@@ -2,86 +2,79 @@ Return-Path: <SRS0=z7rv=V6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7388C433FF
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Aug 2019 04:39:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 053D3C433FF
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Aug 2019 06:10:32 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7BCEB206A3
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Aug 2019 04:39:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C1339206A3
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Aug 2019 06:10:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="l5ErFpJJ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="hGdJLfJG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7BCEB206A3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PMR6QCHK";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=jms.id.au header.i=@jms.id.au header.b="R3+zgINs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C1339206A3
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=jms.id.au
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Cc:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Mr4+E9m2h4P2jzLcvu2DicKqbfSmyeBZNU0diPGmbN8=; b=l5ErFpJJwyMfNe
-	QQ0G1EO8RpUF9ycRk1PLzVG52z02zFl+UZfYV389aZ5Lxzy3lSL+6CKqp2LFCgR8QZGENVJihEYa/
-	DpnVF6UTmTnr0uc+xsIUGnHc9+Tbg7EJWjAQqecgvQZD8XR+XYywV8dwepVJg8kMD+FoYb/zMRB8d
-	hMFikdpI5Kwc90jKevFa+pC4uzY62WPv+xvn8B2HaOoG9bvuahf5gAOkmYByTL4liIuntC8pMcH55
-	ZsQs9+Xr7PmBbtkZmPOfl/PSI8ptcrbLseUuD0EPocsQpgR4yeQDYEUMbY4XD7GlQO7Pg4++zW//R
-	cuudAGkUbiIJIHnX6zew==;
+	List-Owner; bh=zCyYD9CJDKr0Qv7jXBzqC0n6rq8wlxA62O9Kyktox8Q=; b=PMR6QCHKSKmtSW
+	GHjt5UmdW2KHXYhlMx8kcyHfGLemDQ2MxytANtnZ2rzc1tUhkDqjvmXjgjb13XAuWo78WBPHsUCAT
+	xRSm+fPoAl5ErimjzClkGXygbvaDEfNQbTBmhAeSynZMI4aBI8/9dAJD2//ztQ7QY011vICg2nGLr
+	IoiXozJZ2PY2hwjiT9/9dLFYKJmxyOUI87BpioGBy40yXpNvbylEbKATFLwvagPgSZ7+RwEO1SCG4
+	9VXmrRXCTmYQ2mXpbEO1ETEhGLU3LDGjawQESdRpN/wZCcbr4wtV/xUZ7o25rQaBHXpLxf/R57GXY
+	vWJQBs5ZmKn6pEgmbORw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1htPLB-0000Og-7e; Fri, 02 Aug 2019 04:38:53 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1htQlY-0003th-TZ; Fri, 02 Aug 2019 06:10:12 +0000
+Received: from mail-qt1-x844.google.com ([2607:f8b0:4864:20::844])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1htPL7-0000OF-T5
- for linux-mtd@lists.infradead.org; Fri, 02 Aug 2019 04:38:51 +0000
-Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net
- [24.5.143.220])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id CB732206A3;
- Fri,  2 Aug 2019 04:38:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1564720729;
- bh=22Gl8jbJ+JI3LFRMtZwmwjWZb40cKJpBWHsqVgRxQp8=;
- h=Date:From:To:Subject:References:In-Reply-To:From;
- b=hGdJLfJGhfUoeVGRhqaMe25mzQV8+btFmFcQAymp1w48W8DhGqDxUogaRUuHwpPfY
- +cL7kiOkSFEO3QtYlgDX7yYFbPHeJ+zVsFpqPjC/oR21Rt7gPWXjKjZOupPxnzApRu
- kgX+HTDwGCprkebtEPG0MszX50T5fnuUh/zsb+88=
-Date: Thu, 1 Aug 2019 21:38:27 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: "Theodore Y. Ts'o" <tytso@mit.edu>, linux-fscrypt@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net,
- linux-mtd@lists.infradead.org, linux-api@vger.kernel.org,
- linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
- Paul Crowley <paulcrowley@google.com>, Satya Tangirala <satyat@google.com>
-Subject: Re: [PATCH v7 07/16] fscrypt: add FS_IOC_REMOVE_ENCRYPTION_KEY ioctl
-Message-ID: <20190802043827.GA19201@sol.localdomain>
-Mail-Followup-To: "Theodore Y. Ts'o" <tytso@mit.edu>,
- linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-mtd@lists.infradead.org, linux-api@vger.kernel.org,
- linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
- Paul Crowley <paulcrowley@google.com>,
- Satya Tangirala <satyat@google.com>
-References: <20190726224141.14044-1-ebiggers@kernel.org>
- <20190726224141.14044-8-ebiggers@kernel.org>
- <20190728192417.GG6088@mit.edu> <20190729195827.GF169027@gmail.com>
- <20190731183802.GA687@sol.localdomain>
- <20190731233843.GA2769@mit.edu>
- <20190801011140.GB687@sol.localdomain>
- <20190801053108.GD2769@mit.edu> <20190801220432.GC223822@gmail.com>
+ id 1htQlV-0003tA-OS
+ for linux-mtd@lists.infradead.org; Fri, 02 Aug 2019 06:10:11 +0000
+Received: by mail-qt1-x844.google.com with SMTP id x22so67871928qtp.12
+ for <linux-mtd@lists.infradead.org>; Thu, 01 Aug 2019 23:10:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jms.id.au; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=aFWaj3cSyAp5cCruqVAXM269R+jXFA+hpQyudleBW8I=;
+ b=R3+zgINs75dLpE9xitGDlrbGtE/wzbCCZrUQRqXd1DkFAauk+rXBs5F/P6isRb82rQ
+ fGCdP+uzBdeSYGqQpFlJB3PO3LQtniJfZDwC7aTY1w7I/MNKmSqPPLN5EwZ2gGwtY3KB
+ /kjIdOGt+CsMNaXLGf9WLJI4inkssBNReoyCg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=aFWaj3cSyAp5cCruqVAXM269R+jXFA+hpQyudleBW8I=;
+ b=n1uNSDq4xXcRaaYIGo1m5CsOSDIPLUhauKkJ2+ScdWwrLlMf24xxLslHXlESTsOiQw
+ 9jf6KIwoCBphdYIKYyeoZVBGFdOjeL1K7cFABgchRfSJvzCpWc0mVOpn0AK9zXyjtKAx
+ a7KuHPWaRsyKhMsXEA3u2HhgKhoDFkSPeb+SU3jrkNsYvAsnS4dLI9r2e5lSf6jFe+59
+ oxzIgdV+FregNMIQdtidmroAytphrP8+ot5dsNFHcyklPkwTGNmp4TjkJAQ4dq+PRh/Y
+ vsimSUgwlDydpcMmLFJ2kn/uxP3VlVPFmWTLDUbX0sX7LOfeeudrmvxjkJPffWxqeelC
+ 7vYg==
+X-Gm-Message-State: APjAAAUhbf5vF9vZw2fhttzn0xl+owQOmsu+/r/6GkQLuLdIAYwufu9W
+ 8vhZIDlAqHt5qslejoUZltzhXY4yZR6poXyLRc0=
+X-Google-Smtp-Source: APXvYqz7bb22+a5Wv4AkSi0btb/AAI8H35mfK49hqP0WgDG+Ezce+iETXBjueb2NE8qmF9oHprwt/CYIrmsrIe0PbKY=
+X-Received: by 2002:a05:6214:1306:: with SMTP id
+ a6mr97906903qvv.38.1564726208597; 
+ Thu, 01 Aug 2019 23:10:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20190801220432.GC223822@gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+References: <20190730081832.271125-1-avifishman70@gmail.com>
+In-Reply-To: <20190730081832.271125-1-avifishman70@gmail.com>
+From: Joel Stanley <joel@jms.id.au>
+Date: Fri, 2 Aug 2019 06:09:56 +0000
+Message-ID: <CACPK8XeqDRNYJC+=xC_XySSTX6mHi5r94UDaeMPQv3DFV1HYQw@mail.gmail.com>
+Subject: Re: [PATCH v2] mtd: spi-nor: Add Winbond w25q256jvm
+To: Avi Fishman <avifishman70@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190801_213849_979620_1D8B489F 
-X-CRM114-Status: GOOD (  26.04  )
+X-CRM114-CacheID: sfid-20190801_231009_798643_22718EDB 
+X-CRM114-Status: GOOD (  14.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,155 +86,49 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Cc: vigneshr@ti.com, tudor.ambarus@microchip.com,
+ Richard Weinberger <richard@nod.at>,
+ OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Tomer Maimon <tmaimon77@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Aug 01, 2019 at 03:04:34PM -0700, Eric Biggers wrote:
-> On Thu, Aug 01, 2019 at 01:31:08AM -0400, Theodore Y. Ts'o wrote:
-> > On Wed, Jul 31, 2019 at 06:11:40PM -0700, Eric Biggers wrote:
-> > > 
-> > > Well, it's either
-> > > 
-> > > 1a. Remove the user's handle.
-> > > 	OR 
-> > > 1b. Remove all users' handles.  (FSCRYPT_REMOVE_KEY_FLAG_ALL_USERS)
-> > > 
-> > > Then
-> > > 
-> > > 2. If no handles remain, try to evict all inodes that use the key.
-> > > 
-> > > By "purge all keys" do you mean step (2)?  Note that it doesn't require root by
-> > > itself; root is only required to remove other users' handles (1b).
-> > 
-> > No, I was talking about 1b.  I'd argue that 1a and 1b should be
-> > different ioctl.  1b requires root, and 1a doesn't.
-> > 
-> [...]
-> > > 
-> > > Do you mean use a positive return value, or do you mean add an output field to
-> > > the struct passed to the ioctl?
-> > 
-> > I meant adding an output field.  I see EBUSY and EUSERS as status bits
-> > which *some* use cases might find useful.
-> 
-> Ted, would you be happy with the following API?
-> 
+On Tue, 30 Jul 2019 at 08:19, Avi Fishman <avifishman70@gmail.com> wrote:
+>
+> Similar to w25q256 (besides not supporting QPI mode) but with different ID.
+> The "JVM" suffix is in the datasheet.
+> The datasheet indicates DUAL and QUAD are supported.
+> https://www.winbond.com/resource-files/w25q256jv%20spi%20revi%2010232018%20plus.pdf
+>
+> Signed-off-by: Avi Fishman <avifishman70@gmail.com>
 
-Here's a slightly updated version (I missed removing some stale text):
+Reviewed-by: Joel Stanley <joel@jms.id.au>
 
-Removing keys
--------------
-
-Two ioctls are available for removing a key that was added by
-`FS_IOC_ADD_ENCRYPTION_KEY`_:
-
-- `FS_IOC_REMOVE_ENCRYPTION_KEY`_
-- `FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS`_
-
-These two ioctls differ only in cases where v2 policy keys are added
-or removed by non-root users.
-
-These ioctls don't work on keys that were added via the legacy
-process-subscribed keyrings mechanism.
-
-Before using these ioctls, read the `Kernel memory compromise`_
-section for a discussion of the security goals and limitations of
-these ioctls.
-
-FS_IOC_REMOVE_ENCRYPTION_KEY
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The FS_IOC_REMOVE_ENCRYPTION_KEY ioctl removes a claim to a master
-encryption key from the filesystem, and possibly removes the key
-itself.  It can be executed on any file or directory on the target
-filesystem, but using the filesystem's root directory is recommended.
-It takes in a pointer to a :c:type:`struct fscrypt_remove_key_arg`,
-defined as follows::
-
-    struct fscrypt_remove_key_arg {
-            struct fscrypt_key_specifier key_spec;
-    #define FSCRYPT_KEY_REMOVAL_STATUS_FLAG_FILES_BUSY      0x00000001
-    #define FSCRYPT_KEY_REMOVAL_STATUS_FLAG_OTHER_USERS     0x00000002
-            __u32 removal_status_flags;     /* output */
-            __u32 __reserved[5];
-    };
-
-This structure must be zeroed, then initialized as follows:
-
-- The key to remove is specified by ``key_spec``:
-
-    - To remove a key used by v1 encryption policies, set
-      ``key_spec.type`` to FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR and fill
-      in ``key_spec.u.descriptor``.  To remove this type of key, the
-      calling process must have the CAP_SYS_ADMIN capability in the
-      initial user namespace.
-
-    - To remove a key used by v2 encryption policies, set
-      ``key_spec.type`` to FSCRYPT_KEY_SPEC_TYPE_IDENTIFIER and fill
-      in ``key_spec.u.identifier``.
-
-For v2 policy keys, this ioctl is usable by non-root users.  However,
-to make this possible, it actually just removes the current user's
-claim to the key, undoing a single call to FS_IOC_ADD_ENCRYPTION_KEY.
-Only after all claims are removed is the key really removed.
-
-For example, if FS_IOC_ADD_ENCRYPTION_KEY was called with uid 1000,
-then the key will be "claimed" by uid 1000, and
-FS_IOC_REMOVE_ENCRYPTION_KEY will only succeed as uid 1000.  Or, if
-both uids 1000 and 2000 added the key, then for each uid
-FS_IOC_REMOVE_ENCRYPTION_KEY will only remove their own claim.  Only
-once *both* are removed is the key really removed.  (Think of it like
-unlinking a file that may have hard links.)
-
-If FS_IOC_REMOVE_ENCRYPTION_KEY really removes the key, it will also
-try to "lock" all files that had been unlocked with the key.  It won't
-lock files that are still in-use, so this ioctl is expected to be used
-in cooperation with userspace ensuring that none of the files are
-still open.  However, if necessary, the ioctl can be executed again
-later to retry locking any remaining files.
-
-FS_IOC_REMOVE_ENCRYPTION_KEY returns 0 if either the key was removed
-(but may still have files remaining to be locked), the user's claim to
-the key was removed, or the key was already removed but had files
-remaining to be the locked so the ioctl retried locking them.  In any
-of these cases, ``removal_status_flags`` is filled in with the
-following informational status flags:
-
-- ``FSCRYPT_KEY_REMOVAL_STATUS_FLAG_FILES_BUSY``: set if some file(s)
-  are still in-use.  Not guaranteed to be set in the case where only
-  the user's claim to the key was removed.
-- ``FSCRYPT_KEY_REMOVAL_STATUS_FLAG_OTHER_USERS``: set if only the
-  user's claim to the key was removed, not the key itself
-
-FS_IOC_REMOVE_ENCRYPTION_KEY can fail with the following errors:
-
-- ``EACCES``: The FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR key specifier type
-  was specified, but the caller does not have the CAP_SYS_ADMIN
-  capability in the initial user namespace
-- ``EINVAL``: invalid key specifier type, or reserved bits were set
-- ``ENOKEY``: the key object was not found at all, i.e. it was never
-  added in the first place or was already fully removed including all
-  files locked; or, the user does not have a claim to the key.
-- ``ENOTTY``: this type of filesystem does not implement encryption
-- ``EOPNOTSUPP``: the kernel was not configured with encryption
-  support for this filesystem, or the filesystem superblock has not
-  had encryption enabled on it
-
-FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS is exactly the same as
-`FS_IOC_REMOVE_ENCRYPTION_KEY`_, except that for v2 policy keys, the
-ALL_USERS version of the ioctl will remove all users' claims to the
-key, not just the current user's.  I.e., the key itself will always be
-removed, no matter how many users have added it.  This difference is
-only meaningful if non-root users are adding and removing keys.
-
-Because of this, FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS also requires
-"root", namely the CAP_SYS_ADMIN capability in the initial user
-namespace.  Otherwise it will fail with ``EACCES``.
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 03cc788511d5..74b41ec92414 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -2151,6 +2151,8 @@ static const struct flash_info spi_nor_ids[] = {
+>         { "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16, SECT_4K) },
+>         { "w25q128", INFO(0xef4018, 0, 64 * 1024, 256, SECT_4K) },
+>         { "w25q256", INFO(0xef4019, 0, 64 * 1024, 512, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+> +       { "w25q256jvm", INFO(0xef7019, 0, 64 * 1024, 512,
+> +                       SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>         { "w25m512jv", INFO(0xef7119, 0, 64 * 1024, 1024,
+>                         SECT_4K | SPI_NOR_QUAD_READ | SPI_NOR_DUAL_READ) },
+>
+> --
+> 2.18.0
+>
 
 ______________________________________________________
 Linux MTD discussion mailing list
