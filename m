@@ -2,118 +2,68 @@ Return-Path: <SRS0=c8/f=WB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37F69C433FF
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Aug 2019 09:08:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2271EC433FF
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Aug 2019 09:23:20 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0BAAE2067D
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Aug 2019 09:08:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E8BF020880
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Aug 2019 09:23:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KBNpejBV";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="hpX4lyHU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0BAAE2067D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bX1Y7XcM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E8BF020880
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:
+	Subject:To:References:In-Reply-To:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IO+q0WCMKQPhhOP26cm2KxSL5p5UYxfyXaHbFHnBVl8=; b=KBNpejBVHzgxR3
-	qiKadrn+9AjGbsOcca3G/ZhMVtU1xg4C4W1O7VbyYur/AZA3s4c/pPE64WIopH4H1GgngIFT1POGX
-	PUX7NfH3Inu3/PRBnMjBvf4xKXKezuTHuceiM2TlxoqFTH1Tev+1thDk6MXA3JdmjW5AKtfjBo6a4
-	SEwqAeesDQkYoAw7ehZIyPmRNFh/vOT1DaAWEarQsm1LE0fp1ql9zDl5BpFuFGez3rmA/8CNrn7LG
-	yeWi5iVIB92tY/P3LpgsqA4PDiAuGp0Nf5R+GmGiDBh08uH2JQOV1XcwuuVLlUgeaHOxaTmg5B+5O
-	6iEhMtKektf5HIcoMcwA==;
+	List-Owner; bh=5sSHMPowVsK2ly0XzL8r0geTnlFVEkJAGzHrABw0dOo=; b=bX1Y7XcM/MGBPe
+	eb88qUaVuuKSKecgyOjjBlwd5WSpUYHwin/Fd1C16plJQdikVMUHE/Mz6J4wdSB5Tqiy3Va0EnvIz
+	D98qFm7SEzw29qn4ZG5HAoSVQFyNRJwo+9/MDfWhstSxLVrmiVw/SlhwlGKzwVNa2pJGcjGypU+w9
+	tKY+tgG0AekMWCUCkduQzrC0RNBCLiIpo4nuakTAz5Vk+Q1E9Gb94rXLL399cRkPc8nGLsKJhNdVL
+	Nxynk/jK8r84Yn7k6FHWks1oddraAtJSHIcpM2TfnQHiZsQSOKNaxeTgc9jPOwJrWHYb5LARjr1Qb
+	yruYMq+bqMihvLPDmzAQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1huYyt-0002Yo-RH; Mon, 05 Aug 2019 09:08:39 +0000
-Received: from mail-eopbgr20087.outbound.protection.outlook.com ([40.107.2.87]
- helo=EUR02-VE1-obe.outbound.protection.outlook.com)
+	id 1huZCr-0003YU-AM; Mon, 05 Aug 2019 09:23:05 +0000
+Received: from twhmllg4.macronix.com ([211.75.127.132])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1huYya-0002Pi-TG; Mon, 05 Aug 2019 09:08:23 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DWQl43zYt+mve+mcxVoJPD9dPl3lOnNaSiwEaj/Ow+3J7koi+YAsDDmfjW5xyzp4fVJvrzeSx3s1bsD1r6APxlFnyvQrRYh9WFUhJwOUbN86vf+AQexgybEsSSCnOBwRQ8d71mV4Wje+tRU0+4O/TxMcf8QFlotbEEJ9i5FEtRV4hBPuOhVKMlVKMBP/ZuiMbNHOQeIlp2d5t4MbQB7eF4udPBl0MSYNe3KqvSYnpm7d+Utoyv1+vZVySixBf05r0fptbqC82iwBpu21LIrgEU4Lqmx7rWeC+9N64UvJXK+U80M6pvMuFSHkDjo10VxBf1n5TJQl4ia+vpxIbcwsng==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lOzIiE4x1sQ+fFeYmzaB54pnDWh7/NHS25RmKk8deVw=;
- b=n0Dvw4YyrTKeA/ctFeBmdOnlMAk43M6OPi630907dEkncV1ZaXT3GdVuMyJXF5TM2GrbAIUtRb96v41vW3DBdJrlLtOlx7Vl80mBcyj5ojNIAn7BrCFkMi0p6IdQv/35TqJ4IZoyw/ChA7fuiyoBCxjY2eUnfiW62Gs0S3DPbC68NDp5OODcPpCsOkESjY4wcGffM/eaAozUrny0Ssxn4frVWw8o/rDCy2y+rcMdqmRqqlgvAk5OCSWc6kfsF8alkTp+SxzBF5Rhf6BOsXOb6ypE0R0tp16zcRtRlQFcxI+051iVrnQBvxLnoC67JAckfCNzggEpzLHpGMiLo6vgvw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
- smtp.mailfrom=nxp.com;dmarc=pass action=none header.from=nxp.com;dkim=pass
- header.d=nxp.com;arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2; 
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lOzIiE4x1sQ+fFeYmzaB54pnDWh7/NHS25RmKk8deVw=;
- b=hpX4lyHUyItkJ8kbf/i9jLDhEXo7u1nIqBlppzS81LU5luJCmCtArRjidkqY5R0l9zxB0DaJThLG21R4AcyVEuy5oEkWrKqt8HmUeB2smGDp16wBp+Q38QiQgmKjZ3jZe1QEmC1/LKW272XxEalyCf1pvpFq+/AubjjbBs6f/zY=
-Received: from VI1PR04MB4015.eurprd04.prod.outlook.com (10.171.182.24) by
- VI1PR04MB4288.eurprd04.prod.outlook.com (52.134.31.155) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2136.14; Mon, 5 Aug 2019 09:08:18 +0000
-Received: from VI1PR04MB4015.eurprd04.prod.outlook.com
- ([fe80::9c4f:262d:db31:e339]) by VI1PR04MB4015.eurprd04.prod.outlook.com
- ([fe80::9c4f:262d:db31:e339%4]) with mapi id 15.20.2136.018; Mon, 5 Aug 2019
- 09:08:17 +0000
-From: Ashish Kumar <ashish.kumar@nxp.com>
-To: "broonie@kernel.org" <broonie@kernel.org>
-Subject: RE: [EXT] Re: [Patch v3 1/2] dt-bindings: spi: spi-fsl-qspi: Add
- ls2080a compatibility string to bindings
-Thread-Topic: [EXT] Re: [Patch v3 1/2] dt-bindings: spi: spi-fsl-qspi: Add
- ls2080a compatibility string to bindings
-Thread-Index: AQHVJo/VeuuMDsBciEWXxGwYBY/pIqbC1w+AgCPVywCABeCGcA==
-Date: Mon, 5 Aug 2019 09:08:17 +0000
-Message-ID: <VI1PR04MB4015C2C9407598EFEEB4CB2D95DA0@VI1PR04MB4015.eurprd04.prod.outlook.com>
-References: <1560942714-13330-1-git-send-email-Ashish.Kumar@nxp.com>
- <1560942714-13330-2-git-send-email-Ashish.Kumar@nxp.com>
- <20190709200837.GA7806@bogus>
- <CA+EcR23hhD2=abMtNGDoW1LtXSE4qfjTy1uzU7sgrbi7W=KSbw@mail.gmail.com>
-In-Reply-To: <CA+EcR23hhD2=abMtNGDoW1LtXSE4qfjTy1uzU7sgrbi7W=KSbw@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=ashish.kumar@nxp.com; 
-x-originating-ip: [92.120.0.6]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f2f201b3-d14c-4fe6-e49a-08d7198474a3
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);
- SRVR:VI1PR04MB4288; 
-x-ms-traffictypediagnostic: VI1PR04MB4288:
-x-ms-exchange-purlcount: 3
-x-microsoft-antispam-prvs: <VI1PR04MB42888D61404B39C208AF427895DA0@VI1PR04MB4288.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:421;
-x-forefront-prvs: 01208B1E18
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(4636009)(136003)(39860400002)(396003)(346002)(376002)(366004)(13464003)(189003)(199004)(74316002)(7696005)(66066001)(4326008)(486006)(186003)(71200400001)(71190400001)(476003)(33656002)(7736002)(2351001)(2501003)(54906003)(53546011)(53936002)(25786009)(6506007)(26005)(446003)(305945005)(11346002)(6246003)(5660300002)(44832011)(102836004)(68736007)(76176011)(81166006)(9686003)(81156014)(14454004)(52536014)(1730700003)(6306002)(66946007)(66556008)(66476007)(76116006)(8676002)(55016002)(86362001)(6916009)(45080400002)(316002)(2906002)(229853002)(5640700003)(966005)(8936002)(256004)(6436002)(478600001)(64756008)(66446008)(99286004)(6116002)(3846002);
- DIR:OUT; SFP:1101; SCL:1; SRVR:VI1PR04MB4288;
- H:VI1PR04MB4015.eurprd04.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; MX:1; A:1; 
-received-spf: None (protection.outlook.com: nxp.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: Hq6g3mkDo8SB31TSUfn9YNfFwjJAQSB+tel9pofX+rodRUTGZTKzRXFdPF+2M0Zhmo3SziiSNg1S4fy/V3fCsEQSM1xxY4BhcUiFwHQ8ZRk6GZL7aL2IDINE0Jn4dJDQwlCEL8Rgzoh+ciwbT2bLembZrMHAi2eDnkkXr8qSihVVHyUAIHmW1QkajumLAG8cF7HCU3uvEDapVBcy2txjIcwMFMrhfuR1U1YrgxyCPRppJYmCiaa450tgmbgsmqxqWnNi5STllhotUl5dwHJ/OnwQM/cnQSK5kAU0ES1buqteH+oq9kuOu6Mut3SJzwFOs7gSVw4Hxexz1Al4F+QrQO3io8rPPxdqaealGtLKRZhiui1MZNlcBC1d4MD+s+26URmiytYeW/4VycDb53NYYaOYNcm4Z10byt0VJvMJlAE=
+ id 1huZCo-0003Xz-7j
+ for linux-mtd@lists.infradead.org; Mon, 05 Aug 2019 09:23:04 +0000
+Received: from twhfmnt1.mxic.com.tw (twhfm1p2.macronix.com [172.17.20.92])
+ by TWHMLLG4.macronix.com with ESMTP id x759LnQD050642;
+ Mon, 5 Aug 2019 17:21:49 +0800 (GMT-8)
+ (envelope-from masonccyang@mxic.com.tw)
+Received: from MXML06C.mxic.com.tw (mxml06c.macronix.com [172.17.14.55])
+ by Forcepoint Email with ESMTP id AB2C310B77D2B23713D5;
+ Mon,  5 Aug 2019 17:21:49 +0800 (CST)
+In-Reply-To: <20190801082233.759f6ae9@collabora.com>
+References: <1564631710-30276-1-git-send-email-masonccyang@mxic.com.tw>	<1564631710-30276-2-git-send-email-masonccyang@mxic.com.tw>
+ <20190801082233.759f6ae9@collabora.com>
+To: "Boris Brezillon" <boris.brezillon@collabora.com>
+Subject: Re: [PATCH v6 1/2] mtd: rawnand: Add Macronix raw NAND controller
+ driver
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f2f201b3-d14c-4fe6-e49a-08d7198474a3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Aug 2019 09:08:17.8300 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ashish.kumar@nxp.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4288
+X-KeepSent: 566978C2:AD9BE9D7-4825844D:0030DD04;
+ type=4; name=$KeepSent
+X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
+Message-ID: <OF566978C2.AD9BE9D7-ON4825844D.0030DD04-4825844D.00336FFE@mxic.com.tw>
+From: masonccyang@mxic.com.tw
+Date: Mon, 5 Aug 2019 17:21:50 +0800
+X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
+ HF265|July 25, 2018) at 2019/08/05 PM 05:21:49,
+ Serialize complete at 2019/08/05 PM 05:21:49
+X-MAIL: TWHMLLG4.macronix.com x759LnQD050642
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190805_020821_603690_0B23543D 
-X-CRM114-Status: GOOD (  14.92  )
+X-CRM114-CacheID: sfid-20190805_022302_526478_DEC8B5EC 
+X-CRM114-Status: GOOD (  21.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -125,81 +75,399 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Han Xu <xhnjupt@gmail.com>, "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
- Kuldeep Singh <kuldeep.singh@nxp.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Rob Herring <robh@kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, christophe.kerello@st.com,
+ richard@nod.at, bbrezillon@kernel.org, juliensu@mxic.com.tw,
+ lee.jones@linaro.org, linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+ paul@crapouillou.net, marek.vasut@gmail.com, paul.burton@mips.com,
+ liang.yang@amlogic.com, linux-mtd@lists.infradead.org, stefan@agner.ch,
+ miquel.raynal@bootlin.com, anders.roxell@linaro.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org, vigneshr@ti.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
+Hi Boris,
 
-> -----Original Message-----
-> From: Han Xu <xhnjupt@gmail.com>
-> Sent: Thursday, August 1, 2019 8:53 PM
-> To: Rob Herring <robh@kernel.org>
-> Cc: Ashish Kumar <ashish.kumar@nxp.com>; devicetree@vger.kernel.org;
-> bbrezillon@kernel.org; Kuldeep Singh <kuldeep.singh@nxp.com>;
-> broonie@kernel.org; linux-mtd@lists.infradead.org; linux-arm-
-> kernel@lists.infradead.org
-> Subject: [EXT] Re: [Patch v3 1/2] dt-bindings: spi: spi-fsl-qspi: Add ls2080a
-> compatibility string to bindings
+> > +
+> > +struct mxic_nand_ctlr {
+> > +   struct clk *ps_clk;
+> > +   struct clk *send_clk;
+> > +   struct clk *send_dly_clk;
+> > +   void __iomem *regs;
+> > +   struct nand_controller controller;
+> > +   struct device *dev;
+> > +   void *priv;
 > 
-> Caution: EXT Email
+> Looks like this priv field point to a nand_chip object. Please replace
+> it by:
 > 
-> On Tue, Jul 9, 2019 at 3:09 PM Rob Herring <robh@kernel.org> wrote:
-> >
-> > On Wed, 19 Jun 2019 16:41:53 +0530, Ashish Kumar wrote:
-> > > There are 2 version of QSPI-IP, according to which controller
-> > > registers sets can be big endian or little endian.There are some
-> > > other minor changes like RX fifo depth etc.
-> > >
-> > > The big endian version uses driver compatible "fsl,ls1021a-qspi" and
-> > > little endian version uses driver compatible "fsl,ls2080a-qspi"
-> > >
-> > > Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
-> > > Signed-off-by: Ashish Kumar <ashish.kumar@nxp.com>
-> > > ---
-> > > v3:
-> > > Rebase to top
-> > > v2:
-> > > Convert to patch series and rebasing done on top of tree
-> > >
-> > >  Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt | 3 +--
-> > >  1 file changed, 1 insertion(+), 2 deletions(-)
-> > >
-> >
-> > Reviewed-by: Rob Herring <robh@kernel.org>
+>    struct nand_chip *chip;
+
+okay, will fix.
+
 > 
-> Acked-by: Han Xu <han.xu@nxp.com>
-
-Hello Mark,
-
-Could you please send this patch[1] from your spi tree, It applies seamlessly on
-https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git/
-
-[1]: http://patchwork.ozlabs.org/patch/1118636/
-
-Regards 
-Ashish
+> > +};
+> > +
+> > +struct mxic_nand_chip {
+> > +   struct nand_chip chip;
+> > +};
 > 
-> >
-> > ______________________________________________________
-> > Linux MTD discussion mailing list
-> > https://eur01.safelinks.protection.outlook.com/?url=http%3A%2F%2Flists
-> > .infradead.org%2Fmailman%2Flistinfo%2Flinux-
-> mtd%2F&amp;data=02%7C01%7C
-> >
-> Ashish.Kumar%40nxp.com%7Ca172f045af714e408d0a08d716942751%7C686
-> ea1d3bc
-> >
-> 2b4c6fa92cd99c5c301635%7C0%7C1%7C637002697881500159&amp;sdata=f
-> 8i1y4aa
-> > k3gPnuXM3fD1xFPp4RB7GEWZ45%2BeWPOoNSA%3D&amp;reserved=0
+> No need to define your own nand_chip struct if all it contains is the
+> base definition.
+
+okay, will fix.
+
+> 
+> > +
+> > +static int mxic_nfc_clk_enable(struct mxic_nand_ctlr *nfc)
+> > +{
+> > +   int ret;
+> > +
+> > +   ret = clk_prepare_enable(nfc->ps_clk);
+> > +   if (ret)
+> > +      return ret;
+> > +
+> > +   ret = clk_prepare_enable(nfc->send_clk);
+> > +   if (ret)
+> > +      goto err_ps_clk;
+> > +
+> > +   ret = clk_prepare_enable(nfc->send_dly_clk);
+> > +   if (ret)
+> > +      goto err_send_dly_clk;
+> > +
+> > +   return ret;
+> > +
+> > +err_send_dly_clk:
+> > +   clk_disable_unprepare(nfc->send_clk);
+> > +err_ps_clk:
+> > +   clk_disable_unprepare(nfc->ps_clk);
+> > +
+> > +   return ret;
+> > +}
+> > +
+> > +static void mxic_nfc_clk_disable(struct mxic_nand_ctlr *nfc)
+> > +{
+> > +   clk_disable_unprepare(nfc->send_clk);
+> > +   clk_disable_unprepare(nfc->send_dly_clk);
+> > +   clk_disable_unprepare(nfc->ps_clk);
+> > +}
+> > +
+> > +static void mxic_nfc_set_input_delay(struct mxic_nand_ctlr *nfc, u8 
+idly_code)
+> > +{
+> > +   writel(IDLY_CODE_VAL(0, idly_code) |
+> > +          IDLY_CODE_VAL(1, idly_code) |
+> > +          IDLY_CODE_VAL(2, idly_code) |
+> > +          IDLY_CODE_VAL(3, idly_code),
+> > +          nfc->regs + IDLY_CODE(0));
+> > +   writel(IDLY_CODE_VAL(4, idly_code) |
+> > +          IDLY_CODE_VAL(5, idly_code) |
+> > +          IDLY_CODE_VAL(6, idly_code) |
+> > +          IDLY_CODE_VAL(7, idly_code),
+> > +          nfc->regs + IDLY_CODE(1));
+> > +}
+> > +
+> > +static int mxic_nfc_clk_setup(struct mxic_nand_ctlr *nfc, unsigned 
+long freq)
+> > +{
+> > +   int ret;
+> > +
+> > +   ret = clk_set_rate(nfc->send_clk, freq);
+> > +   if (ret)
+> > +      return ret;
+> > +
+> > +   ret = clk_set_rate(nfc->send_dly_clk, freq);
+> > +   if (ret)
+> > +      return ret;
+> > +
+> > +   /*
+> > +    * A constant delay range from 0x0 ~ 0x1F for input delay,
+> > +    * the unit is 78 ps, the max input delay is 2.418 ns.
+> > +    */
+> > +   mxic_nfc_set_input_delay(nfc, 0xf);
+> 
+> Just curious. Shouldn't we use that to support EDO modes? This being
+> said, a delay of 2.5ns will not be enough for EDO...
+
+This mxic_nfc_set_input_delay() thing is for Data IO pins and these delay
+are for internal #RE path latch Data.
+
+> 
+> > +
+> > +   /*
+> > +    * Phase degree = 360 * freq * output-delay
+> > +    * where output-delay is a constant value 1 ns in FPGA.
+> > +    *
+> > +    * Get Phase degree = 360 * freq * 1 ns
+> > +    *                  = 360 * freq * 1 sec / 1000000000
+> > +    *                  = 9 * freq / 25000000
+> > +    */
+> > +   ret = clk_set_phase(nfc->send_dly_clk, 9 * freq / 25000000);
+> > +   if (ret)
+> > +      return ret;
+> > +
+> > +   return 0;
+> > +}
+> > +
+> > +static int mxic_nfc_set_freq(struct mxic_nand_ctlr *nfc, unsigned 
+long freq)
+> > +{
+> > +   int ret;
+> > +
+> > +   if (freq > MXIC_NFC_MAX_CLK_HZ)
+> > +      freq = MXIC_NFC_MAX_CLK_HZ;
+> > +
+> > +   mxic_nfc_clk_disable(nfc);
+> > +   ret = mxic_nfc_clk_setup(nfc, freq);
+> > +   if (ret)
+> > +      return ret;
+> > +
+> > +   ret = mxic_nfc_clk_enable(nfc);
+> > +   if (ret)
+> > +      return ret;
+> > +
+> > +   return 0;
+> > +}
+> > +
+> > +static void mxic_nfc_hw_init(struct mxic_nand_ctlr *nfc)
+> > +{
+> > +   writel(DATA_STROB_EDO_EN, nfc->regs + DATA_STROB);
+> 
+> Oh, no, here is the EDO flag. BTW, you should not have it set by
+> default, it's something you configure in your ->setup_data_interface()
+> implementation.
+
+okay, got it and will fix it.
+
+> 
+> > +   writel(HC_CFG_NIO(8) | HC_CFG_TYPE(1, HC_CFG_TYPE_RAW_NAND) |
+> > +          HC_CFG_SLV_ACT(0) | HC_CFG_MAN_CS_EN |
+> > +          HC_CFG_IDLE_SIO_LVL(1), nfc->regs + HC_CFG);
+> > +   writel(INT_STS_ALL, nfc->regs + INT_STS_EN);
+> > +   writel(0x0, nfc->regs + ONFI_DIN_CNT(0));
+> > +   writel(0, nfc->regs + LRD_CFG);
+> > +   writel(0, nfc->regs + LRD_CTRL);
+> > +   writel(0x0, nfc->regs + HC_EN);
+> > +
+> > +   /* Default 10 MHz to setup tRC_min/tWC_min:100 ns */
+> > +   mxic_nfc_set_freq(nfc, 10000000);
+> 
+> Again, not something you should configure here, but I guess having a
+> default setting does not hurt.
+
+okay, will fix it.
+
+> 
+> > +}
+> > +
+> > +static void mxic_nfc_cs_enable(struct mxic_nand_ctlr *nfc)
+> > +{
+> > +   writel(readl(nfc->regs + HC_CFG) | HC_CFG_MAN_CS_EN,
+> > +          nfc->regs + HC_CFG);
+> > +   writel(HC_CFG_MAN_CS_ASSERT | readl(nfc->regs + HC_CFG),
+> > +          nfc->regs + HC_CFG);
+> > +}
+> > +
+> > +static void mxic_nfc_cs_disable(struct mxic_nand_ctlr *nfc)
+> > +{
+> > +   writel(~HC_CFG_MAN_CS_ASSERT & readl(nfc->regs + HC_CFG),
+> > +          nfc->regs + HC_CFG);
+> > +}
+> > +
+> > +static int  mxic_nfc_wait_ready(struct nand_chip *chip)
+> > +{
+> > +   struct mxic_nand_ctlr *nfc = nand_get_controller_data(chip);
+> > +   u32 sts;
+> > +
+> > +   return readl_poll_timeout(nfc->regs + INT_STS, sts,
+> > +              sts & INT_RDY_PIN, 0, USEC_PER_SEC);
+> 
+> You're not using interrupts at all? For things like R/B wait it's
+> usually a good thing to rely on interrupts instead of status-polling.
+
+In our current FPGA bitstreams, only implement status-polling.
+Interrupts will implement in ASIC.
+
+
+> > +
+> > +static int mxic_nfc_setup_data_interface(struct nand_chip *chip, int 
+chipnr,
+> > +                const struct nand_data_interface *conf)
+> > +{
+> > +   struct mxic_nand_ctlr *nfc = nand_get_controller_data(chip);
+> > +   const struct nand_sdr_timings *sdr;
+> > +   unsigned long freq;
+> > +
+> > +   sdr = nand_get_sdr_timings(conf);
+> > +   if (IS_ERR(sdr))
+> > +      return PTR_ERR(sdr);
+> > +
+> > +   if (chipnr < 0)
+> 
+> Please use the NAND_DATA_IFACE_CHECK_ONLY macro for this check:
+> 
+>    if (chipnr == NAND_DATA_IFACE_CHECK_ONLY)
+>       return 0;
+> 
+
+okay, will fix.
+
+> > +      return 0;
+> > +
+> > +   if (sdr->tRC_min)
+> > +      freq = 1000000000 / (sdr->tRC_min / 1000);
+> 
+> Please use NSEC_PER_SEC instead of 1000000000. And I think you can get
+> rid of the check on sdr->tRC_min (it should never be 0).
+
+got it, thanks.
+
+> 
+> > +
+> > +   return mxic_nfc_set_freq(nfc, freq);
+> 
+> You should set the EDO when ->tRC_min < 30000 IIRC, clear it otherwise.
+> 
+
+okay, will fix,
+
+
+> > +}
+> > +
+> > +static const struct nand_controller_ops mxic_nand_controller_ops = {
+> > +   .exec_op = mxic_nfc_exec_op,
+> > +   .setup_data_interface = mxic_nfc_setup_data_interface,
+> > +};
+> > +
+> > +static int mxic_nfc_probe(struct platform_device *pdev)
+> > +{
+> > +   struct mtd_info *mtd;
+> > +   struct mxic_nand_ctlr *nfc;
+> > +   struct mxic_nand_chip *mxic_nand;
+> > +   struct nand_chip *nand_chip;
+> > +   struct resource *res;
+> > +   int err;
+> > +
+> > +   nfc = devm_kzalloc(&pdev->dev, sizeof(struct mxic_nand_ctlr),
+> > +            GFP_KERNEL);
+> > +   if (!nfc)
+> > +      return -ENOMEM;
+> > +
+> > +   mxic_nand = devm_kzalloc(&pdev->dev, sizeof(struct 
+mxic_nand_chip),
+> > +             GFP_KERNEL);
+> > +   if (!mxic_nand)
+> > +      return -ENOMEM;
+> > +
+> > +   nfc->ps_clk = devm_clk_get(&pdev->dev, "ps");
+> > +   if (IS_ERR(nfc->ps_clk))
+> > +      return PTR_ERR(nfc->ps_clk);
+> > +
+> > +   nfc->send_clk = devm_clk_get(&pdev->dev, "send");
+> > +   if (IS_ERR(nfc->send_clk))
+> > +      return PTR_ERR(nfc->send_clk);
+> > +
+> > +   nfc->send_dly_clk = devm_clk_get(&pdev->dev, "send_dly");
+> > +   if (IS_ERR(nfc->send_dly_clk))
+> > +      return PTR_ERR(nfc->send_dly_clk);
+> > +
+> > +   res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > +   nfc->regs = devm_ioremap_resource(&pdev->dev, res);
+> > +   if (IS_ERR(nfc->regs))
+> > +      return PTR_ERR(nfc->regs);
+> > +
+> > +   nand_chip = &mxic_nand->chip;
+> > +   mtd = nand_to_mtd(nand_chip);
+> > +   mtd->dev.parent = &pdev->dev;
+> > +   nand_chip->ecc.priv = NULL;
+> 
+> No need to do this NULL assignment, the object is allocated with
+> devm_kzalloc().
+
+okay, got it.
+
+> 
+> > +   nand_set_flash_node(nand_chip, pdev->dev.of_node);
+> 
+> The flash node should be a child of pdev->dev.of_node,
+> pdev->dev.of_node is representing your controller not the NAND chip.
+
+I should also patch DTS to add a subnode which is connected to NAND
+controller, as your comments on
+[PATCH v6 2/2] dt-bindings: mtd: Document Macronix raw NAND controller 
+bindings
+
+right ?
+
+> 
+> > +   nand_chip->priv = nfc;
+> > +   nfc->dev = &pdev->dev;
+> > +   nfc->priv = nand_chip;
+> > +
+> > +   nfc->controller.ops = &mxic_nand_controller_ops;
+> > +   nand_controller_init(&nfc->controller);
+> > +   nand_chip->controller = &nfc->controller;
+> > +
+> > +   mxic_nfc_hw_init(nfc);
+> > +
+> > +   err = nand_scan(nand_chip, 1);
+> > +   if (err)
+> > +      goto fail;
+> > +
+> > +   err = mtd_device_register(mtd, NULL, 0);
+> > +   if (err)
+> > +      goto fail;
+> > +
+> > +   platform_set_drvdata(pdev, nfc);
+> > +   return 0;
+> > +
+> > +fail:
+> > +   mxic_nfc_clk_disable(nfc);
+> 
+> Looks like you never call mxic_nfc_clk_enable(), which means you'll end
+> up with unbalanced prepare/enable counts. Also not sure how that can
+> work unless the bootloader takes care of enabling the clks for you.
+
+mxic_nfc_set_freq() will do that.
+
+
+thanks for your time and review.
+
+best regards,
+Mason
+
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information 
+and/or personal data, which is protected by applicable laws. Please be 
+reminded that duplication, disclosure, distribution, or use of this e-mail 
+(and/or its attachments) or any part thereof is prohibited. If you receive 
+this e-mail in error, please notify us immediately and delete this mail as 
+well as its attachment(s) from your system. In addition, please be 
+informed that collection, processing, and/or use of personal data is 
+prohibited unless expressly permitted by personal data protection laws. 
+Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
+
+
+
+============================================================================
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
+
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
