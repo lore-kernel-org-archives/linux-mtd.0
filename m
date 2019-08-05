@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1496C433FF
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Aug 2019 16:34:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0DBBC433FF
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Aug 2019 16:34:15 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6DD102086D
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Aug 2019 16:34:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 816482086D
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Aug 2019 16:34:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="plSyH6YL";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ad4F3SzW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6DD102086D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kdoaJn+q";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="lW0p1+zW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 816482086D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,45 +26,45 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Zi998lwdZ9miZo3qh79sEBvA8RfMAJ7o362ig1eNENI=; b=plSyH6YL5PvkvP
-	C0fzy3X8CdO0J7yWjqEiKt636hiaNOkdmkrA4Edj76MH0q+DiuUsmRXahIzdeILNJ8RLMoTD5pDMT
-	PHZfklXfpybFKmvKQDOjDhqKYNRQ3AWXiAkYkm53DLBcVyM3LvX1KDYOE3WqnQ34qDMIm51tEFoTM
-	kHYARHJFLtaHvRZ1AbcSFLka2EPasE3UMMt4/kmqJ5NiZNqkJFgKo9RxAz3Wc5CiOupL74cOYWUR1
-	fUmsaoPqQ7W0kZpwkTxXRGPGEaIMNRtUBio2cXz97pjci0+urJuluGf0tJjkchdnfeCM1gich7b1t
-	Wy4KZsoKNstgTTepPbbQ==;
+	List-Owner; bh=uIohpZWVn1DM+pvgHPLXbn22pwETVIs7ayI6QPejPZQ=; b=kdoaJn+qBMrLX7
+	xVkHJ2UmN51e2IXOrHQVANfOrdk5fRfwuyOllUzWNAl5MBpLw7P1sDVoxxJ8K/Exa6kMoVrHD7S2g
+	v5yPMWfCDJuECY8+hbMIGCoVO7ozK4lUmwcG71td3fO/eEWhVBL9PpqKrZs+1BZVqH/yKs54/c4O6
+	ajPZwtyy/Foy/nhvqbN+PiG/+nnfK9u6LPR8Tl1kw3S1T4q0fEnDkVUtrBuLp1SefehuNCCiXn7P8
+	vuZtBST0NglekbOU8CTXFzjRbKV5kWtLNOtj4Xa2ajDrJfIVrkQnudwYZhZxql5WqPmJ9pngSHE1B
+	LT2ML+6rATgVwZxIOXeg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hufvb-0004dB-KY; Mon, 05 Aug 2019 16:33:43 +0000
+	id 1hufvq-0004ra-Fw; Mon, 05 Aug 2019 16:33:58 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hufqf-0008OQ-7Z
- for linux-mtd@lists.infradead.org; Mon, 05 Aug 2019 16:28:45 +0000
+ id 1hufql-0008UR-2I
+ for linux-mtd@lists.infradead.org; Mon, 05 Aug 2019 16:28:47 +0000
 Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown
  [104.132.1.77])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 5FBD3217F4;
- Mon,  5 Aug 2019 16:28:32 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 913422189F;
+ Mon,  5 Aug 2019 16:28:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1565022512;
- bh=pOgq0OpPHqH7iz3z5urithoByK1gUgoz9W7hUirsWIQ=;
+ s=default; t=1565022518;
+ bh=LGlqB+KPcdT+yUKo4xoIMYDDnrb5wB4WY6SbGhFfsQA=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Ad4F3SzWKFCz6Oc0jQoQXGjA0Wcg18sTdBIe4uGu3hSe0UGmY4/8K9Gk6liOzdJtR
- XAS47OKbK1aoIg6c+CGp+6Pmfj0Tk9QXZQiJzJYKGF4V0UGfveOSYTfLOVVCJbAyJT
- Fq3Xmo+LQxMs3hl2+i18U3lR7dbbzpNb6vzQ+Sjo=
+ b=lW0p1+zWymvDMHw6wOnKOtMneB8HsEalwqkaNalDGdZSAkU0zL8plEW79RVqMuMWZ
+ uJQAQ19TfbjmoZc/N30eT6G+Ht/asFAo+FJiVAp873vQPOT7+nlt/Ze4uOEopWHUR/
+ C1PcrFC6wdi68QVrTjEwAzShIxii1ofMHdmWiS3o=
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-fscrypt@vger.kernel.org
-Subject: [PATCH v8 05/20] fscrypt: rename fscrypt_master_key to
- fscrypt_direct_key
-Date: Mon,  5 Aug 2019 09:25:06 -0700
-Message-Id: <20190805162521.90882-6-ebiggers@kernel.org>
+Subject: [PATCH v8 17/20] ext4: wire up new fscrypt ioctls
+Date: Mon,  5 Aug 2019 09:25:18 -0700
+Message-Id: <20190805162521.90882-18-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.22.0.770.g0f2c4a37fd-goog
 In-Reply-To: <20190805162521.90882-1-ebiggers@kernel.org>
 References: <20190805162521.90882-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190805_092837_682503_729341DC 
-X-CRM114-Status: GOOD (  18.63  )
+X-CRM114-CacheID: sfid-20190805_092843_687154_157A53D2 
+X-CRM114-Status: UNSURE (   9.80  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,259 +89,84 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-In preparation for introducing a filesystem-level keyring which will
-contain fscrypt master keys, rename the existing 'struct
-fscrypt_master_key' to 'struct fscrypt_direct_key'.  This is the
-structure in the existing table of master keys that's maintained to
-deduplicate the crypto transforms for v1 DIRECT_KEY policies.
+Wire up the new ioctls for adding and removing fscrypt keys to/from the
+filesystem, and the new ioctl for retrieving v2 encryption policies.
 
-I've chosen to keep this table as-is rather than make it automagically
-add/remove the keys to/from the filesystem-level keyring, since that
-would add a lot of extra complexity to the filesystem-level keyring.
+The key removal ioctls also required making ext4_drop_inode() call
+fscrypt_drop_inode().
 
+For more details see Documentation/filesystems/fscrypt.rst and the
+fscrypt patches that added the implementation of these ioctls.
+
+Reviewed-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/fscrypt_private.h |   7 +-
- fs/crypto/keyinfo.c         | 130 ++++++++++++++++++------------------
- 2 files changed, 68 insertions(+), 69 deletions(-)
+ fs/ext4/ioctl.c | 30 ++++++++++++++++++++++++++++++
+ fs/ext4/super.c |  3 +++
+ 2 files changed, 33 insertions(+)
 
-diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index d345a7d28df8c2..80d15a1bf60685 100644
---- a/fs/crypto/fscrypt_private.h
-+++ b/fs/crypto/fscrypt_private.h
-@@ -77,11 +77,10 @@ struct fscrypt_info {
- 	struct inode *ci_inode;
+diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+index 442f7ef873fc36..fe5a4b13f939a2 100644
+--- a/fs/ext4/ioctl.c
++++ b/fs/ext4/ioctl.c
+@@ -1115,6 +1115,31 @@ long ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ 	case EXT4_IOC_GET_ENCRYPTION_POLICY:
+ 		return fscrypt_ioctl_get_policy(filp, (void __user *)arg);
  
- 	/*
--	 * If non-NULL, then this inode uses a master key directly rather than a
--	 * derived key, and ci_ctfm will equal ci_master_key->mk_ctfm.
--	 * Otherwise, this inode uses a derived key.
-+	 * If non-NULL, then encryption is done using the master key directly
-+	 * and ci_ctfm will equal ci_direct_key->dk_ctfm.
- 	 */
--	struct fscrypt_master_key *ci_master_key;
-+	struct fscrypt_direct_key *ci_direct_key;
- 
- 	/* fields from the fscrypt_context */
- 	u8 ci_data_mode;
-diff --git a/fs/crypto/keyinfo.c b/fs/crypto/keyinfo.c
-index 2d45a86f09db25..c4650071df2772 100644
---- a/fs/crypto/keyinfo.c
-+++ b/fs/crypto/keyinfo.c
-@@ -21,8 +21,8 @@
- static struct crypto_shash *essiv_hash_tfm;
- 
- /* Table of keys referenced by DIRECT_KEY policies */
--static DEFINE_HASHTABLE(fscrypt_master_keys, 6); /* 6 bits = 64 buckets */
--static DEFINE_SPINLOCK(fscrypt_master_keys_lock);
-+static DEFINE_HASHTABLE(fscrypt_direct_keys, 6); /* 6 bits = 64 buckets */
-+static DEFINE_SPINLOCK(fscrypt_direct_keys_lock);
- 
- /*
-  * Key derivation function.  This generates the derived key by encrypting the
-@@ -273,46 +273,46 @@ allocate_skcipher_for_mode(struct fscrypt_mode *mode, const u8 *raw_key,
- }
- 
- /* Master key referenced by DIRECT_KEY policy */
--struct fscrypt_master_key {
--	struct hlist_node mk_node;
--	refcount_t mk_refcount;
--	const struct fscrypt_mode *mk_mode;
--	struct crypto_skcipher *mk_ctfm;
--	u8 mk_descriptor[FSCRYPT_KEY_DESCRIPTOR_SIZE];
--	u8 mk_raw[FSCRYPT_MAX_KEY_SIZE];
-+struct fscrypt_direct_key {
-+	struct hlist_node		dk_node;
-+	refcount_t			dk_refcount;
-+	const struct fscrypt_mode	*dk_mode;
-+	struct crypto_skcipher		*dk_ctfm;
-+	u8				dk_descriptor[FSCRYPT_KEY_DESCRIPTOR_SIZE];
-+	u8				dk_raw[FSCRYPT_MAX_KEY_SIZE];
- };
- 
--static void free_master_key(struct fscrypt_master_key *mk)
-+static void free_direct_key(struct fscrypt_direct_key *dk)
++	case FS_IOC_GET_ENCRYPTION_POLICY_EX:
++		if (!ext4_has_feature_encrypt(sb))
++			return -EOPNOTSUPP;
++		return fscrypt_ioctl_get_policy_ex(filp, (void __user *)arg);
++
++	case FS_IOC_ADD_ENCRYPTION_KEY:
++		if (!ext4_has_feature_encrypt(sb))
++			return -EOPNOTSUPP;
++		return fscrypt_ioctl_add_key(filp, (void __user *)arg);
++
++	case FS_IOC_REMOVE_ENCRYPTION_KEY:
++		if (!ext4_has_feature_encrypt(sb))
++			return -EOPNOTSUPP;
++		return fscrypt_ioctl_remove_key(filp, (void __user *)arg);
++
++	case FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS:
++		if (!ext4_has_feature_encrypt(sb))
++			return -EOPNOTSUPP;
++		return fscrypt_ioctl_remove_key_all_users(filp,
++							  (void __user *)arg);
++	case FS_IOC_GET_ENCRYPTION_KEY_STATUS:
++		if (!ext4_has_feature_encrypt(sb))
++			return -EOPNOTSUPP;
++		return fscrypt_ioctl_get_key_status(filp, (void __user *)arg);
++
+ 	case EXT4_IOC_FSGETXATTR:
+ 	{
+ 		struct fsxattr fa;
+@@ -1231,6 +1256,11 @@ long ext4_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 	case EXT4_IOC_SET_ENCRYPTION_POLICY:
+ 	case EXT4_IOC_GET_ENCRYPTION_PWSALT:
+ 	case EXT4_IOC_GET_ENCRYPTION_POLICY:
++	case FS_IOC_GET_ENCRYPTION_POLICY_EX:
++	case FS_IOC_ADD_ENCRYPTION_KEY:
++	case FS_IOC_REMOVE_ENCRYPTION_KEY:
++	case FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS:
++	case FS_IOC_GET_ENCRYPTION_KEY_STATUS:
+ 	case EXT4_IOC_SHUTDOWN:
+ 	case FS_IOC_GETFSMAP:
+ 		break;
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 4079605d437ae7..757819139b8f70 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1107,6 +1107,9 @@ static int ext4_drop_inode(struct inode *inode)
  {
--	if (mk) {
--		crypto_free_skcipher(mk->mk_ctfm);
--		kzfree(mk);
-+	if (dk) {
-+		crypto_free_skcipher(dk->dk_ctfm);
-+		kzfree(dk);
- 	}
+ 	int drop = generic_drop_inode(inode);
+ 
++	if (!drop)
++		drop = fscrypt_drop_inode(inode);
++
+ 	trace_ext4_drop_inode(inode, drop);
+ 	return drop;
  }
- 
--static void put_master_key(struct fscrypt_master_key *mk)
-+static void put_direct_key(struct fscrypt_direct_key *dk)
- {
--	if (!refcount_dec_and_lock(&mk->mk_refcount, &fscrypt_master_keys_lock))
-+	if (!refcount_dec_and_lock(&dk->dk_refcount, &fscrypt_direct_keys_lock))
- 		return;
--	hash_del(&mk->mk_node);
--	spin_unlock(&fscrypt_master_keys_lock);
-+	hash_del(&dk->dk_node);
-+	spin_unlock(&fscrypt_direct_keys_lock);
- 
--	free_master_key(mk);
-+	free_direct_key(dk);
- }
- 
- /*
-- * Find/insert the given master key into the fscrypt_master_keys table.  If
-- * found, it is returned with elevated refcount, and 'to_insert' is freed if
-- * non-NULL.  If not found, 'to_insert' is inserted and returned if it's
-- * non-NULL; otherwise NULL is returned.
-+ * Find/insert the given key into the fscrypt_direct_keys table.  If found, it
-+ * is returned with elevated refcount, and 'to_insert' is freed if non-NULL.  If
-+ * not found, 'to_insert' is inserted and returned if it's non-NULL; otherwise
-+ * NULL is returned.
-  */
--static struct fscrypt_master_key *
--find_or_insert_master_key(struct fscrypt_master_key *to_insert,
-+static struct fscrypt_direct_key *
-+find_or_insert_direct_key(struct fscrypt_direct_key *to_insert,
- 			  const u8 *raw_key, const struct fscrypt_mode *mode,
- 			  const struct fscrypt_info *ci)
- {
- 	unsigned long hash_key;
--	struct fscrypt_master_key *mk;
-+	struct fscrypt_direct_key *dk;
- 
- 	/*
- 	 * Careful: to avoid potentially leaking secret key bytes via timing
-@@ -323,60 +323,60 @@ find_or_insert_master_key(struct fscrypt_master_key *to_insert,
- 	BUILD_BUG_ON(sizeof(hash_key) > FSCRYPT_KEY_DESCRIPTOR_SIZE);
- 	memcpy(&hash_key, ci->ci_master_key_descriptor, sizeof(hash_key));
- 
--	spin_lock(&fscrypt_master_keys_lock);
--	hash_for_each_possible(fscrypt_master_keys, mk, mk_node, hash_key) {
--		if (memcmp(ci->ci_master_key_descriptor, mk->mk_descriptor,
-+	spin_lock(&fscrypt_direct_keys_lock);
-+	hash_for_each_possible(fscrypt_direct_keys, dk, dk_node, hash_key) {
-+		if (memcmp(ci->ci_master_key_descriptor, dk->dk_descriptor,
- 			   FSCRYPT_KEY_DESCRIPTOR_SIZE) != 0)
- 			continue;
--		if (mode != mk->mk_mode)
-+		if (mode != dk->dk_mode)
- 			continue;
--		if (crypto_memneq(raw_key, mk->mk_raw, mode->keysize))
-+		if (crypto_memneq(raw_key, dk->dk_raw, mode->keysize))
- 			continue;
- 		/* using existing tfm with same (descriptor, mode, raw_key) */
--		refcount_inc(&mk->mk_refcount);
--		spin_unlock(&fscrypt_master_keys_lock);
--		free_master_key(to_insert);
--		return mk;
-+		refcount_inc(&dk->dk_refcount);
-+		spin_unlock(&fscrypt_direct_keys_lock);
-+		free_direct_key(to_insert);
-+		return dk;
- 	}
- 	if (to_insert)
--		hash_add(fscrypt_master_keys, &to_insert->mk_node, hash_key);
--	spin_unlock(&fscrypt_master_keys_lock);
-+		hash_add(fscrypt_direct_keys, &to_insert->dk_node, hash_key);
-+	spin_unlock(&fscrypt_direct_keys_lock);
- 	return to_insert;
- }
- 
- /* Prepare to encrypt directly using the master key in the given mode */
--static struct fscrypt_master_key *
--fscrypt_get_master_key(const struct fscrypt_info *ci, struct fscrypt_mode *mode,
-+static struct fscrypt_direct_key *
-+fscrypt_get_direct_key(const struct fscrypt_info *ci, struct fscrypt_mode *mode,
- 		       const u8 *raw_key, const struct inode *inode)
- {
--	struct fscrypt_master_key *mk;
-+	struct fscrypt_direct_key *dk;
- 	int err;
- 
- 	/* Is there already a tfm for this key? */
--	mk = find_or_insert_master_key(NULL, raw_key, mode, ci);
--	if (mk)
--		return mk;
-+	dk = find_or_insert_direct_key(NULL, raw_key, mode, ci);
-+	if (dk)
-+		return dk;
- 
- 	/* Nope, allocate one. */
--	mk = kzalloc(sizeof(*mk), GFP_NOFS);
--	if (!mk)
-+	dk = kzalloc(sizeof(*dk), GFP_NOFS);
-+	if (!dk)
- 		return ERR_PTR(-ENOMEM);
--	refcount_set(&mk->mk_refcount, 1);
--	mk->mk_mode = mode;
--	mk->mk_ctfm = allocate_skcipher_for_mode(mode, raw_key, inode);
--	if (IS_ERR(mk->mk_ctfm)) {
--		err = PTR_ERR(mk->mk_ctfm);
--		mk->mk_ctfm = NULL;
--		goto err_free_mk;
-+	refcount_set(&dk->dk_refcount, 1);
-+	dk->dk_mode = mode;
-+	dk->dk_ctfm = allocate_skcipher_for_mode(mode, raw_key, inode);
-+	if (IS_ERR(dk->dk_ctfm)) {
-+		err = PTR_ERR(dk->dk_ctfm);
-+		dk->dk_ctfm = NULL;
-+		goto err_free_dk;
- 	}
--	memcpy(mk->mk_descriptor, ci->ci_master_key_descriptor,
-+	memcpy(dk->dk_descriptor, ci->ci_master_key_descriptor,
- 	       FSCRYPT_KEY_DESCRIPTOR_SIZE);
--	memcpy(mk->mk_raw, raw_key, mode->keysize);
-+	memcpy(dk->dk_raw, raw_key, mode->keysize);
- 
--	return find_or_insert_master_key(mk, raw_key, mode, ci);
-+	return find_or_insert_direct_key(dk, raw_key, mode, ci);
- 
--err_free_mk:
--	free_master_key(mk);
-+err_free_dk:
-+	free_direct_key(dk);
- 	return ERR_PTR(err);
- }
- 
-@@ -455,22 +455,22 @@ static int setup_crypto_transform(struct fscrypt_info *ci,
- 				  struct fscrypt_mode *mode,
- 				  const u8 *raw_key, const struct inode *inode)
- {
--	struct fscrypt_master_key *mk;
-+	struct fscrypt_direct_key *dk;
- 	struct crypto_skcipher *ctfm;
- 	int err;
- 
- 	if (ci->ci_flags & FSCRYPT_POLICY_FLAG_DIRECT_KEY) {
--		mk = fscrypt_get_master_key(ci, mode, raw_key, inode);
--		if (IS_ERR(mk))
--			return PTR_ERR(mk);
--		ctfm = mk->mk_ctfm;
-+		dk = fscrypt_get_direct_key(ci, mode, raw_key, inode);
-+		if (IS_ERR(dk))
-+			return PTR_ERR(dk);
-+		ctfm = dk->dk_ctfm;
- 	} else {
--		mk = NULL;
-+		dk = NULL;
- 		ctfm = allocate_skcipher_for_mode(mode, raw_key, inode);
- 		if (IS_ERR(ctfm))
- 			return PTR_ERR(ctfm);
- 	}
--	ci->ci_master_key = mk;
-+	ci->ci_direct_key = dk;
- 	ci->ci_ctfm = ctfm;
- 
- 	if (mode->needs_essiv) {
-@@ -494,8 +494,8 @@ static void put_crypt_info(struct fscrypt_info *ci)
- 	if (!ci)
- 		return;
- 
--	if (ci->ci_master_key) {
--		put_master_key(ci->ci_master_key);
-+	if (ci->ci_direct_key) {
-+		put_direct_key(ci->ci_direct_key);
- 	} else {
- 		crypto_free_skcipher(ci->ci_ctfm);
- 		crypto_free_cipher(ci->ci_essiv_tfm);
 -- 
 2.22.0.770.g0f2c4a37fd-goog
 
