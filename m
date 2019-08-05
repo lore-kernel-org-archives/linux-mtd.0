@@ -2,22 +2,22 @@ Return-Path: <SRS0=c8/f=WB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF9D6C0650F
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Aug 2019 10:38:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47445C433FF
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Aug 2019 11:10:13 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B4E0720679
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Aug 2019 10:38:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1A01020856
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Aug 2019 11:10:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oCqJq6RO";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="BU3/ano4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B4E0720679
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bkEkagVN";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="zKqroS2p"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1A01020856
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,63 +26,62 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
 	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
 	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IAnLqkrN7fsJ20m+u6lu5k4+p51fHuy/7NEdxxBrquE=; b=oCqJq6ROm7zJCe
-	3LdqqbiEV3DXpA+Qp4+IfOxp4HdlX/xv5SddWLthJYrOVqZ5N+E1vkhrH8+N/O1ecV7i1G3LO4eFU
-	smZVQGaBRBuLraOBjmtPYsSn4sQNBDvvvNNz7Gi1ssfFJ/5+bzghUtUCyWgLNP4bq9gqY6//9PUF9
-	/gQpuvsx+GzEVvNHJRGHTmXuHRN2fiEaJD54HiP7L/nWafXdEhldNE3yXEwL2CmdfuMrzvAU54/R2
-	t7uwbIoeoEw+KXI5KvoELScWlHEiSYvlDOOS+4HpL+W+3LzSh9hDEx4E207gSyrPugWQZuxaCU3oQ
-	7u+0dgJBKW54BER+lnxA==;
+	List-Owner; bh=DVFWt3BpTw5hXQuBp11i+UjdL6Vyf10s9VUNkpvhgaY=; b=bkEkagVN4FofT/
+	W58FXotUxgE5XoU5bAEOMiPQcyatJS5+IdPgYPngigo+Tcxqfezl97DdEwDMo0NiHlDlIftPqs3n7
+	B7peCQTQnWUEIpG8/Yp3tqWdc5ezxHE6BR/hk5nHGjoalrEskk4TOwywKPdpaoXbLWsuE26StLAFt
+	ywZ7P3P1riDfaH8xvvQFbt894if3ZbuJQ38sS1g+VmQnrgO0yd2B6LwbJrnp5y7XT/re/YmERq5Dr
+	wB02n1B4gUKmAGARHFvok9VUigyQ3pKAMGskwK770AtMuVt1Ieui8sGsQyo80p5HSkkhfaFPEwSCQ
+	viq+R2mCwt/UzE9xwUfA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1huaNk-0005gR-Lh; Mon, 05 Aug 2019 10:38:24 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1huasE-0003FS-1G; Mon, 05 Aug 2019 11:09:54 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1huaNi-0005ft-5M
- for linux-mtd@lists.infradead.org; Mon, 05 Aug 2019 10:38:23 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id x75AcHhm119448;
- Mon, 5 Aug 2019 05:38:17 -0500
+ id 1huasA-0003F7-QY
+ for linux-mtd@lists.infradead.org; Mon, 05 Aug 2019 11:09:52 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id x75B9ha0087336;
+ Mon, 5 Aug 2019 06:09:44 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1565001497;
- bh=1uFoRjo+sqHmQ0i/bby6EbQk0dfwrARVx/RKVjTWgqc=;
+ s=ti-com-17Q1; t=1565003384;
+ bh=phcC27d39oZnXcLzFdJxH6ZDHLmxx0V6skoP0iFbOJg=;
  h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=BU3/ano49QjoY/dMpIY4Y2onskLIxJm+5oZRaag+oTOCH51n8h2WppyP6HK1/BphX
- 7BWLVv1XZN4fAwvO6GhdvKpdWh7MioAOORXNRpDIYvARgCno2pTTBkfQt7mpNz/6kl
- qCFCP1NxSKFkSNqGlxYpZyOHzH0FkfIqB76/eWS0=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x75AcHAp085815
+ b=zKqroS2pKrjvvvCSJ6M4rgBW8O8g9e878yOC9rwcDgZVxWBSX6YbQ+50wPcZ88BMd
+ x8N6S3l/lQGjAyio/q+nz5A15qHHciPqxAD6LLLchBlotdi82pcStxi7TgcoTTEkVF
+ ecd+GRLFlTp4QqaSdpmd0aEynXJKw0jT8/E0BO8c=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x75B9ha8085119
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 5 Aug 2019 05:38:17 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ Mon, 5 Aug 2019 06:09:43 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Mon, 5 Aug
- 2019 05:38:16 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ 2019 06:09:43 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
- Frontend Transport; Mon, 5 Aug 2019 05:38:16 -0500
+ Frontend Transport; Mon, 5 Aug 2019 06:09:43 -0500
 Received: from [172.24.145.136] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id x75AcDOV033666;
- Mon, 5 Aug 2019 05:38:14 -0500
-Subject: Re: [PATCH v4 1/3] mtd: spi-nor: always use bounce buffer for
- register read/writes
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id x75B9eMd079870;
+ Mon, 5 Aug 2019 06:09:41 -0500
+Subject: Re: [PATCH v4 2/3] mtd: spi-nor: Move m25p80 code in spi-nor.c
 To: <Tudor.Ambarus@microchip.com>, <miquel.raynal@bootlin.com>,
  <richard@nod.at>
 References: <20190801162229.28897-1-vigneshr@ti.com>
- <20190801162229.28897-2-vigneshr@ti.com>
- <b125bf29-f1fd-6d33-4a7c-49cb94ef1488@microchip.com>
+ <20190801162229.28897-3-vigneshr@ti.com>
+ <852ffdd1-a546-03db-3b60-47d60bd8d7cf@microchip.com>
 From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <2b10c18a-e955-31b8-b3e0-c3df83508756@ti.com>
-Date: Mon, 5 Aug 2019 16:08:57 +0530
+Message-ID: <c4aa9ee0-9deb-9432-5ae6-0c807092ef35@ti.com>
+Date: Mon, 5 Aug 2019 16:40:24 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <b125bf29-f1fd-6d33-4a7c-49cb94ef1488@microchip.com>
+In-Reply-To: <852ffdd1-a546-03db-3b60-47d60bd8d7cf@microchip.com>
 Content-Language: en-US
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190805_033822_342041_77393C4B 
-X-CRM114-Status: GOOD (  18.30  )
+X-CRM114-CacheID: sfid-20190805_040950_946691_727D0A32 
+X-CRM114-Status: GOOD (  16.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,97 +102,90 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
 
-On 05/08/19 2:36 PM, Tudor.Ambarus@microchip.com wrote:
+On 05/08/19 3:55 PM, Tudor.Ambarus@microchip.com wrote:
 > 
 > 
 > On 08/01/2019 07:22 PM, Vignesh Raghavendra wrote:
->> External E-Mail
->>
->>
->> spi-mem layer expects all buffers passed to it to be DMA'able. But
->> spi-nor layer mostly allocates buffers on stack for reading/writing to
->> registers and therefore are not DMA'able. Introduce bounce buffer to be
->> used to read/write to registers. This ensures that buffer passed to
->> spi-mem layer during register read/writes is DMA'able. With this change
->> nor->cmd-buf is no longer used, so drop it.
->>
->> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
->> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
->> ---
->>
->> v4:
->> Avoid memcpy during READID
->>
->> v3: new patch
->>
->>  drivers/mtd/spi-nor/spi-nor.c | 70 ++++++++++++++++++++---------------
->>  include/linux/mtd/spi-nor.h   |  7 +++-
->>  2 files changed, 45 insertions(+), 32 deletions(-)
->>
+> 
 >> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->> index 03cc788511d5..e02376e1127b 100644
+>> index e02376e1127b..866962c715b4 100644
 >> --- a/drivers/mtd/spi-nor/spi-nor.c
 >> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>> @@ -19,6 +19,7 @@
 > 
 > cut
 > 
->>  /**
->> @@ -1404,9 +1401,11 @@ static int write_sr_cr(struct spi_nor *nor, u8 *sr_cr)
->>  {
->>  	int ret;
->>  
->> +	memcpy(nor->bouncebuf, sr_cr, 2);
-> 
-> I'm thinking out loud. This can be avoided by forcing all the callers to use
-> nor->bouncebuf. That would result in a:
-> 
-
-I can make this change and make all callers use nor->bouncebuf in next
-version.
-
-> static int write_sr(struct spi_nor *nor, size_t len)
-> 
-> write_sr_cr() can be removed. Memcopying 2 bytes is a small price to pay, we can
-> keep things as they are, to not be too invasive. But if you think that this idea
-> is worth it, tell.
-> 
-
-Sounds good to me. But replacing write_sr_cr() with above defintion of
-write_sr() should be a patch IMO>
-
+>> +static ssize_t spi_nor_spimem_read_data(struct spi_nor *nor, loff_t from,
+>> +					size_t len, u8 *buf)
+>> +{
+>> +	struct spi_mem_op op =
+>> +		SPI_MEM_OP(SPI_MEM_OP_CMD(nor->read_opcode, 1),
+>> +			   SPI_MEM_OP_ADDR(nor->addr_width, from, 1),
+>> +			   SPI_MEM_OP_DUMMY(nor->read_dummy, 1),
+>> +			   SPI_MEM_OP_DATA_IN(len, buf, 1));
 >> +
->>  	write_enable(nor);
->>  
->> -	ret = nor->write_reg(nor, SPINOR_OP_WRSR, sr_cr, 2);
->> +	ret = nor->write_reg(nor, SPINOR_OP_WRSR, nor->bouncebuf, 2);
->>  	if (ret < 0) {
->>  		dev_err(nor->dev,
->>  			"error while writing configuration register\n");
+>> +	/* get transfer protocols. */
+>> +	op.cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->read_proto);
+>> +	op.addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->read_proto);
 > 
+> nit: op.dummy.buswidth = op.addr.buswidth;
+> 
+
+Sure, will change.
+
 > cut
 > 
->> @@ -2177,9 +2176,10 @@ static const struct flash_info spi_nor_ids[] = {
->>  static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
->>  {
->>  	int			tmp;
->> -	u8			id[SPI_NOR_MAX_ID_LEN];
->> +	u8			*id;
->>  	const struct flash_info	*info;
 >>  
->> +	id = nor->bouncebuf;
+>> @@ -688,6 +1003,16 @@ static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
+>>  	if (nor->erase)
+>>  		return nor->erase(nor, addr);
+>>  
+>> +	if (nor->spimem) {
+>> +		struct spi_mem_op op =
+>> +			SPI_MEM_OP(SPI_MEM_OP_CMD(nor->erase_opcode, 1),
+>> +				   SPI_MEM_OP_ADDR(nor->addr_width, addr, 1),
+>> +				   SPI_MEM_OP_NO_DUMMY,
+>> +				   SPI_MEM_OP_NO_DATA);
+>> +
+>> +		return spi_mem_exec_op(nor->spimem, &op);
+>> +	}
+>> +
 > 
-> nit: do init at declaration.
+> this should be done below in the function, after masking the address.
+
+Nope. It would have been true if addr been sent as part of op.data.buf.out. 
+But since addr is being send as part of op.addr.val, spi-mem.c takes care of this for spi_transfer(s)
+
+> 
+> You add a double space after return in:
+>> +	return  nor->read_reg(nor, SPINOR_OP_RDSR2, sr2, 1);
 > 
 
-Ok.
+Ah, Will fix
 
-> Also, you missed a place in which you can use the bouncebuf, search by "read_reg(":
-> ret = nor->read_reg(nor, SPINOR_OP_XRDSR, &val, 1);
+> There are some checkpatch warnings that we can fix now.
 > 
 
-Indeed, will fix in next version!
+I did see warnings like:
+>
+>WARNING: line over 80 characters
+>#1023: FILE: drivers/mtd/spi-nor/spi-nor.c:2554:
+>+				   SPI_MEM_OP_DATA_IN(SPI_NOR_MAX_ID_LEN, id, 1));
 
-> Cheers,
+I think its okay to overshoot 80 char limit for better readability. 
+Let me know if you think otherwise
+
+> ERROR: space required after that ',' (ctx:VxV)
+>#1270: FILE: drivers/mtd/spi-nor/spi-nor.c:4846:
+>+	{"mx25l25635e"},{"mx66l51235l"},
+> 	               ^
+
+This and similar warnings can be fixed, but will throw off alignment wrt previous lines.
+Therefore I let them be as is.
+
+
+
+> Looks good!
 > ta
 > 
 
