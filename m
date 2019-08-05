@@ -2,88 +2,67 @@ Return-Path: <SRS0=c8/f=WB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03167C433FF
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Aug 2019 12:31:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25B78C0650F
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Aug 2019 16:29:50 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C753120651
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Aug 2019 12:31:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E55FB2086D
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Aug 2019 16:29:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YBtXW70D";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="GhaIpYzX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C753120651
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="MM770OfF";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="iL8ffATh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E55FB2086D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9cSo4MCVxDiNdSur9QLz4x+3AoIs2Zh7lBA/XV/B50A=; b=YBtXW70DU04J7A
-	LRX0cRzQCsvnC9jEQ8hTtz1Z4zaztceemwGlJ0VZdawx9kKFxEVFybLEzO4C2J314ZBbWsbWO77cI
-	lVLKK9SKIaoJ6F53q2VQ3qczfXZTopiNhdrfyq1rtritFjUuQmLvzARHhFPHhjK+cbJJNnhcjulB2
-	TGG0F0bTb8nfoST81c5Fcgvs52TJi3YICs5XvwUBzdbzL9/DcFwf6lfYoCqnjFUdC2ceMKvoJCUCz
-	R7oBy2zHU+BhMtsoE6sk8KibdM0J3Bc9xFwIIYNgB4ezflB9OwnwnzqMIoncw6IRTj3Y+gCNsNtU4
-	pGzVPtKc5REpSaUyS8OQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=i8Cxh6O2PO/NBkWNE1DbdV5CNsvUVtLLoDmS/U89Zd0=; b=MM770OfFgSJGpQ
+	I2Agf8Rv4vupteoZ2KKCVIMzmRq0ebIj/Z+xCeCq/nNcJNHXjqCCne5GCSOpHpG77AFvXV89Q8RtS
+	ZsUoj1GyF+jhGW6bjJias4P9SVprQl3FR7xMsxUGqK7LfUDVHXGPFTTpa6qXPp/z67ucP03Q+TVJF
+	5wS9ypXSQp+zFg6cTRyeXbW9B+rA62NaEZ6GoCubVP2Ijkk3bHXGgOTRgiIhzjgEzris7ndW3hrGI
+	bH4jTw71lPUdIKKQp7zMMgQOwfAvqPX67KCT4CoVJoLh4p+ZLbQC/4oEWDPxCjtJwKkKUFnKoGt19
+	ss8RXIBRs2aCJ6gRX9BA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1huc8t-00012Z-7g; Mon, 05 Aug 2019 12:31:11 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1hufrT-0000YH-T0; Mon, 05 Aug 2019 16:29:28 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1huc8q-00012E-Ch
- for linux-mtd@lists.infradead.org; Mon, 05 Aug 2019 12:31:09 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id x75CV3jb045947;
- Mon, 5 Aug 2019 07:31:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1565008263;
- bh=lWzTXhSrr0cAVNRCkLsMsMLThhETZUSnx3FezDaatlw=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=GhaIpYzXsLYKaVOrYN7dAF+9q5ShfJUjPlj4pOLVhZvnhWQkW4iol5jESWWhxgZFC
- v3tjk72s+Xi0o0vDKye1BVlrsslYart7+o6Xg1Zwj5kxYZRiiRmF6NcLQdj8cOIdgs
- yDob0Mvwd3HLqxQQugDPBbOPPyRM/6Vj7NxP7VEM=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x75CV2Q3039836
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 5 Aug 2019 07:31:02 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Mon, 5 Aug
- 2019 07:31:02 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
- Frontend Transport; Mon, 5 Aug 2019 07:31:02 -0500
-Received: from [172.24.145.136] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id x75CUx4v054735;
- Mon, 5 Aug 2019 07:30:59 -0500
-Subject: Re: [PATCH v4 2/3] mtd: spi-nor: Move m25p80 code in spi-nor.c
-To: <Tudor.Ambarus@microchip.com>, <miquel.raynal@bootlin.com>,
- <richard@nod.at>
-References: <20190801162229.28897-1-vigneshr@ti.com>
- <20190801162229.28897-3-vigneshr@ti.com>
- <852ffdd1-a546-03db-3b60-47d60bd8d7cf@microchip.com>
- <c4aa9ee0-9deb-9432-5ae6-0c807092ef35@ti.com>
- <50066b1c-6c4c-4aa7-c03d-1d2876afa2c2@microchip.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <cdc6268d-16c7-82ad-53e0-9ec9352d0400@ti.com>
-Date: Mon, 5 Aug 2019 18:01:42 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ id 1hufqc-0008Ky-03
+ for linux-mtd@lists.infradead.org; Mon, 05 Aug 2019 16:28:36 +0000
+Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown
+ [104.132.1.77])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 541512173C;
+ Mon,  5 Aug 2019 16:28:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1565022511;
+ bh=epgWC0ic0Vps9mf8jLO74TmbrQ7mXtNVzjvNBHhYtO0=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=iL8ffAThr+Gi7Gg5KnfSYSShTTe7zTREtSFWglr3trXQmR4zCUT5N4Xexvm+mxqGo
+ D49FIKmYwplqgEGMHTUdQi2RTHHNjzVxl9B7sDidVTK+Ppy9Lt05lhCln+b4FIQ/LB
+ RHDuxHoq8owTmjlqOUrN2mWYksredhOHSGPt1fVU=
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-fscrypt@vger.kernel.org
+Subject: [PATCH v8 03/20] fscrypt: use FSCRYPT_* definitions, not FS_*
+Date: Mon,  5 Aug 2019 09:25:04 -0700
+Message-Id: <20190805162521.90882-4-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.22.0.770.g0f2c4a37fd-goog
+In-Reply-To: <20190805162521.90882-1-ebiggers@kernel.org>
+References: <20190805162521.90882-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <50066b1c-6c4c-4aa7-c03d-1d2876afa2c2@microchip.com>
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190805_053108_535374_DE032C1A 
-X-CRM114-Status: GOOD (  16.09  )
+X-CRM114-CacheID: sfid-20190805_092834_319276_9C692DCB 
+X-CRM114-Status: GOOD (  17.12  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,104 +74,392 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: marek.vasut@gmail.com, bbrezillon@kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, tmaimon77@gmail.com
+Cc: Satya Tangirala <satyat@google.com>, Theodore Ts'o <tytso@mit.edu>,
+ linux-api@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-crypto@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ Jaegeuk Kim <jaegeuk@kernel.org>, linux-ext4@vger.kernel.org,
+ Paul Crowley <paulcrowley@google.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+From: Eric Biggers <ebiggers@google.com>
 
+Update fs/crypto/ to use the new names for the UAPI constants rather
+than the old names, then make the old definitions conditional on
+!__KERNEL__.
 
-On 05/08/19 5:21 PM, Tudor.Ambarus@microchip.com wrote:
-> 
-> 
-> On 08/05/2019 02:10 PM, Vignesh Raghavendra wrote:
->> External E-Mail
->>
->>
->>
->> On 05/08/19 3:55 PM, Tudor.Ambarus@microchip.com wrote:
->>>
->>>
->>> On 08/01/2019 07:22 PM, Vignesh Raghavendra wrote:
->>>
->>>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->>>> index e02376e1127b..866962c715b4 100644
->>>> --- a/drivers/mtd/spi-nor/spi-nor.c
->>>> +++ b/drivers/mtd/spi-nor/spi-nor.c
->>>> @@ -19,6 +19,7 @@
->>>
-> 
->>>>  
->>>> @@ -688,6 +1003,16 @@ static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
->>>>  	if (nor->erase)
->>>>  		return nor->erase(nor, addr);
->>>>  
->>>> +	if (nor->spimem) {
->>>> +		struct spi_mem_op op =
->>>> +			SPI_MEM_OP(SPI_MEM_OP_CMD(nor->erase_opcode, 1),
->>>> +				   SPI_MEM_OP_ADDR(nor->addr_width, addr, 1),
->>>> +				   SPI_MEM_OP_NO_DUMMY,
->>>> +				   SPI_MEM_OP_NO_DATA);
->>>> +
->>>> +		return spi_mem_exec_op(nor->spimem, &op);
->>>> +	}
->>>> +
->>>
->>> this should be done below in the function, after masking the address.
->>
->> Nope. It would have been true if addr been sent as part of op.data.buf.out. 
->> But since addr is being send as part of op.addr.val, spi-mem.c takes care of this for spi_transfer(s)
->>
-> 
-> Is this valid also for the controllers that implement the ctlr->mem_ops?
+Reviewed-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ fs/crypto/crypto.c           |  2 +-
+ fs/crypto/fname.c            |  2 +-
+ fs/crypto/fscrypt_private.h  | 16 +++++------
+ fs/crypto/keyinfo.c          | 53 ++++++++++++++++++------------------
+ fs/crypto/policy.c           | 14 +++++-----
+ include/uapi/linux/fscrypt.h |  2 ++
+ 6 files changed, 46 insertions(+), 43 deletions(-)
 
-Nope, address conversion logic is not required if ctlr->mem_ops is
-implemented. spi-mem drivers should be able to handle address field as
-is and there is no need to be converted to SPI bus order.
-
-Regards
-Vignesh
-
-> 
->>>
->>> You add a double space after return in:
->>>> +	return  nor->read_reg(nor, SPINOR_OP_RDSR2, sr2, 1);
->>>
->>
->> Ah, Will fix
->>
->>> There are some checkpatch warnings that we can fix now.
->>>
->>
->> I did see warnings like:
->>>
->>> WARNING: line over 80 characters
->>> #1023: FILE: drivers/mtd/spi-nor/spi-nor.c:2554:
->>> +				   SPI_MEM_OP_DATA_IN(SPI_NOR_MAX_ID_LEN, id, 1));
->>
->> I think its okay to overshoot 80 char limit for better readability. 
-> 
-> ok
-> 
->> Let me know if you think otherwise> 
->>> ERROR: space required after that ',' (ctx:VxV)
->>> #1270: FILE: drivers/mtd/spi-nor/spi-nor.c:4846:
->>> +	{"mx25l25635e"},{"mx66l51235l"},
->>> 	               ^
->>
->> This and similar warnings can be fixed, but will throw off alignment wrt previous lines.
->> Therefore I let them be as is.
-> 
-> ok
-> 
-> Cheers,ta
-> 
-
+diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
+index 3e4624cfe4b54d..7502c1f0ede9e9 100644
+--- a/fs/crypto/crypto.c
++++ b/fs/crypto/crypto.c
+@@ -141,7 +141,7 @@ void fscrypt_generate_iv(union fscrypt_iv *iv, u64 lblk_num,
+ 	memset(iv, 0, ci->ci_mode->ivsize);
+ 	iv->lblk_num = cpu_to_le64(lblk_num);
+ 
+-	if (ci->ci_flags & FS_POLICY_FLAG_DIRECT_KEY)
++	if (ci->ci_flags & FSCRYPT_POLICY_FLAG_DIRECT_KEY)
+ 		memcpy(iv->nonce, ci->ci_nonce, FS_KEY_DERIVATION_NONCE_SIZE);
+ 
+ 	if (ci->ci_essiv_tfm != NULL)
+diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
+index 5cab3bb2d1fc00..f4977d44d69b81 100644
+--- a/fs/crypto/fname.c
++++ b/fs/crypto/fname.c
+@@ -182,7 +182,7 @@ bool fscrypt_fname_encrypted_size(const struct inode *inode, u32 orig_len,
+ 				  u32 max_len, u32 *encrypted_len_ret)
+ {
+ 	int padding = 4 << (inode->i_crypt_info->ci_flags &
+-			    FS_POLICY_FLAGS_PAD_MASK);
++			    FSCRYPT_POLICY_FLAGS_PAD_MASK);
+ 	u32 encrypted_len;
+ 
+ 	if (orig_len > max_len)
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index 4d715708c6e1f7..fae411b2f78dcb 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -34,7 +34,7 @@ struct fscrypt_context {
+ 	u8 contents_encryption_mode;
+ 	u8 filenames_encryption_mode;
+ 	u8 flags;
+-	u8 master_key_descriptor[FS_KEY_DESCRIPTOR_SIZE];
++	u8 master_key_descriptor[FSCRYPT_KEY_DESCRIPTOR_SIZE];
+ 	u8 nonce[FS_KEY_DERIVATION_NONCE_SIZE];
+ } __packed;
+ 
+@@ -84,7 +84,7 @@ struct fscrypt_info {
+ 	u8 ci_data_mode;
+ 	u8 ci_filename_mode;
+ 	u8 ci_flags;
+-	u8 ci_master_key_descriptor[FS_KEY_DESCRIPTOR_SIZE];
++	u8 ci_master_key_descriptor[FSCRYPT_KEY_DESCRIPTOR_SIZE];
+ 	u8 ci_nonce[FS_KEY_DERIVATION_NONCE_SIZE];
+ };
+ 
+@@ -98,16 +98,16 @@ typedef enum {
+ static inline bool fscrypt_valid_enc_modes(u32 contents_mode,
+ 					   u32 filenames_mode)
+ {
+-	if (contents_mode == FS_ENCRYPTION_MODE_AES_128_CBC &&
+-	    filenames_mode == FS_ENCRYPTION_MODE_AES_128_CTS)
++	if (contents_mode == FSCRYPT_MODE_AES_128_CBC &&
++	    filenames_mode == FSCRYPT_MODE_AES_128_CTS)
+ 		return true;
+ 
+-	if (contents_mode == FS_ENCRYPTION_MODE_AES_256_XTS &&
+-	    filenames_mode == FS_ENCRYPTION_MODE_AES_256_CTS)
++	if (contents_mode == FSCRYPT_MODE_AES_256_XTS &&
++	    filenames_mode == FSCRYPT_MODE_AES_256_CTS)
+ 		return true;
+ 
+-	if (contents_mode == FS_ENCRYPTION_MODE_ADIANTUM &&
+-	    filenames_mode == FS_ENCRYPTION_MODE_ADIANTUM)
++	if (contents_mode == FSCRYPT_MODE_ADIANTUM &&
++	    filenames_mode == FSCRYPT_MODE_ADIANTUM)
+ 		return true;
+ 
+ 	return false;
+diff --git a/fs/crypto/keyinfo.c b/fs/crypto/keyinfo.c
+index 2129943002335c..22345ddede1199 100644
+--- a/fs/crypto/keyinfo.c
++++ b/fs/crypto/keyinfo.c
+@@ -20,7 +20,7 @@
+ 
+ static struct crypto_shash *essiv_hash_tfm;
+ 
+-/* Table of keys referenced by FS_POLICY_FLAG_DIRECT_KEY policies */
++/* Table of keys referenced by DIRECT_KEY policies */
+ static DEFINE_HASHTABLE(fscrypt_master_keys, 6); /* 6 bits = 64 buckets */
+ static DEFINE_SPINLOCK(fscrypt_master_keys_lock);
+ 
+@@ -77,7 +77,7 @@ static int derive_key_aes(const u8 *master_key,
+  */
+ static struct key *
+ find_and_lock_process_key(const char *prefix,
+-			  const u8 descriptor[FS_KEY_DESCRIPTOR_SIZE],
++			  const u8 descriptor[FSCRYPT_KEY_DESCRIPTOR_SIZE],
+ 			  unsigned int min_keysize,
+ 			  const struct fscrypt_key **payload_ret)
+ {
+@@ -87,7 +87,7 @@ find_and_lock_process_key(const char *prefix,
+ 	const struct fscrypt_key *payload;
+ 
+ 	description = kasprintf(GFP_NOFS, "%s%*phN", prefix,
+-				FS_KEY_DESCRIPTOR_SIZE, descriptor);
++				FSCRYPT_KEY_DESCRIPTOR_SIZE, descriptor);
+ 	if (!description)
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -105,7 +105,7 @@ find_and_lock_process_key(const char *prefix,
+ 	payload = (const struct fscrypt_key *)ukp->data;
+ 
+ 	if (ukp->datalen != sizeof(struct fscrypt_key) ||
+-	    payload->size < 1 || payload->size > FS_MAX_KEY_SIZE) {
++	    payload->size < 1 || payload->size > FSCRYPT_MAX_KEY_SIZE) {
+ 		fscrypt_warn(NULL,
+ 			     "key with description '%s' has invalid payload",
+ 			     key->description);
+@@ -129,32 +129,32 @@ find_and_lock_process_key(const char *prefix,
+ }
+ 
+ static struct fscrypt_mode available_modes[] = {
+-	[FS_ENCRYPTION_MODE_AES_256_XTS] = {
++	[FSCRYPT_MODE_AES_256_XTS] = {
+ 		.friendly_name = "AES-256-XTS",
+ 		.cipher_str = "xts(aes)",
+ 		.keysize = 64,
+ 		.ivsize = 16,
+ 	},
+-	[FS_ENCRYPTION_MODE_AES_256_CTS] = {
++	[FSCRYPT_MODE_AES_256_CTS] = {
+ 		.friendly_name = "AES-256-CTS-CBC",
+ 		.cipher_str = "cts(cbc(aes))",
+ 		.keysize = 32,
+ 		.ivsize = 16,
+ 	},
+-	[FS_ENCRYPTION_MODE_AES_128_CBC] = {
++	[FSCRYPT_MODE_AES_128_CBC] = {
+ 		.friendly_name = "AES-128-CBC",
+ 		.cipher_str = "cbc(aes)",
+ 		.keysize = 16,
+ 		.ivsize = 16,
+ 		.needs_essiv = true,
+ 	},
+-	[FS_ENCRYPTION_MODE_AES_128_CTS] = {
++	[FSCRYPT_MODE_AES_128_CTS] = {
+ 		.friendly_name = "AES-128-CTS-CBC",
+ 		.cipher_str = "cts(cbc(aes))",
+ 		.keysize = 16,
+ 		.ivsize = 16,
+ 	},
+-	[FS_ENCRYPTION_MODE_ADIANTUM] = {
++	[FSCRYPT_MODE_ADIANTUM] = {
+ 		.friendly_name = "Adiantum",
+ 		.cipher_str = "adiantum(xchacha12,aes)",
+ 		.keysize = 32,
+@@ -192,7 +192,7 @@ static int find_and_derive_key(const struct inode *inode,
+ 	const struct fscrypt_key *payload;
+ 	int err;
+ 
+-	key = find_and_lock_process_key(FS_KEY_DESC_PREFIX,
++	key = find_and_lock_process_key(FSCRYPT_KEY_DESC_PREFIX,
+ 					ctx->master_key_descriptor,
+ 					mode->keysize, &payload);
+ 	if (key == ERR_PTR(-ENOKEY) && inode->i_sb->s_cop->key_prefix) {
+@@ -203,7 +203,7 @@ static int find_and_derive_key(const struct inode *inode,
+ 	if (IS_ERR(key))
+ 		return PTR_ERR(key);
+ 
+-	if (ctx->flags & FS_POLICY_FLAG_DIRECT_KEY) {
++	if (ctx->flags & FSCRYPT_POLICY_FLAG_DIRECT_KEY) {
+ 		if (mode->ivsize < offsetofend(union fscrypt_iv, nonce)) {
+ 			fscrypt_warn(inode,
+ 				     "Direct key mode not allowed with %s",
+@@ -272,14 +272,14 @@ allocate_skcipher_for_mode(struct fscrypt_mode *mode, const u8 *raw_key,
+ 	return ERR_PTR(err);
+ }
+ 
+-/* Master key referenced by FS_POLICY_FLAG_DIRECT_KEY policy */
++/* Master key referenced by DIRECT_KEY policy */
+ struct fscrypt_master_key {
+ 	struct hlist_node mk_node;
+ 	refcount_t mk_refcount;
+ 	const struct fscrypt_mode *mk_mode;
+ 	struct crypto_skcipher *mk_ctfm;
+-	u8 mk_descriptor[FS_KEY_DESCRIPTOR_SIZE];
+-	u8 mk_raw[FS_MAX_KEY_SIZE];
++	u8 mk_descriptor[FSCRYPT_KEY_DESCRIPTOR_SIZE];
++	u8 mk_raw[FSCRYPT_MAX_KEY_SIZE];
+ };
+ 
+ static void free_master_key(struct fscrypt_master_key *mk)
+@@ -320,13 +320,13 @@ find_or_insert_master_key(struct fscrypt_master_key *to_insert,
+ 	 * raw key, and use crypto_memneq() when comparing raw keys.
+ 	 */
+ 
+-	BUILD_BUG_ON(sizeof(hash_key) > FS_KEY_DESCRIPTOR_SIZE);
++	BUILD_BUG_ON(sizeof(hash_key) > FSCRYPT_KEY_DESCRIPTOR_SIZE);
+ 	memcpy(&hash_key, ci->ci_master_key_descriptor, sizeof(hash_key));
+ 
+ 	spin_lock(&fscrypt_master_keys_lock);
+ 	hash_for_each_possible(fscrypt_master_keys, mk, mk_node, hash_key) {
+ 		if (memcmp(ci->ci_master_key_descriptor, mk->mk_descriptor,
+-			   FS_KEY_DESCRIPTOR_SIZE) != 0)
++			   FSCRYPT_KEY_DESCRIPTOR_SIZE) != 0)
+ 			continue;
+ 		if (mode != mk->mk_mode)
+ 			continue;
+@@ -370,7 +370,7 @@ fscrypt_get_master_key(const struct fscrypt_info *ci, struct fscrypt_mode *mode,
+ 		goto err_free_mk;
+ 	}
+ 	memcpy(mk->mk_descriptor, ci->ci_master_key_descriptor,
+-	       FS_KEY_DESCRIPTOR_SIZE);
++	       FSCRYPT_KEY_DESCRIPTOR_SIZE);
+ 	memcpy(mk->mk_raw, raw_key, mode->keysize);
+ 
+ 	return find_or_insert_master_key(mk, raw_key, mode, ci);
+@@ -448,8 +448,8 @@ static int init_essiv_generator(struct fscrypt_info *ci, const u8 *raw_key,
+ 
+ /*
+  * Given the encryption mode and key (normally the derived key, but for
+- * FS_POLICY_FLAG_DIRECT_KEY mode it's the master key), set up the inode's
+- * symmetric cipher transform object(s).
++ * DIRECT_KEY mode it's the master key), set up the inode's symmetric cipher
++ * transform object(s).
+  */
+ static int setup_crypto_transform(struct fscrypt_info *ci,
+ 				  struct fscrypt_mode *mode,
+@@ -459,7 +459,7 @@ static int setup_crypto_transform(struct fscrypt_info *ci,
+ 	struct crypto_skcipher *ctfm;
+ 	int err;
+ 
+-	if (ci->ci_flags & FS_POLICY_FLAG_DIRECT_KEY) {
++	if (ci->ci_flags & FSCRYPT_POLICY_FLAG_DIRECT_KEY) {
+ 		mk = fscrypt_get_master_key(ci, mode, raw_key, inode);
+ 		if (IS_ERR(mk))
+ 			return PTR_ERR(mk);
+@@ -476,7 +476,7 @@ static int setup_crypto_transform(struct fscrypt_info *ci,
+ 	if (mode->needs_essiv) {
+ 		/* ESSIV implies 16-byte IVs which implies !DIRECT_KEY */
+ 		WARN_ON(mode->ivsize != AES_BLOCK_SIZE);
+-		WARN_ON(ci->ci_flags & FS_POLICY_FLAG_DIRECT_KEY);
++		WARN_ON(ci->ci_flags & FSCRYPT_POLICY_FLAG_DIRECT_KEY);
+ 
+ 		err = init_essiv_generator(ci, raw_key, mode->keysize);
+ 		if (err) {
+@@ -530,9 +530,10 @@ int fscrypt_get_encryption_info(struct inode *inode)
+ 		/* Fake up a context for an unencrypted directory */
+ 		memset(&ctx, 0, sizeof(ctx));
+ 		ctx.format = FS_ENCRYPTION_CONTEXT_FORMAT_V1;
+-		ctx.contents_encryption_mode = FS_ENCRYPTION_MODE_AES_256_XTS;
+-		ctx.filenames_encryption_mode = FS_ENCRYPTION_MODE_AES_256_CTS;
+-		memset(ctx.master_key_descriptor, 0x42, FS_KEY_DESCRIPTOR_SIZE);
++		ctx.contents_encryption_mode = FSCRYPT_MODE_AES_256_XTS;
++		ctx.filenames_encryption_mode = FSCRYPT_MODE_AES_256_CTS;
++		memset(ctx.master_key_descriptor, 0x42,
++		       FSCRYPT_KEY_DESCRIPTOR_SIZE);
+ 	} else if (res != sizeof(ctx)) {
+ 		fscrypt_warn(inode,
+ 			     "Unknown encryption context size (%d bytes)", res);
+@@ -545,7 +546,7 @@ int fscrypt_get_encryption_info(struct inode *inode)
+ 		return -EINVAL;
+ 	}
+ 
+-	if (ctx.flags & ~FS_POLICY_FLAGS_VALID) {
++	if (ctx.flags & ~FSCRYPT_POLICY_FLAGS_VALID) {
+ 		fscrypt_warn(inode, "Unknown encryption context flags (0x%02x)",
+ 			     ctx.flags);
+ 		return -EINVAL;
+@@ -559,7 +560,7 @@ int fscrypt_get_encryption_info(struct inode *inode)
+ 	crypt_info->ci_data_mode = ctx.contents_encryption_mode;
+ 	crypt_info->ci_filename_mode = ctx.filenames_encryption_mode;
+ 	memcpy(crypt_info->ci_master_key_descriptor, ctx.master_key_descriptor,
+-	       FS_KEY_DESCRIPTOR_SIZE);
++	       FSCRYPT_KEY_DESCRIPTOR_SIZE);
+ 	memcpy(crypt_info->ci_nonce, ctx.nonce, FS_KEY_DERIVATION_NONCE_SIZE);
+ 
+ 	mode = select_encryption_mode(crypt_info, inode);
+diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
+index 4941fe8471ceff..da7ae9c8b4ad0b 100644
+--- a/fs/crypto/policy.c
++++ b/fs/crypto/policy.c
+@@ -22,7 +22,7 @@ static bool is_encryption_context_consistent_with_policy(
+ 				const struct fscrypt_policy *policy)
+ {
+ 	return memcmp(ctx->master_key_descriptor, policy->master_key_descriptor,
+-		      FS_KEY_DESCRIPTOR_SIZE) == 0 &&
++		      FSCRYPT_KEY_DESCRIPTOR_SIZE) == 0 &&
+ 		(ctx->flags == policy->flags) &&
+ 		(ctx->contents_encryption_mode ==
+ 		 policy->contents_encryption_mode) &&
+@@ -37,13 +37,13 @@ static int create_encryption_context_from_policy(struct inode *inode,
+ 
+ 	ctx.format = FS_ENCRYPTION_CONTEXT_FORMAT_V1;
+ 	memcpy(ctx.master_key_descriptor, policy->master_key_descriptor,
+-					FS_KEY_DESCRIPTOR_SIZE);
++					FSCRYPT_KEY_DESCRIPTOR_SIZE);
+ 
+ 	if (!fscrypt_valid_enc_modes(policy->contents_encryption_mode,
+ 				     policy->filenames_encryption_mode))
+ 		return -EINVAL;
+ 
+-	if (policy->flags & ~FS_POLICY_FLAGS_VALID)
++	if (policy->flags & ~FSCRYPT_POLICY_FLAGS_VALID)
+ 		return -EINVAL;
+ 
+ 	ctx.contents_encryption_mode = policy->contents_encryption_mode;
+@@ -128,7 +128,7 @@ int fscrypt_ioctl_get_policy(struct file *filp, void __user *arg)
+ 	policy.filenames_encryption_mode = ctx.filenames_encryption_mode;
+ 	policy.flags = ctx.flags;
+ 	memcpy(policy.master_key_descriptor, ctx.master_key_descriptor,
+-				FS_KEY_DESCRIPTOR_SIZE);
++				FSCRYPT_KEY_DESCRIPTOR_SIZE);
+ 
+ 	if (copy_to_user(arg, &policy, sizeof(policy)))
+ 		return -EFAULT;
+@@ -202,7 +202,7 @@ int fscrypt_has_permitted_context(struct inode *parent, struct inode *child)
+ 	if (parent_ci && child_ci) {
+ 		return memcmp(parent_ci->ci_master_key_descriptor,
+ 			      child_ci->ci_master_key_descriptor,
+-			      FS_KEY_DESCRIPTOR_SIZE) == 0 &&
++			      FSCRYPT_KEY_DESCRIPTOR_SIZE) == 0 &&
+ 			(parent_ci->ci_data_mode == child_ci->ci_data_mode) &&
+ 			(parent_ci->ci_filename_mode ==
+ 			 child_ci->ci_filename_mode) &&
+@@ -219,7 +219,7 @@ int fscrypt_has_permitted_context(struct inode *parent, struct inode *child)
+ 
+ 	return memcmp(parent_ctx.master_key_descriptor,
+ 		      child_ctx.master_key_descriptor,
+-		      FS_KEY_DESCRIPTOR_SIZE) == 0 &&
++		      FSCRYPT_KEY_DESCRIPTOR_SIZE) == 0 &&
+ 		(parent_ctx.contents_encryption_mode ==
+ 		 child_ctx.contents_encryption_mode) &&
+ 		(parent_ctx.filenames_encryption_mode ==
+@@ -257,7 +257,7 @@ int fscrypt_inherit_context(struct inode *parent, struct inode *child,
+ 	ctx.filenames_encryption_mode = ci->ci_filename_mode;
+ 	ctx.flags = ci->ci_flags;
+ 	memcpy(ctx.master_key_descriptor, ci->ci_master_key_descriptor,
+-	       FS_KEY_DESCRIPTOR_SIZE);
++	       FSCRYPT_KEY_DESCRIPTOR_SIZE);
+ 	get_random_bytes(ctx.nonce, FS_KEY_DERIVATION_NONCE_SIZE);
+ 	BUILD_BUG_ON(sizeof(ctx) != FSCRYPT_SET_CONTEXT_MAX_SIZE);
+ 	res = parent->i_sb->s_cop->set_context(child, &ctx,
+diff --git a/include/uapi/linux/fscrypt.h b/include/uapi/linux/fscrypt.h
+index 674b0452ef5759..29a945d165def3 100644
+--- a/include/uapi/linux/fscrypt.h
++++ b/include/uapi/linux/fscrypt.h
+@@ -55,6 +55,7 @@ struct fscrypt_key {
+ /**********************************************************************/
+ 
+ /* old names; don't add anything new here! */
++#ifndef __KERNEL__
+ #define FS_KEY_DESCRIPTOR_SIZE		FSCRYPT_KEY_DESCRIPTOR_SIZE
+ #define FS_POLICY_FLAGS_PAD_4		FSCRYPT_POLICY_FLAGS_PAD_4
+ #define FS_POLICY_FLAGS_PAD_8		FSCRYPT_POLICY_FLAGS_PAD_8
+@@ -76,5 +77,6 @@ struct fscrypt_key {
+ #define FS_KEY_DESC_PREFIX		FSCRYPT_KEY_DESC_PREFIX
+ #define FS_KEY_DESC_PREFIX_SIZE		FSCRYPT_KEY_DESC_PREFIX_SIZE
+ #define FS_MAX_KEY_SIZE			FSCRYPT_MAX_KEY_SIZE
++#endif /* !__KERNEL__ */
+ 
+ #endif /* _UAPI_LINUX_FSCRYPT_H */
 -- 
-Regards
-Vignesh
+2.22.0.770.g0f2c4a37fd-goog
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
