@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BECAC0650F
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Aug 2019 16:34:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08039C433FF
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Aug 2019 16:35:08 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 24B492086D
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Aug 2019 16:34:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AD7FB2086D
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Aug 2019 16:35:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dkr2cjFs";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vee5HW50"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 24B492086D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EHdGQY1/";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="D1aJJBld"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD7FB2086D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,45 +26,45 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=g9ms2lp1k35ah9Rm3gB3gBAJOwr4w5d4Fn4U8r88kHM=; b=dkr2cjFsU57pFn
-	k8gEM2O9jPHpGbnoBTxldxFeH/1ruls5hsBbAhTXy7fJVDVVsqAmOarm0NCdWhhnFNjwf8ZWXrqyK
-	95C703R6L764yjee6ZqHclMUtofTXiQrhE1y9Z+TWcJIKPLxZDd2SpEwrHegK1YvXLjyCO9Aj0Y2T
-	/u+hAN8gYJus4Z+x4tG1wM0qBGf+abwTaC9ZhgijKmYj0ETSXcdrAG62K8GqK4lwlknqTM5J9IhD8
-	yMrfcUR9IoiJSYPB5q7U4I/++HUjKBZWzXRoDiY+Ekrv7t6ePBSlKJIdLWRZoqC0ZcPcB+AaxZVrQ
-	X6j5MVIwTyeGCAd+ktLA==;
+	List-Owner; bh=toNCsPXHnTF2MSG78RLgA6NF44vmmS2Di69PIds7iEU=; b=EHdGQY1/9uZ6Bh
+	hsSuVlqvLQfECs6XAOG/N7uO6W+n8ecZdSBXm0PWGl0Dt8sn+Pzblx1fq6DuBLZj6PTwubjDRKRr0
+	sdnhgELN+AGoiW1eLJGvreNEkriBj+mgSPISRshYbzZOdAxOKXirl7sUgExql7D6tQ1sJdGxEEM+i
+	FrY2FkfFW55+0vLwjRGSAIVSBmgz9jrXEJbqpl8diwHvxRJfCtOR4hcoFg7/5JpYvTL2BKezYmaVr
+	EXErz6Ova8bG+TsfMMETsbZplg4/FSDXkMmsR7t3yOB1cxeOY/HCo9slFlhFTaCEnKpm8QHqdSEW9
+	s7hGzrdqQM6Mc/dUPJJg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hufwX-0005ZH-EN; Mon, 05 Aug 2019 16:34:41 +0000
+	id 1hufwk-0005mq-79; Mon, 05 Aug 2019 16:34:54 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hufql-0008US-2s
- for linux-mtd@lists.infradead.org; Mon, 05 Aug 2019 16:28:48 +0000
+ id 1hufql-0008UO-0z
+ for linux-mtd@lists.infradead.org; Mon, 05 Aug 2019 16:28:50 +0000
 Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown
  [104.132.1.77])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 18D1021880;
- Mon,  5 Aug 2019 16:28:39 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 13E732189E;
+ Mon,  5 Aug 2019 16:28:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1565022519;
- bh=xKchlZBFSiXdWf9O42HALH837ZeFXH4QUnQ022O/qXE=;
+ s=default; t=1565022518;
+ bh=xy1t3rSvYnShOxZuTt8ak8auiaMk1xeeLO3ak4sGGW4=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Vee5HW50wwi6C3beCaXmzx4s/nSY6BjK5nLyVT7O6ZJGTT4MDc1oFiuZZYv3EuhTg
- ukmVzCaEI/F67QcE/cD8qiEYDnvGNyeIlKxKFcDe+U5jFRHqRO8re2g3uy9L7GEuto
- f72YBqyW3aRYUeIK6NL6VugSrQ45EmfFw12hQNhk=
+ b=D1aJJBldcpGb18JN2NarCFynGXoY9FVW3evN3jgQMOVasyEEIjksnWi5vY21TAqKF
+ 0Zudz6mVyQYLEwUzT7qMRIArco1zLZx7hxpFHw1UogyLGZdCa6GPil1gmxIoANw6wv
+ UZmddSgC/pTRdUphRX+kvHBgBP96moWKmIRKolug=
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-fscrypt@vger.kernel.org
-Subject: [PATCH v8 18/20] f2fs: wire up new fscrypt ioctls
-Date: Mon,  5 Aug 2019 09:25:19 -0700
-Message-Id: <20190805162521.90882-19-ebiggers@kernel.org>
+Subject: [PATCH v8 16/20] fscrypt: require that key be added when setting a v2
+ encryption policy
+Date: Mon,  5 Aug 2019 09:25:17 -0700
+Message-Id: <20190805162521.90882-17-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.22.0.770.g0f2c4a37fd-goog
 In-Reply-To: <20190805162521.90882-1-ebiggers@kernel.org>
 References: <20190805162521.90882-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190805_092843_684518_1AA6C926 
-X-CRM114-Status: UNSURE (   9.99  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190805_092843_689611_AEE004E8 
+X-CRM114-Status: GOOD (  19.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,119 +89,133 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Wire up the new ioctls for adding and removing fscrypt keys to/from the
-filesystem, and the new ioctl for retrieving v2 encryption policies.
+By looking up the master keys in a filesystem-level keyring rather than
+in the calling processes' key hierarchy, it becomes possible for a user
+to set an encryption policy which refers to some key they don't actually
+know, then encrypt their files using that key.  Cryptographically this
+isn't much of a problem, but the semantics of this would be a bit weird.
+Thus, enforce that a v2 encryption policy can only be set if the user
+has previously added the key, or has capable(CAP_FOWNER).
 
-The key removal ioctls also required making f2fs_drop_inode() call
-fscrypt_drop_inode().
+We tolerate that this problem will continue to exist for v1 encryption
+policies, however; there is no way around that.
 
-For more details see Documentation/filesystems/fscrypt.rst and the
-fscrypt patches that added the implementation of these ioctls.
-
-Acked-by: Jaegeuk Kim <jaegeuk@kernel.org>
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Reviewed-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/f2fs/file.c  | 58 +++++++++++++++++++++++++++++++++++++++++++++++++
- fs/f2fs/super.c |  2 ++
- 2 files changed, 60 insertions(+)
+ fs/crypto/fscrypt_private.h |  3 +++
+ fs/crypto/keyring.c         | 47 +++++++++++++++++++++++++++++++++++++
+ fs/crypto/policy.c          | 14 ++++++++++-
+ 3 files changed, 63 insertions(+), 1 deletion(-)
 
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 3e58a6f697dd8c..6a7349f9ac15ec 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -2184,6 +2184,49 @@ static int f2fs_ioc_get_encryption_pwsalt(struct file *filp, unsigned long arg)
- 	return err;
- }
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index d0e23823423416..e84efc01512e4e 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -431,6 +431,9 @@ extern struct key *
+ fscrypt_find_master_key(struct super_block *sb,
+ 			const struct fscrypt_key_specifier *mk_spec);
  
-+static int f2fs_ioc_get_encryption_policy_ex(struct file *filp,
-+					     unsigned long arg)
-+{
-+	if (!f2fs_sb_has_encrypt(F2FS_I_SB(file_inode(filp))))
-+		return -EOPNOTSUPP;
++extern int fscrypt_verify_key_added(struct super_block *sb,
++				    const u8 identifier[FSCRYPT_KEY_IDENTIFIER_SIZE]);
 +
-+	return fscrypt_ioctl_get_policy_ex(filp, (void __user *)arg);
-+}
-+
-+static int f2fs_ioc_add_encryption_key(struct file *filp, unsigned long arg)
-+{
-+	if (!f2fs_sb_has_encrypt(F2FS_I_SB(file_inode(filp))))
-+		return -EOPNOTSUPP;
-+
-+	return fscrypt_ioctl_add_key(filp, (void __user *)arg);
-+}
-+
-+static int f2fs_ioc_remove_encryption_key(struct file *filp, unsigned long arg)
-+{
-+	if (!f2fs_sb_has_encrypt(F2FS_I_SB(file_inode(filp))))
-+		return -EOPNOTSUPP;
-+
-+	return fscrypt_ioctl_remove_key(filp, (void __user *)arg);
-+}
-+
-+static int f2fs_ioc_remove_encryption_key_all_users(struct file *filp,
-+						    unsigned long arg)
-+{
-+	if (!f2fs_sb_has_encrypt(F2FS_I_SB(file_inode(filp))))
-+		return -EOPNOTSUPP;
-+
-+	return fscrypt_ioctl_remove_key_all_users(filp, (void __user *)arg);
-+}
-+
-+static int f2fs_ioc_get_encryption_key_status(struct file *filp,
-+					      unsigned long arg)
-+{
-+	if (!f2fs_sb_has_encrypt(F2FS_I_SB(file_inode(filp))))
-+		return -EOPNOTSUPP;
-+
-+	return fscrypt_ioctl_get_key_status(filp, (void __user *)arg);
-+}
-+
- static int f2fs_ioc_gc(struct file *filp, unsigned long arg)
- {
- 	struct inode *inode = file_inode(filp);
-@@ -3092,6 +3135,16 @@ long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 		return f2fs_ioc_get_encryption_policy(filp, arg);
- 	case F2FS_IOC_GET_ENCRYPTION_PWSALT:
- 		return f2fs_ioc_get_encryption_pwsalt(filp, arg);
-+	case FS_IOC_GET_ENCRYPTION_POLICY_EX:
-+		return f2fs_ioc_get_encryption_policy_ex(filp, arg);
-+	case FS_IOC_ADD_ENCRYPTION_KEY:
-+		return f2fs_ioc_add_encryption_key(filp, arg);
-+	case FS_IOC_REMOVE_ENCRYPTION_KEY:
-+		return f2fs_ioc_remove_encryption_key(filp, arg);
-+	case FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS:
-+		return f2fs_ioc_remove_encryption_key_all_users(filp, arg);
-+	case FS_IOC_GET_ENCRYPTION_KEY_STATUS:
-+		return f2fs_ioc_get_encryption_key_status(filp, arg);
- 	case F2FS_IOC_GARBAGE_COLLECT:
- 		return f2fs_ioc_gc(filp, arg);
- 	case F2FS_IOC_GARBAGE_COLLECT_RANGE:
-@@ -3219,6 +3272,11 @@ long f2fs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 	case F2FS_IOC_SET_ENCRYPTION_POLICY:
- 	case F2FS_IOC_GET_ENCRYPTION_PWSALT:
- 	case F2FS_IOC_GET_ENCRYPTION_POLICY:
-+	case FS_IOC_GET_ENCRYPTION_POLICY_EX:
-+	case FS_IOC_ADD_ENCRYPTION_KEY:
-+	case FS_IOC_REMOVE_ENCRYPTION_KEY:
-+	case FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS:
-+	case FS_IOC_GET_ENCRYPTION_KEY_STATUS:
- 	case F2FS_IOC_GARBAGE_COLLECT:
- 	case F2FS_IOC_GARBAGE_COLLECT_RANGE:
- 	case F2FS_IOC_WRITE_CHECKPOINT:
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 78a1b873e48ade..e15bd29bd45340 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -913,6 +913,8 @@ static int f2fs_drop_inode(struct inode *inode)
- 		return 0;
- 	}
- 	ret = generic_drop_inode(inode);
-+	if (!ret)
-+		ret = fscrypt_drop_inode(inode);
- 	trace_f2fs_drop_inode(inode, ret);
- 	return ret;
+ extern int __init fscrypt_init_keyring(void);
+ 
+ /* keysetup.c */
+diff --git a/fs/crypto/keyring.c b/fs/crypto/keyring.c
+index 86bfcc02b31fcf..6ea71c2e18f0e7 100644
+--- a/fs/crypto/keyring.c
++++ b/fs/crypto/keyring.c
+@@ -562,6 +562,53 @@ int fscrypt_ioctl_add_key(struct file *filp, void __user *_uarg)
  }
+ EXPORT_SYMBOL_GPL(fscrypt_ioctl_add_key);
+ 
++/*
++ * Verify that the current user has added a master key with the given identifier
++ * (returns -ENOKEY if not).  This is needed to prevent a user from encrypting
++ * their files using some other user's key which they don't actually know.
++ * Cryptographically this isn't much of a problem, but the semantics of this
++ * would be a bit weird, so it's best to just forbid it.
++ *
++ * The system administrator (CAP_FOWNER) can override this, which should be
++ * enough for any use cases where encryption policies are being set using keys
++ * that were chosen ahead of time but aren't available at the moment.
++ *
++ * Note that the key may have already removed by the time this returns, but
++ * that's okay; we just care whether the key was there at some point.
++ *
++ * Return: 0 if the key is added, -ENOKEY if it isn't, or another -errno code
++ */
++int fscrypt_verify_key_added(struct super_block *sb,
++			     const u8 identifier[FSCRYPT_KEY_IDENTIFIER_SIZE])
++{
++	struct fscrypt_key_specifier mk_spec;
++	struct key *key, *mk_user;
++	struct fscrypt_master_key *mk;
++	int err;
++
++	mk_spec.type = FSCRYPT_KEY_SPEC_TYPE_IDENTIFIER;
++	memcpy(mk_spec.u.identifier, identifier, FSCRYPT_KEY_IDENTIFIER_SIZE);
++
++	key = fscrypt_find_master_key(sb, &mk_spec);
++	if (IS_ERR(key)) {
++		err = PTR_ERR(key);
++		goto out;
++	}
++	mk = key->payload.data[0];
++	mk_user = find_master_key_user(mk);
++	if (IS_ERR(mk_user)) {
++		err = PTR_ERR(mk_user);
++	} else {
++		key_put(mk_user);
++		err = 0;
++	}
++	key_put(key);
++out:
++	if (err == -ENOKEY && capable(CAP_FOWNER))
++		err = 0;
++	return err;
++}
++
+ /*
+  * Try to evict the inode's dentries from the dentry cache.  If the inode is a
+  * directory, then it can have at most one dentry; however, that dentry may be
+diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
+index 0141d338c1fdb2..4072ba644595b9 100644
+--- a/fs/crypto/policy.c
++++ b/fs/crypto/policy.c
+@@ -233,11 +233,13 @@ static int set_encryption_policy(struct inode *inode,
+ {
+ 	union fscrypt_context ctx;
+ 	int ctxsize;
++	int err;
+ 
+ 	if (!fscrypt_supported_policy(policy, inode))
+ 		return -EINVAL;
+ 
+-	if (policy->version == FSCRYPT_POLICY_V1) {
++	switch (policy->version) {
++	case FSCRYPT_POLICY_V1:
+ 		/*
+ 		 * The original encryption policy version provided no way of
+ 		 * verifying that the correct master key was supplied, which was
+@@ -251,6 +253,16 @@ static int set_encryption_policy(struct inode *inode,
+ 		 */
+ 		pr_warn_once("%s (pid %d) is setting deprecated v1 encryption policy; recommend upgrading to v2.\n",
+ 			     current->comm, current->pid);
++		break;
++	case FSCRYPT_POLICY_V2:
++		err = fscrypt_verify_key_added(inode->i_sb,
++					       policy->v2.master_key_identifier);
++		if (err)
++			return err;
++		break;
++	default:
++		WARN_ON(1);
++		return -EINVAL;
+ 	}
+ 
+ 	ctxsize = fscrypt_new_context_from_policy(&ctx, policy);
 -- 
 2.22.0.770.g0f2c4a37fd-goog
 
