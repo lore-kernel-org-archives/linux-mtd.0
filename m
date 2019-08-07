@@ -4,84 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 042CFC32751
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Aug 2019 16:52:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D71BC32751
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Aug 2019 17:28:10 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C7E0A2231F
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Aug 2019 16:52:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D5800222FC
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Aug 2019 17:28:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nNHY6ceR";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m8YEU80c"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C7E0A2231F
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KaIcL8+j";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XgqsCZZw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D5800222FC
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pFTr6R7KeRZe71qnP2bC9WztiuyFdO5RawvfFRxcvjA=; b=nNHY6ceRwVxkoC
-	ezzUoMVWhYmWv2Ipm4/10ry4VSe01zGnEZqsa9M6upLmSund9PStfIfbySF8i9a6feqjD06fS5H2J
-	WJoYMfxfvqfaHGTogjPs63hOBVW45UZDZZHMpgH+qYEgbkX1VWRwSc+601VcduutSI3oSXgq0XJy6
-	80DjYr2NDZMksmkxoyiuN6O1zBn+cgN3ubLYiQ0Lj08XW3L5IrgwjV/u6rqw0pDOLyyzBQPuUrUuK
-	ypboyannUv6QBLGbW0y2bFjyVV7FK07u4F/u4DyGM/4ZrO+bj09SFLaCvLlqtLdTAwY6OG/0JQfRU
-	J8/dzeHB7zsA4cfS7wCQ==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From:Date:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=SlOW8rvC01uY4ehKGe5n5M7kMLBbCrFKSWFB04nDZFk=; b=KaIcL8+jM9hsFL
+	AGb2RzZorhjDgEgsRgya96AJZ6+o8pIIRhHAltckCT6D32hzXN/6oPdhJMo27gD2qS4P/3xGIAWCg
+	ZbzxVdVNNOM0TMQIfqFCbs3DD0PXW27X4aM8bTAym7nXeehBEgMaMSFSDife9yRyazPmg0nA55TZg
+	uhbTiwAZQ4R+YQ0AC5+RI9nuL35OQpdvFYyx5h4K51fDHCYT2c2lL4GlJWWqTZit8bIJE0zo/GWD9
+	FZIliI9+mn0XJIaTW6Y5ZiqKXphewhdrWg+q9URQPZ2c13KgMkbCuihW1n17m84WfdcosfYyV60Jx
+	k3nTwzqanytHsgienkKQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hvPB3-0002tm-Qb; Wed, 07 Aug 2019 16:52:41 +0000
-Received: from mail-lj1-x243.google.com ([2a00:1450:4864:20::243])
+	id 1hvPjA-0006Wk-Vp; Wed, 07 Aug 2019 17:27:56 +0000
+Received: from mail-wm1-x32c.google.com ([2a00:1450:4864:20::32c])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hvPB0-0002t1-Pl
- for linux-mtd@lists.infradead.org; Wed, 07 Aug 2019 16:52:40 +0000
-Received: by mail-lj1-x243.google.com with SMTP id h10so14665936ljg.0
- for <linux-mtd@lists.infradead.org>; Wed, 07 Aug 2019 09:52:38 -0700 (PDT)
+ id 1hvPj8-0006WS-Re
+ for linux-mtd@lists.infradead.org; Wed, 07 Aug 2019 17:27:56 +0000
+Received: by mail-wm1-x32c.google.com with SMTP id g67so845276wme.1
+ for <linux-mtd@lists.infradead.org>; Wed, 07 Aug 2019 10:27:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=QC7wHS3+ISEBThD3yh/vJDX8Xujexo9wNquWHTymYZ8=;
- b=m8YEU80cq71xT9BcalJf1PyfEURzMb1kFiDIFCswOAOHKEaRGxjSFqDPt4n5666hfk
- f+Ni9/WBQT0kG0sRQ4cgqmN6ucrO9oBEsBLmEIpLkUQkckU9Lv/akywQX0SGf97wLEJt
- bSNQpfqXyQZwpF6CpZGVgYDAZxnsrsm7YGrXl62zm0pJR/dUCuItRhPVv4Lz0kNP5AUy
- QiMyajbXCdCTvfON5yjMfyWemL9SE4aoCy7q4ryaYsARQjBvhHOO1CvMwBJ4ah4Ionl9
- 1JS6o42jgU6BDal2hUzhFV6lwTihHJsHhkbrxvmDhgK24dCuHYx9ecl7m8j24c5c+Q7s
- RHYQ==
+ h=date:from:to:subject:message-id:mime-version;
+ bh=SlWMD/mY8njctmHF5gyM6BBV0H8KZOr3+hM1c07UsBg=;
+ b=XgqsCZZw5IuVsAvHoP34Ygn49UuZabbtfFXRwRFYjcFiWsylHvaRY/3+0pba9KhPok
+ AeIalZT2HQjTrjL2zTSRbR/I78V+PQbBgGfu1UAZeDX741R0QS9nVN9hSRvdHk1rZcy9
+ bDYgrxaiOs3Fpji2Y9MbrVwWVOm4to0ME8w9T0lU33x/ndDrby0msdA4cc1jvuRnBG1A
+ WgxARfQnls/3FyhjOXM001m51OpoudCFskPFbNianw092FZjRlUzHVNcrHwUKlDt3chQ
+ +2UOp3zSDVGHj8PiXZxmdNr6F9ZjBvHGV4OZ/mzJEb+jKVRDs8shCSFvrmiOboY37U8B
+ JpFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=QC7wHS3+ISEBThD3yh/vJDX8Xujexo9wNquWHTymYZ8=;
- b=a3K1gDZCns+UR+0ZboRhlyhkdCs44LbjCd8iKM/9ni4/TNDHHP9u3Kp1XNVmDmB7xA
- uKzbJHkzSdWJ9Xf9mamgIhZ1knFkwj4K3KGcEc4tDVdkyVbN3SjhRGf5kW2hc/Dcgngc
- sIU2RGeSGvPWTB+HxxNaiuFiKIoDK9tKvJQ2mAfVmlSLMsyyqwJjBWBK6GTI3x84vqSQ
- gAeiGnTyCN6xVlYQQtkr/QlP/bHChyhjMojeInGbxXn1HH0MCVLp7vk+37NHKwGAUsv4
- zI3EkGSUbssEInB9B3K8fEtZbj3UoA+WdSbqmTbFHJ/4uW8Pd4uAjlxic/5nKa2ve/14
- C/jA==
-X-Gm-Message-State: APjAAAXMiKjj1UbUULsO+DHlOkal2lpoiQUwLKtx9o9JdFYohZ0z7nA3
- HI70n96s+UgDfK18qZinDPsRkQ+ypizur0YSkfE=
-X-Google-Smtp-Source: APXvYqwG5hhnFREvq1qUqsccIXXUbyH9vBFlyynNtOw8iCYEENBqiz3jJhb0dHfoyl20H12QDgSGOPp9aAtff+6rcx0=
-X-Received: by 2002:a2e:b009:: with SMTP id y9mr5482513ljk.152.1565196757241; 
- Wed, 07 Aug 2019 09:52:37 -0700 (PDT)
+ h=x-gm-message-state:date:from:to:subject:message-id:mime-version;
+ bh=SlWMD/mY8njctmHF5gyM6BBV0H8KZOr3+hM1c07UsBg=;
+ b=KoqIH+nnzW4Qmrih0XAq7WVhpYlfTP8yUgcNumaMHuZJHxvv2fUwaP08AozFusI5b1
+ /eNCGOcoOQXAXqyvFG1hClh6cbZHISc17i7an0YoVNqzkarBH8fznsZ/NAhbQpEI2RHB
+ M+E8yw7VKlQCeRIQr40dQPzoDy8yBlbDj7+VXxz3qnQy9pG1Yc7D/u6v72vLnb6Rdt+v
+ 9nCry+aJDsX6i8mh7t9NleOByvX/w+dhalBGeoVUcOJsN4PkrON84PA9fvBOw9t0+KL4
+ +S42EvehzTWLjRFDdoILm3WBYAe00UzIoQdJWRPl8292MULdk/dO4Fw2FfBmThkVgCNc
+ i2uA==
+X-Gm-Message-State: APjAAAUmAIzCvhqD15ldR6dmO0oru+Qk27XEqs8DSMwY822HN5DAHRLa
+ ghCtdmmlRN3MwSB7b2CguuBC6rbX
+X-Google-Smtp-Source: APXvYqwcOMXA8Eq0PtPvjJJ6v7b5cqb4kPZeOZ0B4/eSzYv41M1HfOexv101HOJZB4RQ/raWBi8dxQ==
+X-Received: by 2002:a7b:cd84:: with SMTP id y4mr966579wmj.62.1565198873145;
+ Wed, 07 Aug 2019 10:27:53 -0700 (PDT)
+Received: from localhost.localdomain
+ (host235-138-dynamic.251-95-r.retail.telecomitalia.it. [95.251.138.235])
+ by smtp.gmail.com with ESMTPSA id o20sm232353471wrh.8.2019.08.07.10.27.52
+ for <linux-mtd@lists.infradead.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Wed, 07 Aug 2019 10:27:52 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+ by localhost.localdomain (OpenSMTPD) with ESMTP id 7eefdcb8
+ for <linux-mtd@lists.infradead.org>;
+ Wed, 7 Aug 2019 17:27:49 +0000 (UTC)
+Date: Wed, 7 Aug 2019 19:27:49 +0200 (CEST)
+From: Enrico Mioso <mrkiko.rs@gmail.com>
+X-X-Sender: mrkiko@localhost.localdomain
+To: linux-mtd@lists.infradead.org
+Subject: [mtdblock] reading regions where %512 != 0
+Message-ID: <alpine.LNX.2.21.99999.352.1908071924030.11090@localhost.localdomain>
 MIME-Version: 1.0
-References: <CAMxq0fNSWrUFMmmTs8Ri9gFOvS+KQJvZN3-_KuiqXi9bbmCB0Q@mail.gmail.com>
- <CAFLxGvz92UR2M7KJ_dMMW-F47_pLLxSTOrGwdQ5Cc0kuSiTA8Q@mail.gmail.com>
- <CAMxq0fO=0P8972FKvscmNxCBxq0m8_f2DST-Oa9HtNeUA-FKsA@mail.gmail.com>
- <1019514474.57102.1564822129140.JavaMail.zimbra@nod.at>
- <CAMxq0fPvj+gMnUysDDN8j2wXNQj3Th_HwVV2NWmm8pjSe7Q_vQ@mail.gmail.com>
-In-Reply-To: <CAMxq0fPvj+gMnUysDDN8j2wXNQj3Th_HwVV2NWmm8pjSe7Q_vQ@mail.gmail.com>
-From: Sergeant Peppercorn <speppercorn109@gmail.com>
-Date: Wed, 7 Aug 2019 09:52:26 -0700
-Message-ID: <CAMxq0fOJ0uqqzPRW_wBiAZS=KzpRy_waGHODErhjcLgRbX5ALQ@mail.gmail.com>
-Subject: Re: UBIFS ECC errors
-To: Richard Weinberger <richard@nod.at>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190807_095238_858364_06C48DE9 
-X-CRM114-Status: GOOD (  22.34  )
+X-CRM114-CacheID: sfid-20190807_102754_921469_CCA8408B 
+X-CRM114-Status: UNSURE (   7.26  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,50 +97,32 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-QWxzbywgd291bGQgdGhpcyBhcHBseSBmbyBteSA0LjkuODggSU1YIGtlcm5lbCBhcyB3ZWxsIGFz
-IHRoZSBUSSAzLjEyLjEwIGtlcm5lbD8KCk9uIFdlZCwgQXVnIDcsIDIwMTkgYXQgOTo1MSBBTSBT
-ZXJnZWFudCBQZXBwZXJjb3JuCjxzcGVwcGVyY29ybjEwOUBnbWFpbC5jb20+IHdyb3RlOgo+Cj4g
-SGksIHNvIGFyZSB5b3Ugc2F5aW5nIHRoYXQgSSBzaG91bGQgdHJ5IHRvIG1lcmdlIGluIHRoZXNl
-IHR3byBjb21taXRzCj4gZm9yIGEgcHJvcGVyIGZpeCBmb3IgdGhpcz8KPiA3MzBhNDNmYmMxMzUg
-KCJtdGQ6IG5hbmQ6IGFkZCBuYW5kX2NoZWNrX2VyYXNlZCBoZWxwZXIgZnVuY3Rpb25zIikKPiBm
-ZGYyZTgyMTA1MjkgKCJtdGQ6IG5hbmQ6IGdwbWk6IEZpeCBmYWlsdXJlIHdoZW4gYSBlcmFzZWQg
-cGFnZSBoYXMgYQo+IGJpdGZsaXAgYXQgQkJNIikKPgo+IEkgYW0gYXNzdW1pbmcgdGhlc2UgYXJl
-IGZyb20gdGhlIG1haW5saW5lIGtlcm5lbD8KPgo+IElmIG5vdCwgaG93IGRvIEkgZml4IHRoaXM/
-IHRoaXMgb3RoZXIgcGF0Y2gsIGluc3RlYWQgb3Igd2l0aCB0aG9zZSB0d28gY29tbWl0cz8KPiBo
-dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9waXBlcm1haWwvbGludXgtbXRkLzIwMTQtSmFudWFy
-eS8wNTEzNTcuaHRtbAo+Cj4gVGhlIHBhdGNoIGRvZXNuJ3Qgc2VlbSB0byBiZSBhYmxlIHRvIGFw
-cGx5IGNsZWFubHkgdG8gbXkga2VybmVsIHNvIEkKPiBtdXN0IGRvIHNvbWUgZGVlcCBtZXJnaW5n
-LiBJIGhhdmUgbm90IGxvb2tlZCBmb3IgdGhlIHR3byBjb21taXRzIHlldC4KPgo+IEFyZSB0aGVy
-ZSBhbnkgb3RoZXIgYWx0ZXJuYXRpdmVzPwo+Cj4gVGhlbmtzIGluIGFkdmFuY2UgZm9yIGFueSBo
-ZWxwLgo+Cj4gT24gU2F0LCBBdWcgMywgMjAxOSBhdCAxOjQ4IEFNIFJpY2hhcmQgV2VpbmJlcmdl
-ciA8cmljaGFyZEBub2QuYXQ+IHdyb3RlOgo+ID4KPiA+IC0tLS0tIFVyc3Byw7xuZ2xpY2hlIE1h
-aWwgLS0tLS0KPiA+ID4gVm9uOiAiU2VyZ2VhbnQgUGVwcGVyY29ybiIgPHNwZXBwZXJjb3JuMTA5
-QGdtYWlsLmNvbT4KPiA+ID4gQW46ICJSaWNoYXJkIFdlaW5iZXJnZXIiIDxyaWNoYXJkLndlaW5i
-ZXJnZXJAZ21haWwuY29tPgo+ID4gPiBDQzogImxpbnV4LW10ZCIgPGxpbnV4LW10ZEBsaXN0cy5p
-bmZyYWRlYWQub3JnPgo+ID4gPiBHZXNlbmRldDogRnJlaXRhZywgMi4gQXVndXN0IDIwMTkgMTg6
-MTQ6NTUKPiA+ID4gQmV0cmVmZjogUmU6IFVCSUZTIEVDQyBlcnJvcnMKPiA+Cj4gPiA+IEhpLCBt
-YW55IHRoYW5rcyBmb3IgdGhlIHJlcGx5Lgo+ID4gPgo+ID4gPiBJIGhhdmUgc2VlbiBwb3N0cyBv
-biBiaXRmbGlwcyBpbiBlbXB0eSBzcGFjZSBpc3N1ZXMgYmVmb3JlLCBidXQgZG9uJ3QKPiA+ID4g
-cmVtZW1iZXIgc2VlaW5nIGFueSBmaXhlcy4gRG9lcyB0aGlzIG1lYW4gdGhlIGtlcm5lbCBVQkkg
-ZHJpdmVycyBtdXN0Cj4gPiA+IGJlIHBhdGNoZWQ/IENhbiB5b3UgZWxhYm9yYXRlIG9uIHdoYXQg
-Zml4ZXMgb3Igd2hlcmUgdG8gZmluZCBwYXRjaGVzLAo+ID4gPiBldGMsIG9yIHdoYXQgdG8gZG8g
-YWJvdXQgdGhpcywgdGhlbj8gQWxsIEkgY2FyZSBhYm91dCBpcyBnZXR0aW5nIHRoaXMKPiA+ID4g
-dG8gd29yaywgYW5kIGhvcGVmdWxseSB3aXRob3V0IG5lZWRpbmcgdG8gcmVmb3JtYXQgdGhlIHJv
-b3QgZmlsZQo+ID4gPiBzeXN0ZW0gb24gNTAsMDAwIHVuaXRzIGluIHRoZSBmaWVsZC4KPiA+Cj4g
-PiBZb3VyIGtlcm5lbCBpcyBwcmV0dHkgb2xkLCBzbyBJIGd1ZXNzIHlvdSBkb24ndCBoYXZlIHRo
-aXMgY29tbWl0Ogo+ID4gNzMwYTQzZmJjMTM1ICgibXRkOiBuYW5kOiBhZGQgbmFuZF9jaGVja19l
-cmFzZWQgaGVscGVyIGZ1bmN0aW9ucyIpCj4gPgo+ID4gQml0ZmxpcHMgaW4gZW1wdHkgcGFnZXMg
-c2hvdWxkIGJlIGhhbmRsZWQgaW4gdGhlIE5BTkQgbGF5ZXIuCj4gPgo+ID4gUGxlYXNlIGRvbid0
-IGJsaW5kbHkgYXBwbHkgdGhpcyBwYXRjaCwgaXQgbWF5IGhhdmUgZGVwZW5kZW5jaWVzIG9yIHdp
-bGwKPiA+IHVuY292ZXIgb3RoZXIgYnVncy4gU3VjaCBhcyBmaXg6Cj4gPiBmZGYyZTgyMTA1Mjkg
-KCJtdGQ6IG5hbmQ6IGdwbWk6IEZpeCBmYWlsdXJlIHdoZW4gYSBlcmFzZWQgcGFnZSBoYXMgYSBi
-aXRmbGlwIGF0IEJCTSIpCj4gPgo+ID4gVGhhbmtzLAo+ID4gLy9yaWNoYXJkCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRp
-c2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vbGludXgtbXRkLwo=
+Hello guys!
+
+first of all - thank you for your great work!
+
+I've been experimenting an issue with OpenWRt on a TP-Link Archer C60 V2 device, where an mtd region has been defined so that it's not 512-bytes aligned:
+
+mac: partition@1fb00 {
+  	label = "mac";
+  	reg = <0x01fb00 0x000500>;
+  	read-only;
+};
+
+So the region is 1280 bytes long; still reading from the exported mtdblock device will results in a 1024 bytes read.
+This prevents users from making proper backups of flash regions. I don't know how many instances of this exist in the OpenWRt tree right now, but it's not clear wether we should fix this issue in the mtdblock or defining regions differently, changing their sizes.
+Any help, suggestions or ideas very welcome and apreciated.
+
+Thank you very much,
+Enrico
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
