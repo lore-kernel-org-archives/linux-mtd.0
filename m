@@ -1,59 +1,84 @@
-Return-Path: <SRS0=QRHZ=WD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=E2BX=WE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=0.3 required=3.0 tests=DKIMWL_WL_HIGH,
-	DKIM_ADSP_NXDOMAIN,DKIM_SIGNED,DKIM_VALID,FREEMAIL_REPLYTO_END_DIGIT,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 795AFC32751
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Aug 2019 21:23:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40C75C32751
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Aug 2019 00:43:53 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 465CB21743
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Aug 2019 21:23:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 11FE42186A
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Aug 2019 00:43:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lRcQk2R0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 465CB21743
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sharedomeau.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cao33Ps2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 11FE42186A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:
-	Subject:To:From:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=3n3n5zEj+90JTfz7M1gr3xuWtUVjMi7LcoeHXzRXabM=; b=lRcQk2R0ANkBFP
-	RLOp1+2FJ+y/+s7iJDU6hrp10vosNSd4pwxaOkugDutW5gYPlKhtVfCNG13WHKCsQzzfrVaDB3pJd
-	tojjN30a1vrMxqSUwPhiKeaDnLEkNrF8YUcwLCfCzaHxq2KcX+4k4z7EfZzxBIDDE5DYfojrRrsHS
-	yb1fLD39gvbJ31fijhRXz4i6X2LYDITd/xRRPyQRkhpKfkTxvDZKaCiB5Do/0etEkN1hg3hNhhycB
-	7lmoqr+AgmSy0+1dc6AmFpFiH02IqRizT9yrFklvzHtr5Ynq9aioP/A8yDsxQbIfwz8npcT+vuXtG
-	ydc9obG3+JFx1l+UHdKA==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=72+T2+upyHi4Z9APQT4lvY2xoomN+VrIV93FlzAAYhc=; b=cao33Ps2fE4qAOOo8jd864LaY
+	QMt6fn4QP0wwqXg8F8QM4zcg56oMxkC+2/mmefjHAPBEGpCpQPRBWEs6XLcns2sn/E9NrjeVYDrOv
+	uEjXrxxXplOELQsJWUmgajY4HylAsZ6690YPJXYiAg9puSBlc1NgLtYf0egETnJsSvD/yZCxJGtyq
+	FXsPf2BthaLezL6D/psOzTkQtkHer7Gd1xVdQI1zg7Z8UYY4Oc18ng5rAUNfGuOqXKkb80uS9KHBv
+	GilYSzYwytVzxdLDcSLimEEmDyfUt5MdpLoTav5+Qs9VPBGBr2q0U8E4+88cLD7Vy4rmPYPj95Z1Y
+	bsykkedbg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hvTP4-0001eK-BP; Wed, 07 Aug 2019 21:23:26 +0000
-Received: from cloud-sohoportal-mail.hspheredns.com ([67.22.138.101])
- by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hvTNn-0000bU-Jf
- for linux-mtd@lists.infradead.org; Wed, 07 Aug 2019 21:22:09 +0000
-Received: (qmail 9525 invoked by uid 399); 7 Aug 2019 21:22:06 -0000
-Received: from unknown (HELO mail.amces.com) (lori@amces.com@104.43.236.155)
- by cloud-sohoportal-mail.hspheredns.com with ESMTPAMMMMMMMMMMMMMMMMMMM;
- 7 Aug 2019 21:22:06 -0000
-X-Originating-IP: 104.43.236.155
-X-Sender: lori@amces.com
-From: Charlotte Davis <no_reply@sharedomeau.com>
-To: linux-mtd@lists.infradead.org
-Subject: Offer
-Date: 07 Aug 2019 16:22:06 -0500
-Message-ID: <20190807161535.5A54CF26D3DC5A32@sharedomeau.com>
+	id 1hvWWg-00031J-19; Thu, 08 Aug 2019 00:43:30 +0000
+Received: from icp-osb-irony-out5.external.iinet.net.au ([203.59.1.221])
+ by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
+ id 1hvWWd-00030y-Ac
+ for linux-mtd@lists.infradead.org; Thu, 08 Aug 2019 00:43:29 +0000
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2AeAAAZb0td/zXSMGcNWRkBAQEBAQE?=
+ =?us-ascii?q?BAQEBAQEHAQEBAQEBgWeEM4QekBYBAQEBAQaBCQglg2eGAI84gWcJAQEBAQE?=
+ =?us-ascii?q?BAQEBNwEBhD8CgnU4EwEEAQEBBAEBAgEJAYVShhkBAQEDIwQRQRALDQsCAiY?=
+ =?us-ascii?q?CAlcGDQYCAQGDHoF3qxJxfzMahS+DOoFJgQwogWOKGHiBB4ERJwyCXz6EEQE?=
+ =?us-ascii?q?SAQODJ4JYBIwnIIhGgS+UcAmCHpQdBhuNXQOKUqdQgQhxMxoIKAiDJ4FLgQM?=
+ =?us-ascii?q?XjjNgjGaCQwEB?=
+X-IPAS-Result: =?us-ascii?q?A2AeAAAZb0td/zXSMGcNWRkBAQEBAQEBAQEBAQEHAQEBA?=
+ =?us-ascii?q?QEBgWeEM4QekBYBAQEBAQaBCQglg2eGAI84gWcJAQEBAQEBAQEBNwEBhD8Cg?=
+ =?us-ascii?q?nU4EwEEAQEBBAEBAgEJAYVShhkBAQEDIwQRQRALDQsCAiYCAlcGDQYCAQGDH?=
+ =?us-ascii?q?oF3qxJxfzMahS+DOoFJgQwogWOKGHiBB4ERJwyCXz6EEQESAQODJ4JYBIwnI?=
+ =?us-ascii?q?IhGgS+UcAmCHpQdBhuNXQOKUqdQgQhxMxoIKAiDJ4FLgQMXjjNgjGaCQwEB?=
+X-IronPort-AV: E=Sophos;i="5.64,358,1559491200"; d="scan'208";a="243956099"
+Received: from unknown (HELO [10.44.0.22]) ([103.48.210.53])
+ by icp-osb-irony-out5.iinet.net.au with ESMTP; 08 Aug 2019 08:43:17 +0800
+Subject: Re: GPMI iMX6ull timeout on DMA
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+References: <89ae32a0-9b19-4735-90eb-4ffa22aad704@kernel.org>
+ <20190729103655.095297a2@xps13>
+ <18734a1d-17d9-d390-58ef-ad8ca1be925f@kernel.org>
+ <20190729144730.4a58de32@xps13>
+ <17b49e7d-ff63-315f-cf12-3474f7228c6d@kernel.org>
+ <781dd4e6-a694-c3e1-ee13-9c5c51598623@kernel.org>
+ <53cb8db7-bcf8-ee7c-84ee-59a14a04aad9@kernel.org>
+ <20190730103822.7576645d@xps13>
+ <0a6afd79-d5ca-24da-a62c-11146a3522f6@kernel.org>
+ <20190731082823.6284f5a9@collabora.com>
+ <e47b1de2-501a-9a1f-e980-48d2c396811a@kernel.org>
+ <20190802145109.00c4a4eb@collabora.com>
+ <b739696d-bb1d-bb04-cd45-3019712e29ad@kernel.org>
+ <20190807180552.4d85fe28@xps13>
+From: Greg Ungerer <gerg@kernel.org>
+Message-ID: <4e9761d0-b5f3-8531-3523-06d7a2ae028c@kernel.org>
+Date: Thu, 8 Aug 2019 10:43:15 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
+In-Reply-To: <20190807180552.4d85fe28@xps13>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190807_142207_708761_AF615607 
-X-CRM114-Status: UNSURE (  -0.36  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190807_174327_629667_51BE15E6 
+X-CRM114-Status: GOOD (  14.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -65,14 +90,108 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: charlottedavis5346@gmail.com
-Content-Type: text/plain; charset="us-ascii"
+Cc: s.hauer@pengutronix.de, Boris Brezillon <boris.brezillon@collabora.com>,
+ linux-mtd@lists.infradead.org,
+ Michael Nazzareno Trimarchi <michael@amarulasolutions.com>,
+ Boris Brezillon <bbrezillon@kernel.org>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-An offer to work within your region for a decent salary without 
-affecting your present job.
+Hi Miquel,
+
+On 8/8/19 2:05 am, Miquel Raynal wrote:
+> Greg Ungerer <gerg@kernel.org> wrote on Mon, 5 Aug 2019 15:51:05 +1000:
+>> On 2/8/19 10:51 pm, Boris Brezillon wrote:
+>>> On Fri, 2 Aug 2019 22:34:57 +1000
+>>> Greg Ungerer <gerg@kernel.org> wrote:
+>>>> On 31/7/19 4:28 pm, Boris Brezillon wrote:
+>>>>> On Wed, 31 Jul 2019 12:05:44 +1000
+>>>>> Greg Ungerer <gerg@kernel.org> wrote:
+>>>>>> On 30/7/19 6:38 pm, Miquel Raynal wrote:
+>>>>>>> Greg Ungerer <gerg@kernel.org> wrote on Tue, 30 Jul 2019 16:06:55 +1000:
+>>>>>>>> On 30/7/19 10:41 am, Greg Ungerer wrote:
+>>>>>>>>> On 30/7/19 10:28 am, Greg Ungerer wrote:
+>>>>>>>>>> On 29/7/19 10:47 pm, Miquel Raynal wrote:
+>>>>>>>>>>> Greg Ungerer <gerg@kernel.org> wrote on Mon, 29 Jul 2019 22:33:56 +1000:
+>>>>>>>>>>>> On 29/7/19 6:36 pm, Miquel Raynal wrote:
+>>>>>>>>>>>>> Greg Ungerer <gerg@kernel.org> wrote on Mon, 29 Jul 2019 16:41:51 +1000:
+>>>>>>>>> [snip]
+>>>>>> Note that this was generated on a normal boot up (not failure).
+>>>>>
+>>>>> The values looks good. Can you try with the below diff applied?
+>>>>> --->8---
+>>>>> diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+>>>>> index 334fe3130285..9771f6a82abe 100644
+>>>>> --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+>>>>> +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+>>>>> @@ -721,12 +721,10 @@ static void gpmi_nfc_apply_timings(struct gpmi_nand_data *this)
+>>>>>            writel(hw->ctrl1n, gpmi_regs + HW_GPMI_CTRL1_SET);
+>>>>>     >>>           /* Wait 64 clock cycles before using the GPMI after enabling the DLL */
+>>>>> -       dll_wait_time_us = USEC_PER_SEC / hw->clk_rate * 64;
+>>>>> -       if (!dll_wait_time_us)
+>>>>> -               dll_wait_time_us = 1;
+>>>>> +       dll_wait_time_us = DIV_ROUND_UP(USEC_PER_SEC * 64, hw->clk_rate);
+>>>>>     >>>           /* Wait for the DLL to settle. */
+>>>>> -       udelay(dll_wait_time_us);
+>>>>> +       usleep_range(dll_wait_time_us, dll_wait_time_us * 10);
+>>>>>     }
+>>>>>     >>>    static int gpmi_setup_data_interface(struct nand_chip *chip, int chipnr,
+>>>>
+>>>> Eventually it failed, in the same way with with same errors.
+>>>> Took quite a while, over 600 boot cycles.
+>>>>
+>>>> Note also that I had to hand merge the changes, since in 5.1.14 that
+>>>> gpmi_nfc_apply_timings() is in gpmi-lib.c. But it was trivial to do.
+>>>
+>>> Oh well. I guess the next thing to do would be to dump the timing regs
+>>> and clk rate that are set by the bootloader (before the driver override
+>>> them) or those applied by an older kernel (one that didn't have that
+>>> issue).
+>>
+>> Is this useful?
+>>
+>> With attached patch, I get the following dump of the timing
+>> settings in use:
+>>
+>> ...
+>> drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c(490): gpmi_nfc_apply_timings()
+>>     HW_GPMI_TIMING0=0x00010203  (calculated=0x00020101)
+>>     HW_GPMI_TIMING1=0x00000000  (calculated=0x60000000)
+>>     HW_GPMI_CTRL1_SET=0x01c4000c  (calculated=0x00000000)
+>>     r->clock[0]=22000000  (calculated=22000000)
+>> random: fast init done
+>> nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xda
+>> nand: Micron MT29F2G08ABAEAWP
+>> nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+>> drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c(490): gpmi_nfc_apply_timings()
+>>     HW_GPMI_TIMING0=0x00010203  (calculated=0x00020101)
+>>     HW_GPMI_TIMING1=0x00000000  (calculated=0xb0000000)
+>>     HW_GPMI_CTRL1_SET=0x01c4000c  (calculated=0x00000000)
+>>     r->clock[0]=22000000  (calculated=22000000)
+>> drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c(490): gpmi_nfc_apply_timings()
+>>     HW_GPMI_TIMING0=0x00010203  (calculated=0x00010101)
+>>     HW_GPMI_TIMING1=0x00000000  (calculated=0xe0000000)
+>>     HW_GPMI_CTRL1_SET=0x01c4000c  (calculated=0x00c28000)
+>>     r->clock[0]=22000000  (calculated=100000000)
+> 
+> Why are the registers not updated? Is it the same situation when we
+> get all the failures?
+
+As per the patch that was attached to that email. The setting of the
+registers and clock was "#if 0" out so you could see what the
+power-up/boot-loader settings are. Those settings work reliably
+with no nand failures. In between running various tests I have
+left my hardware boot cycle testing with those settings. I don't
+have an exact number but it has probably run at least 100 hours
+and tens of thousands of boots with no problem using those.
+
+Or am I misunderstanding your question?
+
+Regards
+Greg
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
