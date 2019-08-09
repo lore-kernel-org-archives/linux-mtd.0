@@ -2,79 +2,84 @@ Return-Path: <SRS0=Etow=WF=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5107AC31E40
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Aug 2019 13:59:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC16EC433FF
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Aug 2019 14:24:22 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2456E214C6
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Aug 2019 13:59:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B2551208C3
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Aug 2019 14:24:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oN1ARh+2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2456E214C6
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rAmf7cZl";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="CY0rWQRd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B2551208C3
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sifive.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=loSNzazwHMPjvY+XLuvWPk6rr8Z6Sxu2JMvdgQQaxG0=; b=oN1ARh+2U80hFZ
-	TRoRKer+PCsRY/nbiUa0Qz5sEmy0YgcaHCpxJE2/dq6U1gy1EzUvmFZ67SvOHpjeCS+rMJEbSc0Wu
-	4kKPtJAK/2Sed/3KncG4555Dsi6/Y4h9vC0pIbEGWlaTg43XyGG+CG4CtLoSCmA9YunRfPmsnEgWR
-	dw1VGwVss4ERl0qgFm8TW2FTHGbiu19j4PofWJQy81kZA8itKVMZXj4voUe8fADpytTj4tCmG6bJB
-	X1uwhwQL4pB7hr+Snzt20+nnQuqQz5O5suTnCLYRng66ePdbmtmj4AIonYEvaix+5W4b86XFU5tas
-	TZG4bQq30t+rFzkjG6ng==;
+	List-Owner; bh=T+8b5fPui/xI0ci2Y/Dy8gfofIfj6qtVkOYzSGuXJlc=; b=rAmf7cZler43c5
+	E+qelBJJsdOKrGO8eUabt2rnvtw8zKqdcnHMXufwetpiHmpznwGBh8IlDuPO12sEMjKDsNfQN1oFi
+	kNil5besxiJdh29xStvR+rzTzC/hf6Pxb6i7QoxzzDyVE9Gnnw4EBHGMCChMyu/Ag3tvsss6E5nre
+	QcUc5i4yNUoOH2dDotrPhkMEGOtfcuLAbulHU6NUiEAdv997bcMeJU1w3xLpNRsbuqM1Te2d6P0PH
+	rPRfj/nbpQp2PsfPqgY6kpGrvlzvyM06xhOrLZbPFrXAmWQE03cKfVSpPAchZ4L3a3zBEzmKPe+mP
+	1PJiZM2UJJyC5mHuZkiA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hw5Qn-0004oD-CM; Fri, 09 Aug 2019 13:59:45 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1hw5oH-0005Z1-VM; Fri, 09 Aug 2019 14:24:01 +0000
+Received: from mail-vs1-xe44.google.com ([2607:f8b0:4864:20::e44])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hw5Qk-0004nq-8o
- for linux-mtd@lists.infradead.org; Fri, 09 Aug 2019 13:59:44 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id CFF3328A39F;
- Fri,  9 Aug 2019 14:59:37 +0100 (BST)
-Date: Fri, 9 Aug 2019 15:59:34 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Greg Ungerer <gerg@kernel.org>
-Subject: Re: GPMI iMX6ull timeout on DMA
-Message-ID: <20190809155934.40c43f29@collabora.com>
-In-Reply-To: <c5af9334-f679-6fc9-4d2a-1366a295598a@kernel.org>
-References: <89ae32a0-9b19-4735-90eb-4ffa22aad704@kernel.org>
- <20190729103655.095297a2@xps13>
- <18734a1d-17d9-d390-58ef-ad8ca1be925f@kernel.org>
- <20190729144730.4a58de32@xps13>
- <17b49e7d-ff63-315f-cf12-3474f7228c6d@kernel.org>
- <781dd4e6-a694-c3e1-ee13-9c5c51598623@kernel.org>
- <53cb8db7-bcf8-ee7c-84ee-59a14a04aad9@kernel.org>
- <20190730103822.7576645d@xps13>
- <0a6afd79-d5ca-24da-a62c-11146a3522f6@kernel.org>
- <20190731082823.6284f5a9@collabora.com>
- <e47b1de2-501a-9a1f-e980-48d2c396811a@kernel.org>
- <20190802145109.00c4a4eb@collabora.com>
- <b739696d-bb1d-bb04-cd45-3019712e29ad@kernel.org>
- <20190808183651.7c0962e7@collabora.com>
- <694cb2ac-68e6-72b1-3d55-e405b176a17f@kernel.org>
- <20190809082356.0cf60555@collabora.com>
- <ce7157e2-a8d0-7204-4003-8a711acb65b8@kernel.org>
- <20190809093235.09d89e20@collabora.com>
- <c5af9334-f679-6fc9-4d2a-1366a295598a@kernel.org>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1hw5oE-0005XM-N1
+ for linux-mtd@lists.infradead.org; Fri, 09 Aug 2019 14:24:00 +0000
+Received: by mail-vs1-xe44.google.com with SMTP id m8so65612570vsj.0
+ for <linux-mtd@lists.infradead.org>; Fri, 09 Aug 2019 07:23:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sifive.com; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=T7R0g53oVtt0hxxPewtlUubukC0ZyQYO8NJIzmT0oCc=;
+ b=CY0rWQRdZgm3Ad62s5QrVWqWafZ2c4deK+wY2x9OydvIryPzFGXumM3IxKlB1H0pUY
+ uKqxFClA0jt3i9qT3hyv3Vqd7MJ8YS+AxXll30XRDO7b4emBw3tyAnSGATWwko9X+htn
+ C32Z8FBOcLKTgKp5ypcuGXxV43Uhm9TjyQrbB++wr4dtXfWVnUk47P2Du1/IGOjj/UH9
+ KVXRdeS473BuCucIRIFrGiWV4O04/U19xCUkb9zsd4nlevhIXNcwEHEMhZtwxculYkU1
+ a1rIqeiQ456hygBSV3CBkLVci5EqUiJ46r/SQ0idsmLEKV6Q0+BP9Y2ME9uYnFP/KPkT
+ UKwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=T7R0g53oVtt0hxxPewtlUubukC0ZyQYO8NJIzmT0oCc=;
+ b=p8LdG2t4VplXGKbXvkF4K9ugK3KJpuvo/Bd3wBqoLZSvLoSyAcvZzMFW1Uis5Mvnha
+ vveebl076u8oQEeFd9VDw4RYRY+YpR12BID61WT6L++VlkK0pi/y4ZR/jzi7U3B1U9t8
+ NWplFlf4U5OkcsivrSk9RgpnlZC2dlGBj2ro7SsHZObx8xZxhltyeC3tKKTzeNZsf8Xt
+ ZBLlrhdQXtN5JEQTkTTpVAb815wM946J1srNK3PPD2VptA9vbIzrDiDA10UfZmqWRRlo
+ YjqoCLnCgF2WfzYUsWzMvaINaj2m6NYPqjZTfulcFEbWqUQFGmIymeEHxC7zpNYk/mbx
+ 4Xxw==
+X-Gm-Message-State: APjAAAUAJankN67o6chFqi0WxtaEPs+G1aGNzpIGqKeFKwF0EziVvcIu
+ E08MsDg1QMXKQYPS2OMxrL4y8oWqU+HJmM8oGoP64Q==
+X-Google-Smtp-Source: APXvYqzZs94CLTPNtEOYUE3fPG/Fo1fnQN3kFLmROvw+v8aNS7cQMk9CTW2FiPWDlpzolz9aC8Su/VC/9T/aUP4Giyk=
+X-Received: by 2002:a67:2d08:: with SMTP id t8mr3880063vst.178.1565360636286; 
+ Fri, 09 Aug 2019 07:23:56 -0700 (PDT)
 MIME-Version: 1.0
+References: <1562092745-11541-1-git-send-email-sagar.kadam@sifive.com>
+ <1562092745-11541-5-git-send-email-sagar.kadam@sifive.com>
+ <f3a1617e-0478-63ea-ab76-feaab7ac1e9b@ti.com>
+In-Reply-To: <f3a1617e-0478-63ea-ab76-feaab7ac1e9b@ti.com>
+From: Sagar Kadam <sagar.kadam@sifive.com>
+Date: Fri, 9 Aug 2019 19:53:45 +0530
+Message-ID: <CAARK3HkRgchmPZRpHfHj69OMUn=K7Zp-az5YYtBOW_jdASgYyw@mail.gmail.com>
+Subject: Re: [PATCH v7 4/4] mtd: spi-nor: add locking support for is25wp256
+ device
+To: Vignesh Raghavendra <vigneshr@ti.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190809_065942_795324_31BDD425 
-X-CRM114-Status: GOOD (  24.49  )
+X-CRM114-CacheID: sfid-20190809_072358_816815_DB59CA91 
+X-CRM114-Status: GOOD (  21.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,133 +91,151 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, s.hauer@pengutronix.de,
- Michael Nazzareno Trimarchi <michael@amarulasolutions.com>,
- linux-mtd@lists.infradead.org, Boris Brezillon <bbrezillon@kernel.org>
+Cc: Albert Ou <aou@eecs.berkeley.edu>, tudor.ambarus@microchip.com,
+ richard@nod.at, Palmer Dabbelt <palmer@sifive.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
+ Paul Walmsley <paul.walmsley@sifive.com>, miquel.raynal@bootlin.com,
+ linux-riscv@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 9 Aug 2019 23:57:08 +1000
-Greg Ungerer <gerg@kernel.org> wrote:
+Hello Vignesh,
 
-> Hi Boris,
-> 
-> On 9/8/19 5:32 pm, Boris Brezillon wrote:
-> > On Fri, 9 Aug 2019 16:55:22 +1000
-> > Greg Ungerer <gerg@kernel.org> wrote:
-> >> On 9/8/19 4:23 pm, Boris Brezillon wrote:
-> >>> On Fri, 9 Aug 2019 15:20:52 +1000
-> >>> Greg Ungerer <gerg@kernel.org> wrote:
-> >>>> On 9/8/19 2:36 am, Boris Brezillon wrote:
-> >>>>> On Mon, 5 Aug 2019 15:51:05 +1000
-> >>>>> Greg Ungerer <gerg@kernel.org> wrote:
-> >>>>>> On 2/8/19 10:51 pm, Boris Brezillon wrote:
-> >>>>>>> On Fri, 2 Aug 2019 22:34:57 +1000
-> >>>>>>> Greg Ungerer <gerg@kernel.org> wrote:
-> >>>>>>>> On 31/7/19 4:28 pm, Boris Brezillon wrote:
-> >>>>>>>>> On Wed, 31 Jul 2019 12:05:44 +1000
-> >>>>>>>>> Greg Ungerer <gerg@kernel.org> wrote:
-> >>>>>>>>>> On 30/7/19 6:38 pm, Miquel Raynal wrote:
-> >>>>>>>>>>> Greg Ungerer <gerg@kernel.org> wrote on Tue, 30 Jul 2019 16:06:55 +1000:
-> >>>>>>>>>>>> On 30/7/19 10:41 am, Greg Ungerer wrote:
-> >>>>>>>>>>>>> On 30/7/19 10:28 am, Greg Ungerer wrote:
-> >>>>>>>>>>>>>> On 29/7/19 10:47 pm, Miquel Raynal wrote:
-> >>>>>>>>>>>>>>> Greg Ungerer <gerg@kernel.org> wrote on Mon, 29 Jul 2019 22:33:56 +1000:
-> >>>>>>>>>>>>>>>> On 29/7/19 6:36 pm, Miquel Raynal wrote:
-> >>>>>>>>>>>>>>>>> Greg Ungerer <gerg@kernel.org> wrote on Mon, 29 Jul 2019 16:41:51 +1000:
-> >>>>>>>>>>>>> [snip]
-> >>>>>>>>>> Note that this was generated on a normal boot up (not failure).
-> >>>>>>>>>
-> >>>>>>>>> The values looks good. Can you try with the below diff applied?
-> >>>>>>>>> --->8---
-> >>>>>>>>> diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-> >>>>>>>>> index 334fe3130285..9771f6a82abe 100644
-> >>>>>>>>> --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-> >>>>>>>>> +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-> >>>>>>>>> @@ -721,12 +721,10 @@ static void gpmi_nfc_apply_timings(struct gpmi_nand_data *this)
-> >>>>>>>>>              writel(hw->ctrl1n, gpmi_regs + HW_GPMI_CTRL1_SET);
-> >>>>>>>>>       
-> >>>>>>>>>              /* Wait 64 clock cycles before using the GPMI after enabling the DLL */
-> >>>>>>>>> -       dll_wait_time_us = USEC_PER_SEC / hw->clk_rate * 64;
-> >>>>>>>>> -       if (!dll_wait_time_us)
-> >>>>>>>>> -               dll_wait_time_us = 1;
-> >>>>>>>>> +       dll_wait_time_us = DIV_ROUND_UP(USEC_PER_SEC * 64, hw->clk_rate);
-> >>>>>>>>>       
-> >>>>>>>>>              /* Wait for the DLL to settle. */
-> >>>>>>>>> -       udelay(dll_wait_time_us);
-> >>>>>>>>> +       usleep_range(dll_wait_time_us, dll_wait_time_us * 10);
-> >>>>>>>>>       }
-> >>>>>>>>>       
-> >>>>>>>>>       static int gpmi_setup_data_interface(struct nand_chip *chip, int chipnr,
-> >>>>>>>>
-> >>>>>>>> Eventually it failed, in the same way with with same errors.
-> >>>>>>>> Took quite a while, over 600 boot cycles.
-> >>>>>>>>
-> >>>>>>>> Note also that I had to hand merge the changes, since in 5.1.14 that
-> >>>>>>>> gpmi_nfc_apply_timings() is in gpmi-lib.c. But it was trivial to do.
-> >>>>>>>
-> >>>>>>> Oh well. I guess the next thing to do would be to dump the timing regs
-> >>>>>>> and clk rate that are set by the bootloader (before the driver override
-> >>>>>>> them) or those applied by an older kernel (one that didn't have that
-> >>>>>>> issue).
-> >>>>>>
-> >>>>>> Is this useful?
-> >>>>>
-> >>>>> Hm, looks like it's configured in mode 0, so no, it's not super useful.
-> >>>>> Can you try booting an older kernel (one that didn't have the
-> >>>>> ->setup_data_interface() hook implemented).
-> >>>>
-> >>>> Ok. I went back from 5.1 and the first kernel I could find that
-> >>>> returned no grep hits for "setup_data_interface" was 4.16.
-> >>>>
-> >>>> So I built for my target with that and added similar trace to dump
-> >>>> the hardware register settings for that. Debug output looks like
-> >>>> this now for it:
-> >>>>
-> >>>> ...
-> >>>> drivers/mtd/nand/gpmi-nand/gpmi-nand.c(807): gpmi_get_clks()
-> >>>>      clk_get_rate(r->clock[0])=22000000
-> >>>> drivers/mtd/nand/gpmi-nand/gpmi-lib.c(1054): gpmi_begin()
-> >>>>      HW_GPMI_TIMING0=0x00010203
-> >>>>      HW_GPMI_TIMING1=0x05000000
-> >>>> nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xda
-> >>>> nand: Micron MT29F2G08ABAEAWP
-> >>>> nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-> >>>> drivers/mtd/nand/gpmi-nand/gpmi-lib.c(966): enable_edo_mode()
-> >>>>      clk_get_rate(r->clock[0])=99000000
-> >>>> gpmi-nand 1806000.gpmi-nand: enable the asynchronous EDO mode 5
-> >>>> drivers/mtd/nand/gpmi-nand/gpmi-lib.c(1054): gpmi_begin()
-> >>>>      HW_GPMI_TIMING0=0x00010101
-> >>>
-> >>> TIMING0 match the one you have with 5.1 kernels.
-> >>>    
-> >>>>      HW_GPMI_TIMING1=0x90000000
-> >>>
-> >>> And we even have a bigger timeout value in 5.1 (0xe0000000), so we
-> >>> should be all safe WRT to timings in TIMING{0,1}.
-> >>>
-> >>> Can you dump CTRL1?
-> >>
-> >> drivers/mtd/nand/gpmi-nand/gpmi-lib.c(1054): gpmi_begin()
-> >>     HW_GPMI_TIMING0=0x00010101
-> >>     HW_GPMI_TIMING1=0x90000000
-> >>     HW_GPMI_CTRL1_SET=0x01c4800c
-> > 
-> > The read/write delay fields seem to match, but there are a few more
-> > fields set in this version:
-> > - DECOUPLE_CS
-> > - BCH_MODE
-> > - DEV_RESET
-> > - CTRL1_ATA_IRQRDY_POLARITY__ACTIVEHIGH
-> > 
-> > Looks like those fields are not explicitly set in the gpmi_begin()
-> > patch, but maybe you dumped CTRL1. Would you mind sharing your patch?
-> 
-> Attached.
+On Fri, Aug 9, 2019 at 4:57 PM Vignesh Raghavendra <vigneshr@ti.com> wrote:
+>
+> Hi Sagar,
+>
+> On 03/07/19 12:09 AM, Sagar Shrikant Kadam wrote:
+> [...]> +static int issi_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+> > +{
+> > +     int status_old, status_new, blk_prot;
+> > +     u8 mask;
+> > +     u8 shift;
+> > +     u8 pow, ret, func_reg;
+> > +     bool use_top;
+> > +     loff_t lock_len;
+> > +
+> > +     if (nor->flags & SNOR_F_HAS_BP3)
+> > +             mask = SR_BP3 | SR_BP2 | SR_BP1 | SR_BP0;
+> > +     else
+> > +             mask = SR_BP2 | SR_BP1 | SR_BP0;
+> > +
+> > +     shift = ffs(mask) - 1;
+> > +
+> > +     status_old = read_sr(nor);
+> > +
+> > +     /* if status reg is Write protected don't update bit protection */
+> > +     if (status_old & SR_SRWD) {
+> > +             dev_err(nor->dev,
+> > +                     "SR is write protected, can't update BP bits...\n");
+> > +             return -EINVAL;
+> > +     }
+> > +
+> > +     ret = spi_nor_select_zone(nor, ofs, len, status_old, &use_top, 1);
+> > +     if (!ret)
+> > +             /* Older protected blocks include the new requested block's */
+> > +             return 0;
+> > +     else if (ret < 0)
+> > +             return ret;
+> > +
+> > +     func_reg = spi_nor_read_fr(nor);
+>
+Thank you for reviewing the patch.
+> Sorry, I don't understand where func_reg is used? Since TBS OTP, how
+> does issi_lock() code comprehend that TBS bit value in OTP register and
+> use_top returned by spi_nor_select_zone() are matching before we go
+> ahead and program status register.
+>
+In my earlier version of this patch, you had suggested an approach to skip
+updating the TBS OTP bits as ones written that cannot be changed.
+Actually, func_reg was used to update the OTP section, sorry I missed
+removing the func_reg reference here as per your suggestion.
+I will update a new version of this patch which will not modify the OTP
+region and will return with an error when locking the requested region by
+the user is not possible.
 
-Hm, you should read CTRL1 instead of CTRL1_SET which I guess is WO.
+> We should reject locking request if top-bottom calculation does not
+> match OTP bit. Where is that done?
+>
+> Regards
+> Vignesh
+>
+
+Thanks & BR,
+Sagar
+> > +     /* lock_len: length of region that should end up locked */
+> > +     if (use_top)
+> > +             lock_len = nor->mtd.size - ofs;
+> > +     else
+> > +             lock_len = ofs + len;
+> > +
+> > +     pow = order_base_2(lock_len);
+> > +     blk_prot = mask & (((pow + 1) & 0xf) << shift);
+> > +     if (lock_len <= 0) {
+> > +             dev_err(nor->dev, "invalid Length to protect");
+> > +             return -EINVAL;
+> > +     }
+> > +
+> > +     status_new = status_old | blk_prot;
+> > +     if (status_old == status_new)
+> > +             return 0;
+> > +
+> > +     return write_sr_and_check(nor, status_new, mask);
+> > +}
+> > +
+> > +/**
+> >   * issi_unlock() - clear BP[0123] write-protection.
+> >   * @nor: pointer to a 'struct spi_nor'.
+> >   * @ofs: offset from which to unlock memory.
+> > @@ -4171,6 +4338,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+> >       if (JEDEC_MFR(info) == SNOR_MFR_ISSI &&
+> >           info->flags & SPI_NOR_HAS_LOCK &&
+> >           info->flags & SPI_NOR_HAS_BP3) {
+> > +             nor->flash_lock = issi_lock;
+> >               nor->flash_unlock = issi_unlock;
+> >       }
+> >
+> > @@ -4194,6 +4362,8 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+> >               nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
+> >       if (info->flags & USE_CLSR)
+> >               nor->flags |= SNOR_F_USE_CLSR;
+> > +     if (info->flags & SPI_NOR_HAS_BP3)
+> > +             nor->flags |= SNOR_F_HAS_BP3;
+> >
+> >       if (info->flags & SPI_NOR_NO_ERASE)
+> >               mtd->flags |= MTD_NO_ERASE;
+> > diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> > index f6fa70f..26dbf48 100644
+> > --- a/include/linux/mtd/spi-nor.h
+> > +++ b/include/linux/mtd/spi-nor.h
+> > @@ -40,6 +40,8 @@
+> >  #define SPINOR_OP_RDSR               0x05    /* Read status register */
+> >  #define SPINOR_OP_WRSR               0x01    /* Write status register 1 byte */
+> >  #define SPINOR_OP_RDSR2              0x3f    /* Read status register 2 */
+> > +#define SPINOR_OP_RDFR               0x48    /* Read Function register */
+> > +#define SPINOR_OP_WRFR               0x42    /* Write Function register 1 byte */
+> >  #define SPINOR_OP_WRSR2              0x3e    /* Write status register 2 */
+> >  #define SPINOR_OP_READ               0x03    /* Read data bytes (low frequency) */
+> >  #define SPINOR_OP_READ_FAST  0x0b    /* Read data bytes (high frequency) */
+> > @@ -139,6 +141,9 @@
+> >  /* Enhanced Volatile Configuration Register bits */
+> >  #define EVCR_QUAD_EN_MICRON  BIT(7)  /* Micron Quad I/O */
+> >
+> > +/*Function register bit */
+> > +#define FR_TB                        BIT(1)  /*ISSI: Top/Bottom protect */
+> > +
+> >  /* Flag Status Register bits */
+> >  #define FSR_READY            BIT(7)  /* Device status, 0 = Busy, 1 = Ready */
+> >  #define FSR_E_ERR            BIT(5)  /* Erase operation status */
+> >
+>
+> --
+> Regards
+> Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
