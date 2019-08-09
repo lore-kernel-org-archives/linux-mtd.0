@@ -2,83 +2,70 @@ Return-Path: <SRS0=Etow=WF=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AA3CC433FF
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Aug 2019 14:25:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4835C31E40
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Aug 2019 20:29:10 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0C189208C3
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Aug 2019 14:25:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8FC8A214C6
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Aug 2019 20:29:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BdjjkJng";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="nk6FZnAY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0C189208C3
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sifive.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="g7yDlYF2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8FC8A214C6
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CpWI+NnD0xIkXBGKpMaaGYv6KfROjPihP93ETYcyS5M=; b=BdjjkJngY0IUMq
-	oBRvzTr5XZQEOBNBHGmsEVTO0fikr6ZcJmOh4Qlxr2HUq5jf5h75nhEeuDV6bTWrLe34hc+uo8m7G
-	5vEp31GWovPT4jipToeelvjPi3UyEhIfcDKRosTtjgksN4XGvaigKgkdXGWrEhJp+TazIS3IsEQNJ
-	aAnd6Oq3UwbO6jlxHpZhxYLxxNFWCYy8Yu7NDtfgFhK6ldZwnezGZEmfBfVaqhR3RTDFlABxL2MvK
-	8xepn/Xjg3/j6jpeQwRJ0aRRBE+7s3C4opaktePzYKo1CTaAf9EScgbRPoPO4/WiYZlIT/uZtKZlP
-	3FJTZbobp9SXg+N4lfQg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=kjFnocej9fze1oEoctbqtmnNjm2aJVJhl5G3YPGcSiI=; b=g7yDlYF2OUwexw
+	TbeVhRvKbmsyE5y2MbogIEQ59NxcuH6SF5GdWibTGQCXNd7Aq/a+ZxNQONNmel4uZGDqDCSVK6ZEI
+	yP3fA7D1Dl0QKqAsKPinEKFIKSn/gZiGpkdy7xbKIRs9WX/gibxGybodtKvKAWh5azQ+XluKcP9Fg
+	5OcfGN/zydV7YfEq2QYYUIWJyPTzLV3sVNP8EfT1eJ6y6+oWMzPFq5MqEJ1jFErqT5AKhyM4bP57h
+	6MDnukzcHq15oGjW0LQ41ybH3hOd4yCG4d/cEfDS46Oso6OLEuftUZCP7MP1+agH3LNR9/T+zxQGG
+	T5yz/vXfsf47OzjpOAoA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hw5pd-00073Y-O6; Fri, 09 Aug 2019 14:25:25 +0000
-Received: from mail-vk1-xa43.google.com ([2607:f8b0:4864:20::a43])
+	id 1hwBVL-0001O1-EW; Fri, 09 Aug 2019 20:28:51 +0000
+Received: from mout.kundenserver.de ([212.227.126.135])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hw5pZ-00071b-VI
- for linux-mtd@lists.infradead.org; Fri, 09 Aug 2019 14:25:23 +0000
-Received: by mail-vk1-xa43.google.com with SMTP id w186so11082573vkd.11
- for <linux-mtd@lists.infradead.org>; Fri, 09 Aug 2019 07:25:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sifive.com; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=iaNaUNE2Lm/DgVn/kiWl1beHyjX5/83GtVA//BN/oCU=;
- b=nk6FZnAYm3f6V38YcMyeSsu0Umh0fsof410CcKVZQaxBC8x/YE8E6oR2ruW26hoC9D
- Zj6QS0XfftZ1LoWs7MHDOd3CmVWpYuokUYAMVyeKYU9BwWdndrSPV2Q0Yy/PaRS1k0mr
- 8pspJyF+4DaavEjWM8n7ntRTD5FhspUmjDDUqC6FChsB4BVpzCDu+BwYrwRiIvj4UABy
- yzAmlatWQ4E+MUKHXZOXi8O9/iXBVV3dXwyxpfK0+yldGpI8eRlud78B4DAR22xeCvHH
- Vcq1q7f15wJAHBRnVG2ooSHpngu3PqEw2txKOrLa6G/2dx8v3DeGn+TeCH7JsbM/v/kr
- AyFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=iaNaUNE2Lm/DgVn/kiWl1beHyjX5/83GtVA//BN/oCU=;
- b=CM3DzCG1ImIAfavyqVd07fGqHNvBqVluWR2RdTWdstsA6CMb60L+VmKtBePd7bv6lw
- vTPUb836KNLatwV4pgu0kJAvAzDEb3pIhqMDfn+Xw/2LiL2zqz0YNeSS/qPBIHbgY2Pm
- VXfqH8mjDFfVWyiq3KKQychrmlSEBcNZVU4WHa51a1zI8DqZ5zzhPaQaMmJtDVYflI0E
- 8SHuMCVKM/uUOft6ekiQowKdlY+hKuQVpzt1lMWASBAmspVJZz0Biv90gkY61yeNYNqn
- /QmyySa2TXESXhsBd/jO4zdCTHF0jM+xKKXkPksFQv40Gx33kLEYANrbd+tmJ/q/JYZJ
- 8wbg==
-X-Gm-Message-State: APjAAAVFLM9TQIuW2gzPKL0xuwfvqmFGr6pyOaWvPlV8m/yUwO2ahftW
- sDwGDbPQMfBNJsArKU4w2n9OCOE5cBuoziOuoED68w==
-X-Google-Smtp-Source: APXvYqxlwwv+mIYjMSLT6AYQcdMGIum7Lac0W7UqF0yof/9MA/LBA+pmeTrwvMQqMxircZURRx/x9Iljguiqp22qud4=
-X-Received: by 2002:ac5:c24e:: with SMTP id n14mr3363758vkk.23.1565360720450; 
- Fri, 09 Aug 2019 07:25:20 -0700 (PDT)
+ id 1hwBVE-0001MN-TS; Fri, 09 Aug 2019 20:28:47 +0000
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue009 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1M7JvQ-1hxGt81mMG-007hOC; Fri, 09 Aug 2019 22:27:58 +0200
+From: Arnd Bergmann <arnd@arndb.de>
+To: soc@kernel.org
+Subject: [PATCH 00/16] ARM: remove ks8695 and w90x900 platforms
+Date: Fri,  9 Aug 2019 22:27:28 +0200
+Message-Id: <20190809202749.742267-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.20.0
 MIME-Version: 1.0
-References: <1562092745-11541-1-git-send-email-sagar.kadam@sifive.com>
- <1562092745-11541-3-git-send-email-sagar.kadam@sifive.com>
- <5d1d10be-d01f-51ca-0a08-c5a52cd467b9@ti.com>
-In-Reply-To: <5d1d10be-d01f-51ca-0a08-c5a52cd467b9@ti.com>
-From: Sagar Kadam <sagar.kadam@sifive.com>
-Date: Fri, 9 Aug 2019 19:55:09 +0530
-Message-ID: <CAARK3HnBg2bY5DG=JM+zG9TtNDSRgj5Nqz3+1shiK3AUC-zv9Q@mail.gmail.com>
-Subject: Re: [PATCH v7 2/4] mtd: spi-nor: fix nor->addr_width for is25wp256
-To: Vignesh Raghavendra <vigneshr@ti.com>
+X-Provags-ID: V03:K1:e79DZkgFNZp9dvGTGpRIzDbp1U9xKtmOwS7NFPvWoCd6W8DgsD8
+ jFUaOsADnQ6HFt2f8JSvwKT8EjJLooql7wgw8IHL92/OCsO8hIy6Llwq9pC9ITibTzSW0Zi
+ WnvPGjly+Jz6QZvY0sMmV3ekLUbB3HHPOjhXkeR+1bHaYxthIA0XyrnigzaPJoW2SE4PbNJ
+ ZX50iQEG1VqSY3M3Abx7A==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:rQFXwhsBnbk=:vcvGYL5gwOuGJrKu5EyJdE
+ pXygFIdcThx5H7XMGCHmk35kpFvAy/2y+Wkb4oZXuz1GjFsbLNqvdkVSjkUsesOEG+8YHB+Wv
+ SXL4XjEZulOtG1QTXPnly6foF3gfGzwf5EXRucbGcOPLfHyfiV19XiOztVmavCg2PTcPt0cLU
+ TeX23Y+MSGxSVegJjUIkfYkzIM5wwLUl2pUVYycLOyYhJS9rZiIx5dbyX3WMBZxxfVlNGu6HN
+ LdnzKzi/L2t2OKa4LfwZd937QYk4rqsZymU+PUfEKiQwe+J+X4Hzkr7t0EhHS+lLSUh85jknc
+ Rxs2+jz/0IlHIN5Xg6EHnSgzSEsFrUwS6KNspyEfffxN+vNESdlB4K71f70/b05uKwwxJTFBu
+ L3u+ZZrQq2QpmF1XgxagBsCc2DI5j0OlW72Kx/6IU1BIwMILJRC9z9ouU1ibHJ28+fzfQLZ0K
+ 3XJb0cSZGsI8sxflpYzLQunxdv8mUeZNBZCmpsWWSDFLxqOmFnxBCbDX7p+4CSB5AVnccWbJb
+ 43frVwPcAXU8YrjXMqUXYTXmE/MWCrx3j17tK7op3/zRwi2QXApGezne/G03i0gnHAgS8QE4a
+ 6CWVbu6M6/6wJN24YtbQP91ovCVnK+1qQO0vqei4lgMzNBE1d82Ti91AO8cZyF7LGJwLv+kQu
+ 2HEAtywxk7QwdTDYMR8yI67QGy3UzJg/rjjBxJ3LA1Dh7cjxE0LAdmBIj8iNlZ4wXUwi+x7B2
+ C1devbxpoi3Vyy6OBbE6SWUn/lPO76kTgiU/gw==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190809_072522_011285_C368FB51 
-X-CRM114-Status: GOOD (  16.19  )
+X-CRM114-CacheID: sfid-20190809_132845_276333_FC579902 
+X-CRM114-Status: GOOD (  12.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,61 +77,315 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Albert Ou <aou@eecs.berkeley.edu>, tudor.ambarus@microchip.com,
- richard@nod.at, Palmer Dabbelt <palmer@sifive.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
- Paul Walmsley <paul.walmsley@sifive.com>, miquel.raynal@bootlin.com,
- linux-riscv@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org
+Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-fbdev@vger.kernel.org,
+ "Wanzongshun \(Vincent\)" <wanzongshun@huawei.com>, linux-spi@vger.kernel.org,
+ linux-gpio@vger.kernel.org, Greg Ungerer <gerg@kernel.org>,
+ linux-mtd@lists.infradead.org, Mark Brown <broonie@kernel.org>,
+ linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
+ netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+ Guenter Roeck <linux@roeck-us.net>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Vignesh,
+As discussed previously, these two ARM platforms have no
+known remaining users, let's remove them completely.
 
-On Fri, Aug 9, 2019 at 5:05 PM Vignesh Raghavendra <vigneshr@ti.com> wrote:
->
->
->
-> On 03/07/19 12:09 AM, Sagar Shrikant Kadam wrote:
-> > Use the post bfpt fixup hook for the is25wp256 device as done for
-> > is25lp256 device to overwrite the address width advertised by BFPT.
-> >
-> > For instance the standard devices eg: IS25WP256D-JMLE where J stands
-> > for "standard" does not support SFDP.
-> >
-> > Signed-off-by: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
-> > ---
->
-> Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
->
-Thankyou for reviewing.
+Subsystem maintainers: feel free to take the driver removals
+through your respective trees, they are all independent of
+one another. We can merge any remaining patches through the
+soc tree.
 
-BR,
-Sagar
-> >  drivers/mtd/spi-nor/spi-nor.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> > index 971f0f3..315eeec 100644
-> > --- a/drivers/mtd/spi-nor/spi-nor.c
-> > +++ b/drivers/mtd/spi-nor/spi-nor.c
-> > @@ -1860,7 +1860,7 @@ static int sr2_bit7_quad_enable(struct spi_nor *nor)
-> >       { "is25wp256", INFO(0x9d7019, 0, 64 * 1024, 1024,
-> >                       SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-> >                       SPI_NOR_4B_OPCODES)
-> > -     },
-> > +                     .fixups = &is25lp256_fixups },
-> >       /* Macronix */
-> >       { "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
-> >       { "mx25l2005a",  INFO(0xc22012, 0, 64 * 1024,   4, SECT_4K) },
-> >
->
-> --
-> Regards
-> Vignesh
+      Arnd
+
+Arnd Bergmann (16):
+  ARM: remove ks8695 platform
+  serial: remove ks8695 driver
+  gpio: remove ks8695 driver
+  watchdog: remove ks8695 driver
+  net: remove ks8695 driver
+  watchdog: remove w90x900 driver
+  spi: remove w90x900 driver
+  ASoC: remove w90x900/nuc900 platform drivers
+  fbdev: remove w90x900/nuc900 platform drivers
+  Input: remove w90x900 keyboard driver
+  Input: remove w90x900 touchscreen driver
+  mtd: rawnand: remove w90x900 driver
+  net: remove w90p910-ether driver
+  rtc: remove w90x900/nuc900 driver
+  usb: remove ehci-w90x900 driver
+  ARM: remove w90x900 platform
+
+Cc: "Wanzongshun (Vincent)" <wanzongshun@huawei.com>
+Cc: Greg Ungerer <gerg@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-serial@vger.kernel.org
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: linux-input@vger.kernel.org
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-gpio@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: netdev@vger.kernel.org
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
+Cc: linux-spi@vger.kernel.org
+Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc: linux-fbdev@vger.kernel.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+
+ .../watchdog/watchdog-parameters.rst          |   19 -
+ MAINTAINERS                                   |   22 -
+ arch/arm/Kconfig                              |   34 +-
+ arch/arm/Kconfig.debug                        |    8 -
+ arch/arm/Makefile                             |    2 -
+ arch/arm/configs/acs5k_defconfig              |   77 -
+ arch/arm/configs/acs5k_tiny_defconfig         |   69 -
+ arch/arm/configs/ks8695_defconfig             |   67 -
+ arch/arm/configs/nuc910_defconfig             |   51 -
+ arch/arm/configs/nuc950_defconfig             |   67 -
+ arch/arm/configs/nuc960_defconfig             |   57 -
+ arch/arm/include/debug/ks8695.S               |   37 -
+ arch/arm/mach-ks8695/Kconfig                  |   88 -
+ arch/arm/mach-ks8695/Makefile                 |   23 -
+ arch/arm/mach-ks8695/Makefile.boot            |    9 -
+ arch/arm/mach-ks8695/board-acs5k.c            |  238 ---
+ arch/arm/mach-ks8695/board-dsm320.c           |  127 --
+ arch/arm/mach-ks8695/board-micrel.c           |   59 -
+ arch/arm/mach-ks8695/board-og.c               |  197 --
+ arch/arm/mach-ks8695/board-sg.c               |  118 --
+ arch/arm/mach-ks8695/cpu.c                    |   60 -
+ arch/arm/mach-ks8695/devices.c                |  197 --
+ arch/arm/mach-ks8695/devices.h                |   29 -
+ arch/arm/mach-ks8695/generic.h                |   12 -
+ .../mach-ks8695/include/mach/entry-macro.S    |   47 -
+ .../mach-ks8695/include/mach/gpio-ks8695.h    |   36 -
+ arch/arm/mach-ks8695/include/mach/hardware.h  |   42 -
+ arch/arm/mach-ks8695/include/mach/irqs.h      |   51 -
+ arch/arm/mach-ks8695/include/mach/memory.h    |   51 -
+ arch/arm/mach-ks8695/include/mach/regs-gpio.h |   55 -
+ arch/arm/mach-ks8695/include/mach/regs-irq.h  |   41 -
+ arch/arm/mach-ks8695/include/mach/regs-misc.h |   97 -
+ .../mach-ks8695/include/mach/regs-switch.h    |   66 -
+ arch/arm/mach-ks8695/include/mach/regs-uart.h |   89 -
+ .../arm/mach-ks8695/include/mach/uncompress.h |   33 -
+ arch/arm/mach-ks8695/irq.c                    |  164 --
+ arch/arm/mach-ks8695/pci.c                    |  247 ---
+ arch/arm/mach-ks8695/regs-hpna.h              |   25 -
+ arch/arm/mach-ks8695/regs-lan.h               |   65 -
+ arch/arm/mach-ks8695/regs-mem.h               |   89 -
+ arch/arm/mach-ks8695/regs-pci.h               |   53 -
+ arch/arm/mach-ks8695/regs-sys.h               |   34 -
+ arch/arm/mach-ks8695/regs-wan.h               |   65 -
+ arch/arm/mach-ks8695/time.c                   |  159 --
+ arch/arm/mach-w90x900/Kconfig                 |   50 -
+ arch/arm/mach-w90x900/Makefile                |   20 -
+ arch/arm/mach-w90x900/Makefile.boot           |    4 -
+ arch/arm/mach-w90x900/clksel.c                |   88 -
+ arch/arm/mach-w90x900/clock.c                 |  121 --
+ arch/arm/mach-w90x900/clock.h                 |   40 -
+ arch/arm/mach-w90x900/cpu.c                   |  238 ---
+ arch/arm/mach-w90x900/cpu.h                   |   56 -
+ arch/arm/mach-w90x900/dev.c                   |  537 ------
+ arch/arm/mach-w90x900/gpio.c                  |  150 --
+ .../mach-w90x900/include/mach/entry-macro.S   |   26 -
+ arch/arm/mach-w90x900/include/mach/hardware.h |   19 -
+ arch/arm/mach-w90x900/include/mach/irqs.h     |   82 -
+ arch/arm/mach-w90x900/include/mach/map.h      |  153 --
+ arch/arm/mach-w90x900/include/mach/mfp.h      |   21 -
+ .../mach-w90x900/include/mach/regs-clock.h    |   49 -
+ arch/arm/mach-w90x900/include/mach/regs-irq.h |   46 -
+ arch/arm/mach-w90x900/include/mach/regs-ldm.h |  248 ---
+ .../mach-w90x900/include/mach/regs-serial.h   |   54 -
+ .../mach-w90x900/include/mach/uncompress.h    |   43 -
+ arch/arm/mach-w90x900/irq.c                   |  212 ---
+ arch/arm/mach-w90x900/mach-nuc910evb.c        |   38 -
+ arch/arm/mach-w90x900/mach-nuc950evb.c        |   42 -
+ arch/arm/mach-w90x900/mach-nuc960evb.c        |   38 -
+ arch/arm/mach-w90x900/mfp.c                   |  197 --
+ arch/arm/mach-w90x900/nuc910.c                |   58 -
+ arch/arm/mach-w90x900/nuc910.h                |   17 -
+ arch/arm/mach-w90x900/nuc950.c                |   52 -
+ arch/arm/mach-w90x900/nuc950.h                |   17 -
+ arch/arm/mach-w90x900/nuc960.c                |   50 -
+ arch/arm/mach-w90x900/nuc960.h                |   17 -
+ arch/arm/mach-w90x900/nuc9xx.h                |   22 -
+ arch/arm/mach-w90x900/regs-ebi.h              |   29 -
+ arch/arm/mach-w90x900/regs-gcr.h              |   34 -
+ arch/arm/mach-w90x900/regs-timer.h            |   37 -
+ arch/arm/mach-w90x900/regs-usb.h              |   31 -
+ arch/arm/mach-w90x900/time.c                  |  168 --
+ arch/arm/mm/Kconfig                           |    2 +-
+ drivers/gpio/Makefile                         |    1 -
+ drivers/gpio/gpio-ks8695.c                    |  284 ---
+ drivers/input/keyboard/Kconfig                |   11 -
+ drivers/input/keyboard/Makefile               |    1 -
+ drivers/input/keyboard/w90p910_keypad.c       |  264 ---
+ drivers/input/touchscreen/Kconfig             |    9 -
+ drivers/input/touchscreen/Makefile            |    1 -
+ drivers/input/touchscreen/w90p910_ts.c        |  331 ----
+ drivers/mtd/nand/raw/Kconfig                  |    8 -
+ drivers/mtd/nand/raw/Makefile                 |    1 -
+ drivers/mtd/nand/raw/nuc900_nand.c            |  304 ---
+ drivers/net/ethernet/Kconfig                  |    1 -
+ drivers/net/ethernet/Makefile                 |    1 -
+ drivers/net/ethernet/micrel/Kconfig           |   11 +-
+ drivers/net/ethernet/micrel/Makefile          |    1 -
+ drivers/net/ethernet/micrel/ks8695net.c       | 1632 -----------------
+ drivers/net/ethernet/micrel/ks8695net.h       |  108 --
+ drivers/net/ethernet/nuvoton/Kconfig          |   29 -
+ drivers/net/ethernet/nuvoton/Makefile         |    6 -
+ drivers/net/ethernet/nuvoton/w90p910_ether.c  | 1082 -----------
+ drivers/rtc/Kconfig                           |    7 -
+ drivers/rtc/Makefile                          |    1 -
+ drivers/rtc/rtc-nuc900.c                      |  271 ---
+ drivers/spi/Kconfig                           |    7 -
+ drivers/spi/Makefile                          |    1 -
+ drivers/spi/spi-nuc900.c                      |  429 -----
+ drivers/tty/serial/Kconfig                    |   17 -
+ drivers/tty/serial/Makefile                   |    1 -
+ drivers/tty/serial/serial_ks8695.c            |  698 -------
+ drivers/usb/host/Kconfig                      |    6 -
+ drivers/usb/host/Makefile                     |    1 -
+ drivers/usb/host/ehci-w90x900.c               |  130 --
+ drivers/video/fbdev/Kconfig                   |   14 -
+ drivers/video/fbdev/Makefile                  |    1 -
+ drivers/video/fbdev/nuc900fb.c                |  760 --------
+ drivers/video/fbdev/nuc900fb.h                |   51 -
+ drivers/watchdog/Kconfig                      |   16 -
+ drivers/watchdog/Makefile                     |    2 -
+ drivers/watchdog/ks8695_wdt.c                 |  319 ----
+ drivers/watchdog/nuc900_wdt.c                 |  302 ---
+ include/Kbuild                                |    2 -
+ include/linux/platform_data/keypad-w90p910.h  |   16 -
+ include/linux/platform_data/spi-nuc900.h      |   29 -
+ include/linux/platform_data/video-nuc900fb.h  |   79 -
+ include/uapi/linux/serial_core.h              |    3 -
+ sound/soc/Kconfig                             |    1 -
+ sound/soc/Makefile                            |    1 -
+ sound/soc/nuc900/Kconfig                      |   29 -
+ sound/soc/nuc900/Makefile                     |   12 -
+ sound/soc/nuc900/nuc900-ac97.c                |  391 ----
+ sound/soc/nuc900/nuc900-audio.c               |   73 -
+ sound/soc/nuc900/nuc900-audio.h               |  108 --
+ sound/soc/nuc900/nuc900-pcm.c                 |  321 ----
+ 135 files changed, 6 insertions(+), 14461 deletions(-)
+ delete mode 100644 arch/arm/configs/acs5k_defconfig
+ delete mode 100644 arch/arm/configs/acs5k_tiny_defconfig
+ delete mode 100644 arch/arm/configs/ks8695_defconfig
+ delete mode 100644 arch/arm/configs/nuc910_defconfig
+ delete mode 100644 arch/arm/configs/nuc950_defconfig
+ delete mode 100644 arch/arm/configs/nuc960_defconfig
+ delete mode 100644 arch/arm/include/debug/ks8695.S
+ delete mode 100644 arch/arm/mach-ks8695/Kconfig
+ delete mode 100644 arch/arm/mach-ks8695/Makefile
+ delete mode 100644 arch/arm/mach-ks8695/Makefile.boot
+ delete mode 100644 arch/arm/mach-ks8695/board-acs5k.c
+ delete mode 100644 arch/arm/mach-ks8695/board-dsm320.c
+ delete mode 100644 arch/arm/mach-ks8695/board-micrel.c
+ delete mode 100644 arch/arm/mach-ks8695/board-og.c
+ delete mode 100644 arch/arm/mach-ks8695/board-sg.c
+ delete mode 100644 arch/arm/mach-ks8695/cpu.c
+ delete mode 100644 arch/arm/mach-ks8695/devices.c
+ delete mode 100644 arch/arm/mach-ks8695/devices.h
+ delete mode 100644 arch/arm/mach-ks8695/generic.h
+ delete mode 100644 arch/arm/mach-ks8695/include/mach/entry-macro.S
+ delete mode 100644 arch/arm/mach-ks8695/include/mach/gpio-ks8695.h
+ delete mode 100644 arch/arm/mach-ks8695/include/mach/hardware.h
+ delete mode 100644 arch/arm/mach-ks8695/include/mach/irqs.h
+ delete mode 100644 arch/arm/mach-ks8695/include/mach/memory.h
+ delete mode 100644 arch/arm/mach-ks8695/include/mach/regs-gpio.h
+ delete mode 100644 arch/arm/mach-ks8695/include/mach/regs-irq.h
+ delete mode 100644 arch/arm/mach-ks8695/include/mach/regs-misc.h
+ delete mode 100644 arch/arm/mach-ks8695/include/mach/regs-switch.h
+ delete mode 100644 arch/arm/mach-ks8695/include/mach/regs-uart.h
+ delete mode 100644 arch/arm/mach-ks8695/include/mach/uncompress.h
+ delete mode 100644 arch/arm/mach-ks8695/irq.c
+ delete mode 100644 arch/arm/mach-ks8695/pci.c
+ delete mode 100644 arch/arm/mach-ks8695/regs-hpna.h
+ delete mode 100644 arch/arm/mach-ks8695/regs-lan.h
+ delete mode 100644 arch/arm/mach-ks8695/regs-mem.h
+ delete mode 100644 arch/arm/mach-ks8695/regs-pci.h
+ delete mode 100644 arch/arm/mach-ks8695/regs-sys.h
+ delete mode 100644 arch/arm/mach-ks8695/regs-wan.h
+ delete mode 100644 arch/arm/mach-ks8695/time.c
+ delete mode 100644 arch/arm/mach-w90x900/Kconfig
+ delete mode 100644 arch/arm/mach-w90x900/Makefile
+ delete mode 100644 arch/arm/mach-w90x900/Makefile.boot
+ delete mode 100644 arch/arm/mach-w90x900/clksel.c
+ delete mode 100644 arch/arm/mach-w90x900/clock.c
+ delete mode 100644 arch/arm/mach-w90x900/clock.h
+ delete mode 100644 arch/arm/mach-w90x900/cpu.c
+ delete mode 100644 arch/arm/mach-w90x900/cpu.h
+ delete mode 100644 arch/arm/mach-w90x900/dev.c
+ delete mode 100644 arch/arm/mach-w90x900/gpio.c
+ delete mode 100644 arch/arm/mach-w90x900/include/mach/entry-macro.S
+ delete mode 100644 arch/arm/mach-w90x900/include/mach/hardware.h
+ delete mode 100644 arch/arm/mach-w90x900/include/mach/irqs.h
+ delete mode 100644 arch/arm/mach-w90x900/include/mach/map.h
+ delete mode 100644 arch/arm/mach-w90x900/include/mach/mfp.h
+ delete mode 100644 arch/arm/mach-w90x900/include/mach/regs-clock.h
+ delete mode 100644 arch/arm/mach-w90x900/include/mach/regs-irq.h
+ delete mode 100644 arch/arm/mach-w90x900/include/mach/regs-ldm.h
+ delete mode 100644 arch/arm/mach-w90x900/include/mach/regs-serial.h
+ delete mode 100644 arch/arm/mach-w90x900/include/mach/uncompress.h
+ delete mode 100644 arch/arm/mach-w90x900/irq.c
+ delete mode 100644 arch/arm/mach-w90x900/mach-nuc910evb.c
+ delete mode 100644 arch/arm/mach-w90x900/mach-nuc950evb.c
+ delete mode 100644 arch/arm/mach-w90x900/mach-nuc960evb.c
+ delete mode 100644 arch/arm/mach-w90x900/mfp.c
+ delete mode 100644 arch/arm/mach-w90x900/nuc910.c
+ delete mode 100644 arch/arm/mach-w90x900/nuc910.h
+ delete mode 100644 arch/arm/mach-w90x900/nuc950.c
+ delete mode 100644 arch/arm/mach-w90x900/nuc950.h
+ delete mode 100644 arch/arm/mach-w90x900/nuc960.c
+ delete mode 100644 arch/arm/mach-w90x900/nuc960.h
+ delete mode 100644 arch/arm/mach-w90x900/nuc9xx.h
+ delete mode 100644 arch/arm/mach-w90x900/regs-ebi.h
+ delete mode 100644 arch/arm/mach-w90x900/regs-gcr.h
+ delete mode 100644 arch/arm/mach-w90x900/regs-timer.h
+ delete mode 100644 arch/arm/mach-w90x900/regs-usb.h
+ delete mode 100644 arch/arm/mach-w90x900/time.c
+ delete mode 100644 drivers/gpio/gpio-ks8695.c
+ delete mode 100644 drivers/input/keyboard/w90p910_keypad.c
+ delete mode 100644 drivers/input/touchscreen/w90p910_ts.c
+ delete mode 100644 drivers/mtd/nand/raw/nuc900_nand.c
+ delete mode 100644 drivers/net/ethernet/micrel/ks8695net.c
+ delete mode 100644 drivers/net/ethernet/micrel/ks8695net.h
+ delete mode 100644 drivers/net/ethernet/nuvoton/Kconfig
+ delete mode 100644 drivers/net/ethernet/nuvoton/Makefile
+ delete mode 100644 drivers/net/ethernet/nuvoton/w90p910_ether.c
+ delete mode 100644 drivers/rtc/rtc-nuc900.c
+ delete mode 100644 drivers/spi/spi-nuc900.c
+ delete mode 100644 drivers/tty/serial/serial_ks8695.c
+ delete mode 100644 drivers/usb/host/ehci-w90x900.c
+ delete mode 100644 drivers/video/fbdev/nuc900fb.c
+ delete mode 100644 drivers/video/fbdev/nuc900fb.h
+ delete mode 100644 drivers/watchdog/ks8695_wdt.c
+ delete mode 100644 drivers/watchdog/nuc900_wdt.c
+ delete mode 100644 include/linux/platform_data/keypad-w90p910.h
+ delete mode 100644 include/linux/platform_data/spi-nuc900.h
+ delete mode 100644 include/linux/platform_data/video-nuc900fb.h
+ delete mode 100644 sound/soc/nuc900/Kconfig
+ delete mode 100644 sound/soc/nuc900/Makefile
+ delete mode 100644 sound/soc/nuc900/nuc900-ac97.c
+ delete mode 100644 sound/soc/nuc900/nuc900-audio.c
+ delete mode 100644 sound/soc/nuc900/nuc900-audio.h
+ delete mode 100644 sound/soc/nuc900/nuc900-pcm.c
+
+-- 
+2.20.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
