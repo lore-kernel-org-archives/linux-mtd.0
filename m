@@ -3,80 +3,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FEE6C31E40
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Aug 2019 07:31:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66F4FC433FF
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Aug 2019 08:17:01 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ED7A1206C2
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Aug 2019 07:31:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 364992087B
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Aug 2019 08:17:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tw4R5MAM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ED7A1206C2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="P10DjC95";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="u4QlkRbM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 364992087B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=aeFJykDwRc9UW7wvKOTByNDiTKdig94I/3ZUTgHndys=; b=tw4R5MAMJjqwaf
-	SOryltYPXRzxt8gwJCxQKMVyj5VYsAVZH3ytwCRJt/vIRzJ8FVJZ3LIoo/rPa55B9ylv7bv39fZM5
-	nLw+ccQ/5ZGM39Ea11Xjsv9Kvz762Z4D0346Qx/1KDFffJfgJFD9XNhJBS8BNfhWNMIpWzSd1+Kb6
-	ivnrrzGz4oVu/2cQI/pStC/1zue6hk4hKfozqBP96H/yB6h4Sb2GSiXmvUvrR4al5air3KMCj0knY
-	GAlBnjFnvw+VbSZwSqwM7pnGDD0ADSxPsuJSIopPYuA3ZdWtj8MrS/A6jdQVPibpeEgLneUnjlUV5
-	VVRpdfMSJ6mlKE3ygKFA==;
+	List-Owner; bh=gSatS0AmvHMonlmOFGBsnPQHugOdpU8mM+VDg11hGUI=; b=P10DjC95a9tz2F
+	LeAVsEijbi3kgE0+B+O3N8iW4oZU6hwzb8/ybqOUUwHCwO9lVH4FZHN89qOO3O0MqvossidAfOv4L
+	AA+QwTilzP5OedpbFFi/36cyKZT4w63eEO5XwfemRt20o00z6/5Fc5GMKTqS8UCiA7a5+K+q95bus
+	z+wTHxm8/cW5xzjWA/5OEoUYuXncEK7JEPBf7YqfA6Bq8Y7HX58pSh9Bkc7KEsQAbZpmAaBkoKI4l
+	6DRzYSywpGMAJMhgD4fFmG6N9R06cpOe4QW8e77GAlpHMFcZTG0vNzuTtzL5DiKSfXqGI7BXO5zok
+	CT1WcyCH40VDDpZaCxNw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hx4nq-00053g-D3; Mon, 12 Aug 2019 07:31:38 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1hx5VW-0006CH-RA; Mon, 12 Aug 2019 08:16:46 +0000
+Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hx4nm-000534-1S
- for linux-mtd@lists.infradead.org; Mon, 12 Aug 2019 07:31:36 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 2AFC728A170;
- Mon, 12 Aug 2019 08:31:32 +0100 (BST)
-Date: Mon, 12 Aug 2019 09:31:29 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Greg Ungerer <gerg@kernel.org>
-Subject: Re: GPMI iMX6ull timeout on DMA
-Message-ID: <20190812093129.75888dad@collabora.com>
-In-Reply-To: <00b31833-69ba-42c5-57c9-37fa1f70efc5@kernel.org>
-References: <89ae32a0-9b19-4735-90eb-4ffa22aad704@kernel.org>
- <20190729103655.095297a2@xps13>
- <18734a1d-17d9-d390-58ef-ad8ca1be925f@kernel.org>
- <20190729144730.4a58de32@xps13>
- <17b49e7d-ff63-315f-cf12-3474f7228c6d@kernel.org>
- <781dd4e6-a694-c3e1-ee13-9c5c51598623@kernel.org>
- <53cb8db7-bcf8-ee7c-84ee-59a14a04aad9@kernel.org>
- <20190730103822.7576645d@xps13>
- <0a6afd79-d5ca-24da-a62c-11146a3522f6@kernel.org>
- <20190731082823.6284f5a9@collabora.com>
- <e47b1de2-501a-9a1f-e980-48d2c396811a@kernel.org>
- <20190802145109.00c4a4eb@collabora.com>
- <b739696d-bb1d-bb04-cd45-3019712e29ad@kernel.org>
- <20190808183651.7c0962e7@collabora.com>
- <694cb2ac-68e6-72b1-3d55-e405b176a17f@kernel.org>
- <20190809082356.0cf60555@collabora.com>
- <ce7157e2-a8d0-7204-4003-8a711acb65b8@kernel.org>
- <20190809093235.09d89e20@collabora.com>
- <c5af9334-f679-6fc9-4d2a-1366a295598a@kernel.org>
- <20190809155934.40c43f29@collabora.com>
- <00b31833-69ba-42c5-57c9-37fa1f70efc5@kernel.org>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1hx5VU-0006Bt-4f
+ for linux-mtd@lists.infradead.org; Mon, 12 Aug 2019 08:16:45 +0000
+Received: by mail-wr1-x444.google.com with SMTP id q12so13508372wrj.12
+ for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2019 01:16:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:content-transfer-encoding:in-reply-to
+ :user-agent; bh=MJHxBxh/Q5vo+W76uNGRUJUeN3hwDfWxfMg6P/gBOg0=;
+ b=u4QlkRbMDiHfGrjdu436aHZusopdsD94AaT6zXTM3eaZ4y6BosUM0tlaA56X51nN9c
+ umI3PH27REA1YdEm/bDm3OE2UI9MGULdMLuGUTvnDBKUBlM+u5BgwEJXKd1SByIuWkrY
+ 2kv99VeKU+V5QXG9oieP77x7yQgoExIDYXx4vPH8vlEru6HzZ6/p32cpzzObsHy5W3az
+ O2VbXSjzdwyFpNJYin4w9mGvGx4NIQqGMocgiLaaq7HHG8qkJjXvIxiD9mAgo53+VJlh
+ LCcGJbAa2s5qZg9/JZfFsSRo/t/+spxSIJYxDJW7Gfq3OorZb4uOTIjODwyWsHDkDNXd
+ LmBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:content-transfer-encoding
+ :in-reply-to:user-agent;
+ bh=MJHxBxh/Q5vo+W76uNGRUJUeN3hwDfWxfMg6P/gBOg0=;
+ b=UY8CyhSbiDWWB3MSwKBNubjqs0wdMYWsQFGJ2tA15Cqppo8gH/UqVkojoNd68UPG/x
+ YFu4SJUNL9fWdAt8XBKNd06jQF1nu2g1uYjRNmAHbgRRHr4yhCbGHCw7Mv9P6ub2HohU
+ tWUaYMxZIMb7qjbqBfMUPSlvtQRK2smakMM4NdAaBLhQvlwY0UiYehgALqChjCOyNCFG
+ XbqQtzOC6s18b8RNLwuFG0FLo26GYYDgwLBRDmsWbDhbZZ4aP3W+ab+Ghitryptvpf1A
+ QRhOnjrnZfjG8AMbAGyPq3THb/oM9HmG/JEtCNSgd8eHooOtbUHQth0mgbq4MsuJm8c2
+ u7RQ==
+X-Gm-Message-State: APjAAAXRrFx5yOQ1s/iBMLZdBK1ug0GK8BzE7AyjPWdb1APP+KcLmKV2
+ 5tGV73XhDJ5EBxX6iYMEHF45+w==
+X-Google-Smtp-Source: APXvYqyD6fPKryZQTpN9zsdwGV7yS5BKNQZ8tOEeMIPGi0uW8Qmgi+HgiANiv0VmQSgyzgbueGKdzg==
+X-Received: by 2002:adf:ec0d:: with SMTP id x13mr40515082wrn.240.1565597802765; 
+ Mon, 12 Aug 2019 01:16:42 -0700 (PDT)
+Received: from dell ([2.27.35.255])
+ by smtp.gmail.com with ESMTPSA id g15sm16420028wrp.29.2019.08.12.01.16.41
+ (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+ Mon, 12 Aug 2019 01:16:42 -0700 (PDT)
+Date: Mon, 12 Aug 2019 09:16:40 +0100
+From: Lee Jones <lee.jones@linaro.org>
+To: Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 10/11] mfd: Drop obsolete JZ4740 driver
+Message-ID: <20190812081640.GA26727@dell>
+References: <20190725220215.460-1-paul@crapouillou.net>
+ <20190725220215.460-11-paul@crapouillou.net>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20190725220215.460-11-paul@crapouillou.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190812_003134_351431_9A09F6D0 
-X-CRM114-Status: GOOD (  27.65  )
+X-CRM114-CacheID: sfid-20190812_011644_190748_2B0FEB6B 
+X-CRM114-Status: GOOD (  11.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,200 +97,36 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, s.hauer@pengutronix.de,
- Michael Nazzareno Trimarchi <michael@amarulasolutions.com>,
- linux-mtd@lists.infradead.org, Boris Brezillon <bbrezillon@kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Mark Rutland <mark.rutland@arm.com>, linux-fbdev@vger.kernel.org,
+ Liam Girdwood <lgirdwood@gmail.com>, James Hogan <jhogan@kernel.org>,
+ alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
+ Sebastian Reichel <sre@kernel.org>, od@zcrc.me, linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Artur Rojek <contact@artur-rojek.eu>, Richard Weinberger <richard@nod.at>,
+ linux-pm@vger.kernel.org, Paul Burton <paul.burton@mips.com>,
+ linux-mips@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+ devicetree@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Mark Brown <broonie@kernel.org>, linux-hwmon@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>,
+ Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ dmaengine@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 12 Aug 2019 12:50:36 +1000
-Greg Ungerer <gerg@kernel.org> wrote:
-
-> Hi Boris,
-> 
-> On 9/8/19 11:59 pm, Boris Brezillon wrote:
-> > On Fri, 9 Aug 2019 23:57:08 +1000
-> > Greg Ungerer <gerg@kernel.org> wrote:  
-> >> On 9/8/19 5:32 pm, Boris Brezillon wrote:  
-> >>> On Fri, 9 Aug 2019 16:55:22 +1000
-> >>> Greg Ungerer <gerg@kernel.org> wrote:  
-> >>>> On 9/8/19 4:23 pm, Boris Brezillon wrote:  
-> >>>>> On Fri, 9 Aug 2019 15:20:52 +1000
-> >>>>> Greg Ungerer <gerg@kernel.org> wrote:  
-> >>>>>> On 9/8/19 2:36 am, Boris Brezillon wrote:  
-> >>>>>>> On Mon, 5 Aug 2019 15:51:05 +1000
-> >>>>>>> Greg Ungerer <gerg@kernel.org> wrote:  
-> >>>>>>>> On 2/8/19 10:51 pm, Boris Brezillon wrote:  
-> >>>>>>>>> On Fri, 2 Aug 2019 22:34:57 +1000
-> >>>>>>>>> Greg Ungerer <gerg@kernel.org> wrote:  
-> >>>>>>>>>> On 31/7/19 4:28 pm, Boris Brezillon wrote:  
-> >>>>>>>>>>> On Wed, 31 Jul 2019 12:05:44 +1000
-> >>>>>>>>>>> Greg Ungerer <gerg@kernel.org> wrote:  
-> >>>>>>>>>>>> On 30/7/19 6:38 pm, Miquel Raynal wrote:  
-> >>>>>>>>>>>>> Greg Ungerer <gerg@kernel.org> wrote on Tue, 30 Jul 2019 16:06:55 +1000:  
-> >>>>>>>>>>>>>> On 30/7/19 10:41 am, Greg Ungerer wrote:  
-> >>>>>>>>>>>>>>> On 30/7/19 10:28 am, Greg Ungerer wrote:  
-> >>>>>>>>>>>>>>>> On 29/7/19 10:47 pm, Miquel Raynal wrote:  
-> >>>>>>>>>>>>>>>>> Greg Ungerer <gerg@kernel.org> wrote on Mon, 29 Jul 2019 22:33:56 +1000:  
-> >>>>>>>>>>>>>>>>>> On 29/7/19 6:36 pm, Miquel Raynal wrote:  
-> >>>>>>>>>>>>>>>>>>> Greg Ungerer <gerg@kernel.org> wrote on Mon, 29 Jul 2019 16:41:51 +1000:  
-> >>>>>>>>>>>>>>> [snip]  
-> >>>>>>>>>>>> Note that this was generated on a normal boot up (not failure).  
-> >>>>>>>>>>>
-> >>>>>>>>>>> The values looks good. Can you try with the below diff applied?  
-> >>>>>>>>>>> --->8---  
-> >>>>>>>>>>> diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-> >>>>>>>>>>> index 334fe3130285..9771f6a82abe 100644
-> >>>>>>>>>>> --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-> >>>>>>>>>>> +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-> >>>>>>>>>>> @@ -721,12 +721,10 @@ static void gpmi_nfc_apply_timings(struct gpmi_nand_data *this)
-> >>>>>>>>>>>               writel(hw->ctrl1n, gpmi_regs + HW_GPMI_CTRL1_SET);
-> >>>>>>>>>>>        
-> >>>>>>>>>>>               /* Wait 64 clock cycles before using the GPMI after enabling the DLL */
-> >>>>>>>>>>> -       dll_wait_time_us = USEC_PER_SEC / hw->clk_rate * 64;
-> >>>>>>>>>>> -       if (!dll_wait_time_us)
-> >>>>>>>>>>> -               dll_wait_time_us = 1;
-> >>>>>>>>>>> +       dll_wait_time_us = DIV_ROUND_UP(USEC_PER_SEC * 64, hw->clk_rate);
-> >>>>>>>>>>>        
-> >>>>>>>>>>>               /* Wait for the DLL to settle. */
-> >>>>>>>>>>> -       udelay(dll_wait_time_us);
-> >>>>>>>>>>> +       usleep_range(dll_wait_time_us, dll_wait_time_us * 10);
-> >>>>>>>>>>>        }
-> >>>>>>>>>>>        
-> >>>>>>>>>>>        static int gpmi_setup_data_interface(struct nand_chip *chip, int chipnr,  
-> >>>>>>>>>>
-> >>>>>>>>>> Eventually it failed, in the same way with with same errors.
-> >>>>>>>>>> Took quite a while, over 600 boot cycles.
-> >>>>>>>>>>
-> >>>>>>>>>> Note also that I had to hand merge the changes, since in 5.1.14 that
-> >>>>>>>>>> gpmi_nfc_apply_timings() is in gpmi-lib.c. But it was trivial to do.  
-> >>>>>>>>>
-> >>>>>>>>> Oh well. I guess the next thing to do would be to dump the timing regs
-> >>>>>>>>> and clk rate that are set by the bootloader (before the driver override
-> >>>>>>>>> them) or those applied by an older kernel (one that didn't have that
-> >>>>>>>>> issue).  
-> >>>>>>>>
-> >>>>>>>> Is this useful?  
-> >>>>>>>
-> >>>>>>> Hm, looks like it's configured in mode 0, so no, it's not super useful.
-> >>>>>>> Can you try booting an older kernel (one that didn't have the  
-> >>>>>>> ->setup_data_interface() hook implemented).  
-> >>>>>>
-> >>>>>> Ok. I went back from 5.1 and the first kernel I could find that
-> >>>>>> returned no grep hits for "setup_data_interface" was 4.16.
-> >>>>>>
-> >>>>>> So I built for my target with that and added similar trace to dump
-> >>>>>> the hardware register settings for that. Debug output looks like
-> >>>>>> this now for it:
-> >>>>>>
-> >>>>>> ...
-> >>>>>> drivers/mtd/nand/gpmi-nand/gpmi-nand.c(807): gpmi_get_clks()
-> >>>>>>       clk_get_rate(r->clock[0])=22000000
-> >>>>>> drivers/mtd/nand/gpmi-nand/gpmi-lib.c(1054): gpmi_begin()
-> >>>>>>       HW_GPMI_TIMING0=0x00010203
-> >>>>>>       HW_GPMI_TIMING1=0x05000000
-> >>>>>> nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xda
-> >>>>>> nand: Micron MT29F2G08ABAEAWP
-> >>>>>> nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-> >>>>>> drivers/mtd/nand/gpmi-nand/gpmi-lib.c(966): enable_edo_mode()
-> >>>>>>       clk_get_rate(r->clock[0])=99000000
-> >>>>>> gpmi-nand 1806000.gpmi-nand: enable the asynchronous EDO mode 5
-> >>>>>> drivers/mtd/nand/gpmi-nand/gpmi-lib.c(1054): gpmi_begin()
-> >>>>>>       HW_GPMI_TIMING0=0x00010101  
-> >>>>>
-> >>>>> TIMING0 match the one you have with 5.1 kernels.
-> >>>>>       
-> >>>>>>       HW_GPMI_TIMING1=0x90000000  
-> >>>>>
-> >>>>> And we even have a bigger timeout value in 5.1 (0xe0000000), so we
-> >>>>> should be all safe WRT to timings in TIMING{0,1}.
-> >>>>>
-> >>>>> Can you dump CTRL1?  
-> >>>>
-> >>>> drivers/mtd/nand/gpmi-nand/gpmi-lib.c(1054): gpmi_begin()
-> >>>>      HW_GPMI_TIMING0=0x00010101
-> >>>>      HW_GPMI_TIMING1=0x90000000
-> >>>>      HW_GPMI_CTRL1_SET=0x01c4800c  
-> >>>
-> >>> The read/write delay fields seem to match, but there are a few more
-> >>> fields set in this version:
-> >>> - DECOUPLE_CS
-> >>> - BCH_MODE
-> >>> - DEV_RESET
-> >>> - CTRL1_ATA_IRQRDY_POLARITY__ACTIVEHIGH
-> >>>
-> >>> Looks like those fields are not explicitly set in the gpmi_begin()
-> >>> patch, but maybe you dumped CTRL1. Would you mind sharing your patch?  
-> >>
-> >> Attached.  
-> > 
-> > Hm, you should read CTRL1 instead of CTRL1_SET which I guess is WO.  
-> 
-> 
-> Here is 2 sets of trace dumping the same set of registers.
-> This first is on the linux-4.16 kernel:
-> 
-> Linux version 4.16.0 (gerg@goober) (gcc version 4.8.3 (GCC)) #9 Mon Aug 12 10:46:25 AEST 2019
-> ...
-> nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xda
-> nand: Micron MT29F2G08ABAEAWP
-> nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-> gpmi-nand 1806000.gpmi-nand: use legacy bch geometry
-> gpmi-nand 1806000.gpmi-nand: enable the asynchronous EDO mode 5
-> drivers/mtd/nand/gpmi-nand/gpmi-lib.c(1110): gpmi_begin()
->    HW_GPMI_TIMING0=0x00010101
->    HW_GPMI_TIMING1=0x90000000
->    HW_GPMI_CTRL1=0x01c6800c
->    r->clock[0]=99000000
-> Scanning device for bad blocks
-> 5 ofpart partitions found on MTD device gpmi-nand
-> Creating 5 MTD partitions on "gpmi-nand":
-> 0x000000000000-0x000000500000 : "u-boot"
-> 0x000000500000-0x000000600000 : "u-boot-env"
-> 0x000000600000-0x000000800000 : "log"
-> 0x000000800000-0x000010000000 : "flash"
-> 0x000000000000-0x000010000000 : "all"
-> gpmi-nand 1806000.gpmi-nand: driver registered.
-> ...
-> 
-> 
-> And then this is from the 5.1.14 kernel:
-> 
-> Linux version 5.1.14 (gerg@goober) (gcc version 4.8.3 (GCC)) #25 Mon Aug 12 10:49:21 AEST 2019
-> ...
-> nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xda
-> nand: Micron MT29F2G08ABAEAWP
-> nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-> drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c(510): gpmi_nfc_apply_timings()
->    HW_GPMI_TIMING0=0x00020101
->    HW_GPMI_TIMING1=0xb0000000
->    HW_GPMI_CTRL1=0x0104000c
->    r->clock[0]=22000000
-> drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c(510): gpmi_nfc_apply_timings()
->    HW_GPMI_TIMING0=0x00010101
->    HW_GPMI_TIMING1=0xe0000000
->    HW_GPMI_CTRL1=0x01c6800c
->    r->clock[0]=99000000
-> Scanning device for bad blocks
-> 5 fixed-partitions partitions found on MTD device gpmi-nand
-> Creating 5 MTD partitions on "gpmi-nand":
-> 0x000000000000-0x000000500000 : "u-boot"
-> 0x000000500000-0x000000600000 : "u-boot-env"
-> 0x000000600000-0x000000800000 : "log"
-> 0x000000800000-0x000010000000 : "flash"
-> 0x000000000000-0x000010000000 : "all"
-> gpmi-nand 1806000.gpmi-nand: driver registered.
-> 
-> 
-> Register settings read back from the registers themselves at the end
-> of the respective setting routines (so gpmi_begin() for 4.16 and
-> gpmi_nfc_apply_timings() for 5.1.14)
-
-Hm, CTRL1 is identical. Can you dump all regs at the beginning and at
-the end of those funcs?
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gVGh1LCAyNSBKdWwgMjAxOSwgUGF1bCBDZXJjdWVpbCB3cm90ZToKCj4gSXQgaGFzIGJlZW4g
+cmVwbGFjZWQgd2l0aCB0aGUgaW5nZW5pYy1paW8gZHJpdmVyIGZvciB0aGUgQURDLgo+IAo+IFNp
+Z25lZC1vZmYtYnk6IFBhdWwgQ2VyY3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0Pgo+IFRlc3Rl
+ZC1ieTogQXJ0dXIgUm9qZWsgPGNvbnRhY3RAYXJ0dXItcm9qZWsuZXU+Cj4gLS0tCj4gIGRyaXZl
+cnMvbWZkL0tjb25maWcgICAgICB8ICAgOSAtLQo+ICBkcml2ZXJzL21mZC9NYWtlZmlsZSAgICAg
+fCAgIDEgLQo+ICBkcml2ZXJzL21mZC9qejQ3NDAtYWRjLmMgfCAzMjQgLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gIDMgZmlsZXMgY2hhbmdlZCwgMzM0IGRlbGV0aW9u
+cygtKQo+ICBkZWxldGUgbW9kZSAxMDA2NDQgZHJpdmVycy9tZmQvano0NzQwLWFkYy5jCgpBcHBs
+aWVkLCB0aGFua3MuCgotLSAKTGVlIEpvbmVzIFvmnY7nkLzmlq9dCkxpbmFybyBTZXJ2aWNlcyBU
+ZWNobmljYWwgTGVhZApMaW5hcm8ub3JnIOKUgiBPcGVuIHNvdXJjZSBzb2Z0d2FyZSBmb3IgQVJN
+IFNvQ3MKRm9sbG93IExpbmFybzogRmFjZWJvb2sgfCBUd2l0dGVyIHwgQmxvZwoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBk
+aXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2xpbnV4LW10ZC8K
