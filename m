@@ -4,55 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D378C0650F
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Aug 2019 02:51:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D0F2FC31E40
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Aug 2019 04:04:48 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1511C20651
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Aug 2019 02:51:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7994420842
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Aug 2019 04:04:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EIb+gLA8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1511C20651
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="u7pn44Q8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7994420842
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
 	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:References:
+	To:From:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=w7H1tQdkyo72JZPk5OlMg4CMS0/nojn4RMlydE0VfJE=; b=EIb+gLA8d17pmmwMEaZBDFd5L
-	AAnCZ9peJHAQCThtZ7QdOVLY8STwTg2jq0RHaRk1NxJOe7xI2KiSP6s4o3drHsXJ8Y+gnzNOTb7+3
-	J273c6s86tS2voFXVuocioGvClb4i6+jVaVpH1PxRN7Id1B07sfvVH+0uwvNZZVo217URguq/4JDO
-	93u88SHBHyQ+o+VQLUMkI8MgFX1FmlfYFJbnBPoiSdE/HuA+Xd5gmAWESN8abkz8XrHd1KFv1waLh
-	2k7L9SMOUeR7Ntq7KjYptN0f6EggwAQsDYEc/Aeb+yN+cbh2OmxTeaUnbDo6KdbTttHFbDTEnPgPI
-	AaukMNLwQ==;
+	 bh=Mh7AiYaDHh15HtsgbNNgfw8xq/EjcmWFo9SQBlVEjPc=; b=u7pn44Q88PdnfKDP109ecG3do
+	EoWUO2atyuVgkos393edKdJH+mwEiLbUu+gcD4/H7rGGC9WffwBPbbCSAztLCVAJlDr9E60rEXBv4
+	WouFCYmPUZX8mHNZW0dcVzGPSNlkXUCR5xlDNqD2ke4hNxydIbx86uwEl97RaSYeQurNSURAIV2oC
+	Zsq3v0thNXbqWM11X8o5dROKTvwtQXM9JJw+1SRxVjVXEYB8jENGPe5xmn7aifiJdxnff4kW/F4ka
+	4Dfp3V2DE+UgKMesmQqpZdHqHj8PgwLGtD1/DjneWTSDX4zJOtR52upo9ek0S5FxnywGVHthqy/0i
+	EwHhJRwuw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hx0Qe-0008E1-1s; Mon, 12 Aug 2019 02:51:24 +0000
-Received: from icp-osb-irony-out9.external.iinet.net.au ([203.59.1.226])
+	id 1hx1ZJ-0007In-46; Mon, 12 Aug 2019 04:04:25 +0000
+Received: from icp-osb-irony-out4.external.iinet.net.au ([203.59.1.220])
  by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
- id 1hx0QX-0008DE-4Y
- for linux-mtd@lists.infradead.org; Mon, 12 Aug 2019 02:51:20 +0000
+ id 1hx1ZG-0007IK-Aa
+ for linux-mtd@lists.infradead.org; Mon, 12 Aug 2019 04:04:24 +0000
 X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2AhAAC401Bd/zXSMGcNWRkBAQEBAQE?=
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2AhAAAj5FBd/zXSMGcNWRkBAQEBAQE?=
  =?us-ascii?q?BAQEBAQEHAQEBAQEBgWeEM4Qej3UBAQEBBoEJLX6CaoYCkSEJAQEBAQEBAQE?=
- =?us-ascii?q?BNwEBhD8CgwQ4EwEEAQEBBAEBAwEJAYVShhkBAQEDIwQRQRALDQsCAiYCAlc?=
- =?us-ascii?q?GDQYCAQGDHoF3qVJzfzMahS+DPoFJgQwogWOKGHiBB4ERJ4I2NT6HT4JYBIw?=
- =?us-ascii?q?tIIhMgS+UfwmCH49nhEUGG4IwL4sDAxCKSKdngXkzGggoCIMngk4XjjRgjyQ?=
- =?us-ascii?q?BAQ?=
-X-IPAS-Result: =?us-ascii?q?A2AhAAC401Bd/zXSMGcNWRkBAQEBAQEBAQEBAQEHAQEBA?=
+ =?us-ascii?q?BNwEBhD8CgwQ4EwEEAQEBBAEBAwEJAYVShhkBAQEDIwQLAQVBEAkCDQsCAiY?=
+ =?us-ascii?q?CAlcGDQYCAQGDHoF3jluae3N/MxqIaIFJgQwogWOKGHiBB4ERJ4I2NT6HT4J?=
+ =?us-ascii?q?YBIwtIIl7lH8Jgh+PZ4RFBhuCMC+LAwMQikinZ4F5MxoIKAiDJ4JOF440YI8?=
+ =?us-ascii?q?kAQE?=
+X-IPAS-Result: =?us-ascii?q?A2AhAAAj5FBd/zXSMGcNWRkBAQEBAQEBAQEBAQEHAQEBA?=
  =?us-ascii?q?QEBgWeEM4Qej3UBAQEBBoEJLX6CaoYCkSEJAQEBAQEBAQEBNwEBhD8CgwQ4E?=
- =?us-ascii?q?wEEAQEBBAEBAwEJAYVShhkBAQEDIwQRQRALDQsCAiYCAlcGDQYCAQGDHoF3q?=
- =?us-ascii?q?VJzfzMahS+DPoFJgQwogWOKGHiBB4ERJ4I2NT6HT4JYBIwtIIhMgS+UfwmCH?=
- =?us-ascii?q?49nhEUGG4IwL4sDAxCKSKdngXkzGggoCIMngk4XjjRgjyQBAQ?=
-X-IronPort-AV: E=Sophos;i="5.64,375,1559491200"; d="scan'208";a="187021482"
+ =?us-ascii?q?wEEAQEBBAEBAwEJAYVShhkBAQEDIwQLAQVBEAkCDQsCAiYCAlcGDQYCAQGDH?=
+ =?us-ascii?q?oF3jluae3N/MxqIaIFJgQwogWOKGHiBB4ERJ4I2NT6HT4JYBIwtIIl7lH8Jg?=
+ =?us-ascii?q?h+PZ4RFBhuCMC+LAwMQikinZ4F5MxoIKAiDJ4JOF440YI8kAQE?=
+X-IronPort-AV: E=Sophos;i="5.64,376,1559491200"; d="scan'208";a="185402204"
 Received: from unknown (HELO [10.44.0.22]) ([103.48.210.53])
- by icp-osb-irony-out9.iinet.net.au with ESMTP; 12 Aug 2019 10:50:37 +0800
+ by icp-osb-irony-out4.iinet.net.au with ESMTP; 12 Aug 2019 12:04:18 +0800
 Subject: Re: GPMI iMX6ull timeout on DMA
+From: Greg Ungerer <gerg@kernel.org>
 To: Boris Brezillon <boris.brezillon@collabora.com>
 References: <89ae32a0-9b19-4735-90eb-4ffa22aad704@kernel.org>
  <20190729103655.095297a2@xps13>
@@ -74,17 +75,17 @@ References: <89ae32a0-9b19-4735-90eb-4ffa22aad704@kernel.org>
  <20190809093235.09d89e20@collabora.com>
  <c5af9334-f679-6fc9-4d2a-1366a295598a@kernel.org>
  <20190809155934.40c43f29@collabora.com>
-From: Greg Ungerer <gerg@kernel.org>
-Message-ID: <00b31833-69ba-42c5-57c9-37fa1f70efc5@kernel.org>
-Date: Mon, 12 Aug 2019 12:50:36 +1000
+ <00b31833-69ba-42c5-57c9-37fa1f70efc5@kernel.org>
+Message-ID: <a98131a5-d066-f3c2-02fe-02f50ee3ac25@kernel.org>
+Date: Mon, 12 Aug 2019 14:04:18 +1000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190809155934.40c43f29@collabora.com>
+In-Reply-To: <00b31833-69ba-42c5-57c9-37fa1f70efc5@kernel.org>
 Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190811_195117_899051_AEC0A7CE 
-X-CRM114-Status: GOOD (  18.22  )
+X-CRM114-CacheID: sfid-20190811_210422_848175_38DA3833 
+X-CRM114-Status: GOOD (  21.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,205 +100,209 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>, s.hauer@pengutronix.de,
  Michael Nazzareno Trimarchi <michael@amarulasolutions.com>,
  linux-mtd@lists.infradead.org, Boris Brezillon <bbrezillon@kernel.org>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Boris,
-
-On 9/8/19 11:59 pm, Boris Brezillon wrote:
-> On Fri, 9 Aug 2019 23:57:08 +1000
-> Greg Ungerer <gerg@kernel.org> wrote:
->> On 9/8/19 5:32 pm, Boris Brezillon wrote:
->>> On Fri, 9 Aug 2019 16:55:22 +1000
->>> Greg Ungerer <gerg@kernel.org> wrote:
->>>> On 9/8/19 4:23 pm, Boris Brezillon wrote:
->>>>> On Fri, 9 Aug 2019 15:20:52 +1000
->>>>> Greg Ungerer <gerg@kernel.org> wrote:
->>>>>> On 9/8/19 2:36 am, Boris Brezillon wrote:
->>>>>>> On Mon, 5 Aug 2019 15:51:05 +1000
->>>>>>> Greg Ungerer <gerg@kernel.org> wrote:
->>>>>>>> On 2/8/19 10:51 pm, Boris Brezillon wrote:
->>>>>>>>> On Fri, 2 Aug 2019 22:34:57 +1000
->>>>>>>>> Greg Ungerer <gerg@kernel.org> wrote:
->>>>>>>>>> On 31/7/19 4:28 pm, Boris Brezillon wrote:
->>>>>>>>>>> On Wed, 31 Jul 2019 12:05:44 +1000
->>>>>>>>>>> Greg Ungerer <gerg@kernel.org> wrote:
->>>>>>>>>>>> On 30/7/19 6:38 pm, Miquel Raynal wrote:
->>>>>>>>>>>>> Greg Ungerer <gerg@kernel.org> wrote on Tue, 30 Jul 2019 16:06:55 +1000:
->>>>>>>>>>>>>> On 30/7/19 10:41 am, Greg Ungerer wrote:
->>>>>>>>>>>>>>> On 30/7/19 10:28 am, Greg Ungerer wrote:
->>>>>>>>>>>>>>>> On 29/7/19 10:47 pm, Miquel Raynal wrote:
->>>>>>>>>>>>>>>>> Greg Ungerer <gerg@kernel.org> wrote on Mon, 29 Jul 2019 22:33:56 +1000:
->>>>>>>>>>>>>>>>>> On 29/7/19 6:36 pm, Miquel Raynal wrote:
->>>>>>>>>>>>>>>>>>> Greg Ungerer <gerg@kernel.org> wrote on Mon, 29 Jul 2019 16:41:51 +1000:
->>>>>>>>>>>>>>> [snip]
->>>>>>>>>>>> Note that this was generated on a normal boot up (not failure).
->>>>>>>>>>>
->>>>>>>>>>> The values looks good. Can you try with the below diff applied?
->>>>>>>>>>> --->8---
->>>>>>>>>>> diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
->>>>>>>>>>> index 334fe3130285..9771f6a82abe 100644
->>>>>>>>>>> --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
->>>>>>>>>>> +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
->>>>>>>>>>> @@ -721,12 +721,10 @@ static void gpmi_nfc_apply_timings(struct gpmi_nand_data *this)
->>>>>>>>>>>               writel(hw->ctrl1n, gpmi_regs + HW_GPMI_CTRL1_SET);
->>>>>>>>>>>        
->>>>>>>>>>>               /* Wait 64 clock cycles before using the GPMI after enabling the DLL */
->>>>>>>>>>> -       dll_wait_time_us = USEC_PER_SEC / hw->clk_rate * 64;
->>>>>>>>>>> -       if (!dll_wait_time_us)
->>>>>>>>>>> -               dll_wait_time_us = 1;
->>>>>>>>>>> +       dll_wait_time_us = DIV_ROUND_UP(USEC_PER_SEC * 64, hw->clk_rate);
->>>>>>>>>>>        
->>>>>>>>>>>               /* Wait for the DLL to settle. */
->>>>>>>>>>> -       udelay(dll_wait_time_us);
->>>>>>>>>>> +       usleep_range(dll_wait_time_us, dll_wait_time_us * 10);
->>>>>>>>>>>        }
->>>>>>>>>>>        
->>>>>>>>>>>        static int gpmi_setup_data_interface(struct nand_chip *chip, int chipnr,
->>>>>>>>>>
->>>>>>>>>> Eventually it failed, in the same way with with same errors.
->>>>>>>>>> Took quite a while, over 600 boot cycles.
->>>>>>>>>>
->>>>>>>>>> Note also that I had to hand merge the changes, since in 5.1.14 that
->>>>>>>>>> gpmi_nfc_apply_timings() is in gpmi-lib.c. But it was trivial to do.
->>>>>>>>>
->>>>>>>>> Oh well. I guess the next thing to do would be to dump the timing regs
->>>>>>>>> and clk rate that are set by the bootloader (before the driver override
->>>>>>>>> them) or those applied by an older kernel (one that didn't have that
->>>>>>>>> issue).
->>>>>>>>
->>>>>>>> Is this useful?
->>>>>>>
->>>>>>> Hm, looks like it's configured in mode 0, so no, it's not super useful.
->>>>>>> Can you try booting an older kernel (one that didn't have the
->>>>>>> ->setup_data_interface() hook implemented).
->>>>>>
->>>>>> Ok. I went back from 5.1 and the first kernel I could find that
->>>>>> returned no grep hits for "setup_data_interface" was 4.16.
->>>>>>
->>>>>> So I built for my target with that and added similar trace to dump
->>>>>> the hardware register settings for that. Debug output looks like
->>>>>> this now for it:
->>>>>>
->>>>>> ...
->>>>>> drivers/mtd/nand/gpmi-nand/gpmi-nand.c(807): gpmi_get_clks()
->>>>>>       clk_get_rate(r->clock[0])=22000000
->>>>>> drivers/mtd/nand/gpmi-nand/gpmi-lib.c(1054): gpmi_begin()
->>>>>>       HW_GPMI_TIMING0=0x00010203
->>>>>>       HW_GPMI_TIMING1=0x05000000
->>>>>> nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xda
->>>>>> nand: Micron MT29F2G08ABAEAWP
->>>>>> nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
->>>>>> drivers/mtd/nand/gpmi-nand/gpmi-lib.c(966): enable_edo_mode()
->>>>>>       clk_get_rate(r->clock[0])=99000000
->>>>>> gpmi-nand 1806000.gpmi-nand: enable the asynchronous EDO mode 5
->>>>>> drivers/mtd/nand/gpmi-nand/gpmi-lib.c(1054): gpmi_begin()
->>>>>>       HW_GPMI_TIMING0=0x00010101
->>>>>
->>>>> TIMING0 match the one you have with 5.1 kernels.
->>>>>     
->>>>>>       HW_GPMI_TIMING1=0x90000000
->>>>>
->>>>> And we even have a bigger timeout value in 5.1 (0xe0000000), so we
->>>>> should be all safe WRT to timings in TIMING{0,1}.
->>>>>
->>>>> Can you dump CTRL1?
->>>>
->>>> drivers/mtd/nand/gpmi-nand/gpmi-lib.c(1054): gpmi_begin()
->>>>      HW_GPMI_TIMING0=0x00010101
->>>>      HW_GPMI_TIMING1=0x90000000
->>>>      HW_GPMI_CTRL1_SET=0x01c4800c
->>>
->>> The read/write delay fields seem to match, but there are a few more
->>> fields set in this version:
->>> - DECOUPLE_CS
->>> - BCH_MODE
->>> - DEV_RESET
->>> - CTRL1_ATA_IRQRDY_POLARITY__ACTIVEHIGH
->>>
->>> Looks like those fields are not explicitly set in the gpmi_begin()
->>> patch, but maybe you dumped CTRL1. Would you mind sharing your patch?
->>
->> Attached.
-> 
-> Hm, you should read CTRL1 instead of CTRL1_SET which I guess is WO.
-
-
-Here is 2 sets of trace dumping the same set of registers.
-This first is on the linux-4.16 kernel:
-
-Linux version 4.16.0 (gerg@goober) (gcc version 4.8.3 (GCC)) #9 Mon Aug 12 10:46:25 AEST 2019
-...
-nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xda
-nand: Micron MT29F2G08ABAEAWP
-nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-gpmi-nand 1806000.gpmi-nand: use legacy bch geometry
-gpmi-nand 1806000.gpmi-nand: enable the asynchronous EDO mode 5
-drivers/mtd/nand/gpmi-nand/gpmi-lib.c(1110): gpmi_begin()
-   HW_GPMI_TIMING0=0x00010101
-   HW_GPMI_TIMING1=0x90000000
-   HW_GPMI_CTRL1=0x01c6800c
-   r->clock[0]=99000000
-Scanning device for bad blocks
-5 ofpart partitions found on MTD device gpmi-nand
-Creating 5 MTD partitions on "gpmi-nand":
-0x000000000000-0x000000500000 : "u-boot"
-0x000000500000-0x000000600000 : "u-boot-env"
-0x000000600000-0x000000800000 : "log"
-0x000000800000-0x000010000000 : "flash"
-0x000000000000-0x000010000000 : "all"
-gpmi-nand 1806000.gpmi-nand: driver registered.
-...
-
-
-And then this is from the 5.1.14 kernel:
-
-Linux version 5.1.14 (gerg@goober) (gcc version 4.8.3 (GCC)) #25 Mon Aug 12 10:49:21 AEST 2019
-...
-nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xda
-nand: Micron MT29F2G08ABAEAWP
-nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c(510): gpmi_nfc_apply_timings()
-   HW_GPMI_TIMING0=0x00020101
-   HW_GPMI_TIMING1=0xb0000000
-   HW_GPMI_CTRL1=0x0104000c
-   r->clock[0]=22000000
-drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c(510): gpmi_nfc_apply_timings()
-   HW_GPMI_TIMING0=0x00010101
-   HW_GPMI_TIMING1=0xe0000000
-   HW_GPMI_CTRL1=0x01c6800c
-   r->clock[0]=99000000
-Scanning device for bad blocks
-5 fixed-partitions partitions found on MTD device gpmi-nand
-Creating 5 MTD partitions on "gpmi-nand":
-0x000000000000-0x000000500000 : "u-boot"
-0x000000500000-0x000000600000 : "u-boot-env"
-0x000000600000-0x000000800000 : "log"
-0x000000800000-0x000010000000 : "flash"
-0x000000000000-0x000010000000 : "all"
-gpmi-nand 1806000.gpmi-nand: driver registered.
-
-
-Register settings read back from the registers themselves at the end
-of the respective setting routines (so gpmi_begin() for 4.16 and
-gpmi_nfc_apply_timings() for 5.1.14)
-
-So something I notice here is that gpmi_nfc_apply_timings() is
-being run multiple times. When I look back to the original
-failure dumps the first error ("DMA timeout, last DMA") occurred
-after the device type messages ("nand: 256 MiB, SLC,..."). Is it
-happening with that higher clock rate still set?
-
-Regards
-Greg
-
-
-
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Ck9uIDEyLzgvMTkgMTI6NTAgcG0sIEdyZWcgVW5nZXJlciB3cm90ZToKPiBPbiA5LzgvMTkgMTE6
+NTkgcG0sIEJvcmlzIEJyZXppbGxvbiB3cm90ZToKPj4gT24gRnJpLCA5IEF1ZyAyMDE5IDIzOjU3
+OjA4ICsxMDAwCj4+IEdyZWcgVW5nZXJlciA8Z2VyZ0BrZXJuZWwub3JnPiB3cm90ZToKPj4+IE9u
+IDkvOC8xOSA1OjMyIHBtLCBCb3JpcyBCcmV6aWxsb24gd3JvdGU6Cj4+Pj4gT24gRnJpLCA5IEF1
+ZyAyMDE5IDE2OjU1OjIyICsxMDAwCj4+Pj4gR3JlZyBVbmdlcmVyIDxnZXJnQGtlcm5lbC5vcmc+
+IHdyb3RlOgo+Pj4+PiBPbiA5LzgvMTkgNDoyMyBwbSwgQm9yaXMgQnJlemlsbG9uIHdyb3RlOgo+
+Pj4+Pj4gT24gRnJpLCA5IEF1ZyAyMDE5IDE1OjIwOjUyICsxMDAwCj4+Pj4+PiBHcmVnIFVuZ2Vy
+ZXIgPGdlcmdAa2VybmVsLm9yZz4gd3JvdGU6Cj4+Pj4+Pj4gT24gOS84LzE5IDI6MzYgYW0sIEJv
+cmlzIEJyZXppbGxvbiB3cm90ZToKPj4+Pj4+Pj4gT24gTW9uLCA1IEF1ZyAyMDE5IDE1OjUxOjA1
+ICsxMDAwCj4+Pj4+Pj4+IEdyZWcgVW5nZXJlciA8Z2VyZ0BrZXJuZWwub3JnPiB3cm90ZToKPj4+
+Pj4+Pj4+IE9uIDIvOC8xOSAxMDo1MSBwbSwgQm9yaXMgQnJlemlsbG9uIHdyb3RlOgo+Pj4+Pj4+
+Pj4+IE9uIEZyaSwgMiBBdWcgMjAxOSAyMjozNDo1NyArMTAwMAo+Pj4+Pj4+Pj4+IEdyZWcgVW5n
+ZXJlciA8Z2VyZ0BrZXJuZWwub3JnPiB3cm90ZToKPj4+Pj4+Pj4+Pj4gT24gMzEvNy8xOSA0OjI4
+IHBtLCBCb3JpcyBCcmV6aWxsb24gd3JvdGU6Cj4+Pj4+Pj4+Pj4+PiBPbiBXZWQsIDMxIEp1bCAy
+MDE5IDEyOjA1OjQ0ICsxMDAwCj4+Pj4+Pj4+Pj4+PiBHcmVnIFVuZ2VyZXIgPGdlcmdAa2VybmVs
+Lm9yZz4gd3JvdGU6Cj4+Pj4+Pj4+Pj4+Pj4gT24gMzAvNy8xOSA2OjM4IHBtLCBNaXF1ZWwgUmF5
+bmFsIHdyb3RlOgo+Pj4+Pj4+Pj4+Pj4+PiBHcmVnIFVuZ2VyZXIgPGdlcmdAa2VybmVsLm9yZz4g
+d3JvdGUgb24gVHVlLCAzMCBKdWwgMjAxOSAxNjowNjo1NSArMTAwMDoKPj4+Pj4+Pj4+Pj4+Pj4+
+IE9uIDMwLzcvMTkgMTA6NDEgYW0sIEdyZWcgVW5nZXJlciB3cm90ZToKPj4+Pj4+Pj4+Pj4+Pj4+
+PiBPbiAzMC83LzE5IDEwOjI4IGFtLCBHcmVnIFVuZ2VyZXIgd3JvdGU6Cj4+Pj4+Pj4+Pj4+Pj4+
+Pj4+IE9uIDI5LzcvMTkgMTA6NDcgcG0sIE1pcXVlbCBSYXluYWwgd3JvdGU6Cj4+Pj4+Pj4+Pj4+
+Pj4+Pj4+PiBHcmVnIFVuZ2VyZXIgPGdlcmdAa2VybmVsLm9yZz4gd3JvdGUgb24gTW9uLCAyOSBK
+dWwgMjAxOSAyMjozMzo1NiArMTAwMDoKPj4+Pj4+Pj4+Pj4+Pj4+Pj4+PiBPbiAyOS83LzE5IDY6
+MzYgcG0sIE1pcXVlbCBSYXluYWwgd3JvdGU6Cj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+IEdyZWcgVW5n
+ZXJlciA8Z2VyZ0BrZXJuZWwub3JnPiB3cm90ZSBvbiBNb24sIDI5IEp1bCAyMDE5IDE2OjQxOjUx
+ICsxMDAwOgo+Pj4+Pj4+Pj4+Pj4+Pj4+IFtzbmlwXQo+Pj4+Pj4+Pj4+Pj4+IE5vdGUgdGhhdCB0
+aGlzIHdhcyBnZW5lcmF0ZWQgb24gYSBub3JtYWwgYm9vdCB1cCAobm90IGZhaWx1cmUpLgo+Pj4+
+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+Pj4+IFRoZSB2YWx1ZXMgbG9va3MgZ29vZC4gQ2FuIHlvdSB0cnkg
+d2l0aCB0aGUgYmVsb3cgZGlmZiBhcHBsaWVkPwo+Pj4+Pj4+Pj4+Pj4gLS0tPjgtLS0KPj4+Pj4+
+Pj4+Pj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9ncG1pLW5hbmQvZ3BtaS1u
+YW5kLmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9ncG1pLW5hbmQvZ3BtaS1uYW5kLmMKPj4+Pj4+
+Pj4+Pj4+IGluZGV4IDMzNGZlMzEzMDI4NS4uOTc3MWY2YTgyYWJlIDEwMDY0NAo+Pj4+Pj4+Pj4+
+Pj4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvZ3BtaS1uYW5kL2dwbWktbmFuZC5jCj4+Pj4+
+Pj4+Pj4+PiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9ncG1pLW5hbmQvZ3BtaS1uYW5kLmMK
+Pj4+Pj4+Pj4+Pj4+IEBAIC03MjEsMTIgKzcyMSwxMCBAQCBzdGF0aWMgdm9pZCBncG1pX25mY19h
+cHBseV90aW1pbmdzKHN0cnVjdCBncG1pX25hbmRfZGF0YSAqdGhpcykKPj4+Pj4+Pj4+Pj4+IMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHdyaXRlbChody0+Y3RybDFuLCBncG1pX3JlZ3MgKyBI
+V19HUE1JX0NUUkwxX1NFVCk7Cj4+Pj4+Pj4+Pj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oCAvKiBXYWl0IDY0IGNsb2NrIGN5Y2xlcyBiZWZvcmUgdXNpbmcgdGhlIEdQTUkgYWZ0ZXIgZW5h
+YmxpbmcgdGhlIERMTCAqLwo+Pj4+Pj4+Pj4+Pj4gLcKgwqDCoMKgwqDCoCBkbGxfd2FpdF90aW1l
+X3VzID0gVVNFQ19QRVJfU0VDIC8gaHctPmNsa19yYXRlICogNjQ7Cj4+Pj4+Pj4+Pj4+PiAtwqDC
+oMKgwqDCoMKgIGlmICghZGxsX3dhaXRfdGltZV91cykKPj4+Pj4+Pj4+Pj4+IC3CoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIGRsbF93YWl0X3RpbWVfdXMgPSAxOwo+Pj4+Pj4+Pj4+Pj4gK8Kg
+wqDCoMKgwqDCoCBkbGxfd2FpdF90aW1lX3VzID0gRElWX1JPVU5EX1VQKFVTRUNfUEVSX1NFQyAq
+IDY0LCBody0+Y2xrX3JhdGUpOwo+Pj4+Pj4+Pj4+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgLyogV2FpdCBmb3IgdGhlIERMTCB0byBzZXR0bGUuICovCj4+Pj4+Pj4+Pj4+PiAtwqDCoMKg
+wqDCoMKgIHVkZWxheShkbGxfd2FpdF90aW1lX3VzKTsKPj4+Pj4+Pj4+Pj4+ICvCoMKgwqDCoMKg
+wqAgdXNsZWVwX3JhbmdlKGRsbF93YWl0X3RpbWVfdXMsIGRsbF93YWl0X3RpbWVfdXMgKiAxMCk7
+Cj4+Pj4+Pj4+Pj4+PiDCoMKgwqDCoMKgwqAgfQo+Pj4+Pj4+Pj4+Pj4gwqDCoMKgwqDCoMKgIHN0
+YXRpYyBpbnQgZ3BtaV9zZXR1cF9kYXRhX2ludGVyZmFjZShzdHJ1Y3QgbmFuZF9jaGlwICpjaGlw
+LCBpbnQgY2hpcG5yLAo+Pj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4+PiBFdmVudHVhbGx5IGl0IGZhaWxl
+ZCwgaW4gdGhlIHNhbWUgd2F5IHdpdGggd2l0aCBzYW1lIGVycm9ycy4KPj4+Pj4+Pj4+Pj4gVG9v
+ayBxdWl0ZSBhIHdoaWxlLCBvdmVyIDYwMCBib290IGN5Y2xlcy4KPj4+Pj4+Pj4+Pj4KPj4+Pj4+
+Pj4+Pj4gTm90ZSBhbHNvIHRoYXQgSSBoYWQgdG8gaGFuZCBtZXJnZSB0aGUgY2hhbmdlcywgc2lu
+Y2UgaW4gNS4xLjE0IHRoYXQKPj4+Pj4+Pj4+Pj4gZ3BtaV9uZmNfYXBwbHlfdGltaW5ncygpIGlz
+IGluIGdwbWktbGliLmMuIEJ1dCBpdCB3YXMgdHJpdmlhbCB0byBkby4KPj4+Pj4+Pj4+Pgo+Pj4+
+Pj4+Pj4+IE9oIHdlbGwuIEkgZ3Vlc3MgdGhlIG5leHQgdGhpbmcgdG8gZG8gd291bGQgYmUgdG8g
+ZHVtcCB0aGUgdGltaW5nIHJlZ3MKPj4+Pj4+Pj4+PiBhbmQgY2xrIHJhdGUgdGhhdCBhcmUgc2V0
+IGJ5IHRoZSBib290bG9hZGVyIChiZWZvcmUgdGhlIGRyaXZlciBvdmVycmlkZQo+Pj4+Pj4+Pj4+
+IHRoZW0pIG9yIHRob3NlIGFwcGxpZWQgYnkgYW4gb2xkZXIga2VybmVsIChvbmUgdGhhdCBkaWRu
+J3QgaGF2ZSB0aGF0Cj4+Pj4+Pj4+Pj4gaXNzdWUpLgo+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+IElzIHRo
+aXMgdXNlZnVsPwo+Pj4+Pj4+Pgo+Pj4+Pj4+PiBIbSwgbG9va3MgbGlrZSBpdCdzIGNvbmZpZ3Vy
+ZWQgaW4gbW9kZSAwLCBzbyBubywgaXQncyBub3Qgc3VwZXIgdXNlZnVsLgo+Pj4+Pj4+PiBDYW4g
+eW91IHRyeSBib290aW5nIGFuIG9sZGVyIGtlcm5lbCAob25lIHRoYXQgZGlkbid0IGhhdmUgdGhl
+Cj4+Pj4+Pj4+IC0+c2V0dXBfZGF0YV9pbnRlcmZhY2UoKSBob29rIGltcGxlbWVudGVkKS4KPj4+
+Pj4+Pgo+Pj4+Pj4+IE9rLiBJIHdlbnQgYmFjayBmcm9tIDUuMSBhbmQgdGhlIGZpcnN0IGtlcm5l
+bCBJIGNvdWxkIGZpbmQgdGhhdAo+Pj4+Pj4+IHJldHVybmVkIG5vIGdyZXAgaGl0cyBmb3IgInNl
+dHVwX2RhdGFfaW50ZXJmYWNlIiB3YXMgNC4xNi4KPj4+Pj4+Pgo+Pj4+Pj4+IFNvIEkgYnVpbHQg
+Zm9yIG15IHRhcmdldCB3aXRoIHRoYXQgYW5kIGFkZGVkIHNpbWlsYXIgdHJhY2UgdG8gZHVtcAo+
+Pj4+Pj4+IHRoZSBoYXJkd2FyZSByZWdpc3RlciBzZXR0aW5ncyBmb3IgdGhhdC4gRGVidWcgb3V0
+cHV0IGxvb2tzIGxpa2UKPj4+Pj4+PiB0aGlzIG5vdyBmb3IgaXQ6Cj4+Pj4+Pj4KPj4+Pj4+PiAu
+Li4KPj4+Pj4+PiBkcml2ZXJzL210ZC9uYW5kL2dwbWktbmFuZC9ncG1pLW5hbmQuYyg4MDcpOiBn
+cG1pX2dldF9jbGtzKCkKPj4+Pj4+PiDCoMKgwqDCoMKgIGNsa19nZXRfcmF0ZShyLT5jbG9ja1sw
+XSk9MjIwMDAwMDAKPj4+Pj4+PiBkcml2ZXJzL210ZC9uYW5kL2dwbWktbmFuZC9ncG1pLWxpYi5j
+KDEwNTQpOiBncG1pX2JlZ2luKCkKPj4+Pj4+PiDCoMKgwqDCoMKgIEhXX0dQTUlfVElNSU5HMD0w
+eDAwMDEwMjAzCj4+Pj4+Pj4gwqDCoMKgwqDCoCBIV19HUE1JX1RJTUlORzE9MHgwNTAwMDAwMAo+
+Pj4+Pj4+IG5hbmQ6IGRldmljZSBmb3VuZCwgTWFudWZhY3R1cmVyIElEOiAweDJjLCBDaGlwIElE
+OiAweGRhCj4+Pj4+Pj4gbmFuZDogTWljcm9uIE1UMjlGMkcwOEFCQUVBV1AKPj4+Pj4+PiBuYW5k
+OiAyNTYgTWlCLCBTTEMsIGVyYXNlIHNpemU6IDEyOCBLaUIsIHBhZ2Ugc2l6ZTogMjA0OCwgT09C
+IHNpemU6IDY0Cj4+Pj4+Pj4gZHJpdmVycy9tdGQvbmFuZC9ncG1pLW5hbmQvZ3BtaS1saWIuYyg5
+NjYpOiBlbmFibGVfZWRvX21vZGUoKQo+Pj4+Pj4+IMKgwqDCoMKgwqAgY2xrX2dldF9yYXRlKHIt
+PmNsb2NrWzBdKT05OTAwMDAwMAo+Pj4+Pj4+IGdwbWktbmFuZCAxODA2MDAwLmdwbWktbmFuZDog
+ZW5hYmxlIHRoZSBhc3luY2hyb25vdXMgRURPIG1vZGUgNQo+Pj4+Pj4+IGRyaXZlcnMvbXRkL25h
+bmQvZ3BtaS1uYW5kL2dwbWktbGliLmMoMTA1NCk6IGdwbWlfYmVnaW4oKQo+Pj4+Pj4+IMKgwqDC
+oMKgwqAgSFdfR1BNSV9USU1JTkcwPTB4MDAwMTAxMDEKPj4+Pj4+Cj4+Pj4+PiBUSU1JTkcwIG1h
+dGNoIHRoZSBvbmUgeW91IGhhdmUgd2l0aCA1LjEga2VybmVscy4KPj4+Pj4+PiDCoMKgwqDCoMKg
+IEhXX0dQTUlfVElNSU5HMT0weDkwMDAwMDAwCj4+Pj4+Pgo+Pj4+Pj4gQW5kIHdlIGV2ZW4gaGF2
+ZSBhIGJpZ2dlciB0aW1lb3V0IHZhbHVlIGluIDUuMSAoMHhlMDAwMDAwMCksIHNvIHdlCj4+Pj4+
+PiBzaG91bGQgYmUgYWxsIHNhZmUgV1JUIHRvIHRpbWluZ3MgaW4gVElNSU5HezAsMX0uCj4+Pj4+
+Pgo+Pj4+Pj4gQ2FuIHlvdSBkdW1wIENUUkwxPwo+Pj4+Pgo+Pj4+PiBkcml2ZXJzL210ZC9uYW5k
+L2dwbWktbmFuZC9ncG1pLWxpYi5jKDEwNTQpOiBncG1pX2JlZ2luKCkKPj4+Pj4gwqDCoMKgwqAg
+SFdfR1BNSV9USU1JTkcwPTB4MDAwMTAxMDEKPj4+Pj4gwqDCoMKgwqAgSFdfR1BNSV9USU1JTkcx
+PTB4OTAwMDAwMDAKPj4+Pj4gwqDCoMKgwqAgSFdfR1BNSV9DVFJMMV9TRVQ9MHgwMWM0ODAwYwo+
+Pj4+Cj4+Pj4gVGhlIHJlYWQvd3JpdGUgZGVsYXkgZmllbGRzIHNlZW0gdG8gbWF0Y2gsIGJ1dCB0
+aGVyZSBhcmUgYSBmZXcgbW9yZQo+Pj4+IGZpZWxkcyBzZXQgaW4gdGhpcyB2ZXJzaW9uOgo+Pj4+
+IC0gREVDT1VQTEVfQ1MKPj4+PiAtIEJDSF9NT0RFCj4+Pj4gLSBERVZfUkVTRVQKPj4+PiAtIENU
+UkwxX0FUQV9JUlFSRFlfUE9MQVJJVFlfX0FDVElWRUhJR0gKPj4+Pgo+Pj4+IExvb2tzIGxpa2Ug
+dGhvc2UgZmllbGRzIGFyZSBub3QgZXhwbGljaXRseSBzZXQgaW4gdGhlIGdwbWlfYmVnaW4oKQo+
+Pj4+IHBhdGNoLCBidXQgbWF5YmUgeW91IGR1bXBlZCBDVFJMMS4gV291bGQgeW91IG1pbmQgc2hh
+cmluZyB5b3VyIHBhdGNoPwo+Pj4KPj4+IEF0dGFjaGVkLgo+Pgo+PiBIbSwgeW91IHNob3VsZCBy
+ZWFkIENUUkwxIGluc3RlYWQgb2YgQ1RSTDFfU0VUIHdoaWNoIEkgZ3Vlc3MgaXMgV08uCj4gCj4g
+Cj4gSGVyZSBpcyAyIHNldHMgb2YgdHJhY2UgZHVtcGluZyB0aGUgc2FtZSBzZXQgb2YgcmVnaXN0
+ZXJzLgo+IFRoaXMgZmlyc3QgaXMgb24gdGhlIGxpbnV4LTQuMTYga2VybmVsOgo+IAo+IExpbnV4
+IHZlcnNpb24gNC4xNi4wIChnZXJnQGdvb2JlcikgKGdjYyB2ZXJzaW9uIDQuOC4zIChHQ0MpKSAj
+OSBNb24gQXVnIDEyIDEwOjQ2OjI1IEFFU1QgMjAxOQo+IC4uLgo+IG5hbmQ6IGRldmljZSBmb3Vu
+ZCwgTWFudWZhY3R1cmVyIElEOiAweDJjLCBDaGlwIElEOiAweGRhCj4gbmFuZDogTWljcm9uIE1U
+MjlGMkcwOEFCQUVBV1AKPiBuYW5kOiAyNTYgTWlCLCBTTEMsIGVyYXNlIHNpemU6IDEyOCBLaUIs
+IHBhZ2Ugc2l6ZTogMjA0OCwgT09CIHNpemU6IDY0Cj4gZ3BtaS1uYW5kIDE4MDYwMDAuZ3BtaS1u
+YW5kOiB1c2UgbGVnYWN5IGJjaCBnZW9tZXRyeQo+IGdwbWktbmFuZCAxODA2MDAwLmdwbWktbmFu
+ZDogZW5hYmxlIHRoZSBhc3luY2hyb25vdXMgRURPIG1vZGUgNQo+IGRyaXZlcnMvbXRkL25hbmQv
+Z3BtaS1uYW5kL2dwbWktbGliLmMoMTExMCk6IGdwbWlfYmVnaW4oKQo+ICDCoCBIV19HUE1JX1RJ
+TUlORzA9MHgwMDAxMDEwMQo+ICDCoCBIV19HUE1JX1RJTUlORzE9MHg5MDAwMDAwMAo+ICDCoCBI
+V19HUE1JX0NUUkwxPTB4MDFjNjgwMGMKPiAgwqAgci0+Y2xvY2tbMF09OTkwMDAwMDAKPiBTY2Fu
+bmluZyBkZXZpY2UgZm9yIGJhZCBibG9ja3MKPiA1IG9mcGFydCBwYXJ0aXRpb25zIGZvdW5kIG9u
+IE1URCBkZXZpY2UgZ3BtaS1uYW5kCj4gQ3JlYXRpbmcgNSBNVEQgcGFydGl0aW9ucyBvbiAiZ3Bt
+aS1uYW5kIjoKPiAweDAwMDAwMDAwMDAwMC0weDAwMDAwMDUwMDAwMCA6ICJ1LWJvb3QiCj4gMHgw
+MDAwMDA1MDAwMDAtMHgwMDAwMDA2MDAwMDAgOiAidS1ib290LWVudiIKPiAweDAwMDAwMDYwMDAw
+MC0weDAwMDAwMDgwMDAwMCA6ICJsb2ciCj4gMHgwMDAwMDA4MDAwMDAtMHgwMDAwMTAwMDAwMDAg
+OiAiZmxhc2giCj4gMHgwMDAwMDAwMDAwMDAtMHgwMDAwMTAwMDAwMDAgOiAiYWxsIgo+IGdwbWkt
+bmFuZCAxODA2MDAwLmdwbWktbmFuZDogZHJpdmVyIHJlZ2lzdGVyZWQuCj4gLi4uCj4gCj4gCj4g
+QW5kIHRoZW4gdGhpcyBpcyBmcm9tIHRoZSA1LjEuMTQga2VybmVsOgo+IAo+IExpbnV4IHZlcnNp
+b24gNS4xLjE0IChnZXJnQGdvb2JlcikgKGdjYyB2ZXJzaW9uIDQuOC4zIChHQ0MpKSAjMjUgTW9u
+IEF1ZyAxMiAxMDo0OToyMSBBRVNUIDIwMTkKPiAuLi4KPiBuYW5kOiBkZXZpY2UgZm91bmQsIE1h
+bnVmYWN0dXJlciBJRDogMHgyYywgQ2hpcCBJRDogMHhkYQo+IG5hbmQ6IE1pY3JvbiBNVDI5RjJH
+MDhBQkFFQVdQCj4gbmFuZDogMjU2IE1pQiwgU0xDLCBlcmFzZSBzaXplOiAxMjggS2lCLCBwYWdl
+IHNpemU6IDIwNDgsIE9PQiBzaXplOiA2NAo+IGRyaXZlcnMvbXRkL25hbmQvcmF3L2dwbWktbmFu
+ZC9ncG1pLWxpYi5jKDUxMCk6IGdwbWlfbmZjX2FwcGx5X3RpbWluZ3MoKQo+ICDCoCBIV19HUE1J
+X1RJTUlORzA9MHgwMDAyMDEwMQo+ICDCoCBIV19HUE1JX1RJTUlORzE9MHhiMDAwMDAwMAo+ICDC
+oCBIV19HUE1JX0NUUkwxPTB4MDEwNDAwMGMKPiAgwqAgci0+Y2xvY2tbMF09MjIwMDAwMDAKPiBk
+cml2ZXJzL210ZC9uYW5kL3Jhdy9ncG1pLW5hbmQvZ3BtaS1saWIuYyg1MTApOiBncG1pX25mY19h
+cHBseV90aW1pbmdzKCkKPiAgwqAgSFdfR1BNSV9USU1JTkcwPTB4MDAwMTAxMDEKPiAgwqAgSFdf
+R1BNSV9USU1JTkcxPTB4ZTAwMDAwMDAKPiAgwqAgSFdfR1BNSV9DVFJMMT0weDAxYzY4MDBjCj4g
+IMKgIHItPmNsb2NrWzBdPTk5MDAwMDAwCj4gU2Nhbm5pbmcgZGV2aWNlIGZvciBiYWQgYmxvY2tz
+Cj4gNSBmaXhlZC1wYXJ0aXRpb25zIHBhcnRpdGlvbnMgZm91bmQgb24gTVREIGRldmljZSBncG1p
+LW5hbmQKPiBDcmVhdGluZyA1IE1URCBwYXJ0aXRpb25zIG9uICJncG1pLW5hbmQiOgo+IDB4MDAw
+MDAwMDAwMDAwLTB4MDAwMDAwNTAwMDAwIDogInUtYm9vdCIKPiAweDAwMDAwMDUwMDAwMC0weDAw
+MDAwMDYwMDAwMCA6ICJ1LWJvb3QtZW52Igo+IDB4MDAwMDAwNjAwMDAwLTB4MDAwMDAwODAwMDAw
+IDogImxvZyIKPiAweDAwMDAwMDgwMDAwMC0weDAwMDAxMDAwMDAwMCA6ICJmbGFzaCIKPiAweDAw
+MDAwMDAwMDAwMC0weDAwMDAxMDAwMDAwMCA6ICJhbGwiCj4gZ3BtaS1uYW5kIDE4MDYwMDAuZ3Bt
+aS1uYW5kOiBkcml2ZXIgcmVnaXN0ZXJlZC4KPiAKPiAKPiBSZWdpc3RlciBzZXR0aW5ncyByZWFk
+IGJhY2sgZnJvbSB0aGUgcmVnaXN0ZXJzIHRoZW1zZWx2ZXMgYXQgdGhlIGVuZAo+IG9mIHRoZSBy
+ZXNwZWN0aXZlIHNldHRpbmcgcm91dGluZXMgKHNvIGdwbWlfYmVnaW4oKSBmb3IgNC4xNiBhbmQK
+PiBncG1pX25mY19hcHBseV90aW1pbmdzKCkgZm9yIDUuMS4xNCkKPiAKPiBTbyBzb21ldGhpbmcg
+SSBub3RpY2UgaGVyZSBpcyB0aGF0IGdwbWlfbmZjX2FwcGx5X3RpbWluZ3MoKSBpcwo+IGJlaW5n
+IHJ1biBtdWx0aXBsZSB0aW1lcy4gV2hlbiBJIGxvb2sgYmFjayB0byB0aGUgb3JpZ2luYWwKPiBm
+YWlsdXJlIGR1bXBzIHRoZSBmaXJzdCBlcnJvciAoIkRNQSB0aW1lb3V0LCBsYXN0IERNQSIpIG9j
+Y3VycmVkCj4gYWZ0ZXIgdGhlIGRldmljZSB0eXBlIG1lc3NhZ2VzICgibmFuZDogMjU2IE1pQiwg
+U0xDLC4uLiIpLiBJcyBpdAo+IGhhcHBlbmluZyB3aXRoIHRoYXQgaGlnaGVyIGNsb2NrIHJhdGUg
+c3RpbGwgc2V0PwoKTG9va3MgbGlrZSB0aGF0IGlzIG5vdCB0aGUgY2FzZS4uLgoKLi4uCm5hbmQ6
+IGRldmljZSBmb3VuZCwgTWFudWZhY3R1cmVyIElEOiAweDJjLCBDaGlwIElEOiAweGRhCm5hbmQ6
+IE1pY3JvbiBNVDI5RjJHMDhBQkFFQVdQCm5hbmQ6IDI1NiBNaUIsIFNMQywgZXJhc2Ugc2l6ZTog
+MTI4IEtpQiwgcGFnZSBzaXplOiAyMDQ4LCBPT0Igc2l6ZTogNjQKZHJpdmVycy9tdGQvbmFuZC9y
+YXcvZ3BtaS1uYW5kL2dwbWktbGliLmMoNTEwKTogZ3BtaV9uZmNfYXBwbHlfdGltaW5ncygpCiAg
+IEhXX0dQTUlfVElNSU5HMD0weDAwMDIwMTAxCiAgIEhXX0dQTUlfVElNSU5HMT0weGIwMDAwMDAw
+CiAgIEhXX0dQTUlfQ1RSTDE9MHgwMTA0MDAwYwogICByLT5jbG9ja1swXT0yMjAwMDAwMApkcml2
+ZXJzL210ZC9uYW5kL3Jhdy9ncG1pLW5hbmQvZ3BtaS1saWIuYyg1MTApOiBncG1pX25mY19hcHBs
+eV90aW1pbmdzKCkKICAgSFdfR1BNSV9USU1JTkcwPTB4MDAwMTAxMDEKICAgSFdfR1BNSV9USU1J
+TkcxPTB4ZTAwMDAwMDAKICAgSFdfR1BNSV9DVFJMMT0weDAxYzY4MDBjCiAgIHItPmNsb2NrWzBd
+PTk5MDAwMDAwCmdwbWktbmFuZCAxODA2MDAwLmdwbWktbmFuZDogRE1BIHRpbWVvdXQsIGxhc3Qg
+RE1BCmdwbWktbmFuZCAxODA2MDAwLmdwbWktbmFuZDogU2hvdyBHUE1JIHJlZ2lzdGVycyA6Cmdw
+bWktbmFuZCAxODA2MDAwLmdwbWktbmFuZDogb2Zmc2V0IDB4MDAwIDogMHgyMDgzMDAwMgpncG1p
+LW5hbmQgMTgwNjAwMC5ncG1pLW5hbmQ6IG9mZnNldCAweDAxMCA6IDB4MDAwMDAwMDAKZ3BtaS1u
+YW5kIDE4MDYwMDAuZ3BtaS1uYW5kOiBvZmZzZXQgMHgwMjAgOiAweDAwMDAwMDAwCmdwbWktbmFu
+ZCAxODA2MDAwLmdwbWktbmFuZDogb2Zmc2V0IDB4MDMwIDogMHgwMDAwMDAwMApncG1pLW5hbmQg
+MTgwNjAwMC5ncG1pLW5hbmQ6IG9mZnNldCAweDA0MCA6IDB4MDAwMDAwMDAKZ3BtaS1uYW5kIDE4
+MDYwMDAuZ3BtaS1uYW5kOiBvZmZzZXQgMHgwNTAgOiAweDAwMDAwMDAwCmdwbWktbmFuZCAxODA2
+MDAwLmdwbWktbmFuZDogb2Zmc2V0IDB4MDYwIDogMHgwMWM2ODAwYwpncG1pLW5hbmQgMTgwNjAw
+MC5ncG1pLW5hbmQ6IG9mZnNldCAweDA3MCA6IDB4MDAwMTAxMDEKZ3BtaS1uYW5kIDE4MDYwMDAu
+Z3BtaS1uYW5kOiBvZmZzZXQgMHgwODAgOiAweGUwMDAwMDAwCmdwbWktbmFuZCAxODA2MDAwLmdw
+bWktbmFuZDogb2Zmc2V0IDB4MDkwIDogMHgyMzAyMzMzNgpncG1pLW5hbmQgMTgwNjAwMC5ncG1p
+LW5hbmQ6IG9mZnNldCAweDBhMCA6IDB4MDAwMDAxZWUKZ3BtaS1uYW5kIDE4MDYwMDAuZ3BtaS1u
+YW5kOiBvZmZzZXQgMHgwYjAgOiAweGZmMDAwMDAxCmdwbWktbmFuZCAxODA2MDAwLmdwbWktbmFu
+ZDogb2Zmc2V0IDB4MGMwIDogMHgwMDAwMDEwMApncG1pLW5hbmQgMTgwNjAwMC5ncG1pLW5hbmQ6
+IG9mZnNldCAweDBkMCA6IDB4MDUwMjAwMDAKZ3BtaS1uYW5kIDE4MDYwMDAuZ3BtaS1uYW5kOiBT
+aG93IEJDSCByZWdpc3RlcnMgOgpncG1pLW5hbmQgMTgwNjAwMC5ncG1pLW5hbmQ6IG9mZnNldCAw
+eDAwMCA6IDB4MDAwMDAxMDAKZ3BtaS1uYW5kIDE4MDYwMDAuZ3BtaS1uYW5kOiBvZmZzZXQgMHgw
+MTAgOiAweDAwMDAwMDEwCmdwbWktbmFuZCAxODA2MDAwLmdwbWktbmFuZDogb2Zmc2V0IDB4MDIw
+IDogMHgwMDAwMDAwMApncG1pLW5hbmQgMTgwNjAwMC5ncG1pLW5hbmQ6IG9mZnNldCAweDAzMCA6
+IDB4MDAwMDAwMDAKZ3BtaS1uYW5kIDE4MDYwMDAuZ3BtaS1uYW5kOiBvZmZzZXQgMHgwNDAgOiAw
+eDAwMDAwMDAwCmdwbWktbmFuZCAxODA2MDAwLmdwbWktbmFuZDogb2Zmc2V0IDB4MDUwIDogMHgw
+MDAwMDAwMApncG1pLW5hbmQgMTgwNjAwMC5ncG1pLW5hbmQ6IG9mZnNldCAweDA2MCA6IDB4MDAw
+MDAwMDAKZ3BtaS1uYW5kIDE4MDYwMDAuZ3BtaS1uYW5kOiBvZmZzZXQgMHgwNzAgOiAweDAwMDAw
+MDAwCmdwbWktbmFuZCAxODA2MDAwLmdwbWktbmFuZDogb2Zmc2V0IDB4MDgwIDogMHgwMzBhMjA4
+MApncG1pLW5hbmQgMTgwNjAwMC5ncG1pLW5hbmQ6IG9mZnNldCAweDA5MCA6IDB4MDgzZTIwODAK
+Z3BtaS1uYW5kIDE4MDYwMDAuZ3BtaS1uYW5kOiBvZmZzZXQgMHgwYTAgOiAweDA3MGE0MDgwCmdw
+bWktbmFuZCAxODA2MDAwLmdwbWktbmFuZDogb2Zmc2V0IDB4MGIwIDogMHgxMGRhNDA4MApncG1p
+LW5hbmQgMTgwNjAwMC5ncG1pLW5hbmQ6IG9mZnNldCAweDBjMCA6IDB4MDcwYTQwODAKZ3BtaS1u
+YW5kIDE4MDYwMDAuZ3BtaS1uYW5kOiBvZmZzZXQgMHgwZDAgOiAweDEwZGE0MDgwCmdwbWktbmFu
+ZCAxODA2MDAwLmdwbWktbmFuZDogb2Zmc2V0IDB4MGUwIDogMHgwNzBhNDA4MApncG1pLW5hbmQg
+MTgwNjAwMC5ncG1pLW5hbmQ6IG9mZnNldCAweDBmMCA6IDB4MTBkYTQwODAKZ3BtaS1uYW5kIDE4
+MDYwMDAuZ3BtaS1uYW5kOiBvZmZzZXQgMHgxMDAgOiAweDAwMDAwMDAwCmdwbWktbmFuZCAxODA2
+MDAwLmdwbWktbmFuZDogb2Zmc2V0IDB4MTEwIDogMHgwMDAwMDAwMApncG1pLW5hbmQgMTgwNjAw
+MC5ncG1pLW5hbmQ6IG9mZnNldCAweDEyMCA6IDB4MDAwMDAwMDAKZ3BtaS1uYW5kIDE4MDYwMDAu
+Z3BtaS1uYW5kOiBvZmZzZXQgMHgxMzAgOiAweDAwMDAwMDAwCmdwbWktbmFuZCAxODA2MDAwLmdw
+bWktbmFuZDogb2Zmc2V0IDB4MTQwIDogMHgwMDAwMDAwMApncG1pLW5hbmQgMTgwNjAwMC5ncG1p
+LW5hbmQ6IG9mZnNldCAweDE1MCA6IDB4MjA0ODQzNDIKZ3BtaS1uYW5kIDE4MDYwMDAuZ3BtaS1u
+YW5kOiBvZmZzZXQgMHgxNjAgOiAweDAxMDAwMDAwCmdwbWktbmFuZCAxODA2MDAwLmdwbWktbmFu
+ZDogb2Zmc2V0IDB4MTcwIDogMHgwMDAwMDAwMAoKUmVnYXJkcwpHcmVnCgoKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlz
+Y3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9saW51eC1tdGQvCg==
