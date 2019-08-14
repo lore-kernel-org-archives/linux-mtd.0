@@ -2,96 +2,85 @@ Return-Path: <SRS0=SIcx=WK=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 549D3C32753
-	for <linux-mtd@archiver.kernel.org>; Wed, 14 Aug 2019 14:54:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5ED44C433FF
+	for <linux-mtd@archiver.kernel.org>; Wed, 14 Aug 2019 18:07:19 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 27A54206C1
-	for <linux-mtd@archiver.kernel.org>; Wed, 14 Aug 2019 14:54:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3060D206C1
+	for <linux-mtd@archiver.kernel.org>; Wed, 14 Aug 2019 18:07:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Tj3SEv1S";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=android.com header.i=@android.com header.b="ahMJ7+6M"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 27A54206C1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=android.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HbA/7hfS";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IXiZJB9i"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3060D206C1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=WCRMeGsphL9kTl4kCAh7qd5TSiBlXJJcOv+xEHiKVVI=; b=Tj3SEv1SMH1OqekkWilpzqoI0
-	RZhUbwGDF375t9Aw+oo0cBNIVrlJ0E06ydx8gU3kzyVFuoqI+hU4q6ipU3EC9H0YwGlyN2/3j5l8b
-	psQbac4pSbmc8AwsoRcDdPELVxjSXB2LJLGAfVC4FCY3Sk//dZL7tTbkgMRey2pqlJJIayjUU5DWE
-	rRqE91wmDH6RSxyhWkmA/2nDf8UTLHgR8g33LUwE3kv/w4SAw40XYSoxzY64JRDsddflnsY6zqVJD
-	dzkWcwrlGMLUZRUi0PCRqoXf3TRbydwktmpVDV8jChSGassuC0zAkmtpUN4WWkCP2EOC96EzcRBjV
-	1YVaVustA==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=I9Nl5eEsXgrXy10UZQU/SSaK4XWNX31HB3NpfPiThIo=; b=HbA/7hfSGDi8sB
+	isuTWZ8Z4n3Hz4mEMQU+WcI9IwF6bi4F+5JFmnuJ4VEvN1fDBOVjAWXhqoAzIFb6/2a5ntqFJ7XPz
+	CS/NhNJjXHqQrEYvMloGG5ZJLvujvJkid9ayIXSYCJtpX1yXvLe2g4p1nWOdf2t5HtuCNTahJHxp3
+	6BqaZP6laorjt8CJiDp/0NmYoBNBibFcAeQGtM3vgUP0sW7Q+TNFsR2MkDj6hYPc6rZH9zzCeAzKu
+	lPbdL6uyO0YdKjGEu2xFc3Zn/6FD1vuF6SqL9Myi+YzTKsz3NhHCQAAUm9W2RVnJ3KmX3/msYL1iB
+	XItfwE3kFM8aOle+vJTQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hxufP-0001o8-SP; Wed, 14 Aug 2019 14:54:23 +0000
-Received: from mail-pl1-x642.google.com ([2607:f8b0:4864:20::642])
+	id 1hxxfm-0001R4-T2; Wed, 14 Aug 2019 18:06:58 +0000
+Received: from mail-qk1-x742.google.com ([2607:f8b0:4864:20::742])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hxufM-0001nM-Js
- for linux-mtd@lists.infradead.org; Wed, 14 Aug 2019 14:54:22 +0000
-Received: by mail-pl1-x642.google.com with SMTP id g4so4324284plo.3
- for <linux-mtd@lists.infradead.org>; Wed, 14 Aug 2019 07:54:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=android.com; s=20161025;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-transfer-encoding:content-language;
- bh=CnI+bcK+PrkZXa0lXxFneGD0jULXut8K+Ere8plo5Kc=;
- b=ahMJ7+6MRm+vSMGaNapJnzEVkJAGqdseEv5NiAiJ2xVM1sgCa/KjV3CzptwbORiRO4
- tdVwxwGBtUsGnUn2c7e13VySsAmWdVDIrtQOwhPmb7DJeeLmPii1ZL4rskNBRvtj47Hs
- RPxCzpXwnaU3g/CUfEBg3QlPGY1SngnQDCYWpuzQB5cndu90bUkPUFPxqy0/Rekd1WQO
- 4zngI17UYs23Aiqj3B79lt987Hor3fkgPNT95mLnJes5xZMFhtrjHD+wvpp9CvYS0OOT
- T0Jx+829oyOwsEqr2Xgl3CEpOuwA5/x9WXxEUC4UDChgzDD/d77A140pfqc0MLV3w5Tr
- /pug==
+ id 1hxxfi-0001Qk-Kq
+ for linux-mtd@lists.infradead.org; Wed, 14 Aug 2019 18:06:56 +0000
+Received: by mail-qk1-x742.google.com with SMTP id s14so12868811qkm.4
+ for <linux-mtd@lists.infradead.org>; Wed, 14 Aug 2019 11:06:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=OO7XuzvVApwSZIHxh3Y/NXSIKyk+RMQKVn2vcEuD2v8=;
+ b=IXiZJB9irsSyLatAAQAMfJqriU6d2Yn7H2r2N7e4dWWlCpo1951RdJTcxoQoYZRFSr
+ 5xbWDyXtAnLgqgWea3xZ1lqKiEIzUjYHrkiOWelU3tt9aJc7TIdjbrzIIrXfyQDIXnHJ
+ ivSFv/gfoK/UvA+KrOO3av6LP9b8fwcrO3w4a9ZtYf5BQ3w1YI3Xae310V0gu8CDf3Us
+ +LCD2Rdwpopon1JKgh4zgYnEtEFA/lV9un8s0h0Qto6uZspBkNq2/lLmE0OwE53vH3N7
+ fQV+a0QNi5+W7ai51y/ajWSo5lY80yTys/Xe2ZQ+FGnxPK2L2PTAmGZlYNQJiMWwyqNW
+ me9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-transfer-encoding
- :content-language;
- bh=CnI+bcK+PrkZXa0lXxFneGD0jULXut8K+Ere8plo5Kc=;
- b=Xt27dgpJJcaVacskHhfm9DhwWwTICIUe/QyUa/MqieTMt8KqYpn2wbMQUE0/Iu6fH1
- ZXosfe6dEpqQbh2VMFqzxow3y+xKGas1xh2JSSb8fEy4nWqCIndCxlbu/2Q+q4wZPORM
- l8tyd6dmglU13CxiO92Utc6dsoDbhr1TNlVgDZGgpjSr9Pf2steUdKBzFYxNU4XjHwqn
- t7r0rLWPu8ikx1J3hrCV4jidKcN3b93l9kAqfwxb+SLLfwT62NVI+hjLONVOeD5/2iDD
- zj5vFwsCs1ummatXQ7f81meb+nTQKbNQqqCJ6Y1MQmZzsdxicC8Tr5enAYrB/2P8VkdR
- 5sQg==
-X-Gm-Message-State: APjAAAUJXw3wCX/HGlIUP0iCVTOF3aFGNU2XWtMFlw/cjeC2T0tlsAxL
- gh71LLisNlPxdeAjLPmP9mDh1w==
-X-Google-Smtp-Source: APXvYqz3CwepJ0lR8OwKX1IycWhHHs06AM+yzu0iFct+XZq8bOtgfYosWIvv1z0G9d0AAh0UWfDALQ==
-X-Received: by 2002:a17:902:3103:: with SMTP id
- w3mr43683432plb.84.1565794459417; 
- Wed, 14 Aug 2019 07:54:19 -0700 (PDT)
-Received: from nebulus.mtv.corp.google.com
- ([2620:15c:211:200:5404:91ba:59dc:9400])
- by smtp.googlemail.com with ESMTPSA id
- f20sm144508955pgg.56.2019.08.14.07.54.16
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 14 Aug 2019 07:54:18 -0700 (PDT)
-Subject: Re: [PATCH v2] Add flags option to get xattr method paired to
- __vfs_getxattr
-To: Jan Kara <jack@suse.cz>
-References: <20190813145527.26289-1-salyzyn@android.com>
- <20190814110022.GB26273@quack2.suse.cz>
-From: Mark Salyzyn <salyzyn@android.com>
-Message-ID: <71d66fd1-cc94-fd0c-dfa7-115ba8a6b95a@android.com>
-Date: Wed, 14 Aug 2019 07:54:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=OO7XuzvVApwSZIHxh3Y/NXSIKyk+RMQKVn2vcEuD2v8=;
+ b=oC9ZCh/2a8+ZRdxqkwBe7V6Tuwj/gyltX8MUwbKpsqWgRTUQrLY9tpJepDsJxq7fA2
+ gQu11+uG2yQB+nIKdPa+6VIk8Qk+2BmW/lbkIWmmoTl1BX/fMLLnqcvFvtKSdxBIGtoo
+ zxWSWIHvRB7RwJzl3mjfoto53zwkxwifHa9n+jiNOIXtjSFbSdvaZGZt5kologHDi/Jc
+ 4opRl1KMMb29L7H8Q/hnGeACCkDFCB3KisqY9r2VZThms5PtYwhJs6LfWvm7rXfKn4UF
+ gx1HbTBHTQrtk/jNIj9BWgQwdtpKf3OS4iqtTS+TEkYndd7Ax96+gSUUjOHXZhaXTlQT
+ RNTw==
+X-Gm-Message-State: APjAAAWjcZJiTRbi1zvJ7Emsno/CWUeRs+CFP6+GUWusRLbbGmLMwbvR
+ AdI6GPFMefLBJT5aZ4maK4ezlH3F5SJBE1vZAyg=
+X-Google-Smtp-Source: APXvYqx8T2aqOhCDlCkMC1iK4gX4sbf2lfjLIas78XvqhMiKOmOhc9B4D5VFhxY8NBg6LjM7JCb5q6MjC2C0FWELXJs=
+X-Received: by 2002:a37:709:: with SMTP id 9mr738886qkh.2.1565806013337; Wed,
+ 14 Aug 2019 11:06:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190814110022.GB26273@quack2.suse.cz>
-Content-Language: en-GB
+References: <CAF_dkJA2DFr3Vgk5ie=V5YitZr8HaiXWuQ+SKsHzzmLBFnhyeg@mail.gmail.com>
+ <23922253.ayd0uQntjt@blindfold>
+ <CAO1O6se0aPh2FScDStqrK50PPipBbsgEnEPbMHvOdXt2cbxtvA@mail.gmail.com>
+In-Reply-To: <CAO1O6se0aPh2FScDStqrK50PPipBbsgEnEPbMHvOdXt2cbxtvA@mail.gmail.com>
+From: Patrick Doyle <wpdster@gmail.com>
+Date: Wed, 14 Aug 2019 14:06:26 -0400
+Message-ID: <CAF_dkJCg+N+cOM2jCNyJP=+axw5tbM5F-EuPZfBYTZwywODo5Q@mail.gmail.com>
+Subject: Re: [PATCH 1/1] ubi: Allow ubiblock devices nodes to be created by
+ volume name instead of volume ID.
+To: Emil Lenngren <emil.lenngren@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190814_075420_669855_BD4C6E3F 
-X-CRM114-Status: GOOD (  22.08  )
+X-CRM114-CacheID: sfid-20190814_110654_686879_E82A0384 
+X-CRM114-Status: UNSURE (   9.19  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,152 +92,33 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Latchesar Ionkov <lucho@ionkov.net>, Dave Kleikamp <shaggy@kernel.org>,
- jfs-discussion@lists.sourceforge.net,
- Phillip Lougher <phillip@squashfs.org.uk>, linux-integrity@vger.kernel.org,
- Martin Brandenburg <martin@omnibond.com>, samba-technical@lists.samba.org,
- Dominique Martinet <asmadeus@codewreck.org>, Chao Yu <yuchao0@huawei.com>,
- Mimi Zohar <zohar@linux.ibm.com>, Adrian Hunter <adrian.hunter@intel.com>,
- linux-mm@kvack.org, Chris Mason <clm@fb.com>, netdev@vger.kernel.org,
- Andreas Dilger <adilger.kernel@dilger.ca>, linux-xfs@vger.kernel.org,
- Eric Paris <eparis@parisplace.org>, linux-f2fs-devel@lists.sourceforge.net,
- linux-afs@lists.infradead.org, Stephen Smalley <sds@tycho.nsa.gov>,
- Mike Marshall <hubcap@omnibond.com>, devel@driverdev.osuosl.org,
- linux-cifs@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
- Sage Weil <sage@redhat.com>, "Darrick J. Wong" <darrick.wong@oracle.com>,
- Richard Weinberger <richard@nod.at>, Mark Fasheh <mark@fasheh.com>,
- linux-unionfs@vger.kernel.org, Hugh Dickins <hughd@google.com>,
- James Morris <jmorris@namei.org>, cluster-devel@redhat.com,
- Joseph Qi <joseph.qi@linux.alibaba.com>,
- Vyacheslav Dubeyko <slava@dubeyko.com>,
- Casey Schaufler <casey@schaufler-ca.com>, v9fs-developer@lists.sourceforge.net,
- Ilya Dryomov <idryomov@gmail.com>, linux-ext4@vger.kernel.org,
- kernel-team@android.com, devel@lists.orangefs.org,
- Serge Hallyn <serge@hallyn.com>, Gao Xiang <gaoxiang25@huawei.com>,
- Eric Van Hensbergen <ericvh@gmail.com>, ecryptfs@vger.kernel.org,
- linux-erofs@lists.ozlabs.org, Josef Bacik <josef@toxicpanda.com>,
- reiserfs-devel@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
- Joel Becker <jlbec@evilplan.org>, Anna Schumaker <anna.schumaker@netapp.com>,
- David Sterba <dsterba@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
- ceph-devel@vger.kernel.org, selinux@vger.kernel.org,
- Trond Myklebust <trond.myklebust@hammerspace.com>,
- Andreas Gruenbacher <agruenba@redhat.com>, David Howells <dhowells@redhat.com>,
- linux-nfs@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
- linux-fsdevel@vger.kernel.org, Artem Bityutskiy <dedekind1@gmail.com>,
- Mathieu Malaterre <malat@debian.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Miklos Szeredi <miklos@szeredi.hu>, Jeff Layton <jlayton@kernel.org>,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org,
- Tyler Hicks <tyhicks@canonical.com>, Steve French <sfrench@samba.org>,
- =?UTF-8?Q?Ernesto_A=2e_Fern=c3=a1ndez?= <ernesto.mnd.fernandez@gmail.com>,
- linux-btrfs@vger.kernel.org, linux-security-module@vger.kernel.org,
- Jan Kara <jack@suse.com>, Tejun Heo <tj@kernel.org>,
- linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
- David Woodhouse <dwmw2@infradead.org>, "David S. Miller" <davem@davemloft.net>,
- ocfs2-devel@oss.oracle.com, Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Richard Weinberger <richard@nod.at>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 8/14/19 4:00 AM, Jan Kara wrote:
-> On Tue 13-08-19 07:55:06, Mark Salyzyn wrote:
-> ...
->> diff --git a/fs/xattr.c b/fs/xattr.c
->> index 90dd78f0eb27..71f887518d6f 100644
->> --- a/fs/xattr.c
->> +++ b/fs/xattr.c
-> ...
->>   ssize_t
->>   __vfs_getxattr(struct dentry *dentry, struct inode *inode, const char *name,
->> -	       void *value, size_t size)
->> +	       void *value, size_t size, int flags)
->>   {
->>   	const struct xattr_handler *handler;
->> -
->> -	handler = xattr_resolve_name(inode, &name);
->> -	if (IS_ERR(handler))
->> -		return PTR_ERR(handler);
->> -	if (!handler->get)
->> -		return -EOPNOTSUPP;
->> -	return handler->get(handler, dentry, inode, name, value, size);
->> -}
->> -EXPORT_SYMBOL(__vfs_getxattr);
->> -
->> -ssize_t
->> -vfs_getxattr(struct dentry *dentry, const char *name, void *value, size_t size)
->> -{
->> -	struct inode *inode = dentry->d_inode;
->>   	int error;
->>   
->> +	if (flags & XATTR_NOSECURITY)
->> +		goto nolsm;
-> Hum, is it OK for XATTR_NOSECURITY to skip even the xattr_permission()
-> check? I understand that for reads of security xattrs it actually does not
-> matter in practice but conceptually that seems wrong to me as
-> XATTR_NOSECURITY is supposed to skip just security-module checks to avoid
-> recursion AFAIU.
+On Wed, Aug 14, 2019 at 8:34 AM Emil Lenngren <emil.lenngren@gmail.com> wrote:
+> Hi,
+> Den tors 4 apr. 2019 kl 21:43 skrev Richard Weinberger <richard@nod.at>:
+> > Am Donnerstag, 4. April 2019, 17:29:16 CEST schrieb Patrick Doyle:
+> > > Add support for CONFIG_MTD_UBI_BLOCK_BY_NAME, which enables ubi block
 
-Good catch I think.
-
-I was attempting to make this change purely inert, no change in 
-functionality, only a change in API. Adding a call to xattr_permission 
-would incur a change in overall functionality, as it would introduce 
-into the current and original __vfs_getxattr a call to xattr_permission 
-that was not there before.
-
-(I will have to defer the real answer and requirements to the security 
-folks)
-
-AFAIK you are correct, and to make the call would reduce the attack 
-surface, trading a very small amount of CPU utilization, for a much 
-larger amount of trust.
-
-Given the long history of this patch set (for overlayfs) and the large 
-amount of stakeholders, I would _prefer_ to submit a followup 
-independent functionality/security change to _vfs_get_xattr _after_ this 
-makes it in.
-
+> >
+> > Isn't this why we have udev, to create fancy by-id/by-path/... naming conventions?
+> >
+> > Thanks,
+> > //richard
 >
->> diff --git a/include/uapi/linux/xattr.h b/include/uapi/linux/xattr.h
->> index c1395b5bd432..1216d777d210 100644
->> --- a/include/uapi/linux/xattr.h
->> +++ b/include/uapi/linux/xattr.h
->> @@ -17,8 +17,9 @@
->>   #if __UAPI_DEF_XATTR
->>   #define __USE_KERNEL_XATTR_DEFS
->>   
->> -#define XATTR_CREATE	0x1	/* set value, fail if attr already exists */
->> -#define XATTR_REPLACE	0x2	/* set value, fail if attr does not exist */
->> +#define XATTR_CREATE	 0x1	/* set value, fail if attr already exists */
->> +#define XATTR_REPLACE	 0x2	/* set value, fail if attr does not exist */
->> +#define XATTR_NOSECURITY 0x4	/* get value, do not involve security check */
->>   #endif
-> It seems confusing to export XATTR_NOSECURITY definition to userspace when
-> that is kernel-internal flag. I'd just define it in include/linux/xattr.h
-> somewhere from the top of flags space (like 0x40000000).
->
-> Otherwise the patch looks OK to me (cannot really comment on the security
-> module aspect of this whole thing though).
+I never saw //richard's response.  I added it so I could use
+root=/dev/ubiblock0_rootfs in my command line.  When I update my
+software, I write the new rootfs to a volume named "rootfs_new", and
+use UBI's fabulous atomic rename facility to swap "rootfs" and
+"rootfs_new", reboot, and I have my new rootfs.
 
-Good point. However, we do need to keep these flags together to reduce 
-maintenance risk, I personally abhor two locations for flags bits even 
-if one comes from the opposite bit-side; collisions are undetectable at 
-build time. Although I have not gone through the entire thought 
-experiment, I am expecting that fuse could possibly benefit from this 
-flag (if exposed) since it also has a security recursion. That said, 
-fuse is probably the example of a gaping wide attack surface if user 
-space had access to it ... your xattr_permissions call addition 
-requested above would be realistically, not just pedantically, required!
-
-I have to respin the patch because of yet another hole in filesystem 
-coverage (I blew the mechanical ubifs adjustment, adjusted the wrong 
-function), so please do tell if my rationalizations above hit a note, or 
-if I _need_ to make the changes in this patch (change it to a series?).
-
-Thanks -- Mark Salyzyn
-
-
+--wpd
 
 ______________________________________________________
 Linux MTD discussion mailing list
