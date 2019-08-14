@@ -2,67 +2,61 @@ Return-Path: <SRS0=SIcx=WK=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 205E0C433FF
-	for <linux-mtd@archiver.kernel.org>; Wed, 14 Aug 2019 08:23:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA1D0C433FF
+	for <linux-mtd@archiver.kernel.org>; Wed, 14 Aug 2019 11:00:52 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E570F2084F
-	for <linux-mtd@archiver.kernel.org>; Wed, 14 Aug 2019 08:23:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8F352206C1
+	for <linux-mtd@archiver.kernel.org>; Wed, 14 Aug 2019 11:00:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YO63TyxU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E570F2084F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="R20LnwhY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F352206C1
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=1P3tH3Z6arO6XYBB0PqRioFxYEm9PL4kLauK5E7IMrw=; b=YO63TyxUsFFAnt
-	vtyJHJt46Wlsh3WHuClRMCdxwaLphufbA1ahFjsIeeuz9StAmabnS6H7fu//ptmcQeV8N6diMSXay
-	LeeXiAUbG4D8pKdyC5x8CSLHHg45Bwc6fSF4sRLgT3mOOCxPW5PgqKfP5MwRMWbtMA3kNQYfj5sZO
-	wX+I+GqtADsqlT3QHT+1k1J33SKf3CE0oHcLsZEqYjN3FCItaQOM5dXnNKNUjgdvLCeliu+1VATtP
-	yntyNiiuC45HVinjEilBpuT1/jMCF02VIcdGWtorv3XXLVRdu5AKRQHYKs0xbnDenH4EC9qDWw8/p
-	BdTNVnYvMAtm/8rqpoow==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=mhnNe2cPaKU6SLz34P24CO4VEqXbD1kmwUwigkuMye0=; b=R20LnwhYMOYB0r
+	l2Q5nNE96gVZsYHPpP9ddPVcMwqGWI4nkSRfGAwkDW7UORABss2VnDZVYQfaQgDWkLp511dGSrar9
+	7M+LDm0XMbtsJlLlNPWxQG0RprgyEW5KgotoH9XH4eNgbRbnew3//PuWuMeDyNiI6L6/sLCCi7d14
+	upzc/KKF1iU4HDTTjXzc59GRnfKfBu48hpyGkb/33Po+ZDXZulp3X+Md6rATjlELrPO+6fW7HkEQM
+	fC+x1Pfh+THYb69VDtqCV1N/VTFB4E8wDx3Izb/7M/E8PTYomp7G0ZgBQnZ08MyBzvFpE/8rgdlmF
+	XXLY7Ji2q03n9+3uRhTw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hxoYV-0001oO-Rj; Wed, 14 Aug 2019 08:22:51 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1hxr1B-0004H8-Dr; Wed, 14 Aug 2019 11:00:37 +0000
+Received: from mx2.suse.de ([195.135.220.15] helo=mx1.suse.de)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hxoYR-0001nj-0e
- for linux-mtd@lists.infradead.org; Wed, 14 Aug 2019 08:22:48 +0000
-Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28]
- helo=dude02.lab.pengutronix.de)
- by metis.ext.pengutronix.de with esmtps
- (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <mfe@pengutronix.de>)
- id 1hxoYK-0001zd-V5; Wed, 14 Aug 2019 10:22:40 +0200
-Received: from mfe by dude02.lab.pengutronix.de with local (Exim 4.89)
- (envelope-from <mfe@pengutronix.de>)
- id 1hxoYJ-0000xF-7K; Wed, 14 Aug 2019 10:22:39 +0200
-From: Marco Felsch <m.felsch@pengutronix.de>
-To: miquel.raynal@bootlin.com, frieder.schrempf@kontron.de,
- bbrezillon@kernel.org, richard@nod.at
-Subject: [PATCH] mtd: spinand: micron: add support for MT29F1G01AAADD
-Date: Wed, 14 Aug 2019 10:22:32 +0200
-Message-Id: <20190814082232.2119-1-m.felsch@pengutronix.de>
-X-Mailer: git-send-email 2.20.1
+ id 1hxr17-0004GU-H5; Wed, 14 Aug 2019 11:00:35 +0000
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 3537FADEF;
+ Wed, 14 Aug 2019 11:00:26 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+ id 81D741E4200; Wed, 14 Aug 2019 13:00:22 +0200 (CEST)
+Date: Wed, 14 Aug 2019 13:00:22 +0200
+From: Jan Kara <jack@suse.cz>
+To: Mark Salyzyn <salyzyn@android.com>
+Subject: Re: [PATCH v2] Add flags option to get xattr method paired to
+ __vfs_getxattr
+Message-ID: <20190814110022.GB26273@quack2.suse.cz>
+References: <20190813145527.26289-1-salyzyn@android.com>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::28
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+Content-Disposition: inline
+In-Reply-To: <20190813145527.26289-1-salyzyn@android.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190814_012247_061132_4FC05E3F 
-X-CRM114-Status: GOOD (  11.90  )
+X-CRM114-CacheID: sfid-20190814_040033_860215_2CFC18C1 
+X-CRM114-Status: GOOD (  15.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,124 +68,118 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: marek.vasut@gmail.com, linux-mtd@lists.infradead.org, kernel@pengutronix.de,
- Peter Pan <peterpandong@micron.com>
+Cc: Latchesar Ionkov <lucho@ionkov.net>, Dave Kleikamp <shaggy@kernel.org>,
+ jfs-discussion@lists.sourceforge.net,
+ Phillip Lougher <phillip@squashfs.org.uk>, linux-integrity@vger.kernel.org,
+ Martin Brandenburg <martin@omnibond.com>, samba-technical@lists.samba.org,
+ Dominique Martinet <asmadeus@codewreck.org>, Chao Yu <yuchao0@huawei.com>,
+ Mimi Zohar <zohar@linux.ibm.com>, Adrian Hunter <adrian.hunter@intel.com>,
+ linux-mm@kvack.org, Chris Mason <clm@fb.com>, netdev@vger.kernel.org,
+ Andreas Dilger <adilger.kernel@dilger.ca>, linux-xfs@vger.kernel.org,
+ Eric Paris <eparis@parisplace.org>, linux-f2fs-devel@lists.sourceforge.net,
+ linux-afs@lists.infradead.org, Stephen Smalley <sds@tycho.nsa.gov>,
+ Mike Marshall <hubcap@omnibond.com>, devel@driverdev.osuosl.org,
+ linux-cifs@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
+ Sage Weil <sage@redhat.com>, "Darrick J. Wong" <darrick.wong@oracle.com>,
+ Richard Weinberger <richard@nod.at>, Mark Fasheh <mark@fasheh.com>,
+ linux-unionfs@vger.kernel.org, Hugh Dickins <hughd@google.com>,
+ James Morris <jmorris@namei.org>, cluster-devel@redhat.com,
+ Joseph Qi <joseph.qi@linux.alibaba.com>,
+ Vyacheslav Dubeyko <slava@dubeyko.com>,
+ Casey Schaufler <casey@schaufler-ca.com>, v9fs-developer@lists.sourceforge.net,
+ Ilya Dryomov <idryomov@gmail.com>, linux-ext4@vger.kernel.org,
+ kernel-team@android.com, devel@lists.orangefs.org,
+ Serge Hallyn <serge@hallyn.com>, Gao Xiang <gaoxiang25@huawei.com>,
+ Eric Van Hensbergen <ericvh@gmail.com>, ecryptfs@vger.kernel.org,
+ linux-erofs@lists.ozlabs.org, Josef Bacik <josef@toxicpanda.com>,
+ reiserfs-devel@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
+ Joel Becker <jlbec@evilplan.org>, Anna Schumaker <anna.schumaker@netapp.com>,
+ David Sterba <dsterba@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+ ceph-devel@vger.kernel.org, selinux@vger.kernel.org,
+ Trond Myklebust <trond.myklebust@hammerspace.com>,
+ Andreas Gruenbacher <agruenba@redhat.com>, David Howells <dhowells@redhat.com>,
+ linux-nfs@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+ linux-fsdevel@vger.kernel.org, Artem Bityutskiy <dedekind1@gmail.com>,
+ Mathieu Malaterre <malat@debian.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Miklos Szeredi <miklos@szeredi.hu>, Jeff Layton <jlayton@kernel.org>,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+ Tyler Hicks <tyhicks@canonical.com>, Steve French <sfrench@samba.org>,
+ Ernesto =?iso-8859-1?Q?A=2E_Fern=E1ndez?= <ernesto.mnd.fernandez@gmail.com>,
+ linux-btrfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+ Jan Kara <jack@suse.com>, Tejun Heo <tj@kernel.org>,
+ linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
+ David Woodhouse <dwmw2@infradead.org>, "David S. Miller" <davem@davemloft.net>,
+ ocfs2-devel@oss.oracle.com, Alexander Viro <viro@zeniv.linux.org.uk>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The MT29F1G01AAADD is a single die, SLC based SPI NAND. It has a
-capacity of 1Gb and supports 4-bit ECC. The datasheet can be found [1].
+On Tue 13-08-19 07:55:06, Mark Salyzyn wrote:
+...
+> diff --git a/fs/xattr.c b/fs/xattr.c
+> index 90dd78f0eb27..71f887518d6f 100644
+> --- a/fs/xattr.c
+> +++ b/fs/xattr.c
+...
+>  ssize_t
+>  __vfs_getxattr(struct dentry *dentry, struct inode *inode, const char *name,
+> -	       void *value, size_t size)
+> +	       void *value, size_t size, int flags)
+>  {
+>  	const struct xattr_handler *handler;
+> -
+> -	handler = xattr_resolve_name(inode, &name);
+> -	if (IS_ERR(handler))
+> -		return PTR_ERR(handler);
+> -	if (!handler->get)
+> -		return -EOPNOTSUPP;
+> -	return handler->get(handler, dentry, inode, name, value, size);
+> -}
+> -EXPORT_SYMBOL(__vfs_getxattr);
+> -
+> -ssize_t
+> -vfs_getxattr(struct dentry *dentry, const char *name, void *value, size_t size)
+> -{
+> -	struct inode *inode = dentry->d_inode;
+>  	int error;
+>  
+> +	if (flags & XATTR_NOSECURITY)
+> +		goto nolsm;
 
-Unfortunatly the linked device is marked as EoL, but I will expect that
-the MT29F1G01AAADDH4-ITX behaves the same way.
+Hum, is it OK for XATTR_NOSECURITY to skip even the xattr_permission()
+check? I understand that for reads of security xattrs it actually does not
+matter in practice but conceptually that seems wrong to me as
+XATTR_NOSECURITY is supposed to skip just security-module checks to avoid
+recursion AFAIU.
 
-[1] https://datasheet.octopart.com/ \
-      MT29F1G01AAADDH4-IT:D-Micron-datasheet-11572380.pdf
+> diff --git a/include/uapi/linux/xattr.h b/include/uapi/linux/xattr.h
+> index c1395b5bd432..1216d777d210 100644
+> --- a/include/uapi/linux/xattr.h
+> +++ b/include/uapi/linux/xattr.h
+> @@ -17,8 +17,9 @@
+>  #if __UAPI_DEF_XATTR
+>  #define __USE_KERNEL_XATTR_DEFS
+>  
+> -#define XATTR_CREATE	0x1	/* set value, fail if attr already exists */
+> -#define XATTR_REPLACE	0x2	/* set value, fail if attr does not exist */
+> +#define XATTR_CREATE	 0x1	/* set value, fail if attr already exists */
+> +#define XATTR_REPLACE	 0x2	/* set value, fail if attr does not exist */
+> +#define XATTR_NOSECURITY 0x4	/* get value, do not involve security check */
+>  #endif
 
-Cc: Peter Pan <peterpandong@micron.com>
-Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
----
- drivers/mtd/nand/spi/micron.c | 68 +++++++++++++++++++++++++++++++++++
- 1 file changed, 68 insertions(+)
+It seems confusing to export XATTR_NOSECURITY definition to userspace when
+that is kernel-internal flag. I'd just define it in include/linux/xattr.h
+somewhere from the top of flags space (like 0x40000000).
 
-diff --git a/drivers/mtd/nand/spi/micron.c b/drivers/mtd/nand/spi/micron.c
-index 7d7b1f7fcf71..9d63450afc69 100644
---- a/drivers/mtd/nand/spi/micron.c
-+++ b/drivers/mtd/nand/spi/micron.c
-@@ -34,6 +34,18 @@ static SPINAND_OP_VARIANTS(update_cache_variants,
- 		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
- 		SPINAND_PROG_LOAD(false, 0, NULL, 0));
- 
-+static SPINAND_OP_VARIANTS(read_cache_variants_mt29f1g01aaadd,
-+		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(write_cache_variants_mt29f1g01aaadd,
-+		SPINAND_PROG_LOAD(true, 0, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(update_cache_variants_mt29f1g01aaadd,
-+		SPINAND_PROG_LOAD(false, 0, NULL, 0));
-+
- static int mt29f2g01abagd_ooblayout_ecc(struct mtd_info *mtd, int section,
- 					struct mtd_oob_region *region)
- {
-@@ -90,6 +102,52 @@ static int mt29f2g01abagd_ecc_get_status(struct spinand_device *spinand,
- 	return -EINVAL;
- }
- 
-+static int mt29f1g01aaadd_ooblayout_ecc(struct mtd_info *mtd, int section,
-+					struct mtd_oob_region *region)
-+{
-+	if (section > 3)
-+		return -ERANGE;
-+
-+	region->offset = (section * 0x10) + 8;
-+	region->length = 8;
-+
-+	return 0;
-+}
-+
-+static int mt29f1g01aaadd_ooblayout_free(struct mtd_info *mtd, int section,
-+					 struct mtd_oob_region *region)
-+{
-+	if (section > 3)
-+		return -ERANGE;
-+
-+	/* 2 bytes for the BBM + 2 bytes to skip non-ecc memory */
-+	region->offset = (section * 0x10) + 4;
-+	region->length = 4;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops mt29f1g01aaadd_ooblayout = {
-+	.ecc = mt29f1g01aaadd_ooblayout_ecc,
-+	.free = mt29f1g01aaadd_ooblayout_free,
-+};
-+
-+static int mt29f1g01aaadd_ecc_get_status(struct spinand_device *spinand,
-+					 u8 status)
-+{
-+	switch (status & STATUS_ECC_MASK) {
-+	case STATUS_ECC_NO_BITFLIPS:
-+		return 0;
-+	case STATUS_ECC_HAS_BITFLIPS:
-+		/* 1 to 4-bit error detected and corrected */
-+		return 4;
-+	case STATUS_ECC_UNCOR_ERROR:
-+		return -EBADMSG;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
- static const struct spinand_info micron_spinand_table[] = {
- 	SPINAND_INFO("MT29F2G01ABAGD", 0x24,
- 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 2, 1, 1),
-@@ -100,6 +158,16 @@ static const struct spinand_info micron_spinand_table[] = {
- 		     0,
- 		     SPINAND_ECCINFO(&mt29f2g01abagd_ooblayout,
- 				     mt29f2g01abagd_ecc_get_status)),
-+	SPINAND_INFO("MT29F1G01AAADD", 0x12,
-+		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 2, 1, 1),
-+		     NAND_ECCREQ(4, 2048),
-+		     SPINAND_INFO_OP_VARIANTS(
-+					&read_cache_variants_mt29f1g01aaadd,
-+					&write_cache_variants_mt29f1g01aaadd,
-+					&update_cache_variants_mt29f1g01aaadd),
-+		     0,
-+		     SPINAND_ECCINFO(&mt29f1g01aaadd_ooblayout,
-+				     mt29f1g01aaadd_ecc_get_status)),
- };
- 
- static int micron_spinand_detect(struct spinand_device *spinand)
+Otherwise the patch looks OK to me (cannot really comment on the security
+module aspect of this whole thing though).
+
+								Honza
 -- 
-2.20.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
 ______________________________________________________
 Linux MTD discussion mailing list
