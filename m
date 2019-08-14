@@ -2,58 +2,56 @@ Return-Path: <SRS0=SIcx=WK=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FC3AC433FF
-	for <linux-mtd@archiver.kernel.org>; Wed, 14 Aug 2019 12:20:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 72A3EC32753
+	for <linux-mtd@archiver.kernel.org>; Wed, 14 Aug 2019 12:20:43 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 32AC5206C1
-	for <linux-mtd@archiver.kernel.org>; Wed, 14 Aug 2019 12:20:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 49D61208C2
+	for <linux-mtd@archiver.kernel.org>; Wed, 14 Aug 2019 12:20:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ThzWl344"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 32AC5206C1
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Td3q9O1k"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 49D61208C2
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5smQqMPxY7XXkcMM+26M7emNJKpfA7DkIQlFzN4IWkU=; b=ThzWl3442ntS+v
-	NB7l6fdvQhmxss0gR2L0XvXdwOdGIEjN041T4j6bdIEwf5F7grfotLzL6ab0NCEjk6bI7SKwJvEQ5
-	s4S2wdCALtGFysaRLvFSMb1mFV9vZMltIXcxz+ko0SmFpO2rFpBmR61a7XE3lyqiZ83qEYsgAhpEQ
-	tiAIlbOC3JlKY2WSl9GP0Bhh/mzNXM49xBEpDTkh/cxVUcilB3pUiZxMOPsodAb5mnECbApMmkJXh
-	CmBCR9FrPfMw2CzHAEHjSTJbbJoCuVIpdB5AYR88bmZB6Qi13pik4Sdr14BGJk4EtQKD9pRcB+IPc
-	8wZpgvPVy+MY3tJ6E0Xg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=irkkVtLl7QBibL9EoVlyocND3PZe41AVT++oiIcDoR8=; b=Td3q9O1kU/nzmS
+	cWFM3LYNoG+48/dQZYK1TDGvjBXAX1PoS/84nu6o4wrtoviTao2wSUu+VZnXaY1DP6YqPYI5gFxNt
+	lxt92dZhhGzM4fZAcjtb/ofdMS9sGuWMLZXVXQP6yvDp6uCuJtPy7U337a5yHgDfYm6JxNVex+raV
+	YppOMtVxRFdVAQ3iv7UkYZsGt1DKL0+vECfx75B01BTINNd9tl6Z2SmEEw00nCt8bF1R8/c4L7IJn
+	KmUhJ9HAnZarTZy/44ztFZAwDDa5ew/93hTi5KiR63av1mO+RlmoBMtATkcc1/hmkWxzHeYs1BSoP
+	0ff1bPuCaCIqi3sYZfvw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hxsGG-0003E5-Fg; Wed, 14 Aug 2019 12:20:16 +0000
+	id 1hxsGV-0003So-Nk; Wed, 14 Aug 2019 12:20:31 +0000
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hxsF6-0000qc-UG
- for linux-mtd@lists.infradead.org; Wed, 14 Aug 2019 12:19:06 +0000
+ id 1hxsF6-0000qd-UE
+ for linux-mtd@lists.infradead.org; Wed, 14 Aug 2019 12:19:07 +0000
 Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1hxsEp-0005kF-Ee; Wed, 14 Aug 2019 14:18:47 +0200
+ id 1hxsEp-0005k9-EW; Wed, 14 Aug 2019 14:18:47 +0200
 Received: from sha by dude.hi.pengutronix.de with local (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1hxsEm-00081f-OC; Wed, 14 Aug 2019 14:18:44 +0200
+ id 1hxsEm-00080y-Kp; Wed, 14 Aug 2019 14:18:44 +0200
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-fsdevel@vger.kernel.org
-Subject: [PATCH 06/11] ubifs: move checks and preparation into setflags()
-Date: Wed, 14 Aug 2019 14:18:29 +0200
-Message-Id: <20190814121834.13983-7-s.hauer@pengutronix.de>
+Subject: [PATCH 00/11] Add quota support to UBIFS
+Date: Wed, 14 Aug 2019 14:18:23 +0200
+Message-Id: <20190814121834.13983-1-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190814121834.13983-1-s.hauer@pengutronix.de>
-References: <20190814121834.13983-1-s.hauer@pengutronix.de>
 MIME-Version: 1.0
 X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
 X-SA-Exim-Mail-From: sha@pengutronix.de
@@ -61,8 +59,8 @@ X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
  SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190814_051905_041436_677C9F30 
-X-CRM114-Status: GOOD (  14.70  )
+X-CRM114-CacheID: sfid-20190814_051905_048257_F8158E7C 
+X-CRM114-Status: GOOD (  16.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,109 +79,72 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-setflags() can be reused for upcoming FS_IOC_FS[SG]ETXATTR ioctl support.
-In preparation for that move the checks and preparation into that
-function so we can reuse them aswell.
+This series adds quota support to UBIFS.
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
- fs/ubifs/ioctl.c | 46 +++++++++++++++++++++++++++-------------------
- 1 file changed, 27 insertions(+), 19 deletions(-)
+This series follows a very simple approach to quota: Neither the quota
+limits nor the quota usage are ever written to the medium. The quota
+usage is reconstructed from the filesystem during mount time. The quota
+limits must be set by the user each time after mount. This is probably
+not very convenient for systems that are used interactively, but UBIFS
+is targetted to embedded systems and here running a script after mount
+shouldn't be a problem. This of course isn't the way quota was thought
+to be, but I believe this is a good compromise for a feature that I predict
+is only rarely used on UBIFS. The big upside of this approach is that
+no on-disk format changes are required and thus we can't get any
+broken/corrupt filesystems because of quota support. Reconstructing the
+quota data each time during mount has an noticable but I think for many
+cases acceptable time overhead. I mounted a ~56MiB rootfs with 1920 files
+which takes around 0.7s longer when quota is enabled.
 
-diff --git a/fs/ubifs/ioctl.c b/fs/ubifs/ioctl.c
-index 034ad14710d1..b9c4a51bceea 100644
---- a/fs/ubifs/ioctl.c
-+++ b/fs/ubifs/ioctl.c
-@@ -95,18 +95,35 @@ static int ubifs2ioctl(int ubifs_flags)
- 	return ioctl_flags;
- }
- 
--static int setflags(struct inode *inode, int flags)
-+static int setflags(struct file *file, int flags)
- {
- 	int oldflags, err, release;
-+	struct inode *inode = file_inode(file);
- 	struct ubifs_inode *ui = ubifs_inode(inode);
- 	struct ubifs_info *c = inode->i_sb->s_fs_info;
- 	struct ubifs_budget_req req = { .dirtied_ino = 1,
- 					.dirtied_ino_d = ui->data_len };
- 
--	err = ubifs_budget_space(c, &req);
-+	if (IS_RDONLY(inode))
-+		return -EROFS;
-+
-+	if (!inode_owner_or_capable(inode))
-+		return -EACCES;
-+
-+	/*
-+	 * Make sure the file-system is read-write and make sure it
-+	 * will not become read-only while we are changing the flags.
-+	 */
-+	err = mnt_want_write_file(file);
- 	if (err)
- 		return err;
- 
-+	dbg_gen("set flags: %#x, i_flags %#x", flags, inode->i_flags);
-+
-+	err = ubifs_budget_space(c, &req);
-+	if (err)
-+		goto out_drop;
-+
- 	mutex_lock(&ui->ui_mutex);
- 	oldflags = ubifs2ioctl(ui->flags);
- 	err = vfs_ioc_setflags_prepare(inode, oldflags, flags);
-@@ -124,12 +141,18 @@ static int setflags(struct inode *inode, int flags)
- 		ubifs_release_budget(c, &req);
- 	if (IS_SYNC(inode))
- 		err = write_inode_now(inode, 1);
-+
-+	mnt_drop_write_file(file);
-+
- 	return err;
- 
- out_unlock:
- 	ubifs_err(c, "can't modify inode %lu attributes", inode->i_ino);
- 	mutex_unlock(&ui->ui_mutex);
- 	ubifs_release_budget(c, &req);
-+out_drop:
-+	mnt_drop_write_file(file);
-+
- 	return err;
- }
- 
-@@ -146,12 +169,6 @@ long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 		return put_user(flags, (int __user *) arg);
- 
- 	case FS_IOC_SETFLAGS: {
--		if (IS_RDONLY(inode))
--			return -EROFS;
--
--		if (!inode_owner_or_capable(inode))
--			return -EACCES;
--
- 		if (get_user(flags, (int __user *) arg))
- 			return -EFAULT;
- 
-@@ -161,17 +178,8 @@ long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 		if (!S_ISDIR(inode->i_mode))
- 			flags &= ~FS_DIRSYNC_FL;
- 
--		/*
--		 * Make sure the file-system is read-write and make sure it
--		 * will not become read-only while we are changing the flags.
--		 */
--		err = mnt_want_write_file(file);
--		if (err)
--			return err;
--		dbg_gen("set flags: %#x, i_flags %#x", flags, inode->i_flags);
--		err = setflags(inode, flags);
--		mnt_drop_write_file(file);
--		return err;
-+
-+		return setflags(file, flags);
- 	}
- 	case FS_IOC_SET_ENCRYPTION_POLICY: {
- 		struct ubifs_info *c = inode->i_sb->s_fs_info;
+As UBIFS works on mtd there is no block_device involved. The quotactl
+system call requires a path to a block device as argument. To overcome
+this we add support for passing the mount point instead. quota uses
+ get_super_exclusive_thawed(), get_super_thawed() and get_super() to
+get hold of a super_block. All these functions require a block_device
+which we do not have for UBIFS, so this code has to be refactored a bit.
+I'm a bit outside of my comfort zone here, so please review carefully ;)
+
+The UBIFS quota support itself is based on a series by Dongsheng Yang
+posted here:
+http://lists.infradead.org/pipermail/linux-mtd/2015-September/061812.html
+This part hasn't changed much, except that the code for reading and writing
+quota files has been dropped.
+
+Sascha
+
+Dongsheng Yang (1):
+  ubifs: Add quota support
+
+Sascha Hauer (10):
+  quota: Make inode optional
+  quota: Only module_put the format when existing
+  fs: move __get_super() out of loop
+  fs, quota: introduce wait_super_thawed() to wait until a superblock is
+    thawed
+  quota: Allow to pass quotactl a mountpoint
+  ubifs: move checks and preparation into setflags()
+  ubifs: Add support for FS_IOC_FS[SG]ETXATTR ioctls
+  ubifs: do not ubifs_inode() on potentially NULL pointer
+  ubifs: Add support for project id
+  ubifs: export get_znode
+
+ fs/quota/dquot.c       |   9 +-
+ fs/quota/quota.c       |  79 ++++--
+ fs/super.c             |  74 +++---
+ fs/ubifs/Makefile      |   1 +
+ fs/ubifs/dir.c         |  31 ++-
+ fs/ubifs/file.c        |  43 +++
+ fs/ubifs/ioctl.c       | 222 ++++++++++++++--
+ fs/ubifs/journal.c     |   4 +-
+ fs/ubifs/quota.c       | 590 +++++++++++++++++++++++++++++++++++++++++
+ fs/ubifs/super.c       |  46 +++-
+ fs/ubifs/tnc.c         |  34 +--
+ fs/ubifs/ubifs-media.h |   6 +-
+ fs/ubifs/ubifs.h       |  33 +++
+ include/linux/fs.h     |   5 +-
+ 14 files changed, 1076 insertions(+), 101 deletions(-)
+ create mode 100644 fs/ubifs/quota.c
+
 -- 
 2.20.1
 
