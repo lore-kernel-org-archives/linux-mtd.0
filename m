@@ -2,23 +2,22 @@ Return-Path: <SRS0=q3Mz=WL=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B32D2C3A589
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Aug 2019 14:42:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E005AC3A589
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Aug 2019 15:30:53 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8370520644
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Aug 2019 14:42:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B228920644
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Aug 2019 15:30:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ZHsGTUm+";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="H747F4cd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8370520644
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="re6n/C+h"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B228920644
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -26,77 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=aUKgB/ZzNP2TK+YX1meNG/9N5pZjFjJnYPQZRD9wkLc=; b=ZHsGTUm+DEJrX9
-	D7XanpiZx53b4nWsAxZjffVWDGdtVd6X8otYgR0fkn2FRM0H5huQO3pAzmFjWajBC/vsnS/zGZVKC
-	X66vQv9RtTeAgjOK9x6v8elw/02iQ+JtvM6hMNMMh4hMpmwjxYj/z0wd5cpR5AsPJb2pMGn43Ln7m
-	gv6MNk0cC8tvH5SK5O8Vfkc5mTntFEuw42rAa+sFq/7EQa1sUIilySZX5Uzx6lFKaIZPZLBWguLp+
-	g3NAPldSTnk1ndvIGEywm5VnwR2kNyLqKe7YyjhI9XlIcM2iO7cBdsr+tDuJnEhvi/VwqnO2W6QXT
-	34OY3GG0J0ajyR1xl7Iw==;
+	List-Owner; bh=oWEwm3L7q4XR0A8OEGYAPnMEsEEawuG35mougtM3Z5A=; b=re6n/C+hOLb0fB
+	vf3vgJj36LVCbd+RMlnOaF3slPP27Lw8ldEE3cfo6Xpm+YUmFew59m+8s/9l1UiSz7IYJ7XstKkUs
+	UISwR+kxE2O5Udq3peLHy1z38KMsr5ht9iXdX8rEe1cOhWdNLmY6UTlfpQuA51gN6H1ZBGRHJkxsi
+	UQkpf2W25PFc9DK6O769DJGfFt9CC+WFdkrpY4nJwKoLPVGudv07gUmEwv0sjaBZkaAks7HC8V1do
+	1URZfFvmWShikvfpnzPSij3OzwbRF72FSwoHGgYjUW4GyOsnJAulEAxu8OBPoMlq2FLNYDxPHHxj0
+	T/waDfxVC1caw+tmrWbA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hyGxE-00078V-LG; Thu, 15 Aug 2019 14:42:16 +0000
-Received: from userp2120.oracle.com ([156.151.31.85])
+	id 1hyHi1-0006lm-2L; Thu, 15 Aug 2019 15:30:37 +0000
+Received: from mx2.suse.de ([195.135.220.15] helo=mx1.suse.de)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hyGx7-00077m-EV
- for linux-mtd@lists.infradead.org; Thu, 15 Aug 2019 14:42:14 +0000
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
- by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7FEWUWR094990;
- Thu, 15 Aug 2019 14:41:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2019-08-05;
- bh=5gxVVJbUIjHvxflxaYWYWqhI0YhzFJVE4+OZrrgOoTw=;
- b=H747F4cdaFRXJ0Q2C8dc1eNfTpoRo68k2bOGKPjLdKqzfItNI2SObWAB2+u1HaudkOV1
- cSHxPV0cKUWzYfJbDFIx28xRjnrQ0bLe4fb0gW0GOwEm9nsY4KM8DM1oF86eIzjb0t9q
- seNDM5v1XHhsBtFVJl4wFs+HsXG6Q+Y4sGapSYMA7Sc3294VUwYylm5UXt8XblTS1gcp
- AiAB8aWPEmX9ZAXEHxQIP/JPKijTSIdivajH1/O88zI2eMtg2HaenLv6OeNl8rnhsQOe
- 1Yk1eIwyPRH261HVy/ixCbdcUB5V1PI69sEp+9d68Wen+536uV2XfkCTaqRPEYoLcOFD wA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
- by userp2120.oracle.com with ESMTP id 2u9pjqtywq-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 15 Aug 2019 14:41:50 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
- by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7FEXZ09172178;
- Thu, 15 Aug 2019 14:41:50 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
- by userp3020.oracle.com with ESMTP id 2ucgf130h3-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 15 Aug 2019 14:41:50 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
- by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7FEffGY026655;
- Thu, 15 Aug 2019 14:41:42 GMT
-Received: from kadam (/41.57.98.10) by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Thu, 15 Aug 2019 07:41:41 -0700
-Date: Thu, 15 Aug 2019 17:41:33 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: walter harms <wharms@bfs.de>
-Subject: Re: [PATCH] mtd: spi-nor: Fix an error code in spi_nor_read_raw()
-Message-ID: <20190815144133.GA19557@kadam>
-References: <20190815083252.GD27238@mwanda>
- <5D553585.2020907@bfs.de>
+ id 1hyHhw-0006lD-Vm; Thu, 15 Aug 2019 15:30:36 +0000
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 84639B02E;
+ Thu, 15 Aug 2019 15:30:28 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+ id F3E6E1E4200; Thu, 15 Aug 2019 17:30:24 +0200 (CEST)
+Date: Thu, 15 Aug 2019 17:30:24 +0200
+From: Jan Kara <jack@suse.cz>
+To: Mark Salyzyn <salyzyn@android.com>
+Subject: Re: [PATCH v2] Add flags option to get xattr method paired to
+ __vfs_getxattr
+Message-ID: <20190815153024.GP14313@quack2.suse.cz>
+References: <20190813145527.26289-1-salyzyn@android.com>
+ <20190814110022.GB26273@quack2.suse.cz>
+ <71d66fd1-cc94-fd0c-dfa7-115ba8a6b95a@android.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <5D553585.2020907@bfs.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9350
- signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0
- malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1908150148
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9350
- signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
- priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1908150148
+In-Reply-To: <71d66fd1-cc94-fd0c-dfa7-115ba8a6b95a@android.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190815_074209_621876_6C1396AF 
-X-CRM114-Status: GOOD (  26.82  )
+X-CRM114-CacheID: sfid-20190815_083033_319488_063F2A38 
+X-CRM114-Status: GOOD (  27.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,64 +70,152 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, kernel-janitors@vger.kernel.org,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@microchip.com>, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: Latchesar Ionkov <lucho@ionkov.net>, Dave Kleikamp <shaggy@kernel.org>,
+ jfs-discussion@lists.sourceforge.net,
+ Phillip Lougher <phillip@squashfs.org.uk>, Jan Kara <jack@suse.cz>,
+ linux-integrity@vger.kernel.org, Martin Brandenburg <martin@omnibond.com>,
+ samba-technical@lists.samba.org, Dominique Martinet <asmadeus@codewreck.org>,
+ Chao Yu <yuchao0@huawei.com>, Mimi Zohar <zohar@linux.ibm.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-mm@kvack.org,
+ Chris Mason <clm@fb.com>, netdev@vger.kernel.org,
+ Andreas Dilger <adilger.kernel@dilger.ca>, linux-xfs@vger.kernel.org,
+ Eric Paris <eparis@parisplace.org>, linux-f2fs-devel@lists.sourceforge.net,
+ linux-afs@lists.infradead.org, Stephen Smalley <sds@tycho.nsa.gov>,
+ Mike Marshall <hubcap@omnibond.com>, devel@driverdev.osuosl.org,
+ linux-cifs@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
+ Sage Weil <sage@redhat.com>, "Darrick J. Wong" <darrick.wong@oracle.com>,
+ Richard Weinberger <richard@nod.at>, Mark Fasheh <mark@fasheh.com>,
+ linux-unionfs@vger.kernel.org, Hugh Dickins <hughd@google.com>,
+ James Morris <jmorris@namei.org>, cluster-devel@redhat.com,
+ Joseph Qi <joseph.qi@linux.alibaba.com>,
+ Vyacheslav Dubeyko <slava@dubeyko.com>,
+ Casey Schaufler <casey@schaufler-ca.com>, v9fs-developer@lists.sourceforge.net,
+ Ilya Dryomov <idryomov@gmail.com>, linux-ext4@vger.kernel.org,
+ kernel-team@android.com, devel@lists.orangefs.org,
+ Serge Hallyn <serge@hallyn.com>, Gao Xiang <gaoxiang25@huawei.com>,
+ Eric Van Hensbergen <ericvh@gmail.com>, ecryptfs@vger.kernel.org,
+ linux-erofs@lists.ozlabs.org, Josef Bacik <josef@toxicpanda.com>,
+ reiserfs-devel@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
+ Joel Becker <jlbec@evilplan.org>, Anna Schumaker <anna.schumaker@netapp.com>,
+ David Sterba <dsterba@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+ ceph-devel@vger.kernel.org, selinux@vger.kernel.org,
+ Trond Myklebust <trond.myklebust@hammerspace.com>,
+ Andreas Gruenbacher <agruenba@redhat.com>, David Howells <dhowells@redhat.com>,
+ linux-nfs@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+ linux-fsdevel@vger.kernel.org, Artem Bityutskiy <dedekind1@gmail.com>,
+ Mathieu Malaterre <malat@debian.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Miklos Szeredi <miklos@szeredi.hu>, Jeff Layton <jlayton@kernel.org>,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+ Tyler Hicks <tyhicks@canonical.com>, Steve French <sfrench@samba.org>,
+ Ernesto =?iso-8859-1?Q?A=2E_Fern=E1ndez?= <ernesto.mnd.fernandez@gmail.com>,
+ linux-btrfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+ Jan Kara <jack@suse.com>, Tejun Heo <tj@kernel.org>,
+ linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
+ David Woodhouse <dwmw2@infradead.org>, "David S. Miller" <davem@davemloft.net>,
+ ocfs2-devel@oss.oracle.com, Alexander Viro <viro@zeniv.linux.org.uk>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Aug 15, 2019 at 12:35:49PM +0200, walter harms wrote:
+On Wed 14-08-19 07:54:16, Mark Salyzyn wrote:
+> On 8/14/19 4:00 AM, Jan Kara wrote:
+> > On Tue 13-08-19 07:55:06, Mark Salyzyn wrote:
+> > ...
+> > > diff --git a/fs/xattr.c b/fs/xattr.c
+> > > index 90dd78f0eb27..71f887518d6f 100644
+> > > --- a/fs/xattr.c
+> > > +++ b/fs/xattr.c
+> > ...
+> > >   ssize_t
+> > >   __vfs_getxattr(struct dentry *dentry, struct inode *inode, const char *name,
+> > > -	       void *value, size_t size)
+> > > +	       void *value, size_t size, int flags)
+> > >   {
+> > >   	const struct xattr_handler *handler;
+> > > -
+> > > -	handler = xattr_resolve_name(inode, &name);
+> > > -	if (IS_ERR(handler))
+> > > -		return PTR_ERR(handler);
+> > > -	if (!handler->get)
+> > > -		return -EOPNOTSUPP;
+> > > -	return handler->get(handler, dentry, inode, name, value, size);
+> > > -}
+> > > -EXPORT_SYMBOL(__vfs_getxattr);
+> > > -
+> > > -ssize_t
+> > > -vfs_getxattr(struct dentry *dentry, const char *name, void *value, size_t size)
+> > > -{
+> > > -	struct inode *inode = dentry->d_inode;
+> > >   	int error;
+> > > +	if (flags & XATTR_NOSECURITY)
+> > > +		goto nolsm;
+> > Hum, is it OK for XATTR_NOSECURITY to skip even the xattr_permission()
+> > check? I understand that for reads of security xattrs it actually does not
+> > matter in practice but conceptually that seems wrong to me as
+> > XATTR_NOSECURITY is supposed to skip just security-module checks to avoid
+> > recursion AFAIU.
 > 
+> Good catch I think.
 > 
-> Am 15.08.2019 10:32, schrieb Dan Carpenter:
-> > The problem is that if "ret" is negative then when we check if
-> > "ret > len", that condition is going to be true because of type
-> > promotion.  So this patch re-orders the code to check for negatives
-> > first and preserve those error codes.
+> I was attempting to make this change purely inert, no change in
+> functionality, only a change in API. Adding a call to xattr_permission would
+> incur a change in overall functionality, as it would introduce into the
+> current and original __vfs_getxattr a call to xattr_permission that was not
+> there before.
+> 
+> (I will have to defer the real answer and requirements to the security
+> folks)
+> 
+> AFAIK you are correct, and to make the call would reduce the attack surface,
+> trading a very small amount of CPU utilization, for a much larger amount of
+> trust.
+> 
+> Given the long history of this patch set (for overlayfs) and the large
+> amount of stakeholders, I would _prefer_ to submit a followup independent
+> functionality/security change to _vfs_get_xattr _after_ this makes it in.
+
+You're right. The problem was there before. So ack to changing this later.
+
+> > > diff --git a/include/uapi/linux/xattr.h b/include/uapi/linux/xattr.h
+> > > index c1395b5bd432..1216d777d210 100644
+> > > --- a/include/uapi/linux/xattr.h
+> > > +++ b/include/uapi/linux/xattr.h
+> > > @@ -17,8 +17,9 @@
+> > >   #if __UAPI_DEF_XATTR
+> > >   #define __USE_KERNEL_XATTR_DEFS
+> > > -#define XATTR_CREATE	0x1	/* set value, fail if attr already exists */
+> > > -#define XATTR_REPLACE	0x2	/* set value, fail if attr does not exist */
+> > > +#define XATTR_CREATE	 0x1	/* set value, fail if attr already exists */
+> > > +#define XATTR_REPLACE	 0x2	/* set value, fail if attr does not exist */
+> > > +#define XATTR_NOSECURITY 0x4	/* get value, do not involve security check */
+> > >   #endif
+> > It seems confusing to export XATTR_NOSECURITY definition to userspace when
+> > that is kernel-internal flag. I'd just define it in include/linux/xattr.h
+> > somewhere from the top of flags space (like 0x40000000).
 > > 
-> > Fixes: f384b352cbf0 ("mtd: spi-nor: parse Serial Flash Discoverable Parameters (SFDP) tables")
-> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > ---
-> >  drivers/mtd/spi-nor/spi-nor.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> > index 63af87609bac..986b0754495d 100644
-> > --- a/drivers/mtd/spi-nor/spi-nor.c
-> > +++ b/drivers/mtd/spi-nor/spi-nor.c
-> > @@ -2903,10 +2903,10 @@ static int spi_nor_read_raw(struct spi_nor *nor, u32 addr, size_t len, u8 *buf)
-> >  
-> >  	while (len) {
-> >  		ret = spi_nor_read_data(nor, addr, len, buf);
-> > -		if (!ret || ret > len)
-> > -			return -EIO;
-> >  		if (ret < 0)
-> >  			return ret;
-> > +		if (!ret || ret > len)
-> > +			return -EIO;
+> > Otherwise the patch looks OK to me (cannot really comment on the security
+> > module aspect of this whole thing though).
 > 
-> Bonuspoints to make this more readable:
-> 
-> 	if (ret==0 || ret > len)
-> 		return -EIO;
-> 
-> that makes the intention more obvious.
+> Good point. However, we do need to keep these flags together to reduce
+> maintenance risk, I personally abhor two locations for flags bits even if
+> one comes from the opposite bit-side; collisions are undetectable at build
+> time. Although I have not gone through the entire thought experiment, I am
+> expecting that fuse could possibly benefit from this flag (if exposed) since
+> it also has a security recursion. That said, fuse is probably the example of
+> a gaping wide attack surface if user space had access to it ... your
+> xattr_permissions call addition requested above would be realistically, not
+> just pedantically, required!
 
-That's not really related to the bug fix.
+Yeah, flags bits in two places are bad as well. So maybe at least
+#ifdef __KERNEL__ bit around the definitiona and a comment that it is
+kernel internal flag?
 
-I do agree with your style though.  "ret" is a number here, and not a
-bool or error vs no error so == 0 is nicer.
-
-regards,
-dan carpenter
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
 ______________________________________________________
 Linux MTD discussion mailing list
