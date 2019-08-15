@@ -4,56 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3C32C3A589
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Aug 2019 20:22:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85675C3A589
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Aug 2019 20:43:45 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C35572083B
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Aug 2019 20:22:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 549EF21721
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Aug 2019 20:43:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ahq/wGZC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C35572083B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=namei.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PCnGOH0v";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="rmevilO9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 549EF21721
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:Message-ID:
-	In-Reply-To:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JPmJ6lZXozCDimPloZte0YPOUwvvzfFvlwJQ3tiRSME=; b=ahq/wGZCygfoPW
-	oMBprImeij3whRigjCjl2uS2AradutajrnplXNBhF3YRlNIaxtYlzG8gyruqqMWt0heCLAWbxeYZK
-	zSPlsP3qNIqBrqoPKx5Z0sXKMmqKoNF+afAzqMaXwo2xGklIvVoFdRzJmllXvclmgczLo368W+VJz
-	j4TFEzWAx2Th1FTXBxvZ36KLa1IuH9ikQu3ZP4GQGuiq8rWuuIH2nawBkcZf0WrYcpb69ZCy/jahC
-	S9ToGGpG9uGM9dFdlz6xPheg3yoIHiWUwjxgZSYqBn854S8PioGAt7vCpQHJ58EBFmMLQCSms6zgZ
-	d/bgrkbhPGjgjqlwbygA==;
+	List-Owner; bh=CK94RKKOhSqJe+d/F9lYIhSNL9+XobGeOzq70MgORFQ=; b=PCnGOH0vWJt5XA
+	f/K+t851wxIS3FjBcjI4azHISCOFDYdZUT4cAZ9D0OzGM6VxdN5saH1wGhjLzVrRkLDlfZ1xDQgLk
+	QieZrGXSLfBVUhFRB0k0iC1z8dmm30iQXKu0B5rNP09rV5T8xRbjmGOUVYBBy3O6i81JslouJuQQZ
+	O7dBSiRWa16/lkk0tIe36wknSM8UaUlBZ309JoWDuWj4qmJD0k27ZTA7GzO93hM1XMbdPEZl8iNMm
+	8UD4ela7oXRYMI3GUw2qQrjbVFKjrLnSV8uyWZBr7mIzhkGU+TU28LWJ1PJHbVkIAv63/5c2eG2rK
+	9inqFNYTKRAYO0EZDfXw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hyMGE-0000c6-Ra; Thu, 15 Aug 2019 20:22:14 +0000
-Received: from namei.org ([65.99.196.166])
+	id 1hyMao-0007Us-Mb; Thu, 15 Aug 2019 20:43:30 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hyMG9-0000bW-8b; Thu, 15 Aug 2019 20:22:13 +0000
-Received: from localhost (localhost [127.0.0.1])
- by namei.org (8.14.4/8.14.4) with ESMTP id x7FJKa6b013630;
- Thu, 15 Aug 2019 19:20:36 GMT
-Date: Fri, 16 Aug 2019 05:20:36 +1000 (AEST)
-From: James Morris <jmorris@namei.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+ id 1hyMal-0007UW-1K; Thu, 15 Aug 2019 20:43:29 +0000
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
+ [83.86.89.107])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 5BB2B2083B;
+ Thu, 15 Aug 2019 20:43:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1565901805;
+ bh=4MUbuhxyjB/Z/I0+KEuHYyPv1fvr/qroc0kojX6LQUI=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=rmevilO9FFuTpF1TkeHr9rMjq0tx8UWAlZu1cW/zsMuDRMCXNIqbtamv/Bh9PWjxr
+ uMcyMcUqmrlEz/U6ipnvwnFJksubQpe8uhV+mxBP/PuZfI7m0SnpKLNF/GD9rIRrXm
+ 9i2PofIAyA1t7LZj0WwS4y+NrRc1E+LScCfI1k7c=
+Date: Thu, 15 Aug 2019 22:43:22 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: James Morris <jmorris@namei.org>
 Subject: Re: [PATCH] Add flags option to get xattr method paired to
  __vfs_getxattr
-In-Reply-To: <20190813084801.GA972@kroah.com>
-Message-ID: <alpine.LRH.2.21.1908160515130.12729@namei.org>
+Message-ID: <20190815204322.GB6782@kroah.com>
 References: <20190812193320.200472-1-salyzyn@android.com>
  <20190813084801.GA972@kroah.com>
-User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
+ <alpine.LRH.2.21.1908160515130.12729@namei.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <alpine.LRH.2.21.1908160515130.12729@namei.org>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190815_132209_385932_9C6655C3 
-X-CRM114-Status: GOOD (  11.62  )
+X-CRM114-CacheID: sfid-20190815_134327_122353_26B187D8 
+X-CRM114-Status: GOOD (  14.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,7 +91,7 @@ Cc: Latchesar Ionkov <lucho@ionkov.net>, Dave Kleikamp <shaggy@kernel.org>,
  Sage Weil <sage@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>,
  Richard Weinberger <richard@nod.at>, Mark Fasheh <mark@fasheh.com>,
  Hugh Dickins <hughd@google.com>,
- =?ISO-8859-15?Q?Ernesto_A=2E_Fern=E1ndez?= <ernesto.mnd.fernandez@gmail.com>,
+ Ernesto =?iso-8859-1?Q?A=2E_Fern=E1ndez?= <ernesto.mnd.fernandez@gmail.com>,
  cluster-devel@redhat.com, selinux@vger.kernel.org,
  Vyacheslav Dubeyko <slava@dubeyko.com>,
  Casey Schaufler <casey@schaufler-ca.com>, v9fs-developer@lists.sourceforge.net,
@@ -111,54 +123,59 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 13 Aug 2019, Greg Kroah-Hartman wrote:
-
-> On Mon, Aug 12, 2019 at 12:32:49PM -0700, Mark Salyzyn wrote:
-> > --- a/include/linux/xattr.h
-> > +++ b/include/linux/xattr.h
-> > @@ -30,10 +30,10 @@ struct xattr_handler {
-> >  	const char *prefix;
-> >  	int flags;      /* fs private flags */
-> >  	bool (*list)(struct dentry *dentry);
-> > -	int (*get)(const struct xattr_handler *, struct dentry *dentry,
-> > +	int (*get)(const struct xattr_handler *handler, struct dentry *dentry,
-> >  		   struct inode *inode, const char *name, void *buffer,
-> > -		   size_t size);
-> > -	int (*set)(const struct xattr_handler *, struct dentry *dentry,
-> > +		   size_t size, int flags);
-> > +	int (*set)(const struct xattr_handler *handler, struct dentry *dentry,
-> >  		   struct inode *inode, const char *name, const void *buffer,
-> >  		   size_t size, int flags);
+On Fri, Aug 16, 2019 at 05:20:36AM +1000, James Morris wrote:
+> On Tue, 13 Aug 2019, Greg Kroah-Hartman wrote:
 > 
-> Wow, 7 arguments.  Isn't there some nice rule of thumb that says once
-> you get more then 5, a function becomes impossible to understand?
+> > On Mon, Aug 12, 2019 at 12:32:49PM -0700, Mark Salyzyn wrote:
+> > > --- a/include/linux/xattr.h
+> > > +++ b/include/linux/xattr.h
+> > > @@ -30,10 +30,10 @@ struct xattr_handler {
+> > >  	const char *prefix;
+> > >  	int flags;      /* fs private flags */
+> > >  	bool (*list)(struct dentry *dentry);
+> > > -	int (*get)(const struct xattr_handler *, struct dentry *dentry,
+> > > +	int (*get)(const struct xattr_handler *handler, struct dentry *dentry,
+> > >  		   struct inode *inode, const char *name, void *buffer,
+> > > -		   size_t size);
+> > > -	int (*set)(const struct xattr_handler *, struct dentry *dentry,
+> > > +		   size_t size, int flags);
+> > > +	int (*set)(const struct xattr_handler *handler, struct dentry *dentry,
+> > >  		   struct inode *inode, const char *name, const void *buffer,
+> > >  		   size_t size, int flags);
+> > 
+> > Wow, 7 arguments.  Isn't there some nice rule of thumb that says once
+> > you get more then 5, a function becomes impossible to understand?
+> > 
+> > Surely this could be a structure passed in here somehow, that way when
+> > you add the 8th argument in the future, you don't have to change
+> > everything yet again?  :)
+> > 
+> > I don't have anything concrete to offer as a replacement fix for this,
+> > but to me this just feels really wrong...
 > 
-> Surely this could be a structure passed in here somehow, that way when
-> you add the 8th argument in the future, you don't have to change
-> everything yet again?  :)
+> How about something like:
 > 
-> I don't have anything concrete to offer as a replacement fix for this,
-> but to me this just feels really wrong...
+> struct xattr_gs_args {
+> 	struct dentry *dentry;
+> 	struct inode *inode;
 
-How about something like:
+As he said in a later message, dentry and inode is redundant, only 1 is
+needed (dentry I think?)
 
-struct xattr_gs_args {
-	struct dentry *dentry;
-	struct inode *inode;
-	const char *name;
-	const void *buffer;
-	size_t size;
-	int flags;
-};
+> 	const char *name;
+> 	const void *buffer;
+> 	size_t size;
+> 	int flags;
+> };
+> 
+> int (*get)(const struct xattr_handler *handler, struct xattr_gs_args *args);
+> int (*set)(const struct xattr_handler *handler, struct xattr_gs_args *args);
 
-int (*get)(const struct xattr_handler *handler, struct xattr_gs_args *args);
-int (*set)(const struct xattr_handler *handler, struct xattr_gs_args *args);
+But yes, that would be much much better.
 
+thanks,
 
--- 
-James Morris
-<jmorris@namei.org>
-
+greg k-h
 
 ______________________________________________________
 Linux MTD discussion mailing list
