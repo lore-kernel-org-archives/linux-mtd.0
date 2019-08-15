@@ -4,94 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EF53C3A589
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Aug 2019 21:27:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C08D6C3A589
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Aug 2019 22:28:36 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3C459205F4
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Aug 2019 21:27:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8CC32206C1
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Aug 2019 22:28:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BEyuIiNu";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=android.com header.i=@android.com header.b="lIpZ0g9D"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C459205F4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=android.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hPK33ogX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8CC32206C1
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=namei.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=HBoy+zuAQWKK47e4Kuw+WRqTexmQ2/yONTzHU6pauvM=; b=BEyuIiNuEsFrrmdwx4vA7ZMrH
-	VwcIvjYkzzJ1st5P/BasI8gbpb1qJO3LkFmbeEwCRJ9zJUSWr37RGFHNboe+GeZqoc3pWeXdDj0lI
-	2ODnVvcVXi1aJp9D1ANbfbjKc9O5RNSIhvGFAFKDMiwgqNc3Bl34Rggdx0JE7M62+GhEviYKzNKZW
-	xj7YiSPcITu4fT8tNoU8V9brnOJ7ou5gBxVpTIoLRICYDJUGMFf7DqajCaS+WUhRaWKI0eLvsjdQJ
-	GSJA2fjJYkUGzuMzAcAzJ8P1yoUJb1+exHOWGNsi5FrRNuktEOPDruFg4aBKJ452XuAYuGFsfc3L2
-	K3oKkexOg==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:Message-ID:
+	In-Reply-To:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=iFNlg5896SckFBaOVLOi4OgFF3Yz0gk5K6CCzStELes=; b=hPK33ogXyicq/R
+	JJP0q5of+JCmBfc499BOs8M2fGdTDK82paPuRnKoWJokz6Le+njRh4+qvVrSz/zCtcXqHd662QSIC
+	HYYp2iP2c9L/3uH5gfXerFfZm/RM0YPUTHJhugR83193VV+1l9JuW/78bbglfnUviN5zRQ3P2bHSs
+	KKMsIIYcFj078EVDtptdK8L811hujilSTOSHCq5jyJvIpz+f+gKU1O14v8fUgX4ufn6Ryylu0W4EY
+	mT/QeEtjte3Iixku5POkbQ4UWq85rxAtnuD2m6SLQWL6E8FVqbTxYcHvsboKD8KhiiJ2nwuclsQEC
+	WYMUy2DhpUbSneKQ0ODg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hyNGm-000730-Gl; Thu, 15 Aug 2019 21:26:52 +0000
-Received: from mail-pg1-x543.google.com ([2607:f8b0:4864:20::543])
+	id 1hyOEB-0004JO-Lu; Thu, 15 Aug 2019 22:28:15 +0000
+Received: from namei.org ([65.99.196.166])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hyNGj-00072O-Qs
- for linux-mtd@lists.infradead.org; Thu, 15 Aug 2019 21:26:51 +0000
-Received: by mail-pg1-x543.google.com with SMTP id w10so1851659pgj.7
- for <linux-mtd@lists.infradead.org>; Thu, 15 Aug 2019 14:26:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=android.com; s=20161025;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-transfer-encoding:content-language;
- bh=NQPI89pyKynFZwWztDWLjrPNlq9e9KFjYiijpvVD82o=;
- b=lIpZ0g9DtDyqIqk3Pk+f3LAbBb1IHJR/OqcvIqSvHq+yBEN7osFWEACcZH+FVTGAN+
- z81fgESdI7fNhc3JgTo9dRJMBztkRx79bvkDfp3/xi9bZurWt2357qZZo4tFW7M0y0Ej
- A6uvlorCTKMuc3kR41qxmYDng3wbRM+BG0tiDg042ULiVNZsJKa0xmpkuCsfDllwdR+e
- dG4DrPqiLG1FI9UfDGP54YpE2IKITme3NrNG9h5Xx1BAmyChoM9PJ99fCCQ/KwOPT9he
- yumEroYrkBe4fkJ0BYuWZmThYwe0QxWcBl+TbCtzexrk33BB01Ff8hxY8VdTWES/ELDc
- HaRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-transfer-encoding
- :content-language;
- bh=NQPI89pyKynFZwWztDWLjrPNlq9e9KFjYiijpvVD82o=;
- b=YWdHLqWLWbu6VmSCtDTB5k+W2OPZPslpLvr1pg9ONCW1NokRJATgp5fFycvhePN9EK
- UM5hUnPgfuPbUS+V/bAtubnLR5+Yu3fY2y9W6WvADnpKaeK4bXZiT3VBkI6WXGt0VpOg
- zT/xD8NjTNpUv3xayKFyWQ3gkAgz1ldscyrqFHiFmIW6hZd6QvZ+1FRbHj+HMw5zOZH+
- Fql+xM6ccZDJnIf4PcBpKfSzXm0/xfyxI3O7Wi1IzZ+/+WuPYQDAfC2Px8Xd1ZEevm+Z
- u3FtvQ74bqjwyfLeSZM4St0Y0gBH5oYCf35Y8W8fuScKY7xtjzWVu0O8vGNJwMY9lXam
- WOyw==
-X-Gm-Message-State: APjAAAUQGJ5n99Sqlj4sNw+Sk7USlqrr96JBBks/jKYE459mvzCLHWIz
- qD6O7WfUgVcUliQB66xdW5Z+gA==
-X-Google-Smtp-Source: APXvYqzllKC5ksLQDzyaqGJCDuceyLpQSHPwoKzZQcbJiABKWTaC5jPOSVkAOdc7QTtTY77anKcswg==
-X-Received: by 2002:a62:e910:: with SMTP id j16mr7618601pfh.123.1565904408941; 
- Thu, 15 Aug 2019 14:26:48 -0700 (PDT)
-Received: from nebulus.mtv.corp.google.com
- ([2620:15c:211:200:5404:91ba:59dc:9400])
- by smtp.googlemail.com with ESMTPSA id v7sm3875690pff.87.2019.08.15.14.26.46
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 15 Aug 2019 14:26:48 -0700 (PDT)
+ id 1hyOE7-0004J0-NO; Thu, 15 Aug 2019 22:28:13 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by namei.org (8.14.4/8.14.4) with ESMTP id x7FMR7wY025897;
+ Thu, 15 Aug 2019 22:27:07 GMT
+Date: Fri, 16 Aug 2019 08:27:07 +1000 (AEST)
+From: James Morris <jmorris@namei.org>
+To: Mark Salyzyn <salyzyn@android.com>
 Subject: Re: [PATCH] Add flags option to get xattr method paired to
  __vfs_getxattr
-To: James Morris <jmorris@namei.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+In-Reply-To: <69889dec-5440-1472-ed57-380f45547581@android.com>
+Message-ID: <alpine.LRH.2.21.1908160825310.22623@namei.org>
 References: <20190812193320.200472-1-salyzyn@android.com>
  <20190813084801.GA972@kroah.com>
  <alpine.LRH.2.21.1908160515130.12729@namei.org>
-From: Mark Salyzyn <salyzyn@android.com>
-Message-ID: <69889dec-5440-1472-ed57-380f45547581@android.com>
-Date: Thu, 15 Aug 2019 14:26:46 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ <69889dec-5440-1472-ed57-380f45547581@android.com>
+User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <alpine.LRH.2.21.1908160515130.12729@namei.org>
-Content-Language: en-GB
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190815_142649_867421_D904F458 
-X-CRM114-Status: GOOD (  17.79  )
+X-CRM114-CacheID: sfid-20190815_152811_969033_FF544664 
+X-CRM114-Status: UNSURE (   6.33  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,12 +68,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Latchesar Ionkov <lucho@ionkov.net>, Dave Kleikamp <shaggy@kernel.org>,
- jfs-discussion@lists.sourceforge.net, linux-integrity@vger.kernel.org,
- Martin Brandenburg <martin@omnibond.com>, samba-technical@lists.samba.org,
- Dominique Martinet <asmadeus@codewreck.org>, Chao Yu <yuchao0@huawei.com>,
- Mimi Zohar <zohar@linux.ibm.com>, linux-unionfs@vger.kernel.org,
- David Howells <dhowells@redhat.com>, Chris Mason <clm@fb.com>,
- "David S. Miller" <davem@davemloft.net>,
+ jfs-discussion@lists.sourceforge.net, kernel-team@android.com,
+ linux-integrity@vger.kernel.org, Martin Brandenburg <martin@omnibond.com>,
+ samba-technical@lists.samba.org, Dominique Martinet <asmadeus@codewreck.org>,
+ Chao Yu <yuchao0@huawei.com>, Mimi Zohar <zohar@linux.ibm.com>,
+ linux-unionfs@vger.kernel.org, David Howells <dhowells@redhat.com>,
+ Chris Mason <clm@fb.com>, "David S. Miller" <davem@davemloft.net>,
  Andreas Dilger <adilger.kernel@dilger.ca>, Eric Paris <eparis@parisplace.org>,
  netdev@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
  linux-afs@lists.infradead.org, Mike Marshall <hubcap@omnibond.com>,
@@ -117,23 +81,23 @@ Cc: Latchesar Ionkov <lucho@ionkov.net>, Dave Kleikamp <shaggy@kernel.org>,
  Sage Weil <sage@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>,
  Richard Weinberger <richard@nod.at>, Mark Fasheh <mark@fasheh.com>,
  Hugh Dickins <hughd@google.com>,
- =?UTF-8?Q?Ernesto_A=2e_Fern=c3=a1ndez?= <ernesto.mnd.fernandez@gmail.com>,
+ =?ISO-8859-15?Q?Ernesto_A=2E_Fern=E1ndez?= <ernesto.mnd.fernandez@gmail.com>,
  cluster-devel@redhat.com, selinux@vger.kernel.org,
  Vyacheslav Dubeyko <slava@dubeyko.com>,
  Casey Schaufler <casey@schaufler-ca.com>, v9fs-developer@lists.sourceforge.net,
  Ilya Dryomov <idryomov@gmail.com>, linux-ext4@vger.kernel.org,
- kernel-team@android.com, linux-mm@kvack.org, devel@lists.orangefs.org,
- Serge Hallyn <serge@hallyn.com>, linux-cifs@vger.kernel.org,
- Eric Van Hensbergen <ericvh@gmail.com>, ecryptfs@vger.kernel.org,
- Josef Bacik <josef@toxicpanda.com>, reiserfs-devel@vger.kernel.org,
- Tejun Heo <tj@kernel.org>, Joel Becker <jlbec@evilplan.org>,
- linux-mtd@lists.infradead.org, David Sterba <dsterba@suse.com>,
- Jaegeuk Kim <jaegeuk@kernel.org>, ceph-devel@vger.kernel.org,
- Trond Myklebust <trond.myklebust@hammerspace.com>,
+ Stephen Smalley <sds@tycho.nsa.gov>, linux-mm@kvack.org,
+ devel@lists.orangefs.org, Serge Hallyn <serge@hallyn.com>,
+ linux-cifs@vger.kernel.org, Eric Van Hensbergen <ericvh@gmail.com>,
+ ecryptfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+ reiserfs-devel@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+ Joel Becker <jlbec@evilplan.org>, linux-mtd@lists.infradead.org,
+ David Sterba <dsterba@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+ ceph-devel@vger.kernel.org, Trond Myklebust <trond.myklebust@hammerspace.com>,
  Paul Moore <paul@paul-moore.com>, linux-nfs@vger.kernel.org,
  Theodore Ts'o <tytso@mit.edu>, linux-fsdevel@vger.kernel.org,
  Joseph Qi <joseph.qi@linux.alibaba.com>, Mathieu Malaterre <malat@debian.org>,
- Stephen Smalley <sds@tycho.nsa.gov>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  "Darrick J. Wong" <darrick.wong@oracle.com>, Jeff Layton <jlayton@kernel.org>,
  linux-kernel@vger.kernel.org, stable@vger.kernel.org,
  Tyler Hicks <tyhicks@canonical.com>, Steve French <sfrench@samba.org>,
@@ -144,94 +108,31 @@ Cc: Latchesar Ionkov <lucho@ionkov.net>, Dave Kleikamp <shaggy@kernel.org>,
  David Woodhouse <dwmw2@infradead.org>,
  Anna Schumaker <anna.schumaker@netapp.com>, linux-btrfs@vger.kernel.org,
  Alexander Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 8/15/19 12:20 PM, James Morris wrote:
-> On Tue, 13 Aug 2019, Greg Kroah-Hartman wrote:
->
->> On Mon, Aug 12, 2019 at 12:32:49PM -0700, Mark Salyzyn wrote:
->>> --- a/include/linux/xattr.h
->>> +++ b/include/linux/xattr.h
->>> @@ -30,10 +30,10 @@ struct xattr_handler {
->>>   	const char *prefix;
->>>   	int flags;      /* fs private flags */
->>>   	bool (*list)(struct dentry *dentry);
->>> -	int (*get)(const struct xattr_handler *, struct dentry *dentry,
->>> +	int (*get)(const struct xattr_handler *handler, struct dentry *dentry,
->>>   		   struct inode *inode, const char *name, void *buffer,
->>> -		   size_t size);
->>> -	int (*set)(const struct xattr_handler *, struct dentry *dentry,
->>> +		   size_t size, int flags);
->>> +	int (*set)(const struct xattr_handler *handler, struct dentry *dentry,
->>>   		   struct inode *inode, const char *name, const void *buffer,
->>>   		   size_t size, int flags);
->> Wow, 7 arguments.  Isn't there some nice rule of thumb that says once
->> you get more then 5, a function becomes impossible to understand?
->>
->> Surely this could be a structure passed in here somehow, that way when
->> you add the 8th argument in the future, you don't have to change
->> everything yet again?  :)
->>
->> I don't have anything concrete to offer as a replacement fix for this,
->> but to me this just feels really wrong...
-> How about something like:
->
-> struct xattr_gs_args {
+On Thu, 15 Aug 2019, Mark Salyzyn wrote:
+
+> Good Idea, but using the same argument structure for set and get I would be
+> concerned about the loss of compiler protection for the buffer argument;
+
+Agreed, I missed that.
+
+> struct getxattr_args {
 > 	struct dentry *dentry;
 > 	struct inode *inode;
 > 	const char *name;
-> 	const void *buffer;
+> 	void *buffer;
 > 	size_t size;
 > 	int flags;
-> };
->
-> int (*get)(const struct xattr_handler *handler, struct xattr_gs_args *args);
-> int (*set)(const struct xattr_handler *handler, struct xattr_gs_args *args);
->
-Good Idea, but using the same argument structure for set and get I would 
-be concerned about the loss of compiler protection for the buffer 
-argument; it is void* for get, and const void* for set. And if we pulled 
-out buffer (and size since it is paired with it) from the structure to 
-solve, the 'mixed' argument approach (resulting in 4 args) adds to the 
-difficulty/complexity.
 
-Good news is the same structure(s) can get passed to __vfs_getxattr and 
-__vfs_setxattr, so one less issue with getting the argument order 
-correct from the caller.
+Does 'get' need flags?
 
- From an optimization standpoint, passing an argument to a pointer to a 
-structure assembled on the stack constrains the compiler. Whereas 
-individual arguments allow for the optimization to place all the 
-arguments into registers. All modern processors have no issue with tens 
-of arguments.
-
-So, I will look into what the patch set will look like by splitting into 
-set and get, and trying to reuse the structure down the call chain.
-
-struct getxattr_args {
-	struct dentry *dentry;
-	struct inode *inode;
-	const char *name;
-	void *buffer;
-	size_t size;
-	int flags;
-};
-
-struct setxattr_args {
-	struct dentry *dentry;
-	struct inode *inode;
-	const char *name;
-	const void *buffer;
-	size_t size;
-	int flags;
-};
-
--- Mark
-
-
+-- 
+James Morris
+<jmorris@namei.org>
 
 
 ______________________________________________________
