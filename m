@@ -1,63 +1,73 @@
-Return-Path: <SRS0=q3Mz=WL=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=cvjG=WM=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 454E7C3A589
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Aug 2019 22:54:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82C68C3A59C
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Aug 2019 08:01:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1302320644
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Aug 2019 22:54:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 56B2B205F4
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Aug 2019 08:01:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="I8tBxYrw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1302320644
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XNIXJlV3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 56B2B205F4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Type:References:Message-ID:Date:Subject:To:From:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=mFrTkKPwFtI+/kh7fLueVSDinMdrrjtbO8S46i8PCgI=; b=I8t
-	BxYrwVvsBeK5Rw4/B7K+nisK8BX+6h3C59dXw7Tw7PXoxIPPO4boI9U8hQplQX2JJRKj4ms333UUu
-	3tm8ZKzO8YC+XMnAXHSu4gL9EgyI3Haxm6sKXNKdyFpsKbpDYK6SfVcykxU+qP7zDMC45IsyIG+bd
-	ZIsRne/aD9GxZa328FiguV0qyvALSXHNnf63EXHwou5Uqw5SLQ0V9OZRc3ebEdFS8ADkzVGDtAuGg
-	3lDb0qdVbiMsrZXOMUteJnNoM5a6Y3stPUXrZ+AxTvPNfLfqqryJeMyt8pzTXryvbp1qXnLbqgNcf
-	ZJ/e0Sx0iJiMdlhujafwDy35oAtpEZA==;
+	List-Owner; bh=xpj25KXb83l9fKsnKEF8cUc8uvStJvPao+tWOPvlWDQ=; b=XNIXJlV3v7v+JW
+	2D2TTK2hYGVl+V8K78rFZFJ1l6jSMcOExKaIenqDYGelozvMJSr6AKL/NiHDez44zhCqGEE3hO7dg
+	GZ4MRvByXWjgzYPkCTRlPBdT2jfc+OcXghfkTY8dMyrnjwb3InGYBKrk6g3pzMDw2nJ52gp+nV/+r
+	FG1V/5TObFelXXdZs94V661MiJPTftp+9gUMBH93v3eRlzXXk6EoBzobG47Hikt6gdkHpKuqwRH9y
+	UMiQUWU1uXILtoqhK3zm/AE31k6BSYL68SUwiTpHQYlXw+3NT7yRaan2t7rh/02QhqM6m3ueugPXj
+	gdsXSg/wkjW/PZ7W1o3g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hyOct-00040w-Qq; Thu, 15 Aug 2019 22:53:47 +0000
-Received: from mga12.intel.com ([192.55.52.136])
+	id 1hyXAe-0000Fy-DJ; Fri, 16 Aug 2019 08:01:12 +0000
+Received: from szxga02-in.huawei.com ([45.249.212.188] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hyOcq-00040a-Pr
- for linux-mtd@lists.infradead.org; Thu, 15 Aug 2019 22:53:46 +0000
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 15 Aug 2019 15:53:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,389,1559545200"; d="scan'208";a="179505147"
-Received: from tthayer-hp-z620.an.intel.com ([10.122.105.146])
- by orsmga003.jf.intel.com with ESMTP; 15 Aug 2019 15:53:43 -0700
-From: thor.thayer@linux.intel.com
-To: marek.vasut@gmail.com, tudor.ambarus@microchip.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com
-Subject: [RESEND] mtd: spi-nor: Fix Cadence QSPI RCU Schedule Stall
-Date: Thu, 15 Aug 2019 17:55:36 -0500
-Message-Id: <1565909736-11379-1-git-send-email-thor.thayer@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
+ id 1hyXAZ-0000FI-Mh
+ for linux-mtd@lists.infradead.org; Fri, 16 Aug 2019 08:01:10 +0000
+Received: from dggemi402-hub.china.huawei.com (unknown [172.30.72.54])
+ by Forcepoint Email with ESMTP id 1827E54B1D16E317E9A1;
+ Fri, 16 Aug 2019 16:00:51 +0800 (CST)
+Received: from DGGEMI524-MBX.china.huawei.com ([169.254.7.6]) by
+ dggemi402-hub.china.huawei.com ([10.3.17.135]) with mapi id 14.03.0439.000;
+ Fri, 16 Aug 2019 16:00:43 +0800
+From: chengzhihao <chengzhihao1@huawei.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0hdIHViaWZzOiB1Ymlmc190bmNfc3RhcnRfY29tbWl0?=
+ =?utf-8?B?OiBGaXggT09CIGluIGxheW91dF9pbl9nYXBz?=
+Thread-Topic: [PATCH] ubifs: ubifs_tnc_start_commit: Fix OOB in layout_in_gaps
+Thread-Index: AQHVPsBTBWetoNcJ1UaytZ+21M4VxabhWCiAgAETrKCAFtDaAIAAv90QgAOWMZA=
+Date: Fri, 16 Aug 2019 08:00:42 +0000
+Message-ID: <0B80F9D4116B2F4484E7279D5A66984F7C0325@dggemi524-mbx.china.huawei.com>
+References: <1563602720-113903-1-git-send-email-chengzhihao1@huawei.com>
+ <CAFLxGvxEAGtQDFm4G3orY+M9yuthDA4j0+u=HbE9DKuo7H8WCg@mail.gmail.com>
+ <0B80F9D4116B2F4484E7279D5A66984F7A7472@dggemi524-mbx.china.huawei.com>
+ <CAFLxGvz__aw+BnfmGS3XXGqT6n6q-9miLPoVcL9KuvaZ2QbVUQ@mail.gmail.com> 
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.177.224.82]
+Content-Type: multipart/mixed;
+ boundary="_002_0B80F9D4116B2F4484E7279D5A66984F7C0325dggemi524mbxchina_"
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190815_155344_853144_92F5615C 
-X-CRM114-Status: GOOD (  10.06  )
+X-CRM114-CacheID: sfid-20190816_010108_103001_3BCF42C4 
+X-CRM114-Status: UNSURE (   9.17  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,94 +79,214 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Thor Thayer <thor.thayer@linux.intel.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: "zhangyi \(F\)" <yi.zhang@huawei.com>, Richard Weinberger <richard@nod.at>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Artem Bityutskiy <dedekind1@gmail.com>,
+ LKML <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Thor Thayer <thor.thayer@linux.intel.com>
+--_002_0B80F9D4116B2F4484E7279D5A66984F7C0325dggemi524mbxchina_
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 
-The current Cadence QSPI driver sometimes caused a
-"rcu_sched self-detected stall" while writing large files.
+PiAgdWJpZnNfYXNzZXJ0KGMsIHAgPCBjLT5nYXBfbGVicyArIGMtPmxzdC5pZHhfbGVicyk7DQoN
+CkkndmUgZG9uZSA1MCBwcm9ibGVtIHJlcHJvZHVjZXMgb24gZGlmZmVyZW50IGZsYXNoIGRldmlj
+ZXMgYW5kIG1hZGUgc3VyZSB0aGF0IHRoZSBhc3NlcnRpb24gd2FzIG5vdCB0cmlnZ2VyZWQuIFNl
+ZSByZWNvcmQudHh0IGZvciBkZXRhaWxzLg0KDQotLS0tLemCruS7tuWOn+S7ti0tLS0tDQrlj5Hk
+u7bkuro6IGNoZW5nemhpaGFvIA0K5Y+R6YCB5pe26Ze0OiAyMDE55bm0OOaciDE05pelIDk6MjAN
+CuaUtuS7tuS6ujogJ1JpY2hhcmQgV2VpbmJlcmdlcicgPHJpY2hhcmQud2VpbmJlcmdlckBnbWFp
+bC5jb20+DQrmioTpgIE6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+OyBTYXNj
+aGEgSGF1ZXIgPHMuaGF1ZXJAcGVuZ3V0cm9uaXguZGU+OyBBcnRlbSBCaXR5dXRza2l5IDxkZWRl
+a2luZDFAZ21haWwuY29tPjsgemhhbmd5aSAoRikgPHlpLnpoYW5nQGh1YXdlaS5jb20+OyBsaW51
+eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgTEtNTCA8bGludXgta2VybmVsQHZnZXIua2VybmVs
+Lm9yZz4NCuS4u+mimDog562U5aSNOiBbUEFUQ0hdIHViaWZzOiB1Ymlmc190bmNfc3RhcnRfY29t
+bWl0OiBGaXggT09CIGluIGxheW91dF9pbl9nYXBzDQoNClN1cmUsIEknbGwgZG8gbW9yZSB0ZXN0
+cyBvbiBkaWZmZXJlbnQgbWFjaGluZXMgdG8gY2hlY2sgdGhlIGFzc2VydGlvbi4gSSdtIHRyeWlu
+ZyB0byB1bmRlcnN0YW5kIHdoZW4gdGhpcyBhc3NlcnRpb24gd2lsbCBiZSB0cmlnZ2VyZWQuIEFs
+dGhvdWdoIEkgaGF2ZW4ndCBmb3VuZCB0aGlzIGFzc2VydGlvbiBiZSB0cmlnZ2VyZWQgc28gZmFy
+IGluIHNldmVyYWwgdGVzdHMgb24geDg2XzY0KHFlbXUpLg0KDQotLS0tLemCruS7tuWOn+S7ti0t
+LS0tDQrlj5Hku7bkuro6IFJpY2hhcmQgV2VpbmJlcmdlciBbbWFpbHRvOnJpY2hhcmQud2VpbmJl
+cmdlckBnbWFpbC5jb21dIA0K5Y+R6YCB5pe26Ze0OiAyMDE55bm0OOaciDE05pelIDU6NDQNCuaU
+tuS7tuS6ujogY2hlbmd6aGloYW8gPGNoZW5nemhpaGFvMUBodWF3ZWkuY29tPg0K5oqE6YCBOiBS
+aWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0PjsgU2FzY2hhIEhhdWVyIDxzLmhhdWVy
+QHBlbmd1dHJvbml4LmRlPjsgQXJ0ZW0gQml0eXV0c2tpeSA8ZGVkZWtpbmQxQGdtYWlsLmNvbT47
+IHpoYW5neWkgKEYpIDx5aS56aGFuZ0BodWF3ZWkuY29tPjsgbGludXgtbXRkQGxpc3RzLmluZnJh
+ZGVhZC5vcmc7IExLTUwgPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+DQrkuLvpopg6IFJl
+OiBbUEFUQ0hdIHViaWZzOiB1Ymlmc190bmNfc3RhcnRfY29tbWl0OiBGaXggT09CIGluIGxheW91
+dF9pbl9nYXBzDQoNCk9uIFR1ZSwgSnVsIDMwLCAyMDE5IGF0IDM6MjEgQU0gY2hlbmd6aGloYW8g
+PGNoZW5nemhpaGFvMUBodWF3ZWkuY29tPiB3cm90ZToNCj4NCj4gT0ssIHRoYXQncyBmaW5lLCBh
+bmQgSSB3aWxsIGNvbnRpbnVlIHRvIHVuZGVyc3RhbmQgbW9yZSBpbXBsZW1lbnRhdGlvbiBjb2Rl
+IHJlbGF0ZWQgdG8gdGhpcyBwYXJ0Lg0KDQpJIHRoaW5rIHdlIGNhbiBnbyB3aXRoIHRoZSByZWFs
+bG9jKCkgYXBwcm9hY2ggZm9yIG5vdy4NCkNhbiB5b3UgcGxlYXNlIGNoZWNrIHdoZXRoZXIgdGhl
+IGFzc2VydCgpIHRyaWdnZXJzPw0KDQotLSANClRoYW5rcywNCi8vcmljaGFyZA0K
 
-Stall Report:
-'# mtd_debug write /dev/mtd1 0 48816464 blob.img
-[ 1815.454227] rcu: INFO: rcu_sched self-detected stall on CPU
-[ 1815.459789] rcu:     0-....: (2099 ticks this GP) idle=8c6/1/0x40000002
- softirq=6492/6492 fqs=935
-[ 1815.468442] rcu:      (t=2100 jiffies g=8749 q=247)
-	<snip> (abbreviated backtrace)
-[ 1815.772086] [<c05a3ea0>] (cqspi_exec_flash_cmd) (cqspi_read_reg)
-[ 1815.786203] [<c05a5488>] (cqspi_read_reg) from (read_sr)
-[ 1815.803790] [<c05a0330>] (read_sr) from
-	(spi_nor_wait_till_ready_with_timeout)
-[ 1815.816610] [<c05a182c>] (spi_nor_wait_till_ready_with_timeout) from
-	(spi_nor_write+0x104/0x1d0)
-[ 1815.836791] [<c05a1a44>] (spi_nor_write) from (part_write+0x50/0x58)
-	<snip>
-[ 1815.997961] cadence-qspi ff809000.spi: Flash command execution timed out.
-[ 1816.004733] error -110 reading SR
-file_to_flash: write, size 0x2e8e150, n 0x2e8e150
-write(): Connection timed out
+--_002_0B80F9D4116B2F4484E7279D5A66984F7C0325dggemi524mbxchina_
+Content-Type: text/plain; name="record.txt"
+Content-Description: record.txt
+Content-Disposition: attachment; filename="record.txt"; size=8397;
+	creation-date="Fri, 16 Aug 2019 06:13:09 GMT";
+	modification-date="Fri, 16 Aug 2019 07:55:24 GMT"
+Content-Transfer-Encoding: base64
 
-This was caused by a tight loop in cqspi_wait_for_bit(). Fix by using
-readl_relaxed_poll_timeout() which sleeps 10us while polling a register.
+Tm8JCQkJCQkJCQkJCQlMb2cJCQkJCQkJCQkJCQkJCQkJCQkJQ29uZmlnDQoxCQljLT5sc3QuaWR4
+X2xlYnNbb3JpZ2luXSA9IDQsIGMtPmxzdC5pZHhfbGVic1tjdXJyXSA9IDExLCBwIC0gYy0+Z2Fw
+X2xlYnMgPSA4ID09PT0JCW10ZHJhbTogMTZNaUIsIFBFQiBzaXplIDE2S2lCLCBmYXN0bWFwIGVu
+YWJsZWQsIHZvbHVtZSBzaXplIDExTWlCDQoyCQljLT5sc3QuaWR4X2xlYnNbb3JpZ2luXSA9IDQs
+IGMtPmxzdC5pZHhfbGVic1tjdXJyXSA9IDEyLCBwIC0gYy0+Z2FwX2xlYnMgPSA5ID09PT0JCW10
+ZHJhbTogMTZNaUIsIFBFQiBzaXplIDE2S2lCLCBmYXN0bWFwIGVuYWJsZWQsIHZvbHVtZSBzaXpl
+IDExTWlCDQozCQljLT5sc3QuaWR4X2xlYnNbb3JpZ2luXSA9IDQsIGMtPmxzdC5pZHhfbGVic1tj
+dXJyXSA9IDEyLCBwIC0gYy0+Z2FwX2xlYnMgPSA5ID09PT0JCW5hbmRzaW06IDE2TWlCLCBQRUIg
+c2l6ZSAxNktpQiwgcGFnZSBzaXplIDUxMktpQiwgVklEIG9mZnNldCAwLCBmYXN0bWFwIGVuYWJs
+ZWQsIHZvbHVtZSBzaXplIDExTWlCDQo0CQljLT5sc3QuaWR4X2xlYnNbb3JpZ2luXSA9IDQsIGMt
+PmxzdC5pZHhfbGVic1tjdXJyXSA9IDExLCBwIC0gYy0+Z2FwX2xlYnMgPSA4ID09PT0JCW10ZHJh
+bTogMTZNaUIsIFBFQiBzaXplIDE2S2lCLCBmYXN0bWFwIGVuYWJsZWQsIHZvbHVtZSBzaXplIDEx
+TWlCDQo1CQljLT5sc3QuaWR4X2xlYnNbb3JpZ2luXSA9IDUsIGMtPmxzdC5pZHhfbGVic1tjdXJy
+XSA9IDEyLCBwIC0gYy0+Z2FwX2xlYnMgPSA4ID09PT0JCW10ZHJhbTogMTZNaUIsIFBFQiBzaXpl
+IDE2S2lCLCBmYXN0bWFwIGVuYWJsZWQsIHZvbHVtZSBzaXplIDExTWlCDQo2CQljLT5sc3QuaWR4
+X2xlYnNbb3JpZ2luXSA9IDUsIGMtPmxzdC5pZHhfbGVic1tjdXJyXSA9IDEyLCBwIC0gYy0+Z2Fw
+X2xlYnMgPSA4ID09PT0JCW5hbmRzaW06IDE2TWlCLCBQRUIgc2l6ZSAxNktpQiwgcGFnZSBzaXpl
+IDUxMktpQiwgVklEIG9mZnNldCAwLCBmYXN0bWFwIGVuYWJsZWQsIHZvbHVtZSBzaXplIDExTWlC
+DQo3CQljLT5sc3QuaWR4X2xlYnNbb3JpZ2luXSA9IDQsIGMtPmxzdC5pZHhfbGVic1tjdXJyXSA9
+IDExLCBwIC0gYy0+Z2FwX2xlYnMgPSA4ID09PT0JCW10ZHJhbTogMTZNaUIsIFBFQiBzaXplIDE2
+S2lCLCBmYXN0bWFwIGVuYWJsZWQsIHZvbHVtZSBzaXplIDExTWlCDQo4CQljLT5sc3QuaWR4X2xl
+YnNbb3JpZ2luXSA9IDUsIGMtPmxzdC5pZHhfbGVic1tjdXJyXSA9IDEyLCBwIC0gYy0+Z2FwX2xl
+YnMgPSA4ID09PT0JCW5hbmRzaW06IDE2TWlCLCBQRUIgc2l6ZSAxNktpQiwgcGFnZSBzaXplIDUx
+MktpQiwgVklEIG9mZnNldCAwLCBmYXN0bWFwIGVuYWJsZWQsIHZvbHVtZSBzaXplIDExTWlCDQo5
+CQljLT5sc3QuaWR4X2xlYnNbb3JpZ2luXSA9IDQsIGMtPmxzdC5pZHhfbGVic1tjdXJyXSA9IDEx
+LCBwIC0gYy0+Z2FwX2xlYnMgPSA4ID09PT0JCW10ZHJhbTogMTZNaUIsIFBFQiBzaXplIDE2S2lC
+LCBmYXN0bWFwIGVuYWJsZWQsIHZvbHVtZSBzaXplIDExTWlCDQoxMAkJYy0+bHN0LmlkeF9sZWJz
+W29yaWdpbl0gPSA0LCBjLT5sc3QuaWR4X2xlYnNbY3Vycl0gPSAxMSwgcCAtIGMtPmdhcF9sZWJz
+ID0gOCA9PT09CQltdGRyYW06IDE2TWlCLCBQRUIgc2l6ZSAxNktpQiwgZmFzdG1hcCBlbmFibGVk
+LCB2b2x1bWUgc2l6ZSAxMU1pQg0KMTEJCWMtPmxzdC5pZHhfbGVic1tvcmlnaW5dID0gNCwgYy0+
+bHN0LmlkeF9sZWJzW2N1cnJdID0gMTIsIHAgLSBjLT5nYXBfbGVicyA9IDggPT09PQkJbXRkcmFt
+OiAxNk1pQiwgUEVCIHNpemUgMTZLaUIsIGZhc3RtYXAgZW5hYmxlZCwgdm9sdW1lIHNpemUgMTFN
+aUINCjEyCQljLT5sc3QuaWR4X2xlYnNbb3JpZ2luXSA9IDMsIGMtPmxzdC5pZHhfbGVic1tjdXJy
+XSA9IDEyLCBwIC0gYy0+Z2FwX2xlYnMgPSAxMCA9PT09CQluYW5kc2ltOiAxNk1pQiwgUEVCIHNp
+emUgMTZLaUIsIHBhZ2Ugc2l6ZSA1MTJLaUIsIFZJRCBvZmZzZXQgMCwgZmFzdG1hcCBlbmFibGVk
+LCB2b2x1bWUgc2l6ZSAxMU1pQg0KMTMJCWMtPmxzdC5pZHhfbGVic1tvcmlnaW5dID0gNCwgYy0+
+bHN0LmlkeF9sZWJzW2N1cnJdID0gMTEsIHAgLSBjLT5nYXBfbGVicyA9IDggPT09PQkJbXRkcmFt
+OiAxNk1pQiwgUEVCIHNpemUgMTZLaUIsIGZhc3RtYXAgZW5hYmxlZCwgdm9sdW1lIHNpemUgMTFN
+aUINCjE0CQljLT5sc3QuaWR4X2xlYnNbb3JpZ2luXSA9IDUsIGMtPmxzdC5pZHhfbGVic1tjdXJy
+XSA9IDEyLCBwIC0gYy0+Z2FwX2xlYnMgPSA4ID09PT0JCW10ZHJhbTogMTZNaUIsIFBFQiBzaXpl
+IDE2S2lCLCBmYXN0bWFwIGVuYWJsZWQsIHZvbHVtZSBzaXplIDExTWlCDQoxNQkJYy0+bHN0Lmlk
+eF9sZWJzW29yaWdpbl0gPSA0LCBjLT5sc3QuaWR4X2xlYnNbY3Vycl0gPSAxMSwgcCAtIGMtPmdh
+cF9sZWJzID0gOCA9PT09CQltdGRyYW06IDE2TWlCLCBQRUIgc2l6ZSAxNktpQiwgZmFzdG1hcCBl
+bmFibGVkLCB2b2x1bWUgc2l6ZSAxMU1pQg0KMTYJCWMtPmxzdC5pZHhfbGVic1tvcmlnaW5dID0g
+NSwgYy0+bHN0LmlkeF9sZWJzW2N1cnJdID0gMTIsIHAgLSBjLT5nYXBfbGVicyA9IDggPT09PQkJ
+bXRkcmFtOiAxNk1pQiwgUEVCIHNpemUgMTZLaUIsIGZhc3RtYXAgZW5hYmxlZCwgdm9sdW1lIHNp
+emUgMTFNaUINCjE3CQljLT5sc3QuaWR4X2xlYnNbb3JpZ2luXSA9IDQsIGMtPmxzdC5pZHhfbGVi
+c1tjdXJyXSA9IDExLCBwIC0gYy0+Z2FwX2xlYnMgPSA4ID09PT0JCW10ZHJhbTogMTZNaUIsIFBF
+QiBzaXplIDE2S2lCLCBmYXN0bWFwIGVuYWJsZWQsIHZvbHVtZSBzaXplIDExTWlCDQoxOAkJYy0+
+bHN0LmlkeF9sZWJzW29yaWdpbl0gPSA2LCBjLT5sc3QuaWR4X2xlYnNbY3Vycl0gPSAxMywgcCAt
+IGMtPmdhcF9sZWJzID0gOCA9PT09CQluYW5kc2ltOiAxNk1pQiwgUEVCIHNpemUgMTZLaUIsIHBh
+Z2Ugc2l6ZSA1MTJLaUIsIFZJRCBvZmZzZXQgMCwgZmFzdG1hcCBlbmFibGVkLCB2b2x1bWUgc2l6
+ZSAxMU1pQg0KMTkJCWMtPmxzdC5pZHhfbGVic1tvcmlnaW5dID0gNSwgYy0+bHN0LmlkeF9sZWJz
+W2N1cnJdID0gMTIsIHAgLSBjLT5nYXBfbGVicyA9IDggPT09PQkJbXRkcmFtOiAxNk1pQiwgUEVC
+IHNpemUgMTZLaUIsIGZhc3RtYXAgZW5hYmxlZCwgdm9sdW1lIHNpemUgMTFNaUINCjIwCQljLT5s
+c3QuaWR4X2xlYnNbb3JpZ2luXSA9IDQsIGMtPmxzdC5pZHhfbGVic1tjdXJyXSA9IDEyLCBwIC0g
+Yy0+Z2FwX2xlYnMgPSA5ID09PT0JCW5hbmRzaW06IDE2TWlCLCBQRUIgc2l6ZSAxNktpQiwgcGFn
+ZSBzaXplIDUxMktpQiwgVklEIG9mZnNldCAwLCBmYXN0bWFwIGVuYWJsZWQsIHZvbHVtZSBzaXpl
+IDExTWlCDQoyMQkJYy0+bHN0LmlkeF9sZWJzW29yaWdpbl0gPSA0LCBjLT5sc3QuaWR4X2xlYnNb
+Y3Vycl0gPSAxMSwgcCAtIGMtPmdhcF9sZWJzID0gOCA9PT09CQltdGRyYW06IDE2TWlCLCBQRUIg
+c2l6ZSAxNktpQiwgZmFzdG1hcCBlbmFibGVkLCB2b2x1bWUgc2l6ZSAxMU1pQg0KMjIJCWMtPmxz
+dC5pZHhfbGVic1tvcmlnaW5dID0gNSwgYy0+bHN0LmlkeF9sZWJzW2N1cnJdID0gMTIsIHAgLSBj
+LT5nYXBfbGVicyA9IDggPT09PQkJbmFuZHNpbTogMTZNaUIsIFBFQiBzaXplIDE2S2lCLCBwYWdl
+IHNpemUgNTEyS2lCLCBWSUQgb2Zmc2V0IDAsIGZhc3RtYXAgZW5hYmxlZCwgdm9sdW1lIHNpemUg
+MTFNaUINCjIzCQljLT5sc3QuaWR4X2xlYnNbb3JpZ2luXSA9IDQsIGMtPmxzdC5pZHhfbGVic1tj
+dXJyXSA9IDExLCBwIC0gYy0+Z2FwX2xlYnMgPSA4ID09PT0JCW10ZHJhbTogMTZNaUIsIFBFQiBz
+aXplIDE2S2lCLCBmYXN0bWFwIGVuYWJsZWQsIHZvbHVtZSBzaXplIDExTWlCDQoyNAkJYy0+bHN0
+LmlkeF9sZWJzW29yaWdpbl0gPSA0LCBjLT5sc3QuaWR4X2xlYnNbY3Vycl0gPSAxMSwgcCAtIGMt
+PmdhcF9sZWJzID0gOCA9PT09CQltdGRyYW06IDE2TWlCLCBQRUIgc2l6ZSAxNktpQiwgZmFzdG1h
+cCBlbmFibGVkLCB2b2x1bWUgc2l6ZSAxMU1pQg0KMjUJCWMtPmxzdC5pZHhfbGVic1tvcmlnaW5d
+ID0gNCwgYy0+bHN0LmlkeF9sZWJzW2N1cnJdID0gMTEsIHAgLSBjLT5nYXBfbGVicyA9IDggPT09
+PQkJbmFuZHNpbTogMTZNaUIsIFBFQiBzaXplIDE2S2lCLCBwYWdlIHNpemUgNTEyS2lCLCBWSUQg
+b2Zmc2V0IDAsIGZhc3RtYXAgZW5hYmxlZCwgdm9sdW1lIHNpemUgMTFNaUINCjI2CQljLT5sc3Qu
+aWR4X2xlYnNbb3JpZ2luXSA9IDQsIGMtPmxzdC5pZHhfbGVic1tjdXJyXSA9IDExLCBwIC0gYy0+
+Z2FwX2xlYnMgPSA4ID09PT0JCW10ZHJhbTogMTZNaUIsIFBFQiBzaXplIDE2S2lCLCBmYXN0bWFw
+IGVuYWJsZWQsIHZvbHVtZSBzaXplIDExTWlCDQoyNwkJYy0+bHN0LmlkeF9sZWJzW29yaWdpbl0g
+PSA0LCBjLT5sc3QuaWR4X2xlYnNbY3Vycl0gPSAxMSwgcCAtIGMtPmdhcF9sZWJzID0gOCA9PT09
+CQltdGRyYW06IDE2TWlCLCBQRUIgc2l6ZSAxNktpQiwgZmFzdG1hcCBlbmFibGVkLCB2b2x1bWUg
+c2l6ZSAxMU1pQg0KMjgJCWMtPmxzdC5pZHhfbGVic1tvcmlnaW5dID0gNCwgYy0+bHN0LmlkeF9s
+ZWJzW2N1cnJdID0gMTEsIHAgLSBjLT5nYXBfbGVicyA9IDggPT09PQkJbXRkcmFtOiAxNk1pQiwg
+UEVCIHNpemUgMTZLaUIsIGZhc3RtYXAgZW5hYmxlZCwgdm9sdW1lIHNpemUgMTFNaUINCjI5CQlj
+LT5sc3QuaWR4X2xlYnNbb3JpZ2luXSA9IDQsIGMtPmxzdC5pZHhfbGVic1tjdXJyXSA9IDExLCBw
+IC0gYy0+Z2FwX2xlYnMgPSA4ID09PT0JCW5hbmRzaW06IDE2TWlCLCBQRUIgc2l6ZSAxNktpQiwg
+cGFnZSBzaXplIDUxMktpQiwgVklEIG9mZnNldCAwLCBmYXN0bWFwIGVuYWJsZWQsIHZvbHVtZSBz
+aXplIDExTWlCDQozMAkJYy0+bHN0LmlkeF9sZWJzW29yaWdpbl0gPSA0LCBjLT5sc3QuaWR4X2xl
+YnNbY3Vycl0gPSAxMSwgcCAtIGMtPmdhcF9sZWJzID0gOCA9PT09CQltdGRyYW06IDE2TWlCLCBQ
+RUIgc2l6ZSAxNktpQiwgZmFzdG1hcCBlbmFibGVkLCB2b2x1bWUgc2l6ZSAxMU1pQg0KMzEJCWMt
+PmxzdC5pZHhfbGVic1tvcmlnaW5dID0gNiwgYy0+bHN0LmlkeF9sZWJzW2N1cnJdID0gMTMsIHAg
+LSBjLT5nYXBfbGVicyA9IDggPT09PQkJbmFuZHNpbTogMTZNaUIsIFBFQiBzaXplIDE2S2lCLCBw
+YWdlIHNpemUgNTEyS2lCLCBWSUQgb2Zmc2V0IDAsIGZhc3RtYXAgZW5hYmxlZCwgdm9sdW1lIHNp
+emUgMTFNaUINCjMyCQljLT5sc3QuaWR4X2xlYnNbb3JpZ2luXSA9IDUsIGMtPmxzdC5pZHhfbGVi
+c1tjdXJyXSA9IDEyLCBwIC0gYy0+Z2FwX2xlYnMgPSA4ID09PT0JCW10ZHJhbTogMTZNaUIsIFBF
+QiBzaXplIDE2S2lCLCBmYXN0bWFwIGVuYWJsZWQsIHZvbHVtZSBzaXplIDExTWlCDQozMwkJYy0+
+bHN0LmlkeF9sZWJzW29yaWdpbl0gPSA0LCBjLT5sc3QuaWR4X2xlYnNbY3Vycl0gPSAxMiwgcCAt
+IGMtPmdhcF9sZWJzID0gOSA9PT09CQltdGRyYW06IDE2TWlCLCBQRUIgc2l6ZSAxNktpQiwgZmFz
+dG1hcCBlbmFibGVkLCB2b2x1bWUgc2l6ZSAxMU1pQg0KMzQJCWMtPmxzdC5pZHhfbGVic1tvcmln
+aW5dID0gNSwgYy0+bHN0LmlkeF9sZWJzW2N1cnJdID0gMTIsIHAgLSBjLT5nYXBfbGVicyA9IDgg
+PT09PQkJbXRkcmFtOiAxNk1pQiwgUEVCIHNpemUgMTZLaUIsIGZhc3RtYXAgZW5hYmxlZCwgdm9s
+dW1lIHNpemUgMTFNaUINCjM1CQljLT5sc3QuaWR4X2xlYnNbb3JpZ2luXSA9IDE1LCBjLT5sc3Qu
+aWR4X2xlYnNbY3Vycl0gPSAxOSwgcCAtIGMtPmdhcF9sZWJzID0gMTYgPT09PQkJbXRkcmFtOiAz
+Mk1pQiwgUEVCIHNpemUgMTZLaUIsIGZhc3RtYXAgZW5hYmxlZCwgdm9sdW1lIHNpemUgMjJNaUIN
+CjM2CQljLT5sc3QuaWR4X2xlYnNbb3JpZ2luXSA9IDQsIGMtPmxzdC5pZHhfbGVic1tjdXJyXSA9
+IDExLCBwIC0gYy0+Z2FwX2xlYnMgPSA4ID09PT0JCW5hbmRzaW06IDE2TWlCLCBQRUIgc2l6ZSAx
+NktpQiwgcGFnZSBzaXplIDUxMktpQiwgVklEIG9mZnNldCAwLCBmYXN0bWFwIGVuYWJsZWQsIHZv
+bHVtZSBzaXplIDExTWlCDQozNwkJYy0+bHN0LmlkeF9sZWJzW29yaWdpbl0gPSA0LCBjLT5sc3Qu
+aWR4X2xlYnNbY3Vycl0gPSAxMiwgcCAtIGMtPmdhcF9sZWJzID0gOSA9PT09CQluYW5kc2ltOiAx
+Nk1pQiwgUEVCIHNpemUgMTZLaUIsIHBhZ2Ugc2l6ZSA1MTJLaUIsIFZJRCBvZmZzZXQgMCwgZmFz
+dG1hcCBlbmFibGVkLCB2b2x1bWUgc2l6ZSAxMU1pQg0KMzgJCWMtPmxzdC5pZHhfbGVic1tvcmln
+aW5dID0gNSwgYy0+bHN0LmlkeF9sZWJzW2N1cnJdID0gMTIsIHAgLSBjLT5nYXBfbGVicyA9IDgg
+PT09PQkJbmFuZHNpbTogMTZNaUIsIFBFQiBzaXplIDE2S2lCLCBwYWdlIHNpemUgNTEyS2lCLCBW
+SUQgb2Zmc2V0IDAsIGZhc3RtYXAgZW5hYmxlZCwgdm9sdW1lIHNpemUgMTFNaUINCjM5CQljLT5s
+c3QuaWR4X2xlYnNbb3JpZ2luXSA9IDUsIGMtPmxzdC5pZHhfbGVic1tjdXJyXSA9IDEyLCBwIC0g
+Yy0+Z2FwX2xlYnMgPSA4ID09PT0gCQltdGRyYW06IDE2TWlCLCBQRUIgc2l6ZSAxNktpQiwgZmFz
+dG1hcCBlbmFibGVkLCB2b2x1bWUgc2l6ZSAxMU1pQg0KNDAJCWMtPmxzdC5pZHhfbGVic1tvcmln
+aW5dID0gNCwgYy0+bHN0LmlkeF9sZWJzW2N1cnJdID0gMTEsIHAgLSBjLT5nYXBfbGVicyA9IDgg
+PT09PQkJbXRkcmFtOiAxNk1pQiwgUEVCIHNpemUgMTZLaUIsIGZhc3RtYXAgZW5hYmxlZCwgdm9s
+dW1lIHNpemUgMTFNaUINCjQxCQljLT5sc3QuaWR4X2xlYnNbb3JpZ2luXSA9IDQsIGMtPmxzdC5p
+ZHhfbGVic1tjdXJyXSA9IDExLCBwIC0gYy0+Z2FwX2xlYnMgPSA4ID09PT0JCW10ZHJhbTogMTZN
+aUIsIFBFQiBzaXplIDE2S2lCLCBmYXN0bWFwIGVuYWJsZWQsIHZvbHVtZSBzaXplIDExTWlCDQo0
+MgkJYy0+bHN0LmlkeF9sZWJzW29yaWdpbl0gPSA1LCBjLT5sc3QuaWR4X2xlYnNbY3Vycl0gPSAx
+MiwgcCAtIGMtPmdhcF9sZWJzID0gOCA9PT09CQluYW5kc2ltOiAxNk1pQiwgUEVCIHNpemUgMTZL
+aUIsIHBhZ2Ugc2l6ZSA1MTJLaUIsIFZJRCBvZmZzZXQgMCwgZmFzdG1hcCBlbmFibGVkLCB2b2x1
+bWUgc2l6ZSAxMU1pQg0KNDMJCWMtPmxzdC5pZHhfbGVic1tvcmlnaW5dID0gNCwgYy0+bHN0Lmlk
+eF9sZWJzW2N1cnJdID0gMTEsIHAgLSBjLT5nYXBfbGVicyA9IDggPT09PQkJbmFuZHNpbTogMTZN
+aUIsIFBFQiBzaXplIDE2S2lCLCBwYWdlIHNpemUgNTEyS2lCLCBWSUQgb2Zmc2V0IDAsIGZhc3Rt
+YXAgZW5hYmxlZCwgdm9sdW1lIHNpemUgMTFNaUINCjQ0CQljLT5sc3QuaWR4X2xlYnNbb3JpZ2lu
+XSA9IDQsIGMtPmxzdC5pZHhfbGVic1tjdXJyXSA9IDExLCBwIC0gYy0+Z2FwX2xlYnMgPSA4ID09
+PT0JCW10ZHJhbTogMTZNaUIsIFBFQiBzaXplIDE2S2lCLCBmYXN0bWFwIGVuYWJsZWQsIHZvbHVt
+ZSBzaXplIDExTWlCDQo0NQkJYy0+bHN0LmlkeF9sZWJzW29yaWdpbl0gPSA0LCBjLT5sc3QuaWR4
+X2xlYnNbY3Vycl0gPSAxMSwgcCAtIGMtPmdhcF9sZWJzID0gOCA9PT09CQluYW5kc2ltOiAxNk1p
+QiwgUEVCIHNpemUgMTZLaUIsIHBhZ2Ugc2l6ZSA1MTJLaUIsIFZJRCBvZmZzZXQgMCwgZmFzdG1h
+cCBlbmFibGVkLCB2b2x1bWUgc2l6ZSAxMU1pQg0KNDYJCWMtPmxzdC5pZHhfbGVic1tvcmlnaW5d
+ID0gNCwgYy0+bHN0LmlkeF9sZWJzW2N1cnJdID0gMTEsIHAgLSBjLT5nYXBfbGVicyA9IDggPT09
+PQkJbmFuZHNpbTogMTZNaUIsIFBFQiBzaXplIDE2S2lCLCBwYWdlIHNpemUgNTEyS2lCLCBWSUQg
+b2Zmc2V0IDAsIGZhc3RtYXAgZW5hYmxlZCwgdm9sdW1lIHNpemUgMTFNaUINCjQ3CQljLT5sc3Qu
+aWR4X2xlYnNbb3JpZ2luXSA9IDUsIGMtPmxzdC5pZHhfbGVic1tjdXJyXSA9IDEyLCBwIC0gYy0+
+Z2FwX2xlYnMgPSA4ID09PT0JCW5hbmRzaW06IDE2TWlCLCBQRUIgc2l6ZSAxNktpQiwgcGFnZSBz
+aXplIDUxMktpQiwgVklEIG9mZnNldCAwLCBmYXN0bWFwIGVuYWJsZWQsIHZvbHVtZSBzaXplIDEx
+TWlCDQo0OAkJYy0+bHN0LmlkeF9sZWJzW29yaWdpbl0gPSA1LCBjLT5sc3QuaWR4X2xlYnNbY3Vy
+cl0gPSAxMiwgcCAtIGMtPmdhcF9sZWJzID0gOCA9PT09CQluYW5kc2ltOiAxNk1pQiwgUEVCIHNp
+emUgMTZLaUIsIHBhZ2Ugc2l6ZSA1MTJLaUIsIFZJRCBvZmZzZXQgMCwgZmFzdG1hcCBlbmFibGVk
+LCB2b2x1bWUgc2l6ZSAxMU1pQg0KNDkJCWMtPmxzdC5pZHhfbGVic1tvcmlnaW5dID0gNSwgYy0+
+bHN0LmlkeF9sZWJzW2N1cnJdID0gMTIsIHAgLSBjLT5nYXBfbGVicyA9IDggPT09PQkJbmFuZHNp
+bTogMTZNaUIsIFBFQiBzaXplIDE2S2lCLCBwYWdlIHNpemUgNTEyS2lCLCBWSUQgb2Zmc2V0IDAs
+IGZhc3RtYXAgZW5hYmxlZCwgdm9sdW1lIHNpemUgMTFNaUINCjUwCQljLT5sc3QuaWR4X2xlYnNb
+b3JpZ2luXSA9IDQsIGMtPmxzdC5pZHhfbGVic1tjdXJyXSA9IDExLCBwIC0gYy0+Z2FwX2xlYnMg
+PSA4ID09PT0JCW10ZHJhbTogMTZNaUIsIFBFQiBzaXplIDE2S2lCLCBmYXN0bWFwIGVuYWJsZWQs
+IHZvbHVtZSBzaXplIDExTWlC
 
-Fit onto 80 character line by truncating the bool clear parameter
-
-Fixes: 140623410536 ("mtd: spi-nor: Add driver for Cadence Quad SPI Flash Controller")
-Signed-off-by: Thor Thayer <thor.thayer@linux.intel.com>
----
- drivers/mtd/spi-nor/cadence-quadspi.c | 19 +++++--------------
- 1 file changed, 5 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
-index 67f15a1f16fd..7bef63947b29 100644
---- a/drivers/mtd/spi-nor/cadence-quadspi.c
-+++ b/drivers/mtd/spi-nor/cadence-quadspi.c
-@@ -13,6 +13,7 @@
- #include <linux/errno.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
-+#include <linux/iopoll.h>
- #include <linux/jiffies.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
-@@ -241,23 +242,13 @@ struct cqspi_driver_platdata {
- 
- #define CQSPI_IRQ_STATUS_MASK		0x1FFFF
- 
--static int cqspi_wait_for_bit(void __iomem *reg, const u32 mask, bool clear)
-+static int cqspi_wait_for_bit(void __iomem *reg, const u32 mask, bool clr)
- {
--	unsigned long end = jiffies + msecs_to_jiffies(CQSPI_TIMEOUT_MS);
- 	u32 val;
- 
--	while (1) {
--		val = readl(reg);
--		if (clear)
--			val = ~val;
--		val &= mask;
--
--		if (val == mask)
--			return 0;
--
--		if (time_after(jiffies, end))
--			return -ETIMEDOUT;
--	}
-+	return readl_relaxed_poll_timeout(reg, val,
-+					  (((clr ? ~val : val) & mask) == mask),
-+					  10, CQSPI_TIMEOUT_MS * 1000);
- }
- 
- static bool cqspi_is_idle(struct cqspi_st *cqspi)
--- 
-2.7.4
-
+--_002_0B80F9D4116B2F4484E7279D5A66984F7C0325dggemi524mbxchina_
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--_002_0B80F9D4116B2F4484E7279D5A66984F7C0325dggemi524mbxchina_--
+
