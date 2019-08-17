@@ -2,22 +2,22 @@ Return-Path: <SRS0=66Q2=WN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BC8DC3A59B
-	for <linux-mtd@archiver.kernel.org>; Sat, 17 Aug 2019 21:07:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8348C3A59B
+	for <linux-mtd@archiver.kernel.org>; Sat, 17 Aug 2019 21:13:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E13C221783
-	for <linux-mtd@archiver.kernel.org>; Sat, 17 Aug 2019 21:07:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7A17621019
+	for <linux-mtd@archiver.kernel.org>; Sat, 17 Aug 2019 21:13:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GdlUU+WY";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="RFEgb4b2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E13C221783
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="sXsmibic";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="deCansAV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A17621019
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sifive.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,68 +26,68 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:Message-ID:
 	In-Reply-To:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FkxjTB1+81WSAsNRh02NWgKZAzKe71XixTfpPYkfRMg=; b=GdlUU+WYhf58k+
-	MvFrK6b1TdfGqlRSRaipzXE0NKq57hV7tmcJlNjxJyTzxIg0adRurS5eau0+chF8QulJoPj31p4Z9
-	4wi/pJtDNerUqxw8DBAP6bJ+gzeXyTRL8jvtSgWiS8r1GkpZZCyJIlu2W7Bbq3QYjEQQtOHgIAXj0
-	Rr8zDUaUaKRysUpmiyEVTPvfGpN6pRUbuXyXgs2JO3DFmW4RLA5Ig3U3npb1wsa7RozdMbNANx7lM
-	mANpjtqL0ulcNgLiSOiXfgdre624T/aXzIJCK8T4s68eiTQrOSWkSyBXUmxQ6RaSS1x3G7pUkuDTe
-	RAfU7G8fytGkEINH/tFQ==;
+	List-Owner; bh=MB4YTTZ+fLAiNTwBurJQxrmNpeutAtHaabTqT/JiJkw=; b=sXsmibicfdgCEs
+	M2TruSumooN2U2EpfijGKaUhS/QhDVWNrB/BbuZ5uMdP8G/eD6KAHltRU3xDRGUBbNJCM6qiW2prO
+	DohTwsIB5ual7/YCDvYYq5LEzYEbjR9y+p147YPs9+5tS3eDFHyt2eanr8EwQciqPNmRqa3mE4um9
+	ADE44fT9fQVJ7qL0lT4jGNm8FuEUx+U+bJ0Ytr8HOmbewrXzXF5hor1uFCwWErb6tDr4XiMLPGyZP
+	2fp1phye/TQ/Up/YPwXWmDY9dkkEX6g0Qv7da2qS68BbyVGdUGivxMdzBIlru5W3HxJx3R2Kuv6e6
+	vHAyOttLXZbz62O2kRwg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hz5vC-0007mc-EN; Sat, 17 Aug 2019 21:07:34 +0000
+	id 1hz612-0001XV-IV; Sat, 17 Aug 2019 21:13:36 +0000
 Received: from mail-io1-xd42.google.com ([2607:f8b0:4864:20::d42])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hz5v9-0007lM-CY
- for linux-mtd@lists.infradead.org; Sat, 17 Aug 2019 21:07:32 +0000
-Received: by mail-io1-xd42.google.com with SMTP id o9so13210294iom.3
- for <linux-mtd@lists.infradead.org>; Sat, 17 Aug 2019 14:07:31 -0700 (PDT)
+ id 1hz60y-0001VP-JC
+ for linux-mtd@lists.infradead.org; Sat, 17 Aug 2019 21:13:33 +0000
+Received: by mail-io1-xd42.google.com with SMTP id i22so13226167ioh.2
+ for <linux-mtd@lists.infradead.org>; Sat, 17 Aug 2019 14:13:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sifive.com; s=google;
  h=date:from:to:cc:subject:in-reply-to:message-id:references
  :user-agent:mime-version;
- bh=oaLZqyUNyQl0GDzg3TD6D3y22xcAlUrpApHmCWftkKw=;
- b=RFEgb4b2hnNS1WpBLunJkjsIPF/Sn00DtxYAOuifEl6DxdVvHfM90BewsheCYGGIbc
- KkLEVKkHBB0QA34K1oL1QqTpTDmH1r0AAS5LIo/Wzqnat3RY7e+91XBtlrB6cTkdTpWU
- kte/9iGUVWH3tp9kz8MHvMt2gyye60gDCIBj8NdLeTB71AjDJMlqAJtKUxtx8xWkFhbs
- YbzFpA0yJYJCQurf1gnnMtlqH+un70tn1BjQGrEcVg5mWlPKN1VotnQ0tUinFRHtRRZr
- YGQo+eeilNUcY2675AOwdgK09hjXorEyFrfH2VgmS9azKAXXlU4rovb4iLfV8rGhNCxH
- YgJQ==
+ bh=AL7Xo7O/pQKUNo42UZGV/pFyRrG+zXus+zNwtHz5W9I=;
+ b=deCansAVyhf6TTfeW7XM1FrkPiKpOaNXepy8EGROiXSzE+3idZaMvhF5loMAvVUBWX
+ 8qQ/Du7og2kbtPPvNhwLzZWiLrJ6qrhbn+d5EChT/4JvkGHH56R9YNddG7eJVGTYNEBI
+ QoW6LnQrYgb2yLLTPECkaOYkSk37tjvRRkXYTyrjo+mx8C8Hjp4wFkBmcQM76Qw2K1Eg
+ ffQxDHpTJlgpIZyGleaux3hEVOCiLhnzK0XmbrN4f55/9P1fEgrVr+DnimObxh+7zRlK
+ 4Yo+DuQEB/pAtSat0tnGiWfIUMs/ueCHA8h7mqK5WJbFPHuU46Zze5HXtHZ3DWU/vE+t
+ EMXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
  :references:user-agent:mime-version;
- bh=oaLZqyUNyQl0GDzg3TD6D3y22xcAlUrpApHmCWftkKw=;
- b=jD271x6bJqouM1goMjkXQl+WjHcVPtTeP+03n0DTwDhSZNuXIyaepT6IDimYv1nCsT
- qZAZzp0dN8D4B6D3QLhnKk6LWsu7+Ei5C8lMkskXSbpyolZohu5vg31iFU/dgh/iallT
- mPDZKHGlM5HonBS3xdoDNOtAinel+nUxuAByVwyATzUzJxQ6b9TuOGfuNPGJOR2eDGMr
- FVHu1FLFvFK5heZZJdT4NJBFCO3sjJI8LeXGTjzKxFMQgmwXqmTQMhfi0QkjscyO1lqv
- zQpJeq1LQly1ygD/2EmTEMvzofgoRv0LRrpydbagZCrxI3BXJ1E8LIXQTNxlDOeO+rSJ
- woeA==
-X-Gm-Message-State: APjAAAXS1oX5OLIKMt4CM/PIh5MyALYT6eR3GTDoPnBKX0L7O1N28Pn6
- k2ctExuaVGiYnW8MSEddPgzolg==
-X-Google-Smtp-Source: APXvYqxg4I5F1jSj4ALE9JDvtf3Qsjlfm04dEVrcDSQX4DQggSlvp1PesRmYUB74gUk83a46+nakJw==
-X-Received: by 2002:a05:6638:637:: with SMTP id
- h23mr18425886jar.59.1566076050556; 
- Sat, 17 Aug 2019 14:07:30 -0700 (PDT)
+ bh=AL7Xo7O/pQKUNo42UZGV/pFyRrG+zXus+zNwtHz5W9I=;
+ b=XzWpRGdTA/4+7zHm/kMwUHaQUD1Jh18ICPUjlFVaJpJi+g5tlzlBU85tEs7PKNj5pf
+ N5ZMrixL2lIQdaVFlz471nHDoYcK7ELx94ahxPdk0z2P/I9y/rXblODGWAnFLRqT/GJE
+ VOggiKwgzDL37fzR18VKS94LXaKvIwrStGlDHRKnx7F+M+qfGr+DoGjtVTNOAv5r9ig5
+ IP3deXJXeOh2TaFjY0tqEM3IA91m4Tz+zOoYK9TL/PqWo6caovAiSJxBgGwkZP3Hi/Gc
+ V1ZlZCu0RDvbntJ3VxRUXv/VLq9r9hkJbUFvaLcVKETidQ7HLw2xj9ZZ1ypQYpj7HxRL
+ ya8g==
+X-Gm-Message-State: APjAAAVgLu8iqbaYlBK0ceElt8PStHGFh/EsS7LDMOFM8uZUK1JP0U24
+ h2I5wx1oXKVeFcruU5OGObvMsg==
+X-Google-Smtp-Source: APXvYqxnIBRMl9c73z9hygAzKDBeii4Mh/dKY7KAWMtxtYJjPF4p6Ki6tTxIg+HAQN4yYW8gNJPyfw==
+X-Received: by 2002:a02:a492:: with SMTP id d18mr19165200jam.27.1566076411809; 
+ Sat, 17 Aug 2019 14:13:31 -0700 (PDT)
 Received: from localhost (c-73-95-159-87.hsd1.co.comcast.net. [73.95.159.87])
  by smtp.gmail.com with ESMTPSA id
- l6sm6664146ioc.15.2019.08.17.14.07.29
+ i9sm6980372ioe.35.2019.08.17.14.13.31
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 17 Aug 2019 14:07:29 -0700 (PDT)
-Date: Sat, 17 Aug 2019 14:07:29 -0700 (PDT)
+ Sat, 17 Aug 2019 14:13:31 -0700 (PDT)
+Date: Sat, 17 Aug 2019 14:13:30 -0700 (PDT)
 From: Paul Walmsley <paul.walmsley@sifive.com>
 X-X-Sender: paulw@viisi.sifive.com
 To: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 15/26] asm-generic: ioremap_uc should behave the same
- with and without MMU
-In-Reply-To: <20190817073253.27819-16-hch@lst.de>
-Message-ID: <alpine.DEB.2.21.9999.1908171403330.4130@viisi.sifive.com>
+Subject: Re: [PATCH 17/26] arch: rely on asm-generic/io.h for default ioremap_*
+ definitions
+In-Reply-To: <20190817073253.27819-18-hch@lst.de>
+Message-ID: <alpine.DEB.2.21.9999.1908171412560.4130@viisi.sifive.com>
 References: <20190817073253.27819-1-hch@lst.de>
- <20190817073253.27819-16-hch@lst.de>
+ <20190817073253.27819-18-hch@lst.de>
 User-Agent: Alpine 2.21.9999 (DEB 301 2018-08-15)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190817_140731_434280_774C3E3F 
-X-CRM114-Status: GOOD (  13.69  )
+X-CRM114-CacheID: sfid-20190817_141332_652313_144F58D2 
+X-CRM114-Status: UNSURE (   7.75  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -118,47 +118,19 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On Sat, 17 Aug 2019, Christoph Hellwig wrote:
 
-> Whatever reason there is for the existence of ioremap_uc, and the fact 
-> that it returns NULL by default on architectures with an MMU applies 
-> equally to nommu architectures, so don't provide different defaults.
-> 
-> In practice the difference is meaningless as the only portable driver
-> that uses ioremap_uc is atyfb which probably doesn't show up on nommu
-> devices.
+> Various architectures that use asm-generic/io.h still defined their
+> own default versions of ioremap_nocache, ioremap_wt and ioremap_wc
+> that point back to plain ioremap directly or indirectly.  Remove these
+> definitions and rely on asm-generic/io.h instead.  For this to work
+> the backup ioremap_* defintions needs to be changed to purely cpp
+> macros instea of inlines to cover for architectures like openrisc
+> that only define ioremap after including <asm-generic/io.h>.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-[ ... ]
-
-> diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
-> index d02806513670..a98ed6325727 100644
-> --- a/include/asm-generic/io.h
-> +++ b/include/asm-generic/io.h
-
-[ ... ]
-
-> @@ -1004,6 +985,21 @@ static inline void __iomem *ioremap_wt(phys_addr_t offset, size_t size)
->  }
->  #endif
->  
-> +/*
-> + * ioremap_uc is special in that we do require an explicit architecture
-> + * implementation.  In general you do now want to use this function in a
-                                         ^^^ not
-
-> + * driver and use plain ioremap, which is uncached by default.  Similarly
-                ^ instead 
-
-> + * architectures should not implement it unless they have a very good
-> + * reason.
-> + */
-
-Looks like this mess is only needed on x86 with certain graphics drivers 
-and conflicts between MTRR and page table-based MMU attributes.
-
-
 Reviewed-by: Paul Walmsley <paul.walmsley@sifive.com>
 Tested-by: Paul Walmsley <paul.walmsley@sifive.com> # rv32, rv64 boot
+Acked-by: Paul Walmsley <paul.walmsley@sifive.com> # arch/riscv
 
 
 - Paul
