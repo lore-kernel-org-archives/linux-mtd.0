@@ -5,18 +5,18 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E83CCC3A59B
-	for <linux-mtd@archiver.kernel.org>; Sat, 17 Aug 2019 07:52:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C31DC3A59F
+	for <linux-mtd@archiver.kernel.org>; Sat, 17 Aug 2019 07:53:18 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B86AA21743
-	for <linux-mtd@archiver.kernel.org>; Sat, 17 Aug 2019 07:52:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3FE7221743
+	for <linux-mtd@archiver.kernel.org>; Sat, 17 Aug 2019 07:53:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="R5q+7kBt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B86AA21743
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="aTrpLyxt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3FE7221743
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,26 +25,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ptDhLFZRP2Q7yKLai7JO5zTQK2noIE7Em1RI94nx790=; b=R5q+7kBtoS3g7p
-	lLQEKASUrh1LYWDJGl3zt6jMiMYZuuGsl80rHfxDhHCLQbYAwAqko5JS3g3HyxoVmEpg1Mbnjp7Ms
-	tLio/7YR1yNGPyPzaATIrAhd0YQNyABM4YbpxHqIhCkmanWOFddZr0U1zXtXbwg0pLrB9KUWe9oZq
-	9GhShAvX1SXJyudLXm+w1WrbucHqzYBKFJw55kpr0LSqpC0jRtSX9CYvIHLjjq5MGF4UaUmTQJCVU
-	ue16opSf2NXg0orPIe/lNU77yo9CdXPGMpjnMAOebEXmL9rKNh5UM99118lXceZYcCbz4jc7dS9l7
-	rEgY1dn2oHdbwaHgM1gw==;
+	List-Owner; bh=cCW0tVNEWoOHLahMt8kz4iYBFb5GO3bdII0kjPyHIzk=; b=aTrpLyxte835JJ
+	3uscu+irJUpc8Y5/SDFluXAYOFkKAhnC8Mrz1Xu3jCMHwFyPKDgscjUD/0Ln6i1DHlRIhjTOEeJGB
+	SbUGHADJ/oeKGqMZBH7MxMjMtO/vTvQn06nawevROZKmN3z+F2Tk7jv+yd0qkbt+NQOPdjB5qesqJ
+	oLJVX1XoQyEFMXcFaODtvSuNK2WH519yA18z+p2YGwGz80gFMsyw3WlbVhTwj8g7xmI3TqcrYFJs+
+	iEVXBnTZQplEjuHpdzMi/8531GcBiQwWRn8AhrlttrRU2Wu9ocdBSG+1eh3wheeeb9GkbVzZ2G4VG
+	fOIWVgBvVUoXoc+dzAyg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hytVp-0001MD-E4; Sat, 17 Aug 2019 07:52:33 +0000
+	id 1hytWK-0001u5-I7; Sat, 17 Aug 2019 07:53:04 +0000
 Received: from [2001:4bb8:18c:28b5:44f9:d544:957f:32cb] (helo=localhost)
  by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
- id 1hytSA-00052o-Js; Sat, 17 Aug 2019 07:48:47 +0000
+ id 1hytSD-00055m-Im; Sat, 17 Aug 2019 07:48:50 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
  Michal Simek <monstr@monstr.eu>, Greentime Hu <green.hu@gmail.com>,
  Vincent Chen <deanbo422@gmail.com>, Guan Xuetao <gxt@pku.edu.cn>,
  x86@kernel.org
-Subject: [PATCH 12/26] x86: clean up ioremap
-Date: Sat, 17 Aug 2019 09:32:39 +0200
-Message-Id: <20190817073253.27819-13-hch@lst.de>
+Subject: [PATCH 13/26] xtensa: clean up ioremap
+Date: Sat, 17 Aug 2019 09:32:40 +0200
+Message-Id: <20190817073253.27819-14-hch@lst.de>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190817073253.27819-1-hch@lst.de>
 References: <20190817073253.27819-1-hch@lst.de>
@@ -79,96 +79,42 @@ ioremap_nocache to it as a deprecated alias.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/x86/include/asm/io.h | 8 ++------
- arch/x86/mm/ioremap.c     | 8 ++++----
- arch/x86/mm/pageattr.c    | 4 ++--
- 3 files changed, 8 insertions(+), 12 deletions(-)
+ arch/xtensa/include/asm/io.h | 14 ++++----------
+ 1 file changed, 4 insertions(+), 10 deletions(-)
 
-diff --git a/arch/x86/include/asm/io.h b/arch/x86/include/asm/io.h
-index 6bed97ff6db2..6b5cc41319a7 100644
---- a/arch/x86/include/asm/io.h
-+++ b/arch/x86/include/asm/io.h
-@@ -180,8 +180,6 @@ static inline unsigned int isa_virt_to_bus(volatile void *address)
-  * The default ioremap() behavior is non-cached; if you need something
-  * else, you probably want one of the following.
+diff --git a/arch/xtensa/include/asm/io.h b/arch/xtensa/include/asm/io.h
+index da3e783f896b..ffadc99c8601 100644
+--- a/arch/xtensa/include/asm/io.h
++++ b/arch/xtensa/include/asm/io.h
+@@ -31,8 +31,7 @@ void xtensa_iounmap(volatile void __iomem *addr);
+ /*
+  * Return the virtual address for the specified bus memory.
   */
--extern void __iomem *ioremap_nocache(resource_size_t offset, unsigned long size);
+-static inline void __iomem *ioremap_nocache(unsigned long offset,
+-		unsigned long size)
++static inline void __iomem *ioremap(unsigned long offset, unsigned long size)
+ {
+ 	if (offset >= XCHAL_KIO_PADDR
+ 	    && offset - XCHAL_KIO_PADDR < XCHAL_KIO_SIZE)
+@@ -51,15 +50,10 @@ static inline void __iomem *ioremap_cache(unsigned long offset,
+ 		return xtensa_ioremap_cache(offset, size);
+ }
+ #define ioremap_cache ioremap_cache
 -#define ioremap_nocache ioremap_nocache
- extern void __iomem *ioremap_uc(resource_size_t offset, unsigned long size);
- #define ioremap_uc ioremap_uc
- extern void __iomem *ioremap_cache(resource_size_t offset, unsigned long size);
-@@ -205,11 +203,9 @@ extern void __iomem *ioremap_encrypted(resource_size_t phys_addr, unsigned long
-  * If the area you are trying to map is a PCI BAR you should have a
-  * look at pci_iomap().
-  */
--static inline void __iomem *ioremap(resource_size_t offset, unsigned long size)
+-
+-#define ioremap_wc ioremap_nocache
+-#define ioremap_wt ioremap_nocache
+ 
+-static inline void __iomem *ioremap(unsigned long offset, unsigned long size)
 -{
 -	return ioremap_nocache(offset, size);
 -}
-+void __iomem *ioremap(resource_size_t offset, unsigned long size);
- #define ioremap ioremap
 +#define ioremap_nocache ioremap
++#define ioremap_wc ioremap
++#define ioremap_wt ioremap
  
- extern void iounmap(volatile void __iomem *addr);
- #define iounmap iounmap
-diff --git a/arch/x86/mm/ioremap.c b/arch/x86/mm/ioremap.c
-index 63e99f15d7cf..c9e90211bddb 100644
---- a/arch/x86/mm/ioremap.c
-+++ b/arch/x86/mm/ioremap.c
-@@ -279,11 +279,11 @@ __ioremap_caller(resource_size_t phys_addr, unsigned long size,
- }
- 
- /**
-- * ioremap_nocache     -   map bus memory into CPU space
-+ * ioremap     -   map bus memory into CPU space
-  * @phys_addr:    bus address of the memory
-  * @size:      size of the resource to map
-  *
-- * ioremap_nocache performs a platform specific sequence of operations to
-+ * ioremap performs a platform specific sequence of operations to
-  * make bus memory CPU accessible via the readb/readw/readl/writeb/
-  * writew/writel functions and the other mmio helpers. The returned
-  * address is not guaranteed to be usable directly as a virtual
-@@ -299,7 +299,7 @@ __ioremap_caller(resource_size_t phys_addr, unsigned long size,
-  *
-  * Must be freed with iounmap.
-  */
--void __iomem *ioremap_nocache(resource_size_t phys_addr, unsigned long size)
-+void __iomem *ioremap(resource_size_t phys_addr, unsigned long size)
+ static inline void iounmap(volatile void __iomem *addr)
  {
- 	/*
- 	 * Ideally, this should be:
-@@ -314,7 +314,7 @@ void __iomem *ioremap_nocache(resource_size_t phys_addr, unsigned long size)
- 	return __ioremap_caller(phys_addr, size, pcm,
- 				__builtin_return_address(0), false);
- }
--EXPORT_SYMBOL(ioremap_nocache);
-+EXPORT_SYMBOL(ioremap);
- 
- /**
-  * ioremap_uc     -   map bus memory into CPU space as strongly uncachable
-diff --git a/arch/x86/mm/pageattr.c b/arch/x86/mm/pageattr.c
-index 6a9a77a403c9..5b7a9231b85b 100644
---- a/arch/x86/mm/pageattr.c
-+++ b/arch/x86/mm/pageattr.c
-@@ -1774,7 +1774,7 @@ static inline int cpa_clear_pages_array(struct page **pages, int numpages,
- int _set_memory_uc(unsigned long addr, int numpages)
- {
- 	/*
--	 * for now UC MINUS. see comments in ioremap_nocache()
-+	 * for now UC MINUS. see comments in ioremap()
- 	 * If you really need strong UC use ioremap_uc(), but note
- 	 * that you cannot override IO areas with set_memory_*() as
- 	 * these helpers cannot work with IO memory.
-@@ -1789,7 +1789,7 @@ int set_memory_uc(unsigned long addr, int numpages)
- 	int ret;
- 
- 	/*
--	 * for now UC MINUS. see comments in ioremap_nocache()
-+	 * for now UC MINUS. see comments in ioremap()
- 	 */
- 	ret = reserve_memtype(__pa(addr), __pa(addr) + numpages * PAGE_SIZE,
- 			      _PAGE_CACHE_MODE_UC_MINUS, NULL);
 -- 
 2.20.1
 
