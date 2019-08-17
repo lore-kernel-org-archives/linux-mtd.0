@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE4C2C3A59B
-	for <linux-mtd@archiver.kernel.org>; Sat, 17 Aug 2019 07:42:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71995C3A59B
+	for <linux-mtd@archiver.kernel.org>; Sat, 17 Aug 2019 07:44:29 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 906D22086C
-	for <linux-mtd@archiver.kernel.org>; Sat, 17 Aug 2019 07:42:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 42DBC2086C
+	for <linux-mtd@archiver.kernel.org>; Sat, 17 Aug 2019 07:44:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="MxxKEj5o"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 906D22086C
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AJ8pUMtR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 42DBC2086C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,27 +25,27 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vBiAVvjMvc6QAb/3JJ0tS7ZNKJCjXRPNc01zOC3pNQI=; b=MxxKEj5o3Urxg4
-	ZI9PrsK6SmdibAWzbz+cjUUZP5hWqiqQbeTiyWA+hTxbPhSuy63Hj+1p6+sGdwjzk8lJZm3kxjTWT
-	1P/1utGFvLnDBMD5TD5R+vUNzXXAsrVcD+e1/U25Oo6ui9gtV0ThA1nQ/U73Y9pLJx6B/Wlyq1lAs
-	EOl9iChNjN0a+KZBpWfQ8vZ94VajKQYqDLorkEQ991TtJL6fbpmrJVrAoc9+fPK8rq+U1j0JfMIju
-	3kaNSq1N4BtQX1Qwomw6n1jxBu15ZmH29PzqXmVdJCU3Ts3iOWYFgdY5+hZKPay0V882l5sBPAv3r
-	ENFlIA21wSuk2IPeLXog==;
+	List-Owner; bh=JjzuTD9kHQBJC+kWZFsqup/uzfeBcePlRDFs9DkKAq0=; b=AJ8pUMtR2PLN55
+	vUiOFHtTQ7Xt9zAbc47KptvZ/ypWuQkEs2qFjGayijbN2mqkRwBL3inIVVPAmMAR2y7FvNSrafajy
+	U7ZDWCOFXjMJ3X2EA4Qd6xt6jhsI0FQhbwm+XEFhp0VHNCrpJeYnYJcmodOeESaTx0YrVvGqRUbMZ
+	4x7QmgHXfxZ+HnFnkUF8g9vFEYZ0pPvkmXB+GZI3i78NJgSIO+qp2MLNNqAKG4p7j/eWfma9fbF51
+	qMKGFhFONySBPulwnHmR0Zk04RGmwEpFHnj2h8d4pw4kDm9KwKd66REPUzocSnKzeX02MQspY453R
+	H35LG4HzOI/AE63Z6t4w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hytLi-0001Mq-CB; Sat, 17 Aug 2019 07:42:06 +0000
+	id 1hytNp-00026o-Jv; Sat, 17 Aug 2019 07:44:17 +0000
 Received: from 089144199030.atnat0008.highway.a1.net ([89.144.199.30]
  helo=localhost)
  by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
- id 1hytLO-000175-Cc; Sat, 17 Aug 2019 07:41:46 +0000
+ id 1hytNX-0001rF-8R; Sat, 17 Aug 2019 07:43:59 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
  Michal Simek <monstr@monstr.eu>, Greentime Hu <green.hu@gmail.com>,
  Vincent Chen <deanbo422@gmail.com>, Guan Xuetao <gxt@pku.edu.cn>,
  x86@kernel.org
-Subject: [PATCH 03/26] m68k, microblaze: remove ioremap_fullcache
-Date: Sat, 17 Aug 2019 09:32:30 +0200
-Message-Id: <20190817073253.27819-4-hch@lst.de>
+Subject: [PATCH 04/26] mips: remove ioremap_cachable
+Date: Sat, 17 Aug 2019 09:32:31 +0200
+Message-Id: <20190817073253.27819-5-hch@lst.de>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190817073253.27819-1-hch@lst.de>
 References: <20190817073253.27819-1-hch@lst.de>
@@ -75,44 +75,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-No callers of this function.
+Just define ioremap_cache directly.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/m68k/include/asm/kmap.h     | 7 -------
- arch/microblaze/include/asm/io.h | 1 -
- 2 files changed, 8 deletions(-)
+ arch/mips/include/asm/io.h | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/arch/m68k/include/asm/kmap.h b/arch/m68k/include/asm/kmap.h
-index aac7f045f7f0..03d904fe6087 100644
---- a/arch/m68k/include/asm/kmap.h
-+++ b/arch/m68k/include/asm/kmap.h
-@@ -43,13 +43,6 @@ static inline void __iomem *ioremap_wt(unsigned long physaddr,
- 	return __ioremap(physaddr, size, IOMAP_WRITETHROUGH);
- }
+diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
+index 97a280640daf..c02db986ddf5 100644
+--- a/arch/mips/include/asm/io.h
++++ b/arch/mips/include/asm/io.h
+@@ -262,11 +262,11 @@ static inline void __iomem *ioremap_prot(phys_addr_t offset,
+ #define ioremap_uc ioremap_nocache
  
--#define ioremap_fullcache ioremap_fullcache
--static inline void __iomem *ioremap_fullcache(unsigned long physaddr,
--					      unsigned long size)
--{
--	return __ioremap(physaddr, size, IOMAP_FULL_CACHING);
--}
--
- #define memset_io memset_io
- static inline void memset_io(volatile void __iomem *addr, unsigned char val,
- 			     int count)
-diff --git a/arch/microblaze/include/asm/io.h b/arch/microblaze/include/asm/io.h
-index c7968139486f..86c95b2a1ce1 100644
---- a/arch/microblaze/include/asm/io.h
-+++ b/arch/microblaze/include/asm/io.h
-@@ -40,7 +40,6 @@ extern void iounmap(volatile void __iomem *addr);
+ /*
+- * ioremap_cachable -	map bus memory into CPU space
++ * ioremap_cache -	map bus memory into CPU space
+  * @offset:	    bus address of the memory
+  * @size:	    size of the resource to map
+  *
+- * ioremap_nocache performs a platform specific sequence of operations to
++ * ioremap_cache performs a platform specific sequence of operations to
+  * make bus memory CPU accessible via the readb/readw/readl/writeb/
+  * writew/writel functions and the other mmio helpers. The returned
+  * address is not guaranteed to be usable directly as a virtual
+@@ -276,9 +276,8 @@ static inline void __iomem *ioremap_prot(phys_addr_t offset,
+  * the CPU.  Also enables full write-combining.	 Useful for some
+  * memory-like regions on I/O busses.
+  */
+-#define ioremap_cachable(offset, size)					\
++#define ioremap_cache(offset, size)					\
+ 	__ioremap_mode((offset), (size), _page_cachable_default)
+-#define ioremap_cache ioremap_cachable
  
- extern void __iomem *ioremap(phys_addr_t address, unsigned long size);
- #define ioremap_nocache(addr, size)		ioremap((addr), (size))
--#define ioremap_fullcache(addr, size)		ioremap((addr), (size))
- #define ioremap_wc(addr, size)			ioremap((addr), (size))
- #define ioremap_wt(addr, size)			ioremap((addr), (size))
- 
+ /*
+  * ioremap_wc     -   map bus memory into CPU space
 -- 
 2.20.1
 
