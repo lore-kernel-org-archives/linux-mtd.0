@@ -2,22 +2,23 @@ Return-Path: <SRS0=Slyc=WO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 30AADC3A589
-	for <linux-mtd@archiver.kernel.org>; Sun, 18 Aug 2019 16:37:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D465AC3A59E
+	for <linux-mtd@archiver.kernel.org>; Sun, 18 Aug 2019 16:59:48 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F16CD206BB
-	for <linux-mtd@archiver.kernel.org>; Sun, 18 Aug 2019 16:37:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A70342187F
+	for <linux-mtd@archiver.kernel.org>; Sun, 18 Aug 2019 16:59:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rxTjWzkD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F16CD206BB
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cs.uga.edu
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BGY7VljB";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HiJA0cs9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A70342187F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -25,50 +26,61 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=eUG7eY0p8bTHlXMePdExjWlcIhYbYdVGGNhU0KwUppI=; b=rxT
-	jWzkDPdS8rpTdYo00aT+lnPQ6HQVtKyx/Bw1ERXA5V+36TtAH2h+3KV0z4/u1ZPDayzMf8QWWIvNT
-	xaF3GoNH2c1EqEI2Y8C0rqtEfn33kWbhjqH349PffRK/XmZ7hv+CgZ2Kskwzj4ZPuleSEbPZO0JNk
-	p+rOWV9oBxpp+ZhKe+s8fKoyRjsd0f3As+jolnFY4sXClUrivb7ixlKJzkZUydicY/c9oRSr6O+F/
-	ZRlod9FH8q0i2aiIFK47V/swRaMljZ0SnWo05zw15GJ0lb1iKEEKLtVGp5f3/dW4/HKKAixn2hLeZ
-	bSZ0aWpmLaeFwJnUOGgxcV6uN9iBGoA==;
+	References:List-Owner; bh=CDQYLOqKwNLBWApYPviz1/8MNjIC/VE8aUt+C2Qf8Ms=; b=BGY
+	7VljBK4VKA2PIRMCCjbYyK0QezoKx9aJnDP0oFZqMZhxDWFu6525QrfhVt+G1Y9zWjRC654Ddn21K
+	lPFWIWdD6RlaK6bllMW3NXXTxAH/qt8/i8XUvP7/vgvWNTRzCUac/Su2lAAdmRzC9OIXNlZU/Kp6V
+	glVD4WfrLzT1NgrWnB0KYieFI2Ct5gwGM93Apg3g4Ip1cOz2GO9dJYj5bv37RRD0OzgcHurMFpmPX
+	/e/KB7gT1cna7TwT7u8gE3I+tE//0w+tvPwwstkSxYTtR2JkNmqxbjbU+H1Fjs9L7AT0EzkbPrM7O
+	/9x2/yqe5dZGJzfO9D5inWCkyTRVhTQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hzOAn-0001Ul-Lg; Sun, 18 Aug 2019 16:36:53 +0000
-Received: from mail-yb1-f195.google.com ([209.85.219.195])
+	id 1hzOWb-0007Lo-30; Sun, 18 Aug 2019 16:59:25 +0000
+Received: from mail-pl1-x641.google.com ([2607:f8b0:4864:20::641])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hzOAl-0001UR-Gd
- for linux-mtd@lists.infradead.org; Sun, 18 Aug 2019 16:36:52 +0000
-Received: by mail-yb1-f195.google.com with SMTP id o82so3556380ybg.10
- for <linux-mtd@lists.infradead.org>; Sun, 18 Aug 2019 09:36:51 -0700 (PDT)
+ id 1hzOWX-0007Ku-17
+ for linux-mtd@lists.infradead.org; Sun, 18 Aug 2019 16:59:24 +0000
+Received: by mail-pl1-x641.google.com with SMTP id 4so4618144pld.10
+ for <linux-mtd@lists.infradead.org>; Sun, 18 Aug 2019 09:59:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id;
+ bh=RwcmEOVaCgQn5YcIaNY6CXwWg6zDdmkpmJl5vmh1uGs=;
+ b=HiJA0cs9nJZycVEklhF1ydMiEZlqYlRZ+rT3ZYhNjaom6QdwblnzQmdsqBjEZlDKMp
+ jvcGaD8ig89nNQdTGe9GeJ5iFMo7AEN6bsYz2SyhceKvOz7NLf8T+g8wmTJdIYNBHCnk
+ mqxSQ23qxF8fXRSxUZ0GNEzU976EBiFSVLHIFTB7kHKYVwaxjHouhX9bcoWk26Hy1rg6
+ wa6ahr1JhJ39nrboMSrYmJPMJSj2dD+/CMcTQBkhDHlKdSN8HDIVcxto7SezHoUSooyb
+ QXns2+TyCciABnoGJd/w5iL3xBZcmKb98RjlIRImw/72ezzY/hsvU9/c+eh37GhZ+4vQ
+ xS4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=/z1lnlqAbeq6x6turKShcmzG9kg9OUp9/TqeSNEaN7o=;
- b=LKEt1YYinble4UF7KkpMZYST8Faz8IDLoiAPnE3tO3ieC/VHLx7xONXlWNxi5mROSX
- RGGLMNBgUA6ditELFhB8wIeqHkGIjgOkG0pmnlg4LUWMkSi3GSj1BWZTq8wh3ucBq4Lr
- DUvpzz2wBAobKmHruze4ze/EFRXb+qibps+TKZ8qSSDO5jqJdnvApsXetUvkXcjP57Qq
- YNvGlqCZQcfDj0HqRS4KBykNJqn3TuBqigcRDwYUiQZDrmPDicAF4plrvyuacl9QK1/s
- tyX6AsE7evhVXnkmlliat0lfD0MIgDLGjreshnN4RB5NcX8YOLbLrCAqmOGD7Ht+eF9a
- qPAA==
-X-Gm-Message-State: APjAAAXymYpS0eu1YVHxpkbe/z7+6YhRS7Vc78MeunMiBChq8ZyrFLfe
- +zgOOxSo9Se3rodt4L8Y+xA=
-X-Google-Smtp-Source: APXvYqypLyrgn8MarlbnDVP6U8aKKLr5OF9Z3MKC7brXgqz8Mn3YHzZhGSaWibxCXf1VutIzwJs/cQ==
-X-Received: by 2002:a25:cb12:: with SMTP id b18mr14027976ybg.92.1566146210435; 
- Sun, 18 Aug 2019 09:36:50 -0700 (PDT)
-Received: from localhost.localdomain (24-158-240-219.dhcp.smyr.ga.charter.com.
- [24.158.240.219])
- by smtp.gmail.com with ESMTPSA id v141sm2595717ywe.66.2019.08.18.09.36.48
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
- Sun, 18 Aug 2019 09:36:49 -0700 (PDT)
-From: Wenwen Wang <wenwen@cs.uga.edu>
-To: Wenwen Wang <wenwen@cs.uga.edu>
-Subject: [PATCH] mtd: sm_ftl: fix memory leaks
-Date: Sun, 18 Aug 2019 11:36:44 -0500
-Message-Id: <1566146205-2428-1-git-send-email-wenwen@cs.uga.edu>
-X-Mailer: git-send-email 2.7.4
+ bh=RwcmEOVaCgQn5YcIaNY6CXwWg6zDdmkpmJl5vmh1uGs=;
+ b=S7NV3QFX3XK9j24CNW3qiA+mU/uZNeQCnTXfJvy3b6zZHfGCyO4jjI2FlS14KRP+Z2
+ RKipKqFBloYTRxIyguWQZcyBZ7G0tJk2R89bvr28gekxTfiVchSVB/BT0S6kxSvntbqV
+ 9k70N8QPZ+U+P0nrLfK74jxGN1+sbWo/eDilCfFP6dC+YG7ZJl/YNxOQ1XzRdJSKOQaE
+ h4lMxFmqQQEOoCDHDskztqDXYsNx3A93EuSMNwo71828/1tx3neUHBa7rAPdZuz6cA9A
+ MQjj61sulTCfKw77SV8l4LJBkXm/E2rOPi2tGiKbzgVLUGa+2oX+uu2hCRIP24JkdkV/
+ i5Rg==
+X-Gm-Message-State: APjAAAUodUDcrihhVqu6XUVxVoseLbA2UnbX9h/aHd9iOWYVYqljXhVg
+ /uGDo3FyfjtNtzwFRk/3hak=
+X-Google-Smtp-Source: APXvYqxiQNguzmCRctY+lvOzTTOdGzSMQGETwprj26Ooqm/lMPEtm/pNLPzDafLGwlxjn+XuprqyZA==
+X-Received: by 2002:a17:902:f095:: with SMTP id
+ go21mr18588927plb.216.1566147559767; 
+ Sun, 18 Aug 2019 09:59:19 -0700 (PDT)
+Received: from deepa-ubuntu.lan (c-98-234-52-230.hsd1.ca.comcast.net.
+ [98.234.52.230])
+ by smtp.gmail.com with ESMTPSA id b136sm15732831pfb.73.2019.08.18.09.59.15
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 18 Aug 2019 09:59:19 -0700 (PDT)
+From: Deepa Dinamani <deepa.kernel@gmail.com>
+To: viro@zeniv.linux.org.uk,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v8 00/20] vfs: Add support for timestamp limits
+Date: Sun, 18 Aug 2019 09:57:57 -0700
+Message-Id: <20190818165817.32634-1-deepa.kernel@gmail.com>
+X-Mailer: git-send-email 2.17.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190818_093651_553738_41D2FDEA 
-X-CRM114-Status: GOOD (  11.63  )
+X-CRM114-CacheID: sfid-20190818_095921_103959_22DBB882 
+X-CRM114-Status: GOOD (  10.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,49 +92,260 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- open list <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
- "open list:MEMORY TECHNOLOGY DEVICES MTD" <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: lucho@ionkov.net, martin@omnibond.com, jfs-discussion@lists.sourceforge.net,
+ shaggy@kernel.org, al@alarsen.net, yuchao0@huawei.com, me@bobcopeland.com,
+ adilger.kernel@dilger.ca, mikulas@artax.karlin.mff.cuni.cz, hch@lst.de,
+ nico@fluxnic.net, hubcap@omnibond.com, linux-cifs@vger.kernel.org,
+ zyan@redhat.com, sage@redhat.com, darrick.wong@oracle.com,
+ y2038@lists.linaro.org, richard@nod.at, sfrench@samba.org, anton@enomsg.org,
+ codalist@coda.cs.cmu.edu, hch@infradead.org, coda@cs.cmu.edu,
+ v9fs-developer@lists.sourceforge.net, idryomov@gmail.com,
+ linux-ext4@vger.kernel.org, salah.triki@gmail.com, asmadeus@codewreck.org,
+ devel@lists.orangefs.org, dushistov@mail.ru, keescook@chromium.org,
+ arnd@arndb.de, ericvh@gmail.com, jack@suse.com, reiserfs-devel@vger.kernel.org,
+ tj@kernel.org, jlbec@evilplan.org, aivazian.tigran@gmail.com,
+ phillip@squashfs.org.uk, dsterba@suse.com, jaegeuk@kernel.org,
+ ceph-devel@vger.kernel.org, trond.myklebust@hammerspace.com,
+ hirofumi@mail.parknet.co.jp, jaharkes@cs.cmu.edu, linux-nfs@vger.kernel.org,
+ tony.luck@intel.com, tytso@mit.edu, luisbg@kernel.org, dedekind1@gmail.com,
+ linux-ntfs-dev@lists.sourceforge.net, gregkh@linuxfoundation.org,
+ linux-karma-devel@lists.sourceforge.net, adrian.hunter@intel.com,
+ linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+ ccross@android.com, linux-fsdevel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, dwmw2@infradead.org, anna.schumaker@netapp.com
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In sm_init_zone(), 'zone->lba_to_phys_table' is allocated through
-kmalloc_array() and 'zone->free_sectors' is allocated in kfifo_alloc()
-respectively. However, they are not deallocated in the following execution
-if sm_read_sector() fails, leading to memory leaks. To fix this issue, free
-them before returning -EIO.
+The series is an update and a more complete version of the
+previously posted series at
+https://lore.kernel.org/linux-fsdevel/20180122020426.2988-1-deepa.kernel@gmail.com/
 
-Signed-off-by: Wenwen Wang <wenwen@cs.uga.edu>
----
- drivers/mtd/sm_ftl.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Thanks to Arnd Bergmann for doing a few preliminary reviews.
+They helped me fix a few issues I had overlooked.
 
-diff --git a/drivers/mtd/sm_ftl.c b/drivers/mtd/sm_ftl.c
-index dfc47a4..4744bf9 100644
---- a/drivers/mtd/sm_ftl.c
-+++ b/drivers/mtd/sm_ftl.c
-@@ -774,8 +774,11 @@ static int sm_init_zone(struct sm_ftl *ftl, int zone_num)
- 			continue;
- 
- 		/* Read the oob of first sector */
--		if (sm_read_sector(ftl, zone_num, block, 0, NULL, &oob))
-+		if (sm_read_sector(ftl, zone_num, block, 0, NULL, &oob)) {
-+			kfifo_free(&zone->free_sectors);
-+			kfree(zone->lba_to_phys_table);
- 			return -EIO;
-+		}
- 
- 		/* Test to see if block is erased. It is enough to test
- 			first sector, because erase happens in one shot */
+The limits (sometimes granularity also) for the filesystems updated here are according to the
+following table:
+
+File system   Time type                      Start year Expiration year Granularity
+cramfs        fixed                          0          0
+romfs         fixed                          0          0
+pstore        ascii seconds (27 digit ascii) S64_MIN    S64_MAX         1
+coda          INT64                          S64_MIN    S64_MAX         1
+omfs          64-bit milliseconds            0          U64_MAX/ 1000   NSEC_PER_MSEC
+befs          unsigned 48-bit seconds        0          0xffffffffffff  alloc_super
+bfs           unsigned 32-bit seconds        0          U32_MAX         alloc_super
+efs           unsigned 32-bit seconds        0          U32_MAX         alloc_super
+ext2          signed 32-bit seconds          S32_MIN    S32_MAX         alloc_super
+ext3          signed 32-bit seconds          S32_MIN    S32_MAX         alloc_super
+ext4 (old)    signed 32-bit seconds          S32_MIN    S32_MAX         alloc_super
+ext4 (extra)  34-bit seconds, 30-bit ns      S32_MIN    0x37fffffff	1
+freevxfs      u32 secs/usecs                 0          U32_MAX         alloc_super
+jffs2         unsigned 32-bit seconds        0          U32_MAX         alloc_super
+jfs           unsigned 32-bit seconds/ns     0          U32_MAX         1
+minix         unsigned 32-bit seconds        0          U32_MAX         alloc_super
+orangefs      u64 seconds                    0          U64_MAX         alloc_super
+qnx4          unsigned 32-bit seconds        0          U32_MAX         alloc_super
+qnx6          unsigned 32-bit seconds        0          U32_MAX         alloc_super
+reiserfs      unsigned 32-bit seconds        0          U32_MAX         alloc_super
+squashfs      unsigned 32-bit seconds        0          U32_MAX         alloc_super
+ufs1          signed 32-bit seconds          S32_MIN    S32_MAX         NSEC_PER_SEC
+ufs2          signed 64-bit seconds/u32 ns   S64_MIN    S64_MAX         1
+xfs           signed 32-bit seconds/ns       S32_MIN    S32_MAX         1
+ceph          unsigned 32-bit second/ns      0          U32_MAX         1000
+sysv          unsigned 32-bit seconds        0          U32_MAX         alloc_super
+affs          u32 day, min, ticks            1978       u32_max days    NSEC_PER_SEC
+nfsv2         unsigned 32-bit seconds/ns     0          U32_MAX         1
+nfsv3         unsigned 32-bit seconds/ns     0          U32_MAX         1000
+nfsv4         u64 seconds/u32 ns             S64_MIN    S64_MAX         1000
+isofs         u8 year since 1900 (fixable)   1900       2155            alloc_super
+hpfs          unsigned 32-bit seconds        1970       2106            alloc_super
+fat           7-bit years, 2s resolution     1980       2107
+cifs (smb)    7-bit years                    1980       2107
+cifs (modern) 64-bit 100ns since 1601        1601       30828
+adfs          40-bit cs since 1900           1900       2248
+9p (9P2000)   unsigned 32-bit seconds        1970       2106
+9p (9P2000.L) signed 64-bit seconds, ns      1970       S64_MAX
+
+Granularity column filled in by the alloc_super() in the above table indicates that
+the granularity is NSEC_PER_SEC.
+Note that anything not mentioned above still has the default limits
+S64_MIN..S64_MAX.
+
+The patches in the series are as structured below:
+1. Add vfs support to maintain the limits per filesystem.
+2. Add a new timestamp_truncate() api for clamping timestamps
+   according to the filesystem limits.
+3. Add a warning for mount syscall to indicate the impending
+   expiry of timestamps.
+4. Modify utimes to clamp the timestamps.
+5. Fill in limits for filesystems.
+
+A test for checking file system timestamp limits has been posted
+at https://www.spinics.net/lists/fstests/msg12262.html
+
+Changes since v7:
+* Dropped fat modifications from timespec_truncate patch
+* Leverage timestamp_truncate function in utimes
+* Added a fix for pstore ramoops timestamps
+* Added ext4 warning for inodes without room for extended timestamps.
+* Made mount warning more human readable
+Changes since v6:
+* No change in mount behavior because of expiry of timestamps.
+* Included limits for more filesystems.
+Changes since v5:
+* Dropped y2038-specific changes
+Changes since v4:
+* Added documentation for boot param
+Changes since v3:
+* Remove redundant initializations in libfs.c
+* Change early_param to __setup similar to other root mount options.
+* Fix documentation warning
+Changes since v2:
+* Introduce early boot param override for checks.
+* Drop afs patch for timestamp limits.
+Changes since v1:
+* return EROFS on mount errors
+* fix mtime copy/paste error in utimes
+
+Deepa Dinamani (20):
+  vfs: Add file timestamp range support
+  vfs: Add timestamp_truncate() api
+  timestamp_truncate: Replace users of timespec64_trunc
+  mount: Add mount warning for impending timestamp expiry
+  utimes: Clamp the timestamps before update
+  fs: Fill in max and min timestamps in superblock
+  9p: Fill min and max timestamps in sb
+  adfs: Fill in max and min timestamps in sb
+  ext4: Initialize timestamps limits
+  fs: nfs: Initialize filesystem timestamp ranges
+  fs: cifs: Initialize filesystem timestamp ranges
+  fs: fat: Initialize filesystem timestamp ranges
+  fs: affs: Initialize filesystem timestamp ranges
+  fs: sysv: Initialize filesystem timestamp ranges
+  fs: ceph: Initialize filesystem timestamp ranges
+  fs: orangefs: Initialize filesystem timestamp ranges
+  fs: hpfs: Initialize filesystem timestamp ranges
+  fs: omfs: Initialize filesystem timestamp ranges
+  pstore: fs superblock limits
+  isofs: Initialize filesystem timestamp ranges
+
+ fs/9p/vfs_super.c        |  6 +++++-
+ fs/adfs/adfs.h           | 13 +++++++++++++
+ fs/adfs/inode.c          |  8 ++------
+ fs/adfs/super.c          |  2 ++
+ fs/affs/amigaffs.c       |  2 +-
+ fs/affs/amigaffs.h       |  3 +++
+ fs/affs/inode.c          |  4 ++--
+ fs/affs/super.c          |  4 ++++
+ fs/attr.c                | 21 ++++++++++++---------
+ fs/befs/linuxvfs.c       |  2 ++
+ fs/bfs/inode.c           |  2 ++
+ fs/ceph/super.c          |  2 ++
+ fs/cifs/cifsfs.c         | 22 ++++++++++++++++++++++
+ fs/cifs/netmisc.c        | 14 +++++++-------
+ fs/coda/inode.c          |  3 +++
+ fs/configfs/inode.c      | 12 ++++++------
+ fs/cramfs/inode.c        |  2 ++
+ fs/efs/super.c           |  2 ++
+ fs/ext2/super.c          |  2 ++
+ fs/ext4/ext4.h           | 10 +++++++++-
+ fs/ext4/super.c          | 17 +++++++++++++++--
+ fs/f2fs/file.c           | 21 ++++++++++++---------
+ fs/fat/inode.c           | 12 ++++++++++++
+ fs/freevxfs/vxfs_super.c |  2 ++
+ fs/hpfs/hpfs_fn.h        |  6 ++----
+ fs/hpfs/super.c          |  2 ++
+ fs/inode.c               | 33 ++++++++++++++++++++++++++++++++-
+ fs/isofs/inode.c         |  7 +++++++
+ fs/jffs2/fs.c            |  3 +++
+ fs/jfs/super.c           |  2 ++
+ fs/kernfs/inode.c        |  7 +++----
+ fs/minix/inode.c         |  2 ++
+ fs/namespace.c           | 33 ++++++++++++++++++++++++++++++++-
+ fs/nfs/super.c           | 20 +++++++++++++++++++-
+ fs/ntfs/inode.c          | 21 ++++++++++++---------
+ fs/omfs/inode.c          |  4 ++++
+ fs/orangefs/super.c      |  2 ++
+ fs/pstore/ram.c          |  2 ++
+ fs/qnx4/inode.c          |  2 ++
+ fs/qnx6/inode.c          |  2 ++
+ fs/reiserfs/super.c      |  3 +++
+ fs/romfs/super.c         |  2 ++
+ fs/squashfs/super.c      |  2 ++
+ fs/super.c               |  2 ++
+ fs/sysv/super.c          |  5 ++++-
+ fs/ubifs/file.c          | 21 ++++++++++++---------
+ fs/ufs/super.c           |  7 +++++++
+ fs/utimes.c              |  6 ++----
+ fs/xfs/xfs_super.c       |  2 ++
+ include/linux/fs.h       |  5 +++++
+ include/linux/time64.h   |  2 ++
+ 51 files changed, 315 insertions(+), 78 deletions(-)
+
 -- 
-2.7.4
+2.17.1
 
+Cc: adilger.kernel@dilger.ca
+Cc: adrian.hunter@intel.com
+Cc: aivazian.tigran@gmail.com
+Cc: al@alarsen.net
+Cc: anna.schumaker@netapp.com
+Cc: anton@enomsg.org
+Cc: asmadeus@codewreck.org
+Cc: ccross@android.com
+Cc: ceph-devel@vger.kernel.org
+Cc: coda@cs.cmu.edu
+Cc: codalist@coda.cs.cmu.edu
+Cc: darrick.wong@oracle.com
+Cc: dedekind1@gmail.com
+Cc: devel@lists.orangefs.org
+Cc: dsterba@suse.com
+Cc: dushistov@mail.ru
+Cc: dwmw2@infradead.org
+Cc: ericvh@gmail.com
+Cc: gregkh@linuxfoundation.org
+Cc: hch@infradead.org
+Cc: hch@lst.de
+Cc: hirofumi@mail.parknet.co.jp
+Cc: hubcap@omnibond.com
+Cc: idryomov@gmail.com
+Cc: jack@suse.com
+Cc: jaegeuk@kernel.org
+Cc: jaharkes@cs.cmu.edu
+Cc: jfs-discussion@lists.sourceforge.net
+Cc: jlbec@evilplan.org
+Cc: keescook@chromium.org
+Cc: linux-cifs@vger.kernel.org
+Cc: linux-ext4@vger.kernel.org
+Cc: linux-f2fs-devel@lists.sourceforge.net
+Cc: linux-karma-devel@lists.sourceforge.net
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-nfs@vger.kernel.org
+Cc: linux-ntfs-dev@lists.sourceforge.net
+Cc: linux-xfs@vger.kernel.org
+Cc: lucho@ionkov.net
+Cc: luisbg@kernel.org
+Cc: martin@omnibond.com
+Cc: me@bobcopeland.com
+Cc: mikulas@artax.karlin.mff.cuni.cz
+Cc: nico@fluxnic.net
+Cc: phillip@squashfs.org.uk
+Cc: reiserfs-devel@vger.kernel.org
+Cc: richard@nod.at
+Cc: sage@redhat.com
+Cc: salah.triki@gmail.com
+Cc: sfrench@samba.org
+Cc: shaggy@kernel.org
+Cc: tj@kernel.org
+Cc: tony.luck@intel.com
+Cc: trond.myklebust@hammerspace.com
+Cc: tytso@mit.edu
+Cc: v9fs-developer@lists.sourceforge.net
+Cc: yuchao0@huawei.com
+Cc: zyan@redhat.com
 
 ______________________________________________________
 Linux MTD discussion mailing list
