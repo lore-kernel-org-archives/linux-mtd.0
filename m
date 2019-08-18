@@ -2,73 +2,71 @@ Return-Path: <SRS0=Slyc=WO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B9D9C3A589
-	for <linux-mtd@archiver.kernel.org>; Sun, 18 Aug 2019 17:40:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3458DC3A589
+	for <linux-mtd@archiver.kernel.org>; Sun, 18 Aug 2019 18:35:22 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CBE832086C
-	for <linux-mtd@archiver.kernel.org>; Sun, 18 Aug 2019 17:40:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0682B2184D
+	for <linux-mtd@archiver.kernel.org>; Sun, 18 Aug 2019 18:35:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hbqs3PBi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CBE832086C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cs.uga.edu
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="o4rE3srW";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="gGZ5UHz+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0682B2184D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=qusErwDyAWv+PkKPy/nLNU7/0NM2xP2kQL/NE47LkLc=; b=hbq
-	s3PBik3TPRyUWXqyiiWJtPxCTlbTWyuTR2V/gRRYIqvCYjxta6e+h7QeFZLGTY/5ss1VZZAUgUmVX
-	1tRz3aSnAi4UYf+ooao49KLO7hxVDGBlttjaoOCxgpVoRs1GeyMfYnd5UyTLy7PUPyDCTAhHCst4L
-	eCy5YDP2Y48bN2Ner9r3ezdRUfHjeFwgzpgylUV5v2h61Ex/BXMetzvyC9RIE+ZE3A4Gz7dGVXIik
-	AeqPvJJ2/lYK20CJFnh9aeiux7rwHJU/eOjc+yr6pW01wNi0WXt/xjcZou3WTU68C9sgSZxJod6mK
-	+m3a7d83OGVDN3T+EWBN7qWt5wDeD9g==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=5ZQ1s/ZbgkIWD9ydgs16xvo2MCkffloqdAb99cij8Ak=; b=o4rE3srW49zqVO
+	ig1O/NVqaZvzUVdTtmNqn7L127CdsjP1TovgohF/0vCi6DH9M4cMdgmBqAEXQnrNcfd8ABaDdmZII
+	ryAQdH4w5SxFg8owIPq1GbXijQhMzCwMwTIpHeZqttZS3uCzn6E+izlBpJeW+PuCfbhDsRZ2L38js
+	REHVoNoNor3mQTMe+AGYSyWrJuBcTn/e0udHsP1+NUMOX90k3c2jbI+s5N9JX5SzSz9lg8WKFu8G4
+	G4t23+KZ/VutfQW3o1gAdwVsSacO++kip1pjM6MtskChiWDFdrUF1Tzh4fPVezXnZxFIN72x84Qnn
+	0pFNcWS29Ag5tU8kK0bQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hzP9w-0001SY-1T; Sun, 18 Aug 2019 17:40:04 +0000
-Received: from mail-yb1-f193.google.com ([209.85.219.193])
+	id 1hzQ12-0002wW-Ft; Sun, 18 Aug 2019 18:34:56 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hzP9s-00011l-NS
- for linux-mtd@lists.infradead.org; Sun, 18 Aug 2019 17:40:01 +0000
-Received: by mail-yb1-f193.google.com with SMTP id t5so3601103ybt.4
- for <linux-mtd@lists.infradead.org>; Sun, 18 Aug 2019 10:39:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=xRA6A3IpkVXBsZQsDundHQBjGso3fPaNrTm4wSuFb2I=;
- b=Yr6WV0MMt9ke28sGY7qSb0tdDjfTkMw0kbvC/raxKJnL4K3mn+QpudNkl2CcTL3LoA
- qT9GB9aiOuq7rbay+kRve5AruOtS/Dnl0YGAW8pupWMofTB9JjRub7f5ysH4rug9GTBP
- HD/MM0qSjUwxyHrJMk4mS7sSuMsJ16t073Auuc37l+fWvIUUUV+4asCP5GWsTSO2U7nR
- bA8kffOqN0gtrCfH0i4GvePumQOjDK982CxknrplBMiDuPDKpy3MaKjvxOzCVGMimGOQ
- u+mYMzh5FCzFliHPunObV1+/Y9/oCiIeLOJ+5pUPh+zsU8V//KviiW0n8xs52bx0i3Kc
- 78bQ==
-X-Gm-Message-State: APjAAAV0N2ghr1rotnHbJh+Im6NTqYX3HlugY3gZhJhfadZx6OZu57RI
- cWjMMaJudBCitPin8GHjvJc=
-X-Google-Smtp-Source: APXvYqz6cIYNKgmPI9/ElWLDLvo/dZWKDKfDQtT9fbhsMqawO74UYd5k8zODyNwRk3ic6wYVKMqM5Q==
-X-Received: by 2002:a25:782:: with SMTP id 124mr14756624ybh.106.1566149998215; 
- Sun, 18 Aug 2019 10:39:58 -0700 (PDT)
-Received: from localhost.localdomain (24-158-240-219.dhcp.smyr.ga.charter.com.
- [24.158.240.219])
- by smtp.gmail.com with ESMTPSA id d81sm254314ywe.59.2019.08.18.10.39.56
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
- Sun, 18 Aug 2019 10:39:57 -0700 (PDT)
-From: Wenwen Wang <wenwen@cs.uga.edu>
-To: Wenwen Wang <wenwen@cs.uga.edu>
-Subject: [PATCH] mtd: spi-nor: fix a memory leak bug
-Date: Sun, 18 Aug 2019 12:39:53 -0500
-Message-Id: <1566149993-2748-1-git-send-email-wenwen@cs.uga.edu>
-X-Mailer: git-send-email 2.7.4
+ id 1hzQ0y-0002vJ-N1
+ for linux-mtd@lists.infradead.org; Sun, 18 Aug 2019 18:34:54 +0000
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
+ [83.86.89.107])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id D91862184D;
+ Sun, 18 Aug 2019 18:34:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1566153288;
+ bh=NoAluoc+Uq1qt0jwwoy3iiCN6uLBPDpdA+kJGNLfpEc=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=gGZ5UHz+VcRsH4bqNPorYZKMdOjs4yjmQumubPysA2fMTlAuE1QxyfIcxRbYwSVeI
+ Qb4pWxTOnTUKPIM2ipvQtTNTl0RqCtrF1ds4J+2Oe4TVNBnOCeRoFiFduU+U2Qjj+q
+ RM0RP0rlCS881frkAmEiHevGSBTCsQWY54ANTTN4=
+Date: Sun, 18 Aug 2019 20:34:46 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Deepa Dinamani <deepa.kernel@gmail.com>
+Subject: Re: [PATCH v8 03/20] timestamp_truncate: Replace users of
+ timespec64_trunc
+Message-ID: <20190818183446.GA2791@kroah.com>
+References: <20190818165817.32634-1-deepa.kernel@gmail.com>
+ <20190818165817.32634-4-deepa.kernel@gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20190818165817.32634-4-deepa.kernel@gmail.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190818_104000_765376_D0D80847 
-X-CRM114-Status: GOOD (  12.50  )
+X-CRM114-CacheID: sfid-20190818_113452_772103_EE362C69 
+X-CRM114-Status: GOOD (  11.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,46 +78,64 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, open list <linux-kernel@vger.kernel.org>,
- Marek Vasut <marek.vasut@gmail.com>,
- "open list:SPI NOR SUBSYSTEM" <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-MIME-Version: 1.0
+Cc: arnd@arndb.de, dedekind1@gmail.com, y2038@lists.linaro.org, richard@nod.at,
+ yuchao0@huawei.com, adrian.hunter@intel.com, linux-kernel@vger.kernel.org,
+ tj@kernel.org, linux-mtd@lists.infradead.org, viro@zeniv.linux.org.uk,
+ linux-fsdevel@vger.kernel.org, jaegeuk@kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-ntfs-dev@lists.sourceforge.net,
+ hch@lst.de, jlbec@evilplan.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In spi_nor_parse_4bait(), 'dwords' is allocated through kmalloc(). However,
-it is not deallocated in the following execution if spi_nor_read_sfdp()
-fails, leading to a memory leak. To fix this issue, free 'dwords' before
-returning the error.
+On Sun, Aug 18, 2019 at 09:58:00AM -0700, Deepa Dinamani wrote:
+> Update the inode timestamp updates to use timestamp_truncate()
+> instead of timespec64_trunc().
+> 
+> The change was mostly generated by the following coccinelle
+> script.
+> 
+> virtual context
+> virtual patch
+> 
+> @r1 depends on patch forall@
+> struct inode *inode;
+> identifier i_xtime =~ "^i_[acm]time$";
+> expression e;
+> @@
+> 
+> inode->i_xtime =
+> - timespec64_trunc(
+> + timestamp_truncate(
+> ...,
+> - e);
+> + inode);
+> 
+> Signed-off-by: Deepa Dinamani <deepa.kernel@gmail.com>
+> Cc: adrian.hunter@intel.com
+> Cc: dedekind1@gmail.com
+> Cc: gregkh@linuxfoundation.org
+> Cc: hch@lst.de
+> Cc: jaegeuk@kernel.org
+> Cc: jlbec@evilplan.org
+> Cc: richard@nod.at
+> Cc: tj@kernel.org
+> Cc: yuchao0@huawei.com
+> Cc: linux-f2fs-devel@lists.sourceforge.net
+> Cc: linux-ntfs-dev@lists.sourceforge.net
+> Cc: linux-mtd@lists.infradead.org
+> ---
+>  fs/attr.c           | 21 ++++++++++++---------
+>  fs/configfs/inode.c | 12 ++++++------
+>  fs/f2fs/file.c      | 21 ++++++++++++---------
+>  fs/kernfs/inode.c   |  7 +++----
+>  fs/ntfs/inode.c     | 21 ++++++++++++---------
+>  fs/ubifs/file.c     | 21 ++++++++++++---------
+>  6 files changed, 57 insertions(+), 46 deletions(-)
 
-Signed-off-by: Wenwen Wang <wenwen@cs.uga.edu>
----
- drivers/mtd/spi-nor/spi-nor.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 03cc788..a41a466 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -3453,7 +3453,7 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
- 	addr = SFDP_PARAM_HEADER_PTP(param_header);
- 	ret = spi_nor_read_sfdp(nor, addr, len, dwords);
- 	if (ret)
--		return ret;
-+		goto out;
- 
- 	/* Fix endianness of the 4BAIT DWORDs. */
- 	for (i = 0; i < SFDP_4BAIT_DWORD_MAX; i++)
--- 
-2.7.4
-
+For kernfs:
+	Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
