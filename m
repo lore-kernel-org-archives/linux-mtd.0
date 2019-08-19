@@ -2,89 +2,157 @@ Return-Path: <SRS0=wiZC=WP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3764C3A59B
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Aug 2019 04:40:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44726C3A59B
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Aug 2019 06:04:08 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 746272087E
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Aug 2019 04:40:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 13D9F2086C
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Aug 2019 06:04:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TXCxZJNX";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="mWIrPMjN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 746272087E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="S9eOOeKt";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="lp/MAVDU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 13D9F2086C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pGTwsgP1f3ow6DqHFoVzuJZh6rQgtmf9QDWu0a/LDgY=; b=TXCxZJNXHncar2
-	EQ/VbNpqY6SmJ0/ng32KciL76nhCKTkzmt0fm8D/j7E9G5NJaP2qBEn0ztdce7Z3BU7RlszaN5lOp
-	5eRIKCoTU8YkwuTQwgmcx2YFJEVO4aCOhhh9scvlfeURctpunViIvQnEh24oxUWMPEgfYbgGp4VhR
-	iDWDblFCrQQawEi54PgKc0QFOmMVnenBVMnaiNT3lDZObOEoL130dDHlacu9K0Py/sB7dLY/80tGC
-	yqrNAOCKim2PLFeau+CeoEdnNWXc6vGXbQGqpYHU1ilNAtL9XIsR4DtDjyvOfq6h62a5pafEm3jfO
-	14nP460CcsYN9mjQTiEw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=TI5/3WVGM0VNAIdAuf/GtqK8gSbXNJELyy0Pz/DUSgM=; b=S9eOOeKtNEHPyj
+	896w6JfqnnE4+cmZE5xrhju/c5yaw840b2yZFD3xGIhpiDp1jGwZ/83ubH33CDpsdyVPOYAOBuNHK
+	hFaxA509Cyem3huUQkttScxbe+olETbUTK971JhDWBtyiITF8a5XWnqckBlL5pi4LRWM/4RyndRr8
+	n2pVDWL5pKxhdCV0y4pigfH7GD1uo6/5Ybdf0BdwRjOBKTkX0wsy3cjMRoFtjJDTAlcTc3uXHLUrL
+	W7qt1DwL04eLUEdNU7nHn9GF9vEog0/Wd3p1Y99TnsuVdt5oz5zBNb026tYuOMZis4xAxlHPOQrmK
+	to+cyXDkfrCW3XZnvrlA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hzZSN-0002fg-1F; Mon, 19 Aug 2019 04:39:47 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1hzalg-0000zx-N2; Mon, 19 Aug 2019 06:03:48 +0000
+Received: from esa6.microchip.iphmx.com ([216.71.154.253])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hzZSJ-0002aV-G7
- for linux-mtd@lists.infradead.org; Mon, 19 Aug 2019 04:39:45 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id x7J4dJ36095386;
- Sun, 18 Aug 2019 23:39:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1566189559;
- bh=SBM143+uKwC8gIRpIrvI0uZ39YPdVq+NjfiPpDmemoo=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=mWIrPMjNpyIs7BqM2nUDCV/ei9nWDDqt8QKvxJ+iaeM9/iE34NmkGfPAnRCXtTRHW
- 9ivB8nziFGW3asvd7KDnmcRabF98N2WdpXJTcGargtxrDEoCyFK6SYUca2LMC5878i
- w+SKd9PWojDPRnqOshmsGo2kX8iqvZoLNBmlvvhw=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x7J4dJ5W065905
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Sun, 18 Aug 2019 23:39:19 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Sun, 18
- Aug 2019 23:39:19 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
- Frontend Transport; Sun, 18 Aug 2019 23:39:18 -0500
-Received: from [172.24.145.136] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id x7J4dEZr069725;
- Sun, 18 Aug 2019 23:39:15 -0500
-Subject: Re: [PATCH] docs: mtd: Update spi nor reference driver
-To: John Garry <john.garry@huawei.com>, Schrempf Frieder
- <frieder.schrempf@kontron.de>, "corbet@lwn.net" <corbet@lwn.net>,
- "mchehab+samsung@kernel.org" <mchehab+samsung@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-References: <1565107583-68506-1-git-send-email-john.garry@huawei.com>
- <6c4bb892-6cf5-af46-3ace-b333fd47ef14@huawei.com>
- <9b074db7-b95d-a081-2fba-7b2b82997332@kontron.de>
- <ab2d3c29-982f-cb13-e2a2-e6d8da8f1438@huawei.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <b2a475eb-58e6-e7c7-7b8f-b1be04cf27c0@ti.com>
-Date: Mon, 19 Aug 2019 10:09:54 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <ab2d3c29-982f-cb13-e2a2-e6d8da8f1438@huawei.com>
+ id 1hzala-0000zT-MB
+ for linux-mtd@lists.infradead.org; Mon, 19 Aug 2019 06:03:46 +0000
+Received-SPF: Pass (esa6.microchip.iphmx.com: domain of
+ Tudor.Ambarus@microchip.com designates 198.175.253.82 as
+ permitted sender) identity=mailfrom;
+ client-ip=198.175.253.82; receiver=esa6.microchip.iphmx.com;
+ envelope-from="Tudor.Ambarus@microchip.com";
+ x-sender="Tudor.Ambarus@microchip.com";
+ x-conformance=spf_only; x-record-type="v=spf1";
+ x-record-text="v=spf1 mx a:ushub1.microchip.com
+ a:smtpout.microchip.com a:mx1.microchip.iphmx.com
+ a:mx2.microchip.iphmx.com include:servers.mcsv.net
+ include:mktomail.com include:spf.protection.outlook.com ~all"
+Received-SPF: None (esa6.microchip.iphmx.com: no sender
+ authenticity information available from domain of
+ postmaster@email.microchip.com) identity=helo;
+ client-ip=198.175.253.82; receiver=esa6.microchip.iphmx.com;
+ envelope-from="Tudor.Ambarus@microchip.com";
+ x-sender="postmaster@email.microchip.com"; x-conformance=spf_only
+Authentication-Results: esa6.microchip.iphmx.com;
+ spf=Pass smtp.mailfrom=Tudor.Ambarus@microchip.com;
+ spf=None smtp.helo=postmaster@email.microchip.com;
+ dkim=pass (signature verified) header.i=@microchiptechnology.onmicrosoft.com;
+ dmarc=pass (p=none dis=none) d=microchip.com
+IronPort-SDR: mDEN09ridQc9oMEEBdpebg0P9LsQ0Oi6VNtIGccRCKAXiLgHhDu5ZhQSmvbSf/RLWCSNpwYACR
+ wkPU09yBk2+65mtU9HwxBSl0gXQPcFbsNz4ZASpIfZGu7xrPOpVwg1jix3+EYhuKQRRuJd9o7T
+ RqhUI6JeLNuhQ6PMgDrFAehEHei0nMMg1cDM0GJ5SKdB9Mm6aBsEgDSAfC81MlVxmnp9p42C68
+ 8wj6CCUAmbLj+HDb1n2CFKp1dcU6AvBHTZUAiEz0SpZYaNvUQI5gb6ajpovIKBiJgiqkRhS7uq
+ 7nk=
+X-IronPort-AV: E=Sophos;i="5.64,403,1559545200"; d="scan'208";a="42726605"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 18 Aug 2019 23:03:40 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Sun, 18 Aug 2019 23:03:30 -0700
+Received: from NAM03-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, 
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5 via Frontend
+ Transport; Sun, 18 Aug 2019 23:03:29 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fJ3ikrZhra7Oh9eJ0frKrIi7PaXlf9in1XBpEMqhI2tzQDpWqxm3QS2HjZIP+dIhonXfkI6vE6buN0j1d6z1zHvsRYSSxPHk0z3h9lTWWKex3pKmZ3rxvCCniysZWf/29uOWsCCFvutK/BhjQGsYv6cURONhlou6kt3MsK2+Rc/JmLwqv68cZjGs2Sxyv+Hq3igY6bCU24KDFb4zH2AcBqwFPM6zeo6l+lp0v+isyS8zy/R8Dl46y0vnssHGQ0DxFv8SfJmyGLtOi6B+ScR/Tux0ahPxVQ60GnepN/EqdtJYzUIBXnv5hHiBveJxkoemERPN11wAe2qE5/+P6KC8+Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WTl3yRqqsKP9WZERr8g5GYxuvfPjSbb+oUVuAxnPGLk=;
+ b=ZsbhQCwFXV3IQN5YJ99j7ilsr9E6x5/idCwpOcW+XW6okHK3GMlQTfdWFr2cVCdhQISXvVuOv8gS8Z3ClxEvw7kc4UXTYFj5h4qzhtIoxJcQQfqjOOXC8PMBM9Ca9yFt2eMYXhqqsJsTrlmi0VJXRV+/5twsAm/aRZnZ2ryDv51z+kLLckOAy6uq7oiEn4y9KUWxh6WisIAvG4icY6tvg0My8jcCplFqS2hdzUQbm9G8Ec8aSiBtCVDWTf9ycMQBYprL1q4Jzc+hGRFCOwu0b3zpelvQk4y94ZD4qusnqQxQ2XdcR85FWWuJOwB72pYPy0ATDklc/RoXtNO3JE5BDg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WTl3yRqqsKP9WZERr8g5GYxuvfPjSbb+oUVuAxnPGLk=;
+ b=lp/MAVDUgPNF3PdOcUcsi1BmJTH6lj9n/W0JGroSJJtu1HTw2zhYOjL9ef+jNspSYsSN3mxmEsGIfDpbWB0VVjw2eZRBxLakPvJ24rv304Y3aQIOHlIYyAFCbqnY6UDbjm1PgMqITQ6WBW7kV5XDlgX6Z+oQgjN74jLOKwtSqRE=
+Received: from MN2PR11MB4448.namprd11.prod.outlook.com (52.135.39.157) by
+ MN2PR11MB3709.namprd11.prod.outlook.com (20.178.252.214) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2178.16; Mon, 19 Aug 2019 06:03:26 +0000
+Received: from MN2PR11MB4448.namprd11.prod.outlook.com
+ ([fe80::70c3:e929:4da2:60a5]) by MN2PR11MB4448.namprd11.prod.outlook.com
+ ([fe80::70c3:e929:4da2:60a5%7]) with mapi id 15.20.2178.018; Mon, 19 Aug 2019
+ 06:03:26 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <wenwen@cs.uga.edu>
+Subject: Re: [PATCH] mtd: spi-nor: fix a memory leak bug
+Thread-Topic: [PATCH] mtd: spi-nor: fix a memory leak bug
+Thread-Index: AQHVVev6fATxhl9u4US1h72AjbWeGacB+8IA
+Date: Mon, 19 Aug 2019 06:03:26 +0000
+Message-ID: <e52a548a-0516-55ee-4005-5cc24c3a20b5@microchip.com>
+References: <1566149993-2748-1-git-send-email-wenwen@cs.uga.edu>
+In-Reply-To: <1566149993-2748-1-git-send-email-wenwen@cs.uga.edu>
+Accept-Language: en-US
 Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: VI1PR0902CA0034.eurprd09.prod.outlook.com
+ (2603:10a6:802:1::23) To MN2PR11MB4448.namprd11.prod.outlook.com
+ (2603:10b6:208:193::29)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [94.177.32.156]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e6282b93-2635-4e4e-d025-08d7246af320
+x-microsoft-antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);
+ SRVR:MN2PR11MB3709; 
+x-ms-traffictypediagnostic: MN2PR11MB3709:
+x-microsoft-antispam-prvs: <MN2PR11MB37099C8399E88F65C6BDFD1AF0A80@MN2PR11MB3709.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4303;
+x-forefront-prvs: 0134AD334F
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(366004)(39860400002)(136003)(346002)(376002)(396003)(189003)(199004)(186003)(4744005)(31686004)(478600001)(25786009)(81166006)(6246003)(14444005)(76176011)(6916009)(14454004)(31696002)(81156014)(4326008)(8936002)(229853002)(7736002)(52116002)(99286004)(6116002)(3846002)(305945005)(316002)(2906002)(54906003)(71200400001)(71190400001)(26005)(66946007)(66476007)(66556008)(64756008)(66446008)(86362001)(486006)(66066001)(6436002)(5660300002)(2616005)(446003)(11346002)(476003)(53936002)(6512007)(2171002)(6486002)(8676002)(36756003)(53546011)(102836004)(6506007)(256004)(386003);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:MN2PR11MB3709;
+ H:MN2PR11MB4448.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; MX:1; A:1; 
+received-spf: None (protection.outlook.com: microchip.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: 9kY7q9NyQhU0ZXD0Ap51mPQiJTBGSnFPGKC8akfkgg1VnKvGFhyA4BzkakpuZqrKqb73hb8Mw0oJQB8arvyhxni1SOE1Ehj2nLaNrKvdjVPqpfJprPdvr6D65wgIb+2cjiw8pp5P5c5MErcB+kYyRELb/EkQ56I9isUj5qZ20BhUqTslKQrGuuptj+01vs1etMO3UqCRzkNWbPc/2KyOxGRXFtN7BxA6kEgsO0qSIZA3K5oPOlA0O3yjr0RMKN3ii/Ku7RgceiFBM2oqxmXeibFMbJtIu23OCrZ+sePOEQR6gP0/4WJQM0Cp5njK2WsdeVaWZ8uqcXk9msow8nRJSwbEiXSEHClSytPlFXnu/wzLjb0hYy2lvtxoFJ+9wPrI+6oxESccdEUw4oFpQDpz6zicuuWvvGtXfLV6Tua3Kc8=
+x-ms-exchange-transport-forked: True
+Content-ID: <0AAB7BCEA377584D96671AB8EC6B2B43@namprd11.prod.outlook.com>
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: e6282b93-2635-4e4e-d025-08d7246af320
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Aug 2019 06:03:26.2510 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Ahgs/gGSgQ0tZM/H8KC6hONzXhvbHrnIyufbCHKqML6gXO1sD/0DTfKK0s3EUvrzg5EEceB71V4UampYLGDabolkVJX6LHCXmrL2R1wB/4M=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB3709
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190818_213943_622367_985BB4FE 
-X-CRM114-Status: GOOD (  17.15  )
+X-CRM114-CacheID: sfid-20190818_230342_819177_2F14509F 
+X-CRM114-Status: GOOD (  13.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,56 +164,43 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
- "richard@nod.at" <richard@nod.at>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "broonie@kernel.org" <broonie@kernel.org>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- wanghuiqiang <wanghuiqiang@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: vigneshr@ti.com, richard@nod.at, linux-kernel@vger.kernel.org,
+ marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
+ miquel.raynal@bootlin.com, computersforpeace@gmail.com, dwmw2@infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGksCgpPbiAxNi8wOC8xOSAzOjUwIFBNLCBKb2huIEdhcnJ5IHdyb3RlOgo+IE9uIDA2LzA4LzIw
-MTkgMTc6NDAsIFNjaHJlbXBmIEZyaWVkZXIgd3JvdGU6ClsuLi5dCj4gCj4gSGksCj4gCj4gQ291
-bGQgc29tZW9uZSBraW5kbHkgYWR2aXNlIG9uIHRoZSBmb2xsb3dpbmc6Cj4gCj4gSSBhbSBsb29r
-aW5nIGF0IEFDUEkgc3VwcG9ydCBvbmx5IGZvciBhbiBtdGQgc3BpIG5vciBkcml2ZXIgd2UncmUK
-PiB0YXJnZXRpbmcgZm9yIG1haW5saW5lIHN1cHBvcnQuCj4gCgpJZiBpdHMgYSBuZXcgZHJpdmVy
-LCBwbGVhc2UgYWRkIGl0IHVuZGVyIGRyaXZlcnMvc3BpIGltcGxlbWVudGluZyBTUEkKTUVNIGZy
-YW1ld29yay4KVGhlcmUgYXJlIGZldyBkcml2ZXJzIHVuZGVyIGRyaXZlcnMvc3BpIHRoYXQgY2Fu
-IGJlIHVzZWQgYXMgZXhhbXBsZS4KKFNlYXJjaCBmb3IgInNwaV9tZW1fb3BzIikKCj4gU28gZm9y
-IHRoZSBob3N0LCBJIGNvdWxkIHVzZSBhIHByb3ByaWV0YXJ5IEhJRCBpbiB0aGUgRFNEVCBmb3Ig
-bWF0Y2hpbmcKPiBpbiB0aGUga2VybmVsIGRyaXZlci4KPiAKPiBBYm91dCB0aGUgY2hpbGQgc3Bp
-IGZsYXNoIGRldmljZXMsIGlzIHRoZSByZWNvbW1lbmRhdGlvbiB0byBqdXN0IHVzZQo+IFBSUDAw
-MDEgSElEIGFuZCAiamVkZWMsc3BpLW5vciIgY29tcGF0aWJsZT8KPgoKSSBhbSBub3QgcXVpdGUg
-ZmFtaWxpYXIgd2l0aCBBQ1BJIHN5c3RlbXMsIGJ1dCBjaGlsZCBmbGFzaCBkZXZpY2Ugc2hvdWxk
-CnVzZSAiamVkZWMsc3BpLW5vciIgYXMgY29tcGF0aWJsZS4KClJlZ2FyZHMKVmlnbmVzaAoKPiB0
-aGFua3MsCj4gSm9obgo+IAo+IAo+Pgo+PiBATWFpbnRhaW5lcnM6Cj4+IE1heWJlIHRoZSBkb2Nz
-IHVuZGVyIERvY3VtZW50YXRpb24vZHJpdmVyLWFwaS9tdGQgc2hvdWxkIGJlIG9mZmljaWFsbHkK
-Pj4gbWFpbnRhaW5lZCBieSB0aGUgTVREIHN1YnN5c3RlbSAoYW5kIGFkZGVkIHRvIE1BSU5UQUlO
-RVJTKS4gQW5kIGlmIHRoZXJlCj4+IHdpbGwgYmUgc29tZSBkcml2ZXIgQVBJIGRvY3MgZm9yIFNQ
-SSBNRU0gaXQgc2hvdWxkIHByb2JhYmx5IGxpdmUgaW4KPj4gRG9jdW1lbnRhdGlvbi9kcml2ZXIt
-YXBpL3NwaSBpbnN0ZWFkIG9mIERvY3VtZW50YXRpb24vZHJpdmVyLWFwaS9tdGQsIGFzCj4+IHNw
-aS1tZW0uYyBpdHNlbGYgaXMgaW4gZHJpdmVycy9zcGkuCj4+Cj4+IFJlZ2FyZHMsCj4+IEZyaWVk
-ZXIKPj4KPj4+Cj4+PiBUaGFua3MsCj4+PiBKb2huCj4+Pgo+Pj4+IEBAIC01OSw3ICs1OSw3IEBA
-IFBhcnQgSUlJIC0gSG93IGNhbiBkcml2ZXJzIHVzZSB0aGUgZnJhbWV3b3JrPwo+Pj4+Cj4+Pj4g
-wqBUaGUgbWFpbiBBUEkgaXMgc3BpX25vcl9zY2FuKCkuIEJlZm9yZSB5b3UgY2FsbCB0aGUgaG9v
-aywgYSBkcml2ZXIKPj4+PiBzaG91bGQKPj4+PiDCoGluaXRpYWxpemUgdGhlIG5lY2Vzc2FyeSBm
-aWVsZHMgZm9yIHNwaV9ub3J7fS4gUGxlYXNlIHNlZQo+Pj4+IC1kcml2ZXJzL210ZC9zcGktbm9y
-L3NwaS1ub3IuYyBmb3IgZGV0YWlsLiBQbGVhc2UgYWxzbyByZWZlciB0bwo+Pj4+IGZzbC1xdWFk
-c3BpLmMKPj4+PiArZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMgZm9yIGRldGFpbC4gUGxl
-YXNlIGFsc28gcmVmZXIgdG8KPj4+PiBzcGktZnNsLXFzcGkuYwo+Pj4+IMKgd2hlbiB5b3Ugd2Fu
-dCB0byB3cml0ZSBhIG5ldyBkcml2ZXIgZm9yIGEgU1BJIE5PUiBjb250cm9sbGVyLgo+Pj4+IMKg
-QW5vdGhlciBBUEkgaXMgc3BpX25vcl9yZXN0b3JlKCksIHRoaXMgaXMgdXNlZCB0byByZXN0b3Jl
-IHRoZSBzdGF0dXMKPj4+PiBvZiBTUEkKPj4+PiDCoGZsYXNoIGNoaXAgc3VjaCBhcyBhZGRyZXNz
-aW5nIG1vZGUuIENhbGwgaXQgd2hlbmV2ZXIgZGV0YWNoIHRoZQo+Pj4+IGRyaXZlciBmcm9tCj4+
-Pj4KPj4+Cj4+Pgo+Pj4KPj4+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwo+Pj4gTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cj4+
-PiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
-PiAKPiAKCi0tIApSZWdhcmRzClZpZ25lc2gKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxp
-c3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQv
-Cg==
+
+
+On 08/18/2019 08:39 PM, Wenwen Wang wrote:
+> In spi_nor_parse_4bait(), 'dwords' is allocated through kmalloc(). However,
+> it is not deallocated in the following execution if spi_nor_read_sfdp()
+> fails, leading to a memory leak. To fix this issue, free 'dwords' before
+> returning the error.
+
+Looks good. Would you add a Fixes tag?
+> 
+> Signed-off-by: Wenwen Wang <wenwen@cs.uga.edu>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 03cc788..a41a466 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -3453,7 +3453,7 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+>  	addr = SFDP_PARAM_HEADER_PTP(param_header);
+>  	ret = spi_nor_read_sfdp(nor, addr, len, dwords);
+>  	if (ret)
+> -		return ret;
+> +		goto out;
+>  
+>  	/* Fix endianness of the 4BAIT DWORDs. */
+>  	for (i = 0; i < SFDP_4BAIT_DWORD_MAX; i++)
+> 
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
