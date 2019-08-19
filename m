@@ -2,121 +2,73 @@ Return-Path: <SRS0=wiZC=WP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1646C3A5A0
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Aug 2019 20:58:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3867C3A5A0
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Aug 2019 21:55:40 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C610C2087E
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Aug 2019 20:58:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7B679214DA
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Aug 2019 21:55:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QI2LqpF8";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=wavecomp.com header.i=@wavecomp.com header.b="vQ/3pUFl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C610C2087E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mips.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RCU/H+Xq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B679214DA
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cs.uga.edu
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vVKJ0aPmnCWOGhtO3ZGtGNJCcjUXRQ6Q3B1O5Lvneek=; b=QI2LqpF8/OcCHG
-	nhSJpcoGMFwbO8mZtCVWIyqw8YuU22GVZU1+pmzwkkaZYLR9pcMf+aOV7AVYGP33YdwAZuVy7SGKO
-	5zJbpErylT4hQ8Vnh+yHmBqgDV1QtL9mtq2TdH4x702W1WT0l88xf1gIXPOntJQiQm7olyrFsbIJu
-	m2/JNmMEIPkWud3Iz099JovfJsq1Nd7n8Sq6xAyk1y6JgqvEHsE7t0XIAQ+xvLrmtTg94JeN7H0Qy
-	4wVqU0LP33HKRNrsJ25ZVDDAsOVKzbGioz4u6WrsTSI7v/FjGiSEmrYbhr5Wew6P96v4yCSP78Srv
-	SHMZt4arTxvFmAN/+ezQ==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=GVvLqbViBYZ1CYvCp61jYt9/aQJ3ksQ5hk9BuLGiQX0=; b=RCU
+	/H+XqlJmiLbXy8cufrqdRpxaPjyvXfKQT6B+BUg50gqkAhTrqx1x8a29rTkWoVJYaTRMy2gsg+oot
+	Fx2nTkCe9yZjWPU0cmPx+XgBIzmykxOtIvpEDxmFn2Zs0kvPlaQ55KOwxqBZzod4T12lYqmCF54la
+	oN50ttqNxx6EBGSs+M+b2wUnJSrJZAMUGkVrsMQSIhwSM1F8plyaolOaDq38CO/QXQGAEK36H6V5L
+	JyTrFUuJ35C7BYS+uso0pO7NYDSZ51q+P2UpBCdIXSAEZdTVTBKD/sdF/5YEF2lKVElm6Yr7wnmfW
+	34PkJvuKzPkGg43UmQ8jfU2IM+/18JQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hzoj1-0005XX-Mb; Mon, 19 Aug 2019 20:57:59 +0000
-Received: from mail-by2nam01on0712.outbound.protection.outlook.com
- ([2a01:111:f400:fe42::712]
- helo=NAM01-BY2-obe.outbound.protection.outlook.com)
+	id 1hzpcU-0001To-Is; Mon, 19 Aug 2019 21:55:18 +0000
+Received: from mail-yw1-f65.google.com ([209.85.161.65])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hzoid-0005Fm-UV; Mon, 19 Aug 2019 20:57:37 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bGz4W9u+/50ifh/XazO3SsJDsdYXcV0ub1dmfkoaZkrmCZumDMfyTWWiT/rCAG9y2Ohhe/b19HWRKD8YyEzcSdyWFw4M2/k5sk2VvuM1QuSOW4TqhYV8CJSRuQqd0u5WabkghdQSYHQRyAKD5J6/98ZsbeYbOa8mUgI9lRcnEC43zxXgp6PaKgtfer7rHRtzIlaecvBDcl2SGL4ijfD2324+8jz5ch+OV/2qn9TILMjwtwcUPQTKFItYqPqGFvwgDPPNZcGDhmxKzqJlq/+4lXxGOAibOaSm/MplXnTI35ax6Kl3y6diRe0luZe8/XeJ8ut26/rkH+rM4mzdg2NYdA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sQlemvDaibl3TmaUoytPX70nix/LzsjtaZ1/LsbuUDQ=;
- b=F77d5PqBjjR3NragXVyVzF+8IkCwFqeHS39abnfMgapxqGRsW9ukpD9zzSEVUDMQ/jvJ8vtbwTapkx8jmMyooGsjxmyJ6feHFSCHU4uyyYGB2TuhSSrPr2+1UDkRWA+BFtV2bXItHCx641szKLf8rx1CgmYnMcvH9JIdiURutWM9ff9gTPnYBiVbM4x0My2mjjRWGh8Z5MBvyc+59MRB0n/ebVvDytQWcjhq7QegUhj8ZAqF4n5V2GVJMgo1Ew9oAoY5GxvNq4v6FveJxHGWet+WCpK1Igjfc636zVP6GO+f66TXXxn2dPV25V8G0Qy8fjwKPNs5Zgn60y7DjItg4Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wavecomp.com; dmarc=pass action=none header.from=mips.com;
- dkim=pass header.d=mips.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wavecomp.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sQlemvDaibl3TmaUoytPX70nix/LzsjtaZ1/LsbuUDQ=;
- b=vQ/3pUFl5pl4EUYYaAjWg0jq9iLtomWR7q2NzSLd8KleB3fGL4Kf68+gNkERCR82HHTgHcJ3jmVtdMwBtxwKYn3CRheLwhUqHgXa2RA7zB/l6Vqrg1soikbidi4Hc0Eqd6Q3wYn9MPQsHUlsA7C2DQENfza+mdqBZZVqVoiJd3o=
-Received: from MWHPR2201MB1277.namprd22.prod.outlook.com (10.172.60.12) by
- MWHPR2201MB1214.namprd22.prod.outlook.com (10.174.161.147) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2178.18; Mon, 19 Aug 2019 20:57:30 +0000
-Received: from MWHPR2201MB1277.namprd22.prod.outlook.com
- ([fe80::f566:bf1f:dcd:862c]) by MWHPR2201MB1277.namprd22.prod.outlook.com
- ([fe80::f566:bf1f:dcd:862c%10]) with mapi id 15.20.2178.018; Mon, 19 Aug 2019
- 20:57:30 +0000
-From: Paul Burton <paul.burton@mips.com>
-To: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 04/26] mips: remove ioremap_cachable
-Thread-Topic: [PATCH 04/26] mips: remove ioremap_cachable
-Thread-Index: AQHVVtC3NrUy1/60K0Ou3aE6SqmWcg==
-Date: Mon, 19 Aug 2019 20:57:30 +0000
-Message-ID: <20190819205722.4eir2edy6qgtgarl@pburton-laptop>
-References: <20190817073253.27819-1-hch@lst.de>
- <20190817073253.27819-5-hch@lst.de>
-In-Reply-To: <20190817073253.27819-5-hch@lst.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: LO2P123CA0023.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:a6::35) To MWHPR2201MB1277.namprd22.prod.outlook.com
- (2603:10b6:301:18::12)
-user-agent: NeoMutt/20180716
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=pburton@wavecomp.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2a02:c7f:5e65:9900:8519:dc48:d16b:70fc]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 9c641ce4-c757-4855-8ea6-08d724e7d94d
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);
- SRVR:MWHPR2201MB1214; 
-x-ms-traffictypediagnostic: MWHPR2201MB1214:
-x-microsoft-antispam-prvs: <MWHPR2201MB1214CEE95E7DDEFA250FDB2FC1A80@MWHPR2201MB1214.namprd22.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6108;
-x-forefront-prvs: 0134AD334F
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10019020)(7916004)(136003)(376002)(346002)(39830400003)(366004)(396003)(199004)(189003)(71200400001)(8936002)(71190400001)(5660300002)(486006)(1076003)(8676002)(44832011)(6246003)(76176011)(81156014)(81166006)(476003)(256004)(66946007)(42882007)(446003)(14454004)(64756008)(66446008)(66556008)(478600001)(7736002)(305945005)(4326008)(386003)(25786009)(6506007)(11346002)(186003)(46003)(316002)(102836004)(66476007)(33716001)(54906003)(58126008)(6436002)(229853002)(6916009)(53936002)(7416002)(52116002)(6512007)(9686003)(6486002)(99286004)(2906002)(6116002);
- DIR:OUT; SFP:1102; SCL:1; SRVR:MWHPR2201MB1214;
- H:MWHPR2201MB1277.namprd22.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; A:1; MX:1; 
-received-spf: None (protection.outlook.com: wavecomp.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: dV5mX8Pkr7io2t7Y4ptazUid5uXLcd1UBG1s8OB1iX7EfIpmwYRnxosRjB4LPEuf2aK6uYDRQyp3dJs9e92YsCag7SS46KiQIJbIs+xQf+X8AorBt+ClHaEVCD7ZJaKLLsK3BIu7HFM1fPLPFZYo9THzyC9l4isY5g+3SOqRd/PbHXxUZ2uSgAoDnFmA680Ikl/P2i1gv3Pq8U/+3zr5m9Se1heQNHNW9W+IpGDnSPoGZOheeQ1j1UyNjGTZ4d/ErxRt/oTakJHM26tn5F/e3EyR6w/SfiyXxgkxjzOiIVN/b0Qwc0Q4NwrF6c3sEnhjWrphN8eeZ8tYGK+3E8XLhe+j80tJ3Xkjkkm9LpWxh8NtiS6ZHs+RZNPPFMYIRwC+tWYw1I0HPisjb3DBeEEY9hu4JK07d0TBFPfz0jEA40s=
-x-ms-exchange-transport-forked: True
-Content-ID: <F7A01E6E65132543B693A9F6442F8662@namprd22.prod.outlook.com>
-MIME-Version: 1.0
-X-OriginatorOrg: mips.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9c641ce4-c757-4855-8ea6-08d724e7d94d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Aug 2019 20:57:30.3016 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 463607d3-1db3-40a0-8a29-970c56230104
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: qJQF+IhT4z5pqGUgbfafaPiHTxqFNEqH6R6Z4I+k8rb9DobUqivCvM1ix+ODt4H/DJNJU2Hcxxg3SjfiBemtkw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR2201MB1214
+ id 1hzpcQ-0001T7-R5
+ for linux-mtd@lists.infradead.org; Mon, 19 Aug 2019 21:55:16 +0000
+Received: by mail-yw1-f65.google.com with SMTP id x74so1454730ywx.6
+ for <linux-mtd@lists.infradead.org>; Mon, 19 Aug 2019 14:55:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id;
+ bh=j8ArHqoH8hRKY32uSG2n9B6xxahAFt/eVeW0eXi2ctw=;
+ b=eXmr7KKivelP7qfOuQlRdiRW0Ihq2d5aOIXby52bTgatSj028+A02X4U5ZKYAkzlUN
+ rhJvWxnw7uiw4vQaMDsUQqIORerW9dPL5mwRGH1lsK7e/XPi0L8XMnUGdjpLpE2a8xGr
+ jgHV/O+enJP/W3upmHRvHNfuTpUF5lNLMfVEl3euK7KQjWviUcuB6hHm8pViTXWbEx6R
+ 9ak8iAeB0qIH9QUXtwV9FXrzRB45FBGjlJ6U6BG3PybAhWMqZLWvr73qOWV6gX7ONpNy
+ jDke4YyxMZyz6ISgM8mjXUnzRM0CpFLTLzGHZCqDat8fUzWlHsl97BQGxmKrwHJlVCsF
+ gv3A==
+X-Gm-Message-State: APjAAAWO60TetHxHDEAdTysx6mhM8Wtvw3x+k0QZMaQu8vfgzeLwva51
+ 55H8aTSD8bFQMu7BWk0D+m0=
+X-Google-Smtp-Source: APXvYqySihgswsPdsn5yT2rV1y9hK5Ju/ANr2ecCzBrhFmjclQf/vl/w/di3HiumNmRyWIEBt434dA==
+X-Received: by 2002:a81:f81:: with SMTP id 123mr14292554ywp.469.1566251713421; 
+ Mon, 19 Aug 2019 14:55:13 -0700 (PDT)
+Received: from localhost.localdomain (24-158-240-219.dhcp.smyr.ga.charter.com.
+ [24.158.240.219])
+ by smtp.gmail.com with ESMTPSA id x10sm3491960ywl.16.2019.08.19.14.55.11
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+ Mon, 19 Aug 2019 14:55:12 -0700 (PDT)
+From: Wenwen Wang <wenwen@cs.uga.edu>
+To: Wenwen Wang <wenwen@cs.uga.edu>
+Subject: [PATCH] jffs2: fix a memory leak bug
+Date: Mon, 19 Aug 2019 16:55:04 -0500
+Message-Id: <1566251705-7133-1-git-send-email-wenwen@cs.uga.edu>
+X-Mailer: git-send-email 2.7.4
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190819_135736_021306_72D0372B 
-X-CRM114-Status: GOOD (  14.79  )
+X-CRM114-CacheID: sfid-20190819_145514_879266_57BDBC90 
+X-CRM114-Status: GOOD (  12.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -128,83 +80,46 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
- "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
- Guo Ren <guoren@kernel.org>,
- "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
- "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
- Vincent Chen <deanbo422@gmail.com>,
- "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
- "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
- "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>,
- "x86@kernel.org" <x86@kernel.org>,
- "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>,
- "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>,
- Arnd Bergmann <arnd@arndb.de>,
- "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
- "openrisc@lists.librecores.org" <openrisc@lists.librecores.org>,
- Greentime Hu <green.hu@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Guan Xuetao <gxt@pku.edu.cn>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- Michal Simek <monstr@monstr.eu>,
- "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
- "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
- "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
- "nios2-dev@lists.rocketboards.org" <nios2-dev@lists.rocketboards.org>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ open list <linux-kernel@vger.kernel.org>,
+ "open list:JOURNALLING FLASH FILE SYSTEM V2 JFFS2"
+ <linux-mtd@lists.infradead.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Christoph,
+In jffs2_scan_eraseblock(), 'sumptr' is allocated through kmalloc() if
+'sumlen' is larger than 'buf_size'. However, it is not deallocated in the
+following execution if jffs2_fill_scan_buf() fails, leading to a memory
+leak bug. To fix this issue, free 'sumptr' before returning the error.
 
-On Sat, Aug 17, 2019 at 09:32:31AM +0200, Christoph Hellwig wrote:
-> Just define ioremap_cache directly.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Wenwen Wang <wenwen@cs.uga.edu>
+---
+ fs/jffs2/scan.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Acked-by: Paul Burton <paul.burton@mips.com>
+diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
+index 90431dd..5f7e284 100644
+--- a/fs/jffs2/scan.c
++++ b/fs/jffs2/scan.c
+@@ -527,8 +527,11 @@ static int jffs2_scan_eraseblock (struct jffs2_sb_info *c, struct jffs2_eraseblo
+ 					err = jffs2_fill_scan_buf(c, sumptr, 
+ 								  jeb->offset + c->sector_size - sumlen,
+ 								  sumlen - buf_len);				
+-					if (err)
++					if (err) {
++						if (sumlen > buf_size)
++							kfree(sumptr);
+ 						return err;
++					}
+ 				}
+ 			}
+ 
+-- 
+2.7.4
 
-Thanks,
-    Paul
-
-> ---
->  arch/mips/include/asm/io.h | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
-> index 97a280640daf..c02db986ddf5 100644
-> --- a/arch/mips/include/asm/io.h
-> +++ b/arch/mips/include/asm/io.h
-> @@ -262,11 +262,11 @@ static inline void __iomem *ioremap_prot(phys_addr_t offset,
->  #define ioremap_uc ioremap_nocache
->  
->  /*
-> - * ioremap_cachable -	map bus memory into CPU space
-> + * ioremap_cache -	map bus memory into CPU space
->   * @offset:	    bus address of the memory
->   * @size:	    size of the resource to map
->   *
-> - * ioremap_nocache performs a platform specific sequence of operations to
-> + * ioremap_cache performs a platform specific sequence of operations to
->   * make bus memory CPU accessible via the readb/readw/readl/writeb/
->   * writew/writel functions and the other mmio helpers. The returned
->   * address is not guaranteed to be usable directly as a virtual
-> @@ -276,9 +276,8 @@ static inline void __iomem *ioremap_prot(phys_addr_t offset,
->   * the CPU.  Also enables full write-combining.	 Useful for some
->   * memory-like regions on I/O busses.
->   */
-> -#define ioremap_cachable(offset, size)					\
-> +#define ioremap_cache(offset, size)					\
->  	__ioremap_mode((offset), (size), _page_cachable_default)
-> -#define ioremap_cache ioremap_cachable
->  
->  /*
->   * ioremap_wc     -   map bus memory into CPU space
-> -- 
-> 2.20.1
-> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
