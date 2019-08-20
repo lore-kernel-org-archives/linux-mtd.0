@@ -2,158 +2,71 @@ Return-Path: <SRS0=j2Kw=WQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4F05C3A59E
-	for <linux-mtd@archiver.kernel.org>; Tue, 20 Aug 2019 14:56:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B123CC3A589
+	for <linux-mtd@archiver.kernel.org>; Tue, 20 Aug 2019 15:13:27 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A5FBD22DBF
-	for <linux-mtd@archiver.kernel.org>; Tue, 20 Aug 2019 14:56:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7F2AF20C01
+	for <linux-mtd@archiver.kernel.org>; Tue, 20 Aug 2019 15:13:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="UKgm0GXT";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="WWqaBdE9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A5FBD22DBF
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="deMSKP+y"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7F2AF20C01
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=f/+Vr90KYTuQO61llKxJNZDFOQoAYgx6aZR9w+GYzmM=; b=UKgm0GXTLVcosL
-	7JOghBA4WECodRafxxU7VZHQ7P1uQ+pu4EeF+/Ojheva9esJhjj8fUWN3qMddhTnCuYX7RhQBp2jQ
-	W3pJoA3pZSAb169jHnv8G69uXJdl2BufEFIxX+GnS5nnMqp7bgymk7F2+tpL7RhVkZdL/NET/uqNw
-	n63JcbpbHsjKQ26K1qL0zWaszuOwDWb7KxSW31Ve/AQFE8HRp702XAZonheJnxCQTxtunBbU5Dogs
-	OfT7O4OUeg8tP1C3B5EyivpwOhk0OznTb+VxU9heZQwWn60nHupOPNfRj2NBK3MDymzOLP/teLgog
-	bnOY+0Dk0M6Dplg0yVDg==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
+	Content-Type:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To
+	:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=NBsACdcdrf4QfXtX947IMM5lgC79dDBY5z66C1os968=; b=deMSKP+yKiOuUVPUC1VTOGcSG
+	k/T0lo5TzWbEhwqSnxg+ngf+pWY1ORUx5wq02wHsqVm9NytgMZN4wzmNXaSFXXRwA7teo3NeTtPei
+	9cw0BARmZ7YmLLSgrQixx/e5bB/eVlPsEX3OnHUx0xDb50uO/cjwk2NVrTtD1in1AzEUgaL9kYawv
+	KdgZn2yMA7S+WPF09JMPl5fqN/47gLLYk4Ku0+kpqc6dUXVICzZLUr+EimC9UdaQU5nM1L8WoQ3Zg
+	m/bWfszM0bWTS3FXKRU/pcII5DvMv9rolcnfbToaRBGIehAUqswN9lRNxxmlMOq8Z9OI2fEsMMdJa
+	xwwE1Yb/g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i05Y6-0003zW-1t; Tue, 20 Aug 2019 14:55:50 +0000
-Received: from esa4.microchip.iphmx.com ([68.232.154.123])
+	id 1i05ou-0005mq-IE; Tue, 20 Aug 2019 15:13:12 +0000
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i05Ww-0001mE-Ey
- for linux-mtd@lists.infradead.org; Tue, 20 Aug 2019 14:54:40 +0000
-Received-SPF: Pass (esa4.microchip.iphmx.com: domain of
- Tudor.Ambarus@microchip.com designates 198.175.253.82 as
- permitted sender) identity=mailfrom;
- client-ip=198.175.253.82; receiver=esa4.microchip.iphmx.com;
- envelope-from="Tudor.Ambarus@microchip.com";
- x-sender="Tudor.Ambarus@microchip.com";
- x-conformance=spf_only; x-record-type="v=spf1";
- x-record-text="v=spf1 mx a:ushub1.microchip.com
- a:smtpout.microchip.com a:mx1.microchip.iphmx.com
- a:mx2.microchip.iphmx.com include:servers.mcsv.net
- include:mktomail.com include:spf.protection.outlook.com ~all"
-Received-SPF: None (esa4.microchip.iphmx.com: no sender
- authenticity information available from domain of
- postmaster@email.microchip.com) identity=helo;
- client-ip=198.175.253.82; receiver=esa4.microchip.iphmx.com;
- envelope-from="Tudor.Ambarus@microchip.com";
- x-sender="postmaster@email.microchip.com"; x-conformance=spf_only
-Authentication-Results: esa4.microchip.iphmx.com;
- spf=Pass smtp.mailfrom=Tudor.Ambarus@microchip.com;
- spf=None smtp.helo=postmaster@email.microchip.com;
- dkim=pass (signature verified) header.i=@microchiptechnology.onmicrosoft.com;
- dmarc=pass (p=none dis=none) d=microchip.com
-IronPort-SDR: Eet0xybUhXNh5Gn0mcUuMkj74ktNUhIRlgiQDLiQm08jZ4IVgZd8NysmcwvzTZRq3GP+fqA/33
- 2Lp4YD901zhpVlAkPM8NmzI0ra/98OhGqF5dvprVIDScGWvlpTLRo5ws0Rvczn0Jsvjxgktlvc
- amcLL459UjtJWrBpr9yiuah23CHbox5iTSMXjzoTyxC5G0Z56NXi1EU/WpUjccFF6sJ6WOimTM
- WZlPvZW0tZDeVuJ5qxa5VMvCniIgTTAf8rDfRTLvQ7YywKq+68oDyO8tTjKb36pPNQdm5RaVJQ
- +UQ=
-X-IronPort-AV: E=Sophos;i="5.64,408,1559545200"; d="scan'208";a="44944829"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 20 Aug 2019 07:54:37 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 20 Aug 2019 07:54:36 -0700
-Received: from NAM03-BY2-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.71) with Microsoft SMTP Server
- (version=TLS1_2, 
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5 via Frontend
- Transport; Tue, 20 Aug 2019 07:54:35 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dJO7RefyGCXuDdND90UmzXBzVi/Accfgue0QXmk6ZWAYwwcac9nfGbuEuNbfur6TZXbCV7Ney0N9frSoYf56+baZmIQix9sDK6eEKxXv9EfVEptVMnJEtS+Gt6bXbFFwqRoq4XYIjIxhaXKbCsboPLttlZ6HZiT3NHa30E9oJDw7UQVYheKey+CqtPhA0zAoz9fRSm7O5w1oJNDnIfzlxEp7NZ9pQXqsPsGcm4ib3DwO7VugFI2T8xHiH4HesYZLcfTv5ijf9cRPXkAWjerhKBW7s2iKCr5Q18OI6cn9S6sVRuhVuE629LIhRRfA6D0T9WyOvqwA6xg0ozM6sXCX7A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2kVKS2nT0qa4S2HUsTm0bhm6EJoZpqdOg0wz/j5p/4o=;
- b=R9HJGAGoLHtEWbTA0/s2rYmA3CoszIzjT1cuvhEft658mTHeaEUrwoTRjFb9zTRPNjE2mtTR4H2PIZhp/T7iiQDXoz+7WYRYbC3abzSDWNR1XmtjVRiYRb60nsdgLuuEFFCjPuMrWU03YKGI9dM5JoR4EquN+HmCDQpkgMZm2cJg5Grdgv7s3LOsksTovzl8TUoA/wNkzwucz/JH/XVpzjq/pJHlJoxPvU0C4KTa0cJriBMZsRNjVBvNfme9i7ksFnoJ7moWUrZP7jv9A7KXc0phCqxrkGW59FKSb/zGZRuEcq5cetPJIWyA9eT07pUlXDMSGcDCX15OMNv7rowP6g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2kVKS2nT0qa4S2HUsTm0bhm6EJoZpqdOg0wz/j5p/4o=;
- b=WWqaBdE9uAx9LR7RN6YiYHkV7fnMUBf7pGq6xTqnc8WZ/880kIZFzmZot61Sp0ZJwoiQpqnaUUTsNIsEJU/XxFaxpP2i1cnwzIF+kgHIIfNiQm7MmXX0vK1IFC3xrwze5KbhctXzepXZflXKLhvcyWIYG883i7HNFE5obT/86MM=
-Received: from MN2PR11MB4448.namprd11.prod.outlook.com (52.135.39.157) by
- MN2PR11MB4350.namprd11.prod.outlook.com (52.135.39.22) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2178.18; Tue, 20 Aug 2019 14:54:34 +0000
-Received: from MN2PR11MB4448.namprd11.prod.outlook.com
- ([fe80::70c3:e929:4da2:60a5]) by MN2PR11MB4448.namprd11.prod.outlook.com
- ([fe80::70c3:e929:4da2:60a5%7]) with mapi id 15.20.2178.018; Tue, 20 Aug 2019
- 14:54:34 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <wenwen@cs.uga.edu>
-Subject: Re: [PATCH v2] mtd: spi-nor: fix a memory leak bug
-Thread-Topic: [PATCH v2] mtd: spi-nor: fix a memory leak bug
-Thread-Index: AQHVVrHa0wRKD5wwWEKewRQkNp25zacEIO+A
-Date: Tue, 20 Aug 2019 14:54:34 +0000
-Message-ID: <a2eced51-aa2a-0609-530a-16e03e78ae19@microchip.com>
-References: <1566234960-3226-1-git-send-email-wenwen@cs.uga.edu>
-In-Reply-To: <1566234960-3226-1-git-send-email-wenwen@cs.uga.edu>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: VI1P195CA0066.EURP195.PROD.OUTLOOK.COM
- (2603:10a6:802:59::19) To MN2PR11MB4448.namprd11.prod.outlook.com
- (2603:10b6:208:193::29)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [94.177.32.156]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4298d09c-b6ac-436c-161c-08d7257e507c
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);
- SRVR:MN2PR11MB4350; 
-x-ms-traffictypediagnostic: MN2PR11MB4350:
-x-microsoft-antispam-prvs: <MN2PR11MB4350061E04DAE0524ADA3221F0AB0@MN2PR11MB4350.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5797;
-x-forefront-prvs: 013568035E
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(136003)(366004)(39860400002)(346002)(396003)(376002)(189003)(199004)(14454004)(229853002)(7736002)(305945005)(6116002)(6486002)(6916009)(36756003)(86362001)(2171002)(31696002)(6246003)(6512007)(2616005)(11346002)(486006)(5660300002)(102836004)(53546011)(6506007)(386003)(71200400001)(71190400001)(4744005)(6436002)(256004)(14444005)(476003)(26005)(81166006)(81156014)(8936002)(186003)(446003)(4326008)(478600001)(31686004)(54906003)(99286004)(52116002)(76176011)(2906002)(66066001)(8676002)(66946007)(66446008)(64756008)(66556008)(66476007)(316002)(25786009)(53936002)(3846002);
- DIR:OUT; SFP:1101; SCL:1; SRVR:MN2PR11MB4350;
- H:MN2PR11MB4448.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; MX:1; A:1; 
-received-spf: None (protection.outlook.com: microchip.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: edA20vOPIUDllgr4U7LKCsgFcqP4rWlGckIgq+aqW/DewqS3APAHwqN89Pgx1LHKpeAnfIyu92jLlhHRPkTmzjGVUPzav/MttOdFYNAXYn/d4zI1ZtEGPjnpLfDCMVWnhIlWUl+bWJGyo4JKRyrGhR/UqxznDKckUBesJZYGkdcXlpJm90Ri1mqAe3bZyALJ+bn3tR9ylaXd06g7tcrdS7U4FvJ134nuKm8TireYn+x9n2kOxV12ZAwOT9ds4zZ3uXwvdiBT7oYs3PtvrOztvfyji/TV6pCsFZhW3meVtL9JB6JltrlsxghUKMMH1s+wTHw2SjyWvTpE79OQ78aZylGYqjafG+dzMC1ONHy7xOKr74Y+J+43ygBxVOJDcvVCGB0qEcXWlNdem/ChB1ydsr/zYtRYBAl/Q2EXkXhXi/c=
-x-ms-exchange-transport-forked: True
-Content-ID: <F8C01FABEEFAB4498F14639787292A0B@namprd11.prod.outlook.com>
+ id 1i05oq-0005mK-VM; Tue, 20 Aug 2019 15:13:10 +0000
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 20 Aug 2019 08:13:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,408,1559545200"; 
+ d="gz'50?scan'50,208,50";a="353603591"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+ by orsmga005.jf.intel.com with ESMTP; 20 Aug 2019 08:12:52 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+ (envelope-from <lkp@intel.com>)
+ id 1i05oZ-0004T4-Ls; Tue, 20 Aug 2019 23:12:51 +0800
+Date: Tue, 20 Aug 2019 23:12:03 +0800
+From: kbuild test robot <lkp@intel.com>
+To: Mark Salyzyn <salyzyn@android.com>
+Subject: Re: [PATCH v5] Add flags option to get xattr method paired to
+ __vfs_getxattr
+Message-ID: <201908202356.Jnt6ivbB%lkp@intel.com>
+References: <20190819183305.153583-1-salyzyn@android.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4298d09c-b6ac-436c-161c-08d7257e507c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Aug 2019 14:54:34.4439 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: PDSxOotgeXeGFklk+2CyfBpEDbdLCtpeA44djNbIfbJUDvNx4AlS/H0UD5k8xECQg5OvPD4il4/Gotts76TwbDIe3lEmArewRYw5ceRxWho=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4350
+Content-Type: multipart/mixed; boundary="4et4ewpskge26opw"
+Content-Disposition: inline
+In-Reply-To: <20190819183305.153583-1-salyzyn@android.com>
+X-Patchwork-Hint: ignore
+User-Agent: NeoMutt/20170113 (1.7.2)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190820_075438_555306_655A3B7A 
-X-CRM114-Status: UNSURE (   7.91  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190820_081309_024291_B86927B1 
+X-CRM114-Status: GOOD (  17.57  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -165,36 +78,284 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vigneshr@ti.com, richard@nod.at, linux-kernel@vger.kernel.org,
- marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
- miquel.raynal@bootlin.com, computersforpeace@gmail.com, dwmw2@infradead.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Latchesar Ionkov <lucho@ionkov.net>, Hugh Dickins <hughd@google.com>,
+ Mike Marshall <hubcap@omnibond.com>, James Morris <jmorris@namei.org>,
+ devel@lists.orangefs.org, Eric Van Hensbergen <ericvh@gmail.com>,
+ Joel Becker <jlbec@evilplan.org>, Anna Schumaker <anna.schumaker@netapp.com>,
+ Trond Myklebust <trond.myklebust@hammerspace.com>,
+ Mathieu Malaterre <malat@debian.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
+ kbuild-all@01.org, Jan Kara <jack@suse.com>,
+ Casey Schaufler <casey@schaufler-ca.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Dave Kleikamp <shaggy@kernel.org>,
+ linux-doc@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
+ Chao Yu <yuchao0@huawei.com>, Mimi Zohar <zohar@linux.ibm.com>,
+ linux-cifs@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
+ "Darrick J. Wong" <darrick.wong@oracle.com>,
+ Eric Sandeen <sandeen@sandeen.net>, kernel-team@android.com,
+ selinux@vger.kernel.org, Brian Foster <bfoster@redhat.com>,
+ reiserfs-devel@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+ Jaegeuk Kim <jaegeuk@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
+ Miklos Szeredi <miklos@szeredi.hu>, linux-f2fs-devel@lists.sourceforge.net,
+ Benjamin Coddington <bcodding@redhat.com>, linux-integrity@vger.kernel.org,
+ Martin Brandenburg <martin@omnibond.com>, Chris Mason <clm@fb.com>,
+ linux-mtd@lists.infradead.org, linux-afs@lists.infradead.org,
+ Jonathan Corbet <corbet@lwn.net>, Vyacheslav Dubeyko <slava@dubeyko.com>,
+ Allison Henderson <allison.henderson@oracle.com>,
+ Ilya Dryomov <idryomov@gmail.com>, linux-ext4@vger.kernel.org,
+ Stephen Smalley <sds@tycho.nsa.gov>, Serge Hallyn <serge@hallyn.com>,
+ Gao Xiang <gaoxiang25@huawei.com>, Eric Paris <eparis@parisplace.org>,
+ ceph-devel@vger.kernel.org, linux-nfs@vger.kernel.org, linux-mm@kvack.org,
+ samba-technical@lists.samba.org, linux-xfs@vger.kernel.org,
+ Bob Peterson <rpeterso@redhat.com>, linux-fsdevel@vger.kernel.org,
+ linux-erofs@lists.ozlabs.org, "David S. Miller" <davem@davemloft.net>,
+ ocfs2-devel@oss.oracle.com, jfs-discussion@lists.sourceforge.net,
+ Eric Biggers <ebiggers@google.com>,
+ Dominique Martinet <asmadeus@codewreck.org>, Jeff Mahoney <jeffm@suse.com>,
+ linux-unionfs@vger.kernel.org, David Howells <dhowells@redhat.com>,
+ Joseph Qi <joseph.qi@linux.alibaba.com>,
+ Andreas Dilger <adilger.kernel@dilger.ca>, Mark Salyzyn <salyzyn@android.com>,
+ devel@driverdev.osuosl.org, "J. Bruce Fields" <bfields@redhat.com>,
+ Andreas Gruenbacher <agruenba@redhat.com>, Sage Weil <sage@redhat.com>,
+ Richard Weinberger <richard@nod.at>, Mark Fasheh <mark@fasheh.com>,
+ linux-security-module@vger.kernel.org, cluster-devel@redhat.com,
+ Steve French <sfrench@samba.org>, v9fs-developer@lists.sourceforge.net,
+ Bharath Vedartham <linux.bhar@gmail.com>, Jann Horn <jannh@google.com>,
+ ecryptfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+ Dave Chinner <dchinner@redhat.com>, David Sterba <dsterba@suse.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, netdev@vger.kernel.org,
+ Adrian Hunter <adrian.hunter@intel.com>, stable@vger.kernel.org,
+ Tyler Hicks <tyhicks@canonical.com>,
+ Ernesto =?unknown-8bit?Q?A=2E_Fern=C3=A1ndez?=
+ <ernesto.mnd.fernandez@gmail.com>, Phillip Lougher <phillip@squashfs.org.uk>,
+ David Woodhouse <dwmw2@infradead.org>, linux-btrfs@vger.kernel.org,
+ Alexander Viro <viro@zeniv.linux.org.uk>
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
+--4et4ewpskge26opw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 08/19/2019 08:16 PM, Wenwen Wang wrote:
-> External E-Mail
-> 
-> 
-> In spi_nor_parse_4bait(), 'dwords' is allocated through kmalloc(). However,
-> it is not deallocated in the following execution if spi_nor_read_sfdp()
-> fails, leading to a memory leak. To fix this issue, free 'dwords' before
-> returning the error.
-> 
-> Fixes: 816873eaeec6 ("mtd: spi-nor: parse SFDP 4-byte Address Instruction
-> Table")
-> 
+Hi Mark,
 
-^ Miquel, maybe you can drop this new line when applying.
+Thank you for the patch! Yet something to improve:
 
-> Signed-off-by: Wenwen Wang <wenwen@cs.uga.edu>
+[auto build test ERROR on linus/master]
+[cannot apply to v5.3-rc5 next-20190820]
+[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
 
-This is a good candidate for mtd/fixes, so:
+url:    https://github.com/0day-ci/linux/commits/Mark-Salyzyn/Add-flags-option-to-get-xattr-method-paired-to-__vfs_getxattr/20190820-220307
+config: um-x86_64_defconfig (attached as .config)
+compiler: gcc-7 (Debian 7.4.0-10) 7.4.0
+reproduce:
+        # save the attached .config to linux build tree
+        make ARCH=um SUBARCH=x86_64
 
-Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+If you fix the issue, kindly add following tag
+Reported-by: kbuild test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   fs//kernfs/inode.c: In function 'kernfs_vfs_xattr_set':
+>> fs//kernfs/inode.c:322:27: error: 'inode' undeclared (first use in this function)
+     struct kernfs_node *kn = inode->i_private;
+                              ^~~~~
+   fs//kernfs/inode.c:322:27: note: each undeclared identifier is reported only once for each function it appears in
+
+vim +/inode +322 fs//kernfs/inode.c
+
+b230d5aba2d1a7 Ondrej Mosnacek 2019-02-22  318  
+1537ad15c9c59c Ondrej Mosnacek 2019-04-03  319  static int kernfs_vfs_xattr_set(const struct xattr_handler *handler,
+7d823b0879d4e2 Mark Salyzyn    2019-08-19  320  				struct xattr_gs_args *args)
+b230d5aba2d1a7 Ondrej Mosnacek 2019-02-22  321  {
+b230d5aba2d1a7 Ondrej Mosnacek 2019-02-22 @322  	struct kernfs_node *kn = inode->i_private;
+b230d5aba2d1a7 Ondrej Mosnacek 2019-02-22  323  
+7d823b0879d4e2 Mark Salyzyn    2019-08-19  324  	return kernfs_xattr_set(kn, xattr_full_name(handler, args->name),
+7d823b0879d4e2 Mark Salyzyn    2019-08-19  325  				args->value, args->size, args->flags);
+b230d5aba2d1a7 Ondrej Mosnacek 2019-02-22  326  }
+b230d5aba2d1a7 Ondrej Mosnacek 2019-02-22  327  
+
+:::::: The code at line 322 was first introduced by commit
+:::::: b230d5aba2d1a7b0636408889a75bf9eae6b8bc7 LSM: add new hook for kernfs node initialization
+
+:::::: TO: Ondrej Mosnacek <omosnace@redhat.com>
+:::::: CC: Paul Moore <paul@paul-moore.com>
+
+---
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+
+--4et4ewpskge26opw
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
+
+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
+
+--4et4ewpskge26opw
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--4et4ewpskge26opw--
+
