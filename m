@@ -2,162 +2,85 @@ Return-Path: <SRS0=t4Dz=WU=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DCBFFC3A59E
-	for <linux-mtd@archiver.kernel.org>; Sat, 24 Aug 2019 12:27:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 365C3C3A59E
+	for <linux-mtd@archiver.kernel.org>; Sat, 24 Aug 2019 14:15:59 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B0A7F2082F
-	for <linux-mtd@archiver.kernel.org>; Sat, 24 Aug 2019 12:27:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0826321670
+	for <linux-mtd@archiver.kernel.org>; Sat, 24 Aug 2019 14:15:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LAYi+OiT";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="Flyns2To"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B0A7F2082F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pcnVY08o";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="JYmdfYFt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0826321670
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vASW7OqeiLJJk4G5cbajMTt8YObsDOlobM+vpVtr1h0=; b=LAYi+OiTFFoSQ+
-	8ziT88vYiaDNS+CO2unA99PIOeJEoyhH88OKwrcWN7rO12Ms/314zAnlrmPX116f2ld0JDAyBTh1Z
-	52vr8jOjH0MxclshDqvEsPpoIKichRlm1LGzxRjr0XvSerO4hjX/4nOKp2N0Ezkl2ygfXOM6ahwuG
-	7LEToW/3Vbik98Lv9V+xecHbtskeE3iF9NSsIb5FxbJ/zP/8NFvSLanpX27b64pLFk2OtXZwDM4k7
-	S5aRnIvfROjzzLQl5lmTBnlZrVljyvtSTkfGV7ACPfjoWeTPGCmnCW83qhbbIPzG2lfm7jvbqewzV
-	6eRP5yhfMsNMyvG8WfvQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=yVAkVCC0Ygc9FoU35bmgwo3/bOSK5TjdJEA/pb3xJm0=; b=pcnVY08ocxKX3E
+	/NetSGrZECdElIEzakXJiuWBb3WeoSDPTMSfZjqT12WaVl5SrJLaDmaoQjXpJbQwYWYqvpaf8D1pj
+	ejxIAK344LfwWV0rbOkla/31QZUsSbAHHw+GBwvv7w/f/RzNEfdCt0jZMEqIj/CaHjRXppMMf2nTV
+	Gc7ws9kl1batU2c+knAHOcAo+z+VoXAYSW6oX2ML8rMndICN074BrvV+1ts82LKjzgplexbEfDxhi
+	Y4UTZwoiQ2QoSRlbzk83SCsrzsGOuuZc09GnJ0qsbpAsOWtySkw8ygiDvt33vGDG4Jc5FVFxSQydq
+	lpB+hI6mjeWgdoIqsSsQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i1V8n-00059L-1s; Sat, 24 Aug 2019 12:27:33 +0000
-Received: from esa5.microchip.iphmx.com ([216.71.150.166])
+	id 1i1WpK-0007bc-Vf; Sat, 24 Aug 2019 14:15:35 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i1V8W-0004hY-P8
- for linux-mtd@lists.infradead.org; Sat, 24 Aug 2019 12:27:18 +0000
-Received-SPF: Pass (esa5.microchip.iphmx.com: domain of
- Tudor.Ambarus@microchip.com designates 198.175.253.82 as
- permitted sender) identity=mailfrom;
- client-ip=198.175.253.82; receiver=esa5.microchip.iphmx.com;
- envelope-from="Tudor.Ambarus@microchip.com";
- x-sender="Tudor.Ambarus@microchip.com";
- x-conformance=spf_only; x-record-type="v=spf1";
- x-record-text="v=spf1 mx a:ushub1.microchip.com
- a:smtpout.microchip.com a:mx1.microchip.iphmx.com
- a:mx2.microchip.iphmx.com include:servers.mcsv.net
- include:mktomail.com include:spf.protection.outlook.com ~all"
-Received-SPF: None (esa5.microchip.iphmx.com: no sender
- authenticity information available from domain of
- postmaster@email.microchip.com) identity=helo;
- client-ip=198.175.253.82; receiver=esa5.microchip.iphmx.com;
- envelope-from="Tudor.Ambarus@microchip.com";
- x-sender="postmaster@email.microchip.com"; x-conformance=spf_only
-Authentication-Results: esa5.microchip.iphmx.com;
- spf=Pass smtp.mailfrom=Tudor.Ambarus@microchip.com;
- spf=None smtp.helo=postmaster@email.microchip.com;
- dkim=pass (signature verified) header.i=@microchiptechnology.onmicrosoft.com;
- dmarc=pass (p=none dis=none) d=microchip.com
-IronPort-SDR: 3YZ+XJvnhSFuhm7BxVcuzI91hBsIhUonADaAfeg9K/N8yGQqy5z3B0My34bSFGtLvSTr/dar15
- SuNKuoXQzdV69a3uQskEYqe9FpfPb7hFSTMiFcKj8dIDZ8Plzp8WdZtYocAoqNDoj75rlxgs0H
- kY0Ivb2N2O6T2bBjPE76WpBPOch0Zuqoxwe0i2qp00pP0KsbPbCSqeE5n0I0ZqKW8mSuFtYTRr
- 4iPuoZXTqDsnuniYm8bXa4AZ8/exw/RVKhZWAdwfEAHRdr1QyimgA095b7YiqaPtuh47u5gLn4
- hE8=
-X-IronPort-AV: E=Sophos;i="5.64,425,1559545200"; d="scan'208";a="44864844"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 24 Aug 2019 05:27:16 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Sat, 24 Aug 2019 05:27:15 -0700
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.71) with Microsoft SMTP Server
- (version=TLS1_2, 
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5 via Frontend
- Transport; Sat, 24 Aug 2019 05:27:14 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=a/H0HpX5KLMH/fVbhReglk8llmGsY+qdWJHj3f5sXDUPx2JWtCUM0bjEGUaxRwATPMWi4vIaIOxNjsUgDgHSBdQ6RYnCmeFwxPoA082nXV98LlER/5Zw+hZoU0BMReFE1iyk/os93eESPD5No8Z1y0v1tBl85tvoqYJBuBI2eAZ4jEtJ7p303MlK0Av7PjAG1c0lSYm7IVAhxVUMlioxaepRnU5obhsPr0rMj/nnwf4U83aWeMf/8Lq12k20jWgjQ00fR8GybFlSpOQz7k3cEWZI1tPwN5+wuPQIaOdeshqnQ8+J6oVXMYaEe2+HWdrdfnK4orP4OfWNMTfdehVQHg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gOql6G/DPy3QDBUoDff10gGbq5Pi95MgzCgxr37iJGM=;
- b=RJNfcAf4ROWBOHPg1HUyUnDYuS7fyNtihvApS7xvrHx2tFEReCPlpjvYSqid0tmPbORKeGoBjNyD4IUI0QVNMIQV951h5r1So71Y8Exm3H1MwhL3yazJ0tQF9k2VYfFuohSgJcTjNVMhYbBHkDbSgwjT2eq0b2R2cJOc4NldLIrDnFdetfa66Tq1GD2o+PT++9UVGmMA4LD4pTv/NVwpDtIDrnRWBNdj5D4e0xlw25WhxPf7STj2jFu+faJqP+iLSY0jDCc+HlBZ9ObNiJ9vNAKGMhk93T8EdCtCEYGoQ8GeUf371WLUTcHmPNeD96lqyE+EQiR5BrgZLFfoZ39Gxg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gOql6G/DPy3QDBUoDff10gGbq5Pi95MgzCgxr37iJGM=;
- b=Flyns2Togb2oO+lw9hlfw9IWOkYZbKIGeb+oGI80IZyKlTAgNcxCA+ONQFRP+R7eWEoyOny7PjdY7we31IKLLDaQjDtX/LYakbCHP56JbaPhbIceSqgKJsG2U4N6GuIVQYBii1Sf0pXm2mWmmpvYcg8K14WgsomSxoFf0pfjuqs=
-Received: from MN2PR11MB4448.namprd11.prod.outlook.com (52.135.39.157) by
- MN2PR11MB3854.namprd11.prod.outlook.com (20.178.252.23) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2178.16; Sat, 24 Aug 2019 12:27:14 +0000
-Received: from MN2PR11MB4448.namprd11.prod.outlook.com
- ([fe80::70c3:e929:4da2:60a5]) by MN2PR11MB4448.namprd11.prod.outlook.com
- ([fe80::70c3:e929:4da2:60a5%7]) with mapi id 15.20.2178.020; Sat, 24 Aug 2019
- 12:27:14 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <boris.brezillon@collabora.com>, <marek.vasut@gmail.com>,
- <vigneshr@ti.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 2/2] mtd: spi-nor: unlock global block protection on
- sst26vf064b
-Thread-Topic: [PATCH v2 2/2] mtd: spi-nor: unlock global block protection on
- sst26vf064b
-Thread-Index: AQHVWndCob70Y7dOBE2305x27zvpVw==
-Date: Sat, 24 Aug 2019 12:27:14 +0000
-Message-ID: <20190824122700.23558-3-tudor.ambarus@microchip.com>
-References: <20190824122700.23558-1-tudor.ambarus@microchip.com>
-In-Reply-To: <20190824122700.23558-1-tudor.ambarus@microchip.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: VI1PR04CA0129.eurprd04.prod.outlook.com
- (2603:10a6:803:f0::27) To MN2PR11MB4448.namprd11.prod.outlook.com
- (2603:10b6:208:193::29)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-mailer: git-send-email 2.9.5
-x-originating-ip: [86.127.53.184]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d1df6b0c-f573-458b-ed31-08d7288e64e8
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(5600166)(711020)(4605104)(1401327)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);
- SRVR:MN2PR11MB3854; 
-x-ms-traffictypediagnostic: MN2PR11MB3854:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR11MB38545D97D2F2606C80B097EAF0A70@MN2PR11MB3854.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4125;
-x-forefront-prvs: 0139052FDB
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(346002)(376002)(136003)(366004)(39860400002)(396003)(199004)(189003)(256004)(66946007)(81156014)(81166006)(186003)(2201001)(64756008)(66446008)(66556008)(26005)(478600001)(486006)(50226002)(2616005)(6512007)(386003)(102836004)(8676002)(86362001)(2501003)(6506007)(1076003)(14454004)(316002)(476003)(11346002)(6116002)(66476007)(99286004)(110136005)(6486002)(305945005)(6436002)(7736002)(71200400001)(76176011)(2906002)(8936002)(446003)(25786009)(53936002)(66066001)(107886003)(3846002)(71190400001)(4326008)(5660300002)(52116002)(36756003)(14444005);
- DIR:OUT; SFP:1101; SCL:1; SRVR:MN2PR11MB3854;
- H:MN2PR11MB4448.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; A:1; MX:1; 
-received-spf: None (protection.outlook.com: microchip.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: hcelZI6jrX8xmBHfAhEvrisYoubF2byDeZXQbfMNG9IL3vmkYHjR0hV+xBblMEAOK09lg0Uocyt9Cyh83mn+ffrgc+5f7iqIUjft4XEwhp3zGWTRwSpq3boXK+HMReFUhJbHgann3oVn98J1w53trrjIfNNgYRIpK8tllVIE6Lq9L0AvOKQvRl59Lt+pYOToAYTYAHo9Bfen+mFfiTxiZ89d0vEIl1ALBf/06pn65cYm2tTwUx6gHpXo/e9k8JzTCSx6nK6YxWBhRrpaJ0r3PoSqRa87upomwefVtxTqu1i7dgMGnlXdHR3azE6ywTfQak3v4GHFP4KJAuoBZVZtjIhgG5d3PIjhZNMzqPDOLg5oFTq7TivphXDe6LzbkIRWs1bykJpwxj+iyBNsdt+bLuIA2Y7mHIAtk0VsGBv4da0=
+ id 1i1WpF-0007az-OU
+ for linux-mtd@lists.infradead.org; Sat, 24 Aug 2019 14:15:31 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id x7OEFESG089947;
+ Sat, 24 Aug 2019 09:15:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1566656114;
+ bh=NWO1dJivia0EnGfMulUsccXLfXHlI53Biy5LNzeg6ps=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=JYmdfYFty6mcZvJcoI8mFdZ4BoWAFZ/cMMfkLhgm/v7RggkaRCwdg9IvG+r/6aCsj
+ 1LcA/WMMBixZ4AwkhhOAD/QL70xUghpmASasZwga99qnifeMj5FAKOkVVLYwHECHml
+ vpiN+CnqofbexpCLdSQhQXh/L5qPrK+yvqrUyCYg=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x7OEFEoW096395
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Sat, 24 Aug 2019 09:15:14 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Sat, 24
+ Aug 2019 09:15:13 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
+ Frontend Transport; Sat, 24 Aug 2019 09:15:14 -0500
+Received: from [10.250.132.16] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id x7OEFBdw071127;
+ Sat, 24 Aug 2019 09:15:12 -0500
+Subject: Re: [PATCH] mtd: hyperbus: fix dependency and build error
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Randy Dunlap
+ <rdunlap@infradead.org>
+References: <9b1b4ab1-681f-0ef9-7b5c-b6545f7464d2@infradead.org>
+ <20190824124807.393f125d@xps13>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <4626f8cb-0802-e154-d204-15d35081dd27@ti.com>
+Date: Sat, 24 Aug 2019 19:45:11 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: d1df6b0c-f573-458b-ed31-08d7288e64e8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Aug 2019 12:27:14.2426 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: qnManokmt0FscRChFWyMNNrslQPeRxXtWibrb5AND2VlK3SM2kTNSiCyBiJXtXWdwwSbztKTcNgCwwLFrb++6Qke0JQB5ygLGJkp+9lCPTQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB3854
+In-Reply-To: <20190824124807.393f125d@xps13>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190824_052716_927393_EA7B8320 
-X-CRM114-Status: UNSURE (   9.03  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190824_071529_882592_75794D81 
+X-CRM114-Status: GOOD (  13.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -169,43 +92,53 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Tudor.Ambarus@microchip.com
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-mtd@lists.infradead.org,
+ LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
+Hi Miquel,
 
-To avoid inadvertent writes during power-up, sst26vf064b is
-write-protected by default after a power-on reset cycle.
-Unlock the serial flash memory by using the Global Block Protection
-Unlock command - it offers a single command cycle that unlocks
-the entire memory array.
+On 24-Aug-19 4:18 PM, Miquel Raynal wrote:
+> Hi Vignesh,
+> 
+> Randy Dunlap <rdunlap@infradead.org> wrote on Tue, 13 Aug 2019 16:03:13
+> -0700:
+> 
+>> From: Randy Dunlap <rdunlap@infradead.org>
+>>
+>> lib/devres.c, which implements devm_ioremap_resource(), is only built
+>> when CONFIG_HAS_IOMEM is set/enabled, so MTD_HYPERBUS should depend
+>> on HAS_IOMEM.  Fixes a build error and a Kconfig warning (as seen on
+>> UML builds):
+>>
+>> WARNING: unmet direct dependencies detected for MTD_COMPLEX_MAPPINGS
+>>   Depends on [n]: MTD [=m] && HAS_IOMEM [=n]
+>>   Selected by [m]:
+>>   - MTD_HYPERBUS [=m] && MTD [=m]
+>>
+>> ERROR: "devm_ioremap_resource" [drivers/mtd/hyperbus/hyperbus-core.ko] undefined!
+>>
+>> Fixes: dcc7d3446a0f ("mtd: Add support for HyperBus memory devices")
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Cc: Vignesh Raghavendra <vigneshr@ti.com>
+>> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+>> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+>> Cc: linux-mtd@lists.infradead.org
+>> ---
+> 
+> This patch looks like a good candidate for fixes, shall I send a fixes
+> PR next week with it? (Acked-by wished)
+> 
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Yes, that would be great. I was about to send across patch bundle myself.
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index c0ba6fe62461..f92202fa094d 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -2419,7 +2419,9 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "sst25wf080",  INFO(0xbf2505, 0, 64 * 1024, 16, SECT_4K | SST_WRITE) },
- 	{ "sst26wf016b", INFO(0xbf2651, 0, 64 * 1024, 32, SECT_4K |
- 			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
--	{ "sst26vf064b", INFO(0xbf2643, 0, 64 * 1024, 128, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-+	{ "sst26vf064b", INFO(0xbf2643, 0, 64 * 1024, 128,
-+			      SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+			      UNLOCK_GLOBAL_BLOCK) },
- 
- 	/* ST Microelectronics -- newer production may have feature updates */
- 	{ "m25p05",  INFO(0x202010,  0,  32 * 1024,   2, 0) },
--- 
-2.9.5
+Acked-by: Vignesh Raghavendra <vigneshr@ti.com>
 
+Thanks
+Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
