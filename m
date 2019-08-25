@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 63976C3A5A1
-	for <linux-mtd@archiver.kernel.org>; Sun, 25 Aug 2019 12:34:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7A89C3A5A1
+	for <linux-mtd@archiver.kernel.org>; Sun, 25 Aug 2019 12:36:46 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 34D122173E
-	for <linux-mtd@archiver.kernel.org>; Sun, 25 Aug 2019 12:34:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7BF872070B
+	for <linux-mtd@archiver.kernel.org>; Sun, 25 Aug 2019 12:36:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="JDMI2V4n"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 34D122173E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pk5KcCWf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7BF872070B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=THtoPtqcw4knwic7Zf2918GYf10OO2Xlwg1FuerIeVo=; b=JDMI2V4noExfJ1
-	m0U2TanT5S2c7hvpuRBLABUVIGdutWVTE9RnZyWUe8DCN7n+yTDn5/LbsqRFWH8lGomAYmNxMY3rC
-	SWhkNfJ3JFqAwnx2AKRH4RPzoEEZJcnc717Pi3TB4CwQLiv/Z/RhoQgpzc21E+z4ZzYBI4ypSMg/l
-	WqziVgi/+ZTPPkaCvDAMkPs987UfSeKR8MTlPhCRzYFrVuRXDOjK5qMB0OkY/XWwV03Kvqx9fFMIV
-	vlXNhVWz0W2YJ7ftkk3yE9cBYj+mbMQ6ev9wx+NNNyscnTxJJ2rKydd+IOSgtKCJsidMWlYPNTY0g
-	m7WKujjTcyeW73Doid/w==;
+	List-Owner; bh=tFXN8jcuP4/aVZ+xOWTcMQCSnnTsvMUvUMsEiBP4S24=; b=pk5KcCWfRK2zZW
+	xJNhRLjp++Kf+ASXF8sKOfVb9o0+i/Y2k6io+WQLxrsPSOl0limETBiEDEGo5AJyEk5Uo890zTQS/
+	l5WHf0AgoFhSkT+g7sWW1G1vJgLPxIxr8xrThbghZtdc06JAZFqB89sab0x258WhcPxQ9/4Dnz4hL
+	ASYimxPbMVN13UD8SgyepVGS+FdoxxiNl+WAxwvQ38FJTTXt4I4vYimTRhW3nJFIxMePJvmMT0wkJ
+	EGBciYL/OqWXOrtXFkNGMNZWenj2EVe6J4ZuRPq1iK9nHCuhNPW3A+snt2aH8ktufWkequQDzn1y9
+	4vnGyb1Zj73tpOaG3xgQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i1rj2-0001fU-4R; Sun, 25 Aug 2019 12:34:28 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1i1rl3-00039D-SI; Sun, 25 Aug 2019 12:36:33 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i1rix-0001ek-OG
- for linux-mtd@lists.infradead.org; Sun, 25 Aug 2019 12:34:26 +0000
+ id 1i1rl1-00038r-HZ
+ for linux-mtd@lists.infradead.org; Sun, 25 Aug 2019 12:36:32 +0000
 Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
  (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 200B928A1AB;
- Sun, 25 Aug 2019 13:34:19 +0100 (BST)
-Date: Sun, 25 Aug 2019 14:34:16 +0200
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id CA4A628A1AB;
+ Sun, 25 Aug 2019 13:36:29 +0100 (BST)
+Date: Sun, 25 Aug 2019 14:36:26 +0200
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: <Tudor.Ambarus@microchip.com>
-Subject: Re: [PATCH v2 4/6] mtd: spi_nor: Add a ->setup() method
-Message-ID: <20190825143416.33932df0@collabora.com>
-In-Reply-To: <20190824120650.14752-5-tudor.ambarus@microchip.com>
+Subject: Re: [PATCH v2 5/6] mtd: spi-nor: Add s3an_post_sfdp_fixups()
+Message-ID: <20190825143626.2ad09b8f@collabora.com>
+In-Reply-To: <20190824120650.14752-6-tudor.ambarus@microchip.com>
 References: <20190824120650.14752-1-tudor.ambarus@microchip.com>
- <20190824120650.14752-5-tudor.ambarus@microchip.com>
+ <20190824120650.14752-6-tudor.ambarus@microchip.com>
 Organization: Collabora
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190825_053424_064200_09C8E954 
-X-CRM114-Status: GOOD (  31.37  )
+X-CRM114-CacheID: sfid-20190825_053631_714804_5B92D74D 
+X-CRM114-Status: GOOD (  17.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,505 +77,75 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, 24 Aug 2019 12:07:14 +0000
+On Sat, 24 Aug 2019 12:07:16 +0000
 <Tudor.Ambarus@microchip.com> wrote:
 
 > From: Tudor Ambarus <tudor.ambarus@microchip.com>
 > 
-> nor->params.setup() configures the SPI NOR memory. Useful for SPI NOR
-> flashes that have peculiarities to the SPI NOR standard, e.g.
-> different opcodes, specific address calculation, page size, etc.
-> Right now the only user will be the S3AN chips, but other
-> manufacturers can implement it if needed.
-> 
-> Move spi_nor_setup() related code in order to avoid a forward
-> declaration to spi_nor_default_setup().
+> s3an_nor_scan() was overriding the opcode selection done in
+> spi_nor_default_setup(). Set nor->setup() method in order to
+> avoid the unnecessary call to spi_nor_default_setup().
 > 
 > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+
+I guess you checked that nothing in the S3AN init was relying on things
+done in the default_setup() implementation.
 
 Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 
 > ---
->  drivers/mtd/spi-nor/spi-nor.c | 428 +++++++++++++++++++++---------------------
->  include/linux/mtd/spi-nor.h   |   5 +
->  2 files changed, 224 insertions(+), 209 deletions(-)
+>  drivers/mtd/spi-nor/spi-nor.c | 17 ++++++++++-------
+>  1 file changed, 10 insertions(+), 7 deletions(-)
 > 
 > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 0dc6a683719e..17e6c96f9f9a 100644
+> index 17e6c96f9f9a..5e16f293a83b 100644
 > --- a/drivers/mtd/spi-nor/spi-nor.c
 > +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -4144,6 +4144,224 @@ static int spi_nor_parse_sfdp(struct spi_nor *nor,
->  	return err;
+> @@ -2718,7 +2718,8 @@ static int spi_nor_check(struct spi_nor *nor)
+>  	return 0;
 >  }
 >  
-> +static int spi_nor_select_read(struct spi_nor *nor,
-> +			       u32 shared_hwcaps)
-> +{
-> +	int cmd, best_match = fls(shared_hwcaps & SNOR_HWCAPS_READ_MASK) - 1;
-> +	const struct spi_nor_read_command *read;
-> +
-> +	if (best_match < 0)
-> +		return -EINVAL;
-> +
-> +	cmd = spi_nor_hwcaps_read2cmd(BIT(best_match));
-> +	if (cmd < 0)
-> +		return -EINVAL;
-> +
-> +	read = &nor->params.reads[cmd];
-> +	nor->read_opcode = read->opcode;
-> +	nor->read_proto = read->proto;
-> +
-> +	/*
-> +	 * In the spi-nor framework, we don't need to make the difference
-> +	 * between mode clock cycles and wait state clock cycles.
-> +	 * Indeed, the value of the mode clock cycles is used by a QSPI
-> +	 * flash memory to know whether it should enter or leave its 0-4-4
-> +	 * (Continuous Read / XIP) mode.
-> +	 * eXecution In Place is out of the scope of the mtd sub-system.
-> +	 * Hence we choose to merge both mode and wait state clock cycles
-> +	 * into the so called dummy clock cycles.
-> +	 */
-> +	nor->read_dummy = read->num_mode_clocks + read->num_wait_states;
-> +	return 0;
-> +}
-> +
-> +static int spi_nor_select_pp(struct spi_nor *nor,
-> +			     u32 shared_hwcaps)
-> +{
-> +	int cmd, best_match = fls(shared_hwcaps & SNOR_HWCAPS_PP_MASK) - 1;
-> +	const struct spi_nor_pp_command *pp;
-> +
-> +	if (best_match < 0)
-> +		return -EINVAL;
-> +
-> +	cmd = spi_nor_hwcaps_pp2cmd(BIT(best_match));
-> +	if (cmd < 0)
-> +		return -EINVAL;
-> +
-> +	pp = &nor->params.page_programs[cmd];
-> +	nor->program_opcode = pp->opcode;
-> +	nor->write_proto = pp->proto;
-> +	return 0;
-> +}
-> +
-> +/**
-> + * spi_nor_select_uniform_erase() - select optimum uniform erase type
-> + * @map:		the erase map of the SPI NOR
-> + * @wanted_size:	the erase type size to search for. Contains the value of
-> + *			info->sector_size or of the "small sector" size in case
-> + *			CONFIG_MTD_SPI_NOR_USE_4K_SECTORS is defined.
-> + *
-> + * Once the optimum uniform sector erase command is found, disable all the
-> + * other.
-> + *
-> + * Return: pointer to erase type on success, NULL otherwise.
-> + */
-> +static const struct spi_nor_erase_type *
-> +spi_nor_select_uniform_erase(struct spi_nor_erase_map *map,
-> +			     const u32 wanted_size)
-> +{
-> +	const struct spi_nor_erase_type *tested_erase, *erase = NULL;
-> +	int i;
-> +	u8 uniform_erase_type = map->uniform_erase_type;
-> +
-> +	for (i = SNOR_ERASE_TYPE_MAX - 1; i >= 0; i--) {
-> +		if (!(uniform_erase_type & BIT(i)))
-> +			continue;
-> +
-> +		tested_erase = &map->erase_type[i];
-> +
-> +		/*
-> +		 * If the current erase size is the one, stop here:
-> +		 * we have found the right uniform Sector Erase command.
-> +		 */
-> +		if (tested_erase->size == wanted_size) {
-> +			erase = tested_erase;
-> +			break;
-> +		}
-> +
-> +		/*
-> +		 * Otherwise, the current erase size is still a valid canditate.
-> +		 * Select the biggest valid candidate.
-> +		 */
-> +		if (!erase && tested_erase->size)
-> +			erase = tested_erase;
-> +			/* keep iterating to find the wanted_size */
-> +	}
-> +
-> +	if (!erase)
-> +		return NULL;
-> +
-> +	/* Disable all other Sector Erase commands. */
-> +	map->uniform_erase_type &= ~SNOR_ERASE_TYPE_MASK;
-> +	map->uniform_erase_type |= BIT(erase - map->erase_type);
-> +	return erase;
-> +}
-> +
-> +static int spi_nor_select_erase(struct spi_nor *nor, u32 wanted_size)
-> +{
-> +	struct spi_nor_erase_map *map = &nor->params.erase_map;
-> +	const struct spi_nor_erase_type *erase = NULL;
-> +	struct mtd_info *mtd = &nor->mtd;
-> +	int i;
-> +
-> +	/*
-> +	 * The previous implementation handling Sector Erase commands assumed
-> +	 * that the SPI flash memory has an uniform layout then used only one
-> +	 * of the supported erase sizes for all Sector Erase commands.
-> +	 * So to be backward compatible, the new implementation also tries to
-> +	 * manage the SPI flash memory as uniform with a single erase sector
-> +	 * size, when possible.
-> +	 */
-> +#ifdef CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
-> +	/* prefer "small sector" erase if possible */
-> +	wanted_size = 4096u;
-> +#endif
-> +
-> +	if (spi_nor_has_uniform_erase(nor)) {
-> +		erase = spi_nor_select_uniform_erase(map, wanted_size);
-> +		if (!erase)
-> +			return -EINVAL;
-> +		nor->erase_opcode = erase->opcode;
-> +		mtd->erasesize = erase->size;
-> +		return 0;
-> +	}
-> +
-> +	/*
-> +	 * For non-uniform SPI flash memory, set mtd->erasesize to the
-> +	 * maximum erase sector size. No need to set nor->erase_opcode.
-> +	 */
-> +	for (i = SNOR_ERASE_TYPE_MAX - 1; i >= 0; i--) {
-> +		if (map->erase_type[i].size) {
-> +			erase = &map->erase_type[i];
-> +			break;
-> +		}
-> +	}
-> +
-> +	if (!erase)
-> +		return -EINVAL;
-> +
-> +	mtd->erasesize = erase->size;
-> +	return 0;
-> +}
-> +
-> +static int spi_nor_default_setup(struct spi_nor *nor,
-> +				 const struct spi_nor_hwcaps *hwcaps)
-> +{
-> +	struct spi_nor_flash_parameter *params = &nor->params;
-> +	u32 ignored_mask, shared_mask;
-> +	int err;
-> +
-> +	/*
-> +	 * Keep only the hardware capabilities supported by both the SPI
-> +	 * controller and the SPI flash memory.
-> +	 */
-> +	shared_mask = hwcaps->mask & params->hwcaps.mask;
-> +
-> +	if (nor->spimem) {
-> +		/*
-> +		 * When called from spi_nor_probe(), all caps are set and we
-> +		 * need to discard some of them based on what the SPI
-> +		 * controller actually supports (using spi_mem_supports_op()).
-> +		 */
-> +		spi_nor_spimem_adjust_hwcaps(nor, &shared_mask);
-> +	} else {
-> +		/*
-> +		 * SPI n-n-n protocols are not supported when the SPI
-> +		 * controller directly implements the spi_nor interface.
-> +		 * Yet another reason to switch to spi-mem.
-> +		 */
-> +		ignored_mask = SNOR_HWCAPS_X_X_X;
-> +		if (shared_mask & ignored_mask) {
-> +			dev_dbg(nor->dev,
-> +				"SPI n-n-n protocols are not supported.\n");
-> +			shared_mask &= ~ignored_mask;
-> +		}
-> +	}
-> +
-> +	/* Select the (Fast) Read command. */
-> +	err = spi_nor_select_read(nor, shared_mask);
-> +	if (err) {
-> +		dev_err(nor->dev,
-> +			"can't select read settings supported by both the SPI controller and memory.\n");
-> +		return err;
-> +	}
-> +
-> +	/* Select the Page Program command. */
-> +	err = spi_nor_select_pp(nor, shared_mask);
-> +	if (err) {
-> +		dev_err(nor->dev,
-> +			"can't select write settings supported by both the SPI controller and memory.\n");
-> +		return err;
-> +	}
-> +
-> +	/* Select the Sector Erase command. */
-> +	err = spi_nor_select_erase(nor, nor->info->sector_size);
-> +	if (err)
-> +		dev_err(nor->dev,
-> +			"can't select erase settings supported by both the SPI controller and memory.\n");
-> +
-> +	return err;
-> +}
-> +
-> +static int spi_nor_setup(struct spi_nor *nor,
-> +			 const struct spi_nor_hwcaps *hwcaps)
-> +{
-> +	if (!nor->params.setup)
-> +		return 0;
-> +
-> +	return nor->params.setup(nor, hwcaps);
-> +}
-> +
->  static void atmel_set_default_init(struct spi_nor *nor)
+> -static int s3an_nor_scan(struct spi_nor *nor)
+> +static int s3an_nor_setup(struct spi_nor *nor,
+> +			  const struct spi_nor_hwcaps *hwcaps)
 >  {
->  	nor->params.disable_block_protection = spi_nor_clear_sr_bp;
-> @@ -4247,6 +4465,7 @@ static void spi_nor_legacy_init_params(struct spi_nor *nor)
->  	/* Initialize legacy flash parameters and settings. */
->  	params->quad_enable = spansion_quad_enable;
->  	params->set_4byte = spansion_set_4byte;
-> +	params->setup = spi_nor_default_setup;
+>  	int ret;
 >  
->  	/* Set SPI NOR sizes. */
->  	params->size = (u64)info->sector_size * info->n_sectors;
-> @@ -4421,215 +4640,6 @@ static void spi_nor_init_params(struct spi_nor *nor)
->  	spi_nor_late_init_params(nor);
+> @@ -4546,6 +4547,11 @@ static void spansion_post_sfdp_fixups(struct spi_nor *nor)
+>  	nor->mtd.erasesize = nor->info->sector_size;
 >  }
 >  
-> -static int spi_nor_select_read(struct spi_nor *nor,
-> -			       u32 shared_hwcaps)
-> -{
-> -	int cmd, best_match = fls(shared_hwcaps & SNOR_HWCAPS_READ_MASK) - 1;
-> -	const struct spi_nor_read_command *read;
-> -
-> -	if (best_match < 0)
-> -		return -EINVAL;
-> -
-> -	cmd = spi_nor_hwcaps_read2cmd(BIT(best_match));
-> -	if (cmd < 0)
-> -		return -EINVAL;
-> -
-> -	read = &nor->params.reads[cmd];
-> -	nor->read_opcode = read->opcode;
-> -	nor->read_proto = read->proto;
-> -
-> -	/*
-> -	 * In the spi-nor framework, we don't need to make the difference
-> -	 * between mode clock cycles and wait state clock cycles.
-> -	 * Indeed, the value of the mode clock cycles is used by a QSPI
-> -	 * flash memory to know whether it should enter or leave its 0-4-4
-> -	 * (Continuous Read / XIP) mode.
-> -	 * eXecution In Place is out of the scope of the mtd sub-system.
-> -	 * Hence we choose to merge both mode and wait state clock cycles
-> -	 * into the so called dummy clock cycles.
-> -	 */
-> -	nor->read_dummy = read->num_mode_clocks + read->num_wait_states;
-> -	return 0;
-> -}
-> -
-> -static int spi_nor_select_pp(struct spi_nor *nor,
-> -			     u32 shared_hwcaps)
-> -{
-> -	int cmd, best_match = fls(shared_hwcaps & SNOR_HWCAPS_PP_MASK) - 1;
-> -	const struct spi_nor_pp_command *pp;
-> -
-> -	if (best_match < 0)
-> -		return -EINVAL;
-> -
-> -	cmd = spi_nor_hwcaps_pp2cmd(BIT(best_match));
-> -	if (cmd < 0)
-> -		return -EINVAL;
-> -
-> -	pp = &nor->params.page_programs[cmd];
-> -	nor->program_opcode = pp->opcode;
-> -	nor->write_proto = pp->proto;
-> -	return 0;
-> -}
-> -
-> -/**
-> - * spi_nor_select_uniform_erase() - select optimum uniform erase type
-> - * @map:		the erase map of the SPI NOR
-> - * @wanted_size:	the erase type size to search for. Contains the value of
-> - *			info->sector_size or of the "small sector" size in case
-> - *			CONFIG_MTD_SPI_NOR_USE_4K_SECTORS is defined.
-> - *
-> - * Once the optimum uniform sector erase command is found, disable all the
-> - * other.
-> - *
-> - * Return: pointer to erase type on success, NULL otherwise.
-> - */
-> -static const struct spi_nor_erase_type *
-> -spi_nor_select_uniform_erase(struct spi_nor_erase_map *map,
-> -			     const u32 wanted_size)
-> -{
-> -	const struct spi_nor_erase_type *tested_erase, *erase = NULL;
-> -	int i;
-> -	u8 uniform_erase_type = map->uniform_erase_type;
-> -
-> -	for (i = SNOR_ERASE_TYPE_MAX - 1; i >= 0; i--) {
-> -		if (!(uniform_erase_type & BIT(i)))
-> -			continue;
-> -
-> -		tested_erase = &map->erase_type[i];
-> -
-> -		/*
-> -		 * If the current erase size is the one, stop here:
-> -		 * we have found the right uniform Sector Erase command.
-> -		 */
-> -		if (tested_erase->size == wanted_size) {
-> -			erase = tested_erase;
-> -			break;
-> -		}
-> -
-> -		/*
-> -		 * Otherwise, the current erase size is still a valid canditate.
-> -		 * Select the biggest valid candidate.
-> -		 */
-> -		if (!erase && tested_erase->size)
-> -			erase = tested_erase;
-> -			/* keep iterating to find the wanted_size */
-> -	}
-> -
-> -	if (!erase)
-> -		return NULL;
-> -
-> -	/* Disable all other Sector Erase commands. */
-> -	map->uniform_erase_type &= ~SNOR_ERASE_TYPE_MASK;
-> -	map->uniform_erase_type |= BIT(erase - map->erase_type);
-> -	return erase;
-> -}
-> -
-> -static int spi_nor_select_erase(struct spi_nor *nor, u32 wanted_size)
-> -{
-> -	struct spi_nor_erase_map *map = &nor->params.erase_map;
-> -	const struct spi_nor_erase_type *erase = NULL;
-> -	struct mtd_info *mtd = &nor->mtd;
-> -	int i;
-> -
-> -	/*
-> -	 * The previous implementation handling Sector Erase commands assumed
-> -	 * that the SPI flash memory has an uniform layout then used only one
-> -	 * of the supported erase sizes for all Sector Erase commands.
-> -	 * So to be backward compatible, the new implementation also tries to
-> -	 * manage the SPI flash memory as uniform with a single erase sector
-> -	 * size, when possible.
-> -	 */
-> -#ifdef CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
-> -	/* prefer "small sector" erase if possible */
-> -	wanted_size = 4096u;
-> -#endif
-> -
-> -	if (spi_nor_has_uniform_erase(nor)) {
-> -		erase = spi_nor_select_uniform_erase(map, wanted_size);
-> -		if (!erase)
-> -			return -EINVAL;
-> -		nor->erase_opcode = erase->opcode;
-> -		mtd->erasesize = erase->size;
-> -		return 0;
-> -	}
-> -
-> -	/*
-> -	 * For non-uniform SPI flash memory, set mtd->erasesize to the
-> -	 * maximum erase sector size. No need to set nor->erase_opcode.
-> -	 */
-> -	for (i = SNOR_ERASE_TYPE_MAX - 1; i >= 0; i--) {
-> -		if (map->erase_type[i].size) {
-> -			erase = &map->erase_type[i];
-> -			break;
-> -		}
-> -	}
-> -
-> -	if (!erase)
-> -		return -EINVAL;
-> -
-> -	mtd->erasesize = erase->size;
-> -	return 0;
-> -}
-> -
-> -static int spi_nor_setup(struct spi_nor *nor,
-> -			 const struct spi_nor_hwcaps *hwcaps)
-> -{
-> -	struct spi_nor_flash_parameter *params = &nor->params;
-> -	u32 ignored_mask, shared_mask;
-> -	int err;
-> -
-> -	/*
-> -	 * Keep only the hardware capabilities supported by both the SPI
-> -	 * controller and the SPI flash memory.
-> -	 */
-> -	shared_mask = hwcaps->mask & params->hwcaps.mask;
-> -
-> -	if (nor->spimem) {
-> -		/*
-> -		 * When called from spi_nor_probe(), all caps are set and we
-> -		 * need to discard some of them based on what the SPI
-> -		 * controller actually supports (using spi_mem_supports_op()).
-> -		 */
-> -		spi_nor_spimem_adjust_hwcaps(nor, &shared_mask);
-> -	} else {
-> -		/*
-> -		 * SPI n-n-n protocols are not supported when the SPI
-> -		 * controller directly implements the spi_nor interface.
-> -		 * Yet another reason to switch to spi-mem.
-> -		 */
-> -		ignored_mask = SNOR_HWCAPS_X_X_X;
-> -		if (shared_mask & ignored_mask) {
-> -			dev_dbg(nor->dev,
-> -				"SPI n-n-n protocols are not supported.\n");
-> -			shared_mask &= ~ignored_mask;
-> -		}
-> -	}
-> -
-> -	/* Select the (Fast) Read command. */
-> -	err = spi_nor_select_read(nor, shared_mask);
-> -	if (err) {
-> -		dev_err(nor->dev,
-> -			"can't select read settings supported by both the SPI controller and memory.\n");
-> -		return err;
-> -	}
-> -
-> -	/* Select the Page Program command. */
-> -	err = spi_nor_select_pp(nor, shared_mask);
-> -	if (err) {
-> -		dev_err(nor->dev,
-> -			"can't select write settings supported by both the SPI controller and memory.\n");
-> -		return err;
-> -	}
-> -
-> -	/* Select the Sector Erase command. */
-> -	err = spi_nor_select_erase(nor, nor->info->sector_size);
-> -	if (err)
-> -		dev_err(nor->dev,
-> -			"can't select erase settings supported by both the SPI controller and memory.\n");
-> -
-> -	return err;
-> -}
-> -
+> +static void s3an_post_sfdp_fixups(struct spi_nor *nor)
+> +{
+> +	nor->params.setup = s3an_nor_setup;
+> +}
+> +
 >  /**
->   * spi_nor_quad_enable() - enable Quad I/O if needed.
->   * @nor:                pointer to a 'struct spi_nor'
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index f9f1947f7aeb..4752d08e9a3e 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -498,6 +498,10 @@ struct spi_nor_locking_ops {
->   * @convert_addr:	converts an absolute address into something the flash
->   *                      will understand. Particularly useful when pagesize is
->   *                      not a power-of-2.
-> + * @setup:		configures the SPI NOR memory. Useful for SPI NOR
-> + *                      flashes that have peculiarities to the SPI NOR standard,
-> + *                      e.g. different opcodes, specific address calculation,
-> + *                      page size, etc.
->   * @disable_block_protection: disables block protection during power-up.
->   * @locking_ops:	SPI NOR locking methods.
->   */
-> @@ -514,6 +518,7 @@ struct spi_nor_flash_parameter {
->  	int (*quad_enable)(struct spi_nor *nor);
->  	int (*set_4byte)(struct spi_nor *nor, bool enable);
->  	u32 (*convert_addr)(struct spi_nor *nor, u32 addr);
-> +	int (*setup)(struct spi_nor *nor, const struct spi_nor_hwcaps *hwcaps);
->  	int (*disable_block_protection)(struct spi_nor *nor);
+>   * spi_nor_post_sfdp_fixups() - Updates the flash's parameters and settings
+>   * after SFDP has been parsed (is also called for SPI NORs that do not
+> @@ -4567,6 +4573,9 @@ static void spi_nor_post_sfdp_fixups(struct spi_nor *nor)
+>  		break;
+>  	}
 >  
->  	const struct spi_nor_locking_ops *locking_ops;
+> +	if (nor->info->flags & SPI_S3AN)
+> +		s3an_post_sfdp_fixups(nor);
+> +
+>  	if (nor->info->fixups && nor->info->fixups->post_sfdp)
+>  		nor->info->fixups->post_sfdp(nor);
+>  }
+> @@ -4932,12 +4941,6 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+>  		return -EINVAL;
+>  	}
+>  
+> -	if (info->flags & SPI_S3AN) {
+> -		ret = s3an_nor_scan(nor);
+> -		if (ret)
+> -			return ret;
+> -	}
+> -
+>  	/* Send all the required SPI flash commands to initialize device */
+>  	ret = spi_nor_init(nor);
+>  	if (ret)
 
 
 ______________________________________________________
