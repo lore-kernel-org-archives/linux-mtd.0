@@ -4,20 +4,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 998ADC3A5A1
-	for <linux-mtd@archiver.kernel.org>; Sun, 25 Aug 2019 19:02:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62FE0C3A5A1
+	for <linux-mtd@archiver.kernel.org>; Sun, 25 Aug 2019 19:23:27 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6EA69206E0
-	for <linux-mtd@archiver.kernel.org>; Sun, 25 Aug 2019 19:02:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3795C20644
+	for <linux-mtd@archiver.kernel.org>; Sun, 25 Aug 2019 19:23:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="JqyN0t0P";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rpIz6d6N"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6EA69206E0
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DTzPljUa";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QXTNme0y"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3795C20644
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,61 +26,59 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6oi5NO1OsyNIChJlR0FZJb/gEaZopK+gii2mlAnZVdw=; b=JqyN0t0PqqOmk1
-	Gh/ZSJ9dZB6shYLM7xQpGbnB2gEGLL8XWNq1javC/AfAkCOKPGenoWW2TZNH3IqeHsKeh+b/ISMl3
-	p0BXPnqeu2LcRNc/MPU1HjH5hUDRUmDOxLfO1wFgzFU6FXzq+a+X3zvErqYkjYAPY6zQLnixysllP
-	ud5cnruFmjUwp1AypQ0R9wjAYLOern/x0otsoqmbi/mLfiLPXp/UqCfHeSN46W55Jap5XQG6fu5QF
-	hec0LcVygzRW84V5IKSxpaX6V1/+MYH8U26nogXNQte+o7TSsaF6smO23wJM846uNg6ABKt3ihutU
-	7exbSCX0IRK7sgm/dpFw==;
+	List-Owner; bh=0SYbfqNvzcuRElq8lzQ53e0w2pib8hK9YPKRJpWgEuk=; b=DTzPljUaVMg1Gi
+	a7sB8UQEs36fAd9Epd6erNZL75bh2pGkmVbrrGpg6BFb51usZVMk38Lu/e4AI75MZc7zkij4bDBkF
+	rdXzcL3jcUl2IpiNasaQvFp07MI1TPuT4eBEC7oT+Do4P2onlC2ZJglIffLFpM1yYlssAUR7LBApM
+	R8wU2BwKJXZyciXs54yEc30MXMDByqWPXPEuf2eQooayp1N9EKBYvV9AQdduNaQ0swsMfYGFPW4oX
+	bQ0+L3XnKwRGPqcTM0alWRJKcM5D8FKP2ieut3FOcNtFWmrK3VME9xOgmTup7WD4EhBO+3f2Sx6pZ
+	zlfOhRVzWcVuiTIQckVQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i1xmY-00073y-UK; Sun, 25 Aug 2019 19:02:30 +0000
-Received: from mail-wr1-x42a.google.com ([2a00:1450:4864:20::42a])
+	id 1i1y6Z-0005Jt-Tq; Sun, 25 Aug 2019 19:23:11 +0000
+Received: from mail-wr1-x436.google.com ([2a00:1450:4864:20::436])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i1xmV-00073c-Rp
- for linux-mtd@lists.infradead.org; Sun, 25 Aug 2019 19:02:29 +0000
-Received: by mail-wr1-x42a.google.com with SMTP id z11so13244250wrt.4
- for <linux-mtd@lists.infradead.org>; Sun, 25 Aug 2019 12:02:27 -0700 (PDT)
+ id 1i1y6X-0005JZ-8w
+ for linux-mtd@lists.infradead.org; Sun, 25 Aug 2019 19:23:10 +0000
+Received: by mail-wr1-x436.google.com with SMTP id g17so13281255wrr.5
+ for <linux-mtd@lists.infradead.org>; Sun, 25 Aug 2019 12:23:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=JdBerF4HnhTXcR4nAwSdJRiw/Il/0aWiS4ClBd443Ic=;
- b=rpIz6d6NvuAoe7By/cHbfFaCF0YkUSasGrSCCw6jNdPICcg6GUxJdw0IfXxCR1u7Ur
- MI7TbblprJeQPQIX8LZtArb6G8oURcr7fJt0tSn2ydAr2SBsMYdmxnV4AvdBh1R862MK
- NNRkWrDjQsCapeZASZJR4xP21HXmNXz8eJVrvcksOrsigz7ovMddT7d5oypLRrdINkHN
- PKYNKVj90womsHUMfYVDJE7aPrJZIToIRY1cQDtWVazzqnviLL889y86YqI3A1jsR9uo
- fE/ztJBkjVpAiUSnwJs/gzYMRAsTGUIy3s23AHB+U6NrNoliVhUCSVW7er+R/+fFfi7t
- Aiww==
+ :cc; bh=x1Bm8L4LTPF+izF2olAcq5JuhMzc8jf5Ba+vwT1pHpY=;
+ b=QXTNme0yAl2XhzqGkdlYjDqd1sGNa7X8+kmZmflprJjdt2ZUA7R8ONAu1ASmls5Rop
+ 4aPFG/7jQjDFsB0Tc1eSV1uzVmsENAzl32o9GDd43oshIhcZNCjpNM5w+gMGhSUJd8Nl
+ MvNUZzqvgsEHVMWjpNNRKNFih0nbec64y2P25TOlDC0p1e+R/6vW08OUuT4gWIoKS1v/
+ aK3R2vM57UmrWPivAnyU5qnJBGNJgurausswjwvPT18GiCmb+cO3e8tWKoSUyKAxdbJp
+ kFiblKdlfjrkp0fEaub/Er6r8k4no09AvLK+sgARsrhcvbBBMjGEiC3xq4mTtz2yiJjD
+ YtRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=JdBerF4HnhTXcR4nAwSdJRiw/Il/0aWiS4ClBd443Ic=;
- b=OtD4QZlPz+225pNIC+nSDQaDhsermIgF2r7JKtfZdiiu05nOme5eJ39A8htMt9fNg2
- qlDbz90YVUgrdOPGyUB0BjfbXt1gFXzyTTmsSICUg0otWee/6USqOWes9lrUzn2RJa+G
- dTW6sRvWQhiNACjiPil7/vTtvZkaZ1yKY3naTEQzaYmPVr3LrTvpBKIzN8bVsCkxCOoS
- 4Z2dsheMZkMDpWzN66ShcG4+nkABmZkacvDZJ8DNnd5xP8SAHnRZZs1SwgvTVb0k2slO
- XeTH0wGJfpoLntxxSEl14lToMDmDzH99pToN46Oy//ZTQZtF3b2+aeanGfx3VKG+0BaX
- QZsw==
-X-Gm-Message-State: APjAAAXGtc+Yx0Vu3iug1GI/gtUSLhzSqctjK1srk2nODMePHLaKf/ic
- C2sx73M0e1kYngKq9DXyIY2BCU+i3rA8fIlDqhTVptYj
-X-Google-Smtp-Source: APXvYqyEA3NGPzhcwmEdDOrvCTVtaXkuhkVHSPrkeM/IDOsVerbpJ0sUqPnbua8T+e+dSa6ItpFCz2kjnMCbr+16d2k=
-X-Received: by 2002:a5d:6a12:: with SMTP id m18mr17339353wru.306.1566759746025; 
- Sun, 25 Aug 2019 12:02:26 -0700 (PDT)
+ bh=x1Bm8L4LTPF+izF2olAcq5JuhMzc8jf5Ba+vwT1pHpY=;
+ b=ihmb/7Cj8G9zFybvL7TnZ6Apz41Eh2pRNzDty7gCiWYPRDKpQfQr6Hn5egUiAYfA7W
+ wCc+WrbjQAR1mVmobdNca47oBPFCGOQSwOOGhE3IbXfw+cHWH5nB2VU0Sps750fdhJ3d
+ qAPCFJjaJac37ZjhRriIC/c2C/H8f9tBRVKx4TAGAgr/R16oLvxV6c/PGP3ytcHTxn/s
+ bqJBczCvB6JKLQVaueEk/zRMFbxZlrJcyiIFs8PqIThgqEZ8PUo4rPdySoGLIET4Asut
+ zgwCpt0U53M9wSVEqyaD67qwf1vFIOz4r0m8DhLUGEMidZvfmDxzPIMlBwtJCHN9wj37
+ +9MQ==
+X-Gm-Message-State: APjAAAV7FOViiyhXytwkJ7HZy+5aDa7xWgKVM/Cp3B1CBHHtROfntXt6
+ bim7FPeYurwBl+ddFI0EuXKfe7QrvVaSsk7AKF0kqWnV3Lo=
+X-Google-Smtp-Source: APXvYqw68fGyAi9r2oSCocUJG5FQWqQM42yDWWBB38qEhPxm9W3FBWdrxUyvSHxn7pPaFPTSAdye5nbqSvG3taTC3T8=
+X-Received: by 2002:a5d:6a12:: with SMTP id m18mr17414533wru.306.1566760987723; 
+ Sun, 25 Aug 2019 12:23:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <5D3EF488.6010307@etictelecom.com>
- <CAFLxGvyicArpTC_VmE8GPXeHwXVT3CV-Z_5v-+qo=MB9i_-6-w@mail.gmail.com>
- <5D3FF1A6.7050407@etictelecom.com>
- <CAFLxGvzF8iDJG_rTqGwrLdmFsehaLxD4os50_QLZTMjytVQ9Dw@mail.gmail.com>
- <5D5FB0CC.3050502@etictelecom.com>
-In-Reply-To: <5D5FB0CC.3050502@etictelecom.com>
+References: <e8bde724-46fd-4264-ea3f-a84a792bcad8@fb.com>
+ <236e95be-a2cd-3b44-36c5-121678f7c009@fb.com>
+ <afe2b8f2-d1be-4cd2-971a-b13c1e38da67@www.fastmail.com>
+In-Reply-To: <afe2b8f2-d1be-4cd2-971a-b13c1e38da67@www.fastmail.com>
 From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Sun, 25 Aug 2019 21:02:14 +0200
-Message-ID: <CAFLxGvyLqd2yFRQLQau82MV2ud0AUxsdeXVa5fU7j=ZsJ52YEg@mail.gmail.com>
-Subject: Re: ubifs_check_node: bad CRC
-To: Mickael Chazaux <mickael.chazaux@etictelecom.com>
+Date: Sun, 25 Aug 2019 21:22:56 +0200
+Message-ID: <CAFLxGvypuPp_Q_31DpKmfqte4uxHfYiQ6KvT1f2LGo_y7EvKfw@mail.gmail.com>
+Subject: Re: kernel BUG at fs/jffs2/gc.c:395!
+To: Andrew Jeffery <andrew@aj.id.au>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190825_120227_922742_042D3921 
-X-CRM114-Status: UNSURE (   9.15  )
+X-CRM114-CacheID: sfid-20190825_122309_342570_BEDB9E56 
+X-CRM114-Status: UNSURE (   6.90  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -93,29 +91,21 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org
+Cc: Tao Ren <taoren@fb.com>, OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Aug 23, 2019 at 11:25 AM Mickael Chazaux
-<mickael.chazaux@etictelecom.com> wrote:
-> > Hmm. Power cuts or many writes should not trigger such a corruption.
-> > I'd expect ECC errors or data structure errors in UBIFS. But not a good ECC
-> > with bad UBIFS data CRC.
-> >
-> > But with only one sample it is almost impossible to figure...
-> >
->
-> Memory corruption as in some kind of buffer overflow or use after free ? or physical
-> bus errors? Anyway I think I will implement some mitigations at the application level,
-> (eg. less log messages, recovery by creating a new volume, copy the now-readonly data,
-> rename the volume) because the haystack just got too big for the needle.
+On Wed, Aug 21, 2019 at 2:06 AM Andrew Jeffery <andrew@aj.id.au> wrote:
+> Looks like a lack of robustness to filesystem corruption to me. LWN
 
-This could be caused my any kind of corruption. Do you monitor your devices?
-Maybe the crash also once in a while and you notice only the case when bad data
-is written to flash.
+What exactly makes you think so?
+The inode cache entry is in state INO_STATE_UNCHECKED while GC run,
+which is not allowed.
+
+Tao, is the error persistent or did it happen only once?
 
 -- 
 Thanks,
