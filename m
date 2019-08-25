@@ -2,82 +2,156 @@ Return-Path: <SRS0=xwO+=WV=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF932C3A5A1
-	for <linux-mtd@archiver.kernel.org>; Sun, 25 Aug 2019 20:29:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29CE2C3A5A1
+	for <linux-mtd@archiver.kernel.org>; Sun, 25 Aug 2019 22:09:00 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7AAB5206E0
-	for <linux-mtd@archiver.kernel.org>; Sun, 25 Aug 2019 20:29:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EDA31206E0
+	for <linux-mtd@archiver.kernel.org>; Sun, 25 Aug 2019 22:08:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WIdFOKnY";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qIjSaJux"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7AAB5206E0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KNu7vAx4";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=fb.com header.i=@fb.com header.b="jmYDc2b9";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=fb.onmicrosoft.com header.i=@fb.onmicrosoft.com header.b="OSivPdeR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EDA31206E0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=fb.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4PlwtJaBtgAvdmOZg4oaafPnGZuKu0Lv5EipT6dZ14Q=; b=WIdFOKnYq7q1L6
-	3AucfHe4iWoV8EaNmI2ryi3gmTNC+8DCiy/pQAYhFvd9CXKhW6zze190CPTjLMqJs44Xld2hk9zGK
-	tydRm0lTSVTCkPqHBRkOoWwB+aGNzuywcvfBFD8OIImkVY4fa2Su39Qc9IjGj3k/HRVDlhAilJbrl
-	lNCTnYl5Q+1XT1kL9buVMdDxKqDaHY/a/7y5Naypyifku4GhJ1hNcdCr2/aqBZlfDutXV1FPX965E
-	/Tg1KjE5bjH6wTSMFKQOC3BoMJ34EZYIfRtZsnnyRS3p6zVS/M/7VpNQvpbo5Q8wJ4Q0Mm267EVQg
-	uSAKPx4tVYg2/V/Dth9g==;
+	List-Owner; bh=TlhVR1BMJFaP3WbhvbSf+GfAviAfUVTsMqQAl6lZxDc=; b=KNu7vAx4nXRgVd
+	0h3uWbbwL+aKVm1txorqdych7r3epbbLonVPqlHshoDenLAlTM8GBqbdJpnfaavckjjhLhtQ47DR7
+	ONElNMS1AeYhQmwtZt2/RDvN5IGRGRwMmsAICneVGtD8zSMvnoINsCdNjdlusEXG+gcbZnkEaxkv9
+	GUSgkj7Y4++gHc/zMuUgHdqPo4R0ZZ1AoFgT8O/4cYKF9ABxg8Zc2/fgm2GJntUi+mDHxbtvZwcwG
+	Fem5OrSEmnVkGgJ+jdQHaGN0QMv3rsJQ4s1F9le2LXacdnJGI427LcRT3e+7QtiKtA2/y+OqEVAVB
+	T3VgtsYkEIfyjoSqzVNA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i1z81-0001R0-1I; Sun, 25 Aug 2019 20:28:45 +0000
-Received: from mail-wr1-x42d.google.com ([2a00:1450:4864:20::42d])
+	id 1i20gf-0003ax-P9; Sun, 25 Aug 2019 22:08:37 +0000
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i1z7x-0001Qc-Su
- for linux-mtd@lists.infradead.org; Sun, 25 Aug 2019 20:28:43 +0000
-Received: by mail-wr1-x42d.google.com with SMTP id u16so13355150wrr.0
- for <linux-mtd@lists.infradead.org>; Sun, 25 Aug 2019 13:28:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=V9cYYwBjQ4CUbSw4feoqebzQqKyBoKUM68shR8BYXLA=;
- b=qIjSaJuxuI0N9XDbjJFj3VA29/L+LSb626rHLYoxpNOyvWIdTNBjhca/jC+DyiBciR
- aCII5L5zJ6Swpz2eQZsAhrcHeDy0edxuqdXlyP8Q6vp5Nx69A4v45nLs2RpcnfFY+41y
- oRh6PXII05m/3BVo/L/xfBOinS034wvN+F2li7hT4JVz25QdJ34TuLNArXrKCxqX8dHV
- ddAihRs5uomHQ/+xvMVuqa2rkVY9iwydCf8RgPU8yNUWxrKys5xo3lAwkqlcIBRQ41dD
- ChCv5HUlgDKCsf0NwzjK4A6RpwSjlOdNhNoz3bk2YdGShc4+Ut4KVLDnGBaEPooV5PUb
- mm8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=V9cYYwBjQ4CUbSw4feoqebzQqKyBoKUM68shR8BYXLA=;
- b=j+EyWKnFUNbbwM1cNmCE3FiuyHKI6sEdgJQSyBrwq/1NQSFiREDEGSuM+PAZRsbUMU
- bncOK4pi2Evnt4+oBlCsK6kF4E6WI5yfSG6/tFfm0iNrBtkBm7zOsMskrj/WBRTpzSyC
- /AyJNCPi2hMNdpJvAr/v/9Z3vDk6SZGAG1z54sNJOgez88B1pRMC8lpApNTSL20RzmW/
- fhnX1zFagkXXNefSAZU5pLht+bXQuAvzT9ikuXoHN0ZvF0c8esPzxTgna8SjwE7mL8CR
- T0iob+Q0L9PsKYEe/qemJ7oJQSim0a8C8AdUp4NIMIvKzwb+CE/xk2JrmarefNa8qMJp
- xISg==
-X-Gm-Message-State: APjAAAVqAMS0J7Eqo07AkuxyR6T888DAMVQKQoQKf02zFom3WEqNzC3G
- d4ETdY805I75CKlsXxNrBVPI4wx+z1eQgwuSd6U4u4dXcFc=
-X-Google-Smtp-Source: APXvYqwkXhQP6to2Pq19/K9jrepFG6K/G1GaYPCokZozxkIdyB68zV2hjfqk1vJXWS5DBoAnWtDaQz1i8AOmRpQEJxg=
-X-Received: by 2002:adf:f287:: with SMTP id k7mr18256968wro.183.1566764920525; 
- Sun, 25 Aug 2019 13:28:40 -0700 (PDT)
+ id 1i20gc-0003aY-QO
+ for linux-mtd@lists.infradead.org; Sun, 25 Aug 2019 22:08:36 +0000
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+ by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
+ x7PM8Nu9002192; Sun, 25 Aug 2019 15:08:25 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com;
+ h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=owNEY8OWz02/bXW+aU/IGgPSjADigaFv4pELm5lXmws=;
+ b=jmYDc2b9d/2QH7lhw7dDiXyFhKI0Y1dhc4wikY7tszbubpq9IYwC8vAFYwk0ghidWzUv
+ qKdXWmdOWj+A0dwVgYnUSycQgUtzgRIjXkbz4UDcTb8qxqwMtak5kwHcTy7lm/lvGclo
+ soAjnR1eKTEvX/8Mew7pgAI72UDJ8aoznbM= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+ by mx0a-00082601.pphosted.com with ESMTP id 2uknj61s2m-4
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Sun, 25 Aug 2019 15:08:25 -0700
+Received: from ash-exhub203.TheFacebook.com (2620:10d:c0a8:83::5) by
+ ash-exhub101.TheFacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Sun, 25 Aug 2019 15:08:23 -0700
+Received: from NAM04-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP
+ Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Sun, 25 Aug 2019 15:08:22 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Pw9f3yW0kGhsXd/xodD2ziLDxCqQG9XMK9zTgXlMBXZEULZj4NY+9kYGK2AdhF3xDMY2tFkkwGZQgE6nQreEag/8rC51Q8g+RFPsy2i0Tj7yR1LV+4jU32IPxtuZBPgW1LyNRF/j6eRIFnWBzina/gXN4JFRj2/vQPq/4bdbGlM4P84dSzAm6HGIdqkBg7/f3tD4NmbRwuQiJn7oMJNDp7YC5kDB3EvE0t9qZ9A4aoeSTvL7aHo8jcyOmfYq86LXxFF6Qlc/nAfEYdOkElavynUTDolzZbkIAPaMlFplBOe1TGXJjHqz4ewJJLuvsEEd0Q+CvOWdY1Tn/7IdctDInA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=owNEY8OWz02/bXW+aU/IGgPSjADigaFv4pELm5lXmws=;
+ b=dah27flb25GjLugAZrCS28riRc3ZTZJsLtjjr7XkTdMbS0ccF17Q4EWOgehvVzy4+5B8jiO+ODRUizrdGBnIgwt171RlEYPWjyJvNYlJ6+SfVZmhjHNn/0EVekskWTHJIzlUiMbO0+UNj7zjg7LaeobLrzxg6xopr18H090xTQhGjjjash5wvThHl86XZQMEskLX87NW6N7aavLYk7UpeUfi/ADjXZOQCxcSZxcKYBXPw6WqbFDHSwa7Gr8KYZ7vdiPIW0GwkT+DvQjpq29Q7Xm+6XB4f4lNols2BNCw13Vl8Zc2qP83nuwq9y+mOxiE+ncpWMr3tw0yVkzpsR/Mfg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=owNEY8OWz02/bXW+aU/IGgPSjADigaFv4pELm5lXmws=;
+ b=OSivPdeRW7z3rsUDc2p7IH2Rv0YV91txy6LCXlGwxmpNiZfIOo+V9IBhokbUdC3kmPF0W5Gn/dAG7wVvogVwRFeZNJfFAu4WJO9WZT6LwOdCEJnmbpoYV2h6RujtTF+qqffZH6/nwUb0tR80Z1pVE52ALFXtUW8iXlS0DJD0p58=
+Received: from MWHPR15MB1216.namprd15.prod.outlook.com (10.175.2.17) by
+ MWHPR15MB1440.namprd15.prod.outlook.com (10.173.234.142) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2199.20; Sun, 25 Aug 2019 22:08:08 +0000
+Received: from MWHPR15MB1216.namprd15.prod.outlook.com
+ ([fe80::2971:619a:860e:b6cc]) by MWHPR15MB1216.namprd15.prod.outlook.com
+ ([fe80::2971:619a:860e:b6cc%2]) with mapi id 15.20.2178.023; Sun, 25 Aug 2019
+ 22:08:08 +0000
+From: Tao Ren <taoren@fb.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>, Andrew Jeffery
+ <andrew@aj.id.au>
+Subject: Re: kernel BUG at fs/jffs2/gc.c:395!
+Thread-Topic: kernel BUG at fs/jffs2/gc.c:395!
+Thread-Index: AQHVV6xCTU2NhpXAkkGUQ2XhN58pgKcEqeqAgAAPW4CAB4xhAIAALiMA
+Date: Sun, 25 Aug 2019 22:08:08 +0000
+Message-ID: <4dee9f54-1cf4-94ca-4ddc-2b1f8892d9b1@fb.com>
+References: <e8bde724-46fd-4264-ea3f-a84a792bcad8@fb.com>
+ <236e95be-a2cd-3b44-36c5-121678f7c009@fb.com>
+ <afe2b8f2-d1be-4cd2-971a-b13c1e38da67@www.fastmail.com>
+ <CAFLxGvypuPp_Q_31DpKmfqte4uxHfYiQ6KvT1f2LGo_y7EvKfw@mail.gmail.com>
+In-Reply-To: <CAFLxGvypuPp_Q_31DpKmfqte4uxHfYiQ6KvT1f2LGo_y7EvKfw@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MWHPR01CA0045.prod.exchangelabs.com (2603:10b6:300:101::31)
+ To MWHPR15MB1216.namprd15.prod.outlook.com
+ (2603:10b6:320:22::17)
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:180::b0e]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f30f21f5-36e4-4d59-8ab8-08d729a8b5e0
+x-microsoft-antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(2017052603328)(7193020);
+ SRVR:MWHPR15MB1440; 
+x-ms-traffictypediagnostic: MWHPR15MB1440:
+x-microsoft-antispam-prvs: <MWHPR15MB144021F26DC24B27547B8753B2A60@MWHPR15MB1440.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5516;
+x-forefront-prvs: 01401330D1
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10019020)(136003)(366004)(376002)(396003)(39860400002)(346002)(189003)(199004)(110136005)(58126008)(8936002)(66946007)(54906003)(6246003)(6436002)(386003)(229853002)(53546011)(65956001)(65806001)(52116002)(6512007)(53936002)(46003)(14454004)(6506007)(25786009)(478600001)(4744005)(305945005)(186003)(66556008)(316002)(64756008)(446003)(66476007)(66446008)(11346002)(31686004)(7736002)(256004)(5660300002)(6486002)(86362001)(71190400001)(71200400001)(2906002)(76176011)(8676002)(81166006)(476003)(31696002)(102836004)(486006)(6116002)(4326008)(81156014)(36756003)(2616005)(99286004);
+ DIR:OUT; SFP:1102; SCL:1; SRVR:MWHPR15MB1440;
+ H:MWHPR15MB1216.namprd15.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; MX:1; A:1; 
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: +5a95j39SHkToSqWBMvu/28pLzW4UVP1Av951r6cHBBq5WEBbzhTpSiN9zOAJ+Z7gp1CUs0OorezZFCMkV4xNC/olVxOt9NzcBErVB5CYaq2lWifA09upNnBTR0MDDYKUCYd7qROfppkqwUfHC7KKrH8zi2oDrS+hoRnLPC35rgl6eVupg/0bI0yq049/qHat9iya4LJ07bJI/0JF+bco3WoP0+/x4YYPpozjdmQWe6uSeHDnkrYAhVkW0zFvytGXpJTU65t8iTKRUT6z7Xl9i+8zTAWLbFp6ZeZEkM7VDFTHoCuqw7zpLuP7uP/MsdeQuTqvi6lXSN6ekoki4QrhIiPCaZ1aH9QOFiZquHTcz+/gmRAQsrtS2kvUFzBtEBNGe7+uiUsvQ5hRjdJ5eGFFAxUgytrkUnndw51JxQigW8=
+x-ms-exchange-transport-forked: True
+Content-ID: <247EE95655181A469348414E88728C35@namprd15.prod.outlook.com>
 MIME-Version: 1.0
-References: <CFF08794-67A7-4383-92BC-61AD0D2D3661@gmail.com>
-In-Reply-To: <CFF08794-67A7-4383-92BC-61AD0D2D3661@gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Sun, 25 Aug 2019 22:28:28 +0200
-Message-ID: <CAFLxGvwpR9e15vgcKZ1JadHto+xP2T=stEa3rfJ7vbHrt60sJg@mail.gmail.com>
-Subject: Re: Debian 10 boot problems with corrupted rw /var
-To: Travis Griggs <travisgriggs@gmail.com>
+X-MS-Exchange-CrossTenant-Network-Message-Id: f30f21f5-36e4-4d59-8ab8-08d729a8b5e0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Aug 2019 22:08:08.0969 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: eOFhXyPdrUZ1bps4VAbCs3EQNXsrWpfitKXSqkk6Z3aUuhDNcgR8k3rAyddO99Y7
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1440
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:5.22.84,1.0.8
+ definitions=2019-08-25_14:2019-08-23,2019-08-25 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0
+ bulkscore=0
+ priorityscore=1501 malwarescore=0 impostorscore=0 phishscore=0
+ lowpriorityscore=0 clxscore=1011 mlxlogscore=999 adultscore=0 spamscore=0
+ mlxscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1906280000 definitions=main-1908250248
+X-FB-Internal: deliver
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190825_132841_963112_4B5AA203 
-X-CRM114-Status: GOOD (  14.88  )
+X-CRM114-CacheID: sfid-20190825_150834_920146_8037E58D 
+X-CRM114-Status: GOOD (  13.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,41 +163,31 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-VHJhdmlzLAoKT24gVHVlLCBBdWcgMjAsIDIwMTkgYXQgNzoxNyBQTSBUcmF2aXMgR3JpZ2dzIDx0
-cmF2aXNncmlnZ3NAZ21haWwuY29tPiB3cm90ZToKPiAxLiBIb3cgY2FuIEkgZ2V0IHRvIHRoZSBi
-b3R0b20gb2Ygd2hhdC93aHkgbXkgL3ZhciBmaWxlIHN5c3RlbSBpcyBnZXR0aW5nIGNvcnJ1cHRl
-ZD8KClRoaXMgc291bmRzIGEgbGl0dGxlIGxpa2UgdGhlIFVCSUZTIHhhdHRycyBpc3N1ZSBJJ3Zl
-IGJlZW4gaHVudGluZwpkb3duLiBGaXhlcyBhcmUgdXBzdHJlYW0gYnV0IG5vdCBpbiBzdGFibGUt
-dHJlZXMgeWV0LgpDYW4geW91IHBsZWFzZSBnaXZlIExpbnVzJyB0cmVlIGFzIG9mIHRvZGF5IGEg
-dHJ5PwoKPiAyLiBJIGFjY2VwdCB0aGF0IFVCSUZTIGRvZXNuJ3QgcHJvdGVjdCBtZSBmcm9tIHBv
-d2VyLWN5Y2xlIGNvcnJ1cHRpb24gaXNzdWVzIDEwMCUuIEkgaGF2ZSBiZWVuIGxlYWQgdG8gYmVs
-aWV2ZSBpdCBzaW1wbHkgbWFrZXMgaXQgbW9yZSByb2J1c3QgaW4gdGhlIHByZXNlbmNlIG9mIHBv
-d2VyIGN5Y2xlIGV2ZW50cy4gQnV0IHdoeSBkb2VzIGl0IGFsd2F5cyBmYWlsIGJldHdlZW4gMTYw
-MCBhbmQgMTgwMCBpdGVyYXRpb25zPyBJZiBpdCB3YXMgdHJ1bHkgcmFuZG9tLCBJJ2QgZXhwZWN0
-IGl0IHRvIGZhaWwgYXQgcmFuZG9tIHBvd2VyIGN5Y2xlIGV2ZW50cy4gSXQncyBsaWtlIHNvbWUg
-Y291bnRlciBpcyB3ZWFyaW5nIG91dCB0aG91Z2guCgpVQklGUyBzaG91bGQgbm90IGRpZSBmcm9t
-IHBvd2VyLWN1dHMuIEkgaGF2ZSBubyBpZGVhIHdoeSBpdCBmYWlscyBpbgp5b3VyIGNhc2UgYmV0
-d2VlbiAxNjAwIGFuZCAxODAwLgoKPiAzLiBUaGUgYXNzdW1wdGlvbiBJJ20gd29ya2luZyBvbiBo
-ZXJlIGlzIHRoYXQgaGF2aW5nIHRoZSBtYWpvcml0eSBvZiB0aGUgc3lzdGVtIGJlIHJlYWQtb25s
-eSB3b3VsZCBpbmNyZWFzZSB0aGUgcm9idXN0bmVzcyBvZiB0aGUgc3lzdGVtIChsZXNzIGJyaWNr
-IGFibGUpLiBCdXQgaXQgc2VlbXMgaXQncyBvbmx5IG1hZGUgaXQgc28gaXQgYm9vdHMgZnVydGhl
-ciwgYnV0IHVsdGltYXRlbHkgc3RpbGwgYnJpY2tzLiBXaGF0IGNhbiBJIGFkZCBpdCB0byBtYWtl
-IHRoZSByby9ydyBzcGxpdCBhY3R1YWxseSBtZWFuaW5nZnVsPwoKV2VsbCwgdGhlIGJvb3QgZmFp
-bHMgYmVjYXVzZSB5b3VyIHN5c3RlbSBkZXBlbmRzIGhhcmQgb24gYSBydyBVQklGUz8KVXN1YWxs
-eSBzdWNoIGEgc3BsaXQgaXMgdXNlZnVsIHRvIG1ha2UgdXBkYXRlIGNvbmNlcHRzIGVhc3kgb3Ig
-dG8KZGV0ZWN0IGJhZCBwcm9ncmFtcy4KCj4gNC4gSXTigJlzIGJlZW4gc3VnZ2VzdGVkIHRoYXQg
-SSBzaG91bGQgcGxhY2UgdGhlIHR3byBzZXBhcmF0ZSB2b2x1bWVzIChyb290ZnMgYW5kIC92YXIg
-b24gc2VwYXJhdGUgbXRkcykuIEnigJltIGdvaW5nIHRvIGV4cGVyaW1lbnQgd2l0aCB0aGF0LCBi
-dXQgd2lsbCBpdCBtYWtlIGEgZGlmZmVyZW5jZT8KCk5ldmVyIGhhdmUgbXVsdGlwbGUgVUJJIGlu
-c3RhbmNlcyBvbiB0aGUgc2FtZSBmbGFzaC4gVUJJIHNob3VsZCB1c2UgYXMKbXVjaCBmcm9tIHRo
-ZSBmbGFzaCBhcyBpdCBjYW4gdG8gaGF2ZSBhIGxhcmdlCndlYXIgbGV2ZWxpbmcgZG9tYWluLiBP
-biB0b3Agb2YgVUJJIHlvdSBjYW4gaGF2ZSBtdWx0aXBsZSB2b2x1bWVzIGlmIHlvdSB3YW50LgoK
-LS0gClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0
-dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On 8/25/19 12:22 PM, Richard Weinberger wrote:
+> On Wed, Aug 21, 2019 at 2:06 AM Andrew Jeffery <andrew@aj.id.au> wrote:
+>> Looks like a lack of robustness to filesystem corruption to me. LWN
+> 
+> What exactly makes you think so?
+> The inode cache entry is in state INO_STATE_UNCHECKED while GC run,
+> which is not allowed.
+> 
+> Tao, is the error persistent or did it happen only once?
+
+Hi Richard,
+
+It rarely happens (~1 out of 1000 machines in my environment), but once it happens, it's persistent: the machine will fall into reboot loop due to the crash.
+
+
+Thanks,
+
+Tao
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
