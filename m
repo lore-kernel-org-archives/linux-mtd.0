@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C6E0C3A59F
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2019 12:40:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE517C3A59F
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2019 12:49:41 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E38F82080C
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2019 12:40:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A446E21848
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2019 12:49:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hsH3XO4O"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E38F82080C
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TEZ6nNzf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A446E21848
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Xi+wtGppmzCDzdCdokSUSwrEIjvBl1i/Zymm1OLXaNw=; b=hsH3XO4OFLjRSW
-	tCQ2SMXKi1f8G7Y9Pk1cSN0RcycqE0jLwAfl66DEExBagWfcfjLNbTH/vwbvloHzeMEbUCocZp/AV
-	9lLAdscD1mXqWAYSrs10rpaKUDD8ZzqciNxuEA6Y819Prw/m46vj5oMhlk7vJexqu/snCZPbeGKM4
-	mRqd590grYtCvYk9LaE40j+rvNRmyaZllQbxU8MU1fO+c8fgGETUfVg6P0ptW0yBlHvei9f7OxKnO
-	W3ifqw4sIBkxYvbbg42DW/wWeA5sjkRRwWVpB7pZvsqQL6APSW3tWZ0jzKDA8vHOzbKNDcI+RNnZA
-	81TSthUVZmjtPGDMCr7g==;
+	List-Owner; bh=J5ONMOr5n6rvEMXM/bsH7T5m+//41zOiDdTNfxcVp1c=; b=TEZ6nNzfMjlkZT
+	n/AZipzkMfkZ4q+h/3fW5TuVXB+yuJKhyXE6vwlCVSMc6M64teGy2ScWyZLBPKgY44Y4bMc5fFqDZ
+	VFL5cvc17rklzck8LVn47guOSQfZO+CzAZHO1XopbB23HR3+H8rmy3xthQEjYjb7bZK4z27Gp9/wd
+	GHuw44P53focWliixZMg+TMvU8CBLlp+fV86u3rjxDLsvp9Dneo+jNdhIocH3V0uja7ozLfuH2UDH
+	gt9zNAIhmXGocIxPa/YYUyDbQlufiLWh+qE+zqZQUXg/wHIRLA8JmTji7gP1kKiV3HmPkq4yC7IKr
+	l24b54KwWLJ+56JUSZ1w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i2EI5-00061e-7K; Mon, 26 Aug 2019 12:40:09 +0000
+	id 1i2ER6-00070s-Rd; Mon, 26 Aug 2019 12:49:28 +0000
 Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i2EI2-0005Pz-LT
- for linux-mtd@lists.infradead.org; Mon, 26 Aug 2019 12:40:08 +0000
+ id 1i2ER3-0006xz-OA
+ for linux-mtd@lists.infradead.org; Mon, 26 Aug 2019 12:49:27 +0000
 Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
  (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id A42F628BB08;
- Mon, 26 Aug 2019 13:40:04 +0100 (BST)
-Date: Mon, 26 Aug 2019 14:40:02 +0200
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 6BD6A28A1B7;
+ Mon, 26 Aug 2019 13:49:24 +0100 (BST)
+Date: Mon, 26 Aug 2019 14:49:21 +0200
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: <Tudor.Ambarus@microchip.com>
-Subject: Re: [RESEND PATCH v3 14/20] mtd: spi_nor: Add a ->setup() method
-Message-ID: <20190826144002.479494be@collabora.com>
-In-Reply-To: <20190826120821.16351-15-tudor.ambarus@microchip.com>
+Subject: Re: [RESEND RFC PATCH v3 20/20] mtd: spi-nor: Rework the disabling
+ of block write protection
+Message-ID: <20190826144921.70ee27c5@collabora.com>
+In-Reply-To: <20190826120821.16351-21-tudor.ambarus@microchip.com>
 References: <20190826120821.16351-1-tudor.ambarus@microchip.com>
- <20190826120821.16351-15-tudor.ambarus@microchip.com>
+ <20190826120821.16351-21-tudor.ambarus@microchip.com>
 Organization: Collabora
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190826_054006_847128_576080EE 
-X-CRM114-Status: UNSURE (   9.13  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190826_054925_922222_75B8F3AE 
+X-CRM114-Status: GOOD (  17.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,26 +78,55 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 26 Aug 2019 12:08:58 +0000
+On Mon, 26 Aug 2019 12:09:09 +0000
 <Tudor.Ambarus@microchip.com> wrote:
 
 > From: Tudor Ambarus <tudor.ambarus@microchip.com>
 > 
-> nor->params.setup() configures the SPI NOR memory. Useful for SPI NOR
-> flashes that have peculiarities to the SPI NOR standard, e.g.
-> different opcodes, specific address calculation, page size, etc.
-> Right now the only user will be the S3AN chips, but other
-> manufacturers can implement it if needed.
+> spi_nor_unlock() unlocks blocks of memory or the entire flash memory
+> array, if requested. clear_sr_bp() unlocks the entire flash memory
+> array at boot time. This calls for some unification, clear_sr_bp() is
+> just an optimization for the case when the unlock request covers the
+> entire flash size.
 > 
-> Move spi_nor_setup() related code in order to avoid a forward
-> declaration to spi_nor_default_setup().
+> Merge the clear_sr_bp() and stm_lock/unlock logic and introduce
+> spi_nor_unlock_all(), which makes an unlock request that covers the
+> entire flash size.
 > 
-> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-
-Nitpick: R-bs should normally be placed after your SoB.
-
+> Get rid of the MFR handling and implement specific manufacturer
+> default_init() fixup hooks.
+> 
+> Move write_sr_cr() to avoid to add a forward declaration. Prefix
+> new function with 'spi_nor_'.
+> 
+> Note that this changes a bit the logic for the SNOR_MFR_ATMEL and
+> SNOR_MFR_INTEL cases. Before this patch, the Atmel and Intel chips
+> did not set the locking ops, but unlocked the entire flash at boot
+> time, while now they are setting the locking ops to stm_locking_ops.
+> This should work, since the the disable of the block protection at the
+> boot time used the same Status Register bits to unlock the flash, as
+> in the stm_locking_ops case.
+> 
+> In future, we should probably add new hooks to
+> 'struct spi_nor_flash_parameter' to describe how to interact with the
+> Status and Configuration Registers in the form of:
+> 	nor->params.ops->read_sr
+> 	nor->params.ops->write_sr
+> 	nor->params.ops->read_cr
+> 	nor->params.ops->write_sr
+> We can retrieve this info starting with JESD216 revB, by checking the
+> 15th DWORD of Basic Flash Parameter Table, or with later revisions of
+> the standard, by parsing the "Status, Control and Configuration Register
+> Map for SPI Memory Devices".
+> 
+> Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
 > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> ---
+
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+
+Though I'd recommend waiting a bit before applying that one. As
+discussed privately, we might have problems when ->quad_enable is set
+to spansion_read_cr_quad_enable or spansion_no_read_cr_quad_enable.
 
 ______________________________________________________
 Linux MTD discussion mailing list
