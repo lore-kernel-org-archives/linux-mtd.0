@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D44F5C3A5A6
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2019 11:59:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D44AC3A59F
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2019 11:59:26 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9EB392187F
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2019 11:59:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 55F982184D
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2019 11:59:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="eH+p5Myf";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="cd/2cwsm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9EB392187F
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XLpzgAl3";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="o/Q4Dz6z"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 55F982184D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,19 +26,19 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zn527gMpuBW9NG/PtGx4BAgzTq/TM0Y/B5VwAHzmo24=; b=eH+p5MyfwFrnDj
-	Yl8Zt+ff4w7zZmo7/1Ku9NcaIIs0Ay5tZr5ZRMaNj38qC3qdBD3Y7yLMHo2T4bzF+mu3U5jzZRAqx
-	BXy9vL4oENPhX6BBSQH8Dcxe3w6cH7nXWokGkBDWp+oQ9DBbu35NuZU2ydfnEQVEN3pv/Lx/HKepj
-	zP39Vv3E0uKvVj8+ZXwH1HyZ2NcODLTKAiJpX+wNOFjMoYqXYOBw1BOc9ZOIIwwHe9A60AaNl7hrD
-	IhrvFyJWzmaxRYBKQsAW+vymdIq+XVmzKPsmf8GgLcxBqPx87rX/nEam+KVReVZl9SwwqWw91iuQv
-	0xswGD17FOkBMtIG/jJQ==;
+	List-Owner; bh=DuXlHJ67OP1MOA0lG9+9K4stMRA2t9rqri3+rO1Jnkw=; b=XLpzgAl31xewYN
+	7lnkwNa4E4zwigLeGZnrwzL37+h6GrDn4co+ozDsIXB0qfgkQXNrim4q3UyhC5D0y9vwYHd+R1Or+
+	xpCldwKTUfOIz+rSpG/t0lRPCBd2vGTiSx7Gy+n92qInh/V8CY7ilAOWJAvuWonZlxFjYoG0sYFng
+	jXLNWSeeOkGECnbw+lrwXGnR+OzBVGhDjq0pHzyJtuc/hWRszyu4/0AoAh6UeMhoiAWavfnCrKSHq
+	A1FgmvsaYrud0R1ZHRmBncMv8sfP0Q2BRp1FiLuyMKFnaNn5/qN9Pryv3rUfmrjbRNys/GINhPuVN
+	CERmwNlne/jLxex0HDgQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i2DeG-0002kB-Fd; Mon, 26 Aug 2019 11:59:00 +0000
+	id 1i2DeT-00033A-9u; Mon, 26 Aug 2019 11:59:13 +0000
 Received: from esa2.microchip.iphmx.com ([68.232.149.84])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i2De3-0002Wv-5t
- for linux-mtd@lists.infradead.org; Mon, 26 Aug 2019 11:58:49 +0000
+ id 1i2De3-0002XM-T4
+ for linux-mtd@lists.infradead.org; Mon, 26 Aug 2019 11:58:50 +0000
 Received-SPF: Pass (esa2.microchip.iphmx.com: domain of
  Tudor.Ambarus@microchip.com designates 198.175.253.82 as
  permitted sender) identity=mailfrom;
@@ -61,32 +61,32 @@ Authentication-Results: esa2.microchip.iphmx.com;
  spf=None smtp.helo=postmaster@email.microchip.com;
  dkim=pass (signature verified) header.i=@microchiptechnology.onmicrosoft.com;
  dmarc=pass (p=none dis=none) d=microchip.com
-IronPort-SDR: fsIDbCwB5BH+XCdjhVZLxbkZHeK1wDeGgX0IsAeiwjKc5pJvmnmNFrQzLXbr34fN0sOpxCkFXF
- mlEDG78elr0geklatJdY/lTq+1DA7IVTOKXvkT+tBSwbIaZx360uNZDQNVd6H3O6ERJLZPn5k2
- E33ds2t0uh4aY0vegGODemxfL07kTb27mSCejX2ytgkyiTLe21jZdJJ/Qfg9Y3b5ZSZWxNOnZQ
- i0Vl8n0dGeDU0EUwzxZq/tt1t+WVMLOPVLv8XHJFgQI2eGYGOd8q2ZnFzLvR4jiptqzFzBnzYQ
- 9hM=
-X-IronPort-AV: E=Sophos;i="5.64,433,1559545200"; d="scan'208";a="46518688"
+IronPort-SDR: Oy4nrTqHTqGuukxyf01VG3FB6YlTUwCQdHRcOHKTPGHMkGJkSlBcvrChx7/TdBPFXc/AX9/PfR
+ BMFCNAfs/H6o8xBn+oel5AaGS2haBivj9o45Rl7+4MZUn5Ea7Lei5mcNOmh1tbVs+FPBW3k4pU
+ YCRYEoqPwLf8SJdLL8tR4RHoy7EXti4Vb4Teju3WRszO4JMqZPjPbKRlWc580TKrlFqpDXQ9lE
+ ICkF9lzsCnIddaPfBWDdKKIYYp5unAy5ct8gXbB+RL2N1fM0btX8zaZdpuvyXN82zRbpTNdZGG
+ IrY=
+X-IronPort-AV: E=Sophos;i="5.64,433,1559545200"; d="scan'208";a="46518693"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 26 Aug 2019 04:58:45 -0700
+ 26 Aug 2019 04:58:47 -0700
 Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
  chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 26 Aug 2019 04:58:44 -0700
+ 15.1.1713.5; Mon, 26 Aug 2019 04:58:46 -0700
 Received: from NAM01-SN1-obe.outbound.protection.outlook.com (10.10.215.89) by
  email.microchip.com (10.10.87.71) with Microsoft SMTP Server
  (version=TLS1_2, 
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5 via Frontend
- Transport; Mon, 26 Aug 2019 04:58:44 -0700
+ Transport; Mon, 26 Aug 2019 04:58:46 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WgnZOv3Kh0ewBe0yl3iOpeNMxN8OvcYsft/vtAL2+BjjuOZZmwFVNQKRZLjYZeGscFjiw7TiYZlZI4iegImYQIpT04jFgky1+j48oo1TIi0+n6h/KrjeNtX5QL+5wT4f9TI4pebiw81XKwm8ExGM7TSgFL/H04TA5Yzm1swDtfKJ/1hdYxbgEf42iRDQE/5cOOAZuaKfNUhhNBkeLClmZ3OWr0aOyxmtUMkCyDcTkCHLnaSKG63nDNqtKdMGn+y3+6MIXSaZhLfYVBSUcm4C03fqJNbTp4MV/2G5ZRmw18gjf477EYSWQdAJtXYk0bScgSqj8geCSw7dSjswOmCzcQ==
+ b=W8mVu9kbzmY2udz+f/AvDmVGyBJP4ny8K3KbETF46RrUGSSYsHclUNOtqLPD9jgBGfFv+yPozRnmRmnxNaWiO6NSZKkGA7y/7YwLf+A1zl01WuXeTKXp1TaNs2Sax6CT3liN0eH+5mbDLMdRRK3px/DGwBx5QN1Q/Wb02bKmP8RpkRX98oMQsWgRlchnxFSh6Y5eYloze3Hrrni+5co6LS9aPUFo2PeDUYpehlGRMnI1iXzZlG2DFSnQtdkx3nnHWSTjTx1lv4l19SUa4WkB+lINs6wKSSApOCOkG5mIf6a0PRYAzhhVhY8JWOaR3L873Q3Uc1nyW7cBLIy95ZubgA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kNJWgqpt+XlI34xYN7jthxW+soDIOhBBBwQX2gs00SI=;
- b=XsTMl3als95Ib8lJpp+AaxJH3LHnCQo1tJ5qmIEUlf7SWq4f8LNMk4VkBaOEx6UEX7KX0y7m12qTsryiEQToZoeubjpXoz9SXglkC0rPh2RHaOBAcJ5BTBi2GyuW1HYizF8vvZtLy8nPoAvcbl0fzUDtSuVobIzcTDYUD/kTkkvGymJTpAjc/c0GvSRg7TXu0KLeV1uuIhZVOc16xXKcmHg70/IOvURAPHWPUbqDjTmp4Ujpfa+5kSZLndpbzFZBKCfX1orj8U6qcYoFUwKdEnjO8RY2i7h6nCloKIP9WIgktciu7WWg6XjoZeYkyZ09Rp5hJz2s3OMRe/BSSHAs/A==
+ bh=bq93V070zUXIi/6zi0b4fz3mqqDGUW+oVUd3XOm/RXU=;
+ b=dq+tIuUpuWrV0tj4N9YGR2OonK+3mSzby5GioiSQDMpVpSncORWuYNT1xwydTHnQJlQ3Txlz9VMoZsElvCnG8jefQpZjDiVEKkfAZA9ht74oTWU/OPahXde530peip5sj58rJwaDtu7jdxIaEL4b1dYooEZ5+kN9ku6zXazXcr3ZuJRE1JM4xZvBt/00JayugjZdYu/X+klfhUMrMlBWCotNL00pJPzlYHYnwO+IQoThmNNUVPIdyxt0ZFuSwwyrxKVQPewr09mGUtwM+PI3tu3LL9OHTAEtfjzAlfL8fE9WWm+Vh9UrqgdhdURElQTzd36ugyD9etFKkLWhxgaH9g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=microchip.com; dmarc=pass action=none
  header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
@@ -94,26 +94,25 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=microchiptechnology.onmicrosoft.com;
  s=selector2-microchiptechnology-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kNJWgqpt+XlI34xYN7jthxW+soDIOhBBBwQX2gs00SI=;
- b=cd/2cwsm6IT/kwStaepn+MZoZOfIgOkfXDyccoStviewtIBizOooYrdAISlkJU+wnxItRapIuSygtIwQAVe4PI51fBaaPeZhztLkMGai505DN9wY6pFhLv6wrdM11FKEm5cBIJURoBUdrr1Pp/CmF8/7MTOpAMfZziWZCLekfOU=
+ bh=bq93V070zUXIi/6zi0b4fz3mqqDGUW+oVUd3XOm/RXU=;
+ b=o/Q4Dz6zcHUBdwwkOzagW1lHFNWERmkjNZPKhxGe2/FaRcIue2C6+K9J7dWpaH2h0mBlnVT5FzqMsUFrhj36g84XLJYKQqwacJszR3P1439RW9pDC/qNexQpFFFSBeQdGrS1s3TAYJIw/DcY8g9XctGU2Cf96XyBb5myApNTMn8=
 Received: from MN2PR11MB4448.namprd11.prod.outlook.com (52.135.39.157) by
  MN2PR11MB4350.namprd11.prod.outlook.com (52.135.39.22) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2199.21; Mon, 26 Aug 2019 11:58:44 +0000
+ 15.20.2199.21; Mon, 26 Aug 2019 11:58:45 +0000
 Received: from MN2PR11MB4448.namprd11.prod.outlook.com
  ([fe80::70c3:e929:4da2:60a5]) by MN2PR11MB4448.namprd11.prod.outlook.com
  ([fe80::70c3:e929:4da2:60a5%7]) with mapi id 15.20.2199.021; Mon, 26 Aug 2019
- 11:58:43 +0000
+ 11:58:45 +0000
 From: <Tudor.Ambarus@microchip.com>
 To: <boris.brezillon@collabora.com>, <marek.vasut@gmail.com>,
  <vigneshr@ti.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 01/20] mtd: spi-nor: Regroup flash parameter and settings
-Thread-Topic: [PATCH v3 01/20] mtd: spi-nor: Regroup flash parameter and
- settings
-Thread-Index: AQHVXAWbUGQxfu4TdEmy8P7pangj8Q==
-Date: Mon, 26 Aug 2019 11:58:43 +0000
-Message-ID: <20190826115833.14913-2-tudor.ambarus@microchip.com>
+Subject: [PATCH v3 02/20] mtd: spi-nor: Use nor->params
+Thread-Topic: [PATCH v3 02/20] mtd: spi-nor: Use nor->params
+Thread-Index: AQHVXAWdFmiGe/+EPUWdynB8W5OYxQ==
+Date: Mon, 26 Aug 2019 11:58:45 +0000
+Message-ID: <20190826115833.14913-3-tudor.ambarus@microchip.com>
 References: <20190826115833.14913-1-tudor.ambarus@microchip.com>
 In-Reply-To: <20190826115833.14913-1-tudor.ambarus@microchip.com>
 Accept-Language: en-US
@@ -127,35 +126,35 @@ x-ms-exchange-messagesentrepresentingtype: 1
 x-mailer: git-send-email 2.9.5
 x-originating-ip: [94.177.32.156]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 43672f22-4e4a-42d9-933a-08d72a1cbe3a
+x-ms-office365-filtering-correlation-id: d33026e4-164c-4869-981c-08d72a1cbf60
 x-microsoft-antispam: BCL:0; PCL:0;
  RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(2017052603328)(7193020);
  SRVR:MN2PR11MB4350; 
 x-ms-traffictypediagnostic: MN2PR11MB4350:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR11MB4350DB6DDB12608B458F0F77F0A10@MN2PR11MB4350.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-microsoft-antispam-prvs: <MN2PR11MB435021D03FEC0D8E0F816AF5F0A10@MN2PR11MB4350.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
 x-forefront-prvs: 01415BB535
 x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(136003)(346002)(396003)(376002)(366004)(39860400002)(189003)(199004)(386003)(66476007)(6506007)(66556008)(64756008)(81156014)(66446008)(66946007)(14444005)(256004)(8676002)(81166006)(71200400001)(71190400001)(25786009)(6512007)(1076003)(30864003)(6436002)(8936002)(107886003)(53936002)(36756003)(6486002)(5660300002)(4326008)(50226002)(486006)(86362001)(66066001)(2616005)(476003)(305945005)(3846002)(186003)(76176011)(52116002)(99286004)(6116002)(478600001)(2501003)(7736002)(446003)(11346002)(14454004)(2906002)(110136005)(2201001)(316002)(26005)(102836004);
+ SFS:(10009020)(136003)(346002)(396003)(376002)(366004)(39860400002)(189003)(199004)(386003)(66476007)(6506007)(66556008)(64756008)(81156014)(66446008)(66946007)(256004)(8676002)(81166006)(71200400001)(71190400001)(25786009)(6512007)(1076003)(6436002)(8936002)(107886003)(53936002)(36756003)(6486002)(5660300002)(4326008)(50226002)(486006)(86362001)(66066001)(2616005)(476003)(305945005)(3846002)(186003)(76176011)(52116002)(99286004)(6116002)(478600001)(2501003)(7736002)(446003)(11346002)(14454004)(2906002)(110136005)(2201001)(316002)(26005)(102836004);
  DIR:OUT; SFP:1101; SCL:1; SRVR:MN2PR11MB4350;
  H:MN2PR11MB4448.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
  PTR:InfoNoRecords; MX:1; A:1; 
 received-spf: None (protection.outlook.com: microchip.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: xU1xk8jLA5mBu57h9hEEObwsLa3GrmPNIbjO3me6D2z6xyzyA3dnh+gAisyP6YnatPjCrfJf4MACXNYASwLLSh/vHJM0ogXenJwn8TCOruXKjUWwDevEQxlG4crAheUBV/PruVO56pJ8O0SCoAQC/5jUTfp6quG63d6txGMB/Ehe9Az8XWq+PTsypM3sl2We0mzf4VrA7Ykl0eBWzGEQyCv146yIx6ysoeyq8qoREGz6S3FE/35kLzaLuAy4B+0lrlcZKBk1tk5GSrGIvlhxmMNLf9ym/FcYdpizGM0KL9eXMGr78ODqpriwQipPk9G3RiezfjH3V0vBKHHemFYgkQPCtAO2YO841gZMd/zLaNIW9J7iW8DVyR5KoZ/6UdjBtmkM/pAJ2IcsLVmIyUec6ygDWNRVDJZa+JZRAdSAGqA=
+x-microsoft-antispam-message-info: WESfgAN/6nPFsZAarTbOR4RuWJx7NBTPbpUyAvST9sOA7l6jVV5yMz/Dv4IMAZPNhrKRt70Jx7kS+u4O0v89X9AnNkfTB825c4B8Gf4vVCa1E9JulKjkdeIYBxu1nOOG5PVnhm5u/B0+0sCswZB5zM4X/WbNCt1BRrn00KwYh6lTX3kgdlMsmnFbKQLm/votGrYmqW198Akdxv8lJ0gODSgLFXEKOV5IOAMt0jvM1bDHq4Wa+FM8jteO7HoYhbY+RJr1FiAwcWOVU+6L26EckRIyWxtC6laiQbxeI2ekPpd0msSnj38QI0zm/TtaCr/Cu4mANtVQg8hdP8HS/MwSxJW3khm3MD/UHJ/MemyGygzc9WbfNJ9qgXHQ7FnMGoSw2NcJXCCNYt9JPgbP2MmYnLRq1R3VyQuiqsgPnY2Y7ic=
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 43672f22-4e4a-42d9-933a-08d72a1cbe3a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Aug 2019 11:58:43.8183 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d33026e4-164c-4869-981c-08d72a1cbf60
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Aug 2019 11:58:45.6412 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: pWbxy7n9b10MhuMz0j8bknHSUssZgvJRbGHXZODYZMpxK9twsEz+0k15hidxeqHksD11WLKaKm1FpENvVCwABY5uV+8Y6XZG5uIEbuP/I08=
+X-MS-Exchange-CrossTenant-userprincipalname: S3/Dbsc/gUrwZTDf3r2jIKoHggBnbrGxyFoMWEQnV58iDy4LJ8e+wqpQwSgVgpEoVJNEd6r+2tP+I87yjRsacR0Vx+l+wfqSLRmQSPCcJ+I=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4350
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190826_045847_267380_3F069391 
-X-CRM114-Status: GOOD (  10.57  )
+X-CRM114-CacheID: sfid-20190826_045847_984536_751AF152 
+X-CRM114-Status: GOOD (  13.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -175,376 +174,212 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-The scope is to move all [FLASH-SPECIFIC] parameters and settings
-from 'struct spi_nor' to 'struct spi_nor_flash_parameter'.
+The Flash parameters and settings are now stored in 'struct spi_nor'.
+Use this instead of the stack allocated params.
 
-'struct spi_nor_flash_parameter' describes the hardware capabilities
-and associated settings of the SPI NOR flash memory. It includes
-legacy flash parameters and settings that can be overwritten by the
-spi_nor_fixups hooks, or dynamically when parsing the JESD216
-Serial Flash Discoverable Parameters (SFDP) tables. All SFDP params
-and settings will fit inside 'struct spi_nor_flash_parameter'.
+Few functions stop passing pointer to params, as they can get it from
+'struct spi_nor'. spi_nor_parse_sfdp() and children will keep passing
+pointer to params because of the roll-back mechanism: in case the
+parsing of SFDP fails, the legacy flash parameter and settings will be
+restored.
 
-Move spi_nor_hwcaps related code to avoid forward declarations.
-Add a forward declaration that we can't avoid: 'struct spi_nor' will
-be used in 'struct spi_nor_flash_parameter'.
+Zeroing params is no longer needed because all SPI NOR users kzalloc
+'struct spi_nor'.
 
 Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 ---
 v3: collect R-b
 
- drivers/mtd/spi-nor/spi-nor.c |  65 ------------
- include/linux/mtd/spi-nor.h   | 239 +++++++++++++++++++++++++++++-------------
- 2 files changed, 164 insertions(+), 140 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c | 46 ++++++++++++++++++-------------------------
+ 1 file changed, 19 insertions(+), 27 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 0597cb8257b0..d35dc6a97521 100644
+index d35dc6a97521..e9b9cd70a999 100644
 --- a/drivers/mtd/spi-nor/spi-nor.c
 +++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -40,71 +40,6 @@
- #define SPI_NOR_MAX_ID_LEN	6
- #define SPI_NOR_MAX_ADDR_WIDTH	4
- 
--struct spi_nor_read_command {
--	u8			num_mode_clocks;
--	u8			num_wait_states;
--	u8			opcode;
--	enum spi_nor_protocol	proto;
--};
--
--struct spi_nor_pp_command {
--	u8			opcode;
--	enum spi_nor_protocol	proto;
--};
--
--enum spi_nor_read_command_index {
--	SNOR_CMD_READ,
--	SNOR_CMD_READ_FAST,
--	SNOR_CMD_READ_1_1_1_DTR,
--
--	/* Dual SPI */
--	SNOR_CMD_READ_1_1_2,
--	SNOR_CMD_READ_1_2_2,
--	SNOR_CMD_READ_2_2_2,
--	SNOR_CMD_READ_1_2_2_DTR,
--
--	/* Quad SPI */
--	SNOR_CMD_READ_1_1_4,
--	SNOR_CMD_READ_1_4_4,
--	SNOR_CMD_READ_4_4_4,
--	SNOR_CMD_READ_1_4_4_DTR,
--
--	/* Octal SPI */
--	SNOR_CMD_READ_1_1_8,
--	SNOR_CMD_READ_1_8_8,
--	SNOR_CMD_READ_8_8_8,
--	SNOR_CMD_READ_1_8_8_DTR,
--
--	SNOR_CMD_READ_MAX
--};
--
--enum spi_nor_pp_command_index {
--	SNOR_CMD_PP,
--
--	/* Quad SPI */
--	SNOR_CMD_PP_1_1_4,
--	SNOR_CMD_PP_1_4_4,
--	SNOR_CMD_PP_4_4_4,
--
--	/* Octal SPI */
--	SNOR_CMD_PP_1_1_8,
--	SNOR_CMD_PP_1_8_8,
--	SNOR_CMD_PP_8_8_8,
--
--	SNOR_CMD_PP_MAX
--};
--
--struct spi_nor_flash_parameter {
--	u64				size;
--	u32				page_size;
--
--	struct spi_nor_hwcaps		hwcaps;
--	struct spi_nor_read_command	reads[SNOR_CMD_READ_MAX];
--	struct spi_nor_pp_command	page_programs[SNOR_CMD_PP_MAX];
--
--	int (*quad_enable)(struct spi_nor *nor);
--};
--
- struct sfdp_parameter_header {
- 	u8		id_lsb;
- 	u8		minor;
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index 3075ac73b171..77ba692d9348 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -334,6 +334,165 @@ struct spi_nor_erase_map {
- };
- 
- /**
-+ * struct spi_nor_hwcaps - Structure for describing the hardware capabilies
-+ * supported by the SPI controller (bus master).
-+ * @mask:		the bitmask listing all the supported hw capabilies
-+ */
-+struct spi_nor_hwcaps {
-+	u32	mask;
-+};
-+
-+/*
-+ *(Fast) Read capabilities.
-+ * MUST be ordered by priority: the higher bit position, the higher priority.
-+ * As a matter of performances, it is relevant to use Octal SPI protocols first,
-+ * then Quad SPI protocols before Dual SPI protocols, Fast Read and lastly
-+ * (Slow) Read.
-+ */
-+#define SNOR_HWCAPS_READ_MASK		GENMASK(14, 0)
-+#define SNOR_HWCAPS_READ		BIT(0)
-+#define SNOR_HWCAPS_READ_FAST		BIT(1)
-+#define SNOR_HWCAPS_READ_1_1_1_DTR	BIT(2)
-+
-+#define SNOR_HWCAPS_READ_DUAL		GENMASK(6, 3)
-+#define SNOR_HWCAPS_READ_1_1_2		BIT(3)
-+#define SNOR_HWCAPS_READ_1_2_2		BIT(4)
-+#define SNOR_HWCAPS_READ_2_2_2		BIT(5)
-+#define SNOR_HWCAPS_READ_1_2_2_DTR	BIT(6)
-+
-+#define SNOR_HWCAPS_READ_QUAD		GENMASK(10, 7)
-+#define SNOR_HWCAPS_READ_1_1_4		BIT(7)
-+#define SNOR_HWCAPS_READ_1_4_4		BIT(8)
-+#define SNOR_HWCAPS_READ_4_4_4		BIT(9)
-+#define SNOR_HWCAPS_READ_1_4_4_DTR	BIT(10)
-+
-+#define SNOR_HWCAPS_READ_OCTAL		GENMASK(14, 11)
-+#define SNOR_HWCAPS_READ_1_1_8		BIT(11)
-+#define SNOR_HWCAPS_READ_1_8_8		BIT(12)
-+#define SNOR_HWCAPS_READ_8_8_8		BIT(13)
-+#define SNOR_HWCAPS_READ_1_8_8_DTR	BIT(14)
-+
-+/*
-+ * Page Program capabilities.
-+ * MUST be ordered by priority: the higher bit position, the higher priority.
-+ * Like (Fast) Read capabilities, Octal/Quad SPI protocols are preferred to the
-+ * legacy SPI 1-1-1 protocol.
-+ * Note that Dual Page Programs are not supported because there is no existing
-+ * JEDEC/SFDP standard to define them. Also at this moment no SPI flash memory
-+ * implements such commands.
-+ */
-+#define SNOR_HWCAPS_PP_MASK	GENMASK(22, 16)
-+#define SNOR_HWCAPS_PP		BIT(16)
-+
-+#define SNOR_HWCAPS_PP_QUAD	GENMASK(19, 17)
-+#define SNOR_HWCAPS_PP_1_1_4	BIT(17)
-+#define SNOR_HWCAPS_PP_1_4_4	BIT(18)
-+#define SNOR_HWCAPS_PP_4_4_4	BIT(19)
-+
-+#define SNOR_HWCAPS_PP_OCTAL	GENMASK(22, 20)
-+#define SNOR_HWCAPS_PP_1_1_8	BIT(20)
-+#define SNOR_HWCAPS_PP_1_8_8	BIT(21)
-+#define SNOR_HWCAPS_PP_8_8_8	BIT(22)
-+
-+#define SNOR_HWCAPS_X_X_X	(SNOR_HWCAPS_READ_2_2_2 |	\
-+				 SNOR_HWCAPS_READ_4_4_4 |	\
-+				 SNOR_HWCAPS_READ_8_8_8 |	\
-+				 SNOR_HWCAPS_PP_4_4_4 |		\
-+				 SNOR_HWCAPS_PP_8_8_8)
-+
-+#define SNOR_HWCAPS_DTR		(SNOR_HWCAPS_READ_1_1_1_DTR |	\
-+				 SNOR_HWCAPS_READ_1_2_2_DTR |	\
-+				 SNOR_HWCAPS_READ_1_4_4_DTR |	\
-+				 SNOR_HWCAPS_READ_1_8_8_DTR)
-+
-+#define SNOR_HWCAPS_ALL		(SNOR_HWCAPS_READ_MASK |	\
-+				 SNOR_HWCAPS_PP_MASK)
-+
-+struct spi_nor_read_command {
-+	u8			num_mode_clocks;
-+	u8			num_wait_states;
-+	u8			opcode;
-+	enum spi_nor_protocol	proto;
-+};
-+
-+struct spi_nor_pp_command {
-+	u8			opcode;
-+	enum spi_nor_protocol	proto;
-+};
-+
-+enum spi_nor_read_command_index {
-+	SNOR_CMD_READ,
-+	SNOR_CMD_READ_FAST,
-+	SNOR_CMD_READ_1_1_1_DTR,
-+
-+	/* Dual SPI */
-+	SNOR_CMD_READ_1_1_2,
-+	SNOR_CMD_READ_1_2_2,
-+	SNOR_CMD_READ_2_2_2,
-+	SNOR_CMD_READ_1_2_2_DTR,
-+
-+	/* Quad SPI */
-+	SNOR_CMD_READ_1_1_4,
-+	SNOR_CMD_READ_1_4_4,
-+	SNOR_CMD_READ_4_4_4,
-+	SNOR_CMD_READ_1_4_4_DTR,
-+
-+	/* Octal SPI */
-+	SNOR_CMD_READ_1_1_8,
-+	SNOR_CMD_READ_1_8_8,
-+	SNOR_CMD_READ_8_8_8,
-+	SNOR_CMD_READ_1_8_8_DTR,
-+
-+	SNOR_CMD_READ_MAX
-+};
-+
-+enum spi_nor_pp_command_index {
-+	SNOR_CMD_PP,
-+
-+	/* Quad SPI */
-+	SNOR_CMD_PP_1_1_4,
-+	SNOR_CMD_PP_1_4_4,
-+	SNOR_CMD_PP_4_4_4,
-+
-+	/* Octal SPI */
-+	SNOR_CMD_PP_1_1_8,
-+	SNOR_CMD_PP_1_8_8,
-+	SNOR_CMD_PP_8_8_8,
-+
-+	SNOR_CMD_PP_MAX
-+};
-+
-+/* Forward declaration that will be used in 'struct spi_nor_flash_parameter' */
-+struct spi_nor;
-+
-+/**
-+ * struct spi_nor_flash_parameter - SPI NOR flash parameters and settings.
-+ * Includes legacy flash parameters and settings that can be overwritten
-+ * by the spi_nor_fixups hooks, or dynamically when parsing the JESD216
-+ * Serial Flash Discoverable Parameters (SFDP) tables.
-+ *
-+ * @size:		the flash memory density in bytes.
-+ * @page_size:		the page size of the SPI NOR flash memory.
-+ * @hwcaps:		describes the read and page program hardware
-+ *			capabilities.
-+ * @reads:		read capabilities ordered by priority: the higher index
-+ *                      in the array, the higher priority.
-+ * @page_programs:	page program capabilities ordered by priority: the
-+ *                      higher index in the array, the higher priority.
-+ * @quad_enable:	enables SPI NOR quad mode.
-+ */
-+struct spi_nor_flash_parameter {
-+	u64				size;
-+	u32				page_size;
-+
-+	struct spi_nor_hwcaps		hwcaps;
-+	struct spi_nor_read_command	reads[SNOR_CMD_READ_MAX];
-+	struct spi_nor_pp_command	page_programs[SNOR_CMD_PP_MAX];
-+
-+	int (*quad_enable)(struct spi_nor *nor);
-+};
-+
-+/**
-  * struct flash_info - Forward declaration of a structure used internally by
-  *		       spi_nor_scan()
+@@ -2974,16 +2974,13 @@ static int spi_nor_spimem_check_pp(struct spi_nor *nor,
+  * spi_nor_spimem_adjust_hwcaps - Find optimal Read/Write protocol
+  *                                based on SPI controller capabilities
+  * @nor:        pointer to a 'struct spi_nor'
+- * @params:     pointer to the 'struct spi_nor_flash_parameter'
+- *              representing SPI NOR flash capabilities
+  * @hwcaps:     pointer to resulting capabilities after adjusting
+  *              according to controller and flash's capability
   */
-@@ -379,6 +538,10 @@ struct flash_info;
-  * @quad_enable:	[FLASH-SPECIFIC] enables SPI NOR quad mode
-  * @clear_sr_bp:	[FLASH-SPECIFIC] clears the Block Protection Bits from
-  *			the SPI NOR Status Register.
-+ * @params:		[FLASH-SPECIFIC] SPI-NOR flash parameters and settings.
-+ *                      The structure includes legacy flash parameters and
-+ *                      settings that can be overwritten by the spi_nor_fixups
-+ *                      hooks, or dynamically when parsing the SFDP tables.
-  * @priv:		the private data
-  */
- struct spi_nor {
-@@ -418,6 +581,7 @@ struct spi_nor {
- 	int (*flash_is_locked)(struct spi_nor *nor, loff_t ofs, uint64_t len);
- 	int (*quad_enable)(struct spi_nor *nor);
- 	int (*clear_sr_bp)(struct spi_nor *nor);
-+	struct spi_nor_flash_parameter params;
+ static void
+-spi_nor_spimem_adjust_hwcaps(struct spi_nor *nor,
+-			     const struct spi_nor_flash_parameter *params,
+-			     u32 *hwcaps)
++spi_nor_spimem_adjust_hwcaps(struct spi_nor *nor, u32 *hwcaps)
+ {
++	struct spi_nor_flash_parameter *params =  &nor->params;
+ 	unsigned int cap;
  
- 	void *priv;
- };
-@@ -463,81 +627,6 @@ static inline struct device_node *spi_nor_get_flash_node(struct spi_nor *nor)
+ 	/* DTR modes are not supported yet, mask them all. */
+@@ -4129,16 +4126,13 @@ static int spi_nor_parse_sfdp(struct spi_nor *nor,
+ 	return err;
  }
  
- /**
-- * struct spi_nor_hwcaps - Structure for describing the hardware capabilies
-- * supported by the SPI controller (bus master).
-- * @mask:		the bitmask listing all the supported hw capabilies
-- */
--struct spi_nor_hwcaps {
--	u32	mask;
--};
+-static int spi_nor_init_params(struct spi_nor *nor,
+-			       struct spi_nor_flash_parameter *params)
++static int spi_nor_init_params(struct spi_nor *nor)
+ {
++	struct spi_nor_flash_parameter *params = &nor->params;
+ 	struct spi_nor_erase_map *map = &nor->erase_map;
+ 	const struct flash_info *info = nor->info;
+ 	u8 i, erase_mask;
+ 
+-	/* Set legacy flash parameters as default. */
+-	memset(params, 0, sizeof(*params));
 -
--/*
-- *(Fast) Read capabilities.
-- * MUST be ordered by priority: the higher bit position, the higher priority.
-- * As a matter of performances, it is relevant to use Octal SPI protocols first,
-- * then Quad SPI protocols before Dual SPI protocols, Fast Read and lastly
-- * (Slow) Read.
-- */
--#define SNOR_HWCAPS_READ_MASK		GENMASK(14, 0)
--#define SNOR_HWCAPS_READ		BIT(0)
--#define SNOR_HWCAPS_READ_FAST		BIT(1)
--#define SNOR_HWCAPS_READ_1_1_1_DTR	BIT(2)
--
--#define SNOR_HWCAPS_READ_DUAL		GENMASK(6, 3)
--#define SNOR_HWCAPS_READ_1_1_2		BIT(3)
--#define SNOR_HWCAPS_READ_1_2_2		BIT(4)
--#define SNOR_HWCAPS_READ_2_2_2		BIT(5)
--#define SNOR_HWCAPS_READ_1_2_2_DTR	BIT(6)
--
--#define SNOR_HWCAPS_READ_QUAD		GENMASK(10, 7)
--#define SNOR_HWCAPS_READ_1_1_4		BIT(7)
--#define SNOR_HWCAPS_READ_1_4_4		BIT(8)
--#define SNOR_HWCAPS_READ_4_4_4		BIT(9)
--#define SNOR_HWCAPS_READ_1_4_4_DTR	BIT(10)
--
--#define SNOR_HWCAPS_READ_OCTAL		GENMASK(14, 11)
--#define SNOR_HWCAPS_READ_1_1_8		BIT(11)
--#define SNOR_HWCAPS_READ_1_8_8		BIT(12)
--#define SNOR_HWCAPS_READ_8_8_8		BIT(13)
--#define SNOR_HWCAPS_READ_1_8_8_DTR	BIT(14)
--
--/*
-- * Page Program capabilities.
-- * MUST be ordered by priority: the higher bit position, the higher priority.
-- * Like (Fast) Read capabilities, Octal/Quad SPI protocols are preferred to the
-- * legacy SPI 1-1-1 protocol.
-- * Note that Dual Page Programs are not supported because there is no existing
-- * JEDEC/SFDP standard to define them. Also at this moment no SPI flash memory
-- * implements such commands.
-- */
--#define SNOR_HWCAPS_PP_MASK	GENMASK(22, 16)
--#define SNOR_HWCAPS_PP		BIT(16)
--
--#define SNOR_HWCAPS_PP_QUAD	GENMASK(19, 17)
--#define SNOR_HWCAPS_PP_1_1_4	BIT(17)
--#define SNOR_HWCAPS_PP_1_4_4	BIT(18)
--#define SNOR_HWCAPS_PP_4_4_4	BIT(19)
--
--#define SNOR_HWCAPS_PP_OCTAL	GENMASK(22, 20)
--#define SNOR_HWCAPS_PP_1_1_8	BIT(20)
--#define SNOR_HWCAPS_PP_1_8_8	BIT(21)
--#define SNOR_HWCAPS_PP_8_8_8	BIT(22)
--
--#define SNOR_HWCAPS_X_X_X	(SNOR_HWCAPS_READ_2_2_2 |	\
--				 SNOR_HWCAPS_READ_4_4_4 |	\
--				 SNOR_HWCAPS_READ_8_8_8 |	\
--				 SNOR_HWCAPS_PP_4_4_4 |		\
--				 SNOR_HWCAPS_PP_8_8_8)
--
--#define SNOR_HWCAPS_DTR		(SNOR_HWCAPS_READ_1_1_1_DTR |	\
--				 SNOR_HWCAPS_READ_1_2_2_DTR |	\
--				 SNOR_HWCAPS_READ_1_4_4_DTR |	\
--				 SNOR_HWCAPS_READ_1_8_8_DTR)
--
--#define SNOR_HWCAPS_ALL		(SNOR_HWCAPS_READ_MASK |	\
--				 SNOR_HWCAPS_PP_MASK)
--
--/**
-  * spi_nor_scan() - scan the SPI NOR
-  * @nor:	the spi_nor structure
-  * @name:	the chip type name
+ 	/* Set SPI NOR sizes. */
+ 	params->size = (u64)info->sector_size * info->n_sectors;
+ 	params->page_size = info->page_size;
+@@ -4255,7 +4249,6 @@ static int spi_nor_init_params(struct spi_nor *nor,
+ }
+ 
+ static int spi_nor_select_read(struct spi_nor *nor,
+-			       const struct spi_nor_flash_parameter *params,
+ 			       u32 shared_hwcaps)
+ {
+ 	int cmd, best_match = fls(shared_hwcaps & SNOR_HWCAPS_READ_MASK) - 1;
+@@ -4268,7 +4261,7 @@ static int spi_nor_select_read(struct spi_nor *nor,
+ 	if (cmd < 0)
+ 		return -EINVAL;
+ 
+-	read = &params->reads[cmd];
++	read = &nor->params.reads[cmd];
+ 	nor->read_opcode = read->opcode;
+ 	nor->read_proto = read->proto;
+ 
+@@ -4287,7 +4280,6 @@ static int spi_nor_select_read(struct spi_nor *nor,
+ }
+ 
+ static int spi_nor_select_pp(struct spi_nor *nor,
+-			     const struct spi_nor_flash_parameter *params,
+ 			     u32 shared_hwcaps)
+ {
+ 	int cmd, best_match = fls(shared_hwcaps & SNOR_HWCAPS_PP_MASK) - 1;
+@@ -4300,7 +4292,7 @@ static int spi_nor_select_pp(struct spi_nor *nor,
+ 	if (cmd < 0)
+ 		return -EINVAL;
+ 
+-	pp = &params->page_programs[cmd];
++	pp = &nor->params.page_programs[cmd];
+ 	nor->program_opcode = pp->opcode;
+ 	nor->write_proto = pp->proto;
+ 	return 0;
+@@ -4407,9 +4399,9 @@ static int spi_nor_select_erase(struct spi_nor *nor, u32 wanted_size)
+ }
+ 
+ static int spi_nor_setup(struct spi_nor *nor,
+-			 const struct spi_nor_flash_parameter *params,
+ 			 const struct spi_nor_hwcaps *hwcaps)
+ {
++	struct spi_nor_flash_parameter *params = &nor->params;
+ 	u32 ignored_mask, shared_mask;
+ 	bool enable_quad_io;
+ 	int err;
+@@ -4426,7 +4418,7 @@ static int spi_nor_setup(struct spi_nor *nor,
+ 		 * need to discard some of them based on what the SPI
+ 		 * controller actually supports (using spi_mem_supports_op()).
+ 		 */
+-		spi_nor_spimem_adjust_hwcaps(nor, params, &shared_mask);
++		spi_nor_spimem_adjust_hwcaps(nor, &shared_mask);
+ 	} else {
+ 		/*
+ 		 * SPI n-n-n protocols are not supported when the SPI
+@@ -4442,7 +4434,7 @@ static int spi_nor_setup(struct spi_nor *nor,
+ 	}
+ 
+ 	/* Select the (Fast) Read command. */
+-	err = spi_nor_select_read(nor, params, shared_mask);
++	err = spi_nor_select_read(nor, shared_mask);
+ 	if (err) {
+ 		dev_err(nor->dev,
+ 			"can't select read settings supported by both the SPI controller and memory.\n");
+@@ -4450,7 +4442,7 @@ static int spi_nor_setup(struct spi_nor *nor,
+ 	}
+ 
+ 	/* Select the Page Program command. */
+-	err = spi_nor_select_pp(nor, params, shared_mask);
++	err = spi_nor_select_pp(nor, shared_mask);
+ 	if (err) {
+ 		dev_err(nor->dev,
+ 			"can't select write settings supported by both the SPI controller and memory.\n");
+@@ -4553,11 +4545,11 @@ static const struct flash_info *spi_nor_match_id(const char *name)
+ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 		 const struct spi_nor_hwcaps *hwcaps)
+ {
+-	struct spi_nor_flash_parameter params;
+ 	const struct flash_info *info = NULL;
+ 	struct device *dev = nor->dev;
+ 	struct mtd_info *mtd = &nor->mtd;
+ 	struct device_node *np = spi_nor_get_flash_node(nor);
++	struct spi_nor_flash_parameter *params = &nor->params;
+ 	int ret;
+ 	int i;
+ 
+@@ -4639,7 +4631,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 		nor->clear_sr_bp = spi_nor_clear_sr_bp;
+ 
+ 	/* Parse the Serial Flash Discoverable Parameters table. */
+-	ret = spi_nor_init_params(nor, &params);
++	ret = spi_nor_init_params(nor);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -4649,7 +4641,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 	mtd->type = MTD_NORFLASH;
+ 	mtd->writesize = 1;
+ 	mtd->flags = MTD_CAP_NORFLASH;
+-	mtd->size = params.size;
++	mtd->size = params->size;
+ 	mtd->_erase = spi_nor_erase;
+ 	mtd->_read = spi_nor_read;
+ 	mtd->_resume = spi_nor_resume;
+@@ -4688,18 +4680,18 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 		mtd->flags |= MTD_NO_ERASE;
+ 
+ 	mtd->dev.parent = dev;
+-	nor->page_size = params.page_size;
++	nor->page_size = params->page_size;
+ 	mtd->writebufsize = nor->page_size;
+ 
+ 	if (np) {
+ 		/* If we were instantiated by DT, use it */
+ 		if (of_property_read_bool(np, "m25p,fast-read"))
+-			params.hwcaps.mask |= SNOR_HWCAPS_READ_FAST;
++			params->hwcaps.mask |= SNOR_HWCAPS_READ_FAST;
+ 		else
+-			params.hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
++			params->hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
+ 	} else {
+ 		/* If we weren't instantiated by DT, default to fast-read */
+-		params.hwcaps.mask |= SNOR_HWCAPS_READ_FAST;
++		params->hwcaps.mask |= SNOR_HWCAPS_READ_FAST;
+ 	}
+ 
+ 	if (of_property_read_bool(np, "broken-flash-reset"))
+@@ -4707,7 +4699,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 
+ 	/* Some devices cannot do fast-read, no matter what DT tells us */
+ 	if (info->flags & SPI_NOR_NO_FR)
+-		params.hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
++		params->hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
+ 
+ 	/*
+ 	 * Configure the SPI memory:
+@@ -4716,7 +4708,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 	 * - set the SPI protocols for register and memory accesses.
+ 	 * - set the Quad Enable bit if needed (required by SPI x-y-4 protos).
+ 	 */
+-	ret = spi_nor_setup(nor, &params, hwcaps);
++	ret = spi_nor_setup(nor, hwcaps);
+ 	if (ret)
+ 		return ret;
+ 
 -- 
 2.9.5
 
