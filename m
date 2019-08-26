@@ -2,63 +2,62 @@ Return-Path: <SRS0=O+vu=WW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE517C3A59F
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2019 12:49:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA2A0C3A59F
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2019 12:59:49 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A446E21848
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2019 12:49:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C23C521852
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2019 12:59:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TEZ6nNzf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A446E21848
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gw+NaYE8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C23C521852
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=J5ONMOr5n6rvEMXM/bsH7T5m+//41zOiDdTNfxcVp1c=; b=TEZ6nNzfMjlkZT
-	n/AZipzkMfkZ4q+h/3fW5TuVXB+yuJKhyXE6vwlCVSMc6M64teGy2ScWyZLBPKgY44Y4bMc5fFqDZ
-	VFL5cvc17rklzck8LVn47guOSQfZO+CzAZHO1XopbB23HR3+H8rmy3xthQEjYjb7bZK4z27Gp9/wd
-	GHuw44P53focWliixZMg+TMvU8CBLlp+fV86u3rjxDLsvp9Dneo+jNdhIocH3V0uja7ozLfuH2UDH
-	gt9zNAIhmXGocIxPa/YYUyDbQlufiLWh+qE+zqZQUXg/wHIRLA8JmTji7gP1kKiV3HmPkq4yC7IKr
-	l24b54KwWLJ+56JUSZ1w==;
+	List-Owner; bh=x5+WsMRIqcdLZ5dS/4sqIAd4bPtgq38PNnjrKJjyL7U=; b=gw+NaYE8cmsVDd
+	EeHsA1NJ//rzrPZJopc+WW7lPPcL7Ih9EDZJ1ChTJJ2w2HD6aE7MLFpDiJlCcOXvY9kNTpvs9vNRZ
+	VLFxnIEQXt3LY4Fjl8RHfvz87m48ZfuLhwbN1Dxx4E0OYzzJUJ4sh+s6VFkng4kiidn3CdlXQVEkO
+	dvrT2W1qeUr2tzfSgepqWrsQHAwtA59LRabXRHm3swnYcdIw5ICU3G+nEAfx30JzRFwpgHQlQ8NAd
+	k/R+/0d3BfaAWL/YwqTJpsciKrOFs1ldksxS/y5XUalq00cYPRfrrNTePt7vg5IYIwPHYcR3apRO0
+	juNS86UxrdvEOB8JvS0g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i2ER6-00070s-Rd; Mon, 26 Aug 2019 12:49:28 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1i2Eao-0007RF-Ls; Mon, 26 Aug 2019 12:59:30 +0000
+Received: from relay10.mail.gandi.net ([217.70.178.230])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i2ER3-0006xz-OA
- for linux-mtd@lists.infradead.org; Mon, 26 Aug 2019 12:49:27 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 6BD6A28A1B7;
- Mon, 26 Aug 2019 13:49:24 +0100 (BST)
-Date: Mon, 26 Aug 2019 14:49:21 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: <Tudor.Ambarus@microchip.com>
-Subject: Re: [RESEND RFC PATCH v3 20/20] mtd: spi-nor: Rework the disabling
- of block write protection
-Message-ID: <20190826144921.70ee27c5@collabora.com>
-In-Reply-To: <20190826120821.16351-21-tudor.ambarus@microchip.com>
-References: <20190826120821.16351-1-tudor.ambarus@microchip.com>
- <20190826120821.16351-21-tudor.ambarus@microchip.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1i2Eai-0007Fn-Ru
+ for linux-mtd@lists.infradead.org; Mon, 26 Aug 2019 12:59:26 +0000
+Received: from localhost.localdomain (lfbn-1-17395-211.w86-250.abo.wanadoo.fr
+ [86.250.200.211]) (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay10.mail.gandi.net (Postfix) with ESMTPSA id BB461240007;
+ Mon, 26 Aug 2019 12:59:15 +0000 (UTC)
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Arnd Bergmann <arnd@arndb.de>,
+	soc@kernel.org
+Subject: Re: [PATCH 12/16] mtd: rawnand: remove w90x900 driver
+Date: Mon, 26 Aug 2019 14:58:37 +0200
+Message-Id: <20190826125837.14858-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190809202749.742267-13-arnd@arndb.de>
+References: 
 MIME-Version: 1.0
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: 419a7a1f167176d60d036d8002b6e3661fde9707
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190826_054925_922222_75B8F3AE 
-X-CRM114-Status: GOOD (  17.76  )
+X-CRM114-CacheID: sfid-20190826_055925_099460_B27594B8 
+X-CRM114-Status: UNSURE (   7.21  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,63 +69,25 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vigneshr@ti.com, richard@nod.at, linux-kernel@vger.kernel.org,
- marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
- miquel.raynal@bootlin.com
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 26 Aug 2019 12:09:09 +0000
-<Tudor.Ambarus@microchip.com> wrote:
+On Fri, 2019-08-09 at 20:27:40 UTC, Arnd Bergmann wrote:
+> The ARM w90x900 platform is getting removed, so this driver is obsolete.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 
-> From: Tudor Ambarus <tudor.ambarus@microchip.com>
-> 
-> spi_nor_unlock() unlocks blocks of memory or the entire flash memory
-> array, if requested. clear_sr_bp() unlocks the entire flash memory
-> array at boot time. This calls for some unification, clear_sr_bp() is
-> just an optimization for the case when the unlock request covers the
-> entire flash size.
-> 
-> Merge the clear_sr_bp() and stm_lock/unlock logic and introduce
-> spi_nor_unlock_all(), which makes an unlock request that covers the
-> entire flash size.
-> 
-> Get rid of the MFR handling and implement specific manufacturer
-> default_init() fixup hooks.
-> 
-> Move write_sr_cr() to avoid to add a forward declaration. Prefix
-> new function with 'spi_nor_'.
-> 
-> Note that this changes a bit the logic for the SNOR_MFR_ATMEL and
-> SNOR_MFR_INTEL cases. Before this patch, the Atmel and Intel chips
-> did not set the locking ops, but unlocked the entire flash at boot
-> time, while now they are setting the locking ops to stm_locking_ops.
-> This should work, since the the disable of the block protection at the
-> boot time used the same Status Register bits to unlock the flash, as
-> in the stm_locking_ops case.
-> 
-> In future, we should probably add new hooks to
-> 'struct spi_nor_flash_parameter' to describe how to interact with the
-> Status and Configuration Registers in the form of:
-> 	nor->params.ops->read_sr
-> 	nor->params.ops->write_sr
-> 	nor->params.ops->read_cr
-> 	nor->params.ops->write_sr
-> We can retrieve this info starting with JESD216 revB, by checking the
-> 15th DWORD of Basic Flash Parameter Table, or with later revisions of
-> the standard, by parsing the "Status, Control and Configuration Register
-> Map for SPI Memory Devices".
-> 
-> Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-
-Though I'd recommend waiting a bit before applying that one. As
-discussed privately, we might have problems when ->quad_enable is set
-to spansion_read_cr_quad_enable or spansion_no_read_cr_quad_enable.
+Miquel
 
 ______________________________________________________
 Linux MTD discussion mailing list
