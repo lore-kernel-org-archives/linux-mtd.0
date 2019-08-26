@@ -2,82 +2,158 @@ Return-Path: <SRS0=O+vu=WW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5102C3A59E
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2019 09:50:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 467CBC3A5A4
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2019 11:59:07 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 82C682070B
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2019 09:50:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1887C2187F
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2019 11:59:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="A1J2roDp";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ov4DmxlB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 82C682070B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dj0KRlTa";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="XnGi4Lma"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1887C2187F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Lp42hcI8iW8M/JO/h1Q/2m7sUneyJosKq4q3HzCIe3I=; b=A1J2roDp/l+rPD
-	PcWtcmEWDj0TA1Yk/DrrD3N6DLIelLOO3Xuh1p7C24rGB8OmHOJSfMD6sL2EPfydcY+8AN0zoVd7H
-	ctBFUkN9zVWA6nBYFGbnVqxUcsyPQ5dlaRL7i3ShdLpBPsMwrigO3ho/I0I2mz7t6NYor2pTOUAx6
-	BUf4vqpW3qv4x++KzqX3asILqoOC845urIgkwWcTnYbJMODlopyo8cdASdmkOqCijbxdWyKzg9nJP
-	/l0MUK/oZRAF24pgKqV2jCrpQzgUkTziAneTry2Ih9H29r3GXbueG7AB8eovE7BtRzgFbv5BhnkSZ
-	JIvt4n3TCFMbpIXgZxKA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=JGfUVCXGdhr0HfFA9jC8OntGd1LkGlNZDZob99zqfFI=; b=dj0KRlTaVvjqK+
+	xrypEsvTaSBZH8rIK0rSfmFBJ7BL81NNXouoAJOnES9hCs5G7HCuKXx/q+wmLABJ46ARvINDWX4km
+	d51FJzdU6d/dhB/VIrh1H4nCWtQ0u+PhNJagY66qUZkZqUkDpFUy5KwN8nPgmQIwZTbueCR0r8KAU
+	EAN1qB/EQFI51q8ZyBAf2cPNSu8FthEQQGUeTa6eu+xID9rTx8hwbcIPLszpBuFuH+8uu8X7064nj
+	4z43NRzj7zAa5X1g9wP3Y0g0lPVojOJAm/N2qVmqmBt3yXbjNu1+x8ZSsI9nzQbIcH0PSLeKkad1c
+	BCTdQyb9/ai4kh2xG+2g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i2BdO-0007FL-4H; Mon, 26 Aug 2019 09:49:58 +0000
-Received: from mail-wr1-x443.google.com ([2a00:1450:4864:20::443])
+	id 1i2De8-0002YZ-Vg; Mon, 26 Aug 2019 11:58:52 +0000
+Received: from esa5.microchip.iphmx.com ([216.71.150.166])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i2BdL-0007Co-5m; Mon, 26 Aug 2019 09:49:56 +0000
-Received: by mail-wr1-x443.google.com with SMTP id z1so14642426wru.13;
- Mon, 26 Aug 2019 02:49:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=dRJggX7YIR4Be7LdvQ6FETMjFuA1o4T1Bifqrd91O8w=;
- b=Ov4DmxlBukVF49VNclkW4aC22NS730ye9Gw42K0t0pO1pjDRc/khSQoDy5QnfTOdl8
- iI4NE/0Qi8tV1a1eKvj9YCPW976qk/a3ANHh4l/JQmqW7yzp83yQcM/XlGz7F3UeHjQn
- PKAy41MGB2eD8c7ypk2gevobgKIeZjE4JjkE8A6DUn2Saxo+96+Cf9DmEJGe88/i1G3+
- 5AitmlfO36eb+lKmNxhmfkMKSza61HD63veVI6bygNNbm3H++f/poHu+hl2Zm05XeKAK
- WRnUEsgzgwzIEazTHZWFXV5m1C5oGncvj1j20IQ5pADEgohoAgFgA1jsIjmC0dchsLKz
- j6tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=dRJggX7YIR4Be7LdvQ6FETMjFuA1o4T1Bifqrd91O8w=;
- b=JoMPOnpB2P3u9HZ0xkOpAZ2nhoHInYNOSF1bv7vjnHJbsIUq9gwapt1L66/9A7SYNy
- TJSUvcSbV1XarH8pWkUCaOxRYG7Wiq5f6ECIwokgcoTK06P4raPk1Yxo8AZn+BaXW7Oa
- rSD3k3Dcyci9Jr5CdYYa/km73+4fcWNJldNcu+3y/v5PwWGxnDT5p95kLMXlNXkLLb9h
- BJQJES5kA0Kax4UIGjoaTiu+CgesEcXGMUNA5ieFGCanJ6Dq8XxpFuF+HMT9zz6QNf01
- oOlkK8i8DK9/cjLn8FP705mH7fY3dwxM+tF8VpOxGgUO01M1fjbtY4BF4s6GxWAYWuTT
- m9WQ==
-X-Gm-Message-State: APjAAAVEsPqCiiCyY3d2BgPM41jCcO5rjNSJgJRfMEzFurtWBfQo6zd6
- AaSwDz62OytKZ22KP0zNFn1N4ctP8ckAQoyHMyA=
-X-Google-Smtp-Source: APXvYqyP94sNCqmjuVfA73Ep3VyTRiU2sKL2YtThnnM2sGDiG0z+2syRZB4fLuTD+atX0WlgXOTl5YFu2TfY5IifZgE=
-X-Received: by 2002:adf:a2cd:: with SMTP id t13mr20003170wra.251.1566812993586; 
- Mon, 26 Aug 2019 02:49:53 -0700 (PDT)
+ id 1i2De2-0002Wm-6U
+ for linux-mtd@lists.infradead.org; Mon, 26 Aug 2019 11:58:49 +0000
+Received-SPF: Pass (esa5.microchip.iphmx.com: domain of
+ Tudor.Ambarus@microchip.com designates 198.175.253.82 as
+ permitted sender) identity=mailfrom;
+ client-ip=198.175.253.82; receiver=esa5.microchip.iphmx.com;
+ envelope-from="Tudor.Ambarus@microchip.com";
+ x-sender="Tudor.Ambarus@microchip.com";
+ x-conformance=spf_only; x-record-type="v=spf1";
+ x-record-text="v=spf1 mx a:ushub1.microchip.com
+ a:smtpout.microchip.com a:mx1.microchip.iphmx.com
+ a:mx2.microchip.iphmx.com include:servers.mcsv.net
+ include:mktomail.com include:spf.protection.outlook.com ~all"
+Received-SPF: None (esa5.microchip.iphmx.com: no sender
+ authenticity information available from domain of
+ postmaster@email.microchip.com) identity=helo;
+ client-ip=198.175.253.82; receiver=esa5.microchip.iphmx.com;
+ envelope-from="Tudor.Ambarus@microchip.com";
+ x-sender="postmaster@email.microchip.com"; x-conformance=spf_only
+Authentication-Results: esa5.microchip.iphmx.com;
+ spf=Pass smtp.mailfrom=Tudor.Ambarus@microchip.com;
+ spf=None smtp.helo=postmaster@email.microchip.com;
+ dkim=pass (signature verified) header.i=@microchiptechnology.onmicrosoft.com;
+ dmarc=pass (p=none dis=none) d=microchip.com
+IronPort-SDR: AB9yQUCCwCEOnN4FD3asV3BuOd6YknWKcEQl9w8vGF/BpL5w9i/BFItpk7Ia4K2d5L0hiHIv30
+ haljBobXy8KEyDLftw8M9CaqStlQuXLc8ik84xXOk3JxDurvGAhr5b/5cmGazoPfSfyjvVQY1H
+ e9bUImhZqelpY/9t2PPjHTMoRDPBuwRNZd4OEPCCYB3F5uHcdkVfDIXc8qkgBAz1EEvouUuj1d
+ hoK5359V1Lr6975bjMl7rwQKO6QGX/SU+Udcef+ZIqdgalFumCMTJ6v4MRhwRdpEKEiHKi+42v
+ mCQ=
+X-IronPort-AV: E=Sophos;i="5.64,433,1559545200"; d="scan'208";a="44987613"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 26 Aug 2019 04:58:43 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 26 Aug 2019 04:58:43 -0700
+Received: from NAM01-SN1-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.71) with Microsoft SMTP Server
+ (version=TLS1_2, 
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5 via Frontend
+ Transport; Mon, 26 Aug 2019 04:58:42 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mN7SwaCQLgOWM+LB0s3omdi26MwDaBkKmdtQpg8/gGPNkYouaXYuH+Lu0ptML6f+ynt5Z7n+KOxgKJBUZO/vpSNBG+ISfjXb4ZGm4JhstbAIVKxWJnHPVXCEdfS2ZamWb3wynnlEMPFEAeC8lS2sOwuKd5f0JH7LUZxVlDtknNju/IGrYG83crXVCENFhOLuQRNYcIa98wXFtGufXHGW2FPTE4qZJ9uwixNkaIl/p/1pjX0LlevNwjE4u3fIPbSLvJWsbVqSLbXGWRJtCwGvhz3MhJjZgGlZ4fE3MYUlBDOIjfV1jlRjNm1iq3NRXIXBylSwk/SEaThCwZUds8chCg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qh5gELZGDZjGE3vCLY8uS2usuq0UtlUlwYFVIFVD7NE=;
+ b=Id5mNYi2yWAozxaeQ4OE0ZzpqZWrP1k1MoIch325E2HSXu2CLNLfI6HpggXUb4VcIZRnegBuBOWzmsuMIsAX7dI1LB05l2XbsOhRaGVb+O8LRETAZvY19++3vnLxYhZMzXju0jFxy1SwK+P7JLtGtNEFh4MJRQNKhtMdKPmrc8N7Jzpu8ZdU2JdXW6mpd0OuQWWNO/096e5ScPyYt88IDac4+dEs0shPQqEpz/izA9Xo+qmaSdCF0O9qFycn8bDkka0XM0Sys8mpEcYGXXm6Fd4lK3L3cDFAsee+68gYAXmvV5faonbvrpbDytUeSFikxGBJ4qMCWA1v9v3DNRvUKg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qh5gELZGDZjGE3vCLY8uS2usuq0UtlUlwYFVIFVD7NE=;
+ b=XnGi4LmasVEKJb82HU/g+yZmrSauiS0O/rzTD2lfVttAniBKg2eYJlTa3pyMCvDwrEAkNe8P/xv3OWIym693BGLytlr68AzOl1VCnTTRQS5+ox0Ikwh15bdN39NHipuPs0SVcZe5GtJRQz0s66hdFaewfqRzWq1SjKC9myU3uvQ=
+Received: from MN2PR11MB4448.namprd11.prod.outlook.com (52.135.39.157) by
+ MN2PR11MB4350.namprd11.prod.outlook.com (52.135.39.22) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2199.21; Mon, 26 Aug 2019 11:58:42 +0000
+Received: from MN2PR11MB4448.namprd11.prod.outlook.com
+ ([fe80::70c3:e929:4da2:60a5]) by MN2PR11MB4448.namprd11.prod.outlook.com
+ ([fe80::70c3:e929:4da2:60a5%7]) with mapi id 15.20.2199.021; Mon, 26 Aug 2019
+ 11:58:41 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <boris.brezillon@collabora.com>, <marek.vasut@gmail.com>,
+ <vigneshr@ti.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 00/20] mtd: spi-nor: move manuf out of the core
+Thread-Topic: [PATCH v3 00/20] mtd: spi-nor: move manuf out of the core
+Thread-Index: AQHVXAWaaFubNaAlfEiKmjbmMwLXNg==
+Date: Mon, 26 Aug 2019 11:58:41 +0000
+Message-ID: <20190826115833.14913-1-tudor.ambarus@microchip.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: VI1PR09CA0095.eurprd09.prod.outlook.com
+ (2603:10a6:803:78::18) To MN2PR11MB4448.namprd11.prod.outlook.com
+ (2603:10b6:208:193::29)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-mailer: git-send-email 2.9.5
+x-originating-ip: [94.177.32.156]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d64672a0-451a-4df0-d372-08d72a1cbd18
+x-microsoft-antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(2017052603328)(7193020);
+ SRVR:MN2PR11MB4350; 
+x-ms-traffictypediagnostic: MN2PR11MB4350:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR11MB43502F747242F97CC0E6FC77F0A10@MN2PR11MB4350.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 01415BB535
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(136003)(346002)(396003)(376002)(366004)(39860400002)(189003)(199004)(386003)(66476007)(6506007)(66556008)(64756008)(81156014)(66446008)(66946007)(14444005)(256004)(8676002)(81166006)(71200400001)(71190400001)(25786009)(6512007)(1076003)(6436002)(8936002)(107886003)(53936002)(36756003)(6486002)(5660300002)(4326008)(50226002)(486006)(86362001)(66066001)(2616005)(476003)(305945005)(3846002)(186003)(52116002)(99286004)(6116002)(478600001)(2501003)(7736002)(14454004)(2906002)(110136005)(2201001)(316002)(26005)(102836004);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:MN2PR11MB4350;
+ H:MN2PR11MB4448.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; MX:1; A:1; 
+received-spf: None (protection.outlook.com: microchip.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: OFb1sTiO/JbV/v9enPERMqzfRIcmO9dUlHpQDpXyeP4JCAOddVeDcQU5Axzfgz0D6I/Dpf5mKuJ46JaUPnPdR6pK4OXxkve7hJAwoLzpjhqdZWGhGRW8AdXeqmoMVZNppJ5+90L1/uXyaRsHmCWvLWp6JSrGXDaWJpatZazhFCvygRe20/qJn4FlLL3KHO8PcQ8CSyv5L9B0ERwf59H6Zjz6nkZL5rSG9g7hWKMqMguVcCj0TB05Y9mq0Lo8GURNT3ieBKdH2jO/7L6SXHK4XBX61IFzeeq84iYrUT/kcBXJZrLAGC3lFgJmyFDwLe8g2xtQ3vO4HXv1OlynJAsZXHenVVnecRZn99x7FOh9SlkfIH/IqzRad0soVszOvG05PDsc0bf/xbr9J1prSFBUUJNbVW6AytEA6j+A32jmUtU=
 MIME-Version: 1.0
-References: <1565699895-4770-1-git-send-email-sagar.kadam@sifive.com>
- <1565699895-4770-2-git-send-email-sagar.kadam@sifive.com>
-In-Reply-To: <1565699895-4770-2-git-send-email-sagar.kadam@sifive.com>
-From: Bin Meng <bmeng.cn@gmail.com>
-Date: Mon, 26 Aug 2019 17:49:42 +0800
-Message-ID: <CAEUhbmU6xHjUWK3iM_RqURHGuqgmSxQw6RtWthT4+2aL1xLDcA@mail.gmail.com>
-Subject: Re: [PATCH v8 1/4] mtd: spi-nor: add support for is25wp256
-To: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
+X-MS-Exchange-CrossTenant-Network-Message-Id: d64672a0-451a-4df0-d372-08d72a1cbd18
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Aug 2019 11:58:41.8334 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Zdk3PzZJXeiXgJwvGOH5K6q8T/3WcAfiMz3W7uEyrmpl9Sqen2A01wDg61Mp2C7/7RAozgEx4e4zpHnbtkqPHMjnbnAtufHUmMw9DsjaxBI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4350
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190826_024955_220665_14516323 
-X-CRM114-Status: GOOD (  16.14  )
+X-CRM114-CacheID: sfid-20190826_045846_494762_28E51A32 
+X-CRM114-Status: UNSURE (   8.65  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,86 +165,102 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Albert Ou <aou@eecs.berkeley.edu>, Vignesh R <vigneshr@ti.com>,
- tudor.ambarus@microchip.com, Richard Weinberger <richard@nod.at>,
- Palmer Dabbelt <palmer@sifive.com>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd <linux-mtd@lists.infradead.org>,
- Paul Walmsley <paul.walmsley@sifive.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-riscv <linux-riscv@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: Tudor.Ambarus@microchip.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Aug 13, 2019 at 8:40 PM Sagar Shrikant Kadam
-<sagar.kadam@sifive.com> wrote:
->
-> Update spi_nor_id table for is25wp256 (32MB) device from ISSI,
-> present on HiFive Unleashed dev board (Rev: A00).
->
-> Set method to enable quad mode for ISSI device in flash parameters
-> table.
->
-> Based on code originally written by Wesley Terpstra <wesley@sifive.com>
-> and/or Palmer Dabbelt <palmer@sifive.com>
-> https://github.com/riscv/riscv-linux/commit/c94e267766d62bc9a669611c3d0c8ed5ea26569b
->
-> Signed-off-by: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
-> Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 9 ++++++++-
->  include/linux/mtd/spi-nor.h   | 1 +
->  2 files changed, 9 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 03cc788..6635127 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -1946,7 +1946,10 @@ static int spi_nor_spansion_clear_sr_bp(struct spi_nor *nor)
->                         SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->         { "is25wp128",  INFO(0x9d7018, 0, 64 * 1024, 256,
->                         SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> -
-> +       { "is25wp256", INFO(0x9d7019, 0, 64 * 1024, 1024,
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-The sector number should be 512, not 1024.
+v3:
+- Drop patches:
+  "mtd: spi-nor: Move clear_sr_bp() to 'struct spi_nor_flash_parameter'"
+  "mtd: spi-nor: Rework the disabling of block write protection"
+and replace them with the RFC patch:
+  "mtd: spi-nor: Rework the disabling of block write protection"
+- rename spi_nor_legacy_init_params() to spi_nor_info_init_params()
+- rebase patches and send them all in a single patch set.
 
-> +                       SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-> +                       SPI_NOR_4B_OPCODES)
-> +       },
->         /* Macronix */
->         { "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
->         { "mx25l2005a",  INFO(0xc22012, 0, 64 * 1024,   4, SECT_4K) },
-> @@ -3776,6 +3779,10 @@ static int spi_nor_init_params(struct spi_nor *nor,
->                 case SNOR_MFR_ST:
->                 case SNOR_MFR_MICRON:
->                         break;
-> +               case SNOR_MFR_ISSI:
-> +                       params->quad_enable = macronix_quad_enable;
-> +                       break;
-> +
->
->                 default:
->                         /* Kept only for backward compatibility purpose. */
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index 9f57cdf..5d6583e 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -21,6 +21,7 @@
->  #define SNOR_MFR_INTEL         CFI_MFR_INTEL
->  #define SNOR_MFR_ST            CFI_MFR_ST      /* ST Micro */
->  #define SNOR_MFR_MICRON                CFI_MFR_MICRON  /* Micron */
-> +#define SNOR_MFR_ISSI          0x9d            /* ISSI */
->  #define SNOR_MFR_MACRONIX      CFI_MFR_MACRONIX
->  #define SNOR_MFR_SPANSION      CFI_MFR_AMD
->  #define SNOR_MFR_SST           CFI_MFR_SST
+v2:
+- addressed all the comments
+- all flash parameters and settings are now set in 'struct
+  spi_nor_flash_parameter', for a clearer separation between the SPI NOR
+  layer and the flash params.
 
-Regards,
-Bin
+The scope of the "mtd: spi-nor: move manuf out of the core" batches,
+is to move all manufacturer specific code out of the spi-nor core.
+
+In the quest of removing the manufacturer specific code from the spi-nor
+core, we want to impose a timeline/priority on how the flash parameters
+are updated. As of now. the flash parameters initialization logic is as
+following:
+
+    a/ default flash parameters init in spi_nor_init_params()
+    b/ manufacturer specific flash parameters updates, split across entire
+       spi-nor core code
+    c/ flash parameters updates based on SFDP tables
+    d/ post BFPT flash parameter updates
+
+With the "mtd: spi-nor: move manuf out of the core" batches, we want to
+impose the following sequence of calls:
+
+    1/ spi-nor core legacy flash parameters init:
+            spi_nor_default_init_params()
+
+    2/ MFR-based manufacturer flash parameters init:
+            nor->manufacturer->fixups->default_init()
+
+    3/ specific flash_info tweeks done when decisions can not be done just
+       on MFR:
+            nor->info->fixups->default_init()
+
+    4/ SFDP tables flash parameters init - SFDP knows better:
+            spi_nor_sfdp_init_params()
+
+    5/ post SFDP tables flash parameters updates - in case manufacturers
+       get the serial flash tables wrong or incomplete.
+            nor->info->fixups->post_sfdp()
+       The later can be extended to nor->manufacturer->fixups->post_sfdp()
+       if needed.
+
+Setting of flash parameters will no longer be spread interleaved across
+the spi-nor core, there will be a clear separation on who and when will
+update the flash parameters.
+
+Tested on sst26vf064b with atmel-quadspi SPIMEM driver.
+
+Boris Brezillon (7):
+  mtd: spi-nor: Add a default_init() fixup hook for gd25q256
+  mtd: spi-nor: Create a ->set_4byte() method
+  mtd: spi-nor: Rework the SPI NOR lock/unlock logic
+  mtd: spi-nor: Add post_sfdp() hook to tweak flash config
+  mtd: spi-nor: Add spansion_post_sfdp_fixups()
+  mtd: spi-nor: Add a ->convert_addr() method
+  mtd: spi-nor: Add the SPI_NOR_XSR_RDY flag
+
+Tudor Ambarus (13):
+  mtd: spi-nor: Regroup flash parameter and settings
+  mtd: spi-nor: Use nor->params
+  mtd: spi-nor: Drop quad_enable() from 'struct spi-nor'
+  mtd: spi-nor: Move erase_map to 'struct spi_nor_flash_parameter'
+  mtd: spi-nor: Add default_init() hook to tweak flash parameters
+  mtd: spi_nor: Move manufacturer quad_enable() in ->default_init()
+  mtd: spi-nor: Split spi_nor_init_params()
+  mtd: spi_nor: Add a ->setup() method
+  mtd: spi-nor: Add s3an_post_sfdp_fixups()
+  mtd: spi-nor: Bring flash params init together
+  mtd: spi_nor: Introduce spi_nor_set_addr_width()
+  mtd: spi-nor: Introduce spi_nor_get_flash_info()
+  mtd: spi-nor: Rework the disabling of block write protection
+
+ drivers/mtd/spi-nor/spi-nor.c | 1304 +++++++++++++++++++++++------------------
+ include/linux/mtd/spi-nor.h   |  298 +++++++---
+ 2 files changed, 927 insertions(+), 675 deletions(-)
+
+-- 
+2.9.5
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
