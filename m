@@ -2,87 +2,88 @@ Return-Path: <SRS0=gOwn=WX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 374B3C3A5A4
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Aug 2019 07:09:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 342BCC3A5A6
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Aug 2019 07:13:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 07A2420828
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Aug 2019 07:09:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0A484205C9
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Aug 2019 07:13:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cPcmvywo";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="U5DGvw3D"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 07A2420828
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CBQHohE+";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="B7HB8HTB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A484205C9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NvE4xahCsG9cA2Y3ogGUOQRvdC5dgcSyCMISGD62Uxk=; b=cPcmvywoJ2EY2E
-	lpSldzhD2ogO+MXANz5PRbNAl49l8tcumQFpW2lNBJ20jMf+8PkVpayADbVU9TyFe9z7O17FcF3pk
-	X5WuzIJIPzvD4CG3MIj2ByeN7ForMMOCmVrcMeIp4/efr7F7P7IuI8yE7PvRPiK546TFhyb2kmEz+
-	sQlHYhgNwY0chfWtb+1kR/byhwvMaI6L2MXxV57+YG+34bR1bNACKv8CxMBET3ba0LzZuM6YlqS6r
-	I9/KdC5lj+uVejwc+RBr01eD91AjExFoNU2AI6qs9yrjsAkf+25s6IH90sYqqIKJcMMUXRvUTULJh
-	FFWHTqiYGb0kR5po9x0A==;
+	Message-ID:From:References:To:Subject:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=z975NCnEtlRdyAG2RE9s2NgINalltk1b9pJux9QxVxY=; b=CBQHohE+z50Qwc3XiUIEjxftBN
+	Pgh0aF3A75DGFB97HtUVakTysl7RV5xE5zqzxbc10Ml4BKRQAjBNAmUBuWyoAXAq7OP0+KzjQp1Yy
+	JzVTvkubtdyWFeZ32RR6NVdUi607y5hpbdXB27zNUn2qMlwQD1CLGfrA2iRNRvSwoopDCILXS/0R0
+	CFTfKAs6WaY1EQ2y87ySnllxOEdot5puAMzyzAjlEIcVAdrqQaB9JBHJamvxLF+9Y6Zb11lkpu+2Z
+	0SEbgNS8t0Bbk3plflUVMwqBO+xZHm9W8V0gWEuOxT4Cd0XfSksae9K6KDJocOmdRehxvg40m4jyC
+	jueGb6Sg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i2Vbk-0000PX-6W; Tue, 27 Aug 2019 07:09:36 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1i2VfC-0002ND-5F; Tue, 27 Aug 2019 07:13:10 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i2Vbh-0000PC-Dp
- for linux-mtd@lists.infradead.org; Tue, 27 Aug 2019 07:09:35 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id x7R79STM106917;
- Tue, 27 Aug 2019 02:09:28 -0500
+ id 1i2Vf9-0002Mh-5l
+ for linux-mtd@lists.infradead.org; Tue, 27 Aug 2019 07:13:08 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id x7R7D0kq131025;
+ Tue, 27 Aug 2019 02:13:00 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1566889768;
- bh=L4CsoR9kyF0hZV2P6fxDodIlymhCPt1+Z5sMGLgkq/I=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=U5DGvw3D/XfK5S+7Q7z2auIrJd34DRjTQm7jBm7cP56ljh5no0anoAyl/Av0I7XWg
- SoL6LqpZDjZ0HH7XlR5PnWDI2WhiPjarkEZk/SUHdbayMKLmidu0lN4KU2EzXLaxYM
- BHFmlKJtKr3kPKm4FD75BFZ7xHIRXTxjkiHXSsKg=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x7R79SY2094956
+ s=ti-com-17Q1; t=1566889980;
+ bh=Qz1caDsmTLrcgY1LRoE54Osz0mu6gtZdadLVqIgskSo=;
+ h=Subject:To:References:From:Date:In-Reply-To;
+ b=B7HB8HTBua5z0KnMw9zNx6j9kSItbx5sZCqo1X8Fwsr4UyxzDWxGv7NlFsrfSB1sb
+ Oqxxg1/AOu0yXCs6k6/nBJhhKjvf49y6kwp+Hkdim9aE9Nx6frza6vYjo86gzb+CDc
+ JMrgxOdPdE4WyUGowJy0+A49YLpo9auoD+pKRo8s=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x7R7D0O6007391
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 27 Aug 2019 02:09:28 -0500
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ Tue, 27 Aug 2019 02:13:00 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Tue, 27
- Aug 2019 02:09:28 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ Aug 2019 02:13:00 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
- Frontend Transport; Tue, 27 Aug 2019 02:09:28 -0500
+ Frontend Transport; Tue, 27 Aug 2019 02:13:00 -0500
 Received: from [172.24.145.136] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id x7R79OAV076726;
- Tue, 27 Aug 2019 02:09:25 -0500
-Subject: Re: [RESEND PATCH v3 12/20] mtd: spi-nor: Add
- spansion_post_sfdp_fixups()
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id x7R7Cu87034505;
+ Tue, 27 Aug 2019 02:12:57 -0500
+Subject: Re: [RESEND PATCH v3 13/20] mtd: spi-nor: Add a ->convert_addr()
+ method
 To: <Tudor.Ambarus@microchip.com>, <boris.brezillon@collabora.com>,
  <marek.vasut@gmail.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
 References: <20190826120821.16351-1-tudor.ambarus@microchip.com>
- <20190826120821.16351-13-tudor.ambarus@microchip.com>
+ <20190826120821.16351-14-tudor.ambarus@microchip.com>
 From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <8f10d895-f97e-934e-8dd4-be22839a7c77@ti.com>
-Date: Tue, 27 Aug 2019 12:40:02 +0530
+Message-ID: <b6db18f9-3eb9-6bd6-8a9a-3b7320c48739@ti.com>
+Date: Tue, 27 Aug 2019 12:43:34 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190826120821.16351-13-tudor.ambarus@microchip.com>
+In-Reply-To: <20190826120821.16351-14-tudor.ambarus@microchip.com>
 Content-Language: en-US
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190827_000933_554791_C51333A7 
-X-CRM114-Status: GOOD (  18.84  )
+X-CRM114-CacheID: sfid-20190827_001307_304577_7870EC87 
+X-CRM114-Status: GOOD (  24.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,7 +95,6 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: boris.brezillon@bootlin.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
@@ -105,10 +105,16 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 On 26/08/19 5:38 PM, Tudor.Ambarus@microchip.com wrote:
 > From: Boris Brezillon <boris.brezillon@bootlin.com>
 > 
-> Add a spansion_post_sfdp_fixups() function to fix the erase opcode,
-> erase sector size and set the SNOR_F_4B_OPCODES flag.
-> This way, all spansion related quirks are placed in the
-> spansion_post_sfdp_fixups() function.
+> In order to separate manufacturer quirks from the core we need to get
+> rid of all the manufacturer specific flags, like the
+> SNOR_F_S3AN_ADDR_DEFAULT one.
+> 
+> This can easily be replaced by a ->convert_addr() hook, which when
+> implemented will provide the core with an easy way to convert an
+> absolute address into something the flash understands.
+> 
+> Right now the only user are the S3AN chips, but other manufacturers
+> can implement it if needed.
 > 
 > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
@@ -121,78 +127,123 @@ Vignesh
 
 > v3: no changes, rebase on previous commits
 > 
->  drivers/mtd/spi-nor/spi-nor.c | 37 +++++++++++++++++++++++--------------
->  1 file changed, 23 insertions(+), 14 deletions(-)
+>  drivers/mtd/spi-nor/spi-nor.c | 24 ++++++++++++++----------
+>  include/linux/mtd/spi-nor.h   | 17 ++++++++++-------
+>  2 files changed, 24 insertions(+), 17 deletions(-)
 > 
 > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index b8caf5171ff5..c862a59ce9df 100644
+> index c862a59ce9df..b96a7066a36c 100644
 > --- a/drivers/mtd/spi-nor/spi-nor.c
 > +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -591,18 +591,6 @@ static u8 spi_nor_convert_3to4_erase(u8 opcode)
->  
->  static void spi_nor_set_4byte_opcodes(struct spi_nor *nor)
+> @@ -899,10 +899,9 @@ static void spi_nor_unlock_and_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
+>   * Addr can safely be unsigned int, the biggest S3AN device is smaller than
+>   * 4 MiB.
+>   */
+> -static loff_t spi_nor_s3an_addr_convert(struct spi_nor *nor, unsigned int addr)
+> +static u32 s3an_convert_addr(struct spi_nor *nor, u32 addr)
 >  {
-> -	/* Do some manufacturer fixups first */
-> -	switch (JEDEC_MFR(nor->info)) {
-> -	case SNOR_MFR_SPANSION:
-> -		/* No small sector erase for 4-byte command set */
-> -		nor->erase_opcode = SPINOR_OP_SE;
-> -		nor->mtd.erasesize = nor->info->sector_size;
-> -		break;
-> -
-> -	default:
-> -		break;
-> -	}
-> -
->  	nor->read_opcode = spi_nor_convert_3to4_read(nor->read_opcode);
->  	nor->program_opcode = spi_nor_convert_3to4_program(nor->program_opcode);
->  	nor->erase_opcode = spi_nor_convert_3to4_erase(nor->erase_opcode);
-> @@ -4304,6 +4292,19 @@ static void spi_nor_info_init_params(struct spi_nor *nor)
->  	spi_nor_init_uniform_erase_map(map, erase_mask, params->size);
+> -	unsigned int offset;
+> -	unsigned int page;
+> +	u32 offset, page;
+>  
+>  	offset = addr % nor->page_size;
+>  	page = addr / nor->page_size;
+> @@ -911,6 +910,14 @@ static loff_t spi_nor_s3an_addr_convert(struct spi_nor *nor, unsigned int addr)
+>  	return page | offset;
 >  }
 >  
-> +static void spansion_post_sfdp_fixups(struct spi_nor *nor)
+> +static u32 spi_nor_convert_addr(struct spi_nor *nor, loff_t addr)
 > +{
-> +	struct mtd_info *mtd = &nor->mtd;
+> +	if (!nor->params.convert_addr)
+> +		return addr;
 > +
-> +	if (mtd->size <= SZ_16M)
-> +		return;
-> +
-> +	nor->flags |= SNOR_F_4B_OPCODES;
-> +	/* No small sector erase for 4-byte command set */
-> +	nor->erase_opcode = SPINOR_OP_SE;
-> +	nor->mtd.erasesize = nor->info->sector_size;
+> +	return nor->params.convert_addr(nor, addr);
 > +}
 > +
->  /**
->   * spi_nor_post_sfdp_fixups() - Updates the flash's parameters and settings
->   * after SFDP has been parsed (is also called for SPI NORs that do not
-> @@ -4316,6 +4317,15 @@ static void spi_nor_info_init_params(struct spi_nor *nor)
+>  /*
+>   * Initiate the erasure of a single sector
 >   */
->  static void spi_nor_post_sfdp_fixups(struct spi_nor *nor)
+> @@ -918,8 +925,7 @@ static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
 >  {
-> +	switch (JEDEC_MFR(nor->info)) {
-> +	case SNOR_MFR_SPANSION:
-> +		spansion_post_sfdp_fixups(nor);
-> +		break;
-> +
-> +	default:
-> +		break;
-> +	}
-> +
->  	if (nor->info->fixups && nor->info->fixups->post_sfdp)
->  		nor->info->fixups->post_sfdp(nor);
->  }
-> @@ -4862,8 +4872,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
->  		nor->addr_width = 3;
+>  	int i;
+>  
+> -	if (nor->flags & SNOR_F_S3AN_ADDR_DEFAULT)
+> -		addr = spi_nor_s3an_addr_convert(nor, addr);
+> +	addr = spi_nor_convert_addr(nor, addr);
+>  
+>  	if (nor->erase)
+>  		return nor->erase(nor, addr);
+> @@ -2535,8 +2541,7 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
+>  	while (len) {
+>  		loff_t addr = from;
+>  
+> -		if (nor->flags & SNOR_F_S3AN_ADDR_DEFAULT)
+> -			addr = spi_nor_s3an_addr_convert(nor, addr);
+> +		addr = spi_nor_convert_addr(nor, addr);
+>  
+>  		ret = spi_nor_read_data(nor, addr, len, buf);
+>  		if (ret == 0) {
+> @@ -2680,8 +2685,7 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+>  		page_remain = min_t(size_t,
+>  				    nor->page_size - page_offset, len - i);
+>  
+> -		if (nor->flags & SNOR_F_S3AN_ADDR_DEFAULT)
+> -			addr = spi_nor_s3an_addr_convert(nor, addr);
+> +		addr = spi_nor_convert_addr(nor, addr);
+>  
+>  		write_enable(nor);
+>  		ret = spi_nor_write_data(nor, addr, page_remain, buf + i);
+> @@ -2748,7 +2752,7 @@ static int s3an_nor_scan(struct spi_nor *nor)
+>  		nor->mtd.erasesize = 8 * nor->page_size;
+>  	} else {
+>  		/* Flash in Default addressing mode */
+> -		nor->flags |= SNOR_F_S3AN_ADDR_DEFAULT;
+> +		nor->params.convert_addr = s3an_convert_addr;
 >  	}
 >  
-> -	if (info->flags & SPI_NOR_4B_OPCODES ||
-> -	    (JEDEC_MFR(info) == SNOR_MFR_SPANSION && mtd->size > SZ_16M))
-> +	if (info->flags & SPI_NOR_4B_OPCODES)
->  		nor->flags |= SNOR_F_4B_OPCODES;
+>  	return 0;
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index ea3bcac54dc2..35aad92a4ff8 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -237,13 +237,12 @@ enum spi_nor_option_flags {
+>  	SNOR_F_USE_FSR		= BIT(0),
+>  	SNOR_F_HAS_SR_TB	= BIT(1),
+>  	SNOR_F_NO_OP_CHIP_ERASE	= BIT(2),
+> -	SNOR_F_S3AN_ADDR_DEFAULT = BIT(3),
+> -	SNOR_F_READY_XSR_RDY	= BIT(4),
+> -	SNOR_F_USE_CLSR		= BIT(5),
+> -	SNOR_F_BROKEN_RESET	= BIT(6),
+> -	SNOR_F_4B_OPCODES	= BIT(7),
+> -	SNOR_F_HAS_4BAIT	= BIT(8),
+> -	SNOR_F_HAS_LOCK		= BIT(9),
+> +	SNOR_F_READY_XSR_RDY	= BIT(3),
+> +	SNOR_F_USE_CLSR		= BIT(4),
+> +	SNOR_F_BROKEN_RESET	= BIT(5),
+> +	SNOR_F_4B_OPCODES	= BIT(6),
+> +	SNOR_F_HAS_4BAIT	= BIT(7),
+> +	SNOR_F_HAS_LOCK		= BIT(8),
+>  };
 >  
->  	if (nor->addr_width == 4 && nor->flags & SNOR_F_4B_OPCODES &&
+>  /**
+> @@ -496,6 +495,9 @@ struct spi_nor_locking_ops {
+>   *                      Table.
+>   * @quad_enable:	enables SPI NOR quad mode.
+>   * @set_4byte:		puts the SPI NOR in 4 byte addressing mode.
+> + * @convert_addr:	converts an absolute address into something the flash
+> + *                      will understand. Particularly useful when pagesize is
+> + *                      not a power-of-2.
+>   * @locking_ops:	SPI NOR locking methods.
+>   */
+>  struct spi_nor_flash_parameter {
+> @@ -510,6 +512,7 @@ struct spi_nor_flash_parameter {
+>  
+>  	int (*quad_enable)(struct spi_nor *nor);
+>  	int (*set_4byte)(struct spi_nor *nor, bool enable);
+> +	u32 (*convert_addr)(struct spi_nor *nor, u32 addr);
+>  
+>  	const struct spi_nor_locking_ops *locking_ops;
+>  };
 > 
 
 -- 
