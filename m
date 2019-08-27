@@ -2,67 +2,127 @@ Return-Path: <SRS0=gOwn=WX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74515C3A5A3
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Aug 2019 15:50:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 616BCC3A5A4
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Aug 2019 17:06:50 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4999B214DA
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Aug 2019 15:50:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3833B2173E
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Aug 2019 17:06:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TGvfqFQB";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="L2rOWfFT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4999B214DA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Me74k6wi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3833B2173E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:Cc:Reply-To:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:
+	References:Message-ID:Subject:To:From:Date:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zXIkeNBGW07MuObnrYNYlfB2uLqoPoHOksdfpBs+bNs=; b=TGvfqFQBjtn7AK
-	BT011LmYq/pJViWv/srdKqtGJSUGyzCWp1Rnoh4v+Y7seBBUTiIjIFy1G8v7YPkemfvv2UEeM0BB5
-	mrmARNneFfzVckJybydH9ZOroOme7eXmz8sEGvnz8sPXK93RRZ3yfGQ5ujf+8PAQazTFSNB2+1xSn
-	LAI2s4cpSqBK9ph/vZt1Rk81oE/cILPHm2T/i2Y62WB4ZXN+nopeIIlcXEWXAbpJzu/AokFN+hbWA
-	TY9LzutIBJzgA6ZdZtbsoVgbE8CO+Hc7yldgsqE6/f5rscXws73jRyeME5PjJJXqQiarQPfuLMqId
-	4n0VLkdHdWhK8BLK9CAA==;
+	List-Owner; bh=CsJxza0bDlDHQlW2Q9e0pclHNqWmkksKL/DDo2VPJjk=; b=Me74k6wi1VVRcr
+	KwmWtRGZKYJGddL360BOaNytg9f7jjTVO0HmWwIur0bOLdhPIkMwROqhTQDZC7HWCY89Afm7Q9nhI
+	0uvrT5j9jRpt8pFte2JhNiH3j4uu2dIZOdcjJxGGvJcNpzIstCyDTHSUdg1F95uRNDI14ODfgFhbb
+	P0exYC54yhf0N864+nJLuFksz1j5P26YeWM/j20pbQ42xqnbXghG9SyA8VLjwIqmeu/O01rIh7PIb
+	h9UXq0GqQxMlTdCFqnivhVkpSWkxTGN9dwaViRzW8hWqVdLrzAESOByU08g2MlVZ1VZoLsCB2NEI6
+	Fm4ameb02hyQq6ZayjvA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i2djG-0002j9-Af; Tue, 27 Aug 2019 15:49:54 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1i2evh-0001s6-8p; Tue, 27 Aug 2019 17:06:49 +0000
+Received: from mx2.suse.de ([195.135.220.15] helo=mx1.suse.de)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i2djC-0002hv-Au; Tue, 27 Aug 2019 15:49:52 +0000
-Received: from tleilax.poochiereds.net
- (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 833FF2184D;
- Tue, 27 Aug 2019 15:49:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1566920989;
- bh=bbgW62YNwOw6nr0OoLy9qjvU2nnCXSu3OBPYD+Bupp4=;
- h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
- b=L2rOWfFTV9ZENo9sY6rTomCTkAVi6eVgtVnTG5LG9plQ1qzOy8kmqkEIkcKlJccsb
- 6oQCfNdLugesaJKgynlWsJQg7kb5LVkyYTK4cR8c58Kwfjmh9eQhwGZ7v/8NIZG3RI
- XOEmwVN1iC+LyMlqc3dSWBw7KJ+TXshlVw7j4UqM=
-Message-ID: <dfc0fea49dfc77cb7631abb76e1e64ed745d25dd.camel@kernel.org>
+ id 1i2evd-0001gn-Rh; Tue, 27 Aug 2019 17:06:47 +0000
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 6C032B03C;
+ Tue, 27 Aug 2019 17:06:41 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+ id D57F2DA809; Tue, 27 Aug 2019 19:07:00 +0200 (CEST)
+Date: Tue, 27 Aug 2019 19:07:00 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Mark Salyzyn <salyzyn@android.com>
 Subject: Re: [PATCH v8] Add flags option to get xattr method paired to
  __vfs_getxattr
-From: Jeff Layton <jlayton@kernel.org>
-To: Mark Salyzyn <salyzyn@android.com>, linux-kernel@vger.kernel.org
-Date: Tue, 27 Aug 2019 11:49:41 -0400
-In-Reply-To: <20190827150544.151031-1-salyzyn@android.com>
+Message-ID: <20190827170700.GW2752@suse.cz>
+Mail-Followup-To: dsterba@suse.cz, Mark Salyzyn <salyzyn@android.com>,
+ linux-kernel@vger.kernel.org, kernel-team@android.com,
+ Tyler Hicks <tyhicks@canonical.com>,
+ Dominique Martinet <asmadeus@codewreck.org>,
+ "David S. Miller" <davem@davemloft.net>,
+ Mathieu Malaterre <malat@debian.org>,
+ Andreas Dilger <adilger.kernel@dilger.ca>,
+ devel@driverdev.osuosl.org, Vyacheslav Dubeyko <slava@dubeyko.com>,
+ Joel Becker <jlbec@evilplan.org>, Mark Fasheh <mark@fasheh.com>,
+ Chris Mason <clm@fb.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Eric Van Hensbergen <ericvh@gmail.com>,
+ Ilya Dryomov <idryomov@gmail.com>,
+ Bharath Vedartham <linux.bhar@gmail.com>,
+ Eric Biggers <ebiggers@google.com>, Hugh Dickins <hughd@google.com>,
+ Jann Horn <jannh@google.com>, Serge Hallyn <serge@hallyn.com>,
+ Trond Myklebust <trond.myklebust@hammerspace.com>,
+ Gao Xiang <gaoxiang25@huawei.com>, Chao Yu <yuchao0@huawei.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Latchesar Ionkov <lucho@ionkov.net>,
+ Jaegeuk Kim <jaegeuk@kernel.org>, Jeff Layton <jlayton@kernel.org>,
+ Dave Kleikamp <shaggy@kernel.org>, Tejun Heo <tj@kernel.org>,
+ linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ Joseph Qi <joseph.qi@linux.alibaba.com>,
+ Mimi Zohar <zohar@linux.ibm.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-afs@lists.infradead.org, linux-mtd@lists.infradead.org,
+ devel@lists.orangefs.org, linux-erofs@lists.ozlabs.org,
+ samba-technical@lists.samba.org,
+ jfs-discussion@lists.sourceforge.net,
+ linux-f2fs-devel@lists.sourceforge.net,
+ v9fs-developer@lists.sourceforge.net,
+ Jonathan Corbet <corbet@lwn.net>, Theodore Ts'o <tytso@mit.edu>,
+ James Morris <jmorris@namei.org>,
+ Anna Schumaker <anna.schumaker@netapp.com>,
+ Richard Weinberger <richard@nod.at>,
+ Mike Marshall <hubcap@omnibond.com>,
+ Martin Brandenburg <martin@omnibond.com>,
+ Allison Henderson <allison.henderson@oracle.com>,
+ "Darrick J. Wong" <darrick.wong@oracle.com>,
+ ocfs2-devel@oss.oracle.com, Eric Paris <eparis@parisplace.org>,
+ Paul Moore <paul@paul-moore.com>,
+ Andreas Gruenbacher <agruenba@redhat.com>,
+ Benjamin Coddington <bcodding@redhat.com>,
+ "J. Bruce Fields" <bfields@redhat.com>,
+ Brian Foster <bfoster@redhat.com>, cluster-devel@redhat.com,
+ Dave Chinner <dchinner@redhat.com>,
+ David Howells <dhowells@redhat.com>,
+ Bob Peterson <rpeterso@redhat.com>, Sage Weil <sage@redhat.com>,
+ Steve French <sfrench@samba.org>,
+ Eric Sandeen <sandeen@sandeen.net>,
+ Casey Schaufler <casey@schaufler-ca.com>,
+ Phillip Lougher <phillip@squashfs.org.uk>,
+ David Sterba <dsterba@suse.com>, Jan Kara <jack@suse.com>,
+ Jan Kara <jack@suse.cz>, Miklos Szeredi <miklos@szeredi.hu>,
+ Josef Bacik <josef@toxicpanda.com>,
+ Stephen Smalley <sds@tycho.nsa.gov>, ceph-devel@vger.kernel.org,
+ ecryptfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-cifs@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-integrity@vger.kernel.org, linux-nfs@vger.kernel.org,
+ linux-security-module@vger.kernel.org,
+ linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+ netdev@vger.kernel.org, reiserfs-devel@vger.kernel.org,
+ selinux@vger.kernel.org, stable@vger.kernel.org,
+ Alexander Viro <viro@zeniv.linux.org.uk>
 References: <20190827150544.151031-1-salyzyn@android.com>
-User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20190827150544.151031-1-salyzyn@android.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190827_084950_562036_78FB68D5 
-X-CRM114-Status: GOOD (  32.82  )
+X-CRM114-CacheID: sfid-20190827_100646_188870_23BBA47D 
+X-CRM114-Status: GOOD (  21.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,21 +134,23 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Latchesar Ionkov <lucho@ionkov.net>, Hugh Dickins <hughd@google.com>,
+Reply-To: dsterba@suse.cz
+Cc: Latchesar Ionkov <lucho@ionkov.net>, Eric Sandeen <sandeen@sandeen.net>,
  Mike Marshall <hubcap@omnibond.com>, James Morris <jmorris@namei.org>,
  devel@lists.orangefs.org, Eric Van Hensbergen <ericvh@gmail.com>,
- Joel Becker <jlbec@evilplan.org>, Anna Schumaker <anna.schumaker@netapp.com>,
+ Joel Becker <jlbec@evilplan.org>,
  Trond Myklebust <trond.myklebust@hammerspace.com>,
  Mathieu Malaterre <malat@debian.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jan Kara <jack@suse.com>,
- Casey Schaufler <casey@schaufler-ca.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
+ Jan Kara <jack@suse.com>, Casey Schaufler <casey@schaufler-ca.com>,
  Andrew Morton <akpm@linux-foundation.org>, Dave Kleikamp <shaggy@kernel.org>,
- linux-doc@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
- Mimi Zohar <zohar@linux.ibm.com>, linux-cifs@vger.kernel.org,
+ linux-doc@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
+ Chao Yu <yuchao0@huawei.com>, Mimi Zohar <zohar@linux.ibm.com>,
+ "David S. Miller" <davem@davemloft.net>, linux-cifs@vger.kernel.org,
  Paul Moore <paul@paul-moore.com>, "Darrick J. Wong" <darrick.wong@oracle.com>,
- Eric Sandeen <sandeen@sandeen.net>, kernel-team@android.com,
+ Hugh Dickins <hughd@google.com>, kernel-team@android.com,
  selinux@vger.kernel.org, Brian Foster <bfoster@redhat.com>,
- reiserfs-devel@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+ reiserfs-devel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  Jaegeuk Kim <jaegeuk@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
  Miklos Szeredi <miklos@szeredi.hu>, linux-f2fs-devel@lists.sourceforge.net,
  Benjamin Coddington <bcodding@redhat.com>, linux-integrity@vger.kernel.org,
@@ -102,24 +164,24 @@ Cc: Latchesar Ionkov <lucho@ionkov.net>, Hugh Dickins <hughd@google.com>,
  ceph-devel@vger.kernel.org, linux-nfs@vger.kernel.org,
  Joseph Qi <joseph.qi@linux.alibaba.com>, samba-technical@lists.samba.org,
  linux-xfs@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
- linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
- "David S. Miller" <davem@davemloft.net>, ocfs2-devel@oss.oracle.com,
+ Tejun Heo <tj@kernel.org>, linux-erofs@lists.ozlabs.org,
+ Anna Schumaker <anna.schumaker@netapp.com>, ocfs2-devel@oss.oracle.com,
  jfs-discussion@lists.sourceforge.net, Jan Kara <jack@suse.cz>,
  Eric Biggers <ebiggers@google.com>,
- Dominique Martinet <asmadeus@codewreck.org>,
- Adrian Hunter <adrian.hunter@intel.com>, David Howells <dhowells@redhat.com>,
- linux-mm@kvack.org, Andreas Dilger <adilger.kernel@dilger.ca>,
- devel@driverdev.osuosl.org, "J.
- Bruce Fields" <bfields@redhat.com>, Andreas Gruenbacher <agruenba@redhat.com>,
- Sage Weil <sage@redhat.com>, Richard Weinberger <richard@nod.at>,
- Mark Fasheh <mark@fasheh.com>, cluster-devel@redhat.com,
- Steve French <sfrench@samba.org>, v9fs-developer@lists.sourceforge.net,
- Bharath Vedartham <linux.bhar@gmail.com>, Jann Horn <jannh@google.com>,
- ecryptfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
- Dave Chinner <dchinner@redhat.com>, David Sterba <dsterba@suse.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, netdev@vger.kernel.org,
- linux-unionfs@vger.kernel.org, stable@vger.kernel.org,
- Tyler Hicks <tyhicks@canonical.com>, linux-security-module@vger.kernel.org,
+ Dominique Martinet <asmadeus@codewreck.org>, linux-unionfs@vger.kernel.org,
+ David Howells <dhowells@redhat.com>, linux-mm@kvack.org,
+ Andreas Dilger <adilger.kernel@dilger.ca>, devel@driverdev.osuosl.org,
+ "J. Bruce Fields" <bfields@redhat.com>,
+ Andreas Gruenbacher <agruenba@redhat.com>, Sage Weil <sage@redhat.com>,
+ Richard Weinberger <richard@nod.at>, Mark Fasheh <mark@fasheh.com>,
+ cluster-devel@redhat.com, Steve French <sfrench@samba.org>,
+ v9fs-developer@lists.sourceforge.net, Bharath Vedartham <linux.bhar@gmail.com>,
+ Jann Horn <jannh@google.com>, ecryptfs@vger.kernel.org,
+ Josef Bacik <josef@toxicpanda.com>, Dave Chinner <dchinner@redhat.com>,
+ David Sterba <dsterba@suse.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+ netdev@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+ stable@vger.kernel.org, Tyler Hicks <tyhicks@canonical.com>,
+ linux-security-module@vger.kernel.org,
  Phillip Lougher <phillip@squashfs.org.uk>,
  David Woodhouse <dwmw2@infradead.org>, linux-btrfs@vger.kernel.org,
  Alexander Viro <viro@zeniv.linux.org.uk>
@@ -128,7 +190,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2019-08-27 at 08:05 -0700, Mark Salyzyn wrote:
+On Tue, Aug 27, 2019 at 08:05:15AM -0700, Mark Salyzyn wrote:
 > Replace arguments for get and set xattr methods, and __vfs_getxattr
 > and __vfs_setaxtr functions with a reference to the following now
 > common argument structure:
@@ -195,176 +257,12 @@ On Tue, 2019-08-27 at 08:05 -0700, Mark Salyzyn wrote:
 > v8:
 > - Documentation reported 'struct xattr_gs_flags' rather than
 >   'struct xattr_gs_flags *args' as argument to get and set methods.
-> 
-> v7:
-> - missed spots in fs/9p/acl.c, fs/afs/xattr.c, fs/ecryptfs/crypto.c,
->   fs/ubifs/xattr.c, fs/xfs/libxfs/xfs_attr.c,
->   security/integrity/evm/evm_main.c and security/smack/smack_lsm.c.
-> 
-> v6:
-> - kernfs missed a spot
-> 
-> v5:
-> - introduce struct xattr_gs_args for get and set methods,
->   __vfs_getxattr and __vfs_setxattr functions.
-> - cover a missing spot in ext2.
-> - switch from snprintf to scnprintf for correctness.
-> 
-> v4:
-> - ifdef __KERNEL__ around XATTR_NOSECURITY to
->   keep it colocated in uapi headers.
-> 
-> v3:
-> - poor aim on ubifs not ubifs_xattr_get, but static xattr_get
-> 
-> v2:
-> - Missed a spot: ubifs, erofs and afs.
-> 
-> v1:
-> - Removed from an overlayfs patch set, and made independent.
->   Expect this to be the basis of some security improvements.
-> ---
->  Documentation/filesystems/Locking |  10 ++-
->  drivers/staging/erofs/xattr.c     |   8 +--
->  fs/9p/acl.c                       |  51 +++++++-------
->  fs/9p/xattr.c                     |  19 +++--
->  fs/afs/xattr.c                    | 112 +++++++++++++-----------------
+
+For btrfs
+
 >  fs/btrfs/xattr.c                  |  36 +++++-----
->  fs/ceph/xattr.c                   |  40 +++++------
->  fs/cifs/xattr.c                   |  72 +++++++++----------
->  fs/ecryptfs/crypto.c              |  20 +++---
->  fs/ecryptfs/inode.c               |  36 ++++++----
->  fs/ecryptfs/mmap.c                |  39 ++++++-----
->  fs/ext2/xattr_security.c          |  16 ++---
->  fs/ext2/xattr_trusted.c           |  15 ++--
->  fs/ext2/xattr_user.c              |  19 +++--
->  fs/ext4/xattr_security.c          |  15 ++--
->  fs/ext4/xattr_trusted.c           |  15 ++--
->  fs/ext4/xattr_user.c              |  19 +++--
->  fs/f2fs/xattr.c                   |  42 +++++------
->  fs/fuse/xattr.c                   |  23 +++---
->  fs/gfs2/xattr.c                   |  18 ++---
->  fs/hfs/attr.c                     |  15 ++--
->  fs/hfsplus/xattr.c                |  17 +++--
->  fs/hfsplus/xattr_security.c       |  13 ++--
->  fs/hfsplus/xattr_trusted.c        |  13 ++--
->  fs/hfsplus/xattr_user.c           |  13 ++--
->  fs/jffs2/security.c               |  16 ++---
->  fs/jffs2/xattr_trusted.c          |  16 ++---
->  fs/jffs2/xattr_user.c             |  16 ++---
->  fs/jfs/xattr.c                    |  33 ++++-----
->  fs/kernfs/inode.c                 |  23 +++---
->  fs/nfs/nfs4proc.c                 |  28 ++++----
->  fs/ocfs2/xattr.c                  |  52 ++++++--------
->  fs/orangefs/xattr.c               |  19 ++---
->  fs/overlayfs/inode.c              |  43 ++++++------
->  fs/overlayfs/overlayfs.h          |   6 +-
->  fs/overlayfs/super.c              |  53 ++++++--------
->  fs/posix_acl.c                    |  23 +++---
->  fs/reiserfs/xattr.c               |   2 +-
->  fs/reiserfs/xattr_security.c      |  22 +++---
->  fs/reiserfs/xattr_trusted.c       |  22 +++---
->  fs/reiserfs/xattr_user.c          |  22 +++---
->  fs/squashfs/xattr.c               |  10 +--
->  fs/ubifs/xattr.c                  |  33 +++++----
->  fs/xattr.c                        | 112 ++++++++++++++++++------------
->  fs/xfs/libxfs/xfs_attr.c          |   4 +-
->  fs/xfs/libxfs/xfs_attr.h          |   2 +-
->  fs/xfs/xfs_xattr.c                |  35 +++++-----
->  include/linux/xattr.h             |  26 ++++---
->  include/uapi/linux/xattr.h        |   7 +-
->  mm/shmem.c                        |  21 +++---
->  net/socket.c                      |  16 ++---
->  security/commoncap.c              |  29 +++++---
->  security/integrity/evm/evm_main.c |  13 +++-
->  security/selinux/hooks.c          |  28 ++++++--
->  security/smack/smack_lsm.c        |  38 ++++++----
->  55 files changed, 732 insertions(+), 734 deletions(-)
-> 
-> 
 
-[...]
-
->  
-> diff --git a/fs/ceph/xattr.c b/fs/ceph/xattr.c
-> index 939eab7aa219..c4fee624291b 100644
-> --- a/fs/ceph/xattr.c
-> +++ b/fs/ceph/xattr.c
-> @@ -1179,22 +1179,21 @@ int __ceph_setxattr(struct inode *inode, const char *name,
->  }
->  
->  static int ceph_get_xattr_handler(const struct xattr_handler *handler,
-> -				  struct dentry *dentry, struct inode *inode,
-> -				  const char *name, void *value, size_t size)
-> +				  struct xattr_gs_args *args)
->  {
-> -	if (!ceph_is_valid_xattr(name))
-> +	if (!ceph_is_valid_xattr(args->name))
->  		return -EOPNOTSUPP;
-> -	return __ceph_getxattr(inode, name, value, size);
-> +	return __ceph_getxattr(args->inode, args->name,
-> +			       args->buffer, args->size);
->  }
->  
->  static int ceph_set_xattr_handler(const struct xattr_handler *handler,
-> -				  struct dentry *unused, struct inode *inode,
-> -				  const char *name, const void *value,
-> -				  size_t size, int flags)
-> +				  struct xattr_gs_args *args)
->  {
-> -	if (!ceph_is_valid_xattr(name))
-> +	if (!ceph_is_valid_xattr(args->name))
->  		return -EOPNOTSUPP;
-> -	return __ceph_setxattr(inode, name, value, size, flags);
-> +	return __ceph_setxattr(args->inode, args->name,
-> +			       args->value, args->size, args->flags);
->  }
->  
->  static const struct xattr_handler ceph_other_xattr_handler = {
-> @@ -1300,25 +1299,22 @@ void ceph_security_invalidate_secctx(struct inode *inode)
->  }
->  
->  static int ceph_xattr_set_security_label(const struct xattr_handler *handler,
-> -				    struct dentry *unused, struct inode *inode,
-> -				    const char *key, const void *buf,
-> -				    size_t buflen, int flags)
-> +					 struct xattr_gs_args *args)
->  {
-> -	if (security_ismaclabel(key)) {
-> -		const char *name = xattr_full_name(handler, key);
-> -		return __ceph_setxattr(inode, name, buf, buflen, flags);
-> -	}
-> +	if (security_ismaclabel(args->name))
-> +		return __ceph_setxattr(args->inode,
-> +				       xattr_full_name(handler, args->name),
-> +				       args->value, args->size, args->flags);
->  	return  -EOPNOTSUPP;
->  }
->  
->  static int ceph_xattr_get_security_label(const struct xattr_handler *handler,
-> -				    struct dentry *unused, struct inode *inode,
-> -				    const char *key, void *buf, size_t buflen)
-> +					 struct xattr_gs_args *args)
->  {
-> -	if (security_ismaclabel(key)) {
-> -		const char *name = xattr_full_name(handler, key);
-> -		return __ceph_getxattr(inode, name, buf, buflen);
-> -	}
-> +	if (security_ismaclabel(args->name))
-> +		return __ceph_getxattr(args->inode,
-> +				       xattr_full_name(handler, args->name),
-> +				       args->buffer, args->size);
->  	return  -EOPNOTSUPP;
->  }
->  
-
-The ceph bits look fine to me. Note that we do have some patches queued
-up for v5.4 that might have some merge conflicts here. Shouldn't be too
-hard to fix it up though.
-
-Acked-by: Jeff Layton <jlayton@kernel.org>
-
-
+Acked-by: David Sterba <dsterba@suse.com>
 
 ______________________________________________________
 Linux MTD discussion mailing list
