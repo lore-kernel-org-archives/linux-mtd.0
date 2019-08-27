@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8878EC3A5A3
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Aug 2019 07:48:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FBD8C3A5A3
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Aug 2019 07:50:25 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5861820828
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Aug 2019 07:48:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 73414206BA
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Aug 2019 07:50:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cNFKHHcF";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="lxivtr3C"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5861820828
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XFC7Tase";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="jpyYlNaJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73414206BA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,62 +26,63 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
 	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
 	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XyZzo0oHZ1HCRCRnX5oI3CTQIVrw/jx+F4R7/PnQd6Y=; b=cNFKHHcFZDSld3
-	aj4ER7+IiudB5oSiNoe5LIBG+zULg9Sk7JcP2kQIdpO/WDrzb/HwNWNBc153+Mx2J/8eQ5/mwqmAQ
-	Lc7vsi0ZsRmKK1w+sfZkSDx/S3SLmaspDxsXrZymt1p2gj+u1kWGsjWwHNv09+zD+lvMnHTprYDlU
-	qtqbkfu6OM43PHh3OJuNj2RVPO7jdjN8RPxOnMGegTJj2xCt96gUUxvsVQXBUP+O2wS2eyp/d6UOn
-	mCEyjW/9SpBy5Nm5yh5sXF0Cj5F9aFtB13Ho/w/+BjvW78C1cqPPLuAfK4MY/dvPW0M1w9ICx7w4b
-	CrgFxoqJ3oBIrj/sIyIg==;
+	List-Owner; bh=SNBQsLICiyRNbBULQZMEIu3iOe3D8nrtJ2iuEDV83E8=; b=XFC7TasekgFm88
+	k+piP2umXEHuBE/l+Lik+EH0o1zXvpywBFjMQlYJujhYZLAjkk02MNeqoOKrLeUqXySptk8VCBdzC
+	0Z8I0c3S1nXuc+51sJrghDa6hO4PFeVhkX7ydBTmWGeoG93kSrYoFhE2haDoM3GV0jy8i39M/PEXH
+	fjRTAUHpD3fgBTQFISgKKbu3EdtwgKL6uCoAqZshr5iwkoXIyrFWI19VgGO6bAe2+SxVtnOokO4NO
+	IykE1yG1Axs+cwT9idzasTwXPAth5nd3PIWDFuytYuKmulIvRhNdIazQK5eZDl6W+EoGI2Bj+zEKt
+	/V8uw+Kk2tMp/PlYjDJg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i2WD8-0007ix-0u; Tue, 27 Aug 2019 07:48:14 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1i2WFE-0001E8-Qq; Tue, 27 Aug 2019 07:50:25 +0000
+Received: from lelv0142.ext.ti.com ([198.47.23.249])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i2WD4-0007ho-LB
- for linux-mtd@lists.infradead.org; Tue, 27 Aug 2019 07:48:12 +0000
+ id 1i2WF9-0001AE-7p
+ for linux-mtd@lists.infradead.org; Tue, 27 Aug 2019 07:50:21 +0000
 Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id x7R7m55l011401;
- Tue, 27 Aug 2019 02:48:05 -0500
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id x7R7o8a5125051;
+ Tue, 27 Aug 2019 02:50:08 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1566892085;
- bh=DAEmQY6ZcVPLUHgDx6bVO328R5BPWYgZs0CQXt41clQ=;
+ s=ti-com-17Q1; t=1566892208;
+ bh=PdzHYCDcfBYTU3QglVDF7SzK04cZ5/w8A1aZKwXzqFM=;
  h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=lxivtr3CCfY0WlrlGLRWdOIV9dw5+vpZGkk3YRQzrzS2UlmwSFwA+XOXykYongFPl
- gdXC7uNpZpQbaJxS3KpGkUQxljzhjCk34FUubsAv4YqhTAqjdbsfDvcNzJeSgOaI23
- 8fqld3gxFatQZaCBUMOOW4xZocdC2nnp9TxcYXSU=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x7R7m58Y116885
+ b=jpyYlNaJvqmsDqFlos12acT5nvyofU5C6Dnuu8b2eArfDM8kgdCdTqKWjp55/ECZ3
+ TAJ963YD3mHh/0pt71nbVngiSYphc0sWSdKOeINN4viHhZXKW8MhnT2Ye/V/eH599l
+ 4JGnkCEt3qww2pPgRNrA2CgMulAlQPXlmXff5HNg=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x7R7o8IB119262
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 27 Aug 2019 02:48:05 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ Tue, 27 Aug 2019 02:50:08 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Tue, 27
- Aug 2019 02:48:05 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ Aug 2019 02:50:07 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
- Frontend Transport; Tue, 27 Aug 2019 02:48:05 -0500
+ Frontend Transport; Tue, 27 Aug 2019 02:50:07 -0500
 Received: from [172.24.145.136] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id x7R7m0h6129701;
- Tue, 27 Aug 2019 02:48:02 -0500
-Subject: Re: [RESEND PATCH v3 16/20] mtd: spi-nor: Add the SPI_NOR_XSR_RDY flag
-To: <Tudor.Ambarus@microchip.com>, <boris.brezillon@collabora.com>,
- <marek.vasut@gmail.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20190826120821.16351-1-tudor.ambarus@microchip.com>
- <20190826120821.16351-17-tudor.ambarus@microchip.com>
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id x7R7o3Lp087842;
+ Tue, 27 Aug 2019 02:50:04 -0500
+Subject: Re: [Patch v3] drivers: mtd: spi-nor: Add flash property for
+ mt25qu512a and mt35xu02g
+To: Ashish Kumar <Ashish.Kumar@nxp.com>, <tudor.ambarus@microchip.com>,
+ <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <miquel.raynal@bootlin.com>,
+ <richard@nod.at>, <linux-mtd@lists.infradead.org>
+References: <1565692705-27749-1-git-send-email-Ashish.Kumar@nxp.com>
 From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <6c4c1b43-426d-75c9-126d-f60c0af0e956@ti.com>
-Date: Tue, 27 Aug 2019 13:18:38 +0530
+Message-ID: <436df042-917b-d148-9226-7a2dd62c65e4@ti.com>
+Date: Tue, 27 Aug 2019 13:20:41 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190826120821.16351-17-tudor.ambarus@microchip.com>
+In-Reply-To: <1565692705-27749-1-git-send-email-Ashish.Kumar@nxp.com>
 Content-Language: en-US
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190827_004810_781249_C33D558C 
-X-CRM114-Status: GOOD (  19.30  )
+X-CRM114-CacheID: sfid-20190827_005019_503865_95B13DBB 
+X-CRM114-Status: GOOD (  16.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,7 +94,7 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: boris.brezillon@bootlin.com
+Cc: Kuldeep Singh <kuldeep.singh@nxp.com>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
@@ -101,59 +102,60 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
 
-On 26/08/19 5:39 PM, Tudor.Ambarus@microchip.com wrote:
-> From: Boris Brezillon <boris.brezillon@bootlin.com>
+On 13/08/19 4:08 PM, Ashish Kumar wrote:
+> mt25qu512a is rebranded after its spinoff from STM, so it is
+> different only in term of operating frequency, initial JEDEC id
+> is same as that of n25q512a. In order to avoid any confussion
+> with respect to name new entry is added.
+> This flash is tested for Single I/O and QUAD I/O mode on LS1046FRWY.
 > 
-> S3AN flashes use a specific opcode to read the status register.
-> We currently use the SPI_S3AN flag to decide whether this specific
-> SR read opcode should be used, but SPI_S3AN is about to disappear, so
-> let's add a new flag.
+> mt35xu02g is Octal flash supporting Single I/O and QCTAL I/O
+> and it has been tested on LS1028ARDB
 > 
-> Note that we use the same bit as SPI_S3AN implies SPI_NOR_XSR_RDY and
-> vice versa.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
+> Signed-off-by: Ashish Kumar <ashish.kumar@nxp.com>
 > ---
-
 Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
 
 Regards
 Vignesh
 
-> v3: no changes
+> v3:
+> -Reword commits msg
+> -rebase to top of mtd-linux spi-nor/next
+> v2:
+> Incorporate review comments from Vignesh
 > 
->  drivers/mtd/spi-nor/spi-nor.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
+>  drivers/mtd/spi-nor/spi-nor.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 > 
 > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index edf1c8badac9..2699e999d21a 100644
+> index 03cc788..97d3de8 100644
 > --- a/drivers/mtd/spi-nor/spi-nor.c
 > +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -211,6 +211,14 @@ struct flash_info {
->  					 * bit. Must be used with
->  					 * SPI_NOR_HAS_LOCK.
->  					 */
-> +#define SPI_NOR_XSR_RDY		BIT(10)	/*
-> +					 * S3AN flashes have specific opcode to
-> +					 * read the status register.
-> +					 * Flags SPI_NOR_XSR_RDY and SPI_S3AN
-> +					 * use the same bit as one implies the
-> +					 * other, but we will get rid of
-> +					 * SPI_S3AN soon.
-> +					 */
->  #define	SPI_S3AN		BIT(10)	/*
->  					 * Xilinx Spartan 3AN In-System Flash
->  					 * (MFR cannot be used for probing
-> @@ -4798,7 +4806,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
->  	 * spi_nor_wait_till_ready(). Xilinx S3AN share MFR
->  	 * with Atmel spi-nor
->  	 */
-> -	if (info->flags & SPI_S3AN)
-> +	if (info->flags & SPI_NOR_XSR_RDY)
->  		nor->flags |=  SNOR_F_READY_XSR_RDY;
+> @@ -1988,6 +1988,12 @@ static const struct flash_info spi_nor_ids[] = {
+>  	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
+>  	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>  	{ "n25q256ax1",  INFO(0x20bb19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
+> +
+> +	/* Micron */
+> +	{ "mt25qu512a", INFO6(0x20bb20, 0x104400, 64 * 1024, 1024, SECT_4K |
+> +				USE_FSR | SPI_NOR_DUAL_READ |
+> +				SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+> +
+>  	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+>  	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+>  	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
+> @@ -2003,6 +2009,9 @@ static const struct flash_info spi_nor_ids[] = {
+>  			SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
+>  			SPI_NOR_4B_OPCODES)
+>  	},
+> +	{ "mt35xu02g",  INFO(0x2c5b1c, 0, 128 * 1024, 2048,
+> +			SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
+> +			SPI_NOR_4B_OPCODES) },
 >  
->  	if (info->flags & SPI_NOR_HAS_LOCK)
+>  	/* PMC */
+>  	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },
 > 
 
 -- 
