@@ -2,158 +2,73 @@ Return-Path: <SRS0=Lrxn=WY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A231C3A5A3
-	for <linux-mtd@archiver.kernel.org>; Wed, 28 Aug 2019 00:09:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FC53C3A5A3
+	for <linux-mtd@archiver.kernel.org>; Wed, 28 Aug 2019 02:00:26 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4A46B2173E
-	for <linux-mtd@archiver.kernel.org>; Wed, 28 Aug 2019 00:09:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E26A520856
+	for <linux-mtd@archiver.kernel.org>; Wed, 28 Aug 2019 02:00:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lWGGqspc";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=fb.com header.i=@fb.com header.b="lhkADVVX";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=fb.onmicrosoft.com header.i=@fb.onmicrosoft.com header.b="NWGUDAlr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4A46B2173E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=fb.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YZNseuy9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E26A520856
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sVRberXw26J0bYToWiOS7XcXCwtnVDR1/f4Oly+J/IA=; b=lWGGqspcDm2GVS
-	JhNUvZvExXjiJZSgaNLG7eL+FO4aLHAWYqgRscZJh5z/aiW9XFh7xPSO7W8YBdGvsStUqEAoirv5W
-	G5kn8bpuDluvQKbh+GNE5qQPlHmbK+GdwWXJtRbB/iPqE3aFZuF4qPvB99ilwjrxzZNGvIMFLOmc5
-	yY6kNc8OFTfUPBgF7Hl/DTb5tbYUro5/6TlafAbiOYAq+aXE09YVJFwCgQXKP/Hjs7PVqiPwUaePU
-	116Ai20Joi7b56bbf0gE95ClIUjsPwolNU+e5X5R/wz/QTaOTZ77T6W1FqXd6r8XBgpbmnK6ek72I
-	7Z/U1YQMnmjbCSPNrSgA==;
+	List-Owner; bh=xfbOXXQODj4rpxfOYV5mQrZNc5zGuk5T3LSdUcbrAes=; b=YZNseuy9kfrcbT
+	LBcOkCw9+aa6qGgjHWah3GCjGdC/A2fOCPtHJiSjcQAdfOHeXB8cYLG+hSUqbByKVFMrmngzZl8yw
+	CzJS6vcXfZMVh/zpm42HxfVPMT0xqg7sx80Injm9wZZaTt/7NP/X7iF43r1ShRgApN754Zk3E59Dc
+	yykaRSbspP2OkpFKXXluZ6OKNPgoulkzR2fJ2KM/8v5QVaxttXV4KRCp0enmq9kK83KD1aO5jAbcG
+	GNepH7ytx8PvM+AGsnZuRbcD1ggmUQqxgNMKbU8/4noV+PsJoxJew1RSgNsXohJAC4KHF57JVTIdU
+	WRV7dMXyaaAh6Nk8zFfg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i2lW1-0000DP-Ut; Wed, 28 Aug 2019 00:08:45 +0000
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30])
+	id 1i2nFf-0000Un-Ly; Wed, 28 Aug 2019 01:59:59 +0000
+Received: from szxga02-in.huawei.com ([45.249.212.188] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i2lVz-0000D0-30
- for linux-mtd@lists.infradead.org; Wed, 28 Aug 2019 00:08:44 +0000
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
- by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- x7S08aKs026844; Tue, 27 Aug 2019 17:08:37 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com;
- h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=i9cPVzXETJzR3NEOTZQgH5X7f7e1T7LWL58gtYEQ0NI=;
- b=lhkADVVXwKVdx+eVr4nQHaPDnc1qZqVHmnWtXRjabekNkbhUOQKDlySdpyeDH8vImDZY
- mnQSkfdfbDvWR23zRs0rwjWRk98sTGyOFXziYrP+HeSFXOVOyb1PDqRKURfX5CDokjuA
- 9zr+ahwx6oLyJzBIwz4NS72Rlg8IK8/R1y4= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
- by mx0a-00082601.pphosted.com with ESMTP id 2un2fm3eaq-2
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 27 Aug 2019 17:08:37 -0700
-Received: from ash-exhub203.TheFacebook.com (2620:10d:c0a8:83::5) by
- ash-exhub203.TheFacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 27 Aug 2019 17:08:36 -0700
-Received: from NAM05-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP
- Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Tue, 27 Aug 2019 17:08:36 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ivHUHRviJKPRR3fb8KYtGkGNkbjDc7++vqWuGnbsWIna8EpT6URaXF3ub64vgIf86RsMd9bsegdmBpIRuyrcyrGsbXV7RvEyMJjyrDxXEK8qb1PZ5AXxhA3S5nIs1aaUqusyCWXw0YMCuM1HzpjvdwGwr5tzgG3LU43i9xMufAHqSE5x/FDrUnXEXyEjfng9Z564ULyluLy5JijnKHXer0t5P2pRcRv0SbCVbhI/jqswCiHxyl8xEySP8akoNK+K6CWb+Q9vmgohwuT2mBes033wfEVJTgbTdUiYlgNRiQdTAU9z39/sm7cs/f8G6RibFX96vi/SjB/0AOXPdC7vgg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=i9cPVzXETJzR3NEOTZQgH5X7f7e1T7LWL58gtYEQ0NI=;
- b=Vaiyn+xtLgy3Ptw3tCgukVehKUhI+xtuIl1Yx5fgrrkkXgxbT6DjPAUAIQxqeVlWsIaWTcEhuSB6es/F3fkXgw0xn03IMknGH8RTqhyngnwAVDLv7T4CtX677dl4hqPbt05ypKrZOVOnxZRFPlINweqYmgWYrDKyIhpqxsP/C1J/zqvy+EYIH1FJV4fi5KM8+/0lUpJdtD3An+c+6p/aTUIOD23zTWFsZy87Fa7Bde3SmVKxciRt7FKsKv34ToOE9hJdYzkRlFrQJW952NZqjga6xFPJRhMfJu7qMlP4ouIaYYPrW5pJezEzfrOtPTNk+MSJC8NecYRger/XL3gxIQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=i9cPVzXETJzR3NEOTZQgH5X7f7e1T7LWL58gtYEQ0NI=;
- b=NWGUDAlrxKnwyJ3tA25hL+ErDGrSwK+xgM1fKsuzcBdxgoWvhmozswoe/M5yTvGfNC2UDkgH2zXpjTD8olQ5uChFGzVlR6Uw4nmMi6bn7uzvGnoeGfgksGqmACwjRhQOwF4VC6P2GPJJQy0mZGZpjUbzlMJNdBQUy3b9ySa9xk8=
-Received: from MWHPR15MB1216.namprd15.prod.outlook.com (10.175.2.17) by
- MWHPR15MB1310.namprd15.prod.outlook.com (10.175.2.142) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2199.21; Wed, 28 Aug 2019 00:08:35 +0000
-Received: from MWHPR15MB1216.namprd15.prod.outlook.com
- ([fe80::2971:619a:860e:b6cc]) by MWHPR15MB1216.namprd15.prod.outlook.com
- ([fe80::2971:619a:860e:b6cc%2]) with mapi id 15.20.2199.021; Wed, 28 Aug 2019
- 00:08:35 +0000
-From: Tao Ren <taoren@fb.com>
-To: Richard Weinberger <richard@nod.at>
-Subject: Re: [Potential Spoof] Re: kernel BUG at fs/jffs2/gc.c:395!
-Thread-Topic: [Potential Spoof] Re: kernel BUG at fs/jffs2/gc.c:395!
-Thread-Index: AQHVV6xCTU2NhpXAkkGUQ2XhN58pgKcEqeqAgAAPW4CAB4xhAP//uMoAgAB7VACAAYVBAIABuxeA
-Date: Wed, 28 Aug 2019 00:08:35 +0000
-Message-ID: <30720005-49a6-c2ba-2719-c00772bf1caf@fb.com>
-References: <e8bde724-46fd-4264-ea3f-a84a792bcad8@fb.com>
- <236e95be-a2cd-3b44-36c5-121678f7c009@fb.com>
- <afe2b8f2-d1be-4cd2-971a-b13c1e38da67@www.fastmail.com>
- <CAFLxGvypuPp_Q_31DpKmfqte4uxHfYiQ6KvT1f2LGo_y7EvKfw@mail.gmail.com>
- <4dee9f54-1cf4-94ca-4ddc-2b1f8892d9b1@fb.com>
- <216516045.73889.1566772168645.JavaMail.zimbra@nod.at>
- <bc19f328-ef5d-9840-7985-82461c99205e@fb.com>
-In-Reply-To: <bc19f328-ef5d-9840-7985-82461c99205e@fb.com>
+ id 1i2nFc-0000UF-Nl
+ for linux-mtd@lists.infradead.org; Wed, 28 Aug 2019 01:59:58 +0000
+Received: from dggemi404-hub.china.huawei.com (unknown [172.30.72.56])
+ by Forcepoint Email with ESMTP id C5486602C5D1A1E04F6C;
+ Wed, 28 Aug 2019 09:59:45 +0800 (CST)
+Received: from DGGEMI423-HUB.china.huawei.com (10.1.199.152) by
+ dggemi404-hub.china.huawei.com (10.3.17.142) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Wed, 28 Aug 2019 09:59:45 +0800
+Received: from DGGEMI524-MBX.china.huawei.com ([169.254.7.30]) by
+ dggemi423-hub.china.huawei.com ([10.1.199.152]) with mapi id 14.03.0439.000;
+ Wed, 28 Aug 2019 09:59:38 +0800
+From: chengzhihao <chengzhihao1@huawei.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0ggUkZDIHYyXSB1Ymk6IHViaV93bF9nZXRfcGViOiBJ?=
+ =?utf-8?B?bmNyZWFzZSB0aGUgbnVtYmVyIG9mIGF0dGVtcHRzIHdoaWxlIGdldHRpbmcg?=
+ =?utf-8?Q?PEB?=
+Thread-Topic: [PATCH RFC v2] ubi: ubi_wl_get_peb: Increase the number of
+ attempts while getting PEB
+Thread-Index: AQHVT2EsTJNmHoCNk0y5Wp2VB7/tCKb5GeuAgBbPnRA=
+Date: Wed, 28 Aug 2019 01:59:37 +0000
+Message-ID: <0B80F9D4116B2F4484E7279D5A66984F7D875E@dggemi524-mbx.china.huawei.com>
+References: <1565431061-145460-1-git-send-email-chengzhihao1@huawei.com>
+ <CAFLxGvzOMfqJJ+ZKTUavxEx+0_OJO_VcrNu1nn2rrvcypAxAAA@mail.gmail.com>
+In-Reply-To: <CAFLxGvzOMfqJJ+ZKTUavxEx+0_OJO_VcrNu1nn2rrvcypAxAAA@mail.gmail.com>
 Accept-Language: en-US
-Content-Language: en-US
+Content-Language: zh-CN
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR14CA0005.namprd14.prod.outlook.com
- (2603:10b6:300:ae::15) To MWHPR15MB1216.namprd15.prod.outlook.com
- (2603:10b6:320:22::17)
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::8b51]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 578ff742-b6cf-4d2a-e0c2-08d72b4bde8f
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(2017052603328)(7193020);
- SRVR:MWHPR15MB1310; 
-x-ms-traffictypediagnostic: MWHPR15MB1310:
-x-microsoft-antispam-prvs: <MWHPR15MB1310A2960C5AF26EA7AF1886B2A30@MWHPR15MB1310.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-forefront-prvs: 014304E855
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10019020)(366004)(396003)(39860400002)(376002)(136003)(346002)(199004)(189003)(102836004)(7736002)(66476007)(2616005)(25786009)(476003)(446003)(46003)(66574012)(2906002)(6246003)(486006)(316002)(76176011)(256004)(386003)(53546011)(58126008)(11346002)(229853002)(99286004)(14444005)(305945005)(14454004)(6916009)(4326008)(54906003)(6116002)(66556008)(66946007)(71200400001)(65806001)(53936002)(71190400001)(8676002)(5660300002)(81166006)(81156014)(86362001)(31686004)(65956001)(478600001)(52116002)(31696002)(66446008)(36756003)(8936002)(64756008)(6436002)(6512007)(6506007)(186003)(6486002);
- DIR:OUT; SFP:1102; SCL:1; SRVR:MWHPR15MB1310;
- H:MWHPR15MB1216.namprd15.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; A:1; MX:1; 
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: BnEw0g79JptEPn1sx+tBMJtKDb0AzHr+Kv64VaIyO9hAcl356ZJ2oPH76Ftv1onbe6gK2j0cIGbJ0MMUe6/lkus7BoI4DzqmOoIcVrIuaDMFtJBJBlCmTgoq3wpIai3K8nnRhPuUv0AwYHS358wdARt4+qMN4utkNQ9qUmCoYyl26GpL/tCm+3GwjgnB77pLAxru+TXukgZ9SrXdaAuTxZdDxvEGeTrh2GiSNP5YVgY8L+ZD+8PNUk1ZB7dhV4j8J0RsSwn9pgSFv8tB8d6raNME+irdr6uuB2K4HaPXocqIK3aGDA9d1N2DktmzTP0A6+7xHZd8Ixs3+fht8duuGkaEY6C7fWuKQekdV19GJevatf66o1Gpc834tBj1S4aYhkiUYI4YUiDOEk0Hp6uVDsttc8Qq4ACM+TmYVmyD3sw=
-x-ms-exchange-transport-forked: True
-Content-ID: <FDFC331DC3E9524EB61E89921110F696@namprd15.prod.outlook.com>
+x-originating-ip: [10.177.224.82]
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 578ff742-b6cf-4d2a-e0c2-08d72b4bde8f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Aug 2019 00:08:35.4686 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: mP1kIy99WQdGy/+bKjdaWD9QlbCQNDbG9T0+FNiSpPDmgJUYGRZuGfTkrhMXuN9C
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1310
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:5.22.84,1.0.8
- definitions=2019-08-27_05:2019-08-27,2019-08-27 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0
- mlxscore=0 bulkscore=0
- suspectscore=0 priorityscore=1501 impostorscore=0 clxscore=1015
- spamscore=0 adultscore=0 lowpriorityscore=0 phishscore=0 mlxlogscore=999
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1906280000 definitions=main-1908270231
-X-FB-Internal: deliver
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190827_170843_400617_153DD806 
-X-CRM114-Status: GOOD (  21.24  )
+X-CRM114-CacheID: sfid-20190827_185956_941350_881B8907 
+X-CRM114-Status: GOOD (  14.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -165,51 +80,69 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Andrew Jeffery <andrew@aj.id.au>,
- OpenBMC Maillist <openbmc@lists.ozlabs.org>,
- linux-mtd <linux-mtd@lists.infradead.org>
+Cc: Richard Weinberger <richard@nod.at>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>, "zhangyi \(F\)" <yi.zhang@huawei.com>
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gOC8yNi8xOSA5OjQyIFBNLCBUYW8gUmVuIHdyb3RlOg0KPiBPbiA4LzI1LzE5IDM6MjkgUE0s
-IFJpY2hhcmQgV2VpbmJlcmdlciB3cm90ZToNCj4+IC0tLS0tIFVyc3Byw7xuZ2xpY2hlIE1haWwg
-LS0tLS0NCj4+PiBWb246ICJUYW8gUmVuIiA8dGFvcmVuQGZiLmNvbT4NCj4+PiBBbjogIlJpY2hh
-cmQgV2VpbmJlcmdlciIgPHJpY2hhcmQud2VpbmJlcmdlckBnbWFpbC5jb20+LCAiQW5kcmV3IEpl
-ZmZlcnkiIDxhbmRyZXdAYWouaWQuYXU+DQo+Pj4gQ0M6ICJsaW51eC1tdGQiIDxsaW51eC1tdGRA
-bGlzdHMuaW5mcmFkZWFkLm9yZz4sICJPcGVuQk1DIE1haWxsaXN0IiA8b3BlbmJtY0BsaXN0cy5v
-emxhYnMub3JnPg0KPj4+IEdlc2VuZGV0OiBNb250YWcsIDI2LiBBdWd1c3QgMjAxOSAwMDowODow
-OA0KPj4+IEJldHJlZmY6IFJlOiBrZXJuZWwgQlVHIGF0IGZzL2pmZnMyL2djLmM6Mzk1IQ0KPj4N
-Cj4+PiBPbiA4LzI1LzE5IDEyOjIyIFBNLCBSaWNoYXJkIFdlaW5iZXJnZXIgd3JvdGU6DQo+Pj4+
-IE9uIFdlZCwgQXVnIDIxLCAyMDE5IGF0IDI6MDYgQU0gQW5kcmV3IEplZmZlcnkgPGFuZHJld0Bh
-ai5pZC5hdT4gd3JvdGU6DQo+Pj4+PiBMb29rcyBsaWtlIGEgbGFjayBvZiByb2J1c3RuZXNzIHRv
-IGZpbGVzeXN0ZW0gY29ycnVwdGlvbiB0byBtZS4gTFdODQo+Pj4+DQo+Pj4+IFdoYXQgZXhhY3Rs
-eSBtYWtlcyB5b3UgdGhpbmsgc28/DQo+Pj4+IFRoZSBpbm9kZSBjYWNoZSBlbnRyeSBpcyBpbiBz
-dGF0ZSBJTk9fU1RBVEVfVU5DSEVDS0VEIHdoaWxlIEdDIHJ1biwNCj4+Pj4gd2hpY2ggaXMgbm90
-IGFsbG93ZWQuDQo+Pj4+DQo+Pj4+IFRhbywgaXMgdGhlIGVycm9yIHBlcnNpc3RlbnQgb3IgZGlk
-IGl0IGhhcHBlbiBvbmx5IG9uY2U/DQo+Pj4NCj4+PiBIaSBSaWNoYXJkLA0KPj4+DQo+Pj4gSXQg
-cmFyZWx5IGhhcHBlbnMgKH4xIG91dCBvZiAxMDAwIG1hY2hpbmVzIGluIG15IGVudmlyb25tZW50
-KSwgYnV0IG9uY2UgaXQNCj4+PiBoYXBwZW5zLCBpdCdzIHBlcnNpc3RlbnQ6IHRoZSBtYWNoaW5l
-IHdpbGwgZmFsbCBpbnRvIHJlYm9vdCBsb29wIGR1ZSB0byB0aGUNCj4+PiBjcmFzaC4NCj4+DQo+
-PiBDYW4geW91IHByb3ZpZGUgbWUgYW4gaW1hZ2Ugb2YgdGhlIGZpbGVzeXN0ZW0gc3VjaCB0aGF0
-IEkgY2FuIGhhdmUgYSBsb29rPw0KPj4gQW4gaW1hZ2Ugd2hlcmUgdGhlIGlzc3VlIGlzIHBlcnNp
-c3RlbnQuLi4NCj4gDQo+IEhpIFJpY2hhcmQsDQo+IA0KPiBJIHRyaWVkIGtlcm5lbCBpbWFnZSB3
-aXRoIGpmZnMyIHN1bW1hcnkgZW5hYmxlZCBhbmQgZGlzYWJsZWQsIGFuZCBpdCBsb29rcyB0bw0K
-PiBtZSB0aGUgcmVzdWx0IGlzIHNpbWlsYXI6IEkgY2FuIHJlYWNoIGxvZ2luIHNjcmVlbiBub3cs
-IGJ1dCB0aGUgc2FtZSBrZXJuZWwNCj4gcGFuaWMgaGFwcGVucyBhZnRlciAicmVib290IiBjb21t
-YW5kLg0KPiANCj4gVGhlIGJlaGF2aW9yIGlzIGEgbGl0dGxlIGRpZmZlcmVudCBmcm9tIHdoYXQg
-SSBzYXcgeWVzdGVyZGF5OiBwcmV2aW91c2x5IGtlcm5lbA0KPiBwYW5pYyBoYXBwZW5lZCBhdCBi
-b290IHRpbWUsIGFuZCBub3cgaXQncyBhZnRlciAicmVib290IiBjb21tYW5kLiBJIGd1ZXNzIGl0
-J3MNCj4gYmVjYXVzZSBtb3JlIG5vZGUgYmVpbmcgd3JpdHRlbiB0byB0aGUgZmxhc2g/DQo+IA0K
-PiBJIHVuZGVyc3RhbmQgaXQncyBoZWxwZnVsIHRvIHNoYXJlIHRoZSBmaWxlIHN5c3RlbSBpbWFn
-ZSwgYnV0IHVuZm9ydHVuYXRlbHkgSQ0KPiBjYW5ub3QgZG8gaXQgYmVjYXVzZSBpdCBjb250YWlu
-cyBjb25maWRlbnRpYWwgZGF0YS4gU29ycnkgYWJvdXQgdGhhdC4uDQo+IA0KPiBUaGFuayB5b3Ug
-YWdhaW4gZm9yIHRoZSBoZWxwLCBhbmQga2luZGx5IGxldCBtZSBrbm93IGlmIHlvdSBoYXZlIGZ1
-cnRoZXINCj4gc3VnZ2VzdGlvbnMuDQoNClNvbWUgaW50ZXJlc3RpbmcgZmluZGluZ3M6IEkgY2hl
-Y2tlZCAzIGltcGFjdGVkIG1hY2hpbmVzIGFuZCBhbGwgb2YgdGhlbSBhcmUNCmNhdXNlZCBieSB0
-aGUgc2FtZSBzZXQgb2YgZmlsZXMsIGFuZCB0aGVzZSBmaWxlcyBoYXZlIGJlZW4gb24gdGhlIGZs
-YXNoIGZvcg0KeWVhcnMgd2l0aG91dCBtb2RpZmljYXRpb24uDQoNCg0KLSBUYW8NCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQg
-ZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9saW51eC1tdGQvCg==
+VGhpcyBwYXRjaCBtaXNzZWQgdGhlIGZpeGVzIHB1bGwgcmVxdWVzdCg1LjMtcmM2KSwgd2lsbCBp
+dCBiZSBpbiB2NS4zLXJjNz8NCg0KLS0tLS3pgq7ku7bljp/ku7YtLS0tLQ0K5Y+R5Lu25Lq6OiBS
+aWNoYXJkIFdlaW5iZXJnZXIgW21haWx0bzpyaWNoYXJkLndlaW5iZXJnZXJAZ21haWwuY29tXSAN
+CuWPkemAgeaXtumXtDogMjAxOeW5tDjmnIgxNOaXpSA1OjM4DQrmlLbku7bkuro6IGNoZW5nemhp
+aGFvIDxjaGVuZ3poaWhhbzFAaHVhd2VpLmNvbT4NCuaKhOmAgTogUmljaGFyZCBXZWluYmVyZ2Vy
+IDxyaWNoYXJkQG5vZC5hdD47IHpoYW5neWkgKEYpIDx5aS56aGFuZ0BodWF3ZWkuY29tPjsgbGlu
+dXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IExLTUwgPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5l
+bC5vcmc+DQrkuLvpopg6IFJlOiBbUEFUQ0ggUkZDIHYyXSB1Ymk6IHViaV93bF9nZXRfcGViOiBJ
+bmNyZWFzZSB0aGUgbnVtYmVyIG9mIGF0dGVtcHRzIHdoaWxlIGdldHRpbmcgUEVCDQoNCk9uIFNh
+dCwgQXVnIDEwLCAyMDE5IGF0IDExOjUxIEFNIFpoaWhhbyBDaGVuZyA8Y2hlbmd6aGloYW8xQGh1
+YXdlaS5jb20+IHdyb3RlOg0KPg0KPiBSdW5uaW5nIHN0cmVzcyB0ZXN0IGlvX3BhcmFsIChBIHBy
+ZXNzdXJlIHViaSB0ZXN0IGluIG10ZC11dGlscykgb24gYW4gDQo+IFVCSSBkZXZpY2Ugd2l0aCBm
+ZXdlciBQRUJzIChmYXN0bWFwIGVuYWJsZWQpIG1heSBjYXVzZSBFTk9TUEMgZXJyb3JzIA0KPiBh
+bmQgbWFrZSBVQkkgZGV2aWNlIHJlYWQtb25seSwgYnV0IHRoZXJlIGFyZSBzdGlsbCBmcmVlIFBF
+QnMgb24gdGhlIA0KPiBVQkkgZGV2aWNlLiBUaGlzIHByb2JsZW0gY2FuIGJlIGVhc2lseSByZXBy
+b2R1Y2VkIGJ5IHBlcmZvcm1pbmcgdGhlIA0KPiBmb2xsb3dpbmcgc3RlcHMgb24gYSAyLWNvcmUg
+bWFjaGluZToNCj4gICAkIG1vZHByb2JlIG5hbmRzaW0gZmlyc3RfaWRfYnl0ZT0weDIwIHNlY29u
+ZF9pZF9ieXRlPTB4MzMgcGFydHM9ODANCj4gICAkIG1vZHByb2JlIHViaSBtdGQ9IjAsMCIgZm1f
+YXV0b2NvbnZlcnQNCj4gICAkIC4vaW9fcGFyYWwgL2Rldi91YmkwDQo+DQo+IFdlIG1heSBzZWUg
+dGhlIGZvbGxvd2luZyB2ZXJib3NlOg0KPiAob3V0cHV0KQ0KPiAgIFtpb19wYXJhbF0gdXBkYXRl
+X3ZvbHVtZSgpOjEwODogZmFpbGVkIHRvIHdyaXRlIDM4MCBieXRlcyBhdCBvZmZzZXQNCj4gICA5
+NTkyMCBvZiB2b2x1bWUgMg0KPiAgIFtpb19wYXJhbF0gdXBkYXRlX3ZvbHVtZSgpOjEwOTogdXBk
+YXRlOiA5NzA4OCBieXRlcw0KPiAgIFtpb19wYXJhbF0gd3JpdGVfdGhyZWFkKCk6MjI3OiBmdW5j
+dGlvbiBwd3JpdGUoKSBmYWlsZWQgd2l0aCBlcnJvciAyOA0KPiAgIChObyBzcGFjZSBsZWZ0IG9u
+IGRldmljZSkNCj4gICBbaW9fcGFyYWxdIHdyaXRlX3RocmVhZCgpOjIyOTogY2Fubm90IHdyaXRl
+IDE1ODcyIGJ5dGVzIHRvIG9mZnMgMzE3NDQsDQo+ICAgd3JvdGUgLTENCj4gKGRtZXNnKQ0KPiAg
+IHViaTAgZXJyb3I6IHViaV93bF9nZXRfcGViIFt1YmldOiBVbmFibGUgdG8gZ2V0IGEgZnJlZSBQ
+RUIgZnJvbSB1c2VyIFdMDQo+ICAgcG9vbA0KPiAgIHViaTAgd2FybmluZzogdWJpX2ViYV93cml0
+ZV9sZWIgW3ViaV06IHN3aXRjaCB0byByZWFkLW9ubHkgbW9kZQ0KPiAgIENQVTogMCBQSUQ6IDIw
+MjcgQ29tbTogaW9fcGFyYWwgTm90IHRhaW50ZWQgNS4zLjAtcmMyLTAwMDAxLWc1OTg2Y2QwICM5
+DQo+ICAgdWJpMCB3YXJuaW5nOiB0cnlfd3JpdGVfdmlkX2FuZF9kYXRhIFt1YmldOiBmYWlsZWQg
+dG8gd3JpdGUgVklEIGhlYWRlcg0KPiAgIHRvIExFQiAyOjUsIFBFQiAxOA0KPiAgIEhhcmR3YXJl
+IG5hbWU6IFFFTVUgU3RhbmRhcmQgUEMgKGk0NDBGWCArIFBJSVgsIDE5OTYpLCBCSU9TIHJlbC0x
+LjEyLjANCj4gICAtMC1nYTY5OGM4OTk1Zi1wcmVidWlsdC5xZW11Lm9yZyAwNC8wMS8yMDE0DQo+
+ICAgQ2FsbCBUcmFjZToNCj4gICAgIGR1bXBfc3RhY2srMHg4NS8weGJhDQo+ICAgICB1YmlfZWJh
+X3dyaXRlX2xlYisweGExZS8weGE0MCBbdWJpXQ0KPiAgICAgdm9sX2NkZXZfd3JpdGUrMHgzMDcv
+MHg1MjAgW3ViaV0NCj4gICAgIHZmc193cml0ZSsweGZhLzB4MjgwDQo+ICAgICBrc3lzX3B3cml0
+ZTY0KzB4YzUvMHhlMA0KPiAgICAgX194NjRfc3lzX3B3cml0ZTY0KzB4MjIvMHgzMA0KPiAgICAg
+ZG9fc3lzY2FsbF82NCsweGJmLzB4NDQwDQo+DQo+IEluIGZ1bmN0aW9uIHViaV93bF9nZXRfcGVi
+LCB0aGUgb3BlcmF0aW9uIG9mIGZpbGxpbmcgdGhlIHBvb2wNCj4gKHViaV91cGRhdGVfZmFzdG1h
+cCkgd2l0aCBmcmVlIFBFQnMgYW5kIGZldGNoaW5nIGEgZnJlZSBQRUIgZnJvbSB0aGUgDQo+IHBv
+b2wgaXMgbm90IGF0b21pYy4gQWZ0ZXIgdGhyZWFkIEEgZmlsbGluZyB0aGUgcG9vbCB3aXRoIGZy
+ZWUgUEVCLCANCj4gZnJlZSBQRUIgbWF5IGJlIHRha2VuIGF3YXkgYnkgdGhyZWFkIEIuIFdoZW4g
+dGhyZWFkIEEgY2hlY2tzIHRoZSANCj4gZXhwcmVzc2lvbiBhZ2FpbiwgdGhlIGNvbmRpdGlvbiBp
+cyBzdGlsbCB1bnNhdGlzZmFjdG9yeS4gQXQgdGhpcyB0aW1lLCANCj4gdGhlcmUgbWF5IHN0aWxs
+IGJlIGZyZWUgUEVCcyBvbiBVQkkgdGhhdCBjYW4gYmUgZmlsbGVkIGludG8gdGhlIHBvb2wuDQo+
+DQo+IFRoaXMgcGF0Y2ggaW5jcmVhc2VzIHRoZSBudW1iZXIgb2YgYXR0ZW1wdHMgdG8gb2J0YWlu
+IFBFQi4gQW4gZXh0cmVtZSANCj4gY2FzZSAoTm8gZnJlZSBQRUJzIGxlZnQgYWZ0ZXIgY3JlYXRp
+bmcgdGVzdCB2b2x1bWVzKSBoYXMgYmVlbiB0ZXN0ZWQgDQo+IG9uIGRpZmZlcmVudCB0eXBlIG9m
+IG1hY2hpbmVzIGZvciAxMDAgdGltZXMuIFRoZSBiaWdnZXN0IG51bWJlciBvZiANCj4gYXR0ZW1w
+dHMgYXJlIHNob3duIGJlbG93Og0KPg0KPiAgICAgICAgICAgICAgeDg2XzY0ICAgICBhcm02NA0K
+PiAgIDItY29yZSAgICAgICAgNCAgICAgICAgIDQNCj4gICA0LWNvcmUgICAgICAgIDggICAgICAg
+ICA0DQo+ICAgOC1jb3JlICAgICAgICA0ICAgICAgICAgNA0KPg0KPiBTaWduZWQtb2ZmLWJ5OiBa
+aGloYW8gQ2hlbmcgPGNoZW5nemhpaGFvMUBodWF3ZWkuY29tPg0KDQpUaGFua3MgZm9yIGFkZHJl
+c3NpbmcgdGhpcyENCkknbGwgdGFrZSB0aGlzIHZlcnNpb24uIDotKQ0KDQotLQ0KVGhhbmtzLA0K
+Ly9yaWNoYXJkDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5p
+bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
