@@ -2,95 +2,83 @@ Return-Path: <SRS0=Lrxn=WY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DDDB7C3A5A1
-	for <linux-mtd@archiver.kernel.org>; Wed, 28 Aug 2019 14:40:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE246C3A5A1
+	for <linux-mtd@archiver.kernel.org>; Wed, 28 Aug 2019 18:09:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AE6DE2064A
-	for <linux-mtd@archiver.kernel.org>; Wed, 28 Aug 2019 14:40:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A48862053B
+	for <linux-mtd@archiver.kernel.org>; Wed, 28 Aug 2019 18:09:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rAJQYWfD";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=android.com header.i=@android.com header.b="OlcPfkFh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE6DE2064A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=android.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="C0Yt++jU";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="T/GkjUuK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A48862053B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sifive.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=JTK6MuwlqrETuUm6N/+JAo+o9h4porPNwxPAmAXrtC8=; b=rAJQYWfDpabM82/hgG7MX4go+
-	XIqT3D10QnO739Ryg4ENmtPCEsKMExTcA07oNt2OikYjIXuMpuQMF7kSRdr2w8FPdZ8VufJrZk/yO
-	mBRIBhoEbCTzD4lmdQiNhYsj0umy8TDM2Zpmpzs2ZGMzMRMHphPtHoVQ1rGYEFZasEjOsoxJSBx4e
-	gsofUyoTFAz5zaYz58BHqas4TxZxriQIDZI70joFKx0uHallPG9S3VcHpMQVmvBBqLSresIVsTatN
-	Ww/JW/4Iv0psfG84q3w599oDmoQuytWntw/OdWIcFh2M7KUipp+IWbav2WB0p2Gopk0nvDrvJdUPb
-	guT2hesQA==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ZDXQXL6sMSLUh4AYHZrj/49pVYi/0kgLbW+M1nqCRKU=; b=C0Yt++jU7LqjR6
+	Keyzssmi6tNGH4jNdYDxnpY9RcxI5hV1EF1laUdfk/GzSRzaJSAjN1FMsmzn0BXAqIos8g9JdnPLd
+	fU9lneVQOdKNzYHDsP5Iz2a/dxqe+pgXHyZ3F9Mm/qzPj7m5q2Oc6FR0cK2dKhnwo9e11qojGTVB9
+	XtwXO3KO11X9NhW0y1isp5qkE2FSeqfuxen52biavzxCpSZL5EGgtVZFarV0aGtku1QcdN5ZLJVz2
+	58e4KpGGfd2iDihZJOm25xnw5+/XI2TmB8LLHdypVDjJZCcXa9QKwpR4jRjg8kd6HsE998+4FHg79
+	rdYO+RBJYoXSMtrhZ7ow==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i2z7X-0003rz-86; Wed, 28 Aug 2019 14:40:23 +0000
-Received: from mail-pg1-x542.google.com ([2607:f8b0:4864:20::542])
+	id 1i32Na-0004No-EK; Wed, 28 Aug 2019 18:09:10 +0000
+Received: from mail-vs1-xe42.google.com ([2607:f8b0:4864:20::e42])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i2z7U-0003rL-6C
- for linux-mtd@lists.infradead.org; Wed, 28 Aug 2019 14:40:21 +0000
-Received: by mail-pg1-x542.google.com with SMTP id o13so1571375pgp.12
- for <linux-mtd@lists.infradead.org>; Wed, 28 Aug 2019 07:40:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=android.com; s=20161025;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-transfer-encoding:content-language;
- bh=otBOnvzgcCfij7khznQb839FNBhUwDL3v2TXcjGpOzs=;
- b=OlcPfkFh4eVXaPXXhh3cHvgBURsJe3iAt4+TEVeWmIUa8zc09e0oQ5MaZNlepG2vze
- B3r7RgJuWq9O6TIbswaNUIKe8aYWW+KNRgEXeCMfCvmELHUyftJPl7HAVt/DUWoqH+mt
- 7FiMUsP13ILyRxskXvgoEKTt4mcyDqpG+bZTW39pIt/5h+k8/JBgcB7qNM0XACYD7ale
- oWFmT2jC5R2Rv9fP9CO4NSXlbVjGTO4SWvbIfLdPsT4850CBsX7b6iyMaVYsWWgBm0EJ
- ydfkWGX0BboAbCSeR2RRikvC2V1c34KnlnNThn4oWcDh6RwGfO3sPku0/xiss22u0zC8
- qA2Q==
+ id 1i32NW-0004Mg-Nk
+ for linux-mtd@lists.infradead.org; Wed, 28 Aug 2019 18:09:08 +0000
+Received: by mail-vs1-xe42.google.com with SMTP id y16so617192vsc.3
+ for <linux-mtd@lists.infradead.org>; Wed, 28 Aug 2019 11:09:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sifive.com; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=FH2NOkI7wNtasjU18y8L32Bmo2nfckBhtCBctsbMnr8=;
+ b=T/GkjUuK2wuAJPAqyAxjsz1/mFpPPfWw/Xet/c7ibPqMgsoeq542KzUk+EBhER4BVg
+ bkUHNvJ0grvtNI7Eo28Z0qAfQGpsk4IDbys6o5r3BxAQ0kEP8L73kQ39Cpr5ep67UPH6
+ uPXzlohMnXIRz6lGViCgJCyVL89cqF/rI7odee9MU3MwmqXfeR+eCCNrhxbyWkFQA/XF
+ /S+VAztP+ge/ZlnbyIKUJ9ta37ijdoVQ9q6wxSHzqpM14b40T2BoDHgFiaMQPQ7RJ056
+ 0VOQPrd/ckrptmi8vcn7lIxH57fUo9x0LDZsk+wjw9LSoVyUESJMhuyvg09mRWASzrTp
+ QA3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-transfer-encoding
- :content-language;
- bh=otBOnvzgcCfij7khznQb839FNBhUwDL3v2TXcjGpOzs=;
- b=QZtXSZlT3kHH4Q8HALrag8fipdNBA+iUsxkR2uhspsNYRyVBdXj79IaZWxNjAwaA5k
- nlpu7AFOlmP8PK5YD75pn0U28zrGIsf3tDnj/7sLyvg2xSOIY3p+Mplvg0zd81F9qrU6
- maQk9VxgkEJCKgZm/lZG/JpNc58P/doQG4EjDFU8phcx083wEZYYxDsYdsAlU64WKDs1
- fz/WY/ocoZqpdrbE+WHXsYf/R212vj/h5AEUJlMyfpmRBiiE0fQm8z1wRFNn3Wa5cLoz
- Nm5SBuljOaMniAF3+EGHgeLkiy2ddPmTcwJxWrqUdDfsTaLMuGom68TRTj1KUHiUviGN
- pQXg==
-X-Gm-Message-State: APjAAAVi41ITDupO/YiAxOtqUrP3ICOp+rLtSLt4+iuaBQ4KVTqSGz+Z
- 3kJO4fNUsc95sl1c4xtHjtzdhw==
-X-Google-Smtp-Source: APXvYqxMi0WkPdC/TIWQ/rEP0W+6WEwgY/rp8ZhYjwRr9PMekyUrfkMqryPcx5ziGSRNx/jQnRs5oA==
-X-Received: by 2002:a17:90b:8ca:: with SMTP id
- ds10mr4474530pjb.139.1567003218534; 
- Wed, 28 Aug 2019 07:40:18 -0700 (PDT)
-Received: from nebulus.mtv.corp.google.com
- ([2620:15c:211:200:5404:91ba:59dc:9400])
- by smtp.googlemail.com with ESMTPSA id t9sm7295641pgj.89.2019.08.28.07.40.15
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 28 Aug 2019 07:40:17 -0700 (PDT)
-Subject: Re: [PATCH v8] Add flags option to get xattr method paired to
- __vfs_getxattr
-To: Christoph Hellwig <hch@infradead.org>
-References: <20190827150544.151031-1-salyzyn@android.com>
- <20190828142423.GA1955@infradead.org>
-From: Mark Salyzyn <salyzyn@android.com>
-Message-ID: <5dd09a38-fffb-36f2-505b-be2ddf6bb750@android.com>
-Date: Wed, 28 Aug 2019 07:40:15 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=FH2NOkI7wNtasjU18y8L32Bmo2nfckBhtCBctsbMnr8=;
+ b=dy6XZIR06xTqfiYjRIohqVmy3WGn6oClfnl/FTNPlvDTxzU1VzwlpRD6GZVKR3fG/K
+ j3zjqeyjj7eciPiqIYsKclwHPp/0fLoyzmXwCTJJPGZaKV1VHtQCoI7ShgYpBEkS52yQ
+ JE7PsQN1UoUZDfrYBJxEz6T9UMrLAWMrxF98Q0rn4I+SIrxTVvYQT8dl8IyqWNLJVoh+
+ brhgZfMGtrCulNLExv+Ik7JFvsl1Nz8l+fgH03tQzMU6tSWKapUwTZ7oKpazcQzB5WOK
+ yTKKg/fNioxxs5ER24FUhTS34xbq9TjMSx3/a875tcoQeUyPLckAjmWWWATmtixE5dGj
+ J7xQ==
+X-Gm-Message-State: APjAAAVf/gVoEA0MCxNpu6iz2VvnrFAft8oR3doe+PLF9UtEK4/4ZTyD
+ 9nDfmhBNk5JXQdAbrrUYWdryWZS7n2wTPvdKCjg8lQ==
+X-Google-Smtp-Source: APXvYqyURo7rnH5WL7d4rlsbKyu3inzGzxxABHgNQwJFaoudu7gS//knOa/s/zMfx2shYgTXGc5/sEZ5pfMhx5xHJb8=
+X-Received: by 2002:a67:2d08:: with SMTP id t8mr3371760vst.178.1567015744349; 
+ Wed, 28 Aug 2019 11:09:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190828142423.GA1955@infradead.org>
-Content-Language: en-GB
+References: <1565699895-4770-1-git-send-email-sagar.kadam@sifive.com>
+ <1565699895-4770-2-git-send-email-sagar.kadam@sifive.com>
+ <CAEUhbmU6xHjUWK3iM_RqURHGuqgmSxQw6RtWthT4+2aL1xLDcA@mail.gmail.com>
+In-Reply-To: <CAEUhbmU6xHjUWK3iM_RqURHGuqgmSxQw6RtWthT4+2aL1xLDcA@mail.gmail.com>
+From: Sagar Kadam <sagar.kadam@sifive.com>
+Date: Wed, 28 Aug 2019 11:08:53 -0700
+Message-ID: <CAARK3H=gNy7o0NL6KCkcBQANoutwhMHE_-nfbfB2NVUATRgemA@mail.gmail.com>
+Subject: Re: [PATCH v8 1/4] mtd: spi-nor: add support for is25wp256
+To: Bin Meng <bmeng.cn@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190828_074020_260922_1F0810E7 
-X-CRM114-Status: GOOD (  16.75  )
+X-CRM114-CacheID: sfid-20190828_110906_805574_36823BF1 
+X-CRM114-Status: GOOD (  19.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,76 +90,100 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Latchesar Ionkov <lucho@ionkov.net>, Hugh Dickins <hughd@google.com>,
- Mike Marshall <hubcap@omnibond.com>, James Morris <jmorris@namei.org>,
- devel@lists.orangefs.org, Eric Van Hensbergen <ericvh@gmail.com>,
- Joel Becker <jlbec@evilplan.org>, Anna Schumaker <anna.schumaker@netapp.com>,
- Trond Myklebust <trond.myklebust@hammerspace.com>,
- Mathieu Malaterre <malat@debian.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
- Jan Kara <jack@suse.com>, Casey Schaufler <casey@schaufler-ca.com>,
- Andrew Morton <akpm@linux-foundation.org>, Dave Kleikamp <shaggy@kernel.org>,
- linux-doc@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
- Chao Yu <yuchao0@huawei.com>, Mimi Zohar <zohar@linux.ibm.com>,
- linux-cifs@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
- "Darrick J. Wong" <darrick.wong@oracle.com>,
- Eric Sandeen <sandeen@sandeen.net>, kernel-team@android.com,
- selinux@vger.kernel.org, Brian Foster <bfoster@redhat.com>,
- reiserfs-devel@vger.kernel.org, Tejun Heo <tj@kernel.org>,
- Jaegeuk Kim <jaegeuk@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
- Miklos Szeredi <miklos@szeredi.hu>, linux-f2fs-devel@lists.sourceforge.net,
- Benjamin Coddington <bcodding@redhat.com>, linux-integrity@vger.kernel.org,
- Martin Brandenburg <martin@omnibond.com>, Chris Mason <clm@fb.com>,
- linux-mtd@lists.infradead.org, linux-afs@lists.infradead.org,
- Jonathan Corbet <corbet@lwn.net>, Vyacheslav Dubeyko <slava@dubeyko.com>,
- Allison Henderson <allison.henderson@oracle.com>,
- Ilya Dryomov <idryomov@gmail.com>, linux-ext4@vger.kernel.org,
- Stephen Smalley <sds@tycho.nsa.gov>, Serge Hallyn <serge@hallyn.com>,
- Gao Xiang <gaoxiang25@huawei.com>, Eric Paris <eparis@parisplace.org>,
- ceph-devel@vger.kernel.org, linux-nfs@vger.kernel.org, linux-mm@kvack.org,
- samba-technical@lists.samba.org, linux-xfs@vger.kernel.org,
- Bob Peterson <rpeterso@redhat.com>, linux-fsdevel@vger.kernel.org,
- linux-erofs@lists.ozlabs.org, "David S. Miller" <davem@davemloft.net>,
- ocfs2-devel@oss.oracle.com, jfs-discussion@lists.sourceforge.net,
- Jan Kara <jack@suse.cz>, Eric Biggers <ebiggers@google.com>,
- Dominique Martinet <asmadeus@codewreck.org>,
- Adrian Hunter <adrian.hunter@intel.com>, David Howells <dhowells@redhat.com>,
- Joseph Qi <joseph.qi@linux.alibaba.com>,
- Andreas Dilger <adilger.kernel@dilger.ca>, devel@driverdev.osuosl.org,
- "J. Bruce Fields" <bfields@redhat.com>,
- Andreas Gruenbacher <agruenba@redhat.com>, Sage Weil <sage@redhat.com>,
- Richard Weinberger <richard@nod.at>, Mark Fasheh <mark@fasheh.com>,
- cluster-devel@redhat.com, Steve French <sfrench@samba.org>,
- v9fs-developer@lists.sourceforge.net, Bharath Vedartham <linux.bhar@gmail.com>,
- Jann Horn <jannh@google.com>, ecryptfs@vger.kernel.org,
- Josef Bacik <josef@toxicpanda.com>, Dave Chinner <dchinner@redhat.com>,
- David Sterba <dsterba@suse.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- netdev@vger.kernel.org, linux-unionfs@vger.kernel.org, stable@vger.kernel.org,
- Tyler Hicks <tyhicks@canonical.com>, linux-security-module@vger.kernel.org,
- Phillip Lougher <phillip@squashfs.org.uk>,
- David Woodhouse <dwmw2@infradead.org>, linux-btrfs@vger.kernel.org,
- Alexander Viro <viro@zeniv.linux.org.uk>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Cc: Albert Ou <aou@eecs.berkeley.edu>, Vignesh R <vigneshr@ti.com>,
+ tudor.ambarus@microchip.com, Richard Weinberger <richard@nod.at>,
+ Palmer Dabbelt <palmer@sifive.com>,
+ linux-kernel <linux-kernel@vger.kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd <linux-mtd@lists.infradead.org>,
+ Paul Walmsley <paul.walmsley@sifive.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ linux-riscv <linux-riscv@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gOC8yOC8xOSA3OjI0IEFNLCBDaHJpc3RvcGggSGVsbHdpZyB3cm90ZToKPiBPbiBUdWUsIEF1
-ZyAyNywgMjAxOSBhdCAwODowNToxNUFNIC0wNzAwLCBNYXJrIFNhbHl6eW4gd3JvdGU6Cj4+IFJl
-cGxhY2UgYXJndW1lbnRzIGZvciBnZXQgYW5kIHNldCB4YXR0ciBtZXRob2RzLCBhbmQgX192ZnNf
-Z2V0eGF0dHIKPj4gYW5kIF9fdmZzX3NldGF4dHIgZnVuY3Rpb25zIHdpdGggYSByZWZlcmVuY2Ug
-dG8gdGhlIGZvbGxvd2luZyBub3cKPj4gY29tbW9uIGFyZ3VtZW50IHN0cnVjdHVyZToKPiBZaWtl
-cy4gIFRoYXQgbG9va3MgbGlrZSBhIG1lc3MuICBXaHkgY2FuJ3Qgd2UgcGFzcyBhIGtlcm5lbC1v
-bmx5Cj4gZmxhZyBpbiB0aGUgZXhpc3RpbmcgZmxhZ3MgZmllbGQgZm9yIOKCiz5zZXQgYW5kIGFk
-ZCBhIGZsYWdzIGZpZWxkCj4gdG8gLT5nZXQ/ICBQYXNzaW5nIG1ldGhvZHMgYnkgc3RydWN0dXJl
-IGFsd2F5cyB0ZW5kcyB0byBiZSBhIG1lc3MuCgpUaGlzIHdhcyBhIHJlc3BvbnNlIHRvIEdyZWdL
-SEAgY3JpdGljaXNtLCBhbiBlYXJsaWVyIHBhdGNoIHNldCBqdXN0IAphZGRlZCBhIGZsYWcgYXMg
-eW91IHN0YXRlZCB0byBnZXQgbWV0aG9kLCB1bnRpbCBjb21wbGFpbnRzIG9mIGFuIApleGNlc3Np
-dmVseSBsb25nIGFyZ3VtZW50IGxpc3QgYW5kIGZyYWdpbGl0eSB0byBhZGQgb3IgY2hhbmdlIG1v
-cmUgCmFyZ3VtZW50cy4KClNvIG1hbnkgd2F5cyBoYXZlIGJlZW4gdHJpZWQgdG8gc2tpbiB0aGlz
-IGNhdCAuLi4gdGhlIHJpc2sgd2FzIHRha2VuIHRvIApwbGVhc2Ugc29tZSwgYW5kIHdlIG5vdyBo
-YXZlIGh1bmRyZWRzIG9mIHN0YWtlaG9sZGVycywgd2hlbiB0aGUgZmlyc3QgCnBhdGNoIHNldCB3
-YXMgbGVzcyB0aGFuIGEgZG96ZW4uIEEgcmVjaXBlIGZvciBmYWlsdXJlPwoKLS0gTWFyawoKCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51
-eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Hi Bin,
+
+On Mon, Aug 26, 2019 at 2:49 AM Bin Meng <bmeng.cn@gmail.com> wrote:
+>
+> On Tue, Aug 13, 2019 at 8:40 PM Sagar Shrikant Kadam
+> <sagar.kadam@sifive.com> wrote:
+> >
+> > Update spi_nor_id table for is25wp256 (32MB) device from ISSI,
+> > present on HiFive Unleashed dev board (Rev: A00).
+> >
+> > Set method to enable quad mode for ISSI device in flash parameters
+> > table.
+> >
+> > Based on code originally written by Wesley Terpstra <wesley@sifive.com>
+> > and/or Palmer Dabbelt <palmer@sifive.com>
+> > https://github.com/riscv/riscv-linux/commit/c94e267766d62bc9a669611c3d0c8ed5ea26569b
+> >
+> > Signed-off-by: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
+> > Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
+> > ---
+> >  drivers/mtd/spi-nor/spi-nor.c | 9 ++++++++-
+> >  include/linux/mtd/spi-nor.h   | 1 +
+> >  2 files changed, 9 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> > index 03cc788..6635127 100644
+> > --- a/drivers/mtd/spi-nor/spi-nor.c
+> > +++ b/drivers/mtd/spi-nor/spi-nor.c
+> > @@ -1946,7 +1946,10 @@ static int spi_nor_spansion_clear_sr_bp(struct spi_nor *nor)
+> >                         SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+> >         { "is25wp128",  INFO(0x9d7018, 0, 64 * 1024, 256,
+> >                         SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+> > -
+> > +       { "is25wp256", INFO(0x9d7019, 0, 64 * 1024, 1024,
+>
+> The sector number should be 512, not 1024.
+
+Thanks for pointing this out.
+I had rectified it in recent U-boot patchset here
+  https://patchwork.ozlabs.org/patch/1146522/
+but I missed the change in the linux one as it was sent earlier.
+I will include this change in the next version of the patch
+
+Thanks & BR,
+Sagar
+>
+> > +                       SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+> > +                       SPI_NOR_4B_OPCODES)
+> > +       },
+> >         /* Macronix */
+> >         { "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
+> >         { "mx25l2005a",  INFO(0xc22012, 0, 64 * 1024,   4, SECT_4K) },
+> > @@ -3776,6 +3779,10 @@ static int spi_nor_init_params(struct spi_nor *nor,
+> >                 case SNOR_MFR_ST:
+> >                 case SNOR_MFR_MICRON:
+> >                         break;
+> > +               case SNOR_MFR_ISSI:
+> > +                       params->quad_enable = macronix_quad_enable;
+> > +                       break;
+> > +
+> >
+> >                 default:
+> >                         /* Kept only for backward compatibility purpose. */
+> > diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> > index 9f57cdf..5d6583e 100644
+> > --- a/include/linux/mtd/spi-nor.h
+> > +++ b/include/linux/mtd/spi-nor.h
+> > @@ -21,6 +21,7 @@
+> >  #define SNOR_MFR_INTEL         CFI_MFR_INTEL
+> >  #define SNOR_MFR_ST            CFI_MFR_ST      /* ST Micro */
+> >  #define SNOR_MFR_MICRON                CFI_MFR_MICRON  /* Micron */
+> > +#define SNOR_MFR_ISSI          0x9d            /* ISSI */
+> >  #define SNOR_MFR_MACRONIX      CFI_MFR_MACRONIX
+> >  #define SNOR_MFR_SPANSION      CFI_MFR_AMD
+> >  #define SNOR_MFR_SST           CFI_MFR_SST
+>
+> Regards,
+> Bin
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
