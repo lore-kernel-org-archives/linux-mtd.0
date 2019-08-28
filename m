@@ -2,22 +2,22 @@ Return-Path: <SRS0=Lrxn=WY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AD27C3A5A1
-	for <linux-mtd@archiver.kernel.org>; Wed, 28 Aug 2019 10:18:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3B46C3A5A1
+	for <linux-mtd@archiver.kernel.org>; Wed, 28 Aug 2019 10:19:26 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DF09D217F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 28 Aug 2019 10:18:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B8E85208CB
+	for <linux-mtd@archiver.kernel.org>; Wed, 28 Aug 2019 10:19:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VZ9ug0l4";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="KkUYv3qE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DF09D217F5
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VIr83quL";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="XDPc875w"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B8E85208CB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,19 +26,19 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
 	References:Message-ID:Date:Subject:To:From:Reply-To:Cc:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OKRYFocNJG2Z4xyT4B5KgCMp5Jz0uF6wGt/7x01BmTM=; b=VZ9ug0l4LYKXtH
-	IQ96gQT3oV6xzVEqybGtSJuCrJRVp6VUyeJqfgch1y2SzGBQ6BJUhkHdL6cRXh2wPm6jZ5uX0I7ec
-	BaEAFxtvJKfkQ03iwC4Q8fTAt3Geh4PPnzYCcRLNMHEK5L7Klxq/qYchaRfm52EqrUkNuTwKIYs0m
-	ZHhdAlkyTPHTdUBiq5aMSHWj/VZkmwJlMnTNtMkm19ovNZInrMp2RIUU0bBVVRwHcARfN5l1lxlrZ
-	38oxTMOBT6LqLhnu8YEp2qXWorPDdovzbHZ1NYua9MI840Y50I1YOmA2beGQLdpk1/FaxmYSalZU3
-	rPuuAEGh28FQ6K1K6w8w==;
+	List-Owner; bh=Cr7wbQHnIu0ahH4cmLn/bJThMOZYIivdgthXWkWfx7E=; b=VIr83quLzKY6pq
+	2wrR4+AZUCyjvlPFczL2Gf5XziwtvVtt3xv+2fawJ0ViU5aWqdxjqZQbSSIovEEV53kcg5r79qfiQ
+	sbOSaAovSiyHzvm56IpJ49xxF3AHcum7UL+xt/doMxOyVSbb8LKr9JKbarANBnBnYQ2wM3cIK3Q+a
+	Sz/FE6SQIcZYs+SV94eXPmqoJfuIWpvDFY3Vv/nsHeH3b8QtHSUJtskuaJuXN/fAX3ozxH0vaB+UO
+	QQTItA86KVHyX8Wnd/QftKo9AJ1FSu76HZPWPpLCob5LGL1AQBYkXFwoOWwZAlTd9DQhmGmwZ39bS
+	rCMzvbgX/lsVdqt1W83A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i2v2P-0007cN-3L; Wed, 28 Aug 2019 10:18:49 +0000
+	id 1i2v30-00082O-Ak; Wed, 28 Aug 2019 10:19:26 +0000
 Received: from esa1.microchip.iphmx.com ([68.232.147.91])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i2v2J-0007aO-Hk
- for linux-mtd@lists.infradead.org; Wed, 28 Aug 2019 10:18:47 +0000
+ id 1i2v2w-000820-SR
+ for linux-mtd@lists.infradead.org; Wed, 28 Aug 2019 10:19:24 +0000
 Received-SPF: Pass (esa1.microchip.iphmx.com: domain of
  Tudor.Ambarus@microchip.com designates 198.175.253.82 as
  permitted sender) identity=mailfrom;
@@ -61,31 +61,31 @@ Authentication-Results: esa1.microchip.iphmx.com;
  spf=None smtp.helo=postmaster@email.microchip.com;
  dkim=pass (signature verified) header.i=@microchiptechnology.onmicrosoft.com;
  dmarc=pass (p=none dis=none) d=microchip.com
-IronPort-SDR: Hne+sonuOIuUTYQYmdBaSu7N+tSKmViNqadsTj1QabcCfymnHNL7AYJ5uT4OCq5W+mIkF0Avnh
- PZ1jORtGtUvBUVem4eSVYjcr8BjXOzLJQ9mROiZMpaMx8Wu8nqv8zCD1EXGCTA8oXDaon897nD
- 1avqA3adFQlfen1joycC8BIUdr+gVY2C+DtH9smuvtReCANYE4JiO2CwdvTHoALzgk5V1D/Cfo
- dllfOGlyYMjXz+jAratLEpbnknjlSMAl8L9Wc3kPByRECmGOjpcIVSbEwTbHbaogMVE/Y57+2K
- tR0=
-X-IronPort-AV: E=Sophos;i="5.64,440,1559545200"; d="scan'208";a="48305702"
+IronPort-SDR: vlio57bwePCraNwc6A/CoDO9e1ug0UroM4FjR8mwOESHA22u8mcoxTB2q3tBEiniqEp6oZo+n/
+ 0tZiZ7EFw4BLFQLkR5dd+quprsfc1VZnkYqknxL/MTJf4WFxNOZejSOhXlwx5gdcHGm9Cd1/ff
+ nsi3mR0NvOz5xcE01kqyf2GC5kQ2Hp+a6faASfrVrC9cBZOUnbWU7sK/3Z4M8UW9ULJvgRfvNv
+ qOGz+1SjOCuee1jgJ0Z3cZcC9/bWIi9nlIphTM0R8/LDapkVqkqfy8Vl7uTjkUEphgCiOFMhfQ
+ onI=
+X-IronPort-AV: E=Sophos;i="5.64,440,1559545200"; d="scan'208";a="48305850"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 28 Aug 2019 03:18:35 -0700
+ 28 Aug 2019 03:19:21 -0700
 Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
  chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 28 Aug 2019 03:18:35 -0700
+ 15.1.1713.5; Wed, 28 Aug 2019 03:19:16 -0700
 Received: from NAM02-SN1-obe.outbound.protection.outlook.com (10.10.215.89) by
  email.microchip.com (10.10.87.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Wed, 28 Aug 2019 03:18:35 -0700
+ via Frontend Transport; Wed, 28 Aug 2019 03:19:15 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MzbxZesxY2INSF1ZsC+nKBuAMrglH9wpgrSmZY6zu6FC4xeOhQ3BcKgBh1ct/08/2Y3bA8Rt/SlZ0MOEJ/CqmMjxd/2B6U2KXLu5xRpfxhOJPdHfcI5qzFsSwLi+PtTS4gHHfYRfod1KuXsWAO/P82k6nIC3cFOUuPXJA/FhmYbE2M/VNGfEw8om1/Hudk28cxKYastBqvkb88/qKWpWqkQ2mKLsSqMlU426ApZualSIqjOyuJDHjpx/XXPBIjxAY2uPUgN3i1L0mL8Dz4OcfGH4cpRQ8Hc4L9y3n60oS14iNpC1jvWrR/AgR+Ja+dS1WXnBWkIkjq3Y7QWzqwobGQ==
+ b=j74woCEEUaZT5SWAXrD7loGf8TC3nrOKWhVEQIlEvNd70J5a3qmKZ49XH1rsWQaP8sWKxf+kxHpq92K9crK/EnZyYq0SO36V2k1DX1uBrraeNn39simfbzyiDdDer3q7YE7A4BNxStDVCogob6CNgfyghjX3QSw/Va8+cOJy1omzm0lVYbgOxY3t0NJC818uce7Fj6CQhKkIxlD/azjE6zs8OhzILwdP/Z4njTM5+ur7riw+wmKo0xc/pZmwoDyxT907gZfTVbO6Nf4GBkeiW0ID8JVXjqYzmqqxhK4GOLsUhr18QPAZmgUJxH/U7WV3OLuyCdGPcwuNP6sTVkwppQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9AzZwaGPlieZfa9qWIFaQ6Bbb22POZhg1ABVFgDTEFA=;
- b=OyuSBkw5+ApnRZfj+/AG3/Wv5w1n+axfnM3BUrjXns1+NsHgF2rvsZlzk+grw78CBC9WrPENcL7a2sSxsXds/7l5VAFD2zuS7wJcMwKAOni/JszJaas5Ggc2QoT8y66blOFAUTb0Y+PsNQA+lFB/nw5zkHos7gKZiXN/Cj3v7VQLyVe5SFHW3A/qEuoPuL6xNxzXRK8TtfuahE9i3zHdCMEx79r16v1SpjsSQ0YfyoSk1JsPK4b+y+4ar55wlJrzy2hUkDpCsHni0YUEsdr0U+IDZst4XzL6G985G+MNMmIJmDWjGX+cXUxQA4X8R7b3Qtf2WuYEFoLs/BPiZS0AOA==
+ bh=S04HuFQXQ67d5c+VIHf85dlaTl8L1EFHf+UmS4/Mb7M=;
+ b=W9UQgnl22k/GJfBv1AepFsrjrRTVMDnb105a0ALM5qiDDCmaOvKm+LCjXzA7Ov1vxZH6HhDEooc9n9RMK54TaWPlmYORv3H04X4l7i/jnWFPfC9xTwHWRLaDylSPsS3N325QPaxVtRDJiVs2CunNqZUdMcbRS8tHWbAZY9cCsxEwWRoTHiO0zSicfaJvtbzw9/NkWvSCenBZjgxEbOd5bzpMHxmpiKezSMofk/mEsp2phx3M6W0Eqgv9stnkkFB/9n8dyOjoL0uzNclmwERwldFcCJ6vYvJnJacTIiIEwoUM9b4tU7Pi5EMpyWk9qNlwqIoIyfrFDMpjXvx2PxS7zA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=microchip.com; dmarc=pass action=none
  header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
@@ -93,68 +93,69 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=microchiptechnology.onmicrosoft.com;
  s=selector2-microchiptechnology-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9AzZwaGPlieZfa9qWIFaQ6Bbb22POZhg1ABVFgDTEFA=;
- b=KkUYv3qE2TwTCNaO1a8AnaPdYSUS2U1yyEukEYtCFkVZFjAA5ubmBSOxguWvPpmp0KcsGA0BgIKqrfHJ7pBbdFYD61CTBHJS0T/HriGxnDGWkgh/PQGUPEkPB4ra+OUsdBRJeF4KKcAtmaq48iPqlhIeey5i7tk4qFu1G6momqY=
+ bh=S04HuFQXQ67d5c+VIHf85dlaTl8L1EFHf+UmS4/Mb7M=;
+ b=XDPc875wklRctPn7iCJqUIz08Q34VLkrca1EYTOL6QeqgNAhNQ/YI4mD8nsq6w7AXEZ5gYjbqWeg+AXW6jEFUaJKm4VOA0Y8u3yQue8VwWU/I5vXgbfxSyejmWSs6mgI48napoiJlMIf3tz40AItqTbxzA4eL5ELBld3AU/CRzA=
 Received: from MN2PR11MB4448.namprd11.prod.outlook.com (52.135.39.157) by
  MN2PR11MB3727.namprd11.prod.outlook.com (20.178.252.13) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2199.21; Wed, 28 Aug 2019 10:18:34 +0000
+ 15.20.2199.21; Wed, 28 Aug 2019 10:19:14 +0000
 Received: from MN2PR11MB4448.namprd11.prod.outlook.com
  ([fe80::70c3:e929:4da2:60a5]) by MN2PR11MB4448.namprd11.prod.outlook.com
  ([fe80::70c3:e929:4da2:60a5%7]) with mapi id 15.20.2199.021; Wed, 28 Aug 2019
- 10:18:34 +0000
+ 10:19:14 +0000
 From: <Tudor.Ambarus@microchip.com>
-To: <boris.brezillon@collabora.com>, <marek.vasut@gmail.com>,
- <vigneshr@ti.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [RESEND PATCH v3 00/20] mtd: spi-nor: move manuf out of the core
-Thread-Topic: [RESEND PATCH v3 00/20] mtd: spi-nor: move manuf out of the core
-Thread-Index: AQHVXAb5BskU+i2FLEuxBjAKiOchAqcQW80A
-Date: Wed, 28 Aug 2019 10:18:33 +0000
-Message-ID: <8fced5c4-4a22-8445-8838-ea61c416698c@microchip.com>
-References: <20190826120821.16351-1-tudor.ambarus@microchip.com>
-In-Reply-To: <20190826120821.16351-1-tudor.ambarus@microchip.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <marek.vasut@gmail.com>,
+ <vigneshr@ti.com>, <trivial@kernel.org>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH trivial] mtd: spi-nor: Remove unused macro
+Thread-Topic: [PATCH trivial] mtd: spi-nor: Remove unused macro
+Thread-Index: AQHVWckCovcz0915vkiPSX7w3f/ICKcQYHsA
+Date: Wed, 28 Aug 2019 10:19:14 +0000
+Message-ID: <08a97755-7c0e-e6ea-9c97-383ebaf7f93c@microchip.com>
+References: <20190823153946.12860-1-tudor.ambarus@microchip.com>
+In-Reply-To: <20190823153946.12860-1-tudor.ambarus@microchip.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-clientproxiedby: VI1PR0102CA0044.eurprd01.prod.exchangelabs.com
- (2603:10a6:803::21) To MN2PR11MB4448.namprd11.prod.outlook.com
+x-clientproxiedby: VI1PR0102CA0049.eurprd01.prod.exchangelabs.com
+ (2603:10a6:803::26) To MN2PR11MB4448.namprd11.prod.outlook.com
  (2603:10b6:208:193::29)
 x-ms-exchange-messagesentrepresentingtype: 1
 x-originating-ip: [94.177.32.156]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 79be0cd8-d143-41a6-4181-08d72ba114d2
+x-ms-office365-filtering-correlation-id: 382186a9-b792-4639-f112-08d72ba12d2a
 x-microsoft-antispam: BCL:0; PCL:0;
  RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(2017052603328)(7193020);
  SRVR:MN2PR11MB3727; 
 x-ms-traffictypediagnostic: MN2PR11MB3727:
 x-ms-exchange-purlcount: 1
-x-microsoft-antispam-prvs: <MN2PR11MB372788364116A63E26D6E8DBF0A30@MN2PR11MB3727.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-microsoft-antispam-prvs: <MN2PR11MB37276020B31D1588F3BFA561F0A30@MN2PR11MB3727.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:983;
 x-forefront-prvs: 014304E855
 x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(39860400002)(396003)(366004)(346002)(376002)(136003)(189003)(199004)(446003)(6246003)(11346002)(76176011)(2616005)(6436002)(2201001)(6306002)(25786009)(5660300002)(36756003)(99286004)(6506007)(6486002)(316002)(6512007)(14444005)(256004)(2501003)(486006)(53936002)(2906002)(476003)(52116002)(66066001)(71190400001)(229853002)(102836004)(186003)(478600001)(81156014)(81166006)(110136005)(8676002)(966005)(86362001)(26005)(66446008)(64756008)(66556008)(66476007)(305945005)(6116002)(14454004)(3846002)(31696002)(7736002)(8936002)(66946007)(71200400001)(31686004)(53546011)(386003);
+ SFS:(10009020)(39860400002)(396003)(366004)(346002)(376002)(136003)(189003)(199004)(446003)(4744005)(6246003)(11346002)(76176011)(2616005)(6436002)(2201001)(6306002)(25786009)(5660300002)(36756003)(99286004)(6506007)(6486002)(316002)(6512007)(14444005)(256004)(2501003)(486006)(53936002)(2906002)(476003)(52116002)(66066001)(71190400001)(229853002)(102836004)(186003)(478600001)(81156014)(81166006)(110136005)(8676002)(966005)(86362001)(26005)(66446008)(64756008)(66556008)(66476007)(305945005)(6116002)(14454004)(3846002)(31696002)(7736002)(8936002)(66946007)(71200400001)(31686004)(53546011)(386003);
  DIR:OUT; SFP:1101; SCL:1; SRVR:MN2PR11MB3727;
  H:MN2PR11MB4448.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
  PTR:InfoNoRecords; MX:1; A:1; 
 received-spf: None (protection.outlook.com: microchip.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: CJwVI2e92fWcobikBCdukMU8WybP2kIaB7JFsIm78NvHNssmChGQDnRbPFrEStmEGf/LvrPoiNHeazCWmGNVI70E1W2YBuUMB3acLwRmF0VfaYLLLX/vxaWzOyOvMVNUJxPVcIEAO5mZbAZti3n0JIXdqP57QLUuVujSLLMCieZucqnS2+ak25/fPk/e53IXJa3M1Bpqe6Z3nqUbJacCM64QuxrNnvRYUkDFzzjUKASypzadHfUX7OnCxPM2kY3pIp1P8YEKmmBMzc5/eFzmaJzcwmIAj3hIC+BCqQhZzswrH7exxbfoGcFYja4AKLAPGTTV1YwHyZGzcNQ++EyWUOW7hSgRlSd9H4MaJ5B51n+hKlSdX8C4itSOzu+PiKRgF2XJaZQmMEuy8rtCXUvInK65f7M3r7Xt0wvMezEKmcQ=
+x-microsoft-antispam-message-info: OQvb4ouA12RhGaZw6dORvHpNcpHWVmRQqvHWURJvZ81ZbWEUX2yJBW8yjYfXnwZSbS0aNFmKSzqhkixN6dkf28uLIZcuiuizxX2jEBVNbasUNha+Rzw6T40H/hEPc/7tNzrzaaDRWELdrjLQICyVYhjVU3OX4kShpVabljKBnzcw9ls/VRQFZFFqZTiTMcHYcFCFoD9AwZj9xrWBY9gv9De82trT6KdIdbquner8hqzMqrhQCWh6pRLMKTACGYcv+DGBN06pIngt2VRlAjA1JmOfwhjrNqMVWh7QjgAW3B7m+GMpa54guYQx4zWiu2j9e1RuYdJ7fyMWY8w3P0/0YuryIzEgahZEkuWuJCTHNbsDKLOqeTfUfjBJmMrYxVmE47L5On2xHAUQQD0m1RaDrcSNe4eDZddhVngJno85Jxc=
 x-ms-exchange-transport-forked: True
-Content-ID: <2EFD104D4F35294C82AE6C2A3383335A@namprd11.prod.outlook.com>
+Content-ID: <94080E5CA9E3BB48920727EA4317D839@namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 79be0cd8-d143-41a6-4181-08d72ba114d2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Aug 2019 10:18:33.8975 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 382186a9-b792-4639-f112-08d72ba12d2a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Aug 2019 10:19:14.6840 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 203ycDiBm9s6prCPTR3XiNtQv+U3wj2KcFc1VjpQlaBFEiPbu6r22EjR6CHXFJrKDjaIcrevFlepCoaPmPtjaeOk6dAEEtg7AI2aGYTog40=
+X-MS-Exchange-CrossTenant-userprincipalname: Noq7upA6TBMzIshzHjax7dS7jnOv7aLvrsbMfeAeFd153oqstq23ZoJecz5BZlEEROOt0Gwlm+C8BVUs7g30RxWsgk9IpR5tiNTgk16OtrE=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB3727
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190828_031843_706375_3CD80558 
-X-CRM114-Status: GOOD (  19.79  )
+X-CRM114-CacheID: sfid-20190828_031923_028817_8DE37C71 
+X-CRM114-Status: UNSURE (   7.36  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -173,102 +174,18 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
 
-On 08/26/2019 03:08 PM, Tudor Ambarus - M18064 wrote:
+On 08/23/2019 06:39 PM, Tudor Ambarus - M18064 wrote:
 > From: Tudor Ambarus <tudor.ambarus@microchip.com>
 > 
-> v3:
-> - Drop patches:
->   "mtd: spi-nor: Move clear_sr_bp() to 'struct spi_nor_flash_parameter'"
->   "mtd: spi-nor: Rework the disabling of block write protection"
-> and replace them with the RFC patch:
->   "mtd: spi-nor: Rework the disabling of block write protection"
-> - rename spi_nor_legacy_init_params() to spi_nor_info_init_params()
-> - rebase patches and send them all in a single patch set.
+> Remove leftover from nor->cmd_buf.
 > 
-> v2:
-> - addressed all the comments
-> - all flash parameters and settings are now set in 'struct
->   spi_nor_flash_parameter', for a clearer separation between the SPI NOR
->   layer and the flash params.
-> 
-> In order to test this, you'll have to merge v5.3-rc5 in spi-nor/next.
-> This patch set depends on
-> 'commit 834de5c1aa76 ("mtd: spi-nor: Fix the disabling of write protection at init")
-> 
-> The scope of the "mtd: spi-nor: move manuf out of the core" batches,
-> is to move all manufacturer specific code out of the spi-nor core.
-> 
-> In the quest of removing the manufacturer specific code from the spi-nor
-> core, we want to impose a timeline/priority on how the flash parameters
-> are updated. As of now. the flash parameters initialization logic is as
-> following:
-> 
->     a/ default flash parameters init in spi_nor_init_params()
->     b/ manufacturer specific flash parameters updates, split across entire
->        spi-nor core code
->     c/ flash parameters updates based on SFDP tables
->     d/ post BFPT flash parameter updates
-> 
-> With the "mtd: spi-nor: move manuf out of the core" batches, we want to
-> impose the following sequence of calls:
-> 
->     1/ spi-nor core legacy flash parameters init:
->             spi_nor_default_init_params()
-> 
->     2/ MFR-based manufacturer flash parameters init:
->             nor->manufacturer->fixups->default_init()
-> 
->     3/ specific flash_info tweeks done when decisions can not be done just
->        on MFR:
->             nor->info->fixups->default_init()
-> 
->     4/ SFDP tables flash parameters init - SFDP knows better:
->             spi_nor_sfdp_init_params()
-> 
->     5/ post SFDP tables flash parameters updates - in case manufacturers
->        get the serial flash tables wrong or incomplete.
->             nor->info->fixups->post_sfdp()
->        The later can be extended to nor->manufacturer->fixups->post_sfdp()
->        if needed.
-> 
-> Setting of flash parameters will no longer be spread interleaved across
-> the spi-nor core, there will be a clear separation on who and when will
-> update the flash parameters.
-> 
-> Tested on sst26vf064b with atmel-quadspi SPIMEM driver.
-> 
-> Boris Brezillon (7):
->   mtd: spi-nor: Add a default_init() fixup hook for gd25q256
->   mtd: spi-nor: Create a ->set_4byte() method
->   mtd: spi-nor: Rework the SPI NOR lock/unlock logic
->   mtd: spi-nor: Add post_sfdp() hook to tweak flash config
->   mtd: spi-nor: Add spansion_post_sfdp_fixups()
->   mtd: spi-nor: Add a ->convert_addr() method
->   mtd: spi-nor: Add the SPI_NOR_XSR_RDY flag
-> 
-> Tudor Ambarus (13):
->   mtd: spi-nor: Regroup flash parameter and settings
->   mtd: spi-nor: Use nor->params
->   mtd: spi-nor: Drop quad_enable() from 'struct spi-nor'
->   mtd: spi-nor: Move erase_map to 'struct spi_nor_flash_parameter'
->   mtd: spi-nor: Add default_init() hook to tweak flash parameters
->   mtd: spi_nor: Move manufacturer quad_enable() in ->default_init()
->   mtd: spi-nor: Split spi_nor_init_params()
->   mtd: spi_nor: Add a ->setup() method
->   mtd: spi-nor: Add s3an_post_sfdp_fixups()
->   mtd: spi-nor: Bring flash params init together
->   mtd: spi_nor: Introduce spi_nor_set_addr_width()
->   mtd: spi-nor: Introduce spi_nor_get_flash_info()
->   mtd: spi-nor: Rework the disabling of block write protection
-> 
->  drivers/mtd/spi-nor/spi-nor.c | 1304 +++++++++++++++++++++++------------------
->  include/linux/mtd/spi-nor.h   |  298 +++++++---
->  2 files changed, 927 insertions(+), 675 deletions(-)
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> ---
+>  include/linux/mtd/spi-nor.h | 1 -
+>  1 file changed, 1 deletion(-)
 > 
 
-Addressed Boris's and Vingnesh's latest small updates.
-
-All but last applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git,
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git,
 spi-nor/next branch.
 
 Thanks,
