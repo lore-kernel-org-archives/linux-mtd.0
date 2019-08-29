@@ -2,67 +2,90 @@ Return-Path: <SRS0=8wrd=WZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C212C3A59F
-	for <linux-mtd@archiver.kernel.org>; Thu, 29 Aug 2019 09:09:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7716C3A5A3
+	for <linux-mtd@archiver.kernel.org>; Thu, 29 Aug 2019 09:16:34 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E70C22073F
-	for <linux-mtd@archiver.kernel.org>; Thu, 29 Aug 2019 09:09:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BA85D2073F
+	for <linux-mtd@archiver.kernel.org>; Thu, 29 Aug 2019 09:16:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="t2+B4ppa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E70C22073F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TYvmn98h";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="YvGeUTNl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA85D2073F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:
-	Subject:To:References:In-Reply-To:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TrFgBJZwCGHsL4+PBk4SFfqNPoVKxeJGCHmgBkUaVu4=; b=t2+B4ppahyoayA
-	roxZ0+fjxcS1KxsO1UCFgcXlcamNDYJXFMOgO4jSMyViv4Fid2itwrHSOnH919GV7YK3Jn7IZgwSu
-	1WWlvtS/bygU91zBM/AYX+sGlfzAUM4YGVR6wEXHu0hJ7XWTDrULhwjZtkaR6hudVr5tFiyAU0Zwq
-	+GrFzkWgisagC1s+hXumqM92rS6OtkGJgW5VFGDyOSKWi1AJJxN6rQ4zfQWy0VnKC2p0UcnT7GP6P
-	DPJDjlRyX78hJcdBIqpz3ilOYL3CJccgR12ko780iag4WlHftUBX52Y2JrBZ7dIBJhWOfcNlOxMqh
-	Ic3jR899Lxy6crOYqSrA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=cX5zPa0sGe3TuJBXOxmwcW8o668uii1XK5RRE3K76tU=; b=TYvmn98ho8IWTl
+	TUtG8aK2DGXjzYQ92LRMXlF7n7s+1EOf/VxvvCVYDOowR/LCxuOCHyXEjJ3pUcPGjcHfu807KRc1X
+	3DWIvIIJzQ+z7DE9L23jePWe40QwFSQREixDE/PzYqsnWzOYBAsK+QpX2MP4DMoIC4BrTpdsmRvoV
+	M/BrqOb1ZvzvcuhfSpH/zsokB7H3YOG7VT41odSCHiarKoQeTZ3gFptN5CkVSz3mU40jVhq/pjDO9
+	rA0yUkTaEgEIC5AOEdFOhjyRfDxbJVxE2553YTTnAZZPi9g5YW65YeU/fZlhb1+AKJSL/Fjpws0Ko
+	TEAvo4+ujNi9rk1o2+Hw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i3GQN-000374-NQ; Thu, 29 Aug 2019 09:08:59 +0000
-Received: from twhmllg3.macronix.com ([122.147.135.201])
+	id 1i3GXh-0006vX-K4; Thu, 29 Aug 2019 09:16:33 +0000
+Received: from lelv0143.ext.ti.com ([198.47.23.248])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i3GQL-00036k-0l
- for linux-mtd@lists.infradead.org; Thu, 29 Aug 2019 09:08:58 +0000
-Received: from twhfmlp1.macronix.com (twhfm1p1.macronix.com [172.17.20.91])
- by TWHMLLG3.macronix.com with ESMTP id x7T97oGv092690;
- Thu, 29 Aug 2019 17:07:50 +0800 (GMT-8)
- (envelope-from masonccyang@mxic.com.tw)
-Received: from MXML06C.mxic.com.tw (mxml06c.macronix.com [172.17.14.55])
- by Forcepoint Email with ESMTP id 30071D83829036DCCD67;
- Thu, 29 Aug 2019 17:07:51 +0800 (CST)
-In-Reply-To: <20190824130329.68f310aa@xps13>
-References: <1566280428-4159-1-git-send-email-masonccyang@mxic.com.tw>
- <20190824130329.68f310aa@xps13>
-To: "Miquel Raynal" <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH] Add support for Macronix NAND randomizer
+ id 1i3GXd-0006ut-JD
+ for linux-mtd@lists.infradead.org; Thu, 29 Aug 2019 09:16:31 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id x7T9GFpW128083;
+ Thu, 29 Aug 2019 04:16:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1567070175;
+ bh=Oh+p8OBdmPRERr5UkoRBzV5cgtRo7E+kClgmsbE1yAU=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=YvGeUTNlYBRIzhCzDRRudxeyMH7X12MsNcJe8y0OU6IhDoyvtp11bkupvqsKm3+zO
+ z7NEXVFMmIVwtc6mL7CY2wDPF46EeleY8sJlg5tuQWwWjGFaCuhnVxvTq6ejAyk77r
+ Na/sZhbaAyZw/SDkr0bRKilZ7K407DWp6DdjP5J0=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x7T9GFvp008867
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Thu, 29 Aug 2019 04:16:15 -0500
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Thu, 29
+ Aug 2019 04:16:14 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
+ Frontend Transport; Thu, 29 Aug 2019 04:16:14 -0500
+Received: from [172.24.145.136] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id x7T9GBuq042642;
+ Thu, 29 Aug 2019 04:16:12 -0500
+Subject: Re: [EXT] Re: [Patch v3] drivers: mtd: spi-nor: Add flash property
+ for mt25qu512a and mt35xu02g
+To: <Tudor.Ambarus@microchip.com>, <ashish.kumar@nxp.com>,
+ <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <miquel.raynal@bootlin.com>,
+ <richard@nod.at>, <linux-mtd@lists.infradead.org>
+References: <1565692705-27749-1-git-send-email-Ashish.Kumar@nxp.com>
+ <e55cd1f9-7359-5484-d258-1f3ea51584b6@microchip.com>
+ <VI1PR04MB4015E5BA7BE9763A105AD47D95A20@VI1PR04MB4015.eurprd04.prod.outlook.com>
+ <a5049dca-e00e-ca28-7853-526ec7eac281@microchip.com>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <33252600-3823-c41e-8818-68222ab42d62@ti.com>
+Date: Thu, 29 Aug 2019 14:46:48 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-X-KeepSent: 22C5A579:E2E7676F-48258465:002F7F69;
- type=4; name=$KeepSent
-X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
-Message-ID: <OF22C5A579.E2E7676F-ON48258465.002F7F69-48258465.00322849@mxic.com.tw>
-From: masonccyang@mxic.com.tw
-Date: Thu, 29 Aug 2019 17:07:51 +0800
-X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
- HF265|July 25, 2018) at 2019/08/29 PM 05:07:51,
- Serialize complete at 2019/08/29 PM 05:07:51
-X-MAIL: TWHMLLG3.macronix.com x7T97oGv092690
+In-Reply-To: <a5049dca-e00e-ca28-7853-526ec7eac281@microchip.com>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190829_020857_332946_65C06594 
-X-CRM114-Status: GOOD (  11.56  )
+X-CRM114-CacheID: sfid-20190829_021629_721248_1C1ACBAF 
+X-CRM114-Status: GOOD (  19.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,116 +97,78 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: kstewart@linuxfoundation.org, vigneshr@ti.com, bbrezillon@kernel.org,
- juliensu@mxic.com.tw, richard@nod.at, linux-kernel@vger.kernel.org,
- frieder.schrempf@kontron.de, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, tglx@linutronix.de, computersforpeace@gmail.com,
- dwmw2@infradead.org
+Cc: kuldeep.singh@nxp.com, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hi,
 
-Hi Miquel, 
-
-
-> > 
-> > If subpage write not available with hardware ECC, for example,
-> > NAND chip options NAND_NO_SUBPAGE_WRITE be set in driver and
-> > randomizer function is recommended for high-reliability.
-> > Driver checks byte 167 of Vendor Blocks in ONFI parameter page table
-> > to see if this high-reliability function is supported.
-> > 
+On 29/08/19 1:39 PM, Tudor.Ambarus@microchip.com wrote:
+[...]
 > 
-> You did not flagged this patch as a v2 and forgot about the changelog.
-> You did not listen to our comments in the last version neither. I was
-> open to a solution with a specific DT property for warned users but I
-> don't see it coming.
+>>>> +
+>>>> +     /* Micron */
+>>>> +     { "mt25qu512a", INFO6(0x20bb20, 0x104400, 64 * 1024, 1024, SECT_4K |
+>>>> +                             USE_FSR | SPI_NOR_DUAL_READ |
+>>>> +                             SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES)
+>>>> + },
+>>>
+>>> I'm looking at the following datasheets: mt25qu512a [1] and n25q512a [2].
+>>> Both flashes have the same Extended Device ID data. What will happen, is
+>>> that you'll always hit the first valid entry, so "mt25qu512a", and you'll indicate
+>>> a 'wrong' flash name for n25q512a. If there is nothing that differentiate
+>>> between the two, maybe you can add a comment in the code that says that
+>>> "n25q512a" was re-branded to "mt25qu512a" after the STM spin-off.
+>>> Whatever solution will be, it will be better if you do it in a separate patch.
+>> Hi Tudor,
+>> Considering both are same, should I rename to mt25qu51a, and add SPI_NOR_4B_OPCODES or
+>> Keep n25q512a, and comment about mt25qu51a  and add SPI_NOR_4B_OPCODES.
+> 
+> I see two options:
+> 1/ either rename "n25q512a" to "mt25qu512a (n25q512a)" and add the
+> SPI_NOR_4B_OPCODES
+
+I would go with first option so as not to alarm the users who are used
+to seeing n25q512a in kernel log. This option shows both old and new
+brand names.
+
+Regards
+Vignesh
+
+> 2/ or keep "n25q512a", add SPI_NOR_4B_OPCODES, and add a comment about
+> re-branding to mt25qu512a.
+> 
+> Which one do you like better? What about you, Vignesh?
+> 
+>>
+>> For separate patch comment you mean split mt25qu512a and mt35xu02g into 2 patch.
+> 
+> yes, send a separate patch for mt35xu02g, as the changes are not related.
+>>
+>>>
+> 
+> cut
+> 
+>>>> +     { "mt35xu02g",  INFO(0x2c5b1c, 0, 128 * 1024, 2048,
+>>>> +                     SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
+>>>> +                     SPI_NOR_4B_OPCODES) },
+>>>
+>>> Is there a public datasheet for this flash?
+>> No,  data sheet in under NDA, I have asked micron FAE for public data sheet, will resend after the same is published. 
+>>
+> 
+> No need to wait, I'll trust you. It was better if I could verify the info, but
+> if we can't, that's it. Just send a different patch for this change.
+> 
+> Cheers,
+> ta
 > 
 
-Based on your comments by specific DT property for randomizer support.
-to add a new property in children nodes:
-
-i.e,.
-
-nand: nand-controller@43c30000 {
-
-                nand@0 {
-                        reg = <0>;
-                        nand-reliability = "randomizer";
-                };
-};
-
-
-file of nand_macronix.c will patch to:
-
-static void macronix_nand_onfi_init(struct nand_chip *chip)
-{
-        struct nand_parameters *p = &chip->parameters;
-        struct device_node *dn = nand_get_flash_node(chip);
-        const char *pm;
-        int rand_enable = 0;
-
-        ret = of_property_read_string(dn, "nand-reliability", &pm);
-        if (!ret) {
-                if (!strcasecmp(pm, "randomizer"));
-                        rand_enable = 1;
-        }
- 
-        mxic = (struct nand_onfi_vendor_macronix *)p->onfi->vendor;
-        if (rand_enable &&
-            mxic->reliability_func & MACRONIX_RANDOMIZER_BIT) {
-                if (p->supports_set_get_features) {
-                        bitmap_set(p->set_feature_list,
-                                   ONFI_FEATURE_ADDR_MXIC_RANDOMIZER, 1);
-                        bitmap_set(p->get_feature_list,
-                                   ONFI_FEATURE_ADDR_MXIC_RANDOMIZER, 1);
-                        /* set-up chip options with NAND_NO_SUBPAGE_WRITE 
-*/
-                        chip->options |= NAND_NO_SUBPAGE_WRITE;
-                        macronix_nand_randomizer_check_enable(chip);
-                }
-        }
- 
-} 
-
-something like this,
-
-is it OK ?
-
-thanks & best regards,
-Mason
-
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information 
-and/or personal data, which is protected by applicable laws. Please be 
-reminded that duplication, disclosure, distribution, or use of this e-mail 
-(and/or its attachments) or any part thereof is prohibited. If you receive 
-this e-mail in error, please notify us immediately and delete this mail as 
-well as its attachment(s) from your system. In addition, please be 
-informed that collection, processing, and/or use of personal data is 
-prohibited unless expressly permitted by personal data protection laws. 
-Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
-
-
-============================================================================
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
+-- 
+Regards
+Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
