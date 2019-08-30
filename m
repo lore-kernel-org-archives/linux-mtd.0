@@ -2,22 +2,21 @@ Return-Path: <SRS0=5B27=W2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17FA6C3A59F
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Aug 2019 01:20:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75549C3A59F
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Aug 2019 01:24:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D98B921874
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Aug 2019 01:20:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4861221897
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Aug 2019 01:24:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YSq5c04n";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=omnibond-com.20150623.gappssmtp.com header.i=@omnibond-com.20150623.gappssmtp.com header.b="FGYyo76P"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D98B921874
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fdHuoul/";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=omnibond-com.20150623.gappssmtp.com header.i=@omnibond-com.20150623.gappssmtp.com header.b="rsF3TnYv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4861221897
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=omnibond.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,59 +25,62 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hnLA5TZ3KJ48hhugrxebgxN2qO9DgfMmvKcM32iOV2o=; b=YSq5c04nbEOWRg
-	I/RjpKmWkA4+31FXkCaAsCoNQbcBBo38e0kvfKyQwi1oT+X9rElN++P6cNctCL/29ArQY+U2Il3hD
-	fB96c8xr8D+Ph7P0Pz1CctOOc6/KiITggxV46/qn8MTWhuIfCTWjN2rT7lkeYCjQPm+zkcROwAOdy
-	PeTEpoPFDn2tsK8+mi07S9TQmEii2bqdT7N5k+WlDANLTV/dhpGcbkJgMUiJ358xU5KfgpCjTqkqK
-	468Rft0/ijgkPzQ2dGkQVI2NzE4UlvaiFHG/TQbmyp2dWhfy1U8wPhfHat967P6E/cCP+gEY4XrIK
-	uLPtA3Ixf9myw90uuZvA==;
+	List-Owner; bh=E67u2sSkq4H/rXUKp3bpHCZrakodVPkhKhSgZq3zA5A=; b=fdHuoul/wrAcfy
+	S1VuojLBP5b+xPS4TqoEOOuRNjlHCg0lm/VwlYPrhMpaop3iehEMs/HY5IdCkSGgNas3xIjjQELqP
+	sxKevJfh0xIzcTrBqkNGDyOJajkHARALv+OYILPCAJh4X5TPkNBAOCegtbP22mhRaNch3Lrwg8NTn
+	HmuN1p3/SYHdO+Uyr2QboQVPKewR6UVO60bisef35kenwUdAzLbsVwxX3UGhJjT/YTHdj6b5Z7GkY
+	cXo3n0cRu8GmZYd9O6nmmxCMj9RVgfSrxum4vMYSDl4uJDVzXpXV/E0LZN4OouOMYnvsY8xAeVMLD
+	62IQ4nOL4PGHyaQO815Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i3Vad-00061v-TK; Fri, 30 Aug 2019 01:20:36 +0000
-Received: from mail-yw1-xc41.google.com ([2607:f8b0:4864:20::c41])
+	id 1i3Veo-0006Kj-8Q; Fri, 30 Aug 2019 01:24:54 +0000
+Received: from mail-yw1-xc42.google.com ([2607:f8b0:4864:20::c42])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i3VaZ-00061Y-Lw
- for linux-mtd@lists.infradead.org; Fri, 30 Aug 2019 01:20:33 +0000
-Received: by mail-yw1-xc41.google.com with SMTP id l79so1828545ywe.11
- for <linux-mtd@lists.infradead.org>; Thu, 29 Aug 2019 18:20:30 -0700 (PDT)
+ id 1i3Vel-0006K5-79
+ for linux-mtd@lists.infradead.org; Fri, 30 Aug 2019 01:24:52 +0000
+Received: by mail-yw1-xc42.google.com with SMTP id u141so1847228ywe.4
+ for <linux-mtd@lists.infradead.org>; Thu, 29 Aug 2019 18:24:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=omnibond-com.20150623.gappssmtp.com; s=20150623;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=+IuQC8pbIafmSwD8SbGVAzn/DZ0LTbah8BkBemk6zek=;
- b=FGYyo76P5II4TE0xyyEdll3m2ufcqhN3TwhgI6WWOYj3toWhxeSi1wWMnzOp+D+rYj
- ahd/4sJOU/IaAo7fV5KpR4dy/NEnkI1UPi4BR9HH0itETNn+Hditb/hnVnP9oH/cyNg4
- oI/T5YJcX1gIvRAs4gjgcyFpS6Se90hdq2vCkSsM9WNmJBY7Ycu/Ay47jlkEZ0BEznLj
- bnxVQVgo6gmqDF8OmKQJnD/UyjSMDAyIfFY4B9AG7e1HO4urtYx5HaPIY5KSCwE1BSTn
- LymvSnfnU7tZBJ24uBJnsgaKmzRTtIBHnwqi8KIi0Il9SHJcQtsaNRWzW9wHZdDsxfKj
- tuYw==
+ :cc:content-transfer-encoding;
+ bh=4TfZVE6zvYYuoOuB/Rxqa+Mlm3vtxZPY12krCFPSTtI=;
+ b=rsF3TnYvnJjkhMrqd8jgi2b1fWfnS720m/snkWNYBAl3jogwp2mEsqA8h0meBBMFCG
+ mupgLKrOXopsTT3mx+lDcAZLHUPbfCw/vXrZaEIvlfIiq4H0dj/IKCul0NWP4fpGLsu4
+ 48Lini1zfDu9D/EL0CeWiI8kZAXrgg08x+hcJWXhpsmSN701z4+zSsQ5V2A/N+PZ/ko+
+ cAveXQxi5GTfOnxm/M0L2QMcpa0QpEp0UoezlsX6vklrx1noOLsykTvVpPGdg1yASetm
+ NGCTD4uF7gFM2G4DP0Fj0jWpPyOxMpJF0KkXFU1tGtaTorkpzYDBwzJA49OyfPjy95xt
+ U/rA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=+IuQC8pbIafmSwD8SbGVAzn/DZ0LTbah8BkBemk6zek=;
- b=cmKawR3Feaz/PMtr3Q6YOOTvW7+9jNWBko3EwAdXF3W5looOijVHegoSuulK2jdruR
- HDC5DEspNYrXi5bKDOWyMP1cOFS6xycZM1fUbazL+q0DBMByL04cu2x43Rj6hAOnlfhs
- qxL3W8yc3bLoOJcVzRKO6e0ZGhWA+s+0QxOmHappirhALNzbI4EoumQZRuZ9my4tBqHJ
- NNEiZkvPwTsM9+owR0lXpQHj1iInZqws0IYKJGkzwtrAG5nZ1udk9cCGxVsoVUy5V/uG
- AKRRfNcvKwTUp2OMK9Rh/ZOmoaKhrpgX9yv1DwCdeWOs77wZOkZ74borRqFt85/rLul8
- ZAng==
-X-Gm-Message-State: APjAAAVp+1BHRs9oW8TM8n/RY8uyQNo4roQtNrL9Cctnq0JpUzcufe3o
- ywYSJKZVAoCFm32Ln9dJCIVlMzgStU8fka2vujYSOA==
-X-Google-Smtp-Source: APXvYqxAu3ghLEx4a7gfcA71cO2rSrBRWU6Icj84myb4LlhRF0l0un6rKVRkx0QZ124nnLqeAoTJBmXR1ZEKYdU440U=
-X-Received: by 2002:a81:3681:: with SMTP id d123mr9784376ywa.348.1567128029653; 
- Thu, 29 Aug 2019 18:20:29 -0700 (PDT)
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=4TfZVE6zvYYuoOuB/Rxqa+Mlm3vtxZPY12krCFPSTtI=;
+ b=YPOIZz/+R9hEDZx83bqJyjjnVZK86RDQcWPCXk2n7oUJOL0CoyiR5d0uKI3fiSXYx4
+ L4luHuSEfGOhm9znrrsBqNtLgfGcQDKwlGqmkpl5ut1GHOPv1rIfMHGCx26sVUEGZ+gI
+ hX1jDN6UTublilb0jk+IWFgxmTUZaIGiMNVb5eTKDxoHNXIdF8s3NC3BSO+tmjn/Xo3L
+ nppkL7D/xqpvi59suz7ya2UE70cMLjZPOjY8tTdbVo6GN6HEvGFijN8db1WAys5R1wRs
+ PwUi/De8S19aZxg1PYhN80vgzha+Nz4AV7bur3lBVWl7PADnxI4D5jJbDiClrNyY/b8Z
+ 3aXA==
+X-Gm-Message-State: APjAAAV0vaCuVYmInPYhKu2HMKqtz8IPDWKSzsfauQPSaAqRaJ8UPY21
+ n8nxzleYMHPPBQZ5zLkzbamYzviblYBgwD+NYLFVWA==
+X-Google-Smtp-Source: APXvYqwS/gBw6GYqWJhwCNBmHR6+W2ONQRTVjMY8ZXLyRIgVZbf1blJaiiDec2a/U/ArNO35ME5xZuocZ9cXu0GpPKQ=
+X-Received: by 2002:a0d:d596:: with SMTP id x144mr9018446ywd.69.1567128290041; 
+ Thu, 29 Aug 2019 18:24:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190829041132.26677-1-deepa.kernel@gmail.com>
- <CABeXuvoKD83B7iUqE33Y9E2OVtf61DKv-swZr-N=ozz-cMmGOA@mail.gmail.com>
-In-Reply-To: <CABeXuvoKD83B7iUqE33Y9E2OVtf61DKv-swZr-N=ozz-cMmGOA@mail.gmail.com>
+References: <20190827150544.151031-1-salyzyn@android.com>
+ <20190828142423.GA1955@infradead.org>
+ <5dd09a38-fffb-36f2-505b-be2ddf6bb750@android.com>
+In-Reply-To: <5dd09a38-fffb-36f2-505b-be2ddf6bb750@android.com>
 From: Mike Marshall <hubcap@omnibond.com>
-Date: Thu, 29 Aug 2019 21:20:18 -0400
-Message-ID: <CAOg9mSR25eAH7e1KhDZt_uscJSzyuSmELbCxgyh=-KWRxjZtcw@mail.gmail.com>
-Subject: Re: [GIT PULL] vfs: Add support for timestamp limits
-To: Deepa Dinamani <deepa.kernel@gmail.com>
+Date: Thu, 29 Aug 2019 21:24:38 -0400
+Message-ID: <CAOg9mSTCC4Z3RpEyppC50B+pnSBbV0sr-F7hbsM-B+z3c-AZVA@mail.gmail.com>
+Subject: Re: [PATCH v8] Add flags option to get xattr method paired to
+ __vfs_getxattr
+To: Mark Salyzyn <salyzyn@android.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190829_182031_859873_FAB0AC8B 
-X-CRM114-Status: GOOD (  23.06  )
+X-CRM114-CacheID: sfid-20190829_182451_255859_1690FF6F 
+X-CRM114-Status: GOOD (  18.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,173 +92,87 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Latchesar Ionkov <lucho@ionkov.net>,
- Martin Brandenburg <martin@omnibond.com>, jfs-discussion@lists.sourceforge.net,
- Dave Kleikamp <shaggy@kernel.org>, al@alarsen.net, yuchao0@huawei.com,
- Bob Copeland <me@bobcopeland.com>, Adrian Hunter <adrian.hunter@intel.com>,
- Andreas Dilger <adilger.kernel@dilger.ca>, mikulas@artax.karlin.mff.cuni.cz,
- stoph Hellwig <hch@lst.de>, nico@fluxnic.net, linux-cifs@vger.kernel.org, "Yan,
- Zheng" <zyan@redhat.com>, Sage Weil <sage@redhat.com>,
+Cc: Latchesar Ionkov <lucho@ionkov.net>, Hugh Dickins <hughd@google.com>,
+ James Morris <jmorris@namei.org>, Christoph Hellwig <hch@infradead.org>,
+ devel@lists.orangefs.org, Eric Van Hensbergen <ericvh@gmail.com>,
+ Joel Becker <jlbec@evilplan.org>, Anna Schumaker <anna.schumaker@netapp.com>,
+ Trond Myklebust <trond.myklebust@hammerspace.com>,
+ Mathieu Malaterre <malat@debian.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ LKML <linux-kernel@vger.kernel.org>, Jan Kara <jack@suse.com>,
+ Casey Schaufler <casey@schaufler-ca.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Dave Kleikamp <shaggy@kernel.org>,
+ linux-doc@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
+ Chao Yu <yuchao0@huawei.com>, Mimi Zohar <zohar@linux.ibm.com>,
+ linux-cifs@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
  "Darrick J. Wong" <darrick.wong@oracle.com>,
- y2038 Mailman List <y2038@lists.linaro.org>,
- Richard Weinberger <richard@nod.at>, Steve French <sfrench@samba.org>,
- Anton Vorontsov <anton@enomsg.org>, linux@armlinux.org.uk,
- codalist@coda.cs.cmu.edu, Christoph Hellwig <hch@infradead.org>,
- coda@cs.cmu.edu, V9FS Developers <v9fs-developer@lists.sourceforge.net>,
- Ilya Dryomov <idryomov@gmail.com>,
- Ext4 Developers List <linux-ext4@vger.kernel.org>, salah.triki@gmail.com,
- asmadeus@codewreck.org, devel@lists.orangefs.org,
- Evgeniy Dushistov <dushistov@mail.ru>, Kees Cook <keescook@chromium.org>,
- Arnd Bergmann <arnd@arndb.de>, Eric Van Hensbergen <ericvh@gmail.com>,
- Jan Kara <jack@suse.com>, reiserfs-devel@vger.kernel.org,
- Tejun Heo <tj@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
- aivazian.tigran@gmail.com, phillip@squashfs.org.uk,
- David Sterba <dsterba@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
- ceph-devel <ceph-devel@vger.kernel.org>, trond.myklebust@hammerspace.com,
- OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
- Andreas Dilger <adilger@dilger.ca>, Jan Harkes <jaharkes@cs.cmu.edu>,
- Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
- Tony Luck <tony.luck@intel.com>, Theodore Ts'o <tytso@mit.edu>,
- luisbg@kernel.org, Artem Bityutskiy <dedekind1@gmail.com>,
- linux-ntfs-dev@lists.sourceforge.net, Greg KH <gregkh@linuxfoundation.org>,
- linux-karma-devel@lists.sourceforge.net, jlayton@kernel.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "Linux F2FS DEV,
+ Eric Sandeen <sandeen@sandeen.net>, kernel-team@android.com,
+ selinux@vger.kernel.org, Brian Foster <bfoster@redhat.com>,
+ reiserfs-devel@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+ Jaegeuk Kim <jaegeuk@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
+ Miklos Szeredi <miklos@szeredi.hu>, "Linux F2FS DEV,
  Mailing List" <linux-f2fs-devel@lists.sourceforge.net>,
- linux-xfs@vger.kernel.org, Colin Cross <ccross@android.com>,
- Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Anna Schumaker <anna.schumaker@netapp.com>, Joel Becker <jlbec@evilplan.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+ Benjamin Coddington <bcodding@redhat.com>, linux-integrity@vger.kernel.org,
+ Martin Brandenburg <martin@omnibond.com>, Chris Mason <clm@fb.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>, linux-afs@lists.infradead.org,
+ Jonathan Corbet <corbet@lwn.net>, Vyacheslav Dubeyko <slava@dubeyko.com>,
+ Allison Henderson <allison.henderson@oracle.com>,
+ Ilya Dryomov <idryomov@gmail.com>,
+ Ext4 Developers List <linux-ext4@vger.kernel.org>,
+ Stephen Smalley <sds@tycho.nsa.gov>, Serge Hallyn <serge@hallyn.com>,
+ Gao Xiang <gaoxiang25@huawei.com>, Eric Paris <eparis@parisplace.org>,
+ ceph-devel <ceph-devel@vger.kernel.org>,
+ Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+ linux-mm <linux-mm@kvack.org>, samba-technical@lists.samba.org,
+ linux-xfs@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>, linux-erofs@lists.ozlabs.org,
+ "David S. Miller" <davem@davemloft.net>, ocfs2-devel@oss.oracle.com,
+ jfs-discussion@lists.sourceforge.net, Jan Kara <jack@suse.cz>,
+ Eric Biggers <ebiggers@google.com>,
+ Dominique Martinet <asmadeus@codewreck.org>,
+ Adrian Hunter <adrian.hunter@intel.com>, David Howells <dhowells@redhat.com>,
+ Joseph Qi <joseph.qi@linux.alibaba.com>,
+ Andreas Dilger <adilger.kernel@dilger.ca>, devel@driverdev.osuosl.org,
+ "J. Bruce Fields" <bfields@redhat.com>,
+ Andreas Gruenbacher <agruenba@redhat.com>, Sage Weil <sage@redhat.com>,
+ Richard Weinberger <richard@nod.at>, Mark Fasheh <mark@fasheh.com>,
+ cluster-devel@redhat.com, Steve French <sfrench@samba.org>,
+ V9FS Developers <v9fs-developer@lists.sourceforge.net>,
+ Bharath Vedartham <linux.bhar@gmail.com>, Jann Horn <jannh@google.com>,
+ ecryptfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+ Dave Chinner <dchinner@redhat.com>, David Sterba <dsterba@suse.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, netdev@vger.kernel.org,
+ linux-unionfs@vger.kernel.org, stable@vger.kernel.org,
+ Tyler Hicks <tyhicks@canonical.com>, linux-security-module@vger.kernel.org,
+ Phillip Lougher <phillip@squashfs.org.uk>,
+ David Woodhouse <dwmw2@infradead.org>, linux-btrfs@vger.kernel.org,
+ Alexander Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Deepa...
-
-I installed this patch series on top of Linux 5.3-rc6 and ran xfstests
-on orangefs and got a regression... generic/258 failed
-with: "Timestamp wrapped"...
-
-# cat results/generic/258.out.bad
-QA output created by 258
-Creating file with timestamp of Jan 1, 1960
-Testing for negative seconds since epoch
-Timestamp wrapped: 0
-Timestamp wrapped
-(see /home/hubcap/xfstests-dev/results//generic/258.full for details)
-
-Just to double check, I compiled Linux 5.3-rc6 without the timestamp series,
-and 258 passed... then added the patch series back and the failure returned...
-
-Also.... when I was using "git am" to apply the patch series, the ceph patch
-failed, so I "git skipped" it...
-
-I obtained the patch series from: https://github.com/deepa-hub/vfs limits
-today.
-
--Mike
-
-On Thu, Aug 29, 2019 at 12:38 AM Deepa Dinamani <deepa.kernel@gmail.com> wrote:
->
-> Adding the others who were on original cc, just in case.
-> - Deepa
->
-> On Wed, Aug 28, 2019 at 9:12 PM Deepa Dinamani <deepa.kernel@gmail.com> wrote:
-> >
-> > Hi Al, Arnd,
-> >
-> > This is a pull request for filling in min and max timestamps for filesystems.
-> > I've added all the acks, and dropped the adfs patch. That will be merged through
-> > Russell's tree.
-> >
-> > Thanks,
-> > Deepa
-> >
-> > The following changes since commit 5d18cb62218608a1388858880ad3ec76d6cb0d3b:
-> >
-> >   Add linux-next specific files for 20190828 (2019-08-28 19:59:14 +1000)
-> >
-> > are available in the Git repository at:
-> >
-> >   https://github.com/deepa-hub/vfs limits
-> >
-> > for you to fetch changes up to f0f216afa4c7e4dee9121fde52ccf57f76119188:
-> >
-> >   isofs: Initialize filesystem timestamp ranges (2019-08-28 19:19:36 -0700)
-> >
-> > ----------------------------------------------------------------
-> > Deepa Dinamani (19):
-> >       vfs: Add file timestamp range support
-> >       vfs: Add timestamp_truncate() api
-> >       timestamp_truncate: Replace users of timespec64_trunc
-> >       mount: Add mount warning for impending timestamp expiry
-> >       utimes: Clamp the timestamps before update
-> >       fs: Fill in max and min timestamps in superblock
-> >       9p: Fill min and max timestamps in sb
-> >       ext4: Initialize timestamps limits
-> >       fs: nfs: Initialize filesystem timestamp ranges
-> >       fs: cifs: Initialize filesystem timestamp ranges
-> >       fs: fat: Initialize filesystem timestamp ranges
-> >       fs: affs: Initialize filesystem timestamp ranges
-> >       fs: sysv: Initialize filesystem timestamp ranges
-> >       fs: ceph: Initialize filesystem timestamp ranges
-> >       fs: orangefs: Initialize filesystem timestamp ranges
-> >       fs: hpfs: Initialize filesystem timestamp ranges
-> >       fs: omfs: Initialize filesystem timestamp ranges
-> >       pstore: fs superblock limits
-> >       isofs: Initialize filesystem timestamp ranges
-> >
-> >  fs/9p/vfs_super.c        |  6 +++++-
-> >  fs/affs/amigaffs.c       |  2 +-
-> >  fs/affs/amigaffs.h       |  3 +++
-> >  fs/affs/inode.c          |  4 ++--
-> >  fs/affs/super.c          |  4 ++++
-> >  fs/attr.c                | 21 ++++++++++++---------
-> >  fs/befs/linuxvfs.c       |  2 ++
-> >  fs/bfs/inode.c           |  2 ++
-> >  fs/ceph/super.c          |  2 ++
-> >  fs/cifs/cifsfs.c         | 22 ++++++++++++++++++++++
-> >  fs/cifs/netmisc.c        | 14 +++++++-------
-> >  fs/coda/inode.c          |  3 +++
-> >  fs/configfs/inode.c      | 12 ++++++------
-> >  fs/cramfs/inode.c        |  2 ++
-> >  fs/efs/super.c           |  2 ++
-> >  fs/ext2/super.c          |  2 ++
-> >  fs/ext4/ext4.h           | 10 +++++++++-
-> >  fs/ext4/super.c          | 17 +++++++++++++++--
-> >  fs/f2fs/file.c           | 21 ++++++++++++---------
-> >  fs/fat/inode.c           | 12 ++++++++++++
-> >  fs/freevxfs/vxfs_super.c |  2 ++
-> >  fs/hpfs/hpfs_fn.h        |  6 ++----
-> >  fs/hpfs/super.c          |  2 ++
-> >  fs/inode.c               | 33 ++++++++++++++++++++++++++++++++-
-> >  fs/isofs/inode.c         |  7 +++++++
-> >  fs/jffs2/fs.c            |  3 +++
-> >  fs/jfs/super.c           |  2 ++
-> >  fs/kernfs/inode.c        |  7 +++----
-> >  fs/minix/inode.c         |  2 ++
-> >  fs/namespace.c           | 33 ++++++++++++++++++++++++++++++++-
-> >  fs/nfs/super.c           | 20 +++++++++++++++++++-
-> >  fs/ntfs/inode.c          | 21 ++++++++++++---------
-> >  fs/omfs/inode.c          |  4 ++++
-> >  fs/orangefs/super.c      |  2 ++
-> >  fs/pstore/ram.c          |  2 ++
-> >  fs/qnx4/inode.c          |  2 ++
-> >  fs/qnx6/inode.c          |  2 ++
-> >  fs/reiserfs/super.c      |  3 +++
-> >  fs/romfs/super.c         |  2 ++
-> >  fs/squashfs/super.c      |  2 ++
-> >  fs/super.c               |  2 ++
-> >  fs/sysv/super.c          |  5 ++++-
-> >  fs/ubifs/file.c          | 21 ++++++++++++---------
-> >  fs/ufs/super.c           |  7 +++++++
-> >  fs/utimes.c              |  6 ++----
-> >  fs/xfs/xfs_super.c       |  2 ++
-> >  include/linux/fs.h       |  5 +++++
-> >  include/linux/time64.h   |  2 ++
-> >  48 files changed, 298 insertions(+), 72 deletions(-)
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SSBhZGRlZCB0aGlzIHBhdGNoIHNlcmllcyBvbiB0b3Agb2YgTGludXggNS4zLXJjNiBhbmQgcmFu
+IHhmc3Rlc3RzCm9uIG9yYW5nZWZzIHdpdGggbm8gcmVncmVzc2lvbnMuCgpBY2tlZC1ieTogTWlr
+ZSBNYXJzaGFsbCA8aHViY2FwQG9tbmlib25kLmNvbT4KCi1NaWtlCgpPbiBXZWQsIEF1ZyAyOCwg
+MjAxOSBhdCAxMDo0MCBBTSBNYXJrIFNhbHl6eW4gPHNhbHl6eW5AYW5kcm9pZC5jb20+IHdyb3Rl
+Ogo+Cj4gT24gOC8yOC8xOSA3OjI0IEFNLCBDaHJpc3RvcGggSGVsbHdpZyB3cm90ZToKPiA+IE9u
+IFR1ZSwgQXVnIDI3LCAyMDE5IGF0IDA4OjA1OjE1QU0gLTA3MDAsIE1hcmsgU2FseXp5biB3cm90
+ZToKPiA+PiBSZXBsYWNlIGFyZ3VtZW50cyBmb3IgZ2V0IGFuZCBzZXQgeGF0dHIgbWV0aG9kcywg
+YW5kIF9fdmZzX2dldHhhdHRyCj4gPj4gYW5kIF9fdmZzX3NldGF4dHIgZnVuY3Rpb25zIHdpdGgg
+YSByZWZlcmVuY2UgdG8gdGhlIGZvbGxvd2luZyBub3cKPiA+PiBjb21tb24gYXJndW1lbnQgc3Ry
+dWN0dXJlOgo+ID4gWWlrZXMuICBUaGF0IGxvb2tzIGxpa2UgYSBtZXNzLiAgV2h5IGNhbid0IHdl
+IHBhc3MgYSBrZXJuZWwtb25seQo+ID4gZmxhZyBpbiB0aGUgZXhpc3RpbmcgZmxhZ3MgZmllbGQg
+Zm9yIOKCiz5zZXQgYW5kIGFkZCBhIGZsYWdzIGZpZWxkCj4gPiB0byAtPmdldD8gIFBhc3Npbmcg
+bWV0aG9kcyBieSBzdHJ1Y3R1cmUgYWx3YXlzIHRlbmRzIHRvIGJlIGEgbWVzcy4KPgo+IFRoaXMg
+d2FzIGEgcmVzcG9uc2UgdG8gR3JlZ0tIQCBjcml0aWNpc20sIGFuIGVhcmxpZXIgcGF0Y2ggc2V0
+IGp1c3QKPiBhZGRlZCBhIGZsYWcgYXMgeW91IHN0YXRlZCB0byBnZXQgbWV0aG9kLCB1bnRpbCBj
+b21wbGFpbnRzIG9mIGFuCj4gZXhjZXNzaXZlbHkgbG9uZyBhcmd1bWVudCBsaXN0IGFuZCBmcmFn
+aWxpdHkgdG8gYWRkIG9yIGNoYW5nZSBtb3JlCj4gYXJndW1lbnRzLgo+Cj4gU28gbWFueSB3YXlz
+IGhhdmUgYmVlbiB0cmllZCB0byBza2luIHRoaXMgY2F0IC4uLiB0aGUgcmlzayB3YXMgdGFrZW4g
+dG8KPiBwbGVhc2Ugc29tZSwgYW5kIHdlIG5vdyBoYXZlIGh1bmRyZWRzIG9mIHN0YWtlaG9sZGVy
+cywgd2hlbiB0aGUgZmlyc3QKPiBwYXRjaCBzZXQgd2FzIGxlc3MgdGhhbiBhIGRvemVuLiBBIHJl
+Y2lwZSBmb3IgZmFpbHVyZT8KPgo+IC0tIE1hcmsKPgoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxp
+bmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
+LW10ZC8K
