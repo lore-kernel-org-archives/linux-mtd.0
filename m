@@ -2,72 +2,59 @@ Return-Path: <SRS0=1hFJ=W5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37C58C3A59B
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 Sep 2019 07:54:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 91846C3A59B
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 Sep 2019 08:07:25 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 05A7522CF4
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 Sep 2019 07:54:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 639FB20820
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 Sep 2019 08:07:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Pel0vG5a"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 05A7522CF4
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ZBZKrrhZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 639FB20820
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=03nzzSXmUemJbkyvdWxsakX5zyEyMdx0+zUY+ApNQUQ=; b=Pel0vG5av08gb5
-	VAbximYtu2SIAhsU1BUu+2loiwKyJCaROBTQI4Ut0mTzA2pZovlfyWVTotpngAhY7aY40wF4WMXa8
-	WSLjtGpJFwND1Y5dQ08ZUsb9hxrwU/ivP1lrqiGXi+K+lhvDILgR789BJVKEme+5FerRNJN4g/BRc
-	x15eXdC6yef1Gql0tbS7SzbQ47zUV1ouPzmQIrOeEiKo7MpV7ZogSzh6nsoByxa44hUR19vhqJSYL
-	9fXJTyox5wttnfuixlAdmg4qyCP3aQ4RdFGxt5VPWAJU5HZYLV25Fg98DbHOup/DG8JXRUSEtiSyg
-	iJKJn+cV66AVIPKknkDw==;
+	List-Owner; bh=id2p2kcNu+EQTo+DNvPq/8rcz+WqqPuN5q4Esitsp2k=; b=ZBZKrrhZWeTS88
+	VRth6RGEjqo77iyrJy2A0+Q5PRxgm6bk3nK7Yh2H/oFlR1pFiqO4L27Z93i2Kyg3VBsmPh2HtPr4b
+	EjvZk1q68RwRYXsUQ1/Pnwrwj1xMJGIA2eGh5Y50aJLAaEYJLtM2p/98hTPYDDNCgxaEGB+40oh1d
+	7jn4gKBJ0VrHnIGP3Hc39+lkpSzHfHO77oapiVP0uRncIusXu5/S952SUJw/3Qt0v8ZSFxGH+LTSk
+	Xkv8lfKZ1kEmZyIS6GBGduEJFYT7JuiLGvLBi/TjFwQuNJDs8BR3nWA6B2KqeSYmG0XIBJdPsdges
+	Fo0u5bjMT4Illc1liM4g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i4hAp-0000Po-S2; Mon, 02 Sep 2019 07:54:52 +0000
-Received: from mail-ot1-f66.google.com ([209.85.210.66])
+	id 1i4hMw-0007or-9K; Mon, 02 Sep 2019 08:07:22 +0000
+Received: from verein.lst.de ([213.95.11.211])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i4h9G-0007kd-1F; Mon, 02 Sep 2019 07:53:15 +0000
-Received: by mail-ot1-f66.google.com with SMTP id g16so906889otp.12;
- Mon, 02 Sep 2019 00:53:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=eXerReUtklcQDMDiAd2B7yy5/iYyeA9QfRGIULHn46Y=;
- b=BqJbzqx/bqpKT9f66oFCVyZrK/uucwjs4N3enBw3eDy6U7SBlRyzq6dFlbb++WH4RO
- PbYJp0FrtEtA4say6fUx7NDcR4EPK2gkDKGSG82lJUGZtKPWD0HHNl/RqKqlB2Z952EE
- 4ASyxznXZP/X0RGv3s3FvFMMUQnQEAJP7d6fsYeZC6BJ9O2XHZ/CNQsalsTH14Sbb1mK
- DmLxxG1zuC1Zl1D8K8Q2JB4Np5osxMyL+ZVeaTI6HtOCBvX8MqyZqNxkLucXwHDX9Ggt
- 0y2jDf6OY2RVcUIJNPQwwwuye1dhHYk6av76fO+R2fcz1Q753lJTwwWxEgrdLItbg6IS
- 3/gQ==
-X-Gm-Message-State: APjAAAVrO/6vGF4/lv7hQ55mS6+R90F9QXIsbZn+1BWkCnbPfCtwsNC6
- tppz8P73UAOmrvd0utmJPpxepzHc0E2uVmR9XtY=
-X-Google-Smtp-Source: APXvYqwnZmuBQPAycR4wh+MzLxpLnaIqn9yYtJhnEginGgy5iGXJS00OPV33e9x6cT87GYQg3tA+HlJbqb3xbqDiJRA=
-X-Received: by 2002:a9d:61c3:: with SMTP id h3mr14729198otk.39.1567410792636; 
- Mon, 02 Sep 2019 00:53:12 -0700 (PDT)
-MIME-Version: 1.0
+ id 1i4hMs-0007oA-OC
+ for linux-mtd@lists.infradead.org; Mon, 02 Sep 2019 08:07:20 +0000
+Received: by verein.lst.de (Postfix, from userid 2407)
+ id 8B111227A8B; Mon,  2 Sep 2019 10:07:15 +0200 (CEST)
+Date: Mon, 2 Sep 2019 10:07:15 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 01/26] mtd/maps/pxa2xx: use ioremap_cache insted of
+ ioremap_cached
+Message-ID: <20190902080715.GA29458@lst.de>
 References: <20190817073253.27819-1-hch@lst.de>
- <20190817073253.27819-9-hch@lst.de>
- <CAMuHMdWyXGjokWi7tn9JHCTz9YMb_vHn6XKeE7KzH5n-54Sy0A@mail.gmail.com>
- <20190830160620.GD26887@lst.de>
-In-Reply-To: <20190830160620.GD26887@lst.de>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 2 Sep 2019 09:53:01 +0200
-Message-ID: <CAMuHMdXB=DWyu=Y25gih5poeanVnhLEP2MXoozvxdEY6op32FA@mail.gmail.com>
-Subject: Re: [PATCH 08/26] m68k: simplify ioremap_nocache
-To: Christoph Hellwig <hch@lst.de>
+ <20190817073253.27819-2-hch@lst.de>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20190817073253.27819-2-hch@lst.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190902_005314_154377_492CA570 
-X-CRM114-Status: GOOD (  11.92  )
+X-CRM114-CacheID: sfid-20190902_010718_940828_6334FAB6 
+X-CRM114-Status: GOOD (  14.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,55 +66,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
- Linux-sh list <linux-sh@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Guo Ren <guoren@kernel.org>, sparclinux <sparclinux@vger.kernel.org>,
- linux-riscv@lists.infradead.org, Vincent Chen <deanbo422@gmail.com>,
- Linux-Arch <linux-arch@vger.kernel.org>,
- linux-s390 <linux-s390@vger.kernel.org>,
- "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
- the arch/x86 maintainers <x86@kernel.org>,
- arcml <linux-snps-arc@lists.infradead.org>, linux-xtensa@linux-xtensa.org,
- Arnd Bergmann <arnd@arndb.de>, linux-m68k <linux-m68k@lists.linux-m68k.org>,
- Openrisc <openrisc@lists.librecores.org>, Greentime Hu <green.hu@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>, Guan Xuetao <gxt@pku.edu.cn>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- Michal Simek <monstr@monstr.eu>, Parisc List <linux-parisc@vger.kernel.org>,
- linux-mips@vger.kernel.org, alpha <linux-alpha@vger.kernel.org>,
- nios2-dev@lists.rocketboards.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Christoph,
+Mtd maintainers, can you pick this one up for 5.4?
 
-On Fri, Aug 30, 2019 at 6:06 PM Christoph Hellwig <hch@lst.de> wrote:
-> On Mon, Aug 19, 2019 at 10:56:02AM +0200, Geert Uytterhoeven wrote:
-> > On Sat, Aug 17, 2019 at 9:48 AM Christoph Hellwig <hch@lst.de> wrote:
-> > > Just define ioremap_nocache to ioremap instead of duplicating the
-> > > inline.  Also defined ioremap_uc in terms of ioremap instead of
-> > > the using a double indirection.
-> > >
-> > > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> >
-> > Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
->
-> Do you mind picking this up through the m68k tree?
-
-Sure. Applied and queued for v5.4.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+On Sat, Aug 17, 2019 at 09:32:28AM +0200, Christoph Hellwig wrote:
+> pxa2xx-flash is the only user of ioremap_cached, which is an alias
+> for ioremap_cache anyway.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  drivers/mtd/maps/pxa2xx-flash.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/maps/pxa2xx-flash.c b/drivers/mtd/maps/pxa2xx-flash.c
+> index cebb346877a9..7d96758a8f04 100644
+> --- a/drivers/mtd/maps/pxa2xx-flash.c
+> +++ b/drivers/mtd/maps/pxa2xx-flash.c
+> @@ -68,8 +68,7 @@ static int pxa2xx_flash_probe(struct platform_device *pdev)
+>  		       info->map.name);
+>  		return -ENOMEM;
+>  	}
+> -	info->map.cached =
+> -		ioremap_cached(info->map.phys, info->map.size);
+> +	info->map.cached = ioremap_cache(info->map.phys, info->map.size);
+>  	if (!info->map.cached)
+>  		printk(KERN_WARNING "Failed to ioremap cached %s\n",
+>  		       info->map.name);
+> -- 
+> 2.20.1
+> 
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+---end quoted text---
 
 ______________________________________________________
 Linux MTD discussion mailing list
