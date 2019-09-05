@@ -2,22 +2,22 @@ Return-Path: <SRS0=xEIb=XA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA3ADC43331
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Sep 2019 16:19:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FB7AC43331
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Sep 2019 16:19:09 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 567D920CC7
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Sep 2019 16:19:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 19C5B20CC7
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Sep 2019 16:19:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cCzMK0YZ";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Kf9BCxH5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 567D920CC7
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XvDD6itp";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HI5tWkpk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 19C5B20CC7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,62 +27,63 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=eGYWl3hbplHXOx0IlXVZ3CcbxXLRkeBP4/r1hKsfxWo=; b=cCzMK0YZWnu0YesfcFUfdK3aBg
-	ZyZYuSqYi4fD2AzBKE94SYj2b3buV+Cw9/ipAbrzI4y7iOUE5nvG4ue4l5FfuFP+ZnHig0kZ2QoKb
-	GNerGnkOv4pnhYxH0vrg65JyFpuezsWvSlW0P0HjN6W0b2qKjequywRnU3aHGyVnTAwIrZCKmQkY/
-	UWk+QjptyK7lxxnVnpj7rV1gyrkjKYc4CKmPAMzA3pjzk8mFfeziTd3+20zJYBd75p+duaQDOXgBM
-	jjgDQw7jEfLH1eV/y8clBTA0VhJ7EjtqURcZ/wk/ekHlIDDCdg5l1BAX5qFqgS9bEjFEJB49KvVg9
-	mpCyPA7w==;
+	bh=cb1DxEE1IWHQKldWKuqIJhss2aw2BA7SNvVhp7P4L9g=; b=XvDD6itpM4SPW5J0cHML5xqu7G
+	LjAfog0jNzhIRVOoqzHj1vMtxhymBrv/QpMv6nXEcGlC5e4lR8typUCKglUEKGe7BrT1C13Lli8WY
+	xBMq5kRx/u9ircvSkuyZJHHs5FI17gXYftH8mlBrn7zzipYzivnkJ8rg9M+2pLVR6NR8XcR3K3N5Y
+	x1sjFozstrK5MjfKT1goZ2rIZW7sA5hjhJCFObb4IIQElSjXL7NYh08gJwoqRGSau+x2OHu+9WOrg
+	I2kB7FpPzoKa4b3HnvOyEfWaJjnNF6oTXPqBdVEMRfab85PLPsuAtFF2fsZcyeQvZAe/WgsUmyYKN
+	EaqpDfiw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i5uT5-0001fZ-AV; Thu, 05 Sep 2019 16:18:43 +0000
-Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
+	id 1i5uTS-000295-Oi; Thu, 05 Sep 2019 16:19:06 +0000
+Received: from mail-pf1-x442.google.com ([2607:f8b0:4864:20::442])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i5uST-0000qZ-Ah
- for linux-mtd@lists.infradead.org; Thu, 05 Sep 2019 16:18:06 +0000
-Received: by mail-pf1-x441.google.com with SMTP id h195so2075625pfe.5
- for <linux-mtd@lists.infradead.org>; Thu, 05 Sep 2019 09:18:05 -0700 (PDT)
+ id 1i5uSW-0000t5-42
+ for linux-mtd@lists.infradead.org; Thu, 05 Sep 2019 16:18:09 +0000
+Received: by mail-pf1-x442.google.com with SMTP id s12so2071580pfe.6
+ for <linux-mtd@lists.infradead.org>; Thu, 05 Sep 2019 09:18:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references;
- bh=L8hOfhOr51aqScCCWWbh9I9oRm+jyZZGT7N1Ouypdt4=;
- b=Kf9BCxH5tyFR8Sxb6davF0tw/g0BJcQ2LTgqYDRkCXe99lige8xFTOyajGrEfuPQ/R
- I0jfW+xyceHiuUmlk5yy9H/wHaQBHzqM6/NCd+6TYi2hTFJcP+V9Qy+4KG7IN1UQJXhm
- SHxD8duKsNPol28y9SdpztaPVTFslQB1ZJ4shENKHGBsNtllukJz/Fvv4h2tEY0T/gDA
- A2nAqicaFTIrh+VxqbojFsyy6M/2eC5AmJiZLPVyY+LXna6RGps4ro7SxWrWHOr8M3f3
- r5tzdOU8n4cY0b4Asgrm+yIMVuJn8WX1xgQ9ScuHQJtGCR5wLKwPCsSipBa/U9NOB1IX
- 2SLA==
+ bh=3Bt6nNLlt+xUVNaG8TogY6q5T68efSQtUAFTBH8Xlsg=;
+ b=HI5tWkpkgDB2JApLY2ATp8wEzTgsgI7cUXG07/am8F65CP7VSB3lI0NXxyns+DWiX2
+ gaWTANI3zq2OwmaBZXn99DM6sZThpLtoRKLYi5a2I85zG/SH7P8SCjVgftKwhY5ktFuA
+ vJO992gbVyS1qZ7VJYG2btuxuSIAhhpNXMIqEzmVfiiabSsH0Mel1mVFYnYEbX7WVla8
+ tN7UFY3JcIVURcYH4ZeeV0a1XoRM7rgtLWf0/zDA5+VHxMm9oxNpGTujIBcQCjB7dge2
+ mpkITrf0/86JuXKn9lS53c6lBD7zg0AWMotgCzvCXmzDoFROpRfyCy8gCpdWJAq9a8Hw
+ RNtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references;
- bh=L8hOfhOr51aqScCCWWbh9I9oRm+jyZZGT7N1Ouypdt4=;
- b=T2msVtzzlvDseEywe+rhhY7KQh95GQppKxwLVUIatautrqpC/FuHPgpCSuqLpP0SVx
- +NoxRaFzKK6V5rCu502rpXPjXmnUHNfx9+UBRDYgcLYvV/alVsNyWh1zwrpQuLBiJI74
- cwFDGyB7ost2HhYaw2ODBqHCyKvLoeBUqai1ULAa2OALXYz8YMnCeD+tY1gDrXPBo0sc
- FdRB3w9eX8wgXy7ZrOByRAbiAYigv9v9Xhfx54TJ/0YHYFh8yGEYsg0aRBMNOXQsVBUP
- DqqLV9JXTHkkXRloycCn1W8gt8CqSG4mAANsom6uPqUDVvtPk0qM0cpiOy9Ge2bossUa
- Fg8A==
-X-Gm-Message-State: APjAAAV7vhChkDyJGZHOzRbp9HzRpJctYZPtSAoKkEK/mIgCENTX2Xk9
- BIrF9eZyaMMSn0rsbXTarWSH2g==
-X-Google-Smtp-Source: APXvYqzPIZoynm5wH2XSzFsQu6YuhHmdV6ACJ/jbefAUC4vneQ0qioQJzoA1wj/k15d4/pVhs+puhw==
-X-Received: by 2002:a63:df06:: with SMTP id u6mr3817337pgg.96.1567700284680;
- Thu, 05 Sep 2019 09:18:04 -0700 (PDT)
+ bh=3Bt6nNLlt+xUVNaG8TogY6q5T68efSQtUAFTBH8Xlsg=;
+ b=pWVu4Ii9CjJ0si7dHF02zwTUdAAs+O5sZ+Kn3H2zEUbLrZrFiSmDDqkO0T7w4jBwJn
+ TW5FSA/4eKCnHTjxitL2oluxAqOOo+8lbpU+nGor3hvXXBxSgG0eP/4iz3A/TFX3Z/68
+ MPnXBGTCN4WnqvF1R5Xtq0IgbKaJmMdtfwsmyPE9Mmvscyu6GWuRi7CMImCTBXPDFEpF
+ ELucHOlW2aoSgikPe65gKaOgryVICWEr6o+NdDk00IxsK+8ELemGTj7gwGxXHTjImajp
+ W8kutZ6vrL+au9xlzz4xxTn38WARasHPuHC+YhJyr1uEevTWomqcuNDoP8dZIR6GDc2G
+ u4Zg==
+X-Gm-Message-State: APjAAAU96lsDw4IObmDiyex0bxM2ZmMNQx3P9lnBzh63ikM1192JixMP
+ OcSWEY+DOuglscgkwqGbBix4VbwcnTs=
+X-Google-Smtp-Source: APXvYqyeuaXfpPcMY8LL3N9SzaC/DWAxU9D1agyzvWDKKPe/Or/72DzL6TV62pYkRSpSy8AT7z2T/g==
+X-Received: by 2002:a63:6686:: with SMTP id a128mr3841760pgc.361.1567700287353; 
+ Thu, 05 Sep 2019 09:18:07 -0700 (PDT)
 Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net.
  [68.147.8.254])
- by smtp.gmail.com with ESMTPSA id m129sm6324005pga.39.2019.09.05.09.18.03
+ by smtp.gmail.com with ESMTPSA id m129sm6324005pga.39.2019.09.05.09.18.05
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 05 Sep 2019 09:18:04 -0700 (PDT)
+ Thu, 05 Sep 2019 09:18:06 -0700 (PDT)
 From: Mathieu Poirier <mathieu.poirier@linaro.org>
 To: stable@vger.kernel.org
-Subject: [BACKPORT 4.14.y 03/18] drm/omap: panel-dsi-cm: fix driver
-Date: Thu,  5 Sep 2019 10:17:44 -0600
-Message-Id: <20190905161759.28036-4-mathieu.poirier@linaro.org>
+Subject: [BACKPORT 4.14.y 05/18] mfd: palmas: Assign the right powerhold mask
+ for tps65917
+Date: Thu,  5 Sep 2019 10:17:46 -0600
+Message-Id: <20190905161759.28036-6-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190905161759.28036-1-mathieu.poirier@linaro.org>
 References: <20190905161759.28036-1-mathieu.poirier@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190905_091805_382351_4C679DDE 
-X-CRM114-Status: GOOD (  14.73  )
+X-CRM114-CacheID: sfid-20190905_091808_173433_ADC79143 
+X-CRM114-Status: GOOD (  10.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,128 +105,65 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Keerthy <j-keerthy@ti.com>
 
-commit e128310ddd379b0fdd21dc41d176c3b3505a0832 upstream
+commit 572ff4d560be3784205b224cd67d6715620092d7 upstream
 
-This adds support for get_timings() and check_timings()
-to get the driver working and properly initializes the
-timing information from DT.
+The powerhold mask for TPS65917 is different when comapred to
+the other palmas versions. Hence assign the right mask that enables
+power off of tps65917 pmic correctly.
 
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
-Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Signed-off-by: Keerthy <j-keerthy@ti.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
- .../gpu/drm/omapdrm/displays/panel-dsi-cm.c   | 56 +++++++++++++++++--
- 1 file changed, 51 insertions(+), 5 deletions(-)
+ drivers/mfd/palmas.c       | 10 +++++++++-
+ include/linux/mfd/palmas.h |  3 +++
+ 2 files changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/omapdrm/displays/panel-dsi-cm.c b/drivers/gpu/drm/omapdrm/displays/panel-dsi-cm.c
-index 92c556ac22c7..905b71719d65 100644
---- a/drivers/gpu/drm/omapdrm/displays/panel-dsi-cm.c
-+++ b/drivers/gpu/drm/omapdrm/displays/panel-dsi-cm.c
-@@ -25,6 +25,7 @@
- #include <linux/of_gpio.h>
+diff --git a/drivers/mfd/palmas.c b/drivers/mfd/palmas.c
+index 3922a93f9f92..663a2398b6b1 100644
+--- a/drivers/mfd/palmas.c
++++ b/drivers/mfd/palmas.c
+@@ -430,6 +430,7 @@ static void palmas_power_off(void)
+ {
+ 	unsigned int addr;
+ 	int ret, slave;
++	u8 powerhold_mask;
+ 	struct device_node *np = palmas_dev->dev->of_node;
  
- #include <video/mipi_display.h>
-+#include <video/of_display_timing.h>
+ 	if (of_property_read_bool(np, "ti,palmas-override-powerhold")) {
+@@ -437,8 +438,15 @@ static void palmas_power_off(void)
+ 					  PALMAS_PRIMARY_SECONDARY_PAD2);
+ 		slave = PALMAS_BASE_TO_SLAVE(PALMAS_PU_PD_OD_BASE);
  
- #include "../dss/omapdss.h"
++		if (of_device_is_compatible(np, "ti,tps65917"))
++			powerhold_mask =
++				TPS65917_PRIMARY_SECONDARY_PAD2_GPIO_5_MASK;
++		else
++			powerhold_mask =
++				PALMAS_PRIMARY_SECONDARY_PAD2_GPIO_7_MASK;
++
+ 		ret = regmap_update_bits(palmas_dev->regmap[slave], addr,
+-				PALMAS_PRIMARY_SECONDARY_PAD2_GPIO_7_MASK, 0);
++					 powerhold_mask, 0);
+ 		if (ret)
+ 			dev_err(palmas_dev->dev,
+ 				"Unable to write PRIMARY_SECONDARY_PAD2 %d\n",
+diff --git a/include/linux/mfd/palmas.h b/include/linux/mfd/palmas.h
+index 6dec43826303..cffb23b8bd70 100644
+--- a/include/linux/mfd/palmas.h
++++ b/include/linux/mfd/palmas.h
+@@ -3733,6 +3733,9 @@ enum usb_irq_events {
+ #define TPS65917_REGEN3_CTRL_MODE_ACTIVE			0x01
+ #define TPS65917_REGEN3_CTRL_MODE_ACTIVE_SHIFT			0x00
  
-@@ -1099,6 +1100,36 @@ static void dsicm_ulps_work(struct work_struct *work)
- 	mutex_unlock(&ddata->lock);
- }
- 
-+static void dsicm_get_timings(struct omap_dss_device *dssdev,
-+			      struct videomode *vm)
-+{
-+	struct panel_drv_data *ddata = to_panel_data(dssdev);
++/* POWERHOLD Mask field for PRIMARY_SECONDARY_PAD2 register */
++#define TPS65917_PRIMARY_SECONDARY_PAD2_GPIO_5_MASK		0xC
 +
-+	*vm = ddata->vm;
-+}
-+
-+static int dsicm_check_timings(struct omap_dss_device *dssdev,
-+			       struct videomode *vm)
-+{
-+	struct panel_drv_data *ddata = to_panel_data(dssdev);
-+	int ret = 0;
-+
-+	if (vm->hactive != ddata->vm.hactive)
-+		ret = -EINVAL;
-+
-+	if (vm->vactive != ddata->vm.vactive)
-+		ret = -EINVAL;
-+
-+	if (ret) {
-+		dev_warn(dssdev->dev, "wrong resolution: %d x %d",
-+			 vm->hactive, vm->vactive);
-+		dev_warn(dssdev->dev, "panel resolution: %d x %d",
-+			 ddata->vm.hactive, ddata->vm.vactive);
-+	}
-+
-+	return ret;
-+}
-+
- static struct omap_dss_driver dsicm_ops = {
- 	.connect	= dsicm_connect,
- 	.disconnect	= dsicm_disconnect,
-@@ -1109,6 +1140,9 @@ static struct omap_dss_driver dsicm_ops = {
- 	.update		= dsicm_update,
- 	.sync		= dsicm_sync,
- 
-+	.get_timings	= dsicm_get_timings,
-+	.check_timings	= dsicm_check_timings,
-+
- 	.enable_te	= dsicm_enable_te,
- 	.get_te		= dsicm_get_te,
- 
-@@ -1120,7 +1154,8 @@ static int dsicm_probe_of(struct platform_device *pdev)
- 	struct device_node *node = pdev->dev.of_node;
- 	struct panel_drv_data *ddata = platform_get_drvdata(pdev);
- 	struct omap_dss_device *in;
--	int gpio;
-+	struct display_timing timing;
-+	int gpio, err;
- 
- 	gpio = of_get_named_gpio(node, "reset-gpios", 0);
- 	if (!gpio_is_valid(gpio)) {
-@@ -1137,6 +1172,17 @@ static int dsicm_probe_of(struct platform_device *pdev)
- 		return gpio;
- 	}
- 
-+	err = of_get_display_timing(node, "panel-timing", &timing);
-+	if (!err) {
-+		videomode_from_timing(&timing, &ddata->vm);
-+		if (!ddata->vm.pixelclock)
-+			ddata->vm.pixelclock =
-+				ddata->vm.hactive * ddata->vm.vactive * 60;
-+	} else {
-+		dev_warn(&pdev->dev,
-+			 "failed to get video timing, using defaults\n");
-+	}
-+
- 	in = omapdss_of_find_source_for_first_ep(node);
- 	if (IS_ERR(in)) {
- 		dev_err(&pdev->dev, "failed to find video source\n");
-@@ -1171,14 +1217,14 @@ static int dsicm_probe(struct platform_device *pdev)
- 	if (!pdev->dev.of_node)
- 		return -ENODEV;
- 
--	r = dsicm_probe_of(pdev);
--	if (r)
--		return r;
--
- 	ddata->vm.hactive = 864;
- 	ddata->vm.vactive = 480;
- 	ddata->vm.pixelclock = 864 * 480 * 60;
- 
-+	r = dsicm_probe_of(pdev);
-+	if (r)
-+		return r;
-+
- 	dssdev = &ddata->dssdev;
- 	dssdev->dev = dev;
- 	dssdev->driver = &dsicm_ops;
+ /* Registers for function RESOURCE */
+ #define TPS65917_REGEN1_CTRL					0x2
+ #define TPS65917_PLLEN_CTRL					0x3
 -- 
 2.17.1
 
