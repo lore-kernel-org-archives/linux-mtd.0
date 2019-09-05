@@ -5,19 +5,19 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2443BC43331
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Sep 2019 16:19:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CA13C43331
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Sep 2019 16:19:20 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BFCE82082E
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Sep 2019 16:19:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3C6BD20870
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Sep 2019 16:19:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BMomRVGm";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="B+cZWsZu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BFCE82082E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="D65NNRJi";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DhtZCS6p"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C6BD20870
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,63 +27,63 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=cjoVQ38UaKo6aeT5JFTs6YtIoig+lak31ZeiJeVA4ow=; b=BMomRVGmnZZ+tXb5i4EvmWfEM4
-	bzqNDRs4HFgb8yfQ9WS8KKoUzcth8g3Brxad525sxfewYKSsHJpzLzdrLe8KoYHTva6UbZ71ggG8m
-	Y08zMghIYAR5K+yCAFuTlYeMPeQ7u3cOxaI4IKHBVPbsGsBbNL4J/PixmPIU7MyAoU8NfXXACeVYe
-	jhTCaq2cLb7aw0g5f7KwKADSA58Ro8p3wbsumpq25RTdkVZ1cZTDSZBgGbytLGdzqEULLfdZN3rHK
-	7pL1D1ShyBkXJ83V/KUuYNkkJxqC9Fslalv+/iRGhqkcaIjlBxWMrfNNHYLtDgEgi1wcn5FFULdXK
-	EFigl6Ww==;
+	bh=M87R1B83CdvCffRmdlG/Mhks+Wha362vswolhcqWNWM=; b=D65NNRJiCh/MHqtxQnfb7cnnPz
+	o75RXiyghXQuuQfir2++HEoNIBdLRVETJe98qkdh7pEB3z8SwI/nZNj66mH6dBGeqpyIIyQMkDOQc
+	cTvKmMC9OSrDoSenFiwdu0dwZ7LfqDN/CcGNiT11BMud4wZgPC2GnEt3DX3zosB2xIhxqx4LYXBUC
+	IFxB5AG5Hsu10gsTWjR/bibPTwh1bUWB9Azecd/bcB4KDvPRZiUOwTyXZLEOKfDWV0l85OBdYXJ18
+	E1ksjNeJG//PVjQGuU9WGwuuusTp83PCliYeQD5caF+oS0EolpYPlv3ocySp3p8uQH+fZPzKeve8S
+	9qr3d8AQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i5uTG-0001tA-31; Thu, 05 Sep 2019 16:18:54 +0000
+	id 1i5uTf-0002OV-Qt; Thu, 05 Sep 2019 16:19:19 +0000
 Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i5uSU-0000rM-Jy
- for linux-mtd@lists.infradead.org; Thu, 05 Sep 2019 16:18:08 +0000
-Received: by mail-pf1-x444.google.com with SMTP id q5so2049678pfg.13
- for <linux-mtd@lists.infradead.org>; Thu, 05 Sep 2019 09:18:06 -0700 (PDT)
+ id 1i5uSX-0000vA-4c
+ for linux-mtd@lists.infradead.org; Thu, 05 Sep 2019 16:18:10 +0000
+Received: by mail-pf1-x444.google.com with SMTP id h195so2075742pfe.5
+ for <linux-mtd@lists.infradead.org>; Thu, 05 Sep 2019 09:18:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references;
- bh=oxweDnammrNyIt2aaQLCe6r9vThCpXKTK19Q9yGm1E4=;
- b=B+cZWsZuXFEQB01N9qcY/nKk7nFveM0bQSkHouQZ+2v8KRCDItQu12g91o55OqiDIl
- SQnnn5r6vvZTn3KSmZR9+5rl9wxcTUw4H96aAEmGDnjJxx3uKAFfio+dNp5I+wQr3Vwe
- gbXWR4hTOwsV+tXvAEB+6kyHio5Z54rthgV5q6RE89zhMs4lr/LJm01282eHycMXzU0z
- U9a2VMJKcYvCVPouURNHnaM7gNG9pAlCnZKkh1Y0vrCEBkYcoJQ5dlKEJOS6mj8Rfcf/
- 3BOqGGxylR2E7voPViPNnWEY2QFJ0exUKtekqdkZckIcT8g6oOqpENw3lQbrUEfCQSqK
- d4Uw==
+ bh=rjuaqfgsXjJPwAACoDEoQUxKOEl2ZmoHXoDNdOHfK/8=;
+ b=DhtZCS6pEqVXAANTeuPn229D+BZX3X67QaHqNgnEKoio/f3XFGIKudVgM5FDU+7o8L
+ nQ6C8zCJpGUG562Tdrhhk+jzdjUxPEUMlyMrosXluqm8s7BPYWWQ2Sfl8GPdcyN3+vz3
+ WgC0nx5vQPM/ac0gkVSlnhW9uet9jY41HdO0XoqnQ4dQQgwZRDvRXdAX5pdKiXWoz78p
+ gJ/gB20nx7nFBvvCBuWrSZgl46CenVN2LnP6ZluOUqhvk/2lQx7TA+V1EqPfUJ0tOjn4
+ d9umZlIflwKbjOrolidHP4+2mwXkt5JzsO/HIsQg2gt2s/+L0G/cpcGqNlGMyilyzdUy
+ uaqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references;
- bh=oxweDnammrNyIt2aaQLCe6r9vThCpXKTK19Q9yGm1E4=;
- b=DYi/gWo/kevNjlcfXde3qV4EJg1Me6XtWdx8sKyfeRFhfAcIkFAtYKF6KIVAj6d/ea
- PWTTmrahF08bGu8dWoMzAMLvMQmTmNGGN001HXybjtGWLJDmaWWTQjvh8C0XpOwU5MAZ
- zdNuuI+mKNfDuw51aHlqbd9y+ZbJDhvJ6PPi3bjmzppY0wPcxNbM8zuLo6aV8RaJe5iF
- lV8zvuv3psVdRklC8fmOcE4asktkFzutBOAddrMeUNPkE7Yi7j4oNg5BM9V4rh1iaju/
- NG+96zqtMHqIChOP/RxZM8K34a6d6x+Czpvtb67Kt6MBfgXY8XLT8Fa+s4+H0sleuoD0
- WMKw==
-X-Gm-Message-State: APjAAAVFJmuXJMxRc3qwt17FjxYLd8My0KCl0DTthmEB0yOTc35irNJQ
- gtuxD5SczVESXx0F2HWsM0uf/w==
-X-Google-Smtp-Source: APXvYqztrUm14X1kqPalVQhtzDPhMyl9ZuipQZ2gB9IH4meo0O8XJPRIpaw1CUbOHUi6IeHE59j1dQ==
-X-Received: by 2002:a17:90a:303:: with SMTP id 3mr4750663pje.124.1567700285921; 
- Thu, 05 Sep 2019 09:18:05 -0700 (PDT)
+ bh=rjuaqfgsXjJPwAACoDEoQUxKOEl2ZmoHXoDNdOHfK/8=;
+ b=ujnxEjKSRG/xoEwbtwm8HHmDIqeZN5tW+wETkD3cBvXrkKBdWEPmA7IBPYiuFRHbRo
+ D+BKydYSpdBBkXnLA2/PkRl7iZoF1Im6Dw4auYIvqk7TU2YRLKUoEim8UpkNlE3L93wl
+ OdrnR0kSy2WIK8I1O6b6mm1GtElPq4rmSQWqop/adJFXwmLJNxjQ1htlaDnJudxdbhrg
+ LlCiLTzlHeja7HseuD07eEfP+0W064BOAyntybSluGoCRPFo0VzkTNg2JxvEotL9d6Ua
+ ui6vUji1FeJH3oEH9erX53uiEXwl525cvCVbrGq4O+FwpNur1d5Fw8qhLoZJQ06iRzHw
+ DrHw==
+X-Gm-Message-State: APjAAAUoMKMa7gUOxDXOqOdrHo6VE7IfHbrUyflQG2O5k7UIAb4tiN32
+ 7vwdAFSIYaVI+Xzjj5/+0KFzJA==
+X-Google-Smtp-Source: APXvYqwjC/u78z/zaGM+j2+m/kS1EooYMEgWtfeDDH4gvURdMNHJyy5MyPkUpGOGmsnrWffGg8MToQ==
+X-Received: by 2002:a63:394:: with SMTP id 142mr3929328pgd.43.1567700288547;
+ Thu, 05 Sep 2019 09:18:08 -0700 (PDT)
 Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net.
  [68.147.8.254])
- by smtp.gmail.com with ESMTPSA id m129sm6324005pga.39.2019.09.05.09.18.04
+ by smtp.gmail.com with ESMTPSA id m129sm6324005pga.39.2019.09.05.09.18.07
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 05 Sep 2019 09:18:05 -0700 (PDT)
+ Thu, 05 Sep 2019 09:18:08 -0700 (PDT)
 From: Mathieu Poirier <mathieu.poirier@linaro.org>
 To: stable@vger.kernel.org
-Subject: [BACKPORT 4.14.y 04/18] usb: dwc3: Allow disabling of metastability
- workaround
-Date: Thu,  5 Sep 2019 10:17:45 -0600
-Message-Id: <20190905161759.28036-5-mathieu.poirier@linaro.org>
+Subject: [BACKPORT 4.14.y 06/18] ASoC: tlv320aic31xx: Handle inverted BCLK in
+ non-DSP modes
+Date: Thu,  5 Sep 2019 10:17:47 -0600
+Message-Id: <20190905161759.28036-7-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190905161759.28036-1-mathieu.poirier@linaro.org>
 References: <20190905161759.28036-1-mathieu.poirier@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190905_091806_688984_EFBFADAF 
-X-CRM114-Status: GOOD (  12.01  )
+X-CRM114-CacheID: sfid-20190905_091809_306011_CBDDDEA2 
+X-CRM114-Status: GOOD (  11.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,110 +105,68 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Roger Quadros <rogerq@ti.com>
+From: "Andrew F. Davis" <afd@ti.com>
 
-commit 42bf02ec6e420e541af9a47437d0bdf961ca2972 upstream
+commit dcb407b257af06fa58b0544ec01ec9e0d3927e02 upstream
 
-Some platforms (e.g. TI's DRA7 USB2 instance) have more trouble
-with the metastability workaround as it supports only
-a High-Speed PHY and the PHY can enter into an Erratic state [1]
-when the controller is set in SuperSpeed mode as part of
-the metastability workaround.
+Currently BCLK inverting is only handled when the DAI format is
+DSP, but the BCLK may be inverted in any supported mode. Without
+this using this CODEC in any other mode than DSP with the BCLK
+inverted leads to bad sampling timing and very poor audio quality.
 
-This causes upto 2 seconds delay in enumeration on DRA7's USB2
-instance in gadget mode.
-
-If these platforms can be better off without the workaround,
-provide a device tree property to suggest that so the workaround
-is avoided.
-
-[1] Device mode enumeration trace showing PHY Erratic Error.
-     irq/90-dwc3-969   [000] d...    52.323145: dwc3_event: event (00000901): Erratic Error [U0]
-     irq/90-dwc3-969   [000] d...    52.560646: dwc3_event: event (00000901): Erratic Error [U0]
-     irq/90-dwc3-969   [000] d...    52.798144: dwc3_event: event (00000901): Erratic Error [U0]
-
-Signed-off-by: Roger Quadros <rogerq@ti.com>
-Signed-off-by: Felipe Balbi <felipe.balbi@linux.intel.com>
+Signed-off-by: Andrew F. Davis <afd@ti.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
- Documentation/devicetree/bindings/usb/dwc3.txt | 2 ++
- drivers/usb/dwc3/core.c                        | 3 +++
- drivers/usb/dwc3/core.h                        | 3 +++
- drivers/usb/dwc3/gadget.c                      | 6 ++++--
- 4 files changed, 12 insertions(+), 2 deletions(-)
+ sound/soc/codecs/tlv320aic31xx.c | 28 ++++++++++++++++++----------
+ 1 file changed, 18 insertions(+), 10 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/usb/dwc3.txt b/Documentation/devicetree/bindings/usb/dwc3.txt
-index 52fb41046b34..44e8bab159ad 100644
---- a/Documentation/devicetree/bindings/usb/dwc3.txt
-+++ b/Documentation/devicetree/bindings/usb/dwc3.txt
-@@ -47,6 +47,8 @@ Optional properties:
- 			from P0 to P1/P2/P3 without delay.
-  - snps,dis-tx-ipgap-linecheck-quirk: when set, disable u2mac linestate check
- 			during HS transmit.
-+ - snps,dis_metastability_quirk: when set, disable metastability workaround.
-+			CAUTION: use only if you are absolutely sure of it.
-  - snps,is-utmi-l1-suspend: true when DWC3 asserts output signal
- 			utmi_l1_suspend_n, false when asserts utmi_sleep_n
-  - snps,hird-threshold: HIRD threshold
-diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index 945330ea8d5c..9b093978bd24 100644
---- a/drivers/usb/dwc3/core.c
-+++ b/drivers/usb/dwc3/core.c
-@@ -1115,6 +1115,9 @@ static void dwc3_get_properties(struct dwc3 *dwc)
- 	device_property_read_u32(dev, "snps,quirk-frame-length-adjustment",
- 				 &dwc->fladj);
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index 54a87a905eb6..d3bd0bf15ddb 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -924,6 +924,18 @@ static int aic31xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 		return -EINVAL;
+ 	}
  
-+	dwc->dis_metastability_quirk = device_property_read_bool(dev,
-+				"snps,dis_metastability_quirk");
++	/* signal polarity */
++	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_NB_NF:
++		break;
++	case SND_SOC_DAIFMT_IB_NF:
++		iface_reg2 |= AIC31XX_BCLKINV_MASK;
++		break;
++	default:
++		dev_err(codec->dev, "Invalid DAI clock signal polarity\n");
++		return -EINVAL;
++	}
 +
- 	dwc->lpm_nyet_threshold = lpm_nyet_threshold;
- 	dwc->tx_de_emphasis = tx_de_emphasis;
- 
-diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
-index abd1142c9e4d..40bf0e0768d9 100644
---- a/drivers/usb/dwc3/core.h
-+++ b/drivers/usb/dwc3/core.h
-@@ -869,6 +869,7 @@ struct dwc3_scratchpad_array {
-  * 	1	- -3.5dB de-emphasis
-  * 	2	- No de-emphasis
-  * 	3	- Reserved
-+ * @dis_metastability_quirk: set to disable metastability quirk.
-  * @imod_interval: set the interrupt moderation interval in 250ns
-  *                 increments or 0 to disable.
-  */
-@@ -1025,6 +1026,8 @@ struct dwc3 {
- 	unsigned		tx_de_emphasis_quirk:1;
- 	unsigned		tx_de_emphasis:2;
- 
-+	unsigned		dis_metastability_quirk:1;
-+
- 	u16			imod_interval;
- };
- 
-diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index 1b99d44e52b9..5916340c4162 100644
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -2034,7 +2034,8 @@ static void dwc3_gadget_set_speed(struct usb_gadget *g,
- 	 * STAR#9000525659: Clock Domain Crossing on DCTL in
- 	 * USB 2.0 Mode
- 	 */
--	if (dwc->revision < DWC3_REVISION_220A) {
-+	if (dwc->revision < DWC3_REVISION_220A &&
-+	    !dwc->dis_metastability_quirk) {
- 		reg |= DWC3_DCFG_SUPERSPEED;
- 	} else {
- 		switch (speed) {
-@@ -3265,7 +3266,8 @@ int dwc3_gadget_init(struct dwc3 *dwc)
- 	 * is less than super speed because we don't have means, yet, to tell
- 	 * composite.c that we are USB 2.0 + LPM ECN.
- 	 */
--	if (dwc->revision < DWC3_REVISION_220A)
-+	if (dwc->revision < DWC3_REVISION_220A &&
-+	    !dwc->dis_metastability_quirk)
- 		dev_info(dwc->dev, "changing max_speed on rev %08x\n",
- 				dwc->revision);
- 
+ 	/* interface format */
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_I2S:
+@@ -931,16 +943,12 @@ static int aic31xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	case SND_SOC_DAIFMT_DSP_A:
+ 		dsp_a_val = 0x1;
+ 	case SND_SOC_DAIFMT_DSP_B:
+-		/* NOTE: BCLKINV bit value 1 equas NB and 0 equals IB */
+-		switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+-		case SND_SOC_DAIFMT_NB_NF:
+-			iface_reg2 |= AIC31XX_BCLKINV_MASK;
+-			break;
+-		case SND_SOC_DAIFMT_IB_NF:
+-			break;
+-		default:
+-			return -EINVAL;
+-		}
++		/*
++		 * NOTE: This CODEC samples on the falling edge of BCLK in
++		 * DSP mode, this is inverted compared to what most DAIs
++		 * expect, so we invert for this mode
++		 */
++		iface_reg2 ^= AIC31XX_BCLKINV_MASK;
+ 		iface_reg1 |= (AIC31XX_DSP_MODE <<
+ 			       AIC31XX_IFACE1_DATATYPE_SHIFT);
+ 		break;
 -- 
 2.17.1
 
