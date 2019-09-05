@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF266C43331
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Sep 2019 16:21:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 779C5C43331
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Sep 2019 16:21:30 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 66895207E0
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Sep 2019 16:21:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1E81D207E0
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Sep 2019 16:21:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PzIA6omB";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="G2V7SSCD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 66895207E0
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Jr9va/X7";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jZZB1l94"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E81D207E0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,63 +27,62 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=m4w30Pbp8yTFiF5ljwJN72GZpgmMOTkDdhIjdXKmRKo=; b=PzIA6omBdkeUWudM0HDkd/w04b
-	s8Hu/tjRUN5DbKPZgpfi5J/uonEPnxFJ72/e2lInrOgxPCoECX01ReYJxkWG3PKKQqxD3Vbd1iiOi
-	AkUMXgi/k8xV2VgmFPCEOA4jiBxwCnc+G4Dr3VfyW3Um73K2hDpENgxrWHNv6I3eRVKApRaK8Ew8V
-	0AqDpAul4CuQ0S3zjh9wEgJPs6DczPhL/n5+jZhGCrW+Zr5KJkfyLiaxK/DGkxndZTWXKTAIrYyCd
-	xVe5wzxS6Bk29fySjS8CLrle+0Lxor/peKVek4gsiOFpb4/SoPrV3kEH3NhBRaQiJH1z9j5ogSpTZ
-	3JQfzRIQ==;
+	bh=YbVjGxw30KE1Ism4yeh4h3bvliZAyvVhqsPJsH+R5c0=; b=Jr9va/X70/P7FG0LtfN8tk3qCX
+	NBEHTVGJARxOZUaAEfPtBBKKNcOZN5U3vLSL45bO0AUb1oaLYKRQPFjzVxyOCFvk7zlM4wizTIi93
+	AnUiMg92Wt39JYRYiLMeHZBnNMsGXsqPfpaxnciHrJxGClCTD560SkCav/aHnyrilNFfvT5hEua/Z
+	xQt/njRZcygbWlFtH2G0SXaLQU47Z7yI0IvXPHMpiWdzA7v9nXoyYCesEbQMac1c64gYnSGENpHfY
+	Ul8Yhv0DtM1zIqa0ItWePEJJJrNf8p+06/HehZErP2ZTpdJRUfODK+KnFmQGPXF381b7plpkcXs34
+	JLIp40Tg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i5uVe-0006AG-PV; Thu, 05 Sep 2019 16:21:22 +0000
-Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
+	id 1i5uVU-0005wq-Eu; Thu, 05 Sep 2019 16:21:12 +0000
+Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i5uSj-0001En-EE
- for linux-mtd@lists.infradead.org; Thu, 05 Sep 2019 16:18:23 +0000
-Received: by mail-pf1-x444.google.com with SMTP id q5so2050131pfg.13
- for <linux-mtd@lists.infradead.org>; Thu, 05 Sep 2019 09:18:21 -0700 (PDT)
+ id 1i5uSi-0001CW-5J
+ for linux-mtd@lists.infradead.org; Thu, 05 Sep 2019 16:18:22 +0000
+Received: by mail-pg1-x544.google.com with SMTP id d1so1686813pgp.4
+ for <linux-mtd@lists.infradead.org>; Thu, 05 Sep 2019 09:18:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references;
- bh=uGQDHiVh7Y3nm+Fh7RZmraqTkygsaWl9aTS4H8V2qOg=;
- b=G2V7SSCDYkEQo7LiHhdd0FmXiDoCypwneNd0t71NKBiF5VjSYh7im1hJZ8psR9OmdS
- vENjDDDDtQ6NwdMR/F+BtzcV44YofhYGBf5najafmfR9bR99jS1kCvdcrsHzlLCSSxeK
- 7GcxrvgtY7wXU8hlt8M2yDvumDEEvUFc4v5wE3taJ+LuREXiOMnvl/Lw2ns+rIOFePa8
- KXF5jz1R9EzIfWODk0dy/N4ScNQsSc3JHGq4NtqlEeVnjTRTJemxCs9WCnFjW8eLTaw0
- DZr6IXQltw83ioNUii9IPkrTtAIZFHKWIM+WRq0gtusHdP3ZkBTPW2WufSyZjWejUhJa
- 2Maw==
+ bh=k4RSHQziswwPF3IEl7odNlbX/Lq1Hx75YDWK/+CVFu0=;
+ b=jZZB1l94YWLd3tFIaGQ47yvMyJb9LlEazs2Ow8RBBjQ4l/r+vNhmddIWpMfHfHXs50
+ 78rWPPNCOz1OQu1AmHck6xNxXoRE7CFw9P+2slSZQz2Ys6D042/onIrEufTy+6xGnf7G
+ /W7VbSFrbc056Zl/UdlRSDhj5hSjjoWsrULBTO1dp2b+2wVkNBYy15jzvUSO7Yol26Pq
+ +a0ju3yHvCNmc2ezasYLStXloGX/OXTLGO31IarwZm/OPn8nU0nkbRODmTltiIBUdlzi
+ njdrh0EUYg8SUhgdMLrNIUsilQw7WpjaCy9U6aj+BbrkPvrH3K1Yod5NAymx6bhyqYRw
+ 48AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references;
- bh=uGQDHiVh7Y3nm+Fh7RZmraqTkygsaWl9aTS4H8V2qOg=;
- b=D2Z9jvOwT1T5rxgsj3MbvyymFqnR/nwrctZ7137bAnqCoTbwK80RbghhU9rKV1XLYe
- kMgF9soOllkNSEBDCLdSHCDl2gIeMaditFO6UJOAYuZLXOHEbny4yVv3kGV3t9sWBgcn
- Fx2j1PlzOTod2cG7N2NY99TFQ5eBlBv6XuqaVgYoBDnH6Ws3rLYAwZP/AAMptwbhgw0C
- ODghXswt0v51hkNKX17x0Npa6DolrTHBIamLsS6DEJZ8u18Dtoz1wdcqMtnCE2KiuGXI
- KEtt0TGJg7jkLkuEXU8JaqNIgYu80NrPAxZxkP9wagCSt6TRx3WMk28uW7Cx8nHHa3o7
- RmDw==
-X-Gm-Message-State: APjAAAXfT8Xn+VeEARWtNUnj+2JmzdIbvH+e+nFas7LGld5NPFYOFPhi
- 87Foq+1WWJFTCIVHuoZb+f4O5fdp90w=
-X-Google-Smtp-Source: APXvYqzyC7KQpz20rtOB8zivfhdGWRJPZQhVbOYyx1ZP0zkE+kwOQ1jHtksq4R981qryiPR2vzsmvw==
-X-Received: by 2002:a63:ff0c:: with SMTP id k12mr3771562pgi.186.1567700300722; 
- Thu, 05 Sep 2019 09:18:20 -0700 (PDT)
+ bh=k4RSHQziswwPF3IEl7odNlbX/Lq1Hx75YDWK/+CVFu0=;
+ b=sN0HQ1a175jhUK5qLfVFEcC5BY8lVZrmbmg5oqUnKq/2oFiY5+aHSBei2bTqU0WThB
+ Fy0/8BG7T2ro/dG7WMkS8M9EWvFzAS3UiZiV4iTVshMFMibLN5jdJ/lv2JUbTCGj/1Vo
+ ji6hL47r8K8yoTUK8oGI+JfDD+eUHNB4uQ2Pa8eHQ7Se5171ToB+kNlrtQtNRWn5G2bv
+ mM0ZFDNqIKJVN4wmPSBKYIY9DBC++tAbw+UHS4HbgvgsRmOh8ZzE0gXePmORB7CiJNWz
+ xBgQ/Y8zavw/Kz/jouhtIzFe1+380zw2M5sD1qAJZsIoo+hkPybLA2aJteuG/tgw4Ebf
+ A5PA==
+X-Gm-Message-State: APjAAAXO3Hma0ClsjpXBhRyS+YbLpKEXSn6qEQbReTUe2Cu8Dld9Uwjt
+ dCac/6j+ja0Mw9S/yQkZkEJNpw==
+X-Google-Smtp-Source: APXvYqylgGgnlf/Z0Orza9qJRrWxcszrwnK+vdVT7tg0cYX2LQXbbeSPDVM6mlYFYgUjBYVURutriw==
+X-Received: by 2002:a63:714a:: with SMTP id b10mr4066928pgn.25.1567700299222; 
+ Thu, 05 Sep 2019 09:18:19 -0700 (PDT)
 Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net.
  [68.147.8.254])
- by smtp.gmail.com with ESMTPSA id m129sm6324005pga.39.2019.09.05.09.18.19
+ by smtp.gmail.com with ESMTPSA id m129sm6324005pga.39.2019.09.05.09.18.18
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 05 Sep 2019 09:18:19 -0700 (PDT)
+ Thu, 05 Sep 2019 09:18:18 -0700 (PDT)
 From: Mathieu Poirier <mathieu.poirier@linaro.org>
 To: stable@vger.kernel.org
-Subject: [BACKPORT 4.14.y 16/18] ASoC: davinci-mcasp: Fix an error handling
- path in 'davinci_mcasp_probe()'
-Date: Thu,  5 Sep 2019 10:17:57 -0600
-Message-Id: <20190905161759.28036-17-mathieu.poirier@linaro.org>
+Subject: [BACKPORT 4.14.y 15/18] ASoC: davinci: Kill BUG_ON() usage
+Date: Thu,  5 Sep 2019 10:17:56 -0600
+Message-Id: <20190905161759.28036-16-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190905161759.28036-1-mathieu.poirier@linaro.org>
 References: <20190905161759.28036-1-mathieu.poirier@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190905_091821_548104_F0424B81 
-X-CRM114-Status: GOOD (  13.09  )
+X-CRM114-CacheID: sfid-20190905_091820_250818_A733D511 
+X-CRM114-Status: GOOD (  10.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,42 +104,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Christophe Jaillet <christophe.jaillet@wanadoo.fr>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 1b8b68b05d1868404316d32e20782b00442aba90 upstream
+commit befff4fbc27e19b14b343eb4a65d8f75d38b6230 upstream
 
-All error handling paths in this function 'goto err' except this one.
+Don't use BUG_ON() for a non-critical sanity check on production
+systems.  This patch replaces with a softer WARN_ON() and an error
+path.
 
-If one of the 2 previous memory allocations fails, we should go through
-the existing error handling path. Otherwise there is an unbalanced
-pm_runtime_enable()/pm_runtime_disable().
-
-Fixes: dd55ff8346a9 ("ASoC: davinci-mcasp: Add set_tdm_slots() support")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
- sound/soc/davinci/davinci-mcasp.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/davinci/davinci-mcasp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index b4e6f4a04cb6..07bac9ea65c4 100644
+index af6cd8b874f5..b4e6f4a04cb6 100644
 --- a/sound/soc/davinci/davinci-mcasp.c
 +++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -2022,8 +2022,10 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 			     GFP_KERNEL);
+@@ -1748,7 +1748,8 @@ static int davinci_mcasp_get_dma_type(struct davinci_mcasp *mcasp)
+ 				PTR_ERR(chan));
+ 		return PTR_ERR(chan);
+ 	}
+-	BUG_ON(!chan->device || !chan->device->dev);
++	if (WARN_ON(!chan->device || !chan->device->dev))
++		return -EINVAL;
  
- 	if (!mcasp->chconstr[SNDRV_PCM_STREAM_PLAYBACK].list ||
--	    !mcasp->chconstr[SNDRV_PCM_STREAM_CAPTURE].list)
--		return -ENOMEM;
-+	    !mcasp->chconstr[SNDRV_PCM_STREAM_CAPTURE].list) {
-+		ret = -ENOMEM;
-+		goto err;
-+	}
- 
- 	ret = davinci_mcasp_set_ch_constraints(mcasp);
- 	if (ret)
+ 	if (chan->device->dev->of_node)
+ 		ret = of_property_read_string(chan->device->dev->of_node,
 -- 
 2.17.1
 
