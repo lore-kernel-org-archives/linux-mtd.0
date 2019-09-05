@@ -2,22 +2,22 @@ Return-Path: <SRS0=xEIb=XA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B79FC43331
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Sep 2019 16:18:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA3ADC43331
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Sep 2019 16:19:04 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 048CB20CC7
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Sep 2019 16:18:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 567D920CC7
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Sep 2019 16:19:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bBtN3/5J";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="O3tNCt/W"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 048CB20CC7
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cCzMK0YZ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Kf9BCxH5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 567D920CC7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,62 +27,62 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=/XaHFOIo/TbzCv12WcAzspOCirY4HjKwtxjVWgdE4qI=; b=bBtN3/5JI16G1YCxPW1484P9mw
-	1Iyfj8pFbSfXGp8CMNgb+7a8I7S4JuVFdDOXb8Zw1kbEgA/co739Io8V1rvbpK68QbJMLXSddM0n8
-	iWfdtjJY4NqMmpnW9TCpNQvYOz9OFe42BGO5hcf5ThW+cwFQGaU1XT77kjdvYmm2wRrCAov9PXDV4
-	YvWt/8/E2pzGXJ/JSnExzbDrHlU8CDzkopCx9762snuHA4NRrQ29Z3luMVSWeFhQQFzbIrIh9Ako8
-	n8VBiHOcVRgrBvNFY7FZLh3SPcuMwoXHL5XvHUQ4rhn51jFGl5C2KywDwYeffDkr5LuFMTl/WYNN7
-	9K3Y3ryA==;
+	bh=eGYWl3hbplHXOx0IlXVZ3CcbxXLRkeBP4/r1hKsfxWo=; b=cCzMK0YZWnu0YesfcFUfdK3aBg
+	ZyZYuSqYi4fD2AzBKE94SYj2b3buV+Cw9/ipAbrzI4y7iOUE5nvG4ue4l5FfuFP+ZnHig0kZ2QoKb
+	GNerGnkOv4pnhYxH0vrg65JyFpuezsWvSlW0P0HjN6W0b2qKjequywRnU3aHGyVnTAwIrZCKmQkY/
+	UWk+QjptyK7lxxnVnpj7rV1gyrkjKYc4CKmPAMzA3pjzk8mFfeziTd3+20zJYBd75p+duaQDOXgBM
+	jjgDQw7jEfLH1eV/y8clBTA0VhJ7EjtqURcZ/wk/ekHlIDDCdg5l1BAX5qFqgS9bEjFEJB49KvVg9
+	mpCyPA7w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i5uSp-0001MV-CY; Thu, 05 Sep 2019 16:18:27 +0000
-Received: from mail-pg1-x541.google.com ([2607:f8b0:4864:20::541])
+	id 1i5uT5-0001fZ-AV; Thu, 05 Sep 2019 16:18:43 +0000
+Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i5uSS-0000pe-70
- for linux-mtd@lists.infradead.org; Thu, 05 Sep 2019 16:18:05 +0000
-Received: by mail-pg1-x541.google.com with SMTP id 4so1661989pgm.12
- for <linux-mtd@lists.infradead.org>; Thu, 05 Sep 2019 09:18:04 -0700 (PDT)
+ id 1i5uST-0000qZ-Ah
+ for linux-mtd@lists.infradead.org; Thu, 05 Sep 2019 16:18:06 +0000
+Received: by mail-pf1-x441.google.com with SMTP id h195so2075625pfe.5
+ for <linux-mtd@lists.infradead.org>; Thu, 05 Sep 2019 09:18:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references;
- bh=MSiwBcSQD+D+YdS5Q0qHybng0VxB5Rm8vXeXQFjLMZc=;
- b=O3tNCt/W9wLVtkbdnd5ZHoteegcojqCr7hKVqHkZxaUlxVn/YzfA6HZZ40nBdnkoAO
- ZhrB0iw1Uc7D91gKUNEFUts4aaIwRfLc9HFFMibqH7dcc8fRUXz52KMfGwZDlccDJJiE
- RKX9AyFqS2JsIHjGGXMBX/BZ1YMB9oSdcvYb1l/YwNtkOv1/bY7a0taZGatIUTZLB8B5
- qoHjnHc9HvsJyTbTAEzBV36syWkgm7Xqp77PJV2mZ8WayBu5mJr3U5qaAjISS8G7GYPD
- EdmiI92amAdqbvyv4IrbpfYnerC9XFLioXTmFRbJMwAJ7YCYhVi9YGHLHFzUt0cn8dd8
- c2lQ==
+ bh=L8hOfhOr51aqScCCWWbh9I9oRm+jyZZGT7N1Ouypdt4=;
+ b=Kf9BCxH5tyFR8Sxb6davF0tw/g0BJcQ2LTgqYDRkCXe99lige8xFTOyajGrEfuPQ/R
+ I0jfW+xyceHiuUmlk5yy9H/wHaQBHzqM6/NCd+6TYi2hTFJcP+V9Qy+4KG7IN1UQJXhm
+ SHxD8duKsNPol28y9SdpztaPVTFslQB1ZJ4shENKHGBsNtllukJz/Fvv4h2tEY0T/gDA
+ A2nAqicaFTIrh+VxqbojFsyy6M/2eC5AmJiZLPVyY+LXna6RGps4ro7SxWrWHOr8M3f3
+ r5tzdOU8n4cY0b4Asgrm+yIMVuJn8WX1xgQ9ScuHQJtGCR5wLKwPCsSipBa/U9NOB1IX
+ 2SLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references;
- bh=MSiwBcSQD+D+YdS5Q0qHybng0VxB5Rm8vXeXQFjLMZc=;
- b=aoEW3FKdu5xE7HpL+66CQmqqqFWn/CVDRrur0OnScgPRetvrf0Dw8SdJ80BECB04LK
- Y9dk0Xe1+slRqQkm+/E3lQI9ymC8KM9A5XC64oRfvSwPoBRJj2cMaUYZ0IM4dhZ8JIIH
- fUZ5ngWU8j3iwEclG1rtzmNU7ODbv0IJtT1UH3N0qP5YO/rHWH/A+SRYGTO344iEmvAp
- ANFQ7rMlv7EwgH6jYJggJ29Rep90AZFOPbBfYZMtAXbQAsBw9ikmPHTqYzYQxmzNc1Zs
- IrNnGgrjgCcL7V85oZJEXha1Iim5EKJioOj3BSANLIZ0Gmg1/8F/63EdRDH1OqCXeDNn
- F6iA==
-X-Gm-Message-State: APjAAAWDSbovcSaUhTlxZ2URrZV9xxvQN/EUwhom9slq7FvjftTRslzV
- Gvi77GC7mGjsOA9YtYIt93Ei4UwBAPw=
-X-Google-Smtp-Source: APXvYqwx6+407C9x94FJoPzSVHCP0t2Zdj+mPwGij0zS69UFxmlYHwYXWRRcMX8TRc0mw6jEYgImGw==
-X-Received: by 2002:a65:684c:: with SMTP id q12mr3654124pgt.405.1567700283561; 
- Thu, 05 Sep 2019 09:18:03 -0700 (PDT)
+ bh=L8hOfhOr51aqScCCWWbh9I9oRm+jyZZGT7N1Ouypdt4=;
+ b=T2msVtzzlvDseEywe+rhhY7KQh95GQppKxwLVUIatautrqpC/FuHPgpCSuqLpP0SVx
+ +NoxRaFzKK6V5rCu502rpXPjXmnUHNfx9+UBRDYgcLYvV/alVsNyWh1zwrpQuLBiJI74
+ cwFDGyB7ost2HhYaw2ODBqHCyKvLoeBUqai1ULAa2OALXYz8YMnCeD+tY1gDrXPBo0sc
+ FdRB3w9eX8wgXy7ZrOByRAbiAYigv9v9Xhfx54TJ/0YHYFh8yGEYsg0aRBMNOXQsVBUP
+ DqqLV9JXTHkkXRloycCn1W8gt8CqSG4mAANsom6uPqUDVvtPk0qM0cpiOy9Ge2bossUa
+ Fg8A==
+X-Gm-Message-State: APjAAAV7vhChkDyJGZHOzRbp9HzRpJctYZPtSAoKkEK/mIgCENTX2Xk9
+ BIrF9eZyaMMSn0rsbXTarWSH2g==
+X-Google-Smtp-Source: APXvYqzPIZoynm5wH2XSzFsQu6YuhHmdV6ACJ/jbefAUC4vneQ0qioQJzoA1wj/k15d4/pVhs+puhw==
+X-Received: by 2002:a63:df06:: with SMTP id u6mr3817337pgg.96.1567700284680;
+ Thu, 05 Sep 2019 09:18:04 -0700 (PDT)
 Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net.
  [68.147.8.254])
- by smtp.gmail.com with ESMTPSA id m129sm6324005pga.39.2019.09.05.09.18.02
+ by smtp.gmail.com with ESMTPSA id m129sm6324005pga.39.2019.09.05.09.18.03
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 05 Sep 2019 09:18:03 -0700 (PDT)
+ Thu, 05 Sep 2019 09:18:04 -0700 (PDT)
 From: Mathieu Poirier <mathieu.poirier@linaro.org>
 To: stable@vger.kernel.org
-Subject: [BACKPORT 4.14.y 02/18] PCI: dra7xx: Fix legacy INTD IRQ handling
-Date: Thu,  5 Sep 2019 10:17:43 -0600
-Message-Id: <20190905161759.28036-3-mathieu.poirier@linaro.org>
+Subject: [BACKPORT 4.14.y 03/18] drm/omap: panel-dsi-cm: fix driver
+Date: Thu,  5 Sep 2019 10:17:44 -0600
+Message-Id: <20190905161759.28036-4-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190905161759.28036-1-mathieu.poirier@linaro.org>
 References: <20190905161759.28036-1-mathieu.poirier@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190905_091804_252907_2D16F3F1 
-X-CRM114-Status: GOOD (  12.09  )
+X-CRM114-CacheID: sfid-20190905_091805_382351_4C679DDE 
+X-CRM114-Status: GOOD (  14.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,52 +104,128 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Vignesh R <vigneshr@ti.com>
+From: Tony Lindgren <tony@atomide.com>
 
-commit 524d59f6e30aab5b618da55e604c802ccd83e708 upstream
+commit e128310ddd379b0fdd21dc41d176c3b3505a0832 upstream
 
-Legacy INTD IRQ handling is broken on dra7xx due to fact that driver
-uses hwirq in range of 1-4 for INTA, INTD whereas IRQ domain is of size
-4 which is numbered 0-3. Therefore when INTD IRQ line is used with
-pci-dra7xx driver following warning is seen:
+This adds support for get_timings() and check_timings()
+to get the driver working and properly initializes the
+timing information from DT.
 
-       WARNING: CPU: 0 PID: 1 at kernel/irq/irqdomain.c:342 irq_domain_associate+0x12c/0x1c4
-       error: hwirq 0x4 is too large for dummy
-
-Fix this by using pci_irqd_intx_xlate() helper to translate the INTx 1-4
-range into the 0-3 as done in other PCIe drivers.
-
-Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
-Reported-by: Chris Welch <Chris.Welch@viavisolutions.com>
-Signed-off-by: Vignesh R <vigneshr@ti.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Acked-by: Kishon Vijay Abraham I <kishon@ti.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
- drivers/pci/dwc/pci-dra7xx.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ .../gpu/drm/omapdrm/displays/panel-dsi-cm.c   | 56 +++++++++++++++++--
+ 1 file changed, 51 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/pci/dwc/pci-dra7xx.c b/drivers/pci/dwc/pci-dra7xx.c
-index 63052c5e5f82..7f5dfa169d0f 100644
---- a/drivers/pci/dwc/pci-dra7xx.c
-+++ b/drivers/pci/dwc/pci-dra7xx.c
-@@ -227,6 +227,7 @@ static int dra7xx_pcie_intx_map(struct irq_domain *domain, unsigned int irq,
+diff --git a/drivers/gpu/drm/omapdrm/displays/panel-dsi-cm.c b/drivers/gpu/drm/omapdrm/displays/panel-dsi-cm.c
+index 92c556ac22c7..905b71719d65 100644
+--- a/drivers/gpu/drm/omapdrm/displays/panel-dsi-cm.c
++++ b/drivers/gpu/drm/omapdrm/displays/panel-dsi-cm.c
+@@ -25,6 +25,7 @@
+ #include <linux/of_gpio.h>
  
- static const struct irq_domain_ops intx_domain_ops = {
- 	.map = dra7xx_pcie_intx_map,
-+	.xlate = pci_irqd_intx_xlate,
- };
+ #include <video/mipi_display.h>
++#include <video/of_display_timing.h>
  
- static int dra7xx_pcie_init_irq_domain(struct pcie_port *pp)
-@@ -270,7 +271,7 @@ static irqreturn_t dra7xx_pcie_msi_irq_handler(int irq, void *arg)
- 	case INTC:
- 	case INTD:
- 		generic_handle_irq(irq_find_mapping(dra7xx->irq_domain,
--						    ffs(reg)));
-+						    ffs(reg) - 1));
- 		break;
+ #include "../dss/omapdss.h"
+ 
+@@ -1099,6 +1100,36 @@ static void dsicm_ulps_work(struct work_struct *work)
+ 	mutex_unlock(&ddata->lock);
+ }
+ 
++static void dsicm_get_timings(struct omap_dss_device *dssdev,
++			      struct videomode *vm)
++{
++	struct panel_drv_data *ddata = to_panel_data(dssdev);
++
++	*vm = ddata->vm;
++}
++
++static int dsicm_check_timings(struct omap_dss_device *dssdev,
++			       struct videomode *vm)
++{
++	struct panel_drv_data *ddata = to_panel_data(dssdev);
++	int ret = 0;
++
++	if (vm->hactive != ddata->vm.hactive)
++		ret = -EINVAL;
++
++	if (vm->vactive != ddata->vm.vactive)
++		ret = -EINVAL;
++
++	if (ret) {
++		dev_warn(dssdev->dev, "wrong resolution: %d x %d",
++			 vm->hactive, vm->vactive);
++		dev_warn(dssdev->dev, "panel resolution: %d x %d",
++			 ddata->vm.hactive, ddata->vm.vactive);
++	}
++
++	return ret;
++}
++
+ static struct omap_dss_driver dsicm_ops = {
+ 	.connect	= dsicm_connect,
+ 	.disconnect	= dsicm_disconnect,
+@@ -1109,6 +1140,9 @@ static struct omap_dss_driver dsicm_ops = {
+ 	.update		= dsicm_update,
+ 	.sync		= dsicm_sync,
+ 
++	.get_timings	= dsicm_get_timings,
++	.check_timings	= dsicm_check_timings,
++
+ 	.enable_te	= dsicm_enable_te,
+ 	.get_te		= dsicm_get_te,
+ 
+@@ -1120,7 +1154,8 @@ static int dsicm_probe_of(struct platform_device *pdev)
+ 	struct device_node *node = pdev->dev.of_node;
+ 	struct panel_drv_data *ddata = platform_get_drvdata(pdev);
+ 	struct omap_dss_device *in;
+-	int gpio;
++	struct display_timing timing;
++	int gpio, err;
+ 
+ 	gpio = of_get_named_gpio(node, "reset-gpios", 0);
+ 	if (!gpio_is_valid(gpio)) {
+@@ -1137,6 +1172,17 @@ static int dsicm_probe_of(struct platform_device *pdev)
+ 		return gpio;
  	}
  
++	err = of_get_display_timing(node, "panel-timing", &timing);
++	if (!err) {
++		videomode_from_timing(&timing, &ddata->vm);
++		if (!ddata->vm.pixelclock)
++			ddata->vm.pixelclock =
++				ddata->vm.hactive * ddata->vm.vactive * 60;
++	} else {
++		dev_warn(&pdev->dev,
++			 "failed to get video timing, using defaults\n");
++	}
++
+ 	in = omapdss_of_find_source_for_first_ep(node);
+ 	if (IS_ERR(in)) {
+ 		dev_err(&pdev->dev, "failed to find video source\n");
+@@ -1171,14 +1217,14 @@ static int dsicm_probe(struct platform_device *pdev)
+ 	if (!pdev->dev.of_node)
+ 		return -ENODEV;
+ 
+-	r = dsicm_probe_of(pdev);
+-	if (r)
+-		return r;
+-
+ 	ddata->vm.hactive = 864;
+ 	ddata->vm.vactive = 480;
+ 	ddata->vm.pixelclock = 864 * 480 * 60;
+ 
++	r = dsicm_probe_of(pdev);
++	if (r)
++		return r;
++
+ 	dssdev = &ddata->dssdev;
+ 	dssdev->dev = dev;
+ 	dssdev->driver = &dsicm_ops;
 -- 
 2.17.1
 
