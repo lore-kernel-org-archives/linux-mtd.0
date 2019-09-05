@@ -7,63 +7,134 @@ X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B3D8C43331
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Sep 2019 20:26:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 277D4C43331
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Sep 2019 20:40:16 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7546620825
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Sep 2019 20:26:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4B8492082E
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Sep 2019 20:40:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="e8WAlOB9";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b="Wy7bbwoI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7546620825
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=geanix.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rOR6VIYi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4B8492082E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:Subject:From:To:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=OEqOG0CcjSrCx+UwJ7O/nMwI7LdJ/GK+bMb9MVplZQM=; b=e8WAlOB9ETJeQNgtcYKe99Djl+
-	8aMP2ztsyV7ezbLOw6hbUDY2Kw3U8c/bFAJrAM6ynuWYAXzDxmDimDExR9DbmQMGtlm/Kiw7M292V
-	GLHD84ne8PpIHQLyaWlpyMTnDeuEBGVfFKWfqfn5vZT70LbXnsB7N2YtrDxGfD9kytoK2Wivf3ywg
-	ima/qDKboCRIT9gTIVNTdWjifbSAMYFRtLD3tU+uw0kJaeY/IrOYqVPN4rtebyVcIgHLS/kQ7V9OM
-	x5MTOlGaUNe3h0/sdI3JMa6snDASknYvIHGk7UX0zdCZDCLMsh8E1nP+eExXozP0XLjsbAF93j4BA
-	tbia3W9g==;
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:Date:Message-ID:Subject:From:References:To:Reply-To:
+	Cc:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=W9ZrGflsATyv7itZMvrIHjpDrF9dR9LSmIsbQ2BVbik=; b=rOR6VIYiAGbXuA84QRW15uiHd
+	+zHMJEmNc5P654Oi+wy4EzRpE6eqWtmKYoh20GlDZ8eF4RhsW9Sss0S1GJ9Slln35QNUsT7eZ+4I6
+	reOVPDiS6bhvegCtZbsLYYnmllswPTD15mfEt1xz3ufDrK3cFNX0u33jxEHOyhVCLSJY3NUwv8qB6
+	+CVOsTOvSM1QYPouct3raNgokxzW9suHNqS5bLz8pEGzi/T8PZZPdHq7vz+uBaaH2imTS/dfMGEhx
+	ajLNF6dHruln6NJXEeiu2UFPvkCwQT1yYW18gr3pz8nU/mtFOoqsY/5O/3OE1fB5QEckPseEtRxTe
+	5b1wFPMcQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i5yKy-00023K-VM; Thu, 05 Sep 2019 20:26:36 +0000
-Received: from first.geanix.com ([116.203.34.67])
+	id 1i5yXt-00079l-B8; Thu, 05 Sep 2019 20:39:57 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i5yKv-00022W-GB
- for linux-mtd@lists.infradead.org; Thu, 05 Sep 2019 20:26:35 +0000
-Received: from [192.168.100.95] (unknown [95.138.208.137])
- by first.geanix.com (Postfix) with ESMTPSA id 89DA963606;
- Thu,  5 Sep 2019 20:26:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
- t=1567715176; bh=VJ82OV6R6HbsjR62OSCuFU/XKb/r/KLXjb1SAEyiolI=;
- h=To:Cc:From:Subject:Date;
- b=Wy7bbwoIcSEKoGQPKncErZCF7KWIvm5t8v8h2M97RK8iLqpNW+yjBtqVDgcczY1nd
- swcB9fGrmk4mlZxWoydlCh7fE3ISDbkdbKvWZSXWRDethtiDpZFPIpL+FpLpKOvSDF
- TwuUJu7qPzgxNphP6GqYjZb9rpER0FTcxO+jrUYhCcYNZnQW5Tht6+uqTXBLDNU3Zu
- abvMbMPYLIu1qcJTVRE4oDY38PXDYim5hIPQomuywXlJ0EfxaqDNzTm1HRJRSTjnG2
- Hb5xrbmxA9F86ZkqH2SpQ8PW9KMQ9sAlXBswVBwRXQX5t1uwLuIYxZmIX75o2HZNgX
- 9NXjWmwAt0REw==
-To: s.hauer@pengutronix.de, miquel.raynal@bootlin.com,
- linux-mtd@lists.infradead.org
-From: Sean Nyekjaer <sean@geanix.com>
-Subject: [Bug] mtd: rawnand: gpmi
-Message-ID: <6a333d0f-09b2-d0d1-a3a5-955b31b6291e@geanix.com>
-Date: Thu, 5 Sep 2019 22:26:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.0
+ id 1i5yXo-00073X-PQ
+ for linux-mtd@lists.infradead.org; Thu, 05 Sep 2019 20:39:55 +0000
+Received: from gallifrey.ext.pengutronix.de
+ ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <mkl@pengutronix.de>)
+ id 1i5yXf-0001LK-Gk; Thu, 05 Sep 2019 22:39:43 +0200
+Received: from [IPv6:2a03:f580:87bc:d400:8939:9282:92f5:a228] (unknown
+ [IPv6:2a03:f580:87bc:d400:8939:9282:92f5:a228])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest
+ SHA256 client-signature RSA-PSS (4096 bits) client-digest SHA256)
+ (Client CN "mkl@blackshift.org",
+ Issuer "StartCom Class 1 Client CA" (not verified))
+ (Authenticated sender: mkl@blackshift.org)
+ by smtp.blackshift.org (Postfix) with ESMTPSA id 8671F45417F;
+ Thu,  5 Sep 2019 20:39:41 +0000 (UTC)
+To: Sean Nyekjaer <sean@geanix.com>, s.hauer@pengutronix.de,
+ miquel.raynal@bootlin.com, linux-mtd@lists.infradead.org,
+ linux-can <linux-can@vger.kernel.org>
+References: <6a333d0f-09b2-d0d1-a3a5-955b31b6291e@geanix.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Openpgp: preference=signencrypt
+Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
+ mQINBFFVq30BEACtnSvtXHoeHJxG6nRULcvlkW6RuNwHKmrqoksispp43X8+nwqIFYgb8UaX
+ zu8T6kZP2wEIpM9RjEL3jdBjZNCsjSS6x1qzpc2+2ivjdiJsqeaagIgvy2JWy7vUa4/PyGfx
+ QyUeXOxdj59DvLwAx8I6hOgeHx2X/ntKAMUxwawYfPZpP3gwTNKc27dJWSomOLgp+gbmOmgc
+ 6U5KwhAxPTEb3CsT5RicsC+uQQFumdl5I6XS+pbeXZndXwnj5t84M+HEj7RN6bUfV2WZO/AB
+ Xt5+qFkC/AVUcj/dcHvZwQJlGeZxoi4veCoOT2MYqfR0ax1MmN+LVRvKm29oSyD4Ts/97cbs
+ XsZDRxnEG3z/7Winiv0ZanclA7v7CQwrzsbpCv+oj+zokGuKasofzKdpywkjAfSE1zTyF+8K
+ nxBAmzwEqeQ3iKqBc3AcCseqSPX53mPqmwvNVS2GqBpnOfY7Mxr1AEmxdEcRYbhG6Xdn+ACq
+ Dq0Db3A++3PhMSaOu125uIAIwMXRJIzCXYSqXo8NIeo9tobk0C/9w3fUfMTrBDtSviLHqlp8
+ eQEP8+TDSmRP/CwmFHv36jd+XGmBHzW5I7qw0OORRwNFYBeEuiOIgxAfjjbLGHh9SRwEqXAL
+ kw+WVTwh0MN1k7I9/CDVlGvc3yIKS0sA+wudYiselXzgLuP5cQARAQABtCZNYXJjIEtsZWlu
+ ZS1CdWRkZSA8bWtsQHBlbmd1dHJvbml4LmRlPokCVAQTAQoAPgIbAwIeAQIXgAULCQgHAwUV
+ CgkICwUWAgMBABYhBMFAC6CzmJ5vvH1bXCte4hHFiupUBQJcUsSbBQkM366zAAoJECte4hHF
+ iupUgkAP/2RdxKPZ3GMqag33jKwKAbn/fRqAFWqUH9TCsRH3h6+/uEPnZdzhkL4a9p/6OeJn
+ Z6NXqgsyRAOTZsSFcwlfxLNHVxBWm8pMwrBecdt4lzrjSt/3ws2GqxPsmza1Gs61lEdYvLST
+ Ix2vPbB4FAfE0kizKAjRZzlwOyuHOr2ilujDsKTpFtd8lV1nBNNn6HBIBR5ShvJnwyUdzuby
+ tOsSt7qJEvF1x3y49bHCy3uy+MmYuoEyG6zo9udUzhVsKe3hHYC2kfB16ZOBjFC3lH2U5An+
+ yQYIIPZrSWXUeKjeMaKGvbg6W9Oi4XEtrwpzUGhbewxCZZCIrzAH2hz0dUhacxB201Y/faY6
+ BdTS75SPs+zjTYo8yE9Y9eG7x/lB60nQjJiZVNvZ88QDfVuLl/heuIq+fyNajBbqbtBT5CWf
+ mOP4Dh4xjm3Vwlz8imWW/drEVJZJrPYqv0HdPbY8jVMpqoe5jDloyVn3prfLdXSbKPexlJaW
+ 5tnPd4lj8rqOFShRnLFCibpeHWIumqrIqIkiRA9kFW3XMgtU6JkIrQzhJb6Tc6mZg2wuYW0d
+ Wo2qvdziMgPkMFiWJpsxM9xPk9BBVwR+uojNq5LzdCsXQ2seG0dhaOTaaIDWVS8U/V8Nqjrl
+ 6bGG2quo5YzJuXKjtKjZ4R6k762pHJ3tnzI/jnlc1sXzuQENBFxSzJYBCAC58uHRFEjVVE3J
+ 31eyEQT6H1zSFCccTMPO/ewwAnotQWo98Bc67ecmprcnjRjSUKTbyY/eFxS21JnC4ZB0pJKx
+ MNwK6zq71wLmpseXOgjufuG3kvCgwHLGf/nkBHXmSINHvW00eFK/kJBakwHEbddq8Dr4ewmr
+ G7yr8d6A3CSn/qhOYWhIxNORK3SVo4Io7ExNX/ljbisGsgRzsWvY1JlN4sabSNEr7a8YaqTd
+ 2CfFe/5fPcQRGsfhAbH2pVGigr7JddONJPXGE7XzOrx5KTwEv19H6xNe+D/W3FwjZdO4TKIo
+ vcZveSDrFWOi4o2Te4O5OB/2zZbNWPEON8MaXi9zABEBAAGJA3IEGAEKACYWIQTBQAugs5ie
+ b7x9W1wrXuIRxYrqVAUCXFLMlgIbAgUJAeKNmgFACRArXuIRxYrqVMB0IAQZAQoAHRYhBJrx
+ JF84Dn3PPNRrhVrGIaOR5J0gBQJcUsyWAAoJEFrGIaOR5J0grw4H/itil/yryJCvzi6iuZHS
+ suSHHOiEf+UQHib1MLP96LM7FmDabjVSmJDpH4TsMu17A0HTG+bPMAdeia0+q9FWSvSHYW8D
+ wNhfkb8zojpa37qBpVpiNy7r6BKGSRSoFOv6m/iIoRJuJ041AEKao6djj/FdQF8OV1EtWKRO
+ +nE2bNuDCcwHkhHP+FHExdzhKSmnIsMjGpGwIQKN6DxlJ7fN4W7UZFIQdSO21ei+akinBo4K
+ O0uNCnVmePU1UzrwXKG2sS2f97A+sZE89vkc59NtfPHhofI3JkmYexIF6uqLA3PumTqLQ2Lu
+ bywPAC3YNphlhmBrG589p+sdtwDQlpoH9O7NeBAAg/lyGOUUIONrheii/l/zR0xxr2TDE6tq
+ 6HZWdtjWoqcaky6MSyJQIeJ20AjzdV/PxMkd8zOijRVTnlK44bcfidqFM6yuT1bvXAO6NOPy
+ pvBRnfP66L/xECnZe7s07rXpNFy72XGNZwhj89xfpK4a9E8HQcOD0mNtCJaz7TTugqBOsQx2
+ 45VPHosmhdtBQ6/gjlf2WY9FXb5RyceeSuK4lVrz9uZB+fUHBge/giOSsrqFo/9fWAZsE67k
+ 6Mkdbpc7ZQwxelcpP/giB9N+XAfBsffQ8q6kIyuFV4ILsIECCIA4nt1rYmzphv6t5J6PmlTq
+ TzW9jNzbYANoOFAGnjzNRyc9i8UiLvjhTzaKPBOkQfhStEJaZrdSWuR/7Tt2wZBBoNTsgNAw
+ A+cEu+SWCvdX7vNpsCHMiHtcEmVt5R0Tex1Ky87EfXdnGR2mDi6Iyxi3MQcHez3C61Ga3Baf
+ P8UtXR6zrrrlX22xXtpNJf4I4Z6RaLpB/avIXTFXPbJ8CUUbVD2R2mZ/jyzaTzgiABDZspbS
+ gw17QQUrKqUog0nHXuaGGA1uvreHTnyBWx5P8FP7rhtvYKhw6XdJ06ns+2SFcQv0Bv6PcSDK
+ aRXmnW+OsDthn84x1YkfGIRJEPvvmiOKQsFEiB4OUtTX2pheYmZcZc81KFfJMmE8Z9+LT6Ry
+ uSS5AQ0EXFLNDgEIAL14qAzTMCE1PwRrYJRI/RSQGAGF3HLdYvjbQd9Ozzg02K3mNCF2Phb1
+ cjsbMk/V6WMxYoZCEtCh4X2GjQG2GDDW4KC9HOa8cTmr9Vcno+f+pUle09TMzWDgtnH92WKx
+ d0FIQev1zDbxU7lk1dIqyOjjpyhmR8Put6vgunvuIjGJ/GapHL/O0yjVlpumtmow6eME2muc
+ TeJjpapPWBGcy/8VU4LM8xMeMWv8DtQML5ogyJxZ0Smt+AntIzcF9miV2SeYXA3OFiojQstF
+ vScN7owL1XiQ3UjJotCp6pUcSVgVv0SgJXbDo5Nv87M2itn68VPfTu2uBBxRYqXQovsR++kA
+ EQEAAYkCPAQYAQoAJhYhBMFAC6CzmJ5vvH1bXCte4hHFiupUBQJcUs0OAhsMBQkB4o0iAAoJ
+ ECte4hHFiupUbioQAJ40bEJmMOF28vFcGvQrpI+lfHJGk9zSrh4F4SlJyOVWV1yWyUAINr8w
+ v1aamg2nAppZ16z4nAnGU/47tWZ4P8blLVG8x4SWzz3D7MCy1FsQBTrWGLqWldPhkBAGp2VH
+ xDOK4rLhuQWx3H5zd3kPXaIgvHI3EliWaQN+u2xmTQSJN75I/V47QsaPvkm4TVe3JlB7l1Fg
+ OmSvYx31YC+3slh89ayjPWt8hFaTLnB9NaW9bLhs3E2ESF9Dei0FRXIt3qnFV/hnETsx3X4h
+ KEnXxhSRDVeURP7V6P/z3+WIfddVKZk5ZLHi39fJpxvsg9YLSfStMJ/cJfiPXk1vKdoa+FjN
+ 7nGAZyF6NHTNhsI7aHnvZMDavmAD3lK6CY+UBGtGQA3QhrUc2cedp1V53lXwor/D/D3Wo9wY
+ iSXKOl4fFCh2Peo7qYmFUaDdyiCxvFm+YcIeMZ8wO5udzkjDtP4lWKAn4tUcdcwMOT5d0I3q
+ WATP4wFI8QktNBqF3VY47HFwF9PtNuOZIqeAquKezywUc5KqKdqEWCPx9pfLxBAh3GW2Zfjp
+ lP6A5upKs2ktDZOC2HZXP4IJ1GTk8hnfS4ade8s9FNcwu9m3JlxcGKLPq5DnIbPVQI1UUR4F
+ QyAqTtIdSpeFYbvH8D7pO4lxLSz2ZyBMk+aKKs6GL5MqEci8OcFW
+Subject: Re: [Bug] mtd: rawnand: gpmi
+Message-ID: <9db42086-027f-e096-44d7-6d39b8af94ee@pengutronix.de>
+Date: Thu, 5 Sep 2019 22:39:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Language: en-US-large
+In-Reply-To: <6a333d0f-09b2-d0d1-a3a5-955b31b6291e@geanix.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190905_132633_848699_47B6B423 
-X-CRM114-Status: UNSURE (   8.61  )
+X-CRM114-CacheID: sfid-20190905_133952_982617_EF59CEA9 
+X-CRM114-Status: UNSURE (   9.96  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -76,97 +147,84 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: mkl@pengutronix.de
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: multipart/mixed; boundary="===============2910849127678432163=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGksCgpJIGhhdmUgYmVlbiB0cm91Ymxlc2hvb3Rpbmcgc29tZSBDQU4gcHJvYmxlbXMgb24gb3Vy
-IGlteDZ1bGwgd2l0aCBhIHJhdyAKbmFuZCBmbGFzaC4KSSBub3JtYWxseSBydW4gd2l0aCBhIDQu
-MTkgc2VyaWVzIGtlcm5lbCwgYnV0IHRvIHZlcmlmeSB0aG9zZSBDQU4gCnByb2JsZW1zIGhhdmUg
-YmVlbiByZXNvbHZlZCBpbiBuZXdlciBrZXJuZWxzIGkgaGF2ZSBiZWVuIHRyeWluZyB+NS4zLXJj
-Ni4KCkJ1dCB3aXRoIHRoYXQga2VybmVsIGkgaGF2ZSBydW4gaW50byB0cm91YmxlIHdpdGggdWJp
-ZnMsIGl0IHRocm93cyBhIGxvdCAKb2YgZXJyb3JzOgpbICAxODguMzg0NTcyXSBOb3QgYSBub2Rl
-LCBmaXJzdCAyNCBieXRlczoKWyAgMTg4LjM4NDU4OF0gMDAwMDAwMDA6IGZmIGZmIGZmIDAwIDAw
-IDAwIDAwIGU0IDAzIDAwIDAwIGEwIDgxIDAwIDAwIDAxIAowMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAgICAgICAgICAgICAgICAgICAgICAgICAgLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uClsgIDE4
-OC40MDI5NzZdIFVCSUZTIGVycm9yICh1YmkwOjggcGlkIDExNyk6IHViaWZzX3JlYWRfbm9kZTog
-YmFkIG5vZGUgCnR5cGUgKDAgYnV0IGV4cGVjdGVkIDMpClsgIDE4OC40MTE2MDVdIFVCSUZTIGVy
-cm9yICh1YmkwOjggcGlkIDExNyk6IHViaWZzX3JlYWRfbm9kZTogYmFkIG5vZGUgCmF0IExFQiA0
-Njo0OTg4OCwgTEVCIG1hcHBpbmcgc3RhdHVzIDEKCkkgc3RhcnRlZCBhIGJpc2VjdCBmcm9tIExp
-bnV4IDUuMy1yYzcgKGJhZCkgdG8gNS4yIChnb29kKS4KQW5kIGknbSBlbmRpbmcgdXAgaGVyZToK
-CmNvbW1pdCBlZjM0N2MwY2ZkNjE5YTkyNTFlNWEyZjlmZjcyZTMzNjUwYTliY2NiIChIRUFEKQpB
-dXRob3I6IFNhc2NoYSBIYXVlciA8cy5oYXVlckBwZW5ndXRyb25peC5kZT4KRGF0ZTogICBUdWUg
-TWF5IDIxIDA5OjA2OjQzIDIwMTkgKzAyMDAKCiAgICAgbXRkOiByYXduYW5kOiBncG1pOiBJbXBs
-ZW1lbnQgZXhlY19vcAoKZG1lc2cgb24gYm9vdDoKWyAgICAxLjIyOTQzMV0gbmFuZDogZGV2aWNl
-IGZvdW5kLCBNYW51ZmFjdHVyZXIgSUQ6IDB4OTgsIENoaXAgSUQ6IDB4ZGMKWyAgICAxLjIyOTQ3
-Ml0gbmFuZDogVG9zaGliYSBOQU5EIDUxMk1pQiAzLDNWIDgtYml0ClsgICAgMS4yMjk1MTBdIG5h
-bmQ6IDUxMiBNaUIsIFNMQywgZXJhc2Ugc2l6ZTogMjU2IEtpQiwgcGFnZSBzaXplOiA0MDk2LCAK
-T09CIHNpemU6IDEyOApbICAgIDEuMjI5NTQ3XSAtLS0tLS0tLS0tLS1bIGN1dCBoZXJlIF0tLS0t
-LS0tLS0tLS0KWyAgICAxLjIyOTYwNF0gV0FSTklORzogQ1BVOiAwIFBJRDogMSBhdCAKZHJpdmVy
-cy9tdGQvbmFuZC9yYXcvaW50ZXJuYWxzLmg6MTE0IG5hbmRfcmVzZXRfb3ArMHgxOTgvMHgxYzAK
-WyAgICAxLjIyOTYzM10gTW9kdWxlcyBsaW5rZWQgaW46ClsgICAgMS4yMjk2ODRdIENQVTogMCBQ
-SUQ6IDEgQ29tbTogc3dhcHBlci8wIE5vdCB0YWludGVkIAo1LjIuMC1yYzMtMDAwMjItZ2VmMzQ3
-YzBjZmQ2MSAjODQKWyAgICAxLjIyOTcwOV0gSGFyZHdhcmUgbmFtZTogRnJlZXNjYWxlIGkuTVg2
-IFVsdHJhbGl0ZSAoRGV2aWNlIFRyZWUpClsgICAgMS4yMjk3NzBdIFs8YzAxMTE4NGM+XSAodW53
-aW5kX2JhY2t0cmFjZSkgZnJvbSBbPGMwMTBjYzc4Pl0gCihzaG93X3N0YWNrKzB4MTAvMHgxNCkK
-WyAgICAxLjIyOTgyNV0gWzxjMDEwY2M3OD5dIChzaG93X3N0YWNrKSBmcm9tIFs8YzA4NzczMjg+
-XSAKKGR1bXBfc3RhY2srMHhkNC8weDEwOCkKWyAgICAxLjIyOTg4MF0gWzxjMDg3NzMyOD5dIChk
-dW1wX3N0YWNrKSBmcm9tIFs8YzAxMjVmZmM+XSAKKF9fd2Fybi5wYXJ0LjArMHhhOC8weGU4KQpb
-ICAgIDEuMjI5OTI1XSBbPGMwMTI1ZmZjPl0gKF9fd2Fybi5wYXJ0LjApIGZyb20gWzxjMDEyNjE5
-Yz5dIAood2Fybl9zbG93cGF0aF9udWxsKzB4NDAvMHg0YykKWyAgICAxLjIyOTk3MF0gWzxjMDEy
-NjE5Yz5dICh3YXJuX3Nsb3dwYXRoX251bGwpIGZyb20gWzxjMDU2ODAxOD5dIAoobmFuZF9yZXNl
-dF9vcCsweDE5OC8weDFjMCkKWyAgICAxLjIzMDAxOV0gWzxjMDU2ODAxOD5dIChuYW5kX3Jlc2V0
-X29wKSBmcm9tIFs8YzA1NjlkODg+XSAKKG5hbmRfcmVzZXQrMHg1OC8weGI0KQpbICAgIDEuMjMw
-MDY2XSBbPGMwNTY5ZDg4Pl0gKG5hbmRfcmVzZXQpIGZyb20gWzxjMDU2YTgxYz5dIAoobmFuZF9z
-Y2FuX3dpdGhfaWRzKzB4NmFjLzB4MTViYykKWyAgICAxLjIzMDExMl0gWzxjMDU2YTgxYz5dIChu
-YW5kX3NjYW5fd2l0aF9pZHMpIGZyb20gWzxjMDU3MzZiOD5dIAooZ3BtaV9uYW5kX3Byb2JlKzB4
-MmI4LzB4NzA4KQpbICAgIDEuMjMwMTYwXSBbPGMwNTczNmI4Pl0gKGdwbWlfbmFuZF9wcm9iZSkg
-ZnJvbSBbPGMwNTI4MTNjPl0gCihwbGF0Zm9ybV9kcnZfcHJvYmUrMHg0OC8weDk4KQpbICAgIDEu
-MjMwMjA4XSBbPGMwNTI4MTNjPl0gKHBsYXRmb3JtX2Rydl9wcm9iZSkgZnJvbSBbPGMwNTI1Zjdj
-Pl0gCihyZWFsbHlfcHJvYmUrMHhlYy8weDJjOCkKWyAgICAxLjIzMDI2MF0gWzxjMDUyNWY3Yz5d
-IChyZWFsbHlfcHJvYmUpIGZyb20gWzxjMDUyNjJiND5dIAooZHJpdmVyX3Byb2JlX2RldmljZSsw
-eDVjLzB4MTYwKQpbICAgIDEuMjMwMzAzXSBbPGMwNTI2MmI0Pl0gKGRyaXZlcl9wcm9iZV9kZXZp
-Y2UpIGZyb20gWzxjMDUyNjU1OD5dIAooZGV2aWNlX2RyaXZlcl9hdHRhY2grMHg1OC8weDYwKQpb
-ICAgIDEuMjMwMzQzXSBbPGMwNTI2NTU4Pl0gKGRldmljZV9kcml2ZXJfYXR0YWNoKSBmcm9tIFs8
-YzA1MjY1Yjg+XSAKKF9fZHJpdmVyX2F0dGFjaCsweDU4LzB4ZDApClsgICAgMS4yMzAzOTFdIFs8
-YzA1MjY1Yjg+XSAoX19kcml2ZXJfYXR0YWNoKSBmcm9tIFs8YzA1MjQ0MmM+XSAKKGJ1c19mb3Jf
-ZWFjaF9kZXYrMHg3OC8weGI4KQpbICAgIDEuMjMwNDQxXSBbPGMwNTI0NDJjPl0gKGJ1c19mb3Jf
-ZWFjaF9kZXYpIGZyb20gWzxjMDUyNTQ0Yz5dIAooYnVzX2FkZF9kcml2ZXIrMHgxNTAvMHgxZGMp
-ClsgICAgMS4yMzA0ODRdIFs8YzA1MjU0NGM+XSAoYnVzX2FkZF9kcml2ZXIpIGZyb20gWzxjMDUy
-NzI0OD5dIAooZHJpdmVyX3JlZ2lzdGVyKzB4NzQvMHgxMDgpClsgICAgMS4yMzA1MjhdIFs8YzA1
-MjcyNDg+XSAoZHJpdmVyX3JlZ2lzdGVyKSBmcm9tIFs8YzAxMDMwOTA+XSAKKGRvX29uZV9pbml0
-Y2FsbCsweDgwLzB4MzM0KQpbICAgIDEuMjMwNTc2XSBbPGMwMTAzMDkwPl0gKGRvX29uZV9pbml0
-Y2FsbCkgZnJvbSBbPGMwYzAxMWI0Pl0gCihrZXJuZWxfaW5pdF9mcmVlYWJsZSsweDJmYy8weDNl
-NCkKWyAgICAxLjIzMDYyM10gWzxjMGMwMTFiND5dIChrZXJuZWxfaW5pdF9mcmVlYWJsZSkgZnJv
-bSBbPGMwODhmZTFjPl0gCihrZXJuZWxfaW5pdCsweDgvMHgxMTApClsgICAgMS4yMzA2NjhdIFs8
-YzA4OGZlMWM+XSAoa2VybmVsX2luaXQpIGZyb20gWzxjMDEwMTBiND5dIAoocmV0X2Zyb21fZm9y
-aysweDE0LzB4MjApClsgICAgMS4yMzA2OTddIEV4Y2VwdGlvbiBzdGFjaygweGM4MDk3ZmIwIHRv
-IDB4YzgwOTdmZjgpClsgICAgMS4yMzA3MzNdIDdmYTA6ICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIDAwMDAwMDAwIAowMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMApbICAgIDEu
-MjMwNzcyXSA3ZmMwOiAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAw
-MCAKMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAKWyAgICAxLjIzMDgwNl0gN2ZlMDogMDAwMDAw
-MDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMTMgMDAwMDAwMDAKWyAgICAxLjIz
-MDgzMl0gaXJxIGV2ZW50IHN0YW1wOiAxMDQwMTEKWyAgICAxLjIzMDg3NV0gaGFyZGlycXMgbGFz
-dCAgZW5hYmxlZCBhdCAoMTA0MDE3KTogWzxjMDE4N2UzND5dIApjb25zb2xlX3VubG9jaysweDNm
-MC8weDVjMApbICAgIDEuMjMwOTExXSBoYXJkaXJxcyBsYXN0IGRpc2FibGVkIGF0ICgxMDQwMjIp
-OiBbPGMwMTg3YWM4Pl0gCmNvbnNvbGVfdW5sb2NrKzB4ODQvMHg1YzAKWyAgICAxLjIzMDk1MF0g
-c29mdGlycXMgbGFzdCAgZW5hYmxlZCBhdCAoMTAzOTYwKTogWzxjMDEwMjU0MD5dIApfX2RvX3Nv
-ZnRpcnErMHgzMjAvMHg1MGMKWyAgICAxLjIzMDk5Ml0gc29mdGlycXMgbGFzdCBkaXNhYmxlZCBh
-dCAoMTAzOTUzKTogWzxjMDEyZDYzND5dIAppcnFfZXhpdCsweDEyNC8weDE4YwpbICAgIDEuMjMx
-MDYwXSAtLS1bIGVuZCB0cmFjZSAxMmI5ZDE5YTVhYWM0YzlmIF0tLS0KWyAgICAxLjIzNDcxMF0g
-QmFkIGJsb2NrIHRhYmxlIG5vdCBmb3VuZCBmb3IgY2hpcCAwClsgICAgMS4yMzYwNzZdIEJhZCBi
-bG9jayB0YWJsZSBub3QgZm91bmQgZm9yIGNoaXAgMApbICAgIDEuMjM2MTEzXSBTY2FubmluZyBk
-ZXZpY2UgZm9yIGJhZCBibG9ja3MKWyAgICAxLjI0NDkwN10gcmFuZG9tOiBmYXN0IGluaXQgZG9u
-ZQpbICAgIDEuNzAxNzY0XSBCYWQgZXJhc2VibG9jayA3OTggYXQgMHgwMDAwMGM3ODAwMDAKWyAg
-ICAyLjEzMjczNF0gQmFkIGVyYXNlYmxvY2sgMTUzNiBhdCAweDAwMDAxODAwMDAwMApbICAgIDIu
-MTMzMDk0XSBCYWQgZXJhc2VibG9jayAxNTM3IGF0IDB4MDAwMDE4MDQwMDAwClsgICAgMi40MzQw
-NTddIEJhZCBibG9jayB0YWJsZSB3cml0dGVuIHRvIDB4MDAwMDFmZmMwMDAwLCB2ZXJzaW9uIDB4
-MDEKWyAgICAyLjQzNzI1NF0gQmFkIGJsb2NrIHRhYmxlIHdyaXR0ZW4gdG8gMHgwMDAwMWZmODAw
-MDAsIHZlcnNpb24gMHgwMQoKSSdtIGhlcmUgaWYgYW55dGhpbmcgbmVlZHMgdGVzdGluZyA6LSkK
-Ci0tIApCZXN0IHJlZ2FyZHMsClNlYW4gTnlla2rDpnIKRW1iZWRkZWQgTGludXggQ29uc3VsdGFu
-dAoKKzQ1IDQyNDI3MzI2CnNlYW5AZ2Vhbml4LmNvbQoKR2Vhbml4IEFwUwpodHRwczovL2dlYW5p
-eC5jb20KREszOTYwMDcwNgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8v
-bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--===============2910849127678432163==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="5dQik6L09IRMXXsePXfzC0PhJe2enN51h"
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--5dQik6L09IRMXXsePXfzC0PhJe2enN51h
+Content-Type: multipart/mixed; boundary="fXrJmMosEU8RMe8VehDddG5VVSRdBvTWf";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Sean Nyekjaer <sean@geanix.com>, s.hauer@pengutronix.de,
+ miquel.raynal@bootlin.com, linux-mtd@lists.infradead.org,
+ linux-can <linux-can@vger.kernel.org>
+Message-ID: <9db42086-027f-e096-44d7-6d39b8af94ee@pengutronix.de>
+Subject: Re: [Bug] mtd: rawnand: gpmi
+References: <6a333d0f-09b2-d0d1-a3a5-955b31b6291e@geanix.com>
+In-Reply-To: <6a333d0f-09b2-d0d1-a3a5-955b31b6291e@geanix.com>
+
+--fXrJmMosEU8RMe8VehDddG5VVSRdBvTWf
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
+
+On 9/5/19 10:26 PM, Sean Nyekjaer wrote:
+> I have been troubleshooting some CAN problems on our imx6ull with a raw=
+=20
+> nand flash.
+> I normally run with a 4.19 series kernel, but to verify those CAN=20
+> problems have been resolved in newer kernels i have been trying ~5.3-rc=
+6.
+
+What kind of CAN problem? (Cc +=3D linux-can).
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--fXrJmMosEU8RMe8VehDddG5VVSRdBvTWf--
+
+--5dQik6L09IRMXXsePXfzC0PhJe2enN51h
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl1xcogACgkQWsYho5Hk
+nSBz7Af/ai1hQLjrzTi/jsQDJRAIf4qjhJW/doaHYZAleBEBs4wZqVh4ncWt4Ura
+gR9AKbL3jTS4qsxWat/F7oL87jTPik3Yz36PsPLz1nrKL5C5xyIS6h82TJgfF9d3
+ujULqt17EZ5xHPWc6Qumv1hgJ0seTNooA2xjVoJqxLnuI22ipKsRhj/rR4r679AT
+fAYoUZPiokn26FtT9eAFfyoEVcfXqHU8QoIY78NcPoGGxG9mIuKLh3r/V5aBWyBe
+0uU5f16jwy1eUMKGbRRdrvgGW40qxkyYzDqp/Xc2i4tMeSdH4r8K03VN9y0gAImB
+BY1WRlAtP4bdehj0rHITUGzA3YQzZQ==
+=cMqv
+-----END PGP SIGNATURE-----
+
+--5dQik6L09IRMXXsePXfzC0PhJe2enN51h--
+
+
+--===============2910849127678432163==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============2910849127678432163==--
+
