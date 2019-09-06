@@ -8,78 +8,82 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3055DC43331
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Sep 2019 19:49:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69F58C43331
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Sep 2019 19:49:24 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 026D72070C
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Sep 2019 19:49:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3AC322070C
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Sep 2019 19:49:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Wi6W2NkM";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RKKwKRs2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 026D72070C
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cgNUuuRf";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rR42GsoQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3AC322070C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=uNh4Z0Lw23OMAtO4cR8xYXC7er+rTsFDXrPIy872Vzo=; b=Wi6
-	W2NkMPxCbxAOkBxLLHSzjLnt2ezr77nGdo0or0B3ejV/uFe/fOL7I5sgrX9qQLUanawR4BvhmvLEn
-	C3yYRRWtPsPp3jaIUitBKolHg4gxCPVmCz7JLNA8vtF6X6Imcu9ABT0PsjeDyngK7jduzumnuRXpU
-	tpxKdG2sR1kLLNJOD62rBI4IhNughFRqsOpOPWLhfz94SkkBZ2hn29FDoe9tvaGthDyPfGwCdNPJb
-	ax8jhdLU97YToD/bRRBS+F8qr6uc9tvrNNnTcU9sjA/ri8KuADKuqcFB8PXLQ+E+Uc+HwJobD2Yq3
-	qTU/uR8Tms/apbf+2CjmTmofH6ckjaA==;
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:References:
+	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=Vx3UOF3ncht8A/tiqfgc7GK5GbDeK4xGhZEOEr4hVp0=; b=cgNUuuRfriDkUwmR8zBLz9kGJY
+	dr7w1qaUgTt5VE1TP1iXfwUBBL3kEVO9Kr47doChORDEYU4++HSsyAOWvYgPhf7A+XTDXN+73WyeY
+	uK8LFqJXcxNVKaOSgx3mDKteEmJ8H/ea6LgaZVLYVo0rU7tXXhTnx/OmA2/v4Mah9hahujr7IGJ5E
+	PNCp49U6TfLVO4jwPlJg/hSyiweUygBYWGMkyYADeJFg50MfUztzCbrRd6S/2d79BTz55iRyf2i8c
+	BA+LYkarnhzqRRXAEqD1EmllraBNbcId2Ht+tPct6HXxej/Ie/64FjwADYAPqjDQblmbkxLsFVYEH
+	MQOhssUw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i6KEN-0004gv-7I; Fri, 06 Sep 2019 19:49:15 +0000
-Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
+	id 1i6KEV-0004ro-5E; Fri, 06 Sep 2019 19:49:23 +0000
+Received: from mail-pf1-x443.google.com ([2607:f8b0:4864:20::443])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i6KEK-0004gC-MG
- for linux-mtd@lists.infradead.org; Fri, 06 Sep 2019 19:49:13 +0000
-Received: by mail-pg1-x544.google.com with SMTP id p3so4066207pgb.9
- for <linux-mtd@lists.infradead.org>; Fri, 06 Sep 2019 12:49:12 -0700 (PDT)
+ id 1i6KES-0004oT-Ep
+ for linux-mtd@lists.infradead.org; Fri, 06 Sep 2019 19:49:21 +0000
+Received: by mail-pf1-x443.google.com with SMTP id 205so5226877pfw.2
+ for <linux-mtd@lists.infradead.org>; Fri, 06 Sep 2019 12:49:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id;
- bh=uAzFuMJFC8Qs6zalTfHoEOACCJjWE6SxXCJNlMiufmc=;
- b=RKKwKRs2N6yoI0pB2oH4Uv9SbRzRWQEW0woC725TrgQ5hhPfgqJWWtes733p+nCc4u
- ds98ZXgCub53C6qaASOae9vIW3w2C7hXik/fsEOhicdwKkxuKJcR6hWAE4HsDXbnU9U0
- 5gNeKjfnE2BGZhJNJ8AAVceGHsbxrZOOpmfEkOef6xgNdcNdw/DE1xZIQ8TUu9MinI/j
- OxfwccCtnukauMPYWIs4U4jT+wlBUWnze7aTbQThbkKOBNuwJbBeouUFufFHctIO45OV
- lXZikXmPFrQJsxk871LQr1cv4vXt4Gc5+hdxl/AAKi+K5cUaYMyhCEp7HTne/9AyBaDS
- WrVA==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references;
+ bh=mU1+WGtGI6s1SQGf+HUbugB7ywPYgCVVN6kyBzTaNcA=;
+ b=rR42GsoQTXfsBGioVnUnyXrolTnujYH0VV3GlvCX7f+eVRQOY4iR4Jl+A6T+JGK6Uk
+ JhVPirT10DmB2aIVqgd4ufROGVgCU8UmCaouhJLZWmSkSJ2scDGTwV76+FP7Edb0zl3m
+ EjtKQp3GCokxIGWgxsemLvZS7youH/HsBTsxTfjEei6lQXPSs48cXywXSvUhFW6i2a/h
+ hPrEbkaapa19w8ts7Y5h34/COYBufEfcxHs7sxStF+YBs/HNE+dQTMfCodr6eRHu+eOU
+ htdA0pHyEdY+AGo8rb8rs7WmyBfdJYCIjmIarIXCLCreuFoEdum2dXLGlhZQYqKQCT4A
+ D2uA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=uAzFuMJFC8Qs6zalTfHoEOACCJjWE6SxXCJNlMiufmc=;
- b=jf410L6/nwM62txYJwApBVKizEsJmn1cANUyobIayWP7qzNuVaM8KBlng9XNEh5Acx
- +Ai/SfH7g7LzPvt1R+LEdZf63xGkOaLXm8bfRT0m6m2wj6KNLbjjr1zXNac9zGlZyJMo
- uJNFW8KOrjKWta0Mz9PS7fndOBsbzEcTLutc/31eyNB4W2qFOjgLjFHp943eGvAMdSa2
- MuXSS25a8BVSEo+tB1c8xgEPZ1GuUCBG0GJk+5v61es2GZeLwO7Y1pfPhzc9LT8Gs57Y
- Lo07KjgVW0ztctfIoYgIBZpQsQR7gPV97hIUxPy16WFXXk1op9b9sIznGrxC1pnBpmoO
- DpLQ==
-X-Gm-Message-State: APjAAAWB5O4+1PLcnfRxTbKALkRTDmQrAe0vmJcAgq4/nV1npy1/xezR
- Gdr37Q/o20EFnWnN4psqX7H4Pw1Z
-X-Google-Smtp-Source: APXvYqzYnh/9vJNadE0cCHveRlhb7dIY5iG/blPZ0Hq8le4ixP+lhRxijP9d4wDs0X4pvqNWVypmWA==
-X-Received: by 2002:a17:90a:2e15:: with SMTP id
- q21mr11395700pjd.97.1567799351470; 
- Fri, 06 Sep 2019 12:49:11 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references;
+ bh=mU1+WGtGI6s1SQGf+HUbugB7ywPYgCVVN6kyBzTaNcA=;
+ b=mTz4RMUur+etALBMf9o9yZHkC4Bx//UFZQG6fMv06DhpvX/mQhvatcipUXO8Ik4fYm
+ fdk3047T/dyLHK0nAM+NoeUFwQ9d+ThziivcRe0KWQFUjEC9vYQ/Fa2Ivz+BbcYZCfrg
+ V7cFWniewiy2IOixqNEfDnjqOG+MHQ86ecSQXdwIe3zWgzm1i+I4WActAGHFKN9UO7bm
+ 2j5DD39ZDekX5c7Jctb7leNKQ6HZvMyGE411w8WuOWKisZS8J1T7rGS2ahsxTxivJMnu
+ F3XZSkTr+CSZWkDuWUAO/rxXrrej6YU6JaUOlY4kAs9VVK9z/+Y8L4/duFshVBBU7Z99
+ 3aWw==
+X-Gm-Message-State: APjAAAXuHLJKTqgjmBdLsQXnV1mW+pMQ4kgVG5W0dV0Zv2fGSFW0R99j
+ kXVD4S7rf7bMTZkT+bqiokaoZ0+G
+X-Google-Smtp-Source: APXvYqxso7WabPx8hLIH7RQGLkKtxnqxDs90vXPzVkIPXtY/aopJL+vzjpb6PG1mpQ04vofmb+UVqw==
+X-Received: by 2002:aa7:8a86:: with SMTP id a6mr12830850pfc.76.1567799359949; 
+ Fri, 06 Sep 2019 12:49:19 -0700 (PDT)
 Received: from mail.broadcom.com ([192.19.231.250])
- by smtp.gmail.com with ESMTPSA id c127sm9830119pfb.5.2019.09.06.12.49.08
+ by smtp.gmail.com with ESMTPSA id c127sm9830119pfb.5.2019.09.06.12.49.18
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 06 Sep 2019 12:49:10 -0700 (PDT)
+ Fri, 06 Sep 2019 12:49:19 -0700 (PDT)
 From: Kamal Dasu <kdasu.kdev@gmail.com>
 To: kdasu.kdev@gmail.com
-Subject: [PATCH 1/2] mtd: nand: brcmnand: Add support for flash-dma v0
-Date: Fri,  6 Sep 2019 15:47:15 -0400
-Message-Id: <20190906194719.15761-1-kdasu.kdev@gmail.com>
+Subject: [PATCH 2/2] mtd: rawnand: use bounce buffer when vmalloced data buf
+ detected
+Date: Fri,  6 Sep 2019 15:47:16 -0400
+Message-Id: <20190906194719.15761-2-kdasu.kdev@gmail.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20190906194719.15761-1-kdasu.kdev@gmail.com>
+References: <20190906194719.15761-1-kdasu.kdev@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190906_124912_724902_D8455A6C 
-X-CRM114-Status: GOOD (  13.05  )
+X-CRM114-CacheID: sfid-20190906_124920_505123_505356B2 
+X-CRM114-Status: GOOD (  11.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,59 +109,57 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This change adds support for flash dma v0.0.
+For controller drivers that use DMA and set NAND_USE_BOUNCE_BUFFER
+option use data buffers that are not vmalloced, aligned and have
+valid virtual address to be able to do DMA transfers. This change
+adds additional check and makes use of data buffer allocated
+in nand_base driver when it is passed a vmalloced data buffer for
+DMA transfers.
 
 Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
 ---
- drivers/mtd/nand/raw/brcmnand/brcmnand.c | 21 +++++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/raw/nand_base.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index 33310b8a6eb8..1eade9dc3b0d 100644
---- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -117,6 +117,18 @@ enum flash_dma_reg {
- 	FLASH_DMA_CURRENT_DESC_EXT,
- };
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 91f046d4d452..46f6965a896a 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -45,6 +45,12 @@
  
-+/* flash_dma registers v0*/
-+static const u16 flash_dma_regs_v0[] = {
-+	[FLASH_DMA_REVISION]		= 0x00,
-+	[FLASH_DMA_FIRST_DESC]		= 0x04,
-+	[FLASH_DMA_CTRL]		= 0x08,
-+	[FLASH_DMA_MODE]		= 0x0c,
-+	[FLASH_DMA_STATUS]		= 0x10,
-+	[FLASH_DMA_INTERRUPT_DESC]	= 0x14,
-+	[FLASH_DMA_ERROR_STATUS]	= 0x18,
-+	[FLASH_DMA_CURRENT_DESC]	= 0x1c,
-+};
+ #include "internals.h"
+ 
++static int nand_need_bounce_buf(const void *buf, struct nand_chip *chip)
++{
++	return !virt_addr_valid(buf) || is_vmalloc_addr(buf) ||
++		!IS_ALIGNED((unsigned long)buf, chip->buf_align);
++}
 +
- /* flash_dma registers v1*/
- static const u16 flash_dma_regs_v1[] = {
- 	[FLASH_DMA_REVISION]		= 0x00,
-@@ -597,6 +609,8 @@ static void brcmnand_flash_dma_revision_init(struct brcmnand_controller *ctrl)
- 	/* flash_dma register offsets */
- 	if (ctrl->nand_version >= 0x0703)
- 		ctrl->flash_dma_offsets = flash_dma_regs_v4;
-+	else if (ctrl->nand_version == 0x0602)
-+		ctrl->flash_dma_offsets = flash_dma_regs_v0;
- 	else
- 		ctrl->flash_dma_offsets = flash_dma_regs_v1;
- }
-@@ -1673,8 +1687,11 @@ static void brcmnand_dma_run(struct brcmnand_host *host, dma_addr_t desc)
+ /* Define default oob placement schemes for large and small page devices */
+ static int nand_ooblayout_ecc_sp(struct mtd_info *mtd, int section,
+ 				 struct mtd_oob_region *oobregion)
+@@ -3183,9 +3189,7 @@ static int nand_do_read_ops(struct nand_chip *chip, loff_t from,
+ 		if (!aligned)
+ 			use_bufpoi = 1;
+ 		else if (chip->options & NAND_USE_BOUNCE_BUFFER)
+-			use_bufpoi = !virt_addr_valid(buf) ||
+-				     !IS_ALIGNED((unsigned long)buf,
+-						 chip->buf_align);
++			use_bufpoi = nand_need_bounce_buf(buf, chip);
+ 		else
+ 			use_bufpoi = 0;
  
- 	flash_dma_writel(ctrl, FLASH_DMA_FIRST_DESC, lower_32_bits(desc));
- 	(void)flash_dma_readl(ctrl, FLASH_DMA_FIRST_DESC);
--	flash_dma_writel(ctrl, FLASH_DMA_FIRST_DESC_EXT, upper_32_bits(desc));
--	(void)flash_dma_readl(ctrl, FLASH_DMA_FIRST_DESC_EXT);
-+	if (ctrl->nand_version > 0x0602) {
-+		flash_dma_writel(ctrl, FLASH_DMA_FIRST_DESC_EXT,
-+				 upper_32_bits(desc));
-+		(void)flash_dma_readl(ctrl, FLASH_DMA_FIRST_DESC_EXT);
-+	}
+@@ -4009,9 +4013,7 @@ static int nand_do_write_ops(struct nand_chip *chip, loff_t to,
+ 		if (part_pagewr)
+ 			use_bufpoi = 1;
+ 		else if (chip->options & NAND_USE_BOUNCE_BUFFER)
+-			use_bufpoi = !virt_addr_valid(buf) ||
+-				     !IS_ALIGNED((unsigned long)buf,
+-						 chip->buf_align);
++			use_bufpoi = nand_need_bounce_buf(buf, chip);
+ 		else
+ 			use_bufpoi = 0;
  
- 	/* Start FLASH_DMA engine */
- 	ctrl->dma_pending = true;
 -- 
 2.17.1
 
