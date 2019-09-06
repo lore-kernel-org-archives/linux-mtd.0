@@ -2,159 +2,84 @@ Return-Path: <SRS0=stAP=XB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E25EC43331
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Sep 2019 15:10:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3055DC43331
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Sep 2019 19:49:17 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7524B2067D
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Sep 2019 15:10:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 026D72070C
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Sep 2019 19:49:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="JaBdaqrj";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="NpxPO6xF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7524B2067D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Wi6W2NkM";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RKKwKRs2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 026D72070C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JqXziev3VrTOPeMq/ziS7VO1qutWZvXoGh/+tqeW2WA=; b=JaBdaqrjdDOLgA
-	B07KWDXwpb5FSanfG3WXqrw0vBOXk/eZBZFCrpQpc+oX9QSzhdAQkvu7SYPQlCrY7NN02x3GvZRbQ
-	dRj6nl9adqOTp8G6Q1Hs9Q3CS7CIpwqLoHZ3DcXkoaf08aTGT3NbiCBFPTajawAPkQxYfmi9PMwcd
-	v6oopYCU7tmmpUC5YCiUaEsvKHjjx8QI1qrZXSmXdVuxoK4Rzu/9ky782riMRAxqwamFYHXZUsJeo
-	rbJlGBzkHz9JLBQdiz+fpMP86jkomHSBcciIkM/a/RuW0cWZu2AA0oi4mJ+Mm4l0qoDZP37VXDa7o
-	ePZNoasYSc0C16rmnhNg==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=uNh4Z0Lw23OMAtO4cR8xYXC7er+rTsFDXrPIy872Vzo=; b=Wi6
+	W2NkMPxCbxAOkBxLLHSzjLnt2ezr77nGdo0or0B3ejV/uFe/fOL7I5sgrX9qQLUanawR4BvhmvLEn
+	C3yYRRWtPsPp3jaIUitBKolHg4gxCPVmCz7JLNA8vtF6X6Imcu9ABT0PsjeDyngK7jduzumnuRXpU
+	tpxKdG2sR1kLLNJOD62rBI4IhNughFRqsOpOPWLhfz94SkkBZ2hn29FDoe9tvaGthDyPfGwCdNPJb
+	ax8jhdLU97YToD/bRRBS+F8qr6uc9tvrNNnTcU9sjA/ri8KuADKuqcFB8PXLQ+E+Uc+HwJobD2Yq3
+	qTU/uR8Tms/apbf+2CjmTmofH6ckjaA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i6Fsq-0008Ki-Hl; Fri, 06 Sep 2019 15:10:44 +0000
-Received: from esa5.microchip.iphmx.com ([216.71.150.166])
+	id 1i6KEN-0004gv-7I; Fri, 06 Sep 2019 19:49:15 +0000
+Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i6Fsn-0008KE-9C
- for linux-mtd@lists.infradead.org; Fri, 06 Sep 2019 15:10:42 +0000
-Received-SPF: Pass (esa5.microchip.iphmx.com: domain of
- Tudor.Ambarus@microchip.com designates 198.175.253.82 as
- permitted sender) identity=mailfrom;
- client-ip=198.175.253.82; receiver=esa5.microchip.iphmx.com;
- envelope-from="Tudor.Ambarus@microchip.com";
- x-sender="Tudor.Ambarus@microchip.com";
- x-conformance=spf_only; x-record-type="v=spf1";
- x-record-text="v=spf1 mx a:ushub1.microchip.com
- a:smtpout.microchip.com a:mx1.microchip.iphmx.com
- a:mx2.microchip.iphmx.com include:servers.mcsv.net
- include:mktomail.com include:spf.protection.outlook.com ~all"
-Received-SPF: None (esa5.microchip.iphmx.com: no sender
- authenticity information available from domain of
- postmaster@email.microchip.com) identity=helo;
- client-ip=198.175.253.82; receiver=esa5.microchip.iphmx.com;
- envelope-from="Tudor.Ambarus@microchip.com";
- x-sender="postmaster@email.microchip.com"; x-conformance=spf_only
-Authentication-Results: esa5.microchip.iphmx.com;
- spf=Pass smtp.mailfrom=Tudor.Ambarus@microchip.com;
- spf=None smtp.helo=postmaster@email.microchip.com;
- dkim=pass (signature verified) header.i=@microchiptechnology.onmicrosoft.com;
- dmarc=pass (p=none dis=none) d=microchip.com
-IronPort-SDR: DAk/L6SSebespZNlsGdz1NH/xSRIIqRI1WBh6x8lKKQNfmDPXutg5lmS7O5nW9EozdlR9ul4uj
- T3SkirDlqwYgW/5pnN9jqUtgkSdCVDAg3c73h651oQBYoviLLj2bbHEGHivaRO7ndWfcwAQBG3
- Vjk6pmrWF8IIUJsVRcJYEkJVPHMzWFFKUlJoszP3B+zwzVonqqu5QITkfl5K09HI4p8GYS+51l
- epgr0y8wOUz3WS21eTzGtHosf9eUdYiv+wMLPFyIlxPTRIsY0200Kwey0ae7qIQWXkV6n/O9AJ
- myk=
-X-IronPort-AV: E=Sophos;i="5.64,473,1559545200"; d="scan'208";a="46511055"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 06 Sep 2019 08:10:39 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 6 Sep 2019 08:10:38 -0700
-Received: from NAM03-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, 
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5 via Frontend
- Transport; Fri, 6 Sep 2019 08:10:38 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eeg5m2fMAe38Jn28/m/m3+IH/TgXM070j1xw54SmNIdYgmaXhdCiCRmXQBwzi6enw2Tutkz8ZA0fRt38FGhGTqhOlMk6yQE5IDwwtdpsWYqXVkfH4OMaeTyjrp9j/BeqbniyVJn1P76QYmles2OHDIGAmPz1aRk1amajp+596W0z07gxo4GDTG4jUnOQ34jkwUMGb70Bf8N/JXHKJEs/pgmWhkIQAbl+D8wjnerXRnxbvqy/F+SjcEimCW7EaDGXSaMxcQ3utFYuqi2zvaRnaz5YaoqunR4KYO3wKfkbMxtQ8mDcK5fBIPKPpboqlxvK9hKpNXhizhc29hPUgpMLLA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0u2eTlLq1mFFgzRtjealeYUTQnH/Y2Y8v4pMrte1mNM=;
- b=RrC74kmFskwIyM2DPPiwDjzc8dSAOHqyF7AAdGVE15ounxqAwg0cvqgAYtCp/shSrUO3dC84Epfj6p44zP7psOrzIX5UfaILtYww53uTaxBjX9CmNrJWltgICXOLaNxjmJ1OlEmT0EgasUVbt/yzNbE+ZuGOaCdjq0V3bj7wQ3p2uDO2iLL5Gdd9MbW+0Y2CKj371yec+IBK4YAUiw22hyYD/r4bv3nAGEfQuQu5gKd9trVPpidn6IaOI7fXsbd5B3Hy5SeJ8nNmAV/TvIfjtIcBErFztfXFKVMx/on4XSSVAHSNA45lkuq3Hv7YsNpCw/sxwgmZIaqhgB0KQdEp+Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0u2eTlLq1mFFgzRtjealeYUTQnH/Y2Y8v4pMrte1mNM=;
- b=NpxPO6xF/aNSFAM2nwgcEnRQNlHaVAo7tWVvZ2Nh4w6vaAq1x6SjY0m6pbL/xb1Lf+TlzEedxmQF0Ub6sW2MB/ARCuXSN5ULXPN0I8mjUYFt3IC6wRvwf5MVqL+eFHL6pBssbaH6+/wbrS+JWBTfPS6l/sDhc5b052cMzjy8EnM=
-Received: from MN2PR11MB4448.namprd11.prod.outlook.com (52.135.39.157) by
- MN2PR11MB3567.namprd11.prod.outlook.com (20.178.251.95) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2220.19; Fri, 6 Sep 2019 15:10:36 +0000
-Received: from MN2PR11MB4448.namprd11.prod.outlook.com
- ([fe80::c951:b15a:e4b3:30f7]) by MN2PR11MB4448.namprd11.prod.outlook.com
- ([fe80::c951:b15a:e4b3:30f7%7]) with mapi id 15.20.2220.024; Fri, 6 Sep 2019
- 15:10:36 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <corbet@lwn.net>, <john.garry@huawei.com>
-Subject: Re: [PATCH] docs: mtd: Update spi nor reference driver
-Thread-Topic: [PATCH] docs: mtd: Update spi nor reference driver
-Thread-Index: AQHVTHFBYGyfjvOGF0mQIXams2iiIqce7HEAgAAB0ICAAAFTgIAAAfMA
-Date: Fri, 6 Sep 2019 15:10:36 +0000
-Message-ID: <2dc3eed5-95fd-b144-5cee-676b1c95d5b4@microchip.com>
-References: <1565107583-68506-1-git-send-email-john.garry@huawei.com>
- <20190906085212.79ec917c@lwn.net>
- <9110efc4-35e6-ff04-1a6d-d5d9f93927de@huawei.com>
- <20190906090325.330a5945@lwn.net>
-In-Reply-To: <20190906090325.330a5945@lwn.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: VI1PR08CA0123.eurprd08.prod.outlook.com
- (2603:10a6:800:d4::25) To MN2PR11MB4448.namprd11.prod.outlook.com
- (2603:10b6:208:193::29)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [94.177.32.156]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1187d6d2-795e-4bb6-ec9f-08d732dc5f02
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(2017052603328)(7193020);
- SRVR:MN2PR11MB3567; 
-x-ms-traffictypediagnostic: MN2PR11MB3567:
-x-microsoft-antispam-prvs: <MN2PR11MB35675E8EE6E467FDDFAE9294F0BA0@MN2PR11MB3567.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-forefront-prvs: 0152EBA40F
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(376002)(39860400002)(136003)(346002)(366004)(396003)(199004)(189003)(86362001)(6436002)(71190400001)(71200400001)(305945005)(31696002)(7736002)(14454004)(478600001)(4744005)(2906002)(25786009)(81156014)(8676002)(81166006)(4326008)(6116002)(3846002)(6512007)(53936002)(6246003)(8936002)(446003)(2616005)(486006)(11346002)(66446008)(66946007)(64756008)(66476007)(66556008)(476003)(36756003)(26005)(66066001)(256004)(5660300002)(31686004)(110136005)(102836004)(76176011)(52116002)(53546011)(386003)(99286004)(6506007)(54906003)(6486002)(229853002)(316002)(186003);
- DIR:OUT; SFP:1101; SCL:1; SRVR:MN2PR11MB3567;
- H:MN2PR11MB4448.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; A:1; MX:1; 
-received-spf: None (protection.outlook.com: microchip.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: babtXVLRQDysNVtvenh3toVYjITyhbNeN1F97WTW1knqO2AQ/VmWWSMGX6i4i/k08QypzM1od4QGMuwXXs+SwWUZBgkRCWg2LhpO6hZl/hj0nTQ1icGGD6qm//kNjl47Hx8vYGKkE7z0xBfiTWX0VoOEaTsW1dIVxu71DGHIPHQCZqJJ6wm3L9PBHuAGFCv01xMuswtjuLfnerZgBd2I8iYbuNdf4lNF4Z9ykhifOr2GdORlyynEp/oHz9OdONR+CL7STgwAwsQoptjpEakYjq//RNyz4uXf229oYJ1F01Vq8Zn5s8qvuVeCx2Q1Q7o77NTHOOyL/Zretn8nns9OLETlQ63ti6Q2PKSe4ex9bhvaZ4MRM6JZt8K0bnevwnCi0VJ4cxZq3/WFjX+4mXAXVef8VAQoQy+ZCvD7k/dYvZs=
-x-ms-exchange-transport-forked: True
-Content-ID: <4A2E6BE809684E4BA98F5FD647A61305@namprd11.prod.outlook.com>
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1187d6d2-795e-4bb6-ec9f-08d732dc5f02
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Sep 2019 15:10:36.5984 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: GAOOXUS6rJIvc/6jE67YiUzDlieZ1946xKzDwjkCOHPTHAKTwa6OU8PtyDTeoheFJICWnnF47AH3ocy1TwNVHMMCgoKa6cC/13r7WIjuZMA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB3567
+ id 1i6KEK-0004gC-MG
+ for linux-mtd@lists.infradead.org; Fri, 06 Sep 2019 19:49:13 +0000
+Received: by mail-pg1-x544.google.com with SMTP id p3so4066207pgb.9
+ for <linux-mtd@lists.infradead.org>; Fri, 06 Sep 2019 12:49:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id;
+ bh=uAzFuMJFC8Qs6zalTfHoEOACCJjWE6SxXCJNlMiufmc=;
+ b=RKKwKRs2N6yoI0pB2oH4Uv9SbRzRWQEW0woC725TrgQ5hhPfgqJWWtes733p+nCc4u
+ ds98ZXgCub53C6qaASOae9vIW3w2C7hXik/fsEOhicdwKkxuKJcR6hWAE4HsDXbnU9U0
+ 5gNeKjfnE2BGZhJNJ8AAVceGHsbxrZOOpmfEkOef6xgNdcNdw/DE1xZIQ8TUu9MinI/j
+ OxfwccCtnukauMPYWIs4U4jT+wlBUWnze7aTbQThbkKOBNuwJbBeouUFufFHctIO45OV
+ lXZikXmPFrQJsxk871LQr1cv4vXt4Gc5+hdxl/AAKi+K5cUaYMyhCEp7HTne/9AyBaDS
+ WrVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id;
+ bh=uAzFuMJFC8Qs6zalTfHoEOACCJjWE6SxXCJNlMiufmc=;
+ b=jf410L6/nwM62txYJwApBVKizEsJmn1cANUyobIayWP7qzNuVaM8KBlng9XNEh5Acx
+ +Ai/SfH7g7LzPvt1R+LEdZf63xGkOaLXm8bfRT0m6m2wj6KNLbjjr1zXNac9zGlZyJMo
+ uJNFW8KOrjKWta0Mz9PS7fndOBsbzEcTLutc/31eyNB4W2qFOjgLjFHp943eGvAMdSa2
+ MuXSS25a8BVSEo+tB1c8xgEPZ1GuUCBG0GJk+5v61es2GZeLwO7Y1pfPhzc9LT8Gs57Y
+ Lo07KjgVW0ztctfIoYgIBZpQsQR7gPV97hIUxPy16WFXXk1op9b9sIznGrxC1pnBpmoO
+ DpLQ==
+X-Gm-Message-State: APjAAAWB5O4+1PLcnfRxTbKALkRTDmQrAe0vmJcAgq4/nV1npy1/xezR
+ Gdr37Q/o20EFnWnN4psqX7H4Pw1Z
+X-Google-Smtp-Source: APXvYqzYnh/9vJNadE0cCHveRlhb7dIY5iG/blPZ0Hq8le4ixP+lhRxijP9d4wDs0X4pvqNWVypmWA==
+X-Received: by 2002:a17:90a:2e15:: with SMTP id
+ q21mr11395700pjd.97.1567799351470; 
+ Fri, 06 Sep 2019 12:49:11 -0700 (PDT)
+Received: from mail.broadcom.com ([192.19.231.250])
+ by smtp.gmail.com with ESMTPSA id c127sm9830119pfb.5.2019.09.06.12.49.08
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 06 Sep 2019 12:49:10 -0700 (PDT)
+From: Kamal Dasu <kdasu.kdev@gmail.com>
+To: kdasu.kdev@gmail.com
+Subject: [PATCH 1/2] mtd: nand: brcmnand: Add support for flash-dma v0
+Date: Fri,  6 Sep 2019 15:47:15 -0400
+Message-Id: <20190906194719.15761-1-kdasu.kdev@gmail.com>
+X-Mailer: git-send-email 2.17.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190906_081041_440490_28048C83 
-X-CRM114-Status: GOOD (  10.17  )
+X-CRM114-CacheID: sfid-20190906_124912_724902_D8455A6C 
+X-CRM114-Status: GOOD (  13.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -166,40 +91,77 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: mchehab+samsung@kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, frieder.schrempf@kontron.de,
- linux-doc@vger.kernel.org
+Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+ Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, Frieder Schrempf <frieder.schrempf@kontron.de>,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ bcm-kernel-feedback-list@broadcom.com,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+This change adds support for flash dma v0.0.
+
+Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+---
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c | 21 +++++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+index 33310b8a6eb8..1eade9dc3b0d 100644
+--- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+@@ -117,6 +117,18 @@ enum flash_dma_reg {
+ 	FLASH_DMA_CURRENT_DESC_EXT,
+ };
+ 
++/* flash_dma registers v0*/
++static const u16 flash_dma_regs_v0[] = {
++	[FLASH_DMA_REVISION]		= 0x00,
++	[FLASH_DMA_FIRST_DESC]		= 0x04,
++	[FLASH_DMA_CTRL]		= 0x08,
++	[FLASH_DMA_MODE]		= 0x0c,
++	[FLASH_DMA_STATUS]		= 0x10,
++	[FLASH_DMA_INTERRUPT_DESC]	= 0x14,
++	[FLASH_DMA_ERROR_STATUS]	= 0x18,
++	[FLASH_DMA_CURRENT_DESC]	= 0x1c,
++};
++
+ /* flash_dma registers v1*/
+ static const u16 flash_dma_regs_v1[] = {
+ 	[FLASH_DMA_REVISION]		= 0x00,
+@@ -597,6 +609,8 @@ static void brcmnand_flash_dma_revision_init(struct brcmnand_controller *ctrl)
+ 	/* flash_dma register offsets */
+ 	if (ctrl->nand_version >= 0x0703)
+ 		ctrl->flash_dma_offsets = flash_dma_regs_v4;
++	else if (ctrl->nand_version == 0x0602)
++		ctrl->flash_dma_offsets = flash_dma_regs_v0;
+ 	else
+ 		ctrl->flash_dma_offsets = flash_dma_regs_v1;
+ }
+@@ -1673,8 +1687,11 @@ static void brcmnand_dma_run(struct brcmnand_host *host, dma_addr_t desc)
+ 
+ 	flash_dma_writel(ctrl, FLASH_DMA_FIRST_DESC, lower_32_bits(desc));
+ 	(void)flash_dma_readl(ctrl, FLASH_DMA_FIRST_DESC);
+-	flash_dma_writel(ctrl, FLASH_DMA_FIRST_DESC_EXT, upper_32_bits(desc));
+-	(void)flash_dma_readl(ctrl, FLASH_DMA_FIRST_DESC_EXT);
++	if (ctrl->nand_version > 0x0602) {
++		flash_dma_writel(ctrl, FLASH_DMA_FIRST_DESC_EXT,
++				 upper_32_bits(desc));
++		(void)flash_dma_readl(ctrl, FLASH_DMA_FIRST_DESC_EXT);
++	}
+ 
+ 	/* Start FLASH_DMA engine */
+ 	ctrl->dma_pending = true;
+-- 
+2.17.1
 
 
-On 09/06/2019 06:03 PM, Jonathan Corbet wrote:
-> On Fri, 6 Sep 2019 15:58:41 +0100
-> John Garry <john.garry@huawei.com> wrote:
-> 
->> I don't think that it was appropriate to apply this patch in the end - 
->> maybe this could have been communicated better. If you check the 
->> subsequent discussion in this thread, it seems that completely new 
->> documentation is required:
->>
->> "Actually it seems like the whole file is obsolete and needs to be
->> removed or replaced by proper documentation of the SPI MEM API."
->>
->> But nothing seems to be happening there...
-> 
-> Ah, OK, I lost track of that somewhere along the way.
-> 
-> Unless you object I'll leave it applied, it's not going to do any harm,
-> methinks.
-> 
-
-We can rework the documentation on top of this, no worries.
-
-Cheers,
-ta
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
