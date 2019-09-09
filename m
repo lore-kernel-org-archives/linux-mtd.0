@@ -4,85 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A94FC00307
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Sep 2019 06:05:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 696AFC00307
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Sep 2019 07:33:08 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 012152067D
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Sep 2019 06:05:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3F21F21A4A
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Sep 2019 07:33:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IwPdrWSg";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Ky7c9maZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 012152067D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IeAQuGTH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3F21F21A4A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sPclXE1Ja9dYmGc3Z/WIH0qlEkCSxP1FTgM6fLdP330=; b=IwPdrWSg2G1e65
-	WsRvytjFW1B3Xo8jxFqib/S6oPA1BqnDQb+YCZWCfQzEZgh4b01qZVyn2g6jPp8VxTCJrqO0WpvgO
-	j7vsjk9C7pwDSqnjKGc0+VHBN4cImm65iixshdHJjPO29tr5K5sz0PZXK1CxepaqiLMh/q7C5OZ1f
-	cCsODLUPDtlm10Mu7Aos2A3lOjFUUUg7nExnkY3rUHuiC/uGY/Y+AywD8/cq1mRgGvSNywvN6t7Kv
-	xxR9QRoIK2qFJfRVRRNwtRFFiCI9m24ZxNdxYRfWzSB6b15Y8zIXKtvHZEYIxhrGMQgM6YNDGI5Cr
-	Y/YgbqMn7W70lgC+u10Q==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=YJwbQ5JfYgC0m82VT6obcvN6M+Bfh1DxPpkNJrp7LHI=; b=IeAQuGTHwBfSmFZRBJ3bqa9Sw
+	NftfhZWC+UiHwXoJhRDt30Bbs/ltwVnasZgteqPGv/D3hvREBpqn9TSD/FV/WaIVzS5dr/+8ZDn/m
+	4dcRZofEtuAbjjDKcwr+QpCk2R/sgRUt8eW/h0R/5z4CPKS/t1LgF7bYbw8JhbNmaxkPWC6KOa9oV
+	F3OlWsB71808cUYtBhNzT62pugRkkDwsfJEyLPs4OH63wu5JFgFwjX+s1WlJuc1L4/6B8smYlYsSN
+	iF6l59JskP7rGsc6YyRov/ZFzpMGidXAGUHytCG2sNaewQxKlkYdlaP6GTcUY4G78Ctae1/UvK2B1
+	n4wQLmq3Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i7Cni-0004UM-Gw; Mon, 09 Sep 2019 06:05:22 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1i7EAb-00078x-Bc; Mon, 09 Sep 2019 07:33:05 +0000
+Received: from mga04.intel.com ([192.55.52.120])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i7Cnf-0004Tp-GT
- for linux-mtd@lists.infradead.org; Mon, 09 Sep 2019 06:05:21 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id x8964wHK019358;
- Mon, 9 Sep 2019 01:04:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1568009098;
- bh=NvIniZd7CzVPU0n1hR9ibj1hyMdPPpPDMXsdbCt6EVA=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=Ky7c9maZH4tiK1Odu0zOsoUzJ0T5KwJGMmn0Y6vO532sR8KLDMYEdyWV6aQ0GhfJS
- cLusHceyJ6+7W8kYE+8IhR5m0rlPy97/1Hp5RP+gs4G81btYn8MM9d6+PafWOI7UI6
- WF3MLZaMdifHSfztGD98rWYv0lkelA6e0ASVc66M=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x8964wPL077235
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 9 Sep 2019 01:04:58 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Mon, 9 Sep
- 2019 01:04:58 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
- Frontend Transport; Mon, 9 Sep 2019 01:04:58 -0500
-Received: from [172.24.145.136] (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id x8964pSs092782;
- Mon, 9 Sep 2019 01:04:52 -0500
+ id 1i7EAX-00078Z-LD
+ for linux-mtd@lists.infradead.org; Mon, 09 Sep 2019 07:33:03 +0000
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 09 Sep 2019 00:33:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,484,1559545200"; d="scan'208";a="183731697"
+Received: from linux.intel.com ([10.54.29.200])
+ by fmsmga008.fm.intel.com with ESMTP; 09 Sep 2019 00:33:00 -0700
+Received: from [10.226.38.10] (vramuthx-mobl1.gar.corp.intel.com
+ [10.226.38.10])
+ by linux.intel.com (Postfix) with ESMTP id 0F12F5807FF;
+ Mon,  9 Sep 2019 00:32:53 -0700 (PDT)
 Subject: Re: [PATCH v2 2/3] mtd: spi-nor: cadence-quadspi: disable DMA and DAC
  for Intel LGM
-To: "Ramuthevar,Vadivel MuruganX"
- <vadivel.muruganx.ramuthevar@linux.intel.com>,
- <linux-mtd@lists.infradead.org>
+To: Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org
 References: <20190827035827.21024-1-vadivel.muruganx.ramuthevar@linux.intel.com>
  <20190827035827.21024-3-vadivel.muruganx.ramuthevar@linux.intel.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <2596ecd4-4ba6-ff7d-472f-1f6e664b4a97@ti.com>
-Date: Mon, 9 Sep 2019 11:35:26 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ <2596ecd4-4ba6-ff7d-472f-1f6e664b4a97@ti.com>
+From: "Ramuthevar, Vadivel MuruganX"
+ <vadivel.muruganx.ramuthevar@linux.intel.com>
+Message-ID: <3bff7de7-71a8-599b-c9e4-17f7f7c04981@linux.intel.com>
+Date: Mon, 9 Sep 2019 15:32:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20190827035827.21024-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+In-Reply-To: <2596ecd4-4ba6-ff7d-472f-1f6e664b4a97@ti.com>
 Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190908_230519_637447_FCEDE134 
-X-CRM114-Status: GOOD (  25.25  )
+X-CRM114-CacheID: sfid-20190909_003301_711867_5B6C19BA 
+X-CRM114-Status: GOOD (  28.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,183 +86,125 @@ Cc: cheol.yong.kim@intel.com, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, david.oberhollenzer@sigma-star.at,
  miquel.raynal@bootlin.com, jwboyer@gmail.com, computersforpeace@gmail.com,
  dwmw2@infradead.org, cyrille.pitchen@atmel.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-On 27/08/19 9:28 AM, Ramuthevar,Vadivel MuruganX wrote:
-> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> 
-> on Intel's Lightning Mountain(LGM) SoCs QSPI controller do not use
-> Direct Memory Access(DMA) and Direct Access Controller(DAC).
-> 
-> This patch introduces to properly disable the DMA and DAC
-> for data transfer instead it uses indirect data transfer.
-> 
-> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> ---
->  drivers/mtd/spi-nor/Kconfig           |  2 +-
->  drivers/mtd/spi-nor/cadence-quadspi.c | 21 ++++++++++++++++++---
->  2 files changed, 19 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-> index 6de83277ce8b..ba2e372ae514 100644
-> --- a/drivers/mtd/spi-nor/Kconfig
-> +++ b/drivers/mtd/spi-nor/Kconfig
-> @@ -34,7 +34,7 @@ config SPI_ASPEED_SMC
->  
->  config SPI_CADENCE_QUADSPI
->  	tristate "Cadence Quad SPI controller"
-> -	depends on OF && (ARM || ARM64 || COMPILE_TEST)
-> +	depends on OF && (ARM || ARM64 || COMPILE_TEST || X86)
->  	help
->  	  Enable support for the Cadence Quad SPI Flash controller.
->  
-> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
-> index 67f15a1f16fd..69fa13e95110 100644
-> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
-> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
-> @@ -517,12 +517,16 @@ static int cqspi_indirect_read_execute(struct spi_nor *nor, u8 *rxbuf,
->  	struct cqspi_st *cqspi = f_pdata->cqspi;
->  	void __iomem *reg_base = cqspi->iobase;
->  	void __iomem *ahb_base = cqspi->ahb_base;
-> +	u32 trigger_address = cqspi->trigger_address;
->  	unsigned int remaining = n_rx;
->  	unsigned int mod_bytes = n_rx % 4;
->  	unsigned int bytes_to_read = 0;
->  	u8 *rxbuf_end = rxbuf + n_rx;
->  	int ret = 0;
->  
-> +	if (!f_pdata->use_direct_mode)
-> +		writel(trigger_address, reg_base + CQSPI_REG_INDIRECTTRIGGER);
-> +
-
-Again, as I pointed out previously, this should not be needed.
-cqspi_controller_init() already does above configuration and no need to
-touch this register on every read.
-
->  	writel(from_addr, reg_base + CQSPI_REG_INDIRECTRDSTARTADDR);
->  	writel(remaining, reg_base + CQSPI_REG_INDIRECTRDBYTES);
->  
-> @@ -609,6 +613,14 @@ static int cqspi_write_setup(struct spi_nor *nor)
->  	struct cqspi_st *cqspi = f_pdata->cqspi;
->  	void __iomem *reg_base = cqspi->iobase;
->  
-> +	/* Disable the DMA and direct access controller */
-> +	if (!f_pdata->use_direct_mode) {
-> +		reg = readl(reg_base + CQSPI_REG_CONFIG);
-> +		reg &= ~CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL;
-> +		reg &= ~CQSPI_REG_CONFIG_DMA_MASK;
-> +		writel(reg, reg_base + CQSPI_REG_CONFIG);
-> +	}
-> +
-
-You did not respond to my previous comment. Why would you need to clear
-CQSPI_REG_CONFIG_DMA_MASK field, if reset default is 0 anyway?
-
->  	/* Set opcode. */
->  	reg = nor->program_opcode << CQSPI_REG_WR_INSTR_OPCODE_LSB;
->  	writel(reg, reg_base + CQSPI_REG_WR_INSTR);
-> @@ -1171,7 +1183,8 @@ static int cqspi_of_get_pdata(struct platform_device *pdev)
->  		return -ENXIO;
->  	}
->  
-> -	cqspi->rclk_en = of_property_read_bool(np, "cdns,rclk-en");
-> +	if (!of_device_is_compatible(np, "intel,lgm-qspi"))
-> +		cqspi->rclk_en = of_property_read_bool(np, "cdns,rclk-en");
->  
-
-If you don't want to use this property, then just drop it from your DT.
-Don't override it in the driver based on compatible.
-
->  	return 0;
->  }
-> @@ -1301,7 +1314,8 @@ static int cqspi_setup_flash(struct cqspi_st *cqspi, struct device_node *np)
->  		f_pdata->registered = true;
->  
->  		if (mtd->size <= cqspi->ahb_size) {
-> -			f_pdata->use_direct_mode = true;
-> +			f_pdata->use_direct_mode =
-> +				!(of_device_is_compatible(np, "intel,lgm-qspi"));
-
-Looks like, you haven't followed any of my advice. Please add a quirk
-flag to disable DAC mode. Something like:
-
-#define CQSPI_DISABLE_DAC_MODE BIT(1)
-
-static const struct cqspi_driver_platdata intel_lgm_qspi = {
-        .hwcaps_mask = CQSPI_BASE_HWCAPS_MASK,
-        .quirks = CQSPI_DISABLE_DAC_MODE,
-};
-
-static const struct of_device_id cqspi_dt_ids[] = {
-
-	...
-
-        {
-                .compatible = "intel,lgm-qspi",
-                .data = &intel_lgm_qspi,
-        },
-
-	...
-};
-
-
-Then in cqspi_setup_flash(),
-
-	if (mtd->size <= cqspi->ahb_size &&
-		!ddata->quirks & CQSPI_DISABLE_DAC_MODE) {
-		f_pdata->use_direct_mode = true;
-		...
-	}	
-
-
->  			dev_dbg(nor->dev, "using direct mode for %s\n",
->  				mtd->name);
->  
-> @@ -1347,7 +1361,7 @@ static int cqspi_probe(struct platform_device *pdev)
->  	}
->  
->  	/* Obtain QSPI clock. */
-> -	cqspi->clk = devm_clk_get(dev, NULL);
-> +	cqspi->clk = devm_clk_get(dev, "qspi");
-
-This will break DT backward compatibility. Existing DTs don't have
-clock-names = "qspi". Hence, this code will error out.
-What I meant in the previous mail was: if device does not have multiple
-clk inputs then there is no need for clock-names and there is no need to
-touch this part of code.
-
-	cqspi->clk = devm_clk_get(dev, NULL);
-
-This should just work fine even on your board. So drop this hunk.
-
->  	if (IS_ERR(cqspi->clk)) {
->  		dev_err(dev, "Cannot claim QSPI clock.\n");
->  		return PTR_ERR(cqspi->clk);
-> @@ -1369,6 +1383,7 @@ static int cqspi_probe(struct platform_device *pdev)
->  		return PTR_ERR(cqspi->ahb_base);
->  	}
->  	cqspi->mmap_phys_base = (dma_addr_t)res_ahb->start;
-> +	cqspi->trigger_address = res_ahb->start;
-
-Nope, this is not needed. See:
-https://elixir.bootlin.com/linux/v5.3-rc6/source/drivers/mtd/spi-nor/cadence-quadspi.c#L1168
-
-Populate the trigger-address using cdns,trigger-address property in DT
-
->  	cqspi->ahb_size = resource_size(res_ahb);
->  
->  	init_completion(&cqspi->transfer_complete);
-> 
-
--- 
-Regards
-Vignesh
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgVmlnbmVzaCwKClRoYW5rIHlvdSBzbyBtdWNoIGZvciB0aGUgcmV2aWV3IGNvbW1lbnRzIGFu
+ZCB5b3VyIHRpbWUuCgpPbiA5LzkvMjAxOSAyOjA1IFBNLCBWaWduZXNoIFJhZ2hhdmVuZHJhIHdy
+b3RlOgo+IEhpLAo+Cj4gT24gMjcvMDgvMTkgOToyOCBBTSwgUmFtdXRoZXZhcixWYWRpdmVsIE11
+cnVnYW5YIHdyb3RlOgo+PiBGcm9tOiBSYW11dGhldmFyIFZhZGl2ZWwgTXVydWdhbiA8dmFkaXZl
+bC5tdXJ1Z2FueC5yYW11dGhldmFyQGxpbnV4LmludGVsLmNvbT4KPj4KPj4gb24gSW50ZWwncyBM
+aWdodG5pbmcgTW91bnRhaW4oTEdNKSBTb0NzIFFTUEkgY29udHJvbGxlciBkbyBub3QgdXNlCj4+
+IERpcmVjdCBNZW1vcnkgQWNjZXNzKERNQSkgYW5kIERpcmVjdCBBY2Nlc3MgQ29udHJvbGxlcihE
+QUMpLgo+Pgo+PiBUaGlzIHBhdGNoIGludHJvZHVjZXMgdG8gcHJvcGVybHkgZGlzYWJsZSB0aGUg
+RE1BIGFuZCBEQUMKPj4gZm9yIGRhdGEgdHJhbnNmZXIgaW5zdGVhZCBpdCB1c2VzIGluZGlyZWN0
+IGRhdGEgdHJhbnNmZXIuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IFJhbXV0aGV2YXIgVmFkaXZlbCBN
+dXJ1Z2FuIDx2YWRpdmVsLm11cnVnYW54LnJhbXV0aGV2YXJAbGludXguaW50ZWwuY29tPgo+PiAt
+LS0KPj4gICBkcml2ZXJzL210ZC9zcGktbm9yL0tjb25maWcgICAgICAgICAgIHwgIDIgKy0KPj4g
+ICBkcml2ZXJzL210ZC9zcGktbm9yL2NhZGVuY2UtcXVhZHNwaS5jIHwgMjEgKysrKysrKysrKysr
+KysrKysrLS0tCj4+ICAgMiBmaWxlcyBjaGFuZ2VkLCAxOSBpbnNlcnRpb25zKCspLCA0IGRlbGV0
+aW9ucygtKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9LY29uZmlnIGIv
+ZHJpdmVycy9tdGQvc3BpLW5vci9LY29uZmlnCj4+IGluZGV4IDZkZTgzMjc3Y2U4Yi4uYmEyZTM3
+MmFlNTE0IDEwMDY0NAo+PiAtLS0gYS9kcml2ZXJzL210ZC9zcGktbm9yL0tjb25maWcKPj4gKysr
+IGIvZHJpdmVycy9tdGQvc3BpLW5vci9LY29uZmlnCj4+IEBAIC0zNCw3ICszNCw3IEBAIGNvbmZp
+ZyBTUElfQVNQRUVEX1NNQwo+PiAgIAo+PiAgIGNvbmZpZyBTUElfQ0FERU5DRV9RVUFEU1BJCj4+
+ICAgCXRyaXN0YXRlICJDYWRlbmNlIFF1YWQgU1BJIGNvbnRyb2xsZXIiCj4+IC0JZGVwZW5kcyBv
+biBPRiAmJiAoQVJNIHx8IEFSTTY0IHx8IENPTVBJTEVfVEVTVCkKPj4gKwlkZXBlbmRzIG9uIE9G
+ICYmIChBUk0gfHwgQVJNNjQgfHwgQ09NUElMRV9URVNUIHx8IFg4NikKPj4gICAJaGVscAo+PiAg
+IAkgIEVuYWJsZSBzdXBwb3J0IGZvciB0aGUgQ2FkZW5jZSBRdWFkIFNQSSBGbGFzaCBjb250cm9s
+bGVyLgo+PiAgIAo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9jYWRlbmNlLXF1
+YWRzcGkuYyBiL2RyaXZlcnMvbXRkL3NwaS1ub3IvY2FkZW5jZS1xdWFkc3BpLmMKPj4gaW5kZXgg
+NjdmMTVhMWYxNmZkLi42OWZhMTNlOTUxMTAgMTAwNjQ0Cj4+IC0tLSBhL2RyaXZlcnMvbXRkL3Nw
+aS1ub3IvY2FkZW5jZS1xdWFkc3BpLmMKPj4gKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9jYWRl
+bmNlLXF1YWRzcGkuYwo+PiBAQCAtNTE3LDEyICs1MTcsMTYgQEAgc3RhdGljIGludCBjcXNwaV9p
+bmRpcmVjdF9yZWFkX2V4ZWN1dGUoc3RydWN0IHNwaV9ub3IgKm5vciwgdTggKnJ4YnVmLAo+PiAg
+IAlzdHJ1Y3QgY3FzcGlfc3QgKmNxc3BpID0gZl9wZGF0YS0+Y3FzcGk7Cj4+ICAgCXZvaWQgX19p
+b21lbSAqcmVnX2Jhc2UgPSBjcXNwaS0+aW9iYXNlOwo+PiAgIAl2b2lkIF9faW9tZW0gKmFoYl9i
+YXNlID0gY3FzcGktPmFoYl9iYXNlOwo+PiArCXUzMiB0cmlnZ2VyX2FkZHJlc3MgPSBjcXNwaS0+
+dHJpZ2dlcl9hZGRyZXNzOwo+PiAgIAl1bnNpZ25lZCBpbnQgcmVtYWluaW5nID0gbl9yeDsKPj4g
+ICAJdW5zaWduZWQgaW50IG1vZF9ieXRlcyA9IG5fcnggJSA0Owo+PiAgIAl1bnNpZ25lZCBpbnQg
+Ynl0ZXNfdG9fcmVhZCA9IDA7Cj4+ICAgCXU4ICpyeGJ1Zl9lbmQgPSByeGJ1ZiArIG5fcng7Cj4+
+ICAgCWludCByZXQgPSAwOwo+PiAgIAo+PiArCWlmICghZl9wZGF0YS0+dXNlX2RpcmVjdF9tb2Rl
+KQo+PiArCQl3cml0ZWwodHJpZ2dlcl9hZGRyZXNzLCByZWdfYmFzZSArIENRU1BJX1JFR19JTkRJ
+UkVDVFRSSUdHRVIpOwo+PiArCj4gQWdhaW4sIGFzIEkgcG9pbnRlZCBvdXQgcHJldmlvdXNseSwg
+dGhpcyBzaG91bGQgbm90IGJlIG5lZWRlZC4KPiBjcXNwaV9jb250cm9sbGVyX2luaXQoKSBhbHJl
+YWR5IGRvZXMgYWJvdmUgY29uZmlndXJhdGlvbiBhbmQgbm8gbmVlZCB0bwo+IHRvdWNoIHRoaXMg
+cmVnaXN0ZXIgb24gZXZlcnkgcmVhZC4KQWdyZWVkISwgZHJvcCB0aGlzIG9uZS4KPj4gICAJd3Jp
+dGVsKGZyb21fYWRkciwgcmVnX2Jhc2UgKyBDUVNQSV9SRUdfSU5ESVJFQ1RSRFNUQVJUQUREUik7
+Cj4+ICAgCXdyaXRlbChyZW1haW5pbmcsIHJlZ19iYXNlICsgQ1FTUElfUkVHX0lORElSRUNUUkRC
+WVRFUyk7Cj4+ICAgCj4+IEBAIC02MDksNiArNjEzLDE0IEBAIHN0YXRpYyBpbnQgY3FzcGlfd3Jp
+dGVfc2V0dXAoc3RydWN0IHNwaV9ub3IgKm5vcikKPj4gICAJc3RydWN0IGNxc3BpX3N0ICpjcXNw
+aSA9IGZfcGRhdGEtPmNxc3BpOwo+PiAgIAl2b2lkIF9faW9tZW0gKnJlZ19iYXNlID0gY3FzcGkt
+PmlvYmFzZTsKPj4gICAKPj4gKwkvKiBEaXNhYmxlIHRoZSBETUEgYW5kIGRpcmVjdCBhY2Nlc3Mg
+Y29udHJvbGxlciAqLwo+PiArCWlmICghZl9wZGF0YS0+dXNlX2RpcmVjdF9tb2RlKSB7Cj4+ICsJ
+CXJlZyA9IHJlYWRsKHJlZ19iYXNlICsgQ1FTUElfUkVHX0NPTkZJRyk7Cj4+ICsJCXJlZyAmPSB+
+Q1FTUElfUkVHX0NPTkZJR19FTkJfRElSX0FDQ19DVFJMOwo+PiArCQlyZWcgJj0gfkNRU1BJX1JF
+R19DT05GSUdfRE1BX01BU0s7Cj4+ICsJCXdyaXRlbChyZWcsIHJlZ19iYXNlICsgQ1FTUElfUkVH
+X0NPTkZJRyk7Cj4+ICsJfQo+PiArCj4gWW91IGRpZCBub3QgcmVzcG9uZCB0byBteSBwcmV2aW91
+cyBjb21tZW50LiBXaHkgd291bGQgeW91IG5lZWQgdG8gY2xlYXIKPiBDUVNQSV9SRUdfQ09ORklH
+X0RNQV9NQVNLIGZpZWxkLCBpZiByZXNldCBkZWZhdWx0IGlzIDAgYW55d2F5Pwp3aGlsZSB0ZXN0
+aW5nIG9uIHRoZSByZWFsIHNldHVwIGl0IGlzIG5vdCB3b3JraW5nIGZvciBtZSwgZG91YmxlIGNv
+bmZpcm0gCmFuZCBkcm9wIGl0Lgo+PiAgIAkvKiBTZXQgb3Bjb2RlLiAqLwo+PiAgIAlyZWcgPSBu
+b3ItPnByb2dyYW1fb3Bjb2RlIDw8IENRU1BJX1JFR19XUl9JTlNUUl9PUENPREVfTFNCOwo+PiAg
+IAl3cml0ZWwocmVnLCByZWdfYmFzZSArIENRU1BJX1JFR19XUl9JTlNUUik7Cj4+IEBAIC0xMTcx
+LDcgKzExODMsOCBAQCBzdGF0aWMgaW50IGNxc3BpX29mX2dldF9wZGF0YShzdHJ1Y3QgcGxhdGZv
+cm1fZGV2aWNlICpwZGV2KQo+PiAgIAkJcmV0dXJuIC1FTlhJTzsKPj4gICAJfQo+PiAgIAo+PiAt
+CWNxc3BpLT5yY2xrX2VuID0gb2ZfcHJvcGVydHlfcmVhZF9ib29sKG5wLCAiY2RucyxyY2xrLWVu
+Iik7Cj4+ICsJaWYgKCFvZl9kZXZpY2VfaXNfY29tcGF0aWJsZShucCwgImludGVsLGxnbS1xc3Bp
+IikpCj4+ICsJCWNxc3BpLT5yY2xrX2VuID0gb2ZfcHJvcGVydHlfcmVhZF9ib29sKG5wLCAiY2Ru
+cyxyY2xrLWVuIik7Cj4+ICAgCj4gSWYgeW91IGRvbid0IHdhbnQgdG8gdXNlIHRoaXMgcHJvcGVy
+dHksIHRoZW4ganVzdCBkcm9wIGl0IGZyb20geW91ciBEVC4KPiBEb24ndCBvdmVycmlkZSBpdCBp
+biB0aGUgZHJpdmVyIGJhc2VkIG9uIGNvbXBhdGlibGUuClN1cmUuCj4+ICAgCXJldHVybiAwOwo+
+PiAgIH0KPj4gQEAgLTEzMDEsNyArMTMxNCw4IEBAIHN0YXRpYyBpbnQgY3FzcGlfc2V0dXBfZmxh
+c2goc3RydWN0IGNxc3BpX3N0ICpjcXNwaSwgc3RydWN0IGRldmljZV9ub2RlICpucCkKPj4gICAJ
+CWZfcGRhdGEtPnJlZ2lzdGVyZWQgPSB0cnVlOwo+PiAgIAo+PiAgIAkJaWYgKG10ZC0+c2l6ZSA8
+PSBjcXNwaS0+YWhiX3NpemUpIHsKPj4gLQkJCWZfcGRhdGEtPnVzZV9kaXJlY3RfbW9kZSA9IHRy
+dWU7Cj4+ICsJCQlmX3BkYXRhLT51c2VfZGlyZWN0X21vZGUgPQo+PiArCQkJCSEob2ZfZGV2aWNl
+X2lzX2NvbXBhdGlibGUobnAsICJpbnRlbCxsZ20tcXNwaSIpKTsKPiBMb29rcyBsaWtlLCB5b3Ug
+aGF2ZW4ndCBmb2xsb3dlZCBhbnkgb2YgbXkgYWR2aWNlLiBQbGVhc2UgYWRkIGEgcXVpcmsKPiBm
+bGFnIHRvIGRpc2FibGUgREFDIG1vZGUuIFNvbWV0aGluZyBsaWtlOgoKU29ycnkswqAgb24gcmVh
+bCBzZXR1cCBrZXJuZWwgZ290IGNyYXNoIGlmIHdlIGFkZCBxdWlya3MsIHNvIHRoYXQgaXMgdGhl
+IApyZWFzb24gSSBzdGFydGVkIHVzaW5nIERUIGNvbXBhdGlibGUgdG8KCmF2b2lkIGNyYXNoaW5n
+IGFuZCBhbHNvIGRvbid0IHdhbnQgZGlzdHVyYiB0aGUgZXhpc3RpbmcgZnVuY3Rpb25hbGl0aWVz
+LgoKTGV0IG1lIGNoZWNrIG9uY2UgYWdhaW4uCgpUaGFuayB5b3Ugc28gbXVjaCBmb3IgeW91ciB2
+YWx1YWJsZSBjb21tZW50cy4KCj4gI2RlZmluZSBDUVNQSV9ESVNBQkxFX0RBQ19NT0RFIEJJVCgx
+KQo+Cj4gc3RhdGljIGNvbnN0IHN0cnVjdCBjcXNwaV9kcml2ZXJfcGxhdGRhdGEgaW50ZWxfbGdt
+X3FzcGkgPSB7Cj4gICAgICAgICAgLmh3Y2Fwc19tYXNrID0gQ1FTUElfQkFTRV9IV0NBUFNfTUFT
+SywKPiAgICAgICAgICAucXVpcmtzID0gQ1FTUElfRElTQUJMRV9EQUNfTU9ERSwKPiB9Owo+Cj4g
+c3RhdGljIGNvbnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQgY3FzcGlfZHRfaWRzW10gPSB7Cj4KPiAJ
+Li4uCj4KPiAgICAgICAgICB7Cj4gICAgICAgICAgICAgICAgICAuY29tcGF0aWJsZSA9ICJpbnRl
+bCxsZ20tcXNwaSIsCj4gICAgICAgICAgICAgICAgICAuZGF0YSA9ICZpbnRlbF9sZ21fcXNwaSwK
+PiAgICAgICAgICB9LAo+Cj4gCS4uLgo+IH07Cj4KPgo+IFRoZW4gaW4gY3FzcGlfc2V0dXBfZmxh
+c2goKSwKPgo+IAlpZiAobXRkLT5zaXplIDw9IGNxc3BpLT5haGJfc2l6ZSAmJgo+IAkJIWRkYXRh
+LT5xdWlya3MgJiBDUVNQSV9ESVNBQkxFX0RBQ19NT0RFKSB7Cj4gCQlmX3BkYXRhLT51c2VfZGly
+ZWN0X21vZGUgPSB0cnVlOwo+IAkJLi4uCj4gCX0JCj4KPgo+PiAgIAkJCWRldl9kYmcobm9yLT5k
+ZXYsICJ1c2luZyBkaXJlY3QgbW9kZSBmb3IgJXNcbiIsCj4+ICAgCQkJCW10ZC0+bmFtZSk7Cj4+
+ICAgCj4+IEBAIC0xMzQ3LDcgKzEzNjEsNyBAQCBzdGF0aWMgaW50IGNxc3BpX3Byb2JlKHN0cnVj
+dCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4+ICAgCX0KPj4gICAKPj4gICAJLyogT2J0YWluIFFT
+UEkgY2xvY2suICovCj4+IC0JY3FzcGktPmNsayA9IGRldm1fY2xrX2dldChkZXYsIE5VTEwpOwo+
+PiArCWNxc3BpLT5jbGsgPSBkZXZtX2Nsa19nZXQoZGV2LCAicXNwaSIpOwo+IFRoaXMgd2lsbCBi
+cmVhayBEVCBiYWNrd2FyZCBjb21wYXRpYmlsaXR5LiBFeGlzdGluZyBEVHMgZG9uJ3QgaGF2ZQo+
+IGNsb2NrLW5hbWVzID0gInFzcGkiLiBIZW5jZSwgdGhpcyBjb2RlIHdpbGwgZXJyb3Igb3V0Lgo+
+IFdoYXQgSSBtZWFudCBpbiB0aGUgcHJldmlvdXMgbWFpbCB3YXM6IGlmIGRldmljZSBkb2VzIG5v
+dCBoYXZlIG11bHRpcGxlCj4gY2xrIGlucHV0cyB0aGVuIHRoZXJlIGlzIG5vIG5lZWQgZm9yIGNs
+b2NrLW5hbWVzIGFuZCB0aGVyZSBpcyBubyBuZWVkIHRvCj4gdG91Y2ggdGhpcyBwYXJ0IG9mIGNv
+ZGUuCj4KPiAJY3FzcGktPmNsayA9IGRldm1fY2xrX2dldChkZXYsIE5VTEwpOwo+Cj4gVGhpcyBz
+aG91bGQganVzdCB3b3JrIGZpbmUgZXZlbiBvbiB5b3VyIGJvYXJkLiBTbyBkcm9wIHRoaXMgaHVu
+ay4KU3VyZSwgSSB3aWxsIGRyb3AgaXQuCj4+ICAgCWlmIChJU19FUlIoY3FzcGktPmNsaykpIHsK
+Pj4gICAJCWRldl9lcnIoZGV2LCAiQ2Fubm90IGNsYWltIFFTUEkgY2xvY2suXG4iKTsKPj4gICAJ
+CXJldHVybiBQVFJfRVJSKGNxc3BpLT5jbGspOwo+PiBAQCAtMTM2OSw2ICsxMzgzLDcgQEAgc3Rh
+dGljIGludCBjcXNwaV9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQo+PiAgIAkJ
+cmV0dXJuIFBUUl9FUlIoY3FzcGktPmFoYl9iYXNlKTsKPj4gICAJfQo+PiAgIAljcXNwaS0+bW1h
+cF9waHlzX2Jhc2UgPSAoZG1hX2FkZHJfdClyZXNfYWhiLT5zdGFydDsKPj4gKwljcXNwaS0+dHJp
+Z2dlcl9hZGRyZXNzID0gcmVzX2FoYi0+c3RhcnQ7Cj4gTm9wZSwgdGhpcyBpcyBub3QgbmVlZGVk
+LiBTZWU6Cj4gaHR0cHM6Ly9lbGl4aXIuYm9vdGxpbi5jb20vbGludXgvdjUuMy1yYzYvc291cmNl
+L2RyaXZlcnMvbXRkL3NwaS1ub3IvY2FkZW5jZS1xdWFkc3BpLmMjTDExNjgKPgo+IFBvcHVsYXRl
+IHRoZSB0cmlnZ2VyLWFkZHJlc3MgdXNpbmcgY2Rucyx0cmlnZ2VyLWFkZHJlc3MgcHJvcGVydHkg
+aW4gRFQKCkFncmVlZCEswqAgZml4IGl0IGluIHRoZSBuZXh0IHZlcnNpb24uCgpCZXN0IFJlZ2Fy
+ZHMKdmFkaXZlbAo+PiAgIAljcXNwaS0+YWhiX3NpemUgPSByZXNvdXJjZV9zaXplKHJlc19haGIp
+Owo+PiAgIAo+PiAgIAlpbml0X2NvbXBsZXRpb24oJmNxc3BpLT50cmFuc2Zlcl9jb21wbGV0ZSk7
+Cj4+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRl
+YWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
