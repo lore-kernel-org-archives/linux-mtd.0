@@ -2,72 +2,94 @@ Return-Path: <SRS0=z5Ut=XF=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95EB5C49ED9
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Sep 2019 23:43:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA64AC49ED7
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Sep 2019 23:55:55 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 69D23216F4
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Sep 2019 23:43:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 724A52067B
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Sep 2019 23:55:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="vDiWA8tX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 69D23216F4
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=decadent.org.uk
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bRQotZ0N"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 724A52067B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sigma-star.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:Cc:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	MIME-Version:References:In-Reply-To:Date:To:From:Subject:Message-ID:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=yToWmUvge3fNJoSm2xvEcH9U+jUHbUX3LWj1XF3O/ik=; b=vDiWA8tXidTwUxecptL07GJ4x
-	2YCq6fe7Zr+Lz4wID+iiBx3L+nUSZ9VcyFSBhOAIwNgyXiEqqfqPmWhqTxejCPAx0Iyk6mgNnZDGD
-	SHir15QGrmPWvmWZ7WN/ZoHOZoOEWRNbZ25gmnxF8OqZKANbDGp9bPxibvFX49bM+Lozc2Ff7kWmr
-	kAlKbLDoLnXo8DK+K+jzRfQRONRjE8upZXnggxOyBjor7QlRH4xXKHCSphdTW2h0IR/jQgnBLyLDf
-	OJ2HeKC+8UnQhqcDOO0wYz/Nrya9/5wlMLx9pPCkDvNkmpViVj/QDcE6uE3xWZj9SR4pbaA3EVYWY
-	pkxmJNOgA==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=zXv1RNIMO5KAm8gPgMB2axdusD6KY7rzS20Jj1Fu3sE=; b=bRQotZ0Nm1Gjfe
+	LAZEMaITrUX++keqd32oKCvlgK9XBqNwYgzRA6HjVPhBzrySZFdvwdUpSuzfK6I8UB0+iQ3VtP4JN
+	DtE7GPBJeOsI+9kp+VNkISd5Tap7In3coF8//ofYNh+dUhqc8bhNhrfkDS+jV9Pc3QUm5GT3eQGnZ
+	dN3WliCZDlTtSrjuvpLats1rTbcczxxm0HzTRylA+ATe58JdYq9wkJdj1jo37YLPUzG2PtKCiuyo0
+	hRrYogO+h5qPFA6t1KMsrtd5cfB7TxKLTCt69VCmzPDx9dO4E2LgUGiLqO1DjTgEVlDWarhHQAbTq
+	cW3m0mfn68l8VjUuVaBw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i7pna-0007E5-CG; Tue, 10 Sep 2019 23:43:50 +0000
-Received: from shadbolt.e.decadent.org.uk ([88.96.1.126])
+	id 1i7pzE-00035L-T8; Tue, 10 Sep 2019 23:55:52 +0000
+Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i7pnW-0007Dl-O9
- for linux-mtd@lists.infradead.org; Tue, 10 Sep 2019 23:43:48 +0000
-Received: from 92.40.249.110.threembb.co.uk ([92.40.249.110] helo=deadeye)
- by shadbolt.decadent.org.uk with esmtps
- (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.89)
- (envelope-from <ben@decadent.org.uk>)
- id 1i7pnL-00040D-BC; Wed, 11 Sep 2019 00:43:35 +0100
-Received: from ben by deadeye with local (Exim 4.92.1)
- (envelope-from <ben@decadent.org.uk>)
- id 1i7pnJ-0001mT-5q; Wed, 11 Sep 2019 00:43:33 +0100
-Message-ID: <cc538ddebead346bc622adc8f163427458fb5c6d.camel@decadent.org.uk>
-Subject: Re: [PATCH 2/2] mtd: phram,slram: Disable when the kernel is locked
- down
-From: Ben Hutchings <ben@decadent.org.uk>
-To: Richard Weinberger <richard.weinberger@gmail.com>, James Morris
- <jmorris@namei.org>
-Date: Wed, 11 Sep 2019 00:43:28 +0100
-In-Reply-To: <CAFLxGvxRVwt0=wtKJnZB6s+VDCoGT3vsW27P2MECO999sJKAHw@mail.gmail.com>
-References: <20190830154549.vss6h5tlrl6d5r5y@decadent.org.uk>
- <20190830154720.eekfjt6c4jzvlbfz@decadent.org.uk>
- <CACdnJuutzv+0nPKeizsiaix5YtYHU4RSoH-hPFfG1Z8sW_yy2w@mail.gmail.com>
- <alpine.LRH.2.21.1909100816170.3709@namei.org>
- <CAFLxGvxRVwt0=wtKJnZB6s+VDCoGT3vsW27P2MECO999sJKAHw@mail.gmail.com>
-User-Agent: Evolution 3.30.5-1.1 
+ id 1i7pzB-000352-8M
+ for linux-mtd@lists.infradead.org; Tue, 10 Sep 2019 23:55:51 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lilium.sigma-star.at (Postfix) with ESMTP id 4F7E41810A9A4;
+ Wed, 11 Sep 2019 01:55:47 +0200 (CEST)
+Received: from lilium.sigma-star.at ([127.0.0.1])
+ by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id 3lP3CxBe5w0C; Wed, 11 Sep 2019 01:55:46 +0200 (CEST)
+Received: from lilium.sigma-star.at ([127.0.0.1])
+ by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id 8Qb_v6njklbw; Wed, 11 Sep 2019 01:55:46 +0200 (CEST)
+Subject: Re: cannot ubiupdatevol squashfs image
+To: Richard Weinberger <richard.weinberger@gmail.com>,
+ Boris Stein <boris.stein@gmail.com>
+References: <CAFkQurKLwUdGSPNPLYLTrV7-fkWaL5RuP9up0nrN62L4pr-ivg@mail.gmail.com>
+ <CAFLxGvz5JipAzu1x_0EPX6v-SZgxtu6n3-gZZ=DQS4FLMH0XSg@mail.gmail.com>
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Openpgp: preference=signencrypt
+Autocrypt: addr=david.oberhollenzer@sigma-star.at; prefer-encrypt=mutual;
+ keydata=
+ mQENBFZyf0YBCADHyKhABhxthCC9n48pvsuk5p3IEdYXMs8Apenh1N/Z4cViAz/d/nSCZ+FG
+ FX/PSubEzq8AilZLejchAltaORCvA1Y6FgTlpcdJ6gHDfStDbJL/vk5N8aL7YNF7VfjTRntB
+ tKbhKcrG05nbdNjIioAm04pt9rx5mV5KMbf22/FdZpOSSsC6/N7b/cFH9+fx8kwi4pNFuJwr
+ BkWRuQ7rEtCoSpd22t+Vh9qA7kymW9gWY405258jnN65jBO7ElqU2CCuGRPg6uryAHV3RVCB
+ 9j9AE3HLacQReFtt5ylyydSQbaK4K9asnd7U2/C11vIuuciXCppX4bPap/pMnGpzw0UNABEB
+ AAG0N0RhdmlkIE9iZXJob2xsZW56ZXIgPGRhdmlkLm9iZXJob2xsZW56ZXJAc2lnbWEtc3Rh
+ ci5hdD6JATcEEwEIACEFAlZyf0YCGwMFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AACgkQvOXc
+ PHQaAtFuEAgArXOhaoaVvCMVCa5N25Q/+Q6K1wrVpPmkH89yhQqCmfM6f+2VM5MGFDPfaSJ3
+ 5fBDH0iwBQwlXIb7NSXWtzdXX9rMvJkJqv45TgeKtJApf/sRhmcN+clrwzP8oZQbxkP1YWzo
+ Vwo4lOb3Kv7aY9yeCjqNbdJJ57NpvYOUrzrCpGkrDPBBQOvKF3wbq3oU/o3dT23NDeQ20jXg
+ quJf/PCw6WCzRxqg58wH02MdMDQe8vByzVig2bM2e7DErtt+hPK/Dmdsqgns+Z+SrQcOvRa3
+ GMAHAuHB0u2LhYO6NyaNCgzdgutorilYcq7FEKr8XqwOnfVmZdCW3qGKmLbn6qMEdLkBDQRW
+ cn9GAQgAvugF8cFjv2Zs4BBb44SnxGawBySC1bMRas/MjA9EMHUAx/StcecQmxnl6BzEyGpr
+ +TRnXIzcb5xI8SxitBDU5MLvwsHgNvpYp9fscd4kWP7oMir9ta3Q8SvT4OLbO4FZBGaURzGP
+ ak8JmjMMtOoOBh4meOjz6GrJe9UIGxT94aB01w7YohfBANzK8xyk4ykKC5Op4XgaaMKOEQUa
+ h7wajcojYSlvgOiXqEisMHlRDAW6sXL2sEM7TIpvYhy9txMLllpkYb0Pu1BvUpY/unsybWKA
+ FyiTmeiY+nEveUvqX6Ef7BWdClBeCk2UaRvtcoLd22VxMlKTniHQcNMOXlRRawARAQABiQEf
+ BBgBCAAJBQJWcn9GAhsMAAoJELzl3Dx0GgLRPtcH/jD6rn2+VIKgrHdt3ao3Abpu2fqYfwbI
+ yPAtpXOddDptVq+0A/2arXT1Y8+jNSZpbAg8K+bLaEAcSUEjviKMpfI7ppTUBuGKrpgc5xsi
+ UpKkJCb7oB1ZraIBNBPtPPVUhbwLie4uW/LVt+8rBKz3W9KEDOsT0ZCG/pW8Ld+EpDR9l0fm
+ qoVHaw8PhLAtez+B7HS7Hv7iJPDtX85kFYpud8kIPENXVn9EjZudyMWgZb2LhYlcavNcszgR
+ 7In6ift5SNySojCOfAV0iKZb8QUXWktLleY8kQ8jltOsSRTuO4PDfzvtCQDixUw4tQ7WLwDT
+ qyUpot0oG03vtSG4LIRCdxI=
+Organization: sigma star gmbh
+Message-ID: <bddc36a0-647d-e0d8-e1ca-501fd6522315@sigma-star.at>
+Date: Wed, 11 Sep 2019 01:55:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 92.40.249.110
-X-SA-Exim-Mail-From: ben@decadent.org.uk
-X-SA-Exim-Scanned: No (on shadbolt.decadent.org.uk);
- SAEximRunCond expanded to false
+In-Reply-To: <CAFLxGvz5JipAzu1x_0EPX6v-SZgxtu6n3-gZZ=DQS4FLMH0XSg@mail.gmail.com>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190910_164346_930990_7361800C 
-X-CRM114-Status: GOOD (  17.28  )
+X-CRM114-CacheID: sfid-20190910_165549_590116_21D54E0D 
+X-CRM114-Status: GOOD (  12.74  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,102 +101,74 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: David Howells <dhowells@redhat.com>, linux-mtd@lists.infradead.org,
- LSM List <linux-security-module@vger.kernel.org>,
- Joern Engel <joern@lazybastard.org>, Matthew Garrett <mjg59@google.com>
-Content-Type: multipart/mixed; boundary="===============3059978788730676367=="
+Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On 9/10/19 9:31 PM, Richard Weinberger wrote:
+> On Tue, Sep 10, 2019 at 3:11 PM Boris Stein <boris.stein@gmail.com> wrote:
+> 
+> [...]
+> 
+>> [    9.006327] SQUASHFS error: zlib decompression failed, data probably corrupt
+>> [    9.006359] SQUASHFS error: squashfs_read_data failed to read block 0x785a5a
+> 
+> usually squashfs has a blocksize of 1k or 4k. So block 0x785a5a is out
+> of bounds.
+>
 
---===============3059978788730676367==
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="=-r8SF5OwVuFn1THoEmlQI"
+SquashFS has a device block size that is either 1k or 4k that is only relevant
+for I/O transfers. The actual block size is between 4k to 1M (defaults to 128k).
+The data blocks also have no headers or checksums.
 
+Meta data (inodes, directory entries, tables) is chopped in 8k chunks and stored
+possibly compressed with a 2 byte header.
 
---=-r8SF5OwVuFn1THoEmlQI
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Once compressed, blocks can have any size and there is absolutely no requirement
+for alignment. Inodes (or in this case the fragment table) can literally point
+just anywhere between the super block and the inode table.
 
-On Wed, 2019-09-11 at 00:18 +0200, Richard Weinberger wrote:
-> On Tue, Sep 10, 2019 at 5:17 PM James Morris <jmorris@namei.org> wrote:
-> > On Tue, 10 Sep 2019, Matthew Garrett wrote:
-> >=20
-> > > On Fri, Aug 30, 2019 at 11:47 AM Ben Hutchings <ben@decadent.org.uk> =
-wrote:
-> > > > These drivers allow mapping arbitrary memory ranges as MTD devices.
-> > > > This should be disabled to preserve the kernel's integrity when it =
-is
-> > > > locked down.
-> > > >=20
-> > > > * Add the HWPARAM flag to the module parameters
-> > > > * When slram is built-in, it uses __setup() to read kernel paramete=
-rs,
-> > > >   so add an explicit check security_locked_down() check
-> > > >=20
-> > > > Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
-> > > > Cc: Matthew Garrett <mjg59@google.com>
-> > > > Cc: David Howells <dhowells@redhat.com>
-> > > > Cc: Joern Engel <joern@lazybastard.org>
-> > > > Cc: linux-mtd@lists.infradead.org
-> > >=20
-> > > Reviewed-by: Matthew Garrett <mjg59@google.com>
-> > >=20
-> > > James, should I pick patches like this up and send them to you, or
-> > > will you queue them directly after they're acked?
-> >=20
-> > As long as I'm on the to or cc when they're acked, I can grab them.
->=20
-> Acked-by: Richard Weinberger <richard@nod.at>
->=20
-> BTW: I don't have 1/2 in my inbox, is it also MTD related?
+>> [    9.012677] SQUASHFS error: Unable to read fragment cache entry [785a5a]
+>> [    9.019470] SQUASHFS error: Unable to read page, block 785a5a, size d6b4
+>> [    9.026242] SQUASHFS error: Unable to read fragment cache entry [785a5a]
+>> [    9.032876] SQUASHFS error: Unable to read page, block 785a5a, size d6b4
+>> [    9.039529] SQUASHFS error: Unable to read fragment cache entry [785a5a]
+>> [    9.046225] SQUASHFS error: Unable to read page, block 785a5a, size d6b4
+>> [    9.052910] SQUASHFS error: Unable to read fragment cache entry [785a5a]
+>> [    9.059573] SQUASHFS error: Unable to read page, block 785a5a, size d6b4
+>> [    9.066281] SQUASHFS error: Unable to read fragment cache entry [785a5a]
+>> [    9.072954] SQUASHFS error: Unable to read page, block 785a5a, size d6b4
+>>
+>>
 
-No, that was for some other drivers (comedi) that allow setting I/O
-addresses from user-space.
+SquashFS tries to read a fragment block located some ~7.5 MiB after the
+super block (0x785a5a) with a compressed size of 54964 bytes (0xd6b4).
+For a ~41 MiB SquashFS image this sounds plausible.
 
-Ben.
-
---=20
-Ben Hutchings
-The obvious mathematical breakthrough [to break modern encryption]
-would be development of an easy way to factor large prime numbers.
-                                                           - Bill Gates
+Uncompressing fails, so the location that the fragment table points to does
+not contain a valid zlib stream.
 
 
+Interestingly, the inode, directory and fragment tables seem to be at least
+partially readable. Accessing the root inode and walking through the tree
+seems to work, since there are no other SquashFS error messages.
 
---=-r8SF5OwVuFn1THoEmlQI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEErCspvTSmr92z9o8157/I7JWGEQkFAl14NSAACgkQ57/I7JWG
-EQniDxAAr+0WIc1dyucvMVNiLMc5RYy2P5rKBbh6m+3hrxbrXA6aw4RWpZsVwVSd
-tJ0hd0Errn2gzOlZNSNSWnJsvT+6ZRU5g3b2ZQLUsw1okJU9rbSTQgyTOagpEiao
-bsonp3QtoNsN/UECYd9kwte81lINpNXfb9FeJqY7REhg092QDms17pRi8kVrm4cH
-d/6U2PR3wPMcYyx4plgKrJU+GZROpL/Owp8AZhtCd9G4ROFhqhVBAMS+R2QNpdX0
-ds61ZB42oCWUrRjbUGWkrjU9koWslayCUawEQeIFMNgkohrT4bVGUnxySPSs1SZp
-xmpJbuVxA5dG/2wBpO4xzw1PhaPZkwQx42SXRvkdPzzUzpQbteR8u6BucTMk18KO
-Y9NTCHSSCsYn8vznU1VGt2amdA/popmBEGznHAdQnbbdv0lmcOutTfHEpSoUCtNw
-4VP9gqGKVyYQ24LIOQ2Yyn8KDdBnWOQQbXs/Pwe1rSOVUbzF/pgPkejEvkc2ndit
-Kq341FGr+n7hGnxtcSwidg2Bg8BgJy/kuDr1X7TxeEG99qk7R8vfNUW7Rwn9ypa8
-jNkUGX7c0DlmFdkjonaA8vzuVcqhjATlc0GZyhu1VpvrZ8dAZD9AgAAbfRjS0ANy
-lu1lzTmlXt0uuQGYscMcCW3NzrKWFFcMvx9cZ62GcZZ0uJ0PulY=
-=5rjt
------END PGP SIGNATURE-----
-
---=-r8SF5OwVuFn1THoEmlQI--
+*Assuming* that it is not the data that is broken, *if* there are no xattrs
+and NFS export tables, the fragment table is pretty much at the very end.
+Maybe the filesystem is partially chopped off at the end?
 
 
---===============3059978788730676367==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Have you tried dumping the SquashFS image from the UBI volume and extracting it?
+(E.g. using unsquashfs, rdsquashfs or sqfs2tar which generate more useful error
+messages about what actually broke)
+
+
+Regards,
+
+David
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============3059978788730676367==--
-
