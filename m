@@ -2,116 +2,81 @@ Return-Path: <SRS0=z5Ut=XF=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9DACC5AE59
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Sep 2019 15:22:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8D49C49ED9
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Sep 2019 19:31:27 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 80BAA21881
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Sep 2019 15:22:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9D5352168B
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Sep 2019 19:31:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="c1XG1vJo";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="1gbXKIFH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 80BAA21881
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Fbhh8Zat";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nJElaDOT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D5352168B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=D/KbknrbKU0Br68Mgi8hTsl4uo3aW27mi/2gnErQfZI=; b=c1XG1vJoQF1tI3
-	PeJc09HV47p3s/LKkHbbRGLX5kYsH6t31XfHUtx6H2jYbJDfAr/X1txWJ2ZjgSxh6QUuJQTUskyh6
-	sdlYKfDTLQ8DG5TapPfj1lcLH0LRowQtOVK5Kr754habpbs23YFX1O0P0mrVaJMoRJal5q0hc4Ah/
-	AxGRaBxjhTXBy/M1/CnHkXKQiTUlsNb0MeQZVyH3PmnDt0rqMXn3RNwKOEHRIWEjZcINqHdpakLP1
-	VVd+09qh8N6Z68mck04WxALPDHnortAoZrplUTjNm8WWRFtZjztrhfYeB4nXBLsQHgVfNSEjoIoiT
-	DLnmeIjoE/Ri8lQk4BUQ==;
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=d/QHMxAjWKULVRpfbMx/gcvHxMOTNrWqic2yU6RDv6k=; b=Fbhh8ZatG22kAj
+	yjryXoIT7otf8x3KtJpdbka2reyNixQWyfUtuPMCZblhVcw41HpgszViSTuandRWQHRUCNA+oQuqx
+	XycUeKaBH4yZ0RGfMvvkkBF6UFcCF5lQ0PTy4cP6L4PUKS6148o1Ei4HcfRmBqNKGwHBzPcesGa/I
+	WRmX0vacRTowh8EYniQVX1Vak4fP4Nl5PZVJOCCH7lMm4NarfqRUpNhwcQdEHJwUPgSC6Lr6UTjPd
+	xHaymwVxZpjc/QqGHoLGMWRY5EyuEwTaVd6K0QdMaY/1mAgLz1YAkWrtvMR3FIMg5+Uh0grf0ApEe
+	doPUH+jO75f51NHuWDjw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i7hyZ-00046g-VL; Tue, 10 Sep 2019 15:22:39 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1i7lrJ-0006av-Cn; Tue, 10 Sep 2019 19:31:25 +0000
+Received: from mail-wr1-x42d.google.com ([2a00:1450:4864:20::42d])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i7hyW-000463-6F
- for linux-mtd@lists.infradead.org; Tue, 10 Sep 2019 15:22:37 +0000
-Received: from [192.168.1.23] (cpe-70-114-128-244.austin.res.rr.com
- [70.114.128.244])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A7EAA2168B;
- Tue, 10 Sep 2019 15:22:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1568128955;
- bh=3bmua+7sTEe8QXyCL+R29XkE+26bKrUqjv62ypVyE7g=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=1gbXKIFHCazZ5Ss1c041nEqJAy/UqbQ1MtTMfjgMwM8tYWCynOpIDzBoLv484oMsQ
- kI5x5CeuIqW5YdQXJrpvUQWdix4Hc4SlECXw3Zv2dpmXXnhMs6L7igpGRGvfAyqqCi
- YnC8e9vSHgCBanSeB5fBhKEXydbYunhb7cWGf8ME=
-Subject: Re: mtd raw nand denali.c broken for Intel/Altera Cyclone V
-To: Tim Sander <tim@krieglstein.org>,
- Masahiro Yamada <yamada.masahiro@socionext.com>
-References: <5143724.5TqzkYX0oI@dabox>
- <CAK7LNAR8xtURiCoJC0eWLFw0q+78Eb_axoOzWH+JNugf-24Qig@mail.gmail.com>
- <3020870.hsMMj5ogRZ@dabox>
-From: Dinh Nguyen <dinguyen@kernel.org>
-Openpgp: preference=signencrypt
-Autocrypt: addr=dinguyen@kernel.org; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <9bb2fb0e-a9e7-c389-f9b7-42367485ff83@kernel.org>
-Date: Tue, 10 Sep 2019 10:22:32 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ id 1i7lrG-0006aS-Q9
+ for linux-mtd@lists.infradead.org; Tue, 10 Sep 2019 19:31:24 +0000
+Received: by mail-wr1-x42d.google.com with SMTP id q14so21848110wrm.9
+ for <linux-mtd@lists.infradead.org>; Tue, 10 Sep 2019 12:31:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=HbORNqUn50jApNwSMi+Pkx7XSvh/WAm5602Jc9d6LKE=;
+ b=nJElaDOT/9TddYkFnFN7llCKT9hUFDeHmtn6KigsNICYdTJr5xNo9drEOhIBM1c+nE
+ quUEdCgC8mUToSdvU8SZK7Tu1e2yf5X2chJ5Yy2ni4Y7xMxts0+THnVCEhoutvVe3poJ
+ FgIMxUk/4Y6CedxL7EKUlL+2VtXKcIzpMK0EJakTqJVzznHndJOI4mxx0yZQBRawD7/m
+ 9W/wU7V66+XZL787UR1zSWWXX06KQxlsXamAoRFVoWuOvsZ0LsV7tNnB0m5LA756lfmw
+ MoSOzngiHwesraPAXHtIoJjrJzyEihM7KDYOdxbumbK6aFj8eOhFti8glmaPTMzyk80U
+ XO9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=HbORNqUn50jApNwSMi+Pkx7XSvh/WAm5602Jc9d6LKE=;
+ b=TYT3hTXhphRoWB+2pomQX4iynTUhobFlvVEFVGYniMDCkp4bVeNEN0Z+LWxUVIdmcM
+ Af+zi3CmGrtdf01W+vodq3bDy7XPNC1wTmyU+B1j3WlF0uNqOU9ATyt/MrLRDF/LuGxd
+ 5vHjYVGx7iVpAblmr7j+m0KI+T7Rf+LaebsfxfvcYlwJSdZ6aWFoa3DyJYcrZiD4D/UD
+ 48O58lyV7cimn+B1sJmL6lW9zyFKRFo7NOdHKtvyG//r11eNCrMsla6XKZyz6Rundrkh
+ LSHWlbSRDPhn1YRjeLQquB4Sbk1mrnjwqKY0R+6t3X+oPED00pueUXyZ2oUJiyyaIK7V
+ FXpg==
+X-Gm-Message-State: APjAAAUj942vv/kAjx4NCf6hLdeN9vgLzVdUJ2hmy4l3yWldYZYMVBvb
+ JigK66Verd71nTt5tNCz0TnQuqDMQiqwAu2Q2/5EkPJGiQo=
+X-Google-Smtp-Source: APXvYqxpRN2hbavZiu4zasdi3wjJASOGc7Bwzjwafgs73ryHTIdUN5luW+d3sZ4Z3KANN5ZuO5YHwiN3rhPAb4lIpCk=
+X-Received: by 2002:a5d:6987:: with SMTP id g7mr3598396wru.306.1568143879657; 
+ Tue, 10 Sep 2019 12:31:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <3020870.hsMMj5ogRZ@dabox>
-Content-Language: en-US
+References: <CAFkQurKLwUdGSPNPLYLTrV7-fkWaL5RuP9up0nrN62L4pr-ivg@mail.gmail.com>
+In-Reply-To: <CAFkQurKLwUdGSPNPLYLTrV7-fkWaL5RuP9up0nrN62L4pr-ivg@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Tue, 10 Sep 2019 21:31:07 +0200
+Message-ID: <CAFLxGvz5JipAzu1x_0EPX6v-SZgxtu6n3-gZZ=DQS4FLMH0XSg@mail.gmail.com>
+Subject: Re: cannot ubiupdatevol squashfs image
+To: Boris Stein <boris.stein@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190910_082236_277236_81B58BEC 
-X-CRM114-Status: GOOD (  22.23  )
+X-CRM114-CacheID: sfid-20190910_123122_856261_28778101 
+X-CRM114-Status: GOOD (  10.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -123,82 +88,132 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On Tue, Sep 10, 2019 at 3:11 PM Boris Stein <boris.stein@gmail.com> wrote:
 
+[...]
 
-On 9/10/19 8:48 AM, Tim Sander wrote:
-> Hi
-> 
-> I have noticed that my SPF records where not in place after moving the server,
-> so it seems the mail didn't go to the mailing list. Hopefully that's fixed now.
-> 
-> Am Dienstag, 10. September 2019, 09:16:37 CEST schrieb Masahiro Yamada:
->> On Fri, Sep 6, 2019 at 9:39 PM Tim Sander <tim@krieglstein.org> wrote:
->>> Hi
->>>
->>> I have noticed that there multiple breakages piling up for the denali nand
->>> driver on the Intel/Altera Cyclone V. Unfortunately i had no time to track
->>> the mainline kernel closely. So the breakage seems to pile up. I am a
->>> little disapointed that Intel is not on the lookout that the kernel works
->>> on the chips they are selling. I was really happy about the state of the
->>> platform before concerning mainline support.
->>>
->>> The failure starts with kernel 4.19 or stable kernel release 4.18.19. The
->>> commit is ba4a1b62a2d742df9e9c607ac53b3bf33496508f.
->>
->> Just for clarification, this corresponds to
->> 0d55c668b218a1db68b5044bce4de74e1bd0f0c8 upstream.
->>
->>> The problem here is that
->>> our platform works with a zero in the SPARE_AREA_SKIP_BYTES register.
->>
->> Please clarify the scope of "our platform".
->> (Only you, or your company, or every individual using this chip?)
-> The company i work for uses this chip as a base for multiple products.
-> 
->> First, SPARE_AREA_SKIP_BYTES is not the property of the hardware.
->> Rather, it is about the OOB layout, in other words, this parameter
->> is defined by software.
->>
->> For example, U-Boot supports the Denali NAND driver.
->> The SPARE_AREA_SKIP_BYTES is a user-configurable parameter:
->> https://github.com/u-boot/u-boot/blob/v2019.10-rc3/drivers/mtd/nand/raw/Kcon
->> fig#L112
->>
->>
->> Your platform works with a zero in the SPARE_AREA_SKIP_BYTES register
->> because the NAND chip on the board was initialized with a zero
->> set to the SPARE_AREA_SKIP_BYTES register.
->>
->> If the NAND chip had been initialized with 8
->> set to the SPARE_AREA_SKIP_BYTES register, it would have
->> been working with 8 to the SPARE_AREA_SKIP_BYTES.
->>
->> The Boot ROM is the only (semi-)software that is unconfigurable by users,
->> so the value of SPARE_AREA_SKIP_BYTES should be aligned with
->> the boot ROM.
->> I recommend you to check the spec of the boot ROM.
-> We boot from NOR flash. That's why i didn't see a problem booting probably.
-> 
->> (The maintainer of the platform, Dihn is CC'ed,
->> so I hope he will jump in)
-> Yes i hope so too.
->  
+> But then there is a failure when system boots:
 
-I don't have access to a NAND device at the moment. I'll try to find one
-and debug.
+[...]
 
-Dinh
+> [    5.919637] ubi0: attaching mtd25
+> [    7.038038] ubi0: scanning is finished
+> [    7.048738] ubi0: attached mtd25 (name "system", size 319 MiB)
+> [    7.048767] ubi0: PEB size: 262144 bytes (256 KiB), LEB size: 253952 bytes
+> [    7.053530] ubi0: min./max. I/O unit sizes: 4096/4096, sub-page size 4096
+> [    7.060333] ubi0: VID header offset: 4096 (aligned 4096), data offset: 8192
+> [    7.067173] ubi0: good PEBs: 1279, bad PEBs: 0, corrupted PEBs: 0
+> [    7.073956] ubi0: user volume: 8, internal volumes: 1, max. volumes
+> count: 128
+> [    7.080208] ubi0: max/mean erase counter: 2/1, WL threshold: 4096,
+> image sequence number: 796905358
+> [    7.087316] ubi0: available PEBs: 0, total reserved PEBs: 1279,
+> PEBs reserved for bad PEB handling: 40
+> [    7.096278] ubi0: background thread "ubi_bgt0d" started, PID 207
+> [    7.105838] cpuidle: enable-method property 'psci' found operations
+> [    7.106471] lpm_levels_of: Residency < 0 for LPM
+> [    7.106475] lpm_levels_of: idx 1 420
+> [    7.106478] lpm_levels_of: Residency < 0 for LPM
+> [    7.106480] lpm_levels_of: idx 2 500
+> [    7.106483] lpm_levels_of: idx 2 3040
+> [    7.106693] lpm_levels: register_cluster_lpm_stats()
+> [    7.108873] rmnet_ipa3 started initialization
+> [    7.109878] RNDIS_IPA module is loaded.
+> [    7.109878] audio_pdr_late_init get_service_location failed ret -19
+> [    7.110531] msm_bus_late_init: Remove handoff bw requests
+> [    7.135649] vreg_sd_mmc: disabling
+> [    7.135656] emac_phy: disabling
+> [    7.135661] rgmii_io_pads: disabling
+> [    7.135668] vreg_wlan: disabling
+> [    7.135672] ALSA devic[    7.193476] Freeing unused kernel memory: 1024K
+> /etc/mdev/iio.sh: .: line 19: can't open
+> '/sys/bus/i2c/devices/*-006*/iio:device?*/uevent'
+> [    7.697004] iio.sh (216) used greatest stack depth: 6288 bytes left
+> /etc/mdev/iio.sh: .: line 19: can't open
+> '/sys/bus/i2c/devices/*-006*/iio:device?*/uevent'
+> [    7.730144] iio.sh (218) used greatest stack depth: 6256 bytes left
+> mkdir: can't create directory '/mnt/sdcard/': No such file or directory
+> mount: mounting /dev/mmcblk0p1 on /mnt/sdcard/ failed: No such file or directory
+> [    8.038745] mdev (214) used greatest stack depth: 6000 bytes left
+> mdm-init : Detected block device : 25 for system
+> [    8.051651] ubi: mtd25 is already attached to ubi0ubiattach:
+> error!: cannot attach mtd25
+>            error 17 (File exists)
+> [    8.107261] Waiting for ubinfo for md-rootfs
+> [    8.107431] Done ubinfo for md-rootfs, volume ID: 1
+> [    8.111069] Waiting for /dev/ubi0_1
+> [    8.115328] Done waiting for /dev/ubi0_1
+> [    8.124406] block ubiblock0_1: created from ubi0:1(md-rootfs)
+> [    8.125039] Waiting for /dev/ubiblock0_1
+> [    8.186355] Done waiting for /dev/ubiblock0_1
+> [    8.216688] Waiting for ubinfo for rootfs
+> [    8.216872] Done ubinfo for rootfs, volume ID: 0
+> [    8.219764] Waiting for /dev/ubi0_0
+> [    8.224833] Done waiting for /dev/ubi0_0
+> [    8.233326] block ubiblock0_0: created from ubi0:0(rootfs)
+> [    8.233943] Waiting for /dev/ubiblock0_0
+> [    8.301729] Done waiting for /dev/ubiblock0_0
+> [    8.614592] 1911 device_is_secure: #########################
+> device_is_secure=0
+
+???
+
+> [    8.651724] Waiting for ubinfo for md-sdatafs
+> [    8.651900] Done ubinfo for md-sdatafs, volume ID: 3
+> [    8.655158] Waiting for /dev/ubi0_3
+> [    8.660428] Done waiting for /dev/ubi0_3
+> [    8.668817] block ubiblock0_3: created from ubi0:3(md-sdatafs)
+> [    8.669459] Waiting for /dev/ubiblock0_3
+> [    8.734968] Done waiting for /dev/ubiblock0_3
+> [    8.766984] Waiting for ubinfo for sdatafs
+> [    8.767156] Done ubinfo for sdatafs, volume ID: 2
+> [    8.770369] Waiting for /dev/ubi0_2
+> [    8.774891] Done waiting for /dev/ubi0_2
+> [    8.783874] block ubiblock0_2: created from ubi0:2(sdatafs)
+> [    8.784493] Waiting for /dev/ubiblock0_2
+> [    8.851409] Done waiting for /dev/ubiblock0_2
+> [    8.913053] 1911 device_is_secure: #########################
+> device_is_secure=0
+
+???
+
+> mount: mounting /dev on /system/dev failed: Invalid argument
+> mount: mounting /dev/pts on /system/dev/pts failed: No such file or directory
+
+wut?
+
+> [    9.006327] SQUASHFS error: zlib decompression failed, data probably corrupt
+> [    9.006359] SQUASHFS error: squashfs_read_data failed to read block 0x785a5a
+
+usually squashfs has a blocksize of 1k or 4k. So block 0x785a5a is out
+of bounds.
+
+> [    9.012677] SQUASHFS error: Unable to read fragment cache entry [785a5a]
+> [    9.019470] SQUASHFS error: Unable to read page, block 785a5a, size d6b4
+> [    9.026242] SQUASHFS error: Unable to read fragment cache entry [785a5a]
+> [    9.032876] SQUASHFS error: Unable to read page, block 785a5a, size d6b4
+> [    9.039529] SQUASHFS error: Unable to read fragment cache entry [785a5a]
+> [    9.046225] SQUASHFS error: Unable to read page, block 785a5a, size d6b4
+> [    9.052910] SQUASHFS error: Unable to read fragment cache entry [785a5a]
+> [    9.059573] SQUASHFS error: Unable to read page, block 785a5a, size d6b4
+> [    9.066281] SQUASHFS error: Unable to read fragment cache entry [785a5a]
+> [    9.072954] SQUASHFS error: Unable to read page, block 785a5a, size d6b4
+>
+>
+> Please adivse,
+
+There seem to be many other components involved.
+Is the squashfs image actually correct?
+
+-- 
+Thanks,
+//richard
 
 ______________________________________________________
 Linux MTD discussion mailing list
