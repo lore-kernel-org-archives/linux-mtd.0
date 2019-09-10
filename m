@@ -2,84 +2,99 @@ Return-Path: <SRS0=z5Ut=XF=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_HIGH,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A571C4740A
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Sep 2019 14:27:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ECA51C4740A
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Sep 2019 14:35:11 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1234B20863
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Sep 2019 14:27:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BF38721479
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Sep 2019 14:35:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="sybQTIxg";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="CDI61Cau"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1234B20863
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KXxnLPbg";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="E1l0FDeU";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="NNHX+V7a"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BF38721479
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kroah.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SOu3lR9RrpnVzz4XNi1fQsKxHY2+86Pj42tDIPaAuA8=; b=sybQTIxgdpv4q4
-	cBch+2Jf/RXGzQYy+nASNvyQETObK4cQVsO6Tla5C+BRTzNACws2HMqXWZQtDhX0ssbEZ/Cb+4bKr
-	gjLiLF1VaGIadXwsEU488rw3yFRWCWjqg/p9M/jvf+yWrumnu0GVPUHl45ulguixRWJY2xGQg4LYi
-	rnFscqBEvUUphTY/1X2+Q8qMek0d1kzVuelPL3ugCTuy75tjshSuSTStEA/qZPhLxuuMAjPebFPpG
-	hDuOy8VgFW8dNz6kXasuePogRhY0m6G2kRu/j5v9tqnJaTS6HznMwnOnS39OTINwWpaM78kqHocsg
-	Vx/jOvEv3v7y6iAfG2YQ==;
+	List-Owner; bh=nHnHZtU0njAN2mwmppqhp37rh5I16HxEwo8bKLMUhrc=; b=KXxnLPbgh51kTl
+	ZVgDpL7+GcLmBWCEwomPmVHKjaIij6ivxbtMDpqAXKc7JtJKw2Ib0MU/ALmvempib73WlHuXg34Om
+	orv6B8evodjdv3aUfbbuNzaGtdr15z5OzEptFTmcL2+7kUCV4OYG3DAgBTeoz+R6PMbWIZRad1rRS
+	AEfwC6nNvj+JnZh6SSQ119cyAuS8gmFK41qrRxvSW3O1lkMRubaAMO/m18yZQagePC8ZYGCuyHETz
+	W/7mmoXuyIWWE94gzg4U5Tw7Nk2sobm6mbkjcTa34qRZqy/cW7o28Fv5jbj+IdOl8gcUq1OiywPyT
+	t/08ZxVpH2/PmNaA9ebg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i7h7c-0004jp-PK; Tue, 10 Sep 2019 14:27:56 +0000
-Received: from mail-io1-xd43.google.com ([2607:f8b0:4864:20::d43])
+	id 1i7hEd-0008FP-7C; Tue, 10 Sep 2019 14:35:11 +0000
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i7h7a-0004jR-9m
- for linux-mtd@lists.infradead.org; Tue, 10 Sep 2019 14:27:55 +0000
-Received: by mail-io1-xd43.google.com with SMTP id k5so12663061iol.5
- for <linux-mtd@lists.infradead.org>; Tue, 10 Sep 2019 07:27:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=iAJWigFQogCgXqw0GlIr6H4PJdXWKqg0KkSpMrQT/7M=;
- b=CDI61CautrcOJ596e6Ocyme/zhgxyGSPizFMEyCjc8zFk/4DmZGZuLcPRV8DX63sSy
- QfOWqPKSEDO+PN+kXadppYN6yN0ZYWSCnK8k21Pj1s30YvqJwymMQxEDYGbpEqkgCNkO
- 0ff0l9JiWvTuQOzERjuVt4drIbh5FliYa9zHxcWtzXgwk7qOP1JZ5mDPzksaQjMRMDXN
- N0RuubgU/kLpA4t0q5+olIg6IQepEutG6lcPLoSy1ICNhoes3eld3+BXnFc48Jxs2DJC
- 4RulZJ3sw3Ve7oUPlq5zQVUF0+r0FSs5Yo7FXP6yk+xR44XDLDLz/fPotT9tGv/Z1vg1
- ShbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=iAJWigFQogCgXqw0GlIr6H4PJdXWKqg0KkSpMrQT/7M=;
- b=CCIexfQ9K2//WULZVwEfF7HRzcj3I/DP6MCtudUwLuXTSO/Q52iEp5lg1LmdQykLHO
- fau/300SPYtTx9rlufp7uZqRp8pH6kk8BQsz2eQbGnYZ18YUQGTfmeqnLfd92MS9PhaF
- XgM3iyE6ee6cYXGSaSWQs+DmEpRQ3ESAek+9cwfiUPSwBuUs1Rl+PDaBcbJkVfl6ZtZ/
- EJQFtt3SlvofALfOVA1th0tZpW+eZ1hUbJbJDd3CIXy3os9WkMn5RDHDY1LyDpK3YN+V
- JRjHuJKN+wpjei1aNkuNw05aau+cswLJsemQR+rJqvJOlad8SeXYbwhMPyI8557gSvl5
- Hgzg==
-X-Gm-Message-State: APjAAAXs3oRWIlr++Cd+mFuoFV9LmbP+YOCWWC1tzbglZ1tyh71XydmF
- 3dqR2LUp9nMmppdJOGjPexhvl0pAREWzX/GU2U0I5g==
-X-Google-Smtp-Source: APXvYqwEMQEv8abs86qQwB4owkSshjlRdWMduOGeS/BxXi7DyYcvUMQBqShvZAQJ/9H8nlqE9ZM0BxWO8eLyqm2UHOo=
-X-Received: by 2002:a05:6602:2256:: with SMTP id
- o22mr7092227ioo.104.1568125669479; 
- Tue, 10 Sep 2019 07:27:49 -0700 (PDT)
+ id 1i7hEZ-000797-H9
+ for linux-mtd@lists.infradead.org; Tue, 10 Sep 2019 14:35:09 +0000
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+ by mailout.west.internal (Postfix) with ESMTP id 2D199258;
+ Tue, 10 Sep 2019 10:35:02 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+ by compute6.internal (MEProxy); Tue, 10 Sep 2019 10:35:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+ date:from:to:cc:subject:message-id:references:mime-version
+ :content-type:in-reply-to; s=fm1; bh=Yn2LW5Cn6NDpHwAp8OL/VHEBLuD
+ Ea+FvY5tcN4UAkhY=; b=E1l0FDeU0uUFm7pcZuFCt4iz6yOAMuia+vNX5NgkfB9
+ OZ+OCRjCjmAheEZ/c0h/S46faHhQNilYVNSjtRKtEaHY/kG/ecQRjLJyA2moFe/m
+ QiGLzarjz3ucq0RiMxzat8L+2491N7JAvPBXH5i/on3KZHNI2lQwlnftpgcTIunw
+ A2NMpap8CEX7RSvWM0WTG7HhOKYDG79boZ3pcNrA9xmbAaShQHWxTV1aAAcZUyjx
+ xXnPucNsfVuZ2moPw5EHpIQCIY/t7qYRleuWKHPRmlKSbgnCLB/7ZJGL/c4QiN1X
+ SMJaboUtlK9Z54p+uBTgSHA0yDYE70+fSngiiws5SHA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Yn2LW5
+ Cn6NDpHwAp8OL/VHEBLuDEa+FvY5tcN4UAkhY=; b=NNHX+V7aLEcSUnQcXHmGE3
+ nqfAJ1DZb+GMtyCwjtXktd01OmnSK0LMe3vSOTjBUaGAmSF46McHmEA3ASkbI6mz
+ /a7H9PN7qTW/0XsNw2iOX08ic59QTPZhc/VAXM3yORb5oQy1ZG0BW7a7s4EI5o4A
+ /YzepHaWkEb181HwyWTWK75/RkLk2p3ZQ4DqHJvdHCtGUCIF3dzUuYI803HJwnw8
+ jT18H5KQNk2bDKCwVxOKJO+PNKBMJcHn8B6sFBa90EWFzc5AoRr0afIFIuRBIZlH
+ sZLwttpozKF0w0dWRQ9TMqOwO6P5OOkSQC0WP40bhyaPhw7E+0td0sURk7cfXZKw
+ ==
+X-ME-Sender: <xms:lbR3XeLGvUx4O31kAw2oE1n5l3b6fsed1JR-zVy08lObam-UxyKvhQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedrtddtgdehhecutefuodetggdotefrodftvf
+ curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+ uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+ fjughrpeffhffvuffkfhggtggujggfsehttdertddtredvnecuhfhrohhmpefirhgvghcu
+ mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucfkphepvddufedrfedtrdekrdduud
+ dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomhenucev
+ lhhushhtvghrufhiiigvpedt
+X-ME-Proxy: <xmx:lbR3XcGSgZBgfUJoxZBU4g8S3NN0RXfw57IHLBKmHhDJsEAasRbyAg>
+ <xmx:lbR3XcWakchC9nsJ8YlQPtYqK5DzoQcbNHxshQdTHqBMSbyym-Sh6Q>
+ <xmx:lbR3XSMePnZU-G5F6G3_gJC1yDjQfi6DXoXu20hx31ihEJ3K3AB3zA>
+ <xmx:lbR3XaV84X5qhBZCloMBm7H7idqNjs0OLhwR7hNP8BIkyQZHYjIeNg>
+Received: from localhost (110.8.30.213.rev.vodafone.pt [213.30.8.110])
+ by mail.messagingengine.com (Postfix) with ESMTPA id DE087D6005A;
+ Tue, 10 Sep 2019 10:35:00 -0400 (EDT)
+Date: Tue, 10 Sep 2019 15:34:59 +0100
+From: Greg KH <greg@kroah.com>
+To: Mathieu Poirier <mathieu.poirier@linaro.org>
+Subject: Re: [BACKPORT 4.14.y 03/18] drm/omap: panel-dsi-cm: fix driver
+Message-ID: <20190910143459.GC3362@kroah.com>
+References: <20190905161759.28036-1-mathieu.poirier@linaro.org>
+ <20190905161759.28036-4-mathieu.poirier@linaro.org>
 MIME-Version: 1.0
-References: <20190830154549.vss6h5tlrl6d5r5y@decadent.org.uk>
- <20190830154720.eekfjt6c4jzvlbfz@decadent.org.uk>
-In-Reply-To: <20190830154720.eekfjt6c4jzvlbfz@decadent.org.uk>
-From: Matthew Garrett <mjg59@google.com>
-Date: Tue, 10 Sep 2019 10:27:37 -0400
-Message-ID: <CACdnJuutzv+0nPKeizsiaix5YtYHU4RSoH-hPFfG1Z8sW_yy2w@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mtd: phram,
- slram: Disable when the kernel is locked down
-To: Ben Hutchings <ben@decadent.org.uk>
+Content-Disposition: inline
+In-Reply-To: <20190905161759.28036-4-mathieu.poirier@linaro.org>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190910_072754_368161_CE033E51 
-X-CRM114-Status: GOOD (  10.63  )
+X-CRM114-CacheID: sfid-20190910_073507_643724_49927011 
+X-CRM114-Status: UNSURE (   9.11  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,34 +106,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: David Howells <dhowells@redhat.com>, linux-mtd@lists.infradead.org,
- LSM List <linux-security-module@vger.kernel.org>,
- Joern Engel <joern@lazybastard.org>, James Morris <jmorris@namei.org>
+Cc: linux-pm@vger.kernel.org, linux-pci@vger.kernel.org,
+ linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-mtd@lists.infradead.org,
+ stable@vger.kernel.org, linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Aug 30, 2019 at 11:47 AM Ben Hutchings <ben@decadent.org.uk> wrote:
->
-> These drivers allow mapping arbitrary memory ranges as MTD devices.
-> This should be disabled to preserve the kernel's integrity when it is
-> locked down.
->
-> * Add the HWPARAM flag to the module parameters
-> * When slram is built-in, it uses __setup() to read kernel parameters,
->   so add an explicit check security_locked_down() check
->
-> Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
-> Cc: Matthew Garrett <mjg59@google.com>
-> Cc: David Howells <dhowells@redhat.com>
-> Cc: Joern Engel <joern@lazybastard.org>
-> Cc: linux-mtd@lists.infradead.org
+On Thu, Sep 05, 2019 at 10:17:44AM -0600, Mathieu Poirier wrote:
+> From: Tony Lindgren <tony@atomide.com>
+> 
+> commit e128310ddd379b0fdd21dc41d176c3b3505a0832 upstream
+> 
+> This adds support for get_timings() and check_timings()
+> to get the driver working and properly initializes the
+> timing information from DT.
+> 
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
+> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> ---
+>  .../gpu/drm/omapdrm/displays/panel-dsi-cm.c   | 56 +++++++++++++++++--
+>  1 file changed, 51 insertions(+), 5 deletions(-)
 
-Reviewed-by: Matthew Garrett <mjg59@google.com>
+THis looks like a "new feature", right?  Why is this a stable patch?
 
-James, should I pick patches like this up and send them to you, or
-will you queue them directly after they're acked?
+thanks,
+
+greg k-h
 
 ______________________________________________________
 Linux MTD discussion mailing list
