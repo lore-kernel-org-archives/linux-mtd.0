@@ -2,46 +2,46 @@ Return-Path: <SRS0=ZCmB=XG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B469C5ACAE
-	for <linux-mtd@archiver.kernel.org>; Wed, 11 Sep 2019 09:44:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CB46C49ED6
+	for <linux-mtd@archiver.kernel.org>; Wed, 11 Sep 2019 09:45:31 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E33972067B
-	for <linux-mtd@archiver.kernel.org>; Wed, 11 Sep 2019 09:44:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4C0FE2067B
+	for <linux-mtd@archiver.kernel.org>; Wed, 11 Sep 2019 09:45:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="X12tFh1o";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="Tw4IX6AP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E33972067B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pZ5DhMn3";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="bdRNjCdF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C0FE2067B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=YTvGqJJi4nvk6Et6S99BFMu1CILogCC2jjk6e/CzS3k=; b=X12tFh1oeDLaJ+
-	GQBCNQ7QOoEZb9KLfP6RtMfBIH7ZP+EWbDw4k/xVL28mFTleVWircNFJVbbaGXVh39Nw3F0qpB5l3
-	KY7GoUIctm2p59TIAdRmqdvSvibt03L5YJPg0/iVBOQWIRlSgvr0YzhedWyLMq6qm6vXMAr/ODIVq
-	app/q/hZi33a/kKoanJRhWgLSgiOnyt5wEFTmoCiq4iNEz8srezhaJu/WuKEctivOo//bmDdhVAJh
-	BhRJ5OueTi59VY0gH3DmybOMNoGefbyF38YJl5XDmT+hEnVCOxIDpGkxiBsG2hkVM8JWObIcyxDxd
-	VhdQQigB4KsybOAgkrbA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=stzvcM0IndjlmWQDFgiwfuJzSIxn72fhujG06BffSaI=; b=pZ5DhMn35YgBfw
+	eKSaX6x40HQl0ap8q9fZNQI3RrZW2z/C8sJFmGaTogaGJT3XqYfZdh46RT/HpkW4Y3+Bv3DpXN7bX
+	MP6hJG7s9Ra/8I8LLaN5cTe5s6LMo+bwOhFLW091seJ07JvMKyJdq7ZjTHeLliNUP32LTHCitaZTm
+	9aYGxSwvPNwmgeCiBJ64Jpb+yt/sstmCbKDmTcFA+874R3fqfdSMB5vvUf0VzEfVQJJqYQOq7FgCj
+	xefmksEe8uEp5+quT2CP+2MIUcGG8Ete3ssirmAOH3vzyxAQppvHGCvZp0t2fGhBuA5IuCyd4Q6YD
+	bcTCIr6AZIki6dUfQd4g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i7zAq-0004QP-Gu; Wed, 11 Sep 2019 09:44:28 +0000
-Received: from esa4.microchip.iphmx.com ([68.232.154.123])
+	id 1i7zBp-0006SZ-Er; Wed, 11 Sep 2019 09:45:29 +0000
+Received: from esa6.microchip.iphmx.com ([216.71.154.253])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i7z7g-0001gg-Ur; Wed, 11 Sep 2019 09:41:14 +0000
-Received-SPF: Pass (esa4.microchip.iphmx.com: domain of
+ id 1i7z7k-0001jn-Bj; Wed, 11 Sep 2019 09:41:18 +0000
+Received-SPF: Pass (esa6.microchip.iphmx.com: domain of
  Tudor.Ambarus@microchip.com designates 198.175.253.82 as
  permitted sender) identity=mailfrom;
- client-ip=198.175.253.82; receiver=esa4.microchip.iphmx.com;
+ client-ip=198.175.253.82; receiver=esa6.microchip.iphmx.com;
  envelope-from="Tudor.Ambarus@microchip.com";
  x-sender="Tudor.Ambarus@microchip.com";
  x-conformance=spf_only; x-record-type="v=spf1";
@@ -49,43 +49,42 @@ Received-SPF: Pass (esa4.microchip.iphmx.com: domain of
  a:smtpout.microchip.com a:mx1.microchip.iphmx.com
  a:mx2.microchip.iphmx.com include:servers.mcsv.net
  include:mktomail.com include:spf.protection.outlook.com ~all"
-Received-SPF: None (esa4.microchip.iphmx.com: no sender
+Received-SPF: None (esa6.microchip.iphmx.com: no sender
  authenticity information available from domain of
  postmaster@email.microchip.com) identity=helo;
- client-ip=198.175.253.82; receiver=esa4.microchip.iphmx.com;
+ client-ip=198.175.253.82; receiver=esa6.microchip.iphmx.com;
  envelope-from="Tudor.Ambarus@microchip.com";
  x-sender="postmaster@email.microchip.com"; x-conformance=spf_only
-Authentication-Results: esa4.microchip.iphmx.com;
+Authentication-Results: esa6.microchip.iphmx.com;
  spf=Pass smtp.mailfrom=Tudor.Ambarus@microchip.com;
  spf=None smtp.helo=postmaster@email.microchip.com;
  dkim=pass (signature verified) header.i=@microchiptechnology.onmicrosoft.com;
  dmarc=pass (p=none dis=none) d=microchip.com
-IronPort-SDR: ciYjYe5olj+lNH2b/8zzBJuqBaM0AJNvEEQgTegNacb+1wEw1cDjJ8Xi4E2F6K6DZ5yGQsQz8+
- OD/I6bZf48doVdextxBv7KvBm5U+D2lz5t9YdZygH0OlcTG+dMESC20GPfLoGCA/u47r4/Py8e
- aRZhCT1q1VM56bdez5+Jz3a8cIDkg7TzAzUnFsS+iP+t+FeLc1/9Q5EQkUuJMZOTb6+2lWpMvl
- hwO5o1fYZkZ6aFZ2FQvtSRNLUptnFEeFExb49nBFmwOEYqFO94jePZsXt89L+37rGXLATgVLqq
- pSQ=
-X-IronPort-AV: E=Sophos;i="5.64,493,1559545200"; d="scan'208";a="47528356"
+IronPort-SDR: yJXQcr7xbNYM9CTO9UTjgBASXJNCnVzdVtgdO/aG5QJ7xB1Ralok/9pfbaO1oZClFFE0aR1Pnv
+ 3UMSHQ9lDjfYKDQ04Dga0D6pY339C6lJFLsemCW+UHvzFUlPTOlgmtJXvGQ4tsGR17PuC0JyS1
+ qm1wVjBiQO1tW5f5QN7C0lPOYK3EAKsPKi7OIDDs6sAA10M/dmwtavY8Q2Q5sPIiIVBQ4Smy+H
+ VG8+30aPKS3CF0pshwCzyP6nL4jbiMZGBOJwfRUqEjE7ZpGHRa+WsUO+RfrHsTmwRcvGmEXGDf
+ IAo=
+X-IronPort-AV: E=Sophos;i="5.64,493,1559545200"; d="scan'208";a="45738750"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
- by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 11 Sep 2019 02:40:44 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 11 Sep 2019 02:41:15 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 11 Sep 2019 02:40:44 -0700
+ 15.1.1713.5; Wed, 11 Sep 2019 02:41:09 -0700
 Received: from NAM03-DM3-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.71) with Microsoft SMTP Server
- (version=TLS1_2, 
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5 via Frontend
- Transport; Wed, 11 Sep 2019 02:40:43 -0700
+ email.microchip.com (10.10.87.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Wed, 11 Sep 2019 02:41:08 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OnMQkyG/Mh6qIKRtOeihIIjv3E+l02JMwYYXl5pwMkfVR3mjrD/VxG6CSzfUAOCH95sw4pFmR0VQAWDUQxfqs//VySMFtv3mDNxpUqkvjVReAi6Eq+t/C926eprYRZb9o2HufFTrT25FjwkvpRpFz4is2ZsXsZm2R2UaGzQdSePVgW7hHg7URPI0KGnRQuaLQG+S1GnMepHzXEOJaWemJysvkgbCTDePA3/mlRVZtXZl1TzflCJiVxxEpkjyBU4rBj6HWoVJLPCAOQm+WgAVYC30JVBhVqh3riIAekQ/3/EXoZtFlurKWeQKZs55/N1+TpxTqv2jHOUel2vUXmTVEQ==
+ b=KsPgNXdWnQIV0/AfzxBD/5Ipkce97+Akv3QyexBRpnTjWReoGkNwxyFXoLscWXu8oa6tQj7yG0VTNgHVwlH+yHsQHijTPG+hQDl6WmXZ11jSq0dVD6KDGh9mSeyQoSPOowSPpAiNvJ2NMZlfJW6VxB3Eiko6gfE8kYPxZSkAWFLnV2YWUAzvlzmqZue6kcWEfBZjgXhSCEeJRzJfpkCq+9SREfw797pw9Xf5NBlabmydvhJ3kz2Qy8ZLxb71K0Tcj+mRLeJWrfTEe8IZKfEkZPx3suOQk6ENQpxlPs8WgU3eYhC58rTiKDTJ95KJMn+uaBkxfOsV5wzf+Ra6n19d8g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ys0ySanDxvKSuni2DkoCA+py7hv5YKiDDD/ymu6Y3Ps=;
- b=BdUTKC/t9l3vF8k0w0nf/1Sub0ARMCuuPBMeA4lSJR3bNhs/G6CuaD03UnP/+uSjtZMotWYU+2+IusmeTmW2n3yOCHkpZLN/uZu55ausVif7ceLXTpNYyQCzNYZE8dbKdeLqisg6jWRYCh+RSgviUO2Uz6bCymTJ20IOiAk3PW45yjAtOijrtyHCDvnYaRD1X+9PAAfJRwdsnQnrDFs0b88NwcUILEcehgNFVelO7z/+Mflrz/y85A7jet5NuxyOlzH2O2chE6/4mjpsHMnTVkGk1NFApJJ+ydbHExJj23l2BLqaMxF0ykU9Wi8l8Tx2OAPqNQ12bgSZWNhVY4uXPw==
+ bh=pL/TGki7yUGTE0TBBhtzqzU5yObVYuaIIxFR0CYCTjA=;
+ b=YWHwLdTzm5jOTxVdXfDvw2NRI/k5B+uVL0eWxkK79MWtFkzOi7EkPkNPLFiQprYF3Mjyfs4QCW5g5z0cclpG1ey6A8CNwUnftQnn0UcbnceNsrlVJ/H1wNycoN0wGijLvtr2UePnbwgKbnsRkQJ+iYhk+blFAHDOxQH8G0ORs/3m8qiY1CWLxNnALuZORUdxk8n/H2bRaJQWPHGk1yII4HwNtXWeHNkmGIDA5Y7tFij809pMeYR4YbsLWztCt6s7x9YP08QoRaUSgWdLwacEgs/536hjLLi5IscmaT4AjA0N16EOD4iCP3rsj7OkghAzK+p+aMYrT74twHYOzUF4vg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=microchip.com; dmarc=pass action=none
  header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
@@ -93,26 +92,28 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=microchiptechnology.onmicrosoft.com;
  s=selector2-microchiptechnology-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ys0ySanDxvKSuni2DkoCA+py7hv5YKiDDD/ymu6Y3Ps=;
- b=Tw4IX6APTmYAFGPhOYg37zNqxnyr/PZYoiOUiX22eqPgqs2ZrIDoUfL3C1X/ubrlaMxnWFxXf5zTP0mF6VT9ZXrrs/+ABmDBbg80goX/9xOF23GjtZTy/shUx8xXUdtKRn/YwGi2cr+aqMNaR2FNU6aCo0c8SuUBntm+98w2OgI=
+ bh=pL/TGki7yUGTE0TBBhtzqzU5yObVYuaIIxFR0CYCTjA=;
+ b=bdRNjCdF8T5haG+rdBPTdmrbYbclxgJctVybbroOythJ3XnXlWr0blUrQ761l0NOa+uhXHtNNcHxv9n7ddcgu8WoFrhGHUszf5XV+p7NVLLYULyixFtbt3yAHDd0jFPm6TDu3d7M+02/RhzZgiLSG34LcWDvCaQUEuyGymM80PE=
 Received: from BY5PR11MB4435.namprd11.prod.outlook.com (10.255.89.94) by
  BY5PR11MB4401.namprd11.prod.outlook.com (52.132.253.77) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2241.14; Wed, 11 Sep 2019 09:40:42 +0000
+ 15.20.2241.14; Wed, 11 Sep 2019 09:41:07 +0000
 Received: from BY5PR11MB4435.namprd11.prod.outlook.com
  ([fe80::4049:4ab3:1825:469b]) by BY5PR11MB4435.namprd11.prod.outlook.com
  ([fe80::4049:4ab3:1825:469b%3]) with mapi id 15.20.2241.018; Wed, 11 Sep 2019
- 09:40:42 +0000
+ 09:41:07 +0000
 From: <Tudor.Ambarus@microchip.com>
 To: <marek.vasut@gmail.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
  <vigneshr@ti.com>, <joel@jms.id.au>, <andrew@aj.id.au>,
  <matthias.bgg@gmail.com>, <vz@mleia.com>, <boris.brezillon@collabora.com>,
  <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH 00/13] mtd: spi-nor: Clean Flash Register operations
-Thread-Topic: [PATCH 00/13] mtd: spi-nor: Clean Flash Register operations
-Thread-Index: AQHVaIT67doM0cAg5keFoIj15sOM0A==
-Date: Wed, 11 Sep 2019 09:40:42 +0000
-Message-ID: <20190911094031.17615-1-tudor.ambarus@microchip.com>
+Subject: [PATCH 07/13] mtd: spi-nor: Rework read_cr()
+Thread-Topic: [PATCH 07/13] mtd: spi-nor: Rework read_cr()
+Thread-Index: AQHVaIUJpJRJ5mA0UkWlP6FlZIrmbQ==
+Date: Wed, 11 Sep 2019 09:41:07 +0000
+Message-ID: <20190911094031.17615-8-tudor.ambarus@microchip.com>
+References: <20190911094031.17615-1-tudor.ambarus@microchip.com>
+In-Reply-To: <20190911094031.17615-1-tudor.ambarus@microchip.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -124,36 +125,35 @@ x-ms-exchange-messagesentrepresentingtype: 1
 x-mailer: git-send-email 2.9.5
 x-originating-ip: [94.177.32.156]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5eccf51f-ced8-4b5f-2f29-08d7369c1cca
+x-ms-office365-filtering-correlation-id: 1d0a7f53-9e2d-49aa-48e4-08d7369c2b9d
 x-microsoft-antispam: BCL:0; PCL:0;
  RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(2017052603328)(7193020);
  SRVR:BY5PR11MB4401; 
 x-ms-traffictypediagnostic: BY5PR11MB4401:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR11MB4401FD8ADAF90EBC036BB5AFF0B10@BY5PR11MB4401.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5516;
+x-microsoft-antispam-prvs: <BY5PR11MB4401A612965DC69338056638F0B10@BY5PR11MB4401.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
 x-forefront-prvs: 0157DEB61B
 x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(346002)(396003)(39860400002)(376002)(136003)(366004)(189003)(199004)(1076003)(53936002)(6512007)(102836004)(478600001)(256004)(36756003)(26005)(25786009)(4326008)(5660300002)(186003)(2616005)(476003)(486006)(107886003)(2201001)(305945005)(3846002)(66066001)(71190400001)(14454004)(50226002)(110136005)(66946007)(71200400001)(7736002)(66446008)(64756008)(316002)(66556008)(66476007)(99286004)(8676002)(52116002)(8936002)(6116002)(81166006)(7416002)(2501003)(6436002)(386003)(81156014)(6486002)(6506007)(2906002)(86362001)(921003)(1121003);
+ SFS:(10009020)(346002)(396003)(39860400002)(376002)(136003)(366004)(189003)(199004)(1076003)(53936002)(6512007)(102836004)(478600001)(256004)(36756003)(26005)(25786009)(4326008)(5660300002)(186003)(2616005)(476003)(11346002)(446003)(486006)(107886003)(2201001)(305945005)(3846002)(66066001)(71190400001)(14454004)(50226002)(76176011)(110136005)(66946007)(71200400001)(7736002)(66446008)(64756008)(316002)(66556008)(66476007)(99286004)(8676002)(52116002)(8936002)(6116002)(81166006)(7416002)(2501003)(6436002)(386003)(81156014)(6486002)(6506007)(2906002)(86362001)(921003)(1121003);
  DIR:OUT; SFP:1101; SCL:1; SRVR:BY5PR11MB4401;
  H:BY5PR11MB4435.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
  PTR:InfoNoRecords; MX:1; A:1; 
 received-spf: None (protection.outlook.com: microchip.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: nYcOmEfZdcPo8pUuNQ8mfRLOSfuSpRKyvAPxpyhQ9P6DdCNp9zaN6YfEJ39U25MU+bh8XJ0NG2UXE1Ehgf23haDzbLqv9dxT5qjSG+drHkUL7Sjg/Gvl40E8aNvsBwWPBLi7vjDqDFaNhtvgUItmpOGEOLDPSAEoaYIErrTDiZAl3tKtQvUq1B6U5iIaQuXtkF013SwSK7tqS0GaUYE0QojmFyTiUG2m8TaU7M2T4yAk3ao6hnAs7GsrZNsWMFpPEv60xsR0nhWOLDJT4JRxpS5HU4VU8kkVRgco96iK13CQyBLAdiqiGHJLKBSN9G8I0GYx7Z52A3b9o1YPwctn+niDqTMZ56wrpYkkj00m3pxIGnG5pOzvLyA9qw4vypNYDNzUEoS6r/UA3fyexa/YxGf6QT9m5a7eMWEimjxpEgk=
+x-microsoft-antispam-message-info: +d3Xzrnm/fnldBUT8LrFrpadJLYFeYM7ci4zt785K2eihcgg+KfURf2DtxJm0/o8v1siPNyR/44FTY3SEk3kesnbP76wZYGrNniHaVTQnGd6jNFa/9m9/TV6ldqdl9V5623XCQBwdPEa9mUzSIdeifuIVYHWx0Nl3Uz2OXHw4tpweDjIUA2jR+6QVJGJmlbASt6Ohdb2zBvjiF6tVfF7fiic7rxw8sj1X/EX2+5akffqBKGppQLjKWGQa4lUx86GwEfqW42DPui+gYdUKoEkDte5eUAxXkqVRgT2d91t0R2EcDtEXZyCSb8KOYg30DSBVJ3p9to0P9Qprceib3nViySD54QdYht5IV3IA/0zdtxiAqX3mu0e1w7w2ZFV4FCEVtDFORSPsDkvHmfEq2MVnuqZdR5PToUKI1cYaxmZNO4=
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5eccf51f-ced8-4b5f-2f29-08d7369c1cca
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Sep 2019 09:40:42.6232 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1d0a7f53-9e2d-49aa-48e4-08d7369c2b9d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Sep 2019 09:41:07.3698 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: TMoOJIKs9lb9JQXPtk+NpWgYpuunBsW9fB67/FmSFuFa/TKF3vK4CXWDrrluZxPRFQj8pNanf04RkoGqaWNDQ07uWXTtfea4ngQr8NEqm/s=
+X-MS-Exchange-CrossTenant-userprincipalname: 1NKXWUcl+C7O80tbhHspDYebbpoCnk2261eN9kJ8g+u0K+z4Cz+kvakGidc/wtikFiYtjYncSWmRH4wtxFqv8y6ghtDbXmjDrRA6YYOWvCw=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4401
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190911_024113_146499_33A097CD 
-X-CRM114-Status: UNSURE (   4.69  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190911_024117_508349_2061C8E1 
+X-CRM114-Status: GOOD (  15.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -173,36 +173,169 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-Introduce 'struct spi_nor_controller_ops' and move all the SPI NOR
-controller driver specific operations inside it.
+static int read_cr(struct spi_nor *nor)
+becomes
+static int spi_nor_read_cr(struct spi_nor *nor, u8 *cr)
 
-Clean the SPI NOR Flash Register operations.
+The new function returns 0 on success and -errno otherwise.
+We let the callers pass the pointer to the buffer where the
+value of the Configuration Register will be written. This way
+we avoid the casts between int and u8, which can be confusing.
 
-Tudor Ambarus (13):
-  mtd: spi-nor: hisi-sfc: Drop nor->erase NULL asignment.
-  mtd: spi-nor: Introduce 'struct spi_nor_controller_ops'
-  mtd: spi-nor: cadence-quadspi: Fix cqspi_command_read() definition
-  mtd: spi-nor: Rename nor->params to nor->flash
-  mtd: spi-nor: Rework read_sr()
-  mtd: spi-nor: Rework read_fsr()
-  mtd: spi-nor: Rework read_cr()
-  mtd: spi-nor: Rework write_enable/disable()
-  mtd: spi-nor: Rework write_sr()
-  mtd: spi-nor: Rework spi_nor_read/write_sr2()
-  mtd: spi-nor: Report error in spi_nor_xread_sr()
-  mtd: spi-nor: Void return type for spi_nor_clear_sr/fsr()
-  mtd: spi-nor: Drop duplicated new line
+Prepend spi_nor_ to the function name, all functions should begin
+with that.
 
- drivers/mtd/spi-nor/aspeed-smc.c      |   23 +-
- drivers/mtd/spi-nor/cadence-quadspi.c |   54 +-
- drivers/mtd/spi-nor/hisi-sfc.c        |   23 +-
- drivers/mtd/spi-nor/intel-spi.c       |   24 +-
- drivers/mtd/spi-nor/mtk-quadspi.c     |   25 +-
- drivers/mtd/spi-nor/nxp-spifi.c       |   23 +-
- drivers/mtd/spi-nor/spi-nor.c         | 1283 ++++++++++++++++++---------------
- include/linux/mtd/spi-nor.h           |   63 +-
- 8 files changed, 824 insertions(+), 694 deletions(-)
+Vendors are using both the "Configuration Register" and the
+"Status Register 2" terminology when referring to the second byte
+of the Status Register. Indicate in the description of the function
+that we use the SPINOR_OP_RDCR (35h) command to interrogate the
+Configuration Register.
 
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 66 +++++++++++++++++++++----------------------
+ 1 file changed, 33 insertions(+), 33 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index be5f5d681739..cba84759a38e 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -448,12 +448,16 @@ static int spi_nor_read_fsr(struct spi_nor *nor, u8 *fsr)
+ 	return ret;
+ }
+ 
+-/*
+- * Read configuration register, returning its value in the
+- * location. Return the configuration register value.
+- * Returns negative if error occurred.
++/**
++ * spi_nor_read_cr() - Read the Configuration Register using the
++ * SPINOR_OP_RDCR (35h) command.
++ * @nor:	pointer to 'struct spi_nor'
++ * @fsr:	buffer where the value of the Configuration Register
++ *		will be written.
++ *
++ * Return: 0 on success, -errno otherwise.
+  */
+-static int read_cr(struct spi_nor *nor)
++static int spi_nor_read_cr(struct spi_nor *nor, u8 *cr)
+ {
+ 	int ret;
+ 
+@@ -462,20 +466,17 @@ static int read_cr(struct spi_nor *nor)
+ 			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDCR, 1),
+ 				   SPI_MEM_OP_NO_ADDR,
+ 				   SPI_MEM_OP_NO_DUMMY,
+-				   SPI_MEM_OP_DATA_IN(1, nor->bouncebuf, 1));
++				   SPI_MEM_OP_DATA_IN(1, cr, 1));
+ 
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else {
+-		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDCR,
+-						    nor->bouncebuf, 1);
++		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDCR, cr, 1);
+ 	}
+ 
+-	if (ret < 0) {
++	if (ret)
+ 		dev_err(nor->dev, "error %d reading CR\n", ret);
+-		return ret;
+-	}
+ 
+-	return nor->bouncebuf[0];
++	return ret;
+ }
+ 
+ /*
+@@ -1769,7 +1770,8 @@ static int macronix_quad_enable(struct spi_nor *nor)
+  * some very old and few memories don't support this instruction. If a pull-up
+  * resistor is present on the MISO/IO1 line, we might still be able to pass the
+  * "read back" test because the QSPI memory doesn't recognize the command,
+- * so leaves the MISO/IO1 line state unchanged, hence read_cr() returns 0xFF.
++ * so leaves the MISO/IO1 line state unchanged, hence spi_nor_read_cr(nor, cr)
++ * gets the 0xFF value.
+  *
+  * bit 1 of the Configuration Register is the QE bit for Spansion like QSPI
+  * memories.
+@@ -1788,8 +1790,11 @@ static int spansion_quad_enable(struct spi_nor *nor)
+ 		return ret;
+ 
+ 	/* read back and check it */
+-	ret = read_cr(nor);
+-	if (!(ret > 0 && (ret & CR_QUAD_EN_SPAN))) {
++	ret = spi_nor_read_cr(nor, &nor->bouncebuf[0]);
++	if (ret)
++		return ret;
++
++	if (!(nor->bouncebuf[0] & CR_QUAD_EN_SPAN)) {
+ 		dev_err(nor->dev, "Spansion Quad bit not set\n");
+ 		return -EINVAL;
+ 	}
+@@ -1840,21 +1845,18 @@ static int spansion_no_read_cr_quad_enable(struct spi_nor *nor)
+  */
+ static int spansion_read_cr_quad_enable(struct spi_nor *nor)
+ {
+-	struct device *dev = nor->dev;
+ 	u8 *sr_cr = nor->bouncebuf;
+ 	int ret;
+ 
+ 	/* Check current Quad Enable bit value. */
+-	ret = read_cr(nor);
+-	if (ret < 0) {
+-		dev_err(dev, "error while reading configuration register\n");
+-		return -EINVAL;
+-	}
++	ret = spi_nor_read_cr(nor, &sr_cr[1]);
++	if (ret)
++		return ret;
+ 
+-	if (ret & CR_QUAD_EN_SPAN)
++	if (sr_cr[1] & CR_QUAD_EN_SPAN)
+ 		return 0;
+ 
+-	sr_cr[1] = ret | CR_QUAD_EN_SPAN;
++	sr_cr[1] |= CR_QUAD_EN_SPAN;
+ 
+ 	/* Keep the current value of the Status Register. */
+ 	ret = spi_nor_read_sr(nor, &sr_cr[0]);
+@@ -1866,8 +1868,11 @@ static int spansion_read_cr_quad_enable(struct spi_nor *nor)
+ 		return ret;
+ 
+ 	/* Read back and check it. */
+-	ret = read_cr(nor);
+-	if (!(ret > 0 && (ret & CR_QUAD_EN_SPAN))) {
++	ret = spi_nor_read_cr(nor, &sr_cr[1]);
++	if (ret)
++		return ret;
++
++	if (!(sr_cr[1] & CR_QUAD_EN_SPAN)) {
+ 		dev_err(nor->dev, "Spansion Quad bit not set\n");
+ 		return -EINVAL;
+ 	}
+@@ -2008,20 +2013,15 @@ static int spi_nor_spansion_clear_sr_bp(struct spi_nor *nor)
+ 	u8 *sr_cr =  nor->bouncebuf;
+ 
+ 	/* Check current Quad Enable bit value. */
+-	ret = read_cr(nor);
+-	if (ret < 0) {
+-		dev_err(nor->dev,
+-			"error while reading configuration register\n");
++	ret = spi_nor_read_cr(nor, &sr_cr[1]);
++	if (ret)
+ 		return ret;
+-	}
+ 
+ 	/*
+ 	 * When the configuration register Quad Enable bit is one, only the
+ 	 * Write Status (01h) command with two data bytes may be used.
+ 	 */
+-	if (ret & CR_QUAD_EN_SPAN) {
+-		sr_cr[1] = ret;
+-
++	if (sr_cr[1] & CR_QUAD_EN_SPAN) {
+ 		ret = spi_nor_read_sr(nor, &sr_cr[0]);
+ 		if (ret)
+ 			return ret;
 -- 
 2.9.5
 
