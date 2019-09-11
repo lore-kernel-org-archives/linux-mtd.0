@@ -1,95 +1,81 @@
-Return-Path: <SRS0=z5Ut=XF=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=ZCmB=XG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA64AC49ED7
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Sep 2019 23:55:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B546FC49ED7
+	for <linux-mtd@archiver.kernel.org>; Wed, 11 Sep 2019 02:38:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 724A52067B
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Sep 2019 23:55:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 890182171F
+	for <linux-mtd@archiver.kernel.org>; Wed, 11 Sep 2019 02:38:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bRQotZ0N"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 724A52067B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sigma-star.at
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DT02164f";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="gkWwj7F8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 890182171F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zXv1RNIMO5KAm8gPgMB2axdusD6KY7rzS20Jj1Fu3sE=; b=bRQotZ0Nm1Gjfe
-	LAZEMaITrUX++keqd32oKCvlgK9XBqNwYgzRA6HjVPhBzrySZFdvwdUpSuzfK6I8UB0+iQ3VtP4JN
-	DtE7GPBJeOsI+9kp+VNkISd5Tap7In3coF8//ofYNh+dUhqc8bhNhrfkDS+jV9Pc3QUm5GT3eQGnZ
-	dN3WliCZDlTtSrjuvpLats1rTbcczxxm0HzTRylA+ATe58JdYq9wkJdj1jo37YLPUzG2PtKCiuyo0
-	hRrYogO+h5qPFA6t1KMsrtd5cfB7TxKLTCt69VCmzPDx9dO4E2LgUGiLqO1DjTgEVlDWarhHQAbTq
-	cW3m0mfn68l8VjUuVaBw==;
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=CWYPEVCaDRV6KDsuqwuZVfQf9bKeFfPk949JwEsppHA=; b=DT02164fmwvaTb
+	hwJiJ9D+DZ8UrdTRKv6Jm7W8VWQ9YmTUs/TH5bV1ymSIal9zDy1EWHdHyB00sTyIPULufIdETFtP+
+	dWiR3DvQT7gpijA41GFK56NVICaxFhSAYz8MaTkzWp2znhCCi5YhC4eoavr2BZDmBRikZF9k8qwxP
+	kZADsdJu/zB/sjXAQjBZw9HckU92tfc3KbP3IgYpr4fl4hskaABKdU0Ixp6g/3O2q8KJa1cw1ZbRD
+	+PIa+HWNWEuiBuzSqByN2gEmfoLZjP5K6X7ridp78gKye/GkSe2F5unLJaDlUPZ5nk2dOy3oGU6JQ
+	BjU4RctUUpgL8HhoM+iw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1i7pzE-00035L-T8; Tue, 10 Sep 2019 23:55:52 +0000
-Received: from lilium.sigma-star.at ([109.75.188.150])
+	id 1i7sWr-00033g-Fc; Wed, 11 Sep 2019 02:38:45 +0000
+Received: from conssluserg-02.nifty.com ([210.131.2.81])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i7pzB-000352-8M
- for linux-mtd@lists.infradead.org; Tue, 10 Sep 2019 23:55:51 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lilium.sigma-star.at (Postfix) with ESMTP id 4F7E41810A9A4;
- Wed, 11 Sep 2019 01:55:47 +0200 (CEST)
-Received: from lilium.sigma-star.at ([127.0.0.1])
- by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id 3lP3CxBe5w0C; Wed, 11 Sep 2019 01:55:46 +0200 (CEST)
-Received: from lilium.sigma-star.at ([127.0.0.1])
- by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id 8Qb_v6njklbw; Wed, 11 Sep 2019 01:55:46 +0200 (CEST)
-Subject: Re: cannot ubiupdatevol squashfs image
-To: Richard Weinberger <richard.weinberger@gmail.com>,
- Boris Stein <boris.stein@gmail.com>
-References: <CAFkQurKLwUdGSPNPLYLTrV7-fkWaL5RuP9up0nrN62L4pr-ivg@mail.gmail.com>
- <CAFLxGvz5JipAzu1x_0EPX6v-SZgxtu6n3-gZZ=DQS4FLMH0XSg@mail.gmail.com>
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Openpgp: preference=signencrypt
-Autocrypt: addr=david.oberhollenzer@sigma-star.at; prefer-encrypt=mutual;
- keydata=
- mQENBFZyf0YBCADHyKhABhxthCC9n48pvsuk5p3IEdYXMs8Apenh1N/Z4cViAz/d/nSCZ+FG
- FX/PSubEzq8AilZLejchAltaORCvA1Y6FgTlpcdJ6gHDfStDbJL/vk5N8aL7YNF7VfjTRntB
- tKbhKcrG05nbdNjIioAm04pt9rx5mV5KMbf22/FdZpOSSsC6/N7b/cFH9+fx8kwi4pNFuJwr
- BkWRuQ7rEtCoSpd22t+Vh9qA7kymW9gWY405258jnN65jBO7ElqU2CCuGRPg6uryAHV3RVCB
- 9j9AE3HLacQReFtt5ylyydSQbaK4K9asnd7U2/C11vIuuciXCppX4bPap/pMnGpzw0UNABEB
- AAG0N0RhdmlkIE9iZXJob2xsZW56ZXIgPGRhdmlkLm9iZXJob2xsZW56ZXJAc2lnbWEtc3Rh
- ci5hdD6JATcEEwEIACEFAlZyf0YCGwMFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AACgkQvOXc
- PHQaAtFuEAgArXOhaoaVvCMVCa5N25Q/+Q6K1wrVpPmkH89yhQqCmfM6f+2VM5MGFDPfaSJ3
- 5fBDH0iwBQwlXIb7NSXWtzdXX9rMvJkJqv45TgeKtJApf/sRhmcN+clrwzP8oZQbxkP1YWzo
- Vwo4lOb3Kv7aY9yeCjqNbdJJ57NpvYOUrzrCpGkrDPBBQOvKF3wbq3oU/o3dT23NDeQ20jXg
- quJf/PCw6WCzRxqg58wH02MdMDQe8vByzVig2bM2e7DErtt+hPK/Dmdsqgns+Z+SrQcOvRa3
- GMAHAuHB0u2LhYO6NyaNCgzdgutorilYcq7FEKr8XqwOnfVmZdCW3qGKmLbn6qMEdLkBDQRW
- cn9GAQgAvugF8cFjv2Zs4BBb44SnxGawBySC1bMRas/MjA9EMHUAx/StcecQmxnl6BzEyGpr
- +TRnXIzcb5xI8SxitBDU5MLvwsHgNvpYp9fscd4kWP7oMir9ta3Q8SvT4OLbO4FZBGaURzGP
- ak8JmjMMtOoOBh4meOjz6GrJe9UIGxT94aB01w7YohfBANzK8xyk4ykKC5Op4XgaaMKOEQUa
- h7wajcojYSlvgOiXqEisMHlRDAW6sXL2sEM7TIpvYhy9txMLllpkYb0Pu1BvUpY/unsybWKA
- FyiTmeiY+nEveUvqX6Ef7BWdClBeCk2UaRvtcoLd22VxMlKTniHQcNMOXlRRawARAQABiQEf
- BBgBCAAJBQJWcn9GAhsMAAoJELzl3Dx0GgLRPtcH/jD6rn2+VIKgrHdt3ao3Abpu2fqYfwbI
- yPAtpXOddDptVq+0A/2arXT1Y8+jNSZpbAg8K+bLaEAcSUEjviKMpfI7ppTUBuGKrpgc5xsi
- UpKkJCb7oB1ZraIBNBPtPPVUhbwLie4uW/LVt+8rBKz3W9KEDOsT0ZCG/pW8Ld+EpDR9l0fm
- qoVHaw8PhLAtez+B7HS7Hv7iJPDtX85kFYpud8kIPENXVn9EjZudyMWgZb2LhYlcavNcszgR
- 7In6ift5SNySojCOfAV0iKZb8QUXWktLleY8kQ8jltOsSRTuO4PDfzvtCQDixUw4tQ7WLwDT
- qyUpot0oG03vtSG4LIRCdxI=
-Organization: sigma star gmbh
-Message-ID: <bddc36a0-647d-e0d8-e1ca-501fd6522315@sigma-star.at>
-Date: Wed, 11 Sep 2019 01:55:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ id 1i7sWn-00033I-3L
+ for linux-mtd@lists.infradead.org; Wed, 11 Sep 2019 02:38:43 +0000
+Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com
+ [209.85.217.41]) (authenticated)
+ by conssluserg-02.nifty.com with ESMTP id x8B2cNb7008199
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Sep 2019 11:38:23 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com x8B2cNb7008199
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+ s=dec2015msa; t=1568169504;
+ bh=kwm81c9IMZEMWqWCh4SEaGMBY3UA4Ym5AXJ3YOtA5+I=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=gkWwj7F8G/wo4Fy6nqR+udXeWowvSIst1s1XT04yX5p1iJT5hgDROjFLlpFD9dUT5
+ lXhupRLz7k1IUOIBAFbAphRdeWc4I3mZy/SDBp9xIwG5OWFieKCGHM5xx45UIE7dMj
+ Zw7P7f1+Vu3GFEC4ff0LiFNWexeeXb6PEuWt/xKr1q84n3fpy1xLgSJDaSsZYl49KC
+ oXfya6hUNiPF0H+kR/vubD+N27RITpQMjFFESuzM4yz1+O8K6T+f9m3MQHDN+vkCWK
+ 2bmqXe183DwxSAtMMdE1MbEp5BWkB/gpGAtyQGHjqCYMmAnSZWMjvuHT/3s95/8a/x
+ W+d3AUGj84rPw==
+X-Nifty-SrcIP: [209.85.217.41]
+Received: by mail-vs1-f41.google.com with SMTP id q9so12735263vsl.4
+ for <linux-mtd@lists.infradead.org>; Tue, 10 Sep 2019 19:38:23 -0700 (PDT)
+X-Gm-Message-State: APjAAAXZteaLCZKpQz/HZldmrKecAIVmHzhl46Jj5NLxMNMWswVzxD6V
+ USztLj0RCiDrjggT+fGvqncVBwIw455u5rJuK7I=
+X-Google-Smtp-Source: APXvYqwVMpAGBP9ZGdeflRgNSfdoIpeK9RuiTyzaWElh1Uu6Vn8S2OVwOzzEoLHCiBvcHRI9SAzQptRMW33EuaC6e40=
+X-Received: by 2002:a67:dc86:: with SMTP id g6mr12744040vsk.181.1568169502363; 
+ Tue, 10 Sep 2019 19:38:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvz5JipAzu1x_0EPX6v-SZgxtu6n3-gZZ=DQS4FLMH0XSg@mail.gmail.com>
-Content-Language: en-US
+References: <5143724.5TqzkYX0oI@dabox>
+ <CAK7LNAR8xtURiCoJC0eWLFw0q+78Eb_axoOzWH+JNugf-24Qig@mail.gmail.com>
+ <3020870.hsMMj5ogRZ@dabox> <9bb2fb0e-a9e7-c389-f9b7-42367485ff83@kernel.org>
+In-Reply-To: <9bb2fb0e-a9e7-c389-f9b7-42367485ff83@kernel.org>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Wed, 11 Sep 2019 11:37:46 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARCPwqY+YmUzsHkABpshzzS3tC=fDgp4vZjVgBwS+LKJw@mail.gmail.com>
+Message-ID: <CAK7LNARCPwqY+YmUzsHkABpshzzS3tC=fDgp4vZjVgBwS+LKJw@mail.gmail.com>
+Subject: Re: mtd raw nand denali.c broken for Intel/Altera Cyclone V
+To: Dinh Nguyen <dinguyen@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190910_165549_590116_21D54E0D 
-X-CRM114-Status: GOOD (  12.74  )
+X-CRM114-CacheID: sfid-20190910_193841_476990_C0CB0FF4 
+X-CRM114-Status: GOOD (  26.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,73 +87,102 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd <linux-mtd@lists.infradead.org>,
+ Tim Sander <tim@krieglstein.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 9/10/19 9:31 PM, Richard Weinberger wrote:
-> On Tue, Sep 10, 2019 at 3:11 PM Boris Stein <boris.stein@gmail.com> wrote:
-> 
-> [...]
-> 
->> [    9.006327] SQUASHFS error: zlib decompression failed, data probably corrupt
->> [    9.006359] SQUASHFS error: squashfs_read_data failed to read block 0x785a5a
-> 
-> usually squashfs has a blocksize of 1k or 4k. So block 0x785a5a is out
-> of bounds.
+Hi Dinh,
+
+On Wed, Sep 11, 2019 at 12:22 AM Dinh Nguyen <dinguyen@kernel.org> wrote:
 >
+>
+>
+> On 9/10/19 8:48 AM, Tim Sander wrote:
+> > Hi
+> >
+> > I have noticed that my SPF records where not in place after moving the server,
+> > so it seems the mail didn't go to the mailing list. Hopefully that's fixed now.
+> >
+> > Am Dienstag, 10. September 2019, 09:16:37 CEST schrieb Masahiro Yamada:
+> >> On Fri, Sep 6, 2019 at 9:39 PM Tim Sander <tim@krieglstein.org> wrote:
+> >>> Hi
+> >>>
+> >>> I have noticed that there multiple breakages piling up for the denali nand
+> >>> driver on the Intel/Altera Cyclone V. Unfortunately i had no time to track
+> >>> the mainline kernel closely. So the breakage seems to pile up. I am a
+> >>> little disapointed that Intel is not on the lookout that the kernel works
+> >>> on the chips they are selling. I was really happy about the state of the
+> >>> platform before concerning mainline support.
+> >>>
+> >>> The failure starts with kernel 4.19 or stable kernel release 4.18.19. The
+> >>> commit is ba4a1b62a2d742df9e9c607ac53b3bf33496508f.
+> >>
+> >> Just for clarification, this corresponds to
+> >> 0d55c668b218a1db68b5044bce4de74e1bd0f0c8 upstream.
+> >>
+> >>> The problem here is that
+> >>> our platform works with a zero in the SPARE_AREA_SKIP_BYTES register.
+> >>
+> >> Please clarify the scope of "our platform".
+> >> (Only you, or your company, or every individual using this chip?)
+> > The company i work for uses this chip as a base for multiple products.
+> >
+> >> First, SPARE_AREA_SKIP_BYTES is not the property of the hardware.
+> >> Rather, it is about the OOB layout, in other words, this parameter
+> >> is defined by software.
+> >>
+> >> For example, U-Boot supports the Denali NAND driver.
+> >> The SPARE_AREA_SKIP_BYTES is a user-configurable parameter:
+> >> https://github.com/u-boot/u-boot/blob/v2019.10-rc3/drivers/mtd/nand/raw/Kcon
+> >> fig#L112
+> >>
+> >>
+> >> Your platform works with a zero in the SPARE_AREA_SKIP_BYTES register
+> >> because the NAND chip on the board was initialized with a zero
+> >> set to the SPARE_AREA_SKIP_BYTES register.
+> >>
+> >> If the NAND chip had been initialized with 8
+> >> set to the SPARE_AREA_SKIP_BYTES register, it would have
+> >> been working with 8 to the SPARE_AREA_SKIP_BYTES.
+> >>
+> >> The Boot ROM is the only (semi-)software that is unconfigurable by users,
+> >> so the value of SPARE_AREA_SKIP_BYTES should be aligned with
+> >> the boot ROM.
+> >> I recommend you to check the spec of the boot ROM.
+> > We boot from NOR flash. That's why i didn't see a problem booting probably.
+> >
+> >> (The maintainer of the platform, Dihn is CC'ed,
+> >> so I hope he will jump in)
+> > Yes i hope so too.
+> >
+>
+> I don't have access to a NAND device at the moment. I'll try to find one
+> and debug.
+>
+> Dinh
 
-SquashFS has a device block size that is either 1k or 4k that is only relevant
-for I/O transfers. The actual block size is between 4k to 1M (defaults to 128k).
-The data blocks also have no headers or checksums.
 
-Meta data (inodes, directory entries, tables) is chopped in 8k chunks and stored
-possibly compressed with a 2 byte header.
-
-Once compressed, blocks can have any size and there is absolutely no requirement
-for alignment. Inodes (or in this case the fragment table) can literally point
-just anywhere between the super block and the inode table.
-
->> [    9.012677] SQUASHFS error: Unable to read fragment cache entry [785a5a]
->> [    9.019470] SQUASHFS error: Unable to read page, block 785a5a, size d6b4
->> [    9.026242] SQUASHFS error: Unable to read fragment cache entry [785a5a]
->> [    9.032876] SQUASHFS error: Unable to read page, block 785a5a, size d6b4
->> [    9.039529] SQUASHFS error: Unable to read fragment cache entry [785a5a]
->> [    9.046225] SQUASHFS error: Unable to read page, block 785a5a, size d6b4
->> [    9.052910] SQUASHFS error: Unable to read fragment cache entry [785a5a]
->> [    9.059573] SQUASHFS error: Unable to read page, block 785a5a, size d6b4
->> [    9.066281] SQUASHFS error: Unable to read fragment cache entry [785a5a]
->> [    9.072954] SQUASHFS error: Unable to read page, block 785a5a, size d6b4
->>
->>
-
-SquashFS tries to read a fragment block located some ~7.5 MiB after the
-super block (0x785a5a) with a compressed size of 54964 bytes (0xd6b4).
-For a ~41 MiB SquashFS image this sounds plausible.
-
-Uncompressing fails, so the location that the fragment table points to does
-not contain a valid zlib stream.
+Dinh,
+Do you have answers for the following questions?
 
 
-Interestingly, the inode, directory and fragment tables seem to be at least
-partially readable. Accessing the root inode and walking through the tree
-seems to work, since there are no other SquashFS error messages.
+- Does the SOCFPGA boot ROM support the NAND boot mode?
 
-*Assuming* that it is not the data that is broken, *if* there are no xattrs
-and NFS export tables, the fragment table is pretty much at the very end.
-Maybe the filesystem is partially chopped off at the end?
+- If so, which value does it use for SPARE_AREA_SKIP_BYTES?
 
 
-Have you tried dumping the SquashFS image from the UBI volume and extracting it?
-(E.g. using unsquashfs, rdsquashfs or sqfs2tar which generate more useful error
-messages about what actually broke)
 
 
-Regards,
-
-David
+-- 
+Best Regards
+Masahiro Yamada
 
 ______________________________________________________
 Linux MTD discussion mailing list
