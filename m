@@ -8,17 +8,17 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F087C4CEC9
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Sep 2019 17:54:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B8BBC4CEC9
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Sep 2019 17:54:37 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4BD1520640
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Sep 2019 17:54:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7A44120640
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Sep 2019 17:54:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="d4034koE";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RL5AWXGf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4BD1520640
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="I8zvdNyi";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nfc3aLnN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A44120640
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,59 +27,59 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=SoNsonijAQtdOGRMpQrF9R8PAoO33QWUsZlTrKkyLEE=; b=d40
-	34koEIRbZ58xYETBPdbrcFcRRdG4CmhiUudbrH3cpaFb/4LVZGVMUZiw0jmZhr9iy4ucoPh98qQa+
-	jTaUuOBdr/AkKgmk7NTdLore4e5/K5U/Y+PrZCs9+MsattzEvLRBVgr6b7BkFo/TOdou3fqo5rpUr
-	ts3X5pWG7A8k9nDK86GNYBVDiMFcTtAUVqCUXxt2JErLTvjk6bIQrEtsEfl9r3rEsRCiJP2Mz/8k8
-	d0Sv0YtOZJa5a5G64kHKDlSve5VNw1pZExVppCdFtvuBc5z0pAjuIc2HjZWcxbRKpYCPZsV4zTWBa
-	3d0sbxLXVeHv65k3vlNKdh7IOsa1eCw==;
+	References:List-Owner; bh=FAjZj5sb2NfLW0sSCYJxfgzY2GnmiVq9cwMaqt/LFF4=; b=I8z
+	vdNyiGhClY9IWBKsxbtBwWrwLHCi9MiwBxNkwRDLo4r1Aw5P11K6ga7FD8aNli0dtwYQbyPqtEXMN
+	2kM5X1w0K1h8Q9Je1bb3vXML0Lpu7fpOAgbx92eipV+0k2Mwcke7uu4SEPNPOmj1lcL8yL1CbCCH1
+	scCxlo63yKqKsUR6/W2j4p0Vrnari9sfGAHbwZBQBZEz4kMQbAkGKXRGw/45lQJwQ8Diw05MqYGbp
+	OpYvUIW8MjBwJVy7inBixVNvkEtfuA+LijZ2BMCsJaspuvgKjcSqpmpJesaciu3elyCuNhT1TdHTX
+	FIaNqT9ohRD9/VMLC2PWGnGrOaNTm9w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
-	id 1iAHgD-0006j2-Ej; Tue, 17 Sep 2019 17:54:21 +0000
+	id 1iAHgS-0006w4-VZ; Tue, 17 Sep 2019 17:54:36 +0000
 Received: from mail-pf1-x443.google.com ([2607:f8b0:4864:20::443])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iAHg9-0006ij-T5
- for linux-mtd@lists.infradead.org; Tue, 17 Sep 2019 17:54:19 +0000
-Received: by mail-pf1-x443.google.com with SMTP id i1so2590218pfa.6
- for <linux-mtd@lists.infradead.org>; Tue, 17 Sep 2019 10:54:17 -0700 (PDT)
+ id 1iAHgQ-0006vF-6w
+ for linux-mtd@lists.infradead.org; Tue, 17 Sep 2019 17:54:35 +0000
+Received: by mail-pf1-x443.google.com with SMTP id y22so2604560pfr.3
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Sep 2019 10:54:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id;
- bh=WPG/wS1hlThmAskZmosz1ji9mhqI+gG9h0TvZkbfmio=;
- b=RL5AWXGfndm1ddkzAoWs/c1AXuEXvSX6MbZjn4WhZrA1v/2dGI0oSqIsDA0jpoI99y
- dxfvZ0galgUbfWSTUCpbtnGt19kp7n22ynEZPZmn03fKWBYApRIH+B8xHg/H+Qh26nzC
- MQstXH5rq3IPE3CAd/KvZVYi3EVmYJArg9SHOA+JNqRCLJYfVp3jImjxdO/9enT4kr/X
- 7QpavGrNvyx0r5yx3KtQTX5ZfAEleMg4TBi1l4n9gRe3fDEt5LE8X0oMavJOi2mQwOFh
- PWY9eM0mRPRE5+vAGISRgf7yglheYpUnRRjm3nBvQOjpYkYWRpZq9r2leP/2InU0xG3Q
- tk3w==
+ bh=onUVZCBtscC5yuxfoy+zsVbxl2PIwO0NVQMjTwxZqeg=;
+ b=nfc3aLnN69+bt1y7/dIbf8WtiUmT8BJWb6cOUZfM2bUV+P8QZK+rf4wGlI2YtZ7IhQ
+ cK0BLdUdjK/IsJ5hgiQSGju1p6RwgSJOKrHvlv4ycGYnOHAdXigp8fhCauhtEr9tZujS
+ hSqIlp1a3iAgN0Ryxrhb4ta6H6UqSUEyZr/9uGHhFnnwHGwQf2GtpIHHJAzxHSLBE2Lw
+ lv3oWObg1w8Skp/YyCwikjpPtWWgQFyFAVRuNNnKGefFxNfZ9lNB7JNcCwvSe5wjJViB
+ D6b8UtUO1YQ+pTlrxMDkk5qEfzGqTCgNI+mp9TSSVsfohv0huMDTTnB6NmyK0PE1opeZ
+ xGAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=WPG/wS1hlThmAskZmosz1ji9mhqI+gG9h0TvZkbfmio=;
- b=fMywXftM8/xhvCwZuOW08Z2FDcDy60BHJYcszM5I8VfBcFXEcLphZwc/QzT7d38X/Z
- hwp1+YeBebVasEJJzCKZXmNvp6bNwZ5nSe/BUF1ovltshqk3LEfTbJuHufk78kNylm2L
- t2GTy854ZWTueJN03wU83nQ8GwbtRMYRhuUd+sJt5j9uOs1/uV0ADZPETq/P4uh/OpGs
- TowyPqZUO/NcDVgsk2jWjwX82+olscOWzQ8mrzkfRDz/1RLLPwAGXdQpF4oHaQUwFgmX
- YWrVJzXvvN2wbmOL2TAYzwsYcdnUHCrTryECUAybMMJzKCyZo2hQ4UJicnPJfyCwdBkT
- ZiqA==
-X-Gm-Message-State: APjAAAXb55K1tXBKGgGEVLh0NPMTQ8/Deg2hWXVVsf+T7vgckMsW05Nt
- zZHWGNm9gKWbm6zdthD2o1g=
-X-Google-Smtp-Source: APXvYqxqSxM+3xex9bcZPVFmep7rU9hsR1I9Kl5QR0ZoZg0XATeUEci0PksW/ZI/hn435InVGabuLA==
-X-Received: by 2002:a63:5549:: with SMTP id f9mr72061pgm.346.1568742856933;
- Tue, 17 Sep 2019 10:54:16 -0700 (PDT)
+ bh=onUVZCBtscC5yuxfoy+zsVbxl2PIwO0NVQMjTwxZqeg=;
+ b=A5YQw4F0amFOjaes72bzvtHc/ZZgoDstIEbZ3UYEcOgeJEx7VEsfkL+kroxodayA0N
+ 63NKS/NdHf6b9G4y7Dq30k2Jvw3Z9e8Z8tk0Pte0LvfozyjdsRl30Xe+HIIzKUaKji70
+ h2mtZQCSAPUdAK+UOsshAmZNVe2a9myWbJoYV7Avod6IzJCZ5BwkjB37K2Of7eyVFeoN
+ yU3KRaDHZmoEaGGK1kE/oDZGFyHQ+Gd+k19lgztRA+4U0+N7HO10hJtKyR8VFkFdVrrO
+ vqsPMEB2gMsu0jzM0QQ7R1qV4xKRp3S+qkXpFDmT89POmUpkHl92+XxoFISCSaBRuGnA
+ J0mw==
+X-Gm-Message-State: APjAAAXDRoVkrxCL8T66xJW70ciKkPsF7tcWJXp0JVJNb8Ui6orpgpY5
+ 6wIf1Q1L4xTGFtGYiX+Tq9o=
+X-Google-Smtp-Source: APXvYqzlYXc6UcokK2JRSKaWgD2ZROhMynTr0wgcSaUXVcWjEVFlHEcPokkxvP9YPg1EscUh8Aj16Q==
+X-Received: by 2002:a63:4e44:: with SMTP id o4mr53303pgl.103.1568742873677;
+ Tue, 17 Sep 2019 10:54:33 -0700 (PDT)
 Received: from localhost.localdomain (M106072039032.v4.enabler.ne.jp.
  [106.72.39.32])
- by smtp.gmail.com with ESMTPSA id 37sm5512357pgv.32.2019.09.17.10.54.14
+ by smtp.gmail.com with ESMTPSA id l124sm2841929pgl.54.2019.09.17.10.54.31
  (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Tue, 17 Sep 2019 10:54:16 -0700 (PDT)
+ Tue, 17 Sep 2019 10:54:33 -0700 (PDT)
 From: Tokunori Ikegami <ikegami.t@gmail.com>
 To: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH for 4.14.y] mtd: cfi_cmdset_0002: Use chip_good() to retry in
+Subject: [PATCH for 4.9.y] mtd: cfi_cmdset_0002: Use chip_good() to retry in
  do_write_oneword()
-Date: Wed, 18 Sep 2019 02:54:10 +0900
-Message-Id: <20190917175410.19564-1-ikegami.t@gmail.com>
+Date: Wed, 18 Sep 2019 02:54:25 +0900
+Message-Id: <20190917175425.20141-1-ikegami.t@gmail.com>
 X-Mailer: git-send-email 2.11.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190917_105417_943382_AF129C58 
+X-CRM114-CacheID: sfid-20190917_105434_248033_E6346D11 
 X-CRM114-Status: GOOD (  16.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -137,10 +137,10 @@ Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
 diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
 old mode 100644
 new mode 100755
-index af3d207c9cc4..e773dc6fdd3c
+index de35a2a362f9..8725e406a9eb
 --- a/drivers/mtd/chips/cfi_cmdset_0002.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -1628,29 +1628,35 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
+@@ -1624,29 +1624,35 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
  			continue;
  		}
  
