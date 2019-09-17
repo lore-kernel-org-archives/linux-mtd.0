@@ -7,79 +7,85 @@ X-Spam-Status: No, score=-10.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0ECDAC4CECD
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Sep 2019 04:20:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 054B6C4CEC9
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Sep 2019 04:23:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C1E8120862
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Sep 2019 04:20:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CB03621670
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Sep 2019 04:23:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NSBe/zNX";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="sBF1eVTc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C1E8120862
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RFOUjUB9";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="bSMCJXrr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CB03621670
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fUjgx+ivvUvBM19BpEa9xkiiXc7D8fVMP3VBEyG/Alc=; b=NSBe/zNXRSpVuy
-	lcYxZPEGpHF/ua4GEaP/KaoStXGTPksQVLdfsHyAcM82Zpq6d5UsZNyFzaF7/c9H90S/UXbPoUgN7
-	eyu3HtH34fa+E54aH8MuNoazzNmFKtsL4Pm3pMdFj8iNL0rCtLbA6qHyF6YkdUeb6Diwl0jOQQEV9
-	YVELVzVF5AyKn1xNuT+vG7PNULNNpqqfZCwboDEU9txEs4pghINW4LBbyT4n9M1YK6b6EzXjc7x1h
-	f9VEqrx0MCQlxSkYTOGgVyvZJMM4u9iOAwZ37lT24z30Bu0ALMwJp0sfvU3jJwj37IKhDf65Kbb+f
-	kibE2vYq7TZeXtBEt23g==;
+	Message-ID:From:References:To:Subject:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=QQ3BNT3+pPrHIM80xnSDJPblVqbsKY+PVN/1GhFmLM4=; b=RFOUjUB9XSBLJB3mNs8ccRkoKE
+	VIA1KCmXDBsU8APDUc04w5HUlh3+dPjL1nqyBmKKeQbWF6TeiAS+CSFcgadZCYhu6O7i7R559UaZT
+	q+U+Q1DqkowmUm3WGSBTfrw8H+stXor7yKQ64dftswzGC9ZTwTUd1bdJ/fwoSRpKjvg3s87+v1I9J
+	HuGgUA1LHG0XNxtx5z1JmXBr82SE2oEHetjtD67FdreVdhkvcstPEV4mqLWFHe9OVjlEErLckiBo6
+	tTpi452k6awy0Ag3Wh4PxF5AHRoNtm+fjg0Orse7U2o4flhmKt0y2fFCj4hk2jTJG8eRGk/nCH2yv
+	UmFrzRLQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
-	id 1iA4yf-0001mN-Pf; Tue, 17 Sep 2019 04:20:33 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1iA51l-0002EN-3V; Tue, 17 Sep 2019 04:23:45 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iA4yY-0001lT-Ud
- for linux-mtd@lists.infradead.org; Tue, 17 Sep 2019 04:20:28 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id x8H4JvnH094997;
- Mon, 16 Sep 2019 23:19:57 -0500
+ id 1iA51i-0002Dx-7w
+ for linux-mtd@lists.infradead.org; Tue, 17 Sep 2019 04:23:43 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id x8H4NQPS000941;
+ Mon, 16 Sep 2019 23:23:26 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1568693997;
- bh=P73JMkJWeKEbpyGMWSEW8V4ubgvBo+oZqb8XLiEt0TI=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=sBF1eVTc5f4JQw6d9bOPt7tLE/VfrWmABQwAT8Bw1YE+LrOIWpvuvL1HR/Cz6BCP2
- DElAISdWsTHBNS08wA6NI0bQPPrSmZJGYsW6KbeeCp/SUzpnwy9iqVOY58vJFZGNkZ
- dj9YCZaX2VDvbiIxEHihQs7VWJLaKai/BcuB68UQ=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x8H4JvNW118025
+ s=ti-com-17Q1; t=1568694206;
+ bh=iMINKBJy7DMf/H6NfcMaDPvcgrCm4/QoVJXgFVSbzdY=;
+ h=Subject:To:References:From:Date:In-Reply-To;
+ b=bSMCJXrrqc7VQgt1SrvmEOfbC+Ur9nfs8g25hNN0aLot34PygFqY24KGQ8PREds9P
+ OoW+/F/107GlWiPpF9NSWhthYjo653x+xnOJMvj6+k+oFBji+W/vf5iBe/EW1U4PFN
+ ZDkxtkkSV2v6UlIl2TRGfW7JU+E8i1AB3NZWayK4=
+Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x8H4NQCo105570
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 16 Sep 2019 23:19:57 -0500
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ Mon, 16 Sep 2019 23:23:26 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Mon, 16
- Sep 2019 23:19:54 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ Sep 2019 23:23:25 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
- Frontend Transport; Mon, 16 Sep 2019 23:19:57 -0500
+ Frontend Transport; Mon, 16 Sep 2019 23:23:23 -0500
 Received: from [172.24.145.136] (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id x8H4JsUK096972;
- Mon, 16 Sep 2019 23:19:55 -0500
-Subject: Re: [PATCH v8 0/9] mtd: cfi_cmdset_0002: Fix flash write issue for
- OpenWrt Project
-To: Tokunori Ikegami <ikegami.t@gmail.com>
-References: <20190805190326.28772-1-ikegami.t@gmail.com>
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id x8H4NN5b101751;
+ Mon, 16 Sep 2019 23:23:23 -0500
+Subject: Re: [PATCH] mtd: chips: gen_probe: kill useless initializer in
+ mtd_do_chip_probe()
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Marek Vasut
+ <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+References: <610761cf-5a19-c182-07d8-8d118ca20035@cogentembedded.com>
+ <e17f9477-19b4-0572-9df6-86a06695111a@cogentembedded.com>
 From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <5e018d22-99ae-1155-bf64-105a912a20f5@ti.com>
-Date: Tue, 17 Sep 2019 09:50:32 +0530
+Message-ID: <f6a46843-fc65-74bf-0559-2267025f9fff@ti.com>
+Date: Tue, 17 Sep 2019 09:54:01 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190805190326.28772-1-ikegami.t@gmail.com>
+In-Reply-To: <e17f9477-19b4-0572-9df6-86a06695111a@cogentembedded.com>
 Content-Language: en-US
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190916_212027_096584_6D929DF6 
-X-CRM114-Status: GOOD (  13.42  )
+X-CRM114-CacheID: sfid-20190916_212342_368703_7209EAB4 
+X-CRM114-Status: GOOD (  16.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,9 +97,6 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
- Chris Packham <chris.packham@alliedtelesis.co.nz>,
- linux-mtd@lists.infradead.org, Fabio Bettoni <fbettoni@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
@@ -101,39 +104,37 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
 
-On 06/08/19 12:33 AM, Tokunori Ikegami wrote:
-> The change is based on the fix for flash erase to use chip_good() done in
-> the past. And it is fixed as same way in the OpenWrt Project as below.
->  <https://git.openwrt.org/?p=openwrt/openwrt.git;a=commitdiff;h=ddc11c3932>
-> Also includes some refactoring changes.
+On 04/07/19 1:56 AM, Sergei Shtylyov wrote:
+> The 'mtd' local variable is initialized but this value is never used,
+> thus kill that initializer.
 > 
-> Signed-off-by: Tokunori Ikegami <ikegami.t@gmail.com>
-> Cc: Fabio Bettoni <fbettoni@gmail.com>
-> Co: Hauke Mehrtens <hauke@hauke-m.de>
-> Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> Cc: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-> Cc: linux-mtd@lists.infradead.org
+> Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
 > 
-> Tokunori Ikegami (9):
->   mtd: cfi_cmdset_0002: Use chip_good() to retry in do_write_oneword()
->   mtd: cfi_cmdset_0002: Remove goto statement from do_write_buffer()
->   mtd: cfi_cmdset_0002: Split do_write_oneword() to reduce function size
->   mtd: cfi_cmdset_0002: Split do_write_oneword() op_done goto statement
->   mtd: cfi_cmdset_0002: Remove op_done goto statement from
->     do_write_oneword()
->   mtd: cfi_cmdset_0002: Split write-to-buffer-reset sequence
->   mtd: cfi_cmdset_0002: Split to wait write buffer to check if completed
->   mtd: cfi_cmdset_0002: Split do_write_oneword() to reduce exit paths
->   mtd: cfi_cmdset_0002: Disable write buffer functions if
->     FORCE_WORD_WRITE is 1
-> 
->  drivers/mtd/chips/cfi_cmdset_0002.c | 296 ++++++++++++++++++++++--------------
->  1 file changed, 184 insertions(+), 112 deletions(-)
-> 
+> ---
+> Thi patch is atop of the 'mtd/next' branch of the MTD 'linux.git' repo.
 
 Merged into git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next
 
 Thanks!
+
+> 
+>  drivers/mtd/chips/gen_probe.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> Index: linux/drivers/mtd/chips/gen_probe.c
+> ===================================================================
+> --- linux.orig/drivers/mtd/chips/gen_probe.c
+> +++ linux/drivers/mtd/chips/gen_probe.c
+> @@ -20,7 +20,7 @@ static int genprobe_new_chip(struct map_
+>  
+>  struct mtd_info *mtd_do_chip_probe(struct map_info *map, struct chip_probe *cp)
+>  {
+> -	struct mtd_info *mtd = NULL;
+> +	struct mtd_info *mtd;
+>  	struct cfi_private *cfi;
+>  
+>  	/* First probe the map to see if we have CFI stuff there. */
+> 
 
 -- 
 Regards
