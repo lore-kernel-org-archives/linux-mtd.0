@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11C31C4CEC9
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Sep 2019 16:00:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EFAE8C4CECD
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Sep 2019 16:01:46 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D337D214AF
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Sep 2019 16:00:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BEA39214AF
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Sep 2019 16:01:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FFKHG5HW";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="tcC/Lk1b"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D337D214AF
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ndvzDzOZ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="h4iGbpiw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BEA39214AF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,22 +26,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dEw/e0zh6k32CWxUykndD7A6yaqXj0icJfiM0droGO4=; b=FFKHG5HWTVdY97
-	hjaRc0d0xpMaSP8xR+5nzhLmZytE7ukyG/enOOnc4T2puEMohm04SwfV/srRigb5v8CQpK2UMu04z
-	KeX9qo3AtMEpY0xD3Rh7AeOZBmflIk3d55yJiNHs2uCY0TQ2YL7jMEG0u4vz+Q59VZ91BuLbTXpE8
-	Kvmf7DavMAoXdFKUtsdq9kPMcnlyMkiKZ+D0dbmhE+O71LIzYX6kGVDaaKiu7UMf1OxfIRXndTNiz
-	fKaD211Psz+SaCNvQ6kvbD+hNq7w9pJMVEwV2OZKDrdw2obeYPw+ndYdQRDgfKgD1GQKq3lulwIiF
-	CSGS3RKWvo3KS4tLh81Q==;
+	List-Owner; bh=V0neu/81zRWaxGGh+ehggxAzGfIKc+MtF89FmCE8ATw=; b=ndvzDzOZTD8D05
+	U5tqo4vSgVhFgSxMuTVVTXXwHvSZx2dAA0rigE6CATm/QoLh33kwC4ujVcCexr9riOW3PSJFYAwnD
+	jLLTsZOtEkZYpfp+GLT21w7XN3je1ryAfwIKapj1rsSVt4RWZJjd8spp6F3JtY1Sp7Tg1+un388FW
+	6W8+HCdjk8m8J5gNc/hgl65bfS6epL932nKewFvWb1rhMuXt8HwQeilnCsj06Pi2J2wX7zs3CukX8
+	WNKBRpqte7OnsikC+kL0M399pgEVMfeaLLxSwqB4LBRRRv68xxyiAtXGxFjwgb5rwyvWI3NdSFLAt
+	s7pY8Z1REVZVo4pj+Mzg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
-	id 1iAFuJ-0004ar-6l; Tue, 17 Sep 2019 16:00:47 +0000
-Received: from esa4.microchip.iphmx.com ([68.232.154.123])
+	id 1iAFvF-0005KL-D2; Tue, 17 Sep 2019 16:01:45 +0000
+Received: from esa1.microchip.iphmx.com ([68.232.147.91])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iAFot-0007bC-Ph; Tue, 17 Sep 2019 15:55:16 +0000
-Received-SPF: Pass (esa4.microchip.iphmx.com: domain of
+ id 1iAFp4-0007sv-CM; Tue, 17 Sep 2019 15:55:24 +0000
+Received-SPF: Pass (esa1.microchip.iphmx.com: domain of
  Tudor.Ambarus@microchip.com designates 198.175.253.82 as
  permitted sender) identity=mailfrom;
- client-ip=198.175.253.82; receiver=esa4.microchip.iphmx.com;
+ client-ip=198.175.253.82; receiver=esa1.microchip.iphmx.com;
  envelope-from="Tudor.Ambarus@microchip.com";
  x-sender="Tudor.Ambarus@microchip.com";
  x-conformance=spf_only; x-record-type="v=spf1";
@@ -49,42 +49,42 @@ Received-SPF: Pass (esa4.microchip.iphmx.com: domain of
  a:smtpout.microchip.com a:mx1.microchip.iphmx.com
  a:mx2.microchip.iphmx.com include:servers.mcsv.net
  include:mktomail.com include:spf.protection.outlook.com ~all"
-Received-SPF: None (esa4.microchip.iphmx.com: no sender
+Received-SPF: None (esa1.microchip.iphmx.com: no sender
  authenticity information available from domain of
  postmaster@email.microchip.com) identity=helo;
- client-ip=198.175.253.82; receiver=esa4.microchip.iphmx.com;
+ client-ip=198.175.253.82; receiver=esa1.microchip.iphmx.com;
  envelope-from="Tudor.Ambarus@microchip.com";
  x-sender="postmaster@email.microchip.com"; x-conformance=spf_only
-Authentication-Results: esa4.microchip.iphmx.com;
+Authentication-Results: esa1.microchip.iphmx.com;
  spf=Pass smtp.mailfrom=Tudor.Ambarus@microchip.com;
  spf=None smtp.helo=postmaster@email.microchip.com;
  dkim=pass (signature verified) header.i=@microchiptechnology.onmicrosoft.com;
  dmarc=pass (p=none dis=none) d=microchip.com
-IronPort-SDR: LNxLS6OulxgRW3JiWtrRflI2Z+nragxcSAoB77SYuO5+DNeFT+f3NM/41YIVGqHUFRy+oATGvB
- p8Gy2Qkzx9AFfXVYchInJHABkuZYzavwvodD4U5MZNORSlUqZB0viFYf2vLThXkcLA0wb5qGPu
- 6KiBQ9dMl1N7KxRJzdCm5xMu7yT3LYlKrLUUIcIZ72pj7U7dM6V2oJCMmuH1u7uGQV0D4dbQZS
- /vWoL55Pro7q0C3V1/PZ1lICcZ4Gsy+hTANd1ba5nQNM3ZAcomIrjKf+cLg65PiXBB+e/0RVtn
- vjY=
-X-IronPort-AV: E=Sophos;i="5.64,517,1559545200"; d="scan'208";a="48252396"
+IronPort-SDR: AZkRyVtZxYgI/U397LPNcDFw10NVPyuhK3cNau0DqB9jmCMjTB38n+fBGFjGB4PQvHmtMzuUzI
+ hY/cQAMcGNh3RQjXhMzygPpUCCDlGvClxNPHNclwdYQ0mY/jFwinyRL1rjnNoYwOGQwnEFEW+F
+ zvz4wUweXi5qQVQw5P7rv2hwJWrwyy9rCMroKPQ/XM+P+aip4LF5rEkOoJBA/uyeimOk6dJIqN
+ HPkYeUkZMLXyyQSDqjG+48+LnxtIO7ly9C5T/fRJsr4eubju5txTMnh5ZlkKDY20FCwnqbFY7n
+ aCs=
+X-IronPort-AV: E=Sophos;i="5.64,517,1559545200"; d="scan'208";a="50797834"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
- by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 17 Sep 2019 08:55:04 -0700
+ by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 17 Sep 2019 08:55:21 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
  chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 17 Sep 2019 08:54:50 -0700
+ 15.1.1713.5; Tue, 17 Sep 2019 08:55:09 -0700
 Received: from NAM01-BN3-obe.outbound.protection.outlook.com (10.10.215.89) by
  email.microchip.com (10.10.87.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Tue, 17 Sep 2019 08:54:50 -0700
+ via Frontend Transport; Tue, 17 Sep 2019 08:55:09 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZRkcwNPjNLwNm8fGYPU7mvF2CxL+vE7HpDFPbbCSiXLfDHyD+V5vyHGXMmOUl0TuP00htkknCjdDd3JeH4phO0iCHNC0CKHvFp4VC7v0xVRqzKW5RjHfQR9kLx1aTb5XLO0YQTdxTtKlx1OEeC5fm080JuHsCJN65W2kPdsC3kSux9kbDuxGGhpmEfQeMZA/vTvBSGkdl/YJa3Uf7CrXHZXEo2B1boc0ramdhhqdNMqbyJX1PBlVFjHJRufSDWc8Ak4Ob44uHwpGOtRzSbpuSegyZIrAxUaOxHZFw6k0XBAOeSnObJ8zQJVGfqJR/kJWxOp39jNJ2V4FQ5RYFOJNIw==
+ b=M/R1Y3BDShQ6gMv2218AY1L0o9ZBaVLkn05q6thR6RlRTYoa97EGellHbTCM2AR4rj8aCFifL8n4693eIs7QYMrIdVJUuvlFil77h2xuTAIn7WWWCp9pvYSNFajDtjKvF/fW9H/KAlYiYmJZYqNoq8X0C7XQBKmFeq0lHfjtwYCRBFS5fV0Fq0zl2TXy3gXUaO1q6ryqatR6NgKlstqsA302aeUF4qLWp0IiOFfTPdR6CMq/RE8G262NVfmPed5Q69+4hnm63HBcRrsl1vvauH1TPRI+53lief9E+BVOEUeHgVbbW8kNC3zAIk3o8OPSMsWExFSMDi1HEPT/wewxyQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NYSuV3rNSK2cyD0B8kBJl5bzSvj8OrKoGlU8G+Pysuk=;
- b=lF64cLY+emsH6Ws3jk96Lx/PhUDDyFA/ON6U1eThXcwXdmGNGjdNqBCW64OTdGH9Ytz0/Q7TGjs1kJL6naYgIWyg4lqgvrRgFJ/ehqE+1sh0/bukgARtpj0m94mdrwkoHy4eNOKuMAeORJwE9BAuLTaHtYVNN9rWLe2liTvK8t0v7kAhVZmNXggq985dBtc97gOjhWBF0zfEgyucbMOQ2l6crI+7oH6pb9o/LRtpWn+6bVRGnoVbbHwatlPXuGrwLQV5PpTkZQAFqfbwZ2M8VC9H2EoNxN5qrhYi4dh3dDqAMOWW3uok8kbTXwIGh4Wrb0/GR/bInUMBRBML318U1A==
+ bh=IgZDciRiYIn5RKBzZFdhKdyzvTYikOVy9DDuzMJiRUI=;
+ b=VjboE633Sc/cNAh888RF6hWSVQlqt2QivaRiFjyR23LD499pWxZ4SK165YDf31cGauwjazwQ0h9Y+N93MwhHBf8/mVlfI7uErVzRrWS5knW21BVcZQMMInQHYgvtk28MI23Y6gu3AxKWNNOnIHPWa3hrK8SwPvShF0qbEdBs0a6RJVqjnrpCPgXDNzvg71VrLwah0yQ8PFdDeD8p3dlnY1UqDirJlWZfr5m/6Q9s0QVDFgUqOPU7dHI4l1DQIy31NzXK4Rfi7Pk9q/6TAG/U+CZN4f0NK8sna+Pw8dzKU3otEv6ABOeL6Pz+HTjnwIM/AiJ9wRZixlTSDMFUqswoCA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=microchip.com; dmarc=pass action=none
  header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
@@ -92,26 +92,25 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=microchiptechnology.onmicrosoft.com;
  s=selector2-microchiptechnology-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NYSuV3rNSK2cyD0B8kBJl5bzSvj8OrKoGlU8G+Pysuk=;
- b=tcC/Lk1bdSt/T+l51DY7rxyXQzvwWpeNULeJFPPoK9b5DtrBqQLIhEuWcx84UT7pKi4Fkr1dWUhAFgukHw9JLhNF+QREXGwMTOaDMtEf+LNuC6U0aBbgAtlZdNRll2dD21iVUerfBkOVsDsV2oYb5sX4gmuAUmVQsp+PoafROuE=
+ bh=IgZDciRiYIn5RKBzZFdhKdyzvTYikOVy9DDuzMJiRUI=;
+ b=h4iGbpiw3dq7AmnlzboNaorNdcOEi2DJX2uWDTzGwVXhjvp3/GmehMyCfs4rHNjgDFO7rATlsyYPC4iinF45GiiH+tglSdyD96w15C7W/ZnAXnnH6mN+kl/nV/EE63oxTNE5uE2wJHqCL383CvCeInM19/t8nRwNSWi6djMRf3o=
 Received: from MN2PR11MB4448.namprd11.prod.outlook.com (52.135.39.157) by
  MN2PR11MB3984.namprd11.prod.outlook.com (10.255.181.77) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2263.21; Tue, 17 Sep 2019 15:54:47 +0000
+ 15.20.2263.21; Tue, 17 Sep 2019 15:55:06 +0000
 Received: from MN2PR11MB4448.namprd11.prod.outlook.com
  ([fe80::c951:b15a:e4b3:30f7]) by MN2PR11MB4448.namprd11.prod.outlook.com
  ([fe80::c951:b15a:e4b3:30f7%7]) with mapi id 15.20.2263.023; Tue, 17 Sep 2019
- 15:54:47 +0000
+ 15:55:06 +0000
 From: <Tudor.Ambarus@microchip.com>
 To: <vigneshr@ti.com>, <boris.brezillon@collabora.com>,
  <marek.vasut@gmail.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH 02/23] mtd: spi-nor: Introduce 'struct spi_nor_controller_ops'
-Thread-Topic: [PATCH 02/23] mtd: spi-nor: Introduce 'struct
- spi_nor_controller_ops'
-Thread-Index: AQHVbXA7VfKVpMUx1UqOLh4+dBdplg==
-Date: Tue, 17 Sep 2019 15:54:47 +0000
-Message-ID: <20190917155426.7432-3-tudor.ambarus@microchip.com>
+Subject: [PATCH 08/23] mtd: spi-nor: Rework write_enable/disable()
+Thread-Topic: [PATCH 08/23] mtd: spi-nor: Rework write_enable/disable()
+Thread-Index: AQHVbXBGKtMISplgxk+FS63MDGaKQQ==
+Date: Tue, 17 Sep 2019 15:55:06 +0000
+Message-ID: <20190917155426.7432-9-tudor.ambarus@microchip.com>
 References: <20190917155426.7432-1-tudor.ambarus@microchip.com>
 In-Reply-To: <20190917155426.7432-1-tudor.ambarus@microchip.com>
 Accept-Language: en-US
@@ -125,36 +124,35 @@ x-ms-exchange-messagesentrepresentingtype: 1
 x-mailer: git-send-email 2.9.5
 x-originating-ip: [94.177.32.156]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f7764ee2-1571-4d73-76ab-08d73b875d63
+x-ms-office365-filtering-correlation-id: 7c24be63-87dc-4abb-fae7-08d73b8768db
 x-microsoft-antispam: BCL:0; PCL:0;
  RULEID:(2390118)(7020095)(4652040)(8989299)(5600167)(711020)(4605104)(1401327)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);
  SRVR:MN2PR11MB3984; 
 x-ms-traffictypediagnostic: MN2PR11MB3984:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR11MB3984CFF2B316F8F9E40E772EF08F0@MN2PR11MB3984.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2958;
+x-microsoft-antispam-prvs: <MN2PR11MB3984AFD0A795276C37F3F21CF08F0@MN2PR11MB3984.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3044;
 x-forefront-prvs: 01630974C0
 x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(396003)(136003)(39860400002)(376002)(366004)(346002)(199004)(189003)(478600001)(2616005)(64756008)(66476007)(3846002)(6486002)(107886003)(25786009)(6512007)(50226002)(6436002)(305945005)(99286004)(14444005)(71200400001)(476003)(7416002)(486006)(256004)(66066001)(71190400001)(7736002)(76176011)(102836004)(36756003)(26005)(386003)(66446008)(14454004)(66946007)(1076003)(86362001)(6506007)(186003)(6116002)(5660300002)(66556008)(110136005)(81156014)(81166006)(2501003)(8676002)(54906003)(316002)(4326008)(8936002)(11346002)(30864003)(2906002)(446003)(52116002)(2201001)(579004)(559001);
+ SFS:(10009020)(396003)(136003)(39860400002)(376002)(366004)(346002)(199004)(189003)(478600001)(2616005)(64756008)(66476007)(3846002)(6486002)(107886003)(25786009)(6512007)(50226002)(6436002)(305945005)(99286004)(14444005)(71200400001)(476003)(7416002)(486006)(256004)(66066001)(71190400001)(7736002)(76176011)(102836004)(36756003)(26005)(386003)(66446008)(14454004)(66946007)(1076003)(86362001)(6506007)(186003)(6116002)(5660300002)(66556008)(110136005)(81156014)(81166006)(2501003)(8676002)(54906003)(316002)(4326008)(8936002)(11346002)(2906002)(446003)(52116002)(2201001);
  DIR:OUT; SFP:1101; SCL:1; SRVR:MN2PR11MB3984;
  H:MN2PR11MB4448.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
  PTR:InfoNoRecords; A:1; MX:1; 
 received-spf: None (protection.outlook.com: microchip.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: MOnpv1QbMDAmqivoGtXLUcNVYtyH283pFL2TQ5KKcWSZBjhoSZL4T3c1vLSkKEh5N/t5mKaQ6yguOqrrn/xSL1hMh3/L4Vxk9jhQrAIPawuSSpAnIlYHf4kkBtHDYRwloi71MIwHQf7BLmgDntvDw6lExX9SQAC+jbZVDYLMtptDsveuH99Ja1ujXIBR04hg4G9NdB2CrMPuFqmG4cOlrSQc+LSKACm0Ab9wnZaMbvCbOgTSdvEeFszcr8TFoAFSVkCr8Akq88vgeJ/M4KVnDLU4upDnHL6Zn9KEgx6JtpoCzz8eli5/5V8aSTLiL8MSBuhGw23zdNZQbwqyDWKbWNTYPqKjG8I40dlFLEYexpVy/MejbTmnVIMhEB6tFjlJcS/Riml5ZZmOSQ4cY8xUY4yHMvPgQk52ptIgnDRgjnU=
+x-microsoft-antispam-message-info: zDxtMPfQ41Dteye7JKq7mg6OpEbN6vwNDjBtLFwUJk6t9Qbu0wHmB6m9KOfi9UPuCIyrifX+mm1eHXIGPbrnxbXWTLArDXlI2/eDoj4WVcZ08Bxnrx/gMdNZUcsq/7JCvpTfDlW/lpTDbM10aw3KAfgKacrSkHn5xi8KPyZCubnyWxrReYs9SEI9OUIJZzvu5cgMGsB8hVGk0D7Yk6RETrCbMAz7gzra5a3ViLxbUW/ihvudtH6dihk/hj13HUvl0SyAsU4mkWLGYjynKWiuQ30QeJGLTEFuh9MFRAj/1eVvnKlcQOjywnF83MfU1EFoc4Ucckrzg2FR2fo9tHujGkIfA7RofvuCDOwQAUWiD5u1FZBXG5D8TxXANOIQP77B1SMgzuzq/EE48cU2kyFTF6lg5FBdDCHnx8kGWcnatd0=
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: f7764ee2-1571-4d73-76ab-08d73b875d63
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Sep 2019 15:54:47.3805 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7c24be63-87dc-4abb-fae7-08d73b8768db
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Sep 2019 15:55:06.5383 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: g5elzTgLpwiDlc4wVtDvKmn0wGXWe8NpLYr4PzpyTzAxzHugEC/mSOsvTN8wPOmbSxUOUN6Zp/bAVFkqFJv3bT83hNDL+Lmo7ofNmH96rPI=
+X-MS-Exchange-CrossTenant-userprincipalname: GVzgUKM+UXj5rpXkKt3BZmq4iXyN1dxsQZIaJwiu5Ka8tDIKtvttmS8XERuGkicy2g+Ipj6lJ7stiQn44hf781cnUFjpT/JijSOjT/X+NHc=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB3984
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190917_085512_088319_741CBE1A 
-X-CRM114-Status: UNSURE (   9.78  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190917_085523_057763_D2D51268 
+X-CRM114-Status: GOOD (  12.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -177,780 +175,331 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-Move all SPI NOR controller driver specific ops in a dedicated
-structure. 'struct spi_nor' becomes lighter.
+static int write_enable(struct spi_nor *nor)
+static int write_disable(struct spi_nor *nor)
+become
+static int spi_nor_write_enable(struct spi_nor *nor)
+static int spi_nor_write_disable(struct spi_nor *nor)
 
-Use size_t for lengths in 'int (*write_reg)()' and 'int (*read_reg)()'.
-Rename wite/read_buf to buf, the name of the functions are
-suggestive enough. Constify buf in int (*write_reg). Comply with these
-changes in the SPI NOR controller drivers.
+Check for errors after each call to them. Move them up in the
+file as the first SPI NOR Register Operations, to avoid further
+forward declarations.
 
-Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
 Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
- drivers/mtd/spi-nor/aspeed-smc.c      | 23 ++++++-----
- drivers/mtd/spi-nor/cadence-quadspi.c | 39 ++++++++++--------
- drivers/mtd/spi-nor/hisi-sfc.c        | 22 +++++-----
- drivers/mtd/spi-nor/intel-spi.c       | 24 ++++++-----
- drivers/mtd/spi-nor/mtk-quadspi.c     | 25 +++++++-----
- drivers/mtd/spi-nor/nxp-spifi.c       | 23 +++++++----
- drivers/mtd/spi-nor/spi-nor.c         | 76 ++++++++++++++++++++---------------
- include/linux/mtd/spi-nor.h           | 51 +++++++++++++----------
- 8 files changed, 166 insertions(+), 117 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c | 175 +++++++++++++++++++++++++++++-------------
+ 1 file changed, 120 insertions(+), 55 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
-index 009c1da8574c..2b7cabbb680c 100644
---- a/drivers/mtd/spi-nor/aspeed-smc.c
-+++ b/drivers/mtd/spi-nor/aspeed-smc.c
-@@ -320,7 +320,8 @@ static void aspeed_smc_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
- 	mutex_unlock(&chip->controller->mutex);
- }
- 
--static int aspeed_smc_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
-+static int aspeed_smc_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf,
-+			       size_t len)
- {
- 	struct aspeed_smc_chip *chip = nor->priv;
- 
-@@ -331,8 +332,8 @@ static int aspeed_smc_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
- 	return 0;
- }
- 
--static int aspeed_smc_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf,
--				int len)
-+static int aspeed_smc_write_reg(struct spi_nor *nor, u8 opcode, const u8 *buf,
-+				size_t len)
- {
- 	struct aspeed_smc_chip *chip = nor->priv;
- 
-@@ -746,6 +747,15 @@ static int aspeed_smc_chip_setup_finish(struct aspeed_smc_chip *chip)
- 	return 0;
- }
- 
-+static const struct spi_nor_controller_ops aspeed_smc_controller_ops = {
-+	.prepare = aspeed_smc_prep,
-+	.unprepare = aspeed_smc_unprep,
-+	.read_reg = aspeed_smc_read_reg,
-+	.write_reg = aspeed_smc_write_reg,
-+	.read = aspeed_smc_read_user,
-+	.write = aspeed_smc_write_user,
-+};
-+
- static int aspeed_smc_setup_flash(struct aspeed_smc_controller *controller,
- 				  struct device_node *np, struct resource *r)
- {
-@@ -805,12 +815,7 @@ static int aspeed_smc_setup_flash(struct aspeed_smc_controller *controller,
- 		nor->dev = dev;
- 		nor->priv = chip;
- 		spi_nor_set_flash_node(nor, child);
--		nor->read = aspeed_smc_read_user;
--		nor->write = aspeed_smc_write_user;
--		nor->read_reg = aspeed_smc_read_reg;
--		nor->write_reg = aspeed_smc_write_reg;
--		nor->prepare = aspeed_smc_prep;
--		nor->unprepare = aspeed_smc_unprep;
-+		nor->controller_ops = &aspeed_smc_controller_ops;
- 
- 		ret = aspeed_smc_chip_setup_init(chip, r);
- 		if (ret)
-diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
-index 7bef63947b29..ebda612641a4 100644
---- a/drivers/mtd/spi-nor/cadence-quadspi.c
-+++ b/drivers/mtd/spi-nor/cadence-quadspi.c
-@@ -356,18 +356,19 @@ static int cqspi_exec_flash_cmd(struct cqspi_st *cqspi, unsigned int reg)
- 
- static int cqspi_command_read(struct spi_nor *nor,
- 			      const u8 *txbuf, const unsigned n_tx,
--			      u8 *rxbuf, const unsigned n_rx)
-+			      u8 *rxbuf, size_t n_rx)
- {
- 	struct cqspi_flash_pdata *f_pdata = nor->priv;
- 	struct cqspi_st *cqspi = f_pdata->cqspi;
- 	void __iomem *reg_base = cqspi->iobase;
- 	unsigned int rdreg;
- 	unsigned int reg;
--	unsigned int read_len;
-+	size_t read_len;
- 	int status;
- 
- 	if (!n_rx || n_rx > CQSPI_STIG_DATA_LEN_MAX || !rxbuf) {
--		dev_err(nor->dev, "Invalid input argument, len %d rxbuf 0x%p\n",
-+		dev_err(nor->dev,
-+			"Invalid input argument, len %zu rxbuf 0x%p\n",
- 			n_rx, rxbuf);
- 		return -EINVAL;
- 	}
-@@ -404,19 +405,19 @@ static int cqspi_command_read(struct spi_nor *nor,
- }
- 
- static int cqspi_command_write(struct spi_nor *nor, const u8 opcode,
--			       const u8 *txbuf, const unsigned n_tx)
-+			       const u8 *txbuf, size_t n_tx)
- {
- 	struct cqspi_flash_pdata *f_pdata = nor->priv;
- 	struct cqspi_st *cqspi = f_pdata->cqspi;
- 	void __iomem *reg_base = cqspi->iobase;
- 	unsigned int reg;
- 	unsigned int data;
--	u32 write_len;
-+	size_t write_len;
- 	int ret;
- 
- 	if (n_tx > CQSPI_STIG_DATA_LEN_MAX || (n_tx && !txbuf)) {
- 		dev_err(nor->dev,
--			"Invalid input argument, cmdlen %d txbuf 0x%p\n",
-+			"Invalid input argument, cmdlen %zu txbuf 0x%p\n",
- 			n_tx, txbuf);
- 		return -EINVAL;
- 	}
-@@ -1050,7 +1051,7 @@ static int cqspi_erase(struct spi_nor *nor, loff_t offs)
- 		return ret;
- 
- 	/* Send write enable, then erase commands. */
--	ret = nor->write_reg(nor, SPINOR_OP_WREN, NULL, 0);
-+	ret = nor->controller_ops->write_reg(nor, SPINOR_OP_WREN, NULL, 0);
- 	if (ret)
- 		return ret;
- 
-@@ -1080,7 +1081,7 @@ static void cqspi_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
- 	mutex_unlock(&cqspi->bus_mutex);
- }
- 
--static int cqspi_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
-+static int cqspi_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, size_t len)
- {
- 	int ret;
- 
-@@ -1091,7 +1092,8 @@ static int cqspi_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
- 	return ret;
- }
- 
--static int cqspi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
-+static int cqspi_write_reg(struct spi_nor *nor, u8 opcode, const u8 *buf,
-+			   size_t len)
- {
- 	int ret;
- 
-@@ -1216,6 +1218,16 @@ static void cqspi_request_mmap_dma(struct cqspi_st *cqspi)
- 	init_completion(&cqspi->rx_dma_complete);
- }
- 
-+static const struct spi_nor_controller_ops cqspi_controller_ops = {
-+	.prepare = cqspi_prep,
-+	.unprepare = cqspi_unprep,
-+	.read_reg = cqspi_read_reg,
-+	.write_reg = cqspi_write_reg,
-+	.read = cqspi_read,
-+	.write = cqspi_write,
-+	.erase = cqspi_erase,
-+};
-+
- static int cqspi_setup_flash(struct cqspi_st *cqspi, struct device_node *np)
- {
- 	struct platform_device *pdev = cqspi->pdev;
-@@ -1265,14 +1277,7 @@ static int cqspi_setup_flash(struct cqspi_st *cqspi, struct device_node *np)
- 		nor->dev = dev;
- 		spi_nor_set_flash_node(nor, np);
- 		nor->priv = f_pdata;
--
--		nor->read_reg = cqspi_read_reg;
--		nor->write_reg = cqspi_write_reg;
--		nor->read = cqspi_read;
--		nor->write = cqspi_write;
--		nor->erase = cqspi_erase;
--		nor->prepare = cqspi_prep;
--		nor->unprepare = cqspi_unprep;
-+		nor->controller_ops = &cqspi_controller_ops;
- 
- 		mtd->name = devm_kasprintf(dev, GFP_KERNEL, "%s.%d",
- 					   dev_name(dev), cs);
-diff --git a/drivers/mtd/spi-nor/hisi-sfc.c b/drivers/mtd/spi-nor/hisi-sfc.c
-index c99ed9cdbf9c..a1258216f89d 100644
---- a/drivers/mtd/spi-nor/hisi-sfc.c
-+++ b/drivers/mtd/spi-nor/hisi-sfc.c
-@@ -177,7 +177,7 @@ static void hisi_spi_nor_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
- }
- 
- static int hisi_spi_nor_op_reg(struct spi_nor *nor,
--				u8 opcode, int len, u8 optype)
-+				u8 opcode, size_t len, u8 optype)
- {
- 	struct hifmc_priv *priv = nor->priv;
- 	struct hifmc_host *host = priv->host;
-@@ -200,7 +200,7 @@ static int hisi_spi_nor_op_reg(struct spi_nor *nor,
- }
- 
- static int hisi_spi_nor_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf,
--		int len)
-+				 size_t len)
- {
- 	struct hifmc_priv *priv = nor->priv;
- 	struct hifmc_host *host = priv->host;
-@@ -215,7 +215,7 @@ static int hisi_spi_nor_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf,
- }
- 
- static int hisi_spi_nor_write_reg(struct spi_nor *nor, u8 opcode,
--				u8 *buf, int len)
-+				  const u8 *buf, size_t len)
- {
- 	struct hifmc_priv *priv = nor->priv;
- 	struct hifmc_host *host = priv->host;
-@@ -311,6 +311,15 @@ static ssize_t hisi_spi_nor_write(struct spi_nor *nor, loff_t to,
- 	return len;
- }
- 
-+static const struct spi_nor_controller_ops hisi_controller_ops = {
-+	.prepare = hisi_spi_nor_prep,
-+	.unprepare = hisi_spi_nor_unprep,
-+	.read_reg = hisi_spi_nor_read_reg,
-+	.write_reg = hisi_spi_nor_write_reg,
-+	.read = hisi_spi_nor_read,
-+	.write = hisi_spi_nor_write,
-+};
-+
- /**
-  * Get spi flash device information and register it as a mtd device.
-  */
-@@ -357,13 +366,8 @@ static int hisi_spi_nor_register(struct device_node *np,
- 	}
- 	priv->host = host;
- 	nor->priv = priv;
-+	nor->controller_ops = &hisi_controller_ops;
- 
--	nor->prepare = hisi_spi_nor_prep;
--	nor->unprepare = hisi_spi_nor_unprep;
--	nor->read_reg = hisi_spi_nor_read_reg;
--	nor->write_reg = hisi_spi_nor_write_reg;
--	nor->read = hisi_spi_nor_read;
--	nor->write = hisi_spi_nor_write;
- 	ret = spi_nor_scan(nor, NULL, &hwcaps);
- 	if (ret)
- 		return ret;
-diff --git a/drivers/mtd/spi-nor/intel-spi.c b/drivers/mtd/spi-nor/intel-spi.c
-index 43e55a2e9b27..dc38f19ac7ae 100644
---- a/drivers/mtd/spi-nor/intel-spi.c
-+++ b/drivers/mtd/spi-nor/intel-spi.c
-@@ -426,7 +426,7 @@ static int intel_spi_opcode_index(struct intel_spi *ispi, u8 opcode, int optype)
- 	return 0;
- }
- 
--static int intel_spi_hw_cycle(struct intel_spi *ispi, u8 opcode, int len)
-+static int intel_spi_hw_cycle(struct intel_spi *ispi, u8 opcode, size_t len)
- {
- 	u32 val, status;
- 	int ret;
-@@ -469,7 +469,7 @@ static int intel_spi_hw_cycle(struct intel_spi *ispi, u8 opcode, int len)
- 	return 0;
- }
- 
--static int intel_spi_sw_cycle(struct intel_spi *ispi, u8 opcode, int len,
-+static int intel_spi_sw_cycle(struct intel_spi *ispi, u8 opcode, size_t len,
- 			      int optype)
- {
- 	u32 val = 0, status;
-@@ -535,7 +535,8 @@ static int intel_spi_sw_cycle(struct intel_spi *ispi, u8 opcode, int len,
- 	return 0;
- }
- 
--static int intel_spi_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
-+static int intel_spi_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf,
-+			      size_t len)
- {
- 	struct intel_spi *ispi = nor->priv;
- 	int ret;
-@@ -555,7 +556,8 @@ static int intel_spi_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
- 	return intel_spi_read_block(ispi, buf, len);
- }
- 
--static int intel_spi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
-+static int intel_spi_write_reg(struct spi_nor *nor, u8 opcode, const u8 *buf,
-+			       size_t len)
- {
- 	struct intel_spi *ispi = nor->priv;
- 	int ret;
-@@ -864,6 +866,14 @@ static void intel_spi_fill_partition(struct intel_spi *ispi,
- 	}
- }
- 
-+static const struct spi_nor_controller_ops intel_spi_controller_ops = {
-+	.read_reg = intel_spi_read_reg,
-+	.write_reg = intel_spi_write_reg,
-+	.read = intel_spi_read,
-+	.write = intel_spi_write,
-+	.erase = intel_spi_erase,
-+};
-+
- struct intel_spi *intel_spi_probe(struct device *dev,
- 	struct resource *mem, const struct intel_spi_boardinfo *info)
- {
-@@ -897,11 +907,7 @@ struct intel_spi *intel_spi_probe(struct device *dev,
- 
- 	ispi->nor.dev = ispi->dev;
- 	ispi->nor.priv = ispi;
--	ispi->nor.read_reg = intel_spi_read_reg;
--	ispi->nor.write_reg = intel_spi_write_reg;
--	ispi->nor.read = intel_spi_read;
--	ispi->nor.write = intel_spi_write;
--	ispi->nor.erase = intel_spi_erase;
-+	ispi->nor.controller_ops = &intel_spi_controller_ops;
- 
- 	ret = spi_nor_scan(&ispi->nor, NULL, &hwcaps);
- 	if (ret) {
-diff --git a/drivers/mtd/spi-nor/mtk-quadspi.c b/drivers/mtd/spi-nor/mtk-quadspi.c
-index 34db01ab6cab..b1691680d174 100644
---- a/drivers/mtd/spi-nor/mtk-quadspi.c
-+++ b/drivers/mtd/spi-nor/mtk-quadspi.c
-@@ -151,9 +151,9 @@ static int mtk_nor_execute_cmd(struct mtk_nor *mtk_nor, u8 cmdval)
- }
- 
- static int mtk_nor_do_tx_rx(struct mtk_nor *mtk_nor, u8 op,
--			    u8 *tx, int txlen, u8 *rx, int rxlen)
-+			    const u8 *tx, size_t txlen, u8 *rx, size_t rxlen)
- {
--	int len = 1 + txlen + rxlen;
-+	size_t len = 1 + txlen + rxlen;
- 	int i, ret, idx;
- 
- 	if (len > MTK_NOR_MAX_SHIFT)
-@@ -193,7 +193,7 @@ static int mtk_nor_do_tx_rx(struct mtk_nor *mtk_nor, u8 op,
- }
- 
- /* Do a WRSR (Write Status Register) command */
--static int mtk_nor_wr_sr(struct mtk_nor *mtk_nor, u8 sr)
-+static int mtk_nor_wr_sr(struct mtk_nor *mtk_nor, const u8 sr)
- {
- 	writeb(sr, mtk_nor->base + MTK_NOR_PRGDATA5_REG);
- 	writeb(8, mtk_nor->base + MTK_NOR_CNT_REG);
-@@ -354,7 +354,7 @@ static ssize_t mtk_nor_write(struct spi_nor *nor, loff_t to, size_t len,
- 	return len;
- }
- 
--static int mtk_nor_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
-+static int mtk_nor_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, size_t len)
- {
- 	int ret;
- 	struct mtk_nor *mtk_nor = nor->priv;
-@@ -376,8 +376,8 @@ static int mtk_nor_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
- 	return ret;
- }
- 
--static int mtk_nor_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf,
--			     int len)
-+static int mtk_nor_write_reg(struct spi_nor *nor, u8 opcode, const u8 *buf,
-+			     size_t len)
- {
- 	int ret;
- 	struct mtk_nor *mtk_nor = nor->priv;
-@@ -419,6 +419,13 @@ static int mtk_nor_enable_clk(struct mtk_nor *mtk_nor)
- 	return 0;
- }
- 
-+static const struct spi_nor_controller_ops mtk_controller_ops = {
-+	.read_reg = mtk_nor_read_reg,
-+	.write_reg = mtk_nor_write_reg,
-+	.read = mtk_nor_read,
-+	.write = mtk_nor_write,
-+};
-+
- static int mtk_nor_init(struct mtk_nor *mtk_nor,
- 			struct device_node *flash_node)
- {
-@@ -438,12 +445,8 @@ static int mtk_nor_init(struct mtk_nor *mtk_nor,
- 	nor->dev = mtk_nor->dev;
- 	nor->priv = mtk_nor;
- 	spi_nor_set_flash_node(nor, flash_node);
-+	nor->controller_ops = &mtk_controller_ops;
- 
--	/* fill the hooks to spi nor */
--	nor->read = mtk_nor_read;
--	nor->read_reg = mtk_nor_read_reg;
--	nor->write = mtk_nor_write;
--	nor->write_reg = mtk_nor_write_reg;
- 	nor->mtd.name = "mtk_nor";
- 	/* initialized with NULL */
- 	ret = spi_nor_scan(nor, NULL, &hwcaps);
-diff --git a/drivers/mtd/spi-nor/nxp-spifi.c b/drivers/mtd/spi-nor/nxp-spifi.c
-index 4a871587392b..9a5b1a7c636a 100644
---- a/drivers/mtd/spi-nor/nxp-spifi.c
-+++ b/drivers/mtd/spi-nor/nxp-spifi.c
-@@ -123,7 +123,8 @@ static int nxp_spifi_set_memory_mode_on(struct nxp_spifi *spifi)
- 	return ret;
- }
- 
--static int nxp_spifi_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
-+static int nxp_spifi_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf,
-+			      size_t len)
- {
- 	struct nxp_spifi *spifi = nor->priv;
- 	u32 cmd;
-@@ -145,7 +146,8 @@ static int nxp_spifi_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
- 	return nxp_spifi_wait_for_cmd(spifi);
- }
- 
--static int nxp_spifi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
-+static int nxp_spifi_write_reg(struct spi_nor *nor, u8 opcode, const u8 *buf,
-+			       size_t len)
- {
- 	struct nxp_spifi *spifi = nor->priv;
- 	u32 cmd;
-@@ -263,9 +265,18 @@ static int nxp_spifi_setup_memory_cmd(struct nxp_spifi *spifi)
- static void nxp_spifi_dummy_id_read(struct spi_nor *nor)
- {
- 	u8 id[SPI_NOR_MAX_ID_LEN];
--	nor->read_reg(nor, SPINOR_OP_RDID, id, SPI_NOR_MAX_ID_LEN);
-+	nor->controller_ops->read_reg(nor, SPINOR_OP_RDID, id,
-+				      SPI_NOR_MAX_ID_LEN);
- }
- 
-+static const struct spi_nor_controller_ops nxp_spifi_controller_ops = {
-+	.read_reg  = nxp_spifi_read_reg,
-+	.write_reg = nxp_spifi_write_reg,
-+	.read  = nxp_spifi_read,
-+	.write = nxp_spifi_write,
-+	.erase = nxp_spifi_erase,
-+};
-+
- static int nxp_spifi_setup_flash(struct nxp_spifi *spifi,
- 				 struct device_node *np)
- {
-@@ -332,11 +343,7 @@ static int nxp_spifi_setup_flash(struct nxp_spifi *spifi,
- 	spifi->nor.dev   = spifi->dev;
- 	spi_nor_set_flash_node(&spifi->nor, np);
- 	spifi->nor.priv  = spifi;
--	spifi->nor.read  = nxp_spifi_read;
--	spifi->nor.write = nxp_spifi_write;
--	spifi->nor.erase = nxp_spifi_erase;
--	spifi->nor.read_reg  = nxp_spifi_read_reg;
--	spifi->nor.write_reg = nxp_spifi_write_reg;
-+	spifi->nor.controller_ops = &nxp_spifi_controller_ops;
- 
- 	/*
- 	 * The first read on a hard reset isn't reliable so do a
 diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 1d8621d43160..b8c7ded0f145 100644
+index 04491885b9bb..271c2b465038 100644
 --- a/drivers/mtd/spi-nor/spi-nor.c
 +++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -338,7 +338,7 @@ static ssize_t spi_nor_read_data(struct spi_nor *nor, loff_t from, size_t len,
- 	if (nor->spimem)
- 		return spi_nor_spimem_read_data(nor, from, len, buf);
- 
--	return nor->read(nor, from, len, buf);
-+	return nor->controller_ops->read(nor, from, len, buf);
+@@ -389,6 +389,64 @@ static ssize_t spi_nor_write_data(struct spi_nor *nor, loff_t to, size_t len,
  }
  
  /**
-@@ -385,7 +385,7 @@ static ssize_t spi_nor_write_data(struct spi_nor *nor, loff_t to, size_t len,
- 	if (nor->spimem)
- 		return spi_nor_spimem_write_data(nor, to, len, buf);
- 
--	return nor->write(nor, to, len, buf);
-+	return nor->controller_ops->write(nor, to, len, buf);
++ * spi_nor_write_enable() - Set write enable latch with Write Enable command.
++ * @nor:        pointer to 'struct spi_nor'
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++static int spi_nor_write_enable(struct spi_nor *nor)
++{
++	int ret;
++
++	if (nor->spimem) {
++		struct spi_mem_op op =
++			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WREN, 1),
++				   SPI_MEM_OP_NO_ADDR,
++				   SPI_MEM_OP_NO_DUMMY,
++				   SPI_MEM_OP_NO_DATA);
++
++		ret = spi_mem_exec_op(nor->spimem, &op);
++	} else {
++		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_WREN,
++						     NULL, 0);
++	}
++
++	if (ret)
++		dev_err(nor->dev, "error %d on Write Enable\n", ret);
++
++	return ret;
++}
++
++/**
++ * spi_nor_write_disable() - Send Write Disable instruction to the chip.
++ * @nor:        pointer to 'struct spi_nor'
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++static int spi_nor_write_disable(struct spi_nor *nor)
++{
++	int ret;
++
++	if (nor->spimem) {
++		struct spi_mem_op op =
++			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WRDI, 1),
++				   SPI_MEM_OP_NO_ADDR,
++				   SPI_MEM_OP_NO_DUMMY,
++				   SPI_MEM_OP_NO_DATA);
++
++		ret = spi_mem_exec_op(nor->spimem, &op);
++	} else {
++		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_WRDI,
++						     NULL, 0);
++	}
++
++	if (ret)
++		dev_err(nor->dev, "error %d on Write Disable\n", ret);
++
++	return ret;
++}
++
++/**
+  * spi_nor_read_sr() - Read the Status Register.
+  * @nor:        pointer to 'struct spi_nor'
+  * @sr:		buffer where the value of the Status Register will be written.
+@@ -500,43 +558,6 @@ static int write_sr(struct spi_nor *nor, u8 val)
+ 					      nor->bouncebuf, 1);
  }
  
- /*
-@@ -406,7 +406,8 @@ static int read_sr(struct spi_nor *nor)
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
- 	} else {
--		ret = nor->read_reg(nor, SPINOR_OP_RDSR, nor->bouncebuf, 1);
-+		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDSR,
-+						    nor->bouncebuf, 1);
- 	}
- 
- 	if (ret < 0) {
-@@ -435,7 +436,8 @@ static int read_fsr(struct spi_nor *nor)
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
- 	} else {
--		ret = nor->read_reg(nor, SPINOR_OP_RDFSR, nor->bouncebuf, 1);
-+		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDFSR,
-+						    nor->bouncebuf, 1);
- 	}
- 
- 	if (ret < 0) {
-@@ -464,7 +466,8 @@ static int read_cr(struct spi_nor *nor)
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
- 	} else {
--		ret = nor->read_reg(nor, SPINOR_OP_RDCR, nor->bouncebuf, 1);
-+		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDCR,
-+						    nor->bouncebuf, 1);
- 	}
- 
- 	if (ret < 0) {
-@@ -492,7 +495,8 @@ static int write_sr(struct spi_nor *nor, u8 val)
- 		return spi_mem_exec_op(nor->spimem, &op);
- 	}
- 
--	return nor->write_reg(nor, SPINOR_OP_WRSR, nor->bouncebuf, 1);
-+	return nor->controller_ops->write_reg(nor, SPINOR_OP_WRSR,
-+					      nor->bouncebuf, 1);
- }
- 
- /*
-@@ -511,7 +515,7 @@ static int write_enable(struct spi_nor *nor)
- 		return spi_mem_exec_op(nor->spimem, &op);
- 	}
- 
--	return nor->write_reg(nor, SPINOR_OP_WREN, NULL, 0);
-+	return nor->controller_ops->write_reg(nor, SPINOR_OP_WREN, NULL, 0);
- }
- 
- /*
-@@ -529,7 +533,7 @@ static int write_disable(struct spi_nor *nor)
- 		return spi_mem_exec_op(nor->spimem, &op);
- 	}
- 
--	return nor->write_reg(nor, SPINOR_OP_WRDI, NULL, 0);
-+	return nor->controller_ops->write_reg(nor, SPINOR_OP_WRDI, NULL, 0);
- }
- 
+-/*
+- * Set write enable latch with Write Enable command.
+- * Returns negative if error occurred.
+- */
+-static int write_enable(struct spi_nor *nor)
+-{
+-	if (nor->spimem) {
+-		struct spi_mem_op op =
+-			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WREN, 1),
+-				   SPI_MEM_OP_NO_ADDR,
+-				   SPI_MEM_OP_NO_DUMMY,
+-				   SPI_MEM_OP_NO_DATA);
+-
+-		return spi_mem_exec_op(nor->spimem, &op);
+-	}
+-
+-	return nor->controller_ops->write_reg(nor, SPINOR_OP_WREN, NULL, 0);
+-}
+-
+-/*
+- * Send write disable instruction to the chip.
+- */
+-static int write_disable(struct spi_nor *nor)
+-{
+-	if (nor->spimem) {
+-		struct spi_mem_op op =
+-			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WRDI, 1),
+-				   SPI_MEM_OP_NO_ADDR,
+-				   SPI_MEM_OP_NO_DUMMY,
+-				   SPI_MEM_OP_NO_DATA);
+-
+-		return spi_mem_exec_op(nor->spimem, &op);
+-	}
+-
+-	return nor->controller_ops->write_reg(nor, SPINOR_OP_WRDI, NULL, 0);
+-}
+-
  static struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)
-@@ -631,8 +635,9 @@ static int macronix_set_4byte(struct spi_nor *nor, bool enable)
- 		return spi_mem_exec_op(nor->spimem, &op);
- 	}
- 
--	return nor->write_reg(nor, enable ? SPINOR_OP_EN4B : SPINOR_OP_EX4B,
--			      NULL, 0);
-+	return nor->controller_ops->write_reg(nor, enable ? SPINOR_OP_EN4B :
-+							    SPINOR_OP_EX4B,
-+					      NULL, 0);
- }
- 
- static int st_micron_set_4byte(struct spi_nor *nor, bool enable)
-@@ -660,7 +665,8 @@ static int spansion_set_4byte(struct spi_nor *nor, bool enable)
- 		return spi_mem_exec_op(nor->spimem, &op);
- 	}
- 
--	return nor->write_reg(nor, SPINOR_OP_BRWR, nor->bouncebuf, 1);
-+	return nor->controller_ops->write_reg(nor, SPINOR_OP_BRWR,
-+					      nor->bouncebuf, 1);
- }
- 
- static int spi_nor_write_ear(struct spi_nor *nor, u8 ear)
-@@ -677,7 +683,8 @@ static int spi_nor_write_ear(struct spi_nor *nor, u8 ear)
- 		return spi_mem_exec_op(nor->spimem, &op);
- 	}
- 
--	return nor->write_reg(nor, SPINOR_OP_WREAR, nor->bouncebuf, 1);
-+	return nor->controller_ops->write_reg(nor, SPINOR_OP_WREAR,
-+					      nor->bouncebuf, 1);
- }
- 
- static int winbond_set_4byte(struct spi_nor *nor, bool enable)
-@@ -712,7 +719,7 @@ static int spi_nor_xread_sr(struct spi_nor *nor, u8 *sr)
- 		return spi_mem_exec_op(nor->spimem, &op);
- 	}
- 
--	return nor->read_reg(nor, SPINOR_OP_XRDSR, sr, 1);
-+	return nor->controller_ops->read_reg(nor, SPINOR_OP_XRDSR, sr, 1);
- }
- 
- static int s3an_sr_ready(struct spi_nor *nor)
-@@ -740,7 +747,7 @@ static int spi_nor_clear_sr(struct spi_nor *nor)
- 		return spi_mem_exec_op(nor->spimem, &op);
- 	}
- 
--	return nor->write_reg(nor, SPINOR_OP_CLSR, NULL, 0);
-+	return nor->controller_ops->write_reg(nor, SPINOR_OP_CLSR, NULL, 0);
- }
- 
- static int spi_nor_sr_ready(struct spi_nor *nor)
-@@ -774,7 +781,7 @@ static int spi_nor_clear_fsr(struct spi_nor *nor)
- 		return spi_mem_exec_op(nor->spimem, &op);
- 	}
- 
--	return nor->write_reg(nor, SPINOR_OP_CLFSR, NULL, 0);
-+	return nor->controller_ops->write_reg(nor, SPINOR_OP_CLFSR, NULL, 0);
- }
- 
- static int spi_nor_fsr_ready(struct spi_nor *nor)
-@@ -871,7 +878,8 @@ static int erase_chip(struct spi_nor *nor)
- 		return spi_mem_exec_op(nor->spimem, &op);
- 	}
- 
--	return nor->write_reg(nor, SPINOR_OP_CHIP_ERASE, NULL, 0);
-+	return nor->controller_ops->write_reg(nor, SPINOR_OP_CHIP_ERASE,
-+					      NULL, 0);
- }
- 
- static int spi_nor_lock_and_prep(struct spi_nor *nor, enum spi_nor_ops ops)
-@@ -880,10 +888,9 @@ static int spi_nor_lock_and_prep(struct spi_nor *nor, enum spi_nor_ops ops)
- 
- 	mutex_lock(&nor->lock);
- 
--	if (nor->prepare) {
--		ret = nor->prepare(nor, ops);
-+	if (nor->controller_ops &&  nor->controller_ops->prepare) {
-+		ret = nor->controller_ops->prepare(nor, ops);
- 		if (ret) {
--			dev_err(nor->dev, "failed in the preparation.\n");
- 			mutex_unlock(&nor->lock);
- 			return ret;
- 		}
-@@ -893,8 +900,8 @@ static int spi_nor_lock_and_prep(struct spi_nor *nor, enum spi_nor_ops ops)
- 
- static void spi_nor_unlock_and_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
  {
--	if (nor->unprepare)
--		nor->unprepare(nor, ops);
-+	if (nor->controller_ops && nor->controller_ops->unprepare)
-+		nor->controller_ops->unprepare(nor, ops);
- 	mutex_unlock(&nor->lock);
+ 	return mtd->priv;
+@@ -645,9 +666,15 @@ static int st_micron_set_4byte(struct spi_nor *nor, bool enable)
+ {
+ 	int ret;
+ 
+-	write_enable(nor);
++	ret = spi_nor_write_enable(nor);
++	if (ret)
++		return ret;
++
+ 	ret = macronix_set_4byte(nor, enable);
+-	write_disable(nor);
++	if (ret)
++		return ret;
++
++	ret = spi_nor_write_disable(nor);
+ 
+ 	return ret;
  }
+@@ -701,9 +728,15 @@ static int winbond_set_4byte(struct spi_nor *nor, bool enable)
+ 	 * Register to be set to 1, so all 3-byte-address reads come from the
+ 	 * second 16M. We must clear the register to enable normal behavior.
+ 	 */
+-	write_enable(nor);
++	ret = spi_nor_write_enable(nor);
++	if (ret)
++		return ret;
++
+ 	ret = spi_nor_write_ear(nor, 0);
+-	write_disable(nor);
++	if (ret)
++		return ret;
++
++	ret = spi_nor_write_disable(nor);
  
-@@ -935,8 +942,8 @@ static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
+ 	return ret;
+ }
+@@ -1219,7 +1252,9 @@ static int spi_nor_erase_multi_sectors(struct spi_nor *nor, u64 addr, u32 len)
+ 	list_for_each_entry_safe(cmd, next, &erase_list, list) {
+ 		nor->erase_opcode = cmd->opcode;
+ 		while (cmd->count) {
+-			write_enable(nor);
++			ret = spi_nor_write_enable(nor);
++			if (ret)
++				goto destroy_erase_cmd_list;
  
- 	addr = spi_nor_convert_addr(nor, addr);
+ 			ret = spi_nor_erase_sector(nor, addr);
+ 			if (ret)
+@@ -1274,7 +1309,9 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	if (len == mtd->size && !(nor->flags & SNOR_F_NO_OP_CHIP_ERASE)) {
+ 		unsigned long timeout;
  
--	if (nor->erase)
--		return nor->erase(nor, addr);
-+	if (nor->controller_ops && nor->controller_ops->erase)
-+		return nor->controller_ops->erase(nor, addr);
+-		write_enable(nor);
++		ret = spi_nor_write_enable(nor);
++		if (ret)
++			goto erase_err;
+ 
+ 		if (erase_chip(nor)) {
+ 			ret = -EIO;
+@@ -1302,7 +1339,9 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	/* "sector"-at-a-time erase */
+ 	} else if (spi_nor_has_uniform_erase(nor)) {
+ 		while (len) {
+-			write_enable(nor);
++			ret = spi_nor_write_enable(nor);
++			if (ret)
++				goto erase_err;
+ 
+ 			ret = spi_nor_erase_sector(nor, addr);
+ 			if (ret)
+@@ -1323,7 +1362,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 			goto erase_err;
+ 	}
+ 
+-	write_disable(nor);
++	ret = spi_nor_write_disable(nor);
+ 
+ erase_err:
+ 	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_ERASE);
+@@ -1336,7 +1375,10 @@ static int write_sr_and_check(struct spi_nor *nor, u8 status_new, u8 mask)
+ {
+ 	int ret;
+ 
+-	write_enable(nor);
++	ret = spi_nor_write_enable(nor);
++	if (ret)
++		return ret;
++
+ 	ret = write_sr(nor, status_new);
+ 	if (ret)
+ 		return ret;
+@@ -1681,7 +1723,9 @@ static int write_sr_cr(struct spi_nor *nor, u8 *sr_cr)
+ {
+ 	int ret;
+ 
+-	write_enable(nor);
++	ret = spi_nor_write_enable(nor);
++	if (ret)
++		return ret;
  
  	if (nor->spimem) {
  		struct spi_mem_op op =
-@@ -957,8 +964,8 @@ static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
- 		addr >>= 8;
- 	}
+@@ -1733,7 +1777,9 @@ static int macronix_quad_enable(struct spi_nor *nor)
+ 	if (nor->bouncebuf[0] & SR_QUAD_EN_MX)
+ 		return 0;
  
--	return nor->write_reg(nor, nor->erase_opcode, nor->bouncebuf,
--			      nor->addr_width);
-+	return nor->controller_ops->write_reg(nor, nor->erase_opcode,
-+					      nor->bouncebuf, nor->addr_width);
- }
+-	write_enable(nor);
++	ret = spi_nor_write_enable(nor);
++	if (ret)
++		return ret;
  
- /**
-@@ -1678,7 +1685,8 @@ static int write_sr_cr(struct spi_nor *nor, u8 *sr_cr)
+ 	write_sr(nor, nor->bouncebuf[0] | SR_QUAD_EN_MX);
  
- 		ret = spi_mem_exec_op(nor->spimem, &op);
- 	} else {
--		ret = nor->write_reg(nor, SPINOR_OP_WRSR, sr_cr, 2);
-+		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_WRSR,
-+						     sr_cr, 2);
- 	}
+@@ -1936,7 +1982,9 @@ static int sr2_bit7_quad_enable(struct spi_nor *nor)
+ 	/* Update the Quad Enable bit. */
+ 	*sr2 |= SR2_QUAD_EN_BIT7;
  
+-	write_enable(nor);
++	ret = spi_nor_write_enable(nor);
++	if (ret)
++		return ret;
+ 
+ 	ret = spi_nor_write_sr2(nor, sr2);
  	if (ret < 0) {
-@@ -1873,7 +1881,7 @@ static int spi_nor_write_sr2(struct spi_nor *nor, u8 *sr2)
- 		return spi_mem_exec_op(nor->spimem, &op);
+@@ -1978,7 +2026,9 @@ static int spi_nor_clear_sr_bp(struct spi_nor *nor)
+ 	if (ret)
+ 		return ret;
+ 
+-	write_enable(nor);
++	ret = spi_nor_write_enable(nor);
++	if (ret)
++		return ret;
+ 
+ 	ret = write_sr(nor, nor->bouncebuf[0] & ~mask);
+ 	if (ret) {
+@@ -2601,7 +2651,9 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	if (ret)
+ 		return ret;
+ 
+-	write_enable(nor);
++	ret = spi_nor_write_enable(nor);
++	if (ret)
++		goto unlock_and_unprep;
+ 
+ 	nor->sst_write_second = false;
+ 
+@@ -2640,14 +2692,19 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
  	}
+ 	nor->sst_write_second = false;
  
--	return nor->write_reg(nor, SPINOR_OP_WRSR2, sr2, 1);
-+	return nor->controller_ops->write_reg(nor, SPINOR_OP_WRSR2, sr2, 1);
- }
- 
- static int spi_nor_read_sr2(struct spi_nor *nor, u8 *sr2)
-@@ -1888,7 +1896,7 @@ static int spi_nor_read_sr2(struct spi_nor *nor, u8 *sr2)
- 		return spi_mem_exec_op(nor->spimem, &op);
- 	}
- 
--	return nor->read_reg(nor, SPINOR_OP_RDSR2, sr2, 1);
-+	return nor->controller_ops->read_reg(nor, SPINOR_OP_RDSR2, sr2, 1);
- }
- 
- /**
-@@ -2520,8 +2528,8 @@ static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
- 
- 		tmp = spi_mem_exec_op(nor->spimem, &op);
- 	} else {
--		tmp = nor->read_reg(nor, SPINOR_OP_RDID, id,
--				    SPI_NOR_MAX_ID_LEN);
-+		tmp = nor->controller_ops->read_reg(nor, SPINOR_OP_RDID, id,
-+						    SPI_NOR_MAX_ID_LEN);
- 	}
- 	if (tmp < 0) {
- 		dev_err(nor->dev, "error %d reading JEDEC ID\n", tmp);
-@@ -2722,9 +2730,11 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
- static int spi_nor_check(struct spi_nor *nor)
- {
- 	if (!nor->dev ||
--	    (!nor->spimem &&
--	    (!nor->read || !nor->write || !nor->read_reg ||
--	      !nor->write_reg))) {
-+	    (!nor->spimem && nor->controller_ops &&
-+	    (!nor->controller_ops->read ||
-+	     !nor->controller_ops->write ||
-+	     !nor->controller_ops->read_reg ||
-+	     !nor->controller_ops->write_reg))) {
- 		pr_err("spi-nor: please fill all the necessary fields!\n");
- 		return -EINVAL;
- 	}
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index fc0b4b19c900..d1d736d3c8ab 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -466,6 +466,34 @@ enum spi_nor_pp_command_index {
- struct spi_nor;
- 
- /**
-+ * struct spi_nor_controller_ops - SPI NOR controller driver specific
-+ *                                 operations.
-+ * @prepare:		[OPTIONAL] do some preparations for the
-+ *			read/write/erase/lock/unlock operations.
-+ * @unprepare:		[OPTIONAL] do some post work after the
-+ *			read/write/erase/lock/unlock operations.
-+ * @read_reg:		read out the register.
-+ * @write_reg:		write data to the register.
-+ * @read:		read data from the SPI NOR.
-+ * @write:		write data to the SPI NOR.
-+ * @erase:		erase a sector of the SPI NOR at the offset @offs; if
-+ *			not provided by the driver, spi-nor will send the erase
-+ *			opcode via write_reg().
-+ */
-+struct spi_nor_controller_ops {
-+	int (*prepare)(struct spi_nor *nor, enum spi_nor_ops ops);
-+	void (*unprepare)(struct spi_nor *nor, enum spi_nor_ops ops);
-+	int (*read_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, size_t len);
-+	int (*write_reg)(struct spi_nor *nor, u8 opcode, const u8 *buf,
-+			 size_t len);
+-	write_disable(nor);
++	ret = spi_nor_write_disable(nor);
++	if (ret)
++		goto sst_write_err;
 +
-+	ssize_t (*read)(struct spi_nor *nor, loff_t from, size_t len, u8 *buf);
-+	ssize_t (*write)(struct spi_nor *nor, loff_t to, size_t len,
-+			 const u8 *buf);
-+	int (*erase)(struct spi_nor *nor, loff_t offs);
-+};
+ 	ret = spi_nor_wait_till_ready(nor);
+ 	if (ret)
+ 		goto sst_write_err;
+ 
+ 	/* Write out trailing byte if it exists. */
+ 	if (actual != len) {
+-		write_enable(nor);
++		ret = spi_nor_write_enable(nor);
++		if (ret)
++			goto sst_write_err;
+ 
+ 		nor->program_opcode = SPINOR_OP_BP;
+ 		ret = spi_nor_write_data(nor, to, 1, buf + actual);
+@@ -2658,11 +2715,16 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 		ret = spi_nor_wait_till_ready(nor);
+ 		if (ret)
+ 			goto sst_write_err;
+-		write_disable(nor);
 +
-+/**
-  * struct spi_nor_locking_ops - SPI NOR locking methods
-  * @lock:	lock a region of the SPI NOR.
-  * @unlock:	unlock a region of the SPI NOR.
-@@ -549,17 +577,7 @@ struct flash_info;
-  * @read_proto:		the SPI protocol for read operations
-  * @write_proto:	the SPI protocol for write operations
-  * @reg_proto		the SPI protocol for read_reg/write_reg/erase operations
-- * @prepare:		[OPTIONAL] do some preparations for the
-- *			read/write/erase/lock/unlock operations
-- * @unprepare:		[OPTIONAL] do some post work after the
-- *			read/write/erase/lock/unlock operations
-- * @read_reg:		[DRIVER-SPECIFIC] read out the register
-- * @write_reg:		[DRIVER-SPECIFIC] write data to the register
-- * @read:		[DRIVER-SPECIFIC] read data from the SPI NOR
-- * @write:		[DRIVER-SPECIFIC] write data to the SPI NOR
-- * @erase:		[DRIVER-SPECIFIC] erase a sector of the SPI NOR
-- *			at the offset @offs; if not provided by the driver,
-- *			spi-nor will send the erase opcode via write_reg()
-+ * @controller_ops:	SPI NOR controller driver specific operations.
-  * @clear_sr_bp:	[FLASH-SPECIFIC] clears the Block Protection Bits from
-  *			the SPI NOR Status Register.
-  * @params:		[FLASH-SPECIFIC] SPI-NOR flash parameters and settings.
-@@ -588,16 +606,7 @@ struct spi_nor {
- 	bool			sst_write_second;
- 	u32			flags;
++		ret = spi_nor_write_disable(nor);
++		if (ret)
++			goto sst_write_err;
++
+ 		actual += 1;
+ 	}
+ sst_write_err:
+ 	*retlen += actual;
++unlock_and_unprep:
+ 	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_WRITE);
+ 	return ret;
+ }
+@@ -2710,7 +2772,10 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
  
--	int (*prepare)(struct spi_nor *nor, enum spi_nor_ops ops);
--	void (*unprepare)(struct spi_nor *nor, enum spi_nor_ops ops);
--	int (*read_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len);
--	int (*write_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len);
--
--	ssize_t (*read)(struct spi_nor *nor, loff_t from,
--			size_t len, u_char *read_buf);
--	ssize_t (*write)(struct spi_nor *nor, loff_t to,
--			size_t len, const u_char *write_buf);
--	int (*erase)(struct spi_nor *nor, loff_t offs);
-+	const struct spi_nor_controller_ops *controller_ops;
+ 		addr = spi_nor_convert_addr(nor, addr);
  
- 	int (*clear_sr_bp)(struct spi_nor *nor);
- 	struct spi_nor_flash_parameter params;
+-		write_enable(nor);
++		ret = spi_nor_write_enable(nor);
++		if (ret)
++			goto write_err;
++
+ 		ret = spi_nor_write_data(nor, addr, page_remain, buf + i);
+ 		if (ret < 0)
+ 			goto write_err;
 -- 
 2.9.5
 
