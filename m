@@ -2,159 +2,140 @@ Return-Path: <SRS0=mMzh=XN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD41DC4CEC9
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Sep 2019 12:33:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6FFAC4CEC4
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Sep 2019 12:51:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AC390205F4
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Sep 2019 12:33:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 85307206C2
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Sep 2019 12:51:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jqfrhi2W";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cadence.com header.i=@cadence.com header.b="I63ToQrj";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=cadence.com header.i=@cadence.com header.b="polgT42O"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AC390205F4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cadence.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jKbt6csg";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=web.de header.i=@web.de header.b="V5Sq+c4m"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 85307206C2
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=web.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8y1WRF67iPkuHQKl9/9BSTayfpTWSlKbS8125a3YvHY=; b=jqfrhi2WFB5NoD
-	e08JW3d/pF2sp5laaL66VQmL+GqLsW58f7Xqf107ji5UxusYQQEp+oNEHymQtV2629bNz44eN+dam
-	H5GmRb0TaW9V/YAiHnslormnveO+QKCWXYwC7wIJI/zEdM9/68X/EQ6q4pF31UJ1iigAUj8FIbUY1
-	mSF2joN4kSmVYYSPV81psmJp6n+HHdPOExXUeHLcpKWEubYSBsjXKkCSCRxXCb9Ul5tWtleP7kFuG
-	d7f92m/Ljc92AxxFkJ1re+ZX3M/VQA96HsVWbUMTiPsYolTYEXNdUZ4J44dZCSkVeRw0d6+8P48wk
-	1EPQO+xON5R0j9zFu4Xw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:Subject:
+	From:To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=HwF/Zg/vYjWdCdY/PV704zbib7V5e0K235/5ExMvbnw=; b=jKbt6csgPN5AY2
+	W7p0KvfIbi8GuGXZWZDwdejj24xOOcBgicBwHEptHdIm1dVs+Gy8aDTvAqoiqt6YHg7KcfeoNgMbn
+	7tdMRdZwHotiR7lf64rCdpE3Cf48kHCXd2yKkyKTtgjT9nzLCZW3612YbZjfd49evjQNDDKe08ZVN
+	4oNaH0PPJySg1p2XPxmgMGWKcc7bhN/uTGGGEgOBibCuZBrQ+gMAMF0E84mAQOTX0j89Ng7CQ4Nfv
+	hT9GbQylL95rFl1BFxVLNO14NTKL5r+MY0a+0ach6IxxXQgU2PaJ8KoGEkLTtQG6nlg9P/wkOvG7/
+	upX+B4vJNI60Q4rvCgFg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
-	id 1iAZ9g-0001QO-KB; Wed, 18 Sep 2019 12:33:56 +0000
-Received: from mx0b-0014ca01.pphosted.com ([208.86.201.193]
- helo=mx0a-0014ca01.pphosted.com)
+	id 1iAZQM-0000yO-0D; Wed, 18 Sep 2019 12:51:10 +0000
+Received: from mout.web.de ([212.227.15.4])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iAZ9d-0001Px-34
- for linux-mtd@lists.infradead.org; Wed, 18 Sep 2019 12:33:54 +0000
-Received: from pps.filterd (m0042333.ppops.net [127.0.0.1])
- by mx0b-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- x8ICXJBM029525; Wed, 18 Sep 2019 05:33:40 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=proofpoint;
- bh=ZXKfpxxl6xzOXemPDXXdxgZTUKsstAW4xEkots+ZYaY=;
- b=I63ToQrj5LtYfpkQdg48VlxuZg+dazo5AIc7a5oNnzatZYv86BXoyEs9Kx9Z0oSXgip3
- PqW7gr+jZlNBCbD0IacWz1sO3uI75tVESqa/kwCNil6YbNpF/L012OYsNYmz7LKddurZ
- CoHWWTvaPPryHdA44+ZNyxb4m25mNpqG8Ie8rEhja0oshw9zelGJYh5A1qWUSBToX/Gm
- MDikmCV7PKc2pdYauf6Da+yEKhqECleLZM2hr/p8tmbrsWzHmX+gT9BKjcsW01kDC1rJ
- CJandDmpNEMJMz6T6iWiF4Xsij2jUfbARPdWOlrnFALpzuI+AW7kc8k/xQVr3hPiWsax /Q== 
-Received: from nam03-co1-obe.outbound.protection.outlook.com
- (mail-co1nam03lp2052.outbound.protection.outlook.com [104.47.40.52])
- by mx0b-0014ca01.pphosted.com with ESMTP id 2v37ktat4h-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 18 Sep 2019 05:33:39 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KOwVYNysaSK+GsQcrRZMlpiXAjfpXqEpmNLLXy/KgLagyp0WTl3ilCO4c9b2R8SrOVv8e4ZQhuOXPxbRwBCzkdmqboJlrPgeQqpxjITOTm0/Ktn/M/l8Qcf5FbMhasOikDiQwvQPUcXGywmom/0aPnxDDoDlPTVBqZ64+x1x+eIJqlcjgx1olwmurafMRiJ1hH2Ak21bKtNlOpPuw11MRBRc15+U1J/q5mFXth9eSzPsIrXRjHe1lshI93CaP6uXOpw7KjLVzMeo5f7l8O4DaFP4hE7LW17qv7+fKyFQsI3S5NBEWnPceQe/651F7PRrzV55TfeauEAW3o9pBohqtA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZXKfpxxl6xzOXemPDXXdxgZTUKsstAW4xEkots+ZYaY=;
- b=lIBu8vRW0DnLrWOk+XfEO+fitNLIRT3Hlmuzea07+x7R6TNEvsFyIfHN6H626qJUUjkN2H4J8s8T9JezW3sEOYgIAaTvnnE/SqdENVcBtjPGD3X+zYH3toou0UU+iclsIA2N/Jbm/elLKjZwgry/0uOpzg94zr0jeqThML0hPJielosrzOrMyYnoFdWgWUz45hWZsh5UZwuPCWXA1+D7m40wqTVNryg4f2FW9hWLLeEDb5SQTdP/Dv9zdKQSFxkwBT4sx/iPIB2+KsD72jlwQ/OktXEdVaYUcgVM+6PjI2TpkBWHWSMDmUDB509PfFnLJVkkFszuKd9h/MwEShOETg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
- is 158.140.1.28) smtp.rcpttodomain=ti.com smtp.mailfrom=cadence.com;
- dmarc=fail (p=none sp=none pct=100) action=none header.from=cadence.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZXKfpxxl6xzOXemPDXXdxgZTUKsstAW4xEkots+ZYaY=;
- b=polgT42OOEqJ2q4VakCYeEtZ7d15QPDFZbJ8TkBMV/+VJ1042bqSflADPl9JwaTdDUhw3ErH5VmSd/AalO5xt99+dhkpffMGWGAfLw312k5haHuAav2u9njpUYB20DPQ3QgQqdDT1GOj9mkSDD/IFyoJaEAS1x3xy+41ngBFJzE=
-Received: from CH2PR07CA0026.namprd07.prod.outlook.com (2603:10b6:610:20::39)
- by DM5PR07MB3865.namprd07.prod.outlook.com (2603:10b6:3:eb::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2263.15; Wed, 18 Sep
- 2019 12:33:36 +0000
-Received: from BY2NAM05FT031.eop-nam05.prod.protection.outlook.com
- (2a01:111:f400:7e52::202) by CH2PR07CA0026.outlook.office365.com
- (2603:10b6:610:20::39) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2263.17 via Frontend
- Transport; Wed, 18 Sep 2019 12:33:36 +0000
-Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
- cadence.com discourages use of 158.140.1.28 as permitted sender)
-Received: from sjmaillnx2.cadence.com (158.140.1.28) by
- BY2NAM05FT031.mail.protection.outlook.com (10.152.100.168) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2284.10 via Frontend Transport; Wed, 18 Sep 2019 12:33:36 +0000
-Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
- by sjmaillnx2.cadence.com (8.14.4/8.14.4) with ESMTP id
- x8ICXXpI003200
- (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
- Wed, 18 Sep 2019 05:33:34 -0700
-X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
-Received: from maileu3.global.cadence.com (10.160.88.99) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3; Wed, 18 Sep 2019 14:33:32 +0200
-Received: from lvlogina.cadence.com (10.165.176.102) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3 via Frontend Transport; Wed, 18 Sep 2019 14:33:32 +0200
-Received: from lvlogina.cadence.com (localhost.localdomain [127.0.0.1])
- by lvlogina.cadence.com (8.14.4/8.14.4) with ESMTP id x8ICXWI3000935;
- Wed, 18 Sep 2019 13:33:32 +0100
-Received: (from piotrs@localhost)
- by lvlogina.cadence.com (8.14.4/8.14.4/Submit) id x8ICXVGq000933;
- Wed, 18 Sep 2019 13:33:31 +0100
-From: Piotr Sroka <piotrs@cadence.com>
-To: 
-Subject: [v7 2/2] dt-bindings: mtd: Add Cadence NAND controller driver
-Date: Wed, 18 Sep 2019 13:31:45 +0100
-Message-ID: <20190918123223.31745-1-piotrs@cadence.com>
-X-Mailer: git-send-email 2.15.0
-In-Reply-To: <20190918122923.28737-1-piotrs@cadence.com>
-References: <20190918122923.28737-1-piotrs@cadence.com>
+ id 1iAZQI-0000xl-Qu
+ for linux-mtd@lists.infradead.org; Wed, 18 Sep 2019 12:51:08 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+ s=dbaedf251592; t=1568811033;
+ bh=+WNwiFMaUtoRg1qtUawk8yXifdh05q8CsZK/xHuAYvs=;
+ h=X-UI-Sender-Class:To:From:Subject:Cc:Date;
+ b=V5Sq+c4mZ5hs1MKd1QsJbV2YpsvshTWDqAGZMMzF82lR9H4gpOTGgB6OtapEIZCha
+ CdpzMH5hVybPW4UpTfOY39rWro7zdbRzCJ0RUEo2PowVg/SzIn9oBWJ+LLA4ZC49fj
+ QyOORi8p9JtPrcp4/b/P9jobsCExOmwIcwEWA204=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([2.244.2.101]) by smtp.web.de (mrweb001
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 0MWirL-1ihL7K2Ckt-00XvqU; Wed, 18
+ Sep 2019 14:50:33 +0200
+To: linux-mtd@lists.infradead.org, Allison Randal <allison@lohutok.net>,
+ Armijn Hemel <armijn@tjaldur.nl>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Lee Jones <lee.jones@linaro.org>, Marek Vasut <marek.vasut@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>,
+ Vignesh Raghavendra <vigneshr@ti.com>
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] mtd: st_spi_fsm: Use devm_platform_ioremap_resource() in
+ stfsm_probe()
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <e1d32aa4-7c82-64e0-b7c4-33c94d9a2769@web.de>
+Date: Wed, 18 Sep 2019 14:50:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.0
 MIME-Version: 1.0
-X-OrganizationHeadersPreserved: maileu3.global.cadence.com
-X-EOPAttributedMessage: 0
-X-Forefront-Antispam-Report: CIP:158.140.1.28; IPV:CAL; SCL:-1; CTRY:US;
- EFV:NLI; SFV:NSPM;
- SFS:(10009020)(4636009)(39860400002)(136003)(396003)(346002)(376002)(199004)(189003)(36092001)(478600001)(87636003)(5660300002)(70586007)(70206006)(109986005)(2906002)(76130400001)(42186006)(50226002)(4326008)(16586007)(48376002)(54906003)(316002)(486006)(7636002)(305945005)(1076003)(8936002)(1671002)(356004)(7416002)(50466002)(2616005)(336012)(36756003)(26826003)(6666004)(446003)(76176011)(426003)(86362001)(186003)(51416003)(26005)(476003)(47776003)(126002)(8676002)(246002)(11346002)(266003);
- DIR:OUT; SFP:1101; SCL:1; SRVR:DM5PR07MB3865; H:sjmaillnx2.cadence.com; FPR:;
- SPF:SoftFail; LANG:en; PTR:corp.Cadence.COM; A:1; MX:1; 
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a20fe372-a398-416c-5a57-08d73c346cfe
-X-Microsoft-Antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(5600167)(711020)(4605104)(1401327)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328);
- SRVR:DM5PR07MB3865; 
-X-MS-TrafficTypeDiagnostic: DM5PR07MB3865:
-X-Microsoft-Antispam-PRVS: <DM5PR07MB38658DB04A1AB4B14661B350DD8E0@DM5PR07MB3865.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:525;
-X-Forefront-PRVS: 01644DCF4A
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam-Message-Info: 3R6BftLp8SE2ipIBNr0pNyn/ZMkwS8RAsm4U4+nc0JEA02Puyo7xVqjdu8Pe2S8DHpklX1wp2at2P71BgsXruUAVSA22pyBz0gYBdxsUq7bucAZDK8ZKesOOp6UBmpx2otey5lJqPGg6daqmxW60ZMcxevtTCHH9oEBTFcqd9QqSol8wJnYK3fprbmw/Auy5GRaTPDtdGxOVaORPTb24X0tNG/5PymvbTK08/8V/MDOZhT1NRFvOUglVk/NvqUkodjGRPCrZFncIr2zlOKuaackZGEEeV4MoAM4FXtklexXy478+8K2IAWR32TmxAJ1o7vCyH+eZ4FhFm4tbP5ekUW4jUUBbmlBxYDctnnqe1r/hcmuvFi1q+j7URD7DVwkKG8EsFZnexwMNVnLIkO7ZuHtKrXi/Vvyy4u5qJZC95tE=
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2019 12:33:36.0328 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a20fe372-a398-416c-5a57-08d73c346cfe
-X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9; Ip=[158.140.1.28];
- Helo=[sjmaillnx2.cadence.com]
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR07MB3865
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.70,1.0.8
- definitions=2019-09-18_07:2019-09-17,2019-09-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check
- score=0 malwarescore=0
- suspectscore=0 adultscore=0 phishscore=0 spamscore=0 mlxscore=0
- mlxlogscore=999 impostorscore=0 lowpriorityscore=0 bulkscore=0
- clxscore=1015 priorityscore=1501 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-1908290000 definitions=main-1909180128
+Content-Language: en-US
+X-Provags-ID: V03:K1:BqxkGe90vJASEheSmEFOrRVq5Qgo2ALbZg+pjS0GL9yQayyJC3r
+ NJs7O3+WrIHhdemC11+aowrF1vMfEhwH9TVXoEsgBeNEc5O3JKi/cjBDsNepp3i8Ta4k4mu
+ 37F9ScdXJD/1zunnNL6Nhbu2BdpDkSk+rM9wYDfw367qYu9Z0eYzOjKbrtxWYieIybuTZSs
+ A237HI6KS9eG46i1SDDLA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:phUl5+idfpk=:Ezg+HJnYP1hEKPWLoTTzzi
+ NQBidcUX+tm9yPMzFFDCetRz0UTjuVgKBn4WEDMcQb5kX1T5TTRf2QiuzmHb+HOB77YH33f8T
+ RY+pIB1zvTeAzhbK8hXrNSrCgiqOmiNx8q6bzdgL6CuJR4wfBTS6hzoJfukZx2YUoUBkHibWO
+ HFcxLZlb4kyw6N96OvVKuyQd3z4p5riy06FV16l2F8OCJzfl9wrT3tE19ms5DAXkCp1mX8CA8
+ VN34iK5yGyGLgSSV5V2eWZmc+WRtRFdxVEh2ssK0kT2/zI7OX62WivkElcm8B91Y0V6gxOmDj
+ PAWcH/yhvMhnauKWniP4ZkXYXwjxcAfr4H12noog8n2BZdJxNJDYUvq+MvlSCyO0yrsCBEuPw
+ lNWVX0GhrNoHRgiLKTdhXzHn5JiKxIyrO1+rAh8mPyfLSQAy/Iyj8QqAqxZ9MiSym7BePdMGI
+ HEoZ5oKygKqqEtlrNqcVN11rCdLYKCWRThuXgOKLeJI2h/uYLr56Pdf0P1NnicN8KvBcWszzc
+ c3g6MMPemVCQNEllDdRD11Ehrn7UpMIVHE3b3D297N3erAwClQK038+L5amNFLBZlTV63i4ns
+ AmN+QjDOoSZcpmbn8pW5PaxNlZox8NnSJK0Xq4OIMVbu1/+6MEv4FcNhQ7LzPJJPsQhJbyJXx
+ /lsrNV8ST4IHNM5X85xoaJs9k49Qmdu7VwzFbLp4VRnp6IbFd9ITAS7sD4mXVEckUupL+z5g5
+ DwgxZC3sM9KTUefxarvHB6KWS4Q5t4NeXUkyPSBJ5BHPkXpkRb/Hbkne2mQ2BcK162ZvvV0H3
+ na7vs8TRGtI1m16vTZcfEc5NdM/0CMHOFpDfVsGWXFmyUS0IZjPuosOkh6i9Xws+eruXj+7lm
+ i+CfjDw1sKwzeDwqivgPtQ+HewoSzgjDtbD97hhuqZhQYyrB8AewFKAg7Z53L9V7LBHatNbQW
+ oCZjongnKuy82MhzYI68HZL1qCw49Bb4lsdsZPOjqRrRQ946HR7U/8E5+kP/r34kazUaRKJ91
+ kT041dIcSBzYOZnnnrk8PDZPLM6w50KAYpgk1gdFFd/d23WyLfsa4hM1UQ6luDluK0x8/2nWh
+ O0BmBRxt8Un9QvoEcfaCTDUohH75zm54smdxxntBonWofvsbIN7UJwd5meeZbCuka4Pk4hRcu
+ J6AYaGKiWousUOHCnfCAdru0dFzRQ51AxQTnHywa+Ruw5oto3V25f5c+4OETw3kw2FR/00boy
+ e7Vit5xLX4fVi16h9tR9wTL8XpohSIWGZItlsaUn5Yfq5VBPhzzNuBZjnQJg=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190918_053353_261028_060AC851 
-X-CRM114-Status: GOOD (  21.44  )
+X-CRM114-CacheID: sfid-20190918_055107_208179_43FF7337 
+X-CRM114-Status: GOOD (  10.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -166,128 +147,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- "Paul E. McKenney" <paulmck@linux.ibm.com>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Richard Weinberger <richard@nod.at>, Linus Walleij <linus.walleij@linaro.org>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- "David S. Miller" <davem@davemloft.net>, Marek Vasut <marek.vasut@gmail.com>,
- Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Kazuhiro Kasai <kasai.kazuhiro@socionext.com>, linux-kernel@vger.kernel.org,
- Piotr Sroka <piotrs@cadence.com>
+Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+ kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ Himanshu Jha <himanshujha199640@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Document the bindings used by Cadence NAND controller driver
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Wed, 18 Sep 2019 14:37:34 +0200
 
-Signed-off-by: Piotr Sroka <piotrs@cadence.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
-Changes for v7:
-- none
-Changes for v6:
-- add documentation for address-cells and size-cells
-- remove not needed space
-- put myself as maintainer of the Cadence nand driver bindings
-Changes for v5:
-- replace "_" by "-" in all properties
-- change compatible name from cdns,hpnfc to cdns,hp-nfc
-Changes for v4:
-- add commit message
-Changes for v3:
-- add unit suffix for board_delay 
-- move child description to proper place
-- remove prefix cadence_ for reg and sdma fields
-Changes for v2:
-- remove chip dependends parameters from dts bindings
-- add names for register ranges in dts bindings
-- add generic bindings to describe NAND chip representation
----
- .../bindings/mtd/cadence-nand-controller.txt       | 53 ++++++++++++++++++++++
- MAINTAINERS                                        |  1 +
- 2 files changed, 54 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
+Simplify this function implementation by using a known wrapper function.
 
-diff --git a/Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt b/Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
-new file mode 100644
-index 000000000000..f3893c4d3c6a
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
-@@ -0,0 +1,53 @@
-+* Cadence NAND controller
-+
-+Required properties:
-+  - compatible : "cdns,hp-nfc"
-+  - reg : Contains two entries, each of which is a tuple consisting of a
-+	  physical address and length. The first entry is the address and
-+	  length of the controller register set. The second entry is the
-+	  address and length of the Slave DMA data port.
-+  - reg-names: should contain "reg" and "sdma"
-+  - #address-cells: should be 1. The cell encodes the chip select connection.
-+  - #size-cells : should be 0.
-+  - interrupts : The interrupt number.
-+  - clocks: phandle of the controller core clock (nf_clk).
-+
-+Optional properties:
-+  - dmas: shall reference DMA channel associated to the NAND controller
-+  - cdns,board-delay-ps : Estimated Board delay. The value includes the total
-+    round trip delay for the signals and is used for deciding on values
-+    associated with data read capture. The example formula for SDR mode is
-+    the following:
-+    board delay = RE#PAD delay + PCB trace to device + PCB trace from device
-+    + DQ PAD delay
-+
-+Child nodes represent the available NAND chips.
-+
-+Required properties of NAND chips:
-+  - reg: shall contain the native Chip Select ids from 0 to max supported by
-+    the cadence nand flash controller
-+
-+See Documentation/devicetree/bindings/mtd/nand.txt for more details on
-+generic bindings.
-+
-+Example:
-+
-+nand_controller: nand-controller@60000000 {
-+	  compatible = "cdns,hp-nfc";
-+	  #address-cells = <1>;
-+	  #size-cells = <0>;
-+	  reg = <0x60000000 0x10000>, <0x80000000 0x10000>;
-+	  reg-names = "reg", "sdma";
-+	  clocks = <&nf_clk>;
-+	  cdns,board-delay-ps = <4830>;
-+	  interrupts = <2 0>;
-+	  nand@0 {
-+	      reg = <0>;
-+	      label = "nand-1";
-+	  };
-+	  nand@1 {
-+	      reg = <1>;
-+	      label = "nand-2";
-+	  };
-+
-+};
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 16e16445b88b..94d78f4e29ba 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3584,6 +3584,7 @@ M:	Piotr Sroka <piotrs@cadence.com>
- L:	linux-mtd@lists.infradead.org
- S:	Maintained
- F:	drivers/mtd/nand/raw/cadence-nand-controller.c
-+F:	Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
- 
- CADET FM/AM RADIO RECEIVER DRIVER
- M:	Hans Verkuil <hverkuil@xs4all.nl>
--- 
-2.15.0
+This issue was detected by using the Coccinelle software.
+
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ drivers/mtd/devices/st_spi_fsm.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
+
+diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
+index f4d1667daaf9..5bd1c44ae529 100644
+--- a/drivers/mtd/devices/st_spi_fsm.c
++++ b/drivers/mtd/devices/st_spi_fsm.c
+@@ -2034,13 +2034,7 @@ static int stfsm_probe(struct platform_device *pdev)
+
+ 	platform_set_drvdata(pdev, fsm);
+
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (!res) {
+-		dev_err(&pdev->dev, "Resource not found\n");
+-		return -ENODEV;
+-	}
+-
+-	fsm->base = devm_ioremap_resource(&pdev->dev, res);
++	fsm->base = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(fsm->base)) {
+ 		dev_err(&pdev->dev,
+ 			"Failed to reserve memory region %pR\n", res);
+--
+2.23.0
 
 
 ______________________________________________________
