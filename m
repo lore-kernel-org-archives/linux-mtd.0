@@ -1,96 +1,89 @@
-Return-Path: <SRS0=V/n1=XM=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=mMzh=XN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33AEDC4CEC9
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Sep 2019 22:32:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E2B49C4CEC4
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Sep 2019 05:29:27 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 019E721897
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Sep 2019 22:32:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AF7A220856
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Sep 2019 05:29:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OFpwVjBy";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rdYlYU4i"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 019E721897
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="b2mwcVsh";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Bp3JlzlG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AF7A220856
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=6B3x9G36//4nRwSPSoSzxajYIviKmm55e3fhI6OyalA=; b=OFpwVjBy5ny3rNf6Zyp864Uvj
-	bxpjTeCYClGBRc2Sp8+hJoVlq4ywx41dbbavzNTV0CU2QoBpRn1h58UEvK38VfjIuAswxwrvDI1Nz
-	m/eqGaeBci+dKNn9iDzVHsJuMMRjHfjWdaMkrC5rv9T79/674A9khnj1Qm4IJYOo5lBlTC5E+xGZS
-	3VxscrmjW5iVYhwHopwDp9rmmxxXnQuEEYjZ2Q1RQcpiIrLXXpz2oiY5MUWhHvHP/cUFFWAMGggFa
-	f+wnmOS5xpbpK9ev8hzzALO9xqmrGWFtYGJvl8lw6hjyTAqh5iwYK6QcZSTLt9mn8ip7JepDfnxnq
-	N+erY4Zag==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=rOMiKfpZI2J/siwOpCYDrGwMgZ1eDD3xxuB2CiLKru0=; b=b2mwcVsh6QMrCT
+	5SMkkNMc7jOcYZr7Fo0R4vSbirYtMwkwJuO6Or1VjJ9KY0sjEvliiG4obF1o8dvn/yAAa+hwNDBlU
+	KK8Vb3pB9cxMk19kI4yMaopQnM1GAAAZRNOUuJ3Z2QHGqLVoSBfxg7X1cOV1s2oJshhnn9alPLUlc
+	arqlG8KEUH0A7tnnEUJ1BIO3o+JEq5ALV8Mnn+zI1zIWViLvMGji2IX5MsJ3eNjBNuixVS/Bz8pVK
+	OSPP3lz32RU78Yynv5N0lsfMtsVr8e1erp/rSSj+Ud/XlDFkQEQotkMCr+eBgYzFufdDvV3lvl3We
+	PjXFRhGb3vAvEjIJTVSQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
-	id 1iAM1h-0005z0-1R; Tue, 17 Sep 2019 22:32:49 +0000
-Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
+	id 1iASWq-0002SC-C5; Wed, 18 Sep 2019 05:29:24 +0000
+Received: from lelv0143.ext.ti.com ([198.47.23.248])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iAM1d-0005xe-3K
- for linux-mtd@lists.infradead.org; Tue, 17 Sep 2019 22:32:47 +0000
-Received: by mail-pl1-x643.google.com with SMTP id d22so2145600pll.7
- for <linux-mtd@lists.infradead.org>; Tue, 17 Sep 2019 15:32:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-transfer-encoding:content-language;
- bh=dmHKlC95wEkb+HENLwm0wnzogMC58TL2IKPX+eVUAOk=;
- b=rdYlYU4iWu37JaHMYZYnsFvPb4IVU+ujYbjqRjhooffq05DM3nAh3j6bzbFqnl+Z+m
- u9ZAKZlglBUOYenB/3BrqhJ3tLmlHyZCLaO3E/Uya10zG0S2a7lm8L0FYkuj/hWdLa93
- 4iShr/m6wuZq3U7YBdeXaA74t2uDX31eoste1s5rVd8Hm6zeO6vifII9CTxcFrqfmY/y
- frUpAk8OmB38+keSHKuVEZKnZRV3DHkXPFHewW+TK4X5qpWno7yju2r+e22NP8NAlFQc
- t0q/kHRZ2rZWLYq0mEi1eGiRbcw4+Iltb8k661e/Zg0AJwXBqcaJCA/7S9I5vvDxsGHl
- QT1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-transfer-encoding
- :content-language;
- bh=dmHKlC95wEkb+HENLwm0wnzogMC58TL2IKPX+eVUAOk=;
- b=oixetf9qmjQqsU/so9WYnkBJiTYAufiJ0XJQV3YrZo1wRU4G8OLbE9nWtehtKrtnEm
- slx4I2C6EMZbb/WloCf49LEFRepcYwP7Now7Wm3+Odav/JS8JaGz1QFZ2B6fnf/vxvnA
- u31FGiXi0KpVvcV4FGL6QowfFvrWAgoBvFdSue42XFK/vBCzvJX3wNuwLodoTVA/mWXb
- gt65yEv3ZUqqrpFddSydfmPnEUz3PFzXcHEZGshph8yqUrlG/nAmL/jfi8QOpqxmGoXy
- Hyh95rJE/Q0SX5KfkCh5ddaM98YYPEnGISTYhKsGHTSWfQplfkvDyiR4t9diChUKieNg
- PM9g==
-X-Gm-Message-State: APjAAAXZyurHpL1l5yQSrDTONl5dEe2bQ8P9ZZONriDqhlQr/Tirq/hT
- kSO0QFD4FSAutAqrC/IJ5P4=
-X-Google-Smtp-Source: APXvYqz2kwMiV3IzxK9Tf5xKPsp4eqjTJDvh2n17maZJlAv70QrBj7iUZdXyac4Xthx4D2Em5ItjLA==
-X-Received: by 2002:a17:902:9b86:: with SMTP id
- y6mr1010494plp.217.1568759563045; 
- Tue, 17 Sep 2019 15:32:43 -0700 (PDT)
-Received: from ?IPv6:240b:10:2720:5510:a182:288:3ffa:432a?
- ([240b:10:2720:5510:a182:288:3ffa:432a])
- by smtp.gmail.com with ESMTPSA id v5sm5003146pfv.76.2019.09.17.15.32.40
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Tue, 17 Sep 2019 15:32:42 -0700 (PDT)
-Subject: Re: [PATCH for 5.2.y] mtd: cfi_cmdset_0002: Use chip_good() to retry
- in do_write_oneword()
-To: Greg KH <greg@kroah.com>
-References: <20190917175048.12895-1-ikegami.t@gmail.com>
- <20190917181127.GD1570310@kroah.com>
-From: Tokunori Ikegami <ikegami.t@gmail.com>
-Message-ID: <7c0113e0-d455-e3e6-86fc-45429be196fb@gmail.com>
-Date: Wed, 18 Sep 2019 07:32:39 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+ id 1iASWl-0002Rh-ML
+ for linux-mtd@lists.infradead.org; Wed, 18 Sep 2019 05:29:21 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id x8I5T1e8072171;
+ Wed, 18 Sep 2019 00:29:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1568784541;
+ bh=LXroDC7/W6e+6Qj0yAjamkKlIPPiyz/UP6ma+CqZkgQ=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=Bp3JlzlGJBiR85huQP8mVspp6weiw6obeMU6Ga2y453jDAuf9gpXG0mwEIwJuqL9i
+ 9FTC1UjkDEUqyRc/31SXRAgNNFAdDDMMi1kAlFcyBlji6inHvWVxN0843TtvJYeKIn
+ daEE+j9ZW6X+XmngEjZY+hgxgbOt5BMDTROYRCtA=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x8I5T1gR049918
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Wed, 18 Sep 2019 00:29:01 -0500
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Wed, 18
+ Sep 2019 00:29:01 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
+ Frontend Transport; Wed, 18 Sep 2019 00:28:57 -0500
+Received: from [172.24.145.136] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id x8I5Sws2068084;
+ Wed, 18 Sep 2019 00:28:59 -0500
+Subject: Re: [PATCH v8 1/9] mtd: cfi_cmdset_0002: Use chip_good() to retry in
+ do_write_oneword()
+To: Tokunori Ikegami <ikegami_to@yahoo.co.jp>, Tokunori Ikegami
+ <ikegami.t@gmail.com>, Sasha Levin <sashal@kernel.org>
+References: <20190805190326.28772-2-ikegami.t@gmail.com>
+ <20190806004303.EBEF82147A@mail.kernel.org>
+ <9fd8b17b-abb4-114e-d6fb-252430d98432@gmail.com>
+ <a74e201d-4f1c-1bd6-babf-8dac0d515d6d@yahoo.co.jp>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <6d1d5eff-af08-5f86-367f-ada671a1d9bf@ti.com>
+Date: Wed, 18 Sep 2019 10:59:35 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190917181127.GD1570310@kroah.com>
+In-Reply-To: <a74e201d-4f1c-1bd6-babf-8dac0d515d6d@yahoo.co.jp>
 Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190917_153245_144499_4A439861 
-X-CRM114-Status: GOOD (  20.51  )
+X-CRM114-CacheID: sfid-20190917_222919_837288_EDBF5826 
+X-CRM114-Status: GOOD (  16.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,72 +95,66 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Sasha Levin <sashal@kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>,
- Hauke Mehrtens <hauke@hauke-m.de>, stable@vger.kernel.org,
- Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
+Cc: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
  Chris Packham <chris.packham@alliedtelesis.co.nz>,
- linux-mtd@lists.infradead.org, Felix Fietkau <nbd@nbd.name>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+ linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-On 2019/09/18 3:11, Greg KH wrote:
-> On Wed, Sep 18, 2019 at 02:50:48AM +0900, Tokunori Ikegami wrote:
->> As reported by the OpenWRT team, write requests sometimes fail on some
->> platforms.
->> Currently to check the state chip_ready() is used correctly as described by
->> the flash memory S29GL256P11TFI01 datasheet.
->> Also chip_good() is used to check if the write is succeeded and it was
->> implemented by the commit fb4a90bfcd6d8 ("[MTD] CFI-0002 - Improve error
->> checking").
->> But actually the write failure is caused on some platforms and also it can
->> be fixed by using chip_good() to check the state and retry instead.
->> Also it seems that it is caused after repeated about 1,000 times to retry
->> the write one word with the reset command.
->> By using chip_good() to check the state to be done it can be reduced the
->> retry with reset.
->> It is depended on the actual flash chip behavior so the root cause is
->> unknown.
->>
->> Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
->> Cc: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
->> Cc: linux-mtd@lists.infradead.org
->> Cc: stable@vger.kernel.org
->> Reported-by: Fabio Bettoni <fbettoni@gmail.com>
->> Signed-off-by: Felix Fietkau <nbd@nbd.name>
->> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
->> Signed-off-by: Tokunori Ikegami <ikegami.t@gmail.com>
->> [vigneshr@ti.com: Fix a checkpatch warning]
->> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
->> ---
->>   drivers/mtd/chips/cfi_cmdset_0002.c | 18 ++++++++++++------
->>   1 file changed, 12 insertions(+), 6 deletions(-)
->>   mode change 100644 => 100755 drivers/mtd/chips/cfi_cmdset_0002.c
-> You changed the file to be executable???  That's not ok :(
-
-Very sorry for this.
-I missed it to fix to not be executable since it was changed to be 
-executable on my local environment.
-Anyway I will do fix it.
-
->
-> Also, what is the git commit id of this patch in Linus's tree?  I can't
-> seem to find it there.
-
-Actually it has not been pulled in Linus's tree.
-But it has been merged into 
-git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next for 
-v5.4-rc1 as the git commit id 37c673ade35c.
-So I thought as that it is okay to send the patches for the stable trees.
-But should I wait to be pulled the patch in Linus's tree at first?
-
->
-> thanks,
->
-> greg k-h
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGksCgpPbiAxNy8wOS8xOSAxMTozNCBQTSwgVG9rdW5vcmkgSWtlZ2FtaSB3cm90ZToKPiBIaSwK
+PiAKPiBUaGUgcGF0Y2ggaGFzIGJlZW4gbWVyZ2VkIGludG8KPiBnaXQ6Ly9naXQua2VybmVsLm9y
+Zy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvbXRkL2xpbnV4LmdpdCBtdGQvbmV4dCBmb3IKPiB2
+NS40LXJjMS4KPiBTbyBJIGhhdmUganVzdCBzZW50IHBhdGNoZXMgZm9yIHY1LjIueSwgdjQuMTku
+eSwgdjQuMTQueSwgdjQuOS55IGFuZAo+IHYuNC40Lnkgc2VwYXJhdGVseS4KPiAKCk5vcm1hbCBm
+bG93IGlzIHRvIHdhaXQgdW50aWwgcGF0Y2ggZ29lcyBpbnRvIExpbnVzJ3MgdHJlZS4gU28gcGxl
+YXNlCndhaXQgdW50aWwgdGhlbi4KClJlZ2FyZHMKVmlnbmVzaAoKPiBSZWdhcmRzLAo+IElrZWdh
+bWkKPiAKPiBPbiAyMDE5LzA4LzA2IDIzOjMwLCBUb2t1bm9yaSBJa2VnYW1pIHdyb3RlOgo+PiBI
+aSwKPj4KPj4gVGhhbmtzIGZvciB0aGUgbWFpbC4KPj4KPj4gT24gMjAxOS8wOC8wNiA5OjQzLCBT
+YXNoYSBMZXZpbiB3cm90ZToKPj4+IEhpLAo+Pj4KPj4+IFtUaGlzIGlzIGFuIGF1dG9tYXRlZCBl
+bWFpbF0KPj4+Cj4+PiBUaGlzIGNvbW1pdCBoYXMgYmVlbiBwcm9jZXNzZWQgYmVjYXVzZSBpdCBj
+b250YWlucyBhIC1zdGFibGUgdGFnLgo+Pj4gVGhlIHN0YWJsZSB0YWcgaW5kaWNhdGVzIHRoYXQg
+aXQncyByZWxldmFudCBmb3IgdGhlIGZvbGxvd2luZyB0cmVlczogYWxsCj4+Pgo+Pj4gVGhlIGJv
+dCBoYXMgdGVzdGVkIHRoZSBmb2xsb3dpbmcgdHJlZXM6IHY1LjIuNiwgdjQuMTkuNjQsIHY0LjE0
+LjEzNiwKPj4+IHY0LjkuMTg3LCB2NC40LjE4Ny4KPj4+Cj4+PiB2NS4yLjY6IEZhaWxlZCB0byBh
+cHBseSEgUG9zc2libGUgZGVwZW5kZW5jaWVzOgo+Pj4gwqDCoMKgwqAgNDg0NGVmODAzMDVkICgi
+bXRkOiBjZmlfY21kc2V0XzAwMDI6IEFkZCBzdXBwb3J0IGZvciBwb2xsaW5nCj4+PiBzdGF0dXMg
+cmVnaXN0ZXIiKQo+Pj4KPj4+IHY0LjE5LjY0OiBGYWlsZWQgdG8gYXBwbHkhIFBvc3NpYmxlIGRl
+cGVuZGVuY2llczoKPj4+IMKgwqDCoMKgIDQ4NDRlZjgwMzA1ZCAoIm10ZDogY2ZpX2NtZHNldF8w
+MDAyOiBBZGQgc3VwcG9ydCBmb3IgcG9sbGluZwo+Pj4gc3RhdHVzIHJlZ2lzdGVyIikKPj4+IMKg
+wqDCoMKgIGQ5YjhhNjdiM2I5NSAoIm10ZDogY2ZpOiBmaXggZGVhZGxvb3AgaW4gY2ZpX2NtZHNl
+dF8wMDAyLmMKPj4+IGRvX3dyaXRlX2J1ZmZlciIpCj4+Pgo+Pj4gdjQuMTQuMTM2OiBGYWlsZWQg
+dG8gYXBwbHkhIFBvc3NpYmxlIGRlcGVuZGVuY2llczoKPj4+IMKgwqDCoMKgIDQ4NDRlZjgwMzA1
+ZCAoIm10ZDogY2ZpX2NtZHNldF8wMDAyOiBBZGQgc3VwcG9ydCBmb3IgcG9sbGluZwo+Pj4gc3Rh
+dHVzIHJlZ2lzdGVyIikKPj4+IMKgwqDCoMKgIGM2NGQ0NDE5YTE3YyAoIm10ZDogY2ZpX2NtZHNl
+dF8wMDAyOiBDaGFuZ2UgZXJhc2Ugb25lIGJsb2NrIHRvCj4+PiBlbmFibGUgWElQIG9uY2UiKQo+
+Pj4gwqDCoMKgwqAgZDliOGE2N2IzYjk1ICgibXRkOiBjZmk6IGZpeCBkZWFkbG9vcCBpbiBjZmlf
+Y21kc2V0XzAwMDIuYwo+Pj4gZG9fd3JpdGVfYnVmZmVyIikKPj4+IMKgwqDCoMKgIGVhMDkyZmIz
+Y2U2NiAoIm10ZDogY2ZpX2NtZHNldF8wMDAyOiBGaXggY29kaW5nIHN0eWxlIGlzc3VlcyIpCj4+
+Pgo+Pj4gdjQuOS4xODc6IEZhaWxlZCB0byBhcHBseSEgUG9zc2libGUgZGVwZW5kZW5jaWVzOgo+
+Pj4gwqDCoMKgwqAgNDg0NGVmODAzMDVkICgibXRkOiBjZmlfY21kc2V0XzAwMDI6IEFkZCBzdXBw
+b3J0IGZvciBwb2xsaW5nCj4+PiBzdGF0dXMgcmVnaXN0ZXIiKQo+Pj4gwqDCoMKgwqAgYzY0ZDQ0
+MTlhMTdjICgibXRkOiBjZmlfY21kc2V0XzAwMDI6IENoYW5nZSBlcmFzZSBvbmUgYmxvY2sgdG8K
+Pj4+IGVuYWJsZSBYSVAgb25jZSIpCj4+PiDCoMKgwqDCoCBkOWI4YTY3YjNiOTUgKCJtdGQ6IGNm
+aTogZml4IGRlYWRsb29wIGluIGNmaV9jbWRzZXRfMDAwMi5jCj4+PiBkb193cml0ZV9idWZmZXIi
+KQo+Pj4gwqDCoMKgwqAgZWEwOTJmYjNjZTY2ICgibXRkOiBjZmlfY21kc2V0XzAwMDI6IEZpeCBj
+b2Rpbmcgc3R5bGUgaXNzdWVzIikKPj4+Cj4+PiB2NC40LjE4NzogRmFpbGVkIHRvIGFwcGx5ISBQ
+b3NzaWJsZSBkZXBlbmRlbmNpZXM6Cj4+PiDCoMKgwqDCoCA0ODQ0ZWY4MDMwNWQgKCJtdGQ6IGNm
+aV9jbWRzZXRfMDAwMjogQWRkIHN1cHBvcnQgZm9yIHBvbGxpbmcKPj4+IHN0YXR1cyByZWdpc3Rl
+ciIpCj4+PiDCoMKgwqDCoCBjNjRkNDQxOWExN2MgKCJtdGQ6IGNmaV9jbWRzZXRfMDAwMjogQ2hh
+bmdlIGVyYXNlIG9uZSBibG9jayB0bwo+Pj4gZW5hYmxlIFhJUCBvbmNlIikKPj4+IMKgwqDCoMKg
+IGQ5YjhhNjdiM2I5NSAoIm10ZDogY2ZpOiBmaXggZGVhZGxvb3AgaW4gY2ZpX2NtZHNldF8wMDAy
+LmMKPj4+IGRvX3dyaXRlX2J1ZmZlciIpCj4+PiDCoMKgwqDCoCBlYTA5MmZiM2NlNjYgKCJtdGQ6
+IGNmaV9jbWRzZXRfMDAwMjogRml4IGNvZGluZyBzdHlsZSBpc3N1ZXMiKQo+Pj4KPj4+Cj4+PiBO
+T1RFOiBUaGUgcGF0Y2ggd2lsbCBub3QgYmUgcXVldWVkIHRvIHN0YWJsZSB0cmVlcyB1bnRpbCBp
+dCBpcyB1cHN0cmVhbS4KPj4+Cj4+PiBIb3cgc2hvdWxkIHdlIHByb2NlZWQgd2l0aCB0aGlzIHBh
+dGNoPwo+Pgo+PiBZZXMgSSB3aWxsIGRvIGZpeCB0aGUgcGF0Y2ggZm9yIHRoZSB0cmVlcyBmYWls
+ZWQgdG8gYXBwbHkgaWYgaXQgd2FzCj4+IHVwc3RyZWFtLgo+Pgo+PiBSZWdhcmRzLAo+PiBJa2Vn
+YW1pCj4+Cj4+Pgo+Pj4gLS3CoAo+Pj4gVGhhbmtzLAo+Pj4gU2FzaGEKPj4KPj4gX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+IExpbnV4IE1U
+RCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdAo+PiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8KPj4KCi0tIApSZWdhcmRzClZpZ25lc2gKCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBN
+VEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
