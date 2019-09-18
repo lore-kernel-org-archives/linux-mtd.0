@@ -2,22 +2,22 @@ Return-Path: <SRS0=mMzh=XN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2B49C4CEC4
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Sep 2019 05:29:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E2507C4CEC4
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Sep 2019 05:45:29 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AF7A220856
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Sep 2019 05:29:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B779821848
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Sep 2019 05:45:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="b2mwcVsh";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Bp3JlzlG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AF7A220856
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gRUF7fTV";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ZLIhuMuh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B779821848
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,64 +26,64 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
 	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
 	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rOMiKfpZI2J/siwOpCYDrGwMgZ1eDD3xxuB2CiLKru0=; b=b2mwcVsh6QMrCT
-	5SMkkNMc7jOcYZr7Fo0R4vSbirYtMwkwJuO6Or1VjJ9KY0sjEvliiG4obF1o8dvn/yAAa+hwNDBlU
-	KK8Vb3pB9cxMk19kI4yMaopQnM1GAAAZRNOUuJ3Z2QHGqLVoSBfxg7X1cOV1s2oJshhnn9alPLUlc
-	arqlG8KEUH0A7tnnEUJ1BIO3o+JEq5ALV8Mnn+zI1zIWViLvMGji2IX5MsJ3eNjBNuixVS/Bz8pVK
-	OSPP3lz32RU78Yynv5N0lsfMtsVr8e1erp/rSSj+Ud/XlDFkQEQotkMCr+eBgYzFufdDvV3lvl3We
-	PjXFRhGb3vAvEjIJTVSQ==;
+	List-Owner; bh=TcZxGl5zwcyfPpDeHV0IOtpXMtmO9lFVg4bU3cofrb4=; b=gRUF7fTV7CoQPf
+	ODsMzpP0SP4i1taONxKZIN9i184b19In/WIcUO1akIuqAGZ32AnYj6vEfEF4LRFvD482dJE1TMI1s
+	UQV04oAVcE7Af+iFAxSNN54Rwyp9Lf5q53Y0ENisqHWbn844Q6dN0kH5Nno5f83x1xr9PJEVf34bv
+	sbX2SfNqRAjtCClihnQ7r9/WqtUI3Eg4s0Gkga3NVC/STeh90Er4BJM3sIgb719grnhuTbh9KIPF+
+	obKaL6BgsrBN0ogp7feFaW32yTSClyRWIRo0VdlCxF86L/SVRPx/Z13sltVfJFJWoVrJ6MjKbdYLY
+	7uksxR8wkhYEkvZoIj0A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
-	id 1iASWq-0002SC-C5; Wed, 18 Sep 2019 05:29:24 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1iASmM-000814-AA; Wed, 18 Sep 2019 05:45:26 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iASWl-0002Rh-ML
- for linux-mtd@lists.infradead.org; Wed, 18 Sep 2019 05:29:21 +0000
+ id 1iASmJ-00080d-C1
+ for linux-mtd@lists.infradead.org; Wed, 18 Sep 2019 05:45:24 +0000
 Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id x8I5T1e8072171;
- Wed, 18 Sep 2019 00:29:01 -0500
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id x8I5iwVk083894;
+ Wed, 18 Sep 2019 00:44:58 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1568784541;
- bh=LXroDC7/W6e+6Qj0yAjamkKlIPPiyz/UP6ma+CqZkgQ=;
+ s=ti-com-17Q1; t=1568785498;
+ bh=7pG9/InaMSwJjn0yQpoBq7e14aVoFDf5QOSWplTd8hM=;
  h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=Bp3JlzlGJBiR85huQP8mVspp6weiw6obeMU6Ga2y453jDAuf9gpXG0mwEIwJuqL9i
- 9FTC1UjkDEUqyRc/31SXRAgNNFAdDDMMi1kAlFcyBlji6inHvWVxN0843TtvJYeKIn
- daEE+j9ZW6X+XmngEjZY+hgxgbOt5BMDTROYRCtA=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x8I5T1gR049918
+ b=ZLIhuMuhDMAAVa/OB57tiW6AEdePr3n7ZG8cw4fMVrCsTbdfklR7+96PSeevFfAeq
+ W1gak/1zW2G/19fsI2qxAWgIQOqcWRTZkiUuLkHvSYxXfpGY+EIg+15yDEOuFItoNx
+ 7pR/kd6Y05ea3LGzcvrJ/S9tinY7zcRpyJl4b+Ys=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x8I5iw9b075287
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 18 Sep 2019 00:29:01 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ Wed, 18 Sep 2019 00:44:58 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Wed, 18
- Sep 2019 00:29:01 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ Sep 2019 00:44:58 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
- Frontend Transport; Wed, 18 Sep 2019 00:28:57 -0500
+ Frontend Transport; Wed, 18 Sep 2019 00:44:58 -0500
 Received: from [172.24.145.136] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id x8I5Sws2068084;
- Wed, 18 Sep 2019 00:28:59 -0500
-Subject: Re: [PATCH v8 1/9] mtd: cfi_cmdset_0002: Use chip_good() to retry in
- do_write_oneword()
-To: Tokunori Ikegami <ikegami_to@yahoo.co.jp>, Tokunori Ikegami
- <ikegami.t@gmail.com>, Sasha Levin <sashal@kernel.org>
-References: <20190805190326.28772-2-ikegami.t@gmail.com>
- <20190806004303.EBEF82147A@mail.kernel.org>
- <9fd8b17b-abb4-114e-d6fb-252430d98432@gmail.com>
- <a74e201d-4f1c-1bd6-babf-8dac0d515d6d@yahoo.co.jp>
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id x8I5itkA022686;
+ Wed, 18 Sep 2019 00:44:55 -0500
+Subject: Re: [PATCH] mtd: cfi_util: use DIV_ROUND_UP() in cfi_udelay()
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Sergei Shtylyov
+ <sergei.shtylyov@cogentembedded.com>
+References: <610761cf-5a19-c182-07d8-8d118ca20035@cogentembedded.com>
+ <bd64fb56-c42d-7f7b-c6f1-4d7b43a6d191@cogentembedded.com>
+ <CAMuHMdVdKgBYSGJemH2LP+N61T+uui0XX1Zb-=dM5sNEAaQoMg@mail.gmail.com>
+ <90d87853-621f-890a-be59-1591cfe1f4ea@cogentembedded.com>
+ <CAMuHMdWEwc8_=NxY_UQ=tzR9o95Vv3_b6WF5s45nHjkzmVygMQ@mail.gmail.com>
 From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <6d1d5eff-af08-5f86-367f-ada671a1d9bf@ti.com>
-Date: Wed, 18 Sep 2019 10:59:35 +0530
+Message-ID: <f182a0f5-eed9-56ab-a909-a327bcd5ba8f@ti.com>
+Date: Wed, 18 Sep 2019 11:15:32 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <a74e201d-4f1c-1bd6-babf-8dac0d515d6d@yahoo.co.jp>
+In-Reply-To: <CAMuHMdWEwc8_=NxY_UQ=tzR9o95Vv3_b6WF5s45nHjkzmVygMQ@mail.gmail.com>
 Content-Language: en-US
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190917_222919_837288_EDBF5826 
-X-CRM114-Status: GOOD (  16.32  )
+X-CRM114-CacheID: sfid-20190917_224523_494004_F1072E8D 
+X-CRM114-Status: GOOD (  14.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,66 +95,49 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
- Chris Packham <chris.packham@alliedtelesis.co.nz>,
- linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGksCgpPbiAxNy8wOS8xOSAxMTozNCBQTSwgVG9rdW5vcmkgSWtlZ2FtaSB3cm90ZToKPiBIaSwK
-PiAKPiBUaGUgcGF0Y2ggaGFzIGJlZW4gbWVyZ2VkIGludG8KPiBnaXQ6Ly9naXQua2VybmVsLm9y
-Zy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvbXRkL2xpbnV4LmdpdCBtdGQvbmV4dCBmb3IKPiB2
-NS40LXJjMS4KPiBTbyBJIGhhdmUganVzdCBzZW50IHBhdGNoZXMgZm9yIHY1LjIueSwgdjQuMTku
-eSwgdjQuMTQueSwgdjQuOS55IGFuZAo+IHYuNC40Lnkgc2VwYXJhdGVseS4KPiAKCk5vcm1hbCBm
-bG93IGlzIHRvIHdhaXQgdW50aWwgcGF0Y2ggZ29lcyBpbnRvIExpbnVzJ3MgdHJlZS4gU28gcGxl
-YXNlCndhaXQgdW50aWwgdGhlbi4KClJlZ2FyZHMKVmlnbmVzaAoKPiBSZWdhcmRzLAo+IElrZWdh
-bWkKPiAKPiBPbiAyMDE5LzA4LzA2IDIzOjMwLCBUb2t1bm9yaSBJa2VnYW1pIHdyb3RlOgo+PiBI
-aSwKPj4KPj4gVGhhbmtzIGZvciB0aGUgbWFpbC4KPj4KPj4gT24gMjAxOS8wOC8wNiA5OjQzLCBT
-YXNoYSBMZXZpbiB3cm90ZToKPj4+IEhpLAo+Pj4KPj4+IFtUaGlzIGlzIGFuIGF1dG9tYXRlZCBl
-bWFpbF0KPj4+Cj4+PiBUaGlzIGNvbW1pdCBoYXMgYmVlbiBwcm9jZXNzZWQgYmVjYXVzZSBpdCBj
-b250YWlucyBhIC1zdGFibGUgdGFnLgo+Pj4gVGhlIHN0YWJsZSB0YWcgaW5kaWNhdGVzIHRoYXQg
-aXQncyByZWxldmFudCBmb3IgdGhlIGZvbGxvd2luZyB0cmVlczogYWxsCj4+Pgo+Pj4gVGhlIGJv
-dCBoYXMgdGVzdGVkIHRoZSBmb2xsb3dpbmcgdHJlZXM6IHY1LjIuNiwgdjQuMTkuNjQsIHY0LjE0
-LjEzNiwKPj4+IHY0LjkuMTg3LCB2NC40LjE4Ny4KPj4+Cj4+PiB2NS4yLjY6IEZhaWxlZCB0byBh
-cHBseSEgUG9zc2libGUgZGVwZW5kZW5jaWVzOgo+Pj4gwqDCoMKgwqAgNDg0NGVmODAzMDVkICgi
-bXRkOiBjZmlfY21kc2V0XzAwMDI6IEFkZCBzdXBwb3J0IGZvciBwb2xsaW5nCj4+PiBzdGF0dXMg
-cmVnaXN0ZXIiKQo+Pj4KPj4+IHY0LjE5LjY0OiBGYWlsZWQgdG8gYXBwbHkhIFBvc3NpYmxlIGRl
-cGVuZGVuY2llczoKPj4+IMKgwqDCoMKgIDQ4NDRlZjgwMzA1ZCAoIm10ZDogY2ZpX2NtZHNldF8w
-MDAyOiBBZGQgc3VwcG9ydCBmb3IgcG9sbGluZwo+Pj4gc3RhdHVzIHJlZ2lzdGVyIikKPj4+IMKg
-wqDCoMKgIGQ5YjhhNjdiM2I5NSAoIm10ZDogY2ZpOiBmaXggZGVhZGxvb3AgaW4gY2ZpX2NtZHNl
-dF8wMDAyLmMKPj4+IGRvX3dyaXRlX2J1ZmZlciIpCj4+Pgo+Pj4gdjQuMTQuMTM2OiBGYWlsZWQg
-dG8gYXBwbHkhIFBvc3NpYmxlIGRlcGVuZGVuY2llczoKPj4+IMKgwqDCoMKgIDQ4NDRlZjgwMzA1
-ZCAoIm10ZDogY2ZpX2NtZHNldF8wMDAyOiBBZGQgc3VwcG9ydCBmb3IgcG9sbGluZwo+Pj4gc3Rh
-dHVzIHJlZ2lzdGVyIikKPj4+IMKgwqDCoMKgIGM2NGQ0NDE5YTE3YyAoIm10ZDogY2ZpX2NtZHNl
-dF8wMDAyOiBDaGFuZ2UgZXJhc2Ugb25lIGJsb2NrIHRvCj4+PiBlbmFibGUgWElQIG9uY2UiKQo+
-Pj4gwqDCoMKgwqAgZDliOGE2N2IzYjk1ICgibXRkOiBjZmk6IGZpeCBkZWFkbG9vcCBpbiBjZmlf
-Y21kc2V0XzAwMDIuYwo+Pj4gZG9fd3JpdGVfYnVmZmVyIikKPj4+IMKgwqDCoMKgIGVhMDkyZmIz
-Y2U2NiAoIm10ZDogY2ZpX2NtZHNldF8wMDAyOiBGaXggY29kaW5nIHN0eWxlIGlzc3VlcyIpCj4+
-Pgo+Pj4gdjQuOS4xODc6IEZhaWxlZCB0byBhcHBseSEgUG9zc2libGUgZGVwZW5kZW5jaWVzOgo+
-Pj4gwqDCoMKgwqAgNDg0NGVmODAzMDVkICgibXRkOiBjZmlfY21kc2V0XzAwMDI6IEFkZCBzdXBw
-b3J0IGZvciBwb2xsaW5nCj4+PiBzdGF0dXMgcmVnaXN0ZXIiKQo+Pj4gwqDCoMKgwqAgYzY0ZDQ0
-MTlhMTdjICgibXRkOiBjZmlfY21kc2V0XzAwMDI6IENoYW5nZSBlcmFzZSBvbmUgYmxvY2sgdG8K
-Pj4+IGVuYWJsZSBYSVAgb25jZSIpCj4+PiDCoMKgwqDCoCBkOWI4YTY3YjNiOTUgKCJtdGQ6IGNm
-aTogZml4IGRlYWRsb29wIGluIGNmaV9jbWRzZXRfMDAwMi5jCj4+PiBkb193cml0ZV9idWZmZXIi
-KQo+Pj4gwqDCoMKgwqAgZWEwOTJmYjNjZTY2ICgibXRkOiBjZmlfY21kc2V0XzAwMDI6IEZpeCBj
-b2Rpbmcgc3R5bGUgaXNzdWVzIikKPj4+Cj4+PiB2NC40LjE4NzogRmFpbGVkIHRvIGFwcGx5ISBQ
-b3NzaWJsZSBkZXBlbmRlbmNpZXM6Cj4+PiDCoMKgwqDCoCA0ODQ0ZWY4MDMwNWQgKCJtdGQ6IGNm
-aV9jbWRzZXRfMDAwMjogQWRkIHN1cHBvcnQgZm9yIHBvbGxpbmcKPj4+IHN0YXR1cyByZWdpc3Rl
-ciIpCj4+PiDCoMKgwqDCoCBjNjRkNDQxOWExN2MgKCJtdGQ6IGNmaV9jbWRzZXRfMDAwMjogQ2hh
-bmdlIGVyYXNlIG9uZSBibG9jayB0bwo+Pj4gZW5hYmxlIFhJUCBvbmNlIikKPj4+IMKgwqDCoMKg
-IGQ5YjhhNjdiM2I5NSAoIm10ZDogY2ZpOiBmaXggZGVhZGxvb3AgaW4gY2ZpX2NtZHNldF8wMDAy
-LmMKPj4+IGRvX3dyaXRlX2J1ZmZlciIpCj4+PiDCoMKgwqDCoCBlYTA5MmZiM2NlNjYgKCJtdGQ6
-IGNmaV9jbWRzZXRfMDAwMjogRml4IGNvZGluZyBzdHlsZSBpc3N1ZXMiKQo+Pj4KPj4+Cj4+PiBO
-T1RFOiBUaGUgcGF0Y2ggd2lsbCBub3QgYmUgcXVldWVkIHRvIHN0YWJsZSB0cmVlcyB1bnRpbCBp
-dCBpcyB1cHN0cmVhbS4KPj4+Cj4+PiBIb3cgc2hvdWxkIHdlIHByb2NlZWQgd2l0aCB0aGlzIHBh
-dGNoPwo+Pgo+PiBZZXMgSSB3aWxsIGRvIGZpeCB0aGUgcGF0Y2ggZm9yIHRoZSB0cmVlcyBmYWls
-ZWQgdG8gYXBwbHkgaWYgaXQgd2FzCj4+IHVwc3RyZWFtLgo+Pgo+PiBSZWdhcmRzLAo+PiBJa2Vn
-YW1pCj4+Cj4+Pgo+Pj4gLS3CoAo+Pj4gVGhhbmtzLAo+Pj4gU2FzaGEKPj4KPj4gX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+IExpbnV4IE1U
-RCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdAo+PiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8KPj4KCi0tIApSZWdhcmRzClZpZ25lc2gKCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBN
-VEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Hi Sergei,
+
+On 18/09/19 2:53 AM, Geert Uytterhoeven wrote:
+> Hi Sergei,
+> 
+> On Tue, Sep 17, 2019 at 9:53 PM Sergei Shtylyov
+> <sergei.shtylyov@cogentembedded.com> wrote:
+>> On 09/17/2019 10:43 PM, Geert Uytterhoeven wrote:
+>>>> cfi_udelay() open-codes DIV_ROUND_UP(), violating the kernel coding style
+>>>
+>>> Perhaps "violating" sounds a bit too harsh?
+>>
+>>    Hm, indeed, scripts/checkpatch.pl doesn't complain on this line. Do you have
+>> other ideas how to call this? Or just omit this?
+> 
+
+scripts/checkpatch.pl --strict will complain about this.
+
+> Just "use the existing helper, instead of open-coding the same operation"?
+
+I agree with Geert. This driver file predates checkpatch and therefore
+does not follow all kernel coding styles. But its good to replace
+open-coding with available helper macro.
+
+Also, please don't post new patches in reply to an existing thread. This
+patch appears in-reply-to ("mtd: devices: m25p80: Use the spi-mem dirmap
+API") which is unrelated to current patch.
+
+
+-- 
+Regards
+Vignesh
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
