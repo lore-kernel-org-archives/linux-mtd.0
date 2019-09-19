@@ -5,84 +5,86 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC3A5C4CEC9
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Sep 2019 01:38:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2928C4CEC4
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Sep 2019 01:49:32 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9DC7521907
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Sep 2019 01:38:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 70A0C218AE
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Sep 2019 01:49:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="UpbFNlgr";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KccycJwx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9DC7521907
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="e9jxs1wz";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hxMr17/n"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 70A0C218AE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=UKTS/viFwCy1REjHgfjHLkn4TL/aBFlMcEjPjFlqVTA=; b=UpbFNlgrZqcd+M
-	VmTsnxUcplx/ldozCjtqIE0PeyWJJQR5Q2MFqkwDVSq3if135rkDyB8t7wq/gc+ZGBjdV5jdpXhot
-	4y5ZtUbttLhpiKDzlnjzlV8EXnuFBEfW3dkid3h5pz4oASzFo4gxELucYOerlca8w+3u3Qz9b2ZoX
-	ZxC3GfxUXCq0X2qqV5aAijJr+jddBTol1j9sw/2Z/08pbcFjYyJWPZS/QwnVBFj9X22VDOW6izg5t
-	up/pL+RTMuxLnv2IDh33rmR2235E+t6gV3HvwdQm19XN8lOUiIamMGw44SKgnm569gJXgeGWZbaem
-	dkr7fhZotNJDUrAvFghw==;
+	List-Owner; bh=A9neTfU32X9cYIiMccwCLGeL9l61f4zkjJvL6+Iu5DU=; b=e9jxs1wzHcflll
+	9CFaodjqkfTikyFE4CGfxOPWWO5sQDBt1LxgsJftKjcr29GIMwaTFW5Fbcs00BAxk9koSdJ04Oi4z
+	/wHoIt48Dzw1+qZO8af0hMJYJTtXcKSPv0gGlQXhAHaYl2KqfxzcUqQHMGcB8oW6sIioUX6qosCvm
+	DxLnM1tnTtWWGr4GFw23fYEAzEyrIacR+tuMNJzfnPBFtnyNbNBI2I/Q77g50iMtkDDG5rzHLpFR6
+	Jx1CHzIe3jjtrA7XQh9SFJk9MbDRWPMi0Jxfm22TM2BQtqkVn9EIJloKbfm7tOVhoJb3rvfXqJPZ1
+	vnC3cLzdZ+EWCl/qGGnw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
-	id 1iAlP2-0002A4-Tf; Thu, 19 Sep 2019 01:38:37 +0000
-Received: from mail-pf1-x443.google.com ([2607:f8b0:4864:20::443])
+	id 1iAlZa-0005p1-DX; Thu, 19 Sep 2019 01:49:30 +0000
+Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iAlP0-00029C-E3
- for linux-mtd@lists.infradead.org; Thu, 19 Sep 2019 01:38:35 +0000
-Received: by mail-pf1-x443.google.com with SMTP id y72so1123914pfb.12
- for <linux-mtd@lists.infradead.org>; Wed, 18 Sep 2019 18:38:33 -0700 (PDT)
+ id 1iAlZX-0005oe-J4
+ for linux-mtd@lists.infradead.org; Thu, 19 Sep 2019 01:49:28 +0000
+Received: by mail-pf1-x444.google.com with SMTP id 205so1182729pfw.2
+ for <linux-mtd@lists.infradead.org>; Wed, 18 Sep 2019 18:49:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
+ h=from:to:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=wsN9pxLcPJ1qeXa5m6pMME74hufrhsEiWRUwQfSsmVQ=;
- b=KccycJwxERGqBJbUtMI8N2EkDjSdmHH9ab7eqE1HNL3NoDfTzOVfq3ZhlKD/UYZ0Lt
- MwIYJxhPhCtaQ4RwdIxeDZoA038ETi2g/8XOb3xespSfS+oVG6lWlEf1fAZWBm6cMPyL
- JTZ/8x4CXa7KTZCVjCxISSTAqMFMTqYddxGInc3ipb3nKDud/VPSc+UIGgG49PTj3SDM
- qf2WazvIZ2pelPxrSqRIsTJ+aC+7qiWbXwI09PgLvS740/TksEDvcXGMXU686ebCglyZ
- lYja/gN2AoWjVVq9Ydls08x+vhN59tS197PQZnhamD9fnAYxrOzZsXgRdcDymP2ude64
- Cwig==
+ bh=GfRZjmE14s24eFUinYyfK45PVFtEOKsb6d5yrSz1evU=;
+ b=hxMr17/nmJPBxQAZZIOUCXhEwYbKjnmK3niA0as0ONDJmiTjopFWtSiU5KM3iSn38r
+ A4zZd+wZExIVbmTcuXo63u7rE4pMS05S0yDNChYyHF+KYHuFmNO0hf55rdun+AsQ/fQC
+ YVDX3uDcUdgkivwk54d/QR/hCY2uYA5yAAtnhH+u7ZqAl/MbPONR4B5JN6PM5bqGrWdV
+ nAJ2N0wJ9ctfNF+ri+7+5oEUwILfa1+Be2/ZAcPZbu1N+Mqaf6AelFG8K/HfCGAhQvj6
+ H3QJHROsgDPG8Hx0AlbqWteCSl7aiMfqkWgZdT+1Hqc6mLnLKsWZB+qSi4WLbF08pp4Z
+ hKEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ h=x-gm-message-state:from:to:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=wsN9pxLcPJ1qeXa5m6pMME74hufrhsEiWRUwQfSsmVQ=;
- b=CaxrRShD0+uc7rJIKFnwX//RG7g5AujoGdVZAG5S0NZj/9QBV2G/X0/dnETUt2lBaM
- xfbZbNIqg5a5ITVjfw6g/bJUTIrkPQ/V4reW5b7tXtMF6QzNTjBY1bhqWpIkEDgd/5RS
- PNtkKTe1KKXmV23eFZMqprsESEbl3uD2zlHdz1F3xjQVCA+HVmIBJDCNvbwOXzs5DKJC
- /hNWNhrvyPV2Ri7fKZdZmcVwHVnymEFbTrYL2g0+iakHu3eGdrlYwNLMnrCdRI6Zk2hb
- ET+kSc+lDPipyQXpS4zeO36MyDfFL0dq48KZEQGRQZTaaP4bi9DSH0HSosdZoqlNGJuf
- tZoA==
-X-Gm-Message-State: APjAAAXcDU3ySgB330k9zT1XYhxCkjcvoSonLtHTbJmHMKbAABA0s51l
- yTtpxHeBaYLKijR6iQ5Z+w0=
-X-Google-Smtp-Source: APXvYqwrTSgOClI+KXimx0HPoDZ975i7weQtaKEnR0RIeq9IyHlZF9TGjXxv+m7kfwPlWcKf44JaRw==
-X-Received: by 2002:a17:90a:c68a:: with SMTP id
- n10mr935649pjt.31.1568857112797; 
- Wed, 18 Sep 2019 18:38:32 -0700 (PDT)
-Received: from localhost.localdomain ([106.51.104.68])
- by smtp.gmail.com with ESMTPSA id 193sm9508608pfc.59.2019.09.18.18.38.29
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
- Wed, 18 Sep 2019 18:38:32 -0700 (PDT)
-From: Rishi Gupta <gupt21@gmail.com>
-To: dedekind1@gmail.com
-Subject: [PATCH] UBI: fix warning static is not at beginning of declaration
-Date: Thu, 19 Sep 2019 07:08:18 +0530
-Message-Id: <1568857098-3863-1-git-send-email-gupt21@gmail.com>
-X-Mailer: git-send-email 2.7.4
+ bh=GfRZjmE14s24eFUinYyfK45PVFtEOKsb6d5yrSz1evU=;
+ b=YDrZx8pE3RX7gOJJBTkMyIpe7EasTB78Yhn/x2Nce1bsMc8o0nP9FUW76ptt1RaExu
+ D28LA9ETbGEJKvCLCMdDWU35wNik6qIxD5MrJz9uXhmuUrAXvpTJroodk4mZ0Wyqy6ze
+ Zf58H9rnM7g01kEx4Ct8r4A33TtnNqoL6dyzFBGkmMU+19K7sK7mVCGy6Dz7O3fGdyrG
+ tRrj+xkJjRN8iLUl48MlKn/2zI3bufSvKzc/u0UaEyRsqU9iwWDIf2YSvW0BEb6ISTTL
+ /lBb2hzMBa7/+2k5v2UXRFSbBT3YA30j0Hb+bcQZK68+qnbyu8d/KonYtCOQX/qF9Mdj
+ 6omg==
+X-Gm-Message-State: APjAAAXhrqGWy58ASVe4RN5plrN9CNY6OvkA4MeWSpDPKp+0hrXbE41+
+ s5x3eRImDw04UKHfp7n/bFQ=
+X-Google-Smtp-Source: APXvYqwtvasIU4amb4Lm9GYQiP80nKnqve4NpqLuK9BEjTQpLBNPHDFtw47mi6Y70Cy9HQg7vq/CWA==
+X-Received: by 2002:a63:e54d:: with SMTP id z13mr6662464pgj.209.1568857766311; 
+ Wed, 18 Sep 2019 18:49:26 -0700 (PDT)
+Received: from D19-03074.biamp.com (tel3187236.lnk.telstra.net.
+ [203.54.172.54])
+ by smtp.gmail.com with ESMTPSA id k15sm6734598pgt.66.2019.09.18.18.49.23
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Wed, 18 Sep 2019 18:49:25 -0700 (PDT)
+From: Shreyas Joshi <shreyasjoshi15@gmail.com>
+X-Google-Original-From: Shreyas Joshi <shreyas.joshi@biamp.com>
+To: marek.vasut@gmail.com, tudor.ambarus@microchip.com,
+ linux-mtd@lists.infradead.org, shreyasjoshi15@gmail.com
+Subject: [PATCH] driver/mtd/spi-nor: Regression lock/unlock fail
+Date: Thu, 19 Sep 2019 11:49:16 +1000
+Message-Id: <20190919014916.1303-1-shreyas.joshi@biamp.com>
+X-Mailer: git-send-email 2.23.0.windows.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190918_183834_502038_EE4725A0 
-X-CRM114-Status: GOOD (  11.15  )
+X-CRM114-CacheID: sfid-20190918_184927_634148_C6FE9168 
+X-CRM114-Status: GOOD (  11.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,33 +96,97 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vigneshr@ti.com, richard@nod.at, linux-kernel@vger.kernel.org,
- marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
- miquel.raynal@bootlin.com, Rishi Gupta <gupt21@gmail.com>,
- computersforpeace@gmail.com, dwmw2@infradead.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Q29tcGlsZXIgZ2VuZXJhdGVzIGZvbGxvd2luZyB3YXJuaW5nIHdoZW4ga2VybmVsIGlzIGJ1aWx0
-IHdpdGggVz0xOgoKZHJpdmVycy9tdGQvdWJpL3ViaS5oOjk3MToxOiB3YXJuaW5nOiDigJhzdGF0
-aWPigJkgaXMgbm90IGF0IGJlZ2lubmluZwpvZiBkZWNsYXJhdGlvbiBbLVdvbGQtc3R5bGUtZGVj
-bGFyYXRpb25dCgpUaGlzIGNvbW1pdCBmaXhlcyB0aGlzIGJ5IGNvcnJlY3RseSBvcmRlcmluZyBr
-ZXl3b3Jkcy4KClNpZ25lZC1vZmYtYnk6IFJpc2hpIEd1cHRhIDxndXB0MjFAZ21haWwuY29tPgot
-LS0KIGRyaXZlcnMvbXRkL3ViaS91YmkuaCB8IDIgKy0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2Vy
-dGlvbigrKSwgMSBkZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3ViaS91Ymku
-aCBiL2RyaXZlcnMvbXRkL3ViaS91YmkuaAppbmRleCA3MjFiNmFhLi43NWU4MThjYSAxMDA2NDQK
-LS0tIGEvZHJpdmVycy9tdGQvdWJpL3ViaS5oCisrKyBiL2RyaXZlcnMvbXRkL3ViaS91YmkuaApA
-QCAtOTY4LDcgKzk2OCw3IEBAIGludCB1YmlfZmFzdG1hcF9pbml0X2NoZWNrbWFwKHN0cnVjdCB1
-Ymlfdm9sdW1lICp2b2wsIGludCBsZWJfY291bnQpOwogdm9pZCB1YmlfZmFzdG1hcF9kZXN0cm95
-X2NoZWNrbWFwKHN0cnVjdCB1Ymlfdm9sdW1lICp2b2wpOwogI2Vsc2UKIHN0YXRpYyBpbmxpbmUg
-aW50IHViaV91cGRhdGVfZmFzdG1hcChzdHJ1Y3QgdWJpX2RldmljZSAqdWJpKSB7IHJldHVybiAw
-OyB9Ci1pbnQgc3RhdGljIGlubGluZSB1YmlfZmFzdG1hcF9pbml0X2NoZWNrbWFwKHN0cnVjdCB1
-Ymlfdm9sdW1lICp2b2wsIGludCBsZWJfY291bnQpIHsgcmV0dXJuIDA7IH0KK3N0YXRpYyBpbmxp
-bmUgaW50IHViaV9mYXN0bWFwX2luaXRfY2hlY2ttYXAoc3RydWN0IHViaV92b2x1bWUgKnZvbCwg
-aW50IGxlYl9jb3VudCkgeyByZXR1cm4gMDsgfQogc3RhdGljIGlubGluZSB2b2lkIHViaV9mYXN0
-bWFwX2Rlc3Ryb3lfY2hlY2ttYXAoc3RydWN0IHViaV92b2x1bWUgKnZvbCkge30KICNlbmRpZgog
-Ci0tIAoyLjcuNAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+From: shreyas <shreyasjoshi15@gmail.com>
+
+      The n25q128 micron chips cannot be treated similar to STM SPI NOR
+      when it comes to flash lock/unlock. The JDEC ID read here is just 1 byte
+      and it is not sufficient to distinguish between different chips. Thus,
+      memory type is used here in addition to JDEC ID to distinguish further.
+      Once the unique manufacture id is detected, it will invoke the required
+      lock/unlock function required for n25 micron chipsets.
+
+Signed-off-by: shreyas <shreyasjoshi15@gmail.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 20 +++++++++++---------
+ include/linux/mtd/spi-nor.h   |  4 ++--
+ 2 files changed, 13 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index f3b2df2c52b4..6dfdd95a5961 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1356,6 +1356,7 @@ static int n25q_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 	int status_old, status_new;
+ 	uint32_t offset = ofs;
+ 	int ret = 0;
++
+ 	status_old = read_sr(nor);
+ 	if (status_old < 0)
+ 		return status_old;
+@@ -1373,7 +1374,8 @@ static int n25q_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 		status_new = (status_old & ~(SR_BP2|SR_BP0)) | SR_BP1;
+ 	else
+ 		status_new = (status_old & ~(SR_BP2|SR_BP1)) | SR_BP0;
+-	if ((status_new & (SR_BP2|SR_BP1|SR_BP0)) > (status_old & (SR_BP2|SR_BP1|SR_BP0))) {
++	if ((status_new & (SR_BP2|SR_BP1|SR_BP0)) >
++			(status_old & (SR_BP2|SR_BP1|SR_BP0))) {
+ 		write_enable(nor);
+ 		if (write_sr(nor, status_new) < 0)
+ 			return -EINVAL;
+@@ -1392,6 +1394,7 @@ static int n25q_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 	int status_old, status_new;
+ 	uint32_t offset = ofs;
+ 	int ret = 0;
++
+ 	status_old = read_sr(nor);
+ 	if (status_old < 0)
+ 		return status_old;
+@@ -4266,14 +4269,13 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 	if (JEDEC_MFR(info) == SNOR_MFR_ST ||
+ 	    JEDEC_MFR(info) == SNOR_MFR_MICRON ||
+ 	    info->flags & SPI_NOR_HAS_LOCK) {
+-	if (JEDEC_MT(info) == SNOR_MT_MICRON) {
+-		nor->flash_lock = n25q_lock;
+-		nor->flash_unlock = n25q_unlock;
+-	}
+-	else {
+-		nor->flash_lock = stm_lock;
+-		nor->flash_unlock = stm_unlock;
+-	}
++		if (JEDEC_MT(info) == SNOR_MT_MICRON) {
++			nor->flash_lock = n25q_lock;
++			nor->flash_unlock = n25q_unlock;
++		} else {
++			nor->flash_lock = stm_lock;
++			nor->flash_unlock = stm_unlock;
++		}
+ 	nor->flash_is_locked = stm_is_locked;
+ 	}
+ 	if (nor->flash_lock && nor->flash_unlock && nor->flash_is_locked) {
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index aaa3c1065b3b..3939cd77d778 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -27,8 +27,8 @@
+ #define SNOR_MFR_WINBOND	0xef /* Also used by some Spansion */
+ 
+ /* Manufacturer Memory Type
+-* The second byte returned from the flash after sending opcode SPINOR_OP_RDID.
+-*/
++ * The second byte returned from the flash after sending opcode SPINOR_OP_RDID.
++ */
+ #define SNOR_MT_MICRON	0xba
+ #define SNOR_MT_ST      0x20
+ 
+-- 
+2.20.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
