@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3745C3A5A6
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Sep 2019 19:49:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 759C6C3A5A6
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Sep 2019 19:50:31 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C171920678
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Sep 2019 19:49:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 45B4721924
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Sep 2019 19:50:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uGJ8YiLS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C171920678
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HNFCkAhE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 45B4721924
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LJkiF2aB5cX7iOGXZ6RQkmINZORtg4HTd1mBmsl+DB8=; b=uGJ8YiLSTCsFja
-	lwBE3BUDTKNBi8J0Pt99zCY4ACfkM6D69CioBbnqs26UI+5nW2QuZ+14ibX83VcpfnZOZVk94D+m1
-	uWLlfT8vDKIVGTLgpXQ3uCph3gZAGuKNAGjb4sjb4mVolUFTy19XANvVEvNPUhpnT+XpBNnyZeSnH
-	TIsVzWgeDivAbIvmhXucYJz1bF6SiZ6XJO1OAS9KaPXs+ivepRRPPIx2NWJgom2OnB7UStdAqBh5y
-	B48jUuXCvjrgEj2U73Qq87OW0q04wr3prL+DvjxKDkPKysQbpHHWCQ+ft2uJxEDOiuwdVuCvdPrIQ
-	xUupVgNnjOgh12vCUbAg==;
+	List-Owner; bh=SEAP60AoyRUDKKujnoWLxhzv5m/Cvga8tFKPmlqU2jY=; b=HNFCkAhEHXIz2s
+	HobFKQi5ZFUk/s3FtCQx2vilzqxwf9eX/LNeWsq+ZuaHTa5bW7Dh5jHaLRNGBOyGoxtgIpT7OEML6
+	1VEEvTulVsUMufTtfR3fGOUdIBEVklrGXilRi3HziZ1tBVa8wrbivJ1rCNNtU14yxqG3zFWu9SXbh
+	GAG3E71VS5lLcWPbbzFMGBDw3M4qtG3CBsvkT4DjnDhgJYR8SijjOJ0Ik4NmvpWlT20Ow5+IdKiP2
+	SpvHnI9wHfU4DdHVIQFeC1gdZwjUtdEq6/khlDTZQdZMw9ou8BKQ92rKhe1goYnFXMteBlXRoRu6x
+	qK/+gMNL2jDk3E47v9oQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
-	id 1iB2RC-0001Gi-Lv; Thu, 19 Sep 2019 19:49:58 +0000
+	id 1iB2Ri-0002y9-Kj; Thu, 19 Sep 2019 19:50:30 +0000
 Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iB2AR-0002V7-1w; Thu, 19 Sep 2019 19:32:41 +0000
+ id 1iB2AS-0002Wc-Pr; Thu, 19 Sep 2019 19:32:44 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 6B025240007;
- Thu, 19 Sep 2019 19:32:35 +0000 (UTC)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 644DC240003;
+ Thu, 19 Sep 2019 19:32:37 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [PATCH v3 24/40] mtd: nand: Remove useless include about software
- Hamming ECC
-Date: Thu, 19 Sep 2019 21:31:24 +0200
-Message-Id: <20190919193141.7865-25-miquel.raynal@bootlin.com>
+Subject: [PATCH v3 25/40] mtd: nand: ecc: Let the software Hamming ECC engine
+ be unselected
+Date: Thu, 19 Sep 2019 21:31:25 +0200
+Message-Id: <20190919193141.7865-26-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190919193141.7865-1-miquel.raynal@bootlin.com>
 References: <20190919193141.7865-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190919_123239_889370_98986A59 
-X-CRM114-Status: GOOD (  10.55  )
+X-CRM114-CacheID: sfid-20190919_123242_706831_040ECCC8 
+X-CRM114-Status: GOOD (  13.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,311 +83,111 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Most of the includes are simply useless, drop them.
+There is no reason to always embed the software Hamming ECC engine
+implementation. By default it is (with raw NAND), but we can let the
+user decide.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- arch/arm/mach-s3c24xx/common-smdk.c    | 1 -
- arch/arm/mach-s3c24xx/mach-anubis.c    | 1 -
- arch/arm/mach-s3c24xx/mach-at2440evb.c | 1 -
- arch/arm/mach-s3c24xx/mach-bast.c      | 1 -
- arch/arm/mach-s3c24xx/mach-gta02.c     | 1 -
- arch/arm/mach-s3c24xx/mach-jive.c      | 1 -
- arch/arm/mach-s3c24xx/mach-mini2440.c  | 1 -
- arch/arm/mach-s3c24xx/mach-osiris.c    | 1 -
- arch/arm/mach-s3c24xx/mach-qt2410.c    | 1 -
- arch/arm/mach-s3c24xx/mach-rx3715.c    | 1 -
- arch/arm/mach-s3c24xx/mach-vstms.c     | 1 -
- drivers/mtd/nand/raw/fsl_elbc_nand.c   | 1 -
- drivers/mtd/nand/raw/fsl_ifc_nand.c    | 1 -
- drivers/mtd/nand/raw/fsl_upm.c         | 1 -
- drivers/mtd/nand/raw/fsmc_nand.c       | 1 -
- drivers/mtd/nand/raw/lpc32xx_mlc.c     | 1 -
- drivers/mtd/nand/raw/lpc32xx_slc.c     | 1 -
- drivers/mtd/nand/raw/pasemi_nand.c     | 1 -
- drivers/mtd/nand/raw/s3c2410.c         | 1 -
- drivers/mtd/nand/raw/sharpsl.c         | 1 -
- drivers/mtd/nand/raw/tmio_nand.c       | 1 -
- drivers/mtd/nand/raw/txx9ndfmc.c       | 1 -
- include/linux/mtd/sharpsl.h            | 1 -
- 23 files changed, 23 deletions(-)
+ drivers/mtd/nand/Kconfig                | 11 +++++++-
+ drivers/mtd/nand/raw/Kconfig            |  2 +-
+ include/linux/mtd/nand-ecc-sw-hamming.h | 36 +++++++++++++++++++++++++
+ 3 files changed, 47 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/mach-s3c24xx/common-smdk.c b/arch/arm/mach-s3c24xx/common-smdk.c
-index 6f6ed95df636..8db7f58691b2 100644
---- a/arch/arm/mach-s3c24xx/common-smdk.c
-+++ b/arch/arm/mach-s3c24xx/common-smdk.c
-@@ -19,7 +19,6 @@
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 04eaed7b6ab5..ebd2a4f7ec48 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -15,7 +15,16 @@ config MTD_NAND_ECC
+ 	bool
  
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- #include <linux/io.h>
+ config MTD_NAND_ECC_SW_HAMMING
+-	bool
++	bool "Software Hamming ECC engine"
++	default y if MTD_RAW_NAND
++	select MTD_NAND_ECC
++	help
++	  This enables support for software Hamming error
++	  correction. This correction can correct up to 1 bit error
++	  per chunk and detect up to 2 bit errors. While it used to be
++	  widely used with old parts, newer NAND chips usually require
++	  more strength correction and in this case BCH or RS will be
++	  preferred.
  
-diff --git a/arch/arm/mach-s3c24xx/mach-anubis.c b/arch/arm/mach-s3c24xx/mach-anubis.c
-index 9a70863fa678..a32c467d5ad3 100644
---- a/arch/arm/mach-s3c24xx/mach-anubis.c
-+++ b/arch/arm/mach-s3c24xx/mach-anubis.c
-@@ -36,7 +36,6 @@
+ config MTD_NAND_ECC_SW_HAMMING_SMC
+ 	bool "NAND ECC Smart Media byte order"
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index fd98860be20f..5c502e80d79e 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -3,7 +3,6 @@ menuconfig MTD_RAW_NAND
+ 	tristate "Raw/Parallel NAND Device Support"
+ 	select MTD_NAND_CORE
+ 	select MTD_NAND_ECC
+-	select MTD_NAND_ECC_SW_HAMMING
+ 	help
+ 	  This enables support for accessing all type of raw/parallel
+ 	  NAND flash devices. For further information see
+@@ -72,6 +71,7 @@ config MTD_NAND_AU1550
+ config MTD_NAND_NDFC
+ 	tristate "IBM/MCC 4xx NAND controller"
+ 	depends on 4xx
++	select MTD_NAND_ECC_SW_HAMMING
+ 	select MTD_NAND_ECC_SW_HAMMING_SMC
+ 	help
+ 	  NDFC Nand Flash Controllers are integrated in IBM/AMCC's 4xx SoCs
+diff --git a/include/linux/mtd/nand-ecc-sw-hamming.h b/include/linux/mtd/nand-ecc-sw-hamming.h
+index aed46e43d2f6..9de80d324cfa 100644
+--- a/include/linux/mtd/nand-ecc-sw-hamming.h
++++ b/include/linux/mtd/nand-ecc-sw-hamming.h
+@@ -30,6 +30,8 @@ struct nand_ecc_sw_hamming_conf {
+ 	unsigned int sm_order;
+ };
  
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
++#if IS_ENABLED(CONFIG_MTD_NAND_ECC_SW_HAMMING)
++
+ int ecc_sw_hamming_calculate(const unsigned char *buf, unsigned int step_size,
+ 			     unsigned char *code, bool sm_order);
+ int nand_ecc_sw_hamming_calculate(struct nand_device *nand,
+@@ -42,4 +44,38 @@ int nand_ecc_sw_hamming_correct(struct nand_device *nand, unsigned char *buf,
+ 				unsigned char *read_ecc,
+ 				unsigned char *calc_ecc);
  
- #include <net/ax88796.h>
-diff --git a/arch/arm/mach-s3c24xx/mach-at2440evb.c b/arch/arm/mach-s3c24xx/mach-at2440evb.c
-index 6e45171e5371..1b5c432186b8 100644
---- a/arch/arm/mach-s3c24xx/mach-at2440evb.c
-+++ b/arch/arm/mach-s3c24xx/mach-at2440evb.c
-@@ -37,7 +37,6 @@
- 
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- 
- #include <plat/devs.h>
-diff --git a/arch/arm/mach-s3c24xx/mach-bast.c b/arch/arm/mach-s3c24xx/mach-bast.c
-index 295aebdf29e4..a7966683cf00 100644
---- a/arch/arm/mach-s3c24xx/mach-bast.c
-+++ b/arch/arm/mach-s3c24xx/mach-bast.c
-@@ -24,7 +24,6 @@
- 
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- 
- #include <linux/platform_data/asoc-s3c24xx_simtec.h>
-diff --git a/arch/arm/mach-s3c24xx/mach-gta02.c b/arch/arm/mach-s3c24xx/mach-gta02.c
-index d0f70236cd9c..b63e766850fa 100644
---- a/arch/arm/mach-s3c24xx/mach-gta02.c
-+++ b/arch/arm/mach-s3c24xx/mach-gta02.c
-@@ -36,7 +36,6 @@
- 
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/physmap.h>
- 
-diff --git a/arch/arm/mach-s3c24xx/mach-jive.c b/arch/arm/mach-s3c24xx/mach-jive.c
-index 8f63f36b664d..09933ecb48ee 100644
---- a/arch/arm/mach-s3c24xx/mach-jive.c
-+++ b/arch/arm/mach-s3c24xx/mach-jive.c
-@@ -40,7 +40,6 @@
- 
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- 
- #include <plat/gpio-cfg.h>
-diff --git a/arch/arm/mach-s3c24xx/mach-mini2440.c b/arch/arm/mach-s3c24xx/mach-mini2440.c
-index 809773221e62..dd23b62c9bf2 100644
---- a/arch/arm/mach-s3c24xx/mach-mini2440.c
-+++ b/arch/arm/mach-s3c24xx/mach-mini2440.c
-@@ -46,7 +46,6 @@
- 
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- 
- #include <plat/gpio-cfg.h>
-diff --git a/arch/arm/mach-s3c24xx/mach-osiris.c b/arch/arm/mach-s3c24xx/mach-osiris.c
-index 7ce4d789c8fe..deef889217b0 100644
---- a/arch/arm/mach-s3c24xx/mach-osiris.c
-+++ b/arch/arm/mach-s3c24xx/mach-osiris.c
-@@ -33,7 +33,6 @@
- 
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- 
- #include <plat/cpu.h>
-diff --git a/arch/arm/mach-s3c24xx/mach-qt2410.c b/arch/arm/mach-s3c24xx/mach-qt2410.c
-index 84a31ab930d9..12d92ab44937 100644
---- a/arch/arm/mach-s3c24xx/mach-qt2410.c
-+++ b/arch/arm/mach-s3c24xx/mach-qt2410.c
-@@ -21,7 +21,6 @@
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- 
- #include <asm/mach/arch.h>
-diff --git a/arch/arm/mach-s3c24xx/mach-rx3715.c b/arch/arm/mach-s3c24xx/mach-rx3715.c
-index 6f083d1ce18c..e76ebae91461 100644
---- a/arch/arm/mach-s3c24xx/mach-rx3715.c
-+++ b/arch/arm/mach-s3c24xx/mach-rx3715.c
-@@ -22,7 +22,6 @@
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- 
- #include <asm/mach/arch.h>
-diff --git a/arch/arm/mach-s3c24xx/mach-vstms.c b/arch/arm/mach-s3c24xx/mach-vstms.c
-index 2ae4d785ca5b..481727a79e43 100644
---- a/arch/arm/mach-s3c24xx/mach-vstms.c
-+++ b/arch/arm/mach-s3c24xx/mach-vstms.c
-@@ -16,7 +16,6 @@
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- #include <linux/memblock.h>
- 
-diff --git a/drivers/mtd/nand/raw/fsl_elbc_nand.c b/drivers/mtd/nand/raw/fsl_elbc_nand.c
-index e55cf8f42ce6..dc0e3809d6cc 100644
---- a/drivers/mtd/nand/raw/fsl_elbc_nand.c
-+++ b/drivers/mtd/nand/raw/fsl_elbc_nand.c
-@@ -22,7 +22,6 @@
- 
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- 
- #include <asm/io.h>
-diff --git a/drivers/mtd/nand/raw/fsl_ifc_nand.c b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-index 4c7788a9e405..3283f1c4c512 100644
---- a/drivers/mtd/nand/raw/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-@@ -15,7 +15,6 @@
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
--#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/fsl_ifc.h>
- #include <linux/iopoll.h>
- 
-diff --git a/drivers/mtd/nand/raw/fsl_upm.c b/drivers/mtd/nand/raw/fsl_upm.c
-index f2a8bebb3c5b..a9215df44659 100644
---- a/drivers/mtd/nand/raw/fsl_upm.c
-+++ b/drivers/mtd/nand/raw/fsl_upm.c
-@@ -11,7 +11,6 @@
- #include <linux/module.h>
- #include <linux/delay.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/mtd.h>
- #include <linux/of_address.h>
-diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
-index fe25b1123819..5f4b38281625 100644
---- a/drivers/mtd/nand/raw/fsmc_nand.c
-+++ b/drivers/mtd/nand/raw/fsmc_nand.c
-@@ -26,7 +26,6 @@
- #include <linux/types.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/platform_device.h>
- #include <linux/of.h>
- #include <linux/mtd/partitions.h>
-diff --git a/drivers/mtd/nand/raw/lpc32xx_mlc.c b/drivers/mtd/nand/raw/lpc32xx_mlc.c
-index 58e67b4f830f..17c732874434 100644
---- a/drivers/mtd/nand/raw/lpc32xx_mlc.c
-+++ b/drivers/mtd/nand/raw/lpc32xx_mlc.c
-@@ -31,7 +31,6 @@
- #include <linux/mm.h>
- #include <linux/dma-mapping.h>
- #include <linux/dmaengine.h>
--#include <linux/mtd/nand-ecc-sw-hamming.h>
- 
- #define DRV_NAME "lpc32xx_mlc"
- 
-diff --git a/drivers/mtd/nand/raw/lpc32xx_slc.c b/drivers/mtd/nand/raw/lpc32xx_slc.c
-index e1c7600d1dbb..dedabb2ca603 100644
---- a/drivers/mtd/nand/raw/lpc32xx_slc.c
-+++ b/drivers/mtd/nand/raw/lpc32xx_slc.c
-@@ -23,7 +23,6 @@
- #include <linux/mm.h>
- #include <linux/dma-mapping.h>
- #include <linux/dmaengine.h>
--#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/gpio.h>
- #include <linux/of.h>
- #include <linux/of_gpio.h>
-diff --git a/drivers/mtd/nand/raw/pasemi_nand.c b/drivers/mtd/nand/raw/pasemi_nand.c
-index 41e3119b1f3a..8f2ee755fd0a 100644
---- a/drivers/mtd/nand/raw/pasemi_nand.c
-+++ b/drivers/mtd/nand/raw/pasemi_nand.c
-@@ -14,7 +14,6 @@
- #include <linux/module.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/of_address.h>
- #include <linux/of_irq.h>
- #include <linux/of_platform.h>
-diff --git a/drivers/mtd/nand/raw/s3c2410.c b/drivers/mtd/nand/raw/s3c2410.c
-index da1531f0721c..1c9946f5f67c 100644
---- a/drivers/mtd/nand/raw/s3c2410.c
-+++ b/drivers/mtd/nand/raw/s3c2410.c
-@@ -30,7 +30,6 @@
- 
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- 
- #include <linux/platform_data/mtd-nand-s3c2410.h>
-diff --git a/drivers/mtd/nand/raw/sharpsl.c b/drivers/mtd/nand/raw/sharpsl.c
-index 8222239c21f3..860e247935f3 100644
---- a/drivers/mtd/nand/raw/sharpsl.c
-+++ b/drivers/mtd/nand/raw/sharpsl.c
-@@ -12,7 +12,6 @@
- #include <linux/delay.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/sharpsl.h>
- #include <linux/interrupt.h>
-diff --git a/drivers/mtd/nand/raw/tmio_nand.c b/drivers/mtd/nand/raw/tmio_nand.c
-index f0bacbad1533..2461face82e3 100644
---- a/drivers/mtd/nand/raw/tmio_nand.c
-+++ b/drivers/mtd/nand/raw/tmio_nand.c
-@@ -35,7 +35,6 @@
- #include <linux/ioport.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- #include <linux/slab.h>
- 
-diff --git a/drivers/mtd/nand/raw/txx9ndfmc.c b/drivers/mtd/nand/raw/txx9ndfmc.c
-index 1466791ecb5d..785559a6fd8f 100644
---- a/drivers/mtd/nand/raw/txx9ndfmc.c
-+++ b/drivers/mtd/nand/raw/txx9ndfmc.c
-@@ -14,7 +14,6 @@
- #include <linux/delay.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- #include <linux/io.h>
- #include <linux/platform_data/txx9/ndfmc.h>
-diff --git a/include/linux/mtd/sharpsl.h b/include/linux/mtd/sharpsl.h
-index 8cabe41d0f5c..6ef75d7f543d 100644
---- a/include/linux/mtd/sharpsl.h
-+++ b/include/linux/mtd/sharpsl.h
-@@ -6,7 +6,6 @@
-  */
- 
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- 
- struct sharpsl_nand_platform_data {
++#else /* !CONFIG_MTD_NAND_ECC_SW_HAMMING */
++
++static inline int ecc_sw_hamming_calculate(const unsigned char *buf,
++					   unsigned int step_size,
++					   unsigned char *code, bool sm_order)
++{
++	return -ENOTSUPP;
++}
++
++static inline int nand_ecc_sw_hamming_calculate(struct nand_device *nand,
++						const unsigned char *buf,
++						unsigned char *code)
++{
++	return -ENOTSUPP;
++}
++
++static inline int ecc_sw_hamming_correct(unsigned char *buf,
++					 unsigned char *read_ecc,
++					 unsigned char *calc_ecc,
++					 unsigned int step_size, bool sm_order)
++{
++	return -ENOTSUPP;
++}
++
++static inline int nand_ecc_sw_hamming_correct(struct nand_device *nand,
++					      unsigned char *buf,
++					      unsigned char *read_ecc,
++					      unsigned char *calc_ecc)
++{
++	return -ENOTSUPP;
++}
++
++#endif /* CONFIG_MTD_NAND_ECC_SW_HAMMING */
++
+ #endif /* __MTD_NAND_ECC_SW_HAMMING_H__ */
 -- 
 2.20.1
 
