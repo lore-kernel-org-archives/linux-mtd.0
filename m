@@ -2,139 +2,92 @@ Return-Path: <SRS0=PkFq=XO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D50BC3A5A6
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Sep 2019 12:16:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44155C49ED7
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Sep 2019 12:29:55 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 173ED205F4
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Sep 2019 12:16:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 16BD721D56
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Sep 2019 12:29:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="JCZEJmTO";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=web.de header.i=@web.de header.b="g/6JT22G"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 173ED205F4
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=web.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YLD+RvmK";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bgdev-pl.20150623.gappssmtp.com header.i=@bgdev-pl.20150623.gappssmtp.com header.b="MOlak7eH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 16BD721D56
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gj9VAqky3rlSGIiyVhRvNhotI/SXHlb8JuG7bzwSl4Q=; b=JCZEJmTOCj4dXv
-	oLnm869WzQYGXyz9DIavwo0BP0yYy5SfBW/tt8/AyrMWTZ1SkSJuLT9o6+yq/fg6kp3Cv9LIzwN4Z
-	VEp8J0UdvW4tcAIIrCi5uqJz/sRB/n/+ljG+x9qn5J3+xdZLNsVk4uUTYZGI2htkqZqJNNkRtBZCR
-	Grv8UTFQ+egkb2d8FE9XG3N+i0aRTASJhhkFpYgkfFV5d/tIAxlW/CVT9aosiuIXEYmPJQN/kfi8G
-	8h8v9PB8DKYaOZZZw+wGmPKH/rLjytUOnQap2N4ULUQZThReHxFhjtwPIatUDrKmr9OrYyzosKzO6
-	6zMMqz2Vqk//tq7tmleQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=2hFIGKaSAkkoH2zb394kWRcDK467442ufvCIN3EemtA=; b=YLD+RvmKGqHJRO
+	oYOVxfR0qn5QHdBrZOEOhMyWchXWIOzEFrVV/sl6kKE5jWspGbwkpFlmZfVwPmwcmULwkhbMhcKq5
+	xrLHxODATU9WmgcWSYogUdgUz2TVMQsRy3Rpc9krV7d++6tDs/A00ow6XaobbX7DxHIl8Cg7hOfU6
+	KtxvsbilJGBnb2X85JUaUObfUVAhPc7EqglhMV/smBqHeb3dVkZ/Wc8TknnNExIL0T0yCjrBZ+CJC
+	hdR6tb79oxEktQ3DTkkPDoYOMjmJIXKXSKKjf1M+ULLohCQ8lGW3FbcpNSW4+kP0OpQJRz2qrN1pb
+	rbtK3Udp7i2YswlRoLXA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
-	id 1iAvMe-0006nX-Ha; Thu, 19 Sep 2019 12:16:48 +0000
-Received: from mout.web.de ([212.227.15.4])
+	id 1iAvZJ-0002ns-4i; Thu, 19 Sep 2019 12:29:53 +0000
+Received: from mail-wm1-x344.google.com ([2a00:1450:4864:20::344])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iAvMa-0006mo-GH
- for linux-mtd@lists.infradead.org; Thu, 19 Sep 2019 12:16:46 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
- s=dbaedf251592; t=1568895381;
- bh=CJpu+3benbeqrz8hYMxDJfQ5BQ0/dqDtI/1/aYNreUs=;
- h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
- b=g/6JT22Gw75KQqErQlGOO8oQppwTrs8wcisA9M2d4+V0K0rvBKPK5ox2fGt1+DPiX
- WrR7W/YoUUiUC0i7+8/I9FA1h4tyz1Q2eZKHfLmR7LxTgExK3AyUlkf5YwbULw1Xpv
- cpdTA5w77HnQyqD4OFRewEJG/i1kjblpwy4/fUYg=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([93.132.191.36]) by smtp.web.de (mrweb004
- [213.165.67.108]) with ESMTPSA (Nemesis) id 0LmQS2-1hbJck3yVe-00Zzkz; Thu, 19
- Sep 2019 14:16:21 +0200
-Subject: Re: mtd: st_spi_fsm: Use devm_platform_ioremap_resource() in
- stfsm_probe()
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org
-References: <e1d32aa4-7c82-64e0-b7c4-33c94d9a2769@web.de>
- <20190919111014.6c569cf3@xps13> <20190919112937.GA3072241@kroah.com>
- <20190919133506.6e46601f@xps13>
-From: Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <4b467bab-db44-da99-b1fd-0b6cc4ac9547@web.de>
-Date: Thu, 19 Sep 2019 14:16:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.0
+ id 1iAvZD-0002nA-Tc
+ for linux-mtd@lists.infradead.org; Thu, 19 Sep 2019 12:29:51 +0000
+Received: by mail-wm1-x344.google.com with SMTP id v17so3738874wml.4
+ for <linux-mtd@lists.infradead.org>; Thu, 19 Sep 2019 05:29:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=Ih/MDhEc/lR/EwwEWd3UKHZku0wmOCPvpYdqNd7Cz3I=;
+ b=MOlak7eHLX23anoot934MZPNCqef49OxOac8Pza7p1zC+IDnTa6+D9nOHorfBejy36
+ XEdV05aEj0wP1+o9uwLdfQdWQyzTOJ0ZAmvaFnkmKmyxhMXjuJYAm33Yz2x0TkmnsdHW
+ zU5ZqlaIfSDtNTWqGnoU4EftY6U2Kh++BvXSAvGG6pSeilS8SDvl2vvHTW/O4GRH2H30
+ uTecNMafO95TjhTMtK4XYXYhSekGxXNpnuTluTNVP+pzARHkbznR4yZkAKcWvct0CV6F
+ rdz8UljICE9v2iWgDSbWMFua5epnyEpndor195DpDgx4rkq+DivxLiNb7lumlEcWcpay
+ lbKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=Ih/MDhEc/lR/EwwEWd3UKHZku0wmOCPvpYdqNd7Cz3I=;
+ b=HNqDivHCZ6aJOS0S7Xh0ghcargHCgySjgOGkrJQUxx4Nw44LTIk0esq7F3cUHe7TTO
+ 0m4rix5iiqJ6t+G5GI0P9cuLfdMUC4c5wbRDjebq/RMOgJh/r2YZvwiH6KDtDAU8I+bK
+ rg+NTo0TEzRn2EaPrSXk5TGX4WCT+POWAVAwyz+cv00vjr8rLhDeTQv7GEhqntrxepq6
+ gJK5iIo4wS2AqoQxuqZ5HqMyKsV9aL1XeKmfx65xha+qz4SVZDtmbcKtmxC7Fkn0tGXU
+ mCeDaMOXjx2WIhzsKiztunwXDtudkfZd9v7hQqVJHtOz8Qv++YUzuCW/+I5lO+/Lj/RR
+ srmw==
+X-Gm-Message-State: APjAAAV6EAU4IM7XUyDFWgU/TLFDtcAsAI0cNdsRx4LhPSr8iBZw1Dev
+ 9XoeVqWLOwrPSxDBwnDRT4pMlQ==
+X-Google-Smtp-Source: APXvYqx4hKCNiv9gZpKM7ZBFgWrBwYBYMkwk3rpvdDiIL6bb7B9oUvwnBLk2HXj2VFiNljt+us5Ktw==
+X-Received: by 2002:a05:600c:118a:: with SMTP id
+ i10mr2640350wmf.80.1568896186212; 
+ Thu, 19 Sep 2019 05:29:46 -0700 (PDT)
+Received: from localhost.localdomain
+ (amontpellier-652-1-281-69.w109-210.abo.wanadoo.fr. [109.210.96.69])
+ by smtp.gmail.com with ESMTPSA id s10sm9203194wmf.48.2019.09.19.05.29.45
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 19 Sep 2019 05:29:45 -0700 (PDT)
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [PATCH] mtd: st_spi_fsm: remove unused variable
+Date: Thu, 19 Sep 2019 14:29:37 +0200
+Message-Id: <20190919122937.29850-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-In-Reply-To: <20190919133506.6e46601f@xps13>
-Content-Language: en-US
-X-Provags-ID: V03:K1:/ZxRwPOJYgPd6c2XChuGjk8bjZgKCqWJylAGWIKvBGlNpIKzDYQ
- VviCdRZM4gZFfDCjT8QP/YfWrsemt5UQlWscOVDWYFH1vXEtIGbpjtfoVvUvIm1Sk6V1GM2
- UrkIxS+sstncgL/0yrQexpl3iAd5fo27LqbOCI5Njzeg4+Xg6k+h5ZovySQekuVYCNpCY61
- /V986lbEsfvBLE5r72ZRw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:KNjLGHLEwGU=:e+1cD+EzYCMfnkui2JZevV
- pZzD921wunY0MbdQM3F8A9CIQIazBkCaAZGK9ZZ01alnVjiv4/RG+FEWPlFQqgFAcSxrznbF0
- PV8RkR6UWKG0IEvlbdABCSCEb49Rtng7n8Qwl9KT2jia9d4x+fvaaX5X9ZwuFtNCHoXVqVGkg
- 4GV2gaspACB70qSdtJRtb3NhaEeSrd1bn8/FR2Uf7mIipd11cVCynXf1T/QKnEf/1X1eAKp9h
- lT8u5hz6Tm75v7H6oRC0qf2kIcUsUsZ/7faon5VIiuF/yO6u8iDKeE2hbkZ4hab/kdBvs+XGZ
- /KftBo4U9WweGqOsbu+s15vC4fDF+JWCWV3Y4w59+98Lfborwzci80N9gvsR/myE0cjE2Qsth
- FpkI9c18BxW/hNYO+IjyEb1fI6qCvuy5NHvUIQMrF4DUJ8eoy5Qaovt7GbAk55uGM2CBHvDXJ
- HLaKr8XI/uK7CnmwZpKBvGc7wiNrX95BXMSv5XlfAWR3a/UT6unqJURkEslc1RmNZ0tKuTfFW
- H2kKlsG2IW39AI5dMuuHahnUhcd+TeYpsWqDYzlSlzYdX6HfFgq2AexfMRZk+en1LRFzbj8BI
- o1MN5DHTz5Q7BLPAQR0zkJcIMojfU0Vd04fhyKlj62wCyeH2d4QvEBlICF7qxO22LCbG1CrPr
- gGyA1076IRN0UNPZj03eGi/TXyYX43JlH8MsI9RkRcnMDFT1DQtlnt0nI0vssip5vugcnuELo
- vfU8QNnWeNttBhlZrdz6DL0SOo6nthllyurf2D6N2Lr57TR1o6GFXqOL22iNG1rPU7EBUgKwB
- gB4YYJKUkms/OIV6ActnYxTYeYedOJFxMoIBevvRwhs2UgPY0wml2Des9xNFgsdOfzgbyUfrs
- KfaklCu6xojaFFy+UK+GFAYRMEzBR5X9lj/Qf4VLlFgvD5AirwzfnR9ekqyTxevVfLR+3ICdL
- WD7l8sqn/WvfmOkT2u5LOGc0sGqXcNKzXiB/NyJeP8tw46kkNCQx6KQ7u3XPDOmI349fk3FlK
- glhWKG4Y1VMLbEM6fDQIY3tDGckTUVuca3iesNLJf4aIjoY/2lB5p45LtHLU8+m2dnKBQ82Ws
- SXix87Z/VdVW8Wrl8p25s7dCGzA9wIokGoc8qIhgh3iLQ6NJ9P3D5NgMFs8Ff6fHWdM7t8NXG
- NqGCrpPAw+VdOFktNS1dEchw/5CRAfJVFjGvJv+refavp7hndgoJ+K+PbpnN52NuIpeO7qb70
- vTtHaNZrmUd4RCVHxoWJtBZ+OqTp7P00nEuZ5L0r+SsoU5D0YGK8KaLY11/w=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190919_051644_835664_01DD5F2B 
-X-CRM114-Status: UNSURE (   6.94  )
+X-CRM114-CacheID: sfid-20190919_052948_005643_CF92C923 
+X-CRM114-Status: UNSURE (   9.69  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -147,26 +100,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>,
- David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>,
- Marek Vasut <marek.vasut@gmail.com>, Armijn Hemel <armijn@tjaldur.nl>,
- Himanshu Jha <himanshujha199640@gmail.com>,
- Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>,
- Brian Norris <computersforpeace@gmail.com>, Lee Jones <lee.jones@linaro.org>,
- Allison Randal <allison@lohutok.net>
+Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-> Oh right... Sure, I'll ignore it/him as well.
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-I hope that you will still care for further possible software improvements
-because of presented transformation results around collateral evolution.
+The region resource in struct stfsm is unused and can be removed.
 
-Regards,
-Markus
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+---
+ drivers/mtd/devices/st_spi_fsm.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
+index f4d1667daaf9..1888523d9745 100644
+--- a/drivers/mtd/devices/st_spi_fsm.c
++++ b/drivers/mtd/devices/st_spi_fsm.c
+@@ -255,7 +255,6 @@ struct stfsm_seq {
+ struct stfsm {
+ 	struct device		*dev;
+ 	void __iomem		*base;
+-	struct resource		*region;
+ 	struct mtd_info		mtd;
+ 	struct mutex		lock;
+ 	struct flash_info       *info;
+-- 
+2.23.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
