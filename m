@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47B0FC3A5A6
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Sep 2019 19:56:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09CE3C3A5A6
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Sep 2019 19:57:06 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 19D74207FC
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Sep 2019 19:56:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CDCBA207FC
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Sep 2019 19:57:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Tn9btiz6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 19D74207FC
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HR+aq9I5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CDCBA207FC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PcTa/okivN3YbrDtKDk0/FmLZ9QNkhdA6oii/TvNa/U=; b=Tn9btiz66mBDya
-	UUv4fYCG7lX0uAgcwgWfYfKz6mhZwncWikMXqUjyvV7KISfD1HOvAwhrgi66P9srPksRme9JRUSxi
-	kgOjrBZ8OYx9CvDYFHHBc9JDuS+YVpIoN2mfOI+8576PiXyjhon40NlO/ZVqzIMEnvqVfFa9ywqeT
-	Po9m6AV/mml3/j5conr9lTKDnB3FzLUCUxOk+cC6jI51WskEEChFQ8Q27EFL3lptT3PPyDFDodyyP
-	iYuP+Z/jepXxMYCc671llvDIu9nsKXHKOqfwQUljxvWD314zJJcuUpjLqHCE0BTI1qXAikC5f4eHy
-	9oB6wgE6hLDFD76HlnsA==;
+	List-Owner; bh=cCKiBciEIxH+0PtZRCQIEYtWbNH0re6FsS188LcigLk=; b=HR+aq9I5SsJatP
+	ZKw17xV/UEEQiXfmWIaD/4AwEPO3p7wgDaD0gzeppKSE0E9L+o2wHBY3HiubQwnIc9acO2s89KeID
+	nqEmmIYdH7ENZuiJeR29Z8rXRP6wXUsfK1y8jNebjQwuklWric9wt1SBUOhEc/IFNHqS59IN8l1a5
+	2CjNPXdLA3ABvPqkPVeHCYGZSeQ7C9Jiudm+MF+jSgSyGsbGqBEO4MuRmqbFZz25KliFCp87OuPJn
+	lI48C2+NXfW9nSmUa0hIALhkkGbh9LzkUXOZLMZZ8Ee93qztPo/KHnz0mVmw0Gv4s1NV6Kv03XO0z
+	j6iIu7XvoP3luBKiSiGQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
-	id 1iB2XZ-0001iL-2O; Thu, 19 Sep 2019 19:56:33 +0000
+	id 1iB2Y4-0002GN-7A; Thu, 19 Sep 2019 19:57:04 +0000
 Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iB2At-0002m2-5A; Thu, 19 Sep 2019 19:33:08 +0000
+ id 1iB2Au-0002mz-Mv; Thu, 19 Sep 2019 19:33:11 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 34B81240003;
- Thu, 19 Sep 2019 19:33:03 +0000 (UTC)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 35077240007;
+ Thu, 19 Sep 2019 19:33:05 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [PATCH v3 37/40] mtd: spinand: Propagate ECC information to the MTD
- structure
-Date: Thu, 19 Sep 2019 21:31:37 +0200
-Message-Id: <20190919193141.7865-38-miquel.raynal@bootlin.com>
+Subject: [PATCH v3 38/40] mtd: spinand: Allow the case where there is no ECC
+ engine
+Date: Thu, 19 Sep 2019 21:31:38 +0200
+Message-Id: <20190919193141.7865-39-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190919193141.7865-1-miquel.raynal@bootlin.com>
 References: <20190919193141.7865-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190919_123307_584211_A160BCD4 
-X-CRM114-Status: GOOD (  11.31  )
+X-CRM114-CacheID: sfid-20190919_123310_530551_EE09BB5D 
+X-CRM114-Status: GOOD (  13.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,33 +83,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is done by default in the raw NAND core (nand_base.c) but was
-missing in the SPI-NAND core. Without these two lines the ecc_strength
-and ecc_step_size values are not exported to the user through sysfs.
+Even if this is not supposed to happen, there is no reason to fail the
+probe if it was explicitly requested to use no ECC engine at all (for
+instance, during development). This condition is met by just
+commenting out the error on the OOB free bytes count after the
+assignation of an ECC engine if none was provided (any other situation
+would error out much earlier anyway).
 
-This fix depends on recent changes and should not be backported as-is.
-
-Fixes: 7529df465248 ("mtd: nand: Add core infrastructure to support SPI NANDs")
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/spi/core.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/mtd/nand/spi/core.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index a521eeb0d351..36b99f68da81 100644
+index 36b99f68da81..314cbdad1462 100644
 --- a/drivers/mtd/nand/spi/core.c
 +++ b/drivers/mtd/nand/spi/core.c
-@@ -1135,6 +1135,10 @@ static int spinand_init(struct spinand_device *spinand)
+@@ -1129,9 +1129,11 @@ static int spinand_init(struct spinand_device *spinand)
+ 	mtd->_erase = spinand_mtd_erase;
+ 	mtd->_max_bad_blocks = nanddev_mtd_max_bad_blocks;
+ 
+-	ret = mtd_ooblayout_count_freebytes(mtd);
+-	if (ret < 0)
+-		goto err_cleanup_ecc_engine;
++	if (nand->ecc.engine) {
++		ret = mtd_ooblayout_count_freebytes(mtd);
++		if (ret < 0)
++			goto err_cleanup_ecc_engine;
++	}
  
  	mtd->oobavail = ret;
  
-+	/* Propagate ECC information to mtd_info */
-+	mtd->ecc_strength = nand->ecc.ctx.conf.strength;
-+	mtd->ecc_step_size = nand->ecc.ctx.conf.step_size;
-+
- 	return 0;
- 
- err_cleanup_ecc_engine:
 -- 
 2.20.1
 
