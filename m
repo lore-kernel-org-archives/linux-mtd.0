@@ -1,62 +1,87 @@
-Return-Path: <SRS0=rWZ+=XP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=szY+=XQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CABB2C3A5A2
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Sep 2019 15:28:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8890AC49ED7
+	for <linux-mtd@archiver.kernel.org>; Sat, 21 Sep 2019 00:13:48 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 97A352080F
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Sep 2019 15:28:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 543AA20C01
+	for <linux-mtd@archiver.kernel.org>; Sat, 21 Sep 2019 00:13:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="p0PQWMyH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 97A352080F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=zeniv.linux.org.uk
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="t02T7a4O";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cs/jzLy4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 543AA20C01
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	References:In-Reply-To:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZDKG9RiAWdbjLcwe6De5gfLWkONI182ufuQoGArvTlg=; b=p0PQWMyHdgL0WH
-	JBnEt8DiUhxZ/844PLTqiNqqkHRlIJLvuhzYvMO6Wd5iYJ7BMPgSslRgN6o6yIZUPcdu6yD92QAmE
-	d5RGxVcLCNBj8eJehrGaveF1asUlveLCYinaR6Z+OGw0gXg9nlOOp9+apSoAb3FDw6gK6VD8Fa4d1
-	/7tDQSZJ+5btrglYiyHSPJqe9e7KN1lJNJMDdalLDNjJHJKXgbBsMLGioxHtahO51xIFzbpPz6hL0
-	aZrs4zB1her60KDnx71aBvH+PqxJp5XO6qBXtbeYf71tLmGoAshaAIozL1CaRWJyoC1PP2jhnD5Ax
-	KPCUP/jFxAsB9iDE+xVA==;
+	List-Owner; bh=fYaO7OoWjDoWdzwCAHl/cWnyjqYj+3fe0QIR3iyQNa0=; b=t02T7a4OurtNY3
+	NKCR/+kb5ZtaIC5IkTDQ2iD1RRhWfeeJk2EshOMx7cWl6Jr4mXIT6OtjrtZKfgfmVCXmqtLGDY5Mu
+	JZ35A3lx2zzvg190hZRm8UYRY4mZSWlzwGOqQp9EWODbLEFuVskin+kIbCvbCOaqFxOoZzarn/DIN
+	NQJ3MYodEu1DZ+3cdYox3ZG/m1Msh3rEBQbQY1wdy1wkZp3rQOd7BJY3GE58f3TxnRXMpjkRg5aq5
+	JooOzvn4LmLWz0GUBbSm515RZ9401o4gM2JwEARDy/y41zzpfzNCWtDb5YfcHxtGFLm123QD/z3l9
+	aTvONyhV8SwnmeZVPhRA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
-	id 1iBKpq-0003en-O9; Fri, 20 Sep 2019 15:28:38 +0000
-Received: from zeniv.linux.org.uk ([195.92.253.2])
+	id 1iBT22-0003b2-41; Sat, 21 Sep 2019 00:13:46 +0000
+Received: from mail-io1-xd30.google.com ([2607:f8b0:4864:20::d30])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iBKpm-0003XQ-6M
- for linux-mtd@lists.infradead.org; Fri, 20 Sep 2019 15:28:36 +0000
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.2 #3 (Red Hat
- Linux)) id 1iBKpY-0000P5-0U; Fri, 20 Sep 2019 15:28:20 +0000
-Date: Fri, 20 Sep 2019 16:28:19 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Xiaoming Ni <nixiaoming@huawei.com>
-Subject: Re: [PATCH] jffs2:freely allocate memory when parameters are invalid
-Message-ID: <20190920152819.GO1131@ZenIV.linux.org.uk>
-References: <1568962478-126260-1-git-send-email-nixiaoming@huawei.com>
- <20190920114336.GM1131@ZenIV.linux.org.uk>
- <206f8d57-dad9-26c3-6bf6-1d000f5698d4@huawei.com>
- <20190920124532.GN1131@ZenIV.linux.org.uk>
- <20190920125442.GA20754@ZenIV.linux.org.uk>
- <eb679ad2-4020-951c-e4d1-60cb059a5ca8@huawei.com>
+ id 1iBT1y-0003ai-Rc
+ for linux-mtd@lists.infradead.org; Sat, 21 Sep 2019 00:13:44 +0000
+Received: by mail-io1-xd30.google.com with SMTP id q10so20153739iop.2
+ for <linux-mtd@lists.infradead.org>; Fri, 20 Sep 2019 17:13:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=YukVsXas+TebfLvlUNTkLa6Bex7HaQ//yQjvsaRFhnE=;
+ b=cs/jzLy461v3xqH86qLLLhQPbjW2cZCP2YW4jyrTFrR2zW8B3YXqBevqapBBG4rlMf
+ fYqO7LrsLZZ+EEAki9qdBxLhX/rR37XRDE047Oob+GGxWvWslkfVcSYSdPH6rFc76vDl
+ TpCdkokbqhbqVSUfKMg0/p0JH5mK4EiO9BFHBIgbXPNID48UofvLVuZ/aYlRYEPfOAZv
+ GPZs7EKr+/7Z0GLFu2M6XyGATfvk8+lB7dpZR/plpIQzpl0qUvfmSTf+Ox10iyqwV89O
+ M0FMC+pFpo5Q+qJseK+eBBhzY2g9IJieH9i+o9WSkc9FlrIArujjDlf2tr7EYkhwsF4Z
+ x91w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=YukVsXas+TebfLvlUNTkLa6Bex7HaQ//yQjvsaRFhnE=;
+ b=R0aa2lV5dof0NkdcgteoRWw+xhhluNzc2yOfQ3jcWy/eBoWZIbkBhZIiMTt0aFxs1D
+ xTOPyggTYRVfhA7xRtHfCNadVe+bRsQ+YXCFGXRnuFPHA7E1gV0gvSbR5NcpZJrCP0Ox
+ 3NMunP/+JJaSwpn2kJJXD6AKEMQg3aCZLnP89go40ts+RgwhEQiH8K/G0fjG7L2pn45O
+ drsXaw7z6DLy1QmQlONsz8pya6UliI5SMD27CcEMT15GTqV6U1APSU+HzLJWx/lOKYFl
+ 8f0sGdxmePxwKSFN0x3HAEsUWEnn7fXA15jOwEbBGhW2ZXWn3FEsxA6TU4UnQXcPl1B1
+ 48CA==
+X-Gm-Message-State: APjAAAU90crHWjf3G5PsC+SVLdHwqKHi2ZBxydQp32XWd1V0XbN8/UNU
+ AbcFVWWDXg/HALfKEmmv5PCoD/a7JlxHjI9W+UQ=
+X-Google-Smtp-Source: APXvYqyBUd3Zaue6nznRcSVKURVegb88UeBN5Vz+r//onlAoc8mXUCXaflfPwbkLPLk3oRdjN774QEuBE6beedaL+i4=
+X-Received: by 2002:a6b:6b06:: with SMTP id g6mr3879529ioc.72.1569024821810;
+ Fri, 20 Sep 2019 17:13:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <eb679ad2-4020-951c-e4d1-60cb059a5ca8@huawei.com>
-User-Agent: Mutt/1.12.0 (2019-05-25)
+Received: by 2002:ac0:9c85:0:0:0:0:0 with HTTP; Fri, 20 Sep 2019 17:13:41
+ -0700 (PDT)
+In-Reply-To: <CAFLxGvwN1_BJ+3iB8fdKH9cJ_XEr_JvkToFAhxTzmK=FsixCbA@mail.gmail.com>
+References: <CAA=hcWRK-ChXxovKqSLpDF+JO7DtjginYXY33O-xtEAq25MiuQ@mail.gmail.com>
+ <20190920111010.AF800240014@gemini.denx.de>
+ <CAFLxGvwN1_BJ+3iB8fdKH9cJ_XEr_JvkToFAhxTzmK=FsixCbA@mail.gmail.com>
+From: JH <jupiter.hce@gmail.com>
+Date: Sat, 21 Sep 2019 10:13:41 +1000
+Message-ID: <CAA=hcWQ8rDkYz7wTtH0CuRW3xE2RAVNgYsZJOHd4jDRqLeiK=g@mail.gmail.com>
+Subject: Re: Missing all ubi commands in mtd-utils
+To: Richard Weinberger <richard.weinberger@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190920_082834_243286_C5AA7C5F 
-X-CRM114-Status: GOOD (  14.17  )
+X-CRM114-CacheID: sfid-20190920_171342_920830_7180CDC7 
+X-CRM114-Status: UNSURE (   7.83  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,89 +93,29 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: bbrezillon@kernel.org, richard@nod.at, dilinger@queued.net,
- linux-kernel@vger.kernel.org, daniel.santos@pobox.com,
- linux-mtd@lists.infradead.org, houtao1@huawei.com, dwmw2@infradead.org
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Sep 20, 2019 at 10:13:53PM +0800, Xiaoming Ni wrote:
-> 1. drivers/mtd/mtdsuper.c
-> mount_mtd_aux() {
-> ....
-> =A0=A0=A0/* jffs2_sb_info is allocated in jffs2_fill_super, */
-> =A0=A0=A0 ret =3D fill_super(sb, data, flags & SB_SILENT ? 1 : 0);
-> =A0=A0=A0 if (ret < 0) {
-> =A0=A0=A0=A0=A0=A0=A0 deactivate_locked_super(sb); /* If the parameter is=
- wrong, release it here*/
-> =A0=A0=A0=A0=A0=A0=A0 return ERR_PTR(ret);
-> =A0=A0=A0=A0}
-> ...
-> }
-> =
+Thanks Richard and all, indeed in mtd-utils-ubifs, my apology.
 
-> 2. fs/super.c
-> deactivate_locked_super()
-> ---> fs->kill_sb(s);
-> =
+Kind regards,
 
-> 3. fs/jffs2/super.c
-> =A0jffs2_kill_sb()
-> =A0=A0=A0 kfree(c); /*release jffs2_sb_info allocated by jffs2_fill_super=
- here
-> =
+- jupiter
 
-> Here memory allocation and release,
-> experienced the function of mount_mtd_aux/deactivate_locked_super/jffs2_k=
-ill_sb three different files,
-> the path is relatively long,
-> if any of the three functions between the errors,
-
-If any of the three functions _what_?
-
-> it will cause problems (such as memory leaks)
- =
-
-> I still think this is easier to understand:
->  Free the memory allocated by the current function in the failed branch
-
-No.  Again, "failed" branch is going to be practically untested during
-any later code changes.  The more you have to do in those, the faster they
-rots.  And they _do_ rot - we'd seen that happening again and again.
-
-As a general rule, the fewer cleanups are required on failure exits, the
-better off we are.
-
-> static void jffs2_kill_sb(struct super_block *sb)
-> {
-> =A0=A0=A0 struct jffs2_sb_info *c =3D JFFS2_SB_INFO(sb);
-> =A0=A0=A0 if (c && !sb_rdonly(sb))
-> 		/* If sb is not read only,
-> 		 * then jffs2_stop_garbage_collect_thread() will be executed
-> 		 * when the jffs2_fill_super parameter is invalid.
-> 		 */
-> =A0=A0=A0=A0=A0=A0=A0 jffs2_stop_garbage_collect_thread(c);
-> =A0=A0=A0 kill_mtd_super(sb);
-> =A0=A0=A0 kfree(c);
-> }
-> =
-
-> void jffs2_stop_garbage_collect_thread(struct jffs2_sb_info *c)
-> {
-> =A0=A0=A0 int wait =3D 0;
-> 	/* When the jffs2_fill_super parameter is invalid,
-> 	 * this lock is not initialized.
-> 	 * Is this a code problem ?
-> 	 */
-> =A0=A0=A0 spin_lock(&c->erase_completion_lock);
-
-Not in practice and gone in mainline this cycle.  But yes, those initializa=
-tions
-should've been done prior to any failure exits -
-"jffs2: free jffs2_sb_info through jffs2_kill_sb()" ought to have moved them
-prior to the call of jffs2_parse_options().
+On 9/21/19, Richard Weinberger <richard.weinberger@gmail.com> wrote:
+> On Fri, Sep 20, 2019 at 1:10 PM Wolfgang Denk <wd@denx.de> wrote:
+>> Probably "ubifs" is not set in your DISTRO_FEATURES ?
+>
+> Yocto splits mtd-utils into many sub-packages, ubi stuff is in
+> mtd-utils-ubifs.
+>
+> --
+> Thanks,
+> //richard
+>
 
 ______________________________________________________
 Linux MTD discussion mailing list
