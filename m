@@ -2,78 +2,66 @@ Return-Path: <SRS0=szY+=XQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 98CB0C4360D
-	for <linux-mtd@archiver.kernel.org>; Sat, 21 Sep 2019 15:37:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59D45C4740A
+	for <linux-mtd@archiver.kernel.org>; Sat, 21 Sep 2019 18:15:32 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6CD6B20820
-	for <linux-mtd@archiver.kernel.org>; Sat, 21 Sep 2019 15:37:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 328C421971
+	for <linux-mtd@archiver.kernel.org>; Sat, 21 Sep 2019 18:15:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="eam+w7V7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6CD6B20820
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dTybtr49";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="fR7TgMaJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 328C421971
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:To:Date:Message-Id:
+	References:In-Reply-To:From:Subject:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tXBwa5GsMwLxuVN5aWTunMcH4MOZVnziLdVL3qcEXIY=; b=eam+w7V7T6WXE9
-	d0DDI1UiWuAOLCIVEX76I0fNBLWmcK3Xnt1wV755DOHtV4LOjc8tcLQ4tTTO5n7dRZv8kS/L/8nKc
-	gOtGzps4l2395QKffmmW8Nv4+eqAwJlfx90Q9aMOk+yI7BZqlAOwYauUWBgD+Bf3CGY+wBpr0lcik
-	NmYnH4I4WlRadibdMZ0alhMzZ66pJVwaGglRaQeBvfIZM/IuiM96bGslAhPgSGHlc06/5Iny9iJ4G
-	YmKhwOoq7pD9sJ8dyz+fdNFDfPRKCuusbYVjKECUDwPRGt3I4OZ2zfVPtGq0u5o8BPJN2VFY91aoM
-	6W9jerxv3+MqprwghyYw==;
+	List-Owner; bh=Yv0iuDn++wtQ6sC1tWV/05K4wYwz0VwXp6TIIXKglM0=; b=dTybtr49N+EY5U
+	rpqjUaGNHUgea2IMiyVWDzT5K9Qj9FayVzEyIdyApNWhvdWN0N2XHTHF13NEFQSVWtnsG0EQ+GEbK
+	IRerF9UN59GlVv2VJQwZwNl/b3ZVnux1f14YaVaC3eddfvtffe4yDoMdtaHuewW9uDgEocLh84mNU
+	A9uHSnKgb8jI8z36f2UNgA9yH4qaaAyqtiKRQQJ/WQvIBKLcfoYV5NN184tReY6yv4S5wEJkAKaF3
+	FMbKH8Sdd/VlX7zQB6LeYEHUXWfNQcgt4H43t1r0daJEz8ahIk01yZcHaVRqAUcIlPhnOydObslQY
+	plXacRK6ZnkobPKhAmsw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
-	id 1iBhSC-0001ew-HT; Sat, 21 Sep 2019 15:37:44 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1iBjuq-000241-If; Sat, 21 Sep 2019 18:15:28 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iBhS6-0001eZ-Qz
- for linux-mtd@lists.infradead.org; Sat, 21 Sep 2019 15:37:40 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 0E94B608310C;
- Sat, 21 Sep 2019 17:37:37 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id 8SXr9EMJTOpX; Sat, 21 Sep 2019 17:37:36 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 55133613E499;
- Sat, 21 Sep 2019 17:37:36 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id bXykVNXxa5Ah; Sat, 21 Sep 2019 17:37:36 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
- by lithops.sigma-star.at (Postfix) with ESMTP id 1042D608310C;
- Sat, 21 Sep 2019 17:37:36 +0200 (CEST)
-Date: Sat, 21 Sep 2019 17:37:35 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: Hou Tao <houtao1@huawei.com>
-Message-ID: <1837147225.3667.1569080255850.JavaMail.zimbra@nod.at>
-In-Reply-To: <b2425bd2-38e9-cb9b-4151-94891f3a71d1@huawei.com>
-References: <1568962478-126260-1-git-send-email-nixiaoming@huawei.com>
- <20190920114336.GM1131@ZenIV.linux.org.uk>
- <206f8d57-dad9-26c3-6bf6-1d000f5698d4@huawei.com>
- <20190920124532.GN1131@ZenIV.linux.org.uk>
- <20190920125442.GA20754@ZenIV.linux.org.uk>
- <eb679ad2-4020-951c-e4d1-60cb059a5ca8@huawei.com>
- <CAFLxGvzeLTVfA17DMEi5tSkzkUgJncjX5oHWe207x7bfUtugtw@mail.gmail.com>
- <b2425bd2-38e9-cb9b-4151-94891f3a71d1@huawei.com>
-Subject: Re: [PATCH] jffs2:freely allocate memory when parameters are invalid
-MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF60 (Linux)/8.8.12_GA_3809)
-Thread-Topic: jffs2:freely allocate memory when parameters are invalid
-Thread-Index: jsGu5gCQ4Vd/48D/3p31+ncM705uWQ==
+ id 1iBjum-00022K-Se
+ for linux-mtd@lists.infradead.org; Sat, 21 Sep 2019 18:15:26 +0000
+Subject: Re: [GIT PULL] MTD updates for 5.4-rc1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1569089724;
+ bh=bBHYtE7nzeS8vbO+KYHOuR4V++/A2K2IKrb0HKTD+SQ=;
+ h=From:In-Reply-To:References:Date:To:Cc:From;
+ b=fR7TgMaJoZFtmX5b3+WjpVtYjRLLiII17jM1AmB6zc0SGbPavifvifdQHo8zg17Jx
+ io4ggEExuuabRD1UQroqbar72ZbWNb0CgWET9GWdEPntwtvGOsKeZOEnGDkEjM1idk
+ zUj/z9ca7JU2zAi/+zGz1qAiBM515iIrsSo6gJ5k=
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <1742349117.3527.1569051395780.JavaMail.zimbra@nod.at>
+References: <1742349117.3527.1569051395780.JavaMail.zimbra@nod.at>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <1742349117.3527.1569051395780.JavaMail.zimbra@nod.at>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/for-5.4
+X-PR-Tracked-Commit-Id: 2cfcfadb8e1380938d6631cffa4fa567b13f52b2
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 4553d469d6f88028f185de57e771dd29aba10d90
+Message-Id: <156908972436.32474.2390391454365007694.pr-tracker-bot@kernel.org>
+Date: Sat, 21 Sep 2019 18:15:24 +0000
+To: Richard Weinberger <richard@nod.at>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190921_083739_025769_7831C27F 
-X-CRM114-Status: UNSURE (   5.78  )
+X-CRM114-CacheID: sfid-20190921_111524_947469_94032618 
+X-CRM114-Status: UNSURE (   1.21  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -86,35 +74,28 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Boris Brezillon <bbrezillon@kernel.org>,
- David Woodhouse <dwmw2@infradead.org>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- daniel santos <daniel.santos@pobox.com>,
- linux-mtd <linux-mtd@lists.infradead.org>, Al Viro <viro@zeniv.linux.org.uk>,
- dilinger@queued.net, Xiaoming Ni <nixiaoming@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: vigneshr@ti.com, linux-mtd <linux-mtd@lists.infradead.org>,
+ torvalds <torvalds@linux-foundation.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>, miquel.raynal@bootlin.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-VGFvLAoKLS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIkhvdSBUYW8iIDxo
-b3V0YW8xQGh1YXdlaS5jb20+Cj4gSW4gSHVhd2VpIHdlIHVzZSBqZmZzMiBicm9hZGx5IGluIG91
-ciBwcm9kdWN0cyB0byBzdXBwb3J0IGZpbGVzeXN0ZW0gb24gcmF3Cj4gTk9SIGZsYXNoIGFuZCBO
-QU5EIGZsYXNoLCBzbyBmaXhpbmcgdGhlIGJ1Z3MgaW4gamZmczIgbWVhbnMgYSBsb3QgdG8gdXMu
-Cj4gCj4gQWx0aG91Z2ggSSBoYXZlIG5vdCByZWFkIGFsbCBvZiBqZmZzMiBjb2RlIHRob3JvdWdo
-bHksIEkgaGFkIGZpbmQgYW5kICJmaXhlZCIKPiBzb21lIGJ1Z3MgaW4gamZmczIgYW5kIEkgYW0g
-d2lsbGluZyB0byBkbyBhbnkgaGVscCBpbiB0aGUgamZmczIgY29tbXVuaXR5LiBNYXliZQo+IHdl
-IGNhbiBzdGFydCBieSB0ZXN0aW5nIGFuZCByZXZpZXdpbmcgdGhlIHBlbmRpbmcgcGF0Y2hlcyBp
-biBwYXRjaCB3b3JrID8KCnllcywgdGhpcyBpcyBhIGdvb2QgaWRlYS4KSW4gTVREJ3MgcGF0Y2h3
-b3JrIHRoZSBqZmZzMiBxdWV1ZSBpcyBpbiBiYWQgc2hhcGUuIEkgdHJpZWQgdG8gY2F0Y2ggdXAK
-YnV0IGZhaWxlZCB0byBmaW5kIGVub3VnaCB0aW1lLiBTbyB3aXRoIG1vcmUgZXllYmFsbHMgSSB0
-aGluayB3ZSBjYW4gYnJpbmcgaXQKaW4gc2hhcGUgYWdhaW4uCkJhc2ljYWxseSB3ZSBuZWVkIHRv
-IGNsYXNzaWZ5IHdoaWNoIHBhdGNoZXMgZml4IGltcG9ydGFudCBzdHVmZiBhbmQgd2hpY2ggZG8g
-bm90LgoKU29tZSB0aW1lIGFnbyBJIG1ha2UgeGZzdGVzdHMgd29yayB3aXRoIGpmZnMyLCBJIGNh
-biBzaGFyZSAoYW5kIHVwc3RyZWFtKSB0aGVzZQpwYXRjaGVzIHRvby4KT25lIG9mIG15IGdvYWxz
-IGlzIG1ha2luZyBzdXJlIHRoYXQgd2UgZG9uJ3QgYnJlYWsgamZmczIuIHhmc3Rlc3RzIGNhbiBo
-ZWxwLgoKQXJlIHlvdSBvbiB0aGUgT0ZUQyBJUkMgbmV0d29yaz8gT24gI210ZCB5b3UgY2FuIGZp
-bmQgdXMgTVREIGd1eXMuCgpUaGFua3MsCi8vcmljaGFyZAoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1h
-aWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
-bnV4LW10ZC8K
+The pull request you sent on Sat, 21 Sep 2019 09:36:35 +0200 (CEST):
+
+> git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/for-5.4
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/4553d469d6f88028f185de57e771dd29aba10d90
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
