@@ -8,17 +8,17 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 680EDC3A5A6
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Sep 2019 02:33:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 63645C3A5A2
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Sep 2019 02:34:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3EED7206C2
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Sep 2019 02:33:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3689A206C2
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Sep 2019 02:34:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="b9LPoVo1";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k6TfXXWA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3EED7206C2
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nngeu8ml";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A7vN0mah"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3689A206C2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,61 +27,60 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=6JyG27AY+09Um8GqJkBQcmAZqCPx87nRN8yjjOx3HPk=; b=b9L
-	PoVo1dpysL4GueNxBKfmbTh8rVolKJrCEQC3Ta2M2C3Hd7O5hvBfypm/HGQac1H2TEytUCGGdL9sy
-	BLenpgBdb3gobGZIwTYSnW6bgXRGTlLCOr3mG6zSbEJ/CP1JudKXRhx9pbZ0BfMVXIXGR69pQy+q3
-	ojqlUj3OHyNaYhqcMz6jTKr1IbyKwFbIpyIgERZvrblNco6+0sgA4Ug0hWgSMwNduzjlxcA3pq57h
-	gGa7eG7sLnsg8YpVgr0xfI6XBoeQA25Yom3/DCzh2KiVxeV6+IUK2UfXgQElzufmCOeRTNEmDH5O4
-	vDZDnooZ+U7Wb9+UUeIdaP5XOKgzX0g==;
+	References:List-Owner; bh=595u0DN1vv9X2hc83VirvYLlXn/exLRc3JHx8THqD9k=; b=nng
+	eu8ml2VYanow1eC11HeRWMYsFCfyoxfz9DHqmWsI4um7/QfjVQQUb3BfMOfOv4SdKaV92s+By2fbB
+	UiTjKPSclXDtC/cwTCFa7hHY9asZUCPobjkWv2teiAyCB+2ybU7pldr7Tc0G+7FzjMnGjkr4CNICK
+	YIqip4P+f6X0bNS2gcR+IwOpEK8kdzplhnore2j8NY+tZ3D6Lsba861OSaykgpO31HE/9KX8j1TAp
+	eEg7SWxX8q4byNxy86T+/VS0Ix5dS38CKzMwwkDCt6+qJ5JpEon0IrCK2v4sn98eQHp6DSgYi+Syo
+	doVuPD+QGYWEAa4YMkblwEU13OURp/A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
-	id 1iCEAS-0000mF-Mt; Mon, 23 Sep 2019 02:33:36 +0000
-Received: from mail-pf1-x442.google.com ([2607:f8b0:4864:20::442])
+	id 1iCEB0-0001Eg-Gg; Mon, 23 Sep 2019 02:34:10 +0000
+Received: from mail-pg1-x543.google.com ([2607:f8b0:4864:20::543])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iCEAQ-0000lF-MH
- for linux-mtd@lists.infradead.org; Mon, 23 Sep 2019 02:33:36 +0000
-Received: by mail-pf1-x442.google.com with SMTP id q21so8168834pfn.11
- for <linux-mtd@lists.infradead.org>; Sun, 22 Sep 2019 19:33:33 -0700 (PDT)
+ id 1iCEAv-0001B9-Rg
+ for linux-mtd@lists.infradead.org; Mon, 23 Sep 2019 02:34:08 +0000
+Received: by mail-pg1-x543.google.com with SMTP id a3so7102490pgm.13
+ for <linux-mtd@lists.infradead.org>; Sun, 22 Sep 2019 19:34:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id;
- bh=L0CPgCufl3kk7hZTqN/fh/41VjDv8bX2l/BiIIFM92U=;
- b=k6TfXXWAJvRs1psBuPG1jMNUkik0szqKx/RocEFaswy2giB3LFcf4QugLXSmJLpBXD
- P4xlqNBqjO31tkqY2Npm2qH6lI/cVNw1NR7axGvWUQOHWP5XpvSbZEZu9a4+RqxEZpqV
- M9ht42Vi7WgBIdwKefDR5OztOQ/ehVxGGtRskxD6Bg6PmMUQAbEOCo+CLq/sWvnWwXJ9
- IUsgrfGKS1LYl28kNYrFFa3VLlUDYGNUQ6DOGP7pl8oouPbgABgT0VkECbvg9a49apyU
- PwmUgG0P3hf1QJSptFfsBeFeUQZJKqcROVaeunNxFiM+pkhDDT3BZaIaDHa8D0bdzeQM
- uwIA==
+ bh=olfyRzbV8M+cZYIlrHmiKQMFSiGHjLyePCXwy/Ik6xI=;
+ b=A7vN0mahL+iuOHpzHbGW4MXq1bsSSuAw8pWF+ah/HlvNRK9mWyQtxNUX0k+jZykDg2
+ s/VPUxLUBcVJGE67k2UH1qgP1pyVFiEeQ/tZ5As7jfEvRag9FGwt0/RCvs69mhyzWJi3
+ I5o8D4cW86dIY5cEATjk1xvnO6uuixF2jccioi19t2BuHSLa4BtyQ4DEPKfVEhmCOMHH
+ q9PNTPCj8Or/wvPoAigQr229POnBohZLTMKR3+DaAVglVTwhlXzntyPIZEV5cZl/90pN
+ T4M9CPghGm2amRXu18bX1h2DsiHwHvDe6kpyfxIdRVHewtG5l4LMuNzZ/gk0zAYmAI6v
+ LyRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=L0CPgCufl3kk7hZTqN/fh/41VjDv8bX2l/BiIIFM92U=;
- b=KdVzMu5zJ5dUUFcK1NXUgL1pKfQmX3+EXnkSsbBVg+JI3iV/3V7eUvsy2AE1hYkX1Y
- oMoTFBF224LNATP4cN8Gu7OxkBW1uN4F0WTLkZBNc2m5bavLRhhSZg8hZ847Td8B6e0v
- zAPxV2mTZJRHZ4Ol5+CL8GZYJRVrDqeUucoej3cgDh9W3v5HoGmMb66XDvDDND5iO1mL
- +I+zLZcnBbjvU1JP2MTf7KVgmFkp6uCYzDp/lOmskKnTO4/koIOFyaEA/jzkNa0fHH4c
- 3JK2nIx/zhDxBmZPwoDlF1r4DWgcXScCfStRmDr9Yt/x4y/ly/jIk2q6oVUOWv3CjRm+
- TDkw==
-X-Gm-Message-State: APjAAAVPqyWoVsout8j2fC9RK/NIGANjNpJINaN1wsyYD7h+4MAlAZKy
- HXBE0/mxBtdJFonuy2D0V/Q=
-X-Google-Smtp-Source: APXvYqy8JAFETTITBduEzj1zkSULkQzQoDOhOpNX2B3aJRWsyOz1XgaMD9qnrpqwQaEhI8O+TuHVSg==
-X-Received: by 2002:a17:90a:7f89:: with SMTP id
- m9mr15098423pjl.30.1569206013055; 
- Sun, 22 Sep 2019 19:33:33 -0700 (PDT)
+ bh=olfyRzbV8M+cZYIlrHmiKQMFSiGHjLyePCXwy/Ik6xI=;
+ b=MzD0kxn4OgEboXp6BGMNih72GaGRAv6zX6t81stORdjtDS3zGMbOKyothi+8PvLtgj
+ /mRP/laGrt/PVHOu1vx4ilLfjMnDpjqTVVW2DATWyT8IuqhcuDs07jjE0OkkHqMndPcI
+ 9+dkhfRSKupZqVJgyZGK1oVzeoivb6Wjd7/gZjxM9/bs6KBLdS3sec5g+Ymg+ONSLxI3
+ fNcAwVznWZY6Kz4ZtGUqN7vKRwsBCq8/iq2wu4fjgUZWj6rvu1NtcZPmUz3DkVGCgIM1
+ nRyU2QiKaWb5Wt1GyvwqUdcNcooUH5+TrgBYP8m9FO2vvCWI200oDy71G7uDQRabE5ry
+ 6RjQ==
+X-Gm-Message-State: APjAAAXCY+nHutsxykDP/K5lptFgqoVPNho9vnYX7Bv5Ecc+UyAYnBON
+ 85OlGSdBkYd2UJQiSs3ZaN8=
+X-Google-Smtp-Source: APXvYqyZm+iC57DXxob5AOei7j/ZUAQTRFyi21kwj/khROFMBah9Chtg618Lzz6LLLc5+ax5cClYjw==
+X-Received: by 2002:a63:1009:: with SMTP id f9mr4787691pgl.124.1569206044921; 
+ Sun, 22 Sep 2019 19:34:04 -0700 (PDT)
 Received: from localhost.localdomain (M106072039032.v4.enabler.ne.jp.
  [106.72.39.32])
- by smtp.gmail.com with ESMTPSA id i126sm10010566pfc.29.2019.09.22.19.33.30
+ by smtp.gmail.com with ESMTPSA id s7sm8697403pjr.23.2019.09.22.19.34.02
  (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Sun, 22 Sep 2019 19:33:32 -0700 (PDT)
+ Sun, 22 Sep 2019 19:34:04 -0700 (PDT)
 From: Tokunori Ikegami <ikegami.t@gmail.com>
 To: Greg KH <greg@kroah.com>
-Subject: [PATCH for 4.19.y] mtd: cfi_cmdset_0002: Use chip_good() to retry in
+Subject: [PATCH for 4.14.y] mtd: cfi_cmdset_0002: Use chip_good() to retry in
  do_write_oneword()
-Date: Mon, 23 Sep 2019 11:33:26 +0900
-Message-Id: <20190923023326.20230-1-ikegami.t@gmail.com>
+Date: Mon, 23 Sep 2019 11:33:58 +0900
+Message-Id: <20190923023358.20279-1-ikegami.t@gmail.com>
 X-Mailer: git-send-email 2.11.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190922_193334_725553_E4D968E2 
-X-CRM114-Status: GOOD (  16.80  )
+X-CRM114-CacheID: sfid-20190922_193406_788289_427EBB38 
+X-CRM114-Status: GOOD (  16.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -135,10 +134,10 @@ Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
  1 file changed, 12 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 72428b6bfc47..ba44ea6d497e 100644
+index af3d207c9cc4..e773dc6fdd3c 100644
 --- a/drivers/mtd/chips/cfi_cmdset_0002.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -1627,29 +1627,35 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
+@@ -1628,29 +1628,35 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
  			continue;
  		}
  
@@ -167,7 +166,7 @@ index 72428b6bfc47..ba44ea6d497e 100644
 -	if (!chip_good(map, adr, datum)) {
 +	if (ret) {
  		/* reset on all failures. */
- 		map_write(map, CMD(0xF0), chip->start);
+ 		map_write( map, CMD(0xF0), chip->start );
  		/* FIXME - should have reset delay before continuing */
  
 -		if (++retry_cnt <= MAX_RETRIES)
