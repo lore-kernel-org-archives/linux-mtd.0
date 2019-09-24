@@ -1,97 +1,156 @@
-Return-Path: <SRS0=TNJo=XS=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=X2Oj=XT=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7E4CC4CECF
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Sep 2019 16:02:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8ECBC432C1
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Sep 2019 05:56:50 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 964BA205F4
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Sep 2019 16:02:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A9D6120872
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Sep 2019 05:56:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EykbcWjw";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="tlUw+OaX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 964BA205F4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="i0pjTEv2";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cadence.com header.i=@cadence.com header.b="dq7/C3es";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=cadence.com header.i=@cadence.com header.b="yitYC8fs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A9D6120872
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cadence.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:References:
-	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=6LGrkGAMeL9vi4a+5RwCeIPJQnbJ+VzPt5U7zSzJWrg=; b=EykbcWjwlI2T2KDE9h3aD7UpFT
-	8nMXMFs3SJ2f+8EaHc/VLvnHpuJKEmz+yaQ+lLimR2njUkW50cjgK1xS5ZBwNrcLFvJZdFCIeSQwb
-	JZYf2viWqbvP528cR454w+4dciFFWogY6wSXIJvnm4NaMppn7/MyLB8vUG6DPCLZpVVEcFEOI7xT4
-	XcG6W0dDKzaTvSz8jUn63ZsVCL3BIt6LnWbWKIknA4N1Yly0IwhwySpQNzwJYRrhpOk/VXKdtfHXA
-	aa2PpgKxoqheabQYjFDByuvG2cIs9WSmuqCUcOvE2N58iqY6qrPSo2NwofeBSdbmKECuHnaRccdY0
-	adC0ngKA==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=GDrDSFgCSCUPRLUqnLoYQuwQgPK1XmOEkEgu9Ttly5k=; b=i0pjTEv20Qb/Ho
+	AbxnyTEKIWG6G69fH66G7jG+2ccAmmEbJvr/vGfNTLWLA+0Wihn1d8LYafI+fVb2VrxrOX/KczSVz
+	5xIhIsDl87v8M2sMXmRtvJ0nbNRvliGZ3Q3eNGekXPwLhTbfrCt/ETMfV6D0ZsoAALsRE1sC5Lezb
+	EprogQt1D/BFEarfoeXvigFFaBb/q2iYDsf/j/PG6GOAuWGBIyeqQQ3MZHP+Z03LQmecXyJLz9Kh1
+	BohDVpq6LLe7sskl3CxTqUbfg23I+UYQOHcBo+i8crrmR+ukOHdsmr2920wTantL4PJ0tCeI5CgPf
+	eZRm073K712twkbuWGfg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
-	id 1iCQmm-00064e-0J; Mon, 23 Sep 2019 16:02:00 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1iCdod-0005Rc-9E; Tue, 24 Sep 2019 05:56:47 +0000
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iCQlt-0005N9-Ox; Mon, 23 Sep 2019 16:01:08 +0000
-Received: from localhost.localdomain (unknown [194.230.155.145])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A0CD221655;
- Mon, 23 Sep 2019 16:00:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1569254465;
- bh=2mKxiYbUqFAYC8HwEexsiuZjLowiVHlnF0alJUeeDSw=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=tlUw+OaXMxwYGECYkhgPaUozxql55SYqwVwPBLrRL4ny4z68kWASnB4tGsuYX90Yv
- ajdP00xfMHnr1V20CV+zaEr4x2BNlLa45PQFUkcewuq9zOhEq1qi7njM8poF/fvBsq
- PDvQCQOHkgE48vgBrCX8B7EZYAxBZsyIEK6NhBlI=
-From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Jiri Kosina <trivial@kernel.org>, linux-kernel@vger.kernel.org,
- linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-omap@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
- uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@lists.linux-m68k.org,
- openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org,
- linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
- linux-um@lists.infradead.org, keyrings@vger.kernel.org,
- linux-acpi@vger.kernel.org, linux-ide@vger.kernel.org,
- linux-block@vger.kernel.org, linux-crypto@vger.kernel.org,
- openipmi-developer@lists.sourceforge.net, linux-clk@vger.kernel.org,
- linux-pm@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- dmaengine@vger.kernel.org, linux-edac@vger.kernel.org,
- linux-efi@vger.kernel.org, linux-input@vger.kernel.org,
- linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-rdma@vger.kernel.org,
- iommu@lists.linux-foundation.org, netdev@vger.kernel.org,
- linux-raid@vger.kernel.org, dm-devel@redhat.com,
- linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-pci@vger.kernel.org,
- linux-gpio@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org,
- linux-rtc@vger.kernel.org, linux-scsi@vger.kernel.org,
- esc.storagedev@microsemi.com, linux-rockchip@lists.infradead.org,
- linux-spi@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-fbdev@vger.kernel.org, devel@driverdev.osuosl.org,
- ac100@lists.launchpad.net, linux-tegra@vger.kernel.org,
- bcm-kernel-feedback-list@broadcom.com,
- linux-rpi-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
- virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org,
- linux-mm@kvack.org, linux-security-module@vger.kernel.org,
- linux-integrity@vger.kernel.org, linux-mediatek@lists.infradead.org
-Subject: [PATCH trivial 3/3] treewide: arch: Fix Kconfig indentation
-Date: Mon, 23 Sep 2019 18:00:13 +0200
-Message-Id: <20190923160013.8550-3-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190923160013.8550-1-krzk@kernel.org>
-References: <20190923160013.8550-1-krzk@kernel.org>
+ id 1iCdoY-0005RG-4m
+ for linux-mtd@lists.infradead.org; Tue, 24 Sep 2019 05:56:43 +0000
+Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
+ by mx0a-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
+ x8O5q3Cf005689; Mon, 23 Sep 2019 22:56:18 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=proofpoint;
+ bh=X/UFUgGlJSnJ7VZ/c/9TW0G19h38aWqNZIqWJUeJUtM=;
+ b=dq7/C3esbqCXsVAE/YV+xZV+Rh08eZLig7snIfO12xo+JqTOJCBk5U4rLKY76hHVzJfY
+ AyTFl6TFBKF4mOOcMbewiLM9k9Lvb4LpeGsg8nUx7hNzVFJyENim6GQIMG6XLb8asNMF
+ qW7z76rjsKZlCO43U5xU9s6hzZnQoinQmeZBuxv+j2370qDlpWIH52/2tzrxICtT8sHG
+ WkWYMtAYxj7oVYqh1JCboYTtkiHCOvumJ/LkpFBqHJRfJAQBQXpUVSdNsgZJNad45t+Y
+ J5ZKycaJPc5pCn7EYncjMA5TbWcE4xgvU3E/KLodb9v5B98glBRk8/93GwHCu7tZSBH9 AA== 
+Received: from nam03-dm3-obe.outbound.protection.outlook.com
+ (mail-dm3nam03lp2050.outbound.protection.outlook.com [104.47.41.50])
+ by mx0a-0014ca01.pphosted.com with ESMTP id 2v5ge09tyt-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 23 Sep 2019 22:56:17 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lGZWWvCEXVCQ6tOl4Nb2mgJDSJ/yKgLFaxY6y3BX7k1OJCnh2SPLJ+PnuC98ZxpuhZ5pASnRTlAnowq2DsSAXDFj/T6BjDvcb9Tcjp/pMuaD1T7kwfSvlYm5T5FMkKjwIdbJBh5zphuv4hL47xjlwjvlX27syQe/AtCzeA0UKtIyclhNn3RXgK4o4lfuB8drLP720c9ei3YBXpEybFhCvZD4gOLYFsAEQE9RLULPOulfjP6oPQQIBfY+taHQvioNnJrK1EiqUZGgu6tnUIpsqD1G+GZ1g00Y8vB8pxWs1tmBrETkyUJOpPtsb/gev2doN+6AZjAxGII94l5F8OTX+g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=X/UFUgGlJSnJ7VZ/c/9TW0G19h38aWqNZIqWJUeJUtM=;
+ b=AOAips/VSE5I5zEKS+gmFrqINt33aavHJIMXSnEcH/B86BqHdjhK+fA7quOQv0+L11+qG4IoUFIX6si7zwTxJPcHWdxWhZUZyQBEphhW87RDVI/xSFaqXPRa354aKhB7fKN/KduE/qjfYSITcxYyhE+Ti3nxb5viW+PxC8nyPIoAM2BSmrm66J3YRjRU8yc0OLZJGy+pcyGLh0dUbGEp9V8S7/wCvCZHqBwH9s+ndajzcMuVutK+l1Hte3v+eP+gzePEDlzJs+6CRgBLBPWo9x8knKhZ8TRVKloPvGLWfzfpqNzLIijKFpiW9AntyWZIP1Qyt8t2l9aui9m6D8YsIw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
+ is 64.207.220.243) smtp.rcpttodomain=gmail.com smtp.mailfrom=cadence.com;
+ dmarc=fail (p=none sp=none pct=100) action=none header.from=cadence.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=X/UFUgGlJSnJ7VZ/c/9TW0G19h38aWqNZIqWJUeJUtM=;
+ b=yitYC8fsi/vxpbKRDwc3r0EmyYCsSzPoebp8vBGnbC8d9p3iZY+Y8SVZ940CVq2MY45t9WcDrdhICfepyx2hA7Mj14EnbuMIMsprUrg8/nuY1tT+chnZw9N3FIzsgh5DGjCkddfA0zadCEF2yWPugquMqs0nPHteQFqMxwyfgSw=
+Received: from MN2PR07CA0009.namprd07.prod.outlook.com (2603:10b6:208:1a0::19)
+ by MWHPR0701MB3674.namprd07.prod.outlook.com (2603:10b6:301:7e::14)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2284.26; Tue, 24 Sep
+ 2019 05:56:08 +0000
+Received: from DM3NAM05FT064.eop-nam05.prod.protection.outlook.com
+ (2a01:111:f400:7e51::205) by MN2PR07CA0009.outlook.office365.com
+ (2603:10b6:208:1a0::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2284.20 via Frontend
+ Transport; Tue, 24 Sep 2019 05:56:08 +0000
+Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
+ cadence.com discourages use of 64.207.220.243 as permitted sender)
+Received: from wcmailrelayl01.cadence.com (64.207.220.243) by
+ DM3NAM05FT064.mail.protection.outlook.com (10.152.98.188) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2305.15 via Frontend Transport; Tue, 24 Sep 2019 05:56:08 +0000
+Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
+ by wcmailrelayl01.cadence.com (8.14.7/8.14.4) with ESMTP id
+ x8O5txht021140
+ (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=OK);
+ Mon, 23 Sep 2019 22:56:01 -0700
+X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
+Received: from maileu3.global.cadence.com (10.160.88.99) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1367.3; Tue, 24 Sep 2019 07:55:59 +0200
+Received: from lvlogina.cadence.com (10.165.176.102) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1367.3 via Frontend Transport; Tue, 24 Sep 2019 07:55:59 +0200
+Received: from lvlogina.cadence.com (localhost.localdomain [127.0.0.1])
+ by lvlogina.cadence.com (8.14.4/8.14.4) with ESMTP id x8O5txDL006343;
+ Tue, 24 Sep 2019 06:55:59 +0100
+Received: (from piotrs@localhost)
+ by lvlogina.cadence.com (8.14.4/8.14.4/Submit) id x8O5tshM006146;
+ Tue, 24 Sep 2019 06:55:54 +0100
+From: Piotr Sroka <piotrs@cadence.com>
+To: 
+Subject: [v2] mtd: rawnand: Change calculating of position page containing BBM
+Date: Tue, 24 Sep 2019 06:54:31 +0100
+Message-ID: <20190924055439.4212-1-piotrs@cadence.com>
+X-Mailer: git-send-email 2.15.0
+MIME-Version: 1.0
+X-OrganizationHeadersPreserved: maileu3.global.cadence.com
+X-EOPAttributedMessage: 0
+X-Forefront-Antispam-Report: CIP:64.207.220.243; IPV:NLI; CTRY:US; EFV:NLI;
+ SFV:NSPM;
+ SFS:(10009020)(979002)(4636009)(396003)(136003)(376002)(39860400002)(346002)(199004)(189003)(36092001)(2906002)(70206006)(87636003)(305945005)(1671002)(86362001)(5660300002)(478600001)(70586007)(7416002)(1076003)(42186006)(36756003)(316002)(51416003)(36906005)(16586007)(50466002)(48376002)(47776003)(54906003)(109986005)(6666004)(356004)(426003)(186003)(126002)(50226002)(486006)(4326008)(81166006)(8936002)(81156014)(8676002)(26005)(476003)(336012)(2616005)(266003)(969003)(989001)(999001)(1009001)(1019001);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:MWHPR0701MB3674; H:wcmailrelayl01.cadence.com;
+ FPR:; SPF:SoftFail; LANG:en; PTR:unused.mynethost.com; A:1; MX:1; 
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ad6be0f6-c7d8-41b6-223d-08d740b3e50a
+X-Microsoft-Antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600167)(711020)(4605104)(1401327)(2017052603328);
+ SRVR:MWHPR0701MB3674; 
+X-MS-TrafficTypeDiagnostic: MWHPR0701MB3674:
+X-Microsoft-Antispam-PRVS: <MWHPR0701MB3674F904BF4AF3A2D512580EDD840@MWHPR0701MB3674.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-Forefront-PRVS: 0170DAF08C
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam-Message-Info: a85PWJr7fp3mHZ6JFNTRTi6znb+Q0ctMovNPnU5DWy6bBRaFMNL1d+yh1mvQlnwCK8ZKrfQTch2wG1lArNDPWqdrHdv0X42lLNLJBwzTcgDrZt883s7oJxlqMrCYYGnBz5Dg0kNEoOvVQPMIWjZOtoJnF5jpjvaVW/rAz2X3zHp6JhjBZ+cjhvuT6GKCfaRBfY7gwqTR7pfNay+KGmvFmdgC0KShi1B4o7AO0qWQDZrgN6ApwsMtQcNoH2/h+NcHRt7sXqk3C1Y6GugggAy8wkBLFcUsNcRgWh8dvic4QcoP6k1tTQdrh2NDtskgvw4ECtOtz00pFdXRiaNJRrFhlAFAtlYGUaNA6TSNKXBFwjQeANgouCaGVyJwVF2lS7DzRXVJIku8rYU1VD20IxrtrIATFm/upETQq9zYg2P/994=
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Sep 2019 05:56:08.0823 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ad6be0f6-c7d8-41b6-223d-08d740b3e50a
+X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9; Ip=[64.207.220.243];
+ Helo=[wcmailrelayl01.cadence.com]
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR0701MB3674
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-09-24_03:2019-09-23,2019-09-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check
+ score=0 malwarescore=0
+ impostorscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ priorityscore=1501 lowpriorityscore=0 phishscore=0 adultscore=0
+ suspectscore=2 clxscore=1011 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-1908290000 definitions=main-1909240059
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190923_090105_957958_87DD8E83 
-X-CRM114-Status: GOOD (  18.47  )
+X-CRM114-CacheID: sfid-20190923_225642_454808_55415362 
+X-CRM114-Status: GOOD (  17.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,735 +162,91 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>
-MIME-Version: 1.0
+Cc: Kate Stewart <kstewart@linuxfoundation.org>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Boris Brezillon <bbrezillon@kernel.org>,
+ Richard Weinberger <richard@nod.at>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, Frieder Schrempf <frieder.schrempf@kontron.de>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Piotr Sroka <piotrs@cadence.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Adjust indentation from spaces to tab (+optional two spaces) as in
-coding style with command like:
-    $ sed -e 's/^        /\t/' -i */Kconfig
+Change calculating of position page containing BBM
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+If none of BBM flags are set then function nand_bbm_get_next_page 
+reports EINVAL. It causes that BBM is not read at all during scanning
+factory bad blocks. The result is that the BBT table is build without 
+checking factory BBM at all. For Micron flash memories none of these 
+flags are set if page size is different than 2048 bytes.
+
+Address this regression by:
+- adding NAND_BBM_FIRSTPAGE chip flag without any condition. It solves
+  issue only for Micron devices.
+- changing the nand_bbm_get_next_page_function. It will return 0 
+  if no of BBM flag is set and page parameter is 0. After that modification
+  way of discovering factory bad blocks will work similar as in kernel 
+  version 5.1.
+
+Cc: stable@vger.kernel.org
+Fixes: f90da7818b14 (mtd: rawnand: Support bad block markers in first, second or last page)
+Signed-off-by: Piotr Sroka <piotrs@cadence.com>
+Reviewed-by: Frieder Schrempf <frieder.schrempf@kontron.de>
 ---
- arch/Kconfig                           |  4 ++--
- arch/alpha/Kconfig                     |  2 +-
- arch/arm/Kconfig.debug                 |  4 ++--
- arch/arm/mach-ep93xx/Kconfig           |  8 ++++----
- arch/arm/mach-hisi/Kconfig             |  2 +-
- arch/arm/mach-ixp4xx/Kconfig           | 16 ++++++++--------
- arch/arm/mach-mmp/Kconfig              |  2 +-
- arch/arm/mach-omap1/Kconfig            | 14 +++++++-------
- arch/arm/mach-prima2/Kconfig           |  6 +++---
- arch/arm/mach-s3c24xx/Kconfig          |  4 ++--
- arch/arm/mach-s3c64xx/Kconfig          |  6 +++---
- arch/arm/plat-samsung/Kconfig          |  2 +-
- arch/arm64/Kconfig                     |  6 +++---
- arch/arm64/Kconfig.debug               |  2 +-
- arch/h8300/Kconfig                     |  4 ++--
- arch/h8300/Kconfig.cpu                 |  4 ++--
- arch/m68k/Kconfig.bus                  |  2 +-
- arch/m68k/Kconfig.debug                | 16 ++++++++--------
- arch/m68k/Kconfig.machine              |  8 ++++----
- arch/nds32/Kconfig.cpu                 | 18 +++++++++---------
- arch/openrisc/Kconfig                  | 26 +++++++++++++-------------
- arch/powerpc/Kconfig.debug             | 18 +++++++++---------
- arch/powerpc/platforms/Kconfig.cputype |  2 +-
- arch/riscv/Kconfig.socs                |  2 +-
- arch/sh/boards/Kconfig                 |  2 +-
- arch/sh/mm/Kconfig                     |  2 +-
- arch/um/Kconfig                        |  2 +-
- arch/x86/Kconfig                       | 18 +++++++++---------
- 28 files changed, 101 insertions(+), 101 deletions(-)
+Changes for v2:
+- add fix for micron nand driver
+- add fixes and stable tags
+---
+ drivers/mtd/nand/raw/nand_base.c   | 8 ++++++--
+ drivers/mtd/nand/raw/nand_micron.c | 4 +++-
+ 2 files changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 5f8a5d84dbbe..8d4f77bbed29 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -76,7 +76,7 @@ config JUMP_LABEL
-        depends on HAVE_ARCH_JUMP_LABEL
-        depends on CC_HAS_ASM_GOTO
-        help
--         This option enables a transparent branch optimization that
-+	 This option enables a transparent branch optimization that
- 	 makes certain almost-always-true or almost-always-false branch
- 	 conditions even cheaper to execute within the kernel.
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 5c2c30a7dffa..f64e3b6605c6 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -292,12 +292,16 @@ int nand_bbm_get_next_page(struct nand_chip *chip, int page)
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	int last_page = ((mtd->erasesize - mtd->writesize) >>
+ 			 chip->page_shift) & chip->pagemask;
++	unsigned int bbm_flags = NAND_BBM_FIRSTPAGE | NAND_BBM_SECONDPAGE
++		| NAND_BBM_LASTPAGE;
  
-@@ -84,7 +84,7 @@ config JUMP_LABEL
- 	 scheduler functionality, networking code and KVM have such
- 	 branches and include support for this optimization technique.
++	if (page == 0 && !(chip->options & bbm_flags))
++		return 0;
+ 	if (page == 0 && chip->options & NAND_BBM_FIRSTPAGE)
+ 		return 0;
+-	else if (page <= 1 && chip->options & NAND_BBM_SECONDPAGE)
++	if (page <= 1 && chip->options & NAND_BBM_SECONDPAGE)
+ 		return 1;
+-	else if (page <= last_page && chip->options & NAND_BBM_LASTPAGE)
++	if (page <= last_page && chip->options & NAND_BBM_LASTPAGE)
+ 		return last_page;
  
--         If it is detected that the compiler has support for "asm goto",
-+	 If it is detected that the compiler has support for "asm goto",
- 	 the kernel will compile such branches with just a nop
- 	 instruction. When the condition flag is toggled to true, the
- 	 nop will be converted to a jump instruction to execute the
-diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
-index ef179033a7c2..30a6291355cb 100644
---- a/arch/alpha/Kconfig
-+++ b/arch/alpha/Kconfig
-@@ -545,7 +545,7 @@ config NR_CPUS
- 	default "4" if !ALPHA_GENERIC && !ALPHA_MARVEL
- 	help
- 	  MARVEL support can handle a maximum of 32 CPUs, all the others
--          with working support have a maximum of 4 CPUs.
-+	  with working support have a maximum of 4 CPUs.
+ 	return -EINVAL;
+diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
+index 1622d3145587..913f42854563 100644
+--- a/drivers/mtd/nand/raw/nand_micron.c
++++ b/drivers/mtd/nand/raw/nand_micron.c
+@@ -438,8 +438,10 @@ static int micron_nand_init(struct nand_chip *chip)
+ 	if (ret)
+ 		goto err_free_manuf_data;
  
- config ARCH_DISCONTIGMEM_ENABLE
- 	bool "Discontiguous Memory Support"
-diff --git a/arch/arm/Kconfig.debug b/arch/arm/Kconfig.debug
-index 8bcbd0cd739b..0e5d52fbddbd 100644
---- a/arch/arm/Kconfig.debug
-+++ b/arch/arm/Kconfig.debug
-@@ -274,7 +274,7 @@ choice
- 		select DEBUG_UART_8250
- 		help
- 		  Say Y here if you want the debug print routines to direct
--                  their output to the CNS3xxx UART0.
-+	          their output to the CNS3xxx UART0.
- 
- 	config DEBUG_DAVINCI_DA8XX_UART1
- 		bool "Kernel low-level debugging on DaVinci DA8XX using UART1"
-@@ -828,7 +828,7 @@ choice
- 		select DEBUG_UART_8250
- 		help
- 		  Say Y here if you want kernel low-level debugging support
--                  on Rockchip RV1108 based platforms.
-+	          on Rockchip RV1108 based platforms.
- 
- 	config DEBUG_RV1108_UART1
- 		bool "Kernel low-level debugging messages via Rockchip RV1108 UART1"
-diff --git a/arch/arm/mach-ep93xx/Kconfig b/arch/arm/mach-ep93xx/Kconfig
-index f2db5fd38145..bf81dfab7f1b 100644
---- a/arch/arm/mach-ep93xx/Kconfig
-+++ b/arch/arm/mach-ep93xx/Kconfig
-@@ -126,10 +126,10 @@ config MACH_MICRO9S
- 	  Contec Micro9-Slim board.
- 
- config MACH_SIM_ONE
--        bool "Support Simplemachines Sim.One board"
--        help
--          Say 'Y' here if you want your kernel to support the
--          Simplemachines Sim.One board.
-+	bool "Support Simplemachines Sim.One board"
-+	help
-+	  Say 'Y' here if you want your kernel to support the
-+	  Simplemachines Sim.One board.
- 
- config MACH_SNAPPER_CL15
- 	bool "Support Bluewater Systems Snapper CL15 Module"
-diff --git a/arch/arm/mach-hisi/Kconfig b/arch/arm/mach-hisi/Kconfig
-index 98338a489921..4697a756f676 100644
---- a/arch/arm/mach-hisi/Kconfig
-+++ b/arch/arm/mach-hisi/Kconfig
-@@ -31,7 +31,7 @@ config ARCH_HIP01
-        select HAVE_ARM_TWD if SMP
-        select ARM_GLOBAL_TIMER
-        help
--         Support for Hisilicon HIP01 SoC family
-+	 Support for Hisilicon HIP01 SoC family
- 
- config ARCH_HIP04
- 	bool "Hisilicon HiP04 Cortex A15 family"
-diff --git a/arch/arm/mach-ixp4xx/Kconfig b/arch/arm/mach-ixp4xx/Kconfig
-index f7211b57b1e7..484e8eb16baa 100644
---- a/arch/arm/mach-ixp4xx/Kconfig
-+++ b/arch/arm/mach-ixp4xx/Kconfig
-@@ -214,14 +214,14 @@ config IXP4XX_INDIRECT_PCI
- 	bool "Use indirect PCI memory access"
- 	depends on PCI
- 	help
--          IXP4xx provides two methods of accessing PCI memory space:
--
--          1) A direct mapped window from 0x48000000 to 0x4BFFFFFF (64MB).
--             To access PCI via this space, we simply ioremap() the BAR
--             into the kernel and we can use the standard read[bwl]/write[bwl]
--             macros. This is the preferred method due to speed but it
--             limits the system to just 64MB of PCI memory. This can be
--             problematic if using video cards and other memory-heavy devices.
-+	  IXP4xx provides two methods of accessing PCI memory space:
++	chip->options |= NAND_BBM_FIRSTPAGE;
 +
-+	  1) A direct mapped window from 0x48000000 to 0x4BFFFFFF (64MB).
-+	     To access PCI via this space, we simply ioremap() the BAR
-+	     into the kernel and we can use the standard read[bwl]/write[bwl]
-+	     macros. This is the preferred method due to speed but it
-+	     limits the system to just 64MB of PCI memory. This can be
-+	     problematic if using video cards and other memory-heavy devices.
+ 	if (mtd->writesize == 2048)
+-		chip->options |= NAND_BBM_FIRSTPAGE | NAND_BBM_SECONDPAGE;
++		chip->options |= NAND_BBM_SECONDPAGE;
  
- 	  2) If > 64MB of memory space is required, the IXP4xx can be
- 	     configured to use indirect registers to access the whole PCI
-diff --git a/arch/arm/mach-mmp/Kconfig b/arch/arm/mach-mmp/Kconfig
-index 0440109e973b..c549fc3938b8 100644
---- a/arch/arm/mach-mmp/Kconfig
-+++ b/arch/arm/mach-mmp/Kconfig
-@@ -150,7 +150,7 @@ config CPU_MMP2
- 	  Select code specific to MMP2. MMP2 is ARMv7 compatible.
+ 	ondie = micron_supports_on_die_ecc(chip);
  
- config USB_EHCI_MV_U2O
--        bool "EHCI support for PXA USB OTG controller"
-+	bool "EHCI support for PXA USB OTG controller"
- 	depends on USB_EHCI_MV
- 	help
- 	  Enables support for OTG controller which can be switched to host mode.
-diff --git a/arch/arm/mach-omap1/Kconfig b/arch/arm/mach-omap1/Kconfig
-index 2a17dc1d122c..89138d14d0f2 100644
---- a/arch/arm/mach-omap1/Kconfig
-+++ b/arch/arm/mach-omap1/Kconfig
-@@ -66,8 +66,8 @@ config MACH_OMAP_INNOVATOR
- 	bool "TI Innovator"
- 	depends on ARCH_OMAP1 && (ARCH_OMAP15XX || ARCH_OMAP16XX)
- 	help
--          TI OMAP 1510 or 1610 Innovator board support. Say Y here if you
--          have such a board.
-+	  TI OMAP 1510 or 1610 Innovator board support. Say Y here if you
-+	  have such a board.
- 
- config MACH_OMAP_H2
- 	bool "TI H2 Support"
-@@ -94,7 +94,7 @@ config MACH_OMAP_OSK
- 	depends on ARCH_OMAP1 && ARCH_OMAP16XX
-     	help
- 	  TI OMAP 5912 OSK (OMAP Starter Kit) board support. Say Y here
--          if you have such a board.
-+	  if you have such a board.
- 
- config OMAP_OSK_MISTRAL
- 	bool "Mistral QVGA board Support"
-@@ -180,10 +180,10 @@ config MACH_OMAP_GENERIC
- 	bool "Generic OMAP board"
- 	depends on ARCH_OMAP1 && (ARCH_OMAP15XX || ARCH_OMAP16XX)
- 	help
--          Support for generic OMAP-1510, 1610 or 1710 board with
--          no FPGA. Can be used as template for porting Linux to
--          custom OMAP boards. Say Y here if you have a custom
--          board.
-+	  Support for generic OMAP-1510, 1610 or 1710 board with
-+	  no FPGA. Can be used as template for porting Linux to
-+	  custom OMAP boards. Say Y here if you have a custom
-+	  board.
- 
- endmenu
- 
-diff --git a/arch/arm/mach-prima2/Kconfig b/arch/arm/mach-prima2/Kconfig
-index 6f66785fab01..88a76d265fd9 100644
---- a/arch/arm/mach-prima2/Kconfig
-+++ b/arch/arm/mach-prima2/Kconfig
-@@ -22,7 +22,7 @@ config ARCH_ATLAS6
- 	default y
- 	select SIRF_IRQ
- 	help
--          Support for CSR SiRFSoC ARM Cortex A9 Platform
-+	  Support for CSR SiRFSoC ARM Cortex A9 Platform
- 
- config ARCH_ATLAS7
- 	bool "CSR SiRFSoC ATLAS7 ARM Cortex A7 Platform"
-@@ -32,7 +32,7 @@ config ARCH_ATLAS7
- 	select HAVE_ARM_SCU if SMP
- 	select HAVE_SMP
- 	help
--          Support for CSR SiRFSoC ARM Cortex A7 Platform
-+	  Support for CSR SiRFSoC ARM Cortex A7 Platform
- 
- config ARCH_PRIMA2
- 	bool "CSR SiRFSoC PRIMA2 ARM Cortex A9 Platform"
-@@ -41,7 +41,7 @@ config ARCH_PRIMA2
- 	select ZONE_DMA
- 	select PRIMA2_TIMER
- 	help
--          Support for CSR SiRFSoC ARM Cortex A9 Platform
-+	  Support for CSR SiRFSoC ARM Cortex A9 Platform
- 
- config SIRF_IRQ
- 	bool
-diff --git a/arch/arm/mach-s3c24xx/Kconfig b/arch/arm/mach-s3c24xx/Kconfig
-index 686f0bbde998..95db290637aa 100644
---- a/arch/arm/mach-s3c24xx/Kconfig
-+++ b/arch/arm/mach-s3c24xx/Kconfig
-@@ -141,8 +141,8 @@ config S3C2410_CPUFREQ_UTILS
-        bool
-        depends on ARM_S3C24XX_CPUFREQ
-        help
--         Internal node to select timing code that is common to the s3c2410
--         and s3c2440/s3c244 cpu frequency support.
-+	 Internal node to select timing code that is common to the s3c2410
-+	 and s3c2440/s3c244 cpu frequency support.
- 
- # cpu frequency support common to s3c2412, s3c2413 and s3c2442
- 
-diff --git a/arch/arm/mach-s3c64xx/Kconfig b/arch/arm/mach-s3c64xx/Kconfig
-index 5700822e3c74..125e50301d2a 100644
---- a/arch/arm/mach-s3c64xx/Kconfig
-+++ b/arch/arm/mach-s3c64xx/Kconfig
-@@ -202,7 +202,7 @@ config SMDK6410_SD_CH0
- 	bool "Use channel 0 only"
- 	depends on MACH_SMDK6410
- 	help
--          Select CON7 (channel 0) as the MMC/SD slot, as
-+	  Select CON7 (channel 0) as the MMC/SD slot, as
- 	  at least some SMDK6410 boards come with the
- 	  resistors fitted so that the card detects for
- 	  channels 0 and 1 are the same.
-@@ -211,7 +211,7 @@ config SMDK6410_SD_CH1
- 	bool "Use channel 1 only"
- 	depends on MACH_SMDK6410
- 	help
--          Select CON6 (channel 1) as the MMC/SD slot, as
-+	  Select CON6 (channel 1) as the MMC/SD slot, as
- 	  at least some SMDK6410 boards come with the
- 	  resistors fitted so that the card detects for
- 	  channels 0 and 1 are the same.
-@@ -257,7 +257,7 @@ config MACH_NCP
- 	select S3C_DEV_HSMMC1
- 	select S3C_DEV_I2C1
- 	help
--          Machine support for the Samsung NCP
-+	  Machine support for the Samsung NCP
- 
- config MACH_HMT
- 	bool "Airgoo HMT"
-diff --git a/arch/arm/plat-samsung/Kconfig b/arch/arm/plat-samsung/Kconfig
-index 301e572651c0..99ae92fa452a 100644
---- a/arch/arm/plat-samsung/Kconfig
-+++ b/arch/arm/plat-samsung/Kconfig
-@@ -250,7 +250,7 @@ config S3C_PM_DEBUG_LED_SMDK
-        bool "SMDK LED suspend/resume debugging"
-        depends on PM && (MACH_SMDK6410)
-        help
--         Say Y here to enable the use of the SMDK LEDs on the baseboard
-+	 Say Y here to enable the use of the SMDK LEDs on the baseboard
- 	 for debugging of the state of the suspend and resume process.
- 
- 	 Note, this currently only works for S3C64XX based SMDK boards.
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 41a9b4257b72..60233baf3f0f 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -262,7 +262,7 @@ config GENERIC_HWEIGHT
- 	def_bool y
- 
- config GENERIC_CSUM
--        def_bool y
-+	def_bool y
- 
- config GENERIC_CALIBRATE_DELAY
- 	def_bool y
-@@ -832,7 +832,7 @@ config ARM64_PA_BITS
- config CPU_BIG_ENDIAN
-        bool "Build big-endian kernel"
-        help
--         Say Y if you plan on running a kernel in big-endian mode.
-+	 Say Y if you plan on running a kernel in big-endian mode.
- 
- config SCHED_MC
- 	bool "Multi-core scheduler support"
-@@ -1593,7 +1593,7 @@ config EFI
- 	help
- 	  This option provides support for runtime services provided
- 	  by UEFI firmware (such as non-volatile variables, realtime
--          clock, and platform reset). A UEFI stub is also provided to
-+	  clock, and platform reset). A UEFI stub is also provided to
- 	  allow the kernel to be booted as an EFI application. This
- 	  is only useful on systems that have UEFI firmware.
- 
-diff --git a/arch/arm64/Kconfig.debug b/arch/arm64/Kconfig.debug
-index cf09010d825f..bb1eb10a7a62 100644
---- a/arch/arm64/Kconfig.debug
-+++ b/arch/arm64/Kconfig.debug
-@@ -8,7 +8,7 @@ config ARM64_PTDUMP_DEBUGFS
- 	depends on DEBUG_KERNEL
- 	select ARM64_PTDUMP_CORE
- 	select DEBUG_FS
--        help
-+	help
- 	  Say Y here if you want to show the kernel pagetable layout in a
- 	  debugfs file. This information is only useful for kernel developers
- 	  who are working in architecture specific areas of the kernel.
-diff --git a/arch/h8300/Kconfig b/arch/h8300/Kconfig
-index 14bb45644c0c..7a33141fd0b7 100644
---- a/arch/h8300/Kconfig
-+++ b/arch/h8300/Kconfig
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- config H8300
--        def_bool y
-+	def_bool y
- 	select ARCH_32BIT_OFF_T
- 	select ARCH_HAS_BINFMT_FLAT
- 	select BINFMT_FLAT_ARGVP_ENVP_ON_STACK
-@@ -38,7 +38,7 @@ config NO_IOPORT_MAP
- 	def_bool y
- 
- config GENERIC_CSUM
--        def_bool y
-+	def_bool y
- 
- config HZ
- 	int
-diff --git a/arch/h8300/Kconfig.cpu b/arch/h8300/Kconfig.cpu
-index b5e14d513e62..59be62d0716b 100644
---- a/arch/h8300/Kconfig.cpu
-+++ b/arch/h8300/Kconfig.cpu
-@@ -90,11 +90,11 @@ config H8S_SIM
- endchoice
- 
- config H8300_BUILTIN_DTB
--        string "Builtin DTB"
-+	string "Builtin DTB"
- 	default ""
- 
- config OFFSET
--        hex "Load offset"
-+	hex "Load offset"
- 	default 0
- 
- endmenu
-diff --git a/arch/m68k/Kconfig.bus b/arch/m68k/Kconfig.bus
-index 9d0a3a23d50e..f1be832e2b74 100644
---- a/arch/m68k/Kconfig.bus
-+++ b/arch/m68k/Kconfig.bus
-@@ -66,6 +66,6 @@ endif
- if !MMU
- 
- config ISA_DMA_API
--        def_bool !M5272
-+	def_bool !M5272
- 
- endif
-diff --git a/arch/m68k/Kconfig.debug b/arch/m68k/Kconfig.debug
-index f43643111eaf..11b306bdd788 100644
---- a/arch/m68k/Kconfig.debug
-+++ b/arch/m68k/Kconfig.debug
-@@ -12,16 +12,16 @@ config EARLY_PRINTK
- 	bool "Early printk"
- 	depends on !(SUN3 || M68000 || COLDFIRE)
- 	help
--          Write kernel log output directly to a serial port.
--          Where implemented, output goes to the framebuffer as well.
--          PROM console functionality on Sun 3x is not affected by this option.
-+	  Write kernel log output directly to a serial port.
-+	  Where implemented, output goes to the framebuffer as well.
-+	  PROM console functionality on Sun 3x is not affected by this option.
- 
--          Pass "earlyprintk" on the kernel command line to get a
--          boot console.
-+	  Pass "earlyprintk" on the kernel command line to get a
-+	  boot console.
- 
--          This is useful for kernel debugging when your machine crashes very
--          early, i.e. before the normal console driver is loaded.
--          You should normally say N here, unless you want to debug such a crash.
-+	  This is useful for kernel debugging when your machine crashes very
-+	  early, i.e. before the normal console driver is loaded.
-+	  You should normally say N here, unless you want to debug such a crash.
- 
- if !MMU
- 
-diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
-index c01e103492fd..b23a66bac77f 100644
---- a/arch/m68k/Kconfig.machine
-+++ b/arch/m68k/Kconfig.machine
-@@ -269,10 +269,10 @@ config AMCORE
- 	  Support for the Sysam AMCORE open-hardware generic board.
- 
- config STMARK2
--        bool "Sysam stmark2 board support"
--        depends on M5441x
--        help
--          Support for the Sysam stmark2 open-hardware generic board.
-+	bool "Sysam stmark2 board support"
-+	depends on M5441x
-+	help
-+	  Support for the Sysam stmark2 open-hardware generic board.
- 
- config FIREBEE
- 	bool "FireBee board support"
-diff --git a/arch/nds32/Kconfig.cpu b/arch/nds32/Kconfig.cpu
-index f80a4ab63da2..2216cd789b29 100644
---- a/arch/nds32/Kconfig.cpu
-+++ b/arch/nds32/Kconfig.cpu
-@@ -13,8 +13,8 @@ config FPU
- 	default n
- 	help
- 	  If FPU ISA is used in user space, this configuration shall be Y to
--          enable required support in kerenl such as fpu context switch and
--          fpu exception handler.
-+	  enable required support in kerenl such as fpu context switch and
-+	  fpu exception handler.
- 
- 	  If no FPU ISA is used in user space, say N.
- 
-@@ -24,7 +24,7 @@ config LAZY_FPU
- 	default y
- 	help
- 	  Say Y here to enable the lazy FPU scheme. The lazy FPU scheme can
--          enhance system performance by reducing the context switch
-+	  enhance system performance by reducing the context switch
- 	  frequency of the FPU register.
- 
- 	  For nomal case, say Y.
-@@ -75,11 +75,11 @@ choice
- 	  if its cache way size is larger than page size. You can specify the
- 	  CPU type direcly or choose CPU_V3 if unsure.
- 
--          A kernel built for N10 is able to run on N15, D15, N13, N10 or D10.
--          A kernel built for N15 is able to run on N15 or D15.
--          A kernel built for D10 is able to run on D10 or D15.
--          A kernel built for D15 is able to run on D15.
--          A kernel built for N13 is able to run on N15, N13 or D15.
-+	  A kernel built for N10 is able to run on N15, D15, N13, N10 or D10.
-+	  A kernel built for N15 is able to run on N15 or D15.
-+	  A kernel built for D10 is able to run on D10 or D15.
-+	  A kernel built for D15 is able to run on D15.
-+	  A kernel built for N13 is able to run on N15, N13 or D15.
- 
- config CPU_N15
- 	bool "AndesCore N15"
-@@ -173,7 +173,7 @@ config HIGHMEM
- 
- config CACHE_L2
- 	bool "Support L2 cache"
--        default y
-+	default y
- 	help
- 	  Say Y here to enable L2 cache if your SoC are integrated with L2CC.
- 	  If unsure, say N.
-diff --git a/arch/openrisc/Kconfig b/arch/openrisc/Kconfig
-index bf326f0edd2f..1928e061ff96 100644
---- a/arch/openrisc/Kconfig
-+++ b/arch/openrisc/Kconfig
-@@ -13,7 +13,7 @@ config OPENRISC
- 	select IRQ_DOMAIN
- 	select HANDLE_DOMAIN_IRQ
- 	select GPIOLIB
--        select HAVE_ARCH_TRACEHOOK
-+	select HAVE_ARCH_TRACEHOOK
- 	select SPARSE_IRQ
- 	select GENERIC_IRQ_CHIP
- 	select GENERIC_IRQ_PROBE
-@@ -51,12 +51,12 @@ config NO_IOPORT_MAP
- 	def_bool y
- 
- config TRACE_IRQFLAGS_SUPPORT
--        def_bool y
-+	def_bool y
- 
- # For now, use generic checksum functions
- #These can be reimplemented in assembly later if so inclined
- config GENERIC_CSUM
--        def_bool y
-+	def_bool y
- 
- config STACKTRACE_SUPPORT
- 	def_bool y
-@@ -89,8 +89,8 @@ config DCACHE_WRITETHROUGH
- 	  If unsure say N here
- 
- config OPENRISC_BUILTIN_DTB
--        string "Builtin DTB"
--        default ""
-+	string "Builtin DTB"
-+	default ""
- 
- menu "Class II Instructions"
- 
-@@ -161,13 +161,13 @@ config OPENRISC_HAVE_SHADOW_GPRS
- 	  On a unicore system it's safe to say N here if you are unsure.
- 
- config CMDLINE
--        string "Default kernel command string"
--        default ""
--        help
--          On some architectures there is currently no way for the boot loader
--          to pass arguments to the kernel. For these architectures, you should
--          supply some command-line options at build time by entering them
--          here.
-+	string "Default kernel command string"
-+	default ""
-+	help
-+	  On some architectures there is currently no way for the boot loader
-+	  to pass arguments to the kernel. For these architectures, you should
-+	  supply some command-line options at build time by entering them
-+	  here.
- 
- menu "Debugging options"
- 
-@@ -185,7 +185,7 @@ config OPENRISC_ESR_EXCEPTION_BUG_CHECK
- 	default n
- 	help
- 	  This option enables some checks that might expose some problems
--          in kernel.
-+	  in kernel.
- 
- 	  Say N if you are unsure.
- 
-diff --git a/arch/powerpc/Kconfig.debug b/arch/powerpc/Kconfig.debug
-index c59920920ddc..4e1d39847462 100644
---- a/arch/powerpc/Kconfig.debug
-+++ b/arch/powerpc/Kconfig.debug
-@@ -122,8 +122,8 @@ config XMON_DEFAULT_RO_MODE
- 	depends on XMON
- 	default y
- 	help
--          Operate xmon in read-only mode. The cmdline options 'xmon=rw' and
--          'xmon=ro' override this default.
-+	  Operate xmon in read-only mode. The cmdline options 'xmon=rw' and
-+	  'xmon=ro' override this default.
- 
- config DEBUGGER
- 	bool
-@@ -222,7 +222,7 @@ config PPC_EARLY_DEBUG_44x
- 	help
- 	  Select this to enable early debugging for IBM 44x chips via the
- 	  inbuilt serial port.  If you enable this, ensure you set
--          PPC_EARLY_DEBUG_44x_PHYSLOW below to suit your target board.
-+	  PPC_EARLY_DEBUG_44x_PHYSLOW below to suit your target board.
- 
- config PPC_EARLY_DEBUG_40x
- 	bool "Early serial debugging for IBM/AMCC 40x CPUs"
-@@ -325,7 +325,7 @@ config PPC_EARLY_DEBUG_44x_PHYSLOW
- 	default "0x40000200"
- 	help
- 	  You probably want 0x40000200 for ebony boards and
--          0x40000300 for taishan
-+	  0x40000300 for taishan
- 
- config PPC_EARLY_DEBUG_44x_PHYSHIGH
- 	hex "EPRN of early debug UART physical address"
-@@ -359,9 +359,9 @@ config FAIL_IOMMU
- 	  If you are unsure, say N.
- 
- config PPC_PTDUMP
--        bool "Export kernel pagetable layout to userspace via debugfs"
--        depends on DEBUG_KERNEL && DEBUG_FS
--        help
-+	bool "Export kernel pagetable layout to userspace via debugfs"
-+	depends on DEBUG_KERNEL && DEBUG_FS
-+	help
- 	  This option exports the state of the kernel pagetables to a
- 	  debugfs file. This is only useful for kernel developers who are
- 	  working in architecture specific areas of the kernel - probably
-@@ -390,8 +390,8 @@ config PPC_DEBUG_WX
- 
- config PPC_FAST_ENDIAN_SWITCH
- 	bool "Deprecated fast endian-switch syscall"
--        depends on DEBUG_KERNEL && PPC_BOOK3S_64
--        help
-+	depends on DEBUG_KERNEL && PPC_BOOK3S_64
-+	help
- 	  If you're unsure what this is, say N.
- 
- config KASAN_SHADOW_OFFSET
-diff --git a/arch/powerpc/platforms/Kconfig.cputype b/arch/powerpc/platforms/Kconfig.cputype
-index 12543e53fa96..073b6cb6d1ac 100644
---- a/arch/powerpc/platforms/Kconfig.cputype
-+++ b/arch/powerpc/platforms/Kconfig.cputype
-@@ -421,7 +421,7 @@ config PPC_PERF_CTRS
-        def_bool y
-        depends on PERF_EVENTS && PPC_HAVE_PMU_SUPPORT
-        help
--         This enables the powerpc-specific perf_event back-end.
-+	 This enables the powerpc-specific perf_event back-end.
- 
- config FORCE_SMP
- 	# Allow platforms to force SMP=y by selecting this
-diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-index 536c0ef4aee8..85199004c6ef 100644
---- a/arch/riscv/Kconfig.socs
-+++ b/arch/riscv/Kconfig.socs
-@@ -8,6 +8,6 @@ config SOC_SIFIVE
-        select CLK_SIFIVE_FU540_PRCI
-        select SIFIVE_PLIC
-        help
--         This enables support for SiFive SoC platform hardware.
-+	 This enables support for SiFive SoC platform hardware.
- 
- endmenu
-diff --git a/arch/sh/boards/Kconfig b/arch/sh/boards/Kconfig
-index cee24c308337..60a113114a76 100644
---- a/arch/sh/boards/Kconfig
-+++ b/arch/sh/boards/Kconfig
-@@ -231,7 +231,7 @@ config SH_MIGOR
- 	select REGULATOR_FIXED_VOLTAGE if REGULATOR
- 	help
- 	  Select Migo-R if configuring for the SH7722 Migo-R platform
--          by Renesas System Solutions Asia Pte. Ltd.
-+	  by Renesas System Solutions Asia Pte. Ltd.
- 
- config SH_AP325RXA
- 	bool "AP-325RXA"
-diff --git a/arch/sh/mm/Kconfig b/arch/sh/mm/Kconfig
-index 5c8a2ebfc720..d84316abaa81 100644
---- a/arch/sh/mm/Kconfig
-+++ b/arch/sh/mm/Kconfig
-@@ -2,7 +2,7 @@
- menu "Memory management options"
- 
- config MMU
--        bool "Support for memory management hardware"
-+	bool "Support for memory management hardware"
- 	depends on !CPU_SH2
- 	default y
- 	help
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index fec6b4ca2b6e..2a6d04fcb3e9 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -153,7 +153,7 @@ config KERNEL_STACK_ORDER
- 	  It is possible to reduce the stack to 1 for 64BIT and 0 for 32BIT on
- 	  older (pre-2017) CPUs. It is not recommended on newer CPUs due to the
- 	  increase in the size of the state which needs to be saved when handling
--          signals.
-+	  signals.
- 
- config MMAPPER
- 	tristate "iomem emulation driver"
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 96ea2c7449ef..989eaa96e3e6 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -806,9 +806,9 @@ config KVM_GUEST
- 	  timing infrastructure such as time of day, and system time
- 
- config ARCH_CPUIDLE_HALTPOLL
--        def_bool n
--        prompt "Disable host haltpoll when loading haltpoll driver"
--        help
-+	def_bool n
-+	prompt "Disable host haltpoll when loading haltpoll driver"
-+	help
- 	  If virtualized under KVM, disable host haltpoll.
- 
- config PVH
-@@ -892,11 +892,11 @@ config APB_TIMER
-        select DW_APB_TIMER
-        depends on X86_INTEL_MID && SFI
-        help
--         APB timer is the replacement for 8254, HPET on X86 MID platforms.
--         The APBT provides a stable time base on SMP
--         systems, unlike the TSC, but it is more expensive to access,
--         as it is off-chip. APB timers are always running regardless of CPU
--         C states, they are used as per CPU clockevent device when possible.
-+	 APB timer is the replacement for 8254, HPET on X86 MID platforms.
-+	 The APBT provides a stable time base on SMP
-+	 systems, unlike the TSC, but it is more expensive to access,
-+	 as it is off-chip. APB timers are always running regardless of CPU
-+	 C states, they are used as per CPU clockevent device when possible.
- 
- # Mark as expert because too many people got it wrong.
- # The code disables itself when not needed.
-@@ -1962,7 +1962,7 @@ config EFI_STUB
-        depends on EFI && !X86_USE_3DNOW
-        select RELOCATABLE
-        ---help---
--          This kernel feature allows a bzImage to be loaded directly
-+	  This kernel feature allows a bzImage to be loaded directly
- 	  by EFI firmware without the use of a bootloader.
- 
- 	  See Documentation/admin-guide/efi-stub.rst for more information.
 -- 
-2.17.1
+2.15.0
 
 
 ______________________________________________________
