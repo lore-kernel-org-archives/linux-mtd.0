@@ -2,22 +2,23 @@ Return-Path: <SRS0=X2Oj=XT=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7FC3C432C1
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Sep 2019 07:24:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 206CAC432C1
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Sep 2019 07:46:53 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7B953214D9
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Sep 2019 07:24:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E7705214D9
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Sep 2019 07:46:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GQIDAEDU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B953214D9
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mBq+S6Uv";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="LUDChKRx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E7705214D9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -25,40 +26,132 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
 	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=cT1SfRtTaE7Uy7fi7KaFz5KRjlrE4p3lS3c4J4ArJOs=; b=GQIDAEDUUctRhT
-	7zvW8XBBN5wKme7cdUz7CgFgdSa9IYjdHsibJYsJ3kaHtMt7EaQ/XAJworWCZ5RvHMdhTrfJeYPso
-	dXH/lPjp1P188UoRuOI1C4/pBl6DZ1tl2kGgQFXDB3V8lf1Tp6hTRBCDq2FX1fJnNxV5CvyRx4K2S
-	3TjYwX4ybfeQyOwF+4i82IKM5wy7nlBeB6Na+dazNH+COdBjJ2LKCFYIMt7JijRh2lzIYmRO1db+2
-	YLlfVKebisf441FXFtRc1AW8n2ysOk4xrMfQvpN3qSC5tM7VU2PYu9+fXZH/XZBaZJGR1fR0AZwQS
-	LWg5kiVa0Fm26d0WiuBg==;
+	List-Owner; bh=+ugj57kFpG4Iknwf25wxJaHVSAfjhbihzzQ0J+IuOV0=; b=mBq+S6UvVsr7Gz
+	GntD4HJuV69S3f7rj9trG9XKHpxBbD05N+dPBW9/xdYW/BbR2qVebFb8mQ3HuK1g4Fp7xDyJUS/IU
+	xAeKqiqs35vkW3ixRlLoZpjr1TCpjc45G6LZ4PK/6xFHAzuZShbBKHe4WiUMvbtgrhhYQDdAnzJEx
+	Cx4u297YaHgDBmElvvzMwEIBSMQ0qrp9zIGW6arC09Gt09qFB7sceXgs/lUy1IYsFb83OT5Yi6NrC
+	oLVRoqUPZ8i08Do2a6UDCJAXICLKo++sL5aTC7ewuOg/LTaRGEB0BwzZuf5AObcgJ/TFqEI+oBAeP
+	nYQe/hsqssA2G0y6Jlxg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
-	id 1iCfBp-0001mW-6N; Tue, 24 Sep 2019 07:24:49 +0000
-Received: from szxga05-in.huawei.com ([45.249.212.191] helo=huawei.com)
+	id 1iCfX8-0004Wc-LX; Tue, 24 Sep 2019 07:46:50 +0000
+Received: from esa3.microchip.iphmx.com ([68.232.153.233])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iCfBk-0001lV-Qd
- for linux-mtd@lists.infradead.org; Tue, 24 Sep 2019 07:24:47 +0000
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
- by Forcepoint Email with ESMTP id 01B38E9F53F00F1380C1;
- Tue, 24 Sep 2019 15:24:41 +0800 (CST)
-Received: from SZXY1Y004550421.china.huawei.com (10.61.99.243) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.439.0; Tue, 24 Sep 2019 15:24:32 +0800
-From: Huaijie Yi <yihuaijie@huawei.com>
-To: <joern@lazybastard.org>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <marek.vasut@gmail.com>,
- <richard.weinberger@gmail.com>, <vigneshr@ti.com>, <richard@nod.at>
-Subject: [PATCH v3] mtd: fix oops when writing to phram device on arm64
-Date: Tue, 24 Sep 2019 07:24:13 +0000
-Message-ID: <1569309853-14372-1-git-send-email-yihuaijie@huawei.com>
-X-Mailer: git-send-email 2.6.4.windows.1
+ id 1iCfWD-0003bD-5u; Tue, 24 Sep 2019 07:45:57 +0000
+Received-SPF: Pass (esa3.microchip.iphmx.com: domain of
+ Tudor.Ambarus@microchip.com designates 198.175.253.82 as
+ permitted sender) identity=mailfrom;
+ client-ip=198.175.253.82; receiver=esa3.microchip.iphmx.com;
+ envelope-from="Tudor.Ambarus@microchip.com";
+ x-sender="Tudor.Ambarus@microchip.com";
+ x-conformance=spf_only; x-record-type="v=spf1";
+ x-record-text="v=spf1 mx a:ushub1.microchip.com
+ a:smtpout.microchip.com a:mx1.microchip.iphmx.com
+ a:mx2.microchip.iphmx.com include:servers.mcsv.net
+ include:mktomail.com include:spf.protection.outlook.com ~all"
+Received-SPF: None (esa3.microchip.iphmx.com: no sender
+ authenticity information available from domain of
+ postmaster@email.microchip.com) identity=helo;
+ client-ip=198.175.253.82; receiver=esa3.microchip.iphmx.com;
+ envelope-from="Tudor.Ambarus@microchip.com";
+ x-sender="postmaster@email.microchip.com"; x-conformance=spf_only
+Authentication-Results: esa3.microchip.iphmx.com;
+ spf=Pass smtp.mailfrom=Tudor.Ambarus@microchip.com;
+ spf=None smtp.helo=postmaster@email.microchip.com;
+ dkim=pass (signature verified) header.i=@microchiptechnology.onmicrosoft.com;
+ dmarc=pass (p=none dis=none) d=microchip.com
+IronPort-SDR: 0hw8cnv6oT+AdPa2QAC68CFyH4eDTPbj6GGFOxHetv9apz5U6/QdxmNLjZ/3oBouF50zpp3lLi
+ oLaKNw1DFii9q2DGZonY+OpZS28ZSm4VBURRQu/0XL2aLwtnh8kW+2fAagsoZD4g3tpmU9f79G
+ /5RvDLQN80lMJOSucbnWbIoa2128oFB3SUnnbTkaWoS2x8wwlWekxNkNazbg3ttg9z+MyhPORT
+ 8KptrjSV/dh8lJw5Zpd++Gmi8PfgmnS8cxIsKOauKryGUg0WlcWXoRdLAWcfCaAb/dElhlcSQs
+ Blk=
+X-IronPort-AV: E=Sophos;i="5.64,543,1559545200"; d="scan'208";a="50281662"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 24 Sep 2019 00:45:49 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 24 Sep 2019 00:45:46 -0700
+Received: from NAM01-SN1-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.71) with Microsoft SMTP Server
+ (version=TLS1_2, 
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5 via Frontend
+ Transport; Tue, 24 Sep 2019 00:45:46 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fwXfDTGm5/aZPRoJpyXq9JShgok8y1tE2rGA6dAdWmdoL/Jgg1Kh6AMS0wJBlMKnAlTemA3e2bbQKEG0CQejtv8DCZ1DTw1rERFuaUYVqoe9le/NMrAoTqJ2hoz5Q5a/hiWbGozfLUaCHmtj5Gvx/1LR86stjd5uBwCb1FHj/EAlEc0qV4s4wnTVyXYYZc10aqc6257XfQr//OTtVPEI9eKZAuf7yl+DIxBzQGIoDRPt9cD/N35QzV8iH0VUE32vT78XNWXrXt9S/HHFvnfRDTT89fius0NTv4d0nShjn9H9i2wnfFMtclUrdNxnzodwX2Z4qhWde+qJG30NX/91uw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lAcmMyY8SgGOCecCRC6mku9wfzcu6s2jqfClUBSO43c=;
+ b=UiOt2603n0WxADHczEpv6EekAj8JVj71XVICKKmPHpi9OEFUJHpKhfy6xwLX3D+sJLzFI05ZLIYhqce0W3wEn7LQ7rZ1hdemHaWZNaZMkOr/g4AIesKKeVezA0EXWNNUIw1h2HqXJxNcDCniDTlQ6GmOJhfwEZhmzubi60zhK/bfkliew5ZJb8ttRXxN166LfJ+ky+FzldiServLT4GSX8yWGLA0003JT1uE6153bl0x8ypTOSqDuWJWhkafY2tc7k3vzz+48ka50yziBDGaxFEd8IGLf4OANgDpC03W756NEgLbht2FhjZdZKX2Pe7xxhzdtCEizzG0co6Q+jQjvg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lAcmMyY8SgGOCecCRC6mku9wfzcu6s2jqfClUBSO43c=;
+ b=LUDChKRxB5i8gbcdK6xficQradyBwPxPMVF5vBJP7g7dVozyJllhKGoGhKbVaPJ4kEHShuAYUW+5kGeEhrENliM8rDMVnIc/CybdcXUeAiOhVJU4uGe30N9Mn9VhMfa+Tb6XRPGpL5RQjpq0un+YzwQjvy0MFx53l5herZCY3tM=
+Received: from MN2PR11MB4448.namprd11.prod.outlook.com (52.135.39.157) by
+ MN2PR11MB4319.namprd11.prod.outlook.com (52.135.39.155) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2284.26; Tue, 24 Sep 2019 07:45:45 +0000
+Received: from MN2PR11MB4448.namprd11.prod.outlook.com
+ ([fe80::c951:b15a:e4b3:30f7]) by MN2PR11MB4448.namprd11.prod.outlook.com
+ ([fe80::c951:b15a:e4b3:30f7%7]) with mapi id 15.20.2284.023; Tue, 24 Sep 2019
+ 07:45:45 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <vigneshr@ti.com>, <boris.brezillon@collabora.com>,
+ <marek.vasut@gmail.com>, <linux-mtd@lists.infradead.org>,
+ <geert+renesas@glider.be>, <jonas@norrbonn.se>
+Subject: [PATCH v2 00/22] mtd: spi-nor: Quad Enable and (un)lock methods
+Thread-Topic: [PATCH v2 00/22] mtd: spi-nor: Quad Enable and (un)lock methods
+Thread-Index: AQHVcqwSdD6kLiVX1Emf+kHUSzIQ7g==
+Date: Tue, 24 Sep 2019 07:45:45 +0000
+Message-ID: <20190924074533.6618-1-tudor.ambarus@microchip.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: VI1PR0101CA0082.eurprd01.prod.exchangelabs.com
+ (2603:10a6:800:1f::50) To MN2PR11MB4448.namprd11.prod.outlook.com
+ (2603:10b6:208:193::29)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-mailer: git-send-email 2.9.5
+x-originating-ip: [94.177.32.156]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 735cf0e2-b911-4b93-478b-08d740c33507
+x-microsoft-antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600167)(711020)(4605104)(1401327)(2017052603328)(7193020);
+ SRVR:MN2PR11MB4319; 
+x-ms-traffictypediagnostic: MN2PR11MB4319:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR11MB431922042CFBABCA7FA459F1F0840@MN2PR11MB4319.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 0170DAF08C
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(366004)(396003)(136003)(346002)(39860400002)(376002)(189003)(199004)(14444005)(5660300002)(2201001)(6436002)(256004)(86362001)(14454004)(476003)(2501003)(305945005)(186003)(2616005)(26005)(386003)(102836004)(6506007)(25786009)(6486002)(8936002)(81156014)(2906002)(3846002)(81166006)(107886003)(7736002)(8676002)(6512007)(486006)(36756003)(52116002)(71200400001)(71190400001)(50226002)(66446008)(99286004)(66946007)(4326008)(66476007)(64756008)(66556008)(6116002)(54906003)(110136005)(66066001)(316002)(1076003)(7416002)(478600001)(473944003)(414714003);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:MN2PR11MB4319;
+ H:MN2PR11MB4448.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; MX:1; A:1; 
+received-spf: None (protection.outlook.com: microchip.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: JLPd58/WQkDxO4f/qXIuUrpyKxfyaJ/FFNreNjD+qyTWkWCRI3XeDN7Fv5oP9aCSR6X9V3Mk86S8KEJhGGEiBeqQGKotilxKg5p88fEpvpULjjiv/s6nmqYZSvVC47xyfYIFS9iM4OxlHartBlw3h+Al5+NC6wpn2MnNk8YbonJXzysJtRdyngxsGZ3KzPVZHFRgzQg4P0VzYqdEjCGbPEzi8h4csF2k+dWKWxUI8ipQ0QSwPi/e3ZFl7hzTQyhlChwQdfwP1GMvI4br5WZ8+7FPiSI0vnDvq7vRi56sC0iMq7cnhjpqYV0Pq9MG02gQz189ABz4geUdv/Jacg/3JUtPmUsFkmkjMrh/fmloxSodhk4+qu69BiuvR9f2MHz1YNv6J0gL1ylKNTlsI7XPuLtyQ9KatXnvtmi4lnefR3c=
 MIME-Version: 1.0
-X-Originating-IP: [10.61.99.243]
-X-CFilter-Loop: Reflected
+X-MS-Exchange-CrossTenant-Network-Message-Id: 735cf0e2-b911-4b93-478b-08d740c33507
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Sep 2019 07:45:45.2402 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: aw8XKnJvL4QZMOQ4+pZrEwBSnltSbbZps1Fv+ommikhP6XmiPdypzm3prldoLx3YT5kBMN941UYr7X2VVTBCb9x31TmfT70aY7aEiMC71js=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4319
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190924_002445_080747_19C3FF48 
-X-CRM114-Status: UNSURE (   9.83  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190924_004553_433963_501D5CA3 
+X-CRM114-Status: GOOD (  11.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,95 +163,102 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: yihuaijie <yihuaijie@huawei.com>, linux-mtd@lists.infradead.org
+Cc: linux-aspeed@lists.ozlabs.org, Tudor.Ambarus@microchip.com, andrew@aj.id.au,
+ richard@nod.at, linux-kernel@vger.kernel.org, vz@mleia.com,
+ linux-mediatek@lists.infradead.org, joel@jms.id.au, miquel.raynal@bootlin.com,
+ matthias.bgg@gmail.com, computersforpeace@gmail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: yihuaijie <yihuaijie@huawei.com>
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-memcpy() to memory remaped by ioremap() at an address not aligned
-to 8-bytes will cause oops on arm64 platform, fixing this by using
-ioremap_wc().
+Patches 1 - 14 are just clean up patches for the Flash Register
+Operations.
 
-e.g.
-writing through jffs2 on a phram device cause following error:
+Patches 15 - 22 deal with the Quad Enable and the (un)lock methods.
+Fixed the clearing of QE bit on (un)lock() operations. Reworked the
+Quad Enable methods and the disabling of the block write protection
+at power-up.
 
-Unable to handle kernel paging request at virtual address ffffff800f93700c
-pgd = ffffffc00385c000
-[ffffff800f93700c] *pgd=0000000000000000, *pud=0000000000000000
-Internal error: Oops: 96000061 [#1] PREEMPT SMP
-task: ffffffc003549b10 task.stack: ffffffc0b8bc8000
-PC is at __memcpy+0xc0/0x180
-LR is at phram_write+0x5c/0x78 [phram]
-pc : [<ffffff8008484740>] lr : [<ffffff8000d731a4>] pstate: 80000005
-sp : ffffffc0b8bcb8c0
-x29: ffffffc0b8bcb8c0 x28: 000000000093700c
-x27: 0000000000000001 x26: 0000000000000000
-x25: 0000000000000001 x24: 0000000000000000
-x23: ffffffc5b6db8480 x22: ffffffc0b8bcb990
-x21: ffffff800f000000 x20: 000000000093700c
-x19: 0000000000000044 x18: 000000000000000a
-x17: 0000000000000c00 x16: 0000000000000400
-x15: 000000000001e125 x14: 34347830203a6e65
-x13: 6c202c6330303733 x12: 397830203a726464
-x11: 61202c3030303030 x10: 3066303038666666
-x9 : 6666667830203a56 x8 : 0000000298f7fb1d
-x7 : 00000044e0021985 x6 : ffffff800f93700c
-x5 : 0000000000000000 x4 : 0000000000000000
-x3 : ffffff8008cbe018 x2 : ffffffffffffffc4
-x1 : ffffffc5b6db8490 x0 : ffffff800f93700c
+Again, this is just compile tested, I don't have (yet) a relevant
+spansion-like flash memory to test the (un)lock() methods, so I'll need
+your help for testing this patch set.
 
-Signed-off-by: Huaijie Yi <yihuaijie@huawei.com>
----
-v1->v3
-let user to choose using ioremap() or ioremap_wc() through module param
+The patch set can be tested using mtd-utils:
+1/ do a read-erase-write-read-back test immediately after boot, to check
+the spi_nor_unlock_all() method. The focus is on the erase/write
+methods, we want to see if the flash is unlocked at power-up.
+        mtd_debug read /dev/mtd-yours offset size read-file
+        hexdump read-file
+        mtd_debug erase /dev/mtd-yours offset size
+        dd if=/dev/urandom of=write-file bs=please-choose count=please-choose
+        mtd_debug write /dev/mtd-yours offset write-file-size write-file
+        mtd_debug read /dev/mtd-yours offset write-file-size read-file
+        sha1sum read-file write-file
+2/ lock flash then try to erase/write it, to see if the lock works
+        flash_lock /dev/mtd-yours offset block-count
+        Do the read-erase-write-read-back test from 1/. The contents of
+        flash should not change in the erase and write steps.
+3/ unlock flash and do the read-erase-write-read-back from 1/. The value of the
+   QEE should not change and you should be able to erase and write the flash.
+   Test 1/ should be successful.
 
- drivers/mtd/devices/phram.c | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+v2:
+- Introduce spi_nor_write_16bit_cr_and_check() as per Vignesh's suggestion. The
+  Configuration Register contains bits that can be updated in future: FREEZE,
+  CMP. Provide a generic method that allows updating all bits of the
+  Configuration Register.
+- Fix SNOR_F_NO_READ_CR case in
+  "mtd: spi-nor: Rework the disabling of block write protection". When the flash
+  doesn't support the CR Read command, we make an assumption about the value of
+  the QE bit. In spi_nor_init(), call spi_nor_quad_enable() first, then
+  spi_nor_unlock_all(), so that at the spi_nor_unlock_all() time we can be sure
+  the QE bit has value one, because of the previous call to spi_nor_quad_enable().
+- Fix if statement in spi_nor_write_sr_and_check():
+  if (nor->flags & SNOR_F_HAS_16BIT_SR)
+- Fix documentation warnings.
+- New patch: "mtd: spi-nor: Check all the bits written, not just the BP ones".
+- Drop Global Unlock patches, will send them in a different patch set.
 
-diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
-index c467286..a5833dd 100644
---- a/drivers/mtd/devices/phram.c
-+++ b/drivers/mtd/devices/phram.c
-@@ -27,6 +27,20 @@
- #include <linux/slab.h>
- #include <linux/mtd/mtd.h>
- 
-+/*
-+ * It is of the form:
-+ * wc=Y/N for module case
-+ * phram.wc=Y/N for built-in case
-+ */
-+static bool wc;
-+module_param(wc, bool, 0);
-+MODULE_PARM_DESC(wc, "How we remap reserved memory to a phram device\n"
-+		"\tSay N(default) to use ioremap(): \"wc=N\"\n"
-+		"\tSay Y to use ioremap_wc(): \"wc=Y\"\n"
-+		"\tOn ARM64, writing to phram device using ioremap()\n"
-+		"\tat addr not aligned to 8-bytes will cause oops,\n"
-+		"\tioremap_wc() could fix it.");
-+
- struct phram_mtd_list {
- 	struct mtd_info mtd;
- 	struct list_head list;
-@@ -98,7 +112,11 @@ static int register_device(char *name, phys_addr_t start, size_t len)
- 		goto out0;
- 
- 	ret = -EIO;
--	new->mtd.priv = ioremap(start, len);
-+	if (wc)
-+		new->mtd.priv = ioremap_wc(start, len);
-+	else
-+		new->mtd.priv = ioremap(start, len);
-+
- 	if (!new->mtd.priv) {
- 		pr_err("ioremap failed\n");
- 		goto out1;
+Tudor Ambarus (22):
+  mtd: spi-nor: hisi-sfc: Drop nor->erase NULL assignment
+  mtd: spi-nor: Introduce 'struct spi_nor_controller_ops'
+  mtd: spi-nor: cadence-quadspi: Fix cqspi_command_read() definition
+  mtd: spi-nor: Rename nor->params to nor->flash
+  mtd: spi-nor: Rework read_sr()
+  mtd: spi-nor: Rework read_fsr()
+  mtd: spi-nor: Rework read_cr()
+  mtd: spi-nor: Rework write_enable/disable()
+  mtd: spi-nor: Fix retlen handling in sst_write()
+  mtd: spi-nor: Rework write_sr()
+  mtd: spi-nor: Rework spi_nor_read/write_sr2()
+  mtd: spi-nor: Report error in spi_nor_xread_sr()
+  mtd: spi-nor: Void return type for spi_nor_clear_sr/fsr()
+  mtd: spi-nor: Drop duplicated new line
+  mtd: spi-nor: Drop spansion_quad_enable()
+  mtd: spi-nor: Fix errno on quad_enable methods
+  mtd: spi-nor: Check all the bits written, not just the BP ones
+  mtd: spi-nor: Fix clearing of QE bit on lock()/unlock()
+  mtd: spi-nor: Rework macronix_quad_enable()
+  mtd: spi-nor: Rework spansion(_no)_read_cr_quad_enable()
+  mtd: spi-nor: Update sr2_bit7_quad_enable()
+  mtd: spi-nor: Rework the disabling of block write protection
+
+ drivers/mtd/spi-nor/aspeed-smc.c      |   23 +-
+ drivers/mtd/spi-nor/cadence-quadspi.c |   54 +-
+ drivers/mtd/spi-nor/hisi-sfc.c        |   23 +-
+ drivers/mtd/spi-nor/intel-spi.c       |   24 +-
+ drivers/mtd/spi-nor/mtk-quadspi.c     |   25 +-
+ drivers/mtd/spi-nor/nxp-spifi.c       |   23 +-
+ drivers/mtd/spi-nor/spi-nor.c         | 1716 ++++++++++++++++++---------------
+ include/linux/mtd/spi-nor.h           |   74 +-
+ 8 files changed, 1058 insertions(+), 904 deletions(-)
+
 -- 
-1.8.5.6
-
+2.9.5
 
 
 ______________________________________________________
