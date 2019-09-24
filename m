@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F20F3C432C1
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Sep 2019 06:51:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06D4DC432C1
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Sep 2019 06:57:24 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BEC3D21655
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Sep 2019 06:51:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C8DDF2054F
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Sep 2019 06:57:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QTDrzrTT";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zf6XuSv3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BEC3D21655
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Yx7gmDMD";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="zP4O8dbp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C8DDF2054F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,47 +26,47 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:From:To:
 	Subject:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=+cI4j0RPPwSyr9kKPwWeAAXmP1kzEI8FVQdVEf30HLE=; b=QTDrzrTTU7b0FO
-	Eu/B/0XTCBbuNj/NMW7AqFp8gvNRLurnYKXOnKvghKbQSk5bxkHKMth3TJEV8lPG4ciFlvWWhru4j
-	H+hvGjOYCN31Sgss2nFll7FmAnaabDAy2YK7QSVpLGdN9jxuapfC2kerLVEwPCAnnfAwGjOaJvng/
-	nA8phOrjkelv5KaJ1X5YryeBM7KoWGsb3wGmS5qMitK9D6GUvpDne6NgUhxAOfmOtVVJ4A1DBBqzc
-	eTT8uCb/ZCUNQp9n4meBiwcia4+mzwF/lqQnBWtOpnm8EZALn3BScHv31+ZVhV00hcQ8XP+A9TTMu
-	n992DWl8I0Futq4VQLkQ==;
+	List-Owner; bh=Gp8LCwOWAvPe83UQUuXYDiQNJk/em0osDdSoU5SGzeA=; b=Yx7gmDMDnYLKOy
+	znBqX6RBDO+3WonTTivSG4CzDgvrFsdpWDfO/zPPXYvYepOa2oWnQaDjP5CErh0Sl77LVyY9csH8G
+	RZNFJtF6kfcGyU/1DkQSfvVbk/1ebOgPZ7P7DT0XFUX69pmWgKZ8uTQQA3CGNn3uoIDvqKj8FVkgJ
+	KQ6LxIEeXR3SVsMSCmjoJgK20B0Aw2jUMMG70LL8lyjyjssqIQZhm63UPRzPqnzxzu5CWGJ6ezwwo
+	ri6MayrBRNP+mEDCXrocE82UZw2XaGf+VKu52oTij+mbXnCyFMjri6qJ3Sbf65dcJ9Jw+QmBhPo9i
+	a3QAOpBDHcBng6HKiOwA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
-	id 1iCef6-0005Qx-RW; Tue, 24 Sep 2019 06:51:00 +0000
+	id 1iCelF-0007Sm-SC; Tue, 24 Sep 2019 06:57:21 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iCef4-0005Q3-Fn
- for linux-mtd@lists.infradead.org; Tue, 24 Sep 2019 06:51:00 +0000
+ id 1iCelC-0007S9-D7
+ for linux-mtd@lists.infradead.org; Tue, 24 Sep 2019 06:57:20 +0000
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
  [83.86.89.107])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 7FD2A214DA;
- Tue, 24 Sep 2019 06:50:57 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 85B97214D9;
+ Tue, 24 Sep 2019 06:57:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1569307858;
- bh=fbu5eJRLzW5mqkNJ+KMkgwXI84cbo/CVPFXOsWWu2pE=;
+ s=default; t=1569308238;
+ bh=nZJTQr4V+WCfMfGlxC22DLa8RF9moPz7Ih4CTmRhueo=;
  h=Subject:To:Cc:From:Date:From;
- b=Zf6XuSv3ynhjU902mtbgPoprnP79WNTKxyqhv4EuDxvCc6VlFVDseDsFWyjIJ0zp6
- 6opG1gqGuuDfcuYDOcSSW0ppSHL2CF2vEG8h1ZdrqjW4UxUJs77v64PAwVksSnC+B3
- MkO7nxB54UJToSOvVp4V1YXvGu5kUhZJFk3alNks=
+ b=zP4O8dbpH98lAYGwYnRhTEhKerQn9Vn/hgfUHTwFz2pYTDxrNId1RyeitRoo1eaYm
+ d/gXVM3lkzhwfYivKhRkmSL6u1IviHHNVR1kA6eFmj61xwtyKj6ytzdM4xcZ/XsRlv
+ wot7h+z28TM5BwdGZC5w269BXXBrp02NvKBPfRp8=
 Subject: Patch "mtd: cfi_cmdset_0002: Use chip_good() to retry in
- do_write_oneword()" has been added to the 5.2-stable tree
+ do_write_oneword()" has been added to the 4.19-stable tree
 To: Joakim.Tjernlund@infinera.com, chris.packham@alliedtelesis.co.nz,
  fbettoni@gmail.com, gregkh@linuxfoundation.org, hauke@hauke-m.de,
  ikegami.t@gmail.com, linux-mtd@lists.infradead.org, nbd@nbd.name,
  vigneshr@ti.com
 From: <gregkh@linuxfoundation.org>
-Date: Tue, 24 Sep 2019 08:50:33 +0200
-Message-ID: <1569307833130235@kroah.com>
+Date: Tue, 24 Sep 2019 08:56:58 +0200
+Message-ID: <1569308218145131@kroah.com>
 MIME-Version: 1.0
 X-stable: commit
 X-Patchwork-Hint: ignore 
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190923_235058_571019_E9228374 
-X-CRM114-Status: GOOD (  16.26  )
+X-CRM114-CacheID: sfid-20190923_235718_488588_5EFAB6DB 
+X-CRM114-Status: GOOD (  16.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,12 +89,12 @@ This is a note to let you know that I've just added the patch titled
 
     mtd: cfi_cmdset_0002: Use chip_good() to retry in do_write_oneword()
 
-to the 5.2-stable tree which can be found at:
+to the 4.19-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
      mtd-cfi_cmdset_0002-use-chip_good-to-retry-in-do_write_oneword.patch
-and it can be found in the queue-5.2 subdirectory.
+and it can be found in the queue-4.19 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.
@@ -143,7 +143,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/mtd/chips/cfi_cmdset_0002.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -1628,29 +1628,35 @@ static int __xipram do_write_oneword(str
+@@ -1627,29 +1627,35 @@ static int __xipram do_write_oneword(str
  			continue;
  		}
  
@@ -189,7 +189,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 Patches currently in stable-queue which might be from ikegami.t@gmail.com are
 
-queue-5.2/mtd-cfi_cmdset_0002-use-chip_good-to-retry-in-do_write_oneword.patch
+queue-4.19/mtd-cfi_cmdset_0002-use-chip_good-to-retry-in-do_write_oneword.patch
 
 ______________________________________________________
 Linux MTD discussion mailing list
