@@ -2,155 +2,63 @@ Return-Path: <SRS0=X2Oj=XT=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8ECBC432C1
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Sep 2019 05:56:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A937C432C1
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Sep 2019 05:58:40 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A9D6120872
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Sep 2019 05:56:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 481E020872
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Sep 2019 05:58:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="i0pjTEv2";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cadence.com header.i=@cadence.com header.b="dq7/C3es";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=cadence.com header.i=@cadence.com header.b="yitYC8fs"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A9D6120872
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cadence.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AEACEXIx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 481E020872
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=winbond.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=GDrDSFgCSCUPRLUqnLoYQuwQgPK1XmOEkEgu9Ttly5k=; b=i0pjTEv20Qb/Ho
-	AbxnyTEKIWG6G69fH66G7jG+2ccAmmEbJvr/vGfNTLWLA+0Wihn1d8LYafI+fVb2VrxrOX/KczSVz
-	5xIhIsDl87v8M2sMXmRtvJ0nbNRvliGZ3Q3eNGekXPwLhTbfrCt/ETMfV6D0ZsoAALsRE1sC5Lezb
-	EprogQt1D/BFEarfoeXvigFFaBb/q2iYDsf/j/PG6GOAuWGBIyeqQQ3MZHP+Z03LQmecXyJLz9Kh1
-	BohDVpq6LLe7sskl3CxTqUbfg23I+UYQOHcBo+i8crrmR+ukOHdsmr2920wTantL4PJ0tCeI5CgPf
-	eZRm073K712twkbuWGfg==;
+	List-Owner; bh=z8osJWX+HxS7BscLWgTj3A02nuDQ3cAEWAG+y2jaFo0=; b=AEACEXIxFg9p9X
+	De5M9DQTfSC8lpUmJcLYY4bKMidXJyWPWnL2Yn7A52nlke/riYxKQZTFzB4wiJsQV6yJNA+k/V96q
+	vjT4ttKRzY6ORFIhMjUHuM2xhm9orhbFBwmV7C+qy5IVFfxAwSa/tJ70xK+0Rc3EUxlxEPtA2tnGO
+	AtfP9YnSQwOVCPAnbs7IZZFW32dHmAZFPw32ik2E+leDSw4LLfBlyJdzqddWRzYDbXI5+N1I3LcZL
+	iGbPttqVkvofrKjmi50rm6ZFQopE0uzRms8UvPA6LJEq4Z3HlP5lpgkU0pkZy4z7V58Yph8udrS8L
+	g3CFiO4n9TIstGd2/wjg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
-	id 1iCdod-0005Rc-9E; Tue, 24 Sep 2019 05:56:47 +0000
-Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235])
- by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iCdoY-0005RG-4m
- for linux-mtd@lists.infradead.org; Tue, 24 Sep 2019 05:56:43 +0000
-Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
- by mx0a-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- x8O5q3Cf005689; Mon, 23 Sep 2019 22:56:18 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=proofpoint;
- bh=X/UFUgGlJSnJ7VZ/c/9TW0G19h38aWqNZIqWJUeJUtM=;
- b=dq7/C3esbqCXsVAE/YV+xZV+Rh08eZLig7snIfO12xo+JqTOJCBk5U4rLKY76hHVzJfY
- AyTFl6TFBKF4mOOcMbewiLM9k9Lvb4LpeGsg8nUx7hNzVFJyENim6GQIMG6XLb8asNMF
- qW7z76rjsKZlCO43U5xU9s6hzZnQoinQmeZBuxv+j2370qDlpWIH52/2tzrxICtT8sHG
- WkWYMtAYxj7oVYqh1JCboYTtkiHCOvumJ/LkpFBqHJRfJAQBQXpUVSdNsgZJNad45t+Y
- J5ZKycaJPc5pCn7EYncjMA5TbWcE4xgvU3E/KLodb9v5B98glBRk8/93GwHCu7tZSBH9 AA== 
-Received: from nam03-dm3-obe.outbound.protection.outlook.com
- (mail-dm3nam03lp2050.outbound.protection.outlook.com [104.47.41.50])
- by mx0a-0014ca01.pphosted.com with ESMTP id 2v5ge09tyt-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 23 Sep 2019 22:56:17 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lGZWWvCEXVCQ6tOl4Nb2mgJDSJ/yKgLFaxY6y3BX7k1OJCnh2SPLJ+PnuC98ZxpuhZ5pASnRTlAnowq2DsSAXDFj/T6BjDvcb9Tcjp/pMuaD1T7kwfSvlYm5T5FMkKjwIdbJBh5zphuv4hL47xjlwjvlX27syQe/AtCzeA0UKtIyclhNn3RXgK4o4lfuB8drLP720c9ei3YBXpEybFhCvZD4gOLYFsAEQE9RLULPOulfjP6oPQQIBfY+taHQvioNnJrK1EiqUZGgu6tnUIpsqD1G+GZ1g00Y8vB8pxWs1tmBrETkyUJOpPtsb/gev2doN+6AZjAxGII94l5F8OTX+g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X/UFUgGlJSnJ7VZ/c/9TW0G19h38aWqNZIqWJUeJUtM=;
- b=AOAips/VSE5I5zEKS+gmFrqINt33aavHJIMXSnEcH/B86BqHdjhK+fA7quOQv0+L11+qG4IoUFIX6si7zwTxJPcHWdxWhZUZyQBEphhW87RDVI/xSFaqXPRa354aKhB7fKN/KduE/qjfYSITcxYyhE+Ti3nxb5viW+PxC8nyPIoAM2BSmrm66J3YRjRU8yc0OLZJGy+pcyGLh0dUbGEp9V8S7/wCvCZHqBwH9s+ndajzcMuVutK+l1Hte3v+eP+gzePEDlzJs+6CRgBLBPWo9x8knKhZ8TRVKloPvGLWfzfpqNzLIijKFpiW9AntyWZIP1Qyt8t2l9aui9m6D8YsIw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
- is 64.207.220.243) smtp.rcpttodomain=gmail.com smtp.mailfrom=cadence.com;
- dmarc=fail (p=none sp=none pct=100) action=none header.from=cadence.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X/UFUgGlJSnJ7VZ/c/9TW0G19h38aWqNZIqWJUeJUtM=;
- b=yitYC8fsi/vxpbKRDwc3r0EmyYCsSzPoebp8vBGnbC8d9p3iZY+Y8SVZ940CVq2MY45t9WcDrdhICfepyx2hA7Mj14EnbuMIMsprUrg8/nuY1tT+chnZw9N3FIzsgh5DGjCkddfA0zadCEF2yWPugquMqs0nPHteQFqMxwyfgSw=
-Received: from MN2PR07CA0009.namprd07.prod.outlook.com (2603:10b6:208:1a0::19)
- by MWHPR0701MB3674.namprd07.prod.outlook.com (2603:10b6:301:7e::14)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2284.26; Tue, 24 Sep
- 2019 05:56:08 +0000
-Received: from DM3NAM05FT064.eop-nam05.prod.protection.outlook.com
- (2a01:111:f400:7e51::205) by MN2PR07CA0009.outlook.office365.com
- (2603:10b6:208:1a0::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2284.20 via Frontend
- Transport; Tue, 24 Sep 2019 05:56:08 +0000
-Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
- cadence.com discourages use of 64.207.220.243 as permitted sender)
-Received: from wcmailrelayl01.cadence.com (64.207.220.243) by
- DM3NAM05FT064.mail.protection.outlook.com (10.152.98.188) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2305.15 via Frontend Transport; Tue, 24 Sep 2019 05:56:08 +0000
-Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
- by wcmailrelayl01.cadence.com (8.14.7/8.14.4) with ESMTP id
- x8O5txht021140
- (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=OK);
- Mon, 23 Sep 2019 22:56:01 -0700
-X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
-Received: from maileu3.global.cadence.com (10.160.88.99) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3; Tue, 24 Sep 2019 07:55:59 +0200
-Received: from lvlogina.cadence.com (10.165.176.102) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3 via Frontend Transport; Tue, 24 Sep 2019 07:55:59 +0200
-Received: from lvlogina.cadence.com (localhost.localdomain [127.0.0.1])
- by lvlogina.cadence.com (8.14.4/8.14.4) with ESMTP id x8O5txDL006343;
- Tue, 24 Sep 2019 06:55:59 +0100
-Received: (from piotrs@localhost)
- by lvlogina.cadence.com (8.14.4/8.14.4/Submit) id x8O5tshM006146;
- Tue, 24 Sep 2019 06:55:54 +0100
-From: Piotr Sroka <piotrs@cadence.com>
-To: 
-Subject: [v2] mtd: rawnand: Change calculating of position page containing BBM
-Date: Tue, 24 Sep 2019 06:54:31 +0100
-Message-ID: <20190924055439.4212-1-piotrs@cadence.com>
-X-Mailer: git-send-email 2.15.0
+	id 1iCdqQ-0005hK-Cg; Tue, 24 Sep 2019 05:58:38 +0000
+Received: from wehq.winbond.com ([202.39.229.15])
+ by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
+ id 1iCdqL-0005gz-T0
+ for linux-mtd@lists.infradead.org; Tue, 24 Sep 2019 05:58:36 +0000
+Received: from mail.winbond.com (wectmlgw02.winbond.com [10.6.10.76])
+ by wehq.winbond.com (Postfix) with ESMTP id 32EF53423E1
+ for <linux-mtd@lists.infradead.org>; Tue, 24 Sep 2019 13:58:17 +0800 (CST)
+From: Shih-Ting Lin <STLin2@winbond.com>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: mtd: spi-nor: add Winbond 1.8v SPI NOR Flash ID
+Thread-Topic: spi-nor: add Winbond 1.8v SPI NOR Flash ID
+Thread-Index: AdVymtqISfAZutqjQs6VhkDNCDY5TwAAhVnQ
+Date: Tue, 24 Sep 2019 05:58:16 +0000
+Message-ID: <7686ef4d81344337b7d1a937edffc458@wectmlbox04.winbond.com.tw>
+Accept-Language: zh-TW, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [49.215.195.228]
 MIME-Version: 1.0
-X-OrganizationHeadersPreserved: maileu3.global.cadence.com
-X-EOPAttributedMessage: 0
-X-Forefront-Antispam-Report: CIP:64.207.220.243; IPV:NLI; CTRY:US; EFV:NLI;
- SFV:NSPM;
- SFS:(10009020)(979002)(4636009)(396003)(136003)(376002)(39860400002)(346002)(199004)(189003)(36092001)(2906002)(70206006)(87636003)(305945005)(1671002)(86362001)(5660300002)(478600001)(70586007)(7416002)(1076003)(42186006)(36756003)(316002)(51416003)(36906005)(16586007)(50466002)(48376002)(47776003)(54906003)(109986005)(6666004)(356004)(426003)(186003)(126002)(50226002)(486006)(4326008)(81166006)(8936002)(81156014)(8676002)(26005)(476003)(336012)(2616005)(266003)(969003)(989001)(999001)(1009001)(1019001);
- DIR:OUT; SFP:1101; SCL:1; SRVR:MWHPR0701MB3674; H:wcmailrelayl01.cadence.com;
- FPR:; SPF:SoftFail; LANG:en; PTR:unused.mynethost.com; A:1; MX:1; 
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ad6be0f6-c7d8-41b6-223d-08d740b3e50a
-X-Microsoft-Antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600167)(711020)(4605104)(1401327)(2017052603328);
- SRVR:MWHPR0701MB3674; 
-X-MS-TrafficTypeDiagnostic: MWHPR0701MB3674:
-X-Microsoft-Antispam-PRVS: <MWHPR0701MB3674F904BF4AF3A2D512580EDD840@MWHPR0701MB3674.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-Forefront-PRVS: 0170DAF08C
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam-Message-Info: a85PWJr7fp3mHZ6JFNTRTi6znb+Q0ctMovNPnU5DWy6bBRaFMNL1d+yh1mvQlnwCK8ZKrfQTch2wG1lArNDPWqdrHdv0X42lLNLJBwzTcgDrZt883s7oJxlqMrCYYGnBz5Dg0kNEoOvVQPMIWjZOtoJnF5jpjvaVW/rAz2X3zHp6JhjBZ+cjhvuT6GKCfaRBfY7gwqTR7pfNay+KGmvFmdgC0KShi1B4o7AO0qWQDZrgN6ApwsMtQcNoH2/h+NcHRt7sXqk3C1Y6GugggAy8wkBLFcUsNcRgWh8dvic4QcoP6k1tTQdrh2NDtskgvw4ECtOtz00pFdXRiaNJRrFhlAFAtlYGUaNA6TSNKXBFwjQeANgouCaGVyJwVF2lS7DzRXVJIku8rYU1VD20IxrtrIATFm/upETQq9zYg2P/994=
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Sep 2019 05:56:08.0823 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ad6be0f6-c7d8-41b6-223d-08d740b3e50a
-X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9; Ip=[64.207.220.243];
- Helo=[wcmailrelayl01.cadence.com]
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR0701MB3674
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-09-24_03:2019-09-23,2019-09-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check
- score=0 malwarescore=0
- impostorscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- priorityscore=1501 lowpriorityscore=0 phishscore=0 adultscore=0
- suspectscore=2 clxscore=1011 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-1908290000 definitions=main-1909240059
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190923_225642_454808_55415362 
-X-CRM114-Status: GOOD (  17.50  )
+X-CRM114-CacheID: sfid-20190923_225834_260656_78E22BDD 
+X-CRM114-Status: UNSURE (   3.40  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -162,92 +70,50 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Kate Stewart <kstewart@linuxfoundation.org>,
- Vignesh Raghavendra <vigneshr@ti.com>, Boris Brezillon <bbrezillon@kernel.org>,
- Richard Weinberger <richard@nod.at>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org,
- linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, Frieder Schrempf <frieder.schrempf@kontron.de>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Thomas Gleixner <tglx@linutronix.de>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Piotr Sroka <piotrs@cadence.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Change calculating of position page containing BBM
 
-If none of BBM flags are set then function nand_bbm_get_next_page 
-reports EINVAL. It causes that BBM is not read at all during scanning
-factory bad blocks. The result is that the BBT table is build without 
-checking factory BBM at all. For Micron flash memories none of these 
-flags are set if page size is different than 2048 bytes.
+Winbond SPI NOR Flash have new product for 1.8V production line.
+Following is the patch add new device ID and part number information in spi-nor.c file.
 
-Address this regression by:
-- adding NAND_BBM_FIRSTPAGE chip flag without any condition. It solves
-  issue only for Micron devices.
-- changing the nand_bbm_get_next_page_function. It will return 0 
-  if no of BBM flag is set and page parameter is 0. After that modification
-  way of discovering factory bad blocks will work similar as in kernel 
-  version 5.1.
+Signed-off-by: Steam Lin <stlin2@winbond.com>
 
-Cc: stable@vger.kernel.org
-Fixes: f90da7818b14 (mtd: rawnand: Support bad block markers in first, second or last page)
-Signed-off-by: Piotr Sroka <piotrs@cadence.com>
-Reviewed-by: Frieder Schrempf <frieder.schrempf@kontron.de>
----
-Changes for v2:
-- add fix for micron nand driver
-- add fixes and stable tags
----
- drivers/mtd/nand/raw/nand_base.c   | 8 ++++++--
- drivers/mtd/nand/raw/nand_micron.c | 4 +++-
- 2 files changed, 9 insertions(+), 3 deletions(-)
+>  { "w25q256", INFO(0xef4019, 0, 64 * 1024, 512, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>  { "w25m512jv", INFO(0xef7119, 0, 64 * 1024, 1024,
+>  SECT_4K | SPI_NOR_QUAD_READ | SPI_NOR_DUAL_READ) },
+> +{ "w25q32jwxxIM", INFO(0xef8016, 0, 64 * 1024,  64,
+> +SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+> +SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
+> +},
+> +{ "w25q64jwxxIM", INFO(0xef8017, 0, 64 * 1024, 128,
+> +SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+> +SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
+> +},
+> +{ "w25q128jwxxIM", INFO(0xef8018, 0, 64 * 1024, 256,
+> +SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+> +SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
+> +},
+> +{ "w25q256jwxxIM", INFO(0xef8019, 0, 64 * 1024, 512,
+> +SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+> +SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
+> +},
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 5c2c30a7dffa..f64e3b6605c6 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -292,12 +292,16 @@ int nand_bbm_get_next_page(struct nand_chip *chip, int page)
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	int last_page = ((mtd->erasesize - mtd->writesize) >>
- 			 chip->page_shift) & chip->pagemask;
-+	unsigned int bbm_flags = NAND_BBM_FIRSTPAGE | NAND_BBM_SECONDPAGE
-+		| NAND_BBM_LASTPAGE;
- 
-+	if (page == 0 && !(chip->options & bbm_flags))
-+		return 0;
- 	if (page == 0 && chip->options & NAND_BBM_FIRSTPAGE)
- 		return 0;
--	else if (page <= 1 && chip->options & NAND_BBM_SECONDPAGE)
-+	if (page <= 1 && chip->options & NAND_BBM_SECONDPAGE)
- 		return 1;
--	else if (page <= last_page && chip->options & NAND_BBM_LASTPAGE)
-+	if (page <= last_page && chip->options & NAND_BBM_LASTPAGE)
- 		return last_page;
- 
- 	return -EINVAL;
-diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
-index 1622d3145587..913f42854563 100644
---- a/drivers/mtd/nand/raw/nand_micron.c
-+++ b/drivers/mtd/nand/raw/nand_micron.c
-@@ -438,8 +438,10 @@ static int micron_nand_init(struct nand_chip *chip)
- 	if (ret)
- 		goto err_free_manuf_data;
- 
-+	chip->options |= NAND_BBM_FIRSTPAGE;
-+
- 	if (mtd->writesize == 2048)
--		chip->options |= NAND_BBM_FIRSTPAGE | NAND_BBM_SECONDPAGE;
-+		chip->options |= NAND_BBM_SECONDPAGE;
- 
- 	ondie = micron_supports_on_die_ecc(chip);
- 
--- 
-2.15.0
+TEST=rebuild kernel,update to DUT
+    check DUT:
+    cat /var/log/messages | grep mtk-nor
+    ---
+    localhost ~ # cat /var/log/messages | grep mtk-nor
+    2019-07-08T04:42:51.636356-07:00 INFO kernel: [0.301351] mtk-nor \
+    1100d000.spi:w25q32jw (4096 Kbytes)
 
+
+
+________________________________
+
+The privileged confidential information contained in this email is intended for use only by the addressees as indicated by the original sender of this email. If you are not the addressee indicated in this email or are not responsible for delivery of the email to such a person, please kindly reply to the sender indicating this fact and delete all copies of it from your computer and network server immediately. Your cooperation is highly appreciated. It is advised that any unauthorized use of confidential information of Winbond is strictly prohibited; and any information in this email irrelevant to the official business of Winbond shall be deemed as neither given nor endorsed by Winbond.
 
 ______________________________________________________
 Linux MTD discussion mailing list
