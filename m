@@ -2,59 +2,63 @@ Return-Path: <SRS0=cKKb=XV=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 971D4C432C2
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Sep 2019 09:11:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EAF0C432C2
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Sep 2019 09:28:46 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 695A2222C0
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Sep 2019 09:11:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0E84E217F4
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Sep 2019 09:28:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QX6wJx94"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 695A2222C0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=krieglstein.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jsauWifE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0E84E217F4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=winbond.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pzfdCKzRNr/O2bPaEM7pczkXd/gkACMClGHnhpqYt5s=; b=QX6wJx94rONeET
-	jRc5kkcbhWFS3IZOkbNAYnESghqBHIzR3rwk3uhM4qIxp8L0FqnQCDwPimSur2UdU2vzjrFdjHJus
-	omT4kYpkO08nvCrLwzvPkFH/wA9GeaVe1oDx5FjH6WFSSJGNwcRRwzOMUtVoUlTsNkGJ9VYEtuuwn
-	jymMMaP1xSwdzzgVe7sOL+3F+hESB0QDjrQiz+cW+I/Qk9yRVvNjd4QxQ6Uadr0QyjxFVaTgMuHRo
-	tcI0UxtGVNfRRARdw5qWUdT2+3Dp+sJnk/YEW8xTiqbsTUfSDQOLh0QVkgDRCYJj4iXDerL278cox
-	C2ZS/LVQRI0eAtEZepSg==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=TczU6cyfFPOgvnKCnPNLlzts1+58sKvIHoa5nwlnPcw=; b=jsauWifEY7OWNx
+	B6WfzWI913eqbH5t8FJwWBNDvlthJv9FCQbspUMI+q+6Rel5VU2srtH2bSZEEFONe98IgOb9GXSFs
+	ki3Akhdpc5uFf5Z3koTiUxJ2HHDa+QZqVclSKxDK6EnWQS1TSCjYT2bTInnxpyPenyVrTCoKdMCmA
+	ssbs9JXyMctfzHoIViH11swNA6r/pRRmX0cVQ6Vk81sftr4OPoCQx+N7SppQqAc0HZeWCqwK+4dP1
+	GYGbQdI+wa1RVQtFQeYXh+y7v/cT7LqjS0dVW6dWncs8wGdbNfn6SSc4c3lPQgqDfJBx5THMS/J3m
+	5TeIpkTyG97x04EXhmPg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
-	id 1iDPnw-0001sW-G2; Thu, 26 Sep 2019 09:11:16 +0000
-Received: from krieglstein.org ([188.68.35.71])
+	id 1iDQ4q-0000sc-SE; Thu, 26 Sep 2019 09:28:44 +0000
+Received: from wehq.winbond.com ([202.39.229.15])
  by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iDPnq-0001r1-V3
- for linux-mtd@lists.infradead.org; Thu, 26 Sep 2019 09:11:13 +0000
-Received: from dabox.localnet (gateway.hbm.com [213.157.30.2])
- by krieglstein.org (Postfix) with ESMTPSA id B297D401B1;
- Thu, 26 Sep 2019 11:10:34 +0200 (CEST)
-From: Tim Sander <tim@krieglstein.org>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: Re: mtd raw nand denali.c broken for Intel/Altera Cyclone V
-Date: Thu, 26 Sep 2019 11:10:34 +0200
-Message-ID: <23083624.r2bJSIadJk@dabox>
-Organization: Sander and Lightning
-In-Reply-To: <CAK7LNARCPwqY+YmUzsHkABpshzzS3tC=fDgp4vZjVgBwS+LKJw@mail.gmail.com>
-References: <5143724.5TqzkYX0oI@dabox>
- <9bb2fb0e-a9e7-c389-f9b7-42367485ff83@kernel.org>
- <CAK7LNARCPwqY+YmUzsHkABpshzzS3tC=fDgp4vZjVgBwS+LKJw@mail.gmail.com>
+ id 1iDQ4n-0000rt-CM
+ for linux-mtd@lists.infradead.org; Thu, 26 Sep 2019 09:28:42 +0000
+Received: from mail.winbond.com (wectmlgw02.winbond.com [10.6.10.76])
+ by wehq.winbond.com (Postfix) with ESMTP id 3B727342429
+ for <linux-mtd@lists.infradead.org>; Thu, 26 Sep 2019 17:28:26 +0800 (CST)
+From: Shih-Ting Lin <STLin2@winbond.com>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: spi-nor: add Winbond 1.8v SPI NOR Flash ID
+Thread-Topic: [PATCH] mtd: spi-nor: add Winbond 1.8v SPI NOR Flash ID
+Thread-Index: AdV0TLr+8Rk0PqjGQBmzD1KAUfW3uw==
+Date: Thu, 26 Sep 2019 09:28:25 +0000
+Message-ID: <745f82b2f6a34b87a4c356561cfc11e2@wectmlbox04.winbond.com.tw>
+Accept-Language: zh-TW, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.8.58.50]
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190926_021111_300897_12E6B0D7 
-X-CRM114-Status: GOOD (  30.67  )
+X-CRM114-CacheID: sfid-20190926_022841_561346_8F7E9265 
+X-CRM114-Status: UNSURE (   4.26  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,125 +70,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Dinh Nguyen <dinguyen@kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi 
+Winbond SPI NOR Flash have new product for 1.8V production line.
+Following is the patch add new device ID and part number information in spi-nor.c file.
 
-Am Mittwoch, 11. September 2019, 04:37:46 CEST schrieb Masahiro Yamada:
-> Hi Dinh,
-> 
-> On Wed, Sep 11, 2019 at 12:22 AM Dinh Nguyen <dinguyen@kernel.org> wrote:
-> > On 9/10/19 8:48 AM, Tim Sander wrote:
-> > > Hi
-> > > 
-> > > I have noticed that my SPF records where not in place after moving the
-> > > server, so it seems the mail didn't go to the mailing list. Hopefully
-> > > that's fixed now.> > 
-> > > Am Dienstag, 10. September 2019, 09:16:37 CEST schrieb Masahiro Yamada:
-> > >> On Fri, Sep 6, 2019 at 9:39 PM Tim Sander <tim@krieglstein.org> wrote:
-> > >>> Hi
-> > >>> 
-> > >>> I have noticed that there multiple breakages piling up for the denali
-> > >>> nand
-> > >>> driver on the Intel/Altera Cyclone V. Unfortunately i had no time to
-> > >>> track
-> > >>> the mainline kernel closely. So the breakage seems to pile up. I am a
-> > >>> little disapointed that Intel is not on the lookout that the kernel
-> > >>> works
-> > >>> on the chips they are selling. I was really happy about the state of
-> > >>> the
-> > >>> platform before concerning mainline support.
-> > >>> 
-> > >>> The failure starts with kernel 4.19 or stable kernel release 4.18.19.
-> > >>> The
-> > >>> commit is ba4a1b62a2d742df9e9c607ac53b3bf33496508f.
-> > >> 
-> > >> Just for clarification, this corresponds to
-> > >> 0d55c668b218a1db68b5044bce4de74e1bd0f0c8 upstream.
-> > >> 
-> > >>> The problem here is that
-> > >>> our platform works with a zero in the SPARE_AREA_SKIP_BYTES register.
-> > >> 
-> > >> Please clarify the scope of "our platform".
-> > >> (Only you, or your company, or every individual using this chip?)
-> > > 
-> > > The company i work for uses this chip as a base for multiple products.
-> > > 
-> > >> First, SPARE_AREA_SKIP_BYTES is not the property of the hardware.
-> > >> Rather, it is about the OOB layout, in other words, this parameter
-> > >> is defined by software.
-> > >> 
-> > >> For example, U-Boot supports the Denali NAND driver.
-> > >> The SPARE_AREA_SKIP_BYTES is a user-configurable parameter:
-> > >> https://github.com/u-boot/u-boot/blob/v2019.10-rc3/drivers/mtd/nand/raw
-> > >> /Kcon fig#L112
-I am using barebox for booting. I looked at the code and found a comment in 
-denali_hw_init: 
-         * tell driver how many bit controller will skip before
-         * writing ECC code in OOB, this register may be already
-         * set by firmware. So we read this value out.
-         * if this value is 0, just let it be.
+Signed-off-by: Shih-Ting Lin <stlin2@winbond.com>
 
-I have checked the barebox code and the denali register SPARE_AREA_SKIP_BYTES 
-(offset 0x230) is read only once on booting. I have not found any occurrence of 
-the register being set by barebox. So i would concur as the value is zero in 
-my case that the boot ROM seems not to set the value. The code in barebox is 
-mostly imported from linux in 2015 which is before the reorganization which 
-happened on the linux side later on.
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -2153,6 +2153,22 @@
+>  { "w25q256", INFO(0xef4019, 0, 64 * 1024, 512, SECT_4K |
+> SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },  { "w25m512jv",
+> INFO(0xef7119, 0, 64 * 1024, 1024,  SECT_4K | SPI_NOR_QUAD_READ |
+> SPI_NOR_DUAL_READ) },
+> +{ "w25q32jwxxIM", INFO(0xef8016, 0, 64 * 1024,  64, SECT_4K |
+> +SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK |
+> +SPI_NOR_HAS_TB) }, { "w25q64jwxxIM", INFO(0xef8017, 0, 64 * 1024,
+> +128, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+> +SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) }, { "w25q128jwxxIM",
+> +INFO(0xef8018, 0, 64 * 1024, 256, SECT_4K | SPI_NOR_DUAL_READ |
+> +SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) }, {
+> +"w25q256jwxxIM", INFO(0xef8019, 0, 64 * 1024, 512, SECT_4K |
+> +SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK |
+> +SPI_NOR_HAS_TB) },
 
-> > >> 
-> > >> 
-> > >> Your platform works with a zero in the SPARE_AREA_SKIP_BYTES register
-> > >> because the NAND chip on the board was initialized with a zero
-> > >> set to the SPARE_AREA_SKIP_BYTES register.
-> > >> 
-> > >> If the NAND chip had been initialized with 8
-> > >> set to the SPARE_AREA_SKIP_BYTES register, it would have
-> > >> been working with 8 to the SPARE_AREA_SKIP_BYTES.
-> > >> 
-> > >> The Boot ROM is the only (semi-)software that is unconfigurable by
-> > >> users,
-> > >> so the value of SPARE_AREA_SKIP_BYTES should be aligned with
-> > >> the boot ROM.
-> > >> I recommend you to check the spec of the boot ROM.
-> > > 
-> > > We boot from NOR flash. That's why i didn't see a problem booting
-> > > probably.
-> > > 
-> > >> (The maintainer of the platform, Dihn is CC'ed,
-> > >> so I hope he will jump in)
-> > > 
-> > > Yes i hope so too.
-> > 
-> > I don't have access to a NAND device at the moment. I'll try to find one
-> > and debug.
-I have hardware available to me, so i would be happy to test any ideas/
-guesses.
-
-> Dinh,
-> Do you have answers for the following questions?
-> 
-> 
-> - Does the SOCFPGA boot ROM support the NAND boot mode?
-> 
-> - If so, which value does it use for SPARE_AREA_SKIP_BYTES?
-
-Best regards
-Tim
+TEST=rebuild kernel,update to DUT
+    check DUT:
+    cat /var/log/messages | grep mtk-nor
+    ---
+    localhost ~ # cat /var/log/messages | grep mtk-nor
+    2019-07-08T04:42:51.636356-07:00 INFO kernel: [0.301351] mtk-nor \
+    1100d000.spi:w25q32jw (4096 Kbytes)
 
 
 
+________________________________
 
+The privileged confidential information contained in this email is intended for use only by the addressees as indicated by the original sender of this email. If you are not the addressee indicated in this email or are not responsible for delivery of the email to such a person, please kindly reply to the sender indicating this fact and delete all copies of it from your computer and network server immediately. Your cooperation is highly appreciated. It is advised that any unauthorized use of confidential information of Winbond is strictly prohibited; and any information in this email irrelevant to the official business of Winbond shall be deemed as neither given nor endorsed by Winbond.
 
 ______________________________________________________
 Linux MTD discussion mailing list
