@@ -2,70 +2,62 @@ Return-Path: <SRS0=oK52=XY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C8E0C32793
-	for <linux-mtd@archiver.kernel.org>; Sun, 29 Sep 2019 14:03:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C76BC352A9
+	for <linux-mtd@archiver.kernel.org>; Sun, 29 Sep 2019 14:05:23 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0C52B21835
-	for <linux-mtd@archiver.kernel.org>; Sun, 29 Sep 2019 14:03:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 218902082F
+	for <linux-mtd@archiver.kernel.org>; Sun, 29 Sep 2019 14:05:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VmUlAl6i";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="oISv7dhA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0C52B21835
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Xan9hjqz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 218902082F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2lkA9vBlyL2N6VQfh4SXgeBKCaETIDQt0kS7Bo9wt1c=; b=VmUlAl6izNcbdG
-	3fRXYzIqN9EPuK9Gm+UCmlsAwJ2UowJCX4YnlFwZu/H5Ut7hP2wfCXwgjGru84zTyHLRg5sJ//U7D
-	KMrllzQla9AaNpP1tRNVPYxQTrGqf+ja59expCY+z99fMI43Y80S9uJjKP7h1v81eXOzDKAYqEHVD
-	yeAF4F2itDQuXrXs1ZDPluCPNAi65SF3o35qgAjcvg3PsEnVwckPbPfqL3rewn/Thl273P66pUMr3
-	dD7ELRuoW8ZfW4zSuFpnBD/DOeM4QQ+FJ9lEACyKclH1cpdgdKv7Enl5qiDtYPwBZg/ai0d3GuoCC
-	KzSbbyKsxxOc4N3hrzvg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=WmKPS62dRVYD9ItrWP/LgY2GdNUPyL+R0urehGcr40c=; b=Xan9hjqzWFsZHh
+	OQc39qOIAZ8g2Zwk4/bNYD2N1nEsZ5cp6W/qeTiAniaxpSvOwyoF89p48YO0gnLQ6ORbwDiJHUyA1
+	uhJllVUEdmxl1sypWB4XS+eWwmr/iTUoO4cZUj/1M3h/rydGspCHU/UjsBgz/0CU3dnQROF+b5W+5
+	x9zO7gDwfU018NmMxXnmykJNb4trH0oiGj/RhJexxmJwlYFqjbTDQlSNebdRjOQ5vMFQODB0wby2J
+	kcAaUvJjj2lWtuMS/zrVxfb7l7t1aQoJHB8DCXv8KUFXqiOCi9MRzKVj4SoGSeIZzTB3AaCU1hvGG
+	oyo433E6WrlG9poP55rg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
-	id 1iEZnB-0007Dy-EG; Sun, 29 Sep 2019 14:03:17 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1iEZpB-0000Ru-6U; Sun, 29 Sep 2019 14:05:21 +0000
+Received: from szxga04-in.huawei.com ([45.249.212.190] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iEZn7-0007DH-UB
- for linux-mtd@lists.infradead.org; Sun, 29 Sep 2019 14:03:15 +0000
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
- [83.86.89.107])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id C3FAE21835;
- Sun, 29 Sep 2019 14:03:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1569765793;
- bh=4RpIUmaAfy9boE6eBfawdS14OQeP2tuTyRAyuCbuMkA=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=oISv7dhA+GHrNBq88NKCfHvIYTh6AwXZNjb2+1ch92xQExbIbpIN6vQqKuVOFdv3J
- BGhQPQz9n5YyOXmzA2mWT5edllV6N0b641Llev9L6LBwY9rb2fsAj8VjNGHdkV6OGP
- ffVCYPmcmks7Rrv80pGG7JzAfqBPqeQuxDtunkEg=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH 5.3 15/25] mtd: cfi_cmdset_0002: Use chip_good() to retry in
- do_write_oneword()
-Date: Sun, 29 Sep 2019 15:56:18 +0200
-Message-Id: <20190929135015.235296003@linuxfoundation.org>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20190929135006.127269625@linuxfoundation.org>
-References: <20190929135006.127269625@linuxfoundation.org>
-User-Agent: quilt/0.66
+ id 1iEZp7-0007pT-Q7
+ for linux-mtd@lists.infradead.org; Sun, 29 Sep 2019 14:05:20 +0000
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+ by Forcepoint Email with ESMTP id 252308CB7E2E487017D2;
+ Sun, 29 Sep 2019 22:05:08 +0800 (CST)
+Received: from huawei.com (10.90.53.225) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.439.0; Sun, 29 Sep 2019
+ 22:05:03 +0800
+From: Hou Tao <houtao1@huawei.com>
+To: <linux-mtd@lists.infradead.org>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Vignesh Raghavendra <vigneshr@ti.com>, "Richard
+ Weinberger" <richard@nod.at>, Maxim Levitsky <maximlevitsky@gmail.com>
+Subject: [PATCH] mtd: blkdevs: protect tr->devs list by mtd_table_mutex
+Date: Sun, 29 Sep 2019 22:11:57 +0800
+Message-ID: <20190929141157.115845-1-houtao1@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
+X-Originating-IP: [10.90.53.225]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190929_070314_016237_1BD0256C 
-X-CRM114-Status: GOOD (  15.00  )
+X-CRM114-CacheID: sfid-20190929_070518_813792_5FA7DD9F 
+X-CRM114-Status: GOOD (  13.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,101 +69,113 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Tokunori Ikegami <ikegami.t@gmail.com>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org,
- Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
- Chris Packham <chris.packham@alliedtelesis.co.nz>,
- linux-mtd@lists.infradead.org, Hauke Mehrtens <hauke@hauke-m.de>,
- Fabio Bettoni <fbettoni@gmail.com>, Felix Fietkau <nbd@nbd.name>
+Cc: Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Tokunori Ikegami <ikegami.t@gmail.com>
+There may be list corruption if there are concurrent list traversal
+and list deletion on tr->devs as showed in the following case:
 
-commit 37c673ade35c707d50583b5b25091ff8ebdeafd7 upstream.
+CPU 0                               CPU 1
 
-As reported by the OpenWRT team, write requests sometimes fail on some
-platforms.
-Currently to check the state chip_ready() is used correctly as described by
-the flash memory S29GL256P11TFI01 datasheet.
-Also chip_good() is used to check if the write is succeeded and it was
-implemented by the commit fb4a90bfcd6d8 ("[MTD] CFI-0002 - Improve error
-checking").
-But actually the write failure is caused on some platforms and also it can
-be fixed by using chip_good() to check the state and retry instead.
-Also it seems that it is caused after repeated about 1,000 times to retry
-the write one word with the reset command.
-By using chip_good() to check the state to be done it can be reduced the
-retry with reset.
-It is depended on the actual flash chip behavior so the root cause is
-unknown.
+open /dev/mtdblock1
 
-Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-Cc: linux-mtd@lists.infradead.org
-Cc: stable@vger.kernel.org
-Reported-by: Fabio Bettoni <fbettoni@gmail.com>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
-Signed-off-by: Tokunori Ikegami <ikegami.t@gmail.com>
-[vigneshr@ti.com: Fix a checkpatch warning]
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+// remove mtd1
+blktrans_notify_remove()
+    del_mtd_blktrans_dev()
 
+close /dev/mtdblock1
+  blktrans_release
+    blktrans_dev_put
+      acquire blktrans_ref_mutex     // remove mtd0
+      // the final release           acquire mtd_table_mutex
+      blktrans_dev_release()         blktrans_notify_remove()
+        // remove mtdblock1            // next is mtdblock1
+        list_del(&dev->list)           list_for_each_entry_safe()
+
+We could fix the problem by acquiring blktrans_ref_mutex during
+the traversal of tr->devs, but blktrans_ref_mutex needs to be released
+before invoking tr->remote_dev(), so we also need to increase the kref
+of current device else the device may be freed and decrease the kref
+after the removal.
+
+Or we could move the list deletion to del_mtd_blktrans_dev(), and protect
+the operations on tr->devs by mtd_table_mutex which has already be taken.
+
+The latter fix is simpler. We also can remove the unnecessary acquisitions
+of blktrans_ref_mutex in add_mtd_blktrans_dev() because operations on
+tr->devs have already been protected by mtd_table_mutex.
+
+Fixes: 048d87199566 ("mtd: blktrans: Hotplug fixes")
+Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- drivers/mtd/chips/cfi_cmdset_0002.c |   18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+I found the problem by code review, and could not find a way to
+ensure the problem, because the removal of mtd devices almost
+comes from the removal of modules, and the open of /dev/mtdblockX
+will prevent the module from removing.
+---
+ drivers/mtd/mtd_blkdevs.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -1717,31 +1717,37 @@ static int __xipram do_write_oneword(str
- 			continue;
- 		}
+diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+index 0c05f77f9b21..e04260237a25 100644
+--- a/drivers/mtd/mtd_blkdevs.c
++++ b/drivers/mtd/mtd_blkdevs.c
+@@ -35,7 +35,6 @@ static void blktrans_dev_release(struct kref *kref)
+ 	blk_mq_free_tag_set(dev->tag_set);
+ 	kfree(dev->tag_set);
+ 	put_disk(dev->disk);
+-	list_del(&dev->list);
+ 	kfree(dev);
+ }
  
-+		/*
-+		 * We check "time_after" and "!chip_good" before checking
-+		 * "chip_good" to avoid the failure due to scheduling.
-+		 */
- 		if (time_after(jiffies, timeo) &&
--		    !chip_ready(map, chip, adr)) {
-+		    !chip_good(map, chip, adr, datum)) {
- 			xip_enable(map, chip, adr);
- 			printk(KERN_WARNING "MTD %s(): software timeout\n", __func__);
- 			xip_disable(map, chip, adr);
-+			ret = -EIO;
- 			break;
- 		}
- 
--		if (chip_ready(map, chip, adr))
-+		if (chip_good(map, chip, adr, datum))
- 			break;
- 
- 		/* Latency issues. Drop the lock, wait a while and retry */
- 		UDELAY(map, chip, adr, 1);
+@@ -350,7 +349,6 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+ 		BUG();
  	}
+ 
+-	mutex_lock(&blktrans_ref_mutex);
+ 	list_for_each_entry(d, &tr->devs, list) {
+ 		if (new->devnum == -1) {
+ 			/* Use first free number */
+@@ -362,7 +360,6 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+ 			}
+ 		} else if (d->devnum == new->devnum) {
+ 			/* Required number taken */
+-			mutex_unlock(&blktrans_ref_mutex);
+ 			return -EBUSY;
+ 		} else if (d->devnum > new->devnum) {
+ 			/* Required number was free */
+@@ -381,14 +378,12 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+ 	 * with this number. */
+ 	if (new->devnum > (MINORMASK >> tr->part_bits) ||
+ 	    (tr->part_bits && new->devnum >= 27 * 26)) {
+-		mutex_unlock(&blktrans_ref_mutex);
+ 		goto error1;
+ 	}
+ 
+ 	list_add_tail(&new->list, &tr->devs);
+- added:
+-	mutex_unlock(&blktrans_ref_mutex);
+ 
++ added:
+ 	mutex_init(&new->lock);
+ 	kref_init(&new->ref);
+ 	if (!tr->writesect)
+@@ -484,6 +479,8 @@ int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
+ 		BUG();
+ 	}
+ 
++	list_del(&old->list);
 +
- 	/* Did we succeed? */
--	if (!chip_good(map, chip, adr, datum)) {
-+	if (ret) {
- 		/* reset on all failures. */
- 		cfi_check_err_status(map, chip, adr);
- 		map_write(map, CMD(0xF0), chip->start);
- 		/* FIXME - should have reset delay before continuing */
- 
--		if (++retry_cnt <= MAX_RETRIES)
-+		if (++retry_cnt <= MAX_RETRIES) {
-+			ret = 0;
- 			goto retry;
--
--		ret = -EIO;
-+		}
- 	}
- 	xip_enable(map, chip, adr);
-  op_done:
-
+ 	if (old->disk_attributes)
+ 		sysfs_remove_group(&disk_to_dev(old->disk)->kobj,
+ 						old->disk_attributes);
+-- 
+2.22.0
 
 
 ______________________________________________________
