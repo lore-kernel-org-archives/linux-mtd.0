@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38538C10F14
-	for <linux-mtd@archiver.kernel.org>; Thu,  3 Oct 2019 15:57:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1020BC32792
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Oct 2019 16:01:55 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F102020700
-	for <linux-mtd@archiver.kernel.org>; Thu,  3 Oct 2019 15:57:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C7E1821D81
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Oct 2019 16:01:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="K1o0QN7s";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ID7ZgIkJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F102020700
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Xm6akk1a";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="kFg9TRgf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C7E1821D81
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,45 +26,45 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IwWJQdLBYURqYx4tKDFP/lbXjetLRMYAlmgVFxR5b+E=; b=K1o0QN7s86ITaO
-	4kP4DVXbxbM+jW8TrDlL7BVsqMzO/c4wCjnMm6M/ppp4JRxoJss/sjNx4jJ+BOMDddd+G5d5MM3wq
-	R6Y9IRjLrBAqlgRCa7EZhHVnoTQb66rIA6c5aaXVoHhVqzL08C9iLqJecvfm6H4sC/k6eHQFFerOW
-	EjOjMfVkEzn2SuUXvCaNeNUjen+/u0tkpOOoztsfi11pUHnFS4/oc39SloxdW9Q4UksixQ6phNcac
-	pMn4jm12yIZVqzOPnLAezk0E7UCv/Nu3hp9iX3y8+2gIvMcIIe+kY37wnWke526nU6CV2irtVA+r+
-	Vf7uiNLi2zU1xvyqP08Q==;
+	List-Owner; bh=pHcM4d7A7s3gp6FEzNr7SUClax5WD2WiLFJxhVTd3hQ=; b=Xm6akk1aBVefLj
+	nD1kby6fJoRRerf1fny8/JJ126E+k+nQKZtkYqxfot5fubktyRrS1Oea8m6t2/AqOHIeKePECKhIa
+	890JDHT/IWCemiN64NyZ1yX/xsQhlQR/KeKqDLgCuKPoTkJ6AIspR3lA94ZuXgWL3XMTsrHUMBmPi
+	NxMydjNq+BJaDWCp1qpUztFfFg3hs8ARr/9JLGlpop8a+1U7dCC2m9AoXWOfp2Mgtetb3zjU1DJE7
+	8z6LVXutidDIagRoBK57QqsZt9U7ike+p4X9mEw2sS3jg0dE4jKN0klYNX7YGx6o1AoiezqgnPt0k
+	FBHKVAUBmubHZSzWR7NA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
-	id 1iG3U0-00068M-LI; Thu, 03 Oct 2019 15:57:36 +0000
+	id 1iG3Y8-0000UG-OW; Thu, 03 Oct 2019 16:01:52 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iG3Tw-00067Z-Ue
- for linux-mtd@lists.infradead.org; Thu, 03 Oct 2019 15:57:34 +0000
+ id 1iG3Y5-0000TN-KL
+ for linux-mtd@lists.infradead.org; Thu, 03 Oct 2019 16:01:51 +0000
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
  [83.86.89.107])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 851B3207FF;
- Thu,  3 Oct 2019 15:57:31 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id C36A6207FF;
+ Thu,  3 Oct 2019 16:01:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1570118252;
- bh=+yVYbzi6NorjDufJSabcULv4qzLtVu0G7LVMv+Bk8DQ=;
+ s=default; t=1570118509;
+ bh=5u2zAl7BkqOE1FqzDrXTn5nzPaiQIpAI/eo9TlZSobQ=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ID7ZgIkJqZEk6pVsnHKPf6XqkGHCzVpZR1sC3YkNLRfHCyLKGEhOAy2icUjAE7W2p
- y1UAKhVUAZ45cMIccyEJ08eqajlYpPnWa/pzy9LPxg4gE5+QzAgx6t73VEvTUp9UPv
- l1MX5VT/0klXgUhcE+Rwc6MqANabw1n0BEwCgXWE=
+ b=kFg9TRgfC7s9jRlK4FhhmHCKqSZ430+FMUV+hUUl+rxZDx9z3yFFfHMaE/1ufC59P
+ dxm91S12jidhUo/TP99sMBTtAdeIM3YjE/hmz/qEqZt7I9C1GJcXKVtZXnH6UVH4jk
+ KS2zD0VRXqEfzOYOtwHiNytekRFukKnGORcC/FG4=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 4.4 06/99] mtd: cfi_cmdset_0002: Use chip_good() to retry in
+Subject: [PATCH 4.9 006/129] mtd: cfi_cmdset_0002: Use chip_good() to retry in
  do_write_oneword()
-Date: Thu,  3 Oct 2019 17:52:29 +0200
-Message-Id: <20191003154255.205877418@linuxfoundation.org>
+Date: Thu,  3 Oct 2019 17:52:09 +0200
+Message-Id: <20191003154322.117166351@linuxfoundation.org>
 X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191003154252.297991283@linuxfoundation.org>
-References: <20191003154252.297991283@linuxfoundation.org>
+In-Reply-To: <20191003154318.081116689@linuxfoundation.org>
+References: <20191003154318.081116689@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191003_085733_036599_57B13DFB 
+X-CRM114-CacheID: sfid-20191003_090149_711293_D93C8AE8 
 X-CRM114-Status: GOOD (  15.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -128,7 +128,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/mtd/chips/cfi_cmdset_0002.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -1626,29 +1626,35 @@ static int __xipram do_write_oneword(str
+@@ -1624,29 +1624,35 @@ static int __xipram do_write_oneword(str
  			continue;
  		}
  
