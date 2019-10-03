@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82847C10F14
-	for <linux-mtd@archiver.kernel.org>; Thu,  3 Oct 2019 18:32:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB52CC32792
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Oct 2019 18:34:23 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5A02720865
-	for <linux-mtd@archiver.kernel.org>; Thu,  3 Oct 2019 18:32:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6D1192086A
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Oct 2019 18:34:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="aqDta/2S";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="EIf2+2gl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5A02720865
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DmbC+AfS";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="FRMts674"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D1192086A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,56 +27,56 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:References:To:From:Subject:Reply-To:Cc:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=swynHWo+JxRVsNbj3hSrcXFA0y7ojdivACKHaKscFiA=; b=aqDta/2SBDzL7wnxEFFgUJQ+Wp
-	DsQ7Z4+K3rbb0W45oNzi0ojIqmIf5sa13hoPJgX+bH6TXxctSe5XcYaCU0ooOxl0Bsb+0vipFuGfy
-	AWoJWQQL5+Pzo8LpkJeBhsblCEbAiCQrf6+AkFrDbkfY+rB/4k2/xMYkVUkNKGPtOll+DOWl9bgwH
-	cfnVCwDa18U9Eq+XQMCJisyQH4zTMg7wT8vId5X9QM3w/0hO0iu3B4lLXeagKcrZ4LQNv8YPmV/xl
-	S5oLz4g1meUTMrTcPb9YbLO1HIpbEDXmHXmkg6vnD+RxxDe6zESnjm6JQIleAtqNAp+y+51MH+wat
-	fp9RIPVw==;
+	bh=upJIV64qEYXThDI1eYP4zQdy5fvDm7K6x1QIqlcwLak=; b=DmbC+AfS0hatwQNnpRrchXY5X4
+	kbvtDNY3aay8qsqdoLSGftKx99XvfGrQlFkGliDWe87JLfJI/usCKg54E5Vn3EPZr4BLJQxddD1lj
+	tAvxgtEBzCqulgdIhB+egfHMZuFrvLdEZDlh2M1cutHPWaWvGfmDkx3nCORLillRPKbNDniyMhSBf
+	Fv+V+rIdgYMzSM6yXV5j0nR7CdL/zQ5kPc6wdYLxvGAave5DyimGyFKceltqLcceqonrXN8h4ES9Q
+	dtVnsJWXLXjaugm9WwHdqZjVaEK5Gvast0mH/s+o35mOp7WZPTwlaKku/ji97OzD0E9WvtnLGLMY2
+	cU+QO26A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
-	id 1iG5tl-00035p-5U; Thu, 03 Oct 2019 18:32:21 +0000
-Received: from mail-lf1-x143.google.com ([2a00:1450:4864:20::143])
+	id 1iG5vh-0003Ug-IM; Thu, 03 Oct 2019 18:34:21 +0000
+Received: from mail-lj1-x242.google.com ([2a00:1450:4864:20::242])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iG5ti-00035R-7H
- for linux-mtd@lists.infradead.org; Thu, 03 Oct 2019 18:32:19 +0000
-Received: by mail-lf1-x143.google.com with SMTP id r2so2592253lfn.8
- for <linux-mtd@lists.infradead.org>; Thu, 03 Oct 2019 11:32:17 -0700 (PDT)
+ id 1iG5ve-0003Te-79
+ for linux-mtd@lists.infradead.org; Thu, 03 Oct 2019 18:34:19 +0000
+Received: by mail-lj1-x242.google.com with SMTP id d1so3847417ljl.13
+ for <linux-mtd@lists.infradead.org>; Thu, 03 Oct 2019 11:34:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
  h=subject:from:to:references:organization:message-id:date:user-agent
  :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=fj0DCcYfELBsqONSDs288m2oy9cFQweEebiXnDy1Us8=;
- b=EIf2+2gl5wvqgQq9s+zFXwk8y9lcLZnws2n0z3y0+CPzi+uceEVnx4F3j4BblUofd9
- mlQnBDW2goyKOIvbiIb5PdhTXZUQ7/jZbUMbIiR5CPMbeN6rXwTrx2BMN4IBuFYEGNNv
- hiRL2PnikdXFWuEynHMgjArqhCWZ1wHpVuXx1zFm5WIEDE5oE7GnPDzW5Akb1CV8ijVT
- KwefZ3TBnvtokCQ4iVhAJhp01sM6cHNjYuTKIsgzATmvKpdBr5Hx9w9WIdSbIfnLgJB+
- eYDyYEmgK8SA8mI6j8td9a4RAYdCzs/0hmJv5p60ZZyqczm8m00Ab4Bka+zEVmzckqoQ
- ql7A==
+ bh=yVd3PyboFSjsqGh3Ars2txvkocusu0l7iXj1NgKTvDU=;
+ b=FRMts674l4uD/SD+W949nvsQzq2f2X13MtZ2+4NW6ygxKYX21Q4ZoXynJ+psV00WD4
+ 3MLCVD+3ksiBfVehqPPFgFLc4biq7xpZ8Kuh18Ua86Nn+OW9QM0wv6pkImUQs2hJ6F1N
+ sU8thl/lRLdTud2lJsUF0ZMMYq628BnZwMGPBq9M2kT/Ue0BVX19KC0amGyTDKPHo80H
+ xqx+hf21gaOLzqz2RFMJwXEZCz3n5l6Cq82ui3VPRjymw+ZK2Lk8cuEzisHGE55NvTwi
+ bvqPZuQ+nUT+KuIsgP+HU+fGcR0uaJOG8MO1d3v2ZlKo5SXzS2Ce+F3ZRBZryBpI84hg
+ inJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:subject:from:to:references:organization
  :message-id:date:user-agent:mime-version:in-reply-to
  :content-language:content-transfer-encoding;
- bh=fj0DCcYfELBsqONSDs288m2oy9cFQweEebiXnDy1Us8=;
- b=LoZiMdixV8M2vZ/m1LLHr5vAfm6Avklbg2ClIkZeRUqOPBtcvGuXFBuVwgjIylI1Ah
- PEJJ8qQYGpILThHZjPPWcrZKfJfquSO+ELLu8qnHmAgSvkGy/XcQUotjpBaUxAvxQ/2p
- D/cYFMeQS/fpkJ/Gd0FetfBISRtrFrfV9Hh13bpkveVXmQevD0HHMabdV2u33Zjh/40H
- Kkkxbla4N2KYjxAw2jHmkp8vCj2mi7pDNuPQyJDSVdm5oBfhApZfT+gXOWrIAcB/8WRa
- +eZfw0gSxtCnvVJPiwHQ17U2A9iZcR5KBy0lx2XnnkL2bE/+kMrSRDyOwtoI9UhCHT1X
- 3pWQ==
-X-Gm-Message-State: APjAAAUv7iPO/pE6dYwiTPfYBkJDWlTCtDzTuQn8XrOMmOvBhHTf36mn
- LJie/1WjDMRimyaQ5anKk0dMUDwPWNY=
-X-Google-Smtp-Source: APXvYqxKcd1GPt8GEpDfFhJuGpKA6z7kKCshEtpfOsL8NwSN4TiYY+vLHpv4tDOgROL5nkwVUDUKsQ==
-X-Received: by 2002:a19:f711:: with SMTP id z17mr6476768lfe.58.1570127535814; 
- Thu, 03 Oct 2019 11:32:15 -0700 (PDT)
+ bh=yVd3PyboFSjsqGh3Ars2txvkocusu0l7iXj1NgKTvDU=;
+ b=o6Bw+lQ+VEQowXUKXVPWHBi+RdTmHnsG2X8/tDapIWrP9xhEypP4SSv8hs6H0J0ABU
+ RAtOKgOXqFR70Digi44/zC4PJSPD8cvuij98oJcoFUj6YGdusu/WMKFrUNcmAoj+O3DM
+ 9dUXTjJCrwmNyyx9SYgEKjRyErb2L8Hwqp3/pV9BNpSYff087zcPa17vC2HjUiXA8v7o
+ Q1t8S2ywdUsZPUroEutv3Al3u5epVjGYpu441RPlt4Lyg8gOBTWWnvDee6JCSGw56fpt
+ qZy1aS6Sqh1JKMmk+goycs99XEATBXhMAjLAmfUoW5gEgt3HgzF77oLUQn2+hK5aBlI3
+ vSyQ==
+X-Gm-Message-State: APjAAAWcrM1nq3ML2FMO1ojyrlEPHBZ8Wj7iLWK/S9UsLH9bfRJvBEkV
+ tZpMZjZiH4Gkxzz5chFaXJBYwkI0Yso=
+X-Google-Smtp-Source: APXvYqwIoUq5vUCM/xnBPsRrtYeEAE8/8+pUCx2TjWSvChs7RWptcSB6c0fbdkR2GgGAWKGJzmetpw==
+X-Received: by 2002:a2e:9e90:: with SMTP id f16mr6966383ljk.155.1570127656101; 
+ Thu, 03 Oct 2019 11:34:16 -0700 (PDT)
 Received: from wasted.cogentembedded.com
  ([2a00:1fa0:4289:fe73:b1e7:ad72:df1a:c82e])
- by smtp.gmail.com with ESMTPSA id 134sm608853lfk.70.2019.10.03.11.32.14
+ by smtp.gmail.com with ESMTPSA id o13sm682378ljh.35.2019.10.03.11.34.14
  (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 03 Oct 2019 11:32:14 -0700 (PDT)
-Subject: [PATCH 1/2] mtd: cfi_cmdset_0002: only check errors when ready in
- cfi_check_err_status()
+ Thu, 03 Oct 2019 11:34:15 -0700 (PDT)
+Subject: [PATCH 2/2] mtd: cfi_cmdset_0002: fix delayed error detection on
+ HyperFlash
 From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -86,16 +86,16 @@ To: David Woodhouse <dwmw2@infradead.org>,
  linux-mtd@lists.infradead.org
 References: <b93bf510-8812-3f82-29f3-43f41d08550a@cogentembedded.com>
 Organization: Cogent Embedded
-Message-ID: <146a49cc-fb1a-36cf-75b6-cf472d264c7b@cogentembedded.com>
-Date: Thu, 3 Oct 2019 21:32:13 +0300
+Message-ID: <b146c469-6cc3-885e-3e8e-ff7a5fa8dcd4@cogentembedded.com>
+Date: Thu, 3 Oct 2019 21:34:14 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
  Thunderbird/52.2.1
 MIME-Version: 1.0
 In-Reply-To: <b93bf510-8812-3f82-29f3-43f41d08550a@cogentembedded.com>
 Content-Language: en-MW
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191003_113218_263469_23F31DB7 
-X-CRM114-Status: GOOD (  16.37  )
+X-CRM114-CacheID: sfid-20191003_113418_264299_004051BD 
+X-CRM114-Status: GOOD (  22.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,32 +112,193 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Cypress S26K{L|S}P{128|256|512}S datasheet says that the error bits in
-the status register are only valid when the "device ready" bit 7 is set.
-Add the check for the device ready bit in cfi_check_err_status() as that
-function isn't always called with this bit set.
+The commit 4844ef80305d ("mtd: cfi_cmdset_0002: Add support for polling
+status register") added checking for the status register error bits into
+chip_good() to only return 1 if these bits are zero. Unfortunately, this
+means that polling using chip_good() always reaches a time-out condition
+when erase or program failure bits are set. I think the status register
+error checking should be fully delegated to cfi_check_err_status() that
+should return whether any error bits were set or not...
 
 Fixes: 4844ef80305d ("mtd: cfi_cmdset_0002: Add support for polling status register")
 Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
 
 ---
- drivers/mtd/chips/cfi_cmdset_0002.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/mtd/chips/cfi_cmdset_0002.c |   55 +++++++++++++++++++-----------------
+ 1 file changed, 30 insertions(+), 25 deletions(-)
 
 Index: linux/drivers/mtd/chips/cfi_cmdset_0002.c
 ===================================================================
 --- linux.orig/drivers/mtd/chips/cfi_cmdset_0002.c
 +++ linux/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -136,6 +136,10 @@ static void cfi_check_err_status(struct
- 			 cfi->device_type, NULL);
- 	status = map_read(map, adr);
+@@ -123,14 +123,14 @@ static int cfi_use_status_reg(struct cfi
+ 		(extp->SoftwareFeatures & poll_mask) == CFI_POLL_STATUS_REG;
+ }
  
-+	/* The error bits are invalid while the chip's busy */
-+	if (!map_word_bitsset(map, status, CMD(CFI_SR_DRB)))
-+		return;
-+
+-static void cfi_check_err_status(struct map_info *map, struct flchip *chip,
+-				 unsigned long adr)
++static int cfi_check_err_status(struct map_info *map, struct flchip *chip,
++				unsigned long adr)
+ {
+ 	struct cfi_private *cfi = map->fldrv_priv;
+ 	map_word status;
+ 
+ 	if (!cfi_use_status_reg(cfi))
+-		return;
++		return 0;
+ 
+ 	cfi_send_gen_cmd(0x70, cfi->addr_unlock1, chip->start, map, cfi,
+ 			 cfi->device_type, NULL);
+@@ -138,7 +138,7 @@ static void cfi_check_err_status(struct
+ 
+ 	/* The error bits are invalid while the chip's busy */
+ 	if (!map_word_bitsset(map, status, CMD(CFI_SR_DRB)))
+-		return;
++		return 0;
+ 
  	if (map_word_bitsset(map, status, CMD(0x3a))) {
  		unsigned long chipstatus = MERGESTATUS(status);
+@@ -155,7 +155,9 @@ static void cfi_check_err_status(struct
+ 		if (chipstatus & CFI_SR_SLSB)
+ 			pr_err("%s sector write protected, status %lx\n",
+ 			       map->name, chipstatus);
++		return 1;
+ 	}
++	return 0;
+ }
+ 
+ /* #define DEBUG_CFI_FEATURES */
+@@ -852,20 +854,16 @@ static int __xipram chip_good(struct map
+ 
+ 	if (cfi_use_status_reg(cfi)) {
+ 		map_word ready = CMD(CFI_SR_DRB);
+-		map_word err = CMD(CFI_SR_PSB | CFI_SR_ESB);
++
+ 		/*
+ 		 * For chips that support status register, check device
+-		 * ready bit and Erase/Program status bit to know if
+-		 * operation succeeded.
++		 * ready bit
+ 		 */
+ 		cfi_send_gen_cmd(0x70, cfi->addr_unlock1, chip->start, map, cfi,
+ 				 cfi->device_type, NULL);
+ 		curd = map_read(map, addr);
+ 
+-		if (map_word_andequal(map, curd, ready, ready))
+-			return !map_word_bitsset(map, curd, err);
+-
+-		return 0;
++		return map_word_andequal(map, curd, ready, ready);
+ 	}
+ 
+ 	oldd = map_read(map, addr);
+@@ -1703,8 +1701,11 @@ static int __xipram do_write_oneword_onc
+ 			break;
+ 		}
+ 
+-		if (chip_good(map, chip, adr, datum))
++		if (chip_good(map, chip, adr, datum)) {
++			if (cfi_check_err_status(map, chip, adr))
++				ret = -EIO;
+ 			break;
++		}
+ 
+ 		/* Latency issues. Drop the lock, wait a while and retry */
+ 		UDELAY(map, chip, adr, 1);
+@@ -1777,7 +1778,6 @@ static int __xipram do_write_oneword_ret
+ 	ret = do_write_oneword_once(map, chip, adr, datum, mode, cfi);
+ 	if (ret) {
+ 		/* reset on all failures. */
+-		cfi_check_err_status(map, chip, adr);
+ 		map_write(map, CMD(0xF0), chip->start);
+ 		/* FIXME - should have reset delay before continuing */
+ 
+@@ -1974,12 +1974,17 @@ static int __xipram do_write_buffer_wait
+ 		 */
+ 		if (time_after(jiffies, timeo) &&
+ 		    !chip_good(map, chip, adr, datum)) {
++			pr_warn("MTD %s(): software timeout, address:0x%.8lx.\n",
++				__func__, adr);
+ 			ret = -EIO;
+ 			break;
+ 		}
+ 
+-		if (chip_good(map, chip, adr, datum))
++		if (chip_good(map, chip, adr, datum)) {
++			if (cfi_check_err_status(map, chip, adr))
++				ret = -EIO;
+ 			break;
++		}
+ 
+ 		/* Latency issues. Drop the lock, wait a while and retry */
+ 		UDELAY(map, chip, adr, 1);
+@@ -2075,12 +2080,8 @@ static int __xipram do_write_buffer(stru
+ 				chip->word_write_time);
+ 
+ 	ret = do_write_buffer_wait(map, chip, adr, datum);
+-	if (ret) {
+-		cfi_check_err_status(map, chip, adr);
++	if (ret)
+ 		do_write_buffer_reset(map, chip, cfi);
+-		pr_err("MTD %s(): software timeout, address:0x%.8lx.\n",
+-		       __func__, adr);
+-	}
+ 
+ 	xip_enable(map, chip, adr);
+ 
+@@ -2275,9 +2276,9 @@ retry:
+ 		udelay(1);
+ 	}
+ 
+-	if (!chip_good(map, chip, adr, datum)) {
++	if (!chip_good(map, chip, adr, datum) ||
++	    cfi_check_err_status(map, chip, adr)) {
+ 		/* reset on all failures. */
+-		cfi_check_err_status(map, chip, adr);
+ 		map_write(map, CMD(0xF0), chip->start);
+ 		/* FIXME - should have reset delay before continuing */
+ 
+@@ -2471,8 +2472,11 @@ static int __xipram do_erase_chip(struct
+ 			chip->erase_suspended = 0;
+ 		}
+ 
+-		if (chip_good(map, chip, adr, map_word_ff(map)))
++		if (chip_good(map, chip, adr, map_word_ff(map))) {
++			if (cfi_check_err_status(map, chip, adr))
++				ret = -EIO;
+ 			break;
++		}
+ 
+ 		if (time_after(jiffies, timeo)) {
+ 			printk(KERN_WARNING "MTD %s(): software timeout\n",
+@@ -2487,7 +2491,6 @@ static int __xipram do_erase_chip(struct
+ 	/* Did we succeed? */
+ 	if (ret) {
+ 		/* reset on all failures. */
+-		cfi_check_err_status(map, chip, adr);
+ 		map_write(map, CMD(0xF0), chip->start);
+ 		/* FIXME - should have reset delay before continuing */
+ 
+@@ -2568,8 +2571,11 @@ static int __xipram do_erase_oneblock(st
+ 			chip->erase_suspended = 0;
+ 		}
+ 
+-		if (chip_good(map, chip, adr, map_word_ff(map)))
++		if (chip_good(map, chip, adr, map_word_ff(map))) {
++			if (cfi_check_err_status(map, chip, adr))
++				ret = -EIO;
+ 			break;
++		}
+ 
+ 		if (time_after(jiffies, timeo)) {
+ 			printk(KERN_WARNING "MTD %s(): software timeout\n",
+@@ -2584,7 +2590,6 @@ static int __xipram do_erase_oneblock(st
+ 	/* Did we succeed? */
+ 	if (ret) {
+ 		/* reset on all failures. */
+-		cfi_check_err_status(map, chip, adr);
+ 		map_write(map, CMD(0xF0), chip->start);
+ 		/* FIXME - should have reset delay before continuing */
  
 
 ______________________________________________________
