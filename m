@@ -4,20 +4,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1020BC32792
-	for <linux-mtd@archiver.kernel.org>; Thu,  3 Oct 2019 16:01:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88786C4CED1
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Oct 2019 16:08:10 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C7E1821D81
-	for <linux-mtd@archiver.kernel.org>; Thu,  3 Oct 2019 16:01:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5E326222BE
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Oct 2019 16:08:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Xm6akk1a";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="kFg9TRgf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C7E1821D81
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Z2YuNogM";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="drhowalQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E326222BE
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,45 +26,45 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pHcM4d7A7s3gp6FEzNr7SUClax5WD2WiLFJxhVTd3hQ=; b=Xm6akk1aBVefLj
-	nD1kby6fJoRRerf1fny8/JJ126E+k+nQKZtkYqxfot5fubktyRrS1Oea8m6t2/AqOHIeKePECKhIa
-	890JDHT/IWCemiN64NyZ1yX/xsQhlQR/KeKqDLgCuKPoTkJ6AIspR3lA94ZuXgWL3XMTsrHUMBmPi
-	NxMydjNq+BJaDWCp1qpUztFfFg3hs8ARr/9JLGlpop8a+1U7dCC2m9AoXWOfp2Mgtetb3zjU1DJE7
-	8z6LVXutidDIagRoBK57QqsZt9U7ike+p4X9mEw2sS3jg0dE4jKN0klYNX7YGx6o1AoiezqgnPt0k
-	FBHKVAUBmubHZSzWR7NA==;
+	List-Owner; bh=gSnWSDMwL2XSLhAvelV5MPx4nymc6+HTI1v77hccf0o=; b=Z2YuNogMb/puk/
+	nZF22K0Yle7Do/Ar2siyeu3PJUKrjmfpDEti+5liSKX64uPQ0HTR42Lc1cjwGC8/6fFIOmXGRMRC2
+	Vw80yx89rhMFOSvbsxZgEYQaRzu1XC8HzWoOWjKFLy60aqBZuCfEHIZ4c2Q5NkHEd+0XT7xSq7YaC
+	S6mqc1NeGAXN+1xk3hPxDTjqqB/Er0cLre3WIqGx3Xo8dyin7/Y5/Ppr7XRi2/q6EKl5sclFZYAgY
+	8IxCh65sxkbSM/8GvpGv1EdkE9CABQs411/o88zp2EOZuQajz6ZLe2SamRdYZvEl05R4ofr3O20Rm
+	bgvPsK6gz1IOUBPeLuJg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
-	id 1iG3Y8-0000UG-OW; Thu, 03 Oct 2019 16:01:52 +0000
+	id 1iG3eC-00043G-Ha; Thu, 03 Oct 2019 16:08:08 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iG3Y5-0000TN-KL
- for linux-mtd@lists.infradead.org; Thu, 03 Oct 2019 16:01:51 +0000
+ id 1iG3e9-00042B-Bo
+ for linux-mtd@lists.infradead.org; Thu, 03 Oct 2019 16:08:06 +0000
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
  [83.86.89.107])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id C36A6207FF;
- Thu,  3 Oct 2019 16:01:48 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 470C8215EA;
+ Thu,  3 Oct 2019 16:08:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1570118509;
- bh=5u2zAl7BkqOE1FqzDrXTn5nzPaiQIpAI/eo9TlZSobQ=;
+ s=default; t=1570118884;
+ bh=2/8TZMaaS0SiegRnkbaOmawjh7OsL6mgZRAmTfGalrk=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=kFg9TRgfC7s9jRlK4FhhmHCKqSZ430+FMUV+hUUl+rxZDx9z3yFFfHMaE/1ufC59P
- dxm91S12jidhUo/TP99sMBTtAdeIM3YjE/hmz/qEqZt7I9C1GJcXKVtZXnH6UVH4jk
- KS2zD0VRXqEfzOYOtwHiNytekRFukKnGORcC/FG4=
+ b=drhowalQ5MuWUFsv+OEVeGgEEgI8+zCU1wVfzsgDQowvEWhUKiIKIQGjH59YXdQtJ
+ P/P4UYp8wM3wF+fD5TrIjjDbK1bD05ERQMd/aJePou2hcEKRekMYxBYLjhrkO/7bo4
+ Ekek3nt3Bsxr0PF6VQGAMXVQA4XQk0ak5GV0UNlk=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 4.9 006/129] mtd: cfi_cmdset_0002: Use chip_good() to retry in
- do_write_oneword()
-Date: Thu,  3 Oct 2019 17:52:09 +0200
-Message-Id: <20191003154322.117166351@linuxfoundation.org>
+Subject: [PATCH 4.14 009/185] mtd: cfi_cmdset_0002: Use chip_good() to retry
+ in do_write_oneword()
+Date: Thu,  3 Oct 2019 17:51:27 +0200
+Message-Id: <20191003154439.274970489@linuxfoundation.org>
 X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191003154318.081116689@linuxfoundation.org>
-References: <20191003154318.081116689@linuxfoundation.org>
+In-Reply-To: <20191003154437.541662648@linuxfoundation.org>
+References: <20191003154437.541662648@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191003_090149_711293_D93C8AE8 
+X-CRM114-CacheID: sfid-20191003_090805_458506_8B3990E5 
 X-CRM114-Status: GOOD (  15.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -128,7 +128,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/mtd/chips/cfi_cmdset_0002.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -1624,29 +1624,35 @@ static int __xipram do_write_oneword(str
+@@ -1628,29 +1628,35 @@ static int __xipram do_write_oneword(str
  			continue;
  		}
  
