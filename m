@@ -1,82 +1,82 @@
-Return-Path: <SRS0=okf0=X3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=mpCX=X4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF4A4C35280
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Oct 2019 16:13:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D2708C10F14
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Oct 2019 06:35:46 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A820021D81
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Oct 2019 16:13:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A5E8921D81
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Oct 2019 06:35:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fQeTYPHx";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eU+DS5Li"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A820021D81
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="L+dfaKSI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A5E8921D81
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lespocky.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6kvvjcT9HqRumr2r/VzBvYPrwTclpbmicPoi3UEPnIA=; b=fQeTYPHxDQLylq
-	pxnpVZyu3bWvw3Ktfe6gU1J3nh9ijUP6W2/8oqfMGJYZPHHeBmrh1tpGbr3AV6dEufsko8sDsoua3
-	CmucGnysoBKe4xsSTdI5+PccAb4p6775jRIQvbo02e5N6mIAnIKQs01jHpUZBQqsDJWpAHGiN5Ciw
-	7UZwOHxqFu7FK1c9lyzrczTPZFL3HEJR6aMvnW5accEByDpVWHF4csHB9ZqaXekgGkehZxvegLFU6
-	m6TBLyqSF3b1agUG8+GxgAB0dTzdFN4eZpEyyUuRdrnrP4dp9FRJbUGr+voeFCvKOGybp8wCQKDRR
-	mssVoIk/vUSygehOHNSQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=HgyJ+400XQiQKeuUTR0lWgtS1Ez75f6VmJcU18XWvYY=; b=L+dfaKSIdriws4
+	xct8DWocLcQVBCgwnmsXeA/pWtsMrq9/u0IF+RgTYHeK8eC7ChdvNOLHGmiT9SZamnmSopnlWHgyd
+	XjJDkpkb/yrhDvjlyWxN/Xv4Uc4YyU9oOzO+vdcp+4B/3GB85pGAijdxB1WuWTqPSEur7c6pko0mV
+	dJcFZ1HZTJNeQrVCg9s43MWVO+m9+dg1QK8thAt0SEGwGYRCQSjD/H3hxDBtE6F0Ryk8KcmfNAACB
+	zsoVULv0yQTgSvCYmK07vKfC8MNdBub+6fhgtB6Sh9X8IolTuqxRgsn9PUSxhkw/4EF8vRQmqgYvO
+	2SQLvrZUH9RS6HjaZgPQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
-	id 1iFhFw-0004yT-9s; Wed, 02 Oct 2019 16:13:36 +0000
-Received: from mail-wr1-x42a.google.com ([2a00:1450:4864:20::42a])
+	id 1iFuiG-0008OB-3B; Thu, 03 Oct 2019 06:35:44 +0000
+Received: from mout.kundenserver.de ([212.227.126.135])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iFhFt-0004y1-CJ
- for linux-mtd@lists.infradead.org; Wed, 02 Oct 2019 16:13:34 +0000
-Received: by mail-wr1-x42a.google.com with SMTP id o18so20307376wrv.13
- for <linux-mtd@lists.infradead.org>; Wed, 02 Oct 2019 09:13:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=kaYZtEVfGGLTQbvLLDVRoA0jS6dNAcEXyH63OuZNwpU=;
- b=eU+DS5Liup2MgSpgVX4MOFlKxFlP51Mo23FB22/Lq4ZznLDD4pre8Tcf56bC/FxWsX
- XN68kFBDGt7/0jFWvOR4j+NECdiWGXuzIttYjNV67hBPoo6dIwIcMdSVe3NefqM+AkDt
- VDsswuw5qV/3aDwi1cfzT7kjsKNn6FUmZBQ9qmWzwai+Unj+5WgXiCvcbi0/NewvvRP3
- zvlJ+FXhvez6YSeN6eH2sE+3xyqFMl5eH8zm3KRYEaGeaH0W80QEHLNxeQaZ/UMKXGI2
- yEeF0O/pnXYYEiXHSPZ9pbbLkapmJ1UfI9gz5SFXHgGT/1aXHjPxqwB8swohoNDB2q3a
- dgQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=kaYZtEVfGGLTQbvLLDVRoA0jS6dNAcEXyH63OuZNwpU=;
- b=HOB8zbzdi1CHxptmCrUA2u2eIDJOZLgf0pqiWOXod4oHjR6YYa46vMdWtCRiieV2e8
- Mj3lQYYzzNJTj63hzEKuy1DsVb7tkC+YXz1ADblGZENUsiyCgPLKY8ZFCfpakC+CtUE3
- MNb7PqjWdtZRVr66Etkj3a5xsjO0upCDJaMrSJqAhQ1lR0KpyXcZo79JiJagCqiUFD5X
- 5VOwOsVoIwuzW+4DS29V0adU/TQl0x/fBbdLJwhmCrhFWociIYxdiLhfVSYVTKzBz1xx
- I6V4Jfq/Mna1gV9QpYDavMLe0EPjv6HOCtCFcglmyrQPkGajDPW77YnMHPlxUCioqsQJ
- wA0w==
-X-Gm-Message-State: APjAAAWUhxrnuWENhzGghpnLoPbI/h2KF0Pfmi1SAAkBZg/3Lket3Wru
- Ah6X5oKsuZsXQmZ9dg6O8pbD7d17njUCVU0ID/AeQB2P
-X-Google-Smtp-Source: APXvYqxxgn1Gpm7XBZ7cIl9kKLWP+j1U1bzG7NbawLFlHhy/DIjIaH//hE05Pj6xjMle6K95wfb/ybjW1yK1y7Dw43Y=
-X-Received: by 2002:a5d:45c6:: with SMTP id b6mr2658000wrs.4.1570032809468;
- Wed, 02 Oct 2019 09:13:29 -0700 (PDT)
+ id 1iFuiC-0008Mj-5S
+ for linux-mtd@lists.infradead.org; Thu, 03 Oct 2019 06:35:41 +0000
+Received: from methusalix.home.lespocky.de ([92.117.58.69]) by
+ mrelayeu.kundenserver.de (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis)
+ id 1MvJs9-1hxyJh1dsP-00rI4F; Thu, 03 Oct 2019 08:35:24 +0200
+Received: from lemmy.home.lespocky.de ([192.168.243.176])
+ by methusalix.home.lespocky.de with esmtpsa
+ (TLSv1.3:TLS_AES_256_GCM_SHA384:256) (Exim 4.92.3)
+ (envelope-from <alex@home.lespocky.de>)
+ id 1iFuht-0002ny-0N; Thu, 03 Oct 2019 08:35:22 +0200
+Received: (nullmailer pid 18477 invoked by uid 2001);
+ Thu, 03 Oct 2019 06:35:20 -0000
+From: Alexander Dahl <post@lespocky.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 0/2] ubihealthd: Fix options
+Date: Thu,  3 Oct 2019 08:34:59 +0200
+Message-Id: <20191003063501.18421-1-post@lespocky.de>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <CAA=hcWSR52BJB4+k2k4CwLTQUVmvJvR=bjRx6kqe2aar-PH21w@mail.gmail.com>
-In-Reply-To: <CAA=hcWSR52BJB4+k2k4CwLTQUVmvJvR=bjRx6kqe2aar-PH21w@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Wed, 2 Oct 2019 18:13:10 +0200
-Message-ID: <CAFLxGvxg3dYoiiTy7=vNwC75s529akqx0DO3ozLrP_TbhATr_g@mail.gmail.com>
-Subject: Re: How the bad blocks occured in despite MTD manages the bad blocks
-To: JH <jupiter.hce@gmail.com>
+X-Scan-Signature: 17b193f88b83a18bc1d70958b03d0eed
+X-Provags-ID: V03:K1:9r3sl/Ut5bDxJnFiR+CLWv1WXh/arBYJO9bmKiONzpHCDZXQTpU
+ ld78tW5NVwsR4p+qIGp3CnHvTmdLc4KOK6H81zq6Ub+KHwWU81eady+Q67aMwb3yN0NE6BO
+ RdH524guL7D3gNQjiPiILH93O6C/R/B2zNLwVM9WwSlJiFGllLrGrBAf5M9yANPABtwi7LO
+ dTUKuBqa97UYyO8lOPpsQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:xbKNIdFaIZU=:bFTz+rKy9CH5DFjhourS1T
+ 5DXYAViP/mLr4+46Mux/U6jRRvs3uOwEBVj1QbKUu3fzxihVdw7nMEyR5k1vyChUhUrXQA3zH
+ eo9ROPZqKHQwYfHLuzD1XFEl4zcsTDT8sVKua9ddimyQMmCJlnjXPDxE+ImOnV9QHhWLLs8Ee
+ a28QbnomBDQYAD8AresXeNAQOp+4rvS7mOckgvvaqla20oBYdF40mmHT4QAthBvxr+rEJt0dI
+ aW3QijOb1UNVrbYDP1ZMSI81hktXaS30DTR4vro/9mr1bUOENv98LiWaIOG+E5qh8jbirdGPW
+ c4+c+Z9my6+Q/6uqGduvq64/5S/Ml8xyV9XvWBz+cRtG33LG2p1Ecs2vFyWbxX7pbdH16GQ/y
+ vYwsQzikEY3wP8W85233KcxFLTLmKiwJaPTLIYzuojWAm6dxq9rReO7m7Bm4iDVED5w5ezrpe
+ GpTPFXGjZTpSWl3Zq/xRNoK9Sf4Ue35RO7SFl5kONRa8uPqOeZNcaMn+py4wN9BEQ6VmARXDP
+ lUMTkyn+emtzVTB8RXP7LbDFuFnNlezja3LkuXhpFwC0ooU3Qvp5Fe+JUM1fYFtbKyKYwyzRe
+ fqbyjbewPhmSweDisijM1f2Rm4g6JvAD2RA9VjjomJnW9elApaz6spZyUzN/WYQZlcyXsc52X
+ CBrp7hleZopxhkY6xJ07fhLAfYFSBSM1GNPMq1CaJgTNZVFN5Nq+5eGdMGqpERwxuFyGLyZfJ
+ PbOQimecy22f9dZbV1lADho8WpvOhFn2kTKJNzlHwxTIRgDgKqTAMMjK2nthx1xF/Am8Z/nm7
+ rA49pXfG0yIF0YWjFOZwWP1AxaAep3ey+gko7Le/yOMfjo8ETlOiV3qDEig6WsjfkeDocddRe
+ 3dHrGyTWarnQpHDaZNcB6KZvWn/RjFN88W3hWw5jg=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191002_091333_417317_66C57354 
-X-CRM114-Status: GOOD (  10.91  )
+X-CRM114-CacheID: sfid-20191002_233540_507181_AC399B94 
+X-CRM114-Status: UNSURE (   6.32  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,51 +88,34 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Cc: Alexander Dahl <post@lespocky.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Oct 2, 2019 at 12:35 PM JH <jupiter.hce@gmail.com> wrote:
->
-> Hi,
->
-> My understinding is that MTD manages the NAND bad blocks, but can the
-> MTD prevent bad blocks happening?
+Hello,
 
-It does not. UBI does by applying wear-leveling.
+I started experimenting with ubihealthd, first thing I did was:
 
-> My iMX6 NAND device was only up and running about a month, it now
-> failed to boot from NAND due to the bad blocks:
+    ./ubihealthd -h
 
-Why do you think so?
+And boom segfault. The first patch is about that. The second about
+having the usual -h and --help options.
 
-> Questions:
->
-> (a) what could be common cause to trigger bad blacks?
+Greets
+Alex
 
-Mostly due to block aging.
+Alexander Dahl (2):
+  ubihealthd: Add missing sentinel in options array
+  ubihealthd: Add option -h/--help
 
-> (b) if I reflush the NAND will the bad blacks recovered or just mapped
-> it to bad block list?
+ ubi-utils/ubihealthd.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-A bad block will be bad forever.
+-- 
+2.20.1
 
-> .......
-> Bad block table found at page 131008, version 0x01
-> Bad block table found at page 130944, version 0x01
-
-Having a bad block table is nothing bad.
-
-> ................
-> [FAILED] Failed to mount Kernel Debug File System.
-> [FAILED] Failed to mount Temporary Directory (/tmp).
-> [FAILED] Failed to start Remount Root and Kernel File Systems.
-> [FAILED] Failed to mount /var/volatile.
-> [FAILED] Failed to mount FUSE Control File System.
-
-This lines are useless. Why exactly is it failing? And *what* fails?
 
 ______________________________________________________
 Linux MTD discussion mailing list
