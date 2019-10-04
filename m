@@ -2,87 +2,84 @@ Return-Path: <SRS0=3ySE=X5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39F52C47404
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Oct 2019 17:19:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1015AC47404
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Oct 2019 17:20:37 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 12F6B2084D
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Oct 2019 17:19:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D51D22084D
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Oct 2019 17:20:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="u2EZ0bF2";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="uEuWIAjm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 12F6B2084D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QXDAAyKa";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H8nJut5v"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D51D22084D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:References:
-	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=bY+nEfX16U+TNHzKuMI/m67JV+nk0Ony8ln6HIpZ8IY=; b=u2EZ0bF2zGZKFx4nOytsyD8wzU
-	HNP6Rs2OiOmFFWoeZT2gixY7KXRb2GA46oiOCyxgMzNjsb9ZKSmLvbq2eafv2ygPwjyWGxmeYx0tE
-	DU/HZDKCrnF5cPe+ei3+XUZlREYQeYfA6BA3b5lboPOAjJdd1/zCWm3ZFymejBn10v96rWGu6G7FG
-	2ej3ql97P/96Kz2gyr5ED2zSDME6PkhLynMLRQv9wQcqiiuLTYxPseHuuZr0D7HOMAv/5ffvKc2XY
-	h7lsidPLcrDT8hZvNHCyCOyGEEr160lTgnGduP+AIiLrJ89VTN29lUVzEV7B4SsId8usYkEF7/eMt
-	hl9Yt2Sg==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=7qa00cNP5OVi/m5ej0f03HduHqVNPNFw3rDY/DiujoA=; b=QXDAAyKaQ1dNIO
+	Boj8H/5Uk5eScOjbPlE8AU3XgEio3DogzHQ6YpsbKjviwb6Ty6JsJU6RAamr5eoe1WC4xtWpxKaWK
+	ZBb1FX1qm2WV5JOPVYziHdzkoNlzioJ8gYAP5ypUzYDNbkDO/j7AYDoQplhYqi36iNxetl66ewKJO
+	0ANaC/wRsYR+zihd9aKFHt2tK8JQV5QppSQOMphg53NWFMLt8UTT0QZj1LzXsBHHXBZMTfP2sIREv
+	pENmXpBRSoagcyd5M9ySG/IgLcgoF3Vy+fE+F71LKJDQMvQNXjO0z264f81XPWZgnLf5VOA0rS9LA
+	7PGuxjFZLj69l0xCmssQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
-	id 1iGREj-0000TX-Lr; Fri, 04 Oct 2019 17:19:25 +0000
-Received: from mail-io1-xd41.google.com ([2607:f8b0:4864:20::d41])
+	id 1iGRFr-0001yo-0I; Fri, 04 Oct 2019 17:20:35 +0000
+Received: from mail-io1-xd44.google.com ([2607:f8b0:4864:20::d44])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iGREh-0000TC-9H
- for linux-mtd@lists.infradead.org; Fri, 04 Oct 2019 17:19:24 +0000
-Received: by mail-io1-xd41.google.com with SMTP id h144so15127963iof.7
- for <linux-mtd@lists.infradead.org>; Fri, 04 Oct 2019 10:19:22 -0700 (PDT)
+ id 1iGRFo-0001yL-Tx
+ for linux-mtd@lists.infradead.org; Fri, 04 Oct 2019 17:20:34 +0000
+Received: by mail-io1-xd44.google.com with SMTP id q10so15235737iop.2
+ for <linux-mtd@lists.infradead.org>; Fri, 04 Oct 2019 10:20:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references;
- bh=jtoSVXtrhkJf1hDDCpHF8eGDYq27zVP1O774BwN2yFA=;
- b=uEuWIAjmWZC2lobpMCOJTDjl/s5815lvaflCenIocA8vV0nW425V5dnH+6mZPkd4Vz
- XUxuSFBxRAoNyjtPDEthhP3MdPmPJ+j+UF7q+diD1gOch5U0gI3ACLE2oU+Fs+XJ/23g
- 0eClghImRh8A2lRcvMd+dTegBcIb4mymqkub+xittk11wLhax/0+iubbD6YGCPhlJUpe
- +A9FZUJQ0gynepj89NG85hfqV5egfEp0SQ02NeHJMqqH3bmzHuDSEVSFeeBXxkNQ/2o3
- 9HNqPQwaklpxPDsSiEHhQGmCCQslyyD6KgD33YfUubmNugxfGji7IorwH3hvzJQmA0k5
- bIQA==
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=sKSw8LHZWbzHBzhBHzIOue57k2GC5Z1ZStIkEWKfwgk=;
+ b=H8nJut5vMkDRbQ9IMz8Sz2DcHe4QqerOmNEZ82FANGu9ZivVe/t4xGYoF6I9nLVwD7
+ RR8V+7CPA2Y+VP+3wAElS4y9hZu7YTTvaw1t+cjyFpGzAd71HMx7+ehjTXW33GBnOh3O
+ /rGnNXmfNg3RQnvHEOff7bHYgiKEjXxibgufvwO4jnTJYdFsZH8TmUyINqDNFuGQ9IUq
+ hoRQcy32Nv/S5z/SRkd4gbd1RpNOrSpOZXiWk8HaHbUHXqvuZJhvQxdpXZGrm+JMqreg
+ jRT6D0AKj9AbqSt2/vRYYN+zuG13++ESvIXV503LB/YCKzEVnkD2ona1uEXFNkKeZrlk
+ brZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references;
- bh=jtoSVXtrhkJf1hDDCpHF8eGDYq27zVP1O774BwN2yFA=;
- b=FvWm/9U8UkkcvT974ym97F7xus5L3ucaMxw4jca0kKFxkCLAp3fCvbreeqJK5H297w
- WCHydmLaSWmW/QxX4YiAAY5uG8ULsAjvkR3PZybv1KhAyMm1FeRf7xi3bOsYiBZHYbi8
- WH+da1xB0N1VNjDkHl67riLvsBFG3nqAEmzxGtdnMd1mDFmip5T74loqKK93mhsw3wGP
- drEwMW4KCOd2MgiLYc2fbUykuN+1txPUx33hbEg2ohW1MjZWMaqWJZ81eF+dB+C4C7V7
- YrAZOSAdrabPZLLly1joEclhmBgga+u1SEKsOF+F5aGUVpkAr7sk8hGnhi/rlJffaD/Q
- eTxw==
-X-Gm-Message-State: APjAAAUUBexTUb10Wl9UbbNLB1+gm1fADmTLRG11I1LyRla1Kqkz90fh
- ukFN+kQ0+QvXhJzONWoykis=
-X-Google-Smtp-Source: APXvYqxF0fH1FHeLeb/+4F7Sw9KcP3cCcMmpy0s8scdkUAgLYnFwYQd2ajU1J1M/tSF1hZskuCrn2g==
-X-Received: by 2002:a02:b782:: with SMTP id f2mr15929972jam.48.1570209562004; 
- Fri, 04 Oct 2019 10:19:22 -0700 (PDT)
-Received: from cs-dulles.cs.umn.edu (cs-dulles.cs.umn.edu. [128.101.35.54])
- by smtp.googlemail.com with ESMTPSA id i67sm4018502ilf.84.2019.10.04.10.19.20
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 04 Oct 2019 10:19:21 -0700 (PDT)
-From: Navid Emamdoost <navid.emamdoost@gmail.com>
-To: miquel.raynal@bootlin.com
-Subject: [PATCH v2] mtd: onenand: prevent memory leak in onenand_scan
-Date: Fri,  4 Oct 2019 12:19:05 -0500
-Message-Id: <20191004171909.6378-1-navid.emamdoost@gmail.com>
-X-Mailer: git-send-email 2.17.1
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=sKSw8LHZWbzHBzhBHzIOue57k2GC5Z1ZStIkEWKfwgk=;
+ b=gsYFNmghAPuwLRDrCdqwUUBCISDxbQ+LD314x47pAicrUMDYpsi1B/hEeixf/Tx2N+
+ gVXnVdyPxnN4atcCkkFTQkaNPE7HwqxtCJQtTghx1HCoLT9Uqi6385OyHi0fWl6LvzCl
+ xClE5qvmPkzit1yWWKq/q/6YIkoZ6VstjECoxVMTw1/FBqwde8282Q3Z+qpVK0jskWeR
+ eX/TXFq0rYlXzf0liXuhtjeKvB20O54GY+GjKUE3OrIdoArypxwwFj/KyZ/UHYT97jPe
+ aTc1679Z+ZDBOFYpkPQUpPulWdqMbifd6Co9qjYIZSUJwzgBn0i/R1c3wVWy7Q4JTXFG
+ 49nA==
+X-Gm-Message-State: APjAAAURSinmw325xUQwCdNKFeCZp83yioIvZJ5frrQvCJDkis2Tk6Go
+ wUADIIKjzrw6YW5eWsg2NddNSh9Z8lpbLMZip+A=
+X-Google-Smtp-Source: APXvYqzAxM+PiltX2TIBjv/ydm3UZ3bSSprb2UNGgPoDAaW9AZlWIyu5QGysW701lNcNQYSychifgmrLEaiO6SabKUI=
+X-Received: by 2002:a92:b112:: with SMTP id t18mr16647383ilh.252.1570209631842; 
+ Fri, 04 Oct 2019 10:20:31 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190925154302.17708-1-navid.emamdoost@gmail.com>
+ <CAEkB2ETTmCsuOFDsJQ8LbBPHNgckpDFn2XhVePwAQEsCRsJo6g@mail.gmail.com>
+ <20191004175740.5dd84c38@xps13>
 In-Reply-To: <20191004175740.5dd84c38@xps13>
-References: <20191004175740.5dd84c38@xps13>
+From: Navid Emamdoost <navid.emamdoost@gmail.com>
+Date: Fri, 4 Oct 2019 12:20:20 -0500
+Message-ID: <CAEkB2ERissJF6EOhMtoO+RBXJOVnZYuMBnkvL2DxxMKfVJoYXQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: onenand: prevent memory leak in onenand_scan
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191004_101923_325631_31CE304D 
-X-CRM114-Status: GOOD (  12.10  )
+X-CRM114-CacheID: sfid-20191004_102032_990847_F2A57F11 
+X-CRM114-Status: GOOD (  16.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,55 +92,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- kjlu@umn.edu, linux-kernel@vger.kernel.org,
+ Kangjie Lu <kjlu@umn.edu>, LKML <linux-kernel@vger.kernel.org>,
  Marek Vasut <marek.vasut@gmail.com>, Kyungmin Park <kyungmin.park@samsung.com>,
- emamd001@umn.edu, linux-mtd@lists.infradead.org, smccaman@umn.edu,
+ Navid Emamdoost <emamd001@umn.edu>, linux-mtd@lists.infradead.org,
+ Stephen McCamant <smccaman@umn.edu>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Navid Emamdoost <navid.emamdoost@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+ David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In onenand_scan if scan_bbt fails the allocated buffers for oob_buf,
-verify_buf, and page_buf should be released.
-
-Fixes: 5988af231978 ("mtd: Flex-OneNAND support")
-Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
----
-Changes in v2:
-	-- added release for this->verify_buf (thanks to Miquel Raynal
-for the hint).
----
- drivers/mtd/nand/onenand/onenand_base.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/onenand/onenand_base.c b/drivers/mtd/nand/onenand/onenand_base.c
-index 77bd32a683e1..6329ada3f15c 100644
---- a/drivers/mtd/nand/onenand/onenand_base.c
-+++ b/drivers/mtd/nand/onenand/onenand_base.c
-@@ -3977,8 +3977,14 @@ int onenand_scan(struct mtd_info *mtd, int maxchips)
- 	this->badblockpos = ONENAND_BADBLOCK_POS;
- 
- 	ret = this->scan_bbt(mtd);
--	if ((!FLEXONENAND(this)) || ret)
-+	if ((!FLEXONENAND(this)) || ret) {
-+		kfree(this->oob_buf);
-+#ifdef CONFIG_MTD_ONENAND_VERIFY_WRITE
-+		kfree(this->verify_buf);
-+#endif
-+		kfree(this->page_buf);
- 		return ret;
-+	}
- 
- 	/* Change Flex-OneNAND boundaries if required */
- 	for (i = 0; i < MAX_DIES; i++)
--- 
-2.17.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhhbmtzIE1pcXVlbCBmb3IgcG9pbnRpbmcgdGhhdCBvdXQuIHYyIHdhcyBzZW50LgoKVGhhbmsg
+eW91LApOYXZpZC4KCk9uIEZyaSwgT2N0IDQsIDIwMTkgYXQgMTA6NTcgQU0gTWlxdWVsIFJheW5h
+bCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4gd3JvdGU6Cj4KPiBIaSBOYXZpZCwKPgo+IE5h
+dmlkIEVtYW1kb29zdCA8bmF2aWQuZW1hbWRvb3N0QGdtYWlsLmNvbT4gd3JvdGUgb24gTW9uLCAz
+MCBTZXAgMjAxOQo+IDE2OjM3OjE3IC0wNTAwOgo+Cj4gPiBXb3VsZCB5b3UgcGxlYXNlIHRha2Ug
+YSBsb29rIGF0IHRoaXMgcGF0Y2g/Cj4gPgo+ID4gT24gV2VkLCBTZXAgMjUsIDIwMTkgYXQgMTA6
+NDMgQU0gTmF2aWQgRW1hbWRvb3N0Cj4gPiA8bmF2aWQuZW1hbWRvb3N0QGdtYWlsLmNvbT4gd3Jv
+dGU6Cj4gPiA+Cj4gPiA+IEluIG9uZW5hbmRfc2NhbiBpZiBzY2FuX2JidCBmYWlscyB0aGUgYWxs
+b2NhdGVkIGJ1ZmZlcnMgc2hvdWxkIGJlCj4gPiA+IHJlbGVhc2VkLgo+ID4gPgo+ID4gPiBTaWdu
+ZWQtb2ZmLWJ5OiBOYXZpZCBFbWFtZG9vc3QgPG5hdmlkLmVtYW1kb29zdEBnbWFpbC5jb20+Cj4g
+PiA+IC0tLQo+ID4gPiAgZHJpdmVycy9tdGQvbmFuZC9vbmVuYW5kL29uZW5hbmRfYmFzZS5jIHwg
+NSArKysrLQo+ID4gPiAgMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlv
+bigtKQo+ID4gPgo+ID4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9vbmVuYW5kL29u
+ZW5hbmRfYmFzZS5jIGIvZHJpdmVycy9tdGQvbmFuZC9vbmVuYW5kL29uZW5hbmRfYmFzZS5jCj4g
+PiA+IGluZGV4IDc3YmQzMmE2ODNlMS4uNzljMDFmNDI5MjVhIDEwMDY0NAo+ID4gPiAtLS0gYS9k
+cml2ZXJzL210ZC9uYW5kL29uZW5hbmQvb25lbmFuZF9iYXNlLmMKPiA+ID4gKysrIGIvZHJpdmVy
+cy9tdGQvbmFuZC9vbmVuYW5kL29uZW5hbmRfYmFzZS5jCj4gPiA+IEBAIC0zOTc3LDggKzM5Nzcs
+MTEgQEAgaW50IG9uZW5hbmRfc2NhbihzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgaW50IG1heGNoaXBz
+KQo+ID4gPiAgICAgICAgIHRoaXMtPmJhZGJsb2NrcG9zID0gT05FTkFORF9CQURCTE9DS19QT1M7
+Cj4gPiA+Cj4gPiA+ICAgICAgICAgcmV0ID0gdGhpcy0+c2Nhbl9iYnQobXRkKTsKPiA+ID4gLSAg
+ICAgICBpZiAoKCFGTEVYT05FTkFORCh0aGlzKSkgfHwgcmV0KQo+ID4gPiArICAgICAgIGlmICgo
+IUZMRVhPTkVOQU5EKHRoaXMpKSB8fCByZXQpIHsKPiA+ID4gKyAgICAgICAgICAgICAgIGtmcmVl
+KHRoaXMtPnBhZ2VfYnVmKTsKPgo+IEFwcGFyZW50bHkgeW91IG1pc3NlZDoKPgo+ICNpZmRlZiBD
+T05GSUdfTVREX09ORU5BTkRfVkVSSUZZX1dSSVRFCj4gICAgICAgICBrZnJlZSh0aGlzLT52ZXJp
+ZnlfYnVmKTsKPiAjZW5kaWYKPgo+ID4gPiArICAgICAgICAgICAgICAga2ZyZWUodGhpcy0+b29i
+X2J1Zik7Cj4gPiA+ICAgICAgICAgICAgICAgICByZXR1cm4gcmV0Owo+ID4gPiArICAgICAgIH0K
+PiA+ID4KPiA+ID4gICAgICAgICAvKiBDaGFuZ2UgRmxleC1PbmVOQU5EIGJvdW5kYXJpZXMgaWYg
+cmVxdWlyZWQgKi8KPiA+ID4gICAgICAgICBmb3IgKGkgPSAwOyBpIDwgTUFYX0RJRVM7IGkrKykK
+PiA+ID4gLS0KPiA+ID4gMi4xNy4xCj4gPiA+Cj4gPgo+ID4KPgo+IFRoYW5rcywKPiBNaXF1w6hs
+CgoKCi0tIApOYXZpZC4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
