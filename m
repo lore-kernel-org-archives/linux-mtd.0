@@ -2,134 +2,90 @@ Return-Path: <SRS0=9l0+=X6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BC24C3E8AB
-	for <linux-mtd@archiver.kernel.org>; Sat,  5 Oct 2019 14:04:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B30F7C47404
+	for <linux-mtd@archiver.kernel.org>; Sat,  5 Oct 2019 21:56:52 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CD651222C0
-	for <linux-mtd@archiver.kernel.org>; Sat,  5 Oct 2019 14:04:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 70812222C0
+	for <linux-mtd@archiver.kernel.org>; Sat,  5 Oct 2019 21:56:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="V1IsSaWj";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=web.de header.i=@web.de header.b="o19Ecgek"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD651222C0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=web.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tYPcBWOd";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AKuFQrhC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 70812222C0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:To:Subject:References:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=AmW97iBiNXpHPHEwyzJR88BaX+ZavkbaQLjhRhmEKhc=; b=V1IsSaWjxsWzEw
-	6A17LJ3PMWpj/717pU78LyYsXbC3PUPFwJNW7LVXJ2HxlAEHm0Dz1QJL4Lk+FafE/0tA/FxqyWeUi
-	mnZxFZzo//R73O+tWu6fOjGfXQtRP3c+KbtGifp3/HSrXPLr8PywMKTtKZ+pa/d8hOQVvI/cL1rN4
-	ojT7aw7CCHKTbGm4IDhqaGCW65TSGdFNMuj61dQTm/WQl7asC8isOhs+h7FD+vCM03ST52ggdbHVy
-	s9a/8zngviC6K9McDXA8QTrIx4CsONqDULIRr3vwQQpWO0+IC1pYVI/E6tY0H96XUX3cVyILVXbSZ
-	cDrH6ikPU+n7QaSrJBWQ==;
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	References:In-Reply-To:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=+l+i+OXn1wpK5J2qOH9ti/YSh8W5xuNtcgCpmeTgRkk=; b=tYPcBWOd62f7Bh
+	GH9Fgp8b77vOk36d97fzgrVN/FW4LglT+o2ou/ChAokl69vynND1QyMrTdyzJAAYZOHoWMqTWKRns
+	4OqB3/cAYaHw+UK6n0j0FEpOpUBnENnTJxPKQXST5pX8mgBuM1TmMrWcPpkb+62fx26gg4sur+ab9
+	P2mWWaw3vpxLyRQFN+W5uqKYyo1j5430TH31Un7g2Wwv0n8XJf/Qc/7EFDw4F+oiUcJ6AMZGzUrPr
+	oJM5ArAdS/Ua3Q++5MeFJD+Oa4Osr5rs7b4+gGxjLEWSy5INEhHK1iwgLkBKRGauwPS/Bx+QgEpMa
+	ebwglXrH20eujV12i83A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
-	id 1iGkfu-0007Lx-Mo; Sat, 05 Oct 2019 14:04:46 +0000
-Received: from mout.web.de ([212.227.15.4])
+	id 1iGs2j-00089J-BF; Sat, 05 Oct 2019 21:56:49 +0000
+Received: from mail-io1-xd2f.google.com ([2607:f8b0:4864:20::d2f])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iGkfo-0007Ko-EP
- for linux-mtd@lists.infradead.org; Sat, 05 Oct 2019 14:04:41 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
- s=dbaedf251592; t=1570284251;
- bh=yU952EgA76+1w3jlwz/sumRdXN+HoC5Bxy+AmRv95+o=;
- h=X-UI-Sender-Class:Cc:References:Subject:To:From:Date:In-Reply-To;
- b=o19EcgekqyfW5/C7YiaUIjG6oxyd9XdP3J5V9tczIzoak+qHxYFMxaP079FSFVaGb
- vyK2zY1Lx/sh3hoWh9K8HXl8h666Kxvx0juon7/nVmpE+Ah7+dmB0ISgSKGmumDG0i
- TlvZaOQba2m2t22Jlunt6/cqIRe/GGOEvdiVzBRE=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([93.135.178.111]) by smtp.web.de (mrweb001
- [213.165.67.108]) with ESMTPSA (Nemesis) id 0Lcgp5-1hs6ph3jbL-00k5uy; Sat, 05
- Oct 2019 16:04:11 +0200
-References: <20191004171909.6378-1-navid.emamdoost@gmail.com>
-Subject: Re: [PATCH v2] mtd: onenand: prevent memory leak in onenand_scan
-To: Navid Emamdoost <navid.emamdoost@gmail.com>, linux-mtd@lists.infradead.org
-From: Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <d136f119-d408-0c20-c554-818d13dc48df@web.de>
-Date: Sat, 5 Oct 2019 16:04:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+ id 1iGs2g-00088Y-Np
+ for linux-mtd@lists.infradead.org; Sat, 05 Oct 2019 21:56:48 +0000
+Received: by mail-io1-xd2f.google.com with SMTP id b136so20976373iof.3
+ for <linux-mtd@lists.infradead.org>; Sat, 05 Oct 2019 14:56:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=d4ZK3fYkl4xN9cLJQB8PFO4QSdGbplJkD416+/cPTzw=;
+ b=AKuFQrhCYRirgxZZzsG6l+j5ysC0Zp+dPBth0RMLTkFbUr5UbdVOZ6WBVICYRNmp/U
+ z5ZCHz05/TNwxJLwz99kAH9xIASDWCRt6/OZxSRU1Fj6z31btL53N2V+Cmzh0ULsAZtp
+ B33FMWKtIgXj5C86UiX0rDfaymo8Qh/qe9EmnakofOHk181yH6yX/VW+Z/+5hM1um5PI
+ YDKMwjYFZkYK3EmBQTCHjZAkGE+l7w8KzqOljDg4FvOrNiK7OawYL/B8lirSQZC7OXkq
+ NsOZjfFeL3eRkVhLH+4WdTMLfRGLbpnF2S0oOkXaxFT1dSCy1uMjOHDwFn2McQLyWBlP
+ 17Iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=d4ZK3fYkl4xN9cLJQB8PFO4QSdGbplJkD416+/cPTzw=;
+ b=j6zW3LONrGwd+vbr69V+f7bssrqGU+0Q1evzQmq4mDDzPOlpt60dzzYflDzrBNZ+Ao
+ 5VIt8JIxM64tN1iJHFbz9A4TU5g9kcz92mBv3LULdvCi/Ks4UFKfXCD+g4Xj9D1g0TKK
+ gKVuES9ivnduMqd9DXCaW3wph/1nM+rZ6WVLXWM46h+hWrKnZFgZz6EjBuhyil2YSj2v
+ 7xGTdty/5gB5l9yhOZrzn2ES/mCDuRNCm5gDZhs0aIRnBQln6jD1SfTYCfkAxbdl4lfm
+ 9Xe/jeImnltUlRjBW/30DnUkTI0Z6zMRYzUxySCk+/e02aNghfb/+yQeismK2+uqcYNu
+ 3S7A==
+X-Gm-Message-State: APjAAAVpdLwHCbKkKaHHu+LROm7BsPbHlNYkOb+lXriCZnRji3OyS9tQ
+ BXk95hNbIzwT2qJvrQq+g/ZG9Y7Yh/zq6ICayUE=
+X-Google-Smtp-Source: APXvYqxDw+6WtaH7JVy5E5+XywUjkJntxLiD0ZwcUh1bPuHwKkq2JqNXk7OAjfShgscaxqB8hn4LFGAt22GgGWFTtsI=
+X-Received: by 2002:a92:8f19:: with SMTP id j25mr22226770ild.302.1570312602175; 
+ Sat, 05 Oct 2019 14:56:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20191004171909.6378-1-navid.emamdoost@gmail.com>
-Content-Language: en-US
-X-Provags-ID: V03:K1:FkskqHrQv+ChCOFRBvXSqr/LIQNCCcSFDX0jYWFMitIhRKRX9kX
- GoDxQAOYmvt1mg/yOdd2OSQR59MjF1fI7AWsEZC2YJ3U2Vkg6rhEXqzfk4UXfQrg28qcJ1o
- nihrO+OSeNrQeOubwOL7Q0uagHc9X3Y9hyLU9ql3U4ufczlDe2fxxOgXohWV9SupDcJU+CZ
- qiknTVuuq6F2k6ldeIN7w==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:/9QwR6ExVMU=:/deUgzO9xlTfD3I/KeeQax
- h3XU4t0S2Yemc8r2kfmQVi31hpf8fAMF+lCJ7YXHFEIAtKDQF7qasKoClzCRnalY40XvpS5ur
- bsHu9O20/JzRvKJr/xRzkJG3HtUmpnLyRxmSkm13bl7sOBVQuliNSKBs/wnYHAzLMQLuGJTnR
- XYcxCSvx6swOsKFDLQc0IUx4NlUb0Ath6j/rTV+HZJglk16lYYo6bwbUTiWokpWcgYlAM877a
- 8YT2Hb3XB1aGgEp0qFNe6prYstYbJd/p6y+g7JTV6h76C06kqBC9XPOSoDGJRyrvUgIyGGg8J
- qdCpzuSm8FQ8SFB3LlxrhAUL7VIyurBl5JZ6hkKV3JyyvMTfd/pGAihnTkj/79c8fuzS5uAph
- 2+vMnbBalZBHCg4AZu5BskRG6erbFGfZcn+/+9r/vM2woGGiI+JTKBxrlQ8k0vs50pU1+viIB
- TB8SUwiCLIJAEp2Y0qHTqRFJk+W9uoEVho0VTZ7Ts9IkTonzl7cWNfuvsCyB78WMmgrdASKFo
- NjSj/1KxkzE81HCG1THwe3mrMxIRSO/fVy+QfqGy1Tcad3UUYw6mNsVVKEXHVEESkfPubKVhu
- z1P+/d25Vc0MF2yi1BDII63pazYr1+l0od6JVshlLWzMem80Son0SglDlNz63NPa6OzuvI7UT
- 4CFhObQbZSbNqJlMCBBq/KC5omuePXEyrbSYFMWY2/j9C4a3VT9KkByfMlAq4PmKomMQlHhLW
- ep9qWnZ5hcHBe7CSh2CjMeDcqTD5+AMm22vVXNh1dlhFSpX0l8wKz3iTUlVaYYu2mkRFk4Emd
- ckwMPkFWJ9KPwFcUkJRykoKCejlDWxLl162ifjEeybAxaqjMopeIOIPAMARgNVorGbuZFQhcQ
- ECdppQ5ZwILLOkABM7glvtzhXl3h/Z7bMa/80HCk6xD5Xv+gu1i+G+qAVT49jRPcsgWTjydyI
- hst22IE41aQgO1degSmwGNyRByP1/M/WT6VaS0BZ//e2NjTziQfQGL9QvGj5Y5tICmToBX1d4
- gDKBUXKSHsHkcqmHUIemf7azWmkE4RSSYmGbhEayjImaGODv3tddgpnOwOn6iH3w8NlH00i1e
- F6Ldq/gyCyoni3hBFH4RfM9V1VEZQjBZMHcSGc/2yaFEfFeDyHYL+bnE0XGRL8AMDomkv7Fop
- o4cXttqRBTPrBHt0t1jWofEv0FpNO34HXMN7KwyG77lvHOuiCX2xtB8w8R8QZpZJV4N/5TlYi
- UbBQznSsC9AaZycgJ2exDc/1dSblAmfNMEq/2TI6iEx9DFaJUDMTZspFLE3g=
+Received: by 2002:ac0:9c85:0:0:0:0:0 with HTTP;
+ Sat, 5 Oct 2019 14:56:41 -0700 (PDT)
+In-Reply-To: <CAFLxGvyWTSgCQz-wdM9KBR4t45_pBBzWUJSW3j09HyBy+VAmbg@mail.gmail.com>
+References: <CAA=hcWSR52BJB4+k2k4CwLTQUVmvJvR=bjRx6kqe2aar-PH21w@mail.gmail.com>
+ <CAFLxGvxg3dYoiiTy7=vNwC75s529akqx0DO3ozLrP_TbhATr_g@mail.gmail.com>
+ <CAA=hcWTzAMU5GvGzcG2Ha5RH_=QUTEAa3gZkMoe=cgtZGG+h+Q@mail.gmail.com>
+ <CAFLxGvwUK=hb6b_hX8HSTVzAZW7djBL_3bRWvTXcVUw+FuBTmw@mail.gmail.com>
+ <CAA=hcWSYNtCyN460gw1LNJe3M2TCiXKUzv84_kCG3PO78BweDw@mail.gmail.com>
+ <CALLGbRJKJYcwHKGML00GB9mWG7U_EjAnEUSL+HxmHmWXjZY1vw@mail.gmail.com>
+ <CAA=hcWRwe9JOvuR0WZqWrDnr_gdXwXke0X6UXOmWC+K0nKsDpw@mail.gmail.com>
+ <CAFLxGvyWTSgCQz-wdM9KBR4t45_pBBzWUJSW3j09HyBy+VAmbg@mail.gmail.com>
+From: JH <jupiter.hce@gmail.com>
+Date: Sun, 6 Oct 2019 08:56:41 +1100
+Message-ID: <CAA=hcWS5ctErRzJXj0p5+-vVMzGc0U-JF27ZXkM-FMHZ=kz3Fg@mail.gmail.com>
+Subject: Re: How the bad blocks occured in despite MTD manages the bad blocks
+To: Richard Weinberger <richard.weinberger@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191005_070440_780502_23282C58 
-X-CRM114-Status: UNSURE (   9.45  )
+X-CRM114-CacheID: sfid-20191005_145646_801000_A87702EC 
+X-CRM114-Status: UNSURE (   9.64  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -142,31 +98,43 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: kernel-janitors@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
- Richard Weinberger <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Kangjie Lu <kjlu@umn.edu>, linux-kernel@vger.kernel.org,
- Marek Vasut <marek.vasut@gmail.com>, Kyungmin Park <kyungmin.park@samsung.com>,
- Navid Emamdoost <emamd001@umn.edu>, Stephen McCamant <smccaman@umn.edu>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Steve deRosier <derosier@gmail.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-PiBJbiBvbmVuYW5kX3NjYW4gaWYgc2Nhbl9iYnQgZmFpbHMgdGhlIGFsbG9jYXRlZCBidWZmZXJz
-IGZvciBvb2JfYnVmLAo+IHZlcmlmeV9idWYsIGFuZCBwYWdlX2J1ZiBzaG91bGQgYmUgcmVsZWFz
-ZWQuCgpDYW4gYSB3b3JkaW5nIGxpa2UgdGhlIGZvbGxvd2luZyBiZSBuaWNlciBmb3IgdGhlIGNo
-YW5nZSBkZXNjcmlwdGlvbj8KCiAgUmVsZWFzZSB0aGUgbWVtb3J5IGZvciB0aGUgYnVmZmVycyDi
-gJxvb2JfYnVm4oCdLCDigJx2ZXJpZnlfYnVm4oCdIGFuZCDigJxwYWdlX2J1ZuKAnQogIGFmdGVy
-IGEgY2FsbCBvZiB0aGUgZnVuY3Rpb24g4oCcc2Nhbl9iYnTigJ0gZmFpbGVkIGluIHRoZSBpbXBs
-ZW1lbnRhdGlvbgogIG9mIHRoZSBmdW5jdGlvbiDigJxvbmVuYW5kX3NjYW7igJ0uCgoKPiBGaXhl
-czogNTk4OGFmMjMxOTc4ICgibXRkOiBGbGV4LU9uZU5BTkQgc3VwcG9ydCIpCuKApgo+IC0tLQo+
-IENoYW5nZXMgaW4gdjI6CuKApgo+IGZvciB0aGUgaGludCkuCgpEaWQgeW91IHRha2UgYW5vdGhl
-ciByZXZpZXcgY29tbWVudCBpbnRvIGFjY291bnQgZm9yIHRoaXMgcGF0Y2ggY2hhbmdlIGxvZz8K
-Cgo+IC0tLQoKUGxlYXNlIHJlcGxhY2UgdGhlIGRlbGltaXRlciBhdCB0aGlzIHBsYWNlIGJ5IGEg
-YmxhbmsgbGluZSBpbiBzdWJzZXF1ZW50IG1lc3NhZ2VzLgoKCj4gIGRyaXZlcnMvbXRkL25hbmQv
-b25lbmFuZC9vbmVuYW5kX2Jhc2UuYyB8IDggKysrKysrKy0K4oCmCgoKUmVnYXJkcywKTWFya3Vz
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-TGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On 10/5/19, Richard Weinberger <richard.weinberger@gmail.com> wrote:
+>> [    6.057136] UBIFS (ubi0:0): media format: w4/r0 (latest is w5/r0),
+>> UUID E9F1667C-8AC1-4030-BB1A-9C5341482A61, small LPT model
+>> [    6.074491] VFS: Mounted root (ubifs filesystem) on device 0:13.
+>
+> So, UBIFS is happy and mounts cleanly.
+
+Oh good, relieved.
+
+>> [    8.732692] systemd[126]: sys-kernel-debug.mount: Failed to execute
+>> command: No such file or directory
+>> [    8.742715] systemd[128]: sys-fs-fuse-connections.mount: Failed to
+>> execute command: No such file or directory
+>
+> Some files are missing but it does not look like a UBIFS corruption.
+> In case of corruption (such as dead directory entry) UBIFS would cry out
+> loud.
+>
+> I don't see a problem which points to the storage stack.
+
+So if the UBIFS was not corrupted, NAND was not damaged, is my
+assertion rational that software / kernel was not the cause to break
+the system and device down?
+
+Thank you very much Richard.
+
+Kind regards,
+
+- jh
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
