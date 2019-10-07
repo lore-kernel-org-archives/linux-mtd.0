@@ -2,59 +2,71 @@ Return-Path: <SRS0=6eB4=YA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F3DFECE58D
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Oct 2019 08:19:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00CE4C47404
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Oct 2019 08:27:09 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 05F732084D
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Oct 2019 08:19:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AAFBA2084D
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Oct 2019 08:27:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dOAhL49z"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 05F732084D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HTi0VnKS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AAFBA2084D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RvRHJa176Yhhze3WxEd4B5o1Q5EKPPVgfsqxgAx9vfQ=; b=dOAhL49z66LKNX
-	NmjLSPO/4OhmPFXapwKPOLGqrA5uspaMcO1wknlHZfeCuPfWXXbfGEZBeNCdEFah55VrnVdPo1JtZ
-	qlrTICrr673Y82eTc5bDIf6eMEiUcclGq7XNvSr10FVdHVKQat75La3zxBs15tazoI2kuXePNtASn
-	hI0xFoT1SlBdUXn8kRZ4wK1yzrL1xEFzUxSBZoby+ICEq3kh/NE99FUja6f64xzXybnZRIwFH9vrw
-	J+5uepcS8nlObZ4HpjsY4rnwxLAT+ZdvoKRPJDd8Geduszv6SXQDlZs9jdPwO3MGcwermOXHaKW8n
-	1f9SaofWfKZJ8pXn8LZw==;
+	List-Owner; bh=xyadLMHb+VveKF5IN3TCYHxvaCaAtAO2t60mHjt6IqY=; b=HTi0VnKSxUSQj4
+	8q2iibyRKI6e8MhKjE5i0M5vc3c9SX/PmVWn+Kd75gJrp2N10kpIgUwNBfUkgf8UD7hxi+Arn32k0
+	xE1XsffW196pXsRvHvubaxDg/Qn+NQ4hEWiSaCJBXEkv4+BmWm9e5AmtCad8trfmRKgwKbxbXzzdK
+	QZIHrxkvnvHSCZFwrSF1vDTP8/2tVEnkzwy2iDOrlGM4jBMJ47U9L41LDydmIUU3q4jNoIEympICR
+	sZWgqiiXwixNNEENwy00f/BxGXYKtIB3bph0ZXqur3+B1jX+woKCwn7ODXR4AaVI+hnUsexgh7ZUz
+	QhBjmcH/lKQ1L116CqsQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
-	id 1iHOEa-0004B2-6J; Mon, 07 Oct 2019 08:19:12 +0000
-Received: from relay11.mail.gandi.net ([217.70.178.231])
+	id 1iHOME-0000WL-Bk; Mon, 07 Oct 2019 08:27:06 +0000
+Received: from mail-ot1-f66.google.com ([209.85.210.66])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iHOEP-0003vO-RE
- for linux-mtd@lists.infradead.org; Mon, 07 Oct 2019 08:19:06 +0000
-Received: from xps13 (lfbn-1-17395-211.w86-250.abo.wanadoo.fr [86.250.200.211])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay11.mail.gandi.net (Postfix) with ESMTPSA id 6BD9C100010;
- Mon,  7 Oct 2019 08:18:48 +0000 (UTC)
-Date: Mon, 7 Oct 2019 10:18:47 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Mason Yang <masonccyang@mxic.com.tw>
-Subject: Re: [PATCH v3] mtd: rawnand: Add support for Macronix NAND randomizer
-Message-ID: <20191007101847.7fcfcfc7@xps13>
-In-Reply-To: <1567676229-23414-1-git-send-email-masonccyang@mxic.com.tw>
-References: <1567676229-23414-1-git-send-email-masonccyang@mxic.com.tw>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1iHOMA-0000UG-Ah; Mon, 07 Oct 2019 08:27:03 +0000
+Received: by mail-ot1-f66.google.com with SMTP id 41so10217618oti.12;
+ Mon, 07 Oct 2019 01:27:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=VKymJxaLp2SF18G9ExdMOsAdXsmgBDVfrU/If3JZGxo=;
+ b=mkZofDguwBO+rOy3/HkQJ1XcO06d3W7lMJsHjpK2xWKRGnvh7P+qkK/0QGNK86bur2
+ 1tV5XglofN/ZuUThdbBy514hxT5NR3bDKI5YOILA881pEN6t1nElF4773+XU7LVVT6Im
+ 8zygXzaW52yu0krDPMqYtXOwPX9mQuTuOyOwKvqyvF7VsBDwGEIg+oIXw2+iZ5x0kWd3
+ uhPpZIy9Plq0JYRuH1EOvdbJtwSuitLiPBgvQ6Mavnx9sdSGZt3PxOLhbyqhRbyjLChH
+ +DKoxhbk8g1ha6vrJJerHpj+mpyvH9O4PyNeZHyMJ0mDe4EtHE54tySYgAEA4peSchLr
+ hT1g==
+X-Gm-Message-State: APjAAAWx7PdoSvc3KOmCOM6HanCB2ITZDc7BS1PZpAiKjLFQyT2xv+RA
+ ir+VSFk/TmTMMB0Y2e8C7jl1bB/U8HXlGFiwsBw=
+X-Google-Smtp-Source: APXvYqxEOkV8nJCSllSqxdkQVypo90wcNgBvYDBNSKRgpoLJCvXTnmOdSLlUAojqzzfR9rCgupdlwodIFF5kpYpgt28=
+X-Received: by 2002:a9d:17e6:: with SMTP id j93mr20339687otj.297.1570436821298; 
+ Mon, 07 Oct 2019 01:27:01 -0700 (PDT)
 MIME-Version: 1.0
+References: <20191004145544.5066-1-krzk@kernel.org>
+ <20191004145544.5066-3-krzk@kernel.org>
+In-Reply-To: <20191004145544.5066-3-krzk@kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 7 Oct 2019 10:26:49 +0200
+Message-ID: <CAMuHMdW0DSujexoGq4CJAYP40DvMcigk08aEnyQ72haY6jds5Q@mail.gmail.com>
+Subject: Re: [RESEND TRIVIAL 3/3] treewide: arch: Fix Kconfig indentation
+To: Krzysztof Kozlowski <krzk@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191007_011902_186546_309395A7 
-X-CRM114-Status: GOOD (  20.40  )
+X-CRM114-CacheID: sfid-20191007_012702_369334_0A0D0EE2 
+X-CRM114-Status: UNSURE (   6.94  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,101 +78,82 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vigneshr@ti.com, bbrezillon@kernel.org, juliensu@mxic.com.tw,
- richard@nod.at, linux-kernel@vger.kernel.org, frieder.schrempf@kontron.de,
- marek.vasut@gmail.com, linux-mtd@lists.infradead.org, tglx@linutronix.de,
- computersforpeace@gmail.com, dwmw2@infradead.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+ linux-efi <linux-efi@vger.kernel.org>,
+ Linux-sh list <linux-sh@vger.kernel.org>, linux-iio@vger.kernel.org,
+ linux-pci <linux-pci@vger.kernel.org>,
+ "open list:REMOTE PROCESSOR \(REMOTEPROC\) SUBSYSTEM"
+ <linux-remoteproc@vger.kernel.org>,
+ DRI Development <dri-devel@lists.freedesktop.org>,
+ platform-driver-x86@vger.kernel.org, linux-ide@vger.kernel.org,
+ dm-devel@redhat.com, keyrings@vger.kernel.org,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Linux I2C <linux-i2c@vger.kernel.org>, linux-riscv@lists.infradead.org,
+ linux-stm32@st-md-mailman.stormreply.com, ac100@lists.launchpad.net,
+ linux-rtc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+ scsi <linux-scsi@vger.kernel.org>,
+ "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+ linux-rdma <linux-rdma@vger.kernel.org>, esc.storagedev@microsemi.com,
+ linux-security-module@vger.kernel.org, linux-clk <linux-clk@vger.kernel.org>,
+ ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+ bcm-kernel-feedback-list@broadcom.com,
+ "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+ linux-input@vger.kernel.org, xen-devel@lists.xenproject.org,
+ virtualization@lists.linux-foundation.org,
+ Linux Media Mailing List <linux-media@vger.kernel.org>,
+ "moderated list:H8/300 ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>,
+ driverdevel <devel@driverdev.osuosl.org>,
+ Linux PM list <linux-pm@vger.kernel.org>,
+ linux-arm-msm <linux-arm-msm@vger.kernel.org>, linux-um@lists.infradead.org,
+ linux-block@vger.kernel.org,
+ "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+ linux-m68k <linux-m68k@lists.linux-m68k.org>,
+ Openrisc <openrisc@lists.librecores.org>, linux-mediatek@lists.infradead.org,
+ linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>,
+ linux-tegra <linux-tegra@vger.kernel.org>,
+ openipmi-developer@lists.sourceforge.net,
+ "open list:TI ETHERNET SWITCH DRIVER \(CPSW\)" <linux-omap@vger.kernel.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-edac@vger.kernel.org,
+ linux-hwmon@vger.kernel.org, linux-raid@vger.kernel.org,
+ Jiri Kosina <trivial@kernel.org>, Linux MM <linux-mm@kvack.org>,
+ netdev <netdev@vger.kernel.org>, Linux MMC List <linux-mmc@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>,
+ Linux IOMMU <iommu@lists.linux-foundation.org>,
+ Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+ alpha <linux-alpha@vger.kernel.org>, dmaengine@vger.kernel.org,
+ linux-integrity <linux-integrity@vger.kernel.org>,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWFzb24sCgpNYXNvbiBZYW5nIDxtYXNvbmNjeWFuZ0BteGljLmNvbS50dz4gd3JvdGUgb24g
-VGh1LCAgNSBTZXAgMjAxOSAxNzozNzowOQorMDgwMDoKCj4gTWFjcm9uaXggTkFORHMgc3VwcG9y
-dCByYW5kb21pemVyIG9wZXJhdGlvbiBmb3IgdXNlciBkYXRhIHNjcmFtYmxlZCwKPiB3aGljaCBj
-YW4gYmUgZW5hYmxlZCB3aXRoIGEgU0VUX0ZFQVRVUkUuCj4gCj4gVXNlciBkYXRhIHdyaXR0ZW4g
-dG8gdGhlIE5BTkQgZGV2aWNlIHdpdGhvdXQgcmFuZG9taXplciBpcyBzdGlsbCByZWFkYWJsZQo+
-IGFmdGVyIHJhbmRvbWl6ZXIgZnVuY3Rpb24gZW5hYmxlZC4KPiBUaGUgcGVuYWx0eSBvZiByYW5k
-b21pemVyIGFyZSBzdWJwYWdlIGFjY2Vzc2VzIHByb2hpYml0ZWQgYW5kIG1vcmUgdGltZQo+IHBl
-cmlvZCBpcyBuZWVkZWQgaW4gcHJvZ3JhbSBvcGVyYXRpb24gYW5kIGVudGVyaW5nIGRlZXAgcG93
-ZXItZG93biBtb2RlLgo+IGkuZS4sIHRQUk9HIDMwMHVzIHRvIDM0MHVzKHJhbmRvbWl6ZXIgZW5h
-YmxlZCkKPiAKPiBGb3IgbW9yZSBoaWdoLXJlbGlhYmlsaXR5IGNvbmNlcm4sIGlmIHN1YnBhZ2Ug
-d3JpdGUgbm90IGF2YWlsYWJsZSB3aXRoCj4gaGFyZHdhcmUgRUNDIGFuZCB0aGVuIHRvIGVuYWJs
-ZSByYW5kb21pemVyIGlzIHJlY29tbWVuZGVkIGJ5IGRlZmF1bHQuCj4gRHJpdmVyIGNoZWNrcyBi
-eXRlIDE2NyBvZiBWZW5kb3IgQmxvY2tzIGluIE9ORkkgcGFyYW1ldGVyIHBhZ2UgdGFibGUKPiB0
-byBzZWUgaWYgdGhpcyBoaWdoLXJlbGlhYmlsaXR5IGZ1bmN0aW9uIGlzIHN1cHBvcnRlZC4gQnkg
-YWRkaW5nIGEgbmV3Cj4gc3BlY2lmaWMgRFQgcHJvcGVydHkgaW4gY2hpbGRyZW4gbm9kZXMgdG8g
-ZW5hYmxlIHJhbmRvbWl6ZXIgZnVuY3Rpb24uCj4gaS5lLiwKPiAKPiAJbmFuZDogbmFuZC1jb250
-cm9sbGVyQHVuaXQtYWRkcmVzcyB7Cj4gCj4gCQluYW5kQDAgewo+IAkJCXJlZyA9IDwwPjsKPiAJ
-CQlteGljLGVuYWJsZS1yYW5kb21pemVyLW90cDsKPiAJCX07Cj4gCX07Cj4gCj4gLS0KPiBjaGFu
-Z2Vsb2cKPiB2MzoKPiBUbyBlbmFibGUgcmFuZG9taXplciBieSBzcGVjaWZpYyBEVCBwcm9wZXJ0
-eSBpbiBjaGlsZHJlbiBub2RlcywKPiBteGljLGVuYWJsZS1yYW5kb21pemVyLW90cDsKPiAKPiB2
-MjoKPiBUbyBlbmFibGUgcmFuZG9taXplciBieSBjaGVja2luZyBjaGlwIG9wdGlvbnMgTkFORF9O
-T19TVUJQQUdFX1dSSVRFCj4gCj4gdjE6Cj4gVG8gZW5hYmxlIHJhbmRvbWl6ZXIgYnkgc3lzLWZz
-Cj4gCj4gU2lnbmVkLW9mZi1ieTogTWFzb24gWWFuZyA8bWFzb25jY3lhbmdAbXhpYy5jb20udHc+
-Cj4gLS0tCj4gIGRyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfbWFjcm9uaXguYyB8IDY0ICsrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwoKQXMgbG9uZyBhcyB5b3UgbW9kaWZ5IGJp
-bmRpbmdzLCB5b3Ugc2hvdWxkIHdyaXRlIGEgc2VwYXJhdGUgcGF0Y2ggdG8KdXBkYXRlIHRoZSBk
-b2N1bWVudGF0aW9uIGFuZCBnZXQgaXQgYWNrZWQgYnkgUm9iIEhlcnJpbmcuCgo+ICAxIGZpbGUg
-Y2hhbmdlZCwgNjQgaW5zZXJ0aW9ucygrKQo+IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9u
-YW5kL3Jhdy9uYW5kX21hY3Jvbml4LmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX21hY3Jv
-bml4LmMKPiBpbmRleCA1ODUxMWFlLi5kNWRmMDlhIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRk
-L25hbmQvcmF3L25hbmRfbWFjcm9uaXguYwo+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L25h
-bmRfbWFjcm9uaXguYwo+IEBAIC0xMSw2ICsxMSwxMyBAQAo+ICAjZGVmaW5lIE1BQ1JPTklYX1JF
-QURfUkVUUllfQklUIEJJVCgwKQo+ICAjZGVmaW5lIE1BQ1JPTklYX05VTV9SRUFEX1JFVFJZX01P
-REVTIDYKPiAgCj4gKyNkZWZpbmUgTUFDUk9OSVhfUkFORE9NSVpFUl9CSVQgQklUKDEpCj4gKyNk
-ZWZpbmUgT05GSV9GRUFUVVJFX0FERFJfTVhJQ19SQU5ET01JWkVSIDB4QjAKPiArI2RlZmluZSBN
-QUNST05JWF9SQU5ET01JWkVSX0VOUEdNIEJJVCgwKQo+ICsjZGVmaW5lIE1BQ1JPTklYX1JBTkRP
-TUlaRVJfUkFOREVOIEJJVCgxKQo+ICsjZGVmaW5lIE1BQ1JPTklYX1JBTkRPTUlaRVJfUkFORE9Q
-VCBCSVQoMikKPiArI2RlZmluZSBNQUNST05JWF9SQU5ET01JWkVSX01PREVfRVhJVCB+TUFDUk9O
-SVhfUkFORE9NSVpFUl9FTlBHTQoKSSB3b3VsZCByYXRoZXIgcHJlZmVyIGEgCgojZGVmaW5lIC4u
-LlJBTkRPTUlTRVJfTU9ERV9FTlRFUiAoRU5HUE0gfCBSQU5ERU4gfCBSQU5ET1BUKQojZGVmaW5l
-IC4uLlJBTkRPTUlTRVJfTU9ERV9FWElUIChSQU5ERU4gfCBSQU5ET1BUKQoKPiArCj4gIHN0cnVj
-dCBuYW5kX29uZmlfdmVuZG9yX21hY3Jvbml4IHsKPiAgCXU4IHJlc2VydmVkOwo+ICAJdTggcmVs
-aWFiaWxpdHlfZnVuYzsKPiBAQCAtMjksMTUgKzM2LDcyIEBAIHN0YXRpYyBpbnQgbWFjcm9uaXhf
-bmFuZF9zZXR1cF9yZWFkX3JldHJ5KHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsIGludCBtb2RlKQo+
-ICAJcmV0dXJuIG5hbmRfc2V0X2ZlYXR1cmVzKGNoaXAsIE9ORklfRkVBVFVSRV9BRERSX1JFQURf
-UkVUUlksIGZlYXR1cmUpOwo+ICB9Cj4gIAo+ICtzdGF0aWMgdm9pZCBtYWNyb25peF9uYW5kX3Jh
-bmRvbWl6ZXJfY2hlY2tfZW5hYmxlKHN0cnVjdCBuYW5kX2NoaXAgKmNoaXApCgpZb3Ugc2hvdWxk
-IHJldHVybiBzb21ldGhpbmcgYW5kIGNoZWNrIGl0IGZyb20gdGhlIGNhbGxpbmcgZnVuY3Rpb24u
-Cgo+ICt7Cj4gKwl1OCBmZWF0dXJlW09ORklfU1VCRkVBVFVSRV9QQVJBTV9MRU5dOwo+ICsJaW50
-IHJldDsKPiArCj4gKwlyZXQgPSBuYW5kX2dldF9mZWF0dXJlcyhjaGlwLCBPTkZJX0ZFQVRVUkVf
-QUREUl9NWElDX1JBTkRPTUlaRVIsCj4gKwkJCQlmZWF0dXJlKTsKPiArCWlmIChmZWF0dXJlWzBd
-KSB7Cj4gKwkJcHJfaW5mbygiTWFjcm9uaXggTkFORCByYW5kb21pemVyIGVuYWJsZWQ6MHgleFxu
-IiwgZmVhdHVyZVswXSk7Cj4gKwkJcmV0dXJuOwo+ICsJfQo+ICsKPiArCWZlYXR1cmVbMF0gPSBN
-QUNST05JWF9SQU5ET01JWkVSX0VOUEdNIHwgTUFDUk9OSVhfUkFORE9NSVpFUl9SQU5ERU4gfAo+
-ICsJCSAgICAgTUFDUk9OSVhfUkFORE9NSVpFUl9SQU5ET1BUOwo+ICsJcmV0ID0gbmFuZF9zZXRf
-ZmVhdHVyZXMoY2hpcCwgT05GSV9GRUFUVVJFX0FERFJfTVhJQ19SQU5ET01JWkVSLAo+ICsJCQkJ
-ZmVhdHVyZSk7Cj4gKwlpZiAocmV0KQo+ICsJCWdvdG8gZXJyOwo+ICsKPiArCWZlYXR1cmVbMF0g
-PSAweDA7Cj4gKwlyZXQgPSBuYW5kX3Byb2dfcGFnZV9vcChjaGlwLCAwLCAwLCBmZWF0dXJlLCAx
-KTsKCldoYXQgaXMgdGhpcz8gQSBjb21tZW50IGlzIG5lZWRlZC4KCj4gKwlpZiAocmV0KQo+ICsJ
-CWdvdG8gZXJyOwo+ICsKPiArCXJldCA9IG5hbmRfZ2V0X2ZlYXR1cmVzKGNoaXAsIE9ORklfRkVB
-VFVSRV9BRERSX01YSUNfUkFORE9NSVpFUiwKPiArCQkJCWZlYXR1cmUpOwo+ICsJaWYgKHJldCkK
-PiArCQlnb3RvIGVycjsKPiArCj4gKwlmZWF0dXJlWzBdICY9IE1BQ1JPTklYX1JBTkRPTUlaRVJf
-TU9ERV9FWElUOwo+ICsJcmV0ID0gbmFuZF9zZXRfZmVhdHVyZXMoY2hpcCwgT05GSV9GRUFUVVJF
-X0FERFJfTVhJQ19SQU5ET01JWkVSLAo+ICsJCQkJZmVhdHVyZSk7Cj4gKwlpZiAocmV0KQo+ICsJ
-CWdvdG8gZXJyOwo+ICsKPiArCXByX2luZm8oIk1hY3Jvbml4IE5BTkQgcmFuZG9taXplciBlbmFi
-bGUgb2tcbiIpOwoKVGhlIHByX2luZm8gIm9rIiBjb3VsZCBiZSBkcm9wcGVkLCB0aGUgImZhaWxl
-ZCIgb25lIHdvdWxkIGdvIGluCm5hbmRfb25maV9pbml0KCkgYWZ0ZXIgYSBjaGVjayBvbiB0aGUg
-cmV0dXJuIGNvZGUuCgpUaGVuLCBubyBtb3JlIGdvdG8ncy4KCj4gKwlyZXR1cm47Cj4gK2VycjoK
-PiArCXByX2VycigiTWFjcm9uaXggTkFORCByYW5kb21pemVyIGVuYWJsZSBmYWlsZWRcbiIpOwo+
-ICt9Cj4gKwo+ICBzdGF0aWMgdm9pZCBtYWNyb25peF9uYW5kX29uZmlfaW5pdChzdHJ1Y3QgbmFu
-ZF9jaGlwICpjaGlwKQo+ICB7Cj4gIAlzdHJ1Y3QgbmFuZF9wYXJhbWV0ZXJzICpwID0gJmNoaXAt
-PnBhcmFtZXRlcnM7Cj4gIAlzdHJ1Y3QgbmFuZF9vbmZpX3ZlbmRvcl9tYWNyb25peCAqbXhpYzsK
-PiArCXN0cnVjdCBkZXZpY2Vfbm9kZSAqZG4gPSBuYW5kX2dldF9mbGFzaF9ub2RlKGNoaXApOwo+
-ICsJaW50IHJhbmRfb3RwID0gMDsKPiAgCj4gIAlpZiAoIXAtPm9uZmkpCj4gIAkJcmV0dXJuOwo+
-ICAKPiArCWlmIChvZl9maW5kX3Byb3BlcnR5KGRuLCAibXhpYyxlbmFibGUtcmFuZG9taXplci1v
-dHAiLCBOVUxMKSkKPiArCQlyYW5kX290cCA9IDE7Cj4gKwo+ICAJbXhpYyA9IChzdHJ1Y3QgbmFu
-ZF9vbmZpX3ZlbmRvcl9tYWNyb25peCAqKXAtPm9uZmktPnZlbmRvcjsKPiArCWlmIChyYW5kX290
-cCAmJiBjaGlwLT5vcHRpb25zICYgTkFORF9OT19TVUJQQUdFX1dSSVRFICYmCj4gKwkgICAgbXhp
-Yy0+cmVsaWFiaWxpdHlfZnVuYyAmIE1BQ1JPTklYX1JBTkRPTUlaRVJfQklUKSB7Cj4gKwkJaWYg
-KHAtPnN1cHBvcnRzX3NldF9nZXRfZmVhdHVyZXMpIHsKPiArCQkJYml0bWFwX3NldChwLT5zZXRf
-ZmVhdHVyZV9saXN0LAo+ICsJCQkJICAgT05GSV9GRUFUVVJFX0FERFJfTVhJQ19SQU5ET01JWkVS
-LCAxKTsKPiArCQkJYml0bWFwX3NldChwLT5nZXRfZmVhdHVyZV9saXN0LAo+ICsJCQkJICAgT05G
-SV9GRUFUVVJFX0FERFJfTVhJQ19SQU5ET01JWkVSLCAxKTsKPiArCQkJbWFjcm9uaXhfbmFuZF9y
-YW5kb21pemVyX2NoZWNrX2VuYWJsZShjaGlwKTsKPiArCQl9Cj4gKwl9Cj4gKwo+ICAJaWYgKCht
-eGljLT5yZWxpYWJpbGl0eV9mdW5jICYgTUFDUk9OSVhfUkVBRF9SRVRSWV9CSVQpID09IDApCj4g
-IAkJcmV0dXJuOwo+ICAKClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxp
-bmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
-LW10ZC8K
+On Fri, Oct 4, 2019 at 4:57 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> Adjust indentation from spaces to tab (+optional two spaces) as in
+> coding style with command like:
+>     $ sed -e 's/^        /\t/' -i */Kconfig
+>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+
+>  arch/m68k/Kconfig.bus                  |  2 +-
+>  arch/m68k/Kconfig.debug                | 16 ++++++++--------
+>  arch/m68k/Kconfig.machine              |  8 ++++----
+
+For m68k:
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
