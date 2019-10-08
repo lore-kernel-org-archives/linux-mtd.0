@@ -2,66 +2,64 @@ Return-Path: <SRS0=afzE=YB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F73AC10F14
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Oct 2019 13:12:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 823BBC10F14
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Oct 2019 15:03:14 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 22F8D206BB
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Oct 2019 13:12:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 57059205C9
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Oct 2019 15:03:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QSmOgmDL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 22F8D206BB
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YI2MGWBW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 57059205C9
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:References:To:From:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pJIpMlyKIxsa1bhUO75S9VtW7bfkrC5CXAdxTjsifd4=; b=QSmOgmDLznAVWS
-	332cPiOjcJ3b3Kp0MbyqBJQhcPX32UQcPOyXaL8sb5/Ky59i3ykHZsz6Ks7qsXAKJ3qBpiZrJqyCf
-	w4SIv3xGXPq1JtlKnDDw90Y71ie7RBhY6JpOE2i8YqF/EcD6Srgv5t9SfmIttx0Pb17eZf8ol1e6y
-	mdPCOMHtlVfE721G+Irm9/911VzTFIBs5xt09+Ul4TLZpfF/E6scfWbRnHkvCsRbKmBw3g07SyBLr
-	CyAh4k4T4WwSKe5Vfh5ZKm1ISI/LfygmRBVByApqzk348KVvnkWxtqsB5llWgcRofjwDFlC567UqV
-	ADZrdLtm7+4DziPnWbyQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=WjYGwuTs2LKXkBfGQKvlz+CFlRHLnPhrgZMgDcEq+Ys=; b=YI2MGWBWj9Vheq
+	/35hufZMLyxcPatNZginbQbqmLf4F6jApE5oX7seaNWX800Jg0KaLIdHsbU9WuxuFtZb/W4askn9B
+	8eCERt1DKW6W+Yb4/A1DPj0ssu/ao2P0T4z4AUP/bTImmoCvh6M0W+g4FICi/15NvdcrRt41t9x/3
+	ADgoHB9+bq/6dYYG9APQi/fGBZzYg316yD26j/jyum1MIckasPAeaf21bFqrtvzida9H1RhwQarb2
+	vmtP9bDa7NRyVBkqaURDM6RpfNC04F4hOpzw9pamDHrzRUxanipbSWW7iYHpGhRjlzdybXjhEDI03
+	4gMGogcGNnLs6LrGCa0A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
-	id 1iHpID-0006T6-DU; Tue, 08 Oct 2019 13:12:45 +0000
-Received: from szxga04-in.huawei.com ([45.249.212.190] helo=huawei.com)
+	id 1iHr17-0007yf-0r; Tue, 08 Oct 2019 15:03:13 +0000
+Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iHpI9-0006S2-Up
- for linux-mtd@lists.infradead.org; Tue, 08 Oct 2019 13:12:44 +0000
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
- by Forcepoint Email with ESMTP id D0DBFF939A5CF394AFA8;
- Tue,  8 Oct 2019 21:12:32 +0800 (CST)
-Received: from [127.0.0.1] (10.177.31.14) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.439.0; Tue, 8 Oct 2019
- 21:12:28 +0800
-Subject: Re: [PATCH] mtd: blkdevs: protect tr->devs list by mtd_table_mutex
-From: Hou Tao <houtao1@huawei.com>
-To: <linux-mtd@lists.infradead.org>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Vignesh Raghavendra <vigneshr@ti.com>, "Richard
- Weinberger" <richard@nod.at>, Maxim Levitsky <maximlevitsky@gmail.com>
-References: <20190929141157.115845-1-houtao1@huawei.com>
-Message-ID: <fb4b28cb-7bb8-d7a9-abd2-10ed587674f2@huawei.com>
-Date: Tue, 8 Oct 2019 21:12:27 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.8.0
+ id 1iHr0x-0007nJ-3C
+ for linux-mtd@lists.infradead.org; Tue, 08 Oct 2019 15:03:05 +0000
+X-Originating-IP: 86.250.200.211
+Received: from xps13 (lfbn-1-17395-211.w86-250.abo.wanadoo.fr [86.250.200.211])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id DB95C24000F;
+ Tue,  8 Oct 2019 15:02:50 +0000 (UTC)
+Date: Tue, 8 Oct 2019 17:02:49 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: masonccyang@mxic.com.tw
+Subject: Re: [PATCH RFC 2/3] mtd: rawnand: Add support Macronix Block
+ Protection function
+Message-ID: <20191008170249.06bd45ce@xps13>
+In-Reply-To: <OFEDE76FEE.8BC48D9E-ON4825848D.000BCC94-4825848D.000E0643@mxic.com.tw>
+References: <1568793387-25199-1-git-send-email-masonccyang@mxic.com.tw>
+ <1568793387-25199-2-git-send-email-masonccyang@mxic.com.tw>
+ <20191007104511.5aa7b8f2@xps13> <20191007112442.783e4fbe@xps13>
+ <OFEDE76FEE.8BC48D9E-ON4825848D.000BCC94-4825848D.000E0643@mxic.com.tw>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20190929141157.115845-1-houtao1@huawei.com>
-Content-Language: en-US
-X-Originating-IP: [10.177.31.14]
-X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191008_061242_592711_72D72CD4 
-X-CRM114-Status: GOOD (  21.78  )
+X-CRM114-CacheID: sfid-20191008_080303_268281_FFDCB186 
+X-CRM114-Status: GOOD (  14.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,117 +71,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: vigneshr@ti.com, bbrezillon@kernel.org, juliensu@mxic.com.tw,
+ gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+ frieder.schrempf@kontron.de, marcel.ziswiler@toradex.com,
+ linux-mtd@lists.infradead.org, richard@nod.at, tglx@linutronix.de,
+ computersforpeace@gmail.com, dwmw2@infradead.org, marek.vasut@gmail.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-ping ?
-
-On 2019/9/29 22:11, Hou Tao wrote:
-> There may be list corruption if there are concurrent list traversal
-> and list deletion on tr->devs as showed in the following case:
-> 
-> CPU 0                               CPU 1
-> 
-> open /dev/mtdblock1
-> 
-> // remove mtd1
-> blktrans_notify_remove()
->     del_mtd_blktrans_dev()
-> 
-> close /dev/mtdblock1
->   blktrans_release
->     blktrans_dev_put
->       acquire blktrans_ref_mutex     // remove mtd0
->       // the final release           acquire mtd_table_mutex
->       blktrans_dev_release()         blktrans_notify_remove()
->         // remove mtdblock1            // next is mtdblock1
->         list_del(&dev->list)           list_for_each_entry_safe()
-> 
-> We could fix the problem by acquiring blktrans_ref_mutex during
-> the traversal of tr->devs, but blktrans_ref_mutex needs to be released
-> before invoking tr->remote_dev(), so we also need to increase the kref
-> of current device else the device may be freed and decrease the kref
-> after the removal.
-> 
-> Or we could move the list deletion to del_mtd_blktrans_dev(), and protect
-> the operations on tr->devs by mtd_table_mutex which has already be taken.
-> 
-> The latter fix is simpler. We also can remove the unnecessary acquisitions
-> of blktrans_ref_mutex in add_mtd_blktrans_dev() because operations on
-> tr->devs have already been protected by mtd_table_mutex.
-> 
-> Fixes: 048d87199566 ("mtd: blktrans: Hotplug fixes")
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> ---
-> I found the problem by code review, and could not find a way to
-> ensure the problem, because the removal of mtd devices almost
-> comes from the removal of modules, and the open of /dev/mtdblockX
-> will prevent the module from removing.
-> ---
->  drivers/mtd/mtd_blkdevs.c | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-> index 0c05f77f9b21..e04260237a25 100644
-> --- a/drivers/mtd/mtd_blkdevs.c
-> +++ b/drivers/mtd/mtd_blkdevs.c
-> @@ -35,7 +35,6 @@ static void blktrans_dev_release(struct kref *kref)
->  	blk_mq_free_tag_set(dev->tag_set);
->  	kfree(dev->tag_set);
->  	put_disk(dev->disk);
-> -	list_del(&dev->list);
->  	kfree(dev);
->  }
->  
-> @@ -350,7 +349,6 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
->  		BUG();
->  	}
->  
-> -	mutex_lock(&blktrans_ref_mutex);
->  	list_for_each_entry(d, &tr->devs, list) {
->  		if (new->devnum == -1) {
->  			/* Use first free number */
-> @@ -362,7 +360,6 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
->  			}
->  		} else if (d->devnum == new->devnum) {
->  			/* Required number taken */
-> -			mutex_unlock(&blktrans_ref_mutex);
->  			return -EBUSY;
->  		} else if (d->devnum > new->devnum) {
->  			/* Required number was free */
-> @@ -381,14 +378,12 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
->  	 * with this number. */
->  	if (new->devnum > (MINORMASK >> tr->part_bits) ||
->  	    (tr->part_bits && new->devnum >= 27 * 26)) {
-> -		mutex_unlock(&blktrans_ref_mutex);
->  		goto error1;
->  	}
->  
->  	list_add_tail(&new->list, &tr->devs);
-> - added:
-> -	mutex_unlock(&blktrans_ref_mutex);
->  
-> + added:
->  	mutex_init(&new->lock);
->  	kref_init(&new->ref);
->  	if (!tr->writesect)
-> @@ -484,6 +479,8 @@ int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
->  		BUG();
->  	}
->  
-> +	list_del(&old->list);
-> +
->  	if (old->disk_attributes)
->  		sysfs_remove_group(&disk_to_dev(old->disk)->kobj,
->  						old->disk_attributes);
-> 
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWFzb24sCgptYXNvbmNjeWFuZ0BteGljLmNvbS50dyB3cm90ZSBvbiBUdWUsIDggT2N0IDIw
+MTkgMTA6MzM6MTEgKzA4MDA6Cgo+IEhpIE1pcXVlbCwKPiAKPiA+ID4gICAKPiA+ID4gPiBNYWNy
+b25peCBBQyBzZXJpZXMgc3VwcG9ydCB1c2luZyBTRVQvR0VUX0ZFQVRVUkVTIHRvIGNoYW5nZQo+
+ID4gPiA+IEJsb2NrIFByb3RlY3Rpb24gYW5kIFVucHJvdGVjdGlvbi4KPiA+ID4gPiAKPiA+ID4g
+PiBNVEQgZGVmYXVsdCBfbG9jay9fdW5sb2NrIGZ1bmN0aW9uIHJlcGxhY2VtZW50IGJ5IG1hbnVm
+YWN0dXJlcgo+ID4gPiA+IHBvc3Rwb25lZCBpbml0aWFsaXphdGlvbi4gICAKPiA+ID4gCj4gPiA+
+IFdoeSB3b3VsZCB3ZSBkbyB0aGF0Pwo+ID4gPiAKPiA+ID4gQW55d2F5IHlvdXIgc29sdXRpb24g
+bG9va3Mgb3ZlcmtpbGwsIGlmIHdlIGV2ZXIgZGVjaWRlIHRvCj4gPiA+IGltcGxlbWVudCB0aGVz
+ZSBob29rcyBmb3IgcmF3IG5hbmQsIGl0IGlzIGJldHRlciBqdXN0IHRvIG5vdAo+ID4gPiBvdmVy
+d3JpdGUgdGhlbSBpbiBuYW5kX3NjYW5fdGFpbCgpIGlmIHRoZXkgaGF2ZSBiZWVuIGZpbGxlZAo+
+ID4gPiBwcmV2aW91c2x5IChpZS4gYnkgdGhlIG1hbnVmYWN0dXJlciBjb2RlKS4gIAo+ID4gCj4g
+PiBBY3R1YWxseSB5b3Ugc2hvdWxkIGFkZCB0d28gTkFORCBob29rcyB0aGF0IGRvIHRoZSBpbnRl
+cmZhY2Ugd2l0aCB0aGUKPiA+IE1URCBob29rcy4gSW4gdGhlIE5BTkQgaG9va3MsIGNoZWNrIHRo
+YXQgdGhlIHJlcXVlc3QgaXMgdG8gbG9jayBhbGwgdGhlCj4gPiBkZXZpY2UsIG90aGVyd2lzZSBy
+ZXR1cm4gLUVOT1RTVVBQLiAgCj4gCj4gc29ycnksIGNhbid0IGdldCB5b3VyIHBvaW50Lgo+IAo+
+IEJlY2F1c2UgdGhlIE5BTkQgZW50aXJlIGNoaXAgd2lsbCBiZSBwcm90ZWN0ZWQgaWYgUFQocHJv
+dGVjdGlvbikgcGluIAo+IGlzIGFjdGl2ZSBoaWdoIGF0IHBvd2VyLW9uLgoKSW4geW91ciBpbXBs
+ZW1lbnRhdGlvbiBvZiB0aGUgbG9ja2luZywgeW91IHNob3VsZCBjaGVjayB0aGF0IHRoZQpsb2Nr
+aW5nIHJlcXVlc3QgaXMgb3ZlciB0aGUgZW50aXJlIGRldmljZSwgdW5sZXNzIHlvdSBjYW4gbG9j
+ayBhCnNtYWxsZXIgcG9ydGlvbiBvZiBjb3Vyc2UuCgo+IAo+ID4gCj4gPiBUaGVuIGZpbGwtaW4g
+dGhlc2UgdHdvIGhvb2tzIGZyb20gdGhlIG1hbnVmYWN0dXJlciBjb2RlLCB3aXRob3V0IHRoZQo+
+ID4gcG9zdHBvbmVkIGluaXQuCj4gPiAgIAo+IAo+IEJ1dCBpbiB0aGUgZmluYWwgb2YgbmFuZF9z
+Y2FuX3RhaWwoKSwgbXRkLT5fbG9jay9fdW5sb2NrIHdpbGwgYmUKPiBmaWxsZWQgYnkgTlVMTCwg
+cmlnaHQgPwoKVGhlIE5BTkQgY29yZSBzaG91bGQgc2V0IG10ZC0+X2xvY2svX3VubG9jaygpIHRv
+IE5BTkQgc3BlY2lmaWMgaG9va3Mgc28KdGhhdCB0aGUgTVREIGxheWVyIGlzIGFic3RyYWN0ZWQg
+YW5kIGFuZCBkcml2ZXJzIGRvIG5vdCBzZWUgaXQuIFRoZW4sCmluIHRoZSBOQU5EIGhlbHBlciwg
+ZWl0aGVyIHRoZXJlIGlzIG5vIHNwZWNpZmljIGhvb2sgZGVmaW5lZCBieSBhCm1hbnVmYWN0dXJl
+ciBkcml2ZXIgYW5kIHlvdSByZXR1cm4gLUVOT1RTVVBQLCBvciB5b3UgZXhlY3V0ZSB0aGUKZGVm
+aW5lZCBob29rLgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBs
+aXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRk
+Lwo=
