@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F775C4360C
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Oct 2019 07:15:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C386C10F14
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Oct 2019 07:17:11 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6FB6F21920
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Oct 2019 07:15:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6AFDB2067B
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Oct 2019 07:17:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="iCJmkcJ9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6FB6F21920
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qG3aVCTk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6AFDB2067B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=E9Mqmo3Rkgv7qZPTQei+7yiGvqi3QHdHw945eeoR10Y=; b=iCJmkcJ99KgPv/
-	o7U8tTCieYKiUQldRxoH3WJCt6gz8AdhSjdd9X8BMY0ov2rZuRhg1h1VZMfGz+fyDp255l95yWAO8
-	3XBdCUjjJuYQ5yoa0nzl9dxlzDML8N6zHPSFdOYMd+0wCzxndXzMAZxSZ0pH1K4E85Lu8RwFVeUrX
-	YmH8LLdSRNbFQaEs0wD9cW/Dq9tZ9OeQIurieJ/EMfY5BNBClm8IriF8JeZU+h76AOgOeP4HjZhpP
-	eZZlKW6ZOS6kWFUNSzEshz6f7FpF0fPPTj8NcIWPzegaRayeknsfTrTVnB0rorsSGOo1ukqg/fQsp
-	AJ5rH6tePaJDJcDb4FgA==;
+	List-Owner; bh=mGUVdLd+FV4/DIGGux+a8MdAgOdFr9cwrdF2XXa+WJc=; b=qG3aVCTkmgvYwh
+	6ehKIjY/otsrjXJAosuacLbvLSY8gdTqcJvxltjq0ui/ErAdRcq3qMc1MpP4XlK5+CsQfIn/TscEv
+	1XXEjp1j4LOaPOu2I5JaShoBbqzbfzdBRXlOGhC9qm5o3Q6ILyDsxMCI57IagmR0un69sQCwo0twA
+	VYOd122d63vlWWgOD6CzjatJ5NMKgeGaHbkTv/ztUXxoZaB40H4Cw3p2tnAYSB/Ws3A1SNEogAEgs
+	MALE/l0y0LLkJ9gzBCXvLPE0cyMFqeXse5VR8skmtxvtdXvq2Xr9K5HwTjE39a4MaKzRun4MwdXS4
+	fdyj2lo3bG0QFPctMQAQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.2 #3 (Red Hat Linux))
-	id 1iISfN-0004E2-80; Thu, 10 Oct 2019 07:15:17 +0000
+	id 1iIShA-0004q3-IC; Thu, 10 Oct 2019 07:17:08 +0000
 Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iISet-0002fQ-W8; Thu, 10 Oct 2019 07:14:49 +0000
+ id 1iISgt-0004cs-RG; Thu, 10 Oct 2019 07:16:53 +0000
 Received: from dhcp-172-31-174-146.wireless.concordia.ca (unknown
  [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 2F573290694;
- Thu, 10 Oct 2019 08:14:45 +0100 (BST)
-Date: Thu, 10 Oct 2019 09:14:42 +0200
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 3838A28EBEA;
+ Thu, 10 Oct 2019 08:16:50 +0100 (BST)
+Date: Thu, 10 Oct 2019 09:16:48 +0200
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: <Tudor.Ambarus@microchip.com>
-Subject: Re: [PATCH v2 06/22] mtd: spi-nor: Rework read_fsr()
-Message-ID: <20191010091433.2977865a@dhcp-172-31-174-146.wireless.concordia.ca>
-In-Reply-To: <20190924074533.6618-7-tudor.ambarus@microchip.com>
+Subject: Re: [PATCH v2 07/22] mtd: spi-nor: Rework read_cr()
+Message-ID: <20191010091648.10d9a993@dhcp-172-31-174-146.wireless.concordia.ca>
+In-Reply-To: <20190924074533.6618-8-tudor.ambarus@microchip.com>
 References: <20190924074533.6618-1-tudor.ambarus@microchip.com>
- <20190924074533.6618-7-tudor.ambarus@microchip.com>
+ <20190924074533.6618-8-tudor.ambarus@microchip.com>
 Organization: Collabora
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191010_001448_178707_CD142E82 
-X-CRM114-Status: GOOD (  10.80  )
+X-CRM114-CacheID: sfid-20191010_001652_012691_C7ACE246 
+X-CRM114-Status: GOOD (  12.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,27 +80,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 24 Sep 2019 07:46:12 +0000
+On Tue, 24 Sep 2019 07:46:15 +0000
 <Tudor.Ambarus@microchip.com> wrote:
 
 > From: Tudor Ambarus <tudor.ambarus@microchip.com>
 > 
-> static int read_fsr(struct spi_nor *nor)
+> static int read_cr(struct spi_nor *nor)
 > becomes
-> static int spi_nor_read_fsr(struct spi_nor *nor, u8 *fsr)
+> static int spi_nor_read_cr(struct spi_nor *nor, u8 *cr)
 > 
 > The new function returns 0 on success and -errno otherwise.
 > We let the callers pass the pointer to the buffer where the
-> value of the Flag Status Register will be written. This way
+> value of the Configuration Register will be written. This way
 > we avoid the casts between int and u8, which can be confusing.
 > 
 > Prepend spi_nor_ to the function name, all functions should begin
 > with that.
 > 
-> S/pr_err/dev_err and drop duplicated dev_err in callers, in case the
-> function returns error.
 
-Same comments as for patch 5.
+Same as for patch 5, this should be split in several patches
+
+> Vendors are using both the "Configuration Register" and the
+> "Status Register 2" terminology when referring to the second byte
+> of the Status Register. Indicate in the description of the function
+> that we use the SPINOR_OP_RDCR (35h) command to interrogate the
+
+						  ^query
+
+> Configuration Register.
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
