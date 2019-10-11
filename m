@@ -2,85 +2,64 @@ Return-Path: <SRS0=7oHA=YE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C190C47404
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Oct 2019 09:38:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E914FECE58C
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Oct 2019 09:51:46 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0EA3C21D71
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Oct 2019 09:38:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 976882084C
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Oct 2019 09:51:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EW2A4Mkh";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="tru1dtUE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0EA3C21D71
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GZ9t3ZC9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 976882084C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	References:In-Reply-To:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TkmheZiuuGpR5GNNoGqFtudTZVlV70Kw1FSn7rxjaKE=; b=EW2A4MkhrUTwai
-	ph45nPNDeoFhiO/rnjdavTDjlXgB7LaQU5TBhsHfYvXjf4aH5qYHIO4Mb8J8GVzZW+EkqKzGCuX76
-	pxSVEvgzs5LYCScvtDpZKnfom/22NNvR5QOdQ8NKbB4yPUqtFpi4CRAvNYNuGui55i9M/wYIG8FbO
-	EO76JcLsuHJqj63/Brkjc58KxlO3ZFaU8cGbNJxW6rQrPhoXL/1hLCLqgFjhYQuXOgdBxYTRTnWzO
-	LDM+UlM+146jDrp9ijxRzMMM4iOQpCv/aoBsgOznBGps9ZDfhP0wI3FpnOStsuSwKzdNXUL9SeTaT
-	3pTQR5OkAXe8XL44mDMA==;
+	List-Owner; bh=8xVDdKPYfNH43k0faHBcRnZff8luJqpBq0SijJw3lIE=; b=GZ9t3ZC97ICD/f
+	8MIMWcJZBDUZxx98cVzqXild1fgZm0mcAt+u8jNDzzOnsG3dSjpLWvuDGwDQCy13GeAxd6C4NzgZB
+	waQga6ZZnf2faZrSlRcokZ/i8codn4ScRLT1tnLnl7k8uHqqOWH9/DoToNN0AuviD4g6LKv0zkzuz
+	TyhhLt5Kwt+U4TWPd8iqm7BiKjim/5icjZSWs78JoJXmeQMWOVsuCw2a8HDgkLsmQuXL8xTkLPPyh
+	uSKfq3K+O4WUADKiyFwMTb5UcF1tRfb9f36qWwEmqxZ6CZ+5bfWSoItDGzDytZcj7AOaXDf5mR8yp
+	/rQLO5S9OPMlW+VG1hZg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iIrNC-0004D2-5a; Fri, 11 Oct 2019 09:38:10 +0000
-Received: from mail-io1-xd41.google.com ([2607:f8b0:4864:20::d41])
+	id 1iIraL-0001qT-M5; Fri, 11 Oct 2019 09:51:45 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iIrN9-0004CX-5R
- for linux-mtd@lists.infradead.org; Fri, 11 Oct 2019 09:38:08 +0000
-Received: by mail-io1-xd41.google.com with SMTP id q10so20225972iop.2
- for <linux-mtd@lists.infradead.org>; Fri, 11 Oct 2019 02:38:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:in-reply-to:references:from:date:message-id:subject:to
- :cc; bh=tZSRocoCsLRO0f9HyJHZcSOACRd9xPDxC6Yf/xd/Rpo=;
- b=tru1dtUEL0CaRVu49dsT4k25Vdl6FTp54hBr92V6c0inuKusGlKz/yXK3GXtlhDulw
- CKdmSydoWPd6eWgstonmURfZI62910UqyePhr59pnsg/qk4judC+BPT6OFg2NRNAAzy0
- xHX+N2oluEj7UxenJz3UIxZX+AdeVGtTQA8s8yHNE6rQtWOnAZaA+U5JZ8EQRGExC5Xn
- 3Jr2+SNjObeeIQpLKeuGQA5VstvykW2tgny/PhGxPKOezMO3D6AoMCE69lkDnuI7wYpW
- quJZvqzdAadBQB2DqWp44W7PGmcd5cBuGWn+O9qlIRvJB4zqMDVEhfozSCUwCNEy0ZqF
- SXBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:in-reply-to:references:from:date
- :message-id:subject:to:cc;
- bh=tZSRocoCsLRO0f9HyJHZcSOACRd9xPDxC6Yf/xd/Rpo=;
- b=Y0WeQFIsqV7jblsRZmcPLq+UxDJbP3gLpaES2re3KMH3UqTOLymTeiuQ3XWylbz6P3
- 9Rjn4nm2WALrdREOnSp+vNuzsdM0WOd4dUF9XBfZ7UxLRw8JQn6yIOl248nRVSHQg5ri
- Lj4J6BWYNWnwlujugP2ubT1bHkVSiV/67dY7s5BswQfFpJFLUdZtX4CE/FwDFhq10aOa
- phI7iZ5Na2eckRHBqq/vbSRwEpdsRXaukjvurjtVwl1vIF5dObDjM7SjG4AplQ7wiUhS
- KR+tX6bb5PNiYmUftBOFQ+fanvfXoo+CSoooMwte7d4F6OUe3UZqO4RzD2QuYtj+iIlj
- 59IA==
-X-Gm-Message-State: APjAAAWmqCh9c8SvjdL9mswSgHndd9hAZuzOZUF8H7ELteu5CzaRXi99
- zSUAf57Becv5VzGox/VdTsJR1cBk9VOKHjFq8GmOCo8g
-X-Google-Smtp-Source: APXvYqyOtILK6/gJLeitm+B24DsO7cKyhzqYnKsn3f9L+a9Mhtt9jmt3A+dRzXcsrSnlsVQjVA2zjkD1pYmS8nfYtw8=
-X-Received: by 2002:a5d:8886:: with SMTP id d6mr6050163ioo.301.1570786682333; 
- Fri, 11 Oct 2019 02:38:02 -0700 (PDT)
+ id 1iIraA-0001h2-25; Fri, 11 Oct 2019 09:51:36 +0000
+Received: from dhcp-172-31-174-146.wireless.concordia.ca (unknown
+ [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested) (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 3E0AA290E0A;
+ Fri, 11 Oct 2019 10:51:32 +0100 (BST)
+Date: Fri, 11 Oct 2019 11:51:29 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: =?UTF-8?B?Q8OpZHJpYw==?= Le Goater <clg@kaod.org>
+Subject: Re: [PATCH 00/16] mtd: spi-nor: aspeed: AST2600 support and extensions
+Message-ID: <20191011115129.3897cd17@dhcp-172-31-174-146.wireless.concordia.ca>
+In-Reply-To: <3836fcc4-c8b0-ed04-0c52-7c642794ecb8@kaod.org>
+References: <20191004115919.20788-1-clg@kaod.org>
+ <20191009225555.67622339@dhcp-172-31-174-146.wireless.concordia.ca>
+ <CACPK8Xe__AYvrh40vqjwoM=XKJfp5MeqrMARpFUDGWCyJK6jXQ@mail.gmail.com>
+ <20191011084503.5b7a7c2c@dhcp-172-31-174-146.wireless.concordia.ca>
+ <3836fcc4-c8b0-ed04-0c52-7c642794ecb8@kaod.org>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Received: by 2002:ac0:9c85:0:0:0:0:0 with HTTP; Fri, 11 Oct 2019 02:38:01
- -0700 (PDT)
-In-Reply-To: <CAFLxGvybooDyV_D55A1rCh_jfSjBdp4SDaHHua2F-eMYomZpLg@mail.gmail.com>
-References: <CAA=hcWRsrE73HPc0qzcUY7AEHha3NUYQCXj7tTK8o-KN0xLbzw@mail.gmail.com>
- <CAFLxGvybooDyV_D55A1rCh_jfSjBdp4SDaHHua2F-eMYomZpLg@mail.gmail.com>
-From: JH <jupiter.hce@gmail.com>
-Date: Fri, 11 Oct 2019 20:38:01 +1100
-Message-ID: <CAA=hcWRj_dhRPqRez97hHDVQ55tXbRV9VGs-okF-eKSg=6x=4g@mail.gmail.com>
-Subject: Re: Where to define multiple volumes sizes in one MTD rootfs
- partition?
-To: Richard Weinberger <richard.weinberger@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191011_023807_233276_D86AD41B 
-X-CRM114-Status: GOOD (  11.78  )
+X-CRM114-CacheID: sfid-20191011_025134_362951_EC0F0B5E 
+X-CRM114-Status: GOOD (  38.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,92 +71,128 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Mark Rutland <mark.rutland@arm.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>, Andrew Jeffery <andrew@aj.id.au>,
+ Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, Joel Stanley <joel@jms.id.au>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 10/5/19, Richard Weinberger <richard.weinberger@gmail.com> wrote:
-> On Sat, Oct 5, 2019 at 2:51 AM JH <jupiter.hce@gmail.com> wrote:
->> Recently, one of my device is broken failed to boot up, I still don't
->> know what was the cause by hardware problem or software, to be
->> precaution in the future meltdown, I am going to separate all writing
->> data from ubi0 to to another ubi volume ubi1, to keep the rootfs in
->> ubi0 read only. How can I define the ubi0 volume size to 160 MB and
->> the ubi1 volume size to 30 MB?
->
-> Don't setup multiple UBI instances on the same chip.
-> The wear leveling domain should be as large as possible.
->
-> If you want to have multiple UBIFS filesystems, just create more UBI
-> volumes.
-
-Hmm, wandering for several days how to do it, reading lots of
-documents, still not clear how could I make that work, let's say I
-have following a volume configure file:
-
-$ cat volume.conf
-
-[kernel-volume]
-mode=ubi
-image=zImage
-vol_id=1
-vol_size=10MiB
-vol_type=static
-vol_name=kernel
-
-[rootfs-volume]
-mode=ubi
-image=rootfs_data
-vol_id=2
-vol_size=110MiB
-vol_type=static
-vol_name=rootfs
-
-[data-volume]
-mode=ubi
-image=rootfs_data
-vol_id=3
-vol_size=10MiB
-vol_type=dynamic
-vol_name=data
-vol_flags=autoresize
-
-$ ubinize -o rootfs.img -p 130MiB -m 512 -s 256 volume.conf
-
-$ ubidetach -p /dev/mtd5
-$ ubiformat /dev/mtd5 -y
-$ ubiattach -m 5
-$ ubimkvol /dev/ubi0 -s 130MiB -N rootfs_data
-
-$ mount -t ubifs ubi0:rootfs_data /mnt
-
-If I have a single ubi0 rootfs in /dev/mtd5, I can set
-"root=ubi0:rootfs_data rw ubi.mtd=5,2048  noinitrd rootfstype=ubifs
-mem=256M rootwait=1"
-
-$ tar zxvf yocto-image-rootfs.tar.gz -C /mnt
-
-It can boot from the a single rootfs volume.
-
-But for multiple volumes in ubi0, I lost completely, how can it boot
-from volume configure file with multiple volumes? Where the
-volume.conf should be placed in Linux rootfs, in "/"? If it is correct
-to copy volume.conf to /mnt (the "/"), how will it boot from NAND with
-multiple volumes? That is most confusing parts, I could not see any
-clear examples and statements in documents, appreciate kindly advice.
-
-Thank you very much Richard.
-
-Kind regards,
-
-- jh
-
-
-
-it works, but how it can boot from volume configure file?
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gRnJpLCAxMSBPY3QgMjAxOSAxMToyOTo0OSArMDIwMApDw6lkcmljIExlIEdvYXRlciA8Y2xn
+QGthb2Qub3JnPiB3cm90ZToKCj4gT24gMTEvMTAvMjAxOSAwODo0NSwgQm9yaXMgQnJlemlsbG9u
+IHdyb3RlOgo+ID4gT24gVGh1LCAxMCBPY3QgMjAxOSAyMzo0Nzo0NSArMDAwMAo+ID4gSm9lbCBT
+dGFubGV5IDxqb2VsQGptcy5pZC5hdT4gd3JvdGU6Cj4gPiAgIAo+ID4+IE9uIFdlZCwgOSBPY3Qg
+MjAxOSBhdCAyMDo1NiwgQm9yaXMgQnJlemlsbG9uCj4gPj4gPGJvcmlzLmJyZXppbGxvbkBjb2xs
+YWJvcmEuY29tPiB3cm90ZTogIAo+ID4+Pgo+ID4+PiBIaSBDZWRyaWMsCj4gPj4+Cj4gPj4+IE9u
+IEZyaSwgIDQgT2N0IDIwMTkgMTM6NTk6MDMgKzAyMDAKPiA+Pj4gQ8OpZHJpYyBMZSBHb2F0ZXIg
+PGNsZ0BrYW9kLm9yZz4gd3JvdGU6Cj4gPj4+ICAgIAo+ID4+Pj4gSGVsbG8sCj4gPj4+Pgo+ID4+
+Pj4gVGhpcyBzZXJpZXMgZmlyc3QgZXh0ZW5kcyB0aGUgc3VwcG9ydCBmb3IgdGhlIEFzcGVlZCBB
+U1QyNTAwIGFuZAo+ID4+Pj4gQVNUMjQwMCBTTUMgZHJpdmVyLiBJdCBhZGRzIER1YWwgRGF0YSBz
+dXBwb3J0IGFuZCByZWFkIHRyYWluaW5nIGdpdmluZwo+ID4+Pj4gdGhlIGJlc3QgcmVhZCBzZXR0
+aW5ncyBmb3IgYSBnaXZlbiBjaGlwLiBTdXBwb3J0IGZvciB0aGUgbmV3IEFTVDI2MDAKPiA+Pj4+
+IFNvQyBpcyBhZGRlZCBhdCB0aGUgZW5kLgo+ID4+Pj4KPiA+Pj4+IEkgdW5kZXJzdGFuZCB0aGF0
+IGEgbmV3IHNwaV9tZW0gZnJhbWV3b3JrIGV4aXN0cyBhbmQgSSBkbyBoYXZlIGFuCj4gPj4+PiBl
+eHBlcmltZW50YWwgZHJpdmVyIHVzaW5nIGl0LiBCdXQgdW5mb3J0dW5hdGVseSwgaXQgaXMgZGlm
+ZmljdWx0IHRvCj4gPj4+PiBpbnRlZ3JhdGUgdGhlIHJlYWQgdHJhaW5pbmcuIFRoZSBBc3BlZWQg
+Y29uc3RyYWludHMgYXJlIG5vdCBjb21wYXRpYmxlCj4gPj4+PiBhbmQgaSBoYXZlbid0IGhhZCB0
+aGUgdGltZSB0byBleHRlbmQgdGhlIGN1cnJlbnQgZnJhbWV3b3JrLiAgICAKPiA+Pj4KPiA+Pj4g
+SG0sIEkgZG9uJ3QgdGhpbmsgdGhhdCdzIGEgZ29vZCByZWFzb24gdG8gcHVzaCBuZXcgZmVhdHVy
+ZXMgdG8gdGhlCj4gPj4+IGV4aXN0aW5nIGRyaXZlciwgZXNwZWNpYWxseSBzaW5jZSBJIGFza2Vk
+IG90aGVycyB0byBtaWdyYXRlIHRoZWlyCj4gPj4+IGRyaXZlcnMgdG8gc3BpLW1lbSBpbiB0aGUg
+cGFzdC4gSSBkbyB1bmRlcnN0YW5kIHlvdXIgY29uY2VybnMsIGFuZCBJJ2xsCj4gPj4+IGxldCB0
+aGUgU1BJIE5PUi9NVEQgbWFpbnRhaW5lcnMgbWFrZSB0aGUgZmluYWwgY2FsbCwgYnV0IEkgdGhp
+bmsgaXQnZAo+ID4+PiBiZSBiZXR0ZXIgZm9yIHRoZSBTUEkgTUVNIGVjb3N5c3RlbSB0byB0aGlu
+ayBhYm91dCB0aGlzIGxpbmstdHJhaW5pbmcKPiA+Pj4gQVBJIChWaWduZXNoIG5lZWRzIGl0IGZv
+ciB0aGUgQ2FkZW5jZSBkcml2ZXIgSUlSQykgcmF0aGVyIHRoYW4gcHVzaGluZwo+ID4+PiB0aGlz
+IGtpbmQgb2YgZmVhdHVyZSB0byBzcGktbm9yIGNvbnRyb2xsZXIgZHJpdmVycy4gICAgCj4gPj4K
+PiA+PiBBcyBDZWRyaWMgbWVudGlvbmVkLCB0aGUgT3BlbkJNQyBwcm9qZWN0IGhhcyBiZWVuIHNo
+aXBwaW5nIHRoZSByZWFkCj4gPj4gdHJhaW5pbmcgY29kZSBmb3IgdGhlIGFzdDI0MDAvYXN0MjQw
+MCBmb3Igc2V2ZXJhbCB5ZWFycyBub3cuIEl0IHdvdWxkCj4gPj4gYmUgZ3JlYXQgdG8gc2VlIGl0
+IGluIG1haW5saW5lLgo+ID4+Cj4gPj4gSSB0aGluayBpdCdzIHJlYXNvbmFibGUgdG8gYXNrIGZv
+ciB0aGUgZHJpdmVyIHRvIGJlIG1vdmVkIHRvIHRoZQo+ID4+IHNwaS1tZW0gc3Vic3lzdGVtIG9u
+Y2UgaXQgaGFzIHRoZSByZXF1aXJlZCBBUElzLiAgCj4gPiAKPiA+IEV4Y2VwdCBpdCB3b24ndCBo
+YXZlIHRoZSBuZWNlc3NhcnkgQVBJcyB1bmxlc3Mgc29tZW9uZSB3b3JrcyBvbiBpdCwgYW5kCj4g
+PiBhZGRpbmcgdGhpcyBmZWF0dXJlIHRvIGV4aXN0aW5nIHNwaS1ub3IgZHJpdmVycyB3b24ndCBo
+ZWxwIGFjaGlldmluZwo+ID4gdGhpcyBnb2FsLiAgCj4gCj4gCj4gV2hhdCB3b3VsZCB5b3Ugc3Vn
+Z2VzdCA/IFNvbWV0aGluZyBsaWtlIHRoZSBwYXRjaCBiZWxvdyB3aGljaCB3b3VsZAo+IGNhbGwg
+YSAndHJhaW4nIG9wZXJhdGlvbiBhdCB0aGUgZW5kIG9mIHNwaV9hZGRfZGV2aWNlKCkuCgpUaGlz
+IGhhcyBiZWVuIGRpc2N1c3NlZCBpbiB0aGUgcGFzdCB3aXRoIFZpZ25lc2gsIGJ1dCBJIGNhbid0
+IGZpbmQgdGhlCnRocmVhZCB3aGVyZSB0aGlzIGRpc2N1c3Npb24gaGFwcGVuZWQuIE15IHVuZGVy
+c3RhbmRpbmcgd2FzIHRoYXQgbGluawp0cmFpbmluZyB3b3VsZCB1c2UgYSBjb21tYW5kIHdpdGgg
+d2VsbC1rbm93biBvdXRwdXQgKGlzIHRoZXJlIGEKZGVkaWNhdGVkIFNQSSBOT1IgY29tbWFuZCBm
+b3IgdGhhdD8pIGFuZCB0ZXN0IGRpZmZlcmVudCBjbGsgc2V0dGluZ3MKdW50aWwgaXQgZmluZHMg
+b25lIHRoYXQgd29ya3MuCgo+IAo+IEFsc28sIHdoZW4gZG9pbmcgcmVhZCB0cmFpbmluZywgd2Ug
+bWlnaHQgbmVlZCB0byBrbm93IHNvbWUgbG93bGV2ZWwgCj4gY2hhcmFjdGVyaXN0aWNzIG9mIHRo
+ZSBjaGlwIGJlaW5nIHRyYWluZWQuIFNob3VsZCB3ZSBvZmZlciBhIHdheSAKPiB0byBncmFiIHRo
+ZSBwcm9iZWQgbTI1cDgwIGRldmljZSBhbmQgZ2l2ZSBhY2Nlc3MgdG8gdGhlIHVuZGVybHlpbmcg
+Cj4gJ3N0cnVjdCBzcGlfbm9yJyA/IAo+IAo+ICAgc3RhdGljIHN0cnVjdCBzcGlfbm9yICpzcGlf
+Z2V0X3Bub3Ioc3RydWN0IHNwaV9kZXZpY2UgKnNwaSkKPiAgIHsKPiAJc3RydWN0IHNwaV9tZW0g
+KnNwaW1lbSA9IHNwaV9nZXRfZHJ2ZGF0YShzcGkpOwo+IAlzdHJ1Y3QgbTI1cCAqZmxhc2ggPSBz
+cGlfbWVtX2dldF9kcnZkYXRhKHNwaW1lbSk7Cj4gCj4gCXJldHVybiBmbGFzaCA/ICZmbGFzaC0+
+c3BpX25vciA6IE5VTEw7Cj4gICB9Cj4gCj4gWWVhaCwgaXQncyBoaWRlb3VzLiBJIGp1c3Qgd2Fu
+dCB0byByYWlzZSB0aGUgaXNzdWUuCgpPaCBuby4gV2UgZGVmaW5pdGVseSBkb24ndCB3YW50IHRv
+IGV4cG9zZSB0aGUgc3BpX25vciBjaGlwIHRvIHRoZQpzcGlfbWVtIGxheWVyLCBidXQsIGlmIG5l
+ZWRlZCwgd2UgY2FuIGFkZCBtb3JlIGZpZWxkcyB0byBzcGlfbWVtIGFuZApsZXQgdGhlIHNwaV9t
+ZW0gZHJpdmVyIGZpbGwgdGhlbS4gV2UganVzdCBuZWVkIHRvIGZpZ3VyZSBvdXQgd2hhdCdzCnJl
+YWxseSBuZWVkZWQuCgo+IAo+IFRoYW5rcywKPiAKPiBDLiAKPiAKPiAKPiBGcm9tIGIzNDI5N2U2
+Yjk5MWZmMDUxYmMxZTE2MTAzZDE0YjJhMDVjODE4MjcgTW9uIFNlcCAxNyAwMDowMDowMCAyMDAx
+Cj4gRnJvbTogPT9VVEYtOD9xP0M9QzM9QTlkcmljPTIwTGU9MjBHb2F0ZXI/PSA8Y2xnQGthb2Qu
+b3JnPgo+IERhdGU6IEZyaSwgMTEgT2N0IDIwMTkgMTE6MDk6MzMgKzAyMDAKPiBTdWJqZWN0OiBb
+UEFUQ0hdIHNwaTogY29yZTogQWRkIGEgZGV2aWNlIGxpbmsgdHJhaW5pbmcgb3BlcmF0aW9uCj4g
+TUlNRS1WZXJzaW9uOiAxLjAKPiBDb250ZW50LVR5cGU6IHRleHQvcGxhaW47IGNoYXJzZXQ9VVRG
+LTgKPiBDb250ZW50LVRyYW5zZmVyLUVuY29kaW5nOiA4Yml0Cj4gCj4gU2lnbmVkLW9mZi1ieTog
+Q8OpZHJpYyBMZSBHb2F0ZXIgPGNsZ0BrYW9kLm9yZz4KPiAtLS0KPiAgaW5jbHVkZS9saW51eC9z
+cGkvc3BpLmggfCAgNCArKysrCj4gIGRyaXZlcnMvc3BpL3NwaS5jICAgICAgIHwgMjMgKysrKysr
+KysrKysrKysrKysrKysrKysKPiAgMiBmaWxlcyBjaGFuZ2VkLCAyNyBpbnNlcnRpb25zKCspCj4g
+Cj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvc3BpL3NwaS5oIGIvaW5jbHVkZS9saW51eC9z
+cGkvc3BpLmgKPiBpbmRleCBhZjRmMjY1ZDBmNjcuLjk1MGIzOTMwNDgwNyAxMDA2NDQKPiAtLS0g
+YS9pbmNsdWRlL2xpbnV4L3NwaS9zcGkuaAo+ICsrKyBiL2luY2x1ZGUvbGludXgvc3BpL3NwaS5o
+Cj4gQEAgLTQwOSw2ICs0MDksNyBAQCBzdGF0aWMgaW5saW5lIHZvaWQgc3BpX3VucmVnaXN0ZXJf
+ZHJpdmVyKHN0cnVjdCBzcGlfZHJpdmVyICpzZHJ2KQo+ICAgKiBAZndfdHJhbnNsYXRlX2NzOiBJ
+ZiB0aGUgYm9vdCBmaXJtd2FyZSB1c2VzIGRpZmZlcmVudCBudW1iZXJpbmcgc2NoZW1lCj4gICAq
+CXdoYXQgTGludXggZXhwZWN0cywgdGhpcyBvcHRpb25hbCBob29rIGNhbiBiZSB1c2VkIHRvIHRy
+YW5zbGF0ZQo+ICAgKgliZXR3ZWVuIHRoZSB0d28uCj4gKyAqIEB0cmFpbiA6IHBlcmZvcm0gZGV2
+aWNlIGxpbmsgdHJhaW5pbmcKPiAgICoKPiAgICogRWFjaCBTUEkgY29udHJvbGxlciBjYW4gY29t
+bXVuaWNhdGUgd2l0aCBvbmUgb3IgbW9yZSBAc3BpX2RldmljZQo+ICAgKiBjaGlsZHJlbi4gIFRo
+ZXNlIG1ha2UgYSBzbWFsbCBidXMsIHNoYXJpbmcgTU9TSSwgTUlTTyBhbmQgU0NLIHNpZ25hbHMK
+PiBAQCAtNjA0LDYgKzYwNSw5IEBAIHN0cnVjdCBzcGlfY29udHJvbGxlciB7Cj4gIAl2b2lkCQkJ
+KmR1bW15X3R4Owo+ICAKPiAgCWludCAoKmZ3X3RyYW5zbGF0ZV9jcykoc3RydWN0IHNwaV9jb250
+cm9sbGVyICpjdGxyLCB1bnNpZ25lZCBjcyk7Cj4gKwo+ICsJaW50CQkJKCp0cmFpbikoc3RydWN0
+IHNwaV9kZXZpY2UgKnNwaSk7CgpXYXMgbW9yZSB0aGlua2luZyBvZiBzb21ldGhpbmcgbGlrZToK
+CglpbnQgKCpsaW5rX3NldHVwKShzdHJ1Y3Qgc3BpX21lbSAqbWVtLAoJCQkgIHN0cnVjdCBzcGlf
+bWVtX29wICpvcF90ZW1wbGF0ZSwKCQkJICAuLi4pOwoKd2hlcmUgdGhlIG9wX3RlbXBsYXRlIHdv
+dWxkIHBvdGVudGlhbGx5IGRpZmZlciBkZXBlbmRpbmcgb24gdGhlIHR5cGUgb2YKbWVtb3J5IChO
+T1IsIE5BTkQsIFNSQU0/KS4gSSBhbHNvIGRvbid0IGtub3cgd2hhdCBvdGhlciBwYXJhbXMgd291
+bGQgYmUKbmVlZGVkIHRvIGRvIHRoZSBsaW5rIHRyYWluaW5nLgoKQlRXLCB0aGlzIGhvb2sgc2hv
+dWxkIGJlIGluIHRoZSBzcGlfbWVtX2NvbnRyb2xsZXJfb3BzIHN0cnVjdCBub3QgaW4Kc3BpX2Nv
+bnRyb2xsZXIuCgo+ICsKPiAgfTsKPiAgCj4gIHN0YXRpYyBpbmxpbmUgdm9pZCAqc3BpX2NvbnRy
+b2xsZXJfZ2V0X2RldmRhdGEoc3RydWN0IHNwaV9jb250cm9sbGVyICpjdGxyKQo+IGRpZmYgLS1n
+aXQgYS9kcml2ZXJzL3NwaS9zcGkuYyBiL2RyaXZlcnMvc3BpL3NwaS5jCj4gaW5kZXggNzVhYzA0
+NmNhZTUyLi43NTlhNjZkNzQ4MjIgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9zcGkvc3BpLmMKPiAr
+KysgYi9kcml2ZXJzL3NwaS9zcGkuYwo+IEBAIC01NDIsNiArNTQyLDIyIEBAIHN0YXRpYyBpbnQg
+c3BpX2Rldl9jaGVjayhzdHJ1Y3QgZGV2aWNlICpkZXYsIHZvaWQgKmRhdGEpCj4gIAlyZXR1cm4g
+MDsKPiAgfQo+ICAKPiArLyoqCj4gKyAqIHNwaV90cmFpbiAtIGxpbmsgdHJhaW5pbmcgb2YgU1BJ
+IGRldmljZQo+ICsgKiBAc3BpOiB0aGUgZGV2aWNlIHdob3NlIGJlaW5nIHRyYWluZWQKPiArICoK
+PiArICogUmV0dXJuOiB6ZXJvIG9uIHN1Y2Nlc3MsIGVsc2UgYSBuZWdhdGl2ZSBlcnJvciBjb2Rl
+Lgo+ICsgKi8KPiArc3RhdGljIGludCBzcGlfdHJhaW4oc3RydWN0IHNwaV9kZXZpY2UgKnNwaSkK
+PiArewo+ICsJaW50CQlzdGF0dXMgPSAwOwo+ICsKPiArCWlmIChzcGktPmNvbnRyb2xsZXItPnRy
+YWluKQo+ICsJCXN0YXR1cyA9IHNwaS0+Y29udHJvbGxlci0+dHJhaW4oc3BpKTsKPiArCj4gKwly
+ZXR1cm4gc3RhdHVzOwo+ICt9Cj4gKwo+ICAvKioKPiAgICogc3BpX2FkZF9kZXZpY2UgLSBBZGQg
+c3BpX2RldmljZSBhbGxvY2F0ZWQgd2l0aCBzcGlfYWxsb2NfZGV2aWNlCj4gICAqIEBzcGk6IHNw
+aV9kZXZpY2UgdG8gcmVnaXN0ZXIKPiBAQCAtNjA2LDYgKzYyMiwxMyBAQCBpbnQgc3BpX2FkZF9k
+ZXZpY2Uoc3RydWN0IHNwaV9kZXZpY2UgKnNwaSkKPiAgCWVsc2UKPiAgCQlkZXZfZGJnKGRldiwg
+InJlZ2lzdGVyZWQgY2hpbGQgJXNcbiIsIGRldl9uYW1lKCZzcGktPmRldikpOwo+ICAKPiArCXN0
+YXR1cyA9IHNwaV90cmFpbihzcGkpOwo+ICsJaWYgKHN0YXR1cyA8IDApIHsKPiArCQlkZXZfZXJy
+KGRldiwgImNhbid0IHRyYWluICVzLCBzdGF0dXMgJWRcbiIsCj4gKwkJCQlkZXZfbmFtZSgmc3Bp
+LT5kZXYpLCBzdGF0dXMpOwo+ICsJCWdvdG8gZG9uZTsKPiArCX0KPiArCj4gIGRvbmU6Cj4gIAlt
+dXRleF91bmxvY2soJnNwaV9hZGRfbG9jayk7Cj4gIAlyZXR1cm4gc3RhdHVzOwoKCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQg
+ZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9saW51eC1tdGQvCg==
