@@ -5,18 +5,18 @@ X-Spam-Level:
 X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 524EDC4360C
-	for <linux-mtd@archiver.kernel.org>; Sat, 12 Oct 2019 09:29:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D228C4360C
+	for <linux-mtd@archiver.kernel.org>; Sat, 12 Oct 2019 09:35:44 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1172C21850
-	for <linux-mtd@archiver.kernel.org>; Sat, 12 Oct 2019 09:29:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 076D22190F
+	for <linux-mtd@archiver.kernel.org>; Sat, 12 Oct 2019 09:35:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="euEANLos"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1172C21850
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="W9QPpanm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 076D22190F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dPMYW3cWjzDGiknl6m7QTu8RVEyTyQPJ2/eHrzcOfJ8=; b=euEANLosa4nYay
-	q4kwbr/cjsaH6X759L0C1lm6zLrwvbGsb4475+hen1G+yXdBNF6tMwQOKO4pReGc8y2Bc1VVsYN9a
-	Sspm6tLAA9b/p3bcS4DmyZ3vSByqmrXTEAVEFNl6aULt7TAF8zwE6zejS0DNtkT2uylo2InEVrrnq
-	TEv91f/aQMAjRm9rL6jxyDssS1Xrp8Bw7CGEm4sORS9o+rDU75FWi2TB0cDEJMhh4Os+nUpWa0KWr
-	V1hjyFPzbyrL95pg5keF4pmAwsWMIP5sRfXkK0DxfmKvxDa5OlMsP17Ae534eZ7fqG0EG/Pi6AdAf
-	EPyT5cq5sq14dVryuwRA==;
+	List-Owner; bh=C46olM24xc1HEiXMnKtFTnPbB1Rc/mLM2WYDBvvtB5k=; b=W9QPpanmsRjuW9
+	er1z3REl2ow/4gn7JvjwDSidG292pnCJZJ2SrZYVvmOjv2E0MADs6g5tF70w+P+ETWKx41T6r3pMP
+	ZrHHMTTH2LP3RCQac8kbONNsoUrjQwGXqEsuJ/AzILhW+SE9Mq1xdPvD2EFtdpVRlyW63ELvOgUWr
+	pd17SRouvr8xAzTv0w3La4JJbc52zoVCA/S8bmCuzQ4rby58PDm2XeJX6vwYM1jnGaHGXfTqFQ4g5
+	aGlw1+yE64uL0RAM2CaMK8J+IdMwnRSx+HEQJY/X9IdpfKkhFwlvB9ianxpTEGmyq/mptzQ8Ex0YR
+	c1jKf06zbJPdQCqSaYLQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iJDig-00033l-7p; Sat, 12 Oct 2019 09:29:50 +0000
+	id 1iJDoN-0006Id-8O; Sat, 12 Oct 2019 09:35:43 +0000
 Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iJDiW-0002vG-W2; Sat, 12 Oct 2019 09:29:42 +0000
+ id 1iJDoF-0006CM-IS; Sat, 12 Oct 2019 09:35:37 +0000
 Received: from dhcp-172-31-174-146.wireless.concordia.ca (unknown
  [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 75EEC28EDBF;
- Sat, 12 Oct 2019 10:29:39 +0100 (BST)
-Date: Sat, 12 Oct 2019 11:29:36 +0200
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 0257D2912F1;
+ Sat, 12 Oct 2019 10:35:33 +0100 (BST)
+Date: Sat, 12 Oct 2019 11:35:30 +0200
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH v3 07/40] mtd: rawnand: Drop the legacy ECC type
- enumeration
-Message-ID: <20191012112936.6c6fbea8@dhcp-172-31-174-146.wireless.concordia.ca>
-In-Reply-To: <20190919193141.7865-8-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v3 12/40] mtd: nand: Rename a core structure
+Message-ID: <20191012113530.6fe78c71@dhcp-172-31-174-146.wireless.concordia.ca>
+In-Reply-To: <20190919193141.7865-13-miquel.raynal@bootlin.com>
 References: <20190919193141.7865-1-miquel.raynal@bootlin.com>
- <20190919193141.7865-8-miquel.raynal@bootlin.com>
+ <20190919193141.7865-13-miquel.raynal@bootlin.com>
 Organization: Collabora
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191012_022941_160270_F46750A3 
-X-CRM114-Status: GOOD (  16.64  )
+X-CRM114-CacheID: sfid-20191012_023535_741062_20DC5639 
+X-CRM114-Status: GOOD (  18.17  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,69 +81,72 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 19 Sep 2019 21:31:07 +0200
+On Thu, 19 Sep 2019 21:31:12 +0200
 Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> Now that all files have been migrated to use the new enumeration, drop
-> the old one which is unused.
+> Prepare the migration to a generic ECC engine by renaming the
+> nand_ecc_req structure into nand_ecc_props. This structure will be the
+> base of a wider 'nand_ecc' structure.
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > ---
->  drivers/mtd/nand/raw/nand_base.c |  9 ---------
->  include/linux/mtd/rawnand.h      | 13 -------------
->  2 files changed, 22 deletions(-)
+>  include/linux/mtd/nand.h    | 8 ++++----
+>  include/linux/mtd/spinand.h | 2 +-
+>  2 files changed, 5 insertions(+), 5 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> index ad0b892c2523..c313fe4fc16c 100644
-> --- a/drivers/mtd/nand/raw/nand_base.c
-> +++ b/drivers/mtd/nand/raw/nand_base.c
-> @@ -4833,15 +4833,6 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
->  	return ret;
->  }
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index 531c1799bf2c..7072f14239e5 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -128,11 +128,11 @@ struct nand_page_io_req {
+>  };
 >  
-> -static const char * const nand_ecc_modes[] = {
-> -	[NAND_ECC_NONE]		= "none",
-> -	[NAND_SOFT_ECC_ENGINE]		= "soft",
-> -	[NAND_ECC_HW]		= "hw",
-> -	[NAND_ECC_HW_SYNDROME]	= "hw_syndrome",
-> -	[NAND_ECC_HW_OOB_FIRST]	= "hw_oob_first",
-> -	[NAND_ECC_ON_DIE]	= "on-die",
-> -};
-
-You can't really drop that one, for DT backward compat.
-
-> -
->  static const char * const nand_ecc_engine_providers[] = {
->  	[NAND_NO_ECC_ENGINE] = "none",
->  	[NAND_SOFT_ECC_ENGINE] = "soft",
-> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-> index 08964ce8b65f..6c9be596a2d1 100644
-> --- a/include/linux/mtd/rawnand.h
-> +++ b/include/linux/mtd/rawnand.h
-> @@ -80,19 +80,6 @@ struct nand_chip;
->  
->  #define NAND_DATA_IFACE_CHECK_ONLY	-1
->  
-> -/*
-> - * Constants for ECC_MODES
-> - */
-> -enum nand_ecc_mode {
-> -	NAND_ECC_INVALID,
-> -	NAND_ECC_NONE,
-> -	NAND_ECC_SOFT,
-> -	NAND_ECC_HW,
-> -	NAND_ECC_HW_SYNDROME,
-> -	NAND_ECC_HW_OOB_FIRST,
-> -	NAND_ECC_ON_DIE,
-> -};
-> -
-
-You can drop the enum though, assuming you have a way to convert
-ecc_modes strings into engine_type+placement pairs.
-
 >  /**
->   * enum nand_ecc_engine_type - NAND ECC engine type/provider
->   * @NAND_INVALID_ECC_ENGINE: Invalid value
+> - * struct nand_ecc_req - NAND ECC requirements
+> + * struct nand_ecc_props - NAND ECC properties
+>   * @strength: ECC strength
+> - * @step_size: ECC step/block size
+> + * @step_size: Number of bytes per step
+>   */
+> -struct nand_ecc_req {
+> +struct nand_ecc_props {
+>  	unsigned int strength;
+>  	unsigned int step_size;
+>  };
+> @@ -191,7 +191,7 @@ struct nand_ops {
+>  struct nand_device {
+>  	struct mtd_info mtd;
+>  	struct nand_memory_organization memorg;
+> -	struct nand_ecc_req eccreq;
+> +	struct nand_ecc_props eccreq;
+
+Let's rename this field too: s/eccreq/eccprops/
+
+>  	struct nand_row_converter rowconv;
+>  	struct nand_bbt bbt;
+>  	const struct nand_ops *ops;
+> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+> index 4ea558bd3c46..fad19058e28f 100644
+> --- a/include/linux/mtd/spinand.h
+> +++ b/include/linux/mtd/spinand.h
+> @@ -294,7 +294,7 @@ struct spinand_info {
+>  	u16 devid;
+>  	u32 flags;
+>  	struct nand_memory_organization memorg;
+> -	struct nand_ecc_req eccreq;
+> +	struct nand_ecc_props eccreq;
+
+This once can stay unchanged since we're actually describing the ECC
+requirements here, not the final ECC properties (actual ECC engine
+might be stronger than requested).
+
+With this addressed, you can add
+
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+
+>  	struct spinand_ecc_info eccinfo;
+>  	struct {
+>  		const struct spinand_op_variants *read_cache;
 
 
 ______________________________________________________
