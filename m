@@ -2,87 +2,68 @@ Return-Path: <SRS0=jzn5=YH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62EACC4CECE
-	for <linux-mtd@archiver.kernel.org>; Mon, 14 Oct 2019 04:57:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32CE6C4CECE
+	for <linux-mtd@archiver.kernel.org>; Mon, 14 Oct 2019 09:29:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3578520873
-	for <linux-mtd@archiver.kernel.org>; Mon, 14 Oct 2019 04:57:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B5C1C20854
+	for <linux-mtd@archiver.kernel.org>; Mon, 14 Oct 2019 09:29:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="flaxeREK";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m0DtocMH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3578520873
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NE3lsAGp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B5C1C20854
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	References:In-Reply-To:MIME-Version:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=Q+8ANKsfVvu2a0RaXtcQ7peVcfu22K+xgPNQrYo2wh0=; b=flaxeREKkgB8Zo/7YTp/vjLWsP
-	TpL82oCs6xjCKNZlsShgbxARAddm2VQaw0Bxj0WgbuDPc9wPWcWIUlHeYGekzYuQDx6gJMhuCTY8e
-	EdzNrfwfg+cHYDfgMszJvI3loFTqCYa5VAhvGeakAd0u7dKP0NZyDqA0mrEqRZWE82Rw50cB2dOhG
-	d+ecuEd3Vi7zY1iXYe4u+LqJfaztXKsUIHIlE3Qa/QbObfZaGgV5UEQhKSWEbzyipFysn2P5F9rMJ
-	98T6R2dIAH6sE+ipd2M1D9WYNw6wISYDXBGtvSAAoth/DBEy1a/5vYHru5Ie+h7PtWmtsatl3nJuK
-	Dz3XXIEA==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:
+	Subject:To:References:In-Reply-To:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=cFcFl5iHQY+qc7uoZuo8ErglwM4aoxc0lwjFNgCIPAI=; b=NE3lsAGpLLWvHK
+	r/3HNZSGI9PhBCwvHqPIz5TmUfBRqQYEmG/j/JfETVQRBeMHS1Ra7a/NfTA6vrRfnTvMC7lbpYO8U
+	eapXj6Mm94EydPso+09ts3sQk+fwby+LZI2j0Ai+5roFWbslox+WyoC3DcQ4vG1YT33e9IaLQITs+
+	HYzjbUj5eFLXbXPhtBQyDTUoQ4vrLyKsHa85epdQ7Z5pTP0Hyh+gy/LYa1LsS1wR7UspQc0R5qPzB
+	dzH+q8CD0TCRAgvGP0fd4Z0ZEISj7w4Cda98hTpm71dJABeMsgwJORfQ6XaI+TuhxGV+IJJRqb5rK
+	jyX6CmC2fI3mGz+AeTOw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iJsQG-0000ax-F3; Mon, 14 Oct 2019 04:57:32 +0000
-Received: from mail-io1-xd43.google.com ([2607:f8b0:4864:20::d43])
+	id 1iJwew-0005KW-4i; Mon, 14 Oct 2019 09:28:58 +0000
+Received: from twhmllg3.macronix.com ([122.147.135.201])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iJsQD-0000aV-Jq
- for linux-mtd@lists.infradead.org; Mon, 14 Oct 2019 04:57:31 +0000
-Received: by mail-io1-xd43.google.com with SMTP id v2so35182088iob.10
- for <linux-mtd@lists.infradead.org>; Sun, 13 Oct 2019 21:57:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:in-reply-to:references:from:date:message-id:subject:to;
- bh=I/GauP8tnaH/TmPdVGAVF7OEwrfsNVpdWEPR+LMd/oY=;
- b=m0DtocMHFUZRGTNPVvnYE2jMIkuyssLjzENVc9kRc1dPhCjgIlzX4O3WCnBQ8cH0AZ
- fA0Mn63/te0vcfZDgiOBv6IPYqF8S17ilz+c30UrnGhH5JXuASnsAX5DZxzk3IZsiLL2
- +XI+yfrhDDiVn/qNpxfQgBgcuVglnW/rRZpXVHeiYpUWwmec6xqoVLcZqudjgIQFTwT6
- LE91WOsTBrOOcC/nim9OESupOe5GZhesnYPoVP4IG2AV7GR+WEAlOjN2RTU9qX/bzy9I
- KhOB8fTrYNHhWVqXka6PxTplTJxXctpLDYdZhfcycOluobrBQ6Djj7tdXaYgSaF140V3
- pufg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:in-reply-to:references:from:date
- :message-id:subject:to;
- bh=I/GauP8tnaH/TmPdVGAVF7OEwrfsNVpdWEPR+LMd/oY=;
- b=tq9IYAMoQMQaW3EtPtj6gxmsqczjlhnDx2k2uFEKXw1yuf3hx42VmMyFy7oDjGuxDZ
- GsNwD/05+J9mQGOcstc6MnU8PA6coSz8u0KA0Ja19zxfkMRZVwaMzzfNi3oqZCzqPjH4
- 7gQgku7RxXXZasa8H9RNHWrnC+sDYOP1PSb9CNr5gR+dwYdEJ07BgknnNCP57fK1ppw7
- QD8wc1ebl7Y2tvpBT7nm5SJ0/HIpg7bKPnFu8EYfmZHZysu8q3Csz/mPVUwaeR1aQJWA
- OZm1PAJjHDwMzQc/39kiynDgnqrOYEOw3G1Bioo0q0ZfW/n++16HDXo969XRj+TdsOqs
- Ffjg==
-X-Gm-Message-State: APjAAAU7uQeiUY6En3FP8UCoOSAWxEg3i8+JqBSd4By7DTt3/1KanHrj
- e4S7B/alJdBzXJuqmR29o8hkxDkgolg/m8/utPkSvli5
-X-Google-Smtp-Source: APXvYqxNKMB59eGUeWbdaUn/P4ADE2Lo8z1FmhduVOlYdSifpEgDN82CFKZ+FMyZ1xzqE3mlS6cHvXdK76fWVywuizo=
-X-Received: by 2002:a6b:6914:: with SMTP id e20mr31109750ioc.53.1571029047613; 
- Sun, 13 Oct 2019 21:57:27 -0700 (PDT)
+ id 1iJwes-0005JZ-C3
+ for linux-mtd@lists.infradead.org; Mon, 14 Oct 2019 09:28:56 +0000
+Received: from twhfmlp1.macronix.com (twhfm1p1.macronix.com [172.17.20.91])
+ by TWHMLLG3.macronix.com with ESMTP id x9E9RL0C077829;
+ Mon, 14 Oct 2019 17:27:21 +0800 (GMT-8)
+ (envelope-from masonccyang@mxic.com.tw)
+Received: from MXML06C.mxic.com.tw (mxml06c.mxic.com.tw [172.17.14.55])
+ by Forcepoint Email with ESMTP id 6E969CCCFD0F074FFBBA;
+ Mon, 14 Oct 2019 17:27:21 +0800 (CST)
+In-Reply-To: <20191007101847.7fcfcfc7@xps13>
+References: <1567676229-23414-1-git-send-email-masonccyang@mxic.com.tw>
+ <20191007101847.7fcfcfc7@xps13>
+To: "Miquel Raynal" <miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v3] mtd: rawnand: Add support for Macronix NAND randomizer
 MIME-Version: 1.0
-Received: by 2002:ac0:9c85:0:0:0:0:0 with HTTP; Sun, 13 Oct 2019 21:57:26
- -0700 (PDT)
-In-Reply-To: <CAA=hcWRj_dhRPqRez97hHDVQ55tXbRV9VGs-okF-eKSg=6x=4g@mail.gmail.com>
-References: <CAA=hcWRsrE73HPc0qzcUY7AEHha3NUYQCXj7tTK8o-KN0xLbzw@mail.gmail.com>
- <CAFLxGvybooDyV_D55A1rCh_jfSjBdp4SDaHHua2F-eMYomZpLg@mail.gmail.com>
- <CAA=hcWRj_dhRPqRez97hHDVQ55tXbRV9VGs-okF-eKSg=6x=4g@mail.gmail.com>
-From: JH <jupiter.hce@gmail.com>
-Date: Mon, 14 Oct 2019 15:57:26 +1100
-Message-ID: <CAA=hcWTx7Zpd-PNCp+oFp3+CXzOR=Py6H_0vonbBSUU4ArLU7Q@mail.gmail.com>
-Subject: Re: Where to define multiple volumes sizes in one MTD rootfs
- partition?
-To: linux-mtd <linux-mtd@lists.infradead.org>
+X-KeepSent: F66743F5:5B74B775-48258493:003332F7;
+ type=4; name=$KeepSent
+X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
+Message-ID: <OFF66743F5.5B74B775-ON48258493.003332F7-48258493.0033F1E2@mxic.com.tw>
+From: masonccyang@mxic.com.tw
+Date: Mon, 14 Oct 2019 17:27:22 +0800
+X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
+ HF265|July 25, 2018) at 2019/10/14 PM 05:27:21,
+ Serialize complete at 2019/10/14 PM 05:27:21
+X-MAIL: TWHMLLG3.macronix.com x9E9RL0C077829
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191013_215729_677743_EC47992A 
-X-CRM114-Status: GOOD (  15.36  )
+X-CRM114-CacheID: sfid-20191014_022854_679668_FBC25F49 
+X-CRM114-Status: GOOD (  18.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,99 +75,172 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Cc: vigneshr@ti.com, bbrezillon@kernel.org, juliensu@mxic.com.tw,
+ richard@nod.at, linux-kernel@vger.kernel.org, frieder.schrempf@kontron.de,
+ marek.vasut@gmail.com, linux-mtd@lists.infradead.org, tglx@linutronix.de,
+ computersforpeace@gmail.com, dwmw2@infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
 
-Sorry, if it is not right the mailing list to ask helps for multiple
-volumes in a single ubi0 instance, any advice please?
+Hi Miquel,
 
-Thank you.
 
-Kind regards,
+> > changelog
+> > v3:
+> > To enable randomizer by specific DT property in children nodes,
+> > mxic,enable-randomizer-otp;
+> > 
+> > v2:
+> > To enable randomizer by checking chip options NAND_NO_SUBPAGE_WRITE
+> > 
+> > v1:
+> > To enable randomizer by sys-fs
+> > 
+> > Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
+> > ---
+> >  drivers/mtd/nand/raw/nand_macronix.c | 64 
+++++++++++++++++++++++++++++++++++++
+> 
+> As long as you modify bindings, you should write a separate patch to
+> update the documentation and get it acked by Rob Herring.
 
-- jh
+Do you mean I have to create a new device tree binding file by 
+nand_macronix.txt 
+for raw NAND device ?
 
-On 10/11/19, JH <jupiter.hce@gmail.com> wrote:
-> On 10/5/19, Richard Weinberger <richard.weinberger@gmail.com> wrote:
->> On Sat, Oct 5, 2019 at 2:51 AM JH <jupiter.hce@gmail.com> wrote:
->>> Recently, one of my device is broken failed to boot up, I still don't
->>> know what was the cause by hardware problem or software, to be
->>> precaution in the future meltdown, I am going to separate all writing
->>> data from ubi0 to to another ubi volume ubi1, to keep the rootfs in
->>> ubi0 read only. How can I define the ubi0 volume size to 160 MB and
->>> the ubi1 volume size to 30 MB?
->>
->> Don't setup multiple UBI instances on the same chip.
->> The wear leveling domain should be as large as possible.
->>
->> If you want to have multiple UBIFS filesystems, just create more UBI
->> volumes.
->
-> Hmm, wandering for several days how to do it, reading lots of
-> documents, still not clear how could I make that work, let's say I
-> have following a volume configure file:
->
-> $ cat volume.conf
->
-> [kernel-volume]
-> mode=ubi
-> image=zImage
-> vol_id=1
-> vol_size=10MiB
-> vol_type=static
-> vol_name=kernel
->
-> [rootfs-volume]
-> mode=ubi
-> image=rootfs_data
-> vol_id=2
-> vol_size=110MiB
-> vol_type=static
-> vol_name=rootfs
->
-> [data-volume]
-> mode=ubi
-> image=rootfs_data
-> vol_id=3
-> vol_size=10MiB
-> vol_type=dynamic
-> vol_name=data
-> vol_flags=autoresize
->
-> $ ubinize -o rootfs.img -p 130MiB -m 512 -s 256 volume.conf
->
-> $ ubidetach -p /dev/mtd5
-> $ ubiformat /dev/mtd5 -y
-> $ ubiattach -m 5
-> $ ubimkvol /dev/ubi0 -s 130MiB -N rootfs_data
->
-> $ mount -t ubifs ubi0:rootfs_data /mnt
->
-> If I have a single ubi0 rootfs in /dev/mtd5, I can set
-> "root=ubi0:rootfs_data rw ubi.mtd=5,2048  noinitrd rootfstype=ubifs
-> mem=256M rootwait=1"
->
-> $ tar zxvf yocto-image-rootfs.tar.gz -C /mnt
->
-> It can boot from the a single rootfs volume.
->
-> But for multiple volumes in ubi0, I lost completely, how can it boot
-> from volume configure file with multiple volumes? Where the
-> volume.conf should be placed in Linux rootfs, in "/"? If it is correct
-> to copy volume.conf to /mnt (the "/"), how will it boot from NAND with
-> multiple volumes? That is most confusing parts, I could not see any
-> clear examples and statements in documents, appreciate kindly advice.
->
-> Thank you very much Richard.
->
-> Kind regards,
->
-> - jh
->
+> 
+> >  1 file changed, 64 insertions(+)
+> > 
+> > diff --git a/drivers/mtd/nand/raw/nand_macronix.c 
+b/drivers/mtd/nand/raw/
+> nand_macronix.c
+> > index 58511ae..d5df09a 100644
+> > --- a/drivers/mtd/nand/raw/nand_macronix.c
+> > +++ b/drivers/mtd/nand/raw/nand_macronix.c
+> > @@ -11,6 +11,13 @@
+> >  #define MACRONIX_READ_RETRY_BIT BIT(0)
+> >  #define MACRONIX_NUM_READ_RETRY_MODES 6
+> > 
+> > +#define MACRONIX_RANDOMIZER_BIT BIT(1)
+> > +#define ONFI_FEATURE_ADDR_MXIC_RANDOMIZER 0xB0
+> > +#define MACRONIX_RANDOMIZER_ENPGM BIT(0)
+> > +#define MACRONIX_RANDOMIZER_RANDEN BIT(1)
+> > +#define MACRONIX_RANDOMIZER_RANDOPT BIT(2)
+> > +#define MACRONIX_RANDOMIZER_MODE_EXIT ~MACRONIX_RANDOMIZER_ENPGM
+> 
+> I would rather prefer a 
+> 
+> #define ...RANDOMISER_MODE_ENTER (ENGPM | RANDEN | RANDOPT)
+> #define ...RANDOMISER_MODE_EXIT (RANDEN | RANDOPT)
+> 
+
+okay.
+
+> > +
+> >  struct nand_onfi_vendor_macronix {
+> >     u8 reserved;
+> >     u8 reliability_func;
+> > @@ -29,15 +36,72 @@ static int macronix_nand_setup_read_retry(struct 
+> nand_chip *chip, int mode)
+> >     return nand_set_features(chip, ONFI_FEATURE_ADDR_READ_RETRY, 
+feature);
+> >  }
+> > 
+> > +static void macronix_nand_randomizer_check_enable(struct nand_chip 
+*chip)
+> 
+> You should return something and check it from the calling function.
+
+okay, will fix it.
+
+> 
+> > +{
+> > +   u8 feature[ONFI_SUBFEATURE_PARAM_LEN];
+> > +   int ret;
+> > +
+> > +   ret = nand_get_features(chip, ONFI_FEATURE_ADDR_MXIC_RANDOMIZER,
+> > +            feature);
+> > +   if (feature[0]) {
+> > +      pr_info("Macronix NAND randomizer enabled:0x%x\n", feature[0]);
+> > +      return;
+> > +   }
+> > +
+> > +   feature[0] = MACRONIX_RANDOMIZER_ENPGM | 
+MACRONIX_RANDOMIZER_RANDEN |
+> > +           MACRONIX_RANDOMIZER_RANDOPT;
+> > +   ret = nand_set_features(chip, ONFI_FEATURE_ADDR_MXIC_RANDOMIZER,
+> > +            feature);
+> > +   if (ret)
+> > +      goto err;
+> > +
+> > +   feature[0] = 0x0;
+> > +   ret = nand_prog_page_op(chip, 0, 0, feature, 1);
+> 
+> What is this? A comment is needed.
+
+it's needed for a OTP bit programming flow.
+
+> 
+> > +   if (ret)
+> > +      goto err;
+> > +
+> > +   ret = nand_get_features(chip, ONFI_FEATURE_ADDR_MXIC_RANDOMIZER,
+> > +            feature);
+> > +   if (ret)
+> > +      goto err;
+> > +
+> > +   feature[0] &= MACRONIX_RANDOMIZER_MODE_EXIT;
+> > +   ret = nand_set_features(chip, ONFI_FEATURE_ADDR_MXIC_RANDOMIZER,
+> > +            feature);
+> > +   if (ret)
+> > +      goto err;
+> > +
+> > +   pr_info("Macronix NAND randomizer enable ok\n");
+> 
+> The pr_info "ok" could be dropped, the "failed" one would go in
+> nand_onfi_init() after a check on the return code.
+> 
+> Then, no more goto's.
+
+got it, will fix it.
+
+thanks for your time and comments.
+
+best regards,
+Mason
+
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information 
+and/or personal data, which is protected by applicable laws. Please be 
+reminded that duplication, disclosure, distribution, or use of this e-mail 
+(and/or its attachments) or any part thereof is prohibited. If you receive 
+this e-mail in error, please notify us immediately and delete this mail as 
+well as its attachment(s) from your system. In addition, please be 
+informed that collection, processing, and/or use of personal data is 
+prohibited unless expressly permitted by personal data protection laws. 
+Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
+
+
+
+============================================================================
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
