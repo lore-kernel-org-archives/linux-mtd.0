@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 408B5ECE58C
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Oct 2019 20:10:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27FA9C10F14
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Oct 2019 20:17:52 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0ED6F2083B
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Oct 2019 20:10:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E6F8A2083B
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Oct 2019 20:17:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="b3PzTynx";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eZj3657O"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0ED6F2083B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OBcJ3wk6";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OMGJIkGy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E6F8A2083B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,58 +26,59 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=q7yZ/sX4Ns7K5Eg0vl4LUT/b7QrTs1mjiPPDk74Wohc=; b=b3PzTynxnX2fop
-	ZSjwRH/K7H53UVpIJmw5yMehcIe6mF+3JyfscqRoQmhvGLZz990j5JGYWBPj5/NXMnQA5qEONw3K8
-	BjG1OZd+nVzr4Jv7Lv0v1s7OTeoxMkjxFpqYqDvV9mLHmGBwisubEwqVBJ3TJQSeGM4Cr3Q4S/5o0
-	M+ZcfuB+e9JIZd3we21Vf2rq2ZYxTWbxM16PXEbPGtCP46PmM7I/0i5khmW9UDYj9lcuRPjJM00re
-	wHDWehg01ehgxUr92mIkp2hSDffXERaMTalnffMXCMC9FekwMOdOhh//5servJllIqRJyhJoyK5RX
-	3EsJaS9RVxtNVFv/7vwQ==;
+	List-Owner; bh=PgD0xdwuK59I0U8WQQkoVXNLFA1Zb9BU0RNoUYiF6cw=; b=OBcJ3wk66lLRuM
+	3KfpIPGVA7V6Vb+SHbdcYQEVFEi11+7d174+04AlohmcZ1RTJDvYmK/PPRiQ3ZLjsnBTYEym/qsYe
+	5EPSmemM1cgtaG+DsDa8se4FZuh1JZKAnjRMUGkgm2wqwj1+07Y4/ZN9LIeH/miYVKCuaEwl4PYzI
+	VlOGXuFwxNBsPTVLRTFFg2FwaI+dXUIg1y+qRlL1ynoIlOFURhMoaVQECD/Hk9NwtOwlp4wefJC18
+	fPoqO1Wt2PJ3qX2+YrS87Xzbszxlg60Q+3egU8rb8a21isOLCLCz7tvL40E7V3xJzicrXxyzU0M7O
+	RIfUx+AE+mhMbzRuW0Rg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iKT9X-00070T-IQ; Tue, 15 Oct 2019 20:10:43 +0000
-Received: from mail-pg1-x531.google.com ([2607:f8b0:4864:20::531])
+	id 1iKTGP-0001WM-Qs; Tue, 15 Oct 2019 20:17:49 +0000
+Received: from mail-wr1-x42c.google.com ([2a00:1450:4864:20::42c])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iKT9K-0006qM-6n
- for linux-mtd@lists.infradead.org; Tue, 15 Oct 2019 20:10:33 +0000
-Received: by mail-pg1-x531.google.com with SMTP id p30so12813750pgl.2
- for <linux-mtd@lists.infradead.org>; Tue, 15 Oct 2019 13:10:29 -0700 (PDT)
+ id 1iKTGM-0001Vo-Co
+ for linux-mtd@lists.infradead.org; Tue, 15 Oct 2019 20:17:47 +0000
+Received: by mail-wr1-x42c.google.com with SMTP id o18so25326475wrv.13
+ for <linux-mtd@lists.infradead.org>; Tue, 15 Oct 2019 13:17:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=js8Qns6j5BND4HnKBHLkZMeEbDf6k1HnIbaB6Mr8HBI=;
- b=eZj3657OzQv2hRKdtOUsePL8ZE217xH9oK4PyEsaZuWK70s0LGSE8/hA2z9c4egLe1
- UEOGdsHV/bY6keVyoUdPSb1NRHOmDRnwiqBSXQTVimci7JA1Oqs98CyV54R5NbBXerUs
- d/9ch3DABvO3YSJ6x31PWvweXEgS100fCc74NT21Ga/0/mtupy+arBCBcm+eTwTaRK6r
- k8wd7+MqPhFMtnMv4fJmZPP+EHcE6cVbBFUfJUjnKNuyld1Vpm82pK4uYvO/akSyce71
- y7V4urczuO41EqR1WTZMB6xlQeY/dtDBYlNs1yZmHQR+pM7FzfExv5YcuCmzLB3ELy1T
- xwbQ==
+ :cc; bh=kJwmNvIvzA/ttzF7oxFgqB8/Al8OjokWnIPDIyyF97U=;
+ b=OMGJIkGyYeyKnUQkWU2uO/0njN7s6AouZeL36ZYMI2/gJlwyrVls6d+HL+q3IWYNKg
+ ZILqeCErB5iKvtUUfPrIEf1e1XpOkkDE4bqFMZajW/BWY/7Sa91/xxdRmpG6TdUmc1wx
+ Y41Z0NCFnycFsTi7q7pW3ZHI4ehPAlzauvkpNtLva7GzK/evHFj6YR/JMPME2q5z2AgS
+ oK9xN7NIXjsxKGYpOA3zn0Q7T4W1wihtkkQi0530TpVjsQFCtLV057/cs7D5DOYTgO51
+ eYiNzcJr1ADJxIirUrKv2M7YA5NdmKta7OainKIYColQqtjs0zNCMK8fz58yqsyXNQk8
+ gkZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=js8Qns6j5BND4HnKBHLkZMeEbDf6k1HnIbaB6Mr8HBI=;
- b=dusdMT+M9mGqAcHQXhbJoI1KG2DnqJCiFrVsmk7IfIzLKISlnB7t273Ni3wJzmhDBS
- 9wNeIS4DIOjfeaUMmjTxrDdA5sfbuZ4qO/wWLEAfiWVZqxl5r02d+agmzcjU8lUZt1xy
- vIlAxMM+GBWY1VlwpTJbHYeY95drb4HsD7d2PGFEX0YauZrQxsWBDbriMrhZ8PaGi8Nl
- 1nYP8klSO/PN1RzZWSaC55/kTL/Fw+F0MVTBbhhJog669TfNffA2L/iU7sNa0dzYk1Ge
- a9lBsqddtAhVkA3pqIi0H/8zL/e6LUlfAmwviD8VHhaA8ngS0SMepirHvXhsw7YDWYan
- 1q5Q==
-X-Gm-Message-State: APjAAAUQ3lq8z+WyST7w3beJ7cw2fijLftwtUIXZ3opnX0bSon3nuP6l
- gzREOd2ziOTbkfIrLqRJHUfD9i4A631Oy1+ENz8=
-X-Google-Smtp-Source: APXvYqzgF/DbjP8Xbow/xP2oTx6eyc6wLDr+5MwSAUjdrlaNEgjGZqXHJXq0rYz/LCU5LPQ1qF2HJOCGdhcynZqEXX0=
-X-Received: by 2002:aa7:9885:: with SMTP id r5mr40618725pfl.136.1571170229262; 
- Tue, 15 Oct 2019 13:10:29 -0700 (PDT)
+ bh=kJwmNvIvzA/ttzF7oxFgqB8/Al8OjokWnIPDIyyF97U=;
+ b=PQlPz13mF/O2WGCreXSu97MxSTP+Cq+RkjA8Fuv9iXdXqmwH40cjKjkE8+0o1nzR42
+ hmSqKgNIZl4JZFOdoHk/V+TvAUJRUSSAfQ7NF8Go9n4EdNM7pEaEx+wo3jA1m7dGIdNd
+ QJD+piWLcRp7gTE7H7x0eaxO6nDsGP0QE4nlnz+6aNPU3aLvrEcu3rn6fl6zS1U9YssN
+ ydC0uYdEt3UghSdwrcy/461nxb53/JDIvua/xdcO8JcgDKyX8CFqe9/roWa4CsCuV5xY
+ s3v17B60z5UhPDIeJzoFcbFQj6lFjPB58UQCbgk80PaayjeGjWRyH4BumCZlBOU+vu9y
+ D38Q==
+X-Gm-Message-State: APjAAAWOwHDeQwEyruiWdSf/YQcm3mVIPmBPtOe45IOmEB1Fkh9fS7Vh
+ HaY5v2/ADTApmmBTNvXusF/hWCoRmYJZkZzajzSuaLv9
+X-Google-Smtp-Source: APXvYqxAug2IHQZSE/SZ5WAkodyj3jODRCfgJtF52Ygn1aGQd6CVQ1LebtpXxF8yRN+5AJG1Orr8kX4Y7zfQApt92Ck=
+X-Received: by 2002:adf:f145:: with SMTP id y5mr20835705wro.330.1571170662613; 
+ Tue, 15 Oct 2019 13:17:42 -0700 (PDT)
 MIME-Version: 1.0
 References: <CAO1O6seC1UFVrDM1FxP09uPrQhAUxp3pU=YUy09Vj98mpcU=Cw@mail.gmail.com>
  <CAFLxGvz8t-oyzkZE-9X=b+f10-no=E8mqhxmct9eJ2PK54bTfw@mail.gmail.com>
-In-Reply-To: <CAFLxGvz8t-oyzkZE-9X=b+f10-no=E8mqhxmct9eJ2PK54bTfw@mail.gmail.com>
-From: Emil Lenngren <emil.lenngren@gmail.com>
-Date: Tue, 15 Oct 2019 22:10:17 +0200
-Message-ID: <CAO1O6sfd3YOnR_7Zm1fcX-Mz-m2pzxA1uLppb78fGxsAdfjFKw@mail.gmail.com>
+ <CAO1O6sfd3YOnR_7Zm1fcX-Mz-m2pzxA1uLppb78fGxsAdfjFKw@mail.gmail.com>
+In-Reply-To: <CAO1O6sfd3YOnR_7Zm1fcX-Mz-m2pzxA1uLppb78fGxsAdfjFKw@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Tue, 15 Oct 2019 22:17:30 +0200
+Message-ID: <CAFLxGvzKqx9eReObd4uuo4v=G+cFepssXL36GgT17+-E6mEGRg@mail.gmail.com>
 Subject: Re: mtdswap + ubi results in deadlock
-To: Richard Weinberger <richard.weinberger@gmail.com>
+To: Emil Lenngren <emil.lenngren@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191015_131031_398155_7A871E20 
-X-CRM114-Status: GOOD (  17.93  )
+X-CRM114-CacheID: sfid-20191015_131746_458558_C9E51034 
+X-CRM114-Status: GOOD (  11.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,46 +96,24 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+On Tue, Oct 15, 2019 at 10:10 PM Emil Lenngren <emil.lenngren@gmail.com> wrote:
+> Thanks for the tip, I'll try that. But just trying to find some
+> information about GFP_NOFS, I found this article from 2003
+> https://lwn.net/Articles/22909/. It says "The GFP_NOIO flag allows
+> sleeping, but no I/O operations will be started to help satisfy the
+> request. GFP_NOFS is a bit less restrictive; some I/O operations can
+> be started (writing to a swap area, for example), but no filesystem
+> operations will be performed.". I'm not sure how much has changed
+> since 2003 but if I interpret it correctly then GFP_NOFS wouldn't work
+> since that can still trigger a swap, which would result in the same
+> recursive deadlock?
 
-Den tis 15 okt. 2019 kl 20:59 skrev Richard Weinberger
-<richard.weinberger@gmail.com>:
->
-> Emil,
->
-> On Tue, Oct 15, 2019 at 7:00 PM Emil Lenngren <emil.lenngren@gmail.com> wrote:
-> >
-> > Hi. I'm trying to use mtdswap together with ubi increase memory.
-> > Normally mtdswap has its own wear leveling but I want ubi to do that
-> > job instead. So I removed all wear leveling and oob usage from mtdswap
-> > (or really it doesn't do wear leveling if the mtd device has no oob)
-> > and am now using it with a gluebi mtd partition on top of ubi. It
-> > works good but in some occasions it deadlocks because ubi internally
-> > uses kmalloc, which in case of low memory, waits for swap to complete.
-> > But swap won't complete until the data is written to flash.
-> >
-> > Do you have any idea how to mitigate this issue?
->
-> Well, if you use UBI for swap then no memory allocation within UBI is allowed
-> to trigger swapping. Otherwise the memory allocation goes into
-> recursion and locks
-> up. This is what happens in your case.
->
-> You can try to pinpoint these allocations and use GFP_NOFS there but I fear
-> that will case other problems.
+You are right, GFP_NOIO seems to be a better fit.
+At least the block layer uses it too.
 
-Thanks for the tip, I'll try that. But just trying to find some
-information about GFP_NOFS, I found this article from 2003
-https://lwn.net/Articles/22909/. It says "The GFP_NOIO flag allows
-sleeping, but no I/O operations will be started to help satisfy the
-request. GFP_NOFS is a bit less restrictive; some I/O operations can
-be started (writing to a swap area, for example), but no filesystem
-operations will be performed.". I'm not sure how much has changed
-since 2003 but if I interpret it correctly then GFP_NOFS wouldn't work
-since that can still trigger a swap, which would result in the same
-recursive deadlock?
-
-/Emil
+-- 
+Thanks,
+//richard
 
 ______________________________________________________
 Linux MTD discussion mailing list
