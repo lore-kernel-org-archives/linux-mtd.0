@@ -2,69 +2,64 @@ Return-Path: <SRS0=fWin=YI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48D50ECE587
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Oct 2019 06:48:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22AFCECE587
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Oct 2019 07:57:01 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1453120854
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Oct 2019 06:48:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E6D5C2089C
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Oct 2019 07:57:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="MAgdHlT1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1453120854
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="S8K4yoiP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E6D5C2089C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:
-	Subject:To:References:In-Reply-To:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FrVlctxnCwTiJFmjfHH48svSvuYphfs7zRpFikY9xsA=; b=MAgdHlT1bsrseG
-	9PU6US3jKnOto7EWVvCilUL2GlgtKsWJ8ZHQGaCKEHcgNopChbkLBPHOJzcdAzdAyU4bGIIOk7Ors
-	xEC0Yb18LXjLE0w0VNwmhx5f59D5zNGjMGLMKPkRbU908tTdL5iRWmJkrO48gZehFaxmGkwZZcDKL
-	cLqr+x+jYOZSCUXB+7UXa46GQ4z9J3VTS78kwKAg1DmQo7aFeGH5WAVmnwd0DpLPtWdFqYdvY/nQW
-	nlgIrGgaeRDzPsLpQ9e4XeXmdNifLlc0VkpE4JUPo46eMiAUa0CjgSuV8ZOEob7wbBw7tvmM3cetp
-	TvGXHpDVuR2M9Bkp+9Sg==;
+	List-Owner; bh=DNcqo1ppH+UIp4bCvcSTIbd8WjCUYwkL/pTqR09ZeHY=; b=S8K4yoiPkJ9A3K
+	85KRRS6U+zOcWPHKVsOfpbsN0u9NTd3wvWzfXkc2NvEWz3OD9EiNusQgdIcVjbP8dj9W93bLDCpoU
+	Ygz9XF60cJO9bT8xWxrY2ZRtqdipWCbUMM2O1CONqroyDp9+XudMFGySu9goIq54Fzl/cyyuTnpAI
+	HHkfQR75+n97Os+LDxhXilTBridKPbYKj324U4A7lfRBZePydyKSllSktkR20SgNzCgb2SSyt/iz6
+	DAp4FLnYbHUk6fPfJbjsnINJZqQbFmo4Rm27xuxr+Uu0EToX4hoYFi8+yZzGaytj+mRivgTtocvMC
+	3GmCvep/4sXPFIoQG3Ig==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iKGd7-0007B5-Rm; Tue, 15 Oct 2019 06:48:25 +0000
-Received: from twhmllg3.macronix.com ([122.147.135.201])
+	id 1iKHhS-0000Xe-Is; Tue, 15 Oct 2019 07:56:58 +0000
+Received: from relay10.mail.gandi.net ([217.70.178.230])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iKGd3-0007Aa-Qi
- for linux-mtd@lists.infradead.org; Tue, 15 Oct 2019 06:48:23 +0000
-Received: from twhfmlp1.macronix.com (twhfm1p1.macronix.com [172.17.20.91])
- by TWHMLLG3.macronix.com with ESMTP id x9F6lZp4062733;
- Tue, 15 Oct 2019 14:47:35 +0800 (GMT-8)
- (envelope-from masonccyang@mxic.com.tw)
-Received: from MXML06C.mxic.com.tw (mxml06c.mxic.com.tw [172.17.14.55])
- by Forcepoint Email with ESMTP id 7FCE536401869601D56D;
- Tue, 15 Oct 2019 14:47:35 +0800 (CST)
-In-Reply-To: <20191008170249.06bd45ce@xps13>
-References: <1568793387-25199-1-git-send-email-masonccyang@mxic.com.tw>	<1568793387-25199-2-git-send-email-masonccyang@mxic.com.tw>
- <20191007104511.5aa7b8f2@xps13>	<20191007112442.783e4fbe@xps13>	<OFEDE76FEE.8BC48D9E-ON4825848D.000BCC94-4825848D.000E0643@mxic.com.tw>
- <20191008170249.06bd45ce@xps13>
-To: "Miquel Raynal" <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH RFC 2/3] mtd: rawnand: Add support Macronix Block
- Protection function
+ id 1iKHhN-0000VZ-Op
+ for linux-mtd@lists.infradead.org; Tue, 15 Oct 2019 07:56:56 +0000
+Received: from xps13 (lfbn-1-17395-211.w86-250.abo.wanadoo.fr [86.250.200.211])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay10.mail.gandi.net (Postfix) with ESMTPSA id 3654324000D;
+ Tue, 15 Oct 2019 07:56:37 +0000 (UTC)
+Date: Tue, 15 Oct 2019 09:56:37 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: masonccyang@mxic.com.tw
+Subject: Re: [PATCH RFC 3/3] mtd: rawnand: Add support Macronix power down mode
+Message-ID: <20191015095637.142e6db7@xps13>
+In-Reply-To: <OF6D5429CF.876DE422-ON48258494.000D641F-48258494.000E0D4C@mxic.com.tw>
+References: <1568793387-25199-1-git-send-email-masonccyang@mxic.com.tw>
+ <1568793387-25199-3-git-send-email-masonccyang@mxic.com.tw>
+ <20191007104501.1b4ed8ed@xps13>
+ <OF147D635A.8968CD6B-ON4825848D.00088AD5-4825848D.000B9D06@mxic.com.tw>
+ <20191008092832.54492696@dhcp-172-31-174-146.wireless.concordia.ca>
+ <OF6D5429CF.876DE422-ON48258494.000D641F-48258494.000E0D4C@mxic.com.tw>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-KeepSent: B4F10613:467EB346-48258494:0020403E;
- type=4; name=$KeepSent
-X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
-Message-ID: <OFB4F10613.467EB346-ON48258494.0020403E-48258494.002550A2@mxic.com.tw>
-From: masonccyang@mxic.com.tw
-Date: Tue, 15 Oct 2019 14:47:34 +0800
-X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
- HF265|July 25, 2018) at 2019/10/15 PM 02:47:35,
- Serialize complete at 2019/10/15 PM 02:47:35
-X-MAIL: TWHMLLG3.macronix.com x9F6lZp4062733
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191014_234822_136313_E0B2B003 
-X-CRM114-Status: GOOD (  14.34  )
+X-CRM114-CacheID: sfid-20191015_005653_945185_B1FDB373 
+X-CRM114-Status: GOOD (  16.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,107 +74,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Cc: vigneshr@ti.com, bbrezillon@kernel.org, juliensu@mxic.com.tw,
  gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
  frieder.schrempf@kontron.de, marcel.ziswiler@toradex.com,
- linux-mtd@lists.infradead.org, richard@nod.at, tglx@linutronix.de,
- computersforpeace@gmail.com, dwmw2@infradead.org, marek.vasut@gmail.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+ Boris Brezillon <boris.brezillon@collabora.com>, linux-mtd@lists.infradead.org,
+ richard@nod.at, tglx@linutronix.de, computersforpeace@gmail.com,
+ dwmw2@infradead.org, marek.vasut@gmail.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-Hi Miquel,
-
-> > > > 
-> > > > > Macronix AC series support using SET/GET_FEATURES to change
-> > > > > Block Protection and Unprotection.
-> > > > > 
-> > > > > MTD default _lock/_unlock function replacement by manufacturer
-> > > > > postponed initialization. 
-> > > > 
-> > > > Why would we do that?
-> > > > 
-> > > > Anyway your solution looks overkill, if we ever decide to
-> > > > implement these hooks for raw nand, it is better just to not
-> > > > overwrite them in nand_scan_tail() if they have been filled
-> > > > previously (ie. by the manufacturer code). 
-> > > 
-> > > Actually you should add two NAND hooks that do the interface with 
-the
-> > > MTD hooks. In the NAND hooks, check that the request is to lock all 
-the
-> > > device, otherwise return -ENOTSUPP. 
-> > 
-> > sorry, can't get your point.
-> > 
-> > Because the NAND entire chip will be protected if PT(protection) pin 
-> > is active high at power-on.
-> 
-> In your implementation of the locking, you should check that the
-> locking request is over the entire device, unless you can lock a
-> smaller portion of course.
-
-yes, I can lock a smaller portion.
-And at the power-on of device with PT pin at high voltage, all blocks are 
-locked.
-They have to be unlocked by set feature command.
-
-> 
-> > 
-> > > 
-> > > Then fill-in these two hooks from the manufacturer code, without the
-> > > postponed init.
-> > > 
-> > 
-> > But in the final of nand_scan_tail(), mtd->_lock/_unlock will be
-> > filled by NULL, right ?
-> 
-> The NAND core should set mtd->_lock/_unlock() to NAND specific hooks so
-> that the MTD layer is abstracted and and drivers do not see it. Then,
-> in the NAND helper, either there is no specific hook defined by a
-> manufacturer driver and you return -ENOTSUPP, or you execute the
-> defined hook.
-
-okay, patch specific manufacturer _lock/_unlock driver
-in nand_manufacturer_init();
-
-and in the final of nand_scan_tail()
-if (!mtd->_lock)
-        mtd->_lock = NULL;
-if (!mtd->_unlock)
-        mtd->_unlock = NULL;
-
-thanks for your time and comments.
-Mason
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information 
-and/or personal data, which is protected by applicable laws. Please be 
-reminded that duplication, disclosure, distribution, or use of this e-mail 
-(and/or its attachments) or any part thereof is prohibited. If you receive 
-this e-mail in error, please notify us immediately and delete this mail as 
-well as its attachment(s) from your system. In addition, please be 
-informed that collection, processing, and/or use of personal data is 
-prohibited unless expressly permitted by personal data protection laws. 
-Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
-
-
-============================================================================
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWFzb24sCgptYXNvbmNjeWFuZ0BteGljLmNvbS50dyB3cm90ZSBvbiBUdWUsIDE1IE9jdCAy
+MDE5IDEwOjMzOjI5ICswODAwOgoKPiBIaSBCb3JpcywKPiAKPiAgCj4gPiA+ID4gPiArICAgbmFu
+ZF9zZWxlY3RfdGFyZ2V0KGNoaXAsIDApOyAgIAo+ID4gPiA+IAo+ID4gPiA+IE9uIHNldmVyYWwg
+TkFORCBjb250cm9sbGVycyB0aGVyZSBpcyBubyB3YXkgdG8gYWN0IG9uIHRoZSBDUyBsaW5lCj4g
+PiA+ID4gd2l0aG91dCBhY3R1YWxseSB3cml0aW5nIGJ5dGVzIHRvIHRoZSBOQU5EIGNoaXAuIFNv
+IGJhc2ljYWxseSB0aGlzCj4gPiA+ID4gaXMgdmVyeSBsaWtlbHkgdG8gbm90IHdvcmsuICAgCj4g
+PiA+IAo+ID4gPiBhbnkgb3RoZXIgd2F5IHRvIG1ha2UgaXQgd29yayA/IEdQSU8gPwo+ID4gPiBv
+ciBqdXN0IGhhdmUgc29tZSBjb21tZW50cyBkZXNjcmlwdGlvbiBoZXJlLgo+ID4gPiBpLmUsLgo+
+ID4gPiAKPiA+ID4gLyogVGhlIE5BTkQgY2hpcCB3aWxsIGV4aXQgdGhlIGRlZXAgcG93ZXIgZG93
+biBtb2RlIHdpdGggI0NTIHRvZ2dsaW5nLCAgIAo+IAo+ID4gPiAgKiBwbGVhc2UgcmVmZXIgdG8g
+ZGF0YXNoZWV0IGZvciB0aGUgdGltaW5nIHJlcXVpcmVtZW50IG9mIHRDUkRQIGFuZCAgIAo+IHRS
+RFAuCj4gPiA+ICAqLwo+ID4gPiAgIAo+ID4gCj4gPiBHb29kIGx1Y2sgd2l0aCB0aGF0LiBBcyBN
+aXF1ZWwgc2FpZCwgb24gbW9zdCBOQU5EIGNvbnRyb2xsZXJzCj4gPiBzZWxlY3RfdGFyZ2V0KCkg
+aXMgYSBkdW1teSBvcGVyYXRpb24gdGhhdCBqdXN0IGFzc2lnbnMgbmFuZF9jaGlwLT50YXJnZXQK
+PiA+IHRvIHRoZSBzcGVjaWZpZWQgdmFsdWUgYnV0IGRvZXNuJ3QgYXNzZXJ0IHRoZSBDUyBsaW5l
+LiBZb3UgY291bGQgc2VuZCBhCj4gPiBkdW1teSBjb21tYW5kIGhlcmUsIGxpa2UgYSBSRUFEX0lE
+LCBidXQgSSBndWVzcyB5b3UgbmVlZCBDUyB0byBiZQo+ID4gYXNzZXJ0ZWQgZm9yIGF0IGxlYXN0
+IDIwbnMgYmVmb3JlIGFzc2VydGluZyBhbnkgb3RoZXIgc2lnbmFscyAoQ0xFL0FMRSkKPiA+IHdo
+aWNoIG1pZ2h0IGJlIGFuIGlzc3VlLiAgCj4gCj4gb2theSwgZ290IGl0Lgo+IEJ1dCBpZiBwb3Nz
+aWJsZSwgSSB0aGluayBhZGRpbmcgQ1MgbGluZSBjb250cm9sIGluIG5hbmRfc2VsZWN0X3Rhcmdl
+dCgpCj4gaXMgYSBzaW1wbGUgYW5kIGdlbmVyaWMgd2F5IGZvciBNVEQgYW5kIGFsbCByYXcgTkFO
+RCBjb250cm9sbGVycy4KClRoZSBwcm9ibGVtIGlzIG5vdCB0aGF0IHdlIGRvIG5vdCB3YW50IHRv
+OyB0aGUgcHJvYmxlbSBpcyB0aGF0CmNvbnRyb2xsZXJzIGFyZSBub3QgY2FwYWJsZSBvZiBkb2lu
+ZyBpdCByZWxpYWJseSBpZiBubyBieXRlIGlzIHNlbnQKb3ZlciB0aGUgTkFORCBidXMuCgoKVGhh
+bmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0
+cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
