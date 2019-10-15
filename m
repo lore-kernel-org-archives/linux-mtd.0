@@ -2,83 +2,95 @@ Return-Path: <SRS0=fWin=YI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27FA9C10F14
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Oct 2019 20:17:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E1DBC10F14
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Oct 2019 20:23:20 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E6F8A2083B
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Oct 2019 20:17:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 34A6520663
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Oct 2019 20:23:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OBcJ3wk6";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OMGJIkGy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E6F8A2083B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="G6NblMxy";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="ug7K3bxC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 34A6520663
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PgD0xdwuK59I0U8WQQkoVXNLFA1Zb9BU0RNoUYiF6cw=; b=OBcJ3wk66lLRuM
-	3KfpIPGVA7V6Vb+SHbdcYQEVFEi11+7d174+04AlohmcZ1RTJDvYmK/PPRiQ3ZLjsnBTYEym/qsYe
-	5EPSmemM1cgtaG+DsDa8se4FZuh1JZKAnjRMUGkgm2wqwj1+07Y4/ZN9LIeH/miYVKCuaEwl4PYzI
-	VlOGXuFwxNBsPTVLRTFFg2FwaI+dXUIg1y+qRlL1ynoIlOFURhMoaVQECD/Hk9NwtOwlp4wefJC18
-	fPoqO1Wt2PJ3qX2+YrS87Xzbszxlg60Q+3egU8rb8a21isOLCLCz7tvL40E7V3xJzicrXxyzU0M7O
-	RIfUx+AE+mhMbzRuW0Rg==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:To:Subject
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=pFrkdOAp1xkuZjoWuKjtzGgQLLrFTEypUHisgeOlRFE=; b=G6NblMxyK8nupT
+	0FgmPDa5+v0UbpeO0HWcMllu+3++jdjItyQlOcf0NNG57esDMobubgYE1iPTcmFetWBLT/Qd8MDSt
+	mfvyIBd9QqQvDVhgETeUXsrlAz11HimJXeog7hWxhS7kCUE8R36fq6mopKaI1nCm8UhMieI7iXJid
+	wGs3KWPRco1XWSJIXxxYdLRiZdsK+qyAwUvl0CsuWg+oOFkL7NfLHTqMcGSQS9CZeaDTmieF1y+wy
+	QZ7E9kZcOmBrNXFDFOYZknRfaKuToG5b2O1JxywElqF1ShHENxBHPgXeXOoetEtTyamEuCVlW4RBp
+	vyeFcKem48IZsc4TwPrA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iKTGP-0001WM-Qs; Tue, 15 Oct 2019 20:17:49 +0000
-Received: from mail-wr1-x42c.google.com ([2a00:1450:4864:20::42c])
+	id 1iKTLi-0003Ac-BQ; Tue, 15 Oct 2019 20:23:18 +0000
+Received: from mail-lf1-x144.google.com ([2a00:1450:4864:20::144])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iKTGM-0001Vo-Co
- for linux-mtd@lists.infradead.org; Tue, 15 Oct 2019 20:17:47 +0000
-Received: by mail-wr1-x42c.google.com with SMTP id o18so25326475wrv.13
- for <linux-mtd@lists.infradead.org>; Tue, 15 Oct 2019 13:17:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=kJwmNvIvzA/ttzF7oxFgqB8/Al8OjokWnIPDIyyF97U=;
- b=OMGJIkGyYeyKnUQkWU2uO/0njN7s6AouZeL36ZYMI2/gJlwyrVls6d+HL+q3IWYNKg
- ZILqeCErB5iKvtUUfPrIEf1e1XpOkkDE4bqFMZajW/BWY/7Sa91/xxdRmpG6TdUmc1wx
- Y41Z0NCFnycFsTi7q7pW3ZHI4ehPAlzauvkpNtLva7GzK/evHFj6YR/JMPME2q5z2AgS
- oK9xN7NIXjsxKGYpOA3zn0Q7T4W1wihtkkQi0530TpVjsQFCtLV057/cs7D5DOYTgO51
- eYiNzcJr1ADJxIirUrKv2M7YA5NdmKta7OainKIYColQqtjs0zNCMK8fz58yqsyXNQk8
- gkZg==
+ id 1iKTLf-0003A6-7n
+ for linux-mtd@lists.infradead.org; Tue, 15 Oct 2019 20:23:16 +0000
+Received: by mail-lf1-x144.google.com with SMTP id u28so15512674lfc.5
+ for <linux-mtd@lists.infradead.org>; Tue, 15 Oct 2019 13:23:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
+ h=from:subject:to:organization:message-id:date:user-agent
+ :mime-version:content-language:content-transfer-encoding;
+ bh=y+ijVER/5+jBcanAQFE4W3mrHROdEJXq88q8x377sw0=;
+ b=ug7K3bxCDEFGGX8MNwTlQWWJBB99j2C7yDM8H+78/9IRV0rfq57EAEqOXdvuGbAKqv
+ QnxdP31UlV+INsKEIRKo9NGr4r9w2ZOdi4Fe1paX4bMJ9DrVG8/cuGE/d3xwxFJNLDUX
+ HrcE/M7tkXpB6I4//82Ufek+K7RvyhkwMr5c2JPgG1bOFr4QZ+WvS476oPRWTJp+7sUr
+ bhdBbXc2ZBZvsDANL2ugv3DwtvsJALIMXQdFqQLiCaRDVVM6/5ZH3FAT872GBNs0rHfs
+ +d2usj4VTHuBAzb8m0ldu9qQ1f3dYE9zNVWuZfWuB3oCTfVw1wsp68+2qg4JaEEOxqLX
+ /mdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=kJwmNvIvzA/ttzF7oxFgqB8/Al8OjokWnIPDIyyF97U=;
- b=PQlPz13mF/O2WGCreXSu97MxSTP+Cq+RkjA8Fuv9iXdXqmwH40cjKjkE8+0o1nzR42
- hmSqKgNIZl4JZFOdoHk/V+TvAUJRUSSAfQ7NF8Go9n4EdNM7pEaEx+wo3jA1m7dGIdNd
- QJD+piWLcRp7gTE7H7x0eaxO6nDsGP0QE4nlnz+6aNPU3aLvrEcu3rn6fl6zS1U9YssN
- ydC0uYdEt3UghSdwrcy/461nxb53/JDIvua/xdcO8JcgDKyX8CFqe9/roWa4CsCuV5xY
- s3v17B60z5UhPDIeJzoFcbFQj6lFjPB58UQCbgk80PaayjeGjWRyH4BumCZlBOU+vu9y
- D38Q==
-X-Gm-Message-State: APjAAAWOwHDeQwEyruiWdSf/YQcm3mVIPmBPtOe45IOmEB1Fkh9fS7Vh
- HaY5v2/ADTApmmBTNvXusF/hWCoRmYJZkZzajzSuaLv9
-X-Google-Smtp-Source: APXvYqxAug2IHQZSE/SZ5WAkodyj3jODRCfgJtF52Ygn1aGQd6CVQ1LebtpXxF8yRN+5AJG1Orr8kX4Y7zfQApt92Ck=
-X-Received: by 2002:adf:f145:: with SMTP id y5mr20835705wro.330.1571170662613; 
- Tue, 15 Oct 2019 13:17:42 -0700 (PDT)
+ h=x-gm-message-state:from:subject:to:organization:message-id:date
+ :user-agent:mime-version:content-language:content-transfer-encoding;
+ bh=y+ijVER/5+jBcanAQFE4W3mrHROdEJXq88q8x377sw0=;
+ b=P2Lx6LL+j9kJK/qSjC+FcFFujctEcS8x3Zsfk056rBq9MCMy64GcQHCoIthlt1rlAZ
+ TQbQ9QUTEIXkWcW2rWeKatQG6xr7hJ2T5kQf5mrSKgMy1T4KWB7sR/EWCQ7ihZ07InTQ
+ KBAQSebXi1Cs+F4VXeIHEshso0/x6n/io4E2d7WsDqaaxamvBk/3WB6rzSPcjPf4aI8R
+ AbfJjOWCZuJZxneDGssk5Xrzd5WL0Lp/PZptKGrHoaqLzHLPxW07W5YYKabMr0lWJk0g
+ a1n2T5nxBhAxKq6LiHAJDtu7WXqWTfQcyL5hrDVdttQeE5FAMMf+U9nDOVtGEXTJvaMQ
+ wlcg==
+X-Gm-Message-State: APjAAAX9QwUcM9VKmWH3oUMAbVfsp/VJXY/CjFeVh2GLkEqu6oxf5vRH
+ v/4MCGuun/CQzaSMYOTAi6ZP/3ck9mk=
+X-Google-Smtp-Source: APXvYqyAPPlsRI/lVCpvuLwGHO1+L41h5ce+ZtJhKPVfESXXzFnblbi5d8wduBUMcBV6ITQOyCxtNg==
+X-Received: by 2002:ac2:5a1e:: with SMTP id q30mr22053384lfn.30.1571170992579; 
+ Tue, 15 Oct 2019 13:23:12 -0700 (PDT)
+Received: from wasted.cogentembedded.com
+ ([2a00:1fa0:682:331b:9b5d:1e72:4c40:4c22])
+ by smtp.gmail.com with ESMTPSA id p3sm5288159ljn.78.2019.10.15.13.23.11
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Tue, 15 Oct 2019 13:23:11 -0700 (PDT)
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Subject: [PATCH] mtd: spi-nor: fix silent truncation in spi_nor_read()
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org
+Organization: Cogent Embedded
+Message-ID: <72e77a25-fe33-b88e-bfe2-654e10281fba@cogentembedded.com>
+Date: Tue, 15 Oct 2019 23:23:10 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.1
 MIME-Version: 1.0
-References: <CAO1O6seC1UFVrDM1FxP09uPrQhAUxp3pU=YUy09Vj98mpcU=Cw@mail.gmail.com>
- <CAFLxGvz8t-oyzkZE-9X=b+f10-no=E8mqhxmct9eJ2PK54bTfw@mail.gmail.com>
- <CAO1O6sfd3YOnR_7Zm1fcX-Mz-m2pzxA1uLppb78fGxsAdfjFKw@mail.gmail.com>
-In-Reply-To: <CAO1O6sfd3YOnR_7Zm1fcX-Mz-m2pzxA1uLppb78fGxsAdfjFKw@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Tue, 15 Oct 2019 22:17:30 +0200
-Message-ID: <CAFLxGvzKqx9eReObd4uuo4v=G+cFepssXL36GgT17+-E6mEGRg@mail.gmail.com>
-Subject: Re: mtdswap + ubi results in deadlock
-To: Emil Lenngren <emil.lenngren@gmail.com>
+Content-Language: en-MW
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191015_131746_458558_C9E51034 
-X-CRM114-Status: GOOD (  11.23  )
+X-CRM114-CacheID: sfid-20191015_132315_458954_F639F27B 
+X-CRM114-Status: GOOD (  15.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,30 +102,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Oct 15, 2019 at 10:10 PM Emil Lenngren <emil.lenngren@gmail.com> wrote:
-> Thanks for the tip, I'll try that. But just trying to find some
-> information about GFP_NOFS, I found this article from 2003
-> https://lwn.net/Articles/22909/. It says "The GFP_NOIO flag allows
-> sleeping, but no I/O operations will be started to help satisfy the
-> request. GFP_NOFS is a bit less restrictive; some I/O operations can
-> be started (writing to a swap area, for example), but no filesystem
-> operations will be performed.". I'm not sure how much has changed
-> since 2003 but if I interpret it correctly then GFP_NOFS wouldn't work
-> since that can still trigger a swap, which would result in the same
-> recursive deadlock?
+spi_nor_read() assigns the result of 'ssize_t spi_nor_read_data()' to
+an 'int ret' variable, where the silent truncation isn't really valid --
+ssize_t is a 64-bit type and *int* is a 32-bit type on 64-bit machines.
 
-You are right, GFP_NOIO seems to be a better fit.
-At least the block layer uses it too.
+Fixes: 59451e1233bd ("mtd: spi-nor: change return value of read/write")
+Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
 
--- 
-Thanks,
-//richard
+---
+This patch is against of the 'mtd/fixes' branch of the MTD 'linux.git' repo.
+
+ drivers/mtd/spi-nor/spi-nor.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+Index: linux/drivers/mtd/spi-nor/spi-nor.c
+===================================================================
+--- linux.orig/drivers/mtd/spi-nor/spi-nor.c
++++ linux/drivers/mtd/spi-nor/spi-nor.c
+@@ -2544,7 +2544,7 @@ static int spi_nor_read(struct mtd_info
+ 			size_t *retlen, u_char *buf)
+ {
+ 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+-	int ret;
++	ssize_t ret;
+ 
+ 	dev_dbg(nor->dev, "from 0x%08x, len %zd\n", (u32)from, len);
+ 
 
 ______________________________________________________
 Linux MTD discussion mailing list
