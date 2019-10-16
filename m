@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54050FA372B
-	for <linux-mtd@archiver.kernel.org>; Wed, 16 Oct 2019 10:08:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40B4BFA372A
+	for <linux-mtd@archiver.kernel.org>; Wed, 16 Oct 2019 10:16:00 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2763E20650
-	for <linux-mtd@archiver.kernel.org>; Wed, 16 Oct 2019 10:08:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 13A1B20650
+	for <linux-mtd@archiver.kernel.org>; Wed, 16 Oct 2019 10:16:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nNbGQlBt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2763E20650
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YdThakOf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 13A1B20650
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=codethink.co.uk
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,35 +25,35 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
 	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=tkF3pkL85b8PUM1/WCVstji+wKz6iWjabgCUyuTUUAM=; b=nNbGQlBtWW2HP4
-	YWGVGh3eZ91HLZCPBtXag97S3TFGZd8s98GjWPeWW1ldycBPNP4rzvflBRdcUDuv9uh3btBwN5y9I
-	Y4C0lyEkIK19kCxgQWEUu2iJ1GVzpRx5PfeVouTpgvfw2R7zHcRASV+OHUaw23fqttmhANB3qZnFq
-	PjM51wjoiD6lJaUmqJztswFoR45IgCE6ohBowA5JHuN+GB6c5DqrbcHrYTO0LMOHdWLEqSsURq8jA
-	obj2GiKm3zVI6K27RjUTd7C4ZZhqulJKPxAq0xIRX3wOR6YwKZnS5aidHF3a6JlBnN9u3ecZxetBi
-	vCWJcX7wxeH4V28u0EmA==;
+	List-Owner; bh=99zcR6DrxTSlMjr+57FbRVjbX5/0zQvPEDxYb1PFX4M=; b=YdThakOfeyYMPj
+	5vGFkAckHAbiekJ9PxiQR17oEpeHEYXr/WzOqZGFV35Zi3DyOiF3BNd/waByFUgYz4jnoSmewQ7Wp
+	8Idusv57kgFHRuqEbHg4ilD4+XW7EhD3+G/LfbbtqGHJrTQ7dgtt+3UQY+b6l3LN/wZMaDhOFUJ6e
+	bSazB21LaF9H4Qsttl/hrUlZ94LHVrCzVr+6tX+h7SSLH9mpCWG3y/jY3rwV6i9W4lUc78Sm/1m0Y
+	T/p04gxIr7znY7JF8v2pBvj9wjuOrDe94wYOP3JBhIJRbOfqX0QIYM/dcCFue/PcbCcHDstKfS6yZ
+	gCGcFXtThTkeIikiZswg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iKgE0-0007pt-2f; Wed, 16 Oct 2019 10:08:12 +0000
+	id 1iKgLW-0003qE-8r; Wed, 16 Oct 2019 10:15:58 +0000
 Received: from imap1.codethink.co.uk ([176.9.8.82])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iKgDx-0007pL-PJ
- for linux-mtd@lists.infradead.org; Wed, 16 Oct 2019 10:08:11 +0000
+ id 1iKgKk-0002hh-8v
+ for linux-mtd@lists.infradead.org; Wed, 16 Oct 2019 10:15:11 +0000
 Received: from [167.98.27.226] (helo=rainbowdash.codethink.co.uk)
  by imap1.codethink.co.uk with esmtpsa (Exim 4.84_2 #1 (Debian))
- id 1iKgDs-0002s6-TA; Wed, 16 Oct 2019 11:08:05 +0100
+ id 1iKgKf-00037D-3d; Wed, 16 Oct 2019 11:15:05 +0100
 Received: from ben by rainbowdash.codethink.co.uk with local (Exim 4.92.2)
  (envelope-from <ben@rainbowdash.codethink.co.uk>)
- id 1iKgDs-00084o-6a; Wed, 16 Oct 2019 11:08:04 +0100
+ id 1iKgKe-0008GZ-Dh; Wed, 16 Oct 2019 11:15:04 +0100
 From: "Ben Dooks (Codethink)" <ben.dooks@codethink.co.uk>
 To: linux-kernel@lists.codethink.co.uk
-Subject: [PATCH] ubifs: possible missed le64_to_cpu() in journal
-Date: Wed, 16 Oct 2019 11:08:03 +0100
-Message-Id: <20191016100803.31003-1-ben.dooks@codethink.co.uk>
+Subject: [PATCH] ubifs: fix type of sup->hash_algo
+Date: Wed, 16 Oct 2019 11:15:03 +0100
+Message-Id: <20191016101503.31731-1-ben.dooks@codethink.co.uk>
 X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191016_030809_970387_CE6D7290 
-X-CRM114-Status: GOOD (  13.14  )
+X-CRM114-CacheID: sfid-20191016_031510_477821_20729283 
+X-CRM114-Status: GOOD (  13.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,16 +74,14 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In the ubifs_jnl_write_inode() functon, it calls ubifs_iget()
-with xent->inum. The xent->inum is __le64, but the ubifs_iget()
-takes native cpu endian.
+The sup->hash_algo is a __le16, and whilst 0xffff is
+the same in __le16 and u16, it would be better to use
+cpu_to_le16() anyway (which should deal with constants)
+and silence the following sparse warning:
 
-I think that this should be changed to passing le64_to_cpu(xent->inum)
-to fix the following sparse warning:
-
-fs/ubifs/journal.c:902:58: warning: incorrect type in argument 2 (different base types)
-fs/ubifs/journal.c:902:58:    expected unsigned long inum
-fs/ubifs/journal.c:902:58:    got restricted __le64 [usertype] inum
+fs/ubifs/sb.c:187:32: warning: incorrect type in assignment (different base types)
+fs/ubifs/sb.c:187:32:    expected restricted __le16 [usertype] hash_algo
+fs/ubifs/sb.c:187:32:    got int
 
 Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
 ---
@@ -93,22 +91,22 @@ Cc: Adrian Hunter <adrian.hunter@intel.com>
 Cc: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org
 ---
- fs/ubifs/journal.c | 2 +-
+ fs/ubifs/sb.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index d6136f7c1cfc..388fe8f5dc51 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -899,7 +899,7 @@ int ubifs_jnl_write_inode(struct ubifs_info *c, const struct inode *inode)
- 			fname_name(&nm) = xent->name;
- 			fname_len(&nm) = le16_to_cpu(xent->nlen);
+diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
+index a551eb3e9b89..2b7c04bf8983 100644
+--- a/fs/ubifs/sb.c
++++ b/fs/ubifs/sb.c
+@@ -184,7 +184,7 @@ static int create_default_filesystem(struct ubifs_info *c)
+ 		if (err)
+ 			goto out;
+ 	} else {
+-		sup->hash_algo = 0xffff;
++		sup->hash_algo = cpu_to_le16(0xffff);
+ 	}
  
--			xino = ubifs_iget(c->vfs_sb, xent->inum);
-+			xino = ubifs_iget(c->vfs_sb, le64_to_cpu(xent->inum));
- 			if (IS_ERR(xino)) {
- 				err = PTR_ERR(xino);
- 				ubifs_err(c, "dead directory entry '%s', error %d",
+ 	sup->ch.node_type  = UBIFS_SB_NODE;
 -- 
 2.23.0
 
