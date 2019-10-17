@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 673F4ECE58E
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Oct 2019 17:53:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB799ECE58D
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Oct 2019 17:53:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3BE3D21925
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Oct 2019 17:53:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BED562089C
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Oct 2019 17:53:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fHXSCHjI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3BE3D21925
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EQd+HPKV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BED562089C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,26 +25,27 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sK3RedGD+1YYfMxE2nj7LL9Xr66CN3N2W9CXbwrQM3Q=; b=fHXSCHjIaZHlWx
-	CYS0yHPXqkHYGEx+Rla5vx8Hjtb1CPqlKHnxl0cTg2JKNwxBgggVW8ow1k98BgZiFj2KG10l/rvNs
-	LzVqr9dNNHVad7aKuyIzlE4IL6kFQItnP4PcdLorYodkGLMj98FM4pD+SASX2tThDOUqxrLwirvAH
-	rt3XfDEoAGJVjFdOfbjKY4ufOs9lXjVdhNWkZGsgLSx2X1gb/2oxmtunlFNBYpQCU+bEwnrot/hxD
-	4N4dnRmXPuVZi/5tfo7OmpLPv4ti3nJzPQDow5U6tK2ie/HLgd5NePrFji9xJPWqMnfxmsNAXL8NX
-	KHUlQwSFxFGzmu07GUog==;
+	List-Owner; bh=FpimeJCwYitBoDfJ7927S8g1E/OXm4J9/KWZbRxWUnY=; b=EQd+HPKVH8hdab
+	9ittSHeX1KM/O10jD8cPy0dbA+jZlQXwxvBbZ0piiqKaL6l8VPxKRE+oBaXNb5yt1kla1Uopv+ZVv
+	B2BY7hxRTC+15JlY8NkHAPNyuqhLH0gVEADQgayyrs0Fr8jrKuHXU2gYMk4LUwsfaYO/8uHygHa8f
+	I6E/SeKrNUf1I+qRNOsj934VpxSj3OsFNa4X04NS1uNZQYsAFGdmKFScVU0xm2d94PAMOZ5gbCJV/
+	T7RapSuWamRByR9Pi4pNjELoo41JeNyXbN7W8h0mynZYejM4W/eNYelFUAnh8EK8t1BWD8n8duKVt
+	T+0yVd4BiAGwiBC1xIUQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iL9xU-00050U-AB; Thu, 17 Oct 2019 17:53:08 +0000
+	id 1iL9yE-0005hL-Sa; Thu, 17 Oct 2019 17:53:54 +0000
 Received: from [2001:4bb8:18c:d7b:c70:4a89:bc61:3] (helo=localhost)
  by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iL9qv-0005nd-VI; Thu, 17 Oct 2019 17:46:22 +0000
+ id 1iL9qy-0005q9-PO; Thu, 17 Oct 2019 17:46:25 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
  Michal Simek <monstr@monstr.eu>, Greentime Hu <green.hu@gmail.com>,
  Vincent Chen <deanbo422@gmail.com>, Guan Xuetao <gxt@pku.edu.cn>,
  x86@kernel.org
-Subject: [PATCH 09/21] xtensa: clean up ioremap
-Date: Thu, 17 Oct 2019 19:45:42 +0200
-Message-Id: <20191017174554.29840-10-hch@lst.de>
+Subject: [PATCH 10/21] asm-generic: ioremap_uc should behave the same with and
+ without MMU
+Date: Thu, 17 Oct 2019 19:45:43 +0200
+Message-Id: <20191017174554.29840-11-hch@lst.de>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191017174554.29840-1-hch@lst.de>
 References: <20191017174554.29840-1-hch@lst.de>
@@ -74,47 +75,80 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use ioremap as the main implemented function, and defined
-ioremap_nocache to it as a deprecated alias.
+Whatever reason there is for the existence of ioremap_uc, and the fact
+that it returns NULL by default on architectures with an MMU applies
+equally to nommu architectures, so don't provide different defaults.
+
+In practice the difference is meaningless as the only portable driver
+that uses ioremap_uc is atyfb which probably doesn't show up on nommu
+devices.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/xtensa/include/asm/io.h | 14 ++++----------
- 1 file changed, 4 insertions(+), 10 deletions(-)
+ include/asm-generic/io.h | 36 ++++++++++++++++--------------------
+ 1 file changed, 16 insertions(+), 20 deletions(-)
 
-diff --git a/arch/xtensa/include/asm/io.h b/arch/xtensa/include/asm/io.h
-index 988e08530a5c..441fb56926a7 100644
---- a/arch/xtensa/include/asm/io.h
-+++ b/arch/xtensa/include/asm/io.h
-@@ -32,8 +32,7 @@ void xtensa_iounmap(volatile void __iomem *addr);
- /*
-  * Return the virtual address for the specified bus memory.
+diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
+index d02806513670..a98ed6325727 100644
+--- a/include/asm-generic/io.h
++++ b/include/asm-generic/io.h
+@@ -935,18 +935,7 @@ static inline void *phys_to_virt(unsigned long address)
+  * defined your own ioremap_*() variant you must then declare your own
+  * ioremap_*() variant as defined to itself to avoid the default NULL return.
   */
--static inline void __iomem *ioremap_nocache(unsigned long offset,
--		unsigned long size)
-+static inline void __iomem *ioremap(unsigned long offset, unsigned long size)
- {
- 	if (offset >= XCHAL_KIO_PADDR
- 	    && offset - XCHAL_KIO_PADDR < XCHAL_KIO_SIZE)
-@@ -52,15 +51,10 @@ static inline void __iomem *ioremap_cache(unsigned long offset,
- 		return xtensa_ioremap_cache(offset, size);
- }
- #define ioremap_cache ioremap_cache
--#define ioremap_nocache ioremap_nocache
 -
--#define ioremap_wc ioremap_nocache
--#define ioremap_wt ioremap_nocache
+-#ifdef CONFIG_MMU
+-
+-#ifndef ioremap_uc
+-#define ioremap_uc ioremap_uc
+-static inline void __iomem *ioremap_uc(phys_addr_t offset, size_t size)
+-{
+-	return NULL;
+-}
+-#endif
+-
+-#else /* !CONFIG_MMU */
++#ifndef CONFIG_MMU
  
--static inline void __iomem *ioremap(unsigned long offset, unsigned long size)
+ /*
+  * Change "struct page" to physical address.
+@@ -980,14 +969,6 @@ static inline void __iomem *ioremap_nocache(phys_addr_t offset, size_t size)
+ }
+ #endif
+ 
+-#ifndef ioremap_uc
+-#define ioremap_uc ioremap_uc
+-static inline void __iomem *ioremap_uc(phys_addr_t offset, size_t size)
 -{
 -	return ioremap_nocache(offset, size);
 -}
-+#define ioremap_nocache ioremap
-+#define ioremap_wc ioremap
-+#define ioremap_wt ioremap
+-#endif
+-
+ #ifndef ioremap_wc
+ #define ioremap_wc ioremap_wc
+ static inline void __iomem *ioremap_wc(phys_addr_t offset, size_t size)
+@@ -1004,6 +985,21 @@ static inline void __iomem *ioremap_wt(phys_addr_t offset, size_t size)
+ }
+ #endif
  
- static inline void iounmap(volatile void __iomem *addr)
- {
++/*
++ * ioremap_uc is special in that we do require an explicit architecture
++ * implementation.  In general you do now want to use this function in a
++ * driver and use plain ioremap, which is uncached by default.  Similarly
++ * architectures should not implement it unless they have a very good
++ * reason.
++ */
++#ifndef ioremap_uc
++#define ioremap_uc ioremap_uc
++static inline void __iomem *ioremap_uc(phys_addr_t offset, size_t size)
++{
++	return NULL;
++}
++#endif
++
+ #ifdef CONFIG_HAS_IOPORT_MAP
+ #ifndef CONFIG_GENERIC_IOMAP
+ #ifndef ioport_map
 -- 
 2.20.1
 
