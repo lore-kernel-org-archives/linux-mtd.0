@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3198DECE58E
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Oct 2019 17:55:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 228B0ECE58E
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Oct 2019 17:56:00 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0BCB12089C
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Oct 2019 17:55:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F19F120650
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Oct 2019 17:55:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BAT2YZMT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0BCB12089C
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="SKhHJS4l"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F19F120650
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,26 +25,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pYy8R6/PJdhk/n4LbsgBd/zBQSmZZvfnVD/UpUFcYzE=; b=BAT2YZMTnbrBad
-	aegyiVKCqhvMlNuj/KFgzQOrHteYjg21rQ+Sw0g0DBvpkkeAIqey1DTpmsjMxsV5tXfkqkdiDP5ZX
-	ttEomiHwYrb5cntAtHu9bCObvNFAjiRMOaaseB/N8XNeIdHXaxiFbzME+3eDD41Rdnysa+Eyet0QU
-	X8ViO4E1YZlLHhEOmLILtrrNHIvOpSCOve3Xbcu32/ET7Aonf62rVMYpg+LHxJqxNQgMgexeN//0J
-	ZmdnOUchprKQKyO6LM5FzuAnxal21NpZaKOjf0ynEHSOKrzTXOGAuI8A3MUs+NfTz4EcLbAnsT8AD
-	rhoc57kaDgqQ5dhmnBqw==;
+	List-Owner; bh=T6jhV9M21K0VVK1pJzR7L2tyk1Ki0WLPDUJFCGBMW/w=; b=SKhHJS4lSOPi2H
+	5QSqWwvfR2JTjeZRBC5HGS4xqj2yeJ4udIHrGzHoPGn9O6Tz1TU3IdBXp88TlKi0piMVqdr1XUjDD
+	aUwsoHS6/ik4Qk5IVNK0BikXjc1+R58gLSa3F1mbzNT7M3D3QeN/ZK5cF5/BQ2qq5dPPBDuJHJcqs
+	fU2rLgzPkbkWEAyvMZLcZHuQzcx9STWJQC1+Bj5eb4+VYlueFpQopc44bSbrgrwoMEqocpHmvVVKD
+	jHlqQ8oTH60KmLbrh2GVSa+pl7gUYFInUzLg5ooqeLdTXNk8UOS45Pu5lCoTsWXD8RH5Qlt23l6Cz
+	XUeaefmgyoF8+z05jZXQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iLA02-0008Mr-CL; Thu, 17 Oct 2019 17:55:46 +0000
+	id 1iLA0E-00008Z-Va; Thu, 17 Oct 2019 17:55:58 +0000
 Received: from [2001:4bb8:18c:d7b:c70:4a89:bc61:3] (helo=localhost)
  by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iL9r6-00066o-RZ; Thu, 17 Oct 2019 17:46:34 +0000
+ id 1iL9rA-00069R-NO; Thu, 17 Oct 2019 17:46:37 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
  Michal Simek <monstr@monstr.eu>, Greentime Hu <green.hu@gmail.com>,
  Vincent Chen <deanbo422@gmail.com>, Guan Xuetao <gxt@pku.edu.cn>,
  x86@kernel.org
-Subject: [PATCH 13/21] m68k: rename __iounmap and mark it static
-Date: Thu, 17 Oct 2019 19:45:46 +0200
-Message-Id: <20191017174554.29840-14-hch@lst.de>
+Subject: [PATCH 14/21] hexagon: remove __iounmap
+Date: Thu, 17 Oct 2019 19:45:47 +0200
+Message-Id: <20191017174554.29840-15-hch@lst.de>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191017174554.29840-1-hch@lst.de>
 References: <20191017174554.29840-1-hch@lst.de>
@@ -74,72 +74,66 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-m68k uses __iounmap as the name for an internal helper that is only
-used for some CPU types.  Mark it static and give it a better name.
+No need to indirect iounmap for hexagon.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/m68k/include/asm/kmap.h | 1 -
- arch/m68k/mm/kmap.c          | 9 ++++++---
- 2 files changed, 6 insertions(+), 4 deletions(-)
+ arch/hexagon/include/asm/io.h       | 7 +------
+ arch/hexagon/kernel/hexagon_ksyms.c | 2 +-
+ arch/hexagon/mm/ioremap.c           | 2 +-
+ 3 files changed, 3 insertions(+), 8 deletions(-)
 
-diff --git a/arch/m68k/include/asm/kmap.h b/arch/m68k/include/asm/kmap.h
-index 421b6c9c769d..559cb91bede1 100644
---- a/arch/m68k/include/asm/kmap.h
-+++ b/arch/m68k/include/asm/kmap.h
-@@ -20,7 +20,6 @@ extern void __iomem *__ioremap(unsigned long physaddr, unsigned long size,
- 			       int cacheflag);
- #define iounmap iounmap
- extern void iounmap(void __iomem *addr);
--extern void __iounmap(void *addr, unsigned long size);
+diff --git a/arch/hexagon/include/asm/io.h b/arch/hexagon/include/asm/io.h
+index 89537dc1cf97..539e3efcf39c 100644
+--- a/arch/hexagon/include/asm/io.h
++++ b/arch/hexagon/include/asm/io.h
+@@ -27,7 +27,7 @@
+ extern int remap_area_pages(unsigned long start, unsigned long phys_addr,
+ 				unsigned long end, unsigned long flags);
  
- #define ioremap ioremap
- static inline void __iomem *ioremap(unsigned long physaddr, unsigned long size)
-diff --git a/arch/m68k/mm/kmap.c b/arch/m68k/mm/kmap.c
-index 40a3b327da07..4c279cf0bcc8 100644
---- a/arch/m68k/mm/kmap.c
-+++ b/arch/m68k/mm/kmap.c
-@@ -52,6 +52,7 @@ static inline void free_io_area(void *addr)
+-extern void __iounmap(const volatile void __iomem *addr);
++extern void iounmap(const volatile void __iomem *addr);
  
- #define IO_SIZE		(256*1024)
+ /* Defined in lib/io.c, needed for smc91x driver. */
+ extern void __raw_readsw(const void __iomem *addr, void *data, int wordlen);
+@@ -175,11 +175,6 @@ void __iomem *ioremap(unsigned long phys_addr, unsigned long size);
+ #define ioremap_nocache ioremap
  
-+static void __free_io_area(void *addr, unsigned long size);
- static struct vm_struct *iolist;
  
- static struct vm_struct *get_io_area(unsigned long size)
-@@ -90,7 +91,7 @@ static inline void free_io_area(void *addr)
- 		if (tmp->addr == addr) {
- 			*p = tmp->next;
- 			/* remove gap added in get_io_area() */
--			__iounmap(tmp->addr, tmp->size - IO_SIZE);
-+			__free_io_area(tmp->addr, tmp->size - IO_SIZE);
- 			kfree(tmp);
- 			return;
- 		}
-@@ -249,12 +250,13 @@ void iounmap(void __iomem *addr)
+-static inline void iounmap(volatile void __iomem *addr)
+-{
+-	__iounmap(addr);
+-}
+-
+ #define __raw_writel writel
+ 
+ static inline void memcpy_fromio(void *dst, const volatile void __iomem *src,
+diff --git a/arch/hexagon/kernel/hexagon_ksyms.c b/arch/hexagon/kernel/hexagon_ksyms.c
+index b3dbb472572e..6fb1aaab1c29 100644
+--- a/arch/hexagon/kernel/hexagon_ksyms.c
++++ b/arch/hexagon/kernel/hexagon_ksyms.c
+@@ -14,7 +14,7 @@
+ EXPORT_SYMBOL(__clear_user_hexagon);
+ EXPORT_SYMBOL(raw_copy_from_user);
+ EXPORT_SYMBOL(raw_copy_to_user);
+-EXPORT_SYMBOL(__iounmap);
++EXPORT_SYMBOL(iounmap);
+ EXPORT_SYMBOL(__strnlen_user);
+ EXPORT_SYMBOL(__vmgetie);
+ EXPORT_SYMBOL(__vmsetie);
+diff --git a/arch/hexagon/mm/ioremap.c b/arch/hexagon/mm/ioremap.c
+index b103d83b5fbb..255c5b1ee1a7 100644
+--- a/arch/hexagon/mm/ioremap.c
++++ b/arch/hexagon/mm/ioremap.c
+@@ -38,7 +38,7 @@ void __iomem *ioremap(unsigned long phys_addr, unsigned long size)
+ 	return (void __iomem *) (offset + addr);
  }
- EXPORT_SYMBOL(iounmap);
  
-+#ifndef CPU_M68040_OR_M68060_ONLY
- /*
-- * __iounmap unmaps nearly everything, so be careful
-+ * __free_io_area unmaps nearly everything, so be careful
-  * Currently it doesn't free pointer/page tables anymore but this
-  * wasn't used anyway and might be added later.
-  */
--void __iounmap(void *addr, unsigned long size)
-+static void __free_io_area(void *addr, unsigned long size)
+-void __iounmap(const volatile void __iomem *addr)
++void iounmap(const volatile void __iomem *addr)
  {
- 	unsigned long virtaddr = (unsigned long)addr;
- 	pgd_t *pgd_dir;
-@@ -297,6 +299,7 @@ void __iounmap(void *addr, unsigned long size)
- 
- 	flush_tlb_all();
+ 	vunmap((void *) ((unsigned long) addr & PAGE_MASK));
  }
-+#endif /* CPU_M68040_OR_M68060_ONLY */
- 
- /*
-  * Set new cache mode for some kernel address space.
 -- 
 2.20.1
 
