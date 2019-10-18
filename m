@@ -2,82 +2,89 @@ Return-Path: <SRS0=wFkH=YL=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81394CA9EA9
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Oct 2019 18:35:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4F19CA9EA0
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Oct 2019 18:38:14 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5E04E20869
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Oct 2019 18:35:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AA9AE21835
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Oct 2019 18:38:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oL645sFl";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UzSwJdSH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E04E20869
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PkEF73F8";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HDe9kDeK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA9AE21835
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=63vqcPU5V2wbOZ3dg7tTJDTAE5shfPsp/r7O73jhMF0=; b=oL645sFlO/1E7D
-	9/H+WoizA0+G8KpEMETiFQWytpxMgfKcYhgpHiysBpQWOn+C/khu0lcl4TR2luVsZqCzQYo/VXK6x
-	W7Bcm1VpCYUltdk8kiffvdTl8FeaR7Wz6i0NThRLcXfr+A3GPJ1ttUvdNw66u12EPrbw0iXBdTArx
-	oMxHDa49LHhO4wyJEMwk5i8hmO+BS7DlJFZM8bv9eda+IQgN6rUEQJfcEk/8aOiAFbTQTCzV4darn
-	qYevtu6DdqMKuGHoqcSbSA4+zhsE4fZjwWoXUgO98ljI9bf3Fqup567w447zJDtsa37qu3TPu6165
-	jzEyF3+aterydV/4Zb8A==;
+	List-Owner; bh=8aMI/muINDgsOBnIH+CR4IQzUiqo+yDGJXlbM8CsT7o=; b=PkEF73F8IJCEKy
+	CN4l7hOyQ4D5LXIiiddkNa01hWwWRP/zZXMPYyOF2gkhsZuM0qWpRTvNE8Qv2X3r/b5zhMs7ByPv3
+	A4I7f2yJi5+IMGPjOCXz+ghYzgHvTYbonOHQVXcsk/7wz1MCjIE5JXd3O8ehsqdRcBO6/1TF40nw1
+	9Qx6hxEx/U+C/w1USr/jpNv34coNnjSpiK9RcfZPLYhGqxbHFlKJ6+ChPTWpZLvCK498rusu395mY
+	0Itl8kkmCP83e1X6CcqdKQWa/boOCajk/WWXz/vF6yYV3TJ33ulSADG7ovbm9QvrvxfsomrEFybYp
+	ll1PUaG16LmjGqHLTAAQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iLX6O-0001gG-If; Fri, 18 Oct 2019 18:35:52 +0000
-Received: from mail-wr1-x443.google.com ([2a00:1450:4864:20::443])
+	id 1iLX8f-0002FT-PD; Fri, 18 Oct 2019 18:38:13 +0000
+Received: from mail-pg1-x541.google.com ([2607:f8b0:4864:20::541])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iLX6K-0001fi-Lu
- for linux-mtd@lists.infradead.org; Fri, 18 Oct 2019 18:35:50 +0000
-Received: by mail-wr1-x443.google.com with SMTP id l10so6863287wrb.2
- for <linux-mtd@lists.infradead.org>; Fri, 18 Oct 2019 11:35:48 -0700 (PDT)
+ id 1iLX8U-00025K-NI; Fri, 18 Oct 2019 18:38:04 +0000
+Received: by mail-pg1-x541.google.com with SMTP id e10so3811065pgd.11;
+ Fri, 18 Oct 2019 11:38:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=kzOxNxVRX1SmQHuvJ1treZltNyYijexf2ck9J3jXKY8=;
- b=UzSwJdSHGIGnMOL6in+EbhaqHjudWKwi1NoXNc6Uge3Dz+yb1bVaLT75noRv8dYHuV
- ambS0/SltyEdVI84pa4PETyzZPBjm0QQeoohLUkpMbeUPDsW09cyefdSo3jhGiRdQFjh
- LAEoSm3ko6X6szew313BbYAZTgKoPXf05eBXT4V6315zT8oeA4siuvoM8Fcw9gTHYMuB
- lGI/ld+ycFiFQilNyDoK2BP/TnSDSiKKchL6SYYkSO/wC0GyF9CeqRJ2rHSxcbbfnNqi
- ZM8nMiBXw96ozZGOoQvZfrqOOJUhOAEeoHrPbXl4IJloKUCXGUusZ+lnVNnKYNPTMY89
- EcfQ==
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to:user-agent;
+ bh=IFDsqOMwc2ojaPSLkT8+wMYUXewN1acLP2lqR1XP15Q=;
+ b=HDe9kDeKBahe9NjGm/ugr3PrO4D0Lw085ywSNSA095A6Y7b0bdnZjmqC82XIISIIdt
+ HL1478hYPAIvWzZLWe743K+0Z4UKFrxK0/hQ9QagRbJbspKW/xQebobzv2mUFy3hRLKH
+ //wSlMwz56Seed2I+e/Y5zi3HKTITkVYbYNZcR/r9Ty9L4OUJxGZQa8n7sooJF+d06MV
+ U8c1Xqzj80SWkW1+fMzKDsGOIVt27mRFx9PdNgqZxq/nnXPUUxC1LvIFwI/iWySD+Mw9
+ Y/fW+KH35SuT8tMvpzVKHsaJfOpxO5whSf8Fu101J4r54ddKqPMDRDSv0HSvbuy5Taxu
+ 2ebg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=kzOxNxVRX1SmQHuvJ1treZltNyYijexf2ck9J3jXKY8=;
- b=i9eafbSMtclo08UqFz0rTFSS+KFSJfgUzsQb79PzTQ/ZJLn+YnAKnvIvWI1VWmFyoC
- wN4/NeyVGX3dOXfqdW2uE7aqHFDFcy+HxSOTc1mFNB/39aocqKz7X+xXB6++g4NNgfr9
- 8HGWh+znE3FrPi/PoIjEu2hRnKzWg7FfSbg7tahMNTBnqE4adBJpMh/83HtxxNUgMmGV
- PzPElQq7gKNDCji7oqO3qGCibeJ7yNRwqUnzvO0Hi+bD2740bjQaqW+Va1oqxhziKKzz
- NuLKp3tfB+iU708gUsJ62rNDdA4fmB7XBXGZeInIktMsDg5TI4Ws/MA7l0Z+Fu6cO7dj
- HuUA==
-X-Gm-Message-State: APjAAAV6Iva7M2UeksGTK+cGEz0uc5rqSbUe3J+Nff6qRscdd67LEv5F
- MHa7HqB2mbL7IrFtIzd34njRKWUoh2vOUqWX9ZQK3g==
-X-Google-Smtp-Source: APXvYqxgG14kjuTvpv6QghuU/6AEcoV0jY0g70gj1cgl2Yr04sPjTVuLXuZMnzd6TF8thZsV6Aj7jvraefEXiSU/vGY=
-X-Received: by 2002:adf:db42:: with SMTP id f2mr9736231wrj.287.1571423747128; 
- Fri, 18 Oct 2019 11:35:47 -0700 (PDT)
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=IFDsqOMwc2ojaPSLkT8+wMYUXewN1acLP2lqR1XP15Q=;
+ b=XEMpCMweC+sUDepcIjqfyT+k3apa5IUg7HjfG3DGrJawl2kqaoqx8rC4rHUvZtp2/h
+ mXoovesg0i1wKkSfAkcNNe+qENOeidKbp0AS70vYhhlfNZCH2OkP6+mvrc4kHEeYQIbq
+ sdiId+A0qvn1HM6v/XfxsckAM4rOBJ49kN3iVSwZhwmRI8NA9fnhCdFDoDxGWLIyeGkd
+ 7ir+ffchxiowAjzB9LvbL8+ZOQFAKrdC6pieTAVqpghpaUSO8pLWJ365fgApUAgMPeGd
+ hw+YU6e8Yykav+7BZYv2TAiwMWShZifcZdskHRvukKaqkN+hGxVvOsLVg7DKBlXqNAwG
+ 1uLA==
+X-Gm-Message-State: APjAAAWOlwYIInAwGznsSC1EciknekzNMX7dVMCnH/w0u6//LrqxbSYx
+ qCSZrasiUi3synJdV2bewP0=
+X-Google-Smtp-Source: APXvYqxI3fG8J2/DXNrMqbp5He+LcRaizowKU8zXJc/NBeHP6e+1CmGad85VCcLrdR+rSgjhba5HPg==
+X-Received: by 2002:a63:5762:: with SMTP id h34mr2723268pgm.235.1571423881363; 
+ Fri, 18 Oct 2019 11:38:01 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:3adc:b08c:7acc:b325])
+ by smtp.gmail.com with ESMTPSA id 69sm6908001pgh.47.2019.10.18.11.37.59
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 18 Oct 2019 11:38:00 -0700 (PDT)
+Date: Fri, 18 Oct 2019 11:37:57 -0700
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 05/46] ARM: pxa: split up mach/hardware.h
+Message-ID: <20191018183757.GL35946@dtor-ws>
+References: <20191018154052.1276506-1-arnd@arndb.de>
+ <20191018154201.1276638-5-arnd@arndb.de>
 MIME-Version: 1.0
-References: <20191017142229.3853-1-miquel.raynal@bootlin.com>
-In-Reply-To: <20191017142229.3853-1-miquel.raynal@bootlin.com>
-From: Brian Norris <computersforpeace@gmail.com>
-Date: Fri, 18 Oct 2019 11:35:36 -0700
-Message-ID: <CAN8TOE8mNf1VhoRLiiE6bjrVmDUHCwvPNaHuvDw71cxa9OhSYw@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: mtd/ubi/ubifs: Remove inactive maintainers
-To: Miquel Raynal <miquel.raynal@bootlin.com>
+Content-Disposition: inline
+In-Reply-To: <20191018154201.1276638-5-arnd@arndb.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191018_113548_747394_431CBCAB 
-X-CRM114-Status: GOOD (  13.08  )
+X-CRM114-CacheID: sfid-20191018_113802_759807_8D9220EA 
+X-CRM114-Status: GOOD (  15.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,42 +96,81 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger <richard@nod.at>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Linux Kernel <linux-kernel@vger.kernel.org>,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Ulf Hansson <ulf.hansson@linaro.org>,
+ Viresh Kumar <viresh.kumar@linaro.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Dominik Brodowski <linux@dominikbrodowski.net>, linux-mtd@lists.infradead.org,
+ Pavel Machek <pavel@ucw.cz>, Robert Jarzmik <robert.jarzmik@free.fr>,
+ linux-clk@vger.kernel.org, linux-leds@vger.kernel.org,
+ linux-rtc@vger.kernel.org, linux-input@vger.kernel.org,
+ Michael Turquette <mturquette@baylibre.com>,
+ Guenter Roeck <linux@roeck-us.net>, linux-watchdog@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-pm@vger.kernel.org,
+ Haojian Zhuang <haojian.zhuang@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jacek Anaszewski <jacek.anaszewski@gmail.com>, linux-fbdev@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, Stephen Boyd <sboyd@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ dri-devel@lists.freedesktop.org, linux-usb@vger.kernel.org,
+ linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Daniel Mack <daniel@zonque.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVGh1LCBPY3QgMTcsIDIwMTkgYXQgNzoyMiBBTSBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5
-bmFsQGJvb3RsaW4uY29tPiB3cm90ZToKPgo+IERlc3BpdGUgdGhlaXIgc3Vic3RhbnRpYWwgcGVy
-c29uYWwgaW52ZXN0bWVudCBpbiB0aGUgTVREL1VCSS9VQklGUyBhCj4gZmV3IHllYXJzIGJhY2ss
-IERhdmlkLCBCcmlhbiwgQXJ0ZW0gYW5kIEFkcmlhbiBhcmUgbm90IGFjdGl2ZWx5Cj4gbWFpbnRh
-aW5pbmcgdGhlIHN1YnN5c3RlbSBhbnltb3JlLiBXZSB3YXJtbHkgc2FsdXRlIHRoZW0gZm9yIGFs
-bCB0aGUKPiB3b3JrIHRoZXkgaGF2ZSBhY2hpZXZlZCBhbmQgd2lsbCBvZiBjb3Vyc2Ugc3RpbGwg
-d2VsY29tZSB0aGVpcgo+IHBhcnRpY2lwYXRpb24gYW5kIHJldmlld3MuCj4KPiBUaGF0IHNhaWQs
-IE1hcmVrIHJldGlyZWQgaGltc2VsZiBhIGZldyB3ZWVrcyBhZ28gcXVvdGluZyBIYXJhbGQgWzFd
-Ogo+Cj4gICAgICAgICBJdCBtYXR0ZXJzIHdobyBoYXMgd2hpY2ggdGl0bGUgYW5kIHdoZW4uIFNo
-b3VsZCBzb21lYm9keSBub3QKPiAgICAgICAgIGJlIGFuIGFjdGl2ZSBtYWludGFpbmVyLCBtYWtl
-IHN1cmUgaGUncyBub3QgbGlzdGVkIGFzIHN1Y2guCj4KPiBGb3IgdGhpcyBzYW1lIHJlYXNvbiwg
-bGV04oCZcyB0cmltIHRoZSBtYWludGFpbmVycyBsaXN0IHdpdGggdGhlCj4gYWN0dWFsbHkgYWN0
-aXZlIG9uZXMgb3ZlciB0aGUgcGFzdCB0d28geWVhcnMuCj4KPiBbMV0gaHR0cDovL2xhZm9yZ2Uu
-Z251bW9ua3Mub3JnL2Jsb2cvMjAxODAzMDctbWNoYXJkeS1ncGwvCj4KPiBDYzogRGF2aWQgV29v
-ZGhvdXNlIDxkd213MkBpbmZyYWRlYWQub3JnPgo+IENjOiBCcmlhbiBOb3JyaXMgPGNvbXB1dGVy
-c2ZvcnBlYWNlQGdtYWlsLmNvbT4KPiBDYzogQXJ0ZW0gQml0eXV0c2tpeSA8ZGVkZWtpbmQxQGdt
-YWlsLmNvbT4KPiBDYzogQWRyaWFuIEh1bnRlciA8YWRyaWFuLmh1bnRlckBpbnRlbC5jb20+Cj4g
-Q2M6IE1hcmVrIFZhc3V0IDxtYXJlay52YXN1dEBnbWFpbC5jb20+Cj4gQ2M6IE1pcXVlbCBSYXlu
-YWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+Cj4gQ2M6IFJpY2hhcmQgV2VpbmJlcmdlciA8
-cmljaGFyZEBub2QuYXQ+Cj4gQ2M6IFZpZ25lc2ggUmFnaGF2ZW5kcmEgPHZpZ25lc2hyQHRpLmNv
-bT4KPiBDYzogVHVkb3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1c0BtaWNyb2NoaXAuY29tPgo+IFNp
-Z25lZC1vZmYtYnk6IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+CgpJ
-J3ZlIGJlZW4gbWVhbmluZyB0byBkbyB0aGlzIGZvciBhIHdoaWxlLCBzbyB0aGFua3MuCgpBY2tl
-ZC1ieTogQnJpYW4gTm9ycmlzIDxjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb20+CgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVRE
-IGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Fri, Oct 18, 2019 at 05:41:20PM +0200, Arnd Bergmann wrote:
+> The mach/hardware.h is included in lots of places, and it provides
+> three different things on pxa:
+> 
+> - the cpu_is_pxa* macros
+> - an indirect inclusion of mach/addr-map.h
+> - the __REG() and io_pv2() helper macros
+> 
+> Split it up into separate <linux/soc/pxa/cpu.h> and mach/pxa-regs.h
+> headers, then change all the files that use mach/hardware.h to
+> include the exact set of those three headers that they actually
+> need, allowing for further more targeted cleanup.
+> 
+> linux/soc/pxa/cpu.h can remain permanently exported and is now in
+> a global location along with similar headers. pxa-regs.h and
+> addr-map.h are only used in a very small number of drivers now
+> and can be moved to arch/arm/mach-pxa/ directly when those drivers
+> are to pass the necessary data as resources.
+> 
+> Cc: Michael Turquette <mturquette@baylibre.com>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: Viresh Kumar <viresh.kumar@linaro.org>
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+> Cc: Pavel Machek <pavel@ucw.cz>
+> Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> Cc: Dominik Brodowski <linux@dominikbrodowski.net>
+> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Guenter Roeck <linux@roeck-us.net>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: linux-clk@vger.kernel.org
+> Cc: linux-pm@vger.kernel.org
+> Cc: linux-input@vger.kernel.org
+> Cc: linux-leds@vger.kernel.org
+> Cc: linux-mmc@vger.kernel.org
+> Cc: linux-mtd@lists.infradead.org
+> Cc: linux-rtc@vger.kernel.org
+> Cc: linux-usb@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-fbdev@vger.kernel.org
+> Cc: linux-watchdog@vger.kernel.org
+> Cc: alsa-devel@alsa-project.org
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+For input bits:
+
+Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+
+-- 
+Dmitry
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
