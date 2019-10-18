@@ -2,76 +2,60 @@ Return-Path: <SRS0=wFkH=YL=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C46D6CA9EA1
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Oct 2019 09:50:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14622CA9EA0
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Oct 2019 14:37:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 96C60222BD
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Oct 2019 09:50:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D8331222BD
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Oct 2019 14:37:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uvE8X09y"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 96C60222BD
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bc3ao/In"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D8331222BD
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=R7zLxTXZnyNoqf0dIjJOM4jtCTpGkPZxbcJ1vse3H9Y=; b=uvE8X09yiKW0y9
-	hFfys+xdsAJW/UxVRnzeArWzrVwq5yYSK9Bl66xLB+ZzUYrMRNU1VjgLiEDExHpry+qvQwppmdHkt
-	u4eRaMSbIXMjNEnfB+Cta3DXhvRLITzDaDponS21WcaiQqVKY/ufGvj+u6MOQmpqutuessQkpM4es
-	/whk0fM5deGiNFwQhhhlv5b5d5F16MCMIVZ0Pe01t8Z/rNv0SCAylouoj8TEvjqNqGPdodTYPqxYd
-	XdhB8/2ujUBtDRjzyLDiQvSMxsTU7dtbhOtBRyxlBulEI7uMq65k2xgLYD/4M44xF9dVRYGs23MjB
-	DwCV0MpYlCMfFiPvad8Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=nHvLCeOGXwROizeAmkOCnRoyxDVgrPItH62CFgWXu3g=; b=bc3ao/In5Bz4N7
+	kWpydOqlH0wsSTiiUZ9eyl4uwUh7ma72yMNqA4/18wY1Y8lzN/fGIy0HhP76POwGYFGe2jlL5x/fi
+	+sQX0PkybAmPaZvye05+2mUWAsYkgDpQSKPn1hxjtKboYZ3LqgEaNftuXr0kdIEldoCfFc+/OWtiu
+	yAm1hgkY/yCbiyZ+5V6T3TiKk9hwwoVjNcBKSkZwkFIyKtDcHhClTfVz4IStMjIM1ptXWpilUH9Lp
+	L5p7rii/NnpN34epNr2U65JLGlFLzQDlJpwn3OuBIwtswI9fm/nrsv/B9s8uBxmYwDOsgI4Um5pG0
+	razv3f04CZOuNfzydp0Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iLOu7-0008Ok-DH; Fri, 18 Oct 2019 09:50:39 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1iLTNE-0006MN-GS; Fri, 18 Oct 2019 14:37:00 +0000
+Received: from relay4-d.mail.gandi.net ([217.70.183.196])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iLOu4-0008OH-Gk
- for linux-mtd@lists.infradead.org; Fri, 18 Oct 2019 09:50:38 +0000
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <sha@pengutronix.de>)
- id 1iLOu0-00089m-UX; Fri, 18 Oct 2019 11:50:32 +0200
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.89)
- (envelope-from <sha@pengutronix.de>)
- id 1iLOu0-0005Tx-5Y; Fri, 18 Oct 2019 11:50:32 +0200
-Date: Fri, 18 Oct 2019 11:50:32 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Bruno Thomsen <bruno.thomsen@gmail.com>
-Subject: Re: Regression: dmaengine: imx28 with emmc
-Message-ID: <20191018095032.akdis5anygjl4pio@pengutronix.de>
-References: <CAH+2xPB7rbeJnOPU10Ss9BhV_2DJV-ToQ3XNOy97+vrGx+ubcg@mail.gmail.com>
- <20191014141344.uwnzy3j3kxngzv7a@pengutronix.de>
+ id 1iLTN3-0006EI-SK; Fri, 18 Oct 2019 14:36:51 +0000
+X-Originating-IP: 86.250.200.211
+Received: from localhost.localdomain (lfbn-1-17395-211.w86-250.abo.wanadoo.fr
+ [86.250.200.211]) (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 31813E0014;
+ Fri, 18 Oct 2019 14:36:45 +0000 (UTC)
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [PATCH] mtd: spear_smi: Fix nonalignment not handled in memcpy_toio
+Date: Fri, 18 Oct 2019 16:36:43 +0200
+Message-Id: <20191018143643.29676-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20191014141344.uwnzy3j3kxngzv7a@pengutronix.de>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-IRC: #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 11:49:27 up 102 days, 15:59, 102 users,  load average: 0.31, 0.13,
- 0.12
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191018_025036_556886_D809587A 
-X-CRM114-Status: GOOD (  16.65  )
+X-CRM114-CacheID: sfid-20191018_073650_046786_EB784C6A 
+X-CRM114-Status: GOOD (  15.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,52 +67,50 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: bth@kamstrup.com, vkoul@kernel.org, linux-mtd@lists.infradead.org,
- NXP Linux Team <linux-imx@nxp.com>, miquel.raynal@bootlin.com,
- dmaengine@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: stable@vger.kernel.org, Boris Brezillon <boris.brezillon@collabora.com>,
+ linux-mtd@lists.infradead.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Oct 14, 2019 at 04:13:44PM +0200, Sascha Hauer wrote:
-> Hi Bruno,
-> 
-> On Tue, Oct 08, 2019 at 10:03:16AM +0200, Bruno Thomsen wrote:
-> > Hi
-> > 
-> > I am getting a kernel oops[1] during boot on imx28 with emmc flash right
-> > around rootfs mounting. Using git bisect I found the cause to be the
-> > following commit.
-> > 
-> > Regression: ceeeb99cd821 ("dmaengine: mxs: rename custom flag")
-> > 
-> > Reverting the 2 changes in drivers/dma/mxs-dma.c fixes the oops,
-> > but I am not sure that is the right solution as I don't have the full
-> > mxs-dma + mtd/mmc overview.
-> > 
-> > I did see that the patch isn't a simple rename but also a bit define
-> > change.
-> > From: DMA_CTRL_ACK = (1 << 1) = BIT(1)
-> > To: MXS_DMA_CTRL_WAIT4END = BIT(31)
-> > 
-> 
-> Damn, I wasn't aware the DMA driver has other users than the GPMI Nand.
-> Please try the attached patch, it should fix it for MMC/SD. It seems
-> however, that I2C and AUART and SPI are also affected. Are you able to
-> test any of these?
-
-I just sent out the patch again for inclusion with the collected
-tested-by tags.
-
-Sascha
-
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+QW55IHdyaXRlIHdpdGggZWl0aGVyIGRkIG9yIGZsYXNoY3AgdG8gYSBkZXZpY2UgZHJpdmVuIGJ5
+IHRoZQpzcGVhcl9zbWkuYyBkcml2ZXIgd2lsbCBwYXNzIHRocm91Z2ggdGhlIHNwZWFyX3NtaV9j
+cHlfdG9pbygpCmZ1bmN0aW9uLiBUaGlzIGZ1bmN0aW9uIHdpbGwgZ2V0IGNhbGxlZCBmb3IgY2h1
+bmtzIG9mIHVwIHRvIDI1NiBieXRlcy4KSWYgdGhlIGFtb3VudCBvZiBkYXRhIGlzIHNtYWxsZXIs
+IHdlIG1heSBoYXZlIGEgcHJvYmxlbSBpZiB0aGUgZGF0YQpsZW5ndGggaXMgbm90IDQtYnl0ZSBh
+bGlnbmVkLiBJbiB0aGlzIHNpdHVhdGlvbiwgdGhlIGtlcm5lbCBwYW5pY3MKZHVyaW5nIHRoZSBt
+ZW1jcHk6CgogICAgIyBkZCBpZj0vZGV2L3VyYW5kb20gYnM9MTAwMSBjb3VudD0xIG9mPS9kZXYv
+bXRkNgogICAgc3BlYXJfc21pX2NweV90b2lvIFs2MjBdIGRlc3QgYzkwNzAwMDAsIHNyYyBjN2Jl
+ODgwMCwgbGVuIDI1NgogICAgc3BlYXJfc21pX2NweV90b2lvIFs2MjBdIGRlc3QgYzkwNzAxMDAs
+IHNyYyBjN2JlODkwMCwgbGVuIDI1NgogICAgc3BlYXJfc21pX2NweV90b2lvIFs2MjBdIGRlc3Qg
+YzkwNzAyMDAsIHNyYyBjN2JlOGEwMCwgbGVuIDI1NgogICAgc3BlYXJfc21pX2NweV90b2lvIFs2
+MjBdIGRlc3QgYzkwNzAzMDAsIHNyYyBjN2JlOGIwMCwgbGVuIDIzMwogICAgVW5oYW5kbGVkIGZh
+dWx0OiBleHRlcm5hbCBhYm9ydCBvbiBub24tbGluZWZldGNoICgweDgwOCkgYXQgMHhjOTA3MDNl
+OAogICAgWy4uLl0KICAgIFBDIGlzIGF0IG1lbWNweSsweGNjLzB4MzMwCgpXb3JrYXJvdW5kIHRo
+aXMgaXNzdWUgYnkgdXNpbmcgdGhlIGFsdGVybmF0ZSBfbWVtY3B5X3RvaW8oKSBtZXRob2QKd2hp
+Y2ggYXQgbGVhc3QgZG9lcyBub3QgcHJlc2VudCB0aGUgc2FtZSBwcm9ibGVtLgoKRml4ZXM6IGYx
+OGRiYmIxYmZlMCAoIm10ZDogU1QgU1BFQXI6IEFkZCBTTUkgZHJpdmVyIGZvciBzZXJpYWwgTk9S
+IGZsYXNoIikKQ2M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcKU3VnZ2VzdGVkLWJ5OiBCb3JpcyBC
+cmV6aWxsb24gPGJvcmlzLmJyZXppbGxvbkBjb2xsYWJvcmEuY29tPgpTaWduZWQtb2ZmLWJ5OiBN
+aXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPgotLS0KCkhlbGxvLAoKVGhp
+cyBwYXRjaCBjb3VsZCBub3QgYmUgdGVzdGVkIHdpdGggYSBtYWlubGluZSBrZXJuZWwgKG9ubHkg
+Y29tcGlsZWQpCmJ1dCB3YXMgdGVzdGVkIHdpdGggYSBzdGFibGUgNC4xNC54IGtlcm5lbC4gSSBo
+YXZlIHJlYWxseSBubyBpZGVhIHdoeQptZW1jcHkgZmFpbHMgaW4gdGhpcyBzaXR1YXRpb24gdGhh
+dCdzIHdoeSBJIHByb3Bvc2UgdGhpcyB3b3JrYXJvdW5kCmJ1dCBJIGJldCB0aGVyZSBpcyBzb21l
+dGhpbmcgZGVlcGVyIG5vdCB3b3JraW5nLgoKVGhhbmtzLApNaXF1w6hsCgogZHJpdmVycy9tdGQv
+ZGV2aWNlcy9zcGVhcl9zbWkuYyB8IDIgKy0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigr
+KSwgMSBkZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL2RldmljZXMvc3BlYXJf
+c21pLmMgYi9kcml2ZXJzL210ZC9kZXZpY2VzL3NwZWFyX3NtaS5jCmluZGV4IDk4NmY4MWQyZjkz
+ZS4uZDg4ODYyNWEzMjQ0IDEwMDY0NAotLS0gYS9kcml2ZXJzL210ZC9kZXZpY2VzL3NwZWFyX3Nt
+aS5jCisrKyBiL2RyaXZlcnMvbXRkL2RldmljZXMvc3BlYXJfc21pLmMKQEAgLTYxNCw3ICs2MTQs
+NyBAQCBzdGF0aWMgaW5saW5lIGludCBzcGVhcl9zbWlfY3B5X3RvaW8oc3RydWN0IHNwZWFyX3Nt
+aSAqZGV2LCB1MzIgYmFuaywKIAljdHJscmVnMSA9IHJlYWRsKGRldi0+aW9fYmFzZSArIFNNSV9D
+UjEpOwogCXdyaXRlbCgoY3RybHJlZzEgfCBXQl9NT0RFKSAmIH5TV19NT0RFLCBkZXYtPmlvX2Jh
+c2UgKyBTTUlfQ1IxKTsKIAotCW1lbWNweV90b2lvKGRlc3QsIHNyYywgbGVuKTsKKwlfbWVtY3B5
+X3RvaW8oZGVzdCwgc3JjLCBsZW4pOwogCiAJd3JpdGVsKGN0cmxyZWcxLCBkZXYtPmlvX2Jhc2Ug
+KyBTTUlfQ1IxKTsKIAotLSAKMi4yMC4xCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
+dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
