@@ -2,92 +2,73 @@ Return-Path: <SRS0=GZUv=YM=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CC27CA9EA9
-	for <linux-mtd@archiver.kernel.org>; Sat, 19 Oct 2019 01:03:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4298ACA9EAB
+	for <linux-mtd@archiver.kernel.org>; Sat, 19 Oct 2019 09:09:53 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EAED3222C2
-	for <linux-mtd@archiver.kernel.org>; Sat, 19 Oct 2019 01:03:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 05EE4222CD
+	for <linux-mtd@archiver.kernel.org>; Sat, 19 Oct 2019 09:09:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CXiMxJog";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZFvZMeNd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EAED3222C2
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="r4RkQQNZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 05EE4222CD
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=PI2T7FPKJQzjKm3r8Vbb0lKYMLDRreF2CHeiQX9yM14=; b=CXiMxJogUAJ7vsS0BIrzKW/ng
-	Pyk+Rg4mWsIL8PvXULVNXwXjwFqAJ31yh4UDe38ygFst9wZg3D4vTpS8yquMDoybTumCBmZPSEMWb
-	+6PB33Cw5XsJs+lhBCtCEH7jSdfBxN62g0WWfmqDVov0griS1f5rbxvJDz3F/PeoGGI3lWxJpkfgH
-	bwxP3f6eWWb2nTsa6T2KQJcpkeFEJYE6U5Xfhc5ZZw3VeEjibtb7TmYvZThq31zWsh08plXh5GOsV
-	SqUqtBpib2K45FCZtggolXLjN7ea+ROoMfZJEMTMeOwhMRPub7tyNdwnZJf36zr1ohA1Mam35SMf6
-	C/aKD1QLw==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=NOpdhHVQ4Mi77OH/J1QVL3zCiSbyMS/VcBIR5xdkjvQ=; b=r4RkQQNZT3V885
+	jLq9VrqmfBDUiPx7EwFHXx+WCEjOSA/dfVRVmg2R5MZbJneu1m1jr3CFz5Q6GfkR8ye8UWckn/i0M
+	bN0U7mhhMeupSrvNtLcgMZvhJgqZ5jgcBvlbgsLjGlj1WDDkBYKi3oF85VaK3d62gJ5h63uL/S264
+	6/C4RWm146yzQZ8EDhaXRPqFMOO23/XOLwvHK5nmyw8M9xCYa7OcG8WXbzwbZLFA+K1gNlmnL9SYN
+	fRBEgNw3Ks4ih+T8mRn+MALJ4QNBw5FuhbAh0McbN/00qDZF9HpsWA7JkfKi15LsykL5qAiGO/vRB
+	TGmglEK+lk/hrxssUGOg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iLd99-0006Qd-Rf; Sat, 19 Oct 2019 01:03:07 +0000
-Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
+	id 1iLkkA-00017m-E6; Sat, 19 Oct 2019 09:09:50 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iLd95-0006Px-R0; Sat, 19 Oct 2019 01:03:05 +0000
-Received: by mail-pg1-x544.google.com with SMTP id i76so4267764pgc.0;
- Fri, 18 Oct 2019 18:03:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=sender:subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=O2vDP5dhX90+NEeZF4xwy/6nZiyy5Chs2FfT8NPVR7E=;
- b=ZFvZMeNde3XSQbCX5z+A8LC9qIkMj77Zzi+EgKADvigb12CI/Atx5eiO423UuVNTZ4
- FMRj0TTh5vYpzBJFf3onEv/NHctJbLDMvw72Wm/UAs/vKZecv2U7aiKsK5O98DMCY3LN
- 6P8SWWQFoi0WW7dNj9CrT+uf0KK0LjF+3+/cSfQNkEYtvDykIjEQuh6qD2TVjSbIXoLH
- 0NoyZAo/m7sgpGHXCa5h6dWvnJlDsRbI4TfaO4uSF0QgVAzYFE5KMcLQFbvw7OGqrAEI
- 4v0uNLLBBCk7L6lzLHiVmoKSbmmeLfyP8LnUo6lczAWEEIGT7byS+WfZ7fYM1pCa1V6t
- b94w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
- :date:user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=O2vDP5dhX90+NEeZF4xwy/6nZiyy5Chs2FfT8NPVR7E=;
- b=HF1Ra2syiqfDCNxPN4Da7d3cBm0ShD8b9g/mQBbrE/ek6t9O9M0lWdxqZyHwCaPe3q
- dQlT8YkaIrMF2d/bnFHCmIamjjzpxDXuv6WkF74jl81wirAZCkv426y+tn+7zc3eiWuL
- vL/R0EV1Xghu+56FWr/RUvkPv41sYIJOu6kwhG06aKFieLj3+Uu+HlFZ08Ol15WuBv7q
- e4hsMmXW2oIxYJ2LE5xDFwa2SXz1CJ1P3bb98wRCR97Vb1i+mpeSW12Cjm6hZFIq7k2S
- shUCsUqR83ujxe0rrHAEOBctyMVY0B2/mF8A/FIAHwecUG+Lm+hsWxx5XQK/c3abgatV
- u5tg==
-X-Gm-Message-State: APjAAAV4jr6vgy8cvb6ffdyU7HOBy3PB01qqE/hIDmoEDrvQa6zxaseW
- AUTH1STs4B5uY29cpL/zz8J3eASI
-X-Google-Smtp-Source: APXvYqyfRaTHhsimbDLjYp5YZtM7EeE6UsAbtJraEIbyzdK0a87RqNrOa51iK+zxPIPUiG8is3MEFw==
-X-Received: by 2002:a63:f5a:: with SMTP id 26mr13333625pgp.63.1571446981132;
- Fri, 18 Oct 2019 18:03:01 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
- by smtp.gmail.com with ESMTPSA id
- h14sm7304535pfo.15.2019.10.18.18.02.58
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Fri, 18 Oct 2019 18:03:00 -0700 (PDT)
-Subject: Re: [PATCH 00/46] ARM: pxa: towards multiplatform support
-To: Arnd Bergmann <arnd@arndb.de>, Daniel Mack <daniel@zonque.org>,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>
-References: <20191018154052.1276506-1-arnd@arndb.de>
-From: Guenter Roeck <linux@roeck-us.net>
-Message-ID: <803f6fa5-b929-007c-5302-4a2d5042241c@roeck-us.net>
-Date: Fri, 18 Oct 2019 18:02:57 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ id 1iLkk4-000177-C2
+ for linux-mtd@lists.infradead.org; Sat, 19 Oct 2019 09:09:46 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 229C6608F44E;
+ Sat, 19 Oct 2019 11:09:38 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id gREQTJPg-UOX; Sat, 19 Oct 2019 11:09:37 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id BD1A16162112;
+ Sat, 19 Oct 2019 11:09:37 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id AxLTqkty1K1x; Sat, 19 Oct 2019 11:09:37 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 557B1608A386;
+ Sat, 19 Oct 2019 11:09:37 +0200 (CEST)
+Date: Sat, 19 Oct 2019 11:09:36 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: Kiran B S <bs.kiran81@gmail.com>
+Message-ID: <396862842.29400.1571476176976.JavaMail.zimbra@nod.at>
+In-Reply-To: <CA+VTqB=0QSWG68GLO=6LuetoSwwiuxDT6k_n=m+ruZpbjuvgeQ@mail.gmail.com>
+References: <CA+VTqBkr+1Kd0QSLUJbRZG3CMZdNct_svGNjSfVh=8Gaozfrfw@mail.gmail.com>
+ <CA+VTqB=0QSWG68GLO=6LuetoSwwiuxDT6k_n=m+ruZpbjuvgeQ@mail.gmail.com>
+Subject: Re: Seeing ubifs unmap LEB error with linux 2.6.35 kernel
 MIME-Version: 1.0
-In-Reply-To: <20191018154052.1276506-1-arnd@arndb.de>
-Content-Language: en-US
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF60 (Linux)/8.8.12_GA_3809)
+Thread-Topic: Seeing ubifs unmap LEB error with linux 2.6.35 kernel
+Thread-Index: 2sWVzL16nu12F1WFJIu4tXjKw0MIuQ==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191018_180303_899363_69F8DDD3 
-X-CRM114-Status: GOOD (  18.58  )
+X-CRM114-CacheID: sfid-20191019_020945_055061_37DF605F 
+X-CRM114-Status: UNSURE (   8.01  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,62 +80,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-rtc@vger.kernel.org, linux-fbdev@vger.kernel.org,
- linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
- Linus Walleij <linus.walleij@linaro.org>, linux-usb@vger.kernel.org,
- linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-ide@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-leds@vger.kernel.org, linux-input@vger.kernel.org,
- linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 10/18/19 8:40 AM, Arnd Bergmann wrote:
-> 
-> Hi PXA maintainers,
-> 
-> I'm in the process of getting the old ARM platforms to all build
-> in a single kernel. The largest part of that work is changing all
-> the device drivers to no longer require mach/*.h header files.
-> 
-> This series does it for arch/pxa/.
-> 
-> As with the omap1 and s3c24xx series I sent before, I don't
-> expect this all to be correct in the first version, though
-> a lot of the patches are fairly simple and I did exhaustive
-> compile-time testing on them.
-> 
-> Please test if you have the hardware, or review!
-> 
-
-I don't get very far.
-
-$ make-arm pxa_defconfig
-arch/arm/Kconfig:677: can't open file "arch/arm/plat-pxa/Kconfig"
-scripts/kconfig/Makefile:90: recipe for target 'pxa_defconfig' failed
-make[1]: *** [pxa_defconfig] Error 1
-Makefile:567: recipe for target 'pxa_defconfig' failed
-make: *** [pxa_defconfig] Error 2
-$ git describe
-v5.4-rc3-52-gfcc4181cd625
-
-Also:
-
-$ git grep plat-pxa
-Documentation/arm/marvel.rst:   arch/arm/plat-pxa
-Documentation/arm/marvel.rst:   arch/arm/plat-pxa
-Documentation/arm/marvel.rst:   directory. The plat-pxa/ would therefore disappear.
-arch/arm/Kconfig:source "arch/arm/plat-pxa/Kconfig"
-arch/arm/mach-mmp/Makefile:ccflags-$(CONFIG_ARCH_MULTIPLATFORM) := -I$(srctree)/arch/arm/plat-pxa/include
-drivers/gpio/gpio-pxa.c: *  linux/arch/arm/plat-pxa/gpio.c
-drivers/soc/pxa/mfp.c: * linux/arch/arm/plat-pxa/mfp.c
-
-Did I pick the wrong tree ?
-
-Guenter
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+S2lyYW4sCgotLS0tLSBVcnNwcsO8bmdsaWNoZSBNYWlsIC0tLS0tCj4gVm9uOiAiS2lyYW4gQiBT
+IiA8YnMua2lyYW44MUBnbWFpbC5jb20+Cj4gQW46ICJSaWNoYXJkIFdlaW5iZXJnZXIiIDxyaWNo
+YXJkLndlaW5iZXJnZXJAZ21haWwuY29tPiwgImxpbnV4LW10ZCIgPGxpbnV4LW10ZEBsaXN0cy5p
+bmZyYWRlYWQub3JnPgo+IEdlc2VuZGV0OiBGcmVpdGFnLCAxOC4gT2t0b2JlciAyMDE5IDExOjQ2
+OjQ0Cj4gQmV0cmVmZjogUmU6IFNlZWluZyB1YmlmcyB1bm1hcCBMRUIgZXJyb3Igd2l0aCBsaW51
+eCAyLjYuMzUga2VybmVsCgo+IEhpIFJpY2hhcmQsCj4gQWxzbyBhIHJlYm9vdCBvZiB0aGUgc3lz
+dGVtIHJlY292ZXJlZCB0aGUgdWJpZnMgZmlsZXN5c3RlbS4KCk9rYXkuIFRoaXMgaW5kaWNhdGVz
+IHRoYXQgdGhlIHByb2JsZW0gaXMgbm90IGZhdGFsLgpJbml0aWFsbHkgd2Ugc2V0IHRoZSBHQy1I
+ZWFkIHRvIC0xLCB1bm1hcHBpbmcgdGhlIEdDLUhlYWQgaXMKYSBjb21tb24gb3BlcmF0aW9uIGlu
+IFVCSUZTLCBtYXliZSB0aGVyZSBpcyBzb21lIGxvZ2ljIGJ1ZyBpbiB0aGUKcmVwbGF5IGNvZGUu
+CgpDYW4geW91IHBsZWFzZSBnaXZlIHRoZSBmb2xsb3dpbmcgY2hhbmdlIGEgdHJ5PwpkaWZmIC0t
+Z2l0IGEvZHJpdmVycy9tdGQvdWJpL2thcGkuYyBiL2RyaXZlcnMvbXRkL3ViaS9rYXBpLmMKaW5k
+ZXggNjlmYTRlZjAzYzUzLi4wM2NlNzUyZDRkMWUgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL3Vi
+aS9rYXBpLmMKKysrIGIvZHJpdmVycy9tdGQvdWJpL2thcGkuYwpAQCAtNjEwLDggKzYxMCwxMCBA
+QCBpbnQgdWJpX2xlYl91bm1hcChzdHJ1Y3QgdWJpX3ZvbHVtZV9kZXNjICpkZXNjLCBpbnQgbG51
+bSkKICAgICAgICBpZiAoZGVzYy0+bW9kZSA9PSBVQklfUkVBRE9OTFkgfHwgdm9sLT52b2xfdHlw
+ZSA9PSBVQklfU1RBVElDX1ZPTFVNRSkKICAgICAgICAgICAgICAgIHJldHVybiAtRVJPRlM7CiAK
+LSAgICAgICBpZiAobG51bSA8IDAgfHwgbG51bSA+PSB2b2wtPnJlc2VydmVkX3BlYnMpCisgICAg
+ICAgaWYgKGxudW0gPCAwIHx8IGxudW0gPj0gdm9sLT5yZXNlcnZlZF9wZWJzKSB7CisgICAgICAg
+ICAgICAgICBkdW1wX3N0YWNrKCk7CiAgICAgICAgICAgICAgICByZXR1cm4gLUVJTlZBTDsKKyAg
+ICAgICB9CiAKICAgICAgICBpZiAodm9sLT51cGRfbWFya2VyKQogICAgICAgICAgICAgICAgcmV0
+dXJuIC1FQkFERjsKClVzaW5nIGR1bXBfc3RhY2soKSB3ZSBjYW4gc2VlIHdobyB0cmllcyB0byB1
+bm1hcCBhIGJhZCBMRUIgZW50cnkuCgpBZnRlciAyLjYuMzUgVUJJRlMgd2FzIGNoYW5nZWQgYSBs
+b3QgbWF5YmUgdGhlIGlzc3VlIGdvdCBmaXhlZCBhbmQKaXMgbm90IHByZXNlbnQgaW4gYSByZWNl
+bnQga2VybmVsLgoKVGhhbmtzLAovL3JpY2hhcmQKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
+IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
+dGQvCg==
