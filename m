@@ -1,94 +1,70 @@
-Return-Path: <SRS0=zboj=YN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=layW=YO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38F61CA9EAD
-	for <linux-mtd@archiver.kernel.org>; Sun, 20 Oct 2019 23:01:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81BF1CA9EAE
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Oct 2019 02:27:37 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0649421929
-	for <linux-mtd@archiver.kernel.org>; Sun, 20 Oct 2019 23:01:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F258620679
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Oct 2019 02:27:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qQ6TFiH6";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CdDypfBC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0649421929
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nD+//kkZ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="Zf2TycnX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F258620679
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RAz6yppxZlV8BlrCTxMGBIhHmgSO9GAgPJduQTOxKCk=; b=qQ6TFiH6X23/gp
-	BLAFwP4guCSa05FphXxtLs/JjVJ05i2woYKfIahfEKb21klnCE0l3JmA3zja4at/ubS3ehQzO69DQ
-	cvNpvf7DWvD5ylMfK9ODNT4/AZolaupDL9k6Ry3wYjobSGzYJPnKH3HbdoSV6bnddhLSnZCzBLQQz
-	eZorthr8vVOxyVdO8DcqXBBJZGvsXehffMkFhEe0wtdjTafdFhG48T9tf85NPR/V38zUYSzrrys4C
-	euC+uDbVFCBsTnc7kbiHsm0Q00SJx8IcgozdumAjd/+jdMQSkm2whVI+t7YHYC2JypKXcFgxFyc03
-	U8tE/5cpf2BLOqOPyjDw==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=MGxlXNcOccnnWTSfu6lIdEjnN8KcDblPRNMyJS1ZwYI=; b=nD+
+	//kkZI8kZ5c6XgpqVFhVRXmFeLGmgDLXcXvDtl/CuOlfYcTIAAkgmoonjLftgCcinSrddqDa6z2XL
+	MXwd9VjDgsJYaQOOmBuPTggDVSchhZhmN1QfVi18aYowHlqxa/yx+2oXhCCHhYil4ODGhuZjbCgKu
+	K5mpa5bYGetQ5yug0epuaB807e/sb3nsJOMohiUGPyxHwPhmh2TqX9/4hXbrQLzxXRoklx4ImVoOz
+	LG18gVawQo14RHyLD5VpJfJbTuCJIxNyem/gAqSRt/CCUoJ60P0eueGAZs9/CSfeVlLV/76laOFq/
+	kko/Zjj8GeHWWwywyghezSLFj4ItTng==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iMKCI-0006ud-8b; Sun, 20 Oct 2019 23:01:14 +0000
-Received: from mail-lf1-x144.google.com ([2a00:1450:4864:20::144])
+	id 1iMNPy-0005uz-K9; Mon, 21 Oct 2019 02:27:34 +0000
+Received: from conuserg-11.nifty.com ([210.131.2.78])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iMKBz-0005hU-MT
- for linux-mtd@lists.infradead.org; Sun, 20 Oct 2019 23:01:03 +0000
-Received: by mail-lf1-x144.google.com with SMTP id 195so8500040lfj.6
- for <linux-mtd@lists.infradead.org>; Sun, 20 Oct 2019 16:00:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=RCec293SgcM64NtneWJVSHGCnM5fSyWUR46qDu1bvc0=;
- b=CdDypfBCb5a0g2zJwncgmiNN56RUvPwJ0IAF8VF6p28mCMejzkHNONON8fYkFHklvk
- Fx5pfrLX81StvYikO645HdK/02/O6E/j69o37onfPhiFF4kua/0G0wXGwXSqP49komsH
- dZua44ajOQyDd+aL8Zw/SZTQakG+/BWhQGTAidWDc6kzZDzQ9roAmv2f+rfp+3rRqsj8
- BDO2RLv+eTHZAOSNolprRlTbEHvnFoCh0byAjZ4XWkYJ0hzQptaVATkLqy9vSlblyuGU
- NGyJkI8rwPmymThKflH8p28IlqxbkXMQW50F/4LX8bprf3GduG8Go6Xg7LJNY7W/tJdq
- W22A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=RCec293SgcM64NtneWJVSHGCnM5fSyWUR46qDu1bvc0=;
- b=TJcrXWkjXhrgRR+OD2Odp+CaON39Fy/ilOorswxQP0wTs+mrDGyJmdo+QHUTBAsNah
- Ry7Y6XA208h9GjHu4xk1x8aNOoIEjiDSmNLcFurZ5g3sY3BWHWlGjrt9EXstEsAcvdG7
- sXNfofpkuIgSrF+lnmQProyrJXOGvgBIdwYMwenQI68chYqyuiIeCvozmipyD8fkwgtz
- /hAcYdT8emoPO9b0Jp1LAnfokzIMPZn8PWBCporLVdnYvlue6UbUDcSR3ZMNJSyikYa8
- 4QzIy3yrbi8Ami4ARxomu57vWUx3ifdnsTtapA8KpCuZwMvazjlC5FwjFPe5S0OAR17V
- CVHw==
-X-Gm-Message-State: APjAAAV8wzKeDkrU5q7Dzr1hVFzRqWy6wQMV7GzqFr83Z8Lj1hnOQlBY
- RXlS43zgdcIV25pFgcpuQnBzXA==
-X-Google-Smtp-Source: APXvYqw7lSX28do7mOeegcHGaW3+MHD9rH3473pTVhkZRMOH4KabJK6jabadFHJOEw5L4H3A4rxJ7g==
-X-Received: by 2002:a19:6b07:: with SMTP id d7mr2846567lfa.62.1571612453690;
- Sun, 20 Oct 2019 16:00:53 -0700 (PDT)
-Received: from localhost.bredbandsbolaget
- (c-79c8225c.014-348-6c756e10.bbcust.telenor.se. [92.34.200.121])
- by smtp.gmail.com with ESMTPSA id 77sm6011174ljf.85.2019.10.20.16.00.50
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 20 Oct 2019 16:00:50 -0700 (PDT)
-From: Linus Walleij <linus.walleij@linaro.org>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [PATCH 2/2 v4] mtd: physmap_of: add a hook for Intel IXP4xx flash
- probing
-Date: Mon, 21 Oct 2019 01:00:42 +0200
-Message-Id: <20191020230042.7364-2-linus.walleij@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20191020230042.7364-1-linus.walleij@linaro.org>
-References: <20191020230042.7364-1-linus.walleij@linaro.org>
-MIME-Version: 1.0
+ id 1iMNPv-0005uU-Am
+ for linux-mtd@lists.infradead.org; Mon, 21 Oct 2019 02:27:33 +0000
+Received: from localhost.localdomain (p14092-ipngnfx01kyoto.kyoto.ocn.ne.jp
+ [153.142.97.92]) (authenticated)
+ by conuserg-11.nifty.com with ESMTP id x9L2R0jj001059;
+ Mon, 21 Oct 2019 11:27:00 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com x9L2R0jj001059
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+ s=dec2015msa; t=1571624821;
+ bh=rGwnrypchAXWsBh4eydVJnNqPcxPycvJ1jDHIQCeQ0o=;
+ h=From:To:Cc:Subject:Date:From;
+ b=Zf2TycnXa0108kxAeWiLD9OPuZMkAuLjw6uVI2yAOpHXf1rdibSWDIv/Dvool7CCK
+ 67cK30LQB5PydvMv1FC4wotcZRNWHV+awDSDcBb0hFXHk+UeUAtPPFUzlQqZY/iQBC
+ 2rg8bKR1PIyb5O2teKgsw/jufYS1VVp4QeHsCBT1ij0ltvSGhy/LpS0VYKSG0mHF/2
+ 3XG+LQUCezSDo+gQK9mHNOu2iDKtVAdB+TlkUtLruDjxHDXjHWv13juuvXqbOVZaKD
+ 2gExpQQa3k5T0WydTcK8zOYYWqSbdeeG/dfgQcE9yLxdp0TInuH2wDIAAIXIa3yHS1
+ qi3XcgxHav1Fg==
+X-Nifty-SrcIP: [153.142.97.92]
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: rawnand: denali: remove the old unified controller/chip
+ DT support
+Date: Mon, 21 Oct 2019 11:26:54 +0900
+Message-Id: <20191021022654.13886-1-yamada.masahiro@socionext.com>
+X-Mailer: git-send-email 2.17.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191020_160055_742165_E7C807B1 
-X-CRM114-Status: GOOD (  28.32  )
+X-CRM114-CacheID: sfid-20191020_192731_709646_7ECF5E85 
+X-CRM114-Status: GOOD (  11.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,276 +76,108 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Linus Walleij <linus.walleij@linaro.org>, linux-mtd@lists.infradead.org
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Dinh Nguyen <dinguyen@kernel.org>,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In order to support device tree probing of IXP4xx NOR flash
-chips, a certain big-endian or mixed-endian memory access
-pattern need to be used.
+Commit d8e8fd0ebf8b ("mtd: rawnand: denali: decouple controller and
+NAND chips") supported the new binding for the separate controller/chip
+representation, keeping the backward compatibility.
 
-I have opted to use the pattern set by previous plug-ins
-to physmap for Gemini and Versatile, just override some
-functions and reuse most of the physmap core code as it
-is to minimize maintenance.
+All the device trees in upstream migrated to the new binding.
 
-Parts of drivers/mtd/ixp4xx.c are copied into this file.
+Remove the support for the old binding.
 
-After we have IXP4xx converted fully to device tree, the
-drivers/mtd/ixp4xx.c file will be deleted and this will
-be the only access pattern to the IXP4xx flash.
-
-I did not keep the quirk in the flash write function
-after probe, where the old code for a while checks for
-access to odd addresses, fails and assigns a "faster"
-write function once it has convinced probe to only use
-2-byte accesses. As we mandate that this device should
-be using bank-width = <2> this should not be a problem
-unless misconfigured.
-
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
-ChangeLog v3->v4:
-- Rebase on v5.4-rc1
-- Resend
-ChangeLog v2->v3:
-- Restrict option to ARM machines as LE on X86 does not
-  feel very good about this code.
-ChangeLog v1->v2:
-- Simply select MTD_CFI_BE_BYTE_SWAP on big endian in Kconfig
-- Rebase on v5.1-rc1
----
- drivers/mtd/maps/Kconfig          |  11 +++
- drivers/mtd/maps/Makefile         |   1 +
- drivers/mtd/maps/physmap-core.c   |   5 ++
- drivers/mtd/maps/physmap-ixp4xx.c | 132 ++++++++++++++++++++++++++++++
- drivers/mtd/maps/physmap-ixp4xx.h |  17 ++++
- 5 files changed, 166 insertions(+)
- create mode 100644 drivers/mtd/maps/physmap-ixp4xx.c
- create mode 100644 drivers/mtd/maps/physmap-ixp4xx.h
 
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index bc82305ebb4c..b28225a7c4f3 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -96,6 +96,17 @@ config MTD_PHYSMAP_GEMINI
- 	  platforms, some detection and setting up parallel mode on the
- 	  external interface.
+ drivers/mtd/nand/raw/denali_dt.c | 55 +++-----------------------------
+ 1 file changed, 4 insertions(+), 51 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/denali_dt.c b/drivers/mtd/nand/raw/denali_dt.c
+index 5e14836f6bd5..4cce9ae33b8e 100644
+--- a/drivers/mtd/nand/raw/denali_dt.c
++++ b/drivers/mtd/nand/raw/denali_dt.c
+@@ -102,47 +102,6 @@ static int denali_dt_chip_init(struct denali_controller *denali,
+ 	return denali_chip_init(denali, dchip);
+ }
  
-+config MTD_PHYSMAP_IXP4XX
-+	bool "Intel IXP4xx OF-based physical memory map handling"
-+	depends on MTD_PHYSMAP_OF
-+	depends on ARM
-+	select MTD_COMPLEX_MAPPINGS
-+	select MTD_CFI_BE_BYTE_SWAP if CPU_BIG_ENDIAN
-+	default ARCH_IXP4XX
-+	help
-+	  This provides some extra DT physmap parsing for the Intel IXP4xx
-+	  platforms, some elaborate endianness handling in particular.
-+
- config MTD_PHYSMAP_GPIO_ADDR
- 	bool "GPIO-assisted Flash Chip Support"
- 	depends on MTD_PHYSMAP
-diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-index 1146009f41df..c0da86a5d26f 100644
---- a/drivers/mtd/maps/Makefile
-+++ b/drivers/mtd/maps/Makefile
-@@ -20,6 +20,7 @@ obj-$(CONFIG_MTD_PXA2XX)	+= pxa2xx-flash.o
- physmap-objs-y			+= physmap-core.o
- physmap-objs-$(CONFIG_MTD_PHYSMAP_VERSATILE) += physmap-versatile.o
- physmap-objs-$(CONFIG_MTD_PHYSMAP_GEMINI) += physmap-gemini.o
-+physmap-objs-$(CONFIG_MTD_PHYSMAP_IXP4XX) += physmap-ixp4xx.o
- physmap-objs			:= $(physmap-objs-y)
- obj-$(CONFIG_MTD_PHYSMAP)	+= physmap.o
- obj-$(CONFIG_MTD_PISMO)		+= pismo.o
-diff --git a/drivers/mtd/maps/physmap-core.c b/drivers/mtd/maps/physmap-core.c
-index 21b556afc305..a9f7964e2edb 100644
---- a/drivers/mtd/maps/physmap-core.c
-+++ b/drivers/mtd/maps/physmap-core.c
-@@ -41,6 +41,7 @@
- #include <linux/gpio/consumer.h>
+-/* Backward compatibility for old platforms */
+-static int denali_dt_legacy_chip_init(struct denali_controller *denali)
+-{
+-	struct denali_chip *dchip;
+-	int nsels, i;
+-
+-	nsels = denali->nbanks;
+-
+-	dchip = devm_kzalloc(denali->dev, struct_size(dchip, sels, nsels),
+-			     GFP_KERNEL);
+-	if (!dchip)
+-		return -ENOMEM;
+-
+-	dchip->nsels = nsels;
+-
+-	for (i = 0; i < nsels; i++)
+-		dchip->sels[i].bank = i;
+-
+-	nand_set_flash_node(&dchip->chip, denali->dev->of_node);
+-
+-	return denali_chip_init(denali, dchip);
+-}
+-
+-/*
+- * Check the DT binding.
+- * The new binding expects chip subnodes in the controller node.
+- * So, #address-cells = <1>; #size-cells = <0>; are required.
+- * Check the #size-cells to distinguish the binding.
+- */
+-static bool denali_dt_is_legacy_binding(struct device_node *np)
+-{
+-	u32 cells;
+-	int ret;
+-
+-	ret = of_property_read_u32(np, "#size-cells", &cells);
+-	if (ret)
+-		return true;
+-
+-	return cells != 0;
+-}
+-
+ static int denali_dt_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+@@ -213,17 +172,11 @@ static int denali_dt_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto out_disable_clk_ecc;
  
- #include "physmap-gemini.h"
-+#include "physmap-ixp4xx.h"
- #include "physmap-versatile.h"
+-	if (denali_dt_is_legacy_binding(dev->of_node)) {
+-		ret = denali_dt_legacy_chip_init(denali);
+-		if (ret)
++	for_each_child_of_node(dev->of_node, np) {
++		ret = denali_dt_chip_init(denali, np);
++		if (ret) {
++			of_node_put(np);
+ 			goto out_remove_denali;
+-	} else {
+-		for_each_child_of_node(dev->of_node, np) {
+-			ret = denali_dt_chip_init(denali, np);
+-			if (ret) {
+-				of_node_put(np);
+-				goto out_remove_denali;
+-			}
+ 		}
+ 	}
  
- struct physmap_flash_info {
-@@ -370,6 +371,10 @@ static int physmap_flash_of_init(struct platform_device *dev)
- 		if (err)
- 			return err;
- 
-+		err = of_flash_probe_ixp4xx(dev, dp, &info->maps[i]);
-+		if (err)
-+			return err;
-+
- 		err = of_flash_probe_versatile(dev, dp, &info->maps[i]);
- 		if (err)
- 			return err;
-diff --git a/drivers/mtd/maps/physmap-ixp4xx.c b/drivers/mtd/maps/physmap-ixp4xx.c
-new file mode 100644
-index 000000000000..6a054229a8a0
---- /dev/null
-+++ b/drivers/mtd/maps/physmap-ixp4xx.c
-@@ -0,0 +1,132 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Intel IXP4xx OF physmap add-on
-+ * Copyright (C) 2019 Linus Walleij <linus.walleij@linaro.org>
-+ *
-+ * Based on the ixp4xx.c map driver, originally written by:
-+ * Intel Corporation
-+ * Deepak Saxena <dsaxena@mvista.com>
-+ * Copyright (C) 2002 Intel Corporation
-+ * Copyright (C) 2003-2004 MontaVista Software, Inc.
-+ */
-+#include <linux/export.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
-+#include <linux/mtd/map.h>
-+#include <linux/mtd/xip.h>
-+#include "physmap-ixp4xx.h"
-+
-+/*
-+ * Read/write a 16 bit word from flash address 'addr'.
-+ *
-+ * When the cpu is in little-endian mode it swizzles the address lines
-+ * ('address coherency') so we need to undo the swizzling to ensure commands
-+ * and the like end up on the correct flash address.
-+ *
-+ * To further complicate matters, due to the way the expansion bus controller
-+ * handles 32 bit reads, the byte stream ABCD is stored on the flash as:
-+ *     D15    D0
-+ *     +---+---+
-+ *     | A | B | 0
-+ *     +---+---+
-+ *     | C | D | 2
-+ *     +---+---+
-+ * This means that on LE systems each 16 bit word must be swapped. Note that
-+ * this requires CONFIG_MTD_CFI_BE_BYTE_SWAP to be enabled to 'unswap' the CFI
-+ * data and other flash commands which are always in D7-D0.
-+ */
-+#ifndef CONFIG_CPU_BIG_ENDIAN
-+
-+static inline u16 flash_read16(void __iomem *addr)
-+{
-+	return be16_to_cpu(__raw_readw((void __iomem *)((unsigned long)addr ^ 0x2)));
-+}
-+
-+static inline void flash_write16(u16 d, void __iomem *addr)
-+{
-+	__raw_writew(cpu_to_be16(d), (void __iomem *)((unsigned long)addr ^ 0x2));
-+}
-+
-+#define	BYTE0(h)	((h) & 0xFF)
-+#define	BYTE1(h)	(((h) >> 8) & 0xFF)
-+
-+#else
-+
-+static inline u16 flash_read16(const void __iomem *addr)
-+{
-+	return __raw_readw(addr);
-+}
-+
-+static inline void flash_write16(u16 d, void __iomem *addr)
-+{
-+	__raw_writew(d, addr);
-+}
-+
-+#define	BYTE0(h)	(((h) >> 8) & 0xFF)
-+#define	BYTE1(h)	((h) & 0xFF)
-+#endif
-+
-+static map_word ixp4xx_read16(struct map_info *map, unsigned long ofs)
-+{
-+	map_word val;
-+
-+	val.x[0] = flash_read16(map->virt + ofs);
-+	return val;
-+}
-+
-+/*
-+ * The IXP4xx expansion bus only allows 16-bit wide acceses
-+ * when attached to a 16-bit wide device (such as the 28F128J3A),
-+ * so we can't just memcpy_fromio().
-+ */
-+static void ixp4xx_copy_from(struct map_info *map, void *to,
-+			     unsigned long from, ssize_t len)
-+{
-+	u8 *dest = (u8 *) to;
-+	void __iomem *src = map->virt + from;
-+
-+	if (len <= 0)
-+		return;
-+
-+	if (from & 1) {
-+		*dest++ = BYTE1(flash_read16(src-1));
-+		src++;
-+		--len;
-+	}
-+
-+	while (len >= 2) {
-+		u16 data = flash_read16(src);
-+		*dest++ = BYTE0(data);
-+		*dest++ = BYTE1(data);
-+		src += 2;
-+		len -= 2;
-+	}
-+
-+	if (len > 0)
-+		*dest++ = BYTE0(flash_read16(src));
-+}
-+
-+static void ixp4xx_write16(struct map_info *map, map_word d, unsigned long adr)
-+{
-+	flash_write16(d.x[0], map->virt + adr);
-+}
-+
-+int of_flash_probe_ixp4xx(struct platform_device *pdev,
-+			  struct device_node *np,
-+			  struct map_info *map)
-+{
-+	struct device *dev = &pdev->dev;
-+
-+	/* Multiplatform guard */
-+	if (!of_device_is_compatible(np, "intel,ixp4xx-flash"))
-+		return 0;
-+
-+	map->read = ixp4xx_read16;
-+	map->write = ixp4xx_write16;
-+	map->copy_from = ixp4xx_copy_from;
-+	map->copy_to = NULL;
-+
-+	dev_info(dev, "initialized Intel IXP4xx-specific physmap control\n");
-+
-+	return 0;
-+}
-diff --git a/drivers/mtd/maps/physmap-ixp4xx.h b/drivers/mtd/maps/physmap-ixp4xx.h
-new file mode 100644
-index 000000000000..b0fc49b7f3ed
---- /dev/null
-+++ b/drivers/mtd/maps/physmap-ixp4xx.h
-@@ -0,0 +1,17 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#include <linux/of.h>
-+#include <linux/mtd/map.h>
-+
-+#ifdef CONFIG_MTD_PHYSMAP_IXP4XX
-+int of_flash_probe_ixp4xx(struct platform_device *pdev,
-+			  struct device_node *np,
-+			  struct map_info *map);
-+#else
-+static inline
-+int of_flash_probe_ixp4xx(struct platform_device *pdev,
-+			  struct device_node *np,
-+			  struct map_info *map)
-+{
-+	return 0;
-+}
-+#endif
 -- 
-2.21.0
+2.17.1
 
 
 ______________________________________________________
