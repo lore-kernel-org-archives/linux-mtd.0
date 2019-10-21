@@ -2,71 +2,96 @@ Return-Path: <SRS0=layW=YO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68E55CA9EB5
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Oct 2019 08:42:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 947EDCA9EB5
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Oct 2019 08:47:43 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 365D320659
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Oct 2019 08:42:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 64C5C2067B
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Oct 2019 08:47:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OyHUbI+d"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 365D320659
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="F+bBiuex";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="1m2lTqA9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 64C5C2067B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:
-	Subject:To:References:In-Reply-To:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mrmnLg1LNYclX5vmcul1Z5l7AAZXSEGRDSqWUfcKAck=; b=OyHUbI+dr5xgd/
-	fO7/In0LnZb8zuIvk3t3Bbr+2zz4Wyvyj/4NY+WkmA9/dlV0sYXIkVE8DO5nAobA5LF98CexCXllc
-	1TJ7gvLd9k3ujzma7MS6Zb0IPT4DfWHRkxt0rLeyDdQx/a39QTmtYrjXbw45f3VzxA3TtFYWPHIt8
-	U+cSnuH2MkiyXUlbxQmpD2cKF6fVZCDDMhcAVPAdsnLPtpBZE3PBESnX3o3o1TMz1W6+rCyrD5JAU
-	BoCONsXZhgL6U7feRLLw0hZCpOJnqj0WDOWpwZYmp+lnUQdXvmldJ0DeWpK4CRVmwbh1NQLH00knz
-	fYG3MmHAfCZYTPWSINEA==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=PFC8HJDil3Y4N42nqKvhO1UWjGY5qSTsQtZlQIhkgKo=; b=F+bBiuexnsTWFDZ5BMyg/9tzR
+	A9a9fiEnqPVf8ofMxvm6upRRHrn3oOEnMP47uBiRIIRE8OcPrHPbXwJ+DeHKEU4QTBLEK6pLrTfEg
+	mKoaCDnJjhQB3ed1DmLVOJj4rbhnx7JwwamOTNqsWxVnTVHXdGudG0okTw7zDNbp2xpEuo9H/Hy5N
+	ly+2utg4zvJQkUe0H817rePV3NqpH3WuOF1dVQEy1LOotqz4YLxIsIWTx9jgWmxjUYBPod52yVyTV
+	iKSM9qs6az05Hp1gyN5kOkGMaRPPFhR+hG2oMhO3qaW/oR8O9Aiy3m13yz09CxsPjPKD+3gW+R6nf
+	IQ4Q8xrug==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iMTGM-0002ME-Th; Mon, 21 Oct 2019 08:42:02 +0000
-Received: from twhmllg3.macronix.com ([122.147.135.201])
+	id 1iMTLq-0005Ri-6u; Mon, 21 Oct 2019 08:47:42 +0000
+Received: from mail-lf1-x141.google.com ([2a00:1450:4864:20::141])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iMTGK-0002Le-CV
- for linux-mtd@lists.infradead.org; Mon, 21 Oct 2019 08:42:02 +0000
-Received: from twhfmlp1.macronix.com (twhfm1p1.macronix.com [172.17.20.91])
- by TWHMLLG3.macronix.com with ESMTP id x9L8esDg027209;
- Mon, 21 Oct 2019 16:40:54 +0800 (GMT-8)
- (envelope-from masonccyang@mxic.com.tw)
-Received: from MXML06C.mxic.com.tw (mxml06c.macronix.com [172.17.14.55])
- by Forcepoint Email with ESMTP id 26C9B593DD362C20AD47;
- Mon, 21 Oct 2019 16:40:55 +0800 (CST)
-In-Reply-To: <20191021094435.78f4b16e@collabora.com>
-References: <1568793387-25199-1-git-send-email-masonccyang@mxic.com.tw>	<1568793387-25199-2-git-send-email-masonccyang@mxic.com.tw>
- <20191007104511.5aa7b8f2@xps13>	<20191007112442.783e4fbe@xps13>	<OFEDE76FEE.8BC48D9E-ON4825848D.000BCC94-4825848D.000E0643@mxic.com.tw>
- <20191008170249.06bd45ce@xps13>	<OFB4F10613.467EB346-ON48258494.0020403E-48258494.002550A2@LocalDomain>
- <OF894937F3.4B6774EB-ON4825849A.0027B2DF-4825849A.0028A53F@mxic.com.tw>
- <20191021094435.78f4b16e@collabora.com>
-To: "Boris Brezillon" <boris.brezillon@collabora.com>
-Subject: Re: [PATCH RFC 2/3] mtd: rawnand: Add support Macronix Block
- Protection function
+ id 1iMTLm-0005Q9-GV
+ for linux-mtd@lists.infradead.org; Mon, 21 Oct 2019 08:47:40 +0000
+Received: by mail-lf1-x141.google.com with SMTP id z12so9382032lfj.9
+ for <linux-mtd@lists.infradead.org>; Mon, 21 Oct 2019 01:47:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=QXiJynjMNN+K0FoWykKekuEj/OBAnoR2FAHWqATIrfA=;
+ b=1m2lTqA9g8pR+gNDKI38Hf1YD7AHOVMKSH+qSD61rfazdteezEy9qc5uu2ptisQ9la
+ 2LtDIJrwJ7X1O01IGsFjD9Q/tJKUKXCVjQmfmnHyU1gdA5IsuEbNn8xmSiwXeHIxvmk/
+ 6pVLd5kq52suDJKdMlVESukd4NeWOaLnxEtoHQCsXi6XdP7Fg9uthetLEeVehsgGmwkk
+ ja7ACVppObMYfmKfim6MGSHkS3TgOluieW1CYSonwzhW9/htLzCwwZtSsHf1htBxQR70
+ GPCtExDc04v5gmZKf1XkxxBDsYhoYYnWBWz0PP+O7PTGn50JCdZZF3jn0h256hnPJzT7
+ KjZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=QXiJynjMNN+K0FoWykKekuEj/OBAnoR2FAHWqATIrfA=;
+ b=EANKf15puWf4rMrziZXNS/5tr43bE0IzST1EG69EFPQPOVTDXX8fDGfwbQ00pVgfKm
+ tpILzHGjHBabr97l2bJNKX4TbOosal+KfOVtcIOlHL3gA0gSNZ1rttFksZ5EhtxTxH8Z
+ Oaa+BXIDird6jk9F1rXIjJm4yBdN6iJuCHIllldrxmPwmkzZGow7GQ5yS5ddQFoGG0XV
+ B2VflE4kMYpDvWtDotnO6/S+BgtzQAahUWcnDVObX5SDJ1EepWuuH0tgBqXXCCz2+RGQ
+ 455bzQ0Cl8fgvTu7BKSekvBCHnbVORzfQz9xVU6slZ0U/wGEvb9Es5JpwfA+Tzw6zdu7
+ IARQ==
+X-Gm-Message-State: APjAAAVUsK+pnLjtSopAr/9HwwL7oRX5oxDRkRrDeOERjuQFqd3vpE1b
+ Bq6ILlwTPsG9rHZe9RnemO0bpQ==
+X-Google-Smtp-Source: APXvYqylsk8yws60VuLL0ozqdrRuKOuNEAm0brGxK1g45riofpGFYvmXbrn9qDfFdvJfYm2OEK4gUA==
+X-Received: by 2002:ac2:4283:: with SMTP id m3mr14587900lfh.41.1571647656443; 
+ Mon, 21 Oct 2019 01:47:36 -0700 (PDT)
+Received: from ?IPv6:2a00:1fa0:2d0:74aa:edd9:b20e:81b0:5b8f?
+ ([2a00:1fa0:2d0:74aa:edd9:b20e:81b0:5b8f])
+ by smtp.gmail.com with ESMTPSA id x76sm12649907ljb.81.2019.10.21.01.47.34
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Mon, 21 Oct 2019 01:47:35 -0700 (PDT)
+Subject: Re: [PATCH 03/21] ia64: rename ioremap_nocache to ioremap_uc
+To: Christoph Hellwig <hch@lst.de>, Arnd Bergmann <arnd@arndb.de>,
+ Guo Ren <guoren@kernel.org>, Michal Simek <monstr@monstr.eu>,
+ Greentime Hu <green.hu@gmail.com>, Vincent Chen <deanbo422@gmail.com>,
+ Guan Xuetao <gxt@pku.edu.cn>, x86@kernel.org
+References: <20191017174554.29840-1-hch@lst.de>
+ <20191017174554.29840-4-hch@lst.de>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Message-ID: <915c9aaa-ea20-7c29-7ee8-5c5f68f7d123@cogentembedded.com>
+Date: Mon, 21 Oct 2019 11:47:17 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-X-KeepSent: 94EDFFB1:AFAD9C25-4825849A:002E2815;
- type=4; name=$KeepSent
-X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
-Message-ID: <OF94EDFFB1.AFAD9C25-ON4825849A.002E2815-4825849A.002FB1CE@mxic.com.tw>
-From: masonccyang@mxic.com.tw
-Date: Mon, 21 Oct 2019 16:40:57 +0800
-X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
- HF265|July 25, 2018) at 2019/10/21 PM 04:40:55,
- Serialize complete at 2019/10/21 PM 04:40:55
-X-MAIL: TWHMLLG3.macronix.com x9L8esDg027209
+In-Reply-To: <20191017174554.29840-4-hch@lst.de>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191021_014201_006143_83530F27 
-X-CRM114-Status: GOOD (  19.29  )
+X-CRM114-CacheID: sfid-20191021_014738_746804_76DE87B6 
+X-CRM114-Status: GOOD (  14.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,136 +103,52 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: richard@nod.at, bbrezillon@kernel.org, juliensu@mxic.com.tw,
- gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
- frieder.schrempf@kontron.de, marcel.ziswiler@toradex.com,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- tglx@linutronix.de, computersforpeace@gmail.com, dwmw2@infradead.org,
- marek.vasut@gmail.com, vigneshr@ti.com
-Content-Type: text/plain; charset="us-ascii"
+Cc: linux-arch@vger.kernel.org, linux-s390@vger.kernel.org,
+ linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linux-sh@vger.kernel.org, linux-hexagon@vger.kernel.org,
+ linux-xtensa@linux-xtensa.org, linux-mips@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+ openrisc@lists.librecores.org, linux-mtd@lists.infradead.org,
+ linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org,
+ nios2-dev@lists.rocketboards.org, linux-riscv@lists.infradead.org,
+ linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hello!
 
-Hi Boris,
+On 17.10.2019 20:45, Christoph Hellwig wrote:
 
- 
-> > > > > > Then fill-in these two hooks from the manufacturer code, 
-without 
-> > the
-> > > > > > postponed init.
-> > > > > > 
-> > > > > 
-> > > > > But in the final of nand_scan_tail(), mtd->_lock/_unlock will be
-> > > > > filled by NULL, right ? 
-> > > > 
-> > > > The NAND core should set mtd->_lock/_unlock() to NAND specific 
-hooks 
-> > so
-> > > > that the MTD layer is abstracted and and drivers do not see it. 
-Then,
-> > > > in the NAND helper, either there is no specific hook defined by a
-> > > > manufacturer driver and you return -ENOTSUPP, or you execute the
-> > > > defined hook. 
-> > > 
-> > > okay, patch specific manufacturer _lock/_unlock driver
-> > > in nand_manufacturer_init();
-> > > 
-> > > and in the final of nand_scan_tail()
-> > > if (!mtd->_lock)
-> > >  mtd->_lock = NULL;
-> > > if (!mtd->_unlock)
-> > >  mtd->_unlock = NULL; 
-> > 
-> > 
-> > I'm still considering of post_init() in nand_scan_tail() for
-> > MTD layer default call-back function replacement because
-> > there would be more call-back functions need it.
-> > i.e., 
-> > MTD->_lock/_unlokc
-> > MTD->_suspend/_resume
+> On ia64 ioremap_nocache fails if attributs don't match.  Not other
+
+   Attributes?
+
+> architectures does this, and we plan to get rid of ioremap_nocache.
+> So get rid of the special semantics and define ioremap_nocache in
+> terms of ioremap as no portable driver could rely on the behavior
+> anyway.
 > 
-> Again, that's something that needs to be abstracted so that both the
-> NAND manufacturer driver and the NAND controller driver can take
-> appropriate actions on suspend/resume operations.
+> However x86 implements ioremap_uc with a in a similar way as the ia64
+
+    With a what?
+
+> version of ioremap_nocache, so implement that instead.
 > 
-> > NTD->_point/_unpoint
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>   arch/ia64/include/asm/io.h | 6 +++---
+>   arch/ia64/mm/ioremap.c     | 4 ++--
+>   2 files changed, 5 insertions(+), 5 deletions(-)
 > 
-> ->_point/_unpoint() are irrelevant for a NAND chip.
-> 
-> > ...
-> > 
-> > 
-> > actually, my patch series are including MTD->_locl/_unlock and 
-> > MTD->_suspend/_resume. how do you think ?
-> 
-> Miquel was suggesting to add nand_chip->{lock,unlock,is_locked}()
-> methods that would be implemented by the NAND manufacturer drivers, and
-> have generic wrappers implemented in nand_base.c:
-> 
-> static int nand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
-> {
->    struct nand_chip *chip = mtd_to_nand(mtd);
-> 
->    if (!chip->lock)
->       return -ENOTSUPP;
-> 
->    return chip->lock(chip, ofs, len);
-> }
-> 
-> ...
-> 
-> If you do that, you won't need this post_init() hook.
+> diff --git a/arch/ia64/include/asm/io.h b/arch/ia64/include/asm/io.h
+> index 54e70c21352a..fec9df9609ed 100644
+> --- a/arch/ia64/include/asm/io.h
+> +++ b/arch/ia64/include/asm/io.h
+[...]
 
-got it, but ... 
-user space program flash_lock/flash_unlock are calling 
-mtd_lock() & mtd_unlock().
-i.e.,
-int mtd_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
-{
-         if (!mtd->_lock)
-                 return -EOPNOTSUPP;
-         if (ofs < 0 || ofs >= mtd->size || len > mtd->size - ofs)
-                 return -EINVAL;
-         if (!len)
-                 return 0;
-         return mtd->_lock(mtd, ofs, len);
-}
-
-
-thanks for your time & comments.
-Mason
-
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information 
-and/or personal data, which is protected by applicable laws. Please be 
-reminded that duplication, disclosure, distribution, or use of this e-mail 
-(and/or its attachments) or any part thereof is prohibited. If you receive 
-this e-mail in error, please notify us immediately and delete this mail as 
-well as its attachment(s) from your system. In addition, please be 
-informed that collection, processing, and/or use of personal data is 
-prohibited unless expressly permitted by personal data protection laws. 
-Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
-
-
-============================================================================
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
+MBR, Sergei
 
 ______________________________________________________
 Linux MTD discussion mailing list
