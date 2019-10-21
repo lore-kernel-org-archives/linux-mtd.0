@@ -2,69 +2,89 @@ Return-Path: <SRS0=layW=YO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81BF1CA9EAE
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Oct 2019 02:27:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FC35CA9EA0
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Oct 2019 02:28:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F258620679
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Oct 2019 02:27:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 51A2E21928
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Oct 2019 02:28:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nD+//kkZ";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="Zf2TycnX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F258620679
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pTOZhcPm";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HBXUvt04"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 51A2E21928
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=MGxlXNcOccnnWTSfu6lIdEjnN8KcDblPRNMyJS1ZwYI=; b=nD+
-	//kkZI8kZ5c6XgpqVFhVRXmFeLGmgDLXcXvDtl/CuOlfYcTIAAkgmoonjLftgCcinSrddqDa6z2XL
-	MXwd9VjDgsJYaQOOmBuPTggDVSchhZhmN1QfVi18aYowHlqxa/yx+2oXhCCHhYil4ODGhuZjbCgKu
-	K5mpa5bYGetQ5yug0epuaB807e/sb3nsJOMohiUGPyxHwPhmh2TqX9/4hXbrQLzxXRoklx4ImVoOz
-	LG18gVawQo14RHyLD5VpJfJbTuCJIxNyem/gAqSRt/CCUoJ60P0eueGAZs9/CSfeVlLV/76laOFq/
-	kko/Zjj8GeHWWwywyghezSLFj4ItTng==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=1i+xe+dv19XPQItEl2TYylTwHXUTeg+Qx/ZjjSXJaBg=; b=pTOZhcPmomNPtZ
+	wjGXv1IbdVotOitHsl167sJXrPiImp0vs/GDDet2blg4WsCOIsnUXS5e+J4wkbNTxBjWU6a6wfySd
+	mrf30Bn5oWRDegsXX/uxfvBcv2jVo/49xWU2KpKsNNs2y/LBWLNHADyRcHuvI3t/oj5DXuW1dsPp1
+	E3b9O3Drl7ta3lsuAKGrSuYa+op/Ndpo50l3BkGw7Sq7dvJDyw77XlaRGBcIqqwlBYJhVEliNpL5O
+	QsQULlMsZwHg2SmnScoAuwr6dCQT20HtjqF3kGckfhekGBSwn776yper6e0/UdERN1CwwbX0Ebqi0
+	ML+klYG1clrXfUnSryjA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iMNPy-0005uz-K9; Mon, 21 Oct 2019 02:27:34 +0000
-Received: from conuserg-11.nifty.com ([210.131.2.78])
+	id 1iMNQP-0006LA-29; Mon, 21 Oct 2019 02:28:01 +0000
+Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iMNPv-0005uU-Am
- for linux-mtd@lists.infradead.org; Mon, 21 Oct 2019 02:27:33 +0000
-Received: from localhost.localdomain (p14092-ipngnfx01kyoto.kyoto.ocn.ne.jp
- [153.142.97.92]) (authenticated)
- by conuserg-11.nifty.com with ESMTP id x9L2R0jj001059;
- Mon, 21 Oct 2019 11:27:00 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com x9L2R0jj001059
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
- s=dec2015msa; t=1571624821;
- bh=rGwnrypchAXWsBh4eydVJnNqPcxPycvJ1jDHIQCeQ0o=;
- h=From:To:Cc:Subject:Date:From;
- b=Zf2TycnXa0108kxAeWiLD9OPuZMkAuLjw6uVI2yAOpHXf1rdibSWDIv/Dvool7CCK
- 67cK30LQB5PydvMv1FC4wotcZRNWHV+awDSDcBb0hFXHk+UeUAtPPFUzlQqZY/iQBC
- 2rg8bKR1PIyb5O2teKgsw/jufYS1VVp4QeHsCBT1ij0ltvSGhy/LpS0VYKSG0mHF/2
- 3XG+LQUCezSDo+gQK9mHNOu2iDKtVAdB+TlkUtLruDjxHDXjHWv13juuvXqbOVZaKD
- 2gExpQQa3k5T0WydTcK8zOYYWqSbdeeG/dfgQcE9yLxdp0TInuH2wDIAAIXIa3yHS1
- qi3XcgxHav1Fg==
-X-Nifty-SrcIP: [153.142.97.92]
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: rawnand: denali: remove the old unified controller/chip
- DT support
-Date: Mon, 21 Oct 2019 11:26:54 +0900
-Message-Id: <20191021022654.13886-1-yamada.masahiro@socionext.com>
-X-Mailer: git-send-email 2.17.1
+ id 1iMNQ4-00060N-8T
+ for linux-mtd@lists.infradead.org; Mon, 21 Oct 2019 02:27:42 +0000
+Received: by mail-pf1-x444.google.com with SMTP id x127so7416038pfb.7
+ for <linux-mtd@lists.infradead.org>; Sun, 20 Oct 2019 19:27:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to:user-agent;
+ bh=+XgAS3p3ETrEIu1jjk49WnshOluu9ziyQFPp12n3bCU=;
+ b=HBXUvt040GMIEwLCNj0cv5hSZlRkL/uSj5D7wLWdq/dK4otL0nVEbSqZR/yA3O2Og9
+ AGWR8nz33JcyPwt0cVzYqNq50Faf18+z3imXfVGexdoVV7YqaTAx1/VUr9tWFd1T5Cbb
+ Tf3GaNcBURk5SkpU/x/jomYDDMhIfJxW71YTg5rvruJX3ueO8ezhfGPDpZ8h4aBGcFO7
+ kumSOPEltTLr+L4+0n9vUg4CWg75RR45G4UAxyVxqOpn3JU7cI+2DI4kkwOVZWPX+nFt
+ EIZgqQsA7otGwkMKpKWeRDE8Vka9aexA24uKnw1PmWmT0weSSgJHTEGbfcCA0RE8KN8b
+ 2ajw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=+XgAS3p3ETrEIu1jjk49WnshOluu9ziyQFPp12n3bCU=;
+ b=Pkq074OsODsipGZR7h7EnHEYBqCPqzWfdVeAQbWwqIYNsUNPyfxiyFXE6LclNT721V
+ DdoFZ/gmYLeqXlYvlHaQORjTQsckPEsUO27extGO3iiBM5/sgdQIDanMVIljHs5V/cyb
+ 4kBz8yxHlV7OcGna96TV3XTmWtst/6AoR6b8vMAyUkEk82wIzbuf9fmqQ57Zo98Nbp5S
+ 1Jk4uFuctXw/jjtxXjJ0X3E/o9YF3+RSdbElgf7a7svktfpPfClZP+qRI4+vUUEPWUUi
+ aYA8uwn5copr3JvGJGL4kuGCotBYSCpV8N3S2jaWiTQJjOnc4KoWpZyElVBHL7+hj1oS
+ vRIQ==
+X-Gm-Message-State: APjAAAX8fFr/GQ0hTIWJ0TGjwJVrQqQ2BIMHSfurAUp9qllFiUQ95Pio
+ Ww1+zq0otZWfcwC1UIeNJFeP5Q==
+X-Google-Smtp-Source: APXvYqwgXGc8U+6JV2azREgJVpwvucEYJlBr8fKvxMlwaeCP9tIcS23wt/WioWPY0VSEsf3wqmlSTg==
+X-Received: by 2002:a63:4e52:: with SMTP id o18mr11185515pgl.153.1571624859157; 
+ Sun, 20 Oct 2019 19:27:39 -0700 (PDT)
+Received: from localhost ([122.172.151.112])
+ by smtp.gmail.com with ESMTPSA id f17sm20835265pgd.8.2019.10.20.19.27.38
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Sun, 20 Oct 2019 19:27:38 -0700 (PDT)
+Date: Mon, 21 Oct 2019 07:57:36 +0530
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 05/46] ARM: pxa: split up mach/hardware.h
+Message-ID: <20191021022736.yu6unspozqf5634p@vireshk-i7>
+References: <20191018154052.1276506-1-arnd@arndb.de>
+ <20191018154201.1276638-5-arnd@arndb.de>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20191018154201.1276638-5-arnd@arndb.de>
+User-Agent: NeoMutt/20180716-391-311a52
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191020_192731_709646_7ECF5E85 
-X-CRM114-Status: GOOD (  11.98  )
+X-CRM114-CacheID: sfid-20191020_192740_747434_9063C15D 
+X-CRM114-Status: GOOD (  16.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,109 +96,80 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, Dinh Nguyen <dinguyen@kernel.org>,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>
-MIME-Version: 1.0
+Cc: Ulf Hansson <ulf.hansson@linaro.org>, linux-usb@vger.kernel.org,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Dominik Brodowski <linux@dominikbrodowski.net>, linux-mtd@lists.infradead.org,
+ Pavel Machek <pavel@ucw.cz>, Robert Jarzmik <robert.jarzmik@free.fr>,
+ linux-clk@vger.kernel.org, linux-leds@vger.kernel.org,
+ linux-rtc@vger.kernel.org, linux-input@vger.kernel.org,
+ Michael Turquette <mturquette@baylibre.com>,
+ Guenter Roeck <linux@roeck-us.net>, linux-watchdog@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-pm@vger.kernel.org,
+ Haojian Zhuang <haojian.zhuang@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jacek Anaszewski <jacek.anaszewski@gmail.com>, linux-fbdev@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, Stephen Boyd <sboyd@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ dri-devel@lists.freedesktop.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Daniel Mack <daniel@zonque.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Commit d8e8fd0ebf8b ("mtd: rawnand: denali: decouple controller and
-NAND chips") supported the new binding for the separate controller/chip
-representation, keeping the backward compatibility.
+On 18-10-19, 17:41, Arnd Bergmann wrote:
+> The mach/hardware.h is included in lots of places, and it provides
+> three different things on pxa:
+> 
+> - the cpu_is_pxa* macros
+> - an indirect inclusion of mach/addr-map.h
+> - the __REG() and io_pv2() helper macros
+> 
+> Split it up into separate <linux/soc/pxa/cpu.h> and mach/pxa-regs.h
+> headers, then change all the files that use mach/hardware.h to
+> include the exact set of those three headers that they actually
+> need, allowing for further more targeted cleanup.
+> 
+> linux/soc/pxa/cpu.h can remain permanently exported and is now in
+> a global location along with similar headers. pxa-regs.h and
+> addr-map.h are only used in a very small number of drivers now
+> and can be moved to arch/arm/mach-pxa/ directly when those drivers
+> are to pass the necessary data as resources.
+> 
+> Cc: Michael Turquette <mturquette@baylibre.com>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: Viresh Kumar <viresh.kumar@linaro.org>
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+> Cc: Pavel Machek <pavel@ucw.cz>
+> Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> Cc: Dominik Brodowski <linux@dominikbrodowski.net>
+> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Guenter Roeck <linux@roeck-us.net>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: linux-clk@vger.kernel.org
+> Cc: linux-pm@vger.kernel.org
+> Cc: linux-input@vger.kernel.org
+> Cc: linux-leds@vger.kernel.org
+> Cc: linux-mmc@vger.kernel.org
+> Cc: linux-mtd@lists.infradead.org
+> Cc: linux-rtc@vger.kernel.org
+> Cc: linux-usb@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-fbdev@vger.kernel.org
+> Cc: linux-watchdog@vger.kernel.org
+> Cc: alsa-devel@alsa-project.org
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/cpufreq/pxa2xx-cpufreq.c              |  1 +
+>  drivers/cpufreq/pxa3xx-cpufreq.c              |  1 +
 
-All the device trees in upstream migrated to the new binding.
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-Remove the support for the old binding.
-
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
-
- drivers/mtd/nand/raw/denali_dt.c | 55 +++-----------------------------
- 1 file changed, 4 insertions(+), 51 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/denali_dt.c b/drivers/mtd/nand/raw/denali_dt.c
-index 5e14836f6bd5..4cce9ae33b8e 100644
---- a/drivers/mtd/nand/raw/denali_dt.c
-+++ b/drivers/mtd/nand/raw/denali_dt.c
-@@ -102,47 +102,6 @@ static int denali_dt_chip_init(struct denali_controller *denali,
- 	return denali_chip_init(denali, dchip);
- }
- 
--/* Backward compatibility for old platforms */
--static int denali_dt_legacy_chip_init(struct denali_controller *denali)
--{
--	struct denali_chip *dchip;
--	int nsels, i;
--
--	nsels = denali->nbanks;
--
--	dchip = devm_kzalloc(denali->dev, struct_size(dchip, sels, nsels),
--			     GFP_KERNEL);
--	if (!dchip)
--		return -ENOMEM;
--
--	dchip->nsels = nsels;
--
--	for (i = 0; i < nsels; i++)
--		dchip->sels[i].bank = i;
--
--	nand_set_flash_node(&dchip->chip, denali->dev->of_node);
--
--	return denali_chip_init(denali, dchip);
--}
--
--/*
-- * Check the DT binding.
-- * The new binding expects chip subnodes in the controller node.
-- * So, #address-cells = <1>; #size-cells = <0>; are required.
-- * Check the #size-cells to distinguish the binding.
-- */
--static bool denali_dt_is_legacy_binding(struct device_node *np)
--{
--	u32 cells;
--	int ret;
--
--	ret = of_property_read_u32(np, "#size-cells", &cells);
--	if (ret)
--		return true;
--
--	return cells != 0;
--}
--
- static int denali_dt_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -213,17 +172,11 @@ static int denali_dt_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto out_disable_clk_ecc;
- 
--	if (denali_dt_is_legacy_binding(dev->of_node)) {
--		ret = denali_dt_legacy_chip_init(denali);
--		if (ret)
-+	for_each_child_of_node(dev->of_node, np) {
-+		ret = denali_dt_chip_init(denali, np);
-+		if (ret) {
-+			of_node_put(np);
- 			goto out_remove_denali;
--	} else {
--		for_each_child_of_node(dev->of_node, np) {
--			ret = denali_dt_chip_init(denali, np);
--			if (ret) {
--				of_node_put(np);
--				goto out_remove_denali;
--			}
- 		}
- 	}
- 
 -- 
-2.17.1
-
+viresh
 
 ______________________________________________________
 Linux MTD discussion mailing list
