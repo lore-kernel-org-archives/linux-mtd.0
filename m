@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5743CA9EA0
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Oct 2019 14:10:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2242CA9EA0
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Oct 2019 14:59:27 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8184321872
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Oct 2019 14:10:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9261D2084B
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Oct 2019 14:59:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FBIWNZa+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8184321872
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TGeSzE2J"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9261D2084B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,36 +25,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
 	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=93ghjPxuh3dGbeUJq6XXQ5W6MU5xEMFmLBPvSiRhEAA=; b=FBIWNZa+0H63ZH
-	49xQnMv0ykk8WruJx2bWt3wdIe9kn03xKZ3zX7R4DmdZxSDQP6L1l3tZCC5Mzp8PiuFwyzlAyXrpL
-	tMV4zkFqBirinKghhb01o1fNVyKi3UxO+0S+3SWBD0OzkqCZnMBXFhr83JDDyxdO4gUxfYe+z8LPU
-	A9w67NDihRcbLNWlSO/qDQe7LgGd2AJaTRoVinttwjoBpuiZ9vYBekDOI4j1h5XXbUu4HeabXljJq
-	U7LOlBHYAwyA4I0grOZNG6ITb4ni4evfQFmDjiFcLhphEydZaclkPFhq+qmsENaPToMDhQHcfkiFN
-	rVmb6Vy7E0JILdotEkSA==;
+	List-Owner; bh=3v29VstvnxCDZvVNAWugoQF360bb+FhlYy62Y8MiN1E=; b=TGeSzE2Jv3liOh
+	8ElKq8KczaquTg4/w99YmuYWpxVRD/Q0pylpre7jWuEAH3RKmpuBeermFJzAHiJ8f9Sj/aExWmzyW
+	8C5a9HraUEym9cpYpTzCK3Zn9C45yI1Xxj2ptCl00knvO5sRzCXtfih6iVRm2xenw2XLLAISqHxN0
+	O7CBCylb8X9EujRmaSSnC8GjnUKQNv/eYAtrt3rhUdw94N3l5Rt24O4g7nJkn3C8Tcno7++iihSAJ
+	zZ6CFabMOCQDVpSS+q5xB8oaFxyP9w4lnEOK2UnVjvseZdvL8ddKQtIntug82qAATh2+err9uP9MD
+	BB3E8GWXHCV1vLRv+KJA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iMus4-0002Rf-Tz; Tue, 22 Oct 2019 14:10:48 +0000
+	id 1iMvd7-0001bg-D2; Tue, 22 Oct 2019 14:59:25 +0000
 Received: from relay12.mail.gandi.net ([217.70.178.232])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iMurt-0002IV-6P; Tue, 22 Oct 2019 14:10:39 +0000
+ id 1iMvcv-0001Uc-FM; Tue, 22 Oct 2019 14:59:16 +0000
 Received: from localhost.localdomain (lfbn-1-17395-211.w86-250.abo.wanadoo.fr
  [86.250.200.211]) (Authenticated sender: miquel.raynal@bootlin.com)
- by relay12.mail.gandi.net (Postfix) with ESMTPSA id BEBEC200014;
- Tue, 22 Oct 2019 14:10:33 +0000 (UTC)
+ by relay12.mail.gandi.net (Postfix) with ESMTPSA id CDE2F200016;
+ Tue, 22 Oct 2019 14:59:02 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [PATCH v3] mtd: spear_smi: Fix Write Burst mode
-Date: Tue, 22 Oct 2019 16:10:31 +0200
-Message-Id: <20191022141031.31087-1-miquel.raynal@bootlin.com>
+Subject: [PATCH v4] mtd: spear_smi: Fix Write Burst mode
+Date: Tue, 22 Oct 2019 16:58:59 +0200
+Message-Id: <20191022145859.5202-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191022_071037_510218_5D78BE57 
-X-CRM114-Status: GOOD (  21.14  )
+X-CRM114-CacheID: sfid-20191022_075913_786272_8E29602B 
+X-CRM114-Status: GOOD (  21.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,6 +115,11 @@ Cc: stable@vger.kernel.org
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
 
+Changes in v4:
+==============
+* Change a cast to avoid potential warnings:
+  s/unsigned int/uintptr_t/
+
 Changes in v3:
 ==============
 * Prevent writes to non 4-byte aligned addresses to fail.
@@ -139,12 +144,11 @@ Changes in v2:
 * The volatile keyword has been taken voluntarily from the _memcpy_toio()
   implementation I was about to use previously.
 
-
  drivers/mtd/devices/spear_smi.c | 38 ++++++++++++++++++++++++++++++++-
  1 file changed, 37 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/devices/spear_smi.c b/drivers/mtd/devices/spear_smi.c
-index 986f81d2f93e..348961663cf4 100644
+index 986f81d2f93e..47ad0766affa 100644
 --- a/drivers/mtd/devices/spear_smi.c
 +++ b/drivers/mtd/devices/spear_smi.c
 @@ -592,6 +592,26 @@ static int spear_mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
@@ -192,7 +196,7 @@ index 986f81d2f93e..348961663cf4 100644
 +	 * access' helper if at least one of the two conditions above is true.
 +	 */
 +	if (IS_ALIGNED(len, sizeof(u32)) &&
-+	    IS_ALIGNED((unsigned int)dest, sizeof(u32)))
++	    IS_ALIGNED((uintptr_t)dest, sizeof(u32)))
 +		memcpy_toio(dest, src, len);
 +	else
 +		spear_smi_memcpy_toio_b(dest, src, len);
