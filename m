@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A015DCA9EA0
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Oct 2019 07:45:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 007EBCA9EA0
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Oct 2019 07:51:26 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 71AD421783
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Oct 2019 07:45:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C49832075A
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Oct 2019 07:51:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="I6PlSzy7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 71AD421783
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IDpLANir"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C49832075A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:In-Reply-To:Message-ID:Subject:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=W2o1fJCoIxpW1s+/d0fFk07rA71Ceox9nOxFVdcNGuM=; b=I6PlSzy7/Qj62l5DNAoFH2Zs9
-	z/OF9OvjIQJaoyzg4/cgLD8j0WQQSsisT0mtriuLIYJ5Lp/IfBBfLCCI7sJN2jmpeA/AgTgJKUUxK
-	VIYGhn8awpxryxM+OhT9nf2u1BbphJV2ygpTS9cpgHCHpqIYx3jRDMhQ2irvKAILnHTzPTjGXRAPZ
-	L6uqQpOuA9gA/AfIAGmnWHSDWwGgtDpvn+wbadyaynqz/1beHk10RQTbb/al0EPE2vtisdpKQR4e9
-	OBs8k6RzhSOXrrPq5x2umoO+NFlz9gEjDYqVreWSFwCAZH8EWo3aA4xNGjo5br6UIZxf6NjrVnQ1Y
-	46HgNW7Rg==;
+	 bh=d3lM4vJbaG1KhPlHoK+bB3zSLE0McBO0yS6GLUKnjt4=; b=IDpLANirv4CuZx7dOgrvoPJVz
+	ZdLd7pbsiqAy/fileaqjjG5V8hi12+YbwNCp6my4DGS25yYR/Zunee/5Fv09qwCALcVrGyTBJbrDZ
+	TvqwRb5vrrtl8+5iSV1IK0sNUOxfGq0c4eNI2JfSHK2gyIew0NPmqgUtYOYiRY1sbQylKOF1FGWlw
+	//OtAUJPj+RuiMfCFoQPwBzN4tmronpZBEXJ34Wphv7y1sgGWlMjaVSEkuVwk9xVOjffHmeXNKj/I
+	Wt2S74ZHtiMBXJ9BhykS2plvbCYZ7f5PNDNnyBdCsbTQ/n3/L5bLkJhuzBnVrME2jeAcSIhgW+QQo
+	AO1hzcJ/w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iMorA-0003o8-V9; Tue, 22 Oct 2019 07:45:28 +0000
-Received: from relay12.mail.gandi.net ([217.70.178.232])
+	id 1iMowu-0006QZ-9G; Tue, 22 Oct 2019 07:51:24 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iMoqu-0002vc-LH; Tue, 22 Oct 2019 07:45:14 +0000
+ id 1iMowh-0006Gr-8j; Tue, 22 Oct 2019 07:51:13 +0000
+X-Originating-IP: 86.250.200.211
 Received: from xps13 (lfbn-1-17395-211.w86-250.abo.wanadoo.fr [86.250.200.211])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay12.mail.gandi.net (Postfix) with ESMTPSA id 4439D200011;
- Tue, 22 Oct 2019 07:44:52 +0000 (UTC)
-Date: Tue, 22 Oct 2019 09:44:51 +0200
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id C095EFF814;
+ Tue, 22 Oct 2019 07:51:03 +0000 (UTC)
+Date: Tue, 22 Oct 2019 09:51:03 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@collabora.com>
 Subject: Re: [PATCH] mtd: spear_smi: Fix nonalignment not handled in
  memcpy_toio
-Message-ID: <20191022094451.14d39206@xps13>
-In-Reply-To: <20191021100105.0f06b212@collabora.com>
+Message-ID: <20191022095103.56819a30@xps13>
+In-Reply-To: <20191022094451.14d39206@xps13>
 References: <20191018143643.29676-1-miquel.raynal@bootlin.com>
  <20191021100105.0f06b212@collabora.com>
+ <20191022094451.14d39206@xps13>
 Organization: Bootlin
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="MP_/.VFqnn3JQLA7LyBnIYQjQ0i"
+Content-Type: multipart/mixed; boundary="MP_/yP5=PKZzWpbPJhXNMtAyO+t"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191022_004512_976213_BD2D26A8 
-X-CRM114-Status: GOOD (  24.87  )
+X-CRM114-CacheID: sfid-20191022_005111_586959_613D4484 
+X-CRM114-Status: GOOD (  28.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,130 +72,138 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, stable@vger.kernel.org,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
+ stable@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---MP_/.VFqnn3JQLA7LyBnIYQjQ0i
+--MP_/yP5=PKZzWpbPJhXNMtAyO+t
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
 
-Hello,
 
-Boris Brezillon <boris.brezillon@collabora.com> wrote on Mon, 21 Oct
-2019 10:01:05 +0200:
+Russel was out of the loop, re-adding him as he may have interesting
+thoughts about this. Sorry for the double e-mail.
 
-> On Fri, 18 Oct 2019 16:36:43 +0200
-> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+Miquel Raynal <miquel.raynal@bootlin.com> wrote on Tue, 22 Oct 2019
+09:44:51 +0200:
+
+> Hello,
 >=20
-> > Any write with either dd or flashcp to a device driven by the
-> > spear_smi.c driver will pass through the spear_smi_cpy_toio()
-> > function. This function will get called for chunks of up to 256 bytes.
-> > If the amount of data is smaller, we may have a problem if the data
-> > length is not 4-byte aligned. In this situation, the kernel panics
-> > during the memcpy:
-> >=20
-> >     # dd if=3D/dev/urandom bs=3D1001 count=3D1 of=3D/dev/mtd6
-> >     spear_smi_cpy_toio [620] dest c9070000, src c7be8800, len 256
-> >     spear_smi_cpy_toio [620] dest c9070100, src c7be8900, len 256
-> >     spear_smi_cpy_toio [620] dest c9070200, src c7be8a00, len 256
-> >     spear_smi_cpy_toio [620] dest c9070300, src c7be8b00, len 233
-> >     Unhandled fault: external abort on non-linefetch (0x808) at 0xc9070=
-3e8
-> >     [...]
-> >     PC is at memcpy+0xcc/0x330 =20
+> Boris Brezillon <boris.brezillon@collabora.com> wrote on Mon, 21 Oct
+> 2019 10:01:05 +0200:
 >=20
-> Can you find out which instruction is at memcpy+0xcc/0x330? For the
-> record, the assembly is here [1].
-
-The full disassembled file is attached, here is the failing part:
-
-7:			ldmfd	sp!, {r5 - r8}
-  b8:	e8bd01e0 	pop	{r5, r6, r7, r8}
-	UNWIND(		.fnend				) @ end of second stmfd block
-
-	UNWIND(		.fnstart			)
-			usave	r4, lr			  @ still in first stmdb block
-8:			movs	r2, r2, lsl #31
-  bc:	e1b02f82 	lsls	r2, r2, #31
-			ldr1b	r1, r3, ne, abort=3D21f
-  c0:	14d13001 	ldrbne	r3, [r1], #1
-			ldr1b	r1, r4, cs, abort=3D21f
-  c4:	24d14001 	ldrbcs	r4, [r1], #1
-			ldr1b	r1, ip, cs, abort=3D21f
-  c8:	24d1c001 	ldrbcs	ip, [r1], #1
-			str1b	r0, r3, ne, abort=3D21f
-  cc:	14c03001 	strbne	r3, [r0], #1
-			str1b	r0, r4, cs, abort=3D21f
-  d0:	24c04001 	strbcs	r4, [r0], #1
-			str1b	r0, ip, cs, abort=3D21f
-  d4:	24c0c001 	strbcs	ip, [r0], #1
-
-			exit	r4, pc
-  d8:	e8bd8011 	pop	{r0, r4, pc}
-
-
-So the fault is triggered on a strbne instruction.
-
+> > On Fri, 18 Oct 2019 16:36:43 +0200
+> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> >  =20
+> > > Any write with either dd or flashcp to a device driven by the
+> > > spear_smi.c driver will pass through the spear_smi_cpy_toio()
+> > > function. This function will get called for chunks of up to 256 bytes.
+> > > If the amount of data is smaller, we may have a problem if the data
+> > > length is not 4-byte aligned. In this situation, the kernel panics
+> > > during the memcpy:
+> > >=20
+> > >     # dd if=3D/dev/urandom bs=3D1001 count=3D1 of=3D/dev/mtd6
+> > >     spear_smi_cpy_toio [620] dest c9070000, src c7be8800, len 256
+> > >     spear_smi_cpy_toio [620] dest c9070100, src c7be8900, len 256
+> > >     spear_smi_cpy_toio [620] dest c9070200, src c7be8a00, len 256
+> > >     spear_smi_cpy_toio [620] dest c9070300, src c7be8b00, len 233
+> > >     Unhandled fault: external abort on non-linefetch (0x808) at 0xc90=
+703e8
+> > >     [...]
+> > >     PC is at memcpy+0xcc/0x330   =20
 > >=20
-> > Workaround this issue by using the alternate _memcpy_toio() method
-> > which at least does not present the same problem.
-> >=20
-> > Fixes: f18dbbb1bfe0 ("mtd: ST SPEAr: Add SMI driver for serial NOR flas=
-h")
-> > Cc: stable@vger.kernel.org
-> > Suggested-by: Boris Brezillon <boris.brezillon@collabora.com> =20
+> > Can you find out which instruction is at memcpy+0xcc/0x330? For the
+> > record, the assembly is here [1]. =20
 >=20
-> I don't remember suggesting that as a final solution. I probably
-> suggested to test with _memcpy_toio() to see if using a byte accessor
-> was fixing the problem, but it's definitely not the right solution
-> (using byte access with a memory barrier for 256 bytes buffers is likely
-> to cause a huge perf penalty).
+> The full disassembled file is attached, here is the failing part:
 >=20
-> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > ---
-> >=20
-> > Hello,
-> >=20
-> > This patch could not be tested with a mainline kernel (only compiled)
-> > but was tested with a stable 4.14.x kernel. I have really no idea why
-> > memcpy fails in this situation that's why I propose this workaround
-> > but I bet there is something deeper not working.
-> >=20
-> > Thanks,
-> > Miqu=C3=A8l
-> >=20
-> >  drivers/mtd/devices/spear_smi.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >=20
-> > diff --git a/drivers/mtd/devices/spear_smi.c b/drivers/mtd/devices/spea=
-r_smi.c
-> > index 986f81d2f93e..d888625a3244 100644
-> > --- a/drivers/mtd/devices/spear_smi.c
-> > +++ b/drivers/mtd/devices/spear_smi.c
-> > @@ -614,7 +614,7 @@ static inline int spear_smi_cpy_toio(struct spear_s=
-mi *dev, u32 bank,
-> >  	ctrlreg1 =3D readl(dev->io_base + SMI_CR1);
-> >  	writel((ctrlreg1 | WB_MODE) & ~SW_MODE, dev->io_base + SMI_CR1);
-> > =20
-> > -	memcpy_toio(dest, src, len);
-> > +	_memcpy_toio(dest, src, len);
-> > =20
-> >  	writel(ctrlreg1, dev->io_base + SMI_CR1);
-> >   =20
+> 7:			ldmfd	sp!, {r5 - r8}
+>   b8:	e8bd01e0 	pop	{r5, r6, r7, r8}
+> 	UNWIND(		.fnend				) @ end of second stmfd block
 >=20
-> [1]https://elixir.bootlin.com/linux/v5.4-rc2/source/arch/arm/lib/memcpy.S
-
+> 	UNWIND(		.fnstart			)
+> 			usave	r4, lr			  @ still in first stmdb block
+> 8:			movs	r2, r2, lsl #31
+>   bc:	e1b02f82 	lsls	r2, r2, #31
+> 			ldr1b	r1, r3, ne, abort=3D21f
+>   c0:	14d13001 	ldrbne	r3, [r1], #1
+> 			ldr1b	r1, r4, cs, abort=3D21f
+>   c4:	24d14001 	ldrbcs	r4, [r1], #1
+> 			ldr1b	r1, ip, cs, abort=3D21f
+>   c8:	24d1c001 	ldrbcs	ip, [r1], #1
+> 			str1b	r0, r3, ne, abort=3D21f
+>   cc:	14c03001 	strbne	r3, [r0], #1
+> 			str1b	r0, r4, cs, abort=3D21f
+>   d0:	24c04001 	strbcs	r4, [r0], #1
+> 			str1b	r0, ip, cs, abort=3D21f
+>   d4:	24c0c001 	strbcs	ip, [r0], #1
+>=20
+> 			exit	r4, pc
+>   d8:	e8bd8011 	pop	{r0, r4, pc}
+>=20
+>=20
+> So the fault is triggered on a strbne instruction.
+>=20
+> > >=20
+> > > Workaround this issue by using the alternate _memcpy_toio() method
+> > > which at least does not present the same problem.
+> > >=20
+> > > Fixes: f18dbbb1bfe0 ("mtd: ST SPEAr: Add SMI driver for serial NOR fl=
+ash")
+> > > Cc: stable@vger.kernel.org
+> > > Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>   =20
+> >=20
+> > I don't remember suggesting that as a final solution. I probably
+> > suggested to test with _memcpy_toio() to see if using a byte accessor
+> > was fixing the problem, but it's definitely not the right solution
+> > (using byte access with a memory barrier for 256 bytes buffers is likely
+> > to cause a huge perf penalty).
+> >  =20
+> > > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > > ---
+> > >=20
+> > > Hello,
+> > >=20
+> > > This patch could not be tested with a mainline kernel (only compiled)
+> > > but was tested with a stable 4.14.x kernel. I have really no idea why
+> > > memcpy fails in this situation that's why I propose this workaround
+> > > but I bet there is something deeper not working.
+> > >=20
+> > > Thanks,
+> > > Miqu=C3=A8l
+> > >=20
+> > >  drivers/mtd/devices/spear_smi.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >=20
+> > > diff --git a/drivers/mtd/devices/spear_smi.c b/drivers/mtd/devices/sp=
+ear_smi.c
+> > > index 986f81d2f93e..d888625a3244 100644
+> > > --- a/drivers/mtd/devices/spear_smi.c
+> > > +++ b/drivers/mtd/devices/spear_smi.c
+> > > @@ -614,7 +614,7 @@ static inline int spear_smi_cpy_toio(struct spear=
+_smi *dev, u32 bank,
+> > >  	ctrlreg1 =3D readl(dev->io_base + SMI_CR1);
+> > >  	writel((ctrlreg1 | WB_MODE) & ~SW_MODE, dev->io_base + SMI_CR1);
+> > > =20
+> > > -	memcpy_toio(dest, src, len);
+> > > +	_memcpy_toio(dest, src, len);
+> > > =20
+> > >  	writel(ctrlreg1, dev->io_base + SMI_CR1);
+> > >     =20
+> >=20
+> > [1]https://elixir.bootlin.com/linux/v5.4-rc2/source/arch/arm/lib/memcpy=
+.S =20
+>=20
 
 Thanks,
 Miqu=C3=A8l
 
---MP_/.VFqnn3JQLA7LyBnIYQjQ0i
+--MP_/yP5=PKZzWpbPJhXNMtAyO+t
 Content-Type: application/octet-stream; name=memcpy-disassemble
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename=memcpy-disassemble
@@ -375,7 +385,7 @@ MDQgCXN0cglyMywgW3IwXSwgIzQKIDMyNDoJY2FmZmZmZjkgCWJndAkzMTAgPG1lbWNweSsweDMx
 MD4KIDMyODoJZTI0MTEwMDEgCXN1YglyMSwgcjEsICMxCiAzMmM6CWVhZmZmZjYyIAliCWJjIDxt
 ZW1jcHkrMHhiYz4K
 
---MP_/.VFqnn3JQLA7LyBnIYQjQ0i
+--MP_/yP5=PKZzWpbPJhXNMtAyO+t
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -385,5 +395,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---MP_/.VFqnn3JQLA7LyBnIYQjQ0i--
+--MP_/yP5=PKZzWpbPJhXNMtAyO+t--
 
