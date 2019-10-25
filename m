@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F37ECCA9EA0
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Oct 2019 13:57:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AD97CA9EA0
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Oct 2019 13:58:13 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CB32C222C2
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Oct 2019 13:57:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D24DC222C4
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Oct 2019 13:58:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IxAQahT2";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="e9kNWArI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CB32C222C2
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PYffgLz3";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="vrrlSoFg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D24DC222C4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,47 +26,47 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=J9GlsozVKs2pDPKZH+0HIwoxNum07ZVFbOx9qJj3j44=; b=IxAQahT2taNBtn
-	2Ys5O+cn0fWm3CNCoj/XLpksiPh5jpM/yfhysi90uxKln0tn3Q5IXqwIzsVPMRLWJULpLOkkXJoKU
-	cENL/wTsErat76aZrZp/DYzCBzVB+7c+FZYzC5mR1+qsWV0DWlrjzh9zWFDwbULCoT2qBF9JfvvFN
-	XXgviGRXQbgpiZMh0yQIPWyIU1c8ZgU56WnvO4BF4MJh/dqMjSQpgUq8p3VaurWmRcSvXIjwt3/AM
-	b3n683Vabh3xXxot8PMLoP41OphmxTHcNr/thf+ZxXqiWPCgGX8Tz8fMZsWsIpFP78Y9bBzHuPbX2
-	6G7RpN3LH6TRyuN3q4Ow==;
+	List-Owner; bh=L4u+K2Dqsku/VOfXafqg8D9CQZ2MuSBc/ZVnpsfSxow=; b=PYffgLz3ZBwc0K
+	9iFNXC8Vc4FRsYMQkU+GnC3Hog9hjZpKIjIVtrv3LECA2hqaBsWYuxEhOtWLCvgB1O7UkgM2egxyI
+	CWaolcSfVeeh4WLfvTS/iNx56s98UZC7aWVY8TdUJ4CTYenNmqZwmD3CI29L01+N1SA39P9Q2xqHQ
+	CJgbiVK7hxdUQIhqcbPddoaQ5/dcmokxgUsd1YhQB65HLMwMweLMhKVVOH5ml60GfeAqnZkD1IJ41
+	nxlPcll9cFGKzdqPGEf2leMI2h0rTaQUG6Zu1TksL1meiojCVl78e+IX2RlIYDEvuh84OMFwjkg40
+	VvF6sbAmPWmF1dlbqrjA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iO05S-0003Ac-OD; Fri, 25 Oct 2019 13:57:06 +0000
+	id 1iO06G-0003mP-RL; Fri, 25 Oct 2019 13:57:56 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iO05P-000398-59
- for linux-mtd@lists.infradead.org; Fri, 25 Oct 2019 13:57:04 +0000
+ id 1iO06D-0003lh-H8
+ for linux-mtd@lists.infradead.org; Fri, 25 Oct 2019 13:57:55 +0000
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 181A1222CD;
- Fri, 25 Oct 2019 13:57:02 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 88E1D222CD;
+ Fri, 25 Oct 2019 13:57:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1572011822;
- bh=qrgMHvYkNzV/6Kpc4eHMvhYOFkbPtSxCvDcXEAj+KRg=;
+ s=default; t=1572011873;
+ bh=yu2re7QlOLOylGKR+ttvD8dXbCgph8uPZ6I6K2Me1Uk=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=e9kNWArI3e/CJzrRPskENrm4T5/c8okqCw24bB2wiQNr2NMfd8cDpaqRs9snfMhJ5
- XOjllWKYlIf4IIXM66cSgqJn8hfvPTOuF7noCsJXPCSY0lf9uoBkXW5BMnZduTuDT/
- FEZrbMRXe2sQFyLEEodYgJ1U8taXd3lwA9gvdfa0=
+ b=vrrlSoFgxg4G3g4r4X20UQERfcR2qsRvm6jYmksYNJR5Z+vGP8RJJ/nAGQEFkowy5
+ Apl7+qo5Lt5ff/sEtMZybclkAcqXcjT6wpaYfZzouPW0GmLGZD+yypXNwOH6at7fzG
+ byOXP/AubLv9cTDDc0g9yoFAgmBWorYq0DXChtzQ=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 33/37] ubi: ubi_wl_get_peb: Increase the number
+Subject: [PATCH AUTOSEL 4.14 22/25] ubi: ubi_wl_get_peb: Increase the number
  of attempts while getting PEB
-Date: Fri, 25 Oct 2019 09:55:57 -0400
-Message-Id: <20191025135603.25093-33-sashal@kernel.org>
+Date: Fri, 25 Oct 2019 09:57:10 -0400
+Message-Id: <20191025135715.25468-22-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191025135603.25093-1-sashal@kernel.org>
-References: <20191025135603.25093-1-sashal@kernel.org>
+In-Reply-To: <20191025135715.25468-1-sashal@kernel.org>
+References: <20191025135715.25468-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191025_065703_239028_ACF71D52 
+X-CRM114-CacheID: sfid-20191025_065753_613392_5515D0F7 
 X-CRM114-Status: GOOD (  16.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -151,7 +151,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/ubi/fastmap-wl.c b/drivers/mtd/ubi/fastmap-wl.c
-index 98f7d6be8d1fc..e091017d85f6a 100644
+index 69dd21679a30c..99aa30b28e46e 100644
 --- a/drivers/mtd/ubi/fastmap-wl.c
 +++ b/drivers/mtd/ubi/fastmap-wl.c
 @@ -205,7 +205,7 @@ static int produce_free_peb(struct ubi_device *ubi)
