@@ -4,20 +4,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96A00CA9EA0
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Oct 2019 13:58:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42F89CA9EA0
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Oct 2019 13:59:14 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6CA58222CE
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Oct 2019 13:58:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 13DA2222CD
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Oct 2019 13:59:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="l4X5yfWa";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZutflNzE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6CA58222CE
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Fm7QbNng";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="EEK4FY52"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 13DA2222CD
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,48 +26,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=L4u+K2Dqsku/VOfXafqg8D9CQZ2MuSBc/ZVnpsfSxow=; b=l4X5yfWag98IpL
-	59xmRgEw6SWgM6TMyOl0sTCN/p8UMDt6pgSqoveHDHbiqx4n2NS+GtX6b49yqqHaxeJs8J1c+cm0y
-	pAr5ydUTX1nx0aXEsMo6NjnCNtwiBNL4jbzBOIyEBZj6FPhE9Ocd5u4aZVNlCrrZFPzB2TbTMiUGW
-	q3QfPVZZwJukwQdwECx0HuhN1bUkKF7rwxVuTODwGG9Ypyv/Yh/4kq3QBQqYqkbhHIy7yxxs2JleJ
-	O79a+a81+dTZJivN2N/pAIOzqkFmgbN+z8YD89SsVSDFC7FIkJs8NvmMKkmswNS38XFBUK81pBxHd
-	W7yen9gSqpJYRtnvYYkw==;
+	List-Owner; bh=L4u+K2Dqsku/VOfXafqg8D9CQZ2MuSBc/ZVnpsfSxow=; b=Fm7QbNngrEOsMV
+	ognne/x78+LhXkjK5t8ya02zGR9Xz7v5YLF3/p7nASXKNfKzaluutVF5dGwSTd4/eiwaxO+BaOiM1
+	hwpTyfL38MzNJtqWrg7o/8MTn6SrrVTp+nLAZe3yyVmN2GPWcUCNUKbeBuIuIHGQzzq/BWc1PQEH+
+	Zmyc49/2yukVaJf9IP5+0MEUUpEPITysiEnZzypY5TgV88DzyYm0Hb8hZkFcVZOovdcM+b4wEFk2w
+	FanGIC8Keds3/A5B5KKPtA2o/YO3FUJl318yxfe8vPMn6Qulhh0q/Pz8gwNrt7XAs8c9z3D9D8GSz
+	tqzQizaK4lZG/xRtICug==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iO06u-00046I-Vg; Fri, 25 Oct 2019 13:58:36 +0000
+	id 1iO07U-0004RT-OZ; Fri, 25 Oct 2019 13:59:12 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iO06s-000456-01
- for linux-mtd@lists.infradead.org; Fri, 25 Oct 2019 13:58:35 +0000
+ id 1iO07R-0004Qo-Ou
+ for linux-mtd@lists.infradead.org; Fri, 25 Oct 2019 13:59:11 +0000
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 08C9E222CE;
- Fri, 25 Oct 2019 13:58:32 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id C205C22470;
+ Fri, 25 Oct 2019 13:59:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1572011913;
+ s=default; t=1572011949;
  bh=yu2re7QlOLOylGKR+ttvD8dXbCgph8uPZ6I6K2Me1Uk=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ZutflNzE1EANqJ7jXPIMUOz587O2CQfow4DpptNpSHyFWWoGUEXtVJ00MVuaYtI1X
- 0o+HvhtP9277UiThN/XRbLTV48YrKvPZMUrtYsoL8lxJ9TErOtvm5pf5xeh8JhjpRn
- 7bdpXKDNR3rD7Rec2FoQsQ6Yp/UFNyXepc/+FvJY=
+ b=EEK4FY52csoGVpLw4snk84ha26Lg4mkY1e0kwrSrN3r2FJymPErETz6pIjxQebJan
+ 899tuC/P7I/w3CYTH6KW8XLu9iK+lwsbWVxjnZG7G4eI+ZbS0NpPGRpnvsxls3uYHR
+ OUIIQdL3gby8HdlF0PWSGBrqcIU2JS8NpJxm5Fio=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 17/20] ubi: ubi_wl_get_peb: Increase the number of
+Subject: [PATCH AUTOSEL 4.4 14/16] ubi: ubi_wl_get_peb: Increase the number of
  attempts while getting PEB
-Date: Fri, 25 Oct 2019 09:57:57 -0400
-Message-Id: <20191025135801.25739-17-sashal@kernel.org>
+Date: Fri, 25 Oct 2019 09:58:38 -0400
+Message-Id: <20191025135842.25977-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191025135801.25739-1-sashal@kernel.org>
-References: <20191025135801.25739-1-sashal@kernel.org>
+In-Reply-To: <20191025135842.25977-1-sashal@kernel.org>
+References: <20191025135842.25977-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191025_065834_091298_E0535DB5 
-X-CRM114-Status: GOOD (  17.05  )
+X-CRM114-CacheID: sfid-20191025_065909_858512_954C377D 
+X-CRM114-Status: GOOD (  16.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
