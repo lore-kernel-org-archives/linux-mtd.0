@@ -4,20 +4,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7393CA9EA0
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Oct 2019 13:56:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F37ECCA9EA0
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Oct 2019 13:57:07 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9EAB521D7F
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Oct 2019 13:56:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CB32C222C2
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Oct 2019 13:57:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PPiyl6TY";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="M9K8+TWq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9EAB521D7F
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IxAQahT2";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="e9kNWArI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CB32C222C2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,47 +26,47 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qQR7cLlHPISTjHJLxm/f35XZFU+QKqIHzmuxzmyeJHg=; b=PPiyl6TYApU9cR
-	v2bfY38SEiUJ3Kh64KGMZgTZijjySGFYHaVXi4HNsf2VaXYSKKI/Sz+HxMpG1G4/ovyROKgXs9sB2
-	OccL0eJl8qvG3XUa4m0jHWc147F7suy1TF588NmoiH0PO3ZyKWEEBnC5nEy04uJ5hpSx4evTrKoXf
-	aZA6clDlo7tdr2B2AePwYL+cJXrxxT9MW5ukNYTEmrO92rGBd/aFMWVhMzDPUXWplbUThvfrK9dXC
-	0ZgEORIZO1q1wOH3KtkTzJEclWYCKG1/qdnOPncO+USLOyqD28RGAmrftkb2ts3MHfE8RkH1BhGW1
-	ckBNJpJo/m+fcHLBZizw==;
+	List-Owner; bh=J9GlsozVKs2pDPKZH+0HIwoxNum07ZVFbOx9qJj3j44=; b=IxAQahT2taNBtn
+	2Ys5O+cn0fWm3CNCoj/XLpksiPh5jpM/yfhysi90uxKln0tn3Q5IXqwIzsVPMRLWJULpLOkkXJoKU
+	cENL/wTsErat76aZrZp/DYzCBzVB+7c+FZYzC5mR1+qsWV0DWlrjzh9zWFDwbULCoT2qBF9JfvvFN
+	XXgviGRXQbgpiZMh0yQIPWyIU1c8ZgU56WnvO4BF4MJh/dqMjSQpgUq8p3VaurWmRcSvXIjwt3/AM
+	b3n683Vabh3xXxot8PMLoP41OphmxTHcNr/thf+ZxXqiWPCgGX8Tz8fMZsWsIpFP78Y9bBzHuPbX2
+	6G7RpN3LH6TRyuN3q4Ow==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iO04B-0002F3-Ed; Fri, 25 Oct 2019 13:55:47 +0000
+	id 1iO05S-0003Ac-OD; Fri, 25 Oct 2019 13:57:06 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iO048-0002EC-4J
- for linux-mtd@lists.infradead.org; Fri, 25 Oct 2019 13:55:45 +0000
+ id 1iO05P-000398-59
+ for linux-mtd@lists.infradead.org; Fri, 25 Oct 2019 13:57:04 +0000
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 2F9C0222CB;
- Fri, 25 Oct 2019 13:55:43 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 181A1222CD;
+ Fri, 25 Oct 2019 13:57:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1572011743;
- bh=tmHS6dNPbM8iY9hq0ePqUSvZvvPJdn4+Z3vB+QWrr4k=;
+ s=default; t=1572011822;
+ bh=qrgMHvYkNzV/6Kpc4eHMvhYOFkbPtSxCvDcXEAj+KRg=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=M9K8+TWqbKTeXgrxBR919Jszce70V9bMIuw5tNIMP34vrrkNoCbShC3Z+rr/qGIOG
- poCywqGq1BAv/Sw4ibKUzKxtRpujzgApBubLaibvwewerPX1vCX9W9zofyyBBovWJi
- eqh1BA+ov/xcAM3yRCWFMk+TplZyvEZgojSyJouc=
+ b=e9kNWArI3e/CJzrRPskENrm4T5/c8okqCw24bB2wiQNr2NMfd8cDpaqRs9snfMhJ5
+ XOjllWKYlIf4IIXM66cSgqJn8hfvPTOuF7noCsJXPCSY0lf9uoBkXW5BMnZduTuDT/
+ FEZrbMRXe2sQFyLEEodYgJ1U8taXd3lwA9gvdfa0=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.3 24/33] ubi: ubi_wl_get_peb: Increase the number of
- attempts while getting PEB
-Date: Fri, 25 Oct 2019 09:54:56 -0400
-Message-Id: <20191025135505.24762-24-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 33/37] ubi: ubi_wl_get_peb: Increase the number
+ of attempts while getting PEB
+Date: Fri, 25 Oct 2019 09:55:57 -0400
+Message-Id: <20191025135603.25093-33-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191025135505.24762-1-sashal@kernel.org>
-References: <20191025135505.24762-1-sashal@kernel.org>
+In-Reply-To: <20191025135603.25093-1-sashal@kernel.org>
+References: <20191025135603.25093-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191025_065544_213455_8A46A1DC 
+X-CRM114-CacheID: sfid-20191025_065703_239028_ACF71D52 
 X-CRM114-Status: GOOD (  16.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -151,10 +151,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/ubi/fastmap-wl.c b/drivers/mtd/ubi/fastmap-wl.c
-index d9e2e3a6e105f..c44c8470247e1 100644
+index 98f7d6be8d1fc..e091017d85f6a 100644
 --- a/drivers/mtd/ubi/fastmap-wl.c
 +++ b/drivers/mtd/ubi/fastmap-wl.c
-@@ -196,7 +196,7 @@ static int produce_free_peb(struct ubi_device *ubi)
+@@ -205,7 +205,7 @@ static int produce_free_peb(struct ubi_device *ubi)
   */
  int ubi_wl_get_peb(struct ubi_device *ubi)
  {
@@ -163,7 +163,7 @@ index d9e2e3a6e105f..c44c8470247e1 100644
  	struct ubi_fm_pool *pool = &ubi->fm_pool;
  	struct ubi_fm_pool *wl_pool = &ubi->fm_wl_pool;
  
-@@ -221,12 +221,12 @@ int ubi_wl_get_peb(struct ubi_device *ubi)
+@@ -230,12 +230,12 @@ int ubi_wl_get_peb(struct ubi_device *ubi)
  
  	if (pool->used == pool->size) {
  		spin_unlock(&ubi->wl_lock);
