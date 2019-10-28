@@ -2,60 +2,91 @@ Return-Path: <SRS0=3akN=YV=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96E2DCA9EC1
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Oct 2019 16:44:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24B13CA9EC0
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Oct 2019 18:08:04 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6D88821744
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Oct 2019 16:44:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EBDFD20862
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Oct 2019 18:08:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="e3C9LvRS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D88821744
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ou7I1v9K";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y1PKiPJS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EBDFD20862
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XF7S2bULbYJR+xrIphGv2pmouhc06YQId0dSO6kz3Us=; b=e3C9LvRSHHerLI
-	WMq51fmowaJc65zs63T2rhlsQBHUBBMkB/Pihw5dEf/F5FWuSrn7oxFs6jIeo9q3rBmtX4pTD4LVU
-	6FJictzBfB2bw61lpzmr2FQhWziiSAZV+cJ5+yTaUqq9SSD7Cwivs7Frzx3I6XQyy5bIFR7FBo7XR
-	QjEoibLoQTH6GY2HGDw8SWe5jIqdu0rAvZBKysezYpyjPEhujhLwGGxmJH74KsfP9GeKCNpL8O7PR
-	fFXrBQjaPHQ7Cb7y4WR/ZmSIiMxbwmECW8PGbjstfvsPDxPRG4QZJLJPf2xCc3rPeARpL1BV+v31a
-	XVrClOTruQyzwXO/NFjQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From
+	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Q0epYvEM8gjqpwJlQdM2//H5yOq5e0joXQmcXhyo7jc=; b=ou7I1v9KnMbIbH
+	Z/ZFgHKyv5H4jZPCT1kp6nAVPmaNPmHhMcUZmqexotE2blXU2OgUxCN0cDEn2VwNCnq805c7rtNiq
+	G+F9n6ceAopEuwfX7QOjFHS/nHycZwM4JR0kOXgg2QAiVOmciKBEmWr7PUUU0SW8i8x93t2WZqpCN
+	oO/jGSC6MqaZ/OnSTsk5WvPe8ry/2zxX3aZqO8YMcghQLShvmf1yNUu3l80CMKkaHCIaEBfUvCVy2
+	fwcZvcmFN7otFITkOyup2HzGWLnA8d7UWgsHegD+6tpK+tIfKJh1jIGETCtmMBGsoeIJYmylca9E6
+	hcR154QSroAYJmTDpuZQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iP87x-0002Cw-Rh; Mon, 28 Oct 2019 16:44:21 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1iP9Ql-0003SK-Rx; Mon, 28 Oct 2019 18:07:51 +0000
+Received: from mail-pg1-x542.google.com ([2607:f8b0:4864:20::542])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iP85K-00088u-Ua
- for linux-mtd@lists.infradead.org; Mon, 28 Oct 2019 16:41:41 +0000
-X-Originating-IP: 91.217.168.176
-Received: from xps13 (unknown [91.217.168.176])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id EC341FF80E;
- Mon, 28 Oct 2019 16:41:31 +0000 (UTC)
-Date: Mon, 28 Oct 2019 17:41:31 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Chuanhong Guo <gch981213@gmail.com>
-Subject: Re: [PATCH][RFC] mtd: spinand: fix detection of GD5FxGQ4xA flash
-Message-ID: <20191028174131.65c3d580@xps13>
-In-Reply-To: <20191016013845.23508-1-gch981213@gmail.com>
-References: <20191016013845.23508-1-gch981213@gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1iP9Qc-0003Qc-8u
+ for linux-mtd@lists.infradead.org; Mon, 28 Oct 2019 18:07:50 +0000
+Received: by mail-pg1-x542.google.com with SMTP id e10so7385979pgd.11
+ for <linux-mtd@lists.infradead.org>; Mon, 28 Oct 2019 11:07:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+ :user-agent; bh=KooIewZwbvjOkWEaBdb5ogJ6e+TbvWJNeEYKOS8P4w0=;
+ b=Y1PKiPJSo5cC4StnmwLOwPxBIOiH1/YjuhzkGWx/4kjWfWLT96mT2xSrwfVi7yHFEl
+ Nh5NKHRthKhTX38td42WJaxB7C3k4RnOtzAnd/+cwXMPAkE3gXJcIgkRB0vVN8o9bcN4
+ KAp7kN+geHLFssZe5717qy+JPk/T5xKxDrkTMcvlXZmievm/WR8G9YLZjh9nakfkEi8c
+ DuqWxZHoTQVwkP3WRh337YW3LM5Mvc9mLDhNNXAY5c6wXqksrU5cSXZO2Ga09wU9SwfR
+ LCosxU8Rahy9Gs3YHw1vnjY/XZ7JWwuSclzwONsO/L1nul6Ksh4YXaEw13q3UQ39M2GX
+ TZIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+ :content-disposition:user-agent;
+ bh=KooIewZwbvjOkWEaBdb5ogJ6e+TbvWJNeEYKOS8P4w0=;
+ b=c/b3W2qL96U0GVK17tp885k5/+47FZZv0pVK2D3BiQeD/8WFUcyoQtAs/JFjeiZ8NP
+ UYwGDBZiS89zEGD00/E2JaRdSg4Zhl0wWRZipr1VZjkhuKvWgJA505Ow7GK+JqapcO6l
+ vnK0/m6gjUU87/RTvTLYOnxSTktn2greCBmKbaaWolw9DjI+gUar/yxEx19mApKTF3VT
+ cvz6ZyCeT246dGpBQPsfuNlYCnABzEKG7M+otkx6nqO13eJrgBpJzyp7PiBrDTieKgJA
+ IjNtIkI0SnrBLAk6lbqR2loGZeBBcqhCNgubpIT+5e3B78cTIUdM1ucWlBUbDSoWKraJ
+ i7GQ==
+X-Gm-Message-State: APjAAAWlZstX70LgMBa1hMwKFEFYAGcygc29oOuN5cxdfIQgxSHhuyFd
+ DKeOKGQfZoNCQkGLbmFokvI=
+X-Google-Smtp-Source: APXvYqxbYQIyXuOm4thgIzsK1cAneqYYBmH5ZCOjF7KVYtMewLsSjXsd96H2cMKo8EN9gFEru5EWjw==
+X-Received: by 2002:a17:90a:37e4:: with SMTP id v91mr773608pjb.8.1572286061510; 
+ Mon, 28 Oct 2019 11:07:41 -0700 (PDT)
+Received: from saurav ([27.62.167.137])
+ by smtp.gmail.com with ESMTPSA id i102sm168856pje.17.2019.10.28.11.07.37
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 28 Oct 2019 11:07:40 -0700 (PDT)
+Date: Mon, 28 Oct 2019 23:37:33 +0530
+From: Saurav Girepunje <saurav.girepunje@gmail.com>
+To: joern@lazybastard.org, dwmw2@infradead.org, computersforpeace@gmail.com,
+ marek.vasut@gmail.com, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: devices: phram.c: Fix multiple kfree statement from
+ phram_setup]
+Message-ID: <20191028180733.GA26168@saurav>
 MIME-Version: 1.0
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191028_094139_136292_7CB8E671 
-X-CRM114-Status: GOOD (  12.89  )
+X-CRM114-CacheID: sfid-20191028_110746_639802_A08F669F 
+X-CRM114-Status: UNSURE (   9.94  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,38 +98,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Stefan Roese <sr@denx.de>, Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <bbrezillon@kernel.org>, David Woodhouse <dwmw2@infradead.org>,
- linux-kernel@vger.kernel.org, Frieder Schrempf <frieder.schrempf@kontron.de>,
- linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>,
- Jeff Kletsky <git-commits@allycomm.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: saurav.girepunje@hotmail.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgpDaHVhbmhvbmcgR3VvIDxnY2g5ODEyMTNAZ21haWwuY29tPiB3cm90ZSBvbiBXZWQs
-IDE2IE9jdCAyMDE5IDA5OjM4OjI0CiswODAwOgoKPiBHRDVGeEdRNHhBIGRpZG4ndCBmb2xsb3cg
-dGhlIFNQSSBzcGVjIHRvIGtlZXAgTUlTTyBsb3cgd2hpbGUgc2xhdmUgaXMKPiByZWFkaW5nLCBh
-bmQgaW5zdGVhZCBNSVNPIGlzIGtlcHQgaGlnaC4gQXMgYSByZXN1bHQsIHRoZSBmaXJzdCBieXRl
-Cj4gb2YgaWQgYmVjb21lcyAweEZGLgo+IFNpbmNlIHRoZSBmaXJzdCBieXRlIGlzbid0IHN1cHBv
-c2VkIHRvIGJlIGNoZWNrZWQgYXQgYWxsLCB0aGlzIHBhdGNoCj4ganVzdCByZW1vdmVkIHRoYXQg
-Y2hlY2suCj4gCj4gV2hpbGUgYXQgaXQsIHJlZG8gdGhlIGNvbW1lbnQgYWJvdmUgdG8gYmV0dGVy
-IGV4cGxhaW4gd2hhdCdzIGhhcHBlbmluZy4KPiAKPiBGaXhlczogY2ZkOTNkN2M5MDhlICgibXRk
-OiBzcGluYW5kOiBBZGQgc3VwcG9ydCBmb3IgR2lnYURldmljZSBHRDVGMUdRNFVGeHhHIikKPiBT
-aWduZWQtb2ZmLWJ5OiBDaHVhbmhvbmcgR3VvIDxnY2g5ODEyMTNAZ21haWwuY29tPgo+IENDOiBK
-ZWZmIEtsZXRza3kgPGdpdC1jb21taXRzQGFsbHljb21tLmNvbT4KPiAtLS0KPiBSRkM6Cj4gSSBk
-b3VidCB3aGV0aGVyIHRoaXMgcGF0Y2ggaXMgYSBwcm9wZXIgZml4IGZvciB0aGUgdW5kZXJseWlu
-ZyBwcm9ibGVtOgo+IFRoZSBhY3R1YWwgcHJvYmxlbSBpcyB0aGF0IHdlIGhhdmUgdHdvIGRpZmZl
-cmVudCBpbXBsZW1lbnRhdGlvbiBvZiByZWFkIGlkCj4gY29tbWFuZDogT25lIHJlcGxpZXMgaW1t
-ZWRpYXRlbHkgYWZ0ZXIgbWFzdGVyIHNlbmRpbmcgMHg5ZiBhbmQgdGhlIG90aGVyCj4gbmVlZCB0
-byBzZW5kIDB4OWYgYW5kIGFuIG9mZnNldCBieXRlIChmb3VuZCBpbiB3aW5ib25kIGFuZCBlYXJs
-eSBHRCBmbGFzaGVzLikKPiBDdXJyZW50IGNvZGUgb25seSB3b3JrcyBpZiBTUEkgbWFzdGVyIGlz
-IHByb3Blcmx5IGltcGxlbWVudGVkIChpLmUuIGtlZXAgTU9TSQo+IGxvdyB3aGlsZSByZWFkaW5n
-LikKCkkgYW0gbm90IGVudGlyZWx5IGFnYWluc3QgdGhlIGZpeCwgYnV0IHRoaXMgaXMgYSBTUEkg
-aG9zdCBjb250cm9sbGVyCmlzc3VlLCByaWdodD8gQ2FuIHlvdSB0cnkgdG8gZml4IHRoZSBjb250
-cm9sbGVyIGRyaXZlciBpbnN0ZWFkPwoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Np
-b24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vbGludXgtbXRkLwo=
+Remove multiple kfree statement from phram_setup() in phram.c
+
+Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+---
+ drivers/mtd/devices/phram.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
+index c467286ca007..38f95a1517ac 100644
+--- a/drivers/mtd/devices/phram.c
++++ b/drivers/mtd/devices/phram.c
+@@ -243,22 +243,22 @@ static int phram_setup(const char *val)
+ 
+ 	ret = parse_num64(&start, token[1]);
+ 	if (ret) {
+-		kfree(name);
+ 		parse_err("illegal start address\n");
++		goto free_nam;
+ 	}
+ 
+ 	ret = parse_num64(&len, token[2]);
+ 	if (ret) {
+-		kfree(name);
+ 		parse_err("illegal device length\n");
++		goto free_nam;
+ 	}
+ 
+ 	ret = register_device(name, start, len);
+ 	if (!ret)
+ 		pr_info("%s device: %#llx at %#llx\n", name, len, start);
+-	else
+-		kfree(name);
+ 
++free_nam:
++	kfree(name);
+ 	return ret;
+ }
+ 
+-- 
+2.20.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
