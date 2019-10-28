@@ -2,64 +2,102 @@ Return-Path: <SRS0=3akN=YV=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E34BECA9EC0
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Oct 2019 19:14:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B089CA9EC0
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Oct 2019 19:15:39 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BDE23214B2
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Oct 2019 19:14:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 71F8C214B2
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Oct 2019 19:15:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AfUF9+KQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDE23214B2
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=free.fr
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dwQcusJM";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="G/5u+GNL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 71F8C214B2
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
-	Date:References:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2e6PpIFqpeyoh0mBBfe5JzhcASdl/IKnDu9nQ8WYzSk=; b=AfUF9+KQ+szejf
-	lA8uT3RthkCJfoG9SiuZDTUb/wg0Ru2Rp4d12yBtCohTBXD2f+FLDDr7GgBtG//VWVpA7IYWRMAa5
-	SA8bac+bySz8FRH0GYY5WiiJhgi2Ou+bVAf5ZyiZ5t4aNZDRmOOflo3qZwkM5jEPRa8QzZz74LHs1
-	TszhJFdcclt9Dh6NfbI22FKWspvvSrU8FOADQADhXcJ9L9/UevOrur3ONxsK0E8O7RdJZI0NxGmfk
-	VUXZK/QO/TFZvGGZzCuaDg/D5T5jkvDrHOaDO3UjaTvL/N51zGvn2Rqq85qc+XMHH6ONNTkv6KVrq
-	3ABKZgwbSYTDFzcCqd9w==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=OrV7EiSpVLie6/Wi2ay5D/GIkElfoJbJXWheZvcbais=; b=dwQcusJMYuxtUL2hwWTciK4Hot
+	Jc731EWO/mVXYaiCeEAUEi8WP1tHaIV7t25eUeCqYssBNp2Vi/VJwYs/2z8cWguivgE2AUnwbtxYk
+	/j3pVVBoqgUNziKQGEOjgpDYFuZuT9bDLCc7nZhknu0gZMHp+w42fN2GyJgJaTKa6TSwbTBJMExXx
+	W+Le0hrM29GK0bwqGHnTtUgAsYmOj+GO+f7dm/ieZsG5v3SP49EMCziBdikZx1j71DveXdKS76eK0
+	KxXj+kqwAoCYOYhra9QhJ92Rp8k94Ud/L9MSDSlQRwweGJAN4m9STV8q5s4S9uaFxIUK5EryTWAiq
+	UaPWq/kA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iPATO-0004P9-U1; Mon, 28 Oct 2019 19:14:38 +0000
-Received: from smtp09.smtpout.orange.fr ([80.12.242.131]
- helo=smtp.smtpout.orange.fr)
+	id 1iPAU8-0005we-HB; Mon, 28 Oct 2019 19:15:24 +0000
+Received: from mail-lj1-x241.google.com ([2a00:1450:4864:20::241])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iPATC-0004Ep-RO
- for linux-mtd@lists.infradead.org; Mon, 28 Oct 2019 19:14:28 +0000
-Received: from belgarion ([90.55.204.252]) by mwinf5d17 with ME
- id K7EJ2100B5TFNlm037EJ4o; Mon, 28 Oct 2019 20:14:24 +0100
-X-ME-Helo: belgarion
-X-ME-Auth: amFyem1pay5yb2JlcnRAb3JhbmdlLmZy
-X-ME-Date: Mon, 28 Oct 2019 20:14:24 +0100
-X-ME-IP: 90.55.204.252
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Arnd Bergmann <arnd@arndb.de>, Russell King <linux@arm.linux.org.uk>
-Subject: Re: [PATCH 05/46] ARM: pxa: split up mach/hardware.h
-References: <20191018154052.1276506-1-arnd@arndb.de>
- <20191018154201.1276638-5-arnd@arndb.de>
-X-URL: http://belgarath.falguerolles.org/
-Date: Mon, 28 Oct 2019 20:14:18 +0100
-In-Reply-To: <20191018154201.1276638-5-arnd@arndb.de> (Arnd Bergmann's message
- of "Fri, 18 Oct 2019 17:41:20 +0200")
-Message-ID: <87d0egof79.fsf@belgarion.home>
-User-Agent: Gnus/5.130008 (Ma Gnus v0.8) Emacs/26 (gnu/linux)
+ id 1iPAU5-0005wD-II
+ for linux-mtd@lists.infradead.org; Mon, 28 Oct 2019 19:15:23 +0000
+Received: by mail-lj1-x241.google.com with SMTP id m7so12590231lji.2
+ for <linux-mtd@lists.infradead.org>; Mon, 28 Oct 2019 12:15:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
+ h=subject:to:references:from:organization:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=p+1fqspKfIFvwcr38DIrHxckY7p26muWlSRMdgdXIxU=;
+ b=G/5u+GNLJsMVFuNqypRICmKTmVWJRVE+tKcqL3SENMJ1BUSArkgHbdjTAPDE/Jliqz
+ WJIXdPryBBe/E7VN0C8xkIjJk7bMFkY+EJDTlsoaHnP7SQM31lfBxVB5Traqz7w3nR1l
+ N1nwZWAeQrtOM6hhFWeQOFbcgahg1WbixX662CW7RdbXe4xpyWmQCIgPXNaPMlcsnl0B
+ NomLrr/SwZl7MxIQZTjCTxrs7R0L2++hscFFh2gYdkgA/7SaMDp8EmKmzvBvE3Dakc/O
+ um+mudZ8wjZffuLOlAx0NSqsQ5vKfVsKAhmiMdi/QRAssE1ImJmqqrvylNHJz2FJlEhg
+ CLJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:references:from:organization
+ :message-id:date:user-agent:mime-version:in-reply-to
+ :content-language:content-transfer-encoding;
+ bh=p+1fqspKfIFvwcr38DIrHxckY7p26muWlSRMdgdXIxU=;
+ b=IrVAPWKuEuQYD82Sl4yP9IoKNHOTRIXWAH++qiRcVyXfD5R2Ov6wMpBhbSzkrjiXb4
+ 9qLN6O+i/htDW0qTl2W+Q65ugxowIU8WURtcos0vmRsWTPVo2InIitEiRxqNPA34pqru
+ e9VoDhz1QWia+a0N8zTwnJ3rbdLtIssqVzMPItRMfpswQRp//txLZffBLEICo4X8rz0+
+ 3XWV4BztTKu9ufd9E8SDXCbu6/Jy7wjg8OS/EEaz6BJOM1BTfbKk+3iMHPvc5Oo3aDny
+ KAQr7Irvoc47G2XETp0FQXeAIV3uFviV5fDl4ReMamu1DlLWmCXxPSzoBcbclSOHtzZR
+ rtdw==
+X-Gm-Message-State: APjAAAWzrip4xeX93tRPF0nuqb3Jd5r6AP5C5xB8Ozfb7CmjwfEBi0vd
+ p7+v7Cwiw6n9pzJJ5bRVAT0ZoBblJq8=
+X-Google-Smtp-Source: APXvYqw2/Dceaq0L0qhpsSrJmLHqjmSYBpbyM5w+Sp7jdoF2fgehMoGXJLetlp1mW4hUa0TIPxdaeg==
+X-Received: by 2002:a2e:81da:: with SMTP id s26mr12504694ljg.192.1572290118697; 
+ Mon, 28 Oct 2019 12:15:18 -0700 (PDT)
+Received: from wasted.cogentembedded.com
+ ([2a00:1fa0:4840:6ad1:bb94:1046:3ad2:6a64])
+ by smtp.gmail.com with ESMTPSA id r18sm5542295ljg.32.2019.10.28.12.15.17
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Mon, 28 Oct 2019 12:15:18 -0700 (PDT)
+Subject: Re: [PATCH 2/2] mtd: cfi_cmdset_0002: fix delayed error detection on
+ HyperFlash
+To: Vignesh Raghavendra <vigneshr@ti.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+References: <b93bf510-8812-3f82-29f3-43f41d08550a@cogentembedded.com>
+ <b146c469-6cc3-885e-3e8e-ff7a5fa8dcd4@cogentembedded.com>
+ <e5124cbf-c9bd-ec0e-b68f-1882646eb264@ti.com>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Organization: Cogent Embedded
+Message-ID: <0526aa49-0649-b0d1-e72f-9b5bb8f284a5@cogentembedded.com>
+Date: Mon, 28 Oct 2019 22:15:16 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.1
 MIME-Version: 1.0
+In-Reply-To: <e5124cbf-c9bd-ec0e-b68f-1882646eb264@ti.com>
+Content-Language: en-MW
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191028_121427_165479_B8ED4371 
-X-CRM114-Status: GOOD (  22.72  )
+X-CRM114-CacheID: sfid-20191028_121521_789617_4D155483 
+X-CRM114-Status: GOOD (  22.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,91 +109,114 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Ulf Hansson <ulf.hansson@linaro.org>, linux-usb@vger.kernel.org,
- Viresh Kumar <viresh.kumar@linaro.org>,
- Michael Turquette <mturquette@baylibre.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Dominik Brodowski <linux@dominikbrodowski.net>, linux-mtd@lists.infradead.org,
- Pavel Machek <pavel@ucw.cz>, linux-clk@vger.kernel.org,
- linux-leds@vger.kernel.org, linux-rtc@vger.kernel.org,
- linux-input@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
- Guenter Roeck <linux@roeck-us.net>, linux-watchdog@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-pm@vger.kernel.org,
- Haojian Zhuang <haojian.zhuang@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jacek Anaszewski <jacek.anaszewski@gmail.com>, linux-fbdev@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, Stephen Boyd <sboyd@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- dri-devel@lists.freedesktop.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
- Daniel Mack <daniel@zonque.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Arnd Bergmann <arnd@arndb.de> writes:
+Hello!
 
-> The mach/hardware.h is included in lots of places, and it provides
-> three different things on pxa:
->
-> - the cpu_is_pxa* macros
-> - an indirect inclusion of mach/addr-map.h
-> - the __REG() and io_pv2() helper macros
->
-> Split it up into separate <linux/soc/pxa/cpu.h> and mach/pxa-regs.h
-> headers, then change all the files that use mach/hardware.h to
-> include the exact set of those three headers that they actually
-> need, allowing for further more targeted cleanup.
->
-> linux/soc/pxa/cpu.h can remain permanently exported and is now in
-> a global location along with similar headers. pxa-regs.h and
-> addr-map.h are only used in a very small number of drivers now
-> and can be moved to arch/arm/mach-pxa/ directly when those drivers
-> are to pass the necessary data as resources.
+On 10/16/2019 09:33 AM, Vignesh Raghavendra wrote:
 
-For the pxa part, that looks fine to me.
-I'd like to focus a bit of Russell's attention to the sa11xx part (reminder in
-[1]), and more specifically :
+>> The commit 4844ef80305d ("mtd: cfi_cmdset_0002: Add support for polling
+>> status register") added checking for the status register error bits into
+>> chip_good() to only return 1 if these bits are zero. Unfortunately, this
+>> means that polling using chip_good() always reaches a time-out condition
+>> when erase or program failure bits are set. I think the status register
+>> error checking should be fully delegated to cfi_check_err_status() that
+>> should return whether any error bits were set or not...
+>>
+> 
+> Please reword last sentence to drop "I think". Something like:
+> 
+> Lets fully delegate the function of determining error condition to
+> cfi_check_err_status() and make chip_good() only look for Device
+> Ready/Busy condition.
 
- - the change to drivers/pcmcia/soc_common.c
- - the change to drivers/pcmcia/sa1111_generic.c
+   OK. :-)
 
-I must admit my knowledge of PCMCIA is relatively poor, and even if the patch
-looks harmless, one never knows if Assebet will ever by same after ...
+>> Fixes: 4844ef80305d ("mtd: cfi_cmdset_0002: Add support for polling status register")
+>> Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+>>
+>> ---
+>>  drivers/mtd/chips/cfi_cmdset_0002.c |   55 +++++++++++++++++++-----------------
+>>  1 file changed, 30 insertions(+), 25 deletions(-)
+>>
+>> Index: linux/drivers/mtd/chips/cfi_cmdset_0002.c
+>> ===================================================================
+>> --- linux.orig/drivers/mtd/chips/cfi_cmdset_0002.c
+>> +++ linux/drivers/mtd/chips/cfi_cmdset_0002.c
+>> @@ -123,14 +123,14 @@ static int cfi_use_status_reg(struct cfi
+>>  		(extp->SoftwareFeatures & poll_mask) == CFI_POLL_STATUS_REG;
+>>  }
+>>  
+>> -static void cfi_check_err_status(struct map_info *map, struct flchip *chip,
+>> -				 unsigned long adr)
+>> +static int cfi_check_err_status(struct map_info *map, struct flchip *chip,
+>> +				unsigned long adr)
+>>  {
+>>  	struct cfi_private *cfi = map->fldrv_priv;
+>>  	map_word status;
+>>  
+>>  	if (!cfi_use_status_reg(cfi))
+>> -		return;
+>> +		return 0;
+>>  
+>>  	cfi_send_gen_cmd(0x70, cfi->addr_unlock1, chip->start, map, cfi,
+>>  			 cfi->device_type, NULL);
+>> @@ -138,7 +138,7 @@ static void cfi_check_err_status(struct
+>>  
+>>  	/* The error bits are invalid while the chip's busy */
+>>  	if (!map_word_bitsset(map, status, CMD(CFI_SR_DRB)))
+>> -		return;
+>> +		return 0;
+>>  
+>>  	if (map_word_bitsset(map, status, CMD(0x3a))) {
+>>  		unsigned long chipstatus = MERGESTATUS(status);
+>> @@ -155,7 +155,9 @@ static void cfi_check_err_status(struct
+>>  		if (chipstatus & CFI_SR_SLSB)
+>>  			pr_err("%s sector write protected, status %lx\n",
+>>  			       map->name, chipstatus);
+>> +		return 1;
 
-Cheers.
+   So are you OK with extending the set of the error signalling bits I
+did here, or I should really have accounted only for ESB and PSB bits
+being error signals?
 
---
-Robert
+>>  	}
+>> +	return 0;
+>>  }
+>>  
+>>  /* #define DEBUG_CFI_FEATURES */
+[...]
+>> @@ -1703,8 +1701,11 @@ static int __xipram do_write_oneword_onc
+> 
+> Nit: for some reason, your diff has function names truncated abruptly
+> which makes its slightly harder to locate the context. I use git
+> format-patch that produces better readable contexts.
 
-[1] Extract of the patch for Russell's scrutiny
-> diff --git a/drivers/pcmcia/sa1111_generic.c b/drivers/pcmcia/sa1111_generic.c
-> index 11783410223b..2f556fa37c43 100644
-> --- a/drivers/pcmcia/sa1111_generic.c
-> +++ b/drivers/pcmcia/sa1111_generic.c
-> @@ -17,7 +17,6 @@
->  
->  #include <pcmcia/ss.h>
->  
-> -#include <mach/hardware.h>
->  #include <asm/hardware/sa1111.h>
->  #include <asm/mach-types.h>
->  #include <asm/irq.h>
-... zip ...
+   I use quilt for development, not a big fan of git in this role. :-)
 
-> diff --git a/drivers/pcmcia/soc_common.c b/drivers/pcmcia/soc_common.c
-> index 3a8c84bb174d..9276a628473d 100644
-> --- a/drivers/pcmcia/soc_common.c
-> +++ b/drivers/pcmcia/soc_common.c
-> @@ -47,8 +47,6 @@
->  #include <linux/spinlock.h>
->  #include <linux/timer.h>
->  
-> -#include <mach/hardware.h>
-> -
->  #include "soc_common.h"
->  
->  static irqreturn_t soc_common_pcmcia_interrupt(int irq, void *dev);
+[...]
+>> @@ -1974,12 +1974,17 @@ static int __xipram do_write_buffer_wait
+>>  		 */
+>>  		if (time_after(jiffies, timeo) &&
+>>  		    !chip_good(map, chip, adr, datum)) {
+>> +			pr_warn("MTD %s(): software timeout, address:0x%.8lx.\n",
+>> +				__func__, adr);
+> 
+> Since we are returning an error condition, this should be pr_err() (I
+> know that rest of the file does not follow this convention, but lets
+> make sure new code does)
+
+   OK, I was looking at the other timeout code and failed to notice
+that this printk() was converted to pr_err() by Ikegami-san... 
+
+> Rest looks fine to me. Thanks for the patch!
+
+   TY for the review.
+
+MBR, Sergei
 
 ______________________________________________________
 Linux MTD discussion mailing list
