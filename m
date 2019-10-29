@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA846CA9EC2
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Oct 2019 06:51:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C145CA9EC2
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Oct 2019 06:52:50 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 95391204FD
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Oct 2019 06:51:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0EE2D20578
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Oct 2019 06:52:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Cg+rUk0h"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 95391204FD
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kH9eBYPG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0EE2D20578
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,26 +25,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Kc9ckz4qwiYDNIWOjxIW4RDOlk/nRcjn/0dFVNDL3Dg=; b=Cg+rUk0h2HJChT
-	PeyHc16NA01eDF8xc4B2cziS76XoRThy5i84uhmSOtCVNngeXE/JYTjJrh/fEuQ/MLEBQIfFqs6cx
-	O92HOuVp0rkiQ+xqQ8v4x9lLjRe16l2xuKKFZWvIfICokEd3FDXH/BvVtm7qmHVWxDTqOcNug7KHR
-	UqYMauZfLRsqKILg4Q4Nsjpzts2YXqrz8PNL3R1FuZpToDdqqDpcvVuBzJDG3PPzD6zpGiU7tDSOW
-	DSPEWKjGKT+F+rQLo9xGYtEkj0SVf6Rpr5GifCq6WMTcDvrsQVKxAw/TfO27qa01qq4FmCPmxtYGZ
-	lz6AkWI/3LwBg6UjZgbw==;
+	List-Owner; bh=2u6lpAJVMnTv6mo7RMgoTyYe/NCPiuHGbc5h0We0hrE=; b=kH9eBYPGBYNAHA
+	qMRhu3+jUa2JYcWEktpNpCeNz1pCxK9aZmh+OjE+b7zmS2ncrcpXCqXif2Gy0Tzy+927aBXApHW88
+	bZj9YRjkOpVdz2KqeYKKXqSX92VQWta8Wv9urf8MjTRqHgSPLanYqcbgnL/QzFiEdP+U98Tde2gLm
+	vm6MAMY/MNJLUrdDaUcFoYaxuDoBTanen3RWxDyFsD160/op4Oh3wuZlBbnt2u52wiiVVmMo/KZS4
+	ZFfng8dVspxxRBgLxGCkWY+dWm7gJlqdUK4p19mpDUe0dDQmx5ZCS10O1qYw/QomeLFweLFbH6etW
+	BYyU/Q6Q/ZdHqFRkuunA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iPLLq-00071h-EE; Tue, 29 Oct 2019 06:51:34 +0000
+	id 1iPLMp-00080x-Db; Tue, 29 Oct 2019 06:52:35 +0000
 Received: from [2001:4bb8:18c:c7d:c70:4a89:bc61:2] (helo=localhost)
  by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iPLJ7-0003K7-QE; Tue, 29 Oct 2019 06:48:46 +0000
+ id 1iPLJA-0003MW-T4; Tue, 29 Oct 2019 06:48:49 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
  Michal Simek <monstr@monstr.eu>, Greentime Hu <green.hu@gmail.com>,
  Vincent Chen <deanbo422@gmail.com>, Guan Xuetao <gxt@pku.edu.cn>,
  x86@kernel.org
-Subject: [PATCH 03/21] ia64: rename ioremap_nocache to ioremap_uc
-Date: Tue, 29 Oct 2019 07:48:16 +0100
-Message-Id: <20191029064834.23438-4-hch@lst.de>
+Subject: [PATCH 04/21] hexagon: clean up ioremap
+Date: Tue, 29 Oct 2019 07:48:17 +0100
+Message-Id: <20191029064834.23438-5-hch@lst.de>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191029064834.23438-1-hch@lst.de>
 References: <20191029064834.23438-1-hch@lst.de>
@@ -74,67 +74,65 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On ia64 ioremap_nocache fails if attributes don't match.  Not other
-architectures does this, and we plan to get rid of ioremap_nocache.
-So get rid of the special semantics and define ioremap_nocache in
-terms of ioremap as no portable driver could rely on the behavior
-anyway.
-
-However x86 implements ioremap_uc in a similar way as the ia64
-version of ioremap_nocache, in that it ignores the firmware tables.
-Switch ia64 to override ioremap_uc instead.
+Use ioremap as the main implemented function, and defined
+ioremap_nocache to it as a deprecated alias.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/ia64/include/asm/io.h | 6 +++---
- arch/ia64/mm/ioremap.c     | 4 ++--
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ arch/hexagon/include/asm/io.h       | 11 ++---------
+ arch/hexagon/kernel/hexagon_ksyms.c |  2 +-
+ arch/hexagon/mm/ioremap.c           |  2 +-
+ 3 files changed, 4 insertions(+), 11 deletions(-)
 
-diff --git a/arch/ia64/include/asm/io.h b/arch/ia64/include/asm/io.h
-index 54e70c21352a..fec9df9609ed 100644
---- a/arch/ia64/include/asm/io.h
-+++ b/arch/ia64/include/asm/io.h
-@@ -256,16 +256,16 @@ static inline void outsl(unsigned long port, const void *src,
- # ifdef __KERNEL__
+diff --git a/arch/hexagon/include/asm/io.h b/arch/hexagon/include/asm/io.h
+index ba1a444d55b3..89537dc1cf97 100644
+--- a/arch/hexagon/include/asm/io.h
++++ b/arch/hexagon/include/asm/io.h
+@@ -171,16 +171,9 @@ static inline void writel(u32 data, volatile void __iomem *addr)
+ #define writew_relaxed __raw_writew
+ #define writel_relaxed __raw_writel
  
- extern void __iomem * ioremap(unsigned long offset, unsigned long size);
--extern void __iomem * ioremap_nocache (unsigned long offset, unsigned long size);
-+extern void __iomem * ioremap_uc(unsigned long offset, unsigned long size);
- extern void iounmap (volatile void __iomem *addr);
- static inline void __iomem * ioremap_cache (unsigned long phys_addr, unsigned long size)
- {
- 	return ioremap(phys_addr, size);
- }
- #define ioremap ioremap
--#define ioremap_nocache ioremap_nocache
+-/*
+- * Need an mtype somewhere in here, for cache type deals?
+- * This is probably too long for an inline.
+- */
+-void __iomem *ioremap_nocache(unsigned long phys_addr, unsigned long size);
++void __iomem *ioremap(unsigned long phys_addr, unsigned long size);
 +#define ioremap_nocache ioremap
- #define ioremap_cache ioremap_cache
--#define ioremap_uc ioremap_nocache
-+#define ioremap_uc ioremap_uc
- #define iounmap iounmap
  
- /*
-diff --git a/arch/ia64/mm/ioremap.c b/arch/ia64/mm/ioremap.c
-index 0c0de2c4ec69..a09cfa064536 100644
---- a/arch/ia64/mm/ioremap.c
-+++ b/arch/ia64/mm/ioremap.c
-@@ -99,14 +99,14 @@ ioremap (unsigned long phys_addr, unsigned long size)
- EXPORT_SYMBOL(ioremap);
+-static inline void __iomem *ioremap(unsigned long phys_addr, unsigned long size)
+-{
+-	return ioremap_nocache(phys_addr, size);
+-}
  
- void __iomem *
--ioremap_nocache (unsigned long phys_addr, unsigned long size)
-+ioremap_uc(unsigned long phys_addr, unsigned long size)
+ static inline void iounmap(volatile void __iomem *addr)
  {
- 	if (kern_mem_attribute(phys_addr, size) & EFI_MEMORY_WB)
- 		return NULL;
- 
- 	return __ioremap_uc(phys_addr);
- }
+diff --git a/arch/hexagon/kernel/hexagon_ksyms.c b/arch/hexagon/kernel/hexagon_ksyms.c
+index cf8974beb500..b3dbb472572e 100644
+--- a/arch/hexagon/kernel/hexagon_ksyms.c
++++ b/arch/hexagon/kernel/hexagon_ksyms.c
+@@ -20,7 +20,7 @@ EXPORT_SYMBOL(__vmgetie);
+ EXPORT_SYMBOL(__vmsetie);
+ EXPORT_SYMBOL(__vmyield);
+ EXPORT_SYMBOL(empty_zero_page);
 -EXPORT_SYMBOL(ioremap_nocache);
-+EXPORT_SYMBOL(ioremap_uc);
++EXPORT_SYMBOL(ioremap);
+ EXPORT_SYMBOL(memcpy);
+ EXPORT_SYMBOL(memset);
  
- void
- early_iounmap (volatile void __iomem *addr, unsigned long size)
+diff --git a/arch/hexagon/mm/ioremap.c b/arch/hexagon/mm/ioremap.c
+index 77d8e1e69e9b..b103d83b5fbb 100644
+--- a/arch/hexagon/mm/ioremap.c
++++ b/arch/hexagon/mm/ioremap.c
+@@ -9,7 +9,7 @@
+ #include <linux/vmalloc.h>
+ #include <linux/mm.h>
+ 
+-void __iomem *ioremap_nocache(unsigned long phys_addr, unsigned long size)
++void __iomem *ioremap(unsigned long phys_addr, unsigned long size)
+ {
+ 	unsigned long last_addr, addr;
+ 	unsigned long offset = phys_addr & ~PAGE_MASK;
 -- 
 2.20.1
 
