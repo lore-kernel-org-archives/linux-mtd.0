@@ -5,18 +5,18 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8D68CA9EC2
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Oct 2019 06:53:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51134CA9EC2
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Oct 2019 06:54:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BB26420578
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Oct 2019 06:53:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 14BCE20578
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Oct 2019 06:54:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="O1ROr1Ii"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BB26420578
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bENo7gVS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 14BCE20578
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,26 +25,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WFXSml8Q6swx3t0+tzxD1bG25YHTx++xRhfDRtsmJ6g=; b=O1ROr1IiNbwfzr
-	jgxnCFcKNeHSe4ubtzJ659cmiyJ5l3DaugiELqdCV0BwB5LUm5EK6DD3tYZBduCvpvICS/UnxMd5D
-	Or0eVfesjBf3JvMVBEAD9ZOEbh8zRtJHNKPEo73vT6VGHcBfsGyLS9YWojGXr0k7HBMPkmLuCPfBI
-	qYnGtmdGg8tlVBOeUGIPJatpqXXIikHl0mG+/dF3TWNAnr03nKYukN2JZVlAYzF+gaIIks9lUfe3H
-	mFXMpybrumoLRd23WOrEnhKE7jvN1NbAOYqJMAr/qYcP1ohfQwB2P1kC0Ao7SE9nA9rZaB8GkiPxP
-	WoEqUeFeSPzbUfx7GI1w==;
+	List-Owner; bh=qtXhFtZgrlgz3vgAqss40FYXqf2CUraIsMxsEb9xDtw=; b=bENo7gVSdrz378
+	sh8M5IEaPcyFDSZcQmkH0Wgke8hNHE/jLTG/9RGEtgOBeYVBpEw9m758lIqm5cpRFYFbJoKjRcWfT
+	SFiC/vtzFObeTKTugiWHdhY0BUebQ2Z1+r99LvbdJw/Y37KiA9fAabmlwOPqpzUorJq/EfsBH5NWW
+	psePkwghaKc/WTh8jbbhW45KtLdezaZIg25ZshF97T8C+/2lyPnDCy3EYiUmesstfZLwbPtiC2NzT
+	G1kD0yKU5wBj7yi9miy69AZ5ZvmZTvhRNZ+zdg1bX2gIVa6vROsmdf1SG1gE3LEF5hhorKcl9h9vS
+	t4quVBZudpVa9ouHuNnQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iPLNK-0008WQ-MR; Tue, 29 Oct 2019 06:53:06 +0000
+	id 1iPLOj-0001ft-Ce; Tue, 29 Oct 2019 06:54:33 +0000
 Received: from [2001:4bb8:18c:c7d:c70:4a89:bc61:2] (helo=localhost)
  by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iPLJD-0003Po-Or; Tue, 29 Oct 2019 06:48:52 +0000
+ id 1iPLJG-0003Sm-Nu; Tue, 29 Oct 2019 06:48:55 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
  Michal Simek <monstr@monstr.eu>, Greentime Hu <green.hu@gmail.com>,
  Vincent Chen <deanbo422@gmail.com>, Guan Xuetao <gxt@pku.edu.cn>,
  x86@kernel.org
-Subject: [PATCH 05/21] alpha: remove the unused __ioremap wrapper
-Date: Tue, 29 Oct 2019 07:48:18 +0100
-Message-Id: <20191029064834.23438-6-hch@lst.de>
+Subject: [PATCH 06/21] nios2: remove __ioremap
+Date: Tue, 29 Oct 2019 07:48:19 +0100
+Message-Id: <20191029064834.23438-7-hch@lst.de>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191029064834.23438-1-hch@lst.de>
 References: <20191029064834.23438-1-hch@lst.de>
@@ -74,30 +74,100 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-No need for the additional namespace pollution.
+The cacheflag argument to __ioremap is always 0, so just implement
+ioremap directly.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/alpha/include/asm/io.h | 6 ------
- 1 file changed, 6 deletions(-)
+ arch/nios2/include/asm/io.h | 20 ++++----------------
+ arch/nios2/mm/ioremap.c     | 17 +++--------------
+ 2 files changed, 7 insertions(+), 30 deletions(-)
 
-diff --git a/arch/alpha/include/asm/io.h b/arch/alpha/include/asm/io.h
-index af2c0063dc75..1989b946a28d 100644
---- a/arch/alpha/include/asm/io.h
-+++ b/arch/alpha/include/asm/io.h
-@@ -283,12 +283,6 @@ static inline void __iomem *ioremap(unsigned long port, unsigned long size)
- 	return IO_CONCAT(__IO_PREFIX,ioremap) (port, size);
- }
+diff --git a/arch/nios2/include/asm/io.h b/arch/nios2/include/asm/io.h
+index 9010243077ab..74ab34aa6731 100644
+--- a/arch/nios2/include/asm/io.h
++++ b/arch/nios2/include/asm/io.h
+@@ -25,29 +25,17 @@
+ #define writew_relaxed(x, addr)	writew(x, addr)
+ #define writel_relaxed(x, addr)	writel(x, addr)
  
--static inline void __iomem *__ioremap(unsigned long port, unsigned long size,
--				      unsigned long flags)
+-extern void __iomem *__ioremap(unsigned long physaddr, unsigned long size,
+-			unsigned long cacheflag);
++void __iomem *ioremap(unsigned long physaddr, unsigned long size);
+ extern void __iounmap(void __iomem *addr);
+ 
+-static inline void __iomem *ioremap(unsigned long physaddr, unsigned long size)
 -{
--	return ioremap(port, size);
+-	return __ioremap(physaddr, size, 0);
 -}
 -
- static inline void __iomem * ioremap_nocache(unsigned long offset,
- 					     unsigned long size)
+-static inline void __iomem *ioremap_nocache(unsigned long physaddr,
+-						unsigned long size)
+-{
+-	return __ioremap(physaddr, size, 0);
+-}
+-
+ static inline void iounmap(void __iomem *addr)
  {
+ 	__iounmap(addr);
+ }
+ 
+-#define ioremap_nocache ioremap_nocache
+-#define ioremap_wc ioremap_nocache
+-#define ioremap_wt ioremap_nocache
++#define ioremap_nocache ioremap
++#define ioremap_wc ioremap
++#define ioremap_wt ioremap
+ 
+ /* Pages to physical address... */
+ #define page_to_phys(page)	virt_to_phys(page_to_virt(page))
+diff --git a/arch/nios2/mm/ioremap.c b/arch/nios2/mm/ioremap.c
+index 3a28177a01eb..7a1a27f3daa3 100644
+--- a/arch/nios2/mm/ioremap.c
++++ b/arch/nios2/mm/ioremap.c
+@@ -112,8 +112,7 @@ static int remap_area_pages(unsigned long address, unsigned long phys_addr,
+ /*
+  * Map some physical address range into the kernel address space.
+  */
+-void __iomem *__ioremap(unsigned long phys_addr, unsigned long size,
+-			unsigned long cacheflag)
++void __iomem *ioremap(unsigned long phys_addr, unsigned long size)
+ {
+ 	struct vm_struct *area;
+ 	unsigned long offset;
+@@ -139,15 +138,6 @@ void __iomem *__ioremap(unsigned long phys_addr, unsigned long size,
+ 				return NULL;
+ 	}
+ 
+-	/*
+-	 * Map uncached objects in the low part of address space to
+-	 * CONFIG_NIOS2_IO_REGION_BASE
+-	 */
+-	if (IS_MAPPABLE_UNCACHEABLE(phys_addr) &&
+-	    IS_MAPPABLE_UNCACHEABLE(last_addr) &&
+-	    !(cacheflag & _PAGE_CACHED))
+-		return (void __iomem *)(CONFIG_NIOS2_IO_REGION_BASE + phys_addr);
+-
+ 	/* Mappings have to be page-aligned */
+ 	offset = phys_addr & ~PAGE_MASK;
+ 	phys_addr &= PAGE_MASK;
+@@ -158,14 +148,13 @@ void __iomem *__ioremap(unsigned long phys_addr, unsigned long size,
+ 	if (!area)
+ 		return NULL;
+ 	addr = area->addr;
+-	if (remap_area_pages((unsigned long) addr, phys_addr, size,
+-		cacheflag)) {
++	if (remap_area_pages((unsigned long) addr, phys_addr, size, 0)) {
+ 		vunmap(addr);
+ 		return NULL;
+ 	}
+ 	return (void __iomem *) (offset + (char *)addr);
+ }
+-EXPORT_SYMBOL(__ioremap);
++EXPORT_SYMBOL(ioremap);
+ 
+ /*
+  * __iounmap unmaps nearly everything, so be careful
 -- 
 2.20.1
 
