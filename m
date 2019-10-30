@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-7.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 170D3CA9EAE
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Oct 2019 03:23:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DAE4ACA9EAF
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Oct 2019 05:57:25 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D2BE420866
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Oct 2019 03:23:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A4A0820856
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Oct 2019 05:57:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Ady3JOpF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D2BE420866
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mdZ/JccI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A4A0820856
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,49 +25,49 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Content-Type:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To
 	:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=kKDvKmUIEeO9Ugw1Q4FHECIiBK0r7GVjmK6n62ItZvU=; b=Ady3JOpFAxuzZVluCedNq11UQ
-	XmESY3FyEzm6IhFMQ6LBqOAiDVnZnl3Bok9MQ8cRh4BJPGRBS7nB2seUOG/Xvkg2ngdf6Yy4x5pdx
-	fJw6nw2U77N5TMUJkt9DnFgIeVDZkOKOTpmF9x664Db/VHbQWgOmfjYegGP4krFbo3iE570vBKh/F
-	gauV1KSHJU6yrv7dw59DkPlFnIHt1tIqRrlwVMV5pNwbh5sCvsQq5TjauBR5d1gnrEV6JnjvZAzqW
-	l8F7RhVklCPZCSKVJpNo4lqldxo/Hg8RLJEoPRPx4K2IIqetb03ocEMboQz54yy1pG7AxnPcISzEN
-	nhWX6ht9Q==;
+	 bh=tVRd3GOk7YtnurfJkiGWid+R4cW7CtjYkjxNg8FHDXg=; b=mdZ/JccIq9Z3dowZbK5HYVLDE
+	fNNL/ix3OQtBinPSZ3vM3pcsuKYZCpL2lTnPLcVY3ghxKguVQO2bVs/P/B6RAnXKVRgveNCsqgHG8
+	MBksuxE8yGUJVO6wLgwI6qxAZVkvCXwnv1d8xQ2RI9sjXgw4knOA1xZRLwtS+ezctMcMBETevf8RD
+	oXfOS8Emd+Gsj7iT2z9akUUNycqmsEM5kLAZLQIwqh7DHTBLMKPfNbjQRg8nZAfH8x32rMOtMH5wV
+	7FIdnbpjt0BALzeSVA1yTSO2RpCb/vfvaNfr1PKomchwrXc21Cf1MTRMzOuGa2e4bFgzwN6ZQMM0U
+	TUiTsZpIA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iPea9-0000k2-Bm; Wed, 30 Oct 2019 03:23:37 +0000
-Received: from mga17.intel.com ([192.55.52.151])
+	id 1iPgyx-0006Nm-2F; Wed, 30 Oct 2019 05:57:23 +0000
+Received: from mga01.intel.com ([192.55.52.88])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iPea5-0000jQ-HB
- for linux-mtd@lists.infradead.org; Wed, 30 Oct 2019 03:23:35 +0000
+ id 1iPgyt-0006Mx-91
+ for linux-mtd@lists.infradead.org; Wed, 30 Oct 2019 05:57:21 +0000
 X-Amp-Result: UNKNOWN
 X-Amp-Original-Verdict: FILE UNKNOWN
 X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 29 Oct 2019 20:23:31 -0700
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 29 Oct 2019 22:57:16 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,245,1569308400"; 
- d="gz'50?scan'50,208,50";a="400007749"
+X-IronPort-AV: E=Sophos;i="5.68,246,1569308400"; 
+ d="gz'50?scan'50,208,50";a="199132511"
 Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
- by fmsmga005.fm.intel.com with ESMTP; 29 Oct 2019 20:23:27 -0700
+ by fmsmga007.fm.intel.com with ESMTP; 29 Oct 2019 22:57:13 -0700
 Received: from kbuild by lkp-server01 with local (Exim 4.89)
  (envelope-from <lkp@intel.com>)
- id 1iPeZz-000J6u-EY; Wed, 30 Oct 2019 11:23:27 +0800
-Date: Wed, 30 Oct 2019 11:22:51 +0800
+ id 1iPgyn-0005lq-V5; Wed, 30 Oct 2019 13:57:13 +0800
+Date: Wed, 30 Oct 2019 13:56:41 +0800
 From: kbuild test robot <lkp@intel.com>
 To: Mason Yang <masonccyang@mxic.com.tw>
-Subject: Re: [PATCH v2 1/4] mtd: rawnand: Add support manufacturer specific
- lock/unlock operatoin
-Message-ID: <201910301141.SRkwXAwu%lkp@intel.com>
-References: <1572256527-5074-2-git-send-email-masonccyang@mxic.com.tw>
+Subject: Re: [PATCH v2 3/4] mtd: rawnand: Add support manufacturer specific
+ suspend/resume operation
+Message-ID: <201910301359.L3WPYJS0%lkp@intel.com>
+References: <1572256527-5074-4-git-send-email-masonccyang@mxic.com.tw>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="y3hllse2drclbgb2"
+Content-Type: multipart/mixed; boundary="irpewcwxwu3liykg"
 Content-Disposition: inline
-In-Reply-To: <1572256527-5074-2-git-send-email-masonccyang@mxic.com.tw>
+In-Reply-To: <1572256527-5074-4-git-send-email-masonccyang@mxic.com.tw>
 X-Patchwork-Hint: ignore
 User-Agent: NeoMutt/20170113 (1.7.2)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191029_202333_640640_041C31B3 
-X-CRM114-Status: GOOD (  10.28  )
+X-CRM114-CacheID: sfid-20191029_225719_347851_2E09CA6A 
+X-CRM114-Status: GOOD (  10.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,7 +88,7 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
---y3hllse2drclbgb2
+--irpewcwxwu3liykg
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
@@ -114,10 +114,9 @@ All warnings (new ones prefixed by >>):
    Warning: The Sphinx 'sphinx_rtd_theme' HTML theme was not found. Make sure you have the theme installed to produce pretty HTML output. Falling back to the default theme.
    WARNING: dot(1) not found, for better output quality install graphviz from http://www.graphviz.org
    WARNING: convert(1) not found, for SVG to PDF conversion install ImageMagick (https://www.imagemagick.org)
+   include/linux/w1.h:277: warning: Function parameter or member 'of_match_table' not described in 'w1_family'
    include/linux/regulator/machine.h:196: warning: Function parameter or member 'max_uV_step' not described in 'regulation_constraints'
    include/linux/regulator/driver.h:223: warning: Function parameter or member 'resume' not described in 'regulator_ops'
-   include/linux/w1.h:277: warning: Function parameter or member 'of_match_table' not described in 'w1_family'
-   include/linux/spi/spi.h:190: warning: Function parameter or member 'driver_override' not described in 'spi_device'
    include/linux/lsm_hooks.h:1822: warning: Function parameter or member 'quotactl' not described in 'security_list_options'
    include/linux/lsm_hooks.h:1822: warning: Function parameter or member 'quota_on' not described in 'security_list_options'
    include/linux/lsm_hooks.h:1822: warning: Function parameter or member 'sb_free_mnt_opts' not described in 'security_list_options'
@@ -129,25 +128,28 @@ All warnings (new ones prefixed by >>):
    include/linux/lsm_hooks.h:1822: warning: Function parameter or member 'getprocattr' not described in 'security_list_options'
    include/linux/lsm_hooks.h:1822: warning: Function parameter or member 'setprocattr' not described in 'security_list_options'
    include/linux/lsm_hooks.h:1822: warning: Function parameter or member 'locked_down' not described in 'security_list_options'
+   include/linux/spi/spi.h:190: warning: Function parameter or member 'driver_override' not described in 'spi_device'
+   fs/posix_acl.c:647: warning: Function parameter or member 'inode' not described in 'posix_acl_update_mode'
+   fs/posix_acl.c:647: warning: Function parameter or member 'mode_p' not described in 'posix_acl_update_mode'
+   fs/posix_acl.c:647: warning: Function parameter or member 'acl' not described in 'posix_acl_update_mode'
    drivers/gpio/gpiolib-of.c:92: warning: Excess function parameter 'dev' description in 'of_gpio_need_valid_mask'
    include/linux/i2c.h:337: warning: Function parameter or member 'init_irq' not described in 'i2c_client'
+>> include/linux/mtd/rawnand.h:1145: warning: Function parameter or member '_suspend' not described in 'nand_chip'
+>> include/linux/mtd/rawnand.h:1145: warning: Function parameter or member '_resume' not described in 'nand_chip'
+   include/linux/mtd/rawnand.h:1145: warning: Function parameter or member '_lock' not described in 'nand_chip'
+   include/linux/mtd/rawnand.h:1145: warning: Function parameter or member '_unlock' not described in 'nand_chip'
+   drivers/mtd/nand/raw/nand_base.c:4370: warning: Function parameter or member 'ofs' not described in 'nand_lock'
+   drivers/mtd/nand/raw/nand_base.c:4370: warning: Function parameter or member 'len' not described in 'nand_lock'
+   drivers/mtd/nand/raw/nand_base.c:4384: warning: Function parameter or member 'ofs' not described in 'nand_unlock'
+   drivers/mtd/nand/raw/nand_base.c:4384: warning: Function parameter or member 'len' not described in 'nand_unlock'
+   drivers/usb/typec/bus.c:1: warning: 'typec_altmode_unregister_driver' not found
+   drivers/usb/typec/bus.c:1: warning: 'typec_altmode_register_driver' not found
+   drivers/usb/typec/class.c:1: warning: 'typec_altmode_unregister_notifier' not found
+   drivers/usb/typec/class.c:1: warning: 'typec_altmode_register_notifier' not found
    lib/genalloc.c:1: warning: 'gen_pool_add_virt' not found
    lib/genalloc.c:1: warning: 'gen_pool_alloc' not found
    lib/genalloc.c:1: warning: 'gen_pool_free' not found
    lib/genalloc.c:1: warning: 'gen_pool_alloc_algo' not found
->> include/linux/mtd/rawnand.h:1143: warning: Function parameter or member '_lock' not described in 'nand_chip'
->> include/linux/mtd/rawnand.h:1143: warning: Function parameter or member '_unlock' not described in 'nand_chip'
->> drivers/mtd/nand/raw/nand_base.c:4365: warning: Function parameter or member 'ofs' not described in 'nand_lock'
->> drivers/mtd/nand/raw/nand_base.c:4365: warning: Function parameter or member 'len' not described in 'nand_lock'
->> drivers/mtd/nand/raw/nand_base.c:4379: warning: Function parameter or member 'ofs' not described in 'nand_unlock'
->> drivers/mtd/nand/raw/nand_base.c:4379: warning: Function parameter or member 'len' not described in 'nand_unlock'
-   fs/posix_acl.c:647: warning: Function parameter or member 'inode' not described in 'posix_acl_update_mode'
-   fs/posix_acl.c:647: warning: Function parameter or member 'mode_p' not described in 'posix_acl_update_mode'
-   fs/posix_acl.c:647: warning: Function parameter or member 'acl' not described in 'posix_acl_update_mode'
-   drivers/usb/typec/bus.c:1: warning: 'typec_altmode_unregister_driver' not found
-   drivers/usb/typec/bus.c:1: warning: 'typec_altmode_register_driver' not found
-   drivers/usb/typec/class.c:1: warning: 'typec_altmode_register_notifier' not found
-   drivers/usb/typec/class.c:1: warning: 'typec_altmode_unregister_notifier' not found
    Error: Cannot open file drivers/dma-buf/reservation.c
    Error: Cannot open file drivers/dma-buf/reservation.c
    Error: Cannot open file drivers/dma-buf/reservation.c
@@ -234,19 +236,12 @@ All warnings (new ones prefixed by >>):
    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c:1283: warning: Function parameter or member 'addr' not described in 'amdgpu_vm_update_flags'
    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c:1283: warning: Function parameter or member 'count' not described in 'amdgpu_vm_update_flags'
    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c:1283: warning: Function parameter or member 'incr' not described in 'amdgpu_vm_update_flags'
-   drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c:1283: warning: Function parameter or member 'flags' not described in 'amdgpu_vm_update_flags'
-   drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c:2821: warning: Function parameter or member 'pasid' not described in 'amdgpu_vm_make_compute'
-   drivers/gpu/drm/amd/amdgpu/amdgpu_irq.c:378: warning: Excess function parameter 'entry' description in 'amdgpu_irq_dispatch'
-   drivers/gpu/drm/amd/amdgpu/amdgpu_irq.c:379: warning: Function parameter or member 'ih' not described in 'amdgpu_irq_dispatch'
-   drivers/gpu/drm/amd/amdgpu/amdgpu_irq.c:379: warning: Excess function parameter 'entry' description in 'amdgpu_irq_dispatch'
-   drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c:1: warning: no structured comments found
-   drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c:1: warning: no structured comments found
 
-vim +1143 include/linux/mtd/rawnand.h
+vim +1145 include/linux/mtd/rawnand.h
 
-^1da177e4c3f41 include/linux/mtd/nand.h Linus Torvalds 2005-04-16 @1143  
+^1da177e4c3f41 include/linux/mtd/nand.h Linus Torvalds 2005-04-16 @1145  
 
-:::::: The code at line 1143 was first introduced by commit
+:::::: The code at line 1145 was first introduced by commit
 :::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
 
 :::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
@@ -256,12 +251,12 @@ vim +1143 include/linux/mtd/rawnand.h
 0-DAY kernel test infrastructure                Open Source Technology Center
 https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
---y3hllse2drclbgb2
+--irpewcwxwu3liykg
 Content-Type: application/gzip
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICALouF0AAy5jb25maWcAlDxrc+M2kt/3V7CSqquZ2krisT2O9678AQIhCTFJcAhQD39h
+H4sICAsYuV0AAy5jb25maWcAlDxrc+M2kt/3V7CSqquZ2krisT2O9678AQIhCTFJcAhQD39h
 KTLtUcWWfJK8O/PvrxskRZBsaHJbm8RGP/Bq9Jv++R8/B+z9uHtdHTfr1cvL9+C53Jb71bF8
 DJ42L+X/BKEKEmUCEUrzKyBHm+37t982V7c3wedfr3+9+GW//hzcl/tt+RLw3fZp8/wO1Jvd
 9h8//wP+/zMMvr4Bo/1/B8/r9S+/Bx/C8s/Nahv8bqk/XX+sfgJcrpKxnBScF1IXE87vvjdD
@@ -397,7 +392,7 @@ eQJBMamb7wmwM8V8DDOi2XTiYSzg/7HsaTXGpCKBX0z50jFU7QABKzdw8Clkv+svHWofUFYG
 WcXLMerXS30ynxd1OLe86hlxYXZ5sMcENYnfri8//+XpTPUMgoSy81hNRLV751NJPKd0kURO
 MaghgAjMl+/UDde5H9XsWKraooImEHeCzgPESvlz/+Ak4hcZs5uoNGkAAA==
 
---y3hllse2drclbgb2
+--irpewcwxwu3liykg
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -407,5 +402,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---y3hllse2drclbgb2--
+--irpewcwxwu3liykg--
 
