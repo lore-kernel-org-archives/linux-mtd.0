@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3D6BCA9EC5
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Oct 2019 15:28:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DA2CCA9EC5
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Oct 2019 15:29:33 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B2DCF2087E
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Oct 2019 15:28:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5154F2087E
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Oct 2019 15:29:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="igVfKMe6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B2DCF2087E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PHsQfnS+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5154F2087E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,32 +25,32 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8S0y8Ua6g3Q6AHXgMyZ6lIrefR2jMFDjGt56Kr5nzK8=; b=igVfKMe6gvl7bI
-	uWoP1t1zmEtS8FGO+mJv/i485TQQB3TLuKaRCFJa60RPJfPimVkndgS1LuNXdWzIA4yRccIkTJc48
-	e1mIvSzAj7RcXsNkI1NAtgP5tQpxoRVfRT9t2VcXlYx0AMurVaeMNaWLjymktZ5E6MDJCqW9C5Wq0
-	F63aQJei9GPyataWgSxh0YaJF09EmMvG0t/lTpPiRBpirdtITWi5LpOMMXQGgEjnY8lplzl3yONYu
-	cvLG/drfskLSD37h4AAK+KG+mKBCzkIMhdFBsTW0+ozwSh4UglSFXWl+7ZZ1Vbw8ig5Mp6FC7oaiH
-	Nm5hCpQ31gUa2leNUbNA==;
+	List-Owner; bh=8mry8tT42ghS0T6uNeMMScinX3i8DcttMrkKqvJhG38=; b=PHsQfnS+zNml61
+	/LmM1HBR3QfjgQTFcCjAx6ohUrdJOLgioiqhNjUuRB0IWHX0CrfETqgSA8bWhNcH9OYL9cpB1FLZW
+	5kNtQmfpwdUeSxtSpAWXJUzn+9WHcimmkC2+hAxqqVrOb28gk4lnyDjY993GP7MXrqaoLwibgSvNS
+	cXO2gUNThgUG4YDWG/D8RB5LtsM19n7MAvtl7QFxBW5SY5W8sqQwtziqngDkc7o9DEkwAMclPBp7f
+	gcbuS1BjfjyGtXbvcvBMOUt01YllIw4POtLx9ZzUbT6/78hxv+BOp6NVGWx3f9bj9EJY7U3dg5AhC
+	qpDljg2cHH3vTD4ZSHHg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iPpu7-0007FT-7C; Wed, 30 Oct 2019 15:28:59 +0000
+	id 1iPpuS-0007ag-JW; Wed, 30 Oct 2019 15:29:20 +0000
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iPpso-0005y9-QE
- for linux-mtd@lists.infradead.org; Wed, 30 Oct 2019 15:27:40 +0000
+ id 1iPpsw-00065y-E3
+ for linux-mtd@lists.infradead.org; Wed, 30 Oct 2019 15:27:49 +0000
 Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1iPpsG-0003Xz-Or; Wed, 30 Oct 2019 16:27:04 +0100
+ id 1iPpsG-0003Y3-Os; Wed, 30 Oct 2019 16:27:04 +0100
 Received: from sha by dude.hi.pengutronix.de with local (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1iPpsF-0005n4-R5; Wed, 30 Oct 2019 16:27:03 +0100
+ id 1iPpsF-0005nG-UL; Wed, 30 Oct 2019 16:27:03 +0100
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-fsdevel@vger.kernel.org
-Subject: [PATCH 01/10] quota: Make inode optional
-Date: Wed, 30 Oct 2019 16:26:53 +0100
-Message-Id: <20191030152702.14269-2-s.hauer@pengutronix.de>
+Subject: [PATCH 05/10] ubifs: move checks and preparation into setflags()
+Date: Wed, 30 Oct 2019 16:26:57 +0100
+Message-Id: <20191030152702.14269-6-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.24.0.rc1
 In-Reply-To: <20191030152702.14269-1-s.hauer@pengutronix.de>
 References: <20191030152702.14269-1-s.hauer@pengutronix.de>
@@ -61,8 +61,8 @@ X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
  SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191030_082738_849348_C29D1271 
-X-CRM114-Status: GOOD (  13.99  )
+X-CRM114-CacheID: sfid-20191030_082746_480566_147852A9 
+X-CRM114-Status: GOOD (  14.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,90 +81,109 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-To add support for filesystems which do not store quota informations in
-an inode make the inode optional.
+setflags() can be reused for upcoming FS_IOC_FS[SG]ETXATTR ioctl support.
+In preparation for that move the checks and preparation into that
+function so we can reuse them aswell.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- fs/quota/dquot.c | 33 +++++++++++++++++++++------------
- 1 file changed, 21 insertions(+), 12 deletions(-)
+ fs/ubifs/ioctl.c | 46 +++++++++++++++++++++++++++-------------------
+ 1 file changed, 27 insertions(+), 19 deletions(-)
 
-diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
-index 6e826b454082..59f31735fe79 100644
---- a/fs/quota/dquot.c
-+++ b/fs/quota/dquot.c
-@@ -2313,11 +2313,11 @@ static int vfs_load_quota_inode(struct inode *inode, int type, int format_id,
+diff --git a/fs/ubifs/ioctl.c b/fs/ubifs/ioctl.c
+index 5dc5abca11c7..8230dba5fd74 100644
+--- a/fs/ubifs/ioctl.c
++++ b/fs/ubifs/ioctl.c
+@@ -95,18 +95,35 @@ static int ubifs2ioctl(int ubifs_flags)
+ 	return ioctl_flags;
+ }
  
- 	if (!fmt)
- 		return -ESRCH;
--	if (!S_ISREG(inode->i_mode)) {
-+	if (inode && !S_ISREG(inode->i_mode)) {
- 		error = -EACCES;
- 		goto out_fmt;
- 	}
--	if (IS_RDONLY(inode)) {
-+	if (inode && IS_RDONLY(inode)) {
- 		error = -EROFS;
- 		goto out_fmt;
- 	}
-@@ -2352,7 +2352,7 @@ static int vfs_load_quota_inode(struct inode *inode, int type, int format_id,
- 		invalidate_bdev(sb->s_bdev);
- 	}
+-static int setflags(struct inode *inode, int flags)
++static int setflags(struct file *file, int flags)
+ {
+ 	int oldflags, err, release;
++	struct inode *inode = file_inode(file);
+ 	struct ubifs_inode *ui = ubifs_inode(inode);
+ 	struct ubifs_info *c = inode->i_sb->s_fs_info;
+ 	struct ubifs_budget_req req = { .dirtied_ino = 1,
+ 					.dirtied_ino_d = ui->data_len };
  
--	if (!(dqopt->flags & DQUOT_QUOTA_SYS_FILE)) {
-+	if (inode && !(dqopt->flags & DQUOT_QUOTA_SYS_FILE)) {
- 		/* We don't want quota and atime on quota files (deadlocks
- 		 * possible) Also nobody should write to the file - we use
- 		 * special IO operations which ignore the immutable bit. */
-@@ -2367,9 +2367,13 @@ static int vfs_load_quota_inode(struct inode *inode, int type, int format_id,
- 	}
- 
- 	error = -EIO;
--	dqopt->files[type] = igrab(inode);
--	if (!dqopt->files[type])
--		goto out_file_flags;
+-	err = ubifs_budget_space(c, &req);
++	if (IS_RDONLY(inode))
++		return -EROFS;
 +
-+	if (inode) {
-+		dqopt->files[type] = igrab(inode);
-+		if (!dqopt->files[type])
-+			goto out_file_flags;
-+	}
++	if (!inode_owner_or_capable(inode))
++		return -EACCES;
 +
- 	error = -EINVAL;
- 	if (!fmt->qf_ops->check_quota_file(sb, type))
- 		goto out_file_init;
-@@ -2397,11 +2401,14 @@ static int vfs_load_quota_inode(struct inode *inode, int type, int format_id,
- 	return error;
- out_file_init:
- 	dqopt->files[type] = NULL;
--	iput(inode);
-+	if (inode)
-+		iput(inode);
- out_file_flags:
--	inode_lock(inode);
--	inode->i_flags &= ~S_NOQUOTA;
--	inode_unlock(inode);
-+	if (inode) {
-+		inode_lock(inode);
-+		inode->i_flags &= ~S_NOQUOTA;
-+		inode_unlock(inode);
-+	}
- out_fmt:
- 	put_quota_format(fmt);
++	/*
++	 * Make sure the file-system is read-write and make sure it
++	 * will not become read-only while we are changing the flags.
++	 */
++	err = mnt_want_write_file(file);
+ 	if (err)
+ 		return err;
  
-@@ -2800,8 +2807,10 @@ int dquot_get_state(struct super_block *sb, struct qc_state *state)
- 			tstate->flags |= QCI_LIMITS_ENFORCED;
- 		tstate->spc_timelimit = mi->dqi_bgrace;
- 		tstate->ino_timelimit = mi->dqi_igrace;
--		tstate->ino = dqopt->files[type]->i_ino;
--		tstate->blocks = dqopt->files[type]->i_blocks;
-+		if (dqopt->files[type]) {
-+			tstate->ino = dqopt->files[type]->i_ino;
-+			tstate->blocks = dqopt->files[type]->i_blocks;
-+		}
- 		tstate->nextents = 1;	/* We don't know... */
- 		spin_unlock(&dq_data_lock);
++	dbg_gen("set flags: %#x, i_flags %#x", flags, inode->i_flags);
++
++	err = ubifs_budget_space(c, &req);
++	if (err)
++		goto out_drop;
++
+ 	mutex_lock(&ui->ui_mutex);
+ 	oldflags = ubifs2ioctl(ui->flags);
+ 	err = vfs_ioc_setflags_prepare(inode, oldflags, flags);
+@@ -124,12 +141,18 @@ static int setflags(struct inode *inode, int flags)
+ 		ubifs_release_budget(c, &req);
+ 	if (IS_SYNC(inode))
+ 		err = write_inode_now(inode, 1);
++
++	mnt_drop_write_file(file);
++
+ 	return err;
+ 
+ out_unlock:
+ 	ubifs_err(c, "can't modify inode %lu attributes", inode->i_ino);
+ 	mutex_unlock(&ui->ui_mutex);
+ 	ubifs_release_budget(c, &req);
++out_drop:
++	mnt_drop_write_file(file);
++
+ 	return err;
+ }
+ 
+@@ -146,12 +169,6 @@ long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 		return put_user(flags, (int __user *) arg);
+ 
+ 	case FS_IOC_SETFLAGS: {
+-		if (IS_RDONLY(inode))
+-			return -EROFS;
+-
+-		if (!inode_owner_or_capable(inode))
+-			return -EACCES;
+-
+ 		if (get_user(flags, (int __user *) arg))
+ 			return -EFAULT;
+ 
+@@ -161,17 +178,8 @@ long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 		if (!S_ISDIR(inode->i_mode))
+ 			flags &= ~FS_DIRSYNC_FL;
+ 
+-		/*
+-		 * Make sure the file-system is read-write and make sure it
+-		 * will not become read-only while we are changing the flags.
+-		 */
+-		err = mnt_want_write_file(file);
+-		if (err)
+-			return err;
+-		dbg_gen("set flags: %#x, i_flags %#x", flags, inode->i_flags);
+-		err = setflags(inode, flags);
+-		mnt_drop_write_file(file);
+-		return err;
++
++		return setflags(file, flags);
  	}
+ 	case FS_IOC_SET_ENCRYPTION_POLICY: {
+ 		struct ubifs_info *c = inode->i_sb->s_fs_info;
 -- 
 2.24.0.rc1
 
