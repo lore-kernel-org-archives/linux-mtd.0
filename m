@@ -2,67 +2,91 @@ Return-Path: <SRS0=8kzJ=YX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8B05CA9EC5
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Oct 2019 15:30:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B5AECA9EC5
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Oct 2019 15:36:16 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5745D20679
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Oct 2019 15:30:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 587BF205C9
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Oct 2019 15:36:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="noeGKQkL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5745D20679
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mXmMncqr";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="sWc4FmqF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 587BF205C9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MgvwgpN6AJaZCJsYqaRS2oCr0Bz7VUeQUCSNZZJPBtM=; b=noeGKQkLeduQuI
-	jQbsUIF58r0e/G2QNc+95M6JzeptSC7+3roJJjOtqHeLo8FGfuZTmzlfd3Z5oJoHt4i80jrEH5AFH
-	f0ewJyGjkTYgYAszWWQh5uM1lo0k+JimMMRbPglxGgk1uHnRLX+VIUZB71P9gacPLIAYfDzuMYRmC
-	5x82hoGFdmxugYqvIRH0tGRYVvLyvHkOYfknXypsmPJZU4uEQdTEV01fbafnwM9FRQgKDFCf2Eugy
-	tERvAVSY2WzoXN87m90vFJ2lbPIlQAnGZdymAz2IQXX+Dg2XxSF/0kjdeOcfB9c+Gg+ycnjQsxSk8
-	7fxqepNhKmsV1HaXEnsA==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:References:To:Subject:From:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=9bt5GOPUwAhbXpndIAB0hnixf8+5R40I8s9CnLmPqA8=; b=mXmMncqrGSiVZjDRzARbBLiLk6
+	lH4VG3+nC3rFbN5A0T9s2GeSszHKa6HX5bXKLQX4d/tiQ1DTDRvAKMzNQ8h30CO4sctVzYN1hVG3i
+	Qy1Kr8G/UWOYqlKAo5Et77AZIg9eD1HmXnTQ2l3806LVvvE+ZWJVhzFl970izhcPreRHm1IuV9vT1
+	uN2ejP4SdFdR3z8QthtRXZRSu9JLcheUAlc+uHtopZubE9m+905ChdNqLC4d4nmUAxJuStDMKCjKg
+	TiL9FSTvNaa0q1GqiFhmLCjlZiHM7At7nwfoPmqh5JK7CP0k2XrDVv2UIEGea7oK9l83RAlGm2IqQ
+	wEuMU+nA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iPpv4-00085Q-NC; Wed, 30 Oct 2019 15:29:58 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1iPq18-0004QO-Jq; Wed, 30 Oct 2019 15:36:14 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iPptC-0006Jn-Eh
- for linux-mtd@lists.infradead.org; Wed, 30 Oct 2019 15:28:05 +0000
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <sha@pengutronix.de>)
- id 1iPpsG-0003Y7-P6; Wed, 30 Oct 2019 16:27:04 +0100
-Received: from sha by dude.hi.pengutronix.de with local (Exim 4.92)
- (envelope-from <sha@pengutronix.de>)
- id 1iPpsG-0005nS-0a; Wed, 30 Oct 2019 16:27:04 +0100
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: linux-fsdevel@vger.kernel.org
-Subject: [PATCH 09/10] ubifs: export get_znode
-Date: Wed, 30 Oct 2019 16:27:01 +0100
-Message-Id: <20191030152702.14269-10-s.hauer@pengutronix.de>
-X-Mailer: git-send-email 2.24.0.rc1
-In-Reply-To: <20191030152702.14269-1-s.hauer@pengutronix.de>
-References: <20191030152702.14269-1-s.hauer@pengutronix.de>
+ id 1iPq15-0004Pp-Oa
+ for linux-mtd@lists.infradead.org; Wed, 30 Oct 2019 15:36:13 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id x9UFZsU3129133;
+ Wed, 30 Oct 2019 10:35:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1572449754;
+ bh=itDVqGsRHL9c9qnyUP4W+rF3TW1drLds6zfsQHp+0Wk=;
+ h=From:Subject:To:References:Date:In-Reply-To;
+ b=sWc4FmqFuOagyOLcmfTABJRPsRd90Uamk9lYW7o/H1h80De4gfDFORU27FD0okaq7
+ 6Seei0imcw3HnscDBa8/7FEi2IgwEtwUvyUBcsusRQZtSXRJ1dIMBGWuTQ3dF3KftB
+ 3ENuWNJsMpkp6ijLpaBQ74rXgZeKOCnrovGma4ug=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x9UFZsxL037267
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Wed, 30 Oct 2019 10:35:54 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Wed, 30
+ Oct 2019 10:35:41 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
+ Frontend Transport; Wed, 30 Oct 2019 10:35:41 -0500
+Received: from [10.250.147.141] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id x9UFZpte038864;
+ Wed, 30 Oct 2019 10:35:52 -0500
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH 2/2] mtd: cfi_cmdset_0002: fix delayed error detection on
+ HyperFlash
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>
+References: <b93bf510-8812-3f82-29f3-43f41d08550a@cogentembedded.com>
+ <b146c469-6cc3-885e-3e8e-ff7a5fa8dcd4@cogentembedded.com>
+ <e5124cbf-c9bd-ec0e-b68f-1882646eb264@ti.com>
+ <0526aa49-0649-b0d1-e72f-9b5bb8f284a5@cogentembedded.com>
+Message-ID: <72d8c09d-6f8b-e8b2-459d-85c3674abdf5@ti.com>
+Date: Wed, 30 Oct 2019 16:35:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+In-Reply-To: <0526aa49-0649-b0d1-e72f-9b5bb8f284a5@cogentembedded.com>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191030_082802_716463_EB3C5159 
-X-CRM114-Status: GOOD (  14.28  )
+X-CRM114-CacheID: sfid-20191030_083611_908207_DE9442E2 
+X-CRM114-Status: GOOD (  24.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,162 +98,126 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>, Sascha Hauer <s.hauer@pengutronix.de>,
- linux-mtd@lists.infradead.org, kernel@pengutronix.de, Jan Kara <jack@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-get_znode will be needed by upcoming UBIFS quota support. Rename it to
-ubifs_get_znode and export it.
+Hi,
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
- fs/ubifs/tnc.c   | 32 ++++++++++++++++----------------
- fs/ubifs/ubifs.h |  2 ++
- 2 files changed, 18 insertions(+), 16 deletions(-)
+On 28/10/19 8:15 PM, Sergei Shtylyov wrote:
+> Hello!
+> 
+> On 10/16/2019 09:33 AM, Vignesh Raghavendra wrote:
+> 
+>>> The commit 4844ef80305d ("mtd: cfi_cmdset_0002: Add support for polling
+>>> status register") added checking for the status register error bits into
+>>> chip_good() to only return 1 if these bits are zero. Unfortunately, this
+>>> means that polling using chip_good() always reaches a time-out condition
+>>> when erase or program failure bits are set. I think the status register
+>>> error checking should be fully delegated to cfi_check_err_status() that
+>>> should return whether any error bits were set or not...
+>>>
+>>
+>> Please reword last sentence to drop "I think". Something like:
+>>
+>> Lets fully delegate the function of determining error condition to
+>> cfi_check_err_status() and make chip_good() only look for Device
+>> Ready/Busy condition.
+> 
+>    OK. :-)
+> 
+>>> Fixes: 4844ef80305d ("mtd: cfi_cmdset_0002: Add support for polling status register")
+>>> Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+>>>
+>>> ---
+>>>  drivers/mtd/chips/cfi_cmdset_0002.c |   55 +++++++++++++++++++-----------------
+>>>  1 file changed, 30 insertions(+), 25 deletions(-)
+>>>
+>>> Index: linux/drivers/mtd/chips/cfi_cmdset_0002.c
+>>> ===================================================================
+>>> --- linux.orig/drivers/mtd/chips/cfi_cmdset_0002.c
+>>> +++ linux/drivers/mtd/chips/cfi_cmdset_0002.c
+>>> @@ -123,14 +123,14 @@ static int cfi_use_status_reg(struct cfi
+>>>  		(extp->SoftwareFeatures & poll_mask) == CFI_POLL_STATUS_REG;
+>>>  }
+>>>  
+>>> -static void cfi_check_err_status(struct map_info *map, struct flchip *chip,
+>>> -				 unsigned long adr)
+>>> +static int cfi_check_err_status(struct map_info *map, struct flchip *chip,
+>>> +				unsigned long adr)
+>>>  {
+>>>  	struct cfi_private *cfi = map->fldrv_priv;
+>>>  	map_word status;
+>>>  
+>>>  	if (!cfi_use_status_reg(cfi))
+>>> -		return;
+>>> +		return 0;
+>>>  
+>>>  	cfi_send_gen_cmd(0x70, cfi->addr_unlock1, chip->start, map, cfi,
+>>>  			 cfi->device_type, NULL);
+>>> @@ -138,7 +138,7 @@ static void cfi_check_err_status(struct
+>>>  
+>>>  	/* The error bits are invalid while the chip's busy */
+>>>  	if (!map_word_bitsset(map, status, CMD(CFI_SR_DRB)))
+>>> -		return;
+>>> +		return 0;
+>>>  
+>>>  	if (map_word_bitsset(map, status, CMD(0x3a))) {
+>>>  		unsigned long chipstatus = MERGESTATUS(status);
+>>> @@ -155,7 +155,9 @@ static void cfi_check_err_status(struct
+>>>  		if (chipstatus & CFI_SR_SLSB)
+>>>  			pr_err("%s sector write protected, status %lx\n",
+>>>  			       map->name, chipstatus);
+>>> +		return 1;
+> 
+>    So are you OK with extending the set of the error signalling bits I
+> did here, or I should really have accounted only for ESB and PSB bits
+> being error signals?
+> 
 
-diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
-index e8e7b0e9532e..188fa036e655 100644
---- a/fs/ubifs/tnc.c
-+++ b/fs/ubifs/tnc.c
-@@ -571,15 +571,15 @@ static int matches_name(struct ubifs_info *c, struct ubifs_zbranch *zbr,
- }
- 
- /**
-- * get_znode - get a TNC znode that may not be loaded yet.
-+ * ubifs_get_znode - get a TNC znode that may not be loaded yet.
-  * @c: UBIFS file-system description object
-  * @znode: parent znode
-  * @n: znode branch slot number
-  *
-  * This function returns the znode or a negative error code.
-  */
--static struct ubifs_znode *get_znode(struct ubifs_info *c,
--				     struct ubifs_znode *znode, int n)
-+struct ubifs_znode *ubifs_get_znode(struct ubifs_info *c,
-+				    struct ubifs_znode *znode, int n)
- {
- 	struct ubifs_zbranch *zbr;
- 
-@@ -619,11 +619,11 @@ static int tnc_next(struct ubifs_info *c, struct ubifs_znode **zn, int *n)
- 		nn = znode->iip + 1;
- 		znode = zp;
- 		if (nn < znode->child_cnt) {
--			znode = get_znode(c, znode, nn);
-+			znode = ubifs_get_znode(c, znode, nn);
- 			if (IS_ERR(znode))
- 				return PTR_ERR(znode);
- 			while (znode->level != 0) {
--				znode = get_znode(c, znode, 0);
-+				znode = ubifs_get_znode(c, znode, 0);
- 				if (IS_ERR(znode))
- 					return PTR_ERR(znode);
- 			}
-@@ -663,12 +663,12 @@ static int tnc_prev(struct ubifs_info *c, struct ubifs_znode **zn, int *n)
- 		nn = znode->iip - 1;
- 		znode = zp;
- 		if (nn >= 0) {
--			znode = get_znode(c, znode, nn);
-+			znode = ubifs_get_znode(c, znode, nn);
- 			if (IS_ERR(znode))
- 				return PTR_ERR(znode);
- 			while (znode->level != 0) {
- 				nn = znode->child_cnt - 1;
--				znode = get_znode(c, znode, nn);
-+				znode = ubifs_get_znode(c, znode, nn);
- 				if (IS_ERR(znode))
- 					return PTR_ERR(znode);
- 			}
-@@ -2572,7 +2572,7 @@ static int tnc_delete(struct ubifs_info *c, struct ubifs_znode *znode, int n)
- 		while (znode->child_cnt == 1 && znode->level != 0) {
- 			zp = znode;
- 			zbr = &znode->zbranch[0];
--			znode = get_znode(c, znode, 0);
-+			znode = ubifs_get_znode(c, znode, 0);
- 			if (IS_ERR(znode))
- 				return PTR_ERR(znode);
- 			znode = dirty_cow_znode(c, zbr);
-@@ -3096,12 +3096,12 @@ static struct ubifs_znode *left_znode(struct ubifs_info *c,
- 			return NULL;
- 		if (n >= 0) {
- 			/* Now go down the rightmost branch to 'level' */
--			znode = get_znode(c, znode, n);
-+			znode = ubifs_get_znode(c, znode, n);
- 			if (IS_ERR(znode))
- 				return znode;
- 			while (znode->level != level) {
- 				n = znode->child_cnt - 1;
--				znode = get_znode(c, znode, n);
-+				znode = ubifs_get_znode(c, znode, n);
- 				if (IS_ERR(znode))
- 					return znode;
- 			}
-@@ -3133,11 +3133,11 @@ static struct ubifs_znode *right_znode(struct ubifs_info *c,
- 			return NULL;
- 		if (n < znode->child_cnt) {
- 			/* Now go down the leftmost branch to 'level' */
--			znode = get_znode(c, znode, n);
-+			znode = ubifs_get_znode(c, znode, n);
- 			if (IS_ERR(znode))
- 				return znode;
- 			while (znode->level != level) {
--				znode = get_znode(c, znode, 0);
-+				znode = ubifs_get_znode(c, znode, 0);
- 				if (IS_ERR(znode))
- 					return znode;
- 			}
-@@ -3222,13 +3222,13 @@ static struct ubifs_znode *lookup_znode(struct ubifs_info *c,
- 		}
- 		if (znode->level == level + 1)
- 			break;
--		znode = get_znode(c, znode, n);
-+		znode = ubifs_get_znode(c, znode, n);
- 		if (IS_ERR(znode))
- 			return znode;
- 	}
- 	/* Check if the child is the one we are looking for */
- 	if (znode->zbranch[n].lnum == lnum && znode->zbranch[n].offs == offs)
--		return get_znode(c, znode, n);
-+		return ubifs_get_znode(c, znode, n);
- 	/* If the key is unique, there is nowhere else to look */
- 	if (!is_hash_key(c, key))
- 		return NULL;
-@@ -3254,7 +3254,7 @@ static struct ubifs_znode *lookup_znode(struct ubifs_info *c,
- 		/* Check it */
- 		if (znode->zbranch[n].lnum == lnum &&
- 		    znode->zbranch[n].offs == offs)
--			return get_znode(c, znode, n);
-+			return ubifs_get_znode(c, znode, n);
- 		/* Stop if the key is less than the one we are looking for */
- 		if (keys_cmp(c, &znode->zbranch[n].key, key) < 0)
- 			break;
-@@ -3276,7 +3276,7 @@ static struct ubifs_znode *lookup_znode(struct ubifs_info *c,
- 		/* Check it */
- 		if (znode->zbranch[n].lnum == lnum &&
- 		    znode->zbranch[n].offs == offs)
--			return get_znode(c, znode, n);
-+			return ubifs_get_znode(c, znode, n);
- 		/* Stop if the key is greater than the one we are looking for */
- 		if (keys_cmp(c, &znode->zbranch[n].key, key) > 0)
- 			break;
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index 3f8a33fca67b..fd9e52749ef7 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -1819,6 +1819,8 @@ int ubifs_find_dirty_idx_leb(struct ubifs_info *c);
- int ubifs_save_dirty_idx_lnums(struct ubifs_info *c);
- 
- /* tnc.c */
-+struct ubifs_znode *ubifs_get_znode(struct ubifs_info *c,
-+				    struct ubifs_znode *znode, int n);
- int ubifs_lookup_level0(struct ubifs_info *c, const union ubifs_key *key,
- 			struct ubifs_znode **zn, int *n);
- int ubifs_tnc_lookup_nm(struct ubifs_info *c, const union ubifs_key *key,
--- 
-2.24.0.rc1
+I am fine either way. Because as per HyperFlash datasheet, PSB or ESB
+will always be set if either of WASB or SLSB is set. So it does not
+really matter if we are checking for just ESB and PSB or otherwise.
 
+Regards
+Vignesh
+
+>>>  	}
+>>> +	return 0;
+>>>  }
+>>>  
+>>>  /* #define DEBUG_CFI_FEATURES */
+> [...]
+>>> @@ -1703,8 +1701,11 @@ static int __xipram do_write_oneword_onc
+>>
+>> Nit: for some reason, your diff has function names truncated abruptly
+>> which makes its slightly harder to locate the context. I use git
+>> format-patch that produces better readable contexts.
+> 
+>    I use quilt for development, not a big fan of git in this role. :-)
+> 
+> [...]
+>>> @@ -1974,12 +1974,17 @@ static int __xipram do_write_buffer_wait
+>>>  		 */
+>>>  		if (time_after(jiffies, timeo) &&
+>>>  		    !chip_good(map, chip, adr, datum)) {
+>>> +			pr_warn("MTD %s(): software timeout, address:0x%.8lx.\n",
+>>> +				__func__, adr);
+>>
+>> Since we are returning an error condition, this should be pr_err() (I
+>> know that rest of the file does not follow this convention, but lets
+>> make sure new code does)
+> 
+>    OK, I was looking at the other timeout code and failed to notice
+> that this printk() was converted to pr_err() by Ikegami-san... 
+> 
+>> Rest looks fine to me. Thanks for the patch!
+> 
+>    TY for the review.
+> 
+> MBR, Sergei
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
