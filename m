@@ -2,72 +2,89 @@ Return-Path: <SRS0=8kzJ=YX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A12DBCA9EAF
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Oct 2019 08:51:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BCC18CA9EAF
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Oct 2019 09:03:23 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6E16A20578
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Oct 2019 08:51:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 79EE52083E
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Oct 2019 09:03:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ajYB2oZy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6E16A20578
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="UOK/+dMW";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OjUstP+Z"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 79EE52083E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ASnqyg1mmW9/hBI1ZioVfh8jojPIAYJNvG9B526A8C4=; b=ajYB2oZyQzeRXp
-	YWAiqelTgdYUQdHu7QI297btZyyHo9Vbm56gi6ALBG/hI4NcQDdlB47S/7ksowpjYqZYdXIxnalJh
-	3XdCXf0FFAHOfGic7mQzSBEqExoYRApyCfUD7GROfruUEWz5nQnG+F4dmyBqlLfWdaJandjF4M2QX
-	/CsMBkURKjE+8TFW2oICAtyg9vGpOaViY4EEQCc/jaR4YcP6xfSLyD8KpaHUsSiae3GxmbsSSzZXw
-	K6Q+AwHP5KbfccrMZqLIgjJAXMaRlOX59A6W328iVcZdLgqE03MxuMcnFnR1l4J4WDKFGCMa8be/I
-	lXohWiMofZAh+f0HLc+w==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:References:
+	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=4lWAfF7mEKeEyK0m+FIWUO7c0Zn0PPHyqSGFddR+YsY=; b=UOK/+dMWQYZ0hOCHD+w1Fv7pOI
+	FYI2BVUCuztMqlttZLLHxLpKKseKfFR9KfD6u9spOYRBLsxz23gDo3UazXuiaJzWJY6slatDvUOrr
+	Cfg7txu1MzATvG6xfpdm8jucXdH8MiRQkGKjFQUN+JHYCuGLXAZl/UtaNfPbuiDaOEBtmtcGji4n+
+	nOpwo8Z8G4RY64IKuAlsTRsY0lpAwDGnT7wdmQDC/EfAlc/1xWTNbMxpenI+mcySFv0sWShLSux6i
+	2zk7L4onCWCKhCmR9VtllLUYPr9di6HLfowHk+CcQ65H+z/0gGer0nC0PKtVCqpdzH5TVTw2szF5/
+	/wGO9BnA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iPjhr-0007aD-Ta; Wed, 30 Oct 2019 08:51:55 +0000
-Received: from mail-oi1-f195.google.com ([209.85.167.195])
+	id 1iPjsg-0004lE-C7; Wed, 30 Oct 2019 09:03:06 +0000
+Received: from mail-pf1-x442.google.com ([2607:f8b0:4864:20::442])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iPjho-0007ZD-AR; Wed, 30 Oct 2019 08:51:53 +0000
-Received: by mail-oi1-f195.google.com with SMTP id v186so1290442oie.5;
- Wed, 30 Oct 2019 01:51:51 -0700 (PDT)
+ id 1iPjs4-0004BR-OO
+ for linux-mtd@lists.infradead.org; Wed, 30 Oct 2019 09:02:30 +0000
+Received: by mail-pf1-x442.google.com with SMTP id c13so1127943pfp.5
+ for <linux-mtd@lists.infradead.org>; Wed, 30 Oct 2019 02:02:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references;
+ bh=LAPsnGt1pYtfbduk+JeNTkq03C0NkkTkxfb05DzEQJ0=;
+ b=OjUstP+ZDVdOGkJvM7Td/6qBjFXM/KJF6OJzUcEP7TyIJ4ZvUAn9T7yD8XjYxDNEJN
+ KHjfvWijYiNtqenb9bwa4Sd1uGk/jU8FssM6dooJ4yDHUi45cn17lSpLQFbVew2amgW1
+ FPa8iEp/VeagMZARlx0/Hkpd+Tt/g031BieCjXyxwn2gsco2zYNWb50cT4woJ+ovMB3Z
+ fzA4VRtI6KPvbdbp/WHauQOggzc/Pzxm45n53SBGlLJ/X4cN+ny0thBTdo/0mLdX21nN
+ udm+afipjTPSHKncaghH/3F0Zwzwekn1z/WYsofoSyAtuLp7QCy8b/4kPAXWhs5jUQrf
+ Bfnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=mziza5J/MoDupcgI0RkmxCcsKm60Et3F2KLUw+t1RqQ=;
- b=bfN2XgypiTJ7YSnMKgvXsqsoTQNtd8s8D834PllcoXOESduNRfh3ygjssfNNACcW/W
- VWOhGMRJcJKU5XvkEldxqgXO46s+Q7kTsThtOkGeqV0JcvUplnNMXVQ3Cgk4TJmCzODx
- UFdAsUvQ8Sl0LR6aom6tOt8jBs2RxXJ7c7LR8jMyfIBq3mLbWjkQwFuFJKtudSqoG7p3
- dpSx2IgID6LIDIZwJHGxGTPtIVjsZd3icgNImM1s04ldE3n1GndubWv8Hr0ItrZYn6rp
- Hb8AxkOkQqesV4j03R8iHpUt0mOU6IrdoUVVV23B5vB6DxhvlDgx2+3LT3D4gwhx+J/s
- OeKA==
-X-Gm-Message-State: APjAAAVR3piavp3DgnBwIbIAiOHg0adnLN2lFikHhZlG3+QXlwi97/NC
- apsHZKBDPmB13vkN/YhBumFoebTwcdbTH3H+Zfw=
-X-Google-Smtp-Source: APXvYqywm9C+CpnmelJ6SWQKVIah4mda9qPmB6OrDMq707nGOy+7YzCdX2/qccGqz5HinY9G/c8lSRqxbZE+WID7kSw=
-X-Received: by 2002:aca:4ac5:: with SMTP id x188mr4822487oia.148.1572425510897; 
- Wed, 30 Oct 2019 01:51:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20191029064834.23438-1-hch@lst.de>
- <20191029064834.23438-14-hch@lst.de>
-In-Reply-To: <20191029064834.23438-14-hch@lst.de>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 30 Oct 2019 09:51:39 +0100
-Message-ID: <CAMuHMdWGiHhSv=xCqnsUXok7wYG7Wr1EQh+yuPOZBxPCskUFVw@mail.gmail.com>
-Subject: Re: [PATCH 13/21] m68k: rename __iounmap and mark it static
-To: Christoph Hellwig <hch@lst.de>
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references;
+ bh=LAPsnGt1pYtfbduk+JeNTkq03C0NkkTkxfb05DzEQJ0=;
+ b=aT9r9MTW3pyZHG4kfRGjvTPXrtVbLifudPiwhoBl/AP6Y+GePwyFn1QQxcA7s74DUh
+ LI7NZEEsATBc0KPgU3SEs2bzajQckVgYQsgfGom4X9pGJhVW3jHfOjrYQ+wMkrZfHKAD
+ /v6h4KaeSQ2cErZA/7zsJEECmavtdAzt7dFRg3WDV4nwbFZCPcz9hMya/y0WTb2tRC/h
+ 3f/SKMyMU357k8JxECNCoQcEpJZwkesd+SMATpFxFoHjy357NSk0geN9HAgq4RKAPljx
+ gbSGAGPVMOcjcfAJ0cz4jjXa8SeS6KIzmHu76j1ZQc/gIR7Xw9BMRVIqV/fda+hJE04t
+ R7Lw==
+X-Gm-Message-State: APjAAAUQobU4NxP12g/pwz7NhGyQr4/gMr9KciagxKO/dqq4RlUXgVKM
+ 63GbTTeYtCsfUWi+zKwguEGT
+X-Google-Smtp-Source: APXvYqxsyssWpqE3cm5I9+vC1DFWm8h7Zo1nOKgSKfAdxUIWWIrp9fIwVWU5LGEWc9pZGi9gWdp/CA==
+X-Received: by 2002:a63:6d02:: with SMTP id i2mr33658547pgc.64.1572426146740; 
+ Wed, 30 Oct 2019 02:02:26 -0700 (PDT)
+Received: from localhost.localdomain
+ ([2409:4072:618e:77d9:c9fa:423a:3851:8df4])
+ by smtp.gmail.com with ESMTPSA id g24sm2070351pfi.81.2019.10.30.02.02.15
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 30 Oct 2019 02:02:26 -0700 (PDT)
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: shawnguo@kernel.org,
+	s.hauer@pengutronix.de,
+	robh+dt@kernel.org
+Subject: [PATCH v2 4/4] mtd: spi-nor: Add support for w25q256jw
+Date: Wed, 30 Oct 2019 14:31:24 +0530
+Message-Id: <20191030090124.24900-5-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20191030090124.24900-1-manivannan.sadhasivam@linaro.org>
+References: <20191030090124.24900-1-manivannan.sadhasivam@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191030_015152_361825_88944956 
-X-CRM114-Status: UNSURE (   9.38  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20191030_020228_840425_20CFD849 
+X-CRM114-Status: GOOD (  14.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,50 +96,58 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
- Linux-sh list <linux-sh@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Guo Ren <guoren@kernel.org>, sparclinux <sparclinux@vger.kernel.org>,
- linux-riscv@lists.infradead.org, Vincent Chen <deanbo422@gmail.com>,
- Linux-Arch <linux-arch@vger.kernel.org>,
- linux-s390 <linux-s390@vger.kernel.org>,
- "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
- the arch/x86 maintainers <x86@kernel.org>,
- arcml <linux-snps-arc@lists.infradead.org>, linux-xtensa@linux-xtensa.org,
- Arnd Bergmann <arnd@arndb.de>, linux-m68k <linux-m68k@lists.linux-m68k.org>,
- Openrisc <openrisc@lists.librecores.org>, Greentime Hu <green.hu@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>, Guan Xuetao <gxt@pku.edu.cn>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- Michal Simek <monstr@monstr.eu>, Parisc List <linux-parisc@vger.kernel.org>,
- linux-mips@vger.kernel.org, alpha <linux-alpha@vger.kernel.org>,
- nios2-dev@lists.rocketboards.org
+Cc: devicetree@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+ Marek Vasut <marek.vasut@gmail.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>, linux-kernel@vger.kernel.org,
+ Vignesh Raghavendra <vigneshr@ti.com>, darshak.patel@einfochips.com,
+ linux-mtd@lists.infradead.org, linux-imx@nxp.com, kernel@pengutronix.de,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ Brian Norris <computersforpeace@gmail.com>, festevam@gmail.com,
+ linux-arm-kernel@lists.infradead.org, prajose.john@einfochips.com
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Oct 29, 2019 at 7:56 AM Christoph Hellwig <hch@lst.de> wrote:
-> m68k uses __iounmap as the name for an internal helper that is only
-> used for some CPU types.  Mark it static, give it a better name
-> and move it around a bit to avoid a forward declaration.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+Add MTD support for w25q256jw SPI NOR chip from Winbond. This chip
+supports dual/quad I/O mode with 512 blocks of memory organized in
+64KB sectors. In addition to this, there is also small 4KB sectors
+available for flexibility. The device has been validated using Thor96
+board.
 
-Thanks for the update!
+Cc: Marek Vasut <marek.vasut@gmail.com>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org
+Signed-off-by: Darshak Patel <darshak.patel@einfochips.com>
+[Mani: cleaned up for upstream]
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 1d8621d43160..2c25b371d9f0 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -2482,6 +2482,8 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "w25q256jvm", INFO(0xef7019, 0, 64 * 1024, 512,
+ 			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{ "w25q256jw", INFO(0xef6019, 0, 64 * 1024, 512,
++			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "w25m512jv", INFO(0xef7119, 0, 64 * 1024, 1024,
+ 			SECT_4K | SPI_NOR_QUAD_READ | SPI_NOR_DUAL_READ) },
+ 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.17.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
 
 ______________________________________________________
 Linux MTD discussion mailing list
