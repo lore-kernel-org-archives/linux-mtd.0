@@ -2,70 +2,63 @@ Return-Path: <SRS0=gIgt=YY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DB02CA9EC3
-	for <linux-mtd@archiver.kernel.org>; Thu, 31 Oct 2019 07:37:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F3B0CA9EC3
+	for <linux-mtd@archiver.kernel.org>; Thu, 31 Oct 2019 10:34:45 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6FDD520862
-	for <linux-mtd@archiver.kernel.org>; Thu, 31 Oct 2019 07:37:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2F5962083E
+	for <linux-mtd@archiver.kernel.org>; Thu, 31 Oct 2019 10:34:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uFIqyi+e"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6FDD520862
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GY0qYRji"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2F5962083E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8xNiBSPhvITHWBmDijdDM6g3h9UHtTk9cBRz9R2sXp4=; b=uFIqyi+eZw/kN8
-	PyIH7d0NlW5gcaloF0UEhuYLIwvOJTtUIiQFQMSXVHQplqpZ11UVpZLz6ug4Gc8+BNTGvsBqA11YK
-	mY1ONM5Grx2Ior/Zd7QzVbjRZoN51IWFh4g4N0XPW6FQvfnPAP1ZHsCEUqrsG3O0Z83oRGDGqixHz
-	eSDwa1GY0+l9blDCxcokh3ivwsICZ1hx+N1xwAq6s0puxCIegmZZdlvZOhRzJA/Jx51mQ6N0pCBbu
-	9wndTfl4l/SFI5r+U3QRNi3HH8X45eq5ZlAq6MFYKEtzjzVkozxkpl2iUfVc2SkrbHfaxJMmb//Y5
-	oiu1Alhwbu0yak6ZUGOg==;
+	List-Owner; bh=MwhVVdECGLC9GzfcCPA0wxmFlOL/J/MsqgKM2NJfwgA=; b=GY0qYRjiqGBN//
+	6XGk/4VR+pZsNIwe+DZ3b2ZwBx4fJMMqVjOaQyCmPUYPuSDT2fYkO66HL9VzCWkFYKQrH/78Ktlrb
+	dwz1cMW4y+9Mitjee9C5Q09IWOLV1GGxKPnlw7BZUOQ3plmxim50e+3GZVieb7It3Dq3PG/4O4hPB
+	qSACT/vqCAyR5zO/ykdAjiruUgeP4EuqL6xygGgESffQP39I8QGos539eXT0UawVvcpbb1vmsDmDX
+	jXGR/cvrlnquikLMFRrPMFtvY/vuTJA0xQBJ/2zzqV+FbLVnmuSfYNFGdg1lD9eXU6I9GKpmufxoT
+	fAdynNCo6Zy2KgAOz1qw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iQ51b-0003JN-28; Thu, 31 Oct 2019 07:37:43 +0000
-Received: from mga18.intel.com ([134.134.136.126])
+	id 1iQ7mt-0007Uk-UC; Thu, 31 Oct 2019 10:34:43 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iQ51S-00039s-1I
- for linux-mtd@lists.infradead.org; Thu, 31 Oct 2019 07:37:35 +0000
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
- by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 31 Oct 2019 00:37:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,250,1569308400"; d="scan'208";a="230756445"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
- by fmsmga002.fm.intel.com with ESMTP; 31 Oct 2019 00:37:30 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
- (envelope-from <lkp@intel.com>)
- id 1iQ51O-000Eiw-8i; Thu, 31 Oct 2019 15:37:30 +0800
-Date: Thu, 31 Oct 2019 15:36:39 +0800
-From: kbuild test robot <lkp@intel.com>
-To: Mason Yang <masonccyang@mxic.com.tw>
-Subject: Re: [PATCH v2 4/4] mtd: rawnand: Add support Macronix deep power
- down mode
-Message-ID: <201910311559.H7voj6qN%lkp@intel.com>
-References: <1572256527-5074-5-git-send-email-masonccyang@mxic.com.tw>
+ id 1iQ7mj-0007D1-Em
+ for linux-mtd@lists.infradead.org; Thu, 31 Oct 2019 10:34:36 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id BEEFC28DE61;
+ Thu, 31 Oct 2019 10:34:29 +0000 (GMT)
+Date: Thu, 31 Oct 2019 11:34:26 +0100
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: <Tudor.Ambarus@microchip.com>
+Subject: Re: [PATCH v3 01/32] mtd: spi-nor: Prepend spi_nor_ to all Reg Ops
+ methods
+Message-ID: <20191031113426.69bb1468@collabora.com>
+In-Reply-To: <20191029111615.3706-2-tudor.ambarus@microchip.com>
+References: <20191029111615.3706-1-tudor.ambarus@microchip.com>
+ <20191029111615.3706-2-tudor.ambarus@microchip.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1572256527-5074-5-git-send-email-masonccyang@mxic.com.tw>
-X-Patchwork-Hint: ignore
-User-Agent: NeoMutt/20170113 (1.7.2)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191031_003734_112340_E1EA12CD 
-X-CRM114-Status: GOOD (  14.14  )
+X-CRM114-CacheID: sfid-20191031_033433_767751_4A80CAA7 
+X-CRM114-Status: GOOD (  23.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,47 +70,462 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: masonccyang@mxic.com.tw, kbuild-all@lists.01.org, vigneshr@ti.com,
- bbrezillon@kernel.org, juliensu@mxic.com.tw, richard@nod.at,
- linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
- computersforpeace@gmail.com, dwmw2@infradead.org
+Cc: richard@nod.at, linux-mtd@lists.infradead.org, vigneshr@ti.com,
+ linux-kernel@vger.kernel.org, miquel.raynal@bootlin.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Mason,
+On Tue, 29 Oct 2019 11:16:49 +0000
+<Tudor.Ambarus@microchip.com> wrote:
 
-Thank you for the patch! Perhaps something to improve:
+> From: Tudor Ambarus <tudor.ambarus@microchip.com>
+> 
+> All the core functions should begin with "spi_nor_".
+> 
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-[auto build test WARNING on linus/master]
-[cannot apply to v5.4-rc5 next-20191030]
-[if your patch is applied to the wrong git tree, please drop us a note to help
-improve the system. BTW, we also suggest to use '--base' option to specify the
-base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 
-url:    https://github.com/0day-ci/linux/commits/Mason-Yang/mtd-rawnand-Add-support-Macronix-Block-Protection-deep-power-down-mode/20191030-071757
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 23fdb198ae81f47a574296dab5167c5e136a02ba
-reproduce:
-        # apt-get install sparse
-        # sparse version: v0.6.1-dirty
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 110 +++++++++++++++++++++---------------------
+>  1 file changed, 56 insertions(+), 54 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index a6f9f833c862..aca8245fb6c4 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -393,7 +393,7 @@ static ssize_t spi_nor_write_data(struct spi_nor *nor, loff_t to, size_t len,
+>   * Return the status register value.
+>   * Returns negative if error occurred.
+>   */
+> -static int read_sr(struct spi_nor *nor)
+> +static int spi_nor_read_sr(struct spi_nor *nor)
+>  {
+>  	int ret;
+>  
+> @@ -423,7 +423,7 @@ static int read_sr(struct spi_nor *nor)
+>   * Return the status register value.
+>   * Returns negative if error occurred.
+>   */
+> -static int read_fsr(struct spi_nor *nor)
+> +static int spi_nor_read_fsr(struct spi_nor *nor)
+>  {
+>  	int ret;
+>  
+> @@ -453,7 +453,7 @@ static int read_fsr(struct spi_nor *nor)
+>   * location. Return the configuration register value.
+>   * Returns negative if error occurred.
+>   */
+> -static int read_cr(struct spi_nor *nor)
+> +static int spi_nor_read_cr(struct spi_nor *nor)
+>  {
+>  	int ret;
+>  
+> @@ -482,7 +482,7 @@ static int read_cr(struct spi_nor *nor)
+>   * Write status register 1 byte
+>   * Returns negative if error occurred.
+>   */
+> -static int write_sr(struct spi_nor *nor, u8 val)
+> +static int spi_nor_write_sr(struct spi_nor *nor, u8 val)
+>  {
+>  	nor->bouncebuf[0] = val;
+>  	if (nor->spimem) {
+> @@ -503,7 +503,7 @@ static int write_sr(struct spi_nor *nor, u8 val)
+>   * Set write enable latch with Write Enable command.
+>   * Returns negative if error occurred.
+>   */
+> -static int write_enable(struct spi_nor *nor)
+> +static int spi_nor_write_enable(struct spi_nor *nor)
+>  {
+>  	if (nor->spimem) {
+>  		struct spi_mem_op op =
+> @@ -521,7 +521,7 @@ static int write_enable(struct spi_nor *nor)
+>  /*
+>   * Send write disable instruction to the chip.
+>   */
+> -static int write_disable(struct spi_nor *nor)
+> +static int spi_nor_write_disable(struct spi_nor *nor)
+>  {
+>  	if (nor->spimem) {
+>  		struct spi_mem_op op =
+> @@ -644,9 +644,9 @@ static int st_micron_set_4byte(struct spi_nor *nor, bool enable)
+>  {
+>  	int ret;
+>  
+> -	write_enable(nor);
+> +	spi_nor_write_enable(nor);
+>  	ret = macronix_set_4byte(nor, enable);
+> -	write_disable(nor);
+> +	spi_nor_write_disable(nor);
+>  
+>  	return ret;
+>  }
+> @@ -700,9 +700,9 @@ static int winbond_set_4byte(struct spi_nor *nor, bool enable)
+>  	 * Register to be set to 1, so all 3-byte-address reads come from the
+>  	 * second 16M. We must clear the register to enable normal behavior.
+>  	 */
+> -	write_enable(nor);
+> +	spi_nor_write_enable(nor);
+>  	ret = spi_nor_write_ear(nor, 0);
+> -	write_disable(nor);
+> +	spi_nor_write_disable(nor);
+>  
+>  	return ret;
+>  }
+> @@ -752,7 +752,7 @@ static int spi_nor_clear_sr(struct spi_nor *nor)
+>  
+>  static int spi_nor_sr_ready(struct spi_nor *nor)
+>  {
+> -	int sr = read_sr(nor);
+> +	int sr = spi_nor_read_sr(nor);
+>  	if (sr < 0)
+>  		return sr;
+>  
+> @@ -786,7 +786,7 @@ static int spi_nor_clear_fsr(struct spi_nor *nor)
+>  
+>  static int spi_nor_fsr_ready(struct spi_nor *nor)
+>  {
+> -	int fsr = read_fsr(nor);
+> +	int fsr = spi_nor_read_fsr(nor);
+>  	if (fsr < 0)
+>  		return fsr;
+>  
+> @@ -864,7 +864,7 @@ static int spi_nor_wait_till_ready(struct spi_nor *nor)
+>   *
+>   * Returns 0 if successful, non-zero otherwise.
+>   */
+> -static int erase_chip(struct spi_nor *nor)
+> +static int spi_nor_erase_chip(struct spi_nor *nor)
+>  {
+>  	dev_dbg(nor->dev, " %lldKiB\n", (long long)(nor->mtd.size >> 10));
+>  
+> @@ -1215,7 +1215,7 @@ static int spi_nor_erase_multi_sectors(struct spi_nor *nor, u64 addr, u32 len)
+>  	list_for_each_entry_safe(cmd, next, &erase_list, list) {
+>  		nor->erase_opcode = cmd->opcode;
+>  		while (cmd->count) {
+> -			write_enable(nor);
+> +			spi_nor_write_enable(nor);
+>  
+>  			ret = spi_nor_erase_sector(nor, addr);
+>  			if (ret)
+> @@ -1270,9 +1270,9 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+>  	if (len == mtd->size && !(nor->flags & SNOR_F_NO_OP_CHIP_ERASE)) {
+>  		unsigned long timeout;
+>  
+> -		write_enable(nor);
+> +		spi_nor_write_enable(nor);
+>  
+> -		if (erase_chip(nor)) {
+> +		if (spi_nor_erase_chip(nor)) {
+>  			ret = -EIO;
+>  			goto erase_err;
+>  		}
+> @@ -1298,7 +1298,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+>  	/* "sector"-at-a-time erase */
+>  	} else if (spi_nor_has_uniform_erase(nor)) {
+>  		while (len) {
+> -			write_enable(nor);
+> +			spi_nor_write_enable(nor);
+>  
+>  			ret = spi_nor_erase_sector(nor, addr);
+>  			if (ret)
+> @@ -1319,7 +1319,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+>  			goto erase_err;
+>  	}
+>  
+> -	write_disable(nor);
+> +	spi_nor_write_disable(nor);
+>  
+>  erase_err:
+>  	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_ERASE);
+> @@ -1328,12 +1328,13 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+>  }
+>  
+>  /* Write status register and ensure bits in mask match written values */
+> -static int write_sr_and_check(struct spi_nor *nor, u8 status_new, u8 mask)
+> +static int spi_nor_write_sr_and_check(struct spi_nor *nor, u8 status_new,
+> +				      u8 mask)
+>  {
+>  	int ret;
+>  
+> -	write_enable(nor);
+> -	ret = write_sr(nor, status_new);
+> +	spi_nor_write_enable(nor);
+> +	ret = spi_nor_write_sr(nor, status_new);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -1341,7 +1342,7 @@ static int write_sr_and_check(struct spi_nor *nor, u8 status_new, u8 mask)
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = read_sr(nor);
+> +	ret = spi_nor_read_sr(nor);
+>  	if (ret < 0)
+>  		return ret;
+>  
+> @@ -1447,7 +1448,7 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+>  	bool can_be_top = true, can_be_bottom = nor->flags & SNOR_F_HAS_SR_TB;
+>  	bool use_top;
+>  
+> -	status_old = read_sr(nor);
+> +	status_old = spi_nor_read_sr(nor);
+>  	if (status_old < 0)
+>  		return status_old;
+>  
+> @@ -1509,7 +1510,7 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+>  	if ((status_new & mask) < (status_old & mask))
+>  		return -EINVAL;
+>  
+> -	return write_sr_and_check(nor, status_new, mask);
+> +	return spi_nor_write_sr_and_check(nor, status_new, mask);
+>  }
+>  
+>  /*
+> @@ -1527,7 +1528,7 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+>  	bool can_be_top = true, can_be_bottom = nor->flags & SNOR_F_HAS_SR_TB;
+>  	bool use_top;
+>  
+> -	status_old = read_sr(nor);
+> +	status_old = spi_nor_read_sr(nor);
+>  	if (status_old < 0)
+>  		return status_old;
+>  
+> @@ -1592,7 +1593,7 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+>  	if ((status_new & mask) > (status_old & mask))
+>  		return -EINVAL;
+>  
+> -	return write_sr_and_check(nor, status_new, mask);
+> +	return spi_nor_write_sr_and_check(nor, status_new, mask);
+>  }
+>  
+>  /*
+> @@ -1606,7 +1607,7 @@ static int stm_is_locked(struct spi_nor *nor, loff_t ofs, uint64_t len)
+>  {
+>  	int status;
+>  
+> -	status = read_sr(nor);
+> +	status = spi_nor_read_sr(nor);
+>  	if (status < 0)
+>  		return status;
+>  
+> @@ -1670,11 +1671,11 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>   * second byte will be written to the configuration register.
+>   * Return negative if error occurred.
+>   */
+> -static int write_sr_cr(struct spi_nor *nor, u8 *sr_cr)
+> +static int spi_nor_write_sr_cr(struct spi_nor *nor, u8 *sr_cr)
+>  {
+>  	int ret;
+>  
+> -	write_enable(nor);
+> +	spi_nor_write_enable(nor);
+>  
+>  	if (nor->spimem) {
+>  		struct spi_mem_op op =
+> @@ -1719,21 +1720,21 @@ static int macronix_quad_enable(struct spi_nor *nor)
+>  {
+>  	int ret, val;
+>  
+> -	val = read_sr(nor);
+> +	val = spi_nor_read_sr(nor);
+>  	if (val < 0)
+>  		return val;
+>  	if (val & SR_QUAD_EN_MX)
+>  		return 0;
+>  
+> -	write_enable(nor);
+> +	spi_nor_write_enable(nor);
+>  
+> -	write_sr(nor, val | SR_QUAD_EN_MX);
+> +	spi_nor_write_sr(nor, val | SR_QUAD_EN_MX);
+>  
+>  	ret = spi_nor_wait_till_ready(nor);
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = read_sr(nor);
+> +	ret = spi_nor_read_sr(nor);
+>  	if (!(ret > 0 && (ret & SR_QUAD_EN_MX))) {
+>  		dev_err(nor->dev, "Macronix Quad bit not set\n");
+>  		return -EINVAL;
+> @@ -1758,7 +1759,8 @@ static int macronix_quad_enable(struct spi_nor *nor)
+>   * some very old and few memories don't support this instruction. If a pull-up
+>   * resistor is present on the MISO/IO1 line, we might still be able to pass the
+>   * "read back" test because the QSPI memory doesn't recognize the command,
+> - * so leaves the MISO/IO1 line state unchanged, hence read_cr() returns 0xFF.
+> + * so leaves the MISO/IO1 line state unchanged, hence spi_nor_read_cr() returns
+> + * 0xFF.
+>   *
+>   * bit 1 of the Configuration Register is the QE bit for Spansion like QSPI
+>   * memories.
+> @@ -1772,12 +1774,12 @@ static int spansion_quad_enable(struct spi_nor *nor)
+>  
+>  	sr_cr[0] = 0;
+>  	sr_cr[1] = CR_QUAD_EN_SPAN;
+> -	ret = write_sr_cr(nor, sr_cr);
+> +	ret = spi_nor_write_sr_cr(nor, sr_cr);
+>  	if (ret)
+>  		return ret;
+>  
+>  	/* read back and check it */
+> -	ret = read_cr(nor);
+> +	ret = spi_nor_read_cr(nor);
+>  	if (!(ret > 0 && (ret & CR_QUAD_EN_SPAN))) {
+>  		dev_err(nor->dev, "Spansion Quad bit not set\n");
+>  		return -EINVAL;
+> @@ -1805,7 +1807,7 @@ static int spansion_no_read_cr_quad_enable(struct spi_nor *nor)
+>  	int ret;
+>  
+>  	/* Keep the current value of the Status Register. */
+> -	ret = read_sr(nor);
+> +	ret = spi_nor_read_sr(nor);
+>  	if (ret < 0) {
+>  		dev_err(nor->dev, "error while reading status register\n");
+>  		return -EINVAL;
+> @@ -1813,7 +1815,7 @@ static int spansion_no_read_cr_quad_enable(struct spi_nor *nor)
+>  	sr_cr[0] = ret;
+>  	sr_cr[1] = CR_QUAD_EN_SPAN;
+>  
+> -	return write_sr_cr(nor, sr_cr);
+> +	return spi_nor_write_sr_cr(nor, sr_cr);
+>  }
+>  
+>  /**
+> @@ -1836,7 +1838,7 @@ static int spansion_read_cr_quad_enable(struct spi_nor *nor)
+>  	int ret;
+>  
+>  	/* Check current Quad Enable bit value. */
+> -	ret = read_cr(nor);
+> +	ret = spi_nor_read_cr(nor);
+>  	if (ret < 0) {
+>  		dev_err(dev, "error while reading configuration register\n");
+>  		return -EINVAL;
+> @@ -1848,19 +1850,19 @@ static int spansion_read_cr_quad_enable(struct spi_nor *nor)
+>  	sr_cr[1] = ret | CR_QUAD_EN_SPAN;
+>  
+>  	/* Keep the current value of the Status Register. */
+> -	ret = read_sr(nor);
+> +	ret = spi_nor_read_sr(nor);
+>  	if (ret < 0) {
+>  		dev_err(dev, "error while reading status register\n");
+>  		return -EINVAL;
+>  	}
+>  	sr_cr[0] = ret;
+>  
+> -	ret = write_sr_cr(nor, sr_cr);
+> +	ret = spi_nor_write_sr_cr(nor, sr_cr);
+>  	if (ret)
+>  		return ret;
+>  
+>  	/* Read back and check it. */
+> -	ret = read_cr(nor);
+> +	ret = spi_nor_read_cr(nor);
+>  	if (!(ret > 0 && (ret & CR_QUAD_EN_SPAN))) {
+>  		dev_err(nor->dev, "Spansion Quad bit not set\n");
+>  		return -EINVAL;
+> @@ -1926,7 +1928,7 @@ static int sr2_bit7_quad_enable(struct spi_nor *nor)
+>  	/* Update the Quad Enable bit. */
+>  	*sr2 |= SR2_QUAD_EN_BIT7;
+>  
+> -	write_enable(nor);
+> +	spi_nor_write_enable(nor);
+>  
+>  	ret = spi_nor_write_sr2(nor, sr2);
+>  	if (ret < 0) {
+> @@ -1964,15 +1966,15 @@ static int spi_nor_clear_sr_bp(struct spi_nor *nor)
+>  	int ret;
+>  	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
+>  
+> -	ret = read_sr(nor);
+> +	ret = spi_nor_read_sr(nor);
+>  	if (ret < 0) {
+>  		dev_err(nor->dev, "error while reading status register\n");
+>  		return ret;
+>  	}
+>  
+> -	write_enable(nor);
+> +	spi_nor_write_enable(nor);
+>  
+> -	ret = write_sr(nor, ret & ~mask);
+> +	ret = spi_nor_write_sr(nor, ret & ~mask);
+>  	if (ret) {
+>  		dev_err(nor->dev, "write to status register failed\n");
+>  		return ret;
+> @@ -2004,7 +2006,7 @@ static int spi_nor_spansion_clear_sr_bp(struct spi_nor *nor)
+>  	u8 *sr_cr =  nor->bouncebuf;
+>  
+>  	/* Check current Quad Enable bit value. */
+> -	ret = read_cr(nor);
+> +	ret = spi_nor_read_cr(nor);
+>  	if (ret < 0) {
+>  		dev_err(nor->dev,
+>  			"error while reading configuration register\n");
+> @@ -2018,7 +2020,7 @@ static int spi_nor_spansion_clear_sr_bp(struct spi_nor *nor)
+>  	if (ret & CR_QUAD_EN_SPAN) {
+>  		sr_cr[1] = ret;
+>  
+> -		ret = read_sr(nor);
+> +		ret = spi_nor_read_sr(nor);
+>  		if (ret < 0) {
+>  			dev_err(nor->dev,
+>  				"error while reading status register\n");
+> @@ -2026,7 +2028,7 @@ static int spi_nor_spansion_clear_sr_bp(struct spi_nor *nor)
+>  		}
+>  		sr_cr[0] = ret & ~mask;
+>  
+> -		ret = write_sr_cr(nor, sr_cr);
+> +		ret = spi_nor_write_sr_cr(nor, sr_cr);
+>  		if (ret)
+>  			dev_err(nor->dev, "16-bit write register failed\n");
+>  		return ret;
+> @@ -2602,7 +2604,7 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+>  	if (ret)
+>  		return ret;
+>  
+> -	write_enable(nor);
+> +	spi_nor_write_enable(nor);
+>  
+>  	nor->sst_write_second = false;
+>  
+> @@ -2641,14 +2643,14 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+>  	}
+>  	nor->sst_write_second = false;
+>  
+> -	write_disable(nor);
+> +	spi_nor_write_disable(nor);
+>  	ret = spi_nor_wait_till_ready(nor);
+>  	if (ret)
+>  		goto sst_write_err;
+>  
+>  	/* Write out trailing byte if it exists. */
+>  	if (actual != len) {
+> -		write_enable(nor);
+> +		spi_nor_write_enable(nor);
+>  
+>  		nor->program_opcode = SPINOR_OP_BP;
+>  		ret = spi_nor_write_data(nor, to, 1, buf + actual);
+> @@ -2659,7 +2661,7 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+>  		ret = spi_nor_wait_till_ready(nor);
+>  		if (ret)
+>  			goto sst_write_err;
+> -		write_disable(nor);
+> +		spi_nor_write_disable(nor);
+>  		actual += 1;
+>  	}
+>  sst_write_err:
+> @@ -2711,7 +2713,7 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+>  
+>  		addr = spi_nor_convert_addr(nor, addr);
+>  
+> -		write_enable(nor);
+> +		spi_nor_write_enable(nor);
+>  		ret = spi_nor_write_data(nor, addr, page_remain, buf + i);
+>  		if (ret < 0)
+>  			goto write_err;
 
-If you fix the issue, kindly add following tag
-Reported-by: kbuild test robot <lkp@intel.com>
-
-
-sparse warnings: (new ones prefixed by >>)
-
->> drivers/mtd/nand/raw/nand_macronix.c:142:5: sparse: sparse: symbol 'nand_power_down_op' was not declared. Should it be static?
-
-Please review and possibly fold the followup patch.
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
 ______________________________________________________
 Linux MTD discussion mailing list
