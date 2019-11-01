@@ -2,22 +2,23 @@ Return-Path: <SRS0=gsLZ=YZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7E61CA9ED0
-	for <linux-mtd@archiver.kernel.org>; Fri,  1 Nov 2019 16:07:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD52ECA9ECF
+	for <linux-mtd@archiver.kernel.org>; Fri,  1 Nov 2019 16:10:23 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 99933222CB
-	for <linux-mtd@archiver.kernel.org>; Fri,  1 Nov 2019 16:07:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 94703222D1
+	for <linux-mtd@archiver.kernel.org>; Fri,  1 Nov 2019 16:10:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="T9Q4qbo7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 99933222CB
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fCVeqTPF";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pqgUoVGB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 94703222D1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -25,39 +26,69 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=oCMqrmWX1+CigECGWMRMPVl7SzsylHDSedu/SmqlJ4o=; b=T9Q4qbo76p/FeA
-	AD82ZyCMAO+65oYh5FALLBrSR6GbgSbs7akTYwAiMgip5wgsjhw6Y2b/VN2kYuoKQWH4acPHN9P25
-	WjdhXaBwNWgImZUeB0rxLGzeY+pDgUAt0WJhsBnmCilD3jQGe5QSVHSKcj4WRE/+zP2BgQftpDpWf
-	8kF4EhcnjA1uYOP9RptO/8k583O07roWMSSkxVDlpU+nbQ6li6aNJBWD8KY47dutGfTv/OvHBe+6q
-	owOsMI9+14+BiyKUa5fNTadtuI3IFDLPV1SsoICZfXaC8m+awnUGCSnmWGNFAMV5GWYCEmg1kW13m
-	UiFvxrWr666M/98NGDWQ==;
+	List-Owner; bh=IUdKpo2Mo+0HHOZwSVIlp3ZBt8GL9y5kXpFZX9fzZZI=; b=fCVeqTPF3P+l9Z
+	0faEOkrmkLJcDQ0o5/mjoLU2u0GWsR9u97BYZKrlSjVtA/ES/0pATBvqkngBfwTwdqz2zOJxHKFFw
+	L8jQe5dH6O9rEgdhuRj5rKQ/77Jqfocy3wDDaDaIqGMqTmRIOMLR01eWJ9cvm+9Eg0902FZaFTtQV
+	ZJSuTx1+3e5F3YegYXKvFiR7v4ohxmWrUUtIOuHNI9XuOhaehCvxQyfKhGudn/wot0kZnuGdMnTTd
+	jRKo4yuz765OR43pn1+kxEhrYRnmI9frSgnExurvmCmWKoNxmG+GJAwwjV+Vyqxk44ah4s7m40oRk
+	csVV0zaIIiOlhAAxZ7ZQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iQZSP-0007QM-1Q; Fri, 01 Nov 2019 16:07:25 +0000
-Received: from mx2.suse.de ([195.135.220.15] helo=mx1.suse.de)
+	id 1iQZUu-0000ar-VW; Fri, 01 Nov 2019 16:10:00 +0000
+Received: from mail-pl1-x641.google.com ([2607:f8b0:4864:20::641])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iQZSA-0006yL-UE
- for linux-mtd@lists.infradead.org; Fri, 01 Nov 2019 16:07:13 +0000
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 5D4BDB4B9;
- Fri,  1 Nov 2019 16:07:07 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
- id F0F0D1E482F; Fri,  1 Nov 2019 17:07:06 +0100 (CET)
-Date: Fri, 1 Nov 2019 17:07:06 +0100
-From: Jan Kara <jack@suse.cz>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH 04/10] quota: Allow to pass mount path to quotactl
-Message-ID: <20191101160706.GA23441@quack2.suse.cz>
-References: <20191030152702.14269-1-s.hauer@pengutronix.de>
- <20191030152702.14269-5-s.hauer@pengutronix.de>
+ id 1iQZUr-0000Yw-Fx
+ for linux-mtd@lists.infradead.org; Fri, 01 Nov 2019 16:09:59 +0000
+Received: by mail-pl1-x641.google.com with SMTP id q21so4565560plr.13
+ for <linux-mtd@lists.infradead.org>; Fri, 01 Nov 2019 09:09:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to:user-agent;
+ bh=mRy57XKTw+iRaQ47Zu7gF5ohXFgXAtsfkcxRhCEocfA=;
+ b=pqgUoVGB+Pvgs7uB4bZCVL9ddF6mUcusJ+t0IwqeiLrX6+prPEqal1X/OHf+0FpvvS
+ roWNNTa/wYh05Pj1boCFGl+442kLqX6wsmlUJ6S1tT+v2BWeeavOniuzuLm/u9bCtQYX
+ eQ8WBHmX0f1nkWYHj+8QpAIzUMREW7EDyaD9Ge6rO8FGPPMVtJOpLaI9G4fol8KUW/xi
+ TuNBxblEwg3XBK0qlvvnA++b8xIgGdtWlnxQW1qYSBIH1R3mI/GHMuJ9rSUTslOTzqCj
+ f3/WBWImyw0L4OrCd7MgfCSjXeIqz8kiJ2F16qgmfg/G1j+OBvwAP/1b9nQrUn+z0eYe
+ varw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=mRy57XKTw+iRaQ47Zu7gF5ohXFgXAtsfkcxRhCEocfA=;
+ b=BF2zMfpe64edfE6BChNf5I/0olmCtKZqgpBIRURNOhUfoZKAgOI0XucFuQvPB8iTk2
+ RcPY5+iRKdxHRipN4C8KYJlis0Qt8Qo70gDh487GTZaaBKTOFKAU0Lw5HWsmpZVtrPgI
+ bYZmwvnJVM2LKGT6x2HHNe7FL9F1EAOo44q8XqxiAJGJB+RiWXNA2d7EfTIDy0y2osih
+ hz7M/6bsfELPDUqACtbVSVYNjVsS6GAmYBXaBEYAAyyLgMssFAk3/6wAwwgNYPgO/3t8
+ Wvr8g//oa7pqNpS5G5oihNRe1K+2yt3KFcSgJxibG5n48J+SxOd01BBtGxijDALMPmrz
+ kzGg==
+X-Gm-Message-State: APjAAAXdIkwQd2+ntA2zxBRtn3TDaOWXyw8SgNsmX3/a9JvmcRPfhALn
+ bkKotkBP7AXUZksJHiUGuqFo
+X-Google-Smtp-Source: APXvYqzfsLFiVzl52QPqi39geGbcUfS4XiTHJYRx20OJF5w9UUz77wUS+JTwJdlus1wJ1HApS5Y8cA==
+X-Received: by 2002:a17:902:6b07:: with SMTP id
+ o7mr13800479plk.215.1572624596640; 
+ Fri, 01 Nov 2019 09:09:56 -0700 (PDT)
+Received: from Mani-XPS-13-9360 ([2409:4072:6413:fc8c:9538:d2ea:eab:d2c0])
+ by smtp.gmail.com with ESMTPSA id v63sm6705910pfb.181.2019.11.01.09.09.46
+ (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+ Fri, 01 Nov 2019 09:09:55 -0700 (PDT)
+Date: Fri, 1 Nov 2019 21:39:43 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Tudor.Ambarus@microchip.com
+Subject: Re: [PATCH v2 4/4] mtd: spi-nor: Add support for w25q256jw
+Message-ID: <20191101160943.GA20347@Mani-XPS-13-9360>
+References: <20191030090124.24900-1-manivannan.sadhasivam@linaro.org>
+ <20191030090124.24900-5-manivannan.sadhasivam@linaro.org>
+ <87e0b459-8dbf-26cc-611f-1b1b5266aa55@microchip.com>
+ <20191101145806.GB13101@Mani-XPS-13-9360>
+ <beb8e7fc-02c2-8267-3612-20a526ac07fd@microchip.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20191030152702.14269-5-s.hauer@pengutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <beb8e7fc-02c2-8267-3612-20a526ac07fd@microchip.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191101_090711_278177_68ECE082 
-X-CRM114-Status: GOOD (  22.56  )
+X-CRM114-CacheID: sfid-20191101_090957_567245_6121CE96 
+X-CRM114-Status: GOOD (  17.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,125 +100,60 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-fsdevel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, kernel@pengutronix.de, Jan Kara <jack@suse.com>
+Cc: devicetree@vger.kernel.org, richard@nod.at, marek.vasut@gmail.com,
+ vigneshr@ti.com, shawnguo@kernel.org, s.hauer@pengutronix.de,
+ linux-kernel@vger.kernel.org, darshak.patel@einfochips.com, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, linux-imx@nxp.com, kernel@pengutronix.de,
+ miquel.raynal@bootlin.com, computersforpeace@gmail.com, festevam@gmail.com,
+ dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org,
+ prajose.john@einfochips.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed 30-10-19 16:26:56, Sascha Hauer wrote:
-> This patch introduces the Q_PATH flag to the quotactl cmd argument.
-> When given, the path given in the special argument to quotactl will
-> be the mount path where the filesystem is mounted, instead of a path
-> to the block device.
-> This is necessary for filesystems which do not have a block device as
-> backing store. Particularly this is done for upcoming UBIFS support.
+On Fri, Nov 01, 2019 at 03:55:01PM +0000, Tudor.Ambarus@microchip.com wrote:
 > 
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-
-Thanks for the patch! Some smaller comments below...
-
-> ---
->  fs/quota/quota.c           | 37 ++++++++++++++++++++++++++++---------
->  include/uapi/linux/quota.h |  1 +
->  2 files changed, 29 insertions(+), 9 deletions(-)
 > 
-> diff --git a/fs/quota/quota.c b/fs/quota/quota.c
-> index cb13fb76dbee..035cdd1b022b 100644
-> --- a/fs/quota/quota.c
-> +++ b/fs/quota/quota.c
-> @@ -19,6 +19,7 @@
->  #include <linux/types.h>
->  #include <linux/writeback.h>
->  #include <linux/nospec.h>
-> +#include <linux/mount.h>
->  
->  static int check_quotactl_permission(struct super_block *sb, int type, int cmd,
->  				     qid_t id)
-> @@ -825,12 +826,16 @@ int kernel_quotactl(unsigned int cmd, const char __user *special,
->  {
->  	uint cmds, type;
->  	struct super_block *sb = NULL;
-> -	struct path path, *pathp = NULL;
-> +	struct path path, *pathp = NULL, qpath;
+> On 11/01/2019 04:58 PM, Manivannan Sadhasivam wrote:
+> >>> Add MTD support for w25q256jw SPI NOR chip from Winbond. This chip
+> >>> supports dual/quad I/O mode with 512 blocks of memory organized in
+> >>> 64KB sectors. In addition to this, there is also small 4KB sectors
+> >>> available for flexibility. The device has been validated using Thor96
+> >>> board.
+> >>>
+> >>> Cc: Marek Vasut <marek.vasut@gmail.com>
+> >>> Cc: Tudor Ambarus <tudor.ambarus@microchip.com>
+> >>> Cc: David Woodhouse <dwmw2@infradead.org>
+> >>> Cc: Brian Norris <computersforpeace@gmail.com>
+> >>> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+> >>> Cc: Richard Weinberger <richard@nod.at>
+> >>> Cc: Vignesh Raghavendra <vigneshr@ti.com>
+> >>> Cc: linux-mtd@lists.infradead.org
+> >>> Signed-off-by: Darshak Patel <darshak.patel@einfochips.com>
+> >>> [Mani: cleaned up for upstream]
+> >> Can we keep Darshak's authorship? We usually change the author if we feel that
+> >> we made a significant change to what was originally published.
+> >>
+> >> If it's just about cosmetics, cleaning or rebase, you can specify what you did
+> >> after the author's S-o-b tag and then add your S-o-b, as you did above.
+> >>
+> > I'd suggest to keep Darshak's authorship since he did the actual change in
+> > the bsp. I have to clean it up before submitting upstream and I mentioned
+> > the same above.
+> > 
+> 
+> Ok, I'll amend the author when applying, it will be Darshak.
+> 
 
-Maybe call these two 'file_path', 'file_pathp', and 'sb_path' to make it
-clearer which path is which?
+Ah no. I was saying we should keep both of ours authorship. It shouldn't
+be an issue because we both are involved in the process.
 
->  	int ret;
-> +	bool q_path;
->  
->  	cmds = cmd >> SUBCMDSHIFT;
->  	type = cmd & SUBCMDMASK;
->  
-> +	q_path = cmds & Q_PATH;
-> +	cmds &= ~Q_PATH;
-> +
->  	/*
->  	 * As a special case Q_SYNC can be called without a specific device.
->  	 * It will iterate all superblocks that have quota enabled and call
-> @@ -855,19 +860,33 @@ int kernel_quotactl(unsigned int cmd, const char __user *special,
->  			pathp = &path;
->  	}
->  
-> -	sb = quotactl_block(special, cmds);
-> -	if (IS_ERR(sb)) {
-> -		ret = PTR_ERR(sb);
-> -		goto out;
-> +	if (q_path) {
-> +		ret = user_path_at(AT_FDCWD, special, LOOKUP_FOLLOW|LOOKUP_AUTOMOUNT,
-> +				   &qpath);
-> +		if (ret)
-> +			goto out1;
-> +
-> +		sb = qpath.mnt->mnt_sb;
-> +	} else {
-> +		sb = quotactl_block(special, cmds);
-> +		if (IS_ERR(sb)) {
-> +			ret = PTR_ERR(sb);
-> +			goto out;
-> +		}
->  	}
->  
->  	ret = do_quotactl(sb, type, cmds, id, addr, pathp);
->  
-> -	if (!quotactl_cmd_onoff(cmds))
-> -		drop_super(sb);
-> -	else
-> -		drop_super_exclusive(sb);
-> +	if (!q_path) {
-> +		if (!quotactl_cmd_onoff(cmds))
-> +			drop_super(sb);
-> +		else
-> +			drop_super_exclusive(sb);
-> +	}
->  out:
-> +	if (q_path)
-> +		path_put(&qpath);
-> +out1:
+Thanks,
+Mani
 
-Why do you need out1? If you leave 'out' as is, things should just work.
-And you can also combine the above if like:
-
-	if (q_path) {
-		path_put(&qpath);
-	} else {
-		if (!quotactl_cmd_onoff(cmds))
-			drop_super(sb);
-		else
-			drop_super_exclusive(sb);
-	}
-
-which would then make it more obvious, what's actually going on...
-
-Otherwise the patch looks good to me.
-
-								Honza
-
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> Thanks,
+> ta
 
 ______________________________________________________
 Linux MTD discussion mailing list
