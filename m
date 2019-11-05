@@ -2,23 +2,24 @@ Return-Path: <SRS0=AYH6=Y5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0DA4C010DF
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Nov 2019 12:37:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3497AC1747C
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Nov 2019 14:29:43 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C7A302190F
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Nov 2019 12:37:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F397321A4A
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Nov 2019 14:29:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NqQhX1yi";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="diACuOPt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C7A302190F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="X0hL48e3";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="Y0fiQZVl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F397321A4A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gmx.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -26,60 +27,100 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
 	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
 	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5oCT07Oau0e0kRhnHi0+s3A8g21TFFUGlQ1mQnC1aHM=; b=NqQhX1yiULHnmu
-	TfqxLJcpv5vSlhn5S9PugqzChNGGS3k3zLqSzgTZc2JRgR1MNJUARnDpSpNa9AuJjK/KizBtPRJ/q
-	ocNruj51Vf+HlaPAKIkNvuh+nTiMJOPN9mKvcmPollVNpmYKlCqoGfsuSNW8AgKjfTfVbFY/xsbPy
-	EnAbdL6Ha3/cCtIFV/S5bVOuvB1mJ+2v087D42i7u5qCgmc1FT90f2+NVHb9FEZaEly1bnI1R1zE5
-	aV6lyA8oD7r4OzzptCIZGvhXvwC2UwLGEue/OARNuTxQVWXVfQnawhS27UMyJM0roTHaO/gOJtrzX
-	VeRduzoPKvABI3BYuVMg==;
+	List-Owner; bh=BQa44Z294q6VxIA6qz9uGugzVm0vTNjfnfBBHyhMWjo=; b=X0hL48e3mlSljo
+	/XoYS/bIz//qvmslLuBZJ9enpylblakcwBHQlTRQtb7nyDncI2xg28nAuGzwNG25CAY6yCwS+/A2r
+	tl5qgs8U0i9A6lVksDwCDCxWDiKbBDK5Gr/0gyZ5V/D+mNRS3//pJl9nG9E9d/T1ZZi/g1t7dY8Pz
+	PWnD5IJrzgNxngkrr4lsfvxSQ9nrPO85nYxPSQHwX3IQQHtLWf/H5EzdqneO5L9pXQ5/PvLB6BBQu
+	q6OZj2dILGBTYPp+u+ds9QKNBXs1C8LL/TlRwo7FELBH1mXQICL5P4QkNX81LczOsocgkTs55I/t8
+	UhcZqsEzwbA0HZiiodUg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iRy5Q-0007vf-9f; Tue, 05 Nov 2019 12:37:28 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1iRzpp-0000QM-Dp; Tue, 05 Nov 2019 14:29:29 +0000
+Received: from mout.gmx.net ([212.227.17.22])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iRy5M-0007v2-Fh
- for linux-mtd@lists.infradead.org; Tue, 05 Nov 2019 12:37:25 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id xA5CbLMS048959;
- Tue, 5 Nov 2019 06:37:21 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1572957441;
- bh=cCmaD8eE1fK00Mnm1DnRD4gZ7GKdETqTugixTFFcrzg=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=diACuOPt/3Wh00a89YIc7Lb+EGZsAPs7USi6bPr+jRWny31oN8C2rM0UtOd8zbNWV
- TVkOA1GsSZmHBDMHJKmSew2EDEkX1CdEkyqDExZvzRY1kcocVyYaZfVxvSaQVdVUu+
- rVQJR8dQiWBVlSBpAaeOZeRkttQ5e3Bko/BW0Lmo=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id xA5CbLr8094660;
- Tue, 5 Nov 2019 06:37:21 -0600
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Tue, 5 Nov
- 2019 06:37:06 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Tue, 5 Nov 2019 06:37:06 -0600
-Received: from [172.24.145.136] (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id xA5CbI4m052932;
- Tue, 5 Nov 2019 06:37:19 -0600
-Subject: Re: [PATCH v4 12/20] mtd: spi-nor: Print debug message when the read
- back test fails
-To: <Tudor.Ambarus@microchip.com>, <boris.brezillon@collabora.com>
-References: <20191102112316.20715-1-tudor.ambarus@microchip.com>
- <20191102112316.20715-13-tudor.ambarus@microchip.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <9474c875-94a1-3d19-ddab-b90d352967a9@ti.com>
-Date: Tue, 5 Nov 2019 18:07:54 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+ id 1iRzph-0000K0-2T; Tue, 05 Nov 2019 14:29:23 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+ s=badeba3b8450; t=1572964151;
+ bh=1ccRhMfOjQfCWgxZtJzM4hP1zgDfrNPilzzEdo9nVpk=;
+ h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+ b=Y0fiQZVlL53W17TOlZbi6XyMv5zjwVPRrWuOHJMTc50mzth8UTL/m2E1lYcbSheEF
+ 8jorhA7eYWbpK5PWaPEPGi/wJtl+L33sVAQqL300Yc0SHDjTKJjeHWLOB6GN35q3YS
+ +a7NPrubb/JJYnsmHtwYU8sEHifg8Yl87BpLmw98=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.20.60] ([92.116.150.99]) by mail.gmx.com (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MpUYu-1i9DSt0bLI-00pqwr; Tue, 05
+ Nov 2019 15:29:11 +0100
+Subject: Re: [PATCH 07/21] parisc: remove __ioremap
+To: Christoph Hellwig <hch@lst.de>
+References: <20191029064834.23438-1-hch@lst.de>
+ <20191029064834.23438-8-hch@lst.de>
+From: Helge Deller <deller@gmx.de>
+Autocrypt: addr=deller@gmx.de; keydata=
+ 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
+ oiAieEtb6a/7+jPKZnRFTw==
+Message-ID: <23dd12c1-8af2-dd97-18f2-da3203d49a48@gmx.de>
+Date: Tue, 5 Nov 2019 15:29:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-In-Reply-To: <20191102112316.20715-13-tudor.ambarus@microchip.com>
+In-Reply-To: <20191029064834.23438-8-hch@lst.de>
 Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Provags-ID: V03:K1:K84d31/CVvwIJRKgEkYeLn7nG07Ceq3NW0dsqaiRS5IsUys1PNO
+ B3wZA6JSQUR3ASpFYkzv5n9DIUepkHMiZULCTf1KC+BWlAXPXnF8HuJwokTu9RHIoaGeecm
+ Ci3RRzeiRWquDPKN9RN+JUnecDqMAenupRgKRqv99/LWiBv0xQpgWSKokC8ejSoOAF87fIb
+ GlxUK3lSPzPHSDlD+KOEg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qywLIYXxQ6w=:uquN0cefM1Gv+iPhjMDm4y
+ WzeGInW3/ErqTG1UoKT/xRidojOzqlKb5yOcKxyKZooWk6bL0fIl5AhbM6blTwH8c66Kn8H1J
+ WGQc1ZJSoco0WhSHDXQ7118RQcJ0xrZYuyKBlHofDr66VPHNcDWKy5kH8jKybSP7WJTfqINRw
+ XxrfJB4efx2ltV+lzx058SbsYx4C2h/rBJPKR7Kqu12s97bSiY+nyblh2s/yxfeKFuFc/wjCs
+ lFYevasBI4YCaAngtQ6appEtRUuMVex0GquZfTkuN9kQa+RTc+z5tNk/7jbcLhxfdgxDb2A4Y
+ A/K7Bt5gq41M7Jn+KWZX/6P2XqsNOt+6inw4TwVnCWKxgaw4xs9j+1+zOqMQZiYL/+b0EeS0h
+ brYf9g9CAaFNjtMq6+/VAW2IOZ5Nv94fAwRDijmOwyrTdd18Y6DPZNsURYzGl5eEPOeFfkL/F
+ JQUcovMUYYj9ZyJXaUrtQ2Lv1lLkNS2AbR8d6Z/6jfAFZlQsxf8UPI82eUYeX00lWlgIp/SYH
+ cMXDYNrAgF3fA02cefaga+ToL9W+PJkdoWMNamBPYbInO41HfM4bO0JLXBJxLu8NxsIHwyYbL
+ jISx7DcFcwYuhtufHVwYQb2iUXssyinN3j5YlEUD5kcq0apbnaksTH/qQGR+n+GfJqmwZUeTP
+ LwRpD/4coGlhAyp/lmnCABsVRB5lwbpRNVUVoJzONql8z4AriXnPaX9nbHtB3uJ8FT1k1bImz
+ E56ha19Q0Hnmpw/rCFgb7UT4+4PlAIXgifeujs/4EfgAtwZeLMDSJkAL3PBHGUAs62iq2qh1m
+ vpSXwvx1tptIrnrGAtzQHlpMTiy3aP3TJHvhozmVGgOaIR3xRyA9CXUTBI+Hk0XuwymklVM5A
+ BvFZUGwg1Wb55/+OdgYFXa6p9XFxMk+XBpGa8NYWQXBZxnCXVRMf3ucDkauRT/6fdyMaVUBvx
+ qywVTNg1ILLrPVRP63jplKrFoDllanZJZNwQQgR0kyBWBaUMEBKRGhOn8wdgaWGOB5aC65RGx
+ AkhXGJIgOkrsNq3xEuYujqPxATUS2ohV5/RQJjOfpLXgeBUx7ZOhe063AQZ72pgAsRhU5l5bP
+ p/KTjTIG/oyqLgCyNVW9DucS2YjDRVYuPoK5r+qOQfF1oFXgONBCwUTL7hhhu/VtZ6J52BURA
+ uUYYBM/GzpGVcgiHzTrdtFtF4RDNhEibY8tLl2/IpBAL3fwmJg8W+IziWuaj77zX1IdQfs5WW
+ sY7znfNyevOrgCAOqWYYuW4MFkdA7qd6WtFYbUg==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191105_043724_566008_95E3B905 
-X-CRM114-Status: GOOD (  16.63  )
+X-CRM114-CacheID: sfid-20191105_062921_446173_EDDBD99D 
+X-CRM114-Status: GOOD (  16.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,52 +132,106 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: richard@nod.at, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- miquel.raynal@bootlin.com
+Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Guo Ren <guoren@kernel.org>,
+ sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org,
+ Vincent Chen <deanbo422@gmail.com>, linux-arch@vger.kernel.org,
+ linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org,
+ linux-snps-arc@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>,
+ linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org,
+ Greentime Hu <green.hu@gmail.com>, nios2-dev@lists.rocketboards.org,
+ Guan Xuetao <gxt@pku.edu.cn>, linux-arm-kernel@lists.infradead.org,
+ Michal Simek <monstr@monstr.eu>, linux-parisc@vger.kernel.org,
+ linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org,
+ linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On 29.10.19 07:48, Christoph Hellwig wrote:
+> __ioremap is always called with the _PAGE_NO_CACHE, so fold the whole
+> thing and rename it to ioremap.  This also allows to remove the special
+> EISA quirk to force _PAGE_NO_CACHE.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
+Acked-by: Helge Deller <deller@gmx.de>
 
-On 02/11/19 4:53 PM, Tudor.Ambarus@microchip.com wrote:
-> From: Tudor Ambarus <tudor.ambarus@microchip.com>
-> 
-> Demystify where the EIO error occurs.
-> 
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Helge
+
 > ---
-
-I think this is a small enough change that can be squashed into previous
-patch itself
-
->  drivers/mtd/spi-nor/spi-nor.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 8f5e9833081b..725dab241271 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -974,7 +974,12 @@ static int spi_nor_write_sr_and_check(struct spi_nor *nor, u8 status_new)
->  	if (ret)
->  		return ret;
->  
-> -	return (nor->bouncebuf[0] != status_new) ? -EIO : 0;
-> +	if (nor->bouncebuf[0] != status_new) {
-> +		dev_dbg(nor->dev, "SR: read back test failed\n");
-> +		return -EIO;
-> +	}
-> +
-> +	return 0;
+>  arch/parisc/include/asm/io.h | 11 +----------
+>  arch/parisc/mm/ioremap.c     | 10 ++++------
+>  2 files changed, 5 insertions(+), 16 deletions(-)
+>
+> diff --git a/arch/parisc/include/asm/io.h b/arch/parisc/include/asm/io.h
+> index 93d37010b375..46212b52c23e 100644
+> --- a/arch/parisc/include/asm/io.h
+> +++ b/arch/parisc/include/asm/io.h
+> @@ -127,16 +127,7 @@ static inline void gsc_writeq(unsigned long long val, unsigned long addr)
+>  /*
+>   * The standard PCI ioremap interfaces
+>   */
+> -
+> -extern void __iomem * __ioremap(unsigned long offset, unsigned long size, unsigned long flags);
+> -
+> -/* Most machines react poorly to I/O-space being cacheable... Instead let's
+> - * define ioremap() in terms of ioremap_nocache().
+> - */
+> -static inline void __iomem * ioremap(unsigned long offset, unsigned long size)
+> -{
+> -	return __ioremap(offset, size, _PAGE_NO_CACHE);
+> -}
+> +void __iomem *ioremap(unsigned long offset, unsigned long size);
+>  #define ioremap_nocache(off, sz)	ioremap((off), (sz))
+>  #define ioremap_wc			ioremap_nocache
+>  #define ioremap_uc			ioremap_nocache
+> diff --git a/arch/parisc/mm/ioremap.c b/arch/parisc/mm/ioremap.c
+> index f29f682352f0..6e7c005aa09b 100644
+> --- a/arch/parisc/mm/ioremap.c
+> +++ b/arch/parisc/mm/ioremap.c
+> @@ -25,7 +25,7 @@
+>   * have to convert them into an offset in a page-aligned mapping, but the
+>   * caller shouldn't need to know that small detail.
+>   */
+> -void __iomem * __ioremap(unsigned long phys_addr, unsigned long size, unsigned long flags)
+> +void __iomem *ioremap(unsigned long phys_addr, unsigned long size)
+>  {
+>  	void __iomem *addr;
+>  	struct vm_struct *area;
+> @@ -36,10 +36,8 @@ void __iomem * __ioremap(unsigned long phys_addr, unsigned long size, unsigned l
+>  	unsigned long end = phys_addr + size - 1;
+>  	/* Support EISA addresses */
+>  	if ((phys_addr >= 0x00080000 && end < 0x000fffff) ||
+> -	    (phys_addr >= 0x00500000 && end < 0x03bfffff)) {
+> +	    (phys_addr >= 0x00500000 && end < 0x03bfffff))
+>  		phys_addr |= F_EXTEND(0xfc000000);
+> -		flags |= _PAGE_NO_CACHE;
+> -	}
+>  #endif
+>
+>  	/* Don't allow wraparound or zero size */
+> @@ -65,7 +63,7 @@ void __iomem * __ioremap(unsigned long phys_addr, unsigned long size, unsigned l
+>  	}
+>
+>  	pgprot = __pgprot(_PAGE_PRESENT | _PAGE_RW | _PAGE_DIRTY |
+> -			  _PAGE_ACCESSED | flags);
+> +			  _PAGE_ACCESSED | _PAGE_NO_CACHE);
+>
+>  	/*
+>  	 * Mappings have to be page-aligned
+> @@ -90,7 +88,7 @@ void __iomem * __ioremap(unsigned long phys_addr, unsigned long size, unsigned l
+>
+>  	return (void __iomem *) (offset + (char __iomem *)addr);
 >  }
->  
->  /**
-> 
+> -EXPORT_SYMBOL(__ioremap);
+> +EXPORT_SYMBOL(ioremap);
+>
+>  void iounmap(const volatile void __iomem *io_addr)
+>  {
+>
 
--- 
-Regards
-Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
