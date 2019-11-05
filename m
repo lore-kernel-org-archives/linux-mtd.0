@@ -2,76 +2,85 @@ Return-Path: <SRS0=AYH6=Y5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE1A3C010A2
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Nov 2019 11:05:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DEE2C010D4
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Nov 2019 12:12:52 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8665C20869
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Nov 2019 11:05:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 50B9C222C2
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Nov 2019 12:12:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="czSqn1d+";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="ozXkH0JP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8665C20869
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="JCehYNhy";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="bT90Ccoa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 50B9C222C2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:Cc:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=8/jxUIdo//OAc+MEdXgkBJSPD5+qu1RpAsxTAwGupTo=; b=czSqn1d+3X8MRdYMfF2mC88PS
-	loDsYS5p6FEwS9N8NrLTXANwTiyV+GGy2/Yp8KDji0vo505/nYX0fwCNqWjQcydXwAxV3Pe3a7VDf
-	Md/poKDULiB4zSxNbp9glhtwrUXeWZy5hfjZhO1AH9kKxxgQzZOniBA6xCmUVg2BaZM7F5VzhHM8z
-	pK9OxQNMThH4Hx0/vZlfOXqOhA4SrU3SSG0myrO9NidNSILC9W8ybq3GSuhewtETurn5SCcZ3u872
-	mRDovQUcQT4nBOtG7lvQafcOBxGqFcUuVqXC/EgGdUDie31I+PZfK4fRcqOa4pRc/hRF03pFqPD6U
-	P4EUfORMA==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=FUk0S8NG1+h7BBXqXk5T0U1yq6vsUdUQYM1ZIcrUTFE=; b=JCehYNhyT/ZETz
+	JZC+2uF0n5MRddogJO1lzKpqzwZOcpItf/51CW7LCOX6depr3YuVk8XHL69BZzY0WNo82TxeSk/rU
+	wNPNlmZwSTBKhQClG5XXVrgBpnWaWWtBG5gUUH3KN3dUl4GRfFgEB8knMbSBid3DE6bxzLAc2xNUe
+	L/OhJFd1+18N2S2fDsd8AR6iOdwh8VGDERxmYDkUafGjkUFpwReE+PF8M3g7GdssHyN7IqCfxValy
+	vI+tlGdRqWF4RPMs4+NAriL9yiSVap6UbflwfB/S/yHMVLGggLanwnvi7EckUhXLGu9AEoduF+ZAp
+	dnzCt/JZjBVrzJZGl0tQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iRweI-0005yy-BP; Tue, 05 Nov 2019 11:05:22 +0000
-Received: from heliosphere.sirena.org.uk ([172.104.155.198])
+	id 1iRxhL-0006dy-Uv; Tue, 05 Nov 2019 12:12:35 +0000
+Received: from lelv0143.ext.ti.com ([198.47.23.248])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iRweF-0005yR-2I
- for linux-mtd@lists.infradead.org; Tue, 05 Nov 2019 11:05:20 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
- MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=2eO07dXroFiq8sB6b0J/jgAEKIzUzmLjBTejnzmX9T0=; b=ozXkH0JPOhx0viZ0l6KaKifyv
- kzh0+OLvHPX5brnQfaeUpyJh8bw+wr/M5frXCJbajZMkRwqimILKGmXTc5a452eDrB2cve8DE4VSs
- TciJFOnooDYMwV0OHa3T4uz/D0k3tX6ekootqqfcwTstryJvnBSzFVYnD/z6wQPnbwqyQ=;
-Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
- ([82.37.168.47] helo=ypsilon.sirena.org.uk)
- by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.co.uk>)
- id 1iRwe2-0006Kf-Ds; Tue, 05 Nov 2019 11:05:06 +0000
-Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 2711827431C3; Tue,  5 Nov 2019 11:05:05 +0000 (GMT)
-Date: Tue, 5 Nov 2019 11:05:05 +0000
-From: Mark Brown <broonie@kernel.org>
-To: John Garry <john.garry@huawei.com>
-Subject: Re: [PATCH 2/3] spi: Add HiSilicon v3xx SPI NOR flash controller
- driver
-Message-ID: <20191105110504.GA4500@sirena.co.uk>
-References: <1572886297-45400-1-git-send-email-john.garry@huawei.com>
- <1572886297-45400-3-git-send-email-john.garry@huawei.com>
- <20191104192406.GH5238@sirena.co.uk>
- <855a67dc-1356-a763-e374-540f6ac400ab@huawei.com>
+ id 1iRxhJ-0006dM-5h
+ for linux-mtd@lists.infradead.org; Tue, 05 Nov 2019 12:12:35 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id xA5CCOTs010663;
+ Tue, 5 Nov 2019 06:12:24 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1572955944;
+ bh=+BWuk0Yrda7tSkoHrnt1ZpTJvKdEtz2ycB7ZWuF1V/0=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=bT90CcoauXy9PEOZFe+i0dZplotbtT0w6TWT1a7qGY5jmru/coO0+wUUOJOL4Xguz
+ omdyvB/UiqDu3ZpNrE4JrCAqvXsIueit8PJNW1bZtRguXcyiKBu7ACNI1CoL//FEAx
+ GmP+1QKzYrVVdWoBoquyujc/iX/qDDX9P5d39hZU=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id xA5CCO3i120941
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 5 Nov 2019 06:12:24 -0600
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Tue, 5 Nov
+ 2019 06:12:08 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
+ Frontend Transport; Tue, 5 Nov 2019 06:12:08 -0600
+Received: from [172.24.145.136] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id xA5CCK0K076620;
+ Tue, 5 Nov 2019 06:12:21 -0600
+Subject: Re: [PATCH v4 01/20] mtd: spi-nor: Use dev_dbg insted of dev_err for
+ low level info
+To: <Tudor.Ambarus@microchip.com>, <boris.brezillon@collabora.com>
+References: <20191102112316.20715-1-tudor.ambarus@microchip.com>
+ <20191102112316.20715-2-tudor.ambarus@microchip.com>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <bc98d845-1994-69a8-a655-81ba1bb9253f@ti.com>
+Date: Tue, 5 Nov 2019 17:42:56 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <855a67dc-1356-a763-e374-540f6ac400ab@huawei.com>
-X-Cookie: Genius is pain.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20191102112316.20715-2-tudor.ambarus@microchip.com>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191105_030519_128629_EF09A947 
-X-CRM114-Status: GOOD (  12.56  )
+X-CRM114-CacheID: sfid-20191105_041233_297522_56BF9148 
+X-CRM114-Status: GOOD (  19.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,84 +92,235 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: tudor.ambarus@microchip.com, linux-kernel@vger.kernel.org,
- linuxarm@huawei.com, linux-spi@vger.kernel.org, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, xuejiancheng@hisilicon.com,
- fengsheng5@huawei.com
-Content-Type: multipart/mixed; boundary="===============0276710545397836269=="
+Cc: richard@nod.at, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ miquel.raynal@bootlin.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hi,
 
---===============0276710545397836269==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="yrj/dFKFPuw6o+aM"
-Content-Disposition: inline
+On 02/11/19 4:53 PM, Tudor.Ambarus@microchip.com wrote:
+> From: Tudor Ambarus <tudor.ambarus@microchip.com>
+> 
+> What most users care about is "my dev is not working properly".
+> All low level information should be discovered when activating
+> the debug traces.
+> 
+> Keep error messages for just three cases:
+> - when the JEDEC ID is not recognized
+> - when the resume() call fails
+> - when the spi_nor_check() fails.
+> 
+> Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 52 +++++++++++++++++++++----------------------
+>  1 file changed, 26 insertions(+), 26 deletions(-)
+> 
+[...]
+>  
+> @@ -679,9 +679,9 @@ static int spi_nor_sr_ready(struct spi_nor *nor)
+>  	if (nor->flags & SNOR_F_USE_CLSR &&
+>  	    nor->bouncebuf[0] & (SR_E_ERR | SR_P_ERR)) {
+>  		if (nor->bouncebuf[0] & SR_E_ERR)
+> -			dev_err(nor->dev, "Erase Error occurred\n");
+> +			dev_dbg(nor->dev, "Erase Error occurred\n");
+>  		else
+> -			dev_err(nor->dev, "Programming Error occurred\n");
+> +			dev_dbg(nor->dev, "Programming Error occurred\n");
+>  
+>  		spi_nor_clear_sr(nor);
+>  		return -EIO;
+> @@ -714,12 +714,12 @@ static int spi_nor_fsr_ready(struct spi_nor *nor)
+>  
+>  	if (nor->bouncebuf[0] & (FSR_E_ERR | FSR_P_ERR)) {
+>  		if (nor->bouncebuf[0] & FSR_E_ERR)
+> -			dev_err(nor->dev, "Erase operation failed.\n");
+> +			dev_dbg(nor->dev, "Erase operation failed.\n");
+>  		else
+> -			dev_err(nor->dev, "Program operation failed.\n");
+> +			dev_dbg(nor->dev, "Program operation failed.\n");
+>  
+>  		if (nor->bouncebuf[0] & FSR_PT_ERR)
+> -			dev_err(nor->dev,
+> +			dev_dbg(nor->dev,
+>  			"Attempted to modify a protected sector.\n");
+> 
 
+Since, we are specifically parsing FSR bits to know the reason for
+failure, I think we should use dev_err()s here.
+I specifically like the last one which informs the user that
+program/erase operation failed as sector was write protected.
 
---yrj/dFKFPuw6o+aM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Rest looks fine to me:
 
-On Tue, Nov 05, 2019 at 10:58:39AM +0000, John Garry wrote:
-> On 04/11/2019 19:24, Mark Brown wrote:
-> > On Tue, Nov 05, 2019 at 12:51:36AM +0800, John Garry wrote:
+Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
 
-> > > +		if (len) {
-> > > +			u32 val;
-> > > +
-> > > +			val = __raw_readl(host->regbase + CMD_DATABUF(words));
-> > > +
-> > > +			to += words * 4;
-> > > +			for (i = 0; i < len; i++, val >>= 8, to++)
-> > > +				*to = (u8)val;
-> > > +		}
-> > > +	} else {
-> > > +		for (i = 0; i < DIV_ROUND_UP(len, 4); i++) {
-> > > +			u32 val = __raw_readl(host->regbase + CMD_DATABUF(i));
-> > > +			int j;
+Regards
+Vignesh
 
-> > The more usual pattern for these would be to do some unaligned accesses
-> > for the start/end of the buffer to get to alignment and then transfer
-> > the rest as aligned data.
+>  		spi_nor_clear_fsr(nor);
+> @@ -770,7 +770,7 @@ static int spi_nor_wait_till_ready_with_timeout(struct spi_nor *nor,
+>  		cond_resched();
+>  	}
+>  
+> -	dev_err(nor->dev, "flash operation timed out\n");
+> +	dev_dbg(nor->dev, "flash operation timed out\n");
+>  
+>  	return -ETIMEDOUT;
+>  }
+> @@ -807,7 +807,7 @@ static int spi_nor_write_sr_cr(struct spi_nor *nor, const u8 *sr_cr)
+>  	}
+>  
+>  	if (ret) {
+> -		dev_err(nor->dev,
+> +		dev_dbg(nor->dev,
+>  			"error while writing configuration register\n");
+>  		return -EINVAL;
+>  	}
+> @@ -1771,7 +1771,7 @@ static int macronix_quad_enable(struct spi_nor *nor)
+>  		return ret;
+>  
+>  	if (!(nor->bouncebuf[0] & SR_QUAD_EN_MX)) {
+> -		dev_err(nor->dev, "Macronix Quad bit not set\n");
+> +		dev_dbg(nor->dev, "Macronix Quad bit not set\n");
+>  		return -EINVAL;
+>  	}
+>  
+> @@ -1819,7 +1819,7 @@ static int spansion_quad_enable(struct spi_nor *nor)
+>  		return ret;
+>  
+>  	if (!(nor->bouncebuf[0] & CR_QUAD_EN_SPAN)) {
+> -		dev_err(nor->dev, "Spansion Quad bit not set\n");
+> +		dev_dbg(nor->dev, "Spansion Quad bit not set\n");
+>  		return -EINVAL;
+>  	}
+>  
+> @@ -1897,7 +1897,7 @@ static int spansion_read_cr_quad_enable(struct spi_nor *nor)
+>  		return ret;
+>  
+>  	if (!(sr_cr[1] & CR_QUAD_EN_SPAN)) {
+> -		dev_err(nor->dev, "Spansion Quad bit not set\n");
+> +		dev_dbg(nor->dev, "Spansion Quad bit not set\n");
+>  		return -EINVAL;
+>  	}
+>  
+> @@ -1935,7 +1935,7 @@ static int sr2_bit7_quad_enable(struct spi_nor *nor)
+>  
+>  	ret = spi_nor_write_sr2(nor, sr2);
+>  	if (ret) {
+> -		dev_err(nor->dev, "error while writing status register 2\n");
+> +		dev_dbg(nor->dev, "error while writing status register 2\n");
+>  		return ret;
+>  	}
+>  
+> @@ -1949,7 +1949,7 @@ static int sr2_bit7_quad_enable(struct spi_nor *nor)
+>  		return ret;
+>  
+>  	if (!(*sr2 & SR2_QUAD_EN_BIT7)) {
+> -		dev_err(nor->dev, "SR2 Quad bit not set\n");
+> +		dev_dbg(nor->dev, "SR2 Quad bit not set\n");
+>  		return -EINVAL;
+>  	}
+>  
+> @@ -1978,7 +1978,7 @@ static int spi_nor_clear_sr_bp(struct spi_nor *nor)
+>  
+>  	ret = spi_nor_write_sr(nor, nor->bouncebuf[0] & ~mask);
+>  	if (ret) {
+> -		dev_err(nor->dev, "write to status register failed\n");
+> +		dev_dbg(nor->dev, "write to status register failed\n");
+>  		return ret;
+>  	}
+>  
+> @@ -2525,7 +2525,7 @@ static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
+>  						    SPI_NOR_MAX_ID_LEN);
+>  	}
+>  	if (tmp) {
+> -		dev_err(nor->dev, "error %d reading JEDEC ID\n", tmp);
+> +		dev_dbg(nor->dev, "error %d reading JEDEC ID\n", tmp);
+>  		return ERR_PTR(tmp);
+>  	}
+>  
+> @@ -2740,7 +2740,7 @@ static int s3an_nor_setup(struct spi_nor *nor,
+>  
+>  	ret = spi_nor_xread_sr(nor, nor->bouncebuf);
+>  	if (ret) {
+> -		dev_err(nor->dev, "error %d reading XRDSR\n", ret);
+> +		dev_dbg(nor->dev, "error %d reading XRDSR\n", ret);
+>  		return ret;
+>  	}
+>  
+> @@ -4102,7 +4102,7 @@ static int spi_nor_parse_sfdp(struct spi_nor *nor,
+>  		err = spi_nor_read_sfdp(nor, sizeof(header),
+>  					psize, param_headers);
+>  		if (err < 0) {
+> -			dev_err(dev, "failed to read SFDP parameter headers\n");
+> +			dev_dbg(dev, "failed to read SFDP parameter headers\n");
+>  			goto exit;
+>  		}
+>  	}
+> @@ -4349,7 +4349,7 @@ static int spi_nor_default_setup(struct spi_nor *nor,
+>  	/* Select the (Fast) Read command. */
+>  	err = spi_nor_select_read(nor, shared_mask);
+>  	if (err) {
+> -		dev_err(nor->dev,
+> +		dev_dbg(nor->dev,
+>  			"can't select read settings supported by both the SPI controller and memory.\n");
+>  		return err;
+>  	}
+> @@ -4357,7 +4357,7 @@ static int spi_nor_default_setup(struct spi_nor *nor,
+>  	/* Select the Page Program command. */
+>  	err = spi_nor_select_pp(nor, shared_mask);
+>  	if (err) {
+> -		dev_err(nor->dev,
+> +		dev_dbg(nor->dev,
+>  			"can't select write settings supported by both the SPI controller and memory.\n");
+>  		return err;
+>  	}
+> @@ -4365,7 +4365,7 @@ static int spi_nor_default_setup(struct spi_nor *nor,
+>  	/* Select the Sector Erase command. */
+>  	err = spi_nor_select_erase(nor);
+>  	if (err) {
+> -		dev_err(nor->dev,
+> +		dev_dbg(nor->dev,
+>  			"can't select erase settings supported by both the SPI controller and memory.\n");
+>  		return err;
+>  	}
+> @@ -4686,7 +4686,7 @@ static int spi_nor_init(struct spi_nor *nor)
+>  
+>  		err = nor->clear_sr_bp(nor);
+>  		if (err) {
+> -			dev_err(nor->dev,
+> +			dev_dbg(nor->dev,
+>  				"fail to clear block protection bits\n");
+>  			return err;
+>  		}
+> @@ -4694,7 +4694,7 @@ static int spi_nor_init(struct spi_nor *nor)
+>  
+>  	err = spi_nor_quad_enable(nor);
+>  	if (err) {
+> -		dev_err(nor->dev, "quad mode not supported\n");
+> +		dev_dbg(nor->dev, "quad mode not supported\n");
+>  		return err;
+>  	}
+>  
+> @@ -4762,7 +4762,7 @@ static int spi_nor_set_addr_width(struct spi_nor *nor)
+>  	}
+>  
+>  	if (nor->addr_width > SPI_NOR_MAX_ADDR_WIDTH) {
+> -		dev_err(nor->dev, "address width is too large: %u\n",
+> +		dev_dbg(nor->dev, "address width is too large: %u\n",
+>  			nor->addr_width);
+>  		return -EINVAL;
+>  	}
+> 
 
-> Yeah, I understand you, but for that I would need to generate multiple
-> transactions in the driver, and I wanted to keep 1x transaction per
-> spi_controller_mem_ops.exec_op call.
-
-> So maybe I can do some trickery in my adjust_op_size method to generate
-> these multiple transactions: a. any unaligned start data b. the 32b-aligned
-> data b. unaligned end. I think that the HW should be able to handle that.
-
-Right, that's what I was expecting.
-
---yrj/dFKFPuw6o+aM
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl3BV14ACgkQJNaLcl1U
-h9BKZAf6Ash1CMprp9CmtoZgXDlZGjI+I84fZ7x4ZvMSHOMZ20e7KMwVEKBJ4UH8
-onKbrC/sLhV9dOTh4KdW9H7QnPp7NQPru6ZartbDCKHDT2wT7SJCXlQWapZrg5Gh
-E/xH29aG6yQrIxTvYtsqNjBw7cheRBDQUTAvMH+rqNMLtOQVnWgh+Tf09izlS1ve
-6vJrCROj/xO319Oc2iAhRGRbXgr++392iYarO3qdad6SSGFZFVKCs9lU/U+9I8Dz
-KG2nKTMal8tnwJw4GRJ5PqPVsrs3+UYJwey6mbPVeIXfp1Oe2H8igZmXdmd4o9F2
-OHTRDQDXOG8K/Opk2MV79xBmKG+pKw==
-=S6Z7
------END PGP SIGNATURE-----
-
---yrj/dFKFPuw6o+aM--
-
-
---===============0276710545397836269==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+Regards
+Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============0276710545397836269==--
-
