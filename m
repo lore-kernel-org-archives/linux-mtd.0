@@ -4,20 +4,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52B5BC5DF62
-	for <linux-mtd@archiver.kernel.org>; Wed,  6 Nov 2019 10:14:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 372C4C5DF62
+	for <linux-mtd@archiver.kernel.org>; Wed,  6 Nov 2019 10:15:54 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1F2D62173E
-	for <linux-mtd@archiver.kernel.org>; Wed,  6 Nov 2019 10:14:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 01EBA20869
+	for <linux-mtd@archiver.kernel.org>; Wed,  6 Nov 2019 10:15:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="f5IGnArH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1F2D62173E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ls7q+W4o"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 01EBA20869
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -25,39 +25,54 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xpWVhhUmMvmIt4cXXjSR0vbPRumRDqMobT26rEGLv8g=; b=f5IGnArHaUsvbI
-	5zglpiGdHzcyjLsm7OSxLu3T9+UclVfAY9buN9XgzPM5NwQvljVxyV3X93iNNa8jatWUFVU7V7a5v
-	fVkqK3YGpx7A/1LsRNebf+d3Qa2yh286WFSSkAzxDW4+1VMNKXstiONn0V/DBF/FuiV0zjcwlKI69
-	2XmoJYjbx2b4IqrVzhPXVwyDTo1vbOXz5ynmj3vJrIv9rGl2esk6KGXf/9xOpNFM1Jw0IxZrOqOBF
-	HTxpP4piivradZ8odbYFePXp1l4PRzMDx1Q66zHs9CHSabY0/8eiIlDFzDbyO798WCYPTemanxTBE
-	we0O0gqejPFX6aorPoIA==;
+	List-Owner; bh=hZOVYYuDp+s1yKzkfz6Z7cv6zGKA74XKJooDJFPNdx0=; b=ls7q+W4ojzSdwc
+	R36XCwuUUuA545X98QhzGD0dimPqaT1TYTcbv4UKlnuWK50uqKDrtLhi/jToa0hnOUR71/wBb8Q2U
+	hs3xvAVP7Cc5hPV5US3rUJ20JL2SwfrtumDz8PrmHVBmDhXPvuse7UVwoFt1WPMkr0S3diG8iD4Fq
+	3LHVsP3SqOYC/LxRUhBdBUXCeEMqdo+jVQ9+OuxUuXf3wtHMf4H/qE9C8TvVBwyBWhgBIO02dNqBu
+	QR1GMCvCptSlXwqAKUj2SojaILU4bTBnpopGeKki5VFVIVRVpZAVBzCn59SaCb2jarYg9Yoc+D7wx
+	zbsyHYnFCdKt6En58wPw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iSIKf-0004ZA-4k; Wed, 06 Nov 2019 10:14:33 +0000
-Received: from mx2.suse.de ([195.135.220.15] helo=mx1.suse.de)
+	id 1iSILj-0006AI-QY; Wed, 06 Nov 2019 10:15:39 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iSIKc-0004YJ-Jd
- for linux-mtd@lists.infradead.org; Wed, 06 Nov 2019 10:14:32 +0000
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 40A73AC8B;
- Wed,  6 Nov 2019 10:14:29 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
- id 7D9481E47E5; Wed,  6 Nov 2019 11:14:28 +0100 (CET)
-Date: Wed, 6 Nov 2019 11:14:28 +0100
-From: Jan Kara <jack@suse.cz>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH 7/7] ubifs: Add quota support
-Message-ID: <20191106101428.GD16085@quack2.suse.cz>
+ id 1iSILg-00069C-5w
+ for linux-mtd@lists.infradead.org; Wed, 06 Nov 2019 10:15:37 +0000
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <sha@pengutronix.de>)
+ id 1iSILd-0002Pi-C9; Wed, 06 Nov 2019 11:15:33 +0100
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.89)
+ (envelope-from <sha@pengutronix.de>)
+ id 1iSILc-0006Il-QQ; Wed, 06 Nov 2019 11:15:32 +0100
+Date: Wed, 6 Nov 2019 11:15:32 +0100
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH 1/7] quota: Allow to pass mount path to quotactl
+Message-ID: <20191106101532.irqclznlfawz4sxy@pengutronix.de>
 References: <20191106091537.32480-1-s.hauer@pengutronix.de>
- <20191106091537.32480-8-s.hauer@pengutronix.de>
+ <20191106091537.32480-2-s.hauer@pengutronix.de>
+ <20191106100515.GC16085@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20191106091537.32480-8-s.hauer@pengutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20191106100515.GC16085@quack2.suse.cz>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-IRC: #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 11:13:28 up 121 days, 16:23, 123 users,  load average: 0.17, 0.31,
+ 0.27
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191106_021430_787347_84093084 
-X-CRM114-Status: GOOD (  21.83  )
+X-CRM114-CacheID: sfid-20191106_021536_225015_F9166017 
+X-CRM114-Status: GOOD (  14.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,99 +84,39 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de, Jan Kara <jack@suse.com>, linux-fsdevel@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, kernel@pengutronix.de, Jan Kara <jack@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed 06-11-19 10:15:37, Sascha Hauer wrote:
-> This introduces poor man's quota support for UBIFS. Unlike other
-> implementations we never store anything on the flash. This has two
-> big advantages:
+On Wed, Nov 06, 2019 at 11:05:15AM +0100, Jan Kara wrote:
+> On Wed 06-11-19 10:15:31, Sascha Hauer wrote:
+> > This patch introduces the Q_PATH flag to the quotactl cmd argument.
+> > When given, the path given in the special argument to quotactl will
+> > be the mount path where the filesystem is mounted, instead of a path
+> > to the block device.
+> > This is necessary for filesystems which do not have a block device as
+> > backing store. Particularly this is done for upcoming UBIFS support.
+> > 
+> > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 > 
-> - No possible regressions with a changed on-disk format
-> - no quota files can get out of sync.
+> It seems you forgot to implement changes I've asked for in [1]?
 > 
-> There are downsides as well:
-> 
-> - During mount the whole index must be scanned which takes some time
-> - The quota limits must be set manually each time a filesystem is mounted.
-> 
-> UBIFS is targetted for embedded systems and quota limits are likely not
-> changed interactively, so having to restore the quota limits with a
-> script shouldn't be a big deal. The mount time penalty is a price we
-> must pay, but for that we get a simple and straight forward
-> implementation for this rather rarely used feature.
-> 
-> The quota data itself is stored in a red-black tree in memory. It is
-> implemented as a quota format. When enabled with the "quota" mount
-> option all three quota types (user, group, project) are enabled.
-> 
-> The quota integration into UBIFS is taken from a series posted earlier
-> by Dongsheng Yang. Like the earlier series we only account regular files
-> for quota. All others are counted in the number of files, but do not
-> require any quota space.
-> 
-> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> [1] https://lore.kernel.org/linux-fsdevel/20191101160706.GA23441@quack2.suse.cz
 
-Two small comments from a quick look:
+Hm, yes. I somehow thought these were obsolet as the patch was
+superseeded by your changes. Apparently it's still there, so I'll send
+an updated version
 
-> +/**
-> + * ubifs_dqblk_find_next - find the next qid
-> + * @c: UBIFS file-system description object
-> + * @qid: The qid to look for
-> + *
-> + * Find the next dqblk entry with a qid that is bigger or equally big than the
-> + * given qid. Returns the next dqblk entry if found or NULL if no dqblk exists
-> + * with a qid that is at least equally big.
-> + */
-> +static struct ubifs_dqblk *ubifs_dqblk_find_next(struct ubifs_info *c,
-> +						 struct kqid qid)
-> +{
-> +	struct rb_node *node = c->dqblk_tree[qid.type].rb_node;
-> +	struct ubifs_dqblk *next = NULL;
-> +
-> +	while (node) {
-> +		struct ubifs_dqblk *ud = rb_entry(node, struct ubifs_dqblk, rb);
-> +
-> +		if (qid_eq(qid, ud->kqid))
-> +			return ud;
-> +
-> +		if (qid_lt(qid, ud->kqid)) {
-> +			if (!next || qid_lt(ud->kqid, next->kqid))
-> +				next = ud;
-> +
-> +			node = node->rb_left;
-> +		} else {
-> +			node = node->rb_right;
-> +		}
-> +	}
-> +
-> +	return next;
-> +}
+Sascha
 
-Why not use rb_next() here? It should do what you need, shouldn't it?
-
-
-> @@ -435,6 +438,9 @@ static int ubifs_show_options(struct seq_file *s, struct dentry *root)
->  	else if (c->mount_opts.chk_data_crc == 1)
->  		seq_puts(s, ",no_chk_data_crc");
->  
-> +	if (c->quota_enable)
-> +		seq_puts(s, ",quota");
-> +
-
-I'd expect here to see 'usrquota', 'grpquota', 'prjquota' etc. to match
-mount options user has used.
-
-								Honza
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
 ______________________________________________________
 Linux MTD discussion mailing list
