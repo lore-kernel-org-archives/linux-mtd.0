@@ -2,89 +2,87 @@ Return-Path: <SRS0=BbO6=Y6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65790C5DF64
-	for <linux-mtd@archiver.kernel.org>; Wed,  6 Nov 2019 14:09:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32D3AC5DF64
+	for <linux-mtd@archiver.kernel.org>; Wed,  6 Nov 2019 16:26:55 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2F3F520663
-	for <linux-mtd@archiver.kernel.org>; Wed,  6 Nov 2019 14:09:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 088F02067B
+	for <linux-mtd@archiver.kernel.org>; Wed,  6 Nov 2019 16:26:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NJ1wyh8x";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iJJItz+v"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2F3F520663
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pqdQHLWU";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ISC8GuM8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 088F02067B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8l5makY+R2gTCS4acOctOuEzLfYiwnE2pKkGF0cNUDE=; b=NJ1wyh8x7CwPXt
-	p30YN7gqXflRBpBpzZsn//hTTFm65pgBie/LoHoAaKHkrMK+Fwj71BtDT9Q53mj6RN05lUaXNsmri
-	SUA17qezS377CPwHTi08+R/V7Cm7qETzQapMLhq5FFNbMUSGGTVFUMhNDCm+J6ZQEohmRxGc2qHHH
-	QYqrsJxQW1IXu7j5SEktsXx9XFiPsu1bp6CKj8zTZOCq7W7wlrQrmKIWSt56aX6EJvrElzJzLzChN
-	c8qIXgKe3xQp6AcwGry4ihH8EsPKpWa/nQdbL1sWpU5K25WA8KXyIjGMbbbn+wsbMn6x0wTF1ALUJ
-	P1aEkJjXSj9mVK++bLyQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:References:To:Subject:From:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=6LgNhQgduH/44A+jub14IxOv4vEpl3xOv8SdBfVDgXU=; b=pqdQHLWUXG0C+q
+	arUTlQw/8AIi/k9B1h3atSTEOiMshsYVBj8h/AdjjyAEPk3AEjAzrh0/OyvykoTg+Bn/TnxPPJMD4
+	/4JjTv0J06r3UnVSDBkr6TzeCG8NS8vAWLw1JhSOUPU0iH898VuwSIDiP8uo6s/+fuLUgc1JdPNFq
+	biMNvQEIWOP5qJ9K0BCh3Xxkb9PkJYJRdfXJjOVA4UI2Pv9UZ62DNThdMhPNOFLiGXMCav4voZhpo
+	HKssSp9E94UFDtv3Su+HDogTGTlQN8PICZ902YUFuG2W2oGsTXKuImJtEehzXuPDtqP8E7TZWO2Hg
+	Psi1/DTXJkb3BAXD5BKg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iSM0C-0005sS-Hz; Wed, 06 Nov 2019 14:09:40 +0000
-Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
+	id 1iSO8m-0003fu-RE; Wed, 06 Nov 2019 16:26:40 +0000
+Received: from lelv0143.ext.ti.com ([198.47.23.248])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iSLzZ-0005CA-Tj; Wed, 06 Nov 2019 14:09:03 +0000
-Received: by mail-pl1-x643.google.com with SMTP id ay6so4484974plb.0;
- Wed, 06 Nov 2019 06:09:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=FtX1kXBG3vvdaUl4wOoaBRuLdri0yIVtwLf8lR4UWWQ=;
- b=iJJItz+vffO9tQoSQOlwaE50RW26dK4JczW15WHT5J+2/9N3eVa0f9yHMEICb8juR8
- IQ1Ai2MbmbLKBLUaeX2m5RG3VZuJQIpfXA8Q4FeAQ2w63BlC/d1f9BndQbxAsSXm8GeD
- VslHcXTxq91LT4jpeidzeOFR6Qb4ALGFfS+qf50qDzeOWFpiHD60S5AfCp9ATxMzuUcM
- xJIc+vQdYCUHMR9u61Gxt3iIJdupU81bv58oXJ0MQOKX9nLBsdJBL9kE6DmTL762yOFi
- N4FvQkQopxK1HKJjHEWAlOCRIxbQG8ZHk7qRNr6FhpWZTF9P5pojX8jwU0P1uUl1URzv
- PoyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=FtX1kXBG3vvdaUl4wOoaBRuLdri0yIVtwLf8lR4UWWQ=;
- b=cwbfI3Rf+Iz+dNr9QucBS5J8K0oVv9dPVuxoNhBh55emMPJq3/oz+TsBTSLgBRB09f
- zwkFCYcPSzG4fxNa/4dao/YEvBv37hvC6PDndidIUz/XfFLSo+Ei1A+e62df8NMjDVKw
- R8Tvk1nxlJZn1zqe2Z79lzASbehjE0k9KCndAZuc5IxtOOHEXlOXQWfes7w+wrbDyA8A
- 44gTSrLB6H2QT3RJ5nmOyP69i26PRYADQ439zN2zEnInKaYcP1zUdBpXKiDCrPFDHm/P
- ghq+I1Jq8jvzzMYgAyVoHXI/IqLNnAVu667eYsyJ9ikmZ9fVbh4KFglb/lbzu9s1oo5L
- lFMg==
-X-Gm-Message-State: APjAAAW4zB4EFxX4+YD8dM7TXqAwBkBTlBpms5po7fVPtEL8XoYZqYWg
- tSGmwA64i8iw1Mrzj3qgo7/WRHesdc4=
-X-Google-Smtp-Source: APXvYqygts/mak04562X0fgK/vvLZTbkPeSMoZr9mr+mopxFlmJTH31rJNGA97HB0NcP4AgDJFT0HQ==
-X-Received: by 2002:a17:902:8348:: with SMTP id
- z8mr2924804pln.130.1573049339919; 
- Wed, 06 Nov 2019 06:08:59 -0800 (PST)
-Received: from localhost.localdomain ([2001:19f0:7001:2668:5400:1ff:fe62:2bbd])
- by smtp.gmail.com with ESMTPSA id a16sm4707345pfc.56.2019.11.06.06.08.47
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 06 Nov 2019 06:08:59 -0800 (PST)
-From: Chuanhong Guo <gch981213@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/2] dt-bindings: mtd: mtk-quadspi: update bindings for mmap
- flash read
-Date: Wed,  6 Nov 2019 22:07:48 +0800
-Message-Id: <20191106140748.13100-3-gch981213@gmail.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20191106140748.13100-1-gch981213@gmail.com>
-References: <20191106140748.13100-1-gch981213@gmail.com>
+ id 1iSO8j-0003f3-Hx
+ for linux-mtd@lists.infradead.org; Wed, 06 Nov 2019 16:26:39 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id xA6GQNDb117954;
+ Wed, 6 Nov 2019 10:26:23 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1573057583;
+ bh=X2oBSwJNQPZVsVwxr22Pa+22epqGXv5cpkuKVJLk37w=;
+ h=From:Subject:To:CC:References:Date:In-Reply-To;
+ b=ISC8GuM88VTWl5REKJnJPa5Uu5p5RrYZ3NzQDKRMyFVbx08bjbhxkVsmRh8eFitnk
+ JNOOWtavqblIKvUNmQs//m4KC4nrf0rFaMiTp8+Ys5bb44F6M7rgOHXGYu7RX7B6rU
+ FXQhcAKPnaN5OuaqCWiZ7M/4pObIJR+ttoMuVmvk=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id xA6GQNsi046367
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Wed, 6 Nov 2019 10:26:23 -0600
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Wed, 6 Nov
+ 2019 10:26:22 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Wed, 6 Nov 2019 10:26:07 -0600
+Received: from [10.250.133.248] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id xA6GQKaH056886;
+ Wed, 6 Nov 2019 10:26:20 -0600
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH v4 13/20] mtd: spi-nor: Fix clearing of QE bit on
+ lock()/unlock()
+To: <Tudor.Ambarus@microchip.com>, <boris.brezillon@collabora.com>
+References: <20191102112316.20715-1-tudor.ambarus@microchip.com>
+ <20191102112316.20715-14-tudor.ambarus@microchip.com>
+ <14e9c474-1a92-b8be-12cf-56c7f6d0d696@ti.com>
+ <af6fa950-495f-9e49-bcfe-09188e454b6d@microchip.com>
+Message-ID: <36967b16-a52d-667f-cd61-cef9b87a83cf@ti.com>
+Date: Wed, 6 Nov 2019 21:56:04 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
+In-Reply-To: <af6fa950-495f-9e49-bcfe-09188e454b6d@microchip.com>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191106_060902_072736_3A469852 
-X-CRM114-Status: GOOD (  14.63  )
+X-CRM114-CacheID: sfid-20191106_082637_764372_97074C7A 
+X-CRM114-Status: GOOD (  24.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,66 +94,120 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- Chuanhong Guo <gch981213@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- linux-mediatek@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Cc: richard@nod.at, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ miquel.raynal@bootlin.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-update register descriptions and add an example binding using it.
+Hi,
 
-Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
----
- .../devicetree/bindings/mtd/mtk-quadspi.txt   | 21 ++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+On 06/11/19 2:03 PM, Tudor.Ambarus@microchip.com wrote:
+> 
+> 
+> On 11/05/2019 07:07 PM, Vignesh Raghavendra wrote:
+>> On 02-Nov-19 4:53 PM, Tudor.Ambarus@microchip.com wrote:
+>>> From: Tudor Ambarus <tudor.ambarus@microchip.com>
+>>>
+>>> Make sure that when doing a lock() or an unlock() operation we don't clear
+>>> the QE bit from Status Register 2.
+>>>
+>>> JESD216 revB or later offers information about the *default* Status
+>>> Register commands to use (see BFPT DWORDS[15], bits 22:20). In this
+>>> standard, Status Register 1 refers to the first data byte transferred on a
+>>> Read Status (05h) or Write Status (01h) command. Status register 2 refers
+>>> to the byte read using instruction 35h. Status register 2 is the second
+>>> byte transferred in a Write Status (01h) command.
+>>>
+>>> Industry naming and definitions of these Status Registers may differ.
+>>> The definitions are described in JESD216B, BFPT DWORDS[15], bits 22:20.
+>>> There are cases in which writing only one byte to the Status Register 1
+>>> has the side-effect of clearing Status Register 2 and implicitly the Quad
+>>> Enable bit. This side-effect is hit just by the
+>>> BFPT_DWORD15_QER_SR2_BIT1_BUGGY and BFPT_DWORD15_QER_SR2_BIT1 cases.
+>>>
+>> But I see that 1 byte SR1 write still happens as part of
+>> spi_nor_clear_sr_bp() until patch 20/20. So is this only a partial fix?
+> 
+> Fixing spi_nor_clear_sr_bp() would mean to add dead code that will be removed
+> anyway with patch 20/20. This patch fixes the clearing of the QE bit, while in
+> 20/20 the QE bit is already zero when the one byte SR1 write is used, so the
+> quad mode is not affected. 20/20 fixes indirectly the clearing of all the bits
+> from SR2 but QE bit, because it's already zero. I would say it's not a partial
+> fix, but a different bug.
+> 
 
-diff --git a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-index a12e3b5c495d..4860f6e96f5a 100644
---- a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-+++ b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-@@ -12,7 +12,10 @@ Required properties:
- 		  "mediatek,mt7623-nor", "mediatek,mt8173-nor"
- 		  "mediatek,mt7629-nor", "mediatek,mt8173-nor"
- 		  "mediatek,mt8173-nor"
--- reg: 		  physical base address and length of the controller's register
-+- reg: 		  Contains one or two entries, each of which is a tuple consisting of a
-+		  physical address and length. The first entry is the address and length
-+		  of the controller register set. The optional second entry is the address
-+		  and length of the area where the nor flash is mapped to.
- - clocks: 	  the phandle of the clocks needed by the nor controller
- - clock-names: 	  the names of the clocks
- 		  the clocks should be named "spi" and "sf". "spi" is used for spi bus,
-@@ -48,3 +51,19 @@ nor_flash: spi@1100d000 {
- 	};
- };
- 
-+nor_flash: spi@11014000 {
-+	compatible = "mediatek,mt7629-nor",
-+		     "mediatek,mt8173-nor";
-+	reg = <0x11014000 0xe0>,
-+	      <0x30000000 0x10000000>;
-+	clocks = <&pericfg CLK_PERI_FLASH_PD>,
-+		 <&topckgen CLK_TOP_FLASH_SEL>;
-+	clock-names = "spi", "sf";
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	flash@0 {
-+		compatible = "jedec,spi-nor";
-+		reg = <0>;
-+	};
-+};
--- 
-2.21.0
+I was not suggesting on fixing up spi_nor_clear_sr_bp(), but pointing
+out that single byte writes SR1 can happen until patch 20/20.
 
+But now I see that these patches are fixing related but different bugs.
+
+> There are different angles to look at this, I chose the modifying of the quad
+> mode angle. Given the two arguments from above (avoid adding dead code and
+> changing of quad mode approach), I would prefer to keep things as they are. 
+
+Ok, sounds fine, no need to change...
+
+> But I get your approach too, so if you still want yours, I can do it. Please let me
+> know.
+> 
+>> Should this patch be rearranged to appear along with 20/20?
+> 
+> Not necessarily (different bugs) but I can bring 20/20 immediately after this
+> one if you want.
+> >>
+>>
+>>> Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
+>>> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+>>> ---
+>>>  drivers/mtd/spi-nor/spi-nor.c | 120 ++++++++++++++++++++++++++++++++++++++++--
+>>>  include/linux/mtd/spi-nor.h   |   3 ++
+>>>  2 files changed, 118 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+>>> index 725dab241271..f96bc80c0ed1 100644
+>>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>>> @@ -959,12 +959,19 @@ static int spi_nor_write_sr(struct spi_nor *nor, const u8 *sr, size_t len)
+>>>  	return spi_nor_wait_till_ready(nor);
+>>>  }
+>>>  
+>> [...]
+>>> +/**
+>>>   * spi_nor_write_sr2() - Write the Status Register 2 using the
+>>>   * SPINOR_OP_WRSR2 (3eh) command.
+>>>   * @nor:	pointer to 'struct spi_nor'.
+>>> @@ -3634,19 +3723,38 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+>>>  		break;
+>>>  
+>>>  	case BFPT_DWORD15_QER_SR2_BIT1_BUGGY:
+>>> +		/*
+>>> +		 * Writing only one byte to the Status Register has the
+>>> +		 * side-effect of clearing Status Register 2.
+>>> +		 */
+>>>  	case BFPT_DWORD15_QER_SR2_BIT1_NO_RD:
+>>> +		/*
+>>> +		 * Read Configuration Register (35h) instruction is not
+>>> +		 * supported.
+>>> +		 */
+>>> +		nor->flags |= SNOR_F_HAS_16BIT_SR | SNOR_F_NO_READ_CR;
+>> Since SNOR_F_HAS_16BIT_SR is set by default in
+>> spi_nor_info_init_params(), no need to set the flag here again
+>>
+> 
+> I did this on purpose. I set SNOR_F_HAS_16BIT_SR here based on SFDP standard, I
+> want to indicate where the standard requires the 16 bit SR write .
+> spi_nor_info_init_params() initializes data based on info, but that data can be
+> overwritten (even with the same data) when parsing SFDP.
+> 
+
+Alright.
+
+Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
+
+Regards
+Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
