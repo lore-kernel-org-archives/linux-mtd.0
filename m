@@ -2,58 +2,56 @@ Return-Path: <SRS0=BbO6=Y6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7870C5DF62
-	for <linux-mtd@archiver.kernel.org>; Wed,  6 Nov 2019 09:16:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CDB25C5DF62
+	for <linux-mtd@archiver.kernel.org>; Wed,  6 Nov 2019 09:17:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A08FA2173E
-	for <linux-mtd@archiver.kernel.org>; Wed,  6 Nov 2019 09:16:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 959E52173E
+	for <linux-mtd@archiver.kernel.org>; Wed,  6 Nov 2019 09:17:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="C6UrydS1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A08FA2173E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oYzJh0Hc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 959E52173E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=X9AmadbQUgWNVWPdFES8Td2WZCvobuKcKrNOidCVlrw=; b=C6UrydS1KHWzM9
-	I4B418UcYUfEiWmzqld/EPjVQ4OhgkRfpJ2Q2yH4/Kll8pMnDkUVM07PLmsyA+afC1ZhrWorma8RN
-	g0HRnC1kES3tyyRMwm6weyTTjferhCHdyrcVNwgwj5S6Zfj0HS01o3kf6GeuuAi9hAaqIHfCYstkr
-	GmYOgTJrF8xVzPv/MHqo9sO9usgoMaSqn8eQDYsawceyJ7ZWS+mzBupoap+H1eyx064tJ6H4aVnHa
-	njoRpKVCBMuQNW/HjcvFxzqtOXf4wWoPPTyMkY6DhUxI7Eg0lgiAVILDjdB/dpYT2opxpGuVBg5vq
-	SjW2tpvYgLQ93iQcgvzQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=MhQITxgXQ4eScMoPAH6sGuDQ6XmRg7f9xr7gJmQsotg=; b=oYzJh0HcxHocsM
+	ZU/Le/GQKc9MkmucCP2MTtjvoM3Kg2IhE3fxIrcA2KBj9MLKDvxx/dx9numWZ2iLCu8fddZLmlNS5
+	W4tfQqt6ZEkB18X4AfbLOmvWMkOMSdMAcwgC4hx5quiSbNbsE/U2M8vOOk3BI7+4dsvzdjn2RXVLO
+	hNcDMQKsElqPHmQRDYbkMPW1BKWFobehRMsrmySjQxXUiFKXBn2q1cTbYQJ5k8e4oBOtpOPKaTbBp
+	bF6/v05cRIawg5/tc1PB4rjGGg82mqIY60QP4rA9WMglbTamTUCsJAPRw+YTdZtNkn8v5kJsVqF5J
+	kSYGxQ8J7IkyXUBdQc0g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iSHQY-0001r3-NP; Wed, 06 Nov 2019 09:16:34 +0000
+	id 1iSHQo-00024q-Qh; Wed, 06 Nov 2019 09:16:50 +0000
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iSHPy-0001GG-1I
- for linux-mtd@lists.infradead.org; Wed, 06 Nov 2019 09:16:00 +0000
+ id 1iSHQ5-0001Po-VA
+ for linux-mtd@lists.infradead.org; Wed, 06 Nov 2019 09:16:08 +0000
 Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1iSHPg-0002ea-I3; Wed, 06 Nov 2019 10:15:40 +0100
+ id 1iSHPg-0002eU-I7; Wed, 06 Nov 2019 10:15:40 +0100
 Received: from sha by dude.hi.pengutronix.de with local (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1iSHPe-0000B2-K9; Wed, 06 Nov 2019 10:15:38 +0100
+ id 1iSHPe-0000Am-GD; Wed, 06 Nov 2019 10:15:38 +0100
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-fsdevel@vger.kernel.org
-Subject: [PATCH 5/7] ubifs: Add support for project id
-Date: Wed,  6 Nov 2019 10:15:35 +0100
-Message-Id: <20191106091537.32480-6-s.hauer@pengutronix.de>
+Subject: [PATCH v3 0/7] Add quota support to UBIFS
+Date: Wed,  6 Nov 2019 10:15:30 +0100
+Message-Id: <20191106091537.32480-1-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.24.0.rc1
-In-Reply-To: <20191106091537.32480-1-s.hauer@pengutronix.de>
-References: <20191106091537.32480-1-s.hauer@pengutronix.de>
 MIME-Version: 1.0
 X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
 X-SA-Exim-Mail-From: sha@pengutronix.de
@@ -61,8 +59,8 @@ X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
  SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191106_011558_249383_B7489A48 
-X-CRM114-Status: GOOD (  19.14  )
+X-CRM114-CacheID: sfid-20191106_011606_040411_204E368F 
+X-CRM114-Status: GOOD (  18.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,275 +79,83 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The project id is necessary for quota project id support. This adds
-support for the project id to UBIFS as well as support for the
-FS_PROJINHERIT_FL flag.
+This series adds quota support to UBIFS.
 
-This includes a change for the UBIFS on-disk format. struct
-ubifs_ino_node gains a project id number and a UBIFS_PROJINHERIT_FL
-flag.
+Biggest change this time is that most of the quota patches are no longer
+necessary as this series is based on Jans patches, see
+https://lwn.net/ml/linux-fsdevel/20191104091335.7991-1-jack@suse.cz/
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
- fs/ubifs/dir.c         | 23 +++++++++++++++++++++--
- fs/ubifs/ioctl.c       | 34 ++++++++++++++++++++++++++++++++--
- fs/ubifs/journal.c     |  2 +-
- fs/ubifs/super.c       |  1 +
- fs/ubifs/ubifs-media.h |  6 ++++--
- fs/ubifs/ubifs.h       |  4 ++++
- 6 files changed, 63 insertions(+), 7 deletions(-)
+This series follows a very simple approach to quota: Neither the quota
+limits nor the quota usage are ever written to the medium. The quota
+usage is reconstructed from the filesystem during mount time. The quota
+limits must be set by the user each time after mount. This is probably
+not very convenient for systems that are used interactively, but UBIFS
+is targetted to embedded systems and here running a script after mount
+shouldn't be a problem. This of course isn't the way quota was thought
+to be, but I believe this is a good compromise for a feature that I predict
+is only rarely used on UBIFS. The big upside of this approach is that
+no on-disk format changes are required and thus we can't get any
+broken/corrupt filesystems because of quota support. Reconstructing the
+quota data each time during mount has an noticable but I think for many
+cases acceptable time overhead. I mounted a ~56MiB rootfs with 1920 files
+which takes around 0.7s longer when quota is enabled.
 
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index cfce5fee9262..db2456537e6d 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -56,7 +56,8 @@ static int inherit_flags(const struct inode *dir, umode_t mode)
- 		 */
- 		return 0;
- 
--	flags = ui->flags & (UBIFS_COMPR_FL | UBIFS_SYNC_FL | UBIFS_DIRSYNC_FL);
-+	flags = ui->flags & (UBIFS_COMPR_FL | UBIFS_SYNC_FL | UBIFS_DIRSYNC_FL |
-+			     UBIFS_PROJINHERIT_FL);
- 	if (!S_ISDIR(mode))
- 		/* The "DIRSYNC" flag only applies to directories */
- 		flags &= ~UBIFS_DIRSYNC_FL;
-@@ -112,6 +113,11 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
- 			 current_time(inode);
- 	inode->i_mapping->nrpages = 0;
- 
-+	if (ubifs_inode(dir)->flags & UBIFS_PROJINHERIT_FL)
-+		ui->projid = ubifs_inode(dir)->projid;
-+	else
-+		ui->projid = make_kprojid(&init_user_ns, UBIFS_DEF_PROJID);
-+
- 	switch (mode & S_IFMT) {
- 	case S_IFREG:
- 		inode->i_mapping->a_ops = &ubifs_file_address_operations;
-@@ -705,6 +711,9 @@ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
- 	ubifs_assert(c, inode_is_locked(dir));
- 	ubifs_assert(c, inode_is_locked(inode));
- 
-+	if (!projid_eq(dir_ui->projid, ui->projid))
-+                return -EXDEV;
-+
- 	err = fscrypt_prepare_link(old_dentry, dir, dentry);
- 	if (err)
- 		return err;
-@@ -1556,8 +1565,18 @@ static int ubifs_rename(struct inode *old_dir, struct dentry *old_dentry,
- 	if (err)
- 		return err;
- 
--	if (flags & RENAME_EXCHANGE)
-+	if ((ubifs_inode(new_dir)->flags & UBIFS_PROJINHERIT_FL) &&
-+	    (!projid_eq(ubifs_inode(new_dir)->projid,
-+			ubifs_inode(old_dentry->d_inode)->projid)))
-+		return -EXDEV;
-+
-+	if (flags & RENAME_EXCHANGE) {
-+		if ((ubifs_inode(old_dir)->flags & UBIFS_PROJINHERIT_FL) &&
-+		   (!projid_eq(ubifs_inode(old_dir)->projid,
-+			ubifs_inode(new_dentry->d_inode)->projid)))
-+			return -EXDEV;
- 		return ubifs_xrename(old_dir, old_dentry, new_dir, new_dentry);
-+	}
- 
- 	return do_rename(old_dir, old_dentry, new_dir, new_dentry, flags);
- }
-diff --git a/fs/ubifs/ioctl.c b/fs/ubifs/ioctl.c
-index 533df56beab4..829e71d9c9ae 100644
---- a/fs/ubifs/ioctl.c
-+++ b/fs/ubifs/ioctl.c
-@@ -19,7 +19,7 @@
- /* Need to be kept consistent with checked flags in ioctl2ubifs() */
- #define UBIFS_SUPPORTED_IOCTL_FLAGS \
- 	(FS_COMPR_FL | FS_SYNC_FL | FS_APPEND_FL | \
--	 FS_IMMUTABLE_FL | FS_DIRSYNC_FL)
-+	 FS_IMMUTABLE_FL | FS_DIRSYNC_FL | FS_PROJINHERIT_FL)
- 
- /**
-  * ubifs_set_inode_flags - set VFS inode flags.
-@@ -66,6 +66,8 @@ static int ioctl2ubifs(int ioctl_flags)
- 		ubifs_flags |= UBIFS_IMMUTABLE_FL;
- 	if (ioctl_flags & FS_DIRSYNC_FL)
- 		ubifs_flags |= UBIFS_DIRSYNC_FL;
-+	if (ioctl_flags & FS_PROJINHERIT_FL)
-+		ubifs_flags |= UBIFS_PROJINHERIT_FL;
- 
- 	return ubifs_flags;
- }
-@@ -91,6 +93,8 @@ static int ubifs2ioctl(int ubifs_flags)
- 		ioctl_flags |= FS_IMMUTABLE_FL;
- 	if (ubifs_flags & UBIFS_DIRSYNC_FL)
- 		ioctl_flags |= FS_DIRSYNC_FL;
-+	if (ubifs_flags & UBIFS_PROJINHERIT_FL)
-+		ioctl_flags |= FS_PROJINHERIT_FL;
- 
- 	return ioctl_flags;
- }
-@@ -106,6 +110,8 @@ static inline unsigned long ubifs_xflags_to_iflags(__u32 xflags)
- 		iflags |= UBIFS_IMMUTABLE_FL;
- 	if (xflags & FS_XFLAG_APPEND)
- 		iflags |= UBIFS_APPEND_FL;
-+	if (xflags & FS_XFLAG_PROJINHERIT)
-+		iflags |= UBIFS_PROJINHERIT_FL;
- 
-         return iflags;
- }
-@@ -121,15 +127,34 @@ static inline __u32 ubifs_iflags_to_xflags(unsigned long flags)
- 		xflags |= FS_XFLAG_IMMUTABLE;
- 	if (flags & UBIFS_APPEND_FL)
- 		xflags |= FS_XFLAG_APPEND;
-+	if (flags & UBIFS_PROJINHERIT_FL)
-+		xflags |= FS_XFLAG_PROJINHERIT;
- 
-         return xflags;
- }
- 
-+static int ubifs_ioc_setproject(struct file *file, __u32 projid)
-+{
-+	struct inode *inode = file_inode(file);
-+	struct ubifs_inode *ui = ubifs_inode(inode);
-+	kprojid_t kprojid;
-+
-+	kprojid = make_kprojid(&init_user_ns, (projid_t)projid);
-+	if (projid_eq(kprojid, ui->projid))
-+		return 0;
-+
-+	ui->projid = kprojid;
-+
-+	return 0;
-+}
-+
- static void ubifs_fill_fsxattr(struct inode *inode, struct fsxattr *fa)
- {
- 	struct ubifs_inode *ui = ubifs_inode(inode);
- 
- 	simple_fill_fsxattr(fa, ubifs_iflags_to_xflags(ui->flags));
-+
-+	fa->fsx_projid = (__u32)from_kprojid(&init_user_ns, ui->projid);
- }
- 
- static int setflags(struct file *file, int flags, struct fsxattr *fa)
-@@ -180,6 +205,10 @@ static int setflags(struct file *file, int flags, struct fsxattr *fa)
- 		err = vfs_ioc_fssetxattr_check(inode, &old_fa, fa);
- 		if (err)
- 			goto out_unlock;
-+
-+		err = ubifs_ioc_setproject(file, fa->fsx_projid);
-+		if (err)
-+			goto out_unlock;
- 	}
- 
- 	ui->flags = ubi_flags;
-@@ -223,7 +252,8 @@ static int ubifs_ioc_fsgetxattr(struct file *file, void __user *arg)
- 
- static int check_xflags(unsigned int flags)
- {
--	if (flags & ~(FS_XFLAG_SYNC | FS_XFLAG_IMMUTABLE | FS_XFLAG_APPEND))
-+	if (flags & ~(FS_XFLAG_SYNC | FS_XFLAG_IMMUTABLE | FS_XFLAG_APPEND |
-+		      FS_XFLAG_PROJINHERIT))
- 		return -EOPNOTSUPP;
- 	return 0;
- }
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index 4fd9683b8245..d8961993f9dd 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -54,7 +54,6 @@
-  */
- static inline void zero_ino_node_unused(struct ubifs_ino_node *ino)
- {
--	memset(ino->padding1, 0, 4);
- 	memset(ino->padding2, 0, 26);
- }
- 
-@@ -469,6 +468,7 @@ static void pack_inode(struct ubifs_info *c, struct ubifs_ino_node *ino,
- 	ino->xattr_cnt   = cpu_to_le32(ui->xattr_cnt);
- 	ino->xattr_size  = cpu_to_le32(ui->xattr_size);
- 	ino->xattr_names = cpu_to_le32(ui->xattr_names);
-+	ino->projid = cpu_to_le32(from_kprojid(&init_user_ns, ui->projid));
- 	zero_ino_node_unused(ino);
- 
- 	/*
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 7d4547e5202d..281f34789e32 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -141,6 +141,7 @@ struct inode *ubifs_iget(struct super_block *sb, unsigned long inum)
- 	ui->xattr_size  = le32_to_cpu(ino->xattr_size);
- 	ui->xattr_names = le32_to_cpu(ino->xattr_names);
- 	ui->synced_i_size = ui->ui_size = inode->i_size;
-+	ui->projid = make_kprojid(&init_user_ns, le32_to_cpu(ino->projid));
- 
- 	ui->xattr = (ui->flags & UBIFS_XATTR_FL) ? 1 : 0;
- 
-diff --git a/fs/ubifs/ubifs-media.h b/fs/ubifs/ubifs-media.h
-index 3c9792cbb6ff..418f4eba1624 100644
---- a/fs/ubifs/ubifs-media.h
-+++ b/fs/ubifs/ubifs-media.h
-@@ -316,6 +316,7 @@ enum {
-  * UBIFS_DIRSYNC_FL: I/O on this directory inode has to be synchronous
-  * UBIFS_XATTR_FL: this inode is the inode for an extended attribute value
-  * UBIFS_CRYPT_FL: use encryption for this inode
-+ * UBIFS_PROJINHERIT_FL: Create with parents projid
-  *
-  * Note, these are on-flash flags which correspond to ioctl flags
-  * (@FS_COMPR_FL, etc). They have the same values now, but generally, do not
-@@ -329,6 +330,7 @@ enum {
- 	UBIFS_DIRSYNC_FL   = 0x10,
- 	UBIFS_XATTR_FL     = 0x20,
- 	UBIFS_CRYPT_FL     = 0x40,
-+	UBIFS_PROJINHERIT_FL = 0x80,
- };
- 
- /* Inode flag bits used by UBIFS */
-@@ -497,7 +499,7 @@ union ubifs_dev_desc {
-  * @data_len: inode data length
-  * @xattr_cnt: count of extended attributes this inode has
-  * @xattr_size: summarized size of all extended attributes in bytes
-- * @padding1: reserved for future, zeroes
-+ * @projid: Quota project id
-  * @xattr_names: sum of lengths of all extended attribute names belonging to
-  *               this inode
-  * @compr_type: compression type used for this inode
-@@ -531,7 +533,7 @@ struct ubifs_ino_node {
- 	__le32 data_len;
- 	__le32 xattr_cnt;
- 	__le32 xattr_size;
--	__u8 padding1[4]; /* Watch 'zero_ino_node_unused()' if changing! */
-+	__le32 projid;
- 	__le32 xattr_names;
- 	__le16 compr_type;
- 	__u8 padding2[26]; /* Watch 'zero_ino_node_unused()' if changing! */
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index c55f212dcb75..3f8a33fca67b 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -155,6 +155,8 @@
- #define UBIFS_HMAC_ARR_SZ 0
- #endif
- 
-+#define UBIFS_DEF_PROJID 0
-+
- /*
-  * Lockdep classes for UBIFS inode @ui_mutex.
-  */
-@@ -362,6 +364,7 @@ struct ubifs_gced_idx_leb {
-  *                 inodes
-  * @ui_size: inode size used by UBIFS when writing to flash
-  * @flags: inode flags (@UBIFS_COMPR_FL, etc)
-+ * @projid: The project id of this inode
-  * @compr_type: default compression type used for this inode
-  * @last_page_read: page number of last page read (for bulk read)
-  * @read_in_a_row: number of consecutive pages read in a row (for bulk read)
-@@ -413,6 +416,7 @@ struct ubifs_inode {
- 	loff_t synced_i_size;
- 	loff_t ui_size;
- 	int flags;
-+	kprojid_t projid;
- 	pgoff_t last_page_read;
- 	pgoff_t read_in_a_row;
- 	int data_len;
+As UBIFS works on mtd there is no block_device involved. The quotactl
+system call requires a path to a block device as argument. To overcome
+this we add support for passing the mount point instead. This is done
+with a new Q_PATH flag to the quotactl syscall indicating that the special
+argument belongs to the mount path rather than a path to the block device
+file
+
+The UBIFS quota support itself is based on a series by Dongsheng Yang
+posted here:
+http://lists.infradead.org/pipermail/linux-mtd/2015-September/061812.html
+This part hasn't changed much, except that the code for reading and writing
+quota files has been dropped.
+
+Sascha
+
+changes since v2:
+- Rebase on Jans quota-without-inode series
+- Use recently introduced vfs_ioc_fssetxattr_check() and simple_fill_fsxattr()
+- fix project quota support (was broken in v2 due to upstream changes in UBIFS)
+- check for illegal renames due to different project id
+
+Changes since v1:
+- Introduce Q_PATH flag to make passing a mountpath explicit
+- Do not mess with fs layer as suggested by Al Viro
+- create separate usrquota, grpquota and prjquota options rather than just
+  a single quota option
+- register a UBIFS specific quota_format and use dquot_enable()
+- drop "quota: Only module_put the format when existing" which is no
+  longer necesary
+
+
+Sascha Hauer (7):
+  quota: Allow to pass mount path to quotactl
+  ubifs: move checks and preparation into setflags()
+  ubifs: Add support for FS_IOC_FS[SG]ETXATTR ioctls
+  ubifs: do not ubifs_inode() on potentially NULL pointer
+  ubifs: Add support for project id
+  ubifs: export get_znode
+  ubifs: Add quota support
+
+ Documentation/filesystems/ubifs.txt |   7 +-
+ fs/quota/quota.c                    |  37 +-
+ fs/ubifs/Makefile                   |   1 +
+ fs/ubifs/dir.c                      |  43 +-
+ fs/ubifs/file.c                     |  43 ++
+ fs/ubifs/ioctl.c                    | 209 ++++++++--
+ fs/ubifs/journal.c                  |   4 +-
+ fs/ubifs/quota.c                    | 612 ++++++++++++++++++++++++++++
+ fs/ubifs/super.c                    |  83 +++-
+ fs/ubifs/tnc.c                      |  34 +-
+ fs/ubifs/ubifs-media.h              |   6 +-
+ fs/ubifs/ubifs.h                    |  42 ++
+ include/uapi/linux/quota.h          |   2 +
+ 13 files changed, 1064 insertions(+), 59 deletions(-)
+ create mode 100644 fs/ubifs/quota.c
+
 -- 
 2.24.0.rc1
 
