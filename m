@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D23C4C5DF62
-	for <linux-mtd@archiver.kernel.org>; Wed,  6 Nov 2019 09:16:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B6DEC5DF62
+	for <linux-mtd@archiver.kernel.org>; Wed,  6 Nov 2019 09:16:27 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9B4842173E
-	for <linux-mtd@archiver.kernel.org>; Wed,  6 Nov 2019 09:16:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1E3382173E
+	for <linux-mtd@archiver.kernel.org>; Wed,  6 Nov 2019 09:16:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jsUAJUyH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9B4842173E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FksJOXCX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E3382173E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,32 +25,32 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=oQ1RKf16h/aExepGDupakfQhVERkgNh+m0gqwtMHvzM=; b=jsUAJUyHcfksKU
-	TWNEXmHLCqvER3JRPcU/6nbK5JkfqPAbE7nM1p+ZF7tYpgqGV3hSzdAlI1HBxIlk710nZ8GTH8IX0
-	CgW4KsrAsfIFNfrx2OOarWOgSzxgQqcZxaLCLAbA0B5eMuCfTlUVkabjQzGCcX6nTHHFDEwnN9VMv
-	55Q7n4vbf3nO0L73yq9zSHaruTx3snOAdbWfHkzBQu4akyxA21iHiOs34KOL17GMz0O8FZtobOjGG
-	8drsE7V+mnX8W6kS/8jWvmw5FmOsZyODD13c2QtJIuopfxegOvRgWkR9G39ozCzD6H3mmIhRrx9/e
-	QyF7Pa5y2ui49ckpFWtg==;
+	List-Owner; bh=MZUtw5i0v0zcXAXe0lGEVjjBxTlO/zgHuQ0Y9VAXnAU=; b=FksJOXCXBNJtFX
+	gRIe+5Al1+fO5PjXCtvFXx1Tkl5wUMPeOdgKpF47gFkSqsUb4ZBAteHgYqmz6geLYHXdVq3mT4tgE
+	1Hp0P2UUmsbdAf43wT+Q5rLuM6a6LFwMAhKYx22xUbBp882p0a/qODTktoQQJ85xyrOzw4YIOGeMh
+	KF81YRreMs8j6IEhd2H6rz21jqYGtfoc+xR0bSVufgqvKRcMEK9aioqzHGA39iHq3v9mjwiW5vtoW
+	I9ExhMOO+H5e77NeEDhlAXju6CA/0aKwKzOk/GQfYqL1527gNyHvoNETmOAag+1/uOSQnL8L+XcwJ
+	/qX/g8NP6DdZ08fZ1reQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iSHPw-0001Fb-Uy; Wed, 06 Nov 2019 09:15:57 +0000
+	id 1iSHQD-0001YC-8R; Wed, 06 Nov 2019 09:16:13 +0000
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iSHPk-00013T-EF
- for linux-mtd@lists.infradead.org; Wed, 06 Nov 2019 09:15:48 +0000
+ id 1iSHPp-000179-Ti
+ for linux-mtd@lists.infradead.org; Wed, 06 Nov 2019 09:15:51 +0000
 Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1iSHPh-0002ec-36; Wed, 06 Nov 2019 10:15:41 +0100
+ id 1iSHPg-0002eY-I9; Wed, 06 Nov 2019 10:15:40 +0100
 Received: from sha by dude.hi.pengutronix.de with local (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1iSHPe-0000BB-Ls; Wed, 06 Nov 2019 10:15:38 +0100
+ id 1iSHPe-0000Au-If; Wed, 06 Nov 2019 10:15:38 +0100
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-fsdevel@vger.kernel.org
-Subject: [PATCH 7/7] ubifs: Add quota support
-Date: Wed,  6 Nov 2019 10:15:37 +0100
-Message-Id: <20191106091537.32480-8-s.hauer@pengutronix.de>
+Subject: [PATCH 3/7] ubifs: Add support for FS_IOC_FS[SG]ETXATTR ioctls
+Date: Wed,  6 Nov 2019 10:15:33 +0100
+Message-Id: <20191106091537.32480-4-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.24.0.rc1
 In-Reply-To: <20191106091537.32480-1-s.hauer@pengutronix.de>
 References: <20191106091537.32480-1-s.hauer@pengutronix.de>
@@ -61,8 +61,8 @@ X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
  SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191106_011544_971387_E2081049 
-X-CRM114-Status: GOOD (  28.21  )
+X-CRM114-CacheID: sfid-20191106_011549_973894_B787ECB1 
+X-CRM114-Status: GOOD (  16.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,1255 +74,174 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>,
- Richard Weinberger <richard@nod.at>, Sascha Hauer <s.hauer@pengutronix.de>,
+Cc: Richard Weinberger <richard@nod.at>, Sascha Hauer <s.hauer@pengutronix.de>,
  linux-mtd@lists.infradead.org, kernel@pengutronix.de, Jan Kara <jack@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This introduces poor man's quota support for UBIFS. Unlike other
-implementations we never store anything on the flash. This has two
-big advantages:
+The FS_IOC_FS[SG]ETXATTR ioctls are an alternative to FS_IOC_[GS]ETFLAGS
+with additional features. This patch adds support for these ioctls.
 
-- No possible regressions with a changed on-disk format
-- no quota files can get out of sync.
-
-There are downsides as well:
-
-- During mount the whole index must be scanned which takes some time
-- The quota limits must be set manually each time a filesystem is mounted.
-
-UBIFS is targetted for embedded systems and quota limits are likely not
-changed interactively, so having to restore the quota limits with a
-script shouldn't be a big deal. The mount time penalty is a price we
-must pay, but for that we get a simple and straight forward
-implementation for this rather rarely used feature.
-
-The quota data itself is stored in a red-black tree in memory. It is
-implemented as a quota format. When enabled with the "quota" mount
-option all three quota types (user, group, project) are enabled.
-
-The quota integration into UBIFS is taken from a series posted earlier
-by Dongsheng Yang. Like the earlier series we only account regular files
-for quota. All others are counted in the number of files, but do not
-require any quota space.
-
-Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- Documentation/filesystems/ubifs.txt |   7 +-
- fs/ubifs/Makefile                   |   1 +
- fs/ubifs/dir.c                      |  18 +-
- fs/ubifs/file.c                     |  43 ++
- fs/ubifs/ioctl.c                    |  32 ++
- fs/ubifs/journal.c                  |   2 +
- fs/ubifs/quota.c                    | 612 ++++++++++++++++++++++++++++
- fs/ubifs/super.c                    |  82 +++-
- fs/ubifs/tnc.c                      |   2 +-
- fs/ubifs/ubifs.h                    |  36 ++
- include/uapi/linux/quota.h          |   1 +
- 11 files changed, 831 insertions(+), 5 deletions(-)
- create mode 100644 fs/ubifs/quota.c
+ fs/ubifs/ioctl.c | 103 ++++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 98 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/filesystems/ubifs.txt b/Documentation/filesystems/ubifs.txt
-index acc80442a3bb..86285aa17cd8 100644
---- a/Documentation/filesystems/ubifs.txt
-+++ b/Documentation/filesystems/ubifs.txt
-@@ -98,7 +98,12 @@ auth_key=		specify the key used for authenticating the filesystem.
- auth_hash_name=		The hash algorithm used for authentication. Used for
- 			both hashing and for creating HMACs. Typical values
- 			include "sha256" or "sha512"
--
-+usrquota		Enable user disk quota support
-+			(requires CONFIG_QUOTA).
-+grpquota		Enable group disk quota support
-+			(requires CONFIG_QUOTA).
-+prjquota		Enable project disk quota support
-+			(requires CONFIG_QUOTA).
- 
- Quick usage instructions
- ========================
-diff --git a/fs/ubifs/Makefile b/fs/ubifs/Makefile
-index 5c4b845754a7..07f657f5ea8f 100644
---- a/fs/ubifs/Makefile
-+++ b/fs/ubifs/Makefile
-@@ -9,3 +9,4 @@ ubifs-y += misc.o
- ubifs-$(CONFIG_FS_ENCRYPTION) += crypto.o
- ubifs-$(CONFIG_UBIFS_FS_XATTR) += xattr.o
- ubifs-$(CONFIG_UBIFS_FS_AUTHENTICATION) += auth.o
-+ubifs-$(CONFIG_QUOTA) += quota.o
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index db2456537e6d..b2fd40357641 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -118,6 +118,11 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
- 	else
- 		ui->projid = make_kprojid(&init_user_ns, UBIFS_DEF_PROJID);
- 
-+	dquot_initialize(inode);
-+	err = dquot_alloc_inode(inode);
-+	if (err)
-+		goto fail_drop;
-+
- 	switch (mode & S_IFMT) {
- 	case S_IFREG:
- 		inode->i_mapping->a_ops = &ubifs_file_address_operations;
-@@ -158,8 +163,8 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
- 			spin_unlock(&c->cnt_lock);
- 			ubifs_err(c, "out of inode numbers");
- 			make_bad_inode(inode);
--			iput(inode);
--			return ERR_PTR(-EINVAL);
-+			err = -EINVAL;
-+			goto fail_free;
- 		}
- 		ubifs_warn(c, "running out of inode numbers (current %lu, max %u)",
- 			   (unsigned long)c->highest_inum, INUM_WATERMARK);
-@@ -187,6 +192,13 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
- 	}
- 
- 	return inode;
-+
-+fail_free:
-+	dquot_free_inode(inode);
-+fail_drop:
-+	dquot_drop(inode);
-+	iput(inode);
-+	return ERR_PTR(err);
- }
- 
- static int dbg_check_name(const struct ubifs_info *c,
-@@ -776,6 +788,8 @@ static int ubifs_unlink(struct inode *dir, struct dentry *dentry)
- 	unsigned int saved_nlink = inode->i_nlink;
- 	struct fscrypt_name nm;
- 
-+	dquot_initialize(inode);
-+
- 	/*
- 	 * Budget request settings: deletion direntry, deletion inode (+1 for
- 	 * @dirtied_ino), changing the parent directory inode. If budgeting
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index cd52585c8f4f..9ae998febcf1 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -427,8 +427,10 @@ static int ubifs_write_begin(struct file *file, struct address_space *mapping,
- 	struct ubifs_inode *ui = ubifs_inode(inode);
- 	pgoff_t index = pos >> PAGE_SHIFT;
- 	int uninitialized_var(err), appending = !!(pos + len > inode->i_size);
-+	int quota_size = 0;
- 	int skipped_read = 0;
- 	struct page *page;
-+	int ret = 0;
- 
- 	ubifs_assert(c, ubifs_inode(inode)->ui_size == inode->i_size);
- 	ubifs_assert(c, !c->ro_media && !c->ro_mount);
-@@ -436,6 +438,16 @@ static int ubifs_write_begin(struct file *file, struct address_space *mapping,
- 	if (unlikely(c->ro_error))
- 		return -EROFS;
- 
-+	quota_size = ((pos + len) - inode->i_size);
-+	if (quota_size < 0)
-+		quota_size = 0;
-+	if (S_ISREG(inode->i_mode)) {
-+		dquot_initialize(inode);
-+		ret = dquot_alloc_space_nodirty(inode, quota_size);
-+		if (unlikely(ret))
-+			return ret;
-+	}
-+
- 	/* Try out the fast-path part first */
- 	page = grab_cache_page_write_begin(mapping, index, flags);
- 	if (unlikely(!page))
-@@ -541,6 +553,7 @@ static int ubifs_write_end(struct file *file, struct address_space *mapping,
- 	struct ubifs_inode *ui = ubifs_inode(inode);
- 	struct ubifs_info *c = inode->i_sb->s_fs_info;
- 	loff_t end_pos = pos + len;
-+	int quota_size = 0;
- 	int appending = !!(end_pos > inode->i_size);
- 
- 	dbg_gen("ino %lu, pos %llu, pg %lu, len %u, copied %d, i_size %lld",
-@@ -559,6 +572,11 @@ static int ubifs_write_end(struct file *file, struct address_space *mapping,
- 		dbg_gen("copied %d instead of %d, read page and repeat",
- 			copied, len);
- 		cancel_budget(c, page, ui, appending);
-+		quota_size = ((pos + len) - inode->i_size);
-+		if (quota_size < 0)
-+			quota_size = 0;
-+		if (S_ISREG(inode->i_mode))
-+			dquot_free_space_nodirty(inode, quota_size);
- 		ClearPageChecked(page);
- 
- 		/*
-@@ -1115,6 +1133,7 @@ static int do_truncation(struct ubifs_info *c, struct inode *inode,
- 	int err;
- 	struct ubifs_budget_req req;
- 	loff_t old_size = inode->i_size, new_size = attr->ia_size;
-+	loff_t quota_size = (old_size - new_size);
- 	int offset = new_size & (UBIFS_BLOCK_SIZE - 1), budgeted = 1;
- 	struct ubifs_inode *ui = ubifs_inode(inode);
- 
-@@ -1194,6 +1213,10 @@ static int do_truncation(struct ubifs_info *c, struct inode *inode,
- 	do_attr_changes(inode, attr);
- 	err = ubifs_jnl_truncate(c, inode, old_size, new_size);
- 	mutex_unlock(&ui->ui_mutex);
-+	if (quota_size < 0)
-+		quota_size = 0;
-+	if (S_ISREG(inode->i_mode))
-+		dquot_free_space_nodirty(inode, quota_size);
- 
- out_budg:
- 	if (budgeted)
-@@ -1230,6 +1253,17 @@ static int do_setattr(struct ubifs_info *c, struct inode *inode,
- 
- 	if (attr->ia_valid & ATTR_SIZE) {
- 		dbg_gen("size %lld -> %lld", inode->i_size, new_size);
-+		if (S_ISREG(inode->i_mode)) {
-+			if (new_size > inode->i_size) {
-+				err = dquot_alloc_space_nodirty(inode, new_size - inode->i_size);
-+				if (err) {
-+					ubifs_release_budget(c, &req);
-+					return err;
-+				}
-+			} else {
-+				dquot_free_space_nodirty(inode, inode->i_size - new_size);
-+			}
-+		}
- 		truncate_setsize(inode, new_size);
- 	}
- 
-@@ -1281,6 +1315,15 @@ int ubifs_setattr(struct dentry *dentry, struct iattr *attr)
- 	if (err)
- 		return err;
- 
-+	if (is_quota_modification(inode, attr))
-+		dquot_initialize(inode);
-+	if ((attr->ia_valid & ATTR_UID && !uid_eq(attr->ia_uid, inode->i_uid)) ||
-+	    (attr->ia_valid & ATTR_GID && !gid_eq(attr->ia_gid, inode->i_gid))) {
-+		err = dquot_transfer(inode, attr);
-+		if (err)
-+			return err;
-+	}
-+
- 	if ((attr->ia_valid & ATTR_SIZE) && attr->ia_size < inode->i_size)
- 		/* Truncation to a smaller size */
- 		err = do_truncation(c, inode, attr);
 diff --git a/fs/ubifs/ioctl.c b/fs/ubifs/ioctl.c
-index 829e71d9c9ae..b28bfe2d75c9 100644
+index 8230dba5fd74..533df56beab4 100644
 --- a/fs/ubifs/ioctl.c
 +++ b/fs/ubifs/ioctl.c
-@@ -133,16 +133,48 @@ static inline __u32 ubifs_iflags_to_xflags(unsigned long flags)
-         return xflags;
+@@ -95,9 +95,46 @@ static int ubifs2ioctl(int ubifs_flags)
+ 	return ioctl_flags;
  }
  
-+#ifdef CONFIG_QUOTA
-+static int ubifs_transfer_project_quota(struct inode *inode, kprojid_t kprojid)
-+{
-+	struct dquot *transfer_to[MAXQUOTAS] = {};
-+	struct ubifs_info *c = inode->i_sb->s_fs_info;
-+	struct super_block *sb = c->vfs_sb;
-+	int err = 0;
-+
-+	err = dquot_initialize(inode);
-+	if (err)
-+		return err;
-+
-+	transfer_to[PRJQUOTA] = dqget(sb, make_kqid_projid(kprojid));
-+	if (!IS_ERR(transfer_to[PRJQUOTA])) {
-+		err = __dquot_transfer(inode, transfer_to);
-+		dqput(transfer_to[PRJQUOTA]);
-+	}
-+
-+	return err;
-+}
-+#else
-+static int ubifs_transfer_project_quota(struct inode *inode, kprojid_t kprojid)
-+{
-+	return 0;
-+}
-+#endif
-+
- static int ubifs_ioc_setproject(struct file *file, __u32 projid)
+-static int setflags(struct file *file, int flags)
++/* Transfer xflags flags to internal */
++static inline unsigned long ubifs_xflags_to_iflags(__u32 xflags)
  {
- 	struct inode *inode = file_inode(file);
- 	struct ubifs_inode *ui = ubifs_inode(inode);
- 	kprojid_t kprojid;
-+	int err;
- 
- 	kprojid = make_kprojid(&init_user_ns, (projid_t)projid);
- 	if (projid_eq(kprojid, ui->projid))
- 		return 0;
- 
-+	err = ubifs_transfer_project_quota(inode, kprojid);
-+	if (err)
-+		return err;
+-	int oldflags, err, release;
++	unsigned long iflags = 0;
 +
- 	ui->projid = kprojid;
- 
- 	return 0;
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index d8961993f9dd..cba061c74c41 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -630,6 +630,8 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
- 			goto out_finish;
- 		}
- 		ui->del_cmtno = c->cmt_no;
-+		if (S_ISREG(inode->i_mode))
-+			dquot_free_space_nodirty((struct inode *)inode, inode->i_size);
- 	}
- 
- 	err = write_head(c, BASEHD, dent, len, &lnum, &dent_offs, sync);
-diff --git a/fs/ubifs/quota.c b/fs/ubifs/quota.c
-new file mode 100644
-index 000000000000..55ee684d5853
---- /dev/null
-+++ b/fs/ubifs/quota.c
-@@ -0,0 +1,612 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * This file is part of UBIFS.
-+ *
-+ * Copyright (C) 2019 Pengutronix, Sascha Hauer <s.hauer@pengutronix.de>
-+ */
-+#include "ubifs.h"
++	if (xflags & FS_XFLAG_SYNC)
++		iflags |= UBIFS_APPEND_FL;
++	if (xflags & FS_XFLAG_IMMUTABLE)
++		iflags |= UBIFS_IMMUTABLE_FL;
++	if (xflags & FS_XFLAG_APPEND)
++		iflags |= UBIFS_APPEND_FL;
 +
-+struct ubifs_dqblk {
-+	struct mem_dqblk dqblk;
-+	struct rb_node rb;
-+	struct kqid kqid;
-+};
-+
-+/**
-+ * ubifs_dqblk_insert - find qid in tree
-+ * @c: UBIFS file-system description object
-+ * @new: The new entry to insert
-+ *
-+ * This inserts a new entry to the dqblk tree which is sorted by qids. Caller
-+ * must make sure this entry doesn't exist already.
-+ */
-+static void ubifs_dqblk_insert(struct ubifs_info *c, struct ubifs_dqblk *new)
-+{
-+	struct rb_root *root = &c->dqblk_tree[new->kqid.type];
-+	struct rb_node **link = &root->rb_node, *parent = NULL;
-+	struct ubifs_dqblk *ud;
-+
-+	/* Go to the bottom of the tree */
-+	while (*link) {
-+		parent = *link;
-+
-+		ud = rb_entry(parent, struct ubifs_dqblk, rb);
-+
-+		if (qid_lt(new->kqid, ud->kqid))
-+			link = &(*link)->rb_left;
-+		else
-+			link = &(*link)->rb_right;
-+	}
-+
-+	/* Put the new node there */
-+	rb_link_node(&new->rb, parent, link);
-+	rb_insert_color(&new->rb, root);
++        return iflags;
 +}
 +
-+/**
-+ * ubifs_dqblk_find - find qid in tree
-+ * @c: UBIFS file-system description object
-+ * @qid: The qid to look for
-+ *
-+ * This walks the dqblk tree and searches a given qid. Returns the dqblk entry
-+ * when found or NULL otherwise.
-+ */
-+static struct ubifs_dqblk *ubifs_dqblk_find(struct ubifs_info *c,
-+					    struct kqid qid)
++/* Transfer internal flags to xflags */
++static inline __u32 ubifs_iflags_to_xflags(unsigned long flags)
 +{
-+	struct rb_node *node = c->dqblk_tree[qid.type].rb_node;
++	__u32 xflags = 0;
 +
-+	while (node) {
-+		struct ubifs_dqblk *ud = rb_entry(node, struct ubifs_dqblk, rb);
++	if (flags & UBIFS_APPEND_FL)
++		xflags |= FS_XFLAG_SYNC;
++	if (flags & UBIFS_IMMUTABLE_FL)
++		xflags |= FS_XFLAG_IMMUTABLE;
++	if (flags & UBIFS_APPEND_FL)
++		xflags |= FS_XFLAG_APPEND;
 +
-+		if (qid_eq(qid, ud->kqid))
-+			return ud;
-+
-+		if (qid_lt(qid, ud->kqid))
-+			node = node->rb_left;
-+		else
-+			node = node->rb_right;
-+	}
-+
-+	return NULL;
++        return xflags;
 +}
 +
-+/**
-+ * ubifs_dqblk_find_next - find the next qid
-+ * @c: UBIFS file-system description object
-+ * @qid: The qid to look for
-+ *
-+ * Find the next dqblk entry with a qid that is bigger or equally big than the
-+ * given qid. Returns the next dqblk entry if found or NULL if no dqblk exists
-+ * with a qid that is at least equally big.
-+ */
-+static struct ubifs_dqblk *ubifs_dqblk_find_next(struct ubifs_info *c,
-+						 struct kqid qid)
-+{
-+	struct rb_node *node = c->dqblk_tree[qid.type].rb_node;
-+	struct ubifs_dqblk *next = NULL;
-+
-+	while (node) {
-+		struct ubifs_dqblk *ud = rb_entry(node, struct ubifs_dqblk, rb);
-+
-+		if (qid_eq(qid, ud->kqid))
-+			return ud;
-+
-+		if (qid_lt(qid, ud->kqid)) {
-+			if (!next || qid_lt(ud->kqid, next->kqid))
-+				next = ud;
-+
-+			node = node->rb_left;
-+		} else {
-+			node = node->rb_right;
-+		}
-+	}
-+
-+	return next;
-+}
-+
-+/**
-+ * ubifs_dqblk_get - get dqblk entry for given qid
-+ * @c: UBIFS file-system description object
-+ * @qid: The qid to look for
-+ *
-+ * This searches the given qid in the dqblk tree and returns it if found. If not,
-+ * a new dqblk entry is created, inserted into the dqblk tree and returned.
-+ */
-+static struct ubifs_dqblk *ubifs_dqblk_get(struct ubifs_info *c,
-+					   struct kqid qid)
-+{
-+	struct ubifs_dqblk *ud;
-+
-+	ud = ubifs_dqblk_find(c, qid);
-+	if (ud)
-+		return ud;
-+
-+	ud = kzalloc(sizeof(*ud), GFP_KERNEL);
-+	if (!ud)
-+		return NULL;
-+
-+	ud->kqid = qid;
-+
-+	ubifs_dqblk_insert(c, ud);
-+
-+	return ud;
-+}
-+
-+/**
-+ * ubifs_check_quota_file - check if quota file is valid for this format
-+ * @sb: The superblock
-+ * @type: Quota type
-+ *
-+ * We currently do not store any quota file on flash. It's completely in RAM and
-+ * thus always valid.
-+ */
-+static int ubifs_check_quota_file(struct super_block *sb, int type)
-+{
-+	return 1;
-+}
-+
-+/**
-+ * ubifs_read_file_info - read quota file info
-+ * @sb: The superblock
-+ * @type: Quota type
-+ *
-+ * We currently do not store any quota info on flash. Just fill in default
-+ * values.
-+ */
-+static int ubifs_read_file_info(struct super_block *sb, int type)
-+{
-+	struct quota_info *dqopt = sb_dqopt(sb);
-+	struct mem_dqinfo *info = &dqopt->info[type];
-+
-+	down_read(&dqopt->dqio_sem);
-+
-+	/*
-+	 * Used space is stored as unsigned 64-bit value in bytes but
-+	 * quota core supports only signed 64-bit values so use that
-+	 * as a limit
-+	 */
-+	info->dqi_max_spc_limit = 0x7fffffffffffffffLL; /* 2^63-1 */
-+	info->dqi_max_ino_limit = 0x7fffffffffffffffLL;
-+	info->dqi_bgrace = 0;
-+	info->dqi_igrace = 0;
-+	info->dqi_flags = 0;
-+
-+	up_read(&dqopt->dqio_sem);
-+
-+	return 0;
-+}
-+
-+/**
-+ * ubifs_write_file_info - write quota file to device
-+ * @sb: The superblock
-+ * @type: Quota type
-+ *
-+ * We currently do not store any quota file on flash. Nothing to do here.
-+ */
-+static int ubifs_write_file_info(struct super_block *sb, int type)
-+{
-+	return 0;
-+}
-+
-+/**
-+ * ubifs_read_dquot - read dquot from device
-+ * @dquot: The dquot entry to read
-+ *
-+ * For us this means finding the entry in the dquot tree.
-+ */
-+static int ubifs_read_dquot(struct dquot *dquot)
-+{
-+	struct quota_info *dqopt = sb_dqopt(dquot->dq_sb);
-+	struct ubifs_info *c = dquot->dq_sb->s_fs_info;
-+	struct ubifs_dqblk *ud;
-+	int ret = 0;
-+
-+	down_read(&dqopt->dqio_sem);
-+
-+	ud = ubifs_dqblk_find(c, dquot->dq_id);
-+	if (ud)
-+		dquot->dq_dqb = ud->dqblk;
-+	else
-+		ret = -ENOENT;
-+
-+	up_read(&dqopt->dqio_sem);
-+
-+	return 0;
-+}
-+
-+/**
-+ * ubifs_write_dquot - write dquot to device
-+ * @dquot: The dquot entry to read
-+ *
-+ * For us this means finding or creating the entry in the dquot tree and setting
-+ * it to the dquots contents.
-+ */
-+static int ubifs_write_dquot(struct dquot *dquot)
-+{
-+	struct quota_info *dqopt = sb_dqopt(dquot->dq_sb);
-+	struct ubifs_info *c = dquot->dq_sb->s_fs_info;
-+	int ret = 0;
-+	struct ubifs_dqblk *ud;
-+
-+	down_write(&dqopt->dqio_sem);
-+
-+	ud = ubifs_dqblk_get(c, dquot->dq_id);
-+	if (!ud) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	ud->dqblk = dquot->dq_dqb;
-+
-+out:
-+	up_write(&dqopt->dqio_sem);
-+
-+	return ret;
-+}
-+
-+/**
-+ * ubifs_release_dquot - release memory associated to a dquot entry
-+ * @dquot: The dquot entry
-+ *
-+ * Nothing to do here, we didn't allocate anything. Our data is freed at unmount
-+ * time.
-+ */
-+static int ubifs_release_dquot(struct dquot *dquot)
-+{
-+	return 0;
-+}
-+
-+/**
-+ * ubifs_free_file_info - free memory allocated during reading the file info
-+ * @sb: The superblock
-+ * @type: Quota type
-+ *
-+ * Nothing to do here.
-+ */
-+static int ubifs_free_file_info(struct super_block *sb, int type)
-+{
-+	return 0;
-+}
-+
-+static int ubifs_get_next_id(struct super_block *sb, struct kqid *qid)
-+{
-+	struct quota_info *dqopt = sb_dqopt(sb);
-+	struct ubifs_info *c = sb->s_fs_info;
-+	struct ubifs_dqblk *ud;
-+	int ret = 0;
-+
-+	down_read(&dqopt->dqio_sem);
-+
-+	ud = ubifs_dqblk_find_next(c, *qid);
-+	if (!ud) {
-+		ret = -ENOENT;
-+		goto out;
-+	}
-+
-+	*qid = ud->kqid;
-+out:
-+	up_read(&dqopt->dqio_sem);
-+
-+	return ret;
-+}
-+
-+static const struct quota_format_ops ubifs_format_ops = {
-+	.check_quota_file	= ubifs_check_quota_file,
-+	.read_file_info		= ubifs_read_file_info,
-+	.write_file_info	= ubifs_write_file_info,
-+	.free_file_info		= ubifs_free_file_info,
-+	.read_dqblk		= ubifs_read_dquot,
-+	.commit_dqblk		= ubifs_write_dquot,
-+	.release_dqblk		= ubifs_release_dquot,
-+	.get_next_id		= ubifs_get_next_id,
-+};
-+
-+/**
-+ * add_inode_quota - read quota informations for an inode
-+ * @c: UBIFS file-system description object
-+ * @zbr: The zbranch to read the inode from
-+ *
-+ * This reads the inode as referred to by @zbr from the medium and
-+ * extracts the quota relevant informations. Returns 0 for success
-+ * or a negative error code otherwise.
-+ */
-+static int add_inode_quota(struct ubifs_info *c, struct ubifs_zbranch *zbr)
-+{
-+	struct ubifs_ino_node *ino;
-+	int err, type = key_type(c, &zbr->key);
-+	struct kqid qid[MAXQUOTAS];
-+	kprojid_t kprojid;
-+	kgid_t kgid;
-+	kuid_t kuid;
-+	int i;
-+
-+	if (type != UBIFS_INO_KEY) {
-+		ubifs_err(c, "%s called on non INO node %d", __func__, type);
-+		return 0;
-+	}
-+
-+	if (zbr->len < UBIFS_CH_SZ) {
-+		ubifs_err(c, "bad leaf length %d (LEB %d:%d)",
-+				zbr->len, zbr->lnum, zbr->offs);
-+		return -EINVAL;
-+	}
-+
-+	ino = kmalloc(zbr->len, GFP_NOFS);
-+	if (!ino)
-+		return -ENOMEM;
-+
-+	err = ubifs_tnc_read_node(c, zbr, ino);
-+	if (err) {
-+		ubifs_err(c, "cannot read leaf node at LEB %d:%d, error %d",
-+				zbr->lnum, zbr->offs, err);
-+		goto out_free;
-+	}
-+
-+	kuid = make_kuid(&init_user_ns, le32_to_cpu(ino->uid));
-+	qid[USRQUOTA] = make_kqid_uid(kuid);
-+
-+	kgid = make_kgid(&init_user_ns, le32_to_cpu(ino->gid));
-+	qid[GRPQUOTA] = make_kqid_gid(kgid);
-+
-+	kprojid = make_kprojid(&init_user_ns, le32_to_cpu(ino->projid));
-+	qid[PRJQUOTA] = make_kqid_projid(kprojid);
-+
-+	for (i = 0; i < UBIFS_MAXQUOTAS; i++) {
-+		struct ubifs_dqblk *ud;
-+
-+		if (!(c->quota_enable & (1 << type)))
-+			continue;
-+
-+		ud = ubifs_dqblk_get(c, qid[i]);
-+		if (!ud) {
-+			err = -ENOMEM;
-+			goto out_free;
-+		}
-+
-+		if (S_ISREG(le32_to_cpu(ino->mode)))
-+			ud->dqblk.dqb_curspace += le64_to_cpu(ino->size);
-+		ud->dqblk.dqb_curinodes++;
-+	}
-+
-+	err = 0;
-+
-+out_free:
-+	kfree(ino);
-+
-+	return err;
-+}
-+
-+/**
-+ * get_next_parent_inum - get the next inum
-+ * @c: UBIFS file-system description object
-+ * @znode: The znode to start searching from
-+ * @inum: The next inum returned here
-+ *
-+ * Helper function for ubifs_quota_walk_index(). If we know the next inum we
-+ * find up the tree is still the same as we just handled we do not have to walk
-+ * down the tree but can skip these branches. Returns 0 for success or -ENOENT
-+ * when we can't go further to the upper-right but hit the root node instead.
-+ */
-+static int get_next_parent_inum(struct ubifs_info *c, struct ubifs_znode *znode,
-+				ino_t *inum)
-+{
-+	struct ubifs_znode *zp;
-+
-+	while (1) {
-+		int nn;
-+
-+		zp = znode->parent;
-+		if (!zp)
-+			return -ENOENT;
-+
-+		nn = znode->iip + 1;
-+		znode = zp;
-+
-+		if (nn < znode->child_cnt) {
-+			*inum = key_inum(c, &znode->zbranch[nn].key);
-+			return 0;
-+		}
-+	}
-+}
-+
-+/**
-+ * ubifs_quota_walk_index - Collect quota info
-+ * @c: UBIFS file-system description object
-+ *
-+ * This function walks the whole index and collects the quota usage information
-+ * for all inodes. Returns 0 for success or a negative error code otherwise.
-+ */
-+static int ubifs_quota_walk_index(struct ubifs_info *c)
-+{
-+	int err;
-+	struct ubifs_znode *znode;
-+	int i, nn = 0;
-+	ino_t inum = 0, pinum;
-+
-+	if (!c->zroot.znode) {
-+		c->zroot.znode = ubifs_load_znode(c, &c->zroot, NULL, 0);
-+		if (IS_ERR(c->zroot.znode)) {
-+			err = PTR_ERR(c->zroot.znode);
-+			c->zroot.znode = NULL;
-+			return err;
-+		}
-+	}
-+
-+	znode = c->zroot.znode;
-+
-+	while (1) {
-+		while (znode->level != 0) {
-+			znode = ubifs_get_znode(c, znode, nn);
-+			if (IS_ERR(znode))
-+				return PTR_ERR(znode);
-+			nn = 0;
-+		}
-+
-+		for (i = 0; i < znode->child_cnt; i++) {
-+			if (inum == key_inum(c, &znode->zbranch[i].key))
-+				continue;
-+
-+			add_inode_quota(c, &znode->zbranch[i]);
-+			inum = key_inum(c, &znode->zbranch[i].key);
-+		}
-+
-+		while (1) {
-+			struct ubifs_znode *zp;
-+
-+			zp = znode->parent;
-+			if (!zp)
-+				return 0;
-+
-+			nn = znode->iip + 1;
-+			znode = zp;
-+
-+			err = get_next_parent_inum(c, znode, &pinum);
-+
-+			/*
-+			 * Optimization: When the next parent node is still for
-+			 * the inode we just handled we can skip parsing our
-+			 * children.
-+			 */
-+			if (!err && pinum == inum)
-+				continue;
-+
-+			/*
-+			 * Optimization: We can skip scanning all child nodes
-+			 * which are for the same inode as we already looked at.
-+			 */
-+			while (nn < znode->child_cnt - 1 &&
-+			       inum == key_inum(c, &znode->zbranch[nn + 1].key))
-+				nn++;
-+
-+			if (nn < znode->child_cnt)
-+				break;
-+		}
-+	}
-+}
-+
-+/**
-+ * ubifs_enable_quotas - enable quota
-+ * @c: UBIFS file-system description object
-+ *
-+ * Enable usage tracking for all quota types.
-+ */
-+int ubifs_enable_quotas(struct ubifs_info *c)
-+{
-+	struct super_block *sb = c->vfs_sb;
-+	struct quota_info *dqopt = sb_dqopt(sb);
-+	int type, ret;
-+
-+	if (!c->quota_enable)
-+		return 0;
-+
-+	dqopt->flags |= DQUOT_QUOTA_SYS_FILE | DQUOT_NOLIST_DIRTY;
-+
-+	for (type = 0; type < UBIFS_MAXQUOTAS; type++) {
-+		if (!(c->quota_enable & (1 << type)))
-+			continue;
-+
-+		ret = dquot_load_quota_sb(sb, type, QFMT_UBIFS,
-+				   DQUOT_USAGE_ENABLED | DQUOT_LIMITS_ENABLED);
-+		if (ret)
-+			goto out_quota_off;
-+
-+		c->dqblk_tree[type] = RB_ROOT;
-+	}
-+
-+	return ubifs_quota_walk_index(c);
-+
-+out_quota_off:
-+	ubifs_disable_quotas(c);
-+
-+	return ret;
-+}
-+
-+/**
-+ * ubifs_disable_quotas - disable quota
-+ * @c: UBIFS file-system description object
-+ *
-+ * Disable quota for UBFIS.
-+ */
-+void ubifs_disable_quotas(struct ubifs_info *c)
-+{
-+	struct rb_node *n;
-+	struct ubifs_dqblk *ud;
-+	int type;
-+
-+	if (!c->quota_enable)
-+		return;
-+
-+	dquot_disable(c->vfs_sb, -1, DQUOT_USAGE_ENABLED | DQUOT_LIMITS_ENABLED);
-+
-+	for (type = 0; type < UBIFS_MAXQUOTAS; type++) {
-+		while ((n = rb_first(&c->dqblk_tree[type]))) {
-+			ud = rb_entry(n, struct ubifs_dqblk, rb);
-+			rb_erase(n, &c->dqblk_tree[type]);
-+			kfree(ud);
-+		}
-+	}
-+}
-+
-+static int ubifs_get_projid(struct inode *inode, kprojid_t *projid)
++static void ubifs_fill_fsxattr(struct inode *inode, struct fsxattr *fa)
 +{
 +	struct ubifs_inode *ui = ubifs_inode(inode);
 +
-+	*projid = ui->projid;
-+
-+	return 0;
++	simple_fill_fsxattr(fa, ubifs_iflags_to_xflags(ui->flags));
 +}
 +
-+static const struct dquot_operations ubifs_dquot_operations = {
-+	.write_dquot	= dquot_commit,
-+	.acquire_dquot	= dquot_acquire,
-+	.release_dquot	= dquot_release,
-+	.mark_dirty	= dquot_mark_dquot_dirty,
-+	.write_info	= dquot_commit_info,
-+	.alloc_dquot	= dquot_alloc,
-+	.destroy_dquot	= dquot_destroy,
-+	.get_next_id	= dquot_get_next_id,
-+	.get_projid	= ubifs_get_projid,
-+};
-+
-+static const struct quotactl_ops ubifs_quotactl_ops = {
-+	.get_state	= dquot_get_state,
-+	.set_info	= dquot_set_dqinfo,
-+	.get_dqblk	= dquot_get_dqblk,
-+	.set_dqblk	= dquot_set_dqblk,
-+	.get_nextdqblk	= dquot_get_next_dqblk,
-+};
-+
-+static struct quota_format_type ubifs_quota_format = {
-+	.qf_fmt_id	= QFMT_UBIFS,
-+	.qf_ops		= &ubifs_format_ops,
-+	.qf_owner	= THIS_MODULE
-+};
-+
-+int ubifs_register_quota_format(void)
++static int setflags(struct file *file, int flags, struct fsxattr *fa)
 +{
-+	return register_quota_format(&ubifs_quota_format);
-+}
-+
-+void ubifs_unregister_quota_format(void)
-+{
-+	return unregister_quota_format(&ubifs_quota_format);
-+}
-+
-+/**
-+ * ubifs_init_quota - init quota ops for UBIFS
-+ * @c: UBIFS file-system description object
-+ *
-+ * This inits the quota operations for UBIFS
-+ */
-+void ubifs_init_quota(struct ubifs_info *c)
-+{
-+	struct super_block *sb = c->vfs_sb;
-+
-+	if (!c->quota_enable)
-+		return;
-+
-+	sb->dq_op = &ubifs_dquot_operations;
-+	sb->s_qcop = &ubifs_quotactl_ops;
-+	sb->s_quota_types = QTYPE_MASK_USR | QTYPE_MASK_GRP | QTYPE_MASK_PRJ;
-+}
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 281f34789e32..475f8ae7b8af 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -151,6 +151,7 @@ struct inode *ubifs_iget(struct super_block *sb, unsigned long inum)
++	int ubi_flags, oldflags, err, release;
+ 	struct inode *inode = file_inode(file);
+ 	struct ubifs_inode *ui = ubifs_inode(inode);
+ 	struct ubifs_info *c = inode->i_sb->s_fs_info;
+@@ -110,6 +147,11 @@ static int setflags(struct file *file, int flags)
+ 	if (!inode_owner_or_capable(inode))
+ 		return -EACCES;
  
- 	switch (inode->i_mode & S_IFMT) {
- 	case S_IFREG:
-+		inode_set_bytes(inode, ino->size);
- 		inode->i_mapping->a_ops = &ubifs_file_address_operations;
- 		inode->i_op = &ubifs_file_inode_operations;
- 		inode->i_fop = &ubifs_file_operations;
-@@ -354,6 +355,7 @@ static void ubifs_evict_inode(struct inode *inode)
- 	if (is_bad_inode(inode))
- 		goto out;
- 
-+	dquot_initialize(inode);
- 	ui->ui_size = inode->i_size = 0;
- 	err = ubifs_jnl_delete_inode(c, inode);
- 	if (err)
-@@ -363,7 +365,7 @@ static void ubifs_evict_inode(struct inode *inode)
- 		 */
- 		ubifs_err(c, "can't delete inode %lu, error %d",
- 			  inode->i_ino, err);
--
-+	dquot_free_inode(inode);
- out:
- 	if (ui->dirty)
- 		ubifs_release_dirty_inode_budget(c, ui);
-@@ -373,6 +375,7 @@ static void ubifs_evict_inode(struct inode *inode)
- 		smp_wmb();
- 	}
- done:
-+	dquot_drop(inode);
- 	clear_inode(inode);
- 	fscrypt_put_encryption_info(inode);
- }
-@@ -435,6 +438,9 @@ static int ubifs_show_options(struct seq_file *s, struct dentry *root)
- 	else if (c->mount_opts.chk_data_crc == 1)
- 		seq_puts(s, ",no_chk_data_crc");
- 
-+	if (c->quota_enable)
-+		seq_puts(s, ",quota");
-+
- 	if (c->mount_opts.override_compr) {
- 		seq_printf(s, ",compr=%s",
- 			   ubifs_compr_name(c, c->mount_opts.compr_type));
-@@ -927,6 +933,29 @@ static int check_volume_empty(struct ubifs_info *c)
- 	return 0;
- }
- 
-+#ifdef CONFIG_QUOTA
-+static struct dquot **ubifs_get_dquots(struct inode *inode)
-+{
-+	return ubifs_inode(inode)->i_dquot;
-+}
-+
-+static ssize_t ubifs_quota_read(struct super_block *sb, int type, char *data,
-+				size_t len, loff_t off)
-+{
-+	BUG();
-+
-+	return 0;
-+}
-+
-+static ssize_t ubifs_quota_write(struct super_block *sb, int type, const char *data,
-+				 size_t len, loff_t off)
-+{
-+	BUG();
-+
-+	return 0;
-+}
-+#endif
-+
- /*
-  * UBIFS mount options.
-  *
-@@ -954,6 +983,9 @@ enum {
- 	Opt_auth_key,
- 	Opt_auth_hash_name,
- 	Opt_ignore,
-+	Opt_usrquota,
-+	Opt_grpquota,
-+	Opt_prjquota,
- 	Opt_err,
- };
- 
-@@ -970,6 +1002,9 @@ static const match_table_t tokens = {
- 	{Opt_ignore, "ubi=%s"},
- 	{Opt_ignore, "vol=%s"},
- 	{Opt_assert, "assert=%s"},
-+	{Opt_usrquota, "usrquota"},
-+	{Opt_grpquota, "grpquota"},
-+	{Opt_prjquota, "prjquota"},
- 	{Opt_err, NULL},
- };
- 
-@@ -1104,6 +1139,23 @@ static int ubifs_parse_options(struct ubifs_info *c, char *options,
- 			break;
- 		case Opt_ignore:
- 			break;
-+#ifdef CONFIG_QUOTA
-+		case Opt_usrquota:
-+			c->quota_enable |= 1 << USRQUOTA;
-+			break;
-+		case Opt_grpquota:
-+			c->quota_enable |= 1 << GRPQUOTA;
-+			break;
-+		case Opt_prjquota:
-+			c->quota_enable |= 1 << PRJQUOTA;
-+			break;
-+#else
-+		case Opt_usrquota:
-+		case Opt_grpquota:
-+		case Opt_prjquota:
-+			ubifs_err(c, "quota operations not supported");
-+			break;
-+#endif
- 		default:
- 		{
- 			unsigned long flag;
-@@ -1800,6 +1852,7 @@ static int ubifs_remount_rw(struct ubifs_info *c)
- 		 */
- 		err = dbg_check_space_info(c);
- 	}
-+	c->vfs_sb->s_flags &= ~SB_RDONLY;
- 
- 	mutex_unlock(&c->umount_mutex);
- 	return err;
-@@ -1869,6 +1922,7 @@ static void ubifs_remount_ro(struct ubifs_info *c)
- 	err = dbg_check_space_info(c);
- 	if (err)
- 		ubifs_ro_mode(c, err);
-+	c->vfs_sb->s_flags |= SB_RDONLY;
- 	mutex_unlock(&c->umount_mutex);
- }
- 
-@@ -1879,6 +1933,8 @@ static void ubifs_put_super(struct super_block *sb)
- 
- 	ubifs_msg(c, "un-mount UBI device %d", c->vi.ubi_num);
- 
-+	ubifs_disable_quotas(c);
++	if (fa)
++		ubi_flags = ubifs_xflags_to_iflags(fa->fsx_xflags);
++	else
++		ubi_flags = ioctl2ubifs(flags);
 +
  	/*
- 	 * The following asserts are only valid if there has not been a failure
- 	 * of the media. For example, there will be dirty inodes if we failed
-@@ -1976,11 +2032,17 @@ static int ubifs_remount_fs(struct super_block *sb, int *flags, char *data)
- 		err = ubifs_remount_rw(c);
- 		if (err)
- 			return err;
-+		err = dquot_resume(sb, -1);
+ 	 * Make sure the file-system is read-write and make sure it
+ 	 * will not become read-only while we are changing the flags.
+@@ -126,11 +168,21 @@ static int setflags(struct file *file, int flags)
+ 
+ 	mutex_lock(&ui->ui_mutex);
+ 	oldflags = ubifs2ioctl(ui->flags);
+-	err = vfs_ioc_setflags_prepare(inode, oldflags, flags);
++	err = vfs_ioc_setflags_prepare(inode, oldflags, ubifs2ioctl(ubi_flags));
+ 	if (err)
+ 		goto out_unlock;
+ 
+-	ui->flags = ioctl2ubifs(flags);
++	if (fa) {
++		struct fsxattr old_fa;
++
++		ubifs_fill_fsxattr(inode, &old_fa);
++
++		err = vfs_ioc_fssetxattr_check(inode, &old_fa, fa);
 +		if (err)
-+			return err;
- 	} else if (!c->ro_mount && (*flags & SB_RDONLY)) {
- 		if (c->ro_error) {
- 			ubifs_msg(c, "cannot re-mount R/O due to prior errors");
- 			return -EROFS;
- 		}
-+		err = dquot_suspend(sb, -1);
-+		if (err)
-+			return err;
- 		ubifs_remount_ro(c);
- 	}
- 
-@@ -2012,6 +2074,11 @@ const struct super_operations ubifs_super_operations = {
- 	.remount_fs    = ubifs_remount_fs,
- 	.show_options  = ubifs_show_options,
- 	.sync_fs       = ubifs_sync_fs,
-+#ifdef CONFIG_QUOTA
-+	.get_dquots    = ubifs_get_dquots,
-+	.quota_read    = ubifs_quota_read,
-+	.quota_write   = ubifs_quota_write,
-+#endif
- };
- 
- /**
-@@ -2172,6 +2239,8 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
- #endif
- 	fscrypt_set_ops(sb, &ubifs_crypt_operations);
- 
-+	ubifs_init_quota(c);
++			goto out_unlock;
++	}
 +
- 	mutex_lock(&c->umount_mutex);
- 	err = mount_ubifs(c);
- 	if (err) {
-@@ -2186,6 +2255,10 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
- 		goto out_umount;
- 	}
- 
-+	err = ubifs_enable_quotas(c);
-+	if (err)
-+		goto out_umount;
-+
- 	sb->s_root = d_make_root(root);
- 	if (!sb->s_root) {
- 		err = -ENOMEM;
-@@ -2394,6 +2467,10 @@ static int __init ubifs_init(void)
- 
- 	dbg_debugfs_init();
- 
-+	err = ubifs_register_quota_format();
-+	if (err)
-+		goto out_compressors;
-+
- 	err = register_filesystem(&ubifs_fs_type);
- 	if (err) {
- 		pr_err("UBIFS error (pid %d): cannot register file system, error %d",
-@@ -2404,6 +2481,8 @@ static int __init ubifs_init(void)
- 
- out_dbg:
- 	dbg_debugfs_exit();
-+	ubifs_unregister_quota_format();
-+out_compressors:
- 	ubifs_compressors_exit();
- out_shrinker:
- 	unregister_shrinker(&ubifs_shrinker_info);
-@@ -2429,6 +2508,7 @@ static void __exit ubifs_exit(void)
- 	 */
- 	rcu_barrier();
- 	kmem_cache_destroy(ubifs_inode_slab);
-+	ubifs_unregister_quota_format();
- 	unregister_filesystem(&ubifs_fs_type);
++	ui->flags = ubi_flags;
+ 	ubifs_set_inode_flags(inode);
+ 	inode->i_ctime = current_time(inode);
+ 	release = ui->dirty;
+@@ -156,6 +208,41 @@ static int setflags(struct file *file, int flags)
+ 	return err;
  }
- module_exit(ubifs_exit);
-diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
-index 188fa036e655..624568365ad3 100644
---- a/fs/ubifs/tnc.c
-+++ b/fs/ubifs/tnc.c
-@@ -600,7 +600,7 @@ struct ubifs_znode *ubifs_get_znode(struct ubifs_info *c,
-  * This function returns %0 if the next TNC entry is found, %-ENOENT if there is
-  * no next entry, or a negative error code otherwise.
-  */
--static int tnc_next(struct ubifs_info *c, struct ubifs_znode **zn, int *n)
-+int tnc_next(struct ubifs_info *c, struct ubifs_znode **zn, int *n)
+ 
++static int ubifs_ioc_fsgetxattr(struct file *file, void __user *arg)
++{
++	struct inode *inode = file_inode(file);
++	struct fsxattr fa;
++
++	ubifs_fill_fsxattr(inode, &fa);
++
++	if (copy_to_user(arg, &fa, sizeof(fa)))
++		return -EFAULT;
++
++	return 0;
++}
++
++static int check_xflags(unsigned int flags)
++{
++	if (flags & ~(FS_XFLAG_SYNC | FS_XFLAG_IMMUTABLE | FS_XFLAG_APPEND))
++		return -EOPNOTSUPP;
++	return 0;
++}
++
++static int ubifs_ioc_fssetxattr(struct file *file, const void __user *arg)
++{
++	struct fsxattr fa;
++	int err;
++
++	if (copy_from_user(&fa, (struct fsxattr __user *)arg, sizeof(fa)))
++		return -EFAULT;
++
++	err = check_xflags(fa.fsx_xflags);
++	if (err)
++		return err;
++
++	return setflags(file, 0, &fa);
++}
++
+ long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
  {
- 	struct ubifs_znode *znode = *zn;
- 	int nn = *n;
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index fd9e52749ef7..79755ac4732f 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -27,6 +27,7 @@
- #include <linux/security.h>
- #include <linux/xattr.h>
- #include <linux/random.h>
-+#include <linux/quotaops.h>
- #include <crypto/hash_info.h>
- #include <crypto/hash.h>
- #include <crypto/algapi.h>
-@@ -157,6 +158,8 @@
+ 	int flags, err;
+@@ -179,7 +266,7 @@ long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 			flags &= ~FS_DIRSYNC_FL;
  
- #define UBIFS_DEF_PROJID 0
  
-+#define UBIFS_MAXQUOTAS 3
+-		return setflags(file, flags);
++		return setflags(file, flags, NULL);
+ 	}
+ 	case FS_IOC_SET_ENCRYPTION_POLICY: {
+ 		struct ubifs_info *c = inode->i_sb->s_fs_info;
+@@ -208,6 +295,12 @@ long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 	case FS_IOC_GET_ENCRYPTION_KEY_STATUS:
+ 		return fscrypt_ioctl_get_key_status(file, (void __user *)arg);
+ 
++	case FS_IOC_FSGETXATTR:
++		return ubifs_ioc_fsgetxattr(file, (void __user *)arg);
 +
- /*
-  * Lockdep classes for UBIFS inode @ui_mutex.
-  */
-@@ -416,6 +419,9 @@ struct ubifs_inode {
- 	loff_t synced_i_size;
- 	loff_t ui_size;
- 	int flags;
-+#ifdef CONFIG_QUOTA
-+	struct dquot *i_dquot[UBIFS_MAXQUOTAS];
-+#endif
- 	kprojid_t projid;
- 	pgoff_t last_page_read;
- 	pgoff_t read_in_a_row;
-@@ -1045,6 +1051,7 @@ struct ubifs_debug_info;
-  * @rw_incompat: the media is not R/W compatible
-  * @assert_action: action to take when a ubifs_assert() fails
-  * @authenticated: flag indigating the FS is mounted in authenticated mode
-+ * @quota_enable: If true, quota is enabled on this filesystem
-  *
-  * @tnc_mutex: protects the Tree Node Cache (TNC), @zroot, @cnext, @enext, and
-  *             @calc_idx_sz
-@@ -1386,6 +1393,9 @@ struct ubifs_info {
- 	struct ubi_device_info di;
- 	struct ubi_volume_info vi;
- 
-+	unsigned int quota_enable;
-+	struct rb_root dqblk_tree[UBIFS_MAXQUOTAS];
++	case FS_IOC_FSSETXATTR:
++		return ubifs_ioc_fssetxattr(file, (const void __user *)arg);
 +
- 	struct rb_root orph_tree;
- 	struct list_head orph_list;
- 	struct list_head orph_new;
-@@ -2108,6 +2118,32 @@ static inline bool ubifs_crypt_is_encrypted(const struct inode *inode)
- 	return ui->flags & UBIFS_CRYPT_FL;
- }
- 
-+/* quota.c */
-+#ifdef CONFIG_QUOTA
-+int ubifs_register_quota_format(void);
-+void ubifs_unregister_quota_format(void);
-+void ubifs_init_quota(struct ubifs_info *c);
-+int ubifs_enable_quotas(struct ubifs_info *c);
-+void ubifs_disable_quotas(struct ubifs_info *c);
-+#else
-+static inline int ubifs_register_quota_format(void)
-+{
-+	return 0;
-+}
-+static inline void ubifs_unregister_quota_format(void)
-+{
-+}
-+static inline void ubifs_init_quota(struct ubifs_info *c)
-+{
-+}
-+static inline int ubifs_enable_quotas(struct ubifs_info *c)
-+{
-+	return 0;
-+}
-+static inline void ubifs_disable_quotas(struct ubifs_info *c)
-+{
-+}
-+#endif
- /* Normal UBIFS messages */
- __printf(2, 3)
- void ubifs_msg(const struct ubifs_info *c, const char *fmt, ...);
-diff --git a/include/uapi/linux/quota.h b/include/uapi/linux/quota.h
-index e1787c0df601..7082868ca225 100644
---- a/include/uapi/linux/quota.h
-+++ b/include/uapi/linux/quota.h
-@@ -78,6 +78,7 @@
- #define	QFMT_VFS_V0 2
- #define QFMT_OCFS2 3
- #define	QFMT_VFS_V1 4
-+#define QFMT_UBIFS 5
- 
- /* Size of block in which space limits are passed through the quota
-  * interface */
+ 	default:
+ 		return -ENOTTY;
+ 	}
 -- 
 2.24.0.rc1
 
