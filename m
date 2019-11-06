@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B6DEC5DF62
-	for <linux-mtd@archiver.kernel.org>; Wed,  6 Nov 2019 09:16:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7870C5DF62
+	for <linux-mtd@archiver.kernel.org>; Wed,  6 Nov 2019 09:16:49 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1E3382173E
-	for <linux-mtd@archiver.kernel.org>; Wed,  6 Nov 2019 09:16:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A08FA2173E
+	for <linux-mtd@archiver.kernel.org>; Wed,  6 Nov 2019 09:16:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FksJOXCX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E3382173E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="C6UrydS1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A08FA2173E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,32 +25,32 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MZUtw5i0v0zcXAXe0lGEVjjBxTlO/zgHuQ0Y9VAXnAU=; b=FksJOXCXBNJtFX
-	gRIe+5Al1+fO5PjXCtvFXx1Tkl5wUMPeOdgKpF47gFkSqsUb4ZBAteHgYqmz6geLYHXdVq3mT4tgE
-	1Hp0P2UUmsbdAf43wT+Q5rLuM6a6LFwMAhKYx22xUbBp882p0a/qODTktoQQJ85xyrOzw4YIOGeMh
-	KF81YRreMs8j6IEhd2H6rz21jqYGtfoc+xR0bSVufgqvKRcMEK9aioqzHGA39iHq3v9mjwiW5vtoW
-	I9ExhMOO+H5e77NeEDhlAXju6CA/0aKwKzOk/GQfYqL1527gNyHvoNETmOAag+1/uOSQnL8L+XcwJ
-	/qX/g8NP6DdZ08fZ1reQ==;
+	List-Owner; bh=X9AmadbQUgWNVWPdFES8Td2WZCvobuKcKrNOidCVlrw=; b=C6UrydS1KHWzM9
+	I4B418UcYUfEiWmzqld/EPjVQ4OhgkRfpJ2Q2yH4/Kll8pMnDkUVM07PLmsyA+afC1ZhrWorma8RN
+	g0HRnC1kES3tyyRMwm6weyTTjferhCHdyrcVNwgwj5S6Zfj0HS01o3kf6GeuuAi9hAaqIHfCYstkr
+	GmYOgTJrF8xVzPv/MHqo9sO9usgoMaSqn8eQDYsawceyJ7ZWS+mzBupoap+H1eyx064tJ6H4aVnHa
+	njoRpKVCBMuQNW/HjcvFxzqtOXf4wWoPPTyMkY6DhUxI7Eg0lgiAVILDjdB/dpYT2opxpGuVBg5vq
+	SjW2tpvYgLQ93iQcgvzQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iSHQD-0001YC-8R; Wed, 06 Nov 2019 09:16:13 +0000
+	id 1iSHQY-0001r3-NP; Wed, 06 Nov 2019 09:16:34 +0000
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iSHPp-000179-Ti
- for linux-mtd@lists.infradead.org; Wed, 06 Nov 2019 09:15:51 +0000
+ id 1iSHPy-0001GG-1I
+ for linux-mtd@lists.infradead.org; Wed, 06 Nov 2019 09:16:00 +0000
 Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1iSHPg-0002eY-I9; Wed, 06 Nov 2019 10:15:40 +0100
+ id 1iSHPg-0002ea-I3; Wed, 06 Nov 2019 10:15:40 +0100
 Received: from sha by dude.hi.pengutronix.de with local (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1iSHPe-0000Au-If; Wed, 06 Nov 2019 10:15:38 +0100
+ id 1iSHPe-0000B2-K9; Wed, 06 Nov 2019 10:15:38 +0100
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-fsdevel@vger.kernel.org
-Subject: [PATCH 3/7] ubifs: Add support for FS_IOC_FS[SG]ETXATTR ioctls
-Date: Wed,  6 Nov 2019 10:15:33 +0100
-Message-Id: <20191106091537.32480-4-s.hauer@pengutronix.de>
+Subject: [PATCH 5/7] ubifs: Add support for project id
+Date: Wed,  6 Nov 2019 10:15:35 +0100
+Message-Id: <20191106091537.32480-6-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.24.0.rc1
 In-Reply-To: <20191106091537.32480-1-s.hauer@pengutronix.de>
 References: <20191106091537.32480-1-s.hauer@pengutronix.de>
@@ -61,8 +61,8 @@ X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
  SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191106_011549_973894_B787ECB1 
-X-CRM114-Status: GOOD (  16.10  )
+X-CRM114-CacheID: sfid-20191106_011558_249383_B7489A48 
+X-CRM114-Status: GOOD (  19.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,167 +81,275 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The FS_IOC_FS[SG]ETXATTR ioctls are an alternative to FS_IOC_[GS]ETFLAGS
-with additional features. This patch adds support for these ioctls.
+The project id is necessary for quota project id support. This adds
+support for the project id to UBIFS as well as support for the
+FS_PROJINHERIT_FL flag.
+
+This includes a change for the UBIFS on-disk format. struct
+ubifs_ino_node gains a project id number and a UBIFS_PROJINHERIT_FL
+flag.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- fs/ubifs/ioctl.c | 103 ++++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 98 insertions(+), 5 deletions(-)
+ fs/ubifs/dir.c         | 23 +++++++++++++++++++++--
+ fs/ubifs/ioctl.c       | 34 ++++++++++++++++++++++++++++++++--
+ fs/ubifs/journal.c     |  2 +-
+ fs/ubifs/super.c       |  1 +
+ fs/ubifs/ubifs-media.h |  6 ++++--
+ fs/ubifs/ubifs.h       |  4 ++++
+ 6 files changed, 63 insertions(+), 7 deletions(-)
 
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index cfce5fee9262..db2456537e6d 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -56,7 +56,8 @@ static int inherit_flags(const struct inode *dir, umode_t mode)
+ 		 */
+ 		return 0;
+ 
+-	flags = ui->flags & (UBIFS_COMPR_FL | UBIFS_SYNC_FL | UBIFS_DIRSYNC_FL);
++	flags = ui->flags & (UBIFS_COMPR_FL | UBIFS_SYNC_FL | UBIFS_DIRSYNC_FL |
++			     UBIFS_PROJINHERIT_FL);
+ 	if (!S_ISDIR(mode))
+ 		/* The "DIRSYNC" flag only applies to directories */
+ 		flags &= ~UBIFS_DIRSYNC_FL;
+@@ -112,6 +113,11 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
+ 			 current_time(inode);
+ 	inode->i_mapping->nrpages = 0;
+ 
++	if (ubifs_inode(dir)->flags & UBIFS_PROJINHERIT_FL)
++		ui->projid = ubifs_inode(dir)->projid;
++	else
++		ui->projid = make_kprojid(&init_user_ns, UBIFS_DEF_PROJID);
++
+ 	switch (mode & S_IFMT) {
+ 	case S_IFREG:
+ 		inode->i_mapping->a_ops = &ubifs_file_address_operations;
+@@ -705,6 +711,9 @@ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
+ 	ubifs_assert(c, inode_is_locked(dir));
+ 	ubifs_assert(c, inode_is_locked(inode));
+ 
++	if (!projid_eq(dir_ui->projid, ui->projid))
++                return -EXDEV;
++
+ 	err = fscrypt_prepare_link(old_dentry, dir, dentry);
+ 	if (err)
+ 		return err;
+@@ -1556,8 +1565,18 @@ static int ubifs_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 	if (err)
+ 		return err;
+ 
+-	if (flags & RENAME_EXCHANGE)
++	if ((ubifs_inode(new_dir)->flags & UBIFS_PROJINHERIT_FL) &&
++	    (!projid_eq(ubifs_inode(new_dir)->projid,
++			ubifs_inode(old_dentry->d_inode)->projid)))
++		return -EXDEV;
++
++	if (flags & RENAME_EXCHANGE) {
++		if ((ubifs_inode(old_dir)->flags & UBIFS_PROJINHERIT_FL) &&
++		   (!projid_eq(ubifs_inode(old_dir)->projid,
++			ubifs_inode(new_dentry->d_inode)->projid)))
++			return -EXDEV;
+ 		return ubifs_xrename(old_dir, old_dentry, new_dir, new_dentry);
++	}
+ 
+ 	return do_rename(old_dir, old_dentry, new_dir, new_dentry, flags);
+ }
 diff --git a/fs/ubifs/ioctl.c b/fs/ubifs/ioctl.c
-index 8230dba5fd74..533df56beab4 100644
+index 533df56beab4..829e71d9c9ae 100644
 --- a/fs/ubifs/ioctl.c
 +++ b/fs/ubifs/ioctl.c
-@@ -95,9 +95,46 @@ static int ubifs2ioctl(int ubifs_flags)
+@@ -19,7 +19,7 @@
+ /* Need to be kept consistent with checked flags in ioctl2ubifs() */
+ #define UBIFS_SUPPORTED_IOCTL_FLAGS \
+ 	(FS_COMPR_FL | FS_SYNC_FL | FS_APPEND_FL | \
+-	 FS_IMMUTABLE_FL | FS_DIRSYNC_FL)
++	 FS_IMMUTABLE_FL | FS_DIRSYNC_FL | FS_PROJINHERIT_FL)
+ 
+ /**
+  * ubifs_set_inode_flags - set VFS inode flags.
+@@ -66,6 +66,8 @@ static int ioctl2ubifs(int ioctl_flags)
+ 		ubifs_flags |= UBIFS_IMMUTABLE_FL;
+ 	if (ioctl_flags & FS_DIRSYNC_FL)
+ 		ubifs_flags |= UBIFS_DIRSYNC_FL;
++	if (ioctl_flags & FS_PROJINHERIT_FL)
++		ubifs_flags |= UBIFS_PROJINHERIT_FL;
+ 
+ 	return ubifs_flags;
+ }
+@@ -91,6 +93,8 @@ static int ubifs2ioctl(int ubifs_flags)
+ 		ioctl_flags |= FS_IMMUTABLE_FL;
+ 	if (ubifs_flags & UBIFS_DIRSYNC_FL)
+ 		ioctl_flags |= FS_DIRSYNC_FL;
++	if (ubifs_flags & UBIFS_PROJINHERIT_FL)
++		ioctl_flags |= FS_PROJINHERIT_FL;
+ 
  	return ioctl_flags;
  }
+@@ -106,6 +110,8 @@ static inline unsigned long ubifs_xflags_to_iflags(__u32 xflags)
+ 		iflags |= UBIFS_IMMUTABLE_FL;
+ 	if (xflags & FS_XFLAG_APPEND)
+ 		iflags |= UBIFS_APPEND_FL;
++	if (xflags & FS_XFLAG_PROJINHERIT)
++		iflags |= UBIFS_PROJINHERIT_FL;
  
--static int setflags(struct file *file, int flags)
-+/* Transfer xflags flags to internal */
-+static inline unsigned long ubifs_xflags_to_iflags(__u32 xflags)
- {
--	int oldflags, err, release;
-+	unsigned long iflags = 0;
-+
-+	if (xflags & FS_XFLAG_SYNC)
-+		iflags |= UBIFS_APPEND_FL;
-+	if (xflags & FS_XFLAG_IMMUTABLE)
-+		iflags |= UBIFS_IMMUTABLE_FL;
-+	if (xflags & FS_XFLAG_APPEND)
-+		iflags |= UBIFS_APPEND_FL;
-+
-+        return iflags;
-+}
-+
-+/* Transfer internal flags to xflags */
-+static inline __u32 ubifs_iflags_to_xflags(unsigned long flags)
-+{
-+	__u32 xflags = 0;
-+
-+	if (flags & UBIFS_APPEND_FL)
-+		xflags |= FS_XFLAG_SYNC;
-+	if (flags & UBIFS_IMMUTABLE_FL)
-+		xflags |= FS_XFLAG_IMMUTABLE;
-+	if (flags & UBIFS_APPEND_FL)
-+		xflags |= FS_XFLAG_APPEND;
-+
-+        return xflags;
-+}
-+
-+static void ubifs_fill_fsxattr(struct inode *inode, struct fsxattr *fa)
-+{
-+	struct ubifs_inode *ui = ubifs_inode(inode);
-+
-+	simple_fill_fsxattr(fa, ubifs_iflags_to_xflags(ui->flags));
-+}
-+
-+static int setflags(struct file *file, int flags, struct fsxattr *fa)
-+{
-+	int ubi_flags, oldflags, err, release;
- 	struct inode *inode = file_inode(file);
- 	struct ubifs_inode *ui = ubifs_inode(inode);
- 	struct ubifs_info *c = inode->i_sb->s_fs_info;
-@@ -110,6 +147,11 @@ static int setflags(struct file *file, int flags)
- 	if (!inode_owner_or_capable(inode))
- 		return -EACCES;
+         return iflags;
+ }
+@@ -121,15 +127,34 @@ static inline __u32 ubifs_iflags_to_xflags(unsigned long flags)
+ 		xflags |= FS_XFLAG_IMMUTABLE;
+ 	if (flags & UBIFS_APPEND_FL)
+ 		xflags |= FS_XFLAG_APPEND;
++	if (flags & UBIFS_PROJINHERIT_FL)
++		xflags |= FS_XFLAG_PROJINHERIT;
  
-+	if (fa)
-+		ubi_flags = ubifs_xflags_to_iflags(fa->fsx_xflags);
-+	else
-+		ubi_flags = ioctl2ubifs(flags);
-+
- 	/*
- 	 * Make sure the file-system is read-write and make sure it
- 	 * will not become read-only while we are changing the flags.
-@@ -126,11 +168,21 @@ static int setflags(struct file *file, int flags)
- 
- 	mutex_lock(&ui->ui_mutex);
- 	oldflags = ubifs2ioctl(ui->flags);
--	err = vfs_ioc_setflags_prepare(inode, oldflags, flags);
-+	err = vfs_ioc_setflags_prepare(inode, oldflags, ubifs2ioctl(ubi_flags));
- 	if (err)
- 		goto out_unlock;
- 
--	ui->flags = ioctl2ubifs(flags);
-+	if (fa) {
-+		struct fsxattr old_fa;
-+
-+		ubifs_fill_fsxattr(inode, &old_fa);
-+
-+		err = vfs_ioc_fssetxattr_check(inode, &old_fa, fa);
-+		if (err)
-+			goto out_unlock;
-+	}
-+
-+	ui->flags = ubi_flags;
- 	ubifs_set_inode_flags(inode);
- 	inode->i_ctime = current_time(inode);
- 	release = ui->dirty;
-@@ -156,6 +208,41 @@ static int setflags(struct file *file, int flags)
- 	return err;
+         return xflags;
  }
  
-+static int ubifs_ioc_fsgetxattr(struct file *file, void __user *arg)
++static int ubifs_ioc_setproject(struct file *file, __u32 projid)
 +{
 +	struct inode *inode = file_inode(file);
-+	struct fsxattr fa;
++	struct ubifs_inode *ui = ubifs_inode(inode);
++	kprojid_t kprojid;
 +
-+	ubifs_fill_fsxattr(inode, &fa);
++	kprojid = make_kprojid(&init_user_ns, (projid_t)projid);
++	if (projid_eq(kprojid, ui->projid))
++		return 0;
 +
-+	if (copy_to_user(arg, &fa, sizeof(fa)))
-+		return -EFAULT;
++	ui->projid = kprojid;
 +
 +	return 0;
 +}
 +
-+static int check_xflags(unsigned int flags)
-+{
-+	if (flags & ~(FS_XFLAG_SYNC | FS_XFLAG_IMMUTABLE | FS_XFLAG_APPEND))
-+		return -EOPNOTSUPP;
-+	return 0;
-+}
-+
-+static int ubifs_ioc_fssetxattr(struct file *file, const void __user *arg)
-+{
-+	struct fsxattr fa;
-+	int err;
-+
-+	if (copy_from_user(&fa, (struct fsxattr __user *)arg, sizeof(fa)))
-+		return -EFAULT;
-+
-+	err = check_xflags(fa.fsx_xflags);
-+	if (err)
-+		return err;
-+
-+	return setflags(file, 0, &fa);
-+}
-+
- long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ static void ubifs_fill_fsxattr(struct inode *inode, struct fsxattr *fa)
  {
- 	int flags, err;
-@@ -179,7 +266,7 @@ long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 			flags &= ~FS_DIRSYNC_FL;
+ 	struct ubifs_inode *ui = ubifs_inode(inode);
  
- 
--		return setflags(file, flags);
-+		return setflags(file, flags, NULL);
- 	}
- 	case FS_IOC_SET_ENCRYPTION_POLICY: {
- 		struct ubifs_info *c = inode->i_sb->s_fs_info;
-@@ -208,6 +295,12 @@ long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 	case FS_IOC_GET_ENCRYPTION_KEY_STATUS:
- 		return fscrypt_ioctl_get_key_status(file, (void __user *)arg);
- 
-+	case FS_IOC_FSGETXATTR:
-+		return ubifs_ioc_fsgetxattr(file, (void __user *)arg);
+ 	simple_fill_fsxattr(fa, ubifs_iflags_to_xflags(ui->flags));
 +
-+	case FS_IOC_FSSETXATTR:
-+		return ubifs_ioc_fssetxattr(file, (const void __user *)arg);
++	fa->fsx_projid = (__u32)from_kprojid(&init_user_ns, ui->projid);
+ }
+ 
+ static int setflags(struct file *file, int flags, struct fsxattr *fa)
+@@ -180,6 +205,10 @@ static int setflags(struct file *file, int flags, struct fsxattr *fa)
+ 		err = vfs_ioc_fssetxattr_check(inode, &old_fa, fa);
+ 		if (err)
+ 			goto out_unlock;
 +
- 	default:
- 		return -ENOTTY;
++		err = ubifs_ioc_setproject(file, fa->fsx_projid);
++		if (err)
++			goto out_unlock;
  	}
+ 
+ 	ui->flags = ubi_flags;
+@@ -223,7 +252,8 @@ static int ubifs_ioc_fsgetxattr(struct file *file, void __user *arg)
+ 
+ static int check_xflags(unsigned int flags)
+ {
+-	if (flags & ~(FS_XFLAG_SYNC | FS_XFLAG_IMMUTABLE | FS_XFLAG_APPEND))
++	if (flags & ~(FS_XFLAG_SYNC | FS_XFLAG_IMMUTABLE | FS_XFLAG_APPEND |
++		      FS_XFLAG_PROJINHERIT))
+ 		return -EOPNOTSUPP;
+ 	return 0;
+ }
+diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+index 4fd9683b8245..d8961993f9dd 100644
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -54,7 +54,6 @@
+  */
+ static inline void zero_ino_node_unused(struct ubifs_ino_node *ino)
+ {
+-	memset(ino->padding1, 0, 4);
+ 	memset(ino->padding2, 0, 26);
+ }
+ 
+@@ -469,6 +468,7 @@ static void pack_inode(struct ubifs_info *c, struct ubifs_ino_node *ino,
+ 	ino->xattr_cnt   = cpu_to_le32(ui->xattr_cnt);
+ 	ino->xattr_size  = cpu_to_le32(ui->xattr_size);
+ 	ino->xattr_names = cpu_to_le32(ui->xattr_names);
++	ino->projid = cpu_to_le32(from_kprojid(&init_user_ns, ui->projid));
+ 	zero_ino_node_unused(ino);
+ 
+ 	/*
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 7d4547e5202d..281f34789e32 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -141,6 +141,7 @@ struct inode *ubifs_iget(struct super_block *sb, unsigned long inum)
+ 	ui->xattr_size  = le32_to_cpu(ino->xattr_size);
+ 	ui->xattr_names = le32_to_cpu(ino->xattr_names);
+ 	ui->synced_i_size = ui->ui_size = inode->i_size;
++	ui->projid = make_kprojid(&init_user_ns, le32_to_cpu(ino->projid));
+ 
+ 	ui->xattr = (ui->flags & UBIFS_XATTR_FL) ? 1 : 0;
+ 
+diff --git a/fs/ubifs/ubifs-media.h b/fs/ubifs/ubifs-media.h
+index 3c9792cbb6ff..418f4eba1624 100644
+--- a/fs/ubifs/ubifs-media.h
++++ b/fs/ubifs/ubifs-media.h
+@@ -316,6 +316,7 @@ enum {
+  * UBIFS_DIRSYNC_FL: I/O on this directory inode has to be synchronous
+  * UBIFS_XATTR_FL: this inode is the inode for an extended attribute value
+  * UBIFS_CRYPT_FL: use encryption for this inode
++ * UBIFS_PROJINHERIT_FL: Create with parents projid
+  *
+  * Note, these are on-flash flags which correspond to ioctl flags
+  * (@FS_COMPR_FL, etc). They have the same values now, but generally, do not
+@@ -329,6 +330,7 @@ enum {
+ 	UBIFS_DIRSYNC_FL   = 0x10,
+ 	UBIFS_XATTR_FL     = 0x20,
+ 	UBIFS_CRYPT_FL     = 0x40,
++	UBIFS_PROJINHERIT_FL = 0x80,
+ };
+ 
+ /* Inode flag bits used by UBIFS */
+@@ -497,7 +499,7 @@ union ubifs_dev_desc {
+  * @data_len: inode data length
+  * @xattr_cnt: count of extended attributes this inode has
+  * @xattr_size: summarized size of all extended attributes in bytes
+- * @padding1: reserved for future, zeroes
++ * @projid: Quota project id
+  * @xattr_names: sum of lengths of all extended attribute names belonging to
+  *               this inode
+  * @compr_type: compression type used for this inode
+@@ -531,7 +533,7 @@ struct ubifs_ino_node {
+ 	__le32 data_len;
+ 	__le32 xattr_cnt;
+ 	__le32 xattr_size;
+-	__u8 padding1[4]; /* Watch 'zero_ino_node_unused()' if changing! */
++	__le32 projid;
+ 	__le32 xattr_names;
+ 	__le16 compr_type;
+ 	__u8 padding2[26]; /* Watch 'zero_ino_node_unused()' if changing! */
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index c55f212dcb75..3f8a33fca67b 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -155,6 +155,8 @@
+ #define UBIFS_HMAC_ARR_SZ 0
+ #endif
+ 
++#define UBIFS_DEF_PROJID 0
++
+ /*
+  * Lockdep classes for UBIFS inode @ui_mutex.
+  */
+@@ -362,6 +364,7 @@ struct ubifs_gced_idx_leb {
+  *                 inodes
+  * @ui_size: inode size used by UBIFS when writing to flash
+  * @flags: inode flags (@UBIFS_COMPR_FL, etc)
++ * @projid: The project id of this inode
+  * @compr_type: default compression type used for this inode
+  * @last_page_read: page number of last page read (for bulk read)
+  * @read_in_a_row: number of consecutive pages read in a row (for bulk read)
+@@ -413,6 +416,7 @@ struct ubifs_inode {
+ 	loff_t synced_i_size;
+ 	loff_t ui_size;
+ 	int flags;
++	kprojid_t projid;
+ 	pgoff_t last_page_read;
+ 	pgoff_t read_in_a_row;
+ 	int data_len;
 -- 
 2.24.0.rc1
 
