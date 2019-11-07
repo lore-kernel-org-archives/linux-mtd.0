@@ -2,94 +2,72 @@ Return-Path: <SRS0=+z0R=Y7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF5F5C5DF61
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Nov 2019 12:40:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01B10C5DF61
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Nov 2019 13:23:58 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8AC6F2187F
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Nov 2019 12:40:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CAFF12187F
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Nov 2019 13:23:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="i8qAmmF2";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OhNMgVR1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8AC6F2187F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Fyo+k7ZS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CAFF12187F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Date:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LOI9Lk1CE8ZJfT53zIOL0ZqTN4jc2vi1m6EJlWrMM80=; b=i8qAmmF2Pa2OeQ
-	Bh6kd0Hx8waks3oRV2SCGZMgQeVma10+P5vbQWqEUayWey/XVJQjz17R54ZQX24HT/kYjQjG53K8g
-	gMJLS2p0I62qpjRCNTbA/yr1poqYPtr8GiSDK+VKutMDAViWJQo0dmGc1rgQQWAOnGawHwR/9MvhM
-	ZVJKjfHDdAzHwlhmshqpQDuahglJEg1hTFNlSYSVbhyuTKBr2897KrE5ApETdnjaTk2z1s0QO5Vw3
-	KmUKV8Zu7WnFudXPI4iF852z9yKhtvH3DcY81kE2jGPLPPS0H0GAH3sFrDVX+2H2buK04Qt4oSfBo
-	UwB3Xm8mXpYQr2qi0Xhw==;
+	List-Owner; bh=0USGtHZzeyZYLw3Yfr6MBUNFB+njktomTrNphXuu7Sg=; b=Fyo+k7ZSQ7UBT1
+	MNsd99r9j7XNEWY3084ihQbZIHTm9LdeJ+DGcFkwOuj/GmcRPcKxlubNWttvf0Q3/v2ogkKk+HfaW
+	Mr5VoQJUDWKBJRlL6kGgfeT3kh5uVTdizZE9M8JkT3+D3eIfFAjBdM5a6TR9kx9b/kJEsa3TO8GrC
+	T/r25F2LFRPSyjmw/uEf5a+FdJmfXACii+HGz9NP+RcQFqcZuMiqZ1keDEKku6/g7X+23SSlDoMq6
+	UQu72QCVf7S3On5oxsrhOHtI/WstSDlLTVm22i6TnSgpcRn6PzITsh1IOIjcirKHafr6RxKehRYFx
+	DflCFLoWowcA8ZvaLC9g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iSh5c-00037l-In; Thu, 07 Nov 2019 12:40:40 +0000
-Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
+	id 1iShlG-0002IZ-3h; Thu, 07 Nov 2019 13:23:42 +0000
+Received: from mailgw01.mediatek.com ([216.200.240.184])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iSh5Y-00036S-LY
- for linux-mtd@lists.infradead.org; Thu, 07 Nov 2019 12:40:38 +0000
-Received: by mail-pl1-x643.google.com with SMTP id l4so1311624plt.13
- for <linux-mtd@lists.infradead.org>; Thu, 07 Nov 2019 04:40:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=8jX8dOpYJ1sYbsEashiPOSNbkt7RaXnABrhm5i8Aj9M=;
- b=OhNMgVR1JurtHSg7JRnW5MneUVfZ4N2eyVOh4tyDi/lYeME7yGCak6XJOdDte4Q4FW
- nQvdcHkc6W9ilP5NQU0V4nr15Hd2JJTH30cDrvtEphukn/FZEqkJhZSQsbmg6P7Agtxh
- eMnh5QIz9TVsvyAWr5Iq7dyq7W2wpOE5sQkvIwoUXMZ5IoPAq0GGooUSHcoSmAr72huh
- Mmw3TvhSfzF6YcN9Qz84xQY8CsWgQFJ5MQ+OsRrV5NlNcawn07+d235F5F4QInmuTAwn
- nsclYULSqxe+5XCb30Go59+kGBWspcuisgeeS8NhEmsUOQAdndMu1fPVVvKZmKtImkc/
- ldJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=8jX8dOpYJ1sYbsEashiPOSNbkt7RaXnABrhm5i8Aj9M=;
- b=HSmH1A2rnrhD9MmR/xrfitcFhkIBhblK0aaXK0B/xS56qAL8D33eVMaW26yy2XYOJq
- hTlZFtIWr8sTM6Gzy2YaoBHwI0e/N53Lp8oiqpo6qWRUmxoYKvaiqMrkDHZj4mswVRKX
- GdSREed4ZbZPBnLJj0/VJG8UZBAYxyAdgdUsyPTRFtI2Q2qhKKAxWgWzqtezS7ZwPoMQ
- MNGBJhUdzl/aRPgNjCge8Nxc4nDoxddG0qAJFH8F+/TKEcaYtCZ9+deKc207pj4ApU5y
- AFLuN0/Q9U28QwpyEaehOcaATnxvnMprk2IHjoYRoHOsr44jBvY+W+i2xAc++qmlwQbb
- KXpA==
-X-Gm-Message-State: APjAAAWwZD9lMNEidQ0my+IlQv9ZbCPziDJlrYcqKjLQ6FTtc9h4CU9g
- y+aaMqAgPY9KWM0IAPxTZ6Na
-X-Google-Smtp-Source: APXvYqzLZIcS35G7SY5EiXmg/0cAcZzuoHT0TORHjL6RIHzhpWtlIhCX5uDclrlz3ZQbwSIqPV3S6g==
-X-Received: by 2002:a17:90a:bf04:: with SMTP id c4mr4943909pjs.5.1573130435309; 
- Thu, 07 Nov 2019 04:40:35 -0800 (PST)
-Received: from mani ([103.59.133.81])
- by smtp.gmail.com with ESMTPSA id c16sm2442334pfo.34.2019.11.07.04.40.28
- (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
- Thu, 07 Nov 2019 04:40:33 -0800 (PST)
-Date: Thu, 7 Nov 2019 18:10:23 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Tudor.Ambarus@microchip.com
-Subject: Re: [PATCH v2 4/4] mtd: spi-nor: Add support for w25q256jw
-Message-ID: <20191107124023.GA11727@mani>
-References: <20191030090124.24900-1-manivannan.sadhasivam@linaro.org>
- <20191030090124.24900-5-manivannan.sadhasivam@linaro.org>
- <87e0b459-8dbf-26cc-611f-1b1b5266aa55@microchip.com>
- <20191101145806.GB13101@Mani-XPS-13-9360>
- <beb8e7fc-02c2-8267-3612-20a526ac07fd@microchip.com>
- <20191101160943.GA20347@Mani-XPS-13-9360>
- <ba29a5dd-df80-841b-68cd-66cffd6ae7cf@microchip.com>
+ id 1iShl6-00027B-8R; Thu, 07 Nov 2019 13:23:33 +0000
+X-UUID: e8c020057f31483a981adc71185ddfbe-20191107
+X-UUID: e8c020057f31483a981adc71185ddfbe-20191107
+Received: from mtkcas67.mediatek.inc [(172.29.193.45)] by mailgw01.mediatek.com
+ (envelope-from <yingjoe.chen@mediatek.com>)
+ (musrelay.mediatek.com ESMTP with TLS)
+ with ESMTP id 1487721755; Thu, 07 Nov 2019 05:23:25 -0800
+Received: from mtkmbs05n2.mediatek.inc (172.21.101.140) by
+ MTKMBS62N2.mediatek.inc (172.29.193.42) with Microsoft SMTP Server (TLS) id
+ 15.0.1395.4; Thu, 7 Nov 2019 05:23:24 -0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1395.4; Thu, 7 Nov 2019 21:23:23 +0800
+Received: from [172.21.77.4] (172.21.77.4) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1395.4 via Frontend
+ Transport; Thu, 7 Nov 2019 21:23:16 +0800
+Message-ID: <1573132996.8833.3.camel@mtksdaap41>
+Subject: Re: [PATCH 1/2] mtd: mtk-quadspi: add support for memory-mapped
+ flash reading
+From: Yingjoe Chen <yingjoe.chen@mediatek.com>
+To: Chuanhong Guo <gch981213@gmail.com>
+Date: Thu, 7 Nov 2019 21:23:16 +0800
+In-Reply-To: <20191106140748.13100-2-gch981213@gmail.com>
+References: <20191106140748.13100-1-gch981213@gmail.com>
+ <20191106140748.13100-2-gch981213@gmail.com>
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <ba29a5dd-df80-841b-68cd-66cffd6ae7cf@microchip.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-MTK: N
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191107_044036_709731_67FD18D0 
-X-CRM114-Status: GOOD (  18.79  )
+X-CRM114-CacheID: sfid-20191107_052332_301996_0C622CD2 
+X-CRM114-Status: UNSURE (   7.25  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,77 +79,31 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, richard@nod.at, marek.vasut@gmail.com,
- vigneshr@ti.com, shawnguo@kernel.org, s.hauer@pengutronix.de,
- linux-kernel@vger.kernel.org, darshak.patel@einfochips.com, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, linux-imx@nxp.com, kernel@pengutronix.de,
- miquel.raynal@bootlin.com, computersforpeace@gmail.com, festevam@gmail.com,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org,
- prajose.john@einfochips.com
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Vignesh Raghavendra <vigneshr@ti.com>, Tudor
+ Ambarus <tudor.ambarus@microchip.com>, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>, linux-mediatek@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Nov 07, 2019 at 12:30:05PM +0000, Tudor.Ambarus@microchip.com wrote:
-> 
-> 
-> On 11/01/2019 06:09 PM, Manivannan Sadhasivam wrote:
-> >> On 11/01/2019 04:58 PM, Manivannan Sadhasivam wrote:
-> >>>>> Add MTD support for w25q256jw SPI NOR chip from Winbond. This chip
-> >>>>> supports dual/quad I/O mode with 512 blocks of memory organized in
-> >>>>> 64KB sectors. In addition to this, there is also small 4KB sectors
-> >>>>> available for flexibility. The device has been validated using Thor96
-> >>>>> board.
-> >>>>>
-> >>>>> Cc: Marek Vasut <marek.vasut@gmail.com>
-> >>>>> Cc: Tudor Ambarus <tudor.ambarus@microchip.com>
-> >>>>> Cc: David Woodhouse <dwmw2@infradead.org>
-> >>>>> Cc: Brian Norris <computersforpeace@gmail.com>
-> >>>>> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> >>>>> Cc: Richard Weinberger <richard@nod.at>
-> >>>>> Cc: Vignesh Raghavendra <vigneshr@ti.com>
-> >>>>> Cc: linux-mtd@lists.infradead.org
-> >>>>> Signed-off-by: Darshak Patel <darshak.patel@einfochips.com>
-> >>>>> [Mani: cleaned up for upstream]
-> >>>> Can we keep Darshak's authorship? We usually change the author if we feel that
-> >>>> we made a significant change to what was originally published.
-> >>>>
-> >>>> If it's just about cosmetics, cleaning or rebase, you can specify what you did
-> >>>> after the author's S-o-b tag and then add your S-o-b, as you did above.
-> >>>>
-> >>> I'd suggest to keep Darshak's authorship since he did the actual change in
-> >>> the bsp. I have to clean it up before submitting upstream and I mentioned
-> >>> the same above.
-> >>>
-> >> Ok, I'll amend the author when applying, it will be Darshak.
-> >>
-> > Ah no. I was saying we should keep both of ours authorship. It shouldn't
-> > be an issue because we both are involved in the process.
-> 
-> There can be only one author in a patch, and multiple signers if needed:
-> 
-> Author: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> Date:   Wed Oct 30 14:31:24 2019 +0530
-> 
->     mtd: spi-nor: Add support for w25q256jw
-> [cut]
->     Signed-off-by: Darshak Patel <darshak.patel@einfochips.com>
->     [Mani: cleaned up for upstream]
->     Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> 
-> Please read
-> https://www.kernel.org/doc/html/v5.3/process/submitting-patches.html, paragraph
-> 11), and tell me if you want me to amend the author to keep Darshak's authorship
-> or you want to keep yours.
+On Wed, 2019-11-06 at 22:07 +0800, Chuanhong Guo wrote:
+> PIO reading mode on this controller is ridiculously inefficient
+> (one cmd+addr+dummy sequence reads only one byte)
+> This patch adds support for reading from memory-mapped flash area
+> which increases reading speed from 1MB/s to 5.6MB/s
 
-Just keep me as the author of this patch. Darshak still gets credit with his
-signed-off-by tag.
+This may not be true for all MTK SoC. Which one are you testing?
 
-Sorry for the confusion!
+Joe.C
 
-Thanks,
-Mani
+
+
 
 
 ______________________________________________________
