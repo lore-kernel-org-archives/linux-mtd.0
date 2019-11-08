@@ -4,18 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64138FA372C
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Nov 2019 04:34:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3851AC5DF60
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Nov 2019 04:46:32 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 361AE214DB
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Nov 2019 04:34:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 096E121848
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Nov 2019 04:46:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HqFXP7iA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 361AE214DB
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="G1gAzUXi";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="xRn6UE1f"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 096E121848
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,50 +25,45 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
 	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=E+Z+YPSvXcp+DWHZHrSbQlip0psKNWsLKhvTC5sY1pg=; b=HqFXP7iAUc70MKoacu6mQBse+
-	hMjmcxIGdD6wNB9uoLfvr4NGPX2DsixXusS9bub0NxEQ12ACJSoCQCTrDWYw21rq/np9WG//6ITxH
-	1B+Dd1UiIZgd0e2+8isjaRI6+k723Oy2/l1lvqc5ljyA00af8Dz3ILSXn6hl/GCMLntR9kJIB5vjr
-	iavq2z5RES0o3QhmUXKLEuLASK+wBTjNwHzCsY5HLCINSTTKwcV9K3ofOz8dyU5MWw6ei33AXk3yB
-	D3W+GP+y/EtNI8ndDE8uhq87lKTLMfhXOUE1+z9GSZ7YhWPLa/lxIiDauDrrfu3N+oX6Dgyk4pwJu
-	T3D5bmggw==;
+	 bh=VyBlpnlppZeZwt8l9+OnkjkT5MQdstsy8P3AuY0L3HU=; b=G1gAzUXiBwnLEbPekoCWYohIb
+	6b0QdB2NPrXQAErN9K9FeifltA/n4rDtZ3g5R6fKP2yJnt3VoJ+JCITpujYme0d6VMD0k8H8xH1ix
+	2FO2aDwnZdAAtMkM3r6738DVoxbqNaJaqzopRYixzK38VCJourqzvWdN8Rg9yTcrvCouSOZdBGDqE
+	uqf2KB4WgRJ25ZkBN3hkWVjUMq5x4vOR9+9E8qof219WOV8tCFKSilYCZnl5OwoTiVz1XKzwoULrs
+	5Za4z8RhFBucfqa32ym2+zizo4WNzsRrrBOdF/kqo+yzmdThvsySQ5CvqT8vAZK5Y3ZCgO1CBmC8t
+	NUYaojZZQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iSvyj-0001kF-7Q; Fri, 08 Nov 2019 04:34:33 +0000
-Received: from icp-osb-irony-out3.external.iinet.net.au ([203.59.1.153])
- by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iSvyf-0001jL-KQ; Fri, 08 Nov 2019 04:34:32 +0000
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2AWAADi78Rd/zXSMGcNWBkBAQEBAQE?=
- =?us-ascii?q?BAQEBAQEBAQEBAREBAQEBAQEBAQEBAYF+gwyBMYQpj2oBAQeBNn+Ca4V6kUM?=
- =?us-ascii?q?JAQEBAQEBAQEBLwgBAYRAAoQyOBMCDgEBAQQBAQEBAQUDAYVYTIVdAQEBAQI?=
- =?us-ascii?q?BIxVBEAsNCAMCAiYCAlcGDQYCAQGDHgGCUgUvsVp1gTIahB8BgRSDNYFCBoE?=
- =?us-ascii?q?OKIFlikd4gQeBESeCNjU+gQSBOSUChHGCXgSWSpc9gi6HF44kBhuOPwOLMpZ?=
- =?us-ascii?q?6k0qBejMaCCgIgydQkHODW4plYgGQdQEB?=
-X-IPAS-Result: =?us-ascii?q?A2AWAADi78Rd/zXSMGcNWBkBAQEBAQEBAQEBAQEBAQEBA?=
- =?us-ascii?q?REBAQEBAQEBAQEBAYF+gwyBMYQpj2oBAQeBNn+Ca4V6kUMJAQEBAQEBAQEBL?=
- =?us-ascii?q?wgBAYRAAoQyOBMCDgEBAQQBAQEBAQUDAYVYTIVdAQEBAQIBIxVBEAsNCAMCA?=
- =?us-ascii?q?iYCAlcGDQYCAQGDHgGCUgUvsVp1gTIahB8BgRSDNYFCBoEOKIFlikd4gQeBE?=
- =?us-ascii?q?SeCNjU+gQSBOSUChHGCXgSWSpc9gi6HF44kBhuOPwOLMpZ6k0qBejMaCCgIg?=
- =?us-ascii?q?ydQkHODW4plYgGQdQEB?=
-X-IronPort-AV: E=Sophos;i="5.68,280,1569254400"; d="scan'208";a="224499746"
-Received: from unknown (HELO [10.44.0.22]) ([103.48.210.53])
- by icp-osb-irony-out3.iinet.net.au with ESMTP; 08 Nov 2019 12:34:16 +0800
+	id 1iSwA4-0006FG-8a; Fri, 08 Nov 2019 04:46:16 +0000
+Received: from mail.kernel.org ([198.145.29.99])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1iSwA1-0006EL-M3; Fri, 08 Nov 2019 04:46:15 +0000
+Received: from [10.44.0.22] (unknown [103.48.210.53])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id CC92721848;
+ Fri,  8 Nov 2019 04:46:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1573188373;
+ bh=gH4YV/wqrobeQnaVD22aDnltH06bEHnjtZENRGZ48q4=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=xRn6UE1fCLscoGa0SSMS43OBs/hmPEGgj8EzH0pTY9x2nudK/0/KLYUDldyDZFBiW
+ eefoao4dK85ZkzfVnGne6x8pop9UgAK0gyCag4BvbaJ1GqmvgyozJHyhg8t+8IWe7v
+ Jqu6973Y1RC3ZxksXaZzEc2ZHihhNBSO+oKuM9iw=
 Subject: Re: [PATCH] mtd: rawnand: driver for Mediatek MT7621 SoC NAND flash
  controller
-To: Greg KH <gregkh@linuxfoundation.org>
-References: <20191107073521.11413-1-gerg@kernel.org>
- <20191107084007.GA1203521@kroah.com>
+To: =?UTF-8?Q?Ren=c3=a9_van_Dorst?= <opensource@vdorst.com>
+References: <20191107092053.Horde.i3MVcW9RqZDOQBMADZX9fuc@www.vdorst.com>
 From: Greg Ungerer <gerg@kernel.org>
-Message-ID: <eb68fc5f-0a50-3faf-be61-23af5550ef39@kernel.org>
-Date: Fri, 8 Nov 2019 14:34:15 +1000
+Message-ID: <b7e61be8-bd72-a4ef-6fb7-1047c7874342@kernel.org>
+Date: Fri, 8 Nov 2019 14:46:07 +1000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20191107084007.GA1203521@kroah.com>
+In-Reply-To: <20191107092053.Horde.i3MVcW9RqZDOQBMADZX9fuc@www.vdorst.com>
 Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191107_203429_884942_6ECA8FC3 
-X-CRM114-Status: GOOD (  15.03  )
+X-CRM114-CacheID: sfid-20191107_204613_744246_438728B3 
+X-CRM114-Status: GOOD (  20.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,55 +75,56 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, neil@brown.name,
- linux-mediatek@lists.infradead.org, blogic@openwrt.org
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Cc: devel@driverdev.osuosl.org, Weijie Gao <hackpascal@gmail.com>,
+ gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+ DENG Qingfang <dengqf6@mail2.sysu.edu.cn>, linux-mediatek@lists.infradead.org,
+ neil@brown.name, linux-mtd@lists.infradead.org,
+ Chuanhong Guo <gch981213@gmail.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-On 7/11/19 6:40 pm, Greg KH wrote:
-> On Thu, Nov 07, 2019 at 05:35:21PM +1000, gerg@kernel.org wrote:
->> From: Greg Ungerer <gerg@kernel.org>
->>
->> Add a driver to support the NAND flash controller of the MediaTek MT7621
->> System-on-Chip device. (This one is the MIPS based parts from Mediatek).
->>
->> This code is a re-working of the earlier patches for this hardware that
->> have been floating around the internet for years:
->>
->> https://github.com/ReclaimYourPrivacy/cloak/blob/master/target/linux/ramips/patches-3.18/0045-mtd-add-mt7621-nand-support.patch
->>
->> This is a much cleaned up version, put in staging to start with.
->> It does still have some problems, mainly that it still uses a lot of the
->> mtd raw nand legacy support.
-> 
-> Is that an issue?  Why not just put it in the "real" part of the kernel
-> then, if those apis are still in use?
-
-Agreed. If the MTD folks have no problem with it.
-
-
->> The driver not only compiles, but it works well on the small range of
->> hardware platforms that it has been used on so far. I have been using
->> for quite a while now, cleaning up as I get time.
->>
->> So... I am looking for comments on the best approach forward with this.
->> At least in staging it can get some more eyeballs going over it.
-> 
-> staging will just nit-pick it to death for coding style issues, it's not
-> going to be get any major api changes/cleanups there usually.  I'd
-> recommend just merging this to the "real" part of the kernel now if it's
-> working for you.
-
-I'll spin a v2 based on Dan's feedback, and move it into drivers/mtd.
-
-Thanks
-Greg
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Ck9uIDcvMTEvMTkgNzoyMCBwbSwgUmVuw6kgdmFuIERvcnN0IHdyb3RlOgo+IFF1b3RpbmcgZ2Vy
+Z0BrZXJuZWwub3JnOgo+IAo+PiBGcm9tOiBHcmVnIFVuZ2VyZXIgPGdlcmdAa2VybmVsLm9yZz4K
+Pj4KPj4gQWRkIGEgZHJpdmVyIHRvIHN1cHBvcnQgdGhlIE5BTkQgZmxhc2ggY29udHJvbGxlciBv
+ZiB0aGUgTWVkaWFUZWsgTVQ3NjIxCj4+IFN5c3RlbS1vbi1DaGlwIGRldmljZS4gKFRoaXMgb25l
+IGlzIHRoZSBNSVBTIGJhc2VkIHBhcnRzIGZyb20gTWVkaWF0ZWspLgo+Pgo+PiBUaGlzIGNvZGUg
+aXMgYSByZS13b3JraW5nIG9mIHRoZSBlYXJsaWVyIHBhdGNoZXMgZm9yIHRoaXMgaGFyZHdhcmUg
+dGhhdAo+PiBoYXZlIGJlZW4gZmxvYXRpbmcgYXJvdW5kIHRoZSBpbnRlcm5ldCBmb3IgeWVhcnM6
+Cj4+Cj4+IGh0dHBzOi8vZ2l0aHViLmNvbS9SZWNsYWltWW91clByaXZhY3kvY2xvYWsvYmxvYi9t
+YXN0ZXIvdGFyZ2V0L2xpbnV4L3JhbWlwcy9wYXRjaGVzLTMuMTgvMDA0NS1tdGQtYWRkLW10NzYy
+MS1uYW5kLXN1cHBvcnQucGF0Y2gKPj4KPj4gVGhpcyBpcyBhIG11Y2ggY2xlYW5lZCB1cCB2ZXJz
+aW9uLCBwdXQgaW4gc3RhZ2luZyB0byBzdGFydCB3aXRoLgo+PiBJdCBkb2VzIHN0aWxsIGhhdmUg
+c29tZSBwcm9ibGVtcywgbWFpbmx5IHRoYXQgaXQgc3RpbGwgdXNlcyBhIGxvdCBvZiB0aGUKPj4g
+bXRkIHJhdyBuYW5kIGxlZ2FjeSBzdXBwb3J0Lgo+Pgo+PiBUaGUgZHJpdmVyIG5vdCBvbmx5IGNv
+bXBpbGVzLCBidXQgaXQgd29ya3Mgd2VsbCBvbiB0aGUgc21hbGwgcmFuZ2Ugb2YKPj4gaGFyZHdh
+cmUgcGxhdGZvcm1zIHRoYXQgaXQgaGFzIGJlZW4gdXNlZCBvbiBzbyBmYXIuIEkgaGF2ZSBiZWVu
+IHVzaW5nCj4+IGZvciBxdWl0ZSBhIHdoaWxlIG5vdywgY2xlYW5pbmcgdXAgYXMgSSBnZXQgdGlt
+ZS4KPj4KPj4gU28uLi4gSSBhbSBsb29raW5nIGZvciBjb21tZW50cyBvbiB0aGUgYmVzdCBhcHBy
+b2FjaCBmb3J3YXJkIHdpdGggdGhpcy4KPj4gQXQgbGVhc3QgaW4gc3RhZ2luZyBpdCBjYW4gZ2V0
+IHNvbWUgbW9yZSBleWViYWxscyBnb2luZyBvdmVyIGl0Lgo+Pgo+PiBUaGVyZSBpcyBhIG1lZGlh
+dGVrIG5hbmQgZHJpdmVyIGFscmVhZHksIG10a19uYW5kLmMsIGZvciB0aGVpciBBUk0gYmFzZWQK
+Pj4gU3lzdGVtLW9uLUNoaXAgZGV2aWNlcy4gVGhhdCBoYXJkd2FyZSBtb2R1bGUgbG9va3MgdG8g
+aGF2ZSBzb21lIGhhcmR3YXJlCj4+IHNpbWlsYXJpdGllcyB3aXRoIHRoaXMgb25lLiBBdCB0aGlz
+IHBvaW50IEkgZG9uJ3Qga25vdyBpZiB0aGF0IGNhbiBiZQo+PiB1c2VkIG9uIHRoZSA3NjIxIGJh
+c2VkIGRldmljZXMuIChJIHRyaWVkIGEgcXVpY2sgYW5kIGRpcnR5IHNldHVwIGFuZCBoYWQKPj4g
+bm8gc3VjY2VzcyB1c2luZyBpdCBvbiB0aGUgNzYyMSkuCj4+Cj4+IFRob3VnaHRzPwo+IAo+ICtD
+QyBERU5HIFFpbmdmYW5nLCBDaHVhbmhvbmcgR3VvLCBXZWlqaWUgR2FvIHRvIHRoZSBsaXN0Lgo+
+IAo+IEhpIEdyZWcsCj4gCj4gVGhhbmtzIGZvciBwb3N0aW5nIHRoaXMgZHJpdmVyLgo+IAo+IEJ1
+dCBJIHdvdWxkIGxpa2UgdG8gbWVudGlvbiB0aGF0IHRoZSBvcGVud3J0IGNvbW11bml0eSBpcyBj
+dXJyZW50bHkgd29ya2luZyBvbiBhCj4gbmV3IHZlcnNpb24gd2hpY2ggaXMgYmFzZWQgYSBuZXdl
+ciB2ZXJzaW9uIG9mIHRoZSBNZWRpYVRlayB2ZW5kb3IgZHJpdmVyLgo+IFRoYXQgdmVyc2lvbiBp
+cyBjdXJyZW50bHkgdGFyZ2V0ZWQgZm9yIHRoZSBvcGVud3J0IDQuMTkga2VybmVsLgo+IFNlZSBm
+dWxsIHB1bGwgcmVxdWVzdCBbMV0gYW5kIE5BTkQgZHJpdmVyIHBhdGNoIFsyXQo+IAo+IEl0IHdv
+dWxkIGJlIGEgc2hhbWUgaWYgZHVwbGljYXRlIHdvcmsgaGFzIGJlZW4gZG9uZS4KClRoYW5rcyBm
+b3IgcG9pbnRpbmcgdGhhdCBvdXQuIEkgaGF2ZSBubyBwYXJ0aWN1bGFyIGF0dGFjaG1lbnQgdG8g
+dGhlCnBhdGNoIGNvZGUgSSBzZW50IChJIGRpZG4ndCB3cml0ZSBpdCkuIFJlYWxseSBqdXN0IHdh
+bnQgdG8gc2VlIGEgZHJpdmVyCmluIG1haW5saW5lLgoKSSBhbSBnb2luZyB0byBzcGluIGEgdjIg
+b2YgaXQsIGxldHMgc2VlIGhvdyB0byB0aGUgMiBkcml2ZXJzIHN0YWNrIHVwCmFnYWluc3QgZWFj
+aCBvdGhlci4KClJlZ2FyZHMKR3JlZwoKCgo+IFsxXTogaHR0cHM6Ly9naXRodWIuY29tL29wZW53
+cnQvb3BlbndydC9wdWxsLzIzODUKPiBbMl06IGh0dHBzOi8vZ2l0aHViLmNvbS9vcGVud3J0L29w
+ZW53cnQvcHVsbC8yMzg1L2NvbW1pdHMvYjI1NjljMGE1OTQzZmU4Zjk0YmEwN2M5NTQwZWNkMTQw
+MDZkNzI5YQo+IAo+IDxzbmlwPgo+IAo+IAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
+dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
