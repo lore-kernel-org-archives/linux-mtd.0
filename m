@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85BCBC5DF60
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Nov 2019 11:40:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 834ADFA372C
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Nov 2019 11:40:25 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 56A5F222C2
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Nov 2019 11:40:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5AEFF21D7E
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Nov 2019 11:40:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KeaTZ4yZ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="BpQc1Noq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 56A5F222C2
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TblF00nh";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="A2tfOBhx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5AEFF21D7E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dLeOcNs9v4CGVjhhKywqMgUiU6zxoZm4cQJUW6hDVcE=; b=KeaTZ4yZg7P95v
-	M8Tj58n1hnj6BwvblU3dKFPY4Lpm9mWNoD3OuLE1grS7IwOiL9XXVNLy61+sRiAGrkve3p1J0gPpi
-	TrzbEm/6+4fcubKrc4ytTNTYhcXMOhyP067e9yV7YEve7tMrmBBABUeE1HnaqRRLN8PnCJW6vD53G
-	c1n7tWvW0S5Hq4USSdeohsWeIBtTC5mvLOF4MGhOsVixajug7h1TPq51KVuCdcORi7eAewAfaLN34
-	JJ8g0la9IwCcbK7100+979Z0MnQ15POw1kR6t7F5tLadsjRnai8wO5Dkq7GrfyHf+hb+jYbUB4Ino
-	unOYYDjc/Oe0ggU99mJw==;
+	List-Owner; bh=qo801owWd05T3PooCw8+D/ZR2uOyK44tVRMl4ZZ4k/0=; b=TblF00nhy0nD+y
+	Nw+J9D9VzdhRteuf8IMVntOq7TIeU8hNZkwKrKlx1H8C0AMggqm9gBmRwO0J39VbL1JUYvvFyjhUX
+	TQQVv98k4wvfSKCeltsFtcSoEJ1bJrr8Oe0KniCkfgBjvoclonG4urqU9QyWEZdB1Cl2JnQf9pYCv
+	3cG0Pa/UM8lNPIcEdA9LZnyZXvO2cXNP4aiLc7dkrBYcofxCircue5Qrr2sCOGRWnqkmjlkxnTBCa
+	mzREEO3P78LCzl/iu5yWXQuCXDKUtXq9GGa2LldOpnrZ3OQ2RCCB8uXujwWE8ddjcSXuqwqU2MunS
+	YiR4gdsyueCI+Q30Euvg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iT2cM-0007eO-8U; Fri, 08 Nov 2019 11:39:54 +0000
+	id 1iT2cZ-0008Nn-GC; Fri, 08 Nov 2019 11:40:07 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iT2cI-0007av-LV
- for linux-mtd@lists.infradead.org; Fri, 08 Nov 2019 11:39:52 +0000
+ id 1iT2cL-0007dM-8U
+ for linux-mtd@lists.infradead.org; Fri, 08 Nov 2019 11:39:54 +0000
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id B7490222C2;
- Fri,  8 Nov 2019 11:39:49 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 3835B20869;
+ Fri,  8 Nov 2019 11:39:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1573213190;
- bh=FJvlhdFxsqprxnNVbN95u0jbEh0Nno/W3yfaEzFlnI8=;
+ s=default; t=1573213192;
+ bh=61Zi68SLTQlqqIhEFxVkIGJTkP0MJg3PyoENUJb2L+Q=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=BpQc1NoqGN1YJc8D0rgEU1T0Fvp5DReOV9424XPYNW5WJ9kBlvo6cSfBfxf+6q8uU
- 1RSjLctu06Amw5WnDNqPNyqIQ682Ujhw/gAQ+xvrpsYt24M4pjiuDkq77aJKPzp6T5
- mD8kMR7rEeRyCgIt/nYRR9mLbY1B8AnXZlplZGmo=
+ b=A2tfOBhxT2hyA4UARK+KCZEHDBktX3PIdgQiD0FeGwgpdO4gS0h/w/qAeuTgDvPJp
+ +NY0nv9IYErSGw+0btcq4pQNwtIfrgKdM7QOEvs5Y+X2RnsCZTie90Vr24Nq4pI9ls
+ VcvBJbFuDl4iQlKs14o3yEbjZJu+LP3CRXcPjuwk=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 080/205] mtd: rawnand: marvell: use
- regmap_update_bits() for syscon access
-Date: Fri,  8 Nov 2019 06:35:47 -0500
-Message-Id: <20191108113752.12502-80-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 081/205] mtd: rawnand: fsl_ifc: check result of
+ SRAM initialization
+Date: Fri,  8 Nov 2019 06:35:48 -0500
+Message-Id: <20191108113752.12502-81-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191108113752.12502-1-sashal@kernel.org>
 References: <20191108113752.12502-1-sashal@kernel.org>
@@ -65,9 +65,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191108_033950_740066_AAB3F2FC 
-X-CRM114-Status: UNSURE (   9.95  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20191108_033953_383234_DD1F2BE2 
+X-CRM114-Status: GOOD (  11.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,78 +78,75 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Sasha Levin <sashal@kernel.org>, linux-mtd@lists.infradead.org,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Sasha Levin <sashal@kernel.org>, Kurt Kanzenbach <kurt@linutronix.de>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+From: Kurt Kanzenbach <kurt@linutronix.de>
 
-[ Upstream commit 88aa3bbfc020d14b13d67af3f5c08aa992d82cd8 ]
+[ Upstream commit 434655af6a187129d8114640443b27d2cecfb979 ]
 
-The marvell_nfc_init() function fiddles with some bits of a system
-controller on Armada 7K/8K. However, it does a read/modify/write
-sequence on GENCONF_CLK_GATING_CTRL and GENCONF_ND_CLK_CTRL, which
-isn't safe from a concurrency point of view, as the regmap lock isn't
-taken accross the read/modify/write sequence. To solve this issue, use
-regmap_update_bits().
+The SRAM initialization might fail. If that happens further NAND operations
+won't be successful. Therefore, the chip init routine should fail if the SRAM
+initialization didn't work.
 
-While at it, since the "reg" variable is no longer needed for the
-read/modify/write sequences, get rid of it for the regmap_write() to
-GENCONF_SOC_DEVICE_MUX, and directly pass the value to be written as
-argument.
-
-Fixes: 02f26ecf8c772 ("mtd: nand: add reworked Marvell NAND controller driver")
-Signed-off-by: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Signed-off-by: Kurt Kanzenbach <kurt@linutronix.de>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/nand/raw/marvell_nand.c | 23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
+ drivers/mtd/nand/raw/fsl_ifc_nand.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-index 9c90695a885fe..7a84a8f05b46d 100644
---- a/drivers/mtd/nand/raw/marvell_nand.c
-+++ b/drivers/mtd/nand/raw/marvell_nand.c
-@@ -2710,24 +2710,23 @@ static int marvell_nfc_init(struct marvell_nfc *nfc)
- 		struct regmap *sysctrl_base =
- 			syscon_regmap_lookup_by_phandle(np,
- 							"marvell,system-controller");
--		u32 reg;
+diff --git a/drivers/mtd/nand/raw/fsl_ifc_nand.c b/drivers/mtd/nand/raw/fsl_ifc_nand.c
+index 24f59d0066afd..e4f5792dc5893 100644
+--- a/drivers/mtd/nand/raw/fsl_ifc_nand.c
++++ b/drivers/mtd/nand/raw/fsl_ifc_nand.c
+@@ -761,7 +761,7 @@ static const struct nand_controller_ops fsl_ifc_controller_ops = {
+ 	.attach_chip = fsl_ifc_attach_chip,
+ };
  
- 		if (IS_ERR(sysctrl_base))
- 			return PTR_ERR(sysctrl_base);
+-static void fsl_ifc_sram_init(struct fsl_ifc_mtd *priv)
++static int fsl_ifc_sram_init(struct fsl_ifc_mtd *priv)
+ {
+ 	struct fsl_ifc_ctrl *ctrl = priv->ctrl;
+ 	struct fsl_ifc_runtime __iomem *ifc_runtime = ctrl->rregs;
+@@ -805,12 +805,16 @@ static void fsl_ifc_sram_init(struct fsl_ifc_mtd *priv)
+ 	wait_event_timeout(ctrl->nand_wait, ctrl->nand_stat,
+ 			   msecs_to_jiffies(IFC_TIMEOUT_MSECS));
  
--		reg = GENCONF_SOC_DEVICE_MUX_NFC_EN |
--		      GENCONF_SOC_DEVICE_MUX_ECC_CLK_RST |
--		      GENCONF_SOC_DEVICE_MUX_ECC_CORE_RST |
--		      GENCONF_SOC_DEVICE_MUX_NFC_INT_EN;
--		regmap_write(sysctrl_base, GENCONF_SOC_DEVICE_MUX, reg);
-+		regmap_write(sysctrl_base, GENCONF_SOC_DEVICE_MUX,
-+			     GENCONF_SOC_DEVICE_MUX_NFC_EN |
-+			     GENCONF_SOC_DEVICE_MUX_ECC_CLK_RST |
-+			     GENCONF_SOC_DEVICE_MUX_ECC_CORE_RST |
-+			     GENCONF_SOC_DEVICE_MUX_NFC_INT_EN);
+-	if (ctrl->nand_stat != IFC_NAND_EVTER_STAT_OPC)
++	if (ctrl->nand_stat != IFC_NAND_EVTER_STAT_OPC) {
+ 		pr_err("fsl-ifc: Failed to Initialise SRAM\n");
++		return -ETIMEDOUT;
++	}
  
--		regmap_read(sysctrl_base, GENCONF_CLK_GATING_CTRL, &reg);
--		reg |= GENCONF_CLK_GATING_CTRL_ND_GATE;
--		regmap_write(sysctrl_base, GENCONF_CLK_GATING_CTRL, reg);
-+		regmap_update_bits(sysctrl_base, GENCONF_CLK_GATING_CTRL,
-+				   GENCONF_CLK_GATING_CTRL_ND_GATE,
-+				   GENCONF_CLK_GATING_CTRL_ND_GATE);
+ 	/* Restore CSOR and CSOR_ext */
+ 	ifc_out32(csor, &ifc_global->csor_cs[cs].csor);
+ 	ifc_out32(csor_ext, &ifc_global->csor_cs[cs].csor_ext);
++
++	return 0;
+ }
  
--		regmap_read(sysctrl_base, GENCONF_ND_CLK_CTRL, &reg);
--		reg |= GENCONF_ND_CLK_CTRL_EN;
--		regmap_write(sysctrl_base, GENCONF_ND_CLK_CTRL, reg);
-+		regmap_update_bits(sysctrl_base, GENCONF_ND_CLK_CTRL,
-+				   GENCONF_ND_CLK_CTRL_EN,
-+				   GENCONF_ND_CLK_CTRL_EN);
+ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
+@@ -914,8 +918,13 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
+ 		chip->ecc.algo = NAND_ECC_HAMMING;
  	}
  
- 	/* Configure the DMA if appropriate */
+-	if (ctrl->version >= FSL_IFC_VERSION_1_1_0)
+-		fsl_ifc_sram_init(priv);
++	if (ctrl->version >= FSL_IFC_VERSION_1_1_0) {
++		int ret;
++
++		ret = fsl_ifc_sram_init(priv);
++		if (ret)
++			return ret;
++	}
+ 
+ 	/*
+ 	 * As IFC version 2.0.0 has 16KB of internal SRAM as compared to older
 -- 
 2.20.1
 
