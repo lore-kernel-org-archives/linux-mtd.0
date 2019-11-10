@@ -1,63 +1,87 @@
-Return-Path: <SRS0=4Kqf=ZB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=dr70=ZC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F388C43331
-	for <linux-mtd@archiver.kernel.org>; Sat,  9 Nov 2019 19:36:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9190CC17443
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 Nov 2019 05:21:49 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D8F0221882
-	for <linux-mtd@archiver.kernel.org>; Sat,  9 Nov 2019 19:36:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 61DB4214E0
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 Nov 2019 05:21:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="UtXVucSu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D8F0221882
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PaId/Mts";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XdsLA0IE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 61DB4214E0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eLZl82HoasT1sYIkY4o31Po47D7CWgF1CywqGS0uYQY=; b=UtXVucSuyKA2pn
-	Ro7pOHvpW9kmMr9+odb96eld7VwlHwNR6+bD1mV1RRHXZddC5cw6X6oIQbyVfJihkWOuHnzzgZJl/
-	GE8rUn0MfwH+XdYrmYOXHBpfbPnC1R7D6fkbx2Y0AlCazRqIH/N7EAAvP4uupn8nERj/8eI+DUgkG
-	jGLSVBV13e2oSSCcmw46j7RSVNQ43njhgBDMFJ8FrAsknOiWjJDkwOtSOHbqy2OQc5dK+BfUTAl45
-	42lfHnDTBg4d9z6juTQZFnY2aJ8+/xKfz02bhdSAraUoaQlaEq69UtBz4GBTtZqH+aKdd7U/H2klV
-	4MSm3WMKWOcpPzjh+q4w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=2Vr8Ch+saxAlFKac3bLHnFFiwK4QXocLTET5cpnpIe0=; b=PaId/MtsVXX/Ym
+	Cd1dvz938ZGp23tXBR2ucKovspdqk2CyjuyCwntnUy1WopjuOaTend7uSIJ68dKyr2a6+y8poSaml
+	1Y3OuK6YgpmPB5daLMihDvEDpI7MAPAF6FkVqMqWmtc+YfuuWumdpj+wS9thtMOdAN4Wzsar5fe+d
+	mZ/qoUWnkm6pbBVOXeyxRJbmTxYsDYz56xqAgKIHOAApPXX8PtYkTmHEwii5z9x/DCv3nzS618l0C
+	tnZhkWPCnwzvfvOeD/E0h1nwgDJ2iA7PARvYmxHCn88lV3cJKY30vEU0Fq8We1l1cnGJJmH1TMqaG
+	6yI8chXIx4D3MPx77pSA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iTWWk-0002oE-HH; Sat, 09 Nov 2019 19:36:06 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1iTffD-000517-5j; Sun, 10 Nov 2019 05:21:27 +0000
+Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iTWWh-0002ne-Dp
- for linux-mtd@lists.infradead.org; Sat, 09 Nov 2019 19:36:05 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id ACF9728533C;
- Sat,  9 Nov 2019 19:36:01 +0000 (GMT)
-Date: Sat, 9 Nov 2019 20:35:58 +0100
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: Re: [PATCH v2] mtd: spi-nor: use spi-mem dirmap API
-Message-ID: <20191109203558.4a03c398@collabora.com>
-In-Reply-To: <ef173d36-c918-4636-ace6-f6ba82dac672@cogentembedded.com>
-References: <610761cf-5a19-c182-07d8-8d118ca20035@cogentembedded.com>
- <ef173d36-c918-4636-ace6-f6ba82dac672@cogentembedded.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1iTffA-00050X-IH; Sun, 10 Nov 2019 05:21:26 +0000
+Received: by mail-pg1-x544.google.com with SMTP id 15so6844787pgh.5;
+ Sat, 09 Nov 2019 21:21:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=TMao0m+WBFgI6jAFcx+RDnI9bR05H5nekwksgla7gfk=;
+ b=XdsLA0IE1tSbb8ARuuhe1PsBRcnbnHnd8Re01hVkokE2p7OVDNsaGBvWN5ie75kucy
+ j9iKtGOQRK+FmZl3DMY4PdhzEvedoyAR6TfztQoKXGUmymh0erKxS3Bs22o204q9yv6Y
+ bE0SUnBZZZuQrbtYIR1zZzEh8hGo9f21o77RgSQrrohhoxbkzXiGbO3Zn9NGU5/PtGXF
+ 0Deh8RKWCP+oJKIzz9TUkNmQl4kWXsdeO6QqrKUviLOs3MOgg1bjt/iISJI3cYvgRSLh
+ /RVQTWzOgx0al/3NVry0mQWfCiKPTHrqhNLFWs5P+iZkiQrs7iAjfBQmU3gUQsfO2p+N
+ fWYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=TMao0m+WBFgI6jAFcx+RDnI9bR05H5nekwksgla7gfk=;
+ b=MPacWxa1lRpvD2hM+xPwelEmP4dYcocyKI2ElBP7bFtqnkIPZ2gy30wjyaec9cI4gA
+ m6H7aJHlvkwkdi9Ifb+E6allNSkD28JnroSpDj3og3JMJ3bRMufUz1arCMFvm8jNuKQm
+ MNc6Wjib6s1ACj0936648ddFa0cuxA2bWhESloUtije59vs1YhaPzQWS9R3e4gg1ryO7
+ lhhHHVTBuE7ZhCFlQom7unaqXQkDKrZIIrrQBtgkvwD3cHTQU2FkzpofWRbV9XjGUkxT
+ 6+dcytILj2XUZcnxqMqTl8tQ37lVzcI/XwvDc4Rych+G/3E7HPYDnXgbt/HuzP5pQGLJ
+ bAyA==
+X-Gm-Message-State: APjAAAUJWrdXBrL97RDuma9oYWO6mfxFS8Cic+eUzPswOAikjw/cYRIT
+ RX/FM9AcBnSHiMtCBRhE5TNlawIe
+X-Google-Smtp-Source: APXvYqwsQIVrKoTr9TWAEg6y3vO4SJ2DGsvjSoAXlFQdoXqviAyGF42arb0w+rT2gUcrB+ThHkvCMA==
+X-Received: by 2002:a17:90a:eb18:: with SMTP id
+ j24mr26185948pjz.85.1573363281014; 
+ Sat, 09 Nov 2019 21:21:21 -0800 (PST)
+Received: from localhost.localdomain ([2001:19f0:7001:2668:5400:1ff:fe62:2bbd])
+ by smtp.gmail.com with ESMTPSA id y2sm10728754pfe.126.2019.11.09.21.21.13
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sat, 09 Nov 2019 21:21:20 -0800 (PST)
+From: Chuanhong Guo <gch981213@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/2] mtd: mtk-quadspi: add support for DMA reading
+Date: Sun, 10 Nov 2019 13:21:00 +0800
+Message-Id: <20191110052104.5502-1-gch981213@gmail.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191109_113603_729032_F18C0A94 
-X-CRM114-Status: GOOD (  16.55  )
+X-CRM114-CacheID: sfid-20191109_212124_629969_7EDEE2E4 
+X-CRM114-Status: GOOD (  14.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,98 +94,194 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>, Chuanhong Guo <gch981213@gmail.com>,
+ linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 7 Nov 2019 23:49:12 +0300
-Sergei Shtylyov <sergei.shtylyov@cogentembedded.com> wrote:
+PIO reading mode on this controller is pretty inefficient
+(one cmd+addr+dummy sequence reads only one byte)
+This patch adds support for reading using DMA mode which increases
+reading speed from 1MB/s to 4MB/s
 
-> Make use of the spi-mem direct mapping API to let advanced controllers
-> optimize read/write operations when they support direct mapping.
-> 
-> Based on the original patch by Boris Brezillon <boris.brezillon@bootlin.com>.
-> 
-> Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-> 
-> ---
-> Changes in version 2:
-> - moved the spi_mem_dirmap_{read|write}() calls from spi_nor_{read|write}() to
->   spi_nor_spimem_{read|write}_data().
-> 
->  drivers/mtd/spi-nor/spi-nor.c |  125 +++++++++++++++++++++++++++++++++---------
->  include/linux/mtd/spi-nor.h   |    5 +
->  2 files changed, 104 insertions(+), 26 deletions(-)
-> 
-> Index: linux/drivers/mtd/spi-nor/spi-nor.c
-> ===================================================================
-> --- linux.orig/drivers/mtd/spi-nor/spi-nor.c
-> +++ linux/drivers/mtd/spi-nor/spi-nor.c
-> @@ -305,22 +305,28 @@ static ssize_t spi_nor_spimem_xfer_data(
->  static ssize_t spi_nor_spimem_read_data(struct spi_nor *nor, loff_t from,
->  					size_t len, u8 *buf)
->  {
-> -	struct spi_mem_op op =
-> -		SPI_MEM_OP(SPI_MEM_OP_CMD(nor->read_opcode, 1),
-> -			   SPI_MEM_OP_ADDR(nor->addr_width, from, 1),
-> -			   SPI_MEM_OP_DUMMY(nor->read_dummy, 1),
-> -			   SPI_MEM_OP_DATA_IN(len, buf, 1));
-> -
-> -	/* get transfer protocols. */
-> -	op.cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->read_proto);
-> -	op.addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->read_proto);
-> -	op.dummy.buswidth = op.addr.buswidth;
-> -	op.data.buswidth = spi_nor_get_protocol_data_nbits(nor->read_proto);
-> +	if (!nor->dirmap.rdesc) {
-> +		struct spi_mem_op op =
-> +			SPI_MEM_OP(SPI_MEM_OP_CMD(nor->read_opcode, 1),
-> +				   SPI_MEM_OP_ADDR(nor->addr_width, from, 1),
-> +				   SPI_MEM_OP_DUMMY(nor->read_dummy, 1),
-> +				   SPI_MEM_OP_DATA_IN(len, buf, 1));
-> +
-> +		/* get transfer protocols. */
-> +		op.cmd.buswidth =
-> +			spi_nor_get_protocol_inst_nbits(nor->read_proto);
-> +		op.addr.buswidth =
-> +			spi_nor_get_protocol_addr_nbits(nor->read_proto);
-> +		op.dummy.buswidth = op.addr.buswidth;
-> +		op.data.buswidth =
-> +			spi_nor_get_protocol_data_nbits(nor->read_proto);
->  
-> -	/* convert the dummy cycles to the number of bytes */
-> -	op.dummy.nbytes = (nor->read_dummy * op.dummy.buswidth) / 8;
-> +		/* convert the dummy cycles to the number of bytes */
-> +		op.dummy.nbytes = (nor->read_dummy * op.dummy.buswidth) / 8;
->  
-> -	return spi_nor_spimem_xfer_data(nor, &op);
-> +		return spi_nor_spimem_xfer_data(nor, &op);
-> +	}
-> +	return spi_mem_dirmap_read(nor->dirmap.rdesc, from, len, buf);
+DMA busy checking is implemented with readl_poll_timeout because
+I don't have access to IRQ-related docs. The speed increment comes
+from those saved cmd+addr+dummy clocks.
 
-Can we put the spi_mem_dirmap_read() in the if() branch instead of
-having an extra level of indentation for the most complex block.
+This controller requires that DMA source/destination address and
+reading length should be 16-byte aligned. We use a bounce buffer if
+one of them is not aligned, read more than what we need, and copy
+data from corresponding buffer offset.
 
-	if (nor->dirmap.rdesc)
-		return spi_mem_dirmap_read(nor->dirmap.rdesc, from,
-					   len, buf);
+Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
+---
 
-	...
+ drivers/mtd/spi-nor/mtk-quadspi.c | 99 +++++++++++++++++++++++++++++--
+ 1 file changed, 95 insertions(+), 4 deletions(-)
 
-(same comment applies to the write path BTW).
-
-With this addressed, you can add
-
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-
-Thanks,
-
-Boris
+diff --git a/drivers/mtd/spi-nor/mtk-quadspi.c b/drivers/mtd/spi-nor/mtk-quadspi.c
+index b1691680d174..ac0e531ce80c 100644
+--- a/drivers/mtd/spi-nor/mtk-quadspi.c
++++ b/drivers/mtd/spi-nor/mtk-quadspi.c
+@@ -7,6 +7,7 @@
+ #include <linux/clk.h>
+ #include <linux/delay.h>
+ #include <linux/device.h>
++#include <linux/dma-mapping.h>
+ #include <linux/init.h>
+ #include <linux/io.h>
+ #include <linux/iopoll.h>
+@@ -17,6 +18,7 @@
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+ #include <linux/platform_device.h>
++#include <linux/sched/task_stack.h>
+ #include <linux/slab.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+@@ -70,6 +72,10 @@
+ #define MTK_NOR_DELSEL2_REG		0xd0
+ #define MTK_NOR_DELSEL3_REG		0xd4
+ #define MTK_NOR_DELSEL4_REG		0xd8
++#define MTK_NOR_FDMA_CTL_REG		0x718
++#define MTK_NOR_FDMA_FADR_REG		0x71c
++#define MTK_NOR_FDMA_DADR_REG		0x720
++#define MTK_NOR_FDMA_END_DADR_REG	0x724
+ 
+ /* commands for mtk nor controller */
+ #define MTK_NOR_READ_CMD		0x0
+@@ -88,6 +94,7 @@
+ #define MTK_NOR_DUAL_READ_EN		0x1
+ #define MTK_NOR_DUAL_DISABLE		0x0
+ #define MTK_NOR_FAST_READ		0x1
++#define MTK_NOR_DMA_TRIG		0x1
+ 
+ #define SFLASH_WRBUF_SIZE		128
+ 
+@@ -97,7 +104,10 @@
+ #define MTK_NOR_MAX_SHIFT		7
+ /* nor controller 4-byte address mode enable bit */
+ #define MTK_NOR_4B_ADDR_EN		BIT(4)
+-
++/* DMA address has to be 16-byte aligned */
++#define MTK_NOR_DMA_ALIGN		16
++/* Limit bounce buffer size to 32KB */
++#define MTK_NOR_MAX_BBUF_READ		(32 * 1024)
+ /* Helpers for accessing the program data / shift data registers */
+ #define MTK_NOR_PRG_REG(n)		(MTK_NOR_PRGDATA0_REG + 4 * (n))
+ #define MTK_NOR_SHREG(n)		(MTK_NOR_SHREG0_REG + 4 * (n))
+@@ -260,13 +270,12 @@ static void mtk_nor_set_addr(struct mtk_nor *mtk_nor, u32 addr)
+ 	writeb(addr & 0xff, mtk_nor->base + MTK_NOR_RADR3_REG);
+ }
+ 
+-static ssize_t mtk_nor_read(struct spi_nor *nor, loff_t from, size_t length,
+-			    u_char *buffer)
++static ssize_t mtk_nor_read_pio(struct mtk_nor *mtk_nor, loff_t from,
++				size_t length, u_char *buffer)
+ {
+ 	int i, ret;
+ 	int addr = (int)from;
+ 	u8 *buf = (u8 *)buffer;
+-	struct mtk_nor *mtk_nor = nor->priv;
+ 
+ 	/* set mode for fast read mode ,dual mode or quad mode */
+ 	mtk_nor_set_read_mode(mtk_nor);
+@@ -281,6 +290,88 @@ static ssize_t mtk_nor_read(struct spi_nor *nor, loff_t from, size_t length,
+ 	return length;
+ }
+ 
++static int mtk_nor_dma_exec(struct mtk_nor *mtk_nor)
++{
++	int reg;
++
++	reg = readl(mtk_nor->base + MTK_NOR_FDMA_CTL_REG);
++	writel(reg | MTK_NOR_DMA_TRIG, mtk_nor->base + MTK_NOR_FDMA_CTL_REG);
++	return readl_poll_timeout(mtk_nor->base + MTK_NOR_FDMA_CTL_REG, reg,
++				  !(reg & MTK_NOR_DMA_TRIG), 20, 10000);
++}
++
++static ssize_t mtk_nor_read_dma(struct mtk_nor *mtk_nor, loff_t from,
++				size_t length, u_char *buffer)
++{
++	ssize_t ret;
++	ssize_t read_length = length & ~(MTK_NOR_DMA_ALIGN - 1);
++	dma_addr_t dma_addr;
++
++	mtk_nor_set_read_mode(mtk_nor);
++	mtk_nor_set_addr_width(mtk_nor);
++
++	dma_addr = dma_map_single(mtk_nor->dev, buffer, read_length,
++				  DMA_FROM_DEVICE);
++	if (dma_mapping_error(mtk_nor->dev, dma_addr)) {
++		dev_err(mtk_nor->dev, "failed to map dma buffer.");
++		return -EINVAL;
++	}
++
++	writel(from, mtk_nor->base + MTK_NOR_FDMA_FADR_REG);
++	writel(dma_addr, mtk_nor->base + MTK_NOR_FDMA_DADR_REG);
++	writel((u32)dma_addr + read_length,
++	       mtk_nor->base + MTK_NOR_FDMA_END_DADR_REG);
++	ret = mtk_nor_dma_exec(mtk_nor);
++	dma_unmap_single(mtk_nor->dev, dma_addr, read_length, DMA_FROM_DEVICE);
++	if (!ret)
++		ret = read_length;
++	return ret;
++}
++
++static ssize_t mtk_nor_read_dma_bounce(struct mtk_nor *mtk_nor, loff_t from,
++				       size_t length, u_char *buffer)
++{
++	ssize_t nor_unaligned_len = from % MTK_NOR_DMA_ALIGN;
++	loff_t read_from = from & ~(MTK_NOR_DMA_ALIGN - 1);
++	ssize_t read_len;
++	u_char *buf;
++	u_char *bouncebuf;
++	size_t mem_unaligned_len;
++
++	if (length > MTK_NOR_MAX_BBUF_READ)
++		length = MTK_NOR_MAX_BBUF_READ;
++	read_len = length + nor_unaligned_len + MTK_NOR_DMA_ALIGN;
++
++	buf = kmalloc(read_len + MTK_NOR_DMA_ALIGN, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++
++	mem_unaligned_len = (u32)buf % MTK_NOR_DMA_ALIGN;
++	bouncebuf = (buf + MTK_NOR_DMA_ALIGN) - mem_unaligned_len;
++
++	read_len = mtk_nor_read_dma(mtk_nor, read_from, read_len, bouncebuf);
++	if (read_len > 0)
++		memcpy(buffer, bouncebuf + nor_unaligned_len, length);
++
++	kfree(buf);
++	return length;
++}
++
++static ssize_t mtk_nor_read(struct spi_nor *nor, loff_t from, size_t length,
++			    u_char *buffer)
++{
++	struct mtk_nor *mtk_nor = nor->priv;
++
++	if (length < MTK_NOR_DMA_ALIGN)
++		return mtk_nor_read_pio(mtk_nor, from, length, buffer);
++
++	if (object_is_on_stack(buffer) || !virt_addr_valid(buffer) ||
++	    (u32)buffer % MTK_NOR_DMA_ALIGN || from % MTK_NOR_DMA_ALIGN)
++		return mtk_nor_read_dma_bounce(mtk_nor, from, length, buffer);
++
++	return mtk_nor_read_dma(mtk_nor, from, length, buffer);
++}
++
+ static int mtk_nor_write_single_byte(struct mtk_nor *mtk_nor,
+ 				     int addr, int length, u8 *data)
+ {
+-- 
+2.21.0
 
 
 ______________________________________________________
