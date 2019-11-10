@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 184B0C43331
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 Nov 2019 15:33:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BB8AC43331
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 Nov 2019 15:33:28 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DBC6020842
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 Nov 2019 15:33:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1DB8520842
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 Nov 2019 15:33:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ja9G3ei/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DBC6020842
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AWm4qYfu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1DB8520842
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sigma-star.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/Qofld87mUUvzRWXJTDNDIPzOhyytvYQN/Y69V55UOE=; b=ja9G3ei/CoxIIc
-	hfn1+gi+zPMTj8M/+sPj3n/g9KUd9C6IGlzWnsO9kgjHfzOcFmi/mQ6qspcjNsKMjiSpIMPiYgM6t
-	oxDygUb5z9cAFTsaED02qo0OVpZ/V44XLuN/kZFrls0ruF2ZjgukdlMQcrdc5fowIZYxbgiU7DPly
-	nUfAIdgCLSyymn4bdiUKgRxMMMk4wksVHWhzo9bxA84HdEgNDa0FoG1cqo7XIjzpoTeL0jscV7R+P
-	QgIAUfHvndBc4x2qP5HZJEtELQ/PHEp48FfAig3f8EsRz30kcQrhAMVLohsvW2RmsQ4l4/6MNF3OU
-	i+c+9n/3C1P8AXX4W1uw==;
+	List-Owner; bh=Nt3YUr3hnPrSERC3N5AoJ1MrUiKnTAOEwNX8+bDtJec=; b=AWm4qYfu6w0PHM
+	pUk+UongMqY4gB78MzllkRw9OKHh+J0y2uLt93ag81ABhlbfOUA7cp9qgyIR1yeBZD0j2qBEEP3kz
+	/JgoIwxxp8Zx+it2hbuRJecYr7yjt7Orml3AhfRoLXRHm+rEDxkf6j57XIDsgjcr8fBv4zucV37tt
+	gKhI0RSK61O+03NEB0vdDvNpi4sqDl6ZdN9bzrkyAxikgqMSBdASZcXval3Byd1QyqbLuN959suz+
+	EQiOHmynycd+kLtXBWX8AegFI5OLdPeAhsw+qPQ+nZUC1f9gK72YvgKOSBLXCxz6o8ZswcwlgpHw2
+	dWswMrH31plg14AmSTxw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iTpCq-00067e-Sr; Sun, 10 Nov 2019 15:32:48 +0000
+	id 1iTpD6-0006OT-C0; Sun, 10 Nov 2019 15:33:04 +0000
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iTpCC-0005UZ-2K
+ id 1iTpCD-0005W4-4M
  for linux-mtd@lists.infradead.org; Sun, 10 Nov 2019 15:32:11 +0000
 Received: from localhost (localhost [127.0.0.1])
- by lilium.sigma-star.at (Postfix) with ESMTP id 74FD5181099FA;
- Sun, 10 Nov 2019 16:32:06 +0100 (CET)
+ by lilium.sigma-star.at (Postfix) with ESMTP id 92088181099FB;
+ Sun, 10 Nov 2019 16:32:07 +0100 (CET)
 Received: from lilium.sigma-star.at ([127.0.0.1])
  by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id 2PtDXIEZicco; Sun, 10 Nov 2019 16:32:05 +0100 (CET)
+ with ESMTP id q7W6NSW7kDds; Sun, 10 Nov 2019 16:32:06 +0100 (CET)
 Received: from lilium.sigma-star.at ([127.0.0.1])
  by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id GmVBJX_5WB_H; Sun, 10 Nov 2019 16:32:05 +0100 (CET)
+ with ESMTP id NKayHsXCiz_n; Sun, 10 Nov 2019 16:32:06 +0100 (CET)
 From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 02/15] mkfs.ubifs: don't leak copied command line arguments
-Date: Sun, 10 Nov 2019 16:30:46 +0100
-Message-Id: <20191110153059.28878-3-david.oberhollenzer@sigma-star.at>
+Subject: [PATCH 04/15] mkfs.ubifs: don't leak hastable iterators
+Date: Sun, 10 Nov 2019 16:30:48 +0100
+Message-Id: <20191110153059.28878-5-david.oberhollenzer@sigma-star.at>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20191110153059.28878-1-david.oberhollenzer@sigma-star.at>
 References: <20191110153059.28878-1-david.oberhollenzer@sigma-star.at>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191110_073208_278924_C65127EE 
-X-CRM114-Status: GOOD (  10.16  )
+X-CRM114-CacheID: sfid-20191110_073209_328352_FACD8503 
+X-CRM114-Status: GOOD (  10.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,38 +76,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-For some command line flags, the argument string is copied. Simply
-writing over the buffer leads to a resource leak if the same flag
-is specified on the command line more than once.
-
-This patch adds a free() call to the old buffer before overwriting
-it with the new copy.
-
 Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 ---
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 2 ++
- 1 file changed, 2 insertions(+)
+ ubifs-utils/mkfs.ubifs/devtable.c   | 1 +
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 3 ++-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
+diff --git a/ubifs-utils/mkfs.ubifs/devtable.c b/ubifs-utils/mkfs.ubifs/devtable.c
+index 10faaca..0afea90 100644
+--- a/ubifs-utils/mkfs.ubifs/devtable.c
++++ b/ubifs-utils/mkfs.ubifs/devtable.c
+@@ -525,6 +525,7 @@ void free_devtable_info(void)
+ 			 */
+ 			hashtable_destroy(ph_elt->name_htbl, 1);
+ 		} while (hashtable_iterator_advance(ph_itr));
++		free(ph_itr);
+ 	}
+ 	hashtable_destroy(path_htbl, 1);
+ }
 diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-index bf1290f..ea0afee 100644
+index 87f7b4f..4247270 100644
 --- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
 +++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -580,6 +580,7 @@ static int get_options(int argc, char**argv)
- 		switch (opt) {
- 		case 'r':
- 		case 'd':
-+			free(root);
- 			root_len = strlen(optarg);
- 			root = xmalloc(root_len + 2);
+@@ -2013,7 +2013,7 @@ static int add_directory(const char *dir_name, ino_t dir_inum, struct stat *st,
+ 	unsigned int nlink = 2;
+ 	struct path_htbl_element *ph_elt;
+ 	struct name_htbl_element *nh_elt = NULL;
+-	struct hashtable_itr *itr;
++	struct hashtable_itr *itr = NULL;
+ 	ino_t inum;
+ 	unsigned char type;
+ 	unsigned long long dir_creat_sqnum = ++c->max_sqnum;
+@@ -2218,6 +2218,7 @@ static int add_directory(const char *dir_name, ino_t dir_inum, struct stat *st,
+ 	return 0;
  
-@@ -726,6 +727,7 @@ static int get_options(int argc, char**argv)
- 			do_create_inum_attr = 1;
- 			break;
- 		case 's':
-+			free(context);
- 			context_len = strlen(optarg);
- 			context = (char *) xmalloc(context_len + 1);
- 			if (!context)
+ out_free:
++	free(itr);
+ 	free(name);
+ 	if (existing)
+ 		closedir(dir);
 -- 
 2.21.0
 
