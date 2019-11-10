@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BB8AC43331
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 Nov 2019 15:33:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B295CC43331
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 Nov 2019 15:33:32 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1DB8520842
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 Nov 2019 15:33:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 88E6820842
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 Nov 2019 15:33:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AWm4qYfu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1DB8520842
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GZUyClwi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 88E6820842
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sigma-star.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,42 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Nt3YUr3hnPrSERC3N5AoJ1MrUiKnTAOEwNX8+bDtJec=; b=AWm4qYfu6w0PHM
-	pUk+UongMqY4gB78MzllkRw9OKHh+J0y2uLt93ag81ABhlbfOUA7cp9qgyIR1yeBZD0j2qBEEP3kz
-	/JgoIwxxp8Zx+it2hbuRJecYr7yjt7Orml3AhfRoLXRHm+rEDxkf6j57XIDsgjcr8fBv4zucV37tt
-	gKhI0RSK61O+03NEB0vdDvNpi4sqDl6ZdN9bzrkyAxikgqMSBdASZcXval3Byd1QyqbLuN959suz+
-	EQiOHmynycd+kLtXBWX8AegFI5OLdPeAhsw+qPQ+nZUC1f9gK72YvgKOSBLXCxz6o8ZswcwlgpHw2
-	dWswMrH31plg14AmSTxw==;
+	List-Owner; bh=9GyohdJDq+24RAhhHtXBFlVZ5W3atTH2F1iPaGbcViM=; b=GZUyClwi2i7r8B
+	Rp+IgQj+zrXsTGV5vNCIrry133dxFR5FtrWlNCa4GoB3HW3vssMaoolWgXQS2LfRxvmxRKdgadqFi
+	OnY+sEpoI0YsnC78KzDt3RNaI3BUvrR8UTrLDF5Qz/Q8PYQI3Ca652oiiqfhxClMwn8XKMgZkpgku
+	f/QI1B1Mwuz59TwWnabjc4eipQVFDgH8cva54Bj9pCGlC+kwOyNMbtmfotHw80qt9BEzlz/xzAjvy
+	vL4SWq1vZ0MjhBbEDL2QRqc6f+aYohR0KEgEXA7EtO+24yGnLpJSADzd1KJWphQbmzx8XPam8SPSw
+	k66A3NJz4/w/yh7CbPvQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iTpD6-0006OT-C0; Sun, 10 Nov 2019 15:33:04 +0000
+	id 1iTpDL-0006cc-Dm; Sun, 10 Nov 2019 15:33:19 +0000
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iTpCD-0005W4-4M
+ id 1iTpCC-0005VA-Ke
  for linux-mtd@lists.infradead.org; Sun, 10 Nov 2019 15:32:11 +0000
 Received: from localhost (localhost [127.0.0.1])
- by lilium.sigma-star.at (Postfix) with ESMTP id 92088181099FB;
+ by lilium.sigma-star.at (Postfix) with ESMTP id 28AF8181099F0;
  Sun, 10 Nov 2019 16:32:07 +0100 (CET)
 Received: from lilium.sigma-star.at ([127.0.0.1])
  by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id q7W6NSW7kDds; Sun, 10 Nov 2019 16:32:06 +0100 (CET)
+ with ESMTP id DhLDJ7N5v8bU; Sun, 10 Nov 2019 16:32:06 +0100 (CET)
 Received: from lilium.sigma-star.at ([127.0.0.1])
  by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id NKayHsXCiz_n; Sun, 10 Nov 2019 16:32:06 +0100 (CET)
+ with ESMTP id 4qhnDwQXM2TL; Sun, 10 Nov 2019 16:32:05 +0100 (CET)
 From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 04/15] mkfs.ubifs: don't leak hastable iterators
-Date: Sun, 10 Nov 2019 16:30:48 +0100
-Message-Id: <20191110153059.28878-5-david.oberhollenzer@sigma-star.at>
+Subject: [PATCH 03/15] mkfs.ubifs: free derived fscrypt context in
+ add_directory error paths
+Date: Sun, 10 Nov 2019 16:30:47 +0100
+Message-Id: <20191110153059.28878-4-david.oberhollenzer@sigma-star.at>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20191110153059.28878-1-david.oberhollenzer@sigma-star.at>
 References: <20191110153059.28878-1-david.oberhollenzer@sigma-star.at>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191110_073209_328352_FACD8503 
-X-CRM114-Status: GOOD (  10.67  )
+X-CRM114-CacheID: sfid-20191110_073208_838906_A4E0A5CF 
+X-CRM114-Status: UNSURE (   9.11  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,43 +80,88 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 ---
- ubifs-utils/mkfs.ubifs/devtable.c   | 1 +
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 3 ++-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 33 ++++++++++++++++++++++-------
+ 1 file changed, 25 insertions(+), 8 deletions(-)
 
-diff --git a/ubifs-utils/mkfs.ubifs/devtable.c b/ubifs-utils/mkfs.ubifs/devtable.c
-index 10faaca..0afea90 100644
---- a/ubifs-utils/mkfs.ubifs/devtable.c
-+++ b/ubifs-utils/mkfs.ubifs/devtable.c
-@@ -525,6 +525,7 @@ void free_devtable_info(void)
- 			 */
- 			hashtable_destroy(ph_elt->name_htbl, 1);
- 		} while (hashtable_iterator_advance(ph_itr));
-+		free(ph_itr);
- 	}
- 	hashtable_destroy(path_htbl, 1);
- }
 diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-index 87f7b4f..4247270 100644
+index ea0afee..87f7b4f 100644
 --- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
 +++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -2013,7 +2013,7 @@ static int add_directory(const char *dir_name, ino_t dir_inum, struct stat *st,
- 	unsigned int nlink = 2;
- 	struct path_htbl_element *ph_elt;
- 	struct name_htbl_element *nh_elt = NULL;
--	struct hashtable_itr *itr;
-+	struct hashtable_itr *itr = NULL;
- 	ino_t inum;
- 	unsigned char type;
- 	unsigned long long dir_creat_sqnum = ++c->max_sqnum;
-@@ -2218,6 +2218,7 @@ static int add_directory(const char *dir_name, ino_t dir_inum, struct stat *st,
- 	return 0;
+@@ -2099,24 +2099,32 @@ static int add_directory(const char *dir_name, ino_t dir_inum, struct stat *st,
  
- out_free:
-+	free(itr);
- 	free(name);
- 	if (existing)
- 		closedir(dir);
+ 		if (S_ISDIR(dent_st.st_mode)) {
+ 			err = add_directory(name, inum, &dent_st, 1, new_fctx);
+-			if (err)
++			if (err) {
++				free_fscrypt_context(new_fctx);
+ 				goto out_free;
++			}
+ 			nlink += 1;
+ 			type = UBIFS_ITYPE_DIR;
+ 		} else {
+ 			err = add_non_dir(name, &inum, 0, &type,
+ 					  &dent_st, new_fctx);
+-			if (err)
++			if (err) {
++				free_fscrypt_context(new_fctx);
+ 				goto out_free;
++			}
+ 		}
+ 
+ 		err = create_inum_attr(inum, name);
+-		if (err)
++		if (err) {
++			free_fscrypt_context(new_fctx);
+ 			goto out_free;
++		}
+ 
+ 		err = add_dent_node(dir_inum, entry->d_name, inum, type, fctx);
+-		if (err)
++		if (err) {
++			free_fscrypt_context(new_fctx);
+ 			goto out_free;
++		}
+ 		size += ALIGN(UBIFS_DENT_NODE_SZ + strlen(entry->d_name) + 1,
+ 			      8);
+ 
+@@ -2162,24 +2170,33 @@ static int add_directory(const char *dir_name, ino_t dir_inum, struct stat *st,
+ 
+ 		if (S_ISDIR(nh_elt->mode)) {
+ 			err = add_directory(name, inum, &fake_st, 0, new_fctx);
+-			if (err)
++			if (err) {
++				free_fscrypt_context(new_fctx);
+ 				goto out_free;
++			}
+ 			nlink += 1;
+ 			type = UBIFS_ITYPE_DIR;
+ 		} else {
+ 			err = add_non_dir(name, &inum, 0, &type,
+ 					  &fake_st, new_fctx);
+-			if (err)
++			if (err) {
++				free_fscrypt_context(new_fctx);
+ 				goto out_free;
++			}
+ 		}
+ 
+ 		err = create_inum_attr(inum, name);
+-		if (err)
++		if (err) {
++			free_fscrypt_context(new_fctx);
+ 			goto out_free;
++		}
+ 
+ 		err = add_dent_node(dir_inum, nh_elt->name, inum, type, fctx);
+-		if (err)
++		if (err) {
++			free_fscrypt_context(new_fctx);
+ 			goto out_free;
++		}
++
+ 		size += ALIGN(UBIFS_DENT_NODE_SZ + strlen(nh_elt->name) + 1, 8);
+ 
+ 		nh_elt = next_name_htbl_element(ph_elt, &itr);
 -- 
 2.21.0
 
