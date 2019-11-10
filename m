@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34F0EC43331
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 Nov 2019 15:34:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65A8AC43331
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 Nov 2019 15:34:38 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F157120842
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 Nov 2019 15:34:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 377D42085B
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 Nov 2019 15:34:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Etey+16g"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F157120842
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="vCzJ5wUN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 377D42085B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sigma-star.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Zxlonvh57hr4lvOOk09BpddidAeDM1kaFzD0BdzE7FQ=; b=Etey+16g+MJUut
-	t0EVJZGPgZ7BGOC0FbyYVZVrUiG7CW3NAM6oKQMkK84jS3u2I/OELgotkt2SdTa4F24xbg+J8maeJ
-	RxFbs1MSKs+cWiTIrf4ILrFjfehMjoKtvEkpMV7cQliaChWQ6E1avE5QpRrGW5fibAPuyr1oYgKPC
-	uPxS6zGThxtn/DlLJz7wU+1KM2uoH6/uGIZ0AcFaSIZWV8kcBldy6dA4zGkG2RSFljVO4isYrdHSx
-	TJsnh+j2Xobkz+zPRdQuzgmT+A/dq3qq7PQ0m7ia3aFWPbjEZ8Avwt5mTg0N7ZHlg/k10kXPVRMYk
-	B6tr5sa07iNdw8kN6YrA==;
+	List-Owner; bh=gxOHZ1cc+lmcUXxtYq0wowxWrGYsvNkj9fP9woA3iU8=; b=vCzJ5wUNUevfaq
+	j6eTWRSzkvYkBNI3FhgkQDCklv3nR8nxTDpJOX5dsP6ELARRDWKtMnUFEJQL3xqvTjeCiaSqUAy3j
+	MwhXAWMoGP3VafkFQHnu38cuevXJ+sib9g+AAPDlF4giDSlFbsnoPK+WlQUNT6UzilG8hAbw1Vu4b
+	jP26M9zWpr5nZY7i4++T1QyHxKbLPJ/3EgzRSWYjKKx6R/VCrkdjuGL0ojh/mKMiFRnNA2tCN8olv
+	SgX83xhB9EKrm9Hq2kAkr48qA586YlIB0vRPv8pG3idFZsgK9DiCqkzgRGn1KB8Y20LOWjXpGPB3v
+	GK/PCgFKGe3cPqZXlFYQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iTpE6-0007VG-5S; Sun, 10 Nov 2019 15:34:06 +0000
+	id 1iTpEP-0007lS-Bj; Sun, 10 Nov 2019 15:34:25 +0000
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iTpCG-0005a5-GS
+ id 1iTpCH-0005as-Sx
  for linux-mtd@lists.infradead.org; Sun, 10 Nov 2019 15:32:15 +0000
 Received: from localhost (localhost [127.0.0.1])
- by lilium.sigma-star.at (Postfix) with ESMTP id 0472E18109A02;
+ by lilium.sigma-star.at (Postfix) with ESMTP id 9C4E1181099F2;
  Sun, 10 Nov 2019 16:32:11 +0100 (CET)
 Received: from lilium.sigma-star.at ([127.0.0.1])
  by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id 8M9ldtQF4Rcv; Sun, 10 Nov 2019 16:32:07 +0100 (CET)
+ with ESMTP id u9r0wOvY7VkU; Sun, 10 Nov 2019 16:32:08 +0100 (CET)
 Received: from lilium.sigma-star.at ([127.0.0.1])
  by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id H8tj9POS8P4O; Sun, 10 Nov 2019 16:32:06 +0100 (CET)
+ with ESMTP id 2Srm7ANuNBCw; Sun, 10 Nov 2019 16:32:08 +0100 (CET)
 From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 05/15] mkfs.ubifs: don't leak temporary buffers
-Date: Sun, 10 Nov 2019 16:30:49 +0100
-Message-Id: <20191110153059.28878-6-david.oberhollenzer@sigma-star.at>
+Subject: [PATCH 09/15] ftl_check: don't leak temporary buffers
+Date: Sun, 10 Nov 2019 16:30:53 +0100
+Message-Id: <20191110153059.28878-10-david.oberhollenzer@sigma-star.at>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20191110153059.28878-1-david.oberhollenzer@sigma-star.at>
 References: <20191110153059.28878-1-david.oberhollenzer@sigma-star.at>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191110_073212_711051_429664D7 
-X-CRM114-Status: GOOD (  10.44  )
+X-CRM114-CacheID: sfid-20191110_073214_119737_F8AC03AE 
+X-CRM114-Status: UNSURE (   9.56  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,91 +79,48 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 ---
- ubifs-utils/mkfs.ubifs/crypto.c  |  9 ++++++---
- ubifs-utils/mkfs.ubifs/fscrypt.c | 18 +++++++++++++++---
- 2 files changed, 21 insertions(+), 6 deletions(-)
+ misc-utils/ftl_check.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/ubifs-utils/mkfs.ubifs/crypto.c b/ubifs-utils/mkfs.ubifs/crypto.c
-index d31bd2a..19c445e 100644
---- a/ubifs-utils/mkfs.ubifs/crypto.c
-+++ b/ubifs-utils/mkfs.ubifs/crypto.c
-@@ -118,23 +118,26 @@ static ssize_t gen_essiv_salt(const void *iv, size_t iv_len, const void *key, si
- 	cipher = EVP_aes_256_ecb();
- 	if (!cipher) {
- 		errmsg("OpenSSL: Cipher AES-256-ECB is not supported");
--		return -1;
-+		goto fail;
+diff --git a/misc-utils/ftl_check.c b/misc-utils/ftl_check.c
+index e854922..5a04155 100644
+--- a/misc-utils/ftl_check.c
++++ b/misc-utils/ftl_check.c
+@@ -75,7 +75,7 @@ static void check_partition(int fd)
+ 	erase_unit_header_t hdr, hdr2;
+ 	off_t i;
+ 	u_int j, nbam, *bam;
+-	int control, data, free, deleted;
++	int control, data, blk_free, deleted;
+ 
+ 	/* Get partition size, block size */
+ 	if (ioctl(fd, MEMGETINFO, &mtd) != 0) {
+@@ -150,10 +150,10 @@ static void check_partition(int fd)
+ 				perror("read failed");
+ 				break;
+ 			}
+-			free = deleted = control = data = 0;
++			blk_free = deleted = control = data = 0;
+ 			for (j = 0; j < nbam; j++) {
+ 				if (BLOCK_FREE(le32_to_cpu(bam[j])))
+-					free++;
++					blk_free++;
+ 				else if (BLOCK_DELETED(le32_to_cpu(bam[j])))
+ 					deleted++;
+ 				else switch (BLOCK_TYPE(le32_to_cpu(bam[j]))) {
+@@ -163,9 +163,11 @@ static void check_partition(int fd)
+ 				}
+ 			}
+ 			printf("  Block allocation: %d control, %d data, %d free,"
+-					" %d deleted\n", control, data, free, deleted);
++					" %d deleted\n", control, data, blk_free, deleted);
+ 		}
  	}
++
++	free(bam);
+ } /* format_partition */
  
- 	if (do_hash(EVP_sha256(), key, key_len, sha256) != 0) {
- 		errmsg("sha256 failed");
--		return -1;
-+		goto fail;
- 	}
- 
- 	ret = do_encrypt(cipher, iv, iv_len, sha256, EVP_MD_size(EVP_sha256()), NULL, 0, salt);
- 	if (ret != iv_len) {
- 		errmsg("Unable to compute ESSIV salt, return value %zi instead of %zi", ret, iv_len);
--		return -1;
-+		goto fail;
- 	}
- 
- 	free(sha256);
- 
- 	return ret;
-+fail:
-+	free(sha256);
-+	return -1;
- }
- 
- static ssize_t encrypt_block(const void *plaintext, size_t size,
-diff --git a/ubifs-utils/mkfs.ubifs/fscrypt.c b/ubifs-utils/mkfs.ubifs/fscrypt.c
-index 118c11c..b75bdf7 100644
---- a/ubifs-utils/mkfs.ubifs/fscrypt.c
-+++ b/ubifs-utils/mkfs.ubifs/fscrypt.c
-@@ -106,13 +106,19 @@ int encrypt_path(void **outbuf, void *data, unsigned int data_len,
- 	memcpy(inbuf, data, data_len);
- 
- 	crypt_key = calc_fscrypt_subkey(fctx);
--	if (!crypt_key)
-+	if (!crypt_key) {
-+		free(inbuf);
-+		free(*outbuf);
- 		return err_msg("could not compute subkey");
-+	}
- 
- 	ret = fscrypt_cipher->encrypt_fname(inbuf, cryptlen,
- 					    crypt_key, *outbuf);
--	if (ret < 0)
-+	if (ret < 0) {
-+		free(inbuf);
-+		free(*outbuf);
- 		return err_msg("could not encrypt filename");
-+	}
- 
- 	free(crypt_key);
- 	free(inbuf);
-@@ -133,13 +139,19 @@ int encrypt_data_node(struct fscrypt_context *fctx, unsigned int block_no,
- 	memcpy(inbuf, &dn->data, length);
- 
- 	crypt_key = calc_fscrypt_subkey(fctx);
--	if (!crypt_key)
-+	if (!crypt_key) {
-+		free(inbuf);
-+		free(outbuf);
- 		return err_msg("could not compute subkey");
-+	}
- 
- 	ret = fscrypt_cipher->encrypt_block(inbuf, pad_len,
- 					    crypt_key, block_no,
- 					    outbuf);
- 	if (ret != pad_len) {
-+		free(inbuf);
-+		free(outbuf);
-+		free(crypt_key);
- 		return err_msg("encrypt_block returned %zi "
- 				"instead of %zi", ret, pad_len);
- 	}
+ /* Show usage information */
 -- 
 2.21.0
 
