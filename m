@@ -2,62 +2,93 @@ Return-Path: <SRS0=dr70=ZC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95355C17444
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 Nov 2019 11:39:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6766EC43331
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 Nov 2019 12:10:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6B0A820B7C
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 Nov 2019 11:39:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3A05420818
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 Nov 2019 12:10:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OJlfCWT8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6B0A820B7C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lU3esKJ3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A05420818
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sigma-star.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pRQfS79gYx/rwTo5MrAT16RdIc7m6dup/JBnbPJmn0g=; b=OJlfCWT8WfZ+hF
-	RSzHQw5/myCAEIFfPIZ5XioVWMGp3e1r7sAnJsaWhXFd9D6U+0ETToyKdc2OJC1/GytmU0DkmXmXF
-	GaYEzYHyv/sIxv8oG0nj2BpeRIBjo4kMXwNmsEqFiNZ0TGNrmZZZN+j+PGPLnLv75/z/gp6mv0Ucc
-	mLg0bkFGkwvjpFWzNfRaybuaixdDnG4Q/UiQu+nAxrUU6qBmkPRLX49XP3KYg3aD1tgbFN6y+5J5X
-	0AeuVOku2P94BpF8NfFlelS+xYr7P3PjIiuz0jbSqLZ6W9tOUeUCNS//kvc/Bn/r2YfOgOZ2f2Pe8
-	X0vayOHeq2CCRvHoI4sw==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=9dF6D7uITXo/mIebSxbTiIA8GKsAPJPZLsVcBavFDIY=; b=lU3esKJ3AsBauT+biRaQGD63yN
+	qiO0XjSxceCSEfuDU5EG/ifkt6qEENsWcafA1zTK1s94wqP7YnV01d0PQ70E2MUjynQYDvlwltHuv
+	FFjytXH5BZjxujEIT5O7evPPz6L3XEwrl57BwP/eltZm1o34+8LB0+FJOAgQeTpl1aJtHJC8URlPJ
+	A0bz5DaqQ3hC7u3+Emh5bZ7TaxlhyRVzMe5l9JikmoiVAsDhmxLBhZKe3Z0yLI9qXHG9hAk20m7mv
+	sGbcafMTs6SHv4HH3WblK8tR1CgsRqhkXhX22+pAolMF1fnKNGV/YaPzsk+ECiAkO83HDjL5ANpDe
+	aXiXc4LQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iTlZ2-0004bE-DR; Sun, 10 Nov 2019 11:39:28 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1iTm33-0007He-58; Sun, 10 Nov 2019 12:10:29 +0000
+Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iTlYy-0004a7-5X; Sun, 10 Nov 2019 11:39:25 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 716C828DA46;
- Sun, 10 Nov 2019 11:39:22 +0000 (GMT)
-Date: Sun, 10 Nov 2019 12:39:19 +0100
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] mtd: rawnand: driver for Mediatek MT7621 SoC NAND flash
- controller
-Message-ID: <20191110123919.5c998839@collabora.com>
-In-Reply-To: <20191107084007.GA1203521@kroah.com>
-References: <20191107073521.11413-1-gerg@kernel.org>
- <20191107084007.GA1203521@kroah.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1iTm2z-0007Gb-Bs
+ for linux-mtd@lists.infradead.org; Sun, 10 Nov 2019 12:10:26 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lilium.sigma-star.at (Postfix) with ESMTP id 0D575181099FE;
+ Sun, 10 Nov 2019 13:10:18 +0100 (CET)
+Received: from lilium.sigma-star.at ([127.0.0.1])
+ by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id Bhlm3HGLfTgo; Sun, 10 Nov 2019 13:10:17 +0100 (CET)
+Received: from lilium.sigma-star.at ([127.0.0.1])
+ by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id LnLsdjMzu7hF; Sun, 10 Nov 2019 13:10:16 +0100 (CET)
+Subject: Re: [PATCH][mtd-www] ubi.xml: many wording and spelling cleanups
+To: Trevor Woerner <twoerner@gmail.com>, linux-mtd@lists.infradead.org
+References: <20191028032208.19298-1-twoerner@gmail.com>
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Autocrypt: addr=david.oberhollenzer@sigma-star.at; prefer-encrypt=mutual;
+ keydata=
+ mQENBFZyf0YBCADHyKhABhxthCC9n48pvsuk5p3IEdYXMs8Apenh1N/Z4cViAz/d/nSCZ+FG
+ FX/PSubEzq8AilZLejchAltaORCvA1Y6FgTlpcdJ6gHDfStDbJL/vk5N8aL7YNF7VfjTRntB
+ tKbhKcrG05nbdNjIioAm04pt9rx5mV5KMbf22/FdZpOSSsC6/N7b/cFH9+fx8kwi4pNFuJwr
+ BkWRuQ7rEtCoSpd22t+Vh9qA7kymW9gWY405258jnN65jBO7ElqU2CCuGRPg6uryAHV3RVCB
+ 9j9AE3HLacQReFtt5ylyydSQbaK4K9asnd7U2/C11vIuuciXCppX4bPap/pMnGpzw0UNABEB
+ AAG0N0RhdmlkIE9iZXJob2xsZW56ZXIgPGRhdmlkLm9iZXJob2xsZW56ZXJAc2lnbWEtc3Rh
+ ci5hdD6JATcEEwEIACEFAlZyf0YCGwMFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AACgkQvOXc
+ PHQaAtFuEAgArXOhaoaVvCMVCa5N25Q/+Q6K1wrVpPmkH89yhQqCmfM6f+2VM5MGFDPfaSJ3
+ 5fBDH0iwBQwlXIb7NSXWtzdXX9rMvJkJqv45TgeKtJApf/sRhmcN+clrwzP8oZQbxkP1YWzo
+ Vwo4lOb3Kv7aY9yeCjqNbdJJ57NpvYOUrzrCpGkrDPBBQOvKF3wbq3oU/o3dT23NDeQ20jXg
+ quJf/PCw6WCzRxqg58wH02MdMDQe8vByzVig2bM2e7DErtt+hPK/Dmdsqgns+Z+SrQcOvRa3
+ GMAHAuHB0u2LhYO6NyaNCgzdgutorilYcq7FEKr8XqwOnfVmZdCW3qGKmLbn6qMEdLkBDQRW
+ cn9GAQgAvugF8cFjv2Zs4BBb44SnxGawBySC1bMRas/MjA9EMHUAx/StcecQmxnl6BzEyGpr
+ +TRnXIzcb5xI8SxitBDU5MLvwsHgNvpYp9fscd4kWP7oMir9ta3Q8SvT4OLbO4FZBGaURzGP
+ ak8JmjMMtOoOBh4meOjz6GrJe9UIGxT94aB01w7YohfBANzK8xyk4ykKC5Op4XgaaMKOEQUa
+ h7wajcojYSlvgOiXqEisMHlRDAW6sXL2sEM7TIpvYhy9txMLllpkYb0Pu1BvUpY/unsybWKA
+ FyiTmeiY+nEveUvqX6Ef7BWdClBeCk2UaRvtcoLd22VxMlKTniHQcNMOXlRRawARAQABiQEf
+ BBgBCAAJBQJWcn9GAhsMAAoJELzl3Dx0GgLRPtcH/jD6rn2+VIKgrHdt3ao3Abpu2fqYfwbI
+ yPAtpXOddDptVq+0A/2arXT1Y8+jNSZpbAg8K+bLaEAcSUEjviKMpfI7ppTUBuGKrpgc5xsi
+ UpKkJCb7oB1ZraIBNBPtPPVUhbwLie4uW/LVt+8rBKz3W9KEDOsT0ZCG/pW8Ld+EpDR9l0fm
+ qoVHaw8PhLAtez+B7HS7Hv7iJPDtX85kFYpud8kIPENXVn9EjZudyMWgZb2LhYlcavNcszgR
+ 7In6ift5SNySojCOfAV0iKZb8QUXWktLleY8kQ8jltOsSRTuO4PDfzvtCQDixUw4tQ7WLwDT
+ qyUpot0oG03vtSG4LIRCdxI=
+Organization: sigma star gmbh
+Message-ID: <bc566540-c435-8c6d-9301-afe5237787aa@sigma-star.at>
+Date: Sun, 10 Nov 2019 13:10:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
+In-Reply-To: <20191028032208.19298-1-twoerner@gmail.com>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191110_033924_340165_5AD04984 
-X-CRM114-Status: GOOD (  22.61  )
+X-CRM114-CacheID: sfid-20191110_041025_551823_53676F75 
+X-CRM114-Status: UNSURE (   6.28  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,56 +100,16 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org, gerg@kernel.org,
- linux-mtd@lists.infradead.org, neil@brown.name,
- linux-mediatek@lists.infradead.org, blogic@openwrt.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 7 Nov 2019 09:40:07 +0100
-Greg KH <gregkh@linuxfoundation.org> wrote:
+Applied to mtd-www.git master.
 
-> On Thu, Nov 07, 2019 at 05:35:21PM +1000, gerg@kernel.org wrote:
-> > From: Greg Ungerer <gerg@kernel.org>
-> > 
-> > Add a driver to support the NAND flash controller of the MediaTek MT7621
-> > System-on-Chip device. (This one is the MIPS based parts from Mediatek).
-> > 
-> > This code is a re-working of the earlier patches for this hardware that
-> > have been floating around the internet for years:
-> > 
-> > https://github.com/ReclaimYourPrivacy/cloak/blob/master/target/linux/ramips/patches-3.18/0045-mtd-add-mt7621-nand-support.patch
-> > 
-> > This is a much cleaned up version, put in staging to start with.
-> > It does still have some problems, mainly that it still uses a lot of the
-> > mtd raw nand legacy support.  
-> 
-> Is that an issue?
+Thanks,
 
-Well, yes that's an issue since we decided that all new drivers should
-implement ->exec_op() instead of the legacy hooks. But that would be an
-issue even if we were merging the driver in staging.
-
-> Why not just put it in the "real" part of the kernel
-> then, if those apis are still in use?
-> 
-> > The driver not only compiles, but it works well on the small range of
-> > hardware platforms that it has been used on so far. I have been using
-> > for quite a while now, cleaning up as I get time.
-> > 
-> > So... I am looking for comments on the best approach forward with this.
-> > At least in staging it can get some more eyeballs going over it.  
-> 
-> staging will just nit-pick it to death for coding style issues, it's not
-> going to be get any major api changes/cleanups there usually.  I'd
-> recommend just merging this to the "real" part of the kernel now if it's
-> working for you.
-
-I agree on that point: we should merge this driver directly in the NAND
-framework after it's been reworked to implement ->exec_op() instead of
-the legacy hooks.
+David
 
 ______________________________________________________
 Linux MTD discussion mailing list
