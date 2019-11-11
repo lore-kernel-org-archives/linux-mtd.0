@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37A6DC43331
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:45:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F3F7C43331
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:45:43 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C9963215EA
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:45:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 42B3F206C3
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:45:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="APbV19md";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="A66NLQWg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C9963215EA
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WEoARzzs";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="C4r+LnXP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 42B3F206C3
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,48 +25,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
 	Date:From:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
-	List-Owner; bh=lFUJyezzq1sN48ytZh/WLGON3tUydwpYox1MK2z3YPM=; b=APbV19mdVuDJCK
-	BrtEOoxGm+2RrcBIpVIFGbPexu3y7xFBvme2tniv1fPTXEZIDMMOpzgs67K4nDGLHDJu0FQE0GzHb
-	texC5xrMPBu1WBROyZ5uGse6RRYz+zR8jns9nyRtP2gRW+oX4Xc0TWaOkgaBNQqfufKFlkbHDYTOq
-	oAS7SgjNYv2qOT2mJEFqyWML29yut3mlWFqiQTZZX7lLoftJmrf4Mlq5P8M29i138kCEi93oieHHZ
-	8dwUASKRyul/UgfFIyboRrypgzxWLYHTqDW7nwkmgoSQyLFFVmKmhFs7K7Q+ftIkoh7fDWjIflnS1
-	j6rYVT0bGFkH3vLzlJTg==;
+	List-Owner; bh=d0y3Fd5k9t/dyGrx5tTNCm44f9vDH85PO9RhA71Mghs=; b=WEoARzzs7skpWp
+	msxG/OjDxfkTFk8UAvXUJMBU3vCna0gG1aFuiKM0rj1uTQGOau0ZjAzO1MvGd1zPIacMEwAMhbrXT
+	ttT878zCfEzjjpDXrs68KdJyS4BmXinm19IZjflI08Ri8CM/5cnRnB70NHLcz1XxGI9wBtA+SDHLe
+	2HojRHuXxbj+TQZmCc98hoLdiGWuc+RORmb2v574xnxZ4FxMeZXGvCPkBZQl/lVxlxfsUE6AYH764
+	Y/UDTyAaTgC2J2QzsLR4eEz3y2GJKJqbqnHBV7dyFGwFVNF9zKuacChhPCuUqGfgr9ZhL/h0lvyph
+	WDGKdH09eVXrTt10JuFg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iU6Fx-0000xs-JQ; Mon, 11 Nov 2019 09:45:09 +0000
+	id 1iU6GH-0001rn-6g; Mon, 11 Nov 2019 09:45:29 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iU6Et-0007rd-BY
- for linux-mtd@lists.infradead.org; Mon, 11 Nov 2019 09:44:05 +0000
+ id 1iU6Ev-0007vG-R6
+ for linux-mtd@lists.infradead.org; Mon, 11 Nov 2019 09:44:09 +0000
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
  [83.86.89.107])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 382722084F;
- Mon, 11 Nov 2019 09:44:02 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id DABF5215EA;
+ Mon, 11 Nov 2019 09:44:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1573465442;
- bh=00QUe+5b+Pp86oYHx9hoOQd0NTq04xsmMBBQpewtmik=;
+ s=default; t=1573465445;
+ bh=lFELN/GRbs5XMGM93ekhiE/Zf8Bxp9bKZw2azAoMnJY=;
  h=Subject:To:Cc:From:Date:In-Reply-To:From;
- b=A66NLQWgDXxR1pn4ciiEW7CeFAbY204qA4LtK6mbn4lJnK33AriMaXGET3UvpXKHy
- TWrW8b3L+Yq94vykTg8BkFXpmmOTkrmynUs/V00VAj18rqqPe9E10UcPWT9Liqrwkt
- mNUP8dqyKCFjAhhcq7cwyPOm2YbLkEOIwXhnS0Kk=
-Subject: Patch "i2c: omap: Trigger bus recovery in lockup case" has been added
- to the 4.14-stable tree
-To: claudio.foellmi@ergon.ch, dri-devel@lists.freedesktop.org,
- gregkh@linuxfoundation.org, grygorii.strashko@ti.com,
- linux-mtd@lists.infradead.org, mathieu.poirier@linaro.org, vigneshr@ti.com,
- wsa@the-dreams.de
+ b=C4r+LnXPXwh67dXpesbz6oCk33+kWxf2tvjx9usguYuvVqwe59rU8tiuj93pnQ3NV
+ 7DnXErX8AHJXBJIexj/YCoySkoPLR/1B03Zimwc47/Wao2avdGA18PGuiZq0yfz5lX
+ e5utT7l9RRRxgEefWbbTXB35y1FRbzpdsTfsNlrw=
+Subject: Patch "mailbox: reset txdone_method TXDONE_BY_POLL if client
+ knows_txdone" has been added to the 4.14-stable tree
+To: alexey.klimov@arm.com, dri-devel@lists.freedesktop.org,
+ gregkh@linuxfoundation.org, jaswinder.singh@linaro.org,
+ linux-mtd@lists.infradead.org, mathieu.poirier@linaro.org,
+ sudeep.holla@arm.com
 From: <gregkh@linuxfoundation.org>
 Date: Mon, 11 Nov 2019 10:43:33 +0100
-In-Reply-To: <20190905161759.28036-18-mathieu.poirier@linaro.org>
-Message-ID: <1573465413229221@kroah.com>
+In-Reply-To: <20190905161759.28036-13-mathieu.poirier@linaro.org>
+Message-ID: <1573465413247177@kroah.com>
 MIME-Version: 1.0
 X-stable: commit
 X-Patchwork-Hint: ignore 
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191111_014403_443503_4C62E3F0 
-X-CRM114-Status: GOOD (  12.76  )
+X-CRM114-CacheID: sfid-20191111_014405_944198_9E472C89 
+X-CRM114-Status: GOOD (  10.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,13 +87,13 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 This is a note to let you know that I've just added the patch titled
 
-    i2c: omap: Trigger bus recovery in lockup case
+    mailbox: reset txdone_method TXDONE_BY_POLL if client knows_txdone
 
 to the 4.14-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
-     i2c-omap-trigger-bus-recovery-in-lockup-case.patch
+     mailbox-reset-txdone_method-txdone_by_poll-if-client-knows_txdone.patch
 and it can be found in the queue-4.14 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
@@ -102,93 +102,92 @@ please let <stable@vger.kernel.org> know about it.
 
 From foo@baz Mon 11 Nov 2019 10:07:22 AM CET
 From: Mathieu Poirier <mathieu.poirier@linaro.org>
-Date: Thu,  5 Sep 2019 10:17:58 -0600
-Subject: i2c: omap: Trigger bus recovery in lockup case
+Date: Thu,  5 Sep 2019 10:17:53 -0600
+Subject: mailbox: reset txdone_method TXDONE_BY_POLL if client knows_txdone
 To: stable@vger.kernel.org
 Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org, linux-mtd@lists.infradead.org
-Message-ID: <20190905161759.28036-18-mathieu.poirier@linaro.org>
+Message-ID: <20190905161759.28036-13-mathieu.poirier@linaro.org>
 
-From: Claudio Foellmi <claudio.foellmi@ergon.ch>
+From: Sudeep Holla <sudeep.holla@arm.com>
 
-commit 93367bfca98f36cece57c01dbce6ea1b4ac58245 upstream
+commit 33cd7123ac0ba5360656ae27db453de5b9aa711f upstream
 
-A very conservative check for bus activity (to prevent interference
-in multimaster setups) prevented the bus recovery methods from being
-triggered in the case that SDA or SCL was stuck low.
-This defeats the purpose of the recovery mechanism, which was introduced
-for exactly this situation (a slave device keeping SDA pulled down).
+Currently the mailbox framework sets txdone_method to TXDONE_BY_POLL if
+the controller sets txdone_by_poll. However some clients can have a
+mechanism to do TXDONE_BY_ACK which they can specify by knows_txdone.
+However, we endup setting both TXDONE_BY_POLL and TXDONE_BY_ACK in that
+case. In such scenario, we may end up with below warnings as the tx
+ticker is run both by mailbox framework and the client.
 
-Also added a check to make sure SDA is low before attempting recovery.
-If SDA is not stuck low, recovery will not help, so we can skip it.
+WARNING: CPU: 1 PID: 0 at kernel/time/hrtimer.c:805 hrtimer_forward+0x88/0xd8
+CPU: 1 PID: 0 Comm: swapper/1 Not tainted 4.12.0-rc5 #242
+Hardware name: ARM LTD ARM Juno Development Platform
+task: ffff8009768ca700 task.stack: ffff8009768f8000
+PC is at hrtimer_forward+0x88/0xd8
+LR is at txdone_hrtimer+0xd4/0xf8
+Call trace:
+ hrtimer_forward+0x88/0xd8
+ __hrtimer_run_queues+0xe4/0x158
+ hrtimer_interrupt+0xa4/0x220
+ arch_timer_handler_phys+0x30/0x40
+ handle_percpu_devid_irq+0x78/0x130
+ generic_handle_irq+0x24/0x38
+ __handle_domain_irq+0x5c/0xb8
+ gic_handle_irq+0x54/0xa8
 
-Note that bus lockups can persist across reboots. The only other options
-are to reset or power cycle the offending slave device, and many i2c
-slaves do not even have a reset pin.
+This patch fixes the issue by resetting TXDONE_BY_POLL if client has set
+knows_txdone.
 
-If we see that one of the lines is low for the entire timeout duration,
-we can actually be sure that there is no other master driving the bus.
-It is therefore save for us to attempt a bus recovery.
-
-Signed-off-by: Claudio Foellmi <claudio.foellmi@ergon.ch>
-Tested-by: Vignesh R <vigneshr@ti.com>
-Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
-[wsa: fixed one return code to -EBUSY]
-Signed-off-by: Wolfram Sang <wsa@the-dreams.de>
+Cc: Alexey Klimov <alexey.klimov@arm.com>
+Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+Signed-off-by: Jassi Brar <jaswinder.singh@linaro.org>
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/i2c/busses/i2c-omap.c |   25 +++++++++++++++++++++++--
- 1 file changed, 23 insertions(+), 2 deletions(-)
+ drivers/mailbox/mailbox.c |    4 ++--
+ drivers/mailbox/pcc.c     |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/i2c/busses/i2c-omap.c
-+++ b/drivers/i2c/busses/i2c-omap.c
-@@ -487,6 +487,22 @@ static int omap_i2c_init(struct omap_i2c
- }
+--- a/drivers/mailbox/mailbox.c
++++ b/drivers/mailbox/mailbox.c
+@@ -351,7 +351,7 @@ struct mbox_chan *mbox_request_channel(s
+ 	init_completion(&chan->tx_complete);
  
- /*
-+ * Try bus recovery, but only if SDA is actually low.
-+ */
-+static int omap_i2c_recover_bus(struct omap_i2c_dev *omap)
-+{
-+	u16 systest;
-+
-+	systest = omap_i2c_read_reg(omap, OMAP_I2C_SYSTEST_REG);
-+	if ((systest & OMAP_I2C_SYSTEST_SCL_I_FUNC) &&
-+	    (systest & OMAP_I2C_SYSTEST_SDA_I_FUNC))
-+		return 0; /* bus seems to already be fine */
-+	if (!(systest & OMAP_I2C_SYSTEST_SCL_I_FUNC))
-+		return -EBUSY; /* recovery would not fix SCL */
-+	return i2c_recover_bus(&omap->adapter);
-+}
-+
-+/*
-  * Waiting on Bus Busy
-  */
- static int omap_i2c_wait_for_bb(struct omap_i2c_dev *omap)
-@@ -496,7 +512,7 @@ static int omap_i2c_wait_for_bb(struct o
- 	timeout = jiffies + OMAP_I2C_TIMEOUT;
- 	while (omap_i2c_read_reg(omap, OMAP_I2C_STAT_REG) & OMAP_I2C_STAT_BB) {
- 		if (time_after(jiffies, timeout))
--			return i2c_recover_bus(&omap->adapter);
-+			return omap_i2c_recover_bus(omap);
- 		msleep(1);
- 	}
+ 	if (chan->txdone_method	== TXDONE_BY_POLL && cl->knows_txdone)
+-		chan->txdone_method |= TXDONE_BY_ACK;
++		chan->txdone_method = TXDONE_BY_ACK;
  
-@@ -577,8 +593,13 @@ static int omap_i2c_wait_for_bb_valid(st
- 		}
+ 	spin_unlock_irqrestore(&chan->lock, flags);
  
- 		if (time_after(jiffies, timeout)) {
-+			/*
-+			 * SDA or SCL were low for the entire timeout without
-+			 * any activity detected. Most likely, a slave is
-+			 * locking up the bus with no master driving the clock.
-+			 */
- 			dev_warn(omap->dev, "timeout waiting for bus ready\n");
--			return -ETIMEDOUT;
-+			return omap_i2c_recover_bus(omap);
- 		}
+@@ -420,7 +420,7 @@ void mbox_free_channel(struct mbox_chan
+ 	spin_lock_irqsave(&chan->lock, flags);
+ 	chan->cl = NULL;
+ 	chan->active_req = NULL;
+-	if (chan->txdone_method == (TXDONE_BY_POLL | TXDONE_BY_ACK))
++	if (chan->txdone_method == TXDONE_BY_ACK)
+ 		chan->txdone_method = TXDONE_BY_POLL;
  
- 		msleep(1);
+ 	module_put(chan->mbox->dev->driver->owner);
+--- a/drivers/mailbox/pcc.c
++++ b/drivers/mailbox/pcc.c
+@@ -266,7 +266,7 @@ struct mbox_chan *pcc_mbox_request_chann
+ 	init_completion(&chan->tx_complete);
+ 
+ 	if (chan->txdone_method == TXDONE_BY_POLL && cl->knows_txdone)
+-		chan->txdone_method |= TXDONE_BY_ACK;
++		chan->txdone_method = TXDONE_BY_ACK;
+ 
+ 	spin_unlock_irqrestore(&chan->lock, flags);
+ 
+@@ -312,7 +312,7 @@ void pcc_mbox_free_channel(struct mbox_c
+ 	spin_lock_irqsave(&chan->lock, flags);
+ 	chan->cl = NULL;
+ 	chan->active_req = NULL;
+-	if (chan->txdone_method == (TXDONE_BY_POLL | TXDONE_BY_ACK))
++	if (chan->txdone_method == TXDONE_BY_ACK)
+ 		chan->txdone_method = TXDONE_BY_POLL;
+ 
+ 	spin_unlock_irqrestore(&chan->lock, flags);
 
 
 Patches currently in stable-queue which might be from mathieu.poirier@linaro.org are
