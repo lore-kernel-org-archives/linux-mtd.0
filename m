@@ -2,70 +2,156 @@ Return-Path: <SRS0=EHtI=ZD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E873BC43331
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:46:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CA35C43331
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:46:44 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B63C6206C3
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:46:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BD195206C3
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:46:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="D3nqbmJX";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="l/KO6rtX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B63C6206C3
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="MGJbj+5b";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="CtQMnPMI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BD195206C3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
-	Date:From:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
-	List-Owner; bh=W7mgE+UdnppM+2O6z4XVSq81eC+VPI0x9f13JqsgXrA=; b=D3nqbmJXxeILTj
-	Ipw9/u5q4KJH/xSAnhUTUbhxRU805g0JhwvYOMNZII4CIZTB6Y6GtDlex52oLZuT6lIoYlfT1IeZB
-	wqRoz3tLpGQ1P6S0cwW0scfYINiJcrxQ1utKDhVimvhDp36yiogrIN9oguN+K/BAigZUPmgIreIYP
-	L30iDeY5amVGMpgyJiN2HyL4VrMuPCS5fge6ut8T2i0mBZehw7rmYek/GErHcKoqJpSCe2GXIYbZ2
-	wo5mVinloxXZ1VJYwoR4WrUvJxy4T6o0fRp2XB4BlO2AF0qdYbqNC+vAlKkxBBxlMxlgBJmDMs+Pt
-	7biiVxGgswMo687FoGiA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=C5yLYD4vZ+gjvRmfiOEozkh9foIU6+T01RvW4YVBvYE=; b=MGJbj+5bMtYZDO
+	iEuPSbivgNJ5LYehl42tHSCbZ5irTK+GnneFaYpmj0IAQBLiPw4iz9WQuttv3WRyIja3O3BfzOJRc
+	wJUXBaNG0tl6EqUBRtsUrbQnO3rAaP7HgyClZxbJBeVnlQ7XM9WdFtl88AAJKL56xfR2k2MnZUKXq
+	IUcpqSsuMDScPtbgMoXswV4mT/73GPok41yVxkmjo64coVVtIIhrnNC3DXttFv70CDzT3oc4JGe8C
+	LXrINlmgqbAC2BmDFTob4HRt02DJiLOXq2OvXnJJcum3r8IXJzbvQ5uRAtcBZepyHLw1hvdXNgMAH
+	09QF1tGuA6/HLIsFsU3Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iU6H1-0002Y2-P9; Mon, 11 Nov 2019 09:46:15 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1iU6HH-0002mf-18; Mon, 11 Nov 2019 09:46:31 +0000
+Received: from esa4.microchip.iphmx.com ([68.232.154.123])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iU6F5-00083D-64
- for linux-mtd@lists.infradead.org; Mon, 11 Nov 2019 09:44:18 +0000
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
- [83.86.89.107])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id DE6B22084F;
- Mon, 11 Nov 2019 09:44:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1573465454;
- bh=TsET5Ad30Z5LGue4BLdCUG4w7ocxMPwtdcZ3SgYKKAw=;
- h=Subject:To:Cc:From:Date:In-Reply-To:From;
- b=l/KO6rtXfCILC7AJw9LbvMHJIkjC6q5QK9YqdtvYhoffHwaNMpzpYXPthd8lagr1O
- K+7Jq9+PnJt3pDckSggAEmmdQnqlYVu7j62B7K1kyvO41Rbi6P2nuLgHiuaN8plbWn
- lfsu1sRblPsoQ2k8y+Hcmc68jYZ4iEfHfRFOLWP4=
-Subject: Patch "misc: pci_endpoint_test: Prevent some integer overflows" has
- been added to the 4.14-stable tree
-To: dan.carpenter@oracle.com, dri-devel@lists.freedesktop.org,
- gregkh@linuxfoundation.org, linux-mtd@lists.infradead.org,
- mathieu.poirier@linaro.org
-From: <gregkh@linuxfoundation.org>
-Date: Mon, 11 Nov 2019 10:43:33 +0100
-In-Reply-To: <20190905161759.28036-10-mathieu.poirier@linaro.org>
-Message-ID: <157346541354220@kroah.com>
+ id 1iU6F5-00083N-UH
+ for linux-mtd@lists.infradead.org; Mon, 11 Nov 2019 09:44:20 +0000
+Received-SPF: Pass (esa4.microchip.iphmx.com: domain of
+ Tudor.Ambarus@microchip.com designates 198.175.253.82 as
+ permitted sender) identity=mailfrom;
+ client-ip=198.175.253.82; receiver=esa4.microchip.iphmx.com;
+ envelope-from="Tudor.Ambarus@microchip.com";
+ x-sender="Tudor.Ambarus@microchip.com";
+ x-conformance=spf_only; x-record-type="v=spf1";
+ x-record-text="v=spf1 mx a:ushub1.microchip.com
+ a:smtpout.microchip.com a:mx1.microchip.iphmx.com
+ a:mx2.microchip.iphmx.com include:servers.mcsv.net
+ include:mktomail.com include:spf.protection.outlook.com ~all"
+Received-SPF: None (esa4.microchip.iphmx.com: no sender
+ authenticity information available from domain of
+ postmaster@email.microchip.com) identity=helo;
+ client-ip=198.175.253.82; receiver=esa4.microchip.iphmx.com;
+ envelope-from="Tudor.Ambarus@microchip.com";
+ x-sender="postmaster@email.microchip.com"; x-conformance=spf_only
+Authentication-Results: esa4.microchip.iphmx.com;
+ spf=Pass smtp.mailfrom=Tudor.Ambarus@microchip.com;
+ spf=None smtp.helo=postmaster@email.microchip.com;
+ dkim=pass (signature verified) header.i=@microchiptechnology.onmicrosoft.com;
+ dmarc=pass (p=none dis=none) d=microchip.com
+IronPort-SDR: 5nyjJEP5UOy1YDqHXQ7B9aV1CAavZ6W8wSAjX0izGOV7PwDcOlMmJlC+viBq7lGNaO3TjuF05T
+ 2YfsNDCDLLvZGsB04W6Z/g3oZFm+ql5ObkbXiCcyH0iDB6ZMES25/65XVULSrkq3uyHZoLINcT
+ MuaZZYHsP7iN9KyX6BtYsdpbP84NSzHwWN94UlLDq40DHJSbqr6+x7hxS6JzpLyP7EFWWAxCOs
+ Bgx0Bj3A+daqJ/qlfhLotdvljSC9055LTJhacT2loegfG5G5MsfRtpXLt7ZO9JQfkIYcAdxjdw
+ XKc=
+X-IronPort-AV: E=Sophos;i="5.68,292,1569308400"; d="scan'208";a="54853992"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 11 Nov 2019 02:44:13 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 11 Nov 2019 02:44:10 -0700
+Received: from NAM03-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Mon, 11 Nov 2019 02:44:10 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LAKQhc9rnN092lexA8RGscyCv35cZUL0QURC3L0WagJl4wexVY7/ta0EB0EVFuxg/OP0e0p3aLoNOAeU7ArDcMAPSNzGbRBxcmGji2F+1ne6XI0Nsmfe3KfUqz3XuSGtYhCluuYz4eA8sRGB4xYuH+XbmruH5Isd5w0BwD3iD5s8jy3+6o+rh7ysWtPXDYJlnU5G4wZdr9cP6FbECXRj+WWXoR2Iux/KlPYIDASAyd+HBoonhKKlIsEF2yKn5ZjQODgTsQULCHQDi3IK1kmYifsdJKqTbgWBQsK+RPYnJqbAsZphTPkgeHaU2ph3m77Pz1ul4lQnQgS/xTATGoYJag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KsBDjKU3P/fwUarWajpSNTbdg0qlGUNAAeTiJp9vIkA=;
+ b=hPJFisXFNMlUTHvw6LawqxLh2Nf140rCzL5ktlzlfgPu/yxELqGD62+aISLRKtUv01nsNaFRjQhQ8AXPqsm5t+o8TqOtw5ewavBGVYnyNKfODBuB8QaeqWKhXw3dUS5vvsjGE3evesmDgoVhibxL2UmmfnXGEA2V9Q/oHxvF2p+M83U1a8LbFXKKQPy/ZD0VUjyHLuJygbg/KqrJS0Vp0W1J1nyZ66PDV6r1Qbwfnl3FgSmJfLL/kNf4kNQNviLtJ8bmSyxDEiV2eqtu+7ZYHGxfmEU5PZIHAFrzZtBcLhajGrWkn77tRXfHwvXGVBq8M2hwekEZ8Ss21rTARLZwvw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KsBDjKU3P/fwUarWajpSNTbdg0qlGUNAAeTiJp9vIkA=;
+ b=CtQMnPMIH2fBb3WSsPi08fuYIxc1sFtA3XZoPmRwMi3XDsZLRNUN+qNkeG6XlU1JQ7iT8+nf93Czj3FZlnarY+1RmI5B+G2bwEyIM21NNEDNOHNmekps2kA6JpRMa7CszBeE/4B7ILji0egqr1OJYB3p6Tie/zJIJIdlQfIGw+o=
+Received: from MN2PR11MB4448.namprd11.prod.outlook.com (52.135.39.157) by
+ MN2PR11MB3952.namprd11.prod.outlook.com (10.255.181.21) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2430.20; Mon, 11 Nov 2019 09:44:08 +0000
+Received: from MN2PR11MB4448.namprd11.prod.outlook.com
+ ([fe80::c09c:36c8:3301:4457]) by MN2PR11MB4448.namprd11.prod.outlook.com
+ ([fe80::c09c:36c8:3301:4457%5]) with mapi id 15.20.2430.027; Mon, 11 Nov 2019
+ 09:44:08 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <boris.brezillon@collabora.com>
+Subject: [PATCH] mtd: spi-nor: Make sure nor->spimem and nor->controller_ops
+ are mutually exclusive
+Thread-Topic: [PATCH] mtd: spi-nor: Make sure nor->spimem and
+ nor->controller_ops are mutually exclusive
+Thread-Index: AQHVmHSQpwLCmWp+9EG8iC+d50bhxQ==
+Date: Mon, 11 Nov 2019 09:44:08 +0000
+Message-ID: <20191111094358.8271-1-tudor.ambarus@microchip.com>
+References: <20191111100241.717a8fb9@collabora.com>
+In-Reply-To: <20191111100241.717a8fb9@collabora.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: AM0PR10CA0002.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:17c::12) To MN2PR11MB4448.namprd11.prod.outlook.com
+ (2603:10b6:208:193::29)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-mailer: git-send-email 2.9.5
+x-originating-ip: [94.177.32.156]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e1d33535-8eca-4d7b-8d4e-08d7668bb2ab
+x-ms-traffictypediagnostic: MN2PR11MB3952:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR11MB3952B8C29C6118581B051D61F0740@MN2PR11MB3952.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4714;
+x-forefront-prvs: 0218A015FA
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(396003)(376002)(366004)(39860400002)(136003)(346002)(199004)(189003)(25786009)(476003)(11346002)(81156014)(81166006)(66446008)(446003)(66476007)(66946007)(64756008)(2906002)(66556008)(8676002)(2501003)(50226002)(386003)(6506007)(478600001)(52116002)(6916009)(14444005)(14454004)(8936002)(256004)(36756003)(76176011)(2616005)(486006)(102836004)(5660300002)(186003)(7736002)(99286004)(316002)(6512007)(54906003)(2351001)(5640700003)(6436002)(305945005)(26005)(1076003)(6486002)(71200400001)(71190400001)(4326008)(107886003)(86362001)(66066001)(3846002)(6116002);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:MN2PR11MB3952;
+ H:MN2PR11MB4448.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; A:1; MX:1; 
+received-spf: None (protection.outlook.com: microchip.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: pEZRKK1R4brA16iZ5zV7Aj3VOt9ZMSaon419ghrMtpC1jy7xGeMwWOmDyYmTa9PFbPk3/VO7i6DpqvRkcaEItCscAlNgARg59R5v0e8cMR+bvvQwggoKBCFGfUe7z4C7MUi/w5HZNHncqdD5IDTxOscJnZLo9Y4OoNfqBQbiAaP/BrBnMYJnoGUAb0EeJR4DUSsdtxpx8Zo+Nr2MqsjiU+RaBAofRPLuql4GCMW9gn0R7mfBWJ3gcvUu10qKXbTQLZEXgGou7XYzcbrLEMi124RB1dyIGdAle2zfCsAaPiGUYlVF5m3zj4vjRDAVyAuvj8p7qBaw3dWdlod1cBelemEKfTbK0g3LPKHpNiInr7SdIB6gYEIZT8pg3QEQmHOYoXmvacIqVLipUyhx6LP0+SyhXDwpVEauPmnlQj9z4OpIl2X/Ysoki++H7pXUae+7
 MIME-Version: 1.0
-X-stable: commit
-X-Patchwork-Hint: ignore 
+X-MS-Exchange-CrossTenant-Network-Message-Id: e1d33535-8eca-4d7b-8d4e-08d7668bb2ab
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Nov 2019 09:44:08.3737 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ubojthSEhVnITJGPKqvhe70Cii+YznQ+elqxjL19eg9tvOJ5a4JkpYAavbLJHRsFmT8KmpfuU8Bq8DkUzDTnGdilxhGyz3PBjRaZtWIsSm4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB3952
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191111_014415_268446_5D348F70 
-X-CRM114-Status: UNSURE (   9.05  )
+X-CRM114-CacheID: sfid-20191111_014416_119688_3CA1D503 
+X-CRM114-Status: UNSURE (   6.32  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -78,106 +164,56 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: stable-commits@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org, dan.carpenter@oracle.com,
+ Tudor.Ambarus@microchip.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-This is a note to let you know that I've just added the patch titled
+Expand the spi_nor_check() to make sure that nor->spimem and
+nor->controller_ops are mutually exclusive.
 
-    misc: pci_endpoint_test: Prevent some integer overflows
-
-to the 4.14-stable tree which can be found at:
-    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
-
-The filename of the patch is:
-     misc-pci_endpoint_test-prevent-some-integer-overflows.patch
-and it can be found in the queue-4.14 subdirectory.
-
-If you, or anyone else, feels it should not be added to the stable tree,
-please let <stable@vger.kernel.org> know about it.
-
-
-From foo@baz Mon 11 Nov 2019 10:07:22 AM CET
-From: Mathieu Poirier <mathieu.poirier@linaro.org>
-Date: Thu,  5 Sep 2019 10:17:50 -0600
-Subject: misc: pci_endpoint_test: Prevent some integer overflows
-To: stable@vger.kernel.org
-Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org, linux-mtd@lists.infradead.org
-Message-ID: <20190905161759.28036-10-mathieu.poirier@linaro.org>
-
-From: Dan Carpenter <dan.carpenter@oracle.com>
-
-commit 378f79cab12b669928f3a4037f023837ead2ce0c upstream
-
-"size + max" can have an arithmetic overflow when we're allocating:
-
-	orig_src_addr = dma_alloc_coherent(dev, size + alignment, ...
-
-I've added a few checks to prevent that.
-
-Fixes: 13107c60681f ("misc: pci_endpoint_test: Add support to provide aligned buffer addresses")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: b35b9a10362d ("mtd: spi-nor: Move m25p80 code in spi-nor.c")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
- drivers/misc/pci_endpoint_test.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+v3:
+- split checks for better error accuracy
+- s/mutual/mutually
 
---- a/drivers/misc/pci_endpoint_test.c
-+++ b/drivers/misc/pci_endpoint_test.c
-@@ -226,6 +226,9 @@ static bool pci_endpoint_test_copy(struc
- 	u32 src_crc32;
- 	u32 dst_crc32;
+ drivers/mtd/spi-nor/spi-nor.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 824649eecd59..f5d24ccf5108 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -2878,6 +2878,7 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+ static int spi_nor_check(struct spi_nor *nor)
+ {
+ 	if (!nor->dev ||
++	    (!nor->spimem && !nor->controller_ops) ||
+ 	    (!nor->spimem && nor->controller_ops &&
+ 	    (!nor->controller_ops->read ||
+ 	     !nor->controller_ops->write ||
+@@ -2887,6 +2888,11 @@ static int spi_nor_check(struct spi_nor *nor)
+ 		return -EINVAL;
+ 	}
  
-+	if (size > SIZE_MAX - alignment)
-+		goto err;
++	if (nor->spimem && nor->controller_ops) {
++		dev_err(nor->dev, "nor->spimem and nor->controller_ops are mutually exclusive, please set just one of them.\n");
++		return -EINVAL;
++	}
 +
- 	orig_src_addr = dma_alloc_coherent(dev, size + alignment,
- 					   &orig_src_phys_addr, GFP_KERNEL);
- 	if (!orig_src_addr) {
-@@ -311,6 +314,9 @@ static bool pci_endpoint_test_write(stru
- 	size_t alignment = test->alignment;
- 	u32 crc32;
+ 	return 0;
+ }
  
-+	if (size > SIZE_MAX - alignment)
-+		goto err;
-+
- 	orig_addr = dma_alloc_coherent(dev, size + alignment, &orig_phys_addr,
- 				       GFP_KERNEL);
- 	if (!orig_addr) {
-@@ -369,6 +375,9 @@ static bool pci_endpoint_test_read(struc
- 	size_t alignment = test->alignment;
- 	u32 crc32;
- 
-+	if (size > SIZE_MAX - alignment)
-+		goto err;
-+
- 	orig_addr = dma_alloc_coherent(dev, size + alignment, &orig_phys_addr,
- 				       GFP_KERNEL);
- 	if (!orig_addr) {
+-- 
+2.9.5
 
-
-Patches currently in stable-queue which might be from mathieu.poirier@linaro.org are
-
-queue-4.14/mailbox-reset-txdone_method-txdone_by_poll-if-client-knows_txdone.patch
-queue-4.14/mtd-spi-nor-cadence-quadspi-add-a-delay-in-write-sequence.patch
-queue-4.14/misc-pci_endpoint_test-fix-bug_on-error-during-pci_disable_msi.patch
-queue-4.14/asoc-tlv320dac31xx-mark-expected-switch-fall-through.patch
-queue-4.14/pci-dra7xx-add-shutdown-handler-to-cleanly-turn-off-clocks.patch
-queue-4.14/asoc-tlv320aic31xx-handle-inverted-bclk-in-non-dsp-modes.patch
-queue-4.14/mtd-spi-nor-enable-4b-opcodes-for-mx66l51235l.patch
-queue-4.14/cpufreq-ti-cpufreq-add-missing-of_node_put.patch
-queue-4.14/asoc-davinci-kill-bug_on-usage.patch
-queue-4.14/mfd-palmas-assign-the-right-powerhold-mask-for-tps65917.patch
-queue-4.14/asoc-davinci-mcasp-fix-an-error-handling-path-in-davinci_mcasp_probe.patch
-queue-4.14/misc-pci_endpoint_test-prevent-some-integer-overflows.patch
-queue-4.14/asoc-davinci-mcasp-handle-return-value-of-devm_kasprintf.patch
-queue-4.14/i2c-omap-trigger-bus-recovery-in-lockup-case.patch
-queue-4.14/usb-dwc3-allow-disabling-of-metastability-workaround.patch
 
 ______________________________________________________
 Linux MTD discussion mailing list
