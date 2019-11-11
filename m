@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E201C43331
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:44:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E122C43331
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:44:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6022D21783
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:44:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 007B7214DB
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:44:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="e/PVG/G6";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="F4ogiL/6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6022D21783
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CbfkXPuU";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="eCkSalhR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 007B7214DB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,48 +25,47 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
 	Date:From:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
-	List-Owner; bh=iQYS6xjsDcA61X0ZPJG+dno1YZodI7EydGp7YyzICOA=; b=e/PVG/G6EZgH/y
-	Xu+H92tIlYae3nE6TosZ6oA4LolKfw74Lw+GkKOCbfnWN2qiQCDTaIPShkKodBKuEH2dJzA/F50LH
-	RetLolnGmEOmRhFwZnNvPJbYxO36pUWJkJYLoUzTnORpQ45kr+k67LHyQCggjQHITD05WJ2svcEqa
-	RXcDca04ZBypjSroewzRxUZzKa01FCguwnDRI+c7X8jyxuvIGA9Lf6vulxJ9Eyl7nTLIkDrlHwUZW
-	C8fM4r2Wxr5fEDGd/xyOXefRYu0JbgZQXroiwCWvHezCfi5xM4v6WwKN5VJ0eqYyd5EIUSIxFQALx
-	J6C2i4FVm9OGC0ePNmpg==;
+	List-Owner; bh=tXWYuMDk27bx3yKn39HbYjzG2iaDHpHd9TNLoIS67ak=; b=CbfkXPuUArmCkH
+	SxdVrY07rFZ/BaF8QtQqNpGCGrazMN+Igiokbzo6mztF2GULJ15qWXYtVe3BKQDCNEuK44bMRo5gK
+	W/uNuMHer02Ms6ro6ywNv0P/o0P198JE61QVRXMLbwi7WnDz+UvjLRsNQhJyJdGe/pDNdp1LcNzfN
+	k1vz5DT9pjNw0J5RJcO+9yQIylxrkK/gNIun6xDH8QFbOhD1cnIjBexehjh0gCDqVP92yighVXprb
+	bwGzVuv6hkmNfn3mQmY/8BBT+Zsy9nkRJ2PfgL9juoirtoN/rjaPCpfe/khGxs7Y2cqobMAZq43Ft
+	wyuwjA8agjnDZfkD8kyg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iU6F9-00085X-5d; Mon, 11 Nov 2019 09:44:19 +0000
+	id 1iU6FO-0008Kp-82; Mon, 11 Nov 2019 09:44:34 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iU6Ee-0007b6-QP
- for linux-mtd@lists.infradead.org; Mon, 11 Nov 2019 09:43:51 +0000
+ id 1iU6Ek-0007gC-MH
+ for linux-mtd@lists.infradead.org; Mon, 11 Nov 2019 09:43:56 +0000
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
  [83.86.89.107])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id DA25820869;
- Mon, 11 Nov 2019 09:43:47 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 543F8215EA;
+ Mon, 11 Nov 2019 09:43:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1573465428;
- bh=IwDEEIbOgB8J0PtDqz+2EQmYY/t+oEHjXIMetNm95rM=;
+ s=default; t=1573465433;
+ bh=OZ00ERlg+Jzy4M5ctvbznQzgKhO/B9Pa/arXxMqEvcA=;
  h=Subject:To:Cc:From:Date:In-Reply-To:From;
- b=F4ogiL/6Q6G3pQILtM3DsnpT5D5/5FAi90mF35+ERDEXs7vmg+9swU8OcAusif3wc
- 2VLBPLKeYnmFd5T9MuWETJlLAKmNvbYYTJAde/Jb4aCcksztWwPbRz2PjFmvessuwV
- IMois8SwDNrNoSsqptzYRFCsin59qK7sHdvwl+Yo=
-Subject: Patch "ASoC: davinci-mcasp: Handle return value of devm_kasprintf"
- has been added to the 4.14-stable tree
-To: arvind.yadav.cs@gmail.com, broonie@kernel.org,
- dri-devel@lists.freedesktop.org, gregkh@linuxfoundation.org,
+ b=eCkSalhRnjGUrUXkgfaiUOs3sM9fhFpDshyaNoK7ORYG+qmBQ0jO9gV5t6VU24tDm
+ yefBMrfng+2PT0V4gfaH4HaGUUcSGzg+NSc7O9XeUwbyoxKPn04OV9PtZr64FfGSF4
+ eDQMDZWM5dSDQsU7rfUaSySlNh2Dw4//6F6ws8kw=
+Subject: Patch "cpufreq: ti-cpufreq: add missing of_node_put()" has been added
+ to the 4.14-stable tree
+To: dri-devel@lists.freedesktop.org, gregkh@linuxfoundation.org,
  linux-mtd@lists.infradead.org, mathieu.poirier@linaro.org,
- peter.ujfalusi@ti.com
+ rafael.j.wysocki@intel.com, viresh.kumar@linaro.org, zumeng.chen@gmail.com
 From: <gregkh@linuxfoundation.org>
-Date: Mon, 11 Nov 2019 10:43:32 +0100
-In-Reply-To: <20190905161759.28036-15-mathieu.poirier@linaro.org>
-Message-ID: <157346541270237@kroah.com>
+Date: Mon, 11 Nov 2019 10:43:33 +0100
+In-Reply-To: <20190905161759.28036-19-mathieu.poirier@linaro.org>
+Message-ID: <1573465413168159@kroah.com>
 MIME-Version: 1.0
 X-stable: commit
 X-Patchwork-Hint: ignore 
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191111_014348_920074_DB874C9F 
-X-CRM114-Status: UNSURE (   8.28  )
+X-CRM114-CacheID: sfid-20191111_014354_826620_523307F5 
+X-CRM114-Status: UNSURE (   8.46  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -88,13 +87,13 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 This is a note to let you know that I've just added the patch titled
 
-    ASoC: davinci-mcasp: Handle return value of devm_kasprintf
+    cpufreq: ti-cpufreq: add missing of_node_put()
 
 to the 4.14-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
-     asoc-davinci-mcasp-handle-return-value-of-devm_kasprintf.patch
+     cpufreq-ti-cpufreq-add-missing-of_node_put.patch
 and it can be found in the queue-4.14 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
@@ -103,62 +102,37 @@ please let <stable@vger.kernel.org> know about it.
 
 From foo@baz Mon 11 Nov 2019 10:07:22 AM CET
 From: Mathieu Poirier <mathieu.poirier@linaro.org>
-Date: Thu,  5 Sep 2019 10:17:55 -0600
-Subject: ASoC: davinci-mcasp: Handle return value of devm_kasprintf
+Date: Thu,  5 Sep 2019 10:17:59 -0600
+Subject: cpufreq: ti-cpufreq: add missing of_node_put()
 To: stable@vger.kernel.org
 Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org, linux-mtd@lists.infradead.org
-Message-ID: <20190905161759.28036-15-mathieu.poirier@linaro.org>
+Message-ID: <20190905161759.28036-19-mathieu.poirier@linaro.org>
 
-From: Arvind Yadav <arvind.yadav.cs@gmail.com>
+From: Zumeng Chen <zumeng.chen@gmail.com>
 
-commit 0c8b794c4a10aaf7ac0d4a49be2b2638e2038adb upstream
+commit 248aefdcc3a7e0cfbd014946b4dead63e750e71b upstream
 
-devm_kasprintf() can fail here and we must check its return value.
+call of_node_put to release the refcount of np.
 
-Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Zumeng Chen <zumeng.chen@gmail.com>
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/davinci/davinci-mcasp.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/cpufreq/ti-cpufreq.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -1894,6 +1894,10 @@ static int davinci_mcasp_probe(struct pl
- 	if (irq >= 0) {
- 		irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s_common",
- 					  dev_name(&pdev->dev));
-+		if (!irq_name) {
-+			ret = -ENOMEM;
-+			goto err;
-+		}
- 		ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
- 						davinci_mcasp_common_irq_handler,
- 						IRQF_ONESHOT | IRQF_SHARED,
-@@ -1911,6 +1915,10 @@ static int davinci_mcasp_probe(struct pl
- 	if (irq >= 0) {
- 		irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s_rx",
- 					  dev_name(&pdev->dev));
-+		if (!irq_name) {
-+			ret = -ENOMEM;
-+			goto err;
-+		}
- 		ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
- 						davinci_mcasp_rx_irq_handler,
- 						IRQF_ONESHOT, irq_name, mcasp);
-@@ -1926,6 +1934,10 @@ static int davinci_mcasp_probe(struct pl
- 	if (irq >= 0) {
- 		irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s_tx",
- 					  dev_name(&pdev->dev));
-+		if (!irq_name) {
-+			ret = -ENOMEM;
-+			goto err;
-+		}
- 		ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
- 						davinci_mcasp_tx_irq_handler,
- 						IRQF_ONESHOT, irq_name, mcasp);
+--- a/drivers/cpufreq/ti-cpufreq.c
++++ b/drivers/cpufreq/ti-cpufreq.c
+@@ -205,6 +205,7 @@ static int ti_cpufreq_init(void)
+ 
+ 	np = of_find_node_by_path("/");
+ 	match = of_match_node(ti_cpufreq_of_match, np);
++	of_node_put(np);
+ 	if (!match)
+ 		return -ENODEV;
+ 
 
 
 Patches currently in stable-queue which might be from mathieu.poirier@linaro.org are
