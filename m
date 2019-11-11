@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FA55C43331
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:44:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E201C43331
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:44:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 351E420856
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:44:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6022D21783
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:44:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XjdNS82S";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="yCyVHZZE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 351E420856
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="e/PVG/G6";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="F4ogiL/6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6022D21783
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,48 +25,49 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
 	Date:From:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
-	List-Owner; bh=EfEsX95148DDxxKqIsmxwt/UHhjYKOj4FHO2L0ozWfc=; b=XjdNS82SFD0Gii
-	5zBcuCUf63MdRHLq/4oqwPMJO5agp0Xrdb66ZcVTiZmomfRMHE3i36p+NxiHQ4wPnTA1E6ByUqQhI
-	8s+y5d/U2xK+YEm0I3mU2HP1aHgIgWyH5aWASNU1mFbCxozi+A0+KEQQdJJRURXaFUYL8YPtIq1FK
-	DIQyE4i4c+yqwyUAnWQj7eA3HKpmH8pepNJzAVZtTUQk77PmszNzegaPsHOLqpq57Dt6L+rxPhHvW
-	kENP0cLnvgiOtss026ycY2Oxzd6t+OanC41QxIQ1ONI6UQr4ysk46lj3jNfLb5mcfT1hG1IYVUtse
-	r/hPjZELiGHLC52Bn/4g==;
+	List-Owner; bh=iQYS6xjsDcA61X0ZPJG+dno1YZodI7EydGp7YyzICOA=; b=e/PVG/G6EZgH/y
+	Xu+H92tIlYae3nE6TosZ6oA4LolKfw74Lw+GkKOCbfnWN2qiQCDTaIPShkKodBKuEH2dJzA/F50LH
+	RetLolnGmEOmRhFwZnNvPJbYxO36pUWJkJYLoUzTnORpQ45kr+k67LHyQCggjQHITD05WJ2svcEqa
+	RXcDca04ZBypjSroewzRxUZzKa01FCguwnDRI+c7X8jyxuvIGA9Lf6vulxJ9Eyl7nTLIkDrlHwUZW
+	C8fM4r2Wxr5fEDGd/xyOXefRYu0JbgZQXroiwCWvHezCfi5xM4v6WwKN5VJ0eqYyd5EIUSIxFQALx
+	J6C2i4FVm9OGC0ePNmpg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iU6Ep-0007mC-Pu; Mon, 11 Nov 2019 09:43:59 +0000
+	id 1iU6F9-00085X-5d; Mon, 11 Nov 2019 09:44:19 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iU6Ec-0007a8-0k
- for linux-mtd@lists.infradead.org; Mon, 11 Nov 2019 09:43:47 +0000
+ id 1iU6Ee-0007b6-QP
+ for linux-mtd@lists.infradead.org; Mon, 11 Nov 2019 09:43:51 +0000
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
  [83.86.89.107])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 3AC35214DB;
- Mon, 11 Nov 2019 09:43:45 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id DA25820869;
+ Mon, 11 Nov 2019 09:43:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1573465425;
- bh=LN2GfPngDCc5/+o3t8iI7MVS7jkJd4YEDFa37UBDVn8=;
+ s=default; t=1573465428;
+ bh=IwDEEIbOgB8J0PtDqz+2EQmYY/t+oEHjXIMetNm95rM=;
  h=Subject:To:Cc:From:Date:In-Reply-To:From;
- b=yCyVHZZE2I5LI21ie4XZazxtNBUC7/tE9Q7A3oxaeibiJv+gIjM6+82ey+CpjC4z7
- CzOWzAq2dk+C5IHftEpfxLnvICXOM/nroxXQW9Qg1FL5e3tVs3VrvuPTxZmmhCO8V2
- xPTYacW2WWvqdsyCekdjGF6KRt7f4AtdQFtELdYA=
-Subject: Patch "ASoC: davinci-mcasp: Fix an error handling path in
- 'davinci_mcasp_probe()'" has been added to the 4.14-stable tree
-To: broonie@kernel.org, christophe.jaillet@wanadoo.fr,
+ b=F4ogiL/6Q6G3pQILtM3DsnpT5D5/5FAi90mF35+ERDEXs7vmg+9swU8OcAusif3wc
+ 2VLBPLKeYnmFd5T9MuWETJlLAKmNvbYYTJAde/Jb4aCcksztWwPbRz2PjFmvessuwV
+ IMois8SwDNrNoSsqptzYRFCsin59qK7sHdvwl+Yo=
+Subject: Patch "ASoC: davinci-mcasp: Handle return value of devm_kasprintf"
+ has been added to the 4.14-stable tree
+To: arvind.yadav.cs@gmail.com, broonie@kernel.org,
  dri-devel@lists.freedesktop.org, gregkh@linuxfoundation.org,
  linux-mtd@lists.infradead.org, mathieu.poirier@linaro.org,
  peter.ujfalusi@ti.com
 From: <gregkh@linuxfoundation.org>
 Date: Mon, 11 Nov 2019 10:43:32 +0100
-In-Reply-To: <20190905161759.28036-17-mathieu.poirier@linaro.org>
-Message-ID: <1573465412169190@kroah.com>
+In-Reply-To: <20190905161759.28036-15-mathieu.poirier@linaro.org>
+Message-ID: <157346541270237@kroah.com>
 MIME-Version: 1.0
 X-stable: commit
 X-Patchwork-Hint: ignore 
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191111_014346_096876_D2A45E28 
-X-CRM114-Status: GOOD (  13.36  )
+X-CRM114-CacheID: sfid-20191111_014348_920074_DB874C9F 
+X-CRM114-Status: UNSURE (   8.28  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,13 +88,13 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 This is a note to let you know that I've just added the patch titled
 
-    ASoC: davinci-mcasp: Fix an error handling path in 'davinci_mcasp_probe()'
+    ASoC: davinci-mcasp: Handle return value of devm_kasprintf
 
 to the 4.14-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
-     asoc-davinci-mcasp-fix-an-error-handling-path-in-davinci_mcasp_probe.patch
+     asoc-davinci-mcasp-handle-return-value-of-devm_kasprintf.patch
 and it can be found in the queue-4.14 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
@@ -102,47 +103,62 @@ please let <stable@vger.kernel.org> know about it.
 
 From foo@baz Mon 11 Nov 2019 10:07:22 AM CET
 From: Mathieu Poirier <mathieu.poirier@linaro.org>
-Date: Thu,  5 Sep 2019 10:17:57 -0600
-Subject: ASoC: davinci-mcasp: Fix an error handling path in 'davinci_mcasp_probe()'
+Date: Thu,  5 Sep 2019 10:17:55 -0600
+Subject: ASoC: davinci-mcasp: Handle return value of devm_kasprintf
 To: stable@vger.kernel.org
 Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org, linux-mtd@lists.infradead.org
-Message-ID: <20190905161759.28036-17-mathieu.poirier@linaro.org>
+Message-ID: <20190905161759.28036-15-mathieu.poirier@linaro.org>
 
-From: Christophe Jaillet <christophe.jaillet@wanadoo.fr>
+From: Arvind Yadav <arvind.yadav.cs@gmail.com>
 
-commit 1b8b68b05d1868404316d32e20782b00442aba90 upstream
+commit 0c8b794c4a10aaf7ac0d4a49be2b2638e2038adb upstream
 
-All error handling paths in this function 'goto err' except this one.
+devm_kasprintf() can fail here and we must check its return value.
 
-If one of the 2 previous memory allocations fails, we should go through
-the existing error handling path. Otherwise there is an unbalanced
-pm_runtime_enable()/pm_runtime_disable().
-
-Fixes: dd55ff8346a9 ("ASoC: davinci-mcasp: Add set_tdm_slots() support")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/davinci/davinci-mcasp.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/davinci/davinci-mcasp.c |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
 --- a/sound/soc/davinci/davinci-mcasp.c
 +++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -2022,8 +2022,10 @@ static int davinci_mcasp_probe(struct pl
- 			     GFP_KERNEL);
- 
- 	if (!mcasp->chconstr[SNDRV_PCM_STREAM_PLAYBACK].list ||
--	    !mcasp->chconstr[SNDRV_PCM_STREAM_CAPTURE].list)
--		return -ENOMEM;
-+	    !mcasp->chconstr[SNDRV_PCM_STREAM_CAPTURE].list) {
-+		ret = -ENOMEM;
-+		goto err;
-+	}
- 
- 	ret = davinci_mcasp_set_ch_constraints(mcasp);
- 	if (ret)
+@@ -1894,6 +1894,10 @@ static int davinci_mcasp_probe(struct pl
+ 	if (irq >= 0) {
+ 		irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s_common",
+ 					  dev_name(&pdev->dev));
++		if (!irq_name) {
++			ret = -ENOMEM;
++			goto err;
++		}
+ 		ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
+ 						davinci_mcasp_common_irq_handler,
+ 						IRQF_ONESHOT | IRQF_SHARED,
+@@ -1911,6 +1915,10 @@ static int davinci_mcasp_probe(struct pl
+ 	if (irq >= 0) {
+ 		irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s_rx",
+ 					  dev_name(&pdev->dev));
++		if (!irq_name) {
++			ret = -ENOMEM;
++			goto err;
++		}
+ 		ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
+ 						davinci_mcasp_rx_irq_handler,
+ 						IRQF_ONESHOT, irq_name, mcasp);
+@@ -1926,6 +1934,10 @@ static int davinci_mcasp_probe(struct pl
+ 	if (irq >= 0) {
+ 		irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s_tx",
+ 					  dev_name(&pdev->dev));
++		if (!irq_name) {
++			ret = -ENOMEM;
++			goto err;
++		}
+ 		ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
+ 						davinci_mcasp_tx_irq_handler,
+ 						IRQF_ONESHOT, irq_name, mcasp);
 
 
 Patches currently in stable-queue which might be from mathieu.poirier@linaro.org are
