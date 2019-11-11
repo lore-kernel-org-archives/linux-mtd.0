@@ -2,77 +2,82 @@ Return-Path: <SRS0=EHtI=ZD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90408C43331
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 10:08:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF554C17441
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 10:09:51 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5E85D214E0
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 10:08:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AA6402184C
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 10:09:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KJpeeR5w"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E85D214E0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="p5qaOmo+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA6402184C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xwpRTsfNwfGPL1J0BxWvBPdVhNl069sBnrNHt9taAlQ=; b=KJpeeR5wAfg6qg
-	5fSqZbmyz5l3ENkUBTNw4OTMUUArVmN2fVR4nRV4wPV20cxsNgi+rQ7EXvL4XfdLv8CssnEeDdy/u
-	65CTyQ7uMUom83W053PgDDM85HDNXSXrAdaBKsX9WP39XdRikcIN3xLudUzxm5AJ8bvzV6wJ2tnVC
-	r1P7tleQJ1YUwIX4teTfiWCctUBQuFgJM9meh3p9mSn6ipOrUYr/WzSI3Tw8zGftD7Ljs0sPkwRQ8
-	KRclTJ/b5fi0crm/WMYuYfP/YztVzJXgmwHd6c0terPApjGJDA7YEazV1TDZhoLWtjrmTwRwV7KOK
-	fMR11FPJ75EuCA95VtAw==;
+	List-Owner; bh=WtrAxq+P6BpZDW7NKJgzwAxkJb/qD1sBnUqc4FiSKLI=; b=p5qaOmo+0Ii9ez
+	5/Madd521a4e4hd3MAwEsMdST4gIjDwdrMhzSKtVzQmn+GDb0rABtCgHxZsE9JV4oNZfEIjcC/xvY
+	vvkJwk66rQY9dijN3GY9nRO5HqrfAcwAFPe/NXcUY3O1PM5WMsukbC5IeK8pJ/bn2P9KNZVQrMsUQ
+	QHOSDFUzPwoPDZxNI2rCSr4FSK0BvJI96EhNSjByDJMrabUOYwEh1vi8D+fl31a+zqdGXieZe4ij+
+	CZzfei2Ev1uV7fq46+lTtIyo0B3gMrJwKc/sEfINxtixzdZiffcgfZEa+yVpcjMo3PgDRV3EMKmAG
+	UX62pgutL+U8PYoEqpzg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iU6cI-0002eL-6t; Mon, 11 Nov 2019 10:08:14 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1iU6dd-00036s-Hh; Mon, 11 Nov 2019 10:09:37 +0000
+Received: from mout.kundenserver.de ([212.227.17.24])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iU6cE-0002bv-H0
- for linux-mtd@lists.infradead.org; Mon, 11 Nov 2019 10:08:12 +0000
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <sha@pengutronix.de>)
- id 1iU6cC-0006uV-5z; Mon, 11 Nov 2019 11:08:08 +0100
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.89)
- (envelope-from <sha@pengutronix.de>)
- id 1iU6cB-0000CY-8J; Mon, 11 Nov 2019 11:08:07 +0100
-Date: Mon, 11 Nov 2019 11:08:07 +0100
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH 04/10] quota: Allow to pass mount path to quotactl
-Message-ID: <20191111100807.dzomp2o7n3mch6xx@pengutronix.de>
-References: <20191030152702.14269-1-s.hauer@pengutronix.de>
- <20191030152702.14269-5-s.hauer@pengutronix.de>
- <20191101160706.GA23441@quack2.suse.cz>
+ id 1iU6dY-0002yo-Fh; Mon, 11 Nov 2019 10:09:34 +0000
+Received: from mail-qt1-f182.google.com ([209.85.160.182]) by
+ mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MhClw-1hzybu0RoA-00eJP0; Mon, 11 Nov 2019 11:09:24 +0100
+Received: by mail-qt1-f182.google.com with SMTP id o11so15010998qtr.11;
+ Mon, 11 Nov 2019 02:09:22 -0800 (PST)
+X-Gm-Message-State: APjAAAWv8iyxmQLIDiBQXlIhkgflGohJWLHtW4EliIEZKA/EDK8oaCG5
+ CfqN35ml8WFWTRapvUY93fImXBgWBu/X1sRB1II=
+X-Google-Smtp-Source: APXvYqwUFI9CNnIwrAVKasmsTd09tLHKshCq1NYJLSrtULcDmOA+h22x7/m2tzlDDqS3Yhkmt+6zqdhU/D75oBqf0Ro=
+X-Received: by 2002:aed:3e41:: with SMTP id m1mr16150881qtf.142.1573466961656; 
+ Mon, 11 Nov 2019 02:09:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20191101160706.GA23441@quack2.suse.cz>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-IRC: #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 11:03:12 up 126 days, 16:13, 138 users,  load average: 0.25, 0.27,
- 0.19
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+References: <20191029064834.23438-1-hch@lst.de>
+ <20191029064834.23438-11-hch@lst.de>
+In-Reply-To: <20191029064834.23438-11-hch@lst.de>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Mon, 11 Nov 2019 11:09:05 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2o4R+E2hTrHrmNy7K1ki3_98aWE5a-fjkQ_NWW=xd_gQ@mail.gmail.com>
+Message-ID: <CAK8P3a2o4R+E2hTrHrmNy7K1ki3_98aWE5a-fjkQ_NWW=xd_gQ@mail.gmail.com>
+Subject: Re: [PATCH 10/21] asm-generic: ioremap_uc should behave the same with
+ and without MMU
+To: Christoph Hellwig <hch@lst.de>
+X-Provags-ID: V03:K1:Q8h95G51LGJ+lEYcrVT1mVBUea8IcQ9erH4GpK287lhazEIjqVx
+ fP5/Hmr9Z8fUJXDW9BX2tI3T0GXc8PBIt8SKT2xff1DNk/o1NHJnmpbdOML4INTQEzzpYt5
+ xqkWqvP86f3z5WffbZ+79Hs+Tm3glF+cB0+IemNS/SWpM3zzk8XnGd/2o6EoavmRJP7p7Gc
+ wsdc+4bcyovejoN9q/4gw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:fjmunqixS8A=:tPOToe43PB4w4u7CUTDKIq
+ m1bdqRcsk9dsuqhBXaoEHetDB6dSvF21+y8LtHbTvG+5cPaYu5yFqfLpDDdSwCHObZqS+eGIW
+ brWfxEtbJprKugXTZ+KxPquQiHCIiqWDPRQ3lJTTjHycTf6348F/VC3BfSqBuE8wnTZM6tTUk
+ sY7JorQ2XAHogSHduJ/jDewUIuumelNB2ovaX3x7FAeTJhJrnWkELetSYDl+JETDJu2HrR4oz
+ K9+s55kOv1kD5EPe294QVBQpQBvnlRQB1e6hsmwwB4WmQC6VwRkBFk9LB/Pmb+gG4MDo4YGZ5
+ YaY7aqG7gK7tq+iDOy7i2GdAaxGxBkIbBwcBVJ8PI29TN2QZW10zq4Dd8p6jf+SIYhbnw7iaq
+ iFQDA3byabVewETU5MKDBoJKfYpCAJ50hIU2hcyMpu/WOBr8JYpjQlvqOSVV6C1OGrX9tb99r
+ KNcK/sqCmv18xhuVEZxYWE8MVPfyw9pXetJUhK5GrY/vtSJkLsB8xxBhuzPHNhEdXqUqSUivZ
+ d5/fL5n3i4kKvxiL6eRGannSRis3yGI13D7BeGccNDds/3q8ics9gqVbQs5C0d/m8iuUBbaJU
+ /zg68xsyPC64G8hZZ911DK1zoRBI40P974MIHMaMLd8wjIOIYHnDoljeO43a0sqIRyPvs5cQA
+ 0aVyGPFV4R5NmMTRe9x1HwvDiZtYZk5w0hAJlfNHxbP9mz9wC0FWRBhHMXXLbDbAkD+GPCHoo
+ Sma5h+xjzqDC6zCfC96i3Ml0JgN7hjn/vTjeKNcnRM1Zgf6xJRMsP8iBgZyOB0ggjyq9yRnoV
+ 4r8pzbO/MdoTcRUOTQdtjjh8erRrQh+aSzuIt2GsDNK+NdWaHBTU55t3RHmvHCDtGFuFCuPSo
+ cK58ximM9pqnO7SLukGQ==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191111_020810_561656_64DD4647 
-X-CRM114-Status: GOOD (  25.68  )
+X-CRM114-CacheID: sfid-20191111_020932_841685_563614B6 
+X-CRM114-Status: GOOD (  13.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,122 +89,65 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-fsdevel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, kernel@pengutronix.de, Jan Kara <jack@suse.com>
+Cc: linux-ia64@vger.kernel.org, Linux-sh list <linux-sh@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Guo Ren <guoren@kernel.org>, sparclinux <sparclinux@vger.kernel.org>,
+ linux-riscv@lists.infradead.org, Vincent Chen <deanbo422@gmail.com>,
+ linux-arch <linux-arch@vger.kernel.org>,
+ linux-s390 <linux-s390@vger.kernel.org>,
+ "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
+ the arch/x86 maintainers <x86@kernel.org>,
+ "open list:SYNOPSYS ARC ARCHITECTURE" <linux-snps-arc@lists.infradead.org>,
+ linux-xtensa@linux-xtensa.org, linux-m68k <linux-m68k@lists.linux-m68k.org>,
+ openrisc@lists.librecores.org, Greentime Hu <green.hu@gmail.com>,
+ "moderated list:NIOS2 ARCHITECTURE" <nios2-dev@lists.rocketboards.org>,
+ Guan Xuetao <gxt@pku.edu.cn>, Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Michal Simek <monstr@monstr.eu>, Parisc List <linux-parisc@vger.kernel.org>,
+ linux-mips@vger.kernel.org, alpha <linux-alpha@vger.kernel.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Nov 01, 2019 at 05:07:06PM +0100, Jan Kara wrote:
-> On Wed 30-10-19 16:26:56, Sascha Hauer wrote:
-> > This patch introduces the Q_PATH flag to the quotactl cmd argument.
-> > When given, the path given in the special argument to quotactl will
-> > be the mount path where the filesystem is mounted, instead of a path
-> > to the block device.
-> > This is necessary for filesystems which do not have a block device as
-> > backing store. Particularly this is done for upcoming UBIFS support.
-> > 
-> > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> 
-> Thanks for the patch! Some smaller comments below...
-> 
-> > ---
-> >  fs/quota/quota.c           | 37 ++++++++++++++++++++++++++++---------
-> >  include/uapi/linux/quota.h |  1 +
-> >  2 files changed, 29 insertions(+), 9 deletions(-)
-> > 
-> > diff --git a/fs/quota/quota.c b/fs/quota/quota.c
-> > index cb13fb76dbee..035cdd1b022b 100644
-> > --- a/fs/quota/quota.c
-> > +++ b/fs/quota/quota.c
-> > @@ -19,6 +19,7 @@
-> >  #include <linux/types.h>
-> >  #include <linux/writeback.h>
-> >  #include <linux/nospec.h>
-> > +#include <linux/mount.h>
-> >  
-> >  static int check_quotactl_permission(struct super_block *sb, int type, int cmd,
-> >  				     qid_t id)
-> > @@ -825,12 +826,16 @@ int kernel_quotactl(unsigned int cmd, const char __user *special,
-> >  {
-> >  	uint cmds, type;
-> >  	struct super_block *sb = NULL;
-> > -	struct path path, *pathp = NULL;
-> > +	struct path path, *pathp = NULL, qpath;
-> 
-> Maybe call these two 'file_path', 'file_pathp', and 'sb_path' to make it
-> clearer which path is which?
-> 
-> >  	int ret;
-> > +	bool q_path;
-> >  
-> >  	cmds = cmd >> SUBCMDSHIFT;
-> >  	type = cmd & SUBCMDMASK;
-> >  
-> > +	q_path = cmds & Q_PATH;
-> > +	cmds &= ~Q_PATH;
-> > +
-> >  	/*
-> >  	 * As a special case Q_SYNC can be called without a specific device.
-> >  	 * It will iterate all superblocks that have quota enabled and call
-> > @@ -855,19 +860,33 @@ int kernel_quotactl(unsigned int cmd, const char __user *special,
-> >  			pathp = &path;
-> >  	}
-> >  
-> > -	sb = quotactl_block(special, cmds);
-> > -	if (IS_ERR(sb)) {
-> > -		ret = PTR_ERR(sb);
-> > -		goto out;
-> > +	if (q_path) {
-> > +		ret = user_path_at(AT_FDCWD, special, LOOKUP_FOLLOW|LOOKUP_AUTOMOUNT,
-> > +				   &qpath);
-> > +		if (ret)
-> > +			goto out1;
-> > +
-> > +		sb = qpath.mnt->mnt_sb;
-> > +	} else {
-> > +		sb = quotactl_block(special, cmds);
-> > +		if (IS_ERR(sb)) {
-> > +			ret = PTR_ERR(sb);
-> > +			goto out;
-> > +		}
-> >  	}
-> >  
-> >  	ret = do_quotactl(sb, type, cmds, id, addr, pathp);
-> >  
-> > -	if (!quotactl_cmd_onoff(cmds))
-> > -		drop_super(sb);
-> > -	else
-> > -		drop_super_exclusive(sb);
-> > +	if (!q_path) {
-> > +		if (!quotactl_cmd_onoff(cmds))
-> > +			drop_super(sb);
-> > +		else
-> > +			drop_super_exclusive(sb);
-> > +	}
-> >  out:
-> > +	if (q_path)
-> > +		path_put(&qpath);
-> > +out1:
-> 
-> Why do you need out1? If you leave 'out' as is, things should just work.
-> And you can also combine the above if like:
+On Tue, Oct 29, 2019 at 7:49 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> Whatever reason there is for the existence of ioremap_uc, and the fact
+> that it returns NULL by default on architectures with an MMU applies
+> equally to nommu architectures, so don't provide different defaults.
 
-See above where out1 is used. In this case qpath is not valid and I
-cannot call path_put() on it.
+Makes sense.
 
-I see that having q_path and qpath as different variables is confusing,
-but as you say I will rename qpath to sb_path, so hopefully this
-already makes it clearer.
+> In practice the difference is meaningless as the only portable driver
+> that uses ioremap_uc is atyfb which probably doesn't show up on nommu
+> devices.
 
-Sascha
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
+> +/*
+> + * ioremap_uc is special in that we do require an explicit architecture
+> + * implementation.  In general you do now want to use this function in a
+> + * driver and use plain ioremap, which is uncached by default.  Similarly
+> + * architectures should not implement it unless they have a very good
+> + * reason.
+> + */
+> +#ifndef ioremap_uc
+> +#define ioremap_uc ioremap_uc
+> +static inline void __iomem *ioremap_uc(phys_addr_t offset, size_t size)
+> +{
+> +       return NULL;
+> +}
+> +#endif
+
+Maybe we could move the definition into the atyfb driver itself?
+
+As I understand it, the difference between ioremap()/ioremap_nocache()
+and ioremap_uc() only exists on pre-PAT x86-32 systems (i.e. 486, P5,
+Ppro, PII, K6, VIA C3), while on more modern systems (all non-x86,
+PentiumIII, Athlon, VIA C7)  those three are meant to be synonyms
+anyway.
+
+      Arnd
 
 ______________________________________________________
 Linux MTD discussion mailing list
