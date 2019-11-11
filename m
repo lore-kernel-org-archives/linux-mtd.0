@@ -2,20 +2,20 @@ Return-Path: <SRS0=EHtI=ZD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 882B5C43331
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 10:32:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94AFFC43331
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 10:35:31 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 59864214DB
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 10:32:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6569220856
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 10:35:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NJZ6vZkW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 59864214DB
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KzX20WNN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6569220856
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,60 +24,62 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7vPmep0oQToP+VqwcArm/buUc90WM9C27uCYA9RgfdQ=; b=NJZ6vZkWbD/Vqe
-	aqApSah9U8WnYYKsPP645/1KJHgsKg2kFZP8n+kGdxOWG9NhAt5KpjMbwjsEU6UQYzw8p8Woj8gYG
-	HLsOZvCcEoszMc9fL0vfx+wMeybFsk+zcpBICvK2D++/PPYQs2V/lVfqWjYl98KHQaUGwVRoYGmBf
-	etnSTSbBQ9eeRchjVNq/OLB5b+49RksY9kzra8hsK6Trs1SSh1vekou5eiEU4sQLRZpwdQ2Wvx27o
-	K48ZPLmQU0v1rUd62AwPqJirTLhXORT6FUw4OEd2FZAxGf/MIIXHyRTTns3xHMQ3CaIH8tXJDFHXz
-	u45PY0RQGIYuIxh4l4WA==;
+	List-Owner; bh=i16RuOsEjd3v99jpTptFXrWLMyRFMjkte1xMbtw1bxI=; b=KzX20WNNZaToS4
+	aoStxGbDaG5g6dl/usIbzC9M8ffPrcEMESA2gOkpB/ELiN+y0G9yvWG8PEMl2CiHJEvsghe5I9tfZ
+	DOxwtHhUT1Q7SzVBd8ky5FSVsWk7HkWv9QXNhwHSU/RgUocpvB4KA5KpXDd2a6Tmaa4HJAzJi07K4
+	JGJtDavcqOLFc2NepM7QCTzmO169fWnZ9Hlov9yeuqnZDuaV5xPCMizDe3yaw1ZDIcMKrGtVwFJj9
+	d61mUuq2kysvouE38vjMFNAvGzeEsQL5Vi6fxga6jDiK9IYKUzAMvDhiWhjXmHbJ2Ng7GMP4vGAcu
+	9TZPkDryP4Q4y06/2ZWA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iU6za-0004rI-Sg; Mon, 11 Nov 2019 10:32:18 +0000
-Received: from mout.kundenserver.de ([212.227.126.135])
+	id 1iU72S-0006WS-7k; Mon, 11 Nov 2019 10:35:16 +0000
+Received: from mout.kundenserver.de ([212.227.17.24])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iU6yj-0004jG-Ca; Mon, 11 Nov 2019 10:31:27 +0000
-Received: from mail-qv1-f53.google.com ([209.85.219.53]) by
- mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1MVMuN-1iMjEK225v-00SLBi; Mon, 11 Nov 2019 11:31:23 +0100
-Received: by mail-qv1-f53.google.com with SMTP id cg2so4636703qvb.10;
- Mon, 11 Nov 2019 02:31:23 -0800 (PST)
-X-Gm-Message-State: APjAAAV1uHu6Q9+5m/uXVIpS6aLRZNpwjsRLO7wPNQ86ddVV0hzCMTr6
- 87gTGnuJHk7ow0OQV4tIW5MidzrDPQyych2ZXgs=
-X-Google-Smtp-Source: APXvYqxD4F/fwy7LIVnyFzyiMun+f+kScDaMuxMbPMHFdHwTAmNy4Oax48ObAzH1ZmZyCVG2W0sxl5/9Apu79krhc7g=
-X-Received: by 2002:a0c:a9cc:: with SMTP id c12mr4561842qvb.222.1573468282069; 
- Mon, 11 Nov 2019 02:31:22 -0800 (PST)
+ id 1iU71P-0005dU-Cl; Mon, 11 Nov 2019 10:34:15 +0000
+Received: from mail-qk1-f172.google.com ([209.85.222.172]) by
+ mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MWzXj-1iNFHN1G5B-00XL8n; Mon, 11 Nov 2019 11:34:08 +0100
+Received: by mail-qk1-f172.google.com with SMTP id i19so10728169qki.2;
+ Mon, 11 Nov 2019 02:34:07 -0800 (PST)
+X-Gm-Message-State: APjAAAXeqEVa0qpQOFkvF0fqiDj7Ld/dsOn1PchOF7m/ZBazV4BIus9V
+ AfQF5GTzbephRYVO/gYPRgCQE4fnBV5Ga0tUHvk=
+X-Google-Smtp-Source: APXvYqzESzY62F14rsigxKLBXM91nKVjfO+E517KtV1rTG3fdeRCW+MOilAesC4Pz85XDKVkv4qCW/mxeD7p5CII2Ks=
+X-Received: by 2002:a37:4f13:: with SMTP id d19mr9320005qkb.138.1573468446947; 
+ Mon, 11 Nov 2019 02:34:06 -0800 (PST)
 MIME-Version: 1.0
-References: <20191029064834.23438-12-hch@lst.de>
- <mhng-33ea9141-2440-4a2d-8133-62094486fc48@palmer-si-x1c4>
- <CAMuHMdVuDp_8UDeWv8tdPAH5JS84=-yfwZjOk-YQcoYKM9za+w@mail.gmail.com>
-In-Reply-To: <CAMuHMdVuDp_8UDeWv8tdPAH5JS84=-yfwZjOk-YQcoYKM9za+w@mail.gmail.com>
+References: <20191029064834.23438-1-hch@lst.de>
+ <20191029064834.23438-2-hch@lst.de>
+In-Reply-To: <20191029064834.23438-2-hch@lst.de>
 From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 11 Nov 2019 11:31:05 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2a7jwmAKhh3WsowCmvdQpsde5A5nz+3NXRn7amhwUxQg@mail.gmail.com>
-Message-ID: <CAK8P3a2a7jwmAKhh3WsowCmvdQpsde5A5nz+3NXRn7amhwUxQg@mail.gmail.com>
-Subject: Re: [PATCH 11/21] asm-generic: don't provide ioremap for CONFIG_MMU
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-X-Provags-ID: V03:K1:jKdc7SN7TlzrItssvWUahVJz3hDP5Cd0ZmKt98s8caMUYUIeg1a
- XJXJHK48OYgZsi5ooE+SHRbls5mfsDSjjzdKxqV+7TQ0haWZIl00SRFE+1uHGmmMSiQQEjk
- j4XE6F0yAlv0Od2pv/6TeFS/cNJKAI4Ztq4dRUpnq4tr/aod/9rdK+VMdZt8elxgT1Pk7Jn
- b+CGKaZnlfyAqgTx7I6VA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:9bijUwidQcU=:k4e4fsccf7b1kQBRUXFfF7
- 2x6C2BMR87xGd6DUQHtPI68UisFEiQ3fhUeQ8z9c9f0LWWCM00QB+Q6QuX3q4oAMTsC17HKyE
- OS9U7UukFKmm19uDbnHKZfQmXJk51+VlZberOhVicpewkMPELJACdUHCAmPGR3V3e6fVRVJq8
- 14ERn9U4sYWuG8ug7rEGcNxN7YRPcZgbngeeCgEhiKqqVZnKK0pCzpcUEOzOKz6vRBB5OfJDA
- l4UwCJ5roQnrlHNOfjtwMXdOmsofksZPZzV0yEuVt91QLmxq8X97yfgMfWfUoBvsU00+ctxho
- mobkd5fIjNBhz/CEyr/zwRCWk9VKbT95UUYTmHhKHgcHNu0XvvGNoRAMlRURXS13K7cWivOOb
- ADCx4ENJaBl5f2ZJi9ObpaxMYKMcXguX0qigZ1XXUDOVKOFjWKrBjpm5GEB9gFbWntqC3muuP
- n3LqZOhnhUGgCjLTs9yPPvTcUrsnqJIaSKeqI0WJ6ci9kU/jM//kc8xhn6qVDe8DqqJ4vl4yu
- IM53gbIB1IagmQ8ijskWfXjGAs1TubKWj0Jyqvn22RhLH59CdoBF237PzFTIqYm0PlzTKoXJw
- k1lTucluSyDydUojgOKhDG8f7fHj3mZeiP6QLPCufVDPYLEl7Nd5Nwy2pHtUO38YQ2NyQnWF2
- LFkyYjl5yjdRTdwV7F3JvL0QncNnzYQ/Xme/aIk3YFUpea4Xcx9nd+T3rvqgk1ufAx5SMqStT
- kf3OGv3Anm04oi+e3bn8VN7IiLiykMJ4vEIsZNL6CY714bZUdIHdOmxJxnWHA9u3umW42//MQ
- PMaCuSA5nXjKNjyAHTQ7XJ/OJoXhkbmUaFFiX4di26SFdmNnFMf4EdBdbmKzjRwv3E7LEmWvP
- uGNX4U82rMksGM+SEnQw==
+Date: Mon, 11 Nov 2019 11:33:50 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3xk-mQic84Cv7CYhm2DqDCyu69+qH=i8M=JoE3xkpM=g@mail.gmail.com>
+Message-ID: <CAK8P3a3xk-mQic84Cv7CYhm2DqDCyu69+qH=i8M=JoE3xkpM=g@mail.gmail.com>
+Subject: Re: [PATCH 01/21] arm: remove ioremap_cached
+To: Christoph Hellwig <hch@lst.de>
+X-Provags-ID: V03:K1:7s94FvFGdDDs2wGAW4+qFKwxIo7MNglhvZZ4o15WArpb3FLR7h9
+ Y1Z80ha/WcZPxJkBTHtdgFuXYEI8U2ciFfBs81OKtMOFP5rLFAZADWgBtwDmlXc9pslYHGA
+ nDqYCZ5Ut0IGOvgoJ2VX3w149hNKHb4iUHBNfWBNSrQoSlOs/XyuaB01Oe5ypmaazGKuEBU
+ qCI7E0S3QuvQJ0o+G6khA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ACr3tUk2G6s=:6PfJjmdel55Q2JqQG+mEBM
+ 1NhC6LulqgXqtdtFzSrFD1t0KlgF9B3+/xFTMp9/RFheCtiq05QrNJ7rFW3AnTy/nyDRGylo2
+ 3vbNhzXuyhZKE/zLf7vFsBmFIuNuU8Iw8eE5Yx2MyastjREgGUuAtp9JMHnen6UvPCX8pWSXS
+ 53rh9xjiEyItNmvmV42wyRmNT5mfZZSZqlV27bJ9pEqx8MLaOd+pKu903NyPrItaE+B3pPNnL
+ VkZ/svAHr1z41Q2o3B53cq92U1g+0eoNrHqYi2WC3R3dX3Q1jXC62suYjVZR1Mcot7pTGYLIW
+ Mu6MUT+GhSbmjmruAcAWgvrkrw2oTyZidgz4lmNrzk+Y33fKj0uZZ8WSCtofpcaLeqnqEOUwS
+ osPFiPScpTU9bYXVJvVs0mBop62Es3G95YMx74BjBoM9bbPEBn0DEcSEKbBEjWjLUSyUlT2th
+ jKKjsO3q+Z4Y9VYEmMBIT0l4iNPfScy/NJpwgSBhqMeO0a7ZtG6IDiVOyB7X5vwIrRR9FeUns
+ FBxo0WO/QrEvYShK+mrjqRa5f3Lt2HSfoTRqdWwoEnAB3if4rrnkI23MrDg/doXoD0U/hbh1D
+ OIIzf9Va58BifoRj7UfV0U2Ay7FSWTRhFNbBqzhtE5bVoor1oN4b0nq3nbjnG6JAmpLEQaE3Y
+ VIa/AtkR9NLgMhgll/SZQylELYRzKhiVIESrEcl2kUIAs16sj/guJihGj3s7ySHf10eJ0e5Ia
+ FQat9wyXd6lGB3/D6wkwHBYFO8/MSk2Y1YWc3AsJiclSQjyBSv6zXYPvyjdrqmYL28nhi+SZQ
+ 3dTPHgI7Vlkr6XZjhYSmON53uGs4m2viXo4XlF08f2EFLBfPj+g8nXoNPWvJZ+Q2aWwFOPklD
+ QbkPxSfR71XBXDMcKrCL7j/QKdHw/dIzlLO6AazTRKAW5ejX/Nm5FIp6fM6surs+3bQvkZJzb
+ LiMRtCs+SpmBn5eX1nucN9yke8R82aP9U9n6jfZ4U4NbA8/OUFJVH3Z5iaWss6b/A1tRbUbee
+ h2oXyKJpCPr0+630YfOYnEArkBRfoBI7TQkbcJ86vdNwVOdj40r1ywLPpeaMgBpC3w==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191111_023125_719658_C481EF63 
-X-CRM114-Status: GOOD (  10.74  )
+X-CRM114-CacheID: sfid-20191111_023411_727067_0B0B932C 
+X-CRM114-Status: UNSURE (   7.07  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,51 +91,34 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
- Linux-sh list <linux-sh@vger.kernel.org>, linux-mips@vger.kernel.org,
+Cc: linux-ia64@vger.kernel.org, Linux-sh list <linux-sh@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  Guo Ren <guoren@kernel.org>, sparclinux <sparclinux@vger.kernel.org>,
  linux-riscv@lists.infradead.org, Vincent Chen <deanbo422@gmail.com>,
- Christoph Hellwig <hch@lst.de>, Linux-Arch <linux-arch@vger.kernel.org>,
+ linux-arch <linux-arch@vger.kernel.org>,
  linux-s390 <linux-s390@vger.kernel.org>,
  "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
  the arch/x86 maintainers <x86@kernel.org>,
- arcml <linux-snps-arc@lists.infradead.org>, linux-xtensa@linux-xtensa.org,
- linux-m68k <linux-m68k@lists.linux-m68k.org>,
- Openrisc <openrisc@lists.librecores.org>, Greentime Hu <green.hu@gmail.com>,
+ "open list:SYNOPSYS ARC ARCHITECTURE" <linux-snps-arc@lists.infradead.org>,
+ linux-xtensa@linux-xtensa.org, linux-m68k <linux-m68k@lists.linux-m68k.org>,
+ openrisc@lists.librecores.org, Greentime Hu <green.hu@gmail.com>,
  "moderated list:NIOS2 ARCHITECTURE" <nios2-dev@lists.rocketboards.org>,
  Guan Xuetao <gxt@pku.edu.cn>, Linux ARM <linux-arm-kernel@lists.infradead.org>,
  Michal Simek <monstr@monstr.eu>, Parisc List <linux-parisc@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Palmer Dabbelt <palmer@dabbelt.com>, alpha <linux-alpha@vger.kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>
+ linux-mips@vger.kernel.org, alpha <linux-alpha@vger.kernel.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Nov 6, 2019 at 7:16 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+On Tue, Oct 29, 2019 at 7:48 AM Christoph Hellwig <hch@lst.de> wrote:
 >
-> Hi Palmer,
+> No users of ioremap_cached are left, remove it.
 >
-> On Wed, Nov 6, 2019 at 7:11 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
-> > It looks like the difference in prototype between the architectures is between
-> >
-> >     void __iomem *ioremap(resource_size_t, size_t)
-> >     void __iomem *ioremap(phys_addr_t, size_t)
-> >     void __iomem *ioremap(phys_addr_t, unsigned long)
-> >     void __iomem *ioremap(unsigned long, unsigned long)
-> >
-> > shouldn't they all just be that first one?  In other words, wouldn't it be
-> > better to always provide the generic ioremap prototype and unify the ports
-> > instead?
->
-> Agreed. But I'd go for the second one.
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Right, phys_addr_t is the correct type here, resource_size_t is just a generic
-type that is at least as long as any resource, and usually the same as
-phys_addr_t, which is supposed to be used for physical addresses.
-
-      Arnd
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 
 ______________________________________________________
 Linux MTD discussion mailing list
