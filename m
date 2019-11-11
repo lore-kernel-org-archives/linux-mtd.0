@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80E14C43331
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:46:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B379BC43331
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:47:14 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 408CF206C3
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:46:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 77788206C3
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:47:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mZwOT0mS";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="RLi2DaLw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 408CF206C3
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="g22EQqgZ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="GR0/t/Dk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 77788206C3
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,47 +25,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
 	Date:From:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
-	List-Owner; bh=M64hmZQaNg9oEKJGQkYOdk875+HUDcZ/O7W0oqyMFKg=; b=mZwOT0mSVieoJH
-	TmyDdUdGvZXenG1aM2uoLRkFDzQcQxWxseLsOLDuNw+MTlBRjYQ+uxKkYWLeYcFEUD2x53oCfDgDd
-	wFf6Sbyj3ChXxE8CZOZe57S/yhHpzdEkQYNQD94ZNSNxcrcCEkV3p8SCCNTF61kp5lqM6p+hGH9WN
-	9p4dJ1AE2V/fySG118vi4lf9c+5e+/jpIdruaYMDLexFaPpPyV4m4m/mhBKd1squ1oHEWsD4BC6KJ
-	Mnc43Mjz5Bpl9yKZSX7aA6qa2tWznJjTgjNQTLCiVOOxVQLm9ruhmrvh+x2FbnRNlclLQTtZfrAAR
-	wD/y3/mf6ejo5cGpvGJQ==;
+	List-Owner; bh=cQbvmLgm45xKXcsQxsgyDmh/YH3wpzmRtfGqp1W3KJ8=; b=g22EQqgZVLYwZG
+	jzI4tr97oiLgk0yUXc4olIMt/hA7u0DBdNLwsJoxNq+KqOVpzDsHNbGD/xMgiC2EF6ca4/QfJiE1O
+	N3cQQ8SA1N378Na0jpxa6ryFgHFU8fRGMQDM4+0M5jhKCsU70EwPek90AckyGaUc/wNa+fQCH1L/B
+	uBhnwjl+1ffnuvQWuz6c4tC16UoRZpReXGiDw+bY5JKkrQsyHoP6BoVu5q55PydRRp0hWu7I70OuK
+	Z/xpla0581pfacEAy4tCNrr9/kReuk9msdp3Sx68pAus3NB4AnXyAFNaIcF0vPEyIyMOzlU5sJia+
+	kn/yHBmiDuNiVaG5LsXg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iU6HT-0002zr-9g; Mon, 11 Nov 2019 09:46:43 +0000
+	id 1iU6Hl-0003LW-KJ; Mon, 11 Nov 2019 09:47:01 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iU6F7-00085T-Vb
- for linux-mtd@lists.infradead.org; Mon, 11 Nov 2019 09:44:22 +0000
+ id 1iU6FA-00087C-OV
+ for linux-mtd@lists.infradead.org; Mon, 11 Nov 2019 09:44:23 +0000
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
  [83.86.89.107])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 8D64F20869;
- Mon, 11 Nov 2019 09:44:16 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id C85512084F;
+ Mon, 11 Nov 2019 09:44:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1573465457;
- bh=e4zjSx9YTNUC+lxQUEPcgx60AMThmWsCf7+B1bbGs4g=;
+ s=default; t=1573465460;
+ bh=a1KzYj0KgBXJWXXqufUsXtuXdeJ9sahZ3TaRJXX8tOU=;
  h=Subject:To:Cc:From:Date:In-Reply-To:From;
- b=RLi2DaLwoq8i7/OTEJY9IdYozR7CV32a06Wt7PKsipro2Sn8klSN5l2YtqTcdRJFw
- ptH1MJBUvlYNuVoXWP5tyEu1ID448ziS6XKt4v5VcGGEFBdCsW1i/KRinWF9EYR9UZ
- 5qY/sQ75BLjKr5tyAU26Bb13fMFPKl9zH+mgUyro=
-Subject: Patch "mtd: spi-nor: cadence-quadspi: add a delay in write sequence"
- has been added to the 4.14-stable tree
+ b=GR0/t/Dkm7eLNUnmCcVwup0hwrxA/03Madkc19FEmsoXPIKuz9+z2rerJtQ3L+tIo
+ CmN5t/tB6/ACvgI9sVUmtqLn0evob3lLVCQdCb+/PgI3V7B+Fm5XttHxUw6fblLLFl
+ yZNFDtpID3HgE72sZR7Zm3dmhVKUqJHotcbbGWjI=
+Subject: Patch "mtd: spi-nor: enable 4B opcodes for mx66l51235l" has been
+ added to the 4.14-stable tree
 To: cyrille.pitchen@wedev4u.fr, dri-devel@lists.freedesktop.org,
- gregkh@linuxfoundation.org, linux-mtd@lists.infradead.org,
- marek.vasut@gmail.com, mathieu.poirier@linaro.org, vigneshr@ti.com
+ gregkh@linuxfoundation.org, leroi.lists@gmail.com,
+ linux-mtd@lists.infradead.org, mathieu.poirier@linaro.org, roman@advem.lv
 From: <gregkh@linuxfoundation.org>
 Date: Mon, 11 Nov 2019 10:43:33 +0100
-In-Reply-To: <20190905161759.28036-9-mathieu.poirier@linaro.org>
-Message-ID: <157346541330101@kroah.com>
+In-Reply-To: <20190905161759.28036-8-mathieu.poirier@linaro.org>
+Message-ID: <1573465413218159@kroah.com>
 MIME-Version: 1.0
 X-stable: commit
 X-Patchwork-Hint: ignore 
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191111_014418_113263_3991EE0D 
-X-CRM114-Status: GOOD (  12.25  )
+X-CRM114-CacheID: sfid-20191111_014420_878054_DF9F63C7 
+X-CRM114-Status: UNSURE (   9.69  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,13 +87,13 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 This is a note to let you know that I've just added the patch titled
 
-    mtd: spi-nor: cadence-quadspi: add a delay in write sequence
+    mtd: spi-nor: enable 4B opcodes for mx66l51235l
 
 to the 4.14-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
-     mtd-spi-nor-cadence-quadspi-add-a-delay-in-write-sequence.patch
+     mtd-spi-nor-enable-4b-opcodes-for-mx66l51235l.patch
 and it can be found in the queue-4.14 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
@@ -101,104 +102,35 @@ please let <stable@vger.kernel.org> know about it.
 
 From foo@baz Mon 11 Nov 2019 10:07:22 AM CET
 From: Mathieu Poirier <mathieu.poirier@linaro.org>
-Date: Thu,  5 Sep 2019 10:17:49 -0600
-Subject: mtd: spi-nor: cadence-quadspi: add a delay in write sequence
+Date: Thu,  5 Sep 2019 10:17:48 -0600
+Subject: mtd: spi-nor: enable 4B opcodes for mx66l51235l
 To: stable@vger.kernel.org
 Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org, linux-mtd@lists.infradead.org
-Message-ID: <20190905161759.28036-9-mathieu.poirier@linaro.org>
+Message-ID: <20190905161759.28036-8-mathieu.poirier@linaro.org>
 
-From: Vignesh R <vigneshr@ti.com>
+From: Roman Yeryomin <leroi.lists@gmail.com>
 
-commit 61dc8493bae9ba82a1c72edbc6c6065f6a94456a upstream
+commit d342b6a973af459f6104cad6effc8efc71a0558d upstream
 
-As per 66AK2G02 TRM[1] SPRUHY8F section 11.15.5.3 Indirect Access
-Controller programming sequence, a delay equal to couple of QSPI master
-clock(~5ns) is required after setting CQSPI_REG_INDIRECTWR_START bit and
-writing data to the flash. Introduce a quirk flag CQSPI_NEEDS_WR_DELAY
-to handle this and set this flag for TI 66AK2G SoC.
-
-[1]http://www.ti.com/lit/ug/spruhy8f/spruhy8f.pdf
-
-Signed-off-by: Vignesh R <vigneshr@ti.com>
-Acked-by: Marek Vasut <marek.vasut@gmail.com>
+Signed-off-by: Roman Yeryomin <roman@advem.lv>
 Signed-off-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mtd/spi-nor/cadence-quadspi.c |   27 ++++++++++++++++++++++++++-
- 1 file changed, 26 insertions(+), 1 deletion(-)
+ drivers/mtd/spi-nor/spi-nor.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/mtd/spi-nor/cadence-quadspi.c
-+++ b/drivers/mtd/spi-nor/cadence-quadspi.c
-@@ -38,6 +38,9 @@
- #define CQSPI_NAME			"cadence-qspi"
- #define CQSPI_MAX_CHIPSELECT		16
- 
-+/* Quirks */
-+#define CQSPI_NEEDS_WR_DELAY		BIT(0)
-+
- struct cqspi_st;
- 
- struct cqspi_flash_pdata {
-@@ -76,6 +79,7 @@ struct cqspi_st {
- 	u32			fifo_depth;
- 	u32			fifo_width;
- 	u32			trigger_address;
-+	u32			wr_delay;
- 	struct cqspi_flash_pdata f_pdata[CQSPI_MAX_CHIPSELECT];
- };
- 
-@@ -623,6 +627,15 @@ static int cqspi_indirect_write_execute(
- 	reinit_completion(&cqspi->transfer_complete);
- 	writel(CQSPI_REG_INDIRECTWR_START_MASK,
- 	       reg_base + CQSPI_REG_INDIRECTWR);
-+	/*
-+	 * As per 66AK2G02 TRM SPRUHY8F section 11.15.5.3 Indirect Access
-+	 * Controller programming sequence, couple of cycles of
-+	 * QSPI_REF_CLK delay is required for the above bit to
-+	 * be internally synchronized by the QSPI module. Provide 5
-+	 * cycles of delay.
-+	 */
-+	if (cqspi->wr_delay)
-+		ndelay(cqspi->wr_delay);
- 
- 	while (remaining > 0) {
- 		size_t write_words, mod_bytes;
-@@ -1184,6 +1197,7 @@ static int cqspi_probe(struct platform_d
- 	struct cqspi_st *cqspi;
- 	struct resource *res;
- 	struct resource *res_ahb;
-+	unsigned long data;
- 	int ret;
- 	int irq;
- 
-@@ -1241,6 +1255,10 @@ static int cqspi_probe(struct platform_d
- 	}
- 
- 	cqspi->master_ref_clk_hz = clk_get_rate(cqspi->clk);
-+	data  = (unsigned long)of_device_get_match_data(dev);
-+	if (data & CQSPI_NEEDS_WR_DELAY)
-+		cqspi->wr_delay = 5 * DIV_ROUND_UP(NSEC_PER_SEC,
-+						   cqspi->master_ref_clk_hz);
- 
- 	ret = devm_request_irq(dev, irq, cqspi_irq_handler, 0,
- 			       pdev->name, cqspi);
-@@ -1312,7 +1330,14 @@ static const struct dev_pm_ops cqspi__de
- #endif
- 
- static const struct of_device_id cqspi_dt_ids[] = {
--	{.compatible = "cdns,qspi-nor",},
-+	{
-+		.compatible = "cdns,qspi-nor",
-+		.data = (void *)0,
-+	},
-+	{
-+		.compatible = "ti,k2g-qspi",
-+		.data = (void *)CQSPI_NEEDS_WR_DELAY,
-+	},
- 	{ /* end of table */ }
- };
- 
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1030,7 +1030,7 @@ static const struct flash_info spi_nor_i
+ 	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K | SPI_NOR_4B_OPCODES) },
+ 	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
+-	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+ 	{ "mx66u51235f", INFO(0xc2253a, 0, 64 * 1024, 1024, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+ 	{ "mx66l1g45g",  INFO(0xc2201b, 0, 64 * 1024, 2048, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
 
 
 Patches currently in stable-queue which might be from mathieu.poirier@linaro.org are
