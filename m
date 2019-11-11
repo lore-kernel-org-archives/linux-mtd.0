@@ -6,16 +6,16 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94AFFC43331
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 10:35:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DFC5C43331
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 10:37:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6569220856
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 10:35:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4F08F20856
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 10:37:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KzX20WNN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6569220856
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="h7Ncph6W"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4F08F20856
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,61 +24,61 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=i16RuOsEjd3v99jpTptFXrWLMyRFMjkte1xMbtw1bxI=; b=KzX20WNNZaToS4
-	aoStxGbDaG5g6dl/usIbzC9M8ffPrcEMESA2gOkpB/ELiN+y0G9yvWG8PEMl2CiHJEvsghe5I9tfZ
-	DOxwtHhUT1Q7SzVBd8ky5FSVsWk7HkWv9QXNhwHSU/RgUocpvB4KA5KpXDd2a6Tmaa4HJAzJi07K4
-	JGJtDavcqOLFc2NepM7QCTzmO169fWnZ9Hlov9yeuqnZDuaV5xPCMizDe3yaw1ZDIcMKrGtVwFJj9
-	d61mUuq2kysvouE38vjMFNAvGzeEsQL5Vi6fxga6jDiK9IYKUzAMvDhiWhjXmHbJ2Ng7GMP4vGAcu
-	9TZPkDryP4Q4y06/2ZWA==;
+	List-Owner; bh=om7uAXtHHFpZDE27p26tjue0Mf+8aTiR2uEKGcEl6JM=; b=h7Ncph6WHwEokr
+	Zms+9cLo13oJKYB4e7EPEnWvZJudTHiynqcBI+Yi/uJ6Nk2+lXHUBLJaMYwWb6IY7dOHgOi7eG4Ir
+	RssJyolyUT+nIczfgVeHCImaoKDlncyrggOsWoaS7oZjTI/VLpR9JVVMhzKO2x+/MoXxHjHyHyyu6
+	tQ7/suVoKJQcgsRowTDcphiZkbiE5nJTTJf927yPmIIQ/TiMbgc3sac++yuJ23m9/2FWC1kOr+0b3
+	Y3fKRtGK3v9luVE2ap5CuNwxJ9r5cJb0XDoj38Um5GBzb2EaU7jO0A+BsiUdwjRuBlF8mAD7GmzPg
+	LRkCVLxIcyZ/t/TJoLxQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iU72S-0006WS-7k; Mon, 11 Nov 2019 10:35:16 +0000
-Received: from mout.kundenserver.de ([212.227.17.24])
+	id 1iU747-0007Gn-1m; Mon, 11 Nov 2019 10:36:59 +0000
+Received: from mout.kundenserver.de ([212.227.126.187])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iU71P-0005dU-Cl; Mon, 11 Nov 2019 10:34:15 +0000
-Received: from mail-qk1-f172.google.com ([209.85.222.172]) by
- mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MWzXj-1iNFHN1G5B-00XL8n; Mon, 11 Nov 2019 11:34:08 +0100
-Received: by mail-qk1-f172.google.com with SMTP id i19so10728169qki.2;
- Mon, 11 Nov 2019 02:34:07 -0800 (PST)
-X-Gm-Message-State: APjAAAXeqEVa0qpQOFkvF0fqiDj7Ld/dsOn1PchOF7m/ZBazV4BIus9V
- AfQF5GTzbephRYVO/gYPRgCQE4fnBV5Ga0tUHvk=
-X-Google-Smtp-Source: APXvYqzESzY62F14rsigxKLBXM91nKVjfO+E517KtV1rTG3fdeRCW+MOilAesC4Pz85XDKVkv4qCW/mxeD7p5CII2Ks=
-X-Received: by 2002:a37:4f13:: with SMTP id d19mr9320005qkb.138.1573468446947; 
- Mon, 11 Nov 2019 02:34:06 -0800 (PST)
+ id 1iU73r-0007Da-8g; Mon, 11 Nov 2019 10:36:45 +0000
+Received: from mail-qv1-f49.google.com ([209.85.219.49]) by
+ mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MWRmF-1iNnXP0AYN-00XpAX; Mon, 11 Nov 2019 11:36:40 +0100
+Received: by mail-qv1-f49.google.com with SMTP id cg2so4641828qvb.10;
+ Mon, 11 Nov 2019 02:36:39 -0800 (PST)
+X-Gm-Message-State: APjAAAXu36BrpYql+w3vgiGP2nWyAxigBq+F9ZkFKXIoFn/ocoMEM6v4
+ 7h5y26h57G81/0b894i6MnxyhCQhRU61ZM7MAxA=
+X-Google-Smtp-Source: APXvYqwG9UjDI7BT4/zArLXJROi41Jfl0ozvIqGD8Z6sQp9Psd5jWuuWMeGtnWBnULPRq767xF7AmE4x/PyrFGraS9U=
+X-Received: by 2002:a0c:a9cc:: with SMTP id c12mr4580319qvb.222.1573468598676; 
+ Mon, 11 Nov 2019 02:36:38 -0800 (PST)
 MIME-Version: 1.0
 References: <20191029064834.23438-1-hch@lst.de>
- <20191029064834.23438-2-hch@lst.de>
-In-Reply-To: <20191029064834.23438-2-hch@lst.de>
+ <20191029064834.23438-4-hch@lst.de>
+In-Reply-To: <20191029064834.23438-4-hch@lst.de>
 From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 11 Nov 2019 11:33:50 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3xk-mQic84Cv7CYhm2DqDCyu69+qH=i8M=JoE3xkpM=g@mail.gmail.com>
-Message-ID: <CAK8P3a3xk-mQic84Cv7CYhm2DqDCyu69+qH=i8M=JoE3xkpM=g@mail.gmail.com>
-Subject: Re: [PATCH 01/21] arm: remove ioremap_cached
+Date: Mon, 11 Nov 2019 11:36:22 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3k2KRyhCy4OWJkToNBiw_mw0e_A=Ta6UANMMF3EXnhmA@mail.gmail.com>
+Message-ID: <CAK8P3a3k2KRyhCy4OWJkToNBiw_mw0e_A=Ta6UANMMF3EXnhmA@mail.gmail.com>
+Subject: Re: [PATCH 03/21] ia64: rename ioremap_nocache to ioremap_uc
 To: Christoph Hellwig <hch@lst.de>
-X-Provags-ID: V03:K1:7s94FvFGdDDs2wGAW4+qFKwxIo7MNglhvZZ4o15WArpb3FLR7h9
- Y1Z80ha/WcZPxJkBTHtdgFuXYEI8U2ciFfBs81OKtMOFP5rLFAZADWgBtwDmlXc9pslYHGA
- nDqYCZ5Ut0IGOvgoJ2VX3w149hNKHb4iUHBNfWBNSrQoSlOs/XyuaB01Oe5ypmaazGKuEBU
- qCI7E0S3QuvQJ0o+G6khA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ACr3tUk2G6s=:6PfJjmdel55Q2JqQG+mEBM
- 1NhC6LulqgXqtdtFzSrFD1t0KlgF9B3+/xFTMp9/RFheCtiq05QrNJ7rFW3AnTy/nyDRGylo2
- 3vbNhzXuyhZKE/zLf7vFsBmFIuNuU8Iw8eE5Yx2MyastjREgGUuAtp9JMHnen6UvPCX8pWSXS
- 53rh9xjiEyItNmvmV42wyRmNT5mfZZSZqlV27bJ9pEqx8MLaOd+pKu903NyPrItaE+B3pPNnL
- VkZ/svAHr1z41Q2o3B53cq92U1g+0eoNrHqYi2WC3R3dX3Q1jXC62suYjVZR1Mcot7pTGYLIW
- Mu6MUT+GhSbmjmruAcAWgvrkrw2oTyZidgz4lmNrzk+Y33fKj0uZZ8WSCtofpcaLeqnqEOUwS
- osPFiPScpTU9bYXVJvVs0mBop62Es3G95YMx74BjBoM9bbPEBn0DEcSEKbBEjWjLUSyUlT2th
- jKKjsO3q+Z4Y9VYEmMBIT0l4iNPfScy/NJpwgSBhqMeO0a7ZtG6IDiVOyB7X5vwIrRR9FeUns
- FBxo0WO/QrEvYShK+mrjqRa5f3Lt2HSfoTRqdWwoEnAB3if4rrnkI23MrDg/doXoD0U/hbh1D
- OIIzf9Va58BifoRj7UfV0U2Ay7FSWTRhFNbBqzhtE5bVoor1oN4b0nq3nbjnG6JAmpLEQaE3Y
- VIa/AtkR9NLgMhgll/SZQylELYRzKhiVIESrEcl2kUIAs16sj/guJihGj3s7ySHf10eJ0e5Ia
- FQat9wyXd6lGB3/D6wkwHBYFO8/MSk2Y1YWc3AsJiclSQjyBSv6zXYPvyjdrqmYL28nhi+SZQ
- 3dTPHgI7Vlkr6XZjhYSmON53uGs4m2viXo4XlF08f2EFLBfPj+g8nXoNPWvJZ+Q2aWwFOPklD
- QbkPxSfR71XBXDMcKrCL7j/QKdHw/dIzlLO6AazTRKAW5ejX/Nm5FIp6fM6surs+3bQvkZJzb
- LiMRtCs+SpmBn5eX1nucN9yke8R82aP9U9n6jfZ4U4NbA8/OUFJVH3Z5iaWss6b/A1tRbUbee
- h2oXyKJpCPr0+630YfOYnEArkBRfoBI7TQkbcJ86vdNwVOdj40r1ywLPpeaMgBpC3w==
+X-Provags-ID: V03:K1:Kw/w2SXZ9llr0PYVM5zwgWdveEKzv7xOcQoWhgQgBv6k1bp+rKH
+ TkE+THeCYTVFmtTVIuKsogXQX8g6RB420RrRruUGz/yqPYGPgmEId71qaLX2+AYJZPVAHpE
+ TwfbkiT2mNSU7m5Vi2nOaH022qnJJhLvFZi0/kK03opZvkYo5KKtnj8AX+K+XfrAhdE5NzU
+ 7ezF5iP+SiinKpwoUJTgg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:nEUIB33ED7M=:IL7V/vQ9Udnq1tGSwHcFnr
+ nsWsOUlfOS/W92OmQbeSQJqPxo/I2WZ5QtKN+lsxCyAxFW/nQ7FeGA1lPftBM/hg15rM5YmBG
+ HIQfOXWVuRxH31FSpWDD1Ke9N/2ZfQozMCWVEPvM+GIUaWs2+Cd+8JY30vXtgKNQ1FtCGTrm+
+ bXYMQ+2qsK2b1G28NtbObeh6Wv99/sVZNLdcJKHLb34d2NFiPw8LHZUf5jPDlQw5mi6lLNhyo
+ WWo+g7sp1VdO9QD0+cSR/gePMBmbBzLbOJYMv+LEq8X2QJTzpvVYOoX+y6T8cGL/NdIVCpNLw
+ bUxBV5HRyudfrZpLBUDqzOzNj4pW4PoYzFGIdQXx4NuPUuF7HRoix3i/KsCBMLZqgC2NaVNIu
+ dGyE15zj+QllF4l2CHWa5nr73W3ylHjHUOgCWVqk4gebYIC13cxkqAKctAYrYZ7kk3mk54VZg
+ CLA91KZNOJvICCx9Cx9VrvgUVogXrXbkTWV3HRKkh4mLP+gNSVAl2hv8WJ/trrKpH1h3eD54R
+ FtkiCEpgU8JjdIoW3jUSFgo0fmwjlqBIXYrLQQNXOr45ncPjnc+LZxHSn88R38lHYAP3vk7nu
+ 8AKZPG3ClnPiiYZBHliCvYFHWHAzZ+vvFHAL/g54oLfY/Ayh3YLVXX3bIKWOrhSGYWJF1KBJt
+ 0kk0tEyx2J5LmtEi/qRouU2OINgxfFRrvsS9m+RT1TrqroQItNI+qjsly4/VTTauV2WHzvr96
+ +5KKf558NWEuy62P7VUQ9T3HGudpaMYh7KbSeQSvIPBblGPQGGD9AntWXEt5ALOcLU4myCFrr
+ KODzJBJV6cOZQwz4g1QHhAQFkOQFNSBTQp9/ykCGbDe0g1szPOJD/UARqwKKpqq3827exEInm
+ xcLbeHXirdaLR7ClqWM1A+xQEH71uf1RWcr1V+uPZO3ZH+D3Iv3gX+mPT89vO2pLvhPucf8j+
+ YSgERX5x+KdRe+xn+pPNMdLD8mpF0scSVRsIbw4iaoQCKpAVgUC0W+OAUKtA6lbO1bJR4Q88v
+ RaG60yX/f+SWEhugv65LHjC9MADrff8/ukUNlR3VhTgUVmDvo30reffwMCgKgijeAQ==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191111_023411_727067_0B0B932C 
-X-CRM114-Status: UNSURE (   7.07  )
+X-CRM114-CacheID: sfid-20191111_023643_599916_A92917C0 
+X-CRM114-Status: UNSURE (   9.50  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -114,9 +114,19 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On Tue, Oct 29, 2019 at 7:48 AM Christoph Hellwig <hch@lst.de> wrote:
 >
-> No users of ioremap_cached are left, remove it.
+> On ia64 ioremap_nocache fails if attributes don't match.  Not other
+> architectures does this, and we plan to get rid of ioremap_nocache.
+> So get rid of the special semantics and define ioremap_nocache in
+> terms of ioremap as no portable driver could rely on the behavior
+> anyway.
+>
+> However x86 implements ioremap_uc in a similar way as the ia64
+> version of ioremap_nocache, in that it ignores the firmware tables.
+> Switch ia64 to override ioremap_uc instead.
 >
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
+
+Good idea,
 
 Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 
