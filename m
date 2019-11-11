@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B379BC43331
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:47:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6EACC43331
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:47:31 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 77788206C3
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:47:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9CB1F206C3
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:47:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="g22EQqgZ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="GR0/t/Dk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 77788206C3
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TSkEtIpj";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="qIOt9L+C"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9CB1F206C3
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,47 +25,47 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
 	Date:From:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
-	List-Owner; bh=cQbvmLgm45xKXcsQxsgyDmh/YH3wpzmRtfGqp1W3KJ8=; b=g22EQqgZVLYwZG
-	jzI4tr97oiLgk0yUXc4olIMt/hA7u0DBdNLwsJoxNq+KqOVpzDsHNbGD/xMgiC2EF6ca4/QfJiE1O
-	N3cQQ8SA1N378Na0jpxa6ryFgHFU8fRGMQDM4+0M5jhKCsU70EwPek90AckyGaUc/wNa+fQCH1L/B
-	uBhnwjl+1ffnuvQWuz6c4tC16UoRZpReXGiDw+bY5JKkrQsyHoP6BoVu5q55PydRRp0hWu7I70OuK
-	Z/xpla0581pfacEAy4tCNrr9/kReuk9msdp3Sx68pAus3NB4AnXyAFNaIcF0vPEyIyMOzlU5sJia+
-	kn/yHBmiDuNiVaG5LsXg==;
+	List-Owner; bh=7hiwonu5Nv4u/zTC00dLwl3G99zDODELYrAcAXPqQdc=; b=TSkEtIpjdlHm6d
+	Xgo6uUN1DGQoMYj5jc2lajAAwMzRMWiZZd7Kk/pSXJb4DLSo8SMOfvuhZzwsyjyb4GEVC0J/WDIq0
+	LLXZoo6cv6Ro7GB8CRb8nAVqs7pTp+SJl+oMHJuu92y4yOV3BrYsWqeAgaJ+jj8+Mi05GuSvXQHJM
+	jz3sk5WMU3CjMKvI6U7wZ7PyVSJQFWWiJFnr3xKiBADSV8LAiodFGhPQCuBj+gGT0kYxmCWTppJa6
+	Y26poz6pJudAtaUQyyw3BaW8ux1tTtARGAPGVEY+5gv3ns1P1Dl4fyrZrMihNvyptyCjPMNumT8hM
+	RIm31VP849FpoT2EQEGg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iU6Hl-0003LW-KJ; Mon, 11 Nov 2019 09:47:01 +0000
+	id 1iU6I1-0003bI-I5; Mon, 11 Nov 2019 09:47:17 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iU6FA-00087C-OV
- for linux-mtd@lists.infradead.org; Mon, 11 Nov 2019 09:44:23 +0000
+ id 1iU6FD-00089B-BM
+ for linux-mtd@lists.infradead.org; Mon, 11 Nov 2019 09:44:25 +0000
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
  [83.86.89.107])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id C85512084F;
- Mon, 11 Nov 2019 09:44:19 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 7B18920856;
+ Mon, 11 Nov 2019 09:44:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1573465460;
- bh=a1KzYj0KgBXJWXXqufUsXtuXdeJ9sahZ3TaRJXX8tOU=;
+ s=default; t=1573465463;
+ bh=+aADlXTx3Q1dNzrah+Qe7GcB5CNDJ1E+05i2PYHXOrI=;
  h=Subject:To:Cc:From:Date:In-Reply-To:From;
- b=GR0/t/Dkm7eLNUnmCcVwup0hwrxA/03Madkc19FEmsoXPIKuz9+z2rerJtQ3L+tIo
- CmN5t/tB6/ACvgI9sVUmtqLn0evob3lLVCQdCb+/PgI3V7B+Fm5XttHxUw6fblLLFl
- yZNFDtpID3HgE72sZR7Zm3dmhVKUqJHotcbbGWjI=
-Subject: Patch "mtd: spi-nor: enable 4B opcodes for mx66l51235l" has been
- added to the 4.14-stable tree
-To: cyrille.pitchen@wedev4u.fr, dri-devel@lists.freedesktop.org,
- gregkh@linuxfoundation.org, leroi.lists@gmail.com,
- linux-mtd@lists.infradead.org, mathieu.poirier@linaro.org, roman@advem.lv
+ b=qIOt9L+CjbpRMZDTgFznkNZd+hGQ+dMXwmUmNYUxMXN+ZB8Jrsm6abXvr7gE7gsZ4
+ CPMH2tb5m7uY2OTdS8lW3tpLuZOcoLjqmlZlOWW7b9UC1LKBsEOTOt0RSAvZO/KJp3
+ UEHfrfB02sqZXk/3/r5mHegtH6NJd8656Tj3j+30=
+Subject: Patch "PCI: dra7xx: Add shutdown handler to cleanly turn off clocks"
+ has been added to the 4.14-stable tree
+To: bhelgaas@google.com, dri-devel@lists.freedesktop.org,
+ gregkh@linuxfoundation.org, j-keerthy@ti.com, kishon@ti.com,
+ linux-mtd@lists.infradead.org, mathieu.poirier@linaro.org
 From: <gregkh@linuxfoundation.org>
 Date: Mon, 11 Nov 2019 10:43:33 +0100
-In-Reply-To: <20190905161759.28036-8-mathieu.poirier@linaro.org>
-Message-ID: <1573465413218159@kroah.com>
+In-Reply-To: <20190905161759.28036-11-mathieu.poirier@linaro.org>
+Message-ID: <157346541323195@kroah.com>
 MIME-Version: 1.0
 X-stable: commit
 X-Patchwork-Hint: ignore 
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191111_014420_878054_DF9F63C7 
-X-CRM114-Status: UNSURE (   9.69  )
+X-CRM114-CacheID: sfid-20191111_014423_451932_D6B3785B 
+X-CRM114-Status: UNSURE (   9.89  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -87,13 +87,13 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 This is a note to let you know that I've just added the patch titled
 
-    mtd: spi-nor: enable 4B opcodes for mx66l51235l
+    PCI: dra7xx: Add shutdown handler to cleanly turn off clocks
 
 to the 4.14-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
-     mtd-spi-nor-enable-4b-opcodes-for-mx66l51235l.patch
+     pci-dra7xx-add-shutdown-handler-to-cleanly-turn-off-clocks.patch
 and it can be found in the queue-4.14 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
@@ -102,35 +102,60 @@ please let <stable@vger.kernel.org> know about it.
 
 From foo@baz Mon 11 Nov 2019 10:07:22 AM CET
 From: Mathieu Poirier <mathieu.poirier@linaro.org>
-Date: Thu,  5 Sep 2019 10:17:48 -0600
-Subject: mtd: spi-nor: enable 4B opcodes for mx66l51235l
+Date: Thu,  5 Sep 2019 10:17:51 -0600
+Subject: PCI: dra7xx: Add shutdown handler to cleanly turn off clocks
 To: stable@vger.kernel.org
 Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org, linux-mtd@lists.infradead.org
-Message-ID: <20190905161759.28036-8-mathieu.poirier@linaro.org>
+Message-ID: <20190905161759.28036-11-mathieu.poirier@linaro.org>
 
-From: Roman Yeryomin <leroi.lists@gmail.com>
+From: Keerthy <j-keerthy@ti.com>
 
-commit d342b6a973af459f6104cad6effc8efc71a0558d upstream
+commit 9c049bea083fea21373b8baf51fe49acbe24e105 upstream
 
-Signed-off-by: Roman Yeryomin <roman@advem.lv>
-Signed-off-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Add shutdown handler to cleanly turn off clocks.  This will help in cases of
+kexec where in a new kernel can boot abruptly.
+
+Signed-off-by: Keerthy <j-keerthy@ti.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Acked-by: Kishon Vijay Abraham I <kishon@ti.com>
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mtd/spi-nor/spi-nor.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pci/dwc/pci-dra7xx.c |   17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1030,7 +1030,7 @@ static const struct flash_info spi_nor_i
- 	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K | SPI_NOR_4B_OPCODES) },
- 	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
--	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-+	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
- 	{ "mx66u51235f", INFO(0xc2253a, 0, 64 * 1024, 1024, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
- 	{ "mx66l1g45g",  INFO(0xc2201b, 0, 64 * 1024, 2048, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
+--- a/drivers/pci/dwc/pci-dra7xx.c
++++ b/drivers/pci/dwc/pci-dra7xx.c
+@@ -817,6 +817,22 @@ static int dra7xx_pcie_resume_noirq(stru
+ }
+ #endif
+ 
++void dra7xx_pcie_shutdown(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct dra7xx_pcie *dra7xx = dev_get_drvdata(dev);
++	int ret;
++
++	dra7xx_pcie_stop_link(dra7xx->pci);
++
++	ret = pm_runtime_put_sync(dev);
++	if (ret < 0)
++		dev_dbg(dev, "pm_runtime_put_sync failed\n");
++
++	pm_runtime_disable(dev);
++	dra7xx_pcie_disable_phy(dra7xx);
++}
++
+ static const struct dev_pm_ops dra7xx_pcie_pm_ops = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(dra7xx_pcie_suspend, dra7xx_pcie_resume)
+ 	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(dra7xx_pcie_suspend_noirq,
+@@ -830,5 +846,6 @@ static struct platform_driver dra7xx_pci
+ 		.suppress_bind_attrs = true,
+ 		.pm	= &dra7xx_pcie_pm_ops,
+ 	},
++	.shutdown = dra7xx_pcie_shutdown,
+ };
+ builtin_platform_driver_probe(dra7xx_pcie_driver, dra7xx_pcie_probe);
 
 
 Patches currently in stable-queue which might be from mathieu.poirier@linaro.org are
