@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D21DC43331
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:46:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F2E2C43331
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:46:14 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2E1B7206C3
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:46:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 41402214DB
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:46:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IqvaKmw3";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="PFrjY7iz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2E1B7206C3
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ttrVn+uL";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="jjikrwI4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 41402214DB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,47 +25,47 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
 	Date:From:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
-	List-Owner; bh=Qo9vRDaFmE5wrcx3Sm9VGOs4psu/y+EpLOvbTmbaT7A=; b=IqvaKmw3f/lqZe
-	gwnClwbgAJgAvKGfeiQoYCBSbe9DaXtUZKFVUE3K1Z+RB5DBt/pdcgM9wQ895gWro4RYgd+sBUIcj
-	YPMolQiIp+dNg3XNxAx0Vykx5InmMQSJ5rDUFg2Ghu8b6yH8CkfXi6mJQ8JOW4aX6wyamHNPS8VK7
-	HS/1oRrfginvJJ8uIgDoiiNvVD/0ALVcIEMoaJDyzHqs1WA4VhZ1E0QP23g7b+ke6qqPO0A5WfKe2
-	ax74sLMf1hMgN47pHvfCShQ2Pf5cus6AXbjUOe4nK78RcyQF3/58WgiDHy+zoXhmUOKe3LCU5WNj9
-	FxP195BFYktqZfGeAOYQ==;
+	List-Owner; bh=cbjHVr6mJftuQ2KRU4c7NNdBvXw2hIoNQTKcVPvS0hk=; b=ttrVn+uLKeyC5C
+	lml3tH83vp1aOWbxhfM5GYLevqSLimvkgdPruzEb8B8Izzk+wPyV9pIrvEkJSIrBQjaIBn4+X1ZMG
+	MOY+6rayXQsBom6aszMjJyTsVqzZDHFOAKIPUJEIO8oXPePtkFC+20C75K9g42jwZzaXRw+tk4zHk
+	aC5/soimuY14ZHb5gjkuYmNvAnZF3C/8lhDGm+84R99tcW8Xoet9kwYLyu61EmuK2cCdvEvH5pj39
+	DS3gkFVCakXZih+mICI3NB0Y2iP6df8kqLEfj4smnIBY2MLzosRDy7aSsPv8Wtz9GbGh42ncak35H
+	PVS1wnNSkC0nWD1BBmBg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iU6GY-00025y-5a; Mon, 11 Nov 2019 09:45:46 +0000
+	id 1iU6Gm-0002K6-Km; Mon, 11 Nov 2019 09:46:00 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iU6Ey-0007yy-S7
- for linux-mtd@lists.infradead.org; Mon, 11 Nov 2019 09:44:11 +0000
+ id 1iU6F2-00081G-ER
+ for linux-mtd@lists.infradead.org; Mon, 11 Nov 2019 09:44:16 +0000
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
  [83.86.89.107])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 0C28C2084F;
- Mon, 11 Nov 2019 09:44:07 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id AFDFB214DB;
+ Mon, 11 Nov 2019 09:44:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1573465448;
- bh=zEEyuVXyCC5vPq81XTexkQbk2xI9K1gGybGoAmmyUoE=;
+ s=default; t=1573465451;
+ bh=q3uNsNd05YMFqMwLtLufxUgf9NPSXBYt2+vGZcmAz7M=;
  h=Subject:To:Cc:From:Date:In-Reply-To:From;
- b=PFrjY7iz2Ghre0fcqyr7R/lFWkIKqPDmAZ7gXBs4rpLu1e6cJtzT73OIdyWqUXYgv
- udKAJMD4RqeI6jAT1SoOpcMuPpEKd4wTm7qY9O7vMVCg4V4xG+iHn+AdAHglTiI0JM
- /2ewGs+DaUp3FOSoQQ7eKcw+Gi+rgMU6keOTbGjg=
-Subject: Patch "mfd: palmas: Assign the right powerhold mask for tps65917" has
- been added to the 4.14-stable tree
-To: dri-devel@lists.freedesktop.org, gregkh@linuxfoundation.org,
- j-keerthy@ti.com, lee.jones@linaro.org, linux-mtd@lists.infradead.org,
+ b=jjikrwI4B9IQxvyxlXy/g64khqPjgsz8HbFdOFHfR0TxWXF7XGB64ZTjZKm7RMdjs
+ bza59h8IMGub4XZYdpEwtlRTmVEz6AEDTUtF+4rLngDHe1i3lSgwY7GU/wAPkkQwjN
+ sV8qUO8pB75nqmhQDQfNmT76dm7tv5CzXLtlWung=
+Subject: Patch "misc: pci_endpoint_test: Fix BUG_ON error during
+ pci_disable_msi()" has been added to the 4.14-stable tree
+To: bhelgaas@google.com, dri-devel@lists.freedesktop.org,
+ gregkh@linuxfoundation.org, kishon@ti.com, linux-mtd@lists.infradead.org,
  mathieu.poirier@linaro.org
 From: <gregkh@linuxfoundation.org>
 Date: Mon, 11 Nov 2019 10:43:33 +0100
-In-Reply-To: <20190905161759.28036-6-mathieu.poirier@linaro.org>
-Message-ID: <157346541310622@kroah.com>
+In-Reply-To: <20190905161759.28036-12-mathieu.poirier@linaro.org>
+Message-ID: <1573465413184130@kroah.com>
 MIME-Version: 1.0
 X-stable: commit
 X-Patchwork-Hint: ignore 
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191111_014409_000224_50D61425 
-X-CRM114-Status: GOOD (  10.64  )
+X-CRM114-CacheID: sfid-20191111_014412_612781_E6A43735 
+X-CRM114-Status: GOOD (  12.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,13 +86,13 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 This is a note to let you know that I've just added the patch titled
 
-    mfd: palmas: Assign the right powerhold mask for tps65917
+    misc: pci_endpoint_test: Fix BUG_ON error during pci_disable_msi()
 
 to the 4.14-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
-     mfd-palmas-assign-the-right-powerhold-mask-for-tps65917.patch
+     misc-pci_endpoint_test-fix-bug_on-error-during-pci_disable_msi.patch
 and it can be found in the queue-4.14 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
@@ -101,68 +101,73 @@ please let <stable@vger.kernel.org> know about it.
 
 From foo@baz Mon 11 Nov 2019 10:07:22 AM CET
 From: Mathieu Poirier <mathieu.poirier@linaro.org>
-Date: Thu,  5 Sep 2019 10:17:46 -0600
-Subject: mfd: palmas: Assign the right powerhold mask for tps65917
+Date: Thu,  5 Sep 2019 10:17:52 -0600
+Subject: misc: pci_endpoint_test: Fix BUG_ON error during pci_disable_msi()
 To: stable@vger.kernel.org
 Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org, linux-mtd@lists.infradead.org
-Message-ID: <20190905161759.28036-6-mathieu.poirier@linaro.org>
+Message-ID: <20190905161759.28036-12-mathieu.poirier@linaro.org>
 
-From: Keerthy <j-keerthy@ti.com>
+From: Kishon Vijay Abraham I <kishon@ti.com>
 
-commit 572ff4d560be3784205b224cd67d6715620092d7 upstream
+commit b7636e816adcb52bc96b6fb7bc9d141cbfd17ddb upstream
 
-The powerhold mask for TPS65917 is different when comapred to
-the other palmas versions. Hence assign the right mask that enables
-power off of tps65917 pmic correctly.
+pci_disable_msi() throws a Kernel BUG if the driver has successfully
+requested an IRQ and not released it. Fix it here by freeing IRQs before
+invoking pci_disable_msi().
 
-Signed-off-by: Keerthy <j-keerthy@ti.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mfd/palmas.c       |   10 +++++++++-
- include/linux/mfd/palmas.h |    3 +++
- 2 files changed, 12 insertions(+), 1 deletion(-)
+ drivers/misc/pci_endpoint_test.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
 
---- a/drivers/mfd/palmas.c
-+++ b/drivers/mfd/palmas.c
-@@ -430,6 +430,7 @@ static void palmas_power_off(void)
+--- a/drivers/misc/pci_endpoint_test.c
++++ b/drivers/misc/pci_endpoint_test.c
+@@ -92,6 +92,7 @@ struct pci_endpoint_test {
+ 	void __iomem	*bar[6];
+ 	struct completion irq_raised;
+ 	int		last_irq;
++	int		num_irqs;
+ 	/* mutex to protect the ioctls */
+ 	struct mutex	mutex;
+ 	struct miscdevice miscdev;
+@@ -514,6 +515,7 @@ static int pci_endpoint_test_probe(struc
+ 		irq = pci_alloc_irq_vectors(pdev, 1, 32, PCI_IRQ_MSI);
+ 		if (irq < 0)
+ 			dev_err(dev, "failed to get MSI interrupts\n");
++		test->num_irqs = irq;
+ 	}
+ 
+ 	err = devm_request_irq(dev, pdev->irq, pci_endpoint_test_irqhandler,
+@@ -581,6 +583,9 @@ err_iounmap:
+ 			pci_iounmap(pdev, test->bar[bar]);
+ 	}
+ 
++	for (i = 0; i < irq; i++)
++		devm_free_irq(dev, pdev->irq + i, test);
++
+ err_disable_msi:
+ 	pci_disable_msi(pdev);
+ 	pci_release_regions(pdev);
+@@ -594,6 +599,7 @@ err_disable_pdev:
+ static void pci_endpoint_test_remove(struct pci_dev *pdev)
  {
- 	unsigned int addr;
- 	int ret, slave;
-+	u8 powerhold_mask;
- 	struct device_node *np = palmas_dev->dev->of_node;
- 
- 	if (of_property_read_bool(np, "ti,palmas-override-powerhold")) {
-@@ -437,8 +438,15 @@ static void palmas_power_off(void)
- 					  PALMAS_PRIMARY_SECONDARY_PAD2);
- 		slave = PALMAS_BASE_TO_SLAVE(PALMAS_PU_PD_OD_BASE);
- 
-+		if (of_device_is_compatible(np, "ti,tps65917"))
-+			powerhold_mask =
-+				TPS65917_PRIMARY_SECONDARY_PAD2_GPIO_5_MASK;
-+		else
-+			powerhold_mask =
-+				PALMAS_PRIMARY_SECONDARY_PAD2_GPIO_7_MASK;
-+
- 		ret = regmap_update_bits(palmas_dev->regmap[slave], addr,
--				PALMAS_PRIMARY_SECONDARY_PAD2_GPIO_7_MASK, 0);
-+					 powerhold_mask, 0);
- 		if (ret)
- 			dev_err(palmas_dev->dev,
- 				"Unable to write PRIMARY_SECONDARY_PAD2 %d\n",
---- a/include/linux/mfd/palmas.h
-+++ b/include/linux/mfd/palmas.h
-@@ -3733,6 +3733,9 @@ enum usb_irq_events {
- #define TPS65917_REGEN3_CTRL_MODE_ACTIVE			0x01
- #define TPS65917_REGEN3_CTRL_MODE_ACTIVE_SHIFT			0x00
- 
-+/* POWERHOLD Mask field for PRIMARY_SECONDARY_PAD2 register */
-+#define TPS65917_PRIMARY_SECONDARY_PAD2_GPIO_5_MASK		0xC
-+
- /* Registers for function RESOURCE */
- #define TPS65917_REGEN1_CTRL					0x2
- #define TPS65917_PLLEN_CTRL					0x3
+ 	int id;
++	int i;
+ 	enum pci_barno bar;
+ 	struct pci_endpoint_test *test = pci_get_drvdata(pdev);
+ 	struct miscdevice *misc_device = &test->miscdev;
+@@ -609,6 +615,8 @@ static void pci_endpoint_test_remove(str
+ 		if (test->bar[bar])
+ 			pci_iounmap(pdev, test->bar[bar]);
+ 	}
++	for (i = 0; i < test->num_irqs; i++)
++		devm_free_irq(&pdev->dev, pdev->irq + i, test);
+ 	pci_disable_msi(pdev);
+ 	pci_release_regions(pdev);
+ 	pci_disable_device(pdev);
 
 
 Patches currently in stable-queue which might be from mathieu.poirier@linaro.org are
