@@ -2,76 +2,63 @@ Return-Path: <SRS0=EHtI=ZD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ECD82C43331
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 08:58:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 230D0C43331
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:03:02 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BF0922084F
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 08:58:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E95B62075B
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2019 09:03:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CQKHhsji"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BF0922084F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TyDi720r"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E95B62075B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hNaVaGf9P3VFWz/QUAyvvcu9MrejIWQFB1R7d3fUsqY=; b=CQKHhsji4/FZhH
-	22e+NBBd2fKBSUrBZxjym0N2ZMA1FEM9NLOzJY14J1ZbmOQVFA+u6suF5ubbe1h3yvrEomGB85wte
-	BXzMHr3vDzydQHt6KWpL0PEdLcMcV1Rlcdiy9Cm6ijCH6FC7cc/hZYcssXgNMMU6rl+IwMZqk23uv
-	zY5nz8E0yw3dOnLtojtUOANg+aTzPp7nde+ji0mNl2ISEuIPfLbWufPWGmN+YX+koICsY/n+bRM9J
-	No7cRMf+0fYyxyG8JW1XXUoKyWV/RG2WKoNV9I+//AcaOU8IN+LNzMn+MX4f94ggRlIqBujaK2Lj0
-	4DUs//4szILjtat8T17Q==;
+	List-Owner; bh=ygm5Twzt9/zFmdRvG7k/fR13TVj3X62K79YfSO4Ndcw=; b=TyDi720rABKsOk
+	lenuABTWYuGVX2RL44oBXlHPxJhrgqdjQvlVrqlzZBfQ3FTO6xj1/32aFO2rB7DZWfzIpZ8LxW0r4
+	9BuPobCLs3OdiHFJX8/tJW/lRV1XiMY72GbSh8kp55wS8urGt2Ma4ecif7cseqwcF7nU8D+KiN01g
+	WWHoZbfCSUteeuXEDv9medfacBhvVcqSURLgvKm6oXiTsSMQciUp4uMi16MWTOd3llLIUjFxdQrG8
+	qhXGq1R11gR/ira2cKHgQ3k5ObIMqghyhg92AE/CJ2mPI09PG6xwgWXbvEZXMB/el+oR39WoQZXY7
+	3cHhatLQEyR2x+KnkCIQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iU5WM-0006yd-Hy; Mon, 11 Nov 2019 08:58:02 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1iU5az-0000i1-Qz; Mon, 11 Nov 2019 09:02:49 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iU5WJ-0006y4-5t
- for linux-mtd@lists.infradead.org; Mon, 11 Nov 2019 08:58:00 +0000
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <sha@pengutronix.de>)
- id 1iU5WB-0006td-AQ; Mon, 11 Nov 2019 09:57:51 +0100
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.89)
- (envelope-from <sha@pengutronix.de>)
- id 1iU5W5-0003uA-PV; Mon, 11 Nov 2019 09:57:45 +0100
-Date: Mon, 11 Nov 2019 09:57:45 +0100
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH 7/7] ubifs: Add quota support
-Message-ID: <20191111085745.t6qbckcxt6byaoxq@pengutronix.de>
-References: <20191106091537.32480-1-s.hauer@pengutronix.de>
- <20191106091537.32480-8-s.hauer@pengutronix.de>
- <20191106101428.GD16085@quack2.suse.cz>
+ id 1iU5ax-0000hO-HH
+ for linux-mtd@lists.infradead.org; Mon, 11 Nov 2019 09:02:48 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id BAA6228EAA4;
+ Mon, 11 Nov 2019 09:02:44 +0000 (GMT)
+Date: Mon, 11 Nov 2019 10:02:41 +0100
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: <Tudor.Ambarus@microchip.com>
+Subject: Re: [PATCH v2 1/2] mtd: spi-nor: Make sure nor->spimem and
+ nor->controller_ops are mutual exclusive
+Message-ID: <20191111100241.717a8fb9@collabora.com>
+In-Reply-To: <20191025142811.541-1-tudor.ambarus@microchip.com>
+References: <20191025123217.12790-1-tudor.ambarus@microchip.com>
+ <20191025142811.541-1-tudor.ambarus@microchip.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20191106101428.GD16085@quack2.suse.cz>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-IRC: #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 09:49:34 up 126 days, 14:59, 123 users,  load average: 0.12, 0.11,
- 0.12
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191111_005759_220118_6C8B59AC 
-X-CRM114-Status: GOOD (  17.00  )
+X-CRM114-CacheID: sfid-20191111_010247_702847_B96F4EB1 
+X-CRM114-Status: GOOD (  15.61  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,79 +70,56 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de, Jan Kara <jack@suse.com>, linux-fsdevel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org, dan.carpenter@oracle.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Jan,
+On Fri, 25 Oct 2019 14:28:34 +0000
+<Tudor.Ambarus@microchip.com> wrote:
 
-On Wed, Nov 06, 2019 at 11:14:28AM +0100, Jan Kara wrote:
-> > +/**
-> > + * ubifs_dqblk_find_next - find the next qid
-> > + * @c: UBIFS file-system description object
-> > + * @qid: The qid to look for
-> > + *
-> > + * Find the next dqblk entry with a qid that is bigger or equally big than the
-> > + * given qid. Returns the next dqblk entry if found or NULL if no dqblk exists
-> > + * with a qid that is at least equally big.
-> > + */
-> > +static struct ubifs_dqblk *ubifs_dqblk_find_next(struct ubifs_info *c,
-> > +						 struct kqid qid)
-> > +{
-> > +	struct rb_node *node = c->dqblk_tree[qid.type].rb_node;
-> > +	struct ubifs_dqblk *next = NULL;
-> > +
-> > +	while (node) {
-> > +		struct ubifs_dqblk *ud = rb_entry(node, struct ubifs_dqblk, rb);
-> > +
-> > +		if (qid_eq(qid, ud->kqid))
-> > +			return ud;
-> > +
-> > +		if (qid_lt(qid, ud->kqid)) {
-> > +			if (!next || qid_lt(ud->kqid, next->kqid))
-> > +				next = ud;
-> > +
-> > +			node = node->rb_left;
-> > +		} else {
-> > +			node = node->rb_right;
-> > +		}
-> > +	}
-> > +
-> > +	return next;
-> > +}
+> From: Tudor Ambarus <tudor.ambarus@microchip.com>
 > 
-> Why not use rb_next() here? It should do what you need, shouldn't it?
+> Expand the spi_nor_check() to make sure that nor->spimem and
+> nor->controller_ops are mutual exclusive.
 
-I could use rb_next(), but it defeats the purpose of a tree to iterate
-over the whole tree to find an entry. If I wanted that I would have used
-a list.
+			  ^mutually
 
 > 
+> Fixes: b35b9a10362d ("mtd: spi-nor: Move m25p80 code in spi-nor.c")
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> ---
+> v2: new patch
 > 
-> > @@ -435,6 +438,9 @@ static int ubifs_show_options(struct seq_file *s, struct dentry *root)
-> >  	else if (c->mount_opts.chk_data_crc == 1)
-> >  		seq_puts(s, ",no_chk_data_crc");
-> >  
-> > +	if (c->quota_enable)
-> > +		seq_puts(s, ",quota");
-> > +
+>  drivers/mtd/spi-nor/spi-nor.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> I'd expect here to see 'usrquota', 'grpquota', 'prjquota' etc. to match
-> mount options user has used.
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index a6f9f833c862..b452d3d0de28 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -2741,6 +2741,12 @@ static int spi_nor_check(struct spi_nor *nor)
+>  		return -EINVAL;
+>  	}
+>  
+> +	if ((nor->spimem && nor->controller_ops) ||
+> +	    (!nor->spimem && !nor->controller_ops)) {
+> +		dev_err(nor->dev, "nor->spimem and nor->controller_ops are mutual exclusive\n");
 
-Ok, will fix in the next round.
+Hm, the test does more than checking that only one of nor->spimem
+nor->controller_ops is set, it also checks that at least one of them is
+provided. Maybe you should split those tests and have a different error
+message for each, or make the error message more generic.
 
-Sascha
+> +		return -EINVAL;
+> +	}
+> +
+>  	return 0;
+>  }
+>  
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
 ______________________________________________________
 Linux MTD discussion mailing list
