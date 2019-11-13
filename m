@@ -5,18 +5,18 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FA12C432C3
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Nov 2019 17:16:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E004AC432C3
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Nov 2019 17:16:24 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AD509206EC
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Nov 2019 17:16:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1FAF8206DC
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Nov 2019 17:16:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HI1XODEP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD509206EC
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="R7sNFDvR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1FAF8206DC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hOfUtjFiI2rx/PNUG1Uk7dWbZut0BVKWtriIZuKO0CU=; b=HI1XODEPCSZkek
-	zL+dt8Ig7/1TRe53T+0ybye2s/4AXccDSStzkbq6z5Y+/0eMlqV6OjdV6gqt7EYf53dQ9bPGW0Rr2
-	jelCwPjIUTHl51JMrFf3KlAalSlkxg8muh//VAJS4O8xka49Fbr+SGOzGnSdco97FkSiKl2zWwxxs
-	i2gppxrqullEAIqEF7MVrry9YqVsiYcxRd403geAbmB1LMeEHCbyV+tYSv0yDVHVeYUPFqDdafF2U
-	fwz3EfNy3PwX68kC/D75zodMa5cq5MMm6r2t+AbMtsyruJNAR8GhovdzdpN+PacJAGKAqgJEk0gn6
-	G01yuCTu7RdMKYDihQ7Q==;
+	List-Owner; bh=CjOXgf1ietyQpF6MFOLn1L+k3dCthuLW4su6P7TfdGQ=; b=R7sNFDvRo99asc
+	1CWq6g2kJGOaL+9NXJMu7GE/AL9xxtmn7RYpyYJjEY/zK2xrRrIY3cKKEWz4D7zLxoRqphsYLLo/B
+	s0ExvOu65KcWhUtPpH++Puj4wqXSrqtapAu+Ky7WFEBTFiYJIO7YbrXxrCNGUgimbNxtpiJkrfOxN
+	ek5sMMGVA9bMt0TcXYRdzRgn7oGBjkCZ2WsWKBYb31FKfEWdplRXwJYzkGa9f+M3tlVNorQfZTkkz
+	e4PwyTiGTm7XU7oGqVzrk6N0xa4+Qt9xhLDpD7SkDBeVtSXs+fHkSRNdga4/ZNhiGUvRMvC9nLruu
+	jBcTZ4O1m97U4K8z2wWg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iUwFD-0001rq-HL; Wed, 13 Nov 2019 17:15:51 +0000
+	id 1iUwFU-00027f-70; Wed, 13 Nov 2019 17:16:08 +0000
 Received: from relay4-d.mail.gandi.net ([217.70.183.196])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iUwEl-0001RY-Av
+ id 1iUwEk-0001SJ-JO
  for linux-mtd@lists.infradead.org; Wed, 13 Nov 2019 17:15:26 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 45A81E000B;
- Wed, 13 Nov 2019 17:15:11 +0000 (UTC)
+ by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id EBC47E0012;
+ Wed, 13 Nov 2019 17:15:14 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Subject: [PATCH v4 1/4] mtd: concat: Fix a comment referring to an unknown
- symbol
-Date: Wed, 13 Nov 2019 18:15:02 +0100
-Message-Id: <20191113171505.26128-2-miquel.raynal@bootlin.com>
+Subject: [PATCH v4 3/4] dt-bindings: mtd: Describe mtd-concat devices
+Date: Wed, 13 Nov 2019 18:15:04 +0100
+Message-Id: <20191113171505.26128-4-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191113171505.26128-1-miquel.raynal@bootlin.com>
 References: <20191113171505.26128-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191113_091523_508116_088573FA 
-X-CRM114-Status: GOOD (  11.25  )
+X-CRM114-CacheID: sfid-20191113_091522_912856_ADE89622 
+X-CRM114-Status: GOOD (  13.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,6 +68,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Bernhard Frauendienst <kernel@nospam.obeliks.de>,
  Miquel Raynal <miquel.raynal@bootlin.com>, linux-kernel@vger.kernel.org,
  Rob Herring <robh+dt@kernel.org>,
  Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
@@ -80,31 +80,113 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Fix the comment describing what the mtd_concat_destroy() function
-does. It referrers to the concat_mtd_devs symbol which has never
-existed (at least not since the beginning of the Git era).
+From: Bernhard Frauendienst <kernel@nospam.obeliks.de>
 
+The main use case to concatenate MTD devices is probably SPI-NOR
+flashes where the number of address bits is limited to 24, which can
+access a range of 16MiB. Board manufacturers might want to double the
+SPI storage size by adding a second flash asserted thanks to a second
+chip selects which enhances the addressing capabilities to 25 bits,
+32MiB. Having two devices for twice the size is great but without more
+glue, we cannot define partition boundaries spread across the two
+devices. This is the gap mtd-concat intends to address.
+
+There are two options to describe concatenated devices:
+1/ One flash chip is described in the DT with two CS;
+2/ Two flash chips are described in the DT with one CS each, a virtual
+device is also created to describe the concatenation.
+
+Solution 1/ presents at least 3 issues:
+* The hardware description is abused;
+* The concatenation only works for SPI devices (while it could be
+  helpful for any MTD);
+* It would require a lot of rework in the SPI core as most of the
+  logic assumes there is and there always will be only one CS per
+  chip.
+
+Solution 2/ also has caveats:
+* The virtual device has no hardware reality;
+* Possible optimizations at the hardware level will be hard to enable
+  efficiently (ie. a common direct mapping abstracted by a SPI
+  memories oriented controller).
+
+There is no easy and perfect answer to this need but it feels more
+reasonable to address the problem with solution 2, with the
+information/needs we have today.
+
+Signed-off-by: Bernhard Frauendienst <kernel@nospam.obeliks.de>
+[<miquel.raynal@bootlin.com>:
+Wrote a commit message explaining what mtd-concat is.
+Explained the implementation details.
+Switched to yaml schema.]
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/mtdconcat.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ .../devicetree/bindings/mtd/mtd-concat.yaml   | 56 +++++++++++++++++++
+ 1 file changed, 56 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/mtd-concat.yaml
 
-diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-index cbc5925e6440..1b6428d6e13d 100644
---- a/drivers/mtd/mtdconcat.c
-+++ b/drivers/mtd/mtdconcat.c
-@@ -852,10 +852,7 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
- 	return &concat->mtd;
- }
- 
--/*
-- * This function destroys an MTD object obtained from concat_mtd_devs()
-- */
--
-+/* Cleans the context obtained from mtd_concat_create() */
- void mtd_concat_destroy(struct mtd_info *mtd)
- {
- 	struct mtd_concat *concat = CONCAT(mtd);
+diff --git a/Documentation/devicetree/bindings/mtd/mtd-concat.yaml b/Documentation/devicetree/bindings/mtd/mtd-concat.yaml
+new file mode 100644
+index 000000000000..7341198575cf
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/mtd-concat.yaml
+@@ -0,0 +1,56 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/mtd-concat.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Virtual MTD concatenation device bindings
++
++maintainers:
++  - Miquel Raynal <miquel.raynal@bootlin.com>
++
++properties:
++  compatible:
++    const: "mtd-concat"
++
++  devices:
++    minItems: 2
++    description: |
++      List of phandles to MTD nodes that should be concatenated (in
++      order).
++
++required:
++  - compatible
++  - devices
++
++examples:
++  - |
++    &spi {
++            flash0: flash@0 {
++	            reg = <0>;
++            };
++            flash1: flash@1 {
++	            reg = <1>;
++            };
++    };
++
++    flash {
++            compatible = "mtd-concat";
++            devices = <&flash0 &flash1>;
++
++            partitions {
++                    compatible = "fixed-partitions";
++                    #address-cells = <1>;
++                    #size-cells = <1>;
++
++                    partition@0 {
++                            label = "boot";
++                            reg = <0x0000000 0x0040000>;
++                            read-only;
++                    };
++                    partition@40000 {
++                            label = "firmware";
++                            reg = <0x0040000 0x1fc0000>;
++                    };
++            };
++    };
 -- 
 2.20.1
 
