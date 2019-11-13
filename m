@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03A3AC17441
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Nov 2019 01:55:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11A48C43331
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Nov 2019 01:57:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CE2F82245C
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Nov 2019 01:55:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D96BC22473
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Nov 2019 01:57:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="t69vRsTK";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="XTsqZs1j"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CE2F82245C
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="aXixWt5d";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="JJ5xYXxs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D96BC22473
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,48 +25,49 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=DfpbtxwVB3EOlZVUffhFFX5/s/aYJp/CiRyuJbCDDX0=; b=t69vRsTKZGbfr2
-	+mcz5WAskmiEHJUEOToDoKIo/uuJWOuUmwwWADsVxYPlNwEzvVtDCYz4/952/8BXs726n6UXeNTPj
-	B66IgEewvJL0v8CayJFPCTqIrJxeMuUkOQ5m6KQhTjMNRc+z3p7wFSqGG4lfRmGkS4BspgzVQtqRg
-	6yPWwuLGinRn2bJJSjQR8XNyxucb4lyL4/zDNcXsETRVQJ+xxWjJbrSEfDbdvP7tuHkoDMCZ5qKqt
-	xfum5LZYg/QfLlDI6QgbG/S0eogTmxhkygbvFAMS8NOPWBjR0wAIAsTRBsyq8GDewK4rRvTebZ9Cl
-	zkGD3Hpc/ku5CiZty1VA==;
+	List-Owner; bh=U2b/KAn7K9v8EBduPQB7A5Tu9KPDMCHVdcBCzoFB8Cg=; b=aXixWt5dZpqURR
+	agu4/zVrY8hE12zHrImgKTO9G0c8Gaam4emhOWRCi8X65tmBu+kTDwdYNg4C177Pg7WhPPPSOZKYM
+	0lVYBvSQVG4A3pxzrigtT1QRLBpIHvaPFsQd2UtPIwoIhiUh5aWGQgfbtKg42o38sOTtV1ynt2r2i
+	LNPgeN1vIbZ2mNTRlaNB5HddTFZlEhTCAK2wQpg61nlub7J6m1pPmyN98s89r00uPWDkt7AYDpjuP
+	98DLDjUvgu1ImYjqU/ZvRxg7o3RZsuKLz+Ux//6BQTI3RcfHNL6oPzqaUZRmNH6X3ih24u8WfpHOM
+	ydUK3fIsSbmL/2NuxlPA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iUhrs-0004zN-UF; Wed, 13 Nov 2019 01:54:48 +0000
+	id 1iUhuJ-0007SF-0u; Wed, 13 Nov 2019 01:57:19 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iUhrf-0004mn-Py
- for linux-mtd@lists.infradead.org; Wed, 13 Nov 2019 01:54:37 +0000
+ id 1iUhuG-0007Rc-5n
+ for linux-mtd@lists.infradead.org; Wed, 13 Nov 2019 01:57:17 +0000
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id CD5D42245D;
- Wed, 13 Nov 2019 01:54:34 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 07BFC22474;
+ Wed, 13 Nov 2019 01:57:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1573610075;
- bh=RCjXUI6866u57JwmTNcRqya4SFDlPhHwx59HYYacEfk=;
+ s=default; t=1573610235;
+ bh=nV3Afj2p0AljyImMjr0YVmZVcER+1VWGOKDMdHq3Q3o=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=XTsqZs1jpKScPlveYOPeTltzaPtw6SWg0U/mF0c6CcpjEbEYkevF0lEAgmdmzXVmN
- MyXSPmU3nTqlrNIs4L8xe566g3bn2WICrpn5UopN78+e3j/THsYn/n4e0HmoSdmLmz
- 3dQg/4NxXCDBls95925nr4Z43ZDkNYunGZpb/pyg=
+ b=JJ5xYXxs0v8N3QUVz7xlVY48gs3E145OFK77xcRM7Vrfsh/zWptrT6BgnLqByAKAB
+ kKOE2V8OI/Qp010CWGgPHDd6blkA1NxV5oVp7uP9ze5QnIfqk2EuiK1pADYptaBynR
+ fIXRso1g8JIz1J2EAAddD52Ubvl3k0AhK/FOQ2Uo=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 152/209] mtd: devices: m25p80: Make sure WRITE_EN
- is issued before each write
-Date: Tue, 12 Nov 2019 20:49:28 -0500
-Message-Id: <20191113015025.9685-152-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 036/115] mtd: rawnand: sh_flctl: Use proper enum
+ for flctl_dma_fifo0_transfer
+Date: Tue, 12 Nov 2019 20:55:03 -0500
+Message-Id: <20191113015622.11592-36-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191113015025.9685-1-sashal@kernel.org>
-References: <20191113015025.9685-1-sashal@kernel.org>
+In-Reply-To: <20191113015622.11592-1-sashal@kernel.org>
+References: <20191113015622.11592-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191112_175435_861428_8342191C 
-X-CRM114-Status: GOOD (  11.74  )
+X-CRM114-CacheID: sfid-20191112_175716_237369_6B1B99F1 
+X-CRM114-Status: UNSURE (   9.95  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,77 +79,69 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Sasha Levin <sashal@kernel.org>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, linux-mtd@lists.infradead.org
+Cc: Sasha Levin <sashal@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>,
+ clang-built-linux@googlegroups.com, linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Nathan Chancellor <natechancellor@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+From: Nathan Chancellor <natechancellor@gmail.com>
 
-[ Upstream commit 3baa8ec88c2feb902328e59a4dcf0f0aaab7d2ff ]
+[ Upstream commit e2bfa4ca23d9b5a7bdfcf21319fad9b59e38a05c ]
 
-Some SPI controllers can't write nor->page_size bytes in a single step
-because their TX FIFO is too small, but when that happens we should
-make sure a WRITE_EN command before each write access and READ_SR command
-after each write access is issued.
+Clang warns when one enumerated type is converted implicitly to another:
 
-The core is already taking care of that, so all we have to do here is
-return the actual number of bytes that were written during the
-spi_mem_exec_op() operation.
+drivers/mtd/nand/raw/sh_flctl.c:483:46: warning: implicit conversion
+from enumeration type 'enum dma_transfer_direction' to different
+enumeration type 'enum dma_data_direction' [-Wenum-conversion]
+                flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_DEV_TO_MEM) > 0)
+                ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
+drivers/mtd/nand/raw/sh_flctl.c:542:46: warning: implicit conversion
+from enumeration type 'enum dma_transfer_direction' to different
+enumeration type 'enum dma_data_direction' [-Wenum-conversion]
+                flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_MEM_TO_DEV) > 0)
+                ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
+2 warnings generated.
 
-Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Use the proper enums from dma_data_direction to satisfy Clang.
+
+DMA_MEM_TO_DEV = DMA_TO_DEVICE = 1
+DMA_DEV_TO_MEM = DMA_FROM_DEVICE = 2
+
+Reported-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/devices/m25p80.c | 23 ++++++++---------------
- 1 file changed, 8 insertions(+), 15 deletions(-)
+ drivers/mtd/nand/sh_flctl.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 270d3c9580c51..c4a1d04b8c800 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -90,7 +90,6 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
- 				   SPI_MEM_OP_ADDR(nor->addr_width, to, 1),
- 				   SPI_MEM_OP_NO_DUMMY,
- 				   SPI_MEM_OP_DATA_OUT(len, buf, 1));
--	size_t remaining = len;
- 	int ret;
+diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
+index e7f3c98487e62..43db80e5d994f 100644
+--- a/drivers/mtd/nand/sh_flctl.c
++++ b/drivers/mtd/nand/sh_flctl.c
+@@ -480,7 +480,7 @@ static void read_fiforeg(struct sh_flctl *flctl, int rlen, int offset)
  
- 	/* get transfer protocols. */
-@@ -101,22 +100,16 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
- 	if (nor->program_opcode == SPINOR_OP_AAI_WP && nor->sst_write_second)
- 		op.addr.nbytes = 0;
+ 	/* initiate DMA transfer */
+ 	if (flctl->chan_fifo0_rx && rlen >= 32 &&
+-		flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_DEV_TO_MEM) > 0)
++		flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_FROM_DEVICE) > 0)
+ 			goto convert;	/* DMA success */
  
--	while (remaining) {
--		op.data.nbytes = remaining < UINT_MAX ? remaining : UINT_MAX;
--		ret = spi_mem_adjust_op_size(flash->spimem, &op);
--		if (ret)
--			return ret;
--
--		ret = spi_mem_exec_op(flash->spimem, &op);
--		if (ret)
--			return ret;
-+	ret = spi_mem_adjust_op_size(flash->spimem, &op);
-+	if (ret)
-+		return ret;
-+	op.data.nbytes = len < op.data.nbytes ? len : op.data.nbytes;
+ 	/* do polling transfer */
+@@ -539,7 +539,7 @@ static void write_ec_fiforeg(struct sh_flctl *flctl, int rlen,
  
--		op.addr.val += op.data.nbytes;
--		remaining -= op.data.nbytes;
--		op.data.buf.out += op.data.nbytes;
--	}
-+	ret = spi_mem_exec_op(flash->spimem, &op);
-+	if (ret)
-+		return ret;
+ 	/* initiate DMA transfer */
+ 	if (flctl->chan_fifo0_tx && rlen >= 32 &&
+-		flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_MEM_TO_DEV) > 0)
++		flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_TO_DEVICE) > 0)
+ 			return;	/* DMA success */
  
--	return len;
-+	return op.data.nbytes;
- }
- 
- /*
+ 	/* do polling transfer */
 -- 
 2.20.1
 
