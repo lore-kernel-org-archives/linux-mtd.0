@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 40B1CC43331
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Nov 2019 02:02:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D63D6C43331
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Nov 2019 02:02:27 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 12FD821783
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Nov 2019 02:02:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A8DC321783
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Nov 2019 02:02:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AXvHJKm8";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="v06lANdt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 12FD821783
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="htU5702Z";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="uCM1y+Qw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A8DC321783
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=J6olQvwE40HS0f81NW+Oou3Lyn1rM3jstpuSSHbhv5o=; b=AXvHJKm8va5fZY
-	k+E4AfMW/M2dEZLecflE25oLZSk7sFbjCBNkDX/VsGA9TQWKwbyxZkP7Gdi1if2Q++p5iH4fxJ2JC
-	ulPThi/Ud0zBalCsZYLTe33isyYZe8NTyG5efhwqJHQ/VMmIEipvj+S8apfC4DNbBk4hkZZ5uG7v1
-	V+l4BvHsOmVVPqm1yqzYQhghzfxS+z2h/XMne4dciE0HyS3AviG966aF0glI23Mm3wLxpSgqkV/l4
-	hhg/u4kUJJWYPiPdGhRdSpXYmkSGcMpdq+jaJQf7YIHVdalVsJS9SD2ZjW5JyaKZG5dERNE0GXZBx
-	HgNzeXxSMfXGSZ7cprgw==;
+	List-Owner; bh=o01qGJgbiYAePNPGGGdYTdsIGwgwb/UIopBlrrfUny0=; b=htU5702Z0cgH07
+	52DyFFMchQmWrAnOCAXyfOu7OqFn3GSJOIe6ibImPJrXwG26I/q3AIvjcy6pPPYknhGu9aYXj+P69
+	3p2Vlz0wys2NYBa7yCRLEcxr/TP2RhCjVzjx3EBP3Z/TkgmOCe9FqxLkkib56QZHQL7PZRpCfazqU
+	SFcgwu9qk6KmJ14AYEQWJbB2Rb9OtA2F5qLtjo3tA4w4JFZlrXAW6Z4EMVLjT37DBPO8gJm9ALiau
+	FYukZiVKXWebQyxJxfwvUTFMd9m3krmRcqwN28nLQyaicy3QkDPhueKYgHMvCV3h4PGCUoCZ3hBqd
+	o/kMnXYrfqTOnMewLp1g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iUhyq-0002g9-T7; Wed, 13 Nov 2019 02:02:00 +0000
+	id 1iUhz4-0002uf-3C; Wed, 13 Nov 2019 02:02:14 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iUhyn-0002fK-Ad
- for linux-mtd@lists.infradead.org; Wed, 13 Nov 2019 02:01:58 +0000
+ id 1iUhyy-0002oy-PW
+ for linux-mtd@lists.infradead.org; Wed, 13 Nov 2019 02:02:10 +0000
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 31F66222CA;
- Wed, 13 Nov 2019 02:01:56 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id B31A8206B6;
+ Wed, 13 Nov 2019 02:02:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1573610517;
- bh=u2HPfRf/Kr1Qq6s8M6REfzpCPG/qBcR8on1BXqhMHJw=;
+ s=default; t=1573610528;
+ bh=BfsY3M/4bqCtzOYH+rqzQMH+VaQOEdNiiE1gHRZMQnU=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=v06lANdtncHlAYR4rZTxb5gEvisqmkl65CHuORZHZmhFCCvV9JAYXIecwcJZjtGa9
- sUySp91pd/8ZrK1bvZRRK8EqJGppce6c3FsPmh1d2DU9Bgz1hcscPs2lkSFs/FNdQb
- gHWCVzn5YY/yeHGiDrjdIBddUBkmrT9ab77QjEkw=
+ b=uCM1y+QwsS4Ep0NlAmZbcljpGvja4Vl0l4JmQXE+YyhH0g0MJvgZR7lKjjIthgCvu
+ popRuI0DgWJXtHM4onCIeWn9ZglgTASH0h/h9VA6e032aGWIFRwpUF2Z119MzhaVHj
+ qpdNWB2h4wEAR3AqUmvtBigMvkDw4KXzQlZJf75o=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 16/48] mtd: rawnand: sh_flctl: Use proper enum for
- flctl_dma_fifo0_transfer
-Date: Tue, 12 Nov 2019 21:00:59 -0500
-Message-Id: <20191113020131.13356-16-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 23/48] mtd: physmap_of: Release resources on error
+Date: Tue, 12 Nov 2019 21:01:06 -0500
+Message-Id: <20191113020131.13356-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191113020131.13356-1-sashal@kernel.org>
 References: <20191113020131.13356-1-sashal@kernel.org>
@@ -65,9 +64,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191112_180157_384908_F5DB89D8 
-X-CRM114-Status: UNSURE (   9.95  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20191112_180208_882853_A10C51B5 
+X-CRM114-Status: GOOD (  12.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,69 +77,94 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Sasha Levin <sashal@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>,
- clang-built-linux@googlegroups.com, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Nathan Chancellor <natechancellor@gmail.com>
+Cc: Sasha Levin <sashal@kernel.org>,
+ Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>,
+ linux-mtd@lists.infradead.org, Boris Brezillon <boris.brezillon@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Nathan Chancellor <natechancellor@gmail.com>
+From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
 
-[ Upstream commit e2bfa4ca23d9b5a7bdfcf21319fad9b59e38a05c ]
+[ Upstream commit ef0de747f7ad179c7698a5b0e28db05f18ecbf57 ]
 
-Clang warns when one enumerated type is converted implicitly to another:
+During probe, if there was an error the memory region and the memory
+map were not properly released.This can lead a system unusable if
+deferred probe is in use.
 
-drivers/mtd/nand/raw/sh_flctl.c:483:46: warning: implicit conversion
-from enumeration type 'enum dma_transfer_direction' to different
-enumeration type 'enum dma_data_direction' [-Wenum-conversion]
-                flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_DEV_TO_MEM) > 0)
-                ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
-drivers/mtd/nand/raw/sh_flctl.c:542:46: warning: implicit conversion
-from enumeration type 'enum dma_transfer_direction' to different
-enumeration type 'enum dma_data_direction' [-Wenum-conversion]
-                flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_MEM_TO_DEV) > 0)
-                ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
-2 warnings generated.
+Replace mem_request and map with devm_ioremap_resource
 
-Use the proper enums from dma_data_direction to satisfy Clang.
-
-DMA_MEM_TO_DEV = DMA_TO_DEVICE = 1
-DMA_DEV_TO_MEM = DMA_FROM_DEVICE = 2
-
-Reported-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/nand/sh_flctl.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/maps/physmap_of.c | 27 +++++----------------------
+ 1 file changed, 5 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-index 1f2785ee909fe..c00a180306e50 100644
---- a/drivers/mtd/nand/sh_flctl.c
-+++ b/drivers/mtd/nand/sh_flctl.c
-@@ -428,7 +428,7 @@ static void read_fiforeg(struct sh_flctl *flctl, int rlen, int offset)
+diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+index e46b4e9836668..77e7542fa8e42 100644
+--- a/drivers/mtd/maps/physmap_of.c
++++ b/drivers/mtd/maps/physmap_of.c
+@@ -28,7 +28,6 @@
+ struct of_flash_list {
+ 	struct mtd_info *mtd;
+ 	struct map_info map;
+-	struct resource *res;
+ };
  
- 	/* initiate DMA transfer */
- 	if (flctl->chan_fifo0_rx && rlen >= 32 &&
--		flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_DEV_TO_MEM) > 0)
-+		flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_FROM_DEVICE) > 0)
- 			goto convert;	/* DMA success */
+ struct of_flash {
+@@ -53,18 +52,10 @@ static int of_flash_remove(struct platform_device *dev)
+ 			mtd_concat_destroy(info->cmtd);
+ 	}
  
- 	/* do polling transfer */
-@@ -487,7 +487,7 @@ static void write_ec_fiforeg(struct sh_flctl *flctl, int rlen,
+-	for (i = 0; i < info->list_size; i++) {
++	for (i = 0; i < info->list_size; i++)
+ 		if (info->list[i].mtd)
+ 			map_destroy(info->list[i].mtd);
  
- 	/* initiate DMA transfer */
- 	if (flctl->chan_fifo0_tx && rlen >= 32 &&
--		flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_MEM_TO_DEV) > 0)
-+		flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_TO_DEVICE) > 0)
- 			return;	/* DMA success */
+-		if (info->list[i].map.virt)
+-			iounmap(info->list[i].map.virt);
+-
+-		if (info->list[i].res) {
+-			release_resource(info->list[i].res);
+-			kfree(info->list[i].res);
+-		}
+-	}
+ 	return 0;
+ }
  
- 	/* do polling transfer */
+@@ -223,10 +214,11 @@ static int of_flash_probe(struct platform_device *dev)
+ 
+ 		err = -EBUSY;
+ 		res_size = resource_size(&res);
+-		info->list[i].res = request_mem_region(res.start, res_size,
+-						       dev_name(&dev->dev));
+-		if (!info->list[i].res)
++		info->list[i].map.virt = devm_ioremap_resource(&dev->dev, &res);
++		if (IS_ERR(info->list[i].map.virt)) {
++			err = PTR_ERR(info->list[i].map.virt);
+ 			goto err_out;
++		}
+ 
+ 		err = -ENXIO;
+ 		width = of_get_property(dp, "bank-width", NULL);
+@@ -242,15 +234,6 @@ static int of_flash_probe(struct platform_device *dev)
+ 		info->list[i].map.bankwidth = be32_to_cpup(width);
+ 		info->list[i].map.device_node = dp;
+ 
+-		err = -ENOMEM;
+-		info->list[i].map.virt = ioremap(info->list[i].map.phys,
+-						 info->list[i].map.size);
+-		if (!info->list[i].map.virt) {
+-			dev_err(&dev->dev, "Failed to ioremap() flash"
+-				" region\n");
+-			goto err_out;
+-		}
+-
+ 		simple_map_init(&info->list[i].map);
+ 
+ 		/*
 -- 
 2.20.1
 
