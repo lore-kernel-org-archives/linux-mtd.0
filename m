@@ -2,82 +2,77 @@ Return-Path: <SRS0=mbSa=ZF=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06663C17442
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Nov 2019 04:44:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33340C17447
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Nov 2019 08:05:18 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CF31A222D3
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Nov 2019 04:44:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0691B214E0
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Nov 2019 08:05:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qlPqwaCg";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="y0DFwwa9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CF31A222D3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="A2WMiG+z";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=valeo.com header.i=@valeo.com header.b="rgDZNrrH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0691B214E0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=valeo.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:Subject:
-	From:To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=mwNOSnxZgnSMCsV7zS4X3O8Jkgj1uUNXg+7Xd6dieMw=; b=qlPqwaCgn6IIyF
-	YgoVPbq7z2308FGuLcLGBRhv3m4vtV4WDRMi7dXhbKJE6mtYWZFgAq6jTohQQJI4zPkJcfVauTAXt
-	RVeltBoQ6ws/1Arbtk1QLYeC066ytbXUXhGFtlNyRMQmFbmCphzd07VPepM7A5qylq+mC5HrzfEX6
-	sY6iW7FLzuxuNZgC5aBNIS/j99iIOenjPJbLtK8+ZhdYsqztNXS2eWGeHlzKwMbqHTnfIoPVxOf4f
-	Ub5inPtJjAA5MaGD2WiZAHsDae2oQitKbZARpx1DHgEHOq5B5HwoQohq2l+rUZraXaTRaVc7v5Kvu
-	kpMEwVRQQml+E3qni9tQ==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=I+KuRjbneY4nzQwLcp9s3rXH00/zn3mp/9Zo45OlaZg=; b=A2W
+	MiG+zXamO37Wdp97G0zjbvul+Z7rZME1VmeTIJ3Z6NLsBTMMes80GqiNayEF++aIpQGEoINGIAhQn
+	Sw7iK8li2nK0qhM9GLXoyRq8iX2sdn8MJAQca+7pxTJY/MAkQXpi/B2gqmH4NE3eVW1H/sjE6FkWj
+	ZQPj39yT2Pw29czA5DmIGFn3fRKOocZaTTUiS2911m5qbgBTMKFhRJ67zFfqL0vkbMyHhjjPGbNB1
+	+WY4eL8COE2qbRLf1BmSvJmxiTWc3U2xBU9SVUL1D80Sc++KAz2zyJbQjhlQFMBUQGA1dV8yIr5Mm
+	DHDa3ViytVyMqELpcUL3br2NZ3sIsQg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iUkVt-00011C-6y; Wed, 13 Nov 2019 04:44:17 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1iUne9-0004Pu-BH; Wed, 13 Nov 2019 08:05:01 +0000
+Received: from mail-io1-xd2e.google.com ([2607:f8b0:4864:20::d2e])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iUkVp-00010T-LS
- for linux-mtd@lists.infradead.org; Wed, 13 Nov 2019 04:44:15 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id xAD4i3Zm009531;
- Tue, 12 Nov 2019 22:44:03 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1573620243;
- bh=krfS/M4AMWq2GPPOK+NBW+TNgj20t18mmVDIkEHgP/8=;
- h=To:CC:From:Subject:Date;
- b=y0DFwwa9oc+2N3uFRwezabPcN5nLnjsEi20myxZiXTbv3c1bkgu7dNlMnsMoXVEy1
- 2aI7MZfQ4ArJygytAan2hEWxQP5IdswfmuoeQ9WSi/bpWc2354o8OoufSvp4VuM6oH
- 5qGrFl7zFiOcJ2E5OCd/e9LgAzcWuEat5sOwbv2Q=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id xAD4i37D110114
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 12 Nov 2019 22:44:03 -0600
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Tue, 12
- Nov 2019 22:43:45 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Tue, 12 Nov 2019 22:43:46 -0600
-Received: from [172.24.145.136] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id xAD4i19G082073;
- Tue, 12 Nov 2019 22:44:02 -0600
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [GIT PULL] CFI and HyperFlash changes for v5.5-rc1
-Message-ID: <50180087-48c5-ab5a-88b5-5178d4ac933b@ti.com>
-Date: Wed, 13 Nov 2019 10:14:35 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+ id 1iUne5-0004P1-PT
+ for linux-mtd@lists.infradead.org; Wed, 13 Nov 2019 08:04:59 +0000
+Received: by mail-io1-xd2e.google.com with SMTP id j20so1487187ioo.11
+ for <linux-mtd@lists.infradead.org>; Wed, 13 Nov 2019 00:04:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=valeo.com; s=google;
+ h=mime-version:from:date:message-id:subject:to;
+ bh=sjKMRCVyVAnRr84HCR20VLI1DBXWihFShpnoVfAYoQs=;
+ b=rgDZNrrH9nfx02vvI2T86qoTwo87W78vyuhS4A+Q1/lbS+1BpKz2rLtZPkss+7FIch
+ Q1I4PrY36CzjVg810dMpWVTLa0F5xIyojMBfUzDx6bXptXhOjG0vS64fUp42FN9KshJ/
+ 8XhlGwEvNzDsfM5b93D8X07NPVXMe5WFFB0DY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+ bh=sjKMRCVyVAnRr84HCR20VLI1DBXWihFShpnoVfAYoQs=;
+ b=DPzek29hiNs7J2xCn5DcLZmiEmUoPZG4+Yq9p2g4R/GKAWFvy6aL14pNh2jzMebJgo
+ djRlvNgCG4Rn3OADVdz4PcnEE66WiiTXaTRXJxw7+K6QarmW0/2Edg/g6V877bHtEaon
+ sYGGDVL8WWc1LIXX1ePv10RHWKraolU4zZH/EEZtCOQ5XFcSyJubI+6FJwJs2UgAqpM5
+ mWE5PqbEjMJSYi1vr0N25sCB9J3wlk+7XWYvkVkYUHpUIfSC7pAnGt/GZnBx/Yqmlzrb
+ O7tQuOxcnHLmUGh1aUvt0+hzFLEfQDBT9R1vg4LhCHFLRVAoPXlcPixZooV6i1lvoiSv
+ 0lZg==
+X-Gm-Message-State: APjAAAUzO7XmBYk/qNoHZ5l1Xd8tEUFriliQbvguBYALlp+2kB7bB2vC
+ ZKpxnY0FzLl1Xzu3tMCAxQJoLJHuVGxHw9JgzeVUOXj2TIohUBqLxo9xMdEuSLZFLizSeRUeP7b
+ FvC5ZPpQTbkMHO6Cy5G2qkxyOoX74O1dJvSSR5o9fJg==
+X-Google-Smtp-Source: APXvYqx2TRqwtc03pwmFFsaueLDqP00QaPB4Dgu85p3i5uUEdXZPJFUiKIgyIzuCwcUJOgmGTcMDgze0h+zEFD5lGTA=
+X-Received: by 2002:a05:6638:2b1:: with SMTP id
+ d17mr1797458jaq.3.1573632294108; 
+ Wed, 13 Nov 2019 00:04:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+From: Balachandra KUMAR <balachandra.kumar.ext@valeo.com>
+Date: Wed, 13 Nov 2019 09:04:43 +0100
+Message-ID: <CAAHdpOcJcq2spnM9f=9BoycG8oyhw0ufjzF3BemMY2aNFt+5cw@mail.gmail.com>
+Subject: ubi corrupted list not counted as bad block
+To: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191112_204413_809403_22EE599E 
-X-CRM114-Status: GOOD (  13.27  )
+X-CRM114-CacheID: sfid-20191113_000457_987060_529644CF 
+X-CRM114-Status: UNSURE (   5.72  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,57 +84,71 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
+Hi MTD Experts,
 
-Here is the CFI and HyperFlash related PR for v5.5-rc1
+ I am hitting the below problem :
+UBI assert failed in ubi_wl_init at line 1632
+-> ubi_assert(ubi->good_peb_count == found_pebs);
 
-Regards
-Vignesh
+The issue is because, in the scan_peb( ) , a specific PEB is found to
+be corrupted in the volume header CRC calculation which is a
+UBI_IO_BAD_HDR error.
 
-The following changes since commit 54ecb8f7028c5eb3d740bb82b0f1d90f2df63c5c:
+Later in scan_peb ( ), my target hits the else part saying its an
+unexpected corruption.
+[attach.c]
+else if (!err)
+                        /* This corruption is caused by a power cut */
+                        err = add_to_list(ai, pnum, UBI_UNKNOWN,
+                                          UBI_UNKNOWN, ec, 1, &ai->erase);
+                else {
+                        /* This is an unexpected corruption */
+                       err = add_corrupted(ai, pnum, ec);
+                 }
 
-  Linux 5.4-rc1 (2019-09-30 10:35:40 -0700)
+The count of good peb is done as below :
+/* code snippet in attach.c */
+   ubi->bad_peb_count = ai->bad_peb_count; (this is 0 in my case)
+   ubi->good_peb_count = ubi->peb_count - ubi->bad_peb_count;
+(total_peb_count(3464) - 0 = 3464) but what about the corrupted one?
+   ubi->corr_peb_count = ai->corr_peb_count;   (this is 1)
 
-are available in the Git repository at:
+Why is
+good_peb_count = peb_count - bad_peb_count ? (why not minus
+corrupt_peb_count or add it to erase list?)
 
-  https://github.com/r-vignesh/linux.git tags/for-v5.5-rc1
+in the ubi_wl_init ( ) , the found_pebs is calculated from erase list
+and free list and we skip the corrupted peb list. But the good_count
+cotains the corrupted count as well.
+So , i hit this problem ->
+  ubi_assert(ubi->good_peb_count == found_pebs);
 
-for you to fetch changes up to c15995695ea971253ea9507f6732c8cd35384e01:
+What is the logic behind this good_peb_count?
 
-  mtd: cfi_cmdset_0002: fix delayed error detection on HyperFlash (2019-11-09 14:43:53 +0530)
-
-----------------------------------------------------------------
-CFI core changes:
-
-* Code cleanups related useless initializers and coding style issues
-* Fix for a possible double free problem in cfi_cmdset_0002
-* Improved error reporting and handling in cfi_cmdset_0002 core for HyperFlash
-
-----------------------------------------------------------------
-Hou Tao (1):
-      mtd: cfi_cmdset_0002: don't free cfi->cfiq in error path of cfi_amdstd_setup()
-
-Sergei Shtylyov (4):
-      mtd: cfi_util: use DIV_ROUND_UP() in cfi_udelay()
-      mtd: cfi_cmdset_*: kill useless 'ret' variable initializers
-      mtd: cfi_cmdset_0002: only check errors when ready in cfi_check_err_status()
-      mtd: cfi_cmdset_0002: fix delayed error detection on HyperFlash
-
- drivers/mtd/chips/cfi_cmdset_0001.c | 10 +-
- drivers/mtd/chips/cfi_cmdset_0002.c | 79 ++++++----
- drivers/mtd/chips/cfi_cmdset_0020.c |  8 +-
- drivers/mtd/chips/cfi_util.c        |  2 +-
- 4 files changed, 55 insertions(+), 44 deletions(-)
+Thanks
+bala
 
 -- 
-Regards
-Vignesh
+*This e-mail message is intended for the internal use of the intended 
+recipient(s) only.
+The information contained herein is 
+confidential/privileged. Its disclosure or reproduction is strictly 
+prohibited.
+If you are not the intended recipient, please inform the sender 
+immediately, do not disclose it internally or to third parties and destroy 
+it.
+
+In the course of our business relationship and for business purposes 
+only, Valeo may need to process some of your personal data. 
+For more 
+information, please refer to the Valeo Data Protection Statement and 
+Privacy notice available on Valeo.com 
+<https://www.valeo.com/en/ethics-and-compliance/#principes>*
 
 ______________________________________________________
 Linux MTD discussion mailing list
