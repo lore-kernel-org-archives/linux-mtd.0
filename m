@@ -2,80 +2,82 @@ Return-Path: <SRS0=mbSa=ZF=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,FSL_HELO_FAKE,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 687C6C432C3
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Nov 2019 20:36:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E7D1C432C3
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Nov 2019 20:39:07 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 100B4206F3
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Nov 2019 20:36:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AC246206F6
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Nov 2019 20:39:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HHWcgSzB";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="cN+5BXj9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 100B4206F3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LH3a19PU";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="umNxMXgm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AC246206F6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1vEGG2XZootCHB0ZPnhqiwjICe8WFzkNJufQds3EKTY=; b=HHWcgSzBUaQmvp
-	VYpFDM+oXui+gAWgl4cvoLOhicxyUdducAIy4SfAQxwetgKkr4ImqJgFR3yZDp9O5w28gm8/2mysP
-	pG3i7WAwWkn0y4AMnyaWYgB0dCVlK8DCglSg84EjKSyLTbBSyobB6ZMJRaKDkrDfIO86/tX0GLkAz
-	m/PQ2ODSkhVxvG9ZjR02M6cSJi2KjmrGf06zl/PjH/rDN16ethPTSXnIJNBg2DZkgGXP/mjgSdwdZ
-	qfBlmXdKTQfgXUJH0sHENvfkRhL8hZD75xDAu07Kf5fE+f8eYBBTpKzb9D5WzXNlOsqdcJ6LxqtAS
-	zsBEwRIz6L1nJzA75dhg==;
+	List-Owner; bh=sKgDFHfnuv/K32qsjzpRPJiUsldLOpsJ87EqU3t/qjY=; b=LH3a19PUqeZJUK
+	O6K2L9DDYRYpVEpqHRqOeZ1dMSs/3RYuCJeXVNeWkhx5YtiPCa7/jJaQ2HTId8lXreiDL8mAhrM3f
+	fsiymDHcYRZW+1U/0ul6ORNlVoNN3F/99m266MiHULLffpr29iyqNnnysV102TpCq1y23cZBxCTNL
+	MKJwii5NAwMtrO/AdFatAsniqToJ4ZSi2ALrbiTKMg2m93gnwHxv1afZc/yhfi6i1BzsbESC4quFo
+	oHKekn1PW9NJhCst+tMGd7va4XMlx00EaCIge207EDCLHxYYjFiemqNCjhd0nV1BWSpz8rs+liezs
+	q8UbtYU6wY/x3IdSqETw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iUzMr-00005N-1t; Wed, 13 Nov 2019 20:35:57 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1iUzPh-0000SZ-O2; Wed, 13 Nov 2019 20:38:53 +0000
+Received: from mail-io1-xd44.google.com ([2607:f8b0:4864:20::d44])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iUzMn-0008WF-NA
- for linux-mtd@lists.infradead.org; Wed, 13 Nov 2019 20:35:55 +0000
-Received: from gmail.com (unknown [104.132.1.77])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id D1D53206F0;
- Wed, 13 Nov 2019 20:35:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1573677354;
- bh=F7ZEXH3Tifjy9sGUrwh8Fhs+H6mYs1GYZonZpiJuwEo=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=cN+5BXj91Btq6Ry/bO1VhiaNdo4x1+Lt3QDXuQLQyXlsCVgrWNJGKLW3Zy0M3qYgf
- kZYrGKdT5NAbCuJckqXAScixPVqWmbN98LNs2qdXXxKYYq+xhab0ygSaprMlJrUDjc
- 2Rl8cQmt+I9y4p/mks0qpzDMku7DMTI2kzVonDxM=
-Date: Wed, 13 Nov 2019 12:35:51 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: David Howells <dhowells@redhat.com>,
- Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, keyrings@vger.kernel.org
-Subject: Re: [PATCH] fscrypt: support passing a keyring key to
- FS_IOC_ADD_ENCRYPTION_KEY
-Message-ID: <20191113203550.GI221701@gmail.com>
-Mail-Followup-To: David Howells <dhowells@redhat.com>,
- Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
- keyrings@vger.kernel.org, linux-fscrypt@vger.kernel.org,
- "Theodore Y . Ts'o" <tytso@mit.edu>,
- Ondrej Mosnacek <omosnace@redhat.com>,
- linux-f2fs-devel@lists.sourceforge.net,
- Paul Lawrence <paullawrence@google.com>,
- linux-mtd@lists.infradead.org, Ondrej Kozina <okozina@redhat.com>,
- Jaegeuk Kim <jaegeuk@kernel.org>, linux-ext4@vger.kernel.org,
- Paul Crowley <paulcrowley@google.com>
-References: <20191107001259.115018-1-ebiggers@kernel.org>
+ id 1iUzPe-0000Rm-QM
+ for linux-mtd@lists.infradead.org; Wed, 13 Nov 2019 20:38:52 +0000
+Received: by mail-io1-xd44.google.com with SMTP id 1so4126664iou.4
+ for <linux-mtd@lists.infradead.org>; Wed, 13 Nov 2019 12:38:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=YxcRlNzcBiAlNudn6kLat8m1vGtNWaR0Jl7FMyM2EN0=;
+ b=umNxMXgm8tIXimc6Ozqie+Gdq82fKd0dw3loWE9SmGvZAEvk9fJbiRnYW0NFTikUTG
+ AOjEZDGuo6/TiRCPGgN68PH+TcYITjdsx3AcWZn/LTfuYDGh47Dlm2+jNYfaOHz1B+rn
+ lh+5DE24bJugrp5ewgePSfZ2sFYuUCjLtxeJHa9LmOFcHA0/FvWGTw5rPGKb6YRTOiNT
+ 6F6uV/lMfmyuYvJ0HkxxSGTZfT4TADggleQ578z3uQzjueYa2Y9mRQ+pzkA4N2QCvCT1
+ 0JXRsA3pCFDDhBzpFcxtVHFmHbHddlGxGyo//LyBa6rA3QYAa49hiNhO/Ef7HakKmvBC
+ tReA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=YxcRlNzcBiAlNudn6kLat8m1vGtNWaR0Jl7FMyM2EN0=;
+ b=akQTFCZlHZEzTmG8U+Hpy+SkdUpKe045tbSm5v3Iou5A3YOr/Q3e2NOFikhkEy+b+8
+ hkQwA3S+91aq3Rz1GNZAVdHXqo0UC77KsnohLQ0Nq+A6g+gn62OSvcMSGxQG15xwmiq5
+ /ghhja5xx1hNR+5MjiusZWwVgb2ezCx5fP3dSsFq9gi0eEQhRwSUTYPo8snv4Tv9/gNk
+ zzztVK80F0LfwJlTWTtG3HWFehrKMQzzV4vImh3jlmiBv03V0fdObP0hYUbigpGzEqVo
+ Vyn5nfRot4IuVanXbV1RT60wFteeKCLnSpt2+Fvy+Hpqvo2ecltAJKA2f6Ez4bYwdqq0
+ hiDQ==
+X-Gm-Message-State: APjAAAVWAerFfCm9H7+Q0bm8RkA1/wYoXp7yULYs+8CvziAue8st3Oyg
+ KGU8+fk7LiKJTyBdBV2HBL7XToz5NkcRyhToUFw=
+X-Google-Smtp-Source: APXvYqxRL9CM16SQPo7Zeq+ZHRXSjENb/hONgI8YRT826tl7bxT8C4vPD8W2YsYzu1nrCI82QHmInaBKQRJzcwW/y60=
+X-Received: by 2002:a5d:8789:: with SMTP id f9mr5317745ion.237.1573677528331; 
+ Wed, 13 Nov 2019 12:38:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20191107001259.115018-1-ebiggers@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <156950767876.30879.17024491763471689960.stgit@warthog.procyon.org.uk>
+ <f34aaf61-955a-7867-ef93-f22d3d8732c3@cogentembedded.com>
+In-Reply-To: <f34aaf61-955a-7867-ef93-f22d3d8732c3@cogentembedded.com>
+From: Han Xu <xhnjupt@gmail.com>
+Date: Wed, 13 Nov 2019 14:38:37 -0600
+Message-ID: <CA+EcR22=7F7X-9qYXb94dAp6w0_3FoKJPMRhFht+VWgKonoing@mail.gmail.com>
+Subject: Re: [PATCH] jffs2: Fix mounting under new mount API
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191113_123553_810253_E8FEEDA6 
-X-CRM114-Status: GOOD (  18.98  )
+X-CRM114-CacheID: sfid-20191113_123850_859865_F674F1DD 
+X-CRM114-Status: GOOD (  19.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,62 +89,116 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "Theodore Y . Ts'o" <tytso@mit.edu>, Ondrej Mosnacek <omosnace@redhat.com>,
- linux-f2fs-devel@lists.sourceforge.net,
- Paul Lawrence <paullawrence@google.com>, linux-fscrypt@vger.kernel.org,
- linux-mtd@lists.infradead.org, Ondrej Kozina <okozina@redhat.com>,
- Jaegeuk Kim <jaegeuk@kernel.org>, linux-ext4@vger.kernel.org,
- Paul Crowley <paulcrowley@google.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ David Howells <dhowells@redhat.com>, linux-mtd <linux-mtd@lists.infradead.org>,
+ viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+ David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Nov 06, 2019 at 04:12:59PM -0800, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> Extend the FS_IOC_ADD_ENCRYPTION_KEY ioctl to allow the raw key to be
-> specified by a Linux keyring key, rather than specified directly.
-> 
-> This is useful because fscrypt keys belong to a particular filesystem
-> instance, so they are destroyed when that filesystem is unmounted.
-> Usually this is desired.  But in some cases, userspace may need to
-> unmount and re-mount the filesystem while keeping the keys, e.g. during
-> a system update.  This requires keeping the keys somewhere else too.
-> 
-> The keys could be kept in memory in a userspace daemon.  But depending
-> on the security architecture and assumptions, it can be preferable to
-> keep them only in kernel memory, where they are unreadable by userspace.
-> 
-> We also can't solve this by going back to the original fscrypt API
-> (where for each file, the master key was looked up in the process's
-> keyring hierarchy) because that caused lots of problems of its own.
-> 
-> Therefore, add the ability for FS_IOC_ADD_ENCRYPTION_KEY to accept a
-> Linux keyring key.  This solves the problem by allowing userspace to (if
-> needed) save the keys securely in a Linux keyring for re-provisioning,
-> while still using the new fscrypt key management ioctls.
-> 
-> This is analogous to how dm-crypt accepts a Linux keyring key, but the
-> key is then stored internally in the dm-crypt data structures rather
-> than being looked up again each time the dm-crypt device is accessed.
-> 
-> Use a custom key type "fscrypt-provisioning" rather than one of the
-> existing key types such as "logon".  This is strongly desired because it
-> enforces that these keys are only usable for a particular purpose: for
-> fscrypt as input to a particular KDF.  Otherwise, the keys could also be
-> passed to any kernel API that accepts a "logon" key with any service
-> prefix, e.g. dm-crypt, UBIFS, or (recently proposed) AF_ALG.  This would
-> risk leaking information about the raw key despite it ostensibly being
-> unreadable.  Of course, this mistake has already been made for multiple
-> kernel APIs; but since this is a new API, let's do it right.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+Tested the JFFS2 on 5.4 kernel as the instruction said, still got some
+errors, any ideas?
 
-David and Jarkko, are you okay with this patch from a keyrings subsystem
-perspective?
+Without the patch,
 
-- Eric
+root@imx8mmevk:~# cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 00400000 00020000 "mtdram test device"
+mtd1: 04000000 00020000 "5d120000.spi"
+root@imx8mmevk:~# mtd_debug info /dev/mtd0
+mtd.type = MTD_RAM
+mtd.flags = MTD_CAP_RAM
+mtd.size = 4194304 (4M)
+mtd.erasesize = 131072 (128K)
+mtd.writesize = 1
+mtd.oobsize = 0
+regions = 0
+
+root@imx8mmevk:~# flash_erase /dev/mtd0 0 0
+Erasing 128 Kibyte @ 3e0000 -- 100 % complete
+root@imx8mmevk:~# mount -t jffs2 /dev/mtdblock0 test_dir/
+mount: /home/root/test_dir: wrong fs type, bad option, bad superblock
+on /dev/mtdblock0, missing codepage or helper program, or other error.
+
+With the patch,
+
+root@imx8mmevk:~# cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 00400000 00020000 "mtdram test device"
+mtd1: 04000000 00020000 "5d120000.spi"
+root@imx8mmevk:~# mtd_debug info /dev/mtd0
+mtd.type = MTD_RAM
+mtd.flags = MTD_CAP_RAM
+mtd.size = 4194304 (4M)
+mtd.erasesize = 131072 (128K)
+mtd.writesize = 1
+mtd.oobsize = 0
+regions = 0
+
+root@imx8mmevk:~# flash_erase /dev/mtd0 0 0
+Erasing 128 Kibyte @ 3e0000 -- 100 % complete
+root@imx8mmevk:~# mount -t jffs2 /dev/mtdblock0 test_dir/
+root@imx8mmevk:~# mount
+/dev/mtdblock0 on /home/root/test_dir type jffs2 (rw,relatime)
+
+BUT, it's not writable.
+
+root@imx8mmevk:~# cp test_file test_dir/
+cp: error writing 'test_dir/test_file': Invalid argument
+
+root@imx8mmevk:~# dd if=/dev/urandom of=test_dir/test_file bs=1k count=1
+dd: error writing 'test_dir/test_file': Invalid argument
+1+0 records in
+0+0 records out
+0 bytes copied, 0.000855156 s, 0.0 kB/s
+
+
+On Fri, Sep 27, 2019 at 3:38 AM Sergei Shtylyov
+<sergei.shtylyov@cogentembedded.com> wrote:
+>
+> Hello!
+>
+> On 26.09.2019 17:21, David Howells wrote:
+>
+> > The mounting of jffs2 is broken due to the changes from the new mount API
+> > because it specifies a "source" operation, but then doesn't actually
+> > process it.  But because it specified it, it doesn't return -ENOPARAM and
+>
+>     What specified what? Too many "it"'s to figure that out. :-)
+>
+> > the caller doesn't process it either and the source gets lost.
+> >
+> > Fix this by simply removing the source parameter from jffs2 and letting the
+> > VFS deal with it in the default manner.
+> >
+> > To test it, enable CONFIG_MTD_MTDRAM and allow the default size and erase
+> > block size parameters, then try and mount the /dev/mtdblock<N> file that
+> > that creates as jffs2.  No need to initialise it.
+>
+>     One "that" should be enough. :-)
+>
+> > Fixes: ec10a24f10c8 ("vfs: Convert jffs2 to use the new mount API")
+> > Reported-by: Al Viro <viro@zeniv.linux.org.uk>
+> > Signed-off-by: David Howells <dhowells@redhat.com>
+> > cc: David Woodhouse <dwmw2@infradead.org>
+> > cc: Richard Weinberger <richard@nod.at>
+> > cc: linux-mtd@lists.infradead.org
+> [...]
+>
+> MBR, Sergei
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+
+
+-- 
+Sincerely,
+
+Han XU
 
 ______________________________________________________
 Linux MTD discussion mailing list
