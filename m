@@ -2,77 +2,67 @@ Return-Path: <SRS0=eHwk=ZL=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC0ACC432C3
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 Nov 2019 09:27:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC819C432C0
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 Nov 2019 22:26:53 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8F26B21823
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 Nov 2019 09:27:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7D69A2245B
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 Nov 2019 22:26:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="C6Vsx1Ns"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F26B21823
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="A5M/Fg53";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="hMSZfMJ2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7D69A2245B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0JVPgxw43Uq74dE+G+sVGshyb/pa2avB81F15/hBo90=; b=C6Vsx1NsoxjIRw
-	QbELCNjnSJqjeyOt+DzOsQXUtUj8reQyuhNrPwvi4V9IhSY1UKRgKUUUxxircVKxvhNFKoviyX+1i
-	g8YR3UN9YPgEdkOfauXAfTLuboQWFyOcbERlPYQvsj2fXFW9MNHF+sPNhnAoy8esOE+eMAgLD0m8T
-	VrXYAg47AeSwof/VkPCpF2szdMqMzBrT0dT8dCkbn4m25Zv1jfijSjWd93jjB1VeZ43YrnUJxnXhw
-	w1eGLr5PfIWG/C34OcMSipXOcRmyu3EMCOjem8LztK6Gm3XtcwVhawcmVKNRed8OwtU97q8yl7gNH
-	rtiNk4aBCVBIXisXSHqw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=BIF1P/K/DutMPGRFb/c2AxvEkuClhUYHZZkpQFJp8uo=; b=A5M/Fg53ItaGw0
+	nCKCwxe01I1qA70CVqBHgpq88vud9yqkG+ipnpN+GSYRY3MAB3kA+QrrFArcgQXAmOJU7Fq3hIefB
+	eGOaKQIAnxIBTxaXJwqQmuYFCyt4vYLJKs3Xzxt7SfqatSUAKACjKWPxJwBz70CQNgTS21NONK070
+	jyMopz/tSmIlURt+bHmGw5r5l0tCFnOkvzxnWfdgWc+j0YSwbv93w6ERx0bpwaB/FM9CIYDqCLr0M
+	a1FxCMaibDvvhRU3DCgbUoFYWl9HgVxCF4aVm5u/NlUtcKiuJ/2L/ehVnafig0Vfki70nvb3ZX6sZ
+	B8Yw8+LEdc7uly0Ikgtg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iWzn7-00012H-El; Tue, 19 Nov 2019 09:27:21 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1iXBx9-0006Vz-EV; Tue, 19 Nov 2019 22:26:31 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iWzn0-00011J-H9
- for linux-mtd@lists.infradead.org; Tue, 19 Nov 2019 09:27:19 +0000
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <mfe@pengutronix.de>)
- id 1iWzmu-0007gE-QS; Tue, 19 Nov 2019 10:27:08 +0100
-Received: from mfe by pty.hi.pengutronix.de with local (Exim 4.89)
- (envelope-from <mfe@pengutronix.de>)
- id 1iWzmq-0004Ls-MD; Tue, 19 Nov 2019 10:27:04 +0100
-Date: Tue, 19 Nov 2019 10:27:04 +0100
-From: Marco Felsch <m.felsch@pengutronix.de>
-To: Boris Brezillon <boris.brezillon@collabora.com>
-Subject: Re: [EXT] [PATCH] mtd: spinand: micron: add support for MT29F1G01AAADD
-Message-ID: <20191119092704.mz4pie37z6ngxyyn@pengutronix.de>
-References: <20191108074852.18507-1-m.felsch@pengutronix.de>
- <DM6PR08MB6396AB87FEE731C7B3588358B84D0@DM6PR08MB6396.namprd08.prod.outlook.com>
- <20191118140951.dlvsozieeatnmd7d@pengutronix.de>
- <20191118183954.4091abdc@collabora.com>
+ id 1iXBx4-0006VK-70
+ for linux-mtd@lists.infradead.org; Tue, 19 Nov 2019 22:26:28 +0000
+Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown
+ [104.132.1.77])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 9A6D122449;
+ Tue, 19 Nov 2019 22:26:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1574202385;
+ bh=gRhDTw9jnqMiR17fT2dfbIHxRXud32TXY+LIQolMGEo=;
+ h=From:To:Cc:Subject:Date:From;
+ b=hMSZfMJ25vAatHuSDEeNFR6S3ijDNO+ZWax7r60EzV1Z1y39czH+LVb6a+XOgt2gL
+ QyMZ77SY77rcBoDq2G7/a1Yqnfpwuevgzz1wO46ByhTNU8CuNMEsApAAe84AAfpD/d
+ hJfu+ewKgDdzEzkWWt5KbSXR0CTXkewQSwoDEm/k=
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-fscrypt@vger.kernel.org
+Subject: [PATCH v2] fscrypt: support passing a keyring key to
+ FS_IOC_ADD_ENCRYPTION_KEY
+Date: Tue, 19 Nov 2019 14:24:47 -0800
+Message-Id: <20191119222447.226853-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.24.0.432.g9d3f5f5b63-goog
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20191118183954.4091abdc@collabora.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-IRC: #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 10:21:50 up 4 days, 40 min, 19 users,  load average: 0.14, 0.06, 0.01
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191119_012714_729810_F913452A 
-X-CRM114-Status: GOOD (  27.85  )
+X-CRM114-CacheID: sfid-20191119_142626_296086_BAB3B741 
+X-CRM114-Status: GOOD (  28.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,208 +74,346 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
- "richard@nod.at" <richard@nod.at>,
- "frieder.schrempf@kontron.de" <frieder.schrempf@kontron.de>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "kernel@pengutronix.de" <kernel@pengutronix.de>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "Shivamurthy Shastri \(sshivamurthy\)" <sshivamurthy@micron.com>
+Cc: Paul Lawrence <paullawrence@google.com>,
+ "Theodore Y . Ts'o" <tytso@mit.edu>, Ondrej Mosnacek <omosnace@redhat.com>,
+ Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+ linux-f2fs-devel@lists.sourceforge.net, David Howells <dhowells@redhat.com>,
+ keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Ondrej Kozina <okozina@redhat.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+ linux-ext4@vger.kernel.org, Paul Crowley <paulcrowley@google.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Boris,
+From: Eric Biggers <ebiggers@google.com>
 
-On 19-11-18 18:39, Boris Brezillon wrote:
-> On Mon, 18 Nov 2019 15:09:51 +0100
-> Marco Felsch <m.felsch@pengutronix.de> wrote:
-> 
-> > Hi Shiva,
-> > 
-> > On 19-11-18 10:16, Shivamurthy Shastri (sshivamurthy) wrote:
-> > > Hi Marco,
-> > >   
-> > > > 
-> > > > The MT29F1G01AAADD is a single die, SLC based SPI NAND. It has a
-> > > > capacity of 1Gb and supports 4-bit ECC. The datasheet can be found [1].
-> > > > 
-> > > > Unfortunatly the linked device is marked as EoL, but I will expect that
-> > > > the MT29F1G01AAADDH4-ITX behaves the same way.
-> > > > 
-> > > > [1]
-> > > > https://nam01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fdata
-> > > > sheet.octopart.com%2FMT29F1G01AAADDH4-IT%3AD-Micron-datasheet-
-> > > > 11572380.pdf&amp;data=02%7C01%7Csshivamurthy%40micron.com%7C21a
-> > > > da5347828461980a408d7642021a9%7Cf38a5ecd28134862b11bac1d563c806f%
-> > > > 7C0%7C1%7C637087961499818902&amp;sdata=%2Fh%2FHfUoSnl8qqSVClVfp
-> > > > ykvi3UiDEZFTn%2BVCsAf9IaM%3D&amp;reserved=0
-> > > > 
-> > > > Cc: Peter Pan <peterpandong@micron.com>
-> > > > Cc: sshivamurthy@micron.com
-> > > > Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
-> > > > ---
-> > > > v2:
-> > > > - Convert 0x10 into 16 for ooblayout description
-> > > > - Don't break web link within commit message
-> > > > 
-> > > >  drivers/mtd/nand/spi/micron.c | 68
-> > > > +++++++++++++++++++++++++++++++++++
-> > > >  1 file changed, 68 insertions(+)
-> > > > 
-> > > > diff --git a/drivers/mtd/nand/spi/micron.c b/drivers/mtd/nand/spi/micron.c
-> > > > index 7d7b1f7fcf71..70e278759bd3 100644
-> > > > --- a/drivers/mtd/nand/spi/micron.c
-> > > > +++ b/drivers/mtd/nand/spi/micron.c
-> > > > @@ -34,6 +34,18 @@ static
-> > > > SPINAND_OP_VARIANTS(update_cache_variants,
-> > > >  		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
-> > > >  		SPINAND_PROG_LOAD(false, 0, NULL, 0));
-> > > > 
-> > > > +static SPINAND_OP_VARIANTS(read_cache_variants_mt29f1g01aaadd,
-> > > > +		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-> > > > +		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-> > > > +		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL,
-> > > > 0),
-> > > > +		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL,
-> > > > 0));
-> > > > +
-> > > > +static SPINAND_OP_VARIANTS(write_cache_variants_mt29f1g01aaadd,
-> > > > +		SPINAND_PROG_LOAD(true, 0, NULL, 0));
-> > > > +
-> > > > +static SPINAND_OP_VARIANTS(update_cache_variants_mt29f1g01aaadd,
-> > > > +		SPINAND_PROG_LOAD(false, 0, NULL, 0));
-> > > > +
-> > > >  static int mt29f2g01abagd_ooblayout_ecc(struct mtd_info *mtd, int section,
-> > > >  					struct mtd_oob_region *region)
-> > > >  {
-> > > > @@ -90,6 +102,52 @@ static int mt29f2g01abagd_ecc_get_status(struct
-> > > > spinand_device *spinand,
-> > > >  	return -EINVAL;
-> > > >  }
-> > > > 
-> > > > +static int mt29f1g01aaadd_ooblayout_ecc(struct mtd_info *mtd, int
-> > > > section,
-> > > > +					struct mtd_oob_region *region)
-> > > > +{
-> > > > +	if (section > 3)
-> > > > +		return -ERANGE;
-> > > > +
-> > > > +	region->offset = (section * 16) + 8;
-> > > > +	region->length = 8;
-> > > > +
-> > > > +	return 0;
-> > > > +}
-> > > > +
-> > > > +static int mt29f1g01aaadd_ooblayout_free(struct mtd_info *mtd, int
-> > > > section,
-> > > > +					 struct mtd_oob_region *region)
-> > > > +{
-> > > > +	if (section > 3)
-> > > > +		return -ERANGE;
-> > > > +
-> > > > +	/* 2 bytes for the BBM + 2 bytes to skip non-ecc memory */
-> > > > +	region->offset = (section * 16) + 4;
-> > > > +	region->length = 4;
-> > > > +
-> > > > +	return 0;
-> > > > +}
-> > > > +
-> > > > +static const struct mtd_ooblayout_ops mt29f1g01aaadd_ooblayout = {
-> > > > +	.ecc = mt29f1g01aaadd_ooblayout_ecc,
-> > > > +	.free = mt29f1g01aaadd_ooblayout_free,
-> > > > +};
-> > > > +
-> > > > +static int mt29f1g01aaadd_ecc_get_status(struct spinand_device *spinand,
-> > > > +					 u8 status)
-> > > > +{
-> > > > +	switch (status & STATUS_ECC_MASK) {
-> > > > +	case STATUS_ECC_NO_BITFLIPS:
-> > > > +		return 0;
-> > > > +	case STATUS_ECC_HAS_BITFLIPS:
-> > > > +		/* 1 to 4-bit error detected and corrected */
-> > > > +		return 4;
-> > > > +	case STATUS_ECC_UNCOR_ERROR:
-> > > > +		return -EBADMSG;
-> > > > +	default:
-> > > > +		return -EINVAL;
-> > > > +	}
-> > > > +}
-> > > > +
-> > > >  static const struct spinand_info micron_spinand_table[] = {
-> > > >  	SPINAND_INFO("MT29F2G01ABAGD", 0x24,
-> > > >  		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 2, 1, 1),
-> > > > @@ -100,6 +158,16 @@ static const struct spinand_info
-> > > > micron_spinand_table[] = {
-> > > >  		     0,
-> > > >  		     SPINAND_ECCINFO(&mt29f2g01abagd_ooblayout,
-> > > >  				     mt29f2g01abagd_ecc_get_status)),
-> > > > +	SPINAND_INFO("MT29F1G01AAADD", 0x12,
-> > > > +		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 2, 1, 1),
-> > > > +		     NAND_ECCREQ(4, 2048),  
-> > > 
-> > > I think, this should be NAND_ECCREQ(4, 512).  
-> > 
-> > I don't thinks so, according the datasheet [1], section ECC Protection:
-> > 
-> > 8<--------------------------------------
-> > During a PROGRAM operation, the device calculates an ECC code on the 2k
-> > page in the cache register, before the page is written to the NAND
-> > Flash array. The ECC code is stored in the spare area of the page.
-> > 8<--------------------------------------
-> 
-> Looking at "Table 11: ECC Protection" it really seems to be 4bit/512. I
-> think the sentence you quoted just means the ECC is calculated for each
-> 512 bytes block in the page and written at once (no subpage write).
+Extend the FS_IOC_ADD_ENCRYPTION_KEY ioctl to allow the raw key to be
+specified by a Linux keyring key, rather than specified directly.
 
-Yes that part confuses me a bit and than I used the description above..
-I will change that, thanks for the explanation.
+This is useful because fscrypt keys belong to a particular filesystem
+instance, so they are destroyed when that filesystem is unmounted.
+Usually this is desired.  But in some cases, userspace may need to
+unmount and re-mount the filesystem while keeping the keys, e.g. during
+a system update.  This requires keeping the keys somewhere else too.
 
-> BTW, there's an easy way to know who's right => nandbiterrs.
+The keys could be kept in memory in a userspace daemon.  But depending
+on the security architecture and assumptions, it can be preferable to
+keep them only in kernel memory, where they are unreadable by userspace.
 
-Thanks for that hint :)
+We also can't solve this by going back to the original fscrypt API
+(where for each file, the master key was looked up in the process's
+keyring hierarchy) because that caused lots of problems of its own.
 
-Regards,
-  Marco
+Therefore, add the ability for FS_IOC_ADD_ENCRYPTION_KEY to accept a
+Linux keyring key.  This solves the problem by allowing userspace to (if
+needed) save the keys securely in a Linux keyring for re-provisioning,
+while still using the new fscrypt key management ioctls.
 
-> 
-> > 
-> > [1] https://datasheet.octopart.com/MT29F1G01AAADDH4-IT:D-Micron-datasheet-11572380.pdf
-> > 
-> > Regards,
-> >   Marco
-> > 
-> > >   
-> > > > +		     SPINAND_INFO_OP_VARIANTS(
-> > > > +
-> > > > 	&read_cache_variants_mt29f1g01aaadd,
-> > > > +
-> > > > 	&write_cache_variants_mt29f1g01aaadd,
-> > > > +
-> > > > 	&update_cache_variants_mt29f1g01aaadd),
-> > > > +		     0,
-> > > > +		     SPINAND_ECCINFO(&mt29f1g01aaadd_ooblayout,
-> > > > +				     mt29f1g01aaadd_ecc_get_status)),
-> > > >  };
-> > > > 
-> > > >  static int micron_spinand_detect(struct spinand_device *spinand)
-> > > > --
-> > > > 2.20.1  
-> > > 
-> > > Thanks,
-> > > Shiva
-> > >   
-> > 
-> 
-> 
+This is analogous to how dm-crypt accepts a Linux keyring key, but the
+key is then stored internally in the dm-crypt data structures rather
+than being looked up again each time the dm-crypt device is accessed.
 
+Use a custom key type "fscrypt-provisioning" rather than one of the
+existing key types such as "logon".  This is strongly desired because it
+enforces that these keys are only usable for a particular purpose: for
+fscrypt as input to a particular KDF.  Otherwise, the keys could also be
+passed to any kernel API that accepts a "logon" key with any service
+prefix, e.g. dm-crypt, UBIFS, or (recently proposed) AF_ALG.  This would
+risk leaking information about the raw key despite it ostensibly being
+unreadable.  Of course, this mistake has already been made for multiple
+kernel APIs; but since this is a new API, let's do it right.
+
+This patch has been tested using an xfstest which I wrote to test it.
+
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+
+This patch applies to fscrypt.git#master.
+
+Changed v1 => v2:
+
+- Renamed struct fscrypt_key_provisioning_payload to
+  struct fscrypt_provisioning_key_payload.
+
+- Added some blank lines for readability.
+
+- Added note to commit message about xfstest.
+
+ Documentation/filesystems/fscrypt.rst |  35 ++++++-
+ fs/crypto/keyring.c                   | 132 ++++++++++++++++++++++++--
+ include/uapi/linux/fscrypt.h          |  13 ++-
+ 3 files changed, 168 insertions(+), 12 deletions(-)
+
+diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
+index 471a511c75088d..4ed9d58ea0ab5b 100644
+--- a/Documentation/filesystems/fscrypt.rst
++++ b/Documentation/filesystems/fscrypt.rst
+@@ -638,7 +638,8 @@ follows::
+     struct fscrypt_add_key_arg {
+             struct fscrypt_key_specifier key_spec;
+             __u32 raw_size;
+-            __u32 __reserved[9];
++            __u32 key_id;
++            __u32 __reserved[8];
+             __u8 raw[];
+     };
+ 
+@@ -655,6 +656,12 @@ follows::
+             } u;
+     };
+ 
++    struct fscrypt_provisioning_key_payload {
++            __u32 type;
++            __u32 __reserved;
++            __u8 raw[];
++    };
++
+ :c:type:`struct fscrypt_add_key_arg` must be zeroed, then initialized
+ as follows:
+ 
+@@ -677,9 +684,26 @@ as follows:
+   ``Documentation/security/keys/core.rst``).
+ 
+ - ``raw_size`` must be the size of the ``raw`` key provided, in bytes.
++  Alternatively, if ``key_id`` is nonzero, this field must be 0, since
++  in that case the size is implied by the specified Linux keyring key.
++
++- ``key_id`` is 0 if the raw key is given directly in the ``raw``
++  field.  Otherwise ``key_id`` is the ID of a Linux keyring key of
++  type "fscrypt-provisioning" whose payload is a :c:type:`struct
++  fscrypt_provisioning_key_payload` whose ``raw`` field contains the
++  raw key and whose ``type`` field matches ``key_spec.type``.  Since
++  ``raw`` is variable-length, the total size of this key's payload
++  must be ``sizeof(struct fscrypt_provisioning_key_payload)`` plus the
++  raw key size.  The process must have Search permission on this key.
++
++  Most users should leave this 0 and specify the raw key directly.
++  The support for specifying a Linux keyring key is intended mainly to
++  allow re-adding keys after a filesystem is unmounted and re-mounted,
++  without having to store the raw keys in userspace memory.
+ 
+ - ``raw`` is a variable-length field which must contain the actual
+-  key, ``raw_size`` bytes long.
++  key, ``raw_size`` bytes long.  Alternatively, if ``key_id`` is
++  nonzero, then this field is unused.
+ 
+ For v2 policy keys, the kernel keeps track of which user (identified
+ by effective user ID) added the key, and only allows the key to be
+@@ -701,11 +725,16 @@ FS_IOC_ADD_ENCRYPTION_KEY can fail with the following errors:
+ 
+ - ``EACCES``: FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR was specified, but the
+   caller does not have the CAP_SYS_ADMIN capability in the initial
+-  user namespace
++  user namespace; or the raw key was specified by Linux key ID but the
++  process lacks Search permission on the key.
+ - ``EDQUOT``: the key quota for this user would be exceeded by adding
+   the key
+ - ``EINVAL``: invalid key size or key specifier type, or reserved bits
+   were set
++- ``EKEYREJECTED``: the raw key was specified by Linux key ID, but the
++  key has the wrong type
++- ``ENOKEY``: the raw key was specified by Linux key ID, but no key
++  exists with that ID
+ - ``ENOTTY``: this type of filesystem does not implement encryption
+ - ``EOPNOTSUPP``: the kernel was not configured with encryption
+   support for this filesystem, or the filesystem superblock has not
+diff --git a/fs/crypto/keyring.c b/fs/crypto/keyring.c
+index 040df1f5e1c8b1..7d67c8e862c66e 100644
+--- a/fs/crypto/keyring.c
++++ b/fs/crypto/keyring.c
+@@ -465,6 +465,109 @@ static int add_master_key(struct super_block *sb,
+ 	return err;
+ }
+ 
++static int fscrypt_provisioning_key_preparse(struct key_preparsed_payload *prep)
++{
++	const struct fscrypt_provisioning_key_payload *payload = prep->data;
++
++	if (prep->datalen < sizeof(*payload) + FSCRYPT_MIN_KEY_SIZE ||
++	    prep->datalen > sizeof(*payload) + FSCRYPT_MAX_KEY_SIZE)
++		return -EINVAL;
++
++	if (payload->type != FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR &&
++	    payload->type != FSCRYPT_KEY_SPEC_TYPE_IDENTIFIER)
++		return -EINVAL;
++
++	if (payload->__reserved)
++		return -EINVAL;
++
++	prep->payload.data[0] = kmemdup(payload, prep->datalen, GFP_KERNEL);
++	if (!prep->payload.data[0])
++		return -ENOMEM;
++
++	prep->quotalen = prep->datalen;
++	return 0;
++}
++
++static void fscrypt_provisioning_key_free_preparse(
++					struct key_preparsed_payload *prep)
++{
++	kzfree(prep->payload.data[0]);
++}
++
++static void fscrypt_provisioning_key_describe(const struct key *key,
++					      struct seq_file *m)
++{
++	seq_puts(m, key->description);
++	if (key_is_positive(key)) {
++		const struct fscrypt_provisioning_key_payload *payload =
++			key->payload.data[0];
++
++		seq_printf(m, ": %u [%u]", key->datalen, payload->type);
++	}
++}
++
++static void fscrypt_provisioning_key_destroy(struct key *key)
++{
++	kzfree(key->payload.data[0]);
++}
++
++static struct key_type key_type_fscrypt_provisioning = {
++	.name			= "fscrypt-provisioning",
++	.preparse		= fscrypt_provisioning_key_preparse,
++	.free_preparse		= fscrypt_provisioning_key_free_preparse,
++	.instantiate		= generic_key_instantiate,
++	.describe		= fscrypt_provisioning_key_describe,
++	.destroy		= fscrypt_provisioning_key_destroy,
++};
++
++/*
++ * Retrieve the raw key from the Linux keyring key specified by 'key_id', and
++ * store it into 'secret'.
++ *
++ * The key must be of type "fscrypt-provisioning" and must have the field
++ * fscrypt_provisioning_key_payload::type set to 'type', indicating that it's
++ * only usable with fscrypt with the particular KDF version identified by
++ * 'type'.  We don't use the "logon" key type because there's no way to
++ * completely restrict the use of such keys; they can be used by any kernel API
++ * that accepts "logon" keys and doesn't require a specific service prefix.
++ *
++ * The ability to specify the key via Linux keyring key is intended for cases
++ * where userspace needs to re-add keys after the filesystem is unmounted and
++ * re-mounted.  Most users should just provide the raw key directly instead.
++ */
++static int get_keyring_key(u32 key_id, u32 type,
++			   struct fscrypt_master_key_secret *secret)
++{
++	key_ref_t ref;
++	struct key *key;
++	const struct fscrypt_provisioning_key_payload *payload;
++	int err;
++
++	ref = lookup_user_key(key_id, 0, KEY_NEED_SEARCH);
++	if (IS_ERR(ref))
++		return PTR_ERR(ref);
++	key = key_ref_to_ptr(ref);
++
++	if (key->type != &key_type_fscrypt_provisioning)
++		goto bad_key;
++	payload = key->payload.data[0];
++
++	/* Don't allow fscrypt v1 keys to be used as v2 keys and vice versa. */
++	if (payload->type != type)
++		goto bad_key;
++
++	secret->size = key->datalen - sizeof(*payload);
++	memcpy(secret->raw, payload->raw, secret->size);
++	err = 0;
++	goto out_put;
++
++bad_key:
++	err = -EKEYREJECTED;
++out_put:
++	key_ref_put(ref);
++	return err;
++}
++
+ /*
+  * Add a master encryption key to the filesystem, causing all files which were
+  * encrypted with it to appear "unlocked" (decrypted) when accessed.
+@@ -503,18 +606,25 @@ int fscrypt_ioctl_add_key(struct file *filp, void __user *_uarg)
+ 	if (!valid_key_spec(&arg.key_spec))
+ 		return -EINVAL;
+ 
+-	if (arg.raw_size < FSCRYPT_MIN_KEY_SIZE ||
+-	    arg.raw_size > FSCRYPT_MAX_KEY_SIZE)
+-		return -EINVAL;
+-
+ 	if (memchr_inv(arg.__reserved, 0, sizeof(arg.__reserved)))
+ 		return -EINVAL;
+ 
+ 	memset(&secret, 0, sizeof(secret));
+-	secret.size = arg.raw_size;
+-	err = -EFAULT;
+-	if (copy_from_user(secret.raw, uarg->raw, secret.size))
+-		goto out_wipe_secret;
++	if (arg.key_id) {
++		if (arg.raw_size != 0)
++			return -EINVAL;
++		err = get_keyring_key(arg.key_id, arg.key_spec.type, &secret);
++		if (err)
++			goto out_wipe_secret;
++	} else {
++		if (arg.raw_size < FSCRYPT_MIN_KEY_SIZE ||
++		    arg.raw_size > FSCRYPT_MAX_KEY_SIZE)
++			return -EINVAL;
++		secret.size = arg.raw_size;
++		err = -EFAULT;
++		if (copy_from_user(secret.raw, uarg->raw, secret.size))
++			goto out_wipe_secret;
++	}
+ 
+ 	switch (arg.key_spec.type) {
+ 	case FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR:
+@@ -978,8 +1088,14 @@ int __init fscrypt_init_keyring(void)
+ 	if (err)
+ 		goto err_unregister_fscrypt;
+ 
++	err = register_key_type(&key_type_fscrypt_provisioning);
++	if (err)
++		goto err_unregister_fscrypt_user;
++
+ 	return 0;
+ 
++err_unregister_fscrypt_user:
++	unregister_key_type(&key_type_fscrypt_user);
+ err_unregister_fscrypt:
+ 	unregister_key_type(&key_type_fscrypt);
+ 	return err;
+diff --git a/include/uapi/linux/fscrypt.h b/include/uapi/linux/fscrypt.h
+index 1beb174ad95056..d5112a24e8b9f5 100644
+--- a/include/uapi/linux/fscrypt.h
++++ b/include/uapi/linux/fscrypt.h
+@@ -109,11 +109,22 @@ struct fscrypt_key_specifier {
+ 	} u;
+ };
+ 
++/*
++ * Payload of Linux keyring key of type "fscrypt-provisioning", referenced by
++ * fscrypt_add_key_arg::key_id as an alternative to fscrypt_add_key_arg::raw.
++ */
++struct fscrypt_provisioning_key_payload {
++	__u32 type;
++	__u32 __reserved;
++	__u8 raw[];
++};
++
+ /* Struct passed to FS_IOC_ADD_ENCRYPTION_KEY */
+ struct fscrypt_add_key_arg {
+ 	struct fscrypt_key_specifier key_spec;
+ 	__u32 raw_size;
+-	__u32 __reserved[9];
++	__u32 key_id;
++	__u32 __reserved[8];
+ 	__u8 raw[];
+ };
+ 
+
+base-commit: 0eee17e3322625b87ce5fa631bda16562a8dc494
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.24.0.432.g9d3f5f5b63-goog
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
