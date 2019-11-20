@@ -2,88 +2,79 @@ Return-Path: <SRS0=AqdO=ZM=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15A79C432C0
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Nov 2019 18:22:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 547B2C432C0
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Nov 2019 20:33:18 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D87B7208C0
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Nov 2019 18:22:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2422D20872
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Nov 2019 20:33:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="f+Wxm81q";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZEOXB8LN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D87B7208C0
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Wpc41ATX";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="sG4exNP7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2422D20872
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:References:
-	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=+ZRrWcO5+UD3zfFSpQzx75sL0TYRL9cYJ7C5SzriBRs=; b=f+Wxm81qKzfzriMK2PtUcFddw3
-	4ytOOc6y63sWqis3xRvziYf8rwgRru00z851udam4UlJVPB/ICpNI6shgFVy9FFKCg8AdLoSh166K
-	F5SfLkhuddASUYgnWYLrVSCX024tTbVEYiTPdkqBkGY+ppW6iT6ze73fsHJUCyk3k57g/uZrmzIa1
-	cXaaN2odWLbv+se8grQ0hvcBR9lGb42JniqgsLv5jJ4qf2Y9kT/+j/tm1CgtUHTkd4m36Bi9tUKyN
-	bN2oZC6FlKV4G2lUNBxFM8gkXtqq/Mf3SzK1LTqQWfkP+BeB08oAzuggPSmpIbnimklGWUsDm6YDI
-	9AEKjyrw==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:List-Subscribe:List-Help
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:To:Subject:
+	Message-ID:Date:From:MIME-Version:Reply-To:Cc:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=s7bO8w3FONAKZUY2G3dsgWyhUYEebunfh9kBZW778/g=; b=Wpc41ATXYoILPF4BGgMY1IHjdT
+	iYkAp+pjRjZcrjpuuXONPvxBBkk7EWtf/jAmQ0Z9Dz3a81WouxCu/VtyScP4XchE3RECvhykAPZDG
+	6hbuVratbjkIFK4NSkAfamX4UwtUs82IS1xsBKihE/2g6qL21mV4oWwtNG4S3gGbYT28706LmFGAx
+	8HYjEMmd0tWv+2tZgu9ulFg2EobCdER2AWpxRn0HMDwbQldXmbDsWzPwRnXld3DnkldrmwFPwecPn
+	WEW1XNm/coJ3pKWzg+MMlPqpPhBnb3tdDIoLxKdOiRilgKkgckeWCA9PQ/jqLpSbH10zeqG87siAa
+	P7xdzrCA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iXUcm-0000BV-RQ; Wed, 20 Nov 2019 18:22:44 +0000
-Received: from mail-wm1-x344.google.com ([2a00:1450:4864:20::344])
+	id 1iXWet-00062K-4N; Wed, 20 Nov 2019 20:33:03 +0000
+Received: from mail-io1-xd42.google.com ([2607:f8b0:4864:20::d42])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iXUca-0008Rl-HK
- for linux-mtd@lists.infradead.org; Wed, 20 Nov 2019 18:22:38 +0000
-Received: by mail-wm1-x344.google.com with SMTP id b11so683562wmb.5
- for <linux-mtd@lists.infradead.org>; Wed, 20 Nov 2019 10:22:32 -0800 (PST)
+ id 1iXWeo-00061S-L9
+ for linux-mtd@lists.infradead.org; Wed, 20 Nov 2019 20:33:01 +0000
+Received: by mail-io1-xd42.google.com with SMTP id p6so704135iod.7
+ for <linux-mtd@lists.infradead.org>; Wed, 20 Nov 2019 12:32:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references;
- bh=bsTvEyFTeNIAUS3mVb8NukW/8rTsNI+eY8HxLdB3rvs=;
- b=ZEOXB8LNM+F7H6W+7y1cqZxcjPOkio0fm7L6hM9VgIALdPvRQLHfzGCjWM/C05c4hs
- h3L4Od7CbRVSFwLjypMzL4xVdlCYVVhFBoW1sfsv28rNEnJphQJdFZ59+wJyXKKTCRJ6
- FdwlolgecNxOIQW/VCfkIIQg49lom+6Hkg3U41WbdFMjAOscl+Bjf0K3DrD8Mzs7bHZ6
- RUgqnFUaXaGPA/qG7HU5GLgLAW42VmkUitFY9mlKnSjNMaJJm5OBQBZ+hEqd+5Aa0nYB
- O8lFSQBpSXRY3md0vh60ZfYwZWHc0WEWWFW9duhrrs/IZtQGTFz+CoZ+dvM3aStg0bZu
- AWZQ==
+ h=mime-version:from:date:message-id:subject:to;
+ bh=t8xnFRsg2vK9Agno4i+l3ViK7SDUJ1LiH4Ee9a0ytIE=;
+ b=sG4exNP74ZGvdJKjI/4eiHTLqW5Q7aYotnIRc/omNd2nGl5gI4mPMy7mmydcZm1h7o
+ NMsz9RMlg2DCDcL2LkdGM9DH9X3JEdqWSUfKpAC0zXw587IbVLY3htAIBapPD4lAFXnW
+ JaZxgWF6TbkVqV/b3E4f2mkIND46zzko4qAXutsCOVB11a5GQ36A742ivkiXstFJrnSB
+ 3PV+6Vd5zqdOy/S61vQweBr3CBiUqhAgEafLNSP94RsUgc0/kXSPn0XB8fA7QExlBOsn
+ IwKqnvGhBFuBsLeASSBTHvQhz2caVzv9QU/ogsEx3ErFrQegPVX9vUFYPQsMxcW2Fwxc
+ ZLPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references;
- bh=bsTvEyFTeNIAUS3mVb8NukW/8rTsNI+eY8HxLdB3rvs=;
- b=Njc+o01HUKs4lPEPP7RKVsQaIykXj+iCoILTyGLckJb3mFSUtffB11i2UNAtRxXTNB
- u5erNv+9RAhliDGhqchJ610C0PSRfHbMIO0x4Ae+wQNlJ0mmOVLoVPTAeGrU4ThIOWOC
- h1KXZfmbRsTiI8A7j6IqCtrQ7ff2p3HhUBMSKGLgRWhPfSEg0URLaBrOfgX2gmocwKoP
- B3wa++qvtn2W8wcYqrI/YwoGcIpESaw2zit6cqiuhKmDNIck1nwIsc7Uwu0A1r1RGvqy
- LQWictKN2WUmm0H+TEMZyyi2w3aCC0q9CA6rOcrOU7+HjBUtwLNmi7J+m0WzJs2H6fQ2
- JM9w==
-X-Gm-Message-State: APjAAAVZDSFCwCS1lBlbj4mPut30qIGhZr3+bGZ5eM1haXZZ5m7RGFXA
- hIS9CchIRPxO+oC5xlGaHy+6VaIQ
-X-Google-Smtp-Source: APXvYqz2ad4YfCM+3eB+sWJuYud2XkgXWhgx3KzNNhEiL2l22494dP0ekbPqI3yKhqC3QUjllzZ1PQ==
-X-Received: by 2002:a7b:cf32:: with SMTP id m18mr5094987wmg.166.1574274150604; 
- Wed, 20 Nov 2019 10:22:30 -0800 (PST)
-Received: from mail.broadcom.com ([192.19.231.250])
- by smtp.gmail.com with ESMTPSA id x205sm151153wmb.5.2019.11.20.10.22.28
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 20 Nov 2019 10:22:30 -0800 (PST)
-From: Kamal Dasu <kdasu.kdev@gmail.com>
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+ bh=t8xnFRsg2vK9Agno4i+l3ViK7SDUJ1LiH4Ee9a0ytIE=;
+ b=OwSeXZF7ALGdhzfGEpaZWFn8LVFdM6aFSUsndOHXfiaKC1zkfCVHsIW1ljrsWakjz0
+ cYFYVAGJIFW+vi0xAZ8z+4TAOSYcE0Su3Q9JTmKWG8/aXFENxTn6B55SuDgoNHU5GN6M
+ UqK8OUWt2f3hb+oVUuUfPLluGkdiTp0MEL3V8ZnPzbMveUhwxAMbNy3xOmMMZD+UJpxn
+ rVaILIijlTS83D166/gzoyRxuVTlKVxPSjLX0os2BFkKxqdbbdGzlkZOCYQUCnQnWvAJ
+ U/L5S/vr8+o6gXAvSYRDy1W5Ntb5o04/uuIpWOJCsl+ezHkbt0iEwjsoSoM6Ee/ZyTWh
+ qNbA==
+X-Gm-Message-State: APjAAAVOGjuyWjKUCibxJpduJDWt0skKTfUt7mRS9T/uSvKDVFwBzhYO
+ 0HbvhcdMuwI2/OIEohaQ2zmbF1u0Oywpu2ivs0G6FTVGiKw=
+X-Google-Smtp-Source: APXvYqwVVaP9oyzG1UdKi/mDrVeSM4SMNrYy6kO1oSz54oTt31SHFGwJqFrjsWIC6BATZTCJHdg6IJ8BHAjAafI5o+Y=
+X-Received: by 2002:a02:9985:: with SMTP id a5mr1727725jal.126.1574281974710; 
+ Wed, 20 Nov 2019 12:32:54 -0800 (PST)
+MIME-Version: 1.0
+From: Otto Blom <oblom586@gmail.com>
+Date: Wed, 20 Nov 2019 12:32:43 -0800
+Message-ID: <CAOfSrV17Oe=Km63__u1m34sa4fyNgtaa85x5UXQB=yzktwx_TQ@mail.gmail.com>
+Subject: mtd-utils io_paral test fails on NAND
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 3/3] mtd: rawnand: brcmnand: Add support for flash-edu for dma
- transfers
-Date: Wed, 20 Nov 2019 13:20:59 -0500
-Message-Id: <20191120182153.29732-3-kdasu.kdev@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20191120182153.29732-1-kdasu.kdev@gmail.com>
-References: <20191120182153.29732-1-kdasu.kdev@gmail.com>
+Content-Type: multipart/mixed; boundary="000000000000e1229b0597cd1582"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191120_102232_764037_714ACA57 
-X-CRM114-Status: GOOD (  18.68  )
+X-CRM114-CacheID: sfid-20191120_123258_726599_B7072E00 
+X-CRM114-Status: GOOD (  12.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,407 +86,521 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- Marek Vasut <marek.vasut@gmail.com>, bcm-kernel-feedback-list@broadcom.com,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Legacy mips soc platforms that have controller v5.0 and 6.0 use
-flash-edu block for dma transfers. This change adds support for
-nand dma transfers using the EDU block.
+--000000000000e1229b0597cd1582
+Content-Type: text/plain; charset="UTF-8"
 
-Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
----
- drivers/mtd/nand/raw/brcmnand/brcmnand.c | 269 ++++++++++++++++++++++-
- 1 file changed, 263 insertions(+), 6 deletions(-)
+Hi There !
 
-diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index 15ef30b368a5..05663e3ef20f 100644
---- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -102,6 +102,44 @@ struct brcm_nand_dma_desc {
- #define NAND_CTRL_RDY			(INTFC_CTLR_READY | INTFC_FLASH_READY)
- #define NAND_POLL_STATUS_TIMEOUT_MS	100
- 
-+#define EDU_CMD_WRITE          0x00
-+#define EDU_CMD_READ           0x01
-+#define EDU_STATUS_ACTIVE      BIT(0)
-+#define EDU_ERR_STATUS_ERRACK  BIT(0)
-+
-+#define EDU_CONFIG_MODE_NAND   BIT(0)
-+#define EDU_CONFIG_SWAP_BYTE   BIT(1)
-+#ifdef CONFIG_CPU_BIG_ENDIAN
-+#define EDU_CONFIG_SWAP_CFG     EDU_CONFIG_SWAP_BYTE
-+#else
-+#define EDU_CONFIG_SWAP_CFG     0
-+#endif
-+
-+/* edu registers */
-+enum edu_reg {
-+	EDU_CONFIG = 0,
-+	EDU_DRAM_ADDR,
-+	EDU_EXT_ADDR,
-+	EDU_LENGTH,
-+	EDU_CMD,
-+	EDU_STOP,
-+	EDU_STATUS,
-+	EDU_DONE,
-+	EDU_ERR_STATUS,
-+};
-+
-+static const u16  edu_regs[] = {
-+	[EDU_CONFIG] = 0x00,
-+	[EDU_DRAM_ADDR] = 0x04,
-+	[EDU_EXT_ADDR] = 0x08,
-+	[EDU_LENGTH] = 0x0c,
-+	[EDU_CMD] = 0x10,
-+	[EDU_STOP] = 0x14,
-+	[EDU_STATUS] = 0x18,
-+	[EDU_DONE] = 0x1c,
-+	[EDU_ERR_STATUS] = 0x20,
-+};
-+
- /* flash_dma registers */
- enum flash_dma_reg {
- 	FLASH_DMA_REVISION = 0,
-@@ -155,6 +193,8 @@ enum {
- 	BRCMNAND_HAS_WP				= BIT(3),
- };
- 
-+struct brcmnand_host;
-+
- struct brcmnand_controller {
- 	struct device		*dev;
- 	struct nand_controller	controller;
-@@ -173,17 +213,32 @@ struct brcmnand_controller {
- 
- 	int			cmd_pending;
- 	bool			dma_pending;
-+	bool                    edu_pending;
- 	struct completion	done;
- 	struct completion	dma_done;
-+	struct completion       edu_done;
- 
- 	/* List of NAND hosts (one for each chip-select) */
- 	struct list_head host_list;
- 
-+	/* EDU info, per-transaction */
-+	const u16               *edu_offsets;
-+	void __iomem            *edu_base;
-+	unsigned int            edu_irq;
-+	int                     edu_count;
-+	u64                     edu_dram_addr;
-+	u32                     edu_ext_addr;
-+	u32                     edu_cmd;
-+	u32                     edu_config;
-+
- 	/* flash_dma reg */
- 	const u16		*flash_dma_offsets;
- 	struct brcm_nand_dma_desc *dma_desc;
- 	dma_addr_t		dma_pa;
- 
-+	int (*dma_trans)(struct brcmnand_host *host, u64 addr, u32 *buf,
-+			 u32 len, u8 dma_cmd);
-+
- 	/* in-memory cache of the FLASH_CACHE, used only for some commands */
- 	u8			flash_cache[FC_BYTES];
- 
-@@ -204,6 +259,7 @@ struct brcmnand_controller {
- 	u32			nand_cs_nand_xor;
- 	u32			corr_stat_threshold;
- 	u32			flash_dma_mode;
-+	u32                     flash_edu_mode;
- 	bool			pio_poll_mode;
- };
- 
-@@ -643,6 +699,22 @@ static inline void brcmnand_write_fc(struct brcmnand_controller *ctrl,
- 	__raw_writel(val, ctrl->nand_fc + word * 4);
- }
- 
-+static inline void edu_writel(struct brcmnand_controller *ctrl,
-+			      enum edu_reg reg, u32 val)
-+{
-+	u16 offs = ctrl->edu_offsets[reg];
-+
-+	brcmnand_writel(val, ctrl->edu_base + offs);
-+}
-+
-+static inline u32 edu_readl(struct brcmnand_controller *ctrl,
-+			    enum edu_reg reg)
-+{
-+	u16 offs = ctrl->edu_offsets[reg];
-+
-+	return brcmnand_readl(ctrl->edu_base + offs);
-+}
-+
- static void brcmnand_clear_ecc_addr(struct brcmnand_controller *ctrl)
- {
- 
-@@ -912,6 +984,16 @@ static inline bool has_flash_dma(struct brcmnand_controller *ctrl)
- 	return ctrl->flash_dma_base;
- }
- 
-+static inline bool has_edu(struct brcmnand_controller *ctrl)
-+{
-+	return ctrl->edu_base;
-+}
-+
-+static inline bool use_dma(struct brcmnand_controller *ctrl)
-+{
-+	return has_flash_dma(ctrl) || has_edu(ctrl);
-+}
-+
- static inline void disable_ctrl_irqs(struct brcmnand_controller *ctrl)
- {
- 	if (ctrl->pio_poll_mode)
-@@ -1285,6 +1367,40 @@ static int write_oob_to_regs(struct brcmnand_controller *ctrl, int i,
- 	return tbytes;
- }
- 
-+/* edu irq */
-+static irqreturn_t brcmnand_edu_irq(int irq, void *data)
-+{
-+	struct brcmnand_controller *ctrl = data;
-+
-+	if (ctrl->edu_count) {
-+		ctrl->edu_count--;
-+		while (!edu_readl(ctrl, EDU_DONE))
-+			udelay(1);
-+		edu_writel(ctrl, EDU_DONE, 0);
-+		(void)edu_readl(ctrl, EDU_DONE);
-+	}
-+
-+	if (ctrl->edu_count) {
-+		ctrl->edu_dram_addr += FC_BYTES;
-+		ctrl->edu_ext_addr += FC_BYTES;
-+
-+		edu_writel(ctrl, EDU_DRAM_ADDR, (u32)ctrl->edu_dram_addr);
-+		(void)edu_readl(ctrl, EDU_DRAM_ADDR);
-+		edu_writel(ctrl, EDU_EXT_ADDR, ctrl->edu_ext_addr);
-+		(void)edu_readl(ctrl, EDU_EXT_ADDR);
-+
-+		mb(); /* flush previous writes */
-+		edu_writel(ctrl, EDU_CMD, ctrl->edu_cmd);
-+		(void)edu_readl(ctrl, EDU_CMD);
-+
-+		return IRQ_HANDLED;
-+	}
-+
-+	complete(&ctrl->edu_done);
-+
-+	return IRQ_HANDLED;
-+}
-+
- static irqreturn_t brcmnand_ctlrdy_irq(int irq, void *data)
- {
- 	struct brcmnand_controller *ctrl = data;
-@@ -1293,6 +1409,16 @@ static irqreturn_t brcmnand_ctlrdy_irq(int irq, void *data)
- 	if (ctrl->dma_pending)
- 		return IRQ_HANDLED;
- 
-+	/* check if you need to piggy back on the ctrlrdy irq */
-+	if (ctrl->edu_pending) {
-+		if (irq == ctrl->irq && ((int)ctrl->edu_irq >= 0))
-+	/* Discard interrupts while using dedicated edu irq */
-+			return IRQ_HANDLED;
-+
-+	/* no registered edu irq, call handler */
-+		return brcmnand_edu_irq(irq, data);
-+	}
-+
- 	complete(&ctrl->done);
- 	return IRQ_HANDLED;
- }
-@@ -1630,6 +1756,82 @@ static void brcmnand_write_buf(struct nand_chip *chip, const uint8_t *buf,
- 	}
- }
- 
-+/**
-+ *  Kick EDU engine
-+ */
-+static int brcmnand_edu_trans(struct brcmnand_host *host, u64 addr, u32 *buf,
-+			      u32 len, u8 edu_cmd)
-+{
-+	struct brcmnand_controller *ctrl = host->ctrl;
-+	unsigned long timeo = msecs_to_jiffies(200);
-+	int ret = 0;
-+	int dir = edu_cmd == EDU_CMD_READ ? DMA_FROM_DEVICE : DMA_TO_DEVICE;
-+	unsigned int trans = len/FC_BYTES;
-+	dma_addr_t pa;
-+
-+	pa = dma_map_single(ctrl->dev, buf, len, dir);
-+	if (dma_mapping_error(ctrl->dev, pa)) {
-+		dev_err(ctrl->dev, "unable to map buffer for EDU DMA\n");
-+		return -ENOMEM;
-+	}
-+
-+	/* Start edu engine */
-+	ctrl->edu_pending = true;
-+	mb(); /* flush previous writes */
-+
-+	ctrl->edu_dram_addr = pa;
-+	ctrl->edu_ext_addr = addr;
-+	ctrl->edu_cmd = edu_cmd;
-+	ctrl->edu_count = trans;
-+
-+	edu_writel(ctrl, EDU_DRAM_ADDR, (u32)ctrl->edu_dram_addr);
-+	(void)brcmnand_read_reg(ctrl,  EDU_DRAM_ADDR);
-+	edu_writel(ctrl, EDU_EXT_ADDR, ctrl->edu_ext_addr);
-+	(void)edu_readl(ctrl, EDU_EXT_ADDR);
-+	edu_writel(ctrl, EDU_LENGTH, FC_BYTES);
-+	(void)edu_readl(ctrl, EDU_LENGTH);
-+
-+	mb(); /* flush previous writes */
-+	edu_writel(ctrl, EDU_CMD, ctrl->edu_cmd);
-+	(void)edu_readl(ctrl, EDU_CMD);
-+
-+	if (wait_for_completion_timeout(&ctrl->edu_done, timeo) <= 0) {
-+		dev_err(ctrl->dev,
-+			"timeout waiting for EDU; status %#x, error status %#x\n",
-+			edu_readl(ctrl, EDU_STATUS),
-+			edu_readl(ctrl, EDU_ERR_STATUS));
-+	}
-+
-+	dma_unmap_single(ctrl->dev, pa, len, dir);
-+
-+	/* for program page check NAND status */
-+	if (((brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS) &
-+	      INTFC_FLASH_STATUS) & NAND_STATUS_FAIL) &&
-+	    edu_cmd == EDU_CMD_WRITE) {
-+		dev_info(ctrl->dev, "program failed at %llx\n",
-+			 (unsigned long long)addr);
-+		ret = -EIO;
-+	}
-+
-+	/* Make sure the EDU status is clean */
-+	if (edu_readl(ctrl, EDU_STATUS) & EDU_STATUS_ACTIVE)
-+		dev_warn(ctrl->dev, "EDU still active: %#x\n",
-+			 edu_readl(ctrl, EDU_STATUS));
-+
-+	if (unlikely(edu_readl(ctrl, EDU_ERR_STATUS) & EDU_ERR_STATUS_ERRACK)) {
-+		dev_warn(ctrl->dev, "EDU RBUS error at addr %llx\n",
-+			 (unsigned long long)addr);
-+		ret = -EIO;
-+	}
-+
-+	edu_writel(ctrl, EDU_ERR_STATUS, 0);
-+
-+	ctrl->edu_pending = false;
-+	edu_writel(ctrl, EDU_STOP, 0); /* force stop */
-+
-+	return ret;
-+}
-+
- /**
-  * Construct a FLASH_DMA descriptor as part of a linked list. You must know the
-  * following ahead of time:
-@@ -1833,9 +2035,11 @@ static int brcmnand_read(struct mtd_info *mtd, struct nand_chip *chip,
- try_dmaread:
- 	brcmnand_clear_ecc_addr(ctrl);
- 
--	if (has_flash_dma(ctrl) && !oob && flash_dma_buf_ok(buf)) {
--		err = brcmnand_dma_trans(host, addr, buf, trans * FC_BYTES,
--					     CMD_PAGE_READ);
-+	if (ctrl->dma_trans && !oob && flash_dma_buf_ok(buf)) {
-+		err = ctrl->dma_trans(host, addr, buf,
-+				      trans * FC_BYTES,
-+				      CMD_PAGE_READ);
-+
- 		if (err) {
- 			if (mtd_is_bitflip_or_eccerr(err))
- 				err_addr = addr;
-@@ -1971,10 +2175,12 @@ static int brcmnand_write(struct mtd_info *mtd, struct nand_chip *chip,
- 	for (i = 0; i < ctrl->max_oob; i += 4)
- 		oob_reg_write(ctrl, i, 0xffffffff);
- 
--	if (has_flash_dma(ctrl) && !oob && flash_dma_buf_ok(buf)) {
--		if (brcmnand_dma_trans(host, addr, (u32 *)buf,
--					mtd->writesize, CMD_PROGRAM_PAGE))
-+	if (use_dma(ctrl) && !oob && flash_dma_buf_ok(buf)) {
-+		if (ctrl->dma_trans(host, addr, (u32 *)buf, mtd->writesize,
-+				    CMD_PROGRAM_PAGE))
-+
- 			ret = -EIO;
-+
- 		goto out;
- 	}
- 
-@@ -2561,6 +2767,7 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
- 
- 	init_completion(&ctrl->done);
- 	init_completion(&ctrl->dma_done);
-+	init_completion(&ctrl->edu_done);
- 	nand_controller_init(&ctrl->controller);
- 	ctrl->controller.ops = &brcmnand_controller_ops;
- 	INIT_LIST_HEAD(&ctrl->host_list);
-@@ -2650,6 +2857,56 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
- 		dev_info(dev, "enabling FLASH_DMA\n");
- 	}
- 
-+	/* use EDU DMA only no FLASH_DMA present */
-+	if (has_flash_dma(ctrl))
-+		res = 0;
-+	else
-+		res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
-+						   "flash-edu");
-+
-+	if (res) {
-+		ctrl->edu_base = devm_ioremap_resource(dev, res);
-+		if (IS_ERR(ctrl->edu_base))
-+			return PTR_ERR(ctrl->edu_base);
-+
-+		ctrl->edu_offsets = edu_regs;
-+
-+		edu_writel(ctrl, EDU_CONFIG, EDU_CONFIG_MODE_NAND |
-+			   EDU_CONFIG_SWAP_CFG);
-+		(void)edu_readl(ctrl, EDU_CONFIG);
-+
-+		/* initialize edu */
-+		edu_writel(ctrl, EDU_ERR_STATUS, 0);
-+		edu_writel(ctrl, EDU_DONE, 0);
-+		(void)edu_readl(ctrl, EDU_DONE);
-+
-+		ctrl->edu_irq = platform_get_irq(pdev, 1);
-+		if ((int)ctrl->edu_irq < 0) {
-+			dev_warn(dev,
-+				 "FLASH EDU enabled, using ctlrdy irq\n");
-+		} else {
-+			ret = devm_request_irq(dev, ctrl->edu_irq,
-+					       brcmnand_edu_irq, 0,
-+					       "brcmnand-edu", ctrl);
-+			if (ret < 0) {
-+				dev_err(dev, "can't allocate IRQ %d: error %d\n",
-+					ctrl->edu_irq, ret);
-+				return ret;
-+			}
-+
-+			dev_info(dev, "FLASH EDU enabled using irq %u\n",
-+				 ctrl->edu_irq);
-+		}
-+	}
-+
-+	/* set the appropriate dma transfer function to call */
-+	if (has_flash_dma(ctrl))
-+		ctrl->dma_trans = brcmnand_dma_trans;
-+	else if (has_edu(ctrl))
-+		ctrl->dma_trans = brcmnand_edu_trans;
-+	else
-+		ctrl->dma_trans = NULL;
-+
- 	/* Disable automatic device ID config, direct addressing */
- 	brcmnand_rmw_reg(ctrl, BRCMNAND_CS_SELECT,
- 			 CS_SELECT_AUTO_DEVICE_ID_CFG | 0xff, 0, 0);
--- 
-2.17.1
+I've been looking into a few (very rare) cases of ubifs file system
+corruption and noticed that our system fails the mtd-utils io_paral
+test about 50% of the time. I doubt this is a problem with ubi or
+ubifs, but I was hoping for some insights on what the problem might
+be.
 
+System Hardware -
+Processor - Xilinx Zynq Ultrascale 4xARM53  (XCZU3EG)
+Integrated Arasan NAND Flash controller IP Rev v3p9_140822
+Flash - Micron MT29UZ4B8DZZHGPB-107 (DDR3 + MT29F4G08 NAND die)
+
+Software -
+Petalinux 2017.3 - Linux Kernel 4.9.0
+mtd-utils 2.1.1
+
+mtdinfo /dev/mtd2
+mtd2
+Name:                           misc
+Type:                           nand
+Eraseblock size:                131072 bytes, 128.0 KiB
+Amount of eraseblocks:          1024 (134217728 bytes, 128.0 MiB)
+Minimum input/output unit size: 2048 bytes
+Sub-page size:                  2048 bytes
+OOB size:                       64 bytes
+Character device major/minor:   90:4
+Bad blocks are allowed:         true
+Device is writable:             true
+
+ubinfo -d 5
+ubi5
+Volumes count:                           0
+Logical eraseblock size:                 126976 bytes, 124.0 KiB
+Total amount of logical eraseblocks:     1020 (129515520 bytes, 123.5 MiB)
+Amount of available logical eraseblocks: 940 (119357440 bytes, 113.8 MiB)
+Maximum count of volumes                 128
+Count of bad physical eraseblocks:       4
+Count of reserved physical eraseblocks:  76
+Current maximum erase counter value:     96
+Minimum input/output unit size:          2048 bytes
+Character device major/minor:            218:0
+
+
+I run the full battery of ubitests using the "runubitests.sh" script
+but so far it only fails in io_paral. I modified io_paral so that it
+prints the differences between the two buffers to help
+troubleshooting, The patch is attached in case anyone finds it useful.
+
+The test fails in write_thread() line 225, where the written buffer is
+compared with what was read back. Using my patched version (line # are
+different) it prints
+
+write_thread():290: written and read data are different at byte: 14336
+
+14336 / 2048 = 7 so the error occurred at start of the 7th page. The
+hex dump of the buffers is attached, keep in mind it starts 10 bytes
+before the failure. By looking at the logs we can see that the 8th
+page is all zeros, then the correct data is once again showing up on
+page 9 and onward.
+
+So essentially what happened is that one page is missing the data and
+instead has all zeros. I can imagine lots of problems that can cause
+this to happen... but I was hoping someone could point me towards the
+usual suspects ? I've seen it on multiple units so it does not seem to
+be just one bad flash device. I have not seen nandpagetest &
+nandsubpagetest fail yet, although both these run for substantially
+shorter time compared to io_paral
+
+Any hints & help is deeply appreciated
+
+Thanks
+
+/Otto
+
+--000000000000e1229b0597cd1582
+Content-Type: text/plain; charset="US-ASCII"; name="Wbuf.txt"
+Content-Disposition: attachment; filename="Wbuf.txt"
+Content-Transfer-Encoding: base64
+Content-ID: <f_k37pfpn22>
+X-Attachment-Id: f_k37pfpn22
+
+V2J1ZjoNCkI3IDAzIDc5IEU1IDA1IDk3IEQyIERDICAxMyBDQyBFRCAwQyA4NCAwQyA1QiA0QSAg
+fCAgLi55Li4uLi4uLi4uLi5bSg0KMzggOTYgQTAgRTkgNjQgREUgQTYgNDUgIDZFIDJGIDYxIEQ5
+IDkzIDk5IDI3IDdDICB8ICA4Li4uZC4uRW4vYS4uLid8DQpCMSBBNiAwRSBBQyA1RCA2NiBCMCA3
+MiAgMzUgOUIgRTUgRTcgODkgODUgNzkgODIgIHwgIC4uLi5dZi5yNS4uLi4ueS4NCkRGIDU3IEQ1
+IDE2IDIwIDlFIDg3IDk5ICBGMyAyNCAwRiBEMyBEOCBDMiA1QSBFNiAgfCAgLlcuLiAuLi4uJC4u
+Li5aLg0KNEMgNTkgOTQgRUYgOUMgRkQgN0UgNjggIDU3IDNEIDdDIEM0IEVFIDU5IDVEIDRGICB8
+ICBMWS4uLi5+aFc9fC4uWV1PDQoyMCA1QyA3OCAyNSBGOCA5QSAwQyBCNCAgQjAgNUIgNUIgQTQg
+NUMgMDggQjUgMzggIHwgICBceCUuLi4uLltbLlwuLjgNCjhEIDcwIDJGIDhGIDVBIEI3IDgzIDZB
+ICA4OCAxNCA3MiBCNCBDMyBERSBCMiAyOCAgfCAgLnAvLlouLmouLnIuLi4uKA0KOTIgRTUgODgg
+REQgNDIgOUIgQzQgNjAgIDEwIEY5IDczIDQ4IDY5IEY1IDZGIEE4ICB8ICAuLi4uQi4uYC4uc0hp
+Lm8uDQpGMSA5MiA1NiA4MiA0OSBDOCAxMyBBMiAgMjYgOTcgNUQgMzUgMkEgMTIgNTcgQjggIHwg
+IC4uVi5JLi4uJi5dNSouVy4NCjY4IEY0IDVFIEEyIDQzIDMxIDlCIEQ0ICBDRiA4RSA1OCBCOCA5
+OCA4MyBCQiBGMSAgfCAgaC5eLkMxLi4uLlguLi4uLg0KRkEgQTIgOUEgQjAgNzEgRkMgQzQgQTcg
+IDYwIEExIDBGIDg3IDBCIDRBIDhBIDk5ICB8ICAuLi4ucS4uLmAuLi4uSi4uDQo0RiA0NCBGQyBC
+NCA5RSBEQiA4RCAxQSAgMDcgQzggNDUgODMgOTQgRTMgQUEgNEIgIHwgIE9ELi4uLi4uLi5FLi4u
+LksNCkNEIDNGIEY5IDg0IDEwIDYyIDIxIDJDICA3MyA1NiBBRiBCMCA4RiAxMSAzMiBGMCAgfCAg
+Lj8uLi5iISxzVi4uLi4yLg0KRTUgNkIgOUEgREYgQjIgNTIgMkUgMDggIEMwIEZCIDJGIDAxIDk5
+IEVCIDE1IEU3ICB8ICAuay4uLlIuLi4uLy4uLi4uDQpDQyA0QSA4MCAwMSAyMSA1QyA1MiA0NiAg
+RTAgNzMgODggN0QgNzggOUQgRUQgMzEgIHwgIC5KLi4hXFJGLnMufXguLjENCjVGIDExIENEIEVG
+IDQzIDFCIDU0IERBICA3OSA4OCAzRSA2RSA0QiBFNyA3NCAxNyAgfCAgXy4uLkMuVC55Lj5uSy50
+Lg0KMzkgREUgQUUgNzMgNzIgRkUgNzkgQzAgIENFIDg4IEEyIERDIEZDIDA0IEJFIDc4ICB8ICA5
+Li5zci55Li4uLi4uLi54DQpFMiAzRCAzQiAzNiBFRSBDQSAxRCA3MSAgOUEgMkQgRUUgMEUgODMg
+OTkgMUMgQzUgIHwgIC49OzYuLi5xLi0uLi4uLi4NCjUwIDgwIEZCIDdFIDc0IDMwIDkxIDc0ICAw
+QyAwQyBFQiA4NyBFNCA5NiA0NSBFOSAgfCAgUC4ufnQwLnQuLi4uLi5FLg0KMjAgQjEgMTAgOUYg
+MUMgQjUgRTEgNUMgIDZBIEM1IDY3IDdEIDQwIDQ4IDJCIDBDICB8ICAgLi4uLi4uXGouZ31ASCsu
+DQo1NiAyQyA2OSA1QiAwOCAwQiA2QSA3MiAgOEYgRTcgNTEgMDkgMkMgRDMgRkEgMTkgIHwgIFYs
+aVsuLmpyLi5RLiwuLi4NCjEzIDEyIEYxIDQyIEY1IDFEIEQwIDNCICAyMyA0MSAxRSBCQyBBRCBD
+RiBCRCA2NCAgfCAgLi4uQi4uLjsjQS4uLi4uZA0KQkUgNTAgMjEgODYgRjYgRjYgRjYgMTAgIEVE
+IEY0IDVBIDAxIDA4IDI1IEU3IDhGICB8ICAuUCEuLi4uLi4uWi4uJS4uDQpBMSA4NiA3NyAxMCA1
+MCBFMCAzNCA3MCAgRDQgNDMgNjQgQzAgQUIgNzMgOTEgOEQgIHwgIC4udy5QLjRwLkNkLi5zLi4N
+CjkxIDMxIDgyIDhGIEE5IEU3IEVDIEEyICA5MCBERCBGNiAzNCA0NSBFMSAyRiA4MSAgfCAgLjEu
+Li4uLi4uLi40RS4vLg0KNDAgOEQgNUIgNjggQzMgRkMgMjcgMUEgIDM3IDQwIDFFIDAxIDYyIEY3
+IERCIDNFICB8ICBALltoLi4nLjdALi5iLi4+DQo0OCBGNiAyOSAzMyA5NCA0QiBENSBBNiAgNjYg
+NjIgODIgMDYgQUUgMDAgQ0YgNjggIHwgIEguKTMuSy4uZmIuLi4uLmgNCkMyIDYyIDFFIDVDIEM1
+IDI4IDlGIEExICBDMCBFQSA2OSA4OCBDOSAyMyAzMyBCNSAgfCAgLmIuXC4oLi4uLmkuLiMzLg0K
+QUMgNjIgMDQgMEEgMDUgNDcgRjEgNkMgIEU4IDE1IDEzIENEIEJFIDY5IDRBIDdCICB8ICAuYi4u
+LkcubC4uLi4uaUp7DQpCNyBBOSAwQyA4QiA1MCBDMiAxRSAzNSAgMEUgM0YgNTQgNTUgNTEgQ0Qg
+REQgMjEgIHwgIC4uLi5QLi41Lj9UVVEuLiENCjY0IDVDIEIwIEUzIDY4IEExIDQxIDZGICA0NCA1
+OCA4OCA3NCA5RSA4NSBDOSA5QSAgfCAgZFwuLmguQW9EWC50Li4uLg0KQ0EgNzMgMjYgRTUgNzIg
+MkIgRkMgQ0UgIDJGIERGIDk1IERDIDgxIDQ0IDY4IEQ1ICB8ICAucyYucisuLi8uLi4uRGguDQpD
+MyBGNCAxOSBEMSAwRSA5NSBEMyA5MyAgOEIgMTggNzUgQkEgMjAgREUgM0MgOTYgIHwgIC4uLi4u
+Li4uLi51LiAuPC4NCkE3IEYwIDMzIDI5IEI1IENCIDZBIDY3ICA3MiBENSBGNyAxRCBCMiAzNSBB
+QiA1RCAgfCAgLi4zKS4uamdyLi4uLjUuXQ0KQTEgMjQgNEYgOTUgNkMgNDcgNTYgQjAgIDE1IDVC
+IDBBIEQ1IDkwIDFEIDQ1IEQzICB8ICAuJE8ubEdWLi5bLi4uLkUuDQpGNCA1QSBCNyBCOCAwNyBE
+MyA1NiA4RCAgOTkgQzMgRjMgMzIgRjYgMDkgMEEgMUEgIHwgIC5aLi4uLlYuLi4uMi4uLi4NCjMy
+IDZCIERBIEJBIEJGIDgyIDY5IDM2ICAyRCAxRiA4MyAxQiBGNyA3MiBENSAxMCAgfCAgMmsuLi4u
+aTYtLi4uLnIuLg0KNkMgMTkgRjcgMkMgNkIgNTIgQTggRDYgIDBGIDE0IEQ0IEU5IDk0IDAzIDk4
+IDc2ICB8ICBsLi4sa1IuLi4uLi4uLi52DQo2MCA1NCAzQyA5RiA5QyAxQiAyNCAwRiAgNEEgOTMg
+M0YgNkMgQ0UgMDMgMjMgNTIgIHwgIGBUPC4uLiQuSi4/bC4uI1INCkE5IEYzIDA4IDJEIERFIDdG
+IDU5IEE0ICAyNiA4QyA0QyA3RCAxMiBFRSAyNyAwQiAgfCAgLi4uLS4uWS4mLkx9Li4nLg0KQ0Ig
+RUYgRUMgQ0QgQjQgOTEgMUUgQTEgIEZBIEY3IDFFIDNGIDJCIEY4IDA5IDQyICB8ICAuLi4uLi4u
+Li4uLj8rLi5CDQozNyAyOCAxNCA5RSBGQyBDNSA4RSAyMCAgNDQgMjAgRTYgMjYgNTMgN0YgOUQg
+RDQgIHwgIDcoLi4uLi4gRCAuJlMuLi4NCjRFIDhFIDExIDlCIDBEIERFIDZBIENGICBCMiA5MSBB
+QSBEMyAzMiAxRiAzOSBEMSAgfCAgTi4uLi4uai4uLi4uMi45Lg0KNkUgMUYgMjUgQzYgQTcgRjkg
+OTEgMzkgIDM4IDVDIDQyIDI1IEVBIDE0IEYyIDk2ICB8ICBuLiUuLi4uOThcQiUuLi4uDQpCRCBG
+RCA4QSA4NyA1OSA4QyA1NSBGQyAgNTkgRjAgNTQgMkMgRDIgNkQgQUUgOUUgIHwgIC4uLi5ZLlUu
+WS5ULC5tLi4NCjQ0IDk4IDhFIEZCIDcxIEZBIDhEIDhDICBDNCBFRiBDQSBDNyA5OCAxQiA4OSA2
+OCAgfCAgRC4uLnEuLi4uLi4uLi4uaA0KNEYgODEgNjYgNUMgM0IgNzkgNDMgOUEgIDc4IDZDIEY4
+IDc1IEQyIDJGIDE0IDVBICB8ICBPLmZcO3lDLnhsLnUuLy5aDQoyQyBDRCBCNyBEQSAzRSA5NSBF
+RCA4RSAgRUIgNEYgREYgQUEgNjggMEYgRTcgNDEgIHwgICwuLi4+Li4uLk8uLmguLkENCkNDIDNB
+IEJGIEJGIDUwIEI2IEYyIEVFICBFMyA5MSAzMSBDOCA4OCA3RCBCOCAxMiAgfCAgLjouLlAuLi4u
+LjEuLn0uLg0KMDQgQUQgMEEgMEQgQjQgQjQgMjMgQzIgIERCIDI4IEM2IDJEIEMwIDgxIDU0IDI5
+ICB8ICAuLi4uLi4jLi4oLi0uLlQpDQo5NyAwQiA4MyBGRSAzMSBBNiBGQiAxQiAgRTQgQUUgREEg
+NTYgOUYgODkgRUEgNTQgIHwgIC4uLi4xLi4uLi4uVi4uLlQNCjI4IEY2IEYwIDBEIEI2IDk2IDIz
+IDNGICA5MyA2RCA0OSBGQSAyNyA5MiBERCA3MyAgfCAgKC4uLi4uIz8ubUkuJy4ucw0KNTggQUIg
+QjUgODIgODUgRjAgRTkgMzkgIDEyIDVBIDgzIDBFIDk1IDg0IDg4IEMzICB8ICBYLi4uLi4uOS5a
+Li4uLi4uDQo5MyA1MCBCMSBEQiBFOCA1MCA5MyA4NyAgNTggNEUgNjEgNTkgNjcgMUIgRDcgOTYg
+IHwgIC5QLi4uUC4uWE5hWWcuLi4NCkU0IDYxIEUzIEM3IDVGIEQ4IDUxIEZEICAyOSBGMSA3RSBD
+NyAzNSA5RSBDMCBFNCAgfCAgLmEuLl8uUS4pLn4uNS4uLg0KMTcgRDcgNjMgQTEgMTEgNzUgNDMg
+OTMgIDAzIEYxIDQxIDdEIDFDIERDIDNDIEEzICB8ICAuLmMuLnVDLi4uQX0uLjwuDQo3RiBEQiAw
+RiBCNyBFQSA3NiA5MCAyMSAgODIgRUYgQ0UgNkIgQzYgNjMgRkEgRDMgIHwgIC4uLi4udi4hLi4u
+ay5jLi4NCkM0IEI0IEE5IDZGIDdEIDk2IEM0IEZCICA2RiAxOSBDOCA0RCAxMiAyOCBGRCA5MyAg
+fCAgLi4ub30uLi5vLi5NLiguLg0KODMgMDQgNTIgQkEgQzUgQkEgNjQgQTcgIDI5IDQzIEUwIENG
+IEY0IEEwIERCIDI5ICB8ICAuLlIuLi5kLilDLi4uLi4pDQo0MyA4MyAyMiBDNCBEQSA2MSAwNiBD
+NCAgRjcgQTcgRDMgNDUgRDUgRDYgRUUgQjQgIHwgIEMuIi4uYS4uLi4uRS4uLi4NCjFDIDdFIDBC
+IDY5IEE4IDM4IEJGIDQzICA4NyBERCBDRSA2QiA3MSA2NSA3OCAwMCAgfCAgLn4uaS44LkMuLi5r
+cWV4Lg0KNDggRDUgOTcgMUEgMEYgRTEgOUMgNkMgIEQ0IEY5IEE0IDVGIEM1IDM1IDFFIEIxICB8
+ICBILi4uLi4ubC4uLl8uNS4uDQpCMiA5RiBEOCA2NiA5QyBDMCA3QSA4QyAgMTQgQzQgRDMgRkMg
+MkIgNkQgMzUgRjEgIHwgIC4uLmYuLnouLi4uLittNS4NCjc5IEVFIDBDIEI3IDFEIDQ1IDcxIDcy
+ICBBMyBENyAxNyBCMCBERiA1QyBFMiBENyAgfCAgeS4uLi5FcXIuLi4uLlwuLg0KNjMgMUMgQTAg
+RTkgMzYgRkUgNzAgQ0IgIEREIDU0IDlBIDY2IDBBIDYzIDQ3IDA2ICB8ICBjLi4uNi5wLi5ULmYu
+Y0cuDQpFRSBEOCBBMCBFNCA3QiAxMSAyQiA3MyAgRkEgMTkgMTUgOTMgMDEgREQgOUUgQjQgIHwg
+IC4uLi57LitzLi4uLi4uLi4NCkIxIEM4IDlEIDIzIDJFIENCIDc1IDFCICBDQSAwMCBERSAwMyBG
+OSBFNiA0MyA2NyAgfCAgLi4uIy4udS4uLi4uLi5DZw0KRkUgQ0EgODAgRTMgRDUgREUgNzYgREUg
+IDU5IDczIEQ3IDM3IDM4IENBIDU1IDIwICB8ICAuLi4uLi52LllzLjc4LlUNCkJCIDQ4IDk4IDRB
+IDlFIDFFIDcwIDk0ICA0QiBDMyBDQiA0RCBDRiBCMSA5MCA5MCAgfCAgLkguSi4ucC5LLi5NLi4u
+Lg0KODYgQzYgRTIgQkMgNUUgNjYgMDYgNTIgIDA0IDdBIEMzIEU1IEMzIDdCIDY1IEJCICB8ICAu
+Li4uXmYuUi56Li4ue2UuDQo0RSBGRCBDNCBGMCA4RSA4MiBDMSBENiAgRjEgMDMgMjYgOTQgMkIg
+RDggNDkgQUMgIHwgIE4uLi4uLi4uLi4mLisuSS4NCjgwIDFCIENFIDg1IEYzIEFGIEMyIEI2ICBF
+OSA0NCA4RSBENCBEMyAzRCA1RCBFMyAgfCAgLi4uLi4uLi4uRC4uLj1dLg0KQzQgMDQgMEMgRTEg
+RDcgRjkgQjggM0EgIDBEIDM5IDExIEI0IDlBIDIxIEYwIDYyICB8ICAuLi4uLi4uOi45Li4uIS5i
+DQpEQyBDQSA4RSAyRCBCRSBCRCBEMiBCMiAgQUEgNDEgNDIgQzkgOUYgODkgRjIgOUQgIHwgIC4u
+Li0uLi4uLkFCLi4uLi4NCjU1IEQ4IDdDIDNGIDVDIEQzIDQyIDE1ICA1MiA2MSBEMyAxMCAyNyAx
+QSBCMSAxOCAgfCAgVS58P1wuQi5SYS4uJy4uLg0KNjEgODAgMjQgNTEgMTUgREYgRkEgNDYgIDcz
+IDIxIDhEIDVEIDNEIDUwIDM2IEM5ICB8ICBhLiRRLi4uRnMhLl09UDYuDQpEMCAwNyA5NyAzQiBG
+QiBEMiAyNyBDQyAgMDUgRjcgMUEgRkEgNjEgNzAgRkEgMEQgIHwgIC4uLjsuLicuLi4uLmFwLi4N
+Cjk2IEQ4IEM0IDhDIDkwIEZEIDRBIDY1ICBDQSBFRSA1RCBBOSAwNiAyMyBGQiA2QyAgfCAgLi4u
+Li4uSmUuLl0uLiMubA0KMDYgRjEgNjAgMTAgN0YgOUQgNTYgRjcgIDQ2IEJBIDBBIENFIEZFIEYw
+IEUwIDRDICB8ICAuLmAuLi5WLkYuLi4uLi5MDQo0RiA3RCA3NCBEQSBBMSBEQSBEMCAyMCAgNTcg
+NEIgNTYgMDYgN0YgQUIgRDAgNzcgIHwgIE99dC4uLi4gV0tWLi4uLncNCjEwIEJFIDQ5IDNGIEQz
+IDc1IDI0IENCICBENiBFQiBGMSAxNiBERCA5QyA2RSBFQSAgfCAgLi5JPy51JC4uLi4uLi5uLg0K
+ODcgMTYgODggNEIgRUEgNTggNzIgNkUgIDJCIDI0IDA2IDZBIDkwIEMyIDhCIDg1ICB8ICAuLi5L
+LlhybiskLmouLi4uDQo4MiBENyAxNCBBQyA4OSBBQyBFMyAzQSAgRUEgQUMgRkIgODUgQTUgMzEg
+NDYgRjEgIHwgIC4uLi4uLi46Li4uLi4xRi4NCjBGIEFGIDhBIDdFIDQ2IDUxIEFEIDZCICA0NSA0
+OSA5RCAwNyAxRSAyNSAxNSAzRSAgfCAgLi4ufkZRLmtFSS4uLiUuPg0KNzUgNTEgOEEgNkUgQTYg
+NDYgRjggMkQgIEUxIDNFIDQ2IEY0IERDIDVFIEQwIDBFICB8ICB1US5uLkYuLS4+Ri4uXi4uDQo3
+NCAwNiAzNCA3MSBDMyAzMyA5QiAzMiAgODQgN0IgODEgQUMgMkUgMzcgNjUgREIgIHwgIHQuNHEu
+My4yLnsuLi43ZS4NCkFBIDE4IEIyIEJDIDZGIDQyIDU3IDlBICAxRCBDRSA0OCBFMyBCQyBDRSA0
+NCA1QyAgfCAgLi4uLm9CVy4uLkguLi5EXA0KNkYgMzYgRjkgNDAgNjYgNTAgMEYgOTggIDM1IDFF
+IDcwIDYwIDI0IEFCIDZEIDQxICB8ICBvNi5AZlAuLjUucGAkLm1BDQo5NCA2QyAzNyBCOCA3NSAx
+MCBBRiBDMiAgMzAgNUYgQ0MgQTIgOTEgMTUgNkMgREQgIHwgIC5sNy51Li4uMF8uLi4ubC4NCjE3
+IDVEIDQzIEVFIEFGIEY5IEI3IDQxICA4RiA4MyBFOSBBNCA2NCBFMSBGOSBERCAgfCAgLl1DLi4u
+LkEuLi4uZC4uLg0KNTYgNkIgMDcgMUUgMkMgNDEgOTQgQTEgIEExIDgxIDc5IDdEIDk5IDcxIDNF
+IDFFICB8ICBWay4uLEEuLi4ueX0ucT4uDQpCNyA5MyAwNSA5MSAwQyA3NyBDQyAzMCAgMzYgNkYg
+MTAgMjkgMEQgMDQgQjQgQUIgIHwgIC4uLi4udy4wNm8uKS4uLi4NCjMzIDcwIDFBIDg1IDkxIDM4
+IDA5IDI3ICBDRiAyQiA5RiA2NiBERCA5MiBDOSA0QiAgfCAgM3AuLi44LicuKy5mLi4uSw0KNDcg
+MTEgRUUgMzEgMUEgNTEgODcgRUYgIEIxIDQyIDY3IDkwIDRDIEU5IENDIEFEICB8ICBHLi4xLlEu
+Li5CZy5MLi4uDQoyQyAzRCA4OCBCQSBGQSA3RSBFNSBDMiAgQ0UgMTEgM0QgNDQgNzIgMEYgODAg
+N0MgIHwgICw9Li4ufi4uLi49RHIuLnwNCjFBIEUxIEE4IDZEIEM0IDNBIDQ2IDcyICAxMiBENiA5
+MiAyMyA1MCA3OSBDQiBDRCAgfCAgLi4ubS46RnIuLi4jUHkuLg0KM0YgOEQgQzMgQzUgQTcgMDcg
+MUEgQkMgIDY5IEYwIDY1IDY2IDRGIDFEIEE1IEJDICB8ICA/Li4uLi4uLmkuZWZPLi4uDQozMCA0
+NCA0RiBCNiAxNiA5MCAyOSBDRCAgN0QgNkMgMDQgMzAgRTEgNUIgODkgODAgIHwgIDBETy4uLiku
+fWwuMC5bLi4NCkYzIEI2IEYyIDg4IEExIDQzIDQ1IDA4ICAzRCBFQyBEQSAzMiAyQiBFNSAwQyBB
+NyAgfCAgLi4uLi5DRS49Li4yKy4uLg0KNTQgQ0EgOUEgMzAgODkgQ0QgNzMgMEUgIDkxIDRGIDkw
+IDU5IDA4IEQ1IDE0IEIyICB8ICBULi4wLi5zLi5PLlkuLi4uDQo2MCBEQSA2NiA4MiBBQSA1NSAy
+NSA3OSAgOUYgQzEgQUEgODUgNzcgQTIgNzIgREQgIHwgIGAuZi4uVSV5Li4uLncuci4NCkE5IDgz
+IDE2IEU0IEE5IEMwIDQwIEFCICBFMSA3QiAxQSA4QyA5NCBFQyBCNSAwNiAgfCAgLi4uLi4uQC4u
+ey4uLi4uLg0KMDAgNjIgRDUgOTcgNDkgNzEgOEQgQUMgIENFIDNBIEM2IDlEIEUxIDYyIDI2IDRG
+ICB8ICAuYi4uSXEuLi46Li4uYiZPDQo0QiBBOSBFNiBFOSA2OSAzQSAxMCBBNiAgMTAgOTcgNEEg
+NEYgQTggOTggMTIgQjUgIHwgIEsuLi5pOi4uLi5KTy4uLi4NCjYxIEUxIDJBIDJGIEFDIEU4IEVE
+IDUzICBGNCA2RSBBNSAyQyBENCA2MSAxOCBCMiAgfCAgYS4qLy4uLlMubi4sLmEuLg0KRTAgNUUg
+NTggQjYgRTAgMTIgNkYgQTUgIDIyIDdFIDlGIDAwIDA3IDYzIDQzIEVCICB8ICAuXlguLi5vLiJ+
+Li4uY0MuDQpGQiA0RCA3NiBCQiBEQyBFRSBBNSA2QyAgQkIgQTEgNDIgQUQgRUEgQzYgNUQgMkEg
+IHwgIC5Ndi4uLi5sLi5CLi4uXSoNCkFFIEQ2IEQzIEY0IDZBIEE0IEFDIEE4ICAxRiA5NSBEMiBE
+MyBCRCBGOSA2QiA3NCAgfCAgLi4uLmouLi4uLi4uLi5rdA0KODcgM0EgOUMgQzMgMkUgOTQgOTkg
+NDkgIEVEIDYzIDkyIENCIDNEIDI0IDY5IDQ2ICB8ICAuOi4uLi4uSS5jLi49JGlGDQo0NyAwNiAz
+OCA5NiBBMyBDNyBFNyAwNCAgRDkgOTIgQzQgQjEgMUQgMjkgNkUgNjggIHwgIEcuOC4uLi4uLi4u
+Li4pbmgNCjQ3IDlDIEQ1IEY3IDgyIDYwIDE1IEY3ICBCOSA4OSA2MiBBQiA3NSBEOCBGNSBFMCAg
+fCAgRy4uLi5gLi4uLmIudS4uLg0KQ0UgMzYgODIgREEgRjggNkYgODggODMgIEM4IDYyIEQyIDA0
+IDQ1IDNBIDQyIEIwICB8ICAuNi4uLm8uLi5iLi5FOkIuDQo4QiAwOSA3NiA4OCA5RSBCRiA1QiBB
+MSAgRkUgQjYgRDIgREEgODUgNjEgNTYgN0MgIHwgIC4udi4uLlsuLi4uLi5hVnwNCkVCIEU3IEVE
+IDE2IDA5IDVDIEEyIDc2ICA3NCA1RiBDNSBEQSBFNSA5NSBCQyA0NSAgfCAgLi4uLi5cLnZ0Xy4u
+Li4uRQ0KOEMgRTIgMkYgQkYgOTcgQTkgN0IgN0MgIDQ2IDlCIENFIDkxIDg0IDhBIDY4IENBICB8
+ICAuLi8uLi57fEYuLi4uLmguDQpFNSA2MSA3QiBGQyBDOSBEQyAxRCAwOSAgODUgNDIgNEIgQzAg
+M0YgNDUgREEgOTAgIHwgIC5hey4uLi4uLkJLLj9FLi4NCjk5IDUxIDVBIEE5IDkwIEIyIDM2IDFF
+ICA1MyA3MiBDQyA1RiA4MiBEOCBEQiAzNSAgfCAgLlFaLi4uNi5Tci5fLi4uNQ0KMzUgMzEgODcg
+MjAgMUYgMDIgOEMgM0EgIEE0IEQ5IDkzIDlFIDAxIDVEIDc4IDk5ICB8ICA1MS4gLi4uOi4uLi4u
+XXguDQoyNCBBNSA5RCA4MyBCMCBDMiA3NyBCMyAgRTYgRjcgQkYgNkUgMTMgMjQgRkUgMDggIHwg
+ICQuLi4uLncuLi4ubi4kLi4NCkFCIDE4IDdEIDZCIDIwIDZBIENCIEY3ICBFMCBGQyAyMSBGMSA0
+RSA3NyAxQSBEMiAgfCAgLi59ayBqLi4uLiEuTncuLg0KQjQgOTcgNjcgRjUgMjcgREMgMDEgRTEg
+IEI4IEMyIDc4IDM3IEFFIEVDIDQ1IDBDICB8ICAuLmcuJy4uLi4ueDcuLkUuDQpDOSBFQyBCOSBG
+QSA1NiBBNSBGNiBERSAgQjUgOTggNjggNDYgNTEgODggOEQgQUYgIHwgIC4uLi5WLi4uLi5oRlEu
+Li4NCjUwIDA5IDQ3IEI2IEQ5IEQyIEJDIENEICA3NyBBMyBBRiA4QyAwQyBGNyAzMyA0QSAgfCAg
+UC5HLi4uLi53Li4uLi4zSg0KNzMgMzEgQUMgN0IgMjMgNTcgNkQgN0QgIDY4IDZCIDU3IEE2IEMy
+IDEyIEVEIDE1ICB8ICBzMS57I1dtfWhrVy4uLi4uDQo4NiBGQyBBOCBEOCAyQSBERiA5MyAyRCAg
+NjEgMkYgMkYgNjkgQTkgREYgNjUgNUEgIHwgIC4uLi4qLi4tYS8vaS4uZVoNCkE2IEJEIDkxIEQw
+IEIxIDBGIEMzIEMxICA3NyBDRCAwQyBFQiA2OSAzNCA3MSAyOSAgfCAgLi4uLi4uLi53Li4uaTRx
+KQ0KMzkgMTEgNTAgQzMgMDggQzcgNkQgOTcgIEFFIEIwIDU4IDAyIDE0IDUwIEYxIDMwICB8ICA5
+LlAuLi5tLi4uWC4uUC4wDQo4QiA2MyAxMiBBRiBDQyBFNiA3OCBDMCAgNzkgRjUgRUMgQkMgNUUg
+ODAgMzAgMkIgIHwgIC5jLi4uLngueS4uLl4uMCsNCkMxIDM1IDZGIDdGIEM4IDI3IDY1IDIwICAy
+RSBENSA2MiA2MyA1RSA4NyAzNyAyQyAgfCAgLjVvLi4nZSAuLmJjXi43LA0KNDYgOTggRDAgMDgg
+QzQgRkUgMDggMDkgIDE5IDcwIEY1IEYzIDQ5IENGIEZFIDM0ICB8ICBGLi4uLi4uLi5wLi5JLi40
+DQo1NiBEQSA1MCBDQiBDQyBENSBBNiAxRiAgNzUgM0UgRjQgQjAgQUQgMTkgN0IgOTIgIHwgIFYu
+UC4uLi4udT4uLi4uey4NCjIwIEMwIDY3IDAxIDNEIDg0IEJDIDA4ICBCRiA1MCA0QiBBQiA2RSA3
+MiA0OSA0NSAgfCAgIC5nLj0uLi4uUEsubnJJRQ0KQTkgQTMgNEMgMkEgRTkgMEIgRDkgOEYgIENE
+IDM0IEI3IDkxIEU3IDMzIDE3IEM5ICB8ICAuLkwqLi4uLi40Li4uMy4uDQo5QSBCMSA5OCA4OSAw
+RCBFQSA1RiA1NiAgREMgMjEgRTAgQzkgNkYgQUUgOEQgMzcgIHwgIC4uLi4uLl9WLiEuLm8uLjcN
+CkMwIDdDIDgyIDg1IDI4IDhCIEU4IDlBICA2OSBFOSA4QyAxQiA1MyAwRSA0RSA5NCAgfCAgLnwu
+LiguLi5pLi4uUy5OLg0KMDUgNDEgNUEgNDQgRTAgRjAgQkIgRTcgIEIyIDcyIDVEIDY4IDg0IERD
+IDJFIEZBICB8ICAuQVpELi4uLi5yXWguLi4uDQo5OSBGOSBFMCA1NCBCNCA1MyBDNiA5MyAgMUEg
+NkMgNkMgRTIgNEUgQ0YgRkUgNEUgIHwgIC4uLlQuUy4uLmxsLk4uLk4NCkU1IDAxIDZFIDQ1IDA4
+IDIwIDYxIEYxICA4RiBFQyBEMyA2NSBFQyBCQSAwQSAzMSAgfCAgLi5uRS4gYS4uLi5lLi4uMQ0K
+QkQgMDggRjggMDQgMTkgNzYgQjcgREQgIDU5IEE0IEMzIDFGIDBBIDEzIEJGIDZEICB8ICAuLi4u
+LnYuLlkuLi4uLi5tDQo4MCAzOCA1RiA4QyBDMCAyNCBCMyBEMCAgNUQgOTkgRjIgNkQgMzggNzgg
+QTggOTIgIHwgIC44Xy4uJC4uXS4ubTh4Li4NCg0KDQoNCg0K
+--000000000000e1229b0597cd1582
+Content-Type: application/octet-stream; 
+	name="mtd-utils-io_paral_hexdump.patch"
+Content-Disposition: attachment; filename="mtd-utils-io_paral_hexdump.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_k37p5fe90>
+X-Attachment-Id: f_k37p5fe90
+
+ZGlmZiAtLWdpdCBhL3Rlc3RzL3ViaS10ZXN0cy9pb19wYXJhbC5jIGIvdGVzdHMvdWJpLXRlc3Rz
+L2lvX3BhcmFsLmMKaW5kZXggNDA0MGIzZS4uMmRjNDNlMSAxMDA2NDQKLS0tIGEvdGVzdHMvdWJp
+LXRlc3RzL2lvX3BhcmFsLmMKKysrIGIvdGVzdHMvdWJpLXRlc3RzL2lvX3BhcmFsLmMKQEAgLTUw
+LDkgKzUwLDYyIEBAIHN0YXRpYyBjaGFyIHZvbF9ub2Rlc1tUSFJFQURTX05VTSArIDFdW3NpemVv
+ZihVQklfVk9MVU1FX1BBVFRFUk4pICsgOTldOwogc3RhdGljIHVuc2lnbmVkIGNoYXIgKndidWZz
+W1RIUkVBRFNfTlVNICsgMV07CiBzdGF0aWMgdW5zaWduZWQgY2hhciAqcmJ1ZnNbVEhSRUFEU19O
+VU0gKyAxXTsKIAorCitzdGF0aWMgdm9pZCBwcmludGhleChjb25zdCB2b2lkKiBkYXRhLCBzaXpl
+X3Qgc2l6ZSkgeworCWNoYXIgYXNjaWlbMTddOworCXNpemVfdCBpLCBqOworCWFzY2lpWzE2XSA9
+ICdcMCc7CisKKwlwcmludGYoIlxuIik7CisKKwlmb3IgKGkgPSAwOyBpIDwgc2l6ZTsgKytpKSB7
+CisJCXByaW50ZigiJTAyWCAiLCAoKHVuc2lnbmVkIGNoYXIqKWRhdGEpW2ldKTsKKwkJaWYgKCgo
+dW5zaWduZWQgY2hhciopZGF0YSlbaV0gPj0gJyAnICYmICgodW5zaWduZWQgY2hhciopZGF0YSlb
+aV0gPD0gJ34nKSB7CisJCQlhc2NpaVtpICUgMTZdID0gKCh1bnNpZ25lZCBjaGFyKilkYXRhKVtp
+XTsKKwkJfSBlbHNlIHsKKwkJCWFzY2lpW2kgJSAxNl0gPSAnLic7CisJCX0KKwkJaWYgKChpKzEp
+ICUgOCA9PSAwIHx8IGkrMSA9PSBzaXplKSB7CisJCQlwcmludGYoIiAiKTsKKwkJCWlmICgoaSsx
+KSAlIDE2ID09IDApIHsKKwkJCQlwcmludGYoInwgICVzIFxuIiwgYXNjaWkpOworCQkJfSBlbHNl
+IGlmIChpKzEgPT0gc2l6ZSkgeworCQkJCWFzY2lpWyhpKzEpICUgMTZdID0gJ1wwJzsKKwkJCQlp
+ZiAoKGkrMSkgJSAxNiA8PSA4KSB7CisJCQkJCXByaW50ZigiICIpOworCQkJCX0KKwkJCQlmb3Ig
+KGogPSAoaSsxKSAlIDE2OyBqIDwgMTY7ICsraikgeworCQkJCQlwcmludGYoIiAgICIpOworCQkJ
+CX0KKwkJCQlwcmludGYoInwgICVzIFxuIiwgYXNjaWkpOworCQkJfQorCQl9CisJfQorCXByaW50
+ZigiXG4iKTsKK30KKworc3RhdGljIGxvbmcgbXlfbWVtY21wKGNvbnN0IHZvaWQgKlB0cjEsIGNv
+bnN0IHZvaWQgKlB0cjIsIHNpemVfdCBDb3VudCkKK3sKKyAgICBpbnQgdiA9IDA7CisgICAgbG9u
+ZyBwb3MgPSAwOworICAgIGNoYXIgKnAxID0gKGNoYXIgKilQdHIxOworICAgIGNoYXIgKnAyID0g
+KGNoYXIgKilQdHIyOworCisgICAgd2hpbGUoQ291bnQtLSA+IDAgJiYgdiA9PSAwKQorICAgIHsK
+KyAgICAgICAgdiA9ICoocDErKykgLSAqKHAyKyspOworICAgICAgICBpZiAodiA9PSAwKQorICAg
+ICAgICAgICAgcG9zKys7CisgICAgICAgIGVsc2UKKyAgICAgICAgICAgIGJyZWFrOworICAgIH0K
+KworICAgIHJldHVybiBwb3M7Cit9CisKIHN0YXRpYyBpbnQgdXBkYXRlX3ZvbHVtZShpbnQgdm9s
+X2lkLCBpbnQgYnl0ZXMpCiB7Ci0JaW50IGksIGZkLCByZXQsIHdyaXR0ZW4gPSAwLCByZCA9IDA7
+CisJaW50IGksIGZkLCByZXQsIHdyaXR0ZW4gPSAwLCByZCA9IDAsIHBvczsKIAljaGFyICp2b2xf
+bm9kZSA9IHZvbF9ub2Rlc1t2b2xfaWRdOwogCXVuc2lnbmVkIGNoYXIgKndidWYgPSB3YnVmc1t2
+b2xfaWRdOwogCXVuc2lnbmVkIGNoYXIgKnJidWYgPSByYnVmc1t2b2xfaWRdOwpAQCAtMTIzLDcg
+KzE3NiwxNyBAQCBzdGF0aWMgaW50IHVwZGF0ZV92b2x1bWUoaW50IHZvbF9pZCwgaW50IGJ5dGVz
+KQogCX0KIAogCWlmIChtZW1jbXAod2J1ZiwgcmJ1ZiwgYnl0ZXMpKSB7Ci0JCWVycm9ybSgid3Jp
+dHRlbiBhbmQgcmVhZCBkYXRhIGFyZSBkaWZmZXJlbnQiKTsKKwkJcG9zID0gbXlfbWVtY21wKHdi
+dWYsIHJidWYsIGJ5dGVzKTsKKwkJZXJyb3JtKCJ3cml0dGVuIGFuZCByZWFkIGRhdGEgYXJlIGRp
+ZmZlcmVudCBhdCBieXRlOiAlZFxuIiwgcG9zKTsKKworCQllcnJvcm0oIldidWY6Iik7CisKKwkJ
+aWYgKHBvcyA8PSAxMCkgLy9UcnkgdG8gcHJpbnQgMTAgYnl0ZXMgYmVmb3JlIG1pc21hdGNoCisJ
+CQlwb3MgPSAxMDsKKwkJcHJpbnRoZXgoJndidWZbcG9zLTEwXSwgODE5Mik7CisKKwkJZXJyb3Jt
+KCJSYnVmOiIpOworCQlwcmludGhleCgmcmJ1Zltwb3MtMTBdLCA4MTkyKTsKIAkJZ290byBlcnJf
+Y2xvc2U7CiAJfQogCkBAIC0xNzAsNyArMjMzLDcgQEAgc3RhdGljIHZvaWQgKnVwZGF0ZV90aHJl
+YWQodm9pZCAqcHRyKQogCiBzdGF0aWMgdm9pZCAqd3JpdGVfdGhyZWFkKHZvaWQgKnB0cikKIHsK
+LQlpbnQgcmV0LCBmZCwgdm9sX2lkID0gKGxvbmcpcHRyLCBpOworCWludCByZXQsIGZkLCB2b2xf
+aWQgPSAobG9uZylwdHIsIGksIHBvczsKIAljaGFyICp2b2xfbm9kZSA9IHZvbF9ub2Rlc1t2b2xf
+aWRdOwogCXVuc2lnbmVkIGNoYXIgKndidWYgPSB3YnVmc1t2b2xfaWRdOwogCXVuc2lnbmVkIGNo
+YXIgKnJidWYgPSByYnVmc1t2b2xfaWRdOwpAQCAtMjIzLDcgKzI4NiwxNyBAQCBzdGF0aWMgdm9p
+ZCAqd3JpdGVfdGhyZWFkKHZvaWQgKnB0cikKIAkJfQogCiAJCWlmIChtZW1jbXAod2J1ZiwgcmJ1
+ZiwgZGV2X2luZm8ubGViX3NpemUpKSB7Ci0JCQllcnJvcm0oIndyaXR0ZW4gYW5kIHJlYWQgZGF0
+YSBhcmUgZGlmZmVyZW50Iik7CisJCQlwb3MgPSBteV9tZW1jbXAod2J1ZiwgcmJ1ZiwgZGV2X2lu
+Zm8ubGViX3NpemUpOworCQkJZXJyb3JtKCJ3cml0dGVuIGFuZCByZWFkIGRhdGEgYXJlIGRpZmZl
+cmVudCBhdCBieXRlOiAlZFxuIiwgcG9zKTsKKworCQkJZXJyb3JtKCJXYnVmOiIpOworCisJCQlp
+ZiAocG9zIDw9IDEwKSAvL1RyeSB0byBwcmludCAxMCBieXRlcyBiZWZvcmUgbWlzbWF0Y2gKKwkJ
+CQlwb3MgPSAxMDsKKwkJCXByaW50aGV4KCZ3YnVmW3Bvcy0xMF0sIDgxOTIpOworCisJCQllcnJv
+cm0oIlJidWY6Iik7CisJCQlwcmludGhleCgmcmJ1Zltwb3MtMTBdLCA4MTkyKTsKIAkJCWJyZWFr
+OwogCQl9CiAJfQo=
+--000000000000e1229b0597cd1582
+Content-Type: text/plain; charset="US-ASCII"; name="RBuf.txt"
+Content-Disposition: attachment; filename="RBuf.txt"
+Content-Transfer-Encoding: base64
+Content-ID: <f_k37pfpmu1>
+X-Attachment-Id: f_k37pfpmu1
+
+UmJ1ZjoNCkI3IDAzIDc5IEU1IDA1IDk3IEQyIERDICAxMyBDQyAwMCAwMCAwMCAwMCAwMCAwMCAg
+fCAgLi55Li4uLi4uLi4uLi4uLg0KMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAw
+IDAwIDAwIDAwIDAwICB8ICAuLi4uLi4uLi4uLi4uLi4uDQowMCAwMCAwMCAwMCAwMCAwMCAwMCAw
+MCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIHwgIC4uLi4uLi4uLi4uLi4uLi4NCjAwIDAwIDAw
+IDAwIDAwIDAwIDAwIDAwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgfCAgLi4uLi4uLi4uLi4u
+Li4uLg0KMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8
+ICAuLi4uLi4uLi4uLi4uLi4uDQowMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAg
+MDAgMDAgMDAgMDAgIHwgIC4uLi4uLi4uLi4uLi4uLi4NCjAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
+ICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgfCAgLi4uLi4uLi4uLi4uLi4uLg0KMDAgMDAgMDAg
+MDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8ICAuLi4uLi4uLi4uLi4u
+Li4uDQowMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIHwg
+IC4uLi4uLi4uLi4uLi4uLi4NCjAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAwMCAwMCAwMCAwMCAw
+MCAwMCAwMCAwMCAgfCAgLi4uLi4uLi4uLi4uLi4uLg0KMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
+IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8ICAuLi4uLi4uLi4uLi4uLi4uDQowMCAwMCAwMCAw
+MCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIHwgIC4uLi4uLi4uLi4uLi4u
+Li4NCjAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgfCAg
+Li4uLi4uLi4uLi4uLi4uLg0KMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAw
+IDAwIDAwIDAwICB8ICAuLi4uLi4uLi4uLi4uLi4uDQowMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAg
+MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIHwgIC4uLi4uLi4uLi4uLi4uLi4NCjAwIDAwIDAwIDAw
+IDAwIDAwIDAwIDAwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgfCAgLi4uLi4uLi4uLi4uLi4u
+Lg0KMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8ICAu
+Li4uLi4uLi4uLi4uLi4uDQowMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAgMDAg
+MDAgMDAgMDAgIHwgIC4uLi4uLi4uLi4uLi4uLi4NCjAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAw
+MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgfCAgLi4uLi4uLi4uLi4uLi4uLg0KMDAgMDAgMDAgMDAg
+MDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8ICAuLi4uLi4uLi4uLi4uLi4u
+DQowMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIHwgIC4u
+Li4uLi4uLi4uLi4uLi4NCjAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAwMCAwMCAwMCAwMCAwMCAw
+MCAwMCAwMCAgfCAgLi4uLi4uLi4uLi4uLi4uLg0KMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAw
+IDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8ICAuLi4uLi4uLi4uLi4uLi4uDQowMCAwMCAwMCAwMCAw
+MCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIHwgIC4uLi4uLi4uLi4uLi4uLi4N
+CjAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgfCAgLi4u
+Li4uLi4uLi4uLi4uLg0KMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAw
+IDAwIDAwICB8ICAuLi4uLi4uLi4uLi4uLi4uDQowMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgMDAg
+MDAgMDAgMDAgMDAgMDAgMDAgMDAgIHwgIC4uLi4uLi4uLi4uLi4uLi4NCjAwIDAwIDAwIDAwIDAw
+IDAwIDAwIDAwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgfCAgLi4uLi4uLi4uLi4uLi4uLg0K
+MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8ICAuLi4u
+Li4uLi4uLi4uLi4uDQowMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAgMDAgMDAg
+MDAgMDAgIHwgIC4uLi4uLi4uLi4uLi4uLi4NCjAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAwMCAw
+MCAwMCAwMCAwMCAwMCAwMCAwMCAgfCAgLi4uLi4uLi4uLi4uLi4uLg0KMDAgMDAgMDAgMDAgMDAg
+MDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8ICAuLi4uLi4uLi4uLi4uLi4uDQow
+MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIHwgIC4uLi4u
+Li4uLi4uLi4uLi4NCjAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAwMCAwMCAwMCAwMCAwMCAwMCAw
+MCAwMCAgfCAgLi4uLi4uLi4uLi4uLi4uLg0KMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAw
+IDAwIDAwIDAwIDAwIDAwIDAwICB8ICAuLi4uLi4uLi4uLi4uLi4uDQowMCAwMCAwMCAwMCAwMCAw
+MCAwMCAwMCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIHwgIC4uLi4uLi4uLi4uLi4uLi4NCjAw
+IDAwIDAwIDAwIDAwIDAwIDAwIDAwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgfCAgLi4uLi4u
+Li4uLi4uLi4uLg0KMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAw
+IDAwICB8ICAuLi4uLi4uLi4uLi4uLi4uDQowMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgMDAgMDAg
+MDAgMDAgMDAgMDAgMDAgMDAgIHwgIC4uLi4uLi4uLi4uLi4uLi4NCjAwIDAwIDAwIDAwIDAwIDAw
+IDAwIDAwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgfCAgLi4uLi4uLi4uLi4uLi4uLg0KMDAg
+MDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8ICAuLi4uLi4u
+Li4uLi4uLi4uDQowMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
+MDAgIHwgIC4uLi4uLi4uLi4uLi4uLi4NCjAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAwMCAwMCAw
+MCAwMCAwMCAwMCAwMCAwMCAgfCAgLi4uLi4uLi4uLi4uLi4uLg0KMDAgMDAgMDAgMDAgMDAgMDAg
+MDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8ICAuLi4uLi4uLi4uLi4uLi4uDQowMCAw
+MCAwMCAwMCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIHwgIC4uLi4uLi4u
+Li4uLi4uLi4NCjAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
+MCAgfCAgLi4uLi4uLi4uLi4uLi4uLg0KMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAw
+IDAwIDAwIDAwIDAwIDAwICB8ICAuLi4uLi4uLi4uLi4uLi4uDQowMCAwMCAwMCAwMCAwMCAwMCAw
+MCAwMCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIHwgIC4uLi4uLi4uLi4uLi4uLi4NCjAwIDAw
+IDAwIDAwIDAwIDAwIDAwIDAwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgfCAgLi4uLi4uLi4u
+Li4uLi4uLg0KMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
+ICB8ICAuLi4uLi4uLi4uLi4uLi4uDQowMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAg
+MDAgMDAgMDAgMDAgMDAgIHwgIC4uLi4uLi4uLi4uLi4uLi4NCjAwIDAwIDAwIDAwIDAwIDAwIDAw
+IDAwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgfCAgLi4uLi4uLi4uLi4uLi4uLg0KMDAgMDAg
+MDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8ICAuLi4uLi4uLi4u
+Li4uLi4uDQowMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
+IHwgIC4uLi4uLi4uLi4uLi4uLi4NCjAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAwMCAwMCAwMCAw
+MCAwMCAwMCAwMCAwMCAgfCAgLi4uLi4uLi4uLi4uLi4uLg0KMDAgMDAgMDAgMDAgMDAgMDAgMDAg
+MDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8ICAuLi4uLi4uLi4uLi4uLi4uDQowMCAwMCAw
+MCAwMCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIHwgIC4uLi4uLi4uLi4u
+Li4uLi4NCjAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAg
+fCAgLi4uLi4uLi4uLi4uLi4uLg0KMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAw
+IDAwIDAwIDAwIDAwICB8ICAuLi4uLi4uLi4uLi4uLi4uDQowMCAwMCAwMCAwMCAwMCAwMCAwMCAw
+MCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIHwgIC4uLi4uLi4uLi4uLi4uLi4NCjAwIDAwIDAw
+IDAwIDAwIDAwIDAwIDAwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgfCAgLi4uLi4uLi4uLi4u
+Li4uLg0KMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8
+ICAuLi4uLi4uLi4uLi4uLi4uDQowMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAg
+MDAgMDAgMDAgMDAgIHwgIC4uLi4uLi4uLi4uLi4uLi4NCjAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
+ICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgfCAgLi4uLi4uLi4uLi4uLi4uLg0KMDAgMDAgMDAg
+MDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8ICAuLi4uLi4uLi4uLi4u
+Li4uDQowMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIHwg
+IC4uLi4uLi4uLi4uLi4uLi4NCjAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAwMCAwMCAwMCAwMCAw
+MCAwMCAwMCAwMCAgfCAgLi4uLi4uLi4uLi4uLi4uLg0KMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
+IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8ICAuLi4uLi4uLi4uLi4uLi4uDQowMCAwMCAwMCAw
+MCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIHwgIC4uLi4uLi4uLi4uLi4u
+Li4NCjAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgfCAg
+Li4uLi4uLi4uLi4uLi4uLg0KMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAw
+IDAwIDAwIDAwICB8ICAuLi4uLi4uLi4uLi4uLi4uDQowMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAg
+MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIHwgIC4uLi4uLi4uLi4uLi4uLi4NCjAwIDAwIDAwIDAw
+IDAwIDAwIDAwIDAwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgfCAgLi4uLi4uLi4uLi4uLi4u
+Lg0KMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8ICAu
+Li4uLi4uLi4uLi4uLi4uDQowMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAgMDAg
+MDAgMDAgMDAgIHwgIC4uLi4uLi4uLi4uLi4uLi4NCjAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAw
+MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgfCAgLi4uLi4uLi4uLi4uLi4uLg0KMDAgMDAgMDAgMDAg
+MDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8ICAuLi4uLi4uLi4uLi4uLi4u
+DQowMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIHwgIC4u
+Li4uLi4uLi4uLi4uLi4NCjAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAwMCAwMCAwMCAwMCAwMCAw
+MCAwMCAwMCAgfCAgLi4uLi4uLi4uLi4uLi4uLg0KMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAw
+IDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8ICAuLi4uLi4uLi4uLi4uLi4uDQowMCAwMCAwMCAwMCAw
+MCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIHwgIC4uLi4uLi4uLi4uLi4uLi4N
+CjAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgfCAgLi4u
+Li4uLi4uLi4uLi4uLg0KMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAw
+IDAwIDAwICB8ICAuLi4uLi4uLi4uLi4uLi4uDQowMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgMDAg
+MDAgMDAgMDAgMDAgMDAgMDAgMDAgIHwgIC4uLi4uLi4uLi4uLi4uLi4NCjAwIDAwIDAwIDAwIDAw
+IDAwIDAwIDAwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgfCAgLi4uLi4uLi4uLi4uLi4uLg0K
+MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8ICAuLi4u
+Li4uLi4uLi4uLi4uDQowMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAgMDAgMDAg
+MDAgMDAgIHwgIC4uLi4uLi4uLi4uLi4uLi4NCjAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAwMCAw
+MCAwMCAwMCAwMCAwMCAwMCAwMCAgfCAgLi4uLi4uLi4uLi4uLi4uLg0KMDAgMDAgMDAgMDAgMDAg
+MDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8ICAuLi4uLi4uLi4uLi4uLi4uDQow
+MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIHwgIC4uLi4u
+Li4uLi4uLi4uLi4NCjAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAwMCAwMCAwMCAwMCAwMCAwMCAw
+MCAwMCAgfCAgLi4uLi4uLi4uLi4uLi4uLg0KMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAw
+IDAwIDAwIDAwIDAwIDAwIDAwICB8ICAuLi4uLi4uLi4uLi4uLi4uDQowMCAwMCAwMCAwMCAwMCAw
+MCAwMCAwMCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIHwgIC4uLi4uLi4uLi4uLi4uLi4NCjAw
+IDAwIDAwIDAwIDAwIDAwIDAwIDAwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgfCAgLi4uLi4u
+Li4uLi4uLi4uLg0KMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAw
+IDAwICB8ICAuLi4uLi4uLi4uLi4uLi4uDQowMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgMDAgMDAg
+MDAgMDAgMDAgMDAgMDAgMDAgIHwgIC4uLi4uLi4uLi4uLi4uLi4NCjAwIDAwIDAwIDAwIDAwIDAw
+IDAwIDAwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgfCAgLi4uLi4uLi4uLi4uLi4uLg0KMDAg
+MDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8ICAuLi4uLi4u
+Li4uLi4uLi4uDQowMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
+MDAgIHwgIC4uLi4uLi4uLi4uLi4uLi4NCjAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAwMCAwMCAw
+MCAwMCAwMCAwMCAwMCAwMCAgfCAgLi4uLi4uLi4uLi4uLi4uLg0KMDAgMDAgMDAgMDAgMDAgMDAg
+MDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8ICAuLi4uLi4uLi4uLi4uLi4uDQowMCAw
+MCAwMCAwMCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIHwgIC4uLi4uLi4u
+Li4uLi4uLi4NCjAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
+MCAgfCAgLi4uLi4uLi4uLi4uLi4uLg0KMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAw
+IDAwIDAwIDAwIDAwIDAwICB8ICAuLi4uLi4uLi4uLi4uLi4uDQowMCAwMCAwMCAwMCAwMCAwMCAw
+MCAwMCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIHwgIC4uLi4uLi4uLi4uLi4uLi4NCjAwIDAw
+IDAwIDAwIDAwIDAwIDAwIDAwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgfCAgLi4uLi4uLi4u
+Li4uLi4uLg0KMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
+ICB8ICAuLi4uLi4uLi4uLi4uLi4uDQowMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAg
+MDAgMDAgMDAgMDAgMDAgIHwgIC4uLi4uLi4uLi4uLi4uLi4NCjAwIDAwIDAwIDAwIDAwIDAwIDAw
+IDAwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgfCAgLi4uLi4uLi4uLi4uLi4uLg0KMDAgMDAg
+MDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8ICAuLi4uLi4uLi4u
+Li4uLi4uDQowMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
+IHwgIC4uLi4uLi4uLi4uLi4uLi4NCjAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAwMCAwMCAwMCAw
+MCAwMCAwMCAwMCAwMCAgfCAgLi4uLi4uLi4uLi4uLi4uLg0KMDAgMDAgMDAgMDAgMDAgMDAgMDAg
+MDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8ICAuLi4uLi4uLi4uLi4uLi4uDQowMCAwMCAw
+MCAwMCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIHwgIC4uLi4uLi4uLi4u
+Li4uLi4NCjAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAg
+fCAgLi4uLi4uLi4uLi4uLi4uLg0KMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAw
+IDAwIDAwIDAwIDAwICB8ICAuLi4uLi4uLi4uLi4uLi4uDQowMCAwMCAwMCAwMCAwMCAwMCAwMCAw
+MCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIHwgIC4uLi4uLi4uLi4uLi4uLi4NCjAwIDAwIDAw
+IDAwIDAwIDAwIDAwIDAwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgfCAgLi4uLi4uLi4uLi4u
+Li4uLg0KMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8
+ICAuLi4uLi4uLi4uLi4uLi4uDQowMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAg
+MDAgMDAgMDAgMDAgIHwgIC4uLi4uLi4uLi4uLi4uLi4NCjAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
+ICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgfCAgLi4uLi4uLi4uLi4uLi4uLg0KMDAgMDAgMDAg
+MDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8ICAuLi4uLi4uLi4uLi4u
+Li4uDQowMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIHwg
+IC4uLi4uLi4uLi4uLi4uLi4NCjAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAwMCAwMCAwMCAwMCAw
+MCAwMCAwMCAwMCAgfCAgLi4uLi4uLi4uLi4uLi4uLg0KMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
+IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8ICAuLi4uLi4uLi4uLi4uLi4uDQowMCAwMCAwMCAw
+MCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIHwgIC4uLi4uLi4uLi4uLi4u
+Li4NCjAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgfCAg
+Li4uLi4uLi4uLi4uLi4uLg0KMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAw
+IDAwIDAwIDAwICB8ICAuLi4uLi4uLi4uLi4uLi4uDQowMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAg
+MDAgMDAgNjIgNjMgNUUgODcgMzcgMkMgIHwgIC4uLi4uLi4uLi5iY14uNywNCjQ2IDk4IEQwIDA4
+IEM0IEZFIDA4IDA5ICAxOSA3MCBGNSBGMyA0OSBDRiBGRSAzNCAgfCAgRi4uLi4uLi4ucC4uSS4u
+NA0KNTYgREEgNTAgQ0IgQ0MgRDUgQTYgMUYgIDc1IDNFIEY0IEIwIEFEIDE5IDdCIDkyICB8ICBW
+LlAuLi4uLnU+Li4uLnsuDQoyMCBDMCA2NyAwMSAzRCA4NCBCQyAwOCAgQkYgNTAgNEIgQUIgNkUg
+NzIgNDkgNDUgIHwgICAuZy49Li4uLlBLLm5ySUUNCkE5IEEzIDRDIDJBIEU5IDBCIEQ5IDhGICBD
+RCAzNCBCNyA5MSBFNyAzMyAxNyBDOSAgfCAgLi5MKi4uLi4uNC4uLjMuLg0KOUEgQjEgOTggODkg
+MEQgRUEgNUYgNTYgIERDIDIxIEUwIEM5IDZGIEFFIDhEIDM3ICB8ICAuLi4uLi5fVi4hLi5vLi43
+DQpDMCA3QyA4MiA4NSAyOCA4QiBFOCA5QSAgNjkgRTkgOEMgMUIgNTMgMEUgNEUgOTQgIHwgIC58
+Li4oLi4uaS4uLlMuTi4NCjA1IDQxIDVBIDQ0IEUwIEYwIEJCIEU3ICBCMiA3MiA1RCA2OCA4NCBE
+QyAyRSBGQSAgfCAgLkFaRC4uLi4ucl1oLi4uLg0KOTkgRjkgRTAgNTQgQjQgNTMgQzYgOTMgIDFB
+IDZDIDZDIEUyIDRFIENGIEZFIDRFICB8ICAuLi5ULlMuLi5sbC5OLi5ODQpFNSAwMSA2RSA0NSAw
+OCAyMCA2MSBGMSAgOEYgRUMgRDMgNjUgRUMgQkEgMEEgMzEgIHwgIC4ubkUuIGEuLi4uZS4uLjEN
+CkJEIDA4IEY4IDA0IDE5IDc2IEI3IEREICA1OSBBNCBDMyAxRiAwQSAxMyBCRiA2RCAgfCAgLi4u
+Li52Li5ZLi4uLi4ubQ0KODAgMzggNUYgOEMgQzAgMjQgQjMgRDAgIDVEIDk5IEYyIDZEIDM4IDc4
+IEE4IDkyICB8ICAuOF8uLiQuLl0uLm04eC4uDQo=
+--000000000000e1229b0597cd1582
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--000000000000e1229b0597cd1582--
+
