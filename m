@@ -2,77 +2,78 @@ Return-Path: <SRS0=WWUw=ZN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CA77C432C0
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Nov 2019 19:38:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC645C432C0
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Nov 2019 19:55:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 089CC20672
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Nov 2019 19:38:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7D08520659
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Nov 2019 19:55:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="C5Yvk1qA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 089CC20672
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GLhgGFVf";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NCPaWRIy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7D08520659
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ofQ7czjOgdgFrYubaGi765Ze4l6FwTf4RrEpDeKINwk=; b=C5Yvk1qAFiZc9S
-	BVOX/yeouSx45PxUvyGqptUVcpS9pT+bqoIJJkU1YMsA+0tURpy6uFqz1k3cX3ge9rBjN4rWWvT7Z
-	vIaor1zppi0Toe12uxP21FPdIIXbKmNoBk/47yhU+oy5qpQADzD/NvZTrSZw+Yr9BB+834KxBGWBJ
-	3neSMWfAm4hKTtm+/gEm+oOsIIKDs24uJGD9cQCPSRyN6vDHxh21A8SOU8eNGM9T+8lXtB2WCsYNg
-	YmoQvYlhXgTekQb7CDdnwjjAAKiDd9puxZkULtDsH8s9ZzYPN+aL1EH6yxLyZMnyo4pTKZjVX1XOf
-	aO8euSBcMZz0XolT2ugA==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=RnrU9z0Hkqt/gXoWPf4uu9ZHZyboNtRhO91uN5QLV0k=; b=GLh
+	gGFVfPtakv7EtUlTzOq94V9Au8/68fOcJlyZxnQ0VSuL+Sh+Q1ouSsQ+33a0qZkRhiMC2AehNuKHc
+	ClrVjgK4nVfk/2MXLcOEGqPeksWC9QiK8u5CaRsHtwMxHfHjVS5d1R2Ej/FG8jX/7gmFCHKcOAbfw
+	fTYkD2dy11YFVUC2FwDRBH2qV3Bv53HKGa0qga42+gNYlWT8Wv1Q9crxv8Mun1kp2HRinPq4zqzH4
+	M+3hD+cnbATpbdIKBXY7QM1nBZmvE7EF7fxPIYEwab5815isnTGoQm9yFGRhme5Ut4bbfSOx2YHkr
+	yunDEfVEyAsDj9X49Ice0zEAp5fDnbA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iXsH8-0002Az-8A; Thu, 21 Nov 2019 19:37:58 +0000
-Received: from mail-oi1-f196.google.com ([209.85.167.196])
+	id 1iXsXQ-0007fZ-NI; Thu, 21 Nov 2019 19:54:48 +0000
+Received: from mail-io1-xd2e.google.com ([2607:f8b0:4864:20::d2e])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iXsGx-00021r-Ka; Thu, 21 Nov 2019 19:37:48 +0000
-Received: by mail-oi1-f196.google.com with SMTP id m193so4342251oig.0;
- Thu, 21 Nov 2019 11:37:45 -0800 (PST)
+ id 1iXsXN-0007ah-Ns
+ for linux-mtd@lists.infradead.org; Thu, 21 Nov 2019 19:54:47 +0000
+Received: by mail-io1-xd2e.google.com with SMTP id x21so4963940ior.2
+ for <linux-mtd@lists.infradead.org>; Thu, 21 Nov 2019 11:54:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:from:date:message-id:subject:to;
+ bh=2eu0F0T8oU0bzUVUCsIqoDUK61prCYJNl0UzXCdMdoI=;
+ b=NCPaWRIyilUWcVU+jLB//KQCfMY8EVAKpZme0SfrqbjJjRy3HLXxHZQ5qbB+Ri0zgq
+ gSe7p4faq0cVWqXoXGUtSWHRg8HZxWnZpwsRb4JaCOJVxDDoEl5UREY9gqLvEnZezfNq
+ nJZh6ww/55Nx8n+/zT+7hW1d5YX/hUGCmhM0TlZ8eoTNgCW5SYGVXJqtdXhCkCOQQGXG
+ hFsuDR/60myS8fpSsYV/ns4fWSUz2bUAYToa/pQ7UhPEj27nW7/9IeJwO9K5mAe4w8pZ
+ maOaSa0MoQ+pggs+9rYudh8Fs/9+BNmY6USWAYtYXqkhAEgJzwVJ2aep6RZVGYvmhGu/
+ BpmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=tMER4MOHixp2wY9ZjS4RrN2RrDNX7H+o1z/zXkM48ZU=;
- b=XaUzvB4OBBh6WGpG1rsulZ6wBvYE0BZSYrU9epoToS0VrT8rZBKZRr96px5Tuk0Cw8
- Y6UMQjg/UQzNSr2SfjNnkEGclyTGyv9m1c8r4ITbmmlQ8/xv8JpX5PqLg+aSiHnGK1WF
- Yw+Vr52c9G6b1MOWbNGIH7hb+dYM3bWqSUDarIQfBp0Oz+ZfR26Ng+NSiPuiz44Q79d6
- aIJiD3xukhVvh2FVjJmkJSAyG2DxsgTdkR5Hum6atTlBpv6yWgpv3A5T3UHszYCvIrZV
- nULjvWu4kMtYg4VI3JfBBafuHw/THOZ75Zwyq8t9I0Yek94SCssovo4CJMvkvh2EPlZS
- ZB1w==
-X-Gm-Message-State: APjAAAUWxkrRhbFum0vFtnsO4jgMQ2wSRj8hWTcynDW60aVFCn7q0Nip
- Pdjd++I59UGHD6Pqe+YRSQ==
-X-Google-Smtp-Source: APXvYqxz3r1XfhG46Xqzohy//cfJAs84lDW7vsquvPUXB2FPHrRH/1ETgZRryOu7acvqdws+X02tgA==
-X-Received: by 2002:aca:4ac5:: with SMTP id x188mr8823046oia.148.1574365065094; 
- Thu, 21 Nov 2019 11:37:45 -0800 (PST)
-Received: from localhost (24-155-109-49.dyn.grandenetworks.net.
- [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id e88sm1305777ote.39.2019.11.21.11.37.44
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 21 Nov 2019 11:37:44 -0800 (PST)
-Date: Thu, 21 Nov 2019 13:37:43 -0600
-From: Rob Herring <robh@kernel.org>
-To: Benjamin Gaignard <benjamin.gaignard@st.com>
-Subject: Re: [PATCH] dt-bindings: mtd: Convert stm32 fmc2-nand bindings to
- json-schema
-Message-ID: <20191121193743.GA3627@bogus>
-References: <20191121130615.13007-1-benjamin.gaignard@st.com>
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+ bh=2eu0F0T8oU0bzUVUCsIqoDUK61prCYJNl0UzXCdMdoI=;
+ b=getBjKSuFYMmQk5BKcqPjTZXikxhBBUNskfq9BvdQfJKs2+b7zN7m1qRn4eoiTI81N
+ bscYdf2RZ5l717FrsMSsHHirfWRI4az0Ue8pjVepjjxPKH5aJDNNHjfEEw17OYDwP30g
+ d2ijNrFoml1TGcDc1xAhDSP7V7kMyOuKKuMzDmqcc7UO7MFoo9Xw+FsV/xQnpd4+uZpn
+ KyCPlsONxM12QRCf7VnwYwFiWldZ1HLr6q6nQcd7x6+cui/odQ32pOil/SeqZ6JVxxTk
+ sN0KfVcPlBUjxEDpOGe/JiHPefccHbo2x8M7Cs/+PbxmWWqvU49V24idnM5msDw03X7f
+ B3uA==
+X-Gm-Message-State: APjAAAUQRxk4KUl50BAVGPcrnTHhUdyFmmr6zDo/6zosJRDdiUMFqS0p
+ tsp7fBIAHrsorwWM8XWk7cG7cOvJ2ylYeY/LXhyXA3eW
+X-Google-Smtp-Source: APXvYqw398P/e36DkUmaCdWHywkrN2YdzifMUnroDMMCn7n1U1WsIJGme8iwI9z9ZHjVt6km79FyYCYY+nfxmDaNzYw=
+X-Received: by 2002:a5d:9602:: with SMTP id w2mr8806916iol.34.1574366082789;
+ Thu, 21 Nov 2019 11:54:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20191121130615.13007-1-benjamin.gaignard@st.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+From: Otto Blom <oblom586@gmail.com>
+Date: Thu, 21 Nov 2019 11:54:32 -0800
+Message-ID: <CAOfSrV1CNn6EpPkAkP8F2VQUrit_B-t89sSxW=08zyKVOdt9AA@mail.gmail.com>
+Subject: mtd-utils io_paral test fails on NAND
+To: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191121_113747_672297_FDCA1817 
-X-CRM114-Status: UNSURE (   9.04  )
+X-CRM114-CacheID: sfid-20191121_115445_804477_A088A83D 
+X-CRM114-Status: UNSURE (   7.69  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -85,34 +86,27 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org,
- Christophe Kerello <christophe.kerello@st.com>, vigneshr@ti.com,
- richard@nod.at, linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
- robh+dt@kernel.org, linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
- Benjamin Gaignard <benjamin.gaignard@st.com>, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, alexandre.torgue@st.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 21 Nov 2019 14:06:15 +0100, Benjamin Gaignard wrote:
-> Convert the STM32 fmc2-nand binding to DT schema format using json-schema
-> 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@st.com>
-> CC: Christophe Kerello <christophe.kerello@st.com>
-> ---
->  .../bindings/mtd/st,stm32-fmc2-nand.yaml           | 98 ++++++++++++++++++++++
->  .../devicetree/bindings/mtd/stm32-fmc2-nand.txt    | 61 --------------
->  2 files changed, 98 insertions(+), 61 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
->  delete mode 100644 Documentation/devicetree/bindings/mtd/stm32-fmc2-nand.txt
-> 
+Hello All !
 
-Applied, thanks.
+A couple of updates on this problem. Turns out io_read also fails in
+the same way as io_paral - A page of data comes back as all zeros.
+Interestingly I added a retry option to see if it is a read or write
+problem and turns out every single time so far the data is correct
+when I read it a second time.
 
-Rob
+In summary when I run runubitests.sh it passes about 70% of the time,
+io_paral fails 25% and io_read the remaining 5%
+
+Any recommendations on what to try next ?
+
+Thanks in advance
+
+/Otto
 
 ______________________________________________________
 Linux MTD discussion mailing list
