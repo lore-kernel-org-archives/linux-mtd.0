@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2FA3C432C0
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Nov 2019 05:55:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 717B3C432C0
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Nov 2019 05:56:38 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 91EF220717
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Nov 2019 05:55:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3A7652070A
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Nov 2019 05:56:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Xr3i7Knh";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="eWktz9/D"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 91EF220717
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AEoNtroz";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="voc0qooy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A7652070A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,38 +26,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ViSXKojSfxDuaDvtZR4fi6c4KZCz4fkG2bLyKJ4lEXw=; b=Xr3i7KnhJVdCWd
-	YKGcQUDGc/mBaQNlul+IggYRHPzFA8nVFW2+aOB+kS9tdf91WbZvNzMktbhRHdx5XsSOpOwgr5ZER
-	bP/16aehlh6Pmd/2cKO2t2RyW4n0nlCn4zvaQLpDqhKjlPhIqgg439ZdvG5xTAJvSQhHqJexDeOVS
-	9ihm02QbkpamWQ5F1o5eeiRZ6P2jPXR76Ktgo671InoGf0N4d7cEt9yszhZr/rzuTN25QGOgsjFCK
-	C3+LBPIMOyxRo51jvLTMGCeThJ7K0CqwTzV4p3VRWR9epgzUjTgpwfGE334feKaIdqgjgtkY5uXQh
-	EEF7bKWp2Dh0i6r5nGFQ==;
+	List-Owner; bh=A31xkz7b9N1NvOSxUWVDgMBF/29HucGteHY9PjRheLE=; b=AEoNtrozzjWj4O
+	p5lmgemQLGqorRnxcPss7KLat3Y0xlaOg6igwK/elkIlRkAaM7rDPiyCK/k2xwXiqiTm3hDDnes+h
+	rBaelHNHx+R7yAcKQ8k/3yRyVQCCqUv7RzbUuq/uBU0cbu1Fj1mAyJzJ82GR1Nqi2h5qEgejvgWOt
+	iNJMrcIjHGheqJu1hPWSJupNIXobrA/NbKH7QVFXjeivjy4G6MfUKoLofyZLd817v0C1IGoeH9Gkw
+	R3l1ITtdW340CfpZi9aJ5g7Q1n06I9qZKp0jMzSRRibp9wMVeF8+riEJXLx3M1v369Ma7B0wKqaof
+	xBlh/U1r2Tkr6+3VQQhA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iY1uu-00087m-2v; Fri, 22 Nov 2019 05:55:40 +0000
+	id 1iY1va-0000CX-Af; Fri, 22 Nov 2019 05:56:22 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iY1pb-0001VU-1V
- for linux-mtd@lists.infradead.org; Fri, 22 Nov 2019 05:50:13 +0000
+ id 1iY1pc-0001ch-EE
+ for linux-mtd@lists.infradead.org; Fri, 22 Nov 2019 05:50:14 +0000
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 28F5E2071F;
- Fri, 22 Nov 2019 05:50:09 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 493432070E;
+ Fri, 22 Nov 2019 05:50:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1574401809;
- bh=NIBG/DzQYeupRi6YDd/Ko+G1upVp5K5Gk4rxGAwR4UQ=;
+ s=default; t=1574401811;
+ bh=ox+jk7ejkHNusLkSVH1D1TnF4JEMqPUC8DpY3z5P1do=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=eWktz9/DNvouk9H42TfUHimTFYe7mPscaBIKN28Vd2mS0UXVe2ayKyelDWBS76ggu
- 1qng3dLFy3N/w4kWz9gJgLGAQM4xL8RujQeNb8xwl16NIQrmFD4mIXGqpG4TO7viTk
- /S3Om8fheGBFhgLOQIQAQaBKtv4a0jHgjeRkzvt8=
+ b=voc0qooyg2b5Afn8/GyFSGUtV8v1KCaT3bXxa0B0m4G3D6bAhWaWI/HJ5YS7YHfUj
+ eFCGsSLr+6PSwJhFko9zojAibDwEVoM5n1G4Whi8Yeu1tH8Wevbj9BvMBpTn/iHuuO
+ NROzJmy2eWtrAmk7j8y2RhcW7hGA5mkIo+OfHJqo=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 054/219] ubi: Put MTD device after it is not used
-Date: Fri, 22 Nov 2019 00:46:26 -0500
-Message-Id: <20191122054911.1750-47-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 055/219] ubi: Do not drop UBI device reference
+ before using
+Date: Fri, 22 Nov 2019 00:46:27 -0500
+Message-Id: <20191122054911.1750-48-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191122054911.1750-1-sashal@kernel.org>
 References: <20191122054911.1750-1-sashal@kernel.org>
@@ -65,8 +66,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191121_215011_190811_78FCF0E9 
-X-CRM114-Status: GOOD (  11.21  )
+X-CRM114-CacheID: sfid-20191121_215012_611646_1C264AA5 
+X-CRM114-Status: GOOD (  12.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,36 +89,37 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Pan Bian <bianpan2016@163.com>
 
-[ Upstream commit b95f83ab762dd6211351b9140f99f43644076ca8 ]
+[ Upstream commit e542087701f09418702673631a908429feb3eae0 ]
 
-The MTD device reference is dropped via put_mtd_device, however its
-field ->index is read and passed to ubi_msg. To fix this, the patch
-moves the reference dropping after calling ubi_msg.
+The UBI device reference is dropped but then the device is used as a
+parameter of ubi_err. The bug is introduced in changing ubi_err's
+behavior. The old ubi_err does not require a UBI device as its first
+parameter, but the new one does.
 
+Fixes: 32608703310 ("UBI: Extend UBI layer debug/messaging capabilities")
 Signed-off-by: Pan Bian <bianpan2016@163.com>
 Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/ubi/build.c | 2 +-
+ drivers/mtd/ubi/kapi.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index d2a726654ff11..c120c8761fcd2 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -1101,10 +1101,10 @@ int ubi_detach_mtd_dev(int ubi_num, int anyway)
- 	ubi_wl_close(ubi);
- 	ubi_free_internal_volumes(ubi);
- 	vfree(ubi->vtbl);
--	put_mtd_device(ubi->mtd);
- 	vfree(ubi->peb_buf);
- 	vfree(ubi->fm_buf);
- 	ubi_msg(ubi, "mtd%d is detached", ubi->mtd->index);
-+	put_mtd_device(ubi->mtd);
- 	put_device(&ubi->dev);
- 	return 0;
+diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
+index e9e9ecbcedcc3..0b8f0c46268da 100644
+--- a/drivers/mtd/ubi/kapi.c
++++ b/drivers/mtd/ubi/kapi.c
+@@ -227,9 +227,9 @@ struct ubi_volume_desc *ubi_open_volume(int ubi_num, int vol_id, int mode)
+ out_free:
+ 	kfree(desc);
+ out_put_ubi:
+-	ubi_put_device(ubi);
+ 	ubi_err(ubi, "cannot open device %d, volume %d, error %d",
+ 		ubi_num, vol_id, err);
++	ubi_put_device(ubi);
+ 	return ERR_PTR(err);
  }
+ EXPORT_SYMBOL_GPL(ubi_open_volume);
 -- 
 2.20.1
 
