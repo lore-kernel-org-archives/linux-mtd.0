@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54ADCC43215
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Nov 2019 06:15:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02BF3C432C3
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Nov 2019 06:15:40 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2A88C2068E
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Nov 2019 06:15:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CBC6120708
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Nov 2019 06:15:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Z+eOdSyp";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="TpSeSd0N"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2A88C2068E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="aEKtAxXo";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="i9G61iSV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CBC6120708
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,38 +26,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bvKUctxrm/SgqcnVv/nywA09rILQqnFn4DpGy40hAQk=; b=Z+eOdSypnegAZC
-	i55y50tARaHraVM0ftVPeaRCDjTboC3WmjtbLxbEY+1GlNK5b8RA53OLQzxozU6eWnJuq0CcqSee/
-	0stLGBQcNpf/miUE72z4L0DfIn9dVFNApTiPwItXAlMBdtU/ZTL6ZRhl+Q09wkTU7Op6kQhZrAxLR
-	Wz3UTYSBWLO0tgLOfO2zseSlUW/kHnx1D3jW/FBVwhqlV1dh/lgLrEpiDGPN/QXKUiTh3SelmvHwa
-	2Vj87u/+q9n9C6B69K53kJrMYDHEhat77PMwMMNud1IcqkI2BpFXzC9K6NBNF0qhjdCkFFlU6/W4w
-	IyMfsZTAUrCE1U1INuKw==;
+	List-Owner; bh=1A6r2B8YU9gEkeJt+g/Y91EJPcvKj/hPrqhn1do/cDo=; b=aEKtAxXo8GuCPc
+	QfSpmqBAAUvz3xXlViPuPTUJAjh3uYwTa+0ZMrGJ72GcFdPvKRjFmDL5oFRH7NLGoRvVujJEUjZ9D
+	y6Zez2azeYw360OdniXyV9LStp4Gos2cG+AWyXOYqtvk8LrMCwr4oUuFQgUxdsmIFFXFT1rdXovoq
+	8ypj3+DxC8sU82kqy2VCsOMBHCTeMVHRDfHtuLFTpeX8WTJAoy3xL9bzM8JU4S3AxeeC99jE++5n+
+	E2uRy5Zc6qvKU+tc1h2rlLm+8ViZB8wIr5eWSIhxe7wqKidpw0GMHkB96AS2iV1VJAeN1slFvZ00C
+	zd29ryu0dfWrgtG5pS8A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iY2Dg-0001LL-DQ; Fri, 22 Nov 2019 06:15:04 +0000
+	id 1iY2E2-0002uo-42; Fri, 22 Nov 2019 06:15:26 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iY2Ci-0000W1-FJ
- for linux-mtd@lists.infradead.org; Fri, 22 Nov 2019 06:14:06 +0000
+ id 1iY2Cy-0000iy-Kc
+ for linux-mtd@lists.infradead.org; Fri, 22 Nov 2019 06:14:22 +0000
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id AB0E52070E;
- Fri, 22 Nov 2019 06:14:02 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id EE58A20707;
+ Fri, 22 Nov 2019 06:14:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1574403243;
- bh=KZb8ob2IGRQ5it7YQX1abQxF3UyJRObWUe+TBwZzo14=;
+ s=default; t=1574403259;
+ bh=v2yq6QuBQJWjhwP+bGg0C5drFr5wc3WHgW3vI2tG9V8=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=TpSeSd0N1i12u6oN6OU5j45agEhMCtukzzVWL6ERqIWn3+GgGA98G8YToHji5UnwL
- sTOCI32Wp79KwXkqg2d/doomVKVYDhxjKyrrMwhII3Ubf1QxY+588/CZdav1TJ8IK2
- e9E8v5jwVE7lbti23XgD90kwtyFTuinlLURukhUs=
+ b=i9G61iSVM2qLV2TX+OVljOYZomPg/5KVEbfGJZJQ2e8zbSqvS7tZl2kl8ilkjVBhr
+ pXIi+CqI3bk+t65h/jR2rr/ESmARhHA4ptOo/dhb5NJg0yYzuvzmTma4P7utWrVgzV
+ L1rPXhOslnOQkvE2puOOhidLaJZ1bvdHJaMO97Io=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 54/68] mtd: Check add_mtd_device() ret code
-Date: Fri, 22 Nov 2019 01:12:47 -0500
-Message-Id: <20191122061301.4947-53-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 68/68] mtd: Remove a debug trace in mtdpart.c
+Date: Fri, 22 Nov 2019 01:13:01 -0500
+Message-Id: <20191122061301.4947-67-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191122061301.4947-1-sashal@kernel.org>
 References: <20191122061301.4947-1-sashal@kernel.org>
@@ -65,8 +65,9 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191121_221404_754575_18AFDDD8 
-X-CRM114-Status: GOOD (  12.37  )
+X-CRM114-CacheID: sfid-20191121_221420_928503_8C0A50D8 
+X-CRM114-Status: UNSURE (   7.63  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,108 +88,31 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Boris Brezillon <bbrezillon@kernel.org>
 
-[ Upstream commit 2b6f0090a3335b7bdd03ca520c35591159463041 ]
+[ Upstream commit bda2ab56356b9acdfab150f31c4bac9846253092 ]
 
-add_mtd_device() can fail. We should always check its return value
-and gracefully handle the failure case. Fix the call sites where this
-not done (in mtdpart.c) and add a __must_check attribute to the
-prototype to avoid this kind of mistakes.
+Commit 2b6f0090a333 ("mtd: Check add_mtd_device() ret code") contained
+a leftover of the debug session that led to this bug fix. Remove this
+pr_info().
 
+Fixes: 2b6f0090a333 ("mtd: Check add_mtd_device() ret code")
 Signed-off-by: Boris Brezillon <bbrezillon@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/mtdcore.h |  2 +-
- drivers/mtd/mtdpart.c | 36 +++++++++++++++++++++++++++++++-----
- 2 files changed, 32 insertions(+), 6 deletions(-)
+ drivers/mtd/mtdpart.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/mtd/mtdcore.h b/drivers/mtd/mtdcore.h
-index 7b0353399a106..b837f44716820 100644
---- a/drivers/mtd/mtdcore.h
-+++ b/drivers/mtd/mtdcore.h
-@@ -6,7 +6,7 @@
- extern struct mutex mtd_table_mutex;
- 
- struct mtd_info *__mtd_next_device(int i);
--int add_mtd_device(struct mtd_info *mtd);
-+int __must_check add_mtd_device(struct mtd_info *mtd);
- int del_mtd_device(struct mtd_info *mtd);
- int add_mtd_partitions(struct mtd_info *, const struct mtd_partition *, int);
- int del_mtd_partitions(struct mtd_info *);
 diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index f8ba153f63bfe..9b48be05cd1af 100644
+index 9b48be05cd1af..59772510452a5 100644
 --- a/drivers/mtd/mtdpart.c
 +++ b/drivers/mtd/mtdpart.c
-@@ -610,10 +610,22 @@ int mtd_add_partition(struct mtd_info *master, const char *name,
- 	list_add(&new->list, &mtd_partitions);
+@@ -624,7 +624,6 @@ int mtd_add_partition(struct mtd_info *master, const char *name,
  	mutex_unlock(&mtd_partitions_mutex);
  
--	add_mtd_device(&new->mtd);
-+	ret = add_mtd_device(&new->mtd);
-+	if (ret)
-+		goto err_remove_part;
+ 	free_partition(new);
+-	pr_info("%s:%i\n", __func__, __LINE__);
  
- 	mtd_add_partition_attrs(new);
- 
-+	return 0;
-+
-+err_remove_part:
-+	mutex_lock(&mtd_partitions_mutex);
-+	list_del(&new->list);
-+	mutex_unlock(&mtd_partitions_mutex);
-+
-+	free_partition(new);
-+	pr_info("%s:%i\n", __func__, __LINE__);
-+
  	return ret;
  }
- EXPORT_SYMBOL_GPL(mtd_add_partition);
-@@ -658,28 +670,42 @@ int add_mtd_partitions(struct mtd_info *master,
- {
- 	struct mtd_part *slave;
- 	uint64_t cur_offset = 0;
--	int i;
-+	int i, ret;
- 
- 	printk(KERN_NOTICE "Creating %d MTD partitions on \"%s\":\n", nbparts, master->name);
- 
- 	for (i = 0; i < nbparts; i++) {
- 		slave = allocate_partition(master, parts + i, i, cur_offset);
- 		if (IS_ERR(slave)) {
--			del_mtd_partitions(master);
--			return PTR_ERR(slave);
-+			ret = PTR_ERR(slave);
-+			goto err_del_partitions;
- 		}
- 
- 		mutex_lock(&mtd_partitions_mutex);
- 		list_add(&slave->list, &mtd_partitions);
- 		mutex_unlock(&mtd_partitions_mutex);
- 
--		add_mtd_device(&slave->mtd);
-+		ret = add_mtd_device(&slave->mtd);
-+		if (ret) {
-+			mutex_lock(&mtd_partitions_mutex);
-+			list_del(&slave->list);
-+			mutex_unlock(&mtd_partitions_mutex);
-+
-+			free_partition(slave);
-+			goto err_del_partitions;
-+		}
-+
- 		mtd_add_partition_attrs(slave);
- 
- 		cur_offset = slave->offset + slave->mtd.size;
- 	}
- 
- 	return 0;
-+
-+err_del_partitions:
-+	del_mtd_partitions(master);
-+
-+	return ret;
- }
- 
- static DEFINE_SPINLOCK(part_parser_lock);
 -- 
 2.20.1
 
