@@ -5,19 +5,20 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B430C432C0
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Nov 2019 12:03:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0729C432C0
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Nov 2019 17:05:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5A1AD20674
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Nov 2019 12:03:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C456F2068F
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Nov 2019 17:05:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QrXUcsT9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5A1AD20674
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EE8KkxdJ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=st.com header.i=@st.com header.b="ScO2cTUd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C456F2068F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=st.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -25,40 +26,60 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
 	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=TNME4waj7jajkOrGT6NU65f6HkbNMP85M0BdmVNvi6U=; b=QrXUcsT9A93cfL
-	obHVsgcDO95PK39Or4a/JZmDuUA+lXmDO3/jjJh4yt0Rig54gM7CkkRp+5NC9EESZOy85wypwYb3m
-	/1E1YtzYaa1/v7oSvFGn85IR1bAVogWsOt5EqNTcWSmtJlENL3YaSTqSKucAv8hrgcEmGKffFejN1
-	MJcwDgoPcvwPTqorMvsan5hpseA+BDgR36aDnmevGMTFVvcSVKElixujhNHZWPhvQEVJHw4qJ+iC7
-	/H+rq0knB6InXx2rJYGfTkjZnAer7+EMwIc+PTiyAHRc/Xz1+7R7HGfKusGver84CxVcj8sRECapc
-	YYOfJvV2lD4QZeaaNQxg==;
+	List-Owner; bh=f0CQYHThiD8zJaMBcRvQvV7KOVIbKFEYsdjr1luGF/Q=; b=EE8KkxdJQS5J5t
+	pzQZNdwzRRlTlXrAw+cfDCa2xOOJ0Kz0z8oacvfZyQJH//ppJp0cO+DfI63VmxIBKDk7hNxo+liEu
+	OpRSovSyUfSebcaa2gbcxFxnUiyFSiZFaie8WKylzQSly0dgZ8/NiCO5KiTX6UjRpqNy3aigtGkjN
+	Rl3EWTY9BqXToZ17yEKz9XS+L4n7yleitiH3H5hqTHpt23YRr2J0OIECpp2GH87DyhqqUHGZfKhtm
+	ag/ZTNYh6y54aakj3kdYQzRHcuQqFUVs7AhG1ShP7Wed9hrKqLncXOG0h6orUj800+u8J6NX5K6Z+
+	tsb+Uau/9LxPbqXHm9VA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iY7ey-0007Ce-Gs; Fri, 22 Nov 2019 12:03:36 +0000
-Received: from szxga07-in.huawei.com ([45.249.212.35] helo=huawei.com)
+	id 1iYCMO-0003ny-EW; Fri, 22 Nov 2019 17:04:44 +0000
+Received: from mx07-00178001.pphosted.com ([62.209.51.94])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iY7ev-0007Bl-3O
- for linux-mtd@lists.infradead.org; Fri, 22 Nov 2019 12:03:35 +0000
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
- by Forcepoint Email with ESMTP id D76088106B322F716145;
- Fri, 22 Nov 2019 20:03:19 +0800 (CST)
-Received: from localhost.localdomain (10.90.53.225) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.439.0; Fri, 22 Nov 2019 20:03:10 +0800
-From: Chen Wandun <chenwandun@huawei.com>
-To: <kyungmin.park@samsung.com>, <miquel.raynal@bootlin.com>,
- <richard@nod.at>, <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-Subject: [PATCH] nand: onenand: samsung: remove variable 'tmp' set but not used
-Date: Fri, 22 Nov 2019 20:08:54 +0800
-Message-ID: <1574424534-141265-1-git-send-email-chenwandun@huawei.com>
-X-Mailer: git-send-email 2.7.4
+ id 1iYCMF-0003nC-4Q
+ for linux-mtd@lists.infradead.org; Fri, 22 Nov 2019 17:04:37 +0000
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+ by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
+ xAMH2xbe027518; Fri, 22 Nov 2019 18:04:29 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com;
+ h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=sDlyBHMmlDnVJUfbwI/v8Ci33r9NaPZf6a4Vey8Cbh4=;
+ b=ScO2cTUdmzsMRx1QAf4QZar2ZaUZEc12ba4mdm4u7pMakoBTTWtHjMldqJLSE6ge5dtZ
+ 6V0mo1M1cEILb8Zqk1VOVvnOi+EFLip7Vedl1nJLslGa4QiDrBKjotMOHhgua68LhYMK
+ D8Gh+HeFWxdWeelAkapKLmmL27ZBIIpSvUFPu9dHm8dRN6OPfdTU3gy66SzMncLAZjRm
+ lPdDFP+RNFDakISeeQQwZvH7gMXyMGel25qt9YBjhabbIKKnXKhGEHouNNMoBd6nmALb
+ 5ytpF5EEhAjaxkQSj/mhfJygeXV7XM5UUrhDXtwMy6l79dJjmemaGarDpWnWsw5734Uo YA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+ by mx07-00178001.pphosted.com with ESMTP id 2wa9ujhv5w-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 22 Nov 2019 18:04:29 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 048E210002A;
+ Fri, 22 Nov 2019 18:04:27 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag6node2.st.com [10.75.127.17])
+ by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B3BFF2FF5FE;
+ Fri, 22 Nov 2019 18:04:27 +0100 (CET)
+Received: from localhost (10.75.127.44) by SFHDAG6NODE2.st.com (10.75.127.17)
+ with Microsoft SMTP Server (TLS) id 15.0.1347.2;
+ Fri, 22 Nov 2019 18:04:27 +0100
+From: Christophe Kerello <christophe.kerello@st.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
+Subject: mtd: Use mtd device name instead of mtd->name when registering nvmem
+ device
+Date: Fri, 22 Nov 2019 18:03:42 +0100
+Message-ID: <1574442222-19759-1-git-send-email-christophe.kerello@st.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-X-Originating-IP: [10.90.53.225]
-X-CFilter-Loop: Reflected
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG5NODE3.st.com (10.75.127.15) To SFHDAG6NODE2.st.com
+ (10.75.127.17)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-11-22_03:2019-11-21,2019-11-22 signatures=0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191122_040333_760017_F7670818 
-X-CRM114-Status: UNSURE (   9.16  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20191122_090435_634511_D1B21476 
+X-CRM114-Status: GOOD (  16.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,42 +91,115 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: chenwandun@huawei.com
+Cc: Christophe Kerello <christophe.kerello@st.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Fixes gcc '-Wunused-but-set-variable' warning:
-drivers/mtd/nand/onenand/samsung_mtd.c: In function s3c_onenand_check_lock_status:
-drivers/mtd/nand/onenand/samsung_mtd.c:731:6: warning: variable tmp set but not used [-Wunused-but-set-variable]
+MTD currently allows to have same partition name on different devices.
+Since nvmen device registration has been added, it is not more possible
+to have same partition name on different devices. We get following
+logs:
+sysfs: cannot create duplicate filename XXX
+Failed to register NVMEM device
 
-Signed-off-by: Chen Wandun <chenwandun@huawei.com>
+To avoid such issue, the proposed patch uses the mtd device name instead of
+the partition name.
+
+Fixes: c4dfa25ab307 ("mtd: add support for reading MTD devices via the nvmem API")
+Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
 ---
- drivers/mtd/nand/onenand/samsung_mtd.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Hi,
 
-diff --git a/drivers/mtd/nand/onenand/samsung_mtd.c b/drivers/mtd/nand/onenand/samsung_mtd.c
-index 55e5536..3573b12 100644
---- a/drivers/mtd/nand/onenand/samsung_mtd.c
-+++ b/drivers/mtd/nand/onenand/samsung_mtd.c
-@@ -728,13 +728,12 @@ static void s3c_onenand_check_lock_status(struct mtd_info *mtd)
- 	struct onenand_chip *this = mtd->priv;
- 	struct device *dev = &onenand->pdev->dev;
- 	unsigned int block, end;
--	int tmp;
+With latest mtd-next branch, we get following logs on our STM32MP1 eval board.
+
+[    1.979089] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xd3
+[    1.984055] nand: Micron MT29F8G08ABACAH4
+[    1.988000] nand: 1024 MiB, SLC, erase size: 256 KiB, page size: 4096, OOB size: 224
+[    1.996378] Bad block table found at page 262080, version 0x01
+[    2.001945] Bad block table found at page 262016, version 0x01
+[    2.008002] 4 fixed-partitions partitions found on MTD device 58002000.nand-controller
+[    2.015398] Creating 4 MTD partitions on "58002000.nand-controller":
+[    2.021751] 0x000000000000-0x000000200000 : "fsbl"
+[    2.028506] 0x000000200000-0x000000400000 : "ssbl1"
+[    2.033741] 0x000000400000-0x000000600000 : "ssbl2"
+[    2.038924] 0x000000600000-0x000040000000 : "UBI"
+[    2.051336] spi-nor spi0.0: mx66l51235l (65536 Kbytes)
+[    2.055123] 4 fixed-partitions partitions found on MTD device spi0.0
+[    2.061378] Creating 4 MTD partitions on "spi0.0":
+[    2.066243] 0x000000000000-0x000000040000 : "fsbl"
+[    2.071429] sysfs: cannot create duplicate filename '/bus/nvmem/devices/fsbl'
+[    2.078157] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.4.0-rc4-00031-g589e1b6 #176
+[    2.085781] Hardware name: STM32 (Device Tree Support)
+[    2.090957] [<c0312830>] (unwind_backtrace) from [<c030cbe4>] (show_stack+0x10/0x14)
+[    2.098693] [<c030cbe4>] (show_stack) from [<c0e8d340>] (dump_stack+0xb4/0xc8)
+[    2.105929] [<c0e8d340>] (dump_stack) from [<c050fcdc>] (sysfs_warn_dup+0x58/0x64)
+[    2.113509] [<c050fcdc>] (sysfs_warn_dup) from [<c0510010>] (sysfs_do_create_link_sd+0xe4/0xe8)
+[    2.122224] [<c0510010>] (sysfs_do_create_link_sd) from [<c0956f60>] (bus_add_device+0x80/0xfc)
+[    2.130938] [<c0956f60>] (bus_add_device) from [<c0953f54>] (device_add+0x35c/0x608)
+[    2.138697] [<c0953f54>] (device_add) from [<c0d12e0c>] (nvmem_register.part.2+0x180/0x624)
+[    2.147065] [<c0d12e0c>] (nvmem_register.part.2) from [<c09ea5c8>] (add_mtd_device+0x2d8/0x4b8)
+[    2.155776] [<c09ea5c8>] (add_mtd_device) from [<c09edbd4>] (add_mtd_partitions+0x84/0x16c)
+[    2.164140] [<c09edbd4>] (add_mtd_partitions) from [<c09ed9ac>] (parse_mtd_partitions+0x220/0x3c4)
+[    2.173118] [<c09ed9ac>] (parse_mtd_partitions) from [<c09ea8d4>] (mtd_device_parse_register+0x40/0x164)
+[    2.182622] [<c09ea8d4>] (mtd_device_parse_register) from [<c0a22dfc>] (spi_nor_probe+0xd0/0x190)
+[    2.191513] [<c0a22dfc>] (spi_nor_probe) from [<c0a370a0>] (spi_drv_probe+0x80/0xa4)
+[    2.199268] [<c0a370a0>] (spi_drv_probe) from [<c0957f8c>] (really_probe+0x234/0x34c)
+[    2.207111] [<c0957f8c>] (really_probe) from [<c095821c>] (driver_probe_device+0x60/0x174)
+[    2.215391] [<c095821c>] (driver_probe_device) from [<c0956378>] (bus_for_each_drv+0x58/0xb8)
+[    2.223932] [<c0956378>] (bus_for_each_drv) from [<c0957ce4>] (__device_attach+0xd0/0x13c)
+[    2.232212] [<c0957ce4>] (__device_attach) from [<c0957060>] (bus_probe_device+0x84/0x8c)
+[    2.240404] [<c0957060>] (bus_probe_device) from [<c0953fb4>] (device_add+0x3bc/0x608)
+[    2.248334] [<c0953fb4>] (device_add) from [<c0a377b4>] (spi_add_device+0x9c/0x14c)
+[    2.256003] [<c0a377b4>] (spi_add_device) from [<c0a37b98>] (of_register_spi_device+0x234/0x370)
+[    2.264807] [<c0a37b98>] (of_register_spi_device) from [<c0a384ec>] (spi_register_controller+0x578/0x734)
+[    2.274394] [<c0a384ec>] (spi_register_controller) from [<c0a386dc>] (devm_spi_register_controller+0x34/0x6c)
+[    2.284331] [<c0a386dc>] (devm_spi_register_controller) from [<c0a4d0b8>] (stm32_qspi_probe+0x338/0x3bc)
+[    2.293831] [<c0a4d0b8>] (stm32_qspi_probe) from [<c0959ee0>] (platform_drv_probe+0x48/0x98)
+[    2.302285] [<c0959ee0>] (platform_drv_probe) from [<c0957f8c>] (really_probe+0x234/0x34c)
+[    2.310566] [<c0957f8c>] (really_probe) from [<c095821c>] (driver_probe_device+0x60/0x174)
+[    2.318847] [<c095821c>] (driver_probe_device) from [<c09584d8>] (device_driver_attach+0x58/0x60)
+[    2.327735] [<c09584d8>] (device_driver_attach) from [<c0958560>] (__driver_attach+0x80/0xbc)
+[    2.336276] [<c0958560>] (__driver_attach) from [<c09562cc>] (bus_for_each_dev+0x74/0xb4)
+[    2.344469] [<c09562cc>] (bus_for_each_dev) from [<c09572c4>] (bus_add_driver+0x164/0x1e8)
+[    2.352749] [<c09572c4>] (bus_add_driver) from [<c0958fd8>] (driver_register+0x74/0x108)
+[    2.360854] [<c0958fd8>] (driver_register) from [<c0302ec8>] (do_one_initcall+0x54/0x22c)
+[    2.369047] [<c0302ec8>] (do_one_initcall) from [<c1501024>] (kernel_init_freeable+0x150/0x1ec)
+[    2.377762] [<c1501024>] (kernel_init_freeable) from [<c0ea5e74>] (kernel_init+0x8/0x114)
+[    2.385951] [<c0ea5e74>] (kernel_init) from [<c03010e8>] (ret_from_fork+0x14/0x2c)
+[    2.393525] Exception stack(0xe68c1fb0 to 0xe68c1ff8)
+[    2.398583] 1fa0:                                     00000000 00000000 00000000 00000000
+[    2.406777] 1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+[    2.414967] 1fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+[    2.421879] mtd mtd4: Failed to register NVMEM device
+
+Before nvmen device registration was added, it was possible to have same partition name on different devices.
+Instead of using the partition name, this patch proposes to use the MTD device name (mtdX).
+
+Regards,
+Christophe Kerello.
+
+ drivers/mtd/mtdcore.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 5fac435..559b693 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -551,7 +551,7 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
  
- 	end = this->chipsize >> this->erase_shift;
- 
- 	for (block = 0; block < end; block++) {
- 		unsigned int mem_addr = onenand->mem_addr(block, 0, 0);
--		tmp = s3c_read_cmd(CMD_MAP_01(onenand, mem_addr));
-+		s3c_read_cmd(CMD_MAP_01(onenand, mem_addr));
- 
- 		if (s3c_read_reg(INT_ERR_STAT_OFFSET) & LOCKED_BLK) {
- 			dev_err(dev, "block %d is write-protected!\n", block);
+ 	config.id = -1;
+ 	config.dev = &mtd->dev;
+-	config.name = mtd->name;
++	config.name = dev_name(&mtd->dev);
+ 	config.owner = THIS_MODULE;
+ 	config.reg_read = mtd_nvmem_reg_read;
+ 	config.size = mtd->size;
 -- 
-2.7.4
+1.9.1
 
 
 ______________________________________________________
