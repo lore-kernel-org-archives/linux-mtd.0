@@ -2,72 +2,82 @@ Return-Path: <SRS0=TlnG=ZO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02BF3C432C3
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Nov 2019 06:15:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DDDC8C432C0
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Nov 2019 09:53:29 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CBC6120708
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Nov 2019 06:15:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ACF7C20674
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Nov 2019 09:53:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="aEKtAxXo";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="i9G61iSV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CBC6120708
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="S1yn3BeQ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EfeislZO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ACF7C20674
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1A6r2B8YU9gEkeJt+g/Y91EJPcvKj/hPrqhn1do/cDo=; b=aEKtAxXo8GuCPc
-	QfSpmqBAAUvz3xXlViPuPTUJAjh3uYwTa+0ZMrGJ72GcFdPvKRjFmDL5oFRH7NLGoRvVujJEUjZ9D
-	y6Zez2azeYw360OdniXyV9LStp4Gos2cG+AWyXOYqtvk8LrMCwr4oUuFQgUxdsmIFFXFT1rdXovoq
-	8ypj3+DxC8sU82kqy2VCsOMBHCTeMVHRDfHtuLFTpeX8WTJAoy3xL9bzM8JU4S3AxeeC99jE++5n+
-	E2uRy5Zc6qvKU+tc1h2rlLm+8ViZB8wIr5eWSIhxe7wqKidpw0GMHkB96AS2iV1VJAeN1slFvZ00C
-	zd29ryu0dfWrgtG5pS8A==;
+	List-Owner; bh=cJkjkViZKdQr63JViGNrO/d9bVQAPle0w+AIq0I8s6Y=; b=S1yn3BeQ42PGpn
+	B0lY56vZsT/+WTiKfiaXMJ6ODsKPjnIPmG9qnWLlbQJgBhqLoETxzIoE19V34n/Y5sCKyb+bmUcWn
+	ez15UTcywWQayHy+63K8SXvMlPjqPt3JbiTkJF09kh6zUmnmZti/UmoMegDtJRUHyWA1rTkB0SZTz
+	uTwUih0BgZR9+T2zFbU4acNJeX7QwU6NguilQUhOXrS+Y1nhuuOach0shuXD6KcBA44zJA/Y9VTxz
+	kb08hk+8UCgsV7rn3LmqJF2pWgO8IWNi0QAvCwv0hTLLoCQH5soV4CjVLibfhG7qrN7Mhol+dXUAz
+	V8PfdYfUB1tRhIXcdlww==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iY2E2-0002uo-42; Fri, 22 Nov 2019 06:15:26 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1iY5cr-00052X-Dh; Fri, 22 Nov 2019 09:53:17 +0000
+Received: from mail-wm1-x330.google.com ([2a00:1450:4864:20::330])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iY2Cy-0000iy-Kc
- for linux-mtd@lists.infradead.org; Fri, 22 Nov 2019 06:14:22 +0000
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
- [73.47.72.35])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id EE58A20707;
- Fri, 22 Nov 2019 06:14:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1574403259;
- bh=v2yq6QuBQJWjhwP+bGg0C5drFr5wc3WHgW3vI2tG9V8=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=i9G61iSVM2qLV2TX+OVljOYZomPg/5KVEbfGJZJQ2e8zbSqvS7tZl2kl8ilkjVBhr
- pXIi+CqI3bk+t65h/jR2rr/ESmARhHA4ptOo/dhb5NJg0yYzuvzmTma4P7utWrVgzV
- L1rPXhOslnOQkvE2puOOhidLaJZ1bvdHJaMO97Io=
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 68/68] mtd: Remove a debug trace in mtdpart.c
-Date: Fri, 22 Nov 2019 01:13:01 -0500
-Message-Id: <20191122061301.4947-67-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191122061301.4947-1-sashal@kernel.org>
-References: <20191122061301.4947-1-sashal@kernel.org>
+ id 1iY5co-00051U-Kc
+ for linux-mtd@lists.infradead.org; Fri, 22 Nov 2019 09:53:16 +0000
+Received: by mail-wm1-x330.google.com with SMTP id n188so4912379wme.1
+ for <linux-mtd@lists.infradead.org>; Fri, 22 Nov 2019 01:53:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=Xh8kC7tDwRZ3oCombv+wQzJ0Jdh8LpQciSTFin/m+b0=;
+ b=EfeislZOl2z+MqYAJHYxygzx5SuDztUCV06YV/xIH+M2K7mB1BNbshP1fdODp/nZC5
+ cbi1av8xlApeTK1hd4vLEUXvgeTRdcIwbAX2Cv0oMWOeyoD3JLbqUxZ+pKGWqrO98XWE
+ pZjMN6TqfJf0affIR2Oo1SFfUf1eV8xN65D9YkeOxJClW87GXUTbC3mMtF/rJRMF1dC/
+ JJUk3cjPkpJeFIkrzirIMsh2Z5/5oUJhLQpj4cDaS/sg7zDB6BHpcoumvj1JVMcqydLo
+ Z3T/hPNKj3Lr8jj76TgRL4lR479oPHvPPMShRxRfvoIbvJ+/A8Eop5jYE+Mia45QL9nT
+ QYgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=Xh8kC7tDwRZ3oCombv+wQzJ0Jdh8LpQciSTFin/m+b0=;
+ b=g6lmeqdBag2bH6AK1GqX9vTR4YnKKosVCgzLOFwrvJF8m33bMjrfgydlNXQ+fat+FZ
+ iwB/JzuiIbHeoM1Ql3HZgKxaCAMFec6O5BiewvSOZOLklBZB/0nX1m1Xhyl4yg8k9DNG
+ 91DbDbu8+l7yFikR5ken9mFUEw/wc99ws4mD483ZEsiSfildYB1quauXnGNgkqIPMqMx
+ Bfk5qLPL6rONrX8xJt7QZR5Q1V9QqwOYURyQ6HJLG+tNRbN0jDr3FnQAaNNqNKMthJAm
+ 9fOAoqGPoRnfU0TUqrLcqDrzJaH7YxxVnRi/gaQMB7b6R9ABQE0U20hLaexTPfzVepAR
+ v1jw==
+X-Gm-Message-State: APjAAAWduBl6F+PudkAqNZAPmhpQHRklrAJlpiMm9G6Sq2nMOUenLg0s
+ 6BUoJpU1Xll7byLz3KaI5wCU7Kqhg06eFPuxF5Q=
+X-Google-Smtp-Source: APXvYqxN0VwyRPHnGAy1FeK7cYQ4W8LLP9rcQyoTKIBQ5HpgUh7O32Nd+C9FmssP7QWy7/LdEdE/oSKkanGRHSOOWH0=
+X-Received: by 2002:a1c:8086:: with SMTP id
+ b128mr15493568wmd.104.1574416391389; 
+ Fri, 22 Nov 2019 01:53:11 -0800 (PST)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+References: <CAOfSrV1CNn6EpPkAkP8F2VQUrit_B-t89sSxW=08zyKVOdt9AA@mail.gmail.com>
+In-Reply-To: <CAOfSrV1CNn6EpPkAkP8F2VQUrit_B-t89sSxW=08zyKVOdt9AA@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Fri, 22 Nov 2019 10:53:00 +0100
+Message-ID: <CAFLxGvziLKNA0gcPo+EGwfpuv6Fe6=sNOfhEa1DR7sN0oOxzMg@mail.gmail.com>
+Subject: Re: mtd-utils io_paral test fails on NAND
+To: Otto Blom <oblom586@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191121_221420_928503_8C0A50D8 
-X-CRM114-Status: UNSURE (   7.63  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20191122_015314_699847_27000CF3 
+X-CRM114-Status: GOOD (  10.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,43 +89,32 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Sasha Levin <sashal@kernel.org>, linux-mtd@lists.infradead.org,
- Boris Brezillon <bbrezillon@kernel.org>
+Cc: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Boris Brezillon <bbrezillon@kernel.org>
+On Thu, Nov 21, 2019 at 8:54 PM Otto Blom <oblom586@gmail.com> wrote:
+>
+> Hello All !
+>
+> A couple of updates on this problem. Turns out io_read also fails in
+> the same way as io_paral - A page of data comes back as all zeros.
+> Interestingly I added a retry option to see if it is a read or write
+> problem and turns out every single time so far the data is correct
+> when I read it a second time.
+>
+> In summary when I run runubitests.sh it passes about 70% of the time,
+> io_paral fails 25% and io_read the remaining 5%
+>
+> Any recommendations on what to try next ?
 
-[ Upstream commit bda2ab56356b9acdfab150f31c4bac9846253092 ]
+Test one layer deeper. e.g. flash_readtest.
 
-Commit 2b6f0090a333 ("mtd: Check add_mtd_device() ret code") contained
-a leftover of the debug session that led to this bug fix. Remove this
-pr_info().
-
-Fixes: 2b6f0090a333 ("mtd: Check add_mtd_device() ret code")
-Signed-off-by: Boris Brezillon <bbrezillon@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/mtd/mtdpart.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 9b48be05cd1af..59772510452a5 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -624,7 +624,6 @@ int mtd_add_partition(struct mtd_info *master, const char *name,
- 	mutex_unlock(&mtd_partitions_mutex);
- 
- 	free_partition(new);
--	pr_info("%s:%i\n", __func__, __LINE__);
- 
- 	return ret;
- }
 -- 
-2.20.1
-
+Thanks,
+//richard
 
 ______________________________________________________
 Linux MTD discussion mailing list
