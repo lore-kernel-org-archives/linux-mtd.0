@@ -7,70 +7,68 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E64CC432C0
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Nov 2019 12:57:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C0A3C432C0
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Nov 2019 12:59:09 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D15BF2176D
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Nov 2019 12:57:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 22AC92176D
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Nov 2019 12:59:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KttFXuSW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D15BF2176D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WALKZVct"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 22AC92176D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=metux.net
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:References:
-	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=z5+AlIcGvRgMyb+oN0hEAyCJqKQolHu0TadCnJrBGsc=; b=KttFXuSWk/1arUZhjbXoAXPdVZ
-	mFpLf1EXsYZhyhRAc5FNwhuulNvSVxWmo8+AmI20xGjTb436Dm0qiUbqLMPPAAYH9ElMJtS3wJPqj
-	MhP6WGdf+bpz1h/ik4x5SBm3WTMvkdwa5yXDGOOiL6XVryV+A9/Gjfk47GEWbD244e69HqHosHCXz
-	B+QNhusZblZxhgw7nHf7/QWO4qDGTObhtKXXwrf4qq2w9jd8XnNGTGIJ0rFJdVMhqYIdovEWxh4FL
-	skF2VD04+pXmmFxpAsxyp9ZqzR1BUogz3Is3+j4LVz7FKC3LehXBgOE0fckxRB7AfJLOxZhm9X4AG
-	7Np84Ueg==;
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=96fyenR02fjvHCBAu4NKKxkGHAXrc4YNjUit30eqN+w=; b=WAL
+	KZVctrGrERO7iFSFkVizkK13SsDh0alKCOmDDCNUVG2YeGasjtE7xPoe/oc0K8+Xq6mNY9zIcmJek
+	h67wagFn30NHuxxi/LKJv00Zm5wuQBCVRoNszxLvGkPu7k193OIAwwMPA+x+g8WSAZS5iw/enhGtU
+	qjBakAf1tFoqw0HReLpbQokLZyjb9gr01OnBZozd+foupBEvqjiLyrPmJGYFDMDhXggVG8D034GKI
+	/Avaukht5rPXEANTEaRkWntn+IvYdYWvBpAL3SK/eHt5ff+UDa013DSZ7CwOzPQs9J0rxbVnDVglQ
+	mVTb8Af549cvJBedhBuEFVQt3UFv6tA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iaJM9-0004I0-Sy; Thu, 28 Nov 2019 12:57:14 +0000
-Received: from mout.kundenserver.de ([212.227.126.133])
+	id 1iaJNn-00050V-MI; Thu, 28 Nov 2019 12:58:55 +0000
+Received: from mout.kundenserver.de ([212.227.126.134])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iaJLm-0003sd-4T
- for linux-mtd@lists.infradead.org; Thu, 28 Nov 2019 12:56:51 +0000
+ id 1iaJNk-0004zn-LL
+ for linux-mtd@lists.infradead.org; Thu, 28 Nov 2019 12:58:54 +0000
 Received: from orion.localdomain ([95.117.37.214]) by mrelayeu.kundenserver.de
  (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MUY9w-1iRTe00XvE-00QSQQ; Thu, 28 Nov 2019 13:54:36 +0100
+ 1MUY9w-1iRTdx29gW-00QSQQ; Thu, 28 Nov 2019 13:54:33 +0100
 From: "Enrico Weigelt, metux IT consult" <info@metux.net>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 5/6] char: hw_random: intel-rng: use pci_get_device_by_id()
-Date: Thu, 28 Nov 2019 13:54:05 +0100
-Message-Id: <20191128125406.10417-5-info@metux.net>
+Subject: [PATCH 1/6] include: linux: pci.h: introduce pci_get_device_by_id()
+Date: Thu, 28 Nov 2019 13:54:01 +0100
+Message-Id: <20191128125406.10417-1-info@metux.net>
 X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20191128125406.10417-1-info@metux.net>
-References: <20191128125406.10417-1-info@metux.net>
-X-Provags-ID: V03:K1:EbWrMi3cKVLJ5grbOjx3/hSD38kPrYADX4wYa3I2tB+lljpckSy
- 15HWVYCgNQbjb4Jw3Jq5wDzRihvWg1A40U38MsKdMEXp34A3CDPgBn18wQGaajyXKEeu5ay
- NsIDm3ieOx2cqQOzjrtF3v4KCOsDSDg4nKPQBitqKPLXkyvJNky+o2SHLXJPJQ6Nw06jjRO
- p/cWYppeb0dvhCnWHwmrw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:b3/pDDdW3UM=:HOt218E1TJBg5l8PwQMbn5
- w/I+vFLUvPQdEAp5cDPDg8n2h4ya8JtA1HanhyNAmcyh4vGsMgeYRXlZpmvZupMH+axBIuqxu
- pVFcwt4Sp1TMawpRn0F8Dv4vvffgxawkECTS8zzNlz8idaOZtBZbVNa8LAmWjXwgSKrkpSodl
- GnNhy4Pq+UMaqA5ikRxkqWeg9y/u5VllU0cKvl8g+g/brdHyCsqj1pXtL2K/n5bHFOTqC+rzu
- kI9M8bVpPIUPwYxM0aRhWZ6s8bTo4/CCiIDqsN2HAGB/iyPXUNnPROFJV7w+Z4IMLFcxMm2e2
- uNX+S+c0Mr2Q9jCug6/ntRuVhcBUpFChhRw1nCf3jlJi6Rrl7NU16lumMoqUoBmNSdO5ZBiua
- JDI+G2P254oeJieUNKspfKPMjXMZ+mVbeVUGIBV2EHkADJvn4zHbRZA8npJo2h4urY8LcjVCi
- F0McB4lBnIjPPbL/XyEZKdx53XUn8OTfNAdQWnk40u1SQ8cjqYLCjbdqw5YHP99HwciWY6qYw
- YFmBo7tZmLZuXvwd+B8O+8CiJ/K6lSUuZXn3RqDz18foPro7g1/IKzz3/623ktdU3AChdOCud
- BBaIsqme1ehxmVRejswtrs6qTMwX7saoU0f+2BbMnEWjKA+zrpvwppooxFiT9K/3JcsI4CRRQ
- C1lU8pQ5UCuTW1INIXckNLWG+HTBP7lmhcLKzmassUponhmRCYGY8LUwg+tC1U2V1s4NBM3DV
- M376+7mY/UZ2s/l0w27Lqhmv+C7hfea+YTSGQrNnOnNXBS4mFSGa/gsGiJXGg9qt+bXgnF4vx
- Wf6zkZEV35085jbvkNP9VGozwPbfIZsVTOE+NFgOcG+0J5BFDm3tdRJ5FqwaSS7iQU3gN9iQH
- yI5kHlzVQgjPoyZ/zF2Q==
+X-Provags-ID: V03:K1:38OkZkxKYjduW4lFWkkXpmNgmHkotIPpFTk3wHRoh85UV7/YYuo
+ tgz5yik/NedusSxW1EgyG7xsdphhkXUnNg3Kaof7TO/6+C0AXpfwJ2AXjL4JM4uXw2NbyBs
+ fQGSRVXajWCZNgSc2SLQluiWV9mv2n9H8XanaYTkjJ6hXiwKJTrkawaVOivTV782SIyVlhy
+ rooI453gLk05E2firCNUg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:x/bVI3gOHO0=:b8SRXy3cQTU1GMPXvnNm9h
+ MP77h4dAhjsztPhIZ5ViC2W8wpGlmZKcErot+FwRwM1cKJkIrzyAjz9ErATwDMp3R0jKJgspj
+ ECwTEUh1hPWvQVjuJ0HkB+9BCXhfCKKPhMKFsd/V5poviCOQ6zhhDo6o+bXSqh7NtDTjDATh7
+ dO3vF3FXIUBqM5zqEy6lbbf1AyXHkbHU7ZKB9oRELWaJaaMVyhse4C21PHDsc3ezRoriQsiHI
+ 95QsOlRQ11G1P8gYpSjXUkCon0JqkUSg+9HuZGHQJ8toUaeNTy2wivd4BTDY2aEve9TptIXdW
+ jcA8ESAcSDd0HguDf3SiYItRbTP0gR+qcZ6VemEibxnsaGpkRgIe1wkcIHYJK+RdOitCqZ0vi
+ b1LXDt22+5Khx2qOGVBYiXTdGmh3DPyY7kUe4HlYn5cG+Ashfa8A3wBRpahgUBIKC//Mtl4gq
+ RWqobD9GunYu0SJX0OS7fOFs+Io93Pj5MEdiV1fqIAhVRKY3cW3Z1LsfJdEff02Rhmfn4W3Nb
+ aaQFnDcAhEGAFBOGJuDZoYEtXo1djBT5gZC7ruITqXaAUuAcbxhcG5eOvFEZShpvQNs+DWbqn
+ IhrqRH+g4BDor3NYDXJKsfvOQUsiOgqjv8E/WiWn+505kc/u1FpJKVS/b2TAZeaDMNFgAjLX8
+ LSjgvTh/PHowNpjqchgZ+IFodjQ40iDKOpiVeNv16+Qmve0HQdVzpjww0UH0at+1yzCTaFr/v
+ rd3mTknG3pz3HC9VD7s/p92p15LeTLoovZ6bNnjeICggVpLehNuNalNbEtwpvUlUj9brWG2QT
+ Qdh4SaJsmg11d0aG2VQxZciM2y9hGIaHd2hXzWKKrAYXxWLNoAfpPpxkBab7RONNYNsZ/y1Ty
+ +vl6YAdeoGR8p0KxwDZg==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191128_045650_533654_F7FA95C7 
-X-CRM114-Status: GOOD (  11.44  )
+X-CRM114-CacheID: sfid-20191128_045852_995109_D037825E 
+X-CRM114-Status: UNSURE (   7.99  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,28 +91,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use the new pci_get_device_by_id() helper in order to reduce
-a bit of boilerplate.
+From: Enrico Weigelt <info@metux.net>
+
+Introduce a little helper for getting pci device via struct pci_device_id,
+helpful for reducing a little bit of boilerplate.
 
 Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
 ---
- drivers/char/hw_random/intel-rng.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ include/linux/pci.h | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/drivers/char/hw_random/intel-rng.c b/drivers/char/hw_random/intel-rng.c
-index 290c880266bf..6b8d37a81166 100644
---- a/drivers/char/hw_random/intel-rng.c
-+++ b/drivers/char/hw_random/intel-rng.c
-@@ -335,8 +335,7 @@ static int __init mod_init(void)
- 	struct intel_rng_hw *intel_rng_hw;
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index eb9f371aa77c..f6650b13724a 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -1050,6 +1050,21 @@ struct pci_bus *pci_find_next_bus(const struct pci_bus *from);
  
- 	for (i = 0; !dev && pci_tbl[i].vendor; ++i)
--		dev = pci_get_device(pci_tbl[i].vendor, pci_tbl[i].device,
--				     NULL);
-+		dev = pci_get_device_by_id(&pci_tbl[i]);
- 
- 	if (!dev)
- 		goto out; /* Device not found. */
+ struct pci_dev *pci_get_device(unsigned int vendor, unsigned int device,
+ 			       struct pci_dev *from);
++
++/**
++ * pci_get_device_by_id() - get pci dev by struct pci_device_id
++ * @id: pci_device_id struct
++ *
++ * Retrieve PCI device by struct pci_device_id struct
++ *
++ * @return: pointer to struct pci_dev if sucessful, NULL otherwise
++ */
++static inline struct pci_dev *pci_get_device_by_id(
++	const struct pci_device_id *id)
++{
++	return pci_get_device(id->vendor, id->device, NULL);
++}
++
+ struct pci_dev *pci_get_subsys(unsigned int vendor, unsigned int device,
+ 			       unsigned int ss_vendor, unsigned int ss_device,
+ 			       struct pci_dev *from);
 -- 
 2.11.0
 
