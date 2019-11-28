@@ -1,102 +1,63 @@
-Return-Path: <SRS0=A63j=ZT=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=Piv4=ZU=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C0E1C432C0
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Nov 2019 15:52:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2611AC432C0
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Nov 2019 03:07:31 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 414E520684
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Nov 2019 15:52:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BAC11215A4
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Nov 2019 03:07:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EiB2XTFR";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Kg0k/vAl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 414E520684
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cO8rj110"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BAC11215A4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bqvQGAtZgDkh21I2bqDDXkceau68UeBlURjdCUFn+m8=; b=EiB2XTFROhJtow
-	oF1XK0+CsfNbuHYL6Qo5KoTBW09Zij2GXzBTULrsoQdbrTfQ1SiK1LWPbZ0140hzZdoscHQlJV4r6
-	XFUaBMGS1ZyZBD3QE8pCDQRZt9bPH2KCt9wZrSCTjzYqQKCENyRS780LJncUqOl9OtBYMwZdzQIrd
-	/kBBNXI/k2bwezJwLDuYrfqoeBfYjCSOoFyP/QgUOKCxD+4bREHMU1n+rYwegE+jaDANbAHBIjKco
-	VgZCS5XUOAgtbKhCXr9stBHIRxkETXajoKmbnSVdfL2oqzrHmaZZv3dXjdqWqcodQPU6DUQQnNcfC
-	beWYBA+JUxy5hGgUuTng==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=s7WCjsLzqw/8gkRwbIoAnnus6oPgo8GhwVxNajp0qeU=; b=cO8rj110TaZ9cC
+	+elADUO6zFrpVRGJr92zWFtOGaKNV1SsSP89AMQczOofmddPNlts6fwrUgUhlw+UXcRzFwCjvJ9Vo
+	Mu26xY2JvJvtSynfCp9QkutsjiqxxIkpwJ1NdQhZPofkDR6aAAQ9dl3Z5DESTGUkdy5KAhSTp4lox
+	wf5rvhv5BpWDoYX00Vso+MiNMbZkBsCdI8I33QyW/XjFIFJ7QAV4vAfHfoyEIXYb2liSTR6ci3D1z
+	o4ZlfA3v6DFAcZ0nr/9jJLdi2/kCjpUv33E9KbdeSQ7Ur/kJdvMiJ/HaW2VflrMZhO4B/LM8ohTk3
+	d+HJqrxGqfvDQZkaliog==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iZzcA-0007UB-Cb; Wed, 27 Nov 2019 15:52:26 +0000
-Received: from userp2120.oracle.com ([156.151.31.85])
+	id 1iaA9C-0001nZ-I3; Thu, 28 Nov 2019 03:07:14 +0000
+Received: from szxga05-in.huawei.com ([45.249.212.191] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iZzc7-0007Sh-1I
- for linux-mtd@lists.infradead.org; Wed, 27 Nov 2019 15:52:24 +0000
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
- by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xARFi6ak075759;
- Wed, 27 Nov 2019 15:52:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2019-08-05;
- bh=H+/wgbi6zpbbhzBcnf3ZgXVMUMhhbOupxJKtToXxUKY=;
- b=Kg0k/vAlSe8xFiAPHV3p230uhEAIhD+RfNy3L2xMgLeJjWzANRMgYHEoE0Ep3N7qUiEj
- vcF15VBYr8vifEfZfiVr6t7u8ViSjjCg7FNvuwZfLuggXSVyPGlhSN6JUTfYB83peZvJ
- 2Uo59BKL0j0vX1rUEJqlR/o/pNlsdkvaPc0SHw+2iWbYlZWmF6wiaTespaEP5ykBV9AG
- ImLwc8stIz9ZL95hlZuIpbBT4NAPPaz+UgI3qRiVr/uxeOf58bY1exPNLO2+wgw9Fc9C
- Rl8vZBiL+t0XTNoRZlRlrnqJqMZNYYPP0oHZxwuNG+rB9l114hLMSs0+hA/EVvczaecf TQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
- by userp2120.oracle.com with ESMTP id 2wewdrecda-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 27 Nov 2019 15:52:06 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
- by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xARFdTWt031310;
- Wed, 27 Nov 2019 15:50:06 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
- by userp3030.oracle.com with ESMTP id 2wgvhccg37-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 27 Nov 2019 15:50:05 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
- by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xARFnumk003050;
- Wed, 27 Nov 2019 15:49:56 GMT
-Received: from localhost (/67.169.218.210)
- by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Wed, 27 Nov 2019 07:49:56 -0800
-Date: Wed, 27 Nov 2019 07:49:54 -0800
-From: "Darrick J. Wong" <darrick.wong@oracle.com>
-To: Andreas Gruenbacher <agruenba@redhat.com>
-Subject: Re: [PATCH] fs: Fix page_mkwrite off-by-one errors
-Message-ID: <20191127154954.GT6219@magnolia>
-References: <20191127151811.9229-1-agruenba@redhat.com>
+ id 1iaA94-0001hg-3b
+ for linux-mtd@lists.infradead.org; Thu, 28 Nov 2019 03:07:07 +0000
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+ by Forcepoint Email with ESMTP id B50F693BE1532D9D8946;
+ Thu, 28 Nov 2019 11:06:57 +0800 (CST)
+Received: from huawei.com (10.90.53.225) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.439.0; Thu, 28 Nov 2019
+ 11:06:49 +0800
+From: zhengbin <zhengbin13@huawei.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+ <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: rawnand: Remove unneeded semicolon
+Date: Thu, 28 Nov 2019 11:14:12 +0800
+Message-ID: <1574910852-51700-1-git-send-email-zhengbin13@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20191127151811.9229-1-agruenba@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9454
- signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0
- malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-1911270137
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9454
- signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
- priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-1911270137
+X-Originating-IP: [10.90.53.225]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191127_075223_181161_CB1A5C4A 
-X-CRM114-Status: GOOD (  24.14  )
+X-CRM114-CacheID: sfid-20191127_190706_359470_3031E4F8 
+X-CRM114-Status: UNSURE (   8.48  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,137 +69,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-xfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- Theodore Ts'o <tytso@mit.edu>, Sage Weil <sage@redhat.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger <richard@nod.at>,
- Chao Yu <chao@kernel.org>, Jeff Layton <jlayton@kernel.org>,
- linux-kernel@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
- Christoph Hellwig <hch@infradead.org>,
- Andreas Dilger <adilger.kernel@dilger.ca>,
- Alexander Viro <viro@zeniv.linux.org.uk>, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
- Ilya Dryomov <idryomov@gmail.com>, linux-ext4@vger.kernel.org,
- Linus Torvalds <torvalds@linux-foundation.org>, ceph-devel@vger.kernel.org
+Cc: zhengbin13@huawei.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Nov 27, 2019 at 04:18:11PM +0100, Andreas Gruenbacher wrote:
-> Fix a check in block_page_mkwrite meant to determine whether an offset
-> is within the inode size.  This error has spread to several filesystems
-> and to iomap_page_mkwrite, so fix those instances as well.
+Fixes coccicheck warning:
 
-Seeing how this has gotten screwed up at least six times in the kernel,
-maybe we need a static inline helper to do this for us?
+drivers/mtd/nand/raw/mpc5121_nfc.c:441:2-3: Unneeded semicolon
 
-> Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: zhengbin <zhengbin13@huawei.com>
+---
+ drivers/mtd/nand/raw/mpc5121_nfc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The iomap part looks ok,
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+diff --git a/drivers/mtd/nand/raw/mpc5121_nfc.c b/drivers/mtd/nand/raw/mpc5121_nfc.c
+index 8b90def..a2fcb73 100644
+--- a/drivers/mtd/nand/raw/mpc5121_nfc.c
++++ b/drivers/mtd/nand/raw/mpc5121_nfc.c
+@@ -438,7 +438,7 @@ static void mpc5121_nfc_copy_spare(struct mtd_info *mtd, uint offset,
+ 		buffer += blksize;
+ 		offset += blksize;
+ 		size -= blksize;
+-	};
++	}
+ }
 
-(I might just extract the iomap part and put it in the iomap tree if
-someone doesn't merge this one before I get to it...)
+ /* Copy data from/to NFC main and spare buffers */
+--
+2.7.4
 
---D
-
-> 
-> ---
-> 
-> This patch has a trivial conflict with commit "iomap: Fix overflow in
-> iomap_page_mkwrite" in Darrick's iomap pull request for 5.5:
-> 
->   https://lore.kernel.org/lkml/20191125190907.GN6219@magnolia/
-> ---
->  fs/buffer.c            | 2 +-
->  fs/ceph/addr.c         | 2 +-
->  fs/ext4/inode.c        | 2 +-
->  fs/f2fs/file.c         | 2 +-
->  fs/iomap/buffered-io.c | 2 +-
->  fs/ubifs/file.c        | 2 +-
->  6 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/buffer.c b/fs/buffer.c
-> index 86a38b979323..152d391858d4 100644
-> --- a/fs/buffer.c
-> +++ b/fs/buffer.c
-> @@ -2465,7 +2465,7 @@ int block_page_mkwrite(struct vm_area_struct *vma, struct vm_fault *vmf,
->  	lock_page(page);
->  	size = i_size_read(inode);
->  	if ((page->mapping != inode->i_mapping) ||
-> -	    (page_offset(page) > size)) {
-> +	    (page_offset(page) >= size)) {
->  		/* We overload EFAULT to mean page got truncated */
->  		ret = -EFAULT;
->  		goto out_unlock;
-> diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
-> index 7ab616601141..9fa0729ece41 100644
-> --- a/fs/ceph/addr.c
-> +++ b/fs/ceph/addr.c
-> @@ -1575,7 +1575,7 @@ static vm_fault_t ceph_page_mkwrite(struct vm_fault *vmf)
->  	do {
->  		lock_page(page);
->  
-> -		if ((off > size) || (page->mapping != inode->i_mapping)) {
-> +		if ((off >= size) || (page->mapping != inode->i_mapping)) {
->  			unlock_page(page);
->  			ret = VM_FAULT_NOPAGE;
->  			break;
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 516faa280ced..6dd4efe2fb63 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -6224,7 +6224,7 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
->  	lock_page(page);
->  	size = i_size_read(inode);
->  	/* Page got truncated from under us? */
-> -	if (page->mapping != mapping || page_offset(page) > size) {
-> +	if (page->mapping != mapping || page_offset(page) >= size) {
->  		unlock_page(page);
->  		ret = VM_FAULT_NOPAGE;
->  		goto out;
-> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> index 29bc0a542759..3436be01af45 100644
-> --- a/fs/f2fs/file.c
-> +++ b/fs/f2fs/file.c
-> @@ -71,7 +71,7 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_fault *vmf)
->  	down_read(&F2FS_I(inode)->i_mmap_sem);
->  	lock_page(page);
->  	if (unlikely(page->mapping != inode->i_mapping ||
-> -			page_offset(page) > i_size_read(inode) ||
-> +			page_offset(page) >= i_size_read(inode) ||
->  			!PageUptodate(page))) {
->  		unlock_page(page);
->  		err = -EFAULT;
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index e25901ae3ff4..d454dbab5133 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -1041,7 +1041,7 @@ vm_fault_t iomap_page_mkwrite(struct vm_fault *vmf, const struct iomap_ops *ops)
->  	lock_page(page);
->  	size = i_size_read(inode);
->  	if ((page->mapping != inode->i_mapping) ||
-> -	    (page_offset(page) > size)) {
-> +	    (page_offset(page) >= size)) {
->  		/* We overload EFAULT to mean page got truncated */
->  		ret = -EFAULT;
->  		goto out_unlock;
-> diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-> index cd52585c8f4f..ca0148ec77e6 100644
-> --- a/fs/ubifs/file.c
-> +++ b/fs/ubifs/file.c
-> @@ -1564,7 +1564,7 @@ static vm_fault_t ubifs_vm_page_mkwrite(struct vm_fault *vmf)
->  
->  	lock_page(page);
->  	if (unlikely(page->mapping != inode->i_mapping ||
-> -		     page_offset(page) > i_size_read(inode))) {
-> +		     page_offset(page) >= i_size_read(inode))) {
->  		/* Page got truncated out from underneath us */
->  		goto sigbus;
->  	}
-> -- 
-> 2.20.1
-> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
