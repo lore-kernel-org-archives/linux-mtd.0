@@ -2,87 +2,69 @@ Return-Path: <SRS0=TEJX=ZZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F5BEC432C0
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 Dec 2019 19:09:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C772C43141
+	for <linux-mtd@archiver.kernel.org>; Tue,  3 Dec 2019 22:59:36 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5F80A206DF
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 Dec 2019 19:09:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5E50820674
+	for <linux-mtd@archiver.kernel.org>; Tue,  3 Dec 2019 22:59:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jsrOzoqh";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RA++pnfQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F80A206DF
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="MB0Bif/E";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="rNsVxxg7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E50820674
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0elooJU3Fre+Lj+EhmcCvJLp5rhraexDSi60gZGRMhI=; b=jsrOzoqh5NV8B2
-	pvIXUIro/ANlmHYmsfk/oIGFJ6ugHnIXbSBq/bGgINunhW266FJ5CyAHZvfPVRrwJjKEMIbheF0W4
-	tF14HaDs46fMA3D1Vv7zsJHCwXhB2+8op4BkXOjKlGfja6CFf5RT3dZIUefx55tQ0ATouPgVpx0df
-	NeQTIyfVXi87a32qYAuLnjaBoRv08nQOxQsoaPBj4CNXJ4xHEKgo5cEUkMbkqC///8eaacDadqp19
-	NgSDCOd4d9ZQedpIE7ktdRLvBhenVxHmjpMHqfgjsPfqW4xG3b0rZV2IDTeCcsG1Wy3X52fD+YXEI
-	yGBW6m8WS/rQRShKtQ/g==;
+	List-Owner; bh=mXZSCoAwCjlrOIoUgylfuuJO6XNSmg18PMcheGN0j7c=; b=MB0Bif/EoGW/xT
+	wlbONZ0TFTKMr5kD8MFsqxQnMr4WEeZig9qpgRp1hdxRI42igWAhbBTmsc2+9cJ6WzSsHflL9+w2P
+	rCPodQauvPwv2ZChYQ36RdqWvTIzkEPWp9TJZhCNrlrng9IQKuHfRz2ot+aK86O7FHeIYQYeBVSvo
+	pDV7fQdzFydxOK5UeevYh251r6fZ6tGiG2JhqvHzBhNPoHYHUXpUWFfNult9oqJQiutOlc+umtgat
+	VW5Szdqx0FWUyksUITR8fD3QMfUbM2J55KYut8ubtdaO0nv4D1iNuU6fJTx6rRbjBamv58OqucT9S
+	Cd6ml4nS+3rykCgZvHgg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1icDXj-0001V1-9V; Tue, 03 Dec 2019 19:09:03 +0000
-Received: from mail-wr1-x443.google.com ([2a00:1450:4864:20::443])
+	id 1icH8Y-00005I-WA; Tue, 03 Dec 2019 22:59:19 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1icDXh-0001Ui-0d
- for linux-mtd@lists.infradead.org; Tue, 03 Dec 2019 19:09:02 +0000
-Received: by mail-wr1-x443.google.com with SMTP id w15so5149194wru.4
- for <linux-mtd@lists.infradead.org>; Tue, 03 Dec 2019 11:09:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=RgM6aRu1VoXAsJhtsKrEwRnmsLudyDcKIfYzB5q/ENA=;
- b=RA++pnfQwShG7t7eeG40JlPYoxkhxadW+dqsRuZCr/BhsDQCK9o5hB2E2bpg7qTKJ/
- 9oekQYEXIUArmnqXmnVfJCY1Rr0MsY5B6JuafbGy+3RLUBtJPB73BaIqi8js28QsqL7i
- myoThZneq3PVu4p8XIUv14JEac3KKFYj0yPxTZcCE47r+uTlItCTKf/Z56R7zaIFIHAr
- XOM0QSpGFXG9CIo5HaS4BsaqPWtRALjNFrbubckDom/x57LESokOTQdg0RIUQ3EpJJ4Q
- xLiSA/iHgJXh34dm5KfLml+XMkyhQpl/X8WozhlLKc1amJKekI/i53DgwFUa4UXfO8J+
- uqKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=RgM6aRu1VoXAsJhtsKrEwRnmsLudyDcKIfYzB5q/ENA=;
- b=tkY0sKfDnuui950fIEkMASJ5XZOjqzqATLSyOiIhsqM28SIJjtw7hcFv9OE9u8UQfx
- tM04v2oSOvkE2yiJ0Y11MK/EPh7hfm4FrdZ9U9sRytUErkm1nwB9IApbnqJerrYORzwZ
- 7TJba8H8WvpUVhyR23YJexBiHpGSkRO4kVK+3V1H05HlPJJxnBYBLxyE+o3FdX0+FYxk
- pOdWAM1ociFj2CT9pdFDhnU2aatT4x+bUc3XwmlQCeOEVcCSga0o+QMlSfx561wUPx/X
- lvLNz4QfILUIUE6EH9iuPIgibO+yXVm4rBN2tzocr5lLRh3Iq0Z+/qjMRqn8a9txr3ed
- isWA==
-X-Gm-Message-State: APjAAAVf9sV9pcZhfjIZF0qQvImV7+mvyGvfD5ciisXVxihWBRn2X3ox
- L57QNVK2SIdqIcwTGahzkl6XAbbNvzETMg8nUow=
-X-Google-Smtp-Source: APXvYqxGAfIQu4FpQhh634WKvpxzJjRIZ8l9v/+EYTu9HrUxNxqBPtaD1Y7gBXDf+NcLNtGGrUlJj+9hB7NeQDFgQ9E=
-X-Received: by 2002:a5d:480b:: with SMTP id l11mr7069833wrq.129.1575400139644; 
- Tue, 03 Dec 2019 11:08:59 -0800 (PST)
+ id 1icH8Q-0008Pf-Vz; Tue, 03 Dec 2019 22:59:12 +0000
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
+ [83.86.89.107])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id C7A7C20803;
+ Tue,  3 Dec 2019 22:59:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1575413943;
+ bh=xse6kgt5T0zLm987FtTsfxKSnjkyBAkCk5p8frhNgPk=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=rNsVxxg7d6RWxHbd7kPIZSKh44YDZuYotn+fTLSZ7sRFEcBdWJJxVUfUClMxnSgf5
+ 7VFD5keOghIau6mncYXeoW4wfl108IXYgjt68aIiyJQjGmPPg0CacDkmV/GH91FrNj
+ fjaOdtKDntK9KXfKEHmBt2A5KZlnWii6GTdDkq4A=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH 4.19 299/321] mtd: rawnand: atmel: fix possible object
+ reference leak
+Date: Tue,  3 Dec 2019 23:36:05 +0100
+Message-Id: <20191203223442.705005398@linuxfoundation.org>
+X-Mailer: git-send-email 2.24.0
+In-Reply-To: <20191203223427.103571230@linuxfoundation.org>
+References: <20191203223427.103571230@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-References: <MN2PR02MB5727000CBE70BAF31F60FEE4AF420@MN2PR02MB5727.namprd02.prod.outlook.com>
- <20191203084134.tgzir4mtekpm5xbs@pengutronix.de>
- <MN2PR02MB57272E3343CA62ADBA0F97E5AF420@MN2PR02MB5727.namprd02.prod.outlook.com>
- <614898763.105471.1575364223372.JavaMail.zimbra@nod.at>
- <CALgLF9KPAk_AsecnTMmbdF5qbgqXe7HNOrNariNVbhSr6FVN2g@mail.gmail.com>
- <20191203104558.vpqav3oxsydoe4aw@pengutronix.de>
-In-Reply-To: <20191203104558.vpqav3oxsydoe4aw@pengutronix.de>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Tue, 3 Dec 2019 20:08:48 +0100
-Message-ID: <CAFLxGvywFxSrDLLGnLDW6+rMLVUA9Yoi=3sn7wdxqWMydy-w0g@mail.gmail.com>
-Subject: Re: ubifs mount failure
-To: Sascha Hauer <s.hauer@pengutronix.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191203_110901_080942_A10E1345 
-X-CRM114-Status: GOOD (  17.54  )
+X-CRM114-CacheID: sfid-20191203_145911_077799_F0CA2AA5 
+X-CRM114-Status: GOOD (  14.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,57 +76,104 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Naga Sureshkumar Relli <nagasure@xilinx.com>,
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Boris Brezillon <bbrezillon@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Wen Yang <yellowriver2010@hotmail.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>, stable@vger.kernel.org,
  Richard Weinberger <richard@nod.at>,
- siva durga paladugu <siva.durga.paladugu@xililnx.com>,
- linux-kernel <linux-kernel@vger.kernel.org>, Michal Simek <michals@xilinx.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- naga suresh kumar <nagasureshkumarrelli@gmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ Ludovic Desroches <ludovic.desroches@microchip.com>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Lee Jones <lee.jones@linaro.org>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
+ linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVHVlLCBEZWMgMywgMjAxOSBhdCAxMTo0NiBBTSBTYXNjaGEgSGF1ZXIgPHMuaGF1ZXJAcGVu
-Z3V0cm9uaXguZGU+IHdyb3RlOgo+Cj4gT24gVHVlLCBEZWMgMDMsIDIwMTkgYXQgMDQ6MDY6MTJQ
-TSArMDUzMCwgbmFnYSBzdXJlc2gga3VtYXIgd3JvdGU6Cj4gPiBIaSBSaWNoYXJkLAo+ID4KPiA+
-IE9uIFR1ZSwgRGVjIDMsIDIwMTkgYXQgMjo0MCBQTSBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hh
-cmRAbm9kLmF0PiB3cm90ZToKPiA+ID4KPiA+ID4gLS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAt
-LS0tLQo+ID4gPiA+IFZvbjogIk5hZ2EgU3VyZXNoa3VtYXIgUmVsbGkiIDxuYWdhc3VyZUB4aWxp
-bnguY29tPgo+ID4gPiA+IGh0dHBzOi8vZWxpeGlyLmJvb3RsaW4uY29tL2xpbnV4L3Y1LjQvc291
-cmNlL2ZzL3ViaWZzL3NiLmMjTDE2NAo+ID4gPiA+IHdlIGFyZSB0cnlpbmcgdG8gYWxsb2NhdGUg
-NDMyNTM3NiAofjRNQikKPiA+ID4KPiA+ID4gNE1pQj8gSXMgLT5taW5faW9fc2l6ZSB0aGF0IGxh
-cmdlPwo+ID4gaWYgeW91IHNlZSBodHRwczovL2VsaXhpci5ib290bGluLmNvbS9saW51eC9sYXRl
-c3Qvc291cmNlL2ZzL3ViaWZzL3NiLmMjTDE2NAo+ID4gVGhlIHNpemUgaXMgYWN0dWFsbHkgQUxJ
-R04odG1wLCBjLT5taW5faW9fc2l6ZSkuCj4gPiBIZXJlIHRtcCBpcyBvZiA0MzI1Mzc2IEJ5dGVz
-IGFuZCBtaW5faW9fc2l6ZSBpcyAxNjM4NCBCeXRlcwo+Cj4gJ3RtcCcgY29udGFpbnMgYm9ndXMg
-dmFsdWVzLiBUcnkgdGhpczoKPgo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS04PC0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4KPiBGcm9tIDM0ZjY4N2ZjZTE4OTA4NWY1NTcw
-NmI0Y2RkY2IyODhhMDhmNGVlMDYgTW9uIFNlcCAxNyAwMDowMDowMCAyMDAxCj4gRnJvbTogU2Fz
-Y2hhIEhhdWVyIDxzLmhhdWVyQHBlbmd1dHJvbml4LmRlPgo+IERhdGU6IFR1ZSwgMyBEZWMgMjAx
-OSAxMTo0MToyMCArMDEwMAo+IFN1YmplY3Q6IFtQQVRDSF0gdWJpZnM6IEZpeCB3cm9uZyBtZW1v
-cnkgYWxsb2NhdGlvbgo+Cj4gSW4gY3JlYXRlX2RlZmF1bHRfZmlsZXN5c3RlbSgpIHdoZW4gd2Ug
-YWxsb2NhdGUgdGhlIGlkeCBub2RlIHdlIG11c3QgdXNlCj4gdGhlIGlkeF9ub2RlX3NpemUgd2Ug
-Y2FsY3VsYXRlZCBqdXN0IG9uZSBsaW5lIGJlZm9yZSwgbm90IHRtcCwgd2hpY2gKPiBjb250YWlu
-cyBjb21wbGV0ZWx5IG90aGVyIGRhdGEuCj4KPiBGaXhlczogYzRkZTZkN2U0MzE5ICgidWJpZnM6
-IFJlZmFjdG9yIGNyZWF0ZV9kZWZhdWx0X2ZpbGVzeXN0ZW0oKSIpCj4gUmVwb3J0ZWQtYnk6IE5h
-Z2EgU3VyZXNoa3VtYXIgUmVsbGkgPG5hZ2FzdXJlQHhpbGlueC5jb20+Cj4gU2lnbmVkLW9mZi1i
-eTogU2FzY2hhIEhhdWVyIDxzLmhhdWVyQHBlbmd1dHJvbml4LmRlPgo+IC0tLQo+ICBmcy91Ymlm
-cy9zYi5jIHwgMiArLQo+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRp
-b24oLSkKPgo+IGRpZmYgLS1naXQgYS9mcy91Ymlmcy9zYi5jIGIvZnMvdWJpZnMvc2IuYwo+IGlu
-ZGV4IGE1NTFlYjNlOWI4OS4uNjY4MWMxOGU1MmI4IDEwMDY0NAo+IC0tLSBhL2ZzL3ViaWZzL3Ni
-LmMKPiArKysgYi9mcy91Ymlmcy9zYi5jCj4gQEAgLTE2MSw3ICsxNjEsNyBAQCBzdGF0aWMgaW50
-IGNyZWF0ZV9kZWZhdWx0X2ZpbGVzeXN0ZW0oc3RydWN0IHViaWZzX2luZm8gKmMpCj4gICAgICAg
-ICBzdXAgPSBremFsbG9jKEFMSUdOKFVCSUZTX1NCX05PREVfU1osIGMtPm1pbl9pb19zaXplKSwg
-R0ZQX0tFUk5FTCk7Cj4gICAgICAgICBtc3QgPSBremFsbG9jKGMtPm1zdF9ub2RlX2Fsc3osIEdG
-UF9LRVJORUwpOwo+ICAgICAgICAgaWR4X25vZGVfc2l6ZSA9IHViaWZzX2lkeF9ub2RlX3N6KGMs
-IDEpOwo+IC0gICAgICAgaWR4ID0ga3phbGxvYyhBTElHTih0bXAsIGMtPm1pbl9pb19zaXplKSwg
-R0ZQX0tFUk5FTCk7Cj4gKyAgICAgICBpZHggPSBremFsbG9jKEFMSUdOKGlkeF9ub2RlX3NpemUs
-IGMtPm1pbl9pb19zaXplKSwgR0ZQX0tFUk5FTCk7Cj4gICAgICAgICBpbm8gPSBremFsbG9jKEFM
-SUdOKFVCSUZTX0lOT19OT0RFX1NaLCBjLT5taW5faW9fc2l6ZSksIEdGUF9LRVJORUwpOwo+ICAg
-ICAgICAgY3MgPSBremFsbG9jKEFMSUdOKFVCSUZTX0NTX05PREVfU1osIGMtPm1pbl9pb19zaXpl
-KSwgR0ZQX0tFUk5FTCk7CgpPaCwgbG9va3MgZ29vZCEgVGhhbmtzIGZvciBmaXhpbmcsIFNhc2No
-YSEKClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0
-dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+From: Wen Yang <yellowriver2010@hotmail.com>
+
+commit a12085d13997ed15f745f33a0e01002541160179 upstream.
+
+of_find_device_by_node() takes a reference to the struct device
+when it finds a match via get_device, there is no need to call
+get_device() twice.
+We also should make sure to drop the reference to the device
+taken by of_find_device_by_node() on driver unbind.
+
+Fixes: f88fc122cc34 ("mtd: nand: Cleanup/rework the atmel_nand driver")
+Signed-off-by: Wen Yang <yellowriver2010@hotmail.com>
+Suggested-by: Boris Brezillon <bbrezillon@kernel.org>
+Reviewed-by: Boris Brezillon <bbrezillon@kernel.org>
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>
+Cc: Boris Brezillon <bbrezillon@kernel.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>
+Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ drivers/mtd/nand/raw/atmel/pmecc.c |   21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
+
+--- a/drivers/mtd/nand/raw/atmel/pmecc.c
++++ b/drivers/mtd/nand/raw/atmel/pmecc.c
+@@ -876,23 +876,32 @@ static struct atmel_pmecc *atmel_pmecc_g
+ {
+ 	struct platform_device *pdev;
+ 	struct atmel_pmecc *pmecc, **ptr;
++	int ret;
+ 
+ 	pdev = of_find_device_by_node(np);
+-	if (!pdev || !platform_get_drvdata(pdev))
++	if (!pdev)
+ 		return ERR_PTR(-EPROBE_DEFER);
++	pmecc = platform_get_drvdata(pdev);
++	if (!pmecc) {
++		ret = -EPROBE_DEFER;
++		goto err_put_device;
++	}
+ 
+ 	ptr = devres_alloc(devm_atmel_pmecc_put, sizeof(*ptr), GFP_KERNEL);
+-	if (!ptr)
+-		return ERR_PTR(-ENOMEM);
+-
+-	get_device(&pdev->dev);
+-	pmecc = platform_get_drvdata(pdev);
++	if (!ptr) {
++		ret = -ENOMEM;
++		goto err_put_device;
++	}
+ 
+ 	*ptr = pmecc;
+ 
+ 	devres_add(userdev, ptr);
+ 
+ 	return pmecc;
++
++err_put_device:
++	put_device(&pdev->dev);
++	return ERR_PTR(ret);
+ }
+ 
+ static const int atmel_pmecc_strengths[] = { 2, 4, 8, 12, 24, 32 };
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
