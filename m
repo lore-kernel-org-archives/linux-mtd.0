@@ -2,85 +2,74 @@ Return-Path: <SRS0=TEJX=ZZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C6DEC43215
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 Dec 2019 05:20:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B7AAC432C0
+	for <linux-mtd@archiver.kernel.org>; Tue,  3 Dec 2019 08:42:01 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5966E20684
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 Dec 2019 05:20:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4D4BE20640
+	for <linux-mtd@archiver.kernel.org>; Tue,  3 Dec 2019 08:42:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rPeDvDjh";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ztb0Rrey"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5966E20684
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Iji5KTXK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D4BE20640
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=fRUEQEbB+BTOgSZvAX0ksu79Z6LvHoZ30wl7erlv6qg=; b=rPe
-	DvDjhuZJpPOFKJJ2ETx8fjmXKekPApUpbS0lWV9cGBgrGuXgZnsvByrdtc9xOvXveVeiTgVsFxjAA
-	QPyfOs6SebK9yGKllTAJmCCeQIxZvWSX6x/urVvVSfuzgt+PlgZw2cc2j9ILbRT/RtbjRBaWsD0sF
-	nbUa32UGeH7prntkje1Z/K9dieeDLSJKmZvZ4AjT4DO8kuSyoNXL6x3h7DgTeKjhOxN2xXNt2S1b5
-	HXaTwgZGUE3oH2owTn/TWlh211RCCzhIJ0kAcagQJkDSyJmxxySes9WkULOPaD6Lz2nQWl79ffn5m
-	zZfTRW2PQ5J9X4XAzgiuWbmW7tW/RNQ==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=w1EMwJf4WBzXRxIN4/Irqk8fa0r1QIDxO/79jkN7PaY=; b=Iji5KTXKBVEWQd
+	jKAPJu5Os3v3uU5/hnBmZQOJyS1IrGr7IFe6NWTbbK9keobLrIwOiBFhDILSVOZlJ2TMIhSaOFHQb
+	jlNx10mZLXkQnZIH+JNI3dFQ7yJnYWhIy7thDLROo01YRHgtw9drmX58VlesH/Tb7ZMP+BV02uZkp
+	8mwY6prk2kqlIY4ytO8q46euD6ZT4IfqhP75xwZAX+9rzgIptTxW3bbHRiYyy/m3Kgx4b5DaDrqVr
+	YvgB0tWtIbk7DozGCBdfNKtrn9X/2dlVia6GVwRJLRx2YoprVUKbas9IUIOZ/FpYX0T6risOhvldk
+	HxWthN2UL8rJ412e2G6g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ic0bY-0002qQ-Pj; Tue, 03 Dec 2019 05:20:08 +0000
-Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
+	id 1ic3kc-000556-G8; Tue, 03 Dec 2019 08:41:42 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ic0bV-0002Et-RC
- for linux-mtd@lists.infradead.org; Tue, 03 Dec 2019 05:20:07 +0000
-Received: by mail-pf1-x441.google.com with SMTP id x28so1236579pfo.6
- for <linux-mtd@lists.infradead.org>; Mon, 02 Dec 2019 21:20:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id;
- bh=Lo1FIdw7u0NV2Tgo0tQfhnWJEQxmW3ioGg2cCeozVqA=;
- b=Ztb0RreyoIgcYMObe/fxFbZfmUwBOO9ZNQVyf+0wUkqB4IUF8iX0Aj4QAEgwK2Y8HM
- 9R9J2WuuwQAzhlQ/JTsmxUblpgOZSEXSlTYpieISOLR+lxkkznNggFCdSHSHCjpIqfV7
- /xfCn0FBK0DACW28QfMqcF/4QzP3mvELDENsDx94okHKtlscY7ccBwXgRl5XhA2ZeExO
- JSpLajE42kSVi4FjSO+rDXerjrHBAEwhAUn3qReScV8VZLmL+FP5uXu88tMcR4sQc4xI
- mZycIOiu7BQgSsmJ7DMs0dilebUnmKiNVXx2Vhj+jT13hSRhf6hCmXcJlxcxNITmsd5n
- SpQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=Lo1FIdw7u0NV2Tgo0tQfhnWJEQxmW3ioGg2cCeozVqA=;
- b=h8vyV+D+LJpA4B2ds9ZoaAh6h0ZMdUavR90lI9flXZzq1rGcKiDpMblWeyn2FbEkUp
- paFl22sKfq2aNGH9JYmXnW343/bdaGZdrBdx9C8umjgC7/5q7rbwELh0D3x6Tqb6hIcM
- zg/J/fUiLPAnWlRIQpLmzwVy3iLokAnqDZU00Z0DtBokniiFcN7YdRi3NIBAg3mtLpi6
- PGXyO0omM/k7SkJ6T3zRo0KkINrq1LLqNK0nnI9CVKR87v/q1JCD7tpYZGFFF4qaEfJ+
- u7b1H93xO7ABTHW855Nr0ffyNASY43paa5cB8+8/GxLxmzvg+XxtptBe0OO+dk1MXAlk
- d6jw==
-X-Gm-Message-State: APjAAAWGWrO4r1PCO2zoZjP7qDugIR2L7r7xJYEEGZIEb274mQkLN99u
- VnKGX66aX/wgqz1PCSfILk0=
-X-Google-Smtp-Source: APXvYqxzZDh2NfeBrYDTnnOf9/hdb2fm1fLorKVVSa377tbXVjQqr8t/Sr3B1HKNXY0bY7gwbZcU3Q==
-X-Received: by 2002:aa7:9465:: with SMTP id t5mr2899660pfq.18.1575350404175;
- Mon, 02 Dec 2019 21:20:04 -0800 (PST)
-Received: from deepa-ubuntu.lan (c-98-234-52-230.hsd1.ca.comcast.net.
- [98.234.52.230])
- by smtp.gmail.com with ESMTPSA id h9sm1451915pgk.84.2019.12.02.21.20.02
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 02 Dec 2019 21:20:03 -0800 (PST)
-From: Deepa Dinamani <deepa.kernel@gmail.com>
-To: viro@zeniv.linux.org.uk,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/6] Delete timespec64_trunc()
-Date: Mon,  2 Dec 2019 21:19:39 -0800
-Message-Id: <20191203051945.9440-1-deepa.kernel@gmail.com>
-X-Mailer: git-send-email 2.17.1
+ id 1ic3kY-00054B-MU
+ for linux-mtd@lists.infradead.org; Tue, 03 Dec 2019 08:41:40 +0000
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <sha@pengutronix.de>)
+ id 1ic3kV-0004nh-KB; Tue, 03 Dec 2019 09:41:35 +0100
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.89)
+ (envelope-from <sha@pengutronix.de>)
+ id 1ic3kU-000288-NI; Tue, 03 Dec 2019 09:41:34 +0100
+Date: Tue, 3 Dec 2019 09:41:34 +0100
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Naga Sureshkumar Relli <nagasure@xilinx.com>
+Subject: Re: ubifs mount failure
+Message-ID: <20191203084134.tgzir4mtekpm5xbs@pengutronix.de>
+References: <MN2PR02MB5727000CBE70BAF31F60FEE4AF420@MN2PR02MB5727.namprd02.prod.outlook.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <MN2PR02MB5727000CBE70BAF31F60FEE4AF420@MN2PR02MB5727.namprd02.prod.outlook.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-IRC: #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 09:38:04 up 148 days, 14:48, 142 users,  load average: 0.14, 0.18,
+ 0.18
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191202_212005_922535_284E581C 
-X-CRM114-Status: UNSURE (   9.00  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20191203_004138_731029_B20A44D7 
+X-CRM114-Status: GOOD (  17.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,58 +81,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-cifs@vger.kernel.org, arnd@arndb.de, richard@nod.at,
- jlayton@kernel.org, linux-mtd@lists.infradead.org, stfrench@microsoft.com,
- linux-fsdevel@vger.kernel.org, ceph-devel@vger.kernel.org,
- hirofumi@mail.parknet.co.jp
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Michal Simek <michals@xilinx.com>,
+ "siva.durga.paladugu@xililnx.com" <siva.durga.paladugu@xililnx.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This series aims at deleting timespec64_trunc().
-There is a new api: timestamp_truncate() that is the
-replacement api. The api additionally does a limits
-check on the filesystem timestamps.
-
-The suggestion to open code some of the truncate logic
-came from Al Viro. And, this does make the code in some
-filesystems easy to follow.
-
-The series also does some update_time() cleanup as
-suggested by Al Viro.
-
-Deepa Dinamani (6):
-  fs: fat: Eliminate timespec64_trunc() usage
-  fs: cifs: Delete usage of timespec64_trunc
-  fs: ceph: Delete timespec64_trunc() usage
-  fs: ubifs: Eliminate timespec64_trunc() usage
-  fs: Delete timespec64_trunc()
-  fs: Do not overload update_time
-
- fs/ceph/mds_client.c |  4 +---
- fs/cifs/inode.c      | 13 +++++++------
- fs/fat/misc.c        | 10 +++++++++-
- fs/inode.c           | 33 +++------------------------------
- fs/ubifs/sb.c        | 11 ++++-------
- include/linux/fs.h   |  1 -
- 6 files changed, 24 insertions(+), 48 deletions(-)
-
--- 
-Changes since v1:
-* Dropped the atime comparison (patch 2/7) taken through cifs tree.
-* Refactored update_time according to review comments.
-2.17.1
-
-Cc: ceph-devel@vger.kernel.org
-Cc: hirofumi@mail.parknet.co.jp
-Cc: jlayton@kernel.org
-Cc: linux-cifs@vger.kernel.org
-Cc: linux-mtd@lists.infradead.org
-Cc: richard@nod.at
-Cc: stfrench@microsoft.com
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGksCgpPbiBUdWUsIERlYyAwMywgMjAxOSBhdCAwNDo1MjozMkFNICswMDAwLCBOYWdhIFN1cmVz
+aGt1bWFyIFJlbGxpIHdyb3RlOgo+ICAgIEhpLAo+IAo+ICAgIMKgCj4gCj4gICAgV2UgaGF2ZSB1
+cGdyYWRlZCBvdXIgTGludXgga2VybmVsIHRvIDUuNCBmcm9tIDQuMTkuCj4gCj4gICAgQW5kIEkg
+dHJpZWQgbW91bnRpbmcgdWJpZnMgdXNpbmcgdGhpcyBrZXJuZWwgb24gTkFORCBwYXJ0aXRpb24g
+d2l0aCBiZWxvdwo+ICAgIGNvbW1hbmQgYW5kIHNhdyB0aGF0Cj4gCj4gICAgVGhlcmUgaXMgYW4g
+aXNzdWUgd2l0aCBtZW1vcnkgYWxsb2NhdGlvbi4KPiAKPiAgICAjbW91bnQgLXQgdWJpZnMgdWJp
+MDpkYXRhIC9tbnQvCj4gCj4gICAgbW91bnQ6IG1vdW50aW5nIHViaTA6ZGF0YSBvbiAvbW50LyBm
+YWlsZWQ6IENhbm5vdCBhbGxvY2F0ZSBtZW1vcnkKPiAKPiAgICDCoAo+IAo+ICAgIEkgc2F3IHRo
+YXQgdGhlcmUgaXMgYSBjb21taXQgb24gZnMvdWJpZnMvc2IuYywgd2hlcmUgaXQgaXMgYWxsb2Nh
+dGluZyBhbGwKPiAgICB0aGUgcmVxdWlyZWQgbWVtb3JpZXMgYXQgb25lIHNob3QuCj4gCj4gICAg
+WzFdaHR0cHM6Ly9sa21sLm9yZy9sa21sLzIwMTgvOS83LzcyNAo+IAo+ICAgIEJ5IHJldmVydGlu
+ZyB0aGUgYWJvdmUgcGF0Y2gsIEkgYW0gYWJsZSB0byBtb3VudCBzdWNjZXNzZnVsbHkgdGhlIHVi
+aWZzLgo+IAo+ICAgIEJ5IHJldmVydGluZyB0aGlzIHBhdGNoLCB3ZSBhcmUgYWxsb2NhdGluZywg
+d3JpdGluZyBhbmQgZnJlZWluZyBpbiBhCj4gICAgbWFubmVyIHN1Y2ggdGhhdCwgd2UgZG9u4oCZ
+dCBzZWUgbWVtb3J5IGFsbG9jYXRpb24gaXNzdWVzLgoKU29ycnksIEkgY2FuJ3Qgc2VlIGhvdyB0
+aGlzIHBhdGNoIGNhdXNlcyBmYWlsaW5nIG1lbW9yeSBhbGxvY2F0aW9ucy4gQW5kCm5vLCB0aGlz
+IGlzIG5vdCBleHBlY3RlZC4gQ291bGQgeW91IHNwcmlua2xlIHNvbWUgcHJpbnRrcyBhbmQgdHJh
+Y2sgZG93bgp3aGVyZSBpdCBmYWlscz8gSXMgaXQgdGhlIG9idmlvdXMgcGxhY2UgaGVyZToKCglp
+ZiAoIXN1cCB8fCAhbXN0IHx8ICFpZHggfHwgIWlubyB8fCAhY3MpIHsKCQllcnIgPSAtRU5PTUVN
+OwoJCWdvdG8gb3V0OwoJfQoKSWYgeWVzLCB3aGljaCBhbGxvY2F0aW9uIGZhaWxzIGFuZCBob3cg
+bXVjaCBtZW1vcnkgZGlkIHdlIHRyeSB0byBhbGxvY2F0ZT8KSWYgbm8sIHdoZXJlIGRvZXMgaXQg
+ZmFpbD8gQWxzbywgd2hlcmUgYXJlIHlvdSB1c2luZyBVQklGUy4gSXMgaXQgTkFORCBmbGFzaApv
+ciBOT1IgZmxhc2g/CgpTYXNjaGEKCi0tIApQZW5ndXRyb25peCBlLksuICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgfCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfApTdGV1ZXJ3YWxkZXIg
+U3RyLiAyMSAgICAgICAgICAgICAgICAgICAgICAgfCBodHRwOi8vd3d3LnBlbmd1dHJvbml4LmRl
+LyAgfAozMTEzNyBIaWxkZXNoZWltLCBHZXJtYW55ICAgICAgICAgICAgICAgICAgfCBQaG9uZTog
+KzQ5LTUxMjEtMjA2OTE3LTAgICAgfApBbXRzZ2VyaWNodCBIaWxkZXNoZWltLCBIUkEgMjY4NiAg
+ICAgICAgICAgfCBGYXg6ICAgKzQ5LTUxMjEtMjA2OTE3LTU1NTUgfAoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNz
+aW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2xpbnV4LW10ZC8K
