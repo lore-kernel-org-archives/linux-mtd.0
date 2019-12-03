@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4D22C432C0
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 Dec 2019 12:31:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1828EC432C0
+	for <linux-mtd@archiver.kernel.org>; Tue,  3 Dec 2019 12:32:10 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 93C472073B
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 Dec 2019 12:31:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D008A20684
+	for <linux-mtd@archiver.kernel.org>; Tue,  3 Dec 2019 12:32:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ZjPb91n3";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="j/GH6XF2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 93C472073B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="s2lePDIK";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="gsIo5IRG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D008A20684
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,33 +25,33 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:From:To:
 	Subject:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=vYuT2wrQHqWvmjFqUhjbyipNVsRTDqlRm4R+0U+ytIc=; b=ZjPb91n3kPLlEx
-	KEAzagVSLDl2/Jwh/uSfeQDqfarsaGN5URC51oDoME1JAYr9oaJTqxupOJfmuLRVj2qJXd44EyxL2
-	o4HOFWchO39oSzJffAGwsaI2R3Ipcxiu+AdBzeVrfgQrqUXcc1OmZ0+BFrug4jY68sebF5GTXZF9r
-	gaj0++z+bfh6lMVUaSByvBa8kNLNasUdRlh6laFBrlbSVLmSIl3AhkQFniImDGMkjA7ok/jsU5STv
-	I6Sg/UaLIz3VmkOHKhqZwHByPiQ/cJuwGbdTToYBHPElJAZbIWMcgwlftmY0ts5s9RZOP62rjMwLo
-	eMlG89hMuWgYb3ejuHZA==;
+	List-Owner; bh=MsvjYTaGHUZmvaV0xiBXqRt5HFQVPgAwwT/w5yfsdHg=; b=s2lePDIKfWZbMD
+	OQvW2XZkugbkh08HZPG5qe11RcR72eIzkJ2uq8uWQAFY7JBFWh6+091/OJ5XTmC8o4Bj1qlPlxIAO
+	0TyJ75syvosyz2zrlpV7/nnqoxoDa8+YFM3x8hTIXixqN3oMuKmtF0QyidYYNT+voz7cM1dTrVsCA
+	FJtLnWRnZE+dIsgORabJ7g4CIHCK27QAd58Kkx8Iv4t9AqEhTNxL+/Ioj3VPF5Fmf0TtcM2s5UZoY
+	EwwsmlmtACH3tK5s8bAyZ40e/7Yq1Dl9kMGGap64MUOUs7W6GACXGN1jTMSaobcBe6NJ1c4QL9Dgt
+	DZjAHKbXaRnt2uk+a1gw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ic7Km-0001cz-GD; Tue, 03 Dec 2019 12:31:16 +0000
+	id 1ic7LP-00029k-W7; Tue, 03 Dec 2019 12:31:56 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ic7KW-0001SK-L1; Tue, 03 Dec 2019 12:31:02 +0000
+ id 1ic7Kp-0001gq-MN; Tue, 03 Dec 2019 12:31:21 +0000
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
  [83.86.89.107])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 127E52073C;
- Tue,  3 Dec 2019 12:30:58 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 833AE2073F;
+ Tue,  3 Dec 2019 12:31:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1575376259;
- bh=4bPoHww62PiAifL9wchSjqkMtb4cUfKs/nolfKBokxk=;
+ s=default; t=1575376279;
+ bh=STe82IhqK8mzQ2V8Rv7JrL7QykuJoT9Ei9nkrLquIrE=;
  h=Subject:To:Cc:From:Date:From;
- b=j/GH6XF20vW2yLEZJk09oFfKGzC1K829y6CayX2nmVKV6Jjc2zyhpflx4P7ediHgm
- Hf3XKlbGQQR/BuTeH5LY0zObVjYa0lVDWnv5uQtJZl4rTutUPnFERIOreiiluBi4Iy
- 29m5FGPywEZ8UXw/LaMTYlgS+yQd57bw/3s8aR3A=
+ b=gsIo5IRG7FjJ+WIs1AD7R4ef/oiIJEQ7BmmH0H6F1f9UUQTDIlHvEJgjGZ3KZslhQ
+ iEDv4ksoMDctuBe4DPeVKefZ2i6sR9FoW/XRYfB4x/uYSVIIJNaJvg7i0KNdJc8wpl
+ H9Tb+Eb7gN0SX82FPxMieLSuwWSUJ3BJLxzwhM5o=
 Subject: Patch "mtd: rawnand: atmel: fix possible object reference leak" has
- been added to the 4.14-stable tree
+ been added to the 4.19-stable tree
 To: alexandre.belloni@bootlin.com, bbrezillon@kernel.org,
  computersforpeace@gmail.com, dwmw2@infradead.org, gregkh@linuxfoundation.org,
  lee.jones@linaro.org, linux-arm-kernel@lists.infradead.org,
@@ -59,14 +59,14 @@ To: alexandre.belloni@bootlin.com, bbrezillon@kernel.org,
  marek.vasut@gmail.com, miquel.raynal@bootlin.com, nicolas.ferre@microchip.com,
  richard@nod.at, tudor.ambarus@microchip.com, yellowriver2010@hotmail.com
 From: <gregkh@linuxfoundation.org>
-Date: Tue, 03 Dec 2019 13:30:43 +0100
-Message-ID: <1575376243232191@kroah.com>
+Date: Tue, 03 Dec 2019 13:31:10 +0100
+Message-ID: <157537627055132@kroah.com>
 MIME-Version: 1.0
 X-stable: commit
 X-Patchwork-Hint: ignore 
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191203_043100_729076_9E58316E 
-X-CRM114-Status: GOOD (  14.93  )
+X-CRM114-CacheID: sfid-20191203_043119_912356_CF6FC0E9 
+X-CRM114-Status: GOOD (  14.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,12 +89,12 @@ This is a note to let you know that I've just added the patch titled
 
     mtd: rawnand: atmel: fix possible object reference leak
 
-to the 4.14-stable tree which can be found at:
+to the 4.19-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
      mtd-rawnand-atmel-fix-possible-object-reference-leak.patch
-and it can be found in the queue-4.14 subdirectory.
+and it can be found in the queue-4.19 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.
@@ -139,12 +139,12 @@ Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mtd/nand/atmel/pmecc.c |   21 +++++++++++++++------
+ drivers/mtd/nand/raw/atmel/pmecc.c |   21 +++++++++++++++------
  1 file changed, 15 insertions(+), 6 deletions(-)
 
---- a/drivers/mtd/nand/atmel/pmecc.c
-+++ b/drivers/mtd/nand/atmel/pmecc.c
-@@ -875,23 +875,32 @@ static struct atmel_pmecc *atmel_pmecc_g
+--- a/drivers/mtd/nand/raw/atmel/pmecc.c
++++ b/drivers/mtd/nand/raw/atmel/pmecc.c
+@@ -876,23 +876,32 @@ static struct atmel_pmecc *atmel_pmecc_g
  {
  	struct platform_device *pdev;
  	struct atmel_pmecc *pmecc, **ptr;
@@ -187,7 +187,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 Patches currently in stable-queue which might be from yellowriver2010@hotmail.com are
 
-queue-4.14/mtd-rawnand-atmel-fix-possible-object-reference-leak.patch
+queue-4.19/mtd-rawnand-atmel-fix-possible-object-reference-leak.patch
 
 ______________________________________________________
 Linux MTD discussion mailing list
