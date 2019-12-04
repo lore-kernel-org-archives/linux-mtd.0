@@ -2,87 +2,87 @@ Return-Path: <SRS0=Ia6G=Z2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CDD86C43603
-	for <linux-mtd@archiver.kernel.org>; Wed,  4 Dec 2019 11:15:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A698BC43603
+	for <linux-mtd@archiver.kernel.org>; Wed,  4 Dec 2019 12:46:54 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9F23B206DB
-	for <linux-mtd@archiver.kernel.org>; Wed,  4 Dec 2019 11:15:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7A1662081B
+	for <linux-mtd@archiver.kernel.org>; Wed,  4 Dec 2019 12:46:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Rsg8nDF6";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P4sD8VSB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9F23B206DB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="adv41koE";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="AJwpGpbi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A1662081B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:Subject:
-	From:To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=tKkZ55ddSrfYSKtcOFMfOSivP9vq0lawY3AZIfr+t2g=; b=Rsg8nDF6ZP3doe
-	7QlhpZSzHtP0DpwfoiYOz67pSQQKaNNZIi+qdlLVRHUyRfV+x7fdwh7FC/OuLAFYLxHmfgqFcnatN
-	kRAbmIuLbQVtOBxOOVl+RiMhWWcZIJ20DObMJCip3IyQirGqcwlCkRuf6muyYAlqIF9ksKQKO8Rpy
-	he8vZ8h/6c1ttID9lKmUZYDKwR9w+hm0GynlE0bOyCxT1PvKSdytYnCS1Yk0bRYAmy1mBOCJx2HFd
-	PkwaAegeJRcwvbbOOIHZR/+qlttLK98YyvOTzWXrdeoAF7ORp/gN1LFn7SsWA5AM3CSGMRxiM4HMi
-	h9SkmZ7TQrOnGxtMPrPA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=t4sahfldz/yrgj/9g7y9EWDYzrzpabGUKtw2ntG43VU=; b=adv41koE4d1iaN
+	vTA4hXAR/8rOVeKMVyj0hLS45z+P0BtkcDjtqOmYv5x2+8XptY9XZFBJfq2cDz/stJduyp8bzySaP
+	tW2tDtTe4844A7PZhxzGs/GZQbIsBGS4SxVx4Ou37OIJQYrY616AAui3rQrgialsP0kWptqZpsxuH
+	CKjHmnZ+OHfhyXDF17UuYp+5vhNsXJmZvFcQI1chygBZRz4hsDGHa7MLc0nKzD/c09KbPDEqrOWop
+	xfHdrANggVhc5eYKkSswYXhGylnjAYEZSgsj87JhNbPX2k7lmyfes1vQ6xwC+rNfgqFGFNdaBoYwu
+	cMTJ7JO4PsktNKd1Lp7Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1icSck-0007Sy-PM; Wed, 04 Dec 2019 11:15:14 +0000
-Received: from mail-wm1-x341.google.com ([2a00:1450:4864:20::341])
+	id 1icU39-00034p-1T; Wed, 04 Dec 2019 12:46:35 +0000
+Received: from lelv0143.ext.ti.com ([198.47.23.248])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1icScd-0006oo-4y; Wed, 04 Dec 2019 11:15:08 +0000
-Received: by mail-wm1-x341.google.com with SMTP id q9so5503008wmj.5;
- Wed, 04 Dec 2019 03:15:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=to:cc:from:subject:message-id:date:user-agent:mime-version
- :content-language:content-transfer-encoding;
- bh=2dg6vYHfAbIqQs6f5OPzsG4hCTh98ASxjLOtIlWmuN0=;
- b=P4sD8VSBvEo/WuxXT8f9IirLBaAtn9OraQFi6Joeh+nDUHthz6cFe5EGmDQxOxlgN6
- hzKAihoiESWzuWXShRYM5rHaN5U4qGNX4Dg5EB7KyLpxD5GXKqqT96C+uIPC2bnhgb7u
- aNbCL3Tet+7znL2i+gHVlT6iHScZsBei3/f1kDVr9y87pAxtJHJzbdz0ffuXPQJqweAw
- tgPiuUgIqYS8meiNjNR2NJ6pNVD4izxOkkyxYgxavJOaMseqfIY+YmIGJobgQxCJ79Bd
- TQnO133jTMNkw0FNMkMdzjnVe6BewUPs6L0Dfo5HVJomC5Cau3Qp0+Ou5UIiBkK4s6KG
- v7DQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
- :mime-version:content-language:content-transfer-encoding;
- bh=2dg6vYHfAbIqQs6f5OPzsG4hCTh98ASxjLOtIlWmuN0=;
- b=CIOoqhogTL6/DaXeAiMbpNjfqWoDP2xg0dn2BhNpnAsXY6jddznFygc7765YW+Oxjz
- UUttbrPEXE19oZoMz3HoKGAwW2v/VP0p/kV7q7M03KxeNNU+OH+hjjncpYxH+ZRAPjqc
- puoC7gUpRR1FyKSCMSX684g0NgI1RN3EP/AYPb6upX8V8YSAGkQQLEBIKqF2XmYbmPsa
- Lsw0D1io7Op1AYFFynn2JuQgivENJ4aZvT0WJw7cQTbr2qH4rGz2gwxXQ+1Ivy+NLz/g
- NW6s5HBDqRhDnTVkiHFjEnQ4wf+kwns0Y+zzHiADguxoRvvuSOD+NBqhsdZqx+4CeMCq
- w/9A==
-X-Gm-Message-State: APjAAAV/+XiQXHvWJ02ZqPhn/w5xIQpHktBDU1jRBMQtzZwVNWftBC0H
- eoYA3TgqSVbQi+0tSzzB5JcZtmaR
-X-Google-Smtp-Source: APXvYqzOQO1BXYauV3dqygDR71lpWAVKeeqa8hbZDXpG6lQ5lajku0y+th3P4REmruVE3e0qRdIk0g==
-X-Received: by 2002:a1c:9dd1:: with SMTP id g200mr6342874wme.90.1575458105168; 
- Wed, 04 Dec 2019 03:15:05 -0800 (PST)
-Received: from [192.168.2.41] ([46.227.18.67])
- by smtp.gmail.com with ESMTPSA id a6sm5380859wmb.1.2019.12.04.03.15.04
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 04 Dec 2019 03:15:04 -0800 (PST)
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>
-From: Richard Genoud <richard.genoud@gmail.com>
-Subject: fastmap WARN_ON() after ubiupdatevol
-Message-ID: <7a4adbc9-2cf0-e80b-8d0c-c351bc64bd35@gmail.com>
-Date: Wed, 4 Dec 2019 12:14:59 +0100
+ id 1icU34-00034R-Sy
+ for linux-mtd@lists.infradead.org; Wed, 04 Dec 2019 12:46:33 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id xB4CkG4o018094;
+ Wed, 4 Dec 2019 06:46:16 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1575463576;
+ bh=fkrwLNkhfiBTWfctAGmSg102uR8yCc3CSMlGAOA0uiw=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=AJwpGpbiKk7hHKCO+S//ARsDlcTbdvRTJO/hRW5TvcMIqosItunMTFcaXt0sT46Zg
+ 3ojutlC7hq5g45c5L2eLAoYcEYHpcRa5RQcacjIh+uwb/ZyqN9HK9SbLhQmEVCQlc6
+ XGoVVZEIVhd2DkDaT7fSE25A8FVfNmOOMkgLySmM=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id xB4CkGGn071290
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Wed, 4 Dec 2019 06:46:16 -0600
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Wed, 4 Dec
+ 2019 06:46:15 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Wed, 4 Dec 2019 06:46:15 -0600
+Received: from [172.24.145.136] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id xB4CkB5J113235;
+ Wed, 4 Dec 2019 06:46:12 -0600
+Subject: Re: [PATCH 2/4] mtd: spi-nor: Add support for Octal 8D-8D-8D mode
+To: Mason Yang <masonccyang@mxic.com.tw>, <broonie@kernel.org>,
+ <miquel.raynal@bootlin.com>, <richard@nod.at>, <marek.vasut@gmail.com>,
+ <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <bbrezillon@kernel.org>, <tudor.ambarus@microchip.com>
+References: <1573808288-19365-1-git-send-email-masonccyang@mxic.com.tw>
+ <1573808288-19365-3-git-send-email-masonccyang@mxic.com.tw>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <3f514579-d3a4-1319-a55a-265a3f1ce00e@ti.com>
+Date: Wed, 4 Dec 2019 18:16:42 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+ Thunderbird/68.2.1
 MIME-Version: 1.0
+In-Reply-To: <1573808288-19365-3-git-send-email-masonccyang@mxic.com.tw>
 Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191204_031507_226468_9276A128 
-X-CRM114-Status: GOOD (  10.74  )
+X-CRM114-CacheID: sfid-20191204_044631_021306_5FDE5D5B 
+X-CRM114-Status: GOOD (  28.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,121 +94,508 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- Linux Kernel <linux-kernel@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Cc: juliensu@mxic.com.tw, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi !
+Hi Mason,
 
-I've seen that fastmap issues a warning after updating an ubifs volume :
-ubi0: default fastmap pool size: 95
-ubi0: default fastmap WL pool size: 47
-ubi0: attaching mtd3
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 1 at drivers/mtd/ubi/fastmap.c:781 ubi_attach_fastmap+0xadc/0xc30
-Modules linked in:
-CPU: 0 PID: 1 Comm: swapper Not tainted 5.4.1-00048-g23479ee4c63a #1
-Hardware name: Atmel AT91SAM9
-Backtrace: 
-[<c000e484>] (dump_backtrace) from [<c000e884>] (show_stack+0x20/0x24)
- r6:00000000 r5:c066d88c r4:00000000 r3:c4bfd525
-[<c000e864>] (show_stack) from [<c04b99dc>] (dump_stack+0x20/0x28)
-[<c04b99bc>] (dump_stack) from [<c0018d04>] (__warn+0xdc/0x104)
-[<c0018c28>] (__warn) from [<c0018da0>] (warn_slowpath_fmt+0x74/0x80)
- r10:00000000 r8:0000030d r7:c066d88c r6:c0332144 r5:00000009 r4:00000000
-[<c0018d30>] (warn_slowpath_fmt) from [<c0332144>] (ubi_attach_fastmap+0xadc/0xc30)
- r8:c71fd000 r7:c78b7d98 r6:00000000 r5:c71dcf00 r4:000007a9
-[<c0331668>] (ubi_attach_fastmap) from [<c033293c>] (ubi_scan_fastmap+0x668/0x85c)
- r10:b1c9b7aa r9:00000000 r8:c71ff600 r7:00000000 r6:c8afe000 r5:b1c9b7aa
- r4:c71fd000
-[<c03322d4>] (ubi_scan_fastmap) from [<c032e1f8>] (ubi_attach+0xe0/0x2a4)
- r10:00000014 r9:c71fd040 r8:00000040 r7:c71dce80 r6:c71dcf00 r5:00000000
- r4:c71fd000
-[<c032e118>] (ubi_attach) from [<c03218fc>] (ubi_attach_mtd_dev+0x68c/0xb28)
- r8:c7b85000 r7:00000000 r6:c71fd000 r5:fffff800 r4:00000840 r3:00000002
-[<c0321270>] (ubi_attach_mtd_dev) from [<c06fec50>] (ubi_init+0x148/0x1e8)
- r10:c07c53e4 r9:00000000 r8:c07c53e0 r7:00000000 r6:c07c53e4 r5:c7b85000
- r4:00000000
-[<c06feb08>] (ubi_init) from [<c000aafc>] (do_one_initcall+0x7c/0x1e0)
- r10:c0711834 r8:00000077 r7:00000000 r6:c073258c r5:00000007 r4:c06feb08
-[<c000aa80>] (do_one_initcall) from [<c06da114>] (kernel_init_freeable+0x128/0x1fc)
- r7:c7eebcc0 r6:c073258c r5:00000007 r4:00000020
-[<c06d9fec>] (kernel_init_freeable) from [<c04d17d4>] (kernel_init+0x18/0x100)
- r10:00000000 r8:00000000 r7:00000000 r6:00000000 r5:c04d17bc r4:00000000
-[<c04d17bc>] (kernel_init) from [<c00090e0>] (ret_from_fork+0x14/0x34)
-Exception stack(0xc78b7fb0 to 0xc78b7ff8)
-7fa0:                                     00000000 00000000 00000000 00000000
-7fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-7fe0: 00000000 00000000 00000000 00000000 00000013 00000000
- r4:00000000 r3:60000053
----[ end trace b00dfb7213ba31a7 ]---
-ubi0 error: ubi_scan_fastmap: Attach by fastmap failed, doing a full scan!
-random: fast init done
-ubi0: scanning is finished
-ubi0: attached mtd3 (name "ubi", size 245 MiB)
-ubi0: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
-ubi0: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
-ubi0: VID header offset: 2048 (aligned 2048), data offset: 4096
-ubi0: good PEBs: 1964, bad PEBs: 0, corrupted PEBs: 0
-ubi0: user volume: 3, internal volumes: 1, max. volumes count: 128
-ubi0: max/mean erase counter: 26/12, WL threshold: 4096, image sequence number: 1761477484
-ubi0: available PEBs: 0, total reserved PEBs: 1964, PEBs reserved for bad PEB handling: 40
+On 15/11/19 2:28 pm, Mason Yang wrote:
+> According to JESD216C (JEDEC Basic Flash Parameter Table 18th DWORD)
+> Octal DTR(8D-8D-8D) command and command extension (00b: same, 01b: inverse)
+> to add extension command mode in spi_nor struct and to add write_cr2
+> (Write CFG Reg 2) for 8-8-8/8D-8D-8D mode sequences enable.
+> 
 
-The corresponding code is :
-	/*
-	 * If fastmap is leaking PEBs (must not happen), raise a
-	 * fat warning and fall back to scanning mode.
-	 * We do this here because in ubi_wl_init() it's too late
-	 * and we cannot fall back to scanning.
-	 */
-	if (WARN_ON(count_fastmap_pebs(ai) != ubi->peb_count -
-		    ai->bad_peb_count - fm->used_blocks))
-		goto fail_bad;
+But I don't see any code setting "nor->ext_cmd_mode" based on BFPT?
 
-I added some debug and found that, when everything is ok, I have :
-ubi_attach_fastmap: count_fastmap_pebs(ai)=1963 ubi->peb_count=1964 ai->bad_peb_count=0 fm->used_blocks=1
-But when the warning rises, I have:
-ubi_attach_fastmap: count_fastmap_pebs(ai)=1954 ubi->peb_count=1964 ai->bad_peb_count=0 fm->used_blocks=1
-It can also be:
-ubi_attach_fastmap: count_fastmap_pebs(ai)=1962 ubi->peb_count=1964 ai->bad_peb_count=0 fm->used_blocks=1
-ubi_attach_fastmap: count_fastmap_pebs(ai)=1960 ubi->peb_count=1964 ai->bad_peb_count=0 fm->used_blocks=1
+Any new feature that we add to spi-nor should make use of autodiscovery
+feature made possible by SFDP tables. Could you modify the patch to
+discover capabilities supported by flash and opcodes to be used from
+SFDP table?
 
-After a reboot, all is back to normal.
 
-Kernel is 5.4.1, mtd-utils are 1.5.1 (yes, it's quite old)
+> Define the relevant macrons and enum to add such modes and make sure
+> op->xxx.dtr fields, command nbytes and extension command are properly
+> filled and unmask DTR and X-X-X modes in spi_nor_spimem_adjust_hwcaps()
+> so that DTR and X-X-X support detection is done through
+> spi_mem_supports_op().
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 159 ++++++++++++++++++++++++++++++++++++++++--
+>  include/linux/mtd/spi-nor.h   |  58 +++++++++++++--
+>  2 files changed, 206 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 7acf4a9..4cdf52d 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -320,6 +320,23 @@ static ssize_t spi_nor_spimem_read_data(struct spi_nor *nor, loff_t from,
+>  	/* convert the dummy cycles to the number of bytes */
+>  	op.dummy.nbytes = (nor->read_dummy * op.dummy.buswidth) / 8;
+>  
+> +	if (spi_nor_protocol_is_8_8_8(nor->read_proto)) {
+> +		op.cmd.nbytes = 2;
 
-The nand layout is :
-0x000000000000-0x000010000000 : "all"
-0x000000000000-0x000000020000 : "dtb"
-0x000000020000-0x000000a00000 : "kernel"
-0x000000a00000-0x00000ff80000 : "ubi"
-0x00000ff80000-0x000010000000 : "bbt"
-page size : 2KiB
-subpage size : 2KiB
-PEB size: 128KiB
-ubi0_0 : 537 LEBs
-ubi0_1 : 537 LEBs
-ubi0_2 : 844 LEBs
-40 PEBs reserved for bad blocks
-4 PEB for UBI overhead
-2 PEB for fastmap
+Can we get this info from SFDP too?
 
-The ubifs image is created with :
-mkfs.ubifs -d dummy/ -e 0x1f000 -c 537 -m 0x800 -x lzo -o toto.ubifs
-and updated with:
-ubiupdatevol /dev/ubi0_0 toto.ubifs
+> +
+> +		if (nor->ext_cmd_mode == EXT_CMD_IS_INVERSE)
+> +			op.cmd.ext_opcode = ~nor->read_opcode;
+> +		else
+> +			op.cmd.ext_opcode = nor->read_opcode;
+> +
+> +		if (spi_nor_protocol_is_8D_8D_8D(nor->read_proto)) {
+> +			op.dummy.nbytes *= 2;
 
-It seems to happen only when toto.ubifs is quite big (in my case : 57520128
-bytes (453 LEBs))
+> +			op.cmd.dtr = true;
+> +			op.addr.dtr = true;
+> +			op.dummy.dtr = true;
+> +			op.data.dtr = true;
 
-(I can provide the toto.ubifs if needed)
+Can we have a macro for this initialization?
 
-Regards,
-Richard
+
+> +		}
+> +	}
+> +
+>  	return spi_nor_spimem_xfer_data(nor, &op);
+>  }
+>  
+> @@ -367,6 +384,21 @@ static ssize_t spi_nor_spimem_write_data(struct spi_nor *nor, loff_t to,
+>  	if (nor->program_opcode == SPINOR_OP_AAI_WP && nor->sst_write_second)
+>  		op.addr.nbytes = 0;
+>  
+> +	if (spi_nor_protocol_is_8_8_8(nor->write_proto)) {
+> +		op.cmd.nbytes = 2;
+> +
+> +		if (nor->ext_cmd_mode == EXT_CMD_IS_INVERSE)
+> +			op.cmd.ext_opcode = ~nor->program_opcode;
+> +		else
+> +			op.cmd.ext_opcode = nor->program_opcode;
+> +
+> +		if (spi_nor_protocol_is_8D_8D_8D(nor->write_proto)) {
+> +			op.cmd.dtr = true;
+> +			op.addr.dtr = true;
+> +			op.data.dtr = true;
+> +		}
+> +	}
+> +
+>  	return spi_nor_spimem_xfer_data(nor, &op);
+>  }
+>  
+> @@ -404,6 +436,30 @@ static int read_sr(struct spi_nor *nor)
+>  				   SPI_MEM_OP_NO_DUMMY,
+>  				   SPI_MEM_OP_DATA_IN(1, nor->bouncebuf, 1));
+>  
+
+This is not based on the latest tree.
+
+> +		if (spi_nor_protocol_is_8_8_8(nor->read_proto)) {
+> +			op.cmd.buswidth = 8;
+> +			op.addr.buswidth = 8;
+> +			op.dummy.buswidth = 8;
+> +			op.data.buswidth = 8;
+> +			op.cmd.nbytes = 2;
+> +			op.addr.nbytes = 4;
+> +			op.dummy.nbytes = 4;
+> +			op.addr.val = 0;
+
+This is not scalable... There will be bunch of if...else ladders when we
+want to support other X-X-X modes... Can't these be derived from
+nor->reg_proto? And then borrow the logic from spi_nor_spimem_read_data()?
+
+
+Could you have a look at Boris's initial submission to add 8-8-8 mode at
+https://patchwork.kernel.org/cover/10638055/ ?
+You could use that series as the base for your changes/additions.
+
+I am fine if you want to call 2nd byte of opcode as ext_opcode
+
+Regards
+Vignesh
+
+> +
+> +			if (nor->ext_cmd_mode == EXT_CMD_IS_INVERSE)
+> +				op.cmd.ext_opcode = ~SPINOR_OP_RDSR;
+> +			else
+> +				op.cmd.ext_opcode = SPINOR_OP_RDSR;
+> +
+> +			if (spi_nor_protocol_is_8D_8D_8D(nor->read_proto)) {
+> +				op.dummy.nbytes *= 2;
+> +				op.cmd.dtr = true;
+> +				op.addr.dtr = true;
+> +				op.dummy.dtr = true;
+> +				op.data.dtr = true;
+> +			}
+> +		}
+> +
+>  		ret = spi_mem_exec_op(nor->spimem, &op);
+>  	} else {
+>  		ret = nor->read_reg(nor, SPINOR_OP_RDSR, nor->bouncebuf, 1);
+> @@ -508,6 +564,19 @@ static int write_enable(struct spi_nor *nor)
+>  				   SPI_MEM_OP_NO_DUMMY,
+>  				   SPI_MEM_OP_NO_DATA);
+>  
+> +		if (spi_nor_protocol_is_8_8_8(nor->write_proto)) {
+> +			op.cmd.buswidth = 8;
+> +			op.cmd.nbytes = 2;
+> +
+> +			if (spi_nor_protocol_is_8D_8D_8D(nor->write_proto))
+> +				op.cmd.dtr = true;
+> +
+> +			if (nor->ext_cmd_mode == EXT_CMD_IS_INVERSE)
+> +				op.cmd.ext_opcode = ~SPINOR_OP_WREN;
+> +			else
+> +				op.cmd.ext_opcode = SPINOR_OP_WREN;
+> +		}
+> +
+>  		return spi_mem_exec_op(nor->spimem, &op);
+>  	}
+>  
+> @@ -526,12 +595,65 @@ static int write_disable(struct spi_nor *nor)
+>  				   SPI_MEM_OP_NO_DUMMY,
+>  				   SPI_MEM_OP_NO_DATA);
+>  
+> +		if (spi_nor_protocol_is_8_8_8(nor->write_proto)) {
+> +			op.cmd.buswidth = 8;
+> +			op.cmd.nbytes = 2;
+> +
+> +			if (spi_nor_protocol_is_8D_8D_8D(nor->write_proto))
+> +				op.cmd.dtr = true;
+> +
+> +			if (nor->ext_cmd_mode == EXT_CMD_IS_INVERSE)
+> +				op.cmd.ext_opcode = ~SPINOR_OP_WRDI;
+> +			else
+> +				op.cmd.ext_opcode = SPINOR_OP_WRDI;
+> +		}
+> +
+>  		return spi_mem_exec_op(nor->spimem, &op);
+>  	}
+>  
+>  	return nor->write_reg(nor, SPINOR_OP_WRDI, NULL, 0);
+>  }
+>  
+> +/*
+> + * Write configuration register 2 one byte
+> + * Returns negative if error occurred.
+> + */
+> +static int write_cr2(struct spi_nor *nor, u32 addr, u8 val)
+> +{
+> +	write_enable(nor);
+> +
+> +	nor->bouncebuf[0] = val;
+> +	if (nor->spimem) {
+> +		struct spi_mem_op op =
+> +			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WRCR2, 1),
+> +				   SPI_MEM_OP_ADDR(4, addr, 1),
+> +				   SPI_MEM_OP_NO_DUMMY,
+> +				   SPI_MEM_OP_DATA_OUT(1, nor->bouncebuf, 1));
+> +
+> +		if (spi_nor_protocol_is_8_8_8(nor->write_proto)) {
+> +			op.cmd.buswidth = 8;
+> +			op.addr.buswidth = 8;
+> +			op.data.buswidth = 8;
+> +			op.cmd.nbytes = 2;
+> +
+> +			if (spi_nor_protocol_is_8D_8D_8D(nor->write_proto)) {
+> +				op.cmd.dtr = true;
+> +				op.addr.dtr = true;
+> +				op.data.dtr = true;
+> +			}
+> +
+> +			if (nor->ext_cmd_mode == EXT_CMD_IS_INVERSE)
+> +				op.cmd.ext_opcode = ~SPINOR_OP_WRCR2;
+> +			else
+> +				op.cmd.ext_opcode = SPINOR_OP_WRCR2;
+> +		}
+> +
+> +		return spi_mem_exec_op(nor->spimem, &op);
+> +	}
+> +
+> +	return -ENOTSUPP;
+> +}
+> +
+>  static struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)
+>  {
+>  	return mtd->priv;
+> @@ -868,6 +990,19 @@ static int erase_chip(struct spi_nor *nor)
+>  				   SPI_MEM_OP_NO_DUMMY,
+>  				   SPI_MEM_OP_NO_DATA);
+>  
+> +		if (spi_nor_protocol_is_8_8_8(nor->write_proto)) {
+> +			op.cmd.buswidth = 8;
+> +			op.cmd.nbytes = 2;
+> +
+> +			if (spi_nor_protocol_is_8D_8D_8D(nor->write_proto))
+> +				op.cmd.dtr = true;
+> +
+> +			if (nor->ext_cmd_mode == EXT_CMD_IS_INVERSE)
+> +				op.cmd.ext_opcode = ~SPINOR_OP_CHIP_ERASE;
+> +			else
+> +				op.cmd.ext_opcode = SPINOR_OP_CHIP_ERASE;
+> +		}
+> +
+>  		return spi_mem_exec_op(nor->spimem, &op);
+>  	}
+>  
+> @@ -945,6 +1080,22 @@ static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
+>  				   SPI_MEM_OP_NO_DUMMY,
+>  				   SPI_MEM_OP_NO_DATA);
+>  
+> +		if (spi_nor_protocol_is_8_8_8(nor->write_proto)) {
+> +			op.cmd.buswidth = 8;
+> +			op.addr.buswidth = 8;
+> +			op.cmd.nbytes = 2;
+> +
+> +			if (spi_nor_protocol_is_8D_8D_8D(nor->write_proto)) {
+> +				op.cmd.dtr = true;
+> +				op.addr.dtr = true;
+> +			}
+> +
+> +			if (nor->ext_cmd_mode == EXT_CMD_IS_INVERSE)
+> +				op.cmd.ext_opcode = ~nor->erase_opcode;
+> +			else
+> +				op.cmd.ext_opcode = nor->erase_opcode;
+> +		}
+> +
+>  		return spi_mem_exec_op(nor->spimem, &op);
+>  	}
+>  
+> @@ -2825,6 +2976,7 @@ static int spi_nor_hwcaps_read2cmd(u32 hwcaps)
+>  		{ SNOR_HWCAPS_READ_1_8_8,	SNOR_CMD_READ_1_8_8 },
+>  		{ SNOR_HWCAPS_READ_8_8_8,	SNOR_CMD_READ_8_8_8 },
+>  		{ SNOR_HWCAPS_READ_1_8_8_DTR,	SNOR_CMD_READ_1_8_8_DTR },
+> +		{ SNOR_HWCAPS_READ_8_8_8_DTR,	SNOR_CMD_READ_8D_8D_8D },
+>  	};
+>  
+>  	return spi_nor_hwcaps2cmd(hwcaps, hwcaps_read2cmd,
+> @@ -2841,6 +2993,7 @@ static int spi_nor_hwcaps_pp2cmd(u32 hwcaps)
+>  		{ SNOR_HWCAPS_PP_1_1_8,		SNOR_CMD_PP_1_1_8 },
+>  		{ SNOR_HWCAPS_PP_1_8_8,		SNOR_CMD_PP_1_8_8 },
+>  		{ SNOR_HWCAPS_PP_8_8_8,		SNOR_CMD_PP_8_8_8 },
+> +		{ SNOR_HWCAPS_PP_8_8_8_DTR,	SNOR_CMD_PP_8D_8D_8D },
+>  	};
+>  
+>  	return spi_nor_hwcaps2cmd(hwcaps, hwcaps_pp2cmd,
+> @@ -3010,12 +3163,6 @@ static int spi_nor_spimem_check_pp(struct spi_nor *nor,
+>  	struct spi_nor_flash_parameter *params =  &nor->params;
+>  	unsigned int cap;
+>  
+> -	/* DTR modes are not supported yet, mask them all. */
+> -	*hwcaps &= ~SNOR_HWCAPS_DTR;
+> -
+> -	/* X-X-X modes are not supported yet, mask them all. */
+> -	*hwcaps &= ~SNOR_HWCAPS_X_X_X;
+> -
+>  	for (cap = 0; cap < sizeof(*hwcaps) * BITS_PER_BYTE; cap++) {
+>  		int rdidx, ppidx;
+>  
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index fc0b4b1..2e720ca 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -84,6 +84,9 @@
+>  #define SPINOR_OP_BE_4K_4B	0x21	/* Erase 4KiB block */
+>  #define SPINOR_OP_BE_32K_4B	0x5c	/* Erase 32KiB block */
+>  #define SPINOR_OP_SE_4B		0xdc	/* Sector erase (usually 64KiB) */
+> +#define SPINOR_OP_READ_8_8_8	SPINOR_OP_READ_1_4_4_4B
+> +#define SPINOR_OP_PP_8_8_8	SPINOR_OP_PP_4B
+> +#define SPINOR_OP_PP_8D_8D_8D	SPINOR_OP_PP_4B
+>  
+>  /* Double Transfer Rate opcodes - defined in JEDEC JESD216B. */
+>  #define SPINOR_OP_READ_1_1_1_DTR	0x0d
+> @@ -93,6 +96,7 @@
+>  #define SPINOR_OP_READ_1_1_1_DTR_4B	0x0e
+>  #define SPINOR_OP_READ_1_2_2_DTR_4B	0xbe
+>  #define SPINOR_OP_READ_1_4_4_DTR_4B	0xee
+> +#define SPINOR_OP_READ_8D_8D_8D		SPINOR_OP_READ_1_4_4_DTR_4B
+>  
+>  /* Used for SST flashes only. */
+>  #define SPINOR_OP_BP		0x02	/* Byte program */
+> @@ -107,6 +111,8 @@
+>  #define XSR_PAGESIZE		BIT(0)	/* Page size in Po2 or Linear */
+>  #define XSR_RDY			BIT(7)	/* Ready */
+>  
+> +/* Write CFG Reg 2 - defined in JEDEC JESD216C. */
+> +#define SPINOR_OP_WRCR2		0x72	/* Write configuration register 2 */
+>  
+>  /* Used for Macronix and Winbond flashes. */
+>  #define SPINOR_OP_EN4B		0xb7	/* Enter 4-byte mode */
+> @@ -150,6 +156,13 @@
+>  /* Status Register 2 bits. */
+>  #define SR2_QUAD_EN_BIT7	BIT(7)
+>  
+> +/* Configuration register 2, offset 0 */
+> +#define CR2_REG0		0x0
+> +#define CR2_REG0_MODE_MASK	GENMASK(1, 0)
+> +#define CR2_REG0_MODE_SPI	0
+> +#define CR2_REG0_MODE_OPI_STR	1
+> +#define CR2_REG0_MODE_OPI_DTR	2
+> +
+>  /* Supported SPI protocols */
+>  #define SNOR_PROTO_INST_MASK	GENMASK(23, 16)
+>  #define SNOR_PROTO_INST_SHIFT	16
+> @@ -170,6 +183,7 @@
+>  	 SNOR_PROTO_DATA_MASK)
+>  
+>  #define SNOR_PROTO_IS_DTR	BIT(24)	/* Double Transfer Rate */
+> +#define SNOR_PROTO_IS_8D_8D_8D	BIT(25) /* Full Octal DTR */
+>  
+>  #define SNOR_PROTO_STR(_inst_nbits, _addr_nbits, _data_nbits)	\
+>  	(SNOR_PROTO_INST(_inst_nbits) |				\
+> @@ -179,6 +193,10 @@
+>  	(SNOR_PROTO_IS_DTR |					\
+>  	 SNOR_PROTO_STR(_inst_nbits, _addr_nbits, _data_nbits))
+>  
+> +#define SNOR_PROTO_8D_8D_8D(_nbits)				\
+> +	(SNOR_PROTO_IS_8D_8D_8D |				\
+> +	 SNOR_PROTO_STR(_nbits, _nbits, _nbits))
+> +
+>  enum spi_nor_protocol {
+>  	SNOR_PROTO_1_1_1 = SNOR_PROTO_STR(1, 1, 1),
+>  	SNOR_PROTO_1_1_2 = SNOR_PROTO_STR(1, 1, 2),
+> @@ -195,6 +213,7 @@ enum spi_nor_protocol {
+>  	SNOR_PROTO_1_2_2_DTR = SNOR_PROTO_DTR(1, 2, 2),
+>  	SNOR_PROTO_1_4_4_DTR = SNOR_PROTO_DTR(1, 4, 4),
+>  	SNOR_PROTO_1_8_8_DTR = SNOR_PROTO_DTR(1, 8, 8),
+> +	SNOR_PROTO_8_8_8_DTR = SNOR_PROTO_8D_8D_8D(8),
+>  };
+>  
+>  static inline bool spi_nor_protocol_is_dtr(enum spi_nor_protocol proto)
+> @@ -202,6 +221,16 @@ static inline bool spi_nor_protocol_is_dtr(enum spi_nor_protocol proto)
+>  	return !!(proto & SNOR_PROTO_IS_DTR);
+>  }
+>  
+> +static inline bool spi_nor_protocol_is_8_8_8(enum spi_nor_protocol proto)
+> +{
+> +	return !!(proto & SNOR_PROTO_8_8_8);
+> +}
+> +
+> +static inline bool spi_nor_protocol_is_8D_8D_8D(enum spi_nor_protocol proto)
+> +{
+> +	return !!(proto & SNOR_PROTO_IS_8D_8D_8D);
+> +}
+> +
+>  static inline u8 spi_nor_get_protocol_inst_nbits(enum spi_nor_protocol proto)
+>  {
+>  	return ((unsigned long)(proto & SNOR_PROTO_INST_MASK)) >>
+> @@ -349,7 +378,7 @@ struct spi_nor_hwcaps {
+>   * then Quad SPI protocols before Dual SPI protocols, Fast Read and lastly
+>   * (Slow) Read.
+>   */
+> -#define SNOR_HWCAPS_READ_MASK		GENMASK(14, 0)
+> +#define SNOR_HWCAPS_READ_MASK		GENMASK(15, 0)
+>  #define SNOR_HWCAPS_READ		BIT(0)
+>  #define SNOR_HWCAPS_READ_FAST		BIT(1)
+>  #define SNOR_HWCAPS_READ_1_1_1_DTR	BIT(2)
+> @@ -366,11 +395,12 @@ struct spi_nor_hwcaps {
+>  #define SNOR_HWCAPS_READ_4_4_4		BIT(9)
+>  #define SNOR_HWCAPS_READ_1_4_4_DTR	BIT(10)
+>  
+> -#define SNOR_HWCAPS_READ_OCTAL		GENMASK(14, 11)
+> +#define SNOR_HWCAPS_READ_OCTAL		GENMASK(15, 11)
+>  #define SNOR_HWCAPS_READ_1_1_8		BIT(11)
+>  #define SNOR_HWCAPS_READ_1_8_8		BIT(12)
+>  #define SNOR_HWCAPS_READ_8_8_8		BIT(13)
+>  #define SNOR_HWCAPS_READ_1_8_8_DTR	BIT(14)
+> +#define SNOR_HWCAPS_READ_8_8_8_DTR	BIT(15)
+>  
+>  /*
+>   * Page Program capabilities.
+> @@ -381,7 +411,7 @@ struct spi_nor_hwcaps {
+>   * JEDEC/SFDP standard to define them. Also at this moment no SPI flash memory
+>   * implements such commands.
+>   */
+> -#define SNOR_HWCAPS_PP_MASK	GENMASK(22, 16)
+> +#define SNOR_HWCAPS_PP_MASK	GENMASK(23, 16)
+>  #define SNOR_HWCAPS_PP		BIT(16)
+>  
+>  #define SNOR_HWCAPS_PP_QUAD	GENMASK(19, 17)
+> @@ -389,10 +419,17 @@ struct spi_nor_hwcaps {
+>  #define SNOR_HWCAPS_PP_1_4_4	BIT(18)
+>  #define SNOR_HWCAPS_PP_4_4_4	BIT(19)
+>  
+> -#define SNOR_HWCAPS_PP_OCTAL	GENMASK(22, 20)
+> +#define SNOR_HWCAPS_PP_OCTAL	GENMASK(23, 20)
+>  #define SNOR_HWCAPS_PP_1_1_8	BIT(20)
+>  #define SNOR_HWCAPS_PP_1_8_8	BIT(21)
+>  #define SNOR_HWCAPS_PP_8_8_8	BIT(22)
+> +#define SNOR_HWCAPS_PP_8_8_8_DTR	BIT(23)
+> +
+> +#define SNOR_HWCAPS_OPI_FULL_STR	(SNOR_HWCAPS_READ_8_8_8 | \
+> +					 SNOR_HWCAPS_PP_8_8_8)
+> +
+> +#define SNOR_HWCAPS_OPI_FULL_DTR	(SNOR_HWCAPS_READ_8_8_8_DTR | \
+> +					 SNOR_HWCAPS_PP_8_8_8_DTR)
+>  
+>  #define SNOR_HWCAPS_X_X_X	(SNOR_HWCAPS_READ_2_2_2 |	\
+>  				 SNOR_HWCAPS_READ_4_4_4 |	\
+> @@ -403,7 +440,9 @@ struct spi_nor_hwcaps {
+>  #define SNOR_HWCAPS_DTR		(SNOR_HWCAPS_READ_1_1_1_DTR |	\
+>  				 SNOR_HWCAPS_READ_1_2_2_DTR |	\
+>  				 SNOR_HWCAPS_READ_1_4_4_DTR |	\
+> -				 SNOR_HWCAPS_READ_1_8_8_DTR)
+> +				 SNOR_HWCAPS_READ_1_8_8_DTR |	\
+> +				 SNOR_HWCAPS_READ_8_8_8_DTR |	\
+> +				 SNOR_HWCAPS_PP_8_8_8_DTR)
+>  
+>  #define SNOR_HWCAPS_ALL		(SNOR_HWCAPS_READ_MASK |	\
+>  				 SNOR_HWCAPS_PP_MASK)
+> @@ -442,6 +481,7 @@ enum spi_nor_read_command_index {
+>  	SNOR_CMD_READ_1_8_8,
+>  	SNOR_CMD_READ_8_8_8,
+>  	SNOR_CMD_READ_1_8_8_DTR,
+> +	SNOR_CMD_READ_8D_8D_8D,
+>  
+>  	SNOR_CMD_READ_MAX
+>  };
+> @@ -458,6 +498,7 @@ enum spi_nor_pp_command_index {
+>  	SNOR_CMD_PP_1_1_8,
+>  	SNOR_CMD_PP_1_8_8,
+>  	SNOR_CMD_PP_8_8_8,
+> +	SNOR_CMD_PP_8D_8D_8D,
+>  
+>  	SNOR_CMD_PP_MAX
+>  };
+> @@ -528,6 +569,11 @@ struct spi_nor_flash_parameter {
+>   */
+>  struct flash_info;
+>  
+> +enum extension_cmd_mode {
+> +	EXT_CMD_IS_CMD,
+> +	EXT_CMD_IS_INVERSE,
+> +};
+> +
+>  /**
+>   * struct spi_nor - Structure for defining a the SPI NOR layer
+>   * @mtd:		point to a mtd_info structure
+> @@ -537,6 +583,7 @@ struct spi_nor_flash_parameter {
+>   * @bouncebuf:		bounce buffer used when the buffer passed by the MTD
+>   *                      layer is not DMA-able
+>   * @bouncebuf_size:	size of the bounce buffer
+> + * @ext_cmd_mode:	extension command mode, 0: same, 1: inverse
+>   * @info:		spi-nor part JDEC MFR id and other info
+>   * @page_size:		the page size of the SPI NOR
+>   * @addr_width:		number of address bytes
+> @@ -575,6 +622,7 @@ struct spi_nor {
+>  	struct spi_mem		*spimem;
+>  	u8			*bouncebuf;
+>  	size_t			bouncebuf_size;
+> +	enum extension_cmd_mode	ext_cmd_mode;
+>  	const struct flash_info	*info;
+>  	u32			page_size;
+>  	u8			addr_width;
+> 
+
+-- 
+Regards
+Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
