@@ -2,83 +2,88 @@ Return-Path: <SRS0=Ia6G=Z2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF224C43603
-	for <linux-mtd@archiver.kernel.org>; Wed,  4 Dec 2019 12:55:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59579C2D0B1
+	for <linux-mtd@archiver.kernel.org>; Wed,  4 Dec 2019 13:03:52 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 81F2220674
-	for <linux-mtd@archiver.kernel.org>; Wed,  4 Dec 2019 12:55:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 276D92073C
+	for <linux-mtd@archiver.kernel.org>; Wed,  4 Dec 2019 13:03:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AmGYbbxA";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="e6TfccCf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 81F2220674
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HSqFpnxi";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="AjWT/abc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 276D92073C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	Message-ID:References:To:Subject:From:Reply-To:Content-ID:Content-Description
 	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UdciKF2EzEDHQFQC9OcwRcGSFktV8g9BbZUz12UF5kU=; b=AmGYbbxAa3ihzA
-	7Ag/xtuY5zhHrGv++4NfvEgAsQtuTvHqDHy/4gy0iQy+nAJ9gYBwFBkT+omruPLy9l5BbeQoUEpxk
-	AgZWGLK/N98mHQ4RoD8mQWxyukUO1knOqCErNuFnScb9z1wuDhed2dQDtqaxyUSqL0eeqw3efYx7z
-	QMYR/Xib5aQ1052//o5bzlFlYwX6m9tHeGlMNBzLuBS6EaESkBTk8iKpEOdovyVlkK7X/Xk8YWisp
-	Pw+d+hkEM5KGMKTfxeAbk2Fok06sZQnU4hgzKN/E/llRxjP50yUPl703mE/wBtlVgYSYX+As3n4ht
-	lT0Dqd9QjZ5D45yTm+bg==;
+	List-Owner; bh=bkAhaydDI58MjnD+BMMVNwrqBXy3KDMGeU6NezGSNdY=; b=HSqFpnxiVoGnAJ
+	NUlseFf7g8ZrTx+4aRCnVu4NK35RfzK5k1E8qlsONj/0vjlieQAkt9+/2SqqZsav98JyI2j5jAjKv
+	90QjhBzmPgs2GCtjMlnXNnsOpHU10IeHtS2FGtIGULVVERm2k0m/B9HDVWx4ec/XNOWxXMivdQaX3
+	/csF+aqFxhRDxMdmtlUC0MfuHT9WLF1yyfJxZXFQ6U6aPhZwWTGVwRdKbF6sg575PgLpsRvAW6YMI
+	Zabnd57MnY70zXuYXAeNPayxZRi3YDOSPg5fWideYOwArV0q1NCeiU4PgAv6GyDmfdrfeAzYPcLcX
+	G5Fustb81yAjyY9SoLZg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1icUBq-0000ha-7b; Wed, 04 Dec 2019 12:55:34 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1icUJe-00043q-Ro; Wed, 04 Dec 2019 13:03:38 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1icUBn-0000h1-CI
- for linux-mtd@lists.infradead.org; Wed, 04 Dec 2019 12:55:32 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id xB4CtLla021288;
- Wed, 4 Dec 2019 06:55:21 -0600
+ id 1icUJc-00043Q-2n
+ for linux-mtd@lists.infradead.org; Wed, 04 Dec 2019 13:03:37 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id xB4D3MCh042037;
+ Wed, 4 Dec 2019 07:03:22 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1575464121;
- bh=75OBmJFI3hpuZ4Q6xPCszXW82HOFGTHmHSHourpUJo0=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=e6TfccCfOlRHdE4aRiwj/c6mLAfsJvVI9jtvB241LwZYg12Kb3nKITmZXXAim2ENg
- mW4d9tz8/BHbqG9JyHgltecYvf8lGeGhYvn9gFVZQc8708HiuZU95x8HqXVPQd0Czd
- vr1tYpTKdDAeilTspVpALfyteFa87pBEN0Os9fPI=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id xB4CtLqc057283;
- Wed, 4 Dec 2019 06:55:21 -0600
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ s=ti-com-17Q1; t=1575464603;
+ bh=a648Q8PR7Fd9pDqZhKY3IibCqOE8UuutHYsZW4LNa+o=;
+ h=From:Subject:To:CC:References:Date:In-Reply-To;
+ b=AjWT/abcZk2gtbwVTyszweomFn8doLCGhBZcFQBek6PfBMkB2YyI0d1gTDHxz7sVi
+ blsnHbbtXOJsdBysgnj3goSRNJa/xWHNkAJTmTyeU9foaYM36b0cGkCfhwYscGhHo7
+ h9JaItthgWioy3XiBISRlz0w/7b6r4vRCHbLCfTw=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id xB4D3MSp094535
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Wed, 4 Dec 2019 07:03:22 -0600
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Wed, 4 Dec
- 2019 06:55:21 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ 2019 07:03:22 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Wed, 4 Dec 2019 06:55:21 -0600
+ Frontend Transport; Wed, 4 Dec 2019 07:03:22 -0600
 Received: from [172.24.145.136] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id xB4CtHYT006688;
- Wed, 4 Dec 2019 06:55:18 -0600
-Subject: Re: [PATCH v5 4/4] mtd: Add driver for concatenating devices
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-References: <20191127105522.31445-1-miquel.raynal@bootlin.com>
- <20191127105522.31445-5-miquel.raynal@bootlin.com>
- <690065a2-619d-3f97-30c6-5dea76896d78@ti.com> <20191204111751.5383b426@xps13>
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id xB4D3I8p028973;
+ Wed, 4 Dec 2019 07:03:18 -0600
 From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <431e7345-ee60-6d79-7a0c-9396da93029c@ti.com>
-Date: Wed, 4 Dec 2019 18:25:48 +0530
+Subject: Re: [PATCH 3/4] mtd: spi-nor: Add Octal 8D-8D-8D mode support for
+ Macronix mx25uw51245g
+To: Mason Yang <masonccyang@mxic.com.tw>, <broonie@kernel.org>,
+ <miquel.raynal@bootlin.com>, <richard@nod.at>, <marek.vasut@gmail.com>,
+ <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <bbrezillon@kernel.org>, <tudor.ambarus@microchip.com>
+References: <1573808288-19365-1-git-send-email-masonccyang@mxic.com.tw>
+ <1573808288-19365-4-git-send-email-masonccyang@mxic.com.tw>
+Message-ID: <1f1a368a-e3d3-4e58-819e-b4dffc3212ef@ti.com>
+Date: Wed, 4 Dec 2019 18:33:49 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.1
 MIME-Version: 1.0
-In-Reply-To: <20191204111751.5383b426@xps13>
+In-Reply-To: <1573808288-19365-4-git-send-email-masonccyang@mxic.com.tw>
 Content-Language: en-US
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191204_045531_562591_238FC4CB 
-X-CRM114-Status: GOOD (  14.67  )
+X-CRM114-CacheID: sfid-20191204_050336_208247_C0D2D90D 
+X-CRM114-Status: GOOD (  25.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,15 +95,9 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>,
- linux-kernel@vger.kernel.org,
- Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
- Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
- Bernhard Frauendienst <kernel@nospam.obeliks.de>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Boris Brezillon <boris.brezillon@collabora.com>
+Cc: juliensu@mxic.com.tw, Boris Brezillon <boris.brezillon@bootlin.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
@@ -106,67 +105,204 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
 
-On 04/12/19 3:47 pm, Miquel Raynal wrote:
-> Hi Vignesh,
+On 15/11/19 2:28 pm, Mason Yang wrote:
+> mx25uw51245g is a SPI NOR that supports 1-1-1/8-8-8 mode and the SFDPRD
+> command but returns an empty SFDP page. This forces us to add a new entry
+> in the flash_info table and patch spi_nor_fixups hooks to tweak flash
+> parameters for spi_nor_read/pp_setting() and then to enter
+> Octal 8D-8D-8D modes.
 > 
-> Vignesh Raghavendra <vigneshr@ti.com> wrote on Wed, 4 Dec 2019 15:28:46
-> +0530:
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 114 ++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/mtd/spi-nor.h   |   3 ++
+>  2 files changed, 117 insertions(+)
 > 
-[...]
->> IIUC flash0 and flash1 are subnodes of a SPI master node?
->> And I believe flash0 node's compatible is "jedec,spi-nor"?
-> 
-> Indeed this is one possibility (probably the most common) but in theory
-> this should work for any kind of MTD device, hence I voluntarily
-> dropped the hardware-specific properties to focus on the partitions
-> description here.
-> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 4cdf52d..9013590 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -615,6 +615,56 @@ static int write_disable(struct spi_nor *nor)
+>  }
+>  
+>  /*
+> + * Read configuration register 2, returning its value in the
+> + * location. Return the configuration register 2 value.
+> + * Returns negative if error occurred.
+> + */
+> +static int read_cr2(struct spi_nor *nor, u32 addr)
 
-Ah, make sense...
+Please prefix spi_nor_* for all new functions. 
+Also, include manf name if its vendor specific.
 
->>
->>
->>>
->>>         flash1 {
->>>                 partitions {
->>>                         compatible = "fixed-partitions";
->>>
->>> 			flash0_part1: part1@0 {  
->>
->> s/flash0_part1/flash1_part0?
-> 
-> Right!
-> 
->>
->>> 				label = "part1_0";
->>> 				reg = <0x0 0x800000>;
->>> 			};
->>>
->>> 			part0@800000 {
->>> 				label = "part1_1";
->>> 				reg = <0x800000 0x800000>;
->>> 			};
->>>                 };
->>>         };
->>>   
->>
->> For my understanding, how many /dev/mtdX entries would this create?
-> 
-> If the master is retained (Kconfig option) and thanks to the common
-> partitioning scheme, we would have:
-> * flash0 (mtd0)
-> *   part0_0 (mtd1)
-> *   part0_1 (mtd2)
-> * flash1 (mtd3)
-> *   part1_0 (mtd4)
-> *   part1_1 (mtd5)
-> 
-> If we enable this driver, we would also get an additional device:
-> * mtd2-mtd4-concat (or part0_1-part1_0-concat, I don't recall the exact
->   name) being mtd6.
+> +{
+> +	int ret;
+> +
+> +	if (nor->spimem) {
+> +		struct spi_mem_op op =
+> +			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDCR2, 1),
+> +				   SPI_MEM_OP_ADDR(4, addr, 1),
+> +				   SPI_MEM_OP_DUMMY(4, 1),
+> +				   SPI_MEM_OP_DATA_IN(1, nor->bouncebuf, 1));
+> +
+> +		if (spi_nor_protocol_is_8_8_8(nor->read_proto)) {
+> +			op.cmd.buswidth = 8;
+> +			op.addr.buswidth = 8;
+> +			op.dummy.buswidth = 8;
+> +			op.data.buswidth = 8;
+> +			op.cmd.nbytes = 2;
+> +
+> +			if (spi_nor_protocol_is_8D_8D_8D(nor->read_proto)) {
+> +				op.dummy.nbytes *= 2;
+> +				op.cmd.dtr = true;
+> +				op.addr.dtr = true;
+> +				op.dummy.dtr = true;
+> +				op.data.dtr = true;
+> +			}
+> +
+> +			if (nor->ext_cmd_mode == EXT_CMD_IS_INVERSE)
+> +				op.cmd.ext_opcode = ~SPINOR_OP_RDCR2;
+> +			else
+> +				op.cmd.ext_opcode = SPINOR_OP_RDCR2;
+> +		}
+> +
+> +		ret = spi_mem_exec_op(nor->spimem, &op);
+> +	} else {
+> +		ret = -ENOTSUPP;
+> +	}
+> +
+> +	if (ret < 0) {
+> +		dev_err(nor->dev, "error %d reading CR\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	return nor->bouncebuf[0];
+> +}
+> +
+> +/*
+>   * Write configuration register 2 one byte
+>   * Returns negative if error occurred.
+>   */
+> @@ -2275,10 +2325,72 @@ static int spi_nor_spansion_clear_sr_bp(struct spi_nor *nor)
+>  	return 0;
+>  }
+>  
+> +static void
+> +spi_nor_set_read_settings(struct spi_nor_read_command *read,
+> +			  u8 num_mode_clocks,
+> +			  u8 num_wait_states,
+> +			  u8 opcode,
+> +			  enum spi_nor_protocol proto);
+> +
+> +static void
+> +spi_nor_set_pp_settings(struct spi_nor_pp_command *pp,
+> +			u8 opcode,
+> +			enum spi_nor_protocol proto);
+> +
+> +static void
+> +mx25uw51245g_default_init(struct spi_nor *nor)
+> +{
+> +	struct spi_nor_flash_parameter *params = &nor->params;
+> +
+> +	if (!(nor->spimem->spi->mode & (SPI_RX_OCTAL | SPI_TX_OCTAL)))
+> +		return;
+> +
+> +	/* Octal 8S-8S-8S mode */
+> +	params->hwcaps.mask |= SNOR_HWCAPS_OPI_FULL_STR;
+> +	spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_8_8_8],
+> +				  0, 20, SPINOR_OP_READ_8_8_8,
+> +				  SNOR_PROTO_8_8_8);
+> +
+> +	spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP_8_8_8],
+> +				SPINOR_OP_PP_8_8_8, SNOR_PROTO_8_8_8);
+> +
+> +	/* Octal 8D-8D-8D mode */
+> +	params->hwcaps.mask |= SNOR_HWCAPS_OPI_FULL_DTR;
+> +	spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_8D_8D_8D],
+> +				  0, 20, SPINOR_OP_READ_8D_8D_8D,
+> +				  SNOR_PROTO_8_8_8_DTR);
+> +
+> +	spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP_8D_8D_8D],
+> +				SPINOR_OP_PP_8D_8D_8D, SNOR_PROTO_8_8_8_DTR);
+> +
+> +	nor->ext_cmd_mode = EXT_CMD_IS_INVERSE;
+> +}
 
-Ok, thanks for the clarification!
+I don't see anything that is macronix specific here.. Can this be moved to
+generic code with information parsed from SFDP table?
 
+> +
+> +static void
+> +mx25uw51245g_post_sfdp_fixups(struct spi_nor *nor)
+> +{
+> +	struct spi_nor_flash_parameter *params = &nor->params;
+> +	u8 cr2;
+> +
+> +	cr2 = read_cr2(nor, CR2_REG0) & CR2_REG0_MODE_MASK;
+> +
+> +	if (params->hwcaps.mask & SNOR_HWCAPS_OPI_FULL_DTR)
+> +		cr2 |= CR2_REG0_MODE_OPI_DTR;
+> +	else if (params->hwcaps.mask & SNOR_HWCAPS_OPI_FULL_STR)
+> +		cr2 |= CR2_REG0_MODE_OPI_STR;
+> +
+> +	write_cr2(nor, CR2_REG0, cr2);
+> +}
+> +
+
+I see this as a misuse of sfdp_fixups hook:
+
+ * @post_sfdp: called after SFDP has been parsed (is also called for SPI NORs
+ *             that do not support RDSFDP). Typically used to tweak various
+ *             parameters that could not be extracted by other means (i.e.
+ *             when information provided by the SFDP/flash_info tables are
+ *             incomplete or wrong).
+ *
+
+
+This should only tweak options parsed by SFDP and not be used to
+configure flash to a different mode. Please add a separate function 
+to do so. See https://patchwork.kernel.org/patch/10638085/
+
+Also, I guess JESD216C provides a way to discover command sequence 
+to enter OPI mode?
+
+>  static struct spi_nor_fixups mx25l25635_fixups = {
+>  	.post_bfpt = mx25l25635_post_bfpt_fixups,
+>  };
+>  
+> +static struct spi_nor_fixups mx25uw51245g_fixups = {
+> +	.default_init = mx25uw51245g_default_init,
+> +	.post_sfdp = mx25uw51245g_post_sfdp_fixups,
+> +};
+> +
+>  static void gd25q256_default_init(struct spi_nor *nor)
+>  {
+>  	/*
+> @@ -2442,6 +2554,8 @@ static void gd25q256_default_init(struct spi_nor *nor)
+>  			 SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+>  			 .fixups = &mx25l25635_fixups },
+>  	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K | SPI_NOR_4B_OPCODES) },
+> +	{ "mx25uw51245g", INFO(0xc2813a, 0, 64 * 1024, 1024, SECT_4K | SPI_NOR_4B_OPCODES)
+> +				.fixups = &mx25uw51245g_fixups},
+>  	{ "mx25v8035f",  INFO(0xc22314, 0, 64 * 1024,  16,
+>  			 SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>  	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index 2e720ca..3aa54dd 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -114,6 +114,9 @@
+>  /* Write CFG Reg 2 - defined in JEDEC JESD216C. */
+>  #define SPINOR_OP_WRCR2		0x72	/* Write configuration register 2 */
+>  
+> +/* Used for Macronix flashes only */
+> +#define SPINOR_OP_RDCR2		0x71	/* Read configuration register 2 */
+> +
+>  /* Used for Macronix and Winbond flashes. */
+>  #define SPINOR_OP_EN4B		0xb7	/* Enter 4-byte mode */
+>  #define SPINOR_OP_EX4B		0xe9	/* Exit 4-byte mode */
+> 
 
 -- 
 Regards
