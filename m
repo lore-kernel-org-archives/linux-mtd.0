@@ -1,70 +1,82 @@
-Return-Path: <SRS0=TEJX=ZZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=Ia6G=Z2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C772C43141
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 Dec 2019 22:59:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C89EFC2BBE2
+	for <linux-mtd@archiver.kernel.org>; Wed,  4 Dec 2019 07:19:13 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5E50820674
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 Dec 2019 22:59:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8F4A32068E
+	for <linux-mtd@archiver.kernel.org>; Wed,  4 Dec 2019 07:18:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="MB0Bif/E";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="rNsVxxg7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E50820674
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="avl3M2wp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F4A32068E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mXZSCoAwCjlrOIoUgylfuuJO6XNSmg18PMcheGN0j7c=; b=MB0Bif/EoGW/xT
-	wlbONZ0TFTKMr5kD8MFsqxQnMr4WEeZig9qpgRp1hdxRI42igWAhbBTmsc2+9cJ6WzSsHflL9+w2P
-	rCPodQauvPwv2ZChYQ36RdqWvTIzkEPWp9TJZhCNrlrng9IQKuHfRz2ot+aK86O7FHeIYQYeBVSvo
-	pDV7fQdzFydxOK5UeevYh251r6fZ6tGiG2JhqvHzBhNPoHYHUXpUWFfNult9oqJQiutOlc+umtgat
-	VW5Szdqx0FWUyksUITR8fD3QMfUbM2J55KYut8ubtdaO0nv4D1iNuU6fJTx6rRbjBamv58OqucT9S
-	Cd6ml4nS+3rykCgZvHgg==;
+	List-Owner; bh=13WO58YZoIpVTtma1YOYCaGOuVNMdohVEa+bxFdXuCQ=; b=avl3M2wpmyTsO9
+	CCfuaMEdHwZPuW1m7EQ2xOt1BS1mD6ZfpwHnIl+Zdi2PFOB6Vwfpay7QnyL65++0bVRHvQJXx2fS2
+	xOaiorOIhoZ5mzXs6wN3KMSmQeiYIVxiJS9dutIjw8lrbSxD9AmVr3qRqt7tbl4VK9IXacgtQUi2o
+	qO7bS3ZjkLIZIjYRbTUyTJDVvn+euqKumSsqkfeEHCcVeRu8WXrcW4fnfn9kNSRO5lxZCWsjz/cBS
+	krYqlBFCv/t+JgrZ9wuRObA5nfUEtW5sz02Nxnt0cFvaCn8ah34HbrwpuZ2YdqH8VSsn27d784mNl
+	bdFbkWXu2iROB+3GF1Ew==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1icH8Y-00005I-WA; Tue, 03 Dec 2019 22:59:19 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1icOv9-0004vY-1v; Wed, 04 Dec 2019 07:17:59 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1icH8Q-0008Pf-Vz; Tue, 03 Dec 2019 22:59:12 +0000
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
- [83.86.89.107])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id C7A7C20803;
- Tue,  3 Dec 2019 22:59:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1575413943;
- bh=xse6kgt5T0zLm987FtTsfxKSnjkyBAkCk5p8frhNgPk=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=rNsVxxg7d6RWxHbd7kPIZSKh44YDZuYotn+fTLSZ7sRFEcBdWJJxVUfUClMxnSgf5
- 7VFD5keOghIau6mncYXeoW4wfl108IXYgjt68aIiyJQjGmPPg0CacDkmV/GH91FrNj
- fjaOdtKDntK9KXfKEHmBt2A5KZlnWii6GTdDkq4A=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH 4.19 299/321] mtd: rawnand: atmel: fix possible object
- reference leak
-Date: Tue,  3 Dec 2019 23:36:05 +0100
-Message-Id: <20191203223442.705005398@linuxfoundation.org>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20191203223427.103571230@linuxfoundation.org>
-References: <20191203223427.103571230@linuxfoundation.org>
-User-Agent: quilt/0.66
+ id 1icOv2-0004uY-QK
+ for linux-mtd@lists.infradead.org; Wed, 04 Dec 2019 07:17:55 +0000
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <sha@pengutronix.de>)
+ id 1icOux-0003vA-St; Wed, 04 Dec 2019 08:17:47 +0100
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.89)
+ (envelope-from <sha@pengutronix.de>)
+ id 1icOuw-00075T-Cc; Wed, 04 Dec 2019 08:17:46 +0100
+Date: Wed, 4 Dec 2019 08:17:46 +0100
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Subject: Re: ubifs mount failure
+Message-ID: <20191204071746.kfdflui4ziladmjg@pengutronix.de>
+References: <MN2PR02MB5727000CBE70BAF31F60FEE4AF420@MN2PR02MB5727.namprd02.prod.outlook.com>
+ <20191203084134.tgzir4mtekpm5xbs@pengutronix.de>
+ <MN2PR02MB57272E3343CA62ADBA0F97E5AF420@MN2PR02MB5727.namprd02.prod.outlook.com>
+ <614898763.105471.1575364223372.JavaMail.zimbra@nod.at>
+ <CALgLF9KPAk_AsecnTMmbdF5qbgqXe7HNOrNariNVbhSr6FVN2g@mail.gmail.com>
+ <20191203104558.vpqav3oxsydoe4aw@pengutronix.de>
+ <CAFLxGvywFxSrDLLGnLDW6+rMLVUA9Yoi=3sn7wdxqWMydy-w0g@mail.gmail.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CAFLxGvywFxSrDLLGnLDW6+rMLVUA9Yoi=3sn7wdxqWMydy-w0g@mail.gmail.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-IRC: #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 08:17:13 up 149 days, 13:27, 126 users,  load average: 0.16, 0.23,
+ 0.21
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191203_145911_077799_F0CA2AA5 
-X-CRM114-Status: GOOD (  14.98  )
+X-CRM114-CacheID: sfid-20191203_231752_854168_2FEE633C 
+X-CRM114-Status: GOOD (  19.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,103 +88,90 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Boris Brezillon <bbrezillon@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Wen Yang <yellowriver2010@hotmail.com>,
- Nicolas Ferre <nicolas.ferre@microchip.com>, stable@vger.kernel.org,
+Cc: Naga Sureshkumar Relli <nagasure@xilinx.com>,
  Richard Weinberger <richard@nod.at>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- Lee Jones <lee.jones@linaro.org>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
- linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+ siva durga paladugu <siva.durga.paladugu@xililnx.com>,
+ linux-kernel <linux-kernel@vger.kernel.org>, Michal Simek <michals@xilinx.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ naga suresh kumar <nagasureshkumarrelli@gmail.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Wen Yang <yellowriver2010@hotmail.com>
+On Tue, Dec 03, 2019 at 08:08:48PM +0100, Richard Weinberger wrote:
+> On Tue, Dec 3, 2019 at 11:46 AM Sascha Hauer <s.hauer@pengutronix.de> wro=
+te:
+> >
+> > On Tue, Dec 03, 2019 at 04:06:12PM +0530, naga suresh kumar wrote:
+> > > Hi Richard,
+> > >
+> > > On Tue, Dec 3, 2019 at 2:40 PM Richard Weinberger <richard@nod.at> wr=
+ote:
+> > > >
+> > > > ----- Urspr=FCngliche Mail -----
+> > > > > Von: "Naga Sureshkumar Relli" <nagasure@xilinx.com>
+> > > > > https://elixir.bootlin.com/linux/v5.4/source/fs/ubifs/sb.c#L164
+> > > > > we are trying to allocate 4325376 (~4MB)
+> > > >
+> > > > 4MiB? Is ->min_io_size that large?
+> > > if you see https://elixir.bootlin.com/linux/latest/source/fs/ubifs/sb=
+.c#L164
+> > > The size is actually ALIGN(tmp, c->min_io_size).
+> > > Here tmp is of 4325376 Bytes and min_io_size is 16384 Bytes
+> >
+> > 'tmp' contains bogus values. Try this:
+> >
+> > ----------------------------8<--------------------------------
+> >
+> > From 34f687fce189085f55706b4cddcb288a08f4ee06 Mon Sep 17 00:00:00 2001
+> > From: Sascha Hauer <s.hauer@pengutronix.de>
+> > Date: Tue, 3 Dec 2019 11:41:20 +0100
+> > Subject: [PATCH] ubifs: Fix wrong memory allocation
+> >
+> > In create_default_filesystem() when we allocate the idx node we must use
+> > the idx_node_size we calculated just one line before, not tmp, which
+> > contains completely other data.
+> >
+> > Fixes: c4de6d7e4319 ("ubifs: Refactor create_default_filesystem()")
+> > Reported-by: Naga Sureshkumar Relli <nagasure@xilinx.com>
+> > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> > ---
+> >  fs/ubifs/sb.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
+> > index a551eb3e9b89..6681c18e52b8 100644
+> > --- a/fs/ubifs/sb.c
+> > +++ b/fs/ubifs/sb.c
+> > @@ -161,7 +161,7 @@ static int create_default_filesystem(struct ubifs_i=
+nfo *c)
+> >         sup =3D kzalloc(ALIGN(UBIFS_SB_NODE_SZ, c->min_io_size), GFP_KE=
+RNEL);
+> >         mst =3D kzalloc(c->mst_node_alsz, GFP_KERNEL);
+> >         idx_node_size =3D ubifs_idx_node_sz(c, 1);
+> > -       idx =3D kzalloc(ALIGN(tmp, c->min_io_size), GFP_KERNEL);
+> > +       idx =3D kzalloc(ALIGN(idx_node_size, c->min_io_size), GFP_KERNE=
+L);
+> >         ino =3D kzalloc(ALIGN(UBIFS_INO_NODE_SZ, c->min_io_size), GFP_K=
+ERNEL);
+> >         cs =3D kzalloc(ALIGN(UBIFS_CS_NODE_SZ, c->min_io_size), GFP_KER=
+NEL);
+> =
 
-commit a12085d13997ed15f745f33a0e01002541160179 upstream.
+> Oh, looks good! Thanks for fixing, Sascha!
 
-of_find_device_by_node() takes a reference to the struct device
-when it finds a match via get_device, there is no need to call
-get_device() twice.
-We also should make sure to drop the reference to the device
-taken by of_find_device_by_node() on driver unbind.
+Will you apply this one? Otherwise I resend with the proper tags added.
 
-Fixes: f88fc122cc34 ("mtd: nand: Cleanup/rework the atmel_nand driver")
-Signed-off-by: Wen Yang <yellowriver2010@hotmail.com>
-Suggested-by: Boris Brezillon <bbrezillon@kernel.org>
-Reviewed-by: Boris Brezillon <bbrezillon@kernel.org>
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>
-Cc: Boris Brezillon <bbrezillon@kernel.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>
-Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
-Cc: linux-mtd@lists.infradead.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Sascha
 
----
- drivers/mtd/nand/raw/atmel/pmecc.c |   21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
+-- =
 
---- a/drivers/mtd/nand/raw/atmel/pmecc.c
-+++ b/drivers/mtd/nand/raw/atmel/pmecc.c
-@@ -876,23 +876,32 @@ static struct atmel_pmecc *atmel_pmecc_g
- {
- 	struct platform_device *pdev;
- 	struct atmel_pmecc *pmecc, **ptr;
-+	int ret;
- 
- 	pdev = of_find_device_by_node(np);
--	if (!pdev || !platform_get_drvdata(pdev))
-+	if (!pdev)
- 		return ERR_PTR(-EPROBE_DEFER);
-+	pmecc = platform_get_drvdata(pdev);
-+	if (!pmecc) {
-+		ret = -EPROBE_DEFER;
-+		goto err_put_device;
-+	}
- 
- 	ptr = devres_alloc(devm_atmel_pmecc_put, sizeof(*ptr), GFP_KERNEL);
--	if (!ptr)
--		return ERR_PTR(-ENOMEM);
--
--	get_device(&pdev->dev);
--	pmecc = platform_get_drvdata(pdev);
-+	if (!ptr) {
-+		ret = -ENOMEM;
-+		goto err_put_device;
-+	}
- 
- 	*ptr = pmecc;
- 
- 	devres_add(userdev, ptr);
- 
- 	return pmecc;
-+
-+err_put_device:
-+	put_device(&pdev->dev);
-+	return ERR_PTR(ret);
- }
- 
- static const int atmel_pmecc_strengths[] = { 2, 4, 8, 12, 24, 32 };
-
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
 ______________________________________________________
 Linux MTD discussion mailing list
