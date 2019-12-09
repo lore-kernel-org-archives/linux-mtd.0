@@ -2,78 +2,69 @@ Return-Path: <SRS0=S0OG=Z7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 111C9C43603
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Dec 2019 05:39:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2454DC43603
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Dec 2019 06:39:45 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D8C5F206D3
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Dec 2019 05:39:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EA56F206E0
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Dec 2019 06:39:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FtgUUPkB";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="JvzTcgkP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D8C5F206D3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CZeEMZA/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EA56F206E0
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:
+	Subject:To:References:In-Reply-To:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MKY7rn9ZYEVbHJgbuvnqEhatV7Gcgj9ZzPGz1wepBQU=; b=FtgUUPkBfyh7SV
-	kFd/umJEEzjmv4nUOHtwP7TRqcNL90mcEgGJxzidiqXN/0eafIG8mlfgKSSMdy+VrHE/dSm1HJSLq
-	U04WtxTIEXuF7lKgkVd8loMrU67LFCX0OB1IxRpRBgk6VQ0OjpCAjQVD0gC5PdbQov0gDp6wLkyY6
-	qRQLTk7YsjHWyJEqDWHLgEOZj/lk6HTV465uzTKF8xtrmsdI0+SXbfXtWRtAHnPqDb/v0HPZ2vw+x
-	oDjpjWw/pGuGAZtS/tzIfZDSJjte3r9tLo0o88ljesiXiJhM/qJ2sz0iG+Mti4Fg6HPMUSYxHmELm
-	Fr8vJmId+eBjOR0GfqYg==;
+	List-Owner; bh=WrbAGzb60Wmut4idlSop2XFop0mPuoyGDD2LScOJn0E=; b=CZeEMZA/I1mAE/
+	cwtW74j7eEa+fxBF2tVhUt2TVwPyOgTp9NghjGeZC5Pi0xZafW4Mu85iUG15kbV4vftO4RLz5IFLY
+	fvD9ZTrv9f9orEP/bAyUhNpLX8WWPxfDIkt66TplS3tXIoFq+wakZnKqbf07Imryl5RjSMOFs+HZ+
+	HKjJpjk04e9MgWo9AwP7fNSqw/JyQU13qSDKPpdukEYl19asEMRREXP7o131QrqUXVvfSH9ebSdHp
+	bxiCcexQcps/2gpy4WZmiL4C13+QmV0qd7tdEuhgBZP9K/EvJnJEFIqtIFfrJsvNt+KGJna5jwp6s
+	YQninsjtUzg6YwU1V6/g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ieBlR-0007c2-88; Mon, 09 Dec 2019 05:39:21 +0000
-Received: from conssluserg-04.nifty.com ([210.131.2.83])
+	id 1ieChf-00055D-Tr; Mon, 09 Dec 2019 06:39:31 +0000
+Received: from twhmllg3.macronix.com ([211.75.127.131])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ieBlN-0007bh-N4
- for linux-mtd@lists.infradead.org; Mon, 09 Dec 2019 05:39:19 +0000
-Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com
- [209.85.222.45]) (authenticated)
- by conssluserg-04.nifty.com with ESMTP id xB95coD0005657
- for <linux-mtd@lists.infradead.org>; Mon, 9 Dec 2019 14:38:50 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com xB95coD0005657
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
- s=dec2015msa; t=1575869930;
- bh=cqqz7tbKmZfY+aYrjvD0h1xkQW0LQHgC7pkxY1C85k4=;
- h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=JvzTcgkP5PuNiJPKQo5BfmtuRhhh6enCrbiow1rcSNKISvDn3ggAyol6RjlL6sqEG
- o5y8r8tKE0vnsFf+rAzs7mszOX9v7yZWZXqYtmriMIo38YafJqA43osntMsKMH/DpP
- pHlb7o1z9pfTcFX2LG8qTZVa0gV6B0/vExP3+GNlZJe/oFPeeXChq2EybZqhdgtu0n
- E0ZvicHtaX2tiKx3fAKFH3elkJKwLFHm4p27RW8MW3j3biCDG63YOOAxzQuv3UEwKE
- mZFMrRU/kGguBU8wyUzW53aMPTZl+5HjXJnQ44rVTD+icKQNw4w7KqrqWb2/xHY+vW
- ltjlZlNp9Wasg==
-X-Nifty-SrcIP: [209.85.222.45]
-Received: by mail-ua1-f45.google.com with SMTP id d6so5082249uam.11
- for <linux-mtd@lists.infradead.org>; Sun, 08 Dec 2019 21:38:50 -0800 (PST)
-X-Gm-Message-State: APjAAAXoSu4Wjy6WM+zPx8kmwt0IkErdhqMmp9XK3uMXO+G7YeMoxtGR
- UIQe1Q/jCnLQhgDjQoT2N6MDbIU4nwxpgxL8VI0=
-X-Google-Smtp-Source: APXvYqzmjeJ9Sy+or75CR+CsHQDewxgWaE42VREp0YyRUrsHMtt88CQS4h53Ib1UhzjucWcbPf7YHuSZqiZ45RfFt/4=
-X-Received: by 2002:ab0:63c7:: with SMTP id i7mr21397670uap.109.1575869929282; 
- Sun, 08 Dec 2019 21:38:49 -0800 (PST)
+ id 1ieChd-0004tn-8h
+ for linux-mtd@lists.infradead.org; Mon, 09 Dec 2019 06:39:31 +0000
+Received: from twhfmlp1.macronix.com (twhfm1p1.macronix.com [172.17.20.91])
+ by TWHMLLG3.macronix.com with ESMTP id xB96cNWv082301;
+ Mon, 9 Dec 2019 14:38:23 +0800 (GMT-8)
+ (envelope-from masonccyang@mxic.com.tw)
+Received: from MXML06C.mxic.com.tw (mxml06c.macronix.com [172.17.14.55])
+ by Forcepoint Email with ESMTP id 83AF2D64DA588A20DB58;
+ Mon,  9 Dec 2019 14:38:23 +0800 (CST)
+In-Reply-To: <1f1a368a-e3d3-4e58-819e-b4dffc3212ef@ti.com>
+References: <1573808288-19365-1-git-send-email-masonccyang@mxic.com.tw>
+ <1573808288-19365-4-git-send-email-masonccyang@mxic.com.tw>
+ <1f1a368a-e3d3-4e58-819e-b4dffc3212ef@ti.com>
+To: "Vignesh Raghavendra" <vigneshr@ti.com>
+Subject: Re: [PATCH 3/4] mtd: spi-nor: Add Octal 8D-8D-8D mode support for
+ Macronix mx25uw51245g
 MIME-Version: 1.0
-References: <20191207004855.11334-1-marex@denx.de>
-In-Reply-To: <20191207004855.11334-1-marex@denx.de>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Mon, 9 Dec 2019 14:38:13 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQsejXuwAZ6G5=G88GMj6P10bFkBwr4czL_BXkONSHsGw@mail.gmail.com>
-Message-ID: <CAK7LNAQsejXuwAZ6G5=G88GMj6P10bFkBwr4czL_BXkONSHsGw@mail.gmail.com>
-Subject: Re: [PATCH] mtd: rawnand: denali_dt: Add support for configuring
- SPARE_AREA_SKIP_BYTES
-To: Marek Vasut <marex@denx.de>
+X-KeepSent: 5C924A21:8A6464DD-482584CB:00232656;
+ type=4; name=$KeepSent
+X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
+Message-ID: <OF5C924A21.8A6464DD-ON482584CB.00232656-482584CB.002479DE@mxic.com.tw>
+From: masonccyang@mxic.com.tw
+Date: Mon, 9 Dec 2019 14:38:25 +0800
+X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
+ HF265|July 25, 2018) at 2019/12/09 PM 02:38:23,
+ Serialize complete at 2019/12/09 PM 02:38:23
+X-MAIL: TWHMLLG3.macronix.com xB96cNWv082301
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191208_213917_969083_A0C8E925 
-X-CRM114-Status: GOOD (  25.00  )
+X-CRM114-CacheID: sfid-20191208_223929_577754_A7A33071 
+X-CRM114-Status: GOOD (  17.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,106 +76,212 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Vignesh Raghavendra <vigneshr@ti.com>, Ley Foon Tan <ley.foon.tan@intel.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: bbrezillon@kernel.org, juliensu@mxic.com.tw, richard@nod.at,
+ tudor.ambarus@microchip.com, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, Boris Brezillon <boris.brezillon@bootlin.com>,
+ broonie@kernel.org, linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org, marek.vasut@gmail.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, Dec 7, 2019 at 9:49 AM Marek Vasut <marex@denx.de> wrote:
->
-> The SPARE_AREA_SKIP_BYTES register is reset when the controller reset
-> signal is toggled. Yet, this register must be configured to match the
-> content of the NAND OOB area. The current default value is always set
-> to 8 and is programmed into the hardware in case the hardware was not
-> programmed before (e.g. in a bootloader) with a different value. This
-> however does not work when the block is reset properly by Linux.
->
-> On Altera SoCFPGA CycloneV, ArriaV and Arria10, which are the SoCFPGA
-> platforms which support booting from NAND, the SPARE_AREA_SKIP_BYTES
-> value must be set to 2. On Socionext Uniphier, the value is 8. This
-> patch adds support for preconfiguring the default value and handles
-> the special SoCFPGA case by setting the default to 2 on all SoCFPGA
-> platforms, while retaining the original behavior and default value of
-> 8 on all the other platforms.
->
-> Signed-off-by: Marek Vasut <marex@denx.de>
-> Cc: Ley Foon Tan <ley.foon.tan@intel.com>
-> Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
-> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Vignesh Raghavendra <vigneshr@ti.com>
-> To: linux-mtd@lists.infradead.org
-> ---
->  drivers/mtd/nand/raw/denali.c    | 13 ++++++++++---
->  drivers/mtd/nand/raw/denali_dt.c |  6 ++++++
->  2 files changed, 16 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
-> index 3102ddbd8abdb..b6c463d021677 100644
-> --- a/drivers/mtd/nand/raw/denali.c
-> +++ b/drivers/mtd/nand/raw/denali.c
-> @@ -1302,14 +1302,21 @@ int denali_init(struct denali_controller *denali)
->
->         /*
->          * Set how many bytes should be skipped before writing data in OOB.
-> +        * If a non-zero value has already been configured, update it in HW.
->          * If a non-zero value has already been set (by firmware or something),
->          * just use it. Otherwise, set the driver's default.
->          */
-> -       denali->oob_skip_bytes = ioread32(denali->reg + SPARE_AREA_SKIP_BYTES);
-> -       if (!denali->oob_skip_bytes) {
-> -               denali->oob_skip_bytes = DENALI_DEFAULT_OOB_SKIP_BYTES;
-> +       if (denali->oob_skip_bytes) {
->                 iowrite32(denali->oob_skip_bytes,
->                           denali->reg + SPARE_AREA_SKIP_BYTES);
-> +       } else {
-> +               denali->oob_skip_bytes =
-> +                       ioread32(denali->reg + SPARE_AREA_SKIP_BYTES);
-> +               if (!denali->oob_skip_bytes) {
-> +                       denali->oob_skip_bytes = DENALI_DEFAULT_OOB_SKIP_BYTES;
-> +                       iowrite32(denali->oob_skip_bytes,
-> +                                 denali->reg + SPARE_AREA_SKIP_BYTES);
 
-This fallback is ugly, and should be removed, I think.
-It is only reachable by PCI platform (Intel MRST), where
-DENALI_DEFAULT_OOB_SKIP_BYTES is probably useless.
+Hi Vignesh,
+
+> > 
+> >  /*
+> > + * Read configuration register 2, returning its value in the
+> > + * location. Return the configuration register 2 value.
+> > + * Returns negative if error occurred.
+> > + */
+> > +static int read_cr2(struct spi_nor *nor, u32 addr)
+> 
+> Please prefix spi_nor_* for all new functions. 
+> Also, include manf name if its vendor specific.
+
+okay, will fix it.
+
+> 
+> > +{
+> > +   int ret;
+> > +
+> > +   if (nor->spimem) {
+> > +      struct spi_mem_op op =
+> > +         SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDCR2, 1),
+> > +               SPI_MEM_OP_ADDR(4, addr, 1),
+> > +               SPI_MEM_OP_DUMMY(4, 1),
+> > +               SPI_MEM_OP_DATA_IN(1, nor->bouncebuf, 1));
+> > +
+> > +      if (spi_nor_protocol_is_8_8_8(nor->read_proto)) {
+> > +         op.cmd.buswidth = 8;
+> > +         op.addr.buswidth = 8;
+> > +         op.dummy.buswidth = 8;
+> > +         op.data.buswidth = 8;
+> > +         op.cmd.nbytes = 2;
+> > +
+> > +         if (spi_nor_protocol_is_8D_8D_8D(nor->read_proto)) {
+> > +            op.dummy.nbytes *= 2;
+> > +            op.cmd.dtr = true;
+> > +            op.addr.dtr = true;
+> > +            op.dummy.dtr = true;
+> > +            op.data.dtr = true;
+> > +         }
+> > +
+> > +         if (nor->ext_cmd_mode == EXT_CMD_IS_INVERSE)
+> > +            op.cmd.ext_opcode = ~SPINOR_OP_RDCR2;
+> > +         else
+> > +            op.cmd.ext_opcode = SPINOR_OP_RDCR2;
+> > +      }
+> > +
+> > +      ret = spi_mem_exec_op(nor->spimem, &op);
+> > +   } else {
+> > +      ret = -ENOTSUPP;
+> > +   }
+> > +
+> > +   if (ret < 0) {
+> > +      dev_err(nor->dev, "error %d reading CR\n", ret);
+> > +      return ret;
+> > +   }
+> > +
+> > +   return nor->bouncebuf[0];
+> > +}
+> > +
+> > +/*
+> >   * Write configuration register 2 one byte
+> >   * Returns negative if error occurred.
+> >   */
+> > @@ -2275,10 +2325,72 @@ static int spi_nor_spansion_clear_sr_bp(struct 
+spi_nor *nor)
+> >     return 0;
+> >  }
+> > 
+> > +static void
+> > +spi_nor_set_read_settings(struct spi_nor_read_command *read,
+> > +           u8 num_mode_clocks,
+> > +           u8 num_wait_states,
+> > +           u8 opcode,
+> > +           enum spi_nor_protocol proto);
+> > +
+> > +static void
+> > +spi_nor_set_pp_settings(struct spi_nor_pp_command *pp,
+> > +         u8 opcode,
+> > +         enum spi_nor_protocol proto);
+> > +
+> > +static void
+> > +mx25uw51245g_default_init(struct spi_nor *nor)
+> > +{
+> > +   struct spi_nor_flash_parameter *params = &nor->params;
+> > +
+> > +   if (!(nor->spimem->spi->mode & (SPI_RX_OCTAL | SPI_TX_OCTAL)))
+> > +      return;
+> > +
+> > +   /* Octal 8S-8S-8S mode */
+> > +   params->hwcaps.mask |= SNOR_HWCAPS_OPI_FULL_STR;
+> > +   spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_8_8_8],
+> > +              0, 20, SPINOR_OP_READ_8_8_8,
+> > +              SNOR_PROTO_8_8_8);
+> > +
+> > +   spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP_8_8_8],
+> > +            SPINOR_OP_PP_8_8_8, SNOR_PROTO_8_8_8);
+> > +
+> > +   /* Octal 8D-8D-8D mode */
+> > +   params->hwcaps.mask |= SNOR_HWCAPS_OPI_FULL_DTR;
+> > +   spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_8D_8D_8D],
+> > +              0, 20, SPINOR_OP_READ_8D_8D_8D,
+> > +              SNOR_PROTO_8_8_8_DTR);
+> > +
+> > + 
+spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP_8D_8D_8D],
+> > +            SPINOR_OP_PP_8D_8D_8D, SNOR_PROTO_8_8_8_DTR);
+> > +
+> > +   nor->ext_cmd_mode = EXT_CMD_IS_INVERSE;
+> > +}
+> 
+> I don't see anything that is macronix specific here.. Can this be moved 
+to
+> generic code with information parsed from SFDP table?
+
+This mx25uw51245g device support SFDP command but returns an empty SFDP 
+page.
+
+> 
+> > +
+> > +static void
+> > +mx25uw51245g_post_sfdp_fixups(struct spi_nor *nor)
+> > +{
+> > +   struct spi_nor_flash_parameter *params = &nor->params;
+> > +   u8 cr2;
+> > +
+> > +   cr2 = read_cr2(nor, CR2_REG0) & CR2_REG0_MODE_MASK;
+> > +
+> > +   if (params->hwcaps.mask & SNOR_HWCAPS_OPI_FULL_DTR)
+> > +      cr2 |= CR2_REG0_MODE_OPI_DTR;
+> > +   else if (params->hwcaps.mask & SNOR_HWCAPS_OPI_FULL_STR)
+> > +      cr2 |= CR2_REG0_MODE_OPI_STR;
+> > +
+> > +   write_cr2(nor, CR2_REG0, cr2);
+> > +}
+> > +
+> 
+> I see this as a misuse of sfdp_fixups hook:
+> 
+>  * @post_sfdp: called after SFDP has been parsed (is also called for SPI 
+NORs
+>  *             that do not support RDSFDP). Typically used to tweak 
+various
+>  *             parameters that could not be extracted by other means 
+(i.e.
+>  *             when information provided by the SFDP/flash_info tables 
+are
+>  *             incomplete or wrong).
+>  *
+> 
+> 
+> This should only tweak options parsed by SFDP and not be used to
+> configure flash to a different mode. Please add a separate function 
+> to do so. See https://patchwork.kernel.org/patch/10638085/
+> 
+
+okay.
+My idea is that device changed to 8D-8D-8D stateful mode after SFDP 
+parsed. 
+But if SFDP page table is broken in device and driver will just configure 
+the device into 8D-8D-8D mode directly.
+
+
+thanks for your time & comments.
+
+Mason
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information 
+and/or personal data, which is protected by applicable laws. Please be 
+reminded that duplication, disclosure, distribution, or use of this e-mail 
+(and/or its attachments) or any part thereof is prohibited. If you receive 
+this e-mail in error, please notify us immediately and delete this mail as 
+well as its attachment(s) from your system. In addition, please be 
+informed that collection, processing, and/or use of personal data is 
+prohibited unless expressly permitted by personal data protection laws. 
+Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
 
 
 
-> @@ -209,6 +213,8 @@ static int denali_dt_probe(struct platform_device *pdev)
->         denali->clk_rate = clk_get_rate(dt->clk);
->         denali->clk_x_rate = clk_get_rate(dt->clk_x);
->
-> +       denali->oob_skip_bytes = data->oob_skip_bytes;
-> +
+============================================================================
 
-Please move this to the relevant hunk.
-Preferably, based on this:
-http://patchwork.ozlabs.org/patch/1205912/
+CONFIDENTIALITY NOTE:
 
+This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
 
+Macronix International Co., Ltd.
 
+=====================================================================
 
->         ret = denali_init(denali);
->         if (ret)
->                 goto out_disable_clk_ecc;
-> --
-> 2.24.0
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
-
-
---
-Best Regards
-Masahiro Yamada
 
 ______________________________________________________
 Linux MTD discussion mailing list
