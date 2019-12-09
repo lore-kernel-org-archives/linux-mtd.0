@@ -4,58 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E920DC43603
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Dec 2019 13:48:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D31C2C43603
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Dec 2019 14:12:16 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BACFC206E0
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Dec 2019 13:48:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A08632073D
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Dec 2019 14:12:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Yn7DPftP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BACFC206E0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bJ8m+Xsy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A08632073D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=yB9OW9HKyfA99/h+JHFOgKpF1ZcjeHm/hExetyjYcWc=; b=Yn7
-	DPftPPP4y4hAWsTb5Hsvlog5Dq3B8WqqD5c2ess17FISlAklSjeCKU/fNpahATsWv6Rb5fCXCz8MB
-	juuZHLjNbD5wD8bV/TTfuzCjPYrSdlaAKC+WWJV2RgCNCl8kpso0VKqbRRNeboIAz60iYelxelqe0
-	hNpwsUz9bwXHtG89/4QxyaI0D+MUWPKugQbifF8/HLzOzbfsOvK0GC0AXhUzDUIYJ1Zx1uIcozgzm
-	gT94oLEviHjqo7RY+M6zXdbDCk5PxSUGPCg0vvf+wbU1j2x4WYfkmvmhA6xqaBjY1P1hfR89B9q1j
-	OFSaZqvXlEHEWTW+KmUwKeVi/j0XVjA==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=cULX0GWZZszOfZH8XgSrv+a+STBRxK/dHksu1+4dC7E=; b=bJ8m+XsyH8xuXk
+	UerdYEt1EyW4wTt3JDk9n/Kd0yg+xqSUIj9HBi1Or4V2P3MMQbmYiNUSncAeoLR6Bkc13Ly8oA4Ws
+	14rh+96+m0e1KzGJ20BuvTFZvywANK8twMsK+sQNAcpN7JGPVAxZ1YNUuBDDreO9wBSK7GUAX/soA
+	lHV9/gzWTPBkiw+s35uyiZD4KDBfrMbZ8zxBBatj15EuHaECvwXzuZyMZfU9F3/RNAVtQSIufswj4
+	/qGyhAd49nT2mhMDJS7ecxnNFBn2Z1itBz0G8v31nlG3J1lVvGDIA00ftHba+873Un3f2gMPSzO/7
+	RxWoYxUnTTVrK6GSguBg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ieJP2-00062C-JX; Mon, 09 Dec 2019 13:48:44 +0000
-Received: from andre.telenet-ops.be ([2a02:1800:120:4::f00:15])
+	id 1ieJlc-00085D-AD; Mon, 09 Dec 2019 14:12:04 +0000
+Received: from szxga05-in.huawei.com ([45.249.212.191] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ieJOz-000613-08
- for linux-mtd@lists.infradead.org; Mon, 09 Dec 2019 13:48:43 +0000
-Received: from ramsan ([84.195.182.253]) by andre.telenet-ops.be with bizsmtp
- id bpoa2100U5USYZQ01poakF; Mon, 09 Dec 2019 14:48:35 +0100
-Received: from rox.of.borg ([192.168.97.57]) by ramsan with esmtp (Exim 4.90_1)
- (envelope-from <geert@linux-m68k.org>)
- id 1ieJOs-0006Sj-CA; Mon, 09 Dec 2019 14:48:34 +0100
-Received: from geert by rox.of.borg with local (Exim 4.90_1)
- (envelope-from <geert@linux-m68k.org>)
- id 1ieJOs-0003Tk-9p; Mon, 09 Dec 2019 14:48:34 +0100
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [PATCH] mtd: maps: physmap: Add minimal Runtime PM support
-Date: Mon,  9 Dec 2019 14:48:23 +0100
-Message-Id: <20191209134823.13330-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.17.1
+ id 1ieJlY-00082m-R8
+ for linux-mtd@lists.infradead.org; Mon, 09 Dec 2019 14:12:02 +0000
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+ by Forcepoint Email with ESMTP id B5CB71F1F54802B1C6EE;
+ Mon,  9 Dec 2019 22:11:49 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.439.0; Mon, 9 Dec 2019 22:11:41 +0800
+From: John Garry <john.garry@huawei.com>
+To: <broonie@kernel.org>, <marek.vasut@gmail.com>,
+ <tudor.ambarus@microchip.com>
+Subject: [PATCH v2 1/3] mtd: spi-nor: hisi-sfc: Try to provide some clarity on
+ which SFC we are
+Date: Mon, 9 Dec 2019 22:08:08 +0800
+Message-ID: <1575900490-74467-2-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
+In-Reply-To: <1575900490-74467-1-git-send-email-john.garry@huawei.com>
+References: <1575900490-74467-1-git-send-email-john.garry@huawei.com>
+MIME-Version: 1.0
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191209_054841_200590_B2E32815 
-X-CRM114-Status: GOOD (  13.96  )
+X-CRM114-CacheID: sfid-20191209_061201_054973_997843C8 
+X-CRM114-Status: GOOD (  11.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,119 +71,62 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-renesas-soc@vger.kernel.org, Chris Brandt <chris.brandt@renesas.com>,
- linux-mtd@lists.infradead.org, Geert Uytterhoeven <geert+renesas@glider.be>,
- linux-pm@vger.kernel.org
-MIME-Version: 1.0
+Cc: chenxiang66@hisilicon.com, linux-kernel@vger.kernel.org,
+ John Garry <john.garry@huawei.com>, linuxarm@huawei.com, fengsheng5@huawei.com,
+ linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
+ xuejiancheng@hisilicon.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add minimal runtime PM support (enable on probe, disable on remove), to
-ensure proper operation with a parent device that uses runtime PM.
+The driver is for the HiSilicon FMC (Flash Memory Controller), which
+supports SPI NOR in addition other memory technologies, like SPI NAND.
 
-This is needed on systems where the FLASH is connected to a bus
-controller that is contained in a PM domain and/or has a gateable
-functional clock.  In such cases, before accessing any device connected
-to the external bus, the PM domain must be powered up, and/or the
-functional clock must be enabled, which is typically handled through
-runtime PM by the bus controller driver.
+Indeed, the naming in the driver is a little inappropriate, especially
+considering that there is already another HiSilicon SPI NOR flash
+controller (which I believe the FMC is derived from).
 
-An example of this is the Renesas APE6-EVM development board, which has
-an Ethernet controller and a CFI FLASH connected to the Bus State
-Controller (BSC) of an R-Mobile APE6 SoC.
-As long as the Ethernet driver, which had Runtime PM support since
-commit 3a611e26e958b037 ("net/smsc911x: Add minimal runtime PM
-support"), keeps the BSC powered, accessing the FLASH works.
-When the ethernet node in r8a73a4-ape6evm.dts is disabled, the BSC is
-never powered up, and the kernel crashes when trying to access the
-FLASH:
+Since we now want to provide software support for this other HiSilicon
+controller, update code comments to at least try to make it clear that
+this driver is for the FMC.
 
-    Unhandled fault: imprecise external abort (0x1406) at 0x00000000
-    pgd = (ptrval)
-    [00000000] *pgd=7fef2835
-    Internal error: : 1406 [#1] SMP ARM
-    CPU: 0 PID: 122 Comm: hd Tainted: G        W         5.5.0-rc1-ape6evm-00814-g38ca966db25b9dbd-dirty #136
-    Hardware name: Generic R8A73A4 (Flattened Device Tree)
-    PC is at chip_ready+0x12c/0x380
-    LR is at chip_ready+0x10c/0x380
-
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: John Garry <john.garry@huawei.com>
 ---
-Probably the device should be powered down after probing, and powered
-up/down on-demand in the various {get,put}_chip() functions.  However,
-that is an optimization which touches more intimidate details of the
-internal MTD API, and can be done later.
----
- drivers/mtd/maps/physmap-core.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ drivers/mtd/spi-nor/Kconfig    | 4 ++--
+ drivers/mtd/spi-nor/hisi-sfc.c | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/maps/physmap-core.c b/drivers/mtd/maps/physmap-core.c
-index a9f7964e2edb6668..8f7f966fa9a7ee8a 100644
---- a/drivers/mtd/maps/physmap-core.c
-+++ b/drivers/mtd/maps/physmap-core.c
-@@ -38,6 +38,7 @@
- #include <linux/mtd/cfi_endian.h>
- #include <linux/io.h>
- #include <linux/of_device.h>
-+#include <linux/pm_runtime.h>
- #include <linux/gpio/consumer.h>
+diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+index f237fcdf7f86..c1eda67d1ad2 100644
+--- a/drivers/mtd/spi-nor/Kconfig
++++ b/drivers/mtd/spi-nor/Kconfig
+@@ -46,11 +46,11 @@ config SPI_CADENCE_QUADSPI
+ 	  Flash as an MTD device.
  
- #include "physmap-gemini.h"
-@@ -64,16 +65,16 @@ static int physmap_flash_remove(struct platform_device *dev)
- {
- 	struct physmap_flash_info *info;
- 	struct physmap_flash_data *physmap_data;
--	int i, err;
-+	int i, err = 0;
+ config SPI_HISI_SFC
+-	tristate "Hisilicon SPI-NOR Flash Controller(SFC)"
++	tristate "Hisilicon FMC SPI-NOR Flash Controller(SFC)"
+ 	depends on ARCH_HISI || COMPILE_TEST
+ 	depends on HAS_IOMEM
+ 	help
+-	  This enables support for hisilicon SPI-NOR flash controller.
++	  This enables support for HiSilicon FMC SPI-NOR flash controller.
  
- 	info = platform_get_drvdata(dev);
- 	if (!info)
--		return 0;
-+		goto out;
- 
- 	if (info->cmtd) {
- 		err = mtd_device_unregister(info->cmtd);
- 		if (err)
--			return err;
-+			goto out;
- 
- 		if (info->cmtd != info->mtds[0])
- 			mtd_concat_destroy(info->cmtd);
-@@ -88,7 +89,10 @@ static int physmap_flash_remove(struct platform_device *dev)
- 	if (physmap_data && physmap_data->exit)
- 		physmap_data->exit(dev);
- 
--	return 0;
-+out:
-+	pm_runtime_put(&dev->dev);
-+	pm_runtime_disable(&dev->dev);
-+	return err;
- }
- 
- static void physmap_set_vpp(struct map_info *map, int state)
-@@ -484,13 +488,19 @@ static int physmap_flash_probe(struct platform_device *dev)
- 		return -EINVAL;
- 	}
- 
-+	pm_runtime_enable(&dev->dev);
-+	pm_runtime_get_sync(&dev->dev);
-+
- 	if (dev->dev.of_node)
- 		err = physmap_flash_of_init(dev);
- 	else
- 		err = physmap_flash_pdata_init(dev);
- 
--	if (err)
-+	if (err) {
-+		pm_runtime_put(&dev->dev);
-+		pm_runtime_disable(&dev->dev);
- 		return err;
-+	}
- 
- 	for (i = 0; i < info->nmaps; i++) {
- 		struct resource *res;
+ config SPI_MTK_QUADSPI
+ 	tristate "MediaTek Quad SPI controller"
+diff --git a/drivers/mtd/spi-nor/hisi-sfc.c b/drivers/mtd/spi-nor/hisi-sfc.c
+index a1258216f89d..6db964bf3b0e 100644
+--- a/drivers/mtd/spi-nor/hisi-sfc.c
++++ b/drivers/mtd/spi-nor/hisi-sfc.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- * HiSilicon SPI Nor Flash Controller Driver
++ * HiSilicon FMC SPI-NOR flash controller driver
+  *
+  * Copyright (c) 2015-2016 HiSilicon Technologies Co., Ltd.
+  */
 -- 
 2.17.1
 
