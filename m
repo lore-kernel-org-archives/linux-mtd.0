@@ -2,21 +2,21 @@ Return-Path: <SRS0=Oj4s=2C=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1427C43603
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Dec 2019 03:34:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62021C43603
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Dec 2019 04:13:37 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B2F54206C3
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Dec 2019 03:34:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 33EC122B48
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Dec 2019 04:13:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BdizS7iq";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="FdUxNb09"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B2F54206C3
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="UH+7oJkI";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="Jn2y5o/G"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 33EC122B48
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,56 +25,61 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ugx/1zdSBGKBprkvjXVxteMRyJk3gamL/gvg5rnKj+o=; b=BdizS7iqGTkhbd
-	5zhy7HtyQJ6YYqZf/qz/91vya0avAydfJLUgtJwEkeRfKAlrbEmGzV+nGKCCsX/Mim//OuyizygNL
-	CZGH5JzdHlWRIMjQqQGOXfEJVS8uX8IvORQyvSLugPn6uqXV640opgO9Ir9KyfiJe4JDo9wWNpTZD
-	Mut2gbmm8UgU6Jt6wdnVit4Kuk3+PI8rMuhY45PtDHzEEVX0y5hldMmV3i975j/llEkz1MUBz5NZ5
-	E4cTJRcrlg8qb7J2jUWY2d+cVp9XMHgxI9Altayem1rVKBV5woZv+6TD67MO4ETfjB5ZtheGOPcpF
-	yAS+H7yzuA/LVHRwp1lA==;
+	List-Owner; bh=kHeo0M/DXoVUN7tZG80z5KVp6LMhYpKp4iXsmv7pzW4=; b=UH+7oJkI7vHEUm
+	Hn8Z6hSbt0UojpFOPJO0gZQch3AsTHfvlgzF4z4CwyVnj+2jNM1WZO/Ja8/wKDGhSG/vcx6qkxqOr
+	WUXoU/R/LK0dV+5j5tkjI8yELJ4EFUFHKZnjK6Ptu5arB3IGjmxwFtn84redGT1hpsC+37OLl1msW
+	J6cbq3K79ZQHGudIN+nI+hICiZHgPb6MzMj4mb7NCe8G6Bryfg28UGJgDLLleCSTLvoquFXoijwlV
+	74LiXAhp1KjC+biIY3iGU/LWbZX0ZbKZ9+w22YdH2t85Zhk3H36GlAmol0S1jem7+SgpvuswErKwQ
+	vL+LfKSeLEL3hvPjt84Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ifFEw-0006Gb-L4; Thu, 12 Dec 2019 03:34:10 +0000
-Received: from conssluserg-02.nifty.com ([210.131.2.81])
+	id 1ifFqs-0001F1-3r; Thu, 12 Dec 2019 04:13:22 +0000
+Received: from conssluserg-05.nifty.com ([210.131.2.90])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ifFEs-0006FO-Bh
- for linux-mtd@lists.infradead.org; Thu, 12 Dec 2019 03:34:08 +0000
-Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com
- [209.85.221.174]) (authenticated)
- by conssluserg-02.nifty.com with ESMTP id xBC3Xl8u003773
- for <linux-mtd@lists.infradead.org>; Thu, 12 Dec 2019 12:33:48 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com xBC3Xl8u003773
+ id 1ifFqn-0001EJ-DF
+ for linux-mtd@lists.infradead.org; Thu, 12 Dec 2019 04:13:19 +0000
+Received: from mail-vs1-f49.google.com (mail-vs1-f49.google.com
+ [209.85.217.49]) (authenticated)
+ by conssluserg-05.nifty.com with ESMTP id xBC4D0Fx027412
+ for <linux-mtd@lists.infradead.org>; Thu, 12 Dec 2019 13:13:01 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com xBC4D0Fx027412
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
- s=dec2015msa; t=1576121628;
- bh=p1P3InDUiioyKsJ0uqaLYPyxVpYrR5VZ44BOVhRr6QU=;
+ s=dec2015msa; t=1576123981;
+ bh=OLE39NHHlB0QIu9dLR7E2Ssfa4ekHz3DTsIqmneEYDY=;
  h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=FdUxNb09tRix91rC7pFGfY91Alomf9VGqGWbt5CnOCadE5WbXoJg5TPifTUICLvWK
- LesPIlYRvDQDBtlsyO6qOj4DUBcy05EFUfaaIPppNaG6wXtfWE6+QFM3+BUxsmc0Aq
- DOh3Qjm0Q3M5HiAG3xgecFuFWSJ2oLbpNFA0osNVc2SwHOLl5l8DgByu6GYHdLMMrv
- rkYvYXDAjt6DAP9PTW/rNqdJJkckmBVkLGBtcXWlb8jnlZIHJG0kSJkXT7j9flOcZE
- q8NAQqaa0QUPV/XK+UyUcs8h4sK4R18uosuG/P4l3RBpr7Iebx9pi1anrFSlG+ULxp
- BZHYMF3jHk4+w==
-X-Nifty-SrcIP: [209.85.221.174]
-Received: by mail-vk1-f174.google.com with SMTP id u6so346585vkn.13
- for <linux-mtd@lists.infradead.org>; Wed, 11 Dec 2019 19:33:47 -0800 (PST)
-X-Gm-Message-State: APjAAAUY9NygS4o9igOnRYLcd/hWWH/FsDzK5+/8oFkNEEDfiiHg9NUR
- aPuQdeawDvRF5HaoSGfyGX4yFpx/QCRGJdCCUFw=
-X-Google-Smtp-Source: APXvYqxQv7H+yYlj4cHgvDygVGhBBZnFMhLd2OuGWfMmVY59MfZ4NEBI6ohS0rdhJMIe8WNTbhNsQh+3Do02yOmxJmQ=
-X-Received: by 2002:a1f:2e4a:: with SMTP id u71mr3263415vku.96.1576121626675; 
- Wed, 11 Dec 2019 19:33:46 -0800 (PST)
+ b=Jn2y5o/GvRSD1fyW2ph0l6L+KyIi0YOiaRxvKiF9TUCrPMSKMjgjjfpmogptgH6QV
+ p6Icq7BIiMJssUSyJPQYRRYv65r2ILAg+ZajOceyWfp1XiN3y0ZRFxJi042fCDZC2K
+ S78zr5bTRAxS2lAjWBZKdTTwN/A7xgoOc0sXWSsCQBZr9H2f9IGUrdNgZHA2TkMCWA
+ uK0lyBCaY29beL0RD17a84yRoVVWEi8r/PC+03xcpAkVuKfq14DogfLNTk0jy6w2yD
+ 6ea0/XArYItn3phvH9QnUnk1OFswOmnDeLt6N8TfoqilvVkbnDpaDRdZlJ+m4WHol6
+ 2TjTL+WgGtJvw==
+X-Nifty-SrcIP: [209.85.217.49]
+Received: by mail-vs1-f49.google.com with SMTP id x18so639665vsq.4
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Dec 2019 20:13:01 -0800 (PST)
+X-Gm-Message-State: APjAAAV+UUg4IGkCkcJRSZS+zXWmO0ysZEDY8w8eG3pifQhfFoNSvDm3
+ ulepX+IM3igVQGQ9CtPQK2CL6UCY2bDHPInbRoo=
+X-Google-Smtp-Source: APXvYqzqUFulXneRuZ2aoR4z8w5J/cvcJnExgLVtCVbc9ik4emkLaF1M3yZru+Kvfls87OUju1hWXC+Z7+o3BPYj3pw=
+X-Received: by 2002:a67:7904:: with SMTP id u4mr3205130vsc.155.1576123979998; 
+ Wed, 11 Dec 2019 20:12:59 -0800 (PST)
 MIME-Version: 1.0
-References: <20191211054538.8283-1-yamada.masahiro@socionext.com>
- <20191211054538.8283-2-yamada.masahiro@socionext.com>
- <399bb8ab-74c5-1be3-4156-6d854738b548@denx.de>
-In-Reply-To: <399bb8ab-74c5-1be3-4156-6d854738b548@denx.de>
+References: <20191207004855.11334-1-marex@denx.de>
+ <CAK7LNAQsejXuwAZ6G5=G88GMj6P10bFkBwr4czL_BXkONSHsGw@mail.gmail.com>
+ <ffdfa74a-f3cf-1c8a-4917-dabf7d8fc393@denx.de>
+ <CAK7LNAR=y0hTFYzNodPr9LvGad76V7MeMfsX+58s+zCERx6Y-A@mail.gmail.com>
+ <c611d4ab-443d-1041-9301-6129fb3fcf81@denx.de>
+ <CAK7LNATYCvjqzctz+e-7Phh2No31xY891vK3e26c4OQLLdjKUA@mail.gmail.com>
+ <3f8417b7-56c4-8bf8-6c5b-99b4eb599e38@denx.de>
+In-Reply-To: <3f8417b7-56c4-8bf8-6c5b-99b4eb599e38@denx.de>
 From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Thu, 12 Dec 2019 12:33:10 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATDcWV5sV3r6Rkv-4KMGDE5ZwyG525WDyjGEW85xSDF1g@mail.gmail.com>
-Message-ID: <CAK7LNATDcWV5sV3r6Rkv-4KMGDE5ZwyG525WDyjGEW85xSDF1g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] mtd: rawnand: denali_dt: add reset controlling
+Date: Thu, 12 Dec 2019 13:12:23 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQAzrKBF1UM5Eenx52Oxp4vnVBMK1KKKaLBAXik-ojhbQ@mail.gmail.com>
+Message-ID: <CAK7LNAQAzrKBF1UM5Eenx52Oxp4vnVBMK1KKKaLBAXik-ojhbQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: rawnand: denali_dt: Add support for configuring
+ SPARE_AREA_SKIP_BYTES
 To: Marek Vasut <marex@denx.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191211_193406_733086_35F0248D 
-X-CRM114-Status: GOOD (  18.63  )
+X-CRM114-CacheID: sfid-20191211_201317_672025_E9DFA35F 
+X-CRM114-Status: GOOD (  30.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,139 +91,157 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: DTML <devicetree@vger.kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>,
- Richard Weinberger <richard@nod.at>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Ley Foon Tan <ley.foon.tan@intel.com>, Dinh Nguyen <dinguyen@kernel.org>,
- Rob Herring <robh+dt@kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>,
- Philipp Zabel <p.zabel@pengutronix.de>,
+Cc: Richard Weinberger <richard@nod.at>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Ley Foon Tan <ley.foon.tan@intel.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Dec 12, 2019 at 10:05 AM Marek Vasut <marex@denx.de> wrote:
+On Thu, Dec 12, 2019 at 10:06 AM Marek Vasut <marex@denx.de> wrote:
 >
-> On 12/11/19 6:45 AM, Masahiro Yamada wrote:
+> On 12/10/19 7:30 AM, Masahiro Yamada wrote:
+> > On Tue, Dec 10, 2019 at 12:35 PM Marek Vasut <marex@denx.de> wrote:
+> >>
+> >> On 12/10/19 4:15 AM, Masahiro Yamada wrote:
+> >>> On Mon, Dec 9, 2019 at 9:57 PM Marek Vasut <marex@denx.de> wrote:
+> >>>>
+> >>>> On 12/9/19 6:38 AM, Masahiro Yamada wrote:
+> >>>> [...]
+> >>>>
+> >>>>>> diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
+> >>>>>> index 3102ddbd8abdb..b6c463d021677 100644
+> >>>>>> --- a/drivers/mtd/nand/raw/denali.c
+> >>>>>> +++ b/drivers/mtd/nand/raw/denali.c
+> >>>>>> @@ -1302,14 +1302,21 @@ int denali_init(struct denali_controller *denali)
+> >>>>>>
+> >>>>>>         /*
+> >>>>>>          * Set how many bytes should be skipped before writing data in OOB.
+> >>>>>> +        * If a non-zero value has already been configured, update it in HW.
+> >>>>>>          * If a non-zero value has already been set (by firmware or something),
+> >>>>>>          * just use it. Otherwise, set the driver's default.
+> >>>>>>          */
+> >>>>>> -       denali->oob_skip_bytes = ioread32(denali->reg + SPARE_AREA_SKIP_BYTES);
+> >>>>>> -       if (!denali->oob_skip_bytes) {
+> >>>>>> -               denali->oob_skip_bytes = DENALI_DEFAULT_OOB_SKIP_BYTES;
+> >>>>>> +       if (denali->oob_skip_bytes) {
+> >>>>>>                 iowrite32(denali->oob_skip_bytes,
+> >>>>>>                           denali->reg + SPARE_AREA_SKIP_BYTES);
+> >>>>>> +       } else {
+> >>>>>> +               denali->oob_skip_bytes =
+> >>>>>> +                       ioread32(denali->reg + SPARE_AREA_SKIP_BYTES);
+> >>>>>> +               if (!denali->oob_skip_bytes) {
+> >>>>>> +                       denali->oob_skip_bytes = DENALI_DEFAULT_OOB_SKIP_BYTES;
+> >>>>>> +                       iowrite32(denali->oob_skip_bytes,
+> >>>>>> +                                 denali->reg + SPARE_AREA_SKIP_BYTES);
+> >>>>>
+> >>>>> This fallback is ugly, and should be removed, I think.
+> >>>>> It is only reachable by PCI platform (Intel MRST), where
+> >>>>> DENALI_DEFAULT_OOB_SKIP_BYTES is probably useless.
+> >>>>
+> >>>> This fallback retains the original behavior on all platforms. It might
+> >>>> not be to your liking, but it does not break other platforms while
+> >>>> fixing SoCFPGA. We don't know what other platforms might be depending on
+> >>>> this behavior, do we ?
+> >>>
+> >>>      if (denali->oob_skip_bytes) {
+> >>>                  iowrite32(denali->oob_skip_bytes,
+> >>>                                  denali->reg + SPARE_AREA_SKIP_BYTES);
+> >>>      else
+> >>>                 denali->oob_skip_bytes =
+> >>>                                  ioread32(denali->reg + SPARE_AREA_SKIP_BYTES);
+> >>>
+> >>>
+> >>> ... retains the original behavior.
+> >>
+> >> It does not, because if the readback in the else branch sets
+> >> oob_skip_bytes to 0, the controller is not updated with the default value.
+> >>
+> >>> For denali_dt.c, it now explicitly sets SPARE_AREA_SKIP_BYTES
+> >>> to the well-defined value.
+> >>>
+> >>> denali_pci.c is the only platform that can read back the
+> >>> register value.
+> >>>
+> >>> See, how Intel originally wrote the code.
+> >>>
+> >>> https://github.com/torvalds/linux/blob/v3.0/drivers/mtd/nand/denali.c#L1345
+> >>>
+> >>>
+> >>> Please notice the part "if this value is 0, just let it be."
+> >>> The Intel MRST platform happily accepts
+> >>> SPARE_AREA_SKIP_BYTES being set to 0.
+> >>>
+> >>> I am not sure how many people are using this platform,
+> >>> but anyway it is how it has worked for a long time.
+> >>
+> >> The intel platform might accept 0 happily, but that's not how the
+> >> controller was configured for a long time.
+> >
+> > It is.
+> > It worked like that for 9 years. (i.e. v2.6.35 - v4.19)
+>
+> So it is broken now ?
+
+I do not know.
+As I already said, there is no perfect solution about what
+to do when SPARE_AREA_SKIP_BYTES is zero.
+
+I received various feedback from SOCFPGA board users
+about this driver, but nothing from denali_pci platfrom users.
+Absolutely zero question/complaint.
+
+I suspect there is no user of that platform, but who knows.
+
+
+> If so, then that fix is for another patch.
+
+So, do you want me to get back the original behavior,
+then you want to send a new patch based on that?
+
+I think it is a waste of time, but
+it would be less worse than continuing this thread.
+
+
+
+> >> So if I were to change the
+> >> code as you suggest, it would likely break some setups.
+> >
+> > There is no perfect solution here
+> > when SPARE_AREA_SKIP_BYTES was set to 0
+> > before booting the kernel.
+> >
+> > [A] Keep SPARE_AREA_SKIP_BYTES as it is.
+> >      This might affect the factory-recorded BBM,
+> >      but it should at least work if the firmware or the boot-loader
+> >      has set up the controller this way.
+> >
+> > [B] Override SPARE_AREA_SKIP_BYTES with
+> >       a different value (8).
+> >       This can keep the factory-based BBM, but
+> >      this is very unlikely to work across software stages
+> >      if the NAND device was formatted by the firmware or
+> >      the boot-loader.
+> >
+> >
+> > We need to give up something.
+> > [A] was the original, 9 years' default, and cleaner.
+>
+> Or maybe
+>
+> commit 0d55c668b218a1db68b5044bce4de74e1bd0f0c8
+>     mtd: rawnand: denali: set SPARE_AREA_SKIP_BYTES register to 8 if unset
+>
+> should be reverted, since it changed the behavior ?
+>
 > [...]
-> > diff --git a/drivers/mtd/nand/raw/denali_dt.c b/drivers/mtd/nand/raw/denali_dt.c
-> > index 8b779a899dcf..9a294c3f6ec8 100644
-> > --- a/drivers/mtd/nand/raw/denali_dt.c
-> > +++ b/drivers/mtd/nand/raw/denali_dt.c
-> > @@ -6,6 +6,7 @@
-> >   */
-> >
-> >  #include <linux/clk.h>
-> > +#include <linux/delay.h>
-> >  #include <linux/err.h>
-> >  #include <linux/io.h>
-> >  #include <linux/ioport.h>
-> > @@ -14,6 +15,7 @@
-> >  #include <linux/of.h>
-> >  #include <linux/of_device.h>
-> >  #include <linux/platform_device.h>
-> > +#include <linux/reset.h>
-> >
-> >  #include "denali.h"
-> >
-> > @@ -22,6 +24,8 @@ struct denali_dt {
-> >       struct clk *clk;        /* core clock */
-> >       struct clk *clk_x;      /* bus interface clock */
-> >       struct clk *clk_ecc;    /* ECC circuit clock */
-> > +     struct reset_control *rst;      /* core reset */
-> > +     struct reset_control *rst_reg;  /* register reset */
-> >  };
-> >
-> >  struct denali_dt_data {
-> > @@ -151,6 +155,14 @@ static int denali_dt_probe(struct platform_device *pdev)
-> >       if (IS_ERR(dt->clk_ecc))
-> >               return PTR_ERR(dt->clk_ecc);
-> >
-> > +     dt->rst = devm_reset_control_get_optional_shared(dev, "nand");
-> > +     if (IS_ERR(dt->rst))
-> > +             return PTR_ERR(dt->rst);
-> > +
-> > +     dt->rst_reg = devm_reset_control_get_optional_shared(dev, "reg");
-> > +     if (IS_ERR(dt->rst_reg))
-> > +             return PTR_ERR(dt->rst_reg);
-> > +
-> >       ret = clk_prepare_enable(dt->clk);
-> >       if (ret)
-> >               return ret;
-> > @@ -166,10 +178,30 @@ static int denali_dt_probe(struct platform_device *pdev)
-> >       denali->clk_rate = clk_get_rate(dt->clk);
-> >       denali->clk_x_rate = clk_get_rate(dt->clk_x);
-> >
-> > -     ret = denali_init(denali);
-> > +     /*
-> > +      * Deassert the register reset, and the core reset in this order.
-> > +      * Deasserting the core reset while the register reset is asserted
-> > +      * will cause unpredictable behavior in the controller.
-> > +      */
-> > +     ret = reset_control_deassert(dt->rst_reg);
-> >       if (ret)
-> >               goto out_disable_clk_ecc;
-> >
-> > +     ret = reset_control_deassert(dt->rst);
-> > +     if (ret)
-> > +             goto out_assert_rst_reg;
-> > +
-> > +     /*
-> > +      * When the reset is deasserted, the initialization sequence is kicked
-> > +      * (bootstrap process). The driver must wait until it finished.
-> > +      * Otherwise, it will result in unpredictable behavior.
-> > +      */
-> > +     usleep_range(200, 1000);
-> > +
-> > +     ret = denali_init(denali);
-> > +     if (ret)
-> > +             goto out_assert_rst;
-> > +
-> >       for_each_child_of_node(dev->of_node, np) {
-> >               ret = denali_dt_chip_init(denali, np);
-> >               if (ret) {
-> > @@ -184,6 +216,10 @@ static int denali_dt_probe(struct platform_device *pdev)
-> >
-> >  out_remove_denali:
-> >       denali_remove(denali);
-> > +out_assert_rst:
-> > +     reset_control_assert(dt->rst);
-> > +out_assert_rst_reg:
-> > +     reset_control_assert(dt->rst_reg);
->
-> Maybe you can use devm_add_action_or_reset() here , like in e.g.
-> drivers/input/touchscreen/ili210x.c , to avoid this unwinding ?
-
-
-No.
-
-Drivers should be explicit about what and when
-to do about the hardware access.
-
-
-This comes down to a question about why
-Linux kernel does not have such APIs as:
-
-devm_clk_prepare_enable()
-devm_reset_control_deassert()
-devm_regulator_enable()
-
-In fact, I saw some people sending such patches in the past.
-
-
-Mark Brown clearly answered the question.
-https://lkml.org/lkml/2014/2/1/131
-
-I really support his thinking.
 
 
 
-
-
---
+-- 
 Best Regards
-
 Masahiro Yamada
 
 ______________________________________________________
