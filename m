@@ -2,83 +2,70 @@ Return-Path: <SRS0=uFxw=2G=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A79BC43603
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Dec 2019 10:48:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 133B0C2D0BF
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Dec 2019 14:52:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CEBDB206D3
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Dec 2019 10:48:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DACF7206E0
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Dec 2019 14:52:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IHtxN4DM";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="n6ErLyRB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CEBDB206D3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="c+7zccPv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DACF7206E0
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bN8Knl5500iXowCwjqsoehtWjmO4dLfvX5kunUoVnlw=; b=IHtxN4DMaBk5UG
-	+Z3CGaSJttRgQI7CbNbDXcNE9g/biP7CUM0uTeIx/CpJWttycJMdaMdpxknFw+0Leb5G8XyMHs15T
-	rk53FHCD7JsOfkQX9DaF6mrwVvcUCCb26gkYTDC5QkRpnGlWnYYwgpi7oCrefF9aT6+OwatdKFqpG
-	XfJ0QdiMEtr7SrenMe0J8fG0YkPqebSVEHLYWpKW0afoXZWuaBizK7A/4YrkxyHqjGkLK/M3DYvAG
-	lQ7epOnYng8OD0RkeuakSfvmVrxcoDy1CpnPP8HRjPpDN7o2XVWjAtbueKakMCjFOKDYk6ZuWJa4Q
-	px/TpTFdGuYynQVIUkIg==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=Mwt/AustqMGAbCkhOj7qJqYKURdcZodEmpOLtefUes0=; b=c+7zccPv6yT/d2kX9iRWMmdbY
+	hrlaLs0picihnKpjCUKhwQSV26Ifh1URlqGPjS/WCaV++V5IYfiL9N8lqPZi75xxdvTn/9cd6Rox/
+	SpTjb+Uv4yMkRErYI+iKN9Wt2EBnCrm9qk7VJz7VxArjMvv862MNy/JrWjYLorCMxTxSFAIoEWDFv
+	5iuZxd/9FFzOyyMHaAbbSaJjhHkDOHsbZioDcvEMgd9/rdE9klN1hB5WnMtM8OgaNMtoSwkKYkNM5
+	rm2BSDXHkKIVDhOsg5VFediP2r8BuG4bb9Ez5nH5irj2cjEIntpvVgwRCc6J2RIxZloneEfjDCnTY
+	jpyoo8RCw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ignuu-0005pg-5W; Mon, 16 Dec 2019 10:47:56 +0000
-Received: from mail-wm1-x331.google.com ([2a00:1450:4864:20::331])
+	id 1igrjj-0001gf-W8; Mon, 16 Dec 2019 14:52:39 +0000
+Received: from lhrrgout.huawei.com ([185.176.76.210] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ignur-0005pD-Dx
- for linux-mtd@lists.infradead.org; Mon, 16 Dec 2019 10:47:54 +0000
-Received: by mail-wm1-x331.google.com with SMTP id p17so6151876wma.1
- for <linux-mtd@lists.infradead.org>; Mon, 16 Dec 2019 02:47:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=18RrYiuwhPg41ksFb+9Rc3HMXvIRoHYYzaNxny5Xoso=;
- b=n6ErLyRBLt3mySYsEKwgy9S+jk7r4+dqfTVtgP20W0FiVLDN/WDzNnZC1Q06YTlL6E
- DZ89nbcEyoiS5V9Up5SL+2Oe0IxxCIcEVKej8H82+ZZbOQ5HIzoRNOZJtyXOdnHDIrTe
- THlhHV+NLPGcqsWSDqCx1glOrOqrxhFMmWqycWgRb4Vc/dIH3lzUOInhZ5GvOKGq99bX
- CxHYXB+rIBpW2MbiWxoZ9Wlgp0mnAhgQbRSiJ7SRlelj/u5FH8baoLbgFD6rLvBQR66K
- R/CEngxSYdhsGAfOUFPbPQdCJnHwRhJLRUnSIbAFBeSb8q3cV4YJu0nHp2YNeLOR5iq5
- CEBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=18RrYiuwhPg41ksFb+9Rc3HMXvIRoHYYzaNxny5Xoso=;
- b=YwxtDAllJAIM/ZLwAwivNmHXcx6b5wiW75Kfxdn8MN+aENV/c4Wi+zGgLXj/Se+ggd
- M2NkXG+dQWpat1NhXBDUCesEqKlq0e/7c1Pz1rdLxtEcmROGtIN/tfs64UMan8OI50Y2
- axCSlx6qIaajS6zfQT8/3qIGwc/1NCdXEpT0iVhDubl6DTKbjBWsfzZWy5pVZW2cfSGW
- wCeCOI2/ET+3G2wnmZNi29EqxbZAi2UFdccgyzGl1kMIRyVpGc8IKnR5/CkA8e1Gc0AK
- HSSL8LDCquoDLlv4EgmPABnvqAwTj/KEZjVp36jj8kmlpO5BrtU+jzAVgVo7haQFAiPF
- IELA==
-X-Gm-Message-State: APjAAAX9EsMJmwXVmU/MVf96r+2vlxo0VosaaVu5K0azWKQFBZdYi/63
- SE5jznigPf17vYgq2LzMbqgJhk6cZitxURxy5z8=
-X-Google-Smtp-Source: APXvYqws0ZRlPGJiwN+HPcGvl0OksW7l95bU1CAQayS8Ft35MGFmhUOnc6KOuoKPqcsOc2frOb1427GD0BWt+pLLOZs=
-X-Received: by 2002:a1c:b456:: with SMTP id d83mr14892145wmf.172.1576493272007; 
- Mon, 16 Dec 2019 02:47:52 -0800 (PST)
+ id 1igrjh-0001dh-Ea
+ for linux-mtd@lists.infradead.org; Mon, 16 Dec 2019 14:52:39 +0000
+Received: from LHREML713-CAH.china.huawei.com (unknown [172.18.7.108])
+ by Forcepoint Email with ESMTP id 3B58AEB36E6F617BABE2;
+ Mon, 16 Dec 2019 14:52:25 +0000 (GMT)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ LHREML713-CAH.china.huawei.com (10.201.108.36) with Microsoft SMTP Server
+ (TLS) id 14.3.408.0; Mon, 16 Dec 2019 14:52:24 +0000
+Received: from [127.0.0.1] (10.202.226.46) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Mon, 16 Dec
+ 2019 14:52:24 +0000
+Subject: Re: [PATCH v2 0/3] HiSilicon v3xx SFC driver
+To: <broonie@kernel.org>, <marek.vasut@gmail.com>,
+ <tudor.ambarus@microchip.com>
+References: <1575900490-74467-1-git-send-email-john.garry@huawei.com>
+From: John Garry <john.garry@huawei.com>
+Message-ID: <65a6d94b-95b7-b11b-2234-c091ba3f671e@huawei.com>
+Date: Mon, 16 Dec 2019 14:52:23 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-References: <4cb355340b844ab49671eb1068f45434@eckelmann.de>
- <CAFLxGvz2=LZkU769af8r46A+D=at2FQqr4cype5FGcSrsDc_bQ@mail.gmail.com>
- <882abf5cf5994b3db6a4d27b62b34b95@eckelmann.de>
-In-Reply-To: <882abf5cf5994b3db6a4d27b62b34b95@eckelmann.de>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Mon, 16 Dec 2019 11:47:40 +0100
-Message-ID: <CAFLxGvxB_BCwBxJwA0Q1_Y63NbRUKdruiuLDnx_vpCuL8DRHMw@mail.gmail.com>
-Subject: Re: Support for @(POSIX|NFSv4)-ACLs on UBIFS ?
-To: "Mainz, Roland" <R.Mainz@eckelmann.de>
+In-Reply-To: <1575900490-74467-1-git-send-email-john.garry@huawei.com>
+Content-Language: en-US
+X-Originating-IP: [10.202.226.46]
+X-ClientProxiedBy: lhreml728-chm.china.huawei.com (10.201.108.79) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191216_024753_472537_604CFA1B 
-X-CRM114-Status: GOOD (  11.42  )
+X-CRM114-CacheID: sfid-20191216_065237_640864_BC92898B 
+X-CRM114-Status: GOOD (  18.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,37 +77,63 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="us-ascii"
+Cc: chenxiang66@hisilicon.com, linux-kernel@vger.kernel.org,
+ linuxarm@huawei.com, fengsheng5@huawei.com, linux-spi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, xuejiancheng@hisilicon.com
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Dec 16, 2019 at 11:10 AM Mainz, Roland <R.Mainz@eckelmann.de> wrote:
-> > -----Original Message-----
-> > From: Richard Weinberger [mailto:richard.weinberger@gmail.com]
-> > Sent: Monday, December 16, 2019 10:44 AM
-> > To: Mainz, Roland <R.Mainz@eckelmann.de>
-> > Cc: linux-mtd@lists.infradead.org
-> > Subject: Re: Support for @(POSIX|NFSv4)-ACLs on UBIFS ?
-> >
-> > On Mon, Dec 16, 2019 at 10:09 AM Mainz, Roland <R.Mainz@eckelmann.de>
-> > wrote:
-> > > Are there any plans to support POSIX ACLs (or the extended NFSv4 set of
-> > ACLs) on UBIFS ?
-> >
-> > Well, if there is need for it I can try to find time to implement it.
-> > ...or better, you implement it and send patches :)
->
-> Someone already send patches around, see https://lwn.net/Articles/657287/
+On 09/12/2019 14:08, John Garry wrote:
+> This patchset introduces support for the HiSilicon SFC V3XX driver.
+> 
 
-Ah, 2015. This explains why nobody cared much. ;-\
+Hi guys,
 
-Did you try the patches? ...and you can forward port them?
+Just a friendly reminder on this series.
 
--- 
 Thanks,
-//richard
+John
+
+> Whilst the kernel tree already includes support for a "HiSilicon SFC
+> driver", that is for different HW. Indeed, as mentioned in patch #1, the
+> naming for that driver could be better, as it should support more memory
+> technologies than SPI NOR (as I have been told), and it is actually known
+> internally as FMC. As such, maybe "hisi-fmc" would have been better, but
+> we can't change that now.
+> 
+> I used V3XX in this driver name, as that is the unique versioning for
+> this HW.
+> 
+> As for the driver itself, it is quite simple. Only ACPI firmware is
+> supported, and we assume m25p80 compatible SPI NOR part will be used.
+> 
+> DMA is not supported, and we just use polling mode for operation
+> completion notification. The driver uses the SPI MEM OPs.
+> 
+> Changes from v1:
+> - Add ACPI kconfig dependency
+> - Fix up header comment style
+> - Change macros naming style
+> - Try to enforce aligned accesses in hisi_sfc_v3xx_adjust_op_size()
+> 
+> John Garry (3):
+>    mtd: spi-nor: hisi-sfc: Try to provide some clarity on which SFC we
+>      are
+>    spi: Add HiSilicon v3xx SPI NOR flash controller driver
+>    MAINTAINERS: Add a maintainer for the HiSilicon v3xx SFC driver
+> 
+>   MAINTAINERS                     |   6 +
+>   drivers/mtd/spi-nor/Kconfig     |   4 +-
+>   drivers/mtd/spi-nor/hisi-sfc.c  |   2 +-
+>   drivers/spi/Kconfig             |   9 +
+>   drivers/spi/Makefile            |   1 +
+>   drivers/spi/spi-hisi-sfc-v3xx.c | 284 ++++++++++++++++++++++++++++++++
+>   6 files changed, 303 insertions(+), 3 deletions(-)
+>   create mode 100644 drivers/spi/spi-hisi-sfc-v3xx.c
+> 
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
