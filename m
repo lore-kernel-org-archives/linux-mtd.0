@@ -2,84 +2,84 @@ Return-Path: <SRS0=uFxw=2G=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA185C43603
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Dec 2019 08:54:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 683A9C43603
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Dec 2019 09:03:13 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 806A320725
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Dec 2019 08:54:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 32C3D20725
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Dec 2019 09:03:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ib1A2TFj";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="F0P+45XX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 806A320725
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Z/OxddCG";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=st.com header.i=@st.com header.b="fIF4BGPT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 32C3D20725
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=st.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZHreonX+q6u/fLLwhzSRLWNPWmJVzT76Au5YSTBBJWI=; b=ib1A2TFjISaulP
-	rnVfxJ6+FSkWvIJ6MIaZHP+BjM8Gh7BN89vOXxmCq5CKmkwxyQwIfZApkLsLtq0jJrBrcCq2T+ahj
-	jmwvgSXR5mxJB2nY0M8UtfSLbQ9sh2wtZAIMS1MqKa8nT3nNpSDh3Dp61ovszfZJu5fLiyxTC11+B
-	dvEgKBg3L5N75zdVgnCJdHzbbTaJQzYRtKkdE9cmaCWIKdP+2+MXZ+58vtnVkbb6cV0dYi/hnolJN
-	8GOv8L1o+A7ggukbE1nmYgwzZxFHe7jxad1x5uuJQuTw5ABjDHdKHPxXlg1rsS6uBR/HcxZtNGuTZ
-	BnrrtPtRkOIRulkDtObA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=wx5ojaWurc2M+RB3QzXHiaiuRSrDiXCYlYrdHzAEZk0=; b=Z/OxddCGwoQoP2
+	422eDHt9gjQi9q/4Vq+JZsentyKd8TE02b3iYPAn6Ua8KsHbTrs5pPg4+P6+iz9BAewxovueyzHkM
+	HiLE3fIOGDEg0eeo8nrvBFDec33UZtMB1IAfTrBClLN+o2ojpnFzHRDlawfPNGOTqnbxwbTJ+KkMH
+	JCDYd7C7QgNXPJX95lz38y8reh2MhH5X8wEds6cPlhLGyRuuGgwJQwp9h4/5AmXzBjvrlsAivZ9lX
+	MV9yq0Ql99Q+8EgadxEF2OirqQuFFPewslQ1F2cZk23/FsMWZNQfnlse+w8dj3UW9FiKd+uOqYLEx
+	YHmpOmV75VW6YJRuuURA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1igm8i-0002cQ-9t; Mon, 16 Dec 2019 08:54:04 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1igmHM-0007Bd-Bh; Mon, 16 Dec 2019 09:03:00 +0000
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]
+ helo=mx07-00178001.pphosted.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1igm8f-0002ba-KP
- for linux-mtd@lists.infradead.org; Mon, 16 Dec 2019 08:54:03 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id xBG8rqsP083176;
- Mon, 16 Dec 2019 02:53:52 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1576486432;
- bh=6aFcWyhsHHVnr6Cqjh6RFG3uMltbSLRzg3ZmXfAwROo=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=F0P+45XXO+oyrT9rlcf9tv/US8pM8xKSRjl88mVxP6m173McAj6Pyhkfi+bIFs8oh
- W3IDPIBKql+P+k+9vXABGrikOVH+ShRd+3NHkLQy0AFryRaIEvVF7KwOjF0qQFXtQU
- TlwhjfDx+D/yzAhFW7NqrutL/8PZPK8Q+YS8YyYA=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id xBG8rqNW082176
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 16 Dec 2019 02:53:52 -0600
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Mon, 16
- Dec 2019 02:53:50 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Mon, 16 Dec 2019 02:53:50 -0600
-Received: from [172.24.145.136] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id xBG8rlLb101138;
- Mon, 16 Dec 2019 02:53:48 -0600
-Subject: Re: [PATCH 1/2] dt-bindings: mtd: spi-nor: document new flag
-To: Michael Walle <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20191214191943.3679-1-michael@walle.cc>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <556fe468-0080-ad05-8228-5ff8f1b3dac6@ti.com>
-Date: Mon, 16 Dec 2019 14:24:15 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.1
+ id 1igmHJ-0006ta-Oc
+ for linux-mtd@lists.infradead.org; Mon, 16 Dec 2019 09:02:59 +0000
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+ by mx08-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
+ xBG907Md015521; Mon, 16 Dec 2019 10:02:23 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com;
+ h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=UdMl4jxtKK5tEbnHy5CiO3//LkXhcmJ0JMTyto/hDvo=;
+ b=fIF4BGPT1D+5/YfiWTebDA+CJvlQ+aDI5rNyt751gl8etpfOUNh2Y/S5M8n9yj0n0kD/
+ vJI+B8gJzCQDiSpF5uXhd7tEe5rVGRd4OxIJg6bF/WtOlrQ54ERVgUZzeQi54Hwdmp5M
+ A2gueFhbAUPxrAWwVQVR3nlZLLZx9cc2alddDAM2x+hIwpa3mbBAvNWHXguIZFi8GuWG
+ +RJxfz6Ede/tvDGxQkruUO0t+WO2EKO0sNfOiChv6syGzAfLPIw6xJmw4YxMA5o7bhAo
+ v4dYvbyx2Bmt/tg1LCBaPOq70ZmnT3X9P3d4GdxYrdm/wiuOmPEx/S/psSqTB2E+k8kA sA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+ by mx08-00178001.pphosted.com with ESMTP id 2wvnre8gg4-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 16 Dec 2019 10:02:22 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8D25D100051;
+ Mon, 16 Dec 2019 10:02:17 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag6node2.st.com [10.75.127.17])
+ by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7583A2B6A14;
+ Mon, 16 Dec 2019 10:02:17 +0100 (CET)
+Received: from localhost (10.75.127.44) by SFHDAG6NODE2.st.com (10.75.127.17)
+ with Microsoft SMTP Server (TLS) id 15.0.1347.2;
+ Mon, 16 Dec 2019 10:02:16 +0100
+From: Christophe Kerello <christophe.kerello@st.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
+Subject: mtd: rawnand: stm32_fmc2: avoid to lock the CPU bus
+Date: Mon, 16 Dec 2019 10:01:55 +0100
+Message-ID: <1576486915-7517-1-git-send-email-christophe.kerello@st.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-In-Reply-To: <20191214191943.3679-1-michael@walle.cc>
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG6NODE2.st.com
+ (10.75.127.17)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-12-16_02:2019-12-16,2019-12-16 signatures=0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191216_005401_749887_18986EFB 
-X-CRM114-Status: GOOD (  26.40  )
+X-CRM114-CacheID: sfid-20191216_010258_157508_253A434B 
+X-CRM114-Status: GOOD (  16.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,116 +91,108 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Mark Rutland <mark.rutland@arm.com>, Richard Weinberger <richard@nod.at>,
- Rob Herring <robh+dt@kernel.org>, Tudor Ambarus <tudor.ambarus@microchip.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Christophe Kerello <christophe.kerello@st.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+We are currently using nand_soft_waitrdy to poll the status of the NAND
+flash. FMC2 enables the wait feature bit (this feature is mandatory for
+the sequencer mode). By enabling this feature, we can't poll the status
+of the NAND flash, the read status command is stucked in FMC2 pipeline
+until R/B# signal is high, and locks the CPU bus.
+To avoid to lock the CPU bus, we poll FMC2 ISR register. This register
+reports the status of the R/B# signal.
 
-On 15/12/19 12:49 am, Michael Walle wrote:
-> Document the new flag "no-unlock".
-> 
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> ---
-> Does the property need a prefix? I couldn't find any hint. If so, what
-> should it be? "m25p," or "spi-nor," ?
-> 
->  Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
-> index f03be904d3c2..2d305c893ed7 100644
-> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
-> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
-> @@ -78,6 +78,12 @@ Optional properties:
->  		   cannot reboot properly if the flash is left in the "wrong"
->  		   state. This boolean flag can be used on such systems, to
->  		   denote the absence of a reliable reset mechanism.
-> +- no-unlock : By default, linux unlocks the whole flash because there
-> +		   are legacy flash devices which are locked by default
-> +		   after reset. Set this flag if you don't want linux to
-> +		   unlock the whole flash automatically. In this case you
-> +		   can control the non-volatile bits by the
-> +		   flash_lock/flash_unlock tools.
->  
+Fixes: 2cd457f328c1 ("mtd: rawnand: stm32_fmc2: add STM32 FMC2 NAND flash controller driver")
+Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
+---
+ drivers/mtd/nand/raw/stm32_fmc2_nand.c | 38 ++++++++++++++++++++++++++++++++--
+ 1 file changed, 36 insertions(+), 2 deletions(-)
 
-Current SPI NOR framework unconditionally unlocks entire flash which
-I agree is not the best thing to do, but I don't think we need
-new DT property here. MTD cmdline partitions and DT partitions already 
-provide a way to specify that a partition should remain locked[1][2]
-
-SPI NOR framework should instead set MTD_POWERUP_LOCK flags in mtd->flags
-for flash devices that power up with lock bits set. And MTD core will 
-take care of unlocking flash regions while taking into account partition
-flags defined by user as part of MTD partitions defined in DT or
-via cmdline args.
-
-So that change should to be set MTD_POWERUP_LOCK for
-in SPI NOR core. Can you check below[3] (untested) diff helps?
-This should prevent unlocking partitions that are to remain locked 
-as specified in DT/cmdline 
-
-[1] Documentation/devicetree/bindings/mtd/partition.txt
-[2] drivers/mtd/parsers/cmdlinepart.c (see "lk" parameter)
-
-[3]
-
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 1082b6bb1393..6adb950849f6 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -4914,23 +4914,6 @@ static int spi_nor_quad_enable(struct spi_nor *nor)
- 	return nor->params.quad_enable(nor);
+diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+index 9e63800..3ba73f1 100644
+--- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
++++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+@@ -37,6 +37,7 @@
+ /* Max ECC buffer length */
+ #define FMC2_MAX_ECC_BUF_LEN		(FMC2_BCHDSRS_LEN * FMC2_MAX_SG)
+ 
++#define FMC2_TIMEOUT_US			1000
+ #define FMC2_TIMEOUT_MS			1000
+ 
+ /* Timings */
+@@ -53,6 +54,8 @@
+ #define FMC2_PMEM			0x88
+ #define FMC2_PATT			0x8c
+ #define FMC2_HECCR			0x94
++#define FMC2_ISR			0x184
++#define FMC2_ICR			0x188
+ #define FMC2_CSQCR			0x200
+ #define FMC2_CSQCFGR1			0x204
+ #define FMC2_CSQCFGR2			0x208
+@@ -118,6 +121,12 @@
+ #define FMC2_PATT_ATTHIZ(x)		(((x) & 0xff) << 24)
+ #define FMC2_PATT_DEFAULT		0x0a0a0a0a
+ 
++/* Register: FMC2_ISR */
++#define FMC2_ISR_IHLF			BIT(1)
++
++/* Register: FMC2_ICR */
++#define FMC2_ICR_CIHLF			BIT(1)
++
+ /* Register: FMC2_CSQCR */
+ #define FMC2_CSQCR_CSQSTART		BIT(0)
+ 
+@@ -1322,6 +1331,31 @@ static void stm32_fmc2_write_data(struct nand_chip *chip, const void *buf,
+ 		stm32_fmc2_set_buswidth_16(fmc2, true);
  }
  
--/**
-- * spi_nor_unlock_all() - Unlocks the entire flash memory array.
-- * @nor:	pointer to a 'struct spi_nor'.
-- *
-- * Some SPI NOR flashes are write protected by default after a power-on reset
-- * cycle, in order to avoid inadvertent writes during power-up. Backward
-- * compatibility imposes to unlock the entire flash memory array at power-up
-- * by default.
-- */
--static int spi_nor_unlock_all(struct spi_nor *nor)
--{
--	if (nor->flags & SNOR_F_HAS_LOCK)
--		return spi_nor_unlock(&nor->mtd, 0, nor->params.size);
--
--	return 0;
--}
--
- static int spi_nor_init(struct spi_nor *nor)
- {
- 	int err;
-@@ -4941,11 +4924,11 @@ static int spi_nor_init(struct spi_nor *nor)
- 		return err;
++static int stm32_fmc2_waitrdy(struct nand_chip *chip, unsigned long timeout_ms)
++{
++	struct stm32_fmc2_nfc *fmc2 = to_stm32_nfc(chip->controller);
++	const struct nand_sdr_timings *timings;
++	u32 isr, sr;
++
++	/* Check if there is no pending requests to the NAND flash */
++	if (readl_relaxed_poll_timeout_atomic(fmc2->io_base + FMC2_SR, sr,
++					      sr & FMC2_SR_NWRF, 1,
++					      FMC2_TIMEOUT_US))
++		dev_warn(fmc2->dev, "Waitrdy timeout\n");
++
++	/* Wait tWB before R/B# signal is low */
++	timings = nand_get_sdr_timings(&chip->data_interface);
++	ndelay(PSEC_TO_NSEC(timings->tWB_max));
++
++	/* R/B# signal is low, clear high level flag */
++	writel_relaxed(FMC2_ICR_CIHLF, fmc2->io_base + FMC2_ICR);
++
++	/* Wait R/B# signal is high */
++	return readl_relaxed_poll_timeout_atomic(fmc2->io_base + FMC2_ISR,
++						 isr, isr & FMC2_ISR_IHLF,
++						 5, 1000 * timeout_ms);
++}
++
+ static int stm32_fmc2_exec_op(struct nand_chip *chip,
+ 			      const struct nand_operation *op,
+ 			      bool check_only)
+@@ -1366,8 +1400,8 @@ static int stm32_fmc2_exec_op(struct nand_chip *chip,
+ 			break;
+ 
+ 		case NAND_OP_WAITRDY_INSTR:
+-			ret = nand_soft_waitrdy(chip,
+-						instr->ctx.waitrdy.timeout_ms);
++			ret = stm32_fmc2_waitrdy(chip,
++						 instr->ctx.waitrdy.timeout_ms);
+ 			break;
+ 		}
  	}
- 
--	err = spi_nor_unlock_all(nor);
--	if (err) {
--		dev_dbg(nor->dev, "Failed to unlock the entire flash memory array\n");
--		return err;
--	}
-+	/*
-+	 * Flashes may power up locked. Set this flag so that MTD core
-+	 * takes care of unlocking partitions as required.
-+	 */
-+	nor->mtd.flags |= MTD_POWERUP_LOCK;
- 
- 	if (nor->addr_width == 4 && !(nor->flags & SNOR_F_4B_OPCODES)) {
- 		/*
-
-
-
-
 -- 
-Regards
-Vignesh
+1.9.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
