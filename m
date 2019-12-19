@@ -2,86 +2,85 @@ Return-Path: <SRS0=zmh0=2J=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FAFCC43603
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Dec 2019 03:20:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0777C2D0C1
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Dec 2019 05:33:40 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1249521D7D
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Dec 2019 03:20:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 94983222C2
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Dec 2019 05:33:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Yvlvm9Mc";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ia8kEdT3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1249521D7D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dOXtg+a0";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="N3ZfoC8+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 94983222C2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=5UknBb11DlhiFeCdDOJhrvv8S3k+ZX+HdlZXK/+kstw=; b=Yvl
-	vm9Mc2BsMQ3SmAI4sNZ02/EIV/zVz5l4zedbx7l1dkFjcbOom+MXCi7Bl8r83a+ZdcJ+Eu4HYV2tK
-	nSlRR4xRpRAXUOaV7CwXtphUJazvxQKe3Wv1Q2BuHnV19tqj6kbyAZ23PtmhNKO61qYjgDmaFhb6a
-	bApLIqMnR+GOad5K0j8XjBK8pGJnOuX28M/7OtwyVE1z+wh9XA+AA46Q9ZV6u2+BWhZfZXffdLm4s
-	LIFo3dACjag1EXe0KZiKPcx009krpnJvowPRBMyaTAL5ntwvgDfR6MLOqlXcs/LT2fUZYXGPPbc59
-	Wz4edJi5a0eYXd2cQr/yuE7Pat6OP0Q==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=9Q3U5ZCalxuzBQfZyVkRIKo3+gdG/54hoF6wpA8JOfw=; b=dOXtg+a00d3XDU
+	8RzRXYIYz0CX+z6RWaMF7PoatpJjMdpckOh66ukd1Ms8rpbZ7OK2LgyEUEgteDw87pKfMxP+rGUb5
+	jl0CWc4GB/0cM4Fv5oV99lnIt6N0TiYHlS9gcMNYx4zShrUsUI6u520wz36E7ahU/zA6foRHHQjst
+	vf1ax3Tq2Bb78Wz/A7orGC9nLZ1UVPYp91coTF6jOtTckbKM9oQbuwnoIp3eTBgHPPjb8J8WrkWun
+	7SXCOP+Fzfo5cPRsVP4GNrFa36oS29jXqvbTvmZaGieeWzoaV7bIxY5SdQIRLaN4g4D+oCL0LH3UL
+	y102+aUL/Pfp5V4NWq9Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ihmMg-0000TW-FH; Thu, 19 Dec 2019 03:20:38 +0000
-Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
+	id 1ihoRB-0000jp-Fo; Thu, 19 Dec 2019 05:33:25 +0000
+Received: from lelv0142.ext.ti.com ([198.47.23.249])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ihmMd-0000Sq-T3
- for linux-mtd@lists.infradead.org; Thu, 19 Dec 2019 03:20:37 +0000
-Received: by mail-pf1-x441.google.com with SMTP id y14so2348238pfm.13
- for <linux-mtd@lists.infradead.org>; Wed, 18 Dec 2019 19:20:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id;
- bh=myMe1QwkZnF5nX58KJ75LAcGLicOPPY3P73wZ7ihcKg=;
- b=ia8kEdT3w0AGu1TZUC9FRWhFeospX94hSxPi51J1YQoavCj9UmQpWXusCabigHGUs7
- EYP6G8K6XhsexI3r7GaURDw9S6Dy3hmV3waThbzkXxN8Nnk9MDG0MzHz22cFguX3lMZD
- sQ9pMH7hRWKtOJf6+d6816XdBDpluUNwLGLDYaibxHZ8b2iCrcuRtWork+kpe+sUucLu
- HMCfkQGwd0hVOlfnuVK65CVQ7c2eOKP5FCdy/QMhURFGUVVUThfLOEN500bGYIA4IpIQ
- fLak64i81D38a6frFcDdYj3mASruGQiOYLAcXPYM6pgGoJmmKjGu/awEinsBDCQWhIOy
- AmYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=myMe1QwkZnF5nX58KJ75LAcGLicOPPY3P73wZ7ihcKg=;
- b=DRp/uXBnFfI0bSQQt4nIA69vWob8L+E42zhihETNpnsZ33dD5ePchEqOvTu15MM/7o
- J2nt5IZSvpUwB+Oynfh7kHX9OAktJ0s6dXSIuyNHicKcA986h5scHrUDoPsylteT4kEu
- aWT4p33ggBKWtFBceLPsWdvbIFqYd8ufQ+TfHj73BJVxeSg7RWL49zfEpPoOPINPDU49
- sdhjXWrNZI9FP0NbM2C/kjwmis1LAXGocXBYg4VdxlXePszbK8i1bqNzxPDQBtFsaLqI
- n8/xIQBLSXNT6ywAIoePQrQGI7izLNtKPQgArHIQ7m2gcGCOy2W+UKIi5jOGjmR6va5r
- 1ULQ==
-X-Gm-Message-State: APjAAAU3SFx9SnDMgmlbEbwbVYtUxcI1WfwnkrW/PQ+fOrSkUP9fwOAz
- dKYti1F4OQEz7zO9+fu/0/0=
-X-Google-Smtp-Source: APXvYqxLCUfDqY2jqojMritJO5se/AtwS0zRhyNk8y17DL2VoewC8sku+NYR6qj3xiSrF9C8oUG5Cg==
-X-Received: by 2002:a63:d958:: with SMTP id e24mr6579422pgj.31.1576725633389; 
- Wed, 18 Dec 2019 19:20:33 -0800 (PST)
-Received: from oslab.tsinghua.edu.cn ([166.111.139.172])
- by smtp.gmail.com with ESMTPSA id c3sm2350517pfi.155.2019.12.18.19.20.29
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 18 Dec 2019 19:20:32 -0800 (PST)
-From: Jia-Ju Bai <baijiaju1990@gmail.com>
-To: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- linux@dominikbrodowski.net
-Subject: [PATCH v2] mtd: maps: pcmciamtd: fix possible sleep-in-atomic-context
- bugs in pcmciamtd_set_vpp()
-Date: Thu, 19 Dec 2019 11:20:23 +0800
-Message-Id: <20191219032023.7177-1-baijiaju1990@gmail.com>
-X-Mailer: git-send-email 2.17.1
+ id 1ihoR7-0000jI-7k
+ for linux-mtd@lists.infradead.org; Thu, 19 Dec 2019 05:33:23 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id xBJ5XAMo090485;
+ Wed, 18 Dec 2019 23:33:10 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1576733590;
+ bh=LOOY6W2Ku2R5ppLjFbe/RkqYjMl9lftew8PFB4joQIs=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=N3ZfoC8+zHBNo+unnhOUoM5b//zS1vm0iE6RRaKDoli0tIVjMvE0s3DjrOe+SK6Yb
+ ZCa1CRV7PqFore/THw7HRmM2MYNLimmu3N3IA7EEWRymae76Tb2p65xyLOhapJNacj
+ XmWwX8VNPVQ227zYdY6HkPqpvWzYpbZLVO21MVvM=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id xBJ5XAu1122133
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Wed, 18 Dec 2019 23:33:10 -0600
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Wed, 18
+ Dec 2019 23:33:10 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Wed, 18 Dec 2019 23:33:10 -0600
+Received: from [172.24.145.136] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id xBJ5X6wR055261;
+ Wed, 18 Dec 2019 23:33:07 -0600
+Subject: Re: [PATCH 1/2] dt-bindings: mtd: spi-nor: document new flag
+To: Michael Walle <michael@walle.cc>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>
+References: <20191214191943.3679-1-michael@walle.cc>
+ <556fe468-0080-ad05-8228-5ff8f1b3dac6@ti.com>
+ <af3692dba69e85fa8136ab3d170bef39@walle.cc>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <2dfc30a7-3261-d783-8256-f72458a0141b@ti.com>
+Date: Thu, 19 Dec 2019 11:03:33 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.1
+MIME-Version: 1.0
+In-Reply-To: <af3692dba69e85fa8136ab3d170bef39@walle.cc>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191218_192035_963442_04936446 
-X-CRM114-Status: UNSURE (   9.25  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20191218_213321_402310_AF383D19 
+X-CRM114-Status: GOOD (  18.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,85 +92,49 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Jia-Ju Bai <baijiaju1990@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The driver may sleep while holding a spinlock.
-The function call path (from bottom to top) in Linux 4.19 is:
-
-drivers/pcmcia/pcmcia_resource.c, 312:
-	mutex_lock in pcmcia_fixup_vpp
-drivers/mtd/maps/pcmciamtd.c, 309:
-	pcmcia_fixup_vpp in pcmciamtd_set_vpp
-drivers/mtd/maps/pcmciamtd.c, 306:
-	_raw_spin_lock_irqsave in pcmciamtd_set_vpp
-
-drivers/pcmcia/pcmcia_resource.c, 312:
-	mutex_lock in pcmcia_fixup_vpp
-drivers/mtd/maps/pcmciamtd.c, 312:
-	pcmcia_fixup_vpp in pcmciamtd_set_vpp
-drivers/mtd/maps/pcmciamtd.c, 306:
-	_raw_spin_lock_irqsave in pcmciamtd_set_vp
-
-mutex_lock() may sleep at runtime.
-
-To fix these bugs, the spinlock is replaced with a mutex.
-
-These bugs are found by a static analysis tool STCheck written by
-myself.
-
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
----
-v2:
-* Change the spinlock to a mutex.
-  Thank Dominik for good advice.
-
----
-
- drivers/mtd/maps/pcmciamtd.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mtd/maps/pcmciamtd.c b/drivers/mtd/maps/pcmciamtd.c
-index 70bb403f69f7..2ac79e1cedd9 100644
---- a/drivers/mtd/maps/pcmciamtd.c
-+++ b/drivers/mtd/maps/pcmciamtd.c
-@@ -294,16 +294,15 @@ static void pcmcia_copy_to(struct map_info *map, unsigned long to, const void *f
- }
- 
- 
--static DEFINE_SPINLOCK(pcmcia_vpp_lock);
-+static DEFINE_MUTEX(pcmcia_vpp_lock);
- static int pcmcia_vpp_refcnt;
- static void pcmciamtd_set_vpp(struct map_info *map, int on)
- {
- 	struct pcmciamtd_dev *dev = (struct pcmciamtd_dev *)map->map_priv_1;
- 	struct pcmcia_device *link = dev->p_dev;
--	unsigned long flags;
- 
- 	pr_debug("dev = %p on = %d vpp = %d\n\n", dev, on, dev->vpp);
--	spin_lock_irqsave(&pcmcia_vpp_lock, flags);
-+	mutex_lock(&pcmcia_vpp_lock);
- 	if (on) {
- 		if (++pcmcia_vpp_refcnt == 1)   /* first nested 'on' */
- 			pcmcia_fixup_vpp(link, dev->vpp);
-@@ -311,7 +310,7 @@ static void pcmciamtd_set_vpp(struct map_info *map, int on)
- 		if (--pcmcia_vpp_refcnt == 0)   /* last nested 'off' */
- 			pcmcia_fixup_vpp(link, 0);
- 	}
--	spin_unlock_irqrestore(&pcmcia_vpp_lock, flags);
-+	mutex_unlock(&pcmcia_vpp_lock);
- }
- 
- 
--- 
-2.17.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWljaGFlbCwKClsuLi5dCj4+PiArLSBuby11bmxvY2sgOiBCeSBkZWZhdWx0LCBsaW51eCB1
+bmxvY2tzIHRoZSB3aG9sZSBmbGFzaCBiZWNhdXNlIHRoZXJlCj4+PiArwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgYXJlIGxlZ2FjeSBmbGFzaCBkZXZpY2VzIHdoaWNoIGFyZSBsb2NrZWQgYnkgZGVmYXVs
+dAo+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgIGFmdGVyIHJlc2V0LiBTZXQgdGhpcyBmbGFnIGlm
+IHlvdSBkb24ndCB3YW50IGxpbnV4IHRvCj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqAgdW5sb2Nr
+IHRoZSB3aG9sZSBmbGFzaCBhdXRvbWF0aWNhbGx5LiBJbiB0aGlzIGNhc2UgeW91Cj4+PiArwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgY2FuIGNvbnRyb2wgdGhlIG5vbi12b2xhdGlsZSBiaXRzIGJ5IHRo
+ZQo+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgIGZsYXNoX2xvY2svZmxhc2hfdW5sb2NrIHRvb2xz
+Lgo+Pj4KPj4KPj4gQ3VycmVudCBTUEkgTk9SIGZyYW1ld29yayB1bmNvbmRpdGlvbmFsbHkgdW5s
+b2NrcyBlbnRpcmUgZmxhc2ggd2hpY2gKPj4gSSBhZ3JlZSBpcyBub3QgdGhlIGJlc3QgdGhpbmcg
+dG8gZG8sIGJ1dCBJIGRvbid0IHRoaW5rIHdlIG5lZWQKPj4gbmV3IERUIHByb3BlcnR5IGhlcmUu
+IE1URCBjbWRsaW5lIHBhcnRpdGlvbnMgYW5kIERUIHBhcnRpdGlvbnMgYWxyZWFkeQo+PiBwcm92
+aWRlIGEgd2F5IHRvIHNwZWNpZnkgdGhhdCBhIHBhcnRpdGlvbiBzaG91bGQgcmVtYWluIGxvY2tl
+ZFsxXVsyXQo+IAo+IEkga25vdyB0aGF0IHRoZSBNVEQgbGF5ZXIgaGFzIHRoZSBzYW1lIGtpbmQg
+b2YgdW5sb2NraW5nLiBCdXQgdGhhdAo+IHVubG9ja2luZyBpcyBkb25lIG9uIGEgcGVyIG10ZCBw
+YXJ0aXRpb24gYmFzaXMuIEVnLiBjb25zaWRlciBzb21ldGhpbmcKPiBsaWtlIHRoZSBmb2xsb3dp
+bmcKPiAKPiDCoG10ZDEgYm9vdGxvYWRlcsKgIChsb2NrZWQpCj4gwqBtdGQyIGZpcm13YXJlwqDC
+oMKgIChsb2NrZWQpCj4gwqBtdGQzIGtlcm5lbAo+IMKgbXRkNCBlbnZpcm9ubWVudAo+IAo+IEZ1
+cnRoZXIgYXNzdW1lLCB0aGF0IHRoZSBlbmQgb2YgbXRkMiBhbGlnbnMgd2l0aCBvbmUgb2YgdGhl
+IHBvc3NpYmxlCj4gbG9ja2luZyBhcmVhcyB3aGljaCBhcmUgc3VwcG9ydGVkIGJ5IHRoZSBmbGFz
+aCBjaGlwLiBFZy4gdGhlIGZpcnN0IHF1YXJ0ZXIuCj4gCj4gVGhlIG10ZCBsYXllciB3b3VsZCBk
+byB0d28gKG9yIGZvdXIsIGlmICJsb2NrIiBwcm9wZXJ0eSBpcyBzZXQpIHVubG9jaygpCj4gY2Fs
+bHMsIG9uZSBmb3IgbXRkMSBhbmQgb25lIGZvciBtdGQyLgo+IAoKCj4gTXkgcG9pbnQgaGVyZSBp
+cywgdGhhdCB0aGUgbXRkIHBhcnRpdGlvbnMgZG9lc24ndCBhbHdheXMgbWFwIHRvIHRoZQo+IGxv
+Y2tpbmcgcmVnaW9ucyBvZiB0aGUgU1BJIGZsYXNoIChhdCBsZWFzdCBpZiB0aGUgYXJlIG5vdCBt
+ZXJnZWQgdG9nZXRoZXIpLgo+IAoKWW91IGFyZSByaWdodCEgVGhpcyB3aWxsIGJlIGFuIGlzc3Vl
+IGlmIGV4aXN0aW5nIHBhcnRpdGlvbnMgYXJlIG5vdAphbGlnbmVkIHRvIGxvY2tpbmcgcmVnaW9u
+cy4KCkkgdGFrZSBteSBjb21tZW50cyBiYWNrLi4uIEJ1dCBJIGFtIG5vdCBzdXJlIGlmIGEgbmV3
+IERUIHByb3BlcnR5IGlzIHRoZQpuZWVkZWQuIFRoaXMgZG9lcyBub3QgZGVzY3JpYmUgSFcgYW5k
+IGlzIHNwZWNpZmljIHRvIExpbnV4IFNQSSBOT1IKc3RhY2suIEhvdyBhYm91dCBhIG1vZHVsZSBw
+YXJhbWV0ZXIgaW5zdGVhZD8KTW9kdWxlIHBhcmFtZXRlciB3b24ndCBwcm92aWRlIHBlciBmbGFz
+aCBncmFudWxhcml0eSBpbiBjb250cm9sbGluZwp1bmxvY2tpbmcgYmVoYXZpb3IuIEJ1dCBJIGRv
+bid0IHRoaW5rIHRoYXQgbWF0dGVycy4KClR1ZG9yLAoKWW91IGhhZCBhIHBhdGNoIGRvaW5nIHNv
+bWV0aGluZyBzaW1pbGFyLiBEb2VzIG1vZHVsZSBwYXJhbSBzb3VuZCBnb29kIHRvCnlvdT8KCgot
+LSAKUmVnYXJkcwpWaWduZXNoCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6
+Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
