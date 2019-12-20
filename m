@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0B82C43603
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Dec 2019 11:32:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9696C43603
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Dec 2019 11:33:10 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AB1B72465E
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Dec 2019 11:32:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 80A7A2465E
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Dec 2019 11:33:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="E3RHGTXC";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="M98RO5g7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AB1B72465E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OWNPoN+S";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="GrQ/g5y0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 80A7A2465E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,47 +27,46 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=XvWjCVoT5tkYoNuQ+zWVdRuG33AV7RPm5vATnSLpBPo=; b=E3RHGTXCDJ4JNT15H3k24g37XA
-	i3wlk0iNzSkM2aHKPtUnHmSqGFThp+h2WnmtQgHHKyAxrlb1hzZgnS2inOGGsWL/2pP3Z9U3vzqnj
-	gin0UwerhNxOM+FI2iMjywSs0NUBbdMu+Gpr9S33pNNFMKKuy60nuRdtPooDzMTn14vVggMG/V1Ry
-	ZsWsJZa6u+dNYfN4pAiWFl3lTWTBEYI7ZvthRruv48fz2hIowKlkzbQOoljLdmIWLJOUpK3a8vBT0
-	ymyTDmAR9Cdz5bgKav+83OA541o4vWyO8+4h3O63ThzRImqGOv8QWiaXZ6GAgneFbX2b9kUcN5E2a
-	UhRnUV8w==;
+	bh=SDN+S/pmxufOyXnMNb6a8S1O3rnOHNNCkI+4kM0LRGA=; b=OWNPoN+SQbO72XkRc8IyQV1+JT
+	QQdzI/ktzFOwE1H8BC3zVQaFKFNlbhQa9yzfaC2T4myKf4Ip5wnib34cMdRbaGBr+K5qy4sk4yh8O
+	NFrsqOETPbdiXGGMe0Vd0fpYN/ePzP5jyrib9kLG+IGcd4jWRnYXr3rVawYw5UxsQ4Jgjsvrie4Dn
+	uqXpN0i03Z+/8knAYEqv8jVZrwHaZOjbvglrA6YTSrA/4VtB4JlT1pbrNv0RoGo3tCKZIk/1x5Be5
+	oec8B/LlRW3FKGsJxVRa/D9RXwxPbT2TIlpegtmE4apT7ZrWiLM8v/OicXbCA0WG1gaE7/Ofvhodl
+	rnE7B8kw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iiGWS-0000II-Cs; Fri, 20 Dec 2019 11:32:44 +0000
+	id 1iiGWc-0000UG-Fz; Fri, 20 Dec 2019 11:32:54 +0000
 Received: from conuserg-08.nifty.com ([210.131.2.75])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iiGWH-00007z-Fe
- for linux-mtd@lists.infradead.org; Fri, 20 Dec 2019 11:32:35 +0000
+ id 1iiGWH-000080-DI
+ for linux-mtd@lists.infradead.org; Fri, 20 Dec 2019 11:32:36 +0000
 Received: from localhost.localdomain (p14092-ipngnfx01kyoto.kyoto.ocn.ne.jp
  [153.142.97.92]) (authenticated)
- by conuserg-08.nifty.com with ESMTP id xBKBW2Wv010984;
- Fri, 20 Dec 2019 20:32:05 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com xBKBW2Wv010984
+ by conuserg-08.nifty.com with ESMTP id xBKBW2Wx010984;
+ Fri, 20 Dec 2019 20:32:07 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com xBKBW2Wx010984
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
- s=dec2015msa; t=1576841526;
- bh=v9133Ufzc3+ic87B/K3hcV7PpJe8R3xx9bGS9VeHmEc=;
+ s=dec2015msa; t=1576841528;
+ bh=my3TOmqDy5To4BV9jpt+Keyp543Zjs/fVShQ11GouiE=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=M98RO5g7Dl+IAFl7CBY+mE2aAH6WsodGaRO14yB70GRQtJ/zXz5KxVoKOYBEwkVqD
- nvBZtrCP3vhs0Y+rqnXwygAFssqIuSPG5RA+th90akWkzXELLHOgpWbOJq6K4lPqmU
- DlG33DyVywWfSGPVGK2KL20+W0S1Po59s1hjfK0ux31s9VACxK60mKHCQD/TykjcPp
- hiHE44ptkLTt95kgcWQg5Ga6nB3OhwdmrHehB/FadonjX97MTSKx7S9pcUBuuej2ge
- OvxWrWQtlM4tv0vTZZL1tbkrP/EcwxIdqITIN0czJgAvnLTDGN1bzW7q/8wD0KFCoT
- GzswpdCvKwEaA==
+ b=GrQ/g5y07vaA+qagWKN4ACyos7dSCu3OP+vo82RhtqmGC1SD66KHa/mcr8g6AdmZD
+ vP+JYrQRNB8tyQa/GHNiy9PMwjfoj/Hs9CPu4RWQke/JbJFvCGMyDPnhbJYPkxZ2Gt
+ ENEHjS6//KSTMqGFmWPEyG3eR9ZdfYuJ53QCoVVuYGEUFNJHPXviwjpP0809uJLJRE
+ GURkaFBN915RVcg5jgbh6wctnpTXPcte0qNUnvt/AlsXcKFXUDO71gXrs0DVL2hk5l
+ nALGwybjYsRnFXCiCtaa/L1H7NkXK6e/ppcT8MfY7j5shzl0e3h1kpLlI4hH3B4qck
+ o4tEkPUQPE64A==
 X-Nifty-SrcIP: [153.142.97.92]
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH v3 2/5] mtd: rawnand: denali_dt: Add support for configuring
- SPARE_AREA_SKIP_BYTES
-Date: Fri, 20 Dec 2019 20:31:52 +0900
-Message-Id: <20191220113155.28177-3-yamada.masahiro@socionext.com>
+Subject: [PATCH v3 4/5] mtd: rawnand: denali_dt: add reset controlling
+Date: Fri, 20 Dec 2019 20:31:54 +0900
+Message-Id: <20191220113155.28177-5-yamada.masahiro@socionext.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20191220113155.28177-1-yamada.masahiro@socionext.com>
 References: <20191220113155.28177-1-yamada.masahiro@socionext.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191220_033233_769721_E1F6C00D 
-X-CRM114-Status: GOOD (  17.99  )
+X-CRM114-CacheID: sfid-20191220_033233_774451_970A329C 
+X-CRM114-Status: GOOD (  18.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,6 +82,7 @@ Cc: Marek Vasut <marex@denx.de>, Vignesh Raghavendra <vigneshr@ti.com>,
  Masahiro Yamada <yamada.masahiro@socionext.com>,
  Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
  Ley Foon Tan <ley.foon.tan@intel.com>, Dinh Nguyen <dinguyen@kernel.org>,
+ Philipp Zabel <p.zabel@pengutronix.de>,
  Miquel Raynal <miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -90,117 +90,157 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Marek Vasut <marex@denx.de>
+According to the Denali NAND Flash Memory Controller User's Guide,
+this IP has two reset signals.
 
-The SPARE_AREA_SKIP_BYTES register is reset when the controller reset
-signal is toggled. Yet, this register must be configured to match the
-content of the NAND OOB area. The current default value is always set
-to 8 and is programmed into the hardware in case the hardware was not
-programmed before (e.g. in a bootloader) with a different value. This
-however does not work when the block is reset properly by Linux.
+  rst_n:     reset most of FFs in the controller core
+  reg_rst_n: reset all FFs in the register interface, and in the
+             initialization sequencer
 
-On Altera SoCFPGA CycloneV, ArriaV and Arria10, which are the SoCFPGA
-platforms which support booting from NAND, the SPARE_AREA_SKIP_BYTES
-value must be set to 2. On Socionext Uniphier, the value is 8. This
-patch adds support for preconfiguring the default value and handles
-the special SoCFPGA case by setting the default to 2 on all SoCFPGA
-platforms, while retaining the original behavior and default value of
-8 on all the other platforms.
+This commit supports controlling those reset signals.
 
-Signed-off-by: Marek Vasut <marex@denx.de>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>
-To: linux-mtd@lists.infradead.org
-Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-Acked-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+It is possible to control them separately from the IP point of view
+although they might be often tied up together in actual SoC integration.
+
+The IP spec says, asserting only the reg_rst_n without asserting rst_n
+will cause unpredictable behavior in the controller. So, the driver
+deasserts ->rst_reg and ->rst in this order.
+
+Another thing that should be kept in mind is the automated initialization
+sequence (a.k.a. 'bootstrap' process) is kicked off when reg_rst_n is
+deasserted.
+
+When the reset is deasserted, the controller issues a RESET command
+to the chip select 0, and attempts to read out the chip ID, and further
+more, ONFI parameters if it is an ONFI-compliant device. Then, the
+controller sets up the relevant registers based on the detected
+device parameters.
+
+This process might be useful for tiny boot firmware, but is redundant
+for Linux Kernel because nand_scan_ident() probes devices and sets up
+parameters accordingly. Rather, this hardware feature is annoying
+because it ends up with misdetection due to bugs.
+
+So, commit 0615e7ad5d52 ("mtd: nand: denali: remove Toshiba and Hynix
+specific fixup code") changed the driver to not rely on it.
+
+However, there is no way to prevent it from running. The IP provides
+the 'bootstrap_inhibit_init' port to suppress this sequence, but it is
+usually out of software control, and dependent on SoC implementation.
+As for the Socionext UniPhier platform, LD4 always enables it. For the
+later SoCs, the bootstrap sequence runs depending on the boot mode.
+
+I added usleep_range() to make the driver wait until the sequence
+finishes. Otherwise, the driver would fail to detect the chip due
+to the race between the driver and hardware-controlled sequence.
+
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
 ---
 
-Changes in v3:
-  [Masahiro]
-   - Rebase and give my Acked-by
-
+Changes in v3: None
 Changes in v2:
-  - V2: Move denali->oob_skip_bytes = data->oob_skip_bytes; right after
-    of_device_get_match_data()
+ - Split into two patches
 
- drivers/mtd/nand/raw/denali.c    | 13 ++++++++++---
- drivers/mtd/nand/raw/denali_dt.c |  5 +++++
- 2 files changed, 15 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/raw/denali_dt.c | 40 +++++++++++++++++++++++++++++++-
+ 1 file changed, 39 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
-index 3102ddbd8abd..b6c463d02167 100644
---- a/drivers/mtd/nand/raw/denali.c
-+++ b/drivers/mtd/nand/raw/denali.c
-@@ -1302,14 +1302,21 @@ int denali_init(struct denali_controller *denali)
- 
- 	/*
- 	 * Set how many bytes should be skipped before writing data in OOB.
-+	 * If a non-zero value has already been configured, update it in HW.
- 	 * If a non-zero value has already been set (by firmware or something),
- 	 * just use it. Otherwise, set the driver's default.
- 	 */
--	denali->oob_skip_bytes = ioread32(denali->reg + SPARE_AREA_SKIP_BYTES);
--	if (!denali->oob_skip_bytes) {
--		denali->oob_skip_bytes = DENALI_DEFAULT_OOB_SKIP_BYTES;
-+	if (denali->oob_skip_bytes) {
- 		iowrite32(denali->oob_skip_bytes,
- 			  denali->reg + SPARE_AREA_SKIP_BYTES);
-+	} else {
-+		denali->oob_skip_bytes =
-+			ioread32(denali->reg + SPARE_AREA_SKIP_BYTES);
-+		if (!denali->oob_skip_bytes) {
-+			denali->oob_skip_bytes = DENALI_DEFAULT_OOB_SKIP_BYTES;
-+			iowrite32(denali->oob_skip_bytes,
-+				  denali->reg + SPARE_AREA_SKIP_BYTES);
-+		}
- 	}
- 
- 	iowrite32(0, denali->reg + TRANSFER_SPARE_REG);
 diff --git a/drivers/mtd/nand/raw/denali_dt.c b/drivers/mtd/nand/raw/denali_dt.c
-index 276187939689..699255fb2dd8 100644
+index 699255fb2dd8..f08740ae282b 100644
 --- a/drivers/mtd/nand/raw/denali_dt.c
 +++ b/drivers/mtd/nand/raw/denali_dt.c
-@@ -27,6 +27,7 @@ struct denali_dt {
+@@ -6,6 +6,7 @@
+  */
+ 
+ #include <linux/clk.h>
++#include <linux/delay.h>
+ #include <linux/err.h>
+ #include <linux/io.h>
+ #include <linux/ioport.h>
+@@ -14,6 +15,7 @@
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+ #include <linux/platform_device.h>
++#include <linux/reset.h>
+ 
+ #include "denali.h"
+ 
+@@ -22,6 +24,8 @@ struct denali_dt {
+ 	struct clk *clk;	/* core clock */
+ 	struct clk *clk_x;	/* bus interface clock */
+ 	struct clk *clk_ecc;	/* ECC circuit clock */
++	struct reset_control *rst;	/* core reset */
++	struct reset_control *rst_reg;	/* register reset */
+ };
+ 
  struct denali_dt_data {
- 	unsigned int revision;
- 	unsigned int caps;
-+	unsigned int oob_skip_bytes;
- 	const struct nand_ecc_caps *ecc_caps;
- };
+@@ -157,6 +161,14 @@ static int denali_dt_probe(struct platform_device *pdev)
+ 	if (IS_ERR(dt->clk_ecc))
+ 		return PTR_ERR(dt->clk_ecc);
  
-@@ -34,6 +35,7 @@ NAND_ECC_CAPS_SINGLE(denali_socfpga_ecc_caps, denali_calc_ecc_bytes,
- 		     512, 8, 15);
- static const struct denali_dt_data denali_socfpga_data = {
- 	.caps = DENALI_CAP_HW_ECC_FIXUP,
-+	.oob_skip_bytes = 2,
- 	.ecc_caps = &denali_socfpga_ecc_caps,
- };
++	dt->rst = devm_reset_control_get_optional_shared(dev, "nand");
++	if (IS_ERR(dt->rst))
++		return PTR_ERR(dt->rst);
++
++	dt->rst_reg = devm_reset_control_get_optional_shared(dev, "reg");
++	if (IS_ERR(dt->rst_reg))
++		return PTR_ERR(dt->rst_reg);
++
+ 	ret = clk_prepare_enable(dt->clk);
+ 	if (ret)
+ 		return ret;
+@@ -172,10 +184,30 @@ static int denali_dt_probe(struct platform_device *pdev)
+ 	denali->clk_rate = clk_get_rate(dt->clk);
+ 	denali->clk_x_rate = clk_get_rate(dt->clk_x);
  
-@@ -42,6 +44,7 @@ NAND_ECC_CAPS_SINGLE(denali_uniphier_v5a_ecc_caps, denali_calc_ecc_bytes,
- static const struct denali_dt_data denali_uniphier_v5a_data = {
- 	.caps = DENALI_CAP_HW_ECC_FIXUP |
- 		DENALI_CAP_DMA_64BIT,
-+	.oob_skip_bytes = 8,
- 	.ecc_caps = &denali_uniphier_v5a_ecc_caps,
- };
+-	ret = denali_init(denali);
++	/*
++	 * Deassert the register reset, and the core reset in this order.
++	 * Deasserting the core reset while the register reset is asserted
++	 * will cause unpredictable behavior in the controller.
++	 */
++	ret = reset_control_deassert(dt->rst_reg);
+ 	if (ret)
+ 		goto out_disable_clk_ecc;
  
-@@ -51,6 +54,7 @@ static const struct denali_dt_data denali_uniphier_v5b_data = {
- 	.revision = 0x0501,
- 	.caps = DENALI_CAP_HW_ECC_FIXUP |
- 		DENALI_CAP_DMA_64BIT,
-+	.oob_skip_bytes = 8,
- 	.ecc_caps = &denali_uniphier_v5b_ecc_caps,
- };
++	ret = reset_control_deassert(dt->rst);
++	if (ret)
++		goto out_assert_rst_reg;
++
++	/*
++	 * When the reset is deasserted, the initialization sequence is kicked
++	 * (bootstrap process). The driver must wait until it finished.
++	 * Otherwise, it will result in unpredictable behavior.
++	 */
++	usleep_range(200, 1000);
++
++	ret = denali_init(denali);
++	if (ret)
++		goto out_assert_rst;
++
+ 	for_each_child_of_node(dev->of_node, np) {
+ 		ret = denali_dt_chip_init(denali, np);
+ 		if (ret) {
+@@ -190,6 +222,10 @@ static int denali_dt_probe(struct platform_device *pdev)
  
-@@ -123,6 +127,7 @@ static int denali_dt_probe(struct platform_device *pdev)
+ out_remove_denali:
+ 	denali_remove(denali);
++out_assert_rst:
++	reset_control_assert(dt->rst);
++out_assert_rst_reg:
++	reset_control_assert(dt->rst_reg);
+ out_disable_clk_ecc:
+ 	clk_disable_unprepare(dt->clk_ecc);
+ out_disable_clk_x:
+@@ -205,6 +241,8 @@ static int denali_dt_remove(struct platform_device *pdev)
+ 	struct denali_dt *dt = platform_get_drvdata(pdev);
  
- 	denali->revision = data->revision;
- 	denali->caps = data->caps;
-+	denali->oob_skip_bytes = data->oob_skip_bytes;
- 	denali->ecc_caps = data->ecc_caps;
- 
- 	denali->dev = dev;
+ 	denali_remove(&dt->controller);
++	reset_control_assert(dt->rst);
++	reset_control_assert(dt->rst_reg);
+ 	clk_disable_unprepare(dt->clk_ecc);
+ 	clk_disable_unprepare(dt->clk_x);
+ 	clk_disable_unprepare(dt->clk);
 -- 
 2.17.1
 
