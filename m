@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43249C2D0C2
-	for <linux-mtd@archiver.kernel.org>; Mon, 30 Dec 2019 16:52:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17A4FC2D0C2
+	for <linux-mtd@archiver.kernel.org>; Mon, 30 Dec 2019 16:52:36 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 123B2206CB
-	for <linux-mtd@archiver.kernel.org>; Mon, 30 Dec 2019 16:52:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CB6DB206CB
+	for <linux-mtd@archiver.kernel.org>; Mon, 30 Dec 2019 16:52:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mQ4zhe+M"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 123B2206CB
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LcNE4wx8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CB6DB206CB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qUp5e+AlagMlXl3uAWM54QAO1hvLsrflpS6I4OL10nI=; b=mQ4zhe+MkJiLeb
-	QVsju5Uf9Ee+yPQNDSA/9uzImnjCGmC5nCC3m/o7a8LFoi762ITz8iK5dV16e21AEmKRO6RAmKJ7s
-	TpQsaMCbWVHNdNvds+fhdWu3RC9MP2dzPxH11TZHQaUsTtEjD1BWyy20pcd+oMvTS0Kk3Cih1gwS+
-	Yk0MGyv4YMaf3oKCDddukuAJca8RhyjM4w1VZZDjNvKhRp3TSgWgkFdpZi4Qh6sVf3VRz58n6rWNj
-	YdSYby0znZhxxt64iYhnWUYg15RmajZOV21cNmOIMX2iv6i3L4m7rpIrftg64gVFZU2i/rHQjznmg
-	/gA2iQ81xKWxueYCeS9w==;
+	List-Owner; bh=51Rnf9BEVQopdRb8E7708CvXSWyoJyKfdFO40gozuxI=; b=LcNE4wx8HQcsvY
+	lL6CovkN/fwwCUxtPMEIsmCXpKGNliBEpjA8lvHTsd2DWyWqiPrR4Cf5PaD0UInE/ff0o+zZW6qDP
+	h91pZRVIVJ+X7dcytUa2GsfAOiSa+CZZJUGydA75xG+/IXSlZBVJxNrTYHrpWfHnLC/oCsz6P1jDO
+	WC/khZjenk7CVQ4xjl84C4WjTbEC8atL3ikWpNwqkQll6ELlYjV7EMstQes8rSPxURrk7+1fR6KGJ
+	/dgUcYadU2bbKAnOQIGx//JA+iBBAnDdhu56nDVhqdzM9f/FQ0DnDVaDlLF+WltQBdwhfR3kyAxMW
+	rVTa8W2kFcmrP0C5AvXg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ilyGz-0003h7-2r; Mon, 30 Dec 2019 16:52:05 +0000
+	id 1ilyHG-0003xZ-WA; Mon, 30 Dec 2019 16:52:23 +0000
 Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ilyGd-0003J2-GM
+ id 1ilyGd-0003J4-GS
  for linux-mtd@lists.infradead.org; Mon, 30 Dec 2019 16:51:46 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id A516EC000C;
- Mon, 30 Dec 2019 16:51:38 +0000 (UTC)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id D1098C0008;
+ Mon, 30 Dec 2019 16:51:33 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH 8/8] ubi: Relax the 'no MLC' rule and allow MLCs operating in
- SLC mode
-Date: Mon, 30 Dec 2019 17:51:29 +0100
-Message-Id: <20191230165129.11925-9-miquel.raynal@bootlin.com>
+Subject: [PATCH 3/8] mtd: rawnand: toshiba: Set the pairing scheme for
+ TC58TEG5DCLTA00
+Date: Mon, 30 Dec 2019 17:51:24 +0100
+Message-Id: <20191230165129.11925-4-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191230165129.11925-1-miquel.raynal@bootlin.com>
 References: <20191230165129.11925-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191230_085143_697529_148421AD 
-X-CRM114-Status: UNSURE (   9.85  )
+X-CRM114-CacheID: sfid-20191230_085143_698728_4BF16AD9 
+X-CRM114-Status: UNSURE (   9.17  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -81,36 +81,31 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 
-The MTD layer provides an SLC mode (purely software emulation of SLC
-behavior) addressing the paired-pages corruption issue, which was the
-main reason for refusing attaching MLC NANDs to UBI.
-
-Relax this rule and allow partitions that have the MTD_MLC_IN_SLC_MODE
-flag set to be attached.
+TC58TEG5DCLTA00 uses a stride of 3 between its lower and upper page.
+Set the appropriate pairing scheme at init time.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/ubi/build.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/raw/nand_toshiba.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index d636bbe214cb..d917cc4cd937 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -846,8 +846,11 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
- 	 * Both UBI and UBIFS have been designed for SLC NAND and NOR flashes.
- 	 * MLC NAND is different and needs special care, otherwise UBI or UBIFS
- 	 * will die soon and you will lose all your data.
-+	 * Relax this rule if the partition we're attaching to operates in SLC
-+	 * mode.
- 	 */
--	if (mtd->type == MTD_MLCNANDFLASH) {
-+	if (mtd->type == MTD_MLCNANDFLASH &&
-+	    !(mtd->flags & MTD_MLC_IN_SLC_MODE)) {
- 		pr_err("ubi: refuse attaching mtd%d - MLC NAND is not supported\n",
- 			mtd->index);
- 		return -EINVAL;
+diff --git a/drivers/mtd/nand/raw/nand_toshiba.c b/drivers/mtd/nand/raw/nand_toshiba.c
+index 9114b96880d7..ed758ff80080 100644
+--- a/drivers/mtd/nand/raw/nand_toshiba.c
++++ b/drivers/mtd/nand/raw/nand_toshiba.c
+@@ -142,8 +142,11 @@ static void toshiba_nand_decode_id(struct nand_chip *chip)
+ 
+ static int tc58teg5dclta00_init(struct nand_chip *chip)
+ {
++	struct mtd_info *mtd = nand_to_mtd(chip);
++
+ 	chip->onfi_timing_mode_default = 5;
+ 	chip->options |= NAND_NEED_SCRAMBLING;
++	mtd_set_pairing_scheme(mtd, &dist3_pairing_scheme);
+ 
+ 	return 0;
+ }
 -- 
 2.20.1
 
