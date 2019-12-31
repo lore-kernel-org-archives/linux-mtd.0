@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ACC85C2D0C2
-	for <linux-mtd@archiver.kernel.org>; Tue, 31 Dec 2019 19:27:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73F39C2D0C2
+	for <linux-mtd@archiver.kernel.org>; Tue, 31 Dec 2019 19:28:39 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 89567206D9
-	for <linux-mtd@archiver.kernel.org>; Tue, 31 Dec 2019 19:27:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2B1EF206D9
+	for <linux-mtd@archiver.kernel.org>; Tue, 31 Dec 2019 19:28:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nZ+o6EE5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 89567206D9
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IFyKQF+D"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2B1EF206D9
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EhaW1O8Kw33gHaqvWadRxljvVF9+Frn82rPdmBWlZV4=; b=nZ+o6EE5z6e+cH
-	mBZEN2jEIJzHnd1qLYa+MUdJuZUw9FS6Kw6aiqPreUJLC10qa9l+1wHldJ3/w6axHYbcPlyEosObc
-	wBH33O9XomIojnf9CED7M+nIgGi8pr3eVdUf/y74o/bZhjJ86YotcFB6YpMwOP28conoxZULAC0Uo
-	IFvK6b5Bafk/irCBxXn10AHjoih34XBldgIvuIAYL0/8qZ2OX4y6etYtLwicZE7YFI/rR6C42fz7F
-	siXrpkj1WAeaeDykkqqFGfrVelJ5pjBWOfFRyuho73CXIxLGzlJaWg6spxgf7uXnfz0ySApHCyFW7
-	XsIdFJnMOw+I+wJ9VJUQ==;
+	List-Owner; bh=UsUimr3FJJ2FqY/Z4bf9Dk4g05J7Dd7iSdaXhXx5140=; b=IFyKQF+DtKRdvC
+	v1TArDsvZFrtvF5dK/ByEyNtUbX+b7r4ihZMULaFN5y+Hui3qu0XuCzsvpT/bosS1xyuIXt4ZdmpC
+	IHbYBQZuIMNA4iMUty+GvKAIB5rDOplAa+tEbn21PTdrRVc6day8Rf5ANdAuLZDSGPgtWF1Vo3xZ9
+	Z9dGmVYKsLCOS+Osb8jKgNHMAkmTHtM9zYtij3tWzt2ci48Y59enCa060N05RxjvmuWDA/VA0JL7P
+	1xRD+l014pWtNPYV0BwjQR2ptBAKuS9PJfH859Pph/QkldqzMM6GmuY48RqnBubFs/aIrbovKFqFe
+	5CTZIy6XkYThGRtRQTKQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1imNB1-0005AC-2E; Tue, 31 Dec 2019 19:27:35 +0000
+	id 1imNBo-0005Z9-LM; Tue, 31 Dec 2019 19:28:24 +0000
 Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1imNAo-0004zb-NZ
- for linux-mtd@lists.infradead.org; Tue, 31 Dec 2019 19:27:24 +0000
+ id 1imNAo-0004zZ-NY
+ for linux-mtd@lists.infradead.org; Tue, 31 Dec 2019 19:27:25 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 78589240002;
- Tue, 31 Dec 2019 19:27:16 +0000 (UTC)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id EDCC0240008;
+ Tue, 31 Dec 2019 19:27:17 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [RFC PATCH 1/3] mtd: rawnand: Add the nand_chip->erase hook
-Date: Tue, 31 Dec 2019 20:26:54 +0100
-Message-Id: <20191231192656.16376-2-miquel.raynal@bootlin.com>
+Subject: [RFC PATCH 2/3] mtd: rawnand: Add the nand_chip->write_oob hook
+Date: Tue, 31 Dec 2019 20:26:55 +0100
+Message-Id: <20191231192656.16376-3-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191231192656.16376-1-miquel.raynal@bootlin.com>
 References: <20191231192656.16376-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20191231_112722_905325_51A60118 
-X-CRM114-Status: GOOD (  11.16  )
+X-CRM114-CacheID: sfid-20191231_112723_038970_F1193561 
+X-CRM114-Status: GOOD (  11.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,59 +79,78 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In order to solve an issue with Micron NANDs, we must be able to
-overload the erase operation. With this in mind, we create a ->erase
-hook in the nand_chip structure which points by default to the
-currently in use nand_erase_nand() helper.
+With the same approach as for the ->erase hook, in order to solve an
+issue with Micron NANDs, we must be able to overload the write
+operation. With this in mind, we create a ->write_oob hook in the
+nand_chip structure which points by default to the
+currently in use nand_write_oob() helper, renamed
+nand_write_oob_nand() for the parallel with the nand_erase_nand()
+one.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/nand_base.c | 6 +++++-
+ drivers/mtd/nand/raw/internals.h | 2 ++
+ drivers/mtd/nand/raw/nand_base.c | 8 ++++++++
  include/linux/mtd/rawnand.h      | 3 +++
- 2 files changed, 8 insertions(+), 1 deletion(-)
+ 3 files changed, 13 insertions(+)
 
+diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
+index cba6fe7dd8c4..55cf26e691ee 100644
+--- a/drivers/mtd/nand/raw/internals.h
++++ b/drivers/mtd/nand/raw/internals.h
+@@ -80,6 +80,8 @@ int nand_bbm_get_next_page(struct nand_chip *chip, int page);
+ int nand_markbad_bbm(struct nand_chip *chip, loff_t ofs);
+ int nand_erase_nand(struct nand_chip *chip, struct erase_info *instr,
+ 		    int allowbbt);
++int nand_write_oob_nand(struct nand_chip *chip, loff_t to,
++			struct mtd_oob_ops *ops);
+ int onfi_fill_data_interface(struct nand_chip *chip,
+ 			     enum nand_data_interface_type type,
+ 			     int timing_mode);
 diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index f64e3b6605c6..1b1d86391e9d 100644
+index 1b1d86391e9d..b0ed556d4d12 100644
 --- a/drivers/mtd/nand/raw/nand_base.c
 +++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -4153,7 +4153,9 @@ static int nand_write_oob(struct mtd_info *mtd, loff_t to,
-  */
- static int nand_erase(struct mtd_info *mtd, struct erase_info *instr)
+@@ -4116,6 +4116,13 @@ static int nand_write_oob(struct mtd_info *mtd, loff_t to,
+ 			  struct mtd_oob_ops *ops)
  {
--	return nand_erase_nand(mtd_to_nand(mtd), instr, 0);
-+	struct nand_chip *chip = mtd_to_nand(mtd);
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
 +
-+	return chip->erase(chip, instr, 0);
- }
++	return chip->write_oob(chip, to, ops);
++}
++
++int nand_write_oob_nand(struct nand_chip *chip, loff_t to,
++			struct mtd_oob_ops *ops)
++{
+ 	int ret;
  
- /**
-@@ -4373,6 +4375,8 @@ static void nand_set_defaults(struct nand_chip *chip)
- 
- 	if (!chip->buf_align)
+ 	ops->retlen = 0;
+@@ -4377,6 +4384,7 @@ static void nand_set_defaults(struct nand_chip *chip)
  		chip->buf_align = 1;
-+
-+	chip->erase = nand_erase_nand;
+ 
+ 	chip->erase = nand_erase_nand;
++	chip->write_oob = nand_write_oob_nand;
  }
  
  /* Sanitize ONFI strings so we can safely print them */
 diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 4ab9bccfcde0..aa956949b226 100644
+index aa956949b226..c6ca1e71341d 100644
 --- a/include/linux/mtd/rawnand.h
 +++ b/include/linux/mtd/rawnand.h
-@@ -1020,6 +1020,7 @@ struct nand_legacy {
-  *			avoid using them.
+@@ -1021,6 +1021,7 @@ struct nand_legacy {
   * @setup_read_retry:	[FLASHSPECIFIC] flash (vendor) specific function for
   *			setting the read-retry mode. Mostly needed for MLC NAND.
-+ * @erase:		Raw NAND erase operation.
+  * @erase:		Raw NAND erase operation.
++ * @write_oob:		Raw NAND write operation.
   * @ecc:		[BOARDSPECIFIC] ECC control structure
   * @buf_align:		minimum buffer alignment required by a platform
   * @oob_poi:		"poison value buffer," used for laying out OOB data
-@@ -1085,6 +1086,8 @@ struct nand_chip {
- 	struct nand_legacy legacy;
- 
+@@ -1088,6 +1089,8 @@ struct nand_chip {
  	int (*setup_read_retry)(struct nand_chip *chip, int retry_mode);
-+	int (*erase)(struct nand_chip *chip, struct erase_info *instr,
-+		     int allowbbt);
+ 	int (*erase)(struct nand_chip *chip, struct erase_info *instr,
+ 		     int allowbbt);
++	int (*write_oob)(struct nand_chip *chip, loff_t to,
++			 struct mtd_oob_ops *ops);
  
  	unsigned int options;
  	unsigned int bbt_options;
