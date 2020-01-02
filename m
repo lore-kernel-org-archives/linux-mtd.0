@@ -7,66 +7,64 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 286C7C2D0DC
-	for <linux-mtd@archiver.kernel.org>; Thu,  2 Jan 2020 13:09:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AC69C2D0DC
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 Jan 2020 13:09:10 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E45AF215A4
-	for <linux-mtd@archiver.kernel.org>; Thu,  2 Jan 2020 13:09:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2D97F215A4
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 Jan 2020 13:09:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="d6Jx2/Q4";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b="cGAW1xXm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E45AF215A4
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bRqD2hBR";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b="Qm9Wllhl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2D97F215A4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=geanix.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=p4egESLRZO0PuX+UXgLhJhwHjwVoyohVlZywPSxmkYg=; b=d6Jx2/Q4BlGT3p
-	o5A46SmHvViJhn9IeUiC1X39bTE1SOQYw1+Y3N/p7RtVrEsSKqkq1Vj56zocRvvKQTJ5KSZZ/p1ro
-	zylZ8qJnWLCXewLA1NBsqn9DKCaC55lIbS76KWQN2jhgS4QxngtYZkQEiE0jTDcZ1E2k8J8eEtsaJ
-	EC9+U4tL8f1DBpj4Qm86rAYp6FP2/Uh7N6nz8Ijuj3TvepX6DI02TADHzpRQFtGU1+2p7M7WkQktW
-	DYzFvYUjEOIKoqPOOwebNgWqZ3ndjBU8mgVNPXoOODToV+TmFYxdGBkblcurcY7eiObcOZeLLFJWd
-	1NLTIuYmWHBSXkZbkT5A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=WBaugc1Moa1mGbNV1JQfUhW1yJw4G/4dej4M4Cj19Vc=; b=bRqD2hBRr7To4q
+	GnibQmEPQYxaNlin0ricHXCQ9tAohrv3BFAw4VtfrN3bUD60zCMsBGNcKuXWlhuRWH6B01sOfr+oP
+	A4GJXrQfd1YSSyxFulTAzUHwhO1ScJe974V+zwcDWrQLCs6UgskPHmWkn40I6flWHRvJTKucB+9T/
+	5hjSeZpjovb3VPkr0cU+XcS6+daW5cBJtFf0VCRkL3DsMeFFt1JF+d92fFjOi4f/mNDtm4P99YyG/
+	1Clvd5Dq0MXkmQO0cl3CU5nmbXoWNbCX+zdLmpcS2ITeYePvcEJ4V06RyJdapFBEjnOekn/EJDfnO
+	k2OT2XaZAP3KBrL8NlLQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1in0DW-0007Y9-DO; Thu, 02 Jan 2020 13:08:46 +0000
+	id 1in0Dc-0007g1-HB; Thu, 02 Jan 2020 13:08:52 +0000
 Received: from first.geanix.com ([116.203.34.67])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1in0DR-0007XB-Fz
+ id 1in0DR-0007XA-R7
  for linux-mtd@lists.infradead.org; Thu, 02 Jan 2020 13:08:44 +0000
 Received: from localhost (87-49-44-45-mobile.dk.customer.tdc.net [87.49.44.45])
- by first.geanix.com (Postfix) with ESMTPSA id 4ADA4750;
- Thu,  2 Jan 2020 13:08:20 +0000 (UTC)
+ by first.geanix.com (Postfix) with ESMTPSA id 7F05670C;
+ Thu,  2 Jan 2020 13:08:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
- t=1577970500; bh=XfPm35eGN5+xpwS8KwBzEk1mrUoGTU4Ie/ppTaltq/I=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References;
- b=cGAW1xXmyB44612wv1DyxyIO6G5i65uJ+uWxZK6o95eFzlDizEOOuI2OUJdJpHM7g
- aAlCIysiEB4QoFbuH/IRv7REZJWdCzN/0gGe50L+4UE/b1no2lFV9oZCAFVrNeL6+J
- gGpjTy5UoSwkvBCiApQkM7Pbdq2VOc6FE2j0SlomWOaJTsWEH+ZH424QYfhTIV+8xw
- j5ZaPbnhFH8JABSwWXUMkaFprNKO1EOePtdtYBb+7ffJGQSCaX82cuS3d2ZVYMa+PB
- 6BmDIObq9M5VuShlYFoqDnlSLkwNfQKgnOE/i65qEs5R1KjqM1bbi8wjj7+ngMWA5h
- D+bN0XJ2o74Jw==
+ t=1577970498; bh=Dfa8ENalQ2mEXtcrK/dPpXS61QrbohOlp3rcs5GNL+Y=;
+ h=From:To:Cc:Subject:Date;
+ b=Qm9WllhlFFiSTBjIic+LmeZngoRAn9m4wdbvxPCdZzKIqdxuBINfPyY/zvNaI7o82
+ EDUpekEGwIwwa27HTRy1mGMGfPJCelPVqzxeYnqjroJAvDBHtenBjoHkcsPgqzuIHg
+ iQ6kiT1hN/SDUjmug6wPg/xPm/chypz923qABqaisyRbqU8VLlzXYDFPrno/waVdak
+ p5BaY0mKTehVruqU2iTkANuw1xG5lo4F1hF+xFUXmOP9nSrlQAo2txsp4ps2pyNV43
+ 4yyM9B/ZV/YMOPX05m5K9Enh5jlLL8nEfZEnKKGQH1wiiMECIjnpi8pgcU8FmlPZ2h
+ RDg2J3ZWKWpjw==
 From: Esben Haabendal <esben@geanix.com>
 To: linux-mtd@lists.infradead.org, Sascha Hauer <s.hauer@pengutronix.de>,
  Boris Brezillon <boris.brezillon@collabora.com>, Han Xu <han.xu@nxp.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [PATCH 2/2] mtd: rawnand: gpmi: Restore nfc timing setup after
- suspend/resume
-Date: Thu,  2 Jan 2020 14:08:26 +0100
-Message-Id: <20200102130826.170647-2-esben@geanix.com>
+Subject: [PATCH 1/2] mtd: rawnand: gpmi: Fix suspend/resume problem
+Date: Thu,  2 Jan 2020 14:08:25 +0100
+Message-Id: <20200102130826.170647-1-esben@geanix.com>
 X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200102130826.170647-1-esben@geanix.com>
-References: <20200102130826.170647-1-esben@geanix.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200102_050842_631286_9B81E39F 
-X-CRM114-Status: GOOD (  10.03  )
+X-CRM114-CacheID: sfid-20200102_050842_627809_A0EF26FC 
+X-CRM114-Status: UNSURE (   8.71  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,30 +82,43 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-As we reset the GPMI block at resume, the timing parameters setup by a
-previous exec_op is lost.  Rewriting GPMI timing registers on first exec_op
-after resume fixes the problem.
+On system resume, the gpmi clock must be enabled before accessing gpmi
+block.  Without this, resume causes something like
+
+[  661.348790] gpmi_reset_block(5cbb0f7e): module reset timeout
+[  661.348889] gpmi-nand 1806000.gpmi-nand: Error setting GPMI : -110
+[  661.348928] PM: dpm_run_callback(): platform_pm_resume+0x0/0x44 returns -110
+[  661.348961] PM: Device 1806000.gpmi-nand failed to resume: error -110
 
 Signed-off-by: Esben Haabendal <esben@geanix.com>
 ---
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-index 7ac8c8b95afc..fcc7325f2a10 100644
+index 334fe3130285..7ac8c8b95afc 100644
 --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
 +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-@@ -2728,6 +2728,10 @@ static int gpmi_pm_resume(struct device *dev)
- 		return ret;
- 	}
+@@ -148,6 +148,10 @@ static int gpmi_init(struct gpmi_nand_data *this)
+ 	struct resources *r = &this->resources;
+ 	int ret;
  
-+	/* Set flag to get timing setup restored for next exec_op */
-+	if (this->hw.clk_rate)
-+		this->hw.must_apply_timings = true;
++	ret = pm_runtime_get_sync(this->dev);
++	if (ret < 0)
++		return ret;
 +
- 	/* re-init the BCH registers */
- 	ret = bch_set_geometry(this);
- 	if (ret) {
+ 	ret = gpmi_reset_block(r->gpmi_regs, false);
+ 	if (ret)
+ 		goto err_out;
+@@ -181,6 +185,8 @@ static int gpmi_init(struct gpmi_nand_data *this)
+ 
+ 	return 0;
+ err_out:
++	pm_runtime_mark_last_busy(this->dev);
++	pm_runtime_put_autosuspend(this->dev);
+ 	return ret;
+ }
+ 
 -- 
 2.24.1
 
