@@ -2,80 +2,77 @@ Return-Path: <SRS0=PPpL=24=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A834C33C99
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jan 2020 08:45:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1FE2C33C99
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jan 2020 09:05:40 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E0A742051A
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jan 2020 08:45:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2015F20715
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jan 2020 09:05:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AGAQqtGu";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="W7Lwbh+2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E0A742051A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WNDRDGfw";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="tcN4ViOp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2015F20715
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=FA+hMIMyEO3LRamtBVUFYfYBwtnua5a0L/oFSPMVvZw=; b=AGAQqtGuEOHbZL
-	m1NQLaUWAeZw9q6fxkPtx1qJPElS0Y87kTSzbNykqUeXxUSVDvsrEqm3JtTnUKrOt++41m/04U1Z2
-	6ejPcfcrNsX6JjQ2Rp3Ci4kus3jZN3EuHeKSNM8j1DYbFz2wazpFMMyEYnU7P1Gx5DLX4jS8ReaVH
-	ctrfD8nEBHHbXx5CNMqrHJ4h95FF99+yEDeSrli4wRQtSbeZhvU6RHZgilJ6D8AoHf630d4OxW8HI
-	ZoCifpCvY9BemFpW2P10Af6pJ1kCdE8dCgR8LNhe3i3rmN4rrbzdlhJeHWcBvR5qkaQwzqJQ6e66p
-	vf2GBxvBpr9ISYNjZ7vQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=GsYetVUw39fI/wwJa2uuo8lcW94k3jh+rWLD4qbCOuk=; b=WNDRDGfw2mzfxf
+	r4vPFRXyjAjFRIa3ZMXMerLRTUrK8/7FkhJnIuElHOCtQTkpbEhkU0TbvazOSHeq4gRrH0OoZq5kT
+	pnWcOttxFJo1io28cUk/B/UMI9S7dxjuoXtMr71w+h61Z1Hee6adXxsiRlzX4MfkdS5LXDDI7WOnI
+	e4j/2WuXML1mxmdsXtHaDxKnyp9CQgEDO2yBeA9vSdidj9LfFFl43TezShxWj/JL1LnH8TdflOugP
+	a8qhca2QC7bYGqFevqgeceb8q9eYDGI2zSA9UnvfNzxGL6D5ZnRk6gIxl0/uGTbNG06QYgfqYvXkw
+	C/wA+rt19G4aSRi1VEAg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iokUh-0008V9-4J; Tue, 07 Jan 2020 08:45:43 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1ioknl-0007xC-FC; Tue, 07 Jan 2020 09:05:25 +0000
+Received: from merlin.infradead.org ([2001:8b0:10b:1231::1])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iokUd-0008UX-Ip
- for linux-mtd@lists.infradead.org; Tue, 07 Jan 2020 08:45:41 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0078jH0n008916;
- Tue, 7 Jan 2020 02:45:17 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1578386717;
- bh=8o27iEx4YNIvAK4xZuCbnoQRTobEbGheT+LgGTmiM+Q=;
- h=From:To:CC:Subject:Date;
- b=W7Lwbh+2iPu0Tdg4jKRSbG7Unncn2/S/BIzYV6HtNGgYLuZZgQkpksdETman36mPv
- JiB6Ulpzw8k+jMCtGi22tHXVLHBkz1FotfEybSP+lLfqOHAVYlrJ9XUfqxuU5DXrjb
- U2jO6zmuRPdcb0FYQbDtLOUZvDmBXFAsB1LxnA9Q=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0078jHOM063657
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 7 Jan 2020 02:45:17 -0600
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Tue, 7 Jan
- 2020 02:45:16 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Tue, 7 Jan 2020 02:45:16 -0600
-Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0078jEfT059940;
- Tue, 7 Jan 2020 02:45:14 -0600
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-To: <kyungmin.park@samsung.com>, <miquel.raynal@bootlin.com>,
- <aaro.koskinen@iki.fi>, <vigneshr@ti.com>, <hns@goldelico.com>
-Subject: [PATCH v2] mtd: onenand: omap2: Pass correct flags for prep_dma_memcpy
-Date: Tue, 7 Jan 2020 10:45:44 +0200
-Message-ID: <20200107084544.18547-1-peter.ujfalusi@ti.com>
-X-Mailer: git-send-email 2.24.1
+ id 1ioknj-0007x4-Vb
+ for linux-mtd@bombadil.infradead.org; Tue, 07 Jan 2020 09:05:23 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+ MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
+ :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+ Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+ List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=yipb7jD339S7dDG4wVC9EjzxTnOCqSZKCaOKWHvIpX0=; b=tcN4ViOp2QiJQFlCcCYHHvm2H1
+ rc20lEeWhCGFMVOz6mUqYDo+Ds0/ZY6nF/8cbVfI1Vx84Z7zPCQGDZSEcszwvTJjipwOJZIsYS6vn
+ 9FJeOfHFM3kGujnK5sHvDJ6glKjmbvEytsSpBhZG+jtAiOgzO0cH1rY5ZN89zLBwGc1pzJXSwdYUs
+ RvKq4FhIGnwZXmUdKhmbiyiGJA7Pi1eJOOF5YokW0THHHWeBcjAIPdsetBg35Nh9rntd3V0a7diY0
+ nKcxWMk5U8/dcQGgVNdC84/Lj3JDQq0jIDZgqusODUTwu5DGLyafI1olXu2FpYMq6lh5VfFYrO0Nl
+ Pwq2QHYw==;
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1ioknh-0004RM-6H
+ for linux-mtd@lists.infradead.org; Tue, 07 Jan 2020 09:05:22 +0000
+X-Originating-IP: 90.76.211.102
+Received: from xps13 (lfbn-tou-1-1151-102.w90-76.abo.wanadoo.fr
+ [90.76.211.102]) (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 16206FF80D;
+ Tue,  7 Jan 2020 09:04:39 +0000 (UTC)
+Date: Tue, 7 Jan 2020 10:04:39 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Olof Johansson <olof@lixom.net>
+Subject: Re: [PATCH v2] mtd: cadence: Fix cast to pointer from integer of
+ different size warning
+Message-ID: <20200107100439.23f86175@xps13>
+In-Reply-To: <CAOesGMjp8=uOwTnGwuMwTJMKVh915udgkhSb0joKMTcwWBEy-Q@mail.gmail.com>
+References: <20191216110947.6fb2423a@xps13>
+ <20191218095715.25585-1-gomonovych@gmail.com>
+ <CAOesGMjp8=uOwTnGwuMwTJMKVh915udgkhSb0joKMTcwWBEy-Q@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200107_004539_726878_5918A6CA 
-X-CRM114-Status: GOOD (  14.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,67 +84,28 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: tony@atomide.com, linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Vasyl Gomonovych <gomonovych@gmail.com>, Vignesh R <vigneshr@ti.com>,
+ Richard Weinberger <richard@nod.at>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, Piotr Sroka <piotrs@cadence.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The commit converting the driver to DMAengine was missing the flags for
-the memcpy prepare call.
-It went unnoticed since the omap-dma driver was ignoring them.
-
-Fixes: 3ed6a4d1de2c5 (" mtd: onenand: omap2: Convert to use dmaengine for memcp")
-Reported-by: Aaro Koskinen <aaro.koskinen@iki.fi>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Tested-by: H. Nikolaus Schaller <hns@goldelico.com>
-Tested-by: Aaro Koskinen <aaro.koskinen@iki.fi>
----
-Hi,
-
-Changes since v1:
-- Typo fixed in the commit message
-- Added the Tested-by from Aaro and Nikolaus
-
-Aaro reported [1] a failure on omap2-onenand pointing to
-4689d35c765c696bdf0535486a990038b242a26b. It looks like the root cause is the
-conversion of omap2-onenand to DMAengine which missed the flags.
-
-Basically the client is waiting for a callback without asking for it. This
-certainly causes timeout.
-
-I have not tested the patch, but it should fix the issue.
-
-[1] https://lore.kernel.org/lkml/20200103081726.GD15023@darkstar.musicnaut.iki.fi/
-
-Regards,
-Peter
-
- drivers/mtd/nand/onenand/omap2.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/onenand/omap2.c b/drivers/mtd/nand/onenand/omap2.c
-index edf94ee54ec7..71a632b815aa 100644
---- a/drivers/mtd/nand/onenand/omap2.c
-+++ b/drivers/mtd/nand/onenand/omap2.c
-@@ -328,7 +328,8 @@ static inline int omap2_onenand_dma_transfer(struct omap2_onenand *c,
- 	struct dma_async_tx_descriptor *tx;
- 	dma_cookie_t cookie;
- 
--	tx = dmaengine_prep_dma_memcpy(c->dma_chan, dst, src, count, 0);
-+	tx = dmaengine_prep_dma_memcpy(c->dma_chan, dst, src, count,
-+				       DMA_CTRL_ACK | DMA_PREP_INTERRUPT);
- 	if (!tx) {
- 		dev_err(&c->pdev->dev, "Failed to prepare DMA memcpy\n");
- 		return -EIO;
--- 
-Peter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgT2xvZiwKCk9sb2YgSm9oYW5zc29uIDxvbG9mQGxpeG9tLm5ldD4gd3JvdGUgb24gTW9uLCA2
+IEphbiAyMDIwIDEzOjE4OjE3IC0wODAwOgoKPiBNaXF1ZWwsIHRoaXMgd2FybmluZyBpcyBzdGls
+bCB0aGVyZSBib3RoIGluIG1haW5saW5lIGFuZCBsaW51eC1uZXh0Lgo+IAo+IENhbiB5b3UgcGxl
+YXNlIGFwcGx5IGl0IGFuZCBnZXQgaXQgc2VudCBpbiBzbyB3ZSBjYW4ga2VlcCB0aGUgdHJlZQo+
+IGJ1aWxkaW5nIGNsZWFuaW5nIGFuZCBzcG90IHdhcm5pbmdzIHdpdGhvdXQgdGhlIG5vaXNlPyBU
+aGFua3MhCj4gCj4gT24gV2VkLCBEZWMgMTgsIDIwMTkgYXQgMTo1NyBBTSBWYXN5bCBHb21vbm92
+eWNoIDxnb21vbm92eWNoQGdtYWlsLmNvbT4gd3JvdGU6Cj4gPgo+ID4gVXNlIGRtYV9hZGRyX3Qg
+dHlwZSB0byBwYXNzIG1lbW9yeSBhZGRyZXNzIGFuZCBjb250cm9sIGRhdGEgaW4KPiA+IERNQSBk
+ZXNjcmlwdG9yIGZpZWxkcyBtZW1vcnlfcG9pbnRlciBhbmQgY3RybF9kYXRhX3B0cgo+ID4gVG8g
+Zml4IHdhcm5pbmc6IGNhc3QgdG8gcG9pbnRlciBmcm9tIGludGVnZXIgb2YgZGlmZmVyZW50IHNp
+emUKPiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBWYXN5bCBHb21vbm92eWNoIDxnb21vbm92eWNoQGdt
+YWlsLmNvbT4gIAo+IAo+IEFja2VkLWJ5OiBPbG9mIEpvaGFuc3NvbiA8b2xvZkBsaXhvbS5uZXQ+
+Cj4gCgpTb3JyeSwgSSBhbSBsYXRlLiBJJ2xsIHNlbmQgYSBmaXhlcyBQUiB0aGlzIHdlZWsuCgpU
+aGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
