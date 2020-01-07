@@ -2,81 +2,74 @@ Return-Path: <SRS0=PPpL=24=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96EA7C33C9B
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jan 2020 19:31:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EFC4C282DD
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jan 2020 21:25:48 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5F982206DB
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jan 2020 19:31:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D26C52075A
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jan 2020 21:25:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dkjyzvW4";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c6vp9J20"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F982206DB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uADg1LTr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D26C52075A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kTpPDuVG3XPSOLjJAPNuuNodq98Dk2A13wqNc5Z7aRA=; b=dkjyzvW4UgMO5d
-	2eqJ8dY0nHVXRNKty862jvCnr3tnq+QCXntvtOGmAITi3jfHtRA1VSVpTjpts8j31ARk2LA4CKaC/
-	3tU0zlOAyppgo2R2Kp4iRnc3GtUBl6uajofa9/Ga9LurxK+GDZRq1HfAg7f0j8GUREydNFCBqRZl6
-	OTBjx7ffcoOFH8J7wREI2rHvVOTtSi1oCAGbHt+AePDpULWlQjFKH1yEP/DVDJJ5fRgj4rya/tSML
-	TKKY1OqQWWw6IF+/luPtLpjwa0+EpvMcdvtBuezy8qRbMasYTXeOP+0MJLdpowmt7ix/Um80hFQlj
-	+hOlyXL9XLdnigxENCIQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=NfiGQLMZVt1qaq2ra7j8wYyLtzOkcUO/fK9cKFp7g28=; b=uADg1LTr9dqTEB
+	eWxTOsIHE348nV3GahP2e0dxb+WHZZZHLgo/f26lklhW84Dl8NoHADSK5Ia7IFNgT8Rzl5qZvFgZ3
+	3Mpfrjk/QWFVTZoQ/LsED70lxL11oROFTvWNXY1ypk1fUpZpZepFwn+peSiwSQ8D5NBCycfXoWRF+
+	3FDX7ZgaCyyofAPNUidfQDnlpUH0Q46g2AuHoCgjzlIe691rFyGI4cI9+EOsFDALcIXfBOBo413Ej
+	vqA4AWJwBY6p9EZrdzkxniSvpZfE7rOtKGUd9c9xNeklKZG+4fNzMSxT3oksR2BRbSt31fiYIQCu6
+	x2c3KjXut1Y00woAWluA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iouZq-0002e3-7L; Tue, 07 Jan 2020 19:31:42 +0000
-Received: from mail-il1-x144.google.com ([2607:f8b0:4864:20::144])
+	id 1iowM2-0006Ll-FP; Tue, 07 Jan 2020 21:25:34 +0000
+Received: from mout.kundenserver.de ([212.227.126.130])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iouZn-0002di-ML
- for linux-mtd@lists.infradead.org; Tue, 07 Jan 2020 19:31:41 +0000
-Received: by mail-il1-x144.google.com with SMTP id t2so563707ilq.9
- for <linux-mtd@lists.infradead.org>; Tue, 07 Jan 2020 11:31:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=PDeHYwcMj26udJGnPyH//IEVTc2ptJtpLMJq2njPdtQ=;
- b=c6vp9J20U4kYvyl4b8b7xy9/deyTcXXWHujzhQ96f0m0pYIE8VWpky02DhWa8tJEER
- YBccX0OvgJQ0O7U+IiW33zmlVykrkpf6S6Ur/K5Bd6NDIkAyB2qpR/xGMpS78/bGPwv1
- q6tD1jTLNP19RNT73KZgbzhfLIi44+p3fxx3rDaiYSnDoKej1fJ9n+rD9qwkcCYay7Q8
- 3avkE3Xu8EUI56w8ix3GQLYkT0HvbaoZ2U04I6b/FkZ0Sn/eFcvT/SYSO7dbKgfwAJ3e
- b2BcZVNOWZUtN6Ns1ZUOujemeuYRZBO076TY2Wu0JLizB7949sv+/j//pau3Ys6cODV1
- Hweg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=PDeHYwcMj26udJGnPyH//IEVTc2ptJtpLMJq2njPdtQ=;
- b=q4YdkTEMB+gMr9CIi3QrEpEV4c+zdwmIvekC4P+nLdtUIq7bPPtiEnPZuinJeXopP7
- qDjU2VKM86a4e/uKOlkfGy/+OJ8ntfTZ/RnRyYkB0q8fQW9DsVd83TCAkC2hGMtrSmW9
- p+YLJ7Aou+OQyHHIfQZKgnKszxrIiqy6yohs7GhlUw26eMt7l6ZoaoC6aBsDCm+Xbror
- VwAwXhZqBOK0yicj1jVezkuVVTe1NoB+mugCIAZP86ehDoo3ahI70ZrSYzS0hvT0z6IZ
- JruJFUxXMPTL8hhbWSAKXJRXFRZU946Vx3d/97S5HLfMVMt+vEepiJ7TpZi1XHoqvNwF
- LDWw==
-X-Gm-Message-State: APjAAAWwrY3FjKeeD3R3YvwozUrNvArgBpsk2nRSDg/9OyFzG65lJU2c
- weuxKQ/hjOswmnaJbyiN0roRBJvJ3MRWeDByue8=
-X-Google-Smtp-Source: APXvYqwwpdft0uwddR654fxlpykUDmqY3GAmy+9mXwDRdzdwJMHLyjT5p5HDn53V7hG/Gp6PKeYuJmt3v5GAwueHciA=
-X-Received: by 2002:a92:d7c6:: with SMTP id g6mr639959ilq.282.1578425498736;
- Tue, 07 Jan 2020 11:31:38 -0800 (PST)
+ id 1iowLz-0006Kh-DM
+ for linux-mtd@lists.infradead.org; Tue, 07 Jan 2020 21:25:32 +0000
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue011 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1MYedH-1jBdkj2AHz-00Vh2O; Tue, 07 Jan 2020 22:25:10 +0100
+From: Arnd Bergmann <arnd@arndb.de>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [PATCH] mtd: sm_ftl: fix NULL pointer warning
+Date: Tue,  7 Jan 2020 22:24:52 +0100
+Message-Id: <20200107212509.4004137-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.20.0
 MIME-Version: 1.0
-References: <20200102130826.170647-1-esben@geanix.com>
-In-Reply-To: <20200102130826.170647-1-esben@geanix.com>
-From: Han Xu <xhnjupt@gmail.com>
-Date: Tue, 7 Jan 2020 13:31:27 -0600
-Message-ID: <CA+EcR21F1u4dX6NEO9Zfur=ZA7btr51EthZurEjzPHSuWu-0PQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mtd: rawnand: gpmi: Fix suspend/resume problem
-To: Esben Haabendal <esben@geanix.com>
+X-Provags-ID: V03:K1:ncIFui4ErDAl4vN/oGEZXMNgEj4j+k+9hJ4pY48nu5RbLc25IKy
+ wvT+1dVpVSXAjxr8JMNEH6BWU5nmzh0RpjqzFua0sIzGAqz6fYLPTHVL9cy70ikbrSVcjVS
+ 5ifk2tLrlvqrjRbvrxX+6Li7G68QFpqz3mBI7ar3+fzpkJgnJB3GeyN8ryWzz59jxNB3CQA
+ JD2S+j3ILJZXPHyrGrhqg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:K+zk6N/AoxE=:gW0Osoe5f1+X5N4GWTz8yH
+ w09mbUEW7a5i6/6NjJMJXCa3EaTI4K+XKu60VSsNh3oCxpvYc5dJItw4A8U2/7wlRMJolwvq8
+ Sx3lwS/7mYRyca1pMXr+uTcxrv95i4po1Gl4qEsdSVy5GLG+zE+JsZEtIwhYcIGzvOE6iAk7F
+ CFEQlXNoSsBmTl5TNyVZxi5ezNux8js1DQ5kCXW1QZPTjjrXUg+yZr5bTA9RkP2/UwhH4oWuC
+ lNeoYSyqvSi9t2h8Ry/YIJlccaM1SoRjOWZmAFOBpJTvF956eLJx+giGcTt5pltxzKmzuUtJ5
+ LWvm0k4eC6+5bQ08yQLBisDHsavX8aeI3z/N0ZHehgDxIlfvba3YnA2pQY4K+70UBxJbRO5BG
+ GNHkur5QivKFDnuXo18fT8SpSAG3DbUblO3fp1/XLBP6nlvJLHW0gaN+ThkdFJG1KBTNkLky8
+ M4P1QWVLqAIcKFN6qzUXnr+R57zNY35+ljt/n9WSpFqR1Q1FkFo9XK7thUoEvpOzkOouYQP5s
+ VDitBCjgwQ3ipLT8/CpG6WpWrps/mn0TJPP8wW/wr0uvD6/ODlh4Zhj1/ZEbYn/1FN8R9RT/Q
+ WPIhTMJ5wGle5WysYqUEm86bxoAY5ZpnQ36ObV930La/Y5Q92keUnr+9i7dlYCWAjNgctD0mx
+ 5a5lB5+BhjHFAE5JfoBUuj14CvXWphSOEX2lej0HRD9Wd8h4aw26i+IkdxRhuERYNm5UamKRh
+ nLFMu2zHexaw77cpJAm1xuo15mZxG502vpIbapME1JyHcku4fnkIHIIbPvQffE5eMv9X/p3EZ
+ oSNfpG3/DNr74QuMpnFvFXO2c7hbxRWbiBzhGI1agyoi3bfEUBD+IhnNY3AltaaXpdfA7/Cia
+ DTWUY+bxhNAo7K10gfww==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200107_113139_729483_B4B9FE93 
-X-CRM114-Status: GOOD (  15.43  )
+X-CRM114-CacheID: sfid-20200107_132531_746450_F3618652 
+X-CRM114-Status: GOOD (  12.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,72 +81,50 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- Sascha Hauer <s.hauer@pengutronix.de>, sean@geanix.com, martin@geanix.com,
- Boris Brezillon <boris.brezillon@collabora.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Han Xu <han.xu@nxp.com>
+Cc: Oleksandr Natalenko <oleksandr@redhat.com>, Wenwen Wang <wenwen@cs.uga.edu>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Arnd Bergmann <arnd@arndb.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jan 2, 2020 at 7:09 AM Esben Haabendal <esben@geanix.com> wrote:
->
-> On system resume, the gpmi clock must be enabled before accessing gpmi
-> block.  Without this, resume causes something like
->
-> [  661.348790] gpmi_reset_block(5cbb0f7e): module reset timeout
-> [  661.348889] gpmi-nand 1806000.gpmi-nand: Error setting GPMI : -110
-> [  661.348928] PM: dpm_run_callback(): platform_pm_resume+0x0/0x44 returns -110
-> [  661.348961] PM: Device 1806000.gpmi-nand failed to resume: error -110
->
-> Signed-off-by: Esben Haabendal <esben@geanix.com>
-> ---
->  drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-> index 334fe3130285..7ac8c8b95afc 100644
-> --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-> @@ -148,6 +148,10 @@ static int gpmi_init(struct gpmi_nand_data *this)
->         struct resources *r = &this->resources;
->         int ret;
->
-> +       ret = pm_runtime_get_sync(this->dev);
-> +       if (ret < 0)
-> +               return ret;
-> +
->         ret = gpmi_reset_block(r->gpmi_regs, false);
->         if (ret)
->                 goto err_out;
-> @@ -181,6 +185,8 @@ static int gpmi_init(struct gpmi_nand_data *this)
->
->         return 0;
->  err_out:
-> +       pm_runtime_mark_last_busy(this->dev);
-> +       pm_runtime_put_autosuspend(this->dev);
->         return ret;
->  }
+With gcc -O3, we get a new warning:
 
-I have a similar patch with more fixes, will send out tonight for review.
+In file included from arch/arm64/include/asm/processor.h:28,
+                 from drivers/mtd/sm_ftl.c:8:
+In function 'memset',
+    inlined from 'sm_read_sector.constprop' at drivers/mtd/sm_ftl.c:250:3:
+include/linux/string.h:411:9: error: argument 1 null where non-null expected [-Werror=nonnull]
+  return __builtin_memset(p, c, size);
 
->
-> --
-> 2.24.1
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+From all I can tell, this cannot happen (the function is called
+either with a NULL buffer or with a -1 block number but not both),
+but adding a check makes it more robust and avoids the warning.
 
+Fixes: mmtom ("init/Kconfig: enable -O3 for all arches")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/mtd/sm_ftl.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-
+diff --git a/drivers/mtd/sm_ftl.c b/drivers/mtd/sm_ftl.c
+index 4744bf94ad9a..b9f272408c4d 100644
+--- a/drivers/mtd/sm_ftl.c
++++ b/drivers/mtd/sm_ftl.c
+@@ -247,7 +247,8 @@ static int sm_read_sector(struct sm_ftl *ftl,
+ 
+ 	/* FTL can contain -1 entries that are by default filled with bits */
+ 	if (block == -1) {
+-		memset(buffer, 0xFF, SM_SECTOR_SIZE);
++		if (buffer)
++			memset(buffer, 0xFF, SM_SECTOR_SIZE);
+ 		return 0;
+ 	}
+ 
 -- 
-Sincerely,
+2.20.0
 
-Han XU
 
 ______________________________________________________
 Linux MTD discussion mailing list
