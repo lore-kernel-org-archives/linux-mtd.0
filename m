@@ -7,69 +7,83 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EFC4C282DD
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jan 2020 21:25:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46BD5C282DD
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jan 2020 22:23:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D26C52075A
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jan 2020 21:25:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 13918206DB
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jan 2020 22:23:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uADg1LTr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D26C52075A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IoYHFT72";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=walle.cc header.i=@walle.cc header.b="Bj4iEpxi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 13918206DB
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=NfiGQLMZVt1qaq2ra7j8wYyLtzOkcUO/fK9cKFp7g28=; b=uADg1LTr9dqTEB
-	eWxTOsIHE348nV3GahP2e0dxb+WHZZZHLgo/f26lklhW84Dl8NoHADSK5Ia7IFNgT8Rzl5qZvFgZ3
-	3Mpfrjk/QWFVTZoQ/LsED70lxL11oROFTvWNXY1ypk1fUpZpZepFwn+peSiwSQ8D5NBCycfXoWRF+
-	3FDX7ZgaCyyofAPNUidfQDnlpUH0Q46g2AuHoCgjzlIe691rFyGI4cI9+EOsFDALcIXfBOBo413Ej
-	vqA4AWJwBY6p9EZrdzkxniSvpZfE7rOtKGUd9c9xNeklKZG+4fNzMSxT3oksR2BRbSt31fiYIQCu6
-	x2c3KjXut1Y00woAWluA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Hc4Zr839TEAbN/rnz4O8iWqDPXS/yq+f/Iwy2rg7o30=; b=IoYHFT72bTMjvf
+	5EdPTDf6Yv5hnXoAVIVVrC8VxyqFY/hGvlLyPeP60PO5xRSxKvuesEJs1Qx7tcvN8BGt2KDcA3MNN
+	BL8QGBhhohDkJOKvFFsr8cpwZA7+nfvX2tKz4ZzXKeN8oKH/adS7cGgT5Z3wXEmUsXCYf+3lxTogC
+	t3AKELcMIUgcMmWEwwGSQiggxEvkIIVq51+rx14xqCDOuJ72w/sGYtHbnuB2HZvSGc6GHTly8BeC9
+	SLdFVe8ouYHJ9YVsOmihsyFnn3UJ6eGY/cO6Ougi8bhPOkx9pH3Anx7YJUfyF1TP+lTBKFOvM3QbH
+	8Xq8Zj1P2e9m0QNMEp5g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iowM2-0006Ll-FP; Tue, 07 Jan 2020 21:25:34 +0000
-Received: from mout.kundenserver.de ([212.227.126.130])
+	id 1ioxGD-0003lM-L0; Tue, 07 Jan 2020 22:23:37 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iowLz-0006Kh-DM
- for linux-mtd@lists.infradead.org; Tue, 07 Jan 2020 21:25:32 +0000
-Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
- (mreue011 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1MYedH-1jBdkj2AHz-00Vh2O; Tue, 07 Jan 2020 22:25:10 +0100
-From: Arnd Bergmann <arnd@arndb.de>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [PATCH] mtd: sm_ftl: fix NULL pointer warning
-Date: Tue,  7 Jan 2020 22:24:52 +0100
-Message-Id: <20200107212509.4004137-1-arnd@arndb.de>
-X-Mailer: git-send-email 2.20.0
+ id 1ioxG8-0003jt-VW
+ for linux-mtd@lists.infradead.org; Tue, 07 Jan 2020 22:23:35 +0000
+Received: from apollo.fritz.box (unknown
+ [IPv6:2a02:810c:c200:2e91:6257:18ff:fec4:ca34])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
+ SHA256) (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id B6FBF23E29;
+ Tue,  7 Jan 2020 23:23:24 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1578435804;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=ycC4l96HeCSX2Wgr4BM6xzAWC3OL6kgNnAF7SFpEJxI=;
+ b=Bj4iEpxiffWzIm18jzTYuSKjpQYic1qaWT4ZnYIMM0Gau4xn8wCSzOEhW+puQza17FqiDI
+ r/u/sbOYgjmX6cWNOH4nEez0f+uTK6pr0NsWNIFe7vS3QfteBHMtRZrByVyZ13Cno6x3D6
+ VjKlplRBoOoDEQKENZO56y9+zBFijiE=
+From: Michael Walle <michael@walle.cc>
+To: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] mtd: spi-nor: fix locking argument in spi_nor_is_locked()
+Date: Tue,  7 Jan 2020 23:23:17 +0100
+Message-Id: <20200107222317.3527-2-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200107222317.3527-1-michael@walle.cc>
+References: <20200107222317.3527-1-michael@walle.cc>
 MIME-Version: 1.0
-X-Provags-ID: V03:K1:ncIFui4ErDAl4vN/oGEZXMNgEj4j+k+9hJ4pY48nu5RbLc25IKy
- wvT+1dVpVSXAjxr8JMNEH6BWU5nmzh0RpjqzFua0sIzGAqz6fYLPTHVL9cy70ikbrSVcjVS
- 5ifk2tLrlvqrjRbvrxX+6Li7G68QFpqz3mBI7ar3+fzpkJgnJB3GeyN8ryWzz59jxNB3CQA
- JD2S+j3ILJZXPHyrGrhqg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:K+zk6N/AoxE=:gW0Osoe5f1+X5N4GWTz8yH
- w09mbUEW7a5i6/6NjJMJXCa3EaTI4K+XKu60VSsNh3oCxpvYc5dJItw4A8U2/7wlRMJolwvq8
- Sx3lwS/7mYRyca1pMXr+uTcxrv95i4po1Gl4qEsdSVy5GLG+zE+JsZEtIwhYcIGzvOE6iAk7F
- CFEQlXNoSsBmTl5TNyVZxi5ezNux8js1DQ5kCXW1QZPTjjrXUg+yZr5bTA9RkP2/UwhH4oWuC
- lNeoYSyqvSi9t2h8Ry/YIJlccaM1SoRjOWZmAFOBpJTvF956eLJx+giGcTt5pltxzKmzuUtJ5
- LWvm0k4eC6+5bQ08yQLBisDHsavX8aeI3z/N0ZHehgDxIlfvba3YnA2pQY4K+70UBxJbRO5BG
- GNHkur5QivKFDnuXo18fT8SpSAG3DbUblO3fp1/XLBP6nlvJLHW0gaN+ThkdFJG1KBTNkLky8
- M4P1QWVLqAIcKFN6qzUXnr+R57zNY35+ljt/n9WSpFqR1Q1FkFo9XK7thUoEvpOzkOouYQP5s
- VDitBCjgwQ3ipLT8/CpG6WpWrps/mn0TJPP8wW/wr0uvD6/ODlh4Zhj1/ZEbYn/1FN8R9RT/Q
- WPIhTMJ5wGle5WysYqUEm86bxoAY5ZpnQ36ObV930La/Y5Q92keUnr+9i7dlYCWAjNgctD0mx
- 5a5lB5+BhjHFAE5JfoBUuj14CvXWphSOEX2lej0HRD9Wd8h4aw26i+IkdxRhuERYNm5UamKRh
- nLFMu2zHexaw77cpJAm1xuo15mZxG502vpIbapME1JyHcku4fnkIHIIbPvQffE5eMv9X/p3EZ
- oSNfpG3/DNr74QuMpnFvFXO2c7hbxRWbiBzhGI1agyoi3bfEUBD+IhnNY3AltaaXpdfA7/Cia
- DTWUY+bxhNAo7K10gfww==
+X-Spamd-Bar: ++++
+X-Rspamd-Server: web
+X-Rspamd-Queue-Id: B6FBF23E29
+X-Spamd-Result: default: False [4.90 / 15.00]; ARC_NA(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ R_MISSING_CHARSET(2.50)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ MIME_GOOD(-0.10)[text/plain];
+ FREEMAIL_ENVRCPT(0.00)[gmail.com]; BROKEN_CONTENT_TYPE(1.50)[];
+ DKIM_SIGNED(0.00)[]; RCPT_COUNT_SEVEN(0.00)[8];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM(-0.00)[-0.120];
+ RCVD_COUNT_ZERO(0.00)[0]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+];
+ ASN(0.00)[asn:31334, ipnet:2a02:810c::/31, country:DE];
+ FREEMAIL_CC(0.00)[microchip.com, bootlin.com, nod.at, ti.com, gmail.com,
+ walle.cc]
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200107_132531_746450_F3618652 
-X-CRM114-Status: GOOD (  12.43  )
+X-CRM114-CacheID: sfid-20200107_142333_166074_3525DE4C 
+X-CRM114-Status: GOOD (  11.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,49 +95,60 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Oleksandr Natalenko <oleksandr@redhat.com>, Wenwen Wang <wenwen@cs.uga.edu>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Arnd Bergmann <arnd@arndb.de>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Richard Weinberger <richard@nod.at>, Michael Walle <michael@walle.cc>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-With gcc -O3, we get a new warning:
+The second argument represents the operation which takes the lock. Add a
+new SPI_NOR_OPS_IS_LOCKED and use it.
 
-In file included from arch/arm64/include/asm/processor.h:28,
-                 from drivers/mtd/sm_ftl.c:8:
-In function 'memset',
-    inlined from 'sm_read_sector.constprop' at drivers/mtd/sm_ftl.c:250:3:
-include/linux/string.h:411:9: error: argument 1 null where non-null expected [-Werror=nonnull]
-  return __builtin_memset(p, c, size);
-
-From all I can tell, this cannot happen (the function is called
-either with a NULL buffer or with a -1 block number but not both),
-but adding a check makes it more robust and avoids the warning.
-
-Fixes: mmtom ("init/Kconfig: enable -O3 for all arches")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: 5bf0e69b67a5 ("mtd: spi-nor: add mtd_is_locked() support")
+Signed-off-by: Michael Walle <michael@walle.cc>
 ---
- drivers/mtd/sm_ftl.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/mtd/spi-nor/spi-nor.c | 4 ++--
+ include/linux/mtd/spi-nor.h   | 1 +
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/sm_ftl.c b/drivers/mtd/sm_ftl.c
-index 4744bf94ad9a..b9f272408c4d 100644
---- a/drivers/mtd/sm_ftl.c
-+++ b/drivers/mtd/sm_ftl.c
-@@ -247,7 +247,8 @@ static int sm_read_sector(struct sm_ftl *ftl,
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 5cc4c0b331b3..d422aead9f36 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -2071,13 +2071,13 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+ 	int ret;
  
- 	/* FTL can contain -1 entries that are by default filled with bits */
- 	if (block == -1) {
--		memset(buffer, 0xFF, SM_SECTOR_SIZE);
-+		if (buffer)
-+			memset(buffer, 0xFF, SM_SECTOR_SIZE);
- 		return 0;
- 	}
+-	ret = spi_nor_lock_and_prep(nor, SPI_NOR_OPS_UNLOCK);
++	ret = spi_nor_lock_and_prep(nor, SPI_NOR_OPS_IS_LOCKED);
+ 	if (ret)
+ 		return ret;
  
+ 	ret = nor->params.locking_ops->is_locked(nor, ofs, len);
+ 
+-	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_LOCK);
++	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_IS_LOCKED);
+ 	return ret;
+ }
+ 
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index b661fd948a25..a8fcb1d70510 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -235,6 +235,7 @@ enum spi_nor_ops {
+ 	SPI_NOR_OPS_ERASE,
+ 	SPI_NOR_OPS_LOCK,
+ 	SPI_NOR_OPS_UNLOCK,
++	SPI_NOR_OPS_IS_LOCKED,
+ };
+ 
+ enum spi_nor_option_flags {
 -- 
-2.20.0
+2.20.1
 
 
 ______________________________________________________
