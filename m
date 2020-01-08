@@ -2,85 +2,81 @@ Return-Path: <SRS0=0ZJr=25=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 108FEC282DD
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jan 2020 22:44:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54E7EC282DD
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jan 2020 23:24:40 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D6A292053B
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jan 2020 22:44:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1F4472053B
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jan 2020 23:24:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QiCY8Ow/";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dxzcHW6v"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D6A292053B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Rad/U1LF";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=walle.cc header.i=@walle.cc header.b="oa6jOc88"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1F4472053B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZstttYrEBRYl7PUhW/zNBQ8bWDluN4j7e2XCpJroB5s=; b=QiCY8Ow/f7zoBj
-	PnvU07L3IlfOteSLS77kCGBoz2gXRqWwKIjdbsTa2jHhfdVpO0nFn9LhuSVA6imCMV9cDWSe7zn8z
-	6AeJGsW38wQJiGtuibxvEQGB+hZM+j28UWONqhEPiO7neTBCAflVI0yBjggU6BSJ0iMYzaaYfvM+v
-	pFUPv2KpgXFt5zS9+foTFDkO3+jaAtkcazveekDFceESiyzL4CkWzwKH6l/cysvYy32/P//b2221n
-	lShjXifwNK/hABsZO9ONMZii+ul2C6qf2XayWHsLVjLO/B+ucjWlX6M8LmgYadm5ZvHyaGgSxGR/x
-	HjKTA9QKVa1GEeonb50Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=uWaiIVOLwa0j58RCRCKzRa9MHKXUq8JK514HyGOeZ+g=; b=Rad/U1LFDgQ9UX
+	iwaLz7py45Z7XbPLNfZCwBFYgutVTcLjogMlnWD9xbjhl4p0JVLUqsN7pQmbsyW9QCtKDTPKDD0pW
+	iSlDkh9ptWTU+ER2VNM70KMTtZBdZcd3aLWpO0ekLScnJT2wLdK2lFaheQR45q5RPMHjKhM1ZY9q/
+	KaKWaM7QcjBRn+xddM0W19RNOPjJ17j9rSwmP0YFd1fxAg0RjxFYxCDIkW4+DSVxuLFsJhXdWQBGs
+	8ZIQoXvkhm1bomqNZSOAZnddS3NdwAZKTO2h44+P7CGeOx/9I8dgACuCiuARtBC6cFUHCdhEGRNn9
+	dw0LWUsxL+c4EQfhNfbw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ipK3V-0006Eb-M0; Wed, 08 Jan 2020 22:44:01 +0000
-Received: from mail-wm1-x343.google.com ([2a00:1450:4864:20::343])
+	id 1ipKgY-0005nR-EG; Wed, 08 Jan 2020 23:24:22 +0000
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ipK3S-0006DY-Dg
- for linux-mtd@lists.infradead.org; Wed, 08 Jan 2020 22:43:59 +0000
-Received: by mail-wm1-x343.google.com with SMTP id b19so707029wmj.4
- for <linux-mtd@lists.infradead.org>; Wed, 08 Jan 2020 14:43:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=UWWZMqPdrpyLM4PNNhJEbDf2OARkgPYBiWJgc0QHlYM=;
- b=dxzcHW6vBEVtIMKz7w6Rq/2EZ7/9WYR4LnbuTZhnSlBG6qiQWEgnncI+US+L0uNiry
- v+LUH4n0j9OpZ6FIaBOusMzf/coHGLczPogtTAK1A/cD9TwKMSZqMLul3oD83Fmgf/Pr
- Kocq+wkGafcAXC/4mdi1kcnnUPqVV/a0UA7VZbUgBakCxMKnK69NKuJBZdhmWCe9gKTK
- sCzOQAZwXDttePRFLgqtYQlhXA0u0VbognfEgIz0RfOYTNw7mQ3CSId5HGEz+AAO90FL
- 9QSgTkEHltlAv7FBF1jLlIkRebXNKBlodTj+aYe3+AaBhyem8eX7IlnOXQDAZu1PB/co
- By1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=UWWZMqPdrpyLM4PNNhJEbDf2OARkgPYBiWJgc0QHlYM=;
- b=kUexCF6WvvVhXWeQmO8dUXBfgLiSgOyxBwvXAQg7+ol7EhWyOu2KNk7Lv+R9XqQ7WP
- ga3ysBfR03DWtys539q/gmkRc6NUp+B72qGRXzy9EpXxEBVW2j6JtGpoB7EY35pd4ric
- iSqK5tYA55+mYy098Hm9fMG/J+A5wMAoHLYxYpS9vs1bMV2seWnc/l1pzih/cyn+8FDw
- 4Ex8B+tvYL0d7vj9ZUYwjNICduGIKRyW9CD9HdkBMxUg/j89H5rUiUdKhUqwQN+8D15u
- 4DDXa1b6OIKQJWpOAnr0JK0G4nV8nAf0axVTcWk5Oe59dXHun02SSXZCWP0N6WixjhAK
- 6foQ==
-X-Gm-Message-State: APjAAAVIWwTKeAsMWoUCFK5IYZ8uR1gffYZOgi+10LLpwojtPsOOaHVQ
- K/5T3SCrbOnzx6WW8+wf1IbBR3vanYogzbT+Loc5eg==
-X-Google-Smtp-Source: APXvYqyum7X1NjaMw//Cv9KuPI9DU6oxZ/T2dzD1WKak+E1BQ+o6OZ+VovchbVcu0Gl9WY0dXjhnNvKiDO4TsHzzEI4=
-X-Received: by 2002:a1c:184:: with SMTP id 126mr914459wmb.127.1578523436957;
- Wed, 08 Jan 2020 14:43:56 -0800 (PST)
+ id 1ipKgU-0005mq-TQ
+ for linux-mtd@lists.infradead.org; Wed, 08 Jan 2020 23:24:21 +0000
+Received: from apollo.fritz.box (unknown
+ [IPv6:2a02:810c:c200:2e91:6257:18ff:fec4:ca34])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
+ SHA256) (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id EF2A523D09;
+ Thu,  9 Jan 2020 00:24:09 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1578525850;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=g/FY8GZCPjERjMMlYTQ+Rg/b1/hidQXhPXGYsOQUAL8=;
+ b=oa6jOc88Wd34O+B9/2IzjZ17YVK73pBXPqCD2QNbuyxAP6QTa+jJbtWYD88mM2qI4nZVKp
+ iednltBeirly4G8fkSnijLD5hvOJ6YFYGrQ7Gm9C9gpernWIG7o9gDD/uW/yxBKsxqQt0w
+ JydqzrsZU3kLZrJMcOGN2DzVGUB/zDA=
+From: Michael Walle <michael@walle.cc>
+To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Subject: [PATCH] mtd-utils: add optional offset parameter to flash_otp_dump
+Date: Thu,  9 Jan 2020 00:23:59 +0100
+Message-Id: <20200108232359.27372-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <CAF_dkJA2DFr3Vgk5ie=V5YitZr8HaiXWuQ+SKsHzzmLBFnhyeg@mail.gmail.com>
- <23922253.ayd0uQntjt@blindfold>
- <CAO1O6se0aPh2FScDStqrK50PPipBbsgEnEPbMHvOdXt2cbxtvA@mail.gmail.com>
- <CAAEAJfCfYV6F4L00m=P60BFdENyhY1CsD3yC-jpOx=kKLL88Kw@mail.gmail.com>
-In-Reply-To: <CAAEAJfCfYV6F4L00m=P60BFdENyhY1CsD3yC-jpOx=kKLL88Kw@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Wed, 8 Jan 2020 23:43:45 +0100
-Message-ID: <CAFLxGvw8h+pSV5r1PEf1f_R46do3GAri7DcANM5BhNd+oAdUng@mail.gmail.com>
-Subject: Re: [PATCH 1/1] ubi: Allow ubiblock devices nodes to be created by
- volume name instead of volume ID.
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+X-Spamd-Bar: ++++
+X-Rspamd-Server: web
+X-Rspamd-Queue-Id: EF2A523D09
+X-Spamd-Result: default: False [4.90 / 15.00]; ARC_NA(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
+ R_MISSING_CHARSET(2.50)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ MIME_GOOD(-0.10)[text/plain]; BROKEN_CONTENT_TYPE(1.50)[];
+ TO_DN_SOME(0.00)[]; DKIM_SIGNED(0.00)[];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM(-0.00)[-0.694];
+ RCVD_COUNT_ZERO(0.00)[0]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+];
+ ASN(0.00)[asn:31334, ipnet:2a02:810c::/31, country:DE]
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200108_144358_492503_758FE775 
-X-CRM114-Status: GOOD (  20.74  )
+X-CRM114-CacheID: sfid-20200108_152419_931313_395B23D1 
+X-CRM114-Status: GOOD (  10.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,88 +88,76 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>,
- Emil Lenngren <emil.lenngren@gmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>, Patrick Doyle <wpdster@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Dec 30, 2019 at 6:32 PM Ezequiel Garcia
-<ezequiel@vanguardiasur.com.ar> wrote:
-> Regarding, the "use a initramfs" I've been there, carrying an
-> initramfs for the sole purpose of finding the volume with the
-> name you want, mounting and pivoting. Looking back,
-> I can say this was a big, fat PITA.
+There are flashes which have gaps between OTP regions and flashes where
+the regions don't start at 0 (for example the Winbond 25Q series, which
+has three 256 bytes OTP regions starting at 0x1000, 0x2000 and 0x3000).
+At the moment it is impossible to dump the OTP memory. Fix it by passing
+an optional offset parameter.
 
-It all depends on your tooling. With yocto creating and maintaining
-and initramfs is easy.
-But maybe I'm a little biased since every single embedded system
-I create needs an initramfs due to crypto foo..
+Signed-off-by: Michael Walle <michael@walle.cc>
+---
+ misc-utils/flash_otp_dump.c | 23 +++++++++++++++++++----
+ 1 file changed, 19 insertions(+), 4 deletions(-)
 
-> And it's _not_ about boot time or anything like that.
-> It's about increasing the number of components
-> (in this case, an entire rootfs) that system integrators
-> have to maintain, keep track of, and worry about.
->
-> I'm not at all surprised hacking a downstream is easier for
-> embedded developers, and I'm sorry we didn't see thought
-> about this use case back then.
->
-> > Is it maybe possible to define both /dev/ubiblock%d_%d and
-> > /dev/ubiblock%d_%s at the same time?
->
-> Nope, this won't fly.
->
-> The sad news is that it's not easy to fix. The patch proposed
-> by Patrick is a no-go, because we don't want to increase
-> the number of configuration options for something like this.
->
-> Configuration options increase the combinations that you
-> need to test, and so we try to avoid them as much as possible.
->
-> We can't change any default behavior either, as it will
-> have an impact on existing systems.
->
-> What we _could_ do, is extend the current syntax, passing
-> a format string to the kernel. Something like this, provided
-> a ubi0_0 volume, named "rootA".
->
-> ubi.block=0,0,ubiblock${dev.id}_${vol.id}
->
-> would create block device as "/dev/ubiblock0_0".
->
-> Where as, ubi.block=0,0,ubiblock${dev.id}${vol.name}
->
-> would create block device as "/dev/ubiblock0_rootA".
->
-> Knowing Richard's stand in the initramfs camp, I'm sure
-> he's eyes are in flames right now :-)
->
-> Does this make any sense... or it is pure insanity?
-
-We need to consider also the volume rename case.
-If the kernel creates a named ubiblock device we have to keep
-the names consistent also across renames.
-Again, udev helps here.
-
-That said, I understand that not everyone wants to have an initramfs.
-As maintainer I have to be neutral even when I personally don't like a solution.
-
-I'll happily accept such a change if it:
-a) is not an ugly hack and/or makes the existing ubi-naming logic worse
-b) is is fine by block layer folks and does not violate the Linux device model
-
-Within UBI we can do whatever we want. That's why the whole ubi name
-parsing at attach time exists. IMHO doing this in the kernel was a mistake
-and we should have enforced an initramfs back then.
-ubiblock is a block device stacked ontop of ubi and we have to obey their rules.
-
+diff --git a/misc-utils/flash_otp_dump.c b/misc-utils/flash_otp_dump.c
+index f0c0fb9..f1e1782 100644
+--- a/misc-utils/flash_otp_dump.c
++++ b/misc-utils/flash_otp_dump.c
+@@ -10,16 +10,18 @@
+ #include <string.h>
+ #include <errno.h>
+ #include <sys/ioctl.h>
++#include <stdlib.h>
+ 
+ #include <mtd/mtd-user.h>
+ 
+ int main(int argc,char *argv[])
+ {
+-	int fd, val, i, offset, ret;
++	int fd, val, i, ret;
++	int offset = 0;
+ 	unsigned char buf[16];
+ 
+-	if (argc != 3 || (strcmp(argv[1], "-f") && strcmp(argv[1], "-u"))) {
+-		fprintf(stderr,"Usage: %s [ -f | -u ] <device>\n", PROGRAM_NAME);
++	if (argc <= 3 || (strcmp(argv[1], "-f") && strcmp(argv[1], "-u"))) {
++		fprintf(stderr,"Usage: %s [ -f | -u ] <device> [<offset>]\n", PROGRAM_NAME);
+ 		return EINVAL;
+ 	}
+ 
+@@ -36,9 +38,22 @@ int main(int argc,char *argv[])
+ 		return errno;
+ 	}
+ 
++	if (argc >= 4) {
++		char *p;
++		offset = (off_t)strtoull(argv[3], &p, 0);
++		if (argv[3][0] == 0 || *p != 0) {
++			fprintf(stderr, "%s: bad offset value\n", PROGRAM_NAME);
++			return ERANGE;
++		}
++	}
++
++	if (lseek(fd, offset, SEEK_SET) == (off_t)-1) {
++		perror("lseek()");
++		return errno;
++	}
++
+ 	printf("OTP %s data for %s\n",
+ 			argv[1][1] == 'f' ? "factory" : "user", argv[2]);
+-	offset = 0;
+ 	while ((ret = read(fd, buf, sizeof(buf)))) {
+ 		if (ret < 0) {
+ 			perror("read()");
 -- 
-Thanks,
-//richard
+2.20.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
