@@ -2,86 +2,81 @@ Return-Path: <SRS0=0ZJr=25=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-6.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47602C282DD
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jan 2020 20:58:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 427F3C282DD
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jan 2020 22:27:09 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E9B5620692
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jan 2020 20:58:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0FF3620705
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jan 2020 22:27:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="o6lL+F6X";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e0kSxlvM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E9B5620692
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Rs3bw1Sy";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gUum7dHD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0FF3620705
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:References:
-	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=Os65L0X71amg2SztMgYkYCCCn+Ry5V++wZoYncRmMbE=; b=o6lL+F6XbdPyu/i4oebptn3XGZ
-	UHjopWgvBt5d6gpXc4ysM4kpw3ut35KDnmehFp24SSpNyvSwl7BRpn216pjANth2Npnd4QdKZ1r7/
-	8+02XWOV5TDMSjd+q2WiMhgPppvKnRQpVidSTTcds1hChMW0uKH6lCYeR6rDJAMf9aq6/Hai8f6ZQ
-	k6d68a77hBHKRSRxa9jnDZ5dsz6TJxbFjGRYiz9gNzKVjg+IFCk00QcL51RD0cswAi4qnEwhxGh6t
-	H6bqGdSKSsKuvhBve5GtJOr6BgyLmjA17Y/jCHFoe9lcgr4F/00ugIpeDowXSIxocACARTCU+olCu
-	wAcnvRaw==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=kSpYzequDMs1RCnT0eyWhSzIxUDoUiAUJGBpW6GooRc=; b=Rs3bw1SycQFU9Z
+	QntK163URzP7r+EyZyFh5IdZjma4i2b7ojgo9jwb1bkRRKZ1RQTebnY2NzkzIczNfsouqGT1I/wzs
+	qrjtlNP+ygkg+QNVyrCWW6MgULNU4GsKeodigPUaCRG7/jSgJXUSC1+Gshb0IlPfHoXmBhGk6zuWK
+	yWDYwQQZr1qL+1BwJC5zyM4p+4gEkIF3c4E8oz676EWRCVyFIX4LsloOYwrbsyklMQnY6eA5a6szT
+	3E+F6zgkKSViFBDZNDn6ZQodBHsigGKd/HfmEFLIUcJyYrVRQlhIDJ0cCwOdI8ojzbu3z2SfKkARK
+	FgSVpgrUPc5SaKhvkbxw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ipIP7-0002fY-U8; Wed, 08 Jan 2020 20:58:13 +0000
-Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
+	id 1ipJmv-0005vZ-RJ; Wed, 08 Jan 2020 22:26:53 +0000
+Received: from mail-wm1-x341.google.com ([2a00:1450:4864:20::341])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ipIKx-0006Pb-I9; Wed, 08 Jan 2020 20:53:58 +0000
-Received: by mail-wr1-x441.google.com with SMTP id z7so4852703wrl.13;
- Wed, 08 Jan 2020 12:53:55 -0800 (PST)
+ id 1ipJmt-0005uS-3H
+ for linux-mtd@lists.infradead.org; Wed, 08 Jan 2020 22:26:52 +0000
+Received: by mail-wm1-x341.google.com with SMTP id p9so683521wmc.2
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Jan 2020 14:26:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references;
- bh=F8uH8Ohf0/3msxdVq/elVtV9phQ+l7EJ3TnSIFW8Fo0=;
- b=e0kSxlvMjAEUSAiUAW4ICM7lkFZ2+g0/XlA56tjVT6RbtvXsMljyPPsICZYaqnXjEx
- 1Pl4fd1uchMzmbVCnXpwAADD3730auQp71lV3yeD/fHM/5DzT19YSdDVsjQTAzwJEWRI
- CQmC7v74Akdutq2yKBONZZjXl/KmT5+BX3AiQ80n6/RQGUXtd7pxwsvwMPq1UuRnE0iY
- OM84XVb8kdffdl/ij1JdieMxy4k8CZ++CcuyzQYtaAZ9Bv0NnEH6p+6w68lBsC60WvZM
- stZMy9Q8f9Cj2VTkBiDlSmAXUxENYvar+5YXCp8XxRMxh1XOXQhRKynw0+g0w0gdAyZn
- RMFQ==
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=TR8J64IqyQncvqOtd/yZ29cmXT7Fd/GhQofRmUNnP6E=;
+ b=gUum7dHDz2Si3vc831dY3sr9xegNRQtI4RV1eoNLF/eTP1L/XokLAc6CbmBXYdtnkC
+ E4pc67Ea81q6ch2DSqnVkBE5Aj3l0+eLIoNkxma0OJCQqkepi3/lCjwqTFCzmUNbwDMf
+ ZX48hW/6fsKyFZ4q9uY0+QV3B+SIpB/mv+/Zjk6ExDybNrNtZxfQN94u8KJE2HUrwefX
+ HBZ26jnngI8vND0NYkTfv6jaKcE7D6ycFgPDokGLkGUQnmoRgdXfaX8XPFBn1oK4FD0W
+ 2G7XDp3/kg/cp1Jmxh4GoQD+0ilwMBtXC5AZmEfO2au6fJWf84+AF6gB5WIozl/8eAy0
+ k8mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references;
- bh=F8uH8Ohf0/3msxdVq/elVtV9phQ+l7EJ3TnSIFW8Fo0=;
- b=ebunRywdG9ohhhIROcUOZat7JawSt5hMua32//S31yI3bibLxR/Cw4PFHbhDaLoCye
- 4ClhYknJKo2l/xaWnTpe/JlTFnimSXJB94ypuDkqU9aC26CFvVGqbrFkFVTdJfQKI4DV
- 1tBGxBbmNzZ6mV5WDIjQ3QLRrm/pyn39d+gVy7DgweQgvcdTZBJxPMIukMipJTjofZYG
- Myltrm1PdG2uhJkDNH/1WgP2BrEkhrAT2KtYBl3liVjala8u4x6Zz6bjLsXQsLybPWe/
- c3734mo0VF43U6i7SB9ez0WYUQ53xJiAAzjZ3kEyQFt6iW+Cj7iT5uvhFXob+naVEKj1
- iwWw==
-X-Gm-Message-State: APjAAAWYnz20eYTKQUL4BvxOPEUN4+h9/00qbrNcl7IIHDIuBhKwOOIH
- KAXjjimVclodVInisvwLLY0=
-X-Google-Smtp-Source: APXvYqzc+xNsRHv3qmj0V/9o6spPl+YMOp2ERxVsBuT5Qvll3hQ2GWvJTQUwG9znzVyhruZwbxDrog==
-X-Received: by 2002:a5d:4e0a:: with SMTP id p10mr6657980wrt.229.1578516834066; 
- Wed, 08 Jan 2020 12:53:54 -0800 (PST)
-Received: from debian.home (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
- by smtp.gmail.com with ESMTPSA id c5sm311835wmd.42.2020.01.08.12.53.53
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 08 Jan 2020 12:53:53 -0800 (PST)
-From: Johan Jonker <jbx6244@gmail.com>
-To: miquel.raynal@bootlin.com
-Subject: [RFC PATCH v1 07/10] arm64: dts: rockchip: add nandc node for px30
-Date: Wed,  8 Jan 2020 21:53:35 +0100
-Message-Id: <20200108205338.11369-8-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200108205338.11369-1-jbx6244@gmail.com>
-References: <20200108205338.11369-1-jbx6244@gmail.com>
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=TR8J64IqyQncvqOtd/yZ29cmXT7Fd/GhQofRmUNnP6E=;
+ b=dv2cQlnJI97r1xYAkR13qCHvljwymPNXS5zEsiZFfgnRi7Lxs0i7NLMadHj1zm4mPD
+ IjZl7je29BjXPdAXSD5EO6hQTXyltpIjznpPHcvRVEdDTaqx9Qt7hKGcY4/GIEJCQU6c
+ PrtI9OwBbGl+MDnG9NZPbh6rbFr1b5MwTcUAv2DNfS48Bp7fDm0wqxIdYiJZeB7CumYT
+ o52HUSDCYJASSUYMq3dLXlugDsuF/2gGzaQOdTu3T2rmrYoSvo4rf7FCoy0PWo8/CI8W
+ Zslqo1SJbc2++LQcoTeEJkYI8+GWnUEfaS/Xynj8kyJhZ5QcsCvKFDtRaHEgYXEX55Rc
+ h0dg==
+X-Gm-Message-State: APjAAAV4LY+KofKH5phT1EqEGPR2/erNxruUyUKNV+5emoMeBElfuwUo
+ nv+kxs3O93tpNB0fsDNsp+r0O0kiIzY1u8dqXto=
+X-Google-Smtp-Source: APXvYqyzMe1+wQgQxXxKQtQ6a89rjjGSXn5ASgBlF9xEs3Nx304WhHyfMRRyqTZzzz3VN3S7ebSySKDRKipG3PbsffU=
+X-Received: by 2002:a1c:184:: with SMTP id 126mr866374wmb.127.1578522407365;
+ Wed, 08 Jan 2020 14:26:47 -0800 (PST)
+MIME-Version: 1.0
+References: <20200106192815.8902-1-ceggers@arri.de>
+In-Reply-To: <20200106192815.8902-1-ceggers@arri.de>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Wed, 8 Jan 2020 23:26:36 +0100
+Message-ID: <CAFLxGvx9V4OXXLgNvFNHVSB72FvW7sbsin3TpG+68vXA8-56Ag@mail.gmail.com>
+Subject: Re: [PATCH] mkfs.ubifs: Also encrypt multi linked files
+To: Christian Eggers <ceggers@arri.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200108_125355_841902_799C6F13 
-X-CRM114-Status: GOOD (  11.33  )
+X-CRM114-CacheID: sfid-20200108_142651_163581_7DBF1369 
+X-CRM114-Status: GOOD (  19.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,63 +88,78 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, vigneshr@ti.com,
- richard@nod.at, linux-kernel@vger.kernel.org,
- linux-rockchip@lists.infradead.org, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- heiko@sntech.de
-MIME-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Dingqiang Lin <jon.lin@rock-chips.com>
+On Mon, Jan 6, 2020 at 8:28 PM Christian Eggers <ceggers@arri.de> wrote:
+>
+> Up to now, no fscrypt context has been passed when calling add_non_dir()
+> from add_multi_linked_files(). In consequence, files with multiple links
+> were not encrypted all.
+>
+> The Linux ubifs file system detects this situation (file not encrypted,
+> but parent directory is) and refuses to open such files. Nevertheless,
+> these files are stored unencrypted in flash and could be accessed by
+> reading directly from the flash.
 
-Add nandc node for px30.
+Thanks for pointing this out!
 
-Signed-off-by: Dingqiang Lin <jon.lin@rock-chips.com>
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- arch/arm64/boot/dts/rockchip/px30.dtsi | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+> Signed-off-by: Christian Eggers <ceggers@arri.de>
+> ---
+>  ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 13 +++++++++----
+>  1 file changed, 9 insertions(+), 4 deletions(-)
+>
+> diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+> index 4247270..519c982 100644
+> --- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+> +++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+> @@ -2228,7 +2228,7 @@ out_free:
+>  /**
+>   * add_multi_linked_files - write all the files for which we counted links.
+>   */
+> -static int add_multi_linked_files(void)
+> +static int add_multi_linked_files(struct fscrypt_context *fctx)
+>  {
+>         int i, err;
+>
+> @@ -2237,11 +2237,16 @@ static int add_multi_linked_files(void)
+>                 unsigned char type = 0;
+>
+>                 for (im = hash_table[i]; im; im = im->next) {
+> +                       struct fscrypt_context *new_fctx = inherit_fscrypt_context(fctx);
+> +
+>                         dbg_msg(2, "%s", im->path_name);
+>                         err = add_non_dir(im->path_name, &im->use_inum,
+> -                                         im->use_nlink, &type, &im->st, NULL);
+> -                       if (err)
+> +                                         im->use_nlink, &type, &im->st, new_fctx);
+> +                       if (err) {
+> +                               free_fscrypt_context(new_fctx);
+>                                 return err;
+> +                       }
+> +                       free_fscrypt_context(new_fctx);
+>                 }
+>         }
+>         return 0;
+> @@ -2290,7 +2295,7 @@ static int write_data(void)
+>         err = add_directory(root, UBIFS_ROOT_INO, &root_st, !!root, root_fctx);
+>         if (err)
+>                 return err;
+> -       err = add_multi_linked_files();
+> +       err = add_multi_linked_files(root_fctx);
 
-diff --git a/arch/arm64/boot/dts/rockchip/px30.dtsi b/arch/arm64/boot/dts/rockchip/px30.dtsi
-index 9a0f77ea4..3f46b8852 100644
---- a/arch/arm64/boot/dts/rockchip/px30.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/px30.dtsi
-@@ -25,6 +25,7 @@
- 		i2c1 = &i2c1;
- 		i2c2 = &i2c2;
- 		i2c3 = &i2c3;
-+		nandc0 = &nandc0;
- 		serial0 = &uart0;
- 		serial1 = &uart1;
- 		serial2 = &uart2;
-@@ -924,6 +925,20 @@
- 		status = "disabled";
- 	};
- 
-+	nandc0: nand-controller@ff3b0000 {
-+		compatible = "rockchip,nandc-v9";
-+		reg = <0x0 0xff3b0000 0x0 0x4000>;
-+		interrupts = <GIC_SPI 57 IRQ_TYPE_LEVEL_HIGH>;
-+		clocks = <&cru SCLK_NANDC>, <&cru HCLK_NANDC>;
-+		clock-names = "clk_nandc", "hclk_nandc";
-+		assigned-clocks = <&cru SCLK_NANDC>;
-+		assigned-clock-parents = <&cru SCLK_NANDC_DIV50>;
-+		power-domains = <&power PX30_PD_MMC_NAND>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		status = "disabled";
-+	};
-+
- 	vopb: vop@ff460000 {
- 		compatible = "rockchip,px30-vop-big";
- 		reg = <0x0 0xff460000 0x0 0xefc>;
+Hmm, maybe I don't read the patch correctly but doesn't this
+always inherit the the context from root?
+
+This may work by chance right now but AFAICT the fscrypt model wants us
+to inherit from the parent directory.
+
 -- 
-2.11.0
-
+Thanks,
+//richard
 
 ______________________________________________________
 Linux MTD discussion mailing list
