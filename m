@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB382C282DD
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jan 2020 13:01:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A29D0C282DD
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jan 2020 13:01:28 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ABF3320643
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jan 2020 13:01:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 62D5720643
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jan 2020 13:01:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OqMxwQaa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ABF3320643
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GsmSGsCx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 62D5720643
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,22 +25,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NW4jlDzDmhm97PBqWcOjZiMWlglomTvnoBfcBnhvtR0=; b=OqMxwQaaBBoFU/
-	Z/weNF4zqnW5r+1NPRZ1Xm/aI9zItGAjH2W4vXrscwOdc1/nF4hw8CWjG6SfK73pLyngFQ++TiApL
-	xMlMXmd/PHQNd/0ihfnf9LCkgTIs5uF2sQVkOa5imNWLMxQunObUBFpIEOhf4hP/Z64OD0jrn46uI
-	ZykmFSGnQYvOq5iQqNdLa7+toDc/hNRdhGJMqZ2XT7WC0YyRgLlUPVJPl5MPodGvQB7pSUEzna/NW
-	zS8MXHCh4KfyZ4IWZaUM742BZnIhZBNC6JAVqpBlsMpggXIMA5LIakh0hnJ+pzoTZgfQpvB7jQ1ef
-	KXX4vNGxI3y6B/FT3H0Q==;
+	List-Owner; bh=xmDmP4x/1CaelHQjSgD+79rvyO4Hz8eQNRicC7oOhC8=; b=GsmSGsCxl1xEIz
+	X1ugqiTwpm8WsNyG0hKcjeuDy7fs7TX4AM0tMKV6YswTaypUFSsiP6L7/3dGzV+d+/Bevb3g23/nc
+	qNw1juZMrVXIeRomvEnvIMDjKOY564M6VkzFZ4LRHRw5k5U18Pn6nGFaujFBpYFv7OPAEY0H8yYBZ
+	j0em3P8xBTLYwJ0OpHh4a6uv5LJpGSgJEjM+Il97k1V41F0IlutTVfucHcjBzaE+rPn56uo6SSfzV
+	wqwvLr5mtmagofXqvZZ2ZzLzOcoQlwJadU6Rg9ZfBr6x/kXJDyXDQ8v/lNghjZT60bSd/kHVn+YSp
+	xFRHWbVmHAtViQOCQ0nw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ipAxJ-0008Fl-V6; Wed, 08 Jan 2020 13:01:01 +0000
-Received: from esa4.microchip.iphmx.com ([68.232.154.123])
+	id 1ipAxX-0008TH-2N; Wed, 08 Jan 2020 13:01:15 +0000
+Received: from esa1.microchip.iphmx.com ([68.232.147.91])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ipAti-0003pW-PK; Wed, 08 Jan 2020 12:57:20 +0000
-Received-SPF: Pass (esa4.microchip.iphmx.com: domain of
+ id 1ipAtm-0003ul-NK; Wed, 08 Jan 2020 12:57:27 +0000
+Received-SPF: Pass (esa1.microchip.iphmx.com: domain of
  Claudiu.Beznea@microchip.com designates 198.175.253.82 as
  permitted sender) identity=mailfrom;
- client-ip=198.175.253.82; receiver=esa4.microchip.iphmx.com;
+ client-ip=198.175.253.82; receiver=esa1.microchip.iphmx.com;
  envelope-from="Claudiu.Beznea@microchip.com";
  x-sender="Claudiu.Beznea@microchip.com";
  x-conformance=spf_only; x-record-type="v=spf1";
@@ -48,34 +48,34 @@ Received-SPF: Pass (esa4.microchip.iphmx.com: domain of
  a:smtpout.microchip.com -exists:%{i}.spf.microchip.iphmx.com
  include:servers.mcsv.net include:mktomail.com
  include:spf.protection.outlook.com ~all"
-Received-SPF: None (esa4.microchip.iphmx.com: no sender
+Received-SPF: None (esa1.microchip.iphmx.com: no sender
  authenticity information available from domain of
  postmaster@email.microchip.com) identity=helo;
- client-ip=198.175.253.82; receiver=esa4.microchip.iphmx.com;
+ client-ip=198.175.253.82; receiver=esa1.microchip.iphmx.com;
  envelope-from="Claudiu.Beznea@microchip.com";
  x-sender="postmaster@email.microchip.com"; x-conformance=spf_only
-Authentication-Results: esa4.microchip.iphmx.com;
+Authentication-Results: esa1.microchip.iphmx.com;
  dkim=none (message not signed) header.i=none;
  spf=Pass smtp.mailfrom=Claudiu.Beznea@microchip.com;
  spf=None smtp.helo=postmaster@email.microchip.com;
  dmarc=pass (p=none dis=none) d=microchip.com
-IronPort-SDR: 9ehLZOiS1j5cQb1qM5hUEXDBgFknLEoEWycLBkeu09mjURNxNeKxuHyaQYM95qNdPm4zWaNphw
- yr879yzJsoIf5+6YRRPob+B8LryOJ5OOMOLRt7YySMX1z0w0dxebLmCs0fOguGNMs8ou/BBJ1l
- 2JsH4SXoY3ZraA4pSSsnx2FPFf/ujLP4B1cWruuShNIdy9sUGBIjLALGnkme9/djUlcs899XBG
- IgcbhZeIDsnemgnCCsWqf9nhUpVqniQ2g16azBOpDHbW4qo2PCQAm2vsBwwPvbHypDnPuzxyXP
- m+U=
-X-IronPort-AV: E=Sophos;i="5.69,410,1571727600"; d="scan'208";a="60517594"
+IronPort-SDR: xmT3Mcf3S9/tnfGJssOEPLTVnYXXoRgVxPx3+ShY2n7weGIu6nc0pZCUXda3tMcbubRB+NJXNc
+ bCzwt+Qwpblz/FlaRk+/iG+3dJDmTDBjvJ+qKQLrXlnDKh4Vrg7fpJGeC3sz+FcglG3s62oF7+
+ mfYMWhZ6FYMoHxxgaAOBe80QueXe3THiVu2/cAjYaCFtAbrAUduYaNKxkxQLK+vfc0/MncXAQa
+ V8z4ObcPqTUpcw6IffcoQauISsqVhIn2mkEoa0Y18gBGpPlLOC9KhlOXHOqHx+rfVu5LurNLpi
+ NmM=
+X-IronPort-AV: E=Sophos;i="5.69,410,1571727600"; d="scan'208";a="64014441"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
- by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 08 Jan 2020 05:57:17 -0700
+ by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 08 Jan 2020 05:57:19 -0700
 Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
  chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 8 Jan 2020 05:56:56 -0700
+ 15.1.1713.5; Wed, 8 Jan 2020 05:57:03 -0700
 Received: from m18063-ThinkPad-T460p.microchip.com (10.10.85.251) by
  chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1713.5 via Frontend Transport; Wed, 8 Jan 2020 05:56:49 -0700
+ 15.1.1713.5 via Frontend Transport; Wed, 8 Jan 2020 05:56:56 -0700
 From: Claudiu Beznea <claudiu.beznea@microchip.com>
 To: <robh+dt@kernel.org>, <mark.rutland@arm.com>,
  <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
@@ -87,16 +87,16 @@ To: <robh+dt@kernel.org>, <mark.rutland@arm.com>,
  <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
  <wg@grandegger.com>, <mkl@pengutronix.de>, <a.zummo@towertech.it>,
  <broonie@kernel.org>
-Subject: [PATCH 07/16] dt-bindings: atmel-nand: add microchip,sam9x60-pmecc
-Date: Wed, 8 Jan 2020 14:55:14 +0200
-Message-ID: <1578488123-26127-8-git-send-email-claudiu.beznea@microchip.com>
+Subject: [PATCH 08/16] dt-bindings: atmel-sysreg: add microchip, sam9x60-ddramc
+Date: Wed, 8 Jan 2020 14:55:15 +0200
+Message-ID: <1578488123-26127-9-git-send-email-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1578488123-26127-1-git-send-email-claudiu.beznea@microchip.com>
 References: <1578488123-26127-1-git-send-email-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200108_045718_939920_2A1A37AB 
-X-CRM114-Status: UNSURE (   8.05  )
+X-CRM114-CacheID: sfid-20200108_045722_777986_26C93CEE 
+X-CRM114-Status: UNSURE (   6.78  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -120,25 +120,25 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add microchip,sam9x60-pmecc to DT bindings documentation.
+Add microchip,sam9x60-ddramc to DT bindings documentation.
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- Documentation/devicetree/bindings/mtd/atmel-nand.txt | 1 +
+ Documentation/devicetree/bindings/arm/atmel-sysregs.txt | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-index 68b51dc58816..3aa297c97ab6 100644
---- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-@@ -57,6 +57,7 @@ Required properties:
- 	"atmel,at91sam9g45-pmecc"
- 	"atmel,sama5d4-pmecc"
- 	"atmel,sama5d2-pmecc"
-+	"microchip,sam9x60-pmecc"
- - reg: should contain 2 register ranges. The first one is pointing to the PMECC
-        block, and the second one to the PMECC_ERRLOC block.
+diff --git a/Documentation/devicetree/bindings/arm/atmel-sysregs.txt b/Documentation/devicetree/bindings/arm/atmel-sysregs.txt
+index 9fbde401a090..b4900d3b4a7c 100644
+--- a/Documentation/devicetree/bindings/arm/atmel-sysregs.txt
++++ b/Documentation/devicetree/bindings/arm/atmel-sysregs.txt
+@@ -39,6 +39,7 @@ RAMC SDRAM/DDR Controller required properties:
+ 			"atmel,at91sam9260-sdramc",
+ 			"atmel,at91sam9g45-ddramc",
+ 			"atmel,sama5d3-ddramc",
++			"microchip,sam9x60-ddramc"
+ - reg: Should contain registers location and length
  
+ Examples:
 -- 
 2.7.4
 
