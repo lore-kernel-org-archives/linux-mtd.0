@@ -2,68 +2,85 @@ Return-Path: <SRS0=0ZJr=25=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EA22C282DD
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jan 2020 22:43:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 108FEC282DD
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jan 2020 22:44:23 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E3A87206DB
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jan 2020 22:43:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D6A292053B
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jan 2020 22:44:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DKUH0VJD";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="k5NdnaWa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E3A87206DB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QiCY8Ow/";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dxzcHW6v"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D6A292053B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rnyLx+ee+IgDWuS9pdAdFscUSVYftexA2WWKxv4Bt+k=; b=DKUH0VJDU7+QKE
-	LtRrNDNiH6T2sXzOhECDUuUlXE9zGa46GzdW24EOynQq48yPz+0sN/LzpyJ7zP3/0O/sho6pjZrCS
-	4dULeCCdvWMWQo9s5gHzC/Ww3sRjnlumJXmIK0LbQDR2Fv2DDozYK3OQfaCTujO9o9iAlaP2w3wvN
-	usNzAH72HFpT/kGZJDdq3WmGXVmUb7afVlvSbKThfGYz/AK5LiZ1Qh5akLORZlElW4x/uf7NLxDjC
-	TmbVHN3mAl+soXhLYvr9kNPSs+Ia0iUqy4Gsy2fZ/OLIb4pl+RiKMDwYByGn0zOCk9Q3Qdx5FfZI2
-	KeRqo7X8rT81P/iC2ySw==;
+	List-Owner; bh=ZstttYrEBRYl7PUhW/zNBQ8bWDluN4j7e2XCpJroB5s=; b=QiCY8Ow/f7zoBj
+	PnvU07L3IlfOteSLS77kCGBoz2gXRqWwKIjdbsTa2jHhfdVpO0nFn9LhuSVA6imCMV9cDWSe7zn8z
+	6AeJGsW38wQJiGtuibxvEQGB+hZM+j28UWONqhEPiO7neTBCAflVI0yBjggU6BSJ0iMYzaaYfvM+v
+	pFUPv2KpgXFt5zS9+foTFDkO3+jaAtkcazveekDFceESiyzL4CkWzwKH6l/cysvYy32/P//b2221n
+	lShjXifwNK/hABsZO9ONMZii+ul2C6qf2XayWHsLVjLO/B+ucjWlX6M8LmgYadm5ZvHyaGgSxGR/x
+	HjKTA9QKVa1GEeonb50Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ipK2U-0005J0-CI; Wed, 08 Jan 2020 22:42:58 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1ipK3V-0006Eb-M0; Wed, 08 Jan 2020 22:44:01 +0000
+Received: from mail-wm1-x343.google.com ([2a00:1450:4864:20::343])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ipK2R-0005IX-4h
- for linux-mtd@lists.infradead.org; Wed, 08 Jan 2020 22:42:57 +0000
-Received: from localhost (unknown [104.132.0.81])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 4A6DA2053B;
- Wed,  8 Jan 2020 22:42:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1578523374;
- bh=o+EBZqF4Q3rb3rJsaguToktWL8ixzhk3Cs0X6JHnuWQ=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=k5NdnaWaKTe+ShsNn7Avicpv6kmAudgSdjCCCkHc8JkJ93E1FGAoiqJTJv9Gt2b7h
- K86oj/gBeyC8BzLIZWCfEwzTczvjm+Q6NtHwDbaI/4l6BETeoUDyqXGraok+juAheo
- k9q1huD97Dyfqg5/bZhKEna9PZ9KqS6dlvuuDgUI=
-Date: Wed, 8 Jan 2020 14:42:53 -0800
-From: Jaegeuk Kim <jaegeuk@kernel.org>
-To: Andreas Gruenbacher <agruenba@redhat.com>
-Subject: Re: [PATCH v4] fs: Fix page_mkwrite off-by-one errors
-Message-ID: <20200108224253.GA42219@jaegeuk-macbookpro.roam.corp.google.com>
-References: <20200108131528.4279-1-agruenba@redhat.com>
+ id 1ipK3S-0006DY-Dg
+ for linux-mtd@lists.infradead.org; Wed, 08 Jan 2020 22:43:59 +0000
+Received: by mail-wm1-x343.google.com with SMTP id b19so707029wmj.4
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Jan 2020 14:43:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=UWWZMqPdrpyLM4PNNhJEbDf2OARkgPYBiWJgc0QHlYM=;
+ b=dxzcHW6vBEVtIMKz7w6Rq/2EZ7/9WYR4LnbuTZhnSlBG6qiQWEgnncI+US+L0uNiry
+ v+LUH4n0j9OpZ6FIaBOusMzf/coHGLczPogtTAK1A/cD9TwKMSZqMLul3oD83Fmgf/Pr
+ Kocq+wkGafcAXC/4mdi1kcnnUPqVV/a0UA7VZbUgBakCxMKnK69NKuJBZdhmWCe9gKTK
+ sCzOQAZwXDttePRFLgqtYQlhXA0u0VbognfEgIz0RfOYTNw7mQ3CSId5HGEz+AAO90FL
+ 9QSgTkEHltlAv7FBF1jLlIkRebXNKBlodTj+aYe3+AaBhyem8eX7IlnOXQDAZu1PB/co
+ By1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=UWWZMqPdrpyLM4PNNhJEbDf2OARkgPYBiWJgc0QHlYM=;
+ b=kUexCF6WvvVhXWeQmO8dUXBfgLiSgOyxBwvXAQg7+ol7EhWyOu2KNk7Lv+R9XqQ7WP
+ ga3ysBfR03DWtys539q/gmkRc6NUp+B72qGRXzy9EpXxEBVW2j6JtGpoB7EY35pd4ric
+ iSqK5tYA55+mYy098Hm9fMG/J+A5wMAoHLYxYpS9vs1bMV2seWnc/l1pzih/cyn+8FDw
+ 4Ex8B+tvYL0d7vj9ZUYwjNICduGIKRyW9CD9HdkBMxUg/j89H5rUiUdKhUqwQN+8D15u
+ 4DDXa1b6OIKQJWpOAnr0JK0G4nV8nAf0axVTcWk5Oe59dXHun02SSXZCWP0N6WixjhAK
+ 6foQ==
+X-Gm-Message-State: APjAAAVIWwTKeAsMWoUCFK5IYZ8uR1gffYZOgi+10LLpwojtPsOOaHVQ
+ K/5T3SCrbOnzx6WW8+wf1IbBR3vanYogzbT+Loc5eg==
+X-Google-Smtp-Source: APXvYqyum7X1NjaMw//Cv9KuPI9DU6oxZ/T2dzD1WKak+E1BQ+o6OZ+VovchbVcu0Gl9WY0dXjhnNvKiDO4TsHzzEI4=
+X-Received: by 2002:a1c:184:: with SMTP id 126mr914459wmb.127.1578523436957;
+ Wed, 08 Jan 2020 14:43:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20200108131528.4279-1-agruenba@redhat.com>
-User-Agent: Mutt/1.8.2 (2017-04-18)
+References: <CAF_dkJA2DFr3Vgk5ie=V5YitZr8HaiXWuQ+SKsHzzmLBFnhyeg@mail.gmail.com>
+ <23922253.ayd0uQntjt@blindfold>
+ <CAO1O6se0aPh2FScDStqrK50PPipBbsgEnEPbMHvOdXt2cbxtvA@mail.gmail.com>
+ <CAAEAJfCfYV6F4L00m=P60BFdENyhY1CsD3yC-jpOx=kKLL88Kw@mail.gmail.com>
+In-Reply-To: <CAAEAJfCfYV6F4L00m=P60BFdENyhY1CsD3yC-jpOx=kKLL88Kw@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Wed, 8 Jan 2020 23:43:45 +0100
+Message-ID: <CAFLxGvw8h+pSV5r1PEf1f_R46do3GAri7DcANM5BhNd+oAdUng@mail.gmail.com>
+Subject: Re: [PATCH 1/1] ubi: Allow ubiblock devices nodes to be created by
+ volume name instead of volume ID.
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200108_144255_227810_C06DB4C4 
-X-CRM114-Status: GOOD (  31.24  )
+X-CRM114-CacheID: sfid-20200108_144358_492503_758FE775 
+X-CRM114-Status: GOOD (  20.74  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,358 +92,88 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Jan Kara <jack@suse.cz>, Chao Yu <yuchao0@huawei.com>,
- Adrian Hunter <adrian.hunter@intel.com>, Chris Mason <clm@fb.com>,
- Andreas Dilger <adilger.kernel@dilger.ca>, Sage Weil <sage@redhat.com>,
- "Darrick J. Wong" <darrick.wong@oracle.com>,
- Richard Weinberger <richard@nod.at>, YueHaibing <yuehaibing@huawei.com>,
- Christoph Hellwig <hch@infradead.org>, Ilya Dryomov <idryomov@gmail.com>,
- linux-ext4@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
- Chao Yu <chao@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>, David Sterba <dsterba@suse.com>,
- ceph-devel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
- Artem Bityutskiy <dedekind1@gmail.com>, Jeff Layton <jlayton@kernel.org>,
- linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Linus Torvalds <torvalds@linux-foundation.org>,
- linux-btrfs@vger.kernel.org
+Cc: Richard Weinberger <richard@nod.at>,
+ Emil Lenngren <emil.lenngren@gmail.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>, Patrick Doyle <wpdster@gmail.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 01/08, Andreas Gruenbacher wrote:
-> Hi Darrick,
-> 
-> here's an updated version with the latest feedback incorporated.  Hope
-> you find that useful.
-> 
-> As far as the f2fs merge conflict goes, I've been told by Linus not to
-> resolve those kinds of conflicts but to point them out when sending the
-> merge request.  So this shouldn't be a big deal.
-> 
-> Changes:
-> 
-> * Turn page_mkwrite_check_truncate into a non-inline function.
-> * Get rid of now-unused mapping variable in ext4_page_mkwrite.
-> * In btrfs_page_mkwrite, don't ignore the return value of
->   block_page_mkwrite_return (no change in behavior).
-> * Clean up the f2fs_vm_page_mkwrite changes as suggested by
->   Jaegeuk Kim.
-> 
-> Thanks,
-> Andreas
-> 
-> --
-> 
-> The check in block_page_mkwrite that is meant to determine whether an
-> offset is within the inode size is off by one.  This bug has been copied
-> into iomap_page_mkwrite and several filesystems (ubifs, ext4, f2fs,
-> ceph).
-> 
-> Fix that by introducing a new page_mkwrite_check_truncate helper that
-> checks for truncate and computes the bytes in the page up to EOF.  Use
-> the helper in the above mentioned filesystems.
-> 
-> In addition, use the new helper in btrfs as well.
-> 
-> Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-> Acked-by: David Sterba <dsterba@suse.com> (btrfs)
-> Acked-by: Richard Weinberger <richard@nod.at> (ubifs)
-> Acked-by: Theodore Ts'o <tytso@mit.edu> (ext4)
-> Acked-by: Chao Yu <yuchao0@huawei.com> (f2fs)
+On Mon, Dec 30, 2019 at 6:32 PM Ezequiel Garcia
+<ezequiel@vanguardiasur.com.ar> wrote:
+> Regarding, the "use a initramfs" I've been there, carrying an
+> initramfs for the sole purpose of finding the volume with the
+> name you want, mounting and pivoting. Looking back,
+> I can say this was a big, fat PITA.
 
-Acked-by: Jaegeuk Kim <jaegeuk@kernel.org>
+It all depends on your tooling. With yocto creating and maintaining
+and initramfs is easy.
+But maybe I'm a little biased since every single embedded system
+I create needs an initramfs due to crypto foo..
 
-> ---
->  fs/btrfs/inode.c        | 16 +++++-----------
->  fs/buffer.c             | 16 +++-------------
->  fs/ceph/addr.c          |  2 +-
->  fs/ext4/inode.c         | 15 ++++-----------
->  fs/f2fs/file.c          | 19 +++++++------------
->  fs/iomap/buffered-io.c  | 18 +++++-------------
->  fs/ubifs/file.c         |  3 +--
->  include/linux/pagemap.h |  2 ++
->  mm/filemap.c            | 28 ++++++++++++++++++++++++++++
->  9 files changed, 56 insertions(+), 63 deletions(-)
-> 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index e3c76645cad7..23e6f614e000 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -9011,16 +9011,15 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
->  		goto out_noreserve;
->  	}
->  
-> -	ret = VM_FAULT_NOPAGE; /* make the VM retry the fault */
->  again:
->  	lock_page(page);
-> -	size = i_size_read(inode);
->  
-> -	if ((page->mapping != inode->i_mapping) ||
-> -	    (page_start >= size)) {
-> -		/* page got truncated out from underneath us */
-> +	ret2 = page_mkwrite_check_truncate(page, inode);
-> +	if (ret2 < 0) {
-> +		ret = block_page_mkwrite_return(ret2);
->  		goto out_unlock;
->  	}
-> +	zero_start = ret2;
->  	wait_on_page_writeback(page);
->  
->  	lock_extent_bits(io_tree, page_start, page_end, &cached_state);
-> @@ -9041,6 +9040,7 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
->  		goto again;
->  	}
->  
-> +	size = i_size_read(inode);
->  	if (page->index == ((size - 1) >> PAGE_SHIFT)) {
->  		reserved_space = round_up(size - page_start,
->  					  fs_info->sectorsize);
-> @@ -9073,12 +9073,6 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
->  	}
->  	ret2 = 0;
->  
-> -	/* page is wholly or partially inside EOF */
-> -	if (page_start + PAGE_SIZE > size)
-> -		zero_start = offset_in_page(size);
-> -	else
-> -		zero_start = PAGE_SIZE;
-> -
->  	if (zero_start != PAGE_SIZE) {
->  		kaddr = kmap(page);
->  		memset(kaddr + zero_start, 0, PAGE_SIZE - zero_start);
-> diff --git a/fs/buffer.c b/fs/buffer.c
-> index d8c7242426bb..53aabde57ca7 100644
-> --- a/fs/buffer.c
-> +++ b/fs/buffer.c
-> @@ -2499,23 +2499,13 @@ int block_page_mkwrite(struct vm_area_struct *vma, struct vm_fault *vmf,
->  	struct page *page = vmf->page;
->  	struct inode *inode = file_inode(vma->vm_file);
->  	unsigned long end;
-> -	loff_t size;
->  	int ret;
->  
->  	lock_page(page);
-> -	size = i_size_read(inode);
-> -	if ((page->mapping != inode->i_mapping) ||
-> -	    (page_offset(page) > size)) {
-> -		/* We overload EFAULT to mean page got truncated */
-> -		ret = -EFAULT;
-> +	ret = page_mkwrite_check_truncate(page, inode);
-> +	if (ret < 0)
->  		goto out_unlock;
-> -	}
-> -
-> -	/* page is wholly or partially inside EOF */
-> -	if (((page->index + 1) << PAGE_SHIFT) > size)
-> -		end = size & ~PAGE_MASK;
-> -	else
-> -		end = PAGE_SIZE;
-> +	end = ret;
->  
->  	ret = __block_write_begin(page, 0, end, get_block);
->  	if (!ret)
-> diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
-> index 7ab616601141..ef958aa4adb4 100644
-> --- a/fs/ceph/addr.c
-> +++ b/fs/ceph/addr.c
-> @@ -1575,7 +1575,7 @@ static vm_fault_t ceph_page_mkwrite(struct vm_fault *vmf)
->  	do {
->  		lock_page(page);
->  
-> -		if ((off > size) || (page->mapping != inode->i_mapping)) {
-> +		if (page_mkwrite_check_truncate(page, inode) < 0) {
->  			unlock_page(page);
->  			ret = VM_FAULT_NOPAGE;
->  			break;
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 629a25d999f0..3244803df30a 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -5871,13 +5871,11 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
->  {
->  	struct vm_area_struct *vma = vmf->vma;
->  	struct page *page = vmf->page;
-> -	loff_t size;
->  	unsigned long len;
->  	int err;
->  	vm_fault_t ret;
->  	struct file *file = vma->vm_file;
->  	struct inode *inode = file_inode(file);
-> -	struct address_space *mapping = inode->i_mapping;
->  	handle_t *handle;
->  	get_block_t *get_block;
->  	int retries = 0;
-> @@ -5907,18 +5905,13 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
->  	}
->  
->  	lock_page(page);
-> -	size = i_size_read(inode);
-> -	/* Page got truncated from under us? */
-> -	if (page->mapping != mapping || page_offset(page) > size) {
-> +	err = page_mkwrite_check_truncate(page, inode);
-> +	if (err < 0) {
->  		unlock_page(page);
-> -		ret = VM_FAULT_NOPAGE;
-> -		goto out;
-> +		goto out_ret;
->  	}
-> +	len = err;
->  
-> -	if (page->index == size >> PAGE_SHIFT)
-> -		len = size & ~PAGE_MASK;
-> -	else
-> -		len = PAGE_SIZE;
->  	/*
->  	 * Return if we have all the buffers mapped. This avoids the need to do
->  	 * journal_start/journal_stop which can block and take a long time
-> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> index 85af112e868d..c2d919210a26 100644
-> --- a/fs/f2fs/file.c
-> +++ b/fs/f2fs/file.c
-> @@ -51,7 +51,7 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_fault *vmf)
->  	struct inode *inode = file_inode(vmf->vma->vm_file);
->  	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
->  	struct dnode_of_data dn = { .node_changed = false };
-> -	int err;
-> +	int offset, err;
->  
->  	if (unlikely(f2fs_cp_error(sbi))) {
->  		err = -EIO;
-> @@ -70,11 +70,12 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_fault *vmf)
->  	file_update_time(vmf->vma->vm_file);
->  	down_read(&F2FS_I(inode)->i_mmap_sem);
->  	lock_page(page);
-> -	if (unlikely(page->mapping != inode->i_mapping ||
-> -			page_offset(page) > i_size_read(inode) ||
-> -			!PageUptodate(page))) {
-> +	offset = -EFAULT;
-> +	if (likely(PageUptodate(page)))
-> +		offset = page_mkwrite_check_truncate(page, inode);
-> +	if (unlikely(offset < 0)) {
->  		unlock_page(page);
-> -		err = -EFAULT;
-> +		err = offset;
->  		goto out_sem;
->  	}
->  
-> @@ -101,14 +102,8 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_fault *vmf)
->  	if (PageMappedToDisk(page))
->  		goto out_sem;
->  
-> -	/* page is wholly or partially inside EOF */
-> -	if (((loff_t)(page->index + 1) << PAGE_SHIFT) >
-> -						i_size_read(inode)) {
-> -		loff_t offset;
-> -
-> -		offset = i_size_read(inode) & ~PAGE_MASK;
-> +	if (offset != PAGE_SIZE)
->  		zero_user_segment(page, offset, PAGE_SIZE);
-> -	}
->  	set_page_dirty(page);
->  	if (!PageUptodate(page))
->  		SetPageUptodate(page);
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index 828444e14d09..7c84c4c027c4 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -1077,24 +1077,16 @@ vm_fault_t iomap_page_mkwrite(struct vm_fault *vmf, const struct iomap_ops *ops)
->  	struct page *page = vmf->page;
->  	struct inode *inode = file_inode(vmf->vma->vm_file);
->  	unsigned long length;
-> -	loff_t offset, size;
-> +	loff_t offset;
->  	ssize_t ret;
->  
->  	lock_page(page);
-> -	size = i_size_read(inode);
-> -	offset = page_offset(page);
-> -	if (page->mapping != inode->i_mapping || offset > size) {
-> -		/* We overload EFAULT to mean page got truncated */
-> -		ret = -EFAULT;
-> +	ret = page_mkwrite_check_truncate(page, inode);
-> +	if (ret < 0)
->  		goto out_unlock;
-> -	}
-> -
-> -	/* page is wholly or partially inside EOF */
-> -	if (offset > size - PAGE_SIZE)
-> -		length = offset_in_page(size);
-> -	else
-> -		length = PAGE_SIZE;
-> +	length = ret;
->  
-> +	offset = page_offset(page);
->  	while (length > 0) {
->  		ret = iomap_apply(inode, offset, length,
->  				IOMAP_WRITE | IOMAP_FAULT, ops, page,
-> diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-> index cd52585c8f4f..91f7a1f2db0d 100644
-> --- a/fs/ubifs/file.c
-> +++ b/fs/ubifs/file.c
-> @@ -1563,8 +1563,7 @@ static vm_fault_t ubifs_vm_page_mkwrite(struct vm_fault *vmf)
->  	}
->  
->  	lock_page(page);
-> -	if (unlikely(page->mapping != inode->i_mapping ||
-> -		     page_offset(page) > i_size_read(inode))) {
-> +	if (unlikely(page_mkwrite_check_truncate(page, inode) < 0)) {
->  		/* Page got truncated out from underneath us */
->  		goto sigbus;
->  	}
-> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-> index 37a4d9e32cd3..6c9c5b88924d 100644
-> --- a/include/linux/pagemap.h
-> +++ b/include/linux/pagemap.h
-> @@ -636,4 +636,6 @@ static inline unsigned long dir_pages(struct inode *inode)
->  			       PAGE_SHIFT;
->  }
->  
-> +int page_mkwrite_check_truncate(struct page *page, struct inode *inode);
-> +
->  #endif /* _LINUX_PAGEMAP_H */
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index bf6aa30be58d..d3e2766216e3 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -2700,6 +2700,34 @@ const struct vm_operations_struct generic_file_vm_ops = {
->  	.page_mkwrite	= filemap_page_mkwrite,
->  };
->  
-> +/**
-> + * page_mkwrite_check_truncate - check if page was truncated
-> + * @page: the page to check
-> + * @inode: the inode to check the page against
-> + *
-> + * Returns the number of bytes in the page up to EOF,
-> + * or -EFAULT if the page was truncated.
-> + */
-> +int page_mkwrite_check_truncate(struct page *page, struct inode *inode)
-> +{
-> +	loff_t size = i_size_read(inode);
-> +	pgoff_t index = size >> PAGE_SHIFT;
-> +	int offset = offset_in_page(size);
-> +
-> +	if (page->mapping != inode->i_mapping)
-> +		return -EFAULT;
-> +
-> +	/* page is wholly inside EOF */
-> +	if (page->index < index)
-> +		return PAGE_SIZE;
-> +	/* page is wholly past EOF */
-> +	if (page->index > index || !offset)
-> +		return -EFAULT;
-> +	/* page is partially inside EOF */
-> +	return offset;
-> +}
-> +EXPORT_SYMBOL(page_mkwrite_check_truncate);
-> +
->  /* This is used for a general mmap of a disk file */
->  
->  int generic_file_mmap(struct file * file, struct vm_area_struct * vma)
-> -- 
-> 2.20.1
+> And it's _not_ about boot time or anything like that.
+> It's about increasing the number of components
+> (in this case, an entire rootfs) that system integrators
+> have to maintain, keep track of, and worry about.
+>
+> I'm not at all surprised hacking a downstream is easier for
+> embedded developers, and I'm sorry we didn't see thought
+> about this use case back then.
+>
+> > Is it maybe possible to define both /dev/ubiblock%d_%d and
+> > /dev/ubiblock%d_%s at the same time?
+>
+> Nope, this won't fly.
+>
+> The sad news is that it's not easy to fix. The patch proposed
+> by Patrick is a no-go, because we don't want to increase
+> the number of configuration options for something like this.
+>
+> Configuration options increase the combinations that you
+> need to test, and so we try to avoid them as much as possible.
+>
+> We can't change any default behavior either, as it will
+> have an impact on existing systems.
+>
+> What we _could_ do, is extend the current syntax, passing
+> a format string to the kernel. Something like this, provided
+> a ubi0_0 volume, named "rootA".
+>
+> ubi.block=0,0,ubiblock${dev.id}_${vol.id}
+>
+> would create block device as "/dev/ubiblock0_0".
+>
+> Where as, ubi.block=0,0,ubiblock${dev.id}${vol.name}
+>
+> would create block device as "/dev/ubiblock0_rootA".
+>
+> Knowing Richard's stand in the initramfs camp, I'm sure
+> he's eyes are in flames right now :-)
+>
+> Does this make any sense... or it is pure insanity?
+
+We need to consider also the volume rename case.
+If the kernel creates a named ubiblock device we have to keep
+the names consistent also across renames.
+Again, udev helps here.
+
+That said, I understand that not everyone wants to have an initramfs.
+As maintainer I have to be neutral even when I personally don't like a solution.
+
+I'll happily accept such a change if it:
+a) is not an ugly hack and/or makes the existing ubi-naming logic worse
+b) is is fine by block layer folks and does not violate the Linux device model
+
+Within UBI we can do whatever we want. That's why the whole ubi name
+parsing at attach time exists. IMHO doing this in the kernel was a mistake
+and we should have enforced an initramfs back then.
+ubiblock is a block device stacked ontop of ubi and we have to obey their rules.
+
+-- 
+Thanks,
+//richard
 
 ______________________________________________________
 Linux MTD discussion mailing list
