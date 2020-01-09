@@ -2,82 +2,68 @@ Return-Path: <SRS0=bx7I=26=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA4B1C282DD
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 Jan 2020 20:09:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1280C282DD
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 Jan 2020 20:46:21 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AC40F20656
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 Jan 2020 20:09:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 706E020721
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 Jan 2020 20:46:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pVg72drB";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iAi+v0g0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AC40F20656
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cCpfnOZg";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b="EKObZoix"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 706E020721
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=geanix.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
+	Date:References:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OheN/fBBoCLMiaPTOEjSp4dRmKUkmxgbs0JYRXrBZws=; b=pVg72drB5OVuLY
-	ktzMJYh8GAyE7dAiwl2aQj9BE6XoYKH05P9Lvm2L8w/RJNMSjZKkR0Pj+9ALgiIkIISRP661MJHyA
-	t6sDDPR88hTP1QfnXkxszHkj/eAfyvytAl7KtmLGrWA3foxOm/yAJFUkO8GUH//EvLo55wqzA0PTJ
-	SCcjyZg2Nrhblh4JDDLoaMQpwwcr49RwndrV9e5AuJBBUmkC9OjR4w4/ZPEyU8qrAZ3c5cFAYYDE0
-	z72TB+vCOIsqeQfWK1LWJvb1xwYGK5DDwqffPyCIONDQw+j+AkZipVYQQDctgYpM3IY7IYhU8OLw/
-	JH6gYStGfS+DK6DV9Mgw==;
+	List-Owner; bh=Y9Cx0dUnIsJyPzlkATfnhff62pzwibRBviSiozln88M=; b=cCpfnOZg3yPqT0
+	UD5W0ubDbYO06zso08y/0Q03lFL6I2xCo3Ll3469Nd5KW0X63OkxaiZr3rD8ZY7tUAYcKSfl7Q+b6
+	MmgkdtNL1cZS/xe/0IO/HSbIxPVzTaFaBmTfWBE7uteNkH7zFKoMISPoSCQMq3wXcAniH7zOhxc1W
+	Qy+N5+cB2A6DDkcGC4zgcDu/u20eX+oCAaOEtUVU5R+9SGGg4kVOF0bow8zsuitRuBSAu7phKggXR
+	WmunkDf5pnBgMppsvwm+TRjRneKreK1feCGIgCe9vh0evCWrDN5AVbSz83yOY1A6JxFKH0HyxApL0
+	HG4r5h7B+RCH9iSpeWdg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ipe7g-0000b4-40; Thu, 09 Jan 2020 20:09:40 +0000
-Received: from mail-il1-x144.google.com ([2607:f8b0:4864:20::144])
+	id 1ipegu-0007VF-LY; Thu, 09 Jan 2020 20:46:04 +0000
+Received: from first.geanix.com ([116.203.34.67])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ipe7d-0000aE-9b
- for linux-mtd@lists.infradead.org; Thu, 09 Jan 2020 20:09:38 +0000
-Received: by mail-il1-x144.google.com with SMTP id g12so6770632ild.2
- for <linux-mtd@lists.infradead.org>; Thu, 09 Jan 2020 12:09:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=aZw32fXMw86fpbf9RJzMhyLDcqHizKEJRkdVn5TpKlc=;
- b=iAi+v0g0a/otanG28TUbCOLcoPhPzOKZHoSXBnqFQtgLbbvcbHYtvKmIwB72Xloax5
- GoaUwMOMEgNdgQpjCnPfPQyHtl8tDtTWGuIQeQeh5MaPyuRvH+HoC8vsPS4h9rzhUvMX
- c19bscr/VVhyG0EZ4H1t9+Srltwlp629+HmXTFwmgBHL0YKav7TIRMuNVwUzo1LTyJM0
- kbFFYV4zypTWyX36HEVYCVVLJWqn87rZ8EN4R//AjguJA6eiIn3E/oyyh28DjEuM2Ivb
- fQBW7BL2FjE6Z71Jl9MDQrr1huGU4ENvAmMT5E9/qds1qT0PrK0sRxdRN+vrDLraMXI8
- QxPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=aZw32fXMw86fpbf9RJzMhyLDcqHizKEJRkdVn5TpKlc=;
- b=MrTRi3fWWYxyrelAZmg3xpZFgBRMikQxeJuPujaCzbopqAEqkicCRMJJDBq3xq6iYh
- nnXqLIe1cENo4U2Owrdt3378X9vATpjeMYEzAzcyTF3PXgxHSy6fREYQWoT2zY3c7Jz/
- bF+chwYaa/tf7yunXkQXnpQG6d6YOYFAE9biwvksVkie4uLxEMK3APlZB0RV8qzD8Tq/
- GcpFCEQ4IDtuzx0VDDEcL1ZUiterto/4WzywBb4Q3XW3q+i7RdgKR7/9dCfznINIEaSL
- Zz/0ijCP7do0bT5jvykf6X8s9ulBJwpnEo6JslCm+ZuYQXquZb8fgM+qcenM0Uvx6UBo
- BmlA==
-X-Gm-Message-State: APjAAAU0/sBWYHDfrKMTICz2Dh/sKU2PRGcA1m5ZAOV8fuN1Dd1aaoAE
- O+exJ38OFJptdeoUgBFw/4qb/FbsMOah0Qwhsn+hXECP
-X-Google-Smtp-Source: APXvYqy3ZoiLSUbJLur5KqGhtON2fPbbKXZVTnPSddOFvpBK67aIEPKD52YFRD5D0QYdFoVcN8bmez/yEf+4D4xurMs=
-X-Received: by 2002:a92:d30d:: with SMTP id x13mr10893590ila.170.1578600575056; 
- Thu, 09 Jan 2020 12:09:35 -0800 (PST)
-MIME-Version: 1.0
-References: <1578589556-683-1-git-send-email-han.xu@nxp.com>
- <20200109200127.0ace18cb@xps13> <87v9pkmm34.fsf@geanix.com>
-In-Reply-To: <87v9pkmm34.fsf@geanix.com>
-From: Han Xu <xhnjupt@gmail.com>
-Date: Thu, 9 Jan 2020 14:09:24 -0600
-Message-ID: <CA+EcR23zwQ2SMH5MYewXXDrGLT04hmjZVetZR6JrKvG9D19CQg@mail.gmail.com>
+ id 1ipegr-0007Up-Dt
+ for linux-mtd@lists.infradead.org; Thu, 09 Jan 2020 20:46:03 +0000
+Received: from localhost (87-49-44-45-mobile.dk.customer.tdc.net [87.49.44.45])
+ by first.geanix.com (Postfix) with ESMTPSA id DBC9C820;
+ Thu,  9 Jan 2020 20:45:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
+ t=1578602731; bh=6Se3wfqzaI4oeyhcIcZQkTNu1I86zuNV8iY4LmK7wy8=;
+ h=From:To:Cc:Subject:References:Date:In-Reply-To;
+ b=EKObZoixYq/drDtg6xVMMXH04ZcCoZSRbYz0kgGKx11MlfBuazAWY8Nk1b85pvMoX
+ wcgijIzu3vzGDXQT0pzL5VPW9Qb3649pJIBo9OUY6Zvs4WBnUiU+5v9/5FDe3/LX9l
+ J3MTXI4nxiU891yJAMJrxWyjCueuEuldApWCki+YMBu+7NcyYBXgtlcWqhoSCWr8wm
+ jl4YYyBBjihduAax4yH83l8ZfAF4PnZeG/v5YUrBc77bV847tdhFfme5v2wv+5o/hm
+ O+ftLIolw44j4thlo9XR5nL7oqVJeenjPJmXZZpq3sDD26IcIEz43ZP2wdO/uxQ8i5
+ W2KpyZ2g2eQXg==
+From: Esben Haabendal <esben@geanix.com>
+To: Han Xu <han.xu@nxp.com>
 Subject: Re: [PATCH] mtd: rawnand: gpmi: fix the suspend/resume issue
-To: Esben Haabendal <esben@geanix.com>
+References: <1578589556-683-1-git-send-email-han.xu@nxp.com>
+Date: Thu, 09 Jan 2020 21:45:58 +0100
+In-Reply-To: <1578589556-683-1-git-send-email-han.xu@nxp.com> (Han Xu's
+ message of "Fri, 10 Jan 2020 01:05:56 +0800")
+Message-ID: <87r208mk8p.fsf@geanix.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200109_120937_361794_27ABD8F7 
-X-CRM114-Status: GOOD (  13.85  )
+X-CRM114-CacheID: sfid-20200109_124601_761599_0CC03B86 
+X-CRM114-Status: GOOD (  21.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,62 +75,197 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Miquel Raynal <miquel.raynal@bootlin.com>, martin@geanix.com,
- Boris Brezillon <boris.brezillon@collabora.com>,
- linux-mtd <linux-mtd@lists.infradead.org>, sean@geanix.com,
- Han Xu <han.xu@nxp.com>
+Cc: vigneshr@ti.com, richard@nod.at, s.hauer@pengutronix.de, sean@geanix.com,
+ martin@geanix.com, boris.brezillon@collabora.com,
+ linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jan 9, 2020 at 2:06 PM Esben Haabendal <esben@geanix.com> wrote:
->
-> Miquel Raynal <miquel.raynal@bootlin.com> writes:
->
-> > Hi Esben, Han,
-> >
-> > Han Xu <han.xu@nxp.com> wrote on Fri, 10 Jan 2020 01:05:56 +0800:
-> >
-> >> fix several issues when system suspend/resume,
-> >>
-> >> - leverage the runtime pm for system suspend/resume
-> >> - enable the clock before register access
-> >> - re-apply timing settings
-> >> - set the proper pinctrl state
-> >
-> > Esben are you fine with this patch?
->
-> It sounds like something that should probably be 4 separate patches.
->
-> > Or maybe Han you could take over Esben's patch and extend it?
->
-> I don't see why my two patches, which covers point 1 and 3 in the list
-> of issues covered by Han's patch, should not be merged.
->
-> Han, would you mind re-spin your patch to two separate patches covering
-> the remaining issues
+Hi Han
 
-I am fine to keep your patches and re-spin the rest changes.
+See comments/questions below.
 
+If I understand the purpose of some of your changes correct, you are
+fixing the handling of pm usage counter, as it currently is incremented
+in gpmi_init() and decremented in gpmi_nand_remove().  I believe that
+would be nice to have in a separate patch with an explanation of the
+change.
+
+Han Xu <han.xu@nxp.com> writes:
+
+> fix several issues when system suspend/resume,
 >
->  - enable the clock before register access
->  - set the proper pinctrl state
+> - leverage the runtime pm for system suspend/resume
+> - enable the clock before register access
+> - re-apply timing settings
+> - set the proper pinctrl state
 >
-> /Esben
+> Signed-off-by: Han Xu <han.xu@nxp.com>
+> ---
+>  drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 59 ++++++++++++++++------
+>  1 file changed, 44 insertions(+), 15 deletions(-)
 >
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+> index 334fe3130285..37437d47ab9a 100644
+> --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/of.h>
+>  #include <linux/of_device.h>
+>  #include <linux/pm_runtime.h>
+> +#include <linux/pinctrl/consumer.h>
+>  #include <linux/dma/mxs-dma.h>
+>  #include "gpmi-nand.h"
+>  #include "gpmi-regs.h"
+> @@ -146,7 +147,11 @@ static int __gpmi_enable_clk(struct gpmi_nand_data *this, bool v)
+>  static int gpmi_init(struct gpmi_nand_data *this)
+>  {
+>  	struct resources *r = &this->resources;
+> -	int ret;
+> +	int ret = 0;
 
+I don't see why this is changed, given that ret is unconditionally
+assigned in the next line.
 
+> +
+> +	ret = pm_runtime_get_sync(this->dev);
+> +	if (ret < 0)
+> +		return ret;
+>  
+>  	ret = gpmi_reset_block(r->gpmi_regs, false);
+>  	if (ret)
+> @@ -179,8 +184,10 @@ static int gpmi_init(struct gpmi_nand_data *this)
+>  	 */
+>  	writel(BM_GPMI_CTRL1_DECOUPLE_CS, r->gpmi_regs + HW_GPMI_CTRL1_SET);
+>  
+> -	return 0;
 
--- 
-Sincerely,
+Please provide an explanation of the reasoning of this change is.
 
-Han XU
+>  err_out:
+> +	pm_runtime_mark_last_busy(this->dev);
+> +	pm_runtime_put_autosuspend(this->dev);
+> +
+>  	return ret;
+>  }
+>  
+> @@ -528,7 +535,7 @@ static int common_nfc_set_geometry(struct gpmi_nand_data *this)
+>  static int bch_set_geometry(struct gpmi_nand_data *this)
+>  {
+>  	struct resources *r = &this->resources;
+> -	int ret;
+> +	int ret = 0;
+
+I don't see any reason for this change.
+
+>  	ret = common_nfc_set_geometry(this);
+>  	if (ret)
+> @@ -2676,7 +2682,7 @@ static int gpmi_nand_probe(struct platform_device *pdev)
+>  	return 0;
+>  
+>  exit_nfc_init:
+> -	pm_runtime_put(&pdev->dev);
+
+I guess this is because of the change above that causes usage counter
+not to be incremented in gpmi_init() when it is successful.
+
+> +	pm_runtime_dont_use_autosuspend(&pdev->dev);
+
+Is this required before pm_runtime_disable()?
+
+>  	pm_runtime_disable(&pdev->dev);
+>  	release_resources(this);
+>  exit_acquire_resources:
+> @@ -2688,7 +2694,6 @@ static int gpmi_nand_remove(struct platform_device *pdev)
+>  {
+>  	struct gpmi_nand_data *this = platform_get_drvdata(pdev);
+>  
+> -	pm_runtime_put_sync(&pdev->dev);
+
+Should be covered by explanation of the change in gpmi_init().
+
+>  	pm_runtime_disable(&pdev->dev);
+>  
+>  	nand_release(&this->nand);
+> @@ -2700,10 +2705,12 @@ static int gpmi_nand_remove(struct platform_device *pdev)
+>  #ifdef CONFIG_PM_SLEEP
+>  static int gpmi_pm_suspend(struct device *dev)
+>  {
+> -	struct gpmi_nand_data *this = dev_get_drvdata(dev);
+> +	int ret;
+>  
+> -	release_dma_channels(this);
+> -	return 0;
+> +	pinctrl_pm_select_sleep_state(dev);
+> +	ret = pm_runtime_force_suspend(dev);
+> +
+> +	return ret;
+>  }
+>  
+>  static int gpmi_pm_resume(struct device *dev)
+> @@ -2711,9 +2718,13 @@ static int gpmi_pm_resume(struct device *dev)
+>  	struct gpmi_nand_data *this = dev_get_drvdata(dev);
+>  	int ret;
+>  
+> -	ret = acquire_dma_channels(this);
+> -	if (ret < 0)
+> +	ret = pm_runtime_force_resume(dev);
+> +	if (ret) {
+> +		dev_err(this->dev, "Error in resume %d\n", ret);
+>  		return ret;
+> +	}
+> +
+> +	pinctrl_pm_select_default_state(dev);
+>  
+>  	/* re-init the GPMI registers */
+>  	ret = gpmi_init(this);
+> @@ -2729,22 +2740,40 @@ static int gpmi_pm_resume(struct device *dev)
+>  		return ret;
+>  	}
+>  
+> +	/* re-apply the timing setting */
+> +	this->hw.must_apply_timings = true;
+> +
+>  	return 0;
+>  }
+>  #endif /* CONFIG_PM_SLEEP */
+>  
+> -static int __maybe_unused gpmi_runtime_suspend(struct device *dev)
+> +#define gpmi_enable_clk(x)	__gpmi_enable_clk(x, true)
+> +#define gpmi_disable_clk(x)	__gpmi_enable_clk(x, false)
+> +
+> +static int gpmi_runtime_suspend(struct device *dev)
+>  {
+>  	struct gpmi_nand_data *this = dev_get_drvdata(dev);
+>  
+> -	return __gpmi_enable_clk(this, false);
+> +	gpmi_disable_clk(this);
+> +	release_dma_channels(this);
+> +
+> +	return 0;
+>  }
+>  
+> -static int __maybe_unused gpmi_runtime_resume(struct device *dev)
+> +static int gpmi_runtime_resume(struct device *dev)
+>  {
+>  	struct gpmi_nand_data *this = dev_get_drvdata(dev);
+> +	int ret;
+>  
+> -	return __gpmi_enable_clk(this, true);
+> +	ret = gpmi_enable_clk(this);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = acquire_dma_channels(this);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return 0;
+>  }
+>  
+>  static const struct dev_pm_ops gpmi_pm_ops = {
 
 ______________________________________________________
 Linux MTD discussion mailing list
