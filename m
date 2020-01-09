@@ -2,72 +2,78 @@ Return-Path: <SRS0=bx7I=26=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7D30C282DD
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 Jan 2020 15:54:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E59CBC282DD
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 Jan 2020 16:15:44 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BAF8E206ED
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 Jan 2020 15:54:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A4FC120661
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 Jan 2020 16:15:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="auTqujv+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BAF8E206ED
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ecHjtk13";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="y/sZzdyL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A4FC120661
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:References:
-	To:Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Ut/opNATk1MvKvwsR7MK4gO+f7ff/6VvGOQR4Q8XiFo=; b=auTqujv+Pnj2XovURLVFVFT9Q
-	pSuaJsNIZY0o46EHd/4TXTMHvHIz5NFD495XJ6ZFkNsRKeKyaCp3tyUgtfIWyVsIX3Tfhq57QlnLo
-	MT+Gvg3APZOjrBaE5b6pymoLxrMlsL02030BYI2Vr289b/Em9KZviigdoZXjrNMJqySb/rDGtLbUc
-	Vd04HT+KdQ+0enDXnLjFSr07PGPAz21lrxI3BMZOpEEui5aHtogGaQHlZyD/UHG1F3kX01mQ/+G7w
-	OeW/OoLMnUBJ7EwVBJfle3cVB3x3GEcxPQgpSOkIhS0ANyULtsfv04tU93OYVZp9O4zNeH9Hp10mw
-	81TSmRzyg==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=RYA89uOEusWjQQVQsJGLdKyr+8zD0hEvF+wSLme2UBY=; b=ecHjtk13JP3xj2
+	/vobjX4eOt9ng9HQdPSZsUZ/6qnoYfuGJ+RZDcXU1uZ9c+W+8Lwhg05TOoRLIfwgbNFWvxTMVksvh
+	akGJYxIVWHkrO+8NmXXeZu+O+uCM8GBR6ga7jttcnhjStipss/wLzua+DK/FcsuemeqRzZlU3t6Xk
+	0p3PdSVx+AzGj/5jbZHRKo8Mh/422jy4ijsaW1/8laknahN4TDlMl9yAq8VLpvXm+VrEIsTOgORVe
+	cHRZJXqWk9dJaynzhNZMJigguI1DE+7NrzC7sYdKiryGWee2ZAItC0b0myCcVqglgqfI8csY7WwR7
+	a6mmcRZXcY0JcDyMxy8A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ipa8U-0008TB-Eo; Thu, 09 Jan 2020 15:54:14 +0000
-Received: from lhrrgout.huawei.com ([185.176.76.210] helo=huawei.com)
+	id 1ipaT4-00021b-TT; Thu, 09 Jan 2020 16:15:30 +0000
+Received: from conssluserg-02.nifty.com ([210.131.2.81])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ipa8Q-0008HB-5B
- for linux-mtd@lists.infradead.org; Thu, 09 Jan 2020 15:54:12 +0000
-Received: from lhreml707-cah.china.huawei.com (unknown [172.18.7.106])
- by Forcepoint Email with ESMTP id EAEA9FEA2FA6E372B4D1;
- Thu,  9 Jan 2020 15:54:02 +0000 (GMT)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- lhreml707-cah.china.huawei.com (10.201.108.48) with Microsoft SMTP Server
- (TLS) id 14.3.408.0; Thu, 9 Jan 2020 15:54:02 +0000
-Received: from [127.0.0.1] (10.202.226.43) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Thu, 9 Jan 2020
- 15:54:02 +0000
-From: John Garry <john.garry@huawei.com>
-Subject: Re: [PATCH v2 2/3] spi: Add HiSilicon v3xx SPI NOR flash controller
- driver
-To: <broonie@kernel.org>, <marek.vasut@gmail.com>,
- <tudor.ambarus@microchip.com>
-References: <1575900490-74467-1-git-send-email-john.garry@huawei.com>
- <1575900490-74467-3-git-send-email-john.garry@huawei.com>
-Message-ID: <0dc5cb2e-b765-9e13-b05e-9e3c835c5985@huawei.com>
-Date: Thu, 9 Jan 2020 15:54:00 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+ id 1ipaL2-0000HI-Tg
+ for linux-mtd@lists.infradead.org; Thu, 09 Jan 2020 16:07:17 +0000
+Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com
+ [209.85.221.176]) (authenticated)
+ by conssluserg-02.nifty.com with ESMTP id 009G6v5I031719
+ for <linux-mtd@lists.infradead.org>; Fri, 10 Jan 2020 01:06:57 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 009G6v5I031719
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+ s=dec2015msa; t=1578586018;
+ bh=k8jTaE2xbIiQDd54sogLUlEULj1XHwQrpsjDqVBmQwY=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=y/sZzdyLFOtYw9c2wgBtK0rqoD6/W9YIMcpdWwNH0yGvmshd8DNRo5usCFh+pFM/n
+ OoLA7Ai19lpymNvghMShWq/KVApFbb34/aV5V0QNPQuiBOA4lRPHGmn2OIMtDeEKXm
+ e8+ashjvf/7R3oslEoIgNbFs0wo+doqk1iEJek7Mpaw2y1HKy+1eSLxHvCNtckwCWV
+ SZkHZ4OdRLoWXDr5xJRpGyUjf5RBpxEPbrjJxbPBMPSUXh1HZMceWmm0sTUgiSQQ6z
+ IdHeS9sTh/+ySyWDsCaivtnE2e9faIW+ZljTdln5N654EFIiknyZ35qn3axZIY68Dd
+ K0A40I3yewomg==
+X-Nifty-SrcIP: [209.85.221.176]
+Received: by mail-vk1-f176.google.com with SMTP id i4so2102646vkc.3
+ for <linux-mtd@lists.infradead.org>; Thu, 09 Jan 2020 08:06:57 -0800 (PST)
+X-Gm-Message-State: APjAAAVV6Q3J4O2vvJ+NlKXOkBZx+yv3Om6hVXdfIwEeQlNwRyY6hSIM
+ ZaEUFBPOi26TV+GCRkUY+rLzwMynaJIUdRwJ1ao=
+X-Google-Smtp-Source: APXvYqxKxoT9MZW3mB7c/bKDieal6w3Ikp1C6sLd1g5RqvgVjmVhz7WjTd/weC+kDtVEKBo9rd/H2/5vBTbTZpRlHLA=
+X-Received: by 2002:a1f:18b:: with SMTP id 133mr7081862vkb.73.1578586016315;
+ Thu, 09 Jan 2020 08:06:56 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1575900490-74467-3-git-send-email-john.garry@huawei.com>
-Content-Language: en-US
-X-Originating-IP: [10.202.226.43]
-X-ClientProxiedBy: lhreml729-chm.china.huawei.com (10.201.108.80) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+References: <20191220093900.1855751-1-marex@denx.de>
+In-Reply-To: <20191220093900.1855751-1-marex@denx.de>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Fri, 10 Jan 2020 01:06:20 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARkwtNsRrmq=9Cv+hgM2b68m7_2sV1mnrLuYuZ6H4j=vA@mail.gmail.com>
+Message-ID: <CAK7LNARkwtNsRrmq=9Cv+hgM2b68m7_2sV1mnrLuYuZ6H4j=vA@mail.gmail.com>
+Subject: Re: [PATCH V2] mtd: rawnand: denali_dt: Add support for configuring
+ SPARE_AREA_SKIP_BYTES
+To: Marek Vasut <marex@denx.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200109_075410_375814_AB09C03C 
-X-CRM114-Status: GOOD (  12.93  )
+X-CRM114-CacheID: sfid-20200109_080713_211621_85824D51 
+X-CRM114-Status: GOOD (  25.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,87 +85,150 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: chenxiang66@hisilicon.com, linux-kernel@vger.kernel.org,
- linuxarm@huawei.com, fengsheng5@huawei.com, linux-spi@vger.kernel.org,
- linux-mtd@lists.infradead.org, xuejiancheng@hisilicon.com
+Cc: Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 09/12/2019 14:08, John Garry wrote:
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (op->data.dir == SPI_MEM_DATA_IN)
-> +		hisi_sfc_v3xx_read_databuf(host, op->data.buf.in, len);
-> +
-> +	return 0;
-> +}
-> +
-> +static int hisi_sfc_v3xx_exec_op(struct spi_mem *mem,
-> +				 const struct spi_mem_op *op)
-> +{
-> +	struct hisi_sfc_v3xx_host *host;
-> +	struct spi_device *spi = mem->spi;
-> +	u8 chip_select = spi->chip_select;
-> +
-> +	host = spi_controller_get_devdata(spi->master);
-> +
-> +	return hisi_sfc_v3xx_generic_exec_op(host, op, chip_select);
-> +}
-> +
-> +static const struct spi_controller_mem_ops hisi_sfc_v3xx_mem_ops = {
-> +	.adjust_op_size = hisi_sfc_v3xx_adjust_op_size,
-> +	.exec_op = hisi_sfc_v3xx_exec_op,
-> +};
-> +
-> +static int hisi_sfc_v3xx_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct hisi_sfc_v3xx_host *host;
-> +	struct spi_controller *ctlr;
-> +	u32 version;
-> +	int ret;
-> +
-> +	ctlr = spi_alloc_master(&pdev->dev, sizeof(*host));
-> +	if (!ctlr)
-> +		return -ENOMEM;
-> +
+On Fri, Dec 20, 2019 at 6:39 PM Marek Vasut <marex@denx.de> wrote:
+>
+> The SPARE_AREA_SKIP_BYTES register is reset when the controller reset
+> signal is toggled. Yet, this register must be configured to match the
+> content of the NAND OOB area. The current default value is always set
+> to 8 and is programmed into the hardware in case the hardware was not
+> programmed before (e.g. in a bootloader) with a different value. This
+> however does not work when the block is reset properly by Linux.
+>
+> On Altera SoCFPGA CycloneV, ArriaV and Arria10, which are the SoCFPGA
+> platforms which support booting from NAND, the SPARE_AREA_SKIP_BYTES
+> value must be set to 2. On Socionext Uniphier, the value is 8. This
+> patch adds support for preconfiguring the default value and handles
+> the special SoCFPGA case by setting the default to 2 on all SoCFPGA
+> platforms, while retaining the original behavior and default value of
+> 8 on all the other platforms.
+>
+> Signed-off-by: Marek Vasut <marex@denx.de>
+> Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
+> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Vignesh Raghavendra <vigneshr@ti.com>
+> To: linux-mtd@lists.infradead.org
+> Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> ---
+> V2: Move denali->oob_skip_bytes = data->oob_skip_bytes; right after
+>     of_device_get_match_data()
 
 
-Hi Mark,
+FYI.
 
-> +	ctlr->mode_bits = SPI_RX_DUAL | SPI_RX_QUAD |
-> +			  SPI_TX_DUAL | SPI_TX_QUAD;
+This patch was rebased to avoid a conflict:
+http://patchwork.ozlabs.org/patch/1214018/
 
-I have an issue with dual/quad support. I naively thought that setting 
-these bits would give me the highest protocol available.
+My Ack is in v3.
 
-However, now I notice that spi_device.mode needs to be set for supported 
-protocols for the slave - I'm using the generic spi mem ops to check if 
-protocols are supported based on this value.
 
- From checking acpi_spi_add_resource() or anywhere else, I cannot see 
-how SPI_RX_DUAL or the others are set for spi_device.mode. What am I 
-missing? Are these just not supported yet for ACPI? Or should the 
-spi-nor code not be relying on this since we should be able to get this 
-info from the SPI NOR part?
+I solved a merge conflict, and bundled in a series:
+http://patchwork.ozlabs.org/project/linux-mtd/list/?series=149821
 
-Cheers,
-John
 
-> +
-> +	host = spi_controller_get_devdata(ctlr);
-> +	host->dev = dev;
-> +
-> +	platform_set_drvdata(pdev, host);
-> +
-> +	host->regbase = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(host->regbase)) {
-> +		ret = PTR_ERR(host->regbase);
-> +		goto err_put_master;
 
+
+> ---
+>  drivers/mtd/nand/raw/denali.c    | 13 ++++++++++---
+>  drivers/mtd/nand/raw/denali_dt.c |  5 +++++
+>  2 files changed, 15 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
+> index 3102ddbd8abdb..b6c463d021677 100644
+> --- a/drivers/mtd/nand/raw/denali.c
+> +++ b/drivers/mtd/nand/raw/denali.c
+> @@ -1302,14 +1302,21 @@ int denali_init(struct denali_controller *denali)
+>
+>         /*
+>          * Set how many bytes should be skipped before writing data in OOB.
+> +        * If a non-zero value has already been configured, update it in HW.
+>          * If a non-zero value has already been set (by firmware or something),
+>          * just use it. Otherwise, set the driver's default.
+>          */
+> -       denali->oob_skip_bytes = ioread32(denali->reg + SPARE_AREA_SKIP_BYTES);
+> -       if (!denali->oob_skip_bytes) {
+> -               denali->oob_skip_bytes = DENALI_DEFAULT_OOB_SKIP_BYTES;
+> +       if (denali->oob_skip_bytes) {
+>                 iowrite32(denali->oob_skip_bytes,
+>                           denali->reg + SPARE_AREA_SKIP_BYTES);
+> +       } else {
+> +               denali->oob_skip_bytes =
+> +                       ioread32(denali->reg + SPARE_AREA_SKIP_BYTES);
+> +               if (!denali->oob_skip_bytes) {
+> +                       denali->oob_skip_bytes = DENALI_DEFAULT_OOB_SKIP_BYTES;
+> +                       iowrite32(denali->oob_skip_bytes,
+> +                                 denali->reg + SPARE_AREA_SKIP_BYTES);
+> +               }
+>         }
+>
+>         iowrite32(0, denali->reg + TRANSFER_SPARE_REG);
+> diff --git a/drivers/mtd/nand/raw/denali_dt.c b/drivers/mtd/nand/raw/denali_dt.c
+> index 8b779a899dcf4..443f9c1f6854d 100644
+> --- a/drivers/mtd/nand/raw/denali_dt.c
+> +++ b/drivers/mtd/nand/raw/denali_dt.c
+> @@ -27,6 +27,7 @@ struct denali_dt {
+>  struct denali_dt_data {
+>         unsigned int revision;
+>         unsigned int caps;
+> +       unsigned int oob_skip_bytes;
+>         const struct nand_ecc_caps *ecc_caps;
+>  };
+>
+> @@ -34,6 +35,7 @@ NAND_ECC_CAPS_SINGLE(denali_socfpga_ecc_caps, denali_calc_ecc_bytes,
+>                      512, 8, 15);
+>  static const struct denali_dt_data denali_socfpga_data = {
+>         .caps = DENALI_CAP_HW_ECC_FIXUP,
+> +       .oob_skip_bytes = 2,
+>         .ecc_caps = &denali_socfpga_ecc_caps,
+>  };
+>
+> @@ -42,6 +44,7 @@ NAND_ECC_CAPS_SINGLE(denali_uniphier_v5a_ecc_caps, denali_calc_ecc_bytes,
+>  static const struct denali_dt_data denali_uniphier_v5a_data = {
+>         .caps = DENALI_CAP_HW_ECC_FIXUP |
+>                 DENALI_CAP_DMA_64BIT,
+> +       .oob_skip_bytes = 8,
+>         .ecc_caps = &denali_uniphier_v5a_ecc_caps,
+>  };
+>
+> @@ -51,6 +54,7 @@ static const struct denali_dt_data denali_uniphier_v5b_data = {
+>         .revision = 0x0501,
+>         .caps = DENALI_CAP_HW_ECC_FIXUP |
+>                 DENALI_CAP_DMA_64BIT,
+> +       .oob_skip_bytes = 8,
+>         .ecc_caps = &denali_uniphier_v5b_ecc_caps,
+>  };
+>
+> @@ -122,6 +126,7 @@ static int denali_dt_probe(struct platform_device *pdev)
+>                 denali->revision = data->revision;
+>                 denali->caps = data->caps;
+>                 denali->ecc_caps = data->ecc_caps;
+> +               denali->oob_skip_bytes = data->oob_skip_bytes;
+>         }
+>
+>         denali->dev = dev;
+> --
+> 2.24.1
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
 
 ______________________________________________________
 Linux MTD discussion mailing list
