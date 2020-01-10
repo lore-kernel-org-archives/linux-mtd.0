@@ -2,80 +2,75 @@ Return-Path: <SRS0=enRf=27=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BDE2FC282DD
-	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jan 2020 19:06:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54394C282DD
+	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jan 2020 19:31:41 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8B3AE2051A
-	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jan 2020 19:06:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1DA0620661
+	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jan 2020 19:31:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qdURvOWA";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="tJzgrlOE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B3AE2051A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jbB3YwXz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1DA0620661
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=K/vPASdxD+eW7b0fEs8JjqK6x4fLjjVu4dFnCcrf2/g=; b=qdURvOWAFQb/Wb
-	vuMOMBfjiGAYrzc3AfjyDTrYIE920JVB/sIEonhNLu251qX5A5USppl3H3HxxvGDdoVLlVQigzuDB
-	1YWRvCClY2OP3Wrl/UWDWtfh8K8PXir745xt1XiP1D9INzQPSle2u3teB2Tx8FDWwbnomNtWMD3Mb
-	JohF98ZvR0d75UJ13+8tBC5wmhl4kd8H3f8SWFWb2k7liH78uVzDnQ5gbj8mxLWCWCOonw5Ju+NpC
-	RDza+7MhrwqtkUId9p4gY+xV8KYhNCmU1QVPJO6wsQRe3LxbQRPQSU6BVqGEmbLzquF9KcUxFT1mU
-	kexYmTHCw27uoSMtLXGw==;
+	List-Owner; bh=LdIQIG2EYNU72d4B9+pFr63km9N6Ur/jEhqQw71E/v8=; b=jbB3YwXzCiF3mv
+	DhWiolEnUMxlhZThDVu9pXbqQw5v93+A4ivcTAdPQypNZAkAikBXyX+heaChtn/59p/ozYhWNwmqm
+	aExsvbwgi7dPMCNbphHIKDJrdGFoxdSBhxfFfr5FaX2BNTmdgRybE8SzCCnSEbWWRktoap8bUCzcO
+	iVPcoc9s4ipAK9Xg8o1fd0758IVHmGwysW7iXd1Hs7Huq60v9shmDNdHXIcTkxFReRwbfXziIq8ed
+	USXZxqpBtuxPsQoZNiHYInd+iaNudc091lY+lbLxko0cw1hBq4gVVsnHxCOrXt1XT3G0QSdVCr/VA
+	A3Beruq8Y/bL7mXLK0PA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ipzby-0007hJ-32; Fri, 10 Jan 2020 19:06:22 +0000
-Received: from conssluserg-04.nifty.com ([210.131.2.83])
+	id 1iq00D-0002HA-K9; Fri, 10 Jan 2020 19:31:25 +0000
+Received: from mga05.intel.com ([192.55.52.43])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ipzbt-0007g5-QT
- for linux-mtd@lists.infradead.org; Fri, 10 Jan 2020 19:06:20 +0000
-Received: from mail-vs1-f46.google.com (mail-vs1-f46.google.com
- [209.85.217.46]) (authenticated)
- by conssluserg-04.nifty.com with ESMTP id 00AJ5v3u015494
- for <linux-mtd@lists.infradead.org>; Sat, 11 Jan 2020 04:05:58 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 00AJ5v3u015494
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
- s=dec2015msa; t=1578683158;
- bh=8NtpfIX/PcWnAxwvFtqqnnW2AvNcQkGiwZlxmXOTlpw=;
- h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=tJzgrlOEdQm5k/LWHCdLyeBjVZQJreQGUPYzeBoixD9g6kfkLv28xDSs3eOmSjf4+
- 6HrnispRQLALZRZNoBFMTFbJjQzjBWjL7hXY/Kbyc3zeIUCYPW04YAEcPJN3c0nOO7
- Q82z3TkoQsORiu6t4sA1t0OeRLIE6iNidpea711SVvj9hZLVa4ACS8/Uc4CYUWPaL7
- UlDFTiBS8ghaDNmYcECkQ7IC5+Z6L4SfNWgVwT9eWTDgfhsGMJekT9e/r0pKX3ISeQ
- VfS31rujKLDznpFGCYIc2aM8s8NO9jdLPcUh5jwI0Hc7Mjqc8xPUU+ZiZabjM1ThA0
- 7bBdxy66hW3tQ==
-X-Nifty-SrcIP: [209.85.217.46]
-Received: by mail-vs1-f46.google.com with SMTP id p6so1898022vsj.11
- for <linux-mtd@lists.infradead.org>; Fri, 10 Jan 2020 11:05:58 -0800 (PST)
-X-Gm-Message-State: APjAAAW1GSHGRTnvNWB6jWLqNOaQhbmnqELlfgjpm8nPnL7VBuHA/0Tf
- eSb03tC/ZgpNSrAXJ5StmsLGMdjhJE6yb/N2WVw=
-X-Google-Smtp-Source: APXvYqzptZS2PQDC/5TdBee35LOqdXSOPz6nCKyGAVj9C1cZQt4B1OAp6Jj3GTtegq7n6pGmndJjSRqfxenL+7ZJKoc=
-X-Received: by 2002:a05:6102:3102:: with SMTP id
- e2mr60506vsh.179.1578683157058; 
- Fri, 10 Jan 2020 11:05:57 -0800 (PST)
+ id 1iq00A-0002G2-H5
+ for linux-mtd@lists.infradead.org; Fri, 10 Jan 2020 19:31:24 +0000
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 10 Jan 2020 11:31:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,418,1571727600"; d="scan'208";a="422217933"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+ by fmsmga005.fm.intel.com with ESMTP; 10 Jan 2020 11:31:18 -0800
+Received: from andy by smile with local (Exim 4.93)
+ (envelope-from <andriy.shevchenko@linux.intel.com>)
+ id 1iq007-0003bl-4D; Fri, 10 Jan 2020 21:31:19 +0200
+Date: Fri, 10 Jan 2020 21:31:19 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: John Garry <john.garry@huawei.com>
+Subject: Re: [PATCH v2 2/3] spi: Add HiSilicon v3xx SPI NOR flash controller
+ driver
+Message-ID: <20200110193119.GI32742@smile.fi.intel.com>
+References: <1575900490-74467-1-git-send-email-john.garry@huawei.com>
+ <1575900490-74467-3-git-send-email-john.garry@huawei.com>
+ <0dc5cb2e-b765-9e13-b05e-9e3c835c5985@huawei.com>
+ <20200109212842.GK3702@sirena.org.uk>
+ <df67b562-7d82-19f6-7581-680190a7772d@huawei.com>
+ <20200110140726.GB5889@sirena.org.uk>
+ <6db83881-927c-d11c-9c77-23a45892ddab@huawei.com>
 MIME-Version: 1.0
-References: <5143724.5TqzkYX0oI@dabox> <23083624.r2bJSIadJk@dabox>
- <CAK7LNASG+b03NDhrenB9yfvgYDVpYSnb2vSCu_-DB8dh70boMg@mail.gmail.com>
- <2827587.laNcgWlGab@dabox>
-In-Reply-To: <2827587.laNcgWlGab@dabox>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Sat, 11 Jan 2020 04:05:20 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQOCoJC0RzOhTEofHdR+zU5sQTxV-t4nERBExW1ddW5hw@mail.gmail.com>
-Message-ID: <CAK7LNAQOCoJC0RzOhTEofHdR+zU5sQTxV-t4nERBExW1ddW5hw@mail.gmail.com>
-Subject: Re: mtd raw nand denali.c broken for Intel/Altera Cyclone V
-To: Tim Sander <tim@krieglstein.org>
+Content-Disposition: inline
+In-Reply-To: <6db83881-927c-d11c-9c77-23a45892ddab@huawei.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200110_110618_093523_66D0D7A9 
-X-CRM114-Status: GOOD (  24.71  )
+X-CRM114-CacheID: sfid-20200110_113122_576593_8B6273AD 
+X-CRM114-Status: GOOD (  16.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,117 +82,61 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, Dinh Nguyen <dinguyen@kernel.org>,
- Richard Weinberger <richard@nod.at>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: chenxiang66@hisilicon.com, linux-kernel@vger.kernel.org,
+ tudor.ambarus@microchip.com, liusimin4@huawei.com, linuxarm@huawei.com,
+ linux-spi@vger.kernel.org, marek.vasut@gmail.com,
+ Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org,
+ xuejiancheng@hisilicon.com, Mika Westerberg <mika.westerberg@linux.intel.com>,
+ wanghuiqiang <wanghuiqiang@huawei.com>, fengsheng5@huawei.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, Jan 11, 2020 at 1:47 AM Tim Sander <tim@krieglstein.org> wrote:
->
-> Hi Masahiro Yamada
->
-> Sorry for the large delay. I have seen the patches at
-> https://lists.infradead.org/pipermail/linux-mtd/2019-December/092852.html
-> Seem to resolve the question about the spare_area_skip_bytes register.
->
-> I have now set the register to 2 which seems to be the right choice on an Intel
-> SocFPGA. But still i am out of luck trying to boot 5.4.5-rt3 or 5.5-rc5. I get the
-> following messages during bootup booting:
-> [    1.825590] denali-nand-dt ff900000.nand: timeout while waiting for irq 0x1000
-> [    1.832936] denali-nand-dt: probe of ff900000.nand failed with error -5
->
-> But the commit c19e31d0a32dd 2017-06-13 22:45:38 predates the 4.19 kernel
-> release (Mon Oct 22 07:37:37 2018). So it seems there is not an obvious commit
-> which is causing the problem. Looking at the changes it might be that the timing
-> calculations in the driver changed which might also lead to a similar error.
->
-> I am booting via NFS the bootloader is placed in NOR flash.  The corresponding
-> nand dts entry is updated to the new format and looks like this:
->                 nand@ff900000 {
->                         #address-cells = <0x1>;
->                         #size-cells = <0x0>;
->                         compatible = "altr,socfpga-denali-nand";
->                         reg = <0xff900000 0x100000 0xffb80000 0x10000>;
->                         reg-names = "nand_data", "denali_reg";
->                         interrupts = <0x0 0x90 0x4>;
->                         clocks = <0x2d 0x1e 0x2e>;
->                         clock-names = "nand", "nand_x", "ecc";
->                         resets = <0x6 0x24>;
->                         status = "okay";
->                         nand@0 {
->                                 reg = <0x0>;
->                                 #address-cells = <0x1>;
->                                 #size-cells = <0x1>;
->                                 partition@0 {
->                                         label = "work";
->                                         reg = <0x0 0x10000000>;
->                                 };
->                         };
->                 };
->
-> The last kernel i am able to boot is 4.19.10. I have tried booting:
-> 5.1.21, 5.2.9, 5.3-rc8, 5.4.5-rt3 and 5.5-rc5. They all failed. Unfortunately the
-> range is quite large for bisecting the problem. It also occurred to me that
-> all the platforms with Intel Cyclone V in mainline are development boards
-> which boot from SD-card not exhibiting this problem on their default boot path.
+On Fri, Jan 10, 2020 at 02:58:54PM +0000, John Garry wrote:
+> On 10/01/2020 14:07, Mark Brown wrote:
+> > On Fri, Jan 10, 2020 at 11:55:37AM +0000, John Garry wrote: >
 
+...
 
-What will happen if you apply all of these:
+> > > I will note that PRP0001+"jedec,spi-nor" compatible DSD seems to be the
+> > > defacto method to describe the SPI NOR-compat part for ACPI - that's what
+> > > I'm using. We could add properties there, but that seems improper.
+> > 
+> > OK, so that's just reusing the DT binding in which case everything
+> > that's valid for the DT binding should also be valid for ACPI - I
+> > thought that actually worked automatically without you having to do
+> > anything in the code but ICBW.
+> 
+> I thought that it would be improper as we could be mixing ACPI methods to
+> describe the serial bus (SPI Serial Bus Connection Resource Descriptor) and
+> also DT properties which could conflict, like CS active high.
+> 
+> However I do see extra properties than "compatible" being added in DSD for
+> PRP0001:
+> https://patchwork.ozlabs.org/patch/662813/ (see EEPROM part)
 
-http://patchwork.ozlabs.org/project/linux-mtd/list/?series=149821
+PRP method is only for vendors to *test* the hardware in ACPI environment.
+The proper method is to allocate correct ACPI ID.
 
-on top of the mainline kernel,
-and then, hack denali->clk_rate and denali->clk_x_rate as follows?
+Properties (_DSD in ACPI) may be used in the same way as for DT if we have no
+other means in ACPI specification for them.
 
+> And if we were to do this, I think that we would need to add some
+> device_property_read_u32("spi-rx-bus-width", ...), etc calls in the SPI FW
+> parsing for ACPI path - I couldn't see that.
 
--       denali->clk_rate = clk_get_rate(dt->clk);
--       denali->clk_x_rate = clk_get_rate(dt->clk_x);
-+       denali->clk_rate = 50000000;
-+       denali->clk_x_rate = 200000000;
+It's okay as long as you have ACPI ID.
 
-
-
-
-
-If it still fails, what about this?
-
-       denali->clk_rate = 0;
-       denali->clk_x_rate = 0;
-
-
-
-> PS: Here is some snippet from an older mail i didn't sent to the list yet which
-> might be superseded by now:
-> To get into this matter i started reading the "Intel Cyclone V HPS TRM"
-> Section 13-20 Preserving Bad Block Markers:
-> "You can configure the NAND flash controller to skip over a specified number of
-> bytes when it writes the last sector in a page to the spare area. This option
-> write the desired offset to the spare_area_skip_bytes register in the config
-> group. For example, if the device page size is 2 KB, and the device
-> area, set the spare_area_skip_bytes register to 2. When the flash controller
-> writes the last sector of the page that overlaps with the spare area, it
-> spare_area_skip_bytes must be an even number. For example, if the bad block
-> marker is a single byte, set spare_area_skip_bytes to 2."
-
-I did not know this documentation.
-
-It says "For example" (twice),
-it sounds uncertain to me, though.
-
-Anyway, an intel engineer checked the boot ROM code.
-SPARE_AREA_SKIP_BYTES=2 is correct, he said.
-
+P.S. Most of the sensor drivers were updated in order to support ACPI PRP
+method due to DIY hobbyist on IoT sector and embedded devices. This should not
+be an official way how we support hardware on ACPI-based platforms.
 
 -- 
-Best Regards
-Masahiro Yamada
+With Best Regards,
+Andy Shevchenko
+
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
