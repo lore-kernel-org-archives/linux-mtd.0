@@ -2,59 +2,65 @@ Return-Path: <SRS0=enRf=27=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C2F0C282DD
-	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jan 2020 13:40:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00F82C282DD
+	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jan 2020 14:07:43 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1E6422080D
-	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jan 2020 13:40:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C914820721
+	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jan 2020 14:07:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Y/jWgE2w"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E6422080D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="m3TA4cTk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C914820721
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=w5Orn76glDL7JASyTjYRsojK+O0hqQjr53zRPxRevvk=; b=Y/jWgE2wmgZGxL
-	kNYDDFIOsX65E8QwFsE4sL5UHhfhPBRSKq7rNIOYrc+oVYhjMYX1SSA/E5KSZFs8cGIWf8Riu9FaW
-	p+OVAZv+a3Vz/rEULnbx5TQ+Xo0e6bjiN9oZyx+3Xcbb4oysoR9AYnDF3EYy6kAO6b4pxfgRIU69E
-	Tx+wEM1sMlXKWBa66MQOUfhjshl657YAgN3dEucfJlaD3uRdxDsoXveEWOSFy9b4IsASb25bvpqqm
-	Fk6UPtma8RSuMuTwXnCI+W7sfRd5LzSKw6wWBcs0fwCzwy9zy6W8A3dJdHDif16NSGlj3b2SQ5V71
-	7NTdR6e5UaPWh3hcHQHA==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:Cc:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=PFvbhYyj8zPmQtfcxxVTnnS/7JsW/wHcm7GgDpMz7dM=; b=m3TA4cTkbH5YzicUKKKmg5X5v
+	sLtb+louGuYExxjwd2vXItBvUi9usxA0PCg4MajN22AdpqXUmaAon8qKvTVycsVffmPEFBtfB3k24
+	nZeOsOPP/hPI3dMsY58T32wJ2at+RkOw1AKzzjdsixdlF2CdlkxjTr4a4rwUIJsorWDdbAWf3Ri1X
+	qGQcuf6PTPV7QmGOzdd3Ce4bLuQJNaDaj81eHGefVxL5YoDf2YUPK24STFwKRpRkWKAeTHkaDRLm2
+	VpLA40gqwvQYqsUKvrcWUXlIrqmDSw6IfQhu27WYIJKGj7x6ZKlZrs3EmVWp6aWo3rh/7tMQ4Jn/m
+	+s5EMjc7A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ipuWe-0000eV-1w; Fri, 10 Jan 2020 13:40:32 +0000
-Received: from relay10.mail.gandi.net ([217.70.178.230])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ipuWR-0000Td-NU; Fri, 10 Jan 2020 13:40:22 +0000
-Received: from localhost (lfbn-lyo-1-1670-129.w90-65.abo.wanadoo.fr
- [90.65.102.129])
- (Authenticated sender: alexandre.belloni@bootlin.com)
- by relay10.mail.gandi.net (Postfix) with ESMTPSA id 29C1E240016;
- Fri, 10 Jan 2020 13:40:01 +0000 (UTC)
-Date: Fri, 10 Jan 2020 14:40:01 +0100
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
-To: Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: Re: [PATCH 03/16] dt-bindings: atmel-tcb: add microchip,<chip>-tcb
-Message-ID: <20200110134001.GD1027187@piout.net>
-References: <1578488123-26127-1-git-send-email-claudiu.beznea@microchip.com>
- <1578488123-26127-4-git-send-email-claudiu.beznea@microchip.com>
+	id 1ipuwl-0006Be-Pe; Fri, 10 Jan 2020 14:07:31 +0000
+Received: from foss.arm.com ([217.140.110.172])
+ by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1ipuwj-0006Aq-Ce
+ for linux-mtd@lists.infradead.org; Fri, 10 Jan 2020 14:07:30 +0000
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7CCD3328;
+ Fri, 10 Jan 2020 06:07:28 -0800 (PST)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 05E883F534;
+ Fri, 10 Jan 2020 06:07:27 -0800 (PST)
+Date: Fri, 10 Jan 2020 14:07:26 +0000
+From: Mark Brown <broonie@kernel.org>
+To: John Garry <john.garry@huawei.com>
+Subject: Re: [PATCH v2 2/3] spi: Add HiSilicon v3xx SPI NOR flash controller
+ driver
+Message-ID: <20200110140726.GB5889@sirena.org.uk>
+References: <1575900490-74467-1-git-send-email-john.garry@huawei.com>
+ <1575900490-74467-3-git-send-email-john.garry@huawei.com>
+ <0dc5cb2e-b765-9e13-b05e-9e3c835c5985@huawei.com>
+ <20200109212842.GK3702@sirena.org.uk>
+ <df67b562-7d82-19f6-7581-680190a7772d@huawei.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1578488123-26127-4-git-send-email-claudiu.beznea@microchip.com>
+In-Reply-To: <df67b562-7d82-19f6-7581-680190a7772d@huawei.com>
+X-Cookie: A little pain never hurt anyone.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200110_054019_902902_93CAF596 
-X-CRM114-Status: GOOD (  12.05  )
+X-CRM114-CacheID: sfid-20200110_060729_475625_E1E73E40 
+X-CRM114-Status: GOOD (  10.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,56 +72,63 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: mark.rutland@arm.com, vigneshr@ti.com, linux-iio@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, pmeerw@pmeerw.net,
- miquel.raynal@bootlin.com, lee.jones@linaro.org, linux-rtc@vger.kernel.org,
- lars@metafoo.de, richard@nod.at, ludovic.desroches@microchip.com,
- wg@grandegger.com, linux-media@vger.kernel.org, devicetree@vger.kernel.org,
- tudor.ambarus@microchip.com, radu_nicolae.pirea@upb.ro,
- linux-can@vger.kernel.org, robh+dt@kernel.org, mkl@pengutronix.de,
- mchehab@kernel.org, linux-arm-kernel@lists.infradead.org, a.zummo@towertech.it,
- richard.genoud@gmail.com, netdev@vger.kernel.org, nicolas.ferre@microchip.com,
- linux-spi@vger.kernel.org, vkoul@kernel.org, broonie@kernel.org,
- knaack.h@gmx.de, dmaengine@vger.kernel.org, eugen.hristev@microchip.com,
- jic23@kernel.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: tudor.ambarus@microchip.com, linux-kernel@vger.kernel.org,
+ chenxiang66@hisilicon.com, linuxarm@huawei.com, linux-spi@vger.kernel.org,
+ marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
+ xuejiancheng@hisilicon.com, fengsheng5@huawei.com
+Content-Type: multipart/mixed; boundary="===============7525006604578363460=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 08/01/2020 14:55:10+0200, Claudiu Beznea wrote:
-> Add microchip,<chip>-tcb to DT bindings documentation. This is for
-> microchip,sam9x60-tcb.
-> 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-> ---
->  Documentation/devicetree/bindings/mfd/atmel-tcb.txt | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mfd/atmel-tcb.txt b/Documentation/devicetree/bindings/mfd/atmel-tcb.txt
-> index c4a83e364cb6..e1713e41f6e0 100644
-> --- a/Documentation/devicetree/bindings/mfd/atmel-tcb.txt
-> +++ b/Documentation/devicetree/bindings/mfd/atmel-tcb.txt
-> @@ -1,6 +1,7 @@
->  * Device tree bindings for Atmel Timer Counter Blocks
-> -- compatible: Should be "atmel,<chip>-tcb", "simple-mfd", "syscon".
-> -  <chip> can be "at91rm9200" or "at91sam9x5"
-> +- compatible: Should be "atmel,<chip>-tcb", "microchip,<chip>-tcb",
-> +  "simple-mfd", "syscon".
-> +  <chip> can be "at91rm9200", "at91sam9x5" or "sam9x60"
 
-atmel,sam9x60-tcb, microchip,at91rm9200-tcb and microchip,at91sam9x5-tcb
-are not allowed and the documentation should reflect that.
+--===============7525006604578363460==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="QKdGvSO+nmPlgiQ/"
+Content-Disposition: inline
 
-It would probably be easier to do that on top of the yaml conversion
-here:
-https://lore.kernel.org/lkml/20191009224006.5021-2-alexandre.belloni@bootlin.com/
 
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+--QKdGvSO+nmPlgiQ/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Jan 10, 2020 at 11:55:37AM +0000, John Garry wrote:
+
+> I will note that PRP0001+"jedec,spi-nor" compatible DSD seems to be the
+> defacto method to describe the SPI NOR-compat part for ACPI - that's what
+> I'm using. We could add properties there, but that seems improper.
+
+OK, so that's just reusing the DT binding in which case everything
+that's valid for the DT binding should also be valid for ACPI - I
+thought that actually worked automatically without you having to do
+anything in the code but ICBW.
+
+--QKdGvSO+nmPlgiQ/
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl4YhR0ACgkQJNaLcl1U
+h9CHqQf/fT6tkZc5rjRON7HtRrGsmNaUJN8ElUARXmp+zfbAka7ozgwC4DENqjOK
+I9Of3xZsrE2VlGeIpXS7KAkjdbCOvoRmMhChM1VH7yF5lxz+AEOjWwKZlfXpurjM
+RxElFm6u7Z9iiP0PDww9K+yEXS91EbxPFi7UvRL783aV3VJORsP9aY7ewmXSb9UP
+E3SLtAQQMhQrwrMS7jGd3tex9ik6YdXOqChEsaScE7GDjvGUDNS54yYXK1lfCPHi
+yKq7WymCtC2pgoVQxmQloHBzk82z6wMSwVp+DowO1eM3qbdevM6UVKniyJLDT5pN
+EEDzuxOjUXvHls2lGkGX9YdKUFFLhw==
+=lFqO
+-----END PGP SIGNATURE-----
+
+--QKdGvSO+nmPlgiQ/--
+
+
+--===============7525006604578363460==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============7525006604578363460==--
+
