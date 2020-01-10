@@ -2,75 +2,60 @@ Return-Path: <SRS0=enRf=27=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54394C282DD
-	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jan 2020 19:31:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61223C282DD
+	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jan 2020 19:59:32 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1DA0620661
-	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jan 2020 19:31:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2B215206ED
+	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jan 2020 19:59:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jbB3YwXz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1DA0620661
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Ynd140II"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2B215206ED
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:
+	In-Reply-To:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LdIQIG2EYNU72d4B9+pFr63km9N6Ur/jEhqQw71E/v8=; b=jbB3YwXzCiF3mv
-	DhWiolEnUMxlhZThDVu9pXbqQw5v93+A4ivcTAdPQypNZAkAikBXyX+heaChtn/59p/ozYhWNwmqm
-	aExsvbwgi7dPMCNbphHIKDJrdGFoxdSBhxfFfr5FaX2BNTmdgRybE8SzCCnSEbWWRktoap8bUCzcO
-	iVPcoc9s4ipAK9Xg8o1fd0758IVHmGwysW7iXd1Hs7Huq60v9shmDNdHXIcTkxFReRwbfXziIq8ed
-	USXZxqpBtuxPsQoZNiHYInd+iaNudc091lY+lbLxko0cw1hBq4gVVsnHxCOrXt1XT3G0QSdVCr/VA
-	A3Beruq8Y/bL7mXLK0PA==;
+	References:List-Owner; bh=m+Chi/KsZXuj3C2Xn3PYGUA/PrBL2/nUTFBQ9K9DeNY=; b=Ynd
+	140IIzY0VwJrU9ITtsmfzC6Pe0NUsTL5UIRERepXmgNWDcGPnpmShiJWkJJ3ZcO0+A/bix/eaLSX1
+	7kNSB34IlGWeg5FA9bFgteMKTKwfQ2+Oq4Z6sXunH6+bLFrV/O9y5J+Lzj4rIal2nVV1d5F9k8DAc
+	pyvxDvOLFlfyoSKcyddiMTe+aM4AP8mgiwHNseWs+ty3FADqXYO21t9PgZwoTyRIuk1jp5sCC6Wmj
+	9x+wcqTOOjldyraYFIWmdILwE5bdkE/V66ITpftnEh7SbMYUi7s1YcTIaL4l1L/+0mHmSeWlm6BmR
+	RfrzXic1l5R+u/oVikcjR2XLsjkm1Dw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iq00D-0002HA-K9; Fri, 10 Jan 2020 19:31:25 +0000
-Received: from mga05.intel.com ([192.55.52.43])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iq00A-0002G2-H5
- for linux-mtd@lists.infradead.org; Fri, 10 Jan 2020 19:31:24 +0000
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 10 Jan 2020 11:31:21 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,418,1571727600"; d="scan'208";a="422217933"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
- by fmsmga005.fm.intel.com with ESMTP; 10 Jan 2020 11:31:18 -0800
-Received: from andy by smile with local (Exim 4.93)
- (envelope-from <andriy.shevchenko@linux.intel.com>)
- id 1iq007-0003bl-4D; Fri, 10 Jan 2020 21:31:19 +0200
-Date: Fri, 10 Jan 2020 21:31:19 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+	id 1iq0R6-0005Cm-3J; Fri, 10 Jan 2020 19:59:12 +0000
+Received: from foss.arm.com ([217.140.110.172])
+ by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1iq0R2-0005Bt-75
+ for linux-mtd@lists.infradead.org; Fri, 10 Jan 2020 19:59:09 +0000
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D051E328;
+ Fri, 10 Jan 2020 11:59:04 -0800 (PST)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5615D3F534;
+ Fri, 10 Jan 2020 11:59:04 -0800 (PST)
+Date: Fri, 10 Jan 2020 19:59:02 +0000
+From: Mark Brown <broonie@kernel.org>
 To: John Garry <john.garry@huawei.com>
-Subject: Re: [PATCH v2 2/3] spi: Add HiSilicon v3xx SPI NOR flash controller
- driver
-Message-ID: <20200110193119.GI32742@smile.fi.intel.com>
-References: <1575900490-74467-1-git-send-email-john.garry@huawei.com>
- <1575900490-74467-3-git-send-email-john.garry@huawei.com>
- <0dc5cb2e-b765-9e13-b05e-9e3c835c5985@huawei.com>
- <20200109212842.GK3702@sirena.org.uk>
- <df67b562-7d82-19f6-7581-680190a7772d@huawei.com>
- <20200110140726.GB5889@sirena.org.uk>
- <6db83881-927c-d11c-9c77-23a45892ddab@huawei.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <6db83881-927c-d11c-9c77-23a45892ddab@huawei.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Subject: Applied "MAINTAINERS: Add a maintainer for the HiSilicon v3xx SFC
+ driver" to the spi tree
+In-Reply-To: <1575900490-74467-4-git-send-email-john.garry@huawei.com>
+Message-Id: <applied-1575900490-74467-4-git-send-email-john.garry@huawei.com>
+X-Patchwork-Hint: ignore
+X-Bad-Reply: In-Reply-To but no 'Re:' in Subject.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200110_113122_576593_8B6273AD 
-X-CRM114-Status: GOOD (  16.67  )
+X-CRM114-CacheID: sfid-20200110_115908_302000_58C6D763 
+X-CRM114-Status: GOOD (  11.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,60 +67,78 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: chenxiang66@hisilicon.com, linux-kernel@vger.kernel.org,
- tudor.ambarus@microchip.com, liusimin4@huawei.com, linuxarm@huawei.com,
- linux-spi@vger.kernel.org, marek.vasut@gmail.com,
+Cc: fengsheng5@huawei.com, chenxiang66@hisilicon.com,
+ linux-kernel@vger.kernel.org, linuxarm@huawei.com, marek.vasut@gmail.com,
  Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org,
- xuejiancheng@hisilicon.com, Mika Westerberg <mika.westerberg@linux.intel.com>,
- wanghuiqiang <wanghuiqiang@huawei.com>, fengsheng5@huawei.com
+ tudor.ambarus@microchip.com, xuejiancheng@hisilicon.com,
+ linux-spi@vger.kernel.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Jan 10, 2020 at 02:58:54PM +0000, John Garry wrote:
-> On 10/01/2020 14:07, Mark Brown wrote:
-> > On Fri, Jan 10, 2020 at 11:55:37AM +0000, John Garry wrote: >
+The patch
 
-...
+   MAINTAINERS: Add a maintainer for the HiSilicon v3xx SFC driver
 
-> > > I will note that PRP0001+"jedec,spi-nor" compatible DSD seems to be the
-> > > defacto method to describe the SPI NOR-compat part for ACPI - that's what
-> > > I'm using. We could add properties there, but that seems improper.
-> > 
-> > OK, so that's just reusing the DT binding in which case everything
-> > that's valid for the DT binding should also be valid for ACPI - I
-> > thought that actually worked automatically without you having to do
-> > anything in the code but ICBW.
-> 
-> I thought that it would be improper as we could be mixing ACPI methods to
-> describe the serial bus (SPI Serial Bus Connection Resource Descriptor) and
-> also DT properties which could conflict, like CS active high.
-> 
-> However I do see extra properties than "compatible" being added in DSD for
-> PRP0001:
-> https://patchwork.ozlabs.org/patch/662813/ (see EEPROM part)
+has been applied to the spi tree at
 
-PRP method is only for vendors to *test* the hardware in ACPI environment.
-The proper method is to allocate correct ACPI ID.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-5.6
 
-Properties (_DSD in ACPI) may be used in the same way as for DT if we have no
-other means in ACPI specification for them.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> And if we were to do this, I think that we would need to add some
-> device_property_read_u32("spi-rx-bus-width", ...), etc calls in the SPI FW
-> parsing for ACPI path - I couldn't see that.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-It's okay as long as you have ACPI ID.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-P.S. Most of the sensor drivers were updated in order to support ACPI PRP
-method due to DIY hobbyist on IoT sector and embedded devices. This should not
-be an official way how we support hardware on ACPI-based platforms.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
+Thanks,
+Mark
+
+From 99eb0a1221ac1083b8c87932c438ef016abdaa05 Mon Sep 17 00:00:00 2001
+From: John Garry <john.garry@huawei.com>
+Date: Mon, 9 Dec 2019 22:08:10 +0800
+Subject: [PATCH] MAINTAINERS: Add a maintainer for the HiSilicon v3xx SFC
+ driver
+
+Set John Garry @ Huawei as the maintainer.
+
+Signed-off-by: John Garry <john.garry@huawei.com>
+Link: https://lore.kernel.org/r/1575900490-74467-4-git-send-email-john.garry@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ MAINTAINERS | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index bd5847e802de..8c119bd4f687 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -7492,6 +7492,12 @@ S:	Supported
+ F:	drivers/scsi/hisi_sas/
+ F:	Documentation/devicetree/bindings/scsi/hisilicon-sas.txt
+ 
++HISILICON V3XX SPI NOR FLASH Controller Driver
++M:	John Garry <john.garry@huawei.com>
++W:	http://www.hisilicon.com
++S:	Maintained
++F:	drivers/spi/spi-hisi-sfc-v3xx.c
++
+ HISILICON QM AND ZIP Controller DRIVER
+ M:	Zhou Wang <wangzhou1@hisilicon.com>
+ L:	linux-crypto@vger.kernel.org
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.20.1
 
 
 ______________________________________________________
