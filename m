@@ -2,68 +2,126 @@ Return-Path: <SRS0=enRf=27=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35771C33CA4
-	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jan 2020 09:56:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5D50C33CA2
+	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jan 2020 10:23:33 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0AABA20721
-	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jan 2020 09:56:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6C5A820721
+	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jan 2020 10:23:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WXrg5gv8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0AABA20721
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="REe0pCBQ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="I/AzzKky"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C5A820721
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=samsung.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=F0yrr54vOR6j4eQyR3zYfwGwzZfSiATts4lD/VrQUyY=; b=WXrg5gv8VCncry
-	J3Ghd1DMOhO2kFVpHDnC+lr1b9Ei6nZHmIcL0fzpkEu0JKCzAZNXhHY8ZIHI745aQGt4AbDNeLuES
-	wdSas0R/SAEyb31y0NMXC2jSa6Pxjh1OL13wWvLbfxWA4P2EkXXK19EfKy3+ZdlueH3QrOWFVoUqt
-	tGqbpgubPIZ3MRid4wuR0xlCQuG8TdKRZWnFpSWd1YnMD0wDPBcAmBa8IETORr9ROA9+z7Q7VsO4Q
-	f+OVr3XqjUCQzR07QsDqMku3EDRVP0WM5C1TiLzaSX0nGwi9fUGpZK3UtZbsxmDcs85RnEnecBOD2
-	Il9kjd+sLkepXUBGR9JQ==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:References:Message-Id:Date:
+	Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	List-Owner; bh=I4dYYbiPqAazFdEAnhzdAiUfs2I1TzxkHOcNOTLdGyQ=; b=REe0pCBQ5GDY2A
+	djnvSigoSZovFU4L5Z02qt+UkMgY4aQobC3Ge6C+Ohn/FsActyOhcbkNf4I5o7vO+8uznLEoOHJ1D
+	WkIIBQfq/CDLc5LMCaawH125nud3xI1Ml2YQNd7/d89XM0s1EhgWocA1NHLeHgJgJmCIuERH74UIa
+	GF+lD/QhV8W+KJ1y9shF2CQbGprjMzvqjgeaYAemLdw4NrRSN3ObQJEttYvfKdiU3GNdpjroae/oO
+	zULqa+eriis5qCtYrPs7kNNYzxJGReWKcyzkDJr9cGgSmeKJd8aEvHcNM11IwYy9TV+KYk8+36Sm0
+	wj9AqHmOyJZHmksr+g7g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ipr1I-0000Qi-ON; Fri, 10 Jan 2020 09:55:56 +0000
-Received: from relay6-d.mail.gandi.net ([217.70.183.198])
+	id 1iprRm-00064O-DU; Fri, 10 Jan 2020 10:23:18 +0000
+Received: from mailout3.samsung.com ([203.254.224.33])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ipr1E-0000Pw-PX
- for linux-mtd@lists.infradead.org; Fri, 10 Jan 2020 09:55:54 +0000
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 008D3C000B;
- Fri, 10 Jan 2020 09:55:44 +0000 (UTC)
-Date: Fri, 10 Jan 2020 10:55:43 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@collabora.com>
-Subject: Re: [PATCH v2] mtd: implement proper partition handling
-Message-ID: <20200110105543.29235890@xps13>
-In-Reply-To: <20200110104626.0531d556@collabora.com>
-References: <20191230111948.27005-1-miquel.raynal@bootlin.com>
- <1651325521.16954.1578526458487.JavaMail.zimbra@nod.at>
- <20200109191304.636c82e7@xps13>
- <1737779363.17836.1578595384783.JavaMail.zimbra@nod.at>
- <20200109194556.34cf67dc@xps13>
- <20200109201355.707c5b0d@collabora.com>
- <20200109202358.2a428a8d@xps13>
- <20200109203722.4423ed09@collabora.com>
- <20200110092855.79f18339@xps13>
- <20200110104626.0531d556@collabora.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
+ id 1iprRi-00063S-TQ
+ for linux-mtd@lists.infradead.org; Fri, 10 Jan 2020 10:23:16 +0000
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+ by mailout3.samsung.com (KnoxPortal) with ESMTP id
+ 20200110102310epoutp03ba9e417b55cdd93517ff4a681d99e20a~of3B2FObH0866408664epoutp032
+ for <linux-mtd@lists.infradead.org>; Fri, 10 Jan 2020 10:23:10 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com
+ 20200110102310epoutp03ba9e417b55cdd93517ff4a681d99e20a~of3B2FObH0866408664epoutp032
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+ s=mail20170921; t=1578651790;
+ bh=ZT9gk3Qr65aOLdt/Ucet4AAG0kIErlyp2QZ2AQ3M2Sk=;
+ h=From:To:Subject:Date:References:From;
+ b=I/AzzKkybJoN0lcmzjL8EySZQxo5YcBkIz4S1A2B8ytJArlaKolcb3s5pZjI9PUBc
+ LceB4HRNFoXkIDc8gHhFLBODaCQ6PkiFsYtGaem5qPw4d4GIkxUMTMF54L+O+YK2TV
+ lI0SxSgomSD3NgZ6SHxwXMHQn2QUMwJk/7EQ02eU=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+ epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+ 20200110102310epcas1p32fc8347b7f678b9a03a2c37498555a22~of3BlMjqh1289112891epcas1p3L;
+ Fri, 10 Jan 2020 10:23:10 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.166]) by
+ epsnrtp4.localdomain (Postfix) with ESMTP id 47vJwF0XJhzMqYkb; Fri, 10 Jan
+ 2020 10:23:09 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+ epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+ C4.9A.57028.B80581E5; Fri, 10 Jan 2020 19:23:07 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+ epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+ 20200110102307epcas1p2a8b32fc2a2455d1052982d8ac499d21b~of2-NrVPL0682306823epcas1p2C;
+ Fri, 10 Jan 2020 10:23:07 +0000 (GMT)
+Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
+ epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+ 20200110102307epsmtrp173a20fa925e4e74f13e241ebd59c075b~of2-NB3j-1827118271epsmtrp1h;
+ Fri, 10 Jan 2020 10:23:07 +0000 (GMT)
+X-AuditID: b6c32a35-50bff7000001dec4-1d-5e18508b3d02
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+ epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+ C3.79.06569.B80581E5; Fri, 10 Jan 2020 19:23:07 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.88.100.192]) by
+ epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+ 20200110102307epsmtip2ed9fdcdc80506d621286ac1ee162fc82~of2-AP0P51253612536epsmtip2w;
+ Fri, 10 Jan 2020 10:23:07 +0000 (GMT)
+From: Jungseung Lee <js07.lee@samsung.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>, Vignesh Raghavendra
+ <vigneshr@ti.com>, linux-mtd@lists.infradead.org, js07.lee@gmail.com,
+ js07.lee@samsung.com
+Subject: [PATCH 1/3] mtd: spi-nor: introduce SR_BP_SHIFT define
+Date: Fri, 10 Jan 2020 19:22:55 +0900
+Message-Id: <20200110102257.28883-1-js07.lee@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA01SbUhTYRTm3Xa362p1maYHEVoXjBTUXed0lpaQxUB/CEZFmHbZXrbhvtid
+ I/ujlImplVYiSqWYH2mUomLOCmJiQmUkFSgpfhdaWmaZpWWb16h/z3nOed7nnPMeUih/QgST
+ JqsTO6ysmRZLRV29YVERJWmQqVybidP8ur4g0EwOrxKaB2cbJZrF+iTN+sBnSRKhdVePSrQd
+ 9XnakZUGpL3U2YK0/UP3BWnECXOCEbN67FBgq86mN1kNiXRKetbBLHWskolg4jVxtMLKWnAi
+ nZyaFnHYZPZ60woXa87xUmksx9FR+xMcthwnVhhtnDORxna92c4o7ZEca+FyrIZInc2yl1Eq
+ o9XeylNmY2Vfj8Q+GnS64P1tUT6akRcjPxKoGHjc/w4VIykpp7oRDH5sEPPBFwQtZQMSPlhG
+ MHE1X1iMyA1JeZOO5x8haPhZJOKDJQTPz1cIfO+KqXAYWm0nfIkA6haC0vlXyKf2pw7A6xqx
+ r0ZEhcJ6wzLhwzIqHty9tSK+p51wp+2x0KcFapaAurc9It45Gbo+2fkaf5jr75TwOBhmLxdu
+ Yg7czeUSXluAYLKpfjOhgoX5uxsTCKkwaO2J4uld4F69gXxYSG2DhW+lBG8lg6LCzRXR8HG8
+ YLM1gJdTFwkea+H7s6cbvJw6CY3N06IyFFL9z6AWoRYUiO2cxYA5xs78/zHtaOOGwtXd6NqL
+ VA+iSERvlRn9gzLlBOvici0eBKSQDpD1DQVmymV6NvcMdtiyHDlmzHmQ2ru8cmHwDp3Ne5FW
+ ZxajjlapVJqY2LhYtYoOkpErgyfllIF14myM7djxVycg/YLzUfeC2D26pa7mIrVv+XfNbuOe
+ h/jNZXzq7r3ncQVFZXPzybmtxzOGJ0arPl34EFXvCUh/6MqTVrgPyI6YDolhraJ2ZGy7Sz9y
+ 88pSdoQ1PvDS2FTG145CR6HB1Kw4dqc65cc52bhfZeNq5Hk8Ps0sCqqokqO6vGce+ndZSJs0
+ dIUWcUaWCRc6OPYP7ydGGVkDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrMJMWRmVeSWpSXmKPExsWy7bCSvG53gEScQftVKYu/c94xWTy6+ZvV
+ YnfTMnaLj0scLP6f/cDuwOqxc9Zddo/NS+o97vxYyujRt2UVo8fxG9uZAlijuGxSUnMyy1KL
+ 9O0SuDKmH93FXnBXvKLl+QqWBsanQl2MHBwSAiYSE5cndzFycQgJ7GaUWP3xNnsXIydQXELi
+ 0c4vLBA1whKHDxdD1HxklPg9YQ0rSA2bgJbEjd+bWEESIgLLGSXO/7zLDtIgLGAvcWU+G0gN
+ i4CqxP+l38DqeQUsJXYeXsACMV9eYvWGA8wTGLkXMDKsYpRMLSjOTc8tNiwwykst1ytOzC0u
+ zUvXS87P3cQIDgotrR2MJ07EH2IU4GBU4uHNEBaPE2JNLCuuzD3EKMHBrCTCe/SGWJwQb0pi
+ ZVVqUX58UWlOavEhRmkOFiVxXvn8Y5FCAumJJanZqakFqUUwWSYOTqkGxpwXpVvUO7Y6/7T1
+ vGOhMrX3071Qy1sMRX3TLbrbO5XunXd6/K338I4G5+/37MxlpJs4u7/cmhEWz6829yKb9Gbl
+ zATdaNs3PN/OJ/MnfOvhf5CQMaVc4W5vSYh/etwSoSk1hW8+CU6V/Mdiuk9AddGfLYnrbn+9
+ tCj+9GqFv6UH2otXlF7IU2Ipzkg01GIuKk4EAG8Z+I8GAgAA
+X-CMS-MailID: 20200110102307epcas1p2a8b32fc2a2455d1052982d8ac499d21b
+X-Msg-Generator: CA
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200110102307epcas1p2a8b32fc2a2455d1052982d8ac499d21b
+References: <CGME20200110102307epcas1p2a8b32fc2a2455d1052982d8ac499d21b@epcas1p2.samsung.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200110_015553_099680_1F17CFE0 
-X-CRM114-Status: GOOD (  31.88  )
+X-CRM114-CacheID: sfid-20200110_022315_196270_0BA4D1E1 
+X-CRM114-Status: GOOD (  15.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,110 +133,98 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQm9yaXMsCgpCb3JpcyBCcmV6aWxsb24gPGJvcmlzLmJyZXppbGxvbkBjb2xsYWJvcmEuY29t
-PiB3cm90ZSBvbiBGcmksIDEwIEphbgoyMDIwIDEwOjQ2OjI2ICswMTAwOgoKPiBPbiBGcmksIDEw
-IEphbiAyMDIwIDA5OjI4OjU1ICswMTAwCj4gTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBi
-b290bGluLmNvbT4gd3JvdGU6Cj4gCj4gPiBIaSBCb3JpcywKPiA+IAo+ID4gQm9yaXMgQnJlemls
-bG9uIDxib3Jpcy5icmV6aWxsb25AY29sbGFib3JhLmNvbT4gd3JvdGUgb24gVGh1LCA5IEphbgo+
-ID4gMjAyMCAyMDozNzoyMiArMDEwMDoKPiA+ICAgCj4gPiA+IE9uIFRodSwgOSBKYW4gMjAyMCAy
-MDoyMzo1OCArMDEwMAo+ID4gPiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4u
-Y29tPiB3cm90ZToKPiA+ID4gICAgIAo+ID4gPiA+IEhpIEJvcmlzLAo+ID4gPiA+IAo+ID4gPiA+
-IEJvcmlzIEJyZXppbGxvbiA8Ym9yaXMuYnJlemlsbG9uQGNvbGxhYm9yYS5jb20+IHdyb3RlIG9u
-IFRodSwgOSBKYW4KPiA+ID4gPiAyMDIwIDIwOjEzOjU1ICswMTAwOgo+ID4gPiA+ICAgICAgIAo+
-ID4gPiA+ID4gT24gVGh1LCA5IEphbiAyMDIwIDE5OjQ1OjU2ICswMTAwCj4gPiA+ID4gPiBNaXF1
-ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPiB3cm90ZToKPiA+ID4gPiA+ICAg
-ICAgICAgCj4gPiA+ID4gPiA+IEhpIFJpY2hhcmQsCj4gPiA+ID4gPiA+IAo+ID4gPiA+ID4gPiBS
-aWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0PiB3cm90ZSBvbiBUaHUsIDkgSmFuIDIw
-MjAgMTk6NDM6MDQKPiA+ID4gPiA+ID4gKzAxMDAgKENFVCk6Cj4gPiA+ID4gPiA+ICAgICAgICAg
-ICAKPiA+ID4gPiA+ID4gPiBNaXF1ZWwsCj4gPiA+ID4gPiA+ID4gCj4gPiA+ID4gPiA+ID4gLS0t
-LS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLSAgICAgICAgICAgIAo+ID4gPiA+ID4gPiA+ID4+
-IFdoYXQgcHJvYmxlbSBkb2VzIHRoaXMgc29sdmU/Cj4gPiA+ID4gPiA+ID4gPj4gLi4uYmVzaWRl
-IG9mIGEgbmljZSBkaWZmc3RhdCB3aGljaCByZW1vdmVzIG1vcmUgdGhhbiBpdCBhZGRzLiA6LSkg
-ICAgICAgICAgICAgIAo+ID4gPiA+ID4gPiA+ID4gCj4gPiA+ID4gPiA+ID4gPiBJdCBpcyBtdWNo
-IGVhc2llciB0byBlc2NhbGFkZSB0byB0aGUgdG9wIG1vc3QgIm1hc3RlciIgZGV2aWNlIHdoZW4K
-PiA+ID4gPiA+ID4gPiA+IHRoZXJlIGFyZSBtdWx0aXBsZSBsZXZlbHMgb2YgcGFydGl0aW9uaW5n
-LCB3aGljaCB3YXMgbm90IGNsZWFubHkKPiA+ID4gPiA+ID4gPiA+IGRlc2NyaWJlZCBJTUhPLiBB
-bHNvIGl0IGlzIGFscmVhZHkgdXNlZCBpbiB0aGUgTUxDLWluLXBzZXVkby1TTEMtbW9kZQo+ID4g
-PiA+ID4gPiA+ID4gc2VyaWVzIDopICAgICAgICAgICAgICAKPiA+ID4gPiA+ID4gPiAKPiA+ID4g
-PiA+ID4gPiBPay4gSW4gZmFjdCBJICJmb3VuZCIgdGhpcyBwYXRjaCBteSBsb29raW5nIGF0IHRo
-ZSBTTEMgZW11bGF0aW9uIHBhdGNoZXMuCj4gPiA+ID4gPiA+ID4gICAgICAgICAgICAgCj4gPiA+
-ID4gPiA+ID4gPj4gPiArc3RhdGljIGlubGluZSBzdHJ1Y3QgbXRkX2luZm8gKm10ZF9nZXRfbWFz
-dGVyKHN0cnVjdCBtdGRfaW5mbyAqbXRkKQo+ID4gPiA+ID4gPiA+ID4+ID4gK3sKPiA+ID4gPiA+
-ID4gPiA+PiA+ICsJd2hpbGUgKG10ZC0+cGFyZW50KQo+ID4gPiA+ID4gPiA+ID4+ID4gKwkJbXRk
-ID0gbXRkLT5wYXJlbnQ7Cj4gPiA+ID4gPiA+ID4gPj4gPiArCj4gPiA+ID4gPiA+ID4gPj4gPiAr
-CXJldHVybiBtdGQ7Cj4gPiA+ID4gPiA+ID4gPj4gPiArfSAgICAgICAgICAgICAgCj4gPiA+ID4g
-PiA+ID4gPj4gCj4gPiA+ID4gPiA+ID4gPj4gU28sIHBhcmVudCA9PSBtYXN0ZXI/ICAgICAgICAg
-ICAgICAKPiA+ID4gPiA+ID4gPiA+IAo+ID4gPiA+ID4gPiA+ID4gdG9wIG1vc3QgcGFyZW50ICh0
-aGUgb25lIHdpdGhvdXQgcGFyZW50KSA9PSBtYXN0ZXIgIQo+ID4gPiA+ID4gPiA+ID4gICAgICAg
-ICAgICAgICAKPiA+ID4gPiA+ID4gPiA+PiAKPiA+ID4gPiA+ID4gPiA+PiBXaGVuIEkgY3JlYXRl
-IGEgTVREIG9udG9wIG9mIFVCSSB1c2luZyBnbHVlYmksIHdobyB3aWxsIGJlIHBhcmVudC9tYXN0
-ZXI/ICAgICAgICAgICAgICAKPiA+ID4gPiA+ID4gPiA+IAo+ID4gPiA+ID4gPiA+ID4gSSBkb24n
-dCByZWFsbHkgdW5kZXJzdGFuZCB0aGUgaXNzdWUgaGVyZT8gICAgICAgICAgICAgIAo+ID4gPiA+
-ID4gPiA+IAo+ID4gPiA+ID4gPiA+IExldCdzIHNheSBJIGhhdmUgbXRkMCB3aXRoIGFuIHViaSBh
-bmQgYSB2b2x1bWUgInh4eCIuIEFmdGVyIGVuYWJsaW5nCj4gPiA+ID4gPiA+ID4gZ2x1ZWJpIGEg
-bmV3IG10ZDEgd2lsbCBhcnJpdmUgb24gdGhlIHN5c3RlbS4KPiA+ID4gPiA+ID4gPiBUaGUgc3Rh
-Y2tpbmcgaXMgbXRkMCAtPiB1YmkgKHZvbHVtZSB4eHgpIC0+IG10ZDEuICAgICAgICAgICAgCj4g
-PiA+ID4gPiA+IAo+ID4gPiA+ID4gPiBUaGlzIGlzIG11Y2ggY2xlYXJlciwgdGhhbmtzIQo+ID4g
-PiA+ID4gPiAgICAgICAgICAgCj4gPiA+ID4gPiA+ID4gSXMgbm93IGEgcmVsYXRpb25zaGlwIGJl
-dHdlZW4gbXRkMSBhbmQgbXRkMD8gICAgICAgICAgICAKPiA+ID4gPiA+ID4gCj4gPiA+ID4gPiA+
-IE5vIHRoZXJlIGlzIG5vbmUuIAo+ID4gPiA+ID4gPiAgICAgICAgICAgCj4gPiA+ID4gPiA+ID4g
-SSdkIGV4cGVjdCBtdGQxJ3MgcGFyZW50IGJlaW5nIG10ZDAuICAgICAgICAgICAgCj4gPiA+ID4g
-PiA+IAo+ID4gPiA+ID4gPiBUaGlzIHdvdWxkIGJlIGEgbmV3IGZlYXR1cmUsIHJpZ2h0PyBJIGRv
-bid0IHRoaW5rIGl0IGlzIHRoZSBjYXNlIHRvZGF5LiAgICAgICAgICAKPiA+ID4gPiA+IAo+ID4g
-PiA+ID4gV2UgZGVmaW5pdGVseSBkb24ndCB3YW50IG10ZDEgdG8gYXBwZWFyIGFzIGEgcGFydGl0
-aW9uIG9mIG10ZDAgaW4gdGhhdAo+ID4gPiA+ID4gY2FzZSAoYmxvY2tzIGluIG10ZDEgY2FuJ3Qg
-YmUgbWFwcGVkIHRvIGJsb2NrcyBpbiBtdGQwIHdpdGhvdXQgdGhlIFVCSQo+ID4gPiA+ID4gbGF5
-ZXIgYmVpbmcgaW52b2x2ZWQpLiBNYXliZSBpdCdkIGJlIGNsZWFyZXIgaWYgd2UgbW92ZSB0aGUg
-cGFyZW50Cj4gPiA+ID4gPiBmaWVsZCB0byBtdGRfcGFydCBhbmQgYWRkIGFuIE1URF9JU19QQVJU
-SVRJT04gZmxhZy4gT3IgbWF5YmUgd2UgY2FuCj4gPiA+ID4gPiBqdXN0IGNob29zZSBhIGJldHRl
-ciBuYW1lLiAgICAgICAgCj4gPiA+ID4gCj4gPiA+ID4gSSBwcmVmZXIgdGhlIG5hbWUgY2hhbmdl
-LiBJIHRoaW5rIHRoZSBjdXJyZW50IHN0cnVjdCBvcmdhbml6YXRpb24KPiA+ID4gPiBpcyByaWdo
-dC4gV2hhdCBkbyB5b3Ugc3VnZ2VzdD8gICAgICAKPiA+ID4gCj4gPiA+IEkgZG9uJ3QgaGF2ZSBh
-IGJldHRlciBuYW1lLCBzb3JyeS4gICAgCj4gPiAKPiA+IEFjdHVhbGx5IEkgZmluZCAtPnBhcmVu
-dCB0b3RhbGx5IGRlc2NyaXB0aXZlLCBhbmQgaW4gUmljaGFyZCdzIGV4YW1wbGUsCj4gPiBJIHdv
-dWxkIG5vdCBjYWxsIG10ZDEgYXMgbXRkMCdzIHBhcmVudCwgaXQncyBtb3JlIGxpa2UgYSAidG9w
-IHZpcnR1YWwKPiA+IGRldmljZSIgYnV0IGNlcnRhaW5seSBub3QgYSAiZGlyZWN0IiBwYXJlbnQu
-ICAKPiAKPiBJdCBkZXBlbmRzIHdoYXQga2luZCBvZiBwYXJlbnRpbmcgd2UncmUgdGFsa2luZyBh
-Ym91dCA6UC4gRnJvbSB0aGUKPiBkZXZpY2UgbW9kZWwgcGVyc3BlY3RpdmUsIG10ZDEncyBwYXJl
-bnQgaXMgdWJpMC4gRnJvbSB0aGUgTVREIHBhcnRpdGlvbgo+IHBlcnNwZWN0aXZlLCBtdGQxIGhh
-cyBubyBwYXJlbnQgKGl0J3MgYSBtYXN0ZXIgTVREIGRldmljZSkuIFRoZSBwcm9ibGVtCj4gaGVy
-ZSBpcyB0aGF0ICdwYXJlbnQnIGlzIHZhZ3VlIGVub3VnaCB0aGF0IGl0IGxldHMgcGVvcGxlIHRo
-aW5rIGl0J3MKPiByZXByZXNlbnRpbmcgbW9yZSB0aGFuIGEgcGFydGl0aW9uIC0+IHBhcnRpdGlv
-bl9wYXJlbnQgcmVsYXRpb25zaGlwLAo+IGhlbmNlIG15IHN1Z2dlc3Rpb24gdG8gbW92ZSB0aGUg
-ZmllbGQgdG8gbXRkX3BhcnQgc28gaXQgY2FuIGJlCj4gbmFtZXNwYWNlZCBpbiBtdGQtPnBhcnQu
-cGFyZW50LgoKSSB0aGluayBvbmx5IFJpY2hhcmQgZ290IGNvbmZ1c2VkIDpwCgo+IAo+ID4gCj4g
-PiBtdGQtPmRpcmVjdF9wYXJlbnQgd291bGQgd29yayBidXQgSSB0aGluayBpdCBpcyBhIGJpdCB0
-b28gbG9uZyBhbmQgbW9zdAo+ID4gb2YgdGhlIHBlb3BsZSB3b3VsZCBub3QgdW5kZXJzdGFuZCB3
-aHkgd2UgY2FsbCBpdCB0aGlzIHdheSwgaW5zdGVhZCBvZgo+ID4ganVzdCAicGFyZW50Ii4gIAo+
-IAo+IC0+cGFydGl0aW9uX3BhcmVudCB3b3VsZCBiZSBtb3JlIGFjY3VyYXRlLCBidXQgSSBhZ3Jl
-ZSB3aXRoIHlvdSwgSSdtICAKPiBub3QgYSBiaWcgZmFuIG9mIHRob3NlIGxvbmcgbmFtZXMuIE1h
-eWJlIC0+Y29udGFpbmVyPwoKSSBkb24ndCBsaWtlIC0+Y29udGFpbmVyIHNvIG11Y2ggYXMgZm9y
-IG1lIGl0IHdvdWxkIHJlZmVyIHRvIHRoaXMKInZpcnR1YWwgcGFyZW50IiBJIHdhcyB0YWxraW5n
-IGFib3V0LCBpZS4gVUJJISBJIHRoaW5rIHlvdSBhcmUKcmlnaHQgc2F5aW5nIHRoYXQgdGhlIG1v
-c3QgaW1wb3J0YW50IHRoaW5nIGlzIHRvIGJlIGNsZWFyIGluIHRoZQpkb2N1bWVudGF0aW9uIChJ
-J2xsIHRyeSB0byBleHBsYWluIGJldHRlcikgYmVjYXVzZSBhbnkgd29yZCBjYW4KcmVmZXIgdG8g
-YWxtb3N0IGFueSBjb25jZXB0IGRlcGVuZGluZyBvbiB0aGUgcGVyc29uIHJlYWRpbmcgaXQuCgo+
-ID4gCj4gPiBJIHdvdWxkIGxpa2UgdG8gdGFrZSB0aGlzIHBhdGNoIGludG8gNS42LCBzbyBwbGVh
-c2UgdGVsbCBtZSB3aGF0IHlvdQo+ID4gcHJlZmVyICgicGFyZW50IiBiZWluZyB0aGUgbW9zdCBz
-dHJhaWdodGZvcndhcmQgYW5kIHNpbXBsZSBzb2x1dGlvbiB0bwo+ID4gbWUgOikgKSAgCj4gCj4g
-SSB0aGluayB0aGUgbW9zdCBpbXBvcnRhbnQgdGhpbmcgaGVyZSBpcyBkb2N1bWVudGluZyB3aGF0
-IHRoaXMgZmllbGQKPiBpcyByZXByZXNlbnRpbmcgc28gcGVvcGxlIGNhbiByZWZlciB0byB0aGUg
-ZG9jIGlmIHRoZXkgZ2V0IGNvbmZ1c2VkLgoKWWVzLCBJIHdpbGwgc3RpY2sgdG8gLT5wYXJlbnQu
-IEFzIHdlIGFyZSBpbiB0aGUgTVREIHN0cnVjdHVyZSwgcG9pbnRpbmcKdGhlIGRpcmVjdCBNVEQg
-cGFyZW50IHNlZW1zIGxvZ2ljIHRvIG1lLCBidXQgSSB3aWxsIGV4cGxhaW4gaW4gdGhlIGtkb2MK
-dGhhdCBpdCBpcyB0aGUgcGFyZW50IGZyb20gdGhlIE1URCBwYXJ0aXRpb25pbmcgc2NoZW1lIHBv
-aW50IG9mIHZpZXcsCmFuZCB0aGlzIGlzIG5vdCByZWxhdGVkIHRvIHRoZSBkZXZpY2UtbW9kZWwg
-aGllcmFyY2h5IGF0IGFsbC4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1h
-aWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
-bnV4LW10ZC8K
+The shift variable of SR_BP is conclusive because the first bit of SR_BP
+is fixed on all known flashes.
+
+Introduce SR_BP_SHIFT define and let them used by stm_* functions
+to replace ffs operation to get shift value.
+
+Signed-off-by: Jungseung Lee <js07.lee@samsung.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 11 +++++------
+ include/linux/mtd/spi-nor.h   |  2 ++
+ 2 files changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index addb6319fcbb..e3da6a8654a8 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1767,7 +1767,6 @@ static void stm_get_locked_range(struct spi_nor *nor, u8 sr, loff_t *ofs,
+ 	struct mtd_info *mtd = &nor->mtd;
+ 	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
+ 	u8 tb_mask = SR_TB_BIT5;
+-	int shift = ffs(mask) - 1;
+ 	int pow;
+ 
+ 	if (nor->flags & SNOR_F_HAS_SR_TB_BIT6)
+@@ -1778,7 +1777,7 @@ static void stm_get_locked_range(struct spi_nor *nor, u8 sr, loff_t *ofs,
+ 		*ofs = 0;
+ 		*len = 0;
+ 	} else {
+-		pow = ((sr & mask) ^ mask) >> shift;
++		pow = ((sr & mask) ^ mask) >> SR_BP_SHIFT;
+ 		*len = mtd->size >> pow;
+ 		if (nor->flags & SNOR_F_HAS_SR_TB && sr & tb_mask)
+ 			*ofs = 0;
+@@ -1860,7 +1859,7 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 	int ret, status_old, status_new;
+ 	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
+ 	u8 tb_mask = SR_TB_BIT5;
+-	u8 shift = ffs(mask) - 1, pow, val;
++	u8 pow, val;
+ 	loff_t lock_len;
+ 	bool can_be_top = true, can_be_bottom = nor->flags & SNOR_F_HAS_SR_TB;
+ 	bool use_top;
+@@ -1909,7 +1908,7 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 	 *   pow = ceil(log2(size / len)) = log2(size) - floor(log2(len))
+ 	 */
+ 	pow = ilog2(mtd->size) - ilog2(lock_len);
+-	val = mask - (pow << shift);
++	val = mask - (pow << SR_BP_SHIFT);
+ 	if (val & ~mask)
+ 		return -EINVAL;
+ 	/* Don't "lock" with no region! */
+@@ -1946,7 +1945,7 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 	int ret, status_old, status_new;
+ 	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
+ 	u8 tb_mask = SR_TB_BIT5;
+-	u8 shift = ffs(mask) - 1, pow, val;
++	u8 pow, val;
+ 	loff_t lock_len;
+ 	bool can_be_top = true, can_be_bottom = nor->flags & SNOR_F_HAS_SR_TB;
+ 	bool use_top;
+@@ -1997,7 +1996,7 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 	if (lock_len == 0) {
+ 		val = 0; /* fully unlocked */
+ 	} else {
+-		val = mask - (pow << shift);
++		val = mask - (pow << SR_BP_SHIFT);
+ 		/* Some power-of-two sizes are not supported */
+ 		if (val & ~mask)
+ 			return -EINVAL;
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index 7e32adce72f7..541c06d042e8 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -137,6 +137,8 @@
+ 
+ #define SR1_QUAD_EN_BIT6	BIT(6)
+ 
++#define SR_BP_SHIFT		2
++
+ /* Enhanced Volatile Configuration Register bits */
+ #define EVCR_QUAD_EN_MICRON	BIT(7)	/* Micron Quad I/O */
+ 
+-- 
+2.17.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
