@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3704C33CA4
-	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jan 2020 16:21:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18B91C33CA3
+	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jan 2020 16:22:06 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A12EF20673
-	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jan 2020 16:21:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DD5D4205F4
+	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jan 2020 16:22:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ie0EuISZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A12EF20673
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="F5emjwVA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DD5D4205F4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,18 +25,18 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=VezfVi53e/f4WhfH9daFY9ejiS9oNO8YFmBNtlQhxmU=; b=ie0EuISZNAn8hN
-	5XH7En9fPOVR62YFcceGvLWnmtGAg75+xdZhpRtDSA4pmJ17ovdCF2NZNXObZgAb2QJ1PEMkuWWPM
-	AnFIzFYiOLFgq0MTR5TW1w+0C8FAeSFJRboMPYpLS37tHSRNzsssRRlb77/aJBX5cIix4a4cFeqzS
-	43kj6vLv4sgJrt08M9xGap8ffGqnzCNMRpsZ+9lQM4QZidHZfI7R/mVyiVpGNlVBHg6SI6C1yu9eX
-	+Rgy1LQ6v69PPjsRtbt0M3S9nl8ydgPLN/UQEiHuHMRqBBqTb6/JT3NXpZDfovkYBv0LZyBRhyepg
-	GkpuDC5OdWUQJEkLxSPg==;
+	List-Owner; bh=/pZirFJFJrvRitLNasJb1aY/TwvG+OhGhaJ/f2fH0Og=; b=F5emjwVAjHFdsI
+	EVF/Tx9Hi3JHPhIFqJQ1wBSoTXV77U4TmNgfCpJSvzUa8xj3bd+yzjKIkSwBgvq/ryLEKtWCIFpvz
+	hITC73kKqtehEgHCUvF0jqrryW0Y5t66QDmN9xKiNDTiAMtG3laVlh7Kc2yfPRxWl09yr8fpiAvU3
+	tAX87Ez8zRCvhytujS4SA298azads4NBkMPRK2kuT9I+fw9Ds91BV+Jg+pL2xfeYl00VcXW0aJ3WP
+	+OQ+AEcbO4QgdWocoL5qPf5lzjCJns0oVN4uSpnddv0q+zYZ8XebwE/Xvsim7DkIAPOd57qVSovKh
+	YftChZgkcNWkmgs1E9/Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ipx2C-0007wg-86; Fri, 10 Jan 2020 16:21:16 +0000
+	id 1ipx2o-0008WJ-9N; Fri, 10 Jan 2020 16:21:54 +0000
 Received: from esa2.microchip.iphmx.com ([68.232.149.84])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ipx0G-00050k-32; Fri, 10 Jan 2020 16:19:19 +0000
+ id 1ipx0P-0005DI-4J; Fri, 10 Jan 2020 16:19:26 +0000
 Received-SPF: Pass (esa2.microchip.iphmx.com: domain of
  Claudiu.Beznea@microchip.com designates 198.175.253.82 as
  permitted sender) identity=mailfrom;
@@ -59,23 +59,23 @@ Authentication-Results: esa2.microchip.iphmx.com;
  spf=Pass smtp.mailfrom=Claudiu.Beznea@microchip.com;
  spf=None smtp.helo=postmaster@email.microchip.com;
  dmarc=pass (p=none dis=none) d=microchip.com
-IronPort-SDR: YV8ALLguG8QUFB4CqItaYSwbWKXtr/l9h6TBEJqAM2CB8X3XSlBmehElovTPl80Yp3cReIeiJK
- skkLHTLQya09iazPr+OIM6GclzoomeRMJkjhkSFwLXkJmTTcVBEDKtaEv6G+v5JsQ+Oxi22ext
- 4NFEXoVHTn9yf7wzmmITxqcxinmDEMYmEFY8C+RytZF7RoLjGtQlJBHCbYTmPdH9JrlZk2Hvs+
- WRIPpl1M/0Q1hVpd+/cM2YPBASRcaEslIELieRf1oDNdzD8sXfY1OZ8coiHeld5Xq+cIbY/vwD
- 8WU=
-X-IronPort-AV: E=Sophos;i="5.69,417,1571727600"; d="scan'208";a="62248968"
+IronPort-SDR: f4MPJLzU7fdByLdeQg2AjQ5BgURxm4G4fRnqVkoQvkvW+YUyg/1VNX8MOJwgTdCK7IumBPgTy9
+ 76Y/irDC6PTD3BfnD85vxum3vgSPx2XRYw94KZoj4FxOYCR8DCuvDbSEwFQZttI8X7snbtBiaF
+ wwQaPVWiU69nZbv4P/wUf1HJk5NA0lf24A/+ZaxzHyEuxa8+azf9XjrB5EDl87ApbJOUWLIc1r
+ 7tGB1TyaK/LC9doQ6Fv8QXiD+4WLH6qGAIEmIzKoE26uiNkrA8q8frFgWBXHqfNu2VDctMJtHf
+ 5y4=
+X-IronPort-AV: E=Sophos;i="5.69,417,1571727600"; d="scan'208";a="62248998"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 10 Jan 2020 09:19:15 -0700
+ 10 Jan 2020 09:19:23 -0700
 Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
  chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 10 Jan 2020 09:19:14 -0700
+ 15.1.1713.5; Fri, 10 Jan 2020 09:19:23 -0700
 Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.85.251) by
  chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1713.5 via Frontend Transport; Fri, 10 Jan 2020 09:19:06 -0700
+ 15.1.1713.5 via Frontend Transport; Fri, 10 Jan 2020 09:19:15 -0700
 From: Claudiu Beznea <claudiu.beznea@microchip.com>
 To: <robh+dt@kernel.org>, <mark.rutland@arm.com>,
  <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
@@ -86,16 +86,16 @@ To: <robh+dt@kernel.org>, <mark.rutland@arm.com>,
  <richard.genoud@gmail.com>, <tudor.ambarus@microchip.com>,
  <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
  <wg@grandegger.com>, <mkl@pengutronix.de>, <a.zummo@towertech.it>
-Subject: [PATCH v2 04/17] dt-bindings: atmel-tcb: add microchip,sam9x60-tcb
-Date: Fri, 10 Jan 2020 18:17:56 +0200
-Message-ID: <1578673089-3484-5-git-send-email-claudiu.beznea@microchip.com>
+Subject: [PATCH v2 05/17] dt-bindings: atmel-isi: add microchip,sam9x60-isi
+Date: Fri, 10 Jan 2020 18:17:57 +0200
+Message-ID: <1578673089-3484-6-git-send-email-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1578673089-3484-1-git-send-email-claudiu.beznea@microchip.com>
 References: <1578673089-3484-1-git-send-email-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200110_081916_223556_EB135694 
-X-CRM114-Status: UNSURE (   7.53  )
+X-CRM114-CacheID: sfid-20200110_081925_270508_9B8374CE 
+X-CRM114-Status: UNSURE (   9.61  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -119,26 +119,26 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add microchip,sam9x60-tcb to DT bindings documentation.
+Add microchip,sam9x60-isi to DT bindings documentation.
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- Documentation/devicetree/bindings/mfd/atmel-tcb.txt | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ Documentation/devicetree/bindings/media/atmel-isi.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/mfd/atmel-tcb.txt b/Documentation/devicetree/bindings/mfd/atmel-tcb.txt
-index c4a83e364cb6..cf0edf5381c9 100644
---- a/Documentation/devicetree/bindings/mfd/atmel-tcb.txt
-+++ b/Documentation/devicetree/bindings/mfd/atmel-tcb.txt
-@@ -1,6 +1,6 @@
- * Device tree bindings for Atmel Timer Counter Blocks
--- compatible: Should be "atmel,<chip>-tcb", "simple-mfd", "syscon".
--  <chip> can be "at91rm9200" or "at91sam9x5"
-+- compatible: Should be "atmel,at91rm9200-tcb", "atmel,at91sam9x5-tcb",
-+  "microchip,sam9x60-tcb", "simple-mfd", "syscon".
- - reg: Should contain registers location and length
- - #address-cells: has to be 1
- - #size-cells: has to be 0
+diff --git a/Documentation/devicetree/bindings/media/atmel-isi.txt b/Documentation/devicetree/bindings/media/atmel-isi.txt
+index 332513a151cc..8924c7545b63 100644
+--- a/Documentation/devicetree/bindings/media/atmel-isi.txt
++++ b/Documentation/devicetree/bindings/media/atmel-isi.txt
+@@ -2,7 +2,7 @@ Atmel Image Sensor Interface (ISI)
+ ----------------------------------
+ 
+ Required properties for ISI:
+-- compatible: must be "atmel,at91sam9g45-isi".
++- compatible: must be "atmel,at91sam9g45-isi" or "microchip,sam9x60-isi".
+ - reg: physical base address and length of the registers set for the device.
+ - interrupts: should contain IRQ line for the ISI.
+ - clocks: list of clock specifiers, corresponding to entries in the clock-names
 -- 
 2.7.4
 
