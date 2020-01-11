@@ -2,80 +2,65 @@ Return-Path: <SRS0=phPz=3A=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D1FFC33CA2
-	for <linux-mtd@archiver.kernel.org>; Sat, 11 Jan 2020 02:39:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B5D7C33C9E
+	for <linux-mtd@archiver.kernel.org>; Sat, 11 Jan 2020 08:41:25 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3A94E20721
-	for <linux-mtd@archiver.kernel.org>; Sat, 11 Jan 2020 02:39:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4E288206DA
+	for <linux-mtd@archiver.kernel.org>; Sat, 11 Jan 2020 08:41:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="SjAp7KuL";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="svowljHX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A94E20721
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="j6xClHEG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4E288206DA
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nv7j2n6cg1wOui/Lw4XQfFNEwOf84XUnJF0GzDslp+0=; b=SjAp7KuLmF4Fvv
-	e+JK/PlvyiAjv+TD7JZAu1pcA3wiIHXYkhQIiPGqoUp95KW88hW1GmihJeWClR+9TLZklr3nWSsep
-	ivt73bisMnYM4tDRcYkjP1QJUWbTLag33MPMFg5VXXUKfoFMuqKfttdyD/f+WYxVl5ngsgwYgBM2V
-	5uc5234teHVQ00oiHRn2BIy/hBfUCk2YlLQaFeF4+DIzutcemyZ+ACvGJrFlXgqWvyw+P3QDzjb8f
-	TTV369ngy4xGTShzgdyZcgvwAq9ONw8pvtW3d96eZYnH0C7SNYsRTeBigBAXv7CMPBlmxWXs9zD1Z
-	jvLRV8Sb/wp4b6pjYiCA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=p03ycRza9hudxXTX9fjWd3nyC0laNGJy61wPC9Ox5io=; b=j6xClHEGMIXgnP
+	d+4lgdabrrDVvCV4AYZGEgQ4FrnIzKNQ4DuhRxg06jxop6tzfqRb0m2Tf1Hhwj2KK0d0zMLOzJUZO
+	zTS3vrQfb+hsH0bh7RbiXT0lUZiO0g8lpZ2hem+9WJF9+q0hoAPzuil6GFEmXo5NliAKZohhljRih
+	LjGCMGUvu6zudtgNOMn+KdfIsUxsc+8QA3w7zcArodT7Qd32IAclk58eVlBYMdHTpYm7hCvpzjLYg
+	UvF5jKwpIjbR4UXyDfh7JgfdP+bx7cMkdevfz+/AjIi7cssq1BDn4ra8stVvO0e9tQq3ierDe5r8W
+	Wx4IU1B3edhNPERr+XUQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iq6gd-00055t-5t; Sat, 11 Jan 2020 02:39:39 +0000
-Received: from conssluserg-05.nifty.com ([210.131.2.90])
+	id 1iqCKP-0001Uq-Lp; Sat, 11 Jan 2020 08:41:05 +0000
+Received: from szxga07-in.huawei.com ([45.249.212.35] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iq6gZ-000558-Dv
- for linux-mtd@lists.infradead.org; Sat, 11 Jan 2020 02:39:37 +0000
-Received: from mail-vs1-f46.google.com (mail-vs1-f46.google.com
- [209.85.217.46]) (authenticated)
- by conssluserg-05.nifty.com with ESMTP id 00B2dBXs026461
- for <linux-mtd@lists.infradead.org>; Sat, 11 Jan 2020 11:39:12 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 00B2dBXs026461
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
- s=dec2015msa; t=1578710352;
- bh=cCpKJptwbytiKiuqP/ywOWw+40BFhuBXXDegbirkwCo=;
- h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=svowljHXZWLZoE1LrBpA6UNa1/JS0ynD8no/EX7I9sLNPBjR5/H0Pfs2khkq7ZKOV
- D2fho13/6BcY0LDa6g/K+l5FgOmxT1pr/XdLG6iYMcMEuo3l9GnhPkRukYr7uMqf5l
- zd3R6BO3g7/+KDFD7zdak59e4amu3Hms7c56pMRboczcERExMRop5s7lRJg/wVei+6
- x+vSlgqvvfXBipQ1mC2cp0a7s5v8vfmxNHqw82wERCGXkW6iAZ7CWG8n+fq4u8/OCL
- EBifEd51EYv8YoT2Yj7puvH7YlK+vpK5MmBpwAvWDa9XKZ2bGWit6eoKb1Jc6PHXcx
- /rmIvE3zslJLA==
-X-Nifty-SrcIP: [209.85.217.46]
-Received: by mail-vs1-f46.google.com with SMTP id s16so2522993vsc.10
- for <linux-mtd@lists.infradead.org>; Fri, 10 Jan 2020 18:39:12 -0800 (PST)
-X-Gm-Message-State: APjAAAUn+ghZNsoFCWhfRaFkC4rCKltj8Vjz8rzT0t/O3ONIWW2iSR1q
- TyiRFZezrHb9OCT+i3NjsKkmm64x7s+SJTeXMHE=
-X-Google-Smtp-Source: APXvYqyGfuynkA1llTi0lP764vulPUvdwDrV8zogwS7oYJCk1KcQf4MlTbfGMBz7tvzDdh5lgBD93b6Tg4OjcCQfQtc=
-X-Received: by 2002:a05:6102:2334:: with SMTP id
- b20mr1065290vsa.155.1578710351167; 
- Fri, 10 Jan 2020 18:39:11 -0800 (PST)
+ id 1iqCKM-0001U3-6b
+ for linux-mtd@lists.infradead.org; Sat, 11 Jan 2020 08:41:04 +0000
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+ by Forcepoint Email with ESMTP id 2F1D7B65198CD1FD69F7;
+ Sat, 11 Jan 2020 16:40:52 +0800 (CST)
+Received: from [127.0.0.1] (10.173.220.179) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.439.0;
+ Sat, 11 Jan 2020 16:40:45 +0800
+Subject: Re: [PATCH] ubifs: Fix deadlock in concurrent bulk-read and writepage
+To: Zhihao Cheng <chengzhihao1@huawei.com>, <richard@nod.at>,
+ <s.hauer@pengutronix.de>, <ext-adrian.hunter@nokia.com>
+References: <1578663215-146583-1-git-send-email-chengzhihao1@huawei.com>
+From: "zhangyi (F)" <yi.zhang@huawei.com>
+Message-ID: <d7f23b19-9bf2-014c-2d19-e39cb6c1db9a@huawei.com>
+Date: Sat, 11 Jan 2020 16:40:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-References: <5143724.5TqzkYX0oI@dabox> <2827587.laNcgWlGab@dabox>
- <CAK7LNAQOCoJC0RzOhTEofHdR+zU5sQTxV-t4nERBExW1ddW5hw@mail.gmail.com>
- <2585494.6OhLyxUeiZ@hydra>
-In-Reply-To: <2585494.6OhLyxUeiZ@hydra>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Sat, 11 Jan 2020 11:38:35 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASZMH34QcQij8CuGnOkC1_g6UShiHw3+_QBLddzf6W4XA@mail.gmail.com>
-Message-ID: <CAK7LNASZMH34QcQij8CuGnOkC1_g6UShiHw3+_QBLddzf6W4XA@mail.gmail.com>
-Subject: Re: mtd raw nand denali.c broken for Intel/Altera Cyclone V
-To: Tim Sander <tim@krieglstein.org>
+In-Reply-To: <1578663215-146583-1-git-send-email-chengzhihao1@huawei.com>
+Content-Language: en-US
+X-Originating-IP: [10.173.220.179]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200110_183935_813091_06B87DEB 
-X-CRM114-Status: GOOD (  38.11  )
+X-CRM114-CacheID: sfid-20200111_004102_418460_4DE9CC8E 
+X-CRM114-Status: GOOD (  20.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,196 +72,109 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, Dinh Nguyen <dinguyen@kernel.org>,
- Richard Weinberger <richard@nod.at>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, Jan 11, 2020 at 7:38 AM Tim Sander <tim@krieglstein.org> wrote:
->
-> Hi
-> Am Freitag, 10. Januar 2020, 20:05:20 CET schrieb Masahiro Yamada:
-> > On Sat, Jan 11, 2020 at 1:47 AM Tim Sander <tim@krieglstein.org> wrote:
-> > > Hi Masahiro Yamada
-> > >
-> > > Sorry for the large delay. I have seen the patches at
-> > > https://lists.infradead.org/pipermail/linux-mtd/2019-December/092852.html
-> > > Seem to resolve the question about the spare_area_skip_bytes register.
-> > >
-> > > I have now set the register to 2 which seems to be the right choice on an
-> > > Intel SocFPGA. But still i am out of luck trying to boot 5.4.5-rt3 or
-> > > 5.5-rc5. I get the following messages during bootup booting:
-> > > [    1.825590] denali-nand-dt ff900000.nand: timeout while waiting for irq
-> > > 0x1000 [    1.832936] denali-nand-dt: probe of ff900000.nand failed with
-> > > error -5
-> > >
-> > > But the commit c19e31d0a32dd 2017-06-13 22:45:38 predates the 4.19 kernel
-> > > release (Mon Oct 22 07:37:37 2018). So it seems there is not an obvious
-> > > commit which is causing the problem. Looking at the changes it might be
-> > > that the timing calculations in the driver changed which might also lead
-> > > to a similar error.
-> > >
-> > > I am booting via NFS the bootloader is placed in NOR flash.  The
-> > > corresponding>
-> > > nand dts entry is updated to the new format and looks like this:
-> > >                 nand@ff900000 {
-> > >
-> > >                         #address-cells = <0x1>;
-> > >                         #size-cells = <0x0>;
-> > >                         compatible = "altr,socfpga-denali-nand";
-> > >                         reg = <0xff900000 0x100000 0xffb80000 0x10000>;
-> > >                         reg-names = "nand_data", "denali_reg";
-> > >                         interrupts = <0x0 0x90 0x4>;
-> > >                         clocks = <0x2d 0x1e 0x2e>;
-> > >                         clock-names = "nand", "nand_x", "ecc";
-> > >                         resets = <0x6 0x24>;
-> > >                         status = "okay";
-> > >                         nand@0 {
-> > >
-> > >                                 reg = <0x0>;
-> > >                                 #address-cells = <0x1>;
-> > >                                 #size-cells = <0x1>;
-> > >                                 partition@0 {
-> > >
-> > >                                         label = "work";
-> > >                                         reg = <0x0 0x10000000>;
-> > >
-> > >                                 };
-> > >
-> > >                         };
-> > >
-> > >                 };
-> > >
-> > > The last kernel i am able to boot is 4.19.10. I have tried booting:
-> > > 5.1.21, 5.2.9, 5.3-rc8, 5.4.5-rt3 and 5.5-rc5. They all failed.
-> > > Unfortunately the range is quite large for bisecting the problem. It also
-> > > occurred to me that all the platforms with Intel Cyclone V in mainline
-> > > are development boards which boot from SD-card not exhibiting this
-> > > problem on their default boot path.
-> > What will happen if you apply all of these:
-> >
-> > http://patchwork.ozlabs.org/project/linux-mtd/list/?series=149821
-> I have applied this patch set but it does not help completely.
-
-
-OK, I just wanted to eliminate any other possibility, just in case.
-
-
-> The timings are
-> wrong. I don't have access to the hardware now but one thing i tested before i
-> left (the HW) was to write the NAND timings from the bootloader into the
-> denali controller after the driver configured the timings in denali_init.
-> After that the driver worked again for me.
->
-> > on top of the mainline kernel,
-> > and then, hack denali->clk_rate and denali->clk_x_rate as follows?
-> >
-> >
-> > -       denali->clk_rate = clk_get_rate(dt->clk);
-> > -       denali->clk_x_rate = clk_get_rate(dt->clk_x);
-> > +       denali->clk_rate = 50000000;
-> > +       denali->clk_x_rate = 200000000;
-> >
-> > If it still fails, what about this?
-> >
-> >        denali->clk_rate = 0;
-> >        denali->clk_x_rate = 0;
-> Will try the above next week. Skimming over the socfpga.dtsi it seems as if
-> on the Intel SocFPGA the OSC1 has a value of 25000000 set in
-> socfpga_cyclone5.dtsi (I am currently not sure about the clock tree with all
-> the plls and i am missing the value of osc2?). Also right now it seems i am to
-> tired to parse denali_setup_data_interface...
-
-
-You do not need to parse denali_setup_data_interface().
-
-
-There are good hints.
-
-You said:
-"The last kernel i am able to boot is 4.19.10. I have tried booting:
-5.1.21, 5.2.9, 5.3-rc8, 5.4.5-rt3 and 5.5-rc5. They all failed."
-
-There is no commit between 4.19.10 and 5.1.21
-that changes denali_setup_data_interface().
-
-So, denali_setup_data_interface() is not the
-root cause.
-
-
-From the information you provided,
-I suspect some clock settings are wrong.
-
-
-
-> > > PS: Here is some snippet from an older mail i didn't sent to the list yet
-> > > which might be superseded by now:
-> > > To get into this matter i started reading the "Intel Cyclone V HPS TRM"
-> > > Section 13-20 Preserving Bad Block Markers:
-> > > "You can configure the NAND flash controller to skip over a specified
-> > > number of bytes when it writes the last sector in a page to the spare
-> > > area. This option write the desired offset to the spare_area_skip_bytes
-> > > register in the config group. For example, if the device page size is 2
-> > > KB, and the device area, set the spare_area_skip_bytes register to 2.
-> > > When the flash controller writes the last sector of the page that
-> > > overlaps with the spare area, it spare_area_skip_bytes must be an even
-> > > number. For example, if the bad block marker is a single byte, set
-> > > spare_area_skip_bytes to 2."
-> >
-> > I did not know this documentation.
-> >
-> > It says "For example" (twice),
-> > it sounds uncertain to me, though.
-> >
-> > Anyway, an intel engineer checked the boot ROM code.
-> > SPARE_AREA_SKIP_BYTES=2 is correct, he said.
-> As far as i understand the documentation it must be a multiple of 2. The most
-> nand flashes i know need one byte for bad block marking so 2 seems to be a
-> pretty sane value.
-
-
-Most of NAND flashes, but not all.
-
-See the "Bad Block Location" in this page:
-
-http://www.linux-mtd.infradead.org/nand-data/nanddata.html
-
-
-
-Many of devices have BBM at 1st byte/word,
-but there are devices that have it at 6th byte.
-
-SPARE_AREA_SKIP_BYTES=2 for SOCFPGA
-corrupts the BBM at offset 6.
-So, probably such a device is not used
-on SOCFPGA boards.
-
-I am guessing that is why the UniPhier platform
-adopted SPARE_AREA_SKIP_BYTES=8.
-
-
-
-
-
-> The explanation why default value of
-> spare_area_skip_bytes=0 of the boot rom is a little unfortunate is also in the
-> documentation: The fact that the ECC values might spill into the spare area
-> where the bad block marker of the nand is located.
-
-
-
-
--- 
-Best Regards
-Masahiro Yamada
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGksIFpoaWhhbwoKTm90IHN1cmUgdGhlIHNpZGUgZWZmZWN0cyBvZiBkcm9wcGluZyB1aS0+dWlf
+bXV0ZXggaW4gdWJpZnNfYnVsa19yZWFkKCksCnRoZSBpbm9kZS0+aV9zaXplIG1heSBiZSBpbmNv
+cnJlY3QgZHVlIHRvIHRoZSBjb25jdXJyZW50IHRydW5jYXRlPwoKSSB0aGluayBpdCdzIGJldHRl
+ciB0byBwYXNzIEZHUF9OT1dBSVQgd2hlbiBpbnZva2luZyBwYWdlY2FjaGVfZ2V0X3BhZ2UoKQph
+bmQgc3RvcCBidWxrIHJlYWQgd2hlbiB3ZSBmYWlsZWQgdG8gbG9jayB0aGUgcGFnZSwgdGhvdWdo
+dHM/CgpZaS4KCk9uIDIwMjAvMS8xMCAyMTozMywgWmhpaGFvIENoZW5nIHdyb3RlOgo+IEluIHVi
+aWZzLCBjb25jdXJyZW50IGV4ZWN1dGlvbiBvZiB3cml0ZXBhZ2UgYW5kIGJ1bGsgcmVhZCBvbiB0
+aGUgc2FtZSBmaWxlCj4gbWF5IGNhdXNlIEFCQkEgZGVhZGxvY2ssIGZvciBleGFtcGxlIChSZXBy
+b2R1Y2UgbWV0aG9kIHNlZSBMaW5rKToKPiAKPiBQcm9jZXNzIEEoQnVsay1yZWFkIHN0YXJ0cyBm
+cm9tIHBhZ2U0KSAgICAgICAgIFByb2Nlc3MgQih3cml0ZSBwYWdlNCBiYWNrKQo+ICAgdmZzX3Jl
+YWQgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB3Yl93b3JrZm4gb3IgZnN5
+bmMKPiAgIC4uLiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLi4u
+Cj4gICBnZW5lcmljX2ZpbGVfYnVmZmVyZWRfcmVhZCAgICAgICAgICAgICAgICAgICAgIHdyaXRl
+X2NhY2hlX3BhZ2VzCj4gICAgIHViaWZzX3JlYWRwYWdlICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgTE9DSyhwYWdlNCkKPiAKPiAgICAgICB1Ymlmc19idWxrX3JlYWQgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICB1Ymlmc193cml0ZXBhZ2UKPiAgICAgICAgIExPQ0sodWktPnVp
+X211dGV4KSAgICAgICAgICAgICAgICAgICAgICAgICAgIHViaWZzX3dyaXRlX2lub2RlCj4gCj4g
+CSAgdWJpZnNfZG9fYnVsa19yZWFkICAgICAgICAgICAgICAgICAgICAgICAgICAgTE9DSyh1aS0+
+dWlfbXV0ZXgpCj4gCSAgICBmaW5kX29yX2NyZWF0ZV9wYWdlKGFsbG9jIHBhZ2U0KSAgICAgICAg
+ICAgICAgICAgIOKGkQo+IAkgICAgICBMT0NLKHBhZ2U0KSAgICAgICAgICAgICAgICAgICA8LS0g
+ICAgIEFCQkEgZGVhZGxvY2sgb2NjdXJzIQo+IAo+IEluIG9yZGVyIHRvIGVuc3VyZSB0aGUgc2Vy
+aWFsaXphdGlvbiBleGVjdXRpb24gb2YgYnVsayByZWFkLCB3ZSBjYW4ndAo+IHJlbW92ZSB0aGUg
+YmlnIGxvY2sgJ3VpLT51aV9tdXRleCcgaW4gdWJpZnNfYnVsa19yZWFkKCkuIEluc3RlYWQsIHdl
+IGFkZAo+IGEgbmV3IG11dGV4IGxvY2sgZm9yIGJ1bGsgcmVhZCBpbiB1Ymlmc19pbm9kZS4gdWJp
+ZnNfYnVsa19yZWFkKCkgd2lsbCBiZQo+IHByb3RlY3RlZCBieSB0aGUgbmV3IG11dGV4IGxvY2sg
+d2hpY2ggcmVwbGFjZXMgdWlfbXV0ZXguCj4gSXQgaXMgY29uZmlybWVkIHRoYXQgYnVsay1yZWFk
+IChidWxrIHJlYWQgZGF0YSBtZW1iZXIgYW5kIHByb2Nlc3MpIGFuZAo+IG90aGVyIG1lbWJlcnMg
+KHdoaWNoIGFyZSBwcm90ZWN0ZWQgYnkgdGhlIHVpX211dGV4IGluIHViaWZzX2lub2RlKSBhcmUK
+PiBpbmRlcGVuZGVudCBvZiBlYWNoIG90aGVyLCBpbmNsdWRpbmcgYXR0ciwgZGlydHkgKCJjbGVh
+biA8LT4gZGlydHkiCj4gdHJhbnNpdGlvbnMpLCB1aV9zaXplICh0cnVuY2F0ZSBwcm9jZXNzKSwg
+ZXRjLgo+IAo+IFNpZ25lZC1vZmYtYnk6IFpoaWhhbyBDaGVuZyA8Y2hlbmd6aGloYW8xQGh1YXdl
+aS5jb20+Cj4gQ2M6IDxTdGFibGVAdmdlci5rZXJuZWwub3JnPgo+IEZpeGVzOiA0NzkzZTdjNWUx
+YyAoIlVCSUZTOiBhZGQgYnVsay1yZWFkIGZhY2lsaXR5IikKPiBMaW5rOiBodHRwczovL2J1Z3pp
+bGxhLmtlcm5lbC5vcmcvc2hvd19idWcuY2dpP2lkPTIwNjE1Mwo+IC0tLQo+ICBmcy91Ymlmcy9m
+aWxlLmMgIHwgMjEgKysrKysrKysrKysrKysrKystLS0tCj4gIGZzL3ViaWZzL3N1cGVyLmMgfCAg
+MSArCj4gIGZzL3ViaWZzL3ViaWZzLmggfCAgNyArKysrKy0tCj4gIDMgZmlsZXMgY2hhbmdlZCwg
+MjMgaW5zZXJ0aW9ucygrKSwgNiBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvZnMvdWJp
+ZnMvZmlsZS5jIGIvZnMvdWJpZnMvZmlsZS5jCj4gaW5kZXggY2Q1MjU4NS4uM2UxNWMyNyAxMDA2
+NDQKPiAtLS0gYS9mcy91Ymlmcy9maWxlLmMKPiArKysgYi9mcy91Ymlmcy9maWxlLmMKPiBAQCAt
+ODM2LDEwICs4MzYsMjMgQEAgc3RhdGljIGludCB1Ymlmc19idWxrX3JlYWQoc3RydWN0IHBhZ2Ug
+KnBhZ2UpCj4gIAkJcmV0dXJuIDA7Cj4gIAo+ICAJLyoKPiAtCSAqIEJ1bGstcmVhZCBpcyBwcm90
+ZWN0ZWQgYnkgQHVpLT51aV9tdXRleCwgYnV0IGl0IGlzIGFuIG9wdGltaXphdGlvbiwKPiAtCSAq
+IHNvIGRvbid0IGJvdGhlciBpZiB3ZSBjYW5ub3QgbG9jayB0aGUgbXV0ZXguCj4gKwkgKiBCdWxr
+LXJlYWQgaXMgcHJvdGVjdGVkIGJ5IEB1aS0+dWlfYnVsa19yZWFkX211dGV4LCB1Ymlmc19yZWFk
+cGFnZSgpCj4gKwkgKiB3aWxsIGFsbCBjb21lIGhlcmUuIElmIHRoZXJlIGFyZSBvdGhlciBjb25j
+dXJyZW50IHJlYWQgdGFza3MgZHVyaW5nCj4gKwkgKiBidWxrLXJlYWQsIGRlYWRsb2NrIG1heSBv
+Y2N1ciwgc3VjaCBhczoKPiArCSAqIFByb2Nlc3MgQShCdWxrLXJlYWQgc3RhcnRzIGZyb20gcGFn
+ZTQpICAgUHJvY2VzcyBCKFJlYWQgcGFnZTQpCj4gKwkgKiAgIHZmc19yZWFkICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgdmZzX3JlYWQKPiArCSAqICAgICAuLi4gICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIC4uLgo+ICsJICogICAgIHViaWZzX3JlYWRwYWdlICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgZmluZF9nZXRfcGFnZShhbGxvYyBwYWdlNCkKPiArCSAq
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYWRkX3RvX3Bh
+Z2VfY2FjaGVfbHJ1Cj4gKwkgKiAgICAgICB1Ymlmc19idWxrX3JlYWQgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgTE9DSyhwYWdlNCkKPiArCSAqICAgICAgICAgTE9DSyh1aS0+dWlfYnVsa19y
+ZWFkX211dGV4KSAgICAgICAgIHViaWZzX3JlYWRwYWdlCj4gKwkgKiAgICAgICAgICAgdWJpZnNf
+ZG9fYnVsa19yZWFkICAgICAgICAgICAgICAgICAgIHViaWZzX2J1bGtfcmVhZAo+ICsJICogICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIExPQ0sodWktPnVp
+X2J1bGtfcmVhZF9tdXRleCkKPiArCSAqICAgICAgICAgICAgIGZpbmRfb3JfY3JlYXRlX3BhZ2Ug
+ICAgICAgICAgICAgICAgICAgICAgICAg4oaRCj4gKwkgKiAgICAgICAgICAgICAgIExPQ0socGFn
+ZTQpCQkgICAgICAgPC0tIEFCQkEgZGVhZGxvY2sgb2NjdXJzIQo+ICsJICogU28gZG9uJ3QgYm90
+aGVyIGlmIHdlIGNhbm5vdCBsb2NrIHRoZSBtdXRleC4KPiAgCSAqLwo+IC0JaWYgKCFtdXRleF90
+cnlsb2NrKCZ1aS0+dWlfbXV0ZXgpKQo+ICsJaWYgKCFtdXRleF90cnlsb2NrKCZ1aS0+dWlfYnVs
+a19yZWFkX211dGV4KSkKPiAgCQlyZXR1cm4gMDsKPiAgCj4gIAlpZiAoaW5kZXggIT0gbGFzdF9w
+YWdlX3JlYWQgKyAxKSB7Cj4gQEAgLTg4NCw3ICs4OTcsNyBAQCBzdGF0aWMgaW50IHViaWZzX2J1
+bGtfcmVhZChzdHJ1Y3QgcGFnZSAqcGFnZSkKPiAgCQlrZnJlZShidSk7Cj4gIAo+ICBvdXRfdW5s
+b2NrOgo+IC0JbXV0ZXhfdW5sb2NrKCZ1aS0+dWlfbXV0ZXgpOwo+ICsJbXV0ZXhfdW5sb2NrKCZ1
+aS0+dWlfYnVsa19yZWFkX211dGV4KTsKPiAgCXJldHVybiBlcnI7Cj4gIH0KPiAgCj4gZGlmZiAt
+LWdpdCBhL2ZzL3ViaWZzL3N1cGVyLmMgYi9mcy91Ymlmcy9zdXBlci5jCj4gaW5kZXggNWUxZThl
+Yy4uYzQ0MTViMyAxMDA2NDQKPiAtLS0gYS9mcy91Ymlmcy9zdXBlci5jCj4gKysrIGIvZnMvdWJp
+ZnMvc3VwZXIuYwo+IEBAIC0yNTcsNiArMjU3LDcgQEAgc3RhdGljIHN0cnVjdCBpbm9kZSAqdWJp
+ZnNfYWxsb2NfaW5vZGUoc3RydWN0IHN1cGVyX2Jsb2NrICpzYikKPiAgCW1lbXNldCgodm9pZCAq
+KXVpICsgc2l6ZW9mKHN0cnVjdCBpbm9kZSksIDAsCj4gIAkgICAgICAgc2l6ZW9mKHN0cnVjdCB1
+Ymlmc19pbm9kZSkgLSBzaXplb2Yoc3RydWN0IGlub2RlKSk7Cj4gIAltdXRleF9pbml0KCZ1aS0+
+dWlfbXV0ZXgpOwo+ICsJbXV0ZXhfaW5pdCgmdWktPnVpX2J1bGtfcmVhZF9tdXRleCk7Cj4gIAlz
+cGluX2xvY2tfaW5pdCgmdWktPnVpX2xvY2spOwo+ICAJcmV0dXJuICZ1aS0+dmZzX2lub2RlOwo+
+ICB9Owo+IGRpZmYgLS1naXQgYS9mcy91Ymlmcy91Ymlmcy5oIGIvZnMvdWJpZnMvdWJpZnMuaAo+
+IGluZGV4IGM1NWYyMTIuLjJhZDU5NmUgMTAwNjQ0Cj4gLS0tIGEvZnMvdWJpZnMvdWJpZnMuaAo+
+ICsrKyBiL2ZzL3ViaWZzL3ViaWZzLmgKPiBAQCAtMzU0LDggKzM1NCwxMCBAQCBzdHJ1Y3QgdWJp
+ZnNfZ2NlZF9pZHhfbGViIHsKPiAgICogQHhhdHRyOiBub24temVybyBpZiB0aGlzIGlzIGFuIGV4
+dGVuZGVkIGF0dHJpYnV0ZSBpbm9kZQo+ICAgKiBAYnVsa19yZWFkOiBub24temVybyBpZiBidWxr
+LXJlYWQgc2hvdWxkIGJlIHVzZWQKPiAgICogQHVpX211dGV4OiBzZXJpYWxpemVzIGlub2RlIHdy
+aXRlLWJhY2sgd2l0aCB0aGUgcmVzdCBvZiBWRlMgb3BlcmF0aW9ucywKPiAtICogICAgICAgICAg
+ICBzZXJpYWxpemVzICJjbGVhbiA8LT4gZGlydHkiIHN0YXRlIGNoYW5nZXMsIHNlcmlhbGl6ZXMg
+YnVsay1yZWFkLAo+IC0gKiAgICAgICAgICAgIHByb3RlY3RzIEBkaXJ0eSwgQGJ1bGtfcmVhZCwg
+QHVpX3NpemUsIGFuZCBAeGF0dHJfc2l6ZQo+ICsgKiAgICAgICAgICAgIHNlcmlhbGl6ZXMgImNs
+ZWFuIDwtPiBkaXJ0eSIgc3RhdGUgY2hhbmdlcywKPiArICogICAgICAgICAgICBwcm90ZWN0cyBA
+ZGlydHksIEB1aV9zaXplLCBhbmQgQHhhdHRyX3NpemUKPiArICogQHVpX2J1bGtfcmVhZF9tdXRl
+eDogc2VyaWFsaXplcyBidWxrLXJlYWQsIHByb3RlY3RzIEBidWxrX3JlYWQsCj4gKyAqICAgICAg
+ICAgICAgICAgICAgICAgIEBsYXN0X3BhZ2VfcmVhZCBhbmQgQHJlYWRfaW5fYV9yb3cKPiAgICog
+QHVpX2xvY2s6IHByb3RlY3RzIEBzeW5jZWRfaV9zaXplCj4gICAqIEBzeW5jZWRfaV9zaXplOiBz
+eW5jaHJvbml6ZWQgc2l6ZSBvZiBpbm9kZSwgaS5lLiB0aGUgdmFsdWUgb2YgaW5vZGUgc2l6ZQo+
+ICAgKiAgICAgICAgICAgICAgICAgY3VycmVudGx5IHN0b3JlZCBvbiB0aGUgZmxhc2g7IHVzZWQg
+b25seSBmb3IgcmVndWxhciBmaWxlCj4gQEAgLTQwOSw2ICs0MTEsNyBAQCBzdHJ1Y3QgdWJpZnNf
+aW5vZGUgewo+ICAJdW5zaWduZWQgaW50IGJ1bGtfcmVhZDoxOwo+ICAJdW5zaWduZWQgaW50IGNv
+bXByX3R5cGU6MjsKPiAgCXN0cnVjdCBtdXRleCB1aV9tdXRleDsKPiArCXN0cnVjdCBtdXRleCB1
+aV9idWxrX3JlYWRfbXV0ZXg7Cj4gIAlzcGlubG9ja190IHVpX2xvY2s7Cj4gIAlsb2ZmX3Qgc3lu
+Y2VkX2lfc2l6ZTsKPiAgCWxvZmZfdCB1aV9zaXplOwo+IAoKCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBt
+YWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
+aW51eC1tdGQvCg==
