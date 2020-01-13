@@ -2,81 +2,60 @@ Return-Path: <SRS0=hwCG=3C=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04DF6C3F68F
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 10:30:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C887CC33CAD
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 10:52:27 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C1B782081E
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 10:30:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9BDAB2081E
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 10:52:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="JjR5Fabj";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=vivaldi.net header.i=@vivaldi.net header.b="1SN+YZ7u";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=vivaldi.net header.i=@vivaldi.net header.b="p+fGYR5M"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C1B782081E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=vivaldi.net
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RccpuSvb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9BDAB2081E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:MIME-Version:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:To:From:Date:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=CNUaOqz5pFxBmices7plvvBiG2sefRoiJzX8j072Ch8=; b=JjR5FabjCpiR9p
-	Mx0ix9Jh8SgorbDiAfCas/lXnE7MvgEkMN9lDNJ85FH/OxkFWnBd9sjuzPl4YvQoD1ybWEmoIaocJ
-	o4n1peAOFAMp6qDrIiSXvg3uGpa5HiZI9c6DiY9T/dcI2MH8kmrOjg4W8ZjwM2suanPa3a1EzcxR+
-	Wzuq4LQo3F9LKiMCT+9fglHYn+MU8iMZC7oczuYHjchzow0FcybLH4oEuCQPKTk9E8scliOki7Y4Q
-	GSqP3bFL/6C6cwpQc1Lda9T9lGggIIogpjYpOphwYN+KfHHJfKvL1+jNx6h0+mffPSMCHoFVUo6ia
-	3fva3b4gYW6ITm/AvYSw==;
+	List-Owner; bh=VTkD43nDDFjWutwhfotnrHKOBrQAXKnr35naZWU24vs=; b=RccpuSvbrNk82u
+	5P4bqkvY7FOSWW9+KMJgtYyB0YhUp5zx9Bw3nTED3nx1+Pe+EiSF7oA0F0atkAlmKGCq1m7pOYk9G
+	JFB+nhXWMzN5k1yRIBwyMmcR7t1akUTt8LNrp/wE2OPE/3gXTffYhFDj8xYFUSCKmOof5EKP8dJHk
+	oW8mLo20Zuedzw0xCwA9i4RRTDRPOwKZYrC5UMjgIRiYU2I0Mmz/W1Zrqgt3u9PgVRtKFdRSA7eRU
+	QbGhrTJvCwUsHKWD1vlkA/cEOxyaACr+qtZi3TOAsOd0HgJDVXsPpLayF+FYXc2HQ2B0Xh5+fCbWQ
+	4leCGvFGFaPbBIHMyAaA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iqwys-0001Oe-SL; Mon, 13 Jan 2020 10:29:58 +0000
-Received: from smtp.vivaldi.net ([82.221.130.149])
+	id 1iqxKP-000321-F4; Mon, 13 Jan 2020 10:52:13 +0000
+Received: from laurent.telenet-ops.be ([2a02:1800:110:4::f00:19])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iqwyo-0001My-Q7
- for linux-mtd@lists.infradead.org; Mon, 13 Jan 2020 10:29:56 +0000
-Received: from localhost (localhost [127.0.0.1])
- by smtp.vivaldi.net (Postfix) with ESMTP id 52F8041876
- for <linux-mtd@lists.infradead.org>; Mon, 13 Jan 2020 10:29:51 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.10.3 smtp.vivaldi.net 52F8041876
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivaldi.net; s=mail;
- t=1578911391; bh=+g/bF76sVGCO2ttMu03n8T+smXAWCpq/xANhF61Ywwc=;
- h=Date:From:To:Subject:From;
- b=1SN+YZ7ugmKtb0r9GF7c7kUkTPyO1QhiTn9mv0ABFcRKVTveQT7VoonlBIcJ3JXVg
- +ZFKT7iiQw+D+lh6hHUEkNu/+cUw4ymMDMgl9RBzfX3zYkrZpKplyeAam/70oHhWfi
- EoJPd51c/y7u+EbmP2VoGeddgvQyd17KuPuO9ijm4sRR2Url9+5CDSEMe7+i/FxEOS
- 8TSrhppwmH/EJboDHQQP7tx0g0mD0vRA+R70pkLBdl2j2dhMf8Qz2SE/phktB7cqo/
- SlfZHsl3LWGCd+W8+xAdsARFrocbM2/g0rOZ7fiO0govQuF46y60tahYUzR1lZlLNq
- l1YAZfRPaBzaA==
-X-Virus-Scanned: Debian amavisd-new at smtp.vivaldi.net
-Received: from smtp.vivaldi.net ([127.0.0.1])
- by localhost (mxo-new.viv.ext [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id doJsFI4_Vdlh for <linux-mtd@lists.infradead.org>;
- Mon, 13 Jan 2020 10:29:50 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.10.3 smtp.vivaldi.net EEC2741816
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivaldi.net; s=mail;
- t=1578911389; bh=+g/bF76sVGCO2ttMu03n8T+smXAWCpq/xANhF61Ywwc=;
- h=Date:From:To:Subject:From;
- b=p+fGYR5MPDi8v84YnJc+oOSBqQ5SZ0z5plTNZI/PQT+5ev52Jes2mPQVv5yt8v9bF
- y3YnU6/gw+qfJOy0ztKbG+5rSLsIqPlN6AxiPHBbxGSiga9+rJ4P3HGcNBgEcE79/w
- bx/1im5sPlbGVJbpwfgGlPXb+hORI8pxqDxVxz6ZPOWLqk3kb9eb2+gWnZ0Q+EmGyy
- foZfU7bphqvm2OBlovDCEewY5DscF0LH2j2HRD1dzWamBjmXGkT746D3PD7eJF/+6s
- z8M2ff/yN3Te3WLfWyO3fJcDI2UT3PZ2IqPkG2vYf220wzSoohJuJsf+le6ViflH3y
- Bxoc7GAkW5bZQ==
-Date: Mon, 13 Jan 2020 15:59:48 +0530
-From: jaymin.dabhi@vivaldi.net
-To: linux-mtd@lists.infradead.org
-Subject: UBIFS Image Reserved More Space
-Message-ID: <1e833a8c647ea5fdcc8ca1a5f6532ceb@vivaldi.net>
-X-Sender: jaymin.dabhi@vivaldi.net
-User-Agent: Roundcube Webmail/1.3.9
+ id 1iqxKK-00030R-T9
+ for linux-mtd@lists.infradead.org; Mon, 13 Jan 2020 10:52:10 +0000
+Received: from ramsan ([84.195.182.253]) by laurent.telenet-ops.be with bizsmtp
+ id pmry210015USYZQ01mryH4; Mon, 13 Jan 2020 11:52:01 +0100
+Received: from rox.of.borg ([192.168.97.57]) by ramsan with esmtp (Exim 4.90_1)
+ (envelope-from <geert@linux-m68k.org>)
+ id 1iqxK9-0000up-Tz; Mon, 13 Jan 2020 11:51:57 +0100
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+ (envelope-from <geert@linux-m68k.org>)
+ id 1iqxK9-0006lD-R3; Mon, 13 Jan 2020 11:51:57 +0100
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Richard Weinberger <richard@nod.at>
+Subject: [PATCH] ubifs: Fix ino_t format warnings in orphan_delete()
+Date: Mon, 13 Jan 2020 11:51:56 +0100
+Message-Id: <20200113105156.25945-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200113_022955_245931_22B2CDE9 
-X-CRM114-Status: UNSURE (   2.70  )
+X-CRM114-CacheID: sfid-20200113_025209_096626_904294A9 
+X-CRM114-Status: UNSURE (   9.25  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -89,81 +68,44 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Cc: linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+ linux-alpha@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There is a ubifs.img has been created with following commands and 
-configurations:
-
-
-mkfs.ubifs -r rfs_out_dir -m 2048 -e 126976 -c 2047 -F -o 
-rfs_out_dir/ubifs.img
-
-ubinize -o rfs_out_dir/ubifs -p 131072 -m 2048 -s 2048 
-rfs_out_dir/ubicfg.ini
-
-
->> ubicfg.ini
-
-[ubifs]
-mode=ubi
-image=ubifs.img
-vol_id=0
-vol_type=dynamic
-vol_name=rootfs
-vol_flags=autoresize
-
-
-There is 1GB RAM on the board.
-
->> Output of top command:
-
-Tasks:  43 total,   1 running,  42 sleeping,   0 stopped,   0 zombie
-%Cpu(s):  0.0 us,  1.0 sy,  0.0 ni, 98.7 id,  0.0 wa,  0.2 hi,  0.0 si,  
-0.0 st
-KiB Mem :   703572 total,   649392 free,    20528 used,    33652 
-buff/cache
-KiB Swap:        0 total,        0 free,        0 used.   671578 avail 
-Mem
-
->> Output of free command:
-
-# free -m
-               total        used        free      shared  buff/cache   
-available
-Mem:            687          19         634           0          32      
-    655
-Swap:             0           0           0
-
->> Output of df command:
-
-# df -h
-Filesystem                Size      Used Available Use% Mounted on
-ubi0:rootfs             107.9M     69.8M     38.1M  65% /
-devtmpfs                343.5M         0    343.5M   0% /dev
-tmpfs                   343.5M     68.0K    343.5M   0% /dev/shm
-tmpfs                   343.5M    160.0K    343.4M   0% /run
-tmpfs                   343.5M         0    343.5M   0% /sys/fs/cgroup
-tmpfs                   343.5M     12.0K    343.5M   0% /tmp
-tmpfs                   343.5M         0    343.5M   0% /webSvr/logs
-tmpfs                   343.5M     16.0K    343.5M   0% /var/lib/pulse
-tmpfs                   343.5M     24.0K    343.5M   0% /var/run
-tmpfs                   343.5M         0    343.5M   0% /var/tmp
-tmpfs                    68.7M         0     68.7M   0% /run/user/0
-
-
-The above commands indicate that ~337MB has been reserved somewhere.
-
-Is my UBIFS keeping it reserved?
-How to know why this much memory has been reserved?
-
-Also, how can I get more space in UBIFS?
-
-Thanks in advance.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gYWxwaGEgYW5kIHMzOTB4OgoKICAgIGZzL3ViaWZzL2RlYnVnLmg6MTU4OjExOiB3YXJuaW5n
+OiBmb3JtYXQg4oCYJWx14oCZIGV4cGVjdHMgYXJndW1lbnQgb2YgdHlwZSDigJhsb25nIHVuc2ln
+bmVkIGludOKAmSwgYnV0IGFyZ3VtZW50IDQgaGFzIHR5cGUg4oCYaW5vX3Qge2FrYSB1bnNpZ25l
+ZCBpbnR94oCZIFstV2Zvcm1hdD1dCiAgICAuLi4KICAgIGZzL3ViaWZzL29ycGhhbi5jOjEzMjoz
+OiBub3RlOiBpbiBleHBhbnNpb24gb2YgbWFjcm8g4oCYZGJnX2dlbuKAmQogICAgICAgZGJnX2dl
+bigiZGVsZXRlZCB0d2ljZSBpbm8gJWx1Iiwgb3JwaC0+aW51bSk7CiAgICAuLi4KICAgIGZzL3Vi
+aWZzL29ycGhhbi5jOjE0MDozOiBub3RlOiBpbiBleHBhbnNpb24gb2YgbWFjcm8g4oCYZGJnX2dl
+buKAmQogICAgICAgZGJnX2dlbigiZGVsZXRlIGxhdGVyIGlubyAlbHUiLCBvcnBoLT5pbnVtKTsK
+Cl9fa2VybmVsX2lub190IGlzICJ1bnNpZ25lZCBsb25nIiBvbiBtb3N0IGFyY2hpdGVjdHVyZXMs
+IGJ1dCBub3Qgb24KYWxwaGEgYW5kIHMzOTB4LCB3aGVyZSBpdCBpcyAidW5zaWduZWQgaW50Ii4g
+IEhlbmNlIHdoZW4gcHJpbnRpbmcgYW4KaW5vX3QsIGl0IHNob3VsZCBhbHdheXMgYmUgY2FzdCB0
+byAidW5zaWduZWQgbG9uZyIgZmlyc3QuCgpGaXggdGhpcyBieSByZS1hZGRpbmcgdGhlIHJlY2Vu
+dGx5IHJlbW92ZWQgY2FzdHMuCgpGaXhlczogODAwOWNlOTU2YzNkMjgwMiAoInViaWZzOiBEb24n
+dCBsZWFrIG9ycGhhbnMgb24gbWVtb3J5IGR1cmluZyBjb21taXQiKQpTaWduZWQtb2ZmLWJ5OiBH
+ZWVydCBVeXR0ZXJob2V2ZW4gPGdlZXJ0QGxpbnV4LW02OGsub3JnPgotLS0KIGZzL3ViaWZzL29y
+cGhhbi5jIHwgNCArKy0tCiAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0
+aW9ucygtKQoKZGlmZiAtLWdpdCBhL2ZzL3ViaWZzL29ycGhhbi5jIGIvZnMvdWJpZnMvb3JwaGFu
+LmMKaW5kZXggNTRkNmRiNjExMDZmZmM0NS4uZWRmNDNkZGQ3ZGNlNDc3OSAxMDA2NDQKLS0tIGEv
+ZnMvdWJpZnMvb3JwaGFuLmMKKysrIGIvZnMvdWJpZnMvb3JwaGFuLmMKQEAgLTEyOSw3ICsxMjks
+NyBAQCBzdGF0aWMgdm9pZCBfX29ycGhhbl9kcm9wKHN0cnVjdCB1Ymlmc19pbmZvICpjLCBzdHJ1
+Y3QgdWJpZnNfb3JwaGFuICpvKQogc3RhdGljIHZvaWQgb3JwaGFuX2RlbGV0ZShzdHJ1Y3QgdWJp
+ZnNfaW5mbyAqYywgc3RydWN0IHViaWZzX29ycGhhbiAqb3JwaCkKIHsKIAlpZiAob3JwaC0+ZGVs
+KSB7Ci0JCWRiZ19nZW4oImRlbGV0ZWQgdHdpY2UgaW5vICVsdSIsIG9ycGgtPmludW0pOworCQlk
+YmdfZ2VuKCJkZWxldGVkIHR3aWNlIGlubyAlbHUiLCAodW5zaWduZWQgbG9uZylvcnBoLT5pbnVt
+KTsKIAkJcmV0dXJuOwogCX0KIApAQCAtMTM3LDcgKzEzNyw3IEBAIHN0YXRpYyB2b2lkIG9ycGhh
+bl9kZWxldGUoc3RydWN0IHViaWZzX2luZm8gKmMsIHN0cnVjdCB1Ymlmc19vcnBoYW4gKm9ycGgp
+CiAJCW9ycGgtPmRlbCA9IDE7CiAJCW9ycGgtPmRuZXh0ID0gYy0+b3JwaF9kbmV4dDsKIAkJYy0+
+b3JwaF9kbmV4dCA9IG9ycGg7Ci0JCWRiZ19nZW4oImRlbGV0ZSBsYXRlciBpbm8gJWx1Iiwgb3Jw
+aC0+aW51bSk7CisJCWRiZ19nZW4oImRlbGV0ZSBsYXRlciBpbm8gJWx1IiwgKHVuc2lnbmVkIGxv
+bmcpb3JwaC0+aW51bSk7CiAJCXJldHVybjsKIAl9CiAKLS0gCjIuMTcuMQoKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlz
+Y3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9saW51eC1tdGQvCg==
