@@ -2,99 +2,81 @@ Return-Path: <SRS0=hwCG=3C=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 40C67C33CAD
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 13:24:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC868C33CAD
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 14:07:04 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 118502080D
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 13:24:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 80765207E0
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 14:07:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IDGGj8gp";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="erLYBBdi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 118502080D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TlODdL+j";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="A99ZYAhV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 80765207E0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From
-	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=8XsDw9Ixuqnok8cmMEJVCTCDuFoO3hgwNBdEVtIVO6c=; b=IDGGj8gpQhB8iF
-	F9r7LtDVMeAsztsSPYz8efIwo8fbBIqOZkgaU2YiUq0Hv51htIdwgoSIMfBvYD13lhNireCf6ApFG
-	CPnM6ca9QwP+ZqXfsVaqi1IcmaYDogiRyvqnI8ZYT0X/WW1ujKpbnl/LlGfZhqrrPrkppCpF3xp2I
-	ojxljfdT4YeiuYrv2lGsztv1y/PfVAkRRFEMo4iNQHcoFcCwqSJ5hAStEJ56qsHp/Np6T8v2BVK56
-	RqEkvC+Ud/g8jKdFP2flMw7dGvVjBHfyFyY+sNAz+oHWuX5OLA3ADgNnlAQNc7MR3bR+ydk35QFpx
-	qmdBQwvt2oFjnpcgMRig==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:Cc:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=Hnizw6AHCvhiH7vI1juN7SCiRDgBiiw+3HkW8/W0G8E=; b=TlODdL+jhkUe/MqAVKcafz+VW
+	jvffA6wYD7Cgtm2Uj3qStTQkDNdZtoDzIT1WTpeTnhEISYq4Iq3xPUfjbpD3JwUFFt2dLP5pMDebU
+	LncIw7ZKnas304ykKpVh4fLDbirPaP7++RQnTgWb/EN0frps8accquNzhcwSHoczeVQKlmzqsF/rN
+	/MOEnji7/AuvBTop698U3vZZdauf3TVEkzW95W1sntwOTHZdyWPbLMtqTstQ2JtT21C+YsFjCS6Td
+	JourKXCHu8gOGmtn46TMEIkqLA7y+/fXadsW2OmwJE6eFvDs6G3f0Pjf3UaiGEq69MREUrlujHXjU
+	uzns4UQRQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iqzhk-0004Wl-El; Mon, 13 Jan 2020 13:24:28 +0000
-Received: from userp2130.oracle.com ([156.151.31.86])
+	id 1ir0Mc-0007J7-JQ; Mon, 13 Jan 2020 14:06:42 +0000
+Received: from heliosphere.sirena.org.uk ([172.104.155.198])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iqzhh-0004WE-O9
- for linux-mtd@lists.infradead.org; Mon, 13 Jan 2020 13:24:27 +0000
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
- by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00DDMeRq116202;
- Mon, 13 Jan 2020 13:24:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2019-08-05;
- bh=Ga946dKjkWL6cw2gC4q2vcikz/DRqUl8k49hkbQNN44=;
- b=erLYBBdiZE73upde6C3zUurIz10Re6RCdcFehNJt5jWIAw483zwcjJWdhlkxZH2OFd89
- Lgb8W+YkosBsiDLtSmKCbtDZjUwMjxqU6kCM5tlJ+hpcUmnXkB20Dz/1unzU3mlRaEbT
- Bj1k4uvo3Qj1HzB+zkK5Bqmh0zrXxXSenehl1G44As3VTICecYWxwfe1ZYIZZ3kvcJyj
- Rz/YugKSoeMH3Kx9SYn+6BP1HSapP/i4nGkepPndqIJuJ2edKjaCKRYqTOtqLqkfFZKF
- FZ3WE81olddiQLsVr9sogOnOUM+gpUTcMF3lf0odJoxCM7RZKXawICWOecSULmnwsLCx uQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
- by userp2130.oracle.com with ESMTP id 2xf74rxw6f-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Mon, 13 Jan 2020 13:24:16 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
- by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00DDOBx0084936;
- Mon, 13 Jan 2020 13:24:15 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
- by aserp3030.oracle.com with ESMTP id 2xfrh62vs6-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Mon, 13 Jan 2020 13:24:15 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
- by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 00DDNsNN007011;
- Mon, 13 Jan 2020 13:23:55 GMT
-Received: from kili.mountain (/129.205.23.165)
- by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Mon, 13 Jan 2020 05:23:54 -0800
-Date: Mon, 13 Jan 2020 16:23:46 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: Richard Weinberger <richard@nod.at>
-Subject: [PATCH] ubi: Fix an error pointer dereference in error handling code
-Message-ID: <20200113132346.rmeamdmbxwvo7kgj@kili.mountain>
+ id 1ir0MZ-0007In-8d
+ for linux-mtd@lists.infradead.org; Mon, 13 Jan 2020 14:06:40 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
+ MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=6KFeNs3JL0rvY1BgoRK7VKDE3sUTxPx6uvM/wOGZ2Y0=; b=A99ZYAhVVv9OhsChQogilnnY1
+ GbC0wKY23VKU5dwFKYEIDClgwCt54tcvUMG0Qmlr5TMmRDMEFxwFk/ZmiDmY2J1VbMkoM2cA9wopW
+ LKoaehJEc8bw0RTIo1du7yTNdniOz3M9nVwYS/BMT8FnYWAqNL0Y6MS0BySIA/wESMKMY=;
+Received: from fw-tnat-cam7.arm.com ([217.140.106.55]
+ helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <broonie@sirena.org.uk>)
+ id 1ir0MO-0002fp-0G; Mon, 13 Jan 2020 14:06:28 +0000
+Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
+ id 9D2A6D01965; Mon, 13 Jan 2020 14:06:27 +0000 (GMT)
+Date: Mon, 13 Jan 2020 14:06:27 +0000
+From: Mark Brown <broonie@kernel.org>
+To: John Garry <john.garry@huawei.com>
+Subject: Re: [PATCH v2 2/3] spi: Add HiSilicon v3xx SPI NOR flash controller
+ driver
+Message-ID: <20200113140627.GJ3897@sirena.org.uk>
+References: <1575900490-74467-3-git-send-email-john.garry@huawei.com>
+ <0dc5cb2e-b765-9e13-b05e-9e3c835c5985@huawei.com>
+ <20200109212842.GK3702@sirena.org.uk>
+ <df67b562-7d82-19f6-7581-680190a7772d@huawei.com>
+ <20200110140726.GB5889@sirena.org.uk>
+ <6db83881-927c-d11c-9c77-23a45892ddab@huawei.com>
+ <20200110193119.GI32742@smile.fi.intel.com>
+ <612a3c5d-69a4-af6b-5c79-c3fb853193ab@huawei.com>
+ <20200113114256.GH3897@sirena.org.uk>
+ <6dd45da9-9ccf-45f7-ed12-8f1406a0a56b@huawei.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9498
- signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2
- malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-2001130112
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9498
- signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
- priorityscore=1501 malwarescore=0
- suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-2001130112
+In-Reply-To: <6dd45da9-9ccf-45f7-ed12-8f1406a0a56b@huawei.com>
+X-Cookie: Programming is an unnatural act.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200113_052425_873418_3A321474 
-X-CRM114-Status: GOOD (  17.79  )
+X-CRM114-CacheID: sfid-20200113_060639_308272_3C604C14 
+X-CRM114-Status: GOOD (  12.92  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,110 +88,82 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Alexandre Torgue <alexandre.torgue@st.com>, kernel-janitors@vger.kernel.org,
- linux-mtd@lists.infradead.org, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-stm32@st-md-mailman.stormreply.com,
- Vignesh Raghavendra <vigneshr@ti.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: chenxiang66@hisilicon.com, linux-kernel@vger.kernel.org,
+ tudor.ambarus@microchip.com, liusimin4@huawei.com, linuxarm@huawei.com,
+ linux-spi@vger.kernel.org, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, xuejiancheng@hisilicon.com,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ wanghuiqiang <wanghuiqiang@huawei.com>, fengsheng5@huawei.com
+Content-Type: multipart/mixed; boundary="===============6587250882748493876=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-If "seen_pebs = init_seen(ubi);" fails then "seen_pebs" is an error pointer
-and we try to kfree() it which results in an Oops.
 
-This patch re-arranges the error handling so now it only frees things
-which have been allocated successfully.
+--===============6587250882748493876==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="cN519qCC4CN1mUcX"
+Content-Disposition: inline
 
-Fixes: daef3dd1f0ae ("UBI: Fastmap: Add self check to detect absent PEBs")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/mtd/ubi/fastmap.c | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
----
- drivers/mtd/ubi/fastmap.c | 21 ++++++++++++---------
- 1 file changed, 12 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index 1c7be4eb3ba6..6b544665318a 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -1137,7 +1137,7 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
- 	struct rb_node *tmp_rb;
- 	int ret, i, j, free_peb_count, used_peb_count, vol_count;
- 	int scrub_peb_count, erase_peb_count;
--	unsigned long *seen_pebs = NULL;
-+	unsigned long *seen_pebs;
- 
- 	fm_raw = ubi->fm_buf;
- 	memset(ubi->fm_buf, 0, ubi->fm_size);
-@@ -1151,7 +1151,7 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
- 	dvbuf = new_fm_vbuf(ubi, UBI_FM_DATA_VOLUME_ID);
- 	if (!dvbuf) {
- 		ret = -ENOMEM;
--		goto out_kfree;
-+		goto out_free_avbuf;
- 	}
- 
- 	avhdr = ubi_get_vid_hdr(avbuf);
-@@ -1160,7 +1160,7 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
- 	seen_pebs = init_seen(ubi);
- 	if (IS_ERR(seen_pebs)) {
- 		ret = PTR_ERR(seen_pebs);
--		goto out_kfree;
-+		goto out_free_dvbuf;
- 	}
- 
- 	spin_lock(&ubi->volumes_lock);
-@@ -1328,7 +1328,7 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
- 	ret = ubi_io_write_vid_hdr(ubi, new_fm->e[0]->pnum, avbuf);
- 	if (ret) {
- 		ubi_err(ubi, "unable to write vid_hdr to fastmap SB!");
--		goto out_kfree;
-+		goto out_free_seen;
- 	}
- 
- 	for (i = 0; i < new_fm->used_blocks; i++) {
-@@ -1350,7 +1350,7 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
- 		if (ret) {
- 			ubi_err(ubi, "unable to write vid_hdr to PEB %i!",
- 				new_fm->e[i]->pnum);
--			goto out_kfree;
-+			goto out_free_seen;
- 		}
- 	}
- 
-@@ -1360,7 +1360,7 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
- 		if (ret) {
- 			ubi_err(ubi, "unable to write fastmap to PEB %i!",
- 				new_fm->e[i]->pnum);
--			goto out_kfree;
-+			goto out_free_seen;
- 		}
- 	}
- 
-@@ -1370,10 +1370,13 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
- 	ret = self_check_seen(ubi, seen_pebs);
- 	dbg_bld("fastmap written!");
- 
--out_kfree:
--	ubi_free_vid_buf(avbuf);
--	ubi_free_vid_buf(dvbuf);
-+out_free_seen:
- 	free_seen(seen_pebs);
-+out_free_dvbuf:
-+	ubi_free_vid_buf(dvbuf);
-+out_free_avbuf:
-+	ubi_free_vid_buf(avbuf);
-+
- out:
- 	return ret;
- }
--- 
-2.11.0
+--cN519qCC4CN1mUcX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Jan 13, 2020 at 01:01:06PM +0000, John Garry wrote:
+> On 13/01/2020 11:42, Mark Brown wrote:
+
+> > The idiomatic approach appears to be for individual board vendors
+> > to allocate IDs, you do end up with multiple IDs from multiple
+> > vendors for the same thing.
+
+> But I am not sure how appropriate that same approach would be for some 3rd
+> party memory part which we're simply wiring up on our board. Maybe it is.
+
+It seems to be quite common for Intel reference designs to assign
+Intel IDs to non-Intel parts on the board (which is where I
+became aware of this practice). =20
+
+> > In general there's not really much standardizaiton for devices,
+> > the bindings that do exist aren't really centrally documented and
+> > the Windows standard is just to have the basic device
+> > registration in the firmware and do all properties based on
+> > quirking based on DMI information.
+
+> OK, so there is always DMI. I hoped to avoid this sort of thing in the li=
+nux
+> driver :)
+
+Yes, there are some merits to an approach like that.
+
+--cN519qCC4CN1mUcX
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl4ceWIACgkQJNaLcl1U
+h9BaSQgAhHJyOShaR9eNX0h/1w/gPwom3WJq37NV0iDGPxwM7bufN6CmYlEn2VT5
+14DC0ypUzhgmLxSy/+4YjpVoqHfK24ubjJmdQOaYHBDXtUv7C/R+Yg5Rs+SVwwNb
+dAL9mO11neDUCRVlJP4Lw3tx8feN0SZeUjX6P0pdx3NQSa/pQSww3ZSwG+PoBgWF
+cdwu0JWwvx5k2X5O27NehGYxWXo+alYY3AcVcEsEStyhwpQHYcy8jmE6tP14UI/P
+26/o3Nmt4G8zM605sRu9AIJb5eFWtIPOzrisnK0KLkxtbHJfrd/cRrJ2ANSCjVAX
+L7YeVR4vNDZ98Wz0z/eg21M6wsb8Vg==
+=Mq70
+-----END PGP SIGNATURE-----
+
+--cN519qCC4CN1mUcX--
+
+
+--===============6587250882748493876==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============6587250882748493876==--
+
