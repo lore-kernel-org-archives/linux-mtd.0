@@ -2,59 +2,119 @@ Return-Path: <SRS0=hwCG=3C=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MSGID_FROM_MTA_HEADER,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D3A6C33CAD
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 14:56:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E850EC33CA9
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 15:35:04 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 15CFC207FF
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 14:56:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B7EC8207FD
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 15:35:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="adOuLV4H"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 15CFC207FF
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=axis.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="SHnTopvj";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nokia.onmicrosoft.com header.i=@nokia.onmicrosoft.com header.b="blnpIWyK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B7EC8207FD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nokia.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=FIdMUh97If9jsEqUU1ElJ8WtZP3GabqXKAdet1XQqrc=; b=adOuLV4HQ7ZoxF
-	uhhvnH0DWByeGYNnveuNle71cV/5TZM/hYgaVnMGEyz3jTUMEKfviQxfpcqN4KX9LCfYJSu+0PARE
-	2yscROsZTIExwls2P82lxHFXKooTdsGWr7bH1oqptGwRpRvaU2Dq/26E6RxKeUniC0gIL//diq2o3
-	nkDvsL9VicWMkkUS9uQe0fxa5TDMngdoRZGHz24NgUVocZLr6uUxnDfYJf7ia6ShemeJ9IpI2UR4j
-	H7MemzOIWByz3N5iAjNEJiU2X5nNDit88qa+oO0ip3ErsRfsHW28b6XErnxrNhWBRBJKxdyT3xZ0c
-	jr5Ydr847MLHiMCmATRA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=jwW7+UDymfroG3YJtXEPZ/AvXdQE0NrtambbTT5Up2M=; b=SHnTopvjuBC3qq
+	yUbOVvDVHZRn3MGGb4R73wVfrrTNRulCiNUIBsr7jFAx6K+qxVJLa3z2rzr09nlFwKeFHzFb7/+pj
+	nbJG5dvCVviyznfBkCKwfVGddjpbYszntTQzFwT7k3XNgB8Y+b6miFNqbVP3AOFRqZ13xNbZDdLPu
+	hpAc1IK4ow77UyUL+RhZupRcRrBlq+hWaAYIfK/JJZa1IKSGAOgj8IVLGUUK35sZWbP2rMp+anpUj
+	tkfL/cqexQvddQ515yOGRErYjz+yEq85MeAyJNO4qvldax6eAKYKZ0whrUF1mZRF5vikVBsl3wSqQ
+	lLQL+q5skXdR5u/tlCnw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ir195-0002cG-AW; Mon, 13 Jan 2020 14:56:47 +0000
-Received: from smtp2.axis.com ([195.60.68.18])
+	id 1ir1jt-00053n-V0; Mon, 13 Jan 2020 15:34:49 +0000
+Received: from mail-eopbgr150129.outbound.protection.outlook.com
+ ([40.107.15.129] helo=EUR01-DB5-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ir190-0002b2-HQ
- for linux-mtd@lists.infradead.org; Mon, 13 Jan 2020 14:56:45 +0000
-IronPort-SDR: 476E/49jP70zycdbz/vwy3ppWLWHCbNwTpHwq1oScwLdyLGrEnpg5SCw3/xAAJMArroiTtgcwM
- oVFmEUd26uqncX6t57x9rddguJuQAyLsgK6ZS7DDGlQ3ZZmNlX+wd1fF3+IDjQa507rWiZTgoA
- s5xMNZmPmUNJa573BCkFgkSx68WpkiLuRHrRkALy3YVBjUJkP5ptqX2UH9+cCAYB6g6fAS39KI
- 1rtlyKvfygdMWONIF+iGwh9vKRNghi+J/UnC7ujsrfdlVPLvpcayPElrI1PoRFSTdK3qfwrGl1
- nbY=
-X-IronPort-AV: E=Sophos;i="5.69,429,1571695200"; 
-   d="scan'208";a="4244478"
-From: Arne Edholm <arne.edholm@axis.com>
-To: <richard@nod.at>
-Subject: [PATCH] ubi: Select fastmap anchor PEBs considering wear level rules
-Date: Mon, 13 Jan 2020 15:56:22 +0100
-Message-ID: <20200113145622.18357-1-arne.edholm@axis.com>
-X-Mailer: git-send-email 2.11.0
+ id 1ir1jq-000531-C4
+ for linux-mtd@lists.infradead.org; Mon, 13 Jan 2020 15:34:48 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UmvsEBJsRFRnhazlB9YlusjOAmInP2T7ezCZGiwiQCFI7ygM+YQVPk0GCYOau3lTcGP6uXUnmqqeSZVX7YxbcdYd49EtzVLciljH0S9xL/WkEb2ojLdDRd+uIPrT0/gu5E9kAOrsOWOwV6tsh4mPrVdapxokkJnFrI83LR+zXddS3oCEm9w74Kv2jfvyjcWqMB8x7ajjOB4C5mBKGU+GyDeBzAfHMOAry48eHNtEtTlNP2R1CrjHtYD2ED7pwkB5y+PGVqcBf2J/R4AkfSnuLYGoB0Al/paoHaMWvsEBARwZAmun6ea9LGwZ2s6MbD8Q+Q/Me58HCE79Cy5bXT8p1Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sunhIbcz60iNyplSYz80zhO3scKiwlkQD3cFtomMMNg=;
+ b=AlkO0LSrfO3ri69xVvH9dPpbWIgVrc+GgitOrKNtj2Akjev83gCLpxpqcV25PEk4jYqzuIY2ZZYomzYuZBXQukGpsJiY7mh6FrGH7F7GDDLRRnh4RtuJFobeKM+cwQfeMyU4hgjIl8ZLY5iOrfG+M4xBJb5ovb3g6t3ZbEoIWYViUN1rydNJJ00l0px2emo3Hbf3s+7Yw9uHRpJgNiYtZxQv0RMpoR9T8ds6d3QggxKrYOfTaCZ8Yzd39wGtsecdf+8l/WZwi5WMQ7Wq4MCfiqD3Jv2hStHzWWyETfOOMAYrt9N8H2GGEfqyZc1NU/u/AkRIWgQAHy9SVU8dX6/TSA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
+ dkim=pass header.d=nokia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com; 
+ s=selector1-nokia-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sunhIbcz60iNyplSYz80zhO3scKiwlkQD3cFtomMMNg=;
+ b=blnpIWyKTJCObyY++0qE4L+RA2poU3iXX5pTYVrVGZBSWtNbq+zABzuQ9qwS1bWtGnrbyoQJekB4lC/cvlR2irz69Fjuc6gQtDNxBNQMt3mk5wBhSTHwxQo+z6H/V4vvFQud4EvxS5H5Oc/os/bO+honWs4ftt/3yXW/vysLdBI=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=alexander.sverdlin@nokia.com; 
+Received: from VI1PR07MB5040.eurprd07.prod.outlook.com (20.177.203.20) by
+ VI1PR07MB4688.eurprd07.prod.outlook.com (20.177.57.96) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2623.6; Mon, 13 Jan 2020 15:34:38 +0000
+Received: from VI1PR07MB5040.eurprd07.prod.outlook.com
+ ([fe80::20c4:7ce8:f735:316e]) by VI1PR07MB5040.eurprd07.prod.outlook.com
+ ([fe80::20c4:7ce8:f735:316e%2]) with mapi id 15.20.2644.015; Mon, 13 Jan 2020
+ 15:34:38 +0000
+Subject: Re: [PATCH 2/2] mtd: spi-nor: Always use biggest erase size
+To: Tudor.Ambarus@microchip.com, linux-mtd@lists.infradead.org
+References: <20190124112014.20167-1-alexander.sverdlin@nokia.com>
+ <20190124112014.20167-3-alexander.sverdlin@nokia.com>
+ <08858201-eebb-b9c0-a94d-9eec9106d23b@microchip.com>
+ <e286d6bf-99a1-eedc-7b9f-a082603b0946@nokia.com>
+From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Message-ID: <f6be94ce-03d2-6e24-bddd-115966bf5e29@nokia.com>
+Date: Mon, 13 Jan 2020 16:34:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
+In-Reply-To: <e286d6bf-99a1-eedc-7b9f-a082603b0946@nokia.com>
+Content-Language: en-US
+X-ClientProxiedBy: HE1PR09CA0051.eurprd09.prod.outlook.com
+ (2603:10a6:7:3c::19) To VI1PR07MB5040.eurprd07.prod.outlook.com
+ (2603:10a6:803:9c::20)
 MIME-Version: 1.0
+Received: from [0.0.0.0] (131.228.32.166) by
+ HE1PR09CA0051.eurprd09.prod.outlook.com (2603:10a6:7:3c::19) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2623.10 via Frontend Transport; Mon, 13 Jan 2020 15:34:35 +0000
+X-Originating-IP: [131.228.32.166]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 4f17e82f-917c-467d-f309-08d7983e19c5
+X-MS-TrafficTypeDiagnostic: VI1PR07MB4688:
+X-Microsoft-Antispam-PRVS: <VI1PR07MB46886D45DF48A585A0965C1F88350@VI1PR07MB4688.eurprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-Forefront-PRVS: 028166BF91
+X-Forefront-Antispam-Report: SFV:NSPM;
+ SFS:(10019020)(4636009)(346002)(136003)(366004)(39860400002)(376002)(396003)(189003)(199004)(6706004)(2616005)(6486002)(956004)(316002)(8676002)(6666004)(66556008)(66476007)(66946007)(16576012)(8936002)(44832011)(16526019)(186003)(31696002)(36756003)(86362001)(4326008)(478600001)(5660300002)(52116002)(81166006)(31686004)(81156014)(53546011)(2906002)(26005)(78286006);
+ DIR:OUT; SFP:1102; SCL:1; SRVR:VI1PR07MB4688;
+ H:VI1PR07MB5040.eurprd07.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; MX:1; A:1; 
+Received-SPF: None (protection.outlook.com: nokia.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3qPhSIb/bg+nSJpI/JP8VpEcCrq1zDMpqFSX2G+P2OzMkS7YcyuVL2AxyupVAPBqtTrg0sa+Fo3FdVNgEpWZrz4s8d/fD1jR5QCJulOSVqq0PkHTlqsT+TvwpmC8dvWxO+uPlnuFBrzCGxV9eGrUFc3yz/s+a4w4XvbAXMASrwGwh9lnRKEmjS/qxtluMkqco4Q7Qk5pFQ3WVPZAMhwNzeQ3Z4WRPhwD6ferZJvjcpsMWJRiKhqT0/MzmwdrwawSooWiooJtH2fGDm7aOLc53XO1RFM5DPlg5xML5BYFGPSL8up2Bmj4Ml+d8g4QPK9tV1G/wlN06kxDSWqYMcWX7UHnto0gRYZIocbWmml7TCquLi2ImUW5TkjVbovl3i/4OToVxf07P3Xi88AjTwCN2TfEBXYBWyFH/TK4GdRpJu2WWk0hampetuRrMjdclBqFa7Br80V+TV/1E215/NEgGg1NBOJMLUUdpQZeDUeJPjZ9k/y8N4JQvpYaza329OrH
+X-OriginatorOrg: nokia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4f17e82f-917c-467d-f309-08d7983e19c5
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jan 2020 15:34:38.6380 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wjvHNBYCgwF2/f5d5aqVfTAQqEXU71081FsNwzp057QJISoRxrhlKUAXiGz0Zn5/oDHqGkBdmiolT6aMQDfRjVwxZzBeWLgEWNb6X5G+Zds=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR07MB4688
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200113_065642_915507_503CEF27 
-X-CRM114-Status: GOOD (  18.58  )
+X-CRM114-CacheID: sfid-20200113_073446_462377_BDE1236B 
+X-CRM114-Status: GOOD (  12.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,213 +126,50 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Arne Edholm <arne.edholm@axis.com>, linux-mtd@lists.infradead.org
+Cc: marek.vasut@gmail.com, computersforpeace@gmail.com, dwmw2@infradead.org,
+ richard@nod.at, bbrezillon@kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There is a risk that the fastmap anchor PEB is alternating between
-just two PEBs, the current anchor and the previous anchor that was just
-deleted. As the fastmap pools gets the first take on free PEBs, the
-pools may leave no free PEBs to be selected as the new anchor,
-resulting in the two PEBs alternating behaviour. If the anchor PEBs gets
-a high erase count the PEBs will not be used by the pools but remain in
-ubi->free, even more increasing the likelihood they will be used as
-anchors.
+Hello Tudor,
 
-Getting stuck using only a couple of PEBs continuously will result in an
-uneven wear, eventually leading to failure.
+On 01/03/2019 10:50, Alexander Sverdlin wrote:
+>>> Optimize erase time by always using biggest erase size for given erase
+>>> request. Do it by removing "sector"-at-a-time erase code.
+>>> spi_nor_erase_multi_sectors() seems to be mature enough to handle all
+>>> the cases better.
+>> Did you check if the upper mtd layers are affected by this change?
+> For now I just change static function, I didn't want to remote
+> spi_nor_has_uniform_erase() infrastructure in the first step.
+> 
+> So I personally see no problems with my patch. It's also quite well
+> tested up to now.
+> 
+>>> For the above to work backwards-compatible regarding 4-bytes commands
+>>> spi_nor_set_4byte_opcodes() has to prepare them always, independent of
+>>> spi_nor_has_uniform_erase() flag.
+>>>
+>>> Remainder check in spi_nor_erase() becomes superfluous because
+>>> spi_nor_erase_multi_sectors() performs it anyway.
+>>>
+>>> The trigger for this change was n25q128a13: enabling SECT_4K increased
+>>> erase time of 128k block from 1.763s to 11.335s.
+>> When needed, one can disable the 4K sectors with the MTD_SPI_NOR_USE_4K_SECTORS
+>> kconfig option. Does this help you?
+> This very same kernel runs on different boards with different flashes.
+> Seems that more modern flashes are not so slow when 4K sectors are used.
+> 
+> Moreover, I truly believe this was a dead code and want to be convinced
+> otherwise before real problems start :)
 
-To fix this:
+in the past 10 months I didn't encounter any problems with this patch.
+Could you take another look on it?
 
-- Choose the fastmap anchor when the most free PEBs are available. This is
-  during rebuilding of the fastmap pools, after the unused pool PEBs are
-  added to ubi->free but before the pools are populated again from the
-  free PEBs. Also reserve an additional second best PEB as a candidate
-  for the next time the fast map anchor is updated. If a better PEB is
-  found the next time the fast map anchor is updated, the candidate is
-  made available for building the pools.
-
-- Enable anchor move within the anchor area again as it is useful for
-  distributing wear.
-
-- The anchor candidate for the next fastmap update is the most suited free
-  PEB. Check this PEB's erase count during wear leveling. If the wear
-  leveling limit is exceeded, the PEB is considered unsuitable for now. As
-  all other non used anchor area PEBs should be even worse, free up the
-  used anchor area PEB with the lowest erase count.
-
-Signed-off-by: Arne Edholm <arne.edholm@axis.com>
----
- drivers/mtd/ubi/fastmap-wl.c | 39 ++++++++++++++++++++++++---------------
- drivers/mtd/ubi/fastmap.c    | 11 +++++++++++
- drivers/mtd/ubi/ubi.h        |  4 +++-
- drivers/mtd/ubi/wl.c         | 28 +++++++++++++++++++---------
- 4 files changed, 57 insertions(+), 25 deletions(-)
-
-diff --git a/drivers/mtd/ubi/fastmap-wl.c b/drivers/mtd/ubi/fastmap-wl.c
-index 426820ab9afe..97cb57a12440 100644
---- a/drivers/mtd/ubi/fastmap-wl.c
-+++ b/drivers/mtd/ubi/fastmap-wl.c
-@@ -110,6 +110,21 @@ void ubi_refill_pools(struct ubi_device *ubi)
- 	wl_pool->size = 0;
- 	pool->size = 0;
- 
-+	if (ubi->fm_anchor) {
-+		wl_tree_add(ubi->fm_anchor, &ubi->free);
-+		ubi->free_count++;
-+	}
-+	if (ubi->fm_next_anchor) {
-+		wl_tree_add(ubi->fm_next_anchor, &ubi->free);
-+		ubi->free_count++;
-+	}
-+
-+	/* All available PEBs are in ubi->free, now is the time to get
-+	 * the best anchor PEBs.
-+	 */
-+	ubi->fm_anchor = ubi_wl_get_fm_peb(ubi, 1);
-+	ubi->fm_next_anchor = ubi_wl_get_fm_peb(ubi, 1);
-+
- 	for (;;) {
- 		enough = 0;
- 		if (pool->size < pool->max_size) {
-@@ -265,26 +280,20 @@ static struct ubi_wl_entry *get_peb_for_wl(struct ubi_device *ubi)
- int ubi_ensure_anchor_pebs(struct ubi_device *ubi)
- {
- 	struct ubi_work *wrk;
--	struct ubi_wl_entry *anchor;
- 
- 	spin_lock(&ubi->wl_lock);
- 
--	/* Do we already have an anchor? */
--	if (ubi->fm_anchor) {
--		spin_unlock(&ubi->wl_lock);
--		return 0;
--	}
--
--	/* See if we can find an anchor PEB on the list of free PEBs */
--	anchor = ubi_wl_get_fm_peb(ubi, 1);
--	if (anchor) {
--		ubi->fm_anchor = anchor;
--		spin_unlock(&ubi->wl_lock);
--		return 0;
-+	/* Do we have a next anchor? */
-+	if (!ubi->fm_next_anchor) {
-+		ubi->fm_next_anchor = ubi_wl_get_fm_peb(ubi, 1);
-+		if (!ubi->fm_next_anchor)
-+			/* Tell wear leveling to produce a new anchor PEB */
-+			ubi->fm_do_produce_anchor = 1;
- 	}
- 
--	/* No luck, trigger wear leveling to produce a new anchor PEB */
--	ubi->fm_do_produce_anchor = 1;
-+	/* Do wear leveling to get a new anchor PEB or check the
-+	 * existing next anchor candidate.
-+	 */
- 	if (ubi->wl_scheduled) {
- 		spin_unlock(&ubi->wl_lock);
- 		return 0;
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index 1c7be4eb3ba6..02332f9ea996 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -1220,6 +1220,17 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
- 		fm_pos += sizeof(*fec);
- 		ubi_assert(fm_pos <= ubi->fm_size);
- 	}
-+	if (ubi->fm_next_anchor) {
-+		fec = (struct ubi_fm_ec *)(fm_raw + fm_pos);
-+
-+		fec->pnum = cpu_to_be32(ubi->fm_next_anchor->pnum);
-+		set_seen(ubi, ubi->fm_next_anchor->pnum, seen_pebs);
-+		fec->ec = cpu_to_be32(ubi->fm_next_anchor->ec);
-+
-+		free_peb_count++;
-+		fm_pos += sizeof(*fec);
-+		ubi_assert(fm_pos <= ubi->fm_size);
-+	}
- 	fmh->free_peb_count = cpu_to_be32(free_peb_count);
- 
- 	ubi_for_each_used_peb(ubi, wl_e, tmp_rb) {
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index 9688b411c930..a12fdb137fa4 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -491,7 +491,8 @@ struct ubi_debug_info {
-  * @fm_work: fastmap work queue
-  * @fm_work_scheduled: non-zero if fastmap work was scheduled
-  * @fast_attach: non-zero if UBI was attached by fastmap
-- * @fm_anchor: The next anchor PEB to use for fastmap
-+ * @fm_anchor: The new anchor PEB used during fastmap update
-+ * @fm_next_anchor: An anchor PEB candidate for the next time fastmap is updated
-  * @fm_do_produce_anchor: If true produce an anchor PEB in wl
-  *
-  * @used: RB-tree of used physical eraseblocks
-@@ -602,6 +603,7 @@ struct ubi_device {
- 	int fm_work_scheduled;
- 	int fast_attach;
- 	struct ubi_wl_entry *fm_anchor;
-+	struct ubi_wl_entry *fm_next_anchor;
- 	int fm_do_produce_anchor;
- 
- 	/* Wear-leveling sub-system's stuff */
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index 5d77a38dba54..804c434928aa 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -688,20 +688,27 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
- 	}
- 
- #ifdef CONFIG_MTD_UBI_FASTMAP
-+	e1 = find_anchor_wl_entry(&ubi->used);
-+	if (e1 && ubi->fm_next_anchor &&
-+	    (ubi->fm_next_anchor->ec - e1->ec >= UBI_WL_THRESHOLD)) {
-+		ubi->fm_do_produce_anchor = 1;
-+		/* fm_next_anchor is no longer considered a good anchor
-+		 * candidate.
-+		 * NULL assignment also prevents multiple wear level checks
-+		 * of this PEB.
-+		 */
-+		wl_tree_add(ubi->fm_next_anchor, &ubi->free);
-+		ubi->fm_next_anchor = NULL;
-+		ubi->free_count++;
-+	}
-+
- 	if (ubi->fm_do_produce_anchor) {
--		e1 = find_anchor_wl_entry(&ubi->used);
- 		if (!e1)
- 			goto out_cancel;
- 		e2 = get_peb_for_wl(ubi);
- 		if (!e2)
- 			goto out_cancel;
- 
--		/*
--		 * Anchor move within the anchor area is useless.
--		 */
--		if (e2->pnum < UBI_FM_MAX_START)
--			goto out_cancel;
--
- 		self_check_in_wl_tree(ubi, e1, &ubi->used);
- 		rb_erase(&e1->u.rb, &ubi->used);
- 		dbg_wl("anchor-move PEB %d to PEB %d", e1->pnum, e2->pnum);
-@@ -1080,8 +1087,11 @@ static int __erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk)
- 	if (!err) {
- 		spin_lock(&ubi->wl_lock);
- 
--		if (!ubi->fm_anchor && e->pnum < UBI_FM_MAX_START) {
--			ubi->fm_anchor = e;
-+		if (!ubi->fm_next_anchor && e->pnum < UBI_FM_MAX_START) {
-+			/* Abort anchor production, if needed it will be
-+			 * enabled again in the wear leveling started below.
-+			 */
-+			ubi->fm_next_anchor = e;
- 			ubi->fm_do_produce_anchor = 0;
- 		} else {
- 			wl_tree_add(e, &ubi->free);
 -- 
-2.11.0
-
+Best regards,
+Alexander Sverdlin.
 
 ______________________________________________________
 Linux MTD discussion mailing list
