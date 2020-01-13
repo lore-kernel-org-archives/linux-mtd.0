@@ -6,71 +6,70 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CEEFCC33CAE
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 07:54:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3A16C33CAE
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 08:03:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A1BE92075B
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 07:54:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 95C3E2082E
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 08:03:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pi5dYci2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A1BE92075B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="eCnd/uuX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 95C3E2082E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=yoPTdfgFbHpOR6sgeFDjAIFOPSsdQn1/rhYyy1QFlNU=; b=pi5dYci2zXJOdC
-	uBpSg+ci0sc+xGAmKeKH4HEDAD6zzkxCL2f9VnwD9LSRuoYclAKbBkMhGfelDodu7anXrXDSa/EFk
-	x4ngHYHCjHHHxVvkioD4/IOq4f7AKI4TmL2/OlRgV1ITFyU4sTzJtWc04/G9rwgc0vXk1BNqhqsBg
-	cfpGOcsQqeYyAZlb2KLTk3cN0Y+ee/EeGcCrZv21Xml0wBNmU1uqn/5ucmdU++4Xb8SAaBpiPl9Wo
-	W8rQSpWG2l6ScTApv4Td6o9pBfI2NqtwONOvwiwrGgjghdWNL0ThSKuzbNePqyLG1oy5u4MkBdHB9
-	a9bxosrtyEU9BoN6OdaA==;
+	List-Owner; bh=eky4e/BEwzEDdKCEDCdXrw1hzs3Fj657xsW8aUOGkMo=; b=eCnd/uuXqgqPXo
+	Rg29gUX3G0BcQzMCHDhl2hCq+KMqMQQj2EDNGVtXH0+kYuG5OAAdkVdiEYxCq+zJvRYK0mTIk4FVp
+	bfSXIZGgm1fuykbyb3noP9j8lwkaFKEoB+Ikf3AnkkX9cYBVrlze3yBna3KUMVqJI+kZRlNcntA1v
+	2y2YHjcY0VhdIyAFi1X9ftcheswYB5l8XJh3LXEDiwgz8SoH2dLIUViK6toFVONGKpjdgBlLJSOkQ
+	0A0EGM2KFMJeqD7UR4nvtbwe6lO/X6fbSPgd9HF+7vY0QBqO7qDI8MQ3KRa93Pycz6XPXG/Voru6U
+	Pnm59cN4JtOeWKAmDgdA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iquYA-0007NF-1m; Mon, 13 Jan 2020 07:54:14 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1iquge-0002rl-0T; Mon, 13 Jan 2020 08:03:00 +0000
+Received: from mail-ot1-f66.google.com ([209.85.210.66])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iquY7-0007MO-DP
- for linux-mtd@lists.infradead.org; Mon, 13 Jan 2020 07:54:13 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 3D7D56088971;
- Mon, 13 Jan 2020 08:54:09 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id TUaezdVo-5cL; Mon, 13 Jan 2020 08:54:08 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id BF4B8608310A;
- Mon, 13 Jan 2020 08:54:08 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id 0HgxGEBIOJfD; Mon, 13 Jan 2020 08:54:08 +0100 (CET)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
- by lithops.sigma-star.at (Postfix) with ESMTP id 6D7DB6088971;
- Mon, 13 Jan 2020 08:54:08 +0100 (CET)
-Date: Mon, 13 Jan 2020 08:54:08 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-To: liu song11 <liu.song11@zte.com.cn>
-Message-ID: <1681702500.19692.1578902048331.JavaMail.zimbra@nod.at>
-In-Reply-To: <202001131229371470661@zte.com.cn>
-References: <20191216154441.6648-1-fishland@aliyun.com,
- CAFLxGvyU=zh23vkYiAGRzyd4LGJodLwRRa1S03THAoSaSL=dGA@mail.gmail.com>
- <202001131229371470661@zte.com.cn>
-Subject: Re: [PATCH] ubifs: Fix potentially out-of-bounds memory access in
- ubifs_dump_node
+ id 1iquga-0002qz-W0
+ for linux-mtd@lists.infradead.org; Mon, 13 Jan 2020 08:02:58 +0000
+Received: by mail-ot1-f66.google.com with SMTP id 66so8126843otd.9
+ for <linux-mtd@lists.infradead.org>; Mon, 13 Jan 2020 00:02:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=X8Id6XgPA2ap+aeggUNQ70885pghkWz/XEq4dAjRKOU=;
+ b=jcXYPX7ZGij2XB4MBsukk74Ax2Xc2Zqz75t2WBztb8z8Pes22PM60blc6fLsgOh0EF
+ OeYGSGIRI9L9O1zbx8ip5xf+hAdN2EiT0WhDjYmE3qzWfJBNggclJHOJf6TtX6Tv+fc4
+ Sj5QP7+CKdvDYUj/CzcMYr+44sn6+0eLLAz+xogK6v1NADVAp6uUi2C/aQ5Epaw6p/LI
+ ErTZdULFFxp81Fqw/vGpcVJpfyPiBnopW1e/H+emTFK90DhqOvBOeHqy/l+0Ep/21keX
+ 58AE7raVMyJLhVjY1lRV+5GaAf0NYSGrv2iIKODPJ5jvu6U2KfLPSCmtKNCSmc4X+gS3
+ MpLQ==
+X-Gm-Message-State: APjAAAVvWEk8/xExsLx9yUP1arjohAEw9J40rZqD5APvVYFvGfzocMiK
+ rej6Kca4OqBd+yKwz8lVQYaSYd9wki8NCxaRM0F8Ig==
+X-Google-Smtp-Source: APXvYqxrTQxdCcBjcuZNb4i1DplR5hz8sBr2nJFdWUQiqpijAC8f2J0N8OKIXCudxmSmWTD9cr7n8tPRxo6bdGVvTh0=
+X-Received: by 2002:a05:6830:18c6:: with SMTP id
+ v6mr7330803ote.145.1578902575501; 
+ Mon, 13 Jan 2020 00:02:55 -0800 (PST)
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF68 (Linux)/8.8.12_GA_3809)
-Thread-Topic: ubifs: Fix potentially out-of-bounds memory access in
- ubifs_dump_node
-Thread-Index: U75eDtes0zTxvtUwzHGII2MO4QYnug==
+References: <20200110154218.0b28309f@xps13>
+ <CAHk-=wg=8=nTeOYGoAbJ=VjS47Nh4-_OFK9zKsK3mK4nAi2dNA@mail.gmail.com>
+ <CAHk-=whdsFSX0gTOiNkTANONgHHVY+8jUd1DmY2SJpdNOq5xJw@mail.gmail.com>
+ <20200111145004.htnpdf6oaiksryxz@chatter.i7.local>
+In-Reply-To: <20200111145004.htnpdf6oaiksryxz@chatter.i7.local>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 13 Jan 2020 09:02:44 +0100
+Message-ID: <CAMuHMdUtk9m+BNrH1BuqGxWXR5h1DZmUasHMVKNYFxsd5wa5YA@mail.gmail.com>
+Subject: Re: [GIT PULL] mtd: Fixes for v5.5-rc6
+To: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200112_235411_598308_E7C177F3 
-X-CRM114-Status: UNSURE (   7.67  )
+X-CRM114-CacheID: sfid-20200113_000257_029165_9DA4E80D 
+X-CRM114-Status: UNSURE (   7.50  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -83,27 +82,41 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard.weinberger@gmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- jiang xuexin <jiang.xuexin@zte.com.cn>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Richard Weinberger <richard@nod.at>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFByb2JsZW1zIHdpdGggc3RvcmFnZSBk
-ZXZpY2VzIGFyZSBpbmRlZWQgYSBwcm9ibGVtLCBCdXQgYmVjYXVzZSB0aGUgd3JvbmcKPiAiY2gt
-PmxlbiIgY2F1c2VzIHRoZSBrZXJuZWwgdG8gY3Jhc2gsIHRoaXMgY29zdCBpcyB0b28gaGVhdnku
-IFdlIHNob3VsZAo+IGF2b2lkIGtlcm5lbCBjcmFzaGVzIGR1ZSB0byBzdWNoIGVycm9ycy4KPiAK
-PiAKPiBBbHRob3VnaCBhIGNyYyBlcnJvciB3YXMgZm91bmQgaW4gInViaWZzX2NoZWNrX25vZGUi
-LCBpdCBpcyBkaWZmaWN1bHQgdG8KPiBzaW1wbHkganVkZ2Ugd2hldGhlciAiY2gtPmxlbiIgaXMg
-cmVhc29uYWJsZSwgc28gSSB0aGluayB3ZSBvbmx5IG5lZWQgdG8ga25vdwo+IHRoZSBfbG9jYXRp
-b25fIG9mIHRoZSBlcnJvciBkYXRhIG5vZGUsIGFuZCBpdCBpcyBub3QgbmVjZXNzYXJ5IHRvIHBy
-ZXNlbnQgaXRzCj4gY29udGVudHMgdG9nZXRoZXIuCgpXaGF0IHdlIGNhbiB0cnkgaXMgb3B0aW9u
-YWxseSBwYXNzaW5nIHRoZSBidWZmZXIgbGVuZ3RoIHRvIHViaWZzX2R1bXBfbm9kZSgpLgpJZiBj
-cmMgaXMgYmFkIGJ1dCBjaC0+bGVuIGlzIHdpdGhpbiBib3VuZHMgd2UgY2FuIHN0aWxsIHNhZmVs
-eSBkdW1wLgoKVGhhbmtzLAovL3JpY2hhcmQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxp
-c3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQv
-Cg==
+Hi Konstantin,
+
+On Sat, Jan 11, 2020 at 3:50 PM Konstantin Ryabitsev
+<konstantin@linuxfoundation.org> wrote:
+> Things should be unstuck now, and at least this particular bug is fixed
+> -- hopefully it'll be smooth and automatic the next time the epoch rolls
+> over to 9.git.
+
+Are you prepared for multi-digit epochs? ;-)
+They not only contain more than one digit, but compare incorrectly
+when using lexical sorting...
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
