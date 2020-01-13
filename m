@@ -2,66 +2,62 @@ Return-Path: <SRS0=hwCG=3C=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31B7BC33CAD
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 14:28:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E416C33CAD
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 14:34:22 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0627E207E0
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 14:28:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7200A2073D
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 14:34:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="W3BCNgcR";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="J4HQCkmv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0627E207E0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dxetZnHV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7200A2073D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:Cc:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=urKFFJiq1y1sQH05D9+wbBHzU6qHZ03LjduQolrK3iM=; b=W3BCNgcRR7S1M3RnOHEvJbPyb
-	zr1UmXjT5FkxRPKgTbLCygkzrr4J956a1iNCMRTIU/P/alFik5vn6Pjte7WZ0Gi5NGKcSGuNWZB6/
-	hdRHAxf6/3tUkxW+pLszGkeSOE0TKmP01K2T5ihRYIGw4dboBsRrGeZ5fDJ0Dw1OBV9fVyh1aErBY
-	dd/Ez/kztvxp0Y/dsBAY/EkWzajJVy/kQbQjVB1uler8iKrnoSNOaDb3ErCQFqidcGFBAKFHy5LyY
-	cJ81vBBLHlVG9wtZ7P57xhwCPqZi+FjvsGuvD5jgAKlVAL4umYitp6pdulo8PV1WqqDZe+a86FiQ7
-	y/l6tBe0A==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=6An8F3F4gc/d2qdQ8tj56bGSqp7WwO5dmTEJg5kl6nA=; b=dxetZnHV8d8ama
+	Y3UKx2CWFpza9lD+O4R7dVHfTr1vdPCieyw5pN/W38Xf5kK0+YQFMZpfY2AWpf7DEo2jb/aam9457
+	2eiHvqUaq5FXh3NSJtnZZojEuBW0P/zKNk0yz+jfkMOVg7NvgCsoCXoS638qlJ+VIyxi+dpuNpPAX
+	3JSSgyIv0M+ASWcIlRNW+yeQow3ozLyc4mKvk75XUGc7six2QiwTc9e8isk92tcYDo2p+L/2VBvEh
+	cppY+Az860QO8b6QaVufnp7LNUqRSRJfqB49t2CIoBybyzpEh+BwoD3Url7jJ6ZNCuBVSvh2lcyLx
+	8hHkH8OkACci5SBRPenQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ir0hN-0007kC-Nx; Mon, 13 Jan 2020 14:28:09 +0000
-Received: from heliosphere.sirena.org.uk ([172.104.155.198])
+	id 1ir0nB-0001kz-H1; Mon, 13 Jan 2020 14:34:09 +0000
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ir0hK-0007jK-NG
- for linux-mtd@lists.infradead.org; Mon, 13 Jan 2020 14:28:08 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
- MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=gI+gQL3pn7zMuCRzTvhyLR0rFsc7ORADzwCGXynvWCY=; b=J4HQCkmv5+4IoZU8+rmZFPCmr
- RjSnBLNhkSx+oYkIe0rQIqn+BusQ/aUEwMmsXdwifyEALwkwVaInpZIAE7DAeqRFoxqRc1PmqeVOP
- V8sKprrraFLtSt0PyG0LDwO6AX2Y1yuJtU29anR8mpuMJWlA3YV0u3dxOlJ6Gc0hWhCwI=;
-Received: from fw-tnat-cam7.arm.com ([217.140.106.55]
- helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.org.uk>)
- id 1ir0h8-0002lN-Pj; Mon, 13 Jan 2020 14:27:54 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 2ED9CD01965; Mon, 13 Jan 2020 14:27:54 +0000 (GMT)
-Date: Mon, 13 Jan 2020 14:27:54 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
+ id 1ir0n8-0001jW-N5
+ for linux-mtd@lists.infradead.org; Mon, 13 Jan 2020 14:34:08 +0000
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 13 Jan 2020 06:34:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,429,1571727600"; d="scan'208";a="218679884"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+ by fmsmga007.fm.intel.com with ESMTP; 13 Jan 2020 06:34:02 -0800
+Received: from andy by smile with local (Exim 4.93)
+ (envelope-from <andy.shevchenko@gmail.com>)
+ id 1ir0n5-0000dT-J4; Mon, 13 Jan 2020 16:34:03 +0200
+Date: Mon, 13 Jan 2020 16:34:03 +0200
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+To: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH v2 2/3] spi: Add HiSilicon v3xx SPI NOR flash controller
  driver
-Message-ID: <20200113142754.GL3897@sirena.org.uk>
-References: <20200109212842.GK3702@sirena.org.uk>
- <df67b562-7d82-19f6-7581-680190a7772d@huawei.com>
+Message-ID: <20200113143403.GQ32742@smile.fi.intel.com>
+References: <df67b562-7d82-19f6-7581-680190a7772d@huawei.com>
  <20200110140726.GB5889@sirena.org.uk>
  <6db83881-927c-d11c-9c77-23a45892ddab@huawei.com>
  <20200110193119.GI32742@smile.fi.intel.com>
@@ -70,13 +66,15 @@ References: <20200109212842.GK3702@sirena.org.uk>
  <6dd45da9-9ccf-45f7-ed12-8f1406a0a56b@huawei.com>
  <20200113140627.GJ3897@sirena.org.uk>
  <CAHp75VfepiiVFLLmCwdBS0Z6tmR+XKBaOLg1qPPuz1McLjS=4Q@mail.gmail.com>
+ <20200113142754.GL3897@sirena.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VfepiiVFLLmCwdBS0Z6tmR+XKBaOLg1qPPuz1McLjS=4Q@mail.gmail.com>
-X-Cookie: Programming is an unnatural act.
+Content-Disposition: inline
+In-Reply-To: <20200113142754.GL3897@sirena.org.uk>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200113_062806_765110_EF5274C9 
-X-CRM114-Status: GOOD (  14.24  )
+X-CRM114-CacheID: sfid-20200113_063406_771004_2C12E94D 
+X-CRM114-Status: GOOD (  15.88  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,81 +86,43 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: liusimin4@huawei.com, chenxiang66@hisilicon.com,
- John Garry <john.garry@huawei.com>, linux-spi <linux-spi@vger.kernel.org>,
- Linuxarm <linuxarm@huawei.com>,
+Cc: chenxiang66@hisilicon.com,
  Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ John Garry <john.garry@huawei.com>, liusimin4@huawei.com,
+ Linuxarm <linuxarm@huawei.com>, linux-spi <linux-spi@vger.kernel.org>,
  Marek Vasut <marek.vasut@gmail.com>,
  "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
  tudor.ambarus@microchip.com, Jiancheng Xue <xuejiancheng@hisilicon.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
  Mika Westerberg <mika.westerberg@linux.intel.com>,
  wanghuiqiang <wanghuiqiang@huawei.com>, fengsheng5@huawei.com
-Content-Type: multipart/mixed; boundary="===============6281823099320252311=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
---===============6281823099320252311==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="rnP2AJ7yb1j09OW/"
-Content-Disposition: inline
-
-
---rnP2AJ7yb1j09OW/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jan 13, 2020 at 04:17:32PM +0200, Andy Shevchenko wrote:
-> On Mon, Jan 13, 2020 at 4:07 PM Mark Brown <broonie@kernel.org> wrote:
-> > On Mon, Jan 13, 2020 at 01:01:06PM +0000, John Garry wrote:
-> > > On 13/01/2020 11:42, Mark Brown wrote:
-
-> > > > The idiomatic approach appears to be for individual board vendors
-> > > > to allocate IDs, you do end up with multiple IDs from multiple
-> > > > vendors for the same thing.
-
-> > > But I am not sure how appropriate that same approach would be for some 3rd
-> > > party memory part which we're simply wiring up on our board. Maybe it is.
-
-> > It seems to be quite common for Intel reference designs to assign
-> > Intel IDs to non-Intel parts on the board (which is where I
-> > became aware of this practice).
-
-> Basically vendor of component in question is responsible for ID, but
-> it seems they simple don't care.
-
-AFAICT a lot of the time it seems to be that whoever is writing
-the software ends up assigning an ID, that may not be the silicon
-vendor.
-
---rnP2AJ7yb1j09OW/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl4cfmkACgkQJNaLcl1U
-h9C9SAf/QUGxpHCyO2c4xltDoYDcAjrwD0T5cZM7n1f3yKywuxkpNt6pJtFXI0Vy
-pHN6G5MnEma6TGY+6gO6mfUwgMeMedj8jy8ZlEhWNWEigXKm09SXXf7cNhz/z27G
-UFyxXenpV0xU9839bZ7PfRqgFGhQTOaXCbpqGiL+N9dU0V+jzkpMSL30FJFa8acS
-WSMZlt54a1f462AQepyauxqdCJ5/krBwV2/z1xRJ5z0NwlrqqYWWr77AoZP0chuL
-mjQWulsjgyUGRN7OIt9S51bHPF82uUg+rYKkNLZGmeAz2jVf1nI73h4T88NTlj9H
-msiLxupn8vvcpRM9fc5sYSH6Y0Zmcw==
-=y+l1
------END PGP SIGNATURE-----
-
---rnP2AJ7yb1j09OW/--
-
-
---===============6281823099320252311==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============6281823099320252311==--
-
+T24gTW9uLCBKYW4gMTMsIDIwMjAgYXQgMDI6Mjc6NTRQTSArMDAwMCwgTWFyayBCcm93biB3cm90
+ZToKPiBPbiBNb24sIEphbiAxMywgMjAyMCBhdCAwNDoxNzozMlBNICswMjAwLCBBbmR5IFNoZXZj
+aGVua28gd3JvdGU6Cj4gPiBPbiBNb24sIEphbiAxMywgMjAyMCBhdCA0OjA3IFBNIE1hcmsgQnJv
+d24gPGJyb29uaWVAa2VybmVsLm9yZz4gd3JvdGU6Cj4gPiA+IE9uIE1vbiwgSmFuIDEzLCAyMDIw
+IGF0IDAxOjAxOjA2UE0gKzAwMDAsIEpvaG4gR2Fycnkgd3JvdGU6Cj4gPiA+ID4gT24gMTMvMDEv
+MjAyMCAxMTo0MiwgTWFyayBCcm93biB3cm90ZToKPiAKPiA+ID4gPiA+IFRoZSBpZGlvbWF0aWMg
+YXBwcm9hY2ggYXBwZWFycyB0byBiZSBmb3IgaW5kaXZpZHVhbCBib2FyZCB2ZW5kb3JzCj4gPiA+
+ID4gPiB0byBhbGxvY2F0ZSBJRHMsIHlvdSBkbyBlbmQgdXAgd2l0aCBtdWx0aXBsZSBJRHMgZnJv
+bSBtdWx0aXBsZQo+ID4gPiA+ID4gdmVuZG9ycyBmb3IgdGhlIHNhbWUgdGhpbmcuCj4gCj4gPiA+
+ID4gQnV0IEkgYW0gbm90IHN1cmUgaG93IGFwcHJvcHJpYXRlIHRoYXQgc2FtZSBhcHByb2FjaCB3
+b3VsZCBiZSBmb3Igc29tZSAzcmQKPiA+ID4gPiBwYXJ0eSBtZW1vcnkgcGFydCB3aGljaCB3ZSdy
+ZSBzaW1wbHkgd2lyaW5nIHVwIG9uIG91ciBib2FyZC4gTWF5YmUgaXQgaXMuCj4gCj4gPiA+IEl0
+IHNlZW1zIHRvIGJlIHF1aXRlIGNvbW1vbiBmb3IgSW50ZWwgcmVmZXJlbmNlIGRlc2lnbnMgdG8g
+YXNzaWduCj4gPiA+IEludGVsIElEcyB0byBub24tSW50ZWwgcGFydHMgb24gdGhlIGJvYXJkICh3
+aGljaCBpcyB3aGVyZSBJCj4gPiA+IGJlY2FtZSBhd2FyZSBvZiB0aGlzIHByYWN0aWNlKS4KPiAK
+PiA+IEJhc2ljYWxseSB2ZW5kb3Igb2YgY29tcG9uZW50IGluIHF1ZXN0aW9uIGlzIHJlc3BvbnNp
+YmxlIGZvciBJRCwgYnV0Cj4gPiBpdCBzZWVtcyB0aGV5IHNpbXBsZSBkb24ndCBjYXJlLgo+IAo+
+IEFGQUlDVCBhIGxvdCBvZiB0aGUgdGltZSBpdCBzZWVtcyB0byBiZSB0aGF0IHdob2V2ZXIgaXMg
+d3JpdGluZwo+IHRoZSBzb2Z0d2FyZSBlbmRzIHVwIGFzc2lnbmluZyBhbiBJRCwgdGhhdCBtYXkg
+bm90IGJlIHRoZSBzaWxpY29uCj4gdmVuZG9yLgoKLi4ud2hpY2ggaXMgZWZmZWN0aXZlbHkgYWJ1
+c2luZyB0aGUgQUNQSSBJRCBhbGxvY2F0aW9uIHByb2NlZHVyZS4KCihBbmQgeWVzLCBJbnRlbCBp
+dHNlbGYgZGlkIGl0IGluIHRoZSBwYXN0IOKAlCBzZWUgYmFkbHkgY3JlYXRlZCBBQ1BJIElEcwog
+aW4gdGhlIGRyaXZlcnMpCgotLSAKV2l0aCBCZXN0IFJlZ2FyZHMsCkFuZHkgU2hldmNoZW5rbwoK
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+TGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
+b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
