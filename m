@@ -6,49 +6,50 @@ X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CE1CC33CAB
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 09:41:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94EE1C33CA8
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 09:41:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6C3932075B
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 09:41:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 67FC52075B
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 09:41:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="h1a5xWeL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C3932075B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="k2K5hHCO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 67FC52075B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sigma-star.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kibbSIsSgPObItdlpy8jqXmZtVVFwm7rw1BTDuSRFVI=; b=h1a5xWeLWs7Mls
-	zJnYvVCsx+InnlVh6GgA71GMpVygwIrBmJDJiw+k81drrTZSBIZgEwxQ5hISJQNMHhWk6IeiAOwvs
-	0k4SnD2smTFoqcOJTf9TJ+8Xup8CMHFanFqwUt9ansvbx0Lu0ohv/KLr/jPL9PLFC+eXX9/jRHMPQ
-	K+f9p/k9b9irl3mwwNHg9sQQf8vh2Pdf1hO0RLmeGNyZsbzEVVyjvkHBgmKeV/8RwUxDE+1CWiVnb
-	BxLz4B/jOxSeguGvp9YQypdrm3iYuW+CIXqD1O71WR9jOmeqeXI8l8omwF9PIs45MjlhZ8w3Vlt11
-	6f0z4+G1cmGjUfdWVDtQ==;
+	Message-ID:From:References:To:Subject:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=kibbSIsSgPObItdlpy8jqXmZtVVFwm7rw1BTDuSRFVI=; b=k2K5hHCOmurTDv4mJ0bWhHLxRC
+	DjnStIxNkbhHa6QEZx8Zsju+7pFcS7QNzj6i4jhZOjGZyyaywsOoB1xHe/PNM2IY3ISj+/28cMyXr
+	sCjBjfMdXRN/56YB3djyAKy5tVsgygjdVI6udD9PRbsqgICB+XLqLykame8vy2IIGYby/CDcnUHMI
+	DmK3Bk3/gFrlv356bp9O6FAo5PkOSvZ+bysuS7t8v723dDq7BCrHvYc3n/BwdqL2/bjDup4VGSZSd
+	onAwh0WvRqSNaZZB6knzmqwpiVLzwzakAwkVPPQeomkpofEu9P76O6tPStorqerQASiHNkLrutT7k
+	G01K64Lg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iqwDh-0007D0-D7; Mon, 13 Jan 2020 09:41:13 +0000
+	id 1iqwDs-0007R1-M8; Mon, 13 Jan 2020 09:41:24 +0000
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iqwDe-0007CF-6K
- for linux-mtd@lists.infradead.org; Mon, 13 Jan 2020 09:41:11 +0000
+ id 1iqwDp-0007Mv-E2
+ for linux-mtd@lists.infradead.org; Mon, 13 Jan 2020 09:41:22 +0000
 Received: from localhost (localhost [127.0.0.1])
- by lilium.sigma-star.at (Postfix) with ESMTP id 962971815EA8A;
- Mon, 13 Jan 2020 10:41:06 +0100 (CET)
+ by lilium.sigma-star.at (Postfix) with ESMTP id 24B101815EA8A;
+ Mon, 13 Jan 2020 10:41:20 +0100 (CET)
 Received: from lilium.sigma-star.at ([127.0.0.1])
  by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id xLesOgWhvm8L; Mon, 13 Jan 2020 10:41:06 +0100 (CET)
+ with ESMTP id X3_nDxkMyLWx; Mon, 13 Jan 2020 10:41:19 +0100 (CET)
 Received: from lilium.sigma-star.at ([127.0.0.1])
  by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id B7DSxoKa8560; Mon, 13 Jan 2020 10:41:05 +0100 (CET)
-Subject: Re: [PATCH] mtd-utils: add optional offset parameter to flash_otp_dump
-To: Michael Walle <michael@walle.cc>
-References: <20200108232359.27372-1-michael@walle.cc>
+ with ESMTP id gfKzHv0gd9EH; Mon, 13 Jan 2020 10:41:19 +0100 (CET)
+Subject: Re: [PATCH] mtd-utils: Fix return value of ubiformat
+To: Barry Grussling <barry@grussling.com>, linux-mtd@lists.infradead.org
+References: <20200112203332.24216-1-barry@grussling.com>
 From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 Autocrypt: addr=david.oberhollenzer@sigma-star.at; prefer-encrypt=mutual;
  keydata=
@@ -76,16 +77,16 @@ Autocrypt: addr=david.oberhollenzer@sigma-star.at; prefer-encrypt=mutual;
  7In6ift5SNySojCOfAV0iKZb8QUXWktLleY8kQ8jltOsSRTuO4PDfzvtCQDixUw4tQ7WLwDT
  qyUpot0oG03vtSG4LIRCdxI=
 Organization: sigma star gmbh
-Message-ID: <22dcdf68-e97c-08b7-ebf0-dda41e300422@sigma-star.at>
-Date: Mon, 13 Jan 2020 10:41:04 +0100
+Message-ID: <8440cba3-9a79-166e-b61c-e76abe399b95@sigma-star.at>
+Date: Mon, 13 Jan 2020 10:41:18 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.3.1
 MIME-Version: 1.0
-In-Reply-To: <20200108232359.27372-1-michael@walle.cc>
+In-Reply-To: <20200112203332.24216-1-barry@grussling.com>
 Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200113_014110_381806_C972F923 
-X-CRM114-Status: UNSURE (   6.55  )
+X-CRM114-CacheID: sfid-20200113_014121_631755_6E27C47B 
+X-CRM114-Status: UNSURE (   6.57  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -98,7 +99,6 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
