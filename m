@@ -2,93 +2,90 @@ Return-Path: <SRS0=hwCG=3C=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA908C33CA9
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 18:34:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A496AC33CA9
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 20:52:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9D55B2080D
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 18:34:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 70D2C2187F
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 20:52:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="J3iyFCSw";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mXHlDgiS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D55B2080D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NW+ErtZb";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="P+UkFriY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 70D2C2187F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NaPQZiXQZ68qp/xkSs5EpPJ2/lC1RuTXaDXhFCAlfi8=; b=J3iyFCSwGb0BD2
-	Skb+ADVEzpOQPPPgqsrzBKPPiKsKClFb3O8TtxU4HZqF38dG7XvB9GHD4NAZeD9Oi/+Ck3GerTrY5
-	wmn+rZSzLM3HCS2oZyqw9u8yfTmONkWOtJbKul/6lQypbTsvle4aMhx7c96VWVMcCkagrxiBvuJmF
-	J8gdJzzZaPRJ9EKvpKdYaPNKtsiHMw5Pe6iYGh21LqzDsoOztrdY/GEwdp8suTSQ3g8J1PEt8yw86
-	gYAWS3zmld6l3TnvxSSujP9vnP84ZxAcZmKTMuwO3u9jOZiGiuGVpn9BQ1hRNWkDjLkEkCeZdzG1m
-	NwtXGWQWYxJeuqxOQWaA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Bk0q5nsFtls+Uwq/wgT35cDikQmvTDNRv+XS0g1etwI=; b=NW+ErtZbPzB2PL
+	vB66dwEOkewu+Ef3BE4tCUUGQwNBjo36AF3NgucUQv7WAcv9o6xJ6m7p5G43hMM88MtMRiaBGWuyg
+	wspg2Q8031RolrFfnKGdpeB82//r6rN8YN1udOTQwLiU9alzGTPNt1wYrKhGMinft+xvX4ampz/e4
+	QINE6kZfEMk5ElCBYFBUWx7y8AVS+lB0S1vLdrvYufj40MYo/mhC4/Ha17BAgtQKOcniDDhM04V2w
+	akj/ONbg8LVyVqX74BLfb3eXmt89lpgdwV9zqD7GXgIrOMknjI5iw7zHYdokUv1i7ILQe+rrrzTZM
+	OjqQZTQ0/1l1yNBhOjLA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ir4XT-0007FX-SN; Mon, 13 Jan 2020 18:34:11 +0000
-Received: from mail-wm1-x344.google.com ([2a00:1450:4864:20::344])
+	id 1ir6hQ-0001ET-BH; Mon, 13 Jan 2020 20:52:36 +0000
+Received: from mail-qt1-x841.google.com ([2607:f8b0:4864:20::841])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ir4XG-00075Q-7g; Mon, 13 Jan 2020 18:33:59 +0000
-Received: by mail-wm1-x344.google.com with SMTP id d139so509412wmd.0;
- Mon, 13 Jan 2020 10:33:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=ZXLr4jt3Z0ly6bJlY2S1K+QAkB0UsTXiQL9zQoG2s4c=;
- b=mXHlDgiSO7p/uX3R9XNTgDdGIu/YGZA6qA1uL9FgkaEBt6vhBsjXg3YO9i7CMOhB3j
- MuaaxXJs/7qCYAEOy2rl0yDccD8H+XsP1E4tFJlOvdnNzUnD0BS58a3jfG/MalY4chV0
- dOr1o8A8uUET4aVYVcbOfbaTOTLCHvjclGvrZHrFOgqByKRWF+qdD17NoRYOZLFIxhHw
- dVpVKw9JiDqQN8uveu+hdDr0HHc1vnPKJI8ooC9hXAW2MKWtxD6feQNOS4M+xLC11235
- ln/lgNKbndSLF+653ME1m/3cWrD6ygFqw8OM/mUwQF8A2ApvzcXk4Bt4GOH+ySRbDtCN
- hmlw==
+ id 1ir6hN-0001E3-EG
+ for linux-mtd@lists.infradead.org; Mon, 13 Jan 2020 20:52:34 +0000
+Received: by mail-qt1-x841.google.com with SMTP id k40so10373351qtk.8
+ for <linux-mtd@lists.infradead.org>; Mon, 13 Jan 2020 12:52:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=linuxfoundation.org; s=google;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to;
+ bh=lsWiL3UnmG1D5Zt8iTnfdynsV+4fybuDrOYr1/WPZ2U=;
+ b=P+UkFriYZumuinWVUg3IK8rta0OfS1X3Hw57A/u5ZIV+AWApAv2nBYU9uWRJ/LjaJ6
+ 0PBxZBHdWIBCCESdPsmx3CJu5+WXZvntMP+ioTo453ZJtGZgYSPuT5DH3R/5P3TY7d1Q
+ nPYGILYJnQpgvu1Mx3zY0UMYlSkl46H51PZVk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=ZXLr4jt3Z0ly6bJlY2S1K+QAkB0UsTXiQL9zQoG2s4c=;
- b=AGxaw+4ex+TvPz0GR0V32vMI7q97rpHSnUZZFiLGxqy/NRChIdn5h+bLyGdCSIMXi7
- by3yyOg7J/GcCH2ooYhDkRslxb+sMVinRXx4zZmHUM25SSMxWjhR5N3TS7dVlS4HOf7k
- 7EC3fgX8s/DELM9ghC+ym/6/FKhbJouAxjSMYcM2bexllPY65UbP7R9y19gV5CGq6Zyp
- USq1uV8z7BXapNXnjsaJAKcY9UPAMKnFtI1mThlrbH/432nLSd55tM5AbOntYUo9+oFc
- CzfIvxR+6bxduDpeO8mmH+AI8h8BopYwjCdwcs9kdcnWXpQYEAJsQ7Km+KGIIRq8S5Fe
- y14g==
-X-Gm-Message-State: APjAAAV8MLKhd6lGU3tZxwx99zpFPdtJdEbBhVRUG6QAB2GWd8BD/jlC
- 0CSqUW/0RaMf6TjdZYnzhkA=
-X-Google-Smtp-Source: APXvYqyGePBR9ORItEnsI4A/VolH7tK5HABxUgERqXN9F5gLMCg+0OuRxmIZVKfdKncZ1preY0W6VA==
-X-Received: by 2002:a7b:c5cd:: with SMTP id n13mr21557885wmk.172.1578940433124; 
- Mon, 13 Jan 2020 10:33:53 -0800 (PST)
-Received: from [192.168.2.1] (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
- by smtp.gmail.com with ESMTPSA id n1sm15518360wrw.52.2020.01.13.10.33.52
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 13 Jan 2020 10:33:52 -0800 (PST)
-Subject: =?UTF-8?Q?Re=3a_=5bRFC_PATCH_v1_00/10=5d_Enable_RK3066_NANDC_for_MK?=
- =?UTF-8?B?ODA444CQ6K+35rOo5oSP77yM6YKu5Lu255SxbGludXgtcm9ja2NoaXAtYm91bmNl?=
- =?UTF-8?Q?s+shawn=2elin=3drock-chips=2ecom=40lists=2einfradead=2eorg?=
- =?UTF-8?B?5Luj5Y+R44CR?=
-To: Shawn Lin <shawn.lin@rock-chips.com>, miquel.raynal@bootlin.com
-References: <20200108205338.11369-1-jbx6244@gmail.com>
- <aad92eb5-00ed-5071-c206-491eff243537@rock-chips.com>
-From: Johan Jonker <jbx6244@gmail.com>
-Message-ID: <73cb4b1a-aad3-c613-a642-1887905e3932@gmail.com>
-Date: Mon, 13 Jan 2020 19:33:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=lsWiL3UnmG1D5Zt8iTnfdynsV+4fybuDrOYr1/WPZ2U=;
+ b=EZyxv5CuTZMjNXL09fNvW8wYyTRu6t36kEQN18duZDg6R9qz/UvFovNTrWPM4C0xCX
+ wQjz5omvsb/ljE+PWHiXcB0w00EI7aRNpUnO88nSzPUyREM2yZs5JABkicnEKJfAjCzS
+ 9CYjli2HhWZktvkttyVH/9upnv8VPt6xae3d6f9L2LY/8GU2EsfrmCcIymWDBu4iqxTG
+ 8Ot06e1cQ9KTpbhPwkgYfDBwM5ifLfapP2un+9pL6ZOvZuM79mw0eegpqW2fzptv4gdW
+ 54muJc5f1ROtJgxEKim7iroc/PlXnyee3o7bcHwBDsJ1TFhn+i0psOTOsrgCteZn8C3G
+ uUXg==
+X-Gm-Message-State: APjAAAXwJ0mlabnVB1O4p4NEXPM9PIlBDUg2m+ISBuvEmJUhteqtIMEr
+ glgiaTOYibkjnCXlFWErQSKm1Q==
+X-Google-Smtp-Source: APXvYqwPFOS5t92sYuJVXrtCnYFX7G+y/A7AY5AqTqa2h5nzVyoVk4ENjGQm3E7H3mIV5p8MvmVQqg==
+X-Received: by 2002:aed:2906:: with SMTP id s6mr491409qtd.12.1578948751464;
+ Mon, 13 Jan 2020 12:52:31 -0800 (PST)
+Received: from chatter.i7.local (107-179-243-71.cpe.teksavvy.com.
+ [107.179.243.71])
+ by smtp.gmail.com with ESMTPSA id r80sm5591176qke.134.2020.01.13.12.52.30
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 13 Jan 2020 12:52:30 -0800 (PST)
+Date: Mon, 13 Jan 2020 15:52:29 -0500
+From: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [GIT PULL] mtd: Fixes for v5.5-rc6
+Message-ID: <20200113205229.v5xjcsljmivcaei4@chatter.i7.local>
+References: <20200110154218.0b28309f@xps13>
+ <CAHk-=wg=8=nTeOYGoAbJ=VjS47Nh4-_OFK9zKsK3mK4nAi2dNA@mail.gmail.com>
+ <CAHk-=whdsFSX0gTOiNkTANONgHHVY+8jUd1DmY2SJpdNOq5xJw@mail.gmail.com>
+ <20200111145004.htnpdf6oaiksryxz@chatter.i7.local>
+ <CAMuHMdUtk9m+BNrH1BuqGxWXR5h1DZmUasHMVKNYFxsd5wa5YA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <aad92eb5-00ed-5071-c206-491eff243537@rock-chips.com>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdUtk9m+BNrH1BuqGxWXR5h1DZmUasHMVKNYFxsd5wa5YA@mail.gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200113_103358_277669_7FFCD5E6 
-X-CRM114-Status: UNSURE (   9.49  )
+X-CRM114-CacheID: sfid-20200113_125233_500475_CCEE4BFE 
+X-CRM114-Status: UNSURE (   9.66  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -101,35 +98,34 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, vigneshr@ti.com,
- richard@nod.at, =?UTF-8?B?6LW15Luq5bOw?= <yifeng.zhao@rock-chips.com>,
- linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
- robh+dt@kernel.org, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, heiko@sntech.de
+Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Richard Weinberger <richard@nod.at>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Shawn,
-
-Thank you for your notice.
-In that case I think that I produce a version 2 "light",
-where I address only a small amount of the TODO's and leave all other
-things up to you, so that you can do what suits you best.
-Hope that RK3066 support for MTD can be included.(Linux and Uboot)
-
-Thanks
-
-On 1/13/20 2:55 AM, Shawn Lin wrote:
-
+On Mon, Jan 13, 2020 at 09:02:44AM +0100, Geert Uytterhoeven wrote:
+> > Things should be unstuck now, and at least this particular bug is 
+> > fixed
+> > -- hopefully it'll be smooth and automatic the next time the epoch rolls
+> > over to 9.git.
 > 
-> Hi Johan,
-> 
-> I loop in the author of the original NANDC driver who is now gonna to
-> develop a new version of NANDC driver in near future that supports more
-> features like bad block supoort. Maybe he could share his TODO.
-> 
+> Are you prepared for multi-digit epochs? ;-)
+> They not only contain more than one digit, but compare incorrectly
+> when using lexical sorting...
+
+I had to check, but yes -- we start from 0 and count up until we get a 
+"no such dir":
+https://git.kernel.org/pub/scm/linux/kernel/git/mricon/korg-helpers.git/tree/pr-tracker-bot.py#n376
+
+Best,
+-K
 
 ______________________________________________________
 Linux MTD discussion mailing list
