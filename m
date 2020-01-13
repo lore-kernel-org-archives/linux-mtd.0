@@ -2,78 +2,76 @@ Return-Path: <SRS0=hwCG=3C=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 069D6C33CAB
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 07:47:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CEEFCC33CAE
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 07:54:25 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CD1252073D
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 07:47:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A1BE92075B
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 07:54:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ZS5IOblc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD1252073D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pi5dYci2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A1BE92075B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Anl5zxZ0/BC7k7wo8gb1nig/L4LpsKWAI/sz61zytbU=; b=ZS5IOblchgM0wp
-	oRRo3Ygm4nthup56hWl2duySmoRYDwZkEynAhgfSw5sVYCjGhiG8Afa3a4jwvxUmL1EBPhwZxjyd8
-	V7HW5MO63o9WY5ZBW3U3pRSt2R5uYN/L/SX+0jvcUB8MnLlkFmPespa8oloVOvRJ97RuOsmbtMVTQ
-	y/ZJ4bDH/dxOKhqdXIbKcM69IfDPOw/6K52adoIRk45pvhcoM7x5GsudZs49fJVe9aS0MPxApSOKR
-	FujdlFZ80jBUKT7DxMaUppfzHMYltzfuH1OoYGfjSxb/euWRhwfwo0lUGJQEnnluT5G3kTI4c2Deq
-	6oDLbPseNOfur+StEfTg==;
+	List-Owner; bh=yoPTdfgFbHpOR6sgeFDjAIFOPSsdQn1/rhYyy1QFlNU=; b=pi5dYci2zXJOdC
+	uBpSg+ci0sc+xGAmKeKH4HEDAD6zzkxCL2f9VnwD9LSRuoYclAKbBkMhGfelDodu7anXrXDSa/EFk
+	x4ngHYHCjHHHxVvkioD4/IOq4f7AKI4TmL2/OlRgV1ITFyU4sTzJtWc04/G9rwgc0vXk1BNqhqsBg
+	cfpGOcsQqeYyAZlb2KLTk3cN0Y+ee/EeGcCrZv21Xml0wBNmU1uqn/5ucmdU++4Xb8SAaBpiPl9Wo
+	W8rQSpWG2l6ScTApv4Td6o9pBfI2NqtwONOvwiwrGgjghdWNL0ThSKuzbNePqyLG1oy5u4MkBdHB9
+	a9bxosrtyEU9BoN6OdaA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iquQp-0004oc-Pi; Mon, 13 Jan 2020 07:46:39 +0000
-Received: from mail-ed1-f68.google.com ([209.85.208.68])
+	id 1iquYA-0007NF-1m; Mon, 13 Jan 2020 07:54:14 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iquQn-0004o5-Ab; Mon, 13 Jan 2020 07:46:38 +0000
-Received: by mail-ed1-f68.google.com with SMTP id m8so7574253edi.13;
- Sun, 12 Jan 2020 23:46:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=9+NYHUXqWb5LThglCHJH2RV2/Z3BgkHI4Ngou8ygTeM=;
- b=B/nlr/OIlpwTd9td418golQHSuT1IDDoftuvid4SEK3OmyavaxJjeRQYbjDczyLj7l
- 8nlU1BmStmJmdwkNsQq7oLTG86voAz9Tur9AAPrOKYshw2FtDifjz7jGiVMmAeAXC/K9
- ekuyXvQGifBMjy1CqTkrHqfyq734SR6E5kQlSaRg0O0Je764J6/bxSyNh9Ffhb5RXATA
- IgCvwo00x1yew8ObNUoqkDjS1nWG2A9gYqEIbIxhm0nItVJcJy1USuVBWCCFifCTqS29
- /J/TgaACg0Lx/TkkUg4pxuKNAwSTQ/6G5C9RCBSlr8ZqG4PMIItwR1s5yW+DU0F8+1W+
- Is1Q==
-X-Gm-Message-State: APjAAAUPpqCEx7hgaRl7c2yjam5Cj6xLlnvfqUkXb+bU2PTLNVDon2E+
- kmKkAfR4t563o+ATPUFQ2i4=
-X-Google-Smtp-Source: APXvYqzi2butQD8WUbdthxqJ+MEw6KBLKjtLWPlvu/eksm5HSQg2bqJpNmL4e5nbvOjMdE7ge3nd1Q==
-X-Received: by 2002:a17:906:948e:: with SMTP id
- t14mr15643734ejx.123.1578901595055; 
- Sun, 12 Jan 2020 23:46:35 -0800 (PST)
-Received: from pi3 ([194.230.155.229])
- by smtp.googlemail.com with ESMTPSA id n14sm400975ejs.40.2020.01.12.23.46.33
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 12 Jan 2020 23:46:34 -0800 (PST)
-Date: Mon, 13 Jan 2020 08:46:32 +0100
-From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH 3/3] mtd: onenand: Enable compile testing of OMAP and
- Samsung drivers
-Message-ID: <20200113074632.GA1187@pi3>
-References: <20191229183612.22133-3-krzk@kernel.org>
- <201912310904.9iM6MaFr%lkp@intel.com> <20191231073339.GA6747@pi3>
- <20200109161826.7fda02a4@xps13>
+ id 1iquY7-0007MO-DP
+ for linux-mtd@lists.infradead.org; Mon, 13 Jan 2020 07:54:13 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 3D7D56088971;
+ Mon, 13 Jan 2020 08:54:09 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id TUaezdVo-5cL; Mon, 13 Jan 2020 08:54:08 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id BF4B8608310A;
+ Mon, 13 Jan 2020 08:54:08 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id 0HgxGEBIOJfD; Mon, 13 Jan 2020 08:54:08 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 6D7DB6088971;
+ Mon, 13 Jan 2020 08:54:08 +0100 (CET)
+Date: Mon, 13 Jan 2020 08:54:08 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+To: liu song11 <liu.song11@zte.com.cn>
+Message-ID: <1681702500.19692.1578902048331.JavaMail.zimbra@nod.at>
+In-Reply-To: <202001131229371470661@zte.com.cn>
+References: <20191216154441.6648-1-fishland@aliyun.com,
+ CAFLxGvyU=zh23vkYiAGRzyd4LGJodLwRRa1S03THAoSaSL=dGA@mail.gmail.com>
+ <202001131229371470661@zte.com.cn>
+Subject: Re: [PATCH] ubifs: Fix potentially out-of-bounds memory access in
+ ubifs_dump_node
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20200109161826.7fda02a4@xps13>
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF68 (Linux)/8.8.12_GA_3809)
+Thread-Topic: ubifs: Fix potentially out-of-bounds memory access in
+ ubifs_dump_node
+Thread-Index: U75eDtes0zTxvtUwzHGII2MO4QYnug==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200112_234637_365050_9CB41EB5 
-X-CRM114-Status: GOOD (  16.98  )
+X-CRM114-CacheID: sfid-20200112_235411_598308_E7C177F3 
+X-CRM114-Status: UNSURE (   7.67  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,57 +83,27 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-samsung-soc@vger.kernel.org, kbuild-all@lists.01.org,
- kbuild test robot <lkp@intel.com>, Richard Weinberger <richard@nod.at>,
- linux-kernel@vger.kernel.org, Kyungmin Park <kyungmin.park@samsung.com>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- Vignesh Raghavendra <vigneshr@ti.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Richard Weinberger <richard.weinberger@gmail.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>,
+ jiang xuexin <jiang.xuexin@zte.com.cn>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jan 09, 2020 at 04:18:26PM +0100, Miquel Raynal wrote:
-> Hi Krzysztof,
-> 
-> Krzysztof Kozlowski <krzk@kernel.org> wrote on Tue, 31 Dec 2019
-> 08:33:39 +0100:
-> 
-> > On Tue, Dec 31, 2019 at 10:00:48AM +0800, kbuild test robot wrote:
-> > > Hi Krzysztof,
-> > > 
-> > > I love your patch! Perhaps something to improve:
-> > > 
-> > > [auto build test WARNING on linus/master]
-> > > [also build test WARNING on v5.5-rc4 next-20191220]
-> > > [if your patch is applied to the wrong git tree, please drop us a note to help
-> > > improve the system. BTW, we also suggest to use '--base' option to specify the
-> > > base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
-> > > 
-> > > url:    https://github.com/0day-ci/linux/commits/Krzysztof-Kozlowski/mtd-onenand-samsung-Fix-pointer-cast-Wpointer-to-int-cast-warnings-on-64-bit/20191230-030838
-> > > base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git bf8d1cd4386535004c4afe7f03d37f9864c9940e
-> > > reproduce:
-> > >         # apt-get install sparse
-> > >         # sparse version: v0.6.1-129-g341daf20-dirty
-> > >         make ARCH=x86_64 allmodconfig
-> > >         make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
-> > > 
-> > > If you fix the issue, kindly add following tag
-> > > Reported-by: kbuild test robot <lkp@intel.com>
-> > >   
-> > 
-> > It is not related to my patch. I'll fix it up soon.
-> 
-> I would like this to be fixed before enabling compile testing, is your
-> fix read?
-
-Yes, you picked up the fix here:
-https://lore.kernel.org/lkml/20200103164158.4265-1-krzk@kernel.org/
-
-Best regards,
-Krzysztof
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFByb2JsZW1zIHdpdGggc3RvcmFnZSBk
+ZXZpY2VzIGFyZSBpbmRlZWQgYSBwcm9ibGVtLCBCdXQgYmVjYXVzZSB0aGUgd3JvbmcKPiAiY2gt
+PmxlbiIgY2F1c2VzIHRoZSBrZXJuZWwgdG8gY3Jhc2gsIHRoaXMgY29zdCBpcyB0b28gaGVhdnku
+IFdlIHNob3VsZAo+IGF2b2lkIGtlcm5lbCBjcmFzaGVzIGR1ZSB0byBzdWNoIGVycm9ycy4KPiAK
+PiAKPiBBbHRob3VnaCBhIGNyYyBlcnJvciB3YXMgZm91bmQgaW4gInViaWZzX2NoZWNrX25vZGUi
+LCBpdCBpcyBkaWZmaWN1bHQgdG8KPiBzaW1wbHkganVkZ2Ugd2hldGhlciAiY2gtPmxlbiIgaXMg
+cmVhc29uYWJsZSwgc28gSSB0aGluayB3ZSBvbmx5IG5lZWQgdG8ga25vdwo+IHRoZSBfbG9jYXRp
+b25fIG9mIHRoZSBlcnJvciBkYXRhIG5vZGUsIGFuZCBpdCBpcyBub3QgbmVjZXNzYXJ5IHRvIHBy
+ZXNlbnQgaXRzCj4gY29udGVudHMgdG9nZXRoZXIuCgpXaGF0IHdlIGNhbiB0cnkgaXMgb3B0aW9u
+YWxseSBwYXNzaW5nIHRoZSBidWZmZXIgbGVuZ3RoIHRvIHViaWZzX2R1bXBfbm9kZSgpLgpJZiBj
+cmMgaXMgYmFkIGJ1dCBjaC0+bGVuIGlzIHdpdGhpbiBib3VuZHMgd2UgY2FuIHN0aWxsIHNhZmVs
+eSBkdW1wLgoKVGhhbmtzLAovL3JpY2hhcmQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxp
+c3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQv
+Cg==
