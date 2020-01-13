@@ -2,129 +2,78 @@ Return-Path: <SRS0=hwCG=3C=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4207CC33CAE
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 05:59:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 069D6C33CAB
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 07:47:06 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 165C6214D8
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 05:59:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CD1252073D
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 07:47:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gNN44Lsy";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="un9r1I31"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 165C6214D8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=samsung.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ZS5IOblc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD1252073D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QU1CiKem6kyO/ubpyMaGtrTBuL91rkKKvYbVmppX0fk=; b=gNN44LsynvR4y4
-	g8kZpQiNcJCMMNGYBH7I05sOrGvx2uzpWF6SSwF8/AiFWj7wN012STOwc3jN/AtGg1CuYfmZ/fip7
-	xCav0/awgShzZ61p9Bws1Gd3uRzDaZ+cY7t+a7b5jKlA42xNfzkPkL4e1TLn6Ao0CeyC1TctyZcbM
-	+2s0D2bkgb36aTfa0e6IPY173rGQlWRQafyAbUFcgl2Ros1KdfuumGR379vI7t+9PxvHMbH+zrAeX
-	iu5r2pv4xreDnMQ1E8bmSgp6KgkPffr6MXzO23ve3T0eRGmtWwM/H9rzsgRbyHrK5Q8nweiabnXrL
-	nRr8phxvBYA8vo9K5xtQ==;
+	List-Owner; bh=Anl5zxZ0/BC7k7wo8gb1nig/L4LpsKWAI/sz61zytbU=; b=ZS5IOblchgM0wp
+	oRRo3Ygm4nthup56hWl2duySmoRYDwZkEynAhgfSw5sVYCjGhiG8Afa3a4jwvxUmL1EBPhwZxjyd8
+	V7HW5MO63o9WY5ZBW3U3pRSt2R5uYN/L/SX+0jvcUB8MnLlkFmPespa8oloVOvRJ97RuOsmbtMVTQ
+	y/ZJ4bDH/dxOKhqdXIbKcM69IfDPOw/6K52adoIRk45pvhcoM7x5GsudZs49fJVe9aS0MPxApSOKR
+	FujdlFZ80jBUKT7DxMaUppfzHMYltzfuH1OoYGfjSxb/euWRhwfwo0lUGJQEnnluT5G3kTI4c2Deq
+	6oDLbPseNOfur+StEfTg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iqslH-0004Tu-9i; Mon, 13 Jan 2020 05:59:39 +0000
-Received: from mailout3.samsung.com ([203.254.224.33])
+	id 1iquQp-0004oc-Pi; Mon, 13 Jan 2020 07:46:39 +0000
+Received: from mail-ed1-f68.google.com ([209.85.208.68])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iqsku-00044d-1F
- for linux-mtd@lists.infradead.org; Mon, 13 Jan 2020 05:59:18 +0000
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
- by mailout3.samsung.com (KnoxPortal) with ESMTP id
- 20200113055913epoutp03f81248aa10ff7e7d34e9ee4d38b75896~pXMbHf89B3238132381epoutp03v
- for <linux-mtd@lists.infradead.org>; Mon, 13 Jan 2020 05:59:13 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com
- 20200113055913epoutp03f81248aa10ff7e7d34e9ee4d38b75896~pXMbHf89B3238132381epoutp03v
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
- s=mail20170921; t=1578895153;
- bh=WSJXXhDS0f5hqCWNQP3H+qBaWeMlj4xegivOg2KpPqI=;
- h=From:To:Subject:Date:In-Reply-To:References:From;
- b=un9r1I31kw21dFyVhKm2JyBQfbXsdcKo4X/mobc3eelYmIRRWFbDqxIqcXLgs6yjG
- RIe1f1raeTbGGOKyiCbS9/WADQc9MQFqtFKnjTr4ME7QsRCJBgAGdmcX6GnG2UKJXm
- 5I27EzKlG4M1RGn8ThW5YQ9EZ+TqBy/ttYpejwKY=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
- epcas1p4.samsung.com (KnoxPortal) with ESMTP id
- 20200113055912epcas1p4c2a6615c31136d9defb67fbff428996a~pXMa5idcT2759727597epcas1p4S;
- Mon, 13 Jan 2020 05:59:12 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.40.159]) by
- epsnrtp3.localdomain (Postfix) with ESMTP id 47x2wG6DHLzMqYl3; Mon, 13 Jan
- 2020 05:59:10 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
- epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
- 8F.54.51241.E270C1E5; Mon, 13 Jan 2020 14:59:10 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
- epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
- 20200113055910epcas1p384c04182e7c643163d659d42fafd01b3~pXMYlMmjJ1866218662epcas1p3E;
- Mon, 13 Jan 2020 05:59:10 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
- epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
- 20200113055910epsmtrp2caa8be325eefa7b8c6ba5a81a1b2590c~pXMYkhjSD1687916879epsmtrp2R;
- Mon, 13 Jan 2020 05:59:10 +0000 (GMT)
-X-AuditID: b6c32a39-163ff7000001c829-37-5e1c072e5d2e
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
- epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
- 5E.44.10238.E270C1E5; Mon, 13 Jan 2020 14:59:10 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.88.100.192]) by
- epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
- 20200113055910epsmtip1b7ead90b28abc897528143855357be5c~pXMYcrp761200912009epsmtip1h;
- Mon, 13 Jan 2020 05:59:10 +0000 (GMT)
-From: Jungseung Lee <js07.lee@samsung.com>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>, Vignesh Raghavendra
- <vigneshr@ti.com>, linux-mtd@lists.infradead.org, js07.lee@gmail.com,
- js07.lee@samsung.com
-Subject: [PATCH v3 3/3] mtd: spi-nor: support lock/unlock for a few Micron
- chips
-Date: Mon, 13 Jan 2020 14:59:07 +0900
-Message-Id: <20200113055907.9029-3-js07.lee@samsung.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200113055907.9029-1-js07.lee@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA01SbUhTYRTu3XZ3r+Xqsq06rrJ1K0FJ3ZybM1okSQ00WAn9CHJe3GUT98Xu
- JiVEJVEqJhUhJfZFlqWpY610hiWrlAItkdA+DNGCjFwrKUYite0u6t9zzvt8HM57CL74FSYj
- KuxuxmWnrZRwqeD+4/SszCx8bami7lq2drElxNNOv17AtA9qbuLab607tL+Hw/gOTB9onsT1
- d1uP6t9FbiB9o78d6YcmengG7IB1m4WhTYxLztjLHaYKu1lHFZUYdxrVGoUyU5mvzaPkdtrG
- 6KjCYkPmrgprNJuSV9FWT7RloFmWyt6+zeXwuBm5xcG6dRTjNFmdSoUzi6VtrMduzip32LYq
- FYocdZRZZrXcuvABOWtXHPJ21aFj6OOyepREAJkLo+MvsHq0lBCTvQiCA98SxXcE78+3CLji
- J4K6qQD6K/E31SLuoR/BYEcnzhXzCIa7OvgxlpDMgIkFX9xLSl5H0DA3FpdLyH1w8ZFXEMMC
- cjOMfH2Ox7CI1ELfswYhF7EeOrwDUSOCSCLz4cvltJgPkMeFEGhqwTlOIbT7mhNYAp+H/Aks
- g/lQf8KHhcDtszgnPoFguq01QVJBaK4zHsAn06G7L5trb4DAwqX4nHxyOYR+NGAxCpAiqD0p
- 5igUfJk6IeAwwMuZ0xiH9dAYOZVYVwOCK2M1wjNoXfO/hKsItaNVjJO1mRlW6VT//08+FD+p
- jPxeNDhSHEQkgahk0UD1mlIxRlexh21BBASfkop8I7JSschEH65mXA6jy2Nl2CBSRzd5li9b
- We6IHqjdbVSqc1QqlTZXk6dRq6jVIiIyelBMmmk3U8kwTsb1V8cjkmTHUJvvsSY31RBZPl1y
- ir6i65+/Lxhan8M7kiLcb89Tprytql/Eku+1exdPFzytmaz+VbvlACHxD/ubl2ielJ3/1L2v
- t2fTXJu0yZz0OTzbGN4T3jslnb33KLixJM3tMUkLJ2bKA791lalvipJTssclMw+7MncXpJSF
- 9T0z+J2KczxKwFpoZQbfxdJ/ABtx1LpoAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupmluLIzCtJLcpLzFFi42LZdlhJTlePXSbO4MVVSYu/c94xWTy6+ZvV
- YnfTMnaLj0scLP6f/cDuwOqxc9Zddo/NS+o97vxYyujRt2UVo8fxG9uZAlijuGxSUnMyy1KL
- 9O0SuDJWzHjCWNDBX7FhXSdjA+NT7i5GTg4JAROJLdM6GEFsIYHdjBLLV8dBxCUkHu38wtLF
- yAFkC0scPlzcxcgFVPKRUaJv9X52kBo2AS2JG783sYIkRASWM0qc/3kXLCEsECDx68NMFhCb
- RUBV4tz7U2BxXgELiV0ne9ggFshLrN5wgBlkAaeApcSbeWoQN1hILNh8gnkCI+8CRoZVjJKp
- BcW56bnFhgWGeanlesWJucWleel6yfm5mxjBQaSluYPx8pL4Q4wCHIxKPLwStdJxQqyJZcWV
- uYcYJTiYlUR4N52TihPiTUmsrEotyo8vKs1JLT7EKM3BoiTO+zTvWKSQQHpiSWp2ampBahFM
- lomDU6qBkema1/LNR3OWBDefCr2uuOPis6wGKf20BOeg6Yo7DzTK33GKn9lwvd7g6KSTVfpH
- 9YVuZmla3zFTbLlacuz6klJl8fqmTdmmk/5uFp6ourLT8p1q4cbVMWbfbho3Wzx8pVS4eEpJ
- Q9W1O8+5z3N09j+WYD1RtuOy31G+iUvWXznpxqVoPmnNEyWW4oxEQy3mouJEAOD8494eAgAA
-X-CMS-MailID: 20200113055910epcas1p384c04182e7c643163d659d42fafd01b3
-X-Msg-Generator: CA
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200113055910epcas1p384c04182e7c643163d659d42fafd01b3
-References: <20200113055907.9029-1-js07.lee@samsung.com>
- <CGME20200113055910epcas1p384c04182e7c643163d659d42fafd01b3@epcas1p3.samsung.com>
+ id 1iquQn-0004o5-Ab; Mon, 13 Jan 2020 07:46:38 +0000
+Received: by mail-ed1-f68.google.com with SMTP id m8so7574253edi.13;
+ Sun, 12 Jan 2020 23:46:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=9+NYHUXqWb5LThglCHJH2RV2/Z3BgkHI4Ngou8ygTeM=;
+ b=B/nlr/OIlpwTd9td418golQHSuT1IDDoftuvid4SEK3OmyavaxJjeRQYbjDczyLj7l
+ 8nlU1BmStmJmdwkNsQq7oLTG86voAz9Tur9AAPrOKYshw2FtDifjz7jGiVMmAeAXC/K9
+ ekuyXvQGifBMjy1CqTkrHqfyq734SR6E5kQlSaRg0O0Je764J6/bxSyNh9Ffhb5RXATA
+ IgCvwo00x1yew8ObNUoqkDjS1nWG2A9gYqEIbIxhm0nItVJcJy1USuVBWCCFifCTqS29
+ /J/TgaACg0Lx/TkkUg4pxuKNAwSTQ/6G5C9RCBSlr8ZqG4PMIItwR1s5yW+DU0F8+1W+
+ Is1Q==
+X-Gm-Message-State: APjAAAUPpqCEx7hgaRl7c2yjam5Cj6xLlnvfqUkXb+bU2PTLNVDon2E+
+ kmKkAfR4t563o+ATPUFQ2i4=
+X-Google-Smtp-Source: APXvYqzi2butQD8WUbdthxqJ+MEw6KBLKjtLWPlvu/eksm5HSQg2bqJpNmL4e5nbvOjMdE7ge3nd1Q==
+X-Received: by 2002:a17:906:948e:: with SMTP id
+ t14mr15643734ejx.123.1578901595055; 
+ Sun, 12 Jan 2020 23:46:35 -0800 (PST)
+Received: from pi3 ([194.230.155.229])
+ by smtp.googlemail.com with ESMTPSA id n14sm400975ejs.40.2020.01.12.23.46.33
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 12 Jan 2020 23:46:34 -0800 (PST)
+Date: Mon, 13 Jan 2020 08:46:32 +0100
+From: Krzysztof Kozlowski <krzk@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 3/3] mtd: onenand: Enable compile testing of OMAP and
+ Samsung drivers
+Message-ID: <20200113074632.GA1187@pi3>
+References: <20191229183612.22133-3-krzk@kernel.org>
+ <201912310904.9iM6MaFr%lkp@intel.com> <20191231073339.GA6747@pi3>
+ <20200109161826.7fda02a4@xps13>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20200109161826.7fda02a4@xps13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200112_215916_421824_30E7ED7B 
-X-CRM114-Status: GOOD (  14.54  )
+X-CRM114-CacheID: sfid-20200112_234637_365050_9CB41EB5 
+X-CRM114-Status: GOOD (  16.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -136,51 +85,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
+Cc: linux-samsung-soc@vger.kernel.org, kbuild-all@lists.01.org,
+ kbuild test robot <lkp@intel.com>, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, Kyungmin Park <kyungmin.park@samsung.com>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ Vignesh Raghavendra <vigneshr@ti.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Some Micron models are known to have lock/unlock support,
-and that also support 4bit block protection (bp0-3).
+On Thu, Jan 09, 2020 at 04:18:26PM +0100, Miquel Raynal wrote:
+> Hi Krzysztof,
+> 
+> Krzysztof Kozlowski <krzk@kernel.org> wrote on Tue, 31 Dec 2019
+> 08:33:39 +0100:
+> 
+> > On Tue, Dec 31, 2019 at 10:00:48AM +0800, kbuild test robot wrote:
+> > > Hi Krzysztof,
+> > > 
+> > > I love your patch! Perhaps something to improve:
+> > > 
+> > > [auto build test WARNING on linus/master]
+> > > [also build test WARNING on v5.5-rc4 next-20191220]
+> > > [if your patch is applied to the wrong git tree, please drop us a note to help
+> > > improve the system. BTW, we also suggest to use '--base' option to specify the
+> > > base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+> > > 
+> > > url:    https://github.com/0day-ci/linux/commits/Krzysztof-Kozlowski/mtd-onenand-samsung-Fix-pointer-cast-Wpointer-to-int-cast-warnings-on-64-bit/20191230-030838
+> > > base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git bf8d1cd4386535004c4afe7f03d37f9864c9940e
+> > > reproduce:
+> > >         # apt-get install sparse
+> > >         # sparse version: v0.6.1-129-g341daf20-dirty
+> > >         make ARCH=x86_64 allmodconfig
+> > >         make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
+> > > 
+> > > If you fix the issue, kindly add following tag
+> > > Reported-by: kbuild test robot <lkp@intel.com>
+> > >   
+> > 
+> > It is not related to my patch. I'll fix it up soon.
+> 
+> I would like this to be fixed before enabling compile testing, is your
+> fix read?
 
-This patch support lock/unlock feature on the flashes.
+Yes, you picked up the fix here:
+https://lore.kernel.org/lkml/20200103164158.4265-1-krzk@kernel.org/
 
-Tested on w25q512ax3. The Other is modified following the datasheet.
-
-Signed-off-by: Jungseung Lee <js07.lee@samsung.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 7e8af6c4fdfa..97a027c38d66 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -2583,12 +2583,17 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "mt25ql512a",  INFO6(0x20ba20, 0x104400, 64 * 1024, 1024,
- 			       SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
- 			       SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
--	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
-+	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024,
-+			       SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
-+			       SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
-+			       SPI_NOR_HAS_BP3 | SPI_NOR_BP3_SR_BIT6) },
- 	{ "mt25qu512a",  INFO6(0x20bb20, 0x104400, 64 * 1024, 1024,
- 			       SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
- 			       SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
--	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K |
--			      USE_FSR | SPI_NOR_QUAD_READ) },
-+	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024,
-+			       SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
-+			       SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
-+			       SPI_NOR_HAS_BP3 | SPI_NOR_BP3_SR_BIT6) },
- 	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
- 	{ "n25q00a",     INFO(0x20bb21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
- 	{ "mt25ql02g",   INFO(0x20ba22, 0, 64 * 1024, 4096,
--- 
-2.17.1
+Best regards,
+Krzysztof
 
 
 ______________________________________________________
