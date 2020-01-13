@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	UNPARSEABLE_RELAY,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B56CC33CA9
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 23:23:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C1F7C33CA9
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 23:40:28 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0CCB420678
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 23:23:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0ED162080D
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 23:40:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="aXVXdAg0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0CCB420678
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Rlj3Hewq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0ED162080D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,60 +25,60 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=E9v5ezVjHxSuMTckZvE/ZOJBpiASloUBBLrgL74+Xak=; b=aXVXdAg04eXdI2
-	0aYRzX+RGXqYCkYA21ctVuXJP30kETdyRxFp/KmypJyiB9jsq0THsgKf9V2agtbeznafC4mSyGKgI
-	6D7xa4/WsiAniYeF4yv0pl2iDGNpWJZmeC9eR6V9ONWrOncLk6k0oKx8leju6PX/nDdPglVb+JMxt
-	gMjC3M1Qr+v4fSJCLH0z8SnInhtpad99Q4Cvzd9hqq63NS7sEaMi9vjgIA4umvfGjmMYk+LpwF7jT
-	IdOj5ce2+EG2Q29NRyeqO8RRSyP7L/RGZuiWhnB3JNrkMVSgdvPRNML2DEgxk3lK+Fr/uyggq2X1a
-	MiY33tZ9ZLFRYtbgwFpw==;
+	List-Owner; bh=7zQ6TW8Crh9dYihD83YkzoGEn6ZF2jeXYSUgBAwMZ94=; b=Rlj3HewqstnoJO
+	me8q77M4Vamzn+GwuAW7ba45d2pmR9XyT9E2uIRvkEdE3j5D9exbf2QRLzdqTqllN8/7FpCnAhXkR
+	5iR8MPgamevM+tTY6fim226NpsnBdGGg6Dl9/a1zXvv6dyFBm6Bec7dXqv/drFBYg9wyd+2O+VPox
+	kjeUQHVevacxrimyE2ly3d0fZCUKqD0vM6pdZzlLHILrTRpe1A7RPLf0vEWY6WYyMDNQUJmXMYRfB
+	vI1eLH0MeP7HyOwqZi/rB9XnqZkFG6RyNh/RZA+RTtfAq7jzOrm6o1T9sXKSELnO0tAuBLAvT2FR0
+	1wdYAt8NkEG47sE+PmYg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ir93F-0001Wd-Tk; Mon, 13 Jan 2020 23:23:17 +0000
+	id 1ir9JX-0002Z0-Ii; Mon, 13 Jan 2020 23:40:07 +0000
 Received: from mail-ot1-f65.google.com ([209.85.210.65])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ir93D-0001WB-AX
- for linux-mtd@lists.infradead.org; Mon, 13 Jan 2020 23:23:16 +0000
-Received: by mail-ot1-f65.google.com with SMTP id 77so10725690oty.6
- for <linux-mtd@lists.infradead.org>; Mon, 13 Jan 2020 15:23:13 -0800 (PST)
+ id 1ir9JV-00029t-21
+ for linux-mtd@lists.infradead.org; Mon, 13 Jan 2020 23:40:06 +0000
+Received: by mail-ot1-f65.google.com with SMTP id p8so10734723oth.10
+ for <linux-mtd@lists.infradead.org>; Mon, 13 Jan 2020 15:40:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to:user-agent;
- bh=7d1TijNzzm5olBqQ6BOPTTjVLO96fK38vWoVBLQU76w=;
- b=fv8d+O/fRrcYMK/5buAAXF5+vl1ZuHgd5MTwekDyHdLKqhU5910/YiLXOFT0bxLTUH
- vqfrhS7LoEWIhbSkfaVrn25CExozlUyGb2hyKai/tJc0vm7spvSDnjbMXqZ4l+ncU/yc
- Sxaik7nsOkOyzdIj7WxIbOryq+IhtDx8aVyXwwNOvihjTDQOFhswCdpTtmKYQDCHgMF4
- Ck/vO4por9kJXP+3dR0jw6z2/Ggieg0fb6dPqwqZLmq8QrQkvtm8o+m8/j1Ms5gim6jL
- VKqJPInFLrTmFn48Tff3JZXbfXeVEekDpKzZjcNjb68/z7qodb2ML/tmQfIdvV1/MmK1
- 61eg==
-X-Gm-Message-State: APjAAAX7pEkvdstgR229LTYQpEn9bOYLt26kP2SqPTG6Wd30P+bAi1lF
- y3JsGeUhTJynTM719fqlSi99R/iKIQ==
-X-Google-Smtp-Source: APXvYqzYoenxKfFggPmjH4gzg6i8RgsCUuOmGsuaGvAEAD4wgdC3srdmE9Q8TG/NGLtfi9h50k8YEw==
-X-Received: by 2002:a9d:65cf:: with SMTP id z15mr15366324oth.238.1578957792557; 
- Mon, 13 Jan 2020 15:23:12 -0800 (PST)
+ bh=F2iDZ52lWikDVmU5g/bwIONEfUCTF197jf9k+MTeRXI=;
+ b=TN/CmbS3rj2iRcjusk2pJTxN/pzQgVZsTS/8BRASMKMGhGlMxmwQ7gn61vYrreqjFD
+ cJdoYSOtCOZg70GrAOlH7g4qVzaCJrlCvASLjb5SOc32C8xxRdtGvVUgkv7PD8WG0RZY
+ d4y0QyIQzMFHJbZvybbfpH4CqVZ8z/ge4xzKgp6WmWHQgZgqEAaQSPhURxFU4gFKm5KU
+ V4A47tFtwIvqINuBIQipKK3PbeYm1Dk0Dw0dtDNUxkyJDwsvKTbwQZobW7Fv7REw/yLQ
+ 7BUc36tyrf2luMcmVX7rGFYXkgHSBMGg1Y/YlrNyIrPOVrD0dUR7OSCxk4Qc5czECJcT
+ j25Q==
+X-Gm-Message-State: APjAAAXL+vusiUSe3Xaak5wOqqaSHYxYXPrA3F0sUdjmMbVSMcH7jC3R
+ lgydEEGADwasnLHyiv7yESe+otM=
+X-Google-Smtp-Source: APXvYqzW2akoik1YOfn8Wm6nE3EJvdDEQpb9aQXicTvicwFNYD/IQNT9VV+zjanf2bsQxK507cFFkQ==
+X-Received: by 2002:a9d:4c94:: with SMTP id m20mr15325518otf.341.1578958804386; 
+ Mon, 13 Jan 2020 15:40:04 -0800 (PST)
 Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net.
  [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id l17sm4769978ota.27.2020.01.13.15.23.11
+ by smtp.gmail.com with ESMTPSA id v21sm4772515otr.72.2020.01.13.15.40.03
  for <linux-mtd@lists.infradead.org>
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 13 Jan 2020 15:23:11 -0800 (PST)
-Received: from rob (uid 1000) (envelope-from rob@rob-hp-laptop) id 2219d0
+ Mon, 13 Jan 2020 15:40:04 -0800 (PST)
+Received: from rob (uid 1000) (envelope-from rob@rob-hp-laptop) id 220b00
  by rob-hp-laptop (DragonFly Mail Agent v0.11);
- Mon, 13 Jan 2020 17:23:10 -0600
-Date: Mon, 13 Jan 2020 17:23:10 -0600
+ Mon, 13 Jan 2020 17:22:57 -0600
+Date: Mon, 13 Jan 2020 17:22:57 -0600
 From: Rob Herring <robh@kernel.org>
 To: Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: Re: [PATCH v2 02/17] dt-bindings: at_xdmac: add microchip, sam9x60-dma
-Message-ID: <20200113232310.GA30698@bogus>
+Subject: Re: [PATCH v2 01/17] dt-bindings: at_xdmac: remove wildcard
+Message-ID: <20200113232257.GA30124@bogus>
 References: <1578673089-3484-1-git-send-email-claudiu.beznea@microchip.com>
- <1578673089-3484-3-git-send-email-claudiu.beznea@microchip.com>
+ <1578673089-3484-2-git-send-email-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1578673089-3484-3-git-send-email-claudiu.beznea@microchip.com>
+In-Reply-To: <1578673089-3484-2-git-send-email-claudiu.beznea@microchip.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200113_152315_365528_25712737 
-X-CRM114-Status: UNSURE (   9.06  )
+X-CRM114-CacheID: sfid-20200113_154005_107654_1C922198 
+X-CRM114-Status: UNSURE (   8.94  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -109,13 +109,13 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 10 Jan 2020 18:17:54 +0200, Claudiu Beznea wrote:
-> Add microchip,sam9x60-dma to DT bindings documentation.
+On Fri, 10 Jan 2020 18:17:53 +0200, Claudiu Beznea wrote:
+> Remove wildcard and use the available compatible.
 > 
 > Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 > ---
->  Documentation/devicetree/bindings/dma/atmel-xdma.txt | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  Documentation/devicetree/bindings/dma/atmel-xdma.txt | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
 > 
 
 Acked-by: Rob Herring <robh@kernel.org>
