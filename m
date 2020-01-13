@@ -2,77 +2,153 @@ Return-Path: <SRS0=hwCG=3C=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51832C33C9A
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 10:09:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D0C5C33C9A
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 10:10:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 25E7321739
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 10:09:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F15ED2084D
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2020 10:10:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VCZJIu3n"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 25E7321739
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jLrH8neV";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="c568one4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F15ED2084D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=5XwUGtTmHZuBy156o3C2lN6wAIytZksxxOwjTlW9zOg=; b=VCZJIu3niIkNcK8rMaCr6pBrV
-	XrMu9Nn5DITWOhqO8SVjSQNMyrFSZ5ySGmSOW5OeC5umdQxRzS/jv8Whp4KqEKeNbmI6edb+Tajy2
-	ghM02wZbkzxdP2Zjhmcwvwd/YEbnSkYGQHQ4dZ/5YAEFTDQabl1BZE9Q8ZD6QJGrxayFC51Q2dtsz
-	Qa2d9tUiL0oRXfkq8xdLrSWmHaVUCd1RpHt4W4MhhW1k+DtpDhvkGpAlPpYu381ePjtv4U9ldpO0x
-	UL7FTvIGKH0M74mZ/dmVMIOT0lfHEp2RrQMOhtqzgNZypQZlzMmNnx2iQZzhwzZQLt6S7B6597yDI
-	/rItlyuzQ==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=MeQh7RewsZBxngN2MJRspKx9lN/Ugoqs0EUnB43Xse4=; b=jLrH8neV72oSeN
+	s+g8XGP/Sqf8Lpp+PhwFSEQR/1GCSg90el3f4H2vSgZ6K2t52l6vB2Znd7ZBl93GNI378lDhnVAHJ
+	5XnAY9dOnbNstb8xBQ8Qr5Aro9eEZcBNl+6t4PYi4JzZNR5FDgMZ7DQ/gaT97XSQu/NYuZO5hBR9v
+	vZZv4njKprfMXR5iGfYbPVaco0QWBZJppjd4gkA1cZhQL7G3oYglYMSPes/5a2IIJq4QMboHK9Ebv
+	Cqfr9Gn9Dq9FfhGM+zwbJyfF+qlZ3AQp2JkzpJCkNeyTb5+jnIT+ezhgLL2Ztxby7CafrmRojUSy4
+	gU8Xd7VeKMwnGvNIRgNw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iqwfB-0004uC-Nm; Mon, 13 Jan 2020 10:09:37 +0000
-Received: from lhrrgout.huawei.com ([185.176.76.210] helo=huawei.com)
+	id 1iqwg8-00073f-Ap; Mon, 13 Jan 2020 10:10:36 +0000
+Received: from esa6.microchip.iphmx.com ([216.71.154.253])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iqwf7-0004tK-PT
- for linux-mtd@lists.infradead.org; Mon, 13 Jan 2020 10:09:35 +0000
-Received: from lhreml706-cah.china.huawei.com (unknown [172.18.7.108])
- by Forcepoint Email with ESMTP id BFBAD38E1CB5CD72FF0D;
- Mon, 13 Jan 2020 10:09:30 +0000 (GMT)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- lhreml706-cah.china.huawei.com (10.201.108.47) with Microsoft SMTP Server
- (TLS) id 14.3.408.0; Mon, 13 Jan 2020 10:09:30 +0000
-Received: from [127.0.0.1] (10.202.226.43) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Mon, 13 Jan
- 2020 10:09:29 +0000
-Subject: Re: [PATCH v2 2/3] spi: Add HiSilicon v3xx SPI NOR flash controller
- driver
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-References: <1575900490-74467-1-git-send-email-john.garry@huawei.com>
- <1575900490-74467-3-git-send-email-john.garry@huawei.com>
- <0dc5cb2e-b765-9e13-b05e-9e3c835c5985@huawei.com>
- <20200109212842.GK3702@sirena.org.uk>
- <df67b562-7d82-19f6-7581-680190a7772d@huawei.com>
- <20200110140726.GB5889@sirena.org.uk>
- <6db83881-927c-d11c-9c77-23a45892ddab@huawei.com>
- <20200110193119.GI32742@smile.fi.intel.com>
-From: John Garry <john.garry@huawei.com>
-Message-ID: <612a3c5d-69a4-af6b-5c79-c3fb853193ab@huawei.com>
-Date: Mon, 13 Jan 2020 10:09:27 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
-MIME-Version: 1.0
-In-Reply-To: <20200110193119.GI32742@smile.fi.intel.com>
+ id 1iqwg4-0006zg-As
+ for linux-mtd@lists.infradead.org; Mon, 13 Jan 2020 10:10:33 +0000
+Received-SPF: Pass (esa6.microchip.iphmx.com: domain of
+ Tudor.Ambarus@microchip.com designates 198.175.253.82 as
+ permitted sender) identity=mailfrom;
+ client-ip=198.175.253.82; receiver=esa6.microchip.iphmx.com;
+ envelope-from="Tudor.Ambarus@microchip.com";
+ x-sender="Tudor.Ambarus@microchip.com";
+ x-conformance=spf_only; x-record-type="v=spf1";
+ x-record-text="v=spf1 mx a:ushub1.microchip.com
+ a:smtpout.microchip.com -exists:%{i}.spf.microchip.iphmx.com
+ include:servers.mcsv.net include:mktomail.com
+ include:spf.protection.outlook.com ~all"
+Received-SPF: None (esa6.microchip.iphmx.com: no sender
+ authenticity information available from domain of
+ postmaster@email.microchip.com) identity=helo;
+ client-ip=198.175.253.82; receiver=esa6.microchip.iphmx.com;
+ envelope-from="Tudor.Ambarus@microchip.com";
+ x-sender="postmaster@email.microchip.com"; x-conformance=spf_only
+Authentication-Results: esa6.microchip.iphmx.com;
+ spf=Pass smtp.mailfrom=Tudor.Ambarus@microchip.com;
+ spf=None smtp.helo=postmaster@email.microchip.com;
+ dkim=pass (signature verified) header.i=@microchiptechnology.onmicrosoft.com;
+ dmarc=pass (p=none dis=none) d=microchip.com
+IronPort-SDR: KqN1Cj2pjtDSrXrs5lrLCUL/HVQIl3ikxEpTHQIHAdvJjyPGWSwH8dCWqKZSSJMT0myfpxhb5h
+ FTpChnGVMZQ9az4dah/TzMeGy+C208RMyvRmFCmXX+UZpD8mXNRjeImds6D/nygkX1+cxCH2y1
+ JsOpIJWSybhtCg+W/hyYQMrg/Y8y2v41LJOq3eb5dtMzDMrS0LtwOSZ43HM4HUMUMwrytgStiG
+ ok2+DIjlKL2JZfxrUh5xw+xJFuBpfwo+9wfmlw2S91OKQw/3NvmIUmZwR6snPL7vNfD5Btp8Qi
+ oFQ=
+X-IronPort-AV: E=Sophos;i="5.69,428,1571727600"; d="scan'208";a="60582878"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 13 Jan 2020 03:10:28 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 13 Jan 2020 03:10:28 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Mon, 13 Jan 2020 03:10:28 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Zbl7VCXmeblTp4hnWqFHz+n6NHpkrQq5g2M/CO7HVIk6nkZSAmLB0yR6aJ0+6pDhwvZuHKoFsNrTDRfXzHm3tAjX8rSYMT6ZBeAJ1tIQXr0xY7Pv1DGbP5tcAIHW19HSnnIbw7WcsICzEGlzYlbQ8RWXJ3pQm9qr15CpWh+dnScqNdEx4l+qB9MK3caJ8OFEKPuizyKQdGMK4MAku3B0woCfEAMLF13WjIgFaC1YMs/qfQ93S9WBM7E/u+lt/Ia1efLDWpN8XtYbKCbAETaD/LvhJEzZ8Dy/VAgg1tnZf3r4ZtIU0FF8bA2v1F/AkL6fAZx9VUkTYBSypOKkckvaog==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Lr0i2o/BAHBMybjq3kFoqxacZgUeo2lnEFdJ1x3Nkho=;
+ b=nQSSFH+f9RNCerhmjpHJiQHzUvBCSYK0jkkuonvBO8S/7i71lMzJAXk2wcN5QFWoJ0JR3KLRsszimw3zsbPU2TWm4+mwT3ELce4SRaHFk2RKCCea60/df6TgictWHOv/b96hzG755UnK8oFVxJ5qwSW3AqkTFpdJ9HnGdNHnFRAEfODUqada2Bj09J3R2iyHSJm0YdtLov9jiMPsqQITgPQ3OtqEP37HFXYiCCxYkOGdAv1PR0al8KdonS+ve/f32ViErLysWnB3BIzvPtj29lSVd6hvDTDk1gbzdWIf+XifZR9bDxmMOQzf6h8Qa8gbqrttZxBq65tyHbLHe7eN3g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Lr0i2o/BAHBMybjq3kFoqxacZgUeo2lnEFdJ1x3Nkho=;
+ b=c568one4FLC24psOO56MC0ivUxanH6qqigLjGB5IANW6rd2+ZOEaFanloqffpIK9Bfu2CdBaN6busXRUeDdD0HFVmCnXPEpa5Ex91oE3vlYOAja/SR7DaYBHZ31fircUvxRQITO3EjvpEU0d5+Qn3MZtitwGyt7COVhFd3m98Gc=
+Received: from MN2PR11MB4448.namprd11.prod.outlook.com (52.135.39.157) by
+ MN2PR11MB4335.namprd11.prod.outlook.com (52.135.38.20) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2623.14; Mon, 13 Jan 2020 10:10:27 +0000
+Received: from MN2PR11MB4448.namprd11.prod.outlook.com
+ ([fe80::71cc:a5d4:8e1a:198b]) by MN2PR11MB4448.namprd11.prod.outlook.com
+ ([fe80::71cc:a5d4:8e1a:198b%7]) with mapi id 15.20.2623.015; Mon, 13 Jan 2020
+ 10:10:27 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <michael@walle.cc>
+Subject: Re: [PATCH 2/2] mtd: spi-nor: fix locking argument in
+ spi_nor_is_locked()
+Thread-Topic: [PATCH 2/2] mtd: spi-nor: fix locking argument in
+ spi_nor_is_locked()
+Thread-Index: AQHVyfmtB/RTe4VPuUuyKr1XQJxpYg==
+Date: Mon, 13 Jan 2020 10:10:27 +0000
+Message-ID: <1617765.HVoytVeEL0@localhost.localdomain>
+References: <20200107222317.3527-1-michael@walle.cc>
+ <20200107222317.3527-2-michael@walle.cc>
+In-Reply-To: <20200107222317.3527-2-michael@walle.cc>
+Accept-Language: en-US
 Content-Language: en-US
-X-Originating-IP: [10.202.226.43]
-X-ClientProxiedBy: lhreml729-chm.china.huawei.com (10.201.108.80) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [94.177.32.156]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d0c1ecdd-cdb7-4a20-e443-08d79810d00d
+x-ms-traffictypediagnostic: MN2PR11MB4335:
+x-microsoft-antispam-prvs: <MN2PR11MB4335F2806F01014A54D62556F0350@MN2PR11MB4335.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1227;
+x-forefront-prvs: 028166BF91
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(136003)(366004)(39850400004)(346002)(376002)(396003)(199004)(189003)(4326008)(6486002)(53546011)(6506007)(86362001)(186003)(316002)(26005)(478600001)(54906003)(6916009)(81156014)(66946007)(66446008)(81166006)(8936002)(6512007)(4744005)(9686003)(66556008)(64756008)(8676002)(5660300002)(66476007)(71200400001)(91956017)(2906002)(76116006)(39026012);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:MN2PR11MB4335;
+ H:MN2PR11MB4448.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; A:1; MX:1; 
+received-spf: None (protection.outlook.com: microchip.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: c9+bTQJUslgqVXZIEebceDjXvvQt55roTbP7TmpU/heP4ZNwIFs3++pIuPNgQFx0G8uA/wPUDy3A3SSlPE597rkX6tgWM8RbzNzlUp0oKN4CVl64NnSs9qWA00uzggvSz/XtrqrJazhGUHTjqScPdSvG82LTflB6h4ZM1Wu5YWbBl5TTUg+hqVB8IDfFzNuta1go5/MOOBrk40dJK+7mdIWzA2mVFIrzl3tqHlBfl/zR4Nl1VwmeCzm6efUEJCuM3r5bXUv4qnqoYuQxbx/EiBWv125yDGc5/MU1Z1s9k8NopeCxAqXautTAFdrVjjsC1L14DB/Ch8FI/ZFwpEdaCyVKOgOIVrLW3Zhbt1s8+zP6U6nc32/zVDG4fUfDVCd23R1qdxfdaRYLNNQbV3yu7U+kv4UAKEOWrzC4zc1I/Beu4CDh6rZF5QvqSY1HETs3L7DBtU9dcKBOq8hbJ3hsvqkCh7IHKaE6q58fP0unfSgjXb2+iVyLWyajzXSPA/Ky
+x-ms-exchange-transport-forked: True
+Content-ID: <AB3A0BE49DAE9E42AE777CF0B42EE019@namprd11.prod.outlook.com>
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: d0c1ecdd-cdb7-4a20-e443-08d79810d00d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jan 2020 10:10:27.2155 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 4EyAp0h2Mp9F5VjDwXugWDsDXQISAM1r2OxuzM4eZhv0Dq7HaMSxW9IxbTjVcwouJYe1RViaB6mte3Je1KpyiKGmrjQKHWEerHF3vNiJ2pE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4335
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200113_020933_978216_ACD9D50B 
-X-CRM114-Status: GOOD (  17.82  )
+X-CRM114-CacheID: sfid-20200113_021032_467235_8ACFB626 
+X-CRM114-Status: UNSURE (   7.22  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,79 +160,33 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: chenxiang66@hisilicon.com, linux-kernel@vger.kernel.org,
- tudor.ambarus@microchip.com, liusimin4@huawei.com, linuxarm@huawei.com,
- linux-spi@vger.kernel.org, marek.vasut@gmail.com,
- Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org,
- xuejiancheng@hisilicon.com, Mika Westerberg <mika.westerberg@linux.intel.com>,
- wanghuiqiang <wanghuiqiang@huawei.com>, fengsheng5@huawei.com
+Cc: vigneshr@ti.com, richard@nod.at, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
+ computersforpeace@gmail.com
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 10/01/2020 19:31, Andy Shevchenko wrote:
-> On Fri, Jan 10, 2020 at 02:58:54PM +0000, John Garry wrote:
->> On 10/01/2020 14:07, Mark Brown wrote:
->>> On Fri, Jan 10, 2020 at 11:55:37AM +0000, John Garry wrote: >
-> 
-> ...
-> 
->>>> I will note that PRP0001+"jedec,spi-nor" compatible DSD seems to be the
->>>> defacto method to describe the SPI NOR-compat part for ACPI - that's what
->>>> I'm using. We could add properties there, but that seems improper.
->>>
->>> OK, so that's just reusing the DT binding in which case everything
->>> that's valid for the DT binding should also be valid for ACPI - I
->>> thought that actually worked automatically without you having to do
->>> anything in the code but ICBW.
->>
->> I thought that it would be improper as we could be mixing ACPI methods to
->> describe the serial bus (SPI Serial Bus Connection Resource Descriptor) and
->> also DT properties which could conflict, like CS active high.
->>
->> However I do see extra properties than "compatible" being added in DSD for
->> PRP0001:
->> https://patchwork.ozlabs.org/patch/662813/ (see EEPROM part)
-> 
+Hi, Michael,
 
-Hi Andy,
+On Wednesday, January 8, 2020 12:23:17 AM EET Michael Walle wrote:
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index b661fd948a25..a8fcb1d70510 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -235,6 +235,7 @@ enum spi_nor_ops {
+>         SPI_NOR_OPS_ERASE,
+>         SPI_NOR_OPS_LOCK,
+>         SPI_NOR_OPS_UNLOCK,
+> +       SPI_NOR_OPS_IS_LOCKED,
+>  };
 
-> PRP method is only for vendors to *test* the hardware in ACPI environment.
-> The proper method is to allocate correct ACPI ID.
+There is no NOR controller that uses this enum, can we get rid of it?
 
-Yes, that would seem the proper thing to do. So the SPI NOR driver is 
-based on micron m25p80 and compatible string is "jedec,spi-nor", so I 
-don't know who should or would do this registration.
+Cheers,
+ta
 
-> 
-> Properties (_DSD in ACPI) may be used in the same way as for DT if we have no
-> other means in ACPI specification for them.
-> 
->> And if we were to do this, I think that we would need to add some
->> device_property_read_u32("spi-rx-bus-width", ...), etc calls in the SPI FW
->> parsing for ACPI path - I couldn't see that.
-> 
-> It's okay as long as you have ACPI ID.
-
-Well there is none AFAIK.
-
-> 
-> P.S. Most of the sensor drivers were updated in order to support ACPI PRP
-> method due to DIY hobbyist on IoT sector and embedded devices. This should not
-> be an official way how we support hardware on ACPI-based platforms.
-
-Yeah, so we could do this. But, as I mentioned already, this could mean 
-that we conflicting properties. For this the kernel driver prob should 
-only pay attention to properties which ACPI cannot describe.
-
-Even better would be to update the ACPI spec, especially for something 
-general like SPI bus width
-
-BTW, Do any of these sensors you mention have any ACPI standardization?
-
-Thanks,
-John
 
 ______________________________________________________
 Linux MTD discussion mailing list
