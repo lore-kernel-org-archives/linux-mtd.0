@@ -2,23 +2,22 @@ Return-Path: <SRS0=A3dn=3D=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FFAFC33C9E
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 Jan 2020 21:54:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B48FC33C9E
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 Jan 2020 21:59:52 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F2DC224658
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 Jan 2020 21:54:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2AC3824658
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 Jan 2020 21:59:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="L3edDSKl";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RitqRUb7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F2DC224658
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Eb0H1HaQ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="MsxBFZ1s"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2AC3824658
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -26,58 +25,55 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=F+5CaU/KsvVT1bS7j2kEzBIa9AEyV9bkfDy75bVJOu4=; b=L3edDSKlfSxl0j
-	kleum/MkuCYb2nFnT6onQmVyl0bFX2tWLjkBCiUR7LfcOXcFaD3v27Od4pTlRyCVefWrZnh73u+ne
-	iNd1CMby62ZEECIukG7axv8qgqrd2eaalOnpvVFCOnKzrTUmvCIKuK3YVyOytTC02/AlnhouNDTJe
-	XI1zAcL4OlQsL21epKYmOP2E072k1nvdoGkICpGr9ChBpwgCuRyCuAVLH2b14K5YJYoG9y/AiScCi
-	fa12SCDCvmvQhYSmLAUa0+c+IiozTw2Sz4IeboCZs4IjR9LoG+aL6zFntjmUzpD4x+9b0hsM3GKn1
-	VRmG77OXr67m9z/Tvbiw==;
+	List-Owner; bh=El7zu938MYe+JhgjH8DtYnTny4AHBq031znXP+PnBSc=; b=Eb0H1HaQ4Rm8Q3
+	okZEK3rMneXjClKSTOoDsMyN3K7CVOiaDrolPRSbS98GSjVT+D2oT1TuY5IPbc1eaU8qZust536GL
+	ZM399p7QW5l+yxzR3yyeevW37F8MFkCUVSvRL1V29HSfC056kDtQHi8tgLMXchnHvlBUEMZUWDp+J
+	34Zlfn9rO7YzTb8JkDKmVoB/SvYHty1Afv2UI5cuZjWfPHURggAnN/I6VzcBaoDu537GqWHkwY3pF
+	80aCmmEec5hBq0cxtVRef6Sm9/W9tb9LMbgCf/UBAzqn/rtoJvU9wQkoidbREgP0j4dl3wIz6TZ+8
+	egWvV6F0fv4DafiLiGHw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1irU8e-0000rJ-0g; Tue, 14 Jan 2020 21:54:16 +0000
-Received: from mail-io1-xd44.google.com ([2607:f8b0:4864:20::d44])
+	id 1irUDo-0003Pv-Hy; Tue, 14 Jan 2020 21:59:36 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1irU8Z-0000qx-Tu
- for linux-mtd@lists.infradead.org; Tue, 14 Jan 2020 21:54:14 +0000
-Received: by mail-io1-xd44.google.com with SMTP id t26so15589334ioi.13
- for <linux-mtd@lists.infradead.org>; Tue, 14 Jan 2020 13:54:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=OMhhs/W+1svvDWDR4NPNAPLAvpIZnSm55C+XNSAN5tQ=;
- b=RitqRUb7sGWpYadAwlnVIL7p3f3rKdH6BvilIwLqowXAiFrylQ7ZGCbr1AlJXikMiv
- 5ELwly8YbyUCIuYRmfIdlFeus/Qpe+5enCWvBZ496JdIgf3GD7zdgtIKhlWf8LnWOcBT
- ekYhCFbHI/lFJGSnkpf2KlsyWtZkXXbVgpciAstXOH0yj9lw7QEq5GGYYG1daMwysr/o
- b0HqJj9VaMvH+5seFKbKWJ4i2SK6JZOZ/ubwk7Q4dHzO2SbXIdraGnj5hSeWveQBtsWB
- aStcyKhx8yuObaXJ0KP69ftI3c1tnrLiQJB3ZDkaqEkygmdixgxPCR00Jw1GBrzq4gyV
- LXDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=OMhhs/W+1svvDWDR4NPNAPLAvpIZnSm55C+XNSAN5tQ=;
- b=syxTMH9zfL1anE6qWAv9JnjMQVQmgn7Rw03e+iaNjrqsr0jhaegCdco/FdVrOvqMdE
- wZpYiVJt8ii3tqwY1+3atxXIxzUjqyg9FsDNfmd2FNcKsxvrFB8yCs59+sicBDYJPMPB
- /rQEaxDJdMLiCSnGkQ4NZHTdjDQM2rquK26Wuyx37lD0+RoKw6URgNFX3hATzPOJW/iM
- D1KUk0eR2NBN/KgDdBJYebOnvHkBIV3naXYOHdAqSflXSx2SOU8Dv8nJ6NAH7OviflaF
- 93yZWS8ylPnJbQciav3nUCCLEKUkPQPdXW9gX/+yUqMelGZOfD8OGKgtZ05j13bRTvzo
- 1isQ==
-X-Gm-Message-State: APjAAAVRAFbG/YAGzMzAL8jr7vyVTiI9VnnO7noeFbLBaAuASo/TUgrg
- aq5bpQ7iwL3/l4ImftUKfdXwKvGzAYBHfIqqQU0=
-X-Google-Smtp-Source: APXvYqym5nXDteCe27httL7oBaR5YZGnO401x6bMrkRXidkpMWqX2QHA4vsSW3ApmmLskNT+VV1PHxF/OCnzM6dhWPM=
-X-Received: by 2002:a02:c995:: with SMTP id b21mr21110397jap.112.1579038849152; 
- Tue, 14 Jan 2020 13:54:09 -0800 (PST)
+ id 1irUDk-0003PH-FT
+ for linux-mtd@lists.infradead.org; Tue, 14 Jan 2020 21:59:34 +0000
+Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com
+ [209.85.219.47])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 83EF524676
+ for <linux-mtd@lists.infradead.org>; Tue, 14 Jan 2020 21:59:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1579039170;
+ bh=zJWCWSOhHDeEqNF2yErLCC2xC0maaTa3qYu5FhuOrh8=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=MsxBFZ1sSqm0ONGM+VzeO01CT3AFqKClr8dIYzHrYGReVdFEiaOG3tA9Yhj8qpCQo
+ 8Wx6wN11xc8saLCW00kPko8DwdFnhakLEL6Szm2xnn26iE1a27+dvTAmLLGopZ8p+1
+ r/tSFPNF8wX/35xMMEMKTzGE1rWGs0AwxAoeBVG8=
+Received: by mail-qv1-f47.google.com with SMTP id y8so6442510qvk.6
+ for <linux-mtd@lists.infradead.org>; Tue, 14 Jan 2020 13:59:30 -0800 (PST)
+X-Gm-Message-State: APjAAAV8tGQp6twQfMV24Eoh7J7CiQP4Z1IMDgnziy1v/QZU7JBjUWaj
+ 0N1MaPwhJW2z8aBrNOsL/2NUiqsRR3CPT6GHAA==
+X-Google-Smtp-Source: APXvYqwq7E+CYgVOvhkNu4ZwbkCIUECyJO9AoKk6K3ct3z+22Upakg4Zec8xFRF4mmPeyUbM0xZt2DUav5zMOi1Fn3c=
+X-Received: by 2002:a0c:f6cd:: with SMTP id d13mr22537735qvo.20.1579039169569; 
+ Tue, 14 Jan 2020 13:59:29 -0800 (PST)
 MIME-Version: 1.0
-References: <1578589556-683-1-git-send-email-han.xu@nxp.com>
- <87r208mk8p.fsf@geanix.com>
-In-Reply-To: <87r208mk8p.fsf@geanix.com>
-From: Han Xu <xhnjupt@gmail.com>
-Date: Tue, 14 Jan 2020 15:53:58 -0600
-Message-ID: <CA+EcR2149W_x2gi8jUZ6sK=tmwo6tCAZ6jp37gG9fyxMFa43mA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: rawnand: gpmi: fix the suspend/resume issue
-To: Esben Haabendal <esben@geanix.com>
+References: <20191127105522.31445-1-miquel.raynal@bootlin.com>
+ <20191127105522.31445-5-miquel.raynal@bootlin.com>
+ <20191209113506.41341ed4@collabora.com>
+ <CAL_JsqJP3-h7bPAommzt7KQKoohZpkk=RMxfN1j3rXbisD4eCA@mail.gmail.com>
+ <20200114191052.0a16d116@xps13>
+In-Reply-To: <20200114191052.0a16d116@xps13>
+From: Rob Herring <robh+dt@kernel.org>
+Date: Tue, 14 Jan 2020 15:59:18 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLp6++g9ArSm9guuHeywETanCaLvSKVmV3vV5EYfvUDvg@mail.gmail.com>
+Message-ID: <CAL_JsqLp6++g9ArSm9guuHeywETanCaLvSKVmV3vV5EYfvUDvg@mail.gmail.com>
+Subject: Re: [PATCH v5 4/4] mtd: Add driver for concatenating devices
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200114_135413_057320_6A0F9854 
-X-CRM114-Status: GOOD (  26.97  )
+X-CRM114-CacheID: sfid-20200114_135932_560926_24773B80 
+X-CRM114-Status: GOOD (  35.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,228 +85,180 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, martin@geanix.com,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
  Boris Brezillon <boris.brezillon@collabora.com>,
- linux-mtd <linux-mtd@lists.infradead.org>, sean@geanix.com,
- Han Xu <han.xu@nxp.com>
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Bernhard Frauendienst <kernel@nospam.obeliks.de>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jan 9, 2020 at 2:46 PM Esben Haabendal <esben@geanix.com> wrote:
+On Tue, Jan 14, 2020 at 12:11 PM Miquel Raynal
+<miquel.raynal@bootlin.com> wrote:
 >
-> Hi Han
+> Hi Rob,
 >
-> See comments/questions below.
+> Rob Herring <robh+dt@kernel.org> wrote on Tue, 14 Jan 2020 11:46:18
+> -0600:
 >
-> If I understand the purpose of some of your changes correct, you are
-> fixing the handling of pm usage counter, as it currently is incremented
-> in gpmi_init() and decremented in gpmi_nand_remove().  I believe that
-> would be nice to have in a separate patch with an explanation of the
-> change.
->
-> Han Xu <han.xu@nxp.com> writes:
->
-> > fix several issues when system suspend/resume,
+> > On Mon, Dec 9, 2019 at 4:35 AM Boris Brezillon
+> > <boris.brezillon@collabora.com> wrote:
+> > >
+> > > On Wed, 27 Nov 2019 11:55:22 +0100
+> > > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> > >
+> > > > Introduce a generic way to define concatenated MTD devices. This may
+> > > > be very useful in the case of ie. stacked SPI-NOR. Partitions to
+> > > > concatenate are described in an additional property of the partitions
+> > > > subnode:
+> > > >
+> > > >         flash0 {
+> > > >                 partitions {
+> > > >                         compatible = "fixed-partitions";
+> > > >                         part-concat = <&flash0_part1>, <&flash1_part0>;
+> > > >
+> > > >                       part0@0 {
+> > > >                               label = "part0_0";
+> > > >                               reg = <0x0 0x800000>;
+> > > >                       };
+> > > >
+> > > >                       flash0_part1: part1@800000 {
+> > > >                               label = "part0_1";
+> > > >                               reg = <0x800000 0x800000>;
+> > >
+> > > So, flash0_part1 and flash0_part2 will be created even though the user
+> > > probably doesn't need them?
 > >
-> > - leverage the runtime pm for system suspend/resume
-> > - enable the clock before register access
-> > - re-apply timing settings
-> > - set the proper pinctrl state
-> >
-> > Signed-off-by: Han Xu <han.xu@nxp.com>
-> > ---
-> >  drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 59 ++++++++++++++++------
-> >  1 file changed, 44 insertions(+), 15 deletions(-)
-> >
-> > diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-> > index 334fe3130285..37437d47ab9a 100644
-> > --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-> > +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-> > @@ -15,6 +15,7 @@
-> >  #include <linux/of.h>
-> >  #include <linux/of_device.h>
-> >  #include <linux/pm_runtime.h>
-> > +#include <linux/pinctrl/consumer.h>
-> >  #include <linux/dma/mxs-dma.h>
-> >  #include "gpmi-nand.h"
-> >  #include "gpmi-regs.h"
-> > @@ -146,7 +147,11 @@ static int __gpmi_enable_clk(struct gpmi_nand_data *this, bool v)
-> >  static int gpmi_init(struct gpmi_nand_data *this)
-> >  {
-> >       struct resources *r = &this->resources;
-> > -     int ret;
-> > +     int ret = 0;
+> > I don't follow?
 >
-> I don't see why this is changed, given that ret is unconditionally
-> assigned in the next line.
+> Well, one will have to create "fake" partitions in order to concatenate
+> them with this solution, instead of just concatenating the devices (in
+> the case where you want to concatenate the entire devices). But the real
+> debate is below, on the representation.
 
-removed.
+So concatenating multiple devices without partitions defined in DT? To
+support that, then we need to link flash nodes rather than partition
+nodes.
 
->
-> > +
-> > +     ret = pm_runtime_get_sync(this->dev);
-> > +     if (ret < 0)
-> > +             return ret;
+> > > >                       };
+> > > >                 };
+> > > >         };
+> > > >
+> > > >         flash1 {
+> > > >                 partitions {
+> > > >                         compatible = "fixed-partitions";
+> > > >
+> > > >                       flash0_part1: part1@0 {
+> > > >                               label = "part1_0";
+> > > >                               reg = <0x0 0x800000>;
+> > > >                       };
+> > > >
+> > > >                       part0@800000 {
+> > > >                               label = "part1_1";
+> > > >                               reg = <0x800000 0x800000>;
+> > > >                       };
+> > > >                 };
+> > > >         };
+> > >
+> > > IMHO this representation is far from intuitive. At first glance it's not
+> > > obvious which partitions are linked together and what's the name of the
+> > > resulting concatenated part. I definitely prefer the solution where we
+> > > have a virtual device describing the concatenation. I also understand
+> > > that this goes against the #1 DT rule: "DT only decribes HW blocks, not
+> > > how they should be used/configured", but maybe we can find a compromise
+> > > here, like moving this description to the /chosen node?
+> > >
+> > > chosen {
+> > >         flash-arrays {
+> > >                 /*
+> > >                  * my-flash-array is the MTD name if label is
+> > >                  * not present.
+> > >                  */
+> > >                 my-flash-array {
+> > >                         /*
+> > >                          * We could have
+> > >                          * compatible = "flash-array";
+> > >                          * but we can also do without it.
+> > >                          */
+> > >                         label = "foo";
+> > >                         flashes = <&flash1 &flash2 ...>;
+> > >                         partitions {
+> > >                                 /* usual partition description. */
+> > >                                 ...
+> > >                         };
+> > >                 };
+> > >         };
+> > > };
+> > >
+> > > Rob, what do you think?
 > >
-> >       ret = gpmi_reset_block(r->gpmi_regs, false);
-> >       if (ret)
-> > @@ -179,8 +184,10 @@ static int gpmi_init(struct gpmi_nand_data *this)
-> >        */
-> >       writel(BM_GPMI_CTRL1_DECOUPLE_CS, r->gpmi_regs + HW_GPMI_CTRL1_SET);
+> > I don't think chosen is the right place to put all the partition
+> > information. It's not something the bootloader configures.
 > >
-> > -     return 0;
+> > This suffers from the same issue I have with the original proposal. It
+> > will not work for existing s/w. There's only 1 logical partition that
 >
-> Please provide an explanation of the reasoning of this change is.
+> I don't get why it would not work? Current hardware will just not have
+> the concatenation support, that's all. How is this a problem?
 
-I prefer to pair all runtime ops in same function, get_sync before
-register access and put after that, in all cases.
+No one has multiple flash devices on any h/w already? If I already
+have a working system that can load and boot a kernel off an MTD
+partition, but could benefit from concatenating other partitions (i.e.
+rootfs), why should I have to modify my bootloader(s)?
 
+> > concatenated. The rest of the partitions shouldn't need any special
+> > handling. So we really only need some way to say 'link these 2
+> > partitions into 1 logical partition'. Though perhaps one could want to
+> > combine any number of physical partitions into logical partitions, but
+> > then none of the proposals could support that. Then again, maybe
 >
-> >  err_out:
-> > +     pm_runtime_mark_last_busy(this->dev);
-> > +     pm_runtime_put_autosuspend(this->dev);
-> > +
-> >       return ret;
-> >  }
-> >
-> > @@ -528,7 +535,7 @@ static int common_nfc_set_geometry(struct gpmi_nand_data *this)
-> >  static int bch_set_geometry(struct gpmi_nand_data *this)
-> >  {
-> >       struct resources *r = &this->resources;
-> > -     int ret;
-> > +     int ret = 0;
->
-> I don't see any reason for this change.
+> Yes, the flash-array proposal supports having more than two
+> partitions/devices concatenated, it is also already supported by the
+> driver (you don't care about this, but I do :) ).
 
-removed
+I meant for N devices, you'd only have at most N-1 concatenated
+partitions as there are N-1 device boundaries. Whereas you could
+define any partition could be combined with any other number of
+partitions regardless of where they lie. The types of things you can
+do with LVM and disk partitions is what I'm thinking of.
 
+> > that's a userspace problem like with disks.
 >
-> >       ret = common_nfc_set_geometry(this);
-> >       if (ret)
-> > @@ -2676,7 +2682,7 @@ static int gpmi_nand_probe(struct platform_device *pdev)
-> >       return 0;
-> >
-> >  exit_nfc_init:
-> > -     pm_runtime_put(&pdev->dev);
->
-> I guess this is because of the change above that causes usage counter
-> not to be incremented in gpmi_init() when it is successful.
->
-> > +     pm_runtime_dont_use_autosuspend(&pdev->dev);
->
-> Is this required before pm_runtime_disable()?
+> I see one big issue with this solution: what about bootloaders?
 
-If probe function failed before runtime timeout, for instance, the
-NAND chip not mounted, the runtime suspend won't be called without
-this change.
+Similar to how it works with disks. Bootloaders (at a minimum)
+understand physical partitions. Later stages understand logical
+partitions.
 
->
-> >       pm_runtime_disable(&pdev->dev);
-> >       release_resources(this);
-> >  exit_acquire_resources:
-> > @@ -2688,7 +2694,6 @@ static int gpmi_nand_remove(struct platform_device *pdev)
-> >  {
-> >       struct gpmi_nand_data *this = platform_get_drvdata(pdev);
-> >
-> > -     pm_runtime_put_sync(&pdev->dev);
->
-> Should be covered by explanation of the change in gpmi_init().
->
-> >       pm_runtime_disable(&pdev->dev);
-> >
-> >       nand_release(&this->nand);
-> > @@ -2700,10 +2705,12 @@ static int gpmi_nand_remove(struct platform_device *pdev)
-> >  #ifdef CONFIG_PM_SLEEP
-> >  static int gpmi_pm_suspend(struct device *dev)
-> >  {
-> > -     struct gpmi_nand_data *this = dev_get_drvdata(dev);
-> > +     int ret;
-> >
-> > -     release_dma_channels(this);
-> > -     return 0;
-> > +     pinctrl_pm_select_sleep_state(dev);
-> > +     ret = pm_runtime_force_suspend(dev);
-> > +
-> > +     return ret;
-> >  }
-> >
-> >  static int gpmi_pm_resume(struct device *dev)
-> > @@ -2711,9 +2718,13 @@ static int gpmi_pm_resume(struct device *dev)
-> >       struct gpmi_nand_data *this = dev_get_drvdata(dev);
-> >       int ret;
-> >
-> > -     ret = acquire_dma_channels(this);
-> > -     if (ret < 0)
-> > +     ret = pm_runtime_force_resume(dev);
-> > +     if (ret) {
-> > +             dev_err(this->dev, "Error in resume %d\n", ret);
-> >               return ret;
-> > +     }
-> > +
-> > +     pinctrl_pm_select_default_state(dev);
-> >
-> >       /* re-init the GPMI registers */
-> >       ret = gpmi_init(this);
-> > @@ -2729,22 +2740,40 @@ static int gpmi_pm_resume(struct device *dev)
-> >               return ret;
-> >       }
-> >
-> > +     /* re-apply the timing setting */
-> > +     this->hw.must_apply_timings = true;
-> > +
-> >       return 0;
-> >  }
-> >  #endif /* CONFIG_PM_SLEEP */
-> >
-> > -static int __maybe_unused gpmi_runtime_suspend(struct device *dev)
-> > +#define gpmi_enable_clk(x)   __gpmi_enable_clk(x, true)
-> > +#define gpmi_disable_clk(x)  __gpmi_enable_clk(x, false)
-> > +
-> > +static int gpmi_runtime_suspend(struct device *dev)
-> >  {
-> >       struct gpmi_nand_data *this = dev_get_drvdata(dev);
-> >
-> > -     return __gpmi_enable_clk(this, false);
-> > +     gpmi_disable_clk(this);
-> > +     release_dma_channels(this);
-> > +
-> > +     return 0;
-> >  }
-> >
-> > -static int __maybe_unused gpmi_runtime_resume(struct device *dev)
-> > +static int gpmi_runtime_resume(struct device *dev)
-> >  {
-> >       struct gpmi_nand_data *this = dev_get_drvdata(dev);
-> > +     int ret;
-> >
-> > -     return __gpmi_enable_clk(this, true);
-> > +     ret = gpmi_enable_clk(this);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     ret = acquire_dma_channels(this);
-> > +     if (ret < 0)
-> > +             return ret;
-> > +
-> > +     return 0;
-> >  }
-> >
-> >  static const struct dev_pm_ops gpmi_pm_ops = {
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> The root cause for such idea is that, in my case, the 2 MTD devices are
+> too small to contain the images needed to boot. The perfect solution is
+> to merge the two devices virtually in one single device and let U-Boot
+> read it like one.
 
+Got any actual h/w that the flash devices are smaller than a
+kernel+ramdisk yet had the $ and board space to put multiple devices
+down?
 
+What about the stages before u-boot? Assume they all use DT, why
+require adding this support before a stage that actually needs it.
 
--- 
-Sincerely,
+> I need to have the same representation both in U-Boot and Linux, hence
+> a userspace tool and a kernel command line argument do not work, right?
 
-Han XU
+I never said u-boot can't gain support for this, it's just requiring
+it to from the start even if you only wanted to have a concatenated
+partition for your rootfs or non-boot partition. Only the kernel would
+need to understand concatenating partitions vs. every component that
+reads the partitions.
+
+Rob
 
 ______________________________________________________
 Linux MTD discussion mailing list
