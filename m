@@ -6,16 +6,16 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AAC0CC33CB1
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 Jan 2020 09:57:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BCCEC33CB1
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 Jan 2020 09:58:17 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7C5CF207E0
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 Jan 2020 09:57:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4E349207E0
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 Jan 2020 09:58:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ddQOUMOl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7C5CF207E0
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fvNYZIli"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4E349207E0
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,38 +24,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Yn+j5NBWUh4KjOsWJjoo6pXSI9is1JLlTtLZcuiM75Y=; b=ddQOUMOlVvNBOe
-	Mc6zCJMhoVE+IIpRJU1h80E0yla9R5iKemTMU38h8m6hNJbhuCWsLJAd+qyeQ3TjOcCpGOMLAP4e9
-	pY7qv9TXPnnGkzvE/Vt0t/mxGuILeSnFcgRWkMDYuZwIuLR3Qn/1BmkMr9NBTgGLRR3ALTISC4EfS
-	1161Wv2xT3JcI6U0p25HVpGHlwgzLgaCI8x+EBnbf7B6seYRoECfiPr3yCNtfIkkEmZdQT+3F/7EF
-	KaL/JnDyRUDG7r83k8RCeTjahiNtT46DlmAMZaroWHI55ctjaHYv9t+30Q8OG5X04Ek5deM3U31eI
-	KcgTpHnIrL/OkL26DSwg==;
+	List-Owner; bh=JMj/2TBjebOBV9+THR9qJer2VYSYiTkqU2THMndaqpk=; b=fvNYZIligpObNG
+	0HpCY1wgjTnx4hSyv1Q/RTg8w2tVlcilHWk+I4sdWZSH6+fyV1h+4NuSgpV/yr9iKo9S/zaj+YzrS
+	wiNLSDNaPSasqeDZXNUVYcxFDXnJxp6zg1b8GoD8J67iZTzhbQdBnwXu+Gn1DS7asPZuPtvs1H2Kh
+	D1gX6t6DlCHXZF4QDNYTC+vIbBz8Cp/MuqSh7CxrMJ4//2j51sk9fgvK5xzzNQsy6553373D0bpQK
+	GrGomiTT7eeb51xGqeL/1Ew0BgyXZiQHNiYbgYWZtm4hQMk7EBX9YchbPaWyggrk75qKFVvCRPuqX
+	egzcoTD0gnIXTuIvsBVQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1irIwo-000102-F2; Tue, 14 Jan 2020 09:57:18 +0000
-Received: from relay7-d.mail.gandi.net ([217.70.183.200])
+	id 1irIxY-0001VW-Os; Tue, 14 Jan 2020 09:58:04 +0000
+Received: from relay10.mail.gandi.net ([217.70.178.230])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1irIwO-0000cn-4G; Tue, 14 Jan 2020 09:56:56 +0000
-X-Originating-IP: 90.65.102.129
+ id 1irIxG-0001L3-SS; Tue, 14 Jan 2020 09:57:51 +0000
 Received: from localhost (lfbn-lyo-1-1670-129.w90-65.abo.wanadoo.fr
  [90.65.102.129])
  (Authenticated sender: alexandre.belloni@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 0D34920018;
- Tue, 14 Jan 2020 09:56:47 +0000 (UTC)
-Date: Tue, 14 Jan 2020 10:56:47 +0100
+ by relay10.mail.gandi.net (Postfix) with ESMTPSA id D8D49240019;
+ Tue, 14 Jan 2020 09:57:42 +0000 (UTC)
+Date: Tue, 14 Jan 2020 10:57:42 +0100
 From: Alexandre Belloni <alexandre.belloni@bootlin.com>
 To: Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: Re: [PATCH v2 11/17] dt-bindings: atmel-gpbr: add
- microchip,sam9x60-gpbr
-Message-ID: <20200114095647.GK3137@piout.net>
+Subject: Re: [PATCH v2 15/17] dt-bindings: arm: add sam9x60-ek board
+Message-ID: <20200114095742.GL3137@piout.net>
 References: <1578673089-3484-1-git-send-email-claudiu.beznea@microchip.com>
- <1578673089-3484-12-git-send-email-claudiu.beznea@microchip.com>
+ <1578673089-3484-16-git-send-email-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1578673089-3484-12-git-send-email-claudiu.beznea@microchip.com>
+In-Reply-To: <1578673089-3484-16-git-send-email-claudiu.beznea@microchip.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200114_015652_330486_CF58DC87 
-X-CRM114-Status: UNSURE (   7.00  )
+X-CRM114-CacheID: sfid-20200114_015747_061361_1D14F669 
+X-CRM114-Status: UNSURE (   6.42  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -84,13 +82,13 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 10/01/2020 18:18:03+0200, Claudiu Beznea wrote:
-> Add microchip,sam9x60-gpbr to DT bindings documentation.
+On 10/01/2020 18:18:07+0200, Claudiu Beznea wrote:
+> Add documentation for SAM9X60-EK board.
 > 
 > Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 > ---
->  Documentation/devicetree/bindings/mfd/atmel-gpbr.txt | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+>  Documentation/devicetree/bindings/arm/atmel-at91.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
 Applied, thanks.
 
