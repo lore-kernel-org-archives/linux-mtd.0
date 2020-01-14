@@ -2,67 +2,73 @@ Return-Path: <SRS0=A3dn=3D=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D20BFC33C9E
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 Jan 2020 22:00:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1F31C33CB6
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 Jan 2020 22:04:15 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9C55A24658
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 Jan 2020 22:00:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B0FBB24673
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 Jan 2020 22:04:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Ey4I8RS2";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="mY5ghWc3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9C55A24658
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mRlnJ00p"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B0FBB24673
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+cIAVoudUD92PlKPp+KbtYLahD8m+t52RizrGqvAcY8=; b=Ey4I8RS2T+tPRO
-	6YYaWE6kPXKzIa4pRpwRBbndiLm8R6yAjWP469OR0jZoXjo9ZYgPjIZL0RIds3nHXJYCJH/4IgelU
-	ESEcLk1RO7xTiEXtOyJxjMEcD+sP5tH5UxC1ILYyYHgN1wHCrHdHGVSLEEaZ7P85jYABt9A824VML
-	kYNA8Y2CYWBs0pLbUEI3g/GiY4JqedZYEu+vGvNqait8zv72QIh5K6U52+S2ffHEUrbRdhn5Ooe+i
-	EWZU+BIraKBo8WPSPIBKORuZbgepOS1ph3Ckph+Uh2iH3FMiwolPH+cYGrasbBagJwz2fZBSs2PL1
-	vPf7w1itOSR1vC+Elyeg==;
+	List-Owner; bh=BIOLtTyb1QgAEu/Ek7NoCOvtDd9HaGxx36W9dDxQqKw=; b=mRlnJ00pFoH7qm
+	Wp+XASX9G5/0xC6Q4IPqCRjP9KQoi9Yp0hPd0unvJHvD5VuEmn2TFfsHvRxLullETW51DteYPsU7g
+	6LzoSKag/KcWVIGFzyCramyxG3P0zWF1+9tFsZh9PE04TGbxwGKjj2fgPUmyqiwcDbhZeDUM6SZq2
+	xwSoxmUjCkC5kkm/nBaQ9RsHLo59TC7nBD98iQIANs1Co0P9Pl9IP6ZeTYEiq7thi5gqaP+a1/hlD
+	nDt+3uh0NI5sHbiUUGLTifdgAvJMIsEl2WgqQmvI8btuqeHqK5OQ9aCpbC9SG7z8ULkmphghda3mE
+	JWCbmbDc7zxZEbbHKdvw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1irUEe-0004vt-D7; Tue, 14 Jan 2020 22:00:28 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1irUI9-0005FP-1B; Tue, 14 Jan 2020 22:04:05 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1irUEV-0004uX-JK
- for linux-mtd@lists.infradead.org; Tue, 14 Jan 2020 22:00:27 +0000
-Received: from gmail.com (unknown [104.132.1.77])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id C103824658;
- Tue, 14 Jan 2020 22:00:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1579039218;
- bh=myv1tZujatarOxhWpe/ZDoVHrCY2/KGzo+86dr3TQf4=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=mY5ghWc3WrHee+LAlkopBFawq4UUIwj9d8PLPhe10NkZZbmGxUnmycyP+VhlCjVNy
- ZnfDP+GBNlUWp5B8rLyHLpyevvZS8V9LIZuY+ZpKzn4ccAE6Xy8LuXTjcOPMrxlomE
- j0W+k3yzIGYzJD58KTjLs3Wza0el1kKf+3V5QjSg=
-Date: Tue, 14 Jan 2020 14:00:17 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH 0/2] ubifs: fixes for FS_IOC_GETFLAGS and FS_IOC_SETFLAGS
-Message-ID: <20200114220016.GL41220@gmail.com>
+ id 1irUI3-0005El-4a
+ for linux-mtd@lists.infradead.org; Tue, 14 Jan 2020 22:04:03 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id F0AC160A0741;
+ Tue, 14 Jan 2020 23:03:56 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id a8MQp3-WUMm1; Tue, 14 Jan 2020 23:03:56 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 8FE95609D2D5;
+ Tue, 14 Jan 2020 23:03:56 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id 2oyOLMSheoPF; Tue, 14 Jan 2020 23:03:56 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 6CE04609D2C7;
+ Tue, 14 Jan 2020 23:03:56 +0100 (CET)
+Date: Tue, 14 Jan 2020 23:03:56 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+To: Eric Biggers <ebiggers@kernel.org>
+Message-ID: <1925918130.21041.1579039436354.JavaMail.zimbra@nod.at>
+In-Reply-To: <20200114220016.GL41220@gmail.com>
 References: <20191209222325.95656-1-ebiggers@kernel.org>
+ <20200114220016.GL41220@gmail.com>
+Subject: Re: [PATCH 0/2] ubifs: fixes for FS_IOC_GETFLAGS and FS_IOC_SETFLAGS
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20191209222325.95656-1-ebiggers@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF68 (Linux)/8.8.12_GA_3809)
+Thread-Topic: ubifs: fixes for FS_IOC_GETFLAGS and FS_IOC_SETFLAGS
+Thread-Index: mWPSwcJiuwlSeT6UhNkSjlyF2M4a4g==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200114_140019_657641_E724D332 
-X-CRM114-Status: GOOD (  10.18  )
+X-CRM114-CacheID: sfid-20200114_140359_458129_035DEA47 
+X-CRM114-Status: UNSURE (   7.27  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,29 +80,33 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
- linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ linux-fscrypt <linux-fscrypt@vger.kernel.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Dec 09, 2019 at 02:23:23PM -0800, Eric Biggers wrote:
-> On ubifs, fix FS_IOC_SETFLAGS to not clear the encrypt flag, and update
-> FS_IOC_GETFLAGS to return the encrypt flag like ext4 and f2fs do.
-> 
-> Eric Biggers (2):
->   ubifs: fix FS_IOC_SETFLAGS unexpectedly clearing encrypt flag
->   ubifs: add support for FS_ENCRYPT_FL
-> 
->  fs/ubifs/ioctl.c | 14 +++++++++++---
->  1 file changed, 11 insertions(+), 3 deletions(-)
-
-Richard, have you had a chance to review these?  I'm intending that these be
-taken through the UBIFS tree too.
-
-- Eric
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIkVyaWMgQmlnZ2VycyIgPGVi
+aWdnZXJzQGtlcm5lbC5vcmc+Cj4gQW46ICJyaWNoYXJkIiA8cmljaGFyZEBub2QuYXQ+Cj4gQ0M6
+ICJsaW51eC1tdGQiIDxsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZz4sICJsaW51eC1mc2Ny
+eXB0IiA8bGludXgtZnNjcnlwdEB2Z2VyLmtlcm5lbC5vcmc+LCAibGludXgtZnNkZXZlbCIKPiA8
+bGludXgtZnNkZXZlbEB2Z2VyLmtlcm5lbC5vcmc+Cj4gR2VzZW5kZXQ6IERpZW5zdGFnLCAxNC4g
+SmFudWFyIDIwMjAgMjM6MDA6MTcKPiBCZXRyZWZmOiBSZTogW1BBVENIIDAvMl0gdWJpZnM6IGZp
+eGVzIGZvciBGU19JT0NfR0VURkxBR1MgYW5kIEZTX0lPQ19TRVRGTEFHUwoKPiBPbiBNb24sIERl
+YyAwOSwgMjAxOSBhdCAwMjoyMzoyM1BNIC0wODAwLCBFcmljIEJpZ2dlcnMgd3JvdGU6Cj4+IE9u
+IHViaWZzLCBmaXggRlNfSU9DX1NFVEZMQUdTIHRvIG5vdCBjbGVhciB0aGUgZW5jcnlwdCBmbGFn
+LCBhbmQgdXBkYXRlCj4+IEZTX0lPQ19HRVRGTEFHUyB0byByZXR1cm4gdGhlIGVuY3J5cHQgZmxh
+ZyBsaWtlIGV4dDQgYW5kIGYyZnMgZG8uCj4+IAo+PiBFcmljIEJpZ2dlcnMgKDIpOgo+PiAgIHVi
+aWZzOiBmaXggRlNfSU9DX1NFVEZMQUdTIHVuZXhwZWN0ZWRseSBjbGVhcmluZyBlbmNyeXB0IGZs
+YWcKPj4gICB1YmlmczogYWRkIHN1cHBvcnQgZm9yIEZTX0VOQ1JZUFRfRkwKPj4gCj4+ICBmcy91
+Ymlmcy9pb2N0bC5jIHwgMTQgKysrKysrKysrKystLS0KPj4gIDEgZmlsZSBjaGFuZ2VkLCAxMSBp
+bnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQo+IAo+IFJpY2hhcmQsIGhhdmUgeW91IGhhZCBh
+IGNoYW5jZSB0byByZXZpZXcgdGhlc2U/ICBJJ20gaW50ZW5kaW5nIHRoYXQgdGhlc2UgYmUKPiB0
+YWtlbiB0aHJvdWdoIHRoZSBVQklGUyB0cmVlIHRvby4KCkl0IGlzIGluIG15IHJldmlldyBxdWV1
+ZS4gRGlkbid0IEkgdXBkYXRlIHRoZSBwYXRjaCBzdGF0ZSBpbiBwYXRjaHdvcmsgKG1lIGRvdWJs
+ZSBjaGVja3MpPwoKVGhhbmtzLAovL3JpY2hhcmQKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
+IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
+dGQvCg==
