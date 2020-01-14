@@ -7,59 +7,56 @@ X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E707C33C9E
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 Jan 2020 17:10:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D0ADC33CB2
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 Jan 2020 17:11:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5F10424656
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 Jan 2020 17:10:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5FAE524656
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 Jan 2020 17:11:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EEhtlR7T"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F10424656
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NPuAJbQh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5FAE524656
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=p3wMOovEiXOiNClB5o1eu8BPlzSiR8cXGrlnNpPUy/c=; b=EEhtlR7Tha3RUt
-	0w4P4EOEz/rSydhQnIab5GHgrXqDTy3/+oZwr+UGNjyK9+bIcMOwAhxz67MpppK3FkqgheT8FhapH
-	tRu/UnlhyCh31LDkAdnUmsLGHSf+AKMTNy041tTsu0tW5qsxY9gFXsMJksKxQaFFD6BithTUmKMwM
-	Lo1LTTblBhVx5PPxl3rbafWFsn7KLe/UNZxZjM24svjNKYS6dcg3xwtdGoWRwRVcC2I895VLpL7Jc
-	a6h9g+qWPA+o4MvV7KcqFgceuzobkbv2mtPP2K6anRbt6MvxzNxE1/bF4D5zUs4hWJmRoKnaAbK6O
-	xU43+WgGeiwD7croxaRw==;
+	List-Owner; bh=/6foL5syw8Xv/ah3Mo49rY87cW1kSjloGIPpVDdhHok=; b=NPuAJbQhqy4FXx
+	mou9CjN0ncMNXFD45cr1iXmoNgY8PPtWiU8e2//CqTRC98Ul0M7VdBGVVc8RKgigaM4zkLYBbSZhr
+	lSfaKbFgOR7+DWrsSqZOP6dBA4o4VHH2W1aOXD+YTP4bCwvYVaGNeVS/7/62QxKfAxYEyvEpyFKdS
+	cZEoP4b6lut1/Nmtucpc+qmqfINNb0QOs1xDyrde9wVmkzr4JTPsGloOYusQize5OUMqIk02q/V/V
+	EpAn/LIVOQjvwFGNl/TK/2hZH8MHBUTtxO9qW9Dj8QowYd1DoOhHmeJJ/qBnisNlXyW2edcxUC1kx
+	Dpg6oYgs1FLW7edJLHJw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1irPi8-0005q1-MY; Tue, 14 Jan 2020 17:10:36 +0000
-Received: from relay4-d.mail.gandi.net ([217.70.183.196])
+	id 1irPiT-00065c-6d; Tue, 14 Jan 2020 17:10:57 +0000
+Received: from relay10.mail.gandi.net ([217.70.178.230])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1irPgf-0003LU-M7
- for linux-mtd@lists.infradead.org; Tue, 14 Jan 2020 17:09:11 +0000
-X-Originating-IP: 91.224.148.103
-Received: from xps13.lan (unknown [91.224.148.103])
+ id 1irPgv-0003b7-3U
+ for linux-mtd@lists.infradead.org; Tue, 14 Jan 2020 17:09:28 +0000
+Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 51844E0011;
- Tue, 14 Jan 2020 17:09:00 +0000 (UTC)
+ by relay10.mail.gandi.net (Postfix) with ESMTPSA id 97B6C24000C;
+ Tue, 14 Jan 2020 17:09:17 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Chen Wandun <chenwandun@huawei.com>, kyungmin.park@samsung.com,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] nand: onenand: samsung: remove variable 'tmp' set but not
- used
-Date: Tue, 14 Jan 2020 18:08:49 +0100
-Message-Id: <20200114170849.2229-1-miquel.raynal@bootlin.com>
+To: Krzysztof Kozlowski <krzk@kernel.org>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: onenand: Fix Kconfig indentation
+Date: Tue, 14 Jan 2020 18:09:07 +0100
+Message-Id: <20200114170907.2311-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1574424534-141265-1-git-send-email-chenwandun@huawei.com>
+In-Reply-To: <20191120134050.14622-1-krzk@kernel.org>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: dce02513d9922dd41c49a4bf1b9fd21c22fee76c
+X-linux-mtd-patch-commit: 732ba0bd6e604dcc002c5f74b3e1b87d750d529c
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200114_090905_877015_49E97461 
-X-CRM114-Status: UNSURE (   4.68  )
+X-CRM114-CacheID: sfid-20200114_090921_356386_0D7AACE2 
+X-CRM114-Status: UNSURE (   4.84  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -72,17 +69,21 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Cc: Richard Weinberger <richard@nod.at>,
+ Kyungmin Park <kyungmin.park@samsung.com>, linux-mtd@lists.infradead.org,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2019-11-22 at 12:08:54 UTC, Chen Wandun wrote:
-> Fixes gcc '-Wunused-but-set-variable' warning:
-> drivers/mtd/nand/onenand/samsung_mtd.c: In function s3c_onenand_check_lock_status:
-> drivers/mtd/nand/onenand/samsung_mtd.c:731:6: warning: variable tmp set but not used [-Wunused-but-set-variable]
+On Wed, 2019-11-20 at 13:40:50 UTC, Krzysztof Kozlowski wrote:
+> Adjust indentation from spaces to tab (+optional two spaces) as in
+> coding style with command like:
+> 	$ sed -e 's/^        /\t/' -i */Kconfig
 > 
-> Signed-off-by: Chen Wandun <chenwandun@huawei.com>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
