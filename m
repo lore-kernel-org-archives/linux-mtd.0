@@ -2,72 +2,82 @@ Return-Path: <SRS0=A3dn=3D=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1F31C33CB6
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 Jan 2020 22:04:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47687C33C9E
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 Jan 2020 22:14:07 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B0FBB24673
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 Jan 2020 22:04:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0D75D24656
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 Jan 2020 22:14:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mRlnJ00p"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B0FBB24673
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oUcvWSLe";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S74dWuBq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D75D24656
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BIOLtTyb1QgAEu/Ek7NoCOvtDd9HaGxx36W9dDxQqKw=; b=mRlnJ00pFoH7qm
-	Wp+XASX9G5/0xC6Q4IPqCRjP9KQoi9Yp0hPd0unvJHvD5VuEmn2TFfsHvRxLullETW51DteYPsU7g
-	6LzoSKag/KcWVIGFzyCramyxG3P0zWF1+9tFsZh9PE04TGbxwGKjj2fgPUmyqiwcDbhZeDUM6SZq2
-	xwSoxmUjCkC5kkm/nBaQ9RsHLo59TC7nBD98iQIANs1Co0P9Pl9IP6ZeTYEiq7thi5gqaP+a1/hlD
-	nDt+3uh0NI5sHbiUUGLTifdgAvJMIsEl2WgqQmvI8btuqeHqK5OQ9aCpbC9SG7z8ULkmphghda3mE
-	JWCbmbDc7zxZEbbHKdvw==;
+	List-Owner; bh=jrHwoCKer7c+G9hWo3hbu8+Yhp1QnhrnHMnvyMReWUU=; b=oUcvWSLesJi92m
+	jklPeXOqtzyTfg5cy5s0F7CEG3lZNMTzNU/uqCommrHtJucDCF7eOjUJxcemKPcpRnY+ldZdTssli
+	Lcld+VUnhCslZXk2o04u0FnC9FdhfYr7iN1Utax/VhS86FuoyWz8UNLrAXpkP5HaJkO1XvbvV19Am
+	HmHBu0yn2flHnu0Ey50Eg5iH6wBOCPHAeYhvX5sHxCEgTa0IhOEcS1SKl0Q63WXNVvShtwTZlhRc2
+	O+IYMnzeOP8DAztHvIUIpzrtZ6uCZkUhs/Zd1hOAkJFx68LG4PCGeOuL5YzqojNEFM5vo1gJksdKe
+	dMoBEvUEDDYMasBw+8lw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1irUI9-0005FP-1B; Tue, 14 Jan 2020 22:04:05 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1irURd-0000Qa-Iy; Tue, 14 Jan 2020 22:13:53 +0000
+Received: from mail-lj1-x243.google.com ([2a00:1450:4864:20::243])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1irUI3-0005El-4a
- for linux-mtd@lists.infradead.org; Tue, 14 Jan 2020 22:04:03 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id F0AC160A0741;
- Tue, 14 Jan 2020 23:03:56 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id a8MQp3-WUMm1; Tue, 14 Jan 2020 23:03:56 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 8FE95609D2D5;
- Tue, 14 Jan 2020 23:03:56 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id 2oyOLMSheoPF; Tue, 14 Jan 2020 23:03:56 +0100 (CET)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
- by lithops.sigma-star.at (Postfix) with ESMTP id 6CE04609D2C7;
- Tue, 14 Jan 2020 23:03:56 +0100 (CET)
-Date: Tue, 14 Jan 2020 23:03:56 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-To: Eric Biggers <ebiggers@kernel.org>
-Message-ID: <1925918130.21041.1579039436354.JavaMail.zimbra@nod.at>
-In-Reply-To: <20200114220016.GL41220@gmail.com>
-References: <20191209222325.95656-1-ebiggers@kernel.org>
- <20200114220016.GL41220@gmail.com>
-Subject: Re: [PATCH 0/2] ubifs: fixes for FS_IOC_GETFLAGS and FS_IOC_SETFLAGS
+ id 1irURV-0000Jl-OK; Tue, 14 Jan 2020 22:13:46 +0000
+Received: by mail-lj1-x243.google.com with SMTP id a13so16179291ljm.10;
+ Tue, 14 Jan 2020 14:13:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=cm+CoTM0+jhOXDNc30YUOsZAT6IC0O3DFYyTQEFb64Y=;
+ b=S74dWuBqv3AbnCdv3dgeQq/lxdwYTrhinVamWcvPdDyekZU35ibKEMhjrC5G+zJU/a
+ HLvEGMR5spesjlGfGtswHQrvcUedM/E0QwkgCcGHEz5tdVmcQvuChLd+2a1uB3ZFZaJW
+ wu9dVz6659OdbEOu7cFkes2SeGnaufGc476swME+HHtu5yMszvN/se0TdjWTLtbIRXxo
+ HgvgZchckDeg53Slmdr+KNMjHzu0z9iJOeSn5l8f/c/UjvfHf6G574NbUIwE/Yqj2KTV
+ msXk+SbQGsqdU9RD04fTTdIPguj48HAMKM7EtqeVav72zAg3A+kizc66ghVrGcwRJAu9
+ OXVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=cm+CoTM0+jhOXDNc30YUOsZAT6IC0O3DFYyTQEFb64Y=;
+ b=NfAR/0AoYVg7nJZBzgtdQ4RWq3dDdhxCyzuNmr6/1wKGrXonaw7RAWvOrLtuLQqSbM
+ 1pEEtlwfrPF/AD+n9Gw+o2Y5XG4lUJLsBO7MePYII42i+3YEIm+C1WcsjSXyceurCTvr
+ 9jQxthLEVtsDv558/ehkUWml/Nbfxc83miA6kLMhvDUn4py2Adsnd9Q3iVdTOWSGa8W6
+ lLd4OZt4X6J26y/gOSOBLRMaKoKa0U2cwVxW6WFrynId4wiG7ngevbaLmmF0Vz++URZs
+ fplfoLL2NYQNV6xmV2iH2TQcOf+z/2aBwCCaAvST7Z8yNosixyrC/N+T3bp1toks7Sxo
+ GLEg==
+X-Gm-Message-State: APjAAAUprdJjCk37ox4bcBstv1iWc3+BN0Ge8eBxoFe8CwIJKoCh09fG
+ VmqGx4PKmx0s+xuA4uYuJVy1Kx4lOeedFAFYYKo=
+X-Google-Smtp-Source: APXvYqwN82PPY2p/a4NKRmOqyvi3rbYFvy/BLp5c2pkHMed/zTaGeP3v+iuRDWViPLXh0eZZNQcY0U7v9CZ+YZhZJXs=
+X-Received: by 2002:a2e:8197:: with SMTP id e23mr15595800ljg.250.1579040019756; 
+ Tue, 14 Jan 2020 14:13:39 -0800 (PST)
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF68 (Linux)/8.8.12_GA_3809)
-Thread-Topic: ubifs: fixes for FS_IOC_GETFLAGS and FS_IOC_SETFLAGS
-Thread-Index: mWPSwcJiuwlSeT6UhNkSjlyF2M4a4g==
+References: <1579038243-28550-1-git-send-email-han.xu@nxp.com>
+ <1579038243-28550-2-git-send-email-han.xu@nxp.com>
+In-Reply-To: <1579038243-28550-2-git-send-email-han.xu@nxp.com>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Tue, 14 Jan 2020 19:13:26 -0300
+Message-ID: <CAOMZO5D0LoE8-kJbJ+7AEHJ9PODmCD5Ttv3MUSk7=feWPrdN1Q@mail.gmail.com>
+Subject: Re: [PATCH 1/6] dmaengine: mxs: change the way to register probe
+ function
+To: Han Xu <han.xu@nxp.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200114_140359_458129_035DEA47 
-X-CRM114-Status: UNSURE (   7.27  )
+X-CRM114-CacheID: sfid-20200114_141345_791899_C677F45E 
+X-CRM114-Status: UNSURE (   5.79  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -80,33 +90,26 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- linux-fscrypt <linux-fscrypt@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ linux-kernel <linux-kernel@vger.kernel.org>, Vinod <vkoul@kernel.org>,
+ Boris Brezillon <boris.brezillon@collabora.com>, linux-mtd@lists.infradead.org,
+ NXP Linux Team <linux-imx@nxp.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ dmaengine@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
+ Esben Haabendal <esben@geanix.com>,
+ "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE"
+ <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIkVyaWMgQmlnZ2VycyIgPGVi
-aWdnZXJzQGtlcm5lbC5vcmc+Cj4gQW46ICJyaWNoYXJkIiA8cmljaGFyZEBub2QuYXQ+Cj4gQ0M6
-ICJsaW51eC1tdGQiIDxsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZz4sICJsaW51eC1mc2Ny
-eXB0IiA8bGludXgtZnNjcnlwdEB2Z2VyLmtlcm5lbC5vcmc+LCAibGludXgtZnNkZXZlbCIKPiA8
-bGludXgtZnNkZXZlbEB2Z2VyLmtlcm5lbC5vcmc+Cj4gR2VzZW5kZXQ6IERpZW5zdGFnLCAxNC4g
-SmFudWFyIDIwMjAgMjM6MDA6MTcKPiBCZXRyZWZmOiBSZTogW1BBVENIIDAvMl0gdWJpZnM6IGZp
-eGVzIGZvciBGU19JT0NfR0VURkxBR1MgYW5kIEZTX0lPQ19TRVRGTEFHUwoKPiBPbiBNb24sIERl
-YyAwOSwgMjAxOSBhdCAwMjoyMzoyM1BNIC0wODAwLCBFcmljIEJpZ2dlcnMgd3JvdGU6Cj4+IE9u
-IHViaWZzLCBmaXggRlNfSU9DX1NFVEZMQUdTIHRvIG5vdCBjbGVhciB0aGUgZW5jcnlwdCBmbGFn
-LCBhbmQgdXBkYXRlCj4+IEZTX0lPQ19HRVRGTEFHUyB0byByZXR1cm4gdGhlIGVuY3J5cHQgZmxh
-ZyBsaWtlIGV4dDQgYW5kIGYyZnMgZG8uCj4+IAo+PiBFcmljIEJpZ2dlcnMgKDIpOgo+PiAgIHVi
-aWZzOiBmaXggRlNfSU9DX1NFVEZMQUdTIHVuZXhwZWN0ZWRseSBjbGVhcmluZyBlbmNyeXB0IGZs
-YWcKPj4gICB1YmlmczogYWRkIHN1cHBvcnQgZm9yIEZTX0VOQ1JZUFRfRkwKPj4gCj4+ICBmcy91
-Ymlmcy9pb2N0bC5jIHwgMTQgKysrKysrKysrKystLS0KPj4gIDEgZmlsZSBjaGFuZ2VkLCAxMSBp
-bnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQo+IAo+IFJpY2hhcmQsIGhhdmUgeW91IGhhZCBh
-IGNoYW5jZSB0byByZXZpZXcgdGhlc2U/ICBJJ20gaW50ZW5kaW5nIHRoYXQgdGhlc2UgYmUKPiB0
-YWtlbiB0aHJvdWdoIHRoZSBVQklGUyB0cmVlIHRvby4KCkl0IGlzIGluIG15IHJldmlldyBxdWV1
-ZS4gRGlkbid0IEkgdXBkYXRlIHRoZSBwYXRjaCBzdGF0ZSBpbiBwYXRjaHdvcmsgKG1lIGRvdWJs
-ZSBjaGVja3MpPwoKVGhhbmtzLAovL3JpY2hhcmQKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
-IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
-dGQvCg==
+On Tue, Jan 14, 2020 at 6:48 PM Han Xu <han.xu@nxp.com> wrote:
+>
+> change the way to register probe function for mxs-dma
+
+Please provide the reasoning for such change in the commit log.
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
