@@ -2,78 +2,67 @@ Return-Path: <SRS0=A3dn=3D=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B48FC33C9E
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 Jan 2020 21:59:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D20BFC33C9E
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 Jan 2020 22:00:39 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2AC3824658
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 Jan 2020 21:59:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9C55A24658
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 Jan 2020 22:00:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Eb0H1HaQ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="MsxBFZ1s"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2AC3824658
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Ey4I8RS2";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="mY5ghWc3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9C55A24658
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=El7zu938MYe+JhgjH8DtYnTny4AHBq031znXP+PnBSc=; b=Eb0H1HaQ4Rm8Q3
-	okZEK3rMneXjClKSTOoDsMyN3K7CVOiaDrolPRSbS98GSjVT+D2oT1TuY5IPbc1eaU8qZust536GL
-	ZM399p7QW5l+yxzR3yyeevW37F8MFkCUVSvRL1V29HSfC056kDtQHi8tgLMXchnHvlBUEMZUWDp+J
-	34Zlfn9rO7YzTb8JkDKmVoB/SvYHty1Afv2UI5cuZjWfPHURggAnN/I6VzcBaoDu537GqWHkwY3pF
-	80aCmmEec5hBq0cxtVRef6Sm9/W9tb9LMbgCf/UBAzqn/rtoJvU9wQkoidbREgP0j4dl3wIz6TZ+8
-	egWvV6F0fv4DafiLiGHw==;
+	List-Owner; bh=+cIAVoudUD92PlKPp+KbtYLahD8m+t52RizrGqvAcY8=; b=Ey4I8RS2T+tPRO
+	6YYaWE6kPXKzIa4pRpwRBbndiLm8R6yAjWP469OR0jZoXjo9ZYgPjIZL0RIds3nHXJYCJH/4IgelU
+	ESEcLk1RO7xTiEXtOyJxjMEcD+sP5tH5UxC1ILYyYHgN1wHCrHdHGVSLEEaZ7P85jYABt9A824VML
+	kYNA8Y2CYWBs0pLbUEI3g/GiY4JqedZYEu+vGvNqait8zv72QIh5K6U52+S2ffHEUrbRdhn5Ooe+i
+	EWZU+BIraKBo8WPSPIBKORuZbgepOS1ph3Ckph+Uh2iH3FMiwolPH+cYGrasbBagJwz2fZBSs2PL1
+	vPf7w1itOSR1vC+Elyeg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1irUDo-0003Pv-Hy; Tue, 14 Jan 2020 21:59:36 +0000
+	id 1irUEe-0004vt-D7; Tue, 14 Jan 2020 22:00:28 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1irUDk-0003PH-FT
- for linux-mtd@lists.infradead.org; Tue, 14 Jan 2020 21:59:34 +0000
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com
- [209.85.219.47])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 1irUEV-0004uX-JK
+ for linux-mtd@lists.infradead.org; Tue, 14 Jan 2020 22:00:27 +0000
+Received: from gmail.com (unknown [104.132.1.77])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 83EF524676
- for <linux-mtd@lists.infradead.org>; Tue, 14 Jan 2020 21:59:30 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id C103824658;
+ Tue, 14 Jan 2020 22:00:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1579039170;
- bh=zJWCWSOhHDeEqNF2yErLCC2xC0maaTa3qYu5FhuOrh8=;
- h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=MsxBFZ1sSqm0ONGM+VzeO01CT3AFqKClr8dIYzHrYGReVdFEiaOG3tA9Yhj8qpCQo
- 8Wx6wN11xc8saLCW00kPko8DwdFnhakLEL6Szm2xnn26iE1a27+dvTAmLLGopZ8p+1
- r/tSFPNF8wX/35xMMEMKTzGE1rWGs0AwxAoeBVG8=
-Received: by mail-qv1-f47.google.com with SMTP id y8so6442510qvk.6
- for <linux-mtd@lists.infradead.org>; Tue, 14 Jan 2020 13:59:30 -0800 (PST)
-X-Gm-Message-State: APjAAAV8tGQp6twQfMV24Eoh7J7CiQP4Z1IMDgnziy1v/QZU7JBjUWaj
- 0N1MaPwhJW2z8aBrNOsL/2NUiqsRR3CPT6GHAA==
-X-Google-Smtp-Source: APXvYqwq7E+CYgVOvhkNu4ZwbkCIUECyJO9AoKk6K3ct3z+22Upakg4Zec8xFRF4mmPeyUbM0xZt2DUav5zMOi1Fn3c=
-X-Received: by 2002:a0c:f6cd:: with SMTP id d13mr22537735qvo.20.1579039169569; 
- Tue, 14 Jan 2020 13:59:29 -0800 (PST)
+ s=default; t=1579039218;
+ bh=myv1tZujatarOxhWpe/ZDoVHrCY2/KGzo+86dr3TQf4=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=mY5ghWc3WrHee+LAlkopBFawq4UUIwj9d8PLPhe10NkZZbmGxUnmycyP+VhlCjVNy
+ ZnfDP+GBNlUWp5B8rLyHLpyevvZS8V9LIZuY+ZpKzn4ccAE6Xy8LuXTjcOPMrxlomE
+ j0W+k3yzIGYzJD58KTjLs3Wza0el1kKf+3V5QjSg=
+Date: Tue, 14 Jan 2020 14:00:17 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH 0/2] ubifs: fixes for FS_IOC_GETFLAGS and FS_IOC_SETFLAGS
+Message-ID: <20200114220016.GL41220@gmail.com>
+References: <20191209222325.95656-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-References: <20191127105522.31445-1-miquel.raynal@bootlin.com>
- <20191127105522.31445-5-miquel.raynal@bootlin.com>
- <20191209113506.41341ed4@collabora.com>
- <CAL_JsqJP3-h7bPAommzt7KQKoohZpkk=RMxfN1j3rXbisD4eCA@mail.gmail.com>
- <20200114191052.0a16d116@xps13>
-In-Reply-To: <20200114191052.0a16d116@xps13>
-From: Rob Herring <robh+dt@kernel.org>
-Date: Tue, 14 Jan 2020 15:59:18 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLp6++g9ArSm9guuHeywETanCaLvSKVmV3vV5EYfvUDvg@mail.gmail.com>
-Message-ID: <CAL_JsqLp6++g9ArSm9guuHeywETanCaLvSKVmV3vV5EYfvUDvg@mail.gmail.com>
-Subject: Re: [PATCH v5 4/4] mtd: Add driver for concatenating devices
-To: Miquel Raynal <miquel.raynal@bootlin.com>
+Content-Disposition: inline
+In-Reply-To: <20191209222325.95656-1-ebiggers@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200114_135932_560926_24773B80 
-X-CRM114-Status: GOOD (  35.84  )
+X-CRM114-CacheID: sfid-20200114_140019_657641_E724D332 
+X-CRM114-Status: GOOD (  10.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,180 +74,28 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Bernhard Frauendienst <kernel@nospam.obeliks.de>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+ linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jan 14, 2020 at 12:11 PM Miquel Raynal
-<miquel.raynal@bootlin.com> wrote:
->
-> Hi Rob,
->
-> Rob Herring <robh+dt@kernel.org> wrote on Tue, 14 Jan 2020 11:46:18
-> -0600:
->
-> > On Mon, Dec 9, 2019 at 4:35 AM Boris Brezillon
-> > <boris.brezillon@collabora.com> wrote:
-> > >
-> > > On Wed, 27 Nov 2019 11:55:22 +0100
-> > > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> > >
-> > > > Introduce a generic way to define concatenated MTD devices. This may
-> > > > be very useful in the case of ie. stacked SPI-NOR. Partitions to
-> > > > concatenate are described in an additional property of the partitions
-> > > > subnode:
-> > > >
-> > > >         flash0 {
-> > > >                 partitions {
-> > > >                         compatible = "fixed-partitions";
-> > > >                         part-concat = <&flash0_part1>, <&flash1_part0>;
-> > > >
-> > > >                       part0@0 {
-> > > >                               label = "part0_0";
-> > > >                               reg = <0x0 0x800000>;
-> > > >                       };
-> > > >
-> > > >                       flash0_part1: part1@800000 {
-> > > >                               label = "part0_1";
-> > > >                               reg = <0x800000 0x800000>;
-> > >
-> > > So, flash0_part1 and flash0_part2 will be created even though the user
-> > > probably doesn't need them?
-> >
-> > I don't follow?
->
-> Well, one will have to create "fake" partitions in order to concatenate
-> them with this solution, instead of just concatenating the devices (in
-> the case where you want to concatenate the entire devices). But the real
-> debate is below, on the representation.
+On Mon, Dec 09, 2019 at 02:23:23PM -0800, Eric Biggers wrote:
+> On ubifs, fix FS_IOC_SETFLAGS to not clear the encrypt flag, and update
+> FS_IOC_GETFLAGS to return the encrypt flag like ext4 and f2fs do.
+> 
+> Eric Biggers (2):
+>   ubifs: fix FS_IOC_SETFLAGS unexpectedly clearing encrypt flag
+>   ubifs: add support for FS_ENCRYPT_FL
+> 
+>  fs/ubifs/ioctl.c | 14 +++++++++++---
+>  1 file changed, 11 insertions(+), 3 deletions(-)
 
-So concatenating multiple devices without partitions defined in DT? To
-support that, then we need to link flash nodes rather than partition
-nodes.
+Richard, have you had a chance to review these?  I'm intending that these be
+taken through the UBIFS tree too.
 
-> > > >                       };
-> > > >                 };
-> > > >         };
-> > > >
-> > > >         flash1 {
-> > > >                 partitions {
-> > > >                         compatible = "fixed-partitions";
-> > > >
-> > > >                       flash0_part1: part1@0 {
-> > > >                               label = "part1_0";
-> > > >                               reg = <0x0 0x800000>;
-> > > >                       };
-> > > >
-> > > >                       part0@800000 {
-> > > >                               label = "part1_1";
-> > > >                               reg = <0x800000 0x800000>;
-> > > >                       };
-> > > >                 };
-> > > >         };
-> > >
-> > > IMHO this representation is far from intuitive. At first glance it's not
-> > > obvious which partitions are linked together and what's the name of the
-> > > resulting concatenated part. I definitely prefer the solution where we
-> > > have a virtual device describing the concatenation. I also understand
-> > > that this goes against the #1 DT rule: "DT only decribes HW blocks, not
-> > > how they should be used/configured", but maybe we can find a compromise
-> > > here, like moving this description to the /chosen node?
-> > >
-> > > chosen {
-> > >         flash-arrays {
-> > >                 /*
-> > >                  * my-flash-array is the MTD name if label is
-> > >                  * not present.
-> > >                  */
-> > >                 my-flash-array {
-> > >                         /*
-> > >                          * We could have
-> > >                          * compatible = "flash-array";
-> > >                          * but we can also do without it.
-> > >                          */
-> > >                         label = "foo";
-> > >                         flashes = <&flash1 &flash2 ...>;
-> > >                         partitions {
-> > >                                 /* usual partition description. */
-> > >                                 ...
-> > >                         };
-> > >                 };
-> > >         };
-> > > };
-> > >
-> > > Rob, what do you think?
-> >
-> > I don't think chosen is the right place to put all the partition
-> > information. It's not something the bootloader configures.
-> >
-> > This suffers from the same issue I have with the original proposal. It
-> > will not work for existing s/w. There's only 1 logical partition that
->
-> I don't get why it would not work? Current hardware will just not have
-> the concatenation support, that's all. How is this a problem?
-
-No one has multiple flash devices on any h/w already? If I already
-have a working system that can load and boot a kernel off an MTD
-partition, but could benefit from concatenating other partitions (i.e.
-rootfs), why should I have to modify my bootloader(s)?
-
-> > concatenated. The rest of the partitions shouldn't need any special
-> > handling. So we really only need some way to say 'link these 2
-> > partitions into 1 logical partition'. Though perhaps one could want to
-> > combine any number of physical partitions into logical partitions, but
-> > then none of the proposals could support that. Then again, maybe
->
-> Yes, the flash-array proposal supports having more than two
-> partitions/devices concatenated, it is also already supported by the
-> driver (you don't care about this, but I do :) ).
-
-I meant for N devices, you'd only have at most N-1 concatenated
-partitions as there are N-1 device boundaries. Whereas you could
-define any partition could be combined with any other number of
-partitions regardless of where they lie. The types of things you can
-do with LVM and disk partitions is what I'm thinking of.
-
-> > that's a userspace problem like with disks.
->
-> I see one big issue with this solution: what about bootloaders?
-
-Similar to how it works with disks. Bootloaders (at a minimum)
-understand physical partitions. Later stages understand logical
-partitions.
-
-> The root cause for such idea is that, in my case, the 2 MTD devices are
-> too small to contain the images needed to boot. The perfect solution is
-> to merge the two devices virtually in one single device and let U-Boot
-> read it like one.
-
-Got any actual h/w that the flash devices are smaller than a
-kernel+ramdisk yet had the $ and board space to put multiple devices
-down?
-
-What about the stages before u-boot? Assume they all use DT, why
-require adding this support before a stage that actually needs it.
-
-> I need to have the same representation both in U-Boot and Linux, hence
-> a userspace tool and a kernel command line argument do not work, right?
-
-I never said u-boot can't gain support for this, it's just requiring
-it to from the start even if you only wanted to have a concatenated
-partition for your rootfs or non-boot partition. Only the kernel would
-need to understand concatenating partitions vs. every component that
-reads the partitions.
-
-Rob
+- Eric
 
 ______________________________________________________
 Linux MTD discussion mailing list
