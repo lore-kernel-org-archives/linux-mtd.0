@@ -2,22 +2,22 @@ Return-Path: <SRS0=8YuD=3E=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_SANE_1 autolearn=unavailable
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0997CC33C9E
-	for <linux-mtd@archiver.kernel.org>; Wed, 15 Jan 2020 01:57:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 906D3C33CB1
+	for <linux-mtd@archiver.kernel.org>; Wed, 15 Jan 2020 07:46:45 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D241D222C3
-	for <linux-mtd@archiver.kernel.org>; Wed, 15 Jan 2020 01:57:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 62A2A24655
+	for <linux-mtd@archiver.kernel.org>; Wed, 15 Jan 2020 07:46:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="d7w3psgd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D241D222C3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GuNO1TKr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 62A2A24655
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -25,62 +25,52 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IlFkAX4slm1gKFTiYbN3aUfTFjxQdS6CDYmX2xXdodQ=; b=d7w3psgdU31jQ8
-	sXYpQ5Quk7kysClVYuG8RtFsS3Uy9mjGZO52+p2bhMIhLq6ZnxPATZ2cI8GdtS+7NMbrVIckqeMWg
-	nqcv0xTs3PqzjmBlVvs1YALWICqAYwXghMcrniqOfksc8vqjA2lcRzRMS6jkeDe+xPQyHVFalKTLR
-	+5O5LlnyC1hdEVyMH/HkVQIt52CLPk/RXcGkYANjyhrnwPMuCBCbQfrcUvOaALAraxMJMt44gTQZq
-	UoqmTwSuJRDNeaBIwi6Ukrum6QvjpddgO/onNvt4T/7TiXCKMw6eJl576RCxXKPZPGYyjupSzJCjx
-	thzzIlgLIQGOqduK07sg==;
+	List-Owner; bh=x+Tnw3R7eR8FYNA18R+k6lkwVtrM21CXv2q7F5131L8=; b=GuNO1TKrYW7gYf
+	DJKy62ySxhYXwpJY3Muu0zBIRF35w/Nb4F0eP7aLgn2pMv/KbL8q09TjBKkYJ548FktUoQtlM741U
+	j9h/EfoFIodxhwrwD4T9qrZJVbaJJ7hpItTAf98dAKrO1/f3Drf7dNbNSix7OqmI7eNUch9Y7oFGw
+	9UdJ086pcf4wD1wgD5vFQdtcS9UZlqvQP4WHw64eCFSKkXeN26XkpjSY1WO8cIGnY1nzJtsMaESeH
+	gHqGGk5zgEHmS5fdXlsV4fhKrSSrTGmm2+BsLYm2Vkqnjl8SK5W3XXdUebNp5/AA36KHpMpp1/Glx
+	jc03NMUyqD4KB4fKniUw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1irXw3-0001MN-RP; Wed, 15 Jan 2020 01:57:31 +0000
-Received: from mail-ot1-f67.google.com ([209.85.210.67])
+	id 1irdNo-0002z5-Np; Wed, 15 Jan 2020 07:46:32 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1irXvh-00014W-Ne
- for linux-mtd@lists.infradead.org; Wed, 15 Jan 2020 01:57:12 +0000
-Received: by mail-ot1-f67.google.com with SMTP id b18so14740805otp.0
- for <linux-mtd@lists.infradead.org>; Tue, 14 Jan 2020 17:57:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=XGLcLKcTFWSB66QXGtgKLA+04IUnUM9PoGpdYQjMx20=;
- b=h5wXoodx67G0fCJV2L+MH5q2FBKOPCVqLOmNFwE/+IxIsHEJd/bn479X4oTuikCJoT
- mWdB4pLJ20ci33X7YbDOZaLf6/Te+BB1Hu+PEbGrcA5rwSyHfMU73MWOldyOeRMHMtKK
- hsStX+jHZavNrSru1GRgsnJOvTx41ymaqtY2e/qEYjtYuRmoXVUNws24uno4A+iC/z6A
- QCNSdRhfJLcr1XVOhDbxsb1CR++JKB5qImBA15HtadVowEC96glplMswIcCeF1sYpvzl
- 1sa9/JOih5esgIf5gup88GbrdZqVFiEmUUnxY6O2gnH4dumdDrjIcHT1hKA/wulqVTmU
- t3eA==
-X-Gm-Message-State: APjAAAUzIgonFvNpod/4hLiqSpOubUJk6cdbfMa3m8dxm3CXRQtGekoN
- zmhKLYb4xcZez3fUZ6Q3tQJgd84=
-X-Google-Smtp-Source: APXvYqz25i5PcRuLrIpvJqdjnMg0Qfd11XYdGxs0GiuKxMEvrgndCZoVoezS5dAdCI6Of9XmX1acyg==
-X-Received: by 2002:a05:6830:11d2:: with SMTP id
- v18mr1106795otq.151.1579053428155; 
- Tue, 14 Jan 2020 17:57:08 -0800 (PST)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net.
- [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id c10sm5995007otl.77.2020.01.14.17.57.07
- for <linux-mtd@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 14 Jan 2020 17:57:07 -0800 (PST)
-Received: from rob (uid 1000) (envelope-from rob@rob-hp-laptop) id 2209ae
- by rob-hp-laptop (DragonFly Mail Agent v0.11);
- Tue, 14 Jan 2020 19:57:06 -0600
-Date: Tue, 14 Jan 2020 19:57:06 -0600
-From: Rob Herring <robh@kernel.org>
-To: Johan Jonker <jbx6244@gmail.com>
-Subject: Re: [RFC PATCH v1 01/10] dt-bindings: mtd: add rockchip nand
- controller bindings
-Message-ID: <20200115015706.GA30647@bogus>
-References: <20200108205338.11369-1-jbx6244@gmail.com>
- <20200108205338.11369-2-jbx6244@gmail.com>
+ id 1irdNi-0002yl-Cf
+ for linux-mtd@lists.infradead.org; Wed, 15 Jan 2020 07:46:30 +0000
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <sha@pengutronix.de>)
+ id 1irdNg-00075U-Nd; Wed, 15 Jan 2020 08:46:24 +0100
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.89)
+ (envelope-from <sha@pengutronix.de>)
+ id 1irdNe-0006Nu-SE; Wed, 15 Jan 2020 08:46:22 +0100
+Date: Wed, 15 Jan 2020 08:46:22 +0100
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Esben Haabendal <esben@geanix.com>
+Subject: Re: [PATCH 1/2] mtd: rawnand: gpmi: Fix suspend/resume problem
+Message-ID: <20200115074622.cn7eh6k3mtn6tze3@pengutronix.de>
+References: <20200102130826.170647-1-esben@geanix.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20200108205338.11369-2-jbx6244@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200102130826.170647-1-esben@geanix.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-IRC: #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 08:43:41 up 191 days, 13:53, 85 users,  load average: 0.35, 0.34,
+ 0.27
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200114_175709_794597_9188512C 
-X-CRM114-Status: GOOD (  16.19  )
+X-CRM114-CacheID: sfid-20200114_234626_430032_553BB7DC 
+X-CRM114-Status: GOOD (  17.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,126 +82,69 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, heiko@sntech.de,
- richard@nod.at, linux-kernel@vger.kernel.org,
- linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
- miquel.raynal@bootlin.com, linux-arm-kernel@lists.infradead.org,
- vigneshr@ti.com
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
+ sean@geanix.com, martin@geanix.com,
+ Boris Brezillon <boris.brezillon@collabora.com>, linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Han Xu <han.xu@nxp.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jan 08, 2020 at 09:53:29PM +0100, Johan Jonker wrote:
-> Add the Rockchip NAND controller bindings.
+Hi Esben,
+
+On Thu, Jan 02, 2020 at 02:08:25PM +0100, Esben Haabendal wrote:
+> On system resume, the gpmi clock must be enabled before accessing gpmi
+> block.  Without this, resume causes something like
 > 
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+> [  661.348790] gpmi_reset_block(5cbb0f7e): module reset timeout
+> [  661.348889] gpmi-nand 1806000.gpmi-nand: Error setting GPMI : -110
+> [  661.348928] PM: dpm_run_callback(): platform_pm_resume+0x0/0x44 returns -110
+> [  661.348961] PM: Device 1806000.gpmi-nand failed to resume: error -110
+> 
+> Signed-off-by: Esben Haabendal <esben@geanix.com>
 > ---
->  .../devicetree/bindings/mtd/rockchip,nandc.yaml    | 78 ++++++++++++++++++++++
->  1 file changed, 78 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/rockchip,nandc.yaml
+>  drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/rockchip,nandc.yaml b/Documentation/devicetree/bindings/mtd/rockchip,nandc.yaml
-> new file mode 100644
-> index 000000000..573d1a580
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/rockchip,nandc.yaml
-> @@ -0,0 +1,78 @@
-> +# SPDX-License-Identifier: GPL-2.0
+> diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+> index 334fe3130285..7ac8c8b95afc 100644
+> --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+> @@ -148,6 +148,10 @@ static int gpmi_init(struct gpmi_nand_data *this)
+>  	struct resources *r = &this->resources;
+>  	int ret;
+>  
+> +	ret = pm_runtime_get_sync(this->dev);
+> +	if (ret < 0)
+> +		return ret;
 
-Dual license new bindings:
-
-(GPL-2.0-only OR BSD-2-Clause)
-
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/rockchip,nandc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Rockchip NAND Controller Device Tree Bindings
-> +
-> +allOf:
-> +  - $ref: "nand-controller.yaml"
-
-Should end with a '#'.
+This increases the devices usage counter...
 
 > +
-> +maintainers:
-> +  - Heiko Stuebner <heiko@sntech.de>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - rockchip,nandc-v6
-> +      - rockchip,nandc-v9
+>  	ret = gpmi_reset_block(r->gpmi_regs, false);
+>  	if (ret)
+>  		goto err_out;
+> @@ -181,6 +185,8 @@ static int gpmi_init(struct gpmi_nand_data *this)
+>  
+>  	return 0;
 
-Use SoC specific compatibles, not version numbers.
+... but doesn't decrease it in the success case. This means this patch
+effectively disables runtime pm. You should fall through here as fixed
+in Han Xus patch.
 
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    minItems: 1
-> +    maxItems: 2
-> +
-> +  clock-names:
-> +    oneOf:
-> +      - items:
-> +        - const: hclk_nandc
-> +      - items:
-> +        - const: clk_nandc
-> +        - const: hclk_nandc
+>  err_out:
+> +	pm_runtime_mark_last_busy(this->dev);
+> +	pm_runtime_put_autosuspend(this->dev);
+>  	return ret;
 
-Can't you put hclk_nandc first so it's always index 0.
+Sascha
 
-> +
-> +patternProperties:
-> +  "^nand@[a-f0-9]+$":
-> +    type: object
-> +    properties:
-> +      reg:
-> +        minimum: 0
-> +        maximum: 3
-> +
-> +      nand-is-boot-medium: true
-> +
-> +    additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +  - clock-names
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/rk3188-cru-common.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    nandc: nand-controller@10500000 {
-> +      compatible = "rockchip,nandc-v6";
-> +      reg = <0x10500000 0x4000>;
-> +      interrupts = <GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH>;
-> +      clocks = <&cru HCLK_NANDC0>;
-> +      clock-names = "hclk_nandc";
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +
-> +      nand@0 {
-> +        reg = <0>;
-> +        nand-is-boot-medium;
-> +      };
-> +    };
-> +
-> +...
-> -- 
-> 2.11.0
-> 
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
 ______________________________________________________
 Linux MTD discussion mailing list
