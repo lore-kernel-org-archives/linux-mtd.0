@@ -2,61 +2,65 @@ Return-Path: <SRS0=QXPY=3F=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43600C33CB6
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Jan 2020 18:46:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9C4DC33CB3
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Jan 2020 19:21:25 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1A4F82064C
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Jan 2020 18:46:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B11322087E
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Jan 2020 19:21:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ud560Nws"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1A4F82064C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XuvnbcB0";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="2o/B2tfu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B11322087E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=VnHKBK33IvAM63NNfm6HfY9rzt2Eq3K3lUQ+ydSZO6U=; b=ud560NwsFPY6dd
-	PvD/llNB6sTa8oUoMRHHoZHYdL4Ej4GwUlQgk4CAJQgZdWp5Pxap/rErB3B12dFuOK9AWU1c9E/if
-	2GKQr5vWW5he1dkbRmutGndWAcAdVBebEvGF35VvuHWcOWMvlUYu/aSNa3mGa/GgDgqywm70FoSTQ
-	FF1hzZ1OxlE381qngw3yj7Kz0j3vKamnH+9n1k19GnYqRcSlwIpvaXrQu33rSleZL6X2yaX4kS4DV
-	HRlcSd1aKvQl9lPRxoU+kHJgXIXrcBSyHM/CFfkC3zzJ0Mua1GFfuRUrR8NDW+9eQRfLpqrInmiCH
-	NOovg75SjGpufgVFAvLg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=itN8U0B6GQnYvfka3CNhDjNmOC9QOCm3rqc5ggT7MD4=; b=XuvnbcB0n1dyu/
+	mQdftCiB0BuxQBalAmc9Ie8NuQsQansbEInWL6+wP1CzG3sOdHn2xmhCKGp9MpiLUbGRZh9vxJpXG
+	GPvG5Smr9juAGL3Dmqva+2QyH2VvqJsYBsz2JFoud5Mh4it23m7ACP4rZqdZbYbqu8ngMGdhPqdOb
+	PuhJtc8TthoLap99L01b3gJng05Kej0soY2FNhiTcwVD7ipy+yuyFOhTX6XLJB1xKhkQ/hI1soaYt
+	yr0eub5w5fgQPM18EjvpeTdyOuJN2bY04aF1pLRZgmEvHyk9ZKNwGWlRSufzy3ziJMP/7gGrwJ6iB
+	DjeKsa8rrSJroGNWqnpg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1isA9N-0000JI-QU; Thu, 16 Jan 2020 18:45:49 +0000
-Received: from relay6-d.mail.gandi.net ([217.70.183.198])
+	id 1isAha-0004wd-Ks; Thu, 16 Jan 2020 19:21:10 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1is9mo-0007S5-Oq
- for linux-mtd@lists.infradead.org; Thu, 16 Jan 2020 18:22:37 +0000
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 52FC1C0005;
- Thu, 16 Jan 2020 18:22:23 +0000 (UTC)
-Date: Thu, 16 Jan 2020 19:22:21 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: zdhays@gmail.com
-Subject: Re: [PATCH v1] mtd: rawnand: micron: don't error out if internal
- ECC is set
-Message-ID: <20200116192221.49986c13@xps13>
-In-Reply-To: <20200110162503.7185-1-zdhays@gmail.com>
-References: <20200110162503.7185-1-zdhays@gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1isAhX-0004w3-7J
+ for linux-mtd@lists.infradead.org; Thu, 16 Jan 2020 19:21:08 +0000
+Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown
+ [104.132.1.77])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 1E2D820661;
+ Thu, 16 Jan 2020 19:21:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1579202466;
+ bh=rUr1wlexBA7T5J5m/OSW8iFgPsbrK8hJ/8NOCZzbZK8=;
+ h=From:To:Cc:Subject:Date:From;
+ b=2o/B2tfu8Tgm7+qJkztQ+IGIiSVLQQD4L+vz4mFLQQhxf/05CdxlNQXabL5dVTBRE
+ kEfexecpizCN0hk37ZSmvwuUVv+OLvaeWfK50X4ddeBfHKX66XFfOlGUhdJ4n1ut+1
+ uXug04sCgFEERthHjP/SNqZMkyCDOjxtcExOMNdA=
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-fscrypt@vger.kernel.org
+Subject: [PATCH] fscrypt: reserve flags for hardware-wrapped keys feature
+Date: Thu, 16 Jan 2020 11:20:08 -0800
+Message-Id: <20200116192008.35766-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.25.0.rc1.283.g88dfdc4193-goog
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200116_102231_022701_EE50E19E 
-X-CRM114-Status: GOOD (  19.64  )
+X-CRM114-CacheID: sfid-20200116_112107_302962_47AF9372 
+X-CRM114-Status: GOOD (  11.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,52 +72,138 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
- zhays@lexmark.com, Marco Felsch <m.felsch@pengutronix.de>,
- Frieder Schrempf <frieder.schrempf@kontron.de>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Thomas Gleixner <tglx@linutronix.de>,
- Piotr Sroka <piotrs@cadence.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Barani Muthukumaran <bmuthuku@codeaurora.org>,
+ Gaurav Kashyap <gaurkash@codeaurora.org>, linux-api@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
+ Jaegeuk Kim <jaegeuk@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
+ linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgWmFrLAoKemRoYXlzQGdtYWlsLmNvbSB3cm90ZSBvbiBGcmksIDEwIEphbiAyMDIwIDExOjI1
-OjAxIC0wNTAwOgoKPiBGcm9tOiBaYWsgSGF5cyA8emRoYXlzQGdtYWlsLmNvbT4KPiAKPiBSZWNl
-bnQgY2hhbmdlcyB0byB0aGUgZHJpdmVyIHJlcXVpcmUgdXNlIG9mIG9uLWRpZSBjb3JyZWN0aW9u
-IGlmCj4gdGhlIGludGVybmFsIEVDQyBlbmFibGUgYml0IGlzIHNldC4gT24gc29tZSBNaWNyb24g
-cGFydHMsIHRoaXMgYml0Cj4gaXMgZW5hYmxlZCBieSBkZWZhdWx0IGFuZCB0aGVyZSBpcyBubyBt
-ZXRob2QgZm9yIGRpc2FibGluZyBpdC4KPiAKPiBUaGlzIGlzIGEgZmFsc2UgYXNzdW1wdGlvbiB0
-aG91Z2ggYXMgdGhhdCBiaXQgYmVpbmcgZW5hYmxlZCBkb2VzIG5vdAo+IG5lY2Vzc2FyaWx5IG1l
-YW4gdGhhdCB0aGUgb24tZGllIEVDQyAqaGFzKiB0byBiZSB1c2VkLiBJdCBoYXMgYmVlbgo+IHZl
-cmlmaWVkIHdpdGggYSBNaWNyb24gRkFFIHRoYXQgb3RoZXIgbWV0aG9kcyBvZiBlcnJvciBjb3Jy
-ZWN0aW9uIGFyZQo+IHN0aWxsIHZhbGlkIGV2ZW4gaWYgdGhpcyBiaXQgaXMgc2V0Lgo+IAo+IEhX
-IEVDQyBvZmZlcnMgZ2VuZXJhbGx5IGhpZ2hlciBwZXJmb3JtYW5jZSB0aGFuIG9uLWRpZSBzbyBp
-dCBpcwo+IHByZWZlcnJlZCBpbiBzb21lIHNpdHVhdGlvbnMuIFRoaXMgYWxzbyBhbGxvd3MgbXVs
-dGlwbGUgTkFORCBwYXJ0cyB0bwo+IGJlIHN1cHBvcnRlZCBvbiB0aGUgc2FtZSBQQ0IgYXMgc29t
-ZSBwYXJ0cyBtYXkgbm90IHN1cHBvcnQgb24tZGllCj4gZXJyb3IgY29ycmVjdGlvbi4KPiAKPiBX
-aXRoIHRoYXQgaW4gbWluZCwgb25seSB0aHJvdyBhIHdhcm5pbmcgdGhhdCB0aGUgb24tZGllIGJp
-dCBpcyBzZXQKPiBhbmQgYWxsb3cgdGhlIGluaXQgdG8gY29udGludWUuCgpJIGRvbid0IHRoaW5r
-IEkgY2FuIHRha2UgdGhpcyBwYXRjaCBhcy1pcy4gV2UgbXVzdCBmaW5kIGEgcmVsaWFibGUgd2F5
-CnRvIGRpc2NyaW1pbmF0ZSBNaWNyb24gcGFydHMgZmVhdHVyZXMuIElmIHdlIGNhbm5vdCAoSSB0
-aGluayB3ZSBjYW4ndApiZWZvcmUgb2YgdGhlIGVuZGxlc3MgbGlzdCBvZiBidWdzIHRoZXkgaGF2
-ZSBpbnRyb2R1Y2VkIHdpdGhvdXQKZG9jdW1lbnRpbmcgdGhlbSksIHRoZSBiZXN0IHdheSBpcyB0
-byBidWlsZCBhIHN0YXRpYyB0YWJsZS4KCj4gCj4gU2lnbmVkLW9mZi1ieTogWmFrIEhheXMgPHpk
-aGF5c0BnbWFpbC5jb20+Cj4gLS0tCj4gIGRyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfbWljcm9u
-LmMgfCA0ICstLS0KPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAzIGRlbGV0aW9u
-cygtKQo+IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX21pY3Jvbi5j
-IGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9taWNyb24uYwo+IGluZGV4IDU2NjU0MDMwZWM3
-Zi4uZWM0MGM3NjQ0M2JlIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRf
-bWljcm9uLmMKPiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX21pY3Jvbi5jCj4gQEAg
-LTQ1NSw5ICs0NTUsNyBAQCBzdGF0aWMgaW50IG1pY3Jvbl9uYW5kX2luaXQoc3RydWN0IG5hbmRf
-Y2hpcCAqY2hpcCkKPiAgCj4gIAlpZiAob25kaWUgPT0gTUlDUk9OX09OX0RJRV9NQU5EQVRPUlkg
-JiYKPiAgCSAgICBjaGlwLT5lY2MubW9kZSAhPSBOQU5EX0VDQ19PTl9ESUUpIHsKPiAtCQlwcl9l
-cnIoIk9uLWRpZSBFQ0MgZm9yY2VmdWxseSBlbmFibGVkLCBub3Qgc3VwcG9ydGVkXG4iKTsKPiAt
-CQlyZXQgPSAtRUlOVkFMOwo+IC0JCWdvdG8gZXJyX2ZyZWVfbWFudWZfZGF0YTsKPiArCQlwcl93
-YXJuKCJXQVJOSU5HOiBPbi1kaWUgRUNDIGZvcmNlZnVsbHkgZW5hYmxlZCwgdXNlIGNhdXRpb24g
-d2l0aCBvdGhlciBtZXRob2RzXG4iKTsKPiAgCX0KPiAgCj4gIAlpZiAoY2hpcC0+ZWNjLm1vZGUg
-PT0gTkFORF9FQ0NfT05fRElFKSB7CgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lv
-biBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9saW51eC1tdGQvCg==
+From: Eric Biggers <ebiggers@google.com>
+
+Reserve flags for the hardware-wrapped keys feature which is being
+worked on [1].  FSCRYPT_POLICY_FLAG_HW_WRAPPED_KEY will denote that the
+encryption policy needs a hardware-wrapped key to be unlocked.
+FSCRYPT_ADD_KEY_FLAG_HW_WRAPPED will denote that the key being added is
+a hardware-wrapped key.
+
+This reservation is tentative, and these codepoints may be reused if the
+feature is not upstreamed.
+
+[1] https://android-review.googlesource.com/c/kernel/common/+/1200864
+
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ Documentation/filesystems/fscrypt.rst | 5 +++--
+ fs/crypto/keyring.c                   | 5 ++++-
+ fs/crypto/policy.c                    | 4 +++-
+ include/uapi/linux/fscrypt.h          | 9 ++++++---
+ 4 files changed, 16 insertions(+), 7 deletions(-)
+
+diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
+index 9c53336d06a438..4c443d7b1fc6b5 100644
+--- a/Documentation/filesystems/fscrypt.rst
++++ b/Documentation/filesystems/fscrypt.rst
+@@ -639,7 +639,8 @@ follows::
+             struct fscrypt_key_specifier key_spec;
+             __u32 raw_size;
+             __u32 key_id;
+-            __u32 __reserved[8];
++            __u32 flags;
++            __u32 __reserved[7];
+             __u8 raw[];
+     };
+ 
+@@ -658,7 +659,7 @@ follows::
+ 
+     struct fscrypt_provisioning_key_payload {
+             __u32 type;
+-            __u32 __reserved;
++            __u32 flags;
+             __u8 raw[];
+     };
+ 
+diff --git a/fs/crypto/keyring.c b/fs/crypto/keyring.c
+index 098ff2e0f0bb41..fc27f5d08d7dbe 100644
+--- a/fs/crypto/keyring.c
++++ b/fs/crypto/keyring.c
+@@ -477,7 +477,7 @@ static int fscrypt_provisioning_key_preparse(struct key_preparsed_payload *prep)
+ 	    payload->type != FSCRYPT_KEY_SPEC_TYPE_IDENTIFIER)
+ 		return -EINVAL;
+ 
+-	if (payload->__reserved)
++	if (payload->flags)
+ 		return -EINVAL;
+ 
+ 	prep->payload.data[0] = kmemdup(payload, prep->datalen, GFP_KERNEL);
+@@ -606,6 +606,9 @@ int fscrypt_ioctl_add_key(struct file *filp, void __user *_uarg)
+ 	if (!valid_key_spec(&arg.key_spec))
+ 		return -EINVAL;
+ 
++	if (arg.flags)
++		return -EINVAL;
++
+ 	if (memchr_inv(arg.__reserved, 0, sizeof(arg.__reserved)))
+ 		return -EINVAL;
+ 
+diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
+index f1cff83c151acf..36a2bb077b6910 100644
+--- a/fs/crypto/policy.c
++++ b/fs/crypto/policy.c
+@@ -139,7 +139,9 @@ static bool fscrypt_supported_v2_policy(const struct fscrypt_policy_v2 *policy,
+ 		return false;
+ 	}
+ 
+-	if (policy->flags & ~FSCRYPT_POLICY_FLAGS_VALID) {
++	if (policy->flags & ~(FSCRYPT_POLICY_FLAGS_PAD_MASK |
++			      FSCRYPT_POLICY_FLAG_DIRECT_KEY |
++			      FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64)) {
+ 		fscrypt_warn(inode, "Unsupported encryption flags (0x%02x)",
+ 			     policy->flags);
+ 		return false;
+diff --git a/include/uapi/linux/fscrypt.h b/include/uapi/linux/fscrypt.h
+index 0d8a6f47711c32..fad624a4c5feda 100644
+--- a/include/uapi/linux/fscrypt.h
++++ b/include/uapi/linux/fscrypt.h
+@@ -19,7 +19,8 @@
+ #define FSCRYPT_POLICY_FLAGS_PAD_MASK		0x03
+ #define FSCRYPT_POLICY_FLAG_DIRECT_KEY		0x04
+ #define FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64	0x08
+-#define FSCRYPT_POLICY_FLAGS_VALID		0x0F
++#define FSCRYPT_POLICY_FLAG_HW_WRAPPED_KEY	0x10
++#define FSCRYPT_POLICY_FLAGS_VALID		0x1F
+ 
+ /* Encryption algorithms */
+ #define FSCRYPT_MODE_AES_256_XTS		1
+@@ -116,7 +117,7 @@ struct fscrypt_key_specifier {
+  */
+ struct fscrypt_provisioning_key_payload {
+ 	__u32 type;
+-	__u32 __reserved;
++	__u32 flags;
+ 	__u8 raw[];
+ };
+ 
+@@ -125,7 +126,9 @@ struct fscrypt_add_key_arg {
+ 	struct fscrypt_key_specifier key_spec;
+ 	__u32 raw_size;
+ 	__u32 key_id;
+-	__u32 __reserved[8];
++#define FSCRYPT_ADD_KEY_FLAG_HW_WRAPPED			0x00000001
++	__u32 flags;
++	__u32 __reserved[7];
+ 	__u8 raw[];
+ };
+ 
+
+base-commit: 2d8f7f119b0b2ce5e7ff0e8024b0763bf42b99c9
+-- 
+2.25.0.rc1.283.g88dfdc4193-goog
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
