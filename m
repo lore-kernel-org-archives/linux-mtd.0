@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77F35C33CB1
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Jan 2020 10:04:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25ACEC33CB1
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Jan 2020 10:04:31 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4AAC82073A
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Jan 2020 10:04:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E6DD92073A
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Jan 2020 10:04:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Gkp3u4oH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4AAC82073A
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lRuuDawm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E6DD92073A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=allwinnertech.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,29 +26,29 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=Hg+e/mYm/cVNIO1JIimZtuCXeVC5Ah0G4rDYbNzwBag=; b=Gkp3u4oHETD4Pmyw6AkkhF+62N
-	rs1fYq8j02CPxFZjW9j1T/iEP2nwphE4GfVloIgY14xM4gs5lbeRJ1BDHnG11ofhaAz4tmbTRR/ha
-	NWLjPEXKbI2R2DYAYL5gNqz0UFmA5hj4/14WktK60g758c8XOb+hAYEz4+NjoP1fu4pmzxuG2ZEGW
-	9dxOCxUWBKZ9gulbvdoGG9q50DFSpQfSasrbkzbzfVbdc/PHfokJbm3Rq+EizXA4hFA5tb6qIZlyW
-	rSmcP28jG59Ddd6B3MltwHtK/9vATRwLLIVWGX+Trzd7YwBk/qNpiuT6MtfcPrcCWwAuGwj8FJIQF
-	HhiOySaQ==;
+	bh=W9p4MvXpEbtCtwKyaDAd4EEd9sF94i/t29/As6AB1ao=; b=lRuuDawmJ8ukVzwLfH5VudGmQo
+	6oSFQn/R3VjZuHMxXdrWBKg16pjWbvrjD1R4QDEJdCcxuAn6Swry/L23dopgsiIdZQMKZUTftcadz
+	OXljX515qY7Zx8onglCuvt3VAwfLb9kIH1rdHTI6AvcaEMuu/uGDL4H+5ZiVHiGxBY/ET+J00c2EH
+	YU9xsYZ/Tn5HIQfgFpG6Q2v7JUB5FVy3YMSDCI3Sj8ErmeJp9YuBlDlalXUhnMqezEW1tmGGxn5vY
+	YN2BODrdJ3FdKnSWZv9wz66Rlkwtg7Sy7NT584aDB/AUB9iVN0Q2PmTlzOmoqmN79rwCkw4l88oJB
+	H/tx7XDw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1is20H-000868-Rl; Thu, 16 Jan 2020 10:03:53 +0000
+	id 1is20f-0008Lh-N5; Thu, 16 Jan 2020 10:04:17 +0000
 Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1is1xv-00062J-TA
- for linux-mtd@lists.infradead.org; Thu, 16 Jan 2020 10:01:36 +0000
-X-Alimail-AntiSpam: AC=CONTINUE; BC=0.06712966|-1; CH=green;
- DM=CONTINUE|CONTINUE|true|0.405886-0.0232577-0.570856;
- DS=CONTINUE|ham_regular_dialog|0.0837547-0.000396562-0.915849;
- FP=0|0|0|0|0|-1|-1|-1; HT=e02c03309; MF=liaoweixiong@allwinnertech.com; NM=1;
+ id 1is1xv-00062K-Tx
+ for linux-mtd@lists.infradead.org; Thu, 16 Jan 2020 10:01:37 +0000
+X-Alimail-AntiSpam: AC=CONTINUE; BC=0.06713008|-1; CH=green;
+ DM=CONTINUE|CONTINUE|true|0.234295-0.0201346-0.74557;
+ DS=CONTINUE|ham_system_inform|0.0919446-0.0026769-0.905378;
+ FP=0|0|0|0|0|-1|-1|-1; HT=e01a16370; MF=liaoweixiong@allwinnertech.com; NM=1;
  PH=DS; RN=17; RT=17; SR=0; TI=SMTPD_---.Gd3Kgdg_1579168866; 
 Received: from
  PC-liaoweixiong.allwinnertech.com(mailfrom:liaoweixiong@allwinnertech.com
  fp:SMTPD_---.Gd3Kgdg_1579168866)
  by smtp.aliyun-inc.com(10.147.42.241);
- Thu, 16 Jan 2020 18:01:23 +0800
+ Thu, 16 Jan 2020 18:01:22 +0800
 From: WeiXiong Liao <liaoweixiong@allwinnertech.com>
 To: Kees Cook <keescook@chromium.org>, Anton Vorontsov <anton@enomsg.org>,
  Colin Cross <ccross@android.com>, Tony Luck <tony.luck@intel.com>,
@@ -60,16 +60,15 @@ To: Kees Cook <keescook@chromium.org>, Anton Vorontsov <anton@enomsg.org>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Jonathan Cameron <Jonathan.Cameron@huawei.com>,
  WeiXiong Liao <liaoweixiong@allwinnertech.com>
-Subject: [PATCH 09/11] pstore/blk: blkoops: support special removing jobs for
- dmesg.
-Date: Thu, 16 Jan 2020 18:00:29 +0800
-Message-Id: <1579168831-16399-10-git-send-email-liaoweixiong@allwinnertech.com>
+Subject: [PATCH 08/11] blkoops: respect for device to pick recorders
+Date: Thu, 16 Jan 2020 18:00:28 +0800
+Message-Id: <1579168831-16399-9-git-send-email-liaoweixiong@allwinnertech.com>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1579168831-16399-1-git-send-email-liaoweixiong@allwinnertech.com>
 References: <1579168831-16399-1-git-send-email-liaoweixiong@allwinnertech.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200116_020128_154397_59CBF3AD 
-X-CRM114-Status: GOOD (  14.51  )
+X-CRM114-CacheID: sfid-20200116_020128_175394_6FE2125F 
+X-CRM114-Status: GOOD (  14.86  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,153 +90,163 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 It's one of a series of patches for adaptive to MTD device.
 
-MTD device is not block device. To write to flash device on MTD, erase
-must to be done before. However, pstore/blk just set datalen as 0 when
-remove, which is not enough for mtd device. That's why this patch here,
-to support special jobs when removing pstore/blk record.
+MTD device is not block device. The sector of flash (MTD device) will be
+broken if erase over limited cycles. Avoid damaging block so fast, we
+can not write to a sector frequently. So, the recorders of pstore/blk
+like console and ftrace recorder should not be supported.
+
+Besides, mtd device need aligned write/erase size. To avoid
+over-erasing/writing flash, we should keep a aligned cache and read old
+data to cache before write/erase, which make codes more complex. So,
+pmsg do not be supported now because it writes misaligned.
+
+How about dmesg? Luckly, pstore/blk keeps several aligned chunks for
+dmesg and uses one by one for wear balance.
+
+So, MTD device for pstore should pick recorders, that is why the patch
+here.
 
 Signed-off-by: WeiXiong Liao <liaoweixiong@allwinnertech.com>
 ---
  Documentation/admin-guide/pstore-block.rst |  9 +++++++++
- fs/pstore/blkoops.c                        |  4 +++-
- fs/pstore/blkzone.c                        |  9 ++++++++-
- include/linux/blkoops.h                    | 10 ++++++++++
- include/linux/pstore_blk.h                 | 11 +++++++++++
- 5 files changed, 41 insertions(+), 2 deletions(-)
+ fs/pstore/blkoops.c                        | 29 +++++++++++++++++++++--------
+ include/linux/blkoops.h                    | 14 +++++++++++++-
+ 3 files changed, 43 insertions(+), 9 deletions(-)
 
 diff --git a/Documentation/admin-guide/pstore-block.rst b/Documentation/admin-guide/pstore-block.rst
-index f4fc205406aa..e351b0ebd8e5 100644
+index aea6d2664a22..f4fc205406aa 100644
 --- a/Documentation/admin-guide/pstore-block.rst
 +++ b/Documentation/admin-guide/pstore-block.rst
-@@ -197,6 +197,15 @@ negative number will be returned. The following return numbers mean more:
- 1. -EBUSY: pstore/blk should try again later.
- #. -ENEXT: this zone is used or broken, pstore/blk should try next one.
+@@ -164,6 +164,15 @@ It is only requested by block device which is registered by
+ ``blkoops_register_blkdev``.  It's the major device number of registered
+ devices, by which blkoops can get the matching driver for @blkdev.
  
-+erase
++flags
 +~~~~~
 +
-+It's generic erase API for pstore/blk, which is requested by non-block device.
-+It will be called while pstore record is removing. It's required only when the
-+device has special removing jobs. For example, MTD device tries to erase block.
++Refer to macro starting with *BLKOOPS_DEV_SUPPORT_* which is defined in
++*linux/blkoops.h*. They tell us that which pstore/blk recorders this device
++supports. Default zero means all recorders for compatible, witch is the same
++as BLKOOPS_DEV_SUPPORT_ALL. Recorder works only when chunk size is not zero
++and device support.
 +
-+Normally zero should be returned, otherwise it indicates an error.
-+
- panic_write (for non-block device)
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ total_size
+ ~~~~~~~~~~
  
 diff --git a/fs/pstore/blkoops.c b/fs/pstore/blkoops.c
-index 85008a839a17..3d57a3126c7b 100644
+index 8437b74d4a0f..85008a839a17 100644
 --- a/fs/pstore/blkoops.c
 +++ b/fs/pstore/blkoops.c
-@@ -179,6 +179,7 @@ int blkoops_register_device(struct blkoops_device *bo_dev)
- 	bzinfo->dump_oops = dump_oops;
- 	bzinfo->read = bo_dev->read;
- 	bzinfo->write = bo_dev->write;
-+	bzinfo->erase = bo_dev->erase;
- 	bzinfo->panic_write = bo_dev->panic_write;
- 	bzinfo->name = "blkoops";
- 	bzinfo->owner = THIS_MODULE;
-@@ -398,10 +399,11 @@ int blkoops_register_blkdev(unsigned int major, unsigned int flags,
- 	bo_dev.total_size = blkoops_bdev_size(bdev);
+@@ -143,9 +143,16 @@ int blkoops_register_device(struct blkoops_device *bo_dev)
+ 		return -ENOMEM;
+ 	}
+ 
+-#define verify_size(name, defsize, alignsize) {				\
+-		long _##name_ = (name);					\
+-		if (_##name_ < 0)					\
++	/* zero means all recorders for compatible */
++	if (bo_dev->flags == BLKOOPS_DEV_SUPPORT_DEFAULT)
++		bo_dev->flags = BLKOOPS_DEV_SUPPORT_ALL;
++#define verify_size(name, defsize, alignsize, enable) {			\
++		long _##name_;						\
++		if (!(enable))						\
++			_##name_ = 0;					\
++		else if ((name) >= 0)					\
++			_##name_ = (name);				\
++		else							\
+ 			_##name_ = (defsize);				\
+ 		_##name_ = _##name_ <= 0 ? 0 : (_##name_ * 1024);	\
+ 		if (_##name_ & (alignsize - 1)) {			\
+@@ -157,10 +164,14 @@ int blkoops_register_device(struct blkoops_device *bo_dev)
+ 		bzinfo->name = _##name_;				\
+ 	}
+ 
+-	verify_size(dmesg_size, DEFAULT_DMESG_SIZE, 4096);
+-	verify_size(pmsg_size, DEFAULT_PMSG_SIZE, 4096);
+-	verify_size(console_size, DEFAULT_CONSOLE_SIZE, 4096);
+-	verify_size(ftrace_size, DEFAULT_FTRACE_SIZE, 4096);
++	verify_size(dmesg_size, DEFAULT_DMESG_SIZE, 4096,
++			bo_dev->flags & BLKOOPS_DEV_SUPPORT_DMESG);
++	verify_size(pmsg_size, DEFAULT_PMSG_SIZE, 4096,
++			bo_dev->flags & BLKOOPS_DEV_SUPPORT_PMSG);
++	verify_size(console_size, DEFAULT_CONSOLE_SIZE, 4096,
++			bo_dev->flags & BLKOOPS_DEV_SUPPORT_CONSOLE);
++	verify_size(ftrace_size, DEFAULT_FTRACE_SIZE, 4096,
++			bo_dev->flags & BLKOOPS_DEV_SUPPORT_FTRACE);
+ #undef verify_size
+ 	dump_oops = !!(dump_oops < 0 ? DEFAULT_DUMP_OOPS : dump_oops);
+ 
+@@ -351,6 +362,7 @@ static ssize_t blkoops_blk_panic_write(const char *buf, size_t size,
+  * register block device to blkoops
+  * @major: the major device number of registering device
+  * @panic_write: the write interface for panic case.
++ * @flags: Refer to macro starting with BLKOOPS_DEV_SUPPORT.
+  *
+  * It is ONLY used for block device to register to blkoops. In this case,
+  * the module parameter @blkdev must be valid. Generic read/write interfaces
+@@ -364,7 +376,7 @@ static ssize_t blkoops_blk_panic_write(const char *buf, size_t size,
+  * panic occurs but pstore/blk does not recover yet, the first zone of dmesg
+  * will be used.
+  */
+-int blkoops_register_blkdev(unsigned int major,
++int blkoops_register_blkdev(unsigned int major, unsigned int flags,
+ 		blkoops_blk_panic_write_op panic_write)
+ {
+ 	struct block_device *bdev;
+@@ -387,6 +399,7 @@ int blkoops_register_blkdev(unsigned int major,
  	if (bo_dev.total_size == 0)
  		goto err_put_bdev;
--	bo_dev.panic_write = panic_write ? blkoops_blk_panic_write : NULL;
- 	bo_dev.flags = flags;
+ 	bo_dev.panic_write = panic_write ? blkoops_blk_panic_write : NULL;
++	bo_dev.flags = flags;
  	bo_dev.read = blkoops_generic_blk_read;
  	bo_dev.write = blkoops_generic_blk_write;
-+	bo_dev.erase = NULL;
-+	bo_dev.panic_write = panic_write ? blkoops_blk_panic_write : NULL;
  
- 	ret = blkoops_register_device(&bo_dev);
- 	if (ret)
-diff --git a/fs/pstore/blkzone.c b/fs/pstore/blkzone.c
-index 7c6bf14f7e7d..46f7aff07ffe 100644
---- a/fs/pstore/blkzone.c
-+++ b/fs/pstore/blkzone.c
-@@ -608,11 +608,18 @@ static inline bool blkz_ok(struct blkz_zone *zone)
- static inline int blkz_dmesg_erase(struct blkz_context *cxt,
- 		struct blkz_zone *zone)
- {
-+	size_t size;
-+
- 	if (unlikely(!blkz_ok(zone)))
- 		return 0;
- 
- 	atomic_set(&zone->buffer->datalen, 0);
--	return blkz_zone_write(zone, FLUSH_META, NULL, 0, 0);
-+
-+	size = buffer_datalen(zone) + sizeof(*zone->buffer);
-+	if (cxt->bzinfo->erase)
-+		return cxt->bzinfo->erase(size, zone->off);
-+	else
-+		return blkz_zone_write(zone, FLUSH_META, NULL, 0, 0);
- }
- 
- static inline int blkz_record_erase(struct blkz_context *cxt,
 diff --git a/include/linux/blkoops.h b/include/linux/blkoops.h
-index bc7665d14a98..11cb3036ad5f 100644
+index 71c596fd4cc8..bc7665d14a98 100644
 --- a/include/linux/blkoops.h
 +++ b/include/linux/blkoops.h
-@@ -33,6 +33,15 @@
-  *	number means more:
-  *	  -EBUSY: pstore/blk should try again later.
-  *	  -ENEXT: this zone is used or broken, pstore/blk should try next one.
-+ * @erase:
-+ *	The general (not panic) erase operation. It will be call while pstore
-+ *	record is removing. It's required only when device have special
-+ *	removing jobs, for example, MTD device try to erase block.
-+ *
-+ *	Both of the @size and @offset parameters on this interface are
-+ *	the relative size of the space provided, not the whole disk/flash.
-+ *
-+ *	On success, 0 should be returned. Others mean error.
-  * @panic_write:
-  *	The write operation only used for panic.
+@@ -6,6 +6,7 @@
+ #include <linux/types.h>
+ #include <linux/blkdev.h>
+ #include <linux/pstore_blk.h>
++#include <linux/bitops.h>
+ 
+ /**
+  * struct blkoops_device - backend blkoops driver structure.
+@@ -14,6 +15,10 @@
+  * blkoops_register_device(). If block device, you are strongly recommended
+  * to use blkoops_register_blkdev().
   *
-@@ -53,6 +62,7 @@ struct blkoops_device {
++ * @flags:
++ *	Refer to macro starting with BLKOOPS_DEV_SUPPORT_. These macros tell
++ *	us that which pstore/blk recorders this device supports. Zero means
++ *	all recorders for compatible.
+  * @total_size:
+  *	The total size in bytes pstore/blk can use. It must be greater than
+  *	4096 and be multiple of 4096.
+@@ -38,6 +43,13 @@
+  *	On error, negative number should be returned.
+  */
+ struct blkoops_device {
++	unsigned int flags;
++#define BLKOOPS_DEV_SUPPORT_ALL		UINT_MAX
++#define BLKOOPS_DEV_SUPPORT_DEFAULT	(0)
++#define BLKOOPS_DEV_SUPPORT_DMESG	BIT(0)
++#define BLKOOPS_DEV_SUPPORT_PMSG	BIT(1)
++#define BLKOOPS_DEV_SUPPORT_CONSOLE	BIT(2)
++#define BLKOOPS_DEV_SUPPORT_FTRACE	BIT(3)
  	unsigned long total_size;
  	blkz_read_op read;
  	blkz_write_op write;
-+	blkz_erase_op erase;
- 	blkz_write_op panic_write;
- };
+@@ -54,7 +66,7 @@ typedef int (*blkoops_blk_panic_write_op)(const char *buf, sector_t start_sect,
  
-diff --git a/include/linux/pstore_blk.h b/include/linux/pstore_blk.h
-index bbbe4fe37f7c..9641969f888f 100644
---- a/include/linux/pstore_blk.h
-+++ b/include/linux/pstore_blk.h
-@@ -46,6 +46,15 @@
-  *	number means more:
-  *	  -EBUSY: pstore/blk should try again later.
-  *	  -ENEXT: this zone is used or broken, pstore/blk should try next one.
-+ * @erase:
-+ *	The general (not panic) erase operation. It will be call while pstore
-+ *	record is removing. It's required only when device have special
-+ *	removing jobs, for example, MTD device try to erase block.
-+ *
-+ *	Both of the @size and @offset parameters on this interface are
-+ *	the relative size of the space provided, not the whole disk/flash.
-+ *
-+ *	On success, 0 should be returned. Others mean error.
-  * @panic_write:
-  *	The write operation only used for panic. It's optional if you do not
-  *	care panic record. If panic occur but blkzone do not recover yet, the
-@@ -59,6 +68,7 @@
-  */
- typedef ssize_t (*blkz_read_op)(char *, size_t, loff_t);
- typedef ssize_t (*blkz_write_op)(const char *, size_t, loff_t);
-+typedef ssize_t (*blkz_erase_op)(size_t, loff_t);
- struct blkz_info {
- 	struct module *owner;
- 	const char *name;
-@@ -71,6 +81,7 @@ struct blkz_info {
- 	int dump_oops;
- 	blkz_read_op read;
- 	blkz_write_op write;
-+	blkz_erase_op erase;
- 	blkz_write_op panic_write;
- };
- 
+ int  blkoops_register_device(struct blkoops_device *bo_dev);
+ void blkoops_unregister_device(struct blkoops_device *bo_dev);
+-int  blkoops_register_blkdev(unsigned int major,
++int  blkoops_register_blkdev(unsigned int major, unsigned int flags,
+ 		blkoops_blk_panic_write_op panic_write);
+ void blkoops_unregister_blkdev(unsigned int major);
+ int  blkoops_blkdev_info(dev_t *devt, sector_t *nr_sects, sector_t *start_sect);
 -- 
 1.9.1
 
