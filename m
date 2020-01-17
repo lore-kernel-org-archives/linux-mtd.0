@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-6.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DDEFCC33C9E
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jan 2020 21:30:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A869C33C9E
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jan 2020 21:31:20 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B058B2072E
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jan 2020 21:30:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5EC832072E
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jan 2020 21:31:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="A44LmfiW";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ejng6wdr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B058B2072E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YxRm4Xc4";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YQPtGhpC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5EC832072E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,58 +26,59 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8hidrRhZ5KFQ9c+NJSwh1XWO/NxOjjDbh3GT86gFyJs=; b=A44LmfiWiXKJRW
-	cU6z2PLHcTK3D92SRKZvAistQFU6tMjI+8f3KJ4kv9oTZjSKoUdz5CKhq4k+L7HlgasbZfzUQCGCH
-	iDXAojrXT92xpVSjCC8hq7QSugt48jWZeuvIzLwx1dFCOfcbA6GmuN4od6RMQ8qgIThaN5EUpW8gK
-	ruSZnGYo2+zImKToKmh3MypOEyeS1zCVucinw5lo2PHn6Zjvot7+m28VeXk86vdKSS2qAexQiN1UO
-	P7i9abwK+zfzVEr+3ilMU/8Kha7WLrmO2n+mV6tNps69AwFwda8DzN2k6lAd6XqCYkQhReRzlESgd
-	HK3j3V2IjcUcdozRcuHg==;
+	List-Owner; bh=8E+S2OG6QGvbMczoRz7ldYOV7oj3bgVFZgWV1UxLbbU=; b=YxRm4Xc40xiw2g
+	uEl4/DpD1GLkV6SyIkTkV1/sdQiGm97feSXCFXBHqk24rNBlOoMjX7PzeivNbMt5LerCMBExJLqhe
+	IgfytWJIocGkGcrdelVU5bHS/3H4AdjxpeN78JiOAfse/TrNIAfJ6mSAO7Z0TyLmYnos1GlKhX60/
+	WfqNB11aAqckjJ3McXO422xWIPcdjLcjxixpg7bD+8sIL/B///zqUe3MO3GV43JbaFRExOs8bOwHD
+	V1eiCC6u8iwIKQdKFn1VSsyKMejscIvYPbDk56XdVIyofWgoRza2z0MRcli1mKsK18F9EgExmhe5c
+	hX6lmDuUe8i0pdixiITg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1isZCX-0003cr-2M; Fri, 17 Jan 2020 21:30:45 +0000
-Received: from mail-il1-x143.google.com ([2607:f8b0:4864:20::143])
+	id 1isZCv-0003vR-Bx; Fri, 17 Jan 2020 21:31:09 +0000
+Received: from mail-io1-xd42.google.com ([2607:f8b0:4864:20::d42])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1isZCR-0003cH-2t
- for linux-mtd@lists.infradead.org; Fri, 17 Jan 2020 21:30:43 +0000
-Received: by mail-il1-x143.google.com with SMTP id g12so22459468ild.2
- for <linux-mtd@lists.infradead.org>; Fri, 17 Jan 2020 13:30:38 -0800 (PST)
+ id 1isZCp-0003uD-U8
+ for linux-mtd@lists.infradead.org; Fri, 17 Jan 2020 21:31:08 +0000
+Received: by mail-io1-xd42.google.com with SMTP id n11so27548125iom.9
+ for <linux-mtd@lists.infradead.org>; Fri, 17 Jan 2020 13:31:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=fwUDKdVDVPF9fiX1Os8c+YJ8FeIeDDAgq4WvIPa/3eY=;
- b=Ejng6wdrW6yC/iNH+1VNpMx75kR7aqIBSm06ARTmp6oujT6u3PezSGJObjE/hNh0MH
- +QCfEtiNi2fRllOh+tjh5NW17zUt1u37uSRP5Ca+9yG/KtK4MjzG1h9TivNTcsVLj/zb
- KTWity7lCozfwKOehQTLw7ck2Oz5qU/y9pLzk3LDlT0VMMsiiqQpqQ1XTUVt3tY4zzYq
- UhP2slw4jXzYDrcHzgnvAjYTVQFgVgYbK4Oc3H3k11d3VclWdfXsyE59Gvfqh/SSeEu4
- UrEodfuqk9hg6o+Wz4TkP0m/KbbVI1RB3K4g1og+VrgNfp7K5uvlyhFbo56o6uPKH0j6
- oEkQ==
+ :cc; bh=YCU/PYaiWyucY+/YzsxEM57VENsddFqK2SuGsLdtQgw=;
+ b=YQPtGhpCgkNN818oKIS1hoUv8HqTzo1YAwSKOsFHC05vICs/mRY74WprxPz6gHurUr
+ sSd9L8bRCLJU7rFZ2Ldg8tntXrNL2el3Huev/FxS8bUmFyu+NtWvDVX6ChYNy4vHkiSk
+ kt8kLMLfdzsrtbfRiV1KNdpudmDSsQr0wG8nqj1So1DFtefX9Hm8I5RGArgoQF7rVrMm
+ FrlAl0g7JcA5ZBclvgtROAXVV0Rd5dW1xCOIUyMCCpbFJm1z9NKC+NmdTbjqFHc+Lc5l
+ 6IENMfdQZ88SW+pODJBDx8Xr+cKbUN5MgwOS3WxvGRYajKzaCn2aT6Z4+vapGOwTC5/w
+ W2tA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=fwUDKdVDVPF9fiX1Os8c+YJ8FeIeDDAgq4WvIPa/3eY=;
- b=B1xHBaHHAvDX6+I1+604t+R7kF5BJwwlZQ/O6/NIBBR6mPKxAUlmyMrQzjq794F0Qh
- o13pHll5PfSLovGnHed6dKMqlQBajlzIp5SFfPdiE3jpFlvh9LBZi4x1THHH0gqAkWia
- vY0sU50RSTVBbGPjtUKZ6cqZJCSOv+WK5Lwnb27p+YXQbpU8WMC0mosRtYKxbOxK+xj8
- rTv9+UtkUuSZW5jerxODUyoHQ/gG+Yz61rTS/W9w6UyHs7XK5clluAzks2W+nuAFrgQA
- cFYpyj9wNi1L9YokjMEvWZ5dlb0dq3FLazkMjIbQDXuOVkZuStJ42YyN3IQy6vSNtrB1
- tp2w==
-X-Gm-Message-State: APjAAAXKIY6ofImyoyynUqPDr1rXlx1iogDwO80rg9vX+HKposBY6ivm
- mJIkri8kdeFQkuY2sX9eIt5RPyzXko9g9o2XRCs=
-X-Google-Smtp-Source: APXvYqx9WCvLe5ev4yxrUK8FfE1LNjRob54Psy2nzrwMrpCUCLh0gu4riG0TOkXkU9xwitVW40l2dqmPhpnn6+gTWAc=
-X-Received: by 2002:a92:d30d:: with SMTP id x13mr567709ila.170.1579296637824; 
- Fri, 17 Jan 2020 13:30:37 -0800 (PST)
+ bh=YCU/PYaiWyucY+/YzsxEM57VENsddFqK2SuGsLdtQgw=;
+ b=H18H7Ut/PI1RwjAJl2S0tlafAqIXUCxNaUgnljTlCKfYoLHRWfVesuqpffJGyBOpRn
+ Roi3gKP91VidiiIg9YQZKofzgzOy0Zs57tHBQ+A898ogCEovXRs1rGcXCh1tDDx7M92/
+ /InYKsqn8RV/k0B5JMyKTX4e2jyGgVIyMGr/4PwQgwe2/Vqgw1OfksuK5qZtlez6Z8/L
+ mtNbP3ay+Wp6vC7m09Oq2VbsPmje1pu0pJgZVhcOUxX27YtAzWFSQyg68ME3UbRh0z/I
+ GQTkArv9/t26Fk1jpOuGYTksvckwHoF49q3O1Y6qidtjoaXoXgHOA/GO4Ho9qP4jR9dV
+ tFcg==
+X-Gm-Message-State: APjAAAUUHXeNKYupL2KTXJUJ7vwLVc1y5DzZ+qeGwSXyq73hScz3R3yP
+ LhCSsYXvS+AD/2vZ13eWw1da70amAzSWQJ/b6bA=
+X-Google-Smtp-Source: APXvYqyqSodtv5T4u65HbMpSp2aZaRaEVN2DzjGYbj2pbhHclIbe1/yAZpzJDpRl5KgKexy6rPH+2SOorY0mItIkNTs=
+X-Received: by 2002:a5e:8d14:: with SMTP id m20mr31162687ioj.282.1579296662919; 
+ Fri, 17 Jan 2020 13:31:02 -0800 (PST)
 MIME-Version: 1.0
 References: <20200117200537.9279-1-esben@geanix.com>
- <20200117200537.9279-2-esben@geanix.com>
-In-Reply-To: <20200117200537.9279-2-esben@geanix.com>
+ <20200117200537.9279-3-esben@geanix.com>
+In-Reply-To: <20200117200537.9279-3-esben@geanix.com>
 From: Han Xu <xhnjupt@gmail.com>
-Date: Fri, 17 Jan 2020 15:30:26 -0600
-Message-ID: <CA+EcR23iNa8Pgvo3z-d+FES0WwxzOxKgOXk69BbynLqAg1FQcA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] mtd: rawnand: gpmi: Fix suspend/resume problem
+Date: Fri, 17 Jan 2020 15:30:51 -0600
+Message-ID: <CA+EcR22w7gTtyhbaikXsEHhSUhrm2RRGBNbJWQTxF8Gsx7c4WA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] mtd: rawnand: gpmi: Restore nfc timing setup after
+ suspend/resume
 To: Esben Haabendal <esben@geanix.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200117_133039_149777_0B3CA2E8 
-X-CRM114-Status: GOOD (  15.72  )
+X-CRM114-CacheID: sfid-20200117_133103_986822_E741DF67 
+X-CRM114-Status: GOOD (  15.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,52 +100,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Jan 17, 2020 at 2:05 PM Esben Haabendal <esben@geanix.com> wrote:
+On Fri, Jan 17, 2020 at 2:06 PM Esben Haabendal <esben@geanix.com> wrote:
 >
-> On system resume, the gpmi clock must be enabled before accessing gpmi
-> block.  Without this, resume causes something like
->
-> [  661.348790] gpmi_reset_block(5cbb0f7e): module reset timeout
-> [  661.348889] gpmi-nand 1806000.gpmi-nand: Error setting GPMI : -110
-> [  661.348928] PM: dpm_run_callback(): platform_pm_resume+0x0/0x44 returns -110
-> [  661.348961] PM: Device 1806000.gpmi-nand failed to resume: error -110
+> As we reset the GPMI block at resume, the timing parameters setup by a
+> previous exec_op is lost.  Rewriting GPMI timing registers on first exec_op
+> after resume fixes the problem.
 >
 > Fixes: ef347c0cfd61 ("mtd: rawnand: gpmi: Implement exec_op")
 > Cc: stable@vger.kernel.org
 > Signed-off-by: Esben Haabendal <esben@geanix.com>
 > ---
->  drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
+>  drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 >
 > diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-> index 334fe3130285..879df8402446 100644
+> index 879df8402446..b9d5d55a5edb 100644
 > --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
 > +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-> @@ -148,6 +148,10 @@ static int gpmi_init(struct gpmi_nand_data *this)
->         struct resources *r = &this->resources;
->         int ret;
+> @@ -2727,6 +2727,10 @@ static int gpmi_pm_resume(struct device *dev)
+>                 return ret;
+>         }
 >
-> +       ret = pm_runtime_get_sync(this->dev);
-> +       if (ret < 0)
-> +               return ret;
+> +       /* Set flag to get timing setup restored for next exec_op */
+> +       if (this->hw.clk_rate)
+> +               this->hw.must_apply_timings = true;
 > +
->         ret = gpmi_reset_block(r->gpmi_regs, false);
->         if (ret)
->                 goto err_out;
-> @@ -179,8 +183,9 @@ static int gpmi_init(struct gpmi_nand_data *this)
->          */
->         writel(BM_GPMI_CTRL1_DECOUPLE_CS, r->gpmi_regs + HW_GPMI_CTRL1_SET);
->
-> -       return 0;
->  err_out:
-> +       pm_runtime_mark_last_busy(this->dev);
-> +       pm_runtime_put_autosuspend(this->dev);
->         return ret;
->  }
->
 
 Acked-by: Han Xu <han.xu@nxp.com>
 
+>         /* re-init the BCH registers */
+>         ret = bch_set_geometry(this);
+>         if (ret) {
 > --
 > 2.25.0
 >
