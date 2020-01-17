@@ -2,21 +2,22 @@ Return-Path: <SRS0=4m0E=3G=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 881C5C33CB1
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jan 2020 08:13:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D57E8C33CB6
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jan 2020 08:13:41 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 598C62072B
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jan 2020 08:13:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A92B021582
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jan 2020 08:13:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BNawO7Jv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 598C62072B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tdslnzdV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A92B021582
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -24,26 +25,55 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XxXx/r+7WTbj9T5cDuuErr6FpE48b6fzf82OPAzfbhg=; b=BNawO7JvNWUlXR
-	DY748VNo1w2FKgdn9r0CZbB+xcWBJyKS1vConiP/+bOAawVBgTRLB2a2leH3zWJ/ZTgafoTI0WYT5
-	YuCp0acv6+KaxjeJw78R2d9QgHgCK7ok5jTEQd/c6sVGjqBi7Wky7K+6LUI54wBRBmF6ak08hGq04
-	DyrVaFMTp4uwoB56xwVlmRT+8AsbcJuxDLtHTWh8o5mzvo+jv3rqnXwep0qcN5VPMhe4R6i2aJuCZ
-	WqVa6Tipoy7x+vO5EDjS7SAL8wL1tpQcJWxTXy0XToNDAqOH3+mZeMhTjFI9iJd12AuojLwe9XV9D
-	Tx6m1KNaB/8omBi/h5Tw==;
+	List-Owner; bh=dfcRupA2C1Bp+e7bIIG0G4GDSjR5MPiq8bP+0gtCqxo=; b=tdslnzdVaFXFoq
+	UQlUXi6/51RpL1R5IuL2E70Pcc/HQgCtdwKhhew1XWWyIUDZm+6G3Bqc1EXylPm7n/+fFCkw9GkKd
+	mtgyREMiAvVjWvukoA8bRauk0lXTMr/Bai9Wl/mFcoXnNEh2Qt1weYgSHDVa7dAEv8VtqV3lyD3i9
+	KqRDEgjYlCqpobr2C+DVt0kXUplr2AVYqjJo3aHEeOpoeu9DCLCReq8/QR8S33URjg/1EClhb+aw5
+	/HjFtp40Xx6IPQDufhsUiBMeNqs+IwnMLSm3ZkxoxnqUDqBqlonyiekZPtPNoou5LGe+/ak/MlDf3
+	1W+DRl2Y4Jtjt3QTezjA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1isMkK-0004b6-2x; Fri, 17 Jan 2020 08:12:48 +0000
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red
- Hat Linux)) id 1isMkI-0004ao-RH; Fri, 17 Jan 2020 08:12:46 +0000
-Date: Fri, 17 Jan 2020 00:12:46 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Eric Biggers <ebiggers@kernel.org>
-Subject: Re: [PATCH] fscrypt: reserve flags for hardware-wrapped keys feature
-Message-ID: <20200117081246.GA16846@infradead.org>
-References: <20200116192008.35766-1-ebiggers@kernel.org>
+	id 1isMkz-0004rf-2O; Fri, 17 Jan 2020 08:13:29 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1isMkp-0004qK-P7
+ for linux-mtd@lists.infradead.org; Fri, 17 Jan 2020 08:13:24 +0000
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <sha@pengutronix.de>)
+ id 1isMkd-0001Cc-OT; Fri, 17 Jan 2020 09:13:07 +0100
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.89)
+ (envelope-from <sha@pengutronix.de>)
+ id 1isMkc-0004pJ-7a; Fri, 17 Jan 2020 09:13:06 +0100
+Date: Fri, 17 Jan 2020 09:13:06 +0100
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Han Xu <xhnjupt@gmail.com>
+Subject: Re: [PATCH 3/6] dmaengine: mxs: add the power management functions
+Message-ID: <20200117081306.eeuf3fvph5rb7tjf@pengutronix.de>
+References: <1579038243-28550-1-git-send-email-han.xu@nxp.com>
+ <1579038243-28550-4-git-send-email-han.xu@nxp.com>
+ <20200115080257.dtd4vss4uhopbvn2@pengutronix.de>
+ <CA+EcR23TCUU83Y7BYX5LCvGAj20+s67n+rWaGR5R9BSMHUH82A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20200116192008.35766-1-ebiggers@kernel.org>
+In-Reply-To: <CA+EcR23TCUU83Y7BYX5LCvGAj20+s67n+rWaGR5R9BSMHUH82A@mail.gmail.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-IRC: #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 09:08:04 up 193 days, 14:18, 87 users,  load average: 0.09, 0.28,
+ 0.30
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20200117_001319_811147_28D11030 
+X-CRM114-Status: GOOD (  23.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -55,30 +85,106 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Barani Muthukumaran <bmuthuku@codeaurora.org>,
- Gaurav Kashyap <gaurkash@codeaurora.org>, linux-api@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-fscrypt@vger.kernel.org,
- linux-mtd@lists.infradead.org, Jaegeuk Kim <jaegeuk@kernel.org>,
- Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
+ Esben Haabendal <esben@geanix.com>, linux-kernel@vger.kernel.org,
+ Shawn Guo <shawnguo@kernel.org>, vkoul@kernel.org,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>, linux-imx@nxp.com,
+ Miquel Raynal <miquel.raynal@bootlin.com>, dmaengine@vger.kernel.org,
+ Han Xu <han.xu@nxp.com>, Fabio Estevam <festevam@gmail.com>,
+ linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jan 16, 2020 at 11:20:08AM -0800, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
+On Thu, Jan 16, 2020 at 10:36:33AM -0600, Han Xu wrote:
+> On Wed, Jan 15, 2020 at 2:03 AM Sascha Hauer <s.hauer@pengutronix.de> wrote:
+> >
+> > On Wed, Jan 15, 2020 at 05:44:00AM +0800, Han Xu wrote:
+> > > add the power management functions and leverage the runtime pm for
+> > > system suspend/resume
+> > >
+> > > Signed-off-by: Han Xu <han.xu@nxp.com>
+> > > ---
+> > >  drivers/dma/mxs-dma.c | 97 +++++++++++++++++++++++++++++++++++++++----
+> > >  1 file changed, 90 insertions(+), 7 deletions(-)
+> > >
+> > > diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
+> > > index b458f06f9067..251492c5ea58 100644
+> > > --- a/drivers/dma/mxs-dma.c
+> > > +++ b/drivers/dma/mxs-dma.c
+> > > @@ -25,6 +25,7 @@
+> > >  #include <linux/of_dma.h>
+> > >  #include <linux/list.h>
+> > >  #include <linux/dma/mxs-dma.h>
+> > > +#include <linux/pm_runtime.h>
+> > >
+> > >  #include <asm/irq.h>
+> > >
+> > > @@ -39,6 +40,8 @@
+> > >  #define dma_is_apbh(mxs_dma) ((mxs_dma)->type == MXS_DMA_APBH)
+> > >  #define apbh_is_old(mxs_dma) ((mxs_dma)->dev_id == IMX23_DMA)
+> > >
+> > > +#define MXS_DMA_RPM_TIMEOUT 50 /* ms */
+> > > +
+> > >  #define HW_APBHX_CTRL0                               0x000
+> > >  #define BM_APBH_CTRL0_APB_BURST8_EN          (1 << 29)
+> > >  #define BM_APBH_CTRL0_APB_BURST_EN           (1 << 28)
+> > > @@ -416,6 +419,7 @@ static int mxs_dma_alloc_chan_resources(struct dma_chan *chan)
+> > >  {
+> > >       struct mxs_dma_chan *mxs_chan = to_mxs_dma_chan(chan);
+> > >       struct mxs_dma_engine *mxs_dma = mxs_chan->mxs_dma;
+> > > +     struct device *dev = &mxs_dma->pdev->dev;
+> > >       int ret;
+> > >
+> > >       mxs_chan->ccw = dma_alloc_coherent(mxs_dma->dma_device.dev,
+> > > @@ -431,9 +435,11 @@ static int mxs_dma_alloc_chan_resources(struct dma_chan *chan)
+> > >       if (ret)
+> > >               goto err_irq;
+> > >
+> > > -     ret = clk_prepare_enable(mxs_dma->clk);
+> > > -     if (ret)
+> > > +     ret = pm_runtime_get_sync(dev);
+> > > +     if (ret < 0) {
+> > > +             dev_err(dev, "Failed to enable clock\n");
+> > >               goto err_clk;
+> >
+> > From looking at other DMA drivers I know we are in good company here,
+> > but I think this is wrong. Doing pm_runtime_get_sync() in
+> > alloc_chan_resources() and going to autosuspend in free_chan_resources()
+> > effectively disables runtime_pm as clients normally acquire their
+> > channels during driver probe and release them only in driver remove.
 > 
-> Reserve flags for the hardware-wrapped keys feature which is being
-> worked on [1].  FSCRYPT_POLICY_FLAG_HW_WRAPPED_KEY will denote that the
-> encryption policy needs a hardware-wrapped key to be unlocked.
-> FSCRYPT_ADD_KEY_FLAG_HW_WRAPPED will denote that the key being added is
-> a hardware-wrapped key.
-> 
-> This reservation is tentative, and these codepoints may be reused if the
-> feature is not upstreamed.
+> Thanks for the comments.
+> That's why I moved acquire_dma_resource from the probe to
+> runtime_resume in the gpmi driver, this change won't disable the
+> runtime_pm function and the incremental counter always balanced.
 
-NAK.  While the feature itself sounds really useful we don't just
-reserve format bits for code not upstream.
+Yes, that's what I've written a few lines further down:
+
+> 
+> >
+> > In the next patch you release the DMA channels in the GPMI nand drivers
+> > runtime_suspend hook just to somehow trigger the runtime_suspend of the
+> > DMA driver.
+
+And I consider doing this a crude hack. Here is what I suggested doing
+instead:
+
+> >
+> > What you should do instead is to make sure the hook runtime_pm to the
+> > DMA drivers activity phases, like for example the pl330 driver does.
+> > Then you wouldn't have to care about manually putting the DMA driver into
+> > suspend from the GPMI NAND driver.
+
+Sascha
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
 ______________________________________________________
 Linux MTD discussion mailing list
