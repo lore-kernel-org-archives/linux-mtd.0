@@ -2,23 +2,22 @@ Return-Path: <SRS0=4m0E=3G=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_SANE_1 autolearn=ham
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5018C33C9E
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jan 2020 03:39:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06AA5C33CB1
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jan 2020 07:11:15 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B8A45206D7
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jan 2020 03:39:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CC8872073A
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jan 2020 07:11:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RpZ7NSdk";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="DQtxTb0f"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B8A45206D7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="iFNn5Put"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC8872073A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -26,78 +25,53 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SmXX8nDUgvFrBx78DZdvqYPFhbEuyjg1ma6rfYGedIE=; b=RpZ7NSdksr2nWH
-	kgH6qHjpl8HqQBO8SmCJB+VufasV7FqMPCJZuo4QRoWeU6egEh8XTOOnQjh3+vfDayJl74oeLZ3oG
-	QxHCMgPbn5GQs0ExDCAlIYep9IiNTTQm3oc8lzfSQXwG5yH0Wp5ts1a0omqh5cxZE3HFUPrLiI2MG
-	OCFYxPJ5rcsq8ATCFIpBVTsAtiN44HTmTlTzfsxgEGwK8gtGJ1dMItBhlgMt06yOn2ZWXlQkc06c7
-	grgq9xUb0Ofcw1qwmlm28iHMC/Mt0vrM5Ugx0lGpjxx5EzXm0ZiIrICrsZwyWqH4IAvEd2cowbaUB
-	GzZ99mhS1QFXC2DOC1Rg==;
+	List-Owner; bh=7KYlKCFSFyBmu8aIgefcwVuSgc8sWc4Dhfpc0CiFNhs=; b=iFNn5PutA1aKdH
+	ZRLaToIh8fPa154ImhJCn+g+OD2qFT92xbBgMOvT4rbocsjtbwiIM30Ww1FYaevSy+Siy8NaNQMUT
+	aBAw6nvGPpEyuBkKiwOA7h2/AreDBrrkJVtti+Z5MC/ea8KO7eNpvoKf5WMWhmjXBf/B8sflc7VmR
+	hZpQlSMAYovrW5NdKhaoNxxUE/tsKm3WjJDS0vnWwElcSm8uZGSfmFARDoHkm7RC8gnY5g/9PRMi6
+	dEc0v6XUxkDmYDAutJcwSw/uqJY5tRhk3Pdu6seKfDeT1VdrOvOt3wwWWNITdsCBf0LGQ0/1CdOGF
+	KYMBSnVPJ7C9VO0WFh4Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1isITi-000424-Is; Fri, 17 Jan 2020 03:39:22 +0000
-Received: from userp2120.oracle.com ([156.151.31.85])
+	id 1isLmN-0003fm-PJ; Fri, 17 Jan 2020 07:10:51 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1isITe-0003zJ-Mx
- for linux-mtd@lists.infradead.org; Fri, 17 Jan 2020 03:39:20 +0000
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
- by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00H3bs2o063668;
- Fri, 17 Jan 2020 03:39:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2019-08-05;
- bh=nuIy1AKUur+rkuPHpU5e8KcUcja25k7xLa+gNFNIWfo=;
- b=DQtxTb0fVig1P2lVno4+5cDrYQ5NeL1N9fMVqLBrJF4KxXMFl7JpfxnSgviQd51dCPM7
- RZXkPWUffhhYvJSpl2kcdRUG6TqFx0QBAQJnMYsAVko9EsttE6hLRCrGod92K114s+G7
- iuAU5MuynUpfa/7JK4G3vw/TWYBwF2x8PHGva1cTUVojM9zUQ9SKSxG1M3aZwl34tvcG
- jGbZl+GnIlJIQmoC1OdoeVDE2qeXuiRqZJyL2XB9oEWRd2rPrqpb36HZToIG832dTBNd
- 5UN14I/BDnwSxJCo5v7LRI5Ar2Z3PHDKU1znWP80Tphd1jXEwKHtnCN/PiODfEay4Vit 5A== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
- by userp2120.oracle.com with ESMTP id 2xf73yxb0b-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Fri, 17 Jan 2020 03:39:04 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
- by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00H3cs5g027486;
- Fri, 17 Jan 2020 03:39:04 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
- by userp3020.oracle.com with ESMTP id 2xjxp4aaqu-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Fri, 17 Jan 2020 03:39:03 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
- by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 00H3cuob028532;
- Fri, 17 Jan 2020 03:39:00 GMT
-Received: from kadam (/10.175.29.77) by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Thu, 16 Jan 2020 19:38:56 -0800
-Date: Fri, 17 Jan 2020 06:40:35 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Subject: Re: [PATCH] ubi: Fix an error pointer dereference in error handling
- code
-Message-ID: <20200117034035.GB19765@kadam>
-References: <20200113132346.rmeamdmbxwvo7kgj@kili.mountain>
- <CAFLxGvyBO=_4-f+HQPZSaAL=aJouok3y=MxEKjup3Q=Cj0KKZg@mail.gmail.com>
+ id 1isLmH-0003e6-8g
+ for linux-mtd@lists.infradead.org; Fri, 17 Jan 2020 07:10:49 +0000
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <mfe@pengutronix.de>)
+ id 1isLm1-0003Yx-HD; Fri, 17 Jan 2020 08:10:29 +0100
+Received: from mfe by pty.hi.pengutronix.de with local (Exim 4.89)
+ (envelope-from <mfe@pengutronix.de>)
+ id 1isLly-0000eh-QS; Fri, 17 Jan 2020 08:10:26 +0100
+Date: Fri, 17 Jan 2020 08:10:26 +0100
+From: Marco Felsch <m.felsch@pengutronix.de>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v1] mtd: rawnand: micron: don't error out if internal ECC
+ is set
+Message-ID: <20200117071026.gydlruw2cxre2r2u@pengutronix.de>
+References: <20200110162503.7185-1-zdhays@gmail.com>
+ <20200116192221.49986c13@xps13>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAFLxGvyBO=_4-f+HQPZSaAL=aJouok3y=MxEKjup3Q=Cj0KKZg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9502
- signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0
- malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-2001170026
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9502
- signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
- priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-2001170026
+In-Reply-To: <20200116192221.49986c13@xps13>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-IRC: #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 08:02:50 up 62 days, 22:21, 55 users,  load average: 0.07, 0.07, 0.02
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200116_193918_885387_E9487D6B 
-X-CRM114-Status: GOOD (  21.05  )
+X-CRM114-CacheID: sfid-20200116_231045_308639_9226E6D3 
+X-CRM114-Status: GOOD (  25.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,45 +83,103 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Alexandre Torgue <alexandre.torgue@st.com>,
- Richard Weinberger <richard@nod.at>, kernel-janitors@vger.kernel.org,
- linux-mtd@lists.infradead.org, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-stm32@st-md-mailman.stormreply.com,
- Vignesh Raghavendra <vigneshr@ti.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+ Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
+ zhays@lexmark.com, zdhays@gmail.com, linux-kernel@vger.kernel.org,
+ Frieder Schrempf <frieder.schrempf@kontron.de>, linux-mtd@lists.infradead.org,
+ Thomas Gleixner <tglx@linutronix.de>, Piotr Sroka <piotrs@cadence.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Jan 17, 2020 at 12:50:14AM +0100, Richard Weinberger wrote:
-> On Mon, Jan 13, 2020 at 2:24 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> >
-> > If "seen_pebs = init_seen(ubi);" fails then "seen_pebs" is an error pointer
-> > and we try to kfree() it which results in an Oops.
-> >
-> > This patch re-arranges the error handling so now it only frees things
-> > which have been allocated successfully.
-> >
-> > Fixes: daef3dd1f0ae ("UBI: Fastmap: Add self check to detect absent PEBs")
-> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Hi Zak, Miquel,
+
+On 20-01-16 19:22, Miquel Raynal wrote:
+> Hi Zak,
+> =
+
+> zdhays@gmail.com wrote on Fri, 10 Jan 2020 11:25:01 -0500:
+> =
+
+> > From: Zak Hays <zdhays@gmail.com>
+> > =
+
+> > Recent changes to the driver require use of on-die correction if
+> > the internal ECC enable bit is set. On some Micron parts, this bit
+> > is enabled by default and there is no method for disabling it.
+
+Which changes did you mean here?
+
+> > This is a false assumption though as that bit being enabled does not
+> > necessarily mean that the on-die ECC *has* to be used. It has been
+> > verified with a Micron FAE that other methods of error correction are
+> > still valid even if this bit is set.
+
+It would be cool if a micron FAE can provide a document with all the
+quirks and how those quirks can be handled.
+
+> > HW ECC offers generally higher performance than on-die so it is
+> > preferred in some situations. This also allows multiple NAND parts to
+> > be supported on the same PCB as some parts may not support on-die
+> > error correction.
+
+By HW ECC you mean the host ecc controller?
+
+> > With that in mind, only throw a warning that the on-die bit is set
+> > and allow the init to continue.
+> =
+
+> I don't think I can take this patch as-is. We must find a reliable way
+> to discriminate Micron parts features. If we cannot (I think we can't
+> before of the endless list of bugs they have introduced without
+> documenting them), the best way is to build a static table.
+
++1 for 'find a reliable way to discriminate Micron parts features'
+
+Regards,
+  Marco
+
+> > =
+
+> > Signed-off-by: Zak Hays <zdhays@gmail.com>
 > > ---
-> >  drivers/mtd/ubi/fastmap.c | 19 +++++++++++--------
-> >  1 file changed, 11 insertions(+), 8 deletions(-)
-> > ---
-> >  drivers/mtd/ubi/fastmap.c | 21 ++++++++++++---------
-> >  1 file changed, 12 insertions(+), 9 deletions(-)
-> 
-> This patch seems badly formatted.
-> Copy&paste error?
-> 
+> >  drivers/mtd/nand/raw/nand_micron.c | 4 +---
+> >  1 file changed, 1 insertion(+), 3 deletions(-)
+> > =
 
-Oh, yeah.  Sorrry.  I shouldn't affect anything though.  I can resend
-if you want.
+> > diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/=
+nand_micron.c
+> > index 56654030ec7f..ec40c76443be 100644
+> > --- a/drivers/mtd/nand/raw/nand_micron.c
+> > +++ b/drivers/mtd/nand/raw/nand_micron.c
+> > @@ -455,9 +455,7 @@ static int micron_nand_init(struct nand_chip *chip)
+> >  =
 
-regards,
-dan carpenter
+> >  	if (ondie =3D=3D MICRON_ON_DIE_MANDATORY &&
+> >  	    chip->ecc.mode !=3D NAND_ECC_ON_DIE) {
+> > -		pr_err("On-die ECC forcefully enabled, not supported\n");
+> > -		ret =3D -EINVAL;
+> > -		goto err_free_manuf_data;
+> > +		pr_warn("WARNING: On-die ECC forcefully enabled, use caution with ot=
+her methods\n");
+> >  	}
+> >  =
 
+> >  	if (chip->ecc.mode =3D=3D NAND_ECC_ON_DIE) {
+> =
+
+> Thanks,
+> Miqu=E8l
+> =
+
+
+-- =
+
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
 ______________________________________________________
 Linux MTD discussion mailing list
