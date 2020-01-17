@@ -2,78 +2,63 @@ Return-Path: <SRS0=4m0E=3G=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D57E8C33CB6
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jan 2020 08:13:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EC14C33CB1
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jan 2020 09:14:24 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A92B021582
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jan 2020 08:13:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3250F2082F
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jan 2020 09:14:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tdslnzdV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A92B021582
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hMdKse9T"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3250F2082F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dfcRupA2C1Bp+e7bIIG0G4GDSjR5MPiq8bP+0gtCqxo=; b=tdslnzdVaFXFoq
-	UQlUXi6/51RpL1R5IuL2E70Pcc/HQgCtdwKhhew1XWWyIUDZm+6G3Bqc1EXylPm7n/+fFCkw9GkKd
-	mtgyREMiAvVjWvukoA8bRauk0lXTMr/Bai9Wl/mFcoXnNEh2Qt1weYgSHDVa7dAEv8VtqV3lyD3i9
-	KqRDEgjYlCqpobr2C+DVt0kXUplr2AVYqjJo3aHEeOpoeu9DCLCReq8/QR8S33URjg/1EClhb+aw5
-	/HjFtp40Xx6IPQDufhsUiBMeNqs+IwnMLSm3ZkxoxnqUDqBqlonyiekZPtPNoou5LGe+/ak/MlDf3
-	1W+DRl2Y4Jtjt3QTezjA==;
+	List-Owner; bh=4P0lqiYTTXdKdFQiLUMmjSPqlm+HbHfX0N8tha+wt7U=; b=hMdKse9TfhlHdP
+	r6O/gP0XO42jcM3d14TdLYY9d/x4G3+w0TMcKLmljlfHvj1m+Ns0d8XwEINAJ+Bgr5KnQ4MmgSgoi
+	kgCAHY6zRGA9Pxr6bKftT02FMPUh1FaA2eVXpMPdoXIV+dS8Y7oUEpgjyPNl/eLxvgPi8cPYn2EVU
+	3w1muEj1v4KyTkIh2NpBEXIGa6cRdD4WT4YamWPD5aktdQs8PnnIFVzsJDM5QUthazsJT/LGGQLxR
+	yg1O+H9J5+SNo4w6RlSZZRke7MEt1Jj/FobG/wZmd3mcdxR5LiRZYP1KTne222oYhffwFl9D4Lqij
+	l4VCugNrUThL2hv5MJMw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1isMkz-0004rf-2O; Fri, 17 Jan 2020 08:13:29 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1isNhg-0004bZ-UF; Fri, 17 Jan 2020 09:14:08 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1isMkp-0004qK-P7
- for linux-mtd@lists.infradead.org; Fri, 17 Jan 2020 08:13:24 +0000
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <sha@pengutronix.de>)
- id 1isMkd-0001Cc-OT; Fri, 17 Jan 2020 09:13:07 +0100
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.89)
- (envelope-from <sha@pengutronix.de>)
- id 1isMkc-0004pJ-7a; Fri, 17 Jan 2020 09:13:06 +0100
-Date: Fri, 17 Jan 2020 09:13:06 +0100
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Han Xu <xhnjupt@gmail.com>
-Subject: Re: [PATCH 3/6] dmaengine: mxs: add the power management functions
-Message-ID: <20200117081306.eeuf3fvph5rb7tjf@pengutronix.de>
-References: <1579038243-28550-1-git-send-email-han.xu@nxp.com>
- <1579038243-28550-4-git-send-email-han.xu@nxp.com>
- <20200115080257.dtd4vss4uhopbvn2@pengutronix.de>
- <CA+EcR23TCUU83Y7BYX5LCvGAj20+s67n+rWaGR5R9BSMHUH82A@mail.gmail.com>
+ id 1isNhZ-0004ag-VB
+ for linux-mtd@lists.infradead.org; Fri, 17 Jan 2020 09:14:07 +0000
+X-Originating-IP: 90.76.211.102
+Received: from xps13 (lfbn-tou-1-1151-102.w90-76.abo.wanadoo.fr
+ [90.76.211.102]) (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 0B6A9FF80F;
+ Fri, 17 Jan 2020 09:13:46 +0000 (UTC)
+Date: Fri, 17 Jan 2020 10:13:46 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: masonccyang@mxic.com.tw
+Subject: Re: [PATCH v4 1/2] mtd: rawnand: Add support for Macronix NAND
+ randomizer
+Message-ID: <20200117101346.3611dc0a@xps13>
+In-Reply-To: <OFECBDB130.03AD44B7-ON482584F2.002B40F2-482584F2.002B720F@mxic.com.tw>
+References: <1571902807-10388-1-git-send-email-masonccyang@mxic.com.tw>
+ <1571902807-10388-2-git-send-email-masonccyang@mxic.com.tw>
+ <20200109172816.6c1d7be7@xps13>
+ <OFECBDB130.03AD44B7-ON482584F2.002B40F2-482584F2.002B720F@mxic.com.tw>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CA+EcR23TCUU83Y7BYX5LCvGAj20+s67n+rWaGR5R9BSMHUH82A@mail.gmail.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-IRC: #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 09:08:04 up 193 days, 14:18, 87 users,  load average: 0.09, 0.28,
- 0.30
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200117_001319_811147_28D11030 
-X-CRM114-Status: GOOD (  23.42  )
+X-CRM114-CacheID: sfid-20200117_011402_141491_A4F52C71 
+X-CRM114-Status: GOOD (  11.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,107 +70,46 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- Esben Haabendal <esben@geanix.com>, linux-kernel@vger.kernel.org,
- Shawn Guo <shawnguo@kernel.org>, vkoul@kernel.org,
- Boris Brezillon <boris.brezillon@collabora.com>,
- linux-mtd <linux-mtd@lists.infradead.org>, linux-imx@nxp.com,
- Miquel Raynal <miquel.raynal@bootlin.com>, dmaengine@vger.kernel.org,
- Han Xu <han.xu@nxp.com>, Fabio Estevam <festevam@gmail.com>,
- linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, vigneshr@ti.com,
+ bbrezillon@kernel.org, juliensu@mxic.com.tw, richard@nod.at,
+ linux-kernel@vger.kernel.org, marek.vasut@gmail.com, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jan 16, 2020 at 10:36:33AM -0600, Han Xu wrote:
-> On Wed, Jan 15, 2020 at 2:03 AM Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> >
-> > On Wed, Jan 15, 2020 at 05:44:00AM +0800, Han Xu wrote:
-> > > add the power management functions and leverage the runtime pm for
-> > > system suspend/resume
-> > >
-> > > Signed-off-by: Han Xu <han.xu@nxp.com>
-> > > ---
-> > >  drivers/dma/mxs-dma.c | 97 +++++++++++++++++++++++++++++++++++++++----
-> > >  1 file changed, 90 insertions(+), 7 deletions(-)
-> > >
-> > > diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
-> > > index b458f06f9067..251492c5ea58 100644
-> > > --- a/drivers/dma/mxs-dma.c
-> > > +++ b/drivers/dma/mxs-dma.c
-> > > @@ -25,6 +25,7 @@
-> > >  #include <linux/of_dma.h>
-> > >  #include <linux/list.h>
-> > >  #include <linux/dma/mxs-dma.h>
-> > > +#include <linux/pm_runtime.h>
-> > >
-> > >  #include <asm/irq.h>
-> > >
-> > > @@ -39,6 +40,8 @@
-> > >  #define dma_is_apbh(mxs_dma) ((mxs_dma)->type == MXS_DMA_APBH)
-> > >  #define apbh_is_old(mxs_dma) ((mxs_dma)->dev_id == IMX23_DMA)
-> > >
-> > > +#define MXS_DMA_RPM_TIMEOUT 50 /* ms */
-> > > +
-> > >  #define HW_APBHX_CTRL0                               0x000
-> > >  #define BM_APBH_CTRL0_APB_BURST8_EN          (1 << 29)
-> > >  #define BM_APBH_CTRL0_APB_BURST_EN           (1 << 28)
-> > > @@ -416,6 +419,7 @@ static int mxs_dma_alloc_chan_resources(struct dma_chan *chan)
-> > >  {
-> > >       struct mxs_dma_chan *mxs_chan = to_mxs_dma_chan(chan);
-> > >       struct mxs_dma_engine *mxs_dma = mxs_chan->mxs_dma;
-> > > +     struct device *dev = &mxs_dma->pdev->dev;
-> > >       int ret;
-> > >
-> > >       mxs_chan->ccw = dma_alloc_coherent(mxs_dma->dma_device.dev,
-> > > @@ -431,9 +435,11 @@ static int mxs_dma_alloc_chan_resources(struct dma_chan *chan)
-> > >       if (ret)
-> > >               goto err_irq;
-> > >
-> > > -     ret = clk_prepare_enable(mxs_dma->clk);
-> > > -     if (ret)
-> > > +     ret = pm_runtime_get_sync(dev);
-> > > +     if (ret < 0) {
-> > > +             dev_err(dev, "Failed to enable clock\n");
-> > >               goto err_clk;
-> >
-> > From looking at other DMA drivers I know we are in good company here,
-> > but I think this is wrong. Doing pm_runtime_get_sync() in
-> > alloc_chan_resources() and going to autosuspend in free_chan_resources()
-> > effectively disables runtime_pm as clients normally acquire their
-> > channels during driver probe and release them only in driver remove.
-> 
-> Thanks for the comments.
-> That's why I moved acquire_dma_resource from the probe to
-> runtime_resume in the gpmi driver, this change won't disable the
-> runtime_pm function and the incremental counter always balanced.
-
-Yes, that's what I've written a few lines further down:
-
-> 
-> >
-> > In the next patch you release the DMA channels in the GPMI nand drivers
-> > runtime_suspend hook just to somehow trigger the runtime_suspend of the
-> > DMA driver.
-
-And I consider doing this a crude hack. Here is what I suggested doing
-instead:
-
-> >
-> > What you should do instead is to make sure the hook runtime_pm to the
-> > DMA drivers activity phases, like for example the pl330 driver does.
-> > Then you wouldn't have to care about manually putting the DMA driver into
-> > suspend from the GPMI NAND driver.
-
-Sascha
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWFzb24sCgo+ID4gPiArfQo+ID4gPiArCj4gPiA+ICBzdGF0aWMgdm9pZCBtYWNyb25peF9u
+YW5kX29uZmlfaW5pdChzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwKQo+ID4gPiAgewo+ID4gPiAgICAg
+c3RydWN0IG5hbmRfcGFyYW1ldGVycyAqcCA9ICZjaGlwLT5wYXJhbWV0ZXJzOwo+ID4gPiAgICAg
+c3RydWN0IG5hbmRfb25maV92ZW5kb3JfbWFjcm9uaXggKm14aWM7Cj4gPiA+ICsgICBzdHJ1Y3Qg
+ZGV2aWNlX25vZGUgKmRuID0gbmFuZF9nZXRfZmxhc2hfbm9kZShjaGlwKTsKPiA+ID4gKyAgIGlu
+dCByYW5kX290cCA9IDA7Cj4gPiA+ICsgICBpbnQgcmV0Owo+ID4gPiAKPiA+ID4gICAgIGlmICgh
+cC0+b25maSkKPiA+ID4gICAgICAgIHJldHVybjsKPiA+ID4gCj4gPiA+ICsgICBpZiAob2ZfZmlu
+ZF9wcm9wZXJ0eShkbiwgIm14aWMsZW5hYmxlLXJhbmRvbWl6ZXItb3RwIiwgTlVMTCkpCj4gPiA+
+ICsgICAgICByYW5kX290cCA9IDE7Cj4gPiA+ICsKPiA+ID4gICAgIG14aWMgPSAoc3RydWN0IG5h
+bmRfb25maV92ZW5kb3JfbWFjcm9uaXggKilwLT5vbmZpLT52ZW5kb3I7Cj4gPiA+ICsgICAvKiBT
+dWJwYWdlIHdyaXRlIGlzIHByb2hpYml0ZWQgaW4gcmFuZG9taXplciBvcGVyYXRvaW4gKi8gIAo+
+ID4gCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB3aXRoICAgICAg
+ICAgIG9wZXJhdGlvbgo+ID4gICAKPiA+ID4gKyAgIGlmIChyYW5kX290cCAmJiBjaGlwLT5vcHRp
+b25zICYgTkFORF9OT19TVUJQQUdFX1dSSVRFICYmCj4gPiA+ICsgICAgICAgbXhpYy0+cmVsaWFi
+aWxpdHlfZnVuYyAmIE1BQ1JPTklYX1JBTkRPTUlaRVJfQklUKSB7Cj4gPiA+ICsgICAgICBpZiAo
+cC0+c3VwcG9ydHNfc2V0X2dldF9mZWF0dXJlcykgewo+ID4gPiArICAgICAgICAgYml0bWFwX3Nl
+dChwLT5zZXRfZmVhdHVyZV9saXN0LAo+ID4gPiArICAgICAgICAgICAgICAgT05GSV9GRUFUVVJF
+X0FERFJfTVhJQ19SQU5ET01JWkVSLCAxKTsKPiA+ID4gKyAgICAgICAgIGJpdG1hcF9zZXQocC0+
+Z2V0X2ZlYXR1cmVfbGlzdCwKPiA+ID4gKyAgICAgICAgICAgICAgIE9ORklfRkVBVFVSRV9BRERS
+X01YSUNfUkFORE9NSVpFUiwgMSk7Cj4gPiA+ICsgICAgICAgICByZXQgPSBtYWNyb25peF9uYW5k
+X3JhbmRvbWl6ZXJfY2hlY2tfZW5hYmxlKGNoaXApOwo+ID4gPiArICAgICAgICAgaWYgKHJldCA8
+IDApCj4gPiA+ICsgICAgICAgICAgICBwcl9pbmZvKCJNYWNyb25peCBOQU5EIHJhbmRvbWl6ZXIg
+ZmFpbGVkXG4iKTsKPiA+ID4gKyAgICAgICAgIGVsc2UKPiA+ID4gKyAgICAgICAgICAgIHByX2lu
+Zm8oIk1hY3Jvbml4IE5BTkQgcmFuZG9taXplciBlbmFibGVkXG4iKTsgIAo+ID4gCj4gPiBNYXli
+ZSB3ZSBzaG91bGQgdXBkYXRlIHRoZSBiaXRtYXBzIG9ubHkgaWYgaXQgc3VjY2VlZHM/ICAKPiAK
+PiBva2F5LCB3aWxsIGRyb3AgcHJfaW5mbygpOwoKSXQncyBub3QgbXkgcG9pbnQsIHlvdSBjYW4g
+a2VlcCB0aGUgcHJfaW5mbywgSSBqdXN0IHNheSB0aGF0IHlvdSBzaG91bGQKY2hlY2sgcmV0IGJl
+Zm9yZSB1cGRhdGluZyB0aGUgYml0bWFwIG1heWJlPyBPdGhlcndpc2UgaWYKbWFjcm9uaXhfbmFu
+ZF9yYW5kb21pemVyX2NoZWNrX2VuYWJsZSgpIGZhaWxzLCB5b3UgZW5kIHVwIHdpdGhvdXQgdGhl
+CmZlYXR1cmUgYnV0IHdpdGggaXRzIGJpdCBzZXQgaW4gdGhlIGJpdG1hcC4KClRoYW5rcywKTWlx
+dcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
