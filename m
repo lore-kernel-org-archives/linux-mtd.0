@@ -2,61 +2,83 @@ Return-Path: <SRS0=Efe6=3I=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EFAACC33CAF
-	for <linux-mtd@archiver.kernel.org>; Sun, 19 Jan 2020 21:53:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5117BC33CAF
+	for <linux-mtd@archiver.kernel.org>; Sun, 19 Jan 2020 22:24:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BC188206B7
-	for <linux-mtd@archiver.kernel.org>; Sun, 19 Jan 2020 21:53:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2417E206D7
+	for <linux-mtd@archiver.kernel.org>; Sun, 19 Jan 2020 22:24:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WHjj4jWp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC188206B7
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="P6DRebCD";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=walle.cc header.i=@walle.cc header.b="g9+ksF0A"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2417E206D7
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=o9vylX++OiDiG5ez1soILjRpsvvbqLGWLRN8KppIXG0=; b=WHjj4jWpTReKAV
-	gjJycZB9jW+EMwS4iaRl9wIrWb42PpXJb3+i9qV+AbLXLANdCUXmTfrp4hXQaPKTkyG5lYBty286r
-	a4HUOQY3evewgvxnuPSGwbGXe9VxmQvCJLOA0rzH2qVycPoMaSkq2JguePzhNMcjBkTNGa+hpPZBH
-	a3mfkSRxqhuYDLIU27peQIdiyRYkdeosF5X1/SBtZ6UglcWXGRTyvZQw2oYVEWzjWCifHEXxGgEhm
-	30NcOer+88OufsRro6Qik2E/4xp4Wfb9QjCnvSIu2eC98xh3+uPIAitTz6B+7OhxOKnrkH4zdRR4C
-	W7BQj5Z3PGO/Xew87fcw==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
+	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=0dh4EJH1brBrteAo4c5xthTlxhIQ+HmgbARPl22jJys=; b=P6DRebCDSi5IjXeRGgrO2mtPw
+	8tkgSDs74+8ThYFH/iF4FRDoG6wraRKvExLVbQ/XQ/mBmmSebSZjldI3uT6VYU61d4gS3WR56mh+A
+	Z+lT3hbdm8LysLrRC9kdzmazISVpF1xlI4UYpxCWZqRVfpW84hBFXP4P2UPgNfzR1UvkwLDYU0/dO
+	WjYvBsvCQOV7bK1IoVCjaC1MdyV0PQqPahBst+K55PNGL0cn8vN8Xovu5/48yHFJR6RhgOsidbwGn
+	zs+uYuahV34a7c3/TGoFXtxgVH13NfQ4oRmraf97/PaAc70Gt3IaMO4LjcFiSVBVQ4avUjDnaAWvh
+	CVJ3BptZg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1itIV6-0007Us-8q; Sun, 19 Jan 2020 21:52:56 +0000
-Received: from lilium.sigma-star.at ([109.75.188.150])
+	id 1itIzo-0000go-RS; Sun, 19 Jan 2020 22:24:40 +0000
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1itIV2-0007TZ-TJ
- for linux-mtd@lists.infradead.org; Sun, 19 Jan 2020 21:52:54 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lilium.sigma-star.at (Postfix) with ESMTP id A65051815EA9E;
- Sun, 19 Jan 2020 22:52:47 +0100 (CET)
-Received: from lilium.sigma-star.at ([127.0.0.1])
- by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id BYE0OVrVUX1P; Sun, 19 Jan 2020 22:52:46 +0100 (CET)
-Received: from lilium.sigma-star.at ([127.0.0.1])
- by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id jXPPM9A4qDEB; Sun, 19 Jan 2020 22:52:46 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] ubifs: Fix ubifs_tnc_lookup() usage in do_kill_orphans()
-Date: Sun, 19 Jan 2020 22:52:33 +0100
-Message-Id: <20200119215233.7292-1-richard@nod.at>
-X-Mailer: git-send-email 2.16.4
+ id 1itIzl-0000fA-Q5
+ for linux-mtd@lists.infradead.org; Sun, 19 Jan 2020 22:24:39 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id F06CD22FB3;
+ Sun, 19 Jan 2020 23:24:25 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1579472668;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=SZYItGOiBU5eiIIozCyMNJmuK4OQSk0zR+3B7khf2K4=;
+ b=g9+ksF0Ae3GDSzoAxmLuiVvJAe5Iw2epbLMc9Lx1xSPEc7sOzFhDNQHR/at2jnVCrl1h6q
+ AEt8swBBEZ/lrKdSWaAeFH3Prxpp3YWkv3etkwW2ZFOKNj1Z8ERdIw6/TBVo2v6WZbcLY6
+ 9aOjZJefd6rYy8lRgpKqo7JKLR8a+NU=
 MIME-Version: 1.0
+Date: Sun, 19 Jan 2020 23:24:25 +0100
+From: Michael Walle <michael@walle.cc>
+To: Tudor.Ambarus@microchip.com
+Subject: Re: [PATCH] mtd: spi-nor: Add support for w25qNNjwim
+In-Reply-To: <8021667.67K7kvUAe6@192.168.0.113>
+References: <20200103223423.14025-1-michael@walle.cc>
+ <2dffc658f21da502dff8c5721ec1b0a7@walle.cc>
+ <8ce5f803c9a59a1ebd55ae287fa2e6a9@walle.cc>
+ <8021667.67K7kvUAe6@192.168.0.113>
+Message-ID: <66c1ad8e74fb20a061f35f8b23a925ab@walle.cc>
+X-Sender: michael@walle.cc
+User-Agent: Roundcube Webmail/1.3.8
+X-Spamd-Bar: /
+X-Rspamd-Server: web
+X-Rspamd-Queue-Id: F06CD22FB3
+X-Spamd-Result: default: False [-0.10 / 15.00]; ARC_NA(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ MIME_GOOD(-0.10)[text/plain]; TO_DN_NONE(0.00)[];
+ RCPT_COUNT_FIVE(0.00)[6]; DKIM_SIGNED(0.00)[];
+ NEURAL_HAM(-0.00)[-0.664]; RCVD_COUNT_ZERO(0.00)[0];
+ FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
+ MID_RHS_MATCH_FROM(0.00)[]
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200119_135253_090219_519ECAC8 
-X-CRM114-Status: GOOD (  12.46  )
+X-CRM114-CacheID: sfid-20200119_142438_004476_C19CAC27 
+X-CRM114-Status: GOOD (  24.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,31 +90,120 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: richard@nod.at, miquel.raynal@bootlin.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, vigneshr@ti.com
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T3JwaGFucyBhcmUgYWxsb3dlZCB0byBwb2ludCB0byBkZWxldGVkIGlub2Rlcy4KU28gLUVOT0VO
-VCBpcyBub3QgYSBmYXRhbCBlcnJvci4KClJlcG9ydGVkLWJ5OiDQmtC+0YfQtdGC0LrQvtCyINCc
-0LDQutGB0LjQvCA8Zmlkb19tYXhAaW5ib3gucnU+ClJlcG9ydGVkLWFuZC10ZXN0ZWQtYnk6ICJD
-aHJpc3RpYW4gQmVyZ2VyIiA8Q2hyaXN0aWFuLkJlcmdlckBkZS5ib3NjaC5jb20+CkZpeGVzOiBl
-ZTE0MzhjZTVkYzQgKCJ1YmlmczogQ2hlY2sgbGluayBjb3VudCBvZiBpbm9kZXMgd2hlbiBraWxs
-aW5nIG9ycGhhbnMuIikKU2lnbmVkLW9mZi1ieTogUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNoYXJk
-QG5vZC5hdD4KLS0tCiBmcy91Ymlmcy9vcnBoYW4uYyB8IDQgKystLQogMSBmaWxlIGNoYW5nZWQs
-IDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9mcy91Ymlmcy9v
-cnBoYW4uYyBiL2ZzL3ViaWZzL29ycGhhbi5jCmluZGV4IDU0ZDZkYjYxMTA2Zi4uMjY0NTkxNzM2
-MGI5IDEwMDY0NAotLS0gYS9mcy91Ymlmcy9vcnBoYW4uYworKysgYi9mcy91Ymlmcy9vcnBoYW4u
-YwpAQCAtNjg4LDE0ICs2ODgsMTQgQEAgc3RhdGljIGludCBkb19raWxsX29ycGhhbnMoc3RydWN0
-IHViaWZzX2luZm8gKmMsIHN0cnVjdCB1Ymlmc19zY2FuX2xlYiAqc2xlYiwKIAogCQkJaW5vX2tl
-eV9pbml0KGMsICZrZXkxLCBpbnVtKTsKIAkJCWVyciA9IHViaWZzX3RuY19sb29rdXAoYywgJmtl
-eTEsIGlubyk7Ci0JCQlpZiAoZXJyKQorCQkJaWYgKGVyciAmJiBlcnIgIT0gLUVOT0VOVCkKIAkJ
-CQlnb3RvIG91dF9mcmVlOwogCiAJCQkvKgogCQkJICogQ2hlY2sgd2hldGhlciBhbiBpbm9kZSBj
-YW4gcmVhbGx5IGdldCBkZWxldGVkLgogCQkJICogbGlua2F0KCkgd2l0aCBPX1RNUEZJTEUgYWxs
-b3dzIHJlYmlydGggb2YgYW4gaW5vZGUuCiAJCQkgKi8KLQkJCWlmIChpbm8tPm5saW5rID09IDAp
-IHsKKwkJCWlmIChlcnIgPT0gMCAmJiBpbm8tPm5saW5rID09IDApIHsKIAkJCQlkYmdfcmN2cnko
-ImRlbGV0aW5nIG9ycGhhbmVkIGlub2RlICVsdSIsCiAJCQkJCSAgKHVuc2lnbmVkIGxvbmcpaW51
-bSk7CiAKLS0gCjIuMTYuNAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDov
-L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Hi Tudor,
+
+>> Am 2020-01-13 11:07, schrieb Michael Walle:
+>> >>> Btw. is renaming the flashes also considered a backwards incomaptible
+>> >>> change?
+>> >>
+>> >> No, we can fix the names.
+>> >>
+>> >>> And can there be two flashes with the same name? Because IMHO it
+>> >>> would
+>> >>> be
+>> >>
+>> >> I would prefer that we don't. Why would you have two different
+>> >> jedec-ids with
+>> >> the same name?
+>> >
+>> > Because as pointed out in the Winbond example you cannot distiguish
+>> > between
+>> > W25Q32DW and W25Q32JWIQ; and in the Macronix example between MX25L8005
+>> > and
+>> > MX25L8006E. Thus my reasoning was to show only the common part, ie
+>> > W25Q32
+>> > or MX25L80 which should be the same for this particular ID. Like I
+>> > said, I'd
+>> > prefer showing an ambiguous name instead of a wrong one. But then you
+>> > may
+>> > have different IDs with the same ambiguous name.
+>> 
+>> Another solution would be to have the device tree provide a hint for 
+>> the
+>> actual flash chip. There would be multiple entries in the spi_nor_ids
+>> with the
+>> same flash id. By default the first one is used (keeping the current
+>> behaviour). If there is for example
+>> 
+>>    compatible = "jedec,spi-nor", "w25q32jwq";
+>> 
+>> the flash_info for the w25q32jwq will be chosen.
+> 
+> This won't work for plug-able flashes. You will influence the name in 
+> dt to be
+> chosen as w25q32jwq, and if you change w25q32jwq with w25q32dw you will 
+> end up
+> with a wrong name for w25q32dw, thus the same problem.
+
+No, because then the device tree is wrong and doesn't fit the hardware. 
+You'd
+have to some instance which could change the device tree node, like the
+bootloader or some device tree overlay for plugable flashes. We should 
+try to
+solve the actual problem at hand first..
+
+It is just not possible to autodetect the SPI flash, just because
+the vendors reuse the same IDs for flashes with different features (and 
+the
+SFDP is likely not enough). Therefore, you need to have a hint in some 
+place
+to use the flash properly.
+
+> If the flashes are identical but differ just in terms of name, we can 
+> rename
+> the flash to "w25q32jwq (w25q32dw)". I haven't studied the differences 
+> between
+> these flashes; if you want to fix them, send a patch and I'll try to 
+> help.
+
+It is not only the name, here are two examples which differ in 
+functionality:
+  (1) mx25l8005 doesn't support dual/quad mode. mx25l8006e supports 
+dual/quad
+      mode
+  (2) mx25u3235f doesn't support TB bit, mx25u3232e has a TB bit.
+
+well.. to repeat myself, the mx25l25635_post_bfpt_fixups is a third 
+example.
+
+-michael
+
+> 
+> Cheers,
+> ta
+> 
+>> 
+>> I know this will conflict with the new rule that there should only be
+>> 
+>>    compatible = "jedec,spi-nor";
+>> 
+>> without the actual flash chip. But it seems that it is not always
+>> possible
+>> to just use the jedec id to match the correct chip.
+>> 
+>> Also see for example mx25l25635_post_bfpt_fixups() which tries to 
+>> figure
+>> out different behaviour by looking at "some" SFDP data. In this case 
+>> we
+>> might have been lucky, but I fear that this won't work in all cases 
+>> and
+>> for older flashes it won't work at all.
+>> 
+>> BTW I do not suggest to add the strings to the the spi_nor_dev_ids[].
+>> 
+>> I guess that would be a less invasive way to fix different flashes 
+>> with
+>> same jedec ids.
+>> 
+>> -michael
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
