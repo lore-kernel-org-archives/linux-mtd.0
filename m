@@ -3,71 +3,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C16A8C2D0DB
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jan 2020 18:47:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89951C32771
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jan 2020 22:34:36 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9713222314
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jan 2020 18:47:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 488432253D
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jan 2020 22:34:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qHJLyqLn";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="sHbm3oSr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9713222314
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Ld1Wf8wR";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="n9BG408G"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 488432253D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2NpNbkhp1Xj7Ch9k5iRMriEuVqOw8LhLuVELe+GKj1U=; b=qHJLyqLnFx5Bmj
-	aqMYMjzTfmtIkPUYlarRszaalZxdXARNVFxRTjgPMeQR+m/Cv9ziYjebzkH7jdo685b5rrrxvksVW
-	TpWH9Nz/Mv/IcoJTbumUn+9T7okOLtJzTSpgcxsunRdSRbWoi4SVAFmqdHK582LO9cA3b9YCkpypd
-	T6YyD8l+q2iJhle2cNOBm6bLZ7UBkhRBcO+cwvHnRQdDfLOgmFrsyDC/qlRgeqBQYED+EBKg3ILZY
-	EQwLY6M2ba7OPSsdeGXBo8wrSQiwnJNyjs5puirdxxkqEiiKbzG1CtbLLysNJkOueGYEPLZPyROR4
-	k1MMavCV29ufjEbcDDAg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=xVRgY4WQPzlJN/wBo+TaaRU4I0DRzTIV0Rbx3Dy+qEc=; b=Ld1Wf8wR4VVR1v
+	7RVYODkJTt33J8eiK2GmmUB66IImzNUn+NFKuzHeOjiavSpmZaTq07T2T0OBBEvBYt51kEeE7mfVv
+	i7WshKzgrkySp5Pt6h+nQreYCdgHdKKduZMzzMyl25JSWm6v1AxMQ7/Lf78VxZodXTs3DHp4p5MP8
+	kt9iiCddy3MMdbXMHedfbt2okHBhccbqwl50TR2yyB63Jz+lplD6/q+CyMtJ+8znYIJkAh6r6umuX
+	NrEMBUXp1lSCGo6e30WQM8Y21uoB06+V9+zhAUPor4r1kMpriFRk32BCh2kpCO6Q9U+ZfNiXVqFbb
+	7qaIBPHRCNTCGGBqU4tg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1itc5E-0003Fx-O9; Mon, 20 Jan 2020 18:47:32 +0000
+	id 1itfci-0006rV-LU; Mon, 20 Jan 2020 22:34:20 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1itc59-0003FU-0z
- for linux-mtd@lists.infradead.org; Mon, 20 Jan 2020 18:47:31 +0000
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net
+ id 1itfcf-0006pe-Kn
+ for linux-mtd@lists.infradead.org; Mon, 20 Jan 2020 22:34:19 +0000
+Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net
  [107.3.166.239])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 512DF22527;
- Mon, 20 Jan 2020 18:47:26 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id A5FBF217F4;
+ Mon, 20 Jan 2020 22:34:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1579546046;
- bh=OTFRQhfPut/J4I3VCk7tAM12sQ+tDDYC3vUdMIRPwZc=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=sHbm3oSrbqC4caH/FoWY2eVqVBDAFNprJD/wuDn4cztRHfqVdoBnmoTK9lzci+4bw
- IwRRPYlwCgnWiTbnM09n7zRP/pePGaocppmiSag3qO9exq8Rr9NxewAjoF+iAFarsV
- LpB1K5mRj1TAD687fJBIAts+i7yAqMSAxfBNdglg=
-Date: Mon, 20 Jan 2020 10:47:24 -0800
+ s=default; t=1579559657;
+ bh=xm885UhKFUwKfgBkYWfnG/AC3Rw6vyxcGdpz/w5UOxs=;
+ h=From:To:Cc:Subject:Date:From;
+ b=n9BG408GF/aokCw8EG9MBQ9hJw9mAgpR6LRC5KJXhFvrUD8dUEMcz1fPCmgxfOxnK
+ FYltkiqo8UTJrZL597rrakuG7LCaY6g0rVjw3rHQFWyQaaJluloPm74WLLPuT+6kjF
+ HwzLBOeRmONd/Z5cEVB5lRpaCnrKE0dDiJHJ32rU=
 From: Eric Biggers <ebiggers@kernel.org>
-To: Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH] ubifs: use IS_ENCRYPTED() instead of
- ubifs_crypt_is_encrypted()
-Message-ID: <20200120184724.GA4118@sol.localdomain>
-References: <20191209212721.244396-1-ebiggers@kernel.org>
- <20200103170927.GO19521@gmail.com>
- <CAFLxGvwA6y2+Azm1Xc+-cz1N_jjJXY3uZBVDqGGLvc6GMcb5JA@mail.gmail.com>
- <20200120065422.GA976@sol.localdomain>
- <397871241.24589.1579513469565.JavaMail.zimbra@nod.at>
+To: linux-fscrypt@vger.kernel.org
+Subject: [PATCH v5 0/6] fscrypt preparations for encryption+casefolding
+Date: Mon, 20 Jan 2020 14:31:55 -0800
+Message-Id: <20200120223201.241390-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <397871241.24589.1579513469565.JavaMail.zimbra@nod.at>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200120_104727_090821_7A8804DB 
-X-CRM114-Status: GOOD (  19.97  )
+X-CRM114-CacheID: sfid-20200120_143417_706353_28E6F4D8 
+X-CRM114-Status: GOOD (  12.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,91 +72,74 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-fscrypt <linux-fscrypt@vger.kernel.org>,
- Chandan Rajendra <chandan@linux.vnet.ibm.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Cc: Daniel Rosenberg <drosen@google.com>,
+ Gabriel Krisman Bertazi <krisman@collabora.com>, linux-kernel@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
+ Richard Weinberger <richard@nod.at>, linux-fsdevel@vger.kernel.org,
+ linux-ext4@vger.kernel.org, kernel-team@android.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jan 20, 2020 at 10:44:29AM +0100, Richard Weinberger wrote:
-> =
+This is a cleaned up and fixed version of the fscrypt patches to prepare
+for directories that are both encrypted and casefolded.
 
-> ----- Urspr=FCngliche Mail -----
-> > Von: "Eric Biggers" <ebiggers@kernel.org>
-> > An: "Richard Weinberger" <richard.weinberger@gmail.com>
-> > CC: "richard" <richard@nod.at>, "linux-mtd" <linux-mtd@lists.infradead.=
-org>, "linux-fscrypt"
-> > <linux-fscrypt@vger.kernel.org>, "Chandan Rajendra" <chandan@linux.vnet=
-.ibm.com>
-> > Gesendet: Montag, 20. Januar 2020 07:54:22
-> > Betreff: Re: [PATCH] ubifs: use IS_ENCRYPTED() instead of ubifs_crypt_i=
-s_encrypted()
-> =
+Patches 1-3 start deriving a SipHash key for the new dirhash method that
+will be used by encrypted+casefolded directories.  To avoid unnecessary
+overhead, we only do this if the directory is actually casefolded.
 
-> > On Thu, Jan 09, 2020 at 09:01:09AM +0100, Richard Weinberger wrote:
-> >> On Fri, Jan 3, 2020 at 6:09 PM Eric Biggers <ebiggers@kernel.org> wrot=
-e:
-> >> >
-> >> > On Mon, Dec 09, 2019 at 01:27:21PM -0800, Eric Biggers wrote:
-> >> > > From: Eric Biggers <ebiggers@google.com>
-> >> > >
-> >> > > There's no need for the ubifs_crypt_is_encrypted() function anymor=
-e.
-> >> > > Just use IS_ENCRYPTED() instead, like ext4 and f2fs do.  IS_ENCRYP=
-TED()
-> >> > > checks the VFS-level flag instead of the UBIFS-specific flag, but =
-it
-> >> > > shouldn't change any behavior since the flags are kept in sync.
-> >> > >
-> >> > > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> >> > > ---
-> >> > >  fs/ubifs/dir.c     | 8 ++++----
-> >> > >  fs/ubifs/file.c    | 4 ++--
-> >> > >  fs/ubifs/journal.c | 6 +++---
-> >> > >  fs/ubifs/ubifs.h   | 7 -------
-> >> > >  4 files changed, 9 insertions(+), 16 deletions(-)
-> >> >
-> >> > Richard, can you consider applying this to the UBIFS tree for 5.6?
-> >> =
+Patch 4 fixes a bug in UBIFS where it didn't gracefully handle invalid
+hash values in fscrypt no-key names.  This is an existing bug, but the
+new fscrypt no-key name format (patch 6) made it much easier to trigger;
+it started being hit by 'kvm-xfstests -c ubifs -g encrypt'.
 
-> >> Sure. I'm back from the x-mas break and start collecting patches.
-> >> =
+Patch 5 updates UBIFS to make it ready for the new fscrypt no-key name
+format that always includes the dirhash.
 
-> > =
+Patch 6 modifies the fscrypt no-key names to always include the dirhash,
+since with the new dirhash method the dirhash will no longer be
+computable from the ciphertext filename without the key.  It also fixes
+a longstanding issue where there could be collisions in the no-key
+names, due to not using a proper cryptographic hash to abbreviate names.
 
-> > Ping?  I see the other UBIFS patches I sent in linux-ubifs.git#linux-ne=
-xt,
-> > but not this one.
-> =
+For more information see the main patch series, which includes the
+filesystem-specific changes:
+https://lkml.kernel.org/linux-fscrypt/20200117214246.235591-1-drosen@google.com/T/#u
 
-> Oh dear, I reviewed but forgot to apply it. Now I'm already traveling wit=
-hout my
-> kernel.org PGP keys.
-> =
+This applies to fscrypt.git#master.
 
-> The patch is simple and sane, so I'm totally fine if you carry it via fsc=
-rypt.
-> Another option is that Miquel carries it via MTD this time.
-> =
+Changed v4 => v5:
+  - Fixed UBIFS encryption to work with the new no-key name format.
 
-> In any case:
-> =
+Daniel Rosenberg (3):
+  fscrypt: don't allow v1 policies with casefolding
+  fscrypt: derive dirhash key for casefolded directories
+  fscrypt: improve format of no-key names
 
-> Acked-by: Richard Weinberger <richard@nod.at>
-> =
+Eric Biggers (3):
+  fscrypt: clarify what is meant by a per-file key
+  ubifs: don't trigger assertion on invalid no-key filename
+  ubifs: allow both hash and disk name to be provided in no-key names
 
-> Sorry for messing this up. :-(
-> =
+ Documentation/filesystems/fscrypt.rst |  40 +++--
+ fs/crypto/Kconfig                     |   1 +
+ fs/crypto/fname.c                     | 239 ++++++++++++++++++++------
+ fs/crypto/fscrypt_private.h           |  19 +-
+ fs/crypto/hooks.c                     |  44 +++++
+ fs/crypto/keysetup.c                  |  81 ++++++---
+ fs/crypto/keysetup_v1.c               |   4 +-
+ fs/crypto/policy.c                    |   7 +
+ fs/inode.c                            |   3 +-
+ fs/ubifs/dir.c                        |   6 +-
+ fs/ubifs/journal.c                    |   4 +-
+ fs/ubifs/key.h                        |   1 -
+ include/linux/fscrypt.h               |  94 +++-------
+ 13 files changed, 365 insertions(+), 178 deletions(-)
 
+-- 
+2.25.0
 
-I just went ahead and applied it to the fscrypt tree with your Acked-by, si=
-nce
-it doesn't conflict with anything in the UBIFS tree.  Thanks,
-
-- Eric
 
 ______________________________________________________
 Linux MTD discussion mailing list
