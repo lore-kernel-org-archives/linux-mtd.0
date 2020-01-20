@@ -2,62 +2,152 @@ Return-Path: <SRS0=bf65=3J=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BA64C2D0DB
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jan 2020 10:22:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 947DCC2D0DB
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jan 2020 11:03:45 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2EEA12073D
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jan 2020 10:22:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6349F207FF
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jan 2020 11:03:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fKLXfxYh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2EEA12073D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="B8Zvn5Fc";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="Xa5hMaiW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6349F207FF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UZVO6x5FKV48vvqNkTY6w+3ckpZ4Qwe9ESuxjpiubaA=; b=fKLXfxYhmbiChp
-	rJbAaoc4xn3XkjL010S22p0vqAiXGesSxSu0f2Dc9rdfNCc1JrwzUpNilWZJ4EJ5l5UNup+6YpT4l
-	/dr1cl6eVH82ZSEO9GnNw5OwLzQ10BhhJK+0JuUiUUrJlyHPlSYgMGHh7FQjTUDYJW8BUoV5aXRF4
-	m0rBnD9qPLAhODtdOEGOpLH09KEChYqzL28j1v9+XSJXMLz7KVd1vka/joDM+GSEm8tO+UWkmiU5c
-	zbbq+qsATJMPI8dPiASHRS1GBhI+pKz7XTd++4aJXT9CCZRcl+AuY4VlEyLWIgZPb5gRIi37QRWE8
-	vWx3LqSQmzVAuOMZylZg==;
+	List-Owner; bh=4IHxIw+y/3gRbLP2jJBstias7FnQcRX4FTNvD3lpl/0=; b=B8Zvn5Fcsa46jV
+	1V/5RtrRT8vWqaMrRMh9GL15pBuuQ0lmUNuJa8COOYMwrgoyicH5sWyZJ42q7Il1FbumUGkeBZiWJ
+	bQIB00i5rP5qZRazMfqQe/seulPIggGsHtnjTDY/xHsgbNyMGPLsSFjfRIGGBVJ09aTi2EbFsG3/m
+	yptRprqdF+RyclzI+hr9Wy6eVpDkD4Lw/bgBABxVDu+ckCqgwWXIRX2+ZtPrDSDf0zQADYolHUGNy
+	iK9gdgrTisn8883hd3l/AUhCupBZpEbaIF06iOupV7uFSkJqbma0rtI9Vrva9Hy4liTmg7s8XjCSP
+	ZMlSEqBV83bFIBIQrXQg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1itUCa-0003nm-1d; Mon, 20 Jan 2020 10:22:36 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1itUqA-0001sG-FM; Mon, 20 Jan 2020 11:03:30 +0000
+Received: from esa1.microchip.iphmx.com ([68.232.147.91])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1itUCT-0003mo-0g
- for linux-mtd@lists.infradead.org; Mon, 20 Jan 2020 10:22:35 +0000
-X-Originating-IP: 90.76.211.102
-Received: from xps13 (lfbn-tou-1-1151-102.w90-76.abo.wanadoo.fr
- [90.76.211.102]) (Authenticated sender: miquel.raynal@bootlin.com)
- by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 27B3EFF808;
- Mon, 20 Jan 2020 10:22:21 +0000 (UTC)
-Date: Mon, 20 Jan 2020 11:22:19 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: shiva.linuxworks@gmail.com
-Subject: Re: [PATCH 4/4] mtd: spinand: Add new Micron SPI NAND devices with
- multiple dies
-Message-ID: <20200120112219.36bae01e@xps13>
-In-Reply-To: <20200119145432.10405-5-sshivamurthy@micron.com>
-References: <20200119145432.10405-1-sshivamurthy@micron.com>
- <20200119145432.10405-5-sshivamurthy@micron.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1itUq4-0001rZ-Hp
+ for linux-mtd@lists.infradead.org; Mon, 20 Jan 2020 11:03:28 +0000
+Received-SPF: Pass (esa1.microchip.iphmx.com: domain of
+ Tudor.Ambarus@microchip.com designates 198.175.253.82 as
+ permitted sender) identity=mailfrom;
+ client-ip=198.175.253.82; receiver=esa1.microchip.iphmx.com;
+ envelope-from="Tudor.Ambarus@microchip.com";
+ x-sender="Tudor.Ambarus@microchip.com";
+ x-conformance=spf_only; x-record-type="v=spf1";
+ x-record-text="v=spf1 mx a:ushub1.microchip.com
+ a:smtpout.microchip.com -exists:%{i}.spf.microchip.iphmx.com
+ include:servers.mcsv.net include:mktomail.com
+ include:spf.protection.outlook.com ~all"
+Received-SPF: None (esa1.microchip.iphmx.com: no sender
+ authenticity information available from domain of
+ postmaster@email.microchip.com) identity=helo;
+ client-ip=198.175.253.82; receiver=esa1.microchip.iphmx.com;
+ envelope-from="Tudor.Ambarus@microchip.com";
+ x-sender="postmaster@email.microchip.com"; x-conformance=spf_only
+Authentication-Results: esa1.microchip.iphmx.com;
+ spf=Pass smtp.mailfrom=Tudor.Ambarus@microchip.com;
+ spf=None smtp.helo=postmaster@email.microchip.com;
+ dkim=pass (signature verified) header.i=@microchiptechnology.onmicrosoft.com;
+ dmarc=pass (p=none dis=none) d=microchip.com
+IronPort-SDR: 3GnK8gb0jtusXXR6Ft438mGKTvdi1y0hXNw2RaPHhj7wvwEb93Fikbo4MhStRxL5jDi9OCFx8O
+ imZxodxk/VdcpQc8NABl9PlV+H5eDMEayoQG8zgPDg2ArnuI4ZS9Ndv4Khl8RVArMFz1+jT989
+ jQypjBRODfCaMXFQ1UDm78EE/twPIAilGCnNl83kOz+avyh8pSkk58Mcd0azMbpzzOKGWgXm7Z
+ BxKYVujvHiPRarjJQtRcowJKf7ozxWCQin7OFhfBcyQeUaUAlb3zKupktJ1ZShqswkoNnv1DQJ
+ IFk=
+X-IronPort-AV: E=Sophos;i="5.70,341,1574146800"; d="scan'208";a="65302330"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 20 Jan 2020 04:03:23 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 20 Jan 2020 04:03:22 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, 
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5 via Frontend
+ Transport; Mon, 20 Jan 2020 04:03:21 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=McdZHoLUs+wCtxePewMew7xlg/gVgpKXocuyDVEwkAU3oIevB6Wa/IxPGLInwlVGo9nmpGr8T9ry72jtCQ37Yppn+aaQySLjuIJhb92KVzG7qkibYHYs1iUESzcq7xbQF3t7UuMWSVE1WH9DdfCWHFmq7ahPURvUz/zOjv0ZQ1ersxmFtTQbZU5TG6XeXte5OczawL38cjPAwaIVl2L5AdHZ5NEvOwQxQTpkQmmlCEo4EegZqJzdehVUW2oxlQIJ/mW7RGW5MxXQGIdosVXdk2DlMtd3GTZd8yNYO06fE1X7K/d+UMbYYS3SH2+q7E9T9qgiUFVhwGqgI0Nogdj7Pw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7KipscbLFjVF2iNp3N45uLDUoIWLVPBXszXW/Vd3o84=;
+ b=Z4lTN0hSkpy1DWb+z9jqm4DtRSduuz7vNPrvHpMymWzUEjWM0vfRsy3hGhOWgECZV3hfhGPIUv3b4aN1xaKBRzpTnIZ0kGxK0DynpcbH0zpsXhWH/xB5XqHzvqnfEoq4HrZCf8irsdgBpW0IZIkla8xZXjj9qZi7lej6edKifCDU4nTCMMfnhgloFLrn7++m6/1TyITYayxz+1vLzQb13sPOF3Y8Q1qLrr2DYXXiB+gecb8VRP7JH/3TiMCJzUs3lwplIHFqG4fsTL9B4/FvQY6wTK81U5YM/gaK/pwt8Xuqav1HvioP+zk7HfLCthPI24+z6wBNnvKOkYtkg8rgUA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7KipscbLFjVF2iNp3N45uLDUoIWLVPBXszXW/Vd3o84=;
+ b=Xa5hMaiWMS3+WGZpHTXYWsYtlhqQMR/HCLNz431snQaTOABBCuweMzu4LOYMubj2LPefm7aBoIliCJhtrmZKAP47Xsc7GQxhr2pNCmh5KUMNX96JZkqWjkhsIY93Sf0YV6Q9rU0c1T7YL4WmPx7R+SrZ3YNfUPlQFhOWVuAFlvM=
+Received: from MN2PR11MB4448.namprd11.prod.outlook.com (52.135.39.157) by
+ MN2PR11MB4302.namprd11.prod.outlook.com (52.135.36.13) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2644.23; Mon, 20 Jan 2020 11:03:21 +0000
+Received: from MN2PR11MB4448.namprd11.prod.outlook.com
+ ([fe80::3c8f:7a55:cbd:adfb]) by MN2PR11MB4448.namprd11.prod.outlook.com
+ ([fe80::3c8f:7a55:cbd:adfb%5]) with mapi id 15.20.2644.024; Mon, 20 Jan 2020
+ 11:03:21 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <michael@walle.cc>
+Subject: Re: [PATCH] mtd: spi-nor: Add support for w25qNNjwim
+Thread-Topic: [PATCH] mtd: spi-nor: Add support for w25qNNjwim
+Thread-Index: AQHVzpf32dqEzZAPf0S4HyMwJjELNQ==
+Date: Mon, 20 Jan 2020 11:03:21 +0000
+Message-ID: <3862353.UOg0IvECEa@localhost.localdomain>
+References: <20200103223423.14025-1-michael@walle.cc>
+ <8021667.67K7kvUAe6@192.168.0.113>
+ <66c1ad8e74fb20a061f35f8b23a925ab@walle.cc>
+In-Reply-To: <66c1ad8e74fb20a061f35f8b23a925ab@walle.cc>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [94.177.32.156]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 720c100d-1aa7-4633-cac7-08d79d985ce5
+x-ms-traffictypediagnostic: MN2PR11MB4302:
+x-microsoft-antispam-prvs: <MN2PR11MB43022F8624B8A31F9160177AF0320@MN2PR11MB4302.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 0288CD37D9
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(39860400002)(136003)(346002)(366004)(396003)(376002)(189003)(199004)(478600001)(9686003)(6506007)(53546011)(6512007)(4326008)(6486002)(6916009)(71200400001)(86362001)(2906002)(316002)(5660300002)(8936002)(26005)(66476007)(66946007)(186003)(8676002)(54906003)(76116006)(64756008)(66446008)(91956017)(66556008)(81166006)(81156014)(39026012);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:MN2PR11MB4302;
+ H:MN2PR11MB4448.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; MX:1; A:1; 
+received-spf: None (protection.outlook.com: microchip.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: n9XvoDlq2IDld+jMVgSu+XW9hr7UEIfIM7/2IcAhV/6iiq5+BB/zckJF9oc1zhlANu9fgUJN0//z1+eTI7eHLvNduuwkvv5+nu0a1wq0QGuIX5nRB9Z5QNOSqUnxjgFaITMBpi6+DbM1napwKhqxmX82d7xqAna29g1vK6SJu4kBeEXyx2biP3tvSWB5y4y5aLxqFqeVUVsFYD9d9sc18jdNXwGsqgG7ZSTK3ze3f8iJ6Q3jMfgTiPDVgQ8dzkj6WIgxijSQ/oC8ydLjLpCoYsPqtTh4J7+3Y2Be5boxZfsX+OQ4EElEkvQBGEJ63i78WW9qHZdDujGMS5aEp/5W2cJ40liAvxNjq/lqIhlRYaeYEskjQu4TMAtzHj1/CIoW3NmukF/e+mCiV8H9DVojqkXBtE9R5Dt6/oc/xojY7KVWiq31G5dmW/7E9MR/9PpMFIhpRg2YRIW6PsitnUnfrH7AGwJmK9udQ4iOVqFthCb3hVFb72AiobfX/m5GFgUv
+x-ms-exchange-transport-forked: True
+Content-ID: <65FB57CC47DA72419DF0E5DA957E08FD@namprd11.prod.outlook.com>
 MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 720c100d-1aa7-4633-cac7-08d79d985ce5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Jan 2020 11:03:21.2679 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: UXUS2AGuzKy0uKPc1t8CT+spq06f6HTCAl28LgHuE5/4U5og4plZyzOBenXR4NKvV95wuFU0JzrT9OA0tmgjcDBmKXF+bIkOMaq7PiB0KO8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4302
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200120_022229_337831_45009E91 
-X-CRM114-Status: GOOD (  15.25  )
+X-CRM114-CacheID: sfid-20200120_030324_746222_F54E8942 
+X-CRM114-Status: GOOD (  29.80  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,83 +159,143 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
- linux-kernel@vger.kernel.org, Frieder Schrempf <frieder.schrempf@kontron.de>,
- linux-mtd@lists.infradead.org, Shivamurthy Shastri <sshivamurthy@micron.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: richard@nod.at, miquel.raynal@bootlin.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, vigneshr@ti.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgU2hpdmEsCgpzaGl2YS5saW51eHdvcmtzQGdtYWlsLmNvbSB3cm90ZSBvbiBTdW4sIDE5IEph
-biAyMDIwIDE1OjU0OjMyICswMTAwOgoKPiBGcm9tOiBTaGl2YW11cnRoeSBTaGFzdHJpIDxzc2hp
-dmFtdXJ0aHlAbWljcm9uLmNvbT4KPiAKPiBBZGQgZGV2aWNlIHRhYmxlIGZvciBuZXcgTWljcm9u
-IFNQSSBOQU5EIGRldmljZXMsIHdoaWNoIGhhdmUgbXVsdGlwbGUKPiBkaWVzLiBXaGlsZSBhdCBp
-dCwgYWRkIHN1cHBvcnQgdG8gc2VsZWN0IHRoZSBkaWUuCgpTYW1lIGNvbW1lbnQgYXMgaW4gMy80
-LgoKPiAKPiBTaWduZWQtb2ZmLWJ5OiBTaGl2YW11cnRoeSBTaGFzdHJpIDxzc2hpdmFtdXJ0aHlA
-bWljcm9uLmNvbT4KPiAtLS0KPiAgZHJpdmVycy9tdGQvbmFuZC9zcGkvbWljcm9uLmMgfCA1MCAr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwo+ICAxIGZpbGUgY2hhbmdlZCwgNTAg
-aW5zZXJ0aW9ucygrKQo+IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3NwaS9taWNy
-b24uYyBiL2RyaXZlcnMvbXRkL25hbmQvc3BpL21pY3Jvbi5jCj4gaW5kZXggNDVmYzM3YzU4Zjhh
-Li4wM2I0ODY4NDMyMTAgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9zcGkvbWljcm9u
-LmMKPiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3NwaS9taWNyb24uYwo+IEBAIC0xOCw2ICsxOCw4
-IEBACj4gICNkZWZpbmUgTUlDUk9OX1NUQVRVU19FQ0NfNFRPNl9CSVRGTElQUwkoMyA8PCA0KQo+
-ICAjZGVmaW5lIE1JQ1JPTl9TVEFUVVNfRUNDXzdUTzhfQklURkxJUFMJKDUgPDwgNCkKPiAgCj4g
-KyNkZWZpbmUgTUlDUk9OX0RJRV9TRUxFQ1RJT05fQklUCTYKPiArCj4gIHN0YXRpYyBTUElOQU5E
-X09QX1ZBUklBTlRTKHJlYWRfY2FjaGVfdmFyaWFudHMsCj4gIAkJU1BJTkFORF9QQUdFX1JFQURf
-RlJPTV9DQUNIRV9RVUFESU9fT1AoMCwgMiwgTlVMTCwgMCksCj4gIAkJU1BJTkFORF9QQUdFX1JF
-QURfRlJPTV9DQUNIRV9YNF9PUCgwLCAxLCBOVUxMLCAwKSwKPiBAQCAtNjQsNiArNjYsMjEgQEAg
-c3RhdGljIGNvbnN0IHN0cnVjdCBtdGRfb29ibGF5b3V0X29wcyBtaWNyb25fOF9vb2JsYXlvdXQg
-PSB7Cj4gIAkuZnJlZSA9IG1pY3Jvbl84X29vYmxheW91dF9mcmVlLAo+ICB9Owo+ICAKPiArc3Rh
-dGljIGludCBtaWNyb25fc2VsZWN0X3RhcmdldChzdHJ1Y3Qgc3BpbmFuZF9kZXZpY2UgKnNwaW5h
-bmQsCj4gKwkJCQl1bnNpZ25lZCBpbnQgdGFyZ2V0KQo+ICt7Cj4gKwlzdHJ1Y3Qgc3BpX21lbV9v
-cCBvcCA9IFNQSU5BTkRfU0VUX0ZFQVRVUkVfT1AoMHhkMCwKPiArCQkJCQkJICAgICAgc3BpbmFu
-ZC0+c2NyYXRjaGJ1Zik7Cj4gKwo+ICsJLyoKPiArCSAqIEFzIHBlciBkYXRhc2hlZXQsIGRpZSBz
-ZWxlY3Rpb24gaXMgZG9uZSBieSB0aGUgNnRoIGJpdCBvZiBEaWUKPiArCSAqIFNlbGVjdCBSZWdp
-c3RlciAoQWRkcmVzcyAweEQwKS4KPiArCSAqLwoKSSB3b3VsZCBwdXQgdGhpcyBjb21tZW50IGNs
-b3NlIHRvIHRoZSBtYWNybyBkZWZpbml0aW9uLgoKPiArCSpzcGluYW5kLT5zY3JhdGNoYnVmID0g
-dGFyZ2V0IDw8IE1JQ1JPTl9ESUVfU0VMRUNUSU9OX0JJVDsKCkVpdGhlciB0YXJnZXQgaXMgb3Ig
-b3IgMSBhbmQgeW91IGNhbiB1c2UgdGhlIEJJVCBtYWNybywgb3IgeW91IHN1cHBvc2UKaXQgY2Fu
-IGdvIGhpZ2hlciBhbmQgdGhlIF9CSVQgc3VmZml4IGRvZXMgbm90IGZpdC4gX1NISUZUIHdvdWxk
-IHdvcmsKYW5kIGNyZWF0aW5nIGEgbWFjcm8gZGlyZWN0bHkgd291bGQgYmUgZXZlbiBiZXR0ZXIu
-Cgo+ICsKPiArCXJldHVybiBzcGlfbWVtX2V4ZWNfb3Aoc3BpbmFuZC0+c3BpbWVtLCAmb3ApOwo+
-ICt9Cj4gKwoKV2hlcmUgaXMgdGhpcyBmdW5jdGlvbiB1c2VkPwoKPiAgc3RhdGljIGludCBtaWNy
-b25fOF9lY2NfZ2V0X3N0YXR1cyhzdHJ1Y3Qgc3BpbmFuZF9kZXZpY2UgKnNwaW5hbmQsCj4gIAkJ
-CQkgICB1OCBzdGF0dXMpCj4gIHsKPiBAQCAtMTMxLDYgKzE0OCwxNyBAQCBzdGF0aWMgY29uc3Qg
-c3RydWN0IHNwaW5hbmRfaW5mbyBtaWNyb25fc3BpbmFuZF90YWJsZVtdID0gewo+ICAJCSAgICAg
-MCwKPiAgCQkgICAgIFNQSU5BTkRfRUNDSU5GTygmbWljcm9uXzhfb29ibGF5b3V0LAo+ICAJCQkJ
-ICAgICBtaWNyb25fOF9lY2NfZ2V0X3N0YXR1cykpLAo+ICsJLyogTTc5QSA0R2IgMy4zViAqLwo+
-ICsJU1BJTkFORF9JTkZPKCJNVDI5RjRHMDFBREFHRCIsIDB4MzYsCj4gKwkJICAgICBOQU5EX01F
-TU9SRygxLCAyMDQ4LCAxMjgsIDY0LCAyMDQ4LCA4MCwgMiwgMSwgMiksCj4gKwkJICAgICBOQU5E
-X0VDQ1JFUSg4LCA1MTIpLAo+ICsJCSAgICAgU1BJTkFORF9JTkZPX09QX1ZBUklBTlRTKCZyZWFk
-X2NhY2hlX3ZhcmlhbnRzLAo+ICsJCQkJCSAgICAgICZ3cml0ZV9jYWNoZV92YXJpYW50cywKPiAr
-CQkJCQkgICAgICAmdXBkYXRlX2NhY2hlX3ZhcmlhbnRzKSwKPiArCQkgICAgIDAsCj4gKwkJICAg
-ICBTUElOQU5EX0VDQ0lORk8oJm1pY3Jvbl84X29vYmxheW91dCwKPiArCQkJCSAgICAgbWljcm9u
-XzhfZWNjX2dldF9zdGF0dXMpLAo+ICsJCSAgICAgU1BJTkFORF9TRUxFQ1RfVEFSR0VUKG1pY3Jv
-bl9zZWxlY3RfdGFyZ2V0KSksCj4gIAkvKiBNNzBBIDRHYiAzLjNWICovCj4gIAlTUElOQU5EX0lO
-Rk8oIk1UMjlGNEcwMUFCQUZEIiwgMHgzNCwKPiAgCQkgICAgIE5BTkRfTUVNT1JHKDEsIDQwOTYs
-IDI1NiwgNjQsIDIwNDgsIDQwLCAxLCAxLCAxKSwKPiBAQCAtMTUxLDYgKzE3OSwyOCBAQCBzdGF0
-aWMgY29uc3Qgc3RydWN0IHNwaW5hbmRfaW5mbyBtaWNyb25fc3BpbmFuZF90YWJsZVtdID0gewo+
-ICAJCSAgICAgMCwKPiAgCQkgICAgIFNQSU5BTkRfRUNDSU5GTygmbWljcm9uXzhfb29ibGF5b3V0
-LAo+ICAJCQkJICAgICBtaWNyb25fOF9lY2NfZ2V0X3N0YXR1cykpLAo+ICsJLyogTTcwQSA4R2Ig
-My4zViAqLwo+ICsJU1BJTkFORF9JTkZPKCJNVDI5RjhHMDFBREFGRCIsIDB4NDYsCj4gKwkJICAg
-ICBOQU5EX01FTU9SRygxLCA0MDk2LCAyNTYsIDY0LCAyMDQ4LCA0MCwgMSwgMSwgMiksCj4gKwkJ
-ICAgICBOQU5EX0VDQ1JFUSg4LCA1MTIpLAo+ICsJCSAgICAgU1BJTkFORF9JTkZPX09QX1ZBUklB
-TlRTKCZyZWFkX2NhY2hlX3ZhcmlhbnRzLAo+ICsJCQkJCSAgICAgICZ3cml0ZV9jYWNoZV92YXJp
-YW50cywKPiArCQkJCQkgICAgICAmdXBkYXRlX2NhY2hlX3ZhcmlhbnRzKSwKPiArCQkgICAgIDAs
-Cj4gKwkJICAgICBTUElOQU5EX0VDQ0lORk8oJm1pY3Jvbl84X29vYmxheW91dCwKPiArCQkJCSAg
-ICAgbWljcm9uXzhfZWNjX2dldF9zdGF0dXMpLAo+ICsJCSAgICAgU1BJTkFORF9TRUxFQ1RfVEFS
-R0VUKG1pY3Jvbl9zZWxlY3RfdGFyZ2V0KSksCj4gKwkvKiBNNzBBIDhHYiAxLjhWICovCj4gKwlT
-UElOQU5EX0lORk8oIk1UMjlGOEcwMUFEQkZEIiwgMHg0NywKPiArCQkgICAgIE5BTkRfTUVNT1JH
-KDEsIDQwOTYsIDI1NiwgNjQsIDIwNDgsIDQwLCAxLCAxLCAyKSwKPiArCQkgICAgIE5BTkRfRUND
-UkVRKDgsIDUxMiksCj4gKwkJICAgICBTUElOQU5EX0lORk9fT1BfVkFSSUFOVFMoJnJlYWRfY2Fj
-aGVfdmFyaWFudHMsCj4gKwkJCQkJICAgICAgJndyaXRlX2NhY2hlX3ZhcmlhbnRzLAo+ICsJCQkJ
-CSAgICAgICZ1cGRhdGVfY2FjaGVfdmFyaWFudHMpLAo+ICsJCSAgICAgMCwKPiArCQkgICAgIFNQ
-SU5BTkRfRUNDSU5GTygmbWljcm9uXzhfb29ibGF5b3V0LAo+ICsJCQkJICAgICBtaWNyb25fOF9l
-Y2NfZ2V0X3N0YXR1cyksCj4gKwkJICAgICBTUElOQU5EX1NFTEVDVF9UQVJHRVQobWljcm9uX3Nl
-bGVjdF90YXJnZXQpKSwKPiAgfTsKPiAgCj4gIHN0YXRpYyBpbnQgbWljcm9uX3NwaW5hbmRfZGV0
-ZWN0KHN0cnVjdCBzcGluYW5kX2RldmljZSAqc3BpbmFuZCkKCgoKClRoYW5rcywKTWlxdcOobAoK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxp
-bnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Monday, January 20, 2020 12:24:25 AM EET Michael Walle wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the
+> content is safe
+> 
+> Hi Tudor,
+
+Hi, Michael,
+
+> 
+> >> Am 2020-01-13 11:07, schrieb Michael Walle:
+> >> >>> Btw. is renaming the flashes also considered a backwards incomaptible
+> >> >>> change?
+> >> >> 
+> >> >> No, we can fix the names.
+> >> >> 
+> >> >>> And can there be two flashes with the same name? Because IMHO it
+> >> >>> would
+> >> >>> be
+> >> >> 
+> >> >> I would prefer that we don't. Why would you have two different
+> >> >> jedec-ids with
+> >> >> the same name?
+> >> > 
+> >> > Because as pointed out in the Winbond example you cannot distiguish
+> >> > between
+> >> > W25Q32DW and W25Q32JWIQ; and in the Macronix example between MX25L8005
+> >> > and
+> >> > MX25L8006E. Thus my reasoning was to show only the common part, ie
+> >> > W25Q32
+> >> > or MX25L80 which should be the same for this particular ID. Like I
+> >> > said, I'd
+> >> > prefer showing an ambiguous name instead of a wrong one. But then you
+> >> > may
+> >> > have different IDs with the same ambiguous name.
+> >> 
+> >> Another solution would be to have the device tree provide a hint for
+> >> the
+> >> actual flash chip. There would be multiple entries in the spi_nor_ids
+> >> with the
+> >> same flash id. By default the first one is used (keeping the current
+> >> behaviour). If there is for example
+> >> 
+> >>    compatible = "jedec,spi-nor", "w25q32jwq";
+> >> 
+> >> the flash_info for the w25q32jwq will be chosen.
+> > 
+> > This won't work for plug-able flashes. You will influence the name in
+> > dt to be
+> > chosen as w25q32jwq, and if you change w25q32jwq with w25q32dw you will
+> > end up
+> > with a wrong name for w25q32dw, thus the same problem.
+> 
+> No, because then the device tree is wrong and doesn't fit the hardware.
+> You'd
+> have to some instance which could change the device tree node, like the
+> bootloader or some device tree overlay for plugable flashes. We should
+> try to
+> solve the actual problem at hand first..
+> 
+> It is just not possible to autodetect the SPI flash, just because
+> the vendors reuse the same IDs for flashes with different features (and
+> the
+> SFDP is likely not enough). Therefore, you need to have a hint in some
+> place
+> to use the flash properly.
+> 
+> > If the flashes are identical but differ just in terms of name, we can
+> > rename
+> > the flash to "w25q32jwq (w25q32dw)". I haven't studied the differences
+> > between
+> > these flashes; if you want to fix them, send a patch and I'll try to
+> > help.
+> 
+> It is not only the name, here are two examples which differ in
+> functionality:
+>   (1) mx25l8005 doesn't support dual/quad mode. mx25l8006e supports
+> dual/quad
+>       mode
+>   (2) mx25u3235f doesn't support TB bit, mx25u3232e has a TB bit.
+> 
+> well.. to repeat myself, the mx25l25635_post_bfpt_fixups is a third
+
+sorry if this exhausted you.
+> example.
+> 
+
+Flash auto-detection is nice and we should preserve it if possible. I would 
+prefer having a post bfpt fixup than giving a hint about the flash in the 
+compatible. The flashes that you mention are quite old and I don't know if it 
+is worth to harm the auto-detection for them. A compromise has to be made.
+
+You can gain traction in your endeavor if you have such a flash and there's 
+nothing auto-detectable that differentiates it from some other flash that 
+shares the sama jedec-id.
+
+If you have such a flash and you care about it, send a patch and I'll try to 
+help.
+
+> -michael
+> 
+> > Cheers,
+> > ta
+> > 
+> >> I know this will conflict with the new rule that there should only be
+> >> 
+> >>    compatible = "jedec,spi-nor";
+> >> 
+> >> without the actual flash chip. But it seems that it is not always
+> >> possible
+> >> to just use the jedec id to match the correct chip.
+> >> 
+> >> Also see for example mx25l25635_post_bfpt_fixups() which tries to
+> >> figure
+> >> out different behaviour by looking at "some" SFDP data. In this case
+> >> we
+> >> might have been lucky, but I fear that this won't work in all cases
+> >> and
+> >> for older flashes it won't work at all.
+> >> 
+> >> BTW I do not suggest to add the strings to the the spi_nor_dev_ids[].
+> >> 
+> >> I guess that would be a less invasive way to fix different flashes
+> >> with
+> >> same jedec ids.
+> >> 
+> >> -michael
+
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
