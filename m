@@ -1,68 +1,67 @@
-Return-Path: <SRS0=bf65=3J=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=c5zc=3K=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C9BFC32771
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jan 2020 22:36:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E33ACC33CAA
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Jan 2020 03:36:27 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 464ED217F4
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jan 2020 22:36:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AC7322073D
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Jan 2020 03:36:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CajG/gG4";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="oKIooBDD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 464ED217F4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="b7uUG8oH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AC7322073D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=allwinnertech.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Z8K+EPGITdn0sL9r8bFfhKoiH9nhvs6RXRdXLDCA4Cs=; b=CajG/gG4RGIMZo
-	GPza0P8mws2PsTL8FHsOIUdw5kWsH1QwZodygE875/5N/z5gcQSN4QiIZwtbQGJFq9ruM2JO4egCx
-	ls3IxoD6jzjNWDNa48U1kR5Lk7nF0T8ifZhghPePmCaVtq+gElnYUbcYqyZNVFhFB0Lkq559zr6UN
-	NyqpE1k3+D6t+YUQZaJBOmMFkTA+sHaCzp/0Adt72c2Dy3CM8gCeD4LHCPA/g0h8POrNexLWqI06i
-	d4Qtv3GMaTvsZ1r8M+Eaero6wyJnCOkTt4Of5wREkucMBQOoRwSrD15lgWLQLNfxmQ6QvhAsTZMbE
-	D/kG6oUKVgmbCUrkFbfg==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=kqzSZsZwDL+LzCOUdzebqp/E8t3LeUW8MhkZ7MnvDlU=; b=b7uUG8oHxB2zPf
+	2IyBUuaiyTGFI47TaAc6pBchg6EFCNhBM8+A+19PW4LPq0ZewhvbaQo9biAymFAuGHNH/DlQh/NrE
+	/M+ACYriXanyBQiayniW9zA/tv1tdWQXZKRkxjatlBxS3N1cH1mkYlEG0/CWbBYlFCjK4zMNeSBwv
+	d8z4J2a6JrS3LsrgSamhQST7MzJ/r1uhwZQXoayTvmP1MJFAyye2jwSoVfM46FvAbwchhWm+z35mQ
+	FvxsE0f0XEpUHYGRaRReHikWu6Bb+DcOjjzgQeY0IQaGhnVJnpEC5TVHJZDA/HWCAjXI6VczwGkJm
+	0axAbSRhK1kNgYmfsPzg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1itfeF-00017S-Hk; Mon, 20 Jan 2020 22:35:55 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1itkKk-00014H-18; Tue, 21 Jan 2020 03:36:06 +0000
+Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1itfci-0006rI-1K
- for linux-mtd@lists.infradead.org; Mon, 20 Jan 2020 22:34:23 +0000
-Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net
- [107.3.166.239])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 6786124650;
- Mon, 20 Jan 2020 22:34:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1579559659;
- bh=czS55ueh84XdUvIyd/0NDGU1O2Rh+4VjdPxTybPTNDQ=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=oKIooBDDupfiZwh6a4KZgfRxODadECxnTVLzKxiMpM3xePAyVHSZpDb1zcpHJe3vr
- IFC3cnJsVByfP0V6hPVXfZiOGI/cfmmyEFcurWU6ERwFpGNQx2EB5t9bSQP7rPkzZI
- 4HLEcoXZKal6vy2k2MJOo8hZ/qfWzKiXNmN4Oizc=
-From: Eric Biggers <ebiggers@kernel.org>
-To: linux-fscrypt@vger.kernel.org
-Subject: [PATCH v5 6/6] fscrypt: improve format of no-key names
-Date: Mon, 20 Jan 2020 14:32:01 -0800
-Message-Id: <20200120223201.241390-7-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200120223201.241390-1-ebiggers@kernel.org>
-References: <20200120223201.241390-1-ebiggers@kernel.org>
+ id 1itkKf-00011r-9A
+ for linux-mtd@lists.infradead.org; Tue, 21 Jan 2020 03:36:04 +0000
+X-Alimail-AntiSpam: AC=CONTINUE; BC=0.07436282|-1; CH=green;
+ DM=CONTINUE|CONTINUE|true|0.257809-0.0171984-0.724993;
+ DS=CONTINUE|ham_system_inform|0.041768-0.000336577-0.957895;
+ FP=0|0|0|0|0|-1|-1|-1; HT=e02c03299; MF=liaoweixiong@allwinnertech.com; NM=1;
+ PH=DS; RN=16; RT=16; SR=0; TI=SMTPD_---.GfZ0IwR_1579577749; 
+Received: from 172.16.10.102(mailfrom:liaoweixiong@allwinnertech.com
+ fp:SMTPD_---.GfZ0IwR_1579577749)
+ by smtp.aliyun-inc.com(10.147.40.44); Tue, 21 Jan 2020 11:35:50 +0800
+Subject: Re: [PATCH v1 11/11] mtd: new support oops logger based on pstore/blk
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+References: <1579482233-2672-1-git-send-email-liaoweixiong@allwinnertech.com>
+ <1579482233-2672-12-git-send-email-liaoweixiong@allwinnertech.com>
+ <20200120110306.32e53fd8@xps13>
+From: liaoweixiong <liaoweixiong@allwinnertech.com>
+Message-ID: <27226590-379c-8784-f461-f5d701015611@allwinnertech.com>
+Date: Tue, 21 Jan 2020 11:36:00 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
+In-Reply-To: <20200120110306.32e53fd8@xps13>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200120_143420_120019_FFD7E48C 
-X-CRM114-Status: GOOD (  28.19  )
+X-CRM114-CacheID: sfid-20200120_193601_757271_DEF4542F 
+X-CRM114-Status: GOOD (  33.99  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,482 +73,403 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Daniel Rosenberg <drosen@google.com>,
- Gabriel Krisman Bertazi <krisman@collabora.com>, linux-kernel@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
- Richard Weinberger <richard@nod.at>, linux-fsdevel@vger.kernel.org,
- linux-ext4@vger.kernel.org, kernel-team@android.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Rob Herring <robh@kernel.org>, Tony Luck <tony.luck@intel.com>,
+ Kees Cook <keescook@chromium.org>, Jonathan Corbet <corbet@lwn.net>,
+ Richard Weinberger <richard@nod.at>, Anton Vorontsov <anton@enomsg.org>,
+ linux-doc@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Colin Cross <ccross@android.com>,
+ Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Vignesh Raghavendra <vigneshr@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Daniel Rosenberg <drosen@google.com>
-
-When an encrypted directory is listed without the key, the filesystem
-must show "no-key names" that uniquely identify directory entries, are
-at most 255 (NAME_MAX) bytes long, and don't contain '/' or '\0'.
-Currently, for short names the no-key name is the base64 encoding of the
-ciphertext filename, while for long names it's the base64 encoding of
-the ciphertext filename's dirhash and second-to-last 16-byte block.
-
-This format has the following problems:
-
-- Since it doesn't always include the dirhash, it's incompatible with
-  directories that will use a secret-keyed dirhash over the plaintext
-  filenames.  In this case, the dirhash won't be computable from the
-  ciphertext name without the key, so it instead must be retrieved from
-  the directory entry and always included in the no-key name.
-  Casefolded encrypted directories will use this type of dirhash.
-
-- It's ambiguous: it's possible to craft two filenames that map to the
-  same no-key name, since the method used to abbreviate long filenames
-  doesn't use a proper cryptographic hash function.
-
-Solve both these problems by switching to a new no-key name format that
-is the base64 encoding of a variable-length structure that contains the
-dirhash, up to 149 bytes of the ciphertext filename, and (if any bytes
-remain) the SHA-256 of the remaining bytes of the ciphertext filename.
-
-This ensures that each no-key name contains everything needed to find
-the directory entry again, contains only legal characters, doesn't
-exceed NAME_MAX, is unambiguous unless there's a SHA-256 collision, and
-that we only take the performance hit of SHA-256 on very long filenames.
-
-Note: this change does *not* address the existing issue where users can
-modify the 'dirhash' part of a no-key name and the filesystem may still
-accept the name.
-
-Signed-off-by: Daniel Rosenberg <drosen@google.com>
-[EB: improved comments and commit message, fixed checking return value
- of base64_decode(), check for SHA-256 error, continue to set disk_name
- for short names to keep matching simpler, and many other cleanups]
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- Documentation/filesystems/fscrypt.rst |   2 +-
- fs/crypto/Kconfig                     |   1 +
- fs/crypto/fname.c                     | 218 ++++++++++++++++++++------
- include/linux/fscrypt.h               |  76 +--------
- 4 files changed, 171 insertions(+), 126 deletions(-)
-
-diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
-index d5b1b49c3d002..01e909245fcde 100644
---- a/Documentation/filesystems/fscrypt.rst
-+++ b/Documentation/filesystems/fscrypt.rst
-@@ -1202,7 +1202,7 @@ filesystem-specific hash(es) needed for directory lookups.  This
- allows the filesystem to still, with a high degree of confidence, map
- the filename given in ->lookup() back to a particular directory entry
- that was previously listed by readdir().  See :c:type:`struct
--fscrypt_digested_name` in the source for more details.
-+fscrypt_nokey_name` in the source for more details.
- 
- Note that the precise way that filenames are presented to userspace
- without the key is subject to change in the future.  It is only meant
-diff --git a/fs/crypto/Kconfig b/fs/crypto/Kconfig
-index 02df95b44331d..8046d7c7a3e9c 100644
---- a/fs/crypto/Kconfig
-+++ b/fs/crypto/Kconfig
-@@ -21,5 +21,6 @@ config FS_ENCRYPTION_ALGS
- 	select CRYPTO_CTS
- 	select CRYPTO_ECB
- 	select CRYPTO_HMAC
-+	select CRYPTO_SHA256
- 	select CRYPTO_SHA512
- 	select CRYPTO_XTS
-diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index 2d0d5a934e170..938220292e8de 100644
---- a/fs/crypto/fname.c
-+++ b/fs/crypto/fname.c
-@@ -13,9 +13,85 @@
- 
- #include <linux/namei.h>
- #include <linux/scatterlist.h>
-+#include <crypto/hash.h>
-+#include <crypto/sha.h>
- #include <crypto/skcipher.h>
- #include "fscrypt_private.h"
- 
-+/**
-+ * struct fscrypt_nokey_name - identifier for directory entry when key is absent
-+ *
-+ * When userspace lists an encrypted directory without access to the key, the
-+ * filesystem must present a unique "no-key name" for each filename that allows
-+ * it to find the directory entry again if requested.  Naively, that would just
-+ * mean using the ciphertext filenames.  However, since the ciphertext filenames
-+ * can contain illegal characters ('\0' and '/'), they must be encoded in some
-+ * way.  We use base64.  But that can cause names to exceed NAME_MAX (255
-+ * bytes), so we also need to use a strong hash to abbreviate long names.
-+ *
-+ * The filesystem may also need another kind of hash, the "dirhash", to quickly
-+ * find the directory entry.  Since filesystems normally compute the dirhash
-+ * over the on-disk filename (i.e. the ciphertext), it's not computable from
-+ * no-key names that abbreviate the ciphertext using the strong hash to fit in
-+ * NAME_MAX.  It's also not computable if it's a keyed hash taken over the
-+ * plaintext (but it may still be available in the on-disk directory entry);
-+ * casefolded directories use this type of dirhash.  At least in these cases,
-+ * each no-key name must include the name's dirhash too.
-+ *
-+ * To meet all these requirements, we base64-encode the following
-+ * variable-length structure.  It contains the dirhash, or 0's if the filesystem
-+ * didn't provide one; up to 149 bytes of the ciphertext name; and for
-+ * ciphertexts longer than 149 bytes, also the SHA-256 of the remaining bytes.
-+ *
-+ * This ensures that each no-key name contains everything needed to find the
-+ * directory entry again, contains only legal characters, doesn't exceed
-+ * NAME_MAX, is unambiguous unless there's a SHA-256 collision, and that we only
-+ * take the performance hit of SHA-256 on very long filenames (which are rare).
-+ */
-+struct fscrypt_nokey_name {
-+	u32 dirhash[2];
-+	u8 bytes[149];
-+	u8 sha256[SHA256_DIGEST_SIZE];
-+}; /* 189 bytes => 252 bytes base64-encoded, which is <= NAME_MAX (255) */
-+
-+/*
-+ * Decoded size of max-size nokey name, i.e. a name that was abbreviated using
-+ * the strong hash and thus includes the 'sha256' field.  This isn't simply
-+ * sizeof(struct fscrypt_nokey_name), as the padding at the end isn't included.
-+ */
-+#define FSCRYPT_NOKEY_NAME_MAX	offsetofend(struct fscrypt_nokey_name, sha256)
-+
-+static struct crypto_shash *sha256_hash_tfm;
-+
-+static int fscrypt_do_sha256(const u8 *data, unsigned int data_len, u8 *result)
-+{
-+	struct crypto_shash *tfm = READ_ONCE(sha256_hash_tfm);
-+
-+	if (unlikely(!tfm)) {
-+		struct crypto_shash *prev_tfm;
-+
-+		tfm = crypto_alloc_shash("sha256", 0, 0);
-+		if (IS_ERR(tfm)) {
-+			fscrypt_err(NULL,
-+				    "Error allocating SHA-256 transform: %ld",
-+				    PTR_ERR(tfm));
-+			return PTR_ERR(tfm);
-+		}
-+		prev_tfm = cmpxchg(&sha256_hash_tfm, NULL, tfm);
-+		if (prev_tfm) {
-+			crypto_free_shash(tfm);
-+			tfm = prev_tfm;
-+		}
-+	}
-+	{
-+		SHASH_DESC_ON_STACK(desc, tfm);
-+
-+		desc->tfm = tfm;
-+
-+		return crypto_shash_digest(desc, data, data_len, result);
-+	}
-+}
-+
- static inline bool fscrypt_is_dot_dotdot(const struct qstr *str)
- {
- 	if (str->len == 1 && str->name[0] == '.')
-@@ -207,9 +283,7 @@ int fscrypt_fname_alloc_buffer(const struct inode *inode,
- 			       u32 max_encrypted_len,
- 			       struct fscrypt_str *crypto_str)
- {
--	const u32 max_encoded_len =
--		max_t(u32, BASE64_CHARS(FSCRYPT_FNAME_MAX_UNDIGESTED_SIZE),
--		      1 + BASE64_CHARS(sizeof(struct fscrypt_digested_name)));
-+	const u32 max_encoded_len = BASE64_CHARS(FSCRYPT_NOKEY_NAME_MAX);
- 	u32 max_presented_len;
- 
- 	max_presented_len = max(max_encoded_len, max_encrypted_len);
-@@ -242,9 +316,9 @@ EXPORT_SYMBOL(fscrypt_fname_free_buffer);
-  *
-  * The caller must have allocated sufficient memory for the @oname string.
-  *
-- * If the key is available, we'll decrypt the disk name; otherwise, we'll encode
-- * it for presentation.  Short names are directly base64-encoded, while long
-- * names are encoded in fscrypt_digested_name format.
-+ * If the key is available, we'll decrypt the disk name.  Otherwise, we'll
-+ * encode it for presentation in fscrypt_nokey_name format.
-+ * See struct fscrypt_nokey_name for details.
-  *
-  * Return: 0 on success, -errno on failure
-  */
-@@ -254,7 +328,9 @@ int fscrypt_fname_disk_to_usr(const struct inode *inode,
- 			      struct fscrypt_str *oname)
- {
- 	const struct qstr qname = FSTR_TO_QSTR(iname);
--	struct fscrypt_digested_name digested_name;
-+	struct fscrypt_nokey_name nokey_name;
-+	u32 size; /* size of the unencoded no-key name */
-+	int err;
- 
- 	if (fscrypt_is_dot_dotdot(&qname)) {
- 		oname->name[0] = '.';
-@@ -269,24 +345,37 @@ int fscrypt_fname_disk_to_usr(const struct inode *inode,
- 	if (fscrypt_has_encryption_key(inode))
- 		return fname_decrypt(inode, iname, oname);
- 
--	if (iname->len <= FSCRYPT_FNAME_MAX_UNDIGESTED_SIZE) {
--		oname->len = base64_encode(iname->name, iname->len,
--					   oname->name);
--		return 0;
--	}
-+	/*
-+	 * Sanity check that struct fscrypt_nokey_name doesn't have padding
-+	 * between fields and that its encoded size never exceeds NAME_MAX.
-+	 */
-+	BUILD_BUG_ON(offsetofend(struct fscrypt_nokey_name, dirhash) !=
-+		     offsetof(struct fscrypt_nokey_name, bytes));
-+	BUILD_BUG_ON(offsetofend(struct fscrypt_nokey_name, bytes) !=
-+		     offsetof(struct fscrypt_nokey_name, sha256));
-+	BUILD_BUG_ON(BASE64_CHARS(FSCRYPT_NOKEY_NAME_MAX) > NAME_MAX);
-+
- 	if (hash) {
--		digested_name.hash = hash;
--		digested_name.minor_hash = minor_hash;
-+		nokey_name.dirhash[0] = hash;
-+		nokey_name.dirhash[1] = minor_hash;
-+	} else {
-+		nokey_name.dirhash[0] = 0;
-+		nokey_name.dirhash[1] = 0;
-+	}
-+	if (iname->len <= sizeof(nokey_name.bytes)) {
-+		memcpy(nokey_name.bytes, iname->name, iname->len);
-+		size = offsetof(struct fscrypt_nokey_name, bytes[iname->len]);
- 	} else {
--		digested_name.hash = 0;
--		digested_name.minor_hash = 0;
-+		memcpy(nokey_name.bytes, iname->name, sizeof(nokey_name.bytes));
-+		/* Compute strong hash of remaining part of name. */
-+		err = fscrypt_do_sha256(&iname->name[sizeof(nokey_name.bytes)],
-+					iname->len - sizeof(nokey_name.bytes),
-+					nokey_name.sha256);
-+		if (err)
-+			return err;
-+		size = FSCRYPT_NOKEY_NAME_MAX;
- 	}
--	memcpy(digested_name.digest,
--	       FSCRYPT_FNAME_DIGEST(iname->name, iname->len),
--	       FSCRYPT_FNAME_DIGEST_SIZE);
--	oname->name[0] = '_';
--	oname->len = 1 + base64_encode((const u8 *)&digested_name,
--				       sizeof(digested_name), oname->name + 1);
-+	oname->len = base64_encode((const u8 *)&nokey_name, size, oname->name);
- 	return 0;
- }
- EXPORT_SYMBOL(fscrypt_fname_disk_to_usr);
-@@ -307,8 +396,7 @@ EXPORT_SYMBOL(fscrypt_fname_disk_to_usr);
-  * get the disk_name.
-  *
-  * Else, for keyless @lookup operations, @iname is the presented ciphertext, so
-- * we decode it to get either the ciphertext disk_name (for short names) or the
-- * fscrypt_digested_name (for long names).  Non-@lookup operations will be
-+ * we decode it to get the fscrypt_nokey_name.  Non-@lookup operations will be
-  * impossible in this case, so we fail them with ENOKEY.
-  *
-  * If successful, fscrypt_free_filename() must be called later to clean up.
-@@ -318,8 +406,8 @@ EXPORT_SYMBOL(fscrypt_fname_disk_to_usr);
- int fscrypt_setup_filename(struct inode *dir, const struct qstr *iname,
- 			      int lookup, struct fscrypt_name *fname)
- {
-+	struct fscrypt_nokey_name *nokey_name;
- 	int ret;
--	int digested;
- 
- 	memset(fname, 0, sizeof(struct fscrypt_name));
- 	fname->usr_fname = iname;
-@@ -359,40 +447,31 @@ int fscrypt_setup_filename(struct inode *dir, const struct qstr *iname,
- 	 * We don't have the key and we are doing a lookup; decode the
- 	 * user-supplied name
- 	 */
--	if (iname->name[0] == '_') {
--		if (iname->len !=
--		    1 + BASE64_CHARS(sizeof(struct fscrypt_digested_name)))
--			return -ENOENT;
--		digested = 1;
--	} else {
--		if (iname->len >
--		    BASE64_CHARS(FSCRYPT_FNAME_MAX_UNDIGESTED_SIZE))
--			return -ENOENT;
--		digested = 0;
--	}
- 
--	fname->crypto_buf.name =
--		kmalloc(max_t(size_t, FSCRYPT_FNAME_MAX_UNDIGESTED_SIZE,
--			      sizeof(struct fscrypt_digested_name)),
--			GFP_KERNEL);
-+	if (iname->len > BASE64_CHARS(FSCRYPT_NOKEY_NAME_MAX))
-+		return -ENOENT;
-+
-+	fname->crypto_buf.name = kmalloc(FSCRYPT_NOKEY_NAME_MAX, GFP_KERNEL);
- 	if (fname->crypto_buf.name == NULL)
- 		return -ENOMEM;
- 
--	ret = base64_decode(iname->name + digested, iname->len - digested,
--			    fname->crypto_buf.name);
--	if (ret < 0) {
-+	ret = base64_decode(iname->name, iname->len, fname->crypto_buf.name);
-+	if (ret < (int)offsetof(struct fscrypt_nokey_name, bytes[1]) ||
-+	    (ret > offsetof(struct fscrypt_nokey_name, sha256) &&
-+	     ret != FSCRYPT_NOKEY_NAME_MAX)) {
- 		ret = -ENOENT;
- 		goto errout;
- 	}
- 	fname->crypto_buf.len = ret;
--	if (digested) {
--		const struct fscrypt_digested_name *n =
--			(const void *)fname->crypto_buf.name;
--		fname->hash = n->hash;
--		fname->minor_hash = n->minor_hash;
--	} else {
--		fname->disk_name.name = fname->crypto_buf.name;
--		fname->disk_name.len = fname->crypto_buf.len;
-+
-+	nokey_name = (void *)fname->crypto_buf.name;
-+	fname->hash = nokey_name->dirhash[0];
-+	fname->minor_hash = nokey_name->dirhash[1];
-+	if (ret != FSCRYPT_NOKEY_NAME_MAX) {
-+		/* The full ciphertext filename is available. */
-+		fname->disk_name.name = nokey_name->bytes;
-+		fname->disk_name.len =
-+			ret - offsetof(struct fscrypt_nokey_name, bytes);
- 	}
- 	return 0;
- 
-@@ -402,6 +481,43 @@ int fscrypt_setup_filename(struct inode *dir, const struct qstr *iname,
- }
- EXPORT_SYMBOL(fscrypt_setup_filename);
- 
-+/**
-+ * fscrypt_match_name() - test whether the given name matches a directory entry
-+ * @fname: the name being searched for
-+ * @de_name: the name from the directory entry
-+ * @de_name_len: the length of @de_name in bytes
-+ *
-+ * Normally @fname->disk_name will be set, and in that case we simply compare
-+ * that to the name stored in the directory entry.  The only exception is that
-+ * if we don't have the key for an encrypted directory and the name we're
-+ * looking for is very long, then we won't have the full disk_name and instead
-+ * we'll need to match against a fscrypt_nokey_name that includes a strong hash.
-+ *
-+ * Return: %true if the name matches, otherwise %false.
-+ */
-+bool fscrypt_match_name(const struct fscrypt_name *fname,
-+			const u8 *de_name, u32 de_name_len)
-+{
-+	const struct fscrypt_nokey_name *nokey_name =
-+		(const void *)fname->crypto_buf.name;
-+	u8 sha256[SHA256_DIGEST_SIZE];
-+
-+	if (likely(fname->disk_name.name)) {
-+		if (de_name_len != fname->disk_name.len)
-+			return false;
-+		return !memcmp(de_name, fname->disk_name.name, de_name_len);
-+	}
-+	if (de_name_len <= sizeof(nokey_name->bytes))
-+		return false;
-+	if (memcmp(de_name, nokey_name->bytes, sizeof(nokey_name->bytes)))
-+		return false;
-+	if (fscrypt_do_sha256(&de_name[sizeof(nokey_name->bytes)],
-+			      de_name_len - sizeof(nokey_name->bytes), sha256))
-+		return false;
-+	return !memcmp(sha256, nokey_name->sha256, sizeof(sha256));
-+}
-+EXPORT_SYMBOL_GPL(fscrypt_match_name);
-+
- /**
-  * fscrypt_fname_siphash() - calculate the SipHash of a filename
-  * @dir: the parent directory
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 2bb43a772f361..556f4adf5dc58 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -172,83 +172,11 @@ extern int fscrypt_fname_disk_to_usr(const struct inode *inode,
- 				     u32 hash, u32 minor_hash,
- 				     const struct fscrypt_str *iname,
- 				     struct fscrypt_str *oname);
-+extern bool fscrypt_match_name(const struct fscrypt_name *fname,
-+			       const u8 *de_name, u32 de_name_len);
- extern u64 fscrypt_fname_siphash(const struct inode *dir,
- 				 const struct qstr *name);
- 
--#define FSCRYPT_FNAME_MAX_UNDIGESTED_SIZE	32
--
--/* Extracts the second-to-last ciphertext block; see explanation below */
--#define FSCRYPT_FNAME_DIGEST(name, len)	\
--	((name) + round_down((len) - FS_CRYPTO_BLOCK_SIZE - 1, \
--			     FS_CRYPTO_BLOCK_SIZE))
--
--#define FSCRYPT_FNAME_DIGEST_SIZE	FS_CRYPTO_BLOCK_SIZE
--
--/**
-- * fscrypt_digested_name - alternate identifier for an on-disk filename
-- *
-- * When userspace lists an encrypted directory without access to the key,
-- * filenames whose ciphertext is longer than FSCRYPT_FNAME_MAX_UNDIGESTED_SIZE
-- * bytes are shown in this abbreviated form (base64-encoded) rather than as the
-- * full ciphertext (base64-encoded).  This is necessary to allow supporting
-- * filenames up to NAME_MAX bytes, since base64 encoding expands the length.
-- *
-- * To make it possible for filesystems to still find the correct directory entry
-- * despite not knowing the full on-disk name, we encode any filesystem-specific
-- * 'hash' and/or 'minor_hash' which the filesystem may need for its lookups,
-- * followed by the second-to-last ciphertext block of the filename.  Due to the
-- * use of the CBC-CTS encryption mode, the second-to-last ciphertext block
-- * depends on the full plaintext.  (Note that ciphertext stealing causes the
-- * last two blocks to appear "flipped".)  This makes accidental collisions very
-- * unlikely: just a 1 in 2^128 chance for two filenames to collide even if they
-- * share the same filesystem-specific hashes.
-- *
-- * However, this scheme isn't immune to intentional collisions, which can be
-- * created by anyone able to create arbitrary plaintext filenames and view them
-- * without the key.  Making the "digest" be a real cryptographic hash like
-- * SHA-256 over the full ciphertext would prevent this, although it would be
-- * less efficient and harder to implement, especially since the filesystem would
-- * need to calculate it for each directory entry examined during a search.
-- */
--struct fscrypt_digested_name {
--	u32 hash;
--	u32 minor_hash;
--	u8 digest[FSCRYPT_FNAME_DIGEST_SIZE];
--};
--
--/**
-- * fscrypt_match_name() - test whether the given name matches a directory entry
-- * @fname: the name being searched for
-- * @de_name: the name from the directory entry
-- * @de_name_len: the length of @de_name in bytes
-- *
-- * Normally @fname->disk_name will be set, and in that case we simply compare
-- * that to the name stored in the directory entry.  The only exception is that
-- * if we don't have the key for an encrypted directory and a filename in it is
-- * very long, then we won't have the full disk_name and we'll instead need to
-- * match against the fscrypt_digested_name.
-- *
-- * Return: %true if the name matches, otherwise %false.
-- */
--static inline bool fscrypt_match_name(const struct fscrypt_name *fname,
--				      const u8 *de_name, u32 de_name_len)
--{
--	if (unlikely(!fname->disk_name.name)) {
--		const struct fscrypt_digested_name *n =
--			(const void *)fname->crypto_buf.name;
--		if (WARN_ON_ONCE(fname->usr_fname->name[0] != '_'))
--			return false;
--		if (de_name_len <= FSCRYPT_FNAME_MAX_UNDIGESTED_SIZE)
--			return false;
--		return !memcmp(FSCRYPT_FNAME_DIGEST(de_name, de_name_len),
--			       n->digest, FSCRYPT_FNAME_DIGEST_SIZE);
--	}
--
--	if (de_name_len != fname->disk_name.len)
--		return false;
--	return !memcmp(de_name, fname->disk_name.name, fname->disk_name.len);
--}
--
- /* bio.c */
- extern void fscrypt_decrypt_bio(struct bio *);
- extern int fscrypt_zeroout_range(const struct inode *, pgoff_t, sector_t,
--- 
-2.25.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+aGkgTWlxdWVsIFJheW5hbCwKCk9uIDIwMjAvMS8yMCBQTSA2OjAzLCBNaXF1ZWwgUmF5bmFsIHdy
+b3RlOgo+IEhpIFdlaVhpb25nLAo+IAo+IFdlaVhpb25nIExpYW8gPGxpYW93ZWl4aW9uZ0BhbGx3
+aW5uZXJ0ZWNoLmNvbT4gd3JvdGUgb24gTW9uLCAyMCBKYW4KPiAyMDIwIDA5OjAzOjUzICswODAw
+Ogo+IAo+PiBJdCdzIHRoZSBsYXN0IG9uZSBvZiBhIHNlcmllcyBvZiBwYXRjaGVzIGZvciBhZGFw
+dGl2ZSB0byBNVEQgZGV2aWNlLgo+Pgo+PiBUaGUgbXRkcHN0b3JlIGlzIHNpbWlsYXIgdG8gbXRk
+b29wcyBidXQgbW9yZSBwb3dlcmZ1bC4gSXQgYmFzZXMgb24KPj4gcHN0b3JlL2JsaywgYWltcyB0
+byBzdG9yZSBwYW5pYyBhbmQgb29wcyBsb2cgdG8gYSBmbGFzaCBwYXJ0aXRpb24sCj4gCj4gICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxvZ3M/Cj4gCgpJIHdpbGwg
+Zml4IGl0LiBUaGFua3MuCgo+PiB3aGVyZSBpdCBjYW4gYmUgcmVhZCBiYWNrIGFzIGZpbGVzIGFm
+dGVyIG1vdW50aW5nIHBzdG9yZSBmaWxlc3lzdGVtLgo+Pgo+PiBUaGUgcHN0b3JlL2JsayBhbmQg
+Ymxrb29wcywgYSB3cmFwcGVyIGZvciBwc3RvcmUvYmxrLCBhcmUgZGVzaWduZWQgZm9yCj4+IGJs
+b2NrIGRldmljZSBhdCB0aGUgdmVyeSBiZWdpbm5pbmcsIGJ1dCBub3csIGNvbXBhdGlibGUgdG8g
+bm90IG9ubHkKPj4gYmxvY2sgZGV2aWNlLiBBZnRlciB0aGlzIHNlcmllcyBvZiBwYXRjaGVzLCBw
+c3RvcmUvYmxrIGNhbiBhbHNvIHdvcmsKPj4gZm9yIE1URCBkZXZpY2UuIFRvIG1ha2UgaXQgd29y
+aywgJ2Jsa2Rldicgb24ga2NvbmZpZyBvciBtb2R1bGUKPj4gcGFyYW1ldGVyIG9mIGJsa29vcHMg
+c2hvdWxkIGJlIHNldCBhcyBtdGQgZGV2aWNlIG5hbWUgb3IgbXRkIG51bWJlci4KPj4gU2VlIG1v
+cmUgYWJvdXQgcHN0b3JlL2JsayBhbmQgYmxrb29wcyBvbjoKPj4gICAgIERvY3VtZW50YXRpb24v
+YWRtaW4tZ3VpZGUvcHN0b3JlLWJsb2NrLnJzdAo+Pgo+PiBXaHkgZG8gd2UgbmVlZCBtdGRwc3Rv
+cmU/Cj4+IDEuIHJlcGV0aXRpdmUgam9icyBiZXR3ZWVuIHBzdG9yZSBhbmQgbXRkb29wcwo+PiAg
+ICBCb3RoIG9mIHBzdG9yZSBhbmQgbXRkb29wcyBkbyB0aGUgc2FtZSBqb2JzIHRoYXQgc3RvcmUg
+cGFuaWMvb29wcyBsb2cuCj4+ICAgIFRoZXkgaGF2ZSBtdWNoIHNpbWlsYXIgbG9naWMgdGhhdCBy
+ZWdpc3RlciB0byBrbXNnIGR1bXBlciBhbmQgc3RvcmUKPj4gICAgbG9nIHRvIHNldmVyYWwgY2h1
+bmtzIG9uZSBieSBvbmUuCj4+IDIuIGRvIHdoYXQgYSBkcml2ZXIgc2hvdWxkIGRvCj4+ICAgIFRv
+IG1lLCBhIGRyaXZlciBzaG91bGQgcHJvdmlkZSBtZXRob2RzIGluc3RlYWQgb2YgcG9saWNpZXMu
+IFdoYXQgTVRECj4+ICAgIHNob3VsZCBkbyBpcyB0byBwcm92aWRlIHJlYWQvd3JpdGUvZXJhc2Ug
+b3BlcmF0aW9ucywgZ2V0aW5nIHJpZCBvZiBjb2Rlcwo+PiAgICBhYm91dCBjaHVuayBtYW5hZ2Vt
+ZW50LCBrbXNnIGR1bXBlciBhbmQgY29uZmlndXJhdGlvbi4KPj4gMy4gZW5oYW5jZWQgZmVhdHVy
+ZQo+PiAgICBOb3Qgb25seSBzdG9yZSBsb2csIGJ1dCBhbHNvIHNob3cgaXQgYXMgZmlsZXMuCj4+
+ICAgIE5vdCBvbmx5IGxvZywgYnV0IGFsc28gdHJpZ2dlciB0aW1lIGFuZCB0cmlnZ2VyIGNvdW50
+Lgo+PiAgICBOb3Qgb25seSBwYW5pYy9vb3BzIGxvZywgYnV0IGFsc28gbG9nIHJlY29yZGVyIGZv
+ciBwbXNnLCBjb25zb2xlIGFuZAo+PiAgICBmdHJhY2UgaW4gdGhlIGZ1dHVyZS4KPj4KPj4gU2ln
+bmVkLW9mZi1ieTogV2VpWGlvbmcgTGlhbyA8bGlhb3dlaXhpb25nQGFsbHdpbm5lcnRlY2guY29t
+Pgo+PiBSZXBvcnRlZC1ieToga2J1aWxkIHRlc3Qgcm9ib3QgPGxrcEBpbnRlbC5jb20+Cj4gCj4g
+SSBkb24ndCB0aGluZyB0aGUgdGVzdCByb2JvdCBoYXMgYSBtZWFuaW5nIGhlcmUuCj4gCgpJIGRv
+IG5vdCBrbm93IHdoYXQgbWVhbmluZyB0aGUgdGVzdCByZWJvdCB0YWcgaGFzLCBidXQgaSB3YXMg
+c3VnZ2VzdGVkCmZyb20ga2J1aWxkIHRlc3QgcmVib3QgdG8gZG8gc28uIEhvdyBzaG91bGQgaSBk
+byB0byBpdCA/IERyb3AgdGhlIHRhZyBvcgprZWVwIHRoZSB0YWcgb3Igb3RoZXI/ClRoZSBlbWFp
+bCBmcm9tIGtidWlsZCB0ZXN0IHJlYm90IHNhaWQgdGhhdDoKCklmIHlvdSBmaXggdGhlIGlzc3Vl
+LCBraW5kbHkgYWRkIGZvbGxvd2luZyB0YWcKUmVwb3J0ZWQtYnk6IGtidWlsZCB0ZXN0IHJvYm90
+IDxsa3BAaW50ZWwuY29tPgoKPj4gLS0tCj4+ICBkcml2ZXJzL210ZC9LY29uZmlnICAgICB8ICAx
+MCArCj4+ICBkcml2ZXJzL210ZC9NYWtlZmlsZSAgICB8ICAgMSArCj4+ICBkcml2ZXJzL210ZC9t
+dGRwc3RvcmUuYyB8IDUzMCArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysKPj4gIDMgZmlsZXMgY2hhbmdlZCwgNTQxIGluc2VydGlvbnMoKykKPj4gIGNyZWF0
+ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL210ZC9tdGRwc3RvcmUuYwo+Pgo+PiBkaWZmIC0tZ2l0IGEv
+ZHJpdmVycy9tdGQvS2NvbmZpZyBiL2RyaXZlcnMvbXRkL0tjb25maWcKPj4gaW5kZXggNDJkNDAx
+ZWE2MGVlLi5hNmU1OTQ5NWE3MzggMTAwNjQ0Cj4+IC0tLSBhL2RyaXZlcnMvbXRkL0tjb25maWcK
+Pj4gKysrIGIvZHJpdmVycy9tdGQvS2NvbmZpZwo+PiBAQCAtMTcwLDYgKzE3MCwxNiBAQCBjb25m
+aWcgTVREX09PUFMKPj4gIAkgIGJ1ZmZlciBpbiBhIGZsYXNoIHBhcnRpdGlvbiB3aGVyZSBpdCBj
+YW4gYmUgcmVhZCBiYWNrIGF0IHNvbWUKPj4gIAkgIGxhdGVyIHBvaW50Lgo+PiAgCj4+ICtjb25m
+aWcgTVREX1BTVE9SRQo+PiArCXRyaXN0YXRlICJMb2cgcGFuaWMvb29wcyB0byBhbiBNVEQgYnVm
+ZmVyIGJhc2Ugb24gcHN0b3JlIgo+IAo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgYmFzZWQKPiAKCkkgd2lsbCBmaXggaXQuIFRoYW5rcy4KCj4+ICsJ
+ZGVwZW5kcyBvbiBQU1RPUkVfQkxLT09QUwo+PiArCWhlbHAKPj4gKwkgIFRoaXMgZW5hYmxlcyBw
+YW5pYyBhbmQgb29wcyBtZXNzYWdlcyB0byBiZSBsb2dnZWQgdG8gYSBjaXJjdWxhcgo+PiArCSAg
+YnVmZmVyIGluIGEgZmxhc2ggcGFydGl0aW9uIHdoZXJlIGl0IGNhbiBiZSByZWFkIGJhY2sgYXMg
+ZmlsZXMgYWZ0ZXIKPj4gKwkgIG1vdW50aW5nIHBzdG9yZSBmaWxlc3lzdGVtLgo+PiArCj4+ICsJ
+ICBJZiB1bnN1cmUsIHNheSBOLgo+PiArCj4+ICBjb25maWcgTVREX1NXQVAKPj4gIAl0cmlzdGF0
+ZSAiU3dhcCBvbiBNVEQgZGV2aWNlIHN1cHBvcnQiCj4+ICAJZGVwZW5kcyBvbiBNVEQgJiYgU1dB
+UAo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvTWFrZWZpbGUgYi9kcml2ZXJzL210ZC9NYWtl
+ZmlsZQo+PiBpbmRleCA1NmNjNjBjY2M0NzcuLjU5M2QwNTkzYTAzOCAxMDA2NDQKPj4gLS0tIGEv
+ZHJpdmVycy9tdGQvTWFrZWZpbGUKPj4gKysrIGIvZHJpdmVycy9tdGQvTWFrZWZpbGUKPj4gQEAg
+LTIwLDYgKzIwLDcgQEAgb2JqLSQoQ09ORklHX1JGRF9GVEwpCQkrPSByZmRfZnRsLm8KPj4gIG9i
+ai0kKENPTkZJR19TU0ZEQykJCSs9IHNzZmRjLm8KPj4gIG9iai0kKENPTkZJR19TTV9GVEwpCQkr
+PSBzbV9mdGwubwo+PiAgb2JqLSQoQ09ORklHX01URF9PT1BTKQkJKz0gbXRkb29wcy5vCj4+ICtv
+YmotJChDT05GSUdfTVREX1BTVE9SRSkJKz0gbXRkcHN0b3JlLm8KPj4gIG9iai0kKENPTkZJR19N
+VERfU1dBUCkJCSs9IG10ZHN3YXAubwo+PiAgCj4+ICBuZnRsLW9ianMJCTo9IG5mdGxjb3JlLm8g
+bmZ0bG1vdW50Lm8KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL210ZHBzdG9yZS5jIGIvZHJp
+dmVycy9tdGQvbXRkcHN0b3JlLmMKPj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQKPj4gaW5kZXggMDAw
+MDAwMDAwMDAwLi5hYjRhY2QzYTkwMTEKPj4gLS0tIC9kZXYvbnVsbAo+PiArKysgYi9kcml2ZXJz
+L210ZC9tdGRwc3RvcmUuYwo+PiBAQCAtMCwwICsxLDUzMCBAQAo+PiArLy8gU1BEWC1MaWNlbnNl
+LUlkZW50aWZpZXI6IEdQTC0yLjAKPj4gKy8qCj4+ICsgKiBNVEQgT29wcy9QYW5pYyBsb2dlciBm
+b3IgcHN0b3JlL2Jsawo+PiArICoKPj4gKyAqIENvcHlyaWdodCAoQykgMjAxOSBXZWlYaW9uZyBM
+aWFvIDxsaWFvd2VpeGlvbmdAZ2FsbHdpbm5lcnRlY2guY29tPgo+PiArICoKPj4gKyAqIFRoaXMg
+cHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOyB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3Ig
+bW9kaWZ5Cj4+ICsgKiBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1Ymxp
+YyBMaWNlbnNlIHZlcnNpb24gMiBhcwo+PiArICogcHVibGlzaGVkIGJ5IHRoZSBGcmVlIFNvZnR3
+YXJlIEZvdW5kYXRpb24uCj4+ICsgKgo+PiArICogVGhpcyBwcm9ncmFtIGlzIGRpc3RyaWJ1dGVk
+IGluIHRoZSBob3BlIHRoYXQgaXQgd2lsbCBiZSB1c2VmdWwsCj4+ICsgKiBidXQgV0lUSE9VVCBB
+TlkgV0FSUkFOVFk7IHdpdGhvdXQgZXZlbiB0aGUgaW1wbGllZCB3YXJyYW50eSBvZgo+PiArICog
+TUVSQ0hBTlRBQklMSVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLiBTZWUg
+dGhlCj4+ICsgKiBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBmb3IgbW9yZSBkZXRhaWxzLgo+
+IAo+IFRoZSBsaWNlbnNlIHRleHQgaXMgbm90IG5lZWRlZCBzaW5jZSB5b3UgYWRkZWQgU1BEWCB0
+YWcuCj4gCgpJIHdpbGwgZml4IGl0LiBUaGFua3MuCgo+PiArICoKPj4gKyAqLwo+PiArI2RlZmlu
+ZSBwcl9mbXQoZm10KSAibXRkb29wcy1wc3RvcmU6ICIgZm10Cj4+ICsKPj4gKyNpbmNsdWRlIDxs
+aW51eC9rZXJuZWwuaD4KPj4gKyNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4KPj4gKyNpbmNsdWRl
+IDxsaW51eC9ibGtvb3BzLmg+Cj4+ICsjaW5jbHVkZSA8bGludXgvbXRkL210ZC5oPgo+PiArI2lu
+Y2x1ZGUgPGxpbnV4L2JpdG9wcy5oPgo+PiArCj4+ICsvKiBNYXhpbXVtIE1URCBwYXJ0aXRpb24g
+c2l6ZSAqLwo+PiArI2RlZmluZSBNVERQU1RPUkVfTUFYX01URF9TSVpFICg4ICogMTAyNCAqIDEw
+MjQpCj4gCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFNaXzhNCj4gCgpJIHdp
+bGwgZml4IGl0LiBUaGFua3MuCgo+PiArCj4+ICtzdGF0aWMgc3RydWN0IG10ZHBzdG9yZV9jb250
+ZXh0IHsKPj4gKwlpbnQgaW5kZXg7Cj4+ICsJc3RydWN0IGJsa29vcHNfaW5mbyBib19pbmZvOwo+
+PiArCXN0cnVjdCBibGtvb3BzX2RldmljZSBib19kZXY7Cj4+ICsJc3RydWN0IG10ZF9pbmZvICpt
+dGQ7Cj4+ICsJdW5zaWduZWQgbG9uZyAqcm1tYXA7CQkvKiByZW1vdmVkIGJpdCBtYXAgKi8KPj4g
+Kwl1bnNpZ25lZCBsb25nICp1c2VkbWFwOwkJLyogdXNlZCBiaXQgbWFwICovCj4+ICsJLyoKPj4g
+KwkgKiB1c2VkIGZvciBwYW5pYyB3cml0ZQo+PiArCSAqIEFzIHRoZXJlIGFyZSBubyBibG9ja19p
+c2JhZCBmb3IgcGFuaWMgY2FzZSwgd2Ugc2hvdWxkIGtlZXAgdGhpcwo+PiArCSAqIHN0YXR1cyBi
+ZWZvcmUgcGFuaWMgdG8gZW5zdXJlIHBhbmljX3dyaXRlIG5vdCBmYWlsZWQuCj4+ICsJICovCj4+
+ICsJdW5zaWduZWQgbG9uZyAqYmFkbWFwOwkJLyogYmFkIGJsb2NrIGJpdCBtYXAgKi8KPj4gK30g
+b29wc19jeHQ7Cj4+ICsKPj4gK3N0YXRpYyBpbnQgbXRkcHN0b3JlX2Jsb2NrX2lzYmFkKHN0cnVj
+dCBtdGRwc3RvcmVfY29udGV4dCAqY3h0LCBsb2ZmX3Qgb2ZmKQo+PiArewo+PiArCWludCByZXQ7
+Cj4+ICsJc3RydWN0IG10ZF9pbmZvICptdGQgPSBjeHQtPm10ZDsKPj4gKwl1NjQgYmxrbnVtID0g
+ZGl2X3U2NChvZmYsIG10ZC0+ZXJhc2VzaXplKTsKPj4gKwo+PiArCWlmICh0ZXN0X2JpdChibGtu
+dW0sIGN4dC0+YmFkbWFwKSkKPj4gKwkJcmV0dXJuIHRydWU7Cj4+ICsJcmV0ID0gbXRkX2Jsb2Nr
+X2lzYmFkKG10ZCwgb2ZmKTsKPj4gKwlpZiAocmV0IDwgMCkgewo+PiArCQlwcl9lcnIoIm10ZF9i
+bG9ja19pc2JhZCBmYWlsZWQsIGFib3J0aW5nXG4iKTsKPj4gKwkJcmV0dXJuIHJldDsKPj4gKwl9
+IGVsc2UgaWYgKHJldCA+IDApIHsKPj4gKwkJc2V0X2JpdChibGtudW0sIGN4dC0+YmFkbWFwKTsK
+Pj4gKwkJcmV0dXJuIHRydWU7Cj4+ICsJfQo+PiArCXJldHVybiBmYWxzZTsKPj4gK30KPj4gKwo+
+PiArc3RhdGljIGlubGluZSBpbnQgbXRkcHN0b3JlX3BhbmljX2Jsb2NrX2lzYmFkKHN0cnVjdCBt
+dGRwc3RvcmVfY29udGV4dCAqY3h0LAo+PiArCQlsb2ZmX3Qgb2ZmKQo+PiArewo+PiArCXN0cnVj
+dCBtdGRfaW5mbyAqbXRkID0gY3h0LT5tdGQ7Cj4+ICsJdTY0IGJsa251bSA9IGRpdl91NjQob2Zm
+LCBtdGQtPmVyYXNlc2l6ZSk7Cj4+ICsKPj4gKwlyZXR1cm4gdGVzdF9iaXQoYmxrbnVtLCBjeHQt
+PmJhZG1hcCk7Cj4+ICt9Cj4+ICsKPj4gK3N0YXRpYyBpbmxpbmUgdm9pZCBtdGRwc3RvcmVfbWFy
+a191c2VkKHN0cnVjdCBtdGRwc3RvcmVfY29udGV4dCAqY3h0LAo+PiArCQlsb2ZmX3Qgb2ZmKQo+
+PiArewo+PiArCXU2NCB6b25lbnVtID0gZGl2X3U2NChvZmYsIGN4dC0+Ym9faW5mby5kbWVzZ19z
+aXplKTsKPj4gKwo+PiArCXByX2RlYnVnKCJtYXJrIHpvbmUgJWxsdSB1c2VkXG4iLCB6b25lbnVt
+KTsKPj4gKwlzZXRfYml0KHpvbmVudW0sIGN4dC0+dXNlZG1hcCk7Cj4+ICt9Cj4+ICsKPj4gK3N0
+YXRpYyBpbmxpbmUgdm9pZCBtdGRwc3RvcmVfbWFya191bnVzZWQoc3RydWN0IG10ZHBzdG9yZV9j
+b250ZXh0ICpjeHQsCj4+ICsJCWxvZmZfdCBvZmYpCj4+ICt7Cj4+ICsJdTY0IHpvbmVudW0gPSBk
+aXZfdTY0KG9mZiwgY3h0LT5ib19pbmZvLmRtZXNnX3NpemUpOwo+PiArCj4+ICsJcHJfZGVidWco
+Im1hcmsgem9uZSAlbGx1IHVudXNlZFxuIiwgem9uZW51bSk7Cj4+ICsJY2xlYXJfYml0KHpvbmVu
+dW0sIGN4dC0+dXNlZG1hcCk7Cj4+ICt9Cj4+ICsKPj4gK3N0YXRpYyBpbmxpbmUgdm9pZCBtdGRw
+c3RvcmVfYmxvY2tfbWFya191bnVzZWQoc3RydWN0IG10ZHBzdG9yZV9jb250ZXh0ICpjeHQsCj4+
+ICsJCWxvZmZfdCBvZmYpCj4+ICt7Cj4+ICsJdTY0IHpvbmVudW0gPSBkaXZfdTY0KG9mZiwgY3h0
+LT5ib19pbmZvLmRtZXNnX3NpemUpOwo+PiArCXUzMiB6b25lY250ID0gY3h0LT5tdGQtPmVyYXNl
+c2l6ZSAvIGN4dC0+Ym9faW5mby5kbWVzZ19zaXplOwo+PiArCj4+ICsJd2hpbGUgKHpvbmVjbnQg
+PiAwKSB7Cj4+ICsJCXByX2RlYnVnKCJtYXJrIHpvbmUgJWxsdSB1bnVzZWRcbiIsIHpvbmVudW0p
+Owo+PiArCQljbGVhcl9iaXQoem9uZW51bSwgY3h0LT51c2VkbWFwKTsKPj4gKwkJem9uZW51bSsr
+Owo+PiArCQl6b25lY250LS07Cj4+ICsJfQo+PiArfQo+PiArCj4+ICtzdGF0aWMgaW5saW5lIGlu
+dCBtdGRwc3RvcmVfaXNfdXNlZChzdHJ1Y3QgbXRkcHN0b3JlX2NvbnRleHQgKmN4dCwgbG9mZl90
+IG9mZikKPj4gK3sKPj4gKwl1NjQgem9uZW51bSA9IGRpdl91NjQob2ZmLCBjeHQtPmJvX2luZm8u
+ZG1lc2dfc2l6ZSk7Cj4+ICsJdTY0IGJsa251bSA9IGRpdl91NjQob2ZmLCBjeHQtPm10ZC0+ZXJh
+c2VzaXplKTsKPj4gKwo+PiArCWlmICh0ZXN0X2JpdChibGtudW0sIGN4dC0+YmFkbWFwKSkKPj4g
+KwkJcmV0dXJuIHRydWU7Cj4+ICsJcmV0dXJuIHRlc3RfYml0KHpvbmVudW0sIGN4dC0+dXNlZG1h
+cCk7Cj4+ICt9Cj4+ICsKPj4gK3N0YXRpYyBpbnQgbXRkcHN0b3JlX2Jsb2NrX2lzX3VzZWQoc3Ry
+dWN0IG10ZHBzdG9yZV9jb250ZXh0ICpjeHQsCj4+ICsJCWxvZmZfdCBvZmYpCj4+ICt7Cj4+ICsJ
+dTY0IHpvbmVudW0gPSBkaXZfdTY0KG9mZiwgY3h0LT5ib19pbmZvLmRtZXNnX3NpemUpOwo+PiAr
+CXUzMiB6b25lY250ID0gY3h0LT5tdGQtPmVyYXNlc2l6ZSAvIGN4dC0+Ym9faW5mby5kbWVzZ19z
+aXplOwo+PiArCj4+ICsJd2hpbGUgKHpvbmVjbnQgPiAwKSB7Cj4+ICsJCWlmICh0ZXN0X2JpdCh6
+b25lbnVtLCBjeHQtPnVzZWRtYXApKQo+PiArCQkJcmV0dXJuIHRydWU7Cj4+ICsJCXpvbmVudW0r
+KzsKPj4gKwkJem9uZWNudC0tOwo+PiArCX0KPj4gKwlyZXR1cm4gZmFsc2U7Cj4+ICt9Cj4+ICsK
+Pj4gK3N0YXRpYyBpbnQgbXRkcHN0b3JlX2lzX2VtcHR5KHN0cnVjdCBtdGRwc3RvcmVfY29udGV4
+dCAqY3h0LCBjaGFyICpidWYsCj4+ICsJCXNpemVfdCBzaXplKQo+PiArewo+PiArCXN0cnVjdCBt
+dGRfaW5mbyAqbXRkID0gY3h0LT5tdGQ7Cj4+ICsJc2l6ZV90IHN6Owo+PiArCWludCBpOwo+PiAr
+Cj4+ICsJc3ogPSBtaW5fdCh1aW50MzJfdCwgc2l6ZSwgbXRkLT53cml0ZXNpemUgLyA0KTsKPj4g
+Kwlmb3IgKGkgPSAwOyBpIDwgc3o7IGkrKykgewo+PiArCQlpZiAoYnVmW2ldICE9IChjaGFyKTB4
+RkYpCj4+ICsJCQlyZXR1cm4gZmFsc2U7Cj4+ICsJfQo+PiArCXJldHVybiB0cnVlOwo+PiArfQo+
+PiArCj4+ICtzdGF0aWMgdm9pZCBtdGRwc3RvcmVfbWFya19yZW1vdmVkKHN0cnVjdCBtdGRwc3Rv
+cmVfY29udGV4dCAqY3h0LCBsb2ZmX3Qgb2ZmKQo+PiArewo+PiArCXU2NCB6b25lbnVtID0gZGl2
+X3U2NChvZmYsIGN4dC0+Ym9faW5mby5kbWVzZ19zaXplKTsKPj4gKwo+PiArCXByX2RlYnVnKCJt
+YXJrIHpvbmUgJWxsdSByZW1vdmVkXG4iLCB6b25lbnVtKTsKPj4gKwlzZXRfYml0KHpvbmVudW0s
+IGN4dC0+cm1tYXApOwo+PiArfQo+PiArCj4+ICtzdGF0aWMgdm9pZCBtdGRwc3RvcmVfYmxvY2tf
+Y2xlYXJfcmVtb3ZlZChzdHJ1Y3QgbXRkcHN0b3JlX2NvbnRleHQgKmN4dCwKPj4gKwkJbG9mZl90
+IG9mZikKPj4gK3sKPj4gKwl1NjQgem9uZW51bSA9IGRpdl91NjQob2ZmLCBjeHQtPmJvX2luZm8u
+ZG1lc2dfc2l6ZSk7Cj4+ICsJdTMyIHpvbmVjbnQgPSBjeHQtPm10ZC0+ZXJhc2VzaXplIC8gY3h0
+LT5ib19pbmZvLmRtZXNnX3NpemU7Cj4+ICsKPj4gKwl3aGlsZSAoem9uZWNudCA+IDApIHsKPj4g
+KwkJY2xlYXJfYml0KHpvbmVudW0sIGN4dC0+cm1tYXApOwo+PiArCQl6b25lbnVtKys7Cj4+ICsJ
+CXpvbmVjbnQtLTsKPj4gKwl9Cj4+ICt9Cj4+ICsKPj4gK3N0YXRpYyBpbnQgbXRkcHN0b3JlX2Js
+b2NrX2lzX3JlbW92ZWQoc3RydWN0IG10ZHBzdG9yZV9jb250ZXh0ICpjeHQsCj4+ICsJCWxvZmZf
+dCBvZmYpCj4+ICt7Cj4+ICsJdTY0IHpvbmVudW0gPSBkaXZfdTY0KG9mZiwgY3h0LT5ib19pbmZv
+LmRtZXNnX3NpemUpOwo+PiArCXUzMiB6b25lY250ID0gY3h0LT5tdGQtPmVyYXNlc2l6ZSAvIGN4
+dC0+Ym9faW5mby5kbWVzZ19zaXplOwo+PiArCj4+ICsJd2hpbGUgKHpvbmVjbnQgPiAwKSB7Cj4+
+ICsJCWlmICh0ZXN0X2JpdCh6b25lbnVtLCBjeHQtPnJtbWFwKSkKPj4gKwkJCXJldHVybiB0cnVl
+Owo+PiArCQl6b25lbnVtKys7Cj4+ICsJCXpvbmVjbnQtLTsKPj4gKwl9Cj4+ICsJcmV0dXJuIGZh
+bHNlOwo+PiArfQo+PiArCj4+ICtzdGF0aWMgaW50IG10ZHBzdG9yZV9lcmFzZV9kbyhzdHJ1Y3Qg
+bXRkcHN0b3JlX2NvbnRleHQgKmN4dCwgbG9mZl90IG9mZikKPj4gK3sKPj4gKwlzdHJ1Y3QgZXJh
+c2VfaW5mbyBlcmFzZTsKPj4gKwlpbnQgcmV0Owo+PiArCj4+ICsJcHJfZGVidWcoInRyeSB0byBl
+cmFzZSBvZmYgMHglbGx4XG4iLCBvZmYpOwo+PiArCWVyYXNlLmxlbiA9IGN4dC0+bXRkLT5lcmFz
+ZXNpemU7Cj4+ICsJZXJhc2UuYWRkciA9IG9mZjsKPj4gKwlyZXQgPSBtdGRfZXJhc2UoY3h0LT5t
+dGQsICZlcmFzZSk7Cj4+ICsJaWYgKCFyZXQpCj4+ICsJCW10ZHBzdG9yZV9ibG9ja19jbGVhcl9y
+ZW1vdmVkKGN4dCwgb2ZmKTsKPj4gKwllbHNlCj4+ICsJCXByX2VycigiZXJhc2Ugb2YgcmVnaW9u
+IFsweCVsbHgsIDB4JWxseF0gb24gXCIlc1wiIGZhaWxlZFxuIiwKPj4gKwkJICAgICAgICh1bnNp
+Z25lZCBsb25nIGxvbmcpZXJhc2UuYWRkciwKPj4gKwkJICAgICAgICh1bnNpZ25lZCBsb25nIGxv
+bmcpZXJhc2UubGVuLCBjeHQtPmJvX2luZm8uZGV2aWNlKTsKPj4gKwlyZXR1cm4gcmV0Owo+PiAr
+fQo+PiArCj4+ICsvKgo+PiArICogY2FsbGVkIHdoaWxlIHJlbW92aW5nIGZpbGUKPj4gKyAqCj4+
+ICsgKiBBdm9pZGluZyBvdmVyIGVyYXNpbmcsIGRvIGVyYXNlIG9ubHkgd2hlbiBhbGwgem9uZXMg
+YXJlIHJlbW92ZWQgb3IgdW51c2VkLgo+PiArICogRW5zdXJlIHRvIHJlbW92ZSB3aGVuIHVucmVn
+aXN0ZXIgYnkgcmVhZGluZywgZXJhc2luZyBhbmQgd3J0aWluZyBiYWNrLgo+PiArICovCj4+ICtz
+dGF0aWMgc3NpemVfdCBtdGRwc3RvcmVfZXJhc2Uoc2l6ZV90IHNpemUsIGxvZmZfdCBvZmYpCj4+
+ICt7Cj4+ICsJc3RydWN0IG10ZHBzdG9yZV9jb250ZXh0ICpjeHQgPSAmb29wc19jeHQ7Cj4+ICsK
+Pj4gKwlpZiAobXRkcHN0b3JlX2Jsb2NrX2lzYmFkKGN4dCwgb2ZmKSkKPj4gKwkJcmV0dXJuIC1F
+SU87Cj4+ICsKPj4gKwltdGRwc3RvcmVfbWFya191bnVzZWQoY3h0LCBvZmYpOwo+PiArCj4+ICsJ
+aWYgKGxpa2VseShtdGRwc3RvcmVfYmxvY2tfaXNfdXNlZChjeHQsIG9mZikpKSB7Cj4+ICsJCW10
+ZHBzdG9yZV9tYXJrX3JlbW92ZWQoY3h0LCBvZmYpOwo+PiArCQlyZXR1cm4gMDsKPj4gKwl9Cj4+
+ICsKPj4gKwkvKiBhbGwgem9uZXMgYXJlIHVudXNlZCwgZXJhc2UgaXQgKi8KPj4gKwlvZmYgPSBB
+TElHTl9ET1dOKG9mZiwgY3h0LT5tdGQtPmVyYXNlc2l6ZSk7Cj4+ICsJcmV0dXJuIG10ZHBzdG9y
+ZV9lcmFzZV9kbyhjeHQsIG9mZik7Cj4+ICt9Cj4+ICsKPj4gKy8qCj4+ICsgKiBXaGF0IGlzIHNl
+Y3VyZXR5IGZvciBtdGRwc3RvcmU/Cj4gCj4gICAgICAgICAgICAgICBzZWN1cml0eQo+IAoKSSB3
+aWxsIGZpeCBpdC4gVGhhbmtzLgoKPj4gKyAqIEFzIHRoZXJlIGlzIG5vIGVyYXNlIGZvciBwYW5p
+YyBjYXNlLCB3ZSBzaG91bGQgZW5zdXJlIGF0IGxlYXN0IG9uZSB6b25lCj4+ICsgKiBpcyB3cml0
+YWJsZS4gT3RoZXJ3aXNlLCBwYW5pYyB3cml0ZSB3aWxsIGJlIGZhaWxlZC4KPiAKPiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB3aWxsIGZhaWwuCj4gCkkgd2lsbCBm
+aXggaXQuIFRoYW5rcy4KCj4+ICsgKiBJZiB6b25lIGlzIHVzZWQsIHdyaXRlIG9wZXJhdGlvbiB3
+aWxsIHJldHVybiAtRU5FWFQsIHdoaWNoIG1lYW5zIHRoYXQKPj4gKyAqIHBzdG9yZS9ibGsgd2ls
+bCB0cnkgb25lIGJ5IG9uZSB1bnRpbCBnZXQgYSBlbXB0eSB6b25lLiBTbywgaXQncyBubyBuZWVk
+Cj4gCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGl0IGdldHMg
+YW4gZW1wdHkgem9uZS4gU28gaXQKPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgaXMgbm90IG5lZWRlZCB0byAuLi4KPiAgICAgCgpJIHdpbGwgZml4IGl0LiBUaGFu
+a3MuCgo+PiArICogdG8gZW5zdXJlIG5leHQgem9uZSBpcyBlbXB0eSwgYnV0IGF0IGxlYXN0IG9u
+ZS4KPiAKPiAgICAgICAgICAgICAgICB0aGUKPiAKCkkgd2lsbCBmaXggaXQuIFRoYW5rcy4KCj4+
+ICsgKi8KPj4gK3N0YXRpYyBpbnQgbXRkcHN0b3JlX3NlY3VyaXR5KHN0cnVjdCBtdGRwc3RvcmVf
+Y29udGV4dCAqY3h0LCBsb2ZmX3Qgb2ZmKQo+PiArewo+PiArCWludCByZXQgPSAwLCBpOwo+PiAr
+CXUzMiB6b25lbnVtID0gKHUzMilkaXZfdTY0KG9mZiwgY3h0LT5ib19pbmZvLmRtZXNnX3NpemUp
+Owo+PiArCXUzMiB6b25lY250ID0gKHUzMilkaXZfdTY0KGN4dC0+bXRkLT5zaXplLCBjeHQtPmJv
+X2luZm8uZG1lc2dfc2l6ZSk7Cj4+ICsJdTMyIGJsa2NudCA9ICh1MzIpZGl2X3U2NChjeHQtPm10
+ZC0+c2l6ZSwgY3h0LT5tdGQtPmVyYXNlc2l6ZSk7Cj4+ICsJdTMyIGVyYXNlc2l6ZSA9IGN4dC0+
+bXRkLT5lcmFzZXNpemU7Cj4+ICsKPj4gKwlmb3IgKGkgPSAwOyBpIDwgem9uZWNudDsgaSsrKSB7
+Cj4+ICsJCXUzMiBudW0gPSAoem9uZW51bSArIGkpICUgem9uZWNudDsKPj4gKwo+PiArCQkvKiBm
+b3VuZCBlbXB0eSB6b25lICovCj4+ICsJCWlmICghdGVzdF9iaXQobnVtLCBjeHQtPnVzZWRtYXAp
+KQo+PiArCQkJcmV0dXJuIDA7Cj4+ICsJfQo+PiArCj4+ICsJLyogSWYgdGhlcmUgaXMgbm8gYW55
+IGVtcHR5IHpvbmUsIHdlIGhhdmUgbm8gd2F5IGJ1dCB0byBkbyBlcmFzZSAqLwo+PiArCW9mZiA9
+IEFMSUdOX0RPV04ob2ZmLCBlcmFzZXNpemUpOwo+PiArCXdoaWxlIChibGtjbnQtLSkgewo+PiAr
+CQlkaXY2NF91NjRfcmVtKG9mZiArIGVyYXNlc2l6ZSwgY3h0LT5tdGQtPnNpemUsICh1NjQgKikm
+b2ZmKTsKPj4gKwo+PiArCQlpZiAobXRkcHN0b3JlX2Jsb2NrX2lzYmFkKGN4dCwgb2ZmKSkKPj4g
+KwkJCWNvbnRpbnVlOwo+PiArCj4+ICsJCXJldCA9IG10ZHBzdG9yZV9lcmFzZV9kbyhjeHQsIG9m
+Zik7Cj4+ICsJCWlmICghcmV0KSB7Cj4+ICsJCQltdGRwc3RvcmVfYmxvY2tfbWFya191bnVzZWQo
+Y3h0LCBvZmYpOwo+PiArCQkJYnJlYWs7Cj4+ICsJCX0KPj4gKwl9Cj4+ICsKPj4gKwlpZiAocmV0
+KQo+PiArCQlwcl9lcnIoImFsbCBibG9ja3MgYmFkIVxuIik7Cj4+ICsJcHJfZGVidWcoImVuZCBz
+ZWN1cml0eVxuIik7Cj4+ICsJcmV0dXJuIHJldDsKPj4gK30KPj4gKwo+PiArc3RhdGljIHNzaXpl
+X3QgbXRkcHN0b3JlX3dyaXRlKGNvbnN0IGNoYXIgKmJ1Ziwgc2l6ZV90IHNpemUsIGxvZmZfdCBv
+ZmYpCj4+ICt7Cj4+ICsJc3RydWN0IG10ZHBzdG9yZV9jb250ZXh0ICpjeHQgPSAmb29wc19jeHQ7
+Cj4+ICsJc2l6ZV90IHJldGxlbjsKPj4gKwlpbnQgcmV0Owo+PiArCj4+ICsJaWYgKG10ZHBzdG9y
+ZV9ibG9ja19pc2JhZChjeHQsIG9mZikpCj4+ICsJCXJldHVybiAtRU5FWFQ7Cj4+ICsKPj4gKwkv
+KiB6b25lIGlzIHVzZWQsIHBsZWFzZSB0cnkgbmV4dCBvbmUgKi8KPj4gKwlpZiAobXRkcHN0b3Jl
+X2lzX3VzZWQoY3h0LCBvZmYpKQo+PiArCQlyZXR1cm4gLUVORVhUOwo+PiArCj4+ICsJcHJfZGVi
+dWcoInRyeSB0byB3cml0ZSBvZmYgMHglbGx4IHNpemUgJXp1XG4iLCBvZmYsIHNpemUpOwo+PiAr
+CXJldCA9IG10ZF93cml0ZShjeHQtPm10ZCwgb2ZmLCBzaXplLCAmcmV0bGVuLCAodV9jaGFyICop
+YnVmKTsKPj4gKwlpZiAocmV0IDwgMCB8fCByZXRsZW4gIT0gc2l6ZSkgewo+PiArCQlwcl9lcnIo
+IndyaXRlIGZhaWx1cmUgYXQgJWxsZCAoJXp1IG9mICV6dSB3cml0dGVuKSwgZXJyICVkXG4iLAo+
+PiArCQkJCW9mZiwgcmV0bGVuLCBzaXplLCByZXQpOwo+PiArCQlyZXR1cm4gLUVJTzsKPj4gKwl9
+Cj4+ICsJbXRkcHN0b3JlX21hcmtfdXNlZChjeHQsIG9mZik7Cj4+ICsKPj4gKwltdGRwc3RvcmVf
+c2VjdXJpdHkoY3h0LCBvZmYpOwo+PiArCXJldHVybiByZXRsZW47Cj4+ICt9Cj4+ICsKPj4gKy8q
+Cj4+ICsgKiBBbGwgem9uZXMgd2lsbCBiZSByZWFkIGFzIHBzdG9yZS9ibGsgd2lsbCByZWFkIHpv
+bmUgb25lIGJ5IG9uZSB3aGVuIGRvCj4+ICsgKiByZWNvdmVyLgo+PiArICovCj4+ICtzdGF0aWMg
+c3NpemVfdCBtdGRwc3RvcmVfcmVhZChjaGFyICpidWYsIHNpemVfdCBzaXplLCBsb2ZmX3Qgb2Zm
+KQo+PiArewo+PiArCXN0cnVjdCBtdGRwc3RvcmVfY29udGV4dCAqY3h0ID0gJm9vcHNfY3h0Owo+
+PiArCXNpemVfdCByZXRsZW47Cj4+ICsJaW50IHJldDsKPj4gKwo+PiArCWlmIChtdGRwc3RvcmVf
+YmxvY2tfaXNiYWQoY3h0LCBvZmYpKQo+PiArCQlyZXR1cm4gLUVORVhUOwo+PiArCj4+ICsJcHJf
+ZGVidWcoInRyeSB0byByZWFkIG9mZiAweCVsbHggc2l6ZSAlenVcbiIsIG9mZiwgc2l6ZSk7Cj4+
+ICsJcmV0ID0gbXRkX3JlYWQoY3h0LT5tdGQsIG9mZiwgc2l6ZSwgJnJldGxlbiwgKHVfY2hhciAq
+KWJ1Zik7Cj4+ICsJaWYgKChyZXQgPCAwICYmICFtdGRfaXNfYml0ZmxpcChyZXQpKSB8fCBzaXpl
+ICE9IHJldGxlbikgIHsKPiAKPiBJSVJDIHNpemUgIT0gcmV0bGVuIGRvZXMgbm90IG1lYW4gaXQg
+ZmFpbGVkLCBidXQgdGhhdCB5b3Ugc2hvdWxkCj4gY29udGludWUgcmVhZGluZyBhZnRlciByZXRs
+ZW4gYnl0ZXMsIG5vPwo+IAoKWWVzLCB5b3UgYXJlIHJpZ2h0LiBJIHdpbGwgZml4IGl0LiBUaGFu
+a3MuCgo+IEFsc28sIG10ZF9pc19iaXRmbGlwKCkgZG9lcyBub3QgbWVhbiB0aGF0IHlvdSBhcmUg
+cmVhZGluZyBhIGZhbHNlCj4gYnVmZmVyLCBidXQgdGhhdCB0aGUgZGF0YSBoYXMgYmVlbiBjb3Jy
+ZWN0ZWQgYXMgaXQgY29udGFpbmVkIGJpdGZsaXBzLgo+IG10ZF9pc19lY2NlcnIoKSBob3dldmVy
+LCB3b3VsZCBiZSBtZWFuaW5nZnVsLgo+IAoKU3VyZSBJIGtub3cgbXRkX2lzX2JpdGZsaXAoKSBk
+b2VzIG5vdCBtZWFuIGZhaWx1cmUsIGJ1dCBJIGRvIG5vdCB0aGluawptdGRfaXNfZWNjZXJyKCkg
+c2hvdWxkIGJlIGhlcmUgc2luY2UgdGhlIGNvZGVzIGFyZSByZXQgPCAwIGFuZCBOT1QKbXRkX2lz
+X2JpdGZsaXAoKS4KCj4+ICsJCXByX2VycigicmVhZCBmYWlsdXJlIGF0ICVsbGQgKCV6dSBvZiAl
+enUgcmVhZCksIGVyciAlZFxuIiwKPj4gKwkJCQlvZmYsIHJldGxlbiwgc2l6ZSwgcmV0KTsKPj4g
+KwkJcmV0dXJuIC1FSU87Cj4+ICsJfQo+PiArCj4+ICsJaWYgKG10ZHBzdG9yZV9pc19lbXB0eShj
+eHQsIGJ1Ziwgc2l6ZSkpCj4+ICsJCW10ZHBzdG9yZV9tYXJrX3VudXNlZChjeHQsIG9mZik7Cj4+
+ICsJZWxzZQo+PiArCQltdGRwc3RvcmVfbWFya191c2VkKGN4dCwgb2ZmKTsKPj4gKwo+PiArCW10
+ZHBzdG9yZV9zZWN1cml0eShjeHQsIG9mZik7Cj4+ICsJcmV0dXJuIHJldGxlbjsKPj4gK30KPj4g
+Kwo+PiArc3RhdGljIHNzaXplX3QgbXRkcHN0b3JlX3BhbmljX3dyaXRlKGNvbnN0IGNoYXIgKmJ1
+Ziwgc2l6ZV90IHNpemUsIGxvZmZfdCBvZmYpCj4+ICt7Cj4+ICsJc3RydWN0IG10ZHBzdG9yZV9j
+b250ZXh0ICpjeHQgPSAmb29wc19jeHQ7Cj4+ICsJc2l6ZV90IHJldGxlbjsKPj4gKwlpbnQgcmV0
+Owo+PiArCj4+ICsJaWYgKG10ZHBzdG9yZV9wYW5pY19ibG9ja19pc2JhZChjeHQsIG9mZikpCj4+
+ICsJCXJldHVybiAtRU5FWFQ7Cj4+ICsKPj4gKwkvKiB6b25lIGlzIHVzZWQsIHBsZWFzZSB0cnkg
+bmV4dCBvbmUgKi8KPj4gKwlpZiAobXRkcHN0b3JlX2lzX3VzZWQoY3h0LCBvZmYpKQo+PiArCQly
+ZXR1cm4gLUVORVhUOwo+PiArCj4+ICsJcmV0ID0gbXRkX3BhbmljX3dyaXRlKGN4dC0+bXRkLCBv
+ZmYsIHNpemUsICZyZXRsZW4sICh1X2NoYXIgKilidWYpOwo+PiArCWlmIChyZXQgPCAwIHx8IHNp
+emUgIT0gcmV0bGVuKSB7Cj4+ICsJCXByX2VycigicGFuaWMgd3JpdGUgZmFpbHVyZSBhdCAlbGxk
+ICglenUgb2YgJXp1IHJlYWQpLCBlcnIgJWRcbiIsCj4+ICsJCQkJb2ZmLCByZXRsZW4sIHNpemUs
+IHJldCk7Cj4+ICsJCXJldHVybiAtRUlPOwo+PiArCX0KPj4gKwltdGRwc3RvcmVfbWFya191c2Vk
+KGN4dCwgb2ZmKTsKPj4gKwo+PiArCXJldHVybiByZXRsZW47Cj4+ICt9Cj4+ICsKPj4gK3N0YXRp
+YyB2b2lkIG10ZHBzdG9yZV9ub3RpZnlfYWRkKHN0cnVjdCBtdGRfaW5mbyAqbXRkKQo+PiArewo+
+PiArCWludCByZXQ7Cj4+ICsJc3RydWN0IG10ZHBzdG9yZV9jb250ZXh0ICpjeHQgPSAmb29wc19j
+eHQ7Cj4+ICsJc3RydWN0IGJsa29vcHNfaW5mbyAqaW5mbyA9ICZjeHQtPmJvX2luZm87Cj4+ICsJ
+dW5zaWduZWQgbG9uZyBsb25nY250Owo+PiArCj4+ICsJaWYgKCFzdHJjbXAobXRkLT5uYW1lLCBp
+bmZvLT5kZXZpY2UpKQo+PiArCQljeHQtPmluZGV4ID0gbXRkLT5pbmRleDsKPj4gKwo+PiArCWlm
+IChtdGQtPmluZGV4ICE9IGN4dC0+aW5kZXggfHwgY3h0LT5pbmRleCA8IDApCj4+ICsJCXJldHVy
+bjsKPj4gKwo+PiArCXByX2RlYnVnKCJmb3VuZCBtYXRjaGluZyBNVEQgZGV2aWNlICVzXG4iLCBt
+dGQtPm5hbWUpOwo+PiArCj4+ICsJaWYgKG10ZC0+c2l6ZSA8IGluZm8tPmRtZXNnX3NpemUgKiAy
+KSB7Cj4+ICsJCXByX2VycigiTVREIHBhcnRpdGlvbiAlZCBub3QgYmlnIGVub3VnaFxuIiwgbXRk
+LT5pbmRleCk7Cj4+ICsJCXJldHVybjsKPj4gKwl9Cj4+ICsJaWYgKG10ZC0+ZXJhc2VzaXplIDwg
+aW5mby0+ZG1lc2dfc2l6ZSkgewo+PiArCQlwcl9lcnIoImVyYXNlYmxvY2sgc2l6ZSBvZiBNVEQg
+cGFydGl0aW9uICVkIHRvbyBzbWFsbFxuIiwKPj4gKwkJCQltdGQtPmluZGV4KTsKPiAKPiBXaGF0
+IGlzIHRoZSB1c3VhbCBzaXplIG9mIGRtZXNnPyBDb3VsZCB0aGlzIGNoZWNrIGJlIHRvbyBsaW1p
+dGluZz8KPiAKClRoZSBzaXplIG11c3QgYmUgYWxpZ25lZCB0byA0MDk2LCB3aGljaCBpcyBsaW1p
+dGVkIGJ5IGJsa29vcHMuIFRoZQpkZWZhdWx0IHZhbHVlIGlzIDY0Sy4gSWYgaXQgaXMgbGFyZ2Vy
+IHRoYW4gZXJhc2VzaXplLCBzb21lIGVycm9ycyB3aWxsIG9jY3VyCnNpbmNlIG10ZHBzdG9yZSBp
+cyBkZXNpZ25lZCBvbiBpdC4KCj4+ICsJCXJldHVybjsKPj4gKwl9Cj4+ICsJaWYgKHVubGlrZWx5
+KGluZm8tPmRtZXNnX3NpemUgJSBtdGQtPndyaXRlc2l6ZSkpIHsKPj4gKwkJcHJfZXJyKCJyZWNv
+cmQgc2l6ZSAlbHUgS0IgbXVzdCBhbGlnbiB0byB3cml0ZSBzaXplICVkIEtCXG4iLAo+PiArCQkJ
+CWluZm8tPmRtZXNnX3NpemUgLyAxMDI0LAo+PiArCQkJCW10ZC0+d3JpdGVzaXplIC8gMTAyNCk7
+Cj4gCj4gVGhpcyBjb25kaXRpb24gaXMgd2VpcmQsIHdoeSB3b3VsZCB5b3UgY2hlY2sgdGhpcz8K
+PiAKCnBzdG9yZS9ibGsgd2lsbCB3cml0ZSAncmVjb3JkX3NpemUnIGRtZXNnIGxvZyBhdCBvbmUg
+dGltZS4KU2luY2UgZWFjaCB3cml0ZSBkYXRhIG11c3QgYmUgYWxpZ25lZCB0byAnd3JpdGVzaXpl
+JyBmb3IgZmxhc2gsIEkgYW0gbm90CnN1cmUKYWxsIGZsYXNoIGRyaXZlcnMgYXJlIGNvbXBhdGli
+bGUgd2l0aCBtaXNhbGlnbmVkIGRhdGEsIHRoYXQncyB3aHkgaQpjaGVjayB0aGlzLgoKPj4gKwkJ
+cmV0dXJuOwo+PiArCX0KPj4gKwlpZiAodW5saWtlbHkobXRkLT5zaXplID4gTVREUFNUT1JFX01B
+WF9NVERfU0laRSkpIHsKPj4gKwkJcHJfZXJyKCJtdGQlZCBpcyB0b28gbGFyZ2UgKGxpbWl0IGlz
+ICVkIE1pQilcbiIsCj4+ICsJCQkJbXRkLT5pbmRleCwKPj4gKwkJCQlNVERQU1RPUkVfTUFYX01U
+RF9TSVpFIC8gMTAyNCAvIDEwMjQpOwo+IAo+IFNhbWUgcXVlc3Rpb24/IEkgY291bGQgdW5kZXJz
+dGFuZCB0aGF0IGl0IGlzIGVhc2llciB0byBtYW5hZ2UgYmxvY2tzCj4ga25vd2luZyB0aGVpciBt
+YXhpbXVtIG51bWJlciB0aG91Z2guCj4gCgpJdCByZWZlcnMgdG8gbXRkb29wcy4KCj4+ICsJCXJl
+dHVybjsKPj4gKwl9Cj4+ICsKPj4gKwlsb25nY250ID0gQklUU19UT19MT05HUyhkaXZfdTY0KG10
+ZC0+c2l6ZSwgaW5mby0+ZG1lc2dfc2l6ZSkpOwo+PiArCWN4dC0+cm1tYXAgPSBrY2FsbG9jKGxv
+bmdjbnQsIHNpemVvZihsb25nKSwgR0ZQX0tFUk5FTCk7Cj4+ICsJY3h0LT51c2VkbWFwID0ga2Nh
+bGxvYyhsb25nY250LCBzaXplb2YobG9uZyksIEdGUF9LRVJORUwpOwo+PiArCj4+ICsJbG9uZ2Nu
+dCA9IEJJVFNfVE9fTE9OR1MoZGl2X3U2NChtdGQtPnNpemUsIG10ZC0+ZXJhc2VzaXplKSk7Cj4+
+ICsJY3h0LT5iYWRtYXAgPSBrY2FsbG9jKGxvbmdjbnQsIHNpemVvZihsb25nKSwgR0ZQX0tFUk5F
+TCk7Cj4+ICsKPj4gKwljeHQtPmJvX2Rldi50b3RhbF9zaXplID0gbXRkLT5zaXplOwo+PiArCS8q
+IGp1c3Qgc3VwcG9ydCBkbWVzZyByaWdodCBub3cgKi8KPj4gKwljeHQtPmJvX2Rldi5mbGFncyA9
+IEJMS09PUFNfREVWX1NVUFBPUlRfRE1FU0c7Cj4+ICsJY3h0LT5ib19kZXYucmVhZCA9IG10ZHBz
+dG9yZV9yZWFkOwo+PiArCWN4dC0+Ym9fZGV2LndyaXRlID0gbXRkcHN0b3JlX3dyaXRlOwo+PiAr
+CWN4dC0+Ym9fZGV2LmVyYXNlID0gbXRkcHN0b3JlX2VyYXNlOwo+PiArCWN4dC0+Ym9fZGV2LnBh
+bmljX3dyaXRlID0gbXRkcHN0b3JlX3BhbmljX3dyaXRlOwo+PiArCj4+ICsJcmV0ID0gYmxrb29w
+c19yZWdpc3Rlcl9kZXZpY2UoJmN4dC0+Ym9fZGV2KTsKPj4gKwlpZiAocmV0KSB7Cj4+ICsJCXBy
+X2VycigibXRkJWQgcmVnaXN0ZXIgdG8gYmxrb29wcyBmYWlsZWRcbiIsIG10ZC0+aW5kZXgpOwo+
+PiArCQlyZXR1cm47Cj4+ICsJfQo+PiArCWN4dC0+bXRkID0gbXRkOwo+PiArCXByX2luZm8oIkF0
+dGFjaGVkIHRvIE1URCBkZXZpY2UgJWRcbiIsIG10ZC0+aW5kZXgpOwo+PiArfQo+PiArCj4+ICtz
+dGF0aWMgaW50IG10ZHBzdG9yZV9mbHVzaF9yZW1vdmVkX2RvKHN0cnVjdCBtdGRwc3RvcmVfY29u
+dGV4dCAqY3h0LAo+PiArCQlsb2ZmX3Qgb2ZmLCBzaXplX3Qgc2l6ZSkKPj4gK3sKPj4gKwlzdHJ1
+Y3QgbXRkX2luZm8gKm10ZCA9IGN4dC0+bXRkOwo+PiArCXVfY2hhciAqYnVmOwo+PiArCWludCBy
+ZXQ7Cj4+ICsJc2l6ZV90IHJldGxlbjsKPj4gKwlzdHJ1Y3QgZXJhc2VfaW5mbyBlcmFzZTsKPj4g
+Kwo+PiArCWJ1ZiA9IGttYWxsb2MobXRkLT5lcmFzZXNpemUsIEdGUF9LRVJORUwpOwo+PiArCWlm
+ICghYnVmKQo+PiArCQlyZXR1cm4gLUVOT01FTTsKPj4gKwo+PiArCS8qIDFzdC4gcmVhZCB0byBj
+YWNoZSAqLwo+PiArCXJldCA9IG10ZF9yZWFkKG10ZCwgb2ZmLCBtdGQtPmVyYXNlc2l6ZSwgJnJl
+dGxlbiwgYnVmKTsKPj4gKwlpZiAocmV0IHx8IHJldGxlbiAhPSBtdGQtPmVyYXNlc2l6ZSkKPj4g
+KwkJZ290byBmcmVlOwo+PiArCj4+ICsJLyogMm5kLiBlcmFzZSBibG9jayAqLwo+PiArCWVyYXNl
+LmxlbiA9IG10ZC0+ZXJhc2VzaXplOwo+PiArCWVyYXNlLmFkZHIgPSBvZmY7Cj4+ICsJcmV0ID0g
+bXRkX2VyYXNlKG10ZCwgJmVyYXNlKTsKPj4gKwlpZiAocmV0KQo+PiArCQlnb3RvIGZyZWU7Cj4+
+ICsKPj4gKwkvKiAzcmQuIHdyaXRlIGJhY2sgKi8KPj4gKwl3aGlsZSAoc2l6ZSkgewo+PiArCQl1
+bnNpZ25lZCBpbnQgem9uZXNpemUgPSBjeHQtPmJvX2luZm8uZG1lc2dfc2l6ZTsKPj4gKwo+PiAr
+CQkvKiByZW1vdmUgbXVzdCBjbGVhciB1c2VkIGJpdCAqLwo+PiArCQlpZiAobXRkcHN0b3JlX2lz
+X3VzZWQoY3h0LCBvZmYpKQo+PiArCQkJbXRkX3dyaXRlKG10ZCwgb2ZmLCB6b25lc2l6ZSwgJnJl
+dGxlbiwgYnVmKTsKPiAKPiBCZXNpZGVzIHRoZSBmYWN0IHRoYXQgc2hvdWxkIGRlZmluaXRlbHkg
+Y2hlY2sgdGhlIHdyaXRlIHJldHVybiBjb2RlLCBJCj4gZG9uJ3QgdW5kZXJzdGFuZCB3aGF0IHlv
+dSBkbyBpbiB0aGlzIGZ1bmN0aW9uLiBXaGF0IGRvZXMKPiBmbHVzaF9yZW1vdmVkX2RvIG1lYW4/
+Cj4gCgpXaGVuIHVzZXIgcmVtb3ZlIG9uZSBsb2cgZmlsZSBvbiBwc3RvcmUgZmlsZXN5c3RlbSwg
+bXRkcHN0b3JlIHNob3VsZCBkbwpzb21ldGhpbmcgdG8gZW5zdXJlIGxvZyBmaWxlIHJlbW92ZWQu
+IElmIHRoZSB3aG9sZSBibG9jayBpcyBubyBsb25nZXIgdXNlZCwKaXQgaXMgbmljZSB0byBlcmFz
+ZSB0aGUgYmxvY2suIEhvd2V2ZXIsIGlmIHRoZSBibG9jayBzdGlsbCBjb250YWlucwp2YWxpZCBs
+b2csCndoYXQgbXRkcHN0b3JlIGNhbiBkbyBpcyB0byBlcmFzZSBhbmQgd3JpdGUgdGhlIHZhbGlk
+IGxvZyBiYWNrLgpUaGF0IGlzIHdoYXQgZmx1c2hfcmVtb3ZlZF9kbygpIGRvLgoKSW4gY2FzZSBv
+ZiByZXBlYXRlZCBlcmFzZSB3aGVuIHVzZXJzIHJlbW92ZSBzZXZlcmFsIGxvZyBmaWxlcywgbXRk
+cHN0b3JlCmRvIHJlbW92ZSBqb2JzIHdoZW4gZXhpdC4KCkJlc2lkZXMsIG10ZHBzdG9yZSBkbyBu
+b3QgY2hlY2sgdGhlIHJldHVybiBjb2RlIHRvIGVuc3VyZSB3cml0ZSBiYWNrIHZhbGlkCmxvZyBh
+cyBtdWNoIGFzIHBvc3NpYmxlLgoKPj4gKwo+PiArCQlvZmYgKz0gem9uZXNpemU7Cj4+ICsJCXNp
+emUgLT0gbWluX3QodW5zaWduZWQgaW50LCB6b25lc2l6ZSwgc2l6ZSk7Cj4+ICsJfQo+PiArCj4+
+ICtmcmVlOgo+PiArCWtmcmVlKGJ1Zik7Cj4+ICsJcmV0dXJuIHJldDsKPj4gK30KPj4gKwo+PiAr
+c3RhdGljIGludCBtdGRwc3RvcmVfZmx1c2hfcmVtb3ZlZChzdHJ1Y3QgbXRkcHN0b3JlX2NvbnRl
+eHQgKmN4dCkKPj4gK3sKPj4gKwlzdHJ1Y3QgbXRkX2luZm8gKm10ZCA9IGN4dC0+bXRkOwo+PiAr
+CWludCByZXQ7Cj4+ICsJbG9mZl90IG9mZjsKPj4gKwl1MzIgYmxrY250ID0gKHUzMilkaXZfdTY0
+KG10ZC0+c2l6ZSwgbXRkLT5lcmFzZXNpemUpOwo+PiArCj4+ICsJZm9yIChvZmYgPSAwOyBibGtj
+bnQgPiAwOyBibGtjbnQtLSwgb2ZmICs9IG10ZC0+ZXJhc2VzaXplKSB7Cj4+ICsJCXJldCA9IG10
+ZHBzdG9yZV9ibG9ja19pc19yZW1vdmVkKGN4dCwgb2ZmKTsKPj4gKwkJaWYgKCFyZXQpIHsKPj4g
+KwkJCW9mZiArPSBtdGQtPmVyYXNlc2l6ZTsKPj4gKwkJCWNvbnRpbnVlOwo+PiArCQl9Cj4+ICsK
+Pj4gKwkJcmV0ID0gbXRkcHN0b3JlX2ZsdXNoX3JlbW92ZWRfZG8oY3h0LCBvZmYsIG10ZC0+ZXJh
+c2VzaXplKTsKPj4gKwkJaWYgKHJldCkKPj4gKwkJCXJldHVybiByZXQ7Cj4+ICsJfQo+PiArCXJl
+dHVybiAwOwo+PiArfQo+PiArCj4+ICtzdGF0aWMgdm9pZCBtdGRwc3RvcmVfbm90aWZ5X3JlbW92
+ZShzdHJ1Y3QgbXRkX2luZm8gKm10ZCkKPj4gK3sKPj4gKwlzdHJ1Y3QgbXRkcHN0b3JlX2NvbnRl
+eHQgKmN4dCA9ICZvb3BzX2N4dDsKPj4gKwo+PiArCWlmIChtdGQtPmluZGV4ICE9IGN4dC0+aW5k
+ZXggfHwgY3h0LT5pbmRleCA8IDApCj4+ICsJCXJldHVybjsKPj4gKwo+PiArCW10ZHBzdG9yZV9m
+bHVzaF9yZW1vdmVkKGN4dCk7Cj4+ICsKPj4gKwlibGtvb3BzX3VucmVnaXN0ZXJfZGV2aWNlKCZj
+eHQtPmJvX2Rldik7Cj4+ICsJa2ZyZWUoY3h0LT5iYWRtYXApOwo+PiArCWtmcmVlKGN4dC0+dXNl
+ZG1hcCk7Cj4+ICsJa2ZyZWUoY3h0LT5ybW1hcCk7Cj4+ICsJY3h0LT5tdGQgPSBOVUxMOwo+PiAr
+CWN4dC0+aW5kZXggPSAtMTsKPj4gK30KPj4gKwo+PiArc3RhdGljIHN0cnVjdCBtdGRfbm90aWZp
+ZXIgbXRkcHN0b3JlX25vdGlmaWVyID0gewo+PiArCS5hZGQJPSBtdGRwc3RvcmVfbm90aWZ5X2Fk
+ZCwKPj4gKwkucmVtb3ZlCT0gbXRkcHN0b3JlX25vdGlmeV9yZW1vdmUsCj4+ICt9Owo+PiArCj4+
+ICtzdGF0aWMgaW50IF9faW5pdCBtdGRwc3RvcmVfaW5pdCh2b2lkKQo+PiArewo+PiArCWludCBy
+ZXQ7Cj4+ICsJc3RydWN0IG10ZHBzdG9yZV9jb250ZXh0ICpjeHQgPSAmb29wc19jeHQ7Cj4+ICsJ
+c3RydWN0IGJsa29vcHNfaW5mbyAqaW5mbyA9ICZjeHQtPmJvX2luZm87Cj4+ICsKPj4gKwlyZXQg
+PSBibGtvb3BzX2luZm8oaW5mbyk7Cj4+ICsJaWYgKHVubGlrZWx5KHJldCkpCj4+ICsJCXJldHVy
+biByZXQ7Cj4+ICsKPj4gKwlpZiAoc3RybGVuKGluZm8tPmRldmljZSkgPT0gMCkgewo+PiArCQlw
+cl9lcnIoIm10ZCBkZXZpY2UgbXVzdCBiZSBzdXBwbGllZFxuIik7Cj4+ICsJCXJldHVybiAtRUlO
+VkFMOwo+PiArCX0KPj4gKwlpZiAoIWluZm8tPmRtZXNnX3NpemUpIHsKPj4gKwkJcHJfZXJyKCJu
+byByZWNvcmRlciBlbmFibGVkXG4iKTsKPj4gKwkJcmV0dXJuIC1FSU5WQUw7Cj4+ICsJfQo+PiAr
+Cj4+ICsJLyogU2V0dXAgdGhlIE1URCBkZXZpY2UgdG8gdXNlICovCj4+ICsJcmV0ID0ga3N0cnRv
+aW50KChjaGFyICopaW5mby0+ZGV2aWNlLCAwLCAmY3h0LT5pbmRleCk7Cj4+ICsJaWYgKHJldCkK
+Pj4gKwkJY3h0LT5pbmRleCA9IC0xOwo+PiArCj4+ICsJcmVnaXN0ZXJfbXRkX3VzZXIoJm10ZHBz
+dG9yZV9ub3RpZmllcik7Cj4+ICsJcmV0dXJuIDA7Cj4+ICt9Cj4+ICttb2R1bGVfaW5pdChtdGRw
+c3RvcmVfaW5pdCk7Cj4+ICsKPj4gK3N0YXRpYyB2b2lkIF9fZXhpdCBtdGRwc3RvcmVfZXhpdCh2
+b2lkKQo+PiArewo+PiArCXVucmVnaXN0ZXJfbXRkX3VzZXIoJm10ZHBzdG9yZV9ub3RpZmllcik7
+Cj4+ICt9Cj4+ICttb2R1bGVfZXhpdChtdGRwc3RvcmVfZXhpdCk7Cj4+ICsKPj4gK01PRFVMRV9M
+SUNFTlNFKCJHUEwiKTsKPj4gK01PRFVMRV9BVVRIT1IoIldlaVhpb25nIExpYW8gPGxpYW93ZWl4
+aW9uZ0BhbGx3aW5uZXJ0ZWNoLmNvbT4iKTsKPj4gK01PRFVMRV9ERVNDUklQVElPTigiTVREIE9v
+cHMvUGFuaWMgY29uc29sZSBsb2dnZXIvZHJpdmVyIik7Cj4gCj4gCj4gCj4gCj4gVGhhbmtzLAo+
+IE1pcXXDqGwKPiAKCkkgd2lsbCBjb2xsZWN0IG1vcmUgc3VnZ2VzdGlvbnMgYW5kIHN1Ym1pdCB0
+aGUgbmV3IHZlcnNpb24gYXQgb25lIHRpbWUuCgotLSAKbGlhb3dlaXhpb25nCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRp
+c2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vbGludXgtbXRkLwo=
