@@ -8,77 +8,81 @@ X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B2A35C2D0CE
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Jan 2020 20:00:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A633C2D0CE
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Jan 2020 20:01:30 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 81744217F4
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Jan 2020 20:00:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 374D2217F4
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Jan 2020 20:01:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VC4Mbii3";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UlFqOs0X"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 81744217F4
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Oi3Y39Nk";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P5KYtG59"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 374D2217F4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=oMg148xfQcsV9eRbypi3ioySmB8jHpGSyDhCoxMEqig=; b=VC4
-	Mbii3LuIYnNCsfxwmalE8iirAxgNNTeObtaYbP6wjoNR3RH53bexQofcWSWY5Qa5kcuk/bOWgFPqT
-	UghvYjnXT2HG1m2/+Eib2CgxbuIQuQ5nQtXpXXgV19WbB1irAJnstoEr87mhxnpn8p/9OnRpbyI7M
-	o2ADACiNmNiZVVFRCroRT6iOmZWJ4UIkv7xJ8AcyHqrJ5AvXazJ7pFvNxR9CGi7pX/YabCoOJzDUk
-	42sapYOS/uiZC+OOixQKoy2SzoKXaPjBdHdx2qX3jaWpzWNyEDlIi8ccr/SGI5DqTY4873WJuDMAK
-	4aEaVzFTaSWIeowmR5f8nGxMyYSiWCg==;
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:References:
+	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=JQ3w1TVakyZQBHbWp9nXEcsDCgl5/b2T10JJ6SO3ElU=; b=Oi3Y39NkrF49C/Qg1k3F5jCoXB
+	64Db13KOlSUAA9aCEAu22YeIXo8zv2E3P3X10S7LNCUoGB72/W8paWkYFntqhQbn/F71M69ojh/9Z
+	3+AIFraJau0cpQIbwZDGX2LHaxdA0K/MMU2xoOqKAtjjcS/dYfB+psfqpbHzk9QkbyWVebABnN5VH
+	gFZPCQQy2vkNNCDwyYtOhleZqCzV7mKpztpByW/ZY3RkaUBRCBBptA9jZv7EpYh0YkBJ/BN/BRMui
+	wScz39sjq/KNakCk0d1biG4AHA2LWjs4Ps/YG+dkyNynh0X7RQteoCzeGgrXs+zDWbPXKOdRBcJMn
+	zrYQOI8g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1itzhU-0003BV-V4; Tue, 21 Jan 2020 20:00:37 +0000
-Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
+	id 1itzi5-0003YN-FL; Tue, 21 Jan 2020 20:01:13 +0000
+Received: from mail-pj1-x1041.google.com ([2607:f8b0:4864:20::1041])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1itzhB-0002sG-3P
- for linux-mtd@lists.infradead.org; Tue, 21 Jan 2020 20:00:21 +0000
-Received: by mail-pf1-x441.google.com with SMTP id p14so2041995pfn.4
- for <linux-mtd@lists.infradead.org>; Tue, 21 Jan 2020 12:00:16 -0800 (PST)
+ id 1itzhk-0003N7-7b
+ for linux-mtd@lists.infradead.org; Tue, 21 Jan 2020 20:01:11 +0000
+Received: by mail-pj1-x1041.google.com with SMTP id n59so2125173pjb.1
+ for <linux-mtd@lists.infradead.org>; Tue, 21 Jan 2020 12:00:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id;
- bh=eeX2JNGz9HgVPRGIoEvaZTiS7IkFyrAlD7or7JXr8vc=;
- b=UlFqOs0X9yC5fqiMCEgHjeGUefzh3fJ/FdvxvkBy25yIKgMFlYTZkUmpDcRVBEdlgF
- ZUR71N8z2yAkKbb01kfMh9nrdSr9a3jQyKklhi8pORyOx2F48pWtCL7SDCV5kUYLFbfj
- A/6zRjM0wgnykN0SLUXAWZmLwNhPwM20CVx7WUKQBeOdwm+e4WLIinqeFaDYPZ0C0sy7
- YjjRflOWXmANDIET32nY3CfBQrUvFa+t+v9HZMVIUgx5LURr/P/Q7n9+R8Q9fpN7OJs0
- i8IcKpfWQcTlzHzCI96q5NwSLtKodwMFHjPce6nR7OGqQaNCAJhNNWcr3hsgODln4HZF
- pxNw==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references;
+ bh=kzLVnx6I7dFbl8GGlRwfZsz6Y4gNG6PLh1f7Jaid6/Y=;
+ b=P5KYtG59f1k+Yqe22+zjCSiNmrOUvfFutSuM+Nb6W1BwvT+8UmwyeYVhioNj6nsFqy
+ Yj34T/5ylDVtZGvmBXfwdp/zw3spki+F2gv8UscDG0CoGS8UO6WVgEYU82yCxNj7XPR8
+ 0ZsqbISApivCU87Be5eVRw5O37v1pJSyFT32F9kAznVdFcxaM9J9h9seUzf0N73U0O9P
+ TSM8gOkyUTqhoephbQIDrWA05//KYOuvqrMST0r1f+vbPu9t5zHSP69FpHS9M/cRpCpW
+ S4RYXjSpHrOmCxmvRr/uv7pPtbFQqCLIW5ZhSk7vn2Arokfj5SFUH39hwOCEX2hi0C+W
+ nAqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=eeX2JNGz9HgVPRGIoEvaZTiS7IkFyrAlD7or7JXr8vc=;
- b=r+ij0r6ONJ3qhFYGwlZRaK3eSfSO7gBlU10VIhm2wSWktUkhK32grZStkmBYl+Ovfr
- uI7IAeqbTpotf7uLoUU28DBlDDqwb6LgfmTFL5JB7loDfYle5KAWHke3VYeI4f42w4Er
- BvaSeWArCjU+RESAe1Uop1RjV9SzG1EtRAM0yT3DrSx0CuHVtUrEyy6Qkiaspz/ZtblC
- 6zJ6J7sHVLzf7NcoukBJ6HOZqvGXunAXjhL3yY+cL1Yc+Fp/3IO20QSc8Gg+OOo2UJ6Z
- n1XLubWbRvYPKkFngfCoM0UCgITaL4mci3HJm6aefsvxJalKozQeIniwjQT1oQyOJrF5
- t1yw==
-X-Gm-Message-State: APjAAAUB4GkPdgzjT1vijskFqm7wWWwrw4B1UeiHQi3BUPdEpPxGCarz
- OYa7K4nIFilLtC+4wUZqG20djHTt
-X-Google-Smtp-Source: APXvYqxKq2oDlprFk1+QK2TFgGB5hdnvvHi3lXqLm35fMfkoRjqwMH0R05FaBJfIZvrz79we+8RMcg==
-X-Received: by 2002:a63:2cc8:: with SMTP id s191mr7137691pgs.206.1579636815427; 
- Tue, 21 Jan 2020 12:00:15 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references;
+ bh=kzLVnx6I7dFbl8GGlRwfZsz6Y4gNG6PLh1f7Jaid6/Y=;
+ b=MvvzWfIabAAWsz6cW/fdAYu2ao3QSOxDIwJ3kLqAuM9tyoTXpwLeiuewBmykEd3Wee
+ x5oik+ctLWkywvgIvwh9ZFCyrsXQJd5fSd2urrO98uajtOLA1eHyRbGfy5oBvAeKOF0m
+ Sh2bzzU/FFhQYRl22bLwNl1qbunSqgpF4sC4Psy9+nyu+YTTUELQwY87BYYWBkbTILeQ
+ hzblunVe+rIyqN7HVErJ8lqa9BvpL/SFLmonY5t34Q/LmlyejnTb3Z/TnVm5VWkRts1i
+ qJeW4fNKCbxPleNc1njDFw78TiC4hATgNI9OrIzgo/zSIxHBwdM+JGSzQmGCJAivG3J1
+ pJdw==
+X-Gm-Message-State: APjAAAWtBf+1t9pBebNiY/Kag4RgzzKUWIKStZHNFXOQVhFrRDbYTIJe
+ JupR74ReplVNfMwcwfmtNS1bfGY9
+X-Google-Smtp-Source: APXvYqyv1eUpvO7MITJ+M3cgRICHj72iKltYDNrRQFlAZshLIPuQUQnNPSv2z3H5/XXY4evONk/XIg==
+X-Received: by 2002:a17:90b:142:: with SMTP id em2mr145807pjb.4.1579636850683; 
+ Tue, 21 Jan 2020 12:00:50 -0800 (PST)
 Received: from mail.broadcom.com ([192.19.231.250])
- by smtp.gmail.com with ESMTPSA id d2sm261576pjv.18.2020.01.21.12.00.13
+ by smtp.gmail.com with ESMTPSA id d2sm261576pjv.18.2020.01.21.12.00.48
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 21 Jan 2020 12:00:15 -0800 (PST)
+ Tue, 21 Jan 2020 12:00:50 -0800 (PST)
 From: Kamal Dasu <kdasu.kdev@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH V2 1/3] dt: bindings: brcmnand: Add support for flash-edu
-Date: Tue, 21 Jan 2020 15:00:06 -0500
-Message-Id: <20200121200011.32296-1-kdasu.kdev@gmail.com>
+Subject: [PATCH V2 2/3] arch: mips: brcm: Add 7425 flash-edu support
+Date: Tue, 21 Jan 2020 15:00:07 -0500
+Message-Id: <20200121200011.32296-2-kdasu.kdev@gmail.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200121200011.32296-1-kdasu.kdev@gmail.com>
+References: <20200121200011.32296-1-kdasu.kdev@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200121_120017_188362_2FE3B7E6 
-X-CRM114-Status: GOOD (  10.59  )
+X-CRM114-CacheID: sfid-20200121_120052_336541_B87256B3 
+X-CRM114-Status: GOOD (  11.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,44 +95,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Vignesh Raghavendra <vigneshr@ti.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, bcm-kernel-feedback-list@broadcom.com,
- Miquel Raynal <miquel.raynal@bootlin.com>
+ Florian Fainelli <f.fainelli@gmail.com>, Paul Burton <paulburton@kernel.org>,
+ Kamal Dasu <kdasu.kdev@gmail.com>, James Hogan <jhogan@kernel.org>,
+ linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>,
+ linux-mips@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ bcm-kernel-feedback-list@broadcom.com
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Adding support for EBI DMA unit (EDU).
+Nand controller v5.0 and v6.0 have nand edu blocks that enable
+dma nand flash transfers. This allows for faster read and write
+access.
 
 Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
 ---
- .../devicetree/bindings/mtd/brcm,brcmnand.txt          | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ arch/mips/boot/dts/brcm/bcm7425.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
-index 82156dc8f304..05651a654c66 100644
---- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
-+++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
-@@ -35,11 +35,11 @@ Required properties:
-                      (optional) NAND flash cache range (if at non-standard offset)
- - reg-names        : a list of the names corresponding to the previous register
-                      ranges. Should contain "nand" and (optionally)
--                     "flash-dma" and/or "nand-cache".
--- interrupts       : The NAND CTLRDY interrupt and (if Flash DMA is available)
--                     FLASH_DMA_DONE
--- interrupt-names  : May be "nand_ctlrdy" or "flash_dma_done", if broken out as
--                     individual interrupts.
-+                     "flash-dma" or "flash-edu" and/or "nand-cache".
-+- interrupts       : The NAND CTLRDY interrupt, (if Flash DMA is available)
-+                     FLASH_DMA_DONE and if EDU is avaialble and used FLASH_EDU_DONE
-+- interrupt-names  : May be "nand_ctlrdy" or "flash_dma_done" or "flash_edu_done",
-+                     if broken out as individual interrupts.
-                      May be "nand", if the SoC has the individual NAND
-                      interrupts multiplexed behind another custom piece of
-                      hardware
+diff --git a/arch/mips/boot/dts/brcm/bcm7425.dtsi b/arch/mips/boot/dts/brcm/bcm7425.dtsi
+index 410e61ebaf9e..aa0b2d39c902 100644
+--- a/arch/mips/boot/dts/brcm/bcm7425.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm7425.dtsi
+@@ -403,8 +403,8 @@
+ 			compatible = "brcm,brcmnand-v5.0", "brcm,brcmnand";
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+-			reg-names = "nand";
+-			reg = <0x41b800 0x400>;
++			reg-names = "nand", "flash-edu";
++			reg = <0x41b800 0x400>, <0x41bc00 0x24>;
+ 			interrupt-parent = <&hif_l2_intc>;
+ 			interrupts = <24>;
+ 			status = "disabled";
 -- 
 2.17.1
 
