@@ -2,64 +2,121 @@ Return-Path: <SRS0=c5zc=3K=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A0A3C2D0CE
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Jan 2020 13:44:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD846C2D0CE
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Jan 2020 14:59:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E15F12070C
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Jan 2020 13:44:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 97FD6207E0
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Jan 2020 14:59:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bMGyfTkD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E15F12070C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jZr615/Y";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=micron.com header.i=@micron.com header.b="ig2B4+wN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 97FD6207E0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=micron.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4Z3AZz+lHl3fEHf72i/d0DWJ5eLt0VwPd5PQtV6ImDw=; b=bMGyfTkDptK4PT
-	v1W/JJTN/AamPpt1j6il1m8RExjFjRtjpBamXbnNoJ+ei7ynHw5T46fTehRWK0FrSnLhoztcaxKDM
-	+4CMAm8874PjuATlzHQs9K8WBkYvbkZESwff3MjEZ3Bl3ca7x+Lc00k/85syOY+Irm5Of4Xzit8/X
-	qakeOPEyHVohk2Qiki/Z2p90BaqIro225vGdqshSBCW9tS5T4emnCW5l2LkfI8PQe49ofLGuE+CYN
-	qatbovNDf6oy6knj/+eZfKn13TdvS3N8aRrfK+YTFXstQojpB68JiMlHdvClCkGQxvSOTqb9QfOK9
-	+57bgsXIAaaPCvrvRCsQ==;
+	List-Owner; bh=zEf3GIbZR9kqX7GzhJh6bvWvkCLbDnLKajL7uIfHeE8=; b=jZr615/YcZ8sZa
+	xKw56WfpDHRlyCzrkK755yY0Rs6kbmUlUPOb2gfGJI297d3JvvXFjikR8dMxlPxtwVJjFim2PDkAp
+	zdpjHqNx7zVS6AClViaXKycU7ydSJ6h41n2W+0bMVfi3iKysbs1NTP5OzIPljYjkCRTc5TGNYcspO
+	nXYOqvJM4ZMKA/xLYPSgMvIjkmc2i5KmYLLyE6bVxFw8nCHLKTnKGImT2CBIurV3sNJFWYaU9HXfi
+	nCcikFDuibGWEw28UwlUrKNbun9kG1oilSt4gG80zCR0ncRv6mHqSYhSQI+J0mP2J8hxC/l0Fnbmr
+	Ha8pV/PeNEgYQzv/DShg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ittpO-0008KK-9E; Tue, 21 Jan 2020 13:44:22 +0000
-Received: from relay5-d.mail.gandi.net ([217.70.183.197])
+	id 1ituzy-0001mg-5M; Tue, 21 Jan 2020 14:59:22 +0000
+Received: from mail-bn8nam11on20615.outbound.protection.outlook.com
+ ([2a01:111:f400:7eae::615]
+ helo=NAM11-BN8-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ittpI-0008Jo-7s
- for linux-mtd@lists.infradead.org; Tue, 21 Jan 2020 13:44:20 +0000
-X-Originating-IP: 90.76.211.102
-Received: from xps13 (lfbn-tou-1-1151-102.w90-76.abo.wanadoo.fr
- [90.76.211.102]) (Authenticated sender: miquel.raynal@bootlin.com)
- by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 1645F1C0015;
- Tue, 21 Jan 2020 13:44:05 +0000 (UTC)
-Date: Tue, 21 Jan 2020 14:44:05 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: "Shivamurthy Shastri (sshivamurthy)" <sshivamurthy@micron.com>
-Subject: Re: [EXT] Re: [PATCH 4/4] mtd: spinand: Add new Micron SPI NAND
- devices with multiple dies
-Message-ID: <20200121144405.6fd49ae2@xps13>
-In-Reply-To: <MN2PR08MB6397E9900A3638E873434B9DB80D0@MN2PR08MB6397.namprd08.prod.outlook.com>
+ id 1ituzr-0001lm-Cw
+ for linux-mtd@lists.infradead.org; Tue, 21 Jan 2020 14:59:20 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ahQUBf8rDaltCG6vWZZAA4s5J+2aG6mLz3uQz3tYy4dN9eUA/xrbSUnF8+8qAlystZVT6kLMRc4LRx2C9S6bkVtcHOKBdrNIlIHuydmQAkmlnio2nVKCDIXJpNIbxo+lqheFwE4rlK5e2+5IjDdttgJpzd2RE5B12/zekMjatcW1a81ygo26mT881tWQYaYgl+SD/c774A/IrHhnDXJuywQg1h0SsJh4ZjPcTWLeKDH3teOrriJbsWwfTGB1QyXlzL8AR2Wlk1ru/IkNXDAy64Gp0s34e3EBKnsFm8UfLq8ziK9M5nATQftioP84z5AK7t14LJZmqdiBnEQjqFmGRg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DJk72w5um95NHsIL3MOUskAZaEZkA47EM2M2z5LJTss=;
+ b=mfX1A5wcZcBuD5b+dBVouTOz/mdbKPEEsbFSSrWP8LNtOT6hkfWDEe6r0GTiBVCmJr7E4DTaFZ4hngQnnYDaomVfK0YrgnLpf9spQOLmzWb339eZEKdvCcck4ML4Oxv+COd0du3c2cxjgvAA4hmDVlFc0INGSS1J0+CjFon0m0kniw9ezoSBm9mgi/je8+exLfvxcfEr4sNmd3BjJsUHJjX9YLrXGsvDK8v4z7XyHH8rHm8hdOUk8gN4CYsUJGtL3wry3Pr1Wl01B6BDaKrXvxR4qQsdi61qken5DUEi/tw627MVzWK+WAHh1ZTh/A4MDAQ+vr0QE+KjJPaUwDTtDw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=micron.com; dmarc=pass action=none header.from=micron.com;
+ dkim=pass header.d=micron.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=micron.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DJk72w5um95NHsIL3MOUskAZaEZkA47EM2M2z5LJTss=;
+ b=ig2B4+wN24Vq6/ZprXI6d37x6bI2G0BGjI3fmvjxk89hbR5JSEW0jarDAxx/CPRcZIoYgyiVJygweTuH6p+ADRzQnY6byGTOv4dlSE1QCnkbHh1Tk2a700ka7bphfjHqvTK6RF/ksKUhJUKMq+W4aplnUj/piIxcGw/OSyxFh3I=
+Received: from MN2PR08MB6397.namprd08.prod.outlook.com (52.132.170.74) by
+ MN2SPR01MB0045.namprd08.prod.outlook.com (20.179.223.10) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2644.18; Tue, 21 Jan 2020 14:59:12 +0000
+Received: from MN2PR08MB6397.namprd08.prod.outlook.com
+ ([fe80::61af:ed8:e19b:cb6a]) by MN2PR08MB6397.namprd08.prod.outlook.com
+ ([fe80::61af:ed8:e19b:cb6a%3]) with mapi id 15.20.2644.027; Tue, 21 Jan 2020
+ 14:59:12 +0000
+From: "Shivamurthy Shastri (sshivamurthy)" <sshivamurthy@micron.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: RE: [EXT] Re: [PATCH 3/4] mtd: spinand: Add M70A series Micron SPI
+ NAND devices
+Thread-Topic: [EXT] Re: [PATCH 3/4] mtd: spinand: Add M70A series Micron SPI
+ NAND devices
+Thread-Index: AQHVz3qxhHT4F5gqHEqpiIf5nVR3gqfzXyrAgAHClgCAAAH50A==
+Date: Tue, 21 Jan 2020 14:59:11 +0000
+Message-ID: <MN2PR08MB6397EE91C508B6DA2263F3D6B80D0@MN2PR08MB6397.namprd08.prod.outlook.com>
 References: <20200119145432.10405-1-sshivamurthy@micron.com>
- <20200119145432.10405-5-sshivamurthy@micron.com>
- <20200120112219.36bae01e@xps13>
- <MN2PR08MB6397E9900A3638E873434B9DB80D0@MN2PR08MB6397.namprd08.prod.outlook.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ <20200119145432.10405-4-sshivamurthy@micron.com>
+ <20200120111626.7cb2f6c5@xps13>
+ <MN2PR08MB6397062A37D39287E820A0D8B80D0@MN2PR08MB6397.namprd08.prod.outlook.com>
+ <20200121144034.05a8f49d@xps13>
+In-Reply-To: <20200121144034.05a8f49d@xps13>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-rorf: true
+x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcc3NoaXZhbXVydGh5XGFwcGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEyOWUzNWJcbXNnc1xtc2ctOTM1ZjVhYjAtM2M1ZS0xMWVhLWIxZTMtOTgzYjhmNzQ1MjUxXGFtZS10ZXN0XDkzNWY1YWIyLTNjNWUtMTFlYS1iMWUzLTk4M2I4Zjc0NTI1MWJvZHkudHh0IiBzej0iNTY4OSIgdD0iMTMyMjQwOTIzNDk1NTE1ODM2IiBoPSIwdGVUWGJ1aXVoUjM0a0lUMlZ1eHNFQnNvbWc9IiBpZD0iIiBibD0iMCIgYm89IjEiLz48L21ldGE+
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=sshivamurthy@micron.com; 
+x-originating-ip: [165.225.80.129]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 38db92d3-5ec8-4b43-821b-08d79e8279b2
+x-ms-traffictypediagnostic: MN2SPR01MB0045:|MN2SPR01MB0045:|MN2SPR01MB0045:
+x-microsoft-antispam-prvs: <MN2SPR01MB0045D387487F13F2C3E768ABB80D0@MN2SPR01MB0045.namprd08.prod.outlook.com>
+x-ms-exchange-transport-forked: True
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 0289B6431E
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(4636009)(346002)(39860400002)(366004)(136003)(396003)(376002)(199004)(189003)(52536014)(186003)(4326008)(6506007)(55236004)(7696005)(5660300002)(26005)(8936002)(81156014)(6916009)(2906002)(55016002)(81166006)(9686003)(8676002)(478600001)(316002)(71200400001)(33656002)(54906003)(86362001)(76116006)(66476007)(66446008)(64756008)(66556008)(66946007);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:MN2SPR01MB0045;
+ H:MN2PR08MB6397.namprd08.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; A:1; MX:1; 
+received-spf: None (protection.outlook.com: micron.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: G5gdPq5VeL43b9Mwm3A19+ylR/YWYIdeJWm4fwuE+fx+wTdve41NVT4wB1OrQA1F/FIkNB9uXv3STaWRh9eTW5aW3xYbZ4rYR7xsnJb4TkS5Z6KfCFG2+mZrU7QXLnIzyw7q9Z8Nhf1+xSl9Mgjp3ukMUjGgNdAtoOD4hPpA2RhL0Rg5WdW5Nt0T6igcIGFU6rCuQgf02lNje7pIHztbioqwrpkHSTg1PFsZcDamPFyz/QjGAAeF30L6g6KhdxAFDTWxAkUOXhXiGC2Y/bAJcUXOzxMylP434gBLm3Z5Mz8dQCIz5Wm3p1Oorvv9q6m0UMM+ahlg9eDZ7QKzRonsLFlbw091BUb0IseJ+QwJ5Z5n9dS4uCZ5PDW0huitL+AKe3LnDOk1GRDuEjnMAYsEEiUSd5ByGFQDzo0rgDwflwEIKtsT/Au0M1d/ck8+opCy
 MIME-Version: 1.0
+X-OriginatorOrg: micron.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 38db92d3-5ec8-4b43-821b-08d79e8279b2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jan 2020 14:59:11.9061 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: f38a5ecd-2813-4862-b11b-ac1d563c806f
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 5M43Q0YYvtoVuJTmMUXRjoXQAhTh+aPXVe8N1EXgT2k30sp/pJTk84S4UtU8QUEKMLjNMa455HTP3zFEXO/4zA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2SPR01MB0045
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200121_054416_555341_93442FC3 
-X-CRM114-Status: GOOD (  22.33  )
+X-CRM114-CacheID: sfid-20200121_065915_607157_DF0DCEBF 
+X-CRM114-Status: GOOD (  31.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,108 +130,173 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Vignesh Raghavendra <vigneshr@ti.com>,
  Boris Brezillon <bbrezillon@kernel.org>,
- "shiva.linuxworks@gmail.com" <shiva.linuxworks@gmail.com>,
+ Shivamurthy Shastri <shiva.linuxworks@gmail.com>,
  Richard Weinberger <richard@nod.at>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  Frieder Schrempf <frieder.schrempf@kontron.de>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgU2hpdmFtdXJ0aHksCgoiU2hpdmFtdXJ0aHkgU2hhc3RyaSAoc3NoaXZhbXVydGh5KSIgPHNz
-aGl2YW11cnRoeUBtaWNyb24uY29tPiB3cm90ZSBvbgpUdWUsIDIxIEphbiAyMDIwIDEyOjIzOjM2
-ICswMDAwOgoKPiBIaSBNaXF1ZWwsCj4gCj4gPiAKPiA+IEhpIFNoaXZhLAo+ID4gCj4gPiBzaGl2
-YS5saW51eHdvcmtzQGdtYWlsLmNvbSB3cm90ZSBvbiBTdW4sIDE5IEphbiAyMDIwIDE1OjU0OjMy
-ICswMTAwOgo+ID4gICAKPiA+ID4gRnJvbTogU2hpdmFtdXJ0aHkgU2hhc3RyaSA8c3NoaXZhbXVy
-dGh5QG1pY3Jvbi5jb20+Cj4gPiA+Cj4gPiA+IEFkZCBkZXZpY2UgdGFibGUgZm9yIG5ldyBNaWNy
-b24gU1BJIE5BTkQgZGV2aWNlcywgd2hpY2ggaGF2ZSBtdWx0aXBsZQo+ID4gPiBkaWVzLiBXaGls
-ZSBhdCBpdCwgYWRkIHN1cHBvcnQgdG8gc2VsZWN0IHRoZSBkaWUuICAKPiA+IAo+ID4gU2FtZSBj
-b21tZW50IGFzIGluIDMvNC4gIAo+IAo+IEkgd2lsbCBjb3JyZWN0IHRoZSBjb21tZW50LgoKQWN0
-dWFsbHkgbm93IHdpdGggbW9yZSBleHBsYW5hdGlvbiBJIHVuZGVyc3RhbmQgYmV0dGVyLiBQbGVh
-c2UKa2VlcCBpbiBtaW5kIHRoYXQgYW55Ym9keSBub3Qga25vd2luZyB3aGF0IHlvdSBkbyBvbiBh
-IGRhaWx5IGJhc2lzCnNob3VsZCB1bmRlcnN0YW5kIHdoYXQgdGhpcyBjb21taXQgZG9lcyBhbmQg
-d2h5LgoKU28gbGlrZSBiZWZvcmUsIHlvdSBhY3R1YWxseSBkb24ndCBuZWVkIHRvIHNwbGl0IHRo
-aXMgcGF0Y2gsIGJ1dAppbnN0ZWFkIHJld29yayB0aGUgY29tbWl0IG1lc3NhZ2UuCgo+IAo+ID4g
-ICAKPiA+ID4KPiA+ID4gU2lnbmVkLW9mZi1ieTogU2hpdmFtdXJ0aHkgU2hhc3RyaSA8c3NoaXZh
-bXVydGh5QG1pY3Jvbi5jb20+Cj4gPiA+IC0tLQo+ID4gPiAgZHJpdmVycy9tdGQvbmFuZC9zcGkv
-bWljcm9uLmMgfCA1MCAgCj4gPiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKyAg
-Cj4gPiA+ICAxIGZpbGUgY2hhbmdlZCwgNTAgaW5zZXJ0aW9ucygrKQo+ID4gPgo+ID4gPiBkaWZm
-IC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9zcGkvbWljcm9uLmMgIAo+ID4gYi9kcml2ZXJzL210
-ZC9uYW5kL3NwaS9taWNyb24uYyAgCj4gPiA+IGluZGV4IDQ1ZmMzN2M1OGY4YS4uMDNiNDg2ODQz
-MjEwIDEwMDY0NAo+ID4gPiAtLS0gYS9kcml2ZXJzL210ZC9uYW5kL3NwaS9taWNyb24uYwo+ID4g
-PiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3NwaS9taWNyb24uYwo+ID4gPiBAQCAtMTgsNiArMTgs
-OCBAQAo+ID4gPiAgI2RlZmluZSBNSUNST05fU1RBVFVTX0VDQ180VE82X0JJVEZMSVBTCSgzIDw8
-IDQpCj4gPiA+ICAjZGVmaW5lIE1JQ1JPTl9TVEFUVVNfRUNDXzdUTzhfQklURkxJUFMJKDUgPDwg
-NCkKPiA+ID4KPiA+ID4gKyNkZWZpbmUgTUlDUk9OX0RJRV9TRUxFQ1RJT05fQklUCTYKPiA+ID4g
-Kwo+ID4gPiAgc3RhdGljIFNQSU5BTkRfT1BfVkFSSUFOVFMocmVhZF9jYWNoZV92YXJpYW50cywK
-PiA+ID4gIAkJU1BJTkFORF9QQUdFX1JFQURfRlJPTV9DQUNIRV9RVUFESU9fT1AoMCwgMiwgIAo+
-ID4gTlVMTCwgMCksICAKPiA+ID4gIAkJU1BJTkFORF9QQUdFX1JFQURfRlJPTV9DQUNIRV9YNF9P
-UCgwLCAxLCBOVUxMLCAwKSwKPiA+ID4gQEAgLTY0LDYgKzY2LDIxIEBAIHN0YXRpYyBjb25zdCBz
-dHJ1Y3QgbXRkX29vYmxheW91dF9vcHMgIAo+ID4gbWljcm9uXzhfb29ibGF5b3V0ID0geyAgCj4g
-PiA+ICAJLmZyZWUgPSBtaWNyb25fOF9vb2JsYXlvdXRfZnJlZSwKPiA+ID4gIH07Cj4gPiA+Cj4g
-PiA+ICtzdGF0aWMgaW50IG1pY3Jvbl9zZWxlY3RfdGFyZ2V0KHN0cnVjdCBzcGluYW5kX2Rldmlj
-ZSAqc3BpbmFuZCwKPiA+ID4gKwkJCQl1bnNpZ25lZCBpbnQgdGFyZ2V0KQo+ID4gPiArewo+ID4g
-PiArCXN0cnVjdCBzcGlfbWVtX29wIG9wID0gU1BJTkFORF9TRVRfRkVBVFVSRV9PUCgweGQwLAo+
-ID4gPiArCQkJCQkJICAgICAgc3BpbmFuZC0+c2NyYXRjaGJ1Zik7Cj4gPiA+ICsKPiA+ID4gKwkv
-Kgo+ID4gPiArCSAqIEFzIHBlciBkYXRhc2hlZXQsIGRpZSBzZWxlY3Rpb24gaXMgZG9uZSBieSB0
-aGUgNnRoIGJpdCBvZiBEaWUKPiA+ID4gKwkgKiBTZWxlY3QgUmVnaXN0ZXIgKEFkZHJlc3MgMHhE
-MCkuCj4gPiA+ICsJICovICAKPiA+IAo+ID4gSSB3b3VsZCBwdXQgdGhpcyBjb21tZW50IGNsb3Nl
-IHRvIHRoZSBtYWNybyBkZWZpbml0aW9uLiAgCj4gCj4gU3VyZSwgSSB3aWxsIGRvIGl0Lgo+IAo+
-ID4gICAKPiA+ID4gKwkqc3BpbmFuZC0+c2NyYXRjaGJ1ZiA9IHRhcmdldCA8PCBNSUNST05fRElF
-X1NFTEVDVElPTl9CSVQ7ICAKPiA+IAo+ID4gRWl0aGVyIHRhcmdldCBpcyBvciBvciAxIGFuZCB5
-b3UgY2FuIHVzZSB0aGUgQklUIG1hY3JvLCBvciB5b3Ugc3VwcG9zZQo+ID4gaXQgY2FuIGdvIGhp
-Z2hlciBhbmQgdGhlIF9CSVQgc3VmZml4IGRvZXMgbm90IGZpdC4gX1NISUZUIHdvdWxkIHdvcmsK
-PiA+IGFuZCBjcmVhdGluZyBhIG1hY3JvIGRpcmVjdGx5IHdvdWxkIGJlIGV2ZW4gYmV0dGVyLgo+
-ID4gICAKPiAKPiBJIHdpbGwgY3JlYXRlIG1hY3JvIGRpcmVjdGx5IGFuZCBzZW5kIHRoZSBjb2Rl
-IGluIG5leHQgdmVyc2lvbi4KPiAKPiA+ID4gKwo+ID4gPiArCXJldHVybiBzcGlfbWVtX2V4ZWNf
-b3Aoc3BpbmFuZC0+c3BpbWVtLCAmb3ApOwo+ID4gPiArfQo+ID4gPiArICAKPiA+IAo+ID4gV2hl
-cmUgaXMgdGhpcyBmdW5jdGlvbiB1c2VkPyAgCj4gCj4gSUlVQyB5b3VyIHF1ZXN0aW9uLCB0aGUg
-ZnVuY3Rpb24gaXMgdXNlZCBiZWxvdyBpbiBkZXZpY2UgdGFibGUuCj4gVGhlIGxpbmUgaXMgc29t
-ZXRoaW5nIGxpa2UsIAo+IAo+IFNQSU5BTkRfU0VMRUNUX1RBUkdFVChtaWNyb25fc2VsZWN0X3Rh
-cmdldCkpCgpJIGp1c3QgbWlzc2VkIGl0IDopCgo+IAo+IGZvciBhbGwgdGhlIGRldmljZXMgd2l0
-aCBtdWx0aXBsZSBkaWVzLgo+IAo+ID4gICAKPiA+ID4gIHN0YXRpYyBpbnQgbWljcm9uXzhfZWNj
-X2dldF9zdGF0dXMoc3RydWN0IHNwaW5hbmRfZGV2aWNlICpzcGluYW5kLAo+ID4gPiAgCQkJCSAg
-IHU4IHN0YXR1cykKPiA+ID4gIHsKPiA+ID4gQEAgLTEzMSw2ICsxNDgsMTcgQEAgc3RhdGljIGNv
-bnN0IHN0cnVjdCBzcGluYW5kX2luZm8gIAo+ID4gbWljcm9uX3NwaW5hbmRfdGFibGVbXSA9IHsg
-IAo+ID4gPiAgCQkgICAgIDAsCj4gPiA+ICAJCSAgICAgU1BJTkFORF9FQ0NJTkZPKCZtaWNyb25f
-OF9vb2JsYXlvdXQsCj4gPiA+ICAJCQkJICAgICBtaWNyb25fOF9lY2NfZ2V0X3N0YXR1cykpLAo+
-ID4gPiArCS8qIE03OUEgNEdiIDMuM1YgKi8KPiA+ID4gKwlTUElOQU5EX0lORk8oIk1UMjlGNEcw
-MUFEQUdEIiwgMHgzNiwKPiA+ID4gKwkJICAgICBOQU5EX01FTU9SRygxLCAyMDQ4LCAxMjgsIDY0
-LCAyMDQ4LCA4MCwgMiwgMSwgMiksCj4gPiA+ICsJCSAgICAgTkFORF9FQ0NSRVEoOCwgNTEyKSwK
-PiA+ID4gKwkJICAgICBTUElOQU5EX0lORk9fT1BfVkFSSUFOVFMoJnJlYWRfY2FjaGVfdmFyaWFu
-dHMsCj4gPiA+ICsJCQkJCSAgICAgICZ3cml0ZV9jYWNoZV92YXJpYW50cywKPiA+ID4gKwkJCQkJ
-ICAgICAgJnVwZGF0ZV9jYWNoZV92YXJpYW50cyksCj4gPiA+ICsJCSAgICAgMCwKPiA+ID4gKwkJ
-ICAgICBTUElOQU5EX0VDQ0lORk8oJm1pY3Jvbl84X29vYmxheW91dCwKPiA+ID4gKwkJCQkgICAg
-IG1pY3Jvbl84X2VjY19nZXRfc3RhdHVzKSwKPiA+ID4gKwkJICAgICBTUElOQU5EX1NFTEVDVF9U
-QVJHRVQobWljcm9uX3NlbGVjdF90YXJnZXQpKSwKPiA+ID4gIAkvKiBNNzBBIDRHYiAzLjNWICov
-Cj4gPiA+ICAJU1BJTkFORF9JTkZPKCJNVDI5RjRHMDFBQkFGRCIsIDB4MzQsCj4gPiA+ICAJCSAg
-ICAgTkFORF9NRU1PUkcoMSwgNDA5NiwgMjU2LCA2NCwgMjA0OCwgNDAsIDEsIDEsIDEpLAo+ID4g
-PiBAQCAtMTUxLDYgKzE3OSwyOCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHNwaW5hbmRfaW5mbyAg
-Cj4gPiBtaWNyb25fc3BpbmFuZF90YWJsZVtdID0geyAgCj4gPiA+ICAJCSAgICAgMCwKPiA+ID4g
-IAkJICAgICBTUElOQU5EX0VDQ0lORk8oJm1pY3Jvbl84X29vYmxheW91dCwKPiA+ID4gIAkJCQkg
-ICAgIG1pY3Jvbl84X2VjY19nZXRfc3RhdHVzKSksCj4gPiA+ICsJLyogTTcwQSA4R2IgMy4zViAq
-Lwo+ID4gPiArCVNQSU5BTkRfSU5GTygiTVQyOUY4RzAxQURBRkQiLCAweDQ2LAo+ID4gPiArCQkg
-ICAgIE5BTkRfTUVNT1JHKDEsIDQwOTYsIDI1NiwgNjQsIDIwNDgsIDQwLCAxLCAxLCAyKSwKPiA+
-ID4gKwkJICAgICBOQU5EX0VDQ1JFUSg4LCA1MTIpLAo+ID4gPiArCQkgICAgIFNQSU5BTkRfSU5G
-T19PUF9WQVJJQU5UUygmcmVhZF9jYWNoZV92YXJpYW50cywKPiA+ID4gKwkJCQkJICAgICAgJndy
-aXRlX2NhY2hlX3ZhcmlhbnRzLAo+ID4gPiArCQkJCQkgICAgICAmdXBkYXRlX2NhY2hlX3Zhcmlh
-bnRzKSwKPiA+ID4gKwkJICAgICAwLAo+ID4gPiArCQkgICAgIFNQSU5BTkRfRUNDSU5GTygmbWlj
-cm9uXzhfb29ibGF5b3V0LAo+ID4gPiArCQkJCSAgICAgbWljcm9uXzhfZWNjX2dldF9zdGF0dXMp
-LAo+ID4gPiArCQkgICAgIFNQSU5BTkRfU0VMRUNUX1RBUkdFVChtaWNyb25fc2VsZWN0X3Rhcmdl
-dCkpLAo+ID4gPiArCS8qIE03MEEgOEdiIDEuOFYgKi8KPiA+ID4gKwlTUElOQU5EX0lORk8oIk1U
-MjlGOEcwMUFEQkZEIiwgMHg0NywKPiA+ID4gKwkJICAgICBOQU5EX01FTU9SRygxLCA0MDk2LCAy
-NTYsIDY0LCAyMDQ4LCA0MCwgMSwgMSwgMiksCj4gPiA+ICsJCSAgICAgTkFORF9FQ0NSRVEoOCwg
-NTEyKSwKPiA+ID4gKwkJICAgICBTUElOQU5EX0lORk9fT1BfVkFSSUFOVFMoJnJlYWRfY2FjaGVf
-dmFyaWFudHMsCj4gPiA+ICsJCQkJCSAgICAgICZ3cml0ZV9jYWNoZV92YXJpYW50cywKPiA+ID4g
-KwkJCQkJICAgICAgJnVwZGF0ZV9jYWNoZV92YXJpYW50cyksCj4gPiA+ICsJCSAgICAgMCwKPiA+
-ID4gKwkJICAgICBTUElOQU5EX0VDQ0lORk8oJm1pY3Jvbl84X29vYmxheW91dCwKPiA+ID4gKwkJ
-CQkgICAgIG1pY3Jvbl84X2VjY19nZXRfc3RhdHVzKSwKPiA+ID4gKwkJICAgICBTUElOQU5EX1NF
-TEVDVF9UQVJHRVQobWljcm9uX3NlbGVjdF90YXJnZXQpKSwKPiA+ID4gIH07Cj4gPiA+Cj4gPiA+
-ICBzdGF0aWMgaW50IG1pY3Jvbl9zcGluYW5kX2RldGVjdChzdHJ1Y3Qgc3BpbmFuZF9kZXZpY2Ug
-KnNwaW5hbmQpICAKPiA+IAo+ID4gCj4gPiAKPiA+IAo+ID4gVGhhbmtzLAo+ID4gTWlxdcOobCAg
-Cj4gCj4gVGhhbmtzLAo+IFNoaXZhCgoKCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vz
-c2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9saW51eC1tdGQvCg==
+Hi Miquel,
+
+> 
+> Hi Shivamurthy,
+> 
+> "Shivamurthy Shastri (sshivamurthy)" <sshivamurthy@micron.com> wrote
+> on
+> Tue, 21 Jan 2020 12:23:20 +0000:
+> 
+> > Hi Miquel,
+> >
+> > >
+> > > Hi Shiva,
+> > >
+> > > This is remark common to the four patches: you miss the 'v2' prefix in
+> > > the object.
+> > >
+> >
+> > Sorry for this mistake.
+> > I recognized this after sending out the patches.
+> >
+> > > shiva.linuxworks@gmail.com wrote on Sun, 19 Jan 2020 15:54:31 +0100:
+> > >
+> > > > From: Shivamurthy Shastri <sshivamurthy@micron.com>
+> > > >
+> > > > Add device table for M70A series Micron SPI NAND devices.
+> > > >
+> > > > While at it, disable the Continuous Read feature which is enabled by
+> > > > default.
+> > >
+> > > Can you please give us more detail on why this is an issue?
+> >
+> > "Continuous Read" is the new feature added by the Micron for
+> > M70A series devices. If this feature is enabled, the READ command
+> > doesn't output the OOB area. The following short description
+> > describes this feature.
+> >
+> > Description:
+> > If the Continuous Read feature is enabled, the device provides
+> > the capability to read the whole block with a single command.
+> > However, the read command doesn't output the OOB area.
+> >
+> > Read command behavior (if Continuous Read enabled):
+> > The READ CACHE command doesn't require the starting column address.
+> > The device always output the data starting from the first column of the
+> > cache register, and once the end of the cache register reached, the data
+> > output continues through the next page. With the continuous read mode,
+> > it is possible to read out the entire block using a single READ command, and
+> > once the end of the block reached, the output pins become High-Z state.
+> 
+> Ok I understand better. In this case there is no need to split this
+> commit, instead just reword the commit log to something like:
+> 
+> --->8---
+> Add device table for M70A series Micron SPI-NAND devices.
+> 
+> As opposed to the M60A series already supported, M70A parts have the
+> "Continuous Read" feature enabled by default which does not fit the
+> subsystem needs.
+> 
+> <here explain the feature>.
+> 
+> Hence, we disable the feature at probe time.
+> ---8<---
+> 
+
+Sure, I will change as per your suggestion.
+
+> However, below, you disable this bit for all the parts. Is this really
+> ok? Souldn't we make it more specific to this series?
+
+It is ok because this bit is unused in other series.
+
+> 
+> >
+> > >
+> > > Shall we backport it to stable?
+> >
+> > This is not a bug fix and applicable only to M70A series devices, there is no
+> > need to backport.
+> > (FYI, the previously enabled device was M79A series)
+> >
+> > >
+> > > As a rule of thumb, when you start a sentence by "while at it" in a
+> > > commit message and this is not a trivial change : split the patch,
+> > > please. Unless this is really related and in this case explain how and
+> > > why in the commit message.
+> >
+> > Okay, I will explain in my next version.
+> >
+> > >
+> > > >
+> > > > Signed-off-by: Shivamurthy Shastri <sshivamurthy@micron.com>
+> > > > ---
+> > > >  drivers/mtd/nand/spi/micron.c | 31
+> > > +++++++++++++++++++++++++++++++
+> > > >  1 file changed, 31 insertions(+)
+> > > >
+> > > > diff --git a/drivers/mtd/nand/spi/micron.c
+> > > b/drivers/mtd/nand/spi/micron.c
+> > > > index 5fd1f921ef12..45fc37c58f8a 100644
+> > > > --- a/drivers/mtd/nand/spi/micron.c
+> > > > +++ b/drivers/mtd/nand/spi/micron.c
+> > > > @@ -131,6 +131,26 @@ static const struct spinand_info
+> > > micron_spinand_table[] = {
+> > > >  		     0,
+> > > >  		     SPINAND_ECCINFO(&micron_8_ooblayout,
+> > > >  				     micron_8_ecc_get_status)),
+> > > > +	/* M70A 4Gb 3.3V */
+> > > > +	SPINAND_INFO("MT29F4G01ABAFD", 0x34,
+> > > > +		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
+> > > > +		     NAND_ECCREQ(8, 512),
+> > > > +		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+> > > > +					      &write_cache_variants,
+> > > > +					      &update_cache_variants),
+> > > > +		     0,
+> > > > +		     SPINAND_ECCINFO(&micron_8_ooblayout,
+> > > > +				     micron_8_ecc_get_status)),
+> > > > +	/* M70A 4Gb 1.8V */
+> > > > +	SPINAND_INFO("MT29F4G01ABBFD", 0x35,
+> > > > +		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
+> > > > +		     NAND_ECCREQ(8, 512),
+> > > > +		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+> > > > +					      &write_cache_variants,
+> > > > +					      &update_cache_variants),
+> > > > +		     0,
+> > > > +		     SPINAND_ECCINFO(&micron_8_ooblayout,
+> > > > +				     micron_8_ecc_get_status)),
+> > > >  };
+> > > >
+> > > >  static int micron_spinand_detect(struct spinand_device *spinand)
+> > > > @@ -153,8 +173,19 @@ static int micron_spinand_detect(struct
+> > > spinand_device *spinand)
+> > > >  	return 1;
+> > > >  }
+> > > >
+> > > > +static int micron_spinand_init(struct spinand_device *spinand)
+> > > > +{
+> > > > +	/*
+> > > > +	 * M70A device series enable Continuous Read feature at Power-up,
+> > > > +	 * which is not supported. Disable this bit to avoid any possible
+> > > > +	 * failure.
+> > > > +	 */
+> > > > +	return spinand_upd_cfg(spinand, CFG_QUAD_ENABLE, 0);
+> > > > +}
+> > > > +
+> > > >  static const struct spinand_manufacturer_ops
+> > > micron_spinand_manuf_ops = {
+> > > >  	.detect = micron_spinand_detect,
+> > > > +	.init = micron_spinand_init,
+> > > >  };
+> > > >
+> > > >  const struct spinand_manufacturer micron_spinand_manufacturer = {
+> > >
+
+Thanks,
+Shiva
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
