@@ -2,118 +2,64 @@ Return-Path: <SRS0=c5zc=3K=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 730B2C2D0CE
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Jan 2020 12:24:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56A86C2D0CE
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Jan 2020 13:41:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 42B5D2073A
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Jan 2020 12:24:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2AC14217F4
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Jan 2020 13:41:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="UmTx7NZt";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=micron.com header.i=@micron.com header.b="LYry3UUw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 42B5D2073A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=micron.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Kpe2p+6+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2AC14217F4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7Vwmkxhrnj90nxQRG8oT2hwGPd6+d8/JK+jpywnPKcs=; b=UmTx7NZtOHflax
-	leewCJmx3VRJb9wc/vSAR/qct50Qir2Dqf3S8apPZ8WdS6nCUCzi9g0rbFbXLuRBUYhCRpNz8XMA4
-	wWYbJsUB94xDS0LYwnvNUSNyG47GzXMpdeqdR1mKcd194fn/KuZEm684cKTUAWjQd4qTTm6AKHDFe
-	70hZOko5XynUXdd/+PfbIhPY5u7x0kf4mxKgbBykes1zAuGlpvo9xOTRNGTxXGYBJ5OFAdH07zdqY
-	uUkDGeZ8MVzKahyS1c/FnS8qCmutOeTjriryvq/IZeILezSRz2auW508k4X+c139I7K28uu7eTcOm
-	Tr1l1/1BBnJnvgNHpqHQ==;
+	List-Owner; bh=g9vH26CreVs44TzDanV+6ebvDF294jjkQ/+ilfo7AC8=; b=Kpe2p+6+hNtjpq
+	VEyZ37KXa7i893ImPou+0lcdOtLGibQiDC2/F+qSL1Hma2Dqes7GPEsZMnABpLbkb3xhp69ToaaZx
+	by9GlwaXi1rmLsv/5/5D2+zZrPpT2L0Bios/+CB2k4eQk+ivZ1yljZzNNK8G9aTdsZeBhiZJVYWVt
+	bAR6x67+P23v05lgTx0W37K1ClXxQQwKV/bgNiZKIIklcg1/zLSArzho6D0HxogO/GMWoVlPjDM2/
+	ZHpxGoJaqxrgQNpq1NZXYt8B+NaRlUeDnSVtG2qfK6omhyNgC0Vlo+ofrBPGO7v5+MsiBYokmyQZN
+	68Rx/t6EMvWBz4XT/LRQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1itsZQ-0005aD-FD; Tue, 21 Jan 2020 12:23:48 +0000
-Received: from mail-eopbgr760043.outbound.protection.outlook.com
- ([40.107.76.43] helo=NAM02-CY1-obe.outbound.protection.outlook.com)
+	id 1ittm7-0007uO-7R; Tue, 21 Jan 2020 13:40:59 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1itsZJ-0005W9-Dw
- for linux-mtd@lists.infradead.org; Tue, 21 Jan 2020 12:23:45 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Okr6diLciiViAlUsz1INr6EUQEFw8UHduQ0bbnNIw2CvMpKSYXHsg//VGGGPtmEtdXCn7XU/trfVjDm1PocunylBEovoYmQuH5JWSCk+M2vnNMNblrpzw81ikUoi5+7Cm/r7SqtFDkQCnHTn9RstlkRWUGFTfk1UT6Kk0vxrrHmfC1kzAm6Ad8zz98F9aOraczSnHOFFzMSVonfhrFC8X8WJZyhT//ccPjREBuhojmaLQoTwCbe80daCAgCpxRi9luJRDjC2lE4Ykih3JrXtpn0js1ewLwCioHNqzxbhKN8UF9tRDdwft+nOlZN4kqPRh/WAoEcmQWlwuDYClPGh5g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9oU35mTCdNTOL10n8uybHqrKu8q/zfmZ/47ax2KfLS8=;
- b=SAX/Rig3dDEVyREhL5ANJuMSeWWl0kzHSUImm5uFjN/1KKWPW4hEg7E35JHUzhTn+ajSoARO1ebGoL0g6Ne+vMcsef7JculvIry1KoMDqP8QVCGr6svpBCOY0gCiQKAHJfL1sCP6Hel1s9UbV7SVP29glyNGaX79DuangsQ42to+OoiG2T2CierDn/WTI5wdfG7ynDt3kK44zvH+snrOBBsr2gUYkyZKwOJz7cC4Xq5k7todOShFVl5H4I7hUhNy17+6syqViRjisp0qWQ9Rpzyhp9eT03E7wLMfu8MqHZHDQo0j9GmKwnIZOwC2Fr3drEUuXnsHl2xZvJVeEvkPOg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=micron.com; dmarc=pass action=none header.from=micron.com;
- dkim=pass header.d=micron.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=micron.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9oU35mTCdNTOL10n8uybHqrKu8q/zfmZ/47ax2KfLS8=;
- b=LYry3UUwOqjbMVz0K/irovTLfLvA4NJ/8EHV5UBVYeBZNbSrCQQQTIDNy9Fwk1NS7VhMzn91YHIA9SkwBkvnpVQTVdSLIaL6Q5QmBrFNr/deBKZSwF5XyDS+IOCwD9d+vmmJvONRWkr8ljc0MmFfVGjVa3TaV2u/9zSlVrEIE14=
-Received: from MN2PR08MB6397.namprd08.prod.outlook.com (52.132.170.74) by
- MN2PR08MB6222.namprd08.prod.outlook.com (52.132.168.75) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2644.18; Tue, 21 Jan 2020 12:23:36 +0000
-Received: from MN2PR08MB6397.namprd08.prod.outlook.com
- ([fe80::61af:ed8:e19b:cb6a]) by MN2PR08MB6397.namprd08.prod.outlook.com
- ([fe80::61af:ed8:e19b:cb6a%3]) with mapi id 15.20.2644.027; Tue, 21 Jan 2020
- 12:23:36 +0000
-From: "Shivamurthy Shastri (sshivamurthy)" <sshivamurthy@micron.com>
-To: 'Miquel Raynal' <miquel.raynal@bootlin.com>
-Subject: RE: [EXT] Re: [PATCH 4/4] mtd: spinand: Add new Micron SPI NAND
- devices with multiple dies
-Thread-Topic: [EXT] Re: [PATCH 4/4] mtd: spinand: Add new Micron SPI NAND
- devices with multiple dies
-Thread-Index: AQHVz3uD0S2x3c20oUubGZLLAN6hxafzjs2g
-Date: Tue, 21 Jan 2020 12:23:36 +0000
-Message-ID: <MN2PR08MB6397E9900A3638E873434B9DB80D0@MN2PR08MB6397.namprd08.prod.outlook.com>
+ id 1ittlz-0007tW-Gn
+ for linux-mtd@lists.infradead.org; Tue, 21 Jan 2020 13:40:57 +0000
+X-Originating-IP: 90.76.211.102
+Received: from xps13 (lfbn-tou-1-1151-102.w90-76.abo.wanadoo.fr
+ [90.76.211.102]) (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id CED78FF809;
+ Tue, 21 Jan 2020 13:40:34 +0000 (UTC)
+Date: Tue, 21 Jan 2020 14:40:34 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: "Shivamurthy Shastri (sshivamurthy)" <sshivamurthy@micron.com>
+Subject: Re: [EXT] Re: [PATCH 3/4] mtd: spinand: Add M70A series Micron SPI
+ NAND devices
+Message-ID: <20200121144034.05a8f49d@xps13>
+In-Reply-To: <MN2PR08MB6397062A37D39287E820A0D8B80D0@MN2PR08MB6397.namprd08.prod.outlook.com>
 References: <20200119145432.10405-1-sshivamurthy@micron.com>
- <20200119145432.10405-5-sshivamurthy@micron.com>
- <20200120112219.36bae01e@xps13>
-In-Reply-To: <20200120112219.36bae01e@xps13>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-rorf: true
-x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcc3NoaXZhbXVydGh5XGFwcGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEyOWUzNWJcbXNnc1xtc2ctZDY5OGNhMTMtM2M0OC0xMWVhLWIxZTMtOTgzYjhmNzQ1MjUxXGFtZS10ZXN0XGQ2OThjYTE1LTNjNDgtMTFlYS1iMWUzLTk4M2I4Zjc0NTI1MWJvZHkudHh0IiBzej0iNDcwNCIgdD0iMTMyMjQwODMwMTM0MDQwNzc5IiBoPSJESGhJcUViS3NEZlYxS2tvVXV6d3JQV21QYlU9IiBpZD0iIiBibD0iMCIgYm89IjEiLz48L21ldGE+
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=sshivamurthy@micron.com; 
-x-originating-ip: [165.225.80.129]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 37d41d47-e6e2-4ec7-5f19-08d79e6cbd47
-x-ms-traffictypediagnostic: MN2PR08MB6222:|MN2PR08MB6222:|MN2PR08MB6222:
-x-microsoft-antispam-prvs: <MN2PR08MB6222398EAE4FCECD98B67BF1B80D0@MN2PR08MB6222.namprd08.prod.outlook.com>
-x-ms-exchange-transport-forked: True
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 0289B6431E
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(4636009)(346002)(376002)(396003)(136003)(366004)(39860400002)(199004)(189003)(81166006)(9686003)(26005)(8676002)(55016002)(4326008)(186003)(5660300002)(6506007)(71200400001)(316002)(8936002)(478600001)(81156014)(33656002)(55236004)(52536014)(54906003)(66574012)(66446008)(2906002)(64756008)(66556008)(66946007)(76116006)(66476007)(86362001)(7696005)(6916009);
- DIR:OUT; SFP:1101; SCL:1; SRVR:MN2PR08MB6222;
- H:MN2PR08MB6397.namprd08.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; A:1; MX:1; 
-received-spf: None (protection.outlook.com: micron.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: MkKG0N0m3voi0/aEYVSTTdiPzIKwVUxveWnZVKMpQkWYr2ec660f5nFEvDZX1dUzTOM6j8499gX6BngRoww7y5XvMSKWPgxjf3XZRqytRA8UvMoTp7epZQWhHZeipiYZQ1Ns4gOj8B0MnbUWzbq9bodku7duIx910eJPdfPfq5qXgatHr87Rp019b6Fpvi48hWnTZDQM55fYat1Y3zlNlC/2MpR3ygP6tYo3imxNgFhiO2mAgVXUdPLQdWNkHi2wZthSFiLUYVMK1WrAMc8BX/ZnfRGIPD6wDv+8EikzKRhQe/Tcmm8ygkQXi0a/2cJ7+jFBOom9wHJBc2RTwxxwmoBNCNKGCJZPUA22lfA3lFcsHPyF+E0fUSqksfFF+OEvQeaIqHm8aSmZ23OfF/ElGZ1UmU3glaZ7XfFMeZ80/5p3Ka3qSYnNGw6qVpx89Jls
+ <20200119145432.10405-4-sshivamurthy@micron.com>
+ <20200120111626.7cb2f6c5@xps13>
+ <MN2PR08MB6397062A37D39287E820A0D8B80D0@MN2PR08MB6397.namprd08.prod.outlook.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-OriginatorOrg: micron.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 37d41d47-e6e2-4ec7-5f19-08d79e6cbd47
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jan 2020 12:23:36.3182 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: f38a5ecd-2813-4862-b11b-ac1d563c806f
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: KTb1oCjVlR29OVnEHoYYtZqXLg6TJPfWkFVoaU4F+2fvhSHU2DYxz7W+j+skWryAKss9isLLKoz+Vuh+TTQt5w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR08MB6222
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200121_042341_481501_35EA0FAF 
-X-CRM114-Status: GOOD (  17.94  )
+X-CRM114-CacheID: sfid-20200121_054051_831808_82A49404 
+X-CRM114-Status: GOOD (  29.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -127,178 +73,106 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Vignesh Raghavendra <vigneshr@ti.com>,
  Boris Brezillon <bbrezillon@kernel.org>,
- "shiva.linuxworks@gmail.com" <shiva.linuxworks@gmail.com>,
+ Shivamurthy Shastri <shiva.linuxworks@gmail.com>,
  Richard Weinberger <richard@nod.at>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  Frieder Schrempf <frieder.schrempf@kontron.de>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
-
-> =
-
-> Hi Shiva,
-> =
-
-> shiva.linuxworks@gmail.com wrote on Sun, 19 Jan 2020 15:54:32 +0100:
-> =
-
-> > From: Shivamurthy Shastri <sshivamurthy@micron.com>
-> >
-> > Add device table for new Micron SPI NAND devices, which have multiple
-> > dies. While at it, add support to select the die.
-> =
-
-> Same comment as in 3/4.
-
-I will correct the comment.
-
-> =
-
-> >
-> > Signed-off-by: Shivamurthy Shastri <sshivamurthy@micron.com>
-> > ---
-> >  drivers/mtd/nand/spi/micron.c | 50
-> +++++++++++++++++++++++++++++++++++
-> >  1 file changed, 50 insertions(+)
-> >
-> > diff --git a/drivers/mtd/nand/spi/micron.c
-> b/drivers/mtd/nand/spi/micron.c
-> > index 45fc37c58f8a..03b486843210 100644
-> > --- a/drivers/mtd/nand/spi/micron.c
-> > +++ b/drivers/mtd/nand/spi/micron.c
-> > @@ -18,6 +18,8 @@
-> >  #define MICRON_STATUS_ECC_4TO6_BITFLIPS	(3 << 4)
-> >  #define MICRON_STATUS_ECC_7TO8_BITFLIPS	(5 << 4)
-> >
-> > +#define MICRON_DIE_SELECTION_BIT	6
-> > +
-> >  static SPINAND_OP_VARIANTS(read_cache_variants,
-> >  		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2,
-> NULL, 0),
-> >  		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-> > @@ -64,6 +66,21 @@ static const struct mtd_ooblayout_ops
-> micron_8_ooblayout =3D {
-> >  	.free =3D micron_8_ooblayout_free,
-> >  };
-> >
-> > +static int micron_select_target(struct spinand_device *spinand,
-> > +				unsigned int target)
-> > +{
-> > +	struct spi_mem_op op =3D SPINAND_SET_FEATURE_OP(0xd0,
-> > +						      spinand->scratchbuf);
-> > +
-> > +	/*
-> > +	 * As per datasheet, die selection is done by the 6th bit of Die
-> > +	 * Select Register (Address 0xD0).
-> > +	 */
-> =
-
-> I would put this comment close to the macro definition.
-
-Sure, I will do it.
-
-> =
-
-> > +	*spinand->scratchbuf =3D target << MICRON_DIE_SELECTION_BIT;
-> =
-
-> Either target is or or 1 and you can use the BIT macro, or you suppose
-> it can go higher and the _BIT suffix does not fit. _SHIFT would work
-> and creating a macro directly would be even better.
-> =
-
-
-I will create macro directly and send the code in next version.
-
-> > +
-> > +	return spi_mem_exec_op(spinand->spimem, &op);
-> > +}
-> > +
-> =
-
-> Where is this function used?
-
-IIUC your question, the function is used below in device table.
-The line is something like, =
-
-
-SPINAND_SELECT_TARGET(micron_select_target))
-
-for all the devices with multiple dies.
-
-> =
-
-> >  static int micron_8_ecc_get_status(struct spinand_device *spinand,
-> >  				   u8 status)
-> >  {
-> > @@ -131,6 +148,17 @@ static const struct spinand_info
-> micron_spinand_table[] =3D {
-> >  		     0,
-> >  		     SPINAND_ECCINFO(&micron_8_ooblayout,
-> >  				     micron_8_ecc_get_status)),
-> > +	/* M79A 4Gb 3.3V */
-> > +	SPINAND_INFO("MT29F4G01ADAGD", 0x36,
-> > +		     NAND_MEMORG(1, 2048, 128, 64, 2048, 80, 2, 1, 2),
-> > +		     NAND_ECCREQ(8, 512),
-> > +		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-> > +					      &write_cache_variants,
-> > +					      &update_cache_variants),
-> > +		     0,
-> > +		     SPINAND_ECCINFO(&micron_8_ooblayout,
-> > +				     micron_8_ecc_get_status),
-> > +		     SPINAND_SELECT_TARGET(micron_select_target)),
-> >  	/* M70A 4Gb 3.3V */
-> >  	SPINAND_INFO("MT29F4G01ABAFD", 0x34,
-> >  		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
-> > @@ -151,6 +179,28 @@ static const struct spinand_info
-> micron_spinand_table[] =3D {
-> >  		     0,
-> >  		     SPINAND_ECCINFO(&micron_8_ooblayout,
-> >  				     micron_8_ecc_get_status)),
-> > +	/* M70A 8Gb 3.3V */
-> > +	SPINAND_INFO("MT29F8G01ADAFD", 0x46,
-> > +		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 2),
-> > +		     NAND_ECCREQ(8, 512),
-> > +		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-> > +					      &write_cache_variants,
-> > +					      &update_cache_variants),
-> > +		     0,
-> > +		     SPINAND_ECCINFO(&micron_8_ooblayout,
-> > +				     micron_8_ecc_get_status),
-> > +		     SPINAND_SELECT_TARGET(micron_select_target)),
-> > +	/* M70A 8Gb 1.8V */
-> > +	SPINAND_INFO("MT29F8G01ADBFD", 0x47,
-> > +		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 2),
-> > +		     NAND_ECCREQ(8, 512),
-> > +		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-> > +					      &write_cache_variants,
-> > +					      &update_cache_variants),
-> > +		     0,
-> > +		     SPINAND_ECCINFO(&micron_8_ooblayout,
-> > +				     micron_8_ecc_get_status),
-> > +		     SPINAND_SELECT_TARGET(micron_select_target)),
-> >  };
-> >
-> >  static int micron_spinand_detect(struct spinand_device *spinand)
-> =
-
-> =
-
-> =
-
-> =
-
-> Thanks,
-> Miqu=E8l
-
-Thanks,
-Shiva
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgU2hpdmFtdXJ0aHksCgoiU2hpdmFtdXJ0aHkgU2hhc3RyaSAoc3NoaXZhbXVydGh5KSIgPHNz
+aGl2YW11cnRoeUBtaWNyb24uY29tPiB3cm90ZSBvbgpUdWUsIDIxIEphbiAyMDIwIDEyOjIzOjIw
+ICswMDAwOgoKPiBIaSBNaXF1ZWwsCj4gCj4gPiAKPiA+IEhpIFNoaXZhLAo+ID4gCj4gPiBUaGlz
+IGlzIHJlbWFyayBjb21tb24gdG8gdGhlIGZvdXIgcGF0Y2hlczogeW91IG1pc3MgdGhlICd2Micg
+cHJlZml4IGluCj4gPiB0aGUgb2JqZWN0Lgo+ID4gICAKPiAKPiBTb3JyeSBmb3IgdGhpcyBtaXN0
+YWtlLgo+IEkgcmVjb2duaXplZCB0aGlzIGFmdGVyIHNlbmRpbmcgb3V0IHRoZSBwYXRjaGVzLgo+
+IAo+ID4gc2hpdmEubGludXh3b3Jrc0BnbWFpbC5jb20gd3JvdGUgb24gU3VuLCAxOSBKYW4gMjAy
+MCAxNTo1NDozMSArMDEwMDoKPiA+ICAgCj4gPiA+IEZyb206IFNoaXZhbXVydGh5IFNoYXN0cmkg
+PHNzaGl2YW11cnRoeUBtaWNyb24uY29tPgo+ID4gPgo+ID4gPiBBZGQgZGV2aWNlIHRhYmxlIGZv
+ciBNNzBBIHNlcmllcyBNaWNyb24gU1BJIE5BTkQgZGV2aWNlcy4KPiA+ID4KPiA+ID4gV2hpbGUg
+YXQgaXQsIGRpc2FibGUgdGhlIENvbnRpbnVvdXMgUmVhZCBmZWF0dXJlIHdoaWNoIGlzIGVuYWJs
+ZWQgYnkKPiA+ID4gZGVmYXVsdC4gIAo+ID4gCj4gPiBDYW4geW91IHBsZWFzZSBnaXZlIHVzIG1v
+cmUgZGV0YWlsIG9uIHdoeSB0aGlzIGlzIGFuIGlzc3VlPyAgCj4gCj4gIkNvbnRpbnVvdXMgUmVh
+ZCIgaXMgdGhlIG5ldyBmZWF0dXJlIGFkZGVkIGJ5IHRoZSBNaWNyb24gZm9yIAo+IE03MEEgc2Vy
+aWVzIGRldmljZXMuIElmIHRoaXMgZmVhdHVyZSBpcyBlbmFibGVkLCB0aGUgUkVBRCBjb21tYW5k
+IAo+IGRvZXNuJ3Qgb3V0cHV0IHRoZSBPT0IgYXJlYS4gVGhlIGZvbGxvd2luZyBzaG9ydCBkZXNj
+cmlwdGlvbgo+IGRlc2NyaWJlcyB0aGlzIGZlYXR1cmUuCj4gCj4gRGVzY3JpcHRpb246Cj4gSWYg
+dGhlIENvbnRpbnVvdXMgUmVhZCBmZWF0dXJlIGlzIGVuYWJsZWQsIHRoZSBkZXZpY2UgcHJvdmlk
+ZXMgCj4gdGhlIGNhcGFiaWxpdHkgdG8gcmVhZCB0aGUgd2hvbGUgYmxvY2sgd2l0aCBhIHNpbmds
+ZSBjb21tYW5kLgo+IEhvd2V2ZXIsIHRoZSByZWFkIGNvbW1hbmQgZG9lc24ndCBvdXRwdXQgdGhl
+IE9PQiBhcmVhLgo+IAo+IFJlYWQgY29tbWFuZCBiZWhhdmlvciAoaWYgQ29udGludW91cyBSZWFk
+IGVuYWJsZWQpOgo+IFRoZSBSRUFEIENBQ0hFIGNvbW1hbmQgZG9lc24ndCByZXF1aXJlIHRoZSBz
+dGFydGluZyBjb2x1bW4gYWRkcmVzcy4KPiBUaGUgZGV2aWNlIGFsd2F5cyBvdXRwdXQgdGhlIGRh
+dGEgc3RhcnRpbmcgZnJvbSB0aGUgZmlyc3QgY29sdW1uIG9mIHRoZQo+IGNhY2hlIHJlZ2lzdGVy
+LCBhbmQgb25jZSB0aGUgZW5kIG9mIHRoZSBjYWNoZSByZWdpc3RlciByZWFjaGVkLCB0aGUgZGF0
+YQo+IG91dHB1dCBjb250aW51ZXMgdGhyb3VnaCB0aGUgbmV4dCBwYWdlLiBXaXRoIHRoZSBjb250
+aW51b3VzIHJlYWQgbW9kZSwKPiBpdCBpcyBwb3NzaWJsZSB0byByZWFkIG91dCB0aGUgZW50aXJl
+IGJsb2NrIHVzaW5nIGEgc2luZ2xlIFJFQUQgY29tbWFuZCwgYW5kCj4gb25jZSB0aGUgZW5kIG9m
+IHRoZSBibG9jayByZWFjaGVkLCB0aGUgb3V0cHV0IHBpbnMgYmVjb21lIEhpZ2gtWiBzdGF0ZS4K
+Ck9rIEkgdW5kZXJzdGFuZCBiZXR0ZXIuIEluIHRoaXMgY2FzZSB0aGVyZSBpcyBubyBuZWVkIHRv
+IHNwbGl0IHRoaXMKY29tbWl0LCBpbnN0ZWFkIGp1c3QgcmV3b3JkIHRoZSBjb21taXQgbG9nIHRv
+IHNvbWV0aGluZyBsaWtlOgoKLS0tPjgtLS0KQWRkIGRldmljZSB0YWJsZSBmb3IgTTcwQSBzZXJp
+ZXMgTWljcm9uIFNQSS1OQU5EIGRldmljZXMuCgpBcyBvcHBvc2VkIHRvIHRoZSBNNjBBIHNlcmll
+cyBhbHJlYWR5IHN1cHBvcnRlZCwgTTcwQSBwYXJ0cyBoYXZlIHRoZQoiQ29udGludW91cyBSZWFk
+IiBmZWF0dXJlIGVuYWJsZWQgYnkgZGVmYXVsdCB3aGljaCBkb2VzIG5vdCBmaXQgdGhlCnN1YnN5
+c3RlbSBuZWVkcy4KCjxoZXJlIGV4cGxhaW4gdGhlIGZlYXR1cmU+LgoKSGVuY2UsIHdlIGRpc2Fi
+bGUgdGhlIGZlYXR1cmUgYXQgcHJvYmUgdGltZS4KLS0tODwtLS0KCkhvd2V2ZXIsIGJlbG93LCB5
+b3UgZGlzYWJsZSB0aGlzIGJpdCBmb3IgYWxsIHRoZSBwYXJ0cy4gSXMgdGhpcyByZWFsbHkKb2s/
+IFNvdWxkbid0IHdlIG1ha2UgaXQgbW9yZSBzcGVjaWZpYyB0byB0aGlzIHNlcmllcz8KCj4gCj4g
+PiAKPiA+IFNoYWxsIHdlIGJhY2twb3J0IGl0IHRvIHN0YWJsZT8gIAo+IAo+IFRoaXMgaXMgbm90
+IGEgYnVnIGZpeCBhbmQgYXBwbGljYWJsZSBvbmx5IHRvIE03MEEgc2VyaWVzIGRldmljZXMsIHRo
+ZXJlIGlzIG5vCj4gbmVlZCB0byBiYWNrcG9ydC4KPiAoRllJLCB0aGUgcHJldmlvdXNseSBlbmFi
+bGVkIGRldmljZSB3YXMgTTc5QSBzZXJpZXMpCj4gCj4gPiAKPiA+IEFzIGEgcnVsZSBvZiB0aHVt
+Yiwgd2hlbiB5b3Ugc3RhcnQgYSBzZW50ZW5jZSBieSAid2hpbGUgYXQgaXQiIGluIGEKPiA+IGNv
+bW1pdCBtZXNzYWdlIGFuZCB0aGlzIGlzIG5vdCBhIHRyaXZpYWwgY2hhbmdlIDogc3BsaXQgdGhl
+IHBhdGNoLAo+ID4gcGxlYXNlLiBVbmxlc3MgdGhpcyBpcyByZWFsbHkgcmVsYXRlZCBhbmQgaW4g
+dGhpcyBjYXNlIGV4cGxhaW4gaG93IGFuZAo+ID4gd2h5IGluIHRoZSBjb21taXQgbWVzc2FnZS4g
+IAo+IAo+IE9rYXksIEkgd2lsbCBleHBsYWluIGluIG15IG5leHQgdmVyc2lvbi4KPiAKPiA+ICAg
+Cj4gPiA+Cj4gPiA+IFNpZ25lZC1vZmYtYnk6IFNoaXZhbXVydGh5IFNoYXN0cmkgPHNzaGl2YW11
+cnRoeUBtaWNyb24uY29tPgo+ID4gPiAtLS0KPiA+ID4gIGRyaXZlcnMvbXRkL25hbmQvc3BpL21p
+Y3Jvbi5jIHwgMzEgIAo+ID4gKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKyAgCj4gPiA+
+ICAxIGZpbGUgY2hhbmdlZCwgMzEgaW5zZXJ0aW9ucygrKQo+ID4gPgo+ID4gPiBkaWZmIC0tZ2l0
+IGEvZHJpdmVycy9tdGQvbmFuZC9zcGkvbWljcm9uLmMgIAo+ID4gYi9kcml2ZXJzL210ZC9uYW5k
+L3NwaS9taWNyb24uYyAgCj4gPiA+IGluZGV4IDVmZDFmOTIxZWYxMi4uNDVmYzM3YzU4ZjhhIDEw
+MDY0NAo+ID4gPiAtLS0gYS9kcml2ZXJzL210ZC9uYW5kL3NwaS9taWNyb24uYwo+ID4gPiArKysg
+Yi9kcml2ZXJzL210ZC9uYW5kL3NwaS9taWNyb24uYwo+ID4gPiBAQCAtMTMxLDYgKzEzMSwyNiBA
+QCBzdGF0aWMgY29uc3Qgc3RydWN0IHNwaW5hbmRfaW5mbyAgCj4gPiBtaWNyb25fc3BpbmFuZF90
+YWJsZVtdID0geyAgCj4gPiA+ICAJCSAgICAgMCwKPiA+ID4gIAkJICAgICBTUElOQU5EX0VDQ0lO
+Rk8oJm1pY3Jvbl84X29vYmxheW91dCwKPiA+ID4gIAkJCQkgICAgIG1pY3Jvbl84X2VjY19nZXRf
+c3RhdHVzKSksCj4gPiA+ICsJLyogTTcwQSA0R2IgMy4zViAqLwo+ID4gPiArCVNQSU5BTkRfSU5G
+TygiTVQyOUY0RzAxQUJBRkQiLCAweDM0LAo+ID4gPiArCQkgICAgIE5BTkRfTUVNT1JHKDEsIDQw
+OTYsIDI1NiwgNjQsIDIwNDgsIDQwLCAxLCAxLCAxKSwKPiA+ID4gKwkJICAgICBOQU5EX0VDQ1JF
+USg4LCA1MTIpLAo+ID4gPiArCQkgICAgIFNQSU5BTkRfSU5GT19PUF9WQVJJQU5UUygmcmVhZF9j
+YWNoZV92YXJpYW50cywKPiA+ID4gKwkJCQkJICAgICAgJndyaXRlX2NhY2hlX3ZhcmlhbnRzLAo+
+ID4gPiArCQkJCQkgICAgICAmdXBkYXRlX2NhY2hlX3ZhcmlhbnRzKSwKPiA+ID4gKwkJICAgICAw
+LAo+ID4gPiArCQkgICAgIFNQSU5BTkRfRUNDSU5GTygmbWljcm9uXzhfb29ibGF5b3V0LAo+ID4g
+PiArCQkJCSAgICAgbWljcm9uXzhfZWNjX2dldF9zdGF0dXMpKSwKPiA+ID4gKwkvKiBNNzBBIDRH
+YiAxLjhWICovCj4gPiA+ICsJU1BJTkFORF9JTkZPKCJNVDI5RjRHMDFBQkJGRCIsIDB4MzUsCj4g
+PiA+ICsJCSAgICAgTkFORF9NRU1PUkcoMSwgNDA5NiwgMjU2LCA2NCwgMjA0OCwgNDAsIDEsIDEs
+IDEpLAo+ID4gPiArCQkgICAgIE5BTkRfRUNDUkVRKDgsIDUxMiksCj4gPiA+ICsJCSAgICAgU1BJ
+TkFORF9JTkZPX09QX1ZBUklBTlRTKCZyZWFkX2NhY2hlX3ZhcmlhbnRzLAo+ID4gPiArCQkJCQkg
+ICAgICAmd3JpdGVfY2FjaGVfdmFyaWFudHMsCj4gPiA+ICsJCQkJCSAgICAgICZ1cGRhdGVfY2Fj
+aGVfdmFyaWFudHMpLAo+ID4gPiArCQkgICAgIDAsCj4gPiA+ICsJCSAgICAgU1BJTkFORF9FQ0NJ
+TkZPKCZtaWNyb25fOF9vb2JsYXlvdXQsCj4gPiA+ICsJCQkJICAgICBtaWNyb25fOF9lY2NfZ2V0
+X3N0YXR1cykpLAo+ID4gPiAgfTsKPiA+ID4KPiA+ID4gIHN0YXRpYyBpbnQgbWljcm9uX3NwaW5h
+bmRfZGV0ZWN0KHN0cnVjdCBzcGluYW5kX2RldmljZSAqc3BpbmFuZCkKPiA+ID4gQEAgLTE1Myw4
+ICsxNzMsMTkgQEAgc3RhdGljIGludCBtaWNyb25fc3BpbmFuZF9kZXRlY3Qoc3RydWN0ICAKPiA+
+IHNwaW5hbmRfZGV2aWNlICpzcGluYW5kKSAgCj4gPiA+ICAJcmV0dXJuIDE7Cj4gPiA+ICB9Cj4g
+PiA+Cj4gPiA+ICtzdGF0aWMgaW50IG1pY3Jvbl9zcGluYW5kX2luaXQoc3RydWN0IHNwaW5hbmRf
+ZGV2aWNlICpzcGluYW5kKQo+ID4gPiArewo+ID4gPiArCS8qCj4gPiA+ICsJICogTTcwQSBkZXZp
+Y2Ugc2VyaWVzIGVuYWJsZSBDb250aW51b3VzIFJlYWQgZmVhdHVyZSBhdCBQb3dlci11cCwKPiA+
+ID4gKwkgKiB3aGljaCBpcyBub3Qgc3VwcG9ydGVkLiBEaXNhYmxlIHRoaXMgYml0IHRvIGF2b2lk
+IGFueSBwb3NzaWJsZQo+ID4gPiArCSAqIGZhaWx1cmUuCj4gPiA+ICsJICovCj4gPiA+ICsJcmV0
+dXJuIHNwaW5hbmRfdXBkX2NmZyhzcGluYW5kLCBDRkdfUVVBRF9FTkFCTEUsIDApOwo+ID4gPiAr
+fQo+ID4gPiArCj4gPiA+ICBzdGF0aWMgY29uc3Qgc3RydWN0IHNwaW5hbmRfbWFudWZhY3R1cmVy
+X29wcyAgCj4gPiBtaWNyb25fc3BpbmFuZF9tYW51Zl9vcHMgPSB7ICAKPiA+ID4gIAkuZGV0ZWN0
+ID0gbWljcm9uX3NwaW5hbmRfZGV0ZWN0LAo+ID4gPiArCS5pbml0ID0gbWljcm9uX3NwaW5hbmRf
+aW5pdCwKPiA+ID4gIH07Cj4gPiA+Cj4gPiA+ICBjb25zdCBzdHJ1Y3Qgc3BpbmFuZF9tYW51ZmFj
+dHVyZXIgbWljcm9uX3NwaW5hbmRfbWFudWZhY3R1cmVyID0geyAgCj4gPiAKPiA+IFRoYW5rcywK
+PiA+IE1pcXXDqGwgIAo+IAo+IFRoYW5rcywKPiBTaGl2YQoKCgoKVGhhbmtzLApNaXF1w6hsCgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGlu
+dXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
+L21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
