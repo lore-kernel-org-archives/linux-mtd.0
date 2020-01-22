@@ -2,88 +2,67 @@ Return-Path: <SRS0=3Meg=3L=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,FSL_HELO_FAKE,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C13BC32771
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Jan 2020 21:34:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF83BC32771
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Jan 2020 23:07:10 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3A14E21835
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Jan 2020 21:34:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 804662465A
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Jan 2020 23:07:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RoVstoeS";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rhNpP5GH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A14E21835
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cnAsHPfx";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="MdMedgKf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 804662465A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:References:
-	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=6+YfAdKhI0RNmlS9bQ3UFYWAARr+/R4+0G8Mh0i/x6c=; b=RoVstoeSdbOcjvBJIssvJA8Ld1
-	rxljbaqIL5n6G6n1dbhVjAGr3jVBS4Ko6oFs/hKepFz7dtJaFI8ympYq7+2dLjeFRE7AUPooWWCSh
-	SrO1a4Te81TdQjubR+bZ7WCJFZx13+yfdTz57KOAps1kKAead30ZL69nfYkVhoZlitR8yps3rr6y4
-	gZuf71tqE9ar3YYsoR4VBxONyLvcPWrelpoyUm1n03b9NTIJh6q9Kutr8i8hhLF6d8OuwIYQBVM8X
-	a3FWQMJd//G9HoAeHk7HYAg1UR/Gq9OK0OEmz2bNcufS/uUWjRmQGsBtb7CtFBYSJ6/Tgwj5UxL85
-	Cuodb3IQ==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=H//3bL14IfmUmalsHoYTFk5SH+K+IQxINScRC33LaZ0=; b=cnAsHPfxjiB5u1
+	vaIztiSZHmSoGzBS7Th2sTnoTIcJYz5rYa+anW5eKkL8Vp2IFG8ePRz9LzSstjEMa9yCY3TZ55IfT
+	Ud9Qn+DAP++Etz4J5O2aau+3rP2mEFmEgJQ1QDxsghKwOygKzNL3utteLNjyHFsS1Ny2sYT/G3kHL
+	dvxWcBmPdMohsIlG1j848cZsHjD4a1zwrznQQAuO4MphEKoannd0c1ogHjEtbR0kJJmNkcui3lrVi
+	HhNhsTlEaG+b8/edkWEO2MZGepOeo2KHOmoEw/bXxC936zzGky8iLFCRf0Sm+POGnAXa3bv+wsr74
+	fyPULHUkPiPapPq65lhw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iuNdy-0005gz-Is; Wed, 22 Jan 2020 21:34:34 +0000
-Received: from mail-wr1-x443.google.com ([2a00:1450:4864:20::443])
+	id 1iuP5M-0003ap-1L; Wed, 22 Jan 2020 23:06:56 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iuNdX-0005Dm-BR
- for linux-mtd@lists.infradead.org; Wed, 22 Jan 2020 21:34:11 +0000
-Received: by mail-wr1-x443.google.com with SMTP id t2so748438wrr.1
- for <linux-mtd@lists.infradead.org>; Wed, 22 Jan 2020 13:34:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references;
- bh=5AA0XUXODI/L8mJeadUgLE1ZooEgY946Z+CYImjR0Bo=;
- b=rhNpP5GH6IwGF9InK44HSTBOCKI+4MGEf2e8H1AUlAbQdAdZZnYJ4ZGBdneJfRvtcd
- ZEWoY+Vw/bAB5AuSt1ZOnDJ92woUy9HjEzG2LJI9SDVTgCq0ZyZNQH71/w6xsvHgkrEc
- DB9f/xq12BvaAm0Brj9Uhc2aQyEY4uQ6D6rKyHUKtUkJxpUvza2jOWQduh9sn9TAEmXD
- FFsT2K6PNu8UeTOoMEWChy0SKSm6GUUBYShHKZpuiXXR5DeZu8DVeujbImWor1qJgrDh
- XRPbO8MZaQLynyzt/IxkN9Z6i6j0MX+2g6ZfHFt974XJ0Y54CDoc1IFz2tXUcUTJqd1W
- /vjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references;
- bh=5AA0XUXODI/L8mJeadUgLE1ZooEgY946Z+CYImjR0Bo=;
- b=XYWcSxvrsNPZ9I+ew93F6CHWzWXGfkM2IJz2wUAS935N5ZvEg5mqBwlq8WIwdxef+/
- 9J+ex6Xb+CNhSCpylsBww3nrUZ9pq1kJ2oOY8Lx39MO5erj036IfpwY4unExg0GlPere
- 9bq/3pwipEiGjM8gAKfy5Ke4qh0H9520HiMk8eZMqAiRcGkgxCEXgEiFsdTQr1KqyJ1Q
- zwWgIQ9Wi2IsQ9ZbSGzNtOVlpGYzARklrLJDMnS68yPvHe4LZ7Cf3Woo41fTra51v8ek
- cEFrDWDH9efb6BpQRT7kv7sXuVJge5f1raKa+Ef4fTUaR9uOwrgTjubhgoHTOYVNALcE
- Ka9Q==
-X-Gm-Message-State: APjAAAX7IkyYniYkUsv/xsuAJEETi94ZL0SbEZg+OJ+64LmcO4+t0J0Q
- gfKKIadS8jVakSOO1AMlSW4=
-X-Google-Smtp-Source: APXvYqwkxUglEvCrCq48Z4nbpO9Iyp5fdvM2CIeiSaGlpb7AquulcT0oGUHZUvxEGlKmtys3SARd/A==
-X-Received: by 2002:a5d:4d4a:: with SMTP id a10mr13984704wru.220.1579728845000; 
- Wed, 22 Jan 2020 13:34:05 -0800 (PST)
-Received: from mail.broadcom.com ([192.19.231.250])
- by smtp.gmail.com with ESMTPSA id w8sm6474630wmd.2.2020.01.22.13.34.01
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 22 Jan 2020 13:34:04 -0800 (PST)
-From: Kamal Dasu <kdasu.kdev@gmail.com>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH V4 3/3] mtd: rawnand: brcmnand: Add support for flash-edu for
- dma transfers
-Date: Wed, 22 Jan 2020 16:33:13 -0500
-Message-Id: <20200122213313.35820-4-kdasu.kdev@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200122213313.35820-1-kdasu.kdev@gmail.com>
-References: <20200122213313.35820-1-kdasu.kdev@gmail.com>
+ id 1iuP5J-0003a4-74
+ for linux-mtd@lists.infradead.org; Wed, 22 Jan 2020 23:06:54 +0000
+Received: from gmail.com (unknown [104.132.1.77])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id B9A802465A;
+ Wed, 22 Jan 2020 23:06:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1579734412;
+ bh=iDK9mhfatk0/hNugU/WPUPfmhu1Thz7bh75Z2DXYU/0=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=MdMedgKfSUinhQoW7EX8dAKvj1YwqwHzlbb1cbzLT6dOt2HZWykDyFD3k2cNyhQyK
+ 8GB5uINMlhWRPvQRr20QS8SxKPsazWkqZ9NELkASmhvpjUozkcfUA+LLJ+HQqgq/Lb
+ YogycmIn0nDOqv8LkTPXOOSGVMsOMS5102vK6M3Q=
+Date: Wed, 22 Jan 2020 15:06:50 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH v5 0/6] fscrypt preparations for encryption+casefolding
+Message-ID: <20200122230649.GC182745@gmail.com>
+References: <20200120223201.241390-1-ebiggers@kernel.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20200120223201.241390-1-ebiggers@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200122_133407_573998_53E6BEC8 
-X-CRM114-Status: GOOD (  20.30  )
+X-CRM114-CacheID: sfid-20200122_150653_279486_79409479 
+X-CRM114-Status: GOOD (  14.66  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,455 +74,53 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Florian Fainelli <f.fainelli@gmail.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- Paul Burton <paulburton@kernel.org>, Kamal Dasu <kdasu.kdev@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mips@vger.kernel.org,
- Ralf Baechle <ralf@linux-mips.org>, linaro-mm-sig@lists.linaro.org,
- Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
- dri-devel@lists.freedesktop.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- James Hogan <jhogan@kernel.org>, bcm-kernel-feedback-list@broadcom.com,
- Brian Norris <computersforpeace@gmail.com>,
- Sumit Semwal <sumit.semwal@linaro.org>, linux-media@vger.kernel.org
-MIME-Version: 1.0
+Cc: Daniel Rosenberg <drosen@google.com>,
+ Gabriel Krisman Bertazi <krisman@collabora.com>, linux-kernel@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
+ Richard Weinberger <richard@nod.at>, linux-fsdevel@vger.kernel.org,
+ linux-ext4@vger.kernel.org, kernel-team@android.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Legacy mips soc platforms that have controller v5.0 and 6.0 use
-flash-edu block for dma transfers. This change adds support for
-nand dma transfers using the EDU block.
+On Mon, Jan 20, 2020 at 02:31:55PM -0800, Eric Biggers wrote:
+> This is a cleaned up and fixed version of the fscrypt patches to prepare
+> for directories that are both encrypted and casefolded.
+> 
+> Patches 1-3 start deriving a SipHash key for the new dirhash method that
+> will be used by encrypted+casefolded directories.  To avoid unnecessary
+> overhead, we only do this if the directory is actually casefolded.
+> 
+> Patch 4 fixes a bug in UBIFS where it didn't gracefully handle invalid
+> hash values in fscrypt no-key names.  This is an existing bug, but the
+> new fscrypt no-key name format (patch 6) made it much easier to trigger;
+> it started being hit by 'kvm-xfstests -c ubifs -g encrypt'.
+> 
+> Patch 5 updates UBIFS to make it ready for the new fscrypt no-key name
+> format that always includes the dirhash.
+> 
+> Patch 6 modifies the fscrypt no-key names to always include the dirhash,
+> since with the new dirhash method the dirhash will no longer be
+> computable from the ciphertext filename without the key.  It also fixes
+> a longstanding issue where there could be collisions in the no-key
+> names, due to not using a proper cryptographic hash to abbreviate names.
+> 
+> For more information see the main patch series, which includes the
+> filesystem-specific changes:
+> https://lkml.kernel.org/linux-fscrypt/20200117214246.235591-1-drosen@google.com/T/#u
+> 
+> This applies to fscrypt.git#master.
+> 
+> Changed v4 => v5:
+>   - Fixed UBIFS encryption to work with the new no-key name format.
 
-Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
----
- drivers/mtd/nand/raw/brcmnand/brcmnand.c | 293 ++++++++++++++++++++++-
- 1 file changed, 287 insertions(+), 6 deletions(-)
+I've applied this series to fscrypt.git#master; however I'd still like Acked-bys
+from the UBIFS maintainers on the two UBIFS patches, as well as more
+Reviewed-bys from anyone interested.  If I don't hear anything from anyone, I
+might drop these to give more time, especially if there isn't an v5.5-rc8.
 
-diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index 1a66b1cd51c0..2185ff1c3fee 100644
---- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -102,6 +102,45 @@ struct brcm_nand_dma_desc {
- #define NAND_CTRL_RDY			(INTFC_CTLR_READY | INTFC_FLASH_READY)
- #define NAND_POLL_STATUS_TIMEOUT_MS	100
- 
-+#define EDU_CMD_WRITE          0x00
-+#define EDU_CMD_READ           0x01
-+#define EDU_STATUS_ACTIVE      BIT(0)
-+#define EDU_ERR_STATUS_ERRACK  BIT(0)
-+#define EDU_DONE_MASK		GENMASK(1, 0)
-+
-+#define EDU_CONFIG_MODE_NAND   BIT(0)
-+#define EDU_CONFIG_SWAP_BYTE   BIT(1)
-+#ifdef CONFIG_CPU_BIG_ENDIAN
-+#define EDU_CONFIG_SWAP_CFG     EDU_CONFIG_SWAP_BYTE
-+#else
-+#define EDU_CONFIG_SWAP_CFG     0
-+#endif
-+
-+/* edu registers */
-+enum edu_reg {
-+	EDU_CONFIG = 0,
-+	EDU_DRAM_ADDR,
-+	EDU_EXT_ADDR,
-+	EDU_LENGTH,
-+	EDU_CMD,
-+	EDU_STOP,
-+	EDU_STATUS,
-+	EDU_DONE,
-+	EDU_ERR_STATUS,
-+};
-+
-+static const u16  edu_regs[] = {
-+	[EDU_CONFIG] = 0x00,
-+	[EDU_DRAM_ADDR] = 0x04,
-+	[EDU_EXT_ADDR] = 0x08,
-+	[EDU_LENGTH] = 0x0c,
-+	[EDU_CMD] = 0x10,
-+	[EDU_STOP] = 0x14,
-+	[EDU_STATUS] = 0x18,
-+	[EDU_DONE] = 0x1c,
-+	[EDU_ERR_STATUS] = 0x20,
-+};
-+
- /* flash_dma registers */
- enum flash_dma_reg {
- 	FLASH_DMA_REVISION = 0,
-@@ -167,6 +206,8 @@ enum {
- 	BRCMNAND_HAS_WP				= BIT(3),
- };
- 
-+struct brcmnand_host;
-+
- struct brcmnand_controller {
- 	struct device		*dev;
- 	struct nand_controller	controller;
-@@ -185,17 +226,32 @@ struct brcmnand_controller {
- 
- 	int			cmd_pending;
- 	bool			dma_pending;
-+	bool                    edu_pending;
- 	struct completion	done;
- 	struct completion	dma_done;
-+	struct completion       edu_done;
- 
- 	/* List of NAND hosts (one for each chip-select) */
- 	struct list_head host_list;
- 
-+	/* EDU info, per-transaction */
-+	const u16               *edu_offsets;
-+	void __iomem            *edu_base;
-+	int			edu_irq;
-+	int                     edu_count;
-+	u64                     edu_dram_addr;
-+	u32                     edu_ext_addr;
-+	u32                     edu_cmd;
-+	u32                     edu_config;
-+
- 	/* flash_dma reg */
- 	const u16		*flash_dma_offsets;
- 	struct brcm_nand_dma_desc *dma_desc;
- 	dma_addr_t		dma_pa;
- 
-+	int (*dma_trans)(struct brcmnand_host *host, u64 addr, u32 *buf,
-+			 u32 len, u8 dma_cmd);
-+
- 	/* in-memory cache of the FLASH_CACHE, used only for some commands */
- 	u8			flash_cache[FC_BYTES];
- 
-@@ -216,6 +272,7 @@ struct brcmnand_controller {
- 	u32			nand_cs_nand_xor;
- 	u32			corr_stat_threshold;
- 	u32			flash_dma_mode;
-+	u32                     flash_edu_mode;
- 	bool			pio_poll_mode;
- };
- 
-@@ -657,6 +714,22 @@ static inline void brcmnand_write_fc(struct brcmnand_controller *ctrl,
- 	__raw_writel(val, ctrl->nand_fc + word * 4);
- }
- 
-+static inline void edu_writel(struct brcmnand_controller *ctrl,
-+			      enum edu_reg reg, u32 val)
-+{
-+	u16 offs = ctrl->edu_offsets[reg];
-+
-+	brcmnand_writel(val, ctrl->edu_base + offs);
-+}
-+
-+static inline u32 edu_readl(struct brcmnand_controller *ctrl,
-+			    enum edu_reg reg)
-+{
-+	u16 offs = ctrl->edu_offsets[reg];
-+
-+	return brcmnand_readl(ctrl->edu_base + offs);
-+}
-+
- static void brcmnand_clear_ecc_addr(struct brcmnand_controller *ctrl)
- {
- 
-@@ -926,6 +999,16 @@ static inline bool has_flash_dma(struct brcmnand_controller *ctrl)
- 	return ctrl->flash_dma_base;
- }
- 
-+static inline bool has_edu(struct brcmnand_controller *ctrl)
-+{
-+	return ctrl->edu_base;
-+}
-+
-+static inline bool use_dma(struct brcmnand_controller *ctrl)
-+{
-+	return has_flash_dma(ctrl) || has_edu(ctrl);
-+}
-+
- static inline void disable_ctrl_irqs(struct brcmnand_controller *ctrl)
- {
- 	if (ctrl->pio_poll_mode)
-@@ -1299,6 +1382,52 @@ static int write_oob_to_regs(struct brcmnand_controller *ctrl, int i,
- 	return tbytes;
- }
- 
-+static void brcmnand_edu_init(struct brcmnand_controller *ctrl)
-+{
-+	/* initialize edu */
-+	edu_writel(ctrl, EDU_ERR_STATUS, 0);
-+	edu_readl(ctrl, EDU_ERR_STATUS);
-+	edu_writel(ctrl, EDU_DONE, 0);
-+	edu_writel(ctrl, EDU_DONE, 0);
-+	edu_writel(ctrl, EDU_DONE, 0);
-+	edu_writel(ctrl, EDU_DONE, 0);
-+	edu_readl(ctrl, EDU_DONE);
-+}
-+
-+/* edu irq */
-+static irqreturn_t brcmnand_edu_irq(int irq, void *data)
-+{
-+	struct brcmnand_controller *ctrl = data;
-+
-+	if (ctrl->edu_count) {
-+		ctrl->edu_count--;
-+		while (!(edu_readl(ctrl, EDU_DONE) & EDU_DONE_MASK))
-+			udelay(1);
-+		edu_writel(ctrl, EDU_DONE, 0);
-+		edu_readl(ctrl, EDU_DONE);
-+	}
-+
-+	if (ctrl->edu_count) {
-+		ctrl->edu_dram_addr += FC_BYTES;
-+		ctrl->edu_ext_addr += FC_BYTES;
-+
-+		edu_writel(ctrl, EDU_DRAM_ADDR, (u32)ctrl->edu_dram_addr);
-+		edu_readl(ctrl, EDU_DRAM_ADDR);
-+		edu_writel(ctrl, EDU_EXT_ADDR, ctrl->edu_ext_addr);
-+		edu_readl(ctrl, EDU_EXT_ADDR);
-+
-+		mb(); /* flush previous writes */
-+		edu_writel(ctrl, EDU_CMD, ctrl->edu_cmd);
-+		edu_readl(ctrl, EDU_CMD);
-+
-+		return IRQ_HANDLED;
-+	}
-+
-+	complete(&ctrl->edu_done);
-+
-+	return IRQ_HANDLED;
-+}
-+
- static irqreturn_t brcmnand_ctlrdy_irq(int irq, void *data)
- {
- 	struct brcmnand_controller *ctrl = data;
-@@ -1307,6 +1436,16 @@ static irqreturn_t brcmnand_ctlrdy_irq(int irq, void *data)
- 	if (ctrl->dma_pending)
- 		return IRQ_HANDLED;
- 
-+	/* check if you need to piggy back on the ctrlrdy irq */
-+	if (ctrl->edu_pending) {
-+		if (irq == ctrl->irq && ((int)ctrl->edu_irq >= 0))
-+	/* Discard interrupts while using dedicated edu irq */
-+			return IRQ_HANDLED;
-+
-+	/* no registered edu irq, call handler */
-+		return brcmnand_edu_irq(irq, data);
-+	}
-+
- 	complete(&ctrl->done);
- 	return IRQ_HANDLED;
- }
-@@ -1644,6 +1783,81 @@ static void brcmnand_write_buf(struct nand_chip *chip, const uint8_t *buf,
- 	}
- }
- 
-+/**
-+ *  Kick EDU engine
-+ */
-+static int brcmnand_edu_trans(struct brcmnand_host *host, u64 addr, u32 *buf,
-+			      u32 len, u8 cmd)
-+{
-+	struct brcmnand_controller *ctrl = host->ctrl;
-+	unsigned long timeo = msecs_to_jiffies(200);
-+	int ret = 0;
-+	int dir = (cmd == CMD_PAGE_READ ? DMA_FROM_DEVICE : DMA_TO_DEVICE);
-+	u8 edu_cmd = (cmd == CMD_PAGE_READ ? EDU_CMD_READ : EDU_CMD_WRITE);
-+	unsigned int trans = len >> FC_SHIFT;
-+	dma_addr_t pa;
-+
-+	pa = dma_map_single(ctrl->dev, buf, len, dir);
-+	if (dma_mapping_error(ctrl->dev, pa)) {
-+		dev_err(ctrl->dev, "unable to map buffer for EDU DMA\n");
-+		return -ENOMEM;
-+	}
-+
-+	ctrl->edu_pending = true;
-+	ctrl->edu_dram_addr = pa;
-+	ctrl->edu_ext_addr = addr;
-+	ctrl->edu_cmd = edu_cmd;
-+	ctrl->edu_count = trans;
-+
-+	edu_writel(ctrl, EDU_DRAM_ADDR, (u32)ctrl->edu_dram_addr);
-+	edu_readl(ctrl,  EDU_DRAM_ADDR);
-+	edu_writel(ctrl, EDU_EXT_ADDR, ctrl->edu_ext_addr);
-+	edu_readl(ctrl, EDU_EXT_ADDR);
-+	edu_writel(ctrl, EDU_LENGTH, FC_BYTES);
-+	edu_readl(ctrl, EDU_LENGTH);
-+
-+	/* Start edu engine */
-+	mb(); /* flush previous writes */
-+	edu_writel(ctrl, EDU_CMD, ctrl->edu_cmd);
-+	edu_readl(ctrl, EDU_CMD);
-+
-+	if (wait_for_completion_timeout(&ctrl->edu_done, timeo) <= 0) {
-+		dev_err(ctrl->dev,
-+			"timeout waiting for EDU; status %#x, error status %#x\n",
-+			edu_readl(ctrl, EDU_STATUS),
-+			edu_readl(ctrl, EDU_ERR_STATUS));
-+	}
-+
-+	dma_unmap_single(ctrl->dev, pa, len, dir);
-+
-+	/* for program page check NAND status */
-+	if (((brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS) &
-+	      INTFC_FLASH_STATUS) & NAND_STATUS_FAIL) &&
-+	    edu_cmd == EDU_CMD_WRITE) {
-+		dev_info(ctrl->dev, "program failed at %llx\n",
-+			 (unsigned long long)addr);
-+		ret = -EIO;
-+	}
-+
-+	/* Make sure the EDU status is clean */
-+	if (edu_readl(ctrl, EDU_STATUS) & EDU_STATUS_ACTIVE)
-+		dev_warn(ctrl->dev, "EDU still active: %#x\n",
-+			 edu_readl(ctrl, EDU_STATUS));
-+
-+	if (unlikely(edu_readl(ctrl, EDU_ERR_STATUS) & EDU_ERR_STATUS_ERRACK)) {
-+		dev_warn(ctrl->dev, "EDU RBUS error at addr %llx\n",
-+			 (unsigned long long)addr);
-+		ret = -EIO;
-+	}
-+
-+	ctrl->edu_pending = false;
-+	brcmnand_edu_init(ctrl);
-+	edu_writel(ctrl, EDU_STOP, 0); /* force stop */
-+	edu_readl(ctrl, EDU_STOP);
-+
-+	return ret;
-+}
-+
- /**
-  * Construct a FLASH_DMA descriptor as part of a linked list. You must know the
-  * following ahead of time:
-@@ -1850,9 +2064,11 @@ static int brcmnand_read(struct mtd_info *mtd, struct nand_chip *chip,
- try_dmaread:
- 	brcmnand_clear_ecc_addr(ctrl);
- 
--	if (has_flash_dma(ctrl) && !oob && flash_dma_buf_ok(buf)) {
--		err = brcmnand_dma_trans(host, addr, buf, trans * FC_BYTES,
--					     CMD_PAGE_READ);
-+	if (ctrl->dma_trans && !oob && flash_dma_buf_ok(buf)) {
-+		err = ctrl->dma_trans(host, addr, buf,
-+				      trans * FC_BYTES,
-+				      CMD_PAGE_READ);
-+
- 		if (err) {
- 			if (mtd_is_bitflip_or_eccerr(err))
- 				err_addr = addr;
-@@ -1988,10 +2204,12 @@ static int brcmnand_write(struct mtd_info *mtd, struct nand_chip *chip,
- 	for (i = 0; i < ctrl->max_oob; i += 4)
- 		oob_reg_write(ctrl, i, 0xffffffff);
- 
--	if (has_flash_dma(ctrl) && !oob && flash_dma_buf_ok(buf)) {
--		if (brcmnand_dma_trans(host, addr, (u32 *)buf,
--					mtd->writesize, CMD_PROGRAM_PAGE))
-+	if (use_dma(ctrl) && !oob && flash_dma_buf_ok(buf)) {
-+		if (ctrl->dma_trans(host, addr, (u32 *)buf, mtd->writesize,
-+				    CMD_PROGRAM_PAGE))
-+
- 			ret = -EIO;
-+
- 		goto out;
- 	}
- 
-@@ -2494,6 +2712,8 @@ static int brcmnand_suspend(struct device *dev)
- 
- 	if (has_flash_dma(ctrl))
- 		ctrl->flash_dma_mode = flash_dma_readl(ctrl, FLASH_DMA_MODE);
-+	else if (has_edu(ctrl))
-+		ctrl->edu_config = edu_readl(ctrl, EDU_CONFIG);
- 
- 	return 0;
- }
-@@ -2508,6 +2728,14 @@ static int brcmnand_resume(struct device *dev)
- 		flash_dma_writel(ctrl, FLASH_DMA_ERROR_STATUS, 0);
- 	}
- 
-+	if (has_edu(ctrl))
-+		ctrl->edu_config = edu_readl(ctrl, EDU_CONFIG);
-+	else {
-+		edu_writel(ctrl, EDU_CONFIG, ctrl->edu_config);
-+		edu_readl(ctrl, EDU_CONFIG);
-+		brcmnand_edu_init(ctrl);
-+	}
-+
- 	brcmnand_write_reg(ctrl, BRCMNAND_CS_SELECT, ctrl->nand_cs_nand_select);
- 	brcmnand_write_reg(ctrl, BRCMNAND_CS_XOR, ctrl->nand_cs_nand_xor);
- 	brcmnand_write_reg(ctrl, BRCMNAND_CORR_THRESHOLD,
-@@ -2553,6 +2781,49 @@ MODULE_DEVICE_TABLE(of, brcmnand_of_match);
- /***********************************************************************
-  * Platform driver setup (per controller)
-  ***********************************************************************/
-+static int brcmnand_edu_setup(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct brcmnand_controller *ctrl = dev_get_drvdata(&pdev->dev);
-+	struct resource *res;
-+	int ret;
-+
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "flash-edu");
-+	if (res) {
-+		ctrl->edu_base = devm_ioremap_resource(dev, res);
-+		if (IS_ERR(ctrl->edu_base))
-+			return PTR_ERR(ctrl->edu_base);
-+
-+		ctrl->edu_offsets = edu_regs;
-+
-+		edu_writel(ctrl, EDU_CONFIG, EDU_CONFIG_MODE_NAND |
-+			   EDU_CONFIG_SWAP_CFG);
-+		edu_readl(ctrl, EDU_CONFIG);
-+
-+		/* initialize edu */
-+		brcmnand_edu_init(ctrl);
-+
-+		ctrl->edu_irq = platform_get_irq_optional(pdev, 1);
-+		if (ctrl->edu_irq < 0) {
-+			dev_warn(dev,
-+				 "FLASH EDU enabled, using ctlrdy irq\n");
-+		} else {
-+			ret = devm_request_irq(dev, ctrl->edu_irq,
-+					       brcmnand_edu_irq, 0,
-+					       "brcmnand-edu", ctrl);
-+			if (ret < 0) {
-+				dev_err(ctrl->dev, "can't allocate IRQ %d: error %d\n",
-+					ctrl->edu_irq, ret);
-+				return ret;
-+			}
-+
-+			dev_info(dev, "FLASH EDU enabled using irq %u\n",
-+				 ctrl->edu_irq);
-+		}
-+	}
-+
-+	return 0;
-+}
- 
- int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
- {
-@@ -2578,6 +2849,7 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
- 
- 	init_completion(&ctrl->done);
- 	init_completion(&ctrl->dma_done);
-+	init_completion(&ctrl->edu_done);
- 	nand_controller_init(&ctrl->controller);
- 	ctrl->controller.ops = &brcmnand_controller_ops;
- 	INIT_LIST_HEAD(&ctrl->host_list);
-@@ -2665,6 +2937,15 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
- 		}
- 
- 		dev_info(dev, "enabling FLASH_DMA\n");
-+		/* set flash dma transfer function to call */
-+		ctrl->dma_trans = brcmnand_dma_trans;
-+	} else	{
-+		ret = brcmnand_edu_setup(pdev);
-+		if (ret < 0)
-+			goto err;
-+
-+		/* set edu transfer function to call */
-+		ctrl->dma_trans = brcmnand_edu_trans;
- 	}
- 
- 	/* Disable automatic device ID config, direct addressing */
--- 
-2.17.1
-
+- Eric
 
 ______________________________________________________
 Linux MTD discussion mailing list
