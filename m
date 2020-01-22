@@ -2,71 +2,88 @@ Return-Path: <SRS0=3Meg=3L=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A7F9C2D0DB
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Jan 2020 17:41:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BEB0C2D0DB
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Jan 2020 19:37:00 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ECF2924125
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Jan 2020 17:41:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E453224655
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Jan 2020 19:36:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qYbCBmkh";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="V8Ya36BD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ECF2924125
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DVFGCaAZ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=walle.cc header.i=@walle.cc header.b="MVrIyWGF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E453224655
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1k93wW5os4ErOYOzlUxPVLjNq4HYh+RLa8Y5yYtjKJ8=; b=qYbCBmkhWbwihL
-	XkoXezKr5ViHM1ykGFKzjNizeVVQlyJcFGkSXuc5tpG2RF83ZifIECo7l3V3Pv5NjV/hEU+5PPcGs
-	I57gK+Zhx3KuJB7PxuwAidwvZUsvuIRStP7Tfz0wuEvv8DurrHmMVisBJ7Om9VusEEtpJkd5x+agF
-	vJyrXPEd8OHMl18JRdu6fNTvsbmJCSfPUScoJ2UwbvYET5Hi5lKoXf3DpoCQh0WhsjsyPDO7BIJ/M
-	6ljkGEOlZYD4kPyl4Z+iN9iakFS37buyc/toKq6Vwdsgdni+i2fSKptaewlR7uGMVj9f4KL3mTw6E
-	AHRZuhGHs5mrmMCcbkVw==;
+	List-Owner; bh=cQxfEAejx6AoRG6ajZCa+SSCo9a7ewyVmfXOHU9GesY=; b=DVFGCaAZy8QkI/
+	GoiLOUUUhCA7Zn8zCALCKMGBV5E88RPKHDrJ58eE6e/f+mnP66O/fDgAB9Ega42wovnfrX5rBSXah
+	DW84AmiySBQsS7aZ8h6uOF7pN5YbUcA9NWKn4p9YwcEG35U3X3q4KIDozXUxFVG2XDmBRyP+nY4yd
+	QGCJXUPd9XWzqc5jnFK+uqVrfKY0Hr/PzQXJCjK1I3AhOY2sbxYV3W2/Ic54iY91lKpa8KuZ/Aq87
+	Q8Nvs69tEGjxTlw2zgRZZBw6wRXp09EGCi6vzEkIvuBx3dXz9W/tTFbwehXTyNAiUc+pKqrMzJ+u6
+	bRqFcU1nNySu6Q9tvMFA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iuK0R-0001Ba-Vw; Wed, 22 Jan 2020 17:41:31 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1iuLnw-0004vE-NA; Wed, 22 Jan 2020 19:36:44 +0000
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iuK0O-0001B7-Db
- for linux-mtd@lists.infradead.org; Wed, 22 Jan 2020 17:41:30 +0000
-Received: from xps13 (98.197.23.93.rev.sfr.net [93.23.197.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 7289F24125;
- Wed, 22 Jan 2020 17:41:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1579714887;
- bh=YGZ2cRqG5u4bxPklZHpHWDQi8QEwqwd/Zc28kRnomzE=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=V8Ya36BDaBIBQBr6PhRda8ehKTO24jQw4a2r6ushXaJ8q2k3IY2Ebytd6NzFYjUTQ
- 0zLl/q7dHK1rIepkQM2BYPSSmvKSiQXevCDQmKnsyYsJmF26mtKwIA21USoS+pDf6T
- +1Rs5gVzvPKqm+G2MG6hUO5lqY4UtMFX3HWoUekI=
-Date: Wed, 22 Jan 2020 18:41:14 +0100
-From: Miquel Raynal <mraynal@kernel.org>
-To: liaoweixiong <liaoweixiong@allwinnertech.com>
-Subject: Re: [PATCH v1 11/11] mtd: new support oops logger based on pstore/blk
-Message-ID: <20200122184114.125b42c8@xps13>
-In-Reply-To: <2c6000b1-ae25-564b-911a-2879e9c244b2@allwinnertech.com>
-References: <1579482233-2672-1-git-send-email-liaoweixiong@allwinnertech.com>
- <1579482233-2672-12-git-send-email-liaoweixiong@allwinnertech.com>
- <20200120110306.32e53fd8@xps13>
- <27226590-379c-8784-f461-f5d701015611@allwinnertech.com>
- <20200121094802.61f8cb4d@xps13>
- <2c6000b1-ae25-564b-911a-2879e9c244b2@allwinnertech.com>
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1iuLnq-0004ui-9r
+ for linux-mtd@lists.infradead.org; Wed, 22 Jan 2020 19:36:40 +0000
+Received: from apollo.fritz.box (unknown
+ [IPv6:2a02:810c:c200:2e91:6257:18ff:fec4:ca34])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
+ SHA256) (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 089AA23061;
+ Wed, 22 Jan 2020 20:36:34 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1579721795;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=e/SSszZGKppCJ9+q8XPFWdBCWBaQXR1n3Mv/WeCSt7Y=;
+ b=MVrIyWGFoL7i3KGPHYZ0BjAKEIc7Ivgnn+Ob6Q+GKEMft21CEOjWw5ijDqhZAcCfyaUSQl
+ GCQo0WdwHmmOPvhj5SCxXZNaqN4ff+Ge59WdZx1UwtiphH6VNxB/uqGSspFQdd4xmYA6mK
+ 7uuKjzPdCWtk88vCxhXzWi6FCmrlYgI=
+From: Michael Walle <michael@walle.cc>
+To: js07.lee@samsung.com
+Subject: Re: [PATCH v3 2/3] mtd: spi-nor: add 4bit block protection support
+Date: Wed, 22 Jan 2020 20:36:08 +0100
+Message-Id: <20200122193608.3859-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200113055907.9029-2-js07.lee@samsung.com>
+References: <20200113055907.9029-2-js07.lee@samsung.com>
 MIME-Version: 1.0
+X-Spamd-Bar: ++++++
+X-Rspamd-Server: web
+X-Rspamd-Queue-Id: 089AA23061
+X-Spamd-Result: default: False [6.40 / 15.00]; ARC_NA(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ R_MISSING_CHARSET(2.50)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ TAGGED_RCPT(0.00)[]; MIME_GOOD(-0.10)[text/plain];
+ BROKEN_CONTENT_TYPE(1.50)[]; RCPT_COUNT_FIVE(0.00)[6];
+ DKIM_SIGNED(0.00)[]; MID_CONTAINS_FROM(1.00)[];
+ NEURAL_HAM(-0.00)[-0.801]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
+ RCVD_COUNT_ZERO(0.00)[0]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+];
+ ASN(0.00)[asn:31334, ipnet:2a02:810c::/31, country:DE];
+ FREEMAIL_CC(0.00)[gmail.com,lists.infradead.org,microchip.com,ti.com,walle.cc];
+ SUSPICIOUS_RECIPS(1.50)[]
+X-Spam: Yes
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200122_094128_502628_8B57F1B7 
-X-CRM114-Status: GOOD (  35.45  )
+X-CRM114-CacheID: sfid-20200122_113638_657953_EC564208 
+X-CRM114-Status: GOOD (  29.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,120 +95,340 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Rob Herring <robh@kernel.org>, Tony Luck <tony.luck@intel.com>,
- Kees Cook <keescook@chromium.org>, Jonathan Corbet <corbet@lwn.net>,
- Richard Weinberger <richard@nod.at>, Anton Vorontsov <anton@enomsg.org>,
- linux-doc@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- Colin Cross <ccross@android.com>,
- Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Vignesh Raghavendra <vigneshr@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Michael Walle <michael@walle.cc>, tudor.ambarus@microchip.com,
+ linux-mtd@lists.infradead.org, vigneshr@ti.com, js07.lee@gmail.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgoKPiA+Pj4+ICsvKgo+ID4+Pj4gKyAqIEFsbCB6b25lcyB3aWxsIGJlIHJlYWQgYXMg
-cHN0b3JlL2JsayB3aWxsIHJlYWQgem9uZSBvbmUgYnkgb25lIHdoZW4gZG8KPiA+Pj4+ICsgKiBy
-ZWNvdmVyLgo+ID4+Pj4gKyAqLwo+ID4+Pj4gK3N0YXRpYyBzc2l6ZV90IG10ZHBzdG9yZV9yZWFk
-KGNoYXIgKmJ1Ziwgc2l6ZV90IHNpemUsIGxvZmZfdCBvZmYpCj4gPj4+PiArewo+ID4+Pj4gKwlz
-dHJ1Y3QgbXRkcHN0b3JlX2NvbnRleHQgKmN4dCA9ICZvb3BzX2N4dDsKPiA+Pj4+ICsJc2l6ZV90
-IHJldGxlbjsKPiA+Pj4+ICsJaW50IHJldDsKPiA+Pj4+ICsKPiA+Pj4+ICsJaWYgKG10ZHBzdG9y
-ZV9ibG9ja19pc2JhZChjeHQsIG9mZikpCj4gPj4+PiArCQlyZXR1cm4gLUVORVhUOwo+ID4+Pj4g
-Kwo+ID4+Pj4gKwlwcl9kZWJ1ZygidHJ5IHRvIHJlYWQgb2ZmIDB4JWxseCBzaXplICV6dVxuIiwg
-b2ZmLCBzaXplKTsKPiA+Pj4+ICsJcmV0ID0gbXRkX3JlYWQoY3h0LT5tdGQsIG9mZiwgc2l6ZSwg
-JnJldGxlbiwgKHVfY2hhciAqKWJ1Zik7Cj4gPj4+PiArCWlmICgocmV0IDwgMCAmJiAhbXRkX2lz
-X2JpdGZsaXAocmV0KSkgfHwgc2l6ZSAhPSByZXRsZW4pICB7ICAKPiA+Pj4KPiA+Pj4gSUlSQyBz
-aXplICE9IHJldGxlbiBkb2VzIG5vdCBtZWFuIGl0IGZhaWxlZCwgYnV0IHRoYXQgeW91IHNob3Vs
-ZAo+ID4+PiBjb250aW51ZSByZWFkaW5nIGFmdGVyIHJldGxlbiBieXRlcywgbm8/ICAKPiA+Pj4g
-ICAgPj4gIAo+ID4+IFllcywgeW91IGFyZSByaWdodC4gSSB3aWxsIGZpeCBpdC4gVGhhbmtzLgo+
-ID4+ICAKPiA+Pj4gQWxzbywgbXRkX2lzX2JpdGZsaXAoKSBkb2VzIG5vdCBtZWFuIHRoYXQgeW91
-IGFyZSByZWFkaW5nIGEgZmFsc2UKPiA+Pj4gYnVmZmVyLCBidXQgdGhhdCB0aGUgZGF0YSBoYXMg
-YmVlbiBjb3JyZWN0ZWQgYXMgaXQgY29udGFpbmVkIGJpdGZsaXBzLgo+ID4+PiBtdGRfaXNfZWNj
-ZXJyKCkgaG93ZXZlciwgd291bGQgYmUgbWVhbmluZ2Z1bC4gIAo+ID4+PiAgICA+PiAgCj4gPj4g
-U3VyZSBJIGtub3cgbXRkX2lzX2JpdGZsaXAoKSBkb2VzIG5vdCBtZWFuIGZhaWx1cmUsIGJ1dCBJ
-IGRvIG5vdCB0aGluawo+ID4+IG10ZF9pc19lY2NlcnIoKSBzaG91bGQgYmUgaGVyZSBzaW5jZSB0
-aGUgY29kZXMgYXJlIHJldCA8IDAgYW5kIE5PVAo+ID4+IG10ZF9pc19iaXRmbGlwKCkuICAKPiA+
-IAo+ID4gWWVzLCBqdXN0IGRyb3AgdGhpcyBjaGVjaywgb25seSBrZWVwIHJldCA8IDAuCj4gPiAg
-IAo+IAo+IElmIEkgZG9uJ3QgZ2V0IGl0IHdyb25nLCBpdCBzaG91bGQgbm90CSBiZSBkcm9wcGVk
-IGhlcmUuIExpa2UgeW91ciB3b3JkcywKPiAibXRkX2lzX2JpdGZsaXAoKSBkb2VzIG5vdCBtZWFu
-IHRoYXQgeW91IGFyZSByZWFkaW5nIGEgZmFsc2UgYnVmZmVyLAo+IGJ1dCB0aGF0IHRoZSBkYXRh
-IGhhcyBiZWVuIGNvcnJlY3RlZCBhcyBpdCBjb250YWluZWQgYml0ZmxpcHMuIiwgdGhlCj4gZGF0
-YSBJIGdldCBhcmUgdmFsaWQgZXZlbiBpZiBtdGRfaXNfYml0ZmxpcCgpIHJldHVybiB0cnVlLiBJ
-dCdzIGNvcnJlY3QKPiBkYXRhIGFuZCBpdCdzIG5vIG5lZWQgdG8gZ28gdG8gaGFuZGxlIGVycm9y
-LiBUbyBtZSwgdGhlIGNvZGVzCj4gc2hvdWxkIGJlOgo+IAlpZiAocmV0IDwgMCAmJiAhbWl0X2lz
-X2JpdGZsaXAoKSkKPiAJCVtlcnJvciBoYW5kbGluZ10KClBsZWFzZSBjaGVjayB0aGUgaW1wbGVt
-ZW50YXRpb24gb2YgbXRkX2lzX2JpdGZsaXAoKS4gWW91J2xsIHByb2JhYmx5CmZpZ3VyZSBvdXQg
-d2hhdCBJIGFtIHNheWluZy4KCmh0dHBzOi8vZWxpeGlyLmJvb3RsaW4uY29tL2xpbnV4L2xhdGVz
-dC9zb3VyY2UvaW5jbHVkZS9saW51eC9tdGQvbXRkLmgjTDU4NQoKCnwuLi5dCgo+ID4+Pj4gKwkJ
-cmV0dXJuOwo+ID4+Pj4gKwl9Cj4gPj4+PiArCWlmICh1bmxpa2VseShpbmZvLT5kbWVzZ19zaXpl
-ICUgbXRkLT53cml0ZXNpemUpKSB7Cj4gPj4+PiArCQlwcl9lcnIoInJlY29yZCBzaXplICVsdSBL
-QiBtdXN0IGFsaWduIHRvIHdyaXRlIHNpemUgJWQgS0JcbiIsCj4gPj4+PiArCQkJCWluZm8tPmRt
-ZXNnX3NpemUgLyAxMDI0LAo+ID4+Pj4gKwkJCQltdGQtPndyaXRlc2l6ZSAvIDEwMjQpOyAgCj4g
-Pj4+Cj4gPj4+IFRoaXMgY29uZGl0aW9uIGlzIHdlaXJkLCB3aHkgd291bGQgeW91IGNoZWNrIHRo
-aXM/ICAKPiA+Pj4gICAgPj4gIAo+ID4+IHBzdG9yZS9ibGsgd2lsbCB3cml0ZSAncmVjb3JkX3Np
-emUnIGRtZXNnIGxvZyBhdCBvbmUgdGltZS4KPiA+PiBTaW5jZSBlYWNoIHdyaXRlIGRhdGEgbXVz
-dCBiZSBhbGlnbmVkIHRvICd3cml0ZXNpemUnIGZvciBmbGFzaCwgSSBhbSBub3QKPiA+PiBzdXJl
-Cj4gPj4gYWxsIGZsYXNoIGRyaXZlcnMgYXJlIGNvbXBhdGlibGUgd2l0aCBtaXNhbGlnbmVkIGRh
-dGEsIHRoYXQncyB3aHkgaQo+ID4+IGNoZWNrIHRoaXMuICAKPiA+IAo+ID4gSSB0aGluayB5b3Ug
-c2hvdWxkIGVuZm9yY2UgdGhpcyBhbGlnbm1lbnQgaW5zdGVhZCBvZiBjaGVja2luZyBpdC4KPiA+
-ICAgCj4gCj4gRG8geW91IG1lYW4gdGhhdCBtdGRwc3RvcmUgc2hvdWxkIGVuZm9yY2UgdGhpcyBh
-bGlnbm1lbnQgd2hpbGUgcnVubmluZz8KPiBUaGUgd2F5IEkgY2FuIHRoaW5rIG9mIGlzIHRvIGhh
-bmRsZSBhIGJ1ZmZlciBhbGlnbmVkIHRvIHdyaXRlc2l6ZSBhbmQKPiB3cml0ZSB0byBmbGFzaCB3
-aXRoIHRoaXMgYWxpZ25lZCBidWZmZXIuCj4gCj4gVGhhdCBjYXVzZXMgc29tZSBlcnJvci4gVGhl
-IE1URCBkZXZpY2Ugd2lsbCBiZSBkaXZpZGVkIGludG8gbXV0aWwKPiBjaHVua3MgYWNjcm9kaW5n
-IHRvIGRtZXNnX3NpemUuIEVhY2ggY2h1bmsgc3RvcmVzIGEgaW5kaXZpZHVhbAo+IE9PUFMvUGFu
-aWMgbG9nLiBJZiBkbWVzZ19zaXplIGlzIG1pc2FsaWduZWQgdG8gd3JpdGVzaXplLCB0aGUgbGFz
-dAo+IHdyaXRlIHJlc3VsdHMgaW4gbmV4dCB3cml0ZSBmYWlsdXJlIGJlY2F1c2UgdGhlIHBhZ2Ug
-b2YgZmxhc2ggY2FuIG9ubHkKPiBiZSBwcm9ncmFtZWQgb25jZSBiZWZvcmUgbmV4dCBlcmFzZSBh
-bmQgdGhlIHBhZ2Ugc2hhcmVkIGJ5IHR3byBjaHVua3MKPiBoYXMgYmVlbiB1c2VkIGJ5IHRoZSBs
-YXN0IHdyaXRlLiBCZXNpZGVzLCB3ZSBjYW4gbm90IHJlYWQgdG8gYnVmZmVyLAo+IGVyc2FlIGFu
-ZCB3cml0ZSBiYWNrIGFzIHRoZXJlIGlzIG5vIHJlYWQvZXJhc2UgZm9yIHBhbmljIGNhc2UuCgpJ
-IG1lYW46IHdoYXQgaXMgdGhlIHVzdWFsIHNpemUgb2YgZG1lc2c/IEkgZG9uJ3QgZ2V0IHdoeSB5
-b3UgbmVlZCBpdCB0bwpiZSBpZS4gYSBtdWx0aXBsZSBvZiAyay4gSXQgcHJvYmFibHkgaXMgYWN0
-dWFsbHksIEkgZG9uJ3Qga25vdyBpZiB0aGVyZQppcyBhIHN0YW5kYXJkLiBCdXQgaWYgZG1lc2df
-c2l6ZSBpcyBlZyAzaywganVzdCBza2lwIHRoZSBlbmQgb2YgdGhlCnBhcnRpYWxseSB3cml0dGVu
-IHBhZ2UgYW5kIHN0YXJ0IHdyaXRpbmcgYXQgdGhlIG5leHQgcGFnZT8KCj4gCj4gPj4gIAo+ID4+
-Pj4gKwkJcmV0dXJuOwo+ID4+Pj4gKwl9Cj4gPj4+PiArCWlmICh1bmxpa2VseShtdGQtPnNpemUg
-PiBNVERQU1RPUkVfTUFYX01URF9TSVpFKSkgewo+ID4+Pj4gKwkJcHJfZXJyKCJtdGQlZCBpcyB0
-b28gbGFyZ2UgKGxpbWl0IGlzICVkIE1pQilcbiIsCj4gPj4+PiArCQkJCW10ZC0+aW5kZXgsCj4g
-Pj4+PiArCQkJCU1URFBTVE9SRV9NQVhfTVREX1NJWkUgLyAxMDI0IC8gMTAyNCk7ICAKPiA+Pj4K
-PiA+Pj4gU2FtZSBxdWVzdGlvbj8gSSBjb3VsZCB1bmRlcnN0YW5kIHRoYXQgaXQgaXMgZWFzaWVy
-IHRvIG1hbmFnZSBibG9ja3MKPiA+Pj4ga25vd2luZyB0aGVpciBtYXhpbXVtIG51bWJlciB0aG91
-Z2guICAKPiA+Pj4gICAgPj4gIAo+ID4+IEl0IHJlZmVycyB0byBtdGRvb3BzLiAgCj4gPiAKPiA+
-IFdoYXQgZG8geW91IG1lYW4/Cj4gPiAgIAo+IAo+IFRvIG1lLCBpdCdzIHVubmVjZXNzYXJ5IHRv
-IGNoZWNrIGF0IGFsbCwgaG93ZXZlciBpdCBpcyByZWFsbHkgdGhlcmUKPiBvbiBjb2RlcyBvZiBt
-dGRvb3BzLiBJIHJlZmVyIHRvIG1vZHVsZSBtdGRvb3BzIHdoZW4gSSBkZXNpZ24gbXRkcHN0b3Jl
-Lgo+IEl0IG1heSBiZSBoZWxwZnVsbCBmb3Igc29tZSBjYXNlcyBvdXQgb2YgbXkgdGhpbmssIHRo
-YXQncyB3aHkgSSBrZWVwIGl0LgoKV2h5IG5vdC4KClsuLi5dCgo+ID4+Cj4gPj4gSW4gY2FzZSBv
-ZiByZXBlYXRlZCBlcmFzZSB3aGVuIHVzZXJzIHJlbW92ZSBzZXZlcmFsIGxvZyBmaWxlcywgbXRk
-cHN0b3JlCj4gPj4gZG8gcmVtb3ZlIGpvYnMgd2hlbiBleGl0Lgo+ID4+Cj4gPj4gQmVzaWRlcywg
-bXRkcHN0b3JlIGRvIG5vdCBjaGVjayB0aGUgcmV0dXJuIGNvZGUgdG8gZW5zdXJlIHdyaXRlIGJh
-Y2sgdmFsaWQKPiA+PiBsb2cgYXMgbXVjaCBhcyBwb3NzaWJsZS4gIAo+ID4gCj4gPiBZb3UgYXJl
-IG5vdCBpbiBhIGNyaXRpY2FsIHBhdGgsIEkgZG9uJ3QgdW5kZXJzdGFuZCB3aHkgeW91IGRvbid0
-IGNoZWNrCj4gPiBpdD8gSWYgaXQgcmV0dXJucyBhbiBlcnJvciwgaXQgbWVhbnMgdGhlIGRhdGEg
-aXMgbm90IHdyaXR0ZW4uIElNSE8gaXQKPiA+IGlzIGJlc3QgdG8gYWxlcnQgdGhlIHVzZXIgdGhh
-biB0byBzaWxlbnRseSBmYWlsLgo+ID4gICAKPiAKPiBUaGlzIGZ1bmN0aW9uIHdpbGwgYmUgY2Fs
-bGVkIG9ubHkgd2hlbiBtdGQgZGV2aWNlIGlzIHJlbW92aW5nLiBJdCdzCj4gdXNlbGVzcyB0byBh
-bGVydCB0aGUgdXNlciBidXQgdHJ5IHRvIGZsdXNoIHRoZSBvdGhlciB2YWxpZCBkYXRhIHRvCgpJ
-dCBpcyB1c2VmdWwgdG8gYWxlcnQgdGhlIHVzZXIhIEl0IG1lYW5zIHNvbWV0aGluZyB3ZW50IHdy
-b25nIHdoaWxlCmV2ZXJ5dGhpbmcgc2VlbXMgZmluZS4KCj4gZmxhc2ggYXMgbXVzaCBhcyBwb3Nz
-aWJsZSBieSB3aGljaCByZWR1Y2UgbG9zc2VzLiBJZiBpdCdzIGp1c3QKPiBiZWNhdXNlIG9mIGJ1
-c3ksIHdoYXQgaGFwcGVucyBuZXh0IHRpbWU/CgpKdXN0IGJlY2F1c2Ugb2YgYnVzeT8gSSBkb24n
-dCBnZXQgaXQuCgpJJ20gb2theSB3aXRoIHRoZSBpZGVhIG9mIHRyeWluZyB0byB3cml0ZSB0aGUg
-b3RoZXIgY2h1bmtzIHRob3VnaDoKCgl3aGlsZSAocmVtYWluaW5nX2NodW5rKSB7CgkJcmV0ID0g
-bXRkX3dyaXRlKCkKCQlpZiAocmV0KSB7CgkJCWFsZXJ0LXVzZXI7CgkJCWNvbnRpbnVlOwoJCX0K
-CX0KCj4gCj4gPj4gIAo+ID4+Pj4gKy4gPj4+PiArCQlvZmYgKz0gem9uZXNpemU7Cj4gPj4+PiAr
-CQlzaXplIC09IG1pbl90KHVuc2lnbmVkIGludCwgem9uZXNpemUsIHNpemUpOwo+ID4+Pj4gKwl9
-Cj4gPj4+PiArCj4gPj4+PiArZnJlZToKPiA+Pj4+ICsJa2ZyZWUoYnVmKTsKPiA+Pj4+ICsJcmV0
-dXJuIHJldDsKPiA+Pj4+ICt9Cj4gPj4+PiArICAKPiA+IAo+ID4gCj4gPiBbLi4uXQo+ID4gICAK
-PiA+Pj4KPiA+Pj4gVGhhbmtzLAo+ID4+PiBNaXF1w6hsICAKPiA+Pj4gICAgPj4gIAo+ID4+IEkg
-d2lsbCBjb2xsZWN0IG1vcmUgc3VnZ2VzdGlvbnMgYW5kIHN1Ym1pdCB0aGUgbmV3IHZlcnNpb24g
-YXQgb25lIHRpbWUuCj4gPj4gIAo+ID4gCj4gPiBTdXJlLCBubyBodXJyeS4KPiA+ICAgCj4gCj4g
-SSBhbSBvbiBob2xpZGF5LCBwbGVhc2UgZm9yZ2l2ZSBtZSBmb3IgbXkgc2xvdyByZXNwb25zZS4K
-ClRha2UgeW91ciB0aW1lLCBhcyBJIHNhaWQsIG5vIGh1cnJ5LgoKPiAKPiA+IAo+ID4gVGhhbmtz
-LAo+ID4gTWlxdcOobAo+ID4gICAKCgoKClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNz
-aW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2xpbnV4LW10ZC8K
+Hi,
+
+> Currently, we are supporting block protection only for
+> flash chips with 3 block protection bits in the SR register.
+> This patch enables block protection support for some flash with
+> 4 block protection bits(bp0-3).
+> 
+> Signed-off-by: Jungseung Lee <js07.lee@samsung.com>
+> ---
+> v3 :
+>   Fix wrong ofs calculation on v2 patch
+> v2 :
+>   Add sample table portion about 4bit block protection on the comment
+>   Trivial coding style change
+> 
+>  drivers/mtd/spi-nor/spi-nor.c | 127 +++++++++++++++++++++++++++++-----
+>  include/linux/mtd/spi-nor.h   |   8 +++
+>  2 files changed, 119 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index e3da6a8654a8..7e8af6c4fdfa 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -238,6 +238,14 @@ struct flash_info {
+>  					 * status register. Must be used with
+>  					 * SPI_NOR_HAS_TB.
+>  					 */
+> +#define SPI_NOR_HAS_BP3		BIT(17)	/*
+> +					 * Flash SR has 4 bit fields (BP0-3)
+> +					 * for block protection.
+> +					 */
+> +#define SPI_NOR_BP3_SR_BIT6	BIT(18)	/*
+> +					 * BP3 is bit 6 of status register.
+> +					 * Must be used with SPI_NOR_HAS_BP3.
+> +					 */
+>  
+>  	/* Part specific fixup hooks. */
+>  	const struct spi_nor_fixups *fixups;
+> @@ -1767,23 +1775,47 @@ static void stm_get_locked_range(struct spi_nor *nor, u8 sr, loff_t *ofs,
+>  	struct mtd_info *mtd = &nor->mtd;
+>  	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
+>  	u8 tb_mask = SR_TB_BIT5;
+> -	int pow;
+> +	u8 bp;
+> +	int pow = 0;
+>  
+>  	if (nor->flags & SNOR_F_HAS_SR_TB_BIT6)
+>  		tb_mask = SR_TB_BIT6;
+>  
+> -	if (!(sr & mask)) {
+> -		/* No protection */
+> -		*ofs = 0;
+> -		*len = 0;
+> +	if (nor->flags & SNOR_F_HAS_SR_BP3) {
+> +		u8 tmp;
+> +
+> +		if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6)
+> +			tmp = sr & (mask | SR_BP3_BIT6);
+> +		else
+> +			tmp = sr & (mask | SR_BP3_BIT5);
+> +
+> +		if (tmp & SR_BP3_BIT6)
+> +			tmp = (tmp & ~BIT(6)) | BIT(5);
+> +
+> +		bp = tmp >> SR_BP_SHIFT;
+> +		if (!bp) {
+> +			*ofs = 0;
+> +			*len = 0;
+> +			return;
+> +		}
+> +		if (bp <= ilog2(nor->n_sectors))
+> +			pow = ilog2(nor->n_sectors) + 1 - bp;
+>  	} else {
+> -		pow = ((sr & mask) ^ mask) >> SR_BP_SHIFT;
+> -		*len = mtd->size >> pow;
+> -		if (nor->flags & SNOR_F_HAS_SR_TB && sr & tb_mask)
+> +		bp = (sr & mask) >> SR_BP_SHIFT;
+> +		if (!bp) {
+>  			*ofs = 0;
+> -		else
+> -			*ofs = mtd->size - *len;
+> +			*len = 0;
+> +			return;
+> +		}
+> +		pow = bp ^ (mask >> SR_BP_SHIFT);
+>  	}
+> +
+> +	*len = mtd->size >> pow;
+> +
+> +	if (nor->flags & SNOR_F_HAS_SR_TB && sr & tb_mask)
+> +		*ofs = 0;
+> +	else
+> +		*ofs = mtd->size - *len;
+>  }
+>  
+>  /*
+> @@ -1823,7 +1855,7 @@ static int stm_is_unlocked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
+>  
+>  /*
+>   * Lock a region of the flash. Compatible with ST Micro and similar flash.
+> - * Supports the block protection bits BP{0,1,2} in the status register
+> + * Supports the block protection bits BP{0,1,2,3} in the status register
+>   * (SR). Does not support these features found in newer SR bitfields:
+>   *   - SEC: sector/block protect - only handle SEC=0 (block protect)
+>   *   - CMP: complement protect - only support CMP=0 (range is not complemented)
+> @@ -1831,7 +1863,7 @@ static int stm_is_unlocked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
+>   * Support for the following is provided conditionally for some flash:
+>   *   - TB: top/bottom protect
+>   *
+> - * Sample table portion for 8MB flash (Winbond w25q64fw):
+> + * Sample table portion for 8MB flash (Winbond w25q64fw / BP0-2):
+>   *
+>   *   SEC  |  TB   |  BP2  |  BP1  |  BP0  |  Prot Length  | Protected Portion
+>   *  --------------------------------------------------------------------------
+> @@ -1851,6 +1883,32 @@ static int stm_is_unlocked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
+>   *    0   |   1   |   1   |   0   |   1   |  2 MB         | Lower 1/4
+>   *    0   |   1   |   1   |   1   |   0   |  4 MB         | Lower 1/2
+>   *
+> + * Sample table portion for 64MB flash (Micron n25q512ax3 / BP0-3):
+> + *
+> + *   TB   |  BP3  |  BP2  |  BP1  |  BP0  |  Prot Length  | Protected Portion
+> + *  --------------------------------------------------------------------------
+> + *    0   |   0   |   0   |   0   |   0   |  NONE         | NONE
+> + *    0   |   0   |   0   |   0   |   1   |   64 KB       | Upper 1/1024
+> + *    0   |   0   |   0   |   1   |   0   |  128 KB       | Upper 1/512
+> + *    0   |   0   |   0   |   1   |   1   |  256 KB       | Upper 1/256
+> + *   ...
+> + *    0   |   1   |   0   |   0   |   1   |  16 MB        | Upper 1/4
+> + *    0   |   1   |   0   |   1   |   0   |  32 MB        | Upper 1/2
+> + *    0   |   1   |   0   |   1   |   1   |  64 MB        | ALL
+> + *    0   |   1   |   1   |   0   |   0   |  64 MB        | ALL
+> + *   ...
+> + *  ------|-------|-------|-------|-------|---------------|-------------------
+> + *    1   |   0   |   0   |   0   |   0   |   NONE        | NONE
+> + *    1   |   0   |   0   |   0   |   1   |   64 KB       | Lower 1/1024
+> + *    1   |   0   |   0   |   1   |   0   |  128 KB       | Lower 1/512
+> + *    1   |   0   |   0   |   1   |   1   |  256 KB       | Lower 1/256
+> + *   ...
+> + *    1   |   1   |   0   |   0   |   1   |  16 MB        | Lower 1/4
+> + *    1   |   1   |   0   |   1   |   0   |  32 MB        | Lower 1/2
+> + *    1   |   1   |   0   |   1   |   1   |  64 MB        | ALL
+> + *    1   |   1   |   1   |   0   |   0   |  64 MB        | ALL
+> + *   ...
+> + *
+>   * Returns negative on errors, 0 on success.
+>   */
+>  static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+> @@ -1898,6 +1956,12 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+>  	if (nor->flags & SNOR_F_HAS_SR_TB_BIT6)
+>  		tb_mask = SR_TB_BIT6;
+>  
+> +	if (nor->flags & SNOR_F_HAS_SR_BP3) {
+> +		if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6)
+> +			mask = mask | SR_BP3_BIT6;
+> +		else
+> +			mask = mask | SR_BP3_BIT5;
+> +	}
+>  	/*
+>  	 * Need smallest pow such that:
+>  	 *
+> @@ -1908,7 +1972,17 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+>  	 *   pow = ceil(log2(size / len)) = log2(size) - floor(log2(len))
+>  	 */
+>  	pow = ilog2(mtd->size) - ilog2(lock_len);
+> -	val = mask - (pow << SR_BP_SHIFT);
+> +
+> +	if (nor->flags & SNOR_F_HAS_SR_BP3) {
+> +		val = ilog2(nor->n_sectors) + 1 - pow;
+
+Why do you use a new calculation here? As far as I can see, the method is
+the same except that is has one bit more. That also raises the question why
+n_sectors is now needed?
+
+Can't we just initialize the mask with
+
+mask = SR_BP2 | SR_BP1 | SR_BP0;
+if (nor->flags & SNOR_F_HAS_SR_BP3)
+    mask |= SR_BP3_BIT5;
+
+do the calculation and checks and then move the SR_BP3_BIT5 to SR_BP3_BIT6
+if SNOR_F_HAS_SR_BP3_BIT6 is set.
+
+> +		val = val << SR_BP_SHIFT;
+> +
+> +		if (val & BIT(5) && mask & SR_BP3_BIT6)
+> +			val = (val & ~BIT(5)) | BIT(6);
+> +	} else {
+> +		val = mask - (pow << SR_BP_SHIFT);
+> +	}
+> +
+>  	if (val & ~mask)
+>  		return -EINVAL;
+>  	/* Don't "lock" with no region! */
+> @@ -1983,6 +2057,13 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+>  
+>  	if (nor->flags & SNOR_F_HAS_SR_TB_BIT6)
+>  		tb_mask = SR_TB_BIT6;
+> +
+> +	if (nor->flags & SNOR_F_HAS_SR_BP3) {
+> +		if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6)
+> +			mask = mask | SR_BP3_BIT6;
+> +		else
+> +			mask = mask | SR_BP3_BIT5;
+> +	}
+>  	/*
+>  	 * Need largest pow such that:
+>  	 *
+> @@ -1995,13 +2076,20 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+>  	pow = ilog2(mtd->size) - order_base_2(lock_len);
+>  	if (lock_len == 0) {
+>  		val = 0; /* fully unlocked */
+> +	} else if (nor->flags & SNOR_F_HAS_SR_BP3) {
+> +		val = ilog2(nor->n_sectors) + 1 - pow;
+> +		val = val << SR_BP_SHIFT;
+> +
+> +		if (val & BIT(5) && mask & SR_BP3_BIT6)
+> +			val = (val & ~BIT(5)) | BIT(6);
+>  	} else {
+>  		val = mask - (pow << SR_BP_SHIFT);
+> -		/* Some power-of-two sizes are not supported */
+> -		if (val & ~mask)
+> -			return -EINVAL;
+>  	}
+>  
+> +	/* Some power-of-two sizes are not supported */
+> +	if (val & ~mask)
+> +		return -EINVAL;
+> +
+>  	status_new = (status_old & ~mask & ~tb_mask) | val;
+>  
+>  	/* Don't protect status register if we're fully unlocked */
+> @@ -4736,6 +4824,7 @@ static void spi_nor_info_init_params(struct spi_nor *nor)
+>  	/* Set SPI NOR sizes. */
+>  	params->size = (u64)info->sector_size * info->n_sectors;
+>  	params->page_size = info->page_size;
+> +	params->n_sectors = info->n_sectors;
+>  
+>  	if (!(info->flags & SPI_NOR_NO_FR)) {
+>  		/* Default to Fast Read for DT and non-DT platform devices. */
+> @@ -5192,6 +5281,11 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+>  		nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
+>  	if (info->flags & USE_CLSR)
+>  		nor->flags |= SNOR_F_USE_CLSR;
+> +	if (info->flags & SPI_NOR_HAS_BP3) {
+> +		nor->flags |= SNOR_F_HAS_SR_BP3;
+> +		if (info->flags & SPI_NOR_BP3_SR_BIT6)
+> +			nor->flags |= SNOR_F_HAS_SR_BP3_BIT6;
+> +	}
+>  
+>  	if (info->flags & SPI_NOR_NO_ERASE)
+>  		mtd->flags |= MTD_NO_ERASE;
+> @@ -5199,6 +5293,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+>  	mtd->dev.parent = dev;
+>  	nor->page_size = params->page_size;
+>  	mtd->writebufsize = nor->page_size;
+> +	nor->n_sectors = params->n_sectors;
+>  
+>  	if (of_property_read_bool(np, "broken-flash-reset"))
+>  		nor->flags |= SNOR_F_BROKEN_RESET;
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index 541c06d042e8..92d550501daf 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -129,7 +129,9 @@
+>  #define SR_BP1			BIT(3)	/* Block protect 1 */
+>  #define SR_BP2			BIT(4)	/* Block protect 2 */
+>  #define SR_TB_BIT5		BIT(5)	/* Top/Bottom protect */
+> +#define SR_BP3_BIT5		BIT(5)	/* Block protect 3 */
+
+maybe just name it SR_BP3? would also be more consistent with the proposal
+above.
+
+>  #define SR_TB_BIT6		BIT(6)	/* Top/Bottom protect */
+> +#define SR_BP3_BIT6		BIT(6)	/* Block protect 3 */
+>  #define SR_SRWD			BIT(7)	/* SR write protect */
+>  /* Spansion/Cypress specific status bits */
+>  #define SR_E_ERR		BIT(5)
+> @@ -248,6 +250,8 @@ enum spi_nor_option_flags {
+>  	SNOR_F_HAS_16BIT_SR	= BIT(9),
+>  	SNOR_F_NO_READ_CR	= BIT(10),
+>  	SNOR_F_HAS_SR_TB_BIT6	= BIT(11),
+> +	SNOR_F_HAS_SR_BP3	= BIT(12),
+> +	SNOR_F_HAS_SR_BP3_BIT6	= BIT(13),
+>  
+>  };
+>  
+> @@ -519,6 +523,7 @@ struct spi_nor_locking_ops {
+>   *
+>   * @size:		the flash memory density in bytes.
+>   * @page_size:		the page size of the SPI NOR flash memory.
+> + * @n_sectors:		number of sectors
+>   * @hwcaps:		describes the read and page program hardware
+>   *			capabilities.
+>   * @reads:		read capabilities ordered by priority: the higher index
+> @@ -541,6 +546,7 @@ struct spi_nor_locking_ops {
+>  struct spi_nor_flash_parameter {
+>  	u64				size;
+>  	u32				page_size;
+> +	u16				n_sectors;
+>  
+>  	struct spi_nor_hwcaps		hwcaps;
+>  	struct spi_nor_read_command	reads[SNOR_CMD_READ_MAX];
+> @@ -573,6 +579,7 @@ struct flash_info;
+>   * @bouncebuf_size:	size of the bounce buffer
+>   * @info:		spi-nor part JDEC MFR id and other info
+>   * @page_size:		the page size of the SPI NOR
+> + * @n_sector:		number of sectors
+>   * @addr_width:		number of address bytes
+>   * @erase_opcode:	the opcode for erasing a sector
+>   * @read_opcode:	the read opcode
+> @@ -599,6 +606,7 @@ struct spi_nor {
+>  	size_t			bouncebuf_size;
+>  	const struct flash_info	*info;
+>  	u32			page_size;
+> +	u16			n_sectors;
+>  	u8			addr_width;
+>  	u8			erase_opcode;
+>  	u8			read_opcode;
+> -- 
+> 2.17.1
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
