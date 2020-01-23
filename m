@@ -4,131 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC239C33CAA
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jan 2020 04:00:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01663C33CAA
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jan 2020 04:24:31 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 77F1021835
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jan 2020 04:00:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C5DDE24125
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jan 2020 04:24:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ocvVehVI";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="UelZK64d"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 77F1021835
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=samsung.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GGOJsYge";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="vEX7Zp6E"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C5DDE24125
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:References:Mime-Version:In-Reply-To:
-	Date:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=q9tRArTc1PA2YoIlAkNMg7vjyoNzL0rRnOvxBDqMyg0=; b=ocvVehVIYG+0hF
-	HF+KbJ6VnYNsW7e+E7z5B9zxo7FG7RmDHIJW0NJRorsufKeLUX1s5VDRGCVguwyeLPBkvNH9f/wIu
-	32eXiuxaRoGsxi+HzemiQGOk+sGOLjXFHuJ1DqGXxTZCK+x9R+04cc8K/CF+M4Pc/j/b5lBKyZF93
-	Ekv5IHCllYWTWBTYWA1/MerxNGU/1S3REiAayjEzgfxGO1QJEs+bMC4qssIhwAuBN9SUjUZiVqeE9
-	lkeMGzuKzMmyJHmvl3lxhC14o0cSLK4VTnZ0oXoD2zwRwBXOnHG0OkVshhkJheEKiH2VEGm303evI
-	j62oZBV9Vz9T8Qd4KZog==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=G7WAwT1Roh31oSOTC96L30fitsduP/zSbnzFryCy5Ok=; b=GGOJsYgeFLLjU4
+	5gxB5dvz8Ckasg3hZTs+/KAVnCbB0hKSCUmGiOk92V46Bm8lP4ntqsO+ae4NrfvPtAoiKmsib1OQd
+	aXyBhMOOH6Ubx9Dha1CV6JbpxPG90MhVDElsZv7nG00OR/0myMInL+SsjvbLq0Bx3KCKp5ilbB5OL
+	D6drkbaL7BAK9uwKSDlAx2zdi0kWiU1KOWKF5OomgPoNbI8ZfGm2aQ7EOFSTjCOYbbfyChZYm/l5/
+	qw1jrFUzIC9RaY74u+OpTwQ76jjMZuoOb5CVKHHA3nQnNjmlwuJ7k8EoIY4pfHEMhxkkpIZHKiYaL
+	7I7PFwJo4tNH0tcBlBgg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iuTf3-000322-BD; Thu, 23 Jan 2020 04:00:05 +0000
-Received: from mailout3.samsung.com ([203.254.224.33])
+	id 1iuU2Q-0001BE-4R; Thu, 23 Jan 2020 04:24:14 +0000
+Received: from lelv0143.ext.ti.com ([198.47.23.248])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iuTey-0002Ut-Ra
- for linux-mtd@lists.infradead.org; Thu, 23 Jan 2020 04:00:03 +0000
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
- by mailout3.samsung.com (KnoxPortal) with ESMTP id
- 20200123035956epoutp039b2e58974bfeef84c91a6cfd27b39f81~saBI1EL_J1453214532epoutp03-
- for <linux-mtd@lists.infradead.org>; Thu, 23 Jan 2020 03:59:56 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com
- 20200123035956epoutp039b2e58974bfeef84c91a6cfd27b39f81~saBI1EL_J1453214532epoutp03-
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
- s=mail20170921; t=1579751996;
- bh=AmlhhdgD+10K3qKdQCDUHS0DBv2h76YyGB0PzR1/770=;
- h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
- b=UelZK64dX5C9NFQMIZxAShx7evaSB0KTveZq1jEh+gUT4cLA/2NKAahYkEyWcioVa
- Lbwt1zVCvyfjt+FGaBycBwCF40lQVGu+RRW8TgYZRw5Ouqfaht9M/isL9eKlqXqXfF
- Z1Q0Rruo12QCMtziQm5DOdMJj0iFLytdylJw6E4s=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
- epcas1p4.samsung.com (KnoxPortal) with ESMTP id
- 20200123035956epcas1p400e408eaaf41d2628b2ee23447b52412~saBIUNij-1966019660epcas1p4C;
- Thu, 23 Jan 2020 03:59:56 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.40.162]) by
- epsnrtp1.localdomain (Postfix) with ESMTP id 4837p319dyzMqYm1; Thu, 23 Jan
- 2020 03:59:55 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
- epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
- AB.3D.51241.B3A192E5; Thu, 23 Jan 2020 12:59:55 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
- epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
- 20200123035954epcas1p26a22f51ee2063f437600afc4cfbfe549~saBG8Dh4o1514415144epcas1p2M;
- Thu, 23 Jan 2020 03:59:54 +0000 (GMT)
-Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
- epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
- 20200123035954epsmtrp17daec1c1ddc598550a31f892aa994a02~saBG7SEeO1464714647epsmtrp1v;
- Thu, 23 Jan 2020 03:59:54 +0000 (GMT)
-X-AuditID: b6c32a39-14bff7000001c829-23-5e291a3b2089
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
- epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
- 6C.1A.06569.A3A192E5; Thu, 23 Jan 2020 12:59:54 +0900 (KST)
-Received: from ara-VirtualBox (unknown [10.88.100.192]) by
- epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
- 20200123035954epsmtip1b6b0a3ddd8cd0c27c67ca7401dd161a0~saBGvr1R50865908659epsmtip1s;
- Thu, 23 Jan 2020 03:59:54 +0000 (GMT)
-Message-ID: <7004715e639d0d7aadd48ebb82cfaec42e032cec.camel@samsung.com>
-Subject: Re: [PATCH v3 2/3] mtd: spi-nor: add 4bit block protection support
-From: Jungseung Lee <js07.lee@samsung.com>
-To: Michael Walle <michael@walle.cc>, Tudor.Ambarus@microchip.com
-Date: Thu, 23 Jan 2020 12:59:54 +0900
-In-Reply-To: <87d1ed5d35cc5cb7addfb60d5dd028c9@walle.cc>
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-X-Brightmail-Tracker: H4sIAAAAAAAAA01SbUhTYRTm3d3urtLqdTM9LKJ5oUhpuTmn18pQkhjpD8EfQYHr4m662he7
- W6R/KptSovZBaE4jrZn0ndqHS8ywSOwL0z9GZV8kWG1qpJX2te0a9u85z/uc85xz3kMR8hOk
- kjLbXJzTxlpoMlp8816iWr1emVioGTojZTp6yyXMr6agiOkuPydlAo+uSZkpXxbz58mkNIs0
- +L2vpAbP/YDE0OnbZ3j5vRUZ+kduiQx3ezxkPrnNsqGEY02cU8XZiuwms604k84tMG4y6tM0
- WrU2g0mnVTbWymXSOXn56s1mS6gLWrWHtbhDVD7L83Tyxg1Ou9vFqUrsvCuT5hwmi0Orcazl
- WSvvthWvLbJb12k1mhR9SLnDUjI6WSN2zCr3BjoHJPvRoKIKURTgVGj7trwKRVNy3IWgbqJC
- IgRfEEy8eCquQlGhYAbBm8bcMA4nfH82KxJEPQguHh8lBNHnUBDcEsYybICm7gOSMFbgXGis
- DZBhTOIkGJnriPCxOBtmhqcjPIGNcGn4YKSOGK+E6coPERyFGTjw+6FUMF4DgYe14nDXMhwD
- v7oUQuoKuBVoIgTJMAlTvhhhsBzwfd0m0Ar42H99vooSxo9UzmMe/OePScOjAPYgeNfmm3/Q
- QTBwmQjXIXAiXL2dLNAJ4J87hQTbxRCcrpYIVjI4VCkXJDR8fuMRCxhg8H2NRMAGuHNykBC2
- FhDBwMC09ChSeReG8f43jHfBuBkRF1Ac5+CtxRyvdej//9wOFLnIpIwu9OBpXh/CFKIXybIy
- VhfKJewevtTah4Ai6FhZc/nKQrnMxJaWcU670em2cHwf0odWfYxQLi2yh+7b5jJq9Sk6nY5J
- TUtP0+voeFl9jqpQjotZF7eb4xyc81+eiIpS7kfqw6N1LeZWW/vOn0PVPWPLU36MbO09EWNW
- Fjwec4+V9TasalC2z3bXNhyUGWu3L2MT59pMCc9vKMap5Jb42Dy7/7TFk3183dQUXDkbV1/N
- Z77Nl6/Gj3UZy06/9858KkW4beJFWUfF+C4wrrrxeonpNq64bFST/aahhPoVp2poMV/CapMI
- J8/+BRGeCkOnAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrJLMWRmVeSWpSXmKPExsWy7bCSnK6VlGacwfRHShab9jexWvyd847J
- YnfTMnaLt6c3sFt8XOJg8f/sB3YHNo+ds+6ye7QcecvqsXlJvcedH0sZPY7f2M7kcWBvC1sA
- WxSXTUpqTmZZapG+XQJXxr0PvSwFv6Qq3m4+ydrAeEG4i5GTQ0LAROLHxV9MXYxcHEICuxkl
- vr6/xgiRkJB4tPMLSxcjB5AtLHH4cDFEzStGiV2XrjOD1PAKeEjM2d3ICmILC3hLzO57ywZi
- swloSdz4vQksLiLgKPHt8lewOLNAgsTk1yfZQWwWAVWJr21PweZwClhINP47xQ6x4BOTxMf2
- PnaIBk2J1u2/2SEO0pF4e6oP7CBeAUGJvzuEIUrkJba/ncM8gVFwFpKOWQhVs5BULWBkXsUo
- mVpQnJueW2xYYJSXWq5XnJhbXJqXrpecn7uJERwBWlo7GE+ciD/EKMDBqMTD62CpESfEmlhW
- XJl7iFGCg1lJhHdBk2qcEG9KYmVValF+fFFpTmrxIUZpDhYlcV75/GORQgLpiSWp2ampBalF
- MFkmDk6pBkbd908XJ3ZGTBDiy3v57DvbbfanxveyfdgDlno7RzAnHlE03uSX33HaY9OZ/njG
- VY6cJoqHgy4si5fYemyLddAKs3UrXm47WGb+x2zrnrBus3J+CwZm3SuLnpZGWySeODK1ou5T
- VEBWTEvr8t3rp/4xT7zX+OBQ42e+Y688Uji0Vx9/r8GYfkmJpTgj0VCLuag4EQB1rPZMfAIA
- AA==
-X-CMS-MailID: 20200123035954epcas1p26a22f51ee2063f437600afc4cfbfe549
-X-Msg-Generator: CA
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200122171949epcas1p207e3296cb8a63135437d2b6380c233e7
-References: <20200113055907.9029-1-js07.lee@samsung.com>
- <CAPP0e=NMzizy=fEZi4nWzo9GAJOpB2Qwv7ReK7HDvrGKUv+VEw@mail.gmail.com>
- <0a2c4e9132f7d4f61fd3ce87c5393c65515b937e.camel@samsung.com>
- <1780435.Q0f6Nmcn8h@localhost.localdomain>
- <CGME20200122171949epcas1p207e3296cb8a63135437d2b6380c233e7@epcas1p2.samsung.com>
- <87d1ed5d35cc5cb7addfb60d5dd028c9@walle.cc>
+ id 1iuU2M-0001Ac-Nn
+ for linux-mtd@lists.infradead.org; Thu, 23 Jan 2020 04:24:12 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 00N4NkAx124300;
+ Wed, 22 Jan 2020 22:23:46 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1579753426;
+ bh=PAIatr9x7pXdyPfuUMV0gvvyQBiahoXgOeeVvuGNxrU=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=vEX7Zp6E82L2UWMCymVA4Qc1CD+/H2suB/NrkZDjz25oCAI+N4dvd9HGER1y5Zp/S
+ M6iF1XKyFPZJtpFRh2xapvwUsYLssaL1zMz73c4AZYR6ZzAievifIFCBlFtR/KY2sL
+ xYAgQhx+/XcDPDCQqMFlS887JanZTfp99CK6FcwY=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 00N4NkUS038544
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Wed, 22 Jan 2020 22:23:46 -0600
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Wed, 22
+ Jan 2020 22:23:45 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Wed, 22 Jan 2020 22:23:45 -0600
+Received: from [172.24.145.136] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 00N4NePl095997;
+ Wed, 22 Jan 2020 22:23:41 -0600
+Subject: Re: [PATCH v1 11/11] mtd: new support oops logger based on pstore/blk
+To: WeiXiong Liao <liaoweixiong@allwinnertech.com>, Kees Cook
+ <keescook@chromium.org>, Anton Vorontsov <anton@enomsg.org>, Colin Cross
+ <ccross@android.com>, Tony Luck <tony.luck@intel.com>, Jonathan Corbet
+ <corbet@lwn.net>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
+ Weinberger <richard@nod.at>, Mauro Carvalho Chehab
+ <mchehab+samsung@kernel.org>, "David S. Miller" <davem@davemloft.net>, Rob
+ Herring <robh@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>
+References: <1579482233-2672-1-git-send-email-liaoweixiong@allwinnertech.com>
+ <1579482233-2672-12-git-send-email-liaoweixiong@allwinnertech.com>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <de3659ad-10bc-f14c-169d-d004c8726316@ti.com>
+Date: Thu, 23 Jan 2020 09:54:09 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
+MIME-Version: 1.0
+In-Reply-To: <1579482233-2672-12-git-send-email-liaoweixiong@allwinnertech.com>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200122_200001_321455_6AC163BC 
-X-CRM114-Status: GOOD (  32.31  )
+X-CRM114-CacheID: sfid-20200122_202410_902201_7FBB2EDE 
+X-CRM114-Status: GOOD (  22.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -140,122 +97,498 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: john.garry@huawei.com, linux-mtd@lists.infradead.org, vigneshr@ti.com,
- js07.lee@gmail.com
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi, Michael
+Hi
 
-2020-01-22 (Wed), 18:14 +0100, Michael Walle:
-> Am 2020-01-22 15:31, schrieb Tudor.Ambarus@microchip.com:
-> > Hi, Jungseung,
-> > 
-> > On Wednesday, January 22, 2020 1:42:00 PM EET Jungseung Lee wrote:
-> > 
-> > cut
-> > 
-> > > > > > +#define SPI_NOR_BP3_SR_BIT6    BIT(18) /*
-> > > > > > +                                        * BP3 is bit 6 of
-> > > > > > status
-> > > > > > register.
-> > > > > > +                                        * Must be used
-> > > > > > with
-> > > > > 
-> > > > > Are we safe to replace SPI_NOR_TB_SR_BIT6 and
-> > > > > SPI_NOR_BP3_SR_BIT6
-> > > > > with a
-> > > > > SPI_NOR_SR_TB_BIT6_BP3_BIT5? Or maybe with a
-> > > > > SPI_NOR_SR_BP3_BIT6_TB_BIT5, how
-> > > > > is more convenient?
-> > > > 
-> > > > Let's think about some flash in which BP0-3 exists in the
-> > > > status
-> > > > register but TB exists in another register.
-> > > > for example, mx25u12835f.
-> 
-> And like the mx25u3232f, but this bit is only OTP programmable! For
-> now,
-> I'd only add support for reading the TB bit to for this kind of
-> flashes,
-> to prevent accidentially program this bit. It would be up to the
-> board
-> manufacturer how to actually set the bit.
-> 
-> Like having a TB_READ_ONLY flag.
-> 
-> Its also some kind of asymmetrical because you can only set it one
-> way,
-> eg. you can OTP the flash to be TB=1. Then you can be sure that the 
-> flash
-> will always be TB=1. But OTOH you cannot be sure that a TB=0 flash
-> will
-> always be a TB=0 flash, because you cannot lock that bit.
-> 
-> Any thoughts?
+On 20/01/20 6:33 am, WeiXiong Liao wrote:
+[...]
+> +static inline int mtdpstore_panic_block_isbad(struct mtdpstore_context *cxt,
+> +		loff_t off)
+> +{
+> +	struct mtd_info *mtd = cxt->mtd;
+> +	u64 blknum = div_u64(off, mtd->erasesize);
+> +
+> +	return test_bit(blknum, cxt->badmap);
+> +}
+> +
+> +static inline void mtdpstore_mark_used(struct mtdpstore_context *cxt,
+> +		loff_t off)
+> +{
+> +	u64 zonenum = div_u64(off, cxt->bo_info.dmesg_size);
+> +
+> +	pr_debug("mark zone %llu used\n", zonenum);
+
+Please replace pr_*() with dev_*() throughout the patch. Device pointer
+should be available via struct mtd_info
+
+Regards
+Vignesh
+
+> +	set_bit(zonenum, cxt->usedmap);
+> +}
+> +
+> +static inline void mtdpstore_mark_unused(struct mtdpstore_context *cxt,
+> +		loff_t off)
+> +{
+> +	u64 zonenum = div_u64(off, cxt->bo_info.dmesg_size);
+> +
+> +	pr_debug("mark zone %llu unused\n", zonenum);
+> +	clear_bit(zonenum, cxt->usedmap);
+> +}
+> +
+> +static inline void mtdpstore_block_mark_unused(struct mtdpstore_context *cxt,
+> +		loff_t off)
+> +{
+> +	u64 zonenum = div_u64(off, cxt->bo_info.dmesg_size);
+> +	u32 zonecnt = cxt->mtd->erasesize / cxt->bo_info.dmesg_size;
+> +
+> +	while (zonecnt > 0) {
+> +		pr_debug("mark zone %llu unused\n", zonenum);
+> +		clear_bit(zonenum, cxt->usedmap);
+> +		zonenum++;
+> +		zonecnt--;
+> +	}
+> +}
+> +
+> +static inline int mtdpstore_is_used(struct mtdpstore_context *cxt, loff_t off)
+> +{
+> +	u64 zonenum = div_u64(off, cxt->bo_info.dmesg_size);
+> +	u64 blknum = div_u64(off, cxt->mtd->erasesize);
+> +
+> +	if (test_bit(blknum, cxt->badmap))
+> +		return true;
+> +	return test_bit(zonenum, cxt->usedmap);
+> +}
+> +
+> +static int mtdpstore_block_is_used(struct mtdpstore_context *cxt,
+> +		loff_t off)
+> +{
+> +	u64 zonenum = div_u64(off, cxt->bo_info.dmesg_size);
+> +	u32 zonecnt = cxt->mtd->erasesize / cxt->bo_info.dmesg_size;
+> +
+> +	while (zonecnt > 0) {
+> +		if (test_bit(zonenum, cxt->usedmap))
+> +			return true;
+> +		zonenum++;
+> +		zonecnt--;
+> +	}
+> +	return false;
+> +}
+> +
+> +static int mtdpstore_is_empty(struct mtdpstore_context *cxt, char *buf,
+> +		size_t size)
+> +{
+> +	struct mtd_info *mtd = cxt->mtd;
+> +	size_t sz;
+> +	int i;
+> +
+> +	sz = min_t(uint32_t, size, mtd->writesize / 4);
+> +	for (i = 0; i < sz; i++) {
+> +		if (buf[i] != (char)0xFF)
+> +			return false;
+> +	}
+> +	return true;
+> +}
+> +
+> +static void mtdpstore_mark_removed(struct mtdpstore_context *cxt, loff_t off)
+> +{
+> +	u64 zonenum = div_u64(off, cxt->bo_info.dmesg_size);
+> +
+> +	pr_debug("mark zone %llu removed\n", zonenum);
+> +	set_bit(zonenum, cxt->rmmap);
+> +}
+> +
+> +static void mtdpstore_block_clear_removed(struct mtdpstore_context *cxt,
+> +		loff_t off)
+> +{
+> +	u64 zonenum = div_u64(off, cxt->bo_info.dmesg_size);
+> +	u32 zonecnt = cxt->mtd->erasesize / cxt->bo_info.dmesg_size;
+> +
+> +	while (zonecnt > 0) {
+> +		clear_bit(zonenum, cxt->rmmap);
+> +		zonenum++;
+> +		zonecnt--;
+> +	}
+> +}
+> +
+> +static int mtdpstore_block_is_removed(struct mtdpstore_context *cxt,
+> +		loff_t off)
+> +{
+> +	u64 zonenum = div_u64(off, cxt->bo_info.dmesg_size);
+> +	u32 zonecnt = cxt->mtd->erasesize / cxt->bo_info.dmesg_size;
+> +
+> +	while (zonecnt > 0) {
+> +		if (test_bit(zonenum, cxt->rmmap))
+> +			return true;
+> +		zonenum++;
+> +		zonecnt--;
+> +	}
+> +	return false;
+> +}
+> +
+> +static int mtdpstore_erase_do(struct mtdpstore_context *cxt, loff_t off)
+> +{
+> +	struct erase_info erase;
+> +	int ret;
+> +
+> +	pr_debug("try to erase off 0x%llx\n", off);
+> +	erase.len = cxt->mtd->erasesize;
+> +	erase.addr = off;
+> +	ret = mtd_erase(cxt->mtd, &erase);
+> +	if (!ret)
+> +		mtdpstore_block_clear_removed(cxt, off);
+> +	else
+> +		pr_err("erase of region [0x%llx, 0x%llx] on \"%s\" failed\n",
+> +		       (unsigned long long)erase.addr,
+> +		       (unsigned long long)erase.len, cxt->bo_info.device);
+> +	return ret;
+> +}
+> +
+> +/*
+> + * called while removing file
+> + *
+> + * Avoiding over erasing, do erase only when all zones are removed or unused.
+> + * Ensure to remove when unregister by reading, erasing and wrtiing back.
+> + */
+> +static ssize_t mtdpstore_erase(size_t size, loff_t off)
+> +{
+> +	struct mtdpstore_context *cxt = &oops_cxt;
+> +
+> +	if (mtdpstore_block_isbad(cxt, off))
+> +		return -EIO;
+> +
+> +	mtdpstore_mark_unused(cxt, off);
+> +
+> +	if (likely(mtdpstore_block_is_used(cxt, off))) {
+> +		mtdpstore_mark_removed(cxt, off);
+> +		return 0;
+> +	}
+> +
+> +	/* all zones are unused, erase it */
+> +	off = ALIGN_DOWN(off, cxt->mtd->erasesize);
+> +	return mtdpstore_erase_do(cxt, off);
+> +}
+> +
+> +/*
+> + * What is securety for mtdpstore?
+> + * As there is no erase for panic case, we should ensure at least one zone
+> + * is writable. Otherwise, panic write will be failed.
+> + * If zone is used, write operation will return -ENEXT, which means that
+> + * pstore/blk will try one by one until get a empty zone. So, it's no need
+> + * to ensure next zone is empty, but at least one.
+> + */
+> +static int mtdpstore_security(struct mtdpstore_context *cxt, loff_t off)
+> +{
+> +	int ret = 0, i;
+> +	u32 zonenum = (u32)div_u64(off, cxt->bo_info.dmesg_size);
+> +	u32 zonecnt = (u32)div_u64(cxt->mtd->size, cxt->bo_info.dmesg_size);
+> +	u32 blkcnt = (u32)div_u64(cxt->mtd->size, cxt->mtd->erasesize);
+> +	u32 erasesize = cxt->mtd->erasesize;
+> +
+> +	for (i = 0; i < zonecnt; i++) {
+> +		u32 num = (zonenum + i) % zonecnt;
+> +
+> +		/* found empty zone */
+> +		if (!test_bit(num, cxt->usedmap))
+> +			return 0;
+> +	}
+> +
+> +	/* If there is no any empty zone, we have no way but to do erase */
+> +	off = ALIGN_DOWN(off, erasesize);
+> +	while (blkcnt--) {
+> +		div64_u64_rem(off + erasesize, cxt->mtd->size, (u64 *)&off);
+> +
+> +		if (mtdpstore_block_isbad(cxt, off))
+> +			continue;
+> +
+> +		ret = mtdpstore_erase_do(cxt, off);
+> +		if (!ret) {
+> +			mtdpstore_block_mark_unused(cxt, off);
+> +			break;
+> +		}
+> +	}
+> +
+> +	if (ret)
+> +		pr_err("all blocks bad!\n");
+> +	pr_debug("end security\n");
+> +	return ret;
+> +}
+> +
+> +static ssize_t mtdpstore_write(const char *buf, size_t size, loff_t off)
+> +{
+> +	struct mtdpstore_context *cxt = &oops_cxt;
+> +	size_t retlen;
+> +	int ret;
+> +
+> +	if (mtdpstore_block_isbad(cxt, off))
+> +		return -ENEXT;
+> +
+> +	/* zone is used, please try next one */
+> +	if (mtdpstore_is_used(cxt, off))
+> +		return -ENEXT;
+> +
+> +	pr_debug("try to write off 0x%llx size %zu\n", off, size);
+> +	ret = mtd_write(cxt->mtd, off, size, &retlen, (u_char *)buf);
+> +	if (ret < 0 || retlen != size) {
+> +		pr_err("write failure at %lld (%zu of %zu written), err %d\n",
+> +				off, retlen, size, ret);
+> +		return -EIO;
+> +	}
+> +	mtdpstore_mark_used(cxt, off);
+> +
+> +	mtdpstore_security(cxt, off);
+> +	return retlen;
+> +}
+> +
+> +/*
+> + * All zones will be read as pstore/blk will read zone one by one when do
+> + * recover.
+> + */
+> +static ssize_t mtdpstore_read(char *buf, size_t size, loff_t off)
+> +{
+> +	struct mtdpstore_context *cxt = &oops_cxt;
+> +	size_t retlen;
+> +	int ret;
+> +
+> +	if (mtdpstore_block_isbad(cxt, off))
+> +		return -ENEXT;
+> +
+> +	pr_debug("try to read off 0x%llx size %zu\n", off, size);
+> +	ret = mtd_read(cxt->mtd, off, size, &retlen, (u_char *)buf);
+> +	if ((ret < 0 && !mtd_is_bitflip(ret)) || size != retlen)  {
+> +		pr_err("read failure at %lld (%zu of %zu read), err %d\n",
+> +				off, retlen, size, ret);
+> +		return -EIO;
+> +	}
+> +
+> +	if (mtdpstore_is_empty(cxt, buf, size))
+> +		mtdpstore_mark_unused(cxt, off);
+> +	else
+> +		mtdpstore_mark_used(cxt, off);
+> +
+> +	mtdpstore_security(cxt, off);
+> +	return retlen;
+> +}
+> +
+> +static ssize_t mtdpstore_panic_write(const char *buf, size_t size, loff_t off)
+> +{
+> +	struct mtdpstore_context *cxt = &oops_cxt;
+> +	size_t retlen;
+> +	int ret;
+> +
+> +	if (mtdpstore_panic_block_isbad(cxt, off))
+> +		return -ENEXT;
+> +
+> +	/* zone is used, please try next one */
+> +	if (mtdpstore_is_used(cxt, off))
+> +		return -ENEXT;
+> +
+> +	ret = mtd_panic_write(cxt->mtd, off, size, &retlen, (u_char *)buf);
+> +	if (ret < 0 || size != retlen) {
+> +		pr_err("panic write failure at %lld (%zu of %zu read), err %d\n",
+> +				off, retlen, size, ret);
+> +		return -EIO;
+> +	}
+> +	mtdpstore_mark_used(cxt, off);
+> +
+> +	return retlen;
+> +}
+> +
+> +static void mtdpstore_notify_add(struct mtd_info *mtd)
+> +{
+> +	int ret;
+> +	struct mtdpstore_context *cxt = &oops_cxt;
+> +	struct blkoops_info *info = &cxt->bo_info;
+> +	unsigned long longcnt;
+> +
+> +	if (!strcmp(mtd->name, info->device))
+> +		cxt->index = mtd->index;
+> +
+> +	if (mtd->index != cxt->index || cxt->index < 0)
+> +		return;
+> +
+> +	pr_debug("found matching MTD device %s\n", mtd->name);
+> +
+> +	if (mtd->size < info->dmesg_size * 2) {
+> +		pr_err("MTD partition %d not big enough\n", mtd->index);
+> +		return;
+> +	}
+> +	if (mtd->erasesize < info->dmesg_size) {
+> +		pr_err("eraseblock size of MTD partition %d too small\n",
+> +				mtd->index);
+> +		return;
+> +	}
+> +	if (unlikely(info->dmesg_size % mtd->writesize)) {
+> +		pr_err("record size %lu KB must align to write size %d KB\n",
+> +				info->dmesg_size / 1024,
+> +				mtd->writesize / 1024);
+> +		return;
+> +	}
+> +	if (unlikely(mtd->size > MTDPSTORE_MAX_MTD_SIZE)) {
+> +		pr_err("mtd%d is too large (limit is %d MiB)\n",
+> +				mtd->index,
+> +				MTDPSTORE_MAX_MTD_SIZE / 1024 / 1024);
+> +		return;
+> +	}
+> +
+> +	longcnt = BITS_TO_LONGS(div_u64(mtd->size, info->dmesg_size));
+> +	cxt->rmmap = kcalloc(longcnt, sizeof(long), GFP_KERNEL);
+> +	cxt->usedmap = kcalloc(longcnt, sizeof(long), GFP_KERNEL);
+> +
+> +	longcnt = BITS_TO_LONGS(div_u64(mtd->size, mtd->erasesize));
+> +	cxt->badmap = kcalloc(longcnt, sizeof(long), GFP_KERNEL);
+> +
+> +	cxt->bo_dev.total_size = mtd->size;
+> +	/* just support dmesg right now */
+> +	cxt->bo_dev.flags = BLKOOPS_DEV_SUPPORT_DMESG;
+> +	cxt->bo_dev.read = mtdpstore_read;
+> +	cxt->bo_dev.write = mtdpstore_write;
+> +	cxt->bo_dev.erase = mtdpstore_erase;
+> +	cxt->bo_dev.panic_write = mtdpstore_panic_write;
+> +
+> +	ret = blkoops_register_device(&cxt->bo_dev);
+> +	if (ret) {
+> +		pr_err("mtd%d register to blkoops failed\n", mtd->index);
+> +		return;
+> +	}
+> +	cxt->mtd = mtd;
+> +	pr_info("Attached to MTD device %d\n", mtd->index);
+> +}
+> +
+> +static int mtdpstore_flush_removed_do(struct mtdpstore_context *cxt,
+> +		loff_t off, size_t size)
+> +{
+> +	struct mtd_info *mtd = cxt->mtd;
+> +	u_char *buf;
+> +	int ret;
+> +	size_t retlen;
+> +	struct erase_info erase;
+> +
+> +	buf = kmalloc(mtd->erasesize, GFP_KERNEL);
+> +	if (!buf)
+> +		return -ENOMEM;
+> +
+> +	/* 1st. read to cache */
+> +	ret = mtd_read(mtd, off, mtd->erasesize, &retlen, buf);
+> +	if (ret || retlen != mtd->erasesize)
+> +		goto free;
+> +
+> +	/* 2nd. erase block */
+> +	erase.len = mtd->erasesize;
+> +	erase.addr = off;
+> +	ret = mtd_erase(mtd, &erase);
+> +	if (ret)
+> +		goto free;
+> +
+> +	/* 3rd. write back */
+> +	while (size) {
+> +		unsigned int zonesize = cxt->bo_info.dmesg_size;
+> +
+> +		/* remove must clear used bit */
+> +		if (mtdpstore_is_used(cxt, off))
+> +			mtd_write(mtd, off, zonesize, &retlen, buf);
+> +
+> +		off += zonesize;
+> +		size -= min_t(unsigned int, zonesize, size);
+> +	}
+> +
+> +free:
+> +	kfree(buf);
+> +	return ret;
+> +}
+> +
+> +static int mtdpstore_flush_removed(struct mtdpstore_context *cxt)
+> +{
+> +	struct mtd_info *mtd = cxt->mtd;
+> +	int ret;
+> +	loff_t off;
+> +	u32 blkcnt = (u32)div_u64(mtd->size, mtd->erasesize);
+> +
+> +	for (off = 0; blkcnt > 0; blkcnt--, off += mtd->erasesize) {
+> +		ret = mtdpstore_block_is_removed(cxt, off);
+> +		if (!ret) {
+> +			off += mtd->erasesize;
+> +			continue;
+> +		}
+> +
+> +		ret = mtdpstore_flush_removed_do(cxt, off, mtd->erasesize);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static void mtdpstore_notify_remove(struct mtd_info *mtd)
+> +{
+> +	struct mtdpstore_context *cxt = &oops_cxt;
+> +
+> +	if (mtd->index != cxt->index || cxt->index < 0)
+> +		return;
+> +
+> +	mtdpstore_flush_removed(cxt);
+> +
+> +	blkoops_unregister_device(&cxt->bo_dev);
+> +	kfree(cxt->badmap);
+> +	kfree(cxt->usedmap);
+> +	kfree(cxt->rmmap);
+> +	cxt->mtd = NULL;
+> +	cxt->index = -1;
+> +}
+> +
+> +static struct mtd_notifier mtdpstore_notifier = {
+> +	.add	= mtdpstore_notify_add,
+> +	.remove	= mtdpstore_notify_remove,
+> +};
+> +
+> +static int __init mtdpstore_init(void)
+> +{
+> +	int ret;
+> +	struct mtdpstore_context *cxt = &oops_cxt;
+> +	struct blkoops_info *info = &cxt->bo_info;
+> +
+> +	ret = blkoops_info(info);
+> +	if (unlikely(ret))
+> +		return ret;
+> +
+> +	if (strlen(info->device) == 0) {
+> +		pr_err("mtd device must be supplied\n");
+> +		return -EINVAL;
+> +	}
+> +	if (!info->dmesg_size) {
+> +		pr_err("no recorder enabled\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* Setup the MTD device to use */
+> +	ret = kstrtoint((char *)info->device, 0, &cxt->index);
+> +	if (ret)
+> +		cxt->index = -1;
+> +
+> +	register_mtd_user(&mtdpstore_notifier);
+> +	return 0;
+> +}
+> +module_init(mtdpstore_init);
+> +
+> +static void __exit mtdpstore_exit(void)
+> +{
+> +	unregister_mtd_user(&mtdpstore_notifier);
+> +}
+> +module_exit(mtdpstore_exit);
+> +
+> +MODULE_LICENSE("GPL");
+> +MODULE_AUTHOR("WeiXiong Liao <liaoweixiong@allwinnertech.com>");
+> +MODULE_DESCRIPTION("MTD Oops/Panic console logger/driver");
 > 
 
-Actually, I didn't get the chance to take a look at some flash that has
-TB bit in configuration register. Currently mainline kernel just care
-flashes that has TB bit in SR and SPI_NOR_HAS_TB can be set only such
-flashes(as you could see in comment). It seems neccessary to add
-another functions and flag for mx25u3232f case.
-Is there any flash that has OTP programmable TB bit in SR?
-
-Tudor and me were saying that there is some flash that has not TB bit
-in *SR* even if it has BP3 bit in SR. So it seems unnecessary to make
-correlated flag like SPI_NOR_SR_TB_BIT6_BP3_BIT5 for convenience.
-
-> -michael
-> 
-> > > > I haven't tested yet, but according to the datasheet, I think
-> > > > this
-> > > > patch can support 4bit block protection for the flash.
-> > > > 
-> > > > In order to embrace the case, how about letting them as It is.
-> > > > Is there any suggestion?
-> > 
-> > Ok, this info should go in the commit message, together with
-> > details 
-> > about
-> > which flashes were tested.
-> > 
-> > I didn't know that the TB bit can be defined in the Configuration 
-> > register.
-> > This means that your suggestion with dedicated macros for BP3 and
-> > TB is 
-> > fine.
-> > 
-> > I looked a bit over your patches, they are in a pretty good shape.
-> > I 
-> > saw
-> > something that can be improved on patch 2/3, but I didn't manage
-> > to 
-> > finish the
-> > review. Your patches are the first on my TODO list, but now I'm a
-> > bit 
-> > busy. I
-> > hope that I'll come with a complete review by the end of the next
-> > week. 
-> > I'm
-> > going to do tests on few flashes too, to make sure that BP0-2 was
-> > not
-> > affected.
-> > 
-> > In the meantime, maybe Michael or John can review/test your
-> > patches, 
-> > they
-> > showed interest in BP0-3 support.
-> > 
-> > Cheers,
-> > ta
-> 
-> 
-Thanks,
-Jungseung Lee
-
+-- 
+Regards
+Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
