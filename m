@@ -2,131 +2,75 @@ Return-Path: <SRS0=9DP4=3M=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43C17C33CAA
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jan 2020 06:22:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6EA6C33CAA
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jan 2020 07:04:02 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0806024673
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jan 2020 06:22:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8667E22522
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jan 2020 07:04:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jjLyySom";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="FYxSkAPX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0806024673
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=samsung.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PmJQBmlr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8667E22522
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=allwinnertech.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:References:Mime-Version:In-Reply-To:
-	Date:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Q5RpDwQkIQzxZOxSSQY03vC7h6AcCT9ZsKVqV7flN2Y=; b=jjLyySomNhpwMv
-	5+npT2wKRPb5PrSjoFRFKf/Aw5CplRexYnmity3UWcJq2/tXKZqNhiqcgxddr5XgzUjz/Z4xEzWdc
-	VRZKNI7yRNRZMqdB5u297UYuvO+l1iMbqgptSmLpy/83rMJ2qFrkvjd8Nt6afIN5D6Eb9hquRZV3E
-	ZPSSy4Um4p842TgWAg04OjZEj68QC+AgssHLSj7+X0iwEft/yWebgTDD4CjoXT8nerIs3/a8ibUi5
-	7BHAuMuC4F0cGA1u9IXDuiBlcnHGpC7PUZHiU/Sgu8ZeWjXY/EcmcdrQYaoBEq/+VRUbhseU0BITM
-	lqM7WycWBMWsdHRDToJg==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=UJxCKlMd26uZXT0sZ2u4njm5d1ePnEBpy8mP7MJB9AM=; b=PmJQBmlrLBEhE/Wlf+XOB8O2q
+	ykfArVEosNiZsm2cfuHRBk1fJD1xlZivZN65GjSP9AOPslzaUl8VhrvzozmdIj9QXdJ4PMrFZx+Mt
+	2rOMMrtVxPydlwa5ghnSlgYUMwe9M5ITlMsz/FPui9csOuevP/ibRwPgr4AHnSoSAjHNqCaJw1tAg
+	rsJwr3QD04UL1EzmUjhMmrX5CoFW3yXsRLunSQaf3p0YlBDYiOYabS9JeY0+PDEKBT0rWUZDyv79a
+	AFnTQYWACVKponi0tMO8K7akTEL9JTwWUCj0pG+ByjzKDmZnEWu2VkZxtMWh94b5Wy93NA/bTlBxD
+	V0MctHMPg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iuVsc-0003n1-ST; Thu, 23 Jan 2020 06:22:14 +0000
-Received: from mailout4.samsung.com ([203.254.224.34])
+	id 1iuWWi-0007JG-V4; Thu, 23 Jan 2020 07:03:40 +0000
+Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iuVsY-0003mH-9Z
- for linux-mtd@lists.infradead.org; Thu, 23 Jan 2020 06:22:13 +0000
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
- by mailout4.samsung.com (KnoxPortal) with ESMTP id
- 20200123062206epoutp04cb43b792932a6393e222691f528e5755~sb9QZBgrW0933809338epoutp04F
- for <linux-mtd@lists.infradead.org>; Thu, 23 Jan 2020 06:22:06 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com
- 20200123062206epoutp04cb43b792932a6393e222691f528e5755~sb9QZBgrW0933809338epoutp04F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
- s=mail20170921; t=1579760526;
- bh=TeyogZiTDqPlBYfk6/zamXkqqugbmmJsc0/sS19OiVw=;
- h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
- b=FYxSkAPXtws9LdQfCP0n1f4aaQgwjEPTBqSqdGl8Xup/AotTLHqDBcLQcrKjIm1H0
- RyNsFoayRDesxCstqhgxvarXu5ryZ9aN9QcBEYPvMMkbssSTNPNopDqkNXx6p8tqOd
- 72Ka/M2ftt+9iDjkupfxcnTU4Ik9LmCwFMwxkXYY=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
- epcas1p4.samsung.com (KnoxPortal) with ESMTP id
- 20200123062205epcas1p4e39d721c03b78d6a7949c49bf69e4f43~sb9QF05Uo0508305083epcas1p4H;
- Thu, 23 Jan 2020 06:22:05 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.40.166]) by
- epsnrtp1.localdomain (Postfix) with ESMTP id 483By43ZG3zMqYm0; Thu, 23 Jan
- 2020 06:22:04 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
- epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
- 06.4C.52419.C8B392E5; Thu, 23 Jan 2020 15:22:04 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
- epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
- 20200123062204epcas1p2862633474fc4617eedc971a2c7c39e97~sb9OlvnWl0430904309epcas1p2O;
- Thu, 23 Jan 2020 06:22:04 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
- epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
- 20200123062204epsmtrp2cdbab75707ca20c04c476673964dffea~sb9OlFCyU2359523595epsmtrp2Z;
- Thu, 23 Jan 2020 06:22:04 +0000 (GMT)
-X-AuditID: b6c32a37-59fff7000001ccc3-30-5e293b8c1729
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
- epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
- B7.24.10238.B8B392E5; Thu, 23 Jan 2020 15:22:03 +0900 (KST)
-Received: from ara-VirtualBox (unknown [10.88.100.192]) by
- epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
- 20200123062203epsmtip22cbb145debcdf79f74f88a30577b028b~sb9OXvtar1161811618epsmtip2_;
- Thu, 23 Jan 2020 06:22:03 +0000 (GMT)
-Message-ID: <0c4e70fcf58c93f9b7375d83b50028df225aed82.camel@samsung.com>
-Subject: Re: [PATCH v3 2/3] mtd: spi-nor: add 4bit block protection support
-From: Jungseung Lee <js07.lee@samsung.com>
-To: Michael Walle <michael@walle.cc>, js07.lee@samsung.com
-Date: Thu, 23 Jan 2020 15:22:03 +0900
-In-Reply-To: <20200122193608.3859-1-michael@walle.cc>
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUhTYRTHeXbd3ZQmt2l1sqh1TWjiy9acu5krI4thRlbUhz7MLu6i5t7Y
- 3cT8UKYmZSZJJGZmRpYpaZLvipUvafkSiiFGGaJkVs7USgST2rwL/fY/h995/uec5wgx8W3c
- R5hotDIWI60ncQ+3+g5pcGDOXqlWVvZ5K7VcNMOjxt8v8amW9EcCyt5bLaDmSiOov/2zgghc
- 01Q4KtDUlF7UfFx8iDS5tRVI0z3SwNO8bM3EY/Az+vAEhtYxFgljjDPpEo3xavLIydiDscpQ
- mTxQvodSkRIjbWDUZGR0TODhRL2jC1KSTOttjlQMzbJk8L5wi8lmZSQJJtaqJhmzTm+Wy8xB
- LG1gbcb4oDiTIUwuk+1WOsiz+oSvg+mY+WdSSuO3Ll4ayo7ORu5CIEKgLXeEl408hGKiEUF+
- cw/ignkEi9/f8blgAUHx5KTb/5Kl9GwX1YpguP8WxgXTCJrG3/CdlIjQwOtLP3hO7UUcgTu5
- dtypccIfRpaerTDeRBg8mviAOTVGMDCUWYOc2o3wg4I/HSt5d0IJ1cvPeZxzANh7ch1dCB3v
- r4flRi+udDs02ItWegBiCIey+08EHB8JncPDLu0F37prXdoHfs604pxmoak8T8AVZyIYLyt1
- QQqYsVdiTjOMkMLT5mAuvQOalu4iztgTZn7n8J0IECK4kiXmEBKmxzJdywIYmLjO57QGaibz
- XbtqQNDf1ovfQJLC1XEK14xTuGpcgrAKtJExs4Z4hpWbFWt/+BlaOUt/VSOqfhvdjgghIteJ
- Ivbs0or5dDJ73tCOQIiR3qKSdD+tWKSjz6cyFlOsxaZn2HakdCw7D/PZEGdyHLnRGitX7lYo
- FFRIqCpUqSA3iQoiJVoxEU9bmSSGMTOW/3U8obtPGnpgKiie2iu9tXObJTW50liS9/jm5dOf
- qHMHqIyPfYeP3Zt6pe5kEwdVncd15aq0ltG5PvN06vyFgEMDJQLfExMnZz3ram0iUl/rP3at
- 4VQUuppxx32gLWJ/T5zv0fDy0BTl7Is8qXUhuF6cZatL2dL1RV2Vk6/d/KtodKzqq/VPFOnG
- JtByf8zC0v8A4/YmUqwDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrBLMWRmVeSWpSXmKPExsWy7bCSvG63tWacwcQrVhZ/57xjsnh08zer
- xe6mZewWb09vYLf4uMTB4v/ZD+wObB47Z91l99i8pN7jzo+ljB59W1Yxehy/sZ3J48DeFrYA
- tigum5TUnMyy1CJ9uwSujJcXm5gLPmdX7Hh1jKmBscuni5GTQ0LAROJ3UxdjFyMXh5DAbkaJ
- nesb2SASEhKPdn5h6WLkALKFJQ4fLgYJCwm8YpSY2q0LYvMKeEicaHzPBGILC3hLzO57C9bK
- JqAlceP3JlYQW0TASmLZ49vMIDazQJrE+r6t7CA2i4CqxIw/h8HinAKmEhv+7mOCuGEno8SZ
- fWdYIRo0JVq3/2aHuEdH4u2pPrB7eAUEJf7uEIYokZfY/nYO8wRGwVlIOmYhVM1CUrWAkXkV
- o2RqQXFuem6xYYFhXmq5XnFibnFpXrpecn7uJkZw+Gtp7mC8vCT+EKMAB6MSD6+DpUacEGti
- WXFl7iFGCQ5mJRHeBU2qcUK8KYmVValF+fFFpTmpxYcYpTlYlMR5n+YdixQSSE8sSc1OTS1I
- LYLJMnFwSjUwJoi+unq3U9rRKLCcU008NT3ywh0phSVJbwL3Htv31kvFa8uDjOmerqH27C8e
- zeNwbJobWqf9r2N7gFXZwgDf4M2zNyQ+7p68Z1vxZSVL9SKT6wsUla9KhUcr9i1u2/ute53q
- rZKjxaE7nrVqvk1f/nyXz52u/6k7TPeYxse/SbiavOX+nuQKJZbijERDLeai4kQA2WoGHHsC
- AAA=
-X-CMS-MailID: 20200123062204epcas1p2862633474fc4617eedc971a2c7c39e97
-X-Msg-Generator: CA
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200122193640epcas1p2e8df0b73bdf6c6389709148702082aef
-References: <20200113055907.9029-2-js07.lee@samsung.com>
- <CGME20200122193640epcas1p2e8df0b73bdf6c6389709148702082aef@epcas1p2.samsung.com>
- <20200122193608.3859-1-michael@walle.cc>
+ id 1iuWWd-0007IC-Uo
+ for linux-mtd@lists.infradead.org; Thu, 23 Jan 2020 07:03:39 +0000
+X-Alimail-AntiSpam: AC=CONTINUE; BC=0.07436282|-1; CH=green;
+ DM=CONTINUE|CONTINUE|true|0.265628-0.0172641-0.717108;
+ DS=CONTINUE|ham_system_inform|0.0500938-0.000935655-0.948971;
+ FP=0|0|0|0|0|-1|-1|-1; HT=e01l07447; MF=liaoweixiong@allwinnertech.com; NM=1;
+ PH=DS; RN=16; RT=16; SR=0; TI=SMTPD_---.GgVejnm_1579763006; 
+Received: from 192.168.43.221(mailfrom:liaoweixiong@allwinnertech.com
+ fp:SMTPD_---.GgVejnm_1579763006)
+ by smtp.aliyun-inc.com(10.147.44.145);
+ Thu, 23 Jan 2020 15:03:27 +0800
+Subject: Re: [PATCH v1 11/11] mtd: new support oops logger based on pstore/blk
+To: Vignesh Raghavendra <vigneshr@ti.com>, Kees Cook <keescook@chromium.org>, 
+ Anton Vorontsov <anton@enomsg.org>, Colin Cross <ccross@android.com>,
+ Tony Luck <tony.luck@intel.com>, Jonathan Corbet <corbet@lwn.net>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Rob Herring <robh@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>
+References: <1579482233-2672-1-git-send-email-liaoweixiong@allwinnertech.com>
+ <1579482233-2672-12-git-send-email-liaoweixiong@allwinnertech.com>
+ <de3659ad-10bc-f14c-169d-d004c8726316@ti.com>
+From: liaoweixiong <liaoweixiong@allwinnertech.com>
+Message-ID: <bee57965-6160-0979-68ee-d3841a585df9@allwinnertech.com>
+Date: Thu, 23 Jan 2020 15:03:25 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <de3659ad-10bc-f14c-169d-d004c8726316@ti.com>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200122_222210_860712_6681444C 
-X-CRM114-Status: GOOD (  34.79  )
+X-CRM114-CacheID: sfid-20200122_230336_401561_53268B7B 
+X-CRM114-Status: GOOD (  18.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -138,424 +82,253 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: tudor.ambarus@microchip.com, linux-mtd@lists.infradead.org, vigneshr@ti.com,
- js07.lee@gmail.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi, Michael
-
-2020-01-22 (Wed), 20:36 +0100, Michael Walle:
-> Hi,
-> 
-> > Currently, we are supporting block protection only for
-> > flash chips with 3 block protection bits in the SR register.
-> > This patch enables block protection support for some flash with
-> > 4 block protection bits(bp0-3).
-> > 
-> > Signed-off-by: Jungseung Lee <js07.lee@samsung.com>
-> > ---
-> > v3 :
-> >   Fix wrong ofs calculation on v2 patch
-> > v2 :
-> >   Add sample table portion about 4bit block protection on the
-> > comment
-> >   Trivial coding style change
-> > 
-> >  drivers/mtd/spi-nor/spi-nor.c | 127 +++++++++++++++++++++++++++++-
-> > ----
-> >  include/linux/mtd/spi-nor.h   |   8 +++
-> >  2 files changed, 119 insertions(+), 16 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-
-> > nor/spi-nor.c
-> > index e3da6a8654a8..7e8af6c4fdfa 100644
-> > --- a/drivers/mtd/spi-nor/spi-nor.c
-> > +++ b/drivers/mtd/spi-nor/spi-nor.c
-> > @@ -238,6 +238,14 @@ struct flash_info {
-> >  					 * status register. Must be
-> > used with
-> >  					 * SPI_NOR_HAS_TB.
-> >  					 */
-> > +#define SPI_NOR_HAS_BP3		BIT(17)	/*
-> > +					 * Flash SR has 4 bit fields
-> > (BP0-3)
-> > +					 * for block protection.
-> > +					 */
-> > +#define SPI_NOR_BP3_SR_BIT6	BIT(18)	/*
-> > +					 * BP3 is bit 6 of status
-> > register.
-> > +					 * Must be used with
-> > SPI_NOR_HAS_BP3.
-> > +					 */
-> >  
-> >  	/* Part specific fixup hooks. */
-> >  	const struct spi_nor_fixups *fixups;
-> > @@ -1767,23 +1775,47 @@ static void stm_get_locked_range(struct
-> > spi_nor *nor, u8 sr, loff_t *ofs,
-> >  	struct mtd_info *mtd = &nor->mtd;
-> >  	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
-> >  	u8 tb_mask = SR_TB_BIT5;
-> > -	int pow;
-> > +	u8 bp;
-> > +	int pow = 0;
-> >  
-> >  	if (nor->flags & SNOR_F_HAS_SR_TB_BIT6)
-> >  		tb_mask = SR_TB_BIT6;
-> >  
-> > -	if (!(sr & mask)) {
-> > -		/* No protection */
-> > -		*ofs = 0;
-> > -		*len = 0;
-> > +	if (nor->flags & SNOR_F_HAS_SR_BP3) {
-> > +		u8 tmp;
-> > +
-> > +		if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6)
-> > +			tmp = sr & (mask | SR_BP3_BIT6);
-> > +		else
-> > +			tmp = sr & (mask | SR_BP3_BIT5);
-> > +
-> > +		if (tmp & SR_BP3_BIT6)
-> > +			tmp = (tmp & ~BIT(6)) | BIT(5);
-> > +
-> > +		bp = tmp >> SR_BP_SHIFT;
-> > +		if (!bp) {
-> > +			*ofs = 0;
-> > +			*len = 0;
-> > +			return;
-> > +		}
-> > +		if (bp <= ilog2(nor->n_sectors))
-> > +			pow = ilog2(nor->n_sectors) + 1 - bp;
-> >  	} else {
-> > -		pow = ((sr & mask) ^ mask) >> SR_BP_SHIFT;
-> > -		*len = mtd->size >> pow;
-> > -		if (nor->flags & SNOR_F_HAS_SR_TB && sr & tb_mask)
-> > +		bp = (sr & mask) >> SR_BP_SHIFT;
-> > +		if (!bp) {
-> >  			*ofs = 0;
-> > -		else
-> > -			*ofs = mtd->size - *len;
-> > +			*len = 0;
-> > +			return;
-> > +		}
-> > +		pow = bp ^ (mask >> SR_BP_SHIFT);
-> >  	}
-> > +
-> > +	*len = mtd->size >> pow;
-> > +
-> > +	if (nor->flags & SNOR_F_HAS_SR_TB && sr & tb_mask)
-> > +		*ofs = 0;
-> > +	else
-> > +		*ofs = mtd->size - *len;
-> >  }
-> >  
-> >  /*
-> > @@ -1823,7 +1855,7 @@ static int stm_is_unlocked_sr(struct spi_nor
-> > *nor, loff_t ofs, uint64_t len,
-> >  
-> >  /*
-> >   * Lock a region of the flash. Compatible with ST Micro and
-> > similar flash.
-> > - * Supports the block protection bits BP{0,1,2} in the status
-> > register
-> > + * Supports the block protection bits BP{0,1,2,3} in the status
-> > register
-> >   * (SR). Does not support these features found in newer SR
-> > bitfields:
-> >   *   - SEC: sector/block protect - only handle SEC=0 (block
-> > protect)
-> >   *   - CMP: complement protect - only support CMP=0 (range is not
-> > complemented)
-> > @@ -1831,7 +1863,7 @@ static int stm_is_unlocked_sr(struct spi_nor
-> > *nor, loff_t ofs, uint64_t len,
-> >   * Support for the following is provided conditionally for some
-> > flash:
-> >   *   - TB: top/bottom protect
-> >   *
-> > - * Sample table portion for 8MB flash (Winbond w25q64fw):
-> > + * Sample table portion for 8MB flash (Winbond w25q64fw / BP0-2):
-> >   *
-> >   *   SEC  |  TB   |  BP2  |  BP1  |  BP0  |  Prot Length  |
-> > Protected Portion
-> >   *  ------------------------------------------------------------
-> > --------------
-> > @@ -1851,6 +1883,32 @@ static int stm_is_unlocked_sr(struct spi_nor
-> > *nor, loff_t ofs, uint64_t len,
-> >   *    0   |   1   |   1   |   0   |   1   |  2 MB         | Lower
-> > 1/4
-> >   *    0   |   1   |   1   |   1   |   0   |  4 MB         | Lower
-> > 1/2
-> >   *
-> > + * Sample table portion for 64MB flash (Micron n25q512ax3 / BP0-
-> > 3):
-> > + *
-> > + *   TB   |  BP3  |  BP2  |  BP1  |  BP0  |  Prot Length  |
-> > Protected Portion
-> > + *  ------------------------------------------------------------
-> > --------------
-> > + *    0   |   0   |   0   |   0   |   0   |  NONE         | NONE
-> > + *    0   |   0   |   0   |   0   |   1   |   64 KB       | Upper
-> > 1/1024
-> > + *    0   |   0   |   0   |   1   |   0   |  128 KB       | Upper
-> > 1/512
-> > + *    0   |   0   |   0   |   1   |   1   |  256 KB       | Upper
-> > 1/256
-> > + *   ...
-> > + *    0   |   1   |   0   |   0   |   1   |  16 MB        | Upper
-> > 1/4
-> > + *    0   |   1   |   0   |   1   |   0   |  32 MB        | Upper
-> > 1/2
-> > + *    0   |   1   |   0   |   1   |   1   |  64 MB        | ALL
-> > + *    0   |   1   |   1   |   0   |   0   |  64 MB        | ALL
-> > + *   ...
-> > + *  ------|-------|-------|-------|-------|---------------|-------
-> > ------------
-> > + *    1   |   0   |   0   |   0   |   0   |   NONE        | NONE
-> > + *    1   |   0   |   0   |   0   |   1   |   64 KB       | Lower
-> > 1/1024
-> > + *    1   |   0   |   0   |   1   |   0   |  128 KB       | Lower
-> > 1/512
-> > + *    1   |   0   |   0   |   1   |   1   |  256 KB       | Lower
-> > 1/256
-> > + *   ...
-> > + *    1   |   1   |   0   |   0   |   1   |  16 MB        | Lower
-> > 1/4
-> > + *    1   |   1   |   0   |   1   |   0   |  32 MB        | Lower
-> > 1/2
-> > + *    1   |   1   |   0   |   1   |   1   |  64 MB        | ALL
-> > + *    1   |   1   |   1   |   0   |   0   |  64 MB        | ALL
-> > + *   ...
-> > + *
-> >   * Returns negative on errors, 0 on success.
-> >   */
-> >  static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
-> > @@ -1898,6 +1956,12 @@ static int stm_lock(struct spi_nor *nor,
-> > loff_t ofs, uint64_t len)
-> >  	if (nor->flags & SNOR_F_HAS_SR_TB_BIT6)
-> >  		tb_mask = SR_TB_BIT6;
-> >  
-> > +	if (nor->flags & SNOR_F_HAS_SR_BP3) {
-> > +		if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6)
-> > +			mask = mask | SR_BP3_BIT6;
-> > +		else
-> > +			mask = mask | SR_BP3_BIT5;
-> > +	}
-> >  	/*
-> >  	 * Need smallest pow such that:
-> >  	 *
-> > @@ -1908,7 +1972,17 @@ static int stm_lock(struct spi_nor *nor,
-> > loff_t ofs, uint64_t len)
-> >  	 *   pow = ceil(log2(size / len)) = log2(size) -
-> > floor(log2(len))
-> >  	 */
-> >  	pow = ilog2(mtd->size) - ilog2(lock_len);
-> > -	val = mask - (pow << SR_BP_SHIFT);
-> > +
-> > +	if (nor->flags & SNOR_F_HAS_SR_BP3) {
-> > +		val = ilog2(nor->n_sectors) + 1 - pow;
-> 
-> Why do you use a new calculation here? As far as I can see, the
-> method is
-> the same except that is has one bit more. That also raises the
-> question why
-> n_sectors is now needed?
-> 
-> Can't we just initialize the mask with
-> 
-> mask = SR_BP2 | SR_BP1 | SR_BP0;
-> if (nor->flags & SNOR_F_HAS_SR_BP3)
->     mask |= SR_BP3_BIT5;
-> 
-> do the calculation and checks and then move the SR_BP3_BIT5 to
-> SR_BP3_BIT6
-> if SNOR_F_HAS_SR_BP3_BIT6 is set.
-> 
-
-For most of flashes that supporting BP0-2, the smallest protected
-portion is fixed as 1/64 and it can be properly handled by existing
-calculation. (Actually it's not fully generic, see flashes like
-w25q40bw or m25p80. Of course, it doesn't have SPI_NOR_HAS_LOCK flag
-even though it has BP0-2 bit in SR)
-
-We need new calculation method for 4bit block protection and for making
-it more generic, I choose n_sectors.
-
-On all the flashes I checked, n_sectors is proper value for getting
-block protected portion.
-
-		density	portion	n_sectors
-W25M512JV	64MB	1/512	512
-N25Q128A	16MB	1/256	256	
-N25Q512A	64MB	1/1024	1024
-MT25QL02GCBB	256MB	1/4096	4096
-
-> > +		val = val << SR_BP_SHIFT;
-> > +
-> > +		if (val & BIT(5) && mask & SR_BP3_BIT6)
-> > +			val = (val & ~BIT(5)) | BIT(6);
-> > +	} else {
-> > +		val = mask - (pow << SR_BP_SHIFT);
-> > +	}
-> > +
-> >  	if (val & ~mask)
-> >  		return -EINVAL;
-> >  	/* Don't "lock" with no region! */
-> > @@ -1983,6 +2057,13 @@ static int stm_unlock(struct spi_nor *nor,
-> > loff_t ofs, uint64_t len)
-> >  
-> >  	if (nor->flags & SNOR_F_HAS_SR_TB_BIT6)
-> >  		tb_mask = SR_TB_BIT6;
-> > +
-> > +	if (nor->flags & SNOR_F_HAS_SR_BP3) {
-> > +		if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6)
-> > +			mask = mask | SR_BP3_BIT6;
-> > +		else
-> > +			mask = mask | SR_BP3_BIT5;
-> > +	}
-> >  	/*
-> >  	 * Need largest pow such that:
-> >  	 *
-> > @@ -1995,13 +2076,20 @@ static int stm_unlock(struct spi_nor *nor,
-> > loff_t ofs, uint64_t len)
-> >  	pow = ilog2(mtd->size) - order_base_2(lock_len);
-> >  	if (lock_len == 0) {
-> >  		val = 0; /* fully unlocked */
-> > +	} else if (nor->flags & SNOR_F_HAS_SR_BP3) {
-> > +		val = ilog2(nor->n_sectors) + 1 - pow;
-> > +		val = val << SR_BP_SHIFT;
-> > +
-> > +		if (val & BIT(5) && mask & SR_BP3_BIT6)
-> > +			val = (val & ~BIT(5)) | BIT(6);
-> >  	} else {
-> >  		val = mask - (pow << SR_BP_SHIFT);
-> > -		/* Some power-of-two sizes are not supported */
-> > -		if (val & ~mask)
-> > -			return -EINVAL;
-> >  	}
-> >  
-> > +	/* Some power-of-two sizes are not supported */
-> > +	if (val & ~mask)
-> > +		return -EINVAL;
-> > +
-> >  	status_new = (status_old & ~mask & ~tb_mask) | val;
-> >  
-> >  	/* Don't protect status register if we're fully unlocked */
-> > @@ -4736,6 +4824,7 @@ static void spi_nor_info_init_params(struct
-> > spi_nor *nor)
-> >  	/* Set SPI NOR sizes. */
-> >  	params->size = (u64)info->sector_size * info->n_sectors;
-> >  	params->page_size = info->page_size;
-> > +	params->n_sectors = info->n_sectors;
-> >  
-> >  	if (!(info->flags & SPI_NOR_NO_FR)) {
-> >  		/* Default to Fast Read for DT and non-DT platform
-> > devices. */
-> > @@ -5192,6 +5281,11 @@ int spi_nor_scan(struct spi_nor *nor, const
-> > char *name,
-> >  		nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
-> >  	if (info->flags & USE_CLSR)
-> >  		nor->flags |= SNOR_F_USE_CLSR;
-> > +	if (info->flags & SPI_NOR_HAS_BP3) {
-> > +		nor->flags |= SNOR_F_HAS_SR_BP3;
-> > +		if (info->flags & SPI_NOR_BP3_SR_BIT6)
-> > +			nor->flags |= SNOR_F_HAS_SR_BP3_BIT6;
-> > +	}
-> >  
-> >  	if (info->flags & SPI_NOR_NO_ERASE)
-> >  		mtd->flags |= MTD_NO_ERASE;
-> > @@ -5199,6 +5293,7 @@ int spi_nor_scan(struct spi_nor *nor, const
-> > char *name,
-> >  	mtd->dev.parent = dev;
-> >  	nor->page_size = params->page_size;
-> >  	mtd->writebufsize = nor->page_size;
-> > +	nor->n_sectors = params->n_sectors;
-> >  
-> >  	if (of_property_read_bool(np, "broken-flash-reset"))
-> >  		nor->flags |= SNOR_F_BROKEN_RESET;
-> > diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-
-> > nor.h
-> > index 541c06d042e8..92d550501daf 100644
-> > --- a/include/linux/mtd/spi-nor.h
-> > +++ b/include/linux/mtd/spi-nor.h
-> > @@ -129,7 +129,9 @@
-> >  #define SR_BP1			BIT(3)	/* Block protect 1
-> > */
-> >  #define SR_BP2			BIT(4)	/* Block protect 2
-> > */
-> >  #define SR_TB_BIT5		BIT(5)	/* Top/Bottom protect */
-> > +#define SR_BP3_BIT5		BIT(5)	/* Block protect 3
-> > */
-> 
-> maybe just name it SR_BP3? would also be more consistent with the
-> proposal
-> above.
-> 
-> >  #define SR_TB_BIT6		BIT(6)	/* Top/Bottom protect */
-> > +#define SR_BP3_BIT6		BIT(6)	/* Block protect 3
-> > */
-> >  #define SR_SRWD			BIT(7)	/* SR write protect
-> > */
-> >  /* Spansion/Cypress specific status bits */
-> >  #define SR_E_ERR		BIT(5)
-> > @@ -248,6 +250,8 @@ enum spi_nor_option_flags {
-> >  	SNOR_F_HAS_16BIT_SR	= BIT(9),
-> >  	SNOR_F_NO_READ_CR	= BIT(10),
-> >  	SNOR_F_HAS_SR_TB_BIT6	= BIT(11),
-> > +	SNOR_F_HAS_SR_BP3	= BIT(12),
-> > +	SNOR_F_HAS_SR_BP3_BIT6	= BIT(13),
-> >  
-> >  };
-> >  
-> > @@ -519,6 +523,7 @@ struct spi_nor_locking_ops {
-> >   *
-> >   * @size:		the flash memory density in bytes.
-> >   * @page_size:		the page size of the SPI NOR flash
-> > memory.
-> > + * @n_sectors:		number of sectors
-> >   * @hwcaps:		describes the read and page program
-> > hardware
-> >   *			capabilities.
-> >   * @reads:		read capabilities ordered by priority: the
-> > higher index
-> > @@ -541,6 +546,7 @@ struct spi_nor_locking_ops {
-> >  struct spi_nor_flash_parameter {
-> >  	u64				size;
-> >  	u32				page_size;
-> > +	u16				n_sectors;
-> >  
-> >  	struct spi_nor_hwcaps		hwcaps;
-> >  	struct spi_nor_read_command	reads[SNOR_CMD_READ_MAX];
-> > @@ -573,6 +579,7 @@ struct flash_info;
-> >   * @bouncebuf_size:	size of the bounce buffer
-> >   * @info:		spi-nor part JDEC MFR id and other info
-> >   * @page_size:		the page size of the SPI NOR
-> > + * @n_sector:		number of sectors
-> >   * @addr_width:		number of address bytes
-> >   * @erase_opcode:	the opcode for erasing a sector
-> >   * @read_opcode:	the read opcode
-> > @@ -599,6 +606,7 @@ struct spi_nor {
-> >  	size_t			bouncebuf_size;
-> >  	const struct flash_info	*info;
-> >  	u32			page_size;
-> > +	u16			n_sectors;
-> >  	u8			addr_width;
-> >  	u8			erase_opcode;
-> >  	u8			read_opcode;
-> > -- 
-> > 2.17.1
-> > 
-> > 
-> > ______________________________________________________
-> > Linux MTD discussion mailing list
-> > 
-https://protect2.fireeye.com/url?k=06b6dd5d-5b7d5a63-06b75612-0cc47a31309a-83164929001f7741&u=http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> > 
-> 
-> 
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+aGkgVmlnbmVzaCBSYWdoYXZlbmRyYSwKCk9uIDIwMjAvMS8yMyDkuIvljYgxMjoyNCwgVmlnbmVz
+aCBSYWdoYXZlbmRyYSB3cm90ZToKPiBIaQo+IAo+IE9uIDIwLzAxLzIwIDY6MzMgYW0sIFdlaVhp
+b25nIExpYW8gd3JvdGU6Cj4gWy4uLl0KPj4gK3N0YXRpYyBpbmxpbmUgaW50IG10ZHBzdG9yZV9w
+YW5pY19ibG9ja19pc2JhZChzdHJ1Y3QgbXRkcHN0b3JlX2NvbnRleHQgKmN4dCwKPj4gKwkJbG9m
+Zl90IG9mZikKPj4gK3sKPj4gKwlzdHJ1Y3QgbXRkX2luZm8gKm10ZCA9IGN4dC0+bXRkOwo+PiAr
+CXU2NCBibGtudW0gPSBkaXZfdTY0KG9mZiwgbXRkLT5lcmFzZXNpemUpOwo+PiArCj4+ICsJcmV0
+dXJuIHRlc3RfYml0KGJsa251bSwgY3h0LT5iYWRtYXApOwo+PiArfQo+PiArCj4+ICtzdGF0aWMg
+aW5saW5lIHZvaWQgbXRkcHN0b3JlX21hcmtfdXNlZChzdHJ1Y3QgbXRkcHN0b3JlX2NvbnRleHQg
+KmN4dCwKPj4gKwkJbG9mZl90IG9mZikKPj4gK3sKPj4gKwl1NjQgem9uZW51bSA9IGRpdl91NjQo
+b2ZmLCBjeHQtPmJvX2luZm8uZG1lc2dfc2l6ZSk7Cj4+ICsKPj4gKwlwcl9kZWJ1ZygibWFyayB6
+b25lICVsbHUgdXNlZFxuIiwgem9uZW51bSk7Cj4gCj4gUGxlYXNlIHJlcGxhY2UgcHJfKigpIHdp
+dGggZGV2XyooKSB0aHJvdWdob3V0IHRoZSBwYXRjaC4gRGV2aWNlIHBvaW50ZXIKPiBzaG91bGQg
+YmUgYXZhaWxhYmxlIHZpYSBzdHJ1Y3QgbXRkX2luZm8KPiAKCk9LLiBJIHdpbGwgZml4IGl0IGxh
+dGVyLiBUaGFuayB5b3UuCgo+IFJlZ2FyZHMKPiBWaWduZXNoCj4gCj4+ICsJc2V0X2JpdCh6b25l
+bnVtLCBjeHQtPnVzZWRtYXApOwo+PiArfQo+PiArCj4+ICtzdGF0aWMgaW5saW5lIHZvaWQgbXRk
+cHN0b3JlX21hcmtfdW51c2VkKHN0cnVjdCBtdGRwc3RvcmVfY29udGV4dCAqY3h0LAo+PiArCQls
+b2ZmX3Qgb2ZmKQo+PiArewo+PiArCXU2NCB6b25lbnVtID0gZGl2X3U2NChvZmYsIGN4dC0+Ym9f
+aW5mby5kbWVzZ19zaXplKTsKPj4gKwo+PiArCXByX2RlYnVnKCJtYXJrIHpvbmUgJWxsdSB1bnVz
+ZWRcbiIsIHpvbmVudW0pOwo+PiArCWNsZWFyX2JpdCh6b25lbnVtLCBjeHQtPnVzZWRtYXApOwo+
+PiArfQo+PiArCj4+ICtzdGF0aWMgaW5saW5lIHZvaWQgbXRkcHN0b3JlX2Jsb2NrX21hcmtfdW51
+c2VkKHN0cnVjdCBtdGRwc3RvcmVfY29udGV4dCAqY3h0LAo+PiArCQlsb2ZmX3Qgb2ZmKQo+PiAr
+ewo+PiArCXU2NCB6b25lbnVtID0gZGl2X3U2NChvZmYsIGN4dC0+Ym9faW5mby5kbWVzZ19zaXpl
+KTsKPj4gKwl1MzIgem9uZWNudCA9IGN4dC0+bXRkLT5lcmFzZXNpemUgLyBjeHQtPmJvX2luZm8u
+ZG1lc2dfc2l6ZTsKPj4gKwo+PiArCXdoaWxlICh6b25lY250ID4gMCkgewo+PiArCQlwcl9kZWJ1
+ZygibWFyayB6b25lICVsbHUgdW51c2VkXG4iLCB6b25lbnVtKTsKPj4gKwkJY2xlYXJfYml0KHpv
+bmVudW0sIGN4dC0+dXNlZG1hcCk7Cj4+ICsJCXpvbmVudW0rKzsKPj4gKwkJem9uZWNudC0tOwo+
+PiArCX0KPj4gK30KPj4gKwo+PiArc3RhdGljIGlubGluZSBpbnQgbXRkcHN0b3JlX2lzX3VzZWQo
+c3RydWN0IG10ZHBzdG9yZV9jb250ZXh0ICpjeHQsIGxvZmZfdCBvZmYpCj4+ICt7Cj4+ICsJdTY0
+IHpvbmVudW0gPSBkaXZfdTY0KG9mZiwgY3h0LT5ib19pbmZvLmRtZXNnX3NpemUpOwo+PiArCXU2
+NCBibGtudW0gPSBkaXZfdTY0KG9mZiwgY3h0LT5tdGQtPmVyYXNlc2l6ZSk7Cj4+ICsKPj4gKwlp
+ZiAodGVzdF9iaXQoYmxrbnVtLCBjeHQtPmJhZG1hcCkpCj4+ICsJCXJldHVybiB0cnVlOwo+PiAr
+CXJldHVybiB0ZXN0X2JpdCh6b25lbnVtLCBjeHQtPnVzZWRtYXApOwo+PiArfQo+PiArCj4+ICtz
+dGF0aWMgaW50IG10ZHBzdG9yZV9ibG9ja19pc191c2VkKHN0cnVjdCBtdGRwc3RvcmVfY29udGV4
+dCAqY3h0LAo+PiArCQlsb2ZmX3Qgb2ZmKQo+PiArewo+PiArCXU2NCB6b25lbnVtID0gZGl2X3U2
+NChvZmYsIGN4dC0+Ym9faW5mby5kbWVzZ19zaXplKTsKPj4gKwl1MzIgem9uZWNudCA9IGN4dC0+
+bXRkLT5lcmFzZXNpemUgLyBjeHQtPmJvX2luZm8uZG1lc2dfc2l6ZTsKPj4gKwo+PiArCXdoaWxl
+ICh6b25lY250ID4gMCkgewo+PiArCQlpZiAodGVzdF9iaXQoem9uZW51bSwgY3h0LT51c2VkbWFw
+KSkKPj4gKwkJCXJldHVybiB0cnVlOwo+PiArCQl6b25lbnVtKys7Cj4+ICsJCXpvbmVjbnQtLTsK
+Pj4gKwl9Cj4+ICsJcmV0dXJuIGZhbHNlOwo+PiArfQo+PiArCj4+ICtzdGF0aWMgaW50IG10ZHBz
+dG9yZV9pc19lbXB0eShzdHJ1Y3QgbXRkcHN0b3JlX2NvbnRleHQgKmN4dCwgY2hhciAqYnVmLAo+
+PiArCQlzaXplX3Qgc2l6ZSkKPj4gK3sKPj4gKwlzdHJ1Y3QgbXRkX2luZm8gKm10ZCA9IGN4dC0+
+bXRkOwo+PiArCXNpemVfdCBzejsKPj4gKwlpbnQgaTsKPj4gKwo+PiArCXN6ID0gbWluX3QodWlu
+dDMyX3QsIHNpemUsIG10ZC0+d3JpdGVzaXplIC8gNCk7Cj4+ICsJZm9yIChpID0gMDsgaSA8IHN6
+OyBpKyspIHsKPj4gKwkJaWYgKGJ1ZltpXSAhPSAoY2hhcikweEZGKQo+PiArCQkJcmV0dXJuIGZh
+bHNlOwo+PiArCX0KPj4gKwlyZXR1cm4gdHJ1ZTsKPj4gK30KPj4gKwo+PiArc3RhdGljIHZvaWQg
+bXRkcHN0b3JlX21hcmtfcmVtb3ZlZChzdHJ1Y3QgbXRkcHN0b3JlX2NvbnRleHQgKmN4dCwgbG9m
+Zl90IG9mZikKPj4gK3sKPj4gKwl1NjQgem9uZW51bSA9IGRpdl91NjQob2ZmLCBjeHQtPmJvX2lu
+Zm8uZG1lc2dfc2l6ZSk7Cj4+ICsKPj4gKwlwcl9kZWJ1ZygibWFyayB6b25lICVsbHUgcmVtb3Zl
+ZFxuIiwgem9uZW51bSk7Cj4+ICsJc2V0X2JpdCh6b25lbnVtLCBjeHQtPnJtbWFwKTsKPj4gK30K
+Pj4gKwo+PiArc3RhdGljIHZvaWQgbXRkcHN0b3JlX2Jsb2NrX2NsZWFyX3JlbW92ZWQoc3RydWN0
+IG10ZHBzdG9yZV9jb250ZXh0ICpjeHQsCj4+ICsJCWxvZmZfdCBvZmYpCj4+ICt7Cj4+ICsJdTY0
+IHpvbmVudW0gPSBkaXZfdTY0KG9mZiwgY3h0LT5ib19pbmZvLmRtZXNnX3NpemUpOwo+PiArCXUz
+MiB6b25lY250ID0gY3h0LT5tdGQtPmVyYXNlc2l6ZSAvIGN4dC0+Ym9faW5mby5kbWVzZ19zaXpl
+Owo+PiArCj4+ICsJd2hpbGUgKHpvbmVjbnQgPiAwKSB7Cj4+ICsJCWNsZWFyX2JpdCh6b25lbnVt
+LCBjeHQtPnJtbWFwKTsKPj4gKwkJem9uZW51bSsrOwo+PiArCQl6b25lY250LS07Cj4+ICsJfQo+
+PiArfQo+PiArCj4+ICtzdGF0aWMgaW50IG10ZHBzdG9yZV9ibG9ja19pc19yZW1vdmVkKHN0cnVj
+dCBtdGRwc3RvcmVfY29udGV4dCAqY3h0LAo+PiArCQlsb2ZmX3Qgb2ZmKQo+PiArewo+PiArCXU2
+NCB6b25lbnVtID0gZGl2X3U2NChvZmYsIGN4dC0+Ym9faW5mby5kbWVzZ19zaXplKTsKPj4gKwl1
+MzIgem9uZWNudCA9IGN4dC0+bXRkLT5lcmFzZXNpemUgLyBjeHQtPmJvX2luZm8uZG1lc2dfc2l6
+ZTsKPj4gKwo+PiArCXdoaWxlICh6b25lY250ID4gMCkgewo+PiArCQlpZiAodGVzdF9iaXQoem9u
+ZW51bSwgY3h0LT5ybW1hcCkpCj4+ICsJCQlyZXR1cm4gdHJ1ZTsKPj4gKwkJem9uZW51bSsrOwo+
+PiArCQl6b25lY250LS07Cj4+ICsJfQo+PiArCXJldHVybiBmYWxzZTsKPj4gK30KPj4gKwo+PiAr
+c3RhdGljIGludCBtdGRwc3RvcmVfZXJhc2VfZG8oc3RydWN0IG10ZHBzdG9yZV9jb250ZXh0ICpj
+eHQsIGxvZmZfdCBvZmYpCj4+ICt7Cj4+ICsJc3RydWN0IGVyYXNlX2luZm8gZXJhc2U7Cj4+ICsJ
+aW50IHJldDsKPj4gKwo+PiArCXByX2RlYnVnKCJ0cnkgdG8gZXJhc2Ugb2ZmIDB4JWxseFxuIiwg
+b2ZmKTsKPj4gKwllcmFzZS5sZW4gPSBjeHQtPm10ZC0+ZXJhc2VzaXplOwo+PiArCWVyYXNlLmFk
+ZHIgPSBvZmY7Cj4+ICsJcmV0ID0gbXRkX2VyYXNlKGN4dC0+bXRkLCAmZXJhc2UpOwo+PiArCWlm
+ICghcmV0KQo+PiArCQltdGRwc3RvcmVfYmxvY2tfY2xlYXJfcmVtb3ZlZChjeHQsIG9mZik7Cj4+
+ICsJZWxzZQo+PiArCQlwcl9lcnIoImVyYXNlIG9mIHJlZ2lvbiBbMHglbGx4LCAweCVsbHhdIG9u
+IFwiJXNcIiBmYWlsZWRcbiIsCj4+ICsJCSAgICAgICAodW5zaWduZWQgbG9uZyBsb25nKWVyYXNl
+LmFkZHIsCj4+ICsJCSAgICAgICAodW5zaWduZWQgbG9uZyBsb25nKWVyYXNlLmxlbiwgY3h0LT5i
+b19pbmZvLmRldmljZSk7Cj4+ICsJcmV0dXJuIHJldDsKPj4gK30KPj4gKwo+PiArLyoKPj4gKyAq
+IGNhbGxlZCB3aGlsZSByZW1vdmluZyBmaWxlCj4+ICsgKgo+PiArICogQXZvaWRpbmcgb3ZlciBl
+cmFzaW5nLCBkbyBlcmFzZSBvbmx5IHdoZW4gYWxsIHpvbmVzIGFyZSByZW1vdmVkIG9yIHVudXNl
+ZC4KPj4gKyAqIEVuc3VyZSB0byByZW1vdmUgd2hlbiB1bnJlZ2lzdGVyIGJ5IHJlYWRpbmcsIGVy
+YXNpbmcgYW5kIHdydGlpbmcgYmFjay4KPj4gKyAqLwo+PiArc3RhdGljIHNzaXplX3QgbXRkcHN0
+b3JlX2VyYXNlKHNpemVfdCBzaXplLCBsb2ZmX3Qgb2ZmKQo+PiArewo+PiArCXN0cnVjdCBtdGRw
+c3RvcmVfY29udGV4dCAqY3h0ID0gJm9vcHNfY3h0Owo+PiArCj4+ICsJaWYgKG10ZHBzdG9yZV9i
+bG9ja19pc2JhZChjeHQsIG9mZikpCj4+ICsJCXJldHVybiAtRUlPOwo+PiArCj4+ICsJbXRkcHN0
+b3JlX21hcmtfdW51c2VkKGN4dCwgb2ZmKTsKPj4gKwo+PiArCWlmIChsaWtlbHkobXRkcHN0b3Jl
+X2Jsb2NrX2lzX3VzZWQoY3h0LCBvZmYpKSkgewo+PiArCQltdGRwc3RvcmVfbWFya19yZW1vdmVk
+KGN4dCwgb2ZmKTsKPj4gKwkJcmV0dXJuIDA7Cj4+ICsJfQo+PiArCj4+ICsJLyogYWxsIHpvbmVz
+IGFyZSB1bnVzZWQsIGVyYXNlIGl0ICovCj4+ICsJb2ZmID0gQUxJR05fRE9XTihvZmYsIGN4dC0+
+bXRkLT5lcmFzZXNpemUpOwo+PiArCXJldHVybiBtdGRwc3RvcmVfZXJhc2VfZG8oY3h0LCBvZmYp
+Owo+PiArfQo+PiArCj4+ICsvKgo+PiArICogV2hhdCBpcyBzZWN1cmV0eSBmb3IgbXRkcHN0b3Jl
+Pwo+PiArICogQXMgdGhlcmUgaXMgbm8gZXJhc2UgZm9yIHBhbmljIGNhc2UsIHdlIHNob3VsZCBl
+bnN1cmUgYXQgbGVhc3Qgb25lIHpvbmUKPj4gKyAqIGlzIHdyaXRhYmxlLiBPdGhlcndpc2UsIHBh
+bmljIHdyaXRlIHdpbGwgYmUgZmFpbGVkLgo+PiArICogSWYgem9uZSBpcyB1c2VkLCB3cml0ZSBv
+cGVyYXRpb24gd2lsbCByZXR1cm4gLUVORVhULCB3aGljaCBtZWFucyB0aGF0Cj4+ICsgKiBwc3Rv
+cmUvYmxrIHdpbGwgdHJ5IG9uZSBieSBvbmUgdW50aWwgZ2V0IGEgZW1wdHkgem9uZS4gU28sIGl0
+J3Mgbm8gbmVlZAo+PiArICogdG8gZW5zdXJlIG5leHQgem9uZSBpcyBlbXB0eSwgYnV0IGF0IGxl
+YXN0IG9uZS4KPj4gKyAqLwo+PiArc3RhdGljIGludCBtdGRwc3RvcmVfc2VjdXJpdHkoc3RydWN0
+IG10ZHBzdG9yZV9jb250ZXh0ICpjeHQsIGxvZmZfdCBvZmYpCj4+ICt7Cj4+ICsJaW50IHJldCA9
+IDAsIGk7Cj4+ICsJdTMyIHpvbmVudW0gPSAodTMyKWRpdl91NjQob2ZmLCBjeHQtPmJvX2luZm8u
+ZG1lc2dfc2l6ZSk7Cj4+ICsJdTMyIHpvbmVjbnQgPSAodTMyKWRpdl91NjQoY3h0LT5tdGQtPnNp
+emUsIGN4dC0+Ym9faW5mby5kbWVzZ19zaXplKTsKPj4gKwl1MzIgYmxrY250ID0gKHUzMilkaXZf
+dTY0KGN4dC0+bXRkLT5zaXplLCBjeHQtPm10ZC0+ZXJhc2VzaXplKTsKPj4gKwl1MzIgZXJhc2Vz
+aXplID0gY3h0LT5tdGQtPmVyYXNlc2l6ZTsKPj4gKwo+PiArCWZvciAoaSA9IDA7IGkgPCB6b25l
+Y250OyBpKyspIHsKPj4gKwkJdTMyIG51bSA9ICh6b25lbnVtICsgaSkgJSB6b25lY250Owo+PiAr
+Cj4+ICsJCS8qIGZvdW5kIGVtcHR5IHpvbmUgKi8KPj4gKwkJaWYgKCF0ZXN0X2JpdChudW0sIGN4
+dC0+dXNlZG1hcCkpCj4+ICsJCQlyZXR1cm4gMDsKPj4gKwl9Cj4+ICsKPj4gKwkvKiBJZiB0aGVy
+ZSBpcyBubyBhbnkgZW1wdHkgem9uZSwgd2UgaGF2ZSBubyB3YXkgYnV0IHRvIGRvIGVyYXNlICov
+Cj4+ICsJb2ZmID0gQUxJR05fRE9XTihvZmYsIGVyYXNlc2l6ZSk7Cj4+ICsJd2hpbGUgKGJsa2Nu
+dC0tKSB7Cj4+ICsJCWRpdjY0X3U2NF9yZW0ob2ZmICsgZXJhc2VzaXplLCBjeHQtPm10ZC0+c2l6
+ZSwgKHU2NCAqKSZvZmYpOwo+PiArCj4+ICsJCWlmIChtdGRwc3RvcmVfYmxvY2tfaXNiYWQoY3h0
+LCBvZmYpKQo+PiArCQkJY29udGludWU7Cj4+ICsKPj4gKwkJcmV0ID0gbXRkcHN0b3JlX2VyYXNl
+X2RvKGN4dCwgb2ZmKTsKPj4gKwkJaWYgKCFyZXQpIHsKPj4gKwkJCW10ZHBzdG9yZV9ibG9ja19t
+YXJrX3VudXNlZChjeHQsIG9mZik7Cj4+ICsJCQlicmVhazsKPj4gKwkJfQo+PiArCX0KPj4gKwo+
+PiArCWlmIChyZXQpCj4+ICsJCXByX2VycigiYWxsIGJsb2NrcyBiYWQhXG4iKTsKPj4gKwlwcl9k
+ZWJ1ZygiZW5kIHNlY3VyaXR5XG4iKTsKPj4gKwlyZXR1cm4gcmV0Owo+PiArfQo+PiArCj4+ICtz
+dGF0aWMgc3NpemVfdCBtdGRwc3RvcmVfd3JpdGUoY29uc3QgY2hhciAqYnVmLCBzaXplX3Qgc2l6
+ZSwgbG9mZl90IG9mZikKPj4gK3sKPj4gKwlzdHJ1Y3QgbXRkcHN0b3JlX2NvbnRleHQgKmN4dCA9
+ICZvb3BzX2N4dDsKPj4gKwlzaXplX3QgcmV0bGVuOwo+PiArCWludCByZXQ7Cj4+ICsKPj4gKwlp
+ZiAobXRkcHN0b3JlX2Jsb2NrX2lzYmFkKGN4dCwgb2ZmKSkKPj4gKwkJcmV0dXJuIC1FTkVYVDsK
+Pj4gKwo+PiArCS8qIHpvbmUgaXMgdXNlZCwgcGxlYXNlIHRyeSBuZXh0IG9uZSAqLwo+PiArCWlm
+IChtdGRwc3RvcmVfaXNfdXNlZChjeHQsIG9mZikpCj4+ICsJCXJldHVybiAtRU5FWFQ7Cj4+ICsK
+Pj4gKwlwcl9kZWJ1ZygidHJ5IHRvIHdyaXRlIG9mZiAweCVsbHggc2l6ZSAlenVcbiIsIG9mZiwg
+c2l6ZSk7Cj4+ICsJcmV0ID0gbXRkX3dyaXRlKGN4dC0+bXRkLCBvZmYsIHNpemUsICZyZXRsZW4s
+ICh1X2NoYXIgKilidWYpOwo+PiArCWlmIChyZXQgPCAwIHx8IHJldGxlbiAhPSBzaXplKSB7Cj4+
+ICsJCXByX2Vycigid3JpdGUgZmFpbHVyZSBhdCAlbGxkICglenUgb2YgJXp1IHdyaXR0ZW4pLCBl
+cnIgJWRcbiIsCj4+ICsJCQkJb2ZmLCByZXRsZW4sIHNpemUsIHJldCk7Cj4+ICsJCXJldHVybiAt
+RUlPOwo+PiArCX0KPj4gKwltdGRwc3RvcmVfbWFya191c2VkKGN4dCwgb2ZmKTsKPj4gKwo+PiAr
+CW10ZHBzdG9yZV9zZWN1cml0eShjeHQsIG9mZik7Cj4+ICsJcmV0dXJuIHJldGxlbjsKPj4gK30K
+Pj4gKwo+PiArLyoKPj4gKyAqIEFsbCB6b25lcyB3aWxsIGJlIHJlYWQgYXMgcHN0b3JlL2JsayB3
+aWxsIHJlYWQgem9uZSBvbmUgYnkgb25lIHdoZW4gZG8KPj4gKyAqIHJlY292ZXIuCj4+ICsgKi8K
+Pj4gK3N0YXRpYyBzc2l6ZV90IG10ZHBzdG9yZV9yZWFkKGNoYXIgKmJ1Ziwgc2l6ZV90IHNpemUs
+IGxvZmZfdCBvZmYpCj4+ICt7Cj4+ICsJc3RydWN0IG10ZHBzdG9yZV9jb250ZXh0ICpjeHQgPSAm
+b29wc19jeHQ7Cj4+ICsJc2l6ZV90IHJldGxlbjsKPj4gKwlpbnQgcmV0Owo+PiArCj4+ICsJaWYg
+KG10ZHBzdG9yZV9ibG9ja19pc2JhZChjeHQsIG9mZikpCj4+ICsJCXJldHVybiAtRU5FWFQ7Cj4+
+ICsKPj4gKwlwcl9kZWJ1ZygidHJ5IHRvIHJlYWQgb2ZmIDB4JWxseCBzaXplICV6dVxuIiwgb2Zm
+LCBzaXplKTsKPj4gKwlyZXQgPSBtdGRfcmVhZChjeHQtPm10ZCwgb2ZmLCBzaXplLCAmcmV0bGVu
+LCAodV9jaGFyICopYnVmKTsKPj4gKwlpZiAoKHJldCA8IDAgJiYgIW10ZF9pc19iaXRmbGlwKHJl
+dCkpIHx8IHNpemUgIT0gcmV0bGVuKSAgewo+PiArCQlwcl9lcnIoInJlYWQgZmFpbHVyZSBhdCAl
+bGxkICglenUgb2YgJXp1IHJlYWQpLCBlcnIgJWRcbiIsCj4+ICsJCQkJb2ZmLCByZXRsZW4sIHNp
+emUsIHJldCk7Cj4+ICsJCXJldHVybiAtRUlPOwo+PiArCX0KPj4gKwo+PiArCWlmIChtdGRwc3Rv
+cmVfaXNfZW1wdHkoY3h0LCBidWYsIHNpemUpKQo+PiArCQltdGRwc3RvcmVfbWFya191bnVzZWQo
+Y3h0LCBvZmYpOwo+PiArCWVsc2UKPj4gKwkJbXRkcHN0b3JlX21hcmtfdXNlZChjeHQsIG9mZik7
+Cj4+ICsKPj4gKwltdGRwc3RvcmVfc2VjdXJpdHkoY3h0LCBvZmYpOwo+PiArCXJldHVybiByZXRs
+ZW47Cj4+ICt9Cj4+ICsKPj4gK3N0YXRpYyBzc2l6ZV90IG10ZHBzdG9yZV9wYW5pY193cml0ZShj
+b25zdCBjaGFyICpidWYsIHNpemVfdCBzaXplLCBsb2ZmX3Qgb2ZmKQo+PiArewo+PiArCXN0cnVj
+dCBtdGRwc3RvcmVfY29udGV4dCAqY3h0ID0gJm9vcHNfY3h0Owo+PiArCXNpemVfdCByZXRsZW47
+Cj4+ICsJaW50IHJldDsKPj4gKwo+PiArCWlmIChtdGRwc3RvcmVfcGFuaWNfYmxvY2tfaXNiYWQo
+Y3h0LCBvZmYpKQo+PiArCQlyZXR1cm4gLUVORVhUOwo+PiArCj4+ICsJLyogem9uZSBpcyB1c2Vk
+LCBwbGVhc2UgdHJ5IG5leHQgb25lICovCj4+ICsJaWYgKG10ZHBzdG9yZV9pc191c2VkKGN4dCwg
+b2ZmKSkKPj4gKwkJcmV0dXJuIC1FTkVYVDsKPj4gKwo+PiArCXJldCA9IG10ZF9wYW5pY193cml0
+ZShjeHQtPm10ZCwgb2ZmLCBzaXplLCAmcmV0bGVuLCAodV9jaGFyICopYnVmKTsKPj4gKwlpZiAo
+cmV0IDwgMCB8fCBzaXplICE9IHJldGxlbikgewo+PiArCQlwcl9lcnIoInBhbmljIHdyaXRlIGZh
+aWx1cmUgYXQgJWxsZCAoJXp1IG9mICV6dSByZWFkKSwgZXJyICVkXG4iLAo+PiArCQkJCW9mZiwg
+cmV0bGVuLCBzaXplLCByZXQpOwo+PiArCQlyZXR1cm4gLUVJTzsKPj4gKwl9Cj4+ICsJbXRkcHN0
+b3JlX21hcmtfdXNlZChjeHQsIG9mZik7Cj4+ICsKPj4gKwlyZXR1cm4gcmV0bGVuOwo+PiArfQo+
+PiArCj4+ICtzdGF0aWMgdm9pZCBtdGRwc3RvcmVfbm90aWZ5X2FkZChzdHJ1Y3QgbXRkX2luZm8g
+Km10ZCkKPj4gK3sKPj4gKwlpbnQgcmV0Owo+PiArCXN0cnVjdCBtdGRwc3RvcmVfY29udGV4dCAq
+Y3h0ID0gJm9vcHNfY3h0Owo+PiArCXN0cnVjdCBibGtvb3BzX2luZm8gKmluZm8gPSAmY3h0LT5i
+b19pbmZvOwo+PiArCXVuc2lnbmVkIGxvbmcgbG9uZ2NudDsKPj4gKwo+PiArCWlmICghc3RyY21w
+KG10ZC0+bmFtZSwgaW5mby0+ZGV2aWNlKSkKPj4gKwkJY3h0LT5pbmRleCA9IG10ZC0+aW5kZXg7
+Cj4+ICsKPj4gKwlpZiAobXRkLT5pbmRleCAhPSBjeHQtPmluZGV4IHx8IGN4dC0+aW5kZXggPCAw
+KQo+PiArCQlyZXR1cm47Cj4+ICsKPj4gKwlwcl9kZWJ1ZygiZm91bmQgbWF0Y2hpbmcgTVREIGRl
+dmljZSAlc1xuIiwgbXRkLT5uYW1lKTsKPj4gKwo+PiArCWlmIChtdGQtPnNpemUgPCBpbmZvLT5k
+bWVzZ19zaXplICogMikgewo+PiArCQlwcl9lcnIoIk1URCBwYXJ0aXRpb24gJWQgbm90IGJpZyBl
+bm91Z2hcbiIsIG10ZC0+aW5kZXgpOwo+PiArCQlyZXR1cm47Cj4+ICsJfQo+PiArCWlmIChtdGQt
+PmVyYXNlc2l6ZSA8IGluZm8tPmRtZXNnX3NpemUpIHsKPj4gKwkJcHJfZXJyKCJlcmFzZWJsb2Nr
+IHNpemUgb2YgTVREIHBhcnRpdGlvbiAlZCB0b28gc21hbGxcbiIsCj4+ICsJCQkJbXRkLT5pbmRl
+eCk7Cj4+ICsJCXJldHVybjsKPj4gKwl9Cj4+ICsJaWYgKHVubGlrZWx5KGluZm8tPmRtZXNnX3Np
+emUgJSBtdGQtPndyaXRlc2l6ZSkpIHsKPj4gKwkJcHJfZXJyKCJyZWNvcmQgc2l6ZSAlbHUgS0Ig
+bXVzdCBhbGlnbiB0byB3cml0ZSBzaXplICVkIEtCXG4iLAo+PiArCQkJCWluZm8tPmRtZXNnX3Np
+emUgLyAxMDI0LAo+PiArCQkJCW10ZC0+d3JpdGVzaXplIC8gMTAyNCk7Cj4+ICsJCXJldHVybjsK
+Pj4gKwl9Cj4+ICsJaWYgKHVubGlrZWx5KG10ZC0+c2l6ZSA+IE1URFBTVE9SRV9NQVhfTVREX1NJ
+WkUpKSB7Cj4+ICsJCXByX2VycigibXRkJWQgaXMgdG9vIGxhcmdlIChsaW1pdCBpcyAlZCBNaUIp
+XG4iLAo+PiArCQkJCW10ZC0+aW5kZXgsCj4+ICsJCQkJTVREUFNUT1JFX01BWF9NVERfU0laRSAv
+IDEwMjQgLyAxMDI0KTsKPj4gKwkJcmV0dXJuOwo+PiArCX0KPj4gKwo+PiArCWxvbmdjbnQgPSBC
+SVRTX1RPX0xPTkdTKGRpdl91NjQobXRkLT5zaXplLCBpbmZvLT5kbWVzZ19zaXplKSk7Cj4+ICsJ
+Y3h0LT5ybW1hcCA9IGtjYWxsb2MobG9uZ2NudCwgc2l6ZW9mKGxvbmcpLCBHRlBfS0VSTkVMKTsK
+Pj4gKwljeHQtPnVzZWRtYXAgPSBrY2FsbG9jKGxvbmdjbnQsIHNpemVvZihsb25nKSwgR0ZQX0tF
+Uk5FTCk7Cj4+ICsKPj4gKwlsb25nY250ID0gQklUU19UT19MT05HUyhkaXZfdTY0KG10ZC0+c2l6
+ZSwgbXRkLT5lcmFzZXNpemUpKTsKPj4gKwljeHQtPmJhZG1hcCA9IGtjYWxsb2MobG9uZ2NudCwg
+c2l6ZW9mKGxvbmcpLCBHRlBfS0VSTkVMKTsKPj4gKwo+PiArCWN4dC0+Ym9fZGV2LnRvdGFsX3Np
+emUgPSBtdGQtPnNpemU7Cj4+ICsJLyoganVzdCBzdXBwb3J0IGRtZXNnIHJpZ2h0IG5vdyAqLwo+
+PiArCWN4dC0+Ym9fZGV2LmZsYWdzID0gQkxLT09QU19ERVZfU1VQUE9SVF9ETUVTRzsKPj4gKwlj
+eHQtPmJvX2Rldi5yZWFkID0gbXRkcHN0b3JlX3JlYWQ7Cj4+ICsJY3h0LT5ib19kZXYud3JpdGUg
+PSBtdGRwc3RvcmVfd3JpdGU7Cj4+ICsJY3h0LT5ib19kZXYuZXJhc2UgPSBtdGRwc3RvcmVfZXJh
+c2U7Cj4+ICsJY3h0LT5ib19kZXYucGFuaWNfd3JpdGUgPSBtdGRwc3RvcmVfcGFuaWNfd3JpdGU7
+Cj4+ICsKPj4gKwlyZXQgPSBibGtvb3BzX3JlZ2lzdGVyX2RldmljZSgmY3h0LT5ib19kZXYpOwo+
+PiArCWlmIChyZXQpIHsKPj4gKwkJcHJfZXJyKCJtdGQlZCByZWdpc3RlciB0byBibGtvb3BzIGZh
+aWxlZFxuIiwgbXRkLT5pbmRleCk7Cj4+ICsJCXJldHVybjsKPj4gKwl9Cj4+ICsJY3h0LT5tdGQg
+PSBtdGQ7Cj4+ICsJcHJfaW5mbygiQXR0YWNoZWQgdG8gTVREIGRldmljZSAlZFxuIiwgbXRkLT5p
+bmRleCk7Cj4+ICt9Cj4+ICsKPj4gK3N0YXRpYyBpbnQgbXRkcHN0b3JlX2ZsdXNoX3JlbW92ZWRf
+ZG8oc3RydWN0IG10ZHBzdG9yZV9jb250ZXh0ICpjeHQsCj4+ICsJCWxvZmZfdCBvZmYsIHNpemVf
+dCBzaXplKQo+PiArewo+PiArCXN0cnVjdCBtdGRfaW5mbyAqbXRkID0gY3h0LT5tdGQ7Cj4+ICsJ
+dV9jaGFyICpidWY7Cj4+ICsJaW50IHJldDsKPj4gKwlzaXplX3QgcmV0bGVuOwo+PiArCXN0cnVj
+dCBlcmFzZV9pbmZvIGVyYXNlOwo+PiArCj4+ICsJYnVmID0ga21hbGxvYyhtdGQtPmVyYXNlc2l6
+ZSwgR0ZQX0tFUk5FTCk7Cj4+ICsJaWYgKCFidWYpCj4+ICsJCXJldHVybiAtRU5PTUVNOwo+PiAr
+Cj4+ICsJLyogMXN0LiByZWFkIHRvIGNhY2hlICovCj4+ICsJcmV0ID0gbXRkX3JlYWQobXRkLCBv
+ZmYsIG10ZC0+ZXJhc2VzaXplLCAmcmV0bGVuLCBidWYpOwo+PiArCWlmIChyZXQgfHwgcmV0bGVu
+ICE9IG10ZC0+ZXJhc2VzaXplKQo+PiArCQlnb3RvIGZyZWU7Cj4+ICsKPj4gKwkvKiAybmQuIGVy
+YXNlIGJsb2NrICovCj4+ICsJZXJhc2UubGVuID0gbXRkLT5lcmFzZXNpemU7Cj4+ICsJZXJhc2Uu
+YWRkciA9IG9mZjsKPj4gKwlyZXQgPSBtdGRfZXJhc2UobXRkLCAmZXJhc2UpOwo+PiArCWlmIChy
+ZXQpCj4+ICsJCWdvdG8gZnJlZTsKPj4gKwo+PiArCS8qIDNyZC4gd3JpdGUgYmFjayAqLwo+PiAr
+CXdoaWxlIChzaXplKSB7Cj4+ICsJCXVuc2lnbmVkIGludCB6b25lc2l6ZSA9IGN4dC0+Ym9faW5m
+by5kbWVzZ19zaXplOwo+PiArCj4+ICsJCS8qIHJlbW92ZSBtdXN0IGNsZWFyIHVzZWQgYml0ICov
+Cj4+ICsJCWlmIChtdGRwc3RvcmVfaXNfdXNlZChjeHQsIG9mZikpCj4+ICsJCQltdGRfd3JpdGUo
+bXRkLCBvZmYsIHpvbmVzaXplLCAmcmV0bGVuLCBidWYpOwo+PiArCj4+ICsJCW9mZiArPSB6b25l
+c2l6ZTsKPj4gKwkJc2l6ZSAtPSBtaW5fdCh1bnNpZ25lZCBpbnQsIHpvbmVzaXplLCBzaXplKTsK
+Pj4gKwl9Cj4+ICsKPj4gK2ZyZWU6Cj4+ICsJa2ZyZWUoYnVmKTsKPj4gKwlyZXR1cm4gcmV0Owo+
+PiArfQo+PiArCj4+ICtzdGF0aWMgaW50IG10ZHBzdG9yZV9mbHVzaF9yZW1vdmVkKHN0cnVjdCBt
+dGRwc3RvcmVfY29udGV4dCAqY3h0KQo+PiArewo+PiArCXN0cnVjdCBtdGRfaW5mbyAqbXRkID0g
+Y3h0LT5tdGQ7Cj4+ICsJaW50IHJldDsKPj4gKwlsb2ZmX3Qgb2ZmOwo+PiArCXUzMiBibGtjbnQg
+PSAodTMyKWRpdl91NjQobXRkLT5zaXplLCBtdGQtPmVyYXNlc2l6ZSk7Cj4+ICsKPj4gKwlmb3Ig
+KG9mZiA9IDA7IGJsa2NudCA+IDA7IGJsa2NudC0tLCBvZmYgKz0gbXRkLT5lcmFzZXNpemUpIHsK
+Pj4gKwkJcmV0ID0gbXRkcHN0b3JlX2Jsb2NrX2lzX3JlbW92ZWQoY3h0LCBvZmYpOwo+PiArCQlp
+ZiAoIXJldCkgewo+PiArCQkJb2ZmICs9IG10ZC0+ZXJhc2VzaXplOwo+PiArCQkJY29udGludWU7
+Cj4+ICsJCX0KPj4gKwo+PiArCQlyZXQgPSBtdGRwc3RvcmVfZmx1c2hfcmVtb3ZlZF9kbyhjeHQs
+IG9mZiwgbXRkLT5lcmFzZXNpemUpOwo+PiArCQlpZiAocmV0KQo+PiArCQkJcmV0dXJuIHJldDsK
+Pj4gKwl9Cj4+ICsJcmV0dXJuIDA7Cj4+ICt9Cj4+ICsKPj4gK3N0YXRpYyB2b2lkIG10ZHBzdG9y
+ZV9ub3RpZnlfcmVtb3ZlKHN0cnVjdCBtdGRfaW5mbyAqbXRkKQo+PiArewo+PiArCXN0cnVjdCBt
+dGRwc3RvcmVfY29udGV4dCAqY3h0ID0gJm9vcHNfY3h0Owo+PiArCj4+ICsJaWYgKG10ZC0+aW5k
+ZXggIT0gY3h0LT5pbmRleCB8fCBjeHQtPmluZGV4IDwgMCkKPj4gKwkJcmV0dXJuOwo+PiArCj4+
+ICsJbXRkcHN0b3JlX2ZsdXNoX3JlbW92ZWQoY3h0KTsKPj4gKwo+PiArCWJsa29vcHNfdW5yZWdp
+c3Rlcl9kZXZpY2UoJmN4dC0+Ym9fZGV2KTsKPj4gKwlrZnJlZShjeHQtPmJhZG1hcCk7Cj4+ICsJ
+a2ZyZWUoY3h0LT51c2VkbWFwKTsKPj4gKwlrZnJlZShjeHQtPnJtbWFwKTsKPj4gKwljeHQtPm10
+ZCA9IE5VTEw7Cj4+ICsJY3h0LT5pbmRleCA9IC0xOwo+PiArfQo+PiArCj4+ICtzdGF0aWMgc3Ry
+dWN0IG10ZF9ub3RpZmllciBtdGRwc3RvcmVfbm90aWZpZXIgPSB7Cj4+ICsJLmFkZAk9IG10ZHBz
+dG9yZV9ub3RpZnlfYWRkLAo+PiArCS5yZW1vdmUJPSBtdGRwc3RvcmVfbm90aWZ5X3JlbW92ZSwK
+Pj4gK307Cj4+ICsKPj4gK3N0YXRpYyBpbnQgX19pbml0IG10ZHBzdG9yZV9pbml0KHZvaWQpCj4+
+ICt7Cj4+ICsJaW50IHJldDsKPj4gKwlzdHJ1Y3QgbXRkcHN0b3JlX2NvbnRleHQgKmN4dCA9ICZv
+b3BzX2N4dDsKPj4gKwlzdHJ1Y3QgYmxrb29wc19pbmZvICppbmZvID0gJmN4dC0+Ym9faW5mbzsK
+Pj4gKwo+PiArCXJldCA9IGJsa29vcHNfaW5mbyhpbmZvKTsKPj4gKwlpZiAodW5saWtlbHkocmV0
+KSkKPj4gKwkJcmV0dXJuIHJldDsKPj4gKwo+PiArCWlmIChzdHJsZW4oaW5mby0+ZGV2aWNlKSA9
+PSAwKSB7Cj4+ICsJCXByX2VycigibXRkIGRldmljZSBtdXN0IGJlIHN1cHBsaWVkXG4iKTsKPj4g
+KwkJcmV0dXJuIC1FSU5WQUw7Cj4+ICsJfQo+PiArCWlmICghaW5mby0+ZG1lc2dfc2l6ZSkgewo+
+PiArCQlwcl9lcnIoIm5vIHJlY29yZGVyIGVuYWJsZWRcbiIpOwo+PiArCQlyZXR1cm4gLUVJTlZB
+TDsKPj4gKwl9Cj4+ICsKPj4gKwkvKiBTZXR1cCB0aGUgTVREIGRldmljZSB0byB1c2UgKi8KPj4g
+KwlyZXQgPSBrc3RydG9pbnQoKGNoYXIgKilpbmZvLT5kZXZpY2UsIDAsICZjeHQtPmluZGV4KTsK
+Pj4gKwlpZiAocmV0KQo+PiArCQljeHQtPmluZGV4ID0gLTE7Cj4+ICsKPj4gKwlyZWdpc3Rlcl9t
+dGRfdXNlcigmbXRkcHN0b3JlX25vdGlmaWVyKTsKPj4gKwlyZXR1cm4gMDsKPj4gK30KPj4gK21v
+ZHVsZV9pbml0KG10ZHBzdG9yZV9pbml0KTsKPj4gKwo+PiArc3RhdGljIHZvaWQgX19leGl0IG10
+ZHBzdG9yZV9leGl0KHZvaWQpCj4+ICt7Cj4+ICsJdW5yZWdpc3Rlcl9tdGRfdXNlcigmbXRkcHN0
+b3JlX25vdGlmaWVyKTsKPj4gK30KPj4gK21vZHVsZV9leGl0KG10ZHBzdG9yZV9leGl0KTsKPj4g
+Kwo+PiArTU9EVUxFX0xJQ0VOU0UoIkdQTCIpOwo+PiArTU9EVUxFX0FVVEhPUigiV2VpWGlvbmcg
+TGlhbyA8bGlhb3dlaXhpb25nQGFsbHdpbm5lcnRlY2guY29tPiIpOwo+PiArTU9EVUxFX0RFU0NS
+SVBUSU9OKCJNVEQgT29wcy9QYW5pYyBjb25zb2xlIGxvZ2dlci9kcml2ZXIiKTsKPj4KPiAKCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51
+eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
