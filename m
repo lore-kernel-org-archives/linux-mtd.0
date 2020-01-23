@@ -2,80 +2,87 @@ Return-Path: <SRS0=9DP4=3M=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A4EFC2D0DB
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jan 2020 17:02:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7124FC2D0DB
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jan 2020 17:21:25 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2B4112071E
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jan 2020 17:02:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 48B71214AF
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jan 2020 17:21:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NbIPmhiH";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=walle.cc header.i=@walle.cc header.b="GnzEeY10"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2B4112071E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KfDod5SC";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="pk8lMzDq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 48B71214AF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=MmRPjNbkALtAp8qlep/p5PKuyNg30RcI9zrCf/x8BV0=; b=NbIPmhiHcVoTuW
-	eLTnioGL+iIiujVImdf11MIncacK2SCQZTXTRJvXaY2V7ukBwxl2envgObD4/Vl24DCIx5J240LJp
-	B5NgU+kTt4Zi+OGfVJVeSNjvz8hVwgSNNLdQysOzotRhdQHvxCiBWGuGFNriZlvDroBrDte1RuL2h
-	VN7hPmljswE4vTOsOQik5rRbGl6P4FM99DviNTliyCyfKbbNJx0uIWWUmBIUQAIFex08NnuiXZIbr
-	PEEX9Fi4EZeDDuypTMFYoBltNJ2Z2+frIjfJ0WOlWdTvbLdUYlRoW+/uHJ16gRgtfbqyr+BSnd9PF
-	r1FuV167L2QvWXBseWMA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=UHKfraoeQRYo5WZxucT9chKnVeLlyQfNAPTqutRLXd0=; b=KfDod5SCWFl9pe
+	xQAOFQOiEkjSmWVs8S8zt014IiGZWDlHTW2Gv3TN3B1fazeNwImLxS5PBuYXaaaYd82YZN7UdwJpJ
+	Fj1e13g+nnPdQU33OQYkqK/raNT2gr/t+LdPd0eLftBE7R6OCyhXRnBsICxRG3Q4in7qQUsNz9yuK
+	SPBRcnk30FRwRAHPhDQNFChHyP0At3g8IHVFdHkxFV8R07MuBaunRbrJ7DFm3d9vNzoZic0FTeGBe
+	Zo1vICl9hkzzNbmA7aefgW1fUdwxBwPKkx+bkLP7Es6MwfHNDdKuotsblytACHEHN79PXzibcqNma
+	XyszK4pZ5Wb3KaFIrmfA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iufs3-0002qn-Ru; Thu, 23 Jan 2020 17:02:19 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1iugAG-00033D-Fg; Thu, 23 Jan 2020 17:21:08 +0000
+Received: from lelv0143.ext.ti.com ([198.47.23.248])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iufs0-0002pf-Il
- for linux-mtd@lists.infradead.org; Thu, 23 Jan 2020 17:02:18 +0000
-Received: from mwalle01.sab.local. (unknown [213.135.10.150])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
- SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 6727A22FAD;
- Thu, 23 Jan 2020 18:02:10 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1579798931;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding;
- bh=nmIg70snHQ9F1ZTiqnhlVl06NP5Op1ImwxNDLTa/QwQ=;
- b=GnzEeY10qlJ53LSxb4rjyvvjjiZSvOt2aDlLNwKXdXlqve3Q36xyf4gWuh1DdykGQMqi1q
- rldt+G/D6PFHF9aUZgWe8hPsCf0v+0vOkxEHc8ZaB94nQEfMjwl9E5Gh5EoqO9jfIHibes
- MY13A9Gr4BGVpVtS4uvnj2LwYYpcRdQ=
-From: Michael Walle <michael@walle.cc>
-To: Jungseung Lee <js07.lee@samsung.com>
-Subject: [RFC PATCH] mtd: spi-nor: fix locking for flashes <32MBit
-Date: Thu, 23 Jan 2020 18:01:30 +0100
-Message-Id: <20200123170130.8289-1-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
+ id 1iugAE-00032c-2x
+ for linux-mtd@lists.infradead.org; Thu, 23 Jan 2020 17:21:07 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 00NHKsx4050826;
+ Thu, 23 Jan 2020 11:20:54 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1579800054;
+ bh=3gIbziJjyKajUTx1b0qn+STFFQnqmxy/nbpdeY5ApuY=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=pk8lMzDqe4modsPGk9srUr6q+8hDUKQT5SjYiaCK+0/NQpPnjLj0Bd1r8k0AWsd/d
+ 8ZeVQ+q5xnDJYth+qfR5BGJ6aaevQeUM+3dOvcUSMhXiPddNIrQNnwIy43HHrkqCCA
+ /R/oj8fX843TXU2vHYwO6jdjCyj78JqxRT8f1yW8=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 00NHKsC7018970
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Thu, 23 Jan 2020 11:20:54 -0600
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Thu, 23
+ Jan 2020 11:20:54 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Thu, 23 Jan 2020 11:20:53 -0600
+Received: from [10.250.133.86] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 00NHKniV108940;
+ Thu, 23 Jan 2020 11:20:50 -0600
+Subject: Re: [PATCH v2] mtd: spi-nor: keep lock bits if they are non-volatile
+To: Michael Walle <michael@walle.cc>
+References: <20200103221229.7287-1-michael@walle.cc>
+ <8187061.UfBqSTmf1g@192.168.0.113>
+ <62b578b07d5eb46a015dafd4c2f45bc2@walle.cc>
+ <5323055.WqobA3rpa8@192.168.0.113>
+ <990b9b16-36e5-ce73-36c7-0ebfa391c26b@ti.com>
+ <e64cc3ac32d2b44c9e6f4b4f795354ae@walle.cc>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <a4f3657b-8ebe-a54d-8a11-c6e4ce8a3561@ti.com>
+Date: Thu, 23 Jan 2020 22:50:49 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-X-Spamd-Bar: ++++
-X-Rspamd-Server: web
-X-Rspamd-Queue-Id: 6727A22FAD
-X-Spamd-Result: default: False [4.90 / 15.00]; ARC_NA(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- R_MISSING_CHARSET(2.50)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_GOOD(-0.10)[text/plain]; BROKEN_CONTENT_TYPE(1.50)[];
- DKIM_SIGNED(0.00)[]; RCPT_COUNT_SEVEN(0.00)[7];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM(-0.00)[-0.798];
- RCVD_COUNT_ZERO(0.00)[0]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+];
- ASN(0.00)[asn:12941, ipnet:213.135.0.0/19, country:DE]
+In-Reply-To: <e64cc3ac32d2b44c9e6f4b4f795354ae@walle.cc>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200123_090216_932714_7ADE4C6A 
-X-CRM114-Status: GOOD (  12.60  )
+X-CRM114-CacheID: sfid-20200123_092106_232257_BFD7E72A 
+X-CRM114-Status: GOOD (  24.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,126 +94,79 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, Michael Walle <michael@walle.cc>,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: marex@denx.de, Tudor.Ambarus@microchip.com, richard@nod.at,
+ linux-kernel@vger.kernel.org, boris.brezillon@collabora.com,
+ linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There are flashes which support locking and are smaller than 32Mbit, for
-example the gd25q16. The formula in stm_lock() and stm_unlock() will
-give wrong results, because it assumes that there are no holes in the
-locking configuration and that the second to last BP configuration is
-always "protect half the flash". This is only true for flashes larger
-than or equal to 32MBit.
-
-Introduce a function which calculates the number of "unused" BP
-configuration slots and take them into account when calculating the BP
-bits.
-
-Signed-off-by: Michael Walle <michael@walle.cc>
----
-Hi Jungseung and all,
-
-I've prototyped these functions in userspace. And just compile-tested it
-with linux.
-
-This should also fix the new 4th BP bit calculation if you adapt the masks.
-
-Maybe better description is needed and/or a rewrite of the
-stm_lock()/stm_unlock() functions. But hopefully this patch shows that
-we don't need two different formulas for 3 and 4 BP bits.
-
- drivers/mtd/spi-nor/spi-nor.c | 48 +++++++++++++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index ede7ae80ad92..3278708cc329 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1761,6 +1761,49 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
- 	return ret;
- }
- 
-+/*
-+ * Return the number of "unused" slots for the BP bits.
-+ *
-+ * Sample table portion for 1MB flash (Winbond w25q80bv):
-+ *
-+ *    BP2  |  BP1  |  BP0  |  Prot Length  | Protected Portion
-+ *  -----------------------------------------------------------
-+ *     0   |   0   |   0   |  NONE         | NONE
-+ *     0   |   0   |   1   |  64 KB        | Upper 1/16
-+ *     0   |   1   |   0   |  128 KB       | Upper 1/8
-+ *     0   |   1   |   1   |  256 KB       | Upper 1/4
-+ *     1   |   0   |   0   |  512 KB       | Upper 1/2
-+ *     1   |   0   |   1   |  1 MB         | ALL
-+ *     1   |   1   |   0   |  1 MB         | ALL
-+ *     1   |   1   |   1   |  1 MB         | ALL
-+ *
-+ * For the example above the function would return 2, because
-+ * two slots (BP=6 and BP=7) are "unused".
-+ */
-+#define STM_LOCK_SECTOR_SIZE (64 * 1024)
-+static int stm_pow_offset(struct spi_nor *nor)
-+{
-+	struct mtd_info *mtd = &nor->mtd;
-+	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
-+	int shift = ffs(mask) - 1;
-+	int free_slots;
-+
-+	/* We have 2^3 slots available */
-+	free_slots = (mask >> shift) + 1;
-+
-+	/* We need one for "protect none" and one for "protect all" */
-+	free_slots -= 2;
-+
-+	/*
-+	 * And we need log2(flash_size / sector size) slots for in-between
-+	 * configurations.
-+	 */
-+	free_slots -= ilog2(mtd->size / STM_LOCK_SECTOR_SIZE);
-+
-+	/* make sure we don't return negative values */
-+	return max(0, free_slots);
-+}
-+
- static void stm_get_locked_range(struct spi_nor *nor, u8 sr, loff_t *ofs,
- 				 uint64_t *len)
- {
-@@ -1779,6 +1822,9 @@ static void stm_get_locked_range(struct spi_nor *nor, u8 sr, loff_t *ofs,
- 		*len = 0;
- 	} else {
- 		pow = ((sr & mask) ^ mask) >> shift;
-+		pow -= stm_pow_offset(nor);
-+		/* make sure we don't get negative */
-+		pow = max(0, pow);
- 		*len = mtd->size >> pow;
- 		if (nor->flags & SNOR_F_HAS_SR_TB && sr & tb_mask)
- 			*ofs = 0;
-@@ -1909,6 +1955,7 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
- 	 *   pow = ceil(log2(size / len)) = log2(size) - floor(log2(len))
- 	 */
- 	pow = ilog2(mtd->size) - ilog2(lock_len);
-+	pow += stm_pow_offset(nor);
- 	val = mask - (pow << shift);
- 	if (val & ~mask)
- 		return -EINVAL;
-@@ -1994,6 +2041,7 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
- 	 *   pow = floor(log2(size / len)) = log2(size) - ceil(log2(len))
- 	 */
- 	pow = ilog2(mtd->size) - order_base_2(lock_len);
-+	pow += stm_pow_offset(nor);
- 	if (lock_len == 0) {
- 		val = 0; /* fully unlocked */
- 	} else {
--- 
-2.20.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+CgpPbiAxLzIyLzIwMjAgNjoxNCBQTSwgTWljaGFlbCBXYWxsZSB3cm90ZToKPiBIaSBWaWduZXNo
+LAo+IAo+IEFtIDIwMjAtMDEtMjIgMTM6MTAsIHNjaHJpZWIgVmlnbmVzaCBSYWdoYXZlbmRyYToK
+Pj4gT24gMjIvMDEvMjAgMTI6MjMgYW0sIFR1ZG9yLkFtYmFydXNAbWljcm9jaGlwLmNvbSB3cm90
+ZToKPj4+IEhpLCBNaWNoYWVsLCBWaWduZXNoLAo+Pj4KPj4+IE9uIFN1bmRheSwgSmFudWFyeSAx
+MiwgMjAyMCAxMjo1MDo1NyBBTSBFRVQgTWljaGFlbCBXYWxsZSB3cm90ZToKPj4+PiBFWFRFUk5B
+TCBFTUFJTDogRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNzIHlv
+dQo+Pj4+IGtub3cgdGhlCj4+Pj4gY29udGVudCBpcyBzYWZlCj4+IFsuLi5dCj4+CgpbLi4uXQoK
+Pj4+Pj4gUHJlZmVyZW5jZXMgb3Igc3VnZ2VzdGlvbnM/Cj4+Pj4KPj4+IEkgd291bGQgZ28gd2l0
+aCAyLyBvciAzLy4gVmlnbmVzaCwgd2hhdCBkbyB5b3UgcHJlZmVyIGFuZCB3aHk/Cj4+Pgo+Pgo+
+PiBJIGRvbnQgbGlrZSBvcHRpb24gMSwgYmVjYXVzZSBJIGFtIG5vdCBjb252aW5jZWQgdGhhdCB0
+aGlzIGlzIGEgSFcKPj4gZGVzY3JpcHRpb24gdG8gYmUgcHV0IGluIERULsKgIElJVUMsIHByb2Js
+ZW0gaXMgbW9yZSBvZiB3aGF0IHRvIGRvIHdpdGgKPj4gbG9ja2luZyBjb25maWd1cmF0aW9uIHRo
+YXQgaXMgZG9uZSBiZWZvcmUgTGludXggY29tZXMgdXAoZWl0aGVyIGluCj4+IHByZXZpb3VzIGJv
+b3Qgb3IgYnkgYm9vdGxvYWRlciBvciBQT1IgZGVmYXVsdCkuIEN1cnJlbnQgY29kZSBqdXN0Cj4+
+IGRpc2NhcmRzIGl0IGFuZCB1bmxvY2tzIGVudGlyZSBmbGFzaC4KPiAKPiBCdXQgdGhpcyBpcyBu
+b3QgdGhlIG1haW4gcHJvYmxlbS4gSXQgaXMgcmF0aGVyIHRoZSBpbnRlbnRpb24gb2YgdGhlCj4g
+dXNlciB0byBhY3R1YWxseSB3YW50IHdyaXRlIHByb3RlY3QgdGhlIGZsYXNoIChmb3IgZmxhc2hl
+cyB3aG8gaGFzCj4gcHJvcGVyIHN1cHBvcnQgZm9yIHRoZW0sIHRoYXQgaXMgdGhlIG9uZXMgd2hp
+Y2ggaGF2ZSBub24tdm9sYXRpbGUKPiBiaXRzKS4KPiAKPiBGbGFzaGVzIHdpdGggdm9sYXRpbGUg
+Yml0cyBhcmUgYW5vdGhlciBzdWJqZWN0LiBIZXJlIGl0IG1pZ2h0IGJlIHVzZWZ1bAo+IHRvIHVu
+bG9jayB0aGVtIGVpdGhlciBhdCBwcm9iZSB0aW1lIG9yIHdoZW4gd2UgZmlyc3Qgd3JpdGUgdG8g
+dGhlbSwgc28KPiB0aGUgdXNlciBkb2Vzbid0IG5lZWQgdG8ga25vdyBpZiBpdHMgdGhpcyBraW5k
+IG9mIGZsYXNoIGFuZCBoZSB3b3VsZAo+IGFjdHVhbGx5IGhhdmUgdG8gdW5sb2NrIHRoZSBmbGFz
+aCBiZWZvcmUgd3JpdGluZy4gSSd2ZSBsZWZ0IHRoZQo+IGJlaGF2aW91ciBmb3IgdGhlc2UgZmxh
+c2hlcyBhcyBpdCB3YXMgYmVmb3JlLgo+IAo+IEFuZCB5ZXMsIHUtYm9vdCBzdWZmZXJzIGZyb20g
+dGhlIHNhbWUgcHJvYmxlbSwgZWcuIGl0IHVubG9ja3MgdGhlIHdob2xlCj4gZmxhc2ggdG9vLiBJ
+IGd1ZXNzIHRoZXkgaW5oZXJpdGVkIHRoZSBiZWhhdmlvdXIgZnJvbSBsaW51eC4gQnV0IEkKPiB3
+YW50ZWQgdG8gc3RhcnQgd2l0aCBsaW51eCBmaXJzdC4KPiAKClUtQm9vdCBvbmx5IHVubG9ja3Mg
+ZW50aXJlIGZsYXNoIGluIGNhc2Ugb2YgQXRtZWwgb3IgU1NUIG9yIEludGVsLgoKPj4gQnV0IHBy
+b3Bvc2FsIGlzIG5vdCB0byB0b3VjaCB0aG9zZSBiaXRzIGF0IHByb2JlIHRpbWUgYW5kIGxlYXZl
+IHRoaXMKPj4gdXB0byB1c2Vyc3BhY2UgdG8gaGFuZGxlLgo+IAo+IE5vLCBteSBwcm9wb3NhbCB3
+YXMgdG8gZGl2aWRlIHRoZSBmbGFzaGVzIGludG8gdHdvIGNhdGVnb3JpZXMuIFRoZQo+IHVubG9j
+a2luZyBpcyBvbmx5IGRvbmUgb24gdGhlIGZsYXNoZXMgd2hpY2ggaGF2ZSB2b2xhdGlsZSBsb2Nr
+aW5nIGJpdHMsCj4gdGh1cyBldmVuIHdoZW4gdGhlIG5ldyBvcHRpb24gaXMgZW5hYmxlZCBpdCB3
+b24ndCBicmVhayBhY2Nlc3MgdG8gdGhlc2UKPiBmbGFzaGVzLgo+IAoKSG1tLCBsb29rcyBsaWtl
+IGJlZm9yZSBjb21taXQgM2UwOTMwZjEwOWU3ICgibXRkOiBzcGktbm9yOiBSZXdvcmsgdGhlCmRp
+c2FibGluZyBvZiBibG9jayB3cml0ZSBwcm90ZWN0aW9uIikgZ2xvYmFsIHVubG9jayB3YXMgYmVp
+bmcgZG9uZSBvbmx5CmZvciBBdG1lbCwgU1NUIGFuZCBJbnRlbCBmbGFzaGVzLiBTbyAzZTA5MzBm
+MTA5ZTcgZGVmaW5pdGVseSBjaGFuZ2VzCnRoaXMgYmVoYXZpb3IgdG8gdW5sb2NrIGFsbCBmbGFz
+aGVzIHRoYXQgaGF2ZSBTUElfTk9SX0hBU19MT0NLIHNldCAoaW4KYWRkaXRpb24gdG8gQXRtZWws
+U1NUIGFuZCBJbnRlbCkuCkkgdGhpbmsgd2Ugc2hvdWxkIGp1c3QgcmV2ZXJ0IHRvIHRoZSBiZWhh
+dmlvciBiZWZvcmUgM2UwOTMwZjEwOWU3IHNvIGFzCm5vdCB0byBicmVhayB1c2Vyc3BhY2UgZXhw
+ZWN0YXRpb24gb2YgcHJlc2VydmluZyBub24gdm9sYXRpbGUgQlAgc2V0dGluZwphY3Jvc3MgYm9v
+dHMKCkFyZSB3ZSBzdXJlIHRoZXJlIGFyZSBubyBBdG1lbCBhbmQgU1NUIGZsYXNoZXMgdGhhdCBo
+YXZlIG5vbi12b2xhdGlsZSBCUApiaXRzPyBJZiBzbywgdGhlbiBJIGhhdmUgbm8gb2JqZWN0aW9u
+IGZvciB0aGlzIHBhdGNoIGFzIHRoaXMgZWZmZWN0aXZlbHkKcmV2ZXJ0cyBiYWNrIHRvIGJlaGF2
+aW9yIGJlZm9yZSAzZTA5MzBmMTA5ZTcuCgpSZWdhcmRzClZpZ25lc2gKCj4+IEFkZGluZyBhIEtj
+b25maWcgZG9lcyBub3Qgc2NhbGUgd2VsbCBmb3IgbXVsdGktcGxhdGZvcm0gYnVpbGRzLiBUaGVy
+ZQo+PiB3b3VsZCBub3QgYmUgYSB3YXkgdG8gaGF2ZSBwcm90ZWN0aW9uIGVuYWJsZWQgb24gb25l
+IHBsYXRmb3JtIGJ1dAo+PiBkaXNhYmxlZCBvbiBvdGhlci4gRG9lcyBub3Qgc2NhbGUgZm9yIG11
+bHRpcGxlIGZsYXNoZXMgZWl0aGVyCj4+Cj4+IE9wdGlvbiAzIHNvdW5kcyBsZWFzdCBiYWQgYW1v
+bmcgYWxsLiBJZiBtb2R1bGUgcGFyYW0gY2FuIGJlIGRlc2lnbmVkIHRvCj4+IGJlIGEgc3RyaW5n
+IHRoZW4sIHdlIGNvdWxkIGNvbnRyb2wgbG9ja2luZyBiZWhhdmlvciB0byBiZSBwZXIgZmxhc2gK
+Pj4gdXNpbmcgZmxhc2ggbmFtZS4KPiAKPiBXaGF0IGFib3V0IGJvdGg/IEEga2NvbmZpZyBvcHRp
+b24gd2hpY2ggZGVmaW5lcyB0aGUgZGVmYXVsdCBmb3IgdGhlCj4ga2VybmVsIHBhcmFtZXRlcj8g
+TXkgZmVhciBpcyB0aGF0IG9uY2UgaXQgaXMgYSBrZXJuZWwgcGFyYW1ldGVyIGl0IGlzCj4gZWFz
+eSB0byBmb3JnZXQgKHRodXMgaGF2aW5nIHRoZSBub24tdm9sYXRpbGUgYml0cywgdGhlIGZsYXNo
+IGlzCj4gY29tcGxldGVseSB1bmxvY2tlZCBhZ2FpbikgYW5kIGl0IGlzIG5vdCB2ZXJ5IGhhbmR5
+OyBmb3IgcHJvcGVyIHdyaXRlCj4gcHJvdGVjdGlvbiB5b3UnZCBhbHdheXMgaGF2ZSB0byBoYXZl
+IHRoaXMgcGFyYW1ldGVyLgo+IAo+IGJ0dy4gSSBkb24ndCBzZWUgYSBuZWVkIHRvIGhhdmUgdGhp
+cyBvcHRpb24gcGVyIGZsYXNoLCBiZWNhdXNlIG9uY2UKPiB0aGUgdXNlciBhY3R1YWxseSBlbmFi
+bGVzIGl0LCBoZSBpcyBhd2FyZSB0aGF0IGl0cyBmb3IgYWxsIG9mIGhpcwo+IGZsYXNoZXMuIEkg
+aGF2ZW4ndCBzZWVuIGZsYXNoZXMgd2hpY2ggaGFzIG5vbi12b2xhdGlsZSBwcm90ZWN0aW9uIGJp
+dHMKPiBfYW5kXyBhcmUgcHJvdGVjdGVkIGJ5IGRlZmF1bHQuIFRoZXJlIHNob3VsZG4ndCBiZSBh
+IG5vdGljYWJsZQo+IGRpZmZlcmVuY2UgZm9yIHRoZSB1c2VyIGlmIHRoZSBvcHRpb24gd2hlbiBl
+bmFibGVkLgo+IAo+IC1taWNoYWVsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0
+dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
