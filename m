@@ -2,22 +2,21 @@ Return-Path: <SRS0=9DP4=3M=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7632DC33CAA
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jan 2020 08:11:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65FEDC33CAA
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jan 2020 08:15:38 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3FC3E217F4
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jan 2020 08:11:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 36B5D217F4
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jan 2020 08:15:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="L+rykjFs";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=walle.cc header.i=@walle.cc header.b="COE1u2fD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3FC3E217F4
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YM/X687A";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=walle.cc header.i=@walle.cc header.b="QA4SkT+6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 36B5D217F4
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,63 +25,66 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
 	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=sGBvuwrOtGO7qGAzR9zdnREg4U6Ck9UNr8zRqwAzdcA=; b=L+rykjFsJbEQForpORT4mWkAS
-	02KKVuEM0v9tlNT/9T9WhRvOHD//XXD6j7hNNPJUJLwhiyFaKY0OhFqI7zQXmtiaUVX0O0Zgyi2Ny
-	foJBK/2AbLhFr2X1VbP63r7q39B+6HBzo8THo9MX7Tle1It9Ybca+miSlhkUOnvQURqoeJe58f0Bu
-	A6kezLd4E6FzbKotNb0q3cEIqWelza+7QIhb2sXHL5sPW0sasgHaQI4ZDhmj0QdBKsH1Wep2RHygv
-	BFt/AfyipQb9W3dIX/jsbY4YAZbmtubH9qZE5oycVIcaIvBvZfQ3uKd48YcWcgPvvGyg45YKcQQUT
-	3ksymfvGw==;
+	 bh=JeR8+Db5+bn1XBeTcYjJg7sLG7Rwp33QFDvqxCZhRaA=; b=YM/X687Afz23r73N0wxOXcK1Q
+	qtDMGRVjn91j7uAK0k3nfMqA8LeC29XdD2/RWsPK5nDs4pxXmwAofcDBKZzbReyfMHlSCnrjWPAs5
+	RRXacaYR85I2PF8JxNwAhIkx/I0xfMMyhzxg165wsHtiaeLwI2kfn5h2+a+DoorUb8fjlxlWqXoxE
+	Ns4SKSB2OK03LGATmdElXCXiT0P0pEydLn6v3wKGD3dzMdUGhqdGFmqql3uR8i4MXeB/+Vagi+mE2
+	tQcEssoQrEAnXbhaaVqD9JjkkcK9yNbEVr3HyqRd3ejUNlp65We5muM1GjQLptKqA3oauvZoo1meE
+	vGOMhMJdA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iuXZj-00050j-FW; Thu, 23 Jan 2020 08:10:51 +0000
+	id 1iuXe8-0006Ys-Go; Thu, 23 Jan 2020 08:15:24 +0000
 Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iuXZf-00050C-DH
- for linux-mtd@lists.infradead.org; Thu, 23 Jan 2020 08:10:50 +0000
+ id 1iuXe5-0006YY-Ua
+ for linux-mtd@lists.infradead.org; Thu, 23 Jan 2020 08:15:23 +0000
 Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 082EF22EEB;
- Thu, 23 Jan 2020 09:10:36 +0100 (CET)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id A33B522EEB;
+ Thu, 23 Jan 2020 09:15:18 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1579767038;
+ s=mail2016061301; t=1579767320;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=g6IbzCytqMpsMAO18SmKzfD2DCVFEigqefqQP9nYdVA=;
- b=COE1u2fDw96NbDYw9L4sEn4b8JOO5EOtl5YBt9/6SF6o+0NM3bfhxqwU/GXrRGsztZDVfw
- wHPinD810zRk1a+Gwf+JBejLX5aXyAg9EJvaT7nuPzW3BHWxHWbS798EEQGkQL3CUIyIJw
- rtHaoatOiudQNbYeKUYevruSoGoXKJI=
+ bh=TFCdWYYyXyOd02T5uZViwXUH5nhLZ6ATOKsclmpVCSk=;
+ b=QA4SkT+6ySbjXKL9FAJSy0jK8RhClfMxeUnHobZ5POrHl4ruz9IcmcTDN/hsKvXWqy02rk
+ w5AgBnTmlLAp/VewQ7SoSbcwDRJADfYzLXsqE+uebCVc3yvzd0yw3HE/8O0qq/SULDAVQT
+ e/hxoUwTBN3efXoCntBGod0JV6zJpEI=
 MIME-Version: 1.0
-Date: Thu, 23 Jan 2020 09:10:36 +0100
+Date: Thu, 23 Jan 2020 09:15:18 +0100
 From: Michael Walle <michael@walle.cc>
 To: Jungseung Lee <js07.lee@samsung.com>
 Subject: Re: [PATCH v3 2/3] mtd: spi-nor: add 4bit block protection support
-In-Reply-To: <0c4e70fcf58c93f9b7375d83b50028df225aed82.camel@samsung.com>
-References: <20200113055907.9029-2-js07.lee@samsung.com>
- <CGME20200122193640epcas1p2e8df0b73bdf6c6389709148702082aef@epcas1p2.samsung.com>
- <20200122193608.3859-1-michael@walle.cc>
- <0c4e70fcf58c93f9b7375d83b50028df225aed82.camel@samsung.com>
-Message-ID: <f4581c4cb231cc4c61b9a146dda5fada@walle.cc>
+In-Reply-To: <7004715e639d0d7aadd48ebb82cfaec42e032cec.camel@samsung.com>
+References: <20200113055907.9029-1-js07.lee@samsung.com>
+ <CAPP0e=NMzizy=fEZi4nWzo9GAJOpB2Qwv7ReK7HDvrGKUv+VEw@mail.gmail.com>
+ <0a2c4e9132f7d4f61fd3ce87c5393c65515b937e.camel@samsung.com>
+ <1780435.Q0f6Nmcn8h@localhost.localdomain>
+ <CGME20200122171949epcas1p207e3296cb8a63135437d2b6380c233e7@epcas1p2.samsung.com>
+ <87d1ed5d35cc5cb7addfb60d5dd028c9@walle.cc>
+ <7004715e639d0d7aadd48ebb82cfaec42e032cec.camel@samsung.com>
+Message-ID: <b5a9cc5b83c1af8afc9ea800bf367220@walle.cc>
 X-Sender: michael@walle.cc
 User-Agent: Roundcube Webmail/1.3.8
 X-Spamd-Bar: +
 X-Rspamd-Server: web
-X-Rspamd-Queue-Id: 082EF22EEB
+X-Rspamd-Queue-Id: A33B522EEB
 X-Spamd-Result: default: False [1.40 / 15.00]; ARC_NA(0.00)[];
  FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
  TO_MATCH_ENVRCPT_ALL(0.00)[];
  FREEMAIL_ENVRCPT(0.00)[gmail.com]; TAGGED_RCPT(0.00)[];
- MIME_GOOD(-0.10)[text/plain]; RCPT_COUNT_FIVE(0.00)[5];
- DKIM_SIGNED(0.00)[]; NEURAL_HAM(-0.00)[-0.759];
+ MIME_GOOD(-0.10)[text/plain]; RCPT_COUNT_FIVE(0.00)[6];
+ DKIM_SIGNED(0.00)[]; NEURAL_HAM(-0.00)[-0.763];
  RCVD_COUNT_ZERO(0.00)[0]; FROM_EQ_ENVFROM(0.00)[];
  MIME_TRACE(0.00)[0:+];
- FREEMAIL_CC(0.00)[gmail.com,lists.infradead.org,microchip.com,ti.com];
+ FREEMAIL_CC(0.00)[microchip.com,huawei.com,gmail.com,ti.com,lists.infradead.org];
  MID_RHS_MATCH_FROM(0.00)[]; SUSPICIOUS_RECIPS(1.50)[]
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200123_001047_811173_126084E4 
-X-CRM114-Status: GOOD (  31.92  )
+X-CRM114-CacheID: sfid-20200123_001522_299960_1C11F48A 
+X-CRM114-Status: GOOD (  27.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,462 +96,128 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: tudor.ambarus@microchip.com, linux-mtd@lists.infradead.org, vigneshr@ti.com,
- js07.lee@gmail.com
+Cc: linux-mtd@lists.infradead.org, john.garry@huawei.com, js07.lee@gmail.com,
+ vigneshr@ti.com, Tudor.Ambarus@microchip.com
 Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Jungseung,
-
-Am 2020-01-23 07:22, schrieb Jungseung Lee:
+Am 2020-01-23 04:59, schrieb Jungseung Lee:
 > Hi, Michael
 > 
-> 2020-01-22 (Wed), 20:36 +0100, Michael Walle:
->> Hi,
+> 2020-01-22 (Wed), 18:14 +0100, Michael Walle:
+>> Am 2020-01-22 15:31, schrieb Tudor.Ambarus@microchip.com:
+>> > Hi, Jungseung,
+>> >
+>> > On Wednesday, January 22, 2020 1:42:00 PM EET Jungseung Lee wrote:
+>> >
+>> > cut
+>> >
+>> > > > > > +#define SPI_NOR_BP3_SR_BIT6    BIT(18) /*
+>> > > > > > +                                        * BP3 is bit 6 of
+>> > > > > > status
+>> > > > > > register.
+>> > > > > > +                                        * Must be used
+>> > > > > > with
+>> > > > >
+>> > > > > Are we safe to replace SPI_NOR_TB_SR_BIT6 and
+>> > > > > SPI_NOR_BP3_SR_BIT6
+>> > > > > with a
+>> > > > > SPI_NOR_SR_TB_BIT6_BP3_BIT5? Or maybe with a
+>> > > > > SPI_NOR_SR_BP3_BIT6_TB_BIT5, how
+>> > > > > is more convenient?
+>> > > >
+>> > > > Let's think about some flash in which BP0-3 exists in the
+>> > > > status
+>> > > > register but TB exists in another register.
+>> > > > for example, mx25u12835f.
 >> 
->> > Currently, we are supporting block protection only for
->> > flash chips with 3 block protection bits in the SR register.
->> > This patch enables block protection support for some flash with
->> > 4 block protection bits(bp0-3).
->> >
->> > Signed-off-by: Jungseung Lee <js07.lee@samsung.com>
->> > ---
->> > v3 :
->> >   Fix wrong ofs calculation on v2 patch
->> > v2 :
->> >   Add sample table portion about 4bit block protection on the
->> > comment
->> >   Trivial coding style change
->> >
->> >  drivers/mtd/spi-nor/spi-nor.c | 127 +++++++++++++++++++++++++++++-
->> > ----
->> >  include/linux/mtd/spi-nor.h   |   8 +++
->> >  2 files changed, 119 insertions(+), 16 deletions(-)
->> >
->> > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-
->> > nor/spi-nor.c
->> > index e3da6a8654a8..7e8af6c4fdfa 100644
->> > --- a/drivers/mtd/spi-nor/spi-nor.c
->> > +++ b/drivers/mtd/spi-nor/spi-nor.c
->> > @@ -238,6 +238,14 @@ struct flash_info {
->> >  					 * status register. Must be
->> > used with
->> >  					 * SPI_NOR_HAS_TB.
->> >  					 */
->> > +#define SPI_NOR_HAS_BP3		BIT(17)	/*
->> > +					 * Flash SR has 4 bit fields
->> > (BP0-3)
->> > +					 * for block protection.
->> > +					 */
->> > +#define SPI_NOR_BP3_SR_BIT6	BIT(18)	/*
->> > +					 * BP3 is bit 6 of status
->> > register.
->> > +					 * Must be used with
->> > SPI_NOR_HAS_BP3.
->> > +					 */
->> >
->> >  	/* Part specific fixup hooks. */
->> >  	const struct spi_nor_fixups *fixups;
->> > @@ -1767,23 +1775,47 @@ static void stm_get_locked_range(struct
->> > spi_nor *nor, u8 sr, loff_t *ofs,
->> >  	struct mtd_info *mtd = &nor->mtd;
->> >  	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
->> >  	u8 tb_mask = SR_TB_BIT5;
->> > -	int pow;
->> > +	u8 bp;
->> > +	int pow = 0;
->> >
->> >  	if (nor->flags & SNOR_F_HAS_SR_TB_BIT6)
->> >  		tb_mask = SR_TB_BIT6;
->> >
->> > -	if (!(sr & mask)) {
->> > -		/* No protection */
->> > -		*ofs = 0;
->> > -		*len = 0;
->> > +	if (nor->flags & SNOR_F_HAS_SR_BP3) {
->> > +		u8 tmp;
->> > +
->> > +		if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6)
->> > +			tmp = sr & (mask | SR_BP3_BIT6);
->> > +		else
->> > +			tmp = sr & (mask | SR_BP3_BIT5);
->> > +
->> > +		if (tmp & SR_BP3_BIT6)
->> > +			tmp = (tmp & ~BIT(6)) | BIT(5);
->> > +
->> > +		bp = tmp >> SR_BP_SHIFT;
->> > +		if (!bp) {
->> > +			*ofs = 0;
->> > +			*len = 0;
->> > +			return;
->> > +		}
->> > +		if (bp <= ilog2(nor->n_sectors))
->> > +			pow = ilog2(nor->n_sectors) + 1 - bp;
->> >  	} else {
->> > -		pow = ((sr & mask) ^ mask) >> SR_BP_SHIFT;
->> > -		*len = mtd->size >> pow;
->> > -		if (nor->flags & SNOR_F_HAS_SR_TB && sr & tb_mask)
->> > +		bp = (sr & mask) >> SR_BP_SHIFT;
->> > +		if (!bp) {
->> >  			*ofs = 0;
->> > -		else
->> > -			*ofs = mtd->size - *len;
->> > +			*len = 0;
->> > +			return;
->> > +		}
->> > +		pow = bp ^ (mask >> SR_BP_SHIFT);
->> >  	}
->> > +
->> > +	*len = mtd->size >> pow;
->> > +
->> > +	if (nor->flags & SNOR_F_HAS_SR_TB && sr & tb_mask)
->> > +		*ofs = 0;
->> > +	else
->> > +		*ofs = mtd->size - *len;
->> >  }
->> >
->> >  /*
->> > @@ -1823,7 +1855,7 @@ static int stm_is_unlocked_sr(struct spi_nor
->> > *nor, loff_t ofs, uint64_t len,
->> >
->> >  /*
->> >   * Lock a region of the flash. Compatible with ST Micro and
->> > similar flash.
->> > - * Supports the block protection bits BP{0,1,2} in the status
->> > register
->> > + * Supports the block protection bits BP{0,1,2,3} in the status
->> > register
->> >   * (SR). Does not support these features found in newer SR
->> > bitfields:
->> >   *   - SEC: sector/block protect - only handle SEC=0 (block
->> > protect)
->> >   *   - CMP: complement protect - only support CMP=0 (range is not
->> > complemented)
->> > @@ -1831,7 +1863,7 @@ static int stm_is_unlocked_sr(struct spi_nor
->> > *nor, loff_t ofs, uint64_t len,
->> >   * Support for the following is provided conditionally for some
->> > flash:
->> >   *   - TB: top/bottom protect
->> >   *
->> > - * Sample table portion for 8MB flash (Winbond w25q64fw):
->> > + * Sample table portion for 8MB flash (Winbond w25q64fw / BP0-2):
->> >   *
->> >   *   SEC  |  TB   |  BP2  |  BP1  |  BP0  |  Prot Length  |
->> > Protected Portion
->> >   *  ------------------------------------------------------------
->> > --------------
->> > @@ -1851,6 +1883,32 @@ static int stm_is_unlocked_sr(struct spi_nor
->> > *nor, loff_t ofs, uint64_t len,
->> >   *    0   |   1   |   1   |   0   |   1   |  2 MB         | Lower
->> > 1/4
->> >   *    0   |   1   |   1   |   1   |   0   |  4 MB         | Lower
->> > 1/2
->> >   *
->> > + * Sample table portion for 64MB flash (Micron n25q512ax3 / BP0-
->> > 3):
->> > + *
->> > + *   TB   |  BP3  |  BP2  |  BP1  |  BP0  |  Prot Length  |
->> > Protected Portion
->> > + *  ------------------------------------------------------------
->> > --------------
->> > + *    0   |   0   |   0   |   0   |   0   |  NONE         | NONE
->> > + *    0   |   0   |   0   |   0   |   1   |   64 KB       | Upper
->> > 1/1024
->> > + *    0   |   0   |   0   |   1   |   0   |  128 KB       | Upper
->> > 1/512
->> > + *    0   |   0   |   0   |   1   |   1   |  256 KB       | Upper
->> > 1/256
->> > + *   ...
->> > + *    0   |   1   |   0   |   0   |   1   |  16 MB        | Upper
->> > 1/4
->> > + *    0   |   1   |   0   |   1   |   0   |  32 MB        | Upper
->> > 1/2
->> > + *    0   |   1   |   0   |   1   |   1   |  64 MB        | ALL
->> > + *    0   |   1   |   1   |   0   |   0   |  64 MB        | ALL
->> > + *   ...
->> > + *  ------|-------|-------|-------|-------|---------------|-------
->> > ------------
->> > + *    1   |   0   |   0   |   0   |   0   |   NONE        | NONE
->> > + *    1   |   0   |   0   |   0   |   1   |   64 KB       | Lower
->> > 1/1024
->> > + *    1   |   0   |   0   |   1   |   0   |  128 KB       | Lower
->> > 1/512
->> > + *    1   |   0   |   0   |   1   |   1   |  256 KB       | Lower
->> > 1/256
->> > + *   ...
->> > + *    1   |   1   |   0   |   0   |   1   |  16 MB        | Lower
->> > 1/4
->> > + *    1   |   1   |   0   |   1   |   0   |  32 MB        | Lower
->> > 1/2
->> > + *    1   |   1   |   0   |   1   |   1   |  64 MB        | ALL
->> > + *    1   |   1   |   1   |   0   |   0   |  64 MB        | ALL
->> > + *   ...
->> > + *
->> >   * Returns negative on errors, 0 on success.
->> >   */
->> >  static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
->> > @@ -1898,6 +1956,12 @@ static int stm_lock(struct spi_nor *nor,
->> > loff_t ofs, uint64_t len)
->> >  	if (nor->flags & SNOR_F_HAS_SR_TB_BIT6)
->> >  		tb_mask = SR_TB_BIT6;
->> >
->> > +	if (nor->flags & SNOR_F_HAS_SR_BP3) {
->> > +		if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6)
->> > +			mask = mask | SR_BP3_BIT6;
->> > +		else
->> > +			mask = mask | SR_BP3_BIT5;
->> > +	}
->> >  	/*
->> >  	 * Need smallest pow such that:
->> >  	 *
->> > @@ -1908,7 +1972,17 @@ static int stm_lock(struct spi_nor *nor,
->> > loff_t ofs, uint64_t len)
->> >  	 *   pow = ceil(log2(size / len)) = log2(size) -
->> > floor(log2(len))
->> >  	 */
->> >  	pow = ilog2(mtd->size) - ilog2(lock_len);
->> > -	val = mask - (pow << SR_BP_SHIFT);
->> > +
->> > +	if (nor->flags & SNOR_F_HAS_SR_BP3) {
->> > +		val = ilog2(nor->n_sectors) + 1 - pow;
+>> And like the mx25u3232f, but this bit is only OTP programmable! For
+>> now,
+>> I'd only add support for reading the TB bit to for this kind of
+>> flashes,
+>> to prevent accidentially program this bit. It would be up to the
+>> board
+>> manufacturer how to actually set the bit.
 >> 
->> Why do you use a new calculation here? As far as I can see, the
->> method is
->> the same except that is has one bit more. That also raises the
->> question why
->> n_sectors is now needed?
+>> Like having a TB_READ_ONLY flag.
 >> 
->> Can't we just initialize the mask with
+>> Its also some kind of asymmetrical because you can only set it one
+>> way,
+>> eg. you can OTP the flash to be TB=1. Then you can be sure that the
+>> flash
+>> will always be TB=1. But OTOH you cannot be sure that a TB=0 flash
+>> will
+>> always be a TB=0 flash, because you cannot lock that bit.
 >> 
->> mask = SR_BP2 | SR_BP1 | SR_BP0;
->> if (nor->flags & SNOR_F_HAS_SR_BP3)
->>     mask |= SR_BP3_BIT5;
->> 
->> do the calculation and checks and then move the SR_BP3_BIT5 to
->> SR_BP3_BIT6
->> if SNOR_F_HAS_SR_BP3_BIT6 is set.
+>> Any thoughts?
 >> 
 > 
-> For most of flashes that supporting BP0-2, the smallest protected
-> portion is fixed as 1/64
-> and it can be properly handled by existing
-> calculation. (Actually it's not fully generic, see flashes like
-> w25q40bw or m25p80. Of course, it doesn't have SPI_NOR_HAS_LOCK flag
-> even though it has BP0-2 bit in SR)
+> Actually, I didn't get the chance to take a look at some flash that has
+> TB bit in configuration register. Currently mainline kernel just care
+> flashes that has TB bit in SR and SPI_NOR_HAS_TB can be set only such
+> flashes(as you could see in comment). It seems neccessary to add
+> another functions and flag for mx25u3232f case.
+> Is there any flash that has OTP programmable TB bit in SR?
 
-No. The rules are always the same wether there are three or four BP
-bits (the example in stm_lock() has not enough information on this):
-
-(1) the first setting (besides 0) protects one sector. The second
-     protects 2, the third 4 and so on. eg 2^N
-(2) the last setting is _always_ protect all, just like the '0' setting
-     is always protect none.
-(3) if there is an overflow because there are no more free slots for
-     further settings (for 3 bits with flashes > 32MBit, for 4
-     bits if should be flashes > 16GBit), the first entry will be
-     discarded (eg the very first is the "just one sector" entry).
-
-This is true for all flashes which uses this kind of setting, have a
-look at the m25p80 or w25q40bw, these are no exception. It is just the
-notation "lower 1/64" which is only true for flashes which either
-overflows in (3) or fill all entries (eg. with 3bits that would be the
-32Mbit version).
-
-So for the 3 bit case the following flashes are border cases:
-  - 16mbit (less settings than slots)
-  - 32mbit (number of settings and free slots match)
-  - 64mbit (more settings than slots, first setting is discarded)
-
-That being said, I suspect all the 16mbit flashes (and below) which have
-the _LOCK bit set are broken, because the entries has to be shifted. 
-I'll
-look into that later. This is the same "issue" you have with the 4 bits.
-So if this is fixed, you should not need another formula for the 4 bit
-case.
-
-> We need new calculation method for 4bit block protection and for making
-> it more generic, I choose n_sectors.
-> 
-> On all the flashes I checked, n_sectors is proper value for getting
-> block protected portion.
-> 
-> 		density	portion	n_sectors
-> W25M512JV	64MB	1/512	512
-> N25Q128A	16MB	1/256	256
-> N25Q512A	64MB	1/1024	1024
-> MT25QL02GCBB	256MB	1/4096	4096
-
-The rules above apply to these flashes, too. Could you double check 
-that?
+Not that I'm aware of. My intention wasn't to have anything changed in
+this patch series regarding these flashes, just to ask if anyone else
+has ideas how they would solve the mx25u3232f (or mx25u12835f) case.
 
 -michael
 
+> Tudor and me were saying that there is some flash that has not TB bit
+> in *SR* even if it has BP3 bit in SR. So it seems unnecessary to make
+> correlated flag like SPI_NOR_SR_TB_BIT6_BP3_BIT5 for convenience.
 > 
->> > +		val = val << SR_BP_SHIFT;
->> > +
->> > +		if (val & BIT(5) && mask & SR_BP3_BIT6)
->> > +			val = (val & ~BIT(5)) | BIT(6);
->> > +	} else {
->> > +		val = mask - (pow << SR_BP_SHIFT);
->> > +	}
->> > +
->> >  	if (val & ~mask)
->> >  		return -EINVAL;
->> >  	/* Don't "lock" with no region! */
->> > @@ -1983,6 +2057,13 @@ static int stm_unlock(struct spi_nor *nor,
->> > loff_t ofs, uint64_t len)
->> >
->> >  	if (nor->flags & SNOR_F_HAS_SR_TB_BIT6)
->> >  		tb_mask = SR_TB_BIT6;
->> > +
->> > +	if (nor->flags & SNOR_F_HAS_SR_BP3) {
->> > +		if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6)
->> > +			mask = mask | SR_BP3_BIT6;
->> > +		else
->> > +			mask = mask | SR_BP3_BIT5;
->> > +	}
->> >  	/*
->> >  	 * Need largest pow such that:
->> >  	 *
->> > @@ -1995,13 +2076,20 @@ static int stm_unlock(struct spi_nor *nor,
->> > loff_t ofs, uint64_t len)
->> >  	pow = ilog2(mtd->size) - order_base_2(lock_len);
->> >  	if (lock_len == 0) {
->> >  		val = 0; /* fully unlocked */
->> > +	} else if (nor->flags & SNOR_F_HAS_SR_BP3) {
->> > +		val = ilog2(nor->n_sectors) + 1 - pow;
->> > +		val = val << SR_BP_SHIFT;
->> > +
->> > +		if (val & BIT(5) && mask & SR_BP3_BIT6)
->> > +			val = (val & ~BIT(5)) | BIT(6);
->> >  	} else {
->> >  		val = mask - (pow << SR_BP_SHIFT);
->> > -		/* Some power-of-two sizes are not supported */
->> > -		if (val & ~mask)
->> > -			return -EINVAL;
->> >  	}
->> >
->> > +	/* Some power-of-two sizes are not supported */
->> > +	if (val & ~mask)
->> > +		return -EINVAL;
->> > +
->> >  	status_new = (status_old & ~mask & ~tb_mask) | val;
->> >
->> >  	/* Don't protect status register if we're fully unlocked */
->> > @@ -4736,6 +4824,7 @@ static void spi_nor_info_init_params(struct
->> > spi_nor *nor)
->> >  	/* Set SPI NOR sizes. */
->> >  	params->size = (u64)info->sector_size * info->n_sectors;
->> >  	params->page_size = info->page_size;
->> > +	params->n_sectors = info->n_sectors;
->> >
->> >  	if (!(info->flags & SPI_NOR_NO_FR)) {
->> >  		/* Default to Fast Read for DT and non-DT platform
->> > devices. */
->> > @@ -5192,6 +5281,11 @@ int spi_nor_scan(struct spi_nor *nor, const
->> > char *name,
->> >  		nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
->> >  	if (info->flags & USE_CLSR)
->> >  		nor->flags |= SNOR_F_USE_CLSR;
->> > +	if (info->flags & SPI_NOR_HAS_BP3) {
->> > +		nor->flags |= SNOR_F_HAS_SR_BP3;
->> > +		if (info->flags & SPI_NOR_BP3_SR_BIT6)
->> > +			nor->flags |= SNOR_F_HAS_SR_BP3_BIT6;
->> > +	}
->> >
->> >  	if (info->flags & SPI_NOR_NO_ERASE)
->> >  		mtd->flags |= MTD_NO_ERASE;
->> > @@ -5199,6 +5293,7 @@ int spi_nor_scan(struct spi_nor *nor, const
->> > char *name,
->> >  	mtd->dev.parent = dev;
->> >  	nor->page_size = params->page_size;
->> >  	mtd->writebufsize = nor->page_size;
->> > +	nor->n_sectors = params->n_sectors;
->> >
->> >  	if (of_property_read_bool(np, "broken-flash-reset"))
->> >  		nor->flags |= SNOR_F_BROKEN_RESET;
->> > diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-
->> > nor.h
->> > index 541c06d042e8..92d550501daf 100644
->> > --- a/include/linux/mtd/spi-nor.h
->> > +++ b/include/linux/mtd/spi-nor.h
->> > @@ -129,7 +129,9 @@
->> >  #define SR_BP1			BIT(3)	/* Block protect 1
->> > */
->> >  #define SR_BP2			BIT(4)	/* Block protect 2
->> > */
->> >  #define SR_TB_BIT5		BIT(5)	/* Top/Bottom protect */
->> > +#define SR_BP3_BIT5		BIT(5)	/* Block protect 3
->> > */
+>> -michael
 >> 
->> maybe just name it SR_BP3? would also be more consistent with the
->> proposal
->> above.
->> 
->> >  #define SR_TB_BIT6		BIT(6)	/* Top/Bottom protect */
->> > +#define SR_BP3_BIT6		BIT(6)	/* Block protect 3
->> > */
->> >  #define SR_SRWD			BIT(7)	/* SR write protect
->> > */
->> >  /* Spansion/Cypress specific status bits */
->> >  #define SR_E_ERR		BIT(5)
->> > @@ -248,6 +250,8 @@ enum spi_nor_option_flags {
->> >  	SNOR_F_HAS_16BIT_SR	= BIT(9),
->> >  	SNOR_F_NO_READ_CR	= BIT(10),
->> >  	SNOR_F_HAS_SR_TB_BIT6	= BIT(11),
->> > +	SNOR_F_HAS_SR_BP3	= BIT(12),
->> > +	SNOR_F_HAS_SR_BP3_BIT6	= BIT(13),
+>> > > > I haven't tested yet, but according to the datasheet, I think
+>> > > > this
+>> > > > patch can support 4bit block protection for the flash.
+>> > > >
+>> > > > In order to embrace the case, how about letting them as It is.
+>> > > > Is there any suggestion?
 >> >
->> >  };
+>> > Ok, this info should go in the commit message, together with
+>> > details
+>> > about
+>> > which flashes were tested.
 >> >
->> > @@ -519,6 +523,7 @@ struct spi_nor_locking_ops {
->> >   *
->> >   * @size:		the flash memory density in bytes.
->> >   * @page_size:		the page size of the SPI NOR flash
->> > memory.
->> > + * @n_sectors:		number of sectors
->> >   * @hwcaps:		describes the read and page program
->> > hardware
->> >   *			capabilities.
->> >   * @reads:		read capabilities ordered by priority: the
->> > higher index
->> > @@ -541,6 +546,7 @@ struct spi_nor_locking_ops {
->> >  struct spi_nor_flash_parameter {
->> >  	u64				size;
->> >  	u32				page_size;
->> > +	u16				n_sectors;
+>> > I didn't know that the TB bit can be defined in the Configuration
+>> > register.
+>> > This means that your suggestion with dedicated macros for BP3 and
+>> > TB is
+>> > fine.
 >> >
->> >  	struct spi_nor_hwcaps		hwcaps;
->> >  	struct spi_nor_read_command	reads[SNOR_CMD_READ_MAX];
->> > @@ -573,6 +579,7 @@ struct flash_info;
->> >   * @bouncebuf_size:	size of the bounce buffer
->> >   * @info:		spi-nor part JDEC MFR id and other info
->> >   * @page_size:		the page size of the SPI NOR
->> > + * @n_sector:		number of sectors
->> >   * @addr_width:		number of address bytes
->> >   * @erase_opcode:	the opcode for erasing a sector
->> >   * @read_opcode:	the read opcode
->> > @@ -599,6 +606,7 @@ struct spi_nor {
->> >  	size_t			bouncebuf_size;
->> >  	const struct flash_info	*info;
->> >  	u32			page_size;
->> > +	u16			n_sectors;
->> >  	u8			addr_width;
->> >  	u8			erase_opcode;
->> >  	u8			read_opcode;
->> > --
->> > 2.17.1
+>> > I looked a bit over your patches, they are in a pretty good shape.
+>> > I
+>> > saw
+>> > something that can be improved on patch 2/3, but I didn't manage
+>> > to
+>> > finish the
+>> > review. Your patches are the first on my TODO list, but now I'm a
+>> > bit
+>> > busy. I
+>> > hope that I'll come with a complete review by the end of the next
+>> > week.
+>> > I'm
+>> > going to do tests on few flashes too, to make sure that BP0-2 was
+>> > not
+>> > affected.
 >> >
+>> > In the meantime, maybe Michael or John can review/test your
+>> > patches,
+>> > they
+>> > showed interest in BP0-3 support.
 >> >
->> > ______________________________________________________
->> > Linux MTD discussion mailing list
->> >
-> https://protect2.fireeye.com/url?k=06b6dd5d-5b7d5a63-06b75612-0cc47a31309a-83164929001f7741&u=http://lists.infradead.org/mailman/listinfo/linux-mtd/
->> >
+>> > Cheers,
+>> > ta
 >> 
 >> 
+> Thanks,
+> Jungseung Lee
 
 ______________________________________________________
 Linux MTD discussion mailing list
