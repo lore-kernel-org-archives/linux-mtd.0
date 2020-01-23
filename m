@@ -2,67 +2,87 @@ Return-Path: <SRS0=9DP4=3M=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AFD0EC33CAA
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jan 2020 08:04:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7632DC33CAA
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jan 2020 08:11:07 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7FD8F24655
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jan 2020 08:04:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3FC3E217F4
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jan 2020 08:11:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="feXaVdus"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7FD8F24655
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kioxia.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="L+rykjFs";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=walle.cc header.i=@walle.cc header.b="COE1u2fD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3FC3E217F4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=UAGQW0AyUji0r3XKVDzsVGF87dM6Sp4QrNmbZd16oWc=; b=feX
-	aVduse6gBUT+nPt+WHBDijVjwhn9wveK2v7Jh1eNtg+ltfiRYr0r2ZgmycwMuHxGxbdI/5P7CNgij
-	j6XM1IM2I2//4syWYBvagPshiV6wNp1nhe6q2nKw7G0kq1J1UqYmmeF/bQhyr7+cTiof5f4AobGqV
-	qVVenDfJ6bTe0n0IXn1QoFstYEeCCyfkICmA35Z9B85pFtYwfqpCKCcYTfO/gACPUwzpgpl3NCQuX
-	EFNQ1tj4exntFjn0xMObWhi4cGRDltrFuAkiJR3sKRYMlISSoF0LK8UOZhVz01LSO4VNuKyWfz/F4
-	ZAkYzhcnAz8vqo4fSesFfnDjlxxKFlw==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
+	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=sGBvuwrOtGO7qGAzR9zdnREg4U6Ck9UNr8zRqwAzdcA=; b=L+rykjFsJbEQForpORT4mWkAS
+	02KKVuEM0v9tlNT/9T9WhRvOHD//XXD6j7hNNPJUJLwhiyFaKY0OhFqI7zQXmtiaUVX0O0Zgyi2Ny
+	foJBK/2AbLhFr2X1VbP63r7q39B+6HBzo8THo9MX7Tle1It9Ybca+miSlhkUOnvQURqoeJe58f0Bu
+	A6kezLd4E6FzbKotNb0q3cEIqWelza+7QIhb2sXHL5sPW0sasgHaQI4ZDhmj0QdBKsH1Wep2RHygv
+	BFt/AfyipQb9W3dIX/jsbY4YAZbmtubH9qZE5oycVIcaIvBvZfQ3uKd48YcWcgPvvGyg45YKcQQUT
+	3ksymfvGw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iuXTk-0001lV-QJ; Thu, 23 Jan 2020 08:04:40 +0000
-Received: from mo-csw1516.securemx.jp ([210.130.202.155]
- helo=mo-csw.securemx.jp)
+	id 1iuXZj-00050j-FW; Thu, 23 Jan 2020 08:10:51 +0000
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iuXTe-0001l5-79
- for linux-mtd@lists.infradead.org; Thu, 23 Jan 2020 08:04:37 +0000
-Received: by mo-csw.securemx.jp (mx-mo-csw1516) id 00N84HvF029403;
- Thu, 23 Jan 2020 17:04:17 +0900
-X-Iguazu-Qid: 34trOzu6X0FWqQfsel
-X-Iguazu-QSIG: v=2; s=0; t=1579766656; q=34trOzu6X0FWqQfsel;
- m=pTr+mSjPK091CWNCIihQcPNTPYUhiCgNUOlQ3hsrZY8=
-Received: from imx2.toshiba.co.jp (imx2.toshiba.co.jp [106.186.93.51])
- by relay.securemx.jp (mx-mr1510) id 00N84FR2006162;
- Thu, 23 Jan 2020 17:04:16 +0900
-Received: from enc01.localdomain ([106.186.93.100])
- by imx2.toshiba.co.jp  with ESMTP id 00N84Fnp019529;
- Thu, 23 Jan 2020 17:04:15 +0900 (JST)
-Received: from hop001.toshiba.co.jp ([133.199.164.63])
- by enc01.localdomain  with ESMTP id 00N84EXP024358;
- Thu, 23 Jan 2020 17:04:15 +0900
-From: Yoshio Furuyama <ytc-mb-yfuruyama7@kioxia.com>
-To: miquel.raynal@bootlin.com, vigneshr@ti.com
-Subject: [PATCH] mtd: nand: Rename Toshiba Memory to Kioxia
-Date: Thu, 23 Jan 2020 17:04:03 +0900
-X-TSB-HOP: ON
-Message-Id: <1579766643-4983-1-git-send-email-ytc-mb-yfuruyama7@kioxia.com>
-X-Mailer: git-send-email 2.7.4
+ id 1iuXZf-00050C-DH
+ for linux-mtd@lists.infradead.org; Thu, 23 Jan 2020 08:10:50 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 082EF22EEB;
+ Thu, 23 Jan 2020 09:10:36 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1579767038;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=g6IbzCytqMpsMAO18SmKzfD2DCVFEigqefqQP9nYdVA=;
+ b=COE1u2fDw96NbDYw9L4sEn4b8JOO5EOtl5YBt9/6SF6o+0NM3bfhxqwU/GXrRGsztZDVfw
+ wHPinD810zRk1a+Gwf+JBejLX5aXyAg9EJvaT7nuPzW3BHWxHWbS798EEQGkQL3CUIyIJw
+ rtHaoatOiudQNbYeKUYevruSoGoXKJI=
+MIME-Version: 1.0
+Date: Thu, 23 Jan 2020 09:10:36 +0100
+From: Michael Walle <michael@walle.cc>
+To: Jungseung Lee <js07.lee@samsung.com>
+Subject: Re: [PATCH v3 2/3] mtd: spi-nor: add 4bit block protection support
+In-Reply-To: <0c4e70fcf58c93f9b7375d83b50028df225aed82.camel@samsung.com>
+References: <20200113055907.9029-2-js07.lee@samsung.com>
+ <CGME20200122193640epcas1p2e8df0b73bdf6c6389709148702082aef@epcas1p2.samsung.com>
+ <20200122193608.3859-1-michael@walle.cc>
+ <0c4e70fcf58c93f9b7375d83b50028df225aed82.camel@samsung.com>
+Message-ID: <f4581c4cb231cc4c61b9a146dda5fada@walle.cc>
+X-Sender: michael@walle.cc
+User-Agent: Roundcube Webmail/1.3.8
+X-Spamd-Bar: +
+X-Rspamd-Server: web
+X-Rspamd-Queue-Id: 082EF22EEB
+X-Spamd-Result: default: False [1.40 / 15.00]; ARC_NA(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ FREEMAIL_ENVRCPT(0.00)[gmail.com]; TAGGED_RCPT(0.00)[];
+ MIME_GOOD(-0.10)[text/plain]; RCPT_COUNT_FIVE(0.00)[5];
+ DKIM_SIGNED(0.00)[]; NEURAL_HAM(-0.00)[-0.759];
+ RCVD_COUNT_ZERO(0.00)[0]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+];
+ FREEMAIL_CC(0.00)[gmail.com,lists.infradead.org,microchip.com,ti.com];
+ MID_RHS_MATCH_FROM(0.00)[]; SUSPICIOUS_RECIPS(1.50)[]
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200123_000434_513015_022AE8E4 
-X-CRM114-Status: GOOD (  20.70  )
+X-CRM114-CacheID: sfid-20200123_001047_811173_126084E4 
+X-CRM114-Status: GOOD (  31.92  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,834 +94,462 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Cc: tudor.ambarus@microchip.com, linux-mtd@lists.infradead.org, vigneshr@ti.com,
+ js07.lee@gmail.com
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Rename Toshiba Memory to Kioxia since the company name has changed.
+Hi Jungseung,
 
-Signed-off-by: Yoshio Furuyama <ytc-mb-yfuruyama7@kioxia.com>
----
- drivers/mtd/nand/raw/Makefile       |   2 +-
- drivers/mtd/nand/raw/internals.h    |   4 +-
- drivers/mtd/nand/raw/nand_ids.c     |   2 +-
- drivers/mtd/nand/raw/nand_kioxia.c  | 159 ++++++++++++++++++++++++++++++
- drivers/mtd/nand/raw/nand_toshiba.c | 159 ------------------------------
- drivers/mtd/nand/spi/Makefile       |   2 +-
- drivers/mtd/nand/spi/core.c         |   2 +-
- drivers/mtd/nand/spi/kioxia.c       | 188 ++++++++++++++++++++++++++++++++++++
- drivers/mtd/nand/spi/toshiba.c      | 188 ------------------------------------
- include/linux/mtd/spinand.h         |   2 +-
- 10 files changed, 354 insertions(+), 354 deletions(-)
- create mode 100644 drivers/mtd/nand/raw/nand_kioxia.c
- delete mode 100644 drivers/mtd/nand/raw/nand_toshiba.c
- create mode 100644 drivers/mtd/nand/spi/kioxia.c
- delete mode 100644 drivers/mtd/nand/spi/toshiba.c
+Am 2020-01-23 07:22, schrieb Jungseung Lee:
+> Hi, Michael
+> 
+> 2020-01-22 (Wed), 20:36 +0100, Michael Walle:
+>> Hi,
+>> 
+>> > Currently, we are supporting block protection only for
+>> > flash chips with 3 block protection bits in the SR register.
+>> > This patch enables block protection support for some flash with
+>> > 4 block protection bits(bp0-3).
+>> >
+>> > Signed-off-by: Jungseung Lee <js07.lee@samsung.com>
+>> > ---
+>> > v3 :
+>> >   Fix wrong ofs calculation on v2 patch
+>> > v2 :
+>> >   Add sample table portion about 4bit block protection on the
+>> > comment
+>> >   Trivial coding style change
+>> >
+>> >  drivers/mtd/spi-nor/spi-nor.c | 127 +++++++++++++++++++++++++++++-
+>> > ----
+>> >  include/linux/mtd/spi-nor.h   |   8 +++
+>> >  2 files changed, 119 insertions(+), 16 deletions(-)
+>> >
+>> > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-
+>> > nor/spi-nor.c
+>> > index e3da6a8654a8..7e8af6c4fdfa 100644
+>> > --- a/drivers/mtd/spi-nor/spi-nor.c
+>> > +++ b/drivers/mtd/spi-nor/spi-nor.c
+>> > @@ -238,6 +238,14 @@ struct flash_info {
+>> >  					 * status register. Must be
+>> > used with
+>> >  					 * SPI_NOR_HAS_TB.
+>> >  					 */
+>> > +#define SPI_NOR_HAS_BP3		BIT(17)	/*
+>> > +					 * Flash SR has 4 bit fields
+>> > (BP0-3)
+>> > +					 * for block protection.
+>> > +					 */
+>> > +#define SPI_NOR_BP3_SR_BIT6	BIT(18)	/*
+>> > +					 * BP3 is bit 6 of status
+>> > register.
+>> > +					 * Must be used with
+>> > SPI_NOR_HAS_BP3.
+>> > +					 */
+>> >
+>> >  	/* Part specific fixup hooks. */
+>> >  	const struct spi_nor_fixups *fixups;
+>> > @@ -1767,23 +1775,47 @@ static void stm_get_locked_range(struct
+>> > spi_nor *nor, u8 sr, loff_t *ofs,
+>> >  	struct mtd_info *mtd = &nor->mtd;
+>> >  	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
+>> >  	u8 tb_mask = SR_TB_BIT5;
+>> > -	int pow;
+>> > +	u8 bp;
+>> > +	int pow = 0;
+>> >
+>> >  	if (nor->flags & SNOR_F_HAS_SR_TB_BIT6)
+>> >  		tb_mask = SR_TB_BIT6;
+>> >
+>> > -	if (!(sr & mask)) {
+>> > -		/* No protection */
+>> > -		*ofs = 0;
+>> > -		*len = 0;
+>> > +	if (nor->flags & SNOR_F_HAS_SR_BP3) {
+>> > +		u8 tmp;
+>> > +
+>> > +		if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6)
+>> > +			tmp = sr & (mask | SR_BP3_BIT6);
+>> > +		else
+>> > +			tmp = sr & (mask | SR_BP3_BIT5);
+>> > +
+>> > +		if (tmp & SR_BP3_BIT6)
+>> > +			tmp = (tmp & ~BIT(6)) | BIT(5);
+>> > +
+>> > +		bp = tmp >> SR_BP_SHIFT;
+>> > +		if (!bp) {
+>> > +			*ofs = 0;
+>> > +			*len = 0;
+>> > +			return;
+>> > +		}
+>> > +		if (bp <= ilog2(nor->n_sectors))
+>> > +			pow = ilog2(nor->n_sectors) + 1 - bp;
+>> >  	} else {
+>> > -		pow = ((sr & mask) ^ mask) >> SR_BP_SHIFT;
+>> > -		*len = mtd->size >> pow;
+>> > -		if (nor->flags & SNOR_F_HAS_SR_TB && sr & tb_mask)
+>> > +		bp = (sr & mask) >> SR_BP_SHIFT;
+>> > +		if (!bp) {
+>> >  			*ofs = 0;
+>> > -		else
+>> > -			*ofs = mtd->size - *len;
+>> > +			*len = 0;
+>> > +			return;
+>> > +		}
+>> > +		pow = bp ^ (mask >> SR_BP_SHIFT);
+>> >  	}
+>> > +
+>> > +	*len = mtd->size >> pow;
+>> > +
+>> > +	if (nor->flags & SNOR_F_HAS_SR_TB && sr & tb_mask)
+>> > +		*ofs = 0;
+>> > +	else
+>> > +		*ofs = mtd->size - *len;
+>> >  }
+>> >
+>> >  /*
+>> > @@ -1823,7 +1855,7 @@ static int stm_is_unlocked_sr(struct spi_nor
+>> > *nor, loff_t ofs, uint64_t len,
+>> >
+>> >  /*
+>> >   * Lock a region of the flash. Compatible with ST Micro and
+>> > similar flash.
+>> > - * Supports the block protection bits BP{0,1,2} in the status
+>> > register
+>> > + * Supports the block protection bits BP{0,1,2,3} in the status
+>> > register
+>> >   * (SR). Does not support these features found in newer SR
+>> > bitfields:
+>> >   *   - SEC: sector/block protect - only handle SEC=0 (block
+>> > protect)
+>> >   *   - CMP: complement protect - only support CMP=0 (range is not
+>> > complemented)
+>> > @@ -1831,7 +1863,7 @@ static int stm_is_unlocked_sr(struct spi_nor
+>> > *nor, loff_t ofs, uint64_t len,
+>> >   * Support for the following is provided conditionally for some
+>> > flash:
+>> >   *   - TB: top/bottom protect
+>> >   *
+>> > - * Sample table portion for 8MB flash (Winbond w25q64fw):
+>> > + * Sample table portion for 8MB flash (Winbond w25q64fw / BP0-2):
+>> >   *
+>> >   *   SEC  |  TB   |  BP2  |  BP1  |  BP0  |  Prot Length  |
+>> > Protected Portion
+>> >   *  ------------------------------------------------------------
+>> > --------------
+>> > @@ -1851,6 +1883,32 @@ static int stm_is_unlocked_sr(struct spi_nor
+>> > *nor, loff_t ofs, uint64_t len,
+>> >   *    0   |   1   |   1   |   0   |   1   |  2 MB         | Lower
+>> > 1/4
+>> >   *    0   |   1   |   1   |   1   |   0   |  4 MB         | Lower
+>> > 1/2
+>> >   *
+>> > + * Sample table portion for 64MB flash (Micron n25q512ax3 / BP0-
+>> > 3):
+>> > + *
+>> > + *   TB   |  BP3  |  BP2  |  BP1  |  BP0  |  Prot Length  |
+>> > Protected Portion
+>> > + *  ------------------------------------------------------------
+>> > --------------
+>> > + *    0   |   0   |   0   |   0   |   0   |  NONE         | NONE
+>> > + *    0   |   0   |   0   |   0   |   1   |   64 KB       | Upper
+>> > 1/1024
+>> > + *    0   |   0   |   0   |   1   |   0   |  128 KB       | Upper
+>> > 1/512
+>> > + *    0   |   0   |   0   |   1   |   1   |  256 KB       | Upper
+>> > 1/256
+>> > + *   ...
+>> > + *    0   |   1   |   0   |   0   |   1   |  16 MB        | Upper
+>> > 1/4
+>> > + *    0   |   1   |   0   |   1   |   0   |  32 MB        | Upper
+>> > 1/2
+>> > + *    0   |   1   |   0   |   1   |   1   |  64 MB        | ALL
+>> > + *    0   |   1   |   1   |   0   |   0   |  64 MB        | ALL
+>> > + *   ...
+>> > + *  ------|-------|-------|-------|-------|---------------|-------
+>> > ------------
+>> > + *    1   |   0   |   0   |   0   |   0   |   NONE        | NONE
+>> > + *    1   |   0   |   0   |   0   |   1   |   64 KB       | Lower
+>> > 1/1024
+>> > + *    1   |   0   |   0   |   1   |   0   |  128 KB       | Lower
+>> > 1/512
+>> > + *    1   |   0   |   0   |   1   |   1   |  256 KB       | Lower
+>> > 1/256
+>> > + *   ...
+>> > + *    1   |   1   |   0   |   0   |   1   |  16 MB        | Lower
+>> > 1/4
+>> > + *    1   |   1   |   0   |   1   |   0   |  32 MB        | Lower
+>> > 1/2
+>> > + *    1   |   1   |   0   |   1   |   1   |  64 MB        | ALL
+>> > + *    1   |   1   |   1   |   0   |   0   |  64 MB        | ALL
+>> > + *   ...
+>> > + *
+>> >   * Returns negative on errors, 0 on success.
+>> >   */
+>> >  static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+>> > @@ -1898,6 +1956,12 @@ static int stm_lock(struct spi_nor *nor,
+>> > loff_t ofs, uint64_t len)
+>> >  	if (nor->flags & SNOR_F_HAS_SR_TB_BIT6)
+>> >  		tb_mask = SR_TB_BIT6;
+>> >
+>> > +	if (nor->flags & SNOR_F_HAS_SR_BP3) {
+>> > +		if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6)
+>> > +			mask = mask | SR_BP3_BIT6;
+>> > +		else
+>> > +			mask = mask | SR_BP3_BIT5;
+>> > +	}
+>> >  	/*
+>> >  	 * Need smallest pow such that:
+>> >  	 *
+>> > @@ -1908,7 +1972,17 @@ static int stm_lock(struct spi_nor *nor,
+>> > loff_t ofs, uint64_t len)
+>> >  	 *   pow = ceil(log2(size / len)) = log2(size) -
+>> > floor(log2(len))
+>> >  	 */
+>> >  	pow = ilog2(mtd->size) - ilog2(lock_len);
+>> > -	val = mask - (pow << SR_BP_SHIFT);
+>> > +
+>> > +	if (nor->flags & SNOR_F_HAS_SR_BP3) {
+>> > +		val = ilog2(nor->n_sectors) + 1 - pow;
+>> 
+>> Why do you use a new calculation here? As far as I can see, the
+>> method is
+>> the same except that is has one bit more. That also raises the
+>> question why
+>> n_sectors is now needed?
+>> 
+>> Can't we just initialize the mask with
+>> 
+>> mask = SR_BP2 | SR_BP1 | SR_BP0;
+>> if (nor->flags & SNOR_F_HAS_SR_BP3)
+>>     mask |= SR_BP3_BIT5;
+>> 
+>> do the calculation and checks and then move the SR_BP3_BIT5 to
+>> SR_BP3_BIT6
+>> if SNOR_F_HAS_SR_BP3_BIT6 is set.
+>> 
+> 
+> For most of flashes that supporting BP0-2, the smallest protected
+> portion is fixed as 1/64
+> and it can be properly handled by existing
+> calculation. (Actually it's not fully generic, see flashes like
+> w25q40bw or m25p80. Of course, it doesn't have SPI_NOR_HAS_LOCK flag
+> even though it has BP0-2 bit in SR)
 
-diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
-index 2d136b1..e7eb3b5 100644
---- a/drivers/mtd/nand/raw/Makefile
-+++ b/drivers/mtd/nand/raw/Makefile
-@@ -68,4 +68,4 @@ nand-objs += nand_hynix.o
- nand-objs += nand_macronix.o
- nand-objs += nand_micron.o
- nand-objs += nand_samsung.o
--nand-objs += nand_toshiba.o
-+nand-objs += nand_kioxia.o
-diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
-index cba6fe7..25054fe 100644
---- a/drivers/mtd/nand/raw/internals.h
-+++ b/drivers/mtd/nand/raw/internals.h
-@@ -30,7 +30,7 @@
- #define NAND_MFR_SAMSUNG	0xec
- #define NAND_MFR_SANDISK	0x45
- #define NAND_MFR_STMICRO	0x20
--#define NAND_MFR_TOSHIBA	0x98
-+#define NAND_MFR_KIOXIA		0x98
- #define NAND_MFR_WINBOND	0xef
- 
- /**
-@@ -72,7 +72,7 @@ struct nand_manufacturer {
- extern const struct nand_manufacturer_ops macronix_nand_manuf_ops;
- extern const struct nand_manufacturer_ops micron_nand_manuf_ops;
- extern const struct nand_manufacturer_ops samsung_nand_manuf_ops;
--extern const struct nand_manufacturer_ops toshiba_nand_manuf_ops;
-+extern const struct nand_manufacturer_ops kioxia_nand_manuf_ops;
- 
- /* Core functions */
- const struct nand_manufacturer *nand_get_manufacturer(u8 id);
-diff --git a/drivers/mtd/nand/raw/nand_ids.c b/drivers/mtd/nand/raw/nand_ids.c
-index ba27902..24c8bb3 100644
---- a/drivers/mtd/nand/raw/nand_ids.c
-+++ b/drivers/mtd/nand/raw/nand_ids.c
-@@ -181,7 +181,7 @@ struct nand_flash_dev nand_flash_ids[] = {
- 	{NAND_MFR_SAMSUNG, "Samsung", &samsung_nand_manuf_ops},
- 	{NAND_MFR_SANDISK, "SanDisk"},
- 	{NAND_MFR_STMICRO, "ST Micro"},
--	{NAND_MFR_TOSHIBA, "Toshiba", &toshiba_nand_manuf_ops},
-+	{NAND_MFR_KIOXIA, "Kioxia", &kioxia_nand_manuf_ops},
- 	{NAND_MFR_WINBOND, "Winbond"},
- };
- 
-diff --git a/drivers/mtd/nand/raw/nand_kioxia.c b/drivers/mtd/nand/raw/nand_kioxia.c
-new file mode 100644
-index 0000000..ae85e71
---- /dev/null
-+++ b/drivers/mtd/nand/raw/nand_kioxia.c
-@@ -0,0 +1,159 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2017 Free Electrons
-+ * Copyright (C) 2017 NextThing Co
-+ *
-+ * Author: Boris Brezillon <boris.brezillon@free-electrons.com>
-+ */
-+
-+#include "internals.h"
-+
-+/* Bit for detecting BENAND */
-+#define KIOXIA_NAND_ID4_IS_BENAND		BIT(7)
-+
-+/* Recommended to rewrite for BENAND */
-+#define KIOXIA_NAND_STATUS_REWRITE_RECOMMENDED	BIT(3)
-+
-+static int kioxia_nand_benand_eccstatus(struct nand_chip *chip)
-+{
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	int ret;
-+	unsigned int max_bitflips = 0;
-+	u8 status;
-+
-+	/* Check Status */
-+	ret = nand_status_op(chip, &status);
-+	if (ret)
-+		return ret;
-+
-+	if (status & NAND_STATUS_FAIL) {
-+		/* uncorrected */
-+		mtd->ecc_stats.failed++;
-+	} else if (status & KIOXIA_NAND_STATUS_REWRITE_RECOMMENDED) {
-+		/* corrected */
-+		max_bitflips = mtd->bitflip_threshold;
-+		mtd->ecc_stats.corrected += max_bitflips;
-+	}
-+
-+	return max_bitflips;
-+}
-+
-+static int
-+kioxia_nand_read_page_benand(struct nand_chip *chip, uint8_t *buf,
-+			     int oob_required, int page)
-+{
-+	int ret;
-+
-+	ret = nand_read_page_raw(chip, buf, oob_required, page);
-+	if (ret)
-+		return ret;
-+
-+	return kioxia_nand_benand_eccstatus(chip);
-+}
-+
-+static int
-+kioxia_nand_read_subpage_benand(struct nand_chip *chip, uint32_t data_offs,
-+				uint32_t readlen, uint8_t *bufpoi, int page)
-+{
-+	int ret;
-+
-+	ret = nand_read_page_op(chip, page, data_offs,
-+				bufpoi + data_offs, readlen);
-+	if (ret)
-+		return ret;
-+
-+	return kioxia_nand_benand_eccstatus(chip);
-+}
-+
-+static void kioxia_nand_benand_init(struct nand_chip *chip)
-+{
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+
-+	/*
-+	 * On BENAND, the entire OOB region can be used by the MTD user.
-+	 * The calculated ECC bytes are stored into other isolated
-+	 * area which is not accessible to users.
-+	 * This is why chip->ecc.bytes = 0.
-+	 */
-+	chip->ecc.bytes = 0;
-+	chip->ecc.size = 512;
-+	chip->ecc.strength = 8;
-+	chip->ecc.read_page = kioxia_nand_read_page_benand;
-+	chip->ecc.read_subpage = kioxia_nand_read_subpage_benand;
-+	chip->ecc.write_page = nand_write_page_raw;
-+	chip->ecc.read_page_raw = nand_read_page_raw_notsupp;
-+	chip->ecc.write_page_raw = nand_write_page_raw_notsupp;
-+
-+	chip->options |= NAND_SUBPAGE_READ;
-+
-+	mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
-+}
-+
-+static void kioxia_nand_decode_id(struct nand_chip *chip)
-+{
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	struct nand_memory_organization *memorg;
-+
-+	memorg = nanddev_get_memorg(&chip->base);
-+
-+	nand_decode_ext_id(chip);
-+
-+	/*
-+	 * Toshiba 24nm raw SLC (i.e., not BENAND) have 32B OOB per
-+	 * 512B page. For Toshiba SLC, we decode the 5th/6th byte as
-+	 * follows:
-+	 * - ID byte 6, bits[2:0]: 100b -> 43nm, 101b -> 32nm,
-+	 *                         110b -> 24nm
-+	 * - ID byte 5, bit[7]:    1 -> BENAND, 0 -> raw SLC
-+	 */
-+	if (chip->id.len >= 6 && nand_is_slc(chip) &&
-+	    (chip->id.data[5] & 0x7) == 0x6 /* 24nm */ &&
-+	    !(chip->id.data[4] & 0x80) /* !BENAND */) {
-+		memorg->oobsize = 32 * memorg->pagesize >> 9;
-+		mtd->oobsize = memorg->oobsize;
-+	}
-+
-+	/*
-+	 * Extract ECC requirements from 6th id byte.
-+	 * For Toshiba SLC, ecc requrements are as follows:
-+	 *  - 43nm: 1 bit ECC for each 512Byte is required.
-+	 *  - 32nm: 4 bit ECC for each 512Byte is required.
-+	 *  - 24nm: 8 bit ECC for each 512Byte is required.
-+	 */
-+	if (chip->id.len >= 6 && nand_is_slc(chip)) {
-+		chip->base.eccreq.step_size = 512;
-+		switch (chip->id.data[5] & 0x7) {
-+		case 0x4:
-+			chip->base.eccreq.strength = 1;
-+			break;
-+		case 0x5:
-+			chip->base.eccreq.strength = 4;
-+			break;
-+		case 0x6:
-+			chip->base.eccreq.strength = 8;
-+			break;
-+		default:
-+			WARN(1, "Could not get ECC info");
-+			chip->base.eccreq.step_size = 0;
-+			break;
-+		}
-+	}
-+}
-+
-+static int kioxia_nand_init(struct nand_chip *chip)
-+{
-+	if (nand_is_slc(chip))
-+		chip->options |= NAND_BBM_FIRSTPAGE | NAND_BBM_SECONDPAGE;
-+
-+	/* Check that chip is BENAND and ECC mode is on-die */
-+	if (nand_is_slc(chip) && chip->ecc.mode == NAND_ECC_ON_DIE &&
-+	    chip->id.data[4] & KIOXIA_NAND_ID4_IS_BENAND)
-+		kioxia_nand_benand_init(chip);
-+
-+	return 0;
-+}
-+
-+const struct nand_manufacturer_ops kioxia_nand_manuf_ops = {
-+	.detect = kioxia_nand_decode_id,
-+	.init = kioxia_nand_init,
-+};
-diff --git a/drivers/mtd/nand/raw/nand_toshiba.c b/drivers/mtd/nand/raw/nand_toshiba.c
-deleted file mode 100644
-index 9c03fbb..0000000
---- a/drivers/mtd/nand/raw/nand_toshiba.c
-+++ /dev/null
-@@ -1,159 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- * Copyright (C) 2017 Free Electrons
-- * Copyright (C) 2017 NextThing Co
-- *
-- * Author: Boris Brezillon <boris.brezillon@free-electrons.com>
-- */
--
--#include "internals.h"
--
--/* Bit for detecting BENAND */
--#define TOSHIBA_NAND_ID4_IS_BENAND		BIT(7)
--
--/* Recommended to rewrite for BENAND */
--#define TOSHIBA_NAND_STATUS_REWRITE_RECOMMENDED	BIT(3)
--
--static int toshiba_nand_benand_eccstatus(struct nand_chip *chip)
--{
--	struct mtd_info *mtd = nand_to_mtd(chip);
--	int ret;
--	unsigned int max_bitflips = 0;
--	u8 status;
--
--	/* Check Status */
--	ret = nand_status_op(chip, &status);
--	if (ret)
--		return ret;
--
--	if (status & NAND_STATUS_FAIL) {
--		/* uncorrected */
--		mtd->ecc_stats.failed++;
--	} else if (status & TOSHIBA_NAND_STATUS_REWRITE_RECOMMENDED) {
--		/* corrected */
--		max_bitflips = mtd->bitflip_threshold;
--		mtd->ecc_stats.corrected += max_bitflips;
--	}
--
--	return max_bitflips;
--}
--
--static int
--toshiba_nand_read_page_benand(struct nand_chip *chip, uint8_t *buf,
--			      int oob_required, int page)
--{
--	int ret;
--
--	ret = nand_read_page_raw(chip, buf, oob_required, page);
--	if (ret)
--		return ret;
--
--	return toshiba_nand_benand_eccstatus(chip);
--}
--
--static int
--toshiba_nand_read_subpage_benand(struct nand_chip *chip, uint32_t data_offs,
--				 uint32_t readlen, uint8_t *bufpoi, int page)
--{
--	int ret;
--
--	ret = nand_read_page_op(chip, page, data_offs,
--				bufpoi + data_offs, readlen);
--	if (ret)
--		return ret;
--
--	return toshiba_nand_benand_eccstatus(chip);
--}
--
--static void toshiba_nand_benand_init(struct nand_chip *chip)
--{
--	struct mtd_info *mtd = nand_to_mtd(chip);
--
--	/*
--	 * On BENAND, the entire OOB region can be used by the MTD user.
--	 * The calculated ECC bytes are stored into other isolated
--	 * area which is not accessible to users.
--	 * This is why chip->ecc.bytes = 0.
--	 */
--	chip->ecc.bytes = 0;
--	chip->ecc.size = 512;
--	chip->ecc.strength = 8;
--	chip->ecc.read_page = toshiba_nand_read_page_benand;
--	chip->ecc.read_subpage = toshiba_nand_read_subpage_benand;
--	chip->ecc.write_page = nand_write_page_raw;
--	chip->ecc.read_page_raw = nand_read_page_raw_notsupp;
--	chip->ecc.write_page_raw = nand_write_page_raw_notsupp;
--
--	chip->options |= NAND_SUBPAGE_READ;
--
--	mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
--}
--
--static void toshiba_nand_decode_id(struct nand_chip *chip)
--{
--	struct mtd_info *mtd = nand_to_mtd(chip);
--	struct nand_memory_organization *memorg;
--
--	memorg = nanddev_get_memorg(&chip->base);
--
--	nand_decode_ext_id(chip);
--
--	/*
--	 * Toshiba 24nm raw SLC (i.e., not BENAND) have 32B OOB per
--	 * 512B page. For Toshiba SLC, we decode the 5th/6th byte as
--	 * follows:
--	 * - ID byte 6, bits[2:0]: 100b -> 43nm, 101b -> 32nm,
--	 *                         110b -> 24nm
--	 * - ID byte 5, bit[7]:    1 -> BENAND, 0 -> raw SLC
--	 */
--	if (chip->id.len >= 6 && nand_is_slc(chip) &&
--	    (chip->id.data[5] & 0x7) == 0x6 /* 24nm */ &&
--	    !(chip->id.data[4] & 0x80) /* !BENAND */) {
--		memorg->oobsize = 32 * memorg->pagesize >> 9;
--		mtd->oobsize = memorg->oobsize;
--	}
--
--	/*
--	 * Extract ECC requirements from 6th id byte.
--	 * For Toshiba SLC, ecc requrements are as follows:
--	 *  - 43nm: 1 bit ECC for each 512Byte is required.
--	 *  - 32nm: 4 bit ECC for each 512Byte is required.
--	 *  - 24nm: 8 bit ECC for each 512Byte is required.
--	 */
--	if (chip->id.len >= 6 && nand_is_slc(chip)) {
--		chip->base.eccreq.step_size = 512;
--		switch (chip->id.data[5] & 0x7) {
--		case 0x4:
--			chip->base.eccreq.strength = 1;
--			break;
--		case 0x5:
--			chip->base.eccreq.strength = 4;
--			break;
--		case 0x6:
--			chip->base.eccreq.strength = 8;
--			break;
--		default:
--			WARN(1, "Could not get ECC info");
--			chip->base.eccreq.step_size = 0;
--			break;
--		}
--	}
--}
--
--static int toshiba_nand_init(struct nand_chip *chip)
--{
--	if (nand_is_slc(chip))
--		chip->options |= NAND_BBM_FIRSTPAGE | NAND_BBM_SECONDPAGE;
--
--	/* Check that chip is BENAND and ECC mode is on-die */
--	if (nand_is_slc(chip) && chip->ecc.mode == NAND_ECC_ON_DIE &&
--	    chip->id.data[4] & TOSHIBA_NAND_ID4_IS_BENAND)
--		toshiba_nand_benand_init(chip);
--
--	return 0;
--}
--
--const struct nand_manufacturer_ops toshiba_nand_manuf_ops = {
--	.detect = toshiba_nand_decode_id,
--	.init = toshiba_nand_init,
--};
-diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
-index 9662b9c..820c83f 100644
---- a/drivers/mtd/nand/spi/Makefile
-+++ b/drivers/mtd/nand/spi/Makefile
-@@ -1,3 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0
--spinand-objs := core.o gigadevice.o macronix.o micron.o paragon.o toshiba.o winbond.o
-+spinand-objs := core.o gigadevice.o macronix.o micron.o paragon.o kioxia.o winbond.o
- obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 89f6bee..5c80ee7 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -758,7 +758,7 @@ static int spinand_create_dirmaps(struct spinand_device *spinand)
- 	&macronix_spinand_manufacturer,
- 	&micron_spinand_manufacturer,
- 	&paragon_spinand_manufacturer,
--	&toshiba_spinand_manufacturer,
-+	&kioxia_spinand_manufacturer,
- 	&winbond_spinand_manufacturer,
- };
- 
-diff --git a/drivers/mtd/nand/spi/kioxia.c b/drivers/mtd/nand/spi/kioxia.c
-new file mode 100644
-index 0000000..44fd9c3
---- /dev/null
-+++ b/drivers/mtd/nand/spi/kioxia.c
-@@ -0,0 +1,188 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2018 exceet electronics GmbH
-+ * Copyright (c) 2018 Kontron Electronics GmbH
-+ *
-+ * Author: Frieder Schrempf <frieder.schrempf@kontron.de>
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/kernel.h>
-+#include <linux/mtd/spinand.h>
-+
-+#define SPINAND_MFR_KIOXIA			0x98
-+#define KIOXIA_STATUS_ECC_HAS_BITFLIPS_T	(3 << 4)
-+
-+static SPINAND_OP_VARIANTS(read_cache_variants,
-+		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(write_cache_variants,
-+		SPINAND_PROG_LOAD(true, 0, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(update_cache_variants,
-+		SPINAND_PROG_LOAD(false, 0, NULL, 0));
-+
-+static int tc58cxgxsx_ooblayout_ecc(struct mtd_info *mtd, int section,
-+				    struct mtd_oob_region *region)
-+{
-+	if (section > 0)
-+		return -ERANGE;
-+
-+	region->offset = mtd->oobsize / 2;
-+	region->length = mtd->oobsize / 2;
-+
-+	return 0;
-+}
-+
-+static int tc58cxgxsx_ooblayout_free(struct mtd_info *mtd, int section,
-+				     struct mtd_oob_region *region)
-+{
-+	if (section > 0)
-+		return -ERANGE;
-+
-+	/* 2 bytes reserved for BBM */
-+	region->offset = 2;
-+	region->length = (mtd->oobsize / 2) - 2;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops tc58cxgxsx_ooblayout = {
-+	.ecc = tc58cxgxsx_ooblayout_ecc,
-+	.free = tc58cxgxsx_ooblayout_free,
-+};
-+
-+static int tc58cxgxsx_ecc_get_status(struct spinand_device *spinand,
-+				     u8 status)
-+{
-+	struct nand_device *nand = spinand_to_nand(spinand);
-+	u8 mbf = 0;
-+	struct spi_mem_op op = SPINAND_GET_FEATURE_OP(0x30, &mbf);
-+
-+	switch (status & STATUS_ECC_MASK) {
-+	case STATUS_ECC_NO_BITFLIPS:
-+		return 0;
-+
-+	case STATUS_ECC_UNCOR_ERROR:
-+		return -EBADMSG;
-+
-+	case STATUS_ECC_HAS_BITFLIPS:
-+	case KIOXIA_STATUS_ECC_HAS_BITFLIPS_T:
-+		/*
-+		 * Let's try to retrieve the real maximum number of bitflips
-+		 * in order to avoid forcing the wear-leveling layer to move
-+		 * data around if it's not necessary.
-+		 */
-+		if (spi_mem_exec_op(spinand->spimem, &op))
-+			return nand->eccreq.strength;
-+
-+		mbf >>= 4;
-+
-+		if (WARN_ON(mbf > nand->eccreq.strength || !mbf))
-+			return nand->eccreq.strength;
-+
-+		return mbf;
-+
-+	default:
-+		break;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static const struct spinand_info kioxia_spinand_table[] = {
-+	/* 3.3V 1Gb */
-+	SPINAND_INFO("TC58CVG0S3", 0xC2,
-+		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
-+				     tc58cxgxsx_ecc_get_status)),
-+	/* 3.3V 2Gb */
-+	SPINAND_INFO("TC58CVG1S3", 0xCB,
-+		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
-+				     tc58cxgxsx_ecc_get_status)),
-+	/* 3.3V 4Gb */
-+	SPINAND_INFO("TC58CVG2S0", 0xCD,
-+		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
-+				     tc58cxgxsx_ecc_get_status)),
-+	/* 1.8V 1Gb */
-+	SPINAND_INFO("TC58CYG0S3", 0xB2,
-+		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
-+				     tc58cxgxsx_ecc_get_status)),
-+	/* 1.8V 2Gb */
-+	SPINAND_INFO("TC58CYG1S3", 0xBB,
-+		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
-+				     tc58cxgxsx_ecc_get_status)),
-+	/* 1.8V 4Gb */
-+	SPINAND_INFO("TC58CYG2S0", 0xBD,
-+		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
-+				     tc58cxgxsx_ecc_get_status)),
-+};
-+
-+static int kioxia_spinand_detect(struct spinand_device *spinand)
-+{
-+	u8 *id = spinand->id.data;
-+	int ret;
-+
-+	/*
-+	 * Toshiba SPI NAND read ID needs a dummy byte,
-+	 * so the first byte in id is garbage.
-+	 */
-+	if (id[1] != SPINAND_MFR_KIOXIA)
-+		return 0;
-+
-+	ret = spinand_match_and_init(spinand, kioxia_spinand_table,
-+				     ARRAY_SIZE(kioxia_spinand_table),
-+				     id[2]);
-+	if (ret)
-+		return ret;
-+
-+	return 1;
-+}
-+
-+static const struct spinand_manufacturer_ops kioxia_spinand_manuf_ops = {
-+	.detect = kioxia_spinand_detect,
-+};
-+
-+const struct spinand_manufacturer kioxia_spinand_manufacturer = {
-+	.id = SPINAND_MFR_KIOXIA,
-+	.name = "Kioxia",
-+	.ops = &kioxia_spinand_manuf_ops,
-+};
-diff --git a/drivers/mtd/nand/spi/toshiba.c b/drivers/mtd/nand/spi/toshiba.c
-deleted file mode 100644
-index 1cb3760..0000000
---- a/drivers/mtd/nand/spi/toshiba.c
-+++ /dev/null
-@@ -1,188 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * Copyright (c) 2018 exceet electronics GmbH
-- * Copyright (c) 2018 Kontron Electronics GmbH
-- *
-- * Author: Frieder Schrempf <frieder.schrempf@kontron.de>
-- */
--
--#include <linux/device.h>
--#include <linux/kernel.h>
--#include <linux/mtd/spinand.h>
--
--#define SPINAND_MFR_TOSHIBA		0x98
--#define TOSH_STATUS_ECC_HAS_BITFLIPS_T	(3 << 4)
--
--static SPINAND_OP_VARIANTS(read_cache_variants,
--		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
--		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
--		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
--		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
--
--static SPINAND_OP_VARIANTS(write_cache_variants,
--		SPINAND_PROG_LOAD(true, 0, NULL, 0));
--
--static SPINAND_OP_VARIANTS(update_cache_variants,
--		SPINAND_PROG_LOAD(false, 0, NULL, 0));
--
--static int tc58cxgxsx_ooblayout_ecc(struct mtd_info *mtd, int section,
--				     struct mtd_oob_region *region)
--{
--	if (section > 0)
--		return -ERANGE;
--
--	region->offset = mtd->oobsize / 2;
--	region->length = mtd->oobsize / 2;
--
--	return 0;
--}
--
--static int tc58cxgxsx_ooblayout_free(struct mtd_info *mtd, int section,
--				      struct mtd_oob_region *region)
--{
--	if (section > 0)
--		return -ERANGE;
--
--	/* 2 bytes reserved for BBM */
--	region->offset = 2;
--	region->length = (mtd->oobsize / 2) - 2;
--
--	return 0;
--}
--
--static const struct mtd_ooblayout_ops tc58cxgxsx_ooblayout = {
--	.ecc = tc58cxgxsx_ooblayout_ecc,
--	.free = tc58cxgxsx_ooblayout_free,
--};
--
--static int tc58cxgxsx_ecc_get_status(struct spinand_device *spinand,
--				      u8 status)
--{
--	struct nand_device *nand = spinand_to_nand(spinand);
--	u8 mbf = 0;
--	struct spi_mem_op op = SPINAND_GET_FEATURE_OP(0x30, &mbf);
--
--	switch (status & STATUS_ECC_MASK) {
--	case STATUS_ECC_NO_BITFLIPS:
--		return 0;
--
--	case STATUS_ECC_UNCOR_ERROR:
--		return -EBADMSG;
--
--	case STATUS_ECC_HAS_BITFLIPS:
--	case TOSH_STATUS_ECC_HAS_BITFLIPS_T:
--		/*
--		 * Let's try to retrieve the real maximum number of bitflips
--		 * in order to avoid forcing the wear-leveling layer to move
--		 * data around if it's not necessary.
--		 */
--		if (spi_mem_exec_op(spinand->spimem, &op))
--			return nand->eccreq.strength;
--
--		mbf >>= 4;
--
--		if (WARN_ON(mbf > nand->eccreq.strength || !mbf))
--			return nand->eccreq.strength;
--
--		return mbf;
--
--	default:
--		break;
--	}
--
--	return -EINVAL;
--}
--
--static const struct spinand_info toshiba_spinand_table[] = {
--	/* 3.3V 1Gb */
--	SPINAND_INFO("TC58CVG0S3", 0xC2,
--		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
--		     NAND_ECCREQ(8, 512),
--		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
--					      &write_cache_variants,
--					      &update_cache_variants),
--		     0,
--		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
--				     tc58cxgxsx_ecc_get_status)),
--	/* 3.3V 2Gb */
--	SPINAND_INFO("TC58CVG1S3", 0xCB,
--		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
--		     NAND_ECCREQ(8, 512),
--		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
--					      &write_cache_variants,
--					      &update_cache_variants),
--		     0,
--		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
--				     tc58cxgxsx_ecc_get_status)),
--	/* 3.3V 4Gb */
--	SPINAND_INFO("TC58CVG2S0", 0xCD,
--		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
--		     NAND_ECCREQ(8, 512),
--		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
--					      &write_cache_variants,
--					      &update_cache_variants),
--		     0,
--		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
--				     tc58cxgxsx_ecc_get_status)),
--	/* 1.8V 1Gb */
--	SPINAND_INFO("TC58CYG0S3", 0xB2,
--		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
--		     NAND_ECCREQ(8, 512),
--		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
--					      &write_cache_variants,
--					      &update_cache_variants),
--		     0,
--		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
--				     tc58cxgxsx_ecc_get_status)),
--	/* 1.8V 2Gb */
--	SPINAND_INFO("TC58CYG1S3", 0xBB,
--		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
--		     NAND_ECCREQ(8, 512),
--		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
--					      &write_cache_variants,
--					      &update_cache_variants),
--		     0,
--		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
--				     tc58cxgxsx_ecc_get_status)),
--	/* 1.8V 4Gb */
--	SPINAND_INFO("TC58CYG2S0", 0xBD,
--		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
--		     NAND_ECCREQ(8, 512),
--		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
--					      &write_cache_variants,
--					      &update_cache_variants),
--		     0,
--		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
--				     tc58cxgxsx_ecc_get_status)),
--};
--
--static int toshiba_spinand_detect(struct spinand_device *spinand)
--{
--	u8 *id = spinand->id.data;
--	int ret;
--
--	/*
--	 * Toshiba SPI NAND read ID needs a dummy byte,
--	 * so the first byte in id is garbage.
--	 */
--	if (id[1] != SPINAND_MFR_TOSHIBA)
--		return 0;
--
--	ret = spinand_match_and_init(spinand, toshiba_spinand_table,
--				     ARRAY_SIZE(toshiba_spinand_table),
--				     id[2]);
--	if (ret)
--		return ret;
--
--	return 1;
--}
--
--static const struct spinand_manufacturer_ops toshiba_spinand_manuf_ops = {
--	.detect = toshiba_spinand_detect,
--};
--
--const struct spinand_manufacturer toshiba_spinand_manufacturer = {
--	.id = SPINAND_MFR_TOSHIBA,
--	.name = "Toshiba",
--	.ops = &toshiba_spinand_manuf_ops,
--};
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index 4ea558b..f8c2af8 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -228,7 +228,7 @@ struct spinand_manufacturer {
- extern const struct spinand_manufacturer macronix_spinand_manufacturer;
- extern const struct spinand_manufacturer micron_spinand_manufacturer;
- extern const struct spinand_manufacturer paragon_spinand_manufacturer;
--extern const struct spinand_manufacturer toshiba_spinand_manufacturer;
-+extern const struct spinand_manufacturer kioxia_spinand_manufacturer;
- extern const struct spinand_manufacturer winbond_spinand_manufacturer;
- 
- /**
--- 
-1.9.1
+No. The rules are always the same wether there are three or four BP
+bits (the example in stm_lock() has not enough information on this):
 
+(1) the first setting (besides 0) protects one sector. The second
+     protects 2, the third 4 and so on. eg 2^N
+(2) the last setting is _always_ protect all, just like the '0' setting
+     is always protect none.
+(3) if there is an overflow because there are no more free slots for
+     further settings (for 3 bits with flashes > 32MBit, for 4
+     bits if should be flashes > 16GBit), the first entry will be
+     discarded (eg the very first is the "just one sector" entry).
+
+This is true for all flashes which uses this kind of setting, have a
+look at the m25p80 or w25q40bw, these are no exception. It is just the
+notation "lower 1/64" which is only true for flashes which either
+overflows in (3) or fill all entries (eg. with 3bits that would be the
+32Mbit version).
+
+So for the 3 bit case the following flashes are border cases:
+  - 16mbit (less settings than slots)
+  - 32mbit (number of settings and free slots match)
+  - 64mbit (more settings than slots, first setting is discarded)
+
+That being said, I suspect all the 16mbit flashes (and below) which have
+the _LOCK bit set are broken, because the entries has to be shifted. 
+I'll
+look into that later. This is the same "issue" you have with the 4 bits.
+So if this is fixed, you should not need another formula for the 4 bit
+case.
+
+> We need new calculation method for 4bit block protection and for making
+> it more generic, I choose n_sectors.
+> 
+> On all the flashes I checked, n_sectors is proper value for getting
+> block protected portion.
+> 
+> 		density	portion	n_sectors
+> W25M512JV	64MB	1/512	512
+> N25Q128A	16MB	1/256	256
+> N25Q512A	64MB	1/1024	1024
+> MT25QL02GCBB	256MB	1/4096	4096
+
+The rules above apply to these flashes, too. Could you double check 
+that?
+
+-michael
+
+> 
+>> > +		val = val << SR_BP_SHIFT;
+>> > +
+>> > +		if (val & BIT(5) && mask & SR_BP3_BIT6)
+>> > +			val = (val & ~BIT(5)) | BIT(6);
+>> > +	} else {
+>> > +		val = mask - (pow << SR_BP_SHIFT);
+>> > +	}
+>> > +
+>> >  	if (val & ~mask)
+>> >  		return -EINVAL;
+>> >  	/* Don't "lock" with no region! */
+>> > @@ -1983,6 +2057,13 @@ static int stm_unlock(struct spi_nor *nor,
+>> > loff_t ofs, uint64_t len)
+>> >
+>> >  	if (nor->flags & SNOR_F_HAS_SR_TB_BIT6)
+>> >  		tb_mask = SR_TB_BIT6;
+>> > +
+>> > +	if (nor->flags & SNOR_F_HAS_SR_BP3) {
+>> > +		if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6)
+>> > +			mask = mask | SR_BP3_BIT6;
+>> > +		else
+>> > +			mask = mask | SR_BP3_BIT5;
+>> > +	}
+>> >  	/*
+>> >  	 * Need largest pow such that:
+>> >  	 *
+>> > @@ -1995,13 +2076,20 @@ static int stm_unlock(struct spi_nor *nor,
+>> > loff_t ofs, uint64_t len)
+>> >  	pow = ilog2(mtd->size) - order_base_2(lock_len);
+>> >  	if (lock_len == 0) {
+>> >  		val = 0; /* fully unlocked */
+>> > +	} else if (nor->flags & SNOR_F_HAS_SR_BP3) {
+>> > +		val = ilog2(nor->n_sectors) + 1 - pow;
+>> > +		val = val << SR_BP_SHIFT;
+>> > +
+>> > +		if (val & BIT(5) && mask & SR_BP3_BIT6)
+>> > +			val = (val & ~BIT(5)) | BIT(6);
+>> >  	} else {
+>> >  		val = mask - (pow << SR_BP_SHIFT);
+>> > -		/* Some power-of-two sizes are not supported */
+>> > -		if (val & ~mask)
+>> > -			return -EINVAL;
+>> >  	}
+>> >
+>> > +	/* Some power-of-two sizes are not supported */
+>> > +	if (val & ~mask)
+>> > +		return -EINVAL;
+>> > +
+>> >  	status_new = (status_old & ~mask & ~tb_mask) | val;
+>> >
+>> >  	/* Don't protect status register if we're fully unlocked */
+>> > @@ -4736,6 +4824,7 @@ static void spi_nor_info_init_params(struct
+>> > spi_nor *nor)
+>> >  	/* Set SPI NOR sizes. */
+>> >  	params->size = (u64)info->sector_size * info->n_sectors;
+>> >  	params->page_size = info->page_size;
+>> > +	params->n_sectors = info->n_sectors;
+>> >
+>> >  	if (!(info->flags & SPI_NOR_NO_FR)) {
+>> >  		/* Default to Fast Read for DT and non-DT platform
+>> > devices. */
+>> > @@ -5192,6 +5281,11 @@ int spi_nor_scan(struct spi_nor *nor, const
+>> > char *name,
+>> >  		nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
+>> >  	if (info->flags & USE_CLSR)
+>> >  		nor->flags |= SNOR_F_USE_CLSR;
+>> > +	if (info->flags & SPI_NOR_HAS_BP3) {
+>> > +		nor->flags |= SNOR_F_HAS_SR_BP3;
+>> > +		if (info->flags & SPI_NOR_BP3_SR_BIT6)
+>> > +			nor->flags |= SNOR_F_HAS_SR_BP3_BIT6;
+>> > +	}
+>> >
+>> >  	if (info->flags & SPI_NOR_NO_ERASE)
+>> >  		mtd->flags |= MTD_NO_ERASE;
+>> > @@ -5199,6 +5293,7 @@ int spi_nor_scan(struct spi_nor *nor, const
+>> > char *name,
+>> >  	mtd->dev.parent = dev;
+>> >  	nor->page_size = params->page_size;
+>> >  	mtd->writebufsize = nor->page_size;
+>> > +	nor->n_sectors = params->n_sectors;
+>> >
+>> >  	if (of_property_read_bool(np, "broken-flash-reset"))
+>> >  		nor->flags |= SNOR_F_BROKEN_RESET;
+>> > diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-
+>> > nor.h
+>> > index 541c06d042e8..92d550501daf 100644
+>> > --- a/include/linux/mtd/spi-nor.h
+>> > +++ b/include/linux/mtd/spi-nor.h
+>> > @@ -129,7 +129,9 @@
+>> >  #define SR_BP1			BIT(3)	/* Block protect 1
+>> > */
+>> >  #define SR_BP2			BIT(4)	/* Block protect 2
+>> > */
+>> >  #define SR_TB_BIT5		BIT(5)	/* Top/Bottom protect */
+>> > +#define SR_BP3_BIT5		BIT(5)	/* Block protect 3
+>> > */
+>> 
+>> maybe just name it SR_BP3? would also be more consistent with the
+>> proposal
+>> above.
+>> 
+>> >  #define SR_TB_BIT6		BIT(6)	/* Top/Bottom protect */
+>> > +#define SR_BP3_BIT6		BIT(6)	/* Block protect 3
+>> > */
+>> >  #define SR_SRWD			BIT(7)	/* SR write protect
+>> > */
+>> >  /* Spansion/Cypress specific status bits */
+>> >  #define SR_E_ERR		BIT(5)
+>> > @@ -248,6 +250,8 @@ enum spi_nor_option_flags {
+>> >  	SNOR_F_HAS_16BIT_SR	= BIT(9),
+>> >  	SNOR_F_NO_READ_CR	= BIT(10),
+>> >  	SNOR_F_HAS_SR_TB_BIT6	= BIT(11),
+>> > +	SNOR_F_HAS_SR_BP3	= BIT(12),
+>> > +	SNOR_F_HAS_SR_BP3_BIT6	= BIT(13),
+>> >
+>> >  };
+>> >
+>> > @@ -519,6 +523,7 @@ struct spi_nor_locking_ops {
+>> >   *
+>> >   * @size:		the flash memory density in bytes.
+>> >   * @page_size:		the page size of the SPI NOR flash
+>> > memory.
+>> > + * @n_sectors:		number of sectors
+>> >   * @hwcaps:		describes the read and page program
+>> > hardware
+>> >   *			capabilities.
+>> >   * @reads:		read capabilities ordered by priority: the
+>> > higher index
+>> > @@ -541,6 +546,7 @@ struct spi_nor_locking_ops {
+>> >  struct spi_nor_flash_parameter {
+>> >  	u64				size;
+>> >  	u32				page_size;
+>> > +	u16				n_sectors;
+>> >
+>> >  	struct spi_nor_hwcaps		hwcaps;
+>> >  	struct spi_nor_read_command	reads[SNOR_CMD_READ_MAX];
+>> > @@ -573,6 +579,7 @@ struct flash_info;
+>> >   * @bouncebuf_size:	size of the bounce buffer
+>> >   * @info:		spi-nor part JDEC MFR id and other info
+>> >   * @page_size:		the page size of the SPI NOR
+>> > + * @n_sector:		number of sectors
+>> >   * @addr_width:		number of address bytes
+>> >   * @erase_opcode:	the opcode for erasing a sector
+>> >   * @read_opcode:	the read opcode
+>> > @@ -599,6 +606,7 @@ struct spi_nor {
+>> >  	size_t			bouncebuf_size;
+>> >  	const struct flash_info	*info;
+>> >  	u32			page_size;
+>> > +	u16			n_sectors;
+>> >  	u8			addr_width;
+>> >  	u8			erase_opcode;
+>> >  	u8			read_opcode;
+>> > --
+>> > 2.17.1
+>> >
+>> >
+>> > ______________________________________________________
+>> > Linux MTD discussion mailing list
+>> >
+> https://protect2.fireeye.com/url?k=06b6dd5d-5b7d5a63-06b75612-0cc47a31309a-83164929001f7741&u=http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>> >
+>> 
+>> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
