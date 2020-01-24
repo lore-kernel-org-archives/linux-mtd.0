@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31EDBC2D0DB
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 Jan 2020 13:14:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2349BC2D0DB
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 Jan 2020 13:15:01 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F1553206D5
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 Jan 2020 13:14:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E1782206D5
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 Jan 2020 13:15:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mGFqdyWe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F1553206D5
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nN9EW4Td"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E1782206D5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,32 +25,32 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lZBvc4wJ+MR19USpsQWJXrXcIf607X2HpSh2ziYI0v8=; b=mGFqdyWeaAReOH
-	e5SvSQTuveLut20v14zuYCwGE54z7vG8TAPNZ9UCezTe02AvJrB5jKl1jqYobnVkRyIJYp8Ia08yP
-	ECA1gRcnvG1+D4YTwJau6uMnbo09DAoOIrbAk1VaFr8wQG2ZBbA4CPkWPy6nGEEmFSr690DdQFL8x
-	98z+ZjQ23wbKeWVpM5cxI1KvKfnmLvdOOh2RwUPd7oU2U6BuiCU7wwabwkdnsYBIkRJidbbb3PzVz
-	AniGpFhm7eBS3waxgN/ZwvgUbkaDNmKGnHtQscORPGek9kqX7yyOvzAxbHW5jI7jPYtJ9EffE7e/T
-	Ea/AZyoLF8rZz6QpbqvQ==;
+	List-Owner; bh=QJHnNv+EHfej3RzgU3XWAsuwW/drnqNlxZxHR6KZxSQ=; b=nN9EW4TdvFmrk6
+	d5/FgvYgZVGU7Llp2/d8E+IYYL57fOckdfS4EcqAXSOyNJ8UDql/zXtCtUaRLBjmt2dYNaD8ivfNX
+	KbdIthXd0lXUVzqmJ9iucTCCOLJ73sHs8Gpo1XuiyIgtEgoGzPA9dwh31zxjqoapSeSeaEC01Sw84
+	uODbZue8V92x6bEjPJTcUiQFsWE6Jv5Q36mRtfPdDSnFnbTz0ecEq5LLP4jKSxau1QbKBz/Sw2wvC
+	VjVQDskx/VHd6YGeyN03Qif+I4i5V6/Hk7ySUKTOZPqBYuSl5rWef6+tBA69RpT1qCzEpQ7AsoNnp
+	gyKv0fnZz7BI5fPJD8Sg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iuymy-0006ma-J2; Fri, 24 Jan 2020 13:14:20 +0000
+	id 1iuynQ-00078q-CS; Fri, 24 Jan 2020 13:14:48 +0000
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iuymF-00063x-O3
- for linux-mtd@lists.infradead.org; Fri, 24 Jan 2020 13:13:37 +0000
+ id 1iuymF-00063y-PB
+ for linux-mtd@lists.infradead.org; Fri, 24 Jan 2020 13:13:38 +0000
 Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1iuym5-0003aF-RT; Fri, 24 Jan 2020 14:13:25 +0100
+ id 1iuym5-0003aE-RR; Fri, 24 Jan 2020 14:13:25 +0100
 Received: from sha by dude.hi.pengutronix.de with local (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1iuym5-0006ZC-1G; Fri, 24 Jan 2020 14:13:25 +0100
+ id 1iuym5-0006Z8-0V; Fri, 24 Jan 2020 14:13:25 +0100
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-fsdevel@vger.kernel.org
-Subject: [PATCH 2/8] ubifs: move checks and preparation into setflags()
-Date: Fri, 24 Jan 2020 14:13:17 +0100
-Message-Id: <20200124131323.23885-3-s.hauer@pengutronix.de>
+Subject: [PATCH 1/8] quota: Allow to pass mount path to quotactl
+Date: Fri, 24 Jan 2020 14:13:16 +0100
+Message-Id: <20200124131323.23885-2-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20200124131323.23885-1-s.hauer@pengutronix.de>
 References: <20200124131323.23885-1-s.hauer@pengutronix.de>
@@ -61,8 +61,8 @@ X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
  SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200124_051335_796348_F63515DF 
-X-CRM114-Status: GOOD (  14.45  )
+X-CRM114-CacheID: sfid-20200124_051335_843628_192C96D6 
+X-CRM114-Status: GOOD (  18.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,109 +81,125 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-setflags() can be reused for upcoming FS_IOC_FS[SG]ETXATTR ioctl support.
-In preparation for that move the checks and preparation into that
-function so we can reuse them as well.
+This patch introduces the Q_PATH flag to the quotactl cmd argument.
+When given, the path given in the special argument to quotactl will
+be the mount path where the filesystem is mounted, instead of a path
+to the block device.
+This is necessary for filesystems which do not have a block device as
+backing store. Particularly this is done for upcoming UBIFS support.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- fs/ubifs/ioctl.c | 46 +++++++++++++++++++++++++++-------------------
- 1 file changed, 27 insertions(+), 19 deletions(-)
+ fs/quota/quota.c           | 53 +++++++++++++++++++++++++++-----------
+ include/uapi/linux/quota.h |  1 +
+ 2 files changed, 39 insertions(+), 15 deletions(-)
 
-diff --git a/fs/ubifs/ioctl.c b/fs/ubifs/ioctl.c
-index 5dc5abca11c7..8230dba5fd74 100644
---- a/fs/ubifs/ioctl.c
-+++ b/fs/ubifs/ioctl.c
-@@ -95,18 +95,35 @@ static int ubifs2ioctl(int ubifs_flags)
- 	return ioctl_flags;
- }
+diff --git a/fs/quota/quota.c b/fs/quota/quota.c
+index 5444d3c4d93f..9ef51d02d5a5 100644
+--- a/fs/quota/quota.c
++++ b/fs/quota/quota.c
+@@ -19,6 +19,7 @@
+ #include <linux/types.h>
+ #include <linux/writeback.h>
+ #include <linux/nospec.h>
++#include <linux/mount.h>
  
--static int setflags(struct inode *inode, int flags)
-+static int setflags(struct file *file, int flags)
+ static int check_quotactl_permission(struct super_block *sb, int type, int cmd,
+ 				     qid_t id)
+@@ -821,15 +822,20 @@ int kernel_quotactl(unsigned int cmd, const char __user *special,
  {
- 	int oldflags, err, release;
-+	struct inode *inode = file_inode(file);
- 	struct ubifs_inode *ui = ubifs_inode(inode);
- 	struct ubifs_info *c = inode->i_sb->s_fs_info;
- 	struct ubifs_budget_req req = { .dirtied_ino = 1,
- 					.dirtied_ino_d = ui->data_len };
+ 	uint cmds, type;
+ 	struct super_block *sb = NULL;
+-	struct path path, *pathp = NULL;
++	struct path file_path, *file_pathp = NULL, sb_path;
+ 	int ret;
++	bool q_path;
  
--	err = ubifs_budget_space(c, &req);
-+	if (IS_RDONLY(inode))
-+		return -EROFS;
-+
-+	if (!inode_owner_or_capable(inode))
-+		return -EACCES;
-+
-+	/*
-+	 * Make sure the file-system is read-write and make sure it
-+	 * will not become read-only while we are changing the flags.
-+	 */
-+	err = mnt_want_write_file(file);
- 	if (err)
- 		return err;
+ 	cmds = cmd >> SUBCMDSHIFT;
+ 	type = cmd & SUBCMDMASK;
  
-+	dbg_gen("set flags: %#x, i_flags %#x", flags, inode->i_flags);
 +
-+	err = ubifs_budget_space(c, &req);
-+	if (err)
-+		goto out_drop;
-+
- 	mutex_lock(&ui->ui_mutex);
- 	oldflags = ubifs2ioctl(ui->flags);
- 	err = vfs_ioc_setflags_prepare(inode, oldflags, flags);
-@@ -124,12 +141,18 @@ static int setflags(struct inode *inode, int flags)
- 		ubifs_release_budget(c, &req);
- 	if (IS_SYNC(inode))
- 		err = write_inode_now(inode, 1);
-+
-+	mnt_drop_write_file(file);
-+
- 	return err;
+ 	if (type >= MAXQUOTAS)
+ 		return -EINVAL;
  
- out_unlock:
- 	ubifs_err(c, "can't modify inode %lu attributes", inode->i_ino);
- 	mutex_unlock(&ui->ui_mutex);
- 	ubifs_release_budget(c, &req);
-+out_drop:
-+	mnt_drop_write_file(file);
++	q_path = cmds & Q_PATH;
++	cmds &= ~Q_PATH;
 +
- 	return err;
+ 	/*
+ 	 * As a special case Q_SYNC can be called without a specific device.
+ 	 * It will iterate all superblocks that have quota enabled and call
+@@ -847,28 +853,45 @@ int kernel_quotactl(unsigned int cmd, const char __user *special,
+ 	 * resolution (think about autofs) and thus deadlocks could arise.
+ 	 */
+ 	if (cmds == Q_QUOTAON) {
+-		ret = user_path_at(AT_FDCWD, addr, LOOKUP_FOLLOW|LOOKUP_AUTOMOUNT, &path);
++		ret = user_path_at(AT_FDCWD, addr,
++				   LOOKUP_FOLLOW | LOOKUP_AUTOMOUNT,
++				   &file_path);
+ 		if (ret)
+-			pathp = ERR_PTR(ret);
++			file_pathp = ERR_PTR(ret);
+ 		else
+-			pathp = &path;
++			file_pathp = &file_path;
+ 	}
+ 
+-	sb = quotactl_block(special, cmds);
+-	if (IS_ERR(sb)) {
+-		ret = PTR_ERR(sb);
+-		goto out;
++	if (q_path) {
++		ret = user_path_at(AT_FDCWD, special,
++				   LOOKUP_FOLLOW | LOOKUP_AUTOMOUNT,
++				   &sb_path);
++		if (ret)
++			goto out;
++
++		sb = sb_path.mnt->mnt_sb;
++	} else {
++		sb = quotactl_block(special, cmds);
++		if (IS_ERR(sb)) {
++			ret = PTR_ERR(sb);
++			goto out;
++		}
+ 	}
+ 
+-	ret = do_quotactl(sb, type, cmds, id, addr, pathp);
++	ret = do_quotactl(sb, type, cmds, id, addr, file_pathp);
++
++	if (q_path) {
++		path_put(&sb_path);
++	} else {
++		if (!quotactl_cmd_onoff(cmds))
++			drop_super(sb);
++		else
++			drop_super_exclusive(sb);
++	}
+ 
+-	if (!quotactl_cmd_onoff(cmds))
+-		drop_super(sb);
+-	else
+-		drop_super_exclusive(sb);
+ out:
+-	if (pathp && !IS_ERR(pathp))
+-		path_put(pathp);
++	if (file_pathp && !IS_ERR(file_pathp))
++		path_put(file_pathp);
+ 	return ret;
  }
  
-@@ -146,12 +169,6 @@ long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 		return put_user(flags, (int __user *) arg);
+diff --git a/include/uapi/linux/quota.h b/include/uapi/linux/quota.h
+index f17c9636a859..e1787c0df601 100644
+--- a/include/uapi/linux/quota.h
++++ b/include/uapi/linux/quota.h
+@@ -71,6 +71,7 @@
+ #define Q_GETQUOTA 0x800007	/* get user quota structure */
+ #define Q_SETQUOTA 0x800008	/* set user quota structure */
+ #define Q_GETNEXTQUOTA 0x800009	/* get disk limits and usage >= ID */
++#define Q_PATH     0x400000	/* quotactl special arg contains mount path */
  
- 	case FS_IOC_SETFLAGS: {
--		if (IS_RDONLY(inode))
--			return -EROFS;
--
--		if (!inode_owner_or_capable(inode))
--			return -EACCES;
--
- 		if (get_user(flags, (int __user *) arg))
- 			return -EFAULT;
- 
-@@ -161,17 +178,8 @@ long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 		if (!S_ISDIR(inode->i_mode))
- 			flags &= ~FS_DIRSYNC_FL;
- 
--		/*
--		 * Make sure the file-system is read-write and make sure it
--		 * will not become read-only while we are changing the flags.
--		 */
--		err = mnt_want_write_file(file);
--		if (err)
--			return err;
--		dbg_gen("set flags: %#x, i_flags %#x", flags, inode->i_flags);
--		err = setflags(inode, flags);
--		mnt_drop_write_file(file);
--		return err;
-+
-+		return setflags(file, flags);
- 	}
- 	case FS_IOC_SET_ENCRYPTION_POLICY: {
- 		struct ubifs_info *c = inode->i_sb->s_fs_info;
+ /* Quota format type IDs */
+ #define	QFMT_VFS_OLD 1
 -- 
 2.25.0
 
