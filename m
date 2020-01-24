@@ -8,17 +8,17 @@ X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05F06C2D0DB
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 Jan 2020 16:34:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A1C3C2D0DB
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 Jan 2020 16:35:31 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B6E6A20704
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 Jan 2020 16:34:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3737620704
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 Jan 2020 16:35:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AvP+FFfj";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WYSolAY6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B6E6A20704
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VeqtIeCw";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kV6ntgB+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3737620704
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -28,60 +28,61 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=fGPNxnFp9M3daFI8cqa6MbJ5j9pkQZyKI+fwJ5Y7Ehc=; b=AvP+FFfjt120qiRPtN2P981mMK
-	Ez0J4EzlGcq/9PQKBRY2f2AiJF5IaYqfoFPSgaT2iQBLE6pcT5LgfseTfFc9gnmUHD2pyQbcjr8BW
-	cmt7l0zVCxChUFt5XSG64bv05HbcIYdd5zCmVVmKGMbf/NAx6/iQPqItqMiD1vcGxIroCHpVequPs
-	LYt1ENHi+ctEC/RVJH9XGasVcYRaBMRyECgteMR+/mKTIKa+QSW0FKJaUfzBNFUUUI02Zc+jFKu1Y
-	HXu6YCbzGvF+ViDsENDsL8xT6yDrd5ljxYRUGPhfHc783yztuS2sTx6Nc16uqwdWFHzO904/UlIGN
-	zz8J4MGg==;
+	bh=rXNfBEWFEtU2RYUFTa94kfUhtF4Tf9MTileNnywwn3o=; b=VeqtIeCwl0OuR6zcoTT81KD83j
+	s1UvfbSOoa8BYHc6vP+ejDJBt+1Xpr/o1o/a/XVhof08LY9HRpbSHV7Vd2spez0+bGAvN5n3gWnmH
+	3cBAnCGY3ZAv/xzif/tiLeYnACddsKwqUNRdVsyLS74GJOkG/M3OJRTJfc7eM2BQz43jKufZBmuhR
+	p+X07DT7SNUvlecOkn1Z0GmAihemuI0lEgUM22LgvN0jaEi6F9sQDiXACF4T3yGi/wrppnyaUKfxl
+	wTXmFey5+ekyyIlsNHvwi4xJf9y7CNLOdy45tlWwp58BQQwcOSXBj5el7ZSKSwMW8LntfRWHPxFeX
+	WEK5K6PQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iv1us-0006Os-K5; Fri, 24 Jan 2020 16:34:42 +0000
-Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
+	id 1iv1vR-00083E-Tw; Fri, 24 Jan 2020 16:35:17 +0000
+Received: from mail-wm1-x344.google.com ([2a00:1450:4864:20::344])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iv1qh-0002ZR-85; Fri, 24 Jan 2020 16:30:25 +0000
-Received: by mail-wr1-x441.google.com with SMTP id b6so2732188wrq.0;
- Fri, 24 Jan 2020 08:30:22 -0800 (PST)
+ id 1iv1qj-0002cJ-0a; Fri, 24 Jan 2020 16:30:26 +0000
+Received: by mail-wm1-x344.google.com with SMTP id t14so46659wmi.5;
+ Fri, 24 Jan 2020 08:30:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references;
- bh=7CT1HFdVWS9Kqks9wgmn9tKbM4f7DejmQgot2NDLU84=;
- b=WYSolAY6S4WbAez6asDGNrvm9HWgMKgD/rmvi4wHu+pRvN1EmwWnClM+acTJRDPSbr
- uC/nEOUK2eOmah6Q5Ax3HR6Z0vD8Z/MJK6ZIarCt8SJ21BYk3xMJQVol58N2H9M4yYWV
- ZYSxlCb6uygXUNcrZ1Hq/Dn40sXJIqtKJva4FYKm+WGae/dwIQmXBCLu6EdNlhfYGHiC
- axm5UX7P47U0IMyBEXovcN+BcrqbQTMY4gucmaWYL+XtOdp3Vvyans5wjgCljtyqrWfs
- snRj2BRdfiAQ/jyXUtZ64s9+pcu3Od76Dr8JFuGpYquqPWvD9Z71cxV47zHjijNejWdy
- iyeQ==
+ bh=Ma8EEHyJQOUo40MQ8HAnhmncQWACdEusOuKxQidJjKI=;
+ b=kV6ntgB+pNXteyIG5sQDdsiztdm3UBUUCJyBoyHiHmxkclFVPND0S3W3Vk6VtIjf5J
+ XmoZK93FpxIBE+t16nwoSXdf8iEj5II8LtZLoFrtJBk/poXhgEfUVt06lYqC4g5zT4DC
+ dGO9DdbcAxTDQYOQb3gv9WroclH0OUq6kFhDNj/m7L03ZIU30FXeAiem8DceUgivY2NV
+ JMRgC7XDzZKwOXHZTFkZFcRlhgjFLQfCpzHh2sHkpCYUQsdm4KWzsS89k5J0249uJT8J
+ kPP1QgcGvxH9NjtTV0QMpJoIUX62vqavosjYUaEzOHX2HGAzNx4vxcjDaQlaaDv1VHLI
+ DfLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references;
- bh=7CT1HFdVWS9Kqks9wgmn9tKbM4f7DejmQgot2NDLU84=;
- b=jDwNGpjgS9X9F2fh2G4lJLYmK4ydD83r8vj1tr3AuBX4HMlG0XDZKAAUFr18HEmTre
- PFn1+9Og8gABvjgWgw+J3MlnCjg7yJTaucHVZiiDRVRkT6XXLTsJUaia+LR8ScxyiyH4
- hNwntd3kYmJJvI/dkak9S919AjTZ0qF47yF73S/+zVXZ+04H/S0EXDg44vHn215Kkehd
- e0EBdbND/DcZgHLvvGUPP4G+qHAr6S1JXZlgnatfjMfQDIPJXt9KZARfIyUoHfGl2PM0
- H40lrqA9/C2PqJ9KjCziQwCVkGi2kU2iLUP/0VrUULrb55zOMQjeDQA0gpauzqIFDFZ6
- fXhg==
-X-Gm-Message-State: APjAAAWEY/FDn7ZBlYZ4eeW466zd0FAZsrb+zln5+v+aI+B67oyz2pmv
- I4BOCO/sTd9Br9uanIdDlko=
-X-Google-Smtp-Source: APXvYqyReDgSFOPL1dqk0NxO2V+Xd5blLAgfHdZ6znaq9ryVBBfkZGn9OJywGm8Dwc8e09qhMr7jZQ==
-X-Received: by 2002:adf:fac1:: with SMTP id a1mr4951928wrs.376.1579883421174; 
- Fri, 24 Jan 2020 08:30:21 -0800 (PST)
+ bh=Ma8EEHyJQOUo40MQ8HAnhmncQWACdEusOuKxQidJjKI=;
+ b=nNuFFRwxbh5dcOxyWtq5kqWfAPmXi4WfD00cLc+v0I6NPw+rkdmW/mik7SbFPrM8Oq
+ oN1ILmrVg8eQjYT4ye0c8k1X31lQa/OaPnicv8AddjMd7EsLxdzJAyNG3B61ZKa2v4k2
+ xtitN5S5Hzi1W3PB5iXzY9n8M86PaeV78+o1Mj7yaxE7PSe00WPhQt8IdIhFyOMY5Yu4
+ jF9K/pctcbKiqjv165DbMt2N7P0uUT0qhlvxHiEM8trN3qcN/DVrYBERtRJ/QpsT+lUH
+ /nRsBoGUw7yp3QQC1x3/gkzadov4B4/PllD8CPF2P4/JlRClFx73tybgzvpQuTgnpOPL
+ FypQ==
+X-Gm-Message-State: APjAAAWXi3rt1aySKxAU39z8GcwKFvKeuNjrUGmsr7irotdttR+TTCnA
+ 0xpN9fghRLzpmlPdmhcvxlM=
+X-Google-Smtp-Source: APXvYqxRFPMGGtg+KpLSBpXUNcXTEuVXdOJ58XYB81RM8BMMGfpOR7Z3BO/sFZG6zDyKioVd3UJFjQ==
+X-Received: by 2002:a1c:1fd0:: with SMTP id f199mr30871wmf.113.1579883422270; 
+ Fri, 24 Jan 2020 08:30:22 -0800 (PST)
 Received: from debian.home (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
- by smtp.gmail.com with ESMTPSA id 205sm1977304wmd.42.2020.01.24.08.30.20
+ by smtp.gmail.com with ESMTPSA id 205sm1977304wmd.42.2020.01.24.08.30.21
  (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Fri, 24 Jan 2020 08:30:20 -0800 (PST)
+ Fri, 24 Jan 2020 08:30:21 -0800 (PST)
 From: Johan Jonker <jbx6244@gmail.com>
 To: miquel.raynal@bootlin.com
-Subject: [RFC PATCH v2 09/10] arm64: dts: rockchip: add nandc node for rk3368
-Date: Fri, 24 Jan 2020 17:30:00 +0100
-Message-Id: <20200124163001.28910-10-jbx6244@gmail.com>
+Subject: [RFC PATCH v2 10/10] ARM: dts: rockchip: rk3066a-mk808: enable nandc
+ node
+Date: Fri, 24 Jan 2020 17:30:01 +0100
+Message-Id: <20200124163001.28910-11-jbx6244@gmail.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20200124163001.28910-1-jbx6244@gmail.com>
 References: <20200124163001.28910-1-jbx6244@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200124_083023_376184_2939DB3A 
-X-CRM114-Status: GOOD (  10.83  )
+X-CRM114-CacheID: sfid-20200124_083025_115242_EFCC559A 
+X-CRM114-Status: GOOD (  10.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,36 +105,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Zhaoyifeng <zyf@rock-chips.com>
+This patch enables the nandc node for a MK808 with rk3066 processor.
 
-Add nandc node for rk3368.
-
-Signed-off-by: Zhaoyifeng <zyf@rock-chips.com>
 Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 ---
- arch/arm64/boot/dts/rockchip/rk3368.dtsi | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ arch/arm/boot/dts/rk3066a-mk808.dts | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3368.dtsi b/arch/arm64/boot/dts/rockchip/rk3368.dtsi
-index fd8618801..22a1feed5 100644
---- a/arch/arm64/boot/dts/rockchip/rk3368.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3368.dtsi
-@@ -508,6 +508,15 @@
- 		status = "disabled";
- 	};
+diff --git a/arch/arm/boot/dts/rk3066a-mk808.dts b/arch/arm/boot/dts/rk3066a-mk808.dts
+index 365eff621..e33c85699 100644
+--- a/arch/arm/boot/dts/rk3066a-mk808.dts
++++ b/arch/arm/boot/dts/rk3066a-mk808.dts
+@@ -133,6 +133,17 @@
+ 	status = "okay";
+ };
  
-+	nandc: nand-controller@ff400000 {
-+		compatible = "rockchip,rk3368-nand-controller";
-+		reg = <0x0 0xff400000 0x0 0x4000>;
-+		interrupts = <GIC_SPI 38 IRQ_TYPE_LEVEL_HIGH>;
-+		clocks = <&cru HCLK_NANDC0>, <&cru SCLK_NANDC0>;
-+		clock-names = "hclk_nandc", "clk_nandc";
-+		status = "disabled";
-+	};
++&nandc {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	status = "okay";
 +
- 	usb_host0_ehci: usb@ff500000 {
- 		compatible = "generic-ehci";
- 		reg = <0x0 0xff500000 0x0 0x100>;
++	nand@0 {
++		reg = <0>;
++		nand-is-boot-medium;
++	};
++};
++
+ &pinctrl {
+ 	usb-host {
+ 		host_drv: host-drv {
 -- 
 2.11.0
 
