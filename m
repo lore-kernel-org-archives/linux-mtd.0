@@ -1,71 +1,84 @@
-Return-Path: <SRS0=Gzls=3N=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=fIXu=3O=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,FSL_HELO_FAKE,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B9CEC2D0DB
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 Jan 2020 20:14:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D35FEC2D0CE
+	for <linux-mtd@archiver.kernel.org>; Sat, 25 Jan 2020 02:12:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E42402071E
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 Jan 2020 20:14:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A07F42071E
+	for <linux-mtd@archiver.kernel.org>; Sat, 25 Jan 2020 02:12:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dz0j6mqZ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="1ag7/2DS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E42402071E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uVZjzayA";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="TkxDWTfM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A07F42071E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=AZ6ASmsaqSYqvnLotYtfdgfOsnq5hYRxrysS406lvFw=; b=dz0j6mqZttO/ug
-	QLXTHDanPVTJgJzHNvLRSDr72CVE/eDxa4NxzMACeCdC240eY0YMrFWDnSSHidjH5evm/ymWdO5Rr
-	l99uIx1iW0KJgUhZMVaeDsHdg6ePBaegVI1vWqNRnCXZRCw/xXZo2p5RjWegDzM2/wHUA1w4duzhu
-	v3hr6IMn36oIIXY4xGVgL+4ee09wQO3vimM8Qwsg4iU/9lR0lK/C4zh0SR8Wivvm3plJY9O9FiUpb
-	YYott5ikx0CKWGNrci5ObgWCGaORFMjQ42LgfOpXJz1ue2Oy6yXCoUSzoIKOtk2h/y+w/ze4Q4hIw
-	pQIe8wCn46A6RfN8rgrw==;
+	List-Owner; bh=/OuJJUj8GWGSkwFgPi/gMbzre+9XgaHCjbZ34unQ7u8=; b=uVZjzayAzKYtjk
+	bAIEru5DGYzIfGyYORhuDKitZtvzV71j+1GzcgwAQePya+PR3MFKw9CpHpNgVrXFdr/EV/4oxlTJX
+	Y0CZLxZ2JVqa7JXUFfMXAbic70GCCkGSMzicrKJ1v42AM5Vh+h5kQ5EIcKFaFTOOpOHD+uWAwn/4E
+	SI/D9BP0DfDY1Fc55eRMEnuBy+3U+4vXvErx2o5UrvpwD5BSS+H5KPReZju7ZD/TlsNZ+uex+QR/n
+	Jkm4M6uHfFVR5Qz44t5FPvtVSN3AWuFO1jypwgAd9hF/Agc2ag+IFwOHY+K0lbHNfLXE9+7NrnDun
+	c77/P1/3o4f0Xh23Ybsw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iv5LG-0008OQ-EB; Fri, 24 Jan 2020 20:14:10 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1ivAw5-0001c2-3M; Sat, 25 Jan 2020 02:12:33 +0000
+Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iv5LC-0008NP-KT
- for linux-mtd@lists.infradead.org; Fri, 24 Jan 2020 20:14:07 +0000
-Received: from gmail.com (unknown [104.132.1.77])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 1F8CF2071E;
- Fri, 24 Jan 2020 20:14:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1579896844;
- bh=BXwKT7PuUAxXdQBtcYCaPasA/6uX1OMir4E6yh0LA3k=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=1ag7/2DSoxG5KYU0EMVWB64o75K0btoF+qRMCO5k9cTMqUywqJBdCg/sUprpKIHv/
- 9MepeQSjc6pe8xJdw8+LoNAgcQY5x8NUgXg6RHWOLoXD7dmmnthVG6ewye8WF1rbAv
- 53XYtcyTT0ewAW3ULL2QSG0sBV/ytCRp6aZzLJeA=
-Date: Fri, 24 Jan 2020 12:14:02 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v5 4/6] ubifs: don't trigger assertion on invalid no-key
- filename
-Message-ID: <20200124201317.GC41762@gmail.com>
-References: <20200120223201.241390-1-ebiggers@kernel.org>
- <20200120223201.241390-5-ebiggers@kernel.org>
- <20200122003014.GA180824@gmail.com>
+ id 1ivAvz-0001an-72
+ for linux-mtd@lists.infradead.org; Sat, 25 Jan 2020 02:12:28 +0000
+Received: by mail-pf1-x441.google.com with SMTP id i23so1993414pfo.2
+ for <linux-mtd@lists.infradead.org>; Fri, 24 Jan 2020 18:12:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=EXFe/vfnLkzT3mAWRy5NBHmIc8Oyyk9Ad0WMoNwuPt8=;
+ b=TkxDWTfMZU8Eqr69fjAxX4wvjaAyxwoq2CL2Bwlr1AgGV5D4EqkcCvbwxqxtk5oWQ7
+ Vu3iQLbxn7OwbKzTe4BtiWx7Bvvg/IeY5IAdi7Ep3DVIs6SknDPSxgtbYjPOKkFOA9vy
+ x1TB7CkGJlRbp0gzWpmXSkdZjh1hUhNKqoS0ZI9xK2qxCiNwtuYiAc1T7ywm7J2boTXa
+ Tv6qkmoVmv2ZmykEokMRBxmoaGc+RIaJSM0dV/GnsSeGscoWaVB3Y7CcmRsz4HdsSgGR
+ XWDLWKezF32jOsGs4kkhN3bUgl2Kd6ojl3ufz90tx6eQvHHL80yzoBsAUbi7t9WCXnAw
+ 6Rkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=EXFe/vfnLkzT3mAWRy5NBHmIc8Oyyk9Ad0WMoNwuPt8=;
+ b=o71ZYqtryDIfKJ7ViOII4H9g9HVLV9xKVsVAkegZzDxWGoVqLMMFDkQ0UtOaUComBK
+ KQeTU54V5qYxZaMoH4aT6XMwewImFDMmEjWLl5Dcrin6raekCOHuTKk0l+fU9jLaUCJh
+ mRIulQ5pUIGK09bVvsVLwVmaYz+XVvfyxNBXABftnwqSZCxl3KPaDdUn2059FEO+5wmL
+ 8Fh+29ogc0NYb2EEgHekP6miTWywmuW9VrluVPBjLCTsD+DYgWE5ppW0JvBFOd+vU9jm
+ jf1Su7Ugm10BMUdafX5pQGP9td1MB8o4u2jR4IhecWDhUuCkZSM6yQhuoBknxEmIAUHO
+ klAQ==
+X-Gm-Message-State: APjAAAXbh1MUQgFw2ENBtwnQX2ZOfXcnDlpEo4Zgxd+mhqW98XebVva8
+ pGKz1DsLueMeJzOUyd2YPTlFBZ4w3Pzhrrg7+bGMpg==
+X-Google-Smtp-Source: APXvYqyW0SmPK4KpuQbLoeF3vRxy+R+++4XuYWmuDeTZM4oxe/ppV3OLeGSF+O7JLzqqRY0RxLFKybydDDRXm7DDRfA=
+X-Received: by 2002:a63:cc4f:: with SMTP id q15mr7565027pgi.159.1579918343489; 
+ Fri, 24 Jan 2020 18:12:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20200122003014.GA180824@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20191211192742.95699-1-brendanhiggins@google.com>
+ <20191211192742.95699-3-brendanhiggins@google.com>
+ <20200109162303.35f4f0a3@xps13>
+In-Reply-To: <20200109162303.35f4f0a3@xps13>
+From: Brendan Higgins <brendanhiggins@google.com>
+Date: Fri, 24 Jan 2020 18:12:12 -0800
+Message-ID: <CAFd5g47VLB6zOJsSySAYrJie8hj-OkvOC89-z2b9xMBZ2bxvYA@mail.gmail.com>
+Subject: Re: [PATCH v1 2/7] mtd: rawnand: add unspecified HAS_IOMEM dependency
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200124_121406_696075_92D8416F 
-X-CRM114-Status: GOOD (  12.79  )
+X-CRM114-CacheID: sfid-20200124_181227_280871_D2A8A48C 
+X-CRM114-Status: GOOD (  13.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,50 +90,51 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Daniel Rosenberg <drosen@google.com>, kernel-team@android.com,
- linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-ext4@vger.kernel.org, Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+ Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
+ Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, David Gow <davidgow@google.com>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Piotr Sroka <piotrs@cadence.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jan 21, 2020 at 04:30:15PM -0800, Eric Biggers wrote:
-> On Mon, Jan 20, 2020 at 02:31:59PM -0800, Eric Biggers wrote:
-> > From: Eric Biggers <ebiggers@google.com>
-> > 
-> > If userspace provides an invalid fscrypt no-key filename which encodes a
-> > hash value with any of the UBIFS node type bits set (i.e. the high 3
-> > bits), gracefully report ENOENT rather than triggering ubifs_assert().
-> > 
-> > Test case with kvm-xfstests shell:
-> > 
-> >     . fs/ubifs/config
-> >     . ~/xfstests/common/encrypt
-> >     dev=$(__blkdev_to_ubi_volume /dev/vdc)
-> >     ubiupdatevol $dev -t
-> >     mount $dev /mnt -t ubifs
-> >     mkdir /mnt/edir
-> >     xfs_io -c set_encpolicy /mnt/edir
-> >     rm /mnt/edir/_,,,,,DAAAAAAAAAAAAAAAAAAAAAAAAAA
-> > 
-> > With the bug, the following assertion fails on the 'rm' command:
-> > 
-> >     [   19.066048] UBIFS error (ubi0:0 pid 379): ubifs_assert_failed: UBIFS assert failed: !(hash & ~UBIFS_S_KEY_HASH_MASK), in fs/ubifs/key.h:170
-> > 
-> > Fixes: f4f61d2cc6d8 ("ubifs: Implement encrypted filenames")
-> > Cc: <stable@vger.kernel.org> # v4.10+
-> > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> 
-> Richard, can you review the two UBIFS patches in this series, and if you're okay
-> with them, provide Acked-by's so that we can take them through the fscrypt tree?
-> They don't conflict with anything currently in the UBIFS tree.
-> 
+On Thu, Jan 9, 2020 at 7:23 AM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+>
+> Hi Brendan,
+>
+> Brendan Higgins <brendanhiggins@google.com> wrote on Wed, 11 Dec 2019
+> 11:27:37 -0800:
+>
+> > Currently CONFIG_MTD_NAND_CADENCE implicitly depends on
+> > CONFIG_HAS_IOMEM=y; consequently, on architectures without IOMEM we get
+> > the following build error:
+> >
+> > ld: drivers/mtd/nand/raw/cadence-nand-controller.o: in function `cadence_nand_dt_probe.cold.31':
+> > drivers/mtd/nand/raw/cadence-nand-controller.c:2969: undefined reference to `devm_platform_ioremap_resource'
+> > ld: drivers/mtd/nand/raw/cadence-nand-controller.c:2977: undefined reference to `devm_ioremap_resource'
+> >
+> > Fix the build error by adding the unspecified dependency.
+> >
+> > Reported-by: Brendan Higgins <brendanhiggins@google.com>
+> > Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+> > ---
+>
+> Sorry for the delay.
+>
+> Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-Richard, any objection to us taking these patches through the fscrypt tree?
+It looks like my change has not been applied to nand/next; is this the
+branch it should be applied to? I have also verified that this patch
+isn't in linux-next as of Jan 24th.
 
-- Eric
+Is mtd/linux the correct tree for this? Or do I need to reach out to
+someone else?
+
+Cheers
 
 ______________________________________________________
 Linux MTD discussion mailing list
