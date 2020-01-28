@@ -1,89 +1,63 @@
 Return-Path: <SRS0=h4jW=3R=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
-X-Spam-Level: **
-X-Spam-Status: No, score=2.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_DBL_ABUSE_MALW autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_DBL_ABUSE_MALW,USER_AGENT_SANE_2 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6BBCC33CB3
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Jan 2020 06:25:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2627CC33CB3
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Jan 2020 06:50:54 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9A4DE205F4
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Jan 2020 06:25:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ED6AC22522
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Jan 2020 06:50:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hcLl7Itp";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="t8PThJNe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9A4DE205F4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tL2S9wCJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ED6AC22522
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	References:In-Reply-To:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Xjjr/iLDr8VPfQCkaGLW29dPlrKlBO9aZvpTXO0nGsM=; b=hcLl7ItpWvAtbU
-	f7akV4kOMtFbjm3ryViEJR8IWpa3y2HmSXP0WOJcD+BWniWlW7mARR36ieSpjqWbp5SQ0UsVS3F82
-	Rt+fS/rzbGrkxC4+U3oWz3Pg9Mt+zwDMgP7wj+yZBTJUX38GpcdDr7w3/v6qah4gFo6QL58UDmBRw
-	0oJJkRZBX0zWdInJah5DqdE4veVZCD+9h/1+aYp3cW6f6QJSI5xsGsoCBByjueovYp5cH7yzFMwi2
-	tUtub2d7irBdeA5ompU297qVzFpnlDUokRx0sq7ZURTQhs9uqTljIfBZ5taD91ZfbFZR5VG2LShM7
-	ywkv9PiLIxJNv3ojHUEw==;
+	List-Owner; bh=asrNfF/GyGR4hFFhnBfsA4qIdHUOzWW0PNKZJbT6bTc=; b=tL2S9wCJCzCTel
+	XK85AE5qjnq1qFomoxTpycwHFdznEjswHw0UEYnd7tk/d/6JfO5mG7fyr7ecUT8ogLE156J3wLunq
+	wZWfbycJ8J9wmLcvIjV5KO6tv1MbOGu4f9tPDBgzCUHHkKnaNimTR/Ksrg+3qy1poM6ryzSG36YpP
+	ZvOejFlcslTH/7bXP/7n9xoa1Q+WUcvukoY3Iou/oIHLQC/2DwA3aZrII6RN8s0YROTP+ebQjp5bA
+	LEsAfACEdjjdSHAMDnWgh/sZKlpsyDabmLZY0dqmE2xJ5wtErsqYCOcwrh+x1AlxdOV9MTCH/7yTU
+	ujTc0UFucXoVDErOv/3Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iwKJb-0001d6-71; Tue, 28 Jan 2020 06:25:35 +0000
-Received: from mail-io1-xd2f.google.com ([2607:f8b0:4864:20::d2f])
+	id 1iwKhi-0001nr-Hc; Tue, 28 Jan 2020 06:50:30 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iwKJX-0001ca-RK
- for linux-mtd@lists.infradead.org; Tue, 28 Jan 2020 06:25:33 +0000
-Received: by mail-io1-xd2f.google.com with SMTP id t26so12988041ioi.13
- for <linux-mtd@lists.infradead.org>; Mon, 27 Jan 2020 22:25:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:in-reply-to:references:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=K/jdq6tpZHwG0Rqhvb/QrWB27nnZRReDB1vtxSpHIZs=;
- b=t8PThJNeo6jE0ymluR2dt3G9Mjc3VkwIgwmqgXLwtlOBTnpAUGvKGyB+tYgi69hasJ
- Vtr4Vggj9fz4Os1wrBrBK1ruq+H2peziIysbu1D3tS5Aw3pu8qHPw90Cyive1+FJjDxa
- tBSNz4Mrc/GoHXmx/Z70o+dyIKmScwa0xjljqhNLorEXGmQyEH8MV+QFDbTWNv5zYV+W
- KQCDwo2vlXxsFL6O16/Bm63mfIXEndH6l8G8xStOsZcFAxHvSB4fQutxz52usptB7mZI
- Ul9an1pjEvG/rq9Mo/M5N6GSLY9wPqc5/u5H2Hw3O2kaMwur+8iuCnvGMMG5OfVi/254
- z8Yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:in-reply-to:references:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=K/jdq6tpZHwG0Rqhvb/QrWB27nnZRReDB1vtxSpHIZs=;
- b=FoMGKtNTMJx62uiOeb4vi+4OBi/CvZDG+88FdTWMu21zkWNhXzeUwkUCZKWvEFwMXF
- 93lUsgENSI2eU303yNLOEpN7H7NlMCAcQN6CBUEFLoEwOeRPJ1jm83VbsBHUG7AbcIPr
- jSiKG1loTmzbGmBWEk8UKEpiyEHlwxVAsQRndLueseYP+5CYvLO34Qrlfzy+EyBSXTcc
- z8/QNZ4gjLEHpj3DRGgh1TJjGdzz5AR+1SIjb17LrnlXfBcbXNW9PACEml4lW4r8QSLN
- +qMyR3gM69i0XJRSHwG7cQA6j4RUSZs5pbcgddiqT79+UkjDaTDZvxt1DxBra88/1Hnc
- N5XA==
-X-Gm-Message-State: APjAAAVLmA71k82eN/Jj9C0VYMXFXSCo0DxR658U9FAlTw8Q1I9fH0+9
- feqiMj1Ca0MxD8xNNKIpZv1Dw2bYuqnXP7xuzy8=
-X-Google-Smtp-Source: APXvYqyUwtKwdVKOxQpRxh/wA/rGMshRTD6gcKBzTHZSFXVZZBaFFYLwiTZzXq7LZsy5oW1uup7vHju+yM2m9Mc05RQ=
-X-Received: by 2002:a02:6055:: with SMTP id d21mr17127557jaf.21.1580192730380; 
- Mon, 27 Jan 2020 22:25:30 -0800 (PST)
+ id 1iwKhe-0001nJ-JW
+ for linux-mtd@lists.infradead.org; Tue, 28 Jan 2020 06:50:28 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id E7F342931AA;
+ Tue, 28 Jan 2020 06:50:20 +0000 (GMT)
+Date: Tue, 28 Jan 2020 07:50:17 +0100
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Subject: Re: [PATCH v4 1/2] mtd: spi-nor: split spi_nor_spimem_xfer_data()
+Message-ID: <20200128075017.4014e1f5@collabora.com>
+In-Reply-To: <002acfc3-39d7-68e7-aa00-fbb449c3bc71@cogentembedded.com>
+References: <5143a90d-fede-7025-9eaf-142414c803c3@cogentembedded.com>
+ <002acfc3-39d7-68e7-aa00-fbb449c3bc71@cogentembedded.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Received: by 2002:ad5:5d0d:0:0:0:0:0 with HTTP; Mon, 27 Jan 2020 22:25:29
- -0800 (PST)
-In-Reply-To: <20200127120638.2jpgvedxecwgwz6u@qschulz>
-References: <CAA=hcWRQmXa4_hh3KzKmqeaEkGsbdTEimsPjh=tZWribMkM0dA@mail.gmail.com>
- <CAA=hcWRwi_EsMD2OBzVWtyX_SPJf05vqc09zhQzFdguKi0k=FA@mail.gmail.com>
- <emb3e01e23-7511-48c8-9229-85a767ab359c@andys-imac.leeshillfarm.local>
- <CAA=hcWS2ncU4+RkeLydXOnGvswshK-0iDV3cRTdFgoQ4+Oe57w@mail.gmail.com>
- <20200127120638.2jpgvedxecwgwz6u@qschulz>
-From: JH <jupiter.hce@gmail.com>
-Date: Tue, 28 Jan 2020 17:25:29 +1100
-Message-ID: <CAA=hcWSXrBKX=EbF5KHkWxmWQ+6Tcqvv4exxbWUOniDR6EDiRQ@mail.gmail.com>
-Subject: Re: [yocto] lost busybox mysteriously
-To: Quentin Schulz <quentin.schulz@streamunlimited.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200127_222531_911424_B04434EA 
-X-CRM114-Status: GOOD (  19.66  )
+X-CRM114-CacheID: sfid-20200127_225026_901747_B6741DB7 
+X-CRM114-Status: GOOD (  24.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,67 +69,187 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: connman <connman@lists.01.org>,
- Yocto discussion list <yocto@yoctoproject.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Andy Pont <andy.pont@sdcsystems.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMS8yNy8yMCwgUXVlbnRpbiBTY2h1bHogPHF1ZW50aW4uc2NodWx6QHN0cmVhbXVubGltaXRl
-ZC5jb20+IHdyb3RlOgo+IEhpIEpILAo+Cj4gT24gTW9uLCBKYW4gMjcsIDIwMjAgYXQgMTA6MTM6
-MzdQTSArMTEwMCwgSkggd3JvdGU6Cj4+IEhpIEFuZHksCj4+Cj4+IFRoYW5rcyBmb3IgdGhlIHJl
-c3BvbnNlLgo+Pgo+PiBPbiAxLzI3LzIwLCBBbmR5IFBvbnQgPGFuZHkucG9udEBzZGNzeXN0ZW1z
-LmNvbT4gd3JvdGU6Cj4+ID4gSkggd3JvdGUuLi4KPj4gPgo+PiA+PlRoYXQgdGhlIHNhbWUgcHJv
-YmxlbSBvZiBtaXNzaW5nIGJ1c3lib3ggd2FzIG5vdCBqdXN0IG9jY3VycmVkIGR1cmluZwo+PiA+
-PnRoZSBkZXZpY2UgcnVubmluZyBpbiB0aGUgbWlkZGxlIG9mIG9wZXJhdGlvbiwgaXQgd2FzIGFs
-c28gb2NjdXJyZWQKPj4gPj5kdXJpbmcgYm9vdGluZyBpbWFnZSBmcm9tIE5BTkQsIEkgc2F3IHNl
-dmVyYWwgdGltZXMgdGhhdCB0aGUgZmlyc3QgYW5kCj4+ID4+c2Vjb25kIGN5Y2xlcyBvZiBib290
-aW5nIGltYWdlIGZyb20gTkFORCB3ZXJlIHdvcmtpbmcgd2VsbCwgdGhlbiBzb21lCj4+ID4+Zm9s
-bG93aW5nIGJvb3RpbmcgcHJvY2VzcyB3b3VsZCBiZSBjcmFzaGVkIGJ5IG1pc3NpbmcgYnVzeWJv
-eCwgdGhlbgo+PiA+PmNvdWxkIG5vdCBydW4gd2hvbGUgc2hlbGwgY29tbWFuZHMuIEkgaGF2ZSBi
-ZWVuIHBvbmRlcmluZyBpZiBpdCBjb3VsZAo+PiA+PmJlIGNhdXNlZCBieSBOQU5EIGlzc3VlIG9y
-IG5ldHdvcmsgdmlydXMgLyBmaXNoeT8gQXBwcmVjaWF0ZSBhbnkKPj4gPj5jbHVlcy4KPj4gPiBU
-aGUgZmlyc3Qgc3RlcCBpcyBmb3IgdXMgdG8gdW5kZXJzdGFuZCB3aGF0IOKAnG1pc3NpbmfigJ0g
-bWVhbnM/ICBIYXZlIHlvdQo+PiA+IGdvdCBhbnkgbWVjaGFuaXNtIChVLUJvb3QsIFNEIGNhcmQg
-Ym9vdCwgZXRjLikgdGhhdCB3aWxsIGFsbG93IHlvdSB0bwo+PiA+IG1vdW50IGFuZCBsb29rIGF0
-IHRoZSBjb250ZW50cyBvZiB0aGUgTkFORCBmaWxlIHN5c3RlbT8KPj4KPj4gTWVhbnMgdGhhdCBi
-dXN5Ym94IHdhcyBub3QgdGhlcmUgYW55bW9yZSwgaXQgbXlzdGVyaW91c2x5IGxvc3QsIGFsbAo+
-PiBzaGVsbCBjb21tYW5kcyB3b3VsZCBubyBsb25nZXIgYXZhaWxhYmxlLiBJdCBjYW5ub3QgdG8g
-cnVuIG1vdW50IG9yCj4+IGFueSBzaGVsbCBjb21tYW5kcy4gVGhlcmUgd2FzIHR3byBzY2VuYXJp
-b3Mgd2hlbiB0aGF0IGhhcHBlbmVkOgo+Pgo+PiAtIEluIHRoZSBtaWRkbGUgb2YgcnVubmluZywg
-dGhlIGRldmljZSBhbGwgb2YgY2VydGFpbiBjb3VsZCBub3QgcnVuCj4+IHNoZWxsIGNvbW1hbmRz
-IGFuZCBmYWlsZWQgbXlzdGVyaW91c2x5Cj4+Cj4+IC0gRHVyaW5nIHRoZSB1LWJvb3QgYm9vdGlu
-ZyBrZXJuZWwgcHJvY2VzcywgdGhlcmUgd2VyZSBmdWxsIGVycm9ycyBvZgo+PiBmYWlsaW5nIHNo
-ZWxsIGNvbW1hbmRzLiBMZXQgbWUgbWFrZSBpdCBjbGVhciwgIHRoYXQgYm9vdGluZyBlcnJvciBk
-aWQKPj4gbm90IG9jY3VyIGluIHRoZSBmaXJzdCBvciBzZWNvbmQga2VybmVsIGJvb3RpbmcgYWZ0
-ZXIgdGhlIG5ldyBpbWFnZQo+PiBpbnN0YWxsYXRpb24sIGl0IGhhcHBlbmVkIGluIHRoZSBmb2xs
-b3dpbmcga2VybmVsIGJvb3RpbmcsIGJ1dCB0aGVyZQo+PiB3YXMgbm90aGluZyB0byBkZWxldGUg
-YnVzeWJveCBhY2NpZGVudGFsbHksIGJ1c3lib3ggd2FzIGp1c3QKPj4gbXlzdGVyaW91c2x5IGRp
-c2FwcGVhcmVkLiBCZWNhdXNlIEkgY291bGQgbm90IHJ1biBscywgSSBkaWQgbm90IGtub3cKPj4g
-aWYgdGhlcmUgYXJlIG90aGVyIHRoaW5ncyBtaXNzaW5nLiBJZiB5b3UgYXNrIGhvdyBJIGNvdWxk
-IGtub3cgdGhlCj4+IGJ1c3lib3ggd2FzIG1pc3NpbmcsIEkgcmFuIHRoZSB6SW1hZ2UtaW5pdHJh
-bWZzIHRvIGJvb3QgdGhlIGxpbnV4IGluCj4+IFJBTSwgdGhlbiBtb3VudCB0aGUgdWJpMCB0byBm
-aW5kICBvdXQgYnVzeWJveCB3YXMgZ29uZS4KPj4KPj4KPj4gPiBJZiB5b3UgbG9vayBhdCB0aGUg
-L2JpbiBkaXJlY3RvcnkgKGxzIC1sYSAvYmluL2J1c3kqKSB3aGF0IGRvIHlvdSBzZWU/Cj4+ID4g
-SGF2ZSB0aGUgZmlsZXMgYmVlbiBkZWxldGVkPyBUcnVuY2F0ZWQ/IFplcm8gbGVuZ3RoPwo+Pgo+
-PiBDb3VsZCBub3QgcnVuIGxzIG9yIGFueSBzaGVsbCBjb21tYW5kcyB3aGVuIHRoZSBidXN5Ym94
-IHdhcyBtaXNzaW5nLgo+Pgo+Cj4gL2Jpbi9scyAtbGEgL2Jpbi9idXN5KiA/Cj4KPiBNYXliZSBz
-b21ldGhpbmcgaXMgbWVzc2luZyB3aXRoIHRoZSBQQVRIIGVudmlyb25tZW50IHZhcmlhYmxlLiBP
-cgo+IHNvbWV0aGluZyBpcyByZW1vdmluZyB0aGUgc3ltbGlua3MgZnJvbSBzb21lIGJpbmFyaWVz
-IHRvIGJ1c3lib3guCgpObywgY291bGQgbm90IHJ1biAvYmluL2xzIGFzIGl0IHdhcyAgbGlua2Vk
-IHRvICAvYmluL2J1c3lib3gubm9zdWlkLAp0aGUgL2Jpbi9idXN5Ym94Lm5vc3VpZCB3YXMgZGFt
-YWdlZCBmb3Igc29tZSByZWFzb24uCgo+PiA+IFdoYXQgZmlsZSBzeXN0ZW0gYXJlIHlvdSB1c2lu
-ZyBvbiB0aGUgTkFORCBmbGFzaD8gIEhvdyBhcmUgdGhlIGRldmljZXMKPj4gPiBiZWluZyByZXNl
-dCBkdXJpbmcgdGhlIHZhcmlvdXMgYm9vdCBjeWNsZXM/ICBJZiBpdCBpcyBhIGhhcmR3YXJlIHJl
-c2V0Cj4+ID4gdGhlbiBzb21lIGZpbGUgc3lzdGVtcyBhcmUgbGVzcyByZXNpbGllbnQgdG8gaXQg
-dGhhbiBvdGhlcnMgYnV0IEkgd291bGQKPj4gPiBleHBlY3QgaW4gdGhhdCBjYXNlIG1vcmUgZnVu
-ZGFtZW50YWwgYm9vdCBpc3N1ZXMuCj4+Cj4+IFVCSUZTLCBtb3N0IGRldmljZSByZXNldCBvciBi
-b290IGN5Y2xlcyB3ZXJlIGNhbGxpbmcgaGFsdCBvciByZWJvb3QsCj4+IGJ1dCBpdCBzb21ldGlt
-ZSBpdCBjb3VsZCBqdXN0IHVzZSBwb3dlciBjeWNsZS4KPj4KPgo+IElJUkMsIFVCSUZTIGlzIHNh
-ZmUgZnJvbSBwb3dlciBjeWNsZXMuCgpHb29kIHRvIGtub3cuIFRoYW5rIHlvdS4KCj4gUXVlbnRp
-bgo+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Mon, 27 Jan 2020 23:28:05 +0300
+Sergei Shtylyov <sergei.shtylyov@cogentembedded.com> wrote:
+
+> spi_nor_spimem_xfer_data() being a helper function for the data reads/
+> writes contains 3 fragments that depend on the data direction; and I'm
+> going to add another one to call the SPI dirmap API...
+> I think this function should be split so that the common fragments are
+> put into 2 functions, spi_nor_spimem_bounce() and spi_nor_spimem_exec_op()
+> called from spi_nor_spimem_{read|write}_data(), and the data direction
+> dependent bits moved back into those read/write functions -- that way we
+> would be able to avoid *goto*s otherwise needed in the next patch adding
+> the  SPI dirmap support...
+> 
+> Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+
+> 
+> ---
+> Changes in version 4:
+> - new patch.
+> 
+>  drivers/mtd/spi-nor/spi-nor.c |   91 +++++++++++++++++++++++-------------------
+>  1 file changed, 51 insertions(+), 40 deletions(-)
+> 
+> Index: linux/drivers/mtd/spi-nor/spi-nor.c
+> ===================================================================
+> --- linux.orig/drivers/mtd/spi-nor/spi-nor.c
+> +++ linux/drivers/mtd/spi-nor/spi-nor.c
+> @@ -246,55 +246,45 @@ struct flash_info {
+>  #define JEDEC_MFR(info)	((info)->id[0])
+>  
+>  /**
+> - * spi_nor_spimem_xfer_data() - helper function to read/write data to
+> - *                              flash's memory region
+> + * spi_nor_spimem_bounce() - check if a bounce buffer is needed for the data
+> + *                           transfer
+>   * @nor:        pointer to 'struct spi_nor'
+>   * @op:         pointer to 'struct spi_mem_op' template for transfer
+>   *
+> - * Return: number of bytes transferred on success, -errno otherwise
+> + * If we have to use the bounce buffer, the data field in @op will be updated.
+> + *
+> + * Return: true if the bounce buffer is needed, false if not
+>   */
+> -static ssize_t spi_nor_spimem_xfer_data(struct spi_nor *nor,
+> -					struct spi_mem_op *op)
+> +static bool spi_nor_spimem_bounce(struct spi_nor *nor, struct spi_mem_op *op)
+>  {
+> -	bool usebouncebuf = false;
+> -	void *rdbuf = NULL;
+> -	const void *buf;
+> -	int ret;
+> -
+> -	if (op->data.dir == SPI_MEM_DATA_IN)
+> -		buf = op->data.buf.in;
+> -	else
+> -		buf = op->data.buf.out;
+> -
+> -	if (object_is_on_stack(buf) || !virt_addr_valid(buf))
+> -		usebouncebuf = true;
+> -
+> -	if (usebouncebuf) {
+> +	/* op->data.buf.in occupies the same memory as op->data.buf.out */
+> +	if (object_is_on_stack(op->data.buf.in) ||
+> +	    !virt_addr_valid(op->data.buf.in)) {
+>  		if (op->data.nbytes > nor->bouncebuf_size)
+>  			op->data.nbytes = nor->bouncebuf_size;
+> -
+> -		if (op->data.dir == SPI_MEM_DATA_IN) {
+> -			rdbuf = op->data.buf.in;
+> -			op->data.buf.in = nor->bouncebuf;
+> -		} else {
+> -			op->data.buf.out = nor->bouncebuf;
+> -			memcpy(nor->bouncebuf, buf,
+> -			       op->data.nbytes);
+> -		}
+> +		op->data.buf.in = nor->bouncebuf;
+> +		return true;
+>  	}
+>  
+> -	ret = spi_mem_adjust_op_size(nor->spimem, op);
+> -	if (ret)
+> -		return ret;
+> -
+> -	ret = spi_mem_exec_op(nor->spimem, op);
+> -	if (ret)
+> -		return ret;
+> +	return false;
+> +}
+> +
+> +/**
+> + * spi_nor_spimem_exec_op() - execute a memory operation
+> + * @nor:        pointer to 'struct spi_nor'
+> + * @op:         pointer to 'struct spi_mem_op' template for transfer
+> + *
+> + * Return: 0 on success, -error otherwise.
+> + */
+> +static int spi_nor_spimem_exec_op(struct spi_nor *nor, struct spi_mem_op *op)
+> +{
+> +	int error;
+>  
+> -	if (usebouncebuf && op->data.dir == SPI_MEM_DATA_IN)
+> -		memcpy(rdbuf, nor->bouncebuf, op->data.nbytes);
+> +	error = spi_mem_adjust_op_size(nor->spimem, op);
+> +	if (error)
+> +		return error;
+>  
+> -	return op->data.nbytes;
+> +	return spi_mem_exec_op(nor->spimem, op);
+>  }
+>  
+>  /**
+> @@ -315,6 +305,8 @@ static ssize_t spi_nor_spimem_read_data(
+>  			   SPI_MEM_OP_ADDR(nor->addr_width, from, 1),
+>  			   SPI_MEM_OP_DUMMY(nor->read_dummy, 1),
+>  			   SPI_MEM_OP_DATA_IN(len, buf, 1));
+> +	bool usebouncebuf;
+> +	int error;
+>  
+>  	/* get transfer protocols. */
+>  	op.cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->read_proto);
+> @@ -325,7 +317,16 @@ static ssize_t spi_nor_spimem_read_data(
+>  	/* convert the dummy cycles to the number of bytes */
+>  	op.dummy.nbytes = (nor->read_dummy * op.dummy.buswidth) / 8;
+>  
+> -	return spi_nor_spimem_xfer_data(nor, &op);
+> +	usebouncebuf = spi_nor_spimem_bounce(nor, &op);
+> +
+> +	error = spi_nor_spimem_exec_op(nor, &op);
+> +	if (error)
+> +		return error;
+> +
+> +	if (usebouncebuf)
+> +		memcpy(buf, op.data.buf.in, op.data.nbytes);
+> +
+> +	return op.data.nbytes;
+>  }
+>  
+>  /**
+> @@ -364,6 +365,8 @@ static ssize_t spi_nor_spimem_write_data
+>  			   SPI_MEM_OP_ADDR(nor->addr_width, to, 1),
+>  			   SPI_MEM_OP_NO_DUMMY,
+>  			   SPI_MEM_OP_DATA_OUT(len, buf, 1));
+> +	bool usebouncebuf;
+> +	int error;
+>  
+>  	op.cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->write_proto);
+>  	op.addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->write_proto);
+> @@ -372,7 +375,15 @@ static ssize_t spi_nor_spimem_write_data
+>  	if (nor->program_opcode == SPINOR_OP_AAI_WP && nor->sst_write_second)
+>  		op.addr.nbytes = 0;
+>  
+> -	return spi_nor_spimem_xfer_data(nor, &op);
+> +	usebouncebuf = spi_nor_spimem_bounce(nor, &op);
+> +	if (usebouncebuf)
+> +		memcpy(nor->bouncebuf, buf, op.data.nbytes);
+> +
+> +	error = spi_nor_spimem_exec_op(nor, &op);
+> +	if (error)
+> +		return error;
+> +
+> +	return op.data.nbytes;
+>  }
+>  
+>  /**
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
