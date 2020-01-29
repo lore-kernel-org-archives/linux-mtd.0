@@ -2,22 +2,22 @@ Return-Path: <SRS0=VDEF=3S=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=0.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,URIBL_DBL_ABUSE_MALW,USER_AGENT_SANE_2 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,URIBL_DBL_ABUSE_MALW,USER_AGENT_SANE_2
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74C49C2D0DB
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Jan 2020 14:53:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5175AC2D0DB
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Jan 2020 15:01:21 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 498512070E
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Jan 2020 14:53:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 241A92071E
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Jan 2020 15:01:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="unku7nnT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 498512070E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="B/I5RMoP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 241A92071E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -25,31 +25,29 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xphnZl5oy8fgk6cbO6WJlEq2qVwjG3++1wo91YNMdi0=; b=unku7nnTt8iYIM
-	6DE1j5H0VoP7PCeWeTuGnAQHThAHJiHvFYdkvLSi5FgbeqjK6NSDd7yHKbKMsHP+IS6mvIDcQpzhx
-	5kOlLbXoWvRlvsoNkm02izBShH93E0/cVnSjQYV0AcLFtR3lM372MA8EW78XuoiD4UguCKV4NSAzh
-	b4Q+PCj0XtReZsh36WZPidpnymvYEIHT9wSCAUtLmlnuD9nFZ7YPKrEScc5XEef0gaWaNaoCwfnEq
-	U3/Nv562LNaI6DHUO7VAl16TD4e+2i8BfysMBIPLtCt5vuRD/SXP8ez5/x1/9mFSEOGvmtHZ1EKEn
-	KUv/e20jo5D8ml8CP6kg==;
+	List-Owner; bh=2BMTr83gKfYG/VUbzLnXRIPuHI576obNoL2dho7gbO8=; b=B/I5RMoPSVhFnv
+	8Hu16IE09tOajfqbzmdye6aa7JdAOud6EEYBuD9NCbfJYoB655tqFC9I7tMsgTwCF7cl3aGyyCH9g
+	hOnm0YmtQqUu0jPM6YOkhp1uQ/aajBOv/h0fAM98+5YCldL3D65J7SU1BbEFk1ae5NnbFnML9cND0
+	mCM/gaypZTBV8sjN7PU8bvKFDze8U6TplsjBKLvEYEKCkos7veoQeMaka+Tct9H0+AaXAQsCvo+A5
+	tmEI6zkh8qpEQzR7iAr0pOtrknNQYa1lnmSuRlcoyKyTMsJIjy25DXL0d/ut9pstEKucwE8ZWET0t
+	6UgPHPWyaVfUgl/kHE4A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iwoiB-0005fQ-RQ; Wed, 29 Jan 2020 14:52:59 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1iwoq0-0000po-8M; Wed, 29 Jan 2020 15:01:04 +0000
+Received: from relay5-d.mail.gandi.net ([217.70.183.197])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iwoi7-0005Vn-SH
- for linux-mtd@lists.infradead.org; Wed, 29 Jan 2020 14:52:57 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 9206B293113;
- Wed, 29 Jan 2020 14:52:51 +0000 (GMT)
-Date: Wed, 29 Jan 2020 15:52:48 +0100
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>
+ id 1iwopv-0000p6-7g
+ for linux-mtd@lists.infradead.org; Wed, 29 Jan 2020 15:01:02 +0000
+X-Originating-IP: 90.76.211.102
+Received: from xps13 (lfbn-tou-1-1151-102.w90-76.abo.wanadoo.fr
+ [90.76.211.102]) (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 18BD81C0013;
+ Wed, 29 Jan 2020 15:00:46 +0000 (UTC)
+Date: Wed, 29 Jan 2020 16:00:45 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@collabora.com>
 Subject: Re: How to handle write-protect pin of NAND device ?
-Message-ID: <20200129155248.52bbbfb9@collabora.com>
+Message-ID: <20200129160045.3dc451d8@xps13>
 In-Reply-To: <20200129154926.50e955e8@collabora.com>
 References: <CAK7LNAR0FemABUg5uN5fhy5LRsOm7n5GhmFVVHE8T57knDM9Ug@mail.gmail.com>
  <20200127153559.60a83e76@xps13>
@@ -61,12 +59,12 @@ References: <CAK7LNAR0FemABUg5uN5fhy5LRsOm7n5GhmFVVHE8T57knDM9Ug@mail.gmail.com>
  <20200129145336.66f840ea@collabora.com>
  <20200129145950.2a324acf@xps13>
  <20200129154926.50e955e8@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200129_065256_175020_5D447F8B 
-X-CRM114-Status: GOOD (  43.25  )
+X-CRM114-CacheID: sfid-20200129_070059_551312_AFA16E74 
+X-CRM114-Status: GOOD (  47.61  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,174 +78,190 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Masahiro Yamada <masahiroy@kernel.org>,
  linux-mtd <linux-mtd@lists.infradead.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
  Boris Brezillon <bbrezillon@kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 29 Jan 2020 15:49:26 +0100
-Boris Brezillon <boris.brezillon@collabora.com> wrote:
-
-> On Wed, 29 Jan 2020 14:59:50 +0100
-> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> 
-> > Hi Boris,
-> > 
-> > Boris Brezillon <boris.brezillon@collabora.com> wrote on Wed, 29 Jan
-> > 2020 14:53:36 +0100:
-> >   
-> > > On Wed, 29 Jan 2020 14:36:39 +0100
-> > > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> > >     
-> > > > Hello,
-> > > > 
-> > > > Masahiro Yamada <masahiroy@kernel.org> wrote on Wed, 29 Jan 2020
-> > > > 19:06:46 +0900:
-> > > >       
-> > > > > On Tue, Jan 28, 2020 at 3:58 PM Boris Brezillon
-> > > > > <boris.brezillon@collabora.com> wrote:        
-> > > > > >
-> > > > > > On Mon, 27 Jan 2020 16:47:55 +0100
-> > > > > > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> > > > > >          
-> > > > > > > Hi Hello,
-> > > > > > >
-> > > > > > > Boris Brezillon <boris.brezillon@collabora.com> wrote on Mon, 27 Jan
-> > > > > > > 2020 16:45:54 +0100:
-> > > > > > >          
-> > > > > > > > On Mon, 27 Jan 2020 15:35:59 +0100
-> > > > > > > > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> > > > > > > >          
-> > > > > > > > > Hi Masahiro,
-> > > > > > > > >
-> > > > > > > > > Masahiro Yamada <masahiroy@kernel.org> wrote on Mon, 27 Jan 2020
-> > > > > > > > > 21:55:25 +0900:
-> > > > > > > > >          
-> > > > > > > > > > Hi.
-> > > > > > > > > >
-> > > > > > > > > > I have a question about the
-> > > > > > > > > > WP_n pin of a NAND chip.
-> > > > > > > > > >
-> > > > > > > > > >
-> > > > > > > > > > As far as I see, the NAND framework does not
-> > > > > > > > > > handle it.          
-> > > > > > > > >
-> > > > > > > > > There is a nand_check_wp() which reads the status of the pin before
-> > > > > > > > > erasing/writing.
-> > > > > > > > >          
-> > > > > > > > > >
-> > > > > > > > > > Instead, it is handled in a driver level.
-> > > > > > > > > > I see some DT-bindings that handle the WP_n pin.
-> > > > > > > > > >
-> > > > > > > > > > $ git grep wp -- Documentation/devicetree/bindings/mtd/
-> > > > > > > > > > Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt:-
-> > > > > > > > > > brcm,nand-has-wp          : Some versions of this IP include a
-> > > > > > > > > > write-protect          
-> > > > > > > > >
-> > > > > > > > > Just checked: brcmnand de-assert WP when writing/erasing and asserts it
-> > > > > > > > > otherwise. IMHO this switching is useless.
-> > > > > > > > >          
-> > > > > > > > > > Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt:-
-> > > > > > > > > > wp-gpios: GPIO specifier for the write protect pin.
-> > > > > > > > > > Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt:
-> > > > > > > > > >          wp-gpios = <&gpf 22 GPIO_ACTIVE_LOW>;
-> > > > > > > > > > Documentation/devicetree/bindings/mtd/nvidia-tegra20-nand.txt:-
-> > > > > > > > > > wp-gpios: GPIO specifier for the write protect pin.
-> > > > > > > > > > Documentation/devicetree/bindings/mtd/nvidia-tegra20-nand.txt:
-> > > > > > > > > >          wp-gpios = <&gpio TEGRA_GPIO(S, 0) GPIO_ACTIVE_LOW>;          
-> > > > > > > > >
-> > > > > > > > > In both cases, the WP GPIO is unused in the code, just de-asserted at
-> > > > > > > > > boot time like what you do in the patch below.
-> > > > > > > > >          
-> > > > > > > > > >
-> > > > > > > > > >
-> > > > > > > > > >
-> > > > > > > > > > I wrote a patch to avoid read-only issue in some cases:
-> > > > > > > > > > http://patchwork.ozlabs.org/patch/1229749/
-> > > > > > > > > >
-> > > > > > > > > > Generally speaking, we expect NAND devices
-> > > > > > > > > > are writable in Linux. So, I think my patch is OK.          
-> > > > > > > > >
-> > > > > > > > > I think the patch is fine.
-> > > > > > > > >          
-> > > > > > > > > >
-> > > > > > > > > >
-> > > > > > > > > > However, I asked this myself:
-> > > > > > > > > > Is there a useful case to assert the write protect
-> > > > > > > > > > pin in order to make the NAND chip really read-only?
-> > > > > > > > > > For example, the system recovery image is stored in
-> > > > > > > > > > a read-only device, and the write-protect pin is
-> > > > > > > > > > kept asserted to assure nobody accidentally corrupts it.          
-> > > > > > > > >
-> > > > > > > > > It is very likely that the same device is used for RO and RW storage so
-> > > > > > > > > in most cases this is not possible. We already have squashfs which is
-> > > > > > > > > actually read-only at filesystem level, I'm not sure it is needed to
-> > > > > > > > > enforce this at a lower level... Anyway if there is actually a pin for
-> > > > > > > > > that, one might want to handle the pin directly as a GPIO, what do you
-> > > > > > > > > think?          
-> > > > > > > >
-> > > > > > > > FWIW, I've always considered the WP pin as a way to protect against
-> > > > > > > > spurious destructive command emission, which is most likely to happen
-> > > > > > > > during transition phases (bootloader -> linux, linux -> kexeced-linux,
-> > > > > > > > platform reset, ..., or any other transition where the pin state might
-> > > > > > > > be undefined at some point). This being said, if you're worried about
-> > > > > > > > other sources of spurious cmds (say your bus is shared between
-> > > > > > > > different kind of memory devices, and the CS pin is unreliable), you
-> > > > > > > > might want to leave the NAND in a write-protected state de-asserting WP
-> > > > > > > > only when explicitly issuing a destructive command (program page, erase
-> > > > > > > > block).          
-> > > > > > >
-> > > > > > > Ok so with this in mind, only the brcmnand driver does a useful use of
-> > > > > > > the WP output.          
-> > > > > >
-> > > > > > Well, I'd just say that brcmnand is more paranoid, which is a good
-> > > > > > thing I guess, but that doesn't make other solutions useless, just less
-> > > > > > safe. We could probably flag operations as 'destructive' at the
-> > > > > > nand_operation level, so drivers can assert/de-assert the pin on a
-> > > > > > per-operation basis.          
-> > > > > 
-> > > > > Sounds a good idea.
-> > > > > 
-> > > > > If it is supported in the NAND framework,
-> > > > > I will be happy to implement in the Denali NAND driver.
-> > > > >         
-> > > > 
-> > > > There is currently no such thing at NAND level but I doubt there is
-> > > > more than erase and write operation during which it would be needed
-> > > > to assert/deassert WP. I don't see why having this flag would help
-> > > > the controller drivers?      
-> > > 
-> > > Because ->exec_op() was designed to avoid leaving such decisions to the
-> > > NAND controller drivers :P. If you now ask drivers to look at the
-> > > opcode and guess when they should de-assert the WP pin, you're just
-> > > going back to the ->cmdfunc() mess.    
-> > 
-> > I was actually thinking to the ->write_page(_raw)() helpers, but
-> > yeah, in the case of ->exec_op() it's different. However, for these
-> > helpers as don't use ->exec_op(), we need another way to flag the
-> > operation as destructive.  
-> 
-> I don't think we really care about ancient (AKA non-exec_op()) drivers.
-> They seem to work fine as they are now, so let's focus on the modern
-> ones.
-> 
-> > 
-> > But actually we could let the driver toggle the pin for any operation.
-> > If we want to be protected against spurious access, not directly ordered
-> > by the controller driver itself, then we don't care if the operation is
-> > actually destructive or not as long as the pin is deasserted during our
-> > operations and asserted otherwise.  
-> 
-> Or we could patch the ->exec_op() path to pass this information (and
-> maybe provide helpers for the GPIO case). Should be as simple as:
-
-Just noticed that WP has to be de-asserted 100 ns (tWW) before issuing
-the command cycle, so it might have a minor impact on the perfs (let's
-be honest, 100ns is nothing compared to the page transfer/erase time
-so I don't think it's a good reason for not re-asserting the pin after
-each write program operation).
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgQm9yaXMsCgpCb3JpcyBCcmV6aWxsb24gPGJvcmlzLmJyZXppbGxvbkBjb2xsYWJvcmEuY29t
+PiB3cm90ZSBvbiBXZWQsIDI5IEphbgoyMDIwIDE1OjQ5OjI2ICswMTAwOgoKPiBPbiBXZWQsIDI5
+IEphbiAyMDIwIDE0OjU5OjUwICswMTAwCj4gTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBi
+b290bGluLmNvbT4gd3JvdGU6Cj4gCj4gPiBIaSBCb3JpcywKPiA+IAo+ID4gQm9yaXMgQnJlemls
+bG9uIDxib3Jpcy5icmV6aWxsb25AY29sbGFib3JhLmNvbT4gd3JvdGUgb24gV2VkLCAyOSBKYW4K
+PiA+IDIwMjAgMTQ6NTM6MzYgKzAxMDA6Cj4gPiAgIAo+ID4gPiBPbiBXZWQsIDI5IEphbiAyMDIw
+IDE0OjM2OjM5ICswMTAwCj4gPiA+IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxp
+bi5jb20+IHdyb3RlOgo+ID4gPiAgICAgCj4gPiA+ID4gSGVsbG8sCj4gPiA+ID4gCj4gPiA+ID4g
+TWFzYWhpcm8gWWFtYWRhIDxtYXNhaGlyb3lAa2VybmVsLm9yZz4gd3JvdGUgb24gV2VkLCAyOSBK
+YW4gMjAyMAo+ID4gPiA+IDE5OjA2OjQ2ICswOTAwOgo+ID4gPiA+ICAgICAgIAo+ID4gPiA+ID4g
+T24gVHVlLCBKYW4gMjgsIDIwMjAgYXQgMzo1OCBQTSBCb3JpcyBCcmV6aWxsb24KPiA+ID4gPiA+
+IDxib3Jpcy5icmV6aWxsb25AY29sbGFib3JhLmNvbT4gd3JvdGU6ICAgICAgICAKPiA+ID4gPiA+
+ID4KPiA+ID4gPiA+ID4gT24gTW9uLCAyNyBKYW4gMjAyMCAxNjo0Nzo1NSArMDEwMAo+ID4gPiA+
+ID4gPiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPiB3cm90ZToKPiA+
+ID4gPiA+ID4gICAgICAgICAgCj4gPiA+ID4gPiA+ID4gSGkgSGVsbG8sCj4gPiA+ID4gPiA+ID4K
+PiA+ID4gPiA+ID4gPiBCb3JpcyBCcmV6aWxsb24gPGJvcmlzLmJyZXppbGxvbkBjb2xsYWJvcmEu
+Y29tPiB3cm90ZSBvbiBNb24sIDI3IEphbgo+ID4gPiA+ID4gPiA+IDIwMjAgMTY6NDU6NTQgKzAx
+MDA6Cj4gPiA+ID4gPiA+ID4gICAgICAgICAgCj4gPiA+ID4gPiA+ID4gPiBPbiBNb24sIDI3IEph
+biAyMDIwIDE1OjM1OjU5ICswMTAwCj4gPiA+ID4gPiA+ID4gPiBNaXF1ZWwgUmF5bmFsIDxtaXF1
+ZWwucmF5bmFsQGJvb3RsaW4uY29tPiB3cm90ZToKPiA+ID4gPiA+ID4gPiA+ICAgICAgICAgIAo+
+ID4gPiA+ID4gPiA+ID4gPiBIaSBNYXNhaGlybywKPiA+ID4gPiA+ID4gPiA+ID4KPiA+ID4gPiA+
+ID4gPiA+ID4gTWFzYWhpcm8gWWFtYWRhIDxtYXNhaGlyb3lAa2VybmVsLm9yZz4gd3JvdGUgb24g
+TW9uLCAyNyBKYW4gMjAyMAo+ID4gPiA+ID4gPiA+ID4gPiAyMTo1NToyNSArMDkwMDoKPiA+ID4g
+PiA+ID4gPiA+ID4gICAgICAgICAgCj4gPiA+ID4gPiA+ID4gPiA+ID4gSGkuCj4gPiA+ID4gPiA+
+ID4gPiA+ID4KPiA+ID4gPiA+ID4gPiA+ID4gPiBJIGhhdmUgYSBxdWVzdGlvbiBhYm91dCB0aGUK
+PiA+ID4gPiA+ID4gPiA+ID4gPiBXUF9uIHBpbiBvZiBhIE5BTkQgY2hpcC4KPiA+ID4gPiA+ID4g
+PiA+ID4gPgo+ID4gPiA+ID4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+ID4gPiA+ID4gQXMgZmFyIGFz
+IEkgc2VlLCB0aGUgTkFORCBmcmFtZXdvcmsgZG9lcyBub3QKPiA+ID4gPiA+ID4gPiA+ID4gPiBo
+YW5kbGUgaXQuICAgICAgICAgIAo+ID4gPiA+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiA+ID4gPiBU
+aGVyZSBpcyBhIG5hbmRfY2hlY2tfd3AoKSB3aGljaCByZWFkcyB0aGUgc3RhdHVzIG9mIHRoZSBw
+aW4gYmVmb3JlCj4gPiA+ID4gPiA+ID4gPiA+IGVyYXNpbmcvd3JpdGluZy4KPiA+ID4gPiA+ID4g
+PiA+ID4gICAgICAgICAgCj4gPiA+ID4gPiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4gPiA+ID4gPiBJ
+bnN0ZWFkLCBpdCBpcyBoYW5kbGVkIGluIGEgZHJpdmVyIGxldmVsLgo+ID4gPiA+ID4gPiA+ID4g
+PiA+IEkgc2VlIHNvbWUgRFQtYmluZGluZ3MgdGhhdCBoYW5kbGUgdGhlIFdQX24gcGluLgo+ID4g
+PiA+ID4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+ID4gPiA+ID4gJCBnaXQgZ3JlcCB3cCAtLSBEb2N1
+bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkLwo+ID4gPiA+ID4gPiA+ID4gPiA+IERv
+Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvYnJjbSxicmNtbmFuZC50eHQ6LQo+
+ID4gPiA+ID4gPiA+ID4gPiA+IGJyY20sbmFuZC1oYXMtd3AgICAgICAgICAgOiBTb21lIHZlcnNp
+b25zIG9mIHRoaXMgSVAgaW5jbHVkZSBhCj4gPiA+ID4gPiA+ID4gPiA+ID4gd3JpdGUtcHJvdGVj
+dCAgICAgICAgICAKPiA+ID4gPiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4gPiA+ID4gSnVzdCBjaGVj
+a2VkOiBicmNtbmFuZCBkZS1hc3NlcnQgV1Agd2hlbiB3cml0aW5nL2VyYXNpbmcgYW5kIGFzc2Vy
+dHMgaXQKPiA+ID4gPiA+ID4gPiA+ID4gb3RoZXJ3aXNlLiBJTUhPIHRoaXMgc3dpdGNoaW5nIGlz
+IHVzZWxlc3MuCj4gPiA+ID4gPiA+ID4gPiA+ICAgICAgICAgIAo+ID4gPiA+ID4gPiA+ID4gPiA+
+IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvaW5nZW5pYyxqejQ3ODAtbmFu
+ZC50eHQ6LQo+ID4gPiA+ID4gPiA+ID4gPiA+IHdwLWdwaW9zOiBHUElPIHNwZWNpZmllciBmb3Ig
+dGhlIHdyaXRlIHByb3RlY3QgcGluLgo+ID4gPiA+ID4gPiA+ID4gPiA+IERvY3VtZW50YXRpb24v
+ZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvaW5nZW5pYyxqejQ3ODAtbmFuZC50eHQ6Cj4gPiA+ID4g
+PiA+ID4gPiA+ID4gICAgICAgICAgd3AtZ3Bpb3MgPSA8JmdwZiAyMiBHUElPX0FDVElWRV9MT1c+
+Owo+ID4gPiA+ID4gPiA+ID4gPiA+IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9t
+dGQvbnZpZGlhLXRlZ3JhMjAtbmFuZC50eHQ6LQo+ID4gPiA+ID4gPiA+ID4gPiA+IHdwLWdwaW9z
+OiBHUElPIHNwZWNpZmllciBmb3IgdGhlIHdyaXRlIHByb3RlY3QgcGluLgo+ID4gPiA+ID4gPiA+
+ID4gPiA+IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvbnZpZGlhLXRlZ3Jh
+MjAtbmFuZC50eHQ6Cj4gPiA+ID4gPiA+ID4gPiA+ID4gICAgICAgICAgd3AtZ3Bpb3MgPSA8Jmdw
+aW8gVEVHUkFfR1BJTyhTLCAwKSBHUElPX0FDVElWRV9MT1c+OyAgICAgICAgICAKPiA+ID4gPiA+
+ID4gPiA+ID4KPiA+ID4gPiA+ID4gPiA+ID4gSW4gYm90aCBjYXNlcywgdGhlIFdQIEdQSU8gaXMg
+dW51c2VkIGluIHRoZSBjb2RlLCBqdXN0IGRlLWFzc2VydGVkIGF0Cj4gPiA+ID4gPiA+ID4gPiA+
+IGJvb3QgdGltZSBsaWtlIHdoYXQgeW91IGRvIGluIHRoZSBwYXRjaCBiZWxvdy4KPiA+ID4gPiA+
+ID4gPiA+ID4gICAgICAgICAgCj4gPiA+ID4gPiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4gPiA+ID4g
+Pgo+ID4gPiA+ID4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+ID4gPiA+ID4gSSB3cm90ZSBhIHBhdGNo
+IHRvIGF2b2lkIHJlYWQtb25seSBpc3N1ZSBpbiBzb21lIGNhc2VzOgo+ID4gPiA+ID4gPiA+ID4g
+PiA+IGh0dHA6Ly9wYXRjaHdvcmsub3psYWJzLm9yZy9wYXRjaC8xMjI5NzQ5Lwo+ID4gPiA+ID4g
+PiA+ID4gPiA+Cj4gPiA+ID4gPiA+ID4gPiA+ID4gR2VuZXJhbGx5IHNwZWFraW5nLCB3ZSBleHBl
+Y3QgTkFORCBkZXZpY2VzCj4gPiA+ID4gPiA+ID4gPiA+ID4gYXJlIHdyaXRhYmxlIGluIExpbnV4
+LiBTbywgSSB0aGluayBteSBwYXRjaCBpcyBPSy4gICAgICAgICAgCj4gPiA+ID4gPiA+ID4gPiA+
+Cj4gPiA+ID4gPiA+ID4gPiA+IEkgdGhpbmsgdGhlIHBhdGNoIGlzIGZpbmUuCj4gPiA+ID4gPiA+
+ID4gPiA+ICAgICAgICAgIAo+ID4gPiA+ID4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+ID4gPiA+ID4K
+PiA+ID4gPiA+ID4gPiA+ID4gPiBIb3dldmVyLCBJIGFza2VkIHRoaXMgbXlzZWxmOgo+ID4gPiA+
+ID4gPiA+ID4gPiA+IElzIHRoZXJlIGEgdXNlZnVsIGNhc2UgdG8gYXNzZXJ0IHRoZSB3cml0ZSBw
+cm90ZWN0Cj4gPiA+ID4gPiA+ID4gPiA+ID4gcGluIGluIG9yZGVyIHRvIG1ha2UgdGhlIE5BTkQg
+Y2hpcCByZWFsbHkgcmVhZC1vbmx5Pwo+ID4gPiA+ID4gPiA+ID4gPiA+IEZvciBleGFtcGxlLCB0
+aGUgc3lzdGVtIHJlY292ZXJ5IGltYWdlIGlzIHN0b3JlZCBpbgo+ID4gPiA+ID4gPiA+ID4gPiA+
+IGEgcmVhZC1vbmx5IGRldmljZSwgYW5kIHRoZSB3cml0ZS1wcm90ZWN0IHBpbiBpcwo+ID4gPiA+
+ID4gPiA+ID4gPiA+IGtlcHQgYXNzZXJ0ZWQgdG8gYXNzdXJlIG5vYm9keSBhY2NpZGVudGFsbHkg
+Y29ycnVwdHMgaXQuICAgICAgICAgIAo+ID4gPiA+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiA+ID4g
+PiBJdCBpcyB2ZXJ5IGxpa2VseSB0aGF0IHRoZSBzYW1lIGRldmljZSBpcyB1c2VkIGZvciBSTyBh
+bmQgUlcgc3RvcmFnZSBzbwo+ID4gPiA+ID4gPiA+ID4gPiBpbiBtb3N0IGNhc2VzIHRoaXMgaXMg
+bm90IHBvc3NpYmxlLiBXZSBhbHJlYWR5IGhhdmUgc3F1YXNoZnMgd2hpY2ggaXMKPiA+ID4gPiA+
+ID4gPiA+ID4gYWN0dWFsbHkgcmVhZC1vbmx5IGF0IGZpbGVzeXN0ZW0gbGV2ZWwsIEknbSBub3Qg
+c3VyZSBpdCBpcyBuZWVkZWQgdG8KPiA+ID4gPiA+ID4gPiA+ID4gZW5mb3JjZSB0aGlzIGF0IGEg
+bG93ZXIgbGV2ZWwuLi4gQW55d2F5IGlmIHRoZXJlIGlzIGFjdHVhbGx5IGEgcGluIGZvcgo+ID4g
+PiA+ID4gPiA+ID4gPiB0aGF0LCBvbmUgbWlnaHQgd2FudCB0byBoYW5kbGUgdGhlIHBpbiBkaXJl
+Y3RseSBhcyBhIEdQSU8sIHdoYXQgZG8geW91Cj4gPiA+ID4gPiA+ID4gPiA+IHRoaW5rPyAgICAg
+ICAgICAKPiA+ID4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+ID4gPiBGV0lXLCBJJ3ZlIGFsd2F5cyBj
+b25zaWRlcmVkIHRoZSBXUCBwaW4gYXMgYSB3YXkgdG8gcHJvdGVjdCBhZ2FpbnN0Cj4gPiA+ID4g
+PiA+ID4gPiBzcHVyaW91cyBkZXN0cnVjdGl2ZSBjb21tYW5kIGVtaXNzaW9uLCB3aGljaCBpcyBt
+b3N0IGxpa2VseSB0byBoYXBwZW4KPiA+ID4gPiA+ID4gPiA+IGR1cmluZyB0cmFuc2l0aW9uIHBo
+YXNlcyAoYm9vdGxvYWRlciAtPiBsaW51eCwgbGludXggLT4ga2V4ZWNlZC1saW51eCwKPiA+ID4g
+PiA+ID4gPiA+IHBsYXRmb3JtIHJlc2V0LCAuLi4sIG9yIGFueSBvdGhlciB0cmFuc2l0aW9uIHdo
+ZXJlIHRoZSBwaW4gc3RhdGUgbWlnaHQKPiA+ID4gPiA+ID4gPiA+IGJlIHVuZGVmaW5lZCBhdCBz
+b21lIHBvaW50KS4gVGhpcyBiZWluZyBzYWlkLCBpZiB5b3UncmUgd29ycmllZCBhYm91dAo+ID4g
+PiA+ID4gPiA+ID4gb3RoZXIgc291cmNlcyBvZiBzcHVyaW91cyBjbWRzIChzYXkgeW91ciBidXMg
+aXMgc2hhcmVkIGJldHdlZW4KPiA+ID4gPiA+ID4gPiA+IGRpZmZlcmVudCBraW5kIG9mIG1lbW9y
+eSBkZXZpY2VzLCBhbmQgdGhlIENTIHBpbiBpcyB1bnJlbGlhYmxlKSwgeW91Cj4gPiA+ID4gPiA+
+ID4gPiBtaWdodCB3YW50IHRvIGxlYXZlIHRoZSBOQU5EIGluIGEgd3JpdGUtcHJvdGVjdGVkIHN0
+YXRlIGRlLWFzc2VydGluZyBXUAo+ID4gPiA+ID4gPiA+ID4gb25seSB3aGVuIGV4cGxpY2l0bHkg
+aXNzdWluZyBhIGRlc3RydWN0aXZlIGNvbW1hbmQgKHByb2dyYW0gcGFnZSwgZXJhc2UKPiA+ID4g
+PiA+ID4gPiA+IGJsb2NrKS4gICAgICAgICAgCj4gPiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4gPiBP
+ayBzbyB3aXRoIHRoaXMgaW4gbWluZCwgb25seSB0aGUgYnJjbW5hbmQgZHJpdmVyIGRvZXMgYSB1
+c2VmdWwgdXNlIG9mCj4gPiA+ID4gPiA+ID4gdGhlIFdQIG91dHB1dC4gICAgICAgICAgCj4gPiA+
+ID4gPiA+Cj4gPiA+ID4gPiA+IFdlbGwsIEknZCBqdXN0IHNheSB0aGF0IGJyY21uYW5kIGlzIG1v
+cmUgcGFyYW5vaWQsIHdoaWNoIGlzIGEgZ29vZAo+ID4gPiA+ID4gPiB0aGluZyBJIGd1ZXNzLCBi
+dXQgdGhhdCBkb2Vzbid0IG1ha2Ugb3RoZXIgc29sdXRpb25zIHVzZWxlc3MsIGp1c3QgbGVzcwo+
+ID4gPiA+ID4gPiBzYWZlLiBXZSBjb3VsZCBwcm9iYWJseSBmbGFnIG9wZXJhdGlvbnMgYXMgJ2Rl
+c3RydWN0aXZlJyBhdCB0aGUKPiA+ID4gPiA+ID4gbmFuZF9vcGVyYXRpb24gbGV2ZWwsIHNvIGRy
+aXZlcnMgY2FuIGFzc2VydC9kZS1hc3NlcnQgdGhlIHBpbiBvbiBhCj4gPiA+ID4gPiA+IHBlci1v
+cGVyYXRpb24gYmFzaXMuICAgICAgICAgIAo+ID4gPiA+ID4gCj4gPiA+ID4gPiBTb3VuZHMgYSBn
+b29kIGlkZWEuCj4gPiA+ID4gPiAKPiA+ID4gPiA+IElmIGl0IGlzIHN1cHBvcnRlZCBpbiB0aGUg
+TkFORCBmcmFtZXdvcmssCj4gPiA+ID4gPiBJIHdpbGwgYmUgaGFwcHkgdG8gaW1wbGVtZW50IGlu
+IHRoZSBEZW5hbGkgTkFORCBkcml2ZXIuCj4gPiA+ID4gPiAgICAgICAgIAo+ID4gPiA+IAo+ID4g
+PiA+IFRoZXJlIGlzIGN1cnJlbnRseSBubyBzdWNoIHRoaW5nIGF0IE5BTkQgbGV2ZWwgYnV0IEkg
+ZG91YnQgdGhlcmUgaXMKPiA+ID4gPiBtb3JlIHRoYW4gZXJhc2UgYW5kIHdyaXRlIG9wZXJhdGlv
+biBkdXJpbmcgd2hpY2ggaXQgd291bGQgYmUgbmVlZGVkCj4gPiA+ID4gdG8gYXNzZXJ0L2RlYXNz
+ZXJ0IFdQLiBJIGRvbid0IHNlZSB3aHkgaGF2aW5nIHRoaXMgZmxhZyB3b3VsZCBoZWxwCj4gPiA+
+ID4gdGhlIGNvbnRyb2xsZXIgZHJpdmVycz8gICAgICAKPiA+ID4gCj4gPiA+IEJlY2F1c2UgLT5l
+eGVjX29wKCkgd2FzIGRlc2lnbmVkIHRvIGF2b2lkIGxlYXZpbmcgc3VjaCBkZWNpc2lvbnMgdG8g
+dGhlCj4gPiA+IE5BTkQgY29udHJvbGxlciBkcml2ZXJzIDpQLiBJZiB5b3Ugbm93IGFzayBkcml2
+ZXJzIHRvIGxvb2sgYXQgdGhlCj4gPiA+IG9wY29kZSBhbmQgZ3Vlc3Mgd2hlbiB0aGV5IHNob3Vs
+ZCBkZS1hc3NlcnQgdGhlIFdQIHBpbiwgeW91J3JlIGp1c3QKPiA+ID4gZ29pbmcgYmFjayB0byB0
+aGUgLT5jbWRmdW5jKCkgbWVzcy4gICAgCj4gPiAKPiA+IEkgd2FzIGFjdHVhbGx5IHRoaW5raW5n
+IHRvIHRoZSAtPndyaXRlX3BhZ2UoX3JhdykoKSBoZWxwZXJzLCBidXQKPiA+IHllYWgsIGluIHRo
+ZSBjYXNlIG9mIC0+ZXhlY19vcCgpIGl0J3MgZGlmZmVyZW50LiBIb3dldmVyLCBmb3IgdGhlc2UK
+PiA+IGhlbHBlcnMgYXMgZG9uJ3QgdXNlIC0+ZXhlY19vcCgpLCB3ZSBuZWVkIGFub3RoZXIgd2F5
+IHRvIGZsYWcgdGhlCj4gPiBvcGVyYXRpb24gYXMgZGVzdHJ1Y3RpdmUuICAKPiAKPiBJIGRvbid0
+IHRoaW5rIHdlIHJlYWxseSBjYXJlIGFib3V0IGFuY2llbnQgKEFLQSBub24tZXhlY19vcCgpKSBk
+cml2ZXJzLgo+IFRoZXkgc2VlbSB0byB3b3JrIGZpbmUgYXMgdGhleSBhcmUgbm93LCBzbyBsZXQn
+cyBmb2N1cyBvbiB0aGUgbW9kZXJuCj4gb25lcy4KCk5vdCBteSBwb2ludDogdGhlIC0+d3JpdGVf
+cGFnZVtfcmF3XSgpIGhlbHBlcnMgYXJlIGltcGxlbWVudGVkIGJ5CmV2ZXJ5b25lLCBubyAtPmV4
+ZWNfb3AoKSBpcyBpbnZvbHZlZCBhbmQgdGhleSBhcmUgZGVzdHJ1Y3RpdmUgYXMgd2VsbC4KCj4g
+Cj4gPiAKPiA+IEJ1dCBhY3R1YWxseSB3ZSBjb3VsZCBsZXQgdGhlIGRyaXZlciB0b2dnbGUgdGhl
+IHBpbiBmb3IgYW55IG9wZXJhdGlvbi4KPiA+IElmIHdlIHdhbnQgdG8gYmUgcHJvdGVjdGVkIGFn
+YWluc3Qgc3B1cmlvdXMgYWNjZXNzLCBub3QgZGlyZWN0bHkgb3JkZXJlZAo+ID4gYnkgdGhlIGNv
+bnRyb2xsZXIgZHJpdmVyIGl0c2VsZiwgdGhlbiB3ZSBkb24ndCBjYXJlIGlmIHRoZSBvcGVyYXRp
+b24gaXMKPiA+IGFjdHVhbGx5IGRlc3RydWN0aXZlIG9yIG5vdCBhcyBsb25nIGFzIHRoZSBwaW4g
+aXMgZGVhc3NlcnRlZCBkdXJpbmcgb3VyCj4gPiBvcGVyYXRpb25zIGFuZCBhc3NlcnRlZCBvdGhl
+cndpc2UuICAKPiAKPiBPciB3ZSBjb3VsZCBwYXRjaCB0aGUgLT5leGVjX29wKCkgcGF0aCB0byBw
+YXNzIHRoaXMgaW5mb3JtYXRpb24gKGFuZAo+IG1heWJlIHByb3ZpZGUgaGVscGVycyBmb3IgdGhl
+IEdQSU8gY2FzZSkuIFNob3VsZCBiZSBhcyBzaW1wbGUgYXM6CgpUaGlzIGFwcHJvYWNoIGlzIGZp
+bmUuCgpXaXRob3V0IHRoZSBkZWxheSBwZW5hbHR5IGluIG1pbmQsIEkgd291bGQgc2F5IGl0IGlz
+IHVzZWxlc3MgYW5kIHRoZQpkcml2ZXIgY2FuIHNpbXBseSBkZWFzc2VydCBXUCBhdCB0aGUgc3Rh
+cnQgb2YgLT5leGVjX29wKCkgYnV0IGFzIHRoZXJlCmlzIGEgc21hbGwgcGVuYWx0eSwgd2h5IG5v
+dC4KCj4gCj4gLS0tPjgtLS0gIAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9u
+YW5kX2Jhc2UuYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfYmFzZS5jCj4gaW5kZXggZjY0
+ZTNiNjYwNWM2Li40ZjBmZGJkNWI3NjAgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9y
+YXcvbmFuZF9iYXNlLmMKPiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2Jhc2UuYwo+
+IEBAIC0xMzQzLDYgKzEzNDMsNyBAQCBzdGF0aWMgaW50IG5hbmRfZXhlY19wcm9nX3BhZ2Vfb3Ao
+c3RydWN0IG5hbmRfY2hpcCAqY2hpcCwgdW5zaWduZWQgaW50IHBhZ2UsCj4gICAgICAgICAgICAg
+ICAgIG9wLm5pbnN0cnMtLTsKPiAgICAgICAgIH0KPiAgCj4gKyAgICAgICBvcC5mbGFncyA9IE5B
+TkRfT1BFUkFUSU9OX0RFQVNTRVJUX1dQOwo+ICAgICAgICAgcmV0ID0gbmFuZF9leGVjX29wKGNo
+aXAsICZvcCk7Cj4gICAgICAgICBpZiAoIXByb2cgfHwgcmV0KQo+ICAgICAgICAgICAgICAgICBy
+ZXR1cm4gcmV0Owo+IEBAIC0xNDE2LDYgKzE0MTcsNyBAQCBpbnQgbmFuZF9wcm9nX3BhZ2VfZW5k
+X29wKHN0cnVjdCBuYW5kX2NoaXAgKmNoaXApCj4gICAgICAgICAgICAgICAgIH07Cj4gICAgICAg
+ICAgICAgICAgIHN0cnVjdCBuYW5kX29wZXJhdGlvbiBvcCA9IE5BTkRfT1BFUkFUSU9OKGNoaXAt
+PmN1cl9jcywgaW5zdHJzKTsKPiAgCj4gKyAgICAgICAgICAgICAgIG9wLmZsYWdzID0gTkFORF9P
+UEVSQVRJT05fREVBU1NFUlRfV1A7Cj4gICAgICAgICAgICAgICAgIHJldCA9IG5hbmRfZXhlY19v
+cChjaGlwLCAmb3ApOwo+ICAgICAgICAgICAgICAgICBpZiAocmV0KQo+ICAgICAgICAgICAgICAg
+ICAgICAgICAgIHJldHVybiByZXQ7Cj4gQEAgLTE2OTIsNiArMTY5NCw3IEBAIGludCBuYW5kX2Vy
+YXNlX29wKHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsIHVuc2lnbmVkIGludCBlcmFzZWJsb2NrKQo+
+ICAgICAgICAgICAgICAgICBpZiAoY2hpcC0+b3B0aW9ucyAmIE5BTkRfUk9XX0FERFJfMykKPiAg
+ICAgICAgICAgICAgICAgICAgICAgICBpbnN0cnNbMV0uY3R4LmFkZHIubmFkZHJzKys7Cj4gIAo+
+ICsgICAgICAgICAgICAgICBvcC5mbGFncyA9IE5BTkRfT1BFUkFUSU9OX0RFQVNTRVJUX1dQOwo+
+ICAgICAgICAgICAgICAgICByZXQgPSBuYW5kX2V4ZWNfb3AoY2hpcCwgJm9wKTsKPiAgICAgICAg
+ICAgICAgICAgaWYgKHJldCkKPiAgICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gcmV0Owo+
+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L210ZC9yYXduYW5kLmggYi9pbmNsdWRlL2xpbnV4
+L210ZC9yYXduYW5kLmgKPiBpbmRleCA0YWI5YmNjZmNkZTAuLjFiMDhkZGY2N2ExMiAxMDA2NDQK
+PiAtLS0gYS9pbmNsdWRlL2xpbnV4L210ZC9yYXduYW5kLmgKPiArKysgYi9pbmNsdWRlL2xpbnV4
+L210ZC9yYXduYW5kLmgKPiBAQCAtODQ5LDkgKzg0OSwxMiBAQCBzdHJ1Y3QgbmFuZF9vcF9wYXJz
+ZXIgewo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZW9mKHN0cnVjdCBuYW5kX29w
+X3BhcnNlcl9wYXR0ZXJuKSwgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwKPiAgICAgICAg
+IH0KPiAgCj4gKyNkZWZpbmUgTkFORF9PUEVSQVRJT05fREVBU1NFUlRfV1AgICAgIEJJVCgwKQo+
+ICsKPiAgLyoqCj4gICAqIHN0cnVjdCBuYW5kX29wZXJhdGlvbiAtIE5BTkQgb3BlcmF0aW9uIGRl
+c2NyaXB0b3IKPiAgICogQGNzOiB0aGUgQ1MgbGluZSB0byBzZWxlY3QgZm9yIHRoaXMgTkFORCBv
+cGVyYXRpb24KPiArICogQGZsYWdzOiBvcGVyYXRpb24gZmxhZ3MKPiAgICogQGluc3RyczogYXJy
+YXkgb2YgaW5zdHJ1Y3Rpb25zIHRvIGV4ZWN1dGUKPiAgICogQG5pbnN0cnM6IGxlbmd0aCBvZiB0
+aGUgQGluc3RycyBhcnJheQo+ICAgKgo+IEBAIC04NTksNiArODYyLDcgQEAgc3RydWN0IG5hbmRf
+b3BfcGFyc2VyIHsKPiAgICovCj4gIHN0cnVjdCBuYW5kX29wZXJhdGlvbiB7Cj4gICAgICAgICB1
+bnNpZ25lZCBpbnQgY3M7Cj4gKyAgICAgICB1MzIgZmxhZ3M7Cj4gICAgICAgICBjb25zdCBzdHJ1
+Y3QgbmFuZF9vcF9pbnN0ciAqaW5zdHJzOwo+ICAgICAgICAgdW5zaWduZWQgaW50IG5pbnN0cnM7
+Cj4gIH07CgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QK
+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
