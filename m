@@ -1,91 +1,66 @@
 Return-Path: <SRS0=VDEF=3S=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
-X-Spam-Level: *
-X-Spam-Status: No, score=1.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,URIBL_DBL_ABUSE_MALW autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,URIBL_DBL_ABUSE_MALW
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DD0DC33C9E
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Jan 2020 02:36:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 364A4C33CB2
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Jan 2020 07:42:00 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 52209207FF
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Jan 2020 02:36:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 054AC20708
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Jan 2020 07:42:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RQcsWfXN";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="X5BcoUZt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 52209207FF
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kzyijZ4V"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 054AC20708
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=thorsis.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=YRVbdQYS1g4bMKA1Cji+Z+VlmExMCa1MXpXPeT9dwzk=; b=RQcsWfXNENOpfK
-	FcEnE8VkpmP/UM8ph7Q3rv9lv21oSSLryhNv04YcI8xaeZ+Jhnpzc0bYVnZHNNGq8XW9hdp8W51lk
-	/6iChiu4x9G8iwrb7+K0KiaQHc4mJ2iD2NoAC4Ru7O6dseR6T/3T45NpvuhzzEss+IQq2x333vOAY
-	uZ60fKQ9krI7iV5EsMDXfxAd+F/rnX8pH8h1Wn234XlZHR2bI7cC/ThiosqXWhlCusnGlTBgr1lKe
-	BZFpXSBnA9Z1sNog3O/uD1/0M29GTNGrny7wnUEyWj0OI1z+6KbrTQ/pXC4OvREDeVm2AGPG65ffE
-	wRfDxlrPI4LsnhtSfVeA==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:References:
+	In-Reply-To:Message-ID:Date:Subject:To:From:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=JovGw0JXB1h8J4tvTgCdtdmCe2f2rRx2O5bKgt1IOVc=; b=kzyijZ4VjGXWQSAZdJdNSrljdA
+	pgs9lTsvZAwA6w3+rehn8TfhjuW5/2zhleBzrwJGq0ZylCSIspKXG2o4nE8ObV0IxhiNwrGaCPWTo
+	+0vMc1JXOsTuRNEO/oaABzDfiaTU1V0jFfDyG0COzRajxGzfNWzZiMq7I9aNged2RDyTouV0OJYcv
+	htr0qSzSgxe/jsBGx7CUUUUb/Fjq8lD8xeB1q0AJIC/qP3QwINjJYzFNERqnthEGqTIsh0eZU16+F
+	Pf9rZ9JjFstg8z3HsSBA7IqemhTug0hT+SKQtHBsO5Z7dhlftSh1ukj89jsQKUh4K3t4tbixe/xnm
+	Y5dHTLKA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1iwdCz-0003f4-AS; Wed, 29 Jan 2020 02:36:01 +0000
-Received: from mail-lf1-x12b.google.com ([2a00:1450:4864:20::12b])
+	id 1iwhyu-0002uE-Ri; Wed, 29 Jan 2020 07:41:48 +0000
+Received: from mail.thorsis.com ([92.198.35.195])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iwdCw-0003e2-6Z
- for linux-mtd@lists.infradead.org; Wed, 29 Jan 2020 02:35:59 +0000
-Received: by mail-lf1-x12b.google.com with SMTP id y19so10699773lfl.9
- for <linux-mtd@lists.infradead.org>; Tue, 28 Jan 2020 18:35:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linux-foundation.org; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=xKaKa4v/uLKsxDJmSSJEukA8v8wjYnguys66biR+79o=;
- b=X5BcoUZt/2wlQ1NK6ysY4+Sgw9AsvgwRumxSBuD6ZSRePNHoqdm3x8xz8YZVMKBq6i
- mjE6VgrmCNUVTA6uZnAd6LxDp5WhOQczQFZSInTO6IyCkNJz686lskGkXk61lbqiuHoi
- z+E3sre49DVpJD17N8p07ANfLx3b0QveQdv4s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=xKaKa4v/uLKsxDJmSSJEukA8v8wjYnguys66biR+79o=;
- b=Zmtgv9+Z6IeJCUg9g1hgO5pNiROTGb8krvdXz+qdPdACDqeZWnLG6bfLOPdCUz6nLi
- uHzLwKYM4is44+lNy2LbNyOqynSdqQlByZEVPPsr9GtbPvYYDnZf6Td0LFc2Ak+KYa7J
- jAiGNc1sxa8xwI7a0A1RjKGbBptTtmCZKmPHgNiQ5CcfcYr2ltGdWzB5YFyCgXdlZoTM
- 7iKiE55HQmCDZGRTBauwfGSejRZsaoF7jGPAP/mP/XwTGyWpK0BecLOn0NkMruNuW6R2
- V+s2JMHAS4VGIcUr6etemoDxLvE0X9Q0cdtWd7K2fLjuA/BuIDh3G/TTbKn1cbztzH0H
- MAZw==
-X-Gm-Message-State: APjAAAVlvNGBBYKtLG8vEIJqOVICj3Np2enJrO3xLJTOnAZMctp/WqJr
- BOiMawZr4J/8k3pLg+6ozjzX89Rs0Hw=
-X-Google-Smtp-Source: APXvYqxiDPs0/YbLvlrQoaObYfqpYl+jUTIoyC48riFsOLSuHqkOBKaZS9ntcUbX406U/0zfXhhkfQ==
-X-Received: by 2002:ac2:5f49:: with SMTP id 9mr4100996lfz.151.1580265355208;
- Tue, 28 Jan 2020 18:35:55 -0800 (PST)
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com.
- [209.85.208.182])
- by smtp.gmail.com with ESMTPSA id y5sm251206lfl.6.2020.01.28.18.35.53
- for <linux-mtd@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 28 Jan 2020 18:35:53 -0800 (PST)
-Received: by mail-lj1-f182.google.com with SMTP id y6so16858340lji.0
- for <linux-mtd@lists.infradead.org>; Tue, 28 Jan 2020 18:35:53 -0800 (PST)
-X-Received: by 2002:a2e:9d92:: with SMTP id c18mr7936575ljj.265.1580265353277; 
- Tue, 28 Jan 2020 18:35:53 -0800 (PST)
-MIME-Version: 1.0
-References: <1224347843.24297.1579473209765.JavaMail.zimbra@nod.at>
-In-Reply-To: <1224347843.24297.1579473209765.JavaMail.zimbra@nod.at>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 28 Jan 2020 18:35:37 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjupwymAN-aOytdtxz4EfyKH7MirmJJw40chDGzFQT9wQ@mail.gmail.com>
-Message-ID: <CAHk-=wjupwymAN-aOytdtxz4EfyKH7MirmJJw40chDGzFQT9wQ@mail.gmail.com>
-Subject: Re: Upcomming UBI/UBIFS/UML pull requests
-To: Richard Weinberger <richard@nod.at>
+ id 1iwhyr-0002tq-QT
+ for linux-mtd@lists.infradead.org; Wed, 29 Jan 2020 07:41:47 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by mail.thorsis.com (Postfix) with ESMTP id 5BD85119B
+ for <linux-mtd@lists.infradead.org>; Wed, 29 Jan 2020 08:36:29 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at mail.thorsis.com
+Received: from mail.thorsis.com ([127.0.0.1])
+ by localhost (mail.thorsis.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id jxjp5Ub8wdjN for <linux-mtd@lists.infradead.org>;
+ Wed, 29 Jan 2020 08:36:29 +0100 (CET)
+Received: by mail.thorsis.com (Postfix, from userid 109)
+ id 3766B1AB5; Wed, 29 Jan 2020 08:36:29 +0100 (CET)
+From: Alexander Dahl <ada@thorsis.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 1/8] mtd-utils: Fix printf format specifies with the wrong
+ type
+Date: Wed, 29 Jan 2020 08:36:25 +0100
+Message-ID: <1687829.rdH24INEY4@ada>
+In-Reply-To: <20200128172715.19545-2-david.oberhollenzer@sigma-star.at>
+References: <20200128172715.19545-1-david.oberhollenzer@sigma-star.at>
+ <20200128172715.19545-2-david.oberhollenzer@sigma-star.at>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200128_183558_242059_DF1355C8 
-X-CRM114-Status: GOOD (  10.66  )
+X-CRM114-CacheID: sfid-20200128_234146_183423_624CD817 
+X-CRM114-Status: GOOD (  16.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,44 +72,135 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-um <linux-um@lists.infradead.org>,
- Johannes Berg <johannes@sipsolutions.net>,
- anton ivanov <anton.ivanov@cambridgegreys.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: richard@nod.at, David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sun, Jan 19, 2020 at 2:33 PM Richard Weinberger <richard@nod.at> wrote:
->
-> due to traveling I won't be able to send you pull requests
-> for UBI/UBIFS and UML this time.
->
-> Therefore I've already prepared my next branches and one of my colleges will
-> send you an PR as soon as the merge window opens.
->
-> Miquel: UBI/UBIFS
-> Anton or Johannes: UML
+Hello David,
 
-Heh. I just pulled from Anton's pull request, and noticed that the tag
-was actually signed by you.
+Am Dienstag, 28. Januar 2020, 18:27:08 CET schrieb David Oberhollenzer:
+> Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+> ---
+>  misc-utils/flashcp.c        | 8 ++++----
+>  tests/ubi-tests/io_paral.c  | 4 ++--
+>  tests/ubi-tests/io_read.c   | 2 +-
+>  tests/ubi-tests/io_update.c | 4 ++--
+>  4 files changed, 9 insertions(+), 9 deletions(-)
+> 
+> diff --git a/misc-utils/flashcp.c b/misc-utils/flashcp.c
+> index b6ad2f9..1270422 100644
+> --- a/misc-utils/flashcp.c
+> +++ b/misc-utils/flashcp.c
+> @@ -337,12 +337,12 @@ int main (int argc,char *argv[])
+>  			if (result < 0)
+>  			{
+>  				log_printf (LOG_ERROR,
+> -						"While writing data to 0x%.8x-0x%.8x on %s: %m\n",
+> +						"While writing data to 0x%.8lx-0x%.8lx on %s: %m\n",
+>  						written,written + i,device);
+>  				exit (EXIT_FAILURE);
+>  			}
+>  			log_printf (LOG_ERROR,
+> -					"Short write count returned while writing to x%.8x-0x%.8x on 
+%s:
+> %d/%llu bytes written to flash\n", +					"Short write count 
+returned while
+> writing to x%.8lx-0x%.8lx on %s: %lu/%llu bytes written to flash\n",
+> written,written + i,device,written + result,(unsigned long
+> long)filestat.st_size); exit (EXIT_FAILURE);
+>  		}
 
-That's all fine, and this worked, and I have no complaints. But I
-would like to point out that it's perfectly ok to just send pull
-requests for the merge window early, since it was clearly all done and
-ready to go. Just make it very clear that it's an early pull request
-for the next merge window so that I don't get upset if I think I
-should pull it during the rc series and it's not just fixes.
+The correct length specifier for variables of type size_t would be 'z' so the 
+format specifier would be %zx or %zu. The 'l' for long might work on one 
+platform but lead to a warning on another. We face this regularly when 
+compiling the same source for 64 bit x86 and 32 bit arm.
 
-Delegating somebody else to send the pull request later obviously also
-worked, but I thought I'd mention this "send it early" option. It's
-not hugely common, but quite often I actually have one or two pull
-requests that come in before the window even opens (exactly because of
-travel or other timing issues), so it's also not exactly unheard of.
+> @@ -372,7 +372,7 @@ int main (int argc,char *argv[])
+>  		if (size < BUFSIZE) i = size;
+>  		if (flags & FLAG_VERBOSE)
+>  			log_printf (LOG_NORMAL,
+> -					"\rVerifying data: %dk/%lluk (%llu%%)",
+> +					"\rVerifying data: %luk/%lluk (%llu%%)",
+>  					KB (written + i),
+>  					KB ((unsigned long long)filestat.st_size),
+>  					PERCENTAGE (written + i,(unsigned long long)filestat.st_size));
+> @@ -387,7 +387,7 @@ int main (int argc,char *argv[])
+>  		if (memcmp (src,dest,i))
+>  		{
+>  			log_printf (LOG_ERROR,
+> -					"File does not seem to match flash data. First mismatch at
+> 0x%.8x-0x%.8x\n", +					"File does not seem to match flash data. 
+First
+> mismatch at 0x%.8lx-0x%.8lx\n", written,written + i);
+>  			exit (EXIT_FAILURE);
+>  		}
 
-                Linus
+Same with that ones.
+
+I'm not sure of those 'written + i' though, might be different due to integer 
+promotion.
+
+Greets
+Alex
+
+> diff --git a/tests/ubi-tests/io_paral.c b/tests/ubi-tests/io_paral.c
+> index 4040b3e..b0884fe 100644
+> --- a/tests/ubi-tests/io_paral.c
+> +++ b/tests/ubi-tests/io_paral.c
+> @@ -207,7 +207,7 @@ static void *write_thread(void *ptr)
+>  		ret = pwrite(fd, wbuf, dev_info.leb_size, offs);
+>  		if (ret != dev_info.leb_size) {
+>  			failed("pwrite");
+> -			errorm("cannot write %d bytes to offs %lld, wrote %d",
+> +			errorm("cannot write %d bytes to offs %ld, wrote %d",
+>  				dev_info.leb_size, offs, ret);
+>  			break;
+>  		}
+> @@ -216,7 +216,7 @@ static void *write_thread(void *ptr)
+>  		ret = pread(fd, rbuf, dev_info.leb_size, offs);
+>  		if (ret != dev_info.leb_size) {
+>  			failed("read");
+> -			errorm("failed to read %d bytes at offset %d "
+> +			errorm("failed to read %d bytes at offset %ld "
+>  			       "of volume %d", dev_info.leb_size, offs,
+>  			       vol_id);
+>  			break;
+> diff --git a/tests/ubi-tests/io_read.c b/tests/ubi-tests/io_read.c
+> index f944a86..a6cc8f5 100644
+> --- a/tests/ubi-tests/io_read.c
+> +++ b/tests/ubi-tests/io_read.c
+> @@ -233,7 +233,7 @@ static int test_read2(const struct ubi_vol_info
+> *vol_info, int len) continue;
+> 
+>  		if (test_read3(vol_info, len, offsets[i])) {
+> -			errorm("offset = %d", offsets[i]);
+> +			errorm("offset = %ld", offsets[i]);
+>  			return -1;
+>  		}
+>  	}
+> diff --git a/tests/ubi-tests/io_update.c b/tests/ubi-tests/io_update.c
+> index f48df1d..d093da5 100644
+> --- a/tests/ubi-tests/io_update.c
+> +++ b/tests/ubi-tests/io_update.c
+> @@ -189,11 +189,11 @@ static int test_update1(struct ubi_vol_info *vol_info,
+> int leb_change) ret = read(fd, buf1, test_len);
+>  		if (ret < 0) {
+>  			failed("read");
+> -			errorm("failed to read %d bytes", test_len);
+> +			errorm("failed to read %lld bytes", test_len);
+>  			goto close;
+>  		}
+>  		if (ret != test_len) {
+> -			errorm("failed to read %d bytes, read %d", test_len, ret);
+> +			errorm("failed to read %lld bytes, read %d", test_len, ret);
+>  			goto close;
+>  		}
+>  		if (memcmp(buf, buf1, test_len)) {
+
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
