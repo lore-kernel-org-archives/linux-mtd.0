@@ -2,85 +2,59 @@ Return-Path: <SRS0=c1be=3T=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.2 required=3.0 tests=DKIMWL_WL_HIGH,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_DBL_ABUSE_MALW
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	URIBL_DBL_ABUSE_MALW,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CF85C2D0DB
-	for <linux-mtd@archiver.kernel.org>; Thu, 30 Jan 2020 19:55:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC715C2D0DB
+	for <linux-mtd@archiver.kernel.org>; Thu, 30 Jan 2020 20:15:01 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5F0E12064C
-	for <linux-mtd@archiver.kernel.org>; Thu, 30 Jan 2020 19:55:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AFD2020CC7
+	for <linux-mtd@archiver.kernel.org>; Thu, 30 Jan 2020 20:15:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fHieBwu3";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="DI34Wepw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F0E12064C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="H6qdAlce"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AFD2020CC7
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=C4uSi0Lv9eBoVAP91t/c5rxiGSS9nouneFVo3U74gzw=; b=fHieBwu3IlOkOP
-	hv3g9/4G0yTpEoZN07kSX4+X7aRPnSHSfBSZxt/AFPXNg5pPZLjwpvHmDcEv4E3SW+wq+H7UUQNto
-	sbhsBa1w+y/iBJgTm/5WMzm7MIV8KwN7OQq5weE9Nz52j5Pw+oIwYlQRCuEBZmwoI3kpb6AsMuz+i
-	lzORMVMWvVP66yAW18Ei0MXn1GnnopQF8BDEb6I2QI2CayY/lx/7ACL4XSqwT99LvbQEaAvANgIaW
-	ehozij3LHDCDCdExQ7W4ElQQyKkAyIZbdZDXFzRnbLGAWF0SQjxfhPgPHszsqXDRwYovN4b17piEA
-	Bkw/BSu0jYE+GNtcj7Xw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From
+	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=yCrjpWhUfUHf8vIAW/qmTaJ80s4t4s7dCflMOPKs4GE=; b=H6qdAlce8OLYgC
+	YSLb3Lwiw2xddFZ/J8KOXCmjk14wUBwd4yoHZxJCcFuhVJw1BNSL5WW07iWtDTaQjusodcCjoB1wb
+	XeEadxhks5uni237yuaD7JiAipjJM8ui66KmsOYQhSiNRrdzs2fUEsHrymY1GdiQUGvY1qb0Q7eNG
+	4h+esneH7hex8mUWMA0QTKzta5SQf1LR+/aiK4J5vs/KuByIpeeLAKQh1GxOpvydoGYHuCU+jrsjv
+	h47pgXt8IZZ72EQ9PhOMJ3OooAH86q9ONG0Ev7kauW+1G4dNS5RwJwF85bOLZOuh4o7GvyzqpUS/m
+	WVXgWBgRa1FzQ1icS91g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ixFuW-0007W4-WC; Thu, 30 Jan 2020 19:55:33 +0000
-Received: from mail-pg1-x541.google.com ([2607:f8b0:4864:20::541])
+	id 1ixGDA-0006A3-A1; Thu, 30 Jan 2020 20:14:48 +0000
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ixFuT-0007VA-UP
- for linux-mtd@lists.infradead.org; Thu, 30 Jan 2020 19:55:31 +0000
-Received: by mail-pg1-x541.google.com with SMTP id l24so2207325pgk.2
- for <linux-mtd@lists.infradead.org>; Thu, 30 Jan 2020 11:55:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=pdsu7RCBoLcVOhLco/AVEx3fQJcXVrKTb9CxbekR3XM=;
- b=DI34WepwXxsfZeW+FSgwROgBDBxak/LrfIeoJFt868CvBtLxqjUhcxo4gex8XV+usX
- 5snhM9WM5Auls6RoqhenMBXP3Celv5ymwtrYJ5qpv9kH9PRebunl/KP7I3PjL4yqfs/z
- WPYAA19iWATbE6kVlcEfpF9cLBR7SI7XZ51xOP70l9nLXIxlw6mXPH33ZIR3B7xXVZOT
- +CuDdFqOmmac6rbDbqQKNsjDNzm5lXDVyfZgD5i4WrlkQzuzoWt5DFPXs9EYvBEAjcHZ
- 5SqQIBCo1SKFNFDRu8k8ZwlJUi5HPXCnObZ+DnT6mhFo2zm9Z5T31+N+TkHZMwpP3EBR
- UJXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=pdsu7RCBoLcVOhLco/AVEx3fQJcXVrKTb9CxbekR3XM=;
- b=Pm3BwiF+LvBeavFBOTSByGBSauKvRgEHXIt3LgC/r7iDn25thWqhEHsftKiHsSKtad
- hx/ih08qFdZ4lUdCrPk2DSdIt7FbqZ2wx0POpb7YV98ErU3tom2DX6UkWibZUJyQiYQ5
- 28c+Hcrw0k20zfNaydLkELpwq2jEdkWPM6pbIFhBIv/+ETawOq1qWUPm7S5EeF+gnKg/
- 3gv5bLVhfwsvmObpvOxL5LrMR6NgzFQ6FmpRa9rVyIZNR+GBw/2ITawZgOhqslvPgGJD
- zO0Uz741sciPX5fPgL2SYOdNtbnvJS6mMyRCKjEpM8NrqHlTK344KV63hzaiiOcawhIp
- iPzw==
-X-Gm-Message-State: APjAAAU/1VV8N6+390lMDwWO2OVSohFvudZDoJ0gVTC/b33aLIxPwjva
- fQ2fYL78dO4r8JObN+MBw9tpRG6c62QBFtsU/hxaVg==
-X-Google-Smtp-Source: APXvYqw8k2aC1UM+gBdhOrs5MjUUN9JfLGAfIAxV2TmfEid43hv0iF4Y2HMsBRUHCIPpJPJWBz+DxywnBx15gs0eVA8=
-X-Received: by 2002:a63:1d5f:: with SMTP id d31mr6466014pgm.159.1580414128461; 
- Thu, 30 Jan 2020 11:55:28 -0800 (PST)
+ id 1ixGD6-000694-1Z
+ for linux-mtd@lists.infradead.org; Thu, 30 Jan 2020 20:14:45 +0000
+X-Originating-IP: 93.23.196.10
+Received: from xps13 (10.196.23.93.rev.sfr.net [93.23.196.10])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 4F9D460007;
+ Thu, 30 Jan 2020 20:14:35 +0000 (UTC)
+Date: Thu, 30 Jan 2020 21:14:33 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [GIT PULL] UBIFS changes for 5.6-rc1
+Message-ID: <20200130211433.46abdf90@xps13>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20191211192742.95699-1-brendanhiggins@google.com>
- <20191211192742.95699-3-brendanhiggins@google.com>
- <20200109162303.35f4f0a3@xps13>
- <CAFd5g47VLB6zOJsSySAYrJie8hj-OkvOC89-z2b9xMBZ2bxvYA@mail.gmail.com>
- <20200125162803.5a2375d7@xps13> <20200130205030.0f58cb02@xps13>
-In-Reply-To: <20200130205030.0f58cb02@xps13>
-From: Brendan Higgins <brendanhiggins@google.com>
-Date: Thu, 30 Jan 2020 11:55:17 -0800
-Message-ID: <CAFd5g4736RQLyy-4wNmhLP1qigX7VgYTPSGh-dZGcM5NCeiO=g@mail.gmail.com>
-Subject: Re: [PATCH v1 2/7] mtd: rawnand: add unspecified HAS_IOMEM dependency
-To: Miquel Raynal <miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200130_115529_980167_614E025F 
-X-CRM114-Status: GOOD (  20.63  )
+X-CRM114-CacheID: sfid-20200130_121444_223256_7D5B5101 
+X-CRM114-Status: GOOD (  10.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,76 +67,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
- Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-mtd@lists.infradead.org, David Gow <davidgow@google.com>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Piotr Sroka <piotrs@cadence.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ Frieder Schrempf <frieder.schrempf@kontron.de>, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jan 30, 2020 at 11:50 AM Miquel Raynal
-<miquel.raynal@bootlin.com> wrote:
->
-> Hello,
->
-> Miquel Raynal <miquel.raynal@bootlin.com> wrote on Sat, 25 Jan 2020
-> 16:28:03 +0100:
->
-> > Hi Brendan,
-> >
-> > Brendan Higgins <brendanhiggins@google.com> wrote on Fri, 24 Jan 2020
-> > 18:12:12 -0800:
-> >
-> > > On Thu, Jan 9, 2020 at 7:23 AM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> > > >
-> > > > Hi Brendan,
-> > > >
-> > > > Brendan Higgins <brendanhiggins@google.com> wrote on Wed, 11 Dec 2019
-> > > > 11:27:37 -0800:
-> > > >
-> > > > > Currently CONFIG_MTD_NAND_CADENCE implicitly depends on
-> > > > > CONFIG_HAS_IOMEM=y; consequently, on architectures without IOMEM we get
-> > > > > the following build error:
-> > > > >
-> > > > > ld: drivers/mtd/nand/raw/cadence-nand-controller.o: in function `cadence_nand_dt_probe.cold.31':
-> > > > > drivers/mtd/nand/raw/cadence-nand-controller.c:2969: undefined reference to `devm_platform_ioremap_resource'
-> > > > > ld: drivers/mtd/nand/raw/cadence-nand-controller.c:2977: undefined reference to `devm_ioremap_resource'
-> > > > >
-> > > > > Fix the build error by adding the unspecified dependency.
-> > > > >
-> > > > > Reported-by: Brendan Higgins <brendanhiggins@google.com>
-> > > > > Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-> > > > > ---
-> > > >
-> > > > Sorry for the delay.
-> > > >
-> > > > Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > >
-> > > It looks like my change has not been applied to nand/next; is this the
-> > > branch it should be applied to? I have also verified that this patch
-> > > isn't in linux-next as of Jan 24th.
-> > >
-> > > Is mtd/linux the correct tree for this? Or do I need to reach out to
-> > > someone else?
-> >
-> > When I sent my Acked-by I supposed someone else would pick the patch,
-> > but there is actually no dependency with all the other patches so I
-> > don't know why I did it... Sorry about that. I'll take it anyway in my
-> > PR for 5.6.
->
-> It is applied on top of mtd/next since a few days, it will be part of
-> the 5.6 PR.
->
-> Sorry for the delay.
-
-No worries.
-
-Thanks!
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8gTGludXMsCgpUaGlzIGlzIHRoZSBVQkkvVUJJRlMgUFIgZm9yIDUuNiwgc2VudCBvbiBi
+ZWhhbGYgb2YgUmljaGFyZC4KClRoYW5rcywKTWlxdcOobAoKVGhlIGZvbGxvd2luZyBjaGFuZ2Vz
+IHNpbmNlIGNvbW1pdCBiM2E5ODdiMDI2NGQzZGRiYjI0MjkzZWJmZjEwZWRkZmM0NzJmNjUzOgoK
+ICBMaW51eCA1LjUtcmM2ICgyMDIwLTAxLTEyIDE2OjU1OjA4IC0wODAwKQoKYXJlIGF2YWlsYWJs
+ZSBpbiB0aGUgR2l0IHJlcG9zaXRvcnkgYXQ6CgogIGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9z
+Y20vbGludXgva2VybmVsL2dpdC9ydy91Ymlmcy5naXQgdGFncy91cHN0cmVhbS01LjYtcmMxCgpm
+b3IgeW91IHRvIGZldGNoIGNoYW5nZXMgdXAgdG8gNWQzODA1YWYyNzljOTNlZjQ5YTY0NzAxZjM1
+MjU0Njc2ZDcwOTYyMjoKCiAgdWJpOiBGaXggYW4gZXJyb3IgcG9pbnRlciBkZXJlZmVyZW5jZSBp
+biBlcnJvciBoYW5kbGluZyBjb2RlICgyMDIwLTAxLTE5IDIzOjIzOjI4ICswMTAwKQoKLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LQpUaGlzIHB1bGwgcmVxdWVzdCBjb250YWlucyBtb3N0bHkgZml4ZXMgZm9yIFVCSSBhbmQgVUJJ
+RlM6CgpVQkk6CiAtIEZpeGVzIGZvciBtZW1vcnkgbGVha3MgaW4gZXJyb3IgcGF0aHMKIC0gRml4
+IGZvciBhbiBsb2dpYyBlcnJvciBpbiBhIGZhc3RtYXAgc2VsZmNoZWNrCgpVQklGUzoKIC0gRml4
+IGZvciBGU19JT0NfU0VURkxBR1MgcmVsYXRlZCB0byBmc2NyeXB0IGZsYWcKIC0gU3VwcG9ydCBm
+b3IgRlNfRU5DUllQVF9GTAogLSBGaXggZm9yIGEgZGVhZCBsb2NrIGluIGJ1bGstcmVhZCBtb2Rl
+CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tCkRhbiBDYXJwZW50ZXIgKDEpOgogICAgICB1Ymk6IEZpeCBhbiBlcnJvciBwb2lu
+dGVyIGRlcmVmZXJlbmNlIGluIGVycm9yIGhhbmRsaW5nIGNvZGUKCkVyaWMgQmlnZ2VycyAoMik6
+CiAgICAgIHViaWZzOiBGaXggRlNfSU9DX1NFVEZMQUdTIHVuZXhwZWN0ZWRseSBjbGVhcmluZyBl
+bmNyeXB0IGZsYWcKICAgICAgdWJpZnM6IEFkZCBzdXBwb3J0IGZvciBGU19FTkNSWVBUX0ZMCgpH
+ZWVydCBVeXR0ZXJob2V2ZW4gKDEpOgogICAgICB1YmlmczogRml4IGlub190IGZvcm1hdCB3YXJu
+aW5ncyBpbiBvcnBoYW5fZGVsZXRlKCkKCkhvdSBUYW8gKDIpOgogICAgICB1Ymk6IENoZWNrIHRo
+ZSBwcmVzZW5jZSBvZiB2b2x1bWUgYmVmb3JlIGNhbGwgdWJpX2Zhc3RtYXBfZGVzdHJveV9jaGVj
+a21hcCgpCiAgICAgIHViaTogRnJlZSB0aGUgbm9ybWFsIHZvbHVtZXMgaW4gZXJyb3IgcGF0aHMg
+b2YgdWJpX2F0dGFjaF9tdGRfZGV2KCkKClF1YW55YW5nIFdhbmcgKDEpOgogICAgICB1Ymlmczog
+Rml4IG1lbW9yeSBsZWFrIGZyb20gYy0+c3VwX25vZGUKClNhc2NoYSBIYXVlciAoMik6CiAgICAg
+IHViaTogZmFzdG1hcDogRml4IGludmVydGVkIGxvZ2ljIGluIHNlZW4gc2VsZmNoZWNrCiAgICAg
+IHViaWZzOiBGaXggd3JvbmcgbWVtb3J5IGFsbG9jYXRpb24KCll1ZUhhaWJpbmcgKDEpOgogICAg
+ICB1Ymk6IHdsOiBSZW1vdmUgc2V0IGJ1dCBub3QgdXNlZCB2YXJpYWJsZSAncHJldl9lJwoKWmhp
+aGFvIENoZW5nICgxKToKICAgICAgdWJpZnM6IEZpeCBkZWFkbG9jayBpbiBjb25jdXJyZW50IGJ1
+bGstcmVhZCBhbmQgd3JpdGVwYWdlCgogZHJpdmVycy9tdGQvdWJpL2F0dGFjaC5jICB8ICAyICst
+CiBkcml2ZXJzL210ZC91YmkvYnVpbGQuYyAgIHwgMzEgKysrKysrKysrKysrKysrKysrKysrKysr
+KystLS0tLQogZHJpdmVycy9tdGQvdWJpL2Zhc3RtYXAuYyB8IDIzICsrKysrKysrKysrKystLS0t
+LS0tLS0tCiBkcml2ZXJzL210ZC91YmkvdWJpLmggICAgIHwgIDEgKwogZHJpdmVycy9tdGQvdWJp
+L3Z0YmwuYyAgICB8ICA4ICsrLS0tLS0tCiBkcml2ZXJzL210ZC91Ymkvd2wuYyAgICAgIHwgIDMg
+Ky0tCiBmcy91Ymlmcy9maWxlLmMgICAgICAgICAgIHwgIDQgKysrLQogZnMvdWJpZnMvaW9jdGwu
+YyAgICAgICAgICB8IDE0ICsrKysrKysrKysrLS0tCiBmcy91Ymlmcy9vcnBoYW4uYyAgICAgICAg
+IHwgIDQgKystLQogZnMvdWJpZnMvc2IuYyAgICAgICAgICAgICB8ICAyICstCiBmcy91Ymlmcy9z
+dXBlci5jICAgICAgICAgIHwgIDIgKysKIDExIGZpbGVzIGNoYW5nZWQsIDYzIGluc2VydGlvbnMo
+KyksIDMxIGRlbGV0aW9ucygtKQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRw
+Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
