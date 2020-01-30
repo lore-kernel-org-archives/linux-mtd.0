@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-3.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
 	URIBL_DBL_ABUSE_MALW autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D380AC2D0DB
-	for <linux-mtd@archiver.kernel.org>; Thu, 30 Jan 2020 23:50:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59AB8C35240
+	for <linux-mtd@archiver.kernel.org>; Thu, 30 Jan 2020 23:50:46 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A2BAE20661
-	for <linux-mtd@archiver.kernel.org>; Thu, 30 Jan 2020 23:50:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2E30220661
+	for <linux-mtd@archiver.kernel.org>; Thu, 30 Jan 2020 23:50:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DdJhX5iy";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="BP1QD6LC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A2BAE20661
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nlNlaeqk";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ludw4atG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2E30220661
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,43 +25,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:To:Date:Message-Id:
 	References:In-Reply-To:From:Subject:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pCKhfLyebhV2owA3bcsezEVGLCWHZjsXd0nMfO9bb64=; b=DdJhX5iynVwC6T
-	T5xd0Y5Mw39sMD2lBBQqRNzF/lYQLOJxLNgPuyuABUap20k6dgZQKS1RCtuUfEmvsK0DMfdwAXqUK
-	z492UwdGF//fIUnjEOHg++tW/Jrw6UomxW5Liq6gcYpm5yAXywF9aIT4jfHRgW1Hs6mqoh2J6PVpB
-	aa4pn6EyKG8Skq0t3haypOHqpgyRn1vlbkqYCoJvueJaLfI9PDWcOhoW9f1E1ISDnDbxqeGVNgJgT
-	yUBjiYJ57NBc2lpxSGW9POsUz+yoAwkemSEx+0LtJU6GYqIx9fctJ3P9U1VGETwB5iWHNJu2eA5/j
-	MAWGrmABYelieYpK9XGg==;
+	List-Owner; bh=Ybbl+KnLCCwaY3Cxr4xIZpdD1eq3sKOYZRvZWvxIZ4M=; b=nlNlaeqk6bM8Jc
+	iQedIen6hlBbdoBJPrqxsY3VaDN1Afmri3y2q816rrKRP2mg3Szkq1gTiDbk0vLXB6b8c0h2YPJno
+	B3bCQ5/Eh8qy7zzNiEmbxKZJB4sHJZ/lAMqeJ+pMMDIUDPxCIPOXOQFGtr4jnxDQbPL25OHZScvv4
+	9QEhyPauoo2uWuzozyt7rYWrjfzzyH6mLX/Y3HSL0SrmHDa2OeQ/gSmpTohgF8Ys7gpbnqaKJeR3l
+	qnhxRoVnersUVb33HNXVHvf3HWAkPIaVedans5VfG6QpO6HL9bc6wV8/fDMhArzOmRP6kIOvPIz2R
+	4FhwoBRYIJT74/Y2nLXA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ixJZv-0004Ot-1A; Thu, 30 Jan 2020 23:50:31 +0000
+	id 1ixJZo-0004GS-5b; Thu, 30 Jan 2020 23:50:24 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ixJZl-0004FN-4d
+ id 1ixJZl-0004FL-12
  for linux-mtd@lists.infradead.org; Thu, 30 Jan 2020 23:50:22 +0000
-Subject: Re: [GIT PULL] mtd: Changes for 5.6
+Subject: Re: [GIT PULL] UBIFS changes for 5.6-rc1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1580428220;
- bh=byWzMdC5VzPUaMxxqzsKKy4GLzsK1n8h38uudDXjQ6A=;
+ s=default; t=1580428219;
+ bh=sMz85wRSjNdz8O+qr3zYIEcgVX0eP8CXjq1rhP/j0cM=;
  h=From:In-Reply-To:References:Date:To:Cc:From;
- b=BP1QD6LCGemSPfModyC6TC35FxMQc23KWTP9uEC+8dpQbhUJLYvy54YEZSiaVfsxc
- Nrxz18etI9uMHiwIrQdLbQWObcDr6Zt7OtCPPICfliZV6mItdOF20U3QAx0yskZViE
- jMr4kAyxjgQZd+rj/FIalPrvwUyhSS6eSoNOEg6g=
+ b=Ludw4atGSqzHGvuJvMsSGqSwiEhjaLYBob8aGDfy5/HUs47VuGVriIHglph/RTIvn
+ kGQdtIO+Kj3Qslmckp92OrqqdpSZqNOtUKHmOncjCZz3LpM/GfgDs97CEbRvMf4g2u
+ kYL/Oi4Z231YGJ0Zvda3B1XO3asrorvvYbBcMRFI=
 From: pr-tracker-bot@kernel.org
-In-Reply-To: <20200130212052.11ca8719@xps13>
-References: <20200130212052.11ca8719@xps13>
+In-Reply-To: <20200130211433.46abdf90@xps13>
+References: <20200130211433.46abdf90@xps13>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200130212052.11ca8719@xps13>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/for-5.6
-X-PR-Tracked-Commit-Id: 4575243c5c173f8adbc08a5c6ea2269742ea2b47
+X-PR-Tracked-Message-Id: <20200130211433.46abdf90@xps13>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git
+ tags/upstream-5.6-rc1
+X-PR-Tracked-Commit-Id: 5d3805af279c93ef49a64701f35254676d709622
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 35c222fd323629cf2e834eb8aff77058856ffdda
-Message-Id: <158042822052.30792.15827763280633240047.pr-tracker-bot@kernel.org>
-Date: Thu, 30 Jan 2020 23:50:20 +0000
+X-PR-Merge-Commit-Id: e84bcd61f686d65956c9f54872778bb215059519
+Message-Id: <158042821932.30792.16094549720157204175.pr-tracker-bot@kernel.org>
+Date: Thu, 30 Jan 2020 23:50:19 +0000
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200130_155021_199785_49C222EA 
-X-CRM114-Status: UNSURE (   2.00  )
+X-CRM114-CacheID: sfid-20200130_155021_090553_52881E16 
+X-CRM114-Status: UNSURE (   1.98  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -85,12 +86,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The pull request you sent on Thu, 30 Jan 2020 21:20:52 +0100:
+The pull request you sent on Thu, 30 Jan 2020 21:14:33 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/for-5.6
+> git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/upstream-5.6-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/35c222fd323629cf2e834eb8aff77058856ffdda
+https://git.kernel.org/torvalds/c/e84bcd61f686d65956c9f54872778bb215059519
 
 Thank you!
 
