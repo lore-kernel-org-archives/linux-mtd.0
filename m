@@ -2,93 +2,60 @@ Return-Path: <SRS0=LKht=3Z=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,URIBL_DBL_ABUSE_MALW,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,URIBL_DBL_ABUSE_MALW,USER_AGENT_SANE_2
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B103C35249
-	for <linux-mtd@archiver.kernel.org>; Wed,  5 Feb 2020 08:31:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EBCE1C33CA1
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 Feb 2020 09:12:55 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1AC2720730
-	for <linux-mtd@archiver.kernel.org>; Wed,  5 Feb 2020 08:31:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C01682051A
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 Feb 2020 09:12:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="W3WGVG4Y";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NCv9gBZ8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1AC2720730
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="F5h5toPr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C01682051A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=zqQHbIkvG4MdeHMHY8rC5qOfcxjToYJqCIqbxT5yJR4=; b=W3WGVG4YAU/3lBfVZQscw41dw
-	pBY1WItKFNiREscNZRepUIbzOI18/xbaqdKprneKv0oHFg3PI0o8/xWcZJFt5GjyJm7jnEJlMac2A
-	07leUYhGM2laBLfcrWzy3yn9qKFRM7pk6s5ymaHx8887d6VPLxc1N308d/nainKY6ypWYzCa15eFz
-	mDpe1yiEZsJU1rAj018tOUOnIilRylnNecv/N2SM8P4wSKtt+EcoPhQ3eIwKHiWJhWFAiTgBg+jE9
-	TBJh/tTzJyTVBk0fMfvDTy8R357YnSCP0l/zWbhmVD+l5xpY6nYcYqZg5fI95sN1RWhtw7FNOuM56
-	vxzcMzaFg==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Y7Mpc1yNjzUKYNGi2y2McMdqkcddbD+A0eVQO2MWmGM=; b=F5h5toPrsNImDu
+	tSheuh1+mgGNmWDeZ5kK2NJ9J9WiLwrm8fErRIQWbFpqAjq09GexkDxolMiyNg6r4QLDQIoCNazK/
+	ZmnL5FZsw9vWrMuM/x34/mT0XDO6On5hjATf3HRlLbICixfgdbZ+MyUoiDy06Yaj0piAzxEK7lZqV
+	85wNPGny7FhKzDZqOXPanzfCX+nyBH+lmYAXqnjoxaMQxIOG3hHFspajvb0AJgfrm0QKpqYjL1Keq
+	vp5rq/m7UqzvbXCUYB0ZvEFcNwqUtGeBc0JikvaZKR4xvfFTjTyMGqjgBGYDykkbukLgO8q2BMtbC
+	1J5LPdZoH3OG093zPsPQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1izG5c-0004VY-Te; Wed, 05 Feb 2020 08:31:16 +0000
-Received: from mail-lj1-x241.google.com ([2a00:1450:4864:20::241])
+	id 1izGjj-00042m-OL; Wed, 05 Feb 2020 09:12:43 +0000
+Received: from relay11.mail.gandi.net ([217.70.178.231])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1izG5Z-0004VD-P3
- for linux-mtd@lists.infradead.org; Wed, 05 Feb 2020 08:31:15 +0000
-Received: by mail-lj1-x241.google.com with SMTP id n18so1401438ljo.7
- for <linux-mtd@lists.infradead.org>; Wed, 05 Feb 2020 00:31:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=subject:to:references:from:message-id:date:user-agent:mime-version
- :in-reply-to:content-language:content-transfer-encoding;
- bh=c8n0mXSccT+l6YN9HAsG8bOOgXHE9MPTQrvWGoZzRN0=;
- b=NCv9gBZ8s+Hd0aW9t4fGhh7NP6QoDggSeW7bm+8LB1v1XtGdGOyx/1CKOjq//2R7nz
- JS0a7nR2LvVvOkAFG/zyiqBDqhk/41q9qQdI67LeURmaoankbzQrIQXWm63mkDgxY0bp
- K3h2aENaCj0F+kQRm7BK3Mn/ohWAd4OPYgT9Su96qMPrL3b42/F6DIJbsupgZdIlZ/Kf
- FJ+rFB9MI7hWYf+mdYJum7BWJ1JMTs8dEXaIC0CsDDGLln7cP34MzLsJUUhC36WS0tja
- UWXLYj/oUZoV6zl/h+50QF4hQFugbDuBFtCWeX/epCZI/8fcitS8a67tD3cdahKDgBJt
- osUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=c8n0mXSccT+l6YN9HAsG8bOOgXHE9MPTQrvWGoZzRN0=;
- b=BeuAlAKF6Xaqb/b6eFtD4oGTrwD4eZz1zZxfiaUIT1vgniG3Yai8QMVXophJ8lwqok
- /mIRsNiwDneH8iqNPctgk4PgRtbzbj8xtHZEdaylfwIPg1aSK+Zy3wnpDOk3l4iKkGsG
- YdIdhkQVVjoc0+ZdYQXp9js+9ev79DG+oTUhYeKg2aBuVufKihqpa9K5/1HekCnx4+MZ
- /yfzxSHtrgxCBHQbk6V0qCTqV7GWxYM+ZkqFiovBNUsM0fTVgp8+rdMb4KgY9f4ARccQ
- +rNuD4ppMRZMCRgueEZtKpbS5KJxa/9KZDJjmVA/p+tX92c+d4ECaNHr8Gy6url2BsGt
- BnUQ==
-X-Gm-Message-State: APjAAAXDfvgHznCRjsBjKQ+d/teIYnLnDCPMkC4MuUoLIVw6d5fAxKG7
- nvDEqJpczgbCNh20DoqbigcLj886
-X-Google-Smtp-Source: APXvYqwgymKyFiDe2PxfIj4p9UeVPWKvIYodvWwNcXd5wO2F94yWSv67GbTtyz3g1j4m6ZoGKTPRZA==
-X-Received: by 2002:a2e:9716:: with SMTP id r22mr19685003lji.224.1580891471251; 
- Wed, 05 Feb 2020 00:31:11 -0800 (PST)
-Received: from elitebook.lan (ip-194-187-74-233.konfederacka.maverick.com.pl.
- [194.187.74.233])
- by smtp.googlemail.com with ESMTPSA id w19sm11769545lfl.55.2020.02.05.00.31.10
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 05 Feb 2020 00:31:10 -0800 (PST)
-Subject: Re: [PATCH] mtd: core: allow mask_flags to be set for
- mtd_add_partition
-To: Bruno Pena <brunompena@gmail.com>, linux-mtd@lists.infradead.org
-References: <20191126212511.1218-1-brunompena@gmail.com>
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Message-ID: <449b471c-3604-ffab-b75a-47ed119a5ba8@gmail.com>
-Date: Wed, 5 Feb 2020 09:31:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.2
+ id 1izGje-00041m-HB
+ for linux-mtd@lists.infradead.org; Wed, 05 Feb 2020 09:12:42 +0000
+Received: from xps13 (lfbn-tou-1-1151-102.w90-76.abo.wanadoo.fr
+ [90.76.211.102]) (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay11.mail.gandi.net (Postfix) with ESMTPSA id A2733100007;
+ Wed,  5 Feb 2020 09:12:24 +0000 (UTC)
+Date: Wed, 5 Feb 2020 10:12:23 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH] Revert "mtd: rawnand: denali: get
+ ->setup_data_interface() working again"
+Message-ID: <20200205101223.21d99d93@xps13>
+In-Reply-To: <20200205070834.3087104-1-marex@denx.de>
+References: <20200205070834.3087104-1-marex@denx.de>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20191126212511.1218-1-brunompena@gmail.com>
-Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200205_003113_809832_059ACAE4 
-X-CRM114-Status: GOOD (  11.19  )
+X-CRM114-CacheID: sfid-20200205_011238_710218_7E35002B 
+X-CRM114-Status: GOOD (  13.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,22 +67,41 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Cc: Dinh Nguyen <dinguyen@kernel.org>, Masahiro Yamada <masahiroy@kernel.org>,
+ Boris Brezillon <boris.brezillon@collabora.com>, linux-mtd@lists.infradead.org,
+ Tim Sander <tim@krieglstein.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-On 26.11.2019 22:25, Bruno Pena wrote:
-> This patchs makes it possible to mask certain flags for new partitions (e.g. to make them read-only).
-> The change consists in the addition of a new argument "mask_flags" to "mtd_add_partition" that is passed on to the "allocate_partition".
-
-Your description answers "what?" but not "why?".
-
-This patch adds a new function argument that is never used. This seems
-quite pointless.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWFyZWssCgpNYXJlayBWYXN1dCA8bWFyZXhAZGVueC5kZT4gd3JvdGUgb24gV2VkLCAgNSBG
+ZWIgMjAyMCAwODowODozNCArMDEwMDoKCj4gVGhpcyByZXZlcnRzIGNvbW1pdCBkMzExZTBjMjdi
+OGZjYzI3ZjcwN2Y4Y2FjNDhjZDhiZGM0MTU1MjI0LCB3aGljaAo+IGNvbXBsZXRlbHkgYnJlYWtz
+IE5BTkQgYWNjZXNzIG9uIEFsdGVyYSBTb0NGUEdBIChkZXRlY3RlZCBvbiBBcnJpYVYKPiBTb0Mp
+Lgo+IAo+IE9uIFNvQ0ZQR0EsIGRlbmFsaS0+Y2xrX3JhdGUgPSAzMS4yNSBNSHogYW5kIGRlbmFs
+aS0+Y2xrX3hfcmF0ZSA9IDEyNSBNSHosCj4gaGVuY2UgdGhlIGRyaXZlciBzZXRzIE5BTkRfS0VF
+UF9USU1JTkdTIGZsYWcuIFRoaXMgZGlkIG5vdCBoYXBwZW4gYmVmb3JlCj4gYW5kIGlzIGFjdHVh
+bGx5IGluY29ycmVjdCwgYXMgb24gU29DRlBHQSB3ZSBkbyBub3Qgd2FudCB0byByZXRhaW4gdGlt
+aW5ncwo+IGZyb20gcHJldmlvdXMgc3RhZ2UgKHRoZSB0aW1pbmdzIG1pZ2h0IGJlIGluY29ycmVj
+dCBvciBvdXRyaWdodCBpbnZhbGlkKS4KPiAKPiBDYzogQm9yaXMgQnJlemlsbG9uIDxib3Jpcy5i
+cmV6aWxsb25AY29sbGFib3JhLmNvbT4KPiBDYzogRGluaCBOZ3V5ZW4gPGRpbmd1eWVuQGtlcm5l
+bC5vcmc+Cj4gQ2M6IE1hc2FoaXJvIFlhbWFkYSA8bWFzYWhpcm95QGtlcm5lbC5vcmc+Cj4gQ2M6
+IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+Cj4gQ2M6IFRpbSBTYW5k
+ZXIgPHRpbUBrcmllZ2xzdGVpbi5vcmc+Cj4gVG86IGxpbnV4LW10ZCA8bGludXgtbXRkQGxpc3Rz
+LmluZnJhZGVhZC5vcmc+Cj4gLS0tCj4gIGRyaXZlcnMvbXRkL25hbmQvcmF3L2RlbmFsaS5jIHwg
+MiArLQo+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKPiAK
+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvZGVuYWxpLmMgYi9kcml2ZXJzL210
+ZC9uYW5kL3Jhdy9kZW5hbGkuYwo+IGluZGV4IGI2YzQ2M2QwMjE2Ny4uNWZlM2M2MmE3NTZlIDEw
+MDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L2RlbmFsaS5jCj4gKysrIGIvZHJpdmVy
+cy9tdGQvbmFuZC9yYXcvZGVuYWxpLmMKPiBAQCAtMTIwOSw3ICsxMjA5LDcgQEAgaW50IGRlbmFs
+aV9jaGlwX2luaXQoc3RydWN0IGRlbmFsaV9jb250cm9sbGVyICpkZW5hbGksCj4gIAl9Cj4gIAo+
+ICAJLyogY2xrIHJhdGUgaW5mbyBpcyBuZWVkZWQgZm9yIHNldHVwX2RhdGFfaW50ZXJmYWNlICov
+Cj4gLQlpZiAoIWRlbmFsaS0+Y2xrX3JhdGUgfHwgIWRlbmFsaS0+Y2xrX3hfcmF0ZSkKCkkgZG9u
+J3QgZ2V0IGl0LCBpZiBib3RoIGNsa19yYXRlIGFuZCBjbGtfeF9yYXRlIGFyZSBzZXQsIHRoZSBp
+Zgpjb25kaXRpb24gd2lsbCBub3QgYmUgZW50ZXJlZCwgcmlnaHQ/Cgo+ICsJaWYgKGRlbmFsaS0+
+Y2xrX3JhdGUgJiYgZGVuYWxpLT5jbGtfeF9yYXRlKQo+ICAJCWNoaXAtPm9wdGlvbnMgfD0gTkFO
+RF9LRUVQX1RJTUlOR1M7CgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFp
+bGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGlu
+dXgtbXRkLwo=
