@@ -2,118 +2,71 @@ Return-Path: <SRS0=LKht=3Z=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,MSGID_FROM_MTA_HEADER,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,URIBL_DBL_ABUSE_MALW,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,URIBL_DBL_ABUSE_MALW,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A569BC35247
-	for <linux-mtd@archiver.kernel.org>; Wed,  5 Feb 2020 15:25:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53D10C35247
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 Feb 2020 15:33:20 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7A7A920659
-	for <linux-mtd@archiver.kernel.org>; Wed,  5 Feb 2020 15:25:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1F23B20702
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 Feb 2020 15:33:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="SdkyltQv";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=niko.eu header.i=@niko.eu header.b="t90XDc2d"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A7A920659
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=niko.eu
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YgcZ3xl/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1F23B20702
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
 	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:Date:Message-ID:From:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
 	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=A1Wfd2mpEK9/vhQBau8044tOJ/Zs2FzweV97oHlUKLQ=; b=SdkyltQv8g2z5p5uUF5f2y4XM
-	lq5+0VEQNBWLGjbfyQQcN8E6w2L97AQ4hsppAZ4QOc1B3ho4pZkNxnFbMQ/EwH3X4vc9BjW5ICLMB
-	MSLn3FwH9c3exfC0VhJvV9Yh/otdrLPB20UfYmuGnOAakTWSiCewrUh34kkfOllbSZegPCaXhMz0L
-	y4SrU2qqMKC+PMKw41j31bc4KUkuhqwcCzkfjGnM1MCegwijoDyn9LlacJBea4OnMQCnTwncpKxT2
-	evgMmP9w2qApNeTiQMBnGFY3eomnCJpQNhMh/ZoHpFIKwWDrY825jjg6E968tiMief6634u9O7ap6
-	jy5jnSpaQ==;
+	 bh=qye/q5deM0Bgg/mBp2L+f17Y8DPjroyuFOKm/0qtEf0=; b=YgcZ3xl/B8c+FCMb67cV5CWQl
+	aaw9I+ionTCRCOwUjHaBrUFjzvo4O+ZSgx2TK7d+litGKOgA08M8f787fPJUWuxp6zimamscMSaeT
+	7o3FSyRdanJ2SP74qQrWFb+vinkFRF8BaLcEQWX6VoAF4LCms0lzbjqS2jOm3e/TVbmJyDLA20AFb
+	G6zvKG7FIlCQDiJNmB0h15ftnpwiS/tQ51DmwCc8Z0M5osC8eOOSfUQUAqSYkzFWh6W7Vr5E0YJum
+	75QGx9oZIvXZfH0o+S4QFjnlLswnO/QhGZVTb3AHaXtrVPiY/fIMGS+vL9PN4IZmK4imVN6tAhi0C
+	75aamJ24w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1izMYY-00059Q-R4; Wed, 05 Feb 2020 15:25:34 +0000
-Received: from mail-eopbgr80089.outbound.protection.outlook.com ([40.107.8.89]
- helo=EUR04-VI1-obe.outbound.protection.outlook.com)
+	id 1izMfn-00077g-7J; Wed, 05 Feb 2020 15:33:03 +0000
+Received: from lhrrgout.huawei.com ([185.176.76.210] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1izMYV-00058o-M7
- for linux-mtd@lists.infradead.org; Wed, 05 Feb 2020 15:25:33 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fAzlt0ihrk63/TjTaAKJif3w0YrGj2vuGmGhVMsfjSqwbmW9V4ZsDF5yY5xcptPMXDzkXSf4zSC95hp015l2iqaqUnyljYwiS9kaL/bEEMc8orF0pohNd0SxbvGZNmkrnAOCHf0otAhcEoeD6YUxEuMawVuvz4F2Qff2O1ruOxNZ+B60+ZRyzReg6REjmUHebkcHoUNz3pO+lbI+qBm/fzmhanZPLWXMQUWgswtjSWLz6TQ/VxVRkjymdh964PRyl3jAwtoKJDQNuQ75PZuqQrhxBMTBp+iE646KU7PiZRSRWm2tq7VFJXBeKNdO1LsO5mVCLpaHVEuCabYaRdIhxg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s7H7xOV1QXp9Oe8SIOvVGBpB4ck7Vx+WE34buRsLpw8=;
- b=U5TVy3zFLq8pHlNtVxu7LRqwWnmaw4rkeNgpZfRovYRIXvuwbBWSlRdFsbEO/dP0+GB3cyHLpLV1BmGxVN1uOk4nhhbQbGQPGdfniCJ0AYuHxPi8BOm2eTCPoXlrvlua+o0xS6ig6AIlfPnQPl4jkGbydjwVHkU6dp9AIez4icTZAGn+aLBR3tGfnQUVxZoUW2KJXBXdC2Un5YRA9gDuMdMLswG33RmSXlTYikUQ2lpy4p+ixvViyzxoL0d7glgA+2fTEdwNba5ef9v8RQ/2+o8m6MIa+0PzsRxqG1P6ZIARrNIXi1x7JjNp3TkGKBZXPKwumVandNj7DrcghaRWbg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=niko.eu; dmarc=pass action=none header.from=niko.eu; dkim=pass
- header.d=niko.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=niko.eu; s=selector2; 
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s7H7xOV1QXp9Oe8SIOvVGBpB4ck7Vx+WE34buRsLpw8=;
- b=t90XDc2dIvRlicE3rfmwdCa7d0an8V/GbBB0U6v5wc/Z0NRx7L2/gAxbVLUDCHRIUURnODlB9AVVUfaS23jfB45R4fhxJJuVb5Z7owo6QIKgEbwqBDarx5kOh9U0MZocINwJ025GcCszrnW39uW39+7oadmc0Y1i3bYqSMfIp9k=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=Jef.Driesen@niko.eu; 
-Received: from AM0PR08MB3874.eurprd08.prod.outlook.com (20.178.82.86) by
- AM0PR08MB4596.eurprd08.prod.outlook.com (20.178.22.157) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2686.29; Wed, 5 Feb 2020 15:25:27 +0000
-Received: from AM0PR08MB3874.eurprd08.prod.outlook.com
- ([fe80::2c29:d125:7cf8:8b4e]) by AM0PR08MB3874.eurprd08.prod.outlook.com
- ([fe80::2c29:d125:7cf8:8b4e%7]) with mapi id 15.20.2686.034; Wed, 5 Feb 2020
- 15:25:27 +0000
-Subject: Re: ubifs: mounting fails due to error in orphan file handling
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-References: <0d3a2ed9-8ff0-7030-a8c6-c5a204eb6b5b@niko.eu>
- <20200205092202.5f0929c3@xps13>
-From: Jef Driesen <jef.driesen@niko.eu>
-Message-ID: <21a266b9-ff3f-7a94-4562-11d6f59d4327@niko.eu>
-Date: Wed, 5 Feb 2020 16:25:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-In-Reply-To: <20200205092202.5f0929c3@xps13>
-Content-Language: en-US
-X-ClientProxiedBy: AM0PR05CA0082.eurprd05.prod.outlook.com
- (2603:10a6:208:136::22) To AM0PR08MB3874.eurprd08.prod.outlook.com
- (2603:10a6:208:108::22)
+ id 1izMfk-00076D-Aw
+ for linux-mtd@lists.infradead.org; Wed, 05 Feb 2020 15:33:02 +0000
+Received: from LHREML711-CAH.china.huawei.com (unknown [172.18.7.108])
+ by Forcepoint Email with ESMTP id 56F9ABB8073670B4BB93;
+ Wed,  5 Feb 2020 15:32:35 +0000 (GMT)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ LHREML711-CAH.china.huawei.com (10.201.108.34) with Microsoft SMTP Server
+ (TLS) id 14.3.408.0; Wed, 5 Feb 2020 15:32:35 +0000
+Received: from [127.0.0.1] (10.202.226.45) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Wed, 5 Feb 2020
+ 15:32:34 +0000
+Subject: Re: [PATCH] mtd: spi-nor: Fixup page size for S25FS-S
+To: Alexander X Sverdlin <alexander.sverdlin@nokia.com>,
+ <linux-mtd@lists.infradead.org>
+References: <20200114134704.4708-1-alexander.sverdlin@nokia.com>
+From: John Garry <john.garry@huawei.com>
+Message-ID: <2759888e-0a88-cf76-d2c0-3f0f5141f8cd@huawei.com>
+Date: Wed, 5 Feb 2020 15:32:33 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Received: from [10.47.50.82] (81.83.24.121) by
- AM0PR05CA0082.eurprd05.prod.outlook.com (2603:10a6:208:136::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2707.21 via Frontend
- Transport; Wed, 5 Feb 2020 15:25:27 +0000
-X-Originating-IP: [81.83.24.121]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b81755ef-a980-4c53-f446-08d7aa4fa0b2
-X-MS-TrafficTypeDiagnostic: AM0PR08MB4596:
-X-Microsoft-Antispam-PRVS: <AM0PR08MB459674B196F7B0A357F581E1E2020@AM0PR08MB4596.eurprd08.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1775;
-X-Forefront-PRVS: 0304E36CA3
-X-Forefront-Antispam-Report: SFV:NSPM;
- SFS:(10009020)(4636009)(346002)(366004)(136003)(376002)(396003)(39850400004)(199004)(189003)(36756003)(6916009)(16576012)(316002)(66556008)(66476007)(31696002)(5660300002)(66946007)(86362001)(8936002)(8676002)(81156014)(81166006)(52116002)(478600001)(31686004)(44832011)(186003)(6486002)(16526019)(26005)(55236004)(53546011)(966005)(4326008)(2906002)(956004)(2616005);
- DIR:OUT; SFP:1101; SCL:1; SRVR:AM0PR08MB4596;
- H:AM0PR08MB3874.eurprd08.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; A:1; MX:1; 
-Received-SPF: None (protection.outlook.com: niko.eu does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QxsWlrdjnd/MTr/yqufcZtXlPUaI1JQV5QUIzxFSe9NDC7lzhf7PzgHwLXkOTSm/CRzACHo/FkgRVfbXJCQoa4VDSnS6JjoDeGEMQ5428DVj5FtqB6OhKAS13jwAHilaqXMzouvCXQffAVeHTxxH5NeIWcHby+zAyANeRxjc3CNaNQ3faVVPeaONu5V4Ytpw3Y6dG2iQKxjypDx158B8YVbrcA6LjbeUrKy14Z02UeoL88WqwitCbcVHRoEMmTHHEktDYLll9h2f5L8rJcg1YHCmzvTMKwKpk5KDOj/zzX3qaKs76pilNbQZn7xPX91LdlPoM6gKKArWMJSSKxsgYMAksTkJr175h7F1bcsOFrr81ayqSXNIZo6WgiCAHMKI/qboVdzTdRUoOlGnNRXQmdvVveM+RNN5r76WdkK/cALkPWY3fJUvTxeMwBKuCnHhoogGdMNva7pE/s3wySOoTa2cYga3yvfbtecqlsrDAXR+wYqaZtNrjYNLk+OvKZS/Lsw1c0g96lvivcfFjpna3Q==
-X-MS-Exchange-AntiSpam-MessageData: 7m6T47SjyfLE5gsGD5ADKmq1QqbUoVdw1PBRhY5FuTB7OaS9xsrrfGpt5B8LzDMmIMnFwneXoy224dZ4oEc5onxGzwoc+iYBlrgnbXmdk1hyYAqnSBnF1wPchqONREXUNNlaPzsbld9vbw9tlygVOA==
-X-OriginatorOrg: niko.eu
-X-MS-Exchange-CrossTenant-Network-Message-Id: b81755ef-a980-4c53-f446-08d7aa4fa0b2
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2020 15:25:27.2644 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a4faf0fe-ff3f-4912-b675-3cfe1470e385
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6jRaFLEMxxgW+8+l6clbbgIt4NNOq2BlIKAmCP76g5pVCYo+40rGqoygo6ayV/cSQB/MRBp51q68k30xxWbF+Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR08MB4596
+In-Reply-To: <20200114134704.4708-1-alexander.sverdlin@nokia.com>
+Content-Language: en-US
+X-Originating-IP: [10.202.226.45]
+X-ClientProxiedBy: lhreml720-chm.china.huawei.com (10.201.108.71) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200205_072531_946278_F54F2D1F 
-X-CRM114-Status: GOOD (  14.78  )
+X-CRM114-CacheID: sfid-20200205_073300_526649_1E4E7DA0 
+X-CRM114-Status: GOOD (  21.51  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -125,45 +78,139 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: richard@nod.at,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Richard Weinberger <richard@nod.at>, Boris Brezillon <bbrezillon@kernel.org>,
+ stable@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 2/5/20 9:22 AM, Miquel Raynal wrote:
-> "Driesen Jef (JDI)" <Jef.Driesen@niko.eu> wrote on Tue, 28
-> Jan 2020 10:51:39 +0000:
->> ...
->>
->> I'm not really sure what's going on under the hood, but it looks like a
->> problem with the handling of the orphan files. With this knowledge, we
->> are now able to reproduce the problem reliable, by doing a power cut
->> while running the attached script. The scripts creates many files in a
->> loop, keeps them all open and removes them again. With this approach we
->> hit the problem about once every two attempts.
->>
->> The problem appeared for the first time after we switched from kernel
->> v4.7 to v5.3. I tried with v5.4 and master too, in case we are hitting a
->> problem that is already fixed, but they show the same problem. After
->> doing some bisecting, this commit appears to have introduced the problem:
->>
->> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/fs/ubifs/orphan.c?id=ee1438ce5dc4d67dd8dd1ff51583122a61f5bd9e
->>
->> How can we fix this?
+On 14/01/2020 13:47, Alexander X Sverdlin wrote:
+> From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 > 
-> Just adding Richard into the loop, he is not available right now but
-> will probably be interested by this issue. On my side, I have no clue :)
+> Spansion S25FS-S family has an issue in Basic Flash Parameter Table:
+> DWORD-11 bits 7-4 specify write page size 512 bytes. In reality this
+> is configurable in the non-volatile CR3NV register and even factory
+> default configuration is "wrap at 256 bytes". So blind relying on BFPT
+> breaks write operation on these Flashes.
+> 
+> All this story is vendor-specific, so add the corresponding fixup hook
+> which first restores the safe page size of 256 bytes from
+> struct flash_info but checks is more performant 512 bytes configuration
+> is active and adjusts the page_size accordingly.
+> 
 
-Thanks. If additional info is needed, or some extra testing is 
-necessary, just ask. I'm happy to help to get this fixed.
+Hi Alexander,
 
-For now, we have reverted the above commit. That appears to work (e.g. 
-no more device that fail to boot), but I'm not convinced it's a good 
-long-term solution.
+One of my dev boards has part s25fl129p1, so I would like to try this 
+patch. However it does not apply. Any chance you could resend?
 
-Jef
+Thanks
+John
+
+> Cc: stable@vger.kernel.org
+> Fixes: f384b352c ("mtd: spi-nor: parse Serial Flash Discoverable Parameters (SFDP) tables")
+> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+> ---
+>   drivers/mtd/spi-nor/spi-nor.c | 39 +++++++++++++++++++++++++++++++++++++--
+>   include/linux/mtd/spi-nor.h   |  5 +++++
+>   2 files changed, 42 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 73172d7..18f8705 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -1711,6 +1711,39 @@ static struct spi_nor_fixups mx25l25635_fixups = {
+>   	.post_bfpt = mx25l25635_post_bfpt_fixups,
+>   };
+>   
+> +/* Spansion S25FS-S SFDP workarounds */
+> +static int s25fs_s_post_bfpt_fixups(struct spi_nor *nor,
+> +	const struct sfdp_parameter_header *bfpt_header,
+> +	const struct sfdp_bfpt *bfpt,
+> +	struct spi_nor_flash_parameter *params)
+> +{
+> +	const struct flash_info *info = nor->info;
+> +	u8 read_opcode, buf;
+> +	int ret;
+> +
+> +	/* Default is safe */
+> +	params->page_size = info->page_size;
+> +
+> +	/*
+> +	 * But is the chip configured for more performant 512 bytes write page
+> +	 * size?
+> +	 */
+> +	read_opcode = nor->read_opcode;
+> +
+> +	nor->read_opcode = SPINOR_OP_RDAR;
+> +	ret = nor->read(nor, SPINOR_REG_CR3V, 1, &buf);
+
+struct spi_nor has no member .read AFAICS.
+
+> +	if (!ret && (buf & CR3V_02H_V))
+> +		params->page_size = 512;
+> +
+> +	nor->read_opcode = read_opcode;
+> +
+> +	return ret;
+> +}
+> +
+> +static const struct spi_nor_fixups s25fs_s_fixups = {
+> +	.post_bfpt = s25fs_s_post_bfpt_fixups,
+> +};
+> +
+>   /* NOTE: double check command sets and memory organization when you add
+>    * more nor chips.  This current list focusses on newer chips, which
+>    * have been converging on command sets which including JEDEC ID.
+> @@ -1903,7 +1936,8 @@ static const struct flash_info spi_nor_ids[] = {
+>   			SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR) },
+>   	{ "s25fl128s1", INFO6(0x012018, 0x4d0180, 64 * 1024, 256,
+>   			SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR) },
+> -	{ "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128, USE_CLSR) },
+> +	{ "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128, USE_CLSR)
+> +			.fixups = &s25fs_s_fixups, },
+>   	{ "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR) },
+>   	{ "s25fl512s",  INFO6(0x010220, 0x4d0080, 256 * 1024, 256,
+>   			SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+> @@ -1913,7 +1947,8 @@ static const struct flash_info spi_nor_ids[] = {
+>   	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
+>   	{ "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256, 0) },
+>   	{ "s25fl129p0", INFO(0x012018, 0x4d00, 256 * 1024,  64, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR) },
+> -	{ "s25fl129p1", INFO(0x012018, 0x4d01,  64 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR) },
+> +	{ "s25fl129p1", INFO(0x012018, 0x4d01,  64 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR)
+> +			.fixups = &s25fs_s_fixups, },
+>   	{ "s25sl004a",  INFO(0x010212,      0,  64 * 1024,   8, 0) },
+>   	{ "s25sl008a",  INFO(0x010213,      0,  64 * 1024,  16, 0) },
+>   	{ "s25sl016a",  INFO(0x010214,      0,  64 * 1024,  32, 0) },
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index b3d360b..222eee9 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -114,6 +114,7 @@
+>   /* Used for Spansion flashes only. */
+>   #define SPINOR_OP_BRWR		0x17	/* Bank register write */
+>   #define SPINOR_OP_CLSR		0x30	/* Clear status register 1 */
+> +#define SPINOR_OP_RDAR		0x65	/* Read Any Register */
+>   
+>   /* Used for Micron flashes only. */
+>   #define SPINOR_OP_RD_EVCR      0x65    /* Read EVCR register */
+> @@ -149,6 +150,10 @@
+>   /* Status Register 2 bits. */
+>   #define SR2_QUAD_EN_BIT7	BIT(7)
+>   
+> +/* Used for Spansion flashes RDAR command only. */
+> +#define SPINOR_REG_CR3V		0x800004
+> +#define CR3V_02H_V		BIT(4)	/* Page Buffer Wrap */
+> +
+>   /* Supported SPI protocols */
+>   #define SNOR_PROTO_INST_MASK	GENMASK(23, 16)
+>   #define SNOR_PROTO_INST_SHIFT	16
+> 
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
