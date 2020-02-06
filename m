@@ -5,20 +5,20 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EEE6C35247
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Feb 2020 20:25:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DEA1C35247
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Feb 2020 20:25:39 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 416A021927
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Feb 2020 20:25:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2DDD821927
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Feb 2020 20:25:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qgUNXfVh";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k/+ec3Lz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 416A021927
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jnT9et7p";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dvHjQ6F0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2DDD821927
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -28,51 +28,51 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=UZGgLg51bEFLSnN9FBeGvYBRREfCakROXGxn/vOqjKs=; b=qgUNXfVhpuQtzno6zV1JdfFpVJ
-	xSUszTm0Pt5oxAxWGXgVubRw98WUBB0zWKJ7s/TVrfdH25HO9oeNqw+n68d6mBPpxXAyhPnInZeAI
-	qgP/ULKnuQqvIIgCxy0CgAfKoZ5iH+Lu/ARlWGPbEPHHdZ6GePDVTP8q4+pKHFvEGq5BRjPMM9uwK
-	4dnba/yc5cDRvmTufxta2e9aJjCzn7Y5M6haTyGlPMzwkDTJEkevBMh00VOB6CPsbPvU5w2mmsR8/
-	ljTrXQ/iHoR6f57yPtV5T6FnA3DtzDK2wT+muqj6V2IdjTq4aTiMJtqO+p9BxH5F9THXMtOEVkOxQ
-	8e5PXEMQ==;
+	bh=q9yNB++OlkWVKaL0Egf+09P7eDhFGdv9loqpvCjmWOY=; b=jnT9et7pOqn6VsI1lYhf9Ozd2G
+	WCQf7sV8yavEqFfC3WY7HJ/+7RAbk8qUdycipJNCISfQEiXD0LpocdoPp46vueO1YyhDzJjwnoYpH
+	qmP2C6AGgKM9QTLOJFToTJUPaBcFsErMNVF9arWRQ70d7IbBVmd7orl97NNgziAaUxJQmCNIEY8pQ
+	v97bExGJmAuJDQ6b1ICpeLHcS3YXvY8cD0iQ7pJTuRL6nV90VitWh/9Kly+o/qu4gqI2ukDYOcREA
+	oFehirjoWryNFQ3pMnksjkzDrRT3qWSY4ldpPEFsm8uWp9k8TXgY/kYfrZbSNCx+ObbfklEhg3DU6
+	iWlEdOKw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1izni7-0000Cq-7D; Thu, 06 Feb 2020 20:25:15 +0000
+	id 1izniJ-0000Qx-7x; Thu, 06 Feb 2020 20:25:27 +0000
 Received: from mail-wm1-x343.google.com ([2a00:1450:4864:20::343])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iznhV-0006rg-Py
- for linux-mtd@lists.infradead.org; Thu, 06 Feb 2020 20:24:39 +0000
-Received: by mail-wm1-x343.google.com with SMTP id p9so256788wmc.2
- for <linux-mtd@lists.infradead.org>; Thu, 06 Feb 2020 12:24:37 -0800 (PST)
+ id 1iznhX-0006vL-Os
+ for linux-mtd@lists.infradead.org; Thu, 06 Feb 2020 20:24:41 +0000
+Received: by mail-wm1-x343.google.com with SMTP id g1so229304wmh.4
+ for <linux-mtd@lists.infradead.org>; Thu, 06 Feb 2020 12:24:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references;
- bh=LFxMYCi8lGoovOV/sAYPGteEncrVIWaLSH+LK6Sw5BI=;
- b=k/+ec3LzTqJfjILFR0cc7f2Q6keBUxbOd+AiEs2of8GbeM6GGMyLV8t5tlwRr6KluB
- Q0ypKUjvislTnM12SgJdNMO4zs4w7G35fKiyxdPp8Ka+faKrRC7xfm0ai1SZ47cQERp8
- V58dZd8FLH99DbpwJCzA2vzmXw4+T85nRNz0CKl3lzj7gTFDukAGr9hZQ6iw9uzeamSZ
- yN5vr+4bbMkRnWqfCBA4hDpo5N+efpViK8lHR5qqNhCPP00uZM2tgoJHKaEqOIln125r
- BZR5072gpKse4NZwGg9LDF2VVgdT/4tOCILneL6geAW20JTdo2aV5GNv3ilenohoKFzP
- P1UA==
+ bh=Y1/vJoGTEz84eAnDtx72Ndu+MPAZCnA9yhw+teLVXo0=;
+ b=dvHjQ6F0W51wq8W5czfthpMZ1OOWrPNrp5Sxlg31PPtN5sZZ5mjIZ6CJJq/QCdHS+N
+ GevcgPNDocAYx3cth54wnX6JdqqDZvzoYE4UY40KZVZGsLUqOkkZBTK40dohqBosbt98
+ wRdAOi4FtQrh8Mqu6W4vF1RFfAXsF7hkT8mfpIpTkjTb5LWsKETgmq6B1kzxmUb6OcYa
+ dc+ZuP4D9xPYPQAb1C2yGZ1ujWkaiqMGEbkNROXqXFLnqYcB+i7Xb8rC7fwdfKxwhm9j
+ UQEGVw0X45ZDnGU7K2+PSD3FJ4pw7JoqoTM+c6GRit0uasA4yWLyHHjnHfFVMPw0z5xi
+ n2BA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references;
- bh=LFxMYCi8lGoovOV/sAYPGteEncrVIWaLSH+LK6Sw5BI=;
- b=hKD1T8QBumXJDUFm46aR5XwNEQboPK7AH3in6pxx3+bdv9sfb0Que8LdpLowvLDh82
- X1ZxYkmJrVkc0Tc/bvV2q5l5ihKMUq5RyxpuqrWf6MQE+3HsN1tsrMpVm2+t0zaElZSw
- AekbE0btug+SkYFVouB0iWLzgMkzv+qdtH7HlnPJK2nLuqX8N3YT51S49x0kjbqjpHZc
- H9qNTK8WxszUUGbKIJxo8dJWTaZNp0woAcuPzHJRJF3DHKYrZCHevsZAnTmhdWrK1r+d
- vjsZsw7sLOWUOFRttrqCSIQzEimHN4tZwlN01ESxNT19glPsfsGFa4LpGY1wp8AV1Dag
- Ho2w==
-X-Gm-Message-State: APjAAAWEjFxBeCpCWeONA0ZOmknm6pkPj4rM6lyygGSXcAEIvXeHnUhP
- GX4T0Qs3O021IF46hmZxdkv3BdyexlXKnA==
-X-Google-Smtp-Source: APXvYqyq7CoP1tZczuROmScct0k4Sx4IrB7cBccXjoqRWw1lrhus82/ttE+70/rzdw9FMMxc1pYF6w==
-X-Received: by 2002:a1c:1f56:: with SMTP id f83mr6336867wmf.93.1581020676029; 
- Thu, 06 Feb 2020 12:24:36 -0800 (PST)
+ bh=Y1/vJoGTEz84eAnDtx72Ndu+MPAZCnA9yhw+teLVXo0=;
+ b=bxiXc+g11YUJg1Vc1c4O3SHZTeOGjEl/KFmtF4lB7ufuV7zXTbU2diEO31Ie+Bo8Op
+ vsupWWwRfNEsO53QmGnH6AqzOk2h7gFIisWQfh6TU8LSYGN/kpxZKmUEggyo2dm0ghT3
+ V4xV8IHWMIZT8mhR9lj4xa7W3bfhQ4LUwQ7UGGdYur8Dmx+LCuoPiMDpLtXPQs281uRp
+ asMER3IjliRI6Uir9T5xiuLAY/yyCZMPqD5e02/d5NMPuB8qrOZQkP2KWr6j64lw4ru7
+ HRCy3jOd+rVNZdyniWrebq/rdeFkVodCuY59UjvAfIY+ttCZbL+wj3HBK54m+wtg6Otr
+ fLaQ==
+X-Gm-Message-State: APjAAAXrWKTEr6O7WXZVjXwzIIjg9LZw+4UGc4DOIhqOv7LVVGJnEIc6
+ Lp1watMeCi/pAJeUzjdI9kE=
+X-Google-Smtp-Source: APXvYqx/cxgYne1/eULS2VXuvJcJGurz2A26EKeyBvr3kFw/2Sd/AUf/7GtI4bYoUZi+tIE8evOTog==
+X-Received: by 2002:a1c:65d6:: with SMTP id z205mr6254021wmb.38.1581020678504; 
+ Thu, 06 Feb 2020 12:24:38 -0800 (PST)
 Received: from opensdev.fritz.box
  (business-178-015-117-054.static.arcor-ip.net. [178.15.117.54])
- by smtp.gmail.com with ESMTPSA id c13sm539929wrx.9.2020.02.06.12.24.34
+ by smtp.gmail.com with ESMTPSA id c13sm539929wrx.9.2020.02.06.12.24.37
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 06 Feb 2020 12:24:35 -0800 (PST)
+ Thu, 06 Feb 2020 12:24:37 -0800 (PST)
 From: shiva.linuxworks@gmail.com
 X-Google-Original-From: sshivamurthy@micron.com
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -80,16 +80,17 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Frieder Schrempf <frieder.schrempf@kontron.de>,
  Boris Brezillon <bbrezillon@kernel.org>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v4 3/5] mtd: spinand: micron: identify SPI NAND device with
- Continuous Read mode
-Date: Thu,  6 Feb 2020 21:22:04 +0100
-Message-Id: <20200206202206.14770-4-sshivamurthy@micron.com>
+Subject: [PATCH v4 4/5] mtd: spinand: micron: Add M70A series Micron SPI NAND
+ devices
+Date: Thu,  6 Feb 2020 21:22:05 +0100
+Message-Id: <20200206202206.14770-5-sshivamurthy@micron.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200206202206.14770-1-sshivamurthy@micron.com>
 References: <20200206202206.14770-1-sshivamurthy@micron.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200206_122437_861018_2282BFF8 
-X-CRM114-Status: GOOD (  14.75  )
+X-CRM114-CacheID: sfid-20200206_122439_840181_62DC2B99 
+X-CRM114-Status: UNSURE (   9.55  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,77 +111,44 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Shivamurthy Shastri <sshivamurthy@micron.com>
 
-Add SPINAND_HAS_CR_FEAT_BIT flag to identify the SPI NAND device with
-the Continuous Read mode.
-
-Some of the Micron SPI NAND devices have the "Continuous Read" feature
-enabled by default, which does not fit the subsystem needs.
-
-In this mode, the READ CACHE command doesn't require the starting column
-address. The device always output the data starting from the first
-column of the cache register, and once the end of the cache register
-reached, the data output continues through the next page. With the
-continuous read mode, it is possible to read out the entire block using
-a single READ command, and once the end of the block reached, the output
-pins become High-Z state. However, during this mode the read command
-doesn't output the OOB area.
-
-Hence, we disable the feature at probe time.
+Add device table for M70A series Micron SPI NAND devices.
 
 Signed-off-by: Shivamurthy Shastri <sshivamurthy@micron.com>
 ---
- drivers/mtd/nand/spi/micron.c | 16 ++++++++++++++++
- include/linux/mtd/spinand.h   |  1 +
- 2 files changed, 17 insertions(+)
+ drivers/mtd/nand/spi/micron.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
 diff --git a/drivers/mtd/nand/spi/micron.c b/drivers/mtd/nand/spi/micron.c
-index 5fd1f921ef12..a8e947609cd9 100644
+index a8e947609cd9..3d3734afc35e 100644
 --- a/drivers/mtd/nand/spi/micron.c
 +++ b/drivers/mtd/nand/spi/micron.c
-@@ -18,6 +18,8 @@
- #define MICRON_STATUS_ECC_4TO6_BITFLIPS	(3 << 4)
- #define MICRON_STATUS_ECC_7TO8_BITFLIPS	(5 << 4)
- 
-+#define MICRON_CFG_CONTI_READ		BIT(0)
-+
- static SPINAND_OP_VARIANTS(read_cache_variants,
- 		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
- 		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-@@ -153,8 +155,22 @@ static int micron_spinand_detect(struct spinand_device *spinand)
- 	return 1;
- }
- 
-+static int micron_spinand_init(struct spinand_device *spinand)
-+{
-+	/*
-+	 * M70A device series enable Continuous Read feature at Power-up,
-+	 * which is not supported. Disable this bit to avoid any possible
-+	 * failure.
-+	 */
-+	if (spinand->flags == SPINAND_HAS_CR_FEAT_BIT)
-+		return spinand_upd_cfg(spinand, MICRON_CFG_CONTI_READ, 0);
-+
-+	return 0;
-+}
-+
- static const struct spinand_manufacturer_ops micron_spinand_manuf_ops = {
- 	.detect = micron_spinand_detect,
-+	.init = micron_spinand_init,
+@@ -133,6 +133,26 @@ static const struct spinand_info micron_spinand_table[] = {
+ 		     0,
+ 		     SPINAND_ECCINFO(&micron_8_ooblayout,
+ 				     micron_8_ecc_get_status)),
++	/* M70A 4Gb 3.3V */
++	SPINAND_INFO("MT29F4G01ABAFD", 0x34,
++		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_CR_FEAT_BIT,
++		     SPINAND_ECCINFO(&micron_8_ooblayout,
++				     micron_8_ecc_get_status)),
++	/* M70A 4Gb 1.8V */
++	SPINAND_INFO("MT29F4G01ABBFD", 0x35,
++		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_CR_FEAT_BIT,
++		     SPINAND_ECCINFO(&micron_8_ooblayout,
++				     micron_8_ecc_get_status)),
  };
  
- const struct spinand_manufacturer micron_spinand_manufacturer = {
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index 4ea558bd3c46..333149b2855f 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -270,6 +270,7 @@ struct spinand_ecc_info {
- };
- 
- #define SPINAND_HAS_QE_BIT		BIT(0)
-+#define SPINAND_HAS_CR_FEAT_BIT		BIT(1)
- 
- /**
-  * struct spinand_info - Structure used to describe SPI NAND chips
+ static int micron_spinand_detect(struct spinand_device *spinand)
 -- 
 2.17.1
 
