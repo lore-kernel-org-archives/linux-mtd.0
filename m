@@ -2,23 +2,22 @@ Return-Path: <SRS0=MuW7=32=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-3.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2790C35247
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Feb 2020 19:31:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73ADDC35247
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Feb 2020 20:24:44 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 77D41214AF
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Feb 2020 19:31:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4204B21927
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Feb 2020 20:24:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FYbnsUk5";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rld0aMEN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 77D41214AF
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NK2gWdju";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kkfwTjno"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4204B21927
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,58 +26,65 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=dWBKElfU7fJk8VtHJbsvtI66hfXmkgu05SHTDSDJx68=; b=FYb
-	nsUk5tsL/wFXig1UgzKdoU8zrwBk/kqj68qNPU29CAhUgwO2sOCIDgPMYN/vvl3JfMpM7F9gMx9Oo
-	inBOaD6CItliLu5yNit0OPNwNqhs+kekJa3wLl3ZBWnVgYLRxA5kTszIVg7JsfdYjiHrHsR/DTsI7
-	7UYlKaynlTuCn0VdvVvUY06yxTUS/EYBAnK7lw3vr6Hi2ZJUaUx0rW6DQNwIj4FTYpV/iZKrBpZwz
-	oyF1hu+pWsOaFUuNHkpDtTNDjbZ+3KA8BDfsd2yqybKNgk8RXCaERs3oN33+QEJkjQnh4M9Xq4fUP
-	InOuTKdd8GiTDwib3GFEJ2lrKS4QEEQ==;
+	References:List-Owner; bh=6p9wQSX24JFLMXK9v+NCovEvFpkd8qQaPam/jnbjpCk=; b=NK2
+	gWdjuXK9j/jwLrFoy7hSPQeBAkjefwvnNuUcDR8PKNuAhtVbj0R5FEmXtn0Wc9f8FVEMr2e7Tp9zd
+	QtPS6yJc4+ntMKz5B47oyznr2gY7vdmrDOkIFYHuP5KRpTR4UMX6hoRWETQuQdbsR+7ZlEBu8NKVu
+	oG1trqhWdpbEUb3aJU+oxuhDNxxiu2ZopNJpDhjhbLLSj2vsko0fO6ep3ujDsJENQcVg9OqZZiPNJ
+	BM4KWD3cT/bbOp4eOkDRIdGMrqwW9by9LnlNNiKjZvnUxuj7sfNEiY1NVauajULSuGmQ06Eyl6M7I
+	7LylKo7JOjMlGHcFOe1dX7271erWTSg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1izmrP-0005Tp-PK; Thu, 06 Feb 2020 19:30:47 +0000
-Received: from mail-wm1-x342.google.com ([2a00:1450:4864:20::342])
+	id 1iznhO-0006fn-A0; Thu, 06 Feb 2020 20:24:30 +0000
+Received: from mail-wm1-x329.google.com ([2a00:1450:4864:20::329])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1izmrN-0005T1-7a
- for linux-mtd@lists.infradead.org; Thu, 06 Feb 2020 19:30:46 +0000
-Received: by mail-wm1-x342.google.com with SMTP id q9so1260379wmj.5
- for <linux-mtd@lists.infradead.org>; Thu, 06 Feb 2020 11:30:43 -0800 (PST)
+ id 1iznhL-0006fU-NS
+ for linux-mtd@lists.infradead.org; Thu, 06 Feb 2020 20:24:29 +0000
+Received: by mail-wm1-x329.google.com with SMTP id f129so258436wmf.2
+ for <linux-mtd@lists.infradead.org>; Thu, 06 Feb 2020 12:24:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id;
- bh=WVXxvdnecOHHPSMEpYhU98LOQNanSGQy7dqix/yCj14=;
- b=rld0aMEN8ENxF6NsO4UBquyzfTqkVnCfO4ttYXcOnQTIiZ2T5BaetOtb+iUxm/digi
- GwXCxFCbf5j7C0+xHtVjg/+qN5LphmxCz9rsPcbNeGphW/jgXiPcz7/K3138J67nxkND
- EIuIdsyJlk+291aRA0ZRZ/5N9If1Qn61r1QrWBc3V4pDnKy8msHD7ha2d/bAk+c4bfho
- hXyIwWkkpmAKSbwU4S4ijV78TN4d5cq0w4L39UqKbj974eX5quRRnA9eRK0H0TNqIBj1
- N2Zusf3OCJYB9fL/YJ7cLFTCgkHzuRC70YInw8O98N6xfPJ+D+NAJ8adRhFlQi2RexSC
- rx0A==
+ bh=tlf2cEuWqzi15jSc47YFX5cP+L61Uac1o8CP7Bpwcew=;
+ b=kkfwTjno4EgKmmyYFzOP6XL5hOkg6l0rGjmLQOH5LOdE8GAdQzM+AsTWXky834JXuO
+ dDTsjyoQA5bpKM+41c++AOIAQE08Q5a421JkCvk20ja6NlQef5l201DB/m8RVwe/2kGc
+ Nsey+xGi5pdp/vNIqi0QuDzGJQAFoMI6bGFM45BAq7Ypb0mXjG5t7YnUkp1MIwZ5BoZR
+ QRE/wiCU9jq4OYLMSmfoUWCtH2ZllAqhBTyqzkKCrxeVSu3FF6jDDM9Rhkq0ZJJJvzHj
+ EhqxjXlSAPjNVkRzmk/M37IEg9AxXzZrK/+oWaZRzzcMnuRd0qCmuJeohh+V55PjnV2E
+ MBdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=WVXxvdnecOHHPSMEpYhU98LOQNanSGQy7dqix/yCj14=;
- b=UrgPpR1tCCe3rW6qoFNJ3ZjzicBbvYuzIVjCsbPjkdOIY9QHZD9x1X2BdIeG2F5aqF
- ePqDAO1lV5EgAZJxBtbU4zf98T/MHibErohAxCmYpDN6T7kvGniHa/Sw6sFXCwNLCqCd
- QExd22TumyrEfdaTiD4TVLrXP6HcyLM/hkRdeYxEcyWSxv2hcc0fQKCD+QFKmJmVKf9u
- OKMaxOrY46Dxmbdu7SX2U6UYn9Hc0cJmIvMcSKzxjJFZP9aAFtz3OOyqwKmRNewb2HAz
- yRRpiSLjlvAhG2HgXOVDRCcAe4AxZmVcV77Rsbyga8Zz1RAbWUJ5+IvRy0CGxZv2qVK7
- G63Q==
-X-Gm-Message-State: APjAAAWYHp+9e9CNEKy+lXvaH4g6PKNm5yQZUXE0H6aaKOcWf6WIZ2Jk
- Z9OXGnRfVlsdIAV/TwIp7+HhtKMSBM0=
-X-Google-Smtp-Source: APXvYqyUtf3IIJnos/BEz0mLtu3pt+RIDgoWIXskDhqxOOYrmnTSVr7eGt0o8sCfa5DWMJh0NB1Jvg==
-X-Received: by 2002:a5d:484f:: with SMTP id n15mr3249087wrs.365.1581017442402; 
- Thu, 06 Feb 2020 11:30:42 -0800 (PST)
-Received: from mail.broadcom.com ([192.19.231.250])
- by smtp.gmail.com with ESMTPSA id b128sm537014wmb.25.2020.02.06.11.30.39
+ bh=tlf2cEuWqzi15jSc47YFX5cP+L61Uac1o8CP7Bpwcew=;
+ b=nrh0MrQ4JJRz5DPK84nStuqd9yqSuvWJZ7VJtW9oZzel8Um5XZLuzTkKNW1VGxuDE8
+ +Ax8pZZX0zfwtaXVJfIcEMY5kmimASnjFQW0+vTPKbFtgo7PFSqaOZh2IPjg+755DUQm
+ AD97mVOf5xKSjFAfSx2LkAFn4TLjdS1ptF8rV6Z+HWz+vCxfioRhjkf8nojKbNjCh9lK
+ uhvvXq/JnxbxgJo0ToJSQfmbsvFwiVC2GGbOX4H6r8Y5BnR9d0B8l3sZQM+v5aXxZPFC
+ UQ2Up6ubIYIzWMnc1tQSpBAWK3/Zg8zhGprvy7xkQH5YH6z4Cwm1o+LhadApQBepyH5M
+ czYw==
+X-Gm-Message-State: APjAAAWI6xx8ma0EnvpRil7QlHcScir9hssyY1f7XW3d3j69gVLYlJZn
+ UcUtgyg4szDirxybtjsEeXwKb+9UUiw=
+X-Google-Smtp-Source: APXvYqyZwyPua8T189yaRBv8FiTqbVEyZ+r+dZUf9JfJOlGKwQkcOGgyPA7flD9UyV4D1RYNmu65oQ==
+X-Received: by 2002:a7b:ce18:: with SMTP id m24mr6425514wmc.123.1581020661501; 
+ Thu, 06 Feb 2020 12:24:21 -0800 (PST)
+Received: from opensdev.fritz.box
+ (business-178-015-117-054.static.arcor-ip.net. [178.15.117.54])
+ by smtp.gmail.com with ESMTPSA id c13sm539929wrx.9.2020.02.06.12.24.19
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 06 Feb 2020 11:30:41 -0800 (PST)
-From: Kamal Dasu <kdasu.kdev@gmail.com>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH] MIPS: c-r4k: Invalidate BMIPS5000 ZSCM prefetch lines
-Date: Thu,  6 Feb 2020 14:30:37 -0500
-Message-Id: <20200206193037.32041-1-kdasu.kdev@gmail.com>
+ Thu, 06 Feb 2020 12:24:20 -0800 (PST)
+From: shiva.linuxworks@gmail.com
+X-Google-Original-From: sshivamurthy@micron.com
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Frieder Schrempf <frieder.schrempf@kontron.de>,
+ Boris Brezillon <bbrezillon@kernel.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/5] Add new series Micron SPI NAND devices
+Date: Thu,  6 Feb 2020 21:22:01 +0100
+Message-Id: <20200206202206.14770-1-sshivamurthy@micron.com>
 X-Mailer: git-send-email 2.17.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200206_113045_301818_10425EE6 
-X-CRM114-Status: GOOD (  11.11  )
+X-CRM114-CacheID: sfid-20200206_122427_763554_D363BA1F 
+X-CRM114-Status: UNSURE (   7.21  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,82 +96,66 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Florian Fainelli <f.fainelli@gmail.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- Paul Burton <paulburton@kernel.org>, Richard Weinberger <richard@nod.at>,
- linux-mips@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>,
- linaro-mm-sig@lists.linaro.org, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org, dri-devel@lists.freedesktop.org,
- Miquel Raynal <miquel.raynal@bootlin.com>, James Hogan <jhogan@kernel.org>,
- bcm-kernel-feedback-list@broadcom.com,
- Brian Norris <computersforpeace@gmail.com>,
- Sumit Semwal <sumit.semwal@linaro.org>, linux-media@vger.kernel.org
+Cc: Shivamurthy Shastri <sshivamurthy@micron.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Zephyr secondary cache is 256KB, 128B lines. 32B sectors. A secondary cache
-line can contain two instruction cache lines (64B), or four data cache
-lines (32B). Hardware prefetch Cache detects stream access, and prefetches
-ahead of processor access. Add support to inavalidate BMIPS5000 cpu zephyr
-secondary cache module (ZSCM) on DMA from device so that data returned is
-coherent during DMA read operations.
+From: Shivamurthy Shastri <sshivamurthy@micron.com>
 
-Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
----
- arch/mips/mm/c-r4k.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+This patchset is for the new series of Micron SPI NAND devices, and the
+following links are their datasheets.
 
-diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
-index 5f3d0103b95d..2d8892ba68ab 100644
---- a/arch/mips/mm/c-r4k.c
-+++ b/arch/mips/mm/c-r4k.c
-@@ -901,6 +901,35 @@ static void r4k_dma_cache_wback_inv(unsigned long addr, unsigned long size)
- 	__sync();
- }
- 
-+static void prefetch_cache_inv(unsigned long addr, unsigned long size)
-+{
-+	unsigned int linesz = cpu_scache_line_size();
-+	unsigned long addr0 = addr, addr1;
-+	int cpu_type = current_cpu_type();
-+
-+	if (cpu_type == CPU_BMIPS5000) {
-+		/* invalidate zephyr secondary cache module prefetch lines */
-+		addr0 &= ~(linesz - 1);
-+		addr1 = (addr0 + size - 1) & ~(linesz - 1);
-+
-+		protected_writeback_scache_line(addr0);
-+		if (likely(addr1 != addr0))
-+			protected_writeback_scache_line(addr1);
-+		else
-+			return;
-+
-+		addr0 += linesz;
-+		if (likely(addr1 != addr0))
-+			protected_writeback_scache_line(addr0);
-+		else
-+			return;
-+
-+		addr1 -= linesz;
-+		if (likely(addr1 > addr0))
-+			protected_writeback_scache_line(addr0);
-+	}
-+}
-+
- static void r4k_dma_cache_inv(unsigned long addr, unsigned long size)
- {
- 	/* Catch bad driver code */
-@@ -908,6 +937,7 @@ static void r4k_dma_cache_inv(unsigned long addr, unsigned long size)
- 		return;
- 
- 	preempt_disable();
-+	prefetch_cache_inv(addr, size);
- 	if (cpu_has_inclusive_pcaches) {
- 		if (size >= scache_size) {
- 			if (current_cpu_type() != CPU_LOONGSON64)
+M78A:
+[1] https://www.micron.com/~/media/documents/products/data-sheet/nand-flash/70-series/m78a_1gb_3v_nand_spi.pdf
+[2] https://www.micron.com/~/media/documents/products/data-sheet/nand-flash/70-series/m78a_1gb_1_8v_nand_spi.pdf
+
+M79A:
+[3] https://www.micron.com/~/media/documents/products/data-sheet/nand-flash/70-series/m79a_2gb_1_8v_nand_spi.pdf
+[4] https://www.micron.com/~/media/documents/products/data-sheet/nand-flash/70-series/m79a_ddp_4gb_3v_nand_spi.pdf
+
+M70A:
+[5] https://www.micron.com/~/media/documents/products/data-sheet/nand-flash/70-series/m70a_4gb_3v_nand_spi.pdf
+[6] https://www.micron.com/~/media/documents/products/data-sheet/nand-flash/70-series/m70a_4gb_1_8v_nand_spi.pdf
+[7] https://www.micron.com/~/media/documents/products/data-sheet/nand-flash/70-series/m70a_ddp_8gb_3v_nand_spi.pdf
+[8] https://www.micron.com/~/media/documents/products/data-sheet/nand-flash/70-series/m70a_ddp_8gb_1_8v_nand_spi.pdf
+
+Changes since v3:
+-----------------
+
+1. Patch 3 and 4 reworked as follows
+   - Patch 3 introducing the Continuous read feature
+   - Patch 4 adding devices with the feature
+
+Changes since v2:
+-----------------
+
+1. Patch commit messages have been modified.
+2. Handled devices with Continuous Read feature with vendor specific flag.
+3. Reworked die selection function as per the comment.
+
+Changes since v1:
+-----------------
+
+1. The patch split into multiple patches.
+2. Added comments for selecting the die.
+
+Shivamurthy Shastri (5):
+  mtd: spinand: micron: Generalize the OOB layout structure and function
+    names
+  mtd: spinand: micron: Add new Micron SPI NAND devices
+  mtd: spinand: micron: identify SPI NAND device with Continuous Read
+    mode
+  mtd: spinand: micron: Add M70A series Micron SPI NAND devices
+  mtd: spinand: micron: Add new Micron SPI NAND devices with multiple
+    dies
+
+ drivers/mtd/nand/spi/micron.c | 153 ++++++++++++++++++++++++++++++----
+ include/linux/mtd/spinand.h   |   1 +
+ 2 files changed, 140 insertions(+), 14 deletions(-)
+
 -- 
 2.17.1
 
