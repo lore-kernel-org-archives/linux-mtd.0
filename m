@@ -1,103 +1,84 @@
-Return-Path: <SRS0=Kp4F=33=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=oRr0=34=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIMWL_WL_HIGH,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B566C2BA83
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Feb 2020 20:17:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CBEAEC2BA83
+	for <linux-mtd@archiver.kernel.org>; Sat,  8 Feb 2020 01:35:09 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6398E20715
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Feb 2020 20:17:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9E5D720661
+	for <linux-mtd@archiver.kernel.org>; Sat,  8 Feb 2020 01:35:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LM1pDL5C";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="ha2nbOJF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6398E20715
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EEZheTEy";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="ZzptqxUs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E5D720661
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=y78ZMTOQ362UyrIobH1t1wMtv728Hph8t0/YtswJ908=; b=LM1pDL5C1fVH/joZSvvN59Q9yK
-	aNoOHSa/rPWgRnkW7RYgwGpZ5XtYNg8XFzaYuOHj/1hrhVEx9cSFPyURh9SjUKS0emBPdvNwggcqX
-	UVcnRXadS0pyiIJgas81voaKizUJYwsmRIAgZV52Z6CckaPtBP1zkjijge4Jjm8Tpxhww3+1PI+Yv
-	EZFKiayGGmpS2gEaDEIC2Qq9NMQSJbJCbHcYZQQ9+GbYtl2etbNYzVDc+DnO370jS96J7NAjN1num
-	B62SAwZSjwS55p4ezdLPF/4q3z7qhux9M9PNQcGMksmewPr1GOZIDQkd4qvreVn1ekUl04gJRPb3t
-	gMTSY8Gg==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:From:Subject:Mime-Version:Message-Id
+	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Q65SPIKDiaYhr5O4d7td6k4/+MJSMVClchCyFvr0uGI=; b=EEZheTEyBbZWZC
+	zXc0XFYaUaRwWu9yt0ushct79+jHSAJnAuZzjavnwQYEo7Xp0aZQRqL24iQSjdxfGEPxq5cpCU+O/
+	rdNNDFPgID17YJ7wSH6BfeEEnc7tzgyBTERG73SMYaN9BdwqhIjkTJ6+lnDSe6vwOU4ig13jc4ofm
+	IwZZWFTJ4fUIDK+Nm0YPCVCCyG8z1BJfri7crGKLi8De1yoe8GBSHAcFx5KjZBKnrBOQZRtXd5Fd5
+	HkiCrQB/c8RiHmgRnN7flYS5kVdJNcHqJngI9GMD+77RBtiJbt2CNcBvZfCe68VSlgz1IW0gp60eU
+	sFF7f2hNHhP3jjwUhDvQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j0A4O-0001Rb-Hd; Fri, 07 Feb 2020 20:17:44 +0000
-Received: from mail-lj1-x241.google.com ([2a00:1450:4864:20::241])
+	id 1j0F1F-0004ap-4B; Sat, 08 Feb 2020 01:34:49 +0000
+Received: from mail-pj1-x1049.google.com ([2607:f8b0:4864:20::1049])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j0A4L-0001Qg-CW
- for linux-mtd@lists.infradead.org; Fri, 07 Feb 2020 20:17:42 +0000
-Received: by mail-lj1-x241.google.com with SMTP id a13so610094ljm.10
- for <linux-mtd@lists.infradead.org>; Fri, 07 Feb 2020 12:17:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
- h=subject:to:references:from:organization:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=vFTxeE5liDry5r2GcFp5oMwFF8a0KAeUk2qXnfNDNow=;
- b=ha2nbOJFJXBO4S6wqcOY0NojAVOe0Zm7mkE+a1f6/UBspDKjoamJJ+z5UdVIbZSN4D
- /XNwB4EqSolhYFgPf3wQJeHZvrLId2BeEKxPAiQqwTPE5X+qLHlk72YlaxlMe14RCUYx
- EmbF4LheJV0cshm0iyzX3uQE3US4xbeOhPl7KfUkFcNNDz2vwM5z+Zp5CkJwiXGpadWx
- LugqtdFmxzsLwuopEaMZWxNtaPgHMcBZTp0iFixcxSGpV+OKkHggHK9nWDlE7HJ08L7W
- hFAhSsOIDcLnGQh/AP0OkiCUVIlDzh8DOCMvetMti/6ygpapCLQ7wZXz85p4dwF94oF/
- HG5g==
+ id 1j0F1C-0004Zf-Ja
+ for linux-mtd@lists.infradead.org; Sat, 08 Feb 2020 01:34:48 +0000
+Received: by mail-pj1-x1049.google.com with SMTP id c31so2327477pje.9
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Feb 2020 17:34:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=date:message-id:mime-version:subject:from:to:cc;
+ bh=GmdJt27134kNRYXiKp4wrB+O4TXMZQXM52BZBGOfEtM=;
+ b=ZzptqxUsermKYJMyiUDjvBiGxUIdwqTzJfy+wNJraQ/fqxPgGbS6BGRKrTpYZT99NP
+ LQVDbxgl6rqVunRCW0ICPGiKpNThIj+TdvQ5TjjeSLkpDlJtuWqpEnxBlBrS2HEtG+RW
+ 9z2HN6g50wLJeFY9fmYqHHVVeKmyWOB0q7ii4xnMViegdwpFM70+FfqSZe7YAxDz9qPz
+ rQI68XvesZcSELHJhYuD8Anx5KlcByOodivzB6VfODhyuo8qsoR7iOlqkI0zS2IW8J1A
+ G74nrd0ARErEc3uP+liYKFfxifqkv4AUuLVaYmPTGE7ECQxADA+maD2kLEzIxEDZMkLy
+ HKfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:references:from:organization
- :message-id:date:user-agent:mime-version:in-reply-to
- :content-language:content-transfer-encoding;
- bh=vFTxeE5liDry5r2GcFp5oMwFF8a0KAeUk2qXnfNDNow=;
- b=cWKtHEB9oY9L8TXpVAQ7tp75cDudIv6d0MV5T2/MkMdA7IVHrYutibnwDKA5k9DfOM
- IkXE98htQdY97pUhIJlWUxFq6mnV7kfVMIUjuRiR3E1oCQr/nIRZ9Xx9rmwI62s3Q/lc
- 2ZMd1U85wQ63Sq9wI228lfLgao/ROq9IN+sKhl0y5v/aE/cUFtN+nbxg7o6sxljEDeuZ
- g1ljidwavy0UjNaMKAmVLeDFavL59+dNIo6yv+PGD0p+WlT81jk2Pz6LCEpUcEKJbHkz
- EDoum8g1NsoEOC9N9dO72z/VkoXamiVBxCVHHwRS/UrDdtPM52TkgyULlEtO6GR72dpH
- /psQ==
-X-Gm-Message-State: APjAAAWNaIv4uEbifHLbEEsVlzx8xpgfxNCl1HTSAw36x6bjnJmWY1Jd
- uFGx6HNX4P1i50X/T+BhOdQxkXEut8E=
-X-Google-Smtp-Source: APXvYqwpW/K9IxVP/BoeR2GMegVuuCOvHO6S4eVZsMf5AiYyVo7l3sQ4QH95vEKdR9eOoEmH1T3u9g==
-X-Received: by 2002:a2e:a491:: with SMTP id h17mr540152lji.101.1581106658459; 
- Fri, 07 Feb 2020 12:17:38 -0800 (PST)
-Received: from wasted.cogentembedded.com
- ([2a00:1fa0:667:86ec:de03:9020:cf24:beb2])
- by smtp.gmail.com with ESMTPSA id d22sm1522668lfi.49.2020.02.07.12.17.35
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Fri, 07 Feb 2020 12:17:37 -0800 (PST)
-Subject: Re: [PATCH RFT 0/2/2] mtd: hyperbus: add Renesas RPC-IF driver
-To: Dirk Behme <dirk.behme@gmail.com>,
- "Behme Dirk (CM/ESO2)" <dirk.behme@de.bosch.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org
-References: <fd1360ab-8872-f750-1314-77c6d432b413@cogentembedded.com>
- <eba43289-3cb2-406b-cc5f-1209778621bf@cogentembedded.com>
- <34271135-d103-ccd2-2933-59fd4a399795@de.bosch.com>
- <3ea71f24-d466-81f8-2c1e-239b59e712f8@cogentembedded.com>
- <02108a3e-4527-ee53-3d6a-07b78cad5b60@gmail.com>
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Organization: Cogent Embedded
-Message-ID: <5fc79de7-fd24-0ded-d696-cba81ad0e336@cogentembedded.com>
-Date: Fri, 7 Feb 2020 23:17:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.1
-MIME-Version: 1.0
-In-Reply-To: <02108a3e-4527-ee53-3d6a-07b78cad5b60@gmail.com>
-Content-Language: en-MW
+ h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+ bh=GmdJt27134kNRYXiKp4wrB+O4TXMZQXM52BZBGOfEtM=;
+ b=Hl/Vg5FIb/bbY2Vk6HavP/8OAIXsYP+QUj4txLP1AQvV/D8lSDOH7drEOJCi79fsGQ
+ NlzkG48HW8s7KnbRYG630uA69nF7YMQXyUxHn6ETE7rgrAG5a6UHpualkZPW4UbXEnqe
+ YVbMHoN/N5cSc7Vk1bhZYX8WNeLd1yVgHzgOZqaBycmkZZRVd0Cu/o92bXSHXiYry6t6
+ tbFC50u+sZp8F7mEjazXcMv9EvGrT7Pr55llEK58EjtUipSWiehKk7z/KUgiXaYDdZVb
+ 0ip9W6BbrWAVaKRTmmrEyxXDZeEPn7kWgUFjHTkpwtUcI0E6S+F2wyjKbYXQCfjJi+7t
+ EZvw==
+X-Gm-Message-State: APjAAAWejAsHzKUV9cqtsHyiTz8DxG10GsAJZa79ve1FFGA7B6xlMVbu
+ +esF9Z0X/H6N4lQ5c6M08S+iNAxOUn4=
+X-Google-Smtp-Source: APXvYqxT2SICJR0/scVLMtmD7Drj2JGcZpB0cicjSWB5iCPIziOWFDKhaM/J3laVncF61b47rtO91OtcfaA=
+X-Received: by 2002:a63:1c1d:: with SMTP id c29mr2121466pgc.14.1581125684457; 
+ Fri, 07 Feb 2020 17:34:44 -0800 (PST)
+Date: Fri,  7 Feb 2020 17:34:30 -0800
+Message-Id: <20200208013438.240137-1-drosen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.25.0.341.g760bfbb309-goog
+Subject: [PATCH v7 0/8] Support fof Casefolding and Encryption
+From: Daniel Rosenberg <drosen@google.com>
+To: "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org, 
+ Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>, 
+ linux-f2fs-devel@lists.sourceforge.net, Eric Biggers <ebiggers@kernel.org>, 
+ linux-fscrypt@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>, 
+ Richard Weinberger <richard@nod.at>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200207_121741_576180_330FDCAA 
-X-CRM114-Status: GOOD (  20.13  )
+X-CRM114-CacheID: sfid-20200207_173446_672351_FCD618B9 
+X-CRM114-Status: GOOD (  14.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,126 +90,106 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Cc: Daniel Rosenberg <drosen@google.com>, linux-doc@vger.kernel.org,
+ kernel-team@android.com, Jonathan Corbet <corbet@lwn.net>,
+ linux-kernel@vger.kernel.org, Andreas Dilger <adilger.kernel@dilger.ca>,
+ linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Gabriel Krisman Bertazi <krisman@collabora.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 02/07/2020 10:31 PM, Dirk Behme wrote:
+These patches are all on top of torvalds/master
 
-[...]
->>>> Add the HyperFLash driver for the Renesas RPC-IF.  It's the "front end"
->>>> driver using the "back end" APIs in the main driver to talk to the real
->>>> hardware.
->>>>
->>>> Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
->> [...]
->>>> Index: linux/drivers/mtd/hyperbus/rpc-if.c
->>>> ===================================================================
->>>> --- /dev/null
->>>> +++ linux/drivers/mtd/hyperbus/rpc-if.c
->>>> @@ -0,0 +1,162 @@
->> [...]
->>>> +static u16 rpcif_hb_read16(struct hyperbus_device *hbdev, unsigned long addr)
->>>> +{
->>>> +    struct rpcif_hyperbus *hyperbus =
->>>> +        container_of(hbdev, struct rpcif_hyperbus, hbdev);
->>>> +    struct rpcif_op op = rpcif_op_tmpl;
->>>> +    map_word data;
->>>> +
->>>> +    op.cmd.opcode = 0xC0;
->>>> +    op.addr.val = addr >> 1;
->>>> +    op.dummy.buswidth = 1;
->>>> +    op.dummy.ncycles = 15;
->>>> +    op.data.dir = RPCIF_DATA_IN;
->>>> +    op.data.nbytes = 2;
->>>> +    op.data.buf.in = &data;
->>>> +    rpcif_prepare(&hyperbus->rpc, &op, NULL, NULL); // ?
->>>> +    rpcif_io_xfer(&hyperbus->rpc);
->>>> +
->>>> +    return be16_to_cpu(data.x[0]);
->>>> +}
->>>> +
->>>> +static void rpcif_hb_write16(struct hyperbus_device *hbdev, unsigned long addr,
->>>> +                 u16 data)
->>>> +{
->>>> +    struct rpcif_hyperbus *hyperbus =
->>>> +        container_of(hbdev, struct rpcif_hyperbus, hbdev);
->>>> +    struct rpcif_op op = rpcif_op_tmpl;
->>>> +
->>>> +    op.cmd.opcode = 0x40;
->>>> +    op.addr.val = addr >> 1;
->>>> +    op.data.dir = RPCIF_DATA_OUT;
->>>> +    op.data.nbytes = 2;
->>>> +    op.data.buf.out = &data;
->>>> +    cpu_to_be16s(&data);
->>>
->>>
->>>
->>> Testing this, I found that writing data to the Hyperflash results in swapped _data_ in Hyperflash due to this cpu_to_be16s() conversion:
->>>
->>> 02 01 04 03 06 05 08 07 ...
->>>
->>> Breaking the usage of the data written for other users, i.e. the boot loaders.
->>>
->>> On the other hand, dropping this cpu_to_be16s() (and be16_to_cpu() in the read16 above) makes the probing to fail completely.
->>>
->>> The topic seems to be that rpcif_hb_write16() handles command _and_ data, and the commands seem to need the conversion.
->>
->>     The HyperBus spec says the register space is always big-endian but the
-                                                                          ^^^ then
+Ext4 and F2FS currently both support casefolding and encryption, but not at
+the same time. These patches aim to rectify that.
 
->> again
+I moved the identical casefolding dcache operations for ext4 and f2fs into
+fs/libfs.c, as all filesystems using casefolded names will want them.
 
->> HypoerFlash doesn't have the register space...
->>
->>> As mentioned, the first idea, dropping the conversion and adding some debug output in the driver [1] results in failed probe [2]. Successful probing of the unmodified driver  results in [3], then.
->>>
->>> Seems I need some advice: Why is this conversion for successful probe required?
->>> Why is the first 'QRY' returned by the device not detected by cfi_qry_mode_on()?
->>
->>     "QRY" is in the MSBs?
-> 
-> 
-> Well, even if we have swapping enabled and with this it's in the LSBs, it's not detected in the first run. See the first 5 traces in [3] below.
-> 
-> 
->>> Is the any possibility to drop the conversion _and_ make the driver probe
->>> successful? Or do we need to split the path the commands and the data are 
->>> routed? If so, how?
->>
->>     I've found some interesting options under the CFI advanced config options,
->> e.g. "Flash cmd/query data swapping" having MTD_CFI_BE_BYTE_SWAP value in this
->> item. With this variant chosen, I don't need any byte swapping in the driver
->> any more... and the QRY signature is read correctly on the very 1st try.
-> 
-> 
-> Yes, but ;)
-> 
-> I tried MTD_CFI_BE_BYTE_SWAP config option, too. Enabling that and dropping cpu_to_be16s()/be16_to_cpu() in the driver result in a successful probe. And
-> /dev/mtdx afterwards. That's the good news.
-> 
-> But, the bad news:
-> 
-> Trying a write (dd to /dev/mtdx) hanged and never returned. In contrast to the
+I've also adjust fscrypt to not set it's d_revalidate operation during it's
+prepare lookup, instead having the calling filesystem set it up. This is
+done to that the filesystem may have it's own dentry_operations. Also added
+a helper function in libfs.c that will work for filesystems supporting both
+casefolding and fscrypt.
 
-   Not for me:
+For Ext4, since the hash for encrypted casefolded directory names cannot be
+computed without the key, we need to store the hash on disk. We only do so
+for encrypted and casefolded directories to avoid on disk format changes.
+Previously encryption and casefolding could not be on the same filesystem,
+and we're relaxing that requirement. F2fs is a bit more straightforward
+since it already stores hashes on disk.
 
-root@192.168.2.11:~# dd if=jffs2.img of=/dev/mtd11                              
-random: crng init done                                                          
-2666+1 records in                                                               
-2666+1 records out                                                              
-1365320 bytes (1.4 MB) copied, 33.0917 seconds, 41.3 kB/s                       
+I've updated the related tools with just enough to enable the feature. I
+still need to adjust ext4's fsck's, although without access to the keys,
+neither fsck will be able to verify the hashes of casefolded and encrypted
+names.
 
-> solution with the cpu_to_be16s()/be16_to_cpu() in the driver, which wrote nicely to the Hyperflash, but swapped.
+v7 chances:
+Moved dentry operations from unicode to libfs, added new iterator function
+to unicode to allow this.
+Added libfs function for setting dentries to remove code duplication between
+ext4 and f2fs.
 
-   Something's wrong at your end...
+v6 changes:
+Went back to using dentry_operations for casefolding. Provided standard
+implementations in fs/unicode, avoiding extra allocation in d_hash op.
+Moved fscrypt d_ops setting to be filesystem's responsibility to maintain
+compatibility with casefolding and overlayfs if casefolding is not used
+fixes some f2fs error handling
 
-> Best regards
-> 
-> Dirk
+v4-5: patches submitted on fscrypt
 
-MBR, Sergei
+v3 changes:
+fscrypt patch only creates hash key if it will be needed.
+Rebased on top of fscrypt branch, reconstified match functions in ext4/f2fs
+
+v2 changes:
+fscrypt moved to separate thread to rebase on fscrypt dev branch
+addressed feedback, plus some minor fixes
+
+
+Daniel Rosenberg (8):
+  unicode: Add utf8_casefold_iter
+  fs: Add standard casefolding support
+  f2fs: Use generic casefolding support
+  ext4: Use generic casefolding support
+  fscrypt: Have filesystems handle their d_ops
+  f2fs: Handle casefolding with Encryption
+  ext4: Hande casefolding with encryption
+  ext4: Optimize match for casefolded encrypted dirs
+
+ Documentation/filesystems/ext4/directory.rst |  27 ++
+ fs/crypto/fname.c                            |   7 +-
+ fs/crypto/fscrypt_private.h                  |   1 -
+ fs/crypto/hooks.c                            |   1 -
+ fs/ext4/dir.c                                |  78 +----
+ fs/ext4/ext4.h                               |  93 ++++--
+ fs/ext4/hash.c                               |  26 +-
+ fs/ext4/ialloc.c                             |   5 +-
+ fs/ext4/inline.c                             |  41 ++-
+ fs/ext4/namei.c                              | 325 ++++++++++++-------
+ fs/ext4/super.c                              |  21 +-
+ fs/f2fs/dir.c                                | 127 +++-----
+ fs/f2fs/f2fs.h                               |  15 +-
+ fs/f2fs/hash.c                               |  25 +-
+ fs/f2fs/inline.c                             |   9 +-
+ fs/f2fs/namei.c                              |   1 +
+ fs/f2fs/super.c                              |  17 +-
+ fs/f2fs/sysfs.c                              |  10 +-
+ fs/libfs.c                                   | 127 ++++++++
+ fs/ubifs/dir.c                               |  18 +
+ fs/unicode/utf8-core.c                       |  25 +-
+ include/linux/f2fs_fs.h                      |   3 -
+ include/linux/fs.h                           |  24 ++
+ include/linux/fscrypt.h                      |   6 +-
+ include/linux/unicode.h                      |  10 +
+ 25 files changed, 671 insertions(+), 371 deletions(-)
+
+-- 
+2.25.0.341.g760bfbb309-goog
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
