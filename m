@@ -5,20 +5,20 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17D15C35250
-	for <linux-mtd@archiver.kernel.org>; Sat,  8 Feb 2020 07:45:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0720DC35250
+	for <linux-mtd@archiver.kernel.org>; Sat,  8 Feb 2020 08:41:39 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E0CF921775
-	for <linux-mtd@archiver.kernel.org>; Sat,  8 Feb 2020 07:45:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D435621741
+	for <linux-mtd@archiver.kernel.org>; Sat,  8 Feb 2020 08:41:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AO983Cxw";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="prtMLIsT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E0CF921775
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DTxI8yC1";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j+hIx8PP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D435621741
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,64 +27,60 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
 	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=hT4TWWGfNv2tqyRt1o2uQ6sdFKa3V2b2froqaD/s2vY=; b=AO983Cxw+xtiNG
-	MVCU/CV7XIrEIAXQ82OoYkVAJk+K9qs/g1T5KrsRw6q5VRx0J6MFXtl5DNGLmzDrrleZTYEPm6Nvb
-	rEgJafN182fcj/8dVpalI5UKm8WAw9Hm3qVouMm+T3Y8hfvJzE4+w2NqjuBR7OM/XbYavpRojn8Yw
-	f99XEVT5JCCZxzzvLpStB5wfEFaOuJo2rZN1sWTk04gl5xjx0+jWNN3b0gaLTSMZddR4wOex4xd3H
-	f7gkdkdsezBjnY/HrL8TYgJQTcbUT65+ftlozvB65zZzVovcvL/6dr9T8ZlZRqWtQc+b7KRyklZbx
-	8z/kWjSPFA7im1ZgIeLQ==;
+	List-Owner; bh=HgPoKfv42zRPNBAr7CQ9v8Dn1XoQEKxlGgEeqFfVxI8=; b=DTxI8yC1+zgA7T
+	zTEhRbbxI72g10tvy4su68POw+lYGVBXasXnwxLm6KoETKg9BjSmSdyIp01khzZgXPomG/ZO/IiYK
+	8J/Ej3P9Vf8GbFpGl170OodpgXnBZb93pSqk1eGrXNaIh/FkpvfgEeZAyHKb3ZQL7sGjEh0b3k7KP
+	I3jrMbMkx3lXx5Y9wk3qUEit6vjTKw/rFneLTGiDpVxRLUTc3IHKplOcl+2Q1BYeUVvdPDQW7hToV
+	kelHcpdSgAMDkUj/L3WllC6RXJkHnHxAIov8bbOawfCFHpjwTLobKwGB64cVoaFP2Tz75VQXSw1X1
+	J9J9svvmw/5xtqiQv6zA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j0Knu-0002LM-NV; Sat, 08 Feb 2020 07:45:26 +0000
-Received: from mail-pj1-x1042.google.com ([2607:f8b0:4864:20::1042])
+	id 1j0Lfu-0001fB-Sh; Sat, 08 Feb 2020 08:41:14 +0000
+Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j0Kno-0002Kt-03
- for linux-mtd@lists.infradead.org; Sat, 08 Feb 2020 07:45:22 +0000
-Received: by mail-pj1-x1042.google.com with SMTP id m13so1911003pjb.2
- for <linux-mtd@lists.infradead.org>; Fri, 07 Feb 2020 23:45:18 -0800 (PST)
+ id 1j0Lfr-0001eH-Mx; Sat, 08 Feb 2020 08:41:13 +0000
+Received: by mail-pf1-x441.google.com with SMTP id 4so993629pfz.9;
+ Sat, 08 Feb 2020 00:41:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=BYomgoRIG9vd6mMKg18r8PyN8Atpy/wFe6jYYb4Wzd8=;
- b=prtMLIsTQBtciS34n6iJ/UoccDguxIaJN85vNjcDGTcozDwwbitzPzCPTGEzuPaLo1
- KsLjigADN9Tk+hFh1EybbJJEMMtHq3XAmpAc4FJrSsWxyUq4v8wKzyLc4GDM4lfUcPl0
- ZaqRDo3h8kWZYy93Ba1B689NmmV7IJov23dalUpxSiszIo7DQVtI7Pgz+15NWYGkLcQT
- 3t7m3PefxTCDGQSXVYN0NDv9uMxZe9yN/krCIE/KKFURzRY/6QyMjY1m38m+ahcy0fA4
- PofGwNwEjhhLfBZ260zZSSMbbt400xSczkD5p56Wd260mtfhL7whYjJug+L+PyEQIdcq
- YlNg==
+ bh=t4fT1flivhHE2bOiFUCwrYP2oGVgN/u3bLIm2YsCtVs=;
+ b=j+hIx8PPKVttFIFcJkTAOz8wLBNnQ0xmyv248cqVekR4q7ODZSC7HOTdeDlYUHJpTX
+ /Yofq526CRXJD6p7SeG0rg5/3NSTyZGVkePh9g8DwzfWfmqtzELW79BTNLQMRxh7KDgc
+ SyLwxRFlhr1CWYdivSVAnGbiOmICIMvd/43KpKo2kLI51N8CcBUBJGX0ldpwu47Jlshe
+ mV3Qcy67jPCdc8FlvkzQLF28sRqYxf4DQ5h4RYupY2izf5ae8PBo1i3H8BICW9OxQbq5
+ fJQEzlT+5bD6nEvRdQeJRm2ejYaZHW4qus76uEdo2N7DbIfolJZYali6WDSVyYGaOryV
+ 52eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=BYomgoRIG9vd6mMKg18r8PyN8Atpy/wFe6jYYb4Wzd8=;
- b=UcqgoIiZ3vt5NSSON3WpRxqLRe3GIu9qyS5cVrkxxHOql6PZekEBecZanakiZagIOr
- Kwx+Z3qh3dNPae+ru6Twe/F5/VYIov0NN3lwnjhNP9nbbd9qRjxuqJ6yinCkGFED6L2i
- L1ACK32K+17MFdsIU+1eVxv3clCJ2hUchZDrywTunQtjYB3mZadD592M3duuQdD5OzWD
- 9awJFgD5cn65BLdW4FTW3E6sk6fCkok/KxBHolr1Y5mlZ8eIxDwCB2gauRtwClvE+4a0
- LJYI9madNWY/3vLNIU/H7y7hReC2gc/zsgssMur5ds4SB9b53UmKw3h4bBQJEzUtjzkQ
- NkmQ==
-X-Gm-Message-State: APjAAAXaA41AiHQoxy8z1l6TvePFhhoe4grGJMycfiTygXfyPNLLL8rC
- sgU5NeknzCkwq9REe4cwiIEota5IuNg=
-X-Google-Smtp-Source: APXvYqzHie/GUoCqvaW9x1mREOIGgEZtCTEwa3rtFIAtYPFKMHVaa9yvZP0pdcEx9jYF1S6X8g6HDQ==
-X-Received: by 2002:a17:902:b498:: with SMTP id
- y24mr2630403plr.343.1581147916504; 
- Fri, 07 Feb 2020 23:45:16 -0800 (PST)
+ bh=t4fT1flivhHE2bOiFUCwrYP2oGVgN/u3bLIm2YsCtVs=;
+ b=rNu8oIqh/ZjOi84Vki0t71jNZZoI+diWOkV6jIrULiEke122VKZnM5fTlDzn4t+v47
+ WtJPW34AXk7aZGq5dB5DzzVKSJv/SsajD5JeYQzPNsYcjNYbcqNJppcj1h5YhHkjXKIq
+ SOn0ebEv5JVDweM4fy4jEPqAh49XAu4NLBVqVmzz/kJUy/C3Tkf9IY17j/N4lBwx4WEz
+ oV6AyuCbrJ+ppeWoV0OFzSUQMamwZC2Jp4eGcDSiAlTpNUfttK3eQWerAqkrjD5YKtT8
+ b8fLPkmbtKjq6J2tHb9+J9Sg4EluBrf7oK2+Bu7X90QhG7sP75cGPnz3op9V0xOHx04u
+ cmfg==
+X-Gm-Message-State: APjAAAWn2Nu/aiGdBTy1JVFfr8/hYKdpWgjabZvd1CN8DUfud3xkPwwE
+ 4+D7LboC3lCYBv8ewvIs3AS+uR5Y0HA=
+X-Google-Smtp-Source: APXvYqw8yuRdAlV0i6bI+LVdCO1J+fT6uuUjHQnYnfC2NQZy2tbSx1BIZdWlWOR+b4PIAmizEgcjUg==
+X-Received: by 2002:a62:cec7:: with SMTP id y190mr3075149pfg.191.1581151268223; 
+ Sat, 08 Feb 2020 00:41:08 -0800 (PST)
 Received: from localhost.localdomain ([240e:379:947:2855::fa3])
- by smtp.gmail.com with ESMTPSA id y18sm5089882pfe.19.2020.02.07.23.45.06
+ by smtp.gmail.com with ESMTPSA id t63sm5639365pfb.70.2020.02.08.00.40.57
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 07 Feb 2020 23:45:15 -0800 (PST)
+ Sat, 08 Feb 2020 00:41:07 -0800 (PST)
 From: Chuanhong Guo <gch981213@gmail.com>
-To: linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- Boris Brezillon <bbrezillon@kernel.org>
-Subject: [PATCH v4] mtd: nand: spi: rework detect procedure for different read
- id op
-Date: Sat,  8 Feb 2020 15:43:50 +0800
-Message-Id: <20200208074439.146296-1-gch981213@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH v2] mtd: mtk-quadspi: add support for DMA reading
+Date: Sat,  8 Feb 2020 16:40:09 +0800
+Message-Id: <20200208084022.193231-1-gch981213@gmail.com>
 X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200207_234520_148452_7884417D 
-X-CRM114-Status: GOOD (  17.84  )
+X-CRM114-CacheID: sfid-20200208_004112_090549_41F76658 
+X-CRM114-Status: GOOD (  15.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,799 +92,199 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>, Chuanhong Guo <gch981213@gmail.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
+Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>, Chuanhong Guo <gch981213@gmail.com>,
+ linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Currently there are 3 different variants of read_id implementation:
-1. opcode only. Found in GD5FxGQ4xF.
-2. opcode + 1 addr byte. Found in GD5GxGQ4xA/E
-3. opcode + 1 dummy byte. Found in other currently supported chips.
+PIO reading mode on this controller is pretty inefficient
+(one cmd+addr+dummy sequence reads only one byte)
+This patch adds support for reading using DMA mode which increases
+reading speed from 1MB/s to 4MB/s
 
-Original implementation was for variant 1 and let detect function
-of chips with variant 2 and 3 to ignore the first byte. This isn't
-robust:
+DMA busy checking is implemented with readl_poll_timeout because
+I don't have access to IRQ-related docs. The speed increment comes
+from those saved cmd+addr+dummy clocks.
 
-1. For chips of variant 2, if SPI master doesn't keep MOSI low
-during read, chip will get a random id offset, and the entire id
-buffer will shift by that offset, causing detect failure.
-
-2. For chips of variant 1, if it happens to get a devid that equals
-to manufacture id of variant 2 or 3 chips, it'll get incorrectly
-detected.
-
-This patch reworks detect procedure to address problems above. New
-logic do detection for all variants separatedly, in 1-2-3 order.
-Since all current detect methods do exactly the same id matching
-procedure, unify them into core.c and remove detect method from
-manufacture_ops.
-
-Tested on GD5F1GQ4UAYIG and W25N01GVZEIG.
+This controller requires that DMA source/destination address and
+reading length should be 16-byte aligned. We use a bounce buffer if
+one of them is not aligned, read more than what we need, and copy
+data from corresponding buffer offset.
 
 Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
 ---
 
 Changes since v1:
-1. rename spinand_table to chips
-2. introduce per-chip spinand_devid structure containing id value, length
-   and read id method.
+1. cast pointers to ulong instead of u32 to fix warnings on 64bit
+   platform
+2. drop the other patch for reading with custom opcode. That'll
+   be a separated fix which is unrelated to this one.
 
-Changes since v2:
-1. rename spinand_manufacturer_detect to spinand_id_detect
-2. change id field to u8 array
-3. change all fields of spinand_devid to const
+ drivers/mtd/spi-nor/mtk-quadspi.c | 99 +++++++++++++++++++++++++++++--
+ 1 file changed, 95 insertions(+), 4 deletions(-)
 
-Change since v3:
-   rebased onto nand/next for the following commit:
-   9ee0f956cfbb mtd: spinand: add support for Toshiba TC58CVG2S0HRAIJ
-
- drivers/mtd/nand/spi/core.c       | 86 ++++++++++++++++++++++---------
- drivers/mtd/nand/spi/gigadevice.c | 45 +++++-----------
- drivers/mtd/nand/spi/macronix.c   | 30 +++--------
- drivers/mtd/nand/spi/micron.c     | 26 ++--------
- drivers/mtd/nand/spi/paragon.c    | 28 +++-------
- drivers/mtd/nand/spi/toshiba.c    | 45 ++++++----------
- drivers/mtd/nand/spi/winbond.c    | 34 +++---------
- include/linux/mtd/spinand.h       | 66 ++++++++++++++++--------
- 8 files changed, 157 insertions(+), 203 deletions(-)
-
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 89f6beefb01c..a9e9cbad942f 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -16,6 +16,7 @@
- #include <linux/mtd/spinand.h>
+diff --git a/drivers/mtd/spi-nor/mtk-quadspi.c b/drivers/mtd/spi-nor/mtk-quadspi.c
+index b1691680d174..85101b84b516 100644
+--- a/drivers/mtd/spi-nor/mtk-quadspi.c
++++ b/drivers/mtd/spi-nor/mtk-quadspi.c
+@@ -7,6 +7,7 @@
+ #include <linux/clk.h>
+ #include <linux/delay.h>
+ #include <linux/device.h>
++#include <linux/dma-mapping.h>
+ #include <linux/init.h>
+ #include <linux/io.h>
+ #include <linux/iopoll.h>
+@@ -17,6 +18,7 @@
  #include <linux/of.h>
+ #include <linux/of_device.h>
+ #include <linux/platform_device.h>
++#include <linux/sched/task_stack.h>
  #include <linux/slab.h>
-+#include <linux/string.h>
- #include <linux/spi/spi.h>
- #include <linux/spi/spi-mem.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+@@ -70,6 +72,10 @@
+ #define MTK_NOR_DELSEL2_REG		0xd0
+ #define MTK_NOR_DELSEL3_REG		0xd4
+ #define MTK_NOR_DELSEL4_REG		0xd8
++#define MTK_NOR_FDMA_CTL_REG		0x718
++#define MTK_NOR_FDMA_FADR_REG		0x71c
++#define MTK_NOR_FDMA_DADR_REG		0x720
++#define MTK_NOR_FDMA_END_DADR_REG	0x724
  
-@@ -370,10 +371,11 @@ static int spinand_wait(struct spinand_device *spinand, u8 *s)
- 	return status & STATUS_BUSY ? -ETIMEDOUT : 0;
+ /* commands for mtk nor controller */
+ #define MTK_NOR_READ_CMD		0x0
+@@ -88,6 +94,7 @@
+ #define MTK_NOR_DUAL_READ_EN		0x1
+ #define MTK_NOR_DUAL_DISABLE		0x0
+ #define MTK_NOR_FAST_READ		0x1
++#define MTK_NOR_DMA_TRIG		0x1
+ 
+ #define SFLASH_WRBUF_SIZE		128
+ 
+@@ -97,7 +104,10 @@
+ #define MTK_NOR_MAX_SHIFT		7
+ /* nor controller 4-byte address mode enable bit */
+ #define MTK_NOR_4B_ADDR_EN		BIT(4)
+-
++/* DMA address has to be 16-byte aligned */
++#define MTK_NOR_DMA_ALIGN		16
++/* Limit bounce buffer size to 32KB */
++#define MTK_NOR_MAX_BBUF_READ		(32 * 1024)
+ /* Helpers for accessing the program data / shift data registers */
+ #define MTK_NOR_PRG_REG(n)		(MTK_NOR_PRGDATA0_REG + 4 * (n))
+ #define MTK_NOR_SHREG(n)		(MTK_NOR_SHREG0_REG + 4 * (n))
+@@ -260,13 +270,12 @@ static void mtk_nor_set_addr(struct mtk_nor *mtk_nor, u32 addr)
+ 	writeb(addr & 0xff, mtk_nor->base + MTK_NOR_RADR3_REG);
  }
  
--static int spinand_read_id_op(struct spinand_device *spinand, u8 *buf)
-+static int spinand_read_id_op(struct spinand_device *spinand, u8 naddr,
-+			      u8 ndummy, u8 *buf)
+-static ssize_t mtk_nor_read(struct spi_nor *nor, loff_t from, size_t length,
+-			    u_char *buffer)
++static ssize_t mtk_nor_read_pio(struct mtk_nor *mtk_nor, loff_t from,
++				size_t length, u_char *buffer)
  {
--	struct spi_mem_op op = SPINAND_READID_OP(0, spinand->scratchbuf,
--						 SPINAND_MAX_ID_LEN);
-+	struct spi_mem_op op = SPINAND_READID_OP(
-+		naddr, ndummy, spinand->scratchbuf, SPINAND_MAX_ID_LEN);
- 	int ret;
+ 	int i, ret;
+ 	int addr = (int)from;
+ 	u8 *buf = (u8 *)buffer;
+-	struct mtk_nor *mtk_nor = nor->priv;
  
- 	ret = spi_mem_exec_op(spinand->spimem, &op);
-@@ -762,24 +764,62 @@ static const struct spinand_manufacturer *spinand_manufacturers[] = {
- 	&winbond_spinand_manufacturer,
- };
- 
--static int spinand_manufacturer_detect(struct spinand_device *spinand)
-+static int spinand_manufacturer_match(struct spinand_device *spinand,
-+				      enum spinand_readid_method rdid_method)
- {
-+	u8 *id = spinand->id.data;
- 	unsigned int i;
- 	int ret;
- 
- 	for (i = 0; i < ARRAY_SIZE(spinand_manufacturers); i++) {
--		ret = spinand_manufacturers[i]->ops->detect(spinand);
--		if (ret > 0) {
--			spinand->manufacturer = spinand_manufacturers[i];
--			return 0;
--		} else if (ret < 0) {
--			return ret;
--		}
--	}
-+		const struct spinand_manufacturer *manufacturer =
-+			spinand_manufacturers[i];
-+
-+		if (id[0] != manufacturer->id)
-+			continue;
- 
-+		ret = spinand_match_and_init(spinand,
-+					     manufacturer->chips,
-+					     manufacturer->nchips,
-+					     rdid_method);
-+		if (ret < 0)
-+			continue;
-+
-+		spinand->manufacturer = manufacturer;
-+		return 0;
-+	}
- 	return -ENOTSUPP;
+ 	/* set mode for fast read mode ,dual mode or quad mode */
+ 	mtk_nor_set_read_mode(mtk_nor);
+@@ -281,6 +290,88 @@ static ssize_t mtk_nor_read(struct spi_nor *nor, loff_t from, size_t length,
+ 	return length;
  }
  
-+static int spinand_id_detect(struct spinand_device *spinand)
++static int mtk_nor_dma_exec(struct mtk_nor *mtk_nor)
 +{
-+	u8 *id = spinand->id.data;
-+	int ret;
++	int reg;
 +
-+	ret = spinand_read_id_op(spinand, 0, 0, id);
-+	if (ret)
-+		return ret;
-+	ret = spinand_manufacturer_match(spinand, SPINAND_READID_METHOD_OPCODE);
++	reg = readl(mtk_nor->base + MTK_NOR_FDMA_CTL_REG);
++	writel(reg | MTK_NOR_DMA_TRIG, mtk_nor->base + MTK_NOR_FDMA_CTL_REG);
++	return readl_poll_timeout(mtk_nor->base + MTK_NOR_FDMA_CTL_REG, reg,
++				  !(reg & MTK_NOR_DMA_TRIG), 20, 10000);
++}
++
++static ssize_t mtk_nor_read_dma(struct mtk_nor *mtk_nor, loff_t from,
++				size_t length, u_char *buffer)
++{
++	ssize_t ret;
++	ssize_t read_length = length & ~(MTK_NOR_DMA_ALIGN - 1);
++	dma_addr_t dma_addr;
++
++	mtk_nor_set_read_mode(mtk_nor);
++	mtk_nor_set_addr_width(mtk_nor);
++
++	dma_addr = dma_map_single(mtk_nor->dev, buffer, read_length,
++				  DMA_FROM_DEVICE);
++	if (dma_mapping_error(mtk_nor->dev, dma_addr)) {
++		dev_err(mtk_nor->dev, "failed to map dma buffer.");
++		return -EINVAL;
++	}
++
++	writel(from, mtk_nor->base + MTK_NOR_FDMA_FADR_REG);
++	writel(dma_addr, mtk_nor->base + MTK_NOR_FDMA_DADR_REG);
++	writel((u32)dma_addr + read_length,
++	       mtk_nor->base + MTK_NOR_FDMA_END_DADR_REG);
++	ret = mtk_nor_dma_exec(mtk_nor);
++	dma_unmap_single(mtk_nor->dev, dma_addr, read_length, DMA_FROM_DEVICE);
 +	if (!ret)
-+		return 0;
-+
-+	ret = spinand_read_id_op(spinand, 1, 0, id);
-+	if (ret)
-+		return ret;
-+	ret = spinand_manufacturer_match(spinand,
-+					 SPINAND_READID_METHOD_OPCODE_ADDR);
-+	if (!ret)
-+		return 0;
-+
-+	ret = spinand_read_id_op(spinand, 0, 1, id);
-+	if (ret)
-+		return ret;
-+	ret = spinand_manufacturer_match(spinand,
-+					 SPINAND_READID_METHOD_OPCODE_DUMMY);
-+
++		ret = read_length;
 +	return ret;
 +}
 +
- static int spinand_manufacturer_init(struct spinand_device *spinand)
++static ssize_t mtk_nor_read_dma_bounce(struct mtk_nor *mtk_nor, loff_t from,
++				       size_t length, u_char *buffer)
++{
++	ssize_t nor_unaligned_len = from % MTK_NOR_DMA_ALIGN;
++	loff_t read_from = from & ~(MTK_NOR_DMA_ALIGN - 1);
++	ssize_t read_len;
++	u_char *buf;
++	u_char *bouncebuf;
++	size_t mem_unaligned_len;
++
++	if (length > MTK_NOR_MAX_BBUF_READ)
++		length = MTK_NOR_MAX_BBUF_READ;
++	read_len = length + nor_unaligned_len + MTK_NOR_DMA_ALIGN;
++
++	buf = kmalloc(read_len + MTK_NOR_DMA_ALIGN, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++
++	mem_unaligned_len = (ulong)buf % MTK_NOR_DMA_ALIGN;
++	bouncebuf = (buf + MTK_NOR_DMA_ALIGN) - mem_unaligned_len;
++
++	read_len = mtk_nor_read_dma(mtk_nor, read_from, read_len, bouncebuf);
++	if (read_len > 0)
++		memcpy(buffer, bouncebuf + nor_unaligned_len, length);
++
++	kfree(buf);
++	return length;
++}
++
++static ssize_t mtk_nor_read(struct spi_nor *nor, loff_t from, size_t length,
++			    u_char *buffer)
++{
++	struct mtk_nor *mtk_nor = nor->priv;
++
++	if (length < MTK_NOR_DMA_ALIGN)
++		return mtk_nor_read_pio(mtk_nor, from, length, buffer);
++
++	if (object_is_on_stack(buffer) || !virt_addr_valid(buffer) ||
++	    (ulong)buffer % MTK_NOR_DMA_ALIGN || from % MTK_NOR_DMA_ALIGN)
++		return mtk_nor_read_dma_bounce(mtk_nor, from, length, buffer);
++
++	return mtk_nor_read_dma(mtk_nor, from, length, buffer);
++}
++
+ static int mtk_nor_write_single_byte(struct mtk_nor *mtk_nor,
+ 				     int addr, int length, u8 *data)
  {
- 	if (spinand->manufacturer->ops->init)
-@@ -835,9 +875,9 @@ spinand_select_op_variant(struct spinand_device *spinand,
-  * @spinand: SPI NAND object
-  * @table: SPI NAND device description table
-  * @table_size: size of the device description table
-+ * @rdid_method: read id method to match
-  *
-- * Should be used by SPI NAND manufacturer drivers when they want to find a
-- * match between a device ID retrieved through the READ_ID command and an
-+ * Match between a device ID retrieved through the READ_ID command and an
-  * entry in the SPI NAND description table. If a match is found, the spinand
-  * object will be initialized with information provided by the matching
-  * spinand_info entry.
-@@ -846,8 +886,10 @@ spinand_select_op_variant(struct spinand_device *spinand,
-  */
- int spinand_match_and_init(struct spinand_device *spinand,
- 			   const struct spinand_info *table,
--			   unsigned int table_size, u16 devid)
-+			   unsigned int table_size,
-+			   enum spinand_readid_method rdid_method)
- {
-+	u8 *id = spinand->id.data;
- 	struct nand_device *nand = spinand_to_nand(spinand);
- 	unsigned int i;
- 
-@@ -855,13 +897,17 @@ int spinand_match_and_init(struct spinand_device *spinand,
- 		const struct spinand_info *info = &table[i];
- 		const struct spi_mem_op *op;
- 
--		if (devid != info->devid)
-+		if (rdid_method != info->devid.method)
-+			continue;
-+
-+		if (memcmp(id + 1, info->devid.id, info->devid.len))
- 			continue;
- 
- 		nand->memorg = table[i].memorg;
- 		nand->eccreq = table[i].eccreq;
- 		spinand->eccinfo = table[i].eccinfo;
- 		spinand->flags = table[i].flags;
-+		spinand->id.len = 1 + table[i].devid.len;
- 		spinand->select_target = table[i].select_target;
- 
- 		op = spinand_select_op_variant(spinand,
-@@ -898,13 +944,7 @@ static int spinand_detect(struct spinand_device *spinand)
- 	if (ret)
- 		return ret;
- 
--	ret = spinand_read_id_op(spinand, spinand->id.data);
--	if (ret)
--		return ret;
--
--	spinand->id.len = SPINAND_MAX_ID_LEN;
--
--	ret = spinand_manufacturer_detect(spinand);
-+	ret = spinand_id_detect(spinand);
- 	if (ret) {
- 		dev_err(dev, "unknown raw ID %*phN\n", SPINAND_MAX_ID_LEN,
- 			spinand->id.data);
-diff --git a/drivers/mtd/nand/spi/gigadevice.c b/drivers/mtd/nand/spi/gigadevice.c
-index e99d425aa93f..d219c970042a 100644
---- a/drivers/mtd/nand/spi/gigadevice.c
-+++ b/drivers/mtd/nand/spi/gigadevice.c
-@@ -195,7 +195,8 @@ static int gd5fxgq4ufxxg_ecc_get_status(struct spinand_device *spinand,
- }
- 
- static const struct spinand_info gigadevice_spinand_table[] = {
--	SPINAND_INFO("GD5F1GQ4xA", 0xF1,
-+	SPINAND_INFO("GD5F1GQ4xA",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0xf1),
- 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-@@ -204,7 +205,8 @@ static const struct spinand_info gigadevice_spinand_table[] = {
- 		     0,
- 		     SPINAND_ECCINFO(&gd5fxgq4xa_ooblayout,
- 				     gd5fxgq4xa_ecc_get_status)),
--	SPINAND_INFO("GD5F2GQ4xA", 0xF2,
-+	SPINAND_INFO("GD5F2GQ4xA",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0xf2),
- 		     NAND_MEMORG(1, 2048, 64, 64, 2048, 40, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-@@ -213,7 +215,8 @@ static const struct spinand_info gigadevice_spinand_table[] = {
- 		     0,
- 		     SPINAND_ECCINFO(&gd5fxgq4xa_ooblayout,
- 				     gd5fxgq4xa_ecc_get_status)),
--	SPINAND_INFO("GD5F4GQ4xA", 0xF4,
-+	SPINAND_INFO("GD5F4GQ4xA",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0xf4),
- 		     NAND_MEMORG(1, 2048, 64, 64, 4096, 80, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-@@ -222,7 +225,8 @@ static const struct spinand_info gigadevice_spinand_table[] = {
- 		     0,
- 		     SPINAND_ECCINFO(&gd5fxgq4xa_ooblayout,
- 				     gd5fxgq4xa_ecc_get_status)),
--	SPINAND_INFO("GD5F1GQ4UExxG", 0xd1,
-+	SPINAND_INFO("GD5F1GQ4UExxG",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0xd1),
- 		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-@@ -231,7 +235,8 @@ static const struct spinand_info gigadevice_spinand_table[] = {
- 		     0,
- 		     SPINAND_ECCINFO(&gd5fxgq4_variant2_ooblayout,
- 				     gd5fxgq4uexxg_ecc_get_status)),
--	SPINAND_INFO("GD5F1GQ4UFxxG", 0xb148,
-+	SPINAND_INFO("GD5F1GQ4UFxxG",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE, 0xb1, 0x48),
- 		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants_f,
-@@ -242,39 +247,13 @@ static const struct spinand_info gigadevice_spinand_table[] = {
- 				     gd5fxgq4ufxxg_ecc_get_status)),
- };
- 
--static int gigadevice_spinand_detect(struct spinand_device *spinand)
--{
--	u8 *id = spinand->id.data;
--	u16 did;
--	int ret;
--
--	/*
--	 * Earlier GDF5-series devices (A,E) return [0][MID][DID]
--	 * Later (F) devices return [MID][DID1][DID2]
--	 */
--
--	if (id[0] == SPINAND_MFR_GIGADEVICE)
--		did = (id[1] << 8) + id[2];
--	else if (id[0] == 0 && id[1] == SPINAND_MFR_GIGADEVICE)
--		did = id[2];
--	else
--		return 0;
--
--	ret = spinand_match_and_init(spinand, gigadevice_spinand_table,
--				     ARRAY_SIZE(gigadevice_spinand_table),
--				     did);
--	if (ret)
--		return ret;
--
--	return 1;
--}
--
- static const struct spinand_manufacturer_ops gigadevice_spinand_manuf_ops = {
--	.detect = gigadevice_spinand_detect,
- };
- 
- const struct spinand_manufacturer gigadevice_spinand_manufacturer = {
- 	.id = SPINAND_MFR_GIGADEVICE,
- 	.name = "GigaDevice",
-+	.chips = gigadevice_spinand_table,
-+	.nchips = ARRAY_SIZE(gigadevice_spinand_table),
- 	.ops = &gigadevice_spinand_manuf_ops,
- };
-diff --git a/drivers/mtd/nand/spi/macronix.c b/drivers/mtd/nand/spi/macronix.c
-index 21def3f8fb36..0f900f3aa21a 100644
---- a/drivers/mtd/nand/spi/macronix.c
-+++ b/drivers/mtd/nand/spi/macronix.c
-@@ -99,7 +99,8 @@ static int mx35lf1ge4ab_ecc_get_status(struct spinand_device *spinand,
- }
- 
- static const struct spinand_info macronix_spinand_table[] = {
--	SPINAND_INFO("MX35LF1GE4AB", 0x12,
-+	SPINAND_INFO("MX35LF1GE4AB",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x12),
- 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
- 		     NAND_ECCREQ(4, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-@@ -108,7 +109,8 @@ static const struct spinand_info macronix_spinand_table[] = {
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
- 				     mx35lf1ge4ab_ecc_get_status)),
--	SPINAND_INFO("MX35LF2GE4AB", 0x22,
-+	SPINAND_INFO("MX35LF2GE4AB",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x22),
- 		     NAND_MEMORG(1, 2048, 64, 64, 2048, 40, 2, 1, 1),
- 		     NAND_ECCREQ(4, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-@@ -118,33 +120,13 @@ static const struct spinand_info macronix_spinand_table[] = {
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout, NULL)),
- };
- 
--static int macronix_spinand_detect(struct spinand_device *spinand)
--{
--	u8 *id = spinand->id.data;
--	int ret;
--
--	/*
--	 * Macronix SPI NAND read ID needs a dummy byte, so the first byte in
--	 * raw_id is garbage.
--	 */
--	if (id[1] != SPINAND_MFR_MACRONIX)
--		return 0;
--
--	ret = spinand_match_and_init(spinand, macronix_spinand_table,
--				     ARRAY_SIZE(macronix_spinand_table),
--				     id[2]);
--	if (ret)
--		return ret;
--
--	return 1;
--}
--
- static const struct spinand_manufacturer_ops macronix_spinand_manuf_ops = {
--	.detect = macronix_spinand_detect,
- };
- 
- const struct spinand_manufacturer macronix_spinand_manufacturer = {
- 	.id = SPINAND_MFR_MACRONIX,
- 	.name = "Macronix",
-+	.chips = macronix_spinand_table,
-+	.nchips = ARRAY_SIZE(macronix_spinand_table),
- 	.ops = &macronix_spinand_manuf_ops,
- };
-diff --git a/drivers/mtd/nand/spi/micron.c b/drivers/mtd/nand/spi/micron.c
-index 7d7b1f7fcf71..f56f81325e10 100644
---- a/drivers/mtd/nand/spi/micron.c
-+++ b/drivers/mtd/nand/spi/micron.c
-@@ -91,7 +91,8 @@ static int mt29f2g01abagd_ecc_get_status(struct spinand_device *spinand,
- }
- 
- static const struct spinand_info micron_spinand_table[] = {
--	SPINAND_INFO("MT29F2G01ABAGD", 0x24,
-+	SPINAND_INFO("MT29F2G01ABAGD",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x24),
- 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 2, 1, 1),
- 		     NAND_ECCREQ(8, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-@@ -102,32 +103,13 @@ static const struct spinand_info micron_spinand_table[] = {
- 				     mt29f2g01abagd_ecc_get_status)),
- };
- 
--static int micron_spinand_detect(struct spinand_device *spinand)
--{
--	u8 *id = spinand->id.data;
--	int ret;
--
--	/*
--	 * Micron SPI NAND read ID need a dummy byte,
--	 * so the first byte in raw_id is dummy.
--	 */
--	if (id[1] != SPINAND_MFR_MICRON)
--		return 0;
--
--	ret = spinand_match_and_init(spinand, micron_spinand_table,
--				     ARRAY_SIZE(micron_spinand_table), id[2]);
--	if (ret)
--		return ret;
--
--	return 1;
--}
--
- static const struct spinand_manufacturer_ops micron_spinand_manuf_ops = {
--	.detect = micron_spinand_detect,
- };
- 
- const struct spinand_manufacturer micron_spinand_manufacturer = {
- 	.id = SPINAND_MFR_MICRON,
- 	.name = "Micron",
-+	.chips = micron_spinand_table,
-+	.nchips = ARRAY_SIZE(micron_spinand_table),
- 	.ops = &micron_spinand_manuf_ops,
- };
-diff --git a/drivers/mtd/nand/spi/paragon.c b/drivers/mtd/nand/spi/paragon.c
-index 52307681cbd0..519ade513c1f 100644
---- a/drivers/mtd/nand/spi/paragon.c
-+++ b/drivers/mtd/nand/spi/paragon.c
-@@ -97,7 +97,8 @@ static const struct mtd_ooblayout_ops pn26g0xa_ooblayout = {
- 
- 
- static const struct spinand_info paragon_spinand_table[] = {
--	SPINAND_INFO("PN26G01A", 0xe1,
-+	SPINAND_INFO("PN26G01A",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xe1),
- 		     NAND_MEMORG(1, 2048, 128, 64, 1024, 21, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-@@ -106,7 +107,8 @@ static const struct spinand_info paragon_spinand_table[] = {
- 		     0,
- 		     SPINAND_ECCINFO(&pn26g0xa_ooblayout,
- 				     pn26g0xa_ecc_get_status)),
--	SPINAND_INFO("PN26G02A", 0xe2,
-+	SPINAND_INFO("PN26G02A",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xe2),
- 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 41, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-@@ -117,31 +119,13 @@ static const struct spinand_info paragon_spinand_table[] = {
- 				     pn26g0xa_ecc_get_status)),
- };
- 
--static int paragon_spinand_detect(struct spinand_device *spinand)
--{
--	u8 *id = spinand->id.data;
--	int ret;
--
--	/* Read ID returns [0][MID][DID] */
--
--	if (id[1] != SPINAND_MFR_PARAGON)
--		return 0;
--
--	ret = spinand_match_and_init(spinand, paragon_spinand_table,
--				     ARRAY_SIZE(paragon_spinand_table),
--				     id[2]);
--	if (ret)
--		return ret;
--
--	return 1;
--}
--
- static const struct spinand_manufacturer_ops paragon_spinand_manuf_ops = {
--	.detect = paragon_spinand_detect,
- };
- 
- const struct spinand_manufacturer paragon_spinand_manufacturer = {
- 	.id = SPINAND_MFR_PARAGON,
- 	.name = "Paragon",
-+	.chips = paragon_spinand_table,
-+	.nchips = ARRAY_SIZE(paragon_spinand_table),
- 	.ops = &paragon_spinand_manuf_ops,
- };
-diff --git a/drivers/mtd/nand/spi/toshiba.c b/drivers/mtd/nand/spi/toshiba.c
-index 0db5ee4e82af..f4ec5b1a5710 100644
---- a/drivers/mtd/nand/spi/toshiba.c
-+++ b/drivers/mtd/nand/spi/toshiba.c
-@@ -95,7 +95,8 @@ static int tc58cxgxsx_ecc_get_status(struct spinand_device *spinand,
- 
- static const struct spinand_info toshiba_spinand_table[] = {
- 	/* 3.3V 1Gb */
--	SPINAND_INFO("TC58CVG0S3", 0xC2,
-+	SPINAND_INFO("TC58CVG0S3",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xC2),
- 		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-@@ -105,7 +106,8 @@ static const struct spinand_info toshiba_spinand_table[] = {
- 		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
- 				     tc58cxgxsx_ecc_get_status)),
- 	/* 3.3V 2Gb */
--	SPINAND_INFO("TC58CVG1S3", 0xCB,
-+	SPINAND_INFO("TC58CVG1S3",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xCB),
- 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-@@ -115,7 +117,8 @@ static const struct spinand_info toshiba_spinand_table[] = {
- 		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
- 				     tc58cxgxsx_ecc_get_status)),
- 	/* 3.3V 4Gb */
--	SPINAND_INFO("TC58CVG2S0", 0xCD,
-+	SPINAND_INFO("TC58CVG2S0",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xCD),
- 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-@@ -125,7 +128,8 @@ static const struct spinand_info toshiba_spinand_table[] = {
- 		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
- 				     tc58cxgxsx_ecc_get_status)),
- 	/* 3.3V 4Gb */
--	SPINAND_INFO("TC58CVG2S0", 0xED,
-+	SPINAND_INFO("TC58CVG2S0",
-+			SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xED),
- 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-@@ -135,7 +139,8 @@ static const struct spinand_info toshiba_spinand_table[] = {
- 		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
- 				     tc58cxgxsx_ecc_get_status)),
- 	/* 1.8V 1Gb */
--	SPINAND_INFO("TC58CYG0S3", 0xB2,
-+	SPINAND_INFO("TC58CYG0S3",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xB2),
- 		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-@@ -145,7 +150,8 @@ static const struct spinand_info toshiba_spinand_table[] = {
- 		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
- 				     tc58cxgxsx_ecc_get_status)),
- 	/* 1.8V 2Gb */
--	SPINAND_INFO("TC58CYG1S3", 0xBB,
-+	SPINAND_INFO("TC58CYG1S3",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xBB),
- 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-@@ -155,7 +161,8 @@ static const struct spinand_info toshiba_spinand_table[] = {
- 		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
- 				     tc58cxgxsx_ecc_get_status)),
- 	/* 1.8V 4Gb */
--	SPINAND_INFO("TC58CYG2S0", 0xBD,
-+	SPINAND_INFO("TC58CYG2S0",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xBD),
- 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-@@ -166,33 +173,13 @@ static const struct spinand_info toshiba_spinand_table[] = {
- 				     tc58cxgxsx_ecc_get_status)),
- };
- 
--static int toshiba_spinand_detect(struct spinand_device *spinand)
--{
--	u8 *id = spinand->id.data;
--	int ret;
--
--	/*
--	 * Toshiba SPI NAND read ID needs a dummy byte,
--	 * so the first byte in id is garbage.
--	 */
--	if (id[1] != SPINAND_MFR_TOSHIBA)
--		return 0;
--
--	ret = spinand_match_and_init(spinand, toshiba_spinand_table,
--				     ARRAY_SIZE(toshiba_spinand_table),
--				     id[2]);
--	if (ret)
--		return ret;
--
--	return 1;
--}
--
- static const struct spinand_manufacturer_ops toshiba_spinand_manuf_ops = {
--	.detect = toshiba_spinand_detect,
- };
- 
- const struct spinand_manufacturer toshiba_spinand_manufacturer = {
- 	.id = SPINAND_MFR_TOSHIBA,
- 	.name = "Toshiba",
-+	.chips = toshiba_spinand_table,
-+	.nchips = ARRAY_SIZE(toshiba_spinand_table),
- 	.ops = &toshiba_spinand_manuf_ops,
- };
-diff --git a/drivers/mtd/nand/spi/winbond.c b/drivers/mtd/nand/spi/winbond.c
-index a6c17e0cace8..76684428354e 100644
---- a/drivers/mtd/nand/spi/winbond.c
-+++ b/drivers/mtd/nand/spi/winbond.c
-@@ -75,7 +75,8 @@ static int w25m02gv_select_target(struct spinand_device *spinand,
- }
- 
- static const struct spinand_info winbond_spinand_table[] = {
--	SPINAND_INFO("W25M02GV", 0xAB,
-+	SPINAND_INFO("W25M02GV",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xab),
- 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 2),
- 		     NAND_ECCREQ(1, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-@@ -84,7 +85,8 @@ static const struct spinand_info winbond_spinand_table[] = {
- 		     0,
- 		     SPINAND_ECCINFO(&w25m02gv_ooblayout, NULL),
- 		     SPINAND_SELECT_TARGET(w25m02gv_select_target)),
--	SPINAND_INFO("W25N01GV", 0xAA,
-+	SPINAND_INFO("W25N01GV",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xaa),
- 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
- 		     NAND_ECCREQ(1, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-@@ -94,31 +96,6 @@ static const struct spinand_info winbond_spinand_table[] = {
- 		     SPINAND_ECCINFO(&w25m02gv_ooblayout, NULL)),
- };
- 
--/**
-- * winbond_spinand_detect - initialize device related part in spinand_device
-- * struct if it is a Winbond device.
-- * @spinand: SPI NAND device structure
-- */
--static int winbond_spinand_detect(struct spinand_device *spinand)
--{
--	u8 *id = spinand->id.data;
--	int ret;
--
--	/*
--	 * Winbond SPI NAND read ID need a dummy byte,
--	 * so the first byte in raw_id is dummy.
--	 */
--	if (id[1] != SPINAND_MFR_WINBOND)
--		return 0;
--
--	ret = spinand_match_and_init(spinand, winbond_spinand_table,
--				     ARRAY_SIZE(winbond_spinand_table), id[2]);
--	if (ret)
--		return ret;
--
--	return 1;
--}
--
- static int winbond_spinand_init(struct spinand_device *spinand)
- {
- 	struct nand_device *nand = spinand_to_nand(spinand);
-@@ -138,12 +115,13 @@ static int winbond_spinand_init(struct spinand_device *spinand)
- }
- 
- static const struct spinand_manufacturer_ops winbond_spinand_manuf_ops = {
--	.detect = winbond_spinand_detect,
- 	.init = winbond_spinand_init,
- };
- 
- const struct spinand_manufacturer winbond_spinand_manufacturer = {
- 	.id = SPINAND_MFR_WINBOND,
- 	.name = "Winbond",
-+	.chips = winbond_spinand_table,
-+	.nchips = ARRAY_SIZE(winbond_spinand_table),
- 	.ops = &winbond_spinand_manuf_ops,
- };
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index 4ea558bd3c46..f4c4ae87181b 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -32,9 +32,9 @@
- 		   SPI_MEM_OP_NO_DUMMY,					\
- 		   SPI_MEM_OP_NO_DATA)
- 
--#define SPINAND_READID_OP(ndummy, buf, len)				\
-+#define SPINAND_READID_OP(naddr, ndummy, buf, len)			\
- 	SPI_MEM_OP(SPI_MEM_OP_CMD(0x9f, 1),				\
--		   SPI_MEM_OP_NO_ADDR,					\
-+		   SPI_MEM_OP_ADDR(naddr, 0, 1),			\
- 		   SPI_MEM_OP_DUMMY(ndummy, 1),				\
- 		   SPI_MEM_OP_DATA_IN(len, buf, 1))
- 
-@@ -176,37 +176,46 @@ struct spinand_device;
-  * @data: buffer containing the id bytes. Currently 4 bytes large, but can
-  *	  be extended if required
-  * @len: ID length
-- *
-- * struct_spinand_id->data contains all bytes returned after a READ_ID command,
-- * including dummy bytes if the chip does not emit ID bytes right after the
-- * READ_ID command. The responsibility to extract real ID bytes is left to
-- * struct_manufacurer_ops->detect().
-  */
- struct spinand_id {
- 	u8 data[SPINAND_MAX_ID_LEN];
- 	int len;
- };
- 
-+enum spinand_readid_method {
-+	SPINAND_READID_METHOD_OPCODE,
-+	SPINAND_READID_METHOD_OPCODE_ADDR,
-+	SPINAND_READID_METHOD_OPCODE_DUMMY,
-+};
-+
-+/**
-+ * struct spinand_devid - SPI NAND device id structure
-+ * @id: device id of current chip
-+ * @len: number of bytes in device id
-+ * @method: method to read chip id
-+ *	    There are 3 possible variants:
-+ *	    SPINAND_READID_METHOD_OPCODE: chip id is returned immediately
-+ *	    after read_id opcode.
-+ *	    SPINAND_READID_METHOD_OPCODE_ADDR: chip id is returned after
-+ *	    read_id opcode + 1-byte address.
-+ *	    SPINAND_READID_METHOD_OPCODE_DUMMY: chip id is returned after
-+ *	    read_id opcode + 1 dummy byte.
-+ */
-+struct spinand_devid {
-+	const u8 *id;
-+	const u8 len;
-+	const enum spinand_readid_method method;
-+};
-+
- /**
-  * struct manufacurer_ops - SPI NAND manufacturer specific operations
-- * @detect: detect a SPI NAND device. Every time a SPI NAND device is probed
-- *	    the core calls the struct_manufacurer_ops->detect() hook of each
-- *	    registered manufacturer until one of them return 1. Note that
-- *	    the first thing to check in this hook is that the manufacturer ID
-- *	    in struct_spinand_device->id matches the manufacturer whose
-- *	    ->detect() hook has been called. Should return 1 if there's a
-- *	    match, 0 if the manufacturer ID does not match and a negative
-- *	    error code otherwise. When true is returned, the core assumes
-- *	    that properties of the NAND chip (spinand->base.memorg and
-- *	    spinand->base.eccreq) have been filled
-  * @init: initialize a SPI NAND device
-  * @cleanup: cleanup a SPI NAND device
-  *
-  * Each SPI NAND manufacturer driver should implement this interface so that
-- * NAND chips coming from this vendor can be detected and initialized properly.
-+ * NAND chips coming from this vendor can be initialized properly.
-  */
- struct spinand_manufacturer_ops {
--	int (*detect)(struct spinand_device *spinand);
- 	int (*init)(struct spinand_device *spinand);
- 	void (*cleanup)(struct spinand_device *spinand);
- };
-@@ -215,11 +224,16 @@ struct spinand_manufacturer_ops {
-  * struct spinand_manufacturer - SPI NAND manufacturer instance
-  * @id: manufacturer ID
-  * @name: manufacturer name
-+ * @devid_len: number of bytes in device ID
-+ * @chips: supported SPI NANDs under current manufacturer
-+ * @nchips: number of SPI NANDs available in chips array
-  * @ops: manufacturer operations
-  */
- struct spinand_manufacturer {
- 	u8 id;
- 	char *name;
-+	const struct spinand_info *chips;
-+	const size_t nchips;
- 	const struct spinand_manufacturer_ops *ops;
- };
- 
-@@ -291,7 +305,7 @@ struct spinand_ecc_info {
-  */
- struct spinand_info {
- 	const char *model;
--	u16 devid;
-+	struct spinand_devid devid;
- 	u32 flags;
- 	struct nand_memory_organization memorg;
- 	struct nand_ecc_req eccreq;
-@@ -305,6 +319,13 @@ struct spinand_info {
- 			     unsigned int target);
- };
- 
-+#define SPINAND_ID(__method, ...)					\
-+	{								\
-+		.id = (const u8[]){ __VA_ARGS__ },			\
-+		.len = sizeof((u8[]){ __VA_ARGS__ }),			\
-+		.method = __method,					\
-+	}
-+
- #define SPINAND_INFO_OP_VARIANTS(__read, __write, __update)		\
- 	{								\
- 		.read_cache = __read,					\
-@@ -451,9 +472,10 @@ static inline void spinand_set_of_node(struct spinand_device *spinand,
- 	nanddev_set_of_node(&spinand->base, np);
- }
- 
--int spinand_match_and_init(struct spinand_device *dev,
-+int spinand_match_and_init(struct spinand_device *spinand,
- 			   const struct spinand_info *table,
--			   unsigned int table_size, u16 devid);
-+			   unsigned int table_size,
-+			   enum spinand_readid_method rdid_method);
- 
- int spinand_upd_cfg(struct spinand_device *spinand, u8 mask, u8 val);
- int spinand_select_target(struct spinand_device *spinand, unsigned int target);
 -- 
 2.24.1
 
