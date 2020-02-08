@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CBEAEC2BA83
-	for <linux-mtd@archiver.kernel.org>; Sat,  8 Feb 2020 01:35:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E090C2BA83
+	for <linux-mtd@archiver.kernel.org>; Sat,  8 Feb 2020 01:36:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9E5D720661
-	for <linux-mtd@archiver.kernel.org>; Sat,  8 Feb 2020 01:35:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 74F3D20661
+	for <linux-mtd@archiver.kernel.org>; Sat,  8 Feb 2020 01:36:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EEZheTEy";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="ZzptqxUs"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E5D720661
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="e/r5wrSw";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="NEywg0M1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 74F3D20661
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,47 +26,47 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:To:From:Subject:Mime-Version:Message-Id
 	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Q65SPIKDiaYhr5O4d7td6k4/+MJSMVClchCyFvr0uGI=; b=EEZheTEyBbZWZC
-	zXc0XFYaUaRwWu9yt0ushct79+jHSAJnAuZzjavnwQYEo7Xp0aZQRqL24iQSjdxfGEPxq5cpCU+O/
-	rdNNDFPgID17YJ7wSH6BfeEEnc7tzgyBTERG73SMYaN9BdwqhIjkTJ6+lnDSe6vwOU4ig13jc4ofm
-	IwZZWFTJ4fUIDK+Nm0YPCVCCyG8z1BJfri7crGKLi8De1yoe8GBSHAcFx5KjZBKnrBOQZRtXd5Fd5
-	HkiCrQB/c8RiHmgRnN7flYS5kVdJNcHqJngI9GMD+77RBtiJbt2CNcBvZfCe68VSlgz1IW0gp60eU
-	sFF7f2hNHhP3jjwUhDvQ==;
+	List-Owner; bh=Q65SPIKDiaYhr5O4d7td6k4/+MJSMVClchCyFvr0uGI=; b=e/r5wrSwZWZGAU
+	jSjoXrdzW9E+OyYC5rqJ5Sz3KxBV9eCisyhTAgCfF2gMn8fpe+vrWRTs3HQnVlqJWP3QCMOyRJhVg
+	GRfdwP5IIIeimnX/3/lo1F2tPoQJzst8yIpjWob+22TbpKp9ltXDSsgPfTCoxuL62DiB1w0RIONPA
+	zQrrtaliyfAiJB87inZ5yCrFd1oSBS/flt6YXUBSioCynWwunKqnsaqqpvOzMYewEGM+CUQtPa9xP
+	M+4bNF8FyE9BES3HFDSjxw+FlbyPmrxzwZ8EhW2TOqcbfQ057ci9x890arBzJuxQhe41+5mq2qWfT
+	3D/QXzoUzc+Er+CcfSPw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j0F1F-0004ap-4B; Sat, 08 Feb 2020 01:34:49 +0000
-Received: from mail-pj1-x1049.google.com ([2607:f8b0:4864:20::1049])
+	id 1j0F2O-0006HT-K6; Sat, 08 Feb 2020 01:36:00 +0000
+Received: from mail-pg1-x549.google.com ([2607:f8b0:4864:20::549])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j0F1C-0004Zf-Ja
- for linux-mtd@lists.infradead.org; Sat, 08 Feb 2020 01:34:48 +0000
-Received: by mail-pj1-x1049.google.com with SMTP id c31so2327477pje.9
- for <linux-mtd@lists.infradead.org>; Fri, 07 Feb 2020 17:34:45 -0800 (PST)
+ id 1j0F2L-0006G6-E2
+ for linux-mtd@lists.infradead.org; Sat, 08 Feb 2020 01:35:59 +0000
+Received: by mail-pg1-x549.google.com with SMTP id d9so785856pgd.10
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Feb 2020 17:35:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
  h=date:message-id:mime-version:subject:from:to:cc;
  bh=GmdJt27134kNRYXiKp4wrB+O4TXMZQXM52BZBGOfEtM=;
- b=ZzptqxUsermKYJMyiUDjvBiGxUIdwqTzJfy+wNJraQ/fqxPgGbS6BGRKrTpYZT99NP
- LQVDbxgl6rqVunRCW0ICPGiKpNThIj+TdvQ5TjjeSLkpDlJtuWqpEnxBlBrS2HEtG+RW
- 9z2HN6g50wLJeFY9fmYqHHVVeKmyWOB0q7ii4xnMViegdwpFM70+FfqSZe7YAxDz9qPz
- rQI68XvesZcSELHJhYuD8Anx5KlcByOodivzB6VfODhyuo8qsoR7iOlqkI0zS2IW8J1A
- G74nrd0ARErEc3uP+liYKFfxifqkv4AUuLVaYmPTGE7ECQxADA+maD2kLEzIxEDZMkLy
- HKfQ==
+ b=NEywg0M14MnLDWsKOucPQs1roEACrJM00yn5kNJb9zMFZHTZqInTtQiy8IBGz9p2Hj
+ S2N+jRLMGwbFKmZnn0koP7Tcjk3PRRe25bAoZCO6ZvkOdazou5mlWmZGxidYIkcSGuOg
+ Nc74v+ubh+mtZLefCCwVuXd9BDeFc8qAxw99sNFE3K2Kpg4BaE72oOWDN6XOg4MbOAr3
+ dE6k/7AgKUChxUQkZAzZOa2U+EcNbV65+xrCtvviZzWWuHM3cy3/YjezlVDdUeYdz/l0
+ cT1t9iCftO1kkoHUVh9CSB9TUY9yRGjwmslRWvlUSeA23a9y0cc6gFqjzMT4jbC4J+6s
+ Ch8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
  bh=GmdJt27134kNRYXiKp4wrB+O4TXMZQXM52BZBGOfEtM=;
- b=Hl/Vg5FIb/bbY2Vk6HavP/8OAIXsYP+QUj4txLP1AQvV/D8lSDOH7drEOJCi79fsGQ
- NlzkG48HW8s7KnbRYG630uA69nF7YMQXyUxHn6ETE7rgrAG5a6UHpualkZPW4UbXEnqe
- YVbMHoN/N5cSc7Vk1bhZYX8WNeLd1yVgHzgOZqaBycmkZZRVd0Cu/o92bXSHXiYry6t6
- tbFC50u+sZp8F7mEjazXcMv9EvGrT7Pr55llEK58EjtUipSWiehKk7z/KUgiXaYDdZVb
- 0ip9W6BbrWAVaKRTmmrEyxXDZeEPn7kWgUFjHTkpwtUcI0E6S+F2wyjKbYXQCfjJi+7t
- EZvw==
-X-Gm-Message-State: APjAAAWejAsHzKUV9cqtsHyiTz8DxG10GsAJZa79ve1FFGA7B6xlMVbu
- +esF9Z0X/H6N4lQ5c6M08S+iNAxOUn4=
-X-Google-Smtp-Source: APXvYqxT2SICJR0/scVLMtmD7Drj2JGcZpB0cicjSWB5iCPIziOWFDKhaM/J3laVncF61b47rtO91OtcfaA=
-X-Received: by 2002:a63:1c1d:: with SMTP id c29mr2121466pgc.14.1581125684457; 
- Fri, 07 Feb 2020 17:34:44 -0800 (PST)
-Date: Fri,  7 Feb 2020 17:34:30 -0800
-Message-Id: <20200208013438.240137-1-drosen@google.com>
+ b=Lb/I+awMdQQHZrPDTTEkvxWbRW0TZS55mW8So/SyWaX4dPsjGceqGCcew889nQ8sdU
+ AFqO1hCH+NdnFl3un7qIb5aZi2uAedG+Ok3ovnCWTWgJhSaHzBqsL5kEnvaPcSWXvDy3
+ wzNUVHQWLG0j+sTAyeRRWmo8Gl6vISSBTS1pZFdQoA1aU1FtfF5kLzSnhMNJnazMRV1l
+ c81yE4o1L3wnOjUtTpbutNUEFiXChou92NTHT3cUio63SJ/zcnX50jDjynEDjS49vR0Z
+ G3VweJP21AMyx7wV1+//U7RAdHNsc9sD0kmLweIiFN1AqgjCl56MCD9fnrW8KXKyb9AB
+ YnxQ==
+X-Gm-Message-State: APjAAAUpqrWX++/G/+/P3USVSjw6O53SoPL+sLodwlpFFn39phkX4Ggx
+ Vn9OIR7ftP9zs9NdOjffsWa1ATE+CO0=
+X-Google-Smtp-Source: APXvYqzX2zjDvOsycNvWYLOgK+VBNHyLR+WR4NBkkN5UhCL4Cx9+zC71iQcfsB2K3n5Ocuz6cv+mlKk8NrQ=
+X-Received: by 2002:a63:211f:: with SMTP id h31mr1939792pgh.299.1581125756217; 
+ Fri, 07 Feb 2020 17:35:56 -0800 (PST)
+Date: Fri,  7 Feb 2020 17:35:44 -0800
+Message-Id: <20200208013552.241832-1-drosen@google.com>
 Mime-Version: 1.0
 X-Mailer: git-send-email 2.25.0.341.g760bfbb309-goog
 Subject: [PATCH v7 0/8] Support fof Casefolding and Encryption
@@ -77,7 +77,7 @@ To: "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
  linux-fscrypt@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>, 
  Richard Weinberger <richard@nod.at>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200207_173446_672351_FCD618B9 
+X-CRM114-CacheID: sfid-20200207_173557_498597_90CE8BDB 
 X-CRM114-Status: GOOD (  14.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
