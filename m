@@ -1,61 +1,94 @@
-Return-Path: <SRS0=oRr0=34=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=rK7h=35=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=0.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A1FBC35250
-	for <linux-mtd@archiver.kernel.org>; Sat,  8 Feb 2020 11:36:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B89BC2BA83
+	for <linux-mtd@archiver.kernel.org>; Sun,  9 Feb 2020 21:42:54 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D797621741
-	for <linux-mtd@archiver.kernel.org>; Sat,  8 Feb 2020 11:36:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F0EB820820
+	for <linux-mtd@archiver.kernel.org>; Sun,  9 Feb 2020 21:42:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Yzo8H8gh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D797621741
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XZavfpq/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F0EB820820
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sigma-star.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=mgCBV5aEXO45w+Yr2t9ovSnWexLnHHCCusFoO4QXoHM=; b=Yzo8H8gh+UN39K
-	12PE2prPzxbiUFQgx9JP4pweCSWhfkPrCcAtF1IrUE5BuTcYMNFaag8aToGeJKi3jlOzRbSH7eksE
-	akO4CvAXKMoww87gkE5GT/ciAk6H0bDUXvzEBmkRcWnRj5dxXc220/ycwVqDS9XbFdNXv2mYsUQfL
-	6BxBPwrCLB7CEdn5yD+kmeCkZI+flwEvFQlho9VtsrjxoqbeW8LFrdNjJHCup6znQCExRooyPgeqD
-	9NRtniiYoFU01uZ62EzCzLnxTd/XZkTay3ubvB5uvDvjUrIO9SbNWrvjhsqBSi4Te/Kyfv793uCeS
-	ZAjNubQ9AxRvxSa5ii1w==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=X4yLKP8nV1MWHh/4KtPOg+w1mcMDFKZJ3Z2VBVAwBbw=; b=XZavfpq/poOCySdpVZ7LDOqo+y
+	R+/G9e1VLiwDhkV3HuQhhH528hQkVNfeDtV3m8eCgNLW5VU5X1XqDjAuZC2S5v0vDGVRU0e/CePh8
+	gAZEDmgTfnSj7FoQNlAs9pSCY4LNiflSrdLypVkDzaywzCAjXSFDdkV1G0SL4xUzjEVfgICjY/Rhu
+	BLc1ZB4bfMZMg2Cqv5ymnBlERTjFSfap7yOrELdDwFuuG6W7WMqvqxo0y/carz9Blyi9r1U+zsg88
+	JnVCv1M+9bAh0/K+jekLgYxcKB1aPNueB9TP07HhNMcOES6KsYuo3kgXfIjSJm1uEiut4K5pXqCtm
+	1D87jK+A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j0OPP-0006ve-0Y; Sat, 08 Feb 2020 11:36:23 +0000
-Received: from youngberry.canonical.com ([91.189.89.112])
+	id 1j0uLg-0006XS-3x; Sun, 09 Feb 2020 21:42:40 +0000
+Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j0OPL-0006v9-Hf
- for linux-mtd@lists.infradead.org; Sat, 08 Feb 2020 11:36:21 +0000
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
- by youngberry.canonical.com with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <colin.king@canonical.com>)
- id 1j0OPE-000160-FI; Sat, 08 Feb 2020 11:36:12 +0000
-From: Colin King <colin.king@canonical.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: fix spelling mistake "BlockMultiplerBits" ->
- "BlockMultiplierBits"
-Date: Sat,  8 Feb 2020 11:36:12 +0000
-Message-Id: <20200208113612.817988-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.25.0
+ id 1j0uLb-0006Wu-29
+ for linux-mtd@lists.infradead.org; Sun, 09 Feb 2020 21:42:36 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lilium.sigma-star.at (Postfix) with ESMTP id 9C47F1815EA9A;
+ Sun,  9 Feb 2020 22:42:24 +0100 (CET)
+Received: from lilium.sigma-star.at ([127.0.0.1])
+ by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id vyIKLnYA4YhC; Sun,  9 Feb 2020 22:42:23 +0100 (CET)
+Received: from lilium.sigma-star.at ([127.0.0.1])
+ by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id smXFIuvjyXrN; Sun,  9 Feb 2020 22:42:23 +0100 (CET)
+Subject: Re: [PATCH] libubi: remove private kernel header from includes
+To: Bastian Germann <bastiangermann@fishpost.de>, linux-mtd@lists.infradead.org
+References: <20200129185013.21752-1-bastiangermann@fishpost.de>
+ <20200129185013.21752-2-bastiangermann@fishpost.de>
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Autocrypt: addr=david.oberhollenzer@sigma-star.at; prefer-encrypt=mutual;
+ keydata=
+ mQENBFZyf0YBCADHyKhABhxthCC9n48pvsuk5p3IEdYXMs8Apenh1N/Z4cViAz/d/nSCZ+FG
+ FX/PSubEzq8AilZLejchAltaORCvA1Y6FgTlpcdJ6gHDfStDbJL/vk5N8aL7YNF7VfjTRntB
+ tKbhKcrG05nbdNjIioAm04pt9rx5mV5KMbf22/FdZpOSSsC6/N7b/cFH9+fx8kwi4pNFuJwr
+ BkWRuQ7rEtCoSpd22t+Vh9qA7kymW9gWY405258jnN65jBO7ElqU2CCuGRPg6uryAHV3RVCB
+ 9j9AE3HLacQReFtt5ylyydSQbaK4K9asnd7U2/C11vIuuciXCppX4bPap/pMnGpzw0UNABEB
+ AAG0N0RhdmlkIE9iZXJob2xsZW56ZXIgPGRhdmlkLm9iZXJob2xsZW56ZXJAc2lnbWEtc3Rh
+ ci5hdD6JATcEEwEIACEFAlZyf0YCGwMFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AACgkQvOXc
+ PHQaAtFuEAgArXOhaoaVvCMVCa5N25Q/+Q6K1wrVpPmkH89yhQqCmfM6f+2VM5MGFDPfaSJ3
+ 5fBDH0iwBQwlXIb7NSXWtzdXX9rMvJkJqv45TgeKtJApf/sRhmcN+clrwzP8oZQbxkP1YWzo
+ Vwo4lOb3Kv7aY9yeCjqNbdJJ57NpvYOUrzrCpGkrDPBBQOvKF3wbq3oU/o3dT23NDeQ20jXg
+ quJf/PCw6WCzRxqg58wH02MdMDQe8vByzVig2bM2e7DErtt+hPK/Dmdsqgns+Z+SrQcOvRa3
+ GMAHAuHB0u2LhYO6NyaNCgzdgutorilYcq7FEKr8XqwOnfVmZdCW3qGKmLbn6qMEdLkBDQRW
+ cn9GAQgAvugF8cFjv2Zs4BBb44SnxGawBySC1bMRas/MjA9EMHUAx/StcecQmxnl6BzEyGpr
+ +TRnXIzcb5xI8SxitBDU5MLvwsHgNvpYp9fscd4kWP7oMir9ta3Q8SvT4OLbO4FZBGaURzGP
+ ak8JmjMMtOoOBh4meOjz6GrJe9UIGxT94aB01w7YohfBANzK8xyk4ykKC5Op4XgaaMKOEQUa
+ h7wajcojYSlvgOiXqEisMHlRDAW6sXL2sEM7TIpvYhy9txMLllpkYb0Pu1BvUpY/unsybWKA
+ FyiTmeiY+nEveUvqX6Ef7BWdClBeCk2UaRvtcoLd22VxMlKTniHQcNMOXlRRawARAQABiQEf
+ BBgBCAAJBQJWcn9GAhsMAAoJELzl3Dx0GgLRPtcH/jD6rn2+VIKgrHdt3ao3Abpu2fqYfwbI
+ yPAtpXOddDptVq+0A/2arXT1Y8+jNSZpbAg8K+bLaEAcSUEjviKMpfI7ppTUBuGKrpgc5xsi
+ UpKkJCb7oB1ZraIBNBPtPPVUhbwLie4uW/LVt+8rBKz3W9KEDOsT0ZCG/pW8Ld+EpDR9l0fm
+ qoVHaw8PhLAtez+B7HS7Hv7iJPDtX85kFYpud8kIPENXVn9EjZudyMWgZb2LhYlcavNcszgR
+ 7In6ift5SNySojCOfAV0iKZb8QUXWktLleY8kQ8jltOsSRTuO4PDfzvtCQDixUw4tQ7WLwDT
+ qyUpot0oG03vtSG4LIRCdxI=
+Organization: sigma star gmbh
+Message-ID: <891ac06a-1a62-3366-c228-9945fd595006@sigma-star.at>
+Date: Sun, 9 Feb 2020 22:42:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
+In-Reply-To: <20200129185013.21752-2-bastiangermann@fishpost.de>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200208_033619_722845_91720507 
-X-CRM114-Status: UNSURE (   8.82  )
+X-CRM114-CacheID: sfid-20200209_134235_249948_D430C7C3 
+X-CRM114-Status: UNSURE (   6.31  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -68,50 +101,16 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Applied to mtd-utils.git master.
 
-There is a spelling mistake (missing i) in pr_info messages. Fix these.
+Thanks,
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/mtd/inftlmount.c          | 2 +-
- drivers/mtd/nand/raw/diskonchip.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/inftlmount.c b/drivers/mtd/inftlmount.c
-index 54b176d4319f..af16d3485de0 100644
---- a/drivers/mtd/inftlmount.c
-+++ b/drivers/mtd/inftlmount.c
-@@ -130,7 +130,7 @@ static int find_boot_record(struct INFTLrecord *inftl)
- 			 "    NoOfBootImageBlocks   = %d\n"
- 			 "    NoOfBinaryPartitions  = %d\n"
- 			 "    NoOfBDTLPartitions    = %d\n"
--			 "    BlockMultiplerBits    = %d\n"
-+			 "    BlockMultiplierBits   = %d\n"
- 			 "    FormatFlgs            = %d\n"
- 			 "    OsakVersion           = 0x%x\n"
- 			 "    PercentUsed           = %d\n",
-diff --git a/drivers/mtd/nand/raw/diskonchip.c b/drivers/mtd/nand/raw/diskonchip.c
-index c0e1a8ebe820..2833c49c1378 100644
---- a/drivers/mtd/nand/raw/diskonchip.c
-+++ b/drivers/mtd/nand/raw/diskonchip.c
-@@ -1169,7 +1169,7 @@ static inline int __init inftl_partscan(struct mtd_info *mtd, struct mtd_partiti
- 		"    NoOfBootImageBlocks   = %d\n"
- 		"    NoOfBinaryPartitions  = %d\n"
- 		"    NoOfBDTLPartitions    = %d\n"
--		"    BlockMultiplerBits    = %d\n"
-+		"    BlockMultiplierBits   = %d\n"
- 		"    FormatFlgs            = %d\n"
- 		"    OsakVersion           = %d.%d.%d.%d\n"
- 		"    PercentUsed           = %d\n",
--- 
-2.25.0
+David
 
 
 ______________________________________________________
