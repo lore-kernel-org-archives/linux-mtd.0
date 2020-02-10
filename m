@@ -2,152 +2,156 @@ Return-Path: <SRS0=fEDX=36=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3890C352A4
-	for <linux-mtd@archiver.kernel.org>; Mon, 10 Feb 2020 09:47:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0488C352A4
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 Feb 2020 09:57:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AFA9B2080C
-	for <linux-mtd@archiver.kernel.org>; Mon, 10 Feb 2020 09:47:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6794B214DB
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 Feb 2020 09:57:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="eY98Mhqs";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="nM7ZWoFT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AFA9B2080C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ViUmjWBq";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cadence.com header.i=@cadence.com header.b="tO+oe+EK";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=cadence.com header.i=@cadence.com header.b="OyreM5m6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6794B214DB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cadence.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BRTeAU4lqXQB7G0566AH80l9v3ufNjgwjW4fc+fINpE=; b=eY98MhqsilRJ8g
-	pv8xJhm+03NJuKnrrkS4oH7aphWkkiheMjBr1YTUaRedziVucvGGJa19sdBPo+1eYP+Ybf6OFcm8S
-	enB4oUoQ2NDA+KAHf+wW9+l7/4RzQq6RqBdi2KoSy6RTaa1PaJ4wNmRcuY1X+A9MXVdLaU/ndXtN2
-	bG+BMZU0VHgMdILbgE4ppEhD4mS+zVhvsm0kawVW0hpU+kUzaeiQap1QXR0OK/jqQQax3rOCORRz9
-	gonCsHAx5eFspATAgVWT99eQIrcictTpHg8kYOz3OSnThcUMdCr06hYBVXv+fAtSwqTAPvqBuysy4
-	rLMn5osbH7gC9rF9K2cg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=KT5C5pS51qed1I/+IsBHzPzroPwRnAkg2be779X49xE=; b=ViUmjWBqCxLuNV
+	ElyBwPqgPxF+YYxDlJYhG9ZI5dZtYxki+W5pnFyVs2sy4P7NVjh3vC+xWkTvgZHBGajzyIm2bzKeQ
+	rIL9v/+gNWAubptBV8WuyI4N7lexlB1d4xz2uUBMMw/7dDJEjNGfnavqvxX4zVHBxPIEW4cUEaFiz
+	jAEMf+Sj3XqTjb/AbqLUwNfuNnOShhuU8JrLLbomNKzWvzWUUUS7z7dCjfLh9xBdocSJEMCdtICP1
+	o1KEW0XZchDIZtuame6yOpamrsb9zu2pQfXARhiQHqJEZKngeuaQ7q2hIv6TkE4FlUPdXhE9VocTf
+	s1duW4mwWq/UUmufFiqA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j15fK-0006Z2-5M; Mon, 10 Feb 2020 09:47:42 +0000
-Received: from esa4.microchip.iphmx.com ([68.232.154.123])
+	id 1j15o9-0002Ay-Nh; Mon, 10 Feb 2020 09:56:49 +0000
+Received: from mx0b-0014ca01.pphosted.com ([208.86.201.193]
+ helo=mx0a-0014ca01.pphosted.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j15fE-0006YX-US
- for linux-mtd@lists.infradead.org; Mon, 10 Feb 2020 09:47:40 +0000
-Received-SPF: Pass (esa4.microchip.iphmx.com: domain of
- Tudor.Ambarus@microchip.com designates 198.175.253.82 as
- permitted sender) identity=mailfrom;
- client-ip=198.175.253.82; receiver=esa4.microchip.iphmx.com;
- envelope-from="Tudor.Ambarus@microchip.com";
- x-sender="Tudor.Ambarus@microchip.com";
- x-conformance=spf_only; x-record-type="v=spf1";
- x-record-text="v=spf1 mx a:ushub1.microchip.com
- a:smtpout.microchip.com -exists:%{i}.spf.microchip.iphmx.com
- include:servers.mcsv.net include:mktomail.com
- include:spf.protection.outlook.com ~all"
-Received-SPF: None (esa4.microchip.iphmx.com: no sender
- authenticity information available from domain of
- postmaster@email.microchip.com) identity=helo;
- client-ip=198.175.253.82; receiver=esa4.microchip.iphmx.com;
- envelope-from="Tudor.Ambarus@microchip.com";
- x-sender="postmaster@email.microchip.com"; x-conformance=spf_only
-Authentication-Results: esa4.microchip.iphmx.com;
- spf=Pass smtp.mailfrom=Tudor.Ambarus@microchip.com;
- spf=None smtp.helo=postmaster@email.microchip.com;
- dmarc=pass (p=none dis=none) d=microchip.com
-IronPort-SDR: UnjFiEWHeBOEW3L6itqrBoM/yK+2BUtSgVgUKzohXvOaprKQzrptkPCsz5fVL1AG4w5dgqbt6H
- pfUXi+Dc18AG5e2zuG24H1tV4cu7gPg8IJ0AEUd+qVDLfiztD45gnzCSJxiDL0swgazq7gJr1+
- HQZOi1bBsCISlGw5+BqwBgtoUhuF8uTO0h4o1u33XgTKD6jN2jzeBTgMaIndPGVW2mj7PETAAP
- iRljqmLLZsGTZ5cDjNcHBR29yu1mab70Od36v0QeCdf8EuxRFUs+sfY5lJJQnzfD+TAXkUFe8N
- kN4=
-X-IronPort-AV: E=Sophos;i="5.70,424,1574146800"; d="scan'208";a="63660688"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 10 Feb 2020 02:47:28 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 10 Feb 2020 02:47:26 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.71) with Microsoft SMTP Server
- (version=TLS1_2, 
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5 via Frontend
- Transport; Mon, 10 Feb 2020 02:47:28 -0700
+ id 1j15o5-00028x-N2
+ for linux-mtd@lists.infradead.org; Mon, 10 Feb 2020 09:56:47 +0000
+Received: from pps.filterd (m0042333.ppops.net [127.0.0.1])
+ by mx0b-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
+ 01A9rXJ4031836; Mon, 10 Feb 2020 01:56:29 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=proofpoint;
+ bh=O90wWRk6Rm7B0pPTAJ7KjESzK5HCX7l0xplF3hbNPyw=;
+ b=tO+oe+EKKz2txl2hBae1l2XbylS5lvwyQZ8jTyvFoxSM8NyN5fIVZLKEf/yRJUkVQGlT
+ RXAJspftGpPfgyo3/gXjRJOSMWLV72QwPLiBtRTOmfP0xb8UzKpT++agqXLlBI6Rmcne
+ wvP6QOieGPMcnZ2979InYoqRR8JBNU0U2CIxo7YsjmbX767MJMqqz8MzkysHnIv4l9V8
+ /yFeKaRJo6U7C6ppUazDjtkgP2Z5/cVWxmnPo/8CIA8s+vC0Oz3Ld3Ceav3pitv3DhXg
+ FOc2+530oWj/aC9gqyWLk+FLosTvmteScr1Ki3OYbaS7C64wGjnso5aL98vdNM2iUXYP 3w== 
+Received: from nam04-sn1-obe.outbound.protection.outlook.com
+ (mail-sn1nam04lp2058.outbound.protection.outlook.com [104.47.44.58])
+ by mx0b-0014ca01.pphosted.com with ESMTP id 2y1u17d9e4-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 10 Feb 2020 01:56:28 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H/uAaDhsSoQZVKp6+p/vd0vS9iSQ/uzimT25LPAguM4xh7Ltu16RtH55H7XqDX6ytBcVWn7f73rFuaCQikNRZT+pzOw1OmTzybgjFsQmnDbEkALIhun2bmC9sTQ3NmTMSQ7HhwtqV+f2VnQTJfDZ21g4XvbO4xq3l0BGp9crbhiaKhaZZuIe5NdP+PhBL5by4bn4/DYHZaL910itOVqju9p1gbzTr4q6YsDmZHqoJnK7oEww9Qn4qu9XzSIcsS+WtBwG9uxaKpnPGPBGsZT60xltW9c4IVTf6QVz4DygYs+cTqUa+Oog8tt1NJALylEqRxVnS5GydoCprQhLzlgOrQ==
+ b=KRiHz5UaiVsDccslsLn6rCu0G7EwxvTBP7aD0m46KMyYfpaSCQRk8lnfiKKmoy8v7Pb+DmiNsieVxtAGwI/avG3Nsz/EhtWXlKrr4/pYr5aakHsM6bGSi0YCR65RR9JSiz3mHFymcSVi1QnIpB/S3O9+vPoyLnNNy+rRO4nUPNq565ncHNmAOLTRrLSQiH0Ccft8MmLqGHgu/6FtW/MaxZf+OxhvNeBd21HiuUq50e8/ZAmWLOxv8/Ncv11BIm/6xP8ol0A0E51PPMOhDYvf5Olum6yeGDfaEEISCd+L7yk2MijfWqvIxhObGKVVooBosgO5xqW1bCL0WnusGv+PJA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=i6TcWm8DzLcWh7el54HyWuWdnAmWF0nEKCcDy75DOsI=;
- b=jLG16bhoWS1Wc6LjA1TkZR4OHTGGZ1bxKILEH/ZmUrtab6YOHqA5CSeIK8j71qFjhgLpHKEC1mvcPoIp55ofYG50XRu/Sk3wdPO2/ytbwakiER5u9YbUCXGfQyO4BR5LezNHL9VaHUCx5P62FIDGQVTR3pwk3EdwrkRDnauDFdMIIRag6dBh9UmyVpU216F4BMhQUDu+HSwtdcuTUxTHTjed9+LsbmPBS2lkgn/9FYTTxd03Bf6FtslBIfkw5ztIs0LDtrAgkiLJtIx7YNTwfT9ftUR/uKRA51d8iUxjLU7j7LgDN9KgcP2mJWksBRh9ztLMZYtCDRG9lzVp0523pA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
+ bh=O90wWRk6Rm7B0pPTAJ7KjESzK5HCX7l0xplF3hbNPyw=;
+ b=T6Bf4Rw+PeYpB57barcbTPidak17gczYaE4egnaY5xSmra5MDdbn6eWUH3xdxIlYHGG7ZrwgOcdkXtvDslqR8G5H9Hle29qB2SQ7KfwiTd7ujONE59R78dKQKKYbyt7kuaZ884TIl6yx4OCfv8UsCTw7kglYc11Zn+Hodx/aCeM0UAVcUQ6d8avWX/9T0YYy8YRqgWSRqxTeFvJWFd/PF3c6lrJhP9JNV0PIjziXOm4FAZhs8cR7N6UMgrP+ORb0c7W/5n9D4QBiha5QvqklPoq604ghHYCLq2x+2oM6VHaf3zS8i8rGmMAoBnLakJ5xKUNlWqNdAmmc1akaPjXjsA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 199.43.4.28) smtp.rcpttodomain=nod.at smtp.mailfrom=cadence.com; dmarc=pass
+ (p=none sp=none pct=100) action=none header.from=cadence.com; dkim=none
+ (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=i6TcWm8DzLcWh7el54HyWuWdnAmWF0nEKCcDy75DOsI=;
- b=nM7ZWoFTjPAotzZE1uwqZt3IADdEbvJrKvVzym2DuFuh3U6EyS+lsCPIgZpJmWXsT9xfYMaTKR5F60QahBZ/uhv9VIdNSfU+bJhhmwrhavZrkxGRtn36SJbO6Iv4tXQHVGnYPWG5Zg5FdgXUbpCdgICOdO0/xfQitOHLcUnHL/I=
-Received: from MN2PR11MB4448.namprd11.prod.outlook.com (52.135.39.157) by
- MN2PR11MB4014.namprd11.prod.outlook.com (20.179.150.14) with Microsoft SMTP
+ bh=O90wWRk6Rm7B0pPTAJ7KjESzK5HCX7l0xplF3hbNPyw=;
+ b=OyreM5m6GjA5z6NChN/iSDLTWBjH0npqjrnMDmljWPMVRsdHhrg7JaB7ztC/453ga2S58x1YZIgzmDkqoi+lvp09qGraMWfLSwx+0y8FRMbIw5OhX491NEYuCulJW3vucoHmT72WMdQiF98qY+2hHmWS0yUv0ITXMrFwBHM5Ntg=
+Received: from DM6PR07CA0047.namprd07.prod.outlook.com (2603:10b6:5:74::24) by
+ DM6PR07MB5691.namprd07.prod.outlook.com (2603:10b6:5:32::23) with
+ Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2707.28; Mon, 10 Feb 2020 09:56:26 +0000
+Received: from DM6NAM12FT048.eop-nam12.prod.protection.outlook.com
+ (2a01:111:f400:fe59::203) by DM6PR07CA0047.outlook.office365.com
+ (2603:10b6:5:74::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2707.21 via Frontend
+ Transport; Mon, 10 Feb 2020 09:56:26 +0000
+Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
+ 199.43.4.28 as permitted sender) receiver=protection.outlook.com;
+ client-ip=199.43.4.28; helo=rmmaillnx1.cadence.com;
+Received: from rmmaillnx1.cadence.com (199.43.4.28) by
+ DM6NAM12FT048.mail.protection.outlook.com (10.13.178.173) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2707.21; Mon, 10 Feb 2020 09:47:25 +0000
-Received: from MN2PR11MB4448.namprd11.prod.outlook.com
- ([fe80::3c8f:7a55:cbd:adfb]) by MN2PR11MB4448.namprd11.prod.outlook.com
- ([fe80::3c8f:7a55:cbd:adfb%5]) with mapi id 15.20.2707.028; Mon, 10 Feb 2020
- 09:47:25 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <michael@walle.cc>
-Subject: Re: [PATCH v3 2/3] mtd: spi-nor: add 4bit block protection support
-Thread-Topic: [PATCH v3 2/3] mtd: spi-nor: add 4bit block protection support
-Thread-Index: AQHV3bCHi2pGqMNGHESG9Z9T0h6ocA==
-Date: Mon, 10 Feb 2020 09:47:25 +0000
-Message-ID: <4000296.ZurDTCRVlM@localhost.localdomain>
-References: <20200113055907.9029-2-js07.lee@samsung.com>
- <3576415.28M9a3X63c@localhost.localdomain>
- <56a82fb7956ef9004828569f0dbe8e8d@walle.cc>
-In-Reply-To: <56a82fb7956ef9004828569f0dbe8e8d@walle.cc>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [94.177.32.156]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: bd20d885-2159-49a2-7b83-08d7ae0e3bcd
-x-ms-traffictypediagnostic: MN2PR11MB4014:
-x-microsoft-antispam-prvs: <MN2PR11MB4014EEE6858379F209BB3456F0190@MN2PR11MB4014.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 03094A4065
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(396003)(346002)(376002)(366004)(39860400002)(136003)(189003)(199004)(8936002)(478600001)(186003)(53546011)(2906002)(6506007)(6916009)(54906003)(8676002)(316002)(81166006)(81156014)(26005)(86362001)(6486002)(5660300002)(4326008)(71200400001)(6512007)(9686003)(64756008)(66446008)(66476007)(66556008)(91956017)(66946007)(76116006);
- DIR:OUT; SFP:1101; SCL:1; SRVR:MN2PR11MB4014;
- H:MN2PR11MB4448.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; MX:1; A:1; 
-received-spf: None (protection.outlook.com: microchip.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 5WCDiBWyEL0HwS+Xg42+txzoJPrpbdIDsEjukPLRf4qDu66LM10qGoh7YkNFND1BErl+8Jzs1ZR9K44BTy5HeR3IehLaa8wxrcQ2TYpjgW+CPaJxq3EZIwrNXlEpfxdz/2zqu/4x74mSWmpqOu3xlRvtbzDWPS+RAgHNKhc/v/+DH8ezob5y7F3tt+6Eo8QCvwmfIn+f7jkzJyInZc7dxVeJUVR1gCgbk60Gp3RU8ABjqn0B7TFJGvesXhwyelYLccLY7pTgsx2KseCwzGy0NWZ2FpDc4wZUDkGTD1ZSFsVjm8s1D180J/+mAkQLL6TvbZaMrbvb0iarZsS3lGEBCfAtYsdBW/7fjH+YBoqUbqx8rLzo0wGQE1w9az9AUaAlQ3doTOZe7MZKoGC15bI/ZVHPmrVREgQa1GPds9s3I0C26GhZ2qHaCt7mt2SC5fuL
-x-ms-exchange-antispam-messagedata: ss3nyR5Jj90NmaZWuJGMuqiTJcpYxklZiJH/Vhga+bPnzD7wRvic9QB7TRbgDOqCgCKUBz/eL8D4PaKwwG+/wd/ZzYLRI4OL22R0sLc5S76d2Pf1xVJvEQc+fYMg4lcEYXHQvrutfJLL+G3T3g7ZZw==
-x-ms-exchange-transport-forked: True
-Content-ID: <3563373F7B71234397D0D1FFCD5FF152@namprd11.prod.outlook.com>
+ 15.20.2729.10 via Frontend Transport; Mon, 10 Feb 2020 09:56:25 +0000
+Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
+ by rmmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id
+ 01A9uH0e029084
+ (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
+ Mon, 10 Feb 2020 04:56:19 -0500
+X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
+Received: from maileu3.global.cadence.com (10.160.88.99) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1367.3; Mon, 10 Feb 2020 10:56:17 +0100
+Received: from vleu-orange.cadence.com (10.160.88.83) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1367.3 via Frontend Transport; Mon, 10 Feb 2020 10:56:17 +0100
+Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
+ by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 01A9uHXM030214;
+ Mon, 10 Feb 2020 10:56:17 +0100
+Received: (from piotrs@localhost)
+ by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 01A9uAdO030204;
+ Mon, 10 Feb 2020 10:56:10 +0100
+From: Piotr Sroka <piotrs@cadence.com>
+To: 
+Subject: [PATCH 1/4] mtd: rawnand: cadence: get meta data size from registers
+Date: Mon, 10 Feb 2020 10:55:25 +0100
+Message-ID: <1581328530-29966-1-git-send-email-piotrs@cadence.com>
+X-Mailer: git-send-email 2.4.5
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: bd20d885-2159-49a2-7b83-08d7ae0e3bcd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Feb 2020 09:47:25.0812 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: uw1twWzj8phcp4CVIUHPK/hMgrcClVi9u0JwqB189ezvUlxBtLxxdTMfNj/I/Oqu2YOdgmSj3Iz+O4E/TSo3OSk2sTX0rrRnHVv5Q1zOUuc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4014
+X-OrganizationHeadersPreserved: maileu3.global.cadence.com
+X-EOPAttributedMessage: 0
+X-Forefront-Antispam-Report: CIP:199.43.4.28; IPV:CAL; SCL:-1; CTRY:US; EFV:NLI;
+ SFV:NSPM;
+ SFS:(10009020)(4636009)(376002)(136003)(39860400002)(346002)(396003)(199004)(189003)(36092001)(70586007)(356004)(6666004)(426003)(70206006)(86362001)(8936002)(109986005)(2616005)(54906003)(316002)(42186006)(81156014)(81166006)(8676002)(186003)(2906002)(26005)(5660300002)(36756003)(26826003)(4326008)(478600001)(336012)(266003);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:DM6PR07MB5691; H:rmmaillnx1.cadence.com; FPR:;
+ SPF:Pass; LANG:en; PTR:InfoDomainNonexistent; A:1; MX:1; 
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5951f2d8-4617-4271-fe82-08d7ae0f7dd8
+X-MS-TrafficTypeDiagnostic: DM6PR07MB5691:
+X-Microsoft-Antispam-PRVS: <DM6PR07MB5691C81C935FC6F0E86E428BDD190@DM6PR07MB5691.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:655;
+X-Forefront-PRVS: 03094A4065
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Cygm7Q6z5aFETjzMwlxsfjZegsHsqw1M8ZYmID2cI7FlUBGuueF3b05rETqI94WOpSagr72yjtC4eNIIgVknMf6WXAT5azCZBxVKd7E7oDbOfV22dXyFBryH4N2cYIYIO7wpgQX09Si/tCekKZ6vCQgcrEHAveRBIUVf+07B/4C8+3dZmKdrpmfASNa1MAKWRkAtvFE0yVzOcF+gZhaE3Ih29WWNRNuIlM9aQNiozgs9y89Bm6N1DJCdsWSff4oNI81ZMxaifCyBYalco05AJawoXuqvBUpwigbWmVuZkEXZEgm/OrdiXhomwTP0ydP0w6ZU2oCzojhrX2/Vs+tc3C/VrB2zmr4pgPwE8pN3kMmTLZ7Qb7O5UWHXLzhAUQ1Fb/LJiP+iuj3XMt4gpRsz9BZG7AxdtphsfV8CEnX9teR4HuhHa8x4a4LxNuxEKblh1A+W7WG/R750ANdmtSJI0Slztk5i44OjXqfzu/K6tXO3RYuHY4lxzwVLyUIBy10PREymo2k8p4Q5EnsgjUW6iQ==
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Feb 2020 09:56:25.4650 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5951f2d8-4617-4271-fe82-08d7ae0f7dd8
+X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9; Ip=[199.43.4.28];
+ Helo=[rmmaillnx1.cadence.com]
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR07MB5691
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138, 18.0.572
+ definitions=2020-02-10_02:2020-02-07,
+ 2020-02-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check
+ score=0 bulkscore=0
+ malwarescore=0 phishscore=0 priorityscore=1501 impostorscore=0
+ mlxlogscore=999 clxscore=1011 mlxscore=0 suspectscore=0 adultscore=0
+ spamscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2001150001 definitions=main-2002100077
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200210_014737_079848_F4C11651 
-X-CRM114-Status: GOOD (  25.63  )
+X-CRM114-CacheID: sfid-20200210_015646_448797_22D0B19E 
+X-CRM114-Status: GOOD (  16.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -159,194 +163,103 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: js07.lee@gmail.com, linux-mtd@lists.infradead.org, vigneshr@ti.com,
- js07.lee@samsung.com
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Kazuhiro Kasai <kasai.kazuhiro@socionext.com>,
+ Piotr Sroka <piotrs@cadence.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi, Michael,
+Add checking size of BCH meta data size in capabilities registers
+instead of using fixed value. BCH meta data is used to keep data
+from nand flash oob area.
 
-On Monday, February 10, 2020 10:33:41 AM EET Michael Walle wrote:
+Signed-off-by: Piotr Sroka <piotrs@cadence.com>
+---
+ .../mtd/nand/raw/cadence-nand-controller.c    | 21 ++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
-cut
-
-> > On Monday, February 3, 2020 3:56:58 PM EET Vignesh Raghavendra wrote:
-> >> >>>>>>>>> /*
-> >> >>>>>>>>> * Need smallest pow such that:
-> >> >>>>>>>>> *
-> >> >>>>>>>>> @@ -1908,7 +1972,17 @@ static int stm_lock(struct
-> >> >>>>>>>>> spi_nor
-> >> >>>>>>>>> *nor,
-> >> >>>>>>>>> loff_t ofs, uint64_t len)
-> >> >>>>>>>>> *   pow = ceil(log2(size / len)) = log2(size)
-> >> >>>>>>>>> -
-> >> >>>>>>>>> floor(log2(len))
-> >> >>>>>>>>> */
-> >> >>>>>>>>> pow = ilog2(mtd->size) - ilog2(lock_len);
-> >> >>>>>>>>> -     val = mask - (pow << SR_BP_SHIFT);
-> >> >>>>>>>>> +
-> >> >>>>>>>>> +     if (nor->flags & SNOR_F_HAS_SR_BP3) {
-> >> >>>>>>>>> +             val = ilog2(nor->n_sectors) + 1 - pow;
-> >> >>>>>>>> 
-> >> >>>>>>>> Why do you use a new calculation here? As far as I can
-> >> >>>>>>>> see,
-> >> >>>>>>>> the
-> >> >>>>>>>> method is
-> >> >>>>>>>> the same except that is has one bit more. That also
-> >> >>>>>>>> raises
-> >> >>>>>>>> the
-> >> >>>>>>>> question why
-> >> >>>>>>>> n_sectors is now needed?
-> >> 
-> >> Flash devices have variable sector size, 64KB, 128KB or 256KB... While
-> >> mapping of number of sectors locked to BP bits is dependent on rules 1
-> >> to 3 you mentioned below, the size or area of flash protected depends
-> >> on
-> >> sector size.
-> >> 
-> >> So, the current formula in spi-nor.c (ignoring TB and other
-> >> boilerplate):
-> >> 
-> >> pow = ilog2(mtd->size) - ilog2(lock_len);
-> >> val = mask - (pow << shift);
-> >> 
-> >> This works only for devices with 64KB sector size as 8MB flash with
-> >> 64KB
-> >> sector size would have 128 sectors (BP0-2 => 0b111 => 2^7).
-> >> 
-> >> A more generic formula would be:
-> >> 
-> >> Find n where 2^(n - 1) = len/sector-size
-> >> OR 2^ (n - 1) = len * n_sectors / mtd->size
-> >> 
-> >> Which solves to:
-> >> 
-> >> pow = ilog2(mtd->size) - ilog2(lock_len);
-> >> val = ilog2(nor->n_sectors) + 1 - pow;
-> > 
-> > The current mainline locking support is limited. Michael spotted a good
-> > improvement, but I think there are still others that we should
-> > consider.
-> 
-> Sure, as I said my patch was just to show, that there is an underlying
-> problem
-> and that we should not take the 4th BP bit to differentiate between the
-> two
-> different formulas.
-
-Right, this is the goal.
-
-Let me try to extend the description of the proposal.
-
-> 
-> > We should use a single formula, for all the BP cases. How about the
-> > following:
-> > 
-> > bp_slots_available = (bp_mask >> shift) + 1 - 2;
-
-This formula is derived from Michael's patch. 
-
-A slot (to me) is a horizontal line in the Memory protection table. Maybe we 
-can find a better/standardized name for this.
-
-So for BP0-2, bp_slots_available = 6, and for BP0-3, bp_slots_available = 14. 
-Notice that I stripped the two special cases: lock none and lock all.
-
-> > bp_slots_needed = ilog2(nor->info->n_sectors);
-
-With bp_slots_needed I tried to describe how many slots are needed if the 
-protected density for the first slot is at minimum (sector size).
-
-> > 
-> > if (bp_slots_needed > bp_slots_available) {
-> > 
-> >       bp_slot_count = bp_slots_available;
-> >       bp_min_slot_size = nor->info->n_sectors <<
-> >       
-> >               (bp_slots_needed - bp_slots_available);
-> 
-> mhh, what is the unit of bp_min_slot_size? bytes or sectors? I guess it
-> should
-
-It's bytes. Take a look at W25Q128JV. The sector size for this flash is 
-64KByte. The flash has 256 sectors. For this specific case:
-	bp_slots_available = 6;
-	bp_slots_needed = 8;
-
-The if condition is true, so
-	bp_slot_count = 6;
-	bp_min_slot_size = 64k << (8 - 6); //256k
-
-which is exactly the protected density for the first slot. The protected 
-densities of the other slots can be computed by multiplying with powers of 2.
-
-> be bytes, eg for a 8MiB flash it would be 128kiB and for a 16MiB flash
-> it would
-> be 256kiB (if there are 3 BP bits).
-> 
-> > } else {
-> > 
-> >       bp_slot_count = bp_slots_needed;
-> >       bp_min_slot_size = mtd->size >> bp_block_count;
-
-typo: s/bp_block_count/bp_slot_count
-> 
-> this is a complicated way of saying its the size of one sector, isn't
-> it?
-> can't we use nor->info->sector_size here? Eg.
-> 
-> if (bp_slots_needed > bp_slots_available) {
->         bp_slot_count = bp_slots_available;
->         bp_min_slot_size = nor->info->sector_size <<
->                 (bp_slots_needed - bp_slots_available);
-> } else {
->         bp_slot_count = bp_slots_needed;
->         bp_min_slot_size = nor->info->sector_size;
-> }
-
-you're right, we're in the else case, where the assumption that the minimum 
-protected density is sector size is true, we can use directly nor->info-
->sector_size.
-
-> 
-> > }
-> > 
-> > When both can_be_bottom and can_be_top are true, we prefer the top
-> > protection,
-> > which is incorrect/buggy/sub-optimal. If the received offset is not
-> > aligned to
-> > one of the start addresses of the bp slots, then we should up/down
-> > align the
-> > offset to the closest bp slot, depending on TB and which (top or
-> > bottom) fits
-> > better. Based on the updated offset and length we can compute the lock
-> > range,
-> > and after that:
-> > 
-> > n = ilog2(bp_lock_range/bp_min_slot_size) + 1;
-> > val = mask - (n << shift);
-> 
-> btw. we should catch the two special cases:
->   - lock none -> 0 (that was already the case)
->   - lock all -> all BP bits
-> 
-> The latter is important if "bp_slots_needed < bp_slots_available"
-> because there
-> are multiple settings for protect all. Most flashes will define any
-> remaining
-> setting for "protect all", but I've also seen flashes where the
-> in-between ones
-> were undefined (not mentioned) and only the "all bit set" was protect
-> all.
-
-This case is addressed by using bp_slot_count and bp_slots_available. We're in 
-the else case from above. From bp_slot_count up to the bp_slots_available, 
-those slots are "protect all".
-
-Cheers,
-ta
+diff --git a/drivers/mtd/nand/raw/cadence-nand-controller.c b/drivers/mtd/nand/raw/cadence-nand-controller.c
+index f6c7102a1e32..5063a8b493a4 100644
+--- a/drivers/mtd/nand/raw/cadence-nand-controller.c
++++ b/drivers/mtd/nand/raw/cadence-nand-controller.c
+@@ -30,7 +30,6 @@
+  * Generic mode is used for executing rest of commands.
+  */
+ 
+-#define MAX_OOB_SIZE_PER_SECTOR	32
+ #define MAX_ADDRESS_CYC		6
+ #define MAX_ERASE_ADDRESS_CYC	3
+ #define MAX_DATA_SIZE		0xFFFC
+@@ -190,6 +189,7 @@
+ 
+ /* BCH Engine identification register 3. */
+ #define BCH_CFG_3				0x844
++#define		BCH_CFG_3_METADATA_SIZE		GENMASK(23, 16)
+ 
+ /* Ready/Busy# line status. */
+ #define RBN_SETINGS				0x1004
+@@ -499,6 +499,7 @@ struct cdns_nand_ctrl {
+ 
+ 	unsigned long assigned_cs;
+ 	struct list_head chips;
++	u8 bch_metadata_size;
+ };
+ 
+ struct cdns_nand_chip {
+@@ -1077,6 +1078,14 @@ static int cadence_nand_read_bch_caps(struct cdns_nand_ctrl *cdns_ctrl)
+ 	int max_step_size = 0, nstrengths, i;
+ 	u32 reg;
+ 
++	reg = readl_relaxed(cdns_ctrl->reg + BCH_CFG_3);
++	cdns_ctrl->bch_metadata_size = FIELD_GET(BCH_CFG_3_METADATA_SIZE, reg);
++	if (cdns_ctrl->bch_metadata_size < 4) {
++		dev_err(cdns_ctrl->dev,
++			"Driver needs at least 4 bytes of BCH meta data\n");
++		return -EIO;
++	}
++
+ 	reg = readl_relaxed(cdns_ctrl->reg + BCH_CFG_0);
+ 	cdns_ctrl->ecc_strengths[0] = FIELD_GET(BCH_CFG_0_CORR_CAP_0, reg);
+ 	cdns_ctrl->ecc_strengths[1] = FIELD_GET(BCH_CFG_0_CORR_CAP_1, reg);
+@@ -1170,7 +1179,8 @@ static int cadence_nand_hw_init(struct cdns_nand_ctrl *cdns_ctrl)
+ 	writel_relaxed(0xFFFFFFFF, cdns_ctrl->reg + INTR_STATUS);
+ 
+ 	cadence_nand_get_caps(cdns_ctrl);
+-	cadence_nand_read_bch_caps(cdns_ctrl);
++	if (cadence_nand_read_bch_caps(cdns_ctrl))
++		return -EIO;
+ 
+ 	/*
+ 	 * Set IO width access to 8.
+@@ -2587,7 +2597,6 @@ int cadence_nand_attach_chip(struct nand_chip *chip)
+ 	struct cdns_nand_chip *cdns_chip = to_cdns_nand_chip(chip);
+ 	u32 ecc_size = cdns_chip->sector_count * chip->ecc.bytes;
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+-	u32 max_oob_data_size;
+ 	int ret;
+ 
+ 	if (chip->options & NAND_BUSWIDTH_16) {
+@@ -2628,10 +2637,8 @@ int cadence_nand_attach_chip(struct nand_chip *chip)
+ 
+ 	cdns_chip->avail_oob_size = mtd->oobsize - ecc_size;
+ 
+-	max_oob_data_size = MAX_OOB_SIZE_PER_SECTOR;
+-
+-	if (cdns_chip->avail_oob_size > max_oob_data_size)
+-		cdns_chip->avail_oob_size = max_oob_data_size;
++	if (cdns_chip->avail_oob_size > cdns_ctrl->bch_metadata_size)
++		cdns_chip->avail_oob_size = cdns_ctrl->bch_metadata_size;
+ 
+ 	if ((cdns_chip->avail_oob_size + cdns_chip->bbm_len + ecc_size)
+ 	    > mtd->oobsize)
+-- 
+2.17.1
 
 
 ______________________________________________________
