@@ -6,148 +6,72 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05845C352A3
-	for <linux-mtd@archiver.kernel.org>; Mon, 10 Feb 2020 15:50:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD46FC3F68F
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 Feb 2020 17:07:09 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C771020733
-	for <linux-mtd@archiver.kernel.org>; Mon, 10 Feb 2020 15:50:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B2F252080C
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 Feb 2020 17:07:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oYrxjXhk";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="izlHqkQO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C771020733
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="T6OdTIm9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B2F252080C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=shaiton.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OpWvZoTj/vm0nNb6uuAPUBcgjMdXWC20fUC9WHWruvg=; b=oYrxjXhkpSo2Zo
-	QFVJBzmGTLN3k8HzWdO7hNQ/6KNYdGwTFl6Z3Gyvqavms4XkMG+wvK2KnU+pMqWvB/EDjosvcoimL
-	4n2nrdDESaePhImT5h1bgyoV8cfRnEpPmayKT77ir8YrsWehSJTRMoH5zN/hD5fe5IkeiatMq4F1T
-	wY6+bkI86xDbuO5JGIsgs8ApD4rbxatuhU4Qq5SX2ZE1+ppXZoy3qJxOywRleE0nd5atiL7pwsdkY
-	A1ajSbvCJdCvyFYy6SdjssycAUVw5Z/PILkIPglstYfT9ZL7k2liFdIKV9gA1zUvO7pKQzs6AKZAx
-	wiI/QYIJ8QQSBlDjP9XQ==;
+	List-Owner; bh=JZ2VvYLR/HGEU9yDOk0DsenUzSMHIsXGGtdFhzeQxtc=; b=T6OdTIm91IwgXa
+	btm8IfXUdCCudEy1XRkE6xORvSp+7YY6ekmyC+LttdZy1CQxvnktRpqnTAfRtkkQgaGCCbkSWxFkc
+	35nbfH+lsTJM+68P0+2zFNheYaI4o1RjI8480b2Vxw10W6elkjUeuhbGU2mXqL6c6OGpi1SflOTtj
+	ZF/v//DI0SSclf6F9g/3lQBexjJfF+AKTkm/3KhhcCNYf1TqcJSRAyOn1QV9qnIuG6VMnj4YEymlB
+	F0TUKtvmyw+UYdizIn9Zev6gKJyoxfelUtRK/6fosKIQtdWyXNYtcto1tYT14akL3XoUkjN1sQ6yD
+	aA8ngcVI0HFoVKBXRZyw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j1BKb-0001bZ-4B; Mon, 10 Feb 2020 15:50:41 +0000
-Received: from esa4.microchip.iphmx.com ([68.232.154.123])
+	id 1j1CWO-0000fq-SZ; Mon, 10 Feb 2020 17:06:56 +0000
+Received: from 6.mo173.mail-out.ovh.net ([46.105.43.93])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j1BKX-0001al-Bt
- for linux-mtd@lists.infradead.org; Mon, 10 Feb 2020 15:50:39 +0000
-Received-SPF: Pass (esa4.microchip.iphmx.com: domain of
- Tudor.Ambarus@microchip.com designates 198.175.253.82 as
- permitted sender) identity=mailfrom;
- client-ip=198.175.253.82; receiver=esa4.microchip.iphmx.com;
- envelope-from="Tudor.Ambarus@microchip.com";
- x-sender="Tudor.Ambarus@microchip.com";
- x-conformance=spf_only; x-record-type="v=spf1";
- x-record-text="v=spf1 mx a:ushub1.microchip.com
- a:smtpout.microchip.com -exists:%{i}.spf.microchip.iphmx.com
- include:servers.mcsv.net include:mktomail.com
- include:spf.protection.outlook.com ~all"
-Received-SPF: None (esa4.microchip.iphmx.com: no sender
- authenticity information available from domain of
- postmaster@email.microchip.com) identity=helo;
- client-ip=198.175.253.82; receiver=esa4.microchip.iphmx.com;
- envelope-from="Tudor.Ambarus@microchip.com";
- x-sender="postmaster@email.microchip.com"; x-conformance=spf_only
-Authentication-Results: esa4.microchip.iphmx.com;
- spf=Pass smtp.mailfrom=Tudor.Ambarus@microchip.com;
- spf=None smtp.helo=postmaster@email.microchip.com;
- dmarc=pass (p=none dis=none) d=microchip.com
-IronPort-SDR: mKJEV8M7w3m359kN4XWUkAh7aT8BYM0raIhR20rxWoOZHFe1SWUuwlxNe59PnkVQOSjNfRQD9C
- GjxmO2tPgkygNz8grBmyGc15PfhwPR6RUgKsppMywhFU20GbOr89QLoz3p9oQvK4YyZUel3xoZ
- 851uIa/V9PanJVqgG/5btUgqtoFZuc7ajN4Q2RK6jNrjC35Q227JaAsHtQxFpgkHpFRgWFjXBL
- UOCIqnhX2DtulTeZ2WvG9zfUNihrOrzTCr5Snor5CxJ/ZlpQ7RA8IkRiAvmA0572bj2ONXysL4
- oW4=
-X-IronPort-AV: E=Sophos;i="5.70,425,1574146800"; d="scan'208";a="63690602"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 10 Feb 2020 08:50:32 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 10 Feb 2020 08:50:31 -0700
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, 
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5 via Frontend
- Transport; Mon, 10 Feb 2020 08:50:29 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bnuk08BNnKNP78KQ4V3vVvlx33ynjYsH0RULT6ENmLq4mX2o8cs3V0a7Fzv7HkkrC3jGVL/YvhgtoQVVOhgGO01DRpVSvnvGhv50YfGDfRdlJOJTGQg21w7vyQIifg2XERRHXZvgqOHTQ6XNZh9uX4E38VdNvPd/rZRAgCjmLiO+bt5/4nb8Jx+EjCwAkkNmRApzxdqaPxPjXuKwSlMJOJMN5jF2JGsF1ZFVPAT1LCFKeJiPpoTpXgSIBYu24UPotVXRRwexzotmGZitNxziVCsffLGM6MBoQoxMUnIX9a3nqXI/2mGGiTzJHnMeVrOTg9p8lZQQNH6j5SNTrqpn1w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rnn14GDni7t6Ku6wEUvSJQvjxkMoHXiCwOc9nCwQI9Y=;
- b=CTASuXlbmC0HNndk9B2TokJ2zRp+7M+wy1hLgCUNlBTfrlN6fbYGh66qjZZO2d0Fj49GmS9NHxzwqOm9cUKz3B2yHOjX+3k+TdTsZgHG9xn0WRREByr8EABx2MWgV3h3St7So8NbqpQ3U9Adu7fRMLyUpndSTTBUgKTHmFlKI612d+ddD9QqWjhUm/hTwtK9kwAgrlr8Q4eWD2E9tIQ8UyNCM4S93lQ6lm37wF2yDfTt5bvtRkHO1WpVdLMnBs3RtroXgNIHv2CAhzenqgj9f/8vsd5RQ9MVM544z6L7APfG4CIPgWJ6wHGlDQgcazj7J+utkqKjAqLG1cYm23B6sw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rnn14GDni7t6Ku6wEUvSJQvjxkMoHXiCwOc9nCwQI9Y=;
- b=izlHqkQOCYf3FfVSkyVVulYD4d6y2hKBt30n0VjxzTUBt8/pAbha5tRIMmCSjUKJcAHVA79sbPir0TxFqWUEs6lpSAy0w6HRiooivWuMfsWHeYD2hlftreREc5e3WWk/2P4a6gztfAl6wuiWns0pywEdErGxbftwePS/HumuNwg=
-Received: from MN2PR11MB4448.namprd11.prod.outlook.com (52.135.39.157) by
- MN2PR11MB3936.namprd11.prod.outlook.com (10.255.180.15) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2707.21; Mon, 10 Feb 2020 15:50:28 +0000
-Received: from MN2PR11MB4448.namprd11.prod.outlook.com
- ([fe80::3c8f:7a55:cbd:adfb]) by MN2PR11MB4448.namprd11.prod.outlook.com
- ([fe80::3c8f:7a55:cbd:adfb%5]) with mapi id 15.20.2707.028; Mon, 10 Feb 2020
- 15:50:27 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <michael@walle.cc>
-Subject: Re: [PATCH v3 2/3] mtd: spi-nor: add 4bit block protection support
-Thread-Topic: [PATCH v3 2/3] mtd: spi-nor: add 4bit block protection support
-Thread-Index: AQHV3bCHi2pGqMNGHESG9Z9T0h6ocA==
-Date: Mon, 10 Feb 2020 15:50:27 +0000
-Message-ID: <2666242.fqR9HCI5eq@localhost.localdomain>
-References: <20200113055907.9029-2-js07.lee@samsung.com>
- <4425106.vomQgZVa01@localhost.localdomain>
- <3eb14c9f46fde4d232ed5d1c6295ca91@walle.cc>
-In-Reply-To: <3eb14c9f46fde4d232ed5d1c6295ca91@walle.cc>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [94.177.32.156]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6be3d176-95d3-4951-0186-08d7ae40f354
-x-ms-traffictypediagnostic: MN2PR11MB3936:
-x-microsoft-antispam-prvs: <MN2PR11MB3936DCEA7C9CF3415AC38FE8F0190@MN2PR11MB3936.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 03094A4065
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(376002)(39860400002)(136003)(346002)(366004)(396003)(189003)(199004)(4326008)(8936002)(53546011)(6506007)(26005)(86362001)(966005)(71200400001)(186003)(8676002)(2906002)(81166006)(81156014)(66446008)(9686003)(6512007)(5660300002)(66946007)(76116006)(91956017)(316002)(6916009)(6486002)(64756008)(66556008)(66476007)(54906003)(478600001)(39026012);
- DIR:OUT; SFP:1101; SCL:1; SRVR:MN2PR11MB3936;
- H:MN2PR11MB4448.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; MX:1; A:1; 
-received-spf: None (protection.outlook.com: microchip.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: f4pXC+7wFqaSK+dYUsSOGXyquvoHvJKIC3tyUKKtnzaHyDvogTxNbE7HX7XpLJorRo/gC+gBCWmCWQoY7Sw5x7rSKCaw4+zmmgkA/AKIPcogcEftu9PxNoJfq4jEW9P+G3cD+zIwvGWBt3kbmU9K0j4lNeUyyU4u8aIccL50Bvkgr9da3/cnzQgjkaxzn7q5dFYCLGpFWZxL8uF044HsdpJ/k9jB1gbFAsJmZ32C3ShaeBWnY4MB1i3I7vd6WPIMP4/foRnqO1Ee0QWLZs8r8NKzJ0z3P4tB2ZmqLgSjCb3tJOHWphITr8JUYdq+ZHcqWMl8MtJA2Y/ECi+Oj7wA3NPmnlPgB1IpsAG0vB7mXbE7VZNfeQEVQDEXAqhRXuMeaR7srCZeKf38qAzEo4KxIQz1fRwP5Wc+SNHAWU4nFgBbOJorIWfmeb/En5wtHraA2z6w4FS1kjtFwwWjVvUVdHEtKSSHByZu12qIa61LAjcFgrCs+cVoo64TBtdotn/2XP3Xnx1N8yy6DlD7WcRek4fT/WkbMXmtcintlapFz6cQWKZi7YCg3BISLbUtbyT+
-x-ms-exchange-antispam-messagedata: IMm4UD0293gvcj3fcu/SypnOFJqAKoUWqElR8kTjUMf7tPvkORRuNeau3P4bP/Q1qdM1exowMTyUpQ41sslLINgmTAnnIbRa0i+WLFE9T7uN7nx0DkQ/E7LhF7DKJjSuH2ouOueqT+ML84EPvurMxA==
-x-ms-exchange-transport-forked: True
-Content-ID: <0E28BCDB830DB04EB5768258105DC976@namprd11.prod.outlook.com>
+ id 1j1CWK-0000eJ-Cm
+ for linux-mtd@lists.infradead.org; Mon, 10 Feb 2020 17:06:55 +0000
+Received: from player691.ha.ovh.net (unknown [10.108.57.245])
+ by mo173.mail-out.ovh.net (Postfix) with ESMTP id D83B612F05A
+ for <linux-mtd@lists.infradead.org>; Mon, 10 Feb 2020 18:06:45 +0100 (CET)
+Received: from shaiton.org (mail-vk1-f180.google.com [209.85.221.180])
+ (Authenticated sender: postmaster@shaiton.org)
+ by player691.ha.ovh.net (Postfix) with ESMTPSA id 2CDA0F4AC5CB
+ for <linux-mtd@lists.infradead.org>; Mon, 10 Feb 2020 17:06:44 +0000 (UTC)
+Received: by mail-vk1-f180.google.com with SMTP id t129so1984941vkg.6
+ for <linux-mtd@lists.infradead.org>; Mon, 10 Feb 2020 09:06:44 -0800 (PST)
+X-Gm-Message-State: APjAAAUJut6YFbBKZUdDkl+dPm4GrfwmLc6cwLJSC1d/ffeDaWQY8GqD
+ Gbb4XUbe0pVhQu6Dyy76qWbb1PxIy56manIdpv8=
+X-Google-Smtp-Source: APXvYqxz0n/QLat1dz7+faxPXsA15qRGl7j4g3+5fV4zHNtWTLc0j5DSaUK4jqdAHKbHW3WJm/71T4uTWOHUZpdt0rQ=
+X-Received: by 2002:ac5:cdcd:: with SMTP id u13mr1347898vkn.0.1581354399898;
+ Mon, 10 Feb 2020 09:06:39 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6be3d176-95d3-4951-0186-08d7ae40f354
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Feb 2020 15:50:27.8174 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: aZRp+HGb+9JRZcoHp7AwPB2TL9m5I4U7heXFM7R0C6kxSxC12RWOsq2c7kKmc5sVQ0pNjp2qaC2fRe5dQPPEQioi16AG19jdJQm14OLNynE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB3936
+References: <20190806104928.1224-1-s.hauer@pengutronix.de>
+ <CAPwc7DMK7RKDUW4Kx4eKVXVJ7y9pmYwCBA+OevN_RdrJvhXb3g@mail.gmail.com>
+ <20200207155128.ouow363tvbg2whqk@pengutronix.de>
+ <CAPwc7DOa-HzeEv7RsA6OrAwFjUnEOPQvP4bwn2B2vkC_95=n_g@mail.gmail.com>
+ <20200210075736.qbf4mo7ut5jrjo7n@pengutronix.de>
+In-Reply-To: <20200210075736.qbf4mo7ut5jrjo7n@pengutronix.de>
+From: Kevin Raymond <kr@shaiton.org>
+Date: Mon, 10 Feb 2020 18:06:28 +0100
+X-Gmail-Original-Message-ID: <CAPwc7DM0MeNKaofr+0X3kvNVWUmWV=-9VinDyT-g26VHmWjUsw@mail.gmail.com>
+Message-ID: <CAPwc7DM0MeNKaofr+0X3kvNVWUmWV=-9VinDyT-g26VHmWjUsw@mail.gmail.com>
+Subject: Re: [PATCH 0/2] mtd-utils: mkfs.ubifs: Add signing support for UBIFS
+ images
+To: Sascha Hauer <s.hauer@pengutronix.de>
+X-Ovh-Tracer-Id: 10206564131503057331
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedugedriedugdekkecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeggfhgjhfffkffuvfgtsehttdertddttdejnecuhfhrohhmpefmvghvihhnucftrgihmhhonhguuceokhhrsehshhgrihhtohhnrdhorhhgqeenucffohhmrghinhepphgvnhhguhhtrhhonhhigidruggvnecukfhppedtrddtrddtrddtpddvtdelrdekhedrvddvuddrudektdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrheiledurdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepkhhrsehshhgrihhtohhnrdhorhhgpdhrtghpthhtoheplhhinhhugidqmhhtugeslhhishhtshdrihhnfhhrrgguvggrugdrohhrgh
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200210_075037_505353_D07E8669 
-X-CRM114-Status: GOOD (  15.42  )
+X-CRM114-CacheID: sfid-20200210_090652_723744_7A2B08E3 
+X-CRM114-Status: GOOD (  36.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -159,74 +83,147 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: js07.lee@gmail.com, linux-mtd@lists.infradead.org, vigneshr@ti.com,
- js07.lee@samsung.com
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ david.oberhollenzer@sigma-star.at
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Monday, February 10, 2020 2:14:48 PM EET Michael Walle wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the
-> content is safe
-> Am 2020-02-10 12:27, schrieb Tudor.Ambarus@microchip.com:
-> > On Monday, February 10, 2020 12:40:59 PM EET Michael Walle wrote:
-> >> EXTERNAL EMAIL: Do not click links or open attachments unless you know
-> >> the
-> >> content is safe
-> >> 
-> >> Am 2020-02-10 10:59, schrieb Tudor.Ambarus@microchip.com:
-> >> > On Monday, February 10, 2020 11:47:23 AM EET Tudor Ambarus wrote:
-> >> >> > btw. we should catch the two special cases:
-> >> >> > - lock none -> 0 (that was already the case)
-> >> >> > - lock all -> all BP bits
-> >> >> > 
-> >> >> > The latter is important if "bp_slots_needed < bp_slots_available"
-> >> >> > because there
-> >> >> > are multiple settings for protect all. Most flashes will define any
-> >> >> > remaining
-> >> >> > setting for "protect all", but I've also seen flashes where the
-> >> >> > in-between ones
-> >> >> > were undefined (not mentioned) and only the "all bit set" was
-> >> >> > protect
-> >> >> > all.
-> >> > 
-> >> > I re-read this. Do you have such an example of flash? Aren't the BP
-> >> > bits in
-> >> > this case marked with "X", i.e. don't care? If not, probably we can
-> >> > mask out
-> >> > those undefined slots.
-> >> 
-> >> There was definetly some datasheet where the remaining ones wasn't
-> >> described
-> >> _and_ there was no X (don't care) bits. Unfortunately, I don't find it
-> >> right
-> >> now. That datasheed made me wonder what the other "undefinded" cases
-> >> would be.
-> >> Probably it will also be "protect all"; I just mentioned it because it
-> >> would
-> >> be an easy special case to handle. I don't think we should mask out
-> >> anything,
-> >> either use the slot in between (ie the one which the formula gives us)
-> >> to
-> >> protect all or use the largest setting (ie [TB3 |] TB2 | TB1 | TB0).
-> >> And
-> >> given the reasons above, I'd prefer the latter.
-> > 
-> > I'm fine with using the largest setting, but we'll need the proof
-> > before going
-> > this way.
-> 
-> have a look at 7.1.11:
->    https://www.winbond.com/resource-files/w25q80dv_revg_07212015.pdf
-> 
-> BP[2:0]=0b101 and 0b110 is not defined.
-> 
+On Mon, Feb 10, 2020 at 8:57 AM Sascha Hauer <s.hauer@pengutronix.de> wrote:
+>
+> On Fri, Feb 07, 2020 at 06:20:57PM +0100, Kevin Raymond wrote:
+> > On Fri, Feb 7, 2020 at 4:51 PM Sascha Hauer <s.hauer@pengutronix.de> wrote:
+> > >
+> > > Hi Kevin,
+> > >
+> > > On Fri, Feb 07, 2020 at 04:25:58PM +0100, Kevin Raymond wrote:
+> > > > Hi there,
+> > > >
+> > > > I am testing ubifs authentication for my new board, however I can't
+> > > > git it to work.
+> > > > I am not able to have keyctl add my key to the kernel keyring.
+> > > >
+> > > > This is by far the most easier documentation I found about ubifs authentication.
+> > > >
+> > > > I've got my kernel generating the asymmetric key, I can do the offline
+> > > > signing with mkfs.ubifs but am not able to mount the ubifs partition.
+> > > > I always get the following error:
+> > > >     mount: mounting /dev/ubi0_8 on /mnt failed: Required key not available
+> > > >
+> > > > I am really not sure about the "keyctl add" part.
+> > > > From the Sascha example, should we change 'mysecret' by
+> > > > 'signing_key.pem' ? Should we change its format?
+> > >
+> > > There are two different keys involved. One is an asymmetric
+> > > private/public key pair needed for authenticating offline signed images.
+> > > That's the one you compile the Kernel with and which you provide to
+> > > mkfs.ubifs. This key is only used during first mount.
+> > >
+> > > The other one is a symmetric key which is used during runtime and that's
+> > > the one you add with:
+> > >
+> > > cat mysecret | keyctl padd logon ubifs:root @s
+> > >
+> > > Note that "cat mysecret" is only an example. It obviously doesn't help
+> > > authenticating having a key stored world readable on the device. The
+> > > i.MX6 offers ways to generate secrets with the CAAM unit. However,
+> > > for testing purposes some "echo foobarbaz | keyctl padd logon ubifs:root
+> > > @s" does it.
+> >
+> > Alright I get it, the offline signing key is not the same as the one used at
+> > runtime (which is definitly a good thing).
+> >
+> > >
+> > > You are trying offline signed images, but maybe you should start without
+> > > an image and do runtime authentication only. For this create an empty
+> > > UBI volume and just mount it like this (after doing the keyctl padd as
+> > > above):
+> > >
+> > > mount -t ubifs /dev/ubi0_0 /mnt/ -o auth_hash_name=sha256,auth_key=ubifs:root
+> > >
+> > > I am not sure if the kernel can read the key if you put it into the
+> > > session keyring. Systemd for example influences this and I don't know
+> > > exactly how. You might have to replace "@s" with "@u".
+> >
+> > Ok, using user session keyring is better in my example I can successfully define
+> > a new symmetric key in order to mount a newly created partition.
+> > I am not using systemd here, a simple busybox and sysV init.
+> >
+> > However if I get the whole idea, If I use ubiupdatevol to update my partition,
+> > I need the public key used while signing the ubifs at the first mount time
+> > and then an other symmetric one ("mysecret" identified as 'ubifs:root' in this
+> > exemple) in order to keep signing the partition.
+>
+> Yes. You could do without the symmetric key in a readonly environment.
+>
+> >
+> > This public key is already present (available to the mount command?) but
+> > I don't have a way to tell which one to use.
+>
+> You don't have to, the Kernel will pick the right one automatically.
+>
+> >
+> > mount -t ubifs /dev/ubi0_8 -o auth_key=ubifs:root,auth_hash_name=sha256 /mnt/
+> > mount: mounting /dev/ubi0_8 on /mnt/ failed: Invalid argument
+> >
+> > auth_key is the new symmetric key
+> > my public key used when creating the offline signature is in /proc/keys
+> >
+> > 3b1ecf1d I------     1 perm 1f030000     0     0 asymmetri Build time
+> > autogenerated kernel key: a21494c43b8859eceedf1c3d6727fd26f51b1bea:
+> > X509.rsa f51b1bea []
+> >
+> > I am not sure what I am missing about the first mount of a signed ubifs.
+>
+> Me neither currently. I could play it through with a current
+> Linux/mtd-utils tomorrow to see if there's anything not working.
 
-Good enough for me. Thanks, Michael!
 
+Ok, thanks a lot for your help.
+I tried from scratch (auto generated kernel certificate/key, offline
+signing using this key+certificate) and I still get the following:
 
+    # mount -t ubifs /dev/ubi0_6 -o ro /mnt
+    mount: mounting /dev/ubi0_6 on /mnt failed: Invalid argument
+    [ 7961.936787] UBIFS error (ubi0:6 pid 1025):
+ubifs_read_superblock: authenticated FS found, but no key given
 
+Apparently I need the symmetric key, as the following is working now
+(with or without the read-only option)
+
+    mount -t ubifs /dev/ubi0_6 -o
+ro,auth_key=ubifs:rootf,auth_hash_name=sha256  /mnt
+    [ 8390.028045] UBIFS (ubi0:6): Mounting in authenticated mode
+    [ 8618.586641] UBIFS (ubi0:6): background thread "ubifs_bgt0_6" stops
+    [ 8630.039989] UBIFS (ubi0:6): Mounting in authenticated mode
+    [ 8630.098767] UBIFS (ubi0:6): Successfully verified super block signature
+    [ 8630.151322] UBIFS (ubi0:6): UBIFS: mounted UBI device 0, volume
+6, name "root", R/O mode
+    [ 8630.159482] UBIFS (ubi0:6): LEB size: 126976 bytes (124 KiB),
+min./max. I/O unit sizes: 2048 bytes/2048 bytes
+    [ 8630.169370] UBIFS (ubi0:6): FS size: 33267712 bytes (31 MiB,
+262 LEBs), journal size 9023488 bytes (8 MiB, 72 LEBs)
+    [ 8630.179784] UBIFS (ubi0:6): reserved for root: 0 bytes (0 KiB)
+    [ 8630.185546] UBIFS (ubi0:6): media format: w4/r0 (latest is
+w5/r0), UUID 33053EA9-B76E-47A1-BC0B-BB8B97E7F593, small LPT model
+
+I don't know what was wrong last Friday, it might be the symmetric key
+inserted with keyctl in an invalid format. This time a tried with a
+simple ascii string.
+I now have a working example, which is enough for me to dig further
+into the ubifs authentication feature.
+
+Thanks a lot for your work and your help.
+
+>
+> Sascha
+>
+> --
+> Pengutronix e.K.                           |                             |
+> Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
 ______________________________________________________
 Linux MTD discussion mailing list
