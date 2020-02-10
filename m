@@ -1,95 +1,79 @@
-Return-Path: <SRS0=rK7h=35=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=fEDX=36=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B89BC2BA83
-	for <linux-mtd@archiver.kernel.org>; Sun,  9 Feb 2020 21:42:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69262C352A4
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 Feb 2020 07:58:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F0EB820820
-	for <linux-mtd@archiver.kernel.org>; Sun,  9 Feb 2020 21:42:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3A71B20733
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 Feb 2020 07:58:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XZavfpq/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F0EB820820
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sigma-star.at
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GeF9Y79A"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A71B20733
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=X4yLKP8nV1MWHh/4KtPOg+w1mcMDFKZJ3Z2VBVAwBbw=; b=XZavfpq/poOCySdpVZ7LDOqo+y
-	R+/G9e1VLiwDhkV3HuQhhH528hQkVNfeDtV3m8eCgNLW5VU5X1XqDjAuZC2S5v0vDGVRU0e/CePh8
-	gAZEDmgTfnSj7FoQNlAs9pSCY4LNiflSrdLypVkDzaywzCAjXSFDdkV1G0SL4xUzjEVfgICjY/Rhu
-	BLc1ZB4bfMZMg2Cqv5ymnBlERTjFSfap7yOrELdDwFuuG6W7WMqvqxo0y/carz9Blyi9r1U+zsg88
-	JnVCv1M+9bAh0/K+jekLgYxcKB1aPNueB9TP07HhNMcOES6KsYuo3kgXfIjSJm1uEiut4K5pXqCtm
-	1D87jK+A==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=FJ4mn19xwDwZSMn2LZMjiMkLc55RJLrUo/m2Jmb4fkk=; b=GeF9Y79Agqnl+c
+	fQIuBhi+c1c2e0QJjrjN8aisjgb3qodxR/DANcE0LC3H2uMaWTGgTBFgjq06K5XEgcTbYS8moUdpA
+	Kohvpm5mUV/KS/mPZqwj8IqweWe7MAzLAt1HSMPcFP0I3g10i6dzUlGsdxzlNMBPDY1stq1Y3+l5N
+	66W4FZYiDgaxn2MaibWhaK0wsLmVr1cpDjgq7p8ndDFpGUKOKb5+gaPEBwIRIsVazowrmZymRhp+u
+	oxbwbz2VslZAMpA6V2udaV8At1BS5mphq1HzIwKm37JYTWFxQqTCw4Mfr6dZMPfmt2Cs+VuQWGlTW
+	N3iCfG9E1dBYPlNKh38A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j0uLg-0006XS-3x; Sun, 09 Feb 2020 21:42:40 +0000
-Received: from lilium.sigma-star.at ([109.75.188.150])
+	id 1j13wv-0003XO-Sw; Mon, 10 Feb 2020 07:57:45 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j0uLb-0006Wu-29
- for linux-mtd@lists.infradead.org; Sun, 09 Feb 2020 21:42:36 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lilium.sigma-star.at (Postfix) with ESMTP id 9C47F1815EA9A;
- Sun,  9 Feb 2020 22:42:24 +0100 (CET)
-Received: from lilium.sigma-star.at ([127.0.0.1])
- by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id vyIKLnYA4YhC; Sun,  9 Feb 2020 22:42:23 +0100 (CET)
-Received: from lilium.sigma-star.at ([127.0.0.1])
- by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id smXFIuvjyXrN; Sun,  9 Feb 2020 22:42:23 +0100 (CET)
-Subject: Re: [PATCH] libubi: remove private kernel header from includes
-To: Bastian Germann <bastiangermann@fishpost.de>, linux-mtd@lists.infradead.org
-References: <20200129185013.21752-1-bastiangermann@fishpost.de>
- <20200129185013.21752-2-bastiangermann@fishpost.de>
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Autocrypt: addr=david.oberhollenzer@sigma-star.at; prefer-encrypt=mutual;
- keydata=
- mQENBFZyf0YBCADHyKhABhxthCC9n48pvsuk5p3IEdYXMs8Apenh1N/Z4cViAz/d/nSCZ+FG
- FX/PSubEzq8AilZLejchAltaORCvA1Y6FgTlpcdJ6gHDfStDbJL/vk5N8aL7YNF7VfjTRntB
- tKbhKcrG05nbdNjIioAm04pt9rx5mV5KMbf22/FdZpOSSsC6/N7b/cFH9+fx8kwi4pNFuJwr
- BkWRuQ7rEtCoSpd22t+Vh9qA7kymW9gWY405258jnN65jBO7ElqU2CCuGRPg6uryAHV3RVCB
- 9j9AE3HLacQReFtt5ylyydSQbaK4K9asnd7U2/C11vIuuciXCppX4bPap/pMnGpzw0UNABEB
- AAG0N0RhdmlkIE9iZXJob2xsZW56ZXIgPGRhdmlkLm9iZXJob2xsZW56ZXJAc2lnbWEtc3Rh
- ci5hdD6JATcEEwEIACEFAlZyf0YCGwMFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AACgkQvOXc
- PHQaAtFuEAgArXOhaoaVvCMVCa5N25Q/+Q6K1wrVpPmkH89yhQqCmfM6f+2VM5MGFDPfaSJ3
- 5fBDH0iwBQwlXIb7NSXWtzdXX9rMvJkJqv45TgeKtJApf/sRhmcN+clrwzP8oZQbxkP1YWzo
- Vwo4lOb3Kv7aY9yeCjqNbdJJ57NpvYOUrzrCpGkrDPBBQOvKF3wbq3oU/o3dT23NDeQ20jXg
- quJf/PCw6WCzRxqg58wH02MdMDQe8vByzVig2bM2e7DErtt+hPK/Dmdsqgns+Z+SrQcOvRa3
- GMAHAuHB0u2LhYO6NyaNCgzdgutorilYcq7FEKr8XqwOnfVmZdCW3qGKmLbn6qMEdLkBDQRW
- cn9GAQgAvugF8cFjv2Zs4BBb44SnxGawBySC1bMRas/MjA9EMHUAx/StcecQmxnl6BzEyGpr
- +TRnXIzcb5xI8SxitBDU5MLvwsHgNvpYp9fscd4kWP7oMir9ta3Q8SvT4OLbO4FZBGaURzGP
- ak8JmjMMtOoOBh4meOjz6GrJe9UIGxT94aB01w7YohfBANzK8xyk4ykKC5Op4XgaaMKOEQUa
- h7wajcojYSlvgOiXqEisMHlRDAW6sXL2sEM7TIpvYhy9txMLllpkYb0Pu1BvUpY/unsybWKA
- FyiTmeiY+nEveUvqX6Ef7BWdClBeCk2UaRvtcoLd22VxMlKTniHQcNMOXlRRawARAQABiQEf
- BBgBCAAJBQJWcn9GAhsMAAoJELzl3Dx0GgLRPtcH/jD6rn2+VIKgrHdt3ao3Abpu2fqYfwbI
- yPAtpXOddDptVq+0A/2arXT1Y8+jNSZpbAg8K+bLaEAcSUEjviKMpfI7ppTUBuGKrpgc5xsi
- UpKkJCb7oB1ZraIBNBPtPPVUhbwLie4uW/LVt+8rBKz3W9KEDOsT0ZCG/pW8Ld+EpDR9l0fm
- qoVHaw8PhLAtez+B7HS7Hv7iJPDtX85kFYpud8kIPENXVn9EjZudyMWgZb2LhYlcavNcszgR
- 7In6ift5SNySojCOfAV0iKZb8QUXWktLleY8kQ8jltOsSRTuO4PDfzvtCQDixUw4tQ7WLwDT
- qyUpot0oG03vtSG4LIRCdxI=
-Organization: sigma star gmbh
-Message-ID: <891ac06a-1a62-3366-c228-9945fd595006@sigma-star.at>
-Date: Sun, 9 Feb 2020 22:42:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ id 1j13wr-0003Wo-OJ
+ for linux-mtd@lists.infradead.org; Mon, 10 Feb 2020 07:57:43 +0000
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <sha@pengutronix.de>)
+ id 1j13wn-0003G0-LJ; Mon, 10 Feb 2020 08:57:37 +0100
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.89)
+ (envelope-from <sha@pengutronix.de>)
+ id 1j13wm-0001Es-NS; Mon, 10 Feb 2020 08:57:36 +0100
+Date: Mon, 10 Feb 2020 08:57:36 +0100
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Kevin Raymond <kr@shaiton.org>
+Subject: Re: [PATCH 0/2] mtd-utils: mkfs.ubifs: Add signing support for UBIFS
+ images
+Message-ID: <20200210075736.qbf4mo7ut5jrjo7n@pengutronix.de>
+References: <20190806104928.1224-1-s.hauer@pengutronix.de>
+ <CAPwc7DMK7RKDUW4Kx4eKVXVJ7y9pmYwCBA+OevN_RdrJvhXb3g@mail.gmail.com>
+ <20200207155128.ouow363tvbg2whqk@pengutronix.de>
+ <CAPwc7DOa-HzeEv7RsA6OrAwFjUnEOPQvP4bwn2B2vkC_95=n_g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200129185013.21752-2-bastiangermann@fishpost.de>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <CAPwc7DOa-HzeEv7RsA6OrAwFjUnEOPQvP4bwn2B2vkC_95=n_g@mail.gmail.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-IRC: #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 08:09:10 up 217 days, 13:19, 69 users,  load average: 0.08, 0.23,
+ 0.23
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200209_134235_249948_D430C7C3 
-X-CRM114-Status: UNSURE (   6.31  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200209_235741_791396_EDABE9C6 
+X-CRM114-Status: GOOD (  31.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,17 +85,107 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ david.oberhollenzer@sigma-star.at
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Applied to mtd-utils.git master.
+On Fri, Feb 07, 2020 at 06:20:57PM +0100, Kevin Raymond wrote:
+> On Fri, Feb 7, 2020 at 4:51 PM Sascha Hauer <s.hauer@pengutronix.de> wrote:
+> >
+> > Hi Kevin,
+> >
+> > On Fri, Feb 07, 2020 at 04:25:58PM +0100, Kevin Raymond wrote:
+> > > Hi there,
+> > >
+> > > I am testing ubifs authentication for my new board, however I can't
+> > > git it to work.
+> > > I am not able to have keyctl add my key to the kernel keyring.
+> > >
+> > > This is by far the most easier documentation I found about ubifs authentication.
+> > >
+> > > I've got my kernel generating the asymmetric key, I can do the offline
+> > > signing with mkfs.ubifs but am not able to mount the ubifs partition.
+> > > I always get the following error:
+> > >     mount: mounting /dev/ubi0_8 on /mnt failed: Required key not available
+> > >
+> > > I am really not sure about the "keyctl add" part.
+> > > From the Sascha example, should we change 'mysecret' by
+> > > 'signing_key.pem' ? Should we change its format?
+> >
+> > There are two different keys involved. One is an asymmetric
+> > private/public key pair needed for authenticating offline signed images.
+> > That's the one you compile the Kernel with and which you provide to
+> > mkfs.ubifs. This key is only used during first mount.
+> >
+> > The other one is a symmetric key which is used during runtime and that's
+> > the one you add with:
+> >
+> > cat mysecret | keyctl padd logon ubifs:root @s
+> >
+> > Note that "cat mysecret" is only an example. It obviously doesn't help
+> > authenticating having a key stored world readable on the device. The
+> > i.MX6 offers ways to generate secrets with the CAAM unit. However,
+> > for testing purposes some "echo foobarbaz | keyctl padd logon ubifs:root
+> > @s" does it.
+> 
+> Alright I get it, the offline signing key is not the same as the one used at
+> runtime (which is definitly a good thing).
+> 
+> >
+> > You are trying offline signed images, but maybe you should start without
+> > an image and do runtime authentication only. For this create an empty
+> > UBI volume and just mount it like this (after doing the keyctl padd as
+> > above):
+> >
+> > mount -t ubifs /dev/ubi0_0 /mnt/ -o auth_hash_name=sha256,auth_key=ubifs:root
+> >
+> > I am not sure if the kernel can read the key if you put it into the
+> > session keyring. Systemd for example influences this and I don't know
+> > exactly how. You might have to replace "@s" with "@u".
+> 
+> Ok, using user session keyring is better in my example I can successfully define
+> a new symmetric key in order to mount a newly created partition.
+> I am not using systemd here, a simple busybox and sysV init.
+> 
+> However if I get the whole idea, If I use ubiupdatevol to update my partition,
+> I need the public key used while signing the ubifs at the first mount time
+> and then an other symmetric one ("mysecret" identified as 'ubifs:root' in this
+> exemple) in order to keep signing the partition.
 
-Thanks,
+Yes. You could do without the symmetric key in a readonly environment.
 
-David
+> 
+> This public key is already present (available to the mount command?) but
+> I don't have a way to tell which one to use.
 
+You don't have to, the Kernel will pick the right one automatically.
+
+> 
+> mount -t ubifs /dev/ubi0_8 -o auth_key=ubifs:root,auth_hash_name=sha256 /mnt/
+> mount: mounting /dev/ubi0_8 on /mnt/ failed: Invalid argument
+> 
+> auth_key is the new symmetric key
+> my public key used when creating the offline signature is in /proc/keys
+> 
+> 3b1ecf1d I------     1 perm 1f030000     0     0 asymmetri Build time
+> autogenerated kernel key: a21494c43b8859eceedf1c3d6727fd26f51b1bea:
+> X509.rsa f51b1bea []
+> 
+> I am not sure what I am missing about the first mount of a signed ubifs.
+
+Me neither currently. I could play it through with a current
+Linux/mtd-utils tomorrow to see if there's anything not working.
+
+Sascha
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
 ______________________________________________________
 Linux MTD discussion mailing list
