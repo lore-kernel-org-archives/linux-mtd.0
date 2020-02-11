@@ -7,74 +7,76 @@ X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB254C352A4
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Feb 2020 02:31:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24EF8C352A3
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Feb 2020 06:55:55 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BEB7120714
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Feb 2020 02:31:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E0AFF206D7
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Feb 2020 06:55:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YfgOO0R/";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="tpFbe4/d"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BEB7120714
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YDc3cF60";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g0PIYJaW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E0AFF206D7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=KYU2oxcOMvDmO6sImVB/qfIUvsBJj2hz50SkHkZUWHc=; b=Yfg
-	OO0R/fzfSOcoggluicxUlxjsikCSMCr5oEdjiVAwwvn2OqyulBVZ4Bcjt74K/x30yZVXCQBz7LAca
-	4ks08aLXast4UPChEq8Sa2afvuB6S5ECpzeKMSwvivlniFxj2oGClioixa57l4gAHFG9TKYzrSk3Z
-	yHFQhztZn0+HAxdmMXmQYy1QBWrbjseqhQ6ZBxwaX1Bmw0AVrZECG6eJ8pHpM+zLmqZ7CPrXU1p+c
-	bRsIDV9XkBhgTgre+Eyqa3MszEnd8NCfCYdP65uB8tTYNUWW5fIryeWZvb11Z7PuBMw57/yJDZ0oI
-	sFm/ETl1Ti6GsfchSO86ucPBj6KsQHA==;
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Akua7Wu5HRRg3mpWgsLVcQCUlOo+wzENlXCXCRy5QSg=; b=YDc3cF60K75ylO
+	vCZT9Sv9IDU2HE1iOk8cRTt4ewPLqJ7RMCIEO9utZ1QGE0S2W9mpJqtokrqer5bUc+NUvsNUHC0qv
+	84XA6+/EjT+dL0vJ3i36gpzMGUwSqC+kWC3uqTr9E6wYEJ/HaqVsRy/DA4TJkrfDUmjDJnFHkqTV+
+	kzpaIzU6h1R0GMQJVjci1NxxO5Uc8yUmQn9BGMMvjqzmULrF7ma/ToHPUE27iQO16bKIKDh2/AkZK
+	9pF0PwrFQov8tiQgmvmqgbV2gsntY87Cb20fCsQM91lXy0cKALe8idMRf4jys6TOT9C+YyERjJtWh
+	YMcUCVL5KIqaPlfjG+5Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j1LKM-0007Zm-MZ; Tue, 11 Feb 2020 02:31:06 +0000
-Received: from mail-lj1-x233.google.com ([2a00:1450:4864:20::233])
+	id 1j1PSG-0006wI-FT; Tue, 11 Feb 2020 06:55:32 +0000
+Received: from mail-ot1-x341.google.com ([2607:f8b0:4864:20::341])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j1LKK-0007ZS-6o
- for linux-mtd@lists.infradead.org; Tue, 11 Feb 2020 02:31:05 +0000
-Received: by mail-lj1-x233.google.com with SMTP id x14so9758387ljd.13
- for <linux-mtd@lists.infradead.org>; Mon, 10 Feb 2020 18:31:03 -0800 (PST)
+ id 1j1PSD-0006vM-OS; Tue, 11 Feb 2020 06:55:31 +0000
+Received: by mail-ot1-x341.google.com with SMTP id i6so9046730otr.7;
+ Mon, 10 Feb 2020 22:55:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:from:date:message-id:subject:to;
- bh=z9zvizdqzJ4+t3ijFXEG0ibxAvXW+EPztgpSA78b/OE=;
- b=tpFbe4/dDMcxPaPAXz6GRRpjKZHirPNOU3oBBc+tdCz4RUd3VbptZexNsvUlcRtDkB
- EZpdHWKKJ/UkPDfD6KegBKyBCCPoTBP2nQWZ9+PgQ66j+yx4TG5z47GoS0pm9u6Sn8uX
- ucjm4l+LXoNeBJadA2F1oHMpYN/9AKLP1RNisRHiiZ+sKkLJuyOx2GsoYe3pfyxv3Sqw
- 46KBbGkceXwaiLoI9heVcHtgpihV66EJV7btDe+XZaZcP0dV5+mixktsIfLNiNmoprqf
- gTLTlBlfy5oYDEItuQeY4dIyQBe5BijzbZ2WHzHtk8HBO2pKSFLE70vt43Sa4+TN7EVg
- x72g==
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=0qsBaYW+8tB375NH6OQOHYpSP00PTX/24760IzgBPWM=;
+ b=g0PIYJaWAWx7ZYpbMTj/h5I8yC9Of7h+6G71MOTcoKwG1sXqIRCtHnj2A1Bog8F0D6
+ gRegnL9DOFPHP3NfmRiQphE7IsOBTlUM31AvacH3fpoDnqGnK2q8LqWAH2RR0/Q/7WzI
+ duP1KOPfAuTlULiUAgHq6CLpSbUiTV1SO95ePO4rsRoWpQ0JplY3NS7yClKK7Cu6bwl8
+ pVzpg5r5EZTiEqSZ4ZQxHUcDTdJ4FA67PpBHgKvI1GDq69mKuFWRGxvx3K0fTf7J98+/
+ IQsiov/bIeai8YzlLGeROG8O9fZ7Fq2Ld7LVDxIjP47KB+IR1/ZBFkCo7JBoQGKe+ew2
+ yJEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
- bh=z9zvizdqzJ4+t3ijFXEG0ibxAvXW+EPztgpSA78b/OE=;
- b=PcZfftlxbyY5AmnDrBg20hkg1kbYal4a1c+ABK8BezM21jpFVbldqRzlGKNTkp0uug
- 3fbgMOX+uLTvtjqwH572QRdFSmmlaWlr/Zwsq1X9d3iu2TUU/nsqdT8DRmgc5YxyY7C5
- t9Z2L/TZPFac8CXTBdFs+t7+O0nDeOWvxg5NN2/V3L23AkGUDBDtv+5OT+gxxYRL5PF4
- BfX7rLoTKWxbJMUzbNeIg+yUN3xfE+tZrAy7A1srfyFt9UyULNKO2IAjxX+Ha6prJGpC
- DVzLuEXn6Zl78OmScEMhqcFQSNXCfOX79s0tI3MNN8Z01c+z2JXqgobsWXMWDHDhmb6W
- 0FRQ==
-X-Gm-Message-State: APjAAAXjiR4YT9gr4Zvs5VNYb+Gg0di6I23eNe7MJsa1I3ZDLiY3h4o+
- aq1WTs1ZRz1oS3R1gTJHUVl3gtP+GM4waYctPHwqETNs
-X-Google-Smtp-Source: APXvYqw6E7Ne6JbYiMcGwt2yKyu8q5QPjMI6C930H0mq+ElIGh1lI29Z91N6wvUCff9AeVG4E3o7WPMp/zQSr9z6y+s=
-X-Received: by 2002:a2e:8907:: with SMTP id d7mr2833359lji.71.1581388257570;
- Mon, 10 Feb 2020 18:30:57 -0800 (PST)
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=0qsBaYW+8tB375NH6OQOHYpSP00PTX/24760IzgBPWM=;
+ b=ozuFOpcQxxdygaA26FlxINeXH9z+4YmWPcpz2eAwAC8pt6R9NlMgjEJHrEaNDaJK2p
+ mWsPSOxrxl8qDpaRYndk7MkAScfsn8eSwnE5tQ06GD0qewqMxMacccJ9tGaWzwGXK6hX
+ xseVIL15wQlHJjoyHzjX4AUs6spbSJYqtNp7aagwHCAjjwZZxTPlzYW1AfgJCT7RaPa2
+ 8hRHj7SkqPianDGidcyGOl5CI9LzgP0pWBvQ1mSsZ0h01a3iYRxZsPZX6KtWuJaaJsyJ
+ FwyZVK/UefomgzEZtYbzw24MFE+UHJ/f8BJB3ADl0glJkUGdjclrEL6o4VZMbX0gKsjj
+ lBPA==
+X-Gm-Message-State: APjAAAXLeP8RuBcrkXLUqxZ+qEHPFT9/cH5gjpWYOZwZ490Y03yTmBXG
+ WPBComKekDmASg1B2V6xbF6eJxgncHHfdeYPe3A=
+X-Google-Smtp-Source: APXvYqxfpeNlSBi1DWWxelEmsr9hbXLc0MmgqyHPY0wwLkSBHpl+jlRuYrJEeQNRvkKIlN3ori5EnDnw9W4L7XWKMI0=
+X-Received: by 2002:a9d:3e43:: with SMTP id h3mr3925618otg.84.1581404128257;
+ Mon, 10 Feb 2020 22:55:28 -0800 (PST)
 MIME-Version: 1.0
-From: Otto Blom <oblom586@gmail.com>
-Date: Mon, 10 Feb 2020 18:30:46 -0800
-Message-ID: <CAOfSrV25UiKjgpYBfW3KQF7B9uvr5sMzzTk=yUu3TWpT-OKHjw@mail.gmail.com>
-Subject: Non-Random Bit errors on freshly erased Micron Flash
-To: linux-mtd <linux-mtd@lists.infradead.org>
+References: <20200208084022.193231-1-gch981213@gmail.com>
+ <1581323455.2213.6.camel@mtksdaap41>
+In-Reply-To: <1581323455.2213.6.camel@mtksdaap41>
+From: Chuanhong Guo <gch981213@gmail.com>
+Date: Tue, 11 Feb 2020 14:55:17 +0800
+Message-ID: <CAJsYDVLzwWfT24NGDJMJShwoG0Qrq06mLqamHbH0xedmMLdrAQ@mail.gmail.com>
+Subject: Re: [PATCH v2] mtd: mtk-quadspi: add support for DMA reading
+To: Yingjoe Chen <yingjoe.chen@mediatek.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200210_183104_251165_934431E5 
-X-CRM114-Status: UNSURE (   6.16  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200210_225529_823151_9A9FFD2F 
+X-CRM114-Status: GOOD (  13.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,164 +88,50 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Richard Weinberger <richard@nod.at>, open list <linux-kernel@vger.kernel.org>,
+ linux-mediatek@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi There !
-
-We using a Xilinx Zynq Ultrascale+ (Arasan NAND controller) with
-MT29F4G08AB Micron Flash. The strange thing I observe is that after a
-flash_eraseall there are 4 bit errors on each page (2048bytes), always
-in the same locations, see below -
-
-
-ZynqMP> md 0x10000000 200
-
-10000000: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000010: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000020: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000030: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000040: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000050: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000060: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000070: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000080: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000090: ffffffff ffffffff ffffffff ffffffff    ................
-
-100000a0: ffffffff ffffffff ffffffff ffffffff    ................
-
-100000b0: ffffffff ffffffff ffffffff ffffffff    ................
-
-100000c0: ffffffff ffffffff ffffffff ffffffff    ................
-
-100000d0: ffffffff ffffffff ffffffff ffffffff    ................
-
-100000e0: ffffffff ffffffff ffffffff ffffffff    ................
-
-100000f0: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000100: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000110: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000120: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000130: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000140: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000150: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000160: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000170: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000180: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000190: ffffffff ffffffff ffffffff ffffffff    ................
-
-100001a0: ffffffff ffffffff ffffffff ffffffff    ................
-
-100001b0: ffffffff dfffffff ffffffff ffffffff    ................
-//433rd Byte is missing MSB
-
-100001c0: ffffffff ffffffff ffffffff ffffffff    ................
-
-100001d0: ffffffff ffffffff ffffffff ffffffff    ................
-
-100001e0: ffffffff ffffffff ffffffff ffffffff    ................
-
-100001f0: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000200: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000210: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000220: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000230: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000240: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000250: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000260: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000270: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000280: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000290: ffffffff ffffffff ffffffff ffffffff    ................
-
-100002a0: ffffffff ffffffff ffffffff ffffffff    ................
-
-100002b0: ffffffff ffffffff ffffffff ffffffff    ................
-
-100002c0: ffffffff ffffffff ffffffff ffffffff    ................
-
-100002d0: ffffffff ffffffff ffffffff ffffffff    ................
-
-100002e0: ffffffff ffffffff ffffffff ffffffff    ................
-
-100002f0: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000300: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000310: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000320: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000330: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000340: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000350: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000360: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000370: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000380: ffffffff ffffffff ffffffff ffffffff    ................
-
-10000390: ffffffff ffffffff ffffffff ffffffff    ................
-
-100003a0: ffffffff ffffffff ffffffff ffffffff    ................
-
-100003b0: ffffffff dfffffff ffffffff ffffffff    ................
-//945th Byte missing MSB
-
-100003c0: ffffffff ffffffff ffffffff ffffffff    ................
-
-100003d0: ffffffff ffffffff ffffffff ffffffff    ................
-
-etc,
-
-The offset of the byte errors can be found using this equation  0x1B1
-+ (200 * N)
-
-Given the fact that this is not random in nature I have ruled out
-actual NAND cell bit errors as a possible cause. Problem is that I'm
-not sure what could cause a problem like this.. I'm guessing something
-is wrong with the 4bit BCH ECC configuration, but I'm not sure how to
-proceed.
-
-Any advice or hints would be greatly appreciated as I've already spent
-two weeks on this
-
-Thanks in advance,
-
-/Otto
+Hi!
+
+On Mon, Feb 10, 2020 at 4:31 PM Yingjoe Chen <yingjoe.chen@mediatek.com> wrote:
+> > DMA busy checking is implemented with readl_poll_timeout because
+> > I don't have access to IRQ-related docs. The speed increment comes
+> > from those saved cmd+addr+dummy clocks.
+>
+> Hi Chuanhong,
+>
+> Thanks for your patch, I'm checking with Guochun to see if we could
+> release IRQ related information to you.
+
+Thanks for the info.
+I'd like to keep using polling mode in this patch for easier reviewing.
+It's already a pretty lengthy patch now. I may implement IRQ support
+in future patches.
+
+>
+> > This controller requires that DMA source/destination address and
+> > reading length should be 16-byte aligned. We use a bounce buffer if
+> > one of them is not aligned, read more than what we need, and copy
+> > data from corresponding buffer offset.
+>
+> I've checked with our HW guys. The limitation is on DRAM only.
+> So for read we should check buffer and length to make sure it is
+> aligned, but don't need to check from.
+
+My previous test on mt7629 shows that from address also needs to
+be aligned. e.g. If I perform a DMA read from 0x2 I actually got data
+starting from 0x0 instead.
+
+Regards,
+Chuanhong Guo
 
 ______________________________________________________
 Linux MTD discussion mailing list
