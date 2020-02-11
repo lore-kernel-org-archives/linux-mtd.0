@@ -2,78 +2,84 @@ Return-Path: <SRS0=wpEZ=37=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 566A8C352A3
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Feb 2020 10:04:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E356C3B186
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Feb 2020 13:34:27 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 25F842086A
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Feb 2020 10:04:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 21B332070A
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Feb 2020 13:34:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="thPPG1yY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 25F842086A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=denx.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="X12v/ebB";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Vkh6a/dS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 21B332070A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:References:To:From:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=cmFr+Dy02vfcs8gYRLvu4hBthK6DF4rZ0ovg69E2520=; b=thPPG1yYxdGX2t
-	54a/XNKkhIJQvxCE7sTV9oo6R5G3YJiSv/Qt+r719hXgReZXf6+Lhw4WZKCKBdbk/Ky4ZR4yBH+ke
-	5znD9YQnH1f4S9mwDLzYvv7N6puYKcq3vy0Kj06xhG7mBNdwV4nfNN3E0ysw+LSSVZdWnsIWkYRfE
-	vjdTgcK1xaRYaXTQVW54f8bw7Km+12vn7hBqdcVU5FT7+jxJrokBmlTvhA94foIw7hJ+DDiVSMDR0
-	fGOVNyZq77YMt/KRjbQ7ad6PgwR1PJiGyamTOL11oLAnuK1GYKQt4fu9LeBrKR6E264GvQ7eV5wvq
-	C6UmeNapxdw3aPMczEGA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=PMhiAFV9xnnLCtwpCYpXbyVN8l/lJn13/bIocECQfMk=; b=X12v/ebBMqMNH/
+	WxcA3CL+5wfnntLETE1wxQh2gBX6A4P0osGLbxMShPY4xVPh+pyqDamChklIWARfsyvKxD9tSEy+r
+	XuOnRjULBolOT9I2QHpDWlgGSfMhgC49NwWaFxgwv1B8yGw+//u7qZ1HtX/GRG4VX/tEoAna8MTdQ
+	TcX/JteH2d1ylEN1T0Q5uUPXsfyhCINmfNLjB92R9rNYU1BLnV9AWQBGnC4rLfDjn/jDvOGWkyth+
+	wJCY4sFahu1tG3k32oJwrYFMdVIoV8on9ZyzaVHQ/6mJnLb9XbQtWVVf8a5vMoOiw1XFbHNT+pwWf
+	0WSodEKICWSceuAepQPg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j1SOy-00067p-0I; Tue, 11 Feb 2020 10:04:20 +0000
-Received: from mail-out.m-online.net ([212.18.0.9])
+	id 1j1Vfx-0003nB-Sw; Tue, 11 Feb 2020 13:34:05 +0000
+Received: from lelv0142.ext.ti.com ([198.47.23.249])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j1SOu-00067H-8J
- for linux-mtd@lists.infradead.org; Tue, 11 Feb 2020 10:04:18 +0000
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
- by mail-out.m-online.net (Postfix) with ESMTP id 48Gyzd2RCzz1rHDD;
- Tue, 11 Feb 2020 11:04:13 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
- by mail.m-online.net (Postfix) with ESMTP id 48Gyzd17J3z1qrYk;
- Tue, 11 Feb 2020 11:04:13 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
- by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new,
- port 10024)
- with ESMTP id FjGa24uUwwnY; Tue, 11 Feb 2020 11:04:11 +0100 (CET)
-X-Auth-Info: ER4FsN9sA1y1ZrKSKhnuyEoBbziRu7X4FJ90Dnnwg5Q=
-Received: from [IPv6:::1] (unknown [195.140.253.167])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.mnet-online.de (Postfix) with ESMTPSA;
- Tue, 11 Feb 2020 11:04:11 +0100 (CET)
-Subject: Re: [PATCH] Revert "mtd: rawnand: denali: get
- ->setup_data_interface() working again"
-From: Marek Vasut <marex@denx.de>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-References: <20200205070834.3087104-1-marex@denx.de>
- <20200205101223.21d99d93@xps13>
- <45a10680-5fe6-7cab-a7ef-f7f7a952e822@denx.de>
- <20200205105045.6877aca6@xps13>
- <bdb54ba5-648a-0b79-661c-5eb9604a1ee5@denx.de>
-Message-ID: <b6f094b7-01a9-34a2-bf10-019a05bc7cb3@denx.de>
-Date: Tue, 11 Feb 2020 11:04:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.2
+ id 1j1Vfu-0003mH-Ny
+ for linux-mtd@lists.infradead.org; Tue, 11 Feb 2020 13:34:04 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 01BDXtTM081155;
+ Tue, 11 Feb 2020 07:33:55 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1581428035;
+ bh=J0FidGlQHAmD7w/uylDKgXCR74RkSmQmXQTVDkjB/H8=;
+ h=From:To:CC:Subject:Date:In-Reply-To:References;
+ b=Vkh6a/dSjpVSm5yoS0GFgATq5gbCNxIc4jWzQOtTd3i1cQP3vD7OIVoYxxO6Gxrc0
+ uNm5aohZkUJ0o2/Kk0QblC5IOerJE67bVJ9xraBX3KTbNN4twfwdL/xRQ302aK71gx
+ /DDCCP9HB8sUSN/74SYoOEWJtbrgqa/77uXuslKU=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 01BDXtba127823
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 11 Feb 2020 07:33:55 -0600
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Tue, 11
+ Feb 2020 07:33:55 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Tue, 11 Feb 2020 07:33:55 -0600
+Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com
+ [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 01BDXm5I087522;
+ Tue, 11 Feb 2020 07:33:52 -0600
+From: Pratyush Yadav <p.yadav@ti.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Mark Brown <broonie@kernel.org>
+Subject: [PATCH 1/9] spi: spi-mem: allow specifying whether an op is DTR or not
+Date: Tue, 11 Feb 2020 19:03:40 +0530
+Message-ID: <20200211133348.15558-2-p.yadav@ti.com>
+X-Mailer: git-send-email 2.25.0
+In-Reply-To: <20200211133348.15558-1-p.yadav@ti.com>
+References: <20200211133348.15558-1-p.yadav@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <bdb54ba5-648a-0b79-661c-5eb9604a1ee5@denx.de>
-Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200211_020416_603150_338FEE17 
-X-CRM114-Status: GOOD (  18.44  )
+X-CRM114-CacheID: sfid-20200211_053402_886373_103CC30E 
+X-CRM114-Status: GOOD (  15.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,79 +91,138 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Dinh Nguyen <dinguyen@kernel.org>, Masahiro Yamada <masahiroy@kernel.org>,
- Boris Brezillon <boris.brezillon@collabora.com>, linux-mtd@lists.infradead.org,
- Tim Sander <tim@krieglstein.org>
+Cc: Sekhar Nori <nsekhar@ti.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Pratyush Yadav <p.yadav@ti.com>,
+ linux-spi@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 2/5/20 11:08 AM, Marek Vasut wrote:
-> On 2/5/20 10:50 AM, Miquel Raynal wrote:
->> Hi Marek,
->>
->> Marek Vasut <marex@denx.de> wrote on Wed, 5 Feb 2020 10:41:05 +0100:
->>
->>> On 2/5/20 10:12 AM, Miquel Raynal wrote:
->>>> Hi Marek,
->>>>
->>>> Marek Vasut <marex@denx.de> wrote on Wed,  5 Feb 2020 08:08:34 +0100:
->>>>   
->>>>> This reverts commit d311e0c27b8fcc27f707f8cac48cd8bdc4155224, which
->>>>> completely breaks NAND access on Altera SoCFPGA (detected on ArriaV
->>>>> SoC).
->>>>>
->>>>> On SoCFPGA, denali->clk_rate = 31.25 MHz and denali->clk_x_rate = 125 MHz,
->>>>> hence the driver sets NAND_KEEP_TIMINGS flag. This did not happen before
->>>>> and is actually incorrect, as on SoCFPGA we do not want to retain timings
->>>>> from previous stage (the timings might be incorrect or outright invalid).
->>>>>
->>>>> Cc: Boris Brezillon <boris.brezillon@collabora.com>
->>>>> Cc: Dinh Nguyen <dinguyen@kernel.org>
->>>>> Cc: Masahiro Yamada <masahiroy@kernel.org>
->>>>> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
->>>>> Cc: Tim Sander <tim@krieglstein.org>
->>>>> To: linux-mtd <linux-mtd@lists.infradead.org>
->>>>> ---
->>>>>  drivers/mtd/nand/raw/denali.c | 2 +-
->>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
->>>>> index b6c463d02167..5fe3c62a756e 100644
->>>>> --- a/drivers/mtd/nand/raw/denali.c
->>>>> +++ b/drivers/mtd/nand/raw/denali.c
->>>>> @@ -1209,7 +1209,7 @@ int denali_chip_init(struct denali_controller *denali,
->>>>>  	}
->>>>>  
->>>>>  	/* clk rate info is needed for setup_data_interface */
->>>>> -	if (!denali->clk_rate || !denali->clk_x_rate)  
->>>>
->>>> I don't get it, if both clk_rate and clk_x_rate are set, the if
->>>> condition will not be entered, right?  
->>>
->>> Err, then it's the other way around and I need to keep the timings on
->>> socfpga ?
->>
->> Ok.
->>
->> Do you have a different compatible? Or a register to check? How do you
->> discriminate the different platforms by software? The quick and dirty
->> solution is to add a special case for your platform and specifically
->> use the NAND_KEEP_TIMINGS horror.
-> 
-> Sure, there's a socfpga compatible and at least two for uniphier.
-> 
->> But I think using ->software_data_interface is the right solution. So
->> I would highly recommend fixing the implementation of this hook
->> for your platform and in this case the commit reverted is not the
->> culprit, the one introducing setup_data_interface is (for the Fixes:
->> tag).
-> 
-> I'll leave the details to Yamada-san.
+Each phase is given a separate 'is_dtr' field so mixed protocols like
+4S-4D-4D can be supported.
 
-Just got a confirmation that this fixes NAND behavior on SoCFPGA, so
-this patch should go in in some form.
+Also add the mode bits SPI_RX_DTR and SPI_TX_DTR so controllers can
+specify whether they support DTR modes or not.
+
+Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+---
+ drivers/spi/spi-mem.c       | 25 +++++++++++++++++++++++++
+ include/linux/spi/spi-mem.h |  8 ++++++++
+ include/linux/spi/spi.h     |  2 ++
+ 3 files changed, 35 insertions(+)
+
+diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+index e5a46f0eb93b..8c52ecc41a0e 100644
+--- a/drivers/spi/spi-mem.c
++++ b/drivers/spi/spi-mem.c
+@@ -99,6 +99,17 @@ void spi_controller_dma_unmap_mem_op_data(struct spi_controller *ctlr,
+ }
+ EXPORT_SYMBOL_GPL(spi_controller_dma_unmap_mem_op_data);
+ 
++static int spi_check_dtr_req(struct spi_mem *mem, bool is_dtr, bool tx)
++{
++	u32 mode = mem->spi->mode;
++
++	if (is_dtr &&
++	    ((tx && (mode & SPI_TX_DTR)) || (!tx && (mode & SPI_RX_DTR))))
++			return 0;
++
++	return -ENOTSUPP;
++}
++
+ static int spi_check_buswidth_req(struct spi_mem *mem, u8 buswidth, bool tx)
+ {
+ 	u32 mode = mem->spi->mode;
+@@ -154,6 +165,20 @@ bool spi_mem_default_supports_op(struct spi_mem *mem,
+ 				   op->data.dir == SPI_MEM_DATA_OUT))
+ 		return false;
+ 
++	if (op->cmd.is_dtr && spi_check_dtr_req(mem, op->cmd.is_dtr, true))
++		return false;
++
++	if (op->addr.is_dtr && spi_check_dtr_req(mem, op->addr.is_dtr, true))
++		return false;
++
++	if (op->dummy.is_dtr && spi_check_dtr_req(mem, op->dummy.is_dtr, true))
++		return false;
++
++	if (op->data.dir != SPI_MEM_NO_DATA &&
++	    spi_check_dtr_req(mem, op->data.is_dtr,
++			      op->data.dir == SPI_MEM_DATA_OUT))
++		return false;
++
+ 	return true;
+ }
+ EXPORT_SYMBOL_GPL(spi_mem_default_supports_op);
+diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+index af9ff2f0f1b2..4669082b4e3b 100644
+--- a/include/linux/spi/spi-mem.h
++++ b/include/linux/spi/spi-mem.h
+@@ -71,6 +71,7 @@ enum spi_mem_data_dir {
+  * struct spi_mem_op - describes a SPI memory operation
+  * @cmd.buswidth: number of IO lines used to transmit the command
+  * @cmd.opcode: operation opcode
++ * @cmd.is_dtr: whether the command opcode should be sent in DTR mode or not
+  * @addr.nbytes: number of address bytes to send. Can be zero if the operation
+  *		 does not need to send an address
+  * @addr.buswidth: number of IO lines used to transmit the address cycles
+@@ -78,10 +79,13 @@ enum spi_mem_data_dir {
+  *	      Note that only @addr.nbytes are taken into account in this
+  *	      address value, so users should make sure the value fits in the
+  *	      assigned number of bytes.
++ * @addr.is_dtr: whether the address should be sent in DTR mode or not
+  * @dummy.nbytes: number of dummy bytes to send after an opcode or address. Can
+  *		  be zero if the operation does not require dummy bytes
+  * @dummy.buswidth: number of IO lanes used to transmit the dummy bytes
++ * @dummy.is_dtr: whether the dummy bytes should be sent in DTR mode or not
+  * @data.buswidth: number of IO lanes used to send/receive the data
++ * @data.is_dtr: whether the data should be sent in DTR mode or not
+  * @data.dir: direction of the transfer
+  * @data.nbytes: number of data bytes to send/receive. Can be zero if the
+  *		 operation does not involve transferring data
+@@ -92,21 +96,25 @@ struct spi_mem_op {
+ 	struct {
+ 		u8 buswidth;
+ 		u8 opcode;
++		bool is_dtr;
+ 	} cmd;
+ 
+ 	struct {
+ 		u8 nbytes;
+ 		u8 buswidth;
+ 		u64 val;
++		bool is_dtr;
+ 	} addr;
+ 
+ 	struct {
+ 		u8 nbytes;
+ 		u8 buswidth;
++		bool is_dtr;
+ 	} dummy;
+ 
+ 	struct {
+ 		u8 buswidth;
++		bool is_dtr;
+ 		enum spi_mem_data_dir dir;
+ 		unsigned int nbytes;
+ 		union {
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 6d16ba01ff5a..bf1108318389 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -183,6 +183,8 @@ struct spi_device {
+ #define	SPI_TX_OCTAL	0x2000			/* transmit with 8 wires */
+ #define	SPI_RX_OCTAL	0x4000			/* receive with 8 wires */
+ #define	SPI_3WIRE_HIZ	0x8000			/* high impedance turnaround */
++#define SPI_RX_DTR	0x10000			/* receive in DTR mode */
++#define SPI_TX_DTR	0x20000			/* transmit in DTR mode */
+ 	int			irq;
+ 	void			*controller_state;
+ 	void			*controller_data;
+-- 
+2.25.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
