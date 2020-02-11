@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A018C352A3
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Feb 2020 13:35:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25E51C3B187
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Feb 2020 13:35:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3CCCA20675
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Feb 2020 13:35:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EB97B20675
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Feb 2020 13:35:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lTQJRo5D";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="NLLAZze5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3CCCA20675
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hQOHiLkm";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="xVOXcSr8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EB97B20675
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,60 +26,60 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fMFkvwDoZgGir8pMAN1bOTS/doDmU5kM3wTQVeBWWr0=; b=lTQJRo5DivMVDy
-	Wpkcolw7iDuCebhEnGHUddsN8gUi/4V1ssXDGEHjq4WmsUbJKuEqlLdYVSCAsoDr0Pwspu6TM3ZYL
-	BfL0nMCz+4aYPAXP6h2MqsHs+Nk1mXB7KI/zxwdd2jcbdQtzVRzUfmRZ7NDEh6rSEIZpr8HEekNc9
-	sQrKywtqWZoL4f0YAvkw5qF0sCKrkCNwYXxWcVQmRo/8lUHmgG6qvHijEKQefqXVHU2BGMwco9Xfd
-	LKEiy+Gv+w05Cu/5aGWqfx7MquG2mXlxg0YaSQgLE6GTorNmSQvMgHKM5PBqxVedTFm8oTkQGlh8+
-	qOIKmBwnhLUQh71hgLNw==;
+	List-Owner; bh=QuzmEcpqbfodu0aplpoXH6SXthbfiQ5ASeJsGFWbnA8=; b=hQOHiLkmkPIc4w
+	NdTEkd2t+Goar+XDcpKsk+9paNDDplZo6qat61i6IxfBYdU57qKHdK0EJktV2jJsxHwZdIUILVOch
+	NayVJJZmizr3m674fMlcyA9sJkU3cxqLu6pXi5s5uzTr9ZbEhPICjFYx3WDTocvHBD31xnbtGZOj5
+	0Q3OUPTTpSzkuS2AvNeIVHIZf34cOG1W2zkKAXBirtT3qpq8yJFkP5doG3HP6/5a7G75EACRqhQH+
+	IrDprRlrptXtoEsKd2RlK7GYoR4u4VdHsqe4cwIzPqbtQjgWkz490v/MEUczsvBio2TR353B1DJ7n
+	UwjB23H79STJIjYqueGQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j1Vh7-00060a-6s; Tue, 11 Feb 2020 13:35:17 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1j1VhO-0006Dz-5K; Tue, 11 Feb 2020 13:35:34 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j1Vg0-0003mP-LH
- for linux-mtd@lists.infradead.org; Tue, 11 Feb 2020 13:34:13 +0000
+ id 1j1Vg5-0003tM-Rl
+ for linux-mtd@lists.infradead.org; Tue, 11 Feb 2020 13:34:15 +0000
 Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 01BDXwIV085601;
- Tue, 11 Feb 2020 07:33:58 -0600
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 01BDY8TN130314;
+ Tue, 11 Feb 2020 07:34:08 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1581428038;
- bh=d/e08luL+XtxzZve//IoGlqmM05PTVNAwnE9wxk/UAI=;
+ s=ti-com-17Q1; t=1581428048;
+ bh=oxzh4C7KqjCeurLvFg3+mMLTcJ3kM+cj9SbzjeDFlvY=;
  h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=NLLAZze5GTu05lPYQRCkydNlW+XwfxQdTYeQuex8VsT9olg+6FkDPCo6Vr1zyVuwC
- Q1ezez/d7YXbOzxtFOtJvJ8IseAFuWretTjeu9PtNuSsRLzM/KTfxxoyGGEaQqFHd6
- THNXWLB9fL5Dm5qMutH/c5hz2UPOf0Jq8kwrZfsQ=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 01BDXwpp070030
+ b=xVOXcSr8CUZGRRL2r5aSYulikUteqbnOTYwU0qAl5K7SdaJiJ+CJONA60ANWuXrJE
+ yUSiARu8Yeuoe7CsVeqBNPmZ2ia00iSLfy50SgX6mNxatQ04V+amTlWuz/LucLzLea
+ oAIu2QWz0M3PBVqfo41yiLvlFKbS53ZC1oSlnMS0=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 01BDY7ol070639
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 11 Feb 2020 07:33:58 -0600
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Tue, 11
- Feb 2020 07:33:58 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE113.ent.ti.com
+ Tue, 11 Feb 2020 07:34:08 -0600
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE113.ent.ti.com
  (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Tue, 11
+ Feb 2020 07:34:07 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Tue, 11 Feb 2020 07:33:58 -0600
+ Frontend Transport; Tue, 11 Feb 2020 07:34:07 -0600
 Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com
  [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 01BDXm5J087522;
- Tue, 11 Feb 2020 07:33:55 -0600
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 01BDXm5M087522;
+ Tue, 11 Feb 2020 07:34:05 -0600
 From: Pratyush Yadav <p.yadav@ti.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
  <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
  Raghavendra <vigneshr@ti.com>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 2/9] spi: spi-mem: allow specifying a command's extension
-Date: Tue, 11 Feb 2020 19:03:41 +0530
-Message-ID: <20200211133348.15558-3-p.yadav@ti.com>
+Subject: [PATCH 5/9] mtd: spi-nor: get command opcode extension type from BFPT
+Date: Tue, 11 Feb 2020 19:03:44 +0530
+Message-ID: <20200211133348.15558-6-p.yadav@ti.com>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20200211133348.15558-1-p.yadav@ti.com>
 References: <20200211133348.15558-1-p.yadav@ti.com>
 MIME-Version: 1.0
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200211_053408_806734_EA10B104 
-X-CRM114-Status: GOOD (  15.14  )
+X-CRM114-CacheID: sfid-20200211_053413_992426_83001020 
+X-CRM114-Status: GOOD (  14.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,106 +99,76 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In xSPI mode, flashes expect 2-byte opcodes. The second byte is called
-the "command extension". There can be 3 types of extensions in xSPI:
-repeat, invert, and hex. When the extension type is "repeat", the same
-opcode is sent twice. When it is "invert", the second byte is the
-inverse of the opcode. When it is "hex" an additional opcode byte based
-is sent with the command whose value can be anything.
+Some devices in DTR mode expect an extra command byte called the
+extension. The extension can either be same as the opcode, bitwise
+inverse of the opcode, or another additional byte forming a 16-byte
+opcode. Get the extension type from the BFPT. For now, only flashes with
+"repeat" and "inverse" extensions are supported.
+
+As of JESD216D.01, BFPT is 20 DWORDs, so update the table size to
+reflect that.
 
 Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/spi/spi-mem.c       | 23 +++++++++++++++++++++++
- include/linux/spi/spi-mem.h | 24 ++++++++++++++++++++++++
- 2 files changed, 47 insertions(+)
+ drivers/mtd/spi-nor/spi-nor.c | 30 +++++++++++++++++++++++++++---
+ 1 file changed, 27 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-index 8c52ecc41a0e..fdae50d80715 100644
---- a/drivers/spi/spi-mem.c
-+++ b/drivers/spi/spi-mem.c
-@@ -464,6 +464,29 @@ int spi_mem_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
- }
- EXPORT_SYMBOL_GPL(spi_mem_adjust_op_size);
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 371e56f3cdab..ff0b25754939 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -79,11 +79,11 @@ struct sfdp_header {
+ /* Basic Flash Parameter Table */
  
-+int spi_mem_get_cmd_ext(const struct spi_mem_op *op, u8 *ext)
-+{
-+	switch (op->cmd.ext_type) {
-+	case SPI_MEM_EXT_INVERT:
-+		*ext = ~op->cmd.opcode;
+ /*
+- * JESD216 rev B defines a Basic Flash Parameter Table of 16 DWORDs.
+- * They are indexed from 1 but C arrays are indexed from 0.
++ * JESD216 rev D defines a Basic Flash Parameter Table of 20 DWORDs. They are
++ * indexed from 1 but C arrays are indexed from 0.
+  */
+ #define BFPT_DWORD(i)		((i) - 1)
+-#define BFPT_DWORD_MAX		16
++#define BFPT_DWORD_MAX		20
+ 
+ /* The first version of JESD216 defined only 9 DWORDs. */
+ #define BFPT_DWORD_MAX_JESD216			9
+@@ -148,6 +148,12 @@ struct sfdp_header {
+ #define BFPT_DWORD15_QER_SR2_BIT1_NO_RD		(0x4UL << 20)
+ #define BFPT_DWORD15_QER_SR2_BIT1		(0x5UL << 20) /* Spansion */
+ 
++#define BFPT_DWORD18_CMD_EXT_MASK		GENMASK(30, 29)
++#define BFPT_DWORD18_CMD_EXT_REP		(0x0UL << 29) /* Repeat */
++#define BFPT_DWORD18_CMD_EXT_INV		(0x1UL << 29) /* Invert */
++#define BFPT_DWORD18_CMD_EXT_RES		(0x2UL << 29) /* Reserved */
++#define BFPT_DWORD18_CMD_EXT_16B		(0x3UL << 29) /* 16-bit opcode */
++
+ struct sfdp_bfpt {
+ 	u32	dwords[BFPT_DWORD_MAX];
+ };
+@@ -3867,6 +3873,24 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+ 		return -EINVAL;
+ 	}
+ 
++	/* 8D-8D-8D command extension. */
++	switch (bfpt.dwords[BFPT_DWORD(18)] & BFPT_DWORD18_CMD_EXT_MASK) {
++	case BFPT_DWORD18_CMD_EXT_REP:
++		nor->cmd_ext = SPI_MEM_EXT_REPEAT;
 +		break;
 +
-+	case SPI_MEM_EXT_REPEAT:
-+		*ext = op->cmd.opcode;
++	case BFPT_DWORD18_CMD_EXT_INV:
++		nor->cmd_ext = SPI_MEM_EXT_INVERT;
 +		break;
 +
-+	case SPI_MEM_EXT_HEX:
-+		*ext = op->cmd.ext;
-+		break;
-+
-+	default:
++	case BFPT_DWORD18_CMD_EXT_RES:
 +		return -EINVAL;
++
++	case BFPT_DWORD18_CMD_EXT_16B:
++		dev_err(nor->dev, "16-bit opcodes not supported\n");
++		return -ENOTSUPP;
 +	}
 +
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(spi_mem_get_cmd_ext);
-+
- static ssize_t spi_mem_no_dirmap_read(struct spi_mem_dirmap_desc *desc,
- 				      u64 offs, size_t len, void *buf)
- {
-diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
-index 4669082b4e3b..06ccab17e4d0 100644
---- a/include/linux/spi/spi-mem.h
-+++ b/include/linux/spi/spi-mem.h
-@@ -67,11 +67,31 @@ enum spi_mem_data_dir {
- 	SPI_MEM_DATA_OUT,
- };
- 
-+/**
-+ * enum spi_mem_cmd_ext - describes the command opcode extension in DTR mode
-+ * @SPI_MEM_EXT_NONE: no extension. This is the default, and is used in Legacy
-+ *		      SPI mode
-+ * @SPI_MEM_EXT_REPEAT: the extension is same as the opcode
-+ * @SPI_MEM_EXT_INVERT: the extension is the bitwise inverse of the opcode
-+ * @SPI_MEM_EXT_HEX: the extension is any hex value. The command and opcode
-+ *		     combine to form a 16-bit opcode.
-+ */
-+enum spi_mem_cmd_ext {
-+	SPI_MEM_EXT_NONE = 0,
-+	SPI_MEM_EXT_REPEAT,
-+	SPI_MEM_EXT_INVERT,
-+	SPI_MEM_EXT_HEX,
-+};
-+
- /**
-  * struct spi_mem_op - describes a SPI memory operation
-  * @cmd.buswidth: number of IO lines used to transmit the command
-  * @cmd.opcode: operation opcode
-  * @cmd.is_dtr: whether the command opcode should be sent in DTR mode or not
-+ * @cmd.ext_type: type of the command opcode extension in DTR mode
-+ * @cmd.ext: value of the command opcode extension in DTR mode. It is
-+ *	     only set when 'ext_type' is 'SPI_MEM_EXT_HEX'. In all other
-+ *	     cases, the extension can be directly derived from the opcode.
-  * @addr.nbytes: number of address bytes to send. Can be zero if the operation
-  *		 does not need to send an address
-  * @addr.buswidth: number of IO lines used to transmit the address cycles
-@@ -97,6 +117,8 @@ struct spi_mem_op {
- 		u8 buswidth;
- 		u8 opcode;
- 		bool is_dtr;
-+		enum spi_mem_cmd_ext ext_type;
-+		u8 ext;
- 	} cmd;
- 
- 	struct {
-@@ -361,6 +383,8 @@ int spi_mem_driver_register_with_owner(struct spi_mem_driver *drv,
- 
- void spi_mem_driver_unregister(struct spi_mem_driver *drv);
- 
-+int spi_mem_get_cmd_ext(const struct spi_mem_op *op, u8 *ext);
-+
- #define spi_mem_driver_register(__drv)                                  \
- 	spi_mem_driver_register_with_owner(__drv, THIS_MODULE)
+ 	return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt, params);
+ }
  
 -- 
 2.25.0
