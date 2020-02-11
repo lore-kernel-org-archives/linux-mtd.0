@@ -2,81 +2,78 @@ Return-Path: <SRS0=wpEZ=37=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39C3EC352A3
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Feb 2020 08:12:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 566A8C352A3
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Feb 2020 10:04:33 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0081520714
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Feb 2020 08:12:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 25F842086A
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Feb 2020 10:04:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CYQkz2eg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0081520714
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="thPPG1yY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 25F842086A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=denx.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8vpMDG/45mL8srgkgnynMplx2kX/XFu8bvwwKIRL4W0=; b=CYQkz2egDeXzYm
-	qgybjjgvoYUocpHLxvjUkNLL2jMu9IVQYYbJSoq6+svNjhx9kJNkQM0zN/4SyB1VXmj2DN425BLh+
-	dhrFjuk52t1aFSuDDwzFG+UHg+iunpxc4oC37wIP5IAm1vPJ/0JtpwIEpxsZLWaZkcmWVThIwjNEl
-	lmOyw3YASvan+G8197hKhBQrsifSE/rCPIbuTYuc+E0pkTaGQEzx6vSeCEVJjVs1gCx0nvbMKvN+9
-	qx7N++IIcGQufiMn2KdDrOspEMW0DF6oErnydpI8D9WZW+pQXnF/SR3Kh81RjCOMMQM3FeUIgMY3k
-	a+lboDLcbd9wSMDKCAQg==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:References:To:From:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=cmFr+Dy02vfcs8gYRLvu4hBthK6DF4rZ0ovg69E2520=; b=thPPG1yYxdGX2t
+	54a/XNKkhIJQvxCE7sTV9oo6R5G3YJiSv/Qt+r719hXgReZXf6+Lhw4WZKCKBdbk/Ky4ZR4yBH+ke
+	5znD9YQnH1f4S9mwDLzYvv7N6puYKcq3vy0Kj06xhG7mBNdwV4nfNN3E0ysw+LSSVZdWnsIWkYRfE
+	vjdTgcK1xaRYaXTQVW54f8bw7Km+12vn7hBqdcVU5FT7+jxJrokBmlTvhA94foIw7hJ+DDiVSMDR0
+	fGOVNyZq77YMt/KRjbQ7ad6PgwR1PJiGyamTOL11oLAnuK1GYKQt4fu9LeBrKR6E264GvQ7eV5wvq
+	C6UmeNapxdw3aPMczEGA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j1QeS-0003Da-Qi; Tue, 11 Feb 2020 08:12:12 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1j1SOy-00067p-0I; Tue, 11 Feb 2020 10:04:20 +0000
+Received: from mail-out.m-online.net ([212.18.0.9])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j1QeP-0003CL-Bi
- for linux-mtd@lists.infradead.org; Tue, 11 Feb 2020 08:12:11 +0000
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <sha@pengutronix.de>)
- id 1j1QeK-0002Ko-UH; Tue, 11 Feb 2020 09:12:04 +0100
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.89)
- (envelope-from <sha@pengutronix.de>)
- id 1j1QeK-0007Ae-0h; Tue, 11 Feb 2020 09:12:04 +0100
-Date: Tue, 11 Feb 2020 09:12:03 +0100
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Kevin Raymond <kr@shaiton.org>
-Subject: Re: [PATCH 0/2] mtd-utils: mkfs.ubifs: Add signing support for UBIFS
- images
-Message-ID: <20200211081203.mt5yowsx5ilaeeu4@pengutronix.de>
-References: <20190806104928.1224-1-s.hauer@pengutronix.de>
- <CAPwc7DMK7RKDUW4Kx4eKVXVJ7y9pmYwCBA+OevN_RdrJvhXb3g@mail.gmail.com>
- <20200207155128.ouow363tvbg2whqk@pengutronix.de>
- <CAPwc7DOa-HzeEv7RsA6OrAwFjUnEOPQvP4bwn2B2vkC_95=n_g@mail.gmail.com>
- <20200210075736.qbf4mo7ut5jrjo7n@pengutronix.de>
- <CAPwc7DM0MeNKaofr+0X3kvNVWUmWV=-9VinDyT-g26VHmWjUsw@mail.gmail.com>
+ id 1j1SOu-00067H-8J
+ for linux-mtd@lists.infradead.org; Tue, 11 Feb 2020 10:04:18 +0000
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+ by mail-out.m-online.net (Postfix) with ESMTP id 48Gyzd2RCzz1rHDD;
+ Tue, 11 Feb 2020 11:04:13 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+ by mail.m-online.net (Postfix) with ESMTP id 48Gyzd17J3z1qrYk;
+ Tue, 11 Feb 2020 11:04:13 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+ by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new,
+ port 10024)
+ with ESMTP id FjGa24uUwwnY; Tue, 11 Feb 2020 11:04:11 +0100 (CET)
+X-Auth-Info: ER4FsN9sA1y1ZrKSKhnuyEoBbziRu7X4FJ90Dnnwg5Q=
+Received: from [IPv6:::1] (unknown [195.140.253.167])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.mnet-online.de (Postfix) with ESMTPSA;
+ Tue, 11 Feb 2020 11:04:11 +0100 (CET)
+Subject: Re: [PATCH] Revert "mtd: rawnand: denali: get
+ ->setup_data_interface() working again"
+From: Marek Vasut <marex@denx.de>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+References: <20200205070834.3087104-1-marex@denx.de>
+ <20200205101223.21d99d93@xps13>
+ <45a10680-5fe6-7cab-a7ef-f7f7a952e822@denx.de>
+ <20200205105045.6877aca6@xps13>
+ <bdb54ba5-648a-0b79-661c-5eb9604a1ee5@denx.de>
+Message-ID: <b6f094b7-01a9-34a2-bf10-019a05bc7cb3@denx.de>
+Date: Tue, 11 Feb 2020 11:04:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAPwc7DM0MeNKaofr+0X3kvNVWUmWV=-9VinDyT-g26VHmWjUsw@mail.gmail.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-IRC: #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 09:08:33 up 218 days, 14:18, 99 users,  load average: 0.23, 0.38,
- 0.34
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+In-Reply-To: <bdb54ba5-648a-0b79-661c-5eb9604a1ee5@denx.de>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200211_001209_560092_BA4A92AF 
-X-CRM114-Status: GOOD (  38.90  )
+X-CRM114-CacheID: sfid-20200211_020416_603150_338FEE17 
+X-CRM114-Status: GOOD (  18.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,153 +85,79 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- david.oberhollenzer@sigma-star.at
+Cc: Dinh Nguyen <dinguyen@kernel.org>, Masahiro Yamada <masahiroy@kernel.org>,
+ Boris Brezillon <boris.brezillon@collabora.com>, linux-mtd@lists.infradead.org,
+ Tim Sander <tim@krieglstein.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Feb 10, 2020 at 06:06:28PM +0100, Kevin Raymond wrote:
-> On Mon, Feb 10, 2020 at 8:57 AM Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> >
-> > On Fri, Feb 07, 2020 at 06:20:57PM +0100, Kevin Raymond wrote:
-> > > On Fri, Feb 7, 2020 at 4:51 PM Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> > > >
-> > > > Hi Kevin,
-> > > >
-> > > > On Fri, Feb 07, 2020 at 04:25:58PM +0100, Kevin Raymond wrote:
-> > > > > Hi there,
-> > > > >
-> > > > > I am testing ubifs authentication for my new board, however I can't
-> > > > > git it to work.
-> > > > > I am not able to have keyctl add my key to the kernel keyring.
-> > > > >
-> > > > > This is by far the most easier documentation I found about ubifs authentication.
-> > > > >
-> > > > > I've got my kernel generating the asymmetric key, I can do the offline
-> > > > > signing with mkfs.ubifs but am not able to mount the ubifs partition.
-> > > > > I always get the following error:
-> > > > >     mount: mounting /dev/ubi0_8 on /mnt failed: Required key not available
-> > > > >
-> > > > > I am really not sure about the "keyctl add" part.
-> > > > > From the Sascha example, should we change 'mysecret' by
-> > > > > 'signing_key.pem' ? Should we change its format?
-> > > >
-> > > > There are two different keys involved. One is an asymmetric
-> > > > private/public key pair needed for authenticating offline signed images.
-> > > > That's the one you compile the Kernel with and which you provide to
-> > > > mkfs.ubifs. This key is only used during first mount.
-> > > >
-> > > > The other one is a symmetric key which is used during runtime and that's
-> > > > the one you add with:
-> > > >
-> > > > cat mysecret | keyctl padd logon ubifs:root @s
-> > > >
-> > > > Note that "cat mysecret" is only an example. It obviously doesn't help
-> > > > authenticating having a key stored world readable on the device. The
-> > > > i.MX6 offers ways to generate secrets with the CAAM unit. However,
-> > > > for testing purposes some "echo foobarbaz | keyctl padd logon ubifs:root
-> > > > @s" does it.
-> > >
-> > > Alright I get it, the offline signing key is not the same as the one used at
-> > > runtime (which is definitly a good thing).
-> > >
-> > > >
-> > > > You are trying offline signed images, but maybe you should start without
-> > > > an image and do runtime authentication only. For this create an empty
-> > > > UBI volume and just mount it like this (after doing the keyctl padd as
-> > > > above):
-> > > >
-> > > > mount -t ubifs /dev/ubi0_0 /mnt/ -o auth_hash_name=sha256,auth_key=ubifs:root
-> > > >
-> > > > I am not sure if the kernel can read the key if you put it into the
-> > > > session keyring. Systemd for example influences this and I don't know
-> > > > exactly how. You might have to replace "@s" with "@u".
-> > >
-> > > Ok, using user session keyring is better in my example I can successfully define
-> > > a new symmetric key in order to mount a newly created partition.
-> > > I am not using systemd here, a simple busybox and sysV init.
-> > >
-> > > However if I get the whole idea, If I use ubiupdatevol to update my partition,
-> > > I need the public key used while signing the ubifs at the first mount time
-> > > and then an other symmetric one ("mysecret" identified as 'ubifs:root' in this
-> > > exemple) in order to keep signing the partition.
-> >
-> > Yes. You could do without the symmetric key in a readonly environment.
-> >
-> > >
-> > > This public key is already present (available to the mount command?) but
-> > > I don't have a way to tell which one to use.
-> >
-> > You don't have to, the Kernel will pick the right one automatically.
-> >
-> > >
-> > > mount -t ubifs /dev/ubi0_8 -o auth_key=ubifs:root,auth_hash_name=sha256 /mnt/
-> > > mount: mounting /dev/ubi0_8 on /mnt/ failed: Invalid argument
-> > >
-> > > auth_key is the new symmetric key
-> > > my public key used when creating the offline signature is in /proc/keys
-> > >
-> > > 3b1ecf1d I------     1 perm 1f030000     0     0 asymmetri Build time
-> > > autogenerated kernel key: a21494c43b8859eceedf1c3d6727fd26f51b1bea:
-> > > X509.rsa f51b1bea []
-> > >
-> > > I am not sure what I am missing about the first mount of a signed ubifs.
-> >
-> > Me neither currently. I could play it through with a current
-> > Linux/mtd-utils tomorrow to see if there's anything not working.
+On 2/5/20 11:08 AM, Marek Vasut wrote:
+> On 2/5/20 10:50 AM, Miquel Raynal wrote:
+>> Hi Marek,
+>>
+>> Marek Vasut <marex@denx.de> wrote on Wed, 5 Feb 2020 10:41:05 +0100:
+>>
+>>> On 2/5/20 10:12 AM, Miquel Raynal wrote:
+>>>> Hi Marek,
+>>>>
+>>>> Marek Vasut <marex@denx.de> wrote on Wed,  5 Feb 2020 08:08:34 +0100:
+>>>>   
+>>>>> This reverts commit d311e0c27b8fcc27f707f8cac48cd8bdc4155224, which
+>>>>> completely breaks NAND access on Altera SoCFPGA (detected on ArriaV
+>>>>> SoC).
+>>>>>
+>>>>> On SoCFPGA, denali->clk_rate = 31.25 MHz and denali->clk_x_rate = 125 MHz,
+>>>>> hence the driver sets NAND_KEEP_TIMINGS flag. This did not happen before
+>>>>> and is actually incorrect, as on SoCFPGA we do not want to retain timings
+>>>>> from previous stage (the timings might be incorrect or outright invalid).
+>>>>>
+>>>>> Cc: Boris Brezillon <boris.brezillon@collabora.com>
+>>>>> Cc: Dinh Nguyen <dinguyen@kernel.org>
+>>>>> Cc: Masahiro Yamada <masahiroy@kernel.org>
+>>>>> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+>>>>> Cc: Tim Sander <tim@krieglstein.org>
+>>>>> To: linux-mtd <linux-mtd@lists.infradead.org>
+>>>>> ---
+>>>>>  drivers/mtd/nand/raw/denali.c | 2 +-
+>>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
+>>>>> index b6c463d02167..5fe3c62a756e 100644
+>>>>> --- a/drivers/mtd/nand/raw/denali.c
+>>>>> +++ b/drivers/mtd/nand/raw/denali.c
+>>>>> @@ -1209,7 +1209,7 @@ int denali_chip_init(struct denali_controller *denali,
+>>>>>  	}
+>>>>>  
+>>>>>  	/* clk rate info is needed for setup_data_interface */
+>>>>> -	if (!denali->clk_rate || !denali->clk_x_rate)  
+>>>>
+>>>> I don't get it, if both clk_rate and clk_x_rate are set, the if
+>>>> condition will not be entered, right?  
+>>>
+>>> Err, then it's the other way around and I need to keep the timings on
+>>> socfpga ?
+>>
+>> Ok.
+>>
+>> Do you have a different compatible? Or a register to check? How do you
+>> discriminate the different platforms by software? The quick and dirty
+>> solution is to add a special case for your platform and specifically
+>> use the NAND_KEEP_TIMINGS horror.
 > 
+> Sure, there's a socfpga compatible and at least two for uniphier.
 > 
-> Ok, thanks a lot for your help.
-> I tried from scratch (auto generated kernel certificate/key, offline
-> signing using this key+certificate) and I still get the following:
+>> But I think using ->software_data_interface is the right solution. So
+>> I would highly recommend fixing the implementation of this hook
+>> for your platform and in this case the commit reverted is not the
+>> culprit, the one introducing setup_data_interface is (for the Fixes:
+>> tag).
 > 
->     # mount -t ubifs /dev/ubi0_6 -o ro /mnt
->     mount: mounting /dev/ubi0_6 on /mnt failed: Invalid argument
->     [ 7961.936787] UBIFS error (ubi0:6 pid 1025):
-> ubifs_read_superblock: authenticated FS found, but no key given
+> I'll leave the details to Yamada-san.
 
-Ok, this is something worth changing. The key is only needed once we go
-rw.
-
-> 
-> Apparently I need the symmetric key, as the following is working now
-> (with or without the read-only option)
-> 
->     mount -t ubifs /dev/ubi0_6 -o
-> ro,auth_key=ubifs:rootf,auth_hash_name=sha256  /mnt
->     [ 8390.028045] UBIFS (ubi0:6): Mounting in authenticated mode
->     [ 8618.586641] UBIFS (ubi0:6): background thread "ubifs_bgt0_6" stops
->     [ 8630.039989] UBIFS (ubi0:6): Mounting in authenticated mode
->     [ 8630.098767] UBIFS (ubi0:6): Successfully verified super block signature
->     [ 8630.151322] UBIFS (ubi0:6): UBIFS: mounted UBI device 0, volume
-> 6, name "root", R/O mode
->     [ 8630.159482] UBIFS (ubi0:6): LEB size: 126976 bytes (124 KiB),
-> min./max. I/O unit sizes: 2048 bytes/2048 bytes
->     [ 8630.169370] UBIFS (ubi0:6): FS size: 33267712 bytes (31 MiB,
-> 262 LEBs), journal size 9023488 bytes (8 MiB, 72 LEBs)
->     [ 8630.179784] UBIFS (ubi0:6): reserved for root: 0 bytes (0 KiB)
->     [ 8630.185546] UBIFS (ubi0:6): media format: w4/r0 (latest is
-> w5/r0), UUID 33053EA9-B76E-47A1-BC0B-BB8B97E7F593, small LPT model
-> 
-> I don't know what was wrong last Friday, it might be the symmetric key
-> inserted with keyctl in an invalid format. This time a tried with a
-> simple ascii string.
-> I now have a working example, which is enough for me to dig further
-> into the ubifs authentication feature.
-> 
-> Thanks a lot for your work and your help.
-
-You're welcome. If anything is still not working don't hesitate to ask.
-
-Sascha
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Just got a confirmation that this fixes NAND behavior on SoCFPGA, so
+this patch should go in in some form.
 
 ______________________________________________________
 Linux MTD discussion mailing list
