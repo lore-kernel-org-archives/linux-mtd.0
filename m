@@ -6,19 +6,19 @@ X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,HK_RANDOM_FROM,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BDBE8C35242
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Feb 2020 00:47:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 646EBC35242
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 Feb 2020 00:47:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9129B20724
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Feb 2020 00:47:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2C0AA20724
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 Feb 2020 00:47:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="iKV+I2Pb";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XRUOYw1F"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9129B20724
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kozyHM4D";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dAoEyqxe"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C0AA20724
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,66 +27,65 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ieDL6ubiMH0aLC7OlKmPQw65Re4o+a1tBFLHDPBy8Fk=; b=iKV+I2PbJdUtF/
-	KUkhH6CoS2+/AhDGk6qagiBTU3168L+K6MTYNDcTzjHNKTGifZ9VH0v5H9O2SHvc3h0idtpYskdq3
-	aP0sVzMNVpn318QIRJNsDHGVFku3tr9ED5lyCsTpdfjXe0ZO/0WNMRqQwlHdfxzeME41T+Ty45zft
-	VMV7bGBGfK4Kdq0WZ1yZPHKvcMyN9Z80M0n8uthjrv/N9ldaHlQwTVimrM2Rh8A2SzQHtTpPn6tdm
-	awKqCv+Jq97xcWZ4GH9cgEz1KD6tnE6b470WBiCc/j8vcJVmuApddYDXXjxazbkXQ53+YhnciKROl
-	cKzz/oCGlRzYM282NnGQ==;
+	List-Owner; bh=kKafxbuqTcF5fbFswWXY1PPid5odsBsM7oLZ41twuS4=; b=kozyHM4DaNHohs
+	WDtPTXWC/TwcnCh/DBYd7vHuyOVueTvKvo7PBcyLcbg8Lnz3hgAEyORjPBzNs/Hc7Uo1knBq13M5s
+	hhzrdOPiWBu7wKmx4aLNMrUw2kOZAq9RVhUxLq7feVUUSDKXwApMLPXXQ2AZuYH1oC3bkCu7UbIlS
+	ndekVt9QYaDnY/OQCa/YQSWKpEuhZ8S9web5kXHbNvaG9w7DdLFIS4CUjMzP4ZJAOK/15VlWI2rE4
+	uVEvh4Rdko/YfkOkOqF1D48UFClxIZrUG1E77F4YrFx94PVsfOjikl5OmnTSD6JAVDorfWzNdmUUF
+	cPXQHfPrI6T2o4r4O/dg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j1gBM-0007Qe-L0; Wed, 12 Feb 2020 00:47:12 +0000
-Received: from mail-lj1-x241.google.com ([2a00:1450:4864:20::241])
+	id 1j1gBX-0007dn-RX; Wed, 12 Feb 2020 00:47:23 +0000
+Received: from mail-lf1-x144.google.com ([2a00:1450:4864:20::144])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j1g4r-0008Jt-VK; Wed, 12 Feb 2020 00:40:33 +0000
-Received: by mail-lj1-x241.google.com with SMTP id n18so256671ljo.7;
- Tue, 11 Feb 2020 16:40:26 -0800 (PST)
+ id 1j1g4t-0008Ns-Bx; Wed, 12 Feb 2020 00:40:34 +0000
+Received: by mail-lf1-x144.google.com with SMTP id 203so248974lfa.12;
+ Tue, 11 Feb 2020 16:40:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=FJYKPthvZIFedIlxbcTRXaWUixnzV1+Q9RiZEPYQb/8=;
- b=XRUOYw1FAkTzb6oW3oIsS8OrrN+JDesE+lr0Eg5RKKCAGYyMWyjwLUo6beSeizUGhq
- RgMChJuxxMdMfwy1UX/UAcxmGlSym9l2K/JYczKwDWXjgaogauFOflQwjP50YXIlTZiU
- DGMYFyU/qb0xujibkcIeA8KYFLwPt+VWN6Linlz47TdJyttGzGCM4BOVECZKTJ+CMfq+
- /tlh+vLf+ycG/NXi3N+RgYjSn7A/7iUsj9CjpcboM+B6OvgvJCuXjwk6Fpzu2QVyTMLD
- s1pInl6rcIeUO+t+aqUYwJ5g2apQ2wlLtneq1wUdwlH7CIlILApyrZMC+5NKd9QKyApy
- TlMQ==
+ bh=HTf58YpqwaY9/ZfsDIcfANNUH88w2zXw+jSn3ywd04g=;
+ b=dAoEyqxeOjz7A2KEREadDZ6VqZVRMhPyaTDrRZZW+C4fdJOBFYiwcabV31xKiYs8bs
+ mD9PWUrXqqx+/EQndIe89NMR2DuQUpfkDvTc41UXohGgHD2WxHOLebxME02T0EJtVuXH
+ GMgf9JRWjf8ZUjhbow6HqVrrIh9gPsTKmIhprve6OB9y5PBjyLKHQ+2i6K7h7M3H1RJ1
+ qTxRPYWYbmLnsz14c6lefULFIeaC15ufIop7jj1xvILyxanpeE8APDDXMfZirs59IHsI
+ hb3tVfXPr39bHqvSOFoBkktCHplzqz796hsWSbczDlQTOMbLKv9zKJHGPSrtAA9JUsk1
+ HCiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=FJYKPthvZIFedIlxbcTRXaWUixnzV1+Q9RiZEPYQb/8=;
- b=pyYvFStZ8aHsY6mQzJe/EZXiW7gtGVK645nuwPOs2DDlIrsdIDvpRqJFwe902AKUPv
- DLH/GDksr9wI1AL8ngcSY2MSUcY5m9P1EgZf+xQqLANVL0SPCoK4apshguZdNQkPivTd
- qOByQSnTZVAbmDeC0BWxrQde+5Vss9f2tcefOC382qAI1pFmH/O3JJgVW7ksrC1mOLSg
- bbOnQ1NEP/PaY8bnyLw/eHN0NGnK3j7ns2Aw3InKEjbj7v4qi5fnrAgvxJs+PItBRuk3
- kERhd6beK2NCkI55xuNnaPfYVbSty6ASowqcj9W8CdhhtEw2zy39DLTKcp/0bfEY37SX
- 5nkw==
-X-Gm-Message-State: APjAAAXFVgFHHT7o5cyRpfbErwSVthHIvMcqSp8zgNUFwRMY8LzYU/G/
- mb4NTfb/O+pJ8JZ7z0um+yA=
-X-Google-Smtp-Source: APXvYqw8vOkP/end+TVMFx46dyQcENtXIweuu3keRWt1h/CrKYtPMYiEk3ELj0Qt93lVXrk/HH4MXg==
-X-Received: by 2002:a2e:b4e7:: with SMTP id s7mr6220313ljm.58.1581468024270;
- Tue, 11 Feb 2020 16:40:24 -0800 (PST)
+ bh=HTf58YpqwaY9/ZfsDIcfANNUH88w2zXw+jSn3ywd04g=;
+ b=HpJJ7adZZZrTeK3AgPZNheiU1vXaquANykKbdUvd4lB135TgK25jjvbF8XXtDp7gK8
+ 9IbPzVqHIiKkrKF4CHnP1X+Xr9k+M2veaOqo8WGq4sp4UPjBRjiG19ZzNggdMIzjUyxE
+ Pq5LmV99gm+r3iSGetj0BdkXDSUlraBqcTdFlmRTYLJ9eIybovat+z5ixuwvIehwSooq
+ MCpLFPGKjDU4atUkg/HCH+KP3/hTA9IMhC4MX7r7F0kTZvcnseR+txtmqw4CPihKMUdV
+ jkNVxTjtz7syr/TkUiNtP4Y5Y0iYd9ZUHb/Kb3PI4T8gOhMiBuC0iqe9TYMJ83y2ihpS
+ DNSw==
+X-Gm-Message-State: APjAAAUBplAMqIoF14AxepMjZogLl/zTcx0+3ZcXPMF500rgkJsd6xBd
+ zBPsQ2Gt+opNiJFGfn6jQ9g=
+X-Google-Smtp-Source: APXvYqwwX3ih/dlP/s6h+fr2ICYq2BrPHs02sfYs8lBXyp00LNq1eN3hIoCLnQCndwzdhNiBZFV+jA==
+X-Received: by 2002:a19:748:: with SMTP id 69mr5238603lfh.40.1581468029430;
+ Tue, 11 Feb 2020 16:40:29 -0800 (PST)
 Received: from z50.gdansk-morena.vectranet.pl
  (109241122244.gdansk.vectranet.pl. [109.241.122.244])
- by smtp.gmail.com with ESMTPSA id e8sm3621935ljb.45.2020.02.11.16.40.23
+ by smtp.gmail.com with ESMTPSA id e8sm3621935ljb.45.2020.02.11.16.40.28
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 11 Feb 2020 16:40:23 -0800 (PST)
+ Tue, 11 Feb 2020 16:40:28 -0800 (PST)
 From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>
-Subject: [RFC PATCH 09/14] mtd: rawnand: ams-delta: Handle more GPIO pins as
- optional
-Date: Wed, 12 Feb 2020 01:39:24 +0100
-Message-Id: <20200212003929.6682-10-jmkrzyszt@gmail.com>
+Subject: [RFC PATCH 13/14] mtd: rawnand: ams-delta: Make the driver custom I/O
+ ready
+Date: Wed, 12 Feb 2020 01:39:28 +0100
+Message-Id: <20200212003929.6682-14-jmkrzyszt@gmail.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200212003929.6682-1-jmkrzyszt@gmail.com>
 References: <20200212003929.6682-1-jmkrzyszt@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200211_164030_096392_7A240E34 
-X-CRM114-Status: UNSURE (   9.80  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200211_164031_461923_3E06C84A 
+X-CRM114-Status: GOOD (  13.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,38 +106,105 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In order to make the driver more useful on platforms other than Amstrad
-Delta, allow GPIO descriptor pointers of possibly non-critical NWP and
-NCE pins to be initialised as NULL.
+In order to be merged with "gpio-nand", the driver must support custom
+(non-GPIO) I/O accessors.
+
+Allow platforms to omit data GPIO port as well as NWE pin info from
+device setup.  For the driver to still work on such platform, custom
+I/O accessors as well as a custom probe function which initialises the
+driver private structure with those accessors must be added to the
+driver.
 
 Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
 ---
- drivers/mtd/nand/raw/ams-delta.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/raw/ams-delta.c | 32 ++++++++++++++++++++++++++------
+ 1 file changed, 26 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
-index c481d73e3dcb..0c88e94e9b71 100644
+index a68b7006ed69..9e659984bf59 100644
 --- a/drivers/mtd/nand/raw/ams-delta.c
 +++ b/drivers/mtd/nand/raw/ams-delta.c
-@@ -264,14 +264,16 @@ static int ams_delta_init(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, priv);
+@@ -43,6 +43,9 @@ struct ams_delta_nand {
+ 	bool			data_in;
+ 	unsigned int		tRP;
+ 	unsigned int		tWP;
++	u8			(*io_read)(struct ams_delta_nand *this);
++	void			(*io_write)(struct ams_delta_nand *this,
++					    u8 byte);
+ };
  
- 	/* Set chip enabled but write protected */
--	priv->gpiod_nwp = devm_gpiod_get(&pdev->dev, "nwp", GPIOD_OUT_HIGH);
-+	priv->gpiod_nwp = devm_gpiod_get_optional(&pdev->dev, "nwp",
-+						  GPIOD_OUT_HIGH);
- 	if (IS_ERR(priv->gpiod_nwp)) {
- 		err = PTR_ERR(priv->gpiod_nwp);
- 		dev_err(&pdev->dev, "NWP GPIO request failed (%d)\n", err);
+ static void ams_delta_write_commit(struct ams_delta_nand *priv)
+@@ -116,18 +119,18 @@ static void ams_delta_write_buf(struct ams_delta_nand *priv, const u8 *buf,
+ 		ams_delta_dir_output(priv, buf[i++]);
+ 
+ 	while (i < len)
+-		ams_delta_io_write(priv, buf[i++]);
++		priv->io_write(priv, buf[i++]);
+ }
+ 
+ static void ams_delta_read_buf(struct ams_delta_nand *priv, u8 *buf, int len)
+ {
+ 	int i;
+ 
+-	if (!priv->data_in)
++	if (priv->data_gpiods && !priv->data_in)
+ 		ams_delta_dir_input(priv);
+ 
+ 	for (i = 0; i < len; i++)
+-		buf[i] = ams_delta_io_read(priv);
++		buf[i] = priv->io_read(priv);
+ }
+ 
+ static void ams_delta_ctrl_cs(struct ams_delta_nand *priv, bool assert)
+@@ -289,7 +292,8 @@ static int ams_delta_init(struct platform_device *pdev)
  		return err;
  	}
  
--	priv->gpiod_nce = devm_gpiod_get(&pdev->dev, "nce", GPIOD_OUT_LOW);
-+	priv->gpiod_nce = devm_gpiod_get_optional(&pdev->dev, "nce",
+-	priv->gpiod_nwe = devm_gpiod_get(&pdev->dev, "nwe", GPIOD_OUT_LOW);
++	priv->gpiod_nwe = devm_gpiod_get_optional(&pdev->dev, "nwe",
 +						  GPIOD_OUT_LOW);
- 	if (IS_ERR(priv->gpiod_nce)) {
- 		err = PTR_ERR(priv->gpiod_nce);
- 		dev_err(&pdev->dev, "NCE GPIO request failed (%d)\n", err);
+ 	if (IS_ERR(priv->gpiod_nwe)) {
+ 		err = PTR_ERR(priv->gpiod_nwe);
+ 		dev_err(&pdev->dev, "NWE GPIO request failed (%d)\n", err);
+@@ -311,13 +315,24 @@ static int ams_delta_init(struct platform_device *pdev)
+ 	}
+ 
+ 	/* Request array of data pins, initialize them as input */
+-	priv->data_gpiods = devm_gpiod_get_array(&pdev->dev, "data", GPIOD_IN);
++	priv->data_gpiods = devm_gpiod_get_array_optional(&pdev->dev, "data",
++							  GPIOD_IN);
+ 	if (IS_ERR(priv->data_gpiods)) {
+ 		err = PTR_ERR(priv->data_gpiods);
+ 		dev_err(&pdev->dev, "data GPIO request failed: %d\n", err);
+ 		return err;
+ 	}
+-	priv->data_in = true;
++	if (priv->data_gpiods) {
++		if (!priv->gpiod_nwe) {
++			dev_err(&pdev->dev,
++				"mandatory NWE pin not provided by platform\n");
++			return -ENODEV;
++		}
++
++		priv->io_read = ams_delta_io_read;
++		priv->io_write = ams_delta_io_write;
++		priv->data_in = true;
++	}
+ 
+ 	if (pdev->id_entry)
+ 		probe = (void *) pdev->id_entry->driver_data;
+@@ -328,6 +343,11 @@ static int ams_delta_init(struct platform_device *pdev)
+ 	if (err)
+ 		return err;
+ 
++	if (!priv->io_read || !priv->io_write) {
++		dev_err(&pdev->dev, "incomplete device configuration\n");
++		return -ENODEV;
++	}
++
+ 	/* Initialize the NAND controller object embedded in ams_delta_nand. */
+ 	priv->base.ops = &ams_delta_ops;
+ 	nand_controller_init(&priv->base);
 -- 
 2.24.1
 
