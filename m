@@ -2,21 +2,21 @@ Return-Path: <SRS0=zQg3=4A=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18BD6C2BA83
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Feb 2020 05:10:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5088FC2BA83
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 Feb 2020 05:47:50 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DAEE72073C
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Feb 2020 05:10:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 20F6120714
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 Feb 2020 05:47:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Pu3oLvaO";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="NJ4hV4Xe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DAEE72073C
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AEjrQoRl";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="16O0AgpG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 20F6120714
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,45 +25,45 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qgxcPV9D5dOCW5lS4PbFCw0X3p0Urm7fv/2XmhIU2vM=; b=Pu3oLvaOpzfhl4
-	99VteOj9wLy55RLqlTTWrZuJr7oGFbsvXtuiTIp8+SAeP8c/JlG+8QICe3wRUK3cFZ+p91Q109MfW
-	7NzVhbWhTErhwI2F/as+LPfMXj4k+L2xC44jiwLidwjO6JVADJ+vWCUlbQ3IZZw1McyzdqMTVqZ4B
-	aqPgScF4c0EwaHXVsQiMuyBvUhoklpKws1/KWyBvy6+Lqi+GZemzDJNKXjUvNpuotNZX9UG/GkDsK
-	s0wt/YYqTo413fvui8tkj+x9dBV1okofID5mCqKlVFLjgoz9Q8aQYiz9cUbRE7ig4BsE7lGFcyCtz
-	E1XI4h0uZef7yl4E+wsw==;
+	List-Owner; bh=tHUNWGaOIJAnP4QicroLiYFG28K6spZpkGIDlY2sqI4=; b=AEjrQoRl6PrvkH
+	QhvUQZXW3KV9RmYYf3LUHD5FGAC/Rrvkm1Ka02OBuGdjk+9z+9vX+4fjB2GXmzEjL1VRjerK8WnbT
+	T4WweJOzHhc9rrWdRZ5UMYgaA/XO7/iVURPGy+jcwugCJ29luW/Aq2PxuNY/orUyel5Vxyh4GwacL
+	wBkewbxt5wn8Q5Dw+C+2m8hYjIgaoRqsZnUiF4UKk6OQ/mG3ywj6s7WcMBBm5eNFPrQ4Inp9Ti8HV
+	z/I9kQH3mNhMGCWfciFPVRNH2j90K67EwMG+8+/0TP7e+Zh4LpHGdU2mLiy3QWZKsHuoPUa7qAs5H
+	VI/zzZ++2K1gP9oLbyzA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j1kHy-0007Er-HD; Wed, 12 Feb 2020 05:10:18 +0000
+	id 1j1kru-0001El-GB; Wed, 12 Feb 2020 05:47:26 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j1kHw-0007CZ-DS
- for linux-mtd@lists.infradead.org; Wed, 12 Feb 2020 05:10:17 +0000
+ id 1j1krr-0001EJ-CC
+ for linux-mtd@lists.infradead.org; Wed, 12 Feb 2020 05:47:24 +0000
 Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net
  [107.3.166.239])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 2F0782073C;
- Wed, 12 Feb 2020 05:10:15 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 6D15620714;
+ Wed, 12 Feb 2020 05:47:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1581484215;
- bh=SoSyxp3A0UA/8Dnh/f7bNxJ3PKh7YiP5yN7Miz0urew=;
+ s=default; t=1581486442;
+ bh=vfQCzX8Gzst/DyzbbP8Yb9hEeqTup17d6ibCA2atEQk=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=NJ4hV4Xer0eG0SHiCiwOzByKd5JyUN7uZA4Ev57RCddYfHiQhVYc1ZP6Nu/jQiKeI
- sM/IB+kbGDo4+3rniEtpM5HWck5ZfygaFJlCh2p31egPYqFLRTnuG6Vzno8r8uusGN
- eqTOJ2fXAIxq3MOi1WPwMBn/MfIrQVYZVrO20sdk=
-Date: Tue, 11 Feb 2020 21:10:13 -0800
+ b=16O0AgpGnIblG8wXcW2EbHRzkj93++0mtvCGjFsyUCV76OVBn3s08Rm0Tzv10tDKX
+ lVogvBzynO1bch/RJ/BUyPtnWFQPHyHktHkoCQZmBDMm5mY+WEzsP8LNaRpna7Nlxp
+ fGy1pIz8XmPZ5U7MkLYBItDm8Mu67V3uwnIqWsJk=
+Date: Tue, 11 Feb 2020 21:47:20 -0800
 From: Eric Biggers <ebiggers@kernel.org>
 To: Daniel Rosenberg <drosen@google.com>
 Subject: Re: [PATCH v7 6/8] f2fs: Handle casefolding with Encryption
-Message-ID: <20200212051013.GG870@sol.localdomain>
+Message-ID: <20200212054720.GH870@sol.localdomain>
 References: <20200208013552.241832-1-drosen@google.com>
  <20200208013552.241832-7-drosen@google.com>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <20200208013552.241832-7-drosen@google.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200211_211016_501748_08491F68 
-X-CRM114-Status: GOOD (  20.71  )
+X-CRM114-CacheID: sfid-20200211_214723_461654_B0775B82 
+X-CRM114-Status: GOOD (  13.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,150 +89,100 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On Fri, Feb 07, 2020 at 05:35:50PM -0800, Daniel Rosenberg wrote:
-> This expands f2fs's casefolding support to include encrypted
-> directories. For encrypted directories, we use the siphash of the
-> casefolded name. This ensures there is no direct way to go from an
-> unencrypted name to the stored hash on disk without knowledge of the
-> encryption policy keys.
-> 
-> Additionally, we switch to using the vfs layer's casefolding support
-> instead of storing this information inside of f2fs's private data.
-> 
-> Signed-off-by: Daniel Rosenberg <drosen@google.com>
-> ---
->  fs/f2fs/dir.c    | 65 ++++++++++++++++++++++++++++++++----------------
->  fs/f2fs/f2fs.h   |  8 +++---
->  fs/f2fs/hash.c   | 23 +++++++++++------
->  fs/f2fs/inline.c |  9 ++++---
->  fs/f2fs/super.c  |  6 -----
->  5 files changed, 68 insertions(+), 43 deletions(-)
-> 
-> diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-> index 38c0e6d589be4..3517dd4060341 100644
-> --- a/fs/f2fs/dir.c
-> +++ b/fs/f2fs/dir.c
-> @@ -112,30 +112,50 @@ static struct f2fs_dir_entry *find_in_block(struct inode *dir,
->   * doesn't match or less than zero on error.
->   */
->  int f2fs_ci_compare(const struct inode *parent, const struct qstr *name,
-> -				const struct qstr *entry, bool quick)
-> +		    unsigned char *name2, size_t len, bool quick)
+> @@ -173,24 +193,24 @@ static inline bool f2fs_match_name(struct f2fs_dentry_ptr *d,
 >  {
->  	const struct super_block *sb = parent->i_sb;
->  	const struct unicode_map *um = sb->s_encoding;
-> +	const struct fscrypt_str crypt_entry = FSTR_INIT(name2, len);
-> +	struct fscrypt_str decrypted_entry;
-> +	struct qstr decrypted;
-> +	struct qstr entry = QSTR_INIT(name2, len);
-> +	struct qstr *tocheck;
->  	int ret;
+>  #ifdef CONFIG_UNICODE
+>  	struct inode *parent = d->inode;
+> -	struct super_block *sb = parent->i_sb;
+> -	struct qstr entry;
+> +	unsigned char *name;
+> +	int len;
+>  #endif
 >  
-> +	decrypted_entry.name = NULL;
-> +
-> +	if (IS_ENCRYPTED(parent) && fscrypt_has_encryption_key(parent)) {
-> +		decrypted_entry.name = kmalloc(len, GFP_ATOMIC);
-> +		decrypted.name = decrypted_entry.name;
-> +		decrypted_entry.len = len;
-> +		decrypted.len = len;
-> +		if (!decrypted.name)
-> +			return -ENOMEM;
-> +		ret = fscrypt_fname_disk_to_usr(parent, 0, 0, &crypt_entry,
-> +							&decrypted_entry);
-> +		if (ret < 0)
-> +			goto out;
+>  	if (de->hash_code != namehash)
+>  		return false;
+>  
+>  #ifdef CONFIG_UNICODE
+> -	entry.name = d->filename[bit_pos];
+> -	entry.len = de->name_len;
+> +	name = d->filename[bit_pos];
+> +	len = de->name_len;
+
+This is missing le16_to_cpu().
+
+>  int f2fs_add_regular_entry(struct inode *dir, const struct qstr *new_name,
+>  				const struct qstr *orig_name,
+> +				f2fs_hash_t dentry_hash,
+>  				struct inode *inode, nid_t ino, umode_t mode)
+>  {
+>  	unsigned int bit_pos;
+>  	unsigned int level;
+>  	unsigned int current_depth;
+>  	unsigned long bidx, block;
+> -	f2fs_hash_t dentry_hash;
+>  	unsigned int nbucket, nblock;
+>  	struct page *dentry_page = NULL;
+>  	struct f2fs_dentry_block *dentry_blk = NULL;
+> @@ -632,7 +652,6 @@ int f2fs_add_regular_entry(struct inode *dir, const struct qstr *new_name,
+>  
+>  	level = 0;
+>  	slots = GET_DENTRY_SLOTS(new_name->len);
+> -	dentry_hash = f2fs_dentry_hash(dir, new_name, NULL);
+
+Why was the call to f2fs_dentry_hash() moved to the caller, but for
+f2fs_add_inline_entry() a different approach was taken?
+
+> @@ -718,17 +737,19 @@ int f2fs_add_dentry(struct inode *dir, struct fscrypt_name *fname,
+>  				struct inode *inode, nid_t ino, umode_t mode)
+>  {
+>  	struct qstr new_name;
+> +	f2fs_hash_t dentry_hash;
+>  	int err = -EAGAIN;
+>  
+>  	new_name.name = fname_name(fname);
+>  	new_name.len = fname_len(fname);
+>  
+>  	if (f2fs_has_inline_dentry(dir))
+> -		err = f2fs_add_inline_entry(dir, &new_name, fname->usr_fname,
+> +		err = f2fs_add_inline_entry(dir, &new_name, fname,
+>  							inode, ino, mode);
+
+I'm really confused.  Why are you passing around both new_name and fname?
+We already have new_name == fname.disk_name.  So isn't just the
+'struct fscrypt_name' sufficient?
+
+> +static f2fs_hash_t __f2fs_dentry_hash(const struct inode *dir,
+> +				const struct qstr *name_info,
+> +				const struct fscrypt_name *fname)
+>  {
+>  	__u32 hash;
+>  	f2fs_hash_t f2fs_hash;
+> @@ -85,6 +86,11 @@ static f2fs_hash_t __f2fs_dentry_hash(const struct qstr *name_info,
+>  	if (is_dot_dotdot(name_info))
+>  		return 0;
+>  
+> +	if (IS_CASEFOLDED(dir) && IS_ENCRYPTED(dir)) {
+> +		f2fs_hash = fscrypt_fname_siphash(dir, name_info);
+> +		return f2fs_hash;
 > +	}
-> +	tocheck = decrypted_entry.name ? &decrypted : &entry;
-> +
->  	if (quick)
-> -		ret = utf8_strncasecmp_folded(um, name, entry);
-> +		ret = utf8_strncasecmp_folded(um, name, tocheck);
->  	else
-> -		ret = utf8_strncasecmp(um, name, entry);
-> -
-> +		ret = utf8_strncasecmp(um, name, tocheck);
->  	if (ret < 0) {
->  		/* Handle invalid character sequence as either an error
->  		 * or as an opaque byte sequence.
->  		 */
->  		if (sb_has_enc_strict_mode(sb))
-> -			return -EINVAL;
-> -
-> -		if (name->len != entry->len)
-> -			return 1;
-> -
-> -		return !!memcmp(name->name, entry->name, name->len);
-> +			ret = -EINVAL;
-> +		else if (name->len != len)
-> +			ret = 1;
-> +		else
-> +			ret = !!memcmp(name->name, tocheck->name, len);
->  	}
-> -
-> +out:
-> +	kfree(decrypted_entry.name);
->  	return ret;
->  }
 
-The case-sensitive fallback is broken with encrypted filenames; it's checking
-the length of the encrypted filename rather than the decrypted filename.  The
-decrypted name may be shorter.
+This is missing cpu_to_le32().
 
-Can you please improve your testing to catch bugs like this?
+Also, above we have:
 
-IMO, part of the problem is that there are multiple lengths here, so the
-variable named 'len' is ambiguous.  Can you please clean this function up to
-name things properly?  Also, the 'tocheck' variable is unnecessary, and it's
-confusing having both 'decrypted' and 'decrypted_entry', and to decrypt
-conditionally when fscrypt_has_encryption_key() since that's already required.
+        /* encrypted bigname case */
+        if (fname && !fname->disk_name.name)
+                return cpu_to_le32(fname->hash);
 
-How about:
+That won't work with encrypted+casefolded directories without the key, because
+now sometimes the hash from the no-key name is needed even when the disk_name is
+available.  This will cause a crash in fscrypt_fname_siphash() being called
+without the key.  I think you want:
 
-int f2fs_ci_compare(const struct inode *parent, const struct qstr *name,
-		    u8 *de_name, size_t de_name_len, bool quick)
-{
-	const struct super_block *sb = parent->i_sb;
-	const struct unicode_map *um = sb->s_encoding;
-	struct fscrypt_str decrypted_name = FSTR_INIT(NULL, de_name_len);
-	struct qstr entry = QSTR_INIT(de_name, de_name_len);
-	int ret;
+        if (fname && fname->is_ciphertext_name)
+                return cpu_to_le32(fname->hash);
 
-	if (IS_ENCRYPTED(parent)) {
-		const struct fscrypt_str encrypted_name =
-			FSTR_INIT(de_name, de_name_len);
-
-		decrypted_name.name = kmalloc(de_name_len, GFP_ATOMIC);
-		if (!decrypted_name.name)
-			return -ENOMEM;
-		ret = fscrypt_fname_disk_to_usr(parent, 0, 0, &encrypted_name,
-						&decrypted_name);
-		if (ret < 0)
-			goto out;
-		entry.name = decrypted_name.name;
-		entry.len = decrypted_name.len;
-	}
-
-	if (quick)
-		ret = utf8_strncasecmp_folded(um, name, &entry);
-	else
-		ret = utf8_strncasecmp(um, name, &entry);
-	if (ret < 0) {
-		/* Handle invalid character sequence as either an error
-		 * or as an opaque byte sequence.
-		 */
-		if (sb_has_enc_strict_mode(sb))
-			ret = -EINVAL;
-		else if (name->len != entry.len)
-			ret = 1;
-		else
-			ret = !!memcmp(name->name, entry.name, entry.len);
-	}
-out:
-	kfree(decrypted_name.name);
-	return ret;
-}
-
-
-Of course, all this applies to ext4_ci_compare() as well.
+Can you please write xfstests for encrypt+casefold?
 
 - Eric
 
