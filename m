@@ -6,16 +6,16 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D0C7C352A4
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Feb 2020 18:28:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7C36C352A4
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 Feb 2020 18:29:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6477520714
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Feb 2020 18:28:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7994E20714
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 Feb 2020 18:29:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LK9bXrBR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6477520714
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VuHh+Mov"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7994E20714
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,35 +24,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Lcj+Fp1zRWeXQ50AQ8Anm687h7e/aajcxXTowcpM6Lg=; b=LK9bXrBRTXiRLJ
-	pjAJUec9+K5oczMp4qjccIljBaDUstLI9zzB6uKad5w27O042uURsLTSqnLL2xiRVkKM3kj+fuYdU
-	XFGpXGs7k9HXOGT2RWqWl7F6TbhGFcDoVjh7FP6qF0XmnEo5pQe+WMTdW3P1V4hntxCDFAC4ev3xy
-	uYHY2Rfir3gX5lRMhAf6TGpcA0LE3TutYb23fFx2HEfMhPq5l0Burqapg0rkpVy88xEuDKFNzLMLf
-	yzlUtvX/KrojAFKpuNm4UhZlsWE9e/at29T0zGcaKgbuqA5VQA87BrI9RGlaK5yD3CBVrUuE3SQhc
-	A6CQMbMl5j6CcAWwT0IA==;
+	List-Owner; bh=j7dUdztsb7sr72aTXa4eEEdx6ImCtkBKzc8+xCtAogU=; b=VuHh+MovCAMLud
+	mDJwxtTl76rQCRpm+z/28DRQZFGuPMAJb40ORuRCzfghAWPF/ZNFp8L3WapsQLPYWqQDA+Vp/ETse
+	rfpIRZIKovUHWMAfL/dv8uAC4b6rSEyrLfZbgkOat6FwLo/WRlZn5/Q251Lx1ImC7gdbdGqXt1e3B
+	2O+ViQfD2FNs6zBJ218P6vVP2RudfeJ8oWiYNabrhbf2A0FZaM1Hn3rXCzjhtk6gNAi6FlJMiCL05
+	dxL5FqH+IjlUdx0Gt1QYOqHvy3YFaRVdYtP7T7NefsXeSFGaGTs/khH7M5v2i3ofKSoHjbCmj6pbI
+	PuWvTQjYYc5upjc8N70A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j1wkK-0000cW-Il; Wed, 12 Feb 2020 18:28:24 +0000
+	id 1j1wkl-00019q-25; Wed, 12 Feb 2020 18:28:51 +0000
 Received: from muru.com ([72.249.23.125])
  by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j1wkB-0000Uz-J1; Wed, 12 Feb 2020 18:28:16 +0000
+ id 1j1wkY-0000tr-Ow; Wed, 12 Feb 2020 18:28:39 +0000
 Received: from atomide.com (localhost [127.0.0.1])
- by muru.com (Postfix) with ESMTPS id 566EB80F6;
- Wed, 12 Feb 2020 18:28:53 +0000 (UTC)
-Date: Wed, 12 Feb 2020 10:28:06 -0800
+ by muru.com (Postfix) with ESMTPS id 56BB080F6;
+ Wed, 12 Feb 2020 18:29:22 +0000 (UTC)
+Date: Wed, 12 Feb 2020 10:28:35 -0800
 From: Tony Lindgren <tony@atomide.com>
 To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Subject: Re: [RFC PATCH 06/14] mtd: rawnand: ams-delta: Push inversion
- handling to gpiolib
-Message-ID: <20200212182806.GL64767@atomide.com>
+Subject: Re: [RFC PATCH 03/14] ARM: OMAP1: ams-delta: Provide board specific
+ partition info
+Message-ID: <20200212182835.GM64767@atomide.com>
 References: <20200212003929.6682-1-jmkrzyszt@gmail.com>
- <20200212003929.6682-7-jmkrzyszt@gmail.com>
+ <20200212003929.6682-4-jmkrzyszt@gmail.com>
+ <20200212145154.GK64767@atomide.com> <4506487.GXAFRqVoOG@z50>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20200212003929.6682-7-jmkrzyszt@gmail.com>
+In-Reply-To: <4506487.GXAFRqVoOG@z50>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200212_102815_668964_E2EAA1F1 
-X-CRM114-Status: UNSURE (   5.73  )
+X-CRM114-CacheID: sfid-20200212_102838_846158_63E11420 
+X-CRM114-Status: UNSURE (   4.65  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -74,15 +75,14 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-* Janusz Krzysztofik <jmkrzyszt@gmail.com> [200212 00:41]:
-> Let platforms take care of declaring correct GPIO pin polarity so we
-> can just ask a GPIO line to be asserted or deasserted and gpiolib deals
-> with the rest depending on how the platform is configured.
-> 
-> Inspired by similar changes to regulator drivers by Linus Walleij
-> <linus.walleij@linaro.org>, thanks!
+* Janusz Krzysztofik <jmkrzyszt@gmail.com> [200212 18:26]:
+> Thanks for your A-b:.  BTW, patch 06/14 also touches the board file and would 
+> require your acceptance before being merged via mtd, so could you please have 
+> a look?
 
-Acked-by: Tony Lindgren <tony@atomide.com>
+OK looks good to me, acked that one too.
+
+Tony
 
 ______________________________________________________
 Linux MTD discussion mailing list
