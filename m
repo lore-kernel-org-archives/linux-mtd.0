@@ -6,19 +6,19 @@ X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,HK_RANDOM_FROM,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2B0EC35242
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Feb 2020 00:44:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7F04C35242
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 Feb 2020 00:45:02 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AE72D20848
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Feb 2020 00:44:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4158D20848
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 Feb 2020 00:45:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jUbOZDhS";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y9c3B+ET"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE72D20848
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ug3WKYd2";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="djVfoEvV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4158D20848
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,65 +27,65 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Ez83TAe5a5rWujlS5x3exw3GOyz+4/tOuUWsSTMhGEY=; b=jUbOZDhSmKvgzG
-	i0NKLdT3hAveHBPxz5VmygJaeq81WGXJv1F9LRbBOU+Qvvr9BxblQVHIt6jHy5G/GZXagndlg81NY
-	l+4CTlUtGMyKxWPCYaPw6mzrlFptBg8UUwcD/eyEzVKOVAx72EwlO3DcjKibwNXKhCd2Z1Ab07B9J
-	QITywrQmqDJpKZOW3+nboKzaWuBf+/+6sdAqEBsZZIN5Y/WZiPdElalqs1e6J8KpOiMw85P3Tx4zq
-	26/eRS7nnzguBPG0QXGL4pwGYf3TgBVn4cnayZF22rvD6sT0fDyQz2GK2ze3qx5/I6w0s9itU9aWi
-	i1Es2T9vE44JCybDoEhw==;
+	List-Owner; bh=yXIxN8tsjECNcTT09pEk2ZsrbBcGEXSSwHCcHZ5w3ZQ=; b=ug3WKYd2ou3zwH
+	8495K3Ln8RLMWicgPgB4vqfKTE6s0c0xRk4D67jVyA01ASyTdDyV+GIlhsDpw9z1SzPqxKrpA9JV9
+	AaPmloSf3Sb0f2SBqhUV5KDFROtqOufa/D6vkxKQyOJ9okRguEWTbMZucyWYlc0PEON8mltAcch4+
+	ewZ656JRubUIfFUeBJthMbS7NQs59DA24lNW4qq3WGw+fVjOxIc2lwOYr52EKvLBlnR9UXFirdmHV
+	iKNJXGLBy3YriIfFReDCmXPJYlOjMo0PkEEsMkdTyxl1Gd61R6WclUybvy9sEBQeu4xFVKls0dqKt
+	hzPDKvcB3GcMmaey6Qng==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j1g8m-0003gl-E8; Wed, 12 Feb 2020 00:44:32 +0000
-Received: from mail-lf1-x144.google.com ([2a00:1450:4864:20::144])
+	id 1j1g90-0003vJ-Ut; Wed, 12 Feb 2020 00:44:46 +0000
+Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j1g4l-0008H5-PH; Wed, 12 Feb 2020 00:40:25 +0000
-Received: by mail-lf1-x144.google.com with SMTP id m30so263193lfp.8;
- Tue, 11 Feb 2020 16:40:23 -0800 (PST)
+ id 1j1g4m-0008Ht-KO; Wed, 12 Feb 2020 00:40:26 +0000
+Received: by mail-lj1-x244.google.com with SMTP id e18so234236ljn.12;
+ Tue, 11 Feb 2020 16:40:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=WQvwUELB2lAk2lsQtZP8H2VNrhUPibDwY83BwnWamDU=;
- b=Y9c3B+ETlvveEsikvMHolWK2+/qerHygPjGpuDcQ/n0hRzfAyVEFoaL/+IMhgVyjVI
- HSM4dTDofvtZXO9YIsDpZjF5KiyGe/KSYLfyj/lrgFAqTg+F+HhTNFs2NrR75kkH+5i2
- 64dyCzKM3mBF6vbMbd2Vncx7klqcoJPcacr4uH8igr4vZLxjQlrtlVoNOeg7u+NIlwtk
- pVq8ewORb7HXwzgmwlT40EqF0U7gCwYoQsjFgOLjzKfycJ0sHNsYcAemdsvUoHssc/hV
- PR7JNdgu6aRoPkTz5Y2KhggOiVi0wF4+40UKwSDIohurcU6VjH58IHlssvFEcDYXkx3H
- wxpw==
+ bh=caDIr3rP6oosu1+kaTV/U9Y5uOqTsEJ+evHiz9URQq4=;
+ b=djVfoEvVfIrazuwClaIyoiPfUM8to2+bMx3D9Wv4DKZg4M3KNwM5B7lVFVi/ThZjuN
+ D/IOBS50MpHYmJZjx/r7OSCQXr+nqh5t1B3y37b8YsbDSSJF8A9rDU5d/WrrgLcwJwdt
+ rWCZkN2cP8KFl+zCY9Dv7sPv+L0id5nyDY/85pQKC4wwZZ/5gFWBmHZQAFEhFYmu8wpi
+ Jtl+3z6aCj5u9e5sAJuAonl4JDHDlgevY7zh6mi0cu884C5Y7c7Ru1Aj8ctqPWwUdtHe
+ ikstkQoiBMtzpL2T9jIZM75yaRcjhW5PnoJSYbEsJ8sdxcCk1jCCfszElMW+knCwvaWn
+ wB1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=WQvwUELB2lAk2lsQtZP8H2VNrhUPibDwY83BwnWamDU=;
- b=scJRIJGuiynqDVoYBQgPpmiw4ZJiV0b7Bc0dc5wyawMgHicJ4dxXvPGvI4cyNeOYkU
- HfP1unOQ7DKayIohsYuBJbfeb7jT+KzJ6eud2vwgxtmtQMhHqxVJFgP6IQQDlyUJdDSN
- W2VETO0P9eWEcL5YkV69bgQMZyBNNIHbHJ1CCAx9wkbQCbt1X7lcHlSOBsg1S6ZI37Sv
- HzmloAvcxgtbyXvqRpusfekx49Omj4DbKTzTVcaQYU2fIjgG5u6dwRDQhfmKAjAbf6Ss
- IKVD1zxJi1ASJVkzCsUX1ZkYELkfPpGf1F7r+lkADP8ElHbXwSntjNyKCoEgnDumyzeu
- w8xA==
-X-Gm-Message-State: APjAAAUiAyfr1ZFw5whUbjEYFOBa5iHIH7LrhCnc9lBErkWUZ285fx21
- diPUXtvIxoDoWFZtXnG0LU4=
-X-Google-Smtp-Source: APXvYqzrumwlcv4WELKNafS26Pu7ImSy3VMG/Df7kdpl+EF/FXmNAxgvCTLUbWPORF6yRPXkGWwhbw==
-X-Received: by 2002:ac2:43a7:: with SMTP id t7mr5135029lfl.125.1581468021768; 
- Tue, 11 Feb 2020 16:40:21 -0800 (PST)
+ bh=caDIr3rP6oosu1+kaTV/U9Y5uOqTsEJ+evHiz9URQq4=;
+ b=kEEjZuXXNPkjtqthITMUzkIUjAfgQK/ahWNQjnsNVdcoCHyT0aU1cqsPIbEFy4WmT8
+ 8ilYV3m8rvI3aNvAK3QMDEP5/Nvbyp/WuKvb5QUMU/r6BS1kFzrj2Luvha0PaVmB+WTQ
+ i1sv02A2n592bIpfMrsZrdxbG7BdYsRsx5DoNXar/efGsXFxFQoLDRQ+yx+Fp2VZ2xfp
+ GNLJXvsQf+aov8s2Dy0bCJVJi7beBHfi6I/8oJMNzE60oQo02Dvi+DcXnYmU+dUkQ7I1
+ 4RKKQY14ew9VPw5B7Zakhm8iNg/0FaT1yFo6FOAqqNJT+Xd4k1jCgVQmnz3zu6RqqgtX
+ y8AA==
+X-Gm-Message-State: APjAAAWJ7MU3S5zWWzy66CGDnJAe9bZeaTi2mG5B/vcPLuWVnHMKCT97
+ VUqba0lDfF2iVwvShN8L05I=
+X-Google-Smtp-Source: APXvYqy6JFvRC9NklpSqlYRY6lVX8UkHC9NOlwj40Nhm8KFKwboQJSVotTIA/W7iSbWh/4xCAN+43g==
+X-Received: by 2002:a2e:9596:: with SMTP id w22mr5753039ljh.21.1581468022989; 
+ Tue, 11 Feb 2020 16:40:22 -0800 (PST)
 Received: from z50.gdansk-morena.vectranet.pl
  (109241122244.gdansk.vectranet.pl. [109.241.122.244])
- by smtp.gmail.com with ESMTPSA id e8sm3621935ljb.45.2020.02.11.16.40.20
+ by smtp.gmail.com with ESMTPSA id e8sm3621935ljb.45.2020.02.11.16.40.21
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 11 Feb 2020 16:40:21 -0800 (PST)
+ Tue, 11 Feb 2020 16:40:22 -0800 (PST)
 From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>
-Subject: [RFC PATCH 07/14] mtd: rawnand: ams-delta: Don't hardcode read/write
- pulse widths
-Date: Wed, 12 Feb 2020 01:39:22 +0100
-Message-Id: <20200212003929.6682-8-jmkrzyszt@gmail.com>
+Subject: [RFC PATCH 08/14] mtd: rawnand: ams-delta: Make read pulses optional
+Date: Wed, 12 Feb 2020 01:39:23 +0100
+Message-Id: <20200212003929.6682-9-jmkrzyszt@gmail.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200212003929.6682-1-jmkrzyszt@gmail.com>
 References: <20200212003929.6682-1-jmkrzyszt@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200211_164023_859474_49BA2820 
-X-CRM114-Status: GOOD (  11.28  )
+X-CRM114-CacheID: sfid-20200211_164024_729534_C756790E 
+X-CRM114-Status: UNSURE (   9.17  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,75 +106,43 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Instead of forcing Amstrad Delta specific read/write pulse widths, use
-variables initialised from respective fields of chip SDR timings.
+Allow platforms to omit NRE pin from device configuration by requesting
+that pin as optional.  In that case, also don't apply read pulse width
+from chip SDR timings.  There should be no need for further code
+adjustments as gpiolib can handle NULL GPIO descriptor pointers.
 
 Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
 ---
- drivers/mtd/nand/raw/ams-delta.c | 29 +++++++++++++++++++++++++++--
- 1 file changed, 27 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/raw/ams-delta.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
-index c7aeb940accd..11689218d23a 100644
+index 11689218d23a..c481d73e3dcb 100644
 --- a/drivers/mtd/nand/raw/ams-delta.c
 +++ b/drivers/mtd/nand/raw/ams-delta.c
-@@ -40,12 +40,14 @@ struct ams_delta_nand {
- 	struct gpio_desc	*gpiod_cle;
- 	struct gpio_descs	*data_gpiods;
- 	bool			data_in;
-+	unsigned int		tRP;
-+	unsigned int		tWP;
- };
+@@ -202,8 +202,10 @@ static int ams_delta_setup_data_interface(struct nand_chip *this, int csline,
+ 	if (csline == NAND_DATA_IFACE_CHECK_ONLY)
+ 		return 0;
  
- static void ams_delta_write_commit(struct ams_delta_nand *priv)
- {
- 	gpiod_set_value(priv->gpiod_nwe, 1);
--	ndelay(40);
-+	ndelay(priv->tWP);
- 	gpiod_set_value(priv->gpiod_nwe, 0);
- }
+-	priv->tRP = DIV_ROUND_UP(sdr->tRP_min, 1000);
+-	dev_dbg(dev, "using %u ns read pulse width\n", priv->tRP);
++	if (priv->gpiod_nre) {
++		priv->tRP = DIV_ROUND_UP(sdr->tRP_min, 1000);
++		dev_dbg(dev, "using %u ns read pulse width\n", priv->tRP);
++	}
  
-@@ -82,7 +84,7 @@ static u8 ams_delta_io_read(struct ams_delta_nand *priv)
- 	DECLARE_BITMAP(values, BITS_PER_TYPE(res)) = { 0, };
+ 	priv->tWP = DIV_ROUND_UP(sdr->tWP_min, 1000);
+ 	dev_dbg(dev, "using %u ns write pulse width\n", priv->tWP);
+@@ -276,7 +278,8 @@ static int ams_delta_init(struct platform_device *pdev)
+ 		return err;
+ 	}
  
- 	gpiod_set_value(priv->gpiod_nre, 1);
--	ndelay(40);
-+	ndelay(priv->tRP);
- 
- 	gpiod_get_raw_array_value(data_gpiods->ndescs, data_gpiods->desc,
- 				  data_gpiods->info, values);
-@@ -187,8 +189,31 @@ static int ams_delta_exec_op(struct nand_chip *this,
- 	return ret;
- }
- 
-+static int ams_delta_setup_data_interface(struct nand_chip *this, int csline,
-+					  const struct nand_data_interface *cf)
-+{
-+	struct ams_delta_nand *priv = nand_get_controller_data(this);
-+	const struct nand_sdr_timings *sdr = nand_get_sdr_timings(cf);
-+	struct device *dev = &nand_to_mtd(this)->dev;
-+
-+	if (IS_ERR(sdr))
-+		return PTR_ERR(sdr);
-+
-+	if (csline == NAND_DATA_IFACE_CHECK_ONLY)
-+		return 0;
-+
-+	priv->tRP = DIV_ROUND_UP(sdr->tRP_min, 1000);
-+	dev_dbg(dev, "using %u ns read pulse width\n", priv->tRP);
-+
-+	priv->tWP = DIV_ROUND_UP(sdr->tWP_min, 1000);
-+	dev_dbg(dev, "using %u ns write pulse width\n", priv->tWP);
-+
-+	return 0;
-+}
-+
- static const struct nand_controller_ops ams_delta_ops = {
- 	.exec_op = ams_delta_exec_op,
-+	.setup_data_interface = ams_delta_setup_data_interface,
- };
- 
- /*
+-	priv->gpiod_nre = devm_gpiod_get(&pdev->dev, "nre", GPIOD_OUT_LOW);
++	priv->gpiod_nre = devm_gpiod_get_optional(&pdev->dev, "nre",
++						  GPIOD_OUT_LOW);
+ 	if (IS_ERR(priv->gpiod_nre)) {
+ 		err = PTR_ERR(priv->gpiod_nre);
+ 		dev_err(&pdev->dev, "NRE GPIO request failed (%d)\n", err);
 -- 
 2.24.1
 
