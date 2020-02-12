@@ -8,17 +8,17 @@ X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6A88C35242
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Feb 2020 00:46:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BDBE8C35242
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 Feb 2020 00:47:23 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 92B5220724
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Feb 2020 00:46:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9129B20724
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 Feb 2020 00:47:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OdvgzmY7";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XXy+baYR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 92B5220724
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="iKV+I2Pb";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XRUOYw1F"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9129B20724
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,65 +27,66 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=W4YnxgfwWSnWordUUeAvhws/DQFg1UrhnS/VX9gsxLs=; b=OdvgzmY7yTRyIH
-	+JxkNnKnUpk5Kh5Ruc6PPTR7nnXf66gy2BeOWItThZa48VuzjCHdo9ZV871WYXZwsG0r0gzSsrUql
-	VO/MlcPL3g+oNbBP0YRdFzDcSR2b/XqETQy4cs4vhz8dk+7woeiaOSmW6bLji1IqmYfpkVltgQq4L
-	JnsS6onY+Bc2I6zRFmfP4xN4wsb3Aj3P+FVnA6D1fHuJTPDgJg6mKlvU7yXEdllhV3QXLZCrwHIxG
-	XQjAUTYxms1RE4AlFe7x7AtlZe/mNpMJkkAs/nMrjE5rZUvyDnfOyDv3s0Fw2HlAE/8Ih64hcbAtI
-	HKRuVsa6w6BGMxdvETzg==;
+	List-Owner; bh=ieDL6ubiMH0aLC7OlKmPQw65Re4o+a1tBFLHDPBy8Fk=; b=iKV+I2PbJdUtF/
+	KUkhH6CoS2+/AhDGk6qagiBTU3168L+K6MTYNDcTzjHNKTGifZ9VH0v5H9O2SHvc3h0idtpYskdq3
+	aP0sVzMNVpn318QIRJNsDHGVFku3tr9ED5lyCsTpdfjXe0ZO/0WNMRqQwlHdfxzeME41T+Ty45zft
+	VMV7bGBGfK4Kdq0WZ1yZPHKvcMyN9Z80M0n8uthjrv/N9ldaHlQwTVimrM2Rh8A2SzQHtTpPn6tdm
+	awKqCv+Jq97xcWZ4GH9cgEz1KD6tnE6b470WBiCc/j8vcJVmuApddYDXXjxazbkXQ53+YhnciKROl
+	cKzz/oCGlRzYM282NnGQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j1gAo-0006mI-I8; Wed, 12 Feb 2020 00:46:38 +0000
-Received: from mail-lf1-x141.google.com ([2a00:1450:4864:20::141])
+	id 1j1gBM-0007Qe-L0; Wed, 12 Feb 2020 00:47:12 +0000
+Received: from mail-lj1-x241.google.com ([2a00:1450:4864:20::241])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j1g4r-0008LD-C9; Wed, 12 Feb 2020 00:40:31 +0000
-Received: by mail-lf1-x141.google.com with SMTP id r14so275179lfm.5;
- Tue, 11 Feb 2020 16:40:28 -0800 (PST)
+ id 1j1g4r-0008Jt-VK; Wed, 12 Feb 2020 00:40:33 +0000
+Received: by mail-lj1-x241.google.com with SMTP id n18so256671ljo.7;
+ Tue, 11 Feb 2020 16:40:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=v/6tTpO3ty9Ickxrg60llaPHKJlLlwszXGl2q4ZEWdA=;
- b=XXy+baYR3VmU8+0MGUBmeB6Ufp/HhTXjpTNcm302ZvTcMx1EevlSI36N7AfkUkFY+L
- hikN/KF45d4Z3VpgD4ep9+f5bnN6R9yOvtZD6IKtW6JF30+QsQdYKL6ANu3J23pA2zPC
- vMQdRiXUl7QMICn0fkSYS4MjnkQ9yGjELAbk761xAGcGiTv5ew4ysYqRn60qsjpToxZp
- LdP4g+dkLb2RagCz7Srr7VCQBngZBot1UyOaQ/WSyyXpNmSVXCy6qUaKuJrhOHfOetnx
- +nI6CWdxR8IatlCyIFlRpeJ+xQEWEj9sCVcSc1FKF4cqaFeyYI/kEQKixttD8PiMxyIe
- HjJg==
+ bh=FJYKPthvZIFedIlxbcTRXaWUixnzV1+Q9RiZEPYQb/8=;
+ b=XRUOYw1FAkTzb6oW3oIsS8OrrN+JDesE+lr0Eg5RKKCAGYyMWyjwLUo6beSeizUGhq
+ RgMChJuxxMdMfwy1UX/UAcxmGlSym9l2K/JYczKwDWXjgaogauFOflQwjP50YXIlTZiU
+ DGMYFyU/qb0xujibkcIeA8KYFLwPt+VWN6Linlz47TdJyttGzGCM4BOVECZKTJ+CMfq+
+ /tlh+vLf+ycG/NXi3N+RgYjSn7A/7iUsj9CjpcboM+B6OvgvJCuXjwk6Fpzu2QVyTMLD
+ s1pInl6rcIeUO+t+aqUYwJ5g2apQ2wlLtneq1wUdwlH7CIlILApyrZMC+5NKd9QKyApy
+ TlMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=v/6tTpO3ty9Ickxrg60llaPHKJlLlwszXGl2q4ZEWdA=;
- b=Dxk4U1xzFoKO9qZt8AFeEiB1XsADuLZSSq70bouPfyEoX/LWFwyNHqTiN+6J0QI4mV
- u4IE0tfo+V1iNlUsvdl4U04AUHWVnMTiaZhoQXug6jAyQMWKfMR7EwQuxJphGa4HEAd2
- ro3chNzbjFyJcCfpiwtvK0hcPC1hvkAUQUqTuvteBPgss6yHR1lUNCfrZo3xZ+j8RgHr
- rADYySnrNehu1MAtEL5y9QxdsYMHQM7Ycr+P8hlklx0MZlVe7z3vK1hTf1JsxC80TTIH
- 5+JKIPNvMF/tiwPgcCes4xvxiqRqMnyELQ3Irtx7OJMnpk7vLI+Bu86MEmw2IHa6HA/d
- bMig==
-X-Gm-Message-State: APjAAAX1z5RGt9xZsx9ICLT+km39Ql5/1+ZnwNxDdcAenOHuElGX3xvL
- HPPdA8wOdGAwVkB/EISuzPc=
-X-Google-Smtp-Source: APXvYqzJQMZWjP7I8oQrWw3hIto+GJNhsSDnYXYqbb56cNLMkwksMbMcf+Z2BxWEJFVtQsbKN+icfg==
-X-Received: by 2002:ac2:5f74:: with SMTP id c20mr5161323lfc.15.1581468026840; 
- Tue, 11 Feb 2020 16:40:26 -0800 (PST)
+ bh=FJYKPthvZIFedIlxbcTRXaWUixnzV1+Q9RiZEPYQb/8=;
+ b=pyYvFStZ8aHsY6mQzJe/EZXiW7gtGVK645nuwPOs2DDlIrsdIDvpRqJFwe902AKUPv
+ DLH/GDksr9wI1AL8ngcSY2MSUcY5m9P1EgZf+xQqLANVL0SPCoK4apshguZdNQkPivTd
+ qOByQSnTZVAbmDeC0BWxrQde+5Vss9f2tcefOC382qAI1pFmH/O3JJgVW7ksrC1mOLSg
+ bbOnQ1NEP/PaY8bnyLw/eHN0NGnK3j7ns2Aw3InKEjbj7v4qi5fnrAgvxJs+PItBRuk3
+ kERhd6beK2NCkI55xuNnaPfYVbSty6ASowqcj9W8CdhhtEw2zy39DLTKcp/0bfEY37SX
+ 5nkw==
+X-Gm-Message-State: APjAAAXFVgFHHT7o5cyRpfbErwSVthHIvMcqSp8zgNUFwRMY8LzYU/G/
+ mb4NTfb/O+pJ8JZ7z0um+yA=
+X-Google-Smtp-Source: APXvYqw8vOkP/end+TVMFx46dyQcENtXIweuu3keRWt1h/CrKYtPMYiEk3ELj0Qt93lVXrk/HH4MXg==
+X-Received: by 2002:a2e:b4e7:: with SMTP id s7mr6220313ljm.58.1581468024270;
+ Tue, 11 Feb 2020 16:40:24 -0800 (PST)
 Received: from z50.gdansk-morena.vectranet.pl
  (109241122244.gdansk.vectranet.pl. [109.241.122.244])
- by smtp.gmail.com with ESMTPSA id e8sm3621935ljb.45.2020.02.11.16.40.25
+ by smtp.gmail.com with ESMTPSA id e8sm3621935ljb.45.2020.02.11.16.40.23
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 11 Feb 2020 16:40:26 -0800 (PST)
+ Tue, 11 Feb 2020 16:40:23 -0800 (PST)
 From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>
-Subject: [RFC PATCH 11/14] mtd: rawnand: ams-delta: Support custom driver
- initialisation
-Date: Wed, 12 Feb 2020 01:39:26 +0100
-Message-Id: <20200212003929.6682-12-jmkrzyszt@gmail.com>
+Subject: [RFC PATCH 09/14] mtd: rawnand: ams-delta: Handle more GPIO pins as
+ optional
+Date: Wed, 12 Feb 2020 01:39:24 +0100
+Message-Id: <20200212003929.6682-10-jmkrzyszt@gmail.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200212003929.6682-1-jmkrzyszt@gmail.com>
 References: <20200212003929.6682-1-jmkrzyszt@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200211_164029_447478_E5310F5E 
-X-CRM114-Status: GOOD (  11.10  )
+X-CRM114-CacheID: sfid-20200211_164030_096392_7A240E34 
+X-CRM114-Status: UNSURE (   9.80  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,51 +107,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In preparation for extending the driver with custom I/O support, try to
-obtain device specific initialisation routine from a matching device
-table entry and run it as an additional step of device probe.
+In order to make the driver more useful on platforms other than Amstrad
+Delta, allow GPIO descriptor pointers of possibly non-critical NWP and
+NCE pins to be initialised as NULL.
 
 Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
 ---
- drivers/mtd/nand/raw/ams-delta.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/mtd/nand/raw/ams-delta.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
-index 9857ce25debf..97e3b6629c72 100644
+index c481d73e3dcb..0c88e94e9b71 100644
 --- a/drivers/mtd/nand/raw/ams-delta.c
 +++ b/drivers/mtd/nand/raw/ams-delta.c
-@@ -22,6 +22,7 @@
- #include <linux/mtd/nand-gpio.h>
- #include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
-+#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/sizes.h>
+@@ -264,14 +264,16 @@ static int ams_delta_init(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, priv);
  
-@@ -230,6 +231,7 @@ static int ams_delta_init(struct platform_device *pdev)
- 	struct nand_chip *this;
- 	struct mtd_info *mtd;
- 	struct gpio_descs *data_gpiods;
-+	int (*probe)(struct platform_device *pdev, struct ams_delta_nand *priv);
- 	int err = 0;
+ 	/* Set chip enabled but write protected */
+-	priv->gpiod_nwp = devm_gpiod_get(&pdev->dev, "nwp", GPIOD_OUT_HIGH);
++	priv->gpiod_nwp = devm_gpiod_get_optional(&pdev->dev, "nwp",
++						  GPIOD_OUT_HIGH);
+ 	if (IS_ERR(priv->gpiod_nwp)) {
+ 		err = PTR_ERR(priv->gpiod_nwp);
+ 		dev_err(&pdev->dev, "NWP GPIO request failed (%d)\n", err);
+ 		return err;
+ 	}
  
- 	if (pdata) {
-@@ -319,6 +321,15 @@ static int ams_delta_init(struct platform_device *pdev)
- 	priv->data_gpiods = data_gpiods;
- 	priv->data_in = true;
- 
-+	if (pdev->id_entry)
-+		probe = (void *) pdev->id_entry->driver_data;
-+	else
-+		probe = of_device_get_match_data(&pdev->dev);
-+	if (probe)
-+		err = probe(pdev, priv);
-+	if (err)
-+		return err;
-+
- 	/* Initialize the NAND controller object embedded in ams_delta_nand. */
- 	priv->base.ops = &ams_delta_ops;
- 	nand_controller_init(&priv->base);
+-	priv->gpiod_nce = devm_gpiod_get(&pdev->dev, "nce", GPIOD_OUT_LOW);
++	priv->gpiod_nce = devm_gpiod_get_optional(&pdev->dev, "nce",
++						  GPIOD_OUT_LOW);
+ 	if (IS_ERR(priv->gpiod_nce)) {
+ 		err = PTR_ERR(priv->gpiod_nce);
+ 		dev_err(&pdev->dev, "NCE GPIO request failed (%d)\n", err);
 -- 
 2.24.1
 
