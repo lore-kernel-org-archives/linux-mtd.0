@@ -2,62 +2,86 @@ Return-Path: <SRS0=hSdi=4D=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7780FC352A3
-	for <linux-mtd@archiver.kernel.org>; Sat, 15 Feb 2020 05:54:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 280AEC352A3
+	for <linux-mtd@archiver.kernel.org>; Sat, 15 Feb 2020 07:00:08 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3FBF12083B
-	for <linux-mtd@archiver.kernel.org>; Sat, 15 Feb 2020 05:54:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9E2BC2082F
+	for <linux-mtd@archiver.kernel.org>; Sat, 15 Feb 2020 07:00:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ZabiDxgF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3FBF12083B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ED9j+r+3";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SDH1bF64"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E2BC2082F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KMP+/8iLyda4wDKYRVS6y7rYDAVPJgRCecHzpBulz68=; b=ZabiDxgFTxRLZ7
-	mlCUpRUScipdwtkNhSzXUjwOhkjc2xc+QavUMjTI3pPXPy+VJ36oQgdvbwJ84915SLsxzjsyB5Hqw
-	VN/etsge6eiE4wdhuYqXDij/d05pmzInzKYmVzzRCxXYfHMInNZuIhlyQ4UdnUdyi92DB5IRTjTNl
-	Tfe6JQKeRxaysk0DzdzuuyYBjomlppRixn4XYB87ytz3iuNceMNfSFqv2jCl0K/ntN2seMWp8I1FG
-	3iA9qen/cNbSoszKgwH+T4HhzjdRZ/IE8VJXUsVFW2W/bofm6AkgOuXXY/8id2gr0x1GUVfXhcIhu
-	HzVG6nZ67JewNfnBJJKg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=HnnZ7P6ywXCi3bqbZd3FvI4UoSiGRF6AjNRTnsBT/Us=; b=ED9j+r+34ut5Hz
+	94kelqNMXxwvobscEW3Q4kfb//MEe7iFSG09JqsmuVWlUT+UDf5Yq/D6Zxx+a6FwpeQaxokMzsDsg
+	M0It+btVKulYukZuF7nrE+zo+BcSi222z19YAfUyoxfd09rDHqMnBUBzxh4qoqjkAfvjZ5MLo9wey
+	MTKLaIxcD2VcmgQhKKQThW3+wwZRtXB84ybsYcaIeTotaT9hST5Z5sG8VzMDdKUp+L9lNWB/bVfjL
+	Y1Hf8/dB0zXIExk1b1QoScO6D/XqHOHg9Fxg3Kbeoml8pAfHbZV5BZci/MZySXnDwQMsqYuEhns8M
+	TtAfOwJ2EtHFJSjImlxA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j2qOt-0000v1-V1; Sat, 15 Feb 2020 05:53:59 +0000
-Received: from relay6-d.mail.gandi.net ([217.70.183.198])
+	id 1j2rQT-0004WN-FA; Sat, 15 Feb 2020 06:59:41 +0000
+Received: from mail-pj1-x1042.google.com ([2607:f8b0:4864:20::1042])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j2qOq-0000uF-9I
- for linux-mtd@lists.infradead.org; Sat, 15 Feb 2020 05:53:58 +0000
-X-Originating-IP: 12.207.20.3
-Received: from xps13 (unknown [12.207.20.3])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 163DAC0004;
- Sat, 15 Feb 2020 05:53:32 +0000 (UTC)
-Date: Sat, 15 Feb 2020 06:53:28 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH] mtd: rawnand: ingenic: Allow to compile test the new
- Ingenic driver
-Message-ID: <20200215065328.01792ce3@xps13>
-In-Reply-To: <1581609584.3.1@crapouillou.net>
-References: <20200117212225.18004-1-miquel.raynal@bootlin.com>
- <1581609584.3.1@crapouillou.net>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1j2rQQ-0004V3-26; Sat, 15 Feb 2020 06:59:39 +0000
+Received: by mail-pj1-x1042.google.com with SMTP id m13so4951368pjb.2;
+ Fri, 14 Feb 2020 22:59:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=bLLoa1HE206JYtCQvu5wW2ZAWORsgXQDP7itOiiFk7I=;
+ b=SDH1bF64VdhdHfMBJeZZF2KeRu67V3un9Y24oomrsY7BCJ66wjhBTvayBI5io5knT1
+ dIU+e3CrfiMkkjEFag0kSyghEEuV0Mtg9nfskdBEIuO4tdY3Qc5MiLlwkwI/EInzRpXK
+ OqzldDxuTvQ7eqt092ZzD87fE5fQKr7usgd+E75erNDpZ8a8YCbgX5a7nwmy2ooLyc95
+ GpssJGEWFuFqAwLIiohG1pDuovCwIGth3j2eBNpo+zKxzPbRt0q0+kK1oZR/sVeEYLkH
+ b9Nsge6yiyAGrzZMNHrzL1d8nYib8SFl+EBPHgDFR7GWWa60J4PVidKXeve1jvPoBLHx
+ q7Og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=bLLoa1HE206JYtCQvu5wW2ZAWORsgXQDP7itOiiFk7I=;
+ b=qjK3nvsi13VDBey10bq9o0NXvik9tffROeIZwiJG0uIheMHM39bu1+YZ4OtELThg9Q
+ 4u6QubDhIGgm5satEAfQT+TeMybjIR5kyOyMNCicSAs2cr96l+b0xF9CXmvCy/aDNA08
+ YnznPlGjb6CXG84yGNbSwjsqvvcwmRZi1EUt8cqTa2+LDX4pYYWE+6J+ln1ZC2h9IQYe
+ boBKEQ35N8nQqewFus9XD9sWR6usDUP/vhA3f5Hv0Cen18Ksss9KCOe9KT89F57YOrma
+ e6z/5n8KI99lEiz2w5S/zQhoRvwohmyPdsVZA30l/KsVAbHEjxy507hRdpBSaet2KlhJ
+ lIlA==
+X-Gm-Message-State: APjAAAVE6WIImcS2ZByoX6D9zrBLKJi7p4mDpGhBlc2DxCyzJR7uP44d
+ DVBxW+SMbexMSPU5i0wahtWjAF38E0Vbe0v2
+X-Google-Smtp-Source: APXvYqyOQOi37sMJScGrWpAIv/XpidYqqZcMorxgbOrmVjYGMGTvBNoQrHg6tbqiIiYO/ZeaH4iSjg==
+X-Received: by 2002:a17:90a:3a86:: with SMTP id
+ b6mr8063542pjc.96.1581749976239; 
+ Fri, 14 Feb 2020 22:59:36 -0800 (PST)
+Received: from localhost.localdomain ([240e:379:95a:e780::fa3])
+ by smtp.gmail.com with ESMTPSA id c15sm8918140pfo.137.2020.02.14.22.59.12
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 14 Feb 2020 22:59:35 -0800 (PST)
+From: Chuanhong Guo <gch981213@gmail.com>
+To: linux-mediatek@lists.infradead.org, linux-spi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org
+Subject: [PATCH 0/2] rewrite mtk-quadspi spi-nor driver with spi-mem
+Date: Sat, 15 Feb 2020 14:58:24 +0800
+Message-Id: <20200215065826.739102-1-gch981213@gmail.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200214_215356_462727_164A9258 
-X-CRM114-Status: GOOD (  10.46  )
+X-CRM114-CacheID: sfid-20200214_225938_130946_ACE0B79F 
+X-CRM114-Status: GOOD (  11.33  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,30 +93,50 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>,
- Harvey Hunt <harveyhuntnexus@gmail.com>, linux-mtd@lists.infradead.org,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Mark Rutland <mark.rutland@arm.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>,
+ linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>, Chuanhong Guo <gch981213@gmail.com>,
+ linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgUGF1bCwKClBhdWwgQ2VyY3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PiB3cm90ZSBvbiBU
-aHUsIDEzIEZlYiAyMDIwIDEyOjU5OjQ0Ci0wMzAwOgoKPiBIaSBNaXF1ZWwsIHNvcnJ5IGZvciBy
-ZXNwb25kaW5nIHNvIGxhdGUuCj4gCj4gCj4gTGUgdmVuLiwgamFudi4gMTcsIDIwMjAgYXQgMjI6
-MjIsIE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+IGEgw6ljcml0IDoK
-PiA+IFRoaXMgZHJpdmVyIGhhcyBubyBhcmNoLXNwZWNpZmljIGluc3RydWN0aW9ucyBzbyB3ZSBz
-aG91bGQgYmUgYWJsZSB0bwo+ID4gY29tcGlsZSBpdCB3aXRoIGFueSBjb21waWxlci4KPiA+IAo+
-ID4gU2lnbmVkLW9mZi1ieTogTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNv
-bT4gIAo+IAo+IExvb2tzIGdvb2QgdG8gbWUuCj4gUmV2aWV3ZWQtYnk6IFBhdWwgQ2VyY3VlaWwg
-PHBhdWxAY3JhcG91aWxsb3UubmV0PgoKQWN0dWFsbHkgSSBoYWQgZXJyb3JzIHJlcG9ydGVkIGJ5
-IHJvYm90cyBzbyBJIGRyb3BwZWQgaXQgZm9yIG5vdy4gWW91CmNhbiBzZWUgdGhlIGVycm9ycyB0
-aGF0IEkgYnVtcGVkIHlvdSBpbiBhbm90aGVyIHRocmVhZCwgc2VlOgoKCVN1YmplY3Q6IEZ3OiBb
-bWlxdWVscmF5bmFsOmVjYy1lbmdpbmUgMS82MF0KCWluZ2VuaWNfbmFuZF9kcnYuYzp1bmRlZmlu
-ZWQgIHJlZmVyZW5jZSB0byBgano0NzgwX25lbWNfYXNzZXJ0JwoJRGF0ZTogVHVlLCAyMSBKYW4g
-MjAyMCAxNjozMTo1NyArMDEwMAoKSWYgeW91IGZpbmQgc29tZSB0aW1lIHRvIGZpeCB0aGlzLCB0
-aGF0IHdvdWxkIGJlIHZlcnkgYXBwcmVjaWF0ZWQgYW5kCmhlbHBmdWwhCgoKVGhhbmtzLApNaXF1
-w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+This patchset adds a spi-mem driver for Mediatek SPI-NOR controller,
+which already has limited support by mtk-quadspi. For benefits of
+this replacement, please check commit message of the 1st patch.
+
+To keep patchset small for easier reviewing, there will be 3 patchsets
+including this one.
+1. add the new driver, which is this patchset.
+2. update existing dts for the new driver:
+   spi-max-frequency is missing in current mtk-quadspi binding. Old
+   driver parses child node manually so it doesn't need this, but
+   new spi-mem driver is probed via spi subsystem which requires the
+   presence of spi-max-frequency. Since this doesn't break old driver
+   support, I'll send this separately as a standalone patch.
+3. removing the old driver. I'll create this commit after 1 and 2 are
+   applied to avoid possible rebasing due to any changes in the old
+   driver.
+
+Chuanhong Guo (2):
+  spi: add support for mediatek spi-nor controller
+  dt-bindings: convert mtk-quadspi binding doc for spi-mtk-nor
+
+ .../mtk-quadspi.txt => spi/spi-mtk-nor.txt}   |  34 +-
+ drivers/spi/Kconfig                           |  10 +
+ drivers/spi/Makefile                          |   1 +
+ drivers/spi/spi-mtk-nor.c                     | 689 ++++++++++++++++++
+ 4 files changed, 715 insertions(+), 19 deletions(-)
+ rename Documentation/devicetree/bindings/{mtd/mtk-quadspi.txt => spi/spi-mtk-nor.txt} (62%)
+ create mode 100644 drivers/spi/spi-mtk-nor.c
+
+-- 
+2.24.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
