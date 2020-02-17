@@ -2,89 +2,54 @@ Return-Path: <SRS0=B4Yk=4F=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89216C34022
-	for <linux-mtd@archiver.kernel.org>; Mon, 17 Feb 2020 15:54:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9E92C3402A
+	for <linux-mtd@archiver.kernel.org>; Mon, 17 Feb 2020 16:12:52 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 59D6D206F4
-	for <linux-mtd@archiver.kernel.org>; Mon, 17 Feb 2020 15:54:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 90507215A4
+	for <linux-mtd@archiver.kernel.org>; Mon, 17 Feb 2020 16:12:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="exEcAdtW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 59D6D206F4
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kontron.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rUgbp5oC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 90507215A4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=aauJAVShKL0Ph0oclOTP8ZUCBjNck8g+ZS6wDxP5wJ0=; b=exEcAdtW6hqsLF
-	wPMNofAcz1wWLYWAgmsHgm6j90TchxUOpNuMI+Grs2+5p8C8ysauoXwwyb+FRKw79Ufc9QPh8iQZM
-	6V5mqcQt4qnOhqqZ7nV7yZSHb+0saU7813Q0o3zdxiRLtTVgMGOeGW1zr5mUpBIWNzaRv6Advjp7v
-	uneEgoqpvfuDSDOkRbV5dh6Ei0dbqDVpZdrdkQGpqzzEv+fV/GHHhEnLUYCO/hkPL3QnSlShMGqlD
-	oUXivceQKW/1XieKL0C1agVryB1bxB6hvAEFyuqfJQzeNERmR7eYH3EZwj1ctMT4VLt5X6qybPDo6
-	zdTL74FpCYyE8aFT6NYA==;
+	List-Owner; bh=oJcwF8qIRzc5wjJ6Ol5cAPkdlcPsRqFWHR9PS6eZ8BM=; b=rUgbp5oCDqYM/q
+	2wBbBqcwceIQ39Yff6t9/jZ7l/NLLJcxk33P66HwcZm6lFNUEOixjQXsboNUctvur5KZyorZAyIcr
+	NIFNFXCvLnpGyg0MOd5ai/Fa1KpNgqubTH61cbyK4NB0Zcxfe22aDLbm5LOFh3msM2Pwx112xeLbh
+	gPyc/Re9y/tt44GVysPXtHoxYo5pc3uBPcle5SOZAWKgNdXqcIvSbE55Exns21d+MlYgCYbU+48Wt
+	00A2uUFOqqTTEd1LywQ9QyeIinckkRXsddj5DxDxgeCDrlQBOQ8A6Y2p83y04dtDMWoKP63t0KX0J
+	ARlu7CBe3tI2UyUjDHXw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j3ij5-0007VS-60; Mon, 17 Feb 2020 15:54:27 +0000
-Received: from skedge03.snt-world.com ([91.208.41.68])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j3iis-0007GO-RO
- for linux-mtd@lists.infradead.org; Mon, 17 Feb 2020 15:54:16 +0000
-Received: from sntmail11s.snt-is.com (unknown [10.203.32.181])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by skedge03.snt-world.com (Postfix) with ESMTPS id EABA767AB40;
- Mon, 17 Feb 2020 16:54:12 +0100 (CET)
-Received: from sntmail12r.snt-is.com (10.203.32.182) by sntmail11s.snt-is.com
- (10.203.32.181) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 17 Feb
- 2020 16:54:12 +0100
-Received: from sntmail12r.snt-is.com ([fe80::e551:8750:7bba:3305]) by
- sntmail12r.snt-is.com ([fe80::e551:8750:7bba:3305%3]) with mapi id
- 15.01.1913.005; Mon, 17 Feb 2020 16:54:12 +0100
-From: Schrempf Frieder <frieder.schrempf@kontron.de>
-To: Boris Brezillon <bbrezillon@kernel.org>, Schrempf Frieder
- <frieder.schrempf@kontron.de>, Jeff Kletsky <git-commits@allycomm.com>,
- liaoweixiong <liaoweixiong@allwinnertech.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>
-Subject: [PATCH v2 3/3] mtd: spinand: Don not erase the block before writing a
- bad block marker
-Thread-Topic: [PATCH v2 3/3] mtd: spinand: Don not erase the block before
- writing a bad block marker
-Thread-Index: AQHV5ap/saRAn1//VEmaJshNaD42IA==
-Date: Mon, 17 Feb 2020 15:54:12 +0000
-Message-ID: <20200217155213.5594-4-frieder.schrempf@kontron.de>
-References: <20200217155213.5594-1-frieder.schrempf@kontron.de>
-In-Reply-To: <20200217155213.5594-1-frieder.schrempf@kontron.de>
-Accept-Language: de-DE, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: git-send-email 2.17.1
-x-originating-ip: [172.25.9.193]
-x-c2processedorg: 51b406b7-48a2-4d03-b652-521f56ac89f3
+	id 1j3j0f-0006zP-Sk; Mon, 17 Feb 2020 16:12:37 +0000
+Received: from tmo-109-126.customers.d1-online.com ([80.187.109.126]
+ helo=bombadil.infradead.org)
+ by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1j3j0e-0006uX-2H; Mon, 17 Feb 2020 16:12:36 +0000
+Received: from mchehab by bombadil.infradead.org with local (Exim 4.92.3)
+ (envelope-from <mchehab@bombadil.infradead.org>)
+ id 1j3j0b-000fcJ-EL; Mon, 17 Feb 2020 17:12:33 +0100
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Subject: [PATCH 42/44] docs: filesystems: convert ubifs.txt to ReST
+Date: Mon, 17 Feb 2020 17:12:28 +0100
+Message-Id: <9043dc2965cafc64e6a521e2317c00ecc8303bf6.1581955849.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.24.1
+In-Reply-To: <cover.1581955849.git.mchehab+huawei@kernel.org>
+References: <cover.1581955849.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-X-SnT-MailScanner-Information: Please contact the ISP for more information
-X-SnT-MailScanner-ID: EABA767AB40.A1FAB
-X-SnT-MailScanner: Not scanned: please contact your Internet E-Mail Service
- Provider for details
-X-SnT-MailScanner-SpamCheck: 
-X-SnT-MailScanner-From: frieder.schrempf@kontron.de
-X-SnT-MailScanner-To: bbrezillon@kernel.org, git-commits@allycomm.com,
- liaoweixiong@allwinnertech.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
- richard@nod.at, stable@vger.kernel.org
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200217_075415_238036_174AFDE6 
-X-CRM114-Status: GOOD (  12.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,62 +61,109 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "stable@vger.kernel.org" <stable@vger.kernel.org>
+Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+ linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Richard Weinberger <richard@nod.at>, Jonathan Corbet <corbet@lwn.net>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Frieder Schrempf <frieder.schrempf@kontron.de>
+- Add a SPDX header;
+- Add a document title;
+- Adjust section titles;
+- Some whitespace fixes and new line breaks;
+- Mark literal blocks as such;
+- Add table markups;
+- Add lists markups;
+- Add it to filesystems/index.rst.
 
-Currently when marking a block, we use spinand_erase_op() to erase
-the block before writing the marker to the OOB area. Doing so without
-waiting for the operation to finish can lead to the marking failing
-silently and no bad block marker being written to the flash.
-
-In fact we don't need to do an erase at all before writing the BBM.
-The ECC is disabled for the raw access to the OOB data and we don't
-need to work around any issues with chips reporting ECC errors as it
-is known to be the case for raw NAND.
-
-Fixes: 7529df465248 ("mtd: nand: Add core infrastructure to support SPI NANDs")
-Cc: stable@vger.kernel.org
-Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
-Changes in v2:
- * Instead of waiting for the erase operation to finish, just don't
-   do an erase at all, as it is not needed.
- * Update the commit message
----
- drivers/mtd/nand/spi/core.c | 3 ---
- 1 file changed, 3 deletions(-)
+ Documentation/filesystems/index.rst           |  1 +
+ .../filesystems/{ubifs.txt => ubifs.rst}      | 25 +++++++++++++------
+ 2 files changed, 19 insertions(+), 7 deletions(-)
+ rename Documentation/filesystems/{ubifs.txt => ubifs.rst} (91%)
 
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index a94287884453..8dda51bbdd11 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -613,7 +613,6 @@ static int spinand_markbad(struct nand_device *nand, const struct nand_pos *pos)
- 	};
- 	int ret;
+diff --git a/Documentation/filesystems/index.rst b/Documentation/filesystems/index.rst
+index bb14738df358..58d57c9bf922 100644
+--- a/Documentation/filesystems/index.rst
++++ b/Documentation/filesystems/index.rst
+@@ -90,6 +90,7 @@ Documentation for filesystem implementations.
+    sysfs
+    sysv-fs
+    tmpfs
++   ubifs
+    ubifs-authentication.rst
+    virtiofs
+    vfat
+diff --git a/Documentation/filesystems/ubifs.txt b/Documentation/filesystems/ubifs.rst
+similarity index 91%
+rename from Documentation/filesystems/ubifs.txt
+rename to Documentation/filesystems/ubifs.rst
+index acc80442a3bb..e6ee99762534 100644
+--- a/Documentation/filesystems/ubifs.txt
++++ b/Documentation/filesystems/ubifs.rst
+@@ -1,5 +1,11 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++===============
++UBI File System
++===============
++
+ Introduction
+-=============
++============
  
--	/* Erase block before marking it bad. */
- 	ret = spinand_select_target(spinand, pos->target);
- 	if (ret)
- 		return ret;
-@@ -622,8 +621,6 @@ static int spinand_markbad(struct nand_device *nand, const struct nand_pos *pos)
- 	if (ret)
- 		return ret;
+ UBIFS file-system stands for UBI File System. UBI stands for "Unsorted
+ Block Images". UBIFS is a flash file system, which means it is designed
+@@ -79,6 +85,7 @@ Mount options
  
--	spinand_erase_op(spinand, pos);
--
- 	return spinand_write_page(spinand, &req);
- }
+ (*) == default.
  
++====================	=======================================================
+ bulk_read		read more in one go to take advantage of flash
+ 			media that read faster sequentially
+ no_bulk_read (*)	do not bulk-read
+@@ -98,6 +105,7 @@ auth_key=		specify the key used for authenticating the filesystem.
+ auth_hash_name=		The hash algorithm used for authentication. Used for
+ 			both hashing and for creating HMACs. Typical values
+ 			include "sha256" or "sha512"
++====================	=======================================================
+ 
+ 
+ Quick usage instructions
+@@ -107,12 +115,14 @@ The UBI volume to mount is specified using "ubiX_Y" or "ubiX:NAME" syntax,
+ where "X" is UBI device number, "Y" is UBI volume number, and "NAME" is
+ UBI volume name.
+ 
+-Mount volume 0 on UBI device 0 to /mnt/ubifs:
+-$ mount -t ubifs ubi0_0 /mnt/ubifs
++Mount volume 0 on UBI device 0 to /mnt/ubifs::
++
++    $ mount -t ubifs ubi0_0 /mnt/ubifs
+ 
+ Mount "rootfs" volume of UBI device 0 to /mnt/ubifs ("rootfs" is volume
+-name):
+-$ mount -t ubifs ubi0:rootfs /mnt/ubifs
++name)::
++
++    $ mount -t ubifs ubi0:rootfs /mnt/ubifs
+ 
+ The following is an example of the kernel boot arguments to attach mtd0
+ to UBI and mount volume "rootfs":
+@@ -122,5 +132,6 @@ References
+ ==========
+ 
+ UBIFS documentation and FAQ/HOWTO at the MTD web site:
+-http://www.linux-mtd.infradead.org/doc/ubifs.html
+-http://www.linux-mtd.infradead.org/faq/ubifs.html
++
++- http://www.linux-mtd.infradead.org/doc/ubifs.html
++- http://www.linux-mtd.infradead.org/faq/ubifs.html
 -- 
-2.17.1
+2.24.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
