@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D611EC34026
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Feb 2020 10:46:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED265C34035
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Feb 2020 10:48:11 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A9A7F206E2
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Feb 2020 10:46:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 843A321D56
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Feb 2020 10:48:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AepwB2Ry"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A9A7F206E2
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Egwpt9c4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 843A321D56
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Tonyv9QwxvrOOiA6SjdE5CHZwr71Xu/aZBJHnKtAq54=; b=AepwB2RyyEOOoC
-	S3hrH9/Ab0VM451KkaduPdrGRafYqv6j7K3HUVmrSLEw31FUK7M9fb8DtYslKZrPvSUQF8h9fWbsS
-	NeaM4Cu6K5Ui+L7UmAUBBEh0vHn5kN4sFd58rn8qfazHJn3iCWOpCAEtU5B+ijEgn8L2wq6vZb92T
-	Q4Hzns7kBkkR94L/JFfnJrzd3Gl/ezcxdyQspCCt1L/cV3qu8FoKnEM5C5ih8dTc31YVrjc8pcMnf
-	OAkhWnbQBmERSrpABHb8Lah/NMgCsG9T+nG781hHUo8oM6QOlhRR37PSTR5TZ8q+0+oLaIec2z9vb
-	i6T48oVw9mPCDD9UhZUQ==;
+	List-Owner; bh=iYctxtAageHf2mFezp4Fr0GLLHDhtGJWkOS/lHVmN+g=; b=Egwpt9c4i15Kpt
+	yV/9/UZDCuqowfCJQGmv5QybFFWnIYmSoKg/sC+3Qn43RL6xrjkeoOxEFlRGUt3NS9oCVnfHJcmdm
+	mRKM7VvbUANF2D5yudQcQo4OQOtTGL15yDsi/Up3b2PwosIXPyEZyr/UyooCdTAb0sdicYhCqMUas
+	pGzw7wcNPbBdu8qbk/bKErSe/4zbh9SqYiT7HzD3TvwK9BoOlSpORKNpqxwhjivebzD+OWWzsfZoA
+	BPj3MftKW8PaStNPACwAXgXcCoPx2f2Y1yXnQDCxZSUz/t1KBI76WLOz0M6FhMc9X9WJ0zX05Necl
+	bb7CrcNluJmBbCH/rOqg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j40OL-0004ac-Df; Tue, 18 Feb 2020 10:46:13 +0000
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+	id 1j40Q3-0004tm-SL; Tue, 18 Feb 2020 10:47:59 +0000
+Received: from relay11.mail.gandi.net ([217.70.178.231])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j40OG-0004ZO-UK
- for linux-mtd@lists.infradead.org; Tue, 18 Feb 2020 10:46:10 +0000
-X-Originating-IP: 90.76.211.102
+ id 1j40Q0-0004sx-Jc
+ for linux-mtd@lists.infradead.org; Tue, 18 Feb 2020 10:47:58 +0000
 Received: from xps13 (lfbn-tou-1-1151-102.w90-76.abo.wanadoo.fr
  [90.76.211.102]) (Authenticated sender: miquel.raynal@bootlin.com)
- by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id B9E5140017;
- Tue, 18 Feb 2020 10:45:53 +0000 (UTC)
-Date: Tue, 18 Feb 2020 11:45:53 +0100
+ by relay11.mail.gandi.net (Postfix) with ESMTPSA id 0F8B8100003;
+ Tue, 18 Feb 2020 10:47:51 +0000 (UTC)
+Date: Tue, 18 Feb 2020 11:47:51 +0100
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Piotr Sroka <piotrs@cadence.com>
-Subject: Re: [PATCH 2/4] mtd: rawnand: cadence: fix calculating avaialble
- oob size
-Message-ID: <20200218114537.723436b3@xps13>
-In-Reply-To: <1581328530-29966-2-git-send-email-piotrs@cadence.com>
+Subject: Re: [PATCH 3/4] mtd: rawnand: cadence: change bad block marker size
+Message-ID: <20200218114751.70efa015@xps13>
+In-Reply-To: <1581328530-29966-3-git-send-email-piotrs@cadence.com>
 References: <1581328530-29966-1-git-send-email-piotrs@cadence.com>
- <1581328530-29966-2-git-send-email-piotrs@cadence.com>
+ <1581328530-29966-3-git-send-email-piotrs@cadence.com>
 Organization: Bootlin
 X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200218_024609_113900_29C86020 
-X-CRM114-Status: GOOD (  14.10  )
+X-CRM114-CacheID: sfid-20200218_024756_783517_57ECDB9D 
+X-CRM114-Status: GOOD (  12.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,34 +78,29 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 SGkgUGlvdHIsCgpQaW90ciBTcm9rYSA8cGlvdHJzQGNhZGVuY2UuY29tPiB3cm90ZSBvbiBNb24s
-IDEwIEZlYiAyMDIwIDEwOjU1OjI2CiswMTAwOgoKVGhlcmUgaXMgYSB0eXBvIGluIHRoZSB0aXRs
-ZSAoYXZhaWxhYmxlKS4KCj4gUHJldmlvdXNseSBlY2Nfc2VjdG9yIHNpemUgd2FzIHVzZWQgZm9y
-IGNhbGN1bGF0aW9uIGJ1dCBpdHMgdmFsdWUKPiB3YXMgbm90IHlldCBrbm93bi4KCkNhbiB3ZSBy
-ZXdvcmsgYSBsaXR0bGUgYml0IHRoaXM/IFdoYXQgYWJvdXQ6CgoJVGhlIHZhbHVlIG9mIGNkbnNf
-Y2hpcC0+c2VjdG9yX2NvdW50IGlzIG5vdCBrbm93biBhdCB0aGUgbW9tZW50CglvZiB0aGUgZGVy
-aXZhdGlvbiBvZiBlY2Nfc2l6ZSwgbGVhZGluZyB0byBhIHplcm8gdmFsdWUuIEZpeAoJdGhpcyBi
-eSBhc3NpZ25pbmcgZWNjX3NpemUgbGF0ZXIgaW4gdGhlIGNvZGUuCgpBbHNvLCBJIHRoaW5rIGl0
-IGRlc2VydmVzIGEgRml4ZXMvQ2M6c3RhYmxlIHRhZyEKCj4gCj4gU2lnbmVkLW9mZi1ieTogUGlv
-dHIgU3Jva2EgPHBpb3Ryc0BjYWRlbmNlLmNvbT4KPiAtLS0KPiAgZHJpdmVycy9tdGQvbmFuZC9y
-YXcvY2FkZW5jZS1uYW5kLWNvbnRyb2xsZXIuYyB8IDMgKystCj4gIDEgZmlsZSBjaGFuZ2VkLCAy
-IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKPiAKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9t
-dGQvbmFuZC9yYXcvY2FkZW5jZS1uYW5kLWNvbnRyb2xsZXIuYyBiL2RyaXZlcnMvbXRkL25hbmQv
-cmF3L2NhZGVuY2UtbmFuZC1jb250cm9sbGVyLmMKPiBpbmRleCA1MDYzYThiNDkzYTQuLjJlYmZk
-MDkzNDczOSAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9jYWRlbmNlLW5hbmQt
-Y29udHJvbGxlci5jCj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvY2FkZW5jZS1uYW5kLWNv
-bnRyb2xsZXIuYwo+IEBAIC0yNTk1LDcgKzI1OTUsNyBAQCBpbnQgY2FkZW5jZV9uYW5kX2F0dGFj
-aF9jaGlwKHN0cnVjdCBuYW5kX2NoaXAgKmNoaXApCj4gIHsKPiAgCXN0cnVjdCBjZG5zX25hbmRf
-Y3RybCAqY2Ruc19jdHJsID0gdG9fY2Ruc19uYW5kX2N0cmwoY2hpcC0+Y29udHJvbGxlcik7Cj4g
-IAlzdHJ1Y3QgY2Ruc19uYW5kX2NoaXAgKmNkbnNfY2hpcCA9IHRvX2NkbnNfbmFuZF9jaGlwKGNo
-aXApOwo+IC0JdTMyIGVjY19zaXplID0gY2Ruc19jaGlwLT5zZWN0b3JfY291bnQgKiBjaGlwLT5l
-Y2MuYnl0ZXM7Cj4gKwl1MzIgZWNjX3NpemU7Cj4gIAlzdHJ1Y3QgbXRkX2luZm8gKm10ZCA9IG5h
-bmRfdG9fbXRkKGNoaXApOwo+ICAJaW50IHJldDsKPiAgCj4gQEAgLTI2MzQsNiArMjYzNCw3IEBA
-IGludCBjYWRlbmNlX25hbmRfYXR0YWNoX2NoaXAoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCkKPiAg
-CS8qIEVycm9yIGNvcnJlY3Rpb24gY29uZmlndXJhdGlvbi4gKi8KPiAgCWNkbnNfY2hpcC0+c2Vj
-dG9yX3NpemUgPSBjaGlwLT5lY2Muc2l6ZTsKPiAgCWNkbnNfY2hpcC0+c2VjdG9yX2NvdW50ID0g
-bXRkLT53cml0ZXNpemUgLyBjZG5zX2NoaXAtPnNlY3Rvcl9zaXplOwo+ICsJZWNjX3NpemUgPSBj
-ZG5zX2NoaXAtPnNlY3Rvcl9jb3VudCAqIGNoaXAtPmVjYy5ieXRlczsKPiAgCj4gIAljZG5zX2No
-aXAtPmF2YWlsX29vYl9zaXplID0gbXRkLT5vb2JzaXplIC0gZWNjX3NpemU7Cj4gIAoKVGhhbmtz
-LApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+IDEwIEZlYiAyMDIwIDEwOjU1OjI3CiswMTAwOgoKPiBJbmNyZWFzZSBiYWQgYmxvY2sgbWFya2Vy
+IHNpemUgZnJvbSBvbmUgYnl0ZSB0byB0d28gYnl0ZXMuCj4gQmFkIGJsb2NrIG1hcmtlciBpcyBo
+YW5kbGVkIGJ5IHNraXAgYnl0ZXMgZmVhdHVyZSBvZiBIUE5GQy4KPiBDb250cm9sbGVyIGV4Y3Bl
+Y3RzIHRoaXMgdmFsdWUgdG8gYmUgYW4gZXZlbiBudW1iZXIuCgogICAgICAgICAgICAgZXhwZWN0
+cwoKRG8gd2UgYnJlYWsgZXhpc3RpbmcgdXNlcnMgd2l0aCB0aGlzIGNoYW5nZT8gRG8geW91IGtu
+b3cgaG93IHRoZQpjb250cm9sbGVyIGJlaGF2ZWQgdW50aWwgbm93PwoKQWxzbyBuZWVkcyBhIEZp
+eGVzL3N0YWJsZSB0YWcgSSBndWVzcz8KCj4gCj4gU2lnbmVkLW9mZi1ieTogUGlvdHIgU3Jva2Eg
+PHBpb3Ryc0BjYWRlbmNlLmNvbT4KPiAtLS0KPiAgZHJpdmVycy9tdGQvbmFuZC9yYXcvY2FkZW5j
+ZS1uYW5kLWNvbnRyb2xsZXIuYyB8IDkgKysrLS0tLS0tCj4gIDEgZmlsZSBjaGFuZ2VkLCAzIGlu
+c2VydGlvbnMoKyksIDYgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRk
+L25hbmQvcmF3L2NhZGVuY2UtbmFuZC1jb250cm9sbGVyLmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jh
+dy9jYWRlbmNlLW5hbmQtY29udHJvbGxlci5jCj4gaW5kZXggMmViZmQwOTM0NzM5Li41YzFiYmIw
+NWFiNTEgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvY2FkZW5jZS1uYW5kLWNv
+bnRyb2xsZXIuYwo+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2NhZGVuY2UtbmFuZC1jb250
+cm9sbGVyLmMKPiBAQCAtMjYxMiwxMiArMjYxMiw5IEBAIGludCBjYWRlbmNlX25hbmRfYXR0YWNo
+X2NoaXAoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCkKPiAgCWNoaXAtPm9wdGlvbnMgfD0gTkFORF9O
+T19TVUJQQUdFX1dSSVRFOwo+ICAKPiAgCWNkbnNfY2hpcC0+YmJtX29mZnMgPSBjaGlwLT5iYWRi
+bG9ja3BvczsKPiAtCWlmIChjaGlwLT5vcHRpb25zICYgTkFORF9CVVNXSURUSF8xNikgewo+IC0J
+CWNkbnNfY2hpcC0+YmJtX29mZnMgJj0gfjB4MDE7Cj4gLQkJY2Ruc19jaGlwLT5iYm1fbGVuID0g
+MjsKPiAtCX0gZWxzZSB7Cj4gLQkJY2Ruc19jaGlwLT5iYm1fbGVuID0gMTsKPiAtCX0KPiArCWNk
+bnNfY2hpcC0+YmJtX29mZnMgJj0gfjB4MDE7Cj4gKwkvKiB0aGlzIHZhbHVlIHNob3VsZCBiZSBl
+dmVuIG51bWJlciAqLwo+ICsJY2Ruc19jaGlwLT5iYm1fbGVuID0gMjsKPiAgCj4gIAlyZXQgPSBu
+YW5kX2VjY19jaG9vc2VfY29uZihjaGlwLAo+ICAJCQkJICAgJmNkbnNfY3RybC0+ZWNjX2NhcHMs
+CgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDov
+L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
