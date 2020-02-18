@@ -2,67 +2,66 @@ Return-Path: <SRS0=v3L2=4G=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 970BEC34026
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Feb 2020 09:22:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DDFE9C34033
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Feb 2020 09:35:48 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 682E720658
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Feb 2020 09:22:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B3E5D20722
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Feb 2020 09:35:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="F7CRsMK4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 682E720658
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Dbuzofns"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B3E5D20722
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sdcsystems.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
-	Content-Type:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To
-	:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:Reply-To:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Mime-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=UBWzztCIsW1T5c8+PvGy6CAS5iavttkCV5ohZA44QgM=; b=F7CRsMK4actGLYmoVJik/qGuF
-	UWu9HiTqwpr2yGoijtbejyYt6A908w9nV90K3vGBStRz0OZhT5GhXgxIqiYo5buo/crCvGfKINLSs
-	E0qW30ubyt2cgKPmXyzWMce8St+jtV7tCerkon79d4741w7vzBE54zkF47jrRjMJbqnGXcDGL32HD
-	fEZH8NyDo2RBYl7daTx2ilQfVfzRf77p7RxowQrGmv+0Asl+jyrjdappopnty/cm2cTHGiJew/6U3
-	FDZA5GEwdZGuo1oc0A5/6lFVRBuQerb/Ph24BEprB3fQHq/1rkdxnUu6koBLod4nrvCZGDZs9/Qza
-	8KfGjMpBw==;
+	 bh=WTfLV5CohgSFbMuElNDBoV7iIhyuAeV9w6a820MoWFA=; b=DbuzofnsJdDDtlOi955SyINZ6
+	nJVnOXHPUl54wGPWtZLX7H7f1ig1xkdv43bCkayY0NZRCDq+qC77u3AVErxiyQAqli3nfK5yV3hRn
+	2Vpw7gp2OjfeZDSmh2KUVHm6VR2Cc3D8v7u5dfEe4HZb87Lv0Qd7wbN4AJg9mw5szjzEKiXDXwqtQ
+	mLNUAFtjpF5VKnNaA4J6dz8WWqf580AeL2nWrWCwAbKHaWioJwqdADLpuXJKjquPPD8+mIygLdO9/
+	8aazT0ToaSKoq7Ke1/1c099uMI+IRnq390XPk4XDbBCuFOxHfkF2LmGf4fNLAbIxva3tr69167W6l
+	HFRqpGhsg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j3z5T-0000fs-4t; Tue, 18 Feb 2020 09:22:39 +0000
-Received: from mx2.suse.de ([195.135.220.15])
+	id 1j3zHy-0006CP-6H; Tue, 18 Feb 2020 09:35:34 +0000
+Received: from smtprelay0137.hostedemail.com ([216.40.44.137]
+ helo=smtprelay.hostedemail.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j3z5P-0000f5-Jm
- for linux-mtd@lists.infradead.org; Tue, 18 Feb 2020 09:22:37 +0000
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id B448FACCE;
- Tue, 18 Feb 2020 09:22:32 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
- id BAE0D1E0CF7; Tue, 18 Feb 2020 10:22:31 +0100 (CET)
-Date: Tue, 18 Feb 2020 10:22:31 +0100
-From: Jan Kara <jack@suse.cz>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH 1/8] quota: Allow to pass mount path to quotactl
-Message-ID: <20200218092231.GG16121@quack2.suse.cz>
-References: <20200124131323.23885-1-s.hauer@pengutronix.de>
- <20200124131323.23885-2-s.hauer@pengutronix.de>
- <20200127104518.GC19414@quack2.suse.cz>
- <20200128100631.zv7cn726twylcmb7@pengutronix.de>
- <20200129012929.GV23230@ZenIV.linux.org.uk>
- <20200204103523.tbxzptf4lkr474yi@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="gKMricLos+KVdGMg"
-Content-Disposition: inline
-In-Reply-To: <20200204103523.tbxzptf4lkr474yi@pengutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+ id 1j3zHv-0006BG-11
+ for linux-mtd@lists.infradead.org; Tue, 18 Feb 2020 09:35:32 +0000
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net
+ [216.40.38.60])
+ by smtprelay05.hostedemail.com (Postfix) with ESMTP id 893E11803A171;
+ Tue, 18 Feb 2020 09:35:15 +0000 (UTC)
+X-Session-Marker: 616E64792E706F6E744073646373797374656D732E636F6D
+X-HE-Tag: nerve21_4ae4c17a69a15
+X-Filterd-Recvd-Size: 2331
+Received: from [192.168.10.100] (leeshill.plus.com [81.174.243.117])
+ (Authenticated sender: andy.pont@sdcsystems.com)
+ by omf06.hostedemail.com (Postfix) with ESMTPA;
+ Tue, 18 Feb 2020 09:35:14 +0000 (UTC)
+From: "Andy Pont" <andy.pont@sdcsystems.com>
+To: JH <jupiter.hce@gmail.com>
+Subject: Re: u-boot saveenv corrupted other MTD parttions
+Date: Tue, 18 Feb 2020 09:35:12 +0000
+Message-Id: <em52219238-cb1c-4787-82f9-9f23a0353568@andys-imac.leeshillfarm.local>
+In-Reply-To: <CAA=hcWQBEbO865h2qZEs6DfK8FrDYhMpw+EzPyQ8-g22H7ykug@mail.gmail.com>
+References: <CAA=hcWQBEbO865h2qZEs6DfK8FrDYhMpw+EzPyQ8-g22H7ykug@mail.gmail.com>
+User-Agent: eM_Client/7.2.37934.0
+Mime-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200218_012235_947891_2CE929A5 
-X-CRM114-Status: GOOD (  31.43  )
+X-CRM114-CacheID: sfid-20200218_013531_131537_E53E7B80 
+X-CRM114-Status: UNSURE (   4.50  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,240 +73,36 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Jan Kara <jack@suse.cz>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, Al Viro <viro@zeniv.linux.org.uk>,
- kernel@pengutronix.de, Jan Kara <jack@suse.com>, linux-fsdevel@vger.kernel.org
+Reply-To: Andy Pont <andy.pont@sdcsystems.com>
+Cc: U-Boot Mailing List <u-boot@lists.denx.de>,
+ linux-mtd <linux-mtd@lists.infradead.org>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
---gKMricLos+KVdGMg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-I'm sorry for the late reply, I was busy with other things and I wasn't
-quite sure how I'd like this to be handled :)
-
-On Tue 04-02-20 11:35:23, Sascha Hauer wrote:
-> On Wed, Jan 29, 2020 at 01:29:29AM +0000, Al Viro wrote:
-> > On Tue, Jan 28, 2020 at 11:06:31AM +0100, Sascha Hauer wrote:
-> > > Hi Jan,
-> > 
-> > > @@ -810,6 +811,36 @@ static struct super_block *quotactl_block(const char __user *special, int cmd)
-> > >  #endif
-> > >  }
-> > >  
-> > > +static struct super_block *quotactl_path(const char __user *special, int cmd,
-> > > +					 struct path *path)
-> > > +{
-> > > +	struct super_block *sb;
-> > > +	int ret;
-> > > +
-> > > +	ret = user_path_at(AT_FDCWD, special, LOOKUP_FOLLOW | LOOKUP_AUTOMOUNT,
-> > > +			   path);
-> > > +	if (ret)
-> > > +		return ERR_PTR(ret);
-> > > +
-> > > +	sb = path->mnt->mnt_sb;
-> > > +restart:
-> > > +	if (quotactl_cmd_onoff(cmd))
-> > > +		down_write(&sb->s_umount);
-> > > +	else
-> > > +		down_read(&sb->s_umount);
-> > > +
-> > > +	if (quotactl_cmd_write(cmd) && sb->s_writers.frozen != SB_UNFROZEN) {
-> > > +		if (quotactl_cmd_onoff(cmd))
-> > > +			up_write(&sb->s_umount);
-> > > +		else
-> > > +			up_read(&sb->s_umount);
-> > > +		wait_event(sb->s_writers.wait_unfrozen,
-> > > +			   sb->s_writers.frozen == SB_UNFROZEN);
-> > > +		goto restart;
-> > > +	}
-> > > +
-> > > +	return sb;
-> > > +}
-> > 
-> > This partial duplicate of __get_super_thawed() guts does *not* belong here,
-> > especially not interleaved with quota-specific checks.
-> > 
-> > > +	if (q_path) {
-> > > +		if (quotactl_cmd_onoff(cmd))
-> > > +			up_write(&sb->s_umount);
-> > > +		else
-> > > +			up_read(&sb->s_umount);
-> > > +
-> > > +		path_put(&sb_path);
-> > > +	} else {
-> > > +		if (!quotactl_cmd_onoff(cmds))
-> > > +			drop_super(sb);
-> > > +		else
-> > > +			drop_super_exclusive(sb);
-> > > +	}
-> > 
-> > Er...  Why not have the same code that you've used to lock the damn thing
-> > (needs to be moved to fs/super.c) simply get a passive ref to it?  Then
-> > you could do the same thing, q_path or no q_path...
-> 
-> I am getting confused here. To an earlier version of this series you
-> responded:
-> 
-> > And for path-based you don't need to mess with superblock
-> > references - just keep the struct path until the end.  That
-> > will keep the superblock alive and active just fine.
-> 
-> I did that and got the objection from Jan:
-> 
-> > So I've realized that just looking up superblock with user_path_at() is not
-> > enough. Quota code also expects that the superblock will be locked
-> > (sb->s_umount) and filesystem will not be frozen (in case the quota
-> > operation is going to modify the filesystem). This is needed to serialize
-> > e.g. remount and quota operations or quota operations among themselves.
-
-Yes, using passive reference is not necessary. On the other hand the
-symmetry with how get_super() and friends work has some appeal too so if Al
-wants that, well, he's the maintainer ;)
-
-> So after drawing circles we now seem to be back at passive references.
-> What I have now in my tree is this in fs/super.c, untested currently:
-
-I was thinking how to make the API most sensible. In the end I've decided
-for a variant that is attached - we pass in struct path which enforces
-active reference to a superblock and thus we don't have to be afraid of the
-superblock going away or similar problems. Also the operation "get me
-superblock for a path" kind of makes sense...
-
-Guys, what do you think?
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
-
---gKMricLos+KVdGMg
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="0001-fs-Provide-functions-for-getting-locked-and-thawed-s.patch"
-
-From 18c7913475342f10b4723c7e22409acc573e6436 Mon Sep 17 00:00:00 2001
-From: Jan Kara <jack@suse.cz>
-Date: Tue, 18 Feb 2020 10:05:21 +0100
-Subject: [PATCH] fs: Provide functions for getting locked and thawed
- superblock from a path
-
-Provide functions to get locked (with s_umount) and if desired also thawed
-superblock for a given struct path. We additionally also get passive
-reference count of the superblock so that the superblock can be unlocked
-with put_super() / put_super_exlusive() similarly to how get_super_*()
-class of functions operates.
-
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/super.c         | 64 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
- include/linux/fs.h |  3 +++
- 2 files changed, 67 insertions(+)
-
-diff --git a/fs/super.c b/fs/super.c
-index cd352530eca9..2c78eac57fa5 100644
---- a/fs/super.c
-+++ b/fs/super.c
-@@ -836,6 +836,70 @@ struct super_block *get_super_exclusive_thawed(struct block_device *bdev)
- }
- EXPORT_SYMBOL(get_super_exclusive_thawed);
- 
-+static struct super_block *__hold_super(struct path *path, bool excl,
-+					bool thawed)
-+{
-+	struct super_block *sb = path->mnt->mnt_sb;
-+
-+	while (1) {
-+		if (excl)
-+			down_write(&sb->s_umount);
-+		else
-+			down_read(&sb->s_umount);
-+		if (!thawed || sb->s_writers.frozen == SB_UNFROZEN) {
-+			spin_lock(&sb_lock);
-+			sb->s_count++;
-+			spin_unlock(&sb_lock);
-+			return sb;
-+		}
-+		if (excl)
-+			up_write(&sb->s_umount);
-+		else
-+			up_read(&sb->s_umount);
-+		wait_event(sb->s_writers.wait_unfrozen,
-+					sb->s_writers.frozen == SB_UNFROZEN);
-+	}
-+}
-+
-+/**
-+ *	hold_super - get locked superblock for a path
-+ *	@path: path to get superblock for
-+ *
-+ *	This function gets superblock for @path and returns it with s_umount
-+ *	held in shared mode and superblock's passive refcount (sb->s_count)
-+ *	incremented.
-+ */
-+struct super_block *hold_super(struct path *path)
-+{
-+	return __hold_super(path, false, false);
-+}
-+
-+/**
-+ *	hold_super_thawed - get locked thawed superblock for a path
-+ *	@path: path to get superblock for
-+ *
-+ *	This function gets superblock for @path, makes sure it is not frozen,
-+ *	and returns it with s_umount held in shared mode and superblock's
-+ *	passive refcount (sb->s_count) incremented.
-+ */
-+struct super_block *hold_super_thawed(struct path *path)
-+{
-+	return __hold_super(path, false, true);
-+}
-+
-+/**
-+ *	hold_super_thawed_exclusive - get locked thawed superblock for a path
-+ *	@path: path to get superblock for
-+ *
-+ *	This function gets superblock for @path, makes sure it is not frozen,
-+ *	and returns it with s_umount held in exclusive mode and superblock's
-+ *	passive refcount (sb->s_count) incremented.
-+ */
-+struct super_block *hold_super_thawed_exclusive(struct path *path)
-+{
-+	return __hold_super(path, true, true);
-+}
-+
- /**
-  * get_active_super - get an active reference to the superblock of a device
-  * @bdev: device to get the superblock for
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 3cd4fe6b845e..2406494d2f54 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -3305,6 +3305,9 @@ extern struct file_system_type *get_fs_type(const char *name);
- extern struct super_block *get_super(struct block_device *);
- extern struct super_block *get_super_thawed(struct block_device *);
- extern struct super_block *get_super_exclusive_thawed(struct block_device *bdev);
-+struct super_block *hold_super(struct path *path);
-+struct super_block *hold_super_thawed(struct path *path);
-+struct super_block *hold_super_thawed_exclusive(struct path *path);
- extern struct super_block *get_active_super(struct block_device *bdev);
- extern void drop_super(struct super_block *sb);
- extern void drop_super_exclusive(struct super_block *sb);
--- 
-2.16.4
-
-
---gKMricLos+KVdGMg
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---gKMricLos+KVdGMg--
-
+Skggd3JvdGUuLi4KCj5ncG1pLW5hbmQ6MW0oYm9vdCksMW0odWJvb3RlbnYpLC0oc3RvcmFnZSkK
+PHNuaXA+Cgo+VGhlIHNhdmVlbnYgZG9lcyBub3QgdGFrZSBhbnkgcGFyYW1ldGVycywgaG93IGRp
+ZCBpdCB3b3JrIHRvIHdyaXRlIHRvCj50aGUgTkFORCAxbSh1Ym9vdGVudik/Cj4KPj0+IHNhdmVl
+bnYKPlNhdmluZyBFbnZpcm9ubWVudCB0byBOQU5ELi4uIEVyYXNpbmcgTkFORC4uLgo+RXJhc2lu
+ZyBhdCAweDVlMDAwMCAtLSAxMDAlIGNvbXBsZXRlLgo+V3JpdGluZyB0byBOQU5ELi4uIE9LCj4K
+Pkl0IGxvb2tzIGxpa2UgdGhhdCBzYXZlZW52IG92ZXJ3cml0dGVuIHRvIHRoZSBzdG9yYWdlLCBp
+cyAweDVlMDAwMCBSQU0KPm9yIE5BTkQgYWRkcmVzcz8KPgo+V2hlcmUgd2FzIHRoYXQgYWRkcmVz
+cyBkZWZpbmVkPwpXaGF0IFUtQm9vdCB1c2VzIGZvciB0aGUgc3RvcmFnZSBvZiB0aGUgZW52aXJv
+bm1lbnQgaXMgY29udHJvbGxlZCAKdGhyb3VnaCBjb25maWd1cmF0aW9uIG9wdGlvbnMuICBJbiBy
+ZWNlbnQgdmVyc2lvbnMgdGhpcyBpcyBhbGwgaGFuZGxlZCAKdGhyb3VnaCB0aGUgb3B0aW9ucyBk
+ZWZpbmVkIGluIGVudi9LY29uZmlnLiAgSW4gb2xkZXIgdmVyc2lvbnMgdGhlc2UgbWF5IApoYXZl
+IGJlZW4gZGVmaW5lZCBpbiB0aGUgaW5jbHVkZS9jb25maWdzL215Ym9hcmRuYW1lLmggZmlsZS4K
+CkNPTkZJR19FTlZfSVNfSU5fTkFORCB0ZWxscyBVLUJvb3QgdGhhdCB0aGUgZW52aXJvbm1lbnQg
+aXMgdG8gYmUgc3RvcmVkIAppbiB0aGUgTkFORCBmbGFzaCBkZXZpY2UKCkNPTkZJR19FTlZfT0ZG
+U0VUIGRlZmluZXMgaG93IGZhciBpbnRvIHRoZSBOQU5EIGRldmljZSB0aGUgZW52aXJvbm1lbnQg
+CndpbGwgYmUgc3RvcmVkIChpbiB5b3VyIGNhc2UgdGhpcyBpcyBwcm9iYWJseSAweDVlMDAwMCkK
+CkNPTkZJR19FTlZfU0laRSBkZWZpbmVzIGhvdyBiaWcgaXQgaXMKCllvdXIgZGVmaW5pdGlvbiBv
+ZiB0aGUgbXRkIHBhcnRpdGlvbnMgZG9lc27igJl0IG1hdGNoLiAgWW91ciDigJx1Ym9vdGVudiIg
+cGFydGl0aW9uIHN0YXJ0cyBhdCBvZmZzZXQgMHgxMDAwMDAgYW5kIHlvdXIg4oCcc3RvcmFnZeKA
+nSBwYXJ0aXRpb24gc3RhcnRzIGF0IG9mZnNldCAweDIwMDAwMC4gIFdoZW4geW91IHJ1biB0aGUg
+c2F2ZWVudiBjb21tYW5kIHlvdSBhcmUgd3JpdGluZyBzb21ld2hlcmUgaW4gdGhlIG1pZGRsZSBv
+ZiB0aGUg4oCcc3RvcmFnZeKAnSBwYXJ0aXRpb24uCgotQW5keS4KCgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Np
+b24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vbGludXgtbXRkLwo=
