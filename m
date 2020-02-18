@@ -2,82 +2,69 @@ Return-Path: <SRS0=v3L2=4G=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F94BC34022
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Feb 2020 01:00:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E12EC34022
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Feb 2020 03:15:17 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 114FB20836
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Feb 2020 01:00:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3072D206EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Feb 2020 03:15:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BM+G8bvZ";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="o8xISoHV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 114FB20836
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ONLYplmz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3072D206EF
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=CPQAqUp26n/k6XbBznGpp9+X+fz4h3H9uzBOOQJi8Og=; b=BM+G8bvZT2jJtR
-	JQV9duSDopVDTu/KKQdhpBxMIWp92dic6AA+uJieU/SuyNy1xpD14ZTIRwXiSzvFzzdwwjDOAEmYE
-	OhNM7ZqqQxHRO5m0hc6m7AesvZvrHFRmuy846bk/8YK6/TYaFzVhrtbTxH0hHIqNKksaD63m3kM6Q
-	rwcuFzXEFE9Vuuri3EjUncQpLx7tDMpiYUunfnCgLo+DEfiIg/jn8JHW00hf3XCmyxu6/h166+IRb
-	YuL+iEZyHoaUJHiBVTC8UpT3oa6InTKeZ0UKoKlqGSL3e4H2qANFS10DiePPNwjxXSleTNzhZRIon
-	y0uHLtRb5rv4OM8t6jiQ==;
+	List-Archive:List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:
+	Subject:To:References:In-Reply-To:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=tzeWE8RqacqP5Q2jvq9J86R8WNWgSCIbfq4EZR8BAO8=; b=ONLYplmz5m7Dwu
+	F9s0Jk0m8SgDzPXlOSPzb7uNQpbYK6lAuuj/u64+44zMaIoe4Aufve47QLA8H11JB0BGAj1MY/siy
+	n6LbGJEO3Gq/8Q68ykYmJJBC9Lw0GgCwu0cVunmT9QnC29BbWTQVMj1Fc6QVx1cgk8dCYtvFel4bt
+	HMH8S00TihxsJIYKAwOzC6HqndiNhqYT3H6sAULcPClE7A4kS/wOiIX2IViumcnrke7mfoXEkv6a3
+	oOFSNJa4vMjgSC2uWd4jblJ+Sjpe71zrnfj1Hbppfi/1yWZaHLkbWobhulXvj0nB35cqyFyD2DhbD
+	ysmY9B0Kq1JWlGYHcuig==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j3rFX-0000Cg-PX; Tue, 18 Feb 2020 01:00:31 +0000
-Received: from mail-il1-x130.google.com ([2607:f8b0:4864:20::130])
+	id 1j3tLd-0006fA-CU; Tue, 18 Feb 2020 03:14:57 +0000
+Received: from twhmllg4.macronix.com ([122.147.135.202])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j3rFV-00006A-GS
- for linux-mtd@lists.infradead.org; Tue, 18 Feb 2020 01:00:30 +0000
-Received: by mail-il1-x130.google.com with SMTP id f70so15824099ill.6
- for <linux-mtd@lists.infradead.org>; Mon, 17 Feb 2020 17:00:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:from:date:message-id:subject:to:cc;
- bh=EW0Fnf3YXcKqFSs9Rd2Yv4JlQlGtDQ8qmQpioAEqqNQ=;
- b=o8xISoHVFvsGKN7hdqImys+64pMBHCeQ1CASu2QFHTAqtO9RLOzdvjhEH/xFa1OwT7
- zrXmmTDF+Hiks2bCzV9SEdQU3f/fn592SPj3Di3IzTNTWYr6brACj+mEyNHvncm9ikz1
- tPzlPBk5NTtX5UIpJ/dl9H1NcJyBJF9N0CgrgKToej+YJnH7bxd7QqCxQtuCy1j/XJo6
- y4t/RSSR7krC5GSDjcTpbRvZBeYWeAf2WTg9Yesbw3CEwhaYRv9XpUm4nttrQjYFDl8A
- 4VC3ZPWLfnBNb7PNvgkBIRTk3UuAqt1iPkOSP4sgU3BL0xpaXJaIK+G5CPG0GRkWvFJE
- bpQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
- bh=EW0Fnf3YXcKqFSs9Rd2Yv4JlQlGtDQ8qmQpioAEqqNQ=;
- b=j+FYhdZzn7lJZr3H/UPm2OixuHFLR9Z+nPpVKpuXtOan79h5F7GP7iH0s6oaMyZhVH
- qEabl/wQiuegs2lWLfK1XuNrDVUQhLblQL+8182N37uXKGqjE0En+4Fk33Ik0khwy4on
- N1h//fys+P1Tx/umndESjAoQZuFKQ/ErNE3ZvY2T4pP6h0I1b4PskWjZj00XIx39e3Og
- cxIL7vgWF+zdJ+gP3STMAbUID0Jw0shy0GC9/TVn59ecCs/NVELgJvfyoP1zrnX843rQ
- xlNTy3KUiDi9uOuMXEgTNLlM1oIYZgBuKq0/8QonjXx0BrjsC6YMbHdwHPYE8shrpwyB
- bDjw==
-X-Gm-Message-State: APjAAAWcMUwtP2XeH2XsIO6tSBMC7tvgRmEZxERdM8XDxK369i68QJAR
- ZKGF+3wY1om8V58w+xKdbF0kU/Hj8t7u56D10Kdw3ql6
-X-Google-Smtp-Source: APXvYqxqBP5yqr87WaOZEro0sPSkzN9aQ6pTx8HGV4BQdS10MoRw74Wew2HcyTITvRBanvaJvt+snKpR0VRYIT1T2h4=
-X-Received: by 2002:a92:216:: with SMTP id 22mr16818493ilc.53.1581987626912;
- Mon, 17 Feb 2020 17:00:26 -0800 (PST)
+ id 1j3tLH-0006Ho-Em
+ for linux-mtd@lists.infradead.org; Tue, 18 Feb 2020 03:14:38 +0000
+Received: from twhfm1p2.macronix.com (twhfm1p2.macronix.com [172.17.20.92])
+ by TWHMLLG4.macronix.com with ESMTP id 01I3Dk5L004086;
+ Tue, 18 Feb 2020 11:13:46 +0800 (GMT-8)
+ (envelope-from masonccyang@mxic.com.tw)
+Received: from MXML06C.mxic.com.tw (mxml06c.mxic.com.tw [172.17.14.55])
+ by Forcepoint Email with ESMTP id C236F781A13725FAE6CD;
+ Tue, 18 Feb 2020 11:13:46 +0800 (CST)
+In-Reply-To: <20200217100124.6ff71191@xps13>
+References: <1572256527-5074-1-git-send-email-masonccyang@mxic.com.tw>	<1572256527-5074-2-git-send-email-masonccyang@mxic.com.tw>
+ <20200109203055.2370a358@collabora.com>	<OF505D0437.0130F15A-ON48258511.002C7F75-48258511.002D4341@mxic.com.tw>
+ <20200217100124.6ff71191@xps13>
+To: "Miquel Raynal" <miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v2 1/4] mtd: rawnand: Add support manufacturer specific
+ lock/unlock operatoin
 MIME-Version: 1.0
-Received: by 2002:ad5:5d0d:0:0:0:0:0 with HTTP; Mon, 17 Feb 2020 17:00:26
- -0800 (PST)
-From: JH <jupiter.hce@gmail.com>
-Date: Tue, 18 Feb 2020 12:00:26 +1100
-Message-ID: <CAA=hcWTDqhJEE7MXFY9rvN93nf8=nWvshLoXKF3EMXYGLmZGbA@mail.gmail.com>
-Subject: Change RO rootfs failed RF Kill Switch Status and Failed to start Run
- pending postinsts
-To: linux-wireless <linux-wireless@vger.kernel.org>
+X-KeepSent: 888BBBE2:74456DA3-48258512:0011688B;
+ type=4; name=$KeepSent
+X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
+Message-ID: <OF888BBBE2.74456DA3-ON48258512.0011688B-48258512.0011BE25@mxic.com.tw>
+From: masonccyang@mxic.com.tw
+Date: Tue, 18 Feb 2020 11:13:47 +0800
+X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
+ HF265|July 25, 2018) at 2020/02/18 AM 11:13:46,
+ Serialize complete at 2020/02/18 AM 11:13:46
+X-MAIL: TWHMLLG4.macronix.com 01I3Dk5L004086
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200217_170029_551466_0AF0EA36 
-X-CRM114-Status: UNSURE (   6.04  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200217_191435_819993_1E363E3F 
+X-CRM114-Status: GOOD (  11.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,45 +76,102 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Yocto discussion list <yocto@yoctoproject.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Patches and discussions about the oe-core layer
- <openembedded-core@lists.openembedded.org>
+Cc: vigneshr@ti.com, bbrezillon@kernel.org, juliensu@mxic.com.tw,
+ richard@nod.at, linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
+ Boris Brezillon <boris.brezillon@collabora.com>, linux-mtd@lists.infradead.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
 
-Apologize for the cross posting.
+Hi Miquel,
 
-I am running kernel 4.19.75 on iMX6 customized device with WiFi and 4G
-LTE, it was running well in an RW rootfs. After I have just changed
-rootfs to RO UBIFS partition, it failed RF Kill and postinsts I
-suspect both try write to the RO and failed, any advice how to fix it?
-Despite it failed RF Kill and postinsts, it was still working.
 
-[    6.097762] UBIFS (ubi0:2): UBIFS: mounted UBI device 0, volume 2,
-name "rootfs-volume", R/O mode
-..............
-[    6.151932] VFS: Mounted root (ubifs filesystem) readonly on device 0:13.
-.................
-[  OK  ] Listening on Load/Save RF Kill Switch Status /dev/rfkill Watch.
-         Starting Load/Save RF Kill Switch Status...
-[FAILED] Failed to start Load/Save RF Kill Switch Status.
-See 'systemctl status systemd-rfkill.service' for details.
+> > > >  /* Set default functions */
+> > > >  static void nand_set_defaults(struct nand_chip *chip)
+> > > >  {
+> > > > @@ -5782,8 +5810,8 @@ static int nand_scan_tail(struct nand_chip 
+> > *chip)
+> > > >     mtd->_read_oob = nand_read_oob;
+> > > >     mtd->_write_oob = nand_write_oob;
+> > > >     mtd->_sync = nand_sync;
+> > > > -   mtd->_lock = NULL;
+> > > > -   mtd->_unlock = NULL;
+> > > > +   mtd->_lock = nand_lock;
+> > > > +   mtd->_unlock = nand_unlock;
+> > > >     mtd->_suspend = nand_suspend;
+> > > >     mtd->_resume = nand_resume;
+> > > >     mtd->_reboot = nand_shutdown;
+> > > > diff --git a/include/linux/mtd/rawnand.h 
+b/include/linux/mtd/rawnand.h
+> > > > index 4ab9bcc..2430ecd 100644
+> > > > --- a/include/linux/mtd/rawnand.h
+> > > > +++ b/include/linux/mtd/rawnand.h
+> > > > @@ -1136,6 +1136,9 @@ struct nand_chip {
+> > > >        const struct nand_manufacturer *desc;
+> > > >        void *priv;
+> > > >     } manufacturer;
+> > > > +
+> > > > +   int (*_lock)(struct nand_chip *chip, loff_t ofs, uint64_t 
+len);
+> > > > +   int (*_unlock)(struct nand_chip *chip, loff_t ofs, uint64_t 
+len); 
+> > > 
+> > > Please drop this _ prefix. 
+> > 
+> > Drop _ prefix of _lock will get compile error due to there is already 
+> > defined "struct mutex lock" in struct nand_chip.
+> 
+> Right!
+> 
+> > 
+> > What about keep this _ prefix or patch it to blocklock/blockunlock,
+> > i.e.,
+> > int (*blocklock)(struct nand_chip *chip, loff_t ofs, uint64_t len);
+> > int (*blockunlock)(struct nand_chip *chip, loff_t ofs, uint64_t len);
+> 
+> What about lock_area() unlock_area() ? Seems more accurate to me, tell
+> me if I'm wrong.
 
-[FAILED] Failed to start Run pending postinsts.
-See 'systemctl status run-postinsts.service' for details.
-...............
-root#
+yup, you are right!
 
-Thank you.
+Using lock/unlock_area is better, will patch it.
 
-Kind regards,
+thanks for your comments.
+Mason
 
-- jh
+
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information 
+and/or personal data, which is protected by applicable laws. Please be 
+reminded that duplication, disclosure, distribution, or use of this e-mail 
+(and/or its attachments) or any part thereof is prohibited. If you receive 
+this e-mail in error, please notify us immediately and delete this mail as 
+well as its attachment(s) from your system. In addition, please be 
+informed that collection, processing, and/or use of personal data is 
+prohibited unless expressly permitted by personal data protection laws. 
+Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
+
+
+
+============================================================================
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
