@@ -2,88 +2,99 @@ Return-Path: <SRS0=2g81=4H=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ECC44C34056
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Feb 2020 18:45:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F3F1C34056
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Feb 2020 20:13:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BF32124670
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Feb 2020 18:45:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2F4E12064C
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Feb 2020 20:13:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CJWOg67F"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BF32124670
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=denx.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QeTb4TDB";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="Pn5e4GlQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2F4E12064C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=3a7Sv2KA+ZglngyMIOHk5/h6WnkcfOFHDw3EzIadf74=; b=CJWOg67FtAio1C8+cJG4tSuwx
-	uLUZpQemR/Y+SAyzQNbXKfnkGNBb9v6XdsIzQDS55Z2xFXpFT7/30C7NvK+mPU+vh3qkU+me2UazW
-	ZwKcXuiRXGbAQ6JPwfRGPdEtPuFGxzuVqzvaICepXr6UpntDnIedxTm0nWbya6D5dZFf2XE+fJTa7
-	MqlUSuUXA5PMoMYJpOFUeXJ4adEJ/KxiGPeKB15fTcMp7vsIG8Vz9LHAbGojFQwurTKEB6EH74HoB
-	0xjUCcgYcWgji8LcPz+vNsaE9c1YYZzMZr5020DOfhVUf8cia+Wa90iJJsIBiflxeA4GOrx1yAMpi
-	WtQPgOQIg==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=fn/FAsihlO/qFFhGWndqN92XmtlyRZe6bVko/+Cpfy4=; b=QeTb4TDB9Gk9LP
+	Ao4isVP5776u51V5cjsqnlf4FYWnxkhkglQkpS93YVSLSJWIiq3o9dUh9OmQyeUCSWklDvlP8SkO+
+	oIuSQYeey7SAOMXNlFIthvW0h5Isg4o+9R6NitiM22GqyY2LRZTW402I/RFV9LRhK/qVSBBau7So5
+	wpDKbez4LoopgoOV9sb9Ty22sbKvUZ7ssmKBkDFvazZX2/wEH991eVLJpTcxYA9w44Ee/8A3yyteq
+	yhwGyKkRwOpZvXU8BT1/TXmhCA49xNHCxllHleFPo3kGYmf0IGimhcb1XqP0raO7TjhzF6GQ4gio0
+	gG1qNgP1O/Xfbcu7TGcA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j4ULS-0007n8-NG; Wed, 19 Feb 2020 18:45:14 +0000
-Received: from mail-out.m-online.net ([212.18.0.9])
+	id 1j4Vj5-00053I-Hv; Wed, 19 Feb 2020 20:13:43 +0000
+Received: from mail-lf1-x142.google.com ([2a00:1450:4864:20::142])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j4ULD-0006Pi-8O
- for linux-mtd@lists.infradead.org; Wed, 19 Feb 2020 18:45:01 +0000
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
- by mail-out.m-online.net (Postfix) with ESMTP id 48N68n3B5nz1qqkq;
- Wed, 19 Feb 2020 19:44:57 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
- by mail.m-online.net (Postfix) with ESMTP id 48N68n1Rycz1qyDK;
- Wed, 19 Feb 2020 19:44:57 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
- by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new,
- port 10024)
- with ESMTP id iEi1FHsr8kp4; Wed, 19 Feb 2020 19:44:55 +0100 (CET)
-X-Auth-Info: sENUZ557ky/d+KmFvTCJb0USmGDiCqDHWwGKkL4heLE=
-Received: from [IPv6:::1] (unknown [195.140.253.167])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.mnet-online.de (Postfix) with ESMTPSA;
- Wed, 19 Feb 2020 19:44:55 +0100 (CET)
-Subject: Re: [PATCH] Revert "mtd: rawnand: denali: get
- ->setup_data_interface() working again"
-To: Masahiro Yamada <masahiroy@kernel.org>
-References: <20200205070834.3087104-1-marex@denx.de>
- <20200205101223.21d99d93@xps13>
- <45a10680-5fe6-7cab-a7ef-f7f7a952e822@denx.de>
- <20200205105045.6877aca6@xps13>
- <bdb54ba5-648a-0b79-661c-5eb9604a1ee5@denx.de>
- <b6f094b7-01a9-34a2-bf10-019a05bc7cb3@denx.de>
- <20200211170707.2183625e@xps13>
- <b1a10583-e110-9568-4007-aa2b3f38a7be@denx.de>
- <CAK7LNARqYDh4AJ+N-PTHui0H89-humECskJVUxW4cTf6edEBMQ@mail.gmail.com>
- <f4e2deeb-cc0e-fb06-46fa-d6cf4f2a73ad@denx.de>
- <CAK7LNAR4MU+Rfmpz99iwLuEbD4jMwUdh91uz3zyQdvjyLEQcMQ@mail.gmail.com>
- <29cce21c-2214-7238-0bc5-db2c1a54576f@denx.de>
- <CAK7LNASckTZO-9uVjtQH8iKhU0HH9WiMK-CzMxjESQOOUM0cKA@mail.gmail.com>
- <CAK7LNAT3EG0XocC0xT0f=6MBpXLga3FehOjEYbRyP6AJUbqb2Q@mail.gmail.com>
-From: Marek Vasut <marex@denx.de>
-Message-ID: <311cdc3c-59b5-a46b-62f0-e78fc970134a@denx.de>
-Date: Wed, 19 Feb 2020 19:42:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.2
+ id 1j4Vj2-0004sM-TT
+ for linux-mtd@lists.infradead.org; Wed, 19 Feb 2020 20:13:42 +0000
+Received: by mail-lf1-x142.google.com with SMTP id z5so1121966lfd.12
+ for <linux-mtd@lists.infradead.org>; Wed, 19 Feb 2020 12:13:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
+ h=subject:to:cc:references:from:organization:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=j/a6V6DEe+WHew2072+vD1gDbLYpBHBTTSSf8AvNqVw=;
+ b=Pn5e4GlQpbu4k7Zd8FgVUANgbuGSHv9xjIDS8DTjW24DY177bgg8LKjmOFOSCwfjk+
+ Rb94JNKGH/zIxU9FD6LGmxJZscqoJFL/BXTYHYKQ5HMNakzNfG79p1Gha+iHjdDX0gx8
+ ELmbmKGLeHZV7h2rSetKZ78zzL4fkFugaDWU46bP51us3lODDti4cZSvvkfMoV0SS/4E
+ lQ4BieP04wQZTSz0QfAjTEc6SoyKoRa85tdmVFe4hmFT3Sgw5nxzmELFu6TsyyUXmTnq
+ b4kmV2AXk9JQUXetoLHRL/xnGuGyh9IqvDfdu70TJgaJGQJnL2MRmcCe5ucdLSLhDQpV
+ 4hTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:organization
+ :message-id:date:user-agent:mime-version:in-reply-to
+ :content-language:content-transfer-encoding;
+ bh=j/a6V6DEe+WHew2072+vD1gDbLYpBHBTTSSf8AvNqVw=;
+ b=ihcKBBoXdcXFkAhg2HexqqrYwdjcFRpRXV/WoIxkbjEtYQF10Cp8RsC0dU7+kpxw2t
+ GaMkNMtm7ehEKjINhy+U3pZK3aTarVLAC1Y7L7XpjaZWoI07mgzSFkxuI8tnNemR+ZQz
+ cDre6dpIDC35H+j1qGggkKGeW9sN0b/+BYaAeLmpTWnMQDb1wOdF5qNNWyMl5HMMT1G3
+ 1Wy6DyA37RpPMOVr0D1aGpo9JqJpwe3OWTNTI/tlz9pWNr0a686akjjhvAWOL7qtw8v6
+ TzseEq1ys4wEP7WudCDGDeKoG1v54XHMUwiBUWfi9OoxWW4QP7g0sNhRQV6ulMmllaTb
+ 5H2A==
+X-Gm-Message-State: APjAAAWtk5SdgjXQ/buJLt19UR93PAsJXLViewJ45sS+3tgv0H2O7WsL
+ Dqjn5NOCw3HI+oGoRicGmdpAAcvNK78=
+X-Google-Smtp-Source: APXvYqzZ9kls7Ofv8fiXP15tu0vsR+GAG65uXQy0eI2eBco3BpVQLX2xWyD6NERiD2ipjv1Svu9aRw==
+X-Received: by 2002:a05:6512:1cc:: with SMTP id
+ f12mr14797325lfp.128.1582143218699; 
+ Wed, 19 Feb 2020 12:13:38 -0800 (PST)
+Received: from wasted.cogentembedded.com
+ ([2a00:1fa0:485f:9799:5d0d:27ec:672b:ad53])
+ by smtp.gmail.com with ESMTPSA id g21sm394540ljj.53.2020.02.19.12.13.37
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Wed, 19 Feb 2020 12:13:38 -0800 (PST)
+Subject: Re: [PATCH RFT 0/2/2] mtd: hyperbus: add Renesas RPC-IF driver
+To: Vignesh Raghavendra <vigneshr@ti.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+References: <fd1360ab-8872-f750-1314-77c6d432b413@cogentembedded.com>
+ <eba43289-3cb2-406b-cc5f-1209778621bf@cogentembedded.com>
+ <16309076-4378-d9ff-30c3-93a46af1d803@ti.com>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Organization: Cogent Embedded
+Message-ID: <d09bb1b9-fef8-5a96-df4e-eccc228f2777@cogentembedded.com>
+Date: Wed, 19 Feb 2020 23:13:36 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.1
 MIME-Version: 1.0
-In-Reply-To: <CAK7LNAT3EG0XocC0xT0f=6MBpXLga3FehOjEYbRyP6AJUbqb2Q@mail.gmail.com>
-Content-Type: multipart/mixed; boundary="------------7836A46E0DEA5A9F212DF892"
-Content-Language: en-US
+In-Reply-To: <16309076-4378-d9ff-30c3-93a46af1d803@ti.com>
+Content-Language: en-MW
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200219_104459_602084_257FAE18 
-X-CRM114-Status: GOOD (  20.69  )
+X-CRM114-CacheID: sfid-20200219_121341_129966_CD94B47D 
+X-CRM114-Status: GOOD (  19.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,217 +106,110 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Dinh Nguyen <dinguyen@kernel.org>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- linux-mtd <linux-mtd@lists.infradead.org>, Tim Sander <tim@krieglstein.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Mark Brown <broonie@kernel.org>, Dirk Behme <dirk.behme@de.bosch.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is a multi-part message in MIME format.
---------------7836A46E0DEA5A9F212DF892
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Hello!
 
-On 2/18/20 6:55 AM, Masahiro Yamada wrote:
-> Hi
+On 02/18/2020 07:00 AM, Vignesh Raghavendra wrote:
 
-Hi,
-
+>> Add the HyperFLash driver for the Renesas RPC-IF.  It's the "front end"
+>> driver using the "back end" APIs in the main driver to talk to the real
+>> hardware.
+>>
+>> Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
 [...]
-
->> There is no change around the ->setup_data_interface() hook
->> after v4.19
->> The only difference I could think of is the clock frequency.
->>
->> But, it is OK if you do not want to test it.
->>
->> And you are confident.
->>
->> So, let's suspect the ->setup_data_interface() hook.
->>
->>
->> If possible, can you provide the dump of
->> the attached debug code?
->>
+>> Index: linux/drivers/mtd/hyperbus/rpc-if.c
+>> ===================================================================
+>> --- /dev/null
+>> +++ linux/drivers/mtd/hyperbus/rpc-if.c
+>> @@ -0,0 +1,162 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * Linux driver for RPC-IF HyperFlash
+>> + *
+>> + * Copyright (C) 2019 Cogent Embedded, Inc.
+>> + */
+>> +
+>> +#include <linux/err.h>
+>> +#include <linux/kernel.h>
+>> +#include <linux/module.h>
+>> +#include <linux/mtd/hyperbus.h>
+>> +#include <linux/mtd/mtd.h>
+>> +#include <linux/mux/consumer.h>
+>> +#include <linux/of.h>
+>> +#include <linux/platform_device.h>
+>> +#include <linux/types.h>
+>> +
+>> +#include <memory/renesas-rpc-if.h>
+>> +
+>> +struct	rpcif_hyperbus {
+>> +	struct rpcif rpc;
+>> +	struct hyperbus_ctlr ctlr;
+>> +	struct hyperbus_device hbdev;
+>> +};
+>> +
+>> +static const struct rpcif_op rpcif_op_tmpl = {
+>> +	.cmd = {
+>> +		.buswidth = 8,
+>> +		.ddr = true,
+>> +	},
+>> +	.ocmd = {
+>> +		.buswidth = 8,
+>> +		.ddr = true,
+>> +	},
+>> +	.addr = {
+>> +		.nbytes = 1,
+>> +		.buswidth = 8,
+>> +		.ddr = true,
+>> +	},
+>> +	.data = {
+>> +		.buswidth = 8,
+>> +		.ddr = true,
+>> +	},
+>> +};
+>> +
 > 
-> 
-> I attached two experimental patches.
-> 
-> I cannot test them because
-> the mainline code works fine for my boards.
-> 
-> Does either of them improve something
-> on your settings?
+> Looking around, there seems to be more than one SPI controllers, apart
+> from Renesas, which also support SPI NOR and HyperFlash protocol within
+> a single IP block. E.g.: Cadence xSPI controller [1]. Therefore, we need
+> a generic framework to support these kind of controllers.
 
-Considering that the NAND works if denali_setup_data_interface() is not
-called, would it rather make sense to first read and print what's
-programmed into the controller and then print what the code calculated
-and intends to program into the controller ?
+   We can use e.g. 'struct rpcif_op' as generic command description.
 
-See attached patch, with which (without this revert) you get this:
-denali->reg + TWHR2_AND_WE_2_RE = 0x00001414 -> 0x0000143f
-denali->reg + TCWAW_AND_ADDR_2_DATA = 0x0000143f -> 0x00001432
-denali->reg + RE_2_WE = 0x00000014 -> 0x00000019
-denali->reg + ACC_CLKS = 0x00000004 -> 0x00000005
-denali->reg + RDWR_EN_LO_CNT = 0x00000002 -> 0x00000009
-denali->reg + RDWR_EN_HI_CNT = 0x00000002 -> 0x00000004
-denali->reg + CS_SETUP_CNT = 0x00000001 -> 0x00000008
-denali->reg + RE_2_RE = 0x00000014 -> 0x00000019
+> One way would be to extend spi_mem_op to support above template along
+> with a new field to distinguish SPI NOR vs HyperFlash protocol. HyperBus
+> core can then register a spi_device and use spi-mem ops to talk to
+> controller driver.
 
---------------7836A46E0DEA5A9F212DF892
-Content-Type: text/x-patch; charset=UTF-8;
- name="0001-denali-dump-timing-parameters.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0001-denali-dump-timing-parameters.patch"
+   We have discussed this idea with Mark Brown, the SPI maintainer, and
+he wasn't terribly impressed (I've invited him to #mtd -- his nick is
+broonie and mine is headless, I'm also adding him to CC:).
 
->From a2a1300041979f183a5a85ddada63faa80b68983 Mon Sep 17 00:00:00 2001
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Mon, 17 Feb 2020 16:48:06 +0900
-Subject: [PATCH] denali: dump timing parameters
+> So, I suggest making Renesas RPC-IF backend a full fledged spi-mem
+> driver (instead of driver/memory) and use extended spi_mem_op to support
+> HyperFlash.
 
-:'<,'>s@iowrite32(\([^,]\+\), \([^)]\+\));@pr_err("\2 = 0x%08x -> 0x%08x\\n", ioread32(\2), \1);\r\t&
+   I don't think cramming support for the different flash busses into
+the SPI drivers is a good idea... I'm not against generalizing the
+drivers/memory/ APIs though.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
- drivers/mtd/nand/raw/denali.c | 44 +++++++++++++++++++++++++++++++++--
- 1 file changed, 42 insertions(+), 2 deletions(-)
+> [1]
+> https://ip.cadence.com/uploads/1244/cdn-dsd-mem-fla-host-controller-ip-for-xspi-pdf
 
-diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
-index b6c463d02167..4241b47d92a6 100644
---- a/drivers/mtd/nand/raw/denali.c
-+++ b/drivers/mtd/nand/raw/denali.c
-@@ -218,14 +218,21 @@ static void denali_select_target(struct nand_chip *chip, int cs)
- 		return;
- 
- 	/* update timing registers unless NAND_KEEP_TIMINGS is set */
-+	pr_err("denali->reg + TWHR2_AND_WE_2_RE = 0x%08x -> 0x%08x\n", ioread32(denali->reg + TWHR2_AND_WE_2_RE), sel->hwhr2_and_we_2_re);
- 	iowrite32(sel->hwhr2_and_we_2_re, denali->reg + TWHR2_AND_WE_2_RE);
--	iowrite32(sel->tcwaw_and_addr_2_data,
--		  denali->reg + TCWAW_AND_ADDR_2_DATA);
-+	pr_err("denali->reg + TCWAW_AND_ADDR_2_DATA = 0x%08x -> 0x%08x\n", ioread32(denali->reg + TCWAW_AND_ADDR_2_DATA), sel->tcwaw_and_addr_2_data);
-+	iowrite32(sel->tcwaw_and_addr_2_data, denali->reg + TCWAW_AND_ADDR_2_DATA);
-+	pr_err("denali->reg + RE_2_WE = 0x%08x -> 0x%08x\n", ioread32(denali->reg + RE_2_WE), sel->re_2_we);
- 	iowrite32(sel->re_2_we, denali->reg + RE_2_WE);
-+	pr_err("denali->reg + ACC_CLKS = 0x%08x -> 0x%08x\n", ioread32(denali->reg + ACC_CLKS), sel->acc_clks);
- 	iowrite32(sel->acc_clks, denali->reg + ACC_CLKS);
-+	pr_err("denali->reg + RDWR_EN_LO_CNT = 0x%08x -> 0x%08x\n", ioread32(denali->reg + RDWR_EN_LO_CNT), sel->rdwr_en_lo_cnt);
- 	iowrite32(sel->rdwr_en_lo_cnt, denali->reg + RDWR_EN_LO_CNT);
-+	pr_err("denali->reg + RDWR_EN_HI_CNT = 0x%08x -> 0x%08x\n", ioread32(denali->reg + RDWR_EN_HI_CNT), sel->rdwr_en_hi_cnt);
- 	iowrite32(sel->rdwr_en_hi_cnt, denali->reg + RDWR_EN_HI_CNT);
-+	pr_err("denali->reg + CS_SETUP_CNT = 0x%08x -> 0x%08x\n", ioread32(denali->reg + CS_SETUP_CNT), sel->cs_setup_cnt);
- 	iowrite32(sel->cs_setup_cnt, denali->reg + CS_SETUP_CNT);
-+	pr_err("denali->reg + RE_2_RE = 0x%08x -> 0x%08x\n", ioread32(denali->reg + RE_2_RE), sel->re_2_re);
- 	iowrite32(sel->re_2_re, denali->reg + RE_2_RE);
- }
- 
-@@ -795,6 +802,8 @@ static int denali_setup_data_interface(struct nand_chip *chip, int chipnr,
- 	if (chipnr == NAND_DATA_IFACE_CHECK_ONLY)
- 		return 0;
- 
-+	printk("Denali: clk_rate=%ld, clk_x_rate=%ld\n", denali->clk_rate, denali->clk_x_rate);
-+
- 	sel = &to_denali_chip(chip)->sels[chipnr];
- 
- 	/* tREA -> ACC_CLKS */
-@@ -806,10 +815,16 @@ static int denali_setup_data_interface(struct nand_chip *chip, int chipnr,
- 	tmp |= FIELD_PREP(ACC_CLKS__VALUE, acc_clks);
- 	sel->acc_clks = tmp;
- 
-+	printk("Denali: tREA=%d\n", timings->tREA_max);
-+	printk("Denali: acc_clks=%d\n", acc_clks);
-+
- 	/* tRWH -> RE_2_WE */
- 	re_2_we = DIV_ROUND_UP(timings->tRHW_min, t_x);
- 	re_2_we = min_t(int, re_2_we, RE_2_WE__VALUE);
- 
-+	printk("Denali: tRHW=%d\n", timings->tRHW_min);
-+	printk("Denali: re_2_we=%d\n", re_2_we);
-+
- 	tmp = ioread32(denali->reg + RE_2_WE);
- 	tmp &= ~RE_2_WE__VALUE;
- 	tmp |= FIELD_PREP(RE_2_WE__VALUE, re_2_we);
-@@ -819,6 +834,9 @@ static int denali_setup_data_interface(struct nand_chip *chip, int chipnr,
- 	re_2_re = DIV_ROUND_UP(timings->tRHZ_max, t_x);
- 	re_2_re = min_t(int, re_2_re, RE_2_RE__VALUE);
- 
-+	printk("Denali: tRHZ=%d\n", timings->tRHZ_max);
-+	printk("Denali: re_2_re=%d\n", re_2_re);
-+
- 	tmp = ioread32(denali->reg + RE_2_RE);
- 	tmp &= ~RE_2_RE__VALUE;
- 	tmp |= FIELD_PREP(RE_2_RE__VALUE, re_2_re);
-@@ -833,6 +851,10 @@ static int denali_setup_data_interface(struct nand_chip *chip, int chipnr,
- 	we_2_re = DIV_ROUND_UP(max(timings->tCCS_min, timings->tWHR_min), t_x);
- 	we_2_re = min_t(int, we_2_re, TWHR2_AND_WE_2_RE__WE_2_RE);
- 
-+	printk("Denali: tCCS=%d\n", timings->tCCS_min);
-+	printk("Denali: tWHR=%d\n", timings->tWHR_min);
-+	printk("Denali: we_2_re=%d\n", we_2_re);
-+
- 	tmp = ioread32(denali->reg + TWHR2_AND_WE_2_RE);
- 	tmp &= ~TWHR2_AND_WE_2_RE__WE_2_RE;
- 	tmp |= FIELD_PREP(TWHR2_AND_WE_2_RE__WE_2_RE, we_2_re);
-@@ -848,6 +870,9 @@ static int denali_setup_data_interface(struct nand_chip *chip, int chipnr,
- 	addr_2_data = DIV_ROUND_UP(timings->tADL_min, t_x);
- 	addr_2_data = min_t(int, addr_2_data, addr_2_data_mask);
- 
-+	printk("Denali: tADL=%d\n", timings->tADL_min);
-+	printk("Denali: addr_2_data=%d\n", addr_2_data);
-+
- 	tmp = ioread32(denali->reg + TCWAW_AND_ADDR_2_DATA);
- 	tmp &= ~TCWAW_AND_ADDR_2_DATA__ADDR_2_DATA;
- 	tmp |= FIELD_PREP(TCWAW_AND_ADDR_2_DATA__ADDR_2_DATA, addr_2_data);
-@@ -858,6 +883,10 @@ static int denali_setup_data_interface(struct nand_chip *chip, int chipnr,
- 				  t_x);
- 	rdwr_en_hi = min_t(int, rdwr_en_hi, RDWR_EN_HI_CNT__VALUE);
- 
-+	printk("Denali: tREH=%d\n", timings->tREH_min);
-+	printk("Denali: tWH=%d\n", timings->tWH_min);
-+	printk("Denali: rdwr_en_hi=%d\n", rdwr_en_hi);
-+
- 	tmp = ioread32(denali->reg + RDWR_EN_HI_CNT);
- 	tmp &= ~RDWR_EN_HI_CNT__VALUE;
- 	tmp |= FIELD_PREP(RDWR_EN_HI_CNT__VALUE, rdwr_en_hi);
-@@ -871,6 +900,13 @@ static int denali_setup_data_interface(struct nand_chip *chip, int chipnr,
- 	rdwr_en_lo = max(rdwr_en_lo, rdwr_en_lo_hi - rdwr_en_hi);
- 	rdwr_en_lo = min_t(int, rdwr_en_lo, RDWR_EN_LO_CNT__VALUE);
- 
-+	printk("Denali: tRP=%d\n", timings->tRP_min);
-+	printk("Denali: tWP=%d\n", timings->tWP_min);
-+	printk("Denali: tRC=%d\n", timings->tRC_min);
-+	printk("Denali: tWC=%d\n", timings->tWC_min);
-+	printk("Denali: rdwr_en_lo_hi=%d\n", rdwr_en_lo_hi);
-+	printk("Denali: rdwr_en_lo=%d\n", rdwr_en_lo);
-+
- 	tmp = ioread32(denali->reg + RDWR_EN_LO_CNT);
- 	tmp &= ~RDWR_EN_LO_CNT__VALUE;
- 	tmp |= FIELD_PREP(RDWR_EN_LO_CNT__VALUE, rdwr_en_lo);
-@@ -882,6 +918,10 @@ static int denali_setup_data_interface(struct nand_chip *chip, int chipnr,
- 			0);
- 	cs_setup = min_t(int, cs_setup, CS_SETUP_CNT__VALUE);
- 
-+	printk("Denali: tCS=%d\n", timings->tCS_min);
-+	printk("Denali: tCEA=%d\n", timings->tCEA_max);
-+	printk("Denali: cs_setup=%d\n", cs_setup);
-+
- 	tmp = ioread32(denali->reg + CS_SETUP_CNT);
- 	tmp &= ~CS_SETUP_CNT__VALUE;
- 	tmp |= FIELD_PREP(CS_SETUP_CNT__VALUE, cs_setup);
--- 
-2.24.1
+   Do they have the full datasheet available? I'll try looking at the driver 
+tomorrow...
 
+> Regards
+> Vignesh
 
---------------7836A46E0DEA5A9F212DF892
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+[removed the patch you haven't replied to]
+
+MBR, Sergei
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---------------7836A46E0DEA5A9F212DF892--
-
