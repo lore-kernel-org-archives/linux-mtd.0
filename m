@@ -2,101 +2,87 @@ Return-Path: <SRS0=Ic5j=4I=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03D06C11D0C
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Feb 2020 18:31:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 547B5C11D0C
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Feb 2020 19:09:31 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C83572467A
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Feb 2020 18:31:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 193682465D
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Feb 2020 19:09:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ZuQDNzTU";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="fojdWpH+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C83572467A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XIQXai5b";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=walle.cc header.i=@walle.cc header.b="L6yadnXx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 193682465D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:References:To:Subject:From:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=hvknf9nkGMj2sXEorudx7vwwyLaZHR3aFlPuHj3V/T8=; b=ZuQDNzTUCcYheA1qh8q3bxkOT6
-	nbt6Qrj3Pyfzi9xDKM4fDZ/zZOJJ3PNKIEhH/ePK4lNwtP88QyHuLSW60gAKdBXAB465Vd6E2+0d8
-	3OP0UKayuUGZ5b9xy9H4guKzAXwOeqG3susRQ0IvDqEnDfMNmY8KOZPNU5/ATMv+0qjE4/2pYzAZu
-	DCi5/hHNTfbSxeU4DYLuZVUrHbzKH9Iq4OG4hfxLnnW7tk4ohbXzek3bn+drt9pT5gI96o/WZohfp
-	WjJbGN2CEXoHQliD+PxNp9GEFCcTt3LNM1pVEp5UtMKBLCUfkAQuLzx8qfBs+JbVlT1VlX/27aBAc
-	JR2Eoh7w==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
+	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=5ilxBahmzgaGNg7obAFKN3g682BMcsmBYtjjFa1QIy8=; b=XIQXai5bNgZ+iGN+8I7HufaYq
+	mbAsGStvVDPl1h/fIXgVqKvNnehz7wfADw3FKl6N7A6AxHwK0EEdPqldt0uFVnrJ0MUfC9jkqFaaS
+	FBmdezAEPDIcnKd1scLnHLS1s6GsIel9P0qIMDad6nKmICInM3vqAqpkQl+MSwxyTjX9UJdH+rtol
+	2vFlQ/BAoWl3CabPqGcmTc/xnJuU4VeW/Ip+eXBSqOP6XjkzelsLLYM06fu93Bg3e4BdVQuPWfglJ
+	ZKFOO4vDuGEHg+HjlwGaeoQ4TFM7XFBjMauOy3m/OeWuLIICKm7NlPFFLaPU8nr/iEHGPT+Nyy5+m
+	LC2WDaSWA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j4qbL-0001St-D6; Thu, 20 Feb 2020 18:31:07 +0000
-Received: from mail-lf1-x143.google.com ([2a00:1450:4864:20::143])
+	id 1j4rCB-0005dj-91; Thu, 20 Feb 2020 19:09:11 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j4qbF-0001Rn-E3
- for linux-mtd@lists.infradead.org; Thu, 20 Feb 2020 18:31:03 +0000
-Received: by mail-lf1-x143.google.com with SMTP id b15so3920530lfc.4
- for <linux-mtd@lists.infradead.org>; Thu, 20 Feb 2020 10:30:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
- h=from:subject:to:references:organization:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=uyn75Rz4NGM5uriz0rX1icdPwMMd9aiwfOHnEDXXvzY=;
- b=fojdWpH+xGLzJRlSiXhqYjgrBG3NSX3xhFm2TuiWgZP40UdRhcAzMad28sTcC0o9he
- gug9pgCoBG/dPAObx5YL1h16SGq5B8MnHGcBlJArrWDL3xsaFpaFTzPgPGPGv/gZ6Qzn
- qqVp56yqXp0sV6GW2ZVF6HHxXAonW1RPMlShgOWIP0eKaXwh41R/egZO388n5h+RQJFv
- 6Gnqr/Y1aI1iOS6Z4TmywHIBVOu1FWYhfwlov8jOjGtu3YBeaQrJkt6DP9wE4Z2MrRKA
- vzOZ2PsWcLb2dYGfI7RiHxZMbmWNKPP5kcehssesbh7Kps6bprFalMqhzfuY0801Bkxi
- 6x6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:subject:to:references:organization
- :message-id:date:user-agent:mime-version:in-reply-to
- :content-language:content-transfer-encoding;
- bh=uyn75Rz4NGM5uriz0rX1icdPwMMd9aiwfOHnEDXXvzY=;
- b=YPXkeTXn0qiEmAT28Vr7uycP09RrexhKbyuFR0qsKktFHcUs+lyi6x/Z5SHqKh+GCp
- xq9rbZ8UB6WkkvtNArkWUIvi2C1M4n/7sjb5g0Sf9R2OJnt+v/HYj5QvTPK8AGWV+hDK
- 7zkjlQYkERGRm5o+jRWdQMqTR4DBpkPa/z/f3Vna2cxUUGDXqc/hu4c6Ou3QZieyltBF
- cVcD6iyFZcems4qr6iFFfoX8nULvX0Vh0Ga1GtFasNI8Lx9a+aOtamr8KWhTB8/AlGVl
- ZkIgavnNKFPohDnHgvhim4WtG1f6+bV1soSfkvnxRUCZ86GU8smXH4UO2+ARNVI2jou4
- ojOQ==
-X-Gm-Message-State: APjAAAW0iJu85YGBhtMCs6w1KWQKahQiPJqgBBIwZgUDv7tRcqyzHL0j
- hLBQ/IjvsMHNv3GfsRCXfZFkXA==
-X-Google-Smtp-Source: APXvYqyL9xkBU2N77QUipxvBm6l9liS6W79d/NV4FB7eIGyktxrXmTQUOfNJ6Y5ig5FTf883uUSzQQ==
-X-Received: by 2002:a19:6742:: with SMTP id e2mr17569039lfj.1.1582223457899;
- Thu, 20 Feb 2020 10:30:57 -0800 (PST)
-Received: from wasted.cogentembedded.com
- ([2a00:1fa0:4461:24e3:a71c:cf5f:1f2b:49f3])
- by smtp.gmail.com with ESMTPSA id h5sm152952lja.16.2020.02.20.10.30.56
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 20 Feb 2020 10:30:57 -0800 (PST)
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: Re: [PATCH RFT 0/2/2] mtd: hyperbus: add Renesas RPC-IF driver
-To: Vignesh Raghavendra <vigneshr@ti.com>,
- "Behme Dirk (CM/ESO2)" <dirk.behme@de.bosch.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Mark Brown <broonie@kernel.org>
-References: <fd1360ab-8872-f750-1314-77c6d432b413@cogentembedded.com>
- <eba43289-3cb2-406b-cc5f-1209778621bf@cogentembedded.com>
- <16309076-4378-d9ff-30c3-93a46af1d803@ti.com>
- <eed17a25-e21c-b493-98e8-e25150216731@de.bosch.com>
- <aef44eb7-78df-8505-ad37-d67fd499532e@ti.com>
-Organization: Cogent Embedded
-Message-ID: <d6fd2da7-d1c4-0148-258c-826d8a7da469@cogentembedded.com>
-Date: Thu, 20 Feb 2020 21:30:55 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.1
+ id 1j4rC7-0005cv-3J
+ for linux-mtd@lists.infradead.org; Thu, 20 Feb 2020 19:09:08 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id ABACF23D22;
+ Thu, 20 Feb 2020 20:09:03 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1582225744;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=x/XfMB6oBwmvjeYvWad8g3lgIV8k5aP5j8qLuB6xuko=;
+ b=L6yadnXxoqi/+hn4n3vISKlnB6LCDJon0IGUQ3t4trJNaLQ24q8g9N9mdhCAjkhqvL4tic
+ /6mVmYOs7tcsuhlutIGKVlaHEVTDpnLXOtYvb6nUupyOFdfciN8l3QqX8DWxpKlJ8yNxe4
+ 08pA6X0Sjeejw4/mJeJHp9oJ6PCWAHk=
 MIME-Version: 1.0
-In-Reply-To: <aef44eb7-78df-8505-ad37-d67fd499532e@ti.com>
-Content-Language: en-MW
+Date: Thu, 20 Feb 2020 20:09:03 +0100
+From: Michael Walle <michael@walle.cc>
+To: Jungseung Lee <js07.lee@samsung.com>
+Subject: Re: [PATCH v3 2/3] mtd: spi-nor: add 4bit block protection support
+In-Reply-To: <ed9ae10ab3be4da90779cb6f8d6c6cf1e9fbc968.camel@samsung.com>
+References: <20200113055907.9029-2-js07.lee@samsung.com>
+ <4000296.ZurDTCRVlM@localhost.localdomain>
+ <23efafdb8c439838338eef421e341f4a@walle.cc>
+ <CGME20200210112615epcas1p1c838e38a519a3f3e390bfc51d4db1d3b@epcas1p1.samsung.com>
+ <132665276.5Rxbr4LpEM@localhost.localdomain>
+ <ed9ae10ab3be4da90779cb6f8d6c6cf1e9fbc968.camel@samsung.com>
+Message-ID: <9aaabe654603679dffdbf4c57bcfe0ff@walle.cc>
+X-Sender: michael@walle.cc
+User-Agent: Roundcube Webmail/1.3.10
+X-Spamd-Bar: +
+X-Rspamd-Server: web
+X-Rspamd-Queue-Id: ABACF23D22
+X-Spamd-Result: default: False [1.40 / 15.00]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; TAGGED_RCPT(0.00)[];
+ MIME_GOOD(-0.10)[text/plain]; RCPT_COUNT_FIVE(0.00)[5];
+ DKIM_SIGNED(0.00)[]; NEURAL_HAM(-0.00)[-0.852];
+ RCVD_COUNT_ZERO(0.00)[0]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+];
+ FREEMAIL_CC(0.00)[microchip.com,ti.com,gmail.com,lists.infradead.org];
+ MID_RHS_MATCH_FROM(0.00)[]; SUSPICIOUS_RECIPS(1.50)[]
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200220_103101_895836_9FFA4585 
-X-CRM114-Status: GOOD (  20.88  )
+X-CRM114-CacheID: sfid-20200220_110907_441899_889D356A 
+X-CRM114-Status: GOOD (  20.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,84 +94,141 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+Cc: js07.lee@gmail.com, linux-mtd@lists.infradead.org, vigneshr@ti.com,
+ Tudor.Ambarus@microchip.com
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 02/18/2020 02:11 PM, Vignesh Raghavendra wrote:
-
-[...]
->>> Looking around, there seems to be more than one SPI controllers, apart
->>> from Renesas, which also support SPI NOR and HyperFlash protocol within
->>> a single IP block. E.g.: Cadence xSPI controller [1]. Therefore, we need
->>> a generic framework to support these kind of controllers.
->>>
->>> One way would be to extend spi_mem_op to support above template along
->>> with a new field to distinguish SPI NOR vs HyperFlash protocol. HyperBus
->>> core can then register a spi_device and use spi-mem ops to talk to
->>> controller driver.
->>> So, I suggest making Renesas RPC-IF backend a full fledged spi-mem
->>> driver (instead of driver/memory) and use extended spi_mem_op to support
->>> HyperFlash.
->>
->>
->> From Renesas Hyperflash user point of view, I wonder if a two step
->> approach would be possible and acceptable, here?
->>
->> Being a user of the Renesas Hyperflash, I want a driver for that. And,
->> of course, I want it "now" ;)
->>
->> So I wonder if it would be a valid option to have a functioning Renesas
->> Hypeflash driver, first. And in a second step abstract that in a more
->> generic way to support additional controllers. While in parallel having
->> a functional driver for the Renesas people, already.
+Am 2020-02-19 11:50, schrieb Jungseung Lee:
+> Hi, Tudor and all
 > 
-> AFAICS, the backend driver is not merged and is still in RFC phase.
-
-   It was still marked RFC back in December and I haven't received any
-feedback since, other than Dirk's request. Where have you been? Well,
-I should have CCed linux-mtd back then... :-/
-
-> Therefore I don't see any benefit of two step approach here. Besides
-> you'll have to throw away this new driver (hyperbus/rpc-if.c) entirely
-> later on.
-
-   Why did you create this directory for, anyway? :-/
-
-> How difficult is it to rewrite backend to be spi-mem driver? There is
-> already has a spi_mem_ops frontend implementation, so I don't see much
-> of an issue.
-
-   Really? This may be not much of an issue with coding this but it's
-certainly time consuming (I'm sure there's s/th to think about yet in
-this case)? My management (and also me, so far) believes I'm in the
-final stage with these drivers... what should I say to my boss now?
-
-> Extending hyperbus core to use spi-mem should also straight forward
-> Would involve moving this patch into core file.
-
-   Seriously, only "moving"?
-
->> Is the support for [1] a more or less theoretical one, at the moment? Or
->> are there users of that which need support "now", too?
+> 2020-02-10 (Mon), 11:26 +0000, Tudor.Ambarus@microchip.com:
+>> On Monday, February 10, 2020 12:29:34 PM EET Michael Walle wrote:
+>> > > It's bytes. Take a look at W25Q128JV. The sector size for this
+>> > > flash is
+>> > > 64KByte. The flash has 256 sectors. For this specific case:
+>> > > bp_slots_available = 6;
+>> > > bp_slots_needed = 8;
+>> > >
+>> > > The if condition is true, so
+>> > > bp_slot_count = 6;
+>> > > bp_min_slot_size = 64k << (8 - 6); //256k
+>> >
+>> > But nor->info->n_sectors is not 64k, its 256. Do you mean
+>> > sector_size
+>> > (like in
+>> > my example below? Then we are on the same page
+>> 
+>> Indeed, there is a typo in the pseudo code; I'm happy that the
+>> example is
+>> correct at least. I meant sector_size, not sectors. Now we should
+>> exercise the
+>> logic to all the known (corner) cases. Maybe Jungseung will tell us
+>> if he
+>> spots a flaw in the overall logic.
+>> 
 > 
-> Its not theoretical, I do see patches for xSPI controller here:
-> https://patchwork.kernel.org/cover/11354193/
+> I didn't find any flaw in this logic. But IMHO for the pseudo code.
+> 
+> bp_slots_available = (bp_mask >> shift) + 1 - 2;
+> bp_slots_needed = ilog2(nor->info->n_sectors);
+> 
+> if (bp_slots_needed > bp_slots_available) {
+>     bp_slot_count = bp_slots_available;
+>     bp_min_slot_size = nor->info->sector_size <<
+>         (bp_slots_needed - bp_slots_available);
+> } else {
+>     bp_slot_count = bp_slots_needed;
+>     bp_min_slot_size = mtd->size >> bp_slot_count;
+> }
+> 
+> Probably we can use directly nor->info->sector_size for bp_min_slot_
+> size.
+> 
+> sector_size x n_sectors = mtd->size
+> mtd->size / n_sectors = mtd->size >>
+> ilog2(n_sectors) = sector_size
+> 
+> bp_slot_count is equal to log2(n_sectors) now so if we can trust the
+> value, we can also trust sector_size.
+> 
+> After change it,
+> 
+> if (bp_slots_needed > bp_slots_available)
+>     bp_min_slot_size = nor->info->sector_size <<
+>         (bp_slots_needed - bp_slots_available);
+> else
+>     bp_min_slot_size = nor->info->sector_size
 
-   Which (surprise!) only adds support for the SPI part...
+Yes, thats what I pointed out in my previous mail, too. So I guess we
+agree on that.
 
-> So, its best to sort this out now so as to avoid possible backward
-> compatibility issues (especially with DT bindings)
+> This is a comment from my previous mail.
+>> > The exact fact is that locks operate in two different ways
+>> > according to flash model.
+>> >
+>> > (1) the smallest protected portion is fixed.
+>> >     for BP0-2 : 1/64
+>> >     for BP0-1 : 1/4
+>> > (2) the smallest protected portion is inversely propotional with
+>> > number of sectors.
 
-   What DT issues do you mean exactly? I think that other than changing
-the "home" dir for the bindings, there'd little to change. The "front ends"
-don't deal with the DT probing...
+Again. please don't consider the ratio of the protected area to the 
+flash size.
+This is only the result of applying the sector size and IMHO really bad 
+for
+understanding. Use the number of protected sectors. Thus your (2) is 
+actually
+always one sector (as you've already pointed out above).
 
-> Regards
-> Vignesh
+> (1) - if the slot is insufficient.
+> (2) - if the slot is sufficient.
+> 
+> From the fact, that could be rewritten like below. I think it's more
+> intuitive one.
+> 
+> if (bp_slots_needed > bp_slots_available)    // (1)
+>     bp_min_slot_size = mtd->size >> bp_slots_available;
 
-MBR, Sergei
+Given the reasoning above, I'd prefer having the number of sectors and 
+thus
+the sector_size. Eg. keep the following
+
+     bp_min_slot_size = nor->info->sector_size <<
+          (bp_slots_needed - bp_slots_available);
+
+
+> else                                         // (2)
+>     bp_min_slot_size = nor->info->sector_size;
+> 
+> We could also find a few flashes that does not following the overall
+> logic. For example, "en25qh256" and "en25qh16" which was manufactured
+> by EON. They are always following way (2) no matter what the number of
+> slot is. It seems that it could be handled like below with custom hook
+> later.
+> 
+> if (bp_slots_needed < bp_slots_available || force)
+
+For the en25qh16 the "bp_slots_needed < bp_slots_available" is already
+true, isn't it?
+But good catch for the en25qh256. IMHO the rework of the BP bits should 
+already
+add a flag (together with a reference to this flash) so this information
+is not lost. what about sth like MIN_LOCK_SIZE_IS_ONE_SECTOR.
+
+-michael
+
+>     bp_min_slot_size = nor->info->sector_size;
+> else
+>     bp_min_slot_size = mtd->size >> bp_slots_available;
+> 
+>> Cheers,
+>> ta
+>> 
+> 
+> Thanks,
 
 ______________________________________________________
 Linux MTD discussion mailing list
