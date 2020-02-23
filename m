@@ -2,85 +2,51 @@ Return-Path: <SRS0=rEYP=4L=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EA31C35670
-	for <linux-mtd@archiver.kernel.org>; Sun, 23 Feb 2020 05:46:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C53D6C35670
+	for <linux-mtd@archiver.kernel.org>; Sun, 23 Feb 2020 09:00:24 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DE542208C3
-	for <linux-mtd@archiver.kernel.org>; Sun, 23 Feb 2020 05:46:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9776620656
+	for <linux-mtd@archiver.kernel.org>; Sun, 23 Feb 2020 09:00:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="U19UWUsC";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XamsGeEB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE542208C3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oasVAp0a"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9776620656
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=EVO5KCQzHjQgf72ckHuakbelbKj415u/4d0w+ed7b2Y=; b=U19
-	UWUsCCw85LT0qU+B0aVcBZ0/SOD5cN50ydplCnTGGxjJegXEwPZVj65XxsZmY4zcgGt7SzGTWlVFj
-	shI9Rr6cjQI2UvYQU4CT+0tSX3VMOL7Z1AvRMj/SeFe5+ZKXVrdBVJhcgd4l+kYHxJA8N+uSyyDco
-	9LWluF4IFjqYxE1QIDtv74X5blZAu5RvLoLGfGH0IcdJoefnJMDUrQn5uYaR1VUXct1AIkIVPlIpi
-	iDOD9GZ0nVLXd4QLxy+nDBOfrf/ksvZCGVBQtN5il/urubf8keA54Kp1AV086C1tKJMElgG2NG0mr
-	7/C1eL96osGL9aMQmnMU/M9YcHN2DzQ==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=eG2zC0lQwiMLUbE6ToloHUOIksUEqDby+VzN29R2HJU=; b=oasVAp0aUbvhBR
+	dVnFxm0dVU7EcNlAB5E28oL/pmhh9xZrnwgxgTrgEVgSpJnH7Rlh5cY8V3Jpxnz3Olc0GEuAOg/KP
+	MUXkkyhQ4ioCvmrzKLi+JwDhTUP7uztiNXarqhsNXEoRPA/nth3XPSo473vTTdQNDxh0rt+pMkar0
+	Dpt07dOwUuBH+c2nbC4Arb5MzNnp8nmMia3WaWxEXPflY0fBNW50kZ9poYhVHeGE8GzV6AyWlnT2N
+	SRSS0meLCuxnUUegUuWFED0Ff1DOfyR2yBy3nU/ekdV9cNgKOIOJ8gKZHzvmlsQK920Y+Z6mc37O7
+	0pILAe718TfFMfaSRv6w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j5k5v-0001xK-DH; Sun, 23 Feb 2020 05:46:23 +0000
-Received: from mail-pf1-x442.google.com ([2607:f8b0:4864:20::442])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j5k5s-0001wV-C6
- for linux-mtd@lists.infradead.org; Sun, 23 Feb 2020 05:46:21 +0000
-Received: by mail-pf1-x442.google.com with SMTP id n7so3568579pfn.0
- for <linux-mtd@lists.infradead.org>; Sat, 22 Feb 2020 21:46:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id;
- bh=Q5drJhu0dSe3yU3emIQf8boY6kqQ/RTuUh9H+/FpqJE=;
- b=XamsGeEBsfkEa1xRUsCdmHOzmrTBolDiFk9S+/QsQ5jbcTpube8r2qTijmWzQvV2a5
- 0CAue4j8SGP6QhuGFtm2ZhYuXHH/amDXmU/oGvULjRAEmVd6f7OzXT4AvoWPBz507PCY
- h2USh5KG9o4PaUJJOlSI4yhPkxX3NClgfwhyuQ3I89ub/h6XP50AoCp+vfNRwPFZntH+
- UYDi+VysO+LviNe1F2V02xB0ViKFzYZ7iQot6mNaawMAUtsVRzSVUpUosFgh+R4LoxpU
- dbaD41jsU2xkFJNXIFPcJl84UMNjkd79xJ2l2VyyQkqt70rCuln+M/8LOIw4VJu2aBh0
- 3Rzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=Q5drJhu0dSe3yU3emIQf8boY6kqQ/RTuUh9H+/FpqJE=;
- b=i1T88jeNA9886dRkohSWwX1AmPCXkFZByvFaldjKQ6yKrsKQc9V0yaugXXCW2Hbv9r
- mreiRPsRIFoNx57oajy5udnME5lhgUMnVeSkQzwlIGdI1NZaOZlltOxcDIaZzV1J+MkS
- DDQO5vnV18i2J2a3o+k1/+N7EPzvztFFQqHEnVwGROou3//7L393CiB/RkYvb487iTr/
- 8PKsmPI+R//agN9IO30aLV5FSIeYe2FUxd3x/7wR0YVsaa5mJSuRqu8Otcqz7Vs0tEvR
- CIuR2EJ0T40Li7KHTRSQKw0ZAAyv4yZq04UMJ49CxL3ZL1izWP3mGVNpzwcaDhCn/E53
- 1SBw==
-X-Gm-Message-State: APjAAAWQfo4yLJUAopUU0W/ARzpRgYdHpF8yR9RKZYVEcgUl+vAJC+40
- 00rAK1EDWCKmbg6f4sKGpAo=
-X-Google-Smtp-Source: APXvYqwe40XU8pLkdwH3NDyEQ4xw8tZov/JvBAzE8dV0fDHmFfYwV9IB9/V4AfL9tXsjhAqwSItM0w==
-X-Received: by 2002:aa7:914b:: with SMTP id 11mr47192505pfi.69.1582436779350; 
- Sat, 22 Feb 2020 21:46:19 -0800 (PST)
-Received: from localhost ([43.224.245.179])
- by smtp.gmail.com with ESMTPSA id v4sm7758034pff.174.2020.02.22.21.46.18
- (version=TLS1_2 cipher=AES128-SHA bits=128/128);
- Sat, 22 Feb 2020 21:46:18 -0800 (PST)
-From: qiwuchen55@gmail.com
-To: dwmw2@infradead.org,
-	richard@nod.at
-Subject: [PATCH] jffs2: deubg: list_for_each() -> list_for_each_entry()
-Date: Sun, 23 Feb 2020 13:46:15 +0800
-Message-Id: <1582436775-14367-1-git-send-email-qiwuchen55@gmail.com>
-X-Mailer: git-send-email 1.9.1
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200222_214620_415756_8EAA1C79 
-X-CRM114-Status: UNSURE (   7.89  )
-X-CRM114-Notice: Please train this message.
+	id 1j5n7M-0007qW-5j; Sun, 23 Feb 2020 09:00:04 +0000
+Received: from [80.156.29.194] (helo=bombadil.infradead.org)
+ by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1j5n7F-0007ZW-MS; Sun, 23 Feb 2020 08:59:57 +0000
+Received: from mchehab by bombadil.infradead.org with local (Exim 4.92.3)
+ (envelope-from <mchehab@bombadil.infradead.org>)
+ id 1j5n7D-001RYm-3q; Sun, 23 Feb 2020 09:59:55 +0100
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Subject: [PATCH] docs: dt: fix several broken doc references
+Date: Sun, 23 Feb 2020 09:59:53 +0100
+Message-Id: <0e530494349b37eb2eab4a8eccf56626e0b18e6d.1582448388.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.24.1
+MIME-Version: 1.0
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,188 +58,144 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: chenqiwu <chenqiwu@xiaomi.com>, linux-mtd@lists.infradead.org
-MIME-Version: 1.0
+Cc: alsa-devel@alsa-project.org, Olivier Moysan <olivier.moysan@st.com>,
+ =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= <jerome.pouiller@silabs.com>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ linux-stm32@st-md-mailman.stormreply.com,
+ Vignesh Raghavendra <vigneshr@ti.com>, devel@driverdev.osuosl.org,
+ Jonathan Corbet <corbet@lwn.net>,
+ Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+ Richard Weinberger <richard@nod.at>, Piotr Sroka <piotrs@cadence.com>,
+ devicetree@vger.kernel.org, Alexandre Torgue <alexandre.torgue@st.com>,
+ Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-spi@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: chenqiwu <chenqiwu@xiaomi.com>
+There are several DT doc references that require manual fixes.
+I found 3 cases fixed on this patch:
 
-Use list_for_each_entry() instead of list_for_each() to
-simplify code.
+	- directory named "binding/" instead of "bindings/";
+	- .txt to .yaml renames;
+	- file renames (still on txt format);
 
-Signed-off-by: chenqiwu <chenqiwu@xiaomi.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- fs/jffs2/debug.c | 65 +++++++++++++++++++-------------------------------------
- 1 file changed, 22 insertions(+), 43 deletions(-)
+ .../devicetree/bindings/mtd/cadence-nand-controller.txt       | 2 +-
+ .../devicetree/bindings/net/brcm,bcm7445-switch-v4.0.txt      | 2 +-
+ Documentation/devicetree/bindings/sound/st,stm32-sai.txt      | 2 +-
+ Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt  | 2 +-
+ Documentation/devicetree/bindings/spi/st,stm32-spi.yaml       | 2 +-
+ MAINTAINERS                                                   | 4 ++--
+ .../devicetree/bindings/net/wireless/siliabs,wfx.txt          | 2 +-
+ 7 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/fs/jffs2/debug.c b/fs/jffs2/debug.c
-index 9d26b1b9..6bef692 100644
---- a/fs/jffs2/debug.c
-+++ b/fs/jffs2/debug.c
-@@ -498,12 +498,11 @@ void __jffs2_dbg_superblock_counts(struct jffs2_sb_info *c)
- 	if (list_empty(&c->clean_list)) {
- 		printk(JFFS2_DBG "clean_list: empty\n");
- 	} else {
--		struct list_head *this;
- 		int numblocks = 0;
- 		uint32_t dirty = 0;
-+		struct jffs2_eraseblock *jeb;
+diff --git a/Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt b/Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
+index f3893c4d3c6a..d2eada5044b2 100644
+--- a/Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
++++ b/Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
+@@ -27,7 +27,7 @@ Required properties of NAND chips:
+   - reg: shall contain the native Chip Select ids from 0 to max supported by
+     the cadence nand flash controller
  
--		list_for_each(this, &c->clean_list) {
--			struct jffs2_eraseblock *jeb = list_entry(this, struct jffs2_eraseblock, list);
-+		list_for_each_entry(jeb, &c->clean_list, list) {
- 			numblocks ++;
- 			dirty += jeb->wasted_size;
- 			if (!(jeb->used_size == 0 && jeb->dirty_size == 0 && jeb->wasted_size == 0)) {
-@@ -520,13 +519,11 @@ void __jffs2_dbg_superblock_counts(struct jffs2_sb_info *c)
- 	if (list_empty(&c->very_dirty_list)) {
- 		printk(JFFS2_DBG "very_dirty_list: empty\n");
- 	} else {
--		struct list_head *this;
- 		int numblocks = 0;
- 		uint32_t dirty = 0;
-+		struct jffs2_eraseblock *jeb;
+-See Documentation/devicetree/bindings/mtd/nand.txt for more details on
++See Documentation/devicetree/bindings/mtd/nand-controller.yaml for more details on
+ generic bindings.
  
--		list_for_each(this, &c->very_dirty_list) {
--			struct jffs2_eraseblock *jeb = list_entry(this, struct jffs2_eraseblock, list);
--
-+		list_for_each_entry(jeb, &c->very_dirty_list, list) {
- 			numblocks ++;
- 			dirty += jeb->dirty_size;
- 			if (!(jeb->used_size == 0 && jeb->dirty_size == 0 && jeb->wasted_size == 0)) {
-@@ -543,13 +540,11 @@ void __jffs2_dbg_superblock_counts(struct jffs2_sb_info *c)
- 	if (list_empty(&c->dirty_list)) {
- 		printk(JFFS2_DBG "dirty_list: empty\n");
- 	} else {
--		struct list_head *this;
- 		int numblocks = 0;
- 		uint32_t dirty = 0;
-+		struct jffs2_eraseblock *jeb;
+ Example:
+diff --git a/Documentation/devicetree/bindings/net/brcm,bcm7445-switch-v4.0.txt b/Documentation/devicetree/bindings/net/brcm,bcm7445-switch-v4.0.txt
+index 48a7f916c5e4..88b57b0ca1f4 100644
+--- a/Documentation/devicetree/bindings/net/brcm,bcm7445-switch-v4.0.txt
++++ b/Documentation/devicetree/bindings/net/brcm,bcm7445-switch-v4.0.txt
+@@ -45,7 +45,7 @@ Optional properties:
+   switch queue
  
--		list_for_each(this, &c->dirty_list) {
--			struct jffs2_eraseblock *jeb = list_entry(this, struct jffs2_eraseblock, list);
--
-+		list_for_each_entry(jeb, &c->dirty_list, list) {
- 			numblocks ++;
- 			dirty += jeb->dirty_size;
- 			if (!(jeb->used_size == 0 && jeb->dirty_size == 0 && jeb->wasted_size == 0)) {
-@@ -566,11 +561,9 @@ void __jffs2_dbg_superblock_counts(struct jffs2_sb_info *c)
- 	if (list_empty(&c->erasable_list)) {
- 		printk(JFFS2_DBG "erasable_list: empty\n");
- 	} else {
--		struct list_head *this;
--
--		list_for_each(this, &c->erasable_list) {
--			struct jffs2_eraseblock *jeb = list_entry(this, struct jffs2_eraseblock, list);
-+		struct jffs2_eraseblock *jeb;
+ - resets: a single phandle and reset identifier pair. See
+-  Documentation/devicetree/binding/reset/reset.txt for details.
++  Documentation/devicetree/bindings/reset/reset.txt for details.
  
-+		list_for_each_entry(jeb, &c->erasable_list, list) {
- 			if (!(jeb->used_size == 0 && jeb->dirty_size == 0 && jeb->wasted_size == 0)) {
- 				printk(JFFS2_DBG "erasable_list: %#08x (used %#08x, dirty %#08x, wasted %#08x, unchecked %#08x, free %#08x)\n",
- 					jeb->offset, jeb->used_size, jeb->dirty_size, jeb->wasted_size,
-@@ -582,11 +575,9 @@ void __jffs2_dbg_superblock_counts(struct jffs2_sb_info *c)
- 	if (list_empty(&c->erasing_list)) {
- 		printk(JFFS2_DBG "erasing_list: empty\n");
- 	} else {
--		struct list_head *this;
--
--		list_for_each(this, &c->erasing_list) {
--			struct jffs2_eraseblock *jeb = list_entry(this, struct jffs2_eraseblock, list);
-+		struct jffs2_eraseblock *jeb;
+ - reset-names: If the "reset" property is specified, this property should have
+   the value "switch" to denote the switch reset line.
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-sai.txt b/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
+index 944743dd9212..c42b91e525fa 100644
+--- a/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
++++ b/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
+@@ -36,7 +36,7 @@ SAI subnodes required properties:
+   - clock-names: Must contain "sai_ck".
+ 	Must also contain "MCLK", if SAI shares a master clock,
+ 	with a SAI set as MCLK clock provider.
+-  - dmas: see Documentation/devicetree/bindings/dma/stm32-dma.txt
++  - dmas: see Documentation/devicetree/bindings/dma/st,stm32-dma.yaml
+   - dma-names: identifier string for each DMA request line
+ 	"tx": if sai sub-block is configured as playback DAI
+ 	"rx": if sai sub-block is configured as capture DAI
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt
+index 33826f2459fa..ca9101777c44 100644
+--- a/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt
++++ b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt
+@@ -10,7 +10,7 @@ Required properties:
+   - clock-names: must contain "kclk"
+   - interrupts: cpu DAI interrupt line
+   - dmas: DMA specifiers for audio data DMA and iec control flow DMA
+-    See STM32 DMA bindings, Documentation/devicetree/bindings/dma/stm32-dma.txt
++    See STM32 DMA bindings, Documentation/devicetree/bindings/dma/st,stm32-dma.yaml
+   - dma-names: two dmas have to be defined, "rx" and "rx-ctrl"
  
-+		list_for_each_entry(jeb, &c->erasing_list, list) {
- 			if (!(jeb->used_size == 0 && jeb->dirty_size == 0 && jeb->wasted_size == 0)) {
- 				printk(JFFS2_DBG "erasing_list: %#08x (used %#08x, dirty %#08x, wasted %#08x, unchecked %#08x, free %#08x)\n",
- 					jeb->offset, jeb->used_size, jeb->dirty_size, jeb->wasted_size,
-@@ -597,11 +588,9 @@ void __jffs2_dbg_superblock_counts(struct jffs2_sb_info *c)
- 	if (list_empty(&c->erase_checking_list)) {
- 		printk(JFFS2_DBG "erase_checking_list: empty\n");
- 	} else {
--		struct list_head *this;
--
--		list_for_each(this, &c->erase_checking_list) {
--			struct jffs2_eraseblock *jeb = list_entry(this, struct jffs2_eraseblock, list);
-+		struct jffs2_eraseblock *jeb;
+ Optional properties:
+diff --git a/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml b/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
+index f0d979664f07..e49ecbf715ba 100644
+--- a/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
++++ b/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
+@@ -49,7 +49,7 @@ properties:
+   dmas:
+     description: |
+       DMA specifiers for tx and rx dma. DMA fifo mode must be used. See
+-      the STM32 DMA bindings Documentation/devicetree/bindings/dma/stm32-dma.txt.
++      the STM32 DMA bindings Documentation/devicetree/bindings/dma/st,stm32-dma.yaml.
+     items:
+       - description: rx DMA channel
+       - description: tx DMA channel
+diff --git a/MAINTAINERS b/MAINTAINERS
+index d81701ea3336..6b30a58bd77b 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4480,7 +4480,7 @@ L:	linux-media@vger.kernel.org
+ T:	git git://linuxtv.org/media_tree.git
+ S:	Maintained
+ F:	drivers/media/platform/sunxi/sun6i-csi/
+-F:	Documentation/devicetree/bindings/media/sun6i-csi.txt
++F:	Documentation/devicetree/bindings/media/allwinner,sun6i-a31-csi.yaml
  
-+		list_for_each_entry(jeb, &c->erase_checking_list, list) {
- 			if (!(jeb->used_size == 0 && jeb->dirty_size == 0 && jeb->wasted_size == 0)) {
- 				printk(JFFS2_DBG "erase_checking_list: %#08x (used %#08x, dirty %#08x, wasted %#08x, unchecked %#08x, free %#08x)\n",
- 					jeb->offset, jeb->used_size, jeb->dirty_size, jeb->wasted_size,
-@@ -613,11 +602,9 @@ void __jffs2_dbg_superblock_counts(struct jffs2_sb_info *c)
- 	if (list_empty(&c->erase_pending_list)) {
- 		printk(JFFS2_DBG "erase_pending_list: empty\n");
- 	} else {
--		struct list_head *this;
--
--		list_for_each(this, &c->erase_pending_list) {
--			struct jffs2_eraseblock *jeb = list_entry(this, struct jffs2_eraseblock, list);
-+		struct jffs2_eraseblock *jeb;
+ CW1200 WLAN driver
+ M:	Solomon Peachy <pizza@shaftnet.org>
+@@ -15955,7 +15955,7 @@ F:	drivers/*/stm32-*timer*
+ F:	drivers/pwm/pwm-stm32*
+ F:	include/linux/*/stm32-*tim*
+ F:	Documentation/ABI/testing/*timer-stm32
+-F:	Documentation/devicetree/bindings/*/stm32-*timer*
++F:	Documentation/devicetree/bindings/*/*stm32-*timer*
+ F:	Documentation/devicetree/bindings/pwm/pwm-stm32*
  
-+		list_for_each_entry(jeb, &c->erase_pending_list, list) {
- 			if (!(jeb->used_size == 0 && jeb->dirty_size == 0 && jeb->wasted_size == 0)) {
- 				printk(JFFS2_DBG "erase_pending_list: %#08x (used %#08x, dirty %#08x, wasted %#08x, unchecked %#08x, free %#08x)\n",
- 					jeb->offset, jeb->used_size, jeb->dirty_size, jeb->wasted_size,
-@@ -629,11 +616,9 @@ void __jffs2_dbg_superblock_counts(struct jffs2_sb_info *c)
- 	if (list_empty(&c->erasable_pending_wbuf_list)) {
- 		printk(JFFS2_DBG "erasable_pending_wbuf_list: empty\n");
- 	} else {
--		struct list_head *this;
--
--		list_for_each(this, &c->erasable_pending_wbuf_list) {
--			struct jffs2_eraseblock *jeb = list_entry(this, struct jffs2_eraseblock, list);
-+		struct jffs2_eraseblock *jeb;
+ STMMAC ETHERNET DRIVER
+diff --git a/drivers/staging/wfx/Documentation/devicetree/bindings/net/wireless/siliabs,wfx.txt b/drivers/staging/wfx/Documentation/devicetree/bindings/net/wireless/siliabs,wfx.txt
+index ffec79c14786..17db67559f5e 100644
+--- a/drivers/staging/wfx/Documentation/devicetree/bindings/net/wireless/siliabs,wfx.txt
++++ b/drivers/staging/wfx/Documentation/devicetree/bindings/net/wireless/siliabs,wfx.txt
+@@ -94,5 +94,5 @@ Some properties are recognized either by SPI and SDIO versions:
+    Must contains 64 hexadecimal digits. Not supported in current version.
  
-+		list_for_each_entry(jeb, &c->erasable_pending_wbuf_list, list) {
- 			if (!(jeb->used_size == 0 && jeb->dirty_size == 0 && jeb->wasted_size == 0)) {
- 				printk(JFFS2_DBG "erasable_pending_wbuf_list: %#08x (used %#08x, dirty %#08x, wasted %#08x, unchecked %#08x, free %#08x)\n",
- 					jeb->offset, jeb->used_size, jeb->dirty_size, jeb->wasted_size,
-@@ -645,11 +630,9 @@ void __jffs2_dbg_superblock_counts(struct jffs2_sb_info *c)
- 	if (list_empty(&c->free_list)) {
- 		printk(JFFS2_DBG "free_list: empty\n");
- 	} else {
--		struct list_head *this;
--
--		list_for_each(this, &c->free_list) {
--			struct jffs2_eraseblock *jeb = list_entry(this, struct jffs2_eraseblock, list);
-+		struct jffs2_eraseblock *jeb;
+ WFx driver also supports `mac-address` and `local-mac-address` as described in
+-Documentation/devicetree/binding/net/ethernet.txt
++Documentation/devicetree/bindings/net/ethernet.txt
  
-+		list_for_each_entry(jeb, &c->free_list, list) {
- 			if (!(jeb->used_size == 0 && jeb->dirty_size == 0 && jeb->wasted_size == 0)) {
- 				printk(JFFS2_DBG "free_list: %#08x (used %#08x, dirty %#08x, wasted %#08x, unchecked %#08x, free %#08x)\n",
- 					jeb->offset, jeb->used_size, jeb->dirty_size, jeb->wasted_size,
-@@ -661,11 +644,9 @@ void __jffs2_dbg_superblock_counts(struct jffs2_sb_info *c)
- 	if (list_empty(&c->bad_list)) {
- 		printk(JFFS2_DBG "bad_list: empty\n");
- 	} else {
--		struct list_head *this;
--
--		list_for_each(this, &c->bad_list) {
--			struct jffs2_eraseblock *jeb = list_entry(this, struct jffs2_eraseblock, list);
-+		struct jffs2_eraseblock *jeb;
- 
-+		list_for_each_entry(jeb, &c->bad_list, list) {
- 			if (!(jeb->used_size == 0 && jeb->dirty_size == 0 && jeb->wasted_size == 0)) {
- 				printk(JFFS2_DBG "bad_list: %#08x (used %#08x, dirty %#08x, wasted %#08x, unchecked %#08x, free %#08x)\n",
- 					jeb->offset, jeb->used_size, jeb->dirty_size, jeb->wasted_size,
-@@ -677,11 +658,9 @@ void __jffs2_dbg_superblock_counts(struct jffs2_sb_info *c)
- 	if (list_empty(&c->bad_used_list)) {
- 		printk(JFFS2_DBG "bad_used_list: empty\n");
- 	} else {
--		struct list_head *this;
--
--		list_for_each(this, &c->bad_used_list) {
--			struct jffs2_eraseblock *jeb = list_entry(this, struct jffs2_eraseblock, list);
-+		struct jffs2_eraseblock *jeb;
- 
-+		list_for_each_entry(jeb, &c->bad_used_list, list) {
- 			if (!(jeb->used_size == 0 && jeb->dirty_size == 0 && jeb->wasted_size == 0)) {
- 				printk(JFFS2_DBG "bad_used_list: %#08x (used %#08x, dirty %#08x, wasted %#08x, unchecked %#08x, free %#08x)\n",
- 					jeb->offset, jeb->used_size, jeb->dirty_size, jeb->wasted_size,
 -- 
-1.9.1
+2.24.1
 
 
 ______________________________________________________
