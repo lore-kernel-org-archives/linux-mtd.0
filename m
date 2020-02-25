@@ -2,84 +2,75 @@ Return-Path: <SRS0=ETWj=4N=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	URIBL_RHS_DOB,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90A94C35DF9
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Feb 2020 08:54:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 60F8CC35DF9
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Feb 2020 09:12:34 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 624E12176D
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Feb 2020 08:54:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3025321744
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Feb 2020 09:12:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dqZm8jdB";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W+eV51aj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 624E12176D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gG5QJbKG";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="GNNZRVie"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3025321744
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WGVVO5s7xA90kkE5S/2pctXhqJ33es5R+dvn4d/wFHY=; b=dqZm8jdBedolTf
-	IIcQWtsFkR9fAvtGGV0aO1v/kulDt4j/nLNoYX2wFNMMb7sddDby/rlL0uRdJNtVFPsn3uuO4oc91
-	A2zCslWt4LIgXedBt66RRN6fKN1YbHG0DYvCXMvmDhaD+Ms/bQSrHVQzaZoFGIirYa2gTOlCwZh2Q
-	I7FTh9CA/atUo64NhFyr/zPkn5oTxTNQV8vKD2Mi1jxQzKybo6SuxVwrud08pkWvxyeelMzlBCWk0
-	zx5G8wuanMnRds1f/DGvB6aiH4QizW+3WEkRAEpCU12aEiudNySAj34IriNqrvinembcrIrEKGG7w
-	0xrd3LA+lSmx67ntw1kg==;
+	List-Owner; bh=im2CEBh21VzyuMneM5b7zX/nkMYFVhL+0EOrdtuPrUQ=; b=gG5QJbKG2anVG8
+	qLsoSq0DXkaC6KEsZoQ/DRHxvo94ubwJCEjXTuz7pggaH0nyy7vZOlNt4GJVm6jnuquOQHfAgbIIu
+	o4DJwv1NPCA/wZTVlXocEc1VnIhsOeGSFpkIegYfmmnSFwruMLmcfg76IsxkRcpB1QUlL4oKzHbJy
+	2FA1O+Wise6sEmRxNcs86lths2loXUcDl92RpsPSyWZG3oJhLoqs4CbIAu1DXkVUMcK4rWUg8NLqK
+	W7QG4YaHrtqtFYkR/hjuJpNXHlijysW46iy7oHSLJ7dVhb6na3smo/O6fU5LvwGyJNhaK3Xd121CS
+	F+PaYxWxtls4QoAw1iMw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j6Vz5-0002FO-S2; Tue, 25 Feb 2020 08:54:31 +0000
-Received: from mail-wm1-x32d.google.com ([2a00:1450:4864:20::32d])
+	id 1j6WGK-0002Sh-7m; Tue, 25 Feb 2020 09:12:20 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j6Vyx-00023W-06
- for linux-mtd@lists.infradead.org; Tue, 25 Feb 2020 08:54:24 +0000
-Received: by mail-wm1-x32d.google.com with SMTP id a5so2103115wmb.0
- for <linux-mtd@lists.infradead.org>; Tue, 25 Feb 2020 00:54:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=U0PYL1EX09JByfmO82VsPx+EklZ6SE+TK5zxgWF95t0=;
- b=W+eV51ajb36vCjn01EWBwxH1xSBZgwywE2seO4uu8368p3rslC3DCjrDyxVWoVq33a
- pT03fa/SycKxVKEiP8aA0i5MRaNC3WAlE/uaE/WbpWJPBW0z/bSR9myoJKp4vTngvWC4
- 3TUhVhbw4yH+vR1GGSzDYK/iO9Qz8yu4sHoCGQ8uqnmY8Q84NETxOu1qTuTnT61Y6201
- gVdrHNgKXbLr5er5KxBLaY64XYvf6hpgiSIm3PaiIu/IdK6qEYoyYyr7Rp/2Yh+4+pI4
- 9fXfXaPF4eByC6nrf2xk9iqJ2021ynP4CP5k1F5zIeEplLoErHVyMcrLKwMqDnJAJFN3
- GiFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=U0PYL1EX09JByfmO82VsPx+EklZ6SE+TK5zxgWF95t0=;
- b=H+NGGnQlsZEXVwlX5GLa6hWQxLPGVROScDrRUrcZ5iqkWTktxgdOR5pieY0DKGmBeZ
- vEWOVYHQg8v1bG1r6hmRptlfvSOAPnZAvm0f02F61FXEMnVE1vNqnAq4UIWns2WFzw6k
- 9gumBtqsaVhTbgfOmTse/qGnK5h/vFwuIwSs4EH+VCsXd8ouT8D3uoz+8KfKRJdp1cDX
- CUFdKroFxKHqk7YVjXKC7IYaZ8Cr2mBxbLwDltVAy7l1XAnVwepRzJp5tV40JfSDg9uU
- 0WrbljTJgmPq12cX5GX5yOj03aLSTBHAgTQzgUn/y67YCrBY4uI66+eCAx+zlaBABq5j
- EH9w==
-X-Gm-Message-State: APjAAAU+p09c5FWemrMakZ6U6es7I3NIaC8a7BluqqU9OoMsUUYgjoP1
- zkJcAiwYPORgM8LMP0urFH8sw4dga+OOQqxdeb/eug==
-X-Google-Smtp-Source: APXvYqyc961qX+2JrtC1MNXmnzDuUswVdsNvJ8js7bbnIhuzwKrcAR0/CYTa5GP7FTl5yUjmZyg7jrx2YbAMst+bTTg=
-X-Received: by 2002:a1c:6389:: with SMTP id x131mr4188097wmb.155.1582620861248; 
- Tue, 25 Feb 2020 00:54:21 -0800 (PST)
+ id 1j6WGJ-0002Sa-8C
+ for linux-mtd@bombadil.infradead.org; Tue, 25 Feb 2020 09:12:19 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+ MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
+ :Reply-To:Content-ID:Content-Description;
+ bh=piScC5SUIjhvT+MNVAWlFvWmuVs3rDa0xLHo5bZUeCQ=; b=GNNZRVieh8DYWKRidOVosEfoSt
+ uwnoyFVnDrhPoqgPusqvbrS0z6qPr8+22cn+UdcqRnVc9zXqQDBn0jdAm22+5no/8lGTwXY7jYLEZ
+ 476bxfyQhgZ7LCXxkDV3/FLDTJkApnVZsuS4lAQlWuHwMYYy5mvpFkH9Ag4W4nOKXasHOm731+2zG
+ F4ZDm1Gv8wkA31H/6v/uXYYSMcb3lWuV3HarXwGP+MYWbIMyGBJPHZXtWz/z6c0BSf+SMxPCRZn/H
+ 5+655+VdPTH+VLgUpMjRf4e1c8TOszE+XG6DZaLiGvu5q9UMJ4OPn4Rp42/6dNIdtNdz/BwMV+nTG
+ doK56ANw==;
+Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+ by casper.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1j6WGC-0006Nn-TD
+ for linux-mtd@lists.infradead.org; Tue, 25 Feb 2020 09:12:17 +0000
+X-Originating-IP: 86.201.231.92
+Received: from xps13 (lfbn-tou-1-149-92.w86-201.abo.wanadoo.fr [86.201.231.92])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id D4CC140008;
+ Tue, 25 Feb 2020 09:11:27 +0000 (UTC)
+Date: Tue, 25 Feb 2020 10:11:27 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH] MAINTAINERS: Add staging branch for HyperBus
+Message-ID: <20200225101127.3236c646@xps13>
+In-Reply-To: <20200225050248.20722-1-vigneshr@ti.com>
+References: <20200225050248.20722-1-vigneshr@ti.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <CAA=hcWQOxh-FDU9iy-juGySDdxDRvj7nKDOWebQS7zF7RJ+fSQ@mail.gmail.com>
- <CAFLxGvwUMsXCO2yG27z7av3eAajwEzuHafX9Fimejc_u2mpGig@mail.gmail.com>
- <CAA=hcWS1WPA-Sb93rGgXYFnJckYtwypTXS2LTZ=HhLRiUfYnyw@mail.gmail.com>
-In-Reply-To: <CAA=hcWS1WPA-Sb93rGgXYFnJckYtwypTXS2LTZ=HhLRiUfYnyw@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Tue, 25 Feb 2020 09:54:10 +0100
-Message-ID: <CAFLxGvy1SSc6-snBCViMUf79bON7w3xNPfDLJeYeBf43edDvzg@mail.gmail.com>
-Subject: Re: File IO write flush time span
-To: JH <jupiter.hce@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200225_005423_172521_C1C9D884 
-X-CRM114-Status: UNSURE (   9.08  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200225_091213_087162_98031AFF 
+X-CRM114-Status: GOOD (  13.86  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,27 +82,30 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Feb 25, 2020 at 9:45 AM JH <jupiter.hce@gmail.com> wrote:
-> I was actually talking about applications write files to a UBIFS
-> volume mounted as RW in Linux, let's say if I write a file by vi, will
-> it immediately flush to the NAND or will it stay in cache until some
-> algorithm in MTD to erase NAND pages and flush the cache to NAND page
-> based on size of output or time, is it correct?
-
-UBIFS is a filesystem and follows the rules of the vfs and pagecache.
-But it is less forgiving than ext3/4. To make sure data hits the NAND you
-need to properly use fsync/fdatasync().
-
--- 
-Thanks,
-//richard
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgVmlnbmVzaCwKClZpZ25lc2ggUmFnaGF2ZW5kcmEgPHZpZ25lc2hyQHRpLmNvbT4gd3JvdGUg
+b24gVHVlLCAyNSBGZWIgMjAyMAoxMDozMjo0OCArMDUzMDoKCj4gVXBkYXRlIEh5cGVyQnVzIGVu
+dHJ5IHdpdGggYnJhbmNoIHVzZWQgdG8gc3RhZ2UgcGF0Y2hlcyB1bmRlcgo+IG10ZC5naXQKPiAK
+PiBTaWduZWQtb2ZmLWJ5OiBWaWduZXNoIFJhZ2hhdmVuZHJhIDx2aWduZXNockB0aS5jb20+Cj4g
+LS0tCj4gIE1BSU5UQUlORVJTIHwgMyArKysKPiAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9u
+cygrKQo+IAo+IGRpZmYgLS1naXQgYS9NQUlOVEFJTkVSUyBiL01BSU5UQUlORVJTCj4gaW5kZXgg
+YTBkODY0OTBjMmM2Li40Yjk5MzAyNjNkYzcgMTAwNjQ0Cj4gLS0tIGEvTUFJTlRBSU5FUlMKPiAr
+KysgYi9NQUlOVEFJTkVSUwo+IEBAIC03NzY5LDYgKzc3NjksOSBAQCBGOglEb2N1bWVudGF0aW9u
+L0FCSS90ZXN0aW5nL2RlYnVnZnMtaHlwZXJ2Cj4gIAo+ICBIWVBFUkJVUyBTVVBQT1JUCj4gIE06
+CVZpZ25lc2ggUmFnaGF2ZW5kcmEgPHZpZ25lc2hyQHRpLmNvbT4KPiArTDoJbGludXgtbXRkQGxp
+c3RzLmluZnJhZGVhZC5vcmcKPiArUToJaHR0cDovL3BhdGNod29yay5vemxhYnMub3JnL3Byb2pl
+Y3QvbGludXgtbXRkL2xpc3QvCgpZb3UgZG9uJ3QgbWVudGlvbiB0aGVzZSB0d28gYWRkaXRpb25z
+IGluIHlvdXIgY29tbWl0IGxvZywgY2FuIHlvdSBlZGl0Cm9yIHNwbGl0IHRoZSBwYXRjaCAoYm90
+aCBhcmUgZmluZSk/CgpXaXRoIHRoaXMgYWRkcmVzc2VkOgpBY2tlZC1ieTogTWlxdWVsIFJheW5h
+bCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4KCj4gK1Q6CWdpdCBnaXQ6Ly9naXQua2VybmVs
+Lm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvbXRkL2xpbnV4LmdpdCBjZmkvbmV4dAo+ICBT
+OglTdXBwb3J0ZWQKPiAgRjoJZHJpdmVycy9tdGQvaHlwZXJidXMvCj4gIEY6CWluY2x1ZGUvbGlu
+dXgvbXRkL2h5cGVyYnVzLmgKClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1h
+aWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
+bnV4LW10ZC8K
