@@ -2,85 +2,64 @@ Return-Path: <SRS0=a+Ch=4O=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B04EC4BA0B
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 Feb 2020 09:40:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6B10C4BA0B
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 Feb 2020 11:36:41 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3D06F20732
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 Feb 2020 09:40:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8B820206E6
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 Feb 2020 11:36:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bDA1mlMy";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="K2dTe32y"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3D06F20732
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="d8fyXe0E"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B820206E6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Tr0TWsj0cAvUbrwd4CXBrAjX0SjzsOQqNDfG9fg0XX8=; b=bDA1mlMyLAY7DH
-	IyyGvsPbQzV8xvwR6aD29zAfYorOKPrG00Wnlv/WJ4kFCC7kvrTN1kxNUryy3wApU7oUF3vsNO/Zg
-	MAuIBGmMunWtlXes1KS3wvYuWXZrQ/8zThxrtOe9ozY6YBMKkosRoOwGv0fOHo7XPl2ff0NACHLn+
-	LpgqEQi+gh69aNqNLD4vzgBleZZnPniufjg6nwIh5CIraYWnSY1QP0X6ufaPh/qcUYrd4fjxZjDFk
-	8Rg1/hwzOrguY9tS42cbdf+D04eQm+1rA9pNL5uDisSs9CMkvXKEfqzCSQxI4sIt0fUMAX9m6B69x
-	XYd7HYREnf/txncl1ipQ==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:Cc:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=5+pxktcCkEf26w1KgXhx3o8qeWDEmZq3NPAxOAZRjbk=; b=d8fyXe0EcuM7DUc4BdHN2wdWw
+	aaJdIqrW9GvsI/VCYGlzjI4jVGcW1O/ntmOaNs42PhCCFdmXP1NIW81oHBTBIaRs4JvJe5EjBsFW7
+	mdIrewATlrVZocklpRrfKd8gLJVyFPkEkLzg2mGev2/D7mmnYGazt2RyKR6FKRlwgkgPrjKmzOIXi
+	ZMtBWBK84swq0Qj65AhO85vQiHP14h6aG9DUwrUJLdCu+AxiA7EC9DUSx2XYNK4VIfNaexbiwAEP6
+	tq3Qri7pDLetQCGBAnvPPW+DgzSeFt0TAWcOW+PQboCUBjpwy6GYbYHrCEzCWUzzIvOXH6Rv3qmf4
+	reQ02Iweg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j6tB1-0004sT-4h; Wed, 26 Feb 2020 09:40:23 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j6t8k-0001e4-8p
- for linux-mtd@lists.infradead.org; Wed, 26 Feb 2020 09:38:05 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 01Q9bu9B087237;
- Wed, 26 Feb 2020 03:37:56 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1582709876;
- bh=lx7klmR18LxVuDBU/ZZOyd+LtXGNVESbcjfzd3wnbNA=;
- h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=K2dTe32y4kF8csHn6wb1hcbI0Z5frqIt9bEAjintcG/+wYvrOaf3bOwTQrQywvlO3
- Gbmlj6Nxz6dljt9tOtgbN9rwLwxfJSp7Q5JvxcOo6pk6phoanGnVfmVhcFWaMdv2Fp
- EvLtOua8qL2OaTJJFOLfDh4/oMGVbEU3SVttE1eo=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 01Q9buqo119249
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 26 Feb 2020 03:37:56 -0600
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Wed, 26
- Feb 2020 03:37:55 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Wed, 26 Feb 2020 03:37:55 -0600
-Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com
- [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 01Q9b4AG110613;
- Wed, 26 Feb 2020 03:37:52 -0600
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Mark Brown <broonie@kernel.org>, Rob Herring
- <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Subject: [PATCH v2 11/11] mtd: spi-nor: add support for Cypress Semper flash
-Date: Wed, 26 Feb 2020 15:07:03 +0530
-Message-ID: <20200226093703.19765-12-p.yadav@ti.com>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200226093703.19765-1-p.yadav@ti.com>
-References: <20200226093703.19765-1-p.yadav@ti.com>
+	id 1j6uzN-0003ea-T6; Wed, 26 Feb 2020 11:36:29 +0000
+Received: from foss.arm.com ([217.140.110.172])
+ by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1j6uz6-0003TC-RS; Wed, 26 Feb 2020 11:36:14 +0000
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2680D1FB;
+ Wed, 26 Feb 2020 03:36:12 -0800 (PST)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9DDD73FA00;
+ Wed, 26 Feb 2020 03:36:11 -0800 (PST)
+Date: Wed, 26 Feb 2020 11:36:10 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Chuanhong Guo <gch981213@gmail.com>
+Subject: Re: [PATCH 0/2] rewrite mtk-quadspi spi-nor driver with spi-mem
+Message-ID: <20200226113610.GD4136@sirena.org.uk>
+References: <20200215065826.739102-1-gch981213@gmail.com>
+ <20200218125557.GD4232@sirena.org.uk>
+ <CAJsYDVL03KJv7eewGekBPCfpbOuTX0tJ6qZaydvJnBDzZ5vEwg@mail.gmail.com>
+ <20200225173137.GA31830@bogus>
+ <CAJsYDVKqcd-ytLLf5zKqs8DfjPAa5ELCX53OiPDAi-tDnLd=Eg@mail.gmail.com>
 MIME-Version: 1.0
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <CAJsYDVKqcd-ytLLf5zKqs8DfjPAa5ELCX53OiPDAi-tDnLd=Eg@mail.gmail.com>
+X-Cookie: May all your PUSHes be POPped.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200226_013802_488112_0CA4A5F4 
-X-CRM114-Status: GOOD (  21.12  )
+X-CRM114-CacheID: sfid-20200226_033612_933456_1AA42F75 
+X-CRM114-Status: UNSURE (   9.83  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,282 +71,70 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, Sekhar Nori <nsekhar@ti.com>,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
- linux-mtd@lists.infradead.org, Pratyush Yadav <p.yadav@ti.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh@kernel.org>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, Richard Weinberger <richard@nod.at>,
+ open list <linux-kernel@vger.kernel.org>, linux-spi@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============8560601229834476499=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The Cypress Semper flash is an xSPI compliant octal DTR flash. Add
-support for using it in octal DTR mode.
 
-The flash by default boots in a hybrid sector mode. Switch to uniform
-sector mode on boot. Use the default 20 dummy cycles for a read fast
-command.
+--===============8560601229834476499==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ylS2wUBXLOxYXZFQ"
+Content-Disposition: inline
 
-The SFDP programming on some older versions of the flash was incorrect.
-Fixes for that are included in the fixup hooks.
 
-Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 191 ++++++++++++++++++++++++++++++++++
- include/linux/mtd/spi-nor.h   |  14 +++
- 2 files changed, 205 insertions(+)
+--ylS2wUBXLOxYXZFQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index fdcc1b4abc3f..a01acecaa568 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -260,6 +260,12 @@ struct flash_info {
- 
- #define JEDEC_MFR(info)	((info)->id[0])
- 
-+/* Forward declarations that will be used by s28hs512t_setup(). */
-+static int spi_nor_default_setup(struct spi_nor *nor,
-+				 const struct spi_nor_hwcaps *hwcaps);
-+static void spi_nor_set_pp_settings(struct spi_nor_pp_command *pp,
-+				    u8 opcode, enum spi_nor_protocol proto);
-+
- /**
-  * spi_nor_spimem_setup_op() - Set up common properties of a spi-mem op.
-  * @nor:		pointer to a 'struct spi_nor'
-@@ -2241,6 +2247,64 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 	return ret;
- }
- 
-+/**
-+ * spi_nor_cypress_octal_enable() - Enable octal DTR mode on Cypress flashes.
-+ * @nor:		pointer to a 'struct spi_nor'
-+ *
-+ * This also sets the memory access latency cycles to 20, which is the default
-+ * in the spi-nor framework.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int spi_nor_cypress_octal_enable(struct spi_nor *nor)
-+{
-+	struct spi_mem_op op;
-+	u8 *buf = nor->bouncebuf;
-+	u8 addr_width = 3;
-+	int ret;
-+
-+	/* Use 20 dummy cycles for memory array reads. */
-+	ret = spi_nor_write_enable(nor);
-+	if (ret)
-+		return ret;
-+
-+	*buf = SPINOR_REG_CYPRESS_CFR2V_MEMLAT_8_20;
-+	op = (struct spi_mem_op)SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_ANY_REG, 1),
-+			SPI_MEM_OP_ADDR(addr_width, SPINOR_REG_CYPRESS_CFR2V, 1),
-+			SPI_MEM_OP_NO_DUMMY,
-+			SPI_MEM_OP_DATA_OUT(1, buf, 1));
-+	ret = spi_mem_exec_op(nor->spimem, &op);
-+	if (ret) {
-+		dev_warn(nor->dev,
-+			 "failed to set default memory latency value: %d\n",
-+			 ret);
-+		return ret;
-+	}
-+	ret = spi_nor_wait_till_ready(nor);
-+	if (ret)
-+		return ret;
-+
-+	nor->read_dummy = 20;
-+
-+	/* Set the octal and DTR enable bits. */
-+	ret = spi_nor_write_enable(nor);
-+	if (ret)
-+		return ret;
-+
-+	*buf = SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_EN;
-+	op = (struct spi_mem_op)SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_ANY_REG, 1),
-+			SPI_MEM_OP_ADDR(addr_width, SPINOR_REG_CYPRESS_CFR5V, 1),
-+			SPI_MEM_OP_NO_DUMMY,
-+			SPI_MEM_OP_DATA_OUT(1, buf, 1));
-+	ret = spi_mem_exec_op(nor->spimem, &op);
-+	if (ret) {
-+		dev_warn(nor->dev, "Failed to enable octal DTR mode\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
- /**
-  * spi_nor_sr1_bit6_quad_enable() - Set the Quad Enable BIT(6) in the Status
-  * Register 1.
-@@ -2453,6 +2517,130 @@ static struct spi_nor_fixups gd25q256_fixups = {
- 	.default_init = gd25q256_default_init,
- };
- 
-+static int s28hs512t_setup(struct spi_nor *nor,
-+			    const struct spi_nor_hwcaps *hwcaps)
-+{
-+	struct spi_mem_op op;
-+	u8 *buf = nor->bouncebuf;
-+	u8 addr_width = 3;
-+	int ret;
-+
-+	if (!nor->spimem) {
-+		dev_err(nor->dev,
-+			"operation not supported for non-spimem drivers\n");
-+		return -ENOTSUPP;
-+	}
-+
-+	/*
-+	 * This Cypress flash also supports hybrid sector sizes. Make sure
-+	 * uniform sector mode is selected. This is done by setting the bit
-+	 * CFR3N[3].
-+	 */
-+	op = (struct spi_mem_op)
-+		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RD_ANY_REG, 1),
-+			   SPI_MEM_OP_ADDR(addr_width, SPINOR_REG_CYPRESS_CFR3N, 1),
-+			   SPI_MEM_OP_NO_DUMMY,
-+			   SPI_MEM_OP_DATA_IN(1, buf, 1));
-+	ret = spi_mem_exec_op(nor->spimem, &op);
-+	if (ret)
-+		return ret;
-+
-+	ret = spi_nor_write_enable(nor);
-+	if (ret)
-+		return ret;
-+
-+	/* Set the uniform sector mode bit. */
-+	*buf |= SPINOR_REG_CYPRESS_CFR3N_UNISECT;
-+	op = (struct spi_mem_op)
-+		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_ANY_REG, 1),
-+			   SPI_MEM_OP_ADDR(addr_width, SPINOR_REG_CYPRESS_CFR3N, 1),
-+			   SPI_MEM_OP_NO_DUMMY,
-+			   SPI_MEM_OP_DATA_OUT(1, buf, 1));
-+	ret = spi_mem_exec_op(nor->spimem, &op);
-+	if (ret) {
-+		dev_err(nor->dev, "Failed to change to uniform sector mode\n");
-+		return ret;
-+	}
-+
-+	ret = spi_nor_wait_till_ready(nor);
-+	if (ret)
-+		return ret;
-+
-+	return spi_nor_default_setup(nor, hwcaps);
-+}
-+
-+static void s28hs512t_default_init(struct spi_nor *nor)
-+{
-+	nor->params.octal_dtr_enable = spi_nor_cypress_octal_enable;
-+	nor->params.setup = s28hs512t_setup;
-+}
-+
-+static void s28hs512t_post_sfdp_fixup(struct spi_nor *nor)
-+{
-+	/*
-+	 * On older versions of the flash the xSPI Profile 1.0 table has the
-+	 * 8D-8D-8D Fast Read opcode as 0x00. But it actually should be 0xEE.
-+	 */
-+	if (nor->params.reads[SNOR_CMD_READ_8_8_8_DTR].opcode == 0)
-+		nor->params.reads[SNOR_CMD_READ_8_8_8_DTR].opcode =
-+			SPINOR_OP_CYPRESS_RD_FAST;
-+
-+	/* This flash is also missing the 4-byte Page Program opcode bit. */
-+	spi_nor_set_pp_settings(&nor->params.page_programs[SNOR_CMD_PP],
-+				SPINOR_OP_PP_4B, SNOR_PROTO_1_1_1);
-+	/*
-+	 * Since xSPI Page Program opcode is backward compatible with
-+	 * Legacy SPI, use Legacy SPI opcode there as well.
-+	 */
-+	spi_nor_set_pp_settings(&nor->params.page_programs[SNOR_CMD_PP_8_8_8_DTR],
-+				SPINOR_OP_PP_4B, SNOR_PROTO_8_8_8_DTR);
-+
-+	/*
-+	 * The xSPI Profile 1.0 table advertises the number of additional
-+	 * address bytes needed for Read Status Register command as 0 but the
-+	 * actual value for that is 4.
-+	 */
-+	nor->params.rdsr_addr_nbytes = 4;
-+}
-+
-+static int s28hs512t_post_bfpt_fixup(struct spi_nor *nor,
-+				     const struct sfdp_parameter_header *bfpt_header,
-+				     const struct sfdp_bfpt *bfpt,
-+				     struct spi_nor_flash_parameter *params)
-+{
-+	struct spi_mem_op op;
-+	u8 *buf = nor->bouncebuf;
-+	u8 addr_width = 3;
-+	int ret;
-+
-+	/*
-+	 * The BFPT table advertises a 512B page size but the page size is
-+	 * actually configurable (with the default being 256B). Read from
-+	 * CFR3V[4] and set the correct size.
-+	 */
-+	op = (struct spi_mem_op)
-+		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RD_ANY_REG, 1),
-+			   SPI_MEM_OP_ADDR(addr_width, SPINOR_REG_CYPRESS_CFR3V, 1),
-+			   SPI_MEM_OP_NO_DUMMY,
-+			   SPI_MEM_OP_DATA_IN(1, buf, 1));
-+	ret = spi_mem_exec_op(nor->spimem, &op);
-+	if (ret)
-+		return ret;
-+
-+	if (*buf & SPINOR_REG_CYPRESS_CFR3V_PGSZ)
-+		params->page_size = 512;
-+	else
-+		params->page_size = 256;
-+
-+	return 0;
-+}
-+
-+static struct spi_nor_fixups s28hs512t_fixups = {
-+	.default_init = s28hs512t_default_init,
-+	.post_sfdp = s28hs512t_post_sfdp_fixup,
-+	.post_bfpt = s28hs512t_post_bfpt_fixup,
-+};
-+
- /* NOTE: double check command sets and memory organization when you add
-  * more nor chips.  This current list focusses on newer chips, which
-  * have been converging on command sets which including JEDEC ID.
-@@ -2715,6 +2903,9 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "s25fl064l",  INFO(0x016017,      0,  64 * 1024, 128, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
- 	{ "s25fl128l",  INFO(0x016018,      0,  64 * 1024, 256, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
- 	{ "s25fl256l",  INFO(0x016019,      0,  64 * 1024, 512, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
-+	{ "s28hs512t",  INFO(0x345b1a,      0, 256 * 1024, 256, SECT_4K | SPI_NOR_OCTAL_DTR_READ)
-+		.fixups = &s28hs512t_fixups,
-+	},
- 
- 	/* SST -- large erase sizes are "overlays", "sectors" are 4K */
- 	{ "sst25vf040b", INFO(0xbf258d, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index c653f6713cfc..e765272fc0f4 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -150,6 +150,20 @@
- #define SR2_QUAD_EN_BIT1	BIT(1)
- #define SR2_QUAD_EN_BIT7	BIT(7)
- 
-+/* For Cypress flash. */
-+#define SPINOR_OP_RD_ANY_REG			0x65	/* Read any register */
-+#define SPINOR_OP_WR_ANY_REG			0x71	/* Write any register */
-+#define SPINOR_REG_CYPRESS_CFR2V		0x00800003
-+#define SPINOR_REG_CYPRESS_CFR2V_MEMLAT_8_20	0x8
-+#define SPINOR_REG_CYPRESS_CFR3N		0x00000004
-+#define SPINOR_REG_CYPRESS_CFR3V		0x00800004
-+#define SPINOR_REG_CYPRESS_CFR3V_PGSZ		BIT(4) /* Page size. */
-+#define SPINOR_REG_CYPRESS_CFR3N_UNISECT	BIT(3) /* Uniform sector mode */
-+#define SPINOR_REG_CYPRESS_CFR4V		0x00800005
-+#define SPINOR_REG_CYPRESS_CFR5V		0x00800006
-+#define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_EN	0x3
-+#define SPINOR_OP_CYPRESS_RD_FAST		0xee
-+
- /* Supported SPI protocols */
- #define SNOR_PROTO_INST_MASK	GENMASK(23, 16)
- #define SNOR_PROTO_INST_SHIFT	16
--- 
-2.25.0
+On Wed, Feb 26, 2020 at 09:31:33AM +0800, Chuanhong Guo wrote:
+> On Wed, Feb 26, 2020 at 1:31 AM Rob Herring <robh@kernel.org> wrote:
 
+> > You should should really only need 'spi-max-frequency' if the max freq
+> > is less than the minimum of the host and device max freq.
+
+> But current spi framework forces that a "spi-max-frequency" property
+> is present. [0]
+> Should we patch spi framework then?
+
+That's one option, yes.  As far as I can tell the bindings have always
+required an explicit frequency specified in the bindings but I've no
+idea why.
+
+--ylS2wUBXLOxYXZFQ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5WWCkACgkQJNaLcl1U
+h9CC6gf+JGnksoKyOcf+87xz30r83FSXTXHP5TSv0S1iEPWe7PYG3vPRv0NdFdq2
+95nsCYkfFdyrl8ayy/LjsXvZMbZPUv2oDhJGdq11H7EX3/DrKCTcChXdkzpD64NG
+dlKWpB6xvJ6Ka/g9VowGe+WcTwrhQBQByb45Z0EkTZxQ+YScJHQkJy8HZXQKf85E
+IAW7t7mcHtmmIXmJB7yHHE3exT6cOcDurwuz6QOJ+w3YwNYNO2HcR5ZS0T1IjPe4
+WgWVxid2OxLorFCxu8dUxxsq29uDD49lP/kfbyVYkND761fTbk2idLN94r6vvCyx
+6PNQ3DIDylR48WUdePXdGADNjXBUog==
+=d0oJ
+-----END PGP SIGNATURE-----
+
+--ylS2wUBXLOxYXZFQ--
+
+
+--===============8560601229834476499==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============8560601229834476499==--
+
