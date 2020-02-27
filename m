@@ -2,83 +2,121 @@ Return-Path: <SRS0=tHFz=4P=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D9D5C4BA2D
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Feb 2020 12:42:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03FD8C4BA2D
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Feb 2020 13:04:50 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 04BD524695
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Feb 2020 12:42:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AD44B246A8
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Feb 2020 13:04:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Ud8HGdpl";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="LGPj3ilO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 04BD524695
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jJOP1WRp";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ExertusOy.onmicrosoft.com header.i=@ExertusOy.onmicrosoft.com header.b="PueHN7WC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD44B246A8
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=exertus.fi
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=10gXdAGgoDNxPKv2kihpNjkzKhBnLVqVkRmJLzcYlAE=; b=Ud8HGdpleZi1de
-	02oawLUj8hqbyInGbxTy6J3Wv5gnPiwGmEgp3blVjpTeTdAbDwvcy6I/G4uoJN8ro5dCGNZ/AkQxD
-	J858wsKNqlhc8y0fcjAShr7/8WYC4RfUGOf0mPVq9GioCHJnSxfE/HHY9s5nTS68UIEIrvUgTFDpI
-	0bTqvW603V1mE9CHZbqfK14bE/LrtGHvwb7i16k1yu4UK4lXsXl1ke2yFx2qDHBBa6p/jXHzUHYd5
-	XYSTI3vPDLE/TW1p7Q9AJoFfh1wf9PRj1BIocaclE8S1Fh4ik+mVY+SZ3vDW1RmC87/k7jrhW4QwT
-	KqmzK49JVz6RCU3T71ag==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:Message-ID:Date
+	:Subject:To:From:Reply-To:Cc:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=omWk/OCW0Zf4mIhl6hfwl9tZScP8hcHH0BDgHbjg2Ss=; b=jJOP1WRpfs8y53
+	1wBlBjXTjKhhVLV+sAHhvCwJgKsv6GmG0I2zyKkWJhM6saPBZ5XICzbnn7yRQKEBzqrOZ3VeKWt3+
+	LBalkXPk+z1ymRDM+4xHkRsEP2hq8havotAo3U2aJtOBskKzjN8cl9NQdOo9anXfENcBtAswBZ+4J
+	Y/o/FXoK1cz3QY2l9ZFdCS2pFOvAp6za0OZnssA5UJUQeXNwzwiFoviZKaeyOzissQqyJKR3DEe5m
+	fm+k/FopEICCJzC5P25rHxrF1EnnzA+uzY7x/d7xn4CSX/W2dqngxNTE+O1fuOj0KwbFYCIiF1+UT
+	12yfkVcIuHPfb93jCjXA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j7IUX-0006al-So; Thu, 27 Feb 2020 12:42:13 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1j7Iq9-0000MV-Lr; Thu, 27 Feb 2020 13:04:33 +0000
+Received: from mail-he1eur04on072a.outbound.protection.outlook.com
+ ([2a01:111:f400:fe0d::72a]
+ helo=EUR04-HE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j7IQo-0001xU-Kp; Thu, 27 Feb 2020 12:38:24 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 01RCcFCs060774;
- Thu, 27 Feb 2020 06:38:15 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1582807095;
- bh=oZwRKKvJx/G8CRNhVZ7kLkdfzgNJ4E/mi5KsY0jh8pM=;
- h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=LGPj3ilOH+EuYGqvyVZX0Bpj5e6SFcaJeVANJdnB3tc+r1ATu2fWeSQ2pS4Efzckr
- HYJ1AreHkJXbOWhPXhym+ZC4mPKkA5EBk2CE/6Zs/6Hevtab9eyFKQ2vyrJTp4Ho0h
- fHAOBISG5nuRA750+8G4N/PPjCkgoqoOk72q0D58=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 01RCcFFj117513
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 27 Feb 2020 06:38:15 -0600
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Thu, 27
- Feb 2020 06:38:14 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Thu, 27 Feb 2020 06:38:14 -0600
-Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 01RCbnvU100207;
- Thu, 27 Feb 2020 06:38:11 -0600
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-To: <vigneshr@ti.com>, <miquel.raynal@bootlin.com>, <han.xu@nxp.com>,
- <richard@nod.at>, <mripard@kernel.org>, <wens@csie.org>,
- <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>
-Subject: [PATCH 7/7] mtd: rawnand: stm32_fmc2: Use dma_request_chan() instead
- dma_request_slave_channel()
-Date: Thu, 27 Feb 2020 14:37:49 +0200
-Message-ID: <20200227123749.24064-8-peter.ujfalusi@ti.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200227123749.24064-1-peter.ujfalusi@ti.com>
-References: <20200227123749.24064-1-peter.ujfalusi@ti.com>
+ id 1j7Iq5-0000LU-Ox
+ for linux-mtd@lists.infradead.org; Thu, 27 Feb 2020 13:04:31 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=C9C9Z5QLb9e49twRTsAyb/FzOz3peoPzghlycI3eA1VG+0gD0+u8lB9Q/4CFtW3EhbLfEDc2vLyBN/MCDU3/wKQONh7tluX6ku8yjsvB9j6SBhy6xkNxSWK3fqD6qgKgQJzzLAewJVpsUXNAVaNEWhSDb8cpmMiyoMtyZPFYqLTLLg5M1KJ+4I3lPViNHT60KXtCM290U6X+oe0HoMDgcrYGyaILAAuM/C8o7zy5Gtk4BhYgEzNXuDhWBqUKbggZYJOfDjTTF4BJttGlO8ye3Co0mZP8MRTFkX6JkX8uQGjOK2E9aSP9sQOofKigOyAQMUNm0nvYuIoYeW84EXmyIQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TJt8hi3aMmasxe4i0Z3UHMBRN8yZIYtoNP3AFXizLiw=;
+ b=NJPCLSgYY1dOck6+okQpuLIsbV2LVG5B3palkZG0w77k2J3hhVmqjR+qJZCdaEMvMkGxcJ2PK5AuyLJX7NlQMYZ929744Wd0gdckY70sRh12zRbW8ah8eKYOlvnHl9CpKGN35GuOZqamyokKkN9bhywrwyfnVSEF6W/YDLuDnj0J3Uh28SAsrvDBBqrA+ejrTKAYjXV0hZx9kZ2vsGXFfawq0SVwUrg644riZKUkvQ7I6wpV2AfwArTEnAkGwQ8psRANqT8oHUJaRvmzHLWeke9OCidsHLlGXJxXHIYmZK6QDxoZk4eUBbJ/cPm7ARbHAygoHGDWAeTevtL6ogyGlw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=exertus.fi; dmarc=pass action=none header.from=exertus.fi;
+ dkim=pass header.d=exertus.fi; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=ExertusOy.onmicrosoft.com; s=selector2-ExertusOy-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TJt8hi3aMmasxe4i0Z3UHMBRN8yZIYtoNP3AFXizLiw=;
+ b=PueHN7WCGZTw0T9DHU4Bo+vcyZfdF8NBeTYly2lL8XGX6BAmS3OSF6j3PPmebjJZ5yXfbOYEokeFODNNUhVNJhoQN0yzHc06LSnag6QcZWZmnNlvAdf5u8ABgo6h0+WIvQ96h+E9p8s6DreMsAmUbQRqT6MTy1qwiG7HNDWnc/s=
+Received: from AM5PR0902MB2129.eurprd09.prod.outlook.com (10.173.254.160) by
+ AM5PR0902MB2018.eurprd09.prod.outlook.com (10.175.229.158) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2772.15; Thu, 27 Feb 2020 13:04:26 +0000
+Received: from AM5PR0902MB2129.eurprd09.prod.outlook.com
+ ([fe80::ad47:8da1:fa12:3eca]) by AM5PR0902MB2129.eurprd09.prod.outlook.com
+ ([fe80::ad47:8da1:fa12:3eca%4]) with mapi id 15.20.2750.024; Thu, 27 Feb 2020
+ 13:04:26 +0000
+Received: from [10.3.1.192] (193.210.47.3) by
+ HE1PR0401CA0049.eurprd04.prod.outlook.com (2603:10a6:3:19::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2772.14 via Frontend Transport; Thu, 27 Feb 2020 13:04:25 +0000
+From: Timo Ketola <Timo.Ketola@exertus.fi>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Power cut leads to "corrupt empty space"
+Thread-Topic: Power cut leads to "corrupt empty space"
+Thread-Index: AQHV7W5w0ROHw32Dgk6RN8346II1lA==
+Date: Thu, 27 Feb 2020 13:04:25 +0000
+Message-ID: <ee9d424c-8b89-c8f6-7b3b-1ab09371e04c@exertus.fi>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: HE1PR0401CA0049.eurprd04.prod.outlook.com
+ (2603:10a6:3:19::17) To AM5PR0902MB2129.eurprd09.prod.outlook.com
+ (2603:10a6:206:b::32)
+x-originating-ip: [193.210.47.3]
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Timo.Ketola@exertus.fi; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7e4d3121-cfb8-41a6-08df-08d7bb85927b
+x-ms-traffictypediagnostic: AM5PR0902MB2018:
+x-microsoft-antispam-prvs: <AM5PR0902MB201833D941FE281B92CA4BBD8AEB0@AM5PR0902MB2018.eurprd09.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-forefront-prvs: 03264AEA72
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10019020)(346002)(136003)(366004)(39830400003)(396003)(376002)(189003)(199004)(16526019)(186003)(16576012)(26005)(8676002)(5660300002)(66556008)(66446008)(81166006)(81156014)(8936002)(31686004)(6486002)(316002)(2906002)(52116002)(71200400001)(508600001)(31696002)(66476007)(66946007)(956004)(36756003)(64756008)(6916009)(44832011)(2616005)(86362001)(505234006);
+ DIR:OUT; SFP:1102; SCL:1; SRVR:AM5PR0902MB2018;
+ H:AM5PR0902MB2129.eurprd09.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; MX:1; A:1; 
+received-spf: None (protection.outlook.com: exertus.fi does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: X5De7XFU0Kjo2kABhuYR0k99/uMGoePkXryc3XBHh1wLZEj4PlQMNUEKTe7FvKyLe01aPHeXb0LvVoPysW/ajVz0xrrn616iiXexJxi/KMYWbfQkKhB+8D5p8e6cwrrtK33XVCYsL1jXByVj2vzrIYfD3ShZkxSjtU9SsukU1Im+cnkqppn0jLxRdZMP37HvLr4NsI2FacD2yRPXN73C+7BCfCv/gkGUJNKffuOAVgTXkHOtdqgA4m0xGA9/CK+sCQxQll/4WU63FIOx4DOXT6DcN6MhzKwJuza6yI6uh0OtuQIQd+lqc8otRGzW2npME//wPjpKdktMty1PhgW+Jv9ng2moyGz3nWE0VK+6wL8yhprgYyTYm2P8xDwpQdRGbyoC23O4S6Nke/y7gIrqTmMzcL9rGiY7pbpRNIsqE0wzC6MGg0K3exQhj5rjse/6leI8jOWnhp5y7KCY6YrCFEHjSe65Q409LTXhGFttdtH2ajHPUoy88Gmyn/PUt+xE
+x-ms-exchange-antispam-messagedata: OHFe3sreYbQfkCJzL5UBFqf5xshG5Z9iIIjnAPs3y7tA1IMLzCxn18pgpnJ8Sj+dg6Kc7bu8xihlHOoCeE8qxpbFSpqkvKA3ZhZ/n6gZluDqkPiX4lbIDZJph/f7LSB7HJejjLDMNe8F6aXhvky5Zg==
+x-ms-exchange-transport-forked: True
+Content-ID: <6359CBA8829D614693AE7BB8B3356DC5@eurprd09.prod.outlook.com>
 MIME-Version: 1.0
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-OriginatorOrg: exertus.fi
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7e4d3121-cfb8-41a6-08df-08d7bb85927b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Feb 2020 13:04:25.9875 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 2ff5ff20-bcb9-4615-b2a6-3bbeefd7b8e3
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wsJH9tbAekGYRHx1GW/Gh3fI0iwlhy9Nx6G/szwhdWYdL7CaQr/OBUHG1akqFI50
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM5PR0902MB2018
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200227_043822_812578_63974D7B 
-X-CRM114-Status: GOOD (  14.32  )
+X-CRM114-CacheID: sfid-20200227_050429_815046_2F030953 
+X-CRM114-Status: UNSURE (   8.14  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,95 +128,120 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vkoul@kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-dma_request_slave_channel() is a wrapper on top of dma_request_chan()
-eating up the error code.
+Hi,
 
-Use using dma_request_chan() directly and inform user of error in case the
-DMA request failed.
+We have a few i.MX6D devices which have corrupted their UBIFS filesystem
+on power cut and refuse to mount them any more.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- drivers/mtd/nand/raw/stm32_fmc2_nand.c | 44 ++++++++++++++++++++++----
- 1 file changed, 37 insertions(+), 7 deletions(-)
+The log says:
 
-diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-index 3ba73f18841f..b6d45cd911ae 100644
---- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-+++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-@@ -1606,15 +1606,36 @@ static int stm32_fmc2_setup_interface(struct nand_chip *chip, int chipnr,
- /* DMA configuration */
- static int stm32_fmc2_dma_setup(struct stm32_fmc2_nfc *fmc2)
- {
--	int ret;
-+	int ret = 0;
- 
--	fmc2->dma_tx_ch = dma_request_slave_channel(fmc2->dev, "tx");
--	fmc2->dma_rx_ch = dma_request_slave_channel(fmc2->dev, "rx");
--	fmc2->dma_ecc_ch = dma_request_slave_channel(fmc2->dev, "ecc");
-+	fmc2->dma_tx_ch = dma_request_chan(fmc2->dev, "tx");
-+	if (IS_ERR(fmc2->dma_tx_ch)) {
-+		ret = PTR_ERR(fmc2->dma_tx_ch);
-+		if (ret != -ENODEV)
-+			dev_err(fmc2->dev,
-+				"failed to request tx DMA channel: %d\n", ret);
-+		fmc2->dma_tx_ch = NULL;
-+		goto err_dma;
-+	}
- 
--	if (!fmc2->dma_tx_ch || !fmc2->dma_rx_ch || !fmc2->dma_ecc_ch) {
--		dev_warn(fmc2->dev, "DMAs not defined in the device tree, polling mode is used\n");
--		return 0;
-+	fmc2->dma_rx_ch = dma_request_chan(fmc2->dev, "rx");
-+	if (IS_ERR(fmc2->dma_rx_ch)) {
-+		ret = PTR_ERR(fmc2->dma_rx_ch);
-+		if (ret != -ENODEV)
-+			dev_err(fmc2->dev,
-+				"failed to request rx DMA channel: %d\n", ret);
-+		fmc2->dma_rx_ch = NULL;
-+		goto err_dma;
-+	}
-+
-+	fmc2->dma_ecc_ch = dma_request_chan(fmc2->dev, "ecc");
-+	if (IS_ERR(fmc2->dma_ecc_ch)) {
-+		ret = PTR_ERR(fmc2->dma_ecc_ch);
-+		if (ret != -ENODEV)
-+			dev_err(fmc2->dev,
-+				"failed to request ecc DMA channel: %d\n", ret);
-+		fmc2->dma_ecc_ch = NULL;
-+		goto err_dma;
- 	}
- 
- 	ret = sg_alloc_table(&fmc2->dma_ecc_sg, FMC2_MAX_SG, GFP_KERNEL);
-@@ -1635,6 +1656,15 @@ static int stm32_fmc2_dma_setup(struct stm32_fmc2_nfc *fmc2)
- 	init_completion(&fmc2->dma_ecc_complete);
- 
- 	return 0;
-+
-+err_dma:
-+	if (ret == -ENODEV) {
-+		dev_warn(fmc2->dev,
-+			 "DMAs not defined in the DT, polling mode is used\n");
-+		ret = 0;
-+	}
-+
-+	return ret;
- }
- 
- /* NAND callbacks setup */
--- 
-Peter
+> [   10.382580] UBIFS (ubi1:0): background thread "ubifs_bgt1_0" started, PID 158
+> [   10.408838] UBIFS (ubi1:0): recovery needed
+> [   10.802070] UBIFS error (ubi1:0 pid 157): ubifs_scan: corrupt empty space at 
+> LEB 99:114688
+> [   10.809054] UBIFS error (ubi1:0 pid 157): ubifs_scanned_corruption: corruptio
+> n at LEB 99:114688
+> [   10.816471] UBIFS error (ubi1:0 pid 157): ubifs_scanned_corruption: first 819
+> 2 bytes from LEB 99:114688
+> [   10.824585] 00000000: 06101831 713b7e1b 002e0640 00000000 000000a0 00000200 0
+> 0000554 00000000  1....~;q@...............T.......
+> [   10.824601] 00000020: 00000000 00000000 0001585b 00000000 0008c48d 00000000 5
+> d512897 00000000  ........[X...............(Q]....
 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+...
 
+> [   10.827751] UBIFS error (ubi1:0 pid 157): ubifs_scan: LEB 99 scanning failed
+> [   10.834615] UBIFS (ubi1:0): background thread "ubifs_bgt1_0" stops
 
+I think I found the culprit from the mtdblock contents. Fragment from
+hexdump:
+
+> 3ca20000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 04  |UBI#............|
+> 3ca20010  00 00 08 00 00 00 10 00  0c 4d 7c ed 00 00 00 00  |.........M|.....|
+> 3ca20020  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> 3ca20030  00 00 00 00 00 00 00 00  00 00 00 00 cb 5d 1f 01  |.............]..|
+> 3ca20040  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> *
+> 3ca20800  55 42 49 21 01 01 00 00  00 00 00 00 00 00 00 63  |UBI!...........c|
+> 3ca20810  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> 3ca20820  00 00 00 00 00 00 00 00  00 00 00 00 00 00 8d 07  |................|
+> 3ca20830  00 00 00 00 00 00 00 00  00 00 00 00 91 2b 87 87  |.............+..|
+> 3ca20840  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> *
+> 3ca21000  31 18 10 06 30 3c 6d 96  cd 05 2e 00 00 00 00 00  |1...0<m.........|
+> 3ca21010  a0 00 00 00 00 02 00 00  54 05 00 00 00 00 00 00  |........T.......|
+
+...
+
+> 3ca3b8c0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> *
+> 3ca3c000  31 18 10 06 7b 71 87 8f  3c 06 2e 00 00 00 00 00  |1...{q..<.......|
+> 3ca3c010  a0 00 00 00 00 02 00 00  54 05 00 00 00 00 00 00  |........T.......|
+> 3ca3c020  00 00 00 00 00 00 00 00  5b 58 01 00 00 00 00 00  |........[X......|
+> 3ca3c030  79 c3 08 00 00 00 00 00  97 28 51 5d 00 00 00 00  |y........(Q]....|
+> 3ca3c040  19 58 6d 38 00 00 00 00  19 58 6d 38 00 00 00 00  |.Xm8.....Xm8....|
+> 3ca3c050  00 00 00 00 00 00 00 00  00 00 00 00 01 00 00 00  |................|
+> 3ca3c060  eb 03 00 00 eb 03 00 00  a4 81 00 00 01 00 00 00  |................|
+> 3ca3c070  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> 3ca3c080  00 00 00 00 01 00 00 00  00 00 00 00 00 00 00 00  |................|
+> 3ca3c090  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> 3ca3c0a0  31 18 10 06 84 13 e1 a0  00 00 00 00 00 00 00 00  |1...............|
+> 3ca3c0b0  1c 00 00 00 05 00 00 00  44 07 00 00 00 00 00 00  |........D.......|
+> 3ca3c0c0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> *
+> 3ca3c800  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
+> *
+> 3ca3d000  31 18 10 06 1b 7e 3b 71  40 06 2e 00 00 00 00 00  |1....~;q@.......|
+> 3ca3d010  a0 00 00 00 00 02 00 00  54 05 00 00 00 00 00 00  |........T.......|
+> 3ca3d020  00 00 00 00 00 00 00 00  5b 58 01 00 00 00 00 00  |........[X......|
+> 3ca3d030  8d c4 08 00 00 00 00 00  97 28 51 5d 00 00 00 00  |.........(Q]....|
+> 3ca3d040  19 58 6d 38 00 00 00 00  19 58 6d 38 00 00 00 00  |.Xm8.....Xm8....|
+> 3ca3d050  00 00 00 00 00 00 00 00  00 00 00 00 01 00 00 00  |................|
+> 3ca3d060  eb 03 00 00 eb 03 00 00  a4 81 00 00 01 00 00 00  |................|
+> 3ca3d070  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> 3ca3d080  00 00 00 00 01 00 00 00  00 00 00 00 00 00 00 00  |................|
+> 3ca3d090  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> 3ca3d0a0  31 18 10 06 84 13 e1 a0  00 00 00 00 00 00 00 00  |1...............|
+> 3ca3d0b0  1c 00 00 00 05 00 00 00  44 07 00 00 00 00 00 00  |........D.......|
+> 3ca3d0c0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> *
+> 3ca3d800  31 18 10 06 c1 6b e6 57  42 06 2e 00 00 00 00 00  |1....k.WB.......|
+> 3ca3d810  a0 00 00 00 00 02 00 00  54 05 00 00 00 00 00 00  |........T.......|
+> 3ca3d820  00 00 00 00 00 00 00 00  5b 58 01 00 00 00 00 00  |........[X......|
+> 3ca3d830  0d c5 08 00 00 00 00 00  97 28 51 5d 00 00 00 00  |.........(Q]....|
+> 3ca3d840  19 58 6d 38 00 00 00 00  19 58 6d 38 00 00 00 00  |.Xm8.....Xm8....|
+> 3ca3d850  00 00 00 00 00 00 00 00  00 00 00 00 01 00 00 00  |................|
+> 3ca3d860  eb 03 00 00 eb 03 00 00  a4 81 00 00 01 00 00 00  |................|
+> 3ca3d870  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> 3ca3d880  00 00 00 00 01 00 00 00  00 00 00 00 00 00 00 00  |................|
+> 3ca3d890  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> 3ca3d8a0  31 18 10 06 84 13 e1 a0  00 00 00 00 00 00 00 00  |1...............|
+> 3ca3d8b0  1c 00 00 00 05 00 00 00  44 07 00 00 00 00 00 00  |........D.......|
+> 3ca3d8c0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> *
+> 3ca3e000  31 18 10 06 0b 75 3d 9e  44 06 2e 00 00 00 00 00  |1....u=.D.......|
+
+IIUC, ubifs_scan finds empty space at 3ca3c800, stops scanning and
+checks the rest of the LEB for being empty but finds something else at
+3ca3d000. Then recovery aborts and mounting fails.
+
+Do I understand correctly that empty space should always be continuous
+at the end of the LEB?
+
+How could this kind of corruption happen?
+
+Is there any way to recover from this?
+
+Storage is NAND with 0x20000 erase block size and the kernel is 4.9.88.
+
+--
+
+Timo
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
