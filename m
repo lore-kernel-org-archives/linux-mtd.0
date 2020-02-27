@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 052BDC4BA2D
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Feb 2020 12:41:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D9D5C4BA2D
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Feb 2020 12:42:26 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B749C24695
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Feb 2020 12:41:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 04BD524695
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Feb 2020 12:42:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ug79aJGa";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="v1GWo8JB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B749C24695
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Ud8HGdpl";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="LGPj3ilO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 04BD524695
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,59 +26,59 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zEao5exCBpq02pGC5j3Vyf5NiLbUSgo7Xtzcsy+CoSY=; b=ug79aJGacOqSC7
-	trgY/lsRQ4MFP+cfoaeoO8uPQYzvBoaABXY9+d4iU+eOuoR0XLyzBFVr2vi1sQ++A54QerFj+dhXF
-	DEth9SSewxI8eyo3qtI03J4CxAtggLBn0WEMq7ulAFaWZDfP6gUVZjY4QsLjbXHpv3mwgPvSrDcIA
-	8N/pMQ84v2GT/qgyVLhuA/Ib9/dMmTNHQ2DtCmufQdwGffnRwH20297n7ZIf05K6s4IAoi/0YibtS
-	U8lsw9KlSChD2kwT+gI5VwxvqLG6WFfsFNPFsmUgSZAuhfiFgdnFYmS/LMdfo4ZHoENrZZTvURBB2
-	bUz7napfkdbc7FrTR/1g==;
+	List-Owner; bh=10gXdAGgoDNxPKv2kihpNjkzKhBnLVqVkRmJLzcYlAE=; b=Ud8HGdpleZi1de
+	02oawLUj8hqbyInGbxTy6J3Wv5gnPiwGmEgp3blVjpTeTdAbDwvcy6I/G4uoJN8ro5dCGNZ/AkQxD
+	J858wsKNqlhc8y0fcjAShr7/8WYC4RfUGOf0mPVq9GioCHJnSxfE/HHY9s5nTS68UIEIrvUgTFDpI
+	0bTqvW603V1mE9CHZbqfK14bE/LrtGHvwb7i16k1yu4UK4lXsXl1ke2yFx2qDHBBa6p/jXHzUHYd5
+	XYSTI3vPDLE/TW1p7Q9AJoFfh1wf9PRj1BIocaclE8S1Fh4ik+mVY+SZ3vDW1RmC87/k7jrhW4QwT
+	KqmzK49JVz6RCU3T71ag==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j7IU2-0006AF-UH; Thu, 27 Feb 2020 12:41:42 +0000
+	id 1j7IUX-0006al-So; Thu, 27 Feb 2020 12:42:13 +0000
 Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j7IQj-0001se-9S; Thu, 27 Feb 2020 12:38:18 +0000
+ id 1j7IQo-0001xU-Kp; Thu, 27 Feb 2020 12:38:24 +0000
 Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 01RCcBZN060763;
- Thu, 27 Feb 2020 06:38:11 -0600
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 01RCcFCs060774;
+ Thu, 27 Feb 2020 06:38:15 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1582807091;
- bh=gB00BvfmUubTYpAbr6oIRKU7s9SAe7mdFdoDfZXeBKs=;
+ s=ti-com-17Q1; t=1582807095;
+ bh=oZwRKKvJx/G8CRNhVZ7kLkdfzgNJ4E/mi5KsY0jh8pM=;
  h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=v1GWo8JBT9+cLiKgmF0y2MebVaCu4T5uXNoQJivXViAofTc3748o05dz42Pgi3ks2
- VKxVYuLN96eSqKV0WvRuQuTklI+kzjlU8McBrZrUIf+xCt/TJgvP7K1DwUUcFck1xO
- QXAna0Lr2IwC2Y7CmU8Ks1qR52OEK0EIpJOy+1Ps=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 01RCcBrg117456
+ b=LGPj3ilOH+EuYGqvyVZX0Bpj5e6SFcaJeVANJdnB3tc+r1ATu2fWeSQ2pS4Efzckr
+ HYJ1AreHkJXbOWhPXhym+ZC4mPKkA5EBk2CE/6Zs/6Hevtab9eyFKQ2vyrJTp4Ho0h
+ fHAOBISG5nuRA750+8G4N/PPjCkgoqoOk72q0D58=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 01RCcFFj117513
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 27 Feb 2020 06:38:11 -0600
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ Thu, 27 Feb 2020 06:38:15 -0600
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Thu, 27
- Feb 2020 06:38:11 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ Feb 2020 06:38:14 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Thu, 27 Feb 2020 06:38:11 -0600
+ Frontend Transport; Thu, 27 Feb 2020 06:38:14 -0600
 Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 01RCbnvT100207;
- Thu, 27 Feb 2020 06:38:08 -0600
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 01RCbnvU100207;
+ Thu, 27 Feb 2020 06:38:11 -0600
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
 To: <vigneshr@ti.com>, <miquel.raynal@bootlin.com>, <han.xu@nxp.com>,
  <richard@nod.at>, <mripard@kernel.org>, <wens@csie.org>,
  <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>
-Subject: [PATCH 6/7] mtd: rawnand: qcom: Use dma_request_chan() instead
+Subject: [PATCH 7/7] mtd: rawnand: stm32_fmc2: Use dma_request_chan() instead
  dma_request_slave_channel()
-Date: Thu, 27 Feb 2020 14:37:48 +0200
-Message-ID: <20200227123749.24064-7-peter.ujfalusi@ti.com>
+Date: Thu, 27 Feb 2020 14:37:49 +0200
+Message-ID: <20200227123749.24064-8-peter.ujfalusi@ti.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200227123749.24064-1-peter.ujfalusi@ti.com>
 References: <20200227123749.24064-1-peter.ujfalusi@ti.com>
 MIME-Version: 1.0
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200227_043817_434932_7B6E2FF1 
-X-CRM114-Status: GOOD (  13.20  )
+X-CRM114-CacheID: sfid-20200227_043822_812578_63974D7B 
+X-CRM114-Status: GOOD (  14.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,87 +100,78 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 dma_request_slave_channel() is a wrapper on top of dma_request_chan()
 eating up the error code.
 
-Use using dma_request_chan() directly to return the real error code.
+Use using dma_request_chan() directly and inform user of error in case the
+DMA request failed.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- drivers/mtd/nand/raw/qcom_nandc.c | 50 ++++++++++++++++++++-----------
- 1 file changed, 33 insertions(+), 17 deletions(-)
+ drivers/mtd/nand/raw/stm32_fmc2_nand.c | 44 ++++++++++++++++++++++----
+ 1 file changed, 37 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index ca21cb3836dc..5b11c7061497 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -2696,24 +2696,36 @@ static int qcom_nandc_alloc(struct qcom_nand_controller *nandc)
- 			return -EIO;
- 		}
+diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+index 3ba73f18841f..b6d45cd911ae 100644
+--- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
++++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+@@ -1606,15 +1606,36 @@ static int stm32_fmc2_setup_interface(struct nand_chip *chip, int chipnr,
+ /* DMA configuration */
+ static int stm32_fmc2_dma_setup(struct stm32_fmc2_nfc *fmc2)
+ {
+-	int ret;
++	int ret = 0;
  
--		nandc->tx_chan = dma_request_slave_channel(nandc->dev, "tx");
--		if (!nandc->tx_chan) {
--			dev_err(nandc->dev, "failed to request tx channel\n");
--			ret = -ENODEV;
-+		nandc->tx_chan = dma_request_chan(nandc->dev, "tx");
-+		if (IS_ERR(nandc->tx_chan)) {
-+			ret = PTR_ERR(nandc->tx_chan);
-+			nandc->tx_chan = NULL;
-+			if (ret != -EPROBE_DEFER)
-+				dev_err(nandc->dev,
-+					"tx DMA channel request failed: %d\n",
-+					ret);
- 			goto unalloc;
- 		}
+-	fmc2->dma_tx_ch = dma_request_slave_channel(fmc2->dev, "tx");
+-	fmc2->dma_rx_ch = dma_request_slave_channel(fmc2->dev, "rx");
+-	fmc2->dma_ecc_ch = dma_request_slave_channel(fmc2->dev, "ecc");
++	fmc2->dma_tx_ch = dma_request_chan(fmc2->dev, "tx");
++	if (IS_ERR(fmc2->dma_tx_ch)) {
++		ret = PTR_ERR(fmc2->dma_tx_ch);
++		if (ret != -ENODEV)
++			dev_err(fmc2->dev,
++				"failed to request tx DMA channel: %d\n", ret);
++		fmc2->dma_tx_ch = NULL;
++		goto err_dma;
++	}
  
--		nandc->rx_chan = dma_request_slave_channel(nandc->dev, "rx");
--		if (!nandc->rx_chan) {
--			dev_err(nandc->dev, "failed to request rx channel\n");
--			ret = -ENODEV;
-+		nandc->rx_chan = dma_request_chan(nandc->dev, "rx");
-+		if (IS_ERR(nandc->rx_chan)) {
-+			ret = PTR_ERR(nandc->rx_chan);
-+			nandc->rx_chan = NULL;
-+			if (ret != -EPROBE_DEFER)
-+				dev_err(nandc->dev,
-+					"rx DMA channel request failed: %d\n",
-+					ret);
- 			goto unalloc;
- 		}
- 
--		nandc->cmd_chan = dma_request_slave_channel(nandc->dev, "cmd");
--		if (!nandc->cmd_chan) {
--			dev_err(nandc->dev, "failed to request cmd channel\n");
--			ret = -ENODEV;
-+		nandc->cmd_chan = dma_request_chan(nandc->dev, "cmd");
-+		if (IS_ERR(nandc->cmd_chan)) {
-+			ret = PTR_ERR(nandc->cmd_chan);
-+			nandc->cmd_chan = NULL;
-+			if (ret != -EPROBE_DEFER)
-+				dev_err(nandc->dev,
-+					"cmd DMA channel request failed: %d\n",
-+					ret);
- 			goto unalloc;
- 		}
- 
-@@ -2732,11 +2744,15 @@ static int qcom_nandc_alloc(struct qcom_nand_controller *nandc)
- 			goto unalloc;
- 		}
- 	} else {
--		nandc->chan = dma_request_slave_channel(nandc->dev, "rxtx");
--		if (!nandc->chan) {
--			dev_err(nandc->dev,
--				"failed to request slave channel\n");
--			return -ENODEV;
-+		nandc->chan = dma_request_chan(nandc->dev, "rxtx");
-+		if (IS_ERR(nandc->chan)) {
-+			ret = PTR_ERR(nandc->chan);
-+			nandc->chan = NULL;
-+			if (ret != -EPROBE_DEFER)
-+				dev_err(nandc->dev,
-+					"rxtx DMA channel request failed: %d\n",
-+					ret);
-+			return ret;
- 		}
+-	if (!fmc2->dma_tx_ch || !fmc2->dma_rx_ch || !fmc2->dma_ecc_ch) {
+-		dev_warn(fmc2->dev, "DMAs not defined in the device tree, polling mode is used\n");
+-		return 0;
++	fmc2->dma_rx_ch = dma_request_chan(fmc2->dev, "rx");
++	if (IS_ERR(fmc2->dma_rx_ch)) {
++		ret = PTR_ERR(fmc2->dma_rx_ch);
++		if (ret != -ENODEV)
++			dev_err(fmc2->dev,
++				"failed to request rx DMA channel: %d\n", ret);
++		fmc2->dma_rx_ch = NULL;
++		goto err_dma;
++	}
++
++	fmc2->dma_ecc_ch = dma_request_chan(fmc2->dev, "ecc");
++	if (IS_ERR(fmc2->dma_ecc_ch)) {
++		ret = PTR_ERR(fmc2->dma_ecc_ch);
++		if (ret != -ENODEV)
++			dev_err(fmc2->dev,
++				"failed to request ecc DMA channel: %d\n", ret);
++		fmc2->dma_ecc_ch = NULL;
++		goto err_dma;
  	}
  
+ 	ret = sg_alloc_table(&fmc2->dma_ecc_sg, FMC2_MAX_SG, GFP_KERNEL);
+@@ -1635,6 +1656,15 @@ static int stm32_fmc2_dma_setup(struct stm32_fmc2_nfc *fmc2)
+ 	init_completion(&fmc2->dma_ecc_complete);
+ 
+ 	return 0;
++
++err_dma:
++	if (ret == -ENODEV) {
++		dev_warn(fmc2->dev,
++			 "DMAs not defined in the DT, polling mode is used\n");
++		ret = 0;
++	}
++
++	return ret;
+ }
+ 
+ /* NAND callbacks setup */
 -- 
 Peter
 
