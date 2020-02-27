@@ -3,65 +3,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MSGID_FROM_MTA_HEADER,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DC51C4BA06
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Feb 2020 08:53:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E70DC4BA24
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Feb 2020 09:10:37 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2E90724672
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Feb 2020 08:53:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EFB692467F
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Feb 2020 09:10:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="X8mfB8/T";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="goOHwIhZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2E90724672
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="iqttgtde";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=niko.eu header.i=@niko.eu header.b="HNkvRmMw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EFB692467F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=niko.eu
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Z/WfXKfZs2kCAfdQDD0W4ovYfIPIEL68rDqgBcE6NQ0=; b=X8mfB8/Tt/b+gg
-	rKB5zoCu1OsYtoTB4ECdcQBcUqL0m3PZIjlMUDH54LIvRFCfwGqaOa3NmwB4BW0BzRjjFVmck7oaR
-	MzZwX/RU8HVah/dSKT9gbPoFaNCZFD5gTlXIDrFr5Hg75L3Vrq0hI++EibXv5gmCUHE0dDK87ur0L
-	qnyUzv2O3EkMK5dI7S4qtOcGsju07n8hfZqpkpBvsLd8JfXnLQ2RHD/r7tcN8JUK2J1EVa1v6varM
-	gzs1pswf8q7A8MxTnwJJJ2y//dIZSjlttawi18OIH0qYP5XyDmHQwcdsLQc3aN4XWM2gagA7GEJfN
-	Y66bU+ohJtnuzQGZbXJQ==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=g38DXsQW2VLQyv+Vio2Yvu1zjlf3OieZ3M84ewGyvcg=; b=iqttgtdeQhVgRueUEHKWLifyO
+	93WlCE6V4No2Xk0h6RdCa5xDWa5/FNJu5p74OYJMboSZMUnaPiKoi1+LHkV/ivQVWPcjRMbhDc6oa
+	pr1w11U+7sDrKDobl+ztHaum/lk2QJmg7a1DrsNxFAvdhLHPVFqGjVvfnw5UtHmaU4k5cNinTLNgY
+	M1sxDPWtqGz1TKKIv7EvsLecXYNgtJUlFpjuox1tyA9vnCyX8A9djU5SUXxZUZXT/0czeaS5Yj6Cc
+	wPPBfGJTSnLUHb+EgnvqL4D5I6zE8xsM28EKWEus/76Iit7OAIxUV/a34v6dl1QIey8V4Fs0a3J0N
+	1a+hXqRgw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j7Euh-00015T-Vt; Thu, 27 Feb 2020 08:52:59 +0000
-Received: from merlin.infradead.org ([205.233.59.134])
+	id 1j7FBS-0000I1-1l; Thu, 27 Feb 2020 09:10:18 +0000
+Received: from mail-eopbgr50085.outbound.protection.outlook.com ([40.107.5.85]
+ helo=EUR03-VE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j7Euf-00015B-1o
- for linux-mtd@bombadil.infradead.org; Thu, 27 Feb 2020 08:52:58 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
- MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
- :Reply-To:Content-ID:Content-Description;
- bh=3xffc7Hf9OJZbZSU1epx7azLPScKQz3sI8/joR/ZVZs=; b=goOHwIhZ6sZAzFYCv2cUjq/im/
- GhzreRtKX3gvHbAX8AyHq8kjGRLluNN2dr8VdBcL6rOYACztULY5k+qMKzYc4oDGRtG2sJAe+HJfF
- pnFZrBQbmo307UUsEstvRKLWTebDXAszK9klBfZc1CTGD1s2UoEke9KNX0ANDohEsNCe6U7sMcmzz
- mKmc0UCQ0w5W+HKDFwkyPdl2xco/+1v6Ej5XhIZIAi1iqOGOZwroVCnVbi9JhX79XGWJE+TSlopyY
- 72ZhF+YD6w4i5qzt42axb6ta8DxEXARo49bws2fpmrsUxPsUKwoku4oCWaLP/6CXImPT8AscCsiw2
- PNnVkrmw==;
-Received: from relay11.mail.gandi.net ([217.70.178.231])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j7Eud-0001ja-8P
- for linux-mtd@lists.infradead.org; Thu, 27 Feb 2020 08:52:56 +0000
-Received: from xps13 (lfbn-tou-1-1473-158.w90-89.abo.wanadoo.fr [90.89.41.158])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay11.mail.gandi.net (Postfix) with ESMTPSA id E377C100016;
- Thu, 27 Feb 2020 08:51:54 +0000 (UTC)
-Date: Thu, 27 Feb 2020 09:51:53 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Jef Driesen <jef.driesen@niko.eu>
+ id 1j7FBO-0000Gz-Tc
+ for linux-mtd@lists.infradead.org; Thu, 27 Feb 2020 09:10:16 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gcxbgUkP+0U2miMTYhPqM2eEOPQQoXJ7ZXvvU1J4+KWIYMbVt4QCxewWE5HHN95YC3yDsECp1Sm2bYphbFEnp9lcggMp0UqGZKfYLkve/kCt9kTWNSssWwpjP1UgxfXaCuhCpzIS6FLviAQwhcQwyBBTrkr5Qa9DWQWNttm+umWyOquYouGsfO8fT4jGWDZKNFOoNnugcd+2j/0pBUxDTxmGMHMqJrkkmki8I5JT3DzFsdHzvSo3AJkiY5H6MbCkj9rMvYfYyenTPf5ZGBJ7VhjOOTkT7RlkF5NWlO4A+L9sJK7KTzjL1bxieI1fOOuYdboQomcqeS0jAN+AIOENHw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=g8BrVJwxM/2ORZ4HUtOrWEQzaKC2XD7f7H5cCoY1yzk=;
+ b=bQVfmRbfXC0bUecXmFl9Lf9s0Ghn2Vv3Udzai3IW7NNAgFxYE3zxr69FCOdo9pNUB87QM/zC8NxAtdVxMqlXcY2Wbf3RfAj+unIjeQr0IquSCQdWVZVlrKecGmMDisg8PW5QSWKktaoXIF/BwSNrURurbd5NRpYc8vY+QXCC113L8pbNicfyZ/OpbX4Wo661snPkkT94a51lZ93hUo3AhZI2cIVeEvfuY97VOt4MXis75QHEBoIVSfe/HjdVtQ/CKfY2YOk7g1Cs96Owj4xuPxG5dmhNpqh8UyIjCRuer0ovroPd6l53uoFIIC4mIsQlJJY1X72WhiKHCaf+IEbkgQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=niko.eu; dmarc=pass action=none header.from=niko.eu; dkim=pass
+ header.d=niko.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=niko.eu; s=selector2; 
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=g8BrVJwxM/2ORZ4HUtOrWEQzaKC2XD7f7H5cCoY1yzk=;
+ b=HNkvRmMwD8CzCe9N9uSohaXAJzxoUN2iyz5edduEJGttkNtdJoNcGLduAagX2oGwATXGimfIK6RjWkQMJx7cv+YdGGx1GiWetu1rjHxtznBpTBmKROAxScNH/J0JHzh1cBg7dZxDLcAU4Iy9ReMYegLwxbc0fYBuXPP2OUy1QD8=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=Jef.Driesen@niko.eu; 
+Received: from AM0PR08MB3874.eurprd08.prod.outlook.com (20.178.82.86) by
+ AM0PR08MB5011.eurprd08.prod.outlook.com (10.255.31.211) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2772.14; Thu, 27 Feb 2020 09:10:11 +0000
+Received: from AM0PR08MB3874.eurprd08.prod.outlook.com
+ ([fe80::1548:5958:de47:1434]) by AM0PR08MB3874.eurprd08.prod.outlook.com
+ ([fe80::1548:5958:de47:1434%6]) with mapi id 15.20.2750.024; Thu, 27 Feb 2020
+ 09:10:11 +0000
 Subject: Re: ubifs: mounting fails due to error in orphan file handling
-Message-ID: <20200227095153.363c02bd@xps13>
-In-Reply-To: <fd364e81-b816-1b77-317c-cd030b7833d0@niko.eu>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 References: <0d3a2ed9-8ff0-7030-a8c6-c5a204eb6b5b@niko.eu>
  <20200205092202.5f0929c3@xps13>
  <21a266b9-ff3f-7a94-4562-11d6f59d4327@niko.eu>
@@ -71,9 +75,53 @@ References: <0d3a2ed9-8ff0-7030-a8c6-c5a204eb6b5b@niko.eu>
  <9ff6f4ae-8dda-608b-4e60-6d391cb4efb9@niko.eu>
  <CAFLxGvyaBu8Uu9xMgk2fDK_erv0eOb4B3_JgjLM9m0iu66Gr8g@mail.gmail.com>
  <fd364e81-b816-1b77-317c-cd030b7833d0@niko.eu>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ <20200227095153.363c02bd@xps13>
+From: Jef Driesen <jef.driesen@niko.eu>
+Message-ID: <056035ec-c7a0-e629-34c8-f928747cb42b@niko.eu>
+Date: Thu, 27 Feb 2020 10:07:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+In-Reply-To: <20200227095153.363c02bd@xps13>
+Content-Language: en-US
+X-ClientProxiedBy: LO2P265CA0208.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:9e::28) To AM0PR08MB3874.eurprd08.prod.outlook.com
+ (2603:10a6:208:108::22)
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.31.0.155] (91.183.54.155) by
+ LO2P265CA0208.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:9e::28) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2772.15 via Frontend Transport; Thu, 27 Feb 2020 09:10:11 +0000
+X-Originating-IP: [91.183.54.155]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b7422beb-15f7-4525-05a6-08d7bb64d963
+X-MS-TrafficTypeDiagnostic: AM0PR08MB5011:
+X-Microsoft-Antispam-PRVS: <AM0PR08MB50111A053DA86698A2651650E2EB0@AM0PR08MB5011.eurprd08.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-Forefront-PRVS: 03264AEA72
+X-Forefront-Antispam-Report: SFV:NSPM;
+ SFS:(10009020)(4636009)(366004)(346002)(376002)(39840400004)(396003)(136003)(189003)(199004)(2616005)(31696002)(956004)(6916009)(2906002)(16576012)(66946007)(4326008)(316002)(86362001)(52116002)(44832011)(36756003)(6666004)(66556008)(66476007)(4744005)(81156014)(26005)(54906003)(16526019)(8676002)(186003)(478600001)(5660300002)(6486002)(53546011)(8936002)(81166006)(31686004);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:AM0PR08MB5011;
+ H:AM0PR08MB3874.eurprd08.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; MX:1; A:1; 
+Received-SPF: None (protection.outlook.com: niko.eu does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: L60ngoMKM2lblaLmMqwOP4/c4aNb/zAq75IYBRvSkAMj7P6yGKChT+H0+mJosQWd7vXt++mZ6ld9iv4NOd7bPsps2GgKd9w+g8BUwwcKutaLeAi25PqZJCHGniydVE8K941C7gPmKWT6uqrI9YUzUSKeVz8ymQV4cVUxozKVfKEH10twERyfsF5SjqpR5fwz4cnmvrxbk+kn/y4RK8PewQDEJgVs715ZJLmtpOvHykQza3mTWWsGRUuQwsuuLAuLhX6a8hx1NGftbwvV5QTrz46dpSIKnKTooSu1yzcdhVd7zCgMW7GO5rSEGhdcRq9R4R12/YyuvtbpnTW6nI/72ghSf8L4Wvif6Cc0yt2x/zX5jbBVfyg70Z3ggSThrVVyYRMUYFeZNJTanvIxISuCXkhI0M2FEi6ZfMQTKmf1Vy22SFsL6d65FH7eLBNWh0xH
+X-MS-Exchange-AntiSpam-MessageData: HZV9nC5cRfFQE4SJQdYZKHVmkIrr3yxofqdtzu2SP6vRIsAr7n4U2mfW5hlNKelE7NniZPQ4JVMl1fxFYnDzlo2LjTQ8URJom42nJqa6SMugmZWxkM53QMoZkzcJikhA313a7Ri8n6ZgeBTNoQLW7Q==
+X-OriginatorOrg: niko.eu
+X-MS-Exchange-CrossTenant-Network-Message-Id: b7422beb-15f7-4525-05a6-08d7bb64d963
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Feb 2020 09:10:11.5742 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a4faf0fe-ff3f-4912-b675-3cfe1470e385
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HMk7HgDNDYWblrxkiy5yC1YBT8xXhbhsxsWCe36LCGUdsnfAwRsXqV21DVURLj2jJnfO6aA1HlzHPxr5IP3Mcw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR08MB5011
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20200227_011015_121242_E2761DB0 
+X-CRM114-Status: UNSURE (   9.56  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,29 +137,25 @@ Cc: Richard Weinberger <richard.weinberger@gmail.com>,
  Steve deRosier <derosier@gmail.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  Richard Weinberger <richard@nod.at>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgSmVmLAoKSmVmIERyaWVzZW4gPGplZi5kcmllc2VuQG5pa28uZXU+IHdyb3RlIG9uIFRodSwg
-MjcgRmViIDIwMjAgMDk6NDI6MTAKKzAxMDA6Cgo+IE9uIDI3LzAyLzIwMjAgMDg6NTUsIFJpY2hh
-cmQgV2VpbmJlcmdlciB3cm90ZToKPiA+IE9uIFR1ZSwgRmViIDExLCAyMDIwIGF0IDI6NDcgUE0g
-SmVmIERyaWVzZW4gPGplZi5kcmllc2VuQG5pa28uZXU+IHdyb3RlOiAgCj4gPj4+IEkgc2VuZCBh
-IGZpeCBmb3IgdGhpcyBiZWZvcmUgSSBzdGFydGVkIHRyYXZlbGluZzoKPiA+Pj4gW1BBVENIXSB1
-YmlmczogRml4IHViaWZzX3RuY19sb29rdXAoKSB1c2FnZSBpbiBkb19raWxsX29ycGhhbnMoKQo+
-ID4+Pgo+ID4+PiBEaWdnaW5nIGN1cnJlbnRseSB0aG91Z2h0IGFsbCBteSBtYWlscy4uLi4gIAo+
-ID4+Cj4gPj4gSSBmb3VuZCB5b3VyIHBhdGNoOgo+ID4+Cj4gPj4gaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvcGlwZXJtYWlsL2xpbnV4LW10ZC8yMDIwLUphbnVhcnkvMDkzMzkwLmh0bWwKPiA+
-Pgo+ID4+IEkgZGlkIHNvbWUgdGVzdHMgd2l0aCBpdCwgYW5kIGl0IGFwcGVhcnMgdG8gZml4IHRo
-ZSBwcm9ibGVtIGZvciBtZSEgIAo+ID4gCj4gPiBUaGFuayB5b3UgZm9yIGxldHRpbmcgbWUga25v
-dyEKPiA+IENhbiBJIGhhdmUgYSBUZXN0ZWQtYnk/ICAKPiAKPiBPZiBjb3Vyc2UuCj4gCj4gSmVm
-CgpBY3R1YWxseSBtYWludGFpbmVycyB1c2UgdG9vbHMgdG8gYXV0b21hdGljYWxseSBjb2xsZWN0
-IHRhZ3MgZnJvbSB0aGUKbWFpbGluZyBsaXN0IChvbmx5IGluIHRoZSBsYXN0IHZlcnNpb24gb2Yg
-dGhlIHBhdGNoL3NlcmllcykgcHJvdmlkaW5nCnRoYXQgdGhleSBoYXZlIHRoZSBjb3JyZWN0IGZv
-cm0uIFNvIHdoZW4gUmljaGFyZCBhc2tzIGZvciB5b3VyClRlc3RlZC1ieSB0YWcgYW5kIHlvdSBh
-Z3JlZSwgeW91IHNob3VsZCBhZGQgdGhlIGZvbGxvd2luZyBsaW5lIHRvIHlvdXIKYW5zd2VyOgoK
-VGVzdGVkLWJ5OiBKZWYgRHJpZXNlbiA8amVmLmRyaWVzZW5Abmlrby5ldT4KCjopCgpDaGVlcnMs
-Ck1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmlu
-ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On 27/02/2020 09:51, Miquel Raynal wrote:
+> Actually maintainers use tools to automatically collect tags from the
+> mailing list (only in the last version of the patch/series) providing
+> that they have the correct form. So when Richard asks for your
+> Tested-by tag and you agree, you should add the following line to your
+> answer:
+
+Tested-by: Jef Driesen <jef.driesen@niko.eu>
+
+Sorry, I didn't know adding the tag is automated. I'll take that into account 
+next time!
+
+Jef
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
