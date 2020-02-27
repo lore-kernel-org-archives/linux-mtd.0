@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76EBCC11D3D
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Feb 2020 20:24:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B665C11D3D
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Feb 2020 20:34:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 48D0A2469F
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Feb 2020 20:24:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1CF532468F
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Feb 2020 20:34:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nBcnkJWB";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=micron.com header.i=@micron.com header.b="LrRlfds0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 48D0A2469F
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KqZpCENC";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=micron.com header.i=@micron.com header.b="2TeK+ccr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1CF532468F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=micron.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,98 +26,96 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QPYbIApqwYXtT3i87f2+jCm17YdQd6F/mOotUSFjM/o=; b=nBcnkJWBQemu/R
-	Rahl/kXMi3ObUAcouqukxVteokJZTAlKCfAoolDbrV0ZZrL9+DOgtwqwmedZoc9F0QO8vUSaZPq8y
-	wd2DoiuJfWEp1Qdix7xSXqV2rqbTmDsU50USbSTDfVkvZMdur+j9f4WbJKX1LW0dv/SRTJ6SMKntq
-	GLW8muZWSnl5r8723jHOHVL1lGYuexRS+i8T3LFEx/V1IcAv2qIWPFhseedglo79l1cATMhDILih6
-	vidDCF/aQ94Y5fx3b+VKYGVSabeNBJZuvcUA2J2ri/iKyaRdKtifo5rUCJIJuZkaSVgFD0T2uc7n+
-	SCad/JjaDsRPdra8aZaw==;
+	List-Owner; bh=x3aK+S/5D7hhS+KMlE5v4unFy7ZbNJQpmQd6CklZyS8=; b=KqZpCENCvkbiJc
+	S2fxUcbrg2h5qlWCqaO27XkBT8IcCZNBEVVy16+c34tyTb0ptynfPT6Qx9hUopj2CatyjATBUtVVQ
+	us/T0Jb5uCBDdZnNro7H+kBK8QAKIwdR/ge1bEVo8GlpVm/ExzPjmjg6C0qm4EdliJk4McahJ1Cu2
+	yzo830exH9AxVI3QfdJXr8HESHCWvMVv998+OVR4Q0GXRyRuh2CuDm8kiJAzXNsxXfU5wZ1z/oUic
+	XWbMKmUSdkLqfG3+51z2ipKXj4RR/aYadaMia7Oc4a1HwhvtnB1vBhmIr1op/NTCqbKlcYvSwy0EN
+	/EJ0qiwwRlMg+p1VtiXg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j7Phu-0006VL-NP; Thu, 27 Feb 2020 20:24:30 +0000
-Received: from mail-dm6nam11on2050.outbound.protection.outlook.com
- ([40.107.223.50] helo=NAM11-DM6-obe.outbound.protection.outlook.com)
+	id 1j7Prb-0001Bn-KJ; Thu, 27 Feb 2020 20:34:31 +0000
+Received: from mail-bn8nam11on2066.outbound.protection.outlook.com
+ ([40.107.236.66] helo=NAM11-BN8-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j7Phq-0006UW-PT
- for linux-mtd@lists.infradead.org; Thu, 27 Feb 2020 20:24:28 +0000
+ id 1j7PrW-0001BH-Sk
+ for linux-mtd@lists.infradead.org; Thu, 27 Feb 2020 20:34:30 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J7RYP7wPuyMtXlInKAfCy0KlWkNXoti3fiaRjIbP1yiFIS0/ZARjwH9zQY34sh1vA8FrF6rA4qJF7pOQVshdP+L3S+0OeKi+kWmJxOZL8Hw6NJhzbFUTJ/YUsKtMxApSqJmCQPmqJ6iJ3YuESC1NRx9TL8oNLjQlorIbUXzhldfVEzrA97XGM0CK/IeHzCn7KHx5RYXFW/LBm1Nq8K+ZZltm66kc6upgr8+4X7NAzSWMaFmkuhTXZJGg1n8wObJUUoP2uClx3CD0YgSNdQd/xO009z1XHDwdp7ORclbdEJv3B0SpBOIxPBcfVP7l9gt9pxzgDofkauybDkY+43Dt2A==
+ b=R5tu59W0SsbqNIrDS4fSEg6blyZwMdQuYXQb8HoTHK1YgMpzS7JbIGvrt2fzcnzZSYNluQ6du1zYAEuY7L7io4A8wtGV9+9gu446dsrmc2LY4l4SKWuBTZdZACo7Pk6giXN2yby54k3F0vLpcRkoC2PdP/aTbxQA3L0T22+CZzJc354MyjudxTKJ8z1YfAFG20sV3kz3RyvWAk2O4sXwcn5Zjvp7Q/dtA69/YYg+JDd8yrY+xgqN87MUlzijIZBghjL2Oa5Pg0QxluX1sXBBIA7R1ooAeIf85SO7wVVCJ4EYa+pPm1qvsNrE5iEi/uZfSqajpvCZTHlh3Peskx9/QQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BDfWROweiK7qIR793QDQD30pwX6Vl91e+/VkMgr18H4=;
- b=TwgThDfTrG5vILQ83QQJ19pi9Vv15LykTBBXrMk9L5DDxRTNWRYbFSe0AzjeWIdCcdnHHozbZoQhE1TgphME7alNvsD94Os6+OAKXXqpA1OWg45OTxkMwYO1q/IHmzKBwSZjj2lXZPmLcMriCuFPYwCPHBGcr6p0O1Dkatn/lvyRREJHky6j/f1/SjDpVmlijbxpD9yqxxTSyK9ph/fq2/ESAHZEIlDXXzqrEL8T4yRIvWKfOpsAj9slqKCpe4HZgnHhSRF1D/H4h99+x17nDM83EggpMFzp3WpRR24Dd8CXUYUDAXBS58CQc2+3HjQrHySLWfW1hSJQIBKCDc/AlQ==
+ bh=3hmC9g055i6o0viEGz9Q5E99dahMOgcF/rAOyjEuXNI=;
+ b=av9d1FU0D9uqiwO2Twi1p+VOX94+osGq2+wc8xuaKWSAtEUOoGPaLWOETOdVpHbS4yvJuo3wuuiMmRoK210stvkEw2ntL9hRLm+SB2zQoL3amfR2WtRFTeEgVrEGUeQfRqMYFSjwW1XVAZSQdZ23BirReUu0CnhB5e7hrprlox/4wvqN3UDiArcxAhcIChOP6D3587RRUHKtxDuCbe/dK9IaTMOhXKh3NJ3fM8igqV/IqB3m2QZrLcl4IsYyrF7oB4A/zHy6Tekq5zQYJnwxEe6DjdC/oPNwVS7ZZZIBdvZZAGOVSJGluIz419tSYWB12jtUXv7l2zIGnC/NBG3Hjw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=micron.com; dmarc=pass action=none header.from=micron.com;
  dkim=pass header.d=micron.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=micron.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BDfWROweiK7qIR793QDQD30pwX6Vl91e+/VkMgr18H4=;
- b=LrRlfds0I0yA/6cFFu9t6MUBZjva0JkiSIVrOT/5+UC02BjO3dqVvmnlQ8PaxeJg8gSNkr/o0JHx9Pe37fTLnRd2sigi9uIiNdTEXYGcbvMuBFHpd4637/DSNLA/JXRnkzSy/PTZNiJ6H4nMkN2t9rvfxSehrN27N0MIS/xhDmQ=
+ bh=3hmC9g055i6o0viEGz9Q5E99dahMOgcF/rAOyjEuXNI=;
+ b=2TeK+ccrGnCLGs+k9MWoS4uKXHpPeNPAGhBriYLWwmmmd3iS7Nyf5hMokKYIPi2E+V+AUYXIvUcctn8mjI/uMarTC/keyKE4VaKmpnCep2kzmL4r8IWsQwsFS+nI8UWa9ZhWRYKFANxrq6Gfzudq5RPkO5qNi+ANB9Z7pagyaYs=
 Received: from MN2PR08MB6397.namprd08.prod.outlook.com (2603:10b6:208:1aa::10)
- by MN2PR08MB5982.namprd08.prod.outlook.com (2603:10b6:208:114::13)
+ by MN2PR08MB6336.namprd08.prod.outlook.com (2603:10b6:208:1ac::15)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2772.15; Thu, 27 Feb
- 2020 20:24:22 +0000
+ 2020 20:34:21 +0000
 Received: from MN2PR08MB6397.namprd08.prod.outlook.com
  ([fe80::884a:b0f5:3cf5:f4a4]) by MN2PR08MB6397.namprd08.prod.outlook.com
  ([fe80::884a:b0f5:3cf5:f4a4%4]) with mapi id 15.20.2750.021; Thu, 27 Feb 2020
- 20:24:22 +0000
+ 20:34:21 +0000
 From: "Shivamurthy Shastri (sshivamurthy)" <sshivamurthy@micron.com>
 To: Boris Brezillon <boris.brezillon@collabora.com>
-Subject: RE: [EXT] Re: [PATCH v4 2/5] mtd: spinand: micron: Add new Micron SPI
- NAND devices
-Thread-Topic: [EXT] Re: [PATCH v4 2/5] mtd: spinand: micron: Add new Micron
- SPI NAND devices
-Thread-Index: AQHV7Zrt8nxb4M5o4EyJweDi+Kt0uqgveTTwgAABmICAAADTkA==
-Date: Thu, 27 Feb 2020 20:24:22 +0000
-Message-ID: <MN2PR08MB639762D89F85C2556F51D48EB8EB0@MN2PR08MB6397.namprd08.prod.outlook.com>
+Subject: RE: [EXT] Re: [PATCH v4 3/5] mtd: spinand: micron: identify SPI NAND
+ device with Continuous Read mode
+Thread-Topic: [EXT] Re: [PATCH v4 3/5] mtd: spinand: micron: identify SPI NAND
+ device with Continuous Read mode
+Thread-Index: AQHV7ZjKPZJeMgTIREucfa74oE5zF6gvfO3g
+Date: Thu, 27 Feb 2020 20:34:20 +0000
+Message-ID: <MN2PR08MB63977337C84EE4537D0BF703B8EB0@MN2PR08MB6397.namprd08.prod.outlook.com>
 References: <20200206202206.14770-1-sshivamurthy@micron.com>
- <20200206202206.14770-3-sshivamurthy@micron.com>
- <20200227192247.52f84723@collabora.com>
- <MN2PR08MB6397477172BAC14986175E6DB8EB0@MN2PR08MB6397.namprd08.prod.outlook.com>
- <20200227211759.7ba02273@collabora.com>
-In-Reply-To: <20200227211759.7ba02273@collabora.com>
+ <20200206202206.14770-4-sshivamurthy@micron.com>
+ <20200227190729.1c5e4fef@collabora.com>
+In-Reply-To: <20200227190729.1c5e4fef@collabora.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
 x-dg-rorf: true
-x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcc3NoaXZhbXVydGh5XGFwcGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEyOWUzNWJcbXNnc1xtc2ctMjBlZTliNGItNTk5Zi0xMWVhLWIxZTktOTgzYjhmNzQ1MjUxXGFtZS10ZXN0XDIwZWU5YjRkLTU5OWYtMTFlYS1iMWU5LTk4M2I4Zjc0NTI1MWJvZHkudHh0IiBzej0iMTQyMiIgdD0iMTMyMjczMDg2NTg1NjgyNTE3IiBoPSJaVi9PZFhVRXptOWNRSUt3WHZqYm1Mak5aUm89IiBpZD0iIiBibD0iMCIgYm89IjEiIGNpPSJjQUFBQUVSSFUxUlNSVUZOQ2dVQUFIQUFBQUJWdWtqanErM1ZBZCtwNnRwT1d3V2wzNm5xMms1YkJhVUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUJBQUFCQUFBQUFYbTFpZ0FBQUFBQUFBQUFBQUFBQUE9PSIvPjwvbWV0YT4=
+x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcc3NoaXZhbXVydGh5XGFwcGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEyOWUzNWJcbXNnc1xtc2ctODY0ODM5N2UtNTlhMC0xMWVhLWIxZTktOTgzYjhmNzQ1MjUxXGFtZS10ZXN0XDg2NDgzOTgwLTU5YTAtMTFlYS1iMWU5LTk4M2I4Zjc0NTI1MWJvZHkudHh0IiBzej0iMzU1NyIgdD0iMTMyMjczMDkyNTgwOTU1OTI0IiBoPSJYUE4xUitCVUp0bDFqeENHYlkwVHRlKzBCQVE9IiBpZD0iIiBibD0iMCIgYm89IjEiIGNpPSJjQUFBQUVSSFUxUlNSVUZOQ2dVQUFIQUFBQUFVVjZGSXJlM1ZBZjMwRU9EMjdwam8vZlFRNFBidW1PZ0FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUJBQUFCQUFBQUFYbTFpZ0FBQUFBQUFBQUFBQUFBQUE9PSIvPjwvbWV0YT4=
 authentication-results: spf=none (sender IP is )
  smtp.mailfrom=sshivamurthy@micron.com; 
 x-originating-ip: [165.225.86.137]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 32d8784e-3436-482d-13b0-08d7bbc30834
-x-ms-traffictypediagnostic: MN2PR08MB5982:|MN2PR08MB5982:|MN2PR08MB5982:
-x-microsoft-antispam-prvs: <MN2PR08MB598219082C9D6FE3492C8342B8EB0@MN2PR08MB5982.namprd08.prod.outlook.com>
+x-ms-office365-filtering-correlation-id: f18a8b1c-66e8-4cac-056c-08d7bbc46ce6
+x-ms-traffictypediagnostic: MN2PR08MB6336:|MN2PR08MB6336:|MN2PR08MB6336:
+x-microsoft-antispam-prvs: <MN2PR08MB6336C5B3F03101C40708A193B8EB0@MN2PR08MB6336.namprd08.prod.outlook.com>
 x-ms-exchange-transport-forked: True
-x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
 x-forefront-prvs: 03264AEA72
 x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(4636009)(136003)(396003)(376002)(39860400002)(366004)(346002)(199004)(189003)(55236004)(26005)(4326008)(6506007)(2906002)(7696005)(54906003)(86362001)(186003)(478600001)(316002)(76116006)(66556008)(64756008)(8936002)(9686003)(81156014)(52536014)(5660300002)(8676002)(55016002)(71200400001)(33656002)(6916009)(66476007)(81166006)(66946007)(66446008);
- DIR:OUT; SFP:1101; SCL:1; SRVR:MN2PR08MB5982;
+ SFS:(10009020)(4636009)(366004)(376002)(136003)(39860400002)(346002)(396003)(189003)(199004)(316002)(86362001)(186003)(64756008)(76116006)(66446008)(66556008)(66476007)(71200400001)(66946007)(26005)(5660300002)(52536014)(7696005)(6506007)(33656002)(8936002)(8676002)(54906003)(55236004)(81156014)(81166006)(2906002)(55016002)(9686003)(6916009)(4326008)(478600001);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:MN2PR08MB6336;
  H:MN2PR08MB6397.namprd08.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; A:1; MX:1; 
+ PTR:InfoNoRecords; MX:1; A:1; 
 received-spf: None (protection.outlook.com: micron.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ROWOrv8tsawYM6LAzq1Ta6khJbvUvDR4mR1nswnCbC7V8fQikr/U3OgqojH4OkXxwvZbAy5tunfzRp+x/QG1VZ74XgR/DUr+NR6lOIcsuSEDohoRpDV+0MjryXY5lyzG2q/bI146R+xJ/Bsbqpy/K++z6BlXyFHlmijqpiWqWQCOcFAFeYSZ+zeEgvnx+2wtY6TuuNbceDXGJdMIR3iKMczf1MuacrGwCHqvTTUwJqx5CpLR6B1YtF0lm+aFkxCbfXJ4BXmW2mEqJFc5Mp4bFZT0Q1ILDPaUuUThKlM7BZiw2tiADkQK5Fk6D5a0wz53yy9ontMKFQfAdWJYnoR5kBprJqAH96YroYtJEhERvZaPLgRbFoHlAZyLfHXmtPTD1zaIilgwTy65YrobIdthm7nOeVdt6E7bj516t7q8XSyMRFNliLEWOobB874DRTXG
-x-ms-exchange-antispam-messagedata: f3STYP3uigmdMpClsO7wTmppLNbHUJOdAhYqISLPjMQeIY4iPFI6TsTS+Ao76n3NlbvYthYSZxEaqLdOIPjL9PW5itpdISz83I55LtO/rINIQriUENJHq8DYtWHJQGMc25omjuFnEeIEgV/nr3evBQ==
+x-microsoft-antispam-message-info: 82y/rLVvMc9vGNUB2f0inKTXg+f2Y8JMZdzm78oD+F6q8sUpzDPbylY8kWm2/XtCtWkKA4LiKk7yOZHMkdOhUlNFXzO2k6RqRy0PYMtbX9g6GOV/qBIsDGLNLUWprGB1geYnF8mKp1VEL95EbbFk8ylJl+3JYr2MB+0cG5eJJl0cu89WRnYEFF0Ez+uWggnoqivhq11rVKw306atnPtM9Ia4Mu1ZUHqqqNcyvqS5U1bK0bzjY9yv3JthqDshvqlAU4vfs6iUD7RoHMSdRClaYdNUjBHd0jfOeww6e7YtJf+tiTxb6G8HhScvzDbdK2/SYako7pVIrIxpVH3YEavXI6fKXtbFy+0Itr91+OZ5hUQIFJ9APyyLFe78hSddeH13cntsZQsmI8CKG47NVK512MX5tChpRJFMATIB7FlN20OCeObQW155mO/o0Jby8fDs
+x-ms-exchange-antispam-messagedata: wJriOy3zEDo7cbRUnXOXShNTmlbdkVKovuRtYJMLvd52yoYRrsI+81w/JR5j0F6RjjUorpiNgomrjpUiUpYEC+loCRt59WLdqV14mTLNSdmbOcj04r8cU0VOeYzX2qtIT+S5KJ6EpbfLMdstc9bX0A==
 MIME-Version: 1.0
 X-OriginatorOrg: micron.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 32d8784e-3436-482d-13b0-08d7bbc30834
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Feb 2020 20:24:22.5229 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f18a8b1c-66e8-4cac-056c-08d7bbc46ce6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Feb 2020 20:34:20.9241 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: f38a5ecd-2813-4862-b11b-ac1d563c806f
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: cR1OeIEpPtmH0I+jt9TGg2s4bm7ELGJOgpydOyynsf3yxhtIVP+lCkBN0Jjdk/WECME2YbgwBYRnf8FxGF4dPw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR08MB5982
+X-MS-Exchange-CrossTenant-userprincipalname: 7bD0+q4CpVO2G/TShcDPG/pJ/s1tSwnjsmSsBb9YkkudeQsH9L4Zv6CTa1pv/Q89U1Ae16hZYrUPCu9fBxVYfQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR08MB6336
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200227_122426_830088_F87AF0A4 
-X-CRM114-Status: GOOD (  15.23  )
+X-CRM114-CacheID: sfid-20200227_123426_932166_519B9B95 
+X-CRM114-Status: GOOD (  21.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -144,47 +142,109 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Hi Boris,
 
-> 
-> On Thu, 27 Feb 2020 20:16:46 +0000
-> "Shivamurthy Shastri (sshivamurthy)" <sshivamurthy@micron.com> wrote:
-> 
-> > Hi Boris,
-> >
-> > Thanks for the review.
-> >
-> > >
-> > > On Thu,  6 Feb 2020 21:22:03 +0100
-> > > shiva.linuxworks@gmail.com wrote:
-> > >
-> > > > From: Shivamurthy Shastri <sshivamurthy@micron.com>
-> > > >
-> > > > Add device table for M79A and M78A series Micron SPI NAND devices.
-> > > >
-> > > > Signed-off-by: Shivamurthy Shastri <sshivamurthy@micron.com>
-> > > > ---
-> > > >  drivers/mtd/nand/spi/micron.c | 31
-> > > +++++++++++++++++++++++++++++++
-> > > >  1 file changed, 31 insertions(+)
-> > > >
-> > > > diff --git a/drivers/mtd/nand/spi/micron.c
-> > > b/drivers/mtd/nand/spi/micron.c
-> > > > index c028d0d7e236..5fd1f921ef12 100644
-> > > > --- a/drivers/mtd/nand/spi/micron.c
-> > > > +++ b/drivers/mtd/nand/spi/micron.c
-> > > > @@ -91,6 +91,7 @@ static int micron_8_ecc_get_status(struct
-> > > spinand_device *spinand,
-> > > >  }
-> > > >
-> > > >  static const struct spinand_info micron_spinand_table[] = {
-> > > > +	/* M79A 2Gb 3.3V */
-> > >
-> > > Should be added in a separate patch.
-> >
-> > Okay, I will create separate patch for each device.
-> 
-> No, I meant just for this line.
+Thanks for the review.
 
-How about including this line with 1st Patch?
+> 
+> On Thu,  6 Feb 2020 21:22:04 +0100
+> shiva.linuxworks@gmail.com wrote:
+> 
+> > From: Shivamurthy Shastri <sshivamurthy@micron.com>
+> >
+> > Add SPINAND_HAS_CR_FEAT_BIT flag to identify the SPI NAND device with
+> > the Continuous Read mode.
+> >
+> > Some of the Micron SPI NAND devices have the "Continuous Read" feature
+> > enabled by default, which does not fit the subsystem needs.
+> >
+> > In this mode, the READ CACHE command doesn't require the starting
+> column
+> > address. The device always output the data starting from the first
+> > column of the cache register, and once the end of the cache register
+> > reached, the data output continues through the next page. With the
+> > continuous read mode, it is possible to read out the entire block using
+> > a single READ command, and once the end of the block reached, the
+> output
+> > pins become High-Z state. However, during this mode the read command
+> > doesn't output the OOB area.
+> >
+> > Hence, we disable the feature at probe time.
+> >
+> > Signed-off-by: Shivamurthy Shastri <sshivamurthy@micron.com>
+> > ---
+> >  drivers/mtd/nand/spi/micron.c | 16 ++++++++++++++++
+> >  include/linux/mtd/spinand.h   |  1 +
+> >  2 files changed, 17 insertions(+)
+> >
+> > diff --git a/drivers/mtd/nand/spi/micron.c
+> b/drivers/mtd/nand/spi/micron.c
+> > index 5fd1f921ef12..a8e947609cd9 100644
+> > --- a/drivers/mtd/nand/spi/micron.c
+> > +++ b/drivers/mtd/nand/spi/micron.c
+> > @@ -18,6 +18,8 @@
+> >  #define MICRON_STATUS_ECC_4TO6_BITFLIPS	(3 << 4)
+> >  #define MICRON_STATUS_ECC_7TO8_BITFLIPS	(5 << 4)
+> >
+> > +#define MICRON_CFG_CONTI_READ		BIT(0)
+> 
+> Let's try to use consistent names. The feature bit is
+> SPINAND_HAS_CR_FEAT_BIT, so maybe MICRON_CFG_CR. BTW, is this really
+> a
+> micron-specific bit?
+
+I will change the name.
+Yes, only Micron uses this BIT for Continuous Read feature.
+
+> 
+> > +
+> >  static SPINAND_OP_VARIANTS(read_cache_variants,
+> >  		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2,
+> NULL, 0),
+> >  		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
+> > @@ -153,8 +155,22 @@ static int micron_spinand_detect(struct
+> spinand_device *spinand)
+> >  	return 1;
+> >  }
+> >
+> > +static int micron_spinand_init(struct spinand_device *spinand)
+> > +{
+> > +	/*
+> > +	 * M70A device series enable Continuous Read feature at Power-up,
+> > +	 * which is not supported. Disable this bit to avoid any possible
+> > +	 * failure.
+> > +	 */
+> > +	if (spinand->flags == SPINAND_HAS_CR_FEAT_BIT)
+> 
+> 	if (spinand->flags & SPINAND_HAS_CR_FEAT_BIT)
+
+Okay.
+
+> 
+> > +		return spinand_upd_cfg(spinand,
+> MICRON_CFG_CONTI_READ, 0);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >  static const struct spinand_manufacturer_ops
+> micron_spinand_manuf_ops = {
+> >  	.detect = micron_spinand_detect,
+> > +	.init = micron_spinand_init,
+> >  };
+> >
+> >  const struct spinand_manufacturer micron_spinand_manufacturer = {
+> > diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+> > index 4ea558bd3c46..333149b2855f 100644
+> > --- a/include/linux/mtd/spinand.h
+> > +++ b/include/linux/mtd/spinand.h
+> > @@ -270,6 +270,7 @@ struct spinand_ecc_info {
+> >  };
+> >
+> >  #define SPINAND_HAS_QE_BIT		BIT(0)
+> > +#define SPINAND_HAS_CR_FEAT_BIT		BIT(1)
+> >
+> >  /**
+> >   * struct spinand_info - Structure used to describe SPI NAND chips
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
