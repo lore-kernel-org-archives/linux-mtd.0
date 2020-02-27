@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 112C5C4BA24
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Feb 2020 07:55:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E070C4BA24
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Feb 2020 08:03:21 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D49E420801
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Feb 2020 07:55:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0D3E3222C2
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Feb 2020 08:03:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oQCZeSD0";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XDWHd1qp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D49E420801
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KcwL8gTj";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nLG/+sjQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D3E3222C2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,63 +26,59 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=STHbVpLg3q9KnCTggKp8QDCFf+HPdXiP8qGjHDb40Wk=; b=oQCZeSD0GTO/0/
-	bdhqVJLRakchJbR7wdk4Ng0K8uG5lrRrwTHACDReRthbPxsXbmW5avzBx/v1g72NUVV459f/v4KNN
-	gsx7oqJcdky5jXswh+pm/qKRWbNvfZhsJvH9EflpdL1Bl99Zu+lD3U9R07sYR+2l4E/UJMy8hySiy
-	YNNa1XUs/FPX5CPKnOmRiuzgHRyoalmShSJzN4n3CgrWWGumcNAL5T9JbN8GMg7QJbsoI6c0k+Zfp
-	OTwtJWmuwrc11Aopnlw5NxLFgBxaVhISt8Ql/aLMBryyEQ4wIlxkx/PvwYDAik22LAise/Rha8aKc
-	bxcIjgNlpw8g/mcPifvA==;
+	List-Owner; bh=iAa0K5ea0puZaXady9WG6wKamdDu0z8V/Blyx6U4Sa0=; b=KcwL8gTjxBdjiA
+	88I7K0Jfpxe5GWkpyxzokpQsF3DolDERaMsj15i/mr8qqlon9GqbP69AFt0Nay74quSe3vsU4Cp6g
+	vQ4ggpCbThzdHGOzcDP5fr6XCWgK8OP1uOzU6+bNMuUMYiQKqTy5wwfDvtRJui10wU5fndROnYyVr
+	d6eEyMQNGNdbiwpE9g3zVhvc6iw6vcwsSt62U2RXKQ9dHqX962KJOyd8qs5vS556JMUi4N8MMBzYm
+	GgOMWl2ex3+siTwRfDb5XZHx2QPVZztSJt3UIbzRakNPBhYZcI8xnGFgqVq5kSEWZN1QIcCGBTXB7
+	kMQxFOzUPsHml5CPXdHw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j7E1C-0002qm-Kf; Thu, 27 Feb 2020 07:55:38 +0000
-Received: from mail-wm1-x341.google.com ([2a00:1450:4864:20::341])
+	id 1j7E8O-0005DF-TO; Thu, 27 Feb 2020 08:03:04 +0000
+Received: from mail-wm1-x32f.google.com ([2a00:1450:4864:20::32f])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j7E19-0002qT-W8
- for linux-mtd@lists.infradead.org; Thu, 27 Feb 2020 07:55:37 +0000
-Received: by mail-wm1-x341.google.com with SMTP id z12so2330125wmi.4
- for <linux-mtd@lists.infradead.org>; Wed, 26 Feb 2020 23:55:35 -0800 (PST)
+ id 1j7E8L-0005CZ-V5
+ for linux-mtd@lists.infradead.org; Thu, 27 Feb 2020 08:03:03 +0000
+Received: by mail-wm1-x32f.google.com with SMTP id a141so2244753wme.2
+ for <linux-mtd@lists.infradead.org>; Thu, 27 Feb 2020 00:03:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=3L+1CX8XwZKBQ280Sagdw9uDfxfGYW5K1+VuHg+NT3E=;
- b=XDWHd1qpI5Ft9yYLBrhxHBD2dvoQI+sE3kt1qMsvSb8lsM5p2lmsgk/e+lyY1M59LH
- L6n5oUSdcXWhM9Aeqe788O9Jr0BjeFg8dkHJQn5zIxCN6UHI7Mah8cCoK46XFOB0OUn9
- s7n0oQbRDvHtovlgBG+WWn3noP/TfvcuylXlZ+NgH6ZG4ibAKBMReaiQWJzBjdyPrmQt
- cLBEgKXlITuYEAESmLCp0Jx7pdbEAaZk00jxu3t0WZiXiHgqhIQujxzB+H7AUJbByTJ/
- t7n2T2uIPhIFSH5cuxUIRMRUeN+ICntpabTl8nRR50CNOCMYuEmgxjg1NOVYb3FgdBJP
- EPew==
+ :cc; bh=Fhf3IZugBVe98+oHHcrhDNpWo2kJFqnxZvIwRyl6n/I=;
+ b=nLG/+sjQvZ30HToJsz0ktf2+1mdHVXDoQ8pjkYLONTSnDzhIrF7ddYPLBZ61WTi69Q
+ vkY5tF5ZIA8Sq3ydaioCQhLvB/KEfcm3GUYWE5l5jzkqWjHHbNzqnQOkzLZ+ya/Hcl5D
+ wvpocUEuUHrzfy0f7Yhed86X2h25KItBW6Rttrn34Zlk2excNm6S1X8tFKAe6XXZsSGy
+ 9BcrN1vj4rTxt2Wih8zYfLg9vKCzXt63z2gVyPCXz+qoF37SLdj65piHowtfP3cLAxy5
+ a8NEEwXEN5zHj3VxSLdOGfgE98oODzIo25XEjuLg4vbKh20OVRx2wRXCb1Jc3BZr0jFm
+ rRdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=3L+1CX8XwZKBQ280Sagdw9uDfxfGYW5K1+VuHg+NT3E=;
- b=q8u5HExHE7MKj8QnmPC8HqXx7JmVgu0zIQlrnQEvniAFA2znB2oStXWsUcvMV+iJ6R
- eue5oJMUQEzEBqVRXYg1+vF0h0Ui/a1Shp2LpAyWKs4YfHGwomzzmXdXTmxcHzLhgoBQ
- P48Vh9VTQXtbx1EkauDj9lFmvAoENnzq3q6cV0U7EGXDjKy3oBo4nSVySqAOoYmOzm0I
- RdE5iIVxBNzBKhwsis1oikh7xudt209FEx7IYhHkfbseAiWtGzHYYjvTHDfA8TeI1kAl
- wrDncHnhWNHz1z7jlb3OvJ4ubSjevtT1ZM73HsMR6bHveAnAc7GK51xVrFeGcMWSZhyl
- rg0A==
-X-Gm-Message-State: APjAAAWG9YDJD4wbCQuaLbkHmQMjfnoXA09ewyYXa6iARrjIejnL/SAX
- QRNLO1Q+tRRYdb4XaBSAbSkTYBkpueeWQWDnoGI=
-X-Google-Smtp-Source: APXvYqwZ8dNBlFaxqF6WX68tpWUsuGHc0yoCdc+grElrlO7Gb8VS9NJUs4r2qqp2vc1M4wDTov5BErE4hXnNE8SPajQ=
-X-Received: by 2002:a1c:4e02:: with SMTP id g2mr3758907wmh.131.1582790134172; 
- Wed, 26 Feb 2020 23:55:34 -0800 (PST)
+ bh=Fhf3IZugBVe98+oHHcrhDNpWo2kJFqnxZvIwRyl6n/I=;
+ b=Vzzst6yhHYmNdxY5/PiEIv5C+1Yl5doRtee0RwGCo/opcR1/khXLlugG5zv9kMP8lQ
+ 1KJoBJcInpaNg6/GUnq6VaEyK7qE+FePoDmSdGLnp89k7n552VDI3quYwi3qUlPDlbe7
+ SeBXG9xt04Mm230VbQVsUJyKNNFrNf4Ly8FRaB++hLCjYl6/TpbKXU/8ztExQzSqQqlt
+ lSZcXXaBRu72aAeL7T9P9qIijW3YqkMH1Wed5SWUKE3w7XOdPXO7k6wa4QmycTiDKsx2
+ zqn8EFA/YGpJHLoq+ZqEw5IpvB6mslQ5BRTw3WOEPiibVIGdKqIf4MJQqlqOgPWyLMDe
+ 60UA==
+X-Gm-Message-State: APjAAAWf/SN2uFeNUTdL9MPvdc/vzBI2dGwsx+Gc96FQ86lvQC4NyFKZ
+ Lxv4U+9RIrQyCEmQSCXuYO1Mg9PRGYZXuO69dkk=
+X-Google-Smtp-Source: APXvYqweTm401AKoZP/kKB00By44YYoVutaPT3tE793oU6OyKfTtP0P1PhT4p9L4HhnkejDYJ+o890sCmoRYZmGlQxc=
+X-Received: by 2002:a1c:208a:: with SMTP id g132mr3452799wmg.143.1582790580583; 
+ Thu, 27 Feb 2020 00:03:00 -0800 (PST)
 MIME-Version: 1.0
-References: <0d3a2ed9-8ff0-7030-a8c6-c5a204eb6b5b@niko.eu>
- <20200205092202.5f0929c3@xps13>
- <21a266b9-ff3f-7a94-4562-11d6f59d4327@niko.eu>
- <CALLGbRKotskAgZpxNFHF+RdrA0HB7U2qw6bzvZ9WDJEAiWYwgQ@mail.gmail.com>
- <d86c95cc-3393-0f6e-73ab-56a5bbbbedd8@niko.eu>
- <CAFLxGvwKfcw=Com5U7uGsA-iJ9SuQyqHdEeaWPUmnoxqwma0Gw@mail.gmail.com>
- <9ff6f4ae-8dda-608b-4e60-6d391cb4efb9@niko.eu>
-In-Reply-To: <9ff6f4ae-8dda-608b-4e60-6d391cb4efb9@niko.eu>
+References: <CAA=hcWSjWZDRcNFj3e4fdaV_u5AVNiksgykcDhqbHXm_aqT5wQ@mail.gmail.com>
+ <CAA=hcWS+e_LD-5aS4L3LLgUGnofa1fh96R+24v=Ek_oBhv9L4A@mail.gmail.com>
+In-Reply-To: <CAA=hcWS+e_LD-5aS4L3LLgUGnofa1fh96R+24v=Ek_oBhv9L4A@mail.gmail.com>
 From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Thu, 27 Feb 2020 08:55:22 +0100
-Message-ID: <CAFLxGvyaBu8Uu9xMgk2fDK_erv0eOb4B3_JgjLM9m0iu66Gr8g@mail.gmail.com>
-Subject: Re: ubifs: mounting fails due to error in orphan file handling
-To: Jef Driesen <jef.driesen@niko.eu>
+Date: Thu, 27 Feb 2020 09:02:49 +0100
+Message-ID: <CAFLxGvzv_QaEmmpM6FsskmVAD_Nrc6b7qgz43Bc=xgVhUtX2yg@mail.gmail.com>
+Subject: Re: Cannot mount UBIFS volume rootfs to RO
+To: JH <jupiter.hce@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200226_235536_058506_2D7FD335 
-X-CRM114-Status: GOOD (  10.90  )
+X-CRM114-CacheID: sfid-20200227_000302_024775_17AF2FF0 
+X-CRM114-Status: UNSURE (   9.15  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,28 +90,28 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Steve deRosier <derosier@gmail.com>, Richard Weinberger <richard@nod.at>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Feb 11, 2020 at 2:47 PM Jef Driesen <jef.driesen@niko.eu> wrote:
-> > I send a fix for this before I started traveling:
-> > [PATCH] ubifs: Fix ubifs_tnc_lookup() usage in do_kill_orphans()
-> >
-> > Digging currently thought all my mails....
+On Sun, Feb 16, 2020 at 11:51 PM JH <jupiter.hce@gmail.com> wrote:
 >
-> I found your patch:
+> Also, the kernel boot and mount the root to RO:
 >
-> http://lists.infradead.org/pipermail/linux-mtd/2020-January/093390.html
+> [    5.465303] UBIFS (ubi0:2): UBIFS: mounted UBI device 0, volume 2,
+> name "rootfs-volume", R/O mode
+> [    5.517493] VFS: Mounted root (ubifs filesystem) readonly on device 0:14.
 >
-> I did some tests with it, and it appears to fix the problem for me!
+> Does the UBIFS have some hard wired to reverse the kernel mount back
+> to rw? Could it be some bugs in UBIFS or could I be missing something?
+>
+> root# mount
+> ubi0:rootfs-volume on / type ubifs (rw,relatime,assert=read-only,ubi=0,vol=2)
 
-Thank you for letting me know!
-Can I have a Tested-by?
+I'm pretty sure your init (systemd) remounts UBIFS back to RW.
+Of course you can mount UBIFS read-only.
 
 -- 
 Thanks,
