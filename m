@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73FCDC4BA2D
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Feb 2020 12:40:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC9A5C4BA2D
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Feb 2020 12:40:39 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 17FDB24695
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Feb 2020 12:40:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B3E5F24695
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Feb 2020 12:40:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="J+st7cVO";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="FskWtjnN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 17FDB24695
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oaRVO7ux";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="dgkuGMcG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B3E5F24695
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,59 +26,59 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ThaCPh63tinCAoATzLEax2j/Uc1K/iSisaawbv/Nm3w=; b=J+st7cVOC873tD
-	ugSH1Rp8B9NwwTpQSWKTfPKgUZEJfndS6c9Si8dZHebgw8TwSywQNsnlz+iV+SwaYYxFs4sV2bEwx
-	oK1k4Cywd8bzx2FatLP+xv5L2zTJD5wvNiNE4Ju8V6LR/G4BIMApzD0VvI/vVDfI25+eu8luCVeSb
-	xWHAnpFhfnDsFOOMvV38qy/Lf3s2xlRN/DHXKxYE5ezb5c2ZSUV59vWL9Fb32dmfR+AjYn2AVt421
-	Io88cRHVgY2TbyTpw4JbCIVspHfbeLcKgEHSU2C5mSn92MAyTL98mW+OARfQ/jn/iyZTIhFnooigE
-	twJqE2hJTliQ4G15i7Tw==;
+	List-Owner; bh=gx8dILQ97O4aVxgGAKmyBu32eGlQpyE+wu3x5pkRVtk=; b=oaRVO7uxS3L7HX
+	9U9x6irM7ZrCSJ13O1afV7zVvLRXflme+hfWSXCdWTIOL+pTCOvB/DJvsnAnXuLj1AQ9hDCjsi/Ym
+	oXDbEbOG54PxHWKguABOWFxbxvO4ZODFXNNO1vLYe2HWtpTFK4+Mja74O2QYm8292OBqxYythXp5m
+	3bgkw67drZWlpp5N2MFfvu1yXb3OouyplLjKE7lCf/X5SG0+sEAVyQGN/n6E5ZRKjVCt6rvFfPJMn
+	rTgoctrNynCINVUUZhiGvDRujGANC6HzGuUrftPwuZ7jZfgdaWiVaJ+GCcvcGSxrXnd0LQMmYtKz8
+	YxOIRmrKLDD88Drq40sg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j7ISa-0004RG-AW; Thu, 27 Feb 2020 12:40:12 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1j7ISp-0004yb-3l; Thu, 27 Feb 2020 12:40:27 +0000
+Received: from lelv0142.ext.ti.com ([198.47.23.249])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j7IQf-0001oh-AD; Thu, 27 Feb 2020 12:38:14 +0000
+ id 1j7IQb-0001lP-IY; Thu, 27 Feb 2020 12:38:12 +0000
 Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 01RCc5t7117401;
- Thu, 27 Feb 2020 06:38:05 -0600
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 01RCc3dC033099;
+ Thu, 27 Feb 2020 06:38:03 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1582807085;
- bh=rajg4uTg/TEsV6CsUleF0jbc10ghlyv7bjJVEvPVLiU=;
+ s=ti-com-17Q1; t=1582807083;
+ bh=rBvL/jTgQtXPQwaQj/9VSebj/1cBnnhVjwXy8JgbaGE=;
  h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=FskWtjnNY3OwRDzpQjNUVBsqmFuGzzDUUaB6Knvmlo3V0fmrNa5PSNlX6+uQd4cHG
- 4fSA44R8tHLbSovbpRwMeoWwDoY6uBMUwGT1TmvE3AygtePsainRv6ZOTv7O/PtMrS
- q4TLs6F981JAxJOz2AWqn0fBGOd2EJHz3XpJXsDM=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 01RCc5kG117291
+ b=dgkuGMcGK4+dJG4uVpsTVpbhwKUVjfYHbed1kNfQiEGTBacM+oSvcrx5+YxzM92Ea
+ qDQgLxYx1ae4916jGjaFobCdRyT1bIlA01wePmx5wwn14GRMPTFxbmuFmkJA23bCRG
+ ASl5y3zKjaxE3d4RXbrvNV/kRgcM8u1nXaYwArmc=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 01RCc2n9116708
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 27 Feb 2020 06:38:05 -0600
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Thu, 27
- Feb 2020 06:38:04 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Thu, 27 Feb 2020 06:38:05 -0600
-Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 01RCbnvR100207;
  Thu, 27 Feb 2020 06:38:02 -0600
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Thu, 27
+ Feb 2020 06:38:02 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Thu, 27 Feb 2020 06:38:01 -0600
+Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 01RCbnvQ100207;
+ Thu, 27 Feb 2020 06:37:59 -0600
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
 To: <vigneshr@ti.com>, <miquel.raynal@bootlin.com>, <han.xu@nxp.com>,
  <richard@nod.at>, <mripard@kernel.org>, <wens@csie.org>,
  <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>
-Subject: [PATCH 4/7] mtd: rawnand: sunxi: Use dma_request_chan() instead
+Subject: [PATCH 3/7] mtd: rawnand: marvell: Use dma_request_chan() instead
  dma_request_slave_channel()
-Date: Thu, 27 Feb 2020 14:37:46 +0200
-Message-ID: <20200227123749.24064-5-peter.ujfalusi@ti.com>
+Date: Thu, 27 Feb 2020 14:37:45 +0200
+Message-ID: <20200227123749.24064-4-peter.ujfalusi@ti.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200227123749.24064-1-peter.ujfalusi@ti.com>
 References: <20200227123749.24064-1-peter.ujfalusi@ti.com>
 MIME-Version: 1.0
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200227_043813_438881_518B43CD 
-X-CRM114-Status: GOOD (  13.53  )
+X-CRM114-CacheID: sfid-20200227_043809_725310_0952F6E0 
+X-CRM114-Status: GOOD (  13.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,47 +100,37 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 dma_request_slave_channel() is a wrapper on top of dma_request_chan()
 eating up the error code.
 
-By using dma_request_chan() directly the driver can support deferred
-probing against DMA.
+Use using dma_request_chan() directly to return the real error code.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- drivers/mtd/nand/raw/sunxi_nand.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/raw/marvell_nand.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
-index 37a4ac0dd85b..3a24c4512af7 100644
---- a/drivers/mtd/nand/raw/sunxi_nand.c
-+++ b/drivers/mtd/nand/raw/sunxi_nand.c
-@@ -2123,8 +2123,16 @@ static int sunxi_nfc_probe(struct platform_device *pdev)
+diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+index b6c7e1903396..911430cca7c8 100644
+--- a/drivers/mtd/nand/raw/marvell_nand.c
++++ b/drivers/mtd/nand/raw/marvell_nand.c
+@@ -2743,11 +2743,14 @@ static int marvell_nfc_init_dma(struct marvell_nfc *nfc)
  	if (ret)
- 		goto out_ahb_reset_reassert;
+ 		return ret;
  
--	nfc->dmac = dma_request_slave_channel(dev, "rxtx");
--	if (nfc->dmac) {
-+	nfc->dmac = dma_request_chan(dev, "rxtx");
-+	if (IS_ERR(nfc->dmac)) {
-+		ret = PTR_ERR(nfc->dmac);
-+		if (ret == -EPROBE_DEFER)
-+			goto out_ahb_reset_reassert;
-+
-+		/* Ignore errors to fall back to PIO mode */
-+		dev_warn(dev, "failed to request rxtx DMA channel: %d\n", ret);
-+		nfc->dmac = NULL;
-+	} else {
- 		struct dma_slave_config dmac_cfg = { };
- 
- 		dmac_cfg.src_addr = r->start + nfc->caps->reg_io_data;
-@@ -2138,9 +2146,6 @@ static int sunxi_nfc_probe(struct platform_device *pdev)
- 		if (nfc->caps->extra_mbus_conf)
- 			writel(readl(nfc->regs + NFC_REG_CTL) |
- 			       NFC_DMA_TYPE_NORMAL, nfc->regs + NFC_REG_CTL);
--
--	} else {
--		dev_warn(dev, "failed to request rxtx DMA channel\n");
+-	nfc->dma_chan =	dma_request_slave_channel(nfc->dev, "data");
+-	if (!nfc->dma_chan) {
+-		dev_err(nfc->dev,
+-			"Unable to request data DMA channel\n");
+-		return -ENODEV;
++	nfc->dma_chan =	dma_request_chan(nfc->dev, "data");
++	if (IS_ERR(nfc->dma_chan)) {
++		ret = PTR_ERR(nfc->dma_chan);
++		nfc->dma_chan = NULL;
++		if (ret != -EPROBE_DEFER)
++			dev_err(nfc->dev, "DMA channel request failed: %d\n",
++				ret);
++		return ret;
  	}
  
- 	platform_set_drvdata(pdev, nfc);
+ 	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 -- 
 Peter
 
