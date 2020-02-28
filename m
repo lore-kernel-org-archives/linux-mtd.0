@@ -2,86 +2,89 @@ Return-Path: <SRS0=boQ/=4Q=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97488C3F2D0
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Feb 2020 04:38:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F8ECC3F2CF
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Feb 2020 04:39:22 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 683E42469D
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Feb 2020 04:38:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 22F73246A3
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Feb 2020 04:39:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RjlEye17";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OGuISWEl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 683E42469D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dSp/nJ4O";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hgFIB8G5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 22F73246A3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=oo5RCPuEJEUQRpGDB6IgRirPvV0GcEywMleZPDwvrTY=; b=RjlEye17mZDPBc
-	KLBYvAB4kBT8EQo67/93Dp+ukrOU1rZnxfQ1kp9ZpVChg3gNKDOgay2woSh98uxbvrhUH2ngV6xfB
-	+siydIk8H1Xpoz5HVnZMair7F7m6qZzXSdIYKFj41YlQ5CNmAPfIxCGGfplRDRUbhd1rIfWNZCqNd
-	VBf6Hk6UST63XsEnEp1Uv/xzP35BhHbrs9NgweYVvQv6QiOZ2sqU9/KdFhDLssXBw4wFauoxd3H6w
-	qbITEYss4/4sdy9DlkcoBKg+O1Pq/QV85f2aMBXQYn1CnLN3SMqvmwuiiQFJ6wuT9wYfjk/3wt3k8
-	gFgNKzghzp2wziEn6T4Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=gyYpLqlS99ynr61jygkOB2nnP/ZQBee2DR4+9LyQnak=; b=dSp/nJ4Ouax3JS
+	m9lVNaxTBWQz5yzixWqU9n0AAvaU9IXLbx6u4/fj6wSAqlyWhCvvjKJ1SHTqov3y+shcD1t1SQEu2
+	wI5rTQXbIfzppbvTVj6+ZJd+/wIItkb64+/f57Yuf7yfjBZjaT5mRiLhih18Fg2Cyb2Wnmo/owtPZ
+	fmxmRZlHIsIOeEiXaSj1G4oJuEKbXtQ7JAkn26zWoUq5RfOsNBBKeyyExHGl5XSz4OvEAiXU+93u0
+	3Z2wW/ppeSbR462ar75wtNPR+bTzZCFOLiFZyQxh7+ASIU61p69W8AqnFS0C4p1AP/Ni7gRzU8XPJ
+	cbxXlAsl1NmGaGxzccRg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j7XPx-00005n-BP; Fri, 28 Feb 2020 04:38:29 +0000
-Received: from mail-pl1-x644.google.com ([2607:f8b0:4864:20::644])
+	id 1j7XQU-0000em-TX; Fri, 28 Feb 2020 04:39:02 +0000
+Received: from mail-pg1-x543.google.com ([2607:f8b0:4864:20::543])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j7XPt-0008Vx-Kz; Fri, 28 Feb 2020 04:38:27 +0000
-Received: by mail-pl1-x644.google.com with SMTP id j7so738707plt.1;
- Thu, 27 Feb 2020 20:38:24 -0800 (PST)
+ id 1j7XQ4-0000Dm-NO; Fri, 28 Feb 2020 04:38:38 +0000
+Received: by mail-pg1-x543.google.com with SMTP id 7so849786pgr.2;
+ Thu, 27 Feb 2020 20:38:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=srFQTDpYVngqG0eYKY8zeXeTxEow1+Q6Yy9to892+K8=;
- b=OGuISWEli9eLWMchX3FyKGExfAxWPgMbRqfnKQ71+WgTo0dAEu2wLJuIhrKoGocX7C
- NgR5sxtUyB2qc+ar05E0dailbAMsC/Kwdrk8MOBfQ4vYqgtPKQVDCZtupwPoBDBSJaHY
- 5N3TV62amf+JgPDxaRZ8kRVzgFexamdDBZnLMUd4UHpeSeFtwRVdcFnfvP7jDC5JxKXB
- GprPn9waSFKdqTuaDbE50CEKUjlPN4vQKSkRzh1HrfX0oIkzMyIVOEFMVnYflBo8FWGe
- ldlX01IUa/AEq4++DIRco4fmEed+VmzvnXwDP4sNJG4uEuNpeZa3AdkdoTFZjyMu7OSo
- lYNA==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=QCI1h6XDepXvM9SY2yPFBOaTm7J4GLR1VLmmf1BO1BQ=;
+ b=hgFIB8G5XahI8txUYsDG5MShh+0AatjMli8EcASbn9w8027Uc/WNZUIeppsDE5nxwu
+ 8k1V9RFPmVegaSjuOx5NqPNXyhYFevqXge3mJywpLSUkweXuhEEPympdpxPUfv4+hb7M
+ yVr3nweqvyatKHlLAGD5cGjE6180bkWLkRKuZ8d+BlAN7LXt6IsJ7ZOMRZy65LpEx7Ui
+ S718KkrhH+sJwpIEeL74ndAs5kA5oN9ZUNx2dNeEdTEWXtc6ryrHznrwd0AtPIkTM4Sl
+ YduGSO7MjAqAtPPPGBwrs4jG57l+x4oS+9uKRGtDuTu/gKF8UiMV8AVR31WyIdX3Axb3
+ SM8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=srFQTDpYVngqG0eYKY8zeXeTxEow1+Q6Yy9to892+K8=;
- b=hvZhZDM+/ATAXIcC5go1kyTFqfZOzWK3kBtIt5Vzh54NUd2oNLEHJYPvmi90GZe9lX
- 5YKFTYqTcyenudYi5KXVcvL83AGUKWtvClTuCVRhgZdBViF6rUUjNN3nfFThc0QjX7Vo
- 5iOZypwGCzprm8uvPJi/0HMkvTlAnAwVyMbPmk4CtzZ0NFaL2YvzUCuZSUFteUl2MB7F
- LHzeor+uXxxFctuZi0MDmyX6gyOgo7Lp3OIaVl9sJ+dbsCR8x7ih2KZU1f+ayOUnsRRC
- ct3cogeDp1SZW1IkG4NnvAMmzN5dOYWtIfivOsiez6spIx3j0LRZNLBdoFIx0qYEWgkt
- 28pQ==
-X-Gm-Message-State: APjAAAW6rwbbmp4Tdse6nzx1630fm51Q0o/U7jlZH+JbZhjpeLpFMKVa
- k4Jb2FgYCGtCQ6I9ozejIhRKbvrzJpa+TQ==
-X-Google-Smtp-Source: APXvYqyvibBkO+TV6UPsBt0A3f9XT3QV3cG3heDfSZwLqQ1gjV5l3PPpcjCz6rPkJXCg+y5fzWLizA==
-X-Received: by 2002:a17:90a:aa83:: with SMTP id l3mr2715072pjq.5.1582864703657; 
- Thu, 27 Feb 2020 20:38:23 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=QCI1h6XDepXvM9SY2yPFBOaTm7J4GLR1VLmmf1BO1BQ=;
+ b=Lqt4KDgwMMqQbkshgAsAW0b7uMoKv7JPbmXI8LDsrHohdN8pVIdqhy44SdHNvl+E/t
+ fO2jC2Dg4HD8qkiCJ/lVmF4Lo4Fpx2MqO8geoLwlDbP2pYjHc9i6mq0uP9fiTclJ8Q7x
+ 9YbxrmzXpE6WKdRM7rO7VMKACuosc4GNnpSpVUDm4xxEBJ+Ebkn2DuahyLyT8eAUhJb9
+ 1byGKailet3g6//KNEfnr8DKq5U9MJp6GSbKXQ56hiFRgCv6Ir7w4KC5aFowJ3nmotWL
+ dGdFKwWKhO5R5B5twgs3dX4rGpWJSQrPSpD89hy5ntVS+iwfE/gZ9Zh1LYkX73XlV/TA
+ g+WA==
+X-Gm-Message-State: APjAAAVej5dtX++V04Q392hfwpOz3MRaYj7iGpg5Qp4WHm6W1sLFSmb1
+ +T88kooniK2B3OU8YRWMThss1apb3zSe9JxC
+X-Google-Smtp-Source: APXvYqyZ42VI70e6J50zsTaVBDtxBfufPRxVENg+DF+2e5lxd6dM8CgG2DAIqrDLFaRgxCHGRfp6tQ==
+X-Received: by 2002:a62:7681:: with SMTP id r123mr2516296pfc.169.1582864715674; 
+ Thu, 27 Feb 2020 20:38:35 -0800 (PST)
 Received: from localhost.localdomain ([240e:379:962:6595:7b84:9990:1a82:371c])
  by smtp.gmail.com with ESMTPSA id
- 196sm9069047pfy.86.2020.02.27.20.37.57
+ 196sm9069047pfy.86.2020.02.27.20.38.24
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 27 Feb 2020 20:38:22 -0800 (PST)
+ Thu, 27 Feb 2020 20:38:35 -0800 (PST)
 From: Chuanhong Guo <gch981213@gmail.com>
 To: linux-mediatek@lists.infradead.org, linux-spi@vger.kernel.org,
  linux-mtd@lists.infradead.org, devicetree@vger.kernel.org
-Subject: [PATCH v2 0/4] rewrite mtk-quadspi spi-nor driver with spi-mem
-Date: Fri, 28 Feb 2020 12:36:32 +0800
-Message-Id: <20200228043636.559915-1-gch981213@gmail.com>
+Subject: [PATCH v2 1/4] spi: make spi-max-frequency optional
+Date: Fri, 28 Feb 2020 12:36:33 +0800
+Message-Id: <20200228043636.559915-2-gch981213@gmail.com>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200228043636.559915-1-gch981213@gmail.com>
+References: <20200228043636.559915-1-gch981213@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200227_203825_713136_C677D2ED 
-X-CRM114-Status: GOOD (  10.07  )
+X-CRM114-CacheID: sfid-20200227_203836_815683_7F45BBA4 
+X-CRM114-Status: GOOD (  11.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,36 +109,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This patchset adds a spi-mem driver for Mediatek SPI-NOR controller,
-which already has limited support by mtk-quadspi. This new driver can
-make use of full quadspi capability of this controller.
+We only need a spi-max-frequency when we specifically request a
+spi frequency lower than the max speed of spi host.
+This property is already documented as optional property and current
+host drivers are implemented to operate at highest speed possible
+when spi->max_speed_hz is 0.
+This patch makes spi-max-frequency an optional property so that
+we could just omit it to use max controller speed.
 
-1st new commit makes spi-max-frequency optional to match current
-binding doc and make this new driver compatible with old driver dt
-bindings.
+Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
+---
+Change since v1:
+ new commit
 
-Changes since v1:
- two new commits.
+ drivers/spi/spi.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-Chuanhong Guo (4):
-  spi: make spi-max-frequency optional
-  spi: add support for mediatek spi-nor controller
-  dt-bindings: convert mtk-quadspi binding doc for spi-mtk-nor
-  mtd: spi-nor: remove mtk-quadspi driver
-
- .../mtk-quadspi.txt => spi/spi-mtk-nor.txt}   |  34 +-
- drivers/mtd/spi-nor/Kconfig                   |   8 -
- drivers/mtd/spi-nor/Makefile                  |   1 -
- drivers/mtd/spi-nor/mtk-quadspi.c             | 565 --------------
- drivers/spi/Kconfig                           |  10 +
- drivers/spi/Makefile                          |   1 +
- drivers/spi/spi-mtk-nor.c                     | 689 ++++++++++++++++++
- drivers/spi/spi.c                             |   9 +-
- 8 files changed, 717 insertions(+), 600 deletions(-)
- rename Documentation/devicetree/bindings/{mtd/mtk-quadspi.txt => spi/spi-mtk-nor.txt} (62%)
- delete mode 100644 drivers/mtd/spi-nor/mtk-quadspi.c
- create mode 100644 drivers/spi/spi-mtk-nor.c
-
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 38b4c78df506..c0c55dc79972 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -1955,13 +1955,8 @@ static int of_spi_parse_dt(struct spi_controller *ctlr, struct spi_device *spi,
+ 		spi->mode |= SPI_CS_HIGH;
+ 
+ 	/* Device speed */
+-	rc = of_property_read_u32(nc, "spi-max-frequency", &value);
+-	if (rc) {
+-		dev_err(&ctlr->dev,
+-			"%pOF has no valid 'spi-max-frequency' property (%d)\n", nc, rc);
+-		return rc;
+-	}
+-	spi->max_speed_hz = value;
++	if (!of_property_read_u32(nc, "spi-max-frequency", &value))
++		spi->max_speed_hz = value;
+ 
+ 	return 0;
+ }
 -- 
 2.24.1
 
