@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA4A3C3F2D2
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Feb 2020 18:25:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C73DFC3F2D2
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Feb 2020 18:26:11 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5109A246A3
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Feb 2020 18:25:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9C269246A3
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Feb 2020 18:26:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jb7Y4H1q"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5109A246A3
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="i+kLLAF6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9C269246A3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,37 +25,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:
 	In-Reply-To:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	References:List-Owner; bh=QCbfL0Kowggps06xqkWINN6MkvHsKVBicHN8bkr3bWs=; b=jb7
-	Y4H1qxjyAfSfOWGW2rxM4fKrMLxAp2+Vr4aB8RaBJ16qWGkknpUcl/5RxnKMY6aiN7jjdDJkQ2o5R
-	/DDEdmhEV187ShpX3xdHvCIgaByYaz5e9Pkyv9Kt1sqjqUJSW3N+vvzqnq3cD6jKeYqVP0hxhD9y5
-	EwvGKXxaJokS4Uyaw0R0PBLoHh762t1eC/2xkmXP4fxILj3WY1qiQEvgfYVWTttjde28PU3jQVQUJ
-	0HwnYhZi7bKWU1OQ+yFIaE9p3UsDo40fYCDFfEp/DTS8oArsH6NNYZMpWH09XbsdZODotqd44Zelf
-	fdbfWtVlVABy1P/4cBHlv/c1ZI4gAQw==;
+	References:List-Owner; bh=9HYK74m2wg+NGEq00awmRqIDhEX6wWyIOj/bMZZufdg=; b=i+k
+	LLAF63Qde3K9qvGuOt/v8JQnKCZADJ5evCDwKX0ucPrcbFz1lMpJCtJjpakGO6NXG80DdsyMuZqbT
+	4szaKeUY7icjCWjQSahjptD1uVS62TLyNnsJY6goFIIUCwvdqOpURBnn9WaBpApnF0k6LrPnIz8Km
+	mu1sRzjxK7rlWmd+vT1p2rWhwsTWtTbxATvaB8Bwg1EYmLu8ocOcNSS2oywlVlpaOxbEblkzcay9L
+	e99Y8GFSXiq4TBykZYqkqkQW3c2dKU3HCv/YCeNvC+6vu3ZLoal1vaaOBoWpQ8RMROEzp4OC6NZoh
+	nbLX6ZJvcphWuQp0WLgxj1EzaoyssrA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j7kKS-00059E-Jt; Fri, 28 Feb 2020 18:25:40 +0000
+	id 1j7kKi-0005PW-Tj; Fri, 28 Feb 2020 18:25:56 +0000
 Received: from foss.arm.com ([217.140.110.172])
  by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j7kKO-00053T-Pf
- for linux-mtd@lists.infradead.org; Fri, 28 Feb 2020 18:25:38 +0000
+ id 1j7kKS-00058e-4f
+ for linux-mtd@lists.infradead.org; Fri, 28 Feb 2020 18:25:41 +0000
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 41458FEC;
- Fri, 28 Feb 2020 10:25:35 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C3A4B31B;
+ Fri, 28 Feb 2020 10:25:39 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BA1603F7B4;
- Fri, 28 Feb 2020 10:25:34 -0800 (PST)
-Date: Fri, 28 Feb 2020 18:25:33 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 47EE23F7B4;
+ Fri, 28 Feb 2020 10:25:39 -0800 (PST)
+Date: Fri, 28 Feb 2020 18:25:37 +0000
 From: Mark Brown <broonie@kernel.org>
 To: John Garry <john.garry@huawei.com>
-Subject: Applied "spi: HiSilicon v3xx: Properly set CMD_CONFIG for Dual/Quad
- modes" to the spi tree
-In-Reply-To: <1582903131-160033-3-git-send-email-john.garry@huawei.com>
-Message-Id: <applied-1582903131-160033-3-git-send-email-john.garry@huawei.com>
+Subject: Applied "spi: Allow SPI controller override device buswidth" to the
+ spi tree
+In-Reply-To: <1582903131-160033-2-git-send-email-john.garry@huawei.com>
+Message-Id: <applied-1582903131-160033-2-git-send-email-john.garry@huawei.com>
 X-Patchwork-Hint: ignore
 X-Bad-Reply: In-Reply-To but no 'Re:' in Subject.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200228_102536_926853_BB114DD8 
-X-CRM114-Status: GOOD (  13.29  )
+X-CRM114-CacheID: sfid-20200228_102540_280748_ABA49745 
+X-CRM114-Status: GOOD (  17.80  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,7 +78,7 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 The patch
 
-   spi: HiSilicon v3xx: Properly set CMD_CONFIG for Dual/Quad modes
+   spi: Allow SPI controller override device buswidth
 
 has been applied to the spi tree at
 
@@ -103,86 +103,70 @@ to this mail.
 Thanks,
 Mark
 
-From 8fe21d6b347247227c349c9b2f7c462fae362af4 Mon Sep 17 00:00:00 2001
+From ea23578611dce2eeaf31dcfe12cd7130cf3d1411 Mon Sep 17 00:00:00 2001
 From: John Garry <john.garry@huawei.com>
-Date: Fri, 28 Feb 2020 23:18:50 +0800
-Subject: [PATCH] spi: HiSilicon v3xx: Properly set CMD_CONFIG for Dual/Quad
- modes
+Date: Fri, 28 Feb 2020 23:18:49 +0800
+Subject: [PATCH] spi: Allow SPI controller override device buswidth
 
-The CMD_CONFIG register memory interface type field is not set configured
-for Dual and Quad modes, so set appropriately.
+Currently ACPI firmware description for a SPI device does not have any
+method to describe the data buswidth on the board.
 
-This was not detected previously as we only ever operated in standard SPI
-mode.
+So even through the controller and device may support higher modes than
+standard SPI, it cannot be assumed that the board does - as such, that
+device is limited to standard SPI in such a circumstance.
+
+As a workaround, allow the controller driver supply buswidth override bits,
+which are used inform the core code that the controller driver knows the
+buswidth supported on that board for that device.
+
+A host controller driver might know this info from DMI tables, for example.
 
 Signed-off-by: John Garry <john.garry@huawei.com>
-Link: https://lore.kernel.org/r/1582903131-160033-3-git-send-email-john.garry@huawei.com
+Link: https://lore.kernel.org/r/1582903131-160033-2-git-send-email-john.garry@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/spi/spi-hisi-sfc-v3xx.c | 43 +++++++++++++++++++++++++++++++++
- 1 file changed, 43 insertions(+)
+ drivers/spi/spi.c       | 4 +++-
+ include/linux/spi/spi.h | 3 +++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-hisi-sfc-v3xx.c b/drivers/spi/spi-hisi-sfc-v3xx.c
-index 4cf8fc80a7b7..45d906110ed1 100644
---- a/drivers/spi/spi-hisi-sfc-v3xx.c
-+++ b/drivers/spi/spi-hisi-sfc-v3xx.c
-@@ -17,6 +17,12 @@
- #define HISI_SFC_V3XX_VERSION (0x1f8)
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 38b4c78df506..292f26807b41 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -510,6 +510,7 @@ struct spi_device *spi_alloc_device(struct spi_controller *ctlr)
+ 	spi->dev.bus = &spi_bus_type;
+ 	spi->dev.release = spidev_release;
+ 	spi->cs_gpio = -ENOENT;
++	spi->mode = ctlr->buswidth_override_bits;
  
- #define HISI_SFC_V3XX_CMD_CFG (0x300)
-+#define HISI_SFC_V3XX_CMD_CFG_DUAL_IN_DUAL_OUT (1 << 17)
-+#define HISI_SFC_V3XX_CMD_CFG_DUAL_IO (2 << 17)
-+#define HISI_SFC_V3XX_CMD_CFG_FULL_DIO (3 << 17)
-+#define HISI_SFC_V3XX_CMD_CFG_QUAD_IN_QUAD_OUT (5 << 17)
-+#define HISI_SFC_V3XX_CMD_CFG_QUAD_IO (6 << 17)
-+#define HISI_SFC_V3XX_CMD_CFG_FULL_QIO (7 << 17)
- #define HISI_SFC_V3XX_CMD_CFG_DATA_CNT_OFF 9
- #define HISI_SFC_V3XX_CMD_CFG_RW_MSK BIT(8)
- #define HISI_SFC_V3XX_CMD_CFG_DATA_EN_MSK BIT(7)
-@@ -161,6 +167,43 @@ static int hisi_sfc_v3xx_generic_exec_op(struct hisi_sfc_v3xx_host *host,
- 	if (op->addr.nbytes)
- 		config |= HISI_SFC_V3XX_CMD_CFG_ADDR_EN_MSK;
+ 	spin_lock_init(&spi->statistics.lock);
  
-+	switch (op->data.buswidth) {
-+	case 0 ... 1:
-+		break;
-+	case 2:
-+		if (op->addr.buswidth <= 1) {
-+			config |= HISI_SFC_V3XX_CMD_CFG_DUAL_IN_DUAL_OUT;
-+		} else if (op->addr.buswidth == 2) {
-+			if (op->cmd.buswidth <= 1) {
-+				config |= HISI_SFC_V3XX_CMD_CFG_DUAL_IO;
-+			} else if (op->cmd.buswidth == 2) {
-+				config |= HISI_SFC_V3XX_CMD_CFG_FULL_DIO;
-+			} else {
-+				return -EIO;
-+			}
-+		} else {
-+			return -EIO;
-+		}
-+		break;
-+	case 4:
-+		if (op->addr.buswidth <= 1) {
-+			config |= HISI_SFC_V3XX_CMD_CFG_QUAD_IN_QUAD_OUT;
-+		} else if (op->addr.buswidth == 4) {
-+			if (op->cmd.buswidth <= 1) {
-+				config |= HISI_SFC_V3XX_CMD_CFG_QUAD_IO;
-+			} else if (op->cmd.buswidth == 4) {
-+				config |= HISI_SFC_V3XX_CMD_CFG_FULL_QIO;
-+			} else {
-+				return -EIO;
-+			}
-+		} else {
-+			return -EIO;
-+		}
-+		break;
-+	default:
-+		return -EOPNOTSUPP;
-+	}
+@@ -2181,9 +2182,10 @@ static acpi_status acpi_register_spi_device(struct spi_controller *ctlr,
+ 		return AE_NO_MEMORY;
+ 	}
+ 
 +
- 	if (op->data.dir != SPI_MEM_NO_DATA) {
- 		config |= (len - 1) << HISI_SFC_V3XX_CMD_CFG_DATA_CNT_OFF;
- 		config |= HISI_SFC_V3XX_CMD_CFG_DATA_EN_MSK;
+ 	ACPI_COMPANION_SET(&spi->dev, adev);
+ 	spi->max_speed_hz	= lookup.max_speed_hz;
+-	spi->mode		= lookup.mode;
++	spi->mode		|= lookup.mode;
+ 	spi->irq		= lookup.irq;
+ 	spi->bits_per_word	= lookup.bits_per_word;
+ 	spi->chip_select	= lookup.chip_select;
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 6d16ba01ff5a..600e3793303e 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -481,6 +481,9 @@ struct spi_controller {
+ 	/* spi_device.mode flags understood by this controller driver */
+ 	u32			mode_bits;
+ 
++	/* spi_device.mode flags override flags for this controller */
++	u32			buswidth_override_bits;
++
+ 	/* bitmask of supported bits_per_word for transfers */
+ 	u32			bits_per_word_mask;
+ #define SPI_BPW_MASK(bits) BIT((bits) - 1)
 -- 
 2.20.1
 
