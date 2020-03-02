@@ -2,63 +2,153 @@ Return-Path: <SRS0=I4i7=4T=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E177BC3F2CD
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 Mar 2020 16:33:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85BAEC3F2D1
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 Mar 2020 18:08:28 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B8DAB21775
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 Mar 2020 16:33:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 54EE122B48
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 Mar 2020 18:08:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VkfrXVXT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B8DAB21775
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lwQBByVS";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="bGSZWQhm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 54EE122B48
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:Cc:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=toK14mY2/v1yRzZy2yaBRJ5hYetSzTeoWkFkcgLzwX0=; b=VkfrXVXTipkB7QkRAovrwsmhI
-	3yvGPUrUsofngj+4lmKVE/W4bb07yfeyzDdkHZaSoAVXGwllG++7d4Is+liDyJtz1PGIyt/eCYIQy
-	yI8DiWeUL3kCdpHrmBoh0ecwEkIHJ2lQIIq+EDsSpSmGZuXB/THjGQJL3+zsCTQ6xAt4GeGe9kwAG
-	w0a2pO4jSMJQny6Ih1W1HSwl0xMZhD7Ktj0hvWFKMT3s20ckiGRBcYOwAesHspzafywJGFNVKogiM
-	F9gw1CXYLVBNTUKOMxf/Sl0wlbdq4cu/WgfwoQilsDDJ/YXldaQZXVPhQFsnMFTNy9wT9PNtI1sDT
-	KFgGBJnGA==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=V2GNaSae6bj6ZzySxm5vEaCcaGRkWcaeoiJpmqMcm6g=; b=lwQBByVSvqeis/
+	POBSNU6vp/QNXJG58eQJi1XcLr3CDwvTckpmDg+iSCt3TiODR4Mx9Tz9b77z7TUNF+0wnMjY7xs74
+	Yafg/W3A8wwxaM7i00G4nu+1mx4xjDWbwBcAEBCmMAI+/rGK/rjkURmkfiPOUUQ+Cqkal0OYY9PzQ
+	GeKYzCNs8JYF3FJDqTbupIIasatsnH27dL2JGQ+HAtjMvAiNCf7twq9hyDgoJlNs07rM2Zf1wRmOc
+	A+BSKHdNuTbVqYPV0jgbWt+RBoAQZWQhwz6npFwW1pLHliB4bjKVUkYsUD+zpakrWCT0YrKRgKT9W
+	aDKZMRq/qWdx4nKSNytQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j8o0P-00070B-NO; Mon, 02 Mar 2020 16:33:21 +0000
-Received: from foss.arm.com ([217.140.110.172])
- by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j8o0N-0006zs-UT
- for linux-mtd@lists.infradead.org; Mon, 02 Mar 2020 16:33:21 +0000
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 798BFFEC;
- Mon,  2 Mar 2020 08:33:19 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F22793F534;
- Mon,  2 Mar 2020 08:33:18 -0800 (PST)
-Date: Mon, 2 Mar 2020 16:33:17 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH RFC 1/3] spi: Allow SPI controller override device buswidth
-Message-ID: <20200302163317.GH4166@sirena.org.uk>
-References: <1582903131-160033-1-git-send-email-john.garry@huawei.com>
- <1582903131-160033-2-git-send-email-john.garry@huawei.com>
- <CAMuHMdV9v-7eRqi3JjcNaOBpRrC2-gLDCizYOJwhQCjZiLr5dA@mail.gmail.com>
+	id 1j8pUD-000371-LB; Mon, 02 Mar 2020 18:08:13 +0000
+Received: from esa6.microchip.iphmx.com ([216.71.154.253])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1j8pTs-0002kf-5x; Mon, 02 Mar 2020 18:07:55 +0000
+Received-SPF: Pass (esa6.microchip.iphmx.com: domain of
+ Tudor.Ambarus@microchip.com designates 198.175.253.82 as
+ permitted sender) identity=mailfrom;
+ client-ip=198.175.253.82; receiver=esa6.microchip.iphmx.com;
+ envelope-from="Tudor.Ambarus@microchip.com";
+ x-sender="Tudor.Ambarus@microchip.com";
+ x-conformance=spf_only; x-record-type="v=spf1";
+ x-record-text="v=spf1 mx a:ushub1.microchip.com
+ a:smtpout.microchip.com -exists:%{i}.spf.microchip.iphmx.com
+ include:servers.mcsv.net include:mktomail.com
+ include:spf.protection.outlook.com ~all"
+Received-SPF: None (esa6.microchip.iphmx.com: no sender
+ authenticity information available from domain of
+ postmaster@email.microchip.com) identity=helo;
+ client-ip=198.175.253.82; receiver=esa6.microchip.iphmx.com;
+ envelope-from="Tudor.Ambarus@microchip.com";
+ x-sender="postmaster@email.microchip.com"; x-conformance=spf_only
+Authentication-Results: esa6.microchip.iphmx.com;
+ spf=Pass smtp.mailfrom=Tudor.Ambarus@microchip.com;
+ spf=None smtp.helo=postmaster@email.microchip.com;
+ dmarc=pass (p=none dis=none) d=microchip.com
+IronPort-SDR: HPeQzili6Vd210zJC1LxMw2K39zmUueDHCutulADMKeyXrzPgENDQk+vhaxwgpXfSOP7H0MSkc
+ +7mSRDgo2detp6uMS8rAf5WG1XPjYB9ZFN0qLK67afiwRqYrUiYKcK4T7ZAZhoqV0sUn2iqJbt
+ YHkFafEou07N+wSEaGmWl4QOSpF0HaLSND5/sIZjLfobCrEPMenBfKXiWENb6GSA0II96ZvcCO
+ dAjHM0r/fbcQvimKPnJ/k2o+ys9H5LCJuwxJeOgrVpStCEqjNEyEb+pIFVFakXQjNmzlmXKyxG
+ SIE=
+X-IronPort-AV: E=Sophos;i="5.70,507,1574146800"; 
+   d="scan'208";a="4204854"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 02 Mar 2020 11:07:48 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 2 Mar 2020 11:07:48 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, 
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5 via Frontend
+ Transport; Mon, 2 Mar 2020 11:08:01 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Sfi5VTiEJ2DD5h/8ogchhHpXy7VXytPSV9Oi7pD9/gBPD6z4m2n8PmVkdcQv0kAu6pRCRLtB+XBExObdZXAjtr3HwRBR+DNL4F6zJcMyHOrRHfM6Y+9qCbboMspWBHJCMhlSkmyHr1bjp3SlcsDr2uLIXBSU25B1/02SeXkjYeuHQrbVPq31i98Q3dXkbrvbOZlEI4oY0efh/38nd/ZrAjyrs1T6/CmnjJQkbxqg/PSqFO323taV+o7HLkID1Ss7QaioBJYR7XqLYTHThqTHH85iwS1YRItyscRK5EPYpuoIW8MYn4KC29sKxgpUi5b97/YPbmUoiQ17te08pg+97w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xbVllX3YOhajiMNUHRnkeg4BAiYDSTHwf4Ya15PmZyg=;
+ b=J1kL7WypcLXv2eg3lhcaa82t1vqSvQ+3ymkQ/1d2h/+hHDGQnMzbPfVZxTaWWKPA8S6MouzP0rVRVZLEendueaoOcYgQOwAxhmEWwEWCnAklmRuuLOze1o6pK6s65NdeMdh3mSLjixvVrjrpE6TvuGTYnqfcU5AH1Drz7KBqE5i0UiJQL69XD8skcDWBg4elVAZA0/iOwiu3lPpjs9E3l93837/TvQolorLQ+DwrGhnM8nz3zZ+cgzuQEWCgmpFqtfeQevEJIdLL9SumtCFXjTkIuMCk/3m6ZWBChbA0X4Owz7BkU5whzYHnOJv3R+bW32GsJ2CZIQCUEhNekoLE4Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xbVllX3YOhajiMNUHRnkeg4BAiYDSTHwf4Ya15PmZyg=;
+ b=bGSZWQhmQWYxa2etjTD7rVpgi2Pv7tBjybfbS30DOpErb/lq0PObOxzgokMufS4byPt7dmjSx5w0PQGrMGlYmiW4f0iSB6WAE270jWiO9ymv3dsG4fThQgFSK8lJOn+gciDrLsgBVe7UijO8MKk/BJVzE0cGCo4aDIFHJmysjRI=
+Received: from MN2PR11MB4448.namprd11.prod.outlook.com (2603:10b6:208:193::29)
+ by MN2PR11MB4142.namprd11.prod.outlook.com (2603:10b6:208:135::29)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2772.14; Mon, 2 Mar
+ 2020 18:07:45 +0000
+Received: from MN2PR11MB4448.namprd11.prod.outlook.com
+ ([fe80::3c8f:7a55:cbd:adfb]) by MN2PR11MB4448.namprd11.prod.outlook.com
+ ([fe80::3c8f:7a55:cbd:adfb%5]) with mapi id 15.20.2772.019; Mon, 2 Mar 2020
+ 18:07:45 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <bbrezillon@kernel.org>, <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>
+Subject: [PATCH 01/23] mtd: spi-nor: Stop prefixing generic functions with a
+ manufacturer name
+Thread-Topic: [PATCH 01/23] mtd: spi-nor: Stop prefixing generic functions
+ with a manufacturer name
+Thread-Index: AQHV8L153mkdeT8Yk06rHisgydrYfw==
+Date: Mon, 2 Mar 2020 18:07:44 +0000
+Message-ID: <20200302180730.1886678-2-tudor.ambarus@microchip.com>
+References: <20200302180730.1886678-1-tudor.ambarus@microchip.com>
+In-Reply-To: <20200302180730.1886678-1-tudor.ambarus@microchip.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [94.177.32.156]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 29edb9d2-be08-41d2-0c3e-08d7bed49bf3
+x-ms-traffictypediagnostic: MN2PR11MB4142:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR11MB41421CE86EFD686811921895F0E70@MN2PR11MB4142.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-forefront-prvs: 033054F29A
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(346002)(366004)(39860400002)(136003)(396003)(376002)(189003)(199004)(36756003)(26005)(66446008)(107886003)(6486002)(186003)(2616005)(4326008)(478600001)(6512007)(91956017)(64756008)(66946007)(2906002)(71200400001)(76116006)(8936002)(316002)(86362001)(54906003)(6506007)(66556008)(5660300002)(66476007)(7406005)(1076003)(7416002)(81156014)(81166006)(110136005)(8676002)(41533002);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:MN2PR11MB4142;
+ H:MN2PR11MB4448.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; MX:1; A:1; 
+received-spf: None (protection.outlook.com: microchip.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vzNHmBfRbOS8kyakJ07ytOMfbAIAYwZvQ+c4S4M7aqqGofSwOvNLVv0YLsRKcd3Ulnp87sLCVqAKfU4DUjW0qiq8Ii+m68uznyfQwtciKw/3YyZ7zkwAMyIOcR9Hg45xSVIN4tK4FONqG13w84DEORfbxgJqQv2Yl7rtE6Z0elglfcaiEfoJjuhXgoNRRT+WsOrkhMaoREi6QNVnqu7D2G1PYaik6n3KbJeigquFtcgYKn2SD/vnG+h6j4FgTlcTPAlOzrKyfDo/JPn69e3l3OjRB3cwoiRzCSH37fL+YzbKg8k+OlzdZ0AIxBzuQibd0iLafys33S2vj5y3eGdKm5XFoHzvzlIFCIIg0kyTXFlhyAKyysmORctS/CoDXmKV3Uw1JptCS7G05ORZUcNTAWI2wcXzrRXc4V+DZ0B42mQdEpWonBHw++AQZP9NMeg4F60aCKOSzXEErxvMAGddueTQD0EYta8OfqVfCBv9JoC96VrwCAkYLGn1ePzT5i1r
+x-ms-exchange-antispam-messagedata: 9zDqoaLC0BS1wCvkE3cNGnx9T618WAOTVjmmo7k4+isVNSB7cXm+RLCqSXyPWbnj20iR6XKk6tks9zrUQCPuMFdLueBuVzquJUyebrWbqfmYffsBSAP2wrfvIjVqtHgzd/8hG8i5Fr4uvnWqGDXv5w==
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdV9v-7eRqi3JjcNaOBpRrC2-gLDCizYOJwhQCjZiLr5dA@mail.gmail.com>
-X-Cookie: Whistler's mother is off her rocker.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 29edb9d2-be08-41d2-0c3e-08d7bed49bf3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Mar 2020 18:07:44.8159 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Q0rmOW1+DlCaC+COxmqb3VG6ZOcZe1XLzUteGuTtpLSMYPTeEvDOOSoFbjWMaqHORFLdxZ6b1EmNtLhCrDpeSl2JM1xc2zjSWMbnVdCg5g8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4142
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200302_083320_026239_F6E90010 
-X-CRM114-Status: UNSURE (   9.86  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200302_100752_410311_676DD555 
+X-CRM114-Status: GOOD (  12.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,69 +160,304 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: John Garry <john.garry@huawei.com>, linux-spi <linux-spi@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linuxarm <linuxarm@huawei.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Content-Type: multipart/mixed; boundary="===============6097530852881675451=="
+Cc: kstewart@linuxfoundation.org, alexandre.belloni@bootlin.com,
+ linux-aspeed@lists.ozlabs.org, thor.thayer@linux.intel.com,
+ jethro@fortanix.com, rfontana@redhat.com, miquel.raynal@bootlin.com,
+ opensource@jilayne.com, richard@nod.at, michal.simek@xilinx.com,
+ Ludovic.Desroches@microchip.com, joel@jms.id.au, nishkadg.linux@gmail.com,
+ Tudor.Ambarus@microchip.com, john.garry@huawei.com, vz@mleia.com,
+ alexander.sverdlin@nokia.com, matthias.bgg@gmail.com, tglx@linutronix.de,
+ swboyd@chromium.org, mika.westerberg@linux.intel.com, allison@lohutok.net,
+ linux-arm-kernel@lists.infradead.org, andrew@aj.id.au,
+ Nicolas.Ferre@microchip.com, linux-kernel@vger.kernel.org, dinguyen@kernel.org,
+ michael@walle.cc, ludovic.barre@st.com, linux-mediatek@lists.infradead.org,
+ info@metux.net
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+From: Boris Brezillon <bbrezillon@kernel.org>
 
---===============6097530852881675451==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="tT3UgwmDxwvOMqfu"
-Content-Disposition: inline
+Replace the manufacturer prefix by something describing more precisely
+what those functions do.
 
+Signed-off-by: Boris Brezillon <bbrezillon@kernel.org>
+[tudor.ambarus@microchip.com: prepend spi_nor_ to all modified methods.]
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 88 ++++++++++++++++++-----------------
+ 1 file changed, 45 insertions(+), 43 deletions(-)
 
---tT3UgwmDxwvOMqfu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Mar 02, 2020 at 05:12:05PM +0100, Geert Uytterhoeven wrote:
-> On Fri, Feb 28, 2020 at 4:23 PM John Garry <john.garry@huawei.com> wrote:
-
-> > A host controller driver might know this info from DMI tables, for example.
-
-> Can't acpi_register_spi_device() obtain that info from DMI tables,
-> to avoid contaminating the generic code?
-
-The DMI tables are going to boil down to per board quirks which we
-*could* put in the core but you end up with a lot of them and chances
-are that at some point we'll end up with device specific quirks which
-don't fit so well in the core.  Handling stuff in the drivers is fairly
-idiomatic.
-
-Much ACPI, so standards :/
-
---tT3UgwmDxwvOMqfu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5dNUwACgkQJNaLcl1U
-h9AexAf/aeE9iGeVv7pH09/MjY36txVc4+qNNLl4dd0LN6yt222WVl1jNMjvWnTl
-LrJ94pJcXCAPNZMpzkOMFJHdSK2n9PCuoA9KprkrZ2UUUpQe96q+Ll2qGnO3R7Wo
-qcL0FtJEGfuo9znEMdKSAxp2Buc6RW3AgPYp/9N7s+JT17mm9dL50BrujpvgaE6C
-LTSQ7KZ+rJFDBejSFD8T81zT80tVWXqyzWH9xdDFc9RkvBlX2iFqkUHXDP73Z1ik
-v/6mYFfXLjz0ekOn4/YKkTip2/EQ/EA4SrPYF80UOIzFFGYECBSdGXU3ZEHvkQBV
-jodU2vNG5FKyZOVlc4YxD5faKm8peA==
-=zK3/
------END PGP SIGNATURE-----
-
---tT3UgwmDxwvOMqfu--
-
-
---===============6097530852881675451==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index caf0c109cca0..b15e262765e1 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -568,14 +568,15 @@ static int spi_nor_read_cr(struct spi_nor *nor, u8 *cr)
+ }
+ 
+ /**
+- * macronix_set_4byte() - Set 4-byte address mode for Macronix flashes.
++ * spi_nor_en4_ex4_set_4byte() - Enter/Exit 4-byte mode for Macronix like
++ * flashes.
+  * @nor:	pointer to 'struct spi_nor'.
+  * @enable:	true to enter the 4-byte address mode, false to exit the 4-byte
+  *		address mode.
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+-static int macronix_set_4byte(struct spi_nor *nor, bool enable)
++static int spi_nor_en4_ex4_set_4byte(struct spi_nor *nor, bool enable)
+ {
+ 	int ret;
+ 
+@@ -604,14 +605,15 @@ static int macronix_set_4byte(struct spi_nor *nor, bool enable)
+ }
+ 
+ /**
+- * st_micron_set_4byte() - Set 4-byte address mode for ST and Micron flashes.
++ * spi_nor_en4_ex4_wen_set_4byte() - Set 4-byte address mode for ST and Micron
++ * flashes.
+  * @nor:	pointer to 'struct spi_nor'.
+  * @enable:	true to enter the 4-byte address mode, false to exit the 4-byte
+  *		address mode.
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+-static int st_micron_set_4byte(struct spi_nor *nor, bool enable)
++static int spi_nor_en4_ex4_wen_set_4byte(struct spi_nor *nor, bool enable)
+ {
+ 	int ret;
+ 
+@@ -619,7 +621,7 @@ static int st_micron_set_4byte(struct spi_nor *nor, bool enable)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = macronix_set_4byte(nor, enable);
++	ret = spi_nor_en4_ex4_set_4byte(nor, enable);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -703,7 +705,7 @@ static int winbond_set_4byte(struct spi_nor *nor, bool enable)
+ {
+ 	int ret;
+ 
+-	ret = macronix_set_4byte(nor, enable);
++	ret = spi_nor_en4_ex4_set_4byte(nor, enable);
+ 	if (ret || enable)
+ 		return ret;
+ 
+@@ -755,13 +757,13 @@ static int spi_nor_xread_sr(struct spi_nor *nor, u8 *sr)
+ }
+ 
+ /**
+- * s3an_sr_ready() - Query the Status Register of the S3AN flash to see if the
+- * flash is ready for new commands.
++ * spi_nor_xsr_ready() - Query the Status Register of the S3AN flash to see if
++ * the flash is ready for new commands.
+  * @nor:	pointer to 'struct spi_nor'.
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+-static int s3an_sr_ready(struct spi_nor *nor)
++static int spi_nor_xsr_ready(struct spi_nor *nor)
+ {
+ 	int ret;
+ 
+@@ -892,7 +894,7 @@ static int spi_nor_ready(struct spi_nor *nor)
+ 	int sr, fsr;
+ 
+ 	if (nor->flags & SNOR_F_READY_XSR_RDY)
+-		sr = s3an_sr_ready(nor);
++		sr = spi_nor_xsr_ready(nor);
+ 	else
+ 		sr = spi_nor_sr_ready(nor);
+ 	if (sr < 0)
+@@ -1784,8 +1786,8 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	return ret;
+ }
+ 
+-static void stm_get_locked_range(struct spi_nor *nor, u8 sr, loff_t *ofs,
+-				 uint64_t *len)
++static void spi_nor_get_locked_range_sr(struct spi_nor *nor, u8 sr, loff_t *ofs,
++					uint64_t *len)
+ {
+ 	struct mtd_info *mtd = &nor->mtd;
+ 	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
+@@ -1813,8 +1815,8 @@ static void stm_get_locked_range(struct spi_nor *nor, u8 sr, loff_t *ofs,
+  * Return 1 if the entire region is locked (if @locked is true) or unlocked (if
+  * @locked is false); 0 otherwise
+  */
+-static int stm_check_lock_status_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
+-				    u8 sr, bool locked)
++static int spi_nor_check_lock_status_sr(struct spi_nor *nor, loff_t ofs,
++					uint64_t len, u8 sr, bool locked)
+ {
+ 	loff_t lock_offs;
+ 	uint64_t lock_len;
+@@ -1822,7 +1824,7 @@ static int stm_check_lock_status_sr(struct spi_nor *nor, loff_t ofs, uint64_t le
+ 	if (!len)
+ 		return 1;
+ 
+-	stm_get_locked_range(nor, sr, &lock_offs, &lock_len);
++	spi_nor_get_locked_range_sr(nor, sr, &lock_offs, &lock_len);
+ 
+ 	if (locked)
+ 		/* Requested range is a sub-range of locked range */
+@@ -1832,16 +1834,16 @@ static int stm_check_lock_status_sr(struct spi_nor *nor, loff_t ofs, uint64_t le
+ 		return (ofs >= lock_offs + lock_len) || (ofs + len <= lock_offs);
+ }
+ 
+-static int stm_is_locked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
+-			    u8 sr)
++static int spi_nor_is_locked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
++				u8 sr)
+ {
+-	return stm_check_lock_status_sr(nor, ofs, len, sr, true);
++	return spi_nor_check_lock_status_sr(nor, ofs, len, sr, true);
+ }
+ 
+-static int stm_is_unlocked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
+-			      u8 sr)
++static int spi_nor_is_unlocked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
++				  u8 sr)
+ {
+-	return stm_check_lock_status_sr(nor, ofs, len, sr, false);
++	return spi_nor_check_lock_status_sr(nor, ofs, len, sr, false);
+ }
+ 
+ /*
+@@ -1876,7 +1878,7 @@ static int stm_is_unlocked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
+  *
+  * Returns negative on errors, 0 on success.
+  */
+-static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
++static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ {
+ 	struct mtd_info *mtd = &nor->mtd;
+ 	int ret, status_old, status_new;
+@@ -1894,16 +1896,16 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 	status_old = nor->bouncebuf[0];
+ 
+ 	/* If nothing in our range is unlocked, we don't need to do anything */
+-	if (stm_is_locked_sr(nor, ofs, len, status_old))
++	if (spi_nor_is_locked_sr(nor, ofs, len, status_old))
+ 		return 0;
+ 
+ 	/* If anything below us is unlocked, we can't use 'bottom' protection */
+-	if (!stm_is_locked_sr(nor, 0, ofs, status_old))
++	if (!spi_nor_is_locked_sr(nor, 0, ofs, status_old))
+ 		can_be_bottom = false;
+ 
+ 	/* If anything above us is unlocked, we can't use 'top' protection */
+-	if (!stm_is_locked_sr(nor, ofs + len, mtd->size - (ofs + len),
+-				status_old))
++	if (!spi_nor_is_locked_sr(nor, ofs + len, mtd->size - (ofs + len),
++				  status_old))
+ 		can_be_top = false;
+ 
+ 	if (!can_be_bottom && !can_be_top)
+@@ -1958,11 +1960,11 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ }
+ 
+ /*
+- * Unlock a region of the flash. See stm_lock() for more info
++ * Unlock a region of the flash. See spi_nor_sr_lock() for more info
+  *
+  * Returns negative on errors, 0 on success.
+  */
+-static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
++static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ {
+ 	struct mtd_info *mtd = &nor->mtd;
+ 	int ret, status_old, status_new;
+@@ -1980,16 +1982,16 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 	status_old = nor->bouncebuf[0];
+ 
+ 	/* If nothing in our range is locked, we don't need to do anything */
+-	if (stm_is_unlocked_sr(nor, ofs, len, status_old))
++	if (spi_nor_is_unlocked_sr(nor, ofs, len, status_old))
+ 		return 0;
+ 
+ 	/* If anything below us is locked, we can't use 'top' protection */
+-	if (!stm_is_unlocked_sr(nor, 0, ofs, status_old))
++	if (!spi_nor_is_unlocked_sr(nor, 0, ofs, status_old))
+ 		can_be_top = false;
+ 
+ 	/* If anything above us is locked, we can't use 'bottom' protection */
+-	if (!stm_is_unlocked_sr(nor, ofs + len, mtd->size - (ofs + len),
+-				status_old))
++	if (!spi_nor_is_unlocked_sr(nor, ofs + len, mtd->size - (ofs + len),
++				    status_old))
+ 		can_be_bottom = false;
+ 
+ 	if (!can_be_bottom && !can_be_top)
+@@ -2046,13 +2048,13 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ }
+ 
+ /*
+- * Check if a region of the flash is (completely) locked. See stm_lock() for
+- * more info.
++ * Check if a region of the flash is (completely) locked. See spi_nor_sr_lock()
++ * for more info.
+  *
+  * Returns 1 if entire region is locked, 0 if any portion is unlocked, and
+  * negative on errors.
+  */
+-static int stm_is_locked(struct spi_nor *nor, loff_t ofs, uint64_t len)
++static int spi_nor_sr_is_locked(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ {
+ 	int ret;
+ 
+@@ -2060,13 +2062,13 @@ static int stm_is_locked(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 	if (ret)
+ 		return ret;
+ 
+-	return stm_is_locked_sr(nor, ofs, len, nor->bouncebuf[0]);
++	return spi_nor_is_locked_sr(nor, ofs, len, nor->bouncebuf[0]);
+ }
+ 
+-static const struct spi_nor_locking_ops stm_locking_ops = {
+-	.lock = stm_lock,
+-	.unlock = stm_unlock,
+-	.is_locked = stm_is_locked,
++static const struct spi_nor_locking_ops spi_nor_sr_locking_ops = {
++	.lock = spi_nor_sr_lock,
++	.unlock = spi_nor_sr_unlock,
++	.is_locked = spi_nor_sr_is_locked,
+ };
+ 
+ static int spi_nor_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+@@ -4655,7 +4657,7 @@ static void issi_set_default_init(struct spi_nor *nor)
+ static void macronix_set_default_init(struct spi_nor *nor)
+ {
+ 	nor->params.quad_enable = spi_nor_sr1_bit6_quad_enable;
+-	nor->params.set_4byte = macronix_set_4byte;
++	nor->params.set_4byte = spi_nor_en4_ex4_set_4byte;
+ }
+ 
+ static void sst_set_default_init(struct spi_nor *nor)
+@@ -4668,7 +4670,7 @@ static void st_micron_set_default_init(struct spi_nor *nor)
+ 	nor->flags |= SNOR_F_HAS_LOCK;
+ 	nor->flags &= ~SNOR_F_HAS_16BIT_SR;
+ 	nor->params.quad_enable = NULL;
+-	nor->params.set_4byte = st_micron_set_4byte;
++	nor->params.set_4byte = spi_nor_en4_ex4_wen_set_4byte;
+ }
+ 
+ static void winbond_set_default_init(struct spi_nor *nor)
+@@ -4895,7 +4897,7 @@ static void spi_nor_late_init_params(struct spi_nor *nor)
+ 	 * the default ones.
+ 	 */
+ 	if (nor->flags & SNOR_F_HAS_LOCK && !nor->params.locking_ops)
+-		nor->params.locking_ops = &stm_locking_ops;
++		nor->params.locking_ops = &spi_nor_sr_locking_ops;
+ }
+ 
+ /**
+-- 
+2.23.0
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============6097530852881675451==--
-
