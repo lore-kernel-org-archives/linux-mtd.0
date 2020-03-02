@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43F44C3F2D1
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 Mar 2020 18:14:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D125BC3F2D1
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 Mar 2020 18:15:53 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 15FE52146E
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 Mar 2020 18:14:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 93FB620836
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 Mar 2020 18:15:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qZ/MNMAr";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="BcnxeJ5b"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 15FE52146E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="U/mu7hR8";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="mZ77aYJ+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 93FB620836
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,22 +26,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ngkFb9zZ0Xe/m6IjToTec0kOnwcZ9FXvKGUtXDzQai0=; b=qZ/MNMArZSSkzM
-	8mJVrhw6dzRk6BxTXb58h+dh0B5uanO7UNlG4LHtxY1uf01af1KyzuaSNK8u5wZW4iIMMWk5vPlef
-	d+D7u/p4HHzGDtlZ+1tQ7Hy8inB4ALD04sD/fkwrL77XzQEhk4z7YzOwiaxBlAETfjoQdo0XzrFKr
-	sDxPgIwXl4PjhpRgKlSlq33mNOu7BzRMBiRm9FWMExhggPebgs5zPOw7c8F530OtdrxRaiBytCbiV
-	AWzT/KKD203vKtRQkJEe8LvyvAfBXLq6Xjp8v5dMOy/Qt1M6GNqSszRJeSANzs5JNZ6vPWyfR+gHu
-	yYD1dZqSYXpwnrQwx1gQ==;
+	List-Owner; bh=WkmfXYXxDRhel721J661iVITBDvyGX/75msSuR4jRk8=; b=U/mu7hR8MIN8Hq
+	3eNz2GO9yLId2ivdZJ5JSKbd4VfYZHVhqcrKdWLFQIZvDhCdIZZg3gQomQhh1PKxlQDdvNHpCzICC
+	8zXNxMjxT3rHsk3nNXRqXPYmaNCdezaKkHZS2xxf7l6VHjU0pjER8NWsKumItSLPgpMxdSYBOMZm6
+	QuROY8a8QAhxkODTeNXZVx7t/GtyHEm90XvonA682E5GGEYJbo/GENWkMS68fo5jmfKsCzmgWK1sh
+	04lJYsqGpTgxs5bLfBWJhTgaAGbeQJ/b1sP0EtJ0ImSK9Egu5u0x8x4CtxY6ay+rHjb2RVCVvMl5v
+	Ul54ZiCbjdUuc6F8tbog==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j8pZh-0000MC-7y; Mon, 02 Mar 2020 18:13:53 +0000
-Received: from esa2.microchip.iphmx.com ([68.232.149.84])
+	id 1j8pbP-0002oP-Sp; Mon, 02 Mar 2020 18:15:39 +0000
+Received: from esa6.microchip.iphmx.com ([216.71.154.253])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j8pU3-0002x1-4h; Mon, 02 Mar 2020 18:08:09 +0000
-Received-SPF: Pass (esa2.microchip.iphmx.com: domain of
+ id 1j8pUR-0003HZ-TE; Mon, 02 Mar 2020 18:08:29 +0000
+Received-SPF: Pass (esa6.microchip.iphmx.com: domain of
  Tudor.Ambarus@microchip.com designates 198.175.253.82 as
  permitted sender) identity=mailfrom;
- client-ip=198.175.253.82; receiver=esa2.microchip.iphmx.com;
+ client-ip=198.175.253.82; receiver=esa6.microchip.iphmx.com;
  envelope-from="Tudor.Ambarus@microchip.com";
  x-sender="Tudor.Ambarus@microchip.com";
  x-conformance=spf_only; x-record-type="v=spf1";
@@ -49,41 +49,42 @@ Received-SPF: Pass (esa2.microchip.iphmx.com: domain of
  a:smtpout.microchip.com -exists:%{i}.spf.microchip.iphmx.com
  include:servers.mcsv.net include:mktomail.com
  include:spf.protection.outlook.com ~all"
-Received-SPF: None (esa2.microchip.iphmx.com: no sender
+Received-SPF: None (esa6.microchip.iphmx.com: no sender
  authenticity information available from domain of
  postmaster@email.microchip.com) identity=helo;
- client-ip=198.175.253.82; receiver=esa2.microchip.iphmx.com;
+ client-ip=198.175.253.82; receiver=esa6.microchip.iphmx.com;
  envelope-from="Tudor.Ambarus@microchip.com";
  x-sender="postmaster@email.microchip.com"; x-conformance=spf_only
-Authentication-Results: esa2.microchip.iphmx.com;
+Authentication-Results: esa6.microchip.iphmx.com;
  spf=Pass smtp.mailfrom=Tudor.Ambarus@microchip.com;
  spf=None smtp.helo=postmaster@email.microchip.com;
  dmarc=pass (p=none dis=none) d=microchip.com
-IronPort-SDR: ir1sRq5CHqUc8w8XpAlETMjUgg2nqqKiqMxqQQnN+kI1Nx+BixCtjB6ipV4P/2DtIALY7LLsrp
- eK0BzbLpJjCizHqkhRyJVlMp6C8QuCa27B12onNEJNavatJqzrTAStepYXVE4CO+R9EIvCl85d
- TaPutvRp4ZhvHcN5xrwRVizeVM/7G/RT4JsKMeAqvlFrvYKQidXWA1of5czV9A76cbYSULlMD+
- 9Pv2V3GqK66JXH5dwcq389R7XkVqfNp3DZoF6Kq3x5kqF4hsZoQd2cbjK3A1kKQVgJcP/BQ457
- Q8M=
-X-IronPort-AV: E=Sophos;i="5.70,507,1574146800"; d="scan'208";a="67601716"
+IronPort-SDR: 1nYaE80exlDZZGoy0sJsLgj6w5RFKPzUPvcZMrsiXcfOfOq4w1ul62zyXFefL6QOBk6uHwr+H+
+ /QjG9arlTQ6kC+WE3cNiG820Z1OlUioSklmbl2MKzu8zgeVaIt2HZ6HT5yhF3d2u5qpIdhjq8i
+ TF2agwbC/99N+R2fffat39rFDJhjwB2U7g/klXmIS9udMsL4l9OYxX933T8c2ZAsMOAPy9+wXe
+ byquWC5DrBRF5L9HYcuxyTbpvvh3bwFs3MuuqJhwyP2dZ85z4L2qnyVwjjWuCerxlZPXAyQ/9s
+ blg=
+X-IronPort-AV: E=Sophos;i="5.70,507,1574146800"; 
+   d="scan'208";a="4204979"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
- by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 02 Mar 2020 11:07:56 -0700
+ by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 02 Mar 2020 11:07:59 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 2 Mar 2020 11:07:56 -0700
+ 15.1.1713.5; Mon, 2 Mar 2020 11:07:58 -0700
 Received: from NAM12-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
  email.microchip.com (10.10.87.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Mon, 2 Mar 2020 11:07:56 -0700
+ via Frontend Transport; Mon, 2 Mar 2020 11:07:58 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FqYA5Aysul55Fkr0QNtW69CNPiPHlvU6AQ5/EmVvDJrRJFzbke/I2zR+NKNoXwOq5mw/XyrG+IF+tgOzhZlH0IxUfTdu7ya+C5H3RvEeb2UEEcAAuqvluxanexDW9CUIyEW+GTDq4ORijueKfz1dB8I2yR8tt0U5aLSH+s/brB7hMep5114FKSIn0NruSOrLKTkhnUmo+b0VfXPhBiUCOoBfowhxdauHa6UHSZSIJ8LipU/W5kvSB+G5TryQ17+F2GDNeGuBV0QE/M2PRq4JTYJY7Ip8ROQZ6ywcchSHlkGUBUULSWdl1U4gzWofhTwQCdDHHk08nxpyci5HIVS80w==
+ b=Y/2TdvHXIC1kwkz2uqyRQ0QhqgJLo2UiyKkCj/U2DpI8UwVap2t0RfR3lM1z2d+6O1A7qHGzjV9fQlSBv4Jc6ZZQM06KjmCfgTQKmnoocSVLz77ZlO7ID+wnGy26gg4d70OE1OIe9Zyh/yqvOKdobDGJWVFhu6qzVJwxl6mibC1Qql8S6JAxoiAcAg8FDaQc2JvLITBgJoku3kFFQFqIGWU+lFZwiztW8KOHW26AgRPj7FFNsHcOlSsI0oYM9jjzQQrzj6g7y4jEQ/yCHzt2Rr9OzkA5ZuMbZAzXf5/NdpIC7qet7gEZPsfIOx4xcd9JVJusYTrYY02URU5S0+SSzQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R+qSak5xs4cVCUwM0lIrfQmNKhPeH8NwgE4MxqkZCHo=;
- b=iSgvY8O0Kjmh9Gc4o7eJcdBWuYDBtq1U61Tn4Ph5+xALJx7iaDlxJa0C7bOsxa2BIg/aVX+S6ECGquAimW67ivHYgXdxZlGaBuB6vTUiHjpwJ/goI2bR0FggWOwkZkJ8WlrNla9/xRUdX6mdbd2R3PpPq+sTR0wxnEYORwMkSttvIwLCisCiBbaVu4TuWCAJ/wX6MLayttktpXh7RxV7+Rii62ibNLQTh+pDpMfQlUlZRLeg5Tml9k83UP5c6vDcRXFUOsCv6PKxnJCO/bpZYMPIiO5id5MZ5M8k9tVNRcXuzXawGHx4Hx5PBNbiDY9hdiZUo5OhyXjRj/GqqKkLgw==
+ bh=zQNxp4/ODycXKKWExtuP8d3tzJEpIVsJwFcPOHPtdiU=;
+ b=hSf204sI3UmKSftOHgkOHIH2t27G7PeAoZBEhX2Mly4z8txoGjFdzlRL7jbLbjx440O7k/t4QKD9nQ4XR5qKZba6pwysnkHnvCxO6LgOAWBjixU5d4iXyG9y5J8SU3cfaNc7kn8JTuvCMfwMJjSchUfauXHEqBL6fZT/zulksg9YZ/kuvLf62NOUZ/G1Mbr0ah7ee2KeKJf1ejOHnqjWjLSEF3lfcqf13CBEpdBmwsGXusIj6cpJqJ3MG+iuhhl72vuYtUfGnvVe9gGbpHlD6iH/tp6tWw9Prur++V5yYUIe/aBQFM3g9doGG0aR7T9LuGQOyjb+6TpLUyGGYfXECA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=microchip.com; dmarc=pass action=none
  header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
@@ -91,24 +92,24 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=microchiptechnology.onmicrosoft.com;
  s=selector2-microchiptechnology-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R+qSak5xs4cVCUwM0lIrfQmNKhPeH8NwgE4MxqkZCHo=;
- b=BcnxeJ5bXxmC6fOrjxVkNYHjxreEYqfwVNFRpgimWbrfgqx0mD7XgOqExvoW6vCzu4OSKsWnuBvKGFJvhJ31k841j//vqxjxOEh3IuMbn5EVhgcbTyiZ9EP0w4ag0tFKxP+Cl9YLyNfJZGdNi+NMZgSHRYibCpYy9v/qI5VUOvw=
+ bh=zQNxp4/ODycXKKWExtuP8d3tzJEpIVsJwFcPOHPtdiU=;
+ b=mZ77aYJ+eRREU0KWiHW+nEyvFRRz0p6cvIAnlm5iIDFK/B81MiCkxdC/JXOY7G0kh27uwqG+UiQEnxZxi7q5zHNe7NsLOIoiDv7FCjhvowRd0/fXYTT9IHjXtvAW7C8xS6ojy4DXSUZsUX/btA4o2Q9tJpAk01SDK7YcVzl8tmg=
 Received: from MN2PR11MB4448.namprd11.prod.outlook.com (2603:10b6:208:193::29)
  by MN2PR11MB4142.namprd11.prod.outlook.com (2603:10b6:208:135::29)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2772.14; Mon, 2 Mar
- 2020 18:07:49 +0000
+ 2020 18:07:52 +0000
 Received: from MN2PR11MB4448.namprd11.prod.outlook.com
  ([fe80::3c8f:7a55:cbd:adfb]) by MN2PR11MB4448.namprd11.prod.outlook.com
  ([fe80::3c8f:7a55:cbd:adfb%5]) with mapi id 15.20.2772.019; Mon, 2 Mar 2020
- 18:07:49 +0000
+ 18:07:52 +0000
 From: <Tudor.Ambarus@microchip.com>
 To: <bbrezillon@kernel.org>, <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH 08/23] mtd: spi-nor: Move ESMT bits out of core.c
-Thread-Topic: [PATCH 08/23] mtd: spi-nor: Move ESMT bits out of core.c
-Thread-Index: AQHV8L17GIvmS/f6zEOqYBeDtEU3XQ==
-Date: Mon, 2 Mar 2020 18:07:49 +0000
-Message-ID: <20200302180730.1886678-9-tudor.ambarus@microchip.com>
+Subject: [PATCH 12/23] mtd: spi-nor: Move Intel bits out of core.c
+Thread-Topic: [PATCH 12/23] mtd: spi-nor: Move Intel bits out of core.c
+Thread-Index: AQHV8L19tRI2pepxgUmer4ve1YM+Ww==
+Date: Mon, 2 Mar 2020 18:07:51 +0000
+Message-ID: <20200302180730.1886678-13-tudor.ambarus@microchip.com>
 References: <20200302180730.1886678-1-tudor.ambarus@microchip.com>
 In-Reply-To: <20200302180730.1886678-1-tudor.ambarus@microchip.com>
 Accept-Language: en-US
@@ -117,10 +118,10 @@ X-MS-Has-Attach:
 X-MS-TNEF-Correlator: 
 x-originating-ip: [94.177.32.156]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 11ee166a-0b9e-4d93-8471-08d7bed49e6c
+x-ms-office365-filtering-correlation-id: 8ff69d23-3630-49fe-df19-08d7bed4a033
 x-ms-traffictypediagnostic: MN2PR11MB4142:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR11MB4142DDBF2E550981A7EE3A3FF0E70@MN2PR11MB4142.namprd11.prod.outlook.com>
+x-microsoft-antispam-prvs: <MN2PR11MB4142EEE16E90847884C1B677F0E70@MN2PR11MB4142.namprd11.prod.outlook.com>
 x-ms-oob-tlc-oobclassifiers: OLM:7219;
 x-forefront-prvs: 033054F29A
 x-forefront-antispam-report: SFV:NSPM;
@@ -132,19 +133,19 @@ received-spf: None (protection.outlook.com: microchip.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: rTYQfk3ArjFupYtRS/3APEMwZeizfxv1bFjmPbxzR+3MfxpOloa8ukKcPM2r1xweq3hphPZwRUK4FSOs0Ubx9KnilIn6KhaV/DL2POTW41ML3+zYdVGlkLTOODox0LTDe98dJElut4XuKFVPJqLQ2jFe6UZN0WpVCVBpGXbiVBJmyteltDlJIK1+noj05xDVwHmGcpufy+4Krfqsy63PhDky0twoomjrLrjpRADSEeRiRvaAFJM4xaOm7JDX6QpNaYJEeUjexsLbfBbyWRGW/Q3JuECL0i6JMozRT2ROcd4NLhkznhDEGnduJR6P2e9T2faO6vU29XbxmJbFHdRlos3SmIc0kSMlFrC9JUdTRwqcZ1qBd/iZOXJCwy3kfb5VauxrkmkS+NTalyw6Zj12MZos6mCL+F71vjXQfTsjer1UAlITR0vPi300J97JHYnE
-x-ms-exchange-antispam-messagedata: 2+Z1n+paUUvVyW8ibUYqdCZ99hxH9z9N0z+H3y6T4BHO786hpxKWgocKHcF+ixjfg5JcePhCL0Gw4tsyf+TJwCI3wp+LlV0SXQr58sWf4yiQDl/Ypv9WAV3kuJ8fXj8h+fd8YYbJYNMGTJSRtqJqfw==
+x-microsoft-antispam-message-info: QosRsB37Eog11MyfspnZMxAD931GMLMSmhKObsuGSKyRsHc7c5/xOUJR+tfktR5W5Un7kl72PFkeNDyoB3cFt0EkmcHLpydjVapnnAZkxcy6UwE0HCv0XyTXtje4l/ZklQ5/lNGtMk+l8Ofu7ivWOib5dhc0CfBKHcS2QTjzWYGi56F1dSo29ttMKN2lasGDY5MTrzUKgq93I0XobMS/ZX8J47d+YljYZ4eg63rFarsusTZB2eDfUN4SPmqIJ1T25c6zrX8/84KWPtBw/EgnML+xEJcxwW/XaTwCNJ5LA0QnETcH+qfqTmlRdXl2s/J3BCfc1uafMaEYtummZO/uMEejww0tpzziBOTgv8Jcdj8o8/qlShIUKUS0Ldf0jsaJMuvUo/0JibfPZpTGD6GKkK5r0UdVJaCLpi17MaaNUIlSiYcNHepFf4aKPwCqW2KV
+x-ms-exchange-antispam-messagedata: Z1XhK57Te0p/eUDsW3EYUAExzGn0IbcUYjLe33QTtZ2fUpzX163F1HgRjHPu7hI6IeHC2I+xWLwBsyTDmxZqW/+hsx/1M9MqTc6p96sTvh6x03nW95RhGvIV6YrRc9rwLrrU3751VZ9d3ldUNxhJYw==
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 11ee166a-0b9e-4d93-8471-08d7bed49e6c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Mar 2020 18:07:49.4651 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8ff69d23-3630-49fe-df19-08d7bed4a033
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Mar 2020 18:07:51.5759 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: kAe5MkJHJUcfO3UqOJfz2s8eRTonOPHj0fAiRPgIG7I/K1J6R7sVP2X3Kv9ry117Ir3Emb/1CCQ9671yrboIQyrg2/B1vUIZus5E3APPVKw=
+X-MS-Exchange-CrossTenant-userprincipalname: yete0sVdh66DphObvTLX9PwnrmZ13j7W97BxCdmO0Q8vCXSf9A8Qy+CFvR9vfOr9UOURlRzVKRUMwFODCpcIsOr3HFxhQ+SC/t+mJNSBTc0=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4142
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200302_100803_236318_DABFDB05 
-X-CRM114-Status: GOOD (  11.86  )
+X-CRM114-CacheID: sfid-20200302_100828_012139_ECC0422D 
+X-CRM114-Status: GOOD (  11.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -175,71 +176,94 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Boris Brezillon <bbrezillon@kernel.org>
 
-Create a SPI NOR manufacturer driver for ESMT chips, and move the
-ESMT definitions outside of core.c.
+Create a SPI NOR manufacturer driver for Intel chips, and move the
+Intel definitions outside of core.c.
 
 Signed-off-by: Boris Brezillon <bbrezillon@kernel.org>
 Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
  drivers/mtd/spi-nor/Makefile |  1 +
- drivers/mtd/spi-nor/core.c   |  6 +-----
+ drivers/mtd/spi-nor/core.c   | 15 +--------------
  drivers/mtd/spi-nor/core.h   |  1 +
- drivers/mtd/spi-nor/esmt.c   | 25 +++++++++++++++++++++++++
- 4 files changed, 28 insertions(+), 5 deletions(-)
- create mode 100644 drivers/mtd/spi-nor/esmt.c
+ drivers/mtd/spi-nor/intel.c  | 32 ++++++++++++++++++++++++++++++++
+ 4 files changed, 35 insertions(+), 14 deletions(-)
+ create mode 100644 drivers/mtd/spi-nor/intel.c
 
 diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-index e1bc8ccfe14d..4e5ef10e4fd7 100644
+index 38f704be4b03..8eb741a27fa7 100644
 --- a/drivers/mtd/spi-nor/Makefile
 +++ b/drivers/mtd/spi-nor/Makefile
-@@ -3,4 +3,5 @@
- spi-nor-objs			:= core.o sfdp.o
- spi-nor-objs			+= atmel.o
- spi-nor-objs			+= eon.o
-+spi-nor-objs			+= esmt.o
+@@ -7,4 +7,5 @@ spi-nor-objs			+= esmt.o
+ spi-nor-objs			+= everspin.o
+ spi-nor-objs			+= fujitsu.o
+ spi-nor-objs			+= gigadevice.o
++spi-nor-objs			+= intel.o
  obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 67a3493939f6..30a0ddc6de81 100644
+index 8520423b1104..2f47852a3a01 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -2079,11 +2079,6 @@ static struct spi_nor_fixups gd25q256_fixups = {
+@@ -2064,11 +2064,6 @@ static struct spi_nor_fixups mx25l25635_fixups = {
   * old entries may be missing 4K flag.
   */
  static const struct flash_info spi_nor_ids[] = {
--	/* ESMT */
--	{ "f25l32pa", INFO(0x8c2016, 0, 64 * 1024, 64, SECT_4K | SPI_NOR_HAS_LOCK) },
--	{ "f25l32qa", INFO(0x8c4116, 0, 64 * 1024, 64, SECT_4K | SPI_NOR_HAS_LOCK) },
--	{ "f25l64qa", INFO(0x8c4117, 0, 64 * 1024, 128, SECT_4K | SPI_NOR_HAS_LOCK) },
+-	/* Intel/Numonyx -- xxxs33b */
+-	{ "160s33b",  INFO(0x898911, 0, 64 * 1024,  32, 0) },
+-	{ "320s33b",  INFO(0x898912, 0, 64 * 1024,  64, 0) },
+-	{ "640s33b",  INFO(0x898913, 0, 64 * 1024, 128, 0) },
 -
- 	/* Everspin */
- 	{ "mr25h128", CAT25_INFO( 16 * 1024, 1, 256, 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
- 	{ "mr25h256", CAT25_INFO( 32 * 1024, 1, 256, 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
-@@ -2439,6 +2434,7 @@ static const struct flash_info spi_nor_ids[] = {
- static const struct spi_nor_manufacturer *manufacturers[] = {
- 	&spi_nor_atmel,
- 	&spi_nor_eon,
-+	&spi_nor_esmt,
+ 	/* ISSI */
+ 	{ "is25cd512",  INFO(0x7f9d20, 0, 32 * 1024,   2, SECT_4K) },
+ 	{ "is25lq040b", INFO(0x9d4013, 0, 64 * 1024,   8,
+@@ -2370,6 +2365,7 @@ static const struct spi_nor_manufacturer *manufacturers[] = {
+ 	&spi_nor_everspin,
+ 	&spi_nor_fujitsu,
+ 	&spi_nor_gigadevice,
++	&spi_nor_intel,
  };
  
  static const struct flash_info *
+@@ -3149,11 +3145,6 @@ static int spi_nor_setup(struct spi_nor *nor,
+ 	return nor->params.setup(nor, hwcaps);
+ }
+ 
+-static void intel_set_default_init(struct spi_nor *nor)
+-{
+-	nor->flags |= SNOR_F_HAS_LOCK;
+-}
+-
+ static void issi_set_default_init(struct spi_nor *nor)
+ {
+ 	nor->params.quad_enable = spi_nor_sr1_bit6_quad_enable;
+@@ -3192,10 +3183,6 @@ static void spi_nor_manufacturer_init_params(struct spi_nor *nor)
+ {
+ 	/* Init flash parameters based on MFR */
+ 	switch (JEDEC_MFR(nor->info)) {
+-	case SNOR_MFR_INTEL:
+-		intel_set_default_init(nor);
+-		break;
+-
+ 	case SNOR_MFR_ISSI:
+ 		issi_set_default_init(nor);
+ 		break;
 diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 1ac226c456e1..23ce99fb8087 100644
+index c44802a05532..c4c23efaa68b 100644
 --- a/drivers/mtd/spi-nor/core.h
 +++ b/drivers/mtd/spi-nor/core.h
-@@ -169,6 +169,7 @@ struct spi_nor_manufacturer {
- /* Manufacturer drivers. */
- extern const struct spi_nor_manufacturer spi_nor_atmel;
- extern const struct spi_nor_manufacturer spi_nor_eon;
-+extern const struct spi_nor_manufacturer spi_nor_esmt;
+@@ -173,6 +173,7 @@ extern const struct spi_nor_manufacturer spi_nor_esmt;
+ extern const struct spi_nor_manufacturer spi_nor_everspin;
+ extern const struct spi_nor_manufacturer spi_nor_fujitsu;
+ extern const struct spi_nor_manufacturer spi_nor_gigadevice;
++extern const struct spi_nor_manufacturer spi_nor_intel;
  
  int spi_nor_write_enable(struct spi_nor *nor);
  int spi_nor_write_disable(struct spi_nor *nor);
-diff --git a/drivers/mtd/spi-nor/esmt.c b/drivers/mtd/spi-nor/esmt.c
+diff --git a/drivers/mtd/spi-nor/intel.c b/drivers/mtd/spi-nor/intel.c
 new file mode 100644
-index 000000000000..c93170008118
+index 000000000000..d8196f101368
 --- /dev/null
-+++ b/drivers/mtd/spi-nor/esmt.c
-@@ -0,0 +1,25 @@
++++ b/drivers/mtd/spi-nor/intel.c
+@@ -0,0 +1,32 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Copyright (C) 2005, Intec Automation Inc.
@@ -250,20 +274,27 @@ index 000000000000..c93170008118
 +
 +#include "core.h"
 +
-+static const struct flash_info esmt_parts[] = {
-+	/* ESMT */
-+	{ "f25l32pa", INFO(0x8c2016, 0, 64 * 1024, 64,
-+			   SECT_4K | SPI_NOR_HAS_LOCK) },
-+	{ "f25l32qa", INFO(0x8c4116, 0, 64 * 1024, 64,
-+			   SECT_4K | SPI_NOR_HAS_LOCK) },
-+	{ "f25l64qa", INFO(0x8c4117, 0, 64 * 1024, 128,
-+			   SECT_4K | SPI_NOR_HAS_LOCK) },
++static const struct flash_info intel_parts[] = {
++	/* Intel/Numonyx -- xxxs33b */
++	{ "160s33b",  INFO(0x898911, 0, 64 * 1024,  32, 0) },
++	{ "320s33b",  INFO(0x898912, 0, 64 * 1024,  64, 0) },
++	{ "640s33b",  INFO(0x898913, 0, 64 * 1024, 128, 0) },
 +};
 +
-+const struct spi_nor_manufacturer spi_nor_esmt = {
-+	.name = "esmt",
-+	.parts = esmt_parts,
-+	.nparts = ARRAY_SIZE(esmt_parts),
++static void intel_default_init(struct spi_nor *nor)
++{
++	nor->flags |= SNOR_F_HAS_LOCK;
++}
++
++static const struct spi_nor_fixups intel_fixups = {
++	.default_init = intel_default_init,
++};
++
++const struct spi_nor_manufacturer spi_nor_intel = {
++	.name = "intel",
++	.parts = intel_parts,
++	.nparts = ARRAY_SIZE(intel_parts),
++	.fixups = &intel_fixups,
 +};
 -- 
 2.23.0
