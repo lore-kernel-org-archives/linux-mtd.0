@@ -2,88 +2,88 @@ Return-Path: <SRS0=I4i7=4T=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FBA8C3F2D1
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 Mar 2020 07:58:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D5FCC3F2D1
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 Mar 2020 08:02:54 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E6BC724699
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 Mar 2020 07:57:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 97C7624699
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 Mar 2020 08:02:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VVaH1JU0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E6BC724699
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qdzNyfwP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 97C7624699
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kontron.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3Ji2AmhtWovRvRoVwbEXmk6ZkMjmwE8XeTSbWIaIxrQ=; b=VVaH1JU0G5uevu
-	cMwhFiS340DJ8dg1R+T6cnic5iM7Gf7QU0txXLxaap6Ke3Ui8ydyqPZEBGRhmR+R8tmzVzdfY/mHF
-	1ipJ3aF3mG/vZfq2Q03SW0sRcrGxp9ayCMXtpG85gey2ZYU4iUV2Sz2qqhZzQmwqJUWWgBDDcccis
-	c1/hLqEtxu5dBEe0J3NRIO/On4J2QKI5x+q7nEAbIpNdYRbZvd7+wG4oVhlKmtr38bvz0q5xfSE4X
-	o+UQM4vQZOW1k29Te5rbLimIR6Qk4Vc6yuyeuyJau07sa3xwvCbg0aIgdzlEjqW4knfb4IjJXxPMS
-	IvbP7/bP4LMpgXUTdYuw==;
+	List-Owner; bh=fyeYvy0ksvdlmr9wP1VaZnxREYo9aU1iXd+pFto8SFA=; b=qdzNyfwPcfHIcF
+	wDJQA8o/G0NSXOVrBvx3E/lb45N5g1ip5e8xWf4mbQnGqvyo9fi5+NaCrnsaklfXoFiW46ofDxI9h
+	+wpiIPzdCSTt7WZFeu0GgQp9EeVbG8agRGW2MIOcfmd2zbmyyAZp8i2R0so3/85TcEWDavR//E+ot
+	0GoZH91zMj6z/H2Hlq8NUofSydXJS2b9p4nTzyM1En8iQcXwb7JPU22tFs7FW0OJPMsCrLk6bb94K
+	85XoXcS/HRr22CI8mwfdfVahl2hWEGKZcuVrSQe67p26KgwzOk9ObmXgmmsQ6aa0QWI0mVfng+bdP
+	uq6no80Bedd+89o8dfaw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1j8fxL-00071x-Qj; Mon, 02 Mar 2020 07:57:39 +0000
-Received: from mx1.unisoc.com ([222.66.158.135] helo=SHSQR01.spreadtrum.com)
+	id 1j8g26-0000dy-CO; Mon, 02 Mar 2020 08:02:34 +0000
+Received: from skedge04.snt-world.com ([91.208.41.69])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j8fxH-000717-Lp
- for linux-mtd@lists.infradead.org; Mon, 02 Mar 2020 07:57:38 +0000
-Received: from ig2.spreadtrum.com (shmbx04.spreadtrum.com [10.0.1.214])
- by SHSQR01.spreadtrum.com with ESMTPS id 0227uuva034073
- (version=TLSv1 cipher=AES256-SHA bits=256 verify=NO);
- Mon, 2 Mar 2020 15:56:56 +0800 (CST)
- (envelope-from Carson.Li1@unisoc.com)
-Received: from SHMBX04.spreadtrum.com (10.0.1.214) by shmbx04.spreadtrum.com
- (10.0.1.214) with Microsoft SMTP Server (TLS) id 15.0.847.32; Mon, 2 Mar 2020
- 15:56:56 +0800
-Received: from SHMBX04.spreadtrum.com ([fe80::8532:ef18:9217:26f5]) by
- shmbx04.spreadtrum.com ([fe80::8532:ef18:9217:26f5%13]) with mapi id
- 15.00.0847.030; Mon, 2 Mar 2020 15:56:56 +0800
-From: =?utf-8?B?5p2O5YKy5YKyIChDYXJzb24gTGkxLzk1NDIp?= <Carson.Li1@unisoc.com>
-To: Hou Tao <houtao1@huawei.com>, Richard Weinberger <richard@nod.at>
-Subject: RE: ubifs: read bad node type in ubifs_tnc_read_wbuf
-Thread-Topic: ubifs: read bad node type in ubifs_tnc_read_wbuf
-Thread-Index: AQHVyaL3y4TC5HCNzkiSy+TVWaB7mKfpWzQwG5Qm157/JAOmUHIw88Ik/HDzxSCANiTskIAKghsAgAFc6YD//9dEAAARFrMAAK2+roAAEgFJ4P//wsIA//9zlBA=
-Date: Mon, 2 Mar 2020 07:56:55 +0000
-Message-ID: <0b5d3e537a3f43db86f34cd695906173@shmbx04.spreadtrum.com>
-References: <e2d34800d72243ed85e8df63bb80f7ab@shmbx04.spreadtrum.com>
- <ce621148db0e4f9c80f32c348975663a@shmbx04.spreadtrum.com>
- <ae16d475c0d24c1ba6ab18f1e766e928@shmbx04.spreadtrum.com>
- <46e2f6ca11a442f38d476d4346e8034c@shmbx04.spreadtrum.com>
- <733427970.19532.1578872935782.JavaMail.zimbra@nod.at>
- <5077cb7894bc4b95b09389059edf0ddc@shmbx04.spreadtrum.com>
- <1323907091.20398.1578989376426.JavaMail.zimbra@nod.at>
- <51cabef7ce104de097c2556a4a24d8a7@shmbx04.spreadtrum.com>
- <1741454272.21050.1579043778589.JavaMail.zimbra@nod.at>
- <c62bae00e0d741cc9be1752b139c42d6@shmbx04.spreadtrum.com>
- <fda84926-09d1-1fc7-4b78-99e0d04508bc@huawei.com>
- <e6df93725ef24b548eef69afbbfc15f8@shmbx04.spreadtrum.com>
- <6cf2ba81-98ad-c03f-59b9-b871c7979df6@huawei.com>
- <3768e0805ba349f487214bef018f1853@shmbx04.spreadtrum.com>
- <6387af1b-d5a8-a175-6936-1f5f3ab003a4@huawei.com>
- <6a8b67e4baf44534b6c92c80a0edbdd3@shmbx04.spreadtrum.com>
- <43120885-5bc8-9850-6f14-8e2a637cbeaf@huawei.com>
-In-Reply-To: <43120885-5bc8-9850-6f14-8e2a637cbeaf@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
+ id 1j8g23-0000dI-KC
+ for linux-mtd@lists.infradead.org; Mon, 02 Mar 2020 08:02:33 +0000
+Received: from sntmail11s.snt-is.com (unknown [10.203.32.181])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by skedge04.snt-world.com (Postfix) with ESMTPS id 8244767A863;
+ Mon,  2 Mar 2020 09:02:26 +0100 (CET)
+Received: from sntmail12r.snt-is.com (10.203.32.182) by sntmail11s.snt-is.com
+ (10.203.32.181) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 2 Mar 2020
+ 09:02:25 +0100
+Received: from sntmail12r.snt-is.com ([fe80::e551:8750:7bba:3305]) by
+ sntmail12r.snt-is.com ([fe80::e551:8750:7bba:3305%3]) with mapi id
+ 15.01.1913.005; Mon, 2 Mar 2020 09:02:25 +0100
+From: Schrempf Frieder <frieder.schrempf@kontron.de>
+To: Yoshio Furuyama <ytc-mb-yfuruyama7@kioxia.com>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "vigneshr@ti.com"
+ <vigneshr@ti.com>
+Subject: Re: [PATCH v2 1/2] mtd: spinand: toshiba: Rename function name to
+ change suffix and prefix (8Gbit)
+Thread-Topic: [PATCH v2 1/2] mtd: spinand: toshiba: Rename function name to
+ change suffix and prefix (8Gbit)
+Thread-Index: AQHV7eTlRd9hc/zyAkCXSXtt7ixwU6g05USA
+Date: Mon, 2 Mar 2020 08:02:25 +0000
+Message-ID: <d2837c89-c9b2-fd18-d090-567f2a90cf75@kontron.de>
+References: <cover.1582603241.git.ytc-mb-yfuruyama7@kioxia.com>
+ <41b30e2d308ec7f252d71970a2ed1c29cd25c0d7.1582603241.git.ytc-mb-yfuruyama7@kioxia.com>
+In-Reply-To: <41b30e2d308ec7f252d71970a2ed1c29cd25c0d7.1582603241.git.ytc-mb-yfuruyama7@kioxia.com>
+Accept-Language: de-DE, en-US
+Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-originating-ip: [10.0.1.253]
+x-originating-ip: [172.25.9.193]
+x-c2processedorg: 51b406b7-48a2-4d03-b652-521f56ac89f3
+Content-ID: <9B3931318D729441BBDCA09726B59C7A@snt-world.com>
 MIME-Version: 1.0
-X-MAIL: SHSQR01.spreadtrum.com 0227uuva034073
+X-SnT-MailScanner-Information: Please contact the ISP for more information
+X-SnT-MailScanner-ID: 8244767A863.ACF19
+X-SnT-MailScanner: Not scanned: please contact your Internet E-Mail Service
+ Provider for details
+X-SnT-MailScanner-SpamCheck: 
+X-SnT-MailScanner-From: frieder.schrempf@kontron.de
+X-SnT-MailScanner-To: linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
+ vigneshr@ti.com, ytc-mb-yfuruyama7@kioxia.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200301_235736_398999_3FE76400 
-X-CRM114-Status: UNSURE (   5.71  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200302_000231_991997_70F6040E 
+X-CRM114-Status: GOOD (  18.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,88 +95,196 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gTW9uZGF5LCBNYXJjaCAyLCAyMDIwIDI6MzUgUE0sIEhvdSBUYW88aG91dGFvMUBodWF3ZWku
-Y29tPiB3cm90ZToNCg0KPj4+IFRoZSBhY3R1YWwgc2l0dWF0aW9uIG9mIHRoZSBwcm9ibGVtIGlz
-IHRoZSBMRUIgaXMgR0NlZCwgZnJlZWQgYW5kIHRoZW4NCj4+PiByZXVzZWQgYXMgam91cm5hbCBo
-ZWFkLCBhbmQgZmluYWxseSB1Ymlmc190bmNfbG9jYXRlKCkgcmVhZHMgYW4gaW52YWxpZCBub2Rl
-Lg0KPj4NCj4+IEFjdHVhbGx5LCBJIHRoaW5rIHRoYXQgc2l0dWF0aW9uIG1pZ2h0IG9ubHkgYmUg
-Y2F1c2VkIGJ5IGEgY29tbWl0LCBpcyB0aGF0IHJpZ2h0Pw0KPj4gU2luY2Ugb25seSBjb21taXQg
-bWlnaHQgY2xlYXIgdGhlIGpvdXJuYWwgaGVhZCBMRUJzJyBwcm9wZXJ0eSBvZiBMUFJPUFNfVEFL
-RU4uDQo+PiBCdXQgaXQgd2lsbCBub3QgZ2V0IHRoZSBjLT5qaGVhZHNbaV0ud2J1Zi0+bG51bSBM
-RUIncyB0YWtlbiBwcm9wZXJ0eSBjbGVhcmVkLCBzbyB0aGVyZQ0KPj4gc2VlbXMgbm8gbmVlZCB0
-byBjaGVjayBpZiBhIGMtPmpoZWFkc1tpXS53YnVmLT5sbnVtIExFQiBtaWdodCBiZSBHQ2VkIGFu
-ZCB0aGUNCj4+IG5vZGUgd2hldGhlciBmdWxseSBzaXRzIGluIHdpcnRlIGJ1ZmZlci4NCj5Oby4g
-VGhlIEdDJ2VkIGNoZWNraW5nIGlzIG5lZWRlZCBoZXJlLiBBcyBJIGhhdmUgbm90ZWQgaW4gdGhl
-IGNvbW1pdCBtZXNzYWdlOg0KDQo+PkFuZCBpdCBjYW4gYmUgcmVwcm9kdWNlZCBieSB0aGUgZm9s
-bG93aW5nIHN0ZXBzOg0KPj4qIGNyZWF0ZSAxMjggZW1wdHkgZmlsZXMNCj4+KiBvdmVyd3JpdGUg
-OCBmaWxlcyBpbiBiYWNrZ3JvdXAgcmVwZWF0ZWRseSB0byB0cmlnZ2VyIEdDDQo+PiogZHJvcCBp
-bm9kZSBjYWNoZSBhbmQgc3RhdCB0aGVzZSAxMjggZW1wdHkgZmlsZXMgcmVwZWF0ZWRseQ0KDQo+
-SW4gdGhlIGFib3ZlIHN0ZXBzLCB0aGUgbm9kZXMgcmVsYXRlZCB3aXRoIHRoZXNlIGVtcHR5IGZp
-bGVzIGFyZSBhbHJlYWR5IGJlZW4gY29tbWl0dGVkDQo+bG9uZyBiZWZvcmUgdGhlIHJ1bm5pbmcg
-b2Ygc3RhdCBjb21tYW5kLg0KDQpTb3JyeSwgSSBhbSBhIGxpdHRsZSBjb25mdXNlZCBieSB5b3Vy
-IGNvbW1lbnQgc2F5aW5nIHRoZSBub2RlcyBhcmUgYWxyZWFkeSBiZWVuIGNvbW1pdHRlZA0KbG9u
-ZyBiZWZvcmUgdGhlIHJ1bm5pbmcgb2Ygc3RhdCBjb21tYW5kLg0KSXQgb25seSBoYXBwZW5zIHdo
-ZW4gdGhlcmUgaXMgYSBjb21taXQgYmV0d2VlbiB0bmNfbXV0ZXggcmVsZWFzZWQgYW5kIHViaWZz
-X3JlYWRfbm9kZV93YnVmDQpleGVjdXRlZCwgYW0gSSByaWdodCA/IEhvdyBjb3VsZCBpdCBiZSBz
-byBsb25nIGluIHRoZSBnYXA/DQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KdWJpZnNfdG5jX2xvY2F0ZQ0K
-ICAgemJyLT5sbnVtID0gNTQgKGZpbmQgaW4gVE5DKQ0KICAgICB1Ymlmc19nZXRfd2J1Zih6YnIt
-PmxudW0gPSA1NCkgaXMgdHJ1ZQ0KICAgICAgICAgIHViaWZzX3RuY19yZWFkX25vZGUNCiAgICAg
-ICAgICAgICAgICAgICAgICAgICAtPkdDKGNoYW5nZSB6dC0+bG51bSB0byAyMjQoR0NIRCkgaW4g
-X1ROQ18pDQogICAgICAgICAgICAgICAgICAgICAgICAgLT56YnItPmxudW0gPSA1NCBiZWNvbWVz
-IERBVEFIRA0KICAgICAgICAgICAgIHViaWZzX2dldF93YnVmKHpici0+bG51bSA9IDU0IGFzIHRo
-ZSBEQVRBSEQpIGlzIHRydWUgYWdhaW4NCiAgICAgICAgICAgICB1Ymlmc19yZWFkX25vZGVfd2J1
-Zg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0NCndoZW4gY29tbWl0IGhhcHBlbnMsIHViaWZzX2xvZ19zdGFy
-dF9jb21taXQgd2lsbCBnZXQgcHJlc2VudCBqaGVhZHNbREFUQUhEXS53YnVmLT5sbnVtDQp3cml0
-dGVuIGJhY2sgdG8gYnVkIGxpc3QgYW5kIGxvZyBMRUIgYWdhaW4uIFNvIFdoYXQgSSBtZWFuIGlz
-IHRoYXQgaWYgdGhlIHpici0+bG51bSA9IDU0IGlzIGp1c3QNCmV4YWN0bHkgdGhlIGpoZWFkc1tE
-QVRBSERdLndidWYtPmxudW0sIGl0IHdpbGwgbm90IGJlIEdDZWQuDQoNCkJ1dCBpZiB0aGVyZSBh
-cmUgbW9yZSB0aGFuIG9uZSBjb21taXRzIGhhcHBlbiwgaXQgY2VydGFpbmx5IG5lZWRzIEdDZWQg
-Y2hlY2tpbmcuDQpJIGFtIGp1c3Qgbm90IHN1cmUgaWYgd2UgbmVlZCB0byB0YWtlIHN1Y2ggYSBs
-ZXNzIHBvc3NpYmxlIHNpdHVhdGlvbiBpbnRvIGFjY291bnQsIHNpbmNlIEkgdGhvdWdodA0KaXQg
-bWlnaHQgbm90IHRha2UgdG9vIGxvbmcgYmV0d2VlbiB0bmNfbXV0ZXggcmVsZWFzZWQgYW5kIHVi
-aWZzX3JlYWRfbm9kZV93YnVmIGV4ZWN1dGVkLg0KWW91ciBwYXRjaCBjYW4gYmUgdGhvdWdodCB0
-byBoYXZlIHRha2VuIHRoaXMgYWNjb3VudCBpbiBteSB2aWV3Lg0KDQo+RG8geW91IG1lYW4gY2Fs
-bCBtYXlfbGViX2djZWQoKSBhZnRlciB0aGUgcmVsZWFzZSBvZiB3YnVmLT5sb2NrID8gSWYgaXQn
-cyB0aGUgY2FzZSwNCj5pdCdzIE9LIHRvIG1lIGJlY2F1c2UgaXQgd2lsbCByZWR1Y2UgdGhlIGhv
-bGQgdGltZSBvZiB3YnVmLT5sb2NrLg0KWWVzLCB0aGF0IGlzIHdoYXQgSSBtZWFuLg0KDQo+SXQn
-cyBpbiB0aGUgZmlyc3QgcGF0Y2ggYW5kIEkgaGF2ZSBub3QgYXR0YWNoZWQgaXQgaGVyZS4gSXQn
-cyBhIGhlbHBlciBmdW5jdGlvbiBmYWN0b3JlZCBvdXQNCj5mcm9tIHViaWZzX3JlYWRfbm9kZV93
-YnVmKCkgYW5kIGlzIHVzZWQgdG8gY2hlY2sgdGhlIHZhbGlkaXR5IG9mIG5vZGUgaW4gYnVmZmVy
-Og0KT2ssIGdldCBpdC4NCg0KVGhhbmtzLg0KQ2Fyc29uLg0KDQpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXw0KIFRoaXMgZW1haWwgKGluY2x1ZGluZyBpdHMgYXR0YWNobWVudHMpIGlz
-IGludGVuZGVkIG9ubHkgZm9yIHRoZSBwZXJzb24gb3IgZW50aXR5IHRvIHdoaWNoIGl0IGlzIGFk
-ZHJlc3NlZCBhbmQgbWF5IGNvbnRhaW4gaW5mb3JtYXRpb24gdGhhdCBpcyBwcml2aWxlZ2VkLCBj
-b25maWRlbnRpYWwgb3Igb3RoZXJ3aXNlIHByb3RlY3RlZCBmcm9tIGRpc2Nsb3N1cmUuIFVuYXV0
-aG9yaXplZCB1c2UsIGRpc3NlbWluYXRpb24sIGRpc3RyaWJ1dGlvbiBvciBjb3B5aW5nIG9mIHRo
-aXMgZW1haWwgb3IgdGhlIGluZm9ybWF0aW9uIGhlcmVpbiBvciB0YWtpbmcgYW55IGFjdGlvbiBp
-biByZWxpYW5jZSBvbiB0aGUgY29udGVudHMgb2YgdGhpcyBlbWFpbCBvciB0aGUgaW5mb3JtYXRp
-b24gaGVyZWluLCBieSBhbnlvbmUgb3RoZXIgdGhhbiB0aGUgaW50ZW5kZWQgcmVjaXBpZW50LCBv
-ciBhbiBlbXBsb3llZSBvciBhZ2VudCByZXNwb25zaWJsZSBmb3IgZGVsaXZlcmluZyB0aGUgbWVz
-c2FnZSB0byB0aGUgaW50ZW5kZWQgcmVjaXBpZW50LCBpcyBzdHJpY3RseSBwcm9oaWJpdGVkLiBJ
-ZiB5b3UgYXJlIG5vdCB0aGUgaW50ZW5kZWQgcmVjaXBpZW50LCBwbGVhc2UgZG8gbm90IHJlYWQs
-IGNvcHksIHVzZSBvciBkaXNjbG9zZSBhbnkgcGFydCBvZiB0aGlzIGUtbWFpbCB0byBvdGhlcnMu
-IFBsZWFzZSBub3RpZnkgdGhlIHNlbmRlciBpbW1lZGlhdGVseSBhbmQgcGVybWFuZW50bHkgZGVs
-ZXRlIHRoaXMgZS1tYWlsIGFuZCBhbnkgYXR0YWNobWVudHMgaWYgeW91IHJlY2VpdmVkIGl0IGlu
-IGVycm9yLiBJbnRlcm5ldCBjb21tdW5pY2F0aW9ucyBjYW5ub3QgYmUgZ3VhcmFudGVlZCB0byBi
-ZSB0aW1lbHksIHNlY3VyZSwgZXJyb3ItZnJlZSBvciB2aXJ1cy1mcmVlLiBUaGUgc2VuZGVyIGRv
-ZXMgbm90IGFjY2VwdCBsaWFiaWxpdHkgZm9yIGFueSBlcnJvcnMgb3Igb21pc3Npb25zLg0K5pys
-6YKu5Lu25Y+K5YW26ZmE5Lu25YW35pyJ5L+d5a+G5oCn6LSo77yM5Y+X5rOV5b6L5L+d5oqk5LiN
-5b6X5rOE6Zyy77yM5LuF5Y+R6YCB57uZ5pys6YKu5Lu25omA5oyH54m55a6a5pS25Lu25Lq644CC
-5Lil56aB6Z2e57uP5o6I5p2D5L2/55So44CB5a6j5Lyg44CB5Y+R5biD5oiW5aSN5Yi25pys6YKu
-5Lu25oiW5YW25YaF5a6544CC6Iul6Z2e6K+l54m55a6a5pS25Lu25Lq677yM6K+35Yu/6ZiF6K+7
-44CB5aSN5Yi244CBIOS9v+eUqOaIluaKq+mcsuacrOmCruS7tueahOS7u+S9leWGheWuueOAguiL
-peivr+aUtuacrOmCruS7tu+8jOivt+S7juezu+e7n+S4reawuOS5heaAp+WIoOmZpOacrOmCruS7
-tuWPiuaJgOaciemZhOS7tu+8jOW5tuS7peWbnuWkjemCruS7tueahOaWueW8j+WNs+WIu+WRiuef
-peWPkeS7tuS6uuOAguaXoOazleS/neivgeS6kuiBlOe9kemAmuS/oeWPiuaXtuOAgeWuieWFqOOA
-geaXoOivr+aIlumYsuavkuOAguWPkeS7tuS6uuWvueS7u+S9lemUmea8j+Wdh+S4jeaJv+aLhei0
-o+S7u+OAgg0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On 28.02.20 04:11, Yoshio Furuyama wrote:
+> The suffix was changed to classify from "g" to "j" between 1st generation
+> device and 2nd generation device that's new Serial NAND of Kioxia brand.
+
+I had to read this sentence multiple times to understand it. Maybe 
+something like this would be better:
+
+   The suffix was changed from "g" to "j" to classify between 1st
+   generation and 2nd generation serial NAND devices (which now belong to
+   the Kioxia brand).
+
+> As reference that's
+> 1st generation device of 1Gbit product is "tc58cvg0s3hraig"
+> 2nd generation device of 1Gbit product is "tc58cvg0s3hraij".
+> 
+> The 8Gbit product "TH58CxG3S0HRAIJ" is new line up of Kioxia's serial nand
+> and changed the prefix from tc58 to th58.
+> Thus it was changed argument to the function from "tc58cxgxsx" to
+> "tx58cxgxsxraix".
+
+Same here. It is very hard to read. I would write something like this:
+
+   The 8Gbit type "TH58CxG3S0HRAIJ" is new to Kioxia's serial NAND lineup
+   and the prefix was changed from "TC58" to "TH85".
+
+   Thus the functions were renamed from tc58cxgxsx_*() to
+   tx58cxgxsxraix_*().
+
+With an easier to understand commit message:
+
+Reviewed-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+
+> 
+> Signed-off-by: Yoshio Furuyama <ytc-mb-yfuruyama7@kioxia.com>
+> ---
+> changelog[v2]:Split 2 patches, and add patch description.
+> 
+>   drivers/mtd/nand/spi/toshiba.c | 60 +++++++++++++++++++++---------------------
+>   1 file changed, 30 insertions(+), 30 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/spi/toshiba.c b/drivers/mtd/nand/spi/toshiba.c
+> index 0db5ee4..700d86f 100644
+> --- a/drivers/mtd/nand/spi/toshiba.c
+> +++ b/drivers/mtd/nand/spi/toshiba.c
+> @@ -25,8 +25,8 @@ static SPINAND_OP_VARIANTS(write_cache_variants,
+>   static SPINAND_OP_VARIANTS(update_cache_variants,
+>   		SPINAND_PROG_LOAD(false, 0, NULL, 0));
+>   
+> -static int tc58cxgxsx_ooblayout_ecc(struct mtd_info *mtd, int section,
+> -				     struct mtd_oob_region *region)
+> +static int tx58cxgxsxraix_ooblayout_ecc(struct mtd_info *mtd, int section,
+> +					struct mtd_oob_region *region)
+>   {
+>   	if (section > 0)
+>   		return -ERANGE;
+> @@ -37,8 +37,8 @@ static int tc58cxgxsx_ooblayout_ecc(struct mtd_info *mtd, int section,
+>   	return 0;
+>   }
+>   
+> -static int tc58cxgxsx_ooblayout_free(struct mtd_info *mtd, int section,
+> -				      struct mtd_oob_region *region)
+> +static int tx58cxgxsxraix_ooblayout_free(struct mtd_info *mtd, int section,
+> +					 struct mtd_oob_region *region)
+>   {
+>   	if (section > 0)
+>   		return -ERANGE;
+> @@ -50,13 +50,13 @@ static int tc58cxgxsx_ooblayout_free(struct mtd_info *mtd, int section,
+>   	return 0;
+>   }
+>   
+> -static const struct mtd_ooblayout_ops tc58cxgxsx_ooblayout = {
+> -	.ecc = tc58cxgxsx_ooblayout_ecc,
+> -	.free = tc58cxgxsx_ooblayout_free,
+> +static const struct mtd_ooblayout_ops tx58cxgxsxraix_ooblayout = {
+> +	.ecc = tx58cxgxsxraix_ooblayout_ecc,
+> +	.free = tx58cxgxsxraix_ooblayout_free,
+>   };
+>   
+> -static int tc58cxgxsx_ecc_get_status(struct spinand_device *spinand,
+> -				      u8 status)
+> +static int tx58cxgxsxraix_ecc_get_status(struct spinand_device *spinand,
+> +					 u8 status)
+>   {
+>   	struct nand_device *nand = spinand_to_nand(spinand);
+>   	u8 mbf = 0;
+> @@ -95,75 +95,75 @@ static int tc58cxgxsx_ecc_get_status(struct spinand_device *spinand,
+>   
+>   static const struct spinand_info toshiba_spinand_table[] = {
+>   	/* 3.3V 1Gb */
+> -	SPINAND_INFO("TC58CVG0S3", 0xC2,
+> +	SPINAND_INFO("TC58CVG0S3HRAIG", 0xC2,
+>   		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
+>   		     NAND_ECCREQ(8, 512),
+>   		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+>   					      &write_cache_variants,
+>   					      &update_cache_variants),
+>   		     0,
+> -		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
+> -				     tc58cxgxsx_ecc_get_status)),
+> +		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
+> +				     tx58cxgxsxraix_ecc_get_status)),
+>   	/* 3.3V 2Gb */
+> -	SPINAND_INFO("TC58CVG1S3", 0xCB,
+> +	SPINAND_INFO("TC58CVG1S3HRAIG", 0xCB,
+>   		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
+>   		     NAND_ECCREQ(8, 512),
+>   		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+>   					      &write_cache_variants,
+>   					      &update_cache_variants),
+>   		     0,
+> -		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
+> -				     tc58cxgxsx_ecc_get_status)),
+> +		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
+> +				     tx58cxgxsxraix_ecc_get_status)),
+>   	/* 3.3V 4Gb */
+> -	SPINAND_INFO("TC58CVG2S0", 0xCD,
+> +	SPINAND_INFO("TC58CVG2S0HRAIG", 0xCD,
+>   		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
+>   		     NAND_ECCREQ(8, 512),
+>   		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+>   					      &write_cache_variants,
+>   					      &update_cache_variants),
+>   		     0,
+> -		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
+> -				     tc58cxgxsx_ecc_get_status)),
+> +		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
+> +				     tx58cxgxsxraix_ecc_get_status)),
+>   	/* 3.3V 4Gb */
+> -	SPINAND_INFO("TC58CVG2S0", 0xED,
+> +	SPINAND_INFO("TC58CVG2S0HRAIJ", 0xED,
+>   		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
+>   		     NAND_ECCREQ(8, 512),
+>   		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+>   					      &write_cache_variants,
+>   					      &update_cache_variants),
+>   		     0,
+> -		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
+> -				     tc58cxgxsx_ecc_get_status)),
+> +		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
+> +				     tx58cxgxsxraix_ecc_get_status)),
+>   	/* 1.8V 1Gb */
+> -	SPINAND_INFO("TC58CYG0S3", 0xB2,
+> +	SPINAND_INFO("TC58CYG0S3HRAIG", 0xB2,
+>   		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
+>   		     NAND_ECCREQ(8, 512),
+>   		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+>   					      &write_cache_variants,
+>   					      &update_cache_variants),
+>   		     0,
+> -		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
+> -				     tc58cxgxsx_ecc_get_status)),
+> +		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
+> +				     tx58cxgxsxraix_ecc_get_status)),
+>   	/* 1.8V 2Gb */
+> -	SPINAND_INFO("TC58CYG1S3", 0xBB,
+> +	SPINAND_INFO("TC58CYG1S3HRAIG", 0xBB,
+>   		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
+>   		     NAND_ECCREQ(8, 512),
+>   		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+>   					      &write_cache_variants,
+>   					      &update_cache_variants),
+>   		     0,
+> -		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
+> -				     tc58cxgxsx_ecc_get_status)),
+> +		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
+> +				     tx58cxgxsxraix_ecc_get_status)),
+>   	/* 1.8V 4Gb */
+> -	SPINAND_INFO("TC58CYG2S0", 0xBD,
+> +	SPINAND_INFO("TC58CYG2S0HRAIG", 0xBD,
+>   		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
+>   		     NAND_ECCREQ(8, 512),
+>   		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+>   					      &write_cache_variants,
+>   					      &update_cache_variants),
+>   		     0,
+> -		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
+> -				     tc58cxgxsx_ecc_get_status)),
+> +		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
+> +				     tx58cxgxsxraix_ecc_get_status)),
+>   };
+>   
+>   static int toshiba_spinand_detect(struct spinand_device *spinand)
+> 
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
