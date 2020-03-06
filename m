@@ -2,71 +2,84 @@ Return-Path: <SRS0=bEc/=4X=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FE02C3F2C6
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Mar 2020 03:09:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D6E47C10F26
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Mar 2020 08:39:24 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6D27B2073D
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Mar 2020 03:09:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A049020848
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Mar 2020 08:39:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="JzdwQw9i"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D27B2073D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kioxia.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="U+GEZ2ez";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TTLiPTzK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A049020848
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:References:
-	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=KVps3xgaVYmivGaESoZqPvY9TThVtgDoilBLfPwog/Q=; b=JzdwQw9i6sRh5zmKb+9zphsAEa
-	gSotS2mfBFCkbqbZJnVzoii+i8BbSTKCGfpWoNE+hzG+dpmV5XK8A8jWQ4AeImJUqnh1LQ7s9TgAI
-	GkEJpO6XHJLo+DEpVhrUAQeB58FZ2PWwjQFH0+0CWkJG+TEj/qM0gmK3U9tc1Jkvvd6z3zyfzxxrN
-	Lk7v+2VNYfc0gzJSNRfiCQyCL7dyOkqyR3BHUyYyLAg8rUtTPkXE3jxv+ukrfy+rvbACX26dAvk96
-	4z211nCZtlJpn8xVYpxyNS0KaoabhCVZYXl25dU4/QdoMnx42lRRa5NF+UaGijqAr1hR5PXac10JW
-	Mc1jG6lg==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=gkwxDerKZdMfUIKL5p1MbfYKooCSOjjZuaVayzKT/J0=; b=U+GEZ2ezq6lhC+
+	Pf62eqIirZEkrVNIdBIWpz5MExKUMwnu+SM95GuW5l/JjTLJmAjFgZUB3JWUoJOyo9Jd93B5BuxtG
+	zzPxG22wI/EObrjUpTY2erBKrAwuts8AxyYjRi4KR9kaF+oo/TuwwKWqz0e5AE3gISlP5M2rRW0bA
+	JEokdCiot5ftSq93xZlIxqdan4C5hnRQwtxEvov5O3I8VNlUXjgp/BxXtFU8+lDEkapEAjENpKGMY
+	mp7Ov+FgPFYusdBOKcy4qW06Vwqnqb/VKY9a2uVjhYb3JGXipQWOp9WjA3wknY3jPkGO0JVNYVOVh
+	cNBB4wc0PMtC36ZkJmPw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jA3MD-0000kc-GG; Fri, 06 Mar 2020 03:09:01 +0000
-Received: from mo-csw1115.securemx.jp ([210.130.202.157]
- helo=mo-csw.securemx.jp)
+	id 1jA8Vk-0005cJ-Jp; Fri, 06 Mar 2020 08:39:12 +0000
+Received: from mail-oi1-x242.google.com ([2607:f8b0:4864:20::242])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jA3M6-0000is-8q
- for linux-mtd@lists.infradead.org; Fri, 06 Mar 2020 03:08:59 +0000
-Received: by mo-csw.securemx.jp (mx-mo-csw1115) id 02638mXr029245;
- Fri, 6 Mar 2020 12:08:48 +0900
-X-Iguazu-Qid: 2wGrDj8Mc35JYvFk0m
-X-Iguazu-QSIG: v=2; s=0; t=1583464128; q=2wGrDj8Mc35JYvFk0m;
- m=30XSXFJA1rnp94hRBnSOkpVXRTzIW0024bvn1q+XQp0=
-Received: from imx12.toshiba.co.jp (imx12.toshiba.co.jp [61.202.160.132])
- by relay.securemx.jp (mx-mr1113) id 02638l6W008534;
- Fri, 6 Mar 2020 12:08:48 +0900
-Received: from enc02.toshiba.co.jp ([61.202.160.51])
- by imx12.toshiba.co.jp  with ESMTP id 02638lrE020487;
- Fri, 6 Mar 2020 12:08:47 +0900 (JST)
-Received: from hop101.toshiba.co.jp ([133.199.85.107])
- by enc02.toshiba.co.jp  with ESMTP id 02638kFH000418;
- Fri, 6 Mar 2020 12:08:46 +0900
-From: Yoshio Furuyama <ytc-mb-yfuruyama7@kioxia.com>
-To: miquel.raynal@bootlin.com, vigneshr@ti.com
-Subject: [PATCH v3 1/2] mtd: spinand: toshiba: Rename function name to change
- suffix and prefix (8Gbit)
-Date: Fri,  6 Mar 2020 12:08:44 +0900
-X-TSB-HOP: ON
-Message-Id: <d6d53d2b5723e7c8b1818080626d0f0a48bb17d8.1583371913.git.ytc-mb-yfuruyama7@kioxia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1583371913.git.ytc-mb-yfuruyama7@kioxia.com>
-References: <cover.1583371913.git.ytc-mb-yfuruyama7@kioxia.com>
+ id 1jA8Vh-0005ac-Cv; Fri, 06 Mar 2020 08:39:10 +0000
+Received: by mail-oi1-x242.google.com with SMTP id a22so1741836oid.13;
+ Fri, 06 Mar 2020 00:39:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=T0YCzrMdqSOCLtIegMTpdezODLLacO22ik9gMI/OohA=;
+ b=TTLiPTzKpN1qWN3EEFTC/u8fB+61JOECJD8HcEHhufaX9NawgXNP+CtoO70w1n7/rT
+ gbuiAvBLa7ov+c7HyMDa/2ttOgLylNuZpso5Nq1Evc3IB3CEveDPOKMmpnLMpLzUg/Tz
+ F0hvdMD5bfrhjOSGDqDyYvtD06RWhIju2DEzsCbkC/SbhJf6bYn2HY369DIzAVC7TSyA
+ FBWXloXfGAfNCdgRp8h805Ik77umoY8tRXYzNbl5RMyAywhRL7u2JUs6i0FKOfttOWKp
+ RQMR/yFbrg2cxmXtRtipBXAR8HWBO7yaIqDiYg8MD7UTpGWv72Mixj81Ymqt6+uHkfqu
+ HO1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=T0YCzrMdqSOCLtIegMTpdezODLLacO22ik9gMI/OohA=;
+ b=nDI4avjiIZqpcED+Bv4F/zsVk2EQRgRqCW9G3ezNyzhAx23VE944ipcbFqUf6dg+KZ
+ /N6rXcKRfB8AvISp68ElLiwm9PuXCZyrH/q2MRWvXP3YqPWgClrk5835meBX9nYc0ogJ
+ SGFP+vv/ovSvXRXWiyBi+/4DFTPbtqYW/ht+CwalfF0sxR3/hXS8tLbIkvIRlbcbbHRc
+ Nqz6ByFb6luLFh1NENUZ5SWVf1Vg53/r8GBI1KR0zm9NANP7DNqCFb2RxTLHenTjPNxm
+ FFoAhuI/qahKdhrSuNbcq5WwfDUORh/nlZl0uGhHqn0gzad2b1T+zDCZDS9DgZW/viZv
+ Fasw==
+X-Gm-Message-State: ANhLgQ0BW59OV9VS19aFqqcEqHDYJno0A2Sf+S7zo0kGN8mxnis+BxMS
+ 3PE+lc/ZkwTFJzZRgnUIIg91iwjxSUXOYZ/jgU4=
+X-Google-Smtp-Source: ADFU+vuScZHY2OPIYB1fCsKFbxTT74N+YFxRuCirOj8v8ukqPreNKXLIN5Ul0y9nHN0b8tlqiERNHVdq1j4ynySyfE0=
+X-Received: by 2002:aca:1101:: with SMTP id 1mr1851279oir.30.1583483948255;
+ Fri, 06 Mar 2020 00:39:08 -0800 (PST)
+MIME-Version: 1.0
+References: <20200228043636.559915-1-gch981213@gmail.com>
+ <20200228043636.559915-4-gch981213@gmail.com>
+ <20200303224706.GA22867@bogus>
+In-Reply-To: <20200303224706.GA22867@bogus>
+From: Chuanhong Guo <gch981213@gmail.com>
+Date: Fri, 6 Mar 2020 16:38:57 +0800
+Message-ID: <CAJsYDVK62jqkLimdZWbLE2wgEAuVi5HdY231nR_wPj4TiMtX9w@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] dt-bindings: convert mtk-quadspi binding doc for
+ spi-mtk-nor
+To: Rob Herring <robh@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200305_190854_604468_C9F1F113 
-X-CRM114-Status: GOOD (  10.57  )
+X-CRM114-CacheID: sfid-20200306_003909_458381_DF076755 
+X-CRM114-Status: UNSURE (   9.78  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,179 +91,42 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-MIME-Version: 1.0
+Cc: "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Richard Weinberger <richard@nod.at>, open list <linux-kernel@vger.kernel.org>,
+ linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>, linux-mediatek@lists.infradead.org,
+ "moderated list:ARM/Mediatek SoC support"
+ <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The suffix was changed from "G" to "J" to classify between 1st generation
-and 2nd generation serial NAND devices (which now belong to the Kioxia
-brand).
-As reference that's
-1st generation device of 1Gbit product is "TC58CVG0S3HRAIG"
-2nd generation device of 1Gbit product is "TC58CVG0S3HRAIJ".
+On Wed, Mar 4, 2020 at 6:47 AM Rob Herring <robh@kernel.org> wrote:
+> > 3. replace binding example with a mt7629 one because this is the
+> >    only one I know the interrupt assignment.
+>
+> That doesn't really matter. It would be less churn without that change
+> and examples are just examples.
+> [...]
+> > -
+> > -     flash@0 {
+> > -             compatible = "jedec,spi-nor";
+> > -             reg = <0>;
+> > -     };
+>
+> Better to leave this in the example IMO.
+>
+> Rob
 
-The 8Gbit type "TH58CxG3S0HRAIJ" is new to Kioxia's serial NAND lineup and
-the prefix was changed from "TC58" to "TH58".
+I'll revert example changes and add a dummy interrupt binding instead in v3.
 
-Thus the functions were renamed from tc58cxgxsx_*() to tx58cxgxsxraix_*().
-
-Signed-off-by: Yoshio Furuyama <ytc-mb-yfuruyama7@kioxia.com>
-Reviewed-by: Frieder Schrempf <frieder.schrempf@kontron.de>
----
-changelog[v3]:Fixed commit message to make it easier to understand.
-changelog[v2]:Split 2 patches, and add patch description.
-
- drivers/mtd/nand/spi/toshiba.c | 60 +++++++++++++++++++++---------------------
- 1 file changed, 30 insertions(+), 30 deletions(-)
-
-diff --git a/drivers/mtd/nand/spi/toshiba.c b/drivers/mtd/nand/spi/toshiba.c
-index 0db5ee4..700d86f 100644
---- a/drivers/mtd/nand/spi/toshiba.c
-+++ b/drivers/mtd/nand/spi/toshiba.c
-@@ -25,8 +25,8 @@ static SPINAND_OP_VARIANTS(write_cache_variants,
- static SPINAND_OP_VARIANTS(update_cache_variants,
- 		SPINAND_PROG_LOAD(false, 0, NULL, 0));
- 
--static int tc58cxgxsx_ooblayout_ecc(struct mtd_info *mtd, int section,
--				     struct mtd_oob_region *region)
-+static int tx58cxgxsxraix_ooblayout_ecc(struct mtd_info *mtd, int section,
-+					struct mtd_oob_region *region)
- {
- 	if (section > 0)
- 		return -ERANGE;
-@@ -37,8 +37,8 @@ static int tc58cxgxsx_ooblayout_ecc(struct mtd_info *mtd, int section,
- 	return 0;
- }
- 
--static int tc58cxgxsx_ooblayout_free(struct mtd_info *mtd, int section,
--				      struct mtd_oob_region *region)
-+static int tx58cxgxsxraix_ooblayout_free(struct mtd_info *mtd, int section,
-+					 struct mtd_oob_region *region)
- {
- 	if (section > 0)
- 		return -ERANGE;
-@@ -50,13 +50,13 @@ static int tc58cxgxsx_ooblayout_free(struct mtd_info *mtd, int section,
- 	return 0;
- }
- 
--static const struct mtd_ooblayout_ops tc58cxgxsx_ooblayout = {
--	.ecc = tc58cxgxsx_ooblayout_ecc,
--	.free = tc58cxgxsx_ooblayout_free,
-+static const struct mtd_ooblayout_ops tx58cxgxsxraix_ooblayout = {
-+	.ecc = tx58cxgxsxraix_ooblayout_ecc,
-+	.free = tx58cxgxsxraix_ooblayout_free,
- };
- 
--static int tc58cxgxsx_ecc_get_status(struct spinand_device *spinand,
--				      u8 status)
-+static int tx58cxgxsxraix_ecc_get_status(struct spinand_device *spinand,
-+					 u8 status)
- {
- 	struct nand_device *nand = spinand_to_nand(spinand);
- 	u8 mbf = 0;
-@@ -95,75 +95,75 @@ static int tc58cxgxsx_ecc_get_status(struct spinand_device *spinand,
- 
- static const struct spinand_info toshiba_spinand_table[] = {
- 	/* 3.3V 1Gb */
--	SPINAND_INFO("TC58CVG0S3", 0xC2,
-+	SPINAND_INFO("TC58CVG0S3HRAIG", 0xC2,
- 		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
- 		     0,
--		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
--				     tc58cxgxsx_ecc_get_status)),
-+		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
-+				     tx58cxgxsxraix_ecc_get_status)),
- 	/* 3.3V 2Gb */
--	SPINAND_INFO("TC58CVG1S3", 0xCB,
-+	SPINAND_INFO("TC58CVG1S3HRAIG", 0xCB,
- 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
- 		     0,
--		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
--				     tc58cxgxsx_ecc_get_status)),
-+		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
-+				     tx58cxgxsxraix_ecc_get_status)),
- 	/* 3.3V 4Gb */
--	SPINAND_INFO("TC58CVG2S0", 0xCD,
-+	SPINAND_INFO("TC58CVG2S0HRAIG", 0xCD,
- 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
- 		     0,
--		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
--				     tc58cxgxsx_ecc_get_status)),
-+		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
-+				     tx58cxgxsxraix_ecc_get_status)),
- 	/* 3.3V 4Gb */
--	SPINAND_INFO("TC58CVG2S0", 0xED,
-+	SPINAND_INFO("TC58CVG2S0HRAIJ", 0xED,
- 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
- 		     0,
--		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
--				     tc58cxgxsx_ecc_get_status)),
-+		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
-+				     tx58cxgxsxraix_ecc_get_status)),
- 	/* 1.8V 1Gb */
--	SPINAND_INFO("TC58CYG0S3", 0xB2,
-+	SPINAND_INFO("TC58CYG0S3HRAIG", 0xB2,
- 		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
- 		     0,
--		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
--				     tc58cxgxsx_ecc_get_status)),
-+		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
-+				     tx58cxgxsxraix_ecc_get_status)),
- 	/* 1.8V 2Gb */
--	SPINAND_INFO("TC58CYG1S3", 0xBB,
-+	SPINAND_INFO("TC58CYG1S3HRAIG", 0xBB,
- 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
- 		     0,
--		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
--				     tc58cxgxsx_ecc_get_status)),
-+		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
-+				     tx58cxgxsxraix_ecc_get_status)),
- 	/* 1.8V 4Gb */
--	SPINAND_INFO("TC58CYG2S0", 0xBD,
-+	SPINAND_INFO("TC58CYG2S0HRAIG", 0xBD,
- 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
- 		     0,
--		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
--				     tc58cxgxsx_ecc_get_status)),
-+		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
-+				     tx58cxgxsxraix_ecc_get_status)),
- };
- 
- static int toshiba_spinand_detect(struct spinand_device *spinand)
 -- 
-1.9.1
-
+Regards,
+Chuanhong Guo
 
 ______________________________________________________
 Linux MTD discussion mailing list
