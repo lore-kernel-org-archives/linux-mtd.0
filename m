@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 269FAC3F2D2
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Mar 2020 03:05:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F75DC3F2D1
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Mar 2020 03:05:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ECBBD2072D
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Mar 2020 03:05:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 31E142072D
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Mar 2020 03:05:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DbK6MvEd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ECBBD2072D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VOELEp4Q"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 31E142072D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kioxia.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,46 +26,47 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=ZIpwOJyV6AeVz6ry3ZFWfkAVJkdxZLzJcW4L19h7paI=; b=DbK6MvEdWspN8Co1USxwDfW9et
-	Kp3QvUJaC64nVwKH0QaDCrPZg6tQ48g5rKYoc250YaxEWXrcssMW2gKxfo4AaeG3xDbsWrpcpcPxX
-	MZ7BKVRlErmL/4Nv57JXYTGV/f7UDFPD2GffAH+eIlUveInQt1j5rCQ1AqWhn19gQ3ZIN7nhoT4Ls
-	xzeLowi+XlBTQ9Y/eRDhO5CfVaLAAHCtgD6U5Ot6fx0TWZCa4mjNpL6Fyuw+JxFLTjgCH0JkzyIEI
-	4QXRsE4i4rzHSPy0xJKV52j8kyXdqwd0Jl6mXJ/CAx0KN9fJXEwl2pmx2VLK8Y5ojoq9+srrSaARJ
-	+12x81IQ==;
+	bh=ZIpwOJyV6AeVz6ry3ZFWfkAVJkdxZLzJcW4L19h7paI=; b=VOELEp4QlR5PNFlgxF0nkVpBAZ
+	dfTOR3Iahdw0egelvWkY/f8DuuyV2+sxP6ZCzU7YzwdAmSwqLKwepLPWBcNmw+ln4waWADxDMgnDY
+	klWDqqUmx3mJVEY9FmeSUhKIjrV3jjdkU5woHc8BXy0SQtXOoK1oLbb+RPmq0sUuq6r0Tnj3D+7rx
+	zF8a9G/Qnc5PwtFeT0s47GIdtOHETSgiVsFjF8kf7jkwMDqqBQCzx6dFiRG+deuhqR/PI6nLQxioa
+	YHwi8DxZJ8mCq+TUqVZpIob+hlPScpbsQo3VfdX8Yq+yWLkAAmy2xtbWXJ7LB4gqlhevtbiL/FKJL
+	yvHeJdAQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jA3IU-0007w2-Bd; Fri, 06 Mar 2020 03:05:10 +0000
-Received: from mo-csw1115.securemx.jp ([210.130.202.157]
+	id 1jA3In-0008Vq-4u; Fri, 06 Mar 2020 03:05:29 +0000
+Received: from mo-csw1116.securemx.jp ([210.130.202.158]
  helo=mo-csw.securemx.jp)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jA3IN-00074D-J8
- for linux-mtd@lists.infradead.org; Fri, 06 Mar 2020 03:05:06 +0000
-Received: by mo-csw.securemx.jp (mx-mo-csw1115) id 02634nJX016875;
- Fri, 6 Mar 2020 12:04:49 +0900
-X-Iguazu-Qid: 2wGrDj8Mc351USGAVM
-X-Iguazu-QSIG: v=2; s=0; t=1583463889; q=2wGrDj8Mc351USGAVM;
- m=ndyjnu0DcSyZsE2+a+ZGiFwf2uguWQoJZDmDke3PqmQ=
+ id 1jA3Ih-0008Td-M9
+ for linux-mtd@lists.infradead.org; Fri, 06 Mar 2020 03:05:26 +0000
+Received: by mo-csw.securemx.jp (mx-mo-csw1116) id 02635Hwn016770;
+ Fri, 6 Mar 2020 12:05:17 +0900
+X-Iguazu-Qid: 2wGrZsIRE9x4JsUiaA
+X-Iguazu-QSIG: v=2; s=0; t=1583463916; q=2wGrZsIRE9x4JsUiaA;
+ m=8eRUmWIC3godALj9xZbSEUsjiS77yQSOH4/Jn/h1+FA=
 Received: from imx2.toshiba.co.jp (imx2.toshiba.co.jp [106.186.93.51])
- by relay.securemx.jp (mx-mr1112) id 02634lX7032172;
- Fri, 6 Mar 2020 12:04:48 +0900
+ by relay.securemx.jp (mx-mr1113) id 02635FHR001348;
+ Fri, 6 Mar 2020 12:05:15 +0900
 Received: from enc01.localdomain ([106.186.93.100])
- by imx2.toshiba.co.jp  with ESMTP id 02634lgr014218;
- Fri, 6 Mar 2020 12:04:47 +0900 (JST)
+ by imx2.toshiba.co.jp  with ESMTP id 02635FEb014487;
+ Fri, 6 Mar 2020 12:05:15 +0900 (JST)
 Received: from hop001.toshiba.co.jp ([133.199.164.63])
- by enc01.localdomain  with ESMTP id 02634lv1021124;
- Fri, 6 Mar 2020 12:04:47 +0900
+ by enc01.localdomain  with ESMTP id 02635FRa021523;
+ Fri, 6 Mar 2020 12:05:15 +0900
 From: Yoshio Furuyama <ytc-mb-yfuruyama7@kioxia.com>
 To: miquel.raynal@bootlin.com, vigneshr@ti.com
 Subject: [PATCH v3 2/2] mtd: spinand: toshiba: Support for new Kioxia Serial
  NAND
-Date: Fri,  6 Mar 2020 12:04:45 +0900
+Date: Fri,  6 Mar 2020 12:05:13 +0900
 X-TSB-HOP: ON
-Message-Id: <fcd0899a764689dde17fa8d776d59dde8265b796.1583371913.git.ytc-mb-yfuruyama7@kioxia.com>
+Message-Id:
+ <fcd0899a764689dde17fa8d776d59dde8265b796.1583371913.git.ytc-mb-yfuruyama7@kioxia.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <cover.1583371913.git.ytc-mb-yfuruyama7@kioxia.com>
 References: <cover.1583371913.git.ytc-mb-yfuruyama7@kioxia.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200305_190503_910916_E9654D41 
+X-CRM114-CacheID: sfid-20200305_190523_993154_8FF16B74 
 X-CRM114-Status: UNSURE (   8.03  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
@@ -85,6 +86,7 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
+Message-ID: <20200306030513.m0CwtfvEUYgxwNNm8O_S1xEmCM-RcMwvWOzMZLFVO58@z>
 
 Add support for new Kioxia products.
 The new Kioxia products support program load x4 command, and have
