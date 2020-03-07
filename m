@@ -5,131 +5,58 @@ X-Spam-Level:
 X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FB99C10F00
-	for <linux-mtd@archiver.kernel.org>; Sat,  7 Mar 2020 08:25:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F22F6C10F00
+	for <linux-mtd@archiver.kernel.org>; Sat,  7 Mar 2020 14:50:45 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 06792206D5
-	for <linux-mtd@archiver.kernel.org>; Sat,  7 Mar 2020 08:25:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3C54520675
+	for <linux-mtd@archiver.kernel.org>; Sat,  7 Mar 2020 14:50:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QmiwqXLK";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="EWAkQPv3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 06792206D5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=samsung.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="i8Jd4CrQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C54520675
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:References:Mime-Version:In-Reply-To:
-	Date:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mleUMjSw6R7HRN/zui7vyTL24UJkMehxjfZkE97bzwY=; b=QmiwqXLK1MvGv9
-	I6nAO2DpyL7GiwiFTFXwU/RR/jH2eJzUpc+6dOfumv1s92RERb++RcdGaLhRQ03X/DooVzU+R8Y3l
-	3bsXgP8rBL6UyyTRojYd7lwQJc9mWinScUhf/AeIIRKgJe+3nbMy8GHq1cmVlhJFa+Flf5OBO6Vow
-	f+lv1fVJGKs9mV09lacDmmJx2PKP78lHjum1efCfaEPI7OYgmroUaw4+il2yeHID2Qr4XbbfyEuLS
-	OP8486A9JxUG223yhEAxZsl44/e6DklJhpGo4BmOg4C4kV6WuAg31NJu6QIw2A6n0/n++VhxYmk/D
-	Rwosxq6WDUDuSioAjf1Q==;
+	List-Owner; bh=Wg5Wh8oi3BZMAbHjyZs7E6DXymbtup5Tb1c5tfgP7Eg=; b=i8Jd4CrQ7Rr5/y
+	GgY78AgK9trlFuB5/sfdOt0AHMemyfJNF70XkaaTWBA1O69Tb0KImPN8567KM190gYUmKK3mST4oX
+	AXdN7oiFq2EFixSoyfLRyJxyb2ARzBt33YvWyjNoeNkflL6Ry5dCTjaquNfMw4INCfarZI2bTpsIE
+	SmzVBNnr5WVgUGNq+JOKn4zUUHwdZ4UwMf04oRIgDSVBZ/P18Ce3mWt9jec0mBcNrE2/sc8YBDu1a
+	KgW56H/pNqZ6mppL3BAWKYy3HuaH5O0Blf6WwVktD72B4QETghrYvCALwKw1wyEqI5Fvw+DoPDqmG
+	4C82K3zlt3aG63GQNceg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jAUlL-0004XE-GZ; Sat, 07 Mar 2020 08:24:47 +0000
-Received: from mailout1.samsung.com ([203.254.224.24])
+	id 1jAamS-0006ot-As; Sat, 07 Mar 2020 14:50:20 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jAUlG-0004W7-Jm
- for linux-mtd@lists.infradead.org; Sat, 07 Mar 2020 08:24:46 +0000
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
- by mailout1.samsung.com (KnoxPortal) with ESMTP id
- 20200307082433epoutp015f444e83a19d855a54bed917a2074c74~5_AvEgJFF2613726137epoutp01z
- for <linux-mtd@lists.infradead.org>; Sat,  7 Mar 2020 08:24:33 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com
- 20200307082433epoutp015f444e83a19d855a54bed917a2074c74~5_AvEgJFF2613726137epoutp01z
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
- s=mail20170921; t=1583569473;
- bh=spPkftSjDBxIv0UFcy2SsmjbFvdXlpiWmn3KACieaNw=;
- h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
- b=EWAkQPv3xUtpjSgGWw+KUPHMqdPSZIddqeK7t7u/xUhNApYAA59Y3NAAxNu+kO3Ab
- BBuXgFXTurxO2eGnOQ5AGMtF0gv8JeyaA4ChyphM6WqjXs0BPasphpKQK7juKwuWHM
- 7MhnckLHB4SW//zu93HgWdH/Dx27Bv1Si887SMr8=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
- epcas1p1.samsung.com (KnoxPortal) with ESMTP id
- 20200307082432epcas1p1fa9f8cd22c263bcc62f53f8599ab581e~5_Aty7LmU0243702437epcas1p14;
- Sat,  7 Mar 2020 08:24:32 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.40.162]) by
- epsnrtp3.localdomain (Postfix) with ESMTP id 48ZHb31F4gzMqYkZ; Sat,  7 Mar
- 2020 08:24:31 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
- epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
- 58.36.52419.F3A536E5; Sat,  7 Mar 2020 17:24:31 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
- epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
- 20200307082430epcas1p433c8c9333b6c3d2a94e81266e14bc8b5~5_AshJXlJ1835918359epcas1p4J;
- Sat,  7 Mar 2020 08:24:30 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
- epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
- 20200307082430epsmtrp16d69dfd972845995160efa9359e617a9~5_AsdtdTo2995229952epsmtrp1G;
- Sat,  7 Mar 2020 08:24:30 +0000 (GMT)
-X-AuditID: b6c32a37-59fff7000001ccc3-a3-5e635a3f6171
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
- epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
- 5D.17.10238.E3A536E5; Sat,  7 Mar 2020 17:24:30 +0900 (KST)
-Received: from asdf (unknown [10.88.100.192]) by epsmtip1.samsung.com
- (KnoxPortal) with ESMTPA id
- 20200307082430epsmtip13f1605a42a7b1b211ad713dec24eb791~5_AsPm2od0075700757epsmtip1e;
- Sat,  7 Mar 2020 08:24:30 +0000 (GMT)
-Message-ID: <23f0694c111ca096917ea69ef984e4e3b3cc22c4.camel@samsung.com>
-Subject: Re: [PATCH 1/3] mtd: spi-nor: reimplement block protection handling
-From: Jungseung Lee <js07.lee@samsung.com>
-To: "chenxiang (M)" <chenxiang66@hisilicon.com>, Tudor Ambarus
- <tudor.ambarus@microchip.com>, Vignesh Raghavendra <vigneshr@ti.com>, 
- linux-mtd@lists.infradead.org, js07.lee@gmail.com, Michael Walle
- <michael@walle.cc>,  js07.lee@samsung.com
-Date: Sat, 07 Mar 2020 17:24:30 +0900
-In-Reply-To: <3b7e6d52-e7e2-c444-1d59-5225a7260ea4@hisilicon.com>
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrIJsWRmVeSWpSXmKPExsWy7bCmnq59VHKcwaTlrBbXr11htNi0v4nV
- 4u+cd0wWj27+ZrXY3bSM3eLwxjNMFm9Pb2C3+LjEweL/2Q/sDpweO2fdZfd4PHcju0fLkbes
- HpuX1Hvc+bGU0aNvyypGj+M3tjN5HNjbwhbAEZVjk5GamJJapJCal5yfkpmXbqvkHRzvHG9q
- ZmCoa2hpYa6kkJeYm2qr5OIToOuWmQN0npJCWWJOKVAoILG4WEnfzqYov7QkVSEjv7jEVim1
- ICWnwNCgQK84Mbe4NC9dLzk/18rQwMDIFKgyISfjxM42toJGp4qV746zNjB+M+hi5OSQEDCR
- 6Gt9zdLFyMUhJLCDUeLNxfuMEM4nRomlS9ZBOd8YJTZvu8kK03Li0EeoxF5GiQX97WwQziNG
- iT/HPwE5HBy8Ah4SRw5bgTQIC/hITOvayQRiswloSdz4vYkVpF4EZOrqf5eZQRLMAm4Sh5dc
- BytiEVCVeD+1mQ3E5hRwlHi+4gsTxGYdiben+lgg5gtK/N0hDNEqL9G8dTYzRMlnNombm/gh
- bBeJVRtaoFqFJV4d38IOYUtJvOxvg7KLJXaunMgOco+EQAujxKPlS6ASxhLv3q5lBtnFLKAp
- sX6XPkRYUWLn77mMEHv5JN597WEFKZEQ4JXoaBOCKFGSePOghQXClpC48LgXGm4eEmtazkPD
- 7QijxNTjm1kmMCrMQvhmFpJvZiEsXsDIvIpRLLWgODc9tdiwwBg5gjcxgpOrlvkOxg3nfA4x
- CnAwKvHwOlgnxQmxJpYVV+YeYpTgYFYS4W3USo4T4k1JrKxKLcqPLyrNSS0+xGgKDOuJzFKi
- yfnAxJ9XEm9oamRsbGxhYmZuZmqsJM77MFIzTkggPbEkNTs1tSC1CKaPiYNTqoFRxEbU7Zrb
- C9FbjTq1xxgWm+0PmbdAZcKS5vjnhwx49j3iUr1/9MyGOKspUz5/XK9Qf6TP/UTWvG55y2/a
- TbWffspvmiCcX6JpdWn3xDq9SPX7M7WEFGe1nLr5clJjXdX1bs5tfO2zy/Z8k0nbvK14joCo
- puiR/+0Bf/8mTebdV3hBoKFrkedfJZbijERDLeai4kQADje1VcQDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpikeLIzCtJLcpLzFFi42LZdlhJTtcuKjnO4EiTvMX1a1cYLTbtb2K1
- +DvnHZPFo5u/WS12Ny1jtzi88QyTxdvTG9gtPi5xsPh/9gO7A6fHzll32T0ez93I7tFy5C2r
- x+Yl9R53fixl9OjbsorR4/iN7UweB/a2sAVwRHHZpKTmZJalFunbJXBlnNjZxlbQ6FSx8t1x
- 1gbGbwZdjJwcEgImEicOfWTsYuTiEBLYzShxeecydoiEhMSjnV9Yuhg5gGxhicOHiyFqHjBK
- fL5+nA0kzivgIXHksBVIubCAj8S0rp1MIDabgJbEjd+bWEHqRQS+MUo8+HaSGSTBLOAmcXjJ
- dbAiFgFVifdTm9lAbE4BR4nnK74wQSw4ySjR/Gg2VIOmROv231AH6Ui8PdXHArFYUOLvDmGI
- EnmJ5q2zmScwCs5C0jELoWoWkqoFjMyrGCVTC4pz03OLDQsM81LL9YoTc4tL89L1kvNzNzGC
- Y0ZLcwfj5SXxhxgFOBiVeHhn2CbFCbEmlhVX5h5ilOBgVhLhbdRKjhPiTUmsrEotyo8vKs1J
- LT7EKM3BoiTO+zTvWKSQQHpiSWp2ampBahFMlomDU6qBsa/w/yt7Qe+6JTtzNzCdktbof7CR
- 6cWyF72fjlgrMqzjXms6j/Wop37Mtu/mO/dPm1y8Nk2I+3SRc+fGomXrrvqsi21fkHQnPNWy
- j/3fPeMDZrvM9G5rOPuZ1C7v7rpt/USjm4Uvn3fyFZnjygKmmv+Uv0WFdct3H2ANeGkjsy99
- +xHhU19jlFiKMxINtZiLihMB0JrCo5UCAAA=
-X-CMS-MailID: 20200307082430epcas1p433c8c9333b6c3d2a94e81266e14bc8b5
-X-Msg-Generator: CA
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200304110830epcas1p168bd480847959dc497ac5cc272fa2f80
-References: <CGME20200304110830epcas1p168bd480847959dc497ac5cc272fa2f80@epcas1p1.samsung.com>
- <20200304110800.20658-1-js07.lee@samsung.com>
- <3b7e6d52-e7e2-c444-1d59-5225a7260ea4@hisilicon.com>
+ id 1jAam2-0005Nn-06; Sat, 07 Mar 2020 14:49:57 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id D4568260112;
+ Sat,  7 Mar 2020 14:49:45 +0000 (GMT)
+Date: Sat, 7 Mar 2020 15:49:42 +0100
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: <Tudor.Ambarus@microchip.com>
+Subject: Re: [PATCH 23/23] mtd: spi-nor: Trim what is exposed in spi-nor.h
+Message-ID: <20200307154942.0902e187@collabora.com>
+In-Reply-To: <20200302180730.1886678-24-tudor.ambarus@microchip.com>
+References: <20200302180730.1886678-1-tudor.ambarus@microchip.com>
+ <20200302180730.1886678-24-tudor.ambarus@microchip.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200307_002443_185511_E0CE31AD 
-X-CRM114-Status: GOOD (  36.72  )
+X-CRM114-CacheID: sfid-20200307_064954_317574_A5B2F60B 
+X-CRM114-Status: GOOD (  24.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -141,156 +68,1024 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: John Garry <john.garry@huawei.com>, Linuxarm <linuxarm@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: kstewart@linuxfoundation.org, alexandre.belloni@bootlin.com,
+ vigneshr@ti.com, linux-aspeed@lists.ozlabs.org, thor.thayer@linux.intel.com,
+ michal.simek@xilinx.com, rfontana@redhat.com, linux-mtd@lists.infradead.org,
+ miquel.raynal@bootlin.com, opensource@jilayne.com, richard@nod.at,
+ jethro@fortanix.com, Ludovic.Desroches@microchip.com, joel@jms.id.au,
+ nishkadg.linux@gmail.com, john.garry@huawei.com, swboyd@chromium.org,
+ alexander.sverdlin@nokia.com, matthias.bgg@gmail.com, tglx@linutronix.de,
+ vz@mleia.com, mika.westerberg@linux.intel.com, allison@lohutok.net,
+ linux-arm-kernel@lists.infradead.org, bbrezillon@kernel.org, andrew@aj.id.au,
+ Nicolas.Ferre@microchip.com, linux-kernel@vger.kernel.org, dinguyen@kernel.org,
+ michael@walle.cc, ludovic.barre@st.com, linux-mediatek@lists.infradead.org,
+ info@metux.net
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGksCgoyMDIwLTAzLTA2ICjquIgpLCAyMDoxOSArMDgwMCwgY2hlbnhpYW5nIChNKToKPiBIaSBK
-dW5nc2V1bmcsCj4gCj4g5ZyoIDIwMjAvMy80IDE5OjA3LCBKdW5nc2V1bmcgTGVlIOWGmemBkzoK
-PiA+IFRoZSBjdXJyZW50IG1haW5saW5lIGxvY2tpbmcgd2FzIHJlc3RyaWN0ZWQgYW5kIGNvdWxk
-IG9ubHkgYmUKPiA+IGFwcGxpZWQKPiA+IHRvIGZsYXNoZXMgdGhhdCBoYXMgMyBibG9jayBwcm90
-ZWN0aW9uIGJpdCBhbmQgZml4ZWQgbG9ja2luZyByYXRpby4KPiA+IAo+ID4gQSBuZXcgbWV0aG9k
-IG9mIG5vcm1hbGl6YXRpb24gd2FzIHJlYWNoZWQgYXQgdGhlIGVuZCBvZiB0aGUKPiA+IGRpc2N1
-c3Npb24gWzFdLgo+ID4gCj4gPiAgICAgKDEpIC0gaWYgYnAgc2xvdCBpcyBpbnN1ZmZpY2llbnQu
-Cj4gPiAgICAgKDIpIC0gaWYgYnAgc2xvdCBpcyBzdWZmaWNpZW50Lgo+ID4gCj4gPiAgICAgaWYg
-KGJwX3Nsb3RzX25lZWRlZCA+IGJwX3Nsb3RzKSAgICAvLyAoMSkKPiA+ICAgICAgICAgbWluX3By
-b3RfbGVuZ3RoID0gc2VjdG9yX3NpemUgPDwgKGJwX3Nsb3RzX25lZWRlZCAtCj4gPiBicF9zbG90
-cyk7Cj4gPiAgICAgZWxzZSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyAoMikKPiA+
-ICAgICAgICAgbWluX3Byb3RfbGVuZ3RoID0gc2VjdG9yX3NpemU7Cj4gPiAKPiA+IFRoaXMgcGF0
-Y2ggY2hhbmdlcyBibG9jayBwcm90ZWN0aW9uIGhhbmRsaW5nIGxvZ2ljIGJhc2VkIG9uCj4gPiBt
-aW5fcHJvdF9sZW5ndGguCj4gPiBJdCBpcyBzdWl0YWJsZSBmb3IgdGhlIG92ZXJhbGwgZmxhc2hl
-cyB3aXRoIGV4Y2VwdGlvbiBvZiBzb21lCj4gPiBjb3JuZXIgY2FzZQo+ID4gYW5kIGVhc3kgdG8g
-ZXh0ZW5kIGFuZCBhcHBseSBmb3IgdGhlIGNhc2Ugb2YgMmJpdCBvciA0Yml0IGJsb2NrCj4gPiBw
-cm90ZWN0aW9uLgo+ID4gCj4gPiBbMV0gCj4gPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9w
-aXBlcm1haWwvbGludXgtbXRkLzIwMjAtRmVicnVhcnkvMDkzOTM0Lmh0bWwKPiAgCj4gSSBoYXZl
-IHRlc3RlZCB0aGUgcGF0Y2hzZXQgb24gb25lIG9mIG15IGJvYXJkICh0aGVyZSBpcyBtaWNyb24g
-Zmxhc2gKPiBuMjVxMTI4YTExIHdoaWNoIHN1cHBvcnRzIDRiaXQgQlAsIGFuZCBhbHNvIGJwMyBp
-cyBvbiBiaXQ2IG9mIFNSLCBUQgo+IGJpdCBpcyBvbiBiaXQ1IG9mIFNSKSwgc28KPiBpIG1vZGlm
-eSB0aGUgY29kZSBhcyBmb2xsb3dzIHRvIGVuYWJsZSB0aGUgbG9jay91bmxvY2sgb2YgbjI1cTEy
-OGExMS4KPiAtICAgICAgIHsgIm4yNXExMjhhMTEiLCAgSU5GTygweDIwYmIxOCwgMCwgNjQgKiAx
-MDI0LCAgMjU2LCBTRUNUXzRLIHwKPiBTUElfTk9SX1FVQURfUkVBRCkgfSwKPiArICAgICAgIHsg
-Im4yNXExMjhhMTEiLCAgSU5GTygweDIwYmIxOCwgMCwgNjQgKiAxMDI0LCAgMjU2LAo+ICsgICAg
-ICAgICAgICAgICAgICAgICAgIFNFQ1RfNEsgfCBTUElfTk9SX1FVQURfUkVBRCB8Cj4gKyAgICAg
-ICAgICAgICAgICAgICAgICAgVVNFX0ZTUiB8IFNQSV9OT1JfSEFTX0xPQ0sgfCBTUElfTk9SX0hB
-U19UQiB8Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgU1BJX05PUl9IQVNfQlAzIHwgU1BJX05P
-Ul9CUDNfU1JfQklUNikgfSwKPiAKPiBUaGVyZSBhcmUgdHdvIGlzc3VlcyBpIG1ldDoKPiAoMSkg
-aSBsb2NrL3VubG9jayB0aGUgZnVsbCByZWdpb24gb2YgdGhlIGZsYXNoLCBsb2NrIGlzIHZhbGlk
-LCBidXQKPiB0aGVyZSBpcyBlcnJvciB3aGVuIHVubG9jayB0aGUgZmxhc2gsIGkgcXVlcnkgdGhl
-IHN0YXR1cyBvZiBpdCBpcwo+IHVubG9jayAodGhlIGlzc3VlIGkgdGhpbmsgaXQgaXMKPiB0aGUg
-c2FtZSBhcyB0aGUgaXNzdWUgSm9obiBoYXMgcmVwb3J0ZWQgYmVmb3JlIAo+IGh0dHBzOi8vbG9y
-ZS5rZXJuZWwub3JnL2xpbnV4LW10ZC9jMWE5MmM4OS0wMjBkLTA4NDctYjdiZi00MWRiZmQ5Yjk3
-MmVAbWljcm9jaGlwLmNvbS8pLAo+ICAKPiBpIHNjcmVlbnNob3QgdGhlIGxvZyBvZiB0aGUgb3Bl
-cmF0aW9uIGFzIGZvbGxvd3M6Cj4gCgpMb29rcyBsaWtlIHRoZSB1bmxvY2sgb3BlcmF0aW9uIHdh
-cyBhY3R1YWxseSBkb25lIChhcyBjYW4gYmUgY2hlY2tlZApmcm9tIHRoZSBmb2xsb3dpbmcgcXVl
-cnkgb2YgdGhlIHN0YXR1cykgYnV0IGFuIGVycm9yIGlzIGNvbWluZyB3aXRoCkVJTy4KCkkgdGhp
-bmsgYW5vdGhlciBwYXJ0IG9mIHNyIGhhbmRsaW5nIGlzIHJlbGF0ZWQgd2l0aCB5b3VyIGNhc2Uu
-IChtYXliZQpTUiByZWFkIGJhY2sgdGVzdCA/KQoKSWYgeW91IGNhbiBkdW1wIHRoZSBzciB2YWx1
-ZSAmIGRldl9kYmcgbXNnLCBpdCB3aWxsIGJlIGhlbHBmdWwgdG8KZGVmaW5lIHRoaXMgaXNzdWUu
-Cgo+IAo+ICgyKSBpIHRyeSB0byBsb2NrIHBhcnQgb2YgdGhlIGZsYXNoIHJlZ2lvbiBzdWNoIGFz
-IC4vZmxhc2hfbG9jawo+IC9kZXYvbXRkMCAweGMwMDAwMCAxMCwgaXQgcmVwb3J0cyBpbnZhbGlk
-IGFyZ3VtZW50LAo+IGFuZCBpIGFtIG5vdCBzdXJlIHdoZXRoZXIgaXQgaXMgc29tZXRoaW5nIHdy
-b25nIHdpdGggbXkgb3BlcmF0aW9uLgo+IAoKSXQgaXMgdW5hYmxlIHRvIGxvY2sgc3VjaCByZWdp
-b24gc2luY2UgdGhlIHNwaSBmbGFzaCBkb2Vzbid0IHN1cHBvcnQKaXQuIG9ubHkgd2UgY2FuIGxv
-Y2sgaXQgZnJvbSB0aGUgdG9wIG9yIHRoZSBib3R0b20uCgpsaWtlIHRoaXMgZm9yIG4yNXExMjhh
-MTEsCgpmbGFzaF9sb2NrIC9kZXYvbXRkMCAweGZmMDAwMCAweDEwCmZsYXNoX2xvY2sgL2Rldi9t
-dGQwIDB4MCAweDEwCgpOb3RlIHRoZSBibG9jayBjb3VudCBvZiBleGFtcGxlcyBpcyAweDEwIG5v
-dCAxMC4gVGhlIGxvY2tpbmcgdHJ5IHdpdGgKYmxvY2sgY291bnQgdW5kZXIgbWluaW11bSBibG9j
-ayBwcm90ZWN0aW9uIGxlbmd0aCB3aWxsIGJlIGZhaWxlZC4KClRoYW5rcywKCj4gCj4gPiBTaWdu
-ZWQtb2ZmLWJ5OiBKdW5nc2V1bmcgTGVlIDxqczA3LmxlZUBzYW1zdW5nLmNvbT4KPiA+IC0tLQo+
-ID4gIGRyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jIHwgMTEwICsrKysrKysrKysrKysrKysr
-KysrLS0tLS0tLS0KPiA+IC0tLS0tLQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCA2NiBpbnNlcnRpb25z
-KCspLCA0NCBkZWxldGlvbnMoLSkKPiA+IAo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3Nw
-aS1ub3Ivc3BpLW5vci5jIGIvZHJpdmVycy9tdGQvc3BpLQo+ID4gbm9yL3NwaS1ub3IuYwo+ID4g
-aW5kZXggY2FmMGMxMDljY2EwLi5jNThjMjc1NTJhNzQgMTAwNjQ0Cj4gPiAtLS0gYS9kcml2ZXJz
-L210ZC9zcGktbm9yL3NwaS1ub3IuYwo+ID4gKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zcGkt
-bm9yLmMKPiA+IEBAIC0xNzg0LDI5ICsxNzg0LDY0IEBAIHN0YXRpYyBpbnQgc3BpX25vcl9lcmFz
-ZShzdHJ1Y3QgbXRkX2luZm8KPiA+ICptdGQsIHN0cnVjdCBlcmFzZV9pbmZvICppbnN0cikKPiA+
-ICAJcmV0dXJuIHJldDsKPiA+ICB9Cj4gPiAgCj4gPiArc3RhdGljIHU4IHNwaV9ub3JfZ2V0X2Jw
-X21hc2soc3RydWN0IHNwaV9ub3IgKm5vcikKPiA+ICt7Cj4gPiArCXJldHVybiBTUl9CUDIgfCBT
-Ul9CUDEgfCBTUl9CUDA7Cj4gPiArfQo+ID4gKwo+ID4gK3N0YXRpYyB1OCBzcGlfbm9yX2dldF90
-Yl9tYXNrKHN0cnVjdCBzcGlfbm9yICpub3IpCj4gPiArewo+ID4gKwlpZiAobm9yLT5mbGFncyAm
-IFNOT1JfRl9IQVNfU1JfVEJfQklUNikKPiA+ICsJCXJldHVybiBTUl9UQl9CSVQ2Owo+ID4gKwll
-bHNlCj4gPiArCQlyZXR1cm4gU1JfVEJfQklUNTsKPiA+ICt9Cj4gPiArCj4gPiArc3RhdGljIGlu
-dCBzdG1fZ2V0X21pbl9wcm90X2xlbmd0aChzdHJ1Y3Qgc3BpX25vciAqbm9yKQo+ID4gK3sKPiA+
-ICsJaW50IGJwX3Nsb3RzLCBicF9zbG90c19uZWVkZWQ7Cj4gPiArCXU4IG1hc2sgPSBzcGlfbm9y
-X2dldF9icF9tYXNrKG5vcik7Cj4gPiArCj4gPiArCWJwX3Nsb3RzID0gKG1hc2sgPj4gU1JfQlBf
-U0hJRlQpICsgMTsKPiA+ICsKPiA+ICsJLyogUmVzZXJ2ZWQgb25lIGZvciAicHJvdGVjdCBub25l
-IiBhbmQgb25lIGZvciAicHJvdGVjdCBhbGwiLgo+ID4gKi8KPiA+ICsJYnBfc2xvdHMgPSBicF9z
-bG90cyAtIDI7Cj4gPiArCj4gPiArCWJwX3Nsb3RzX25lZWRlZCA9IGlsb2cyKG5vci0+aW5mby0+
-bl9zZWN0b3JzKTsKPiA+ICsKPiA+ICsJaWYgKGJwX3Nsb3RzX25lZWRlZCA+IGJwX3Nsb3RzKQo+
-ID4gKwkJcmV0dXJuIG5vci0+aW5mby0+c2VjdG9yX3NpemUgPDwKPiA+ICsJCQkoYnBfc2xvdHNf
-bmVlZGVkIC0gYnBfc2xvdHMpOwo+ID4gKwllbHNlCj4gPiArCQlyZXR1cm4gbm9yLT5pbmZvLT5z
-ZWN0b3Jfc2l6ZTsKPiA+ICt9Cj4gPiArCj4gPiAgc3RhdGljIHZvaWQgc3RtX2dldF9sb2NrZWRf
-cmFuZ2Uoc3RydWN0IHNwaV9ub3IgKm5vciwgdTggc3IsCj4gPiBsb2ZmX3QgKm9mcywKPiA+ICAJ
-CQkJIHVpbnQ2NF90ICpsZW4pCj4gPiAgewo+ID4gIAlzdHJ1Y3QgbXRkX2luZm8gKm10ZCA9ICZu
-b3ItPm10ZDsKPiA+IC0JdTggbWFzayA9IFNSX0JQMiB8IFNSX0JQMSB8IFNSX0JQMDsKPiA+IC0J
-dTggdGJfbWFzayA9IFNSX1RCX0JJVDU7Cj4gPiAtCWludCBwb3c7Cj4gPiArCWludCBtaW5fcHJv
-dF9sZW47Cj4gPiArCXU4IG1hc2sgPSBzcGlfbm9yX2dldF9icF9tYXNrKG5vcik7Cj4gPiArCXU4
-IHRiX21hc2sgPSBzcGlfbm9yX2dldF90Yl9tYXNrKG5vcik7Cj4gPiArCXU4IGJwID0gKHNyICYg
-bWFzaykgPj4gU1JfQlBfU0hJRlQ7Cj4gPiAgCj4gPiAtCWlmIChub3ItPmZsYWdzICYgU05PUl9G
-X0hBU19TUl9UQl9CSVQ2KQo+ID4gLQkJdGJfbWFzayA9IFNSX1RCX0JJVDY7Cj4gPiAtCj4gPiAt
-CWlmICghKHNyICYgbWFzaykpIHsKPiA+ICsJaWYgKCFicCkgewo+ID4gIAkJLyogTm8gcHJvdGVj
-dGlvbiAqLwo+ID4gIAkJKm9mcyA9IDA7Cj4gPiAgCQkqbGVuID0gMDsKPiA+IC0JfSBlbHNlIHsK
-PiA+IC0JCXBvdyA9ICgoc3IgJiBtYXNrKSBeIG1hc2spID4+IFNSX0JQX1NISUZUOwo+ID4gLQkJ
-KmxlbiA9IG10ZC0+c2l6ZSA+PiBwb3c7Cj4gPiAtCQlpZiAobm9yLT5mbGFncyAmIFNOT1JfRl9I
-QVNfU1JfVEIgJiYgc3IgJiB0Yl9tYXNrKQo+ID4gLQkJCSpvZnMgPSAwOwo+ID4gLQkJZWxzZQo+
-ID4gLQkJCSpvZnMgPSBtdGQtPnNpemUgLSAqbGVuOwo+ID4gKwkJcmV0dXJuOwo+ID4gIAl9Cj4g
-PiArCj4gPiArCW1pbl9wcm90X2xlbiA9IHN0bV9nZXRfbWluX3Byb3RfbGVuZ3RoKG5vcik7Cj4g
-PiArCSpsZW4gPSBtaW5fcHJvdF9sZW4gPDwgKGJwIC0gMSk7Cj4gPiArCj4gPiArCWlmICgqbGVu
-ID4gbXRkLT5zaXplKQo+ID4gKwkJKmxlbiA9IG10ZC0+c2l6ZTsKPiA+ICsKPiA+ICsJaWYgKG5v
-ci0+ZmxhZ3MgJiBTTk9SX0ZfSEFTX1NSX1RCICYmIHNyICYgdGJfbWFzaykKPiA+ICsJCSpvZnMg
-PSAwOwo+ID4gKwllbHNlCj4gPiArCQkqb2ZzID0gbXRkLT5zaXplIC0gKmxlbjsKPiA+ICB9Cj4g
-PiAgCj4gPiAgLyoKPiA+IEBAIC0xODgwLDggKzE5MTUsOSBAQCBzdGF0aWMgaW50IHN0bV9sb2Nr
-KHN0cnVjdCBzcGlfbm9yICpub3IsCj4gPiBsb2ZmX3Qgb2ZzLCB1aW50NjRfdCBsZW4pCj4gPiAg
-ewo+ID4gIAlzdHJ1Y3QgbXRkX2luZm8gKm10ZCA9ICZub3ItPm10ZDsKPiA+ICAJaW50IHJldCwg
-c3RhdHVzX29sZCwgc3RhdHVzX25ldzsKPiA+IC0JdTggbWFzayA9IFNSX0JQMiB8IFNSX0JQMSB8
-IFNSX0JQMDsKPiA+IC0JdTggdGJfbWFzayA9IFNSX1RCX0JJVDU7Cj4gPiArCWludCBtaW5fcHJv
-dF9sZW47Cj4gPiArCXU4IG1hc2sgPSBzcGlfbm9yX2dldF9icF9tYXNrKG5vcik7Cj4gPiArCXU4
-IHRiX21hc2sgPSBzcGlfbm9yX2dldF90Yl9tYXNrKG5vcik7Cj4gPiAgCXU4IHBvdywgdmFsOwo+
-ID4gIAlsb2ZmX3QgbG9ja19sZW47Cj4gPiAgCWJvb2wgY2FuX2JlX3RvcCA9IHRydWUsIGNhbl9i
-ZV9ib3R0b20gPSBub3ItPmZsYWdzICYKPiA+IFNOT1JfRl9IQVNfU1JfVEI7Cj4gPiBAQCAtMTkx
-OCwyMCArMTk1NCwxNCBAQCBzdGF0aWMgaW50IHN0bV9sb2NrKHN0cnVjdCBzcGlfbm9yICpub3Is
-Cj4gPiBsb2ZmX3Qgb2ZzLCB1aW50NjRfdCBsZW4pCj4gPiAgCWVsc2UKPiA+ICAJCWxvY2tfbGVu
-ID0gb2ZzICsgbGVuOwo+ID4gIAo+ID4gLQlpZiAobm9yLT5mbGFncyAmIFNOT1JfRl9IQVNfU1Jf
-VEJfQklUNikKPiA+IC0JCXRiX21hc2sgPSBTUl9UQl9CSVQ2Owo+ID4gKwlpZiAobG9ja19sZW4g
-PT0gbXRkLT5zaXplKSB7Cj4gPiArCQl2YWwgPSBtYXNrOyAvKiBmdWxseSBsb2NrZWQgKi8KPiA+
-ICsJfSBlbHNlIHsKPiA+ICsJCW1pbl9wcm90X2xlbiA9IHN0bV9nZXRfbWluX3Byb3RfbGVuZ3Ro
-KG5vcik7Cj4gPiArCQlwb3cgPSBpbG9nMihsb2NrX2xlbikgLSBpbG9nMihtaW5fcHJvdF9sZW4p
-ICsgMTsKPiA+ICsJCXZhbCA9IHBvdyA8PCBTUl9CUF9TSElGVDsKPiA+ICsJfQo+ID4gIAo+ID4g
-LQkvKgo+ID4gLQkgKiBOZWVkIHNtYWxsZXN0IHBvdyBzdWNoIHRoYXQ6Cj4gPiAtCSAqCj4gPiAt
-CSAqICAgMSAvICgyXnBvdykgPD0gKGxlbiAvIHNpemUpCj4gPiAtCSAqCj4gPiAtCSAqIHNvIChh
-c3N1bWluZyBwb3dlci1vZi0yIHNpemUpIHdlIGRvOgo+ID4gLQkgKgo+ID4gLQkgKiAgIHBvdyA9
-IGNlaWwobG9nMihzaXplIC8gbGVuKSkgPSBsb2cyKHNpemUpIC0KPiA+IGZsb29yKGxvZzIobGVu
-KSkKPiA+IC0JICovCj4gPiAtCXBvdyA9IGlsb2cyKG10ZC0+c2l6ZSkgLSBpbG9nMihsb2NrX2xl
-bik7Cj4gPiAtCXZhbCA9IG1hc2sgLSAocG93IDw8IFNSX0JQX1NISUZUKTsKPiA+ICAJaWYgKHZh
-bCAmIH5tYXNrKQo+ID4gIAkJcmV0dXJuIC1FSU5WQUw7Cj4gPiAgCS8qIERvbid0ICJsb2NrIiB3
-aXRoIG5vIHJlZ2lvbiEgKi8KPiA+IEBAIC0xOTY2LDggKzE5OTYsOSBAQCBzdGF0aWMgaW50IHN0
-bV91bmxvY2soc3RydWN0IHNwaV9ub3IgKm5vciwKPiA+IGxvZmZfdCBvZnMsIHVpbnQ2NF90IGxl
-bikKPiA+ICB7Cj4gPiAgCXN0cnVjdCBtdGRfaW5mbyAqbXRkID0gJm5vci0+bXRkOwo+ID4gIAlp
-bnQgcmV0LCBzdGF0dXNfb2xkLCBzdGF0dXNfbmV3Owo+ID4gLQl1OCBtYXNrID0gU1JfQlAyIHwg
-U1JfQlAxIHwgU1JfQlAwOwo+ID4gLQl1OCB0Yl9tYXNrID0gU1JfVEJfQklUNTsKPiA+ICsJaW50
-IG1pbl9wcm90X2xlbjsKPiA+ICsJdTggbWFzayA9IHNwaV9ub3JfZ2V0X2JwX21hc2sobm9yKTsK
-PiA+ICsJdTggdGJfbWFzayA9IHNwaV9ub3JfZ2V0X3RiX21hc2sobm9yKTsKPiA+ICAJdTggcG93
-LCB2YWw7Cj4gPiAgCWxvZmZfdCBsb2NrX2xlbjsKPiA+ICAJYm9vbCBjYW5fYmVfdG9wID0gdHJ1
-ZSwgY2FuX2JlX2JvdHRvbSA9IG5vci0+ZmxhZ3MgJgo+ID4gU05PUl9GX0hBU19TUl9UQjsKPiA+
-IEBAIC0yMDA0LDIyICsyMDM1LDEzIEBAIHN0YXRpYyBpbnQgc3RtX3VubG9jayhzdHJ1Y3Qgc3Bp
-X25vciAqbm9yLAo+ID4gbG9mZl90IG9mcywgdWludDY0X3QgbGVuKQo+ID4gIAllbHNlCj4gPiAg
-CQlsb2NrX2xlbiA9IG9mczsKPiA+ICAKPiA+IC0JaWYgKG5vci0+ZmxhZ3MgJiBTTk9SX0ZfSEFT
-X1NSX1RCX0JJVDYpCj4gPiAtCQl0Yl9tYXNrID0gU1JfVEJfQklUNjsKPiA+IC0JLyoKPiA+IC0J
-ICogTmVlZCBsYXJnZXN0IHBvdyBzdWNoIHRoYXQ6Cj4gPiAtCSAqCj4gPiAtCSAqICAgMSAvICgy
-XnBvdykgPj0gKGxlbiAvIHNpemUpCj4gPiAtCSAqCj4gPiAtCSAqIHNvIChhc3N1bWluZyBwb3dl
-ci1vZi0yIHNpemUpIHdlIGRvOgo+ID4gLQkgKgo+ID4gLQkgKiAgIHBvdyA9IGZsb29yKGxvZzIo
-c2l6ZSAvIGxlbikpID0gbG9nMihzaXplKSAtCj4gPiBjZWlsKGxvZzIobGVuKSkKPiA+IC0JICov
-Cj4gPiAtCXBvdyA9IGlsb2cyKG10ZC0+c2l6ZSkgLSBvcmRlcl9iYXNlXzIobG9ja19sZW4pOwo+
-ID4gIAlpZiAobG9ja19sZW4gPT0gMCkgewo+ID4gIAkJdmFsID0gMDsgLyogZnVsbHkgdW5sb2Nr
-ZWQgKi8KPiA+ICAJfSBlbHNlIHsKPiA+IC0JCXZhbCA9IG1hc2sgLSAocG93IDw8IFNSX0JQX1NI
-SUZUKTsKPiA+ICsJCW1pbl9wcm90X2xlbiA9IHN0bV9nZXRfbWluX3Byb3RfbGVuZ3RoKG5vcik7
-Cj4gPiArCQlwb3cgPSBpbG9nMihsb2NrX2xlbikgLSBpbG9nMihtaW5fcHJvdF9sZW4pICsgMTsK
-PiA+ICsJCXZhbCA9IHBvdyA8PCBTUl9CUF9TSElGVDsKPiA+ICsKPiA+ICAJCS8qIFNvbWUgcG93
-ZXItb2YtdHdvIHNpemVzIGFyZSBub3Qgc3VwcG9ydGVkICovCj4gPiAgCQlpZiAodmFsICYgfm1h
-c2spCj4gPiAgCQkJcmV0dXJuIC1FSU5WQUw7Cj4gIAoKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWls
-aW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
-eC1tdGQvCg==
+On Mon, 2 Mar 2020 18:07:57 +0000
+<Tudor.Ambarus@microchip.com> wrote:
+
+> From: Tudor Ambarus <tudor.ambarus@microchip.com>
+> 
+> The SPI NOR controllers drivers must not be able to use structures that
+> are meant just for the SPI NOR core.
+> 
+> struct spi_nor_flash_parameter is filled at run-time with info gathered
+> from flash_info, manufacturer and sfdp data. struct spi_nor_flash_parameter
+> should be opaque to the SPI NOR controller drivers, make sure it is.
+> 
+> spi_nor_option_flags, spi_nor_read_command, spi_nor_pp_command,
+> spi_nor_read_command_index and spi_nor_pp_command_index are defined for the
+> core use, make sure they are opaque to the SPI NOR controller drivers.
+> 
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+
+> ---
+>  drivers/mtd/spi-nor/core.c       |  86 ++++++----
+>  drivers/mtd/spi-nor/core.h       | 214 +++++++++++++++++++++++++
+>  drivers/mtd/spi-nor/gigadevice.c |   2 +-
+>  drivers/mtd/spi-nor/issi.c       |   2 +-
+>  drivers/mtd/spi-nor/macronix.c   |   4 +-
+>  drivers/mtd/spi-nor/micron-st.c  |   4 +-
+>  drivers/mtd/spi-nor/sfdp.c       |  10 ++
+>  drivers/mtd/spi-nor/spansion.c   |   2 +-
+>  drivers/mtd/spi-nor/winbond.c    |   2 +-
+>  drivers/mtd/spi-nor/xilinx.c     |   4 +-
+>  include/linux/mtd/spi-nor.h      | 259 +------------------------------
+>  11 files changed, 294 insertions(+), 295 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index a2e1917b608d..860dac1dff90 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -802,7 +802,7 @@ static int spi_nor_write_16bit_sr_and_check(struct spi_nor *nor, u8 sr1)
+>  		ret = spi_nor_read_cr(nor, &sr_cr[1]);
+>  		if (ret)
+>  			return ret;
+> -	} else if (nor->params.quad_enable) {
+> +	} else if (nor->params->quad_enable) {
+>  		/*
+>  		 * If the Status Register 2 Read command (35h) is not
+>  		 * supported, we should at least be sure we don't
+> @@ -810,7 +810,7 @@ static int spi_nor_write_16bit_sr_and_check(struct spi_nor *nor, u8 sr1)
+>  		 *
+>  		 * We can safely assume that when the Quad Enable method is
+>  		 * set, the value of the QE bit is one, as a consequence of the
+> -		 * nor->params.quad_enable() call.
+> +		 * nor->params->quad_enable() call.
+>  		 *
+>  		 * We can safely assume that the Quad Enable bit is present in
+>  		 * the Status Register 2 at BIT(1). According to the JESD216
+> @@ -1075,6 +1075,11 @@ static u8 spi_nor_convert_3to4_erase(u8 opcode)
+>  				      ARRAY_SIZE(spi_nor_3to4_erase));
+>  }
+>  
+> +static bool spi_nor_has_uniform_erase(const struct spi_nor *nor)
+> +{
+> +	return !!nor->params->erase_map.uniform_erase_type;
+> +}
+> +
+>  static void spi_nor_set_4byte_opcodes(struct spi_nor *nor)
+>  {
+>  	nor->read_opcode = spi_nor_convert_3to4_read(nor->read_opcode);
+> @@ -1082,7 +1087,7 @@ static void spi_nor_set_4byte_opcodes(struct spi_nor *nor)
+>  	nor->erase_opcode = spi_nor_convert_3to4_erase(nor->erase_opcode);
+>  
+>  	if (!spi_nor_has_uniform_erase(nor)) {
+> -		struct spi_nor_erase_map *map = &nor->params.erase_map;
+> +		struct spi_nor_erase_map *map = &nor->params->erase_map;
+>  		struct spi_nor_erase_type *erase;
+>  		int i;
+>  
+> @@ -1119,10 +1124,10 @@ void spi_nor_unlock_and_unprep(struct spi_nor *nor)
+>  
+>  static u32 spi_nor_convert_addr(struct spi_nor *nor, loff_t addr)
+>  {
+> -	if (!nor->params.convert_addr)
+> +	if (!nor->params->convert_addr)
+>  		return addr;
+>  
+> -	return nor->params.convert_addr(nor, addr);
+> +	return nor->params->convert_addr(nor, addr);
+>  }
+>  
+>  /*
+> @@ -1227,6 +1232,16 @@ spi_nor_find_best_erase_type(const struct spi_nor_erase_map *map,
+>  	return NULL;
+>  }
+>  
+> +static u64 spi_nor_region_is_last(const struct spi_nor_erase_region *region)
+> +{
+> +	return region->offset & SNOR_LAST_REGION;
+> +}
+> +
+> +static u64 spi_nor_region_end(const struct spi_nor_erase_region *region)
+> +{
+> +	return (region->offset & ~SNOR_ERASE_FLAGS_MASK) + region->size;
+> +}
+> +
+>  /**
+>   * spi_nor_region_next() - get the next spi nor region
+>   * @region:	pointer to a structure that describes a SPI NOR erase region
+> @@ -1331,7 +1346,7 @@ static int spi_nor_init_erase_cmd_list(struct spi_nor *nor,
+>  				       struct list_head *erase_list,
+>  				       u64 addr, u32 len)
+>  {
+> -	const struct spi_nor_erase_map *map = &nor->params.erase_map;
+> +	const struct spi_nor_erase_map *map = &nor->params->erase_map;
+>  	const struct spi_nor_erase_type *erase, *prev_erase = NULL;
+>  	struct spi_nor_erase_region *region;
+>  	struct spi_nor_erase_command *cmd = NULL;
+> @@ -1817,7 +1832,7 @@ static int spi_nor_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = nor->params.locking_ops->lock(nor, ofs, len);
+> +	ret = nor->params->locking_ops->lock(nor, ofs, len);
+>  
+>  	spi_nor_unlock_and_unprep(nor);
+>  	return ret;
+> @@ -1832,7 +1847,7 @@ static int spi_nor_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = nor->params.locking_ops->unlock(nor, ofs, len);
+> +	ret = nor->params->locking_ops->unlock(nor, ofs, len);
+>  
+>  	spi_nor_unlock_and_unprep(nor);
+>  	return ret;
+> @@ -1847,7 +1862,7 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = nor->params.locking_ops->is_locked(nor, ofs, len);
+> +	ret = nor->params->locking_ops->is_locked(nor, ofs, len);
+>  
+>  	spi_nor_unlock_and_unprep(nor);
+>  	return ret;
+> @@ -2312,7 +2327,7 @@ static int spi_nor_spimem_check_pp(struct spi_nor *nor,
+>  static void
+>  spi_nor_spimem_adjust_hwcaps(struct spi_nor *nor, u32 *hwcaps)
+>  {
+> -	struct spi_nor_flash_parameter *params =  &nor->params;
+> +	struct spi_nor_flash_parameter *params = nor->params;
+>  	unsigned int cap;
+>  
+>  	/* DTR modes are not supported yet, mask them all. */
+> @@ -2411,7 +2426,7 @@ static int spi_nor_select_read(struct spi_nor *nor,
+>  	if (cmd < 0)
+>  		return -EINVAL;
+>  
+> -	read = &nor->params.reads[cmd];
+> +	read = &nor->params->reads[cmd];
+>  	nor->read_opcode = read->opcode;
+>  	nor->read_proto = read->proto;
+>  
+> @@ -2442,7 +2457,7 @@ static int spi_nor_select_pp(struct spi_nor *nor,
+>  	if (cmd < 0)
+>  		return -EINVAL;
+>  
+> -	pp = &nor->params.page_programs[cmd];
+> +	pp = &nor->params->page_programs[cmd];
+>  	nor->program_opcode = pp->opcode;
+>  	nor->write_proto = pp->proto;
+>  	return 0;
+> @@ -2503,7 +2518,7 @@ spi_nor_select_uniform_erase(struct spi_nor_erase_map *map,
+>  
+>  static int spi_nor_select_erase(struct spi_nor *nor)
+>  {
+> -	struct spi_nor_erase_map *map = &nor->params.erase_map;
+> +	struct spi_nor_erase_map *map = &nor->params->erase_map;
+>  	const struct spi_nor_erase_type *erase = NULL;
+>  	struct mtd_info *mtd = &nor->mtd;
+>  	u32 wanted_size = nor->info->sector_size;
+> @@ -2552,7 +2567,7 @@ static int spi_nor_select_erase(struct spi_nor *nor)
+>  static int spi_nor_default_setup(struct spi_nor *nor,
+>  				 const struct spi_nor_hwcaps *hwcaps)
+>  {
+> -	struct spi_nor_flash_parameter *params = &nor->params;
+> +	struct spi_nor_flash_parameter *params = nor->params;
+>  	u32 ignored_mask, shared_mask;
+>  	int err;
+>  
+> @@ -2613,10 +2628,10 @@ static int spi_nor_default_setup(struct spi_nor *nor,
+>  static int spi_nor_setup(struct spi_nor *nor,
+>  			 const struct spi_nor_hwcaps *hwcaps)
+>  {
+> -	if (!nor->params.setup)
+> +	if (!nor->params->setup)
+>  		return 0;
+>  
+> -	return nor->params.setup(nor, hwcaps);
+> +	return nor->params->setup(nor, hwcaps);
+>  }
+>  
+>  /**
+> @@ -2646,13 +2661,13 @@ static void spi_nor_sfdp_init_params(struct spi_nor *nor)
+>  {
+>  	struct spi_nor_flash_parameter sfdp_params;
+>  
+> -	memcpy(&sfdp_params, &nor->params, sizeof(sfdp_params));
+> +	memcpy(&sfdp_params, nor->params, sizeof(sfdp_params));
+>  
+>  	if (spi_nor_parse_sfdp(nor, &sfdp_params)) {
+>  		nor->addr_width = 0;
+>  		nor->flags &= ~SNOR_F_4B_OPCODES;
+>  	} else {
+> -		memcpy(&nor->params, &sfdp_params, sizeof(nor->params));
+> +		memcpy(nor->params, &sfdp_params, sizeof(*nor->params));
+>  	}
+>  }
+>  
+> @@ -2663,7 +2678,7 @@ static void spi_nor_sfdp_init_params(struct spi_nor *nor)
+>   */
+>  static void spi_nor_info_init_params(struct spi_nor *nor)
+>  {
+> -	struct spi_nor_flash_parameter *params = &nor->params;
+> +	struct spi_nor_flash_parameter *params = nor->params;
+>  	struct spi_nor_erase_map *map = &params->erase_map;
+>  	const struct flash_info *info = nor->info;
+>  	struct device_node *np = spi_nor_get_flash_node(nor);
+> @@ -2782,8 +2797,8 @@ static void spi_nor_late_init_params(struct spi_nor *nor)
+>  	 * NOR protection support. When locking_ops are not provided, we pick
+>  	 * the default ones.
+>  	 */
+> -	if (nor->flags & SNOR_F_HAS_LOCK && !nor->params.locking_ops)
+> -		nor->params.locking_ops = &spi_nor_sr_locking_ops;
+> +	if (nor->flags & SNOR_F_HAS_LOCK && !nor->params->locking_ops)
+> +		nor->params->locking_ops = &spi_nor_sr_locking_ops;
+>  }
+>  
+>  /**
+> @@ -2823,8 +2838,12 @@ static void spi_nor_late_init_params(struct spi_nor *nor)
+>   * ->default_init() hook or the SFDP parser do not set specific params.
+>   *		spi_nor_late_init_params()
+>   */
+> -static void spi_nor_init_params(struct spi_nor *nor)
+> +static int spi_nor_init_params(struct spi_nor *nor)
+>  {
+> +	nor->params = devm_kzalloc(nor->dev, sizeof(*nor->params), GFP_KERNEL);
+> +	if (!nor->params)
+> +		return -ENOMEM;
+> +
+>  	spi_nor_info_init_params(nor);
+>  
+>  	spi_nor_manufacturer_init_params(nor);
+> @@ -2836,6 +2855,8 @@ static void spi_nor_init_params(struct spi_nor *nor)
+>  	spi_nor_post_sfdp_fixups(nor);
+>  
+>  	spi_nor_late_init_params(nor);
+> +
+> +	return 0;
+>  }
+>  
+>  /**
+> @@ -2846,14 +2867,14 @@ static void spi_nor_init_params(struct spi_nor *nor)
+>   */
+>  static int spi_nor_quad_enable(struct spi_nor *nor)
+>  {
+> -	if (!nor->params.quad_enable)
+> +	if (!nor->params->quad_enable)
+>  		return 0;
+>  
+>  	if (!(spi_nor_get_protocol_width(nor->read_proto) == 4 ||
+>  	      spi_nor_get_protocol_width(nor->write_proto) == 4))
+>  		return 0;
+>  
+> -	return nor->params.quad_enable(nor);
+> +	return nor->params->quad_enable(nor);
+>  }
+>  
+>  /**
+> @@ -2868,7 +2889,7 @@ static int spi_nor_quad_enable(struct spi_nor *nor)
+>  static int spi_nor_unlock_all(struct spi_nor *nor)
+>  {
+>  	if (nor->flags & SNOR_F_HAS_LOCK)
+> -		return spi_nor_unlock(&nor->mtd, 0, nor->params.size);
+> +		return spi_nor_unlock(&nor->mtd, 0, nor->params->size);
+>  
+>  	return 0;
+>  }
+> @@ -2899,7 +2920,7 @@ static int spi_nor_init(struct spi_nor *nor)
+>  		 */
+>  		WARN_ONCE(nor->flags & SNOR_F_BROKEN_RESET,
+>  			  "enabling reset hack; may not recover from unexpected reboots\n");
+> -		nor->params.set_4byte(nor, true);
+> +		nor->params->set_4byte(nor, true);
+>  	}
+>  
+>  	return 0;
+> @@ -2923,7 +2944,7 @@ void spi_nor_restore(struct spi_nor *nor)
+>  	/* restore the addressing mode */
+>  	if (nor->addr_width == 4 && !(nor->flags & SNOR_F_4B_OPCODES) &&
+>  	    nor->flags & SNOR_F_BROKEN_RESET)
+> -		nor->params.set_4byte(nor, false);
+> +		nor->params->set_4byte(nor, false);
+>  }
+>  EXPORT_SYMBOL_GPL(spi_nor_restore);
+>  
+> @@ -3028,7 +3049,6 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+>  	struct device *dev = nor->dev;
+>  	struct mtd_info *mtd = &nor->mtd;
+>  	struct device_node *np = spi_nor_get_flash_node(nor);
+> -	struct spi_nor_flash_parameter *params = &nor->params;
+>  	int ret;
+>  	int i;
+>  
+> @@ -3079,7 +3099,9 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+>  	mtd->_write = spi_nor_write;
+>  
+>  	/* Init flash parameters based on flash_info struct and SFDP */
+> -	spi_nor_init_params(nor);
+> +	ret = spi_nor_init_params(nor);
+> +	if (ret)
+> +		return ret;
+>  
+>  	if (!mtd->name)
+>  		mtd->name = dev_name(dev);
+> @@ -3087,12 +3109,12 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+>  	mtd->type = MTD_NORFLASH;
+>  	mtd->writesize = 1;
+>  	mtd->flags = MTD_CAP_NORFLASH;
+> -	mtd->size = params->size;
+> +	mtd->size = nor->params->size;
+>  	mtd->_erase = spi_nor_erase;
+>  	mtd->_read = spi_nor_read;
+>  	mtd->_resume = spi_nor_resume;
+>  
+> -	if (nor->params.locking_ops) {
+> +	if (nor->params->locking_ops) {
+>  		mtd->_lock = spi_nor_lock;
+>  		mtd->_unlock = spi_nor_unlock;
+>  		mtd->_is_locked = spi_nor_is_locked;
+> @@ -3115,7 +3137,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+>  		mtd->flags |= MTD_NO_ERASE;
+>  
+>  	mtd->dev.parent = dev;
+> -	nor->page_size = params->page_size;
+> +	nor->page_size = nor->params->page_size;
+>  	mtd->writebufsize = nor->page_size;
+>  
+>  	if (of_property_read_bool(np, "broken-flash-reset"))
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index 3541a84c03d8..7654b6f3b966 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -11,6 +11,220 @@
+>  
+>  #define SPI_NOR_MAX_ID_LEN	6
+>  
+> +enum spi_nor_option_flags {
+> +	SNOR_F_USE_FSR		= BIT(0),
+> +	SNOR_F_HAS_SR_TB	= BIT(1),
+> +	SNOR_F_NO_OP_CHIP_ERASE	= BIT(2),
+> +	SNOR_F_READY_XSR_RDY	= BIT(3),
+> +	SNOR_F_USE_CLSR		= BIT(4),
+> +	SNOR_F_BROKEN_RESET	= BIT(5),
+> +	SNOR_F_4B_OPCODES	= BIT(6),
+> +	SNOR_F_HAS_4BAIT	= BIT(7),
+> +	SNOR_F_HAS_LOCK		= BIT(8),
+> +	SNOR_F_HAS_16BIT_SR	= BIT(9),
+> +	SNOR_F_NO_READ_CR	= BIT(10),
+> +	SNOR_F_HAS_SR_TB_BIT6	= BIT(11),
+> +};
+> +
+> +struct spi_nor_read_command {
+> +	u8			num_mode_clocks;
+> +	u8			num_wait_states;
+> +	u8			opcode;
+> +	enum spi_nor_protocol	proto;
+> +};
+> +
+> +struct spi_nor_pp_command {
+> +	u8			opcode;
+> +	enum spi_nor_protocol	proto;
+> +};
+> +
+> +enum spi_nor_read_command_index {
+> +	SNOR_CMD_READ,
+> +	SNOR_CMD_READ_FAST,
+> +	SNOR_CMD_READ_1_1_1_DTR,
+> +
+> +	/* Dual SPI */
+> +	SNOR_CMD_READ_1_1_2,
+> +	SNOR_CMD_READ_1_2_2,
+> +	SNOR_CMD_READ_2_2_2,
+> +	SNOR_CMD_READ_1_2_2_DTR,
+> +
+> +	/* Quad SPI */
+> +	SNOR_CMD_READ_1_1_4,
+> +	SNOR_CMD_READ_1_4_4,
+> +	SNOR_CMD_READ_4_4_4,
+> +	SNOR_CMD_READ_1_4_4_DTR,
+> +
+> +	/* Octal SPI */
+> +	SNOR_CMD_READ_1_1_8,
+> +	SNOR_CMD_READ_1_8_8,
+> +	SNOR_CMD_READ_8_8_8,
+> +	SNOR_CMD_READ_1_8_8_DTR,
+> +
+> +	SNOR_CMD_READ_MAX
+> +};
+> +
+> +enum spi_nor_pp_command_index {
+> +	SNOR_CMD_PP,
+> +
+> +	/* Quad SPI */
+> +	SNOR_CMD_PP_1_1_4,
+> +	SNOR_CMD_PP_1_4_4,
+> +	SNOR_CMD_PP_4_4_4,
+> +
+> +	/* Octal SPI */
+> +	SNOR_CMD_PP_1_1_8,
+> +	SNOR_CMD_PP_1_8_8,
+> +	SNOR_CMD_PP_8_8_8,
+> +
+> +	SNOR_CMD_PP_MAX
+> +};
+> +
+> +/**
+> + * struct spi_nor_erase_type - Structure to describe a SPI NOR erase type
+> + * @size:		the size of the sector/block erased by the erase type.
+> + *			JEDEC JESD216B imposes erase sizes to be a power of 2.
+> + * @size_shift:		@size is a power of 2, the shift is stored in
+> + *			@size_shift.
+> + * @size_mask:		the size mask based on @size_shift.
+> + * @opcode:		the SPI command op code to erase the sector/block.
+> + * @idx:		Erase Type index as sorted in the Basic Flash Parameter
+> + *			Table. It will be used to synchronize the supported
+> + *			Erase Types with the ones identified in the SFDP
+> + *			optional tables.
+> + */
+> +struct spi_nor_erase_type {
+> +	u32	size;
+> +	u32	size_shift;
+> +	u32	size_mask;
+> +	u8	opcode;
+> +	u8	idx;
+> +};
+> +
+> +/**
+> + * struct spi_nor_erase_command - Used for non-uniform erases
+> + * The structure is used to describe a list of erase commands to be executed
+> + * once we validate that the erase can be performed. The elements in the list
+> + * are run-length encoded.
+> + * @list:		for inclusion into the list of erase commands.
+> + * @count:		how many times the same erase command should be
+> + *			consecutively used.
+> + * @size:		the size of the sector/block erased by the command.
+> + * @opcode:		the SPI command op code to erase the sector/block.
+> + */
+> +struct spi_nor_erase_command {
+> +	struct list_head	list;
+> +	u32			count;
+> +	u32			size;
+> +	u8			opcode;
+> +};
+> +
+> +/**
+> + * struct spi_nor_erase_region - Structure to describe a SPI NOR erase region
+> + * @offset:		the offset in the data array of erase region start.
+> + *			LSB bits are used as a bitmask encoding flags to
+> + *			determine if this region is overlaid, if this region is
+> + *			the last in the SPI NOR flash memory and to indicate
+> + *			all the supported erase commands inside this region.
+> + *			The erase types are sorted in ascending order with the
+> + *			smallest Erase Type size being at BIT(0).
+> + * @size:		the size of the region in bytes.
+> + */
+> +struct spi_nor_erase_region {
+> +	u64		offset;
+> +	u64		size;
+> +};
+> +
+> +#define SNOR_ERASE_TYPE_MAX	4
+> +#define SNOR_ERASE_TYPE_MASK	GENMASK_ULL(SNOR_ERASE_TYPE_MAX - 1, 0)
+> +
+> +#define SNOR_LAST_REGION	BIT(4)
+> +#define SNOR_OVERLAID_REGION	BIT(5)
+> +
+> +#define SNOR_ERASE_FLAGS_MAX	6
+> +#define SNOR_ERASE_FLAGS_MASK	GENMASK_ULL(SNOR_ERASE_FLAGS_MAX - 1, 0)
+> +
+> +/**
+> + * struct spi_nor_erase_map - Structure to describe the SPI NOR erase map
+> + * @regions:		array of erase regions. The regions are consecutive in
+> + *			address space. Walking through the regions is done
+> + *			incrementally.
+> + * @uniform_region:	a pre-allocated erase region for SPI NOR with a uniform
+> + *			sector size (legacy implementation).
+> + * @erase_type:		an array of erase types shared by all the regions.
+> + *			The erase types are sorted in ascending order, with the
+> + *			smallest Erase Type size being the first member in the
+> + *			erase_type array.
+> + * @uniform_erase_type:	bitmask encoding erase types that can erase the
+> + *			entire memory. This member is completed at init by
+> + *			uniform and non-uniform SPI NOR flash memories if they
+> + *			support at least one erase type that can erase the
+> + *			entire memory.
+> + */
+> +struct spi_nor_erase_map {
+> +	struct spi_nor_erase_region	*regions;
+> +	struct spi_nor_erase_region	uniform_region;
+> +	struct spi_nor_erase_type	erase_type[SNOR_ERASE_TYPE_MAX];
+> +	u8				uniform_erase_type;
+> +};
+> +
+> +/**
+> + * struct spi_nor_locking_ops - SPI NOR locking methods
+> + * @lock:	lock a region of the SPI NOR.
+> + * @unlock:	unlock a region of the SPI NOR.
+> + * @is_locked:	check if a region of the SPI NOR is completely locked
+> + */
+> +struct spi_nor_locking_ops {
+> +	int (*lock)(struct spi_nor *nor, loff_t ofs, uint64_t len);
+> +	int (*unlock)(struct spi_nor *nor, loff_t ofs, uint64_t len);
+> +	int (*is_locked)(struct spi_nor *nor, loff_t ofs, uint64_t len);
+> +};
+> +
+> +/**
+> + * struct spi_nor_flash_parameter - SPI NOR flash parameters and settings.
+> + * Includes legacy flash parameters and settings that can be overwritten
+> + * by the spi_nor_fixups hooks, or dynamically when parsing the JESD216
+> + * Serial Flash Discoverable Parameters (SFDP) tables.
+> + *
+> + * @size:		the flash memory density in bytes.
+> + * @page_size:		the page size of the SPI NOR flash memory.
+> + * @hwcaps:		describes the read and page program hardware
+> + *			capabilities.
+> + * @reads:		read capabilities ordered by priority: the higher index
+> + *                      in the array, the higher priority.
+> + * @page_programs:	page program capabilities ordered by priority: the
+> + *                      higher index in the array, the higher priority.
+> + * @erase_map:		the erase map parsed from the SFDP Sector Map Parameter
+> + *                      Table.
+> + * @quad_enable:	enables SPI NOR quad mode.
+> + * @set_4byte:		puts the SPI NOR in 4 byte addressing mode.
+> + * @convert_addr:	converts an absolute address into something the flash
+> + *                      will understand. Particularly useful when pagesize is
+> + *                      not a power-of-2.
+> + * @setup:              configures the SPI NOR memory. Useful for SPI NOR
+> + *                      flashes that have peculiarities to the SPI NOR standard
+> + *                      e.g. different opcodes, specific address calculation,
+> + *                      page size, etc.
+> + * @locking_ops:	SPI NOR locking methods.
+> + */
+> +struct spi_nor_flash_parameter {
+> +	u64				size;
+> +	u32				page_size;
+> +
+> +	struct spi_nor_hwcaps		hwcaps;
+> +	struct spi_nor_read_command	reads[SNOR_CMD_READ_MAX];
+> +	struct spi_nor_pp_command	page_programs[SNOR_CMD_PP_MAX];
+> +
+> +	struct spi_nor_erase_map        erase_map;
+> +
+> +	int (*quad_enable)(struct spi_nor *nor);
+> +	int (*set_4byte)(struct spi_nor *nor, bool enable);
+> +	u32 (*convert_addr)(struct spi_nor *nor, u32 addr);
+> +	int (*setup)(struct spi_nor *nor, const struct spi_nor_hwcaps *hwcaps);
+> +
+> +	const struct spi_nor_locking_ops *locking_ops;
+> +};
+> +
+>  /**
+>   * struct spi_nor_fixups - SPI NOR fixup hooks
+>   * @default_init: called after default flash parameters init. Used to tweak
+> diff --git a/drivers/mtd/spi-nor/gigadevice.c b/drivers/mtd/spi-nor/gigadevice.c
+> index 7930e4490dab..447d84bb2128 100644
+> --- a/drivers/mtd/spi-nor/gigadevice.c
+> +++ b/drivers/mtd/spi-nor/gigadevice.c
+> @@ -16,7 +16,7 @@ static void gd25q256_default_init(struct spi_nor *nor)
+>  	 * indicate the quad_enable method for this case, we need
+>  	 * to set it in the default_init fixup hook.
+>  	 */
+> -	nor->params.quad_enable = spi_nor_sr1_bit6_quad_enable;
+> +	nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
+>  }
+>  
+>  static struct spi_nor_fixups gd25q256_fixups = {
+> diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
+> index 3a1c34c41388..ffcb60e54a80 100644
+> --- a/drivers/mtd/spi-nor/issi.c
+> +++ b/drivers/mtd/spi-nor/issi.c
+> @@ -68,7 +68,7 @@ static const struct flash_info issi_parts[] = {
+>  
+>  static void issi_default_init(struct spi_nor *nor)
+>  {
+> -	nor->params.quad_enable = spi_nor_sr1_bit6_quad_enable;
+> +	nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
+>  }
+>  
+>  static const struct spi_nor_fixups issi_fixups = {
+> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+> index 1ae609c44676..d73bd0363144 100644
+> --- a/drivers/mtd/spi-nor/macronix.c
+> +++ b/drivers/mtd/spi-nor/macronix.c
+> @@ -82,8 +82,8 @@ static const struct flash_info macronix_parts[] = {
+>  
+>  static void macronix_default_init(struct spi_nor *nor)
+>  {
+> -	nor->params.quad_enable = spi_nor_sr1_bit6_quad_enable;
+> -	nor->params.set_4byte = spi_nor_en4_ex4_set_4byte;
+> +	nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
+> +	nor->params->set_4byte = spi_nor_en4_ex4_set_4byte;
+>  }
+>  
+>  static const struct spi_nor_fixups macronix_fixups = {
+> diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
+> index 8017ca58b3a5..5be817d2f27c 100644
+> --- a/drivers/mtd/spi-nor/micron-st.c
+> +++ b/drivers/mtd/spi-nor/micron-st.c
+> @@ -106,8 +106,8 @@ static void micron_st_default_init(struct spi_nor *nor)
+>  {
+>  	nor->flags |= SNOR_F_HAS_LOCK;
+>  	nor->flags &= ~SNOR_F_HAS_16BIT_SR;
+> -	nor->params.quad_enable = NULL;
+> -	nor->params.set_4byte = spi_nor_en4_ex4_wen_set_4byte;
+> +	nor->params->quad_enable = NULL;
+> +	nor->params->set_4byte = spi_nor_en4_ex4_wen_set_4byte;
+>  }
+>  
+>  static const struct spi_nor_fixups micron_st_fixups = {
+> diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+> index b790c3ec871f..6829dc7e4f74 100644
+> --- a/drivers/mtd/spi-nor/sfdp.c
+> +++ b/drivers/mtd/spi-nor/sfdp.c
+> @@ -734,6 +734,16 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
+>  	return ret;
+>  }
+>  
+> +static void spi_nor_region_mark_end(struct spi_nor_erase_region *region)
+> +{
+> +	region->offset |= SNOR_LAST_REGION;
+> +}
+> +
+> +static void spi_nor_region_mark_overlay(struct spi_nor_erase_region *region)
+> +{
+> +	region->offset |= SNOR_OVERLAID_REGION;
+> +}
+> +
+>  /**
+>   * spi_nor_region_check_overlay() - set overlay bit when the region is overlaid
+>   * @region:	pointer to a structure that describes a SPI NOR erase region
+> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+> index 16683983a20e..6756202ace4b 100644
+> --- a/drivers/mtd/spi-nor/spansion.c
+> +++ b/drivers/mtd/spi-nor/spansion.c
+> @@ -74,7 +74,7 @@ static const struct flash_info spansion_parts[] = {
+>  
+>  static void spansion_post_sfdp_fixups(struct spi_nor *nor)
+>  {
+> -	if (nor->params.size <= SZ_16M)
+> +	if (nor->params->size <= SZ_16M)
+>  		return;
+>  
+>  	nor->flags |= SNOR_F_4B_OPCODES;
+> diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
+> index 1e77dffbf729..f15be50024d1 100644
+> --- a/drivers/mtd/spi-nor/winbond.c
+> +++ b/drivers/mtd/spi-nor/winbond.c
+> @@ -97,7 +97,7 @@ static int winbond_set_4byte(struct spi_nor *nor, bool enable)
+>  
+>  static void winbond_default_init(struct spi_nor *nor)
+>  {
+> -	nor->params.set_4byte = winbond_set_4byte;
+> +	nor->params->set_4byte = winbond_set_4byte;
+>  }
+>  
+>  static const struct spi_nor_fixups winbond_fixups = {
+> diff --git a/drivers/mtd/spi-nor/xilinx.c b/drivers/mtd/spi-nor/xilinx.c
+> index fcf635d89f65..1138bdbf4199 100644
+> --- a/drivers/mtd/spi-nor/xilinx.c
+> +++ b/drivers/mtd/spi-nor/xilinx.c
+> @@ -70,7 +70,7 @@ static int xilinx_nor_setup(struct spi_nor *nor,
+>  		nor->mtd.erasesize = 8 * nor->page_size;
+>  	} else {
+>  		/* Flash in Default addressing mode */
+> -		nor->params.convert_addr = s3an_convert_addr;
+> +		nor->params->convert_addr = s3an_convert_addr;
+>  		nor->mtd.erasesize = nor->info->sector_size;
+>  	}
+>  
+> @@ -79,7 +79,7 @@ static int xilinx_nor_setup(struct spi_nor *nor,
+>  
+>  static void xilinx_post_sfdp_fixups(struct spi_nor *nor)
+>  {
+> -	nor->params.setup = xilinx_nor_setup;
+> +	nor->params->setup = xilinx_nor_setup;
+>  }
+>  
+>  static const struct spi_nor_fixups xilinx_fixups = {
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index dde2988a809e..d3d34c4eea48 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -227,110 +227,6 @@ static inline u8 spi_nor_get_protocol_width(enum spi_nor_protocol proto)
+>  	return spi_nor_get_protocol_data_nbits(proto);
+>  }
+>  
+> -enum spi_nor_option_flags {
+> -	SNOR_F_USE_FSR		= BIT(0),
+> -	SNOR_F_HAS_SR_TB	= BIT(1),
+> -	SNOR_F_NO_OP_CHIP_ERASE	= BIT(2),
+> -	SNOR_F_READY_XSR_RDY	= BIT(3),
+> -	SNOR_F_USE_CLSR		= BIT(4),
+> -	SNOR_F_BROKEN_RESET	= BIT(5),
+> -	SNOR_F_4B_OPCODES	= BIT(6),
+> -	SNOR_F_HAS_4BAIT	= BIT(7),
+> -	SNOR_F_HAS_LOCK		= BIT(8),
+> -	SNOR_F_HAS_16BIT_SR	= BIT(9),
+> -	SNOR_F_NO_READ_CR	= BIT(10),
+> -	SNOR_F_HAS_SR_TB_BIT6	= BIT(11),
+> -
+> -};
+> -
+> -/**
+> - * struct spi_nor_erase_type - Structure to describe a SPI NOR erase type
+> - * @size:		the size of the sector/block erased by the erase type.
+> - *			JEDEC JESD216B imposes erase sizes to be a power of 2.
+> - * @size_shift:		@size is a power of 2, the shift is stored in
+> - *			@size_shift.
+> - * @size_mask:		the size mask based on @size_shift.
+> - * @opcode:		the SPI command op code to erase the sector/block.
+> - * @idx:		Erase Type index as sorted in the Basic Flash Parameter
+> - *			Table. It will be used to synchronize the supported
+> - *			Erase Types with the ones identified in the SFDP
+> - *			optional tables.
+> - */
+> -struct spi_nor_erase_type {
+> -	u32	size;
+> -	u32	size_shift;
+> -	u32	size_mask;
+> -	u8	opcode;
+> -	u8	idx;
+> -};
+> -
+> -/**
+> - * struct spi_nor_erase_command - Used for non-uniform erases
+> - * The structure is used to describe a list of erase commands to be executed
+> - * once we validate that the erase can be performed. The elements in the list
+> - * are run-length encoded.
+> - * @list:		for inclusion into the list of erase commands.
+> - * @count:		how many times the same erase command should be
+> - *			consecutively used.
+> - * @size:		the size of the sector/block erased by the command.
+> - * @opcode:		the SPI command op code to erase the sector/block.
+> - */
+> -struct spi_nor_erase_command {
+> -	struct list_head	list;
+> -	u32			count;
+> -	u32			size;
+> -	u8			opcode;
+> -};
+> -
+> -/**
+> - * struct spi_nor_erase_region - Structure to describe a SPI NOR erase region
+> - * @offset:		the offset in the data array of erase region start.
+> - *			LSB bits are used as a bitmask encoding flags to
+> - *			determine if this region is overlaid, if this region is
+> - *			the last in the SPI NOR flash memory and to indicate
+> - *			all the supported erase commands inside this region.
+> - *			The erase types are sorted in ascending order with the
+> - *			smallest Erase Type size being at BIT(0).
+> - * @size:		the size of the region in bytes.
+> - */
+> -struct spi_nor_erase_region {
+> -	u64		offset;
+> -	u64		size;
+> -};
+> -
+> -#define SNOR_ERASE_TYPE_MAX	4
+> -#define SNOR_ERASE_TYPE_MASK	GENMASK_ULL(SNOR_ERASE_TYPE_MAX - 1, 0)
+> -
+> -#define SNOR_LAST_REGION	BIT(4)
+> -#define SNOR_OVERLAID_REGION	BIT(5)
+> -
+> -#define SNOR_ERASE_FLAGS_MAX	6
+> -#define SNOR_ERASE_FLAGS_MASK	GENMASK_ULL(SNOR_ERASE_FLAGS_MAX - 1, 0)
+> -
+> -/**
+> - * struct spi_nor_erase_map - Structure to describe the SPI NOR erase map
+> - * @regions:		array of erase regions. The regions are consecutive in
+> - *			address space. Walking through the regions is done
+> - *			incrementally.
+> - * @uniform_region:	a pre-allocated erase region for SPI NOR with a uniform
+> - *			sector size (legacy implementation).
+> - * @erase_type:		an array of erase types shared by all the regions.
+> - *			The erase types are sorted in ascending order, with the
+> - *			smallest Erase Type size being the first member in the
+> - *			erase_type array.
+> - * @uniform_erase_type:	bitmask encoding erase types that can erase the
+> - *			entire memory. This member is completed at init by
+> - *			uniform and non-uniform SPI NOR flash memories if they
+> - *			support at least one erase type that can erase the
+> - *			entire memory.
+> - */
+> -struct spi_nor_erase_map {
+> -	struct spi_nor_erase_region	*regions;
+> -	struct spi_nor_erase_region	uniform_region;
+> -	struct spi_nor_erase_type	erase_type[SNOR_ERASE_TYPE_MAX];
+> -	u8				uniform_erase_type;
+> -};
+> -
+>  /**
+>   * struct spi_nor_hwcaps - Structure for describing the hardware capabilies
+>   * supported by the SPI controller (bus master).
+> @@ -406,61 +302,7 @@ struct spi_nor_hwcaps {
+>  #define SNOR_HWCAPS_ALL		(SNOR_HWCAPS_READ_MASK |	\
+>  				 SNOR_HWCAPS_PP_MASK)
+>  
+> -struct spi_nor_read_command {
+> -	u8			num_mode_clocks;
+> -	u8			num_wait_states;
+> -	u8			opcode;
+> -	enum spi_nor_protocol	proto;
+> -};
+> -
+> -struct spi_nor_pp_command {
+> -	u8			opcode;
+> -	enum spi_nor_protocol	proto;
+> -};
+> -
+> -enum spi_nor_read_command_index {
+> -	SNOR_CMD_READ,
+> -	SNOR_CMD_READ_FAST,
+> -	SNOR_CMD_READ_1_1_1_DTR,
+> -
+> -	/* Dual SPI */
+> -	SNOR_CMD_READ_1_1_2,
+> -	SNOR_CMD_READ_1_2_2,
+> -	SNOR_CMD_READ_2_2_2,
+> -	SNOR_CMD_READ_1_2_2_DTR,
+> -
+> -	/* Quad SPI */
+> -	SNOR_CMD_READ_1_1_4,
+> -	SNOR_CMD_READ_1_4_4,
+> -	SNOR_CMD_READ_4_4_4,
+> -	SNOR_CMD_READ_1_4_4_DTR,
+> -
+> -	/* Octal SPI */
+> -	SNOR_CMD_READ_1_1_8,
+> -	SNOR_CMD_READ_1_8_8,
+> -	SNOR_CMD_READ_8_8_8,
+> -	SNOR_CMD_READ_1_8_8_DTR,
+> -
+> -	SNOR_CMD_READ_MAX
+> -};
+> -
+> -enum spi_nor_pp_command_index {
+> -	SNOR_CMD_PP,
+> -
+> -	/* Quad SPI */
+> -	SNOR_CMD_PP_1_1_4,
+> -	SNOR_CMD_PP_1_4_4,
+> -	SNOR_CMD_PP_4_4_4,
+> -
+> -	/* Octal SPI */
+> -	SNOR_CMD_PP_1_1_8,
+> -	SNOR_CMD_PP_1_8_8,
+> -	SNOR_CMD_PP_8_8_8,
+> -
+> -	SNOR_CMD_PP_MAX
+> -};
+> -
+> -/* Forward declaration that will be used in 'struct spi_nor_flash_parameter' */
+> +/* Forward declaration that is used in 'struct spi_nor_controller_ops' */
+>  struct spi_nor;
+>  
+>  /**
+> @@ -491,74 +333,14 @@ struct spi_nor_controller_ops {
+>  	int (*erase)(struct spi_nor *nor, loff_t offs);
+>  };
+>  
+> -/**
+> - * struct spi_nor_locking_ops - SPI NOR locking methods
+> - * @lock:	lock a region of the SPI NOR.
+> - * @unlock:	unlock a region of the SPI NOR.
+> - * @is_locked:	check if a region of the SPI NOR is completely locked
+> - */
+> -struct spi_nor_locking_ops {
+> -	int (*lock)(struct spi_nor *nor, loff_t ofs, uint64_t len);
+> -	int (*unlock)(struct spi_nor *nor, loff_t ofs, uint64_t len);
+> -	int (*is_locked)(struct spi_nor *nor, loff_t ofs, uint64_t len);
+> -};
+> -
+> -/**
+> - * struct spi_nor_flash_parameter - SPI NOR flash parameters and settings.
+> - * Includes legacy flash parameters and settings that can be overwritten
+> - * by the spi_nor_fixups hooks, or dynamically when parsing the JESD216
+> - * Serial Flash Discoverable Parameters (SFDP) tables.
+> - *
+> - * @size:		the flash memory density in bytes.
+> - * @page_size:		the page size of the SPI NOR flash memory.
+> - * @hwcaps:		describes the read and page program hardware
+> - *			capabilities.
+> - * @reads:		read capabilities ordered by priority: the higher index
+> - *                      in the array, the higher priority.
+> - * @page_programs:	page program capabilities ordered by priority: the
+> - *                      higher index in the array, the higher priority.
+> - * @erase_map:		the erase map parsed from the SFDP Sector Map Parameter
+> - *                      Table.
+> - * @quad_enable:	enables SPI NOR quad mode.
+> - * @set_4byte:		puts the SPI NOR in 4 byte addressing mode.
+> - * @convert_addr:	converts an absolute address into something the flash
+> - *                      will understand. Particularly useful when pagesize is
+> - *                      not a power-of-2.
+> - * @setup:              configures the SPI NOR memory. Useful for SPI NOR
+> - *                      flashes that have peculiarities to the SPI NOR standard
+> - *                      e.g. different opcodes, specific address calculation,
+> - *                      page size, etc.
+> - * @locking_ops:	SPI NOR locking methods.
+> - */
+> -struct spi_nor_flash_parameter {
+> -	u64				size;
+> -	u32				page_size;
+> -
+> -	struct spi_nor_hwcaps		hwcaps;
+> -	struct spi_nor_read_command	reads[SNOR_CMD_READ_MAX];
+> -	struct spi_nor_pp_command	page_programs[SNOR_CMD_PP_MAX];
+>  
+> -	struct spi_nor_erase_map        erase_map;
+> -
+> -	int (*quad_enable)(struct spi_nor *nor);
+> -	int (*set_4byte)(struct spi_nor *nor, bool enable);
+> -	u32 (*convert_addr)(struct spi_nor *nor, u32 addr);
+> -	int (*setup)(struct spi_nor *nor, const struct spi_nor_hwcaps *hwcaps);
+> -
+> -	const struct spi_nor_locking_ops *locking_ops;
+> -};
+> -
+> -/**
+> - * struct flash_info - Forward declaration of a structure used internally by
+> - *		       spi_nor_scan()
+> +/*
+> + * Forward declarations that are used internally by the core and manufacturer
+> + * drivers.
+>   */
+>  struct flash_info;
+> -
+> -/**
+> - * struct spi_nor_manufacturer - Forward declaration of a structure used
+> - * internally by the core and manufacturer drivers.
+> - */
+>  struct spi_nor_manufacturer;
+> +struct spi_nor_flash_parameter;
+>  
+>  /**
+>   * struct spi_nor - Structure for defining a the SPI NOR layer
+> @@ -613,7 +395,7 @@ struct spi_nor {
+>  
+>  	const struct spi_nor_controller_ops *controller_ops;
+>  
+> -	struct spi_nor_flash_parameter params;
+> +	struct spi_nor_flash_parameter *params;
+>  
+>  	struct {
+>  		struct spi_mem_dirmap_desc *rdesc;
+> @@ -623,35 +405,6 @@ struct spi_nor {
+>  	void *priv;
+>  };
+>  
+> -static u64 __maybe_unused
+> -spi_nor_region_is_last(const struct spi_nor_erase_region *region)
+> -{
+> -	return region->offset & SNOR_LAST_REGION;
+> -}
+> -
+> -static u64 __maybe_unused
+> -spi_nor_region_end(const struct spi_nor_erase_region *region)
+> -{
+> -	return (region->offset & ~SNOR_ERASE_FLAGS_MASK) + region->size;
+> -}
+> -
+> -static void __maybe_unused
+> -spi_nor_region_mark_end(struct spi_nor_erase_region *region)
+> -{
+> -	region->offset |= SNOR_LAST_REGION;
+> -}
+> -
+> -static void __maybe_unused
+> -spi_nor_region_mark_overlay(struct spi_nor_erase_region *region)
+> -{
+> -	region->offset |= SNOR_OVERLAID_REGION;
+> -}
+> -
+> -static bool __maybe_unused spi_nor_has_uniform_erase(const struct spi_nor *nor)
+> -{
+> -	return !!nor->params.erase_map.uniform_erase_type;
+> -}
+> -
+>  static inline void spi_nor_set_flash_node(struct spi_nor *nor,
+>  					  struct device_node *np)
+>  {
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
