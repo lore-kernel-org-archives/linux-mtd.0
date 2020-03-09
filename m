@@ -2,64 +2,96 @@ Return-Path: <SRS0=sdQx=42=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
-	autolearn_force=no version=3.4.0
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BE06C10F27
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Mar 2020 15:22:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 644E1C10F27
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Mar 2020 18:15:14 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4012F2067C
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Mar 2020 15:22:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2DBC120578
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Mar 2020 18:15:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="sPd3Le5c"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4012F2067C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qRySGfgw";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="JlJqa8bM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2DBC120578
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eRZWkxjKXJ196lPjaOz5ezbumUeihmxuf5b089w4TAM=; b=sPd3Le5cV0PdGh
-	TWbpyA4GcMzzvJOeR04Gi3JqlNtrBkOyJ7IW7zglmrYDIcdwtb5bkFYF2nU5B9MU9oFCninatJ227
-	cPR7plRUIhcRk/KjRLPJr7y/yIZ6vNlCE6UL5trR0frhp1vNqm5LRE6X08P2uKh+uCN9dWIl8LoDf
-	MLSj7d0krak/2Mt6ez6L3GW1A6NHF9tZSyYNlsV+8VklDb4EZDwvCZYKbFKJbAI7KCUtDG8lQVSY9
-	zGsUAjeCVTobl/j5HPLB/1cYMN52BUWf/OhIxkAEp9FO54jPsNxzbjX5R+R56fLbQdb0huJ8KpkBb
-	MFZBrqXKffE+bM4MXQxA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From
+	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=QtHFNS8vRNcdXmfbZHfBa+p1Kwy1CjfCe1JlfQIj1lQ=; b=qRySGfgweTVjrW
+	ATsBMyUNWXEOCBXEMG4CaNaP0+FbqG+HqJ0gdVrx5wrQLu84MGSnAgoujHMAiCDMd+nBKSABMzjOJ
+	8L0Dt9B5JnXIYNMlJLv90AjaRhvn+Kpl1VwYnlKMIvcvj8Ko6jxpmiiag0WnmenkUYUBgEX86ckKp
+	7Y7KGzF0ms89C6Sb46vhSQ+KwyiFSdtg6d+kK8ttwV6hyjlWR7QTGWXYm7/caxkXLSsxas9Uchk5F
+	VM3fiS6Dww+Xf8GSactRn4OjuH6PMTNvcIZggDk/k8wM5kf0FQkFR1p62CA/9t+hemSUIoSAST94o
+	DNWBlplO9IrP44n90ZXg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jBKEr-0004CB-E2; Mon, 09 Mar 2020 15:22:41 +0000
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+	id 1jBMvZ-0007uM-Al; Mon, 09 Mar 2020 18:14:57 +0000
+Received: from gateway23.websitewelcome.com ([192.185.50.107])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jBKEn-0004BT-J5
- for linux-mtd@lists.infradead.org; Mon, 09 Mar 2020 15:22:39 +0000
-X-Originating-IP: 90.89.41.158
-Received: from xps13 (lfbn-tou-1-1473-158.w90-89.abo.wanadoo.fr [90.89.41.158])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 5ACF240008;
- Mon,  9 Mar 2020 15:22:24 +0000 (UTC)
-Date: Mon, 9 Mar 2020 16:22:23 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH] mtd: fix calculating partition end address
-Message-ID: <20200309162223.15582d12@xps13>
-In-Reply-To: <e2873d10-2513-8d09-6601-cb542453e10f@milecki.pl>
-References: <20200309074445.23524-1-zajec5@gmail.com>
- <20200309150424.4b75af66@xps13>
- <6125d86fee0c83653cc281b3069e1587@milecki.pl>
- <20200309152221.28dc38ab@xps13>
- <e2873d10-2513-8d09-6601-cb542453e10f@milecki.pl>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1jBMvE-0007R1-2s
+ for linux-mtd@lists.infradead.org; Mon, 09 Mar 2020 18:14:37 +0000
+Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
+ by gateway23.websitewelcome.com (Postfix) with ESMTP id 2BED4C51B
+ for <linux-mtd@lists.infradead.org>; Mon,  9 Mar 2020 13:14:22 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22]) by cmsmtp with SMTP
+ id BMuxjWnixAGTXBMuxjyZux; Mon, 09 Mar 2020 13:14:22 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=embeddedor.com; s=default; h=Content-Type:MIME-Version:Message-ID:Subject:
+ Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+ Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+ :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+ List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=vYQCUGL8WumeOljv/tFtg8GMy2fmDWSq54tfp3yvR1k=; b=JlJqa8bMCe6Uu467Ig6hPMZ6Xa
+ Y9J2KXLqm8ZydzgY2DSlqdugt9OUFmN5pudvQRxXp7lOviaHe/43Nlt2wOe6uCs29v4rKmEWDIIBW
+ MW1+HAOp8rVwpFc4X72dx/mM1EJLHI6JNcPweXxKrwhXc3QWVIu+Wv5lXX5XARDD4GTGLapNZ6yf/
+ qPeAGQVllAJuQPCLvgTR3wnZALj0rHax1hB91T+XBIiWfUuL4ia6r7TAmZwhIERl4mxfiigP/jnze
+ z11Mu7IYSLup0UgNh5qiPgS9ih4PkaurO/YJb9dxtlzpRKVN4JtVNgDQCMvJH2X18GWObCqWEqXro
+ mgSTByvw==;
+Received: from [201.162.240.150] (port=16463 helo=embeddedor)
+ by gator4166.hostgator.com with esmtpa (Exim 4.92)
+ (envelope-from <gustavo@embeddedor.com>)
+ id 1jBMuv-004Hez-7K; Mon, 09 Mar 2020 13:14:17 -0500
+Date: Mon, 9 Mar 2020 13:17:29 -0500
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To: David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>
+Subject: [PATCH][next] jffs2: nodelist.h: Replace zero-length array with
+ flexible-array member
+Message-ID: <20200309181729.GA4420@embeddedor>
 MIME-Version: 1.0
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse,
+ please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - lists.infradead.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 201.162.240.150
+X-Source-L: No
+X-Exim-ID: 1jBMuv-004Hez-7K
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: (embeddedor) [201.162.240.150]:16463
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 19
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200309_082237_900093_0F4EDD9E 
-X-CRM114-Status: GOOD (  18.39  )
+X-CRM114-CacheID: sfid-20200309_111436_290826_B8FDF3F2 
+X-CRM114-Status: UNSURE (   9.15  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,67 +103,63 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- linux-mtd@lists.infradead.org, Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <bbrezillon@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgUmFmYcWCLAoKUmFmYcWCIE1pxYJlY2tpIDxyYWZhbEBtaWxlY2tpLnBsPiB3cm90ZSBvbiBN
-b24sIDkgTWFyIDIwMjAgMTY6MDg6MTIKKzAxMDA6Cgo+IE9uIDA5LjAzLjIwMjAgMTU6MjIsIE1p
-cXVlbCBSYXluYWwgd3JvdGU6Cj4gPiBSYWZhxYIgTWnFgmVja2kgPHJhZmFsQG1pbGVja2kucGw+
-IHdyb3RlIG9uIE1vbiwgMDkgTWFyIDIwMjAgMTU6MTk6MTAKPiA+ICswMTAwOgo+ID4gICAKPiA+
-PiBPbiAyMDIwLTAzLTA5IDE1OjA0LCBNaXF1ZWwgUmF5bmFsIHdyb3RlOiAgCj4gPj4+IFJhZmHF
-giBNacWCZWNraSA8emFqZWM1QGdtYWlsLmNvbT4gd3JvdGUgb24gTW9uLCAgOSBNYXIgMjAyMCAw
-ODo0NDo0NQo+ID4+PiArMDEwMDogIAo+ID4+PiAgICA+Pj4+IEZyb206IFJhZmHFgiBNacWCZWNr
-aSA8cmFmYWxAbWlsZWNraS5wbD4gIAo+ID4+Pj4+PiBUaGlzIGZpeGVzIGNoZWNrIGZvciBwYXJ0
-aXRpb25zIHRoYXQgZG9uJ3Qgc3RhcnQgYXQgYmVnaW5uaW5nIG9mIHRoZWlyICAKPiA+Pj4+IHBh
-cmVudHMuIE1pc3NpbmcgcGFydGl0aW9uJ3Mgb2Zmc2V0IGluIGZvcm11bGEgY291bGQgcmVzdWx0
-IGluIGZvcmNpbmcKPiA+Pj4+IHJlYWQtb25seSBpbmNvcnJlY3RseS4gIAo+ID4+Pj4+PiBGaXhl
-czogNjc1MGY2MWExM2EwICgibXRkOiBpbXByb3ZlIGNhbGN1bGF0aW5nIHBhcnRpdGlvbiBib3Vu
-ZGFyaWVzID4+IHdoZW4gY2hlY2tpbmcgZm9yIGFsaWdubWVudCIpICAKPiA+Pj4+IFNpZ25lZC1v
-ZmYtYnk6IFJhZmHFgiBNacWCZWNraSA8cmFmYWxAbWlsZWNraS5wbD4KPiA+Pj4+IC0tLQo+ID4+
-Pj4gICBkcml2ZXJzL210ZC9tdGRwYXJ0LmMgfCAyICstCj4gPj4+PiAgIDEgZmlsZSBjaGFuZ2Vk
-LCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKSAgCj4gPj4+Pj4+IGRpZmYgLS1naXQgYS9k
-cml2ZXJzL210ZC9tdGRwYXJ0LmMgYi9kcml2ZXJzL210ZC9tdGRwYXJ0LmMgIAo+ID4+Pj4gaW5k
-ZXggNzMyOGMwNjZjNWJhLi5jNjgzYjQzMmNjNWUgMTAwNjQ0Cj4gPj4+PiAtLS0gYS9kcml2ZXJz
-L210ZC9tdGRwYXJ0LmMKPiA+Pj4+ICsrKyBiL2RyaXZlcnMvbXRkL210ZHBhcnQuYwo+ID4+Pj4g
-QEAgLTUyNCw3ICs1MjQsNyBAQCBzdGF0aWMgc3RydWN0IG10ZF9wYXJ0ICphbGxvY2F0ZV9wYXJ0
-aXRpb24oc3RydWN0ID4+IG10ZF9pbmZvICpwYXJlbnQsCj4gPj4+PiAgIAkJCXBhcnQtPm5hbWUp
-Owo+ID4+Pj4gICAJfSAgCj4gPj4+Pj4+IC0JdG1wID0gcGFydF9hYnNvbHV0ZV9vZmZzZXQocGFy
-ZW50KSArIHNsYXZlLT5tdGQuc2l6ZTsgIAo+ID4+Pj4gKwl0bXAgPSBwYXJ0X2Fic29sdXRlX29m
-ZnNldChwYXJlbnQpICsgc2xhdmUtPm9mZnNldCArID4+IHNsYXZlLT5tdGQuc2l6ZTsgIAo+ID4+
-Pgo+ID4+PiBJIHRoaW5rIHlvdSBhcmUgZG9pbmcgdGhlIGNoYW5nZSBhdCB0aGUgd3JvbmcgcGxh
-Y2UsIGlmIHlvdSB3YW50IHRvCj4gPj4+IGNoZWNrIHdoZXJlIHRoZSBwYXJ0aXRpb24gKnN0YXJ0
-cyogeW91IHNob3VsZCBkbyBpdCBhIGZldyBsaW5lcyBhYm92ZS4KPiA+Pj4gQnV0IEkgdGhpbmsg
-dGhlIGNoZWNrIHNob3VsZCBiZSBoZXJlIGFzIHdlbGwsIHByb2JhYmx5LiAgCj4gPj4KPiA+PiBU
-aGUgY2hlY2sgd2hlcmUgdGhlIHBhcnRpdGlvbiAqc3RhcnRzKiBpcyBPSyBhbmQgSSBkb24ndCBt
-ZWFuIHRvIGNoYW5nZQo+ID4+IGl0LiBUaGUgYnVnIGlzIGFib3V0IGNhbGN1bGF0aW5nIGFic29s
-dXRlICplbmQqIGFkZHJlc3Mgb2YgcGFydGl0aW9uLiAgCj4gPiAKPiA+IENhbiB5b3UgZGV0YWls
-IGEgbGl0dGxlIGJpdCB0aGVuPyBCZWNhdXNlIEkgZG9uJ3Qgc2VlIHRoZSBpc3N1ZSBhbnltb3Jl
-Cj4gPiBldmVuIHRob3VnaCBJIGFtIGNvbnZpbmNlZCBzb21ldGhpbmcgaXMgd3JvbmcgaGVyZSA6
-KSAgCj4gCj4gUGxlYXNlIGNvbnNpZGVyIGZvbGxvd2luZyBwYXJ0aXRpb25zIGxheW91dDoKPiAq
-IGJjbTQ3eHhzZmxhc2gKPiDilJzilIAgYm9vdAkJMHgwMDAwMDAwMDAwMDAtMHgwMDAwMDAwNDAw
-MDAKPiDilJTilKwgZmlybXdhcmUJMHgwMDAwMDAwNDAwMDAtMHgwMDAwMDEwMDAwMDAKPiAgIOKU
-nOKUgCBsaW51eAkweDAwMDAwMDAwMDAxYy0weDAwMDAwMDE4ZjgwMAo+ICAg4pSU4pSsIGNvbnRh
-aW5lcgkweDAwMDAwMDE4ZjgwMC0weDAwMDAwMGZjMDAwMAo+ICAgIOKUnOKUgCBmb28JMHgwMDAw
-MDAwMDAwMDAtMHgwMDAwMDA2MzA4MDAKPiAgICDilJTilIAgYmFyCTB4MDAwMDAwNjMwODAwLTB4
-MDAwMDAwZTMwODAwIChzaXplOiAweDgwMDAwMCkKPiAKPiAKPiBFeGlzdGluZyAoY29ycmVjdCkg
-KnN0YXJ0KiBjYWxjdWxhdGlvbjoKPiBiYXIgc3RhcnQ6IDAgKyAweDA0MDAwMCArIDB4MThmODAw
-ICsgMHg2MzA4MDAgPSAweDgwMDAwMAo+IAo+IEV4aXN0aW5nICh3cm9uZykgZW5kIGNhbGN1bGF0
-aW9uOgo+IGJhciBlbmQ6IDAgKyAweDA0MDAwMCArIDB4MThmODAwICsgMHg4MDAwMDAgPSAweDlj
-ZjgwMAo+IAo+IEZpeGVkIChjb3JyZWN0KSBlbmQgY2FsY3VsYXRpb246Cj4gYmFyIGVuZDogMCAr
-IDB4MDQwMDAwICsgMHgxOGY4MDAgKyAweDYzMDgwMCArIDB4ODAwMDAwID0gMHgxMDAwMDAwCgpP
-ayBJIGdldCBpdCEgSSB0aGluayBtZW50aW9uaW5nICJwYXJ0aXRpb25zIHRoYXQgZG9uJ3Qgc3Rh
-cnQgYXQKYmVnaW5uaW5nIG9mIHRoZWlyIHBhcmVudHMiLCBkZXNwaXRlIGJlaW5nIHRydWUsIHdh
-cyBtaXNsZWFkaW5nIHRvIG1lCmFzIEkgdW5kZXJzdG9vZCAibGVhdmluZyBleHRyYSBzcGFjZSB3
-aXRoIHRoZSBzdGFydCBvZiB0aGVpciBwYXJlbnQiLgoKSSBzdXBwb3NlIHlvdSBhbHNvIGhhdmUg
-dGhlIGlzc3VlIHdpdGggImNvbnRhaW5lciIgdG9vPwoKQW55d2F5LCBJIHRoaW5rIHRoZSBmaXgg
-aXMgZmluZS4gQSBiZXR0ZXIgZm9ybXVsYXRpb24gZm9yIHRoZSBjb21taXQKbG9nIHdvdWxkIGJl
-IHdlbGNvbWUgOikgKG1heWJlIGFkZGluZyB0aGlzIGV4YW1wbGUgaXMgYSBnb29kIGlkZWEhKQoK
-ClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8v
-bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+The current codebase makes use of the zero-length array language
+extension to the C90 standard, but the preferred mechanism to declare
+variable-length types such as these ones is a flexible array member[1][2],
+introduced in C99:
+
+struct foo {
+        int stuff;
+        struct boo array[];
+};
+
+By making use of the mechanism above, we will get a compiler warning
+in case the flexible array does not occur last in the structure, which
+will help us prevent some kind of undefined behavior bugs from being
+inadvertently introduced[3] to the codebase from now on.
+
+Also, notice that, dynamic memory allocations won't be affected by
+this change:
+
+"Flexible array members have incomplete type, and so the sizeof operator
+may not be applied. As a quirk of the original implementation of
+zero-length arrays, sizeof evaluates to zero."[1]
+
+This issue was found with the help of Coccinelle.
+
+[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+[2] https://github.com/KSPP/linux/issues/21
+[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+ fs/jffs2/nodelist.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/jffs2/nodelist.h b/fs/jffs2/nodelist.h
+index 0637271f3770..8ff4d1a1e774 100644
+--- a/fs/jffs2/nodelist.h
++++ b/fs/jffs2/nodelist.h
+@@ -259,7 +259,7 @@ struct jffs2_full_dirent
+ 	uint32_t ino; /* == zero for unlink */
+ 	unsigned int nhash;
+ 	unsigned char type;
+-	unsigned char name[0];
++	unsigned char name[];
+ };
+ 
+ /*
+-- 
+2.25.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
