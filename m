@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A09C7C10F27
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Mar 2020 15:05:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C754AC10F27
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Mar 2020 15:08:38 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6891421655
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Mar 2020 15:05:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9B74E20873
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Mar 2020 15:08:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="a8d5nXJM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6891421655
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="b5ejipQQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9B74E20873
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=milecki.pl
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
@@ -25,50 +25,46 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
 	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Ih/t74SYwDHmd4+nrwRJ9AdPV27bRvH7UBUObIlG25c=; b=a8d5nXJMZVlYvy3RxwrkJIohY
-	b9H4Hl8G7jEJQCIZoVnJZzGWF4GGMRosqC/NX/A3ZYT8FIkWcGrnO7Iw5+aIdZPKaBtn4/N8F9LQS
-	23jCrPeR8UJ0rxRjslZCb0LbuNuKaiN/fWl0H5NzYHR5h4yWrim2uaZKfjkMuALixEZhYyEUWcSHi
-	PbUMtOgOUQSOSj95CaL5nmxu6dM+n8HWrQqUsaXq4CDy/G52Jf42URguEL70apnfinV8FvUT7imqL
-	YrdLi7TJWKNfuyQ43JklNRndZAf6vBscqDzAknPuyv9pjlBYhjOCrDQPjkVqRhwxN/Y3D9HiMiTMd
-	cIhenneRg==;
+	 bh=KzzA4IuFOa+zQXby+eniY91OxmF+2JplfDpb+tnJKQ8=; b=b5ejipQQAcOPYJ2bHRzqqEUtl
+	XNxAXTBQNKj8vgZB8C13BpavdxdOEj7dJcFDfNqFNv0CKUjSot2/TySurUIQl+Mvk2P7Z5m3JHGr4
+	/qXwGQvrNPt+seLPIWwrbx9xLLZZTrFjYXi+YYj9QK4v09cNMaaPsTpryMolzqyIu0IBxrnhMwlos
+	3uo/yQ+fbotbJxQJ6i9vMrthLeBK5wC57/FXl3jm85TQZUN6Psi1GwG7VKjMsuDHIE7IQWl83V3qC
+	hjHeYKWxDGaJWO4y9nZ436LDJoY9GSAli4bCBUxN1P3RXtvDdy7kCDV1dlSeUxUXy8tC5GNQxJXyA
+	8Qq93JeMg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jBJxr-0005HZ-82; Mon, 09 Mar 2020 15:05:07 +0000
-Received: from lhrrgout.huawei.com ([185.176.76.210] helo=huawei.com)
+	id 1jBK19-0006QG-FV; Mon, 09 Mar 2020 15:08:31 +0000
+Received: from 19.mo7.mail-out.ovh.net ([178.33.251.118])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jBJxn-0004VF-8V
- for linux-mtd@lists.infradead.org; Mon, 09 Mar 2020 15:05:05 +0000
-Received: from lhreml706-cah.china.huawei.com (unknown [172.18.7.107])
- by Forcepoint Email with ESMTP id 98E2EFDCB4FBB79E5101;
- Mon,  9 Mar 2020 15:04:54 +0000 (GMT)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- lhreml706-cah.china.huawei.com (10.201.108.47) with Microsoft SMTP Server
- (TLS) id 14.3.408.0; Mon, 9 Mar 2020 15:04:54 +0000
-Received: from [127.0.0.1] (10.202.226.45) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Mon, 9 Mar 2020
- 15:04:54 +0000
-Subject: Re: [RESEND PATCH 1/2] mtd: spi-nor: Clear WEL bit when erase or
- program errors occur
-To: <Tudor.Ambarus@microchip.com>, <vigneshr@ti.com>,
- <chenxiang66@hisilicon.com>
-References: <3245882.KdgdznRmvK@localhost.localdomain>
- <20200309101501.191530-1-tudor.ambarus@microchip.com>
-From: John Garry <john.garry@huawei.com>
-Message-ID: <3499f977-e176-52b0-63d1-23e1b4d67b7b@huawei.com>
-Date: Mon, 9 Mar 2020 15:04:53 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+ id 1jBK15-0006Pn-Jk
+ for linux-mtd@lists.infradead.org; Mon, 09 Mar 2020 15:08:29 +0000
+Received: from player774.ha.ovh.net (unknown [10.110.103.23])
+ by mo7.mail-out.ovh.net (Postfix) with ESMTP id B0022157E0C
+ for <linux-mtd@lists.infradead.org>; Mon,  9 Mar 2020 16:08:21 +0100 (CET)
+Received: from milecki.pl (ip-194-187-74-233.konfederacka.maverick.com.pl
+ [194.187.74.233]) (Authenticated sender: rafal@milecki.pl)
+ by player774.ha.ovh.net (Postfix) with ESMTPSA id 8AFF81049FB43;
+ Mon,  9 Mar 2020 15:08:13 +0000 (UTC)
+Subject: Re: [PATCH] mtd: fix calculating partition end address
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+References: <20200309074445.23524-1-zajec5@gmail.com>
+ <20200309150424.4b75af66@xps13> <6125d86fee0c83653cc281b3069e1587@milecki.pl>
+ <20200309152221.28dc38ab@xps13>
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Message-ID: <e2873d10-2513-8d09-6601-cb542453e10f@milecki.pl>
+Date: Mon, 9 Mar 2020 16:08:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200309101501.191530-1-tudor.ambarus@microchip.com>
+In-Reply-To: <20200309152221.28dc38ab@xps13>
 Content-Language: en-US
-X-Originating-IP: [10.202.226.45]
-X-ClientProxiedBy: lhreml720-chm.china.huawei.com (10.201.108.71) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+X-Ovh-Tracer-Id: 6621698827589357235
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedugedruddukedgjeehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomheptfgrfhgrlhcuofhilhgvtghkihcuoehrrghfrghlsehmihhlvggtkhhirdhplheqnecukfhppedtrddtrddtrddtpdduleegrddukeejrdejgedrvdeffeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejjeegrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomheprhgrfhgrlhesmhhilhgvtghkihdrphhlpdhrtghpthhtoheplhhinhhugidqmhhtugeslhhishhtshdrihhnfhhrrgguvggrugdrohhrgh
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200309_080503_468310_89486996 
-X-CRM114-Status: GOOD (  17.91  )
+X-CRM114-CacheID: sfid-20200309_080827_805261_701E23A5 
+X-CRM114-Status: GOOD (  18.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,93 +76,74 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, js07.lee@samsung.com
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Cc: Richard Weinberger <richard@nod.at>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ linux-mtd@lists.infradead.org, Vignesh Raghavendra <vigneshr@ti.com>,
+ Boris Brezillon <bbrezillon@kernel.org>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 09/03/2020 10:15, Tudor.Ambarus@microchip.com wrote:
-> From: Tudor Ambarus <tudor.ambarus@microchip.com>
-> 
-> When an Erase or Program error occurs on a spansion/cypress or a
-> micron flash, the WEL bit remains set to one and should be cleared
-> with a WRDI command in order to protect against inadvertent writes
-> that can possible corrupt the contents of the memory.
-> 
-> Winbond, macronix, gd, etc., do not support the E_ERR and P_ERR bits in the
-> Status Register and always clear the WEL bit regardless of the outcome
-> of the erase or page program operation (ex w25q40bw, MX25L25635E).
-> 
-> Issue a WRDI command when erase or page program errors occur.
-> 
-> Reported-by: John Garry <john.garry@huawei.com>
-
-Previously I would get this unlock complaint:
-
-root@ubuntu:/home/john# flash_lock -l /dev/mtd0
-root@ubuntu:/home/john# sudo mtd_debug erase /dev/mtd0 0xf80000 4096
-[  167.458647] spi-nor spi-PRP0001:00: Erase operation failed.
-[  167.464248] spi-nor spi-PRP0001:00: Attempted to modify a protected 
-sector.
-MEMERASE: Input/output error
-root@ubuntu:/home/john# flash_lock -u /dev/mtd0
-flash_lock: error!: could not unlock device: /dev/mtd0
-
-             error 5 (Input/output error)
-
-Now, no such issue. Thanks
-
-Tested-by: John Garry <john.garry@huawei.com>
-
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> ---
->   drivers/mtd/spi-nor/spi-nor.c | 22 ++++++++++++++++++++++
->   1 file changed, 22 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index caf0c109cca0..4376d8ad5834 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -819,6 +819,17 @@ static int spi_nor_sr_ready(struct spi_nor *nor)
->   			dev_err(nor->dev, "Programming Error occurred\n");
->   
->   		spi_nor_clear_sr(nor);
-> +
-> +		/*
-> +		 * WEL bit remains set to one when an erase or page program
-> +		 * error occurs. Issue a Write Disable command to protect
-> +		 * against inadvertent writes that can possibly corrupt the
-> +		 * contents of the memory.
-> +		 */
-> +		ret = spi_nor_write_disable(nor);
-> +		if (ret)
-> +			return ret;
-> +
->   		return -EIO;
->   	}
->   
-> @@ -875,6 +886,17 @@ static int spi_nor_fsr_ready(struct spi_nor *nor)
->   			"Attempted to modify a protected sector.\n");
->   
->   		spi_nor_clear_fsr(nor);
-> +
-> +		/*
-> +		 * WEL bit remains set to one when an erase or page program
-> +		 * error occurs. Issue a Write Disable command to protect
-> +		 * against inadvertent writes that can possibly corrupt the
-> +		 * contents of the memory.
-> +		 */
-> +		ret = spi_nor_write_disable(nor);
-> +		if (ret)
-> +			return ret;
-> +
->   		return -EIO;
->   	}
->   
-> 
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMDkuMDMuMjAyMCAxNToyMiwgTWlxdWVsIFJheW5hbCB3cm90ZToKPiBSYWZhxYIgTWnFgmVj
+a2kgPHJhZmFsQG1pbGVja2kucGw+IHdyb3RlIG9uIE1vbiwgMDkgTWFyIDIwMjAgMTU6MTk6MTAK
+PiArMDEwMDoKPiAKPj4gT24gMjAyMC0wMy0wOSAxNTowNCwgTWlxdWVsIFJheW5hbCB3cm90ZToK
+Pj4+IFJhZmHFgiBNacWCZWNraSA8emFqZWM1QGdtYWlsLmNvbT4gd3JvdGUgb24gTW9uLCAgOSBN
+YXIgMjAyMCAwODo0NDo0NQo+Pj4gKzAxMDA6Cj4+PiAgICAKPj4+PiBGcm9tOiBSYWZhxYIgTWnF
+gmVja2kgPHJhZmFsQG1pbGVja2kucGw+Cj4+Pj4+PiBUaGlzIGZpeGVzIGNoZWNrIGZvciBwYXJ0
+aXRpb25zIHRoYXQgZG9uJ3Qgc3RhcnQgYXQgYmVnaW5uaW5nIG9mIHRoZWlyCj4+Pj4gcGFyZW50
+cy4gTWlzc2luZyBwYXJ0aXRpb24ncyBvZmZzZXQgaW4gZm9ybXVsYSBjb3VsZCByZXN1bHQgaW4g
+Zm9yY2luZwo+Pj4+IHJlYWQtb25seSBpbmNvcnJlY3RseS4KPj4+Pj4+IEZpeGVzOiA2NzUwZjYx
+YTEzYTAgKCJtdGQ6IGltcHJvdmUgY2FsY3VsYXRpbmcgcGFydGl0aW9uIGJvdW5kYXJpZXMgPj4g
+d2hlbiBjaGVja2luZyBmb3IgYWxpZ25tZW50IikKPj4+PiBTaWduZWQtb2ZmLWJ5OiBSYWZhxYIg
+TWnFgmVja2kgPHJhZmFsQG1pbGVja2kucGw+Cj4+Pj4gLS0tCj4+Pj4gICBkcml2ZXJzL210ZC9t
+dGRwYXJ0LmMgfCAyICstCj4+Pj4gICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEg
+ZGVsZXRpb24oLSkKPj4+Pj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9tdGRwYXJ0LmMgYi9k
+cml2ZXJzL210ZC9tdGRwYXJ0LmMKPj4+PiBpbmRleCA3MzI4YzA2NmM1YmEuLmM2ODNiNDMyY2M1
+ZSAxMDA2NDQKPj4+PiAtLS0gYS9kcml2ZXJzL210ZC9tdGRwYXJ0LmMKPj4+PiArKysgYi9kcml2
+ZXJzL210ZC9tdGRwYXJ0LmMKPj4+PiBAQCAtNTI0LDcgKzUyNCw3IEBAIHN0YXRpYyBzdHJ1Y3Qg
+bXRkX3BhcnQgKmFsbG9jYXRlX3BhcnRpdGlvbihzdHJ1Y3QgPj4gbXRkX2luZm8gKnBhcmVudCwK
+Pj4+PiAgIAkJCXBhcnQtPm5hbWUpOwo+Pj4+ICAgCX0KPj4+Pj4+IC0JdG1wID0gcGFydF9hYnNv
+bHV0ZV9vZmZzZXQocGFyZW50KSArIHNsYXZlLT5tdGQuc2l6ZTsKPj4+PiArCXRtcCA9IHBhcnRf
+YWJzb2x1dGVfb2Zmc2V0KHBhcmVudCkgKyBzbGF2ZS0+b2Zmc2V0ICsgPj4gc2xhdmUtPm10ZC5z
+aXplOwo+Pj4KPj4+IEkgdGhpbmsgeW91IGFyZSBkb2luZyB0aGUgY2hhbmdlIGF0IHRoZSB3cm9u
+ZyBwbGFjZSwgaWYgeW91IHdhbnQgdG8KPj4+IGNoZWNrIHdoZXJlIHRoZSBwYXJ0aXRpb24gKnN0
+YXJ0cyogeW91IHNob3VsZCBkbyBpdCBhIGZldyBsaW5lcyBhYm92ZS4KPj4+IEJ1dCBJIHRoaW5r
+IHRoZSBjaGVjayBzaG91bGQgYmUgaGVyZSBhcyB3ZWxsLCBwcm9iYWJseS4KPj4KPj4gVGhlIGNo
+ZWNrIHdoZXJlIHRoZSBwYXJ0aXRpb24gKnN0YXJ0cyogaXMgT0sgYW5kIEkgZG9uJ3QgbWVhbiB0
+byBjaGFuZ2UKPj4gaXQuIFRoZSBidWcgaXMgYWJvdXQgY2FsY3VsYXRpbmcgYWJzb2x1dGUgKmVu
+ZCogYWRkcmVzcyBvZiBwYXJ0aXRpb24uCj4gCj4gQ2FuIHlvdSBkZXRhaWwgYSBsaXR0bGUgYml0
+IHRoZW4/IEJlY2F1c2UgSSBkb24ndCBzZWUgdGhlIGlzc3VlIGFueW1vcmUKPiBldmVuIHRob3Vn
+aCBJIGFtIGNvbnZpbmNlZCBzb21ldGhpbmcgaXMgd3JvbmcgaGVyZSA6KQoKUGxlYXNlIGNvbnNp
+ZGVyIGZvbGxvd2luZyBwYXJ0aXRpb25zIGxheW91dDoKKiBiY200N3h4c2ZsYXNoCuKUnOKUgCBi
+b290CQkweDAwMDAwMDAwMDAwMC0weDAwMDAwMDA0MDAwMArilJTilKwgZmlybXdhcmUJMHgwMDAw
+MDAwNDAwMDAtMHgwMDAwMDEwMDAwMDAKICDilJzilIAgbGludXgJMHgwMDAwMDAwMDAwMWMtMHgw
+MDAwMDAxOGY4MDAKICDilJTilKwgY29udGFpbmVyCTB4MDAwMDAwMThmODAwLTB4MDAwMDAwZmMw
+MDAwCiAgIOKUnOKUgCBmb28JMHgwMDAwMDAwMDAwMDAtMHgwMDAwMDA2MzA4MDAKICAg4pSU4pSA
+IGJhcgkweDAwMDAwMDYzMDgwMC0weDAwMDAwMGUzMDgwMCAoc2l6ZTogMHg4MDAwMDApCgoKRXhp
+c3RpbmcgKGNvcnJlY3QpICpzdGFydCogY2FsY3VsYXRpb246CmJhciBzdGFydDogMCArIDB4MDQw
+MDAwICsgMHgxOGY4MDAgKyAweDYzMDgwMCA9IDB4ODAwMDAwCgpFeGlzdGluZyAod3JvbmcpIGVu
+ZCBjYWxjdWxhdGlvbjoKYmFyIGVuZDogMCArIDB4MDQwMDAwICsgMHgxOGY4MDAgKyAweDgwMDAw
+MCA9IDB4OWNmODAwCgpGaXhlZCAoY29ycmVjdCkgZW5kIGNhbGN1bGF0aW9uOgpiYXIgZW5kOiAw
+ICsgMHgwNDAwMDAgKyAweDE4ZjgwMCArIDB4NjMwODAwICsgMHg4MDAwMDAgPSAweDEwMDAwMDAK
+CgpCZWNhdXNlIG9mIHRoYXQgZXhpc3Rpbmcgd3JvbmcgZW5kIGNhbGN1bGF0aW9uIEkgd2FzIGdl
+dHRpbmc6Cm10ZDogcGFydGl0aW9uICJiYXIiIGRvZXNuJ3QgZW5kIG9uIGFuIGVyYXNlL3dyaXRl
+IGJsb2NrIC0tIGZvcmNlIHJlYWQtb25seQoKU2VlOgoyIGJjbTQ3eHhwYXJ0IHBhcnRpdGlvbnMg
+Zm91bmQgb24gTVREIGRldmljZSBiY200N3h4c2ZsYXNoCkNyZWF0aW5nIDIgTVREIHBhcnRpdGlv
+bnMgb24gImJjbTQ3eHhzZmxhc2giOgoweDAwMDAwMDAwMDAwMC0weDAwMDAwMDA0MDAwMCA6ICJi
+b290IgoweDAwMDAwMDA0MDAwMC0weDAwMDAwMTAwMDAwMCA6ICJmaXJtd2FyZSIKMiB0cnggcGFy
+dGl0aW9ucyBmb3VuZCBvbiBNVEQgZGV2aWNlIGZpcm13YXJlCkNyZWF0aW5nIDIgTVREIHBhcnRp
+dGlvbnMgb24gImZpcm13YXJlIjoKMHgwMDAwMDAwMDAwMWMtMHgwMDAwMDAxOGY4MDAgOiAibGlu
+dXgiCm10ZDogcGFydGl0aW9uICJsaW51eCIgZG9lc24ndCBzdGFydCBvbiBhbiBlcmFzZS93cml0
+ZSBibG9jayBib3VuZGFyeSAtLSBmb3JjZSByZWFkLW9ubHkKMHgwMDAwMDAxOGY4MDAtMHgwMDAw
+MDBmYzAwMDAgOiAiY29udGFpbmVyIgptdGQ6IHBhcnRpdGlvbiAiY29udGFpbmVyIiBkb2Vzbid0
+IHN0YXJ0IG9uIGFuIGVyYXNlL3dyaXRlIGJsb2NrIGJvdW5kYXJ5IC0tIGZvcmNlIHJlYWQtb25s
+eQoyIGNvbnRhaW5lciBwYXJ0aXRpb25zIGZvdW5kIG9uIE1URCBkZXZpY2UgY29udGFpbmVyCkNy
+ZWF0aW5nIDIgTVREIHBhcnRpdGlvbnMgb24gImNvbnRhaW5lciI6CjB4MDAwMDAwMDAwMDAwLTB4
+MDAwMDAwNjMwODAwIDogImZvbyIKbXRkOiBwYXJ0aXRpb24gImZvbyIgZG9lc24ndCBzdGFydCBv
+biBhbiBlcmFzZS93cml0ZSBibG9jayBib3VuZGFyeSAtLSBmb3JjZSByZWFkLW9ubHkKMHgwMDAw
+MDA2MzA4MDAtMHgwMDAwMDBlMzA4MDAgOiAiYmFyIgptdGQ6IHBhcnRpdGlvbiAiYmFyIiBkb2Vz
+bid0IGVuZCBvbiBhbiBlcmFzZS93cml0ZSBibG9jayAtLSBmb3JjZSByZWFkLW9ubHkKCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBN
+VEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
