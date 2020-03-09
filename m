@@ -2,67 +2,97 @@ Return-Path: <SRS0=sdQx=42=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D03AC10F27
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Mar 2020 08:40:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D919FC10F27
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Mar 2020 09:58:45 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6022020828
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Mar 2020 08:40:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 56C6D20674
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Mar 2020 09:58:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EXQJqWu5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6022020828
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TsL25Fhn";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cerno.tech header.i=@cerno.tech header.b="rhP8IqmZ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="MalW71/b"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 56C6D20674
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cerno.tech
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FMEb0h4YoPnHExje+GDMLuSxacedCT3Pr0Qqwy6V/nY=; b=EXQJqWu5h23G5W
-	otEAcLRCjnbNlnWGH0HjYTla6fyra2SinZTM8f2yqhREyahvqV972B773eV9sV+c5UvwYRlpx1fua
-	U+2h8JkuZ9Viswjg1jQD3vUxOHdjK4SiA2eYuCgI0Hf5Rvynqz+cjwf6APUWK2P4/KswxUDG/VuJh
-	DiTmRSuPXFZ4alumPQxN7NZvqCKktvpG4vdihkcdnDMmrtZOql0cz74rv1FhpEAHw5VX16+RzXD6c
-	IK5NWRPzUVDPH6Dir+/37N7O8SkfhK+iV4moS+aiwx+BYz9n4YTPzbpbQU0Y1mYy4a2VhJySt7Bg0
-	XW1CGbf/dhBjBXz3akWw==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:Cc:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=A6L0W5Iq1f4I7lqIV35EtXiILt1tcFyPg1tc9ZqBR4k=; b=TsL25FhnuOHktakYC5ZRlyev4
+	RNbS1d5RBcrn6MezDPAL5kQD+gIuQ9xixPZEyktviIuMlD4ug8PUjGpgjxHmucD1/SsOtL/q3LKBX
+	PSzyafuC8Um0VtKjETjzRvt4SQdWhCrKW/UiFJKUxqdnT/aN9V2iwmHZocCGX6EtMPAE9+ICjw1xl
+	ymln3JpIqNxIwPB0AqHC+ukcSOBHb6LOPVJopXsceK2xmde6gBFkhku2dTHh50GTz/z3dow9Dmgkq
+	Gvzsn7u/rxvyClmxhiP3CA/nnMLWqPeovWvoHkHaHBzJjovvgfCiSb9opCSCL9zHNxCkJTD/sK92f
+	YQZVPLbBQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jBDxo-0007cz-W0; Mon, 09 Mar 2020 08:40:40 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1jBFBB-0002ML-BM; Mon, 09 Mar 2020 09:58:33 +0000
+Received: from new4-smtp.messagingengine.com ([66.111.4.230])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jBDxm-0007cV-Qd
- for linux-mtd@lists.infradead.org; Mon, 09 Mar 2020 08:40:40 +0000
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <sha@pengutronix.de>)
- id 1jBDxl-0002dw-22; Mon, 09 Mar 2020 09:40:37 +0100
-Received: from sha by dude.hi.pengutronix.de with local (Exim 4.92)
- (envelope-from <sha@pengutronix.de>)
- id 1jBDxj-0002V0-0e; Mon, 09 Mar 2020 09:40:35 +0100
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2] mtd: spi-nor: Add support for cy15x104q
-Date: Mon,  9 Mar 2020 09:40:33 +0100
-Message-Id: <20200309084033.8752-1-s.hauer@pengutronix.de>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200305120242.1391-1-s.hauer@pengutronix.de>
-References: <20200305120242.1391-1-s.hauer@pengutronix.de>
+ id 1jBFB2-0002EO-04; Mon, 09 Mar 2020 09:58:25 +0000
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+ by mailnew.nyi.internal (Postfix) with ESMTP id BA7F52616;
+ Mon,  9 Mar 2020 05:58:14 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute4.internal (MEProxy); Mon, 09 Mar 2020 05:58:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+ date:from:to:cc:subject:message-id:references:mime-version
+ :content-type:in-reply-to; s=fm2; bh=x843TymkohDL0CNnlBbHCXKt7Ii
+ gsbMrdZT6H6SSLmM=; b=rhP8IqmZ+jnmVnsMHlCOIX+LbZ63kU8RwEc3J0svGNY
+ 6l8keSJodZj1KEAzWpHFBUVsnNW/4Hoc5BNgfSJx1dlqwpUOnP6llj1JLVytgp8n
+ G1VcpWl/HmiI62RepxfoKu4dquSqAHs+Yz2NPjR98pBIxB6DvTh0Oe7zzXa4V2io
+ bzkne9Fd1SjR1ug31fLXuWQM62HVBP5MBI0uuZDcCSzNA9ForGP2B3w+r3lSMXGc
+ Uaml2qVaTO/vYNR1e5lJAGzgiN6rewod4YdnLGuTyoNiwxk4k/H9Sd1Ox4uG0vX7
+ 8GALFXpaZxngop8xIjwSQ+ObinvCPW7UGMToYY+QvEw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=x843Ty
+ mkohDL0CNnlBbHCXKt7IigsbMrdZT6H6SSLmM=; b=MalW71/b0+98hpXSkEDGTd
+ vItpnoXZ67gxttvgn8L//69iT2ScZYAkAXmTTi686fLpmjy6KIfpyTygbxyjv2gu
+ NHiCm6ALZHS2jrMN4UW0bUHTyOJB4wgSaiuosEQwG3fqjuFm8t6MeuFNiPQbtBov
+ H28FF+AvM84P6KVV/DHjHXvXL300JIBQWkkTqg4qxh7Nv8b9Oqhc4qaygrsNWMBe
+ Yjr7emvKu9pF2YVO/Cf1pnTTr/WCYh/BplhCbQIgkVvWzJWyws+sPlDOVkQ8mUD5
+ zRvHUEB5Efx+n/zMaqbn+U2GTLEJMZDUFhMIZcC8TL+lDH+hKe/OC2IfF60iJJUg
+ ==
+X-ME-Sender: <xms:NRNmXpJ642poT0Dt5Kmbum1UY08WvQ2u-9noaK5LPgiEhXZ_Q_8JcA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedruddukedgudduucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+ cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+ vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecukfhppeeltd
+ drkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghi
+ lhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:NRNmXvJKMpM5sDIjsIbInMlrLqbf8VAmWT6jQzFtiXrlhS7-654RDg>
+ <xmx:NRNmXrxTqXFf5uSjuEE01s01PFt-cmZKHMZHD60E7njKY7Tmp-clFA>
+ <xmx:NRNmXsJk5dlb4qXdDhwjsS0WwflSz1y6CIusJe9p-qL30nODKfJnfw>
+ <xmx:NhNmXjlWHrL3bFOKqIfhkg4kI_jidnrmXT-SZ4RyTgi6r-VKZPseCg>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr
+ [90.89.68.76])
+ by mail.messagingengine.com (Postfix) with ESMTPA id 0A780328005D;
+ Mon,  9 Mar 2020 05:58:12 -0400 (EDT)
+Date: Mon, 9 Mar 2020 10:58:11 +0100
+From: Maxime Ripard <maxime@cerno.tech>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 4/7] mtd: rawnand: sunxi: Use dma_request_chan() instead
+ dma_request_slave_channel()
+Message-ID: <20200309095811.hg4maq663eaj3opz@gilmour.lan>
+References: <20200227123749.24064-1-peter.ujfalusi@ti.com>
+ <20200227123749.24064-5-peter.ujfalusi@ti.com>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+In-Reply-To: <20200227123749.24064-5-peter.ujfalusi@ti.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200309_014038_864282_C273EADF 
-X-CRM114-Status: GOOD (  11.99  )
+X-CRM114-CacheID: sfid-20200309_025824_180543_65F677E0 
+X-CRM114-Status: UNSURE (   7.01  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,48 +104,62 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>, Sascha Hauer <s.hauer@pengutronix.de>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: vkoul@kernel.org, vigneshr@ti.com, richard@nod.at,
+ linux-kernel@vger.kernel.org, wens@csie.org, linux-mtd@lists.infradead.org,
+ mcoquelin.stm32@gmail.com, miquel.raynal@bootlin.com, han.xu@nxp.com,
+ linux-arm-kernel@lists.infradead.org, alexandre.torgue@st.com
+Content-Type: multipart/mixed; boundary="===============2124591296686004221=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The Cypress cy15b104q and cy15v104q are 4Mbit serial SPI F-RAM devices.
-Add support for them to the spi-nor driver.
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
+--===============2124591296686004221==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ghgfzfwbprbf3thj"
+Content-Disposition: inline
 
-Changes since v1:
-- Instead of specifying 1024 sectors with a sector size of 512 specify
-  512 * 1024 sectos with a sector size of 1. The device has no idea of
-  sectors and is not erasable, so a sector size of 1 seems to better
-  reflect reality.
 
- drivers/mtd/spi-nor/spi-nor.c | 3 +++
- 1 file changed, 3 insertions(+)
+--ghgfzfwbprbf3thj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 4fc632ec18fe..a5c1d684364c 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -2335,6 +2335,9 @@ static const struct flash_info spi_nor_ids[] = {
- 
- 	{ "at45db081d", INFO(0x1f2500, 0, 64 * 1024, 16, SECT_4K) },
- 
-+	/* Cypress */
-+	{ "cy15x104q",  INFO6(0x042cc2, 0x7f7f7f, 512 * 1024, 1, SPI_NOR_NO_ERASE) },
-+
- 	/* EON -- en25xxx */
- 	{ "en25f32",    INFO(0x1c3116, 0, 64 * 1024,   64, SECT_4K) },
- 	{ "en25p32",    INFO(0x1c2016, 0, 64 * 1024,   64, 0) },
--- 
-2.25.1
+On Thu, Feb 27, 2020 at 02:37:46PM +0200, Peter Ujfalusi wrote:
+> dma_request_slave_channel() is a wrapper on top of dma_request_chan()
+> eating up the error code.
+>
+> By using dma_request_chan() directly the driver can support deferred
+> probing against DMA.
+>
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
+Acked-by: Maxime Ripard <mripard@kernel.org>
+
+Thanks!
+Maxime
+
+--ghgfzfwbprbf3thj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXmYTMwAKCRDj7w1vZxhR
+xUqpAP9DxNAJ2AawCZ9Jr/Mw8AxjK5nNtLKe6A6jtOsi8iEfGAD/ScHhr9eJJULD
+Ty0cjoA0+ExrVGQk6FoSzvrsIHJ3BwE=
+=BoAI
+-----END PGP SIGNATURE-----
+
+--ghgfzfwbprbf3thj--
+
+
+--===============2124591296686004221==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============2124591296686004221==--
+
