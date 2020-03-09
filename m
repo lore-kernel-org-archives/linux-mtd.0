@@ -2,93 +2,60 @@ Return-Path: <SRS0=sdQx=42=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DC25C10F27
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Mar 2020 10:28:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24ECDC10F27
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Mar 2020 10:33:27 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 507C920409
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Mar 2020 10:28:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EBF5920409
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Mar 2020 10:33:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NyJCRvLL";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="Ojcpasb+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 507C920409
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="etP2agvb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EBF5920409
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=j7SbRoCZ91YRhbNq24Awzklzai0c3j7U4cJkewfY37Q=; b=NyJCRvLL5dKRel
-	fPxhbzV3OXFK/2zVNlW08Pzg5fS8K8DpmvWXpk9dED1cjuuAtPjh9BxBxLb9IXSgt6+O27tEjdn1Y
-	EXk56EVjCdXNUHPv2cdqkEHH/Wcz3cALLbvzFUVXrfHMOC1bkAXr+XffpO0etxTuEjWYyF8tgqX5o
-	k+6jvezGWZlU9e6mju+kcrpyy6UvjHdXfTWj1Mc8KHwR5kXhMUy7epKQOwA8MRoYh1lX+H1stqM69
-	ARPOm//dejkXV4Xi+8qL3uhwVohAOy9bMYFf2OBNB+E6STo2w6BH2bVJiVNEu1tO8BcKn726XBDqG
-	VYiQ6bhrPscRDWUq+V9Q==;
+	List-Owner; bh=cJnGji52hH97AVBg/QGpmObogBKy/4d06fS2dqfj2zk=; b=etP2agvboy1aJ/
+	yRxEhvnr7OAYJCp4OJqvAt8EqqJUC4Q1ygCvaaFhplOnTsPbHTyRWyuZGhs+wrCqFGL8ptayDztUc
+	hLYQSvsjCeBmQR9eWKHqWMA04KKF8daSDLdp+VXRsXtIe3UzzfIYielERID/+h7nv/LQFYLhdRruJ
+	RnwK7mbzkztGk1sSWhOrh86o7z12YrHIrIM13zLtRQFcJxCSVeEkTkZHGEOvFWlbd/I2eE0Y8KpqI
+	wqqwcq0n3n6NrbV376H69sF8g7TpPbft3Gxy0cXgjEpmaZaOTFQ5TM1D55LRTm95/RDb4inbqVQRF
+	TB2DAu3+UQfgB/HcPYGA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jBFeF-0004vm-31; Mon, 09 Mar 2020 10:28:35 +0000
-Received: from conssluserg-02.nifty.com ([210.131.2.81])
+	id 1jBFip-0007bB-Jt; Mon, 09 Mar 2020 10:33:19 +0000
+Received: from relay5-d.mail.gandi.net ([217.70.183.197])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jBFeC-0004vH-8u
- for linux-mtd@lists.infradead.org; Mon, 09 Mar 2020 10:28:33 +0000
-Received: from mail-vs1-f45.google.com (mail-vs1-f45.google.com
- [209.85.217.45]) (authenticated)
- by conssluserg-02.nifty.com with ESMTP id 029AS8FC012481
- for <linux-mtd@lists.infradead.org>; Mon, 9 Mar 2020 19:28:08 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 029AS8FC012481
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
- s=dec2015msa; t=1583749689;
- bh=jaROwbXlRbbdorTS4/KA8VJVMElH6i4OSgV4v9HDR8w=;
- h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=Ojcpasb+INIoLhu7y8aeL5297ZDGX805MOB6Oc356XaEn4QholKe1wum0Pug7s93W
- Wdih/L4fA0xc/VDBUoMSEhiKGMkNsbJw5x5OoP+lC9xH7Q4GWGlJdLf/KNSoTjWi2V
- inknOh2euw3p4RbLb/N1aUEcdWtaofKEgoroqaDAoC61+7GaUm4GqJhrHBG+7ucsuv
- 7jxDYfQ+JM7NPofFkqH55xYPf4boLgPL4nfWHq7MvBFsoGCUJalAOu23fg/PwuDlDa
- XLBiGjmIPmpdTKEy1Zn2HKDz8pI1WZh1x96djKqKaRK0GEOmM4Z0IfcX9XlwGWpFj4
- AmFD7oi5k1ouw==
-X-Nifty-SrcIP: [209.85.217.45]
-Received: by mail-vs1-f45.google.com with SMTP id i25so1856206vsq.9
- for <linux-mtd@lists.infradead.org>; Mon, 09 Mar 2020 03:28:08 -0700 (PDT)
-X-Gm-Message-State: ANhLgQ1nLzsggIgi/n2fcNWGVLIDquWgFnZ0AQHKSdPjv9UhT4fD2Q+T
- +Myax91revAqsUBeVxFJ4oS+PruNukK/XHR0KRA=
-X-Google-Smtp-Source: ADFU+vuE62peg5pizBYSjIAh7i1knKZ2sKkVuwLeYaj8XnvOqORirTb2OSBDoqIM7Eh/GSiFSkQhcN6llQ5r3RAxzY4=
-X-Received: by 2002:a05:6102:8f:: with SMTP id
- t15mr749818vsp.215.1583749687319; 
- Mon, 09 Mar 2020 03:28:07 -0700 (PDT)
+ id 1jBFim-0007XK-Hi
+ for linux-mtd@lists.infradead.org; Mon, 09 Mar 2020 10:33:18 +0000
+X-Originating-IP: 90.89.41.158
+Received: from xps13 (lfbn-tou-1-1473-158.w90-89.abo.wanadoo.fr [90.89.41.158])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 708D81C001A;
+ Mon,  9 Mar 2020 10:32:57 +0000 (UTC)
+Date: Mon, 9 Mar 2020 11:32:56 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: shiva.linuxworks@gmail.com
+Subject: Re: [PATCH v5 0/6] Add new series Micron SPI NAND devices
+Message-ID: <20200309113256.6c6751f8@xps13>
+In-Reply-To: <20200228150311.12184-1-sshivamurthy@micron.com>
+References: <20200228150311.12184-1-sshivamurthy@micron.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20200205070834.3087104-1-marex@denx.de>
- <20200205101223.21d99d93@xps13>
- <45a10680-5fe6-7cab-a7ef-f7f7a952e822@denx.de> <20200205105045.6877aca6@xps13>
- <bdb54ba5-648a-0b79-661c-5eb9604a1ee5@denx.de>
- <b6f094b7-01a9-34a2-bf10-019a05bc7cb3@denx.de>
- <20200211170707.2183625e@xps13> <b1a10583-e110-9568-4007-aa2b3f38a7be@denx.de>
- <CAK7LNARqYDh4AJ+N-PTHui0H89-humECskJVUxW4cTf6edEBMQ@mail.gmail.com>
- <f4e2deeb-cc0e-fb06-46fa-d6cf4f2a73ad@denx.de>
- <CAK7LNAR4MU+Rfmpz99iwLuEbD4jMwUdh91uz3zyQdvjyLEQcMQ@mail.gmail.com>
- <29cce21c-2214-7238-0bc5-db2c1a54576f@denx.de>
- <CAK7LNASckTZO-9uVjtQH8iKhU0HH9WiMK-CzMxjESQOOUM0cKA@mail.gmail.com>
- <CAK7LNAT3EG0XocC0xT0f=6MBpXLga3FehOjEYbRyP6AJUbqb2Q@mail.gmail.com>
- <311cdc3c-59b5-a46b-62f0-e78fc970134a@denx.de>
- <CAK7LNAT1Bzs68X8PiWQHg4g2bpPGd-WM9D4vwf59XfwwLVuVQQ@mail.gmail.com>
- <e86925d0-805c-d364-57ca-6400b77cffd7@denx.de>
-In-Reply-To: <e86925d0-805c-d364-57ca-6400b77cffd7@denx.de>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Mon, 9 Mar 2020 19:27:31 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARDp1Zru3_XAQyBZHwsRov-QWOnrrwodS8pjszsKy2ysw@mail.gmail.com>
-Message-ID: <CAK7LNARDp1Zru3_XAQyBZHwsRov-QWOnrrwodS8pjszsKy2ysw@mail.gmail.com>
-Subject: Re: [PATCH] Revert "mtd: rawnand: denali: get ->setup_data_interface()
- working again"
-To: Marek Vasut <marex@denx.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200309_032832_534996_B18F49BD 
-X-CRM114-Status: GOOD (  21.49  )
+X-CRM114-CacheID: sfid-20200309_033316_718300_21A0F397 
+X-CRM114-Status: UNSURE (   9.91  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,123 +67,43 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Dinh Nguyen <dinguyen@kernel.org>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- linux-mtd <linux-mtd@lists.infradead.org>, Tim Sander <tim@krieglstein.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+ Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, Frieder Schrempf <frieder.schrempf@kontron.de>,
+ linux-mtd@lists.infradead.org, Shivamurthy Shastri <sshivamurthy@micron.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi.
-
-On Wed, Mar 4, 2020 at 2:13 AM Marek Vasut <marex@denx.de> wrote:
->
-> On 2/25/20 1:41 AM, Masahiro Yamada wrote:
-> > Hi.
->
-> Hi,
->
-> > On Thu, Feb 20, 2020 at 3:45 AM Marek Vasut <marex@denx.de> wrote:
-> >>
-> >> On 2/18/20 6:55 AM, Masahiro Yamada wrote:
-> >>> Hi
-> >>
-> >> Hi,
-> >>
-> >> [...]
-> >>
-> >>>> There is no change around the ->setup_data_interface() hook
-> >>>> after v4.19
-> >>>> The only difference I could think of is the clock frequency.
-> >>>>
-> >>>> But, it is OK if you do not want to test it.
-> >>>>
-> >>>> And you are confident.
-> >>>>
-> >>>> So, let's suspect the ->setup_data_interface() hook.
-> >>>>
-> >>>>
-> >>>> If possible, can you provide the dump of
-> >>>> the attached debug code?
-> >>>>
-> >>>
-> >>>
-> >>> I attached two experimental patches.
-> >>>
-> >>> I cannot test them because
-> >>> the mainline code works fine for my boards.
-> >>>
-> >>> Does either of them improve something
-> >>> on your settings?
-> >
-> >
-> >
-> > I am still waiting for you to let me know
-> > the result of my patches.
->
-> Neither patch works, sorry.
->
-> >> Considering that the NAND works if denali_setup_data_interface() is not
-> >> called, would it rather make sense to first read and print what's
-> >> programmed into the controller and then print what the code calculated
-> >> and intends to program into the controller ?
-> >
-> > denali_select_target() is called every operation.
-> > So, if you dumped this function for a working platform,
-> > it might flood the printk buffer.
-> >
-> > denali_setup_data_interface() is called just twice.
-> > That's why I injected the debug code there.
-> >
-> >
-> >>
-> >> See attached patch, with which (without this revert) you get this:
-> >> denali->reg + TWHR2_AND_WE_2_RE = 0x00001414 -> 0x0000143f
-> >> denali->reg + TCWAW_AND_ADDR_2_DATA = 0x0000143f -> 0x00001432
-> >> denali->reg + RE_2_WE = 0x00000014 -> 0x00000019
-> >> denali->reg + ACC_CLKS = 0x00000004 -> 0x00000005
-> >> denali->reg + RDWR_EN_LO_CNT = 0x00000002 -> 0x00000009
-> >> denali->reg + RDWR_EN_HI_CNT = 0x00000002 -> 0x00000004
-> >> denali->reg + CS_SETUP_CNT = 0x00000001 -> 0x00000008
-> >> denali->reg + RE_2_RE = 0x00000014 -> 0x00000019
-> >
-> > OK, the left-hand side is probably the timing
-> > set up by U-Boot.
->
-> Yep, the timings that work. So now, how do you get to those working
-> timings using the Linux driver ?
-
-
-How about
-0001-denali-more-complicated-calculation-for-timings.patch
-
-+ following ?
-
-diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
-index b0482108a127..ea38aa42873e 100644
---- a/drivers/mtd/nand/raw/denali.c
-+++ b/drivers/mtd/nand/raw/denali.c
-@@ -860,9 +860,9 @@ static int denali_setup_data_interface(struct
-nand_chip *chip, int chipnr,
-
-        /*
-         * Determine the minimum of acc_clks to meet the data setup timing.
--        * (one additional clock cycle just in case)
-+        * (two additional clock cycles just in case)
-         */
--       acc_clks = DIV_ROUND_UP(timings->tREA_max, t_x) + 1;
-+       acc_clks = DIV_ROUND_UP(timings->tREA_max, t_x) + 2;
-
-        /* Determine the minimum of rdwr_en_lo_cnt from RE#/WE# pulse width */
-        rdwr_en_lo = DIV_ROUND_UP(max(timings->tRP_min, timings->tWP_min), t_x);
-
-
--- 
-Best Regards
-Masahiro Yamada
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgU2hpdmEsCgpzaGl2YS5saW51eHdvcmtzQGdtYWlsLmNvbSB3cm90ZSBvbiBGcmksIDI4IEZl
+YiAyMDIwIDE2OjAzOjA1ICswMTAwOgoKPiBGcm9tOiBTaGl2YW11cnRoeSBTaGFzdHJpIDxzc2hp
+dmFtdXJ0aHlAbWljcm9uLmNvbT4KPiAKPiBUaGlzIHBhdGNoc2V0IGlzIGZvciB0aGUgbmV3IHNl
+cmllcyBvZiBNaWNyb24gU1BJIE5BTkQgZGV2aWNlcywgYW5kIHRoZQo+IGZvbGxvd2luZyBsaW5r
+cyBhcmUgdGhlaXIgZGF0YXNoZWV0cy4KPiAKPiBNNzhBOgo+IFsxXSBodHRwczovL3d3dy5taWNy
+b24uY29tL34vbWVkaWEvZG9jdW1lbnRzL3Byb2R1Y3RzL2RhdGEtc2hlZXQvbmFuZC1mbGFzaC83
+MC1zZXJpZXMvbTc4YV8xZ2JfM3ZfbmFuZF9zcGkucGRmCj4gWzJdIGh0dHBzOi8vd3d3Lm1pY3Jv
+bi5jb20vfi9tZWRpYS9kb2N1bWVudHMvcHJvZHVjdHMvZGF0YS1zaGVldC9uYW5kLWZsYXNoLzcw
+LXNlcmllcy9tNzhhXzFnYl8xXzh2X25hbmRfc3BpLnBkZgo+IAo+IE03OUE6Cj4gWzNdIGh0dHBz
+Oi8vd3d3Lm1pY3Jvbi5jb20vfi9tZWRpYS9kb2N1bWVudHMvcHJvZHVjdHMvZGF0YS1zaGVldC9u
+YW5kLWZsYXNoLzcwLXNlcmllcy9tNzlhXzJnYl8xXzh2X25hbmRfc3BpLnBkZgo+IFs0XSBodHRw
+czovL3d3dy5taWNyb24uY29tL34vbWVkaWEvZG9jdW1lbnRzL3Byb2R1Y3RzL2RhdGEtc2hlZXQv
+bmFuZC1mbGFzaC83MC1zZXJpZXMvbTc5YV9kZHBfNGdiXzN2X25hbmRfc3BpLnBkZgo+IAo+IE03
+MEE6Cj4gWzVdIGh0dHBzOi8vd3d3Lm1pY3Jvbi5jb20vfi9tZWRpYS9kb2N1bWVudHMvcHJvZHVj
+dHMvZGF0YS1zaGVldC9uYW5kLWZsYXNoLzcwLXNlcmllcy9tNzBhXzRnYl8zdl9uYW5kX3NwaS5w
+ZGYKPiBbNl0gaHR0cHM6Ly93d3cubWljcm9uLmNvbS9+L21lZGlhL2RvY3VtZW50cy9wcm9kdWN0
+cy9kYXRhLXNoZWV0L25hbmQtZmxhc2gvNzAtc2VyaWVzL203MGFfNGdiXzFfOHZfbmFuZF9zcGku
+cGRmCj4gWzddIGh0dHBzOi8vd3d3Lm1pY3Jvbi5jb20vfi9tZWRpYS9kb2N1bWVudHMvcHJvZHVj
+dHMvZGF0YS1zaGVldC9uYW5kLWZsYXNoLzcwLXNlcmllcy9tNzBhX2RkcF84Z2JfM3ZfbmFuZF9z
+cGkucGRmCj4gWzhdIGh0dHBzOi8vd3d3Lm1pY3Jvbi5jb20vfi9tZWRpYS9kb2N1bWVudHMvcHJv
+ZHVjdHMvZGF0YS1zaGVldC9uYW5kLWZsYXNoLzcwLXNlcmllcy9tNzBhX2RkcF84Z2JfMV84dl9u
+YW5kX3NwaS5wZGYKPiAKPiBDaGFuZ2VzIHNpbmNlIHY0Ogo+IC0tLS0tLS0tLS0tLS0tLS0tCj4g
+Cj4gMS4gUGF0Y2ggMiBpcyBzZXBhcmF0ZWQgaW50byB0d28gYXMgcGVyIHRoZSBjb21tZW50IGJ5
+IEJvcmlzLgo+IDIuIFJlbmFtZWQgTUlDUk9OX0NGR19DT05USV9SRUFEIGludG8gTUlDUk9OX0NG
+R19DUi4KPiAzLiBSZXdvcmtlZCBkaWUgc2VsZWN0aW9uIGZ1bmN0aW9uIGFzIHBlciB0aGUgY29t
+bWVudCBieSBCb3Jpcy4KCkkgd2FzIGFib3V0IHRvIGFwcGx5IHRoaXMgc2VyaWVzIGJ1dCB1bmZv
+cnR1bmF0ZWx5IGl0IGlzIG5vdCBiYXNlZCBvbgp2NS42LXJjMSBzbyBubyBwYXRjaCBhcHBsaWVz
+IGNvcnJlY3RseS4gQ2FuIHlvdSBwbGVhc2UgcmViYXNlIGFuZCBzZW5kCmEgdjYgc29vbj8KClRo
+YW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlz
+dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
