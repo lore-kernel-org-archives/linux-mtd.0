@@ -5,18 +5,18 @@ X-Spam-Level:
 X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF901C10DCE
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Mar 2020 19:39:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4FCCC10DCE
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Mar 2020 19:41:59 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 98D2121655
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Mar 2020 19:39:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8B87721655
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Mar 2020 19:41:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jYT9fruY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 98D2121655
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rLBT0//e"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B87721655
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RYcbazdmGXto+U1nWmB2RJHBsIbuURnSq8b7PPCKyw8=; b=jYT9fruYKi0he0
-	fzjcdYgAyzjA+NuAXOMqdHKQevGAO+7PM1jaKgZrKi7ygM9SfE2SQXMFuf1bfh+kmr/Q/elz01cgO
-	Jc4ljieKlEajY+odBDZmCvdUDmgQ5eXT+gMg8VVh50gZ3eB8+IeBtNWsYsB4+XcF7GAjfpvoPhNmK
-	jKoDrJsX+psFYmH3tsGbSlWLCY7sdM3sZWlmIlugaLUyqrPlIXpxlmM3K8fE3fVv4dcEhcFJfnfc9
-	yMN9vWwV+hnPSa/HT4REuLFAiGYcbviKBm8Z/Ebwz8GpiV5CC06XKGmt8hxvkJYoz7P4fKXKR3L9u
-	kjH9DKXwgf0lvoqO4ejg==;
+	List-Owner; bh=dip07YOOD9C9JXsxxexLAwBy8CjjuGHd/yzOIlKoPxM=; b=rLBT0//e8QnfFr
+	clQY1SNX+PdEQT1kttVW2fATiu3ezFQor4pDGKemy+QBAMhPWKAWsLmaM/moUTHwEfxTSfmHQKunU
+	t8IQabUa9qzszfiellfuKyrxKAnt+0GhUyNDkYUkhO2EQ5FE3kYiOgDzs8eeNq9M/NRPlM5YpOslC
+	OTe1vIBMof03EtGyL+ii6umGv+zkMTB9Dgc+kPTgX5DQ+DA/zCKpp67Zf/BZbagP3TqOBLgob0sZp
+	HtOzmqvKYiF8F8tEBKAsfQ6zDcA1R9GR/W+1RybXP0hAgmcHloU8NL9h5ZlbM1uohSbJn4ofAsOPD
+	63T0ka1V4LcxvdviqpdA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jBkj9-00062e-KO; Tue, 10 Mar 2020 19:39:43 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1jBklD-0007ZN-SX; Tue, 10 Mar 2020 19:41:51 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jBkj6-00062H-IZ
- for linux-mtd@lists.infradead.org; Tue, 10 Mar 2020 19:39:42 +0000
+ id 1jBklA-0007Yv-T0
+ for linux-mtd@lists.infradead.org; Tue, 10 Mar 2020 19:41:50 +0000
 Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
  (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id E875429141E;
- Tue, 10 Mar 2020 19:39:37 +0000 (GMT)
-Date: Tue, 10 Mar 2020 20:39:30 +0100
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 686A329196A;
+ Tue, 10 Mar 2020 19:41:46 +0000 (GMT)
+Date: Tue, 10 Mar 2020 20:41:42 +0100
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Mason Yang <masonccyang@mxic.com.tw>
 Subject: Re: [PATCH v3 3/4] mtd: rawnand: Add support manufacturer specific
  suspend/resume operation
-Message-ID: <20200310203930.2b8c0cfb@collabora.com>
-In-Reply-To: <1583220084-10890-4-git-send-email-masonccyang@mxic.com.tw>
+Message-ID: <20200310204142.540fc7c4@collabora.com>
+In-Reply-To: <20200310203930.2b8c0cfb@collabora.com>
 References: <1583220084-10890-1-git-send-email-masonccyang@mxic.com.tw>
  <1583220084-10890-4-git-send-email-masonccyang@mxic.com.tw>
+ <20200310203930.2b8c0cfb@collabora.com>
 Organization: Collabora
 X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200310_123940_798584_3619045B 
-X-CRM114-Status: GOOD (  20.95  )
+X-CRM114-CacheID: sfid-20200310_124149_102900_5D8BA31C 
+X-CRM114-Status: GOOD (  14.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,79 +81,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue,  3 Mar 2020 15:21:23 +0800
-Mason Yang <masonccyang@mxic.com.tw> wrote:
+On Tue, 10 Mar 2020 20:39:30 +0100
+Boris Brezillon <boris.brezillon@collabora.com> wrote:
 
-> Patch nand_suspend() & nand_resume() for manufacturer specific
-> suspend/resume operation.
+> On Tue,  3 Mar 2020 15:21:23 +0800
+> Mason Yang <masonccyang@mxic.com.tw> wrote:
 > 
-> Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
-> Reported-by: kbuild test robot <lkp@intel.com>
-> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  drivers/mtd/nand/raw/nand_base.c | 11 ++++++++---
->  include/linux/mtd/rawnand.h      |  4 ++++
->  2 files changed, 12 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> index 769be81..b44e460 100644
-> --- a/drivers/mtd/nand/raw/nand_base.c
-> +++ b/drivers/mtd/nand/raw/nand_base.c
-> @@ -4327,7 +4327,9 @@ static int nand_suspend(struct mtd_info *mtd)
->  	struct nand_chip *chip = mtd_to_nand(mtd);
->  
->  	mutex_lock(&chip->lock);
-> -	chip->suspended = 1;
-> +	if (chip->_suspend)
-> +		if (!chip->_suspend(chip))
-> +			chip->suspended = 1;
->  	mutex_unlock(&chip->lock);
->  
->  	return 0;
-> @@ -4342,11 +4344,14 @@ static void nand_resume(struct mtd_info *mtd)
->  	struct nand_chip *chip = mtd_to_nand(mtd);
->  
->  	mutex_lock(&chip->lock);
-> -	if (chip->suspended)
-> +	if (chip->suspended) {
-> +		if (chip->_resume)
-> +			chip->_resume(chip);
->  		chip->suspended = 0;
-> -	else
-> +	} else {
->  		pr_err("%s called for a chip which is not in suspended state\n",
->  			__func__);
-> +	}
->  	mutex_unlock(&chip->lock);
->  }
->  
-> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-> index bc2fa3c..c0055ed 100644
-> --- a/include/linux/mtd/rawnand.h
-> +++ b/include/linux/mtd/rawnand.h
-> @@ -1064,6 +1064,8 @@ struct nand_legacy {
->   * @lock:		lock protecting the suspended field. Also used to
->   *			serialize accesses to the NAND device.
->   * @suspended:		set to 1 when the device is suspended, 0 when it's not.
-> + * @_suspend:		[REPLACEABLE] specific NAND device suspend operation
-> + * @_resume:		[REPLACEABLE] specific NAND device resume operation
+> > Patch nand_suspend() & nand_resume() for manufacturer specific
+> > suspend/resume operation.
+> > 
+> > Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
+> > Reported-by: kbuild test robot <lkp@intel.com>
+> > Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > ---
+> >  drivers/mtd/nand/raw/nand_base.c | 11 ++++++++---
+> >  include/linux/mtd/rawnand.h      |  4 ++++
+> >  2 files changed, 12 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> > index 769be81..b44e460 100644
+> > --- a/drivers/mtd/nand/raw/nand_base.c
+> > +++ b/drivers/mtd/nand/raw/nand_base.c
+> > @@ -4327,7 +4327,9 @@ static int nand_suspend(struct mtd_info *mtd)
+> >  	struct nand_chip *chip = mtd_to_nand(mtd);
+> >  
+> >  	mutex_lock(&chip->lock);
+> > -	chip->suspended = 1;
+> > +	if (chip->_suspend)
+> > +		if (!chip->_suspend(chip))
+> > +			chip->suspended = 1;
 
-Given you added 4 more methods in this series, I think now would be a
-good time to introduce a nand_chip_ops struct grouping all ops together.
-
->   * @bbt:		[INTERN] bad block table pointer
->   * @bbt_td:		[REPLACEABLE] bad block table descriptor for flash
->   *			lookup.
-> @@ -1119,6 +1121,8 @@ struct nand_chip {
->  
->  	struct mutex lock;
->  	unsigned int suspended : 1;
-> +	int (*_suspend)(struct nand_chip *chip);
-> +	void (*_resume)(struct nand_chip *chip);
->  
->  	uint8_t *oob_poi;
->  	struct nand_controller *controller;
-
+Shouldn't you propagate the error to the caller if chip->_suspend()
+fails?
 
 ______________________________________________________
 Linux MTD discussion mailing list
