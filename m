@@ -2,69 +2,68 @@ Return-Path: <SRS0=SuWK=44=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,FSL_HELO_FAKE,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03EFFC10DCE
-	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2020 02:41:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73C2DC10DCE
+	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2020 02:50:38 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C4B3520637
-	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2020 02:41:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4148320637
+	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2020 02:50:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NPuiqlF9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C4B3520637
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="JdobiTRN";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="q1ystG14"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4148320637
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:
-	Subject:To:References:In-Reply-To:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EJ//h/4341B2lnmFUxcR5CbAJJIxZAniDjlXd7MU0WI=; b=NPuiqlF94g4/WO
-	blQBt17NWrkRiUycfY18aTQVYpFN5OawKtQMAN3rb7q8ePgbhciEMftzSQb3t74T/rqu0j3CLtYcD
-	/H39yOrZrTegSWFGq1E0zUnffLUFn5y370Clj/g6dMHce8zfPPwSfg/PHenej+ZyTwgpN5aVF1VYX
-	yHkdzEyg/I+4ycPrUslAILGepYksXKGQT/gykpn2i5KmqThxk3oYSPU+3N12xRx4FgCBCVk+yAXXd
-	KfAwY/fhMbAvdr1RyJ30O0Fm57en5nA2zbLLhoDS7Y0t+tjW2ga2ljfQoNPdg7xLgWa0Sh31Gp/FT
-	rRm8i17KPhgrzWza2YBA==;
+	List-Owner; bh=6ad3DO74jyqVyYX0sDIl3jZ7DjRfdvJqc/f+r0dw/QA=; b=JdobiTRN6op7fg
+	yvJQCWwXeRiwo0DaKoL+EhF3kVwIk6DhxSCXOZ/RtjMwNLnicnqJXsnoYzN8WZQZ8kSviyjAA0X+E
+	DbFrwrevCgW3/JLLuy2ujTmFM0JsFX8h9JVtJ55VFtaFXFhH2q4iU/UY8UbenO8ixqY/YfbHfpHDQ
+	GLRh4j38raq2h+7WN0wAaavlOwWjD8LFo4Lsi6s/ufjJ/YP6uCxILDqG97YpYk/14LCz+sV5j4YbT
+	K6OVqrMhNLCa2xTS0H0uEmV0NXhMSEDGfLro7Y1wZrJ05IerGi6zo3dElyo4ljdLsz+HVVQxXyIr8
+	uVAfNkMDg30uYRt2qeNw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jBrJ9-0007CM-89; Wed, 11 Mar 2020 02:41:19 +0000
-Received: from twhmllg3.macronix.com ([122.147.135.201])
+	id 1jBrRr-0001sZ-9W; Wed, 11 Mar 2020 02:50:19 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jBrJ5-0007Bp-HR
- for linux-mtd@lists.infradead.org; Wed, 11 Mar 2020 02:41:17 +0000
-Received: from twhfmlp1.macronix.com (twhfm1p1.macronix.com [172.17.20.91])
- by TWHMLLG3.macronix.com with ESMTP id 02B2e4K9076230;
- Wed, 11 Mar 2020 10:40:04 +0800 (GMT-8)
- (envelope-from masonccyang@mxic.com.tw)
-Received: from MXML06C.mxic.com.tw (mxml06c.macronix.com [172.17.14.55])
- by Forcepoint Email with ESMTP id C5868B39AA6AF42ADD58;
- Wed, 11 Mar 2020 10:40:04 +0800 (CST)
-In-Reply-To: <20200310202723.16b48f4b@collabora.com>
-References: <1583220084-10890-1-git-send-email-masonccyang@mxic.com.tw>	<1583220084-10890-2-git-send-email-masonccyang@mxic.com.tw>
- <20200310202723.16b48f4b@collabora.com>
-To: "Boris Brezillon" <boris.brezillon@collabora.com>
-Subject: Re: [PATCH v3 1/4] mtd: rawnand: Add support manufacturer specific
- lock/unlock operation
+ id 1jBrRo-0001ry-B0
+ for linux-mtd@lists.infradead.org; Wed, 11 Mar 2020 02:50:18 +0000
+Received: from gmail.com (unknown [104.132.1.77])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id EEDF220637;
+ Wed, 11 Mar 2020 02:50:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1583895015;
+ bh=WtFMlLzPcU5BhKbuP+2KrYUwWQYx4yq+ffF9gx1TB4c=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=q1ystG146lhrdx1ECKnmJ+Gnq00mbVBlMiA9vl3KTF2QmR+GOfMmrR5MUFTybatwD
+ ThRVdbuIcu+qHCl2Wz2aEBWCuC4NftqLMjxqT/L71EMNo6OcqflzJzuhbLoePIfyuA
+ VrMxS7K+quWwG8SXU9sNgRZ+IAiV6J6SxXax9fNI=
+Date: Tue, 10 Mar 2020 19:50:13 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH] fscrypt: don't evict dirty inodes after removing key
+Message-ID: <20200311025013.GB46757@gmail.com>
+References: <20200305084138.653498-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-X-KeepSent: CDE22522:001A7410-48258528:000E260F;
- type=4; name=$KeepSent
-X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
-Message-ID: <OFCDE22522.001A7410-ON48258528.000E260F-48258528.000EA7E7@mxic.com.tw>
-From: masonccyang@mxic.com.tw
-Date: Wed, 11 Mar 2020 10:40:04 +0800
-X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
- HF265|July 25, 2018) at 2020/03/11 AM 10:40:04,
- Serialize complete at 2020/03/11 AM 10:40:04
-X-MAIL: TWHMLLG3.macronix.com 02B2e4K9076230
+Content-Disposition: inline
+In-Reply-To: <20200305084138.653498-1-ebiggers@kernel.org>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200310_194115_858749_B6F3EB26 
-X-CRM114-Status: UNSURE (   8.62  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200310_195016_401517_25D49698 
+X-CRM114-Status: GOOD (  20.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,67 +75,67 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vigneshr@ti.com, bbrezillon@kernel.org, juliensu@mxic.com.tw,
- richard@nod.at, s.hauer@pengutronix.de, yuehaibing@huawei.com,
- linux-kernel@vger.kernel.org, frieder.schrempf@kontron.de, rfontana@redhat.com,
- linux-mtd@lists.infradead.org, stefan@agner.ch, miquel.raynal@bootlin.com,
- tglx@linutronix.de, allison@lohutok.net
+Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-f2fs-devel@lists.sourceforge.net
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-Hi Boris,
-
-> > Add nand_lock() & nand_unlock() for manufacturer specific lock & 
-unlock
-> > operation while the device supports Block Portection function.
-> > 
-> > Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
-> > Reported-by: kbuild test robot <lkp@intel.com>
+On Thu, Mar 05, 2020 at 12:41:38AM -0800, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> Reported-by on something that's not a fix doesn't make sense. I know
-> the 0day bot asked you to add this tag, but that should only be done if
-> you submit a separate patch, ideally with a Fixes tag. If the offending
-> patch has not been merged yet, you should just fix the commit and ignore
-> the Reported-by tag (you can mention who reported the problem in the
-> changelog though).
+> After FS_IOC_REMOVE_ENCRYPTION_KEY removes a key, it syncs the
+> filesystem and tries to get and put all inodes that were unlocked by the
+> key so that unused inodes get evicted via fscrypt_drop_inode().
+> Normally, the inodes are all clean due to the sync.
 > 
+> However, after the filesystem is sync'ed, userspace can modify and close
+> one of the files.  (Userspace is *supposed* to close the files before
+> removing the key.  But it doesn't always happen, and the kernel can't
+> assume it.)  This causes the inode to be dirtied and have i_count == 0.
+> Then, fscrypt_drop_inode() failed to consider this case and indicated
+> that the inode can be dropped, causing the write to be lost.
+> 
+> On f2fs, other problems such as a filesystem freeze could occur due to
+> the inode being freed while still on f2fs's dirty inode list.
+> 
+> Fix this bug by making fscrypt_drop_inode() only drop clean inodes.
+> 
+> I've written an xfstest which detects this bug on ext4, f2fs, and ubifs.
+> 
+> Fixes: b1c0ec3599f4 ("fscrypt: add FS_IOC_REMOVE_ENCRYPTION_KEY ioctl")
+> Cc: <stable@vger.kernel.org> # v5.4+
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+>  fs/crypto/keysetup.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
+> index 65cb09fa6ead..08c9f216a54d 100644
+> --- a/fs/crypto/keysetup.c
+> +++ b/fs/crypto/keysetup.c
+> @@ -538,6 +538,15 @@ int fscrypt_drop_inode(struct inode *inode)
+>  		return 0;
+>  	mk = ci->ci_master_key->payload.data[0];
+>  
+> +	/*
+> +	 * With proper, non-racy use of FS_IOC_REMOVE_ENCRYPTION_KEY, all inodes
+> +	 * protected by the key were cleaned by sync_filesystem().  But if
+> +	 * userspace is still using the files, inodes can be dirtied between
+> +	 * then and now.  We mustn't lose any writes, so skip dirty inodes here.
+> +	 */
+> +	if (inode->i_state & I_DIRTY_ALL)
+> +		return 0;
+> +
+>  	/*
+>  	 * Note: since we aren't holding ->mk_secret_sem, the result here can
+>  	 * immediately become outdated.  But there's no correctness problem with
+> -- 
 
-okay, understand it.
-Thanks a lot for your explanation.
+Applied to fscrypt.git#for-stable for 5.6.
 
-Mason
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information 
-and/or personal data, which is protected by applicable laws. Please be 
-reminded that duplication, disclosure, distribution, or use of this e-mail 
-(and/or its attachments) or any part thereof is prohibited. If you receive 
-this e-mail in error, please notify us immediately and delete this mail as 
-well as its attachment(s) from your system. In addition, please be 
-informed that collection, processing, and/or use of personal data is 
-prohibited unless expressly permitted by personal data protection laws. 
-Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
-
-
-============================================================================
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
+- Eric
 
 ______________________________________________________
 Linux MTD discussion mailing list
