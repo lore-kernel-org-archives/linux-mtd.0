@@ -2,61 +2,95 @@ Return-Path: <SRS0=SuWK=44=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ED8C4C0044D
-	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2020 17:39:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 743E9C0044D
+	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2020 17:59:04 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7007720735
-	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2020 17:39:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E162520737
+	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2020 17:59:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="eebrAV0d"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7007720735
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="JofDAvYC";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qJzM0OhX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E162520737
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=B9SHR/rMd5xbKQ8NgFTQm/A4+cwxi2TfKexdy6G70U0=; b=eebrAV0d9RwCDD
-	r4ISWqzD048OzHfYHSofCPS6u3ujvgaAaF5PQMALLJlFZL4XZ2TX5GEBAoPFv3Y7hGrceXOWv3RFM
-	mI+VW56vLaPpR3Q+LR6aNDq9b+W/HS4D7mvwkt3Nu9BaF7+mOUOGRmj/g3nRiUWs3H6Bf9H7WjqzA
-	TdNF83J92nGAnVCEo11TNZlpVZvnrfsFG/NReogZUn6z4vDWtiYg4eqwArlZuDLLB7iwlT/h9hdhv
-	L01wmuNNwed6CDWR7Z9+eJU8QOfPkB0Sid4+k8GM2Lzn+nNWYrt+q2gCixZ3A//2lnRVmJrAd2Jw7
-	t09sU22nmuyy8NuRSXAA==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:References:
+	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=x0WNeSSrbsNrdn5Ffry3QcyRMs26UAr/d5hQD7g/f5Q=; b=JofDAvYCIGzTf8mczBL1+6FLt8
+	hyuSJkVFEBnf9+GfZ+TJ4zGKggKZLWKjj8RfZY8AVeLdA06ESc2of8WtWhdAqO5bVXMWN5zTMvMSi
+	i6HgjJtIfyfOaPkG/ESD5PhLYee7JJ0bhPetJ04n1jIvzJZdyp3dAJ/vrLOxUL/vKcFINLC4SdBty
+	rGmy35KhfnT+5j5P56DXXVnY44wiDkEWPT+kHKMzLBSl4CYhmK2sjLewN9gtzamnEtBDY9LmsY2+1
+	76RdyE2JM9Un76gbZaBM07Pr6Vua7xu8tHhRkMdYs1n9TE6t8Fyj7tZAaaoguAGzyLP44+sH5kJXY
+	DgPyjqpA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jC5KG-0003xi-6g; Wed, 11 Mar 2020 17:39:24 +0000
-Received: from szxga04-in.huawei.com ([45.249.212.190] helo=huawei.com)
+	id 1jC5d8-0006Pr-Cj; Wed, 11 Mar 2020 17:58:54 +0000
+Received: from mail-wm1-x344.google.com ([2a00:1450:4864:20::344])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jC5KD-0003wc-8s
- for linux-mtd@lists.infradead.org; Wed, 11 Mar 2020 17:39:22 +0000
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
- by Forcepoint Email with ESMTP id 43322579B4F62CF1EA02;
- Thu, 12 Mar 2020 01:39:17 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.58) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 12 Mar 2020 01:39:08 +0800
-From: John Garry <john.garry@huawei.com>
-To: <broonie@kernel.org>
-Subject: [PATCH] spi: Stop selecting MTD_SPI_NOR for SPI_HISI_SFC_V3XX
-Date: Thu, 12 Mar 2020 01:35:15 +0800
-Message-ID: <1583948115-239907-1-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
-MIME-Version: 1.0
-X-Originating-IP: [10.69.192.58]
-X-CFilter-Loop: Reflected
+ id 1jC5d4-0006OJ-R7
+ for linux-mtd@lists.infradead.org; Wed, 11 Mar 2020 17:58:52 +0000
+Received: by mail-wm1-x344.google.com with SMTP id a5so3109766wmb.0
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Mar 2020 10:58:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references;
+ bh=knKxmw0pxQ5Najb1qdtFuNgnhs0cDNgJ5XYCxXVgosg=;
+ b=qJzM0OhX0JFdbqgPq5YWJpiEvMDEeOdVcpY4Up0cRcPOkDWU3qp8g8X7Q2pzFFPWFs
+ xAFzXZP6wP1MWEAjwZKsNxUhvS5DQgwfY8Ivt+KKmBgqY4tzXyCjKkhuNrlWqVAaqlMi
+ OC/dDCFbt33H4Ek9vKHZBB52zMKJhQ62v41XHRVTqINLNdxfRDiwSYUclya2ULd5e8lm
+ WTguo+IYaYdeTUfNmZzW32+acdg1RPW82iU6WD8krr59hmYEIa6rkvBkmg1XR9Df482n
+ sCrbKvZUZJDIhlkK4KQHn6iL2o0afM9zinwMqLn1dlI7THR5EQzByGvnOW27YXWb4q4k
+ XRZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references;
+ bh=knKxmw0pxQ5Najb1qdtFuNgnhs0cDNgJ5XYCxXVgosg=;
+ b=udZ7dghqqWzN6GAMqM3m52twNwk2nBswtWH4xSMM6gJ5/BzmRGXTH8byN4420hiC2E
+ pHxNgETReiW2djvh2aLBYsE4JpZLPC1vDTrsFC5PzZJJF+eJAxRS9pFJQtZAtS9FjAVt
+ zrILDp+lXeaSqGXLuxMHHj/xqpTg/wvMBTgw4F99bYc8GzGcbPWNdkmyPRe2V2XdCaRK
+ zP0yQVkiO9hggtucfR779hRXrbK4RWm3sfAiC+i4PtOasKLusJzF4x5O7q/B40a9AJFe
+ MqKzX1TuVCzk+1cl0woLfIN2VpdVSbkE7Oqb/hObM8F8j8DaeHqUU4U6fK9g1nzdcOcS
+ QLjQ==
+X-Gm-Message-State: ANhLgQ3w/c840q8rXAkUB7nEe9z03PFZuMYp3aVs0N0ZIapQMWVdgIdt
+ Kds7XTLU+WGjwbpWYmOkgGU=
+X-Google-Smtp-Source: ADFU+vsAurwdyvOqykM4WDWKZJGNJb2HwFTrxFtjtMDFjzs0DO5Fess9MLyMeRSaS+sQDoa0WBfQLA==
+X-Received: by 2002:a1c:196:: with SMTP id 144mr4940965wmb.100.1583949528592; 
+ Wed, 11 Mar 2020 10:58:48 -0700 (PDT)
+Received: from opensdev.fritz.box
+ (business-178-015-117-054.static.arcor-ip.net. [178.15.117.54])
+ by smtp.gmail.com with ESMTPSA id l18sm1502107wrr.17.2020.03.11.10.58.47
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 11 Mar 2020 10:58:47 -0700 (PDT)
+From: shiva.linuxworks@gmail.com
+X-Google-Original-From: sshivamurthy@micron.com
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Chuanhong Guo <gch981213@gmail.com>,
+ Frieder Schrempf <frieder.schrempf@kontron.de>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v7 1/6] mtd: spinand: micron: Generalize the OOB layout
+ structure and function names
+Date: Wed, 11 Mar 2020 18:57:30 +0100
+Message-Id: <20200311175735.2007-2-sshivamurthy@micron.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200311175735.2007-1-sshivamurthy@micron.com>
+References: <20200311175735.2007-1-sshivamurthy@micron.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200311_103921_500253_EB67C22E 
-X-CRM114-Status: UNSURE (   6.49  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200311_105850_878702_D1F63CCC 
+X-CRM114-Status: GOOD (  11.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,41 +102,90 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: sfr@canb.auug.org.au, John Garry <john.garry@huawei.com>,
- Tudor.Ambarus@microchip.com, chenxiang66@hisilicon.com, rdunlap@infradead.org,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
- linux-next@vger.kernel.org, linux-mtd@lists.infradead.org, joe@perches.com
+Cc: Shivamurthy Shastri <sshivamurthy@micron.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-By selecting MTD_SPI_NOR for SPI_HISI_SFC_V3XX, we may introduce unmet
-dependencies:
+From: Shivamurthy Shastri <sshivamurthy@micron.com>
 
-WARNING: unmet direct dependencies detected for MTD_SPI_NOR
-  Depends on [m]: MTD [=m] && SPI_MASTER [=y]
-  Selected by [y]:
-  - SPI_HISI_SFC_V3XX [=y] && SPI [=y] && SPI_MASTER [=y] && (ARM64 && ACPI [=y] || COMPILE_TEST [=y]) && HAS_IOMEM [=y]
+In order to add new Micron SPI NAND devices, we generalized the OOB
+layout structure and function names.
 
-Since MTD_SPI_NOR is only selected by SPI_HISI_SFC_V3XX for practical
-reasons - slave devices use the spi-nor driver, enabled by MTD_SPI_NOR -
-just drop it.
+Signed-off-by: Shivamurthy Shastri <sshivamurthy@micron.com>
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+---
+ drivers/mtd/nand/spi/micron.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-Signed-off-by: John Garry <john.garry@huawei.com>
-
-diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index 66c6c0d77ea7..ad1a2547a414 100644
---- a/drivers/spi/Kconfig
-+++ b/drivers/spi/Kconfig
-@@ -299,7 +299,6 @@ config SPI_HISI_SFC_V3XX
- 	tristate "HiSilicon SPI-NOR Flash Controller for Hi16XX chipsets"
- 	depends on (ARM64 && ACPI) || COMPILE_TEST
- 	depends on HAS_IOMEM
--	select MTD_SPI_NOR
- 	help
- 	  This enables support for HiSilicon v3xx SPI-NOR flash controller
- 	  found in hi16xx chipsets.
+diff --git a/drivers/mtd/nand/spi/micron.c b/drivers/mtd/nand/spi/micron.c
+index f56f81325e10..cc1ee68421c8 100644
+--- a/drivers/mtd/nand/spi/micron.c
++++ b/drivers/mtd/nand/spi/micron.c
+@@ -34,38 +34,38 @@ static SPINAND_OP_VARIANTS(update_cache_variants,
+ 		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
+ 		SPINAND_PROG_LOAD(false, 0, NULL, 0));
+ 
+-static int mt29f2g01abagd_ooblayout_ecc(struct mtd_info *mtd, int section,
+-					struct mtd_oob_region *region)
++static int micron_8_ooblayout_ecc(struct mtd_info *mtd, int section,
++				  struct mtd_oob_region *region)
+ {
+ 	if (section)
+ 		return -ERANGE;
+ 
+-	region->offset = 64;
+-	region->length = 64;
++	region->offset = mtd->oobsize / 2;
++	region->length = mtd->oobsize / 2;
+ 
+ 	return 0;
+ }
+ 
+-static int mt29f2g01abagd_ooblayout_free(struct mtd_info *mtd, int section,
+-					 struct mtd_oob_region *region)
++static int micron_8_ooblayout_free(struct mtd_info *mtd, int section,
++				   struct mtd_oob_region *region)
+ {
+ 	if (section)
+ 		return -ERANGE;
+ 
+ 	/* Reserve 2 bytes for the BBM. */
+ 	region->offset = 2;
+-	region->length = 62;
++	region->length = (mtd->oobsize / 2) - 2;
+ 
+ 	return 0;
+ }
+ 
+-static const struct mtd_ooblayout_ops mt29f2g01abagd_ooblayout = {
+-	.ecc = mt29f2g01abagd_ooblayout_ecc,
+-	.free = mt29f2g01abagd_ooblayout_free,
++static const struct mtd_ooblayout_ops micron_8_ooblayout = {
++	.ecc = micron_8_ooblayout_ecc,
++	.free = micron_8_ooblayout_free,
+ };
+ 
+-static int mt29f2g01abagd_ecc_get_status(struct spinand_device *spinand,
+-					 u8 status)
++static int micron_8_ecc_get_status(struct spinand_device *spinand,
++				   u8 status)
+ {
+ 	switch (status & MICRON_STATUS_ECC_MASK) {
+ 	case STATUS_ECC_NO_BITFLIPS:
+@@ -99,8 +99,8 @@ static const struct spinand_info micron_spinand_table[] = {
+ 					      &write_cache_variants,
+ 					      &update_cache_variants),
+ 		     0,
+-		     SPINAND_ECCINFO(&mt29f2g01abagd_ooblayout,
+-				     mt29f2g01abagd_ecc_get_status)),
++		     SPINAND_ECCINFO(&micron_8_ooblayout,
++				     micron_8_ecc_get_status)),
+ };
+ 
+ static const struct spinand_manufacturer_ops micron_spinand_manuf_ops = {
 -- 
 2.17.1
 
