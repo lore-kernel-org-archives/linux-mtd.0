@@ -2,67 +2,84 @@ Return-Path: <SRS0=SuWK=44=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A104FC2BAEE
-	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2020 20:45:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A710C0044D
+	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2020 21:01:28 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A50C220737
-	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2020 20:45:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0FB74206B1
+	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2020 21:01:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Mscirjkv";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xs0c8KJM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A50C220737
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XMompLWw";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cartesi-io.20150623.gappssmtp.com header.i=@cartesi-io.20150623.gappssmtp.com header.b="wcg4DTyc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0FB74206B1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=cartesi.io
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:To:Date:Message-Id:
-	References:In-Reply-To:From:Subject:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OkFrUFKsRlyrn95enDDbTOKpgp6TViA3di2e1jSPW6Y=; b=MscirjkvhD4oF1
-	zuZqrI6s5F6JSCJesF2m0PCPvT1Vf2IY6p0lC64E3iBrqBlCavswv0d6Rp/2j4ntWcHVvM8+BonKF
-	Gx7Gib9tbD9QTFWqi2v/IqNp+zQuZgKXVHK62Zj4JG/gKgr/HE1HMTesi+keK7+n5pP4L/emNPReZ
-	kH6G88H7niEHBm6hjXa51GaUjSGmgqhlw+7S65MNeIJk0AXhO0G9AJ1OOnSTduh6IEQ0zD7W6Pvmb
-	Wo3AU7AhPQcHWLrAHuwRWhA7BtbQ4lZbaqH7Xx53eCNfknS1T+NywcKXQOm7QLa/10vBC+UxJTXR9
-	sSsx3Icuh2bRJ4EdOZ9w==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=oQ1sJx7cBZISMU2eFqxu4ZuqvIXDB9Ce3+yyaJ4/s8Q=; b=XMompLWwUggoOKELHC4qK8Osuk
+	5cSC3An0GbFkoxdyGzzofRVDJ4NrOqJend1Z5J8Dg++wBVk40hJwbbyvaMWIdHyN94pYnBn8O88H+
+	Ifgd4+2nadNb6W2XfYeV5cxUQ56k2gBbyQtW1JWzAC6Om1hx8mUkjg+Y36Ct++91QiUujSdblUYNo
+	BZuv7yi0eyaMktxmDIUyGZOerwhV+i9NJl3aUp+3ikPi3LBczmVJa2qdwIfESVt3kYKZmsSo5eFne
+	D7sbU8HwF/M89cGGJZ93JcHXtY2feQ65MfBzR9OSNLGKleBAA+ga2Nte8d+rQh+aI/BpkeWyNxoaq
+	9OdugC4Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jC8Dx-0001aK-CN; Wed, 11 Mar 2020 20:45:05 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1jC8Tc-0008DE-MP; Wed, 11 Mar 2020 21:01:16 +0000
+Received: from mail-ot1-x336.google.com ([2607:f8b0:4864:20::336])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jC8Du-00015z-Eu
- for linux-mtd@lists.infradead.org; Wed, 11 Mar 2020 20:45:03 +0000
-Subject: Re: [GIT PULL] fscrypt fix for v5.6-rc6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1583959502;
- bh=BpqMPqVMEExHAmwE9Beff6FPwRMgQuXwVzkTYS3rtlU=;
- h=From:In-Reply-To:References:Date:To:Cc:From;
- b=Xs0c8KJMFvlIzYcA40MhFlGm1IOWy8yJpK+Fr+m+FqJo0T4F6QMhQO5I8brlBTQQ9
- uN96LInyTlX1axYS0S+hFluaPchZGwlMsSGXC1kNPWesIoYBt+wReS3ilar28gicxk
- whhVJL8+3q1awpkbNsNhFivAMtRZl/XbkoeJm9ig=
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20200311194839.GB41227@sol.localdomain>
-References: <20200311194839.GB41227@sol.localdomain>
-X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200311194839.GB41227@sol.localdomain>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git
- tags/fscrypt-for-linus
-X-PR-Tracked-Commit-Id: 2b4eae95c7361e0a147b838715c8baa1380a428f
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e6e6ec48dd0fa12e8a2d1ff6b55cd907401bd7fe
-Message-Id: <158395950136.14877.831369511825672693.pr-tracker-bot@kernel.org>
-Date: Wed, 11 Mar 2020 20:45:01 +0000
-To: Eric Biggers <ebiggers@kernel.org>
+ id 1jC8TZ-0008CL-CR
+ for linux-mtd@lists.infradead.org; Wed, 11 Mar 2020 21:01:14 +0000
+Received: by mail-ot1-x336.google.com with SMTP id s15so3649485otq.8
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Mar 2020 14:01:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=cartesi-io.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+ bh=ns8pNt/AZp8wxupvpZz8f0DwcEdrB1oGqd8Uvo5RAe8=;
+ b=wcg4DTycgUYgJGeSZyCLiV0fkDn+4EynrHMM+im1nbIa6vYp/r3UOqZZ7TsaKBKiyC
+ 0ZYTmPqii+Y8LoqVVedF9whM6HWzZkuH/gnx9NQsCPAKKi84+6RkQW7qYR+UL/fxv2B9
+ ALUc4mkHRf5aYYFvDTqqJxP739wu9N2puF3lDkbmx7qMo9/kAPDC0w/HWeFbddrj0CEp
+ Y9X8C71iqQfYEYkjc4+GtAjzW0JBiXllXFWGDcrAOxUSNbSD374AxpWgddIGJ0Re/qsn
+ NMc5ezJoftKoUDn+vKcoELN/mENQSjxH3vBnC1JonKcDJQ/P9xLeg2ujGw82f+mfPV36
+ 2Ryg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to;
+ bh=ns8pNt/AZp8wxupvpZz8f0DwcEdrB1oGqd8Uvo5RAe8=;
+ b=LkgezYC9/h7dDxm4yocwnX4aSsM05lc7Hp/U9YbyRJ2/yQnIhHmXjW0csRmIy7ga9g
+ 6sDQGhX1Th3uRN+jRRy4hXpYEZdqOEC0ZvvtmihChJCjNxAyOCYACtbyl64H1EJ11RzH
+ ZPsWpqqmqoOy+qbIIFhuzj3HNXEFIGsWLTY66V4jNQZ6PL4JiIfMULyBtSyJhN1jgBwR
+ OJq0oNpoL25ewa8orYniWNgwqC2x6Is0/D9ElykucZoLTBUl0LCRDcnHxRaaoAFaIeu0
+ ucQHfq/657rKYskwVpk8n6b6sBjd+3n9vydjFiDg/RqlQ6ZsRuioQ9yvpNenK14knGq0
+ hT5w==
+X-Gm-Message-State: ANhLgQ1EkzvJgpuvwvXNwxBiIDb7oE1vWaPUCDhy8kqp431/r3jUa/j6
+ vbQJZAcrbD5d0SrU2zf9YZN51IWebQ3drtgJt4yGODzCnpHdOw==
+X-Google-Smtp-Source: ADFU+vuAdNfqezRWSEX6XeEQkvlQ1RTpfWcSclyZUN9evd71F0+ZW+B+AKxMw4mjVU7HXdD0JPTrify474U7AyU5zCU=
+X-Received: by 2002:a9d:3435:: with SMTP id v50mr2499507otb.19.1583960470657; 
+ Wed, 11 Mar 2020 14:01:10 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAHpUXUx8puujULLTtLTDEvEVG+gasJcmj9QxLC5vf69+WzL74g@mail.gmail.com>
+ <20200311213120.0141aec0@collabora.com>
+In-Reply-To: <20200311213120.0141aec0@collabora.com>
+From: Victor Fusco <victor@cartesi.io>
+Date: Wed, 11 Mar 2020 18:00:59 -0300
+Message-ID: <CAHpUXUzEQ+0auo=MPefrp5cbWb15JDvsU48tFOZ++qbTGcvY2Q@mail.gmail.com>
+Subject: Re: Possible regression regarding the name and size of MTD devices on
+ kernel 5.5.4
+To: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200311_134502_527281_5AB5C3D1 
-X-CRM114-Status: UNSURE (   1.26  )
+X-CRM114-CacheID: sfid-20200311_140113_569283_A2A51B56 
+X-CRM114-Status: UNSURE (   5.62  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -75,29 +92,24 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Theodore Ts'o <tytso@mit.edu>, linux-kernel@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-fscrypt@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- Jaegeuk Kim <jaegeuk@kernel.org>, linux-ext4@vger.kernel.org,
- Linus Torvalds <torvalds@linux-foundation.org>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The pull request you sent on Wed, 11 Mar 2020 12:48:39 -0700:
+Hi Boris,
 
-> https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
+On Wed, Mar 11, 2020 at 5:31 PM Boris Brezillon
+<boris.brezillon@collabora.com> wrote:
+> Looks like 2 regressions, indeed. Would you mind sending 2 fixes for
+> that?
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e6e6ec48dd0fa12e8a2d1ff6b55cd907401bd7fe
+Yes, sure no problem. Which tree/branch should I base the fixes on?
+Stable/linux-5.5.y?
 
-Thank you!
+Regards,
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+Victor Fusco
 
 ______________________________________________________
 Linux MTD discussion mailing list
