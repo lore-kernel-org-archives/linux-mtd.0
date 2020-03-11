@@ -2,92 +2,83 @@ Return-Path: <SRS0=SuWK=44=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7580CC10F27
-	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2020 14:07:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57D38C10F27
+	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2020 14:22:05 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 45BC020726
-	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2020 14:07:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2A42321313
+	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2020 14:22:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="N109kqRb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 45BC020726
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=denx.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LA8qixKR";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Gkc0L1z8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2A42321313
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hzhFNjaSRRdznBRU0Bc+rEyLknnlih3vSqsJag5MP4U=; b=N109kqRbwJddiw
-	KcMjyzVJNJX4BubkndNbxuOGwMDtIlsdMGUn61e0F+A8U7Iif2NKoxl6GKZ5Q0lNEodA2Q0kNGhov
-	hi3OhcI0WfYmgcgDMHdZZwmfBTc0Yhal6PHGhI6lNTRmDIo04Bi91GneY0D0KlOd3LQh8WCWzV1Ig
-	E/EziGkChH/6uJ0HTYNKYBzBbGX2LE7ABre5Z1U2PbwEt2p/cDRiCo1xsdrGW+Y2giico+RWV6uNK
-	IvzmQaLOvDj+Sto0YWc1LN/wpcPbstaMj/wyEEBZY9k0aQ/8mwMh0CTS2e/VEubDEFfaX/iGo+fIg
-	PX+KpnS6caNgo3MEDDCA==;
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=3VuYs9cToVzo47dCN9DsbiGdtOmDdQ6UYfhTVk+TVsQ=; b=LA8qixKR/tZA1W
+	0bG5PWZuoHaGnUw3z5DuAgIAKsISKJGj5dPgaucmRU6TNOcYlXmjFLCiLQYirWmEUR322uHZOzNwx
+	rtTYiBxvL/R+nbrV23TbcaHkOtxPcsjIB3RmzCTj7mrVQzcgW/+f3VIXPCVjzBeHZWbYwlVbLcR17
+	Ufpj78TTMY5seIpHSGwxjcXkTZ29rz71jrKtyEq08ZHGV6oA6S7OVuu0osCllYWwmtBdx6w8+nBgG
+	KjKQ0fOsEc3nh1HhFeRbDTfLoW1jCDoYvQNa3T2G+bMJ1cQ81PKrsIH53ETjSJN+c5GZ3Oec8qRBm
+	ER9RXhVGbFAncOmmjz9A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jC21H-0005eK-7b; Wed, 11 Mar 2020 14:07:35 +0000
-Received: from mail-out.m-online.net ([212.18.0.9])
+	id 1jC2Ev-00022G-0D; Wed, 11 Mar 2020 14:21:41 +0000
+Received: from mail-vs1-xe43.google.com ([2607:f8b0:4864:20::e43])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jC21E-0005dc-4h
- for linux-mtd@lists.infradead.org; Wed, 11 Mar 2020 14:07:34 +0000
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
- by mail-out.m-online.net (Postfix) with ESMTP id 48cv0x1gQBz1qrfb;
- Wed, 11 Mar 2020 15:07:29 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
- by mail.m-online.net (Postfix) with ESMTP id 48cv0x0cDfz1r0bZ;
- Wed, 11 Mar 2020 15:07:29 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
- by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new,
- port 10024)
- with ESMTP id fk9aTzljl-1I; Wed, 11 Mar 2020 15:07:27 +0100 (CET)
-X-Auth-Info: Me9PlYoLkFSPVGCQrWSzUHql0nHJZAc+4IEp1LtN7Ao=
-Received: from [127.0.0.1] (unknown [195.140.253.167])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.mnet-online.de (Postfix) with ESMTPSA;
- Wed, 11 Mar 2020 15:07:27 +0100 (CET)
-Subject: Re: [PATCH] Revert "mtd: rawnand: denali: get
- ->setup_data_interface() working again"
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-References: <20200205070834.3087104-1-marex@denx.de>
- <bdb54ba5-648a-0b79-661c-5eb9604a1ee5@denx.de>
- <b6f094b7-01a9-34a2-bf10-019a05bc7cb3@denx.de>
- <20200211170707.2183625e@xps13>
- <b1a10583-e110-9568-4007-aa2b3f38a7be@denx.de>
- <CAK7LNARqYDh4AJ+N-PTHui0H89-humECskJVUxW4cTf6edEBMQ@mail.gmail.com>
- <f4e2deeb-cc0e-fb06-46fa-d6cf4f2a73ad@denx.de>
- <CAK7LNAR4MU+Rfmpz99iwLuEbD4jMwUdh91uz3zyQdvjyLEQcMQ@mail.gmail.com>
- <29cce21c-2214-7238-0bc5-db2c1a54576f@denx.de>
- <CAK7LNASckTZO-9uVjtQH8iKhU0HH9WiMK-CzMxjESQOOUM0cKA@mail.gmail.com>
- <CAK7LNAT3EG0XocC0xT0f=6MBpXLga3FehOjEYbRyP6AJUbqb2Q@mail.gmail.com>
- <311cdc3c-59b5-a46b-62f0-e78fc970134a@denx.de>
- <CAK7LNAT1Bzs68X8PiWQHg4g2bpPGd-WM9D4vwf59XfwwLVuVQQ@mail.gmail.com>
- <e86925d0-805c-d364-57ca-6400b77cffd7@denx.de>
- <CAK7LNARDp1Zru3_XAQyBZHwsRov-QWOnrrwodS8pjszsKy2ysw@mail.gmail.com>
- <d4b4abf4-1af9-d57c-5b93-2d56a5dc456b@denx.de>
- <20200311140807.6f56baf3@xps13>
- <5fa809a3-cd2b-74de-3615-387232051ae2@denx.de>
- <20200311143302.309bf468@xps13>
-From: Marek Vasut <marex@denx.de>
-Message-ID: <aaec50bb-05da-8d4e-3e15-17fbfeb52f68@denx.de>
-Date: Wed, 11 Mar 2020 15:07:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+ id 1jC2Es-00021M-Gd
+ for linux-mtd@lists.infradead.org; Wed, 11 Mar 2020 14:21:40 +0000
+Received: by mail-vs1-xe43.google.com with SMTP id i25so1413445vsq.9
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Mar 2020 07:21:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=AA36Z3gXSwJUntGmt4TTG30h5qvPXt0r2XDT/8zcsfI=;
+ b=Gkc0L1z8chPU37ylfxfld8kL1758g6oY0Td7cWlPBhRSaljv0nEP9i+wF1FJLm0Drg
+ 7zQLQnQGtshFfkBxcXQOD8UJjfPEBJlxiQbOQQRDjlQyYcs4GHopCD3WQpPexAJCvhto
+ 8XN93qTBP25DLXymYoqMYfRDFiCDl00Tu7l7HwjPGS2KJhr2hl68CUYN42965CRUP9pQ
+ ZDPNq0D/OlBZjkMIJz112kgpsvq2mG8Y0bHAG6O4T5kI9wyjM5tx9FQxhltw0y0ATKH4
+ ttb7rdiO3me+gomGLr9dPZ6NNBAkBHLub4H4YSPSffAKhD/PJ/7fQfqhDsJtoj4Mb2vw
+ xi5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=AA36Z3gXSwJUntGmt4TTG30h5qvPXt0r2XDT/8zcsfI=;
+ b=eI1KLB/EwzpClUY7pu/vBClowseeLY9x8Zvt9M8MWlPn0FxeWbOjPz7HKh+Xq1FA6O
+ +PC+4Ct+ExY8NjCO98+8ZTJb9yJaw67U3/XlJnmmCz9yEhpC0WywVydaBMI7XuBZrHW8
+ GZSkVjY/WW8TwXy15m2W1NxvRT7B0SvuYifTs3Wdo3Fbw7z+sF++XZZrHuS51hhzz7UB
+ iTBugp0hRQxTxPowVF92n2HxeXkC/pNavYXQivNfSHEHvoDRfJfED56DyOfBP8ht69la
+ 9K04yVNgXO2CCmNu7ITpAPELvqS9+4NmjDX1C/RSyRaqZjn7g8ZcRe03Palxk2bm+1x3
+ qobQ==
+X-Gm-Message-State: ANhLgQ2vZukm2SiwwUXlkP4vPzgN7w8iIlTBdujKDhZzV/4lZI3DxBtG
+ a9CJ3tcPiPVbznYmZ5I1CsITgiZEG3Pka5FKYUKUAA==
+X-Google-Smtp-Source: ADFU+vvAwSiaVqdqSV80/n9skavFztB4aCTDjE1foC884CVvIqJg8m9aPx1YictIGAray0JPA7so3t3+znzsKWxY1WY=
+X-Received: by 2002:a05:6102:2051:: with SMTP id
+ q17mr2225224vsr.165.1583936495390; 
+ Wed, 11 Mar 2020 07:21:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200311143302.309bf468@xps13>
-Content-Language: en-US
+References: <cover.1583896344.git.joe@perches.com>
+ <ad408ff8dc4e5fae0884312cb0aa618664e546e5.1583896348.git.joe@perches.com>
+ <20200311084052.3ca3c331@xps13>
+In-Reply-To: <20200311084052.3ca3c331@xps13>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Wed, 11 Mar 2020 15:20:59 +0100
+Message-ID: <CAPDyKFo2UensmH_gYkH+u22bs=K9Xn0q3Dr9v6tq6GPNRg_Lew@mail.gmail.com>
+Subject: Re: [PATCH -next 013/491] INGENIC JZ47xx SoCs: Use fallthrough;
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Joe Perches <joe@perches.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200311_070732_486678_1820DF98 
-X-CRM114-Status: GOOD (  22.71  )
+X-CRM114-CacheID: sfid-20200311_072138_558358_0CA97175 
+X-CRM114-Status: GOOD (  12.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,103 +90,57 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Dinh Nguyen <dinguyen@kernel.org>, Masahiro Yamada <masahiroy@kernel.org>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- linux-mtd <linux-mtd@lists.infradead.org>, Tim Sander <tim@krieglstein.org>
+Cc: alsa-devel@alsa-project.org, Vignesh Raghavendra <vigneshr@ti.com>,
+ David Airlie <airlied@linux.ie>, Richard Weinberger <richard@nod.at>,
+ Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ dri-devel <dri-devel@lists.freedesktop.org>, Jaroslav Kysela <perex@perex.cz>,
+ Paul Cercueil <paul@crapouillou.net>, Harvey Hunt <harveyhuntnexus@gmail.com>,
+ linux-mtd@lists.infradead.org, Daniel Vetter <daniel@ffwll.ch>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 3/11/20 2:33 PM, Miquel Raynal wrote:
-> Hi Marek,
+On Wed, 11 Mar 2020 at 08:40, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+>
+> Hi Joe,
+>
+> Joe Perches <joe@perches.com> wrote on Tue, 10 Mar 2020 21:51:27 -0700:
+>
+> > Convert the various uses of fallthrough comments to fallthrough;
+> >
+> > Done via script
+> > Link: https://lore.kernel.org/lkml/b56602fcf79f849e733e7b521bb0e17895d390fa.1582230379.git.joe.com/
+> >
+> > Signed-off-by: Joe Perches <joe@perches.com>
+> > ---
+> >  drivers/gpu/drm/ingenic/ingenic-drm.c           | 2 +-
+> >  drivers/mmc/host/jz4740_mmc.c                   | 6 ++----
+> >  drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c | 2 +-
+> >  drivers/mtd/nand/raw/ingenic/jz4725b_bch.c      | 4 ++--
+> >  drivers/mtd/nand/raw/ingenic/jz4780_bch.c       | 4 ++--
+> >  sound/soc/codecs/jz4770.c                       | 2 +-
+> >  6 files changed, 9 insertions(+), 11 deletions(-)
+>
+> I like very much the new way to advertise for fallthrough statements,
+> but I am not willing to take any patch converting a single driver
+> anymore. I had too many from Gustavo when these comments had to be
+> inserted. I would really prefer a MTD-wide or a NAND-wide or at least a
+> raw-NAND-wide single patch (anything inside drivers/mtd/nand/raw/).
+>
+> Hope you'll understand!
 
-Hi,
+I fully agree (for mmc). One patch please.
 
-[...]
+Another option is to make a big fat tree wide patch and ask Linus if
+he want to pick up immediately after an rc1. That should cause less
+disturbance for everyone, no?
 
->>>>> diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
->>>>> index b0482108a127..ea38aa42873e 100644
->>>>> --- a/drivers/mtd/nand/raw/denali.c
->>>>> +++ b/drivers/mtd/nand/raw/denali.c
->>>>> @@ -860,9 +860,9 @@ static int denali_setup_data_interface(struct
->>>>> nand_chip *chip, int chipnr,
->>>>>
->>>>>         /*
->>>>>          * Determine the minimum of acc_clks to meet the data setup timing.
->>>>> -        * (one additional clock cycle just in case)
->>>>> +        * (two additional clock cycles just in case)
->>>>>          */
->>>>> -       acc_clks = DIV_ROUND_UP(timings->tREA_max, t_x) + 1;
->>>>> +       acc_clks = DIV_ROUND_UP(timings->tREA_max, t_x) + 2;
->>>>>
->>>>>         /* Determine the minimum of rdwr_en_lo_cnt from RE#/WE# pulse width */
->>>>>         rdwr_en_lo = DIV_ROUND_UP(max(timings->tRP_min, timings->tWP_min), t_x);    
->>>>
->>>> Like the attached one ?
->>>>
->>>> That seems to work, but -- the calculated timings differ from the ones
->>>> which are calculated by U-Boot and which were tested to work well.
->>>> That's not good, I would expect both timings to be identical:  
->>>
->>> There is no such "timings tested to work well".  
->>
->> Hmmm, the board went through full temperature range testing in a chamber
->> with those timings and passed, and there are boards with those exact
->> timings deployed for years now with older kernel version, which work
->> too. So I would expect they are good and "timings tested to work well".
->>
->>> Timings represent
->>> minimum and maximum values for certain operations on the NAND bus, you
->>> can have two different values that will both work in the same
->>> condition. And it is expected that Linux is more clever than U-Boot  
->>
->> Errr, why ?
-> 
-> Because sometimes people write simpler driver in U-Boot, or even
-> hardcoded values.
-
-I see, this is not the case with denali nand driver though.
-
-> I checked the denali driver and indeed u-boot should not be much clever
-> than Linux. Are the differences significant? The code is so close, you
-> can probably check why you have differences. Also verify that the same
-> ONFI mode is used.
-
-It might've made sense to check those driver differences before making
-such an statement ;-)
-
-That said, I don't think either U-Boot or Linux uses the ONFI
-information for this NAND, but I might be wrong.
-
->>> and
->>> may optimize better the timings depending on the selected mode ([0-5])
->>> (hence the different calls to ->setup_data_interface().  
->>
->> I would expect those two should produce identical timing parameters,
->> period, otherwise one or the other is wrong. Thus far, it was Linux that
->> produced non-working results.
-> 
-> Again, we define minimum and maximum delays. If the right thing is to
-> not wait more than 5us and you wait up to 6, it does not mean you
-> wrote "bad timings". 4us would be a bad timing though. It depends on
-> what you are looking at.
-
-I am look at for example
-
- denali->reg + TCWAW_AND_ADDR_2_DATA = 0x0000143f -> 0x00001432
-
-Register was 0x143f before, now is 0x1432 , which is less.
-I guess that would be the "bad timing" then ?
-
->>> Run a stress test, if it passes, you should be good :)  
->>
->> Thank you for the hint, I think the stress test thus far could be
->> considered sufficient. I guess we can agree on that ?
-> 
-> Oh yeah absolutely :)
-
-Great :)
+Kind regards
+Uffe
 
 ______________________________________________________
 Linux MTD discussion mailing list
