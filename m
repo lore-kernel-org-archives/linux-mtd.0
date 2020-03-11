@@ -2,64 +2,54 @@ Return-Path: <SRS0=SuWK=44=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BDFF4C18E5B
-	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2020 12:53:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 789ABC10F27
+	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2020 13:08:36 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 91E752146E
-	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2020 12:53:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4B5E624680
+	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2020 13:08:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="e2QrXbKC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 91E752146E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=denx.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BqjSBjIY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4B5E624680
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=LiG9AcUL/iY02/1sVqgCtWS7mpven5gFBjjClW8FJxE=; b=e2QrXbKCRpKDReux5TJ94jBNn
-	6gA/Nf4QaDngihpMtc1pcLcW92BZ+LRFz4eMgCE5JmajotKapVXkYFVped0vP9kz2b48hGJK1EDzD
-	tuoCSBxpxsErNtezsf4apSbEexdv6gxQ1BI4cPLIxKjcg4b7fbmEwBHCq5qNaEXgY+jiR2mbhM0lk
-	ivXMyOKTz3hdcB+UemPXfJlV7C0Uynbv3Abu/YaTNfkh7IeZtk3UP3nzMiZGD7+sqnSswDRDNg6te
-	FIVlPwbGaaARdds0SnjlFjUVOAey1pp2NmR7lPU53r/uWQp4Hj866BcYebh8p8WlOZxHuYg1jpAH8
-	sqjSgigJQ==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=74j20Rkg4MimVrtbPxvgDOs4m/kY2+EUdtJJvy2p+Zk=; b=BqjSBjIYsIdw9x
+	+HpVoulZdYN54xE6eokcnIs5J0nAbeYkfVXYY9OQupC83KY4H1TZPq/vG1B7ZHzn8Sa90qRVcyARb
+	+kitZLNsBKRxoHlKqih8paQPm6WRb9MgbmElL0mVGJCgBPj863N6QwejqJwOw3dInJ2AOLLyt+lqO
+	ilaQGeFKuga5esKDSrOT2FXxwBGlzUiBQVJJnh0pQ7LHRgBvEZtByxEZsJFSCgXZm0mUdrba2P29D
+	1eprKITSsYXFTFmZgcFTUoe9oIBlQaBEKwcvWSfCFWRMRfmBqd2XjDsK40VcsPZYJjPtbMnRoMt7v
+	H+8wmb1Gw02XL6P+zcvA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jC0r6-0005mX-Br; Wed, 11 Mar 2020 12:53:00 +0000
-Received: from mail-out.m-online.net ([212.18.0.9])
+	id 1jC15x-0004kM-FH; Wed, 11 Mar 2020 13:08:21 +0000
+Received: from relay11.mail.gandi.net ([217.70.178.231])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jC0r2-0005m1-AL
- for linux-mtd@lists.infradead.org; Wed, 11 Mar 2020 12:52:58 +0000
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
- by mail-out.m-online.net (Postfix) with ESMTP id 48csLs42fMz1qrg3;
- Wed, 11 Mar 2020 13:52:53 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
- by mail.m-online.net (Postfix) with ESMTP id 48csLs2mdkz1qyF8;
- Wed, 11 Mar 2020 13:52:53 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
- by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new,
- port 10024)
- with ESMTP id sICeFbbcUdVf; Wed, 11 Mar 2020 13:52:50 +0100 (CET)
-X-Auth-Info: BWgMdqLXZQYrl7gSjYr2uaq2x3xabFFmd4ARMtP9AsI=
-Received: from [127.0.0.1] (unknown [195.140.253.167])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.mnet-online.de (Postfix) with ESMTPSA;
- Wed, 11 Mar 2020 13:52:50 +0100 (CET)
+ id 1jC15t-0004iM-Om
+ for linux-mtd@lists.infradead.org; Wed, 11 Mar 2020 13:08:20 +0000
+Received: from xps13 (lfbn-tou-1-1473-158.w90-89.abo.wanadoo.fr [90.89.41.158])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay11.mail.gandi.net (Postfix) with ESMTPSA id 1775B100008;
+ Wed, 11 Mar 2020 13:08:07 +0000 (UTC)
+Date: Wed, 11 Mar 2020 14:08:07 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Marek Vasut <marex@denx.de>
 Subject: Re: [PATCH] Revert "mtd: rawnand: denali: get
  ->setup_data_interface() working again"
-To: Masahiro Yamada <masahiroy@kernel.org>
+Message-ID: <20200311140807.6f56baf3@xps13>
+In-Reply-To: <d4b4abf4-1af9-d57c-5b93-2d56a5dc456b@denx.de>
 References: <20200205070834.3087104-1-marex@denx.de>
- <20200205101223.21d99d93@xps13>
  <45a10680-5fe6-7cab-a7ef-f7f7a952e822@denx.de>
  <20200205105045.6877aca6@xps13>
  <bdb54ba5-648a-0b79-661c-5eb9604a1ee5@denx.de>
@@ -76,18 +66,13 @@ References: <20200205070834.3087104-1-marex@denx.de>
  <CAK7LNAT1Bzs68X8PiWQHg4g2bpPGd-WM9D4vwf59XfwwLVuVQQ@mail.gmail.com>
  <e86925d0-805c-d364-57ca-6400b77cffd7@denx.de>
  <CAK7LNARDp1Zru3_XAQyBZHwsRov-QWOnrrwodS8pjszsKy2ysw@mail.gmail.com>
-From: Marek Vasut <marex@denx.de>
-Message-ID: <d4b4abf4-1af9-d57c-5b93-2d56a5dc456b@denx.de>
-Date: Wed, 11 Mar 2020 13:52:30 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+ <d4b4abf4-1af9-d57c-5b93-2d56a5dc456b@denx.de>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <CAK7LNARDp1Zru3_XAQyBZHwsRov-QWOnrrwodS8pjszsKy2ysw@mail.gmail.com>
-Content-Type: multipart/mixed; boundary="------------6DE7A0C90EF8E200F3240991"
-Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200311_055256_665767_90EA02CE 
-X-CRM114-Status: GOOD (  24.07  )
+X-CRM114-CacheID: sfid-20200311_060818_075650_A36A07AA 
+X-CRM114-Status: GOOD (  17.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,276 +84,94 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Dinh Nguyen <dinguyen@kernel.org>,
+Cc: Dinh Nguyen <dinguyen@kernel.org>, Masahiro Yamada <masahiroy@kernel.org>,
  Boris Brezillon <boris.brezillon@collabora.com>,
- linux-mtd <linux-mtd@lists.infradead.org>, Tim Sander <tim@krieglstein.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>
+ linux-mtd <linux-mtd@lists.infradead.org>, Tim Sander <tim@krieglstein.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is a multi-part message in MIME format.
---------------6DE7A0C90EF8E200F3240991
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-
-On 3/9/20 11:27 AM, Masahiro Yamada wrote:
-> Hi.
-
-Hi,
-
-[...]
-
->>>> See attached patch, with which (without this revert) you get this:
->>>> denali->reg + TWHR2_AND_WE_2_RE = 0x00001414 -> 0x0000143f
->>>> denali->reg + TCWAW_AND_ADDR_2_DATA = 0x0000143f -> 0x00001432
->>>> denali->reg + RE_2_WE = 0x00000014 -> 0x00000019
->>>> denali->reg + ACC_CLKS = 0x00000004 -> 0x00000005
->>>> denali->reg + RDWR_EN_LO_CNT = 0x00000002 -> 0x00000009
->>>> denali->reg + RDWR_EN_HI_CNT = 0x00000002 -> 0x00000004
->>>> denali->reg + CS_SETUP_CNT = 0x00000001 -> 0x00000008
->>>> denali->reg + RE_2_RE = 0x00000014 -> 0x00000019
->>>
->>> OK, the left-hand side is probably the timing
->>> set up by U-Boot.
->>
->> Yep, the timings that work. So now, how do you get to those working
->> timings using the Linux driver ?
-> 
-> 
-> How about
-> 0001-denali-more-complicated-calculation-for-timings.patch
-> 
-> + following ?
-> 
-> diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
-> index b0482108a127..ea38aa42873e 100644
-> --- a/drivers/mtd/nand/raw/denali.c
-> +++ b/drivers/mtd/nand/raw/denali.c
-> @@ -860,9 +860,9 @@ static int denali_setup_data_interface(struct
-> nand_chip *chip, int chipnr,
-> 
->         /*
->          * Determine the minimum of acc_clks to meet the data setup timing.
-> -        * (one additional clock cycle just in case)
-> +        * (two additional clock cycles just in case)
->          */
-> -       acc_clks = DIV_ROUND_UP(timings->tREA_max, t_x) + 1;
-> +       acc_clks = DIV_ROUND_UP(timings->tREA_max, t_x) + 2;
-> 
->         /* Determine the minimum of rdwr_en_lo_cnt from RE#/WE# pulse width */
->         rdwr_en_lo = DIV_ROUND_UP(max(timings->tRP_min, timings->tWP_min), t_x);
-
-Like the attached one ?
-
-That seems to work, but -- the calculated timings differ from the ones
-which are calculated by U-Boot and which were tested to work well.
-That's not good, I would expect both timings to be identical:
- Denali: clk_rate=31250000, clk_x_rate=125000000
- Denali: tREA=40000
- Denali: tRHW=200000
- Denali: tRHZ=200000
- Denali: tCCS=500000000
- Denali: tWHR=120000
- Denali: tADL=400000
- Denali: tREH=30000
- Denali: tWH=30000
- Denali: tRP=50000
- Denali: tWP=50000
- Denali: tRC=100000
- Denali: tWC=100000
- Denali: tCS=70000
- Denali: tCEA=100000
- Denali: acc_clks=8
- Denali: re_2_we=25
- Denali: re_2_re=25
- Denali: we_2_re=63
- Denali: addr_2_data=50
- Denali: rdwr_en_hi=4
- Denali: rdwr_en_lo_hi=13
- Denali: rdwr_en_lo=9
- Denali: cs_setup=5
-
- denali->reg + TWHR2_AND_WE_2_RE = 0x00001414 -> 0x0000143f
- denali->reg + TCWAW_AND_ADDR_2_DATA = 0x0000143f -> 0x00001432
- denali->reg + RE_2_WE = 0x00000014 -> 0x00000019
- denali->reg + ACC_CLKS = 0x00000004 -> 0x00000008
- denali->reg + RDWR_EN_LO_CNT = 0x00000002 -> 0x00000009
- denali->reg + RDWR_EN_HI_CNT = 0x00000002 -> 0x00000004
- denali->reg + CS_SETUP_CNT = 0x00000001 -> 0x00000005
- denali->reg + RE_2_RE = 0x00000014 -> 0x00000019
-
- denali->reg + TWHR2_AND_WE_2_RE = 0x0000143f -> 0x0000143f
- denali->reg + TCWAW_AND_ADDR_2_DATA = 0x00001432 -> 0x00001432
- denali->reg + RE_2_WE = 0x00000019 -> 0x00000019
- denali->reg + ACC_CLKS = 0x00000008 -> 0x00000008
- denali->reg + RDWR_EN_LO_CNT = 0x00000009 -> 0x00000009
- denali->reg + RDWR_EN_HI_CNT = 0x00000004 -> 0x00000004
- denali->reg + CS_SETUP_CNT = 0x00000005 -> 0x00000005
- denali->reg + RE_2_RE = 0x00000019 -> 0x00000019
-
- denali->reg + TWHR2_AND_WE_2_RE = 0x0000143f -> 0x0000143f
- denali->reg + TCWAW_AND_ADDR_2_DATA = 0x00001432 -> 0x00001432
- denali->reg + RE_2_WE = 0x00000019 -> 0x00000019
- denali->reg + ACC_CLKS = 0x00000008 -> 0x00000008
- denali->reg + RDWR_EN_LO_CNT = 0x00000009 -> 0x00000009
- denali->reg + RDWR_EN_HI_CNT = 0x00000004 -> 0x00000004
- denali->reg + CS_SETUP_CNT = 0x00000005 -> 0x00000005
- denali->reg + RE_2_RE = 0x00000019 -> 0x00000019
-...
-
--- 
-Best regards,
-Marek Vasut
-
---------------6DE7A0C90EF8E200F3240991
-Content-Type: text/x-patch; charset=UTF-8;
- name="0001-denali-more-complicated-calculation-for-timings.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename*0="0001-denali-more-complicated-calculation-for-timings.patch"
-
->From 5fd2ee8e18de2490da347d0388481adb18a04408 Mon Sep 17 00:00:00 2001
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Mon, 17 Feb 2020 21:16:33 +0900
-Subject: [PATCH] denali: more complicated calculation for timings
-
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
- drivers/mtd/nand/raw/denali.c | 75 +++++++++++++++++++++++++++++------
- 1 file changed, 62 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
-index 5fe3c62a756e..ef5ebb8394f3 100644
---- a/drivers/mtd/nand/raw/denali.c
-+++ b/drivers/mtd/nand/raw/denali.c
-@@ -218,14 +218,21 @@ static void denali_select_target(struct nand_chip *chip, int cs)
- 		return;
- 
- 	/* update timing registers unless NAND_KEEP_TIMINGS is set */
-+	pr_err("denali->reg + TWHR2_AND_WE_2_RE = 0x%08x -> 0x%08x\n", ioread32(denali->reg + TWHR2_AND_WE_2_RE), sel->hwhr2_and_we_2_re);
- 	iowrite32(sel->hwhr2_and_we_2_re, denali->reg + TWHR2_AND_WE_2_RE);
--	iowrite32(sel->tcwaw_and_addr_2_data,
--		  denali->reg + TCWAW_AND_ADDR_2_DATA);
-+	pr_err("denali->reg + TCWAW_AND_ADDR_2_DATA = 0x%08x -> 0x%08x\n", ioread32(denali->reg + TCWAW_AND_ADDR_2_DATA), sel->tcwaw_and_addr_2_data);
-+	iowrite32(sel->tcwaw_and_addr_2_data, denali->reg + TCWAW_AND_ADDR_2_DATA);
-+	pr_err("denali->reg + RE_2_WE = 0x%08x -> 0x%08x\n", ioread32(denali->reg + RE_2_WE), sel->re_2_we);
- 	iowrite32(sel->re_2_we, denali->reg + RE_2_WE);
-+	pr_err("denali->reg + ACC_CLKS = 0x%08x -> 0x%08x\n", ioread32(denali->reg + ACC_CLKS), sel->acc_clks);
- 	iowrite32(sel->acc_clks, denali->reg + ACC_CLKS);
-+	pr_err("denali->reg + RDWR_EN_LO_CNT = 0x%08x -> 0x%08x\n", ioread32(denali->reg + RDWR_EN_LO_CNT), sel->rdwr_en_lo_cnt);
- 	iowrite32(sel->rdwr_en_lo_cnt, denali->reg + RDWR_EN_LO_CNT);
-+	pr_err("denali->reg + RDWR_EN_HI_CNT = 0x%08x -> 0x%08x\n", ioread32(denali->reg + RDWR_EN_HI_CNT), sel->rdwr_en_hi_cnt);
- 	iowrite32(sel->rdwr_en_hi_cnt, denali->reg + RDWR_EN_HI_CNT);
-+	pr_err("denali->reg + CS_SETUP_CNT = 0x%08x -> 0x%08x\n", ioread32(denali->reg + CS_SETUP_CNT), sel->cs_setup_cnt);
- 	iowrite32(sel->cs_setup_cnt, denali->reg + CS_SETUP_CNT);
-+	pr_err("denali->reg + RE_2_RE = 0x%08x -> 0x%08x\n", ioread32(denali->reg + RE_2_RE), sel->re_2_re);
- 	iowrite32(sel->re_2_re, denali->reg + RE_2_RE);
- }
- 
-@@ -797,15 +804,6 @@ static int denali_setup_data_interface(struct nand_chip *chip, int chipnr,
- 
- 	sel = &to_denali_chip(chip)->sels[chipnr];
- 
--	/* tREA -> ACC_CLKS */
--	acc_clks = DIV_ROUND_UP(timings->tREA_max, t_x);
--	acc_clks = min_t(int, acc_clks, ACC_CLKS__VALUE);
--
--	tmp = ioread32(denali->reg + ACC_CLKS);
--	tmp &= ~ACC_CLKS__VALUE;
--	tmp |= FIELD_PREP(ACC_CLKS__VALUE, acc_clks);
--	sel->acc_clks = tmp;
--
- 	/* tRWH -> RE_2_WE */
- 	re_2_we = DIV_ROUND_UP(timings->tRHW_min, t_x);
- 	re_2_we = min_t(int, re_2_we, RE_2_WE__VALUE);
-@@ -863,14 +861,39 @@ static int denali_setup_data_interface(struct nand_chip *chip, int chipnr,
- 	tmp |= FIELD_PREP(RDWR_EN_HI_CNT__VALUE, rdwr_en_hi);
- 	sel->rdwr_en_hi_cnt = tmp;
- 
--	/* tRP, tWP -> RDWR_EN_LO_CNT */
-+	/*
-+	 * tREA -> ACC_CLOCKS
-+	 * tRP, tWP, tRHOH, tRC, tWC -> RDWR_EN_LO_CNT
-+	 */
-+
-+	/*
-+	 * Determine the minimum of acc_clks to meet the data setup timing.
-+	 * (one additional clock cycle just in case)
-+	 */
-+	acc_clks = DIV_ROUND_UP(timings->tREA_max, t_x) + 2;
-+
-+	/* Determine the minimum of rdwr_en_lo_cnt from RE#/WE# pulse width */
- 	rdwr_en_lo = DIV_ROUND_UP(max(timings->tRP_min, timings->tWP_min), t_x);
-+
-+	/* Extend rdwr_en_lo to meet the data hold timing */
-+	rdwr_en_lo = max_t(int, rdwr_en_lo, acc_clks - timings->tRHOH_min / t_x);
-+
-+	/* Extend rdwr_en_lo to meet the requirement for RE#/WE# cycle time */
- 	rdwr_en_lo_hi = DIV_ROUND_UP(max(timings->tRC_min, timings->tWC_min),
- 				     t_x);
--	rdwr_en_lo_hi = max_t(int, rdwr_en_lo_hi, mult_x);
- 	rdwr_en_lo = max(rdwr_en_lo, rdwr_en_lo_hi - rdwr_en_hi);
- 	rdwr_en_lo = min_t(int, rdwr_en_lo, RDWR_EN_LO_CNT__VALUE);
- 
-+	/* Center the data latch timing for extra safety */
-+	acc_clks = (acc_clks + rdwr_en_lo +
-+		    DIV_ROUND_UP(timings->tRHOH_min, t_x)) / 2;
-+	acc_clks = min_t(int, acc_clks, ACC_CLKS__VALUE);
-+
-+	tmp = ioread32(denali->reg + ACC_CLKS);
-+	tmp &= ~ACC_CLKS__VALUE;
-+	tmp |= FIELD_PREP(ACC_CLKS__VALUE, acc_clks);
-+	sel->acc_clks = tmp;
-+
- 	tmp = ioread32(denali->reg + RDWR_EN_LO_CNT);
- 	tmp &= ~RDWR_EN_LO_CNT__VALUE;
- 	tmp |= FIELD_PREP(RDWR_EN_LO_CNT__VALUE, rdwr_en_lo);
-@@ -887,6 +910,32 @@ static int denali_setup_data_interface(struct nand_chip *chip, int chipnr,
- 	tmp |= FIELD_PREP(CS_SETUP_CNT__VALUE, cs_setup);
- 	sel->cs_setup_cnt = tmp;
- 
-+	/* debug */
-+	printk("Denali: clk_rate=%ld, clk_x_rate=%ld\n", denali->clk_rate, denali->clk_x_rate);
-+	printk("Denali: tREA=%d\n", timings->tREA_max);
-+	printk("Denali: tRHW=%d\n", timings->tRHW_min);
-+	printk("Denali: tRHZ=%d\n", timings->tRHZ_max);
-+	printk("Denali: tCCS=%d\n", timings->tCCS_min);
-+	printk("Denali: tWHR=%d\n", timings->tWHR_min);
-+	printk("Denali: tADL=%d\n", timings->tADL_min);
-+	printk("Denali: tREH=%d\n", timings->tREH_min);
-+	printk("Denali: tWH=%d\n", timings->tWH_min);
-+	printk("Denali: tRP=%d\n", timings->tRP_min);
-+	printk("Denali: tWP=%d\n", timings->tWP_min);
-+	printk("Denali: tRC=%d\n", timings->tRC_min);
-+	printk("Denali: tWC=%d\n", timings->tWC_min);
-+	printk("Denali: tCS=%d\n", timings->tCS_min);
-+	printk("Denali: tCEA=%d\n", timings->tCEA_max);
-+	printk("Denali: acc_clks=%d\n", acc_clks);
-+	printk("Denali: re_2_we=%d\n", re_2_we);
-+	printk("Denali: re_2_re=%d\n", re_2_re);
-+	printk("Denali: we_2_re=%d\n", we_2_re);
-+	printk("Denali: addr_2_data=%d\n", addr_2_data);
-+	printk("Denali: rdwr_en_hi=%d\n", rdwr_en_hi);
-+	printk("Denali: rdwr_en_lo_hi=%d\n", rdwr_en_lo_hi);
-+	printk("Denali: rdwr_en_lo=%d\n", rdwr_en_lo);
-+	printk("Denali: cs_setup=%d\n", cs_setup);
-+
- 	return 0;
- }
- 
--- 
-2.25.0
-
-
---------------6DE7A0C90EF8E200F3240991
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---------------6DE7A0C90EF8E200F3240991--
-
+SGkgTWFyZWssCgpNYXJlayBWYXN1dCA8bWFyZXhAZGVueC5kZT4gd3JvdGUgb24gV2VkLCAxMSBN
+YXIgMjAyMCAxMzo1MjozMCArMDEwMDoKCj4gT24gMy85LzIwIDExOjI3IEFNLCBNYXNhaGlybyBZ
+YW1hZGEgd3JvdGU6Cj4gPiBIaS4gIAo+IAo+IEhpLAo+IAo+IFsuLi5dCj4gCj4gPj4+PiBTZWUg
+YXR0YWNoZWQgcGF0Y2gsIHdpdGggd2hpY2ggKHdpdGhvdXQgdGhpcyByZXZlcnQpIHlvdSBnZXQg
+dGhpczoKPiA+Pj4+IGRlbmFsaS0+cmVnICsgVFdIUjJfQU5EX1dFXzJfUkUgPSAweDAwMDAxNDE0
+IC0+IDB4MDAwMDE0M2YKPiA+Pj4+IGRlbmFsaS0+cmVnICsgVENXQVdfQU5EX0FERFJfMl9EQVRB
+ID0gMHgwMDAwMTQzZiAtPiAweDAwMDAxNDMyCj4gPj4+PiBkZW5hbGktPnJlZyArIFJFXzJfV0Ug
+PSAweDAwMDAwMDE0IC0+IDB4MDAwMDAwMTkKPiA+Pj4+IGRlbmFsaS0+cmVnICsgQUNDX0NMS1Mg
+PSAweDAwMDAwMDA0IC0+IDB4MDAwMDAwMDUKPiA+Pj4+IGRlbmFsaS0+cmVnICsgUkRXUl9FTl9M
+T19DTlQgPSAweDAwMDAwMDAyIC0+IDB4MDAwMDAwMDkKPiA+Pj4+IGRlbmFsaS0+cmVnICsgUkRX
+Ul9FTl9ISV9DTlQgPSAweDAwMDAwMDAyIC0+IDB4MDAwMDAwMDQKPiA+Pj4+IGRlbmFsaS0+cmVn
+ICsgQ1NfU0VUVVBfQ05UID0gMHgwMDAwMDAwMSAtPiAweDAwMDAwMDA4Cj4gPj4+PiBkZW5hbGkt
+PnJlZyArIFJFXzJfUkUgPSAweDAwMDAwMDE0IC0+IDB4MDAwMDAwMTkgIAo+ID4+Pgo+ID4+PiBP
+SywgdGhlIGxlZnQtaGFuZCBzaWRlIGlzIHByb2JhYmx5IHRoZSB0aW1pbmcKPiA+Pj4gc2V0IHVw
+IGJ5IFUtQm9vdC4gIAo+ID4+Cj4gPj4gWWVwLCB0aGUgdGltaW5ncyB0aGF0IHdvcmsuIFNvIG5v
+dywgaG93IGRvIHlvdSBnZXQgdG8gdGhvc2Ugd29ya2luZwo+ID4+IHRpbWluZ3MgdXNpbmcgdGhl
+IExpbnV4IGRyaXZlciA/ICAKPiA+IAo+ID4gCj4gPiBIb3cgYWJvdXQKPiA+IDAwMDEtZGVuYWxp
+LW1vcmUtY29tcGxpY2F0ZWQtY2FsY3VsYXRpb24tZm9yLXRpbWluZ3MucGF0Y2gKPiA+IAo+ID4g
+KyBmb2xsb3dpbmcgPwo+ID4gCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcv
+ZGVuYWxpLmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9kZW5hbGkuYwo+ID4gaW5kZXggYjA0ODIx
+MDhhMTI3Li5lYTM4YWE0Mjg3M2UgMTAwNjQ0Cj4gPiAtLS0gYS9kcml2ZXJzL210ZC9uYW5kL3Jh
+dy9kZW5hbGkuYwo+ID4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvZGVuYWxpLmMKPiA+IEBA
+IC04NjAsOSArODYwLDkgQEAgc3RhdGljIGludCBkZW5hbGlfc2V0dXBfZGF0YV9pbnRlcmZhY2Uo
+c3RydWN0Cj4gPiBuYW5kX2NoaXAgKmNoaXAsIGludCBjaGlwbnIsCj4gPiAKPiA+ICAgICAgICAg
+LyoKPiA+ICAgICAgICAgICogRGV0ZXJtaW5lIHRoZSBtaW5pbXVtIG9mIGFjY19jbGtzIHRvIG1l
+ZXQgdGhlIGRhdGEgc2V0dXAgdGltaW5nLgo+ID4gLSAgICAgICAgKiAob25lIGFkZGl0aW9uYWwg
+Y2xvY2sgY3ljbGUganVzdCBpbiBjYXNlKQo+ID4gKyAgICAgICAgKiAodHdvIGFkZGl0aW9uYWwg
+Y2xvY2sgY3ljbGVzIGp1c3QgaW4gY2FzZSkKPiA+ICAgICAgICAgICovCj4gPiAtICAgICAgIGFj
+Y19jbGtzID0gRElWX1JPVU5EX1VQKHRpbWluZ3MtPnRSRUFfbWF4LCB0X3gpICsgMTsKPiA+ICsg
+ICAgICAgYWNjX2Nsa3MgPSBESVZfUk9VTkRfVVAodGltaW5ncy0+dFJFQV9tYXgsIHRfeCkgKyAy
+Owo+ID4gCj4gPiAgICAgICAgIC8qIERldGVybWluZSB0aGUgbWluaW11bSBvZiByZHdyX2VuX2xv
+X2NudCBmcm9tIFJFIy9XRSMgcHVsc2Ugd2lkdGggKi8KPiA+ICAgICAgICAgcmR3cl9lbl9sbyA9
+IERJVl9ST1VORF9VUChtYXgodGltaW5ncy0+dFJQX21pbiwgdGltaW5ncy0+dFdQX21pbiksIHRf
+eCk7ICAKPiAKPiBMaWtlIHRoZSBhdHRhY2hlZCBvbmUgPwo+IAo+IFRoYXQgc2VlbXMgdG8gd29y
+aywgYnV0IC0tIHRoZSBjYWxjdWxhdGVkIHRpbWluZ3MgZGlmZmVyIGZyb20gdGhlIG9uZXMKPiB3
+aGljaCBhcmUgY2FsY3VsYXRlZCBieSBVLUJvb3QgYW5kIHdoaWNoIHdlcmUgdGVzdGVkIHRvIHdv
+cmsgd2VsbC4KPiBUaGF0J3Mgbm90IGdvb2QsIEkgd291bGQgZXhwZWN0IGJvdGggdGltaW5ncyB0
+byBiZSBpZGVudGljYWw6CgpUaGVyZSBpcyBubyBzdWNoICJ0aW1pbmdzIHRlc3RlZCB0byB3b3Jr
+IHdlbGwiLiBUaW1pbmdzIHJlcHJlc2VudAptaW5pbXVtIGFuZCBtYXhpbXVtIHZhbHVlcyBmb3Ig
+Y2VydGFpbiBvcGVyYXRpb25zIG9uIHRoZSBOQU5EIGJ1cywgeW91CmNhbiBoYXZlIHR3byBkaWZm
+ZXJlbnQgdmFsdWVzIHRoYXQgd2lsbCBib3RoIHdvcmsgaW4gdGhlIHNhbWUKY29uZGl0aW9uLiBB
+bmQgaXQgaXMgZXhwZWN0ZWQgdGhhdCBMaW51eCBpcyBtb3JlIGNsZXZlciB0aGFuIFUtQm9vdCBh
+bmQKbWF5IG9wdGltaXplIGJldHRlciB0aGUgdGltaW5ncyBkZXBlbmRpbmcgb24gdGhlIHNlbGVj
+dGVkIG1vZGUgKFswLTVdKQooaGVuY2UgdGhlIGRpZmZlcmVudCBjYWxscyB0byAtPnNldHVwX2Rh
+dGFfaW50ZXJmYWNlKCkuCgpSdW4gYSBzdHJlc3MgdGVzdCwgaWYgaXQgcGFzc2VzLCB5b3Ugc2hv
+dWxkIGJlIGdvb2QgOikKClRoYW5rcywKTWlxdcOobAoKPiAgRGVuYWxpOiBjbGtfcmF0ZT0zMTI1
+MDAwMCwgY2xrX3hfcmF0ZT0xMjUwMDAwMDAKPiAgRGVuYWxpOiB0UkVBPTQwMDAwCj4gIERlbmFs
+aTogdFJIVz0yMDAwMDAKPiAgRGVuYWxpOiB0UkhaPTIwMDAwMAo+ICBEZW5hbGk6IHRDQ1M9NTAw
+MDAwMDAwCj4gIERlbmFsaTogdFdIUj0xMjAwMDAKPiAgRGVuYWxpOiB0QURMPTQwMDAwMAo+ICBE
+ZW5hbGk6IHRSRUg9MzAwMDAKPiAgRGVuYWxpOiB0V0g9MzAwMDAKPiAgRGVuYWxpOiB0UlA9NTAw
+MDAKPiAgRGVuYWxpOiB0V1A9NTAwMDAKPiAgRGVuYWxpOiB0UkM9MTAwMDAwCj4gIERlbmFsaTog
+dFdDPTEwMDAwMAo+ICBEZW5hbGk6IHRDUz03MDAwMAo+ICBEZW5hbGk6IHRDRUE9MTAwMDAwCj4g
+IERlbmFsaTogYWNjX2Nsa3M9OAo+ICBEZW5hbGk6IHJlXzJfd2U9MjUKPiAgRGVuYWxpOiByZV8y
+X3JlPTI1Cj4gIERlbmFsaTogd2VfMl9yZT02Mwo+ICBEZW5hbGk6IGFkZHJfMl9kYXRhPTUwCj4g
+IERlbmFsaTogcmR3cl9lbl9oaT00Cj4gIERlbmFsaTogcmR3cl9lbl9sb19oaT0xMwo+ICBEZW5h
+bGk6IHJkd3JfZW5fbG89OQo+ICBEZW5hbGk6IGNzX3NldHVwPTUKPiAKPiAgZGVuYWxpLT5yZWcg
+KyBUV0hSMl9BTkRfV0VfMl9SRSA9IDB4MDAwMDE0MTQgLT4gMHgwMDAwMTQzZgo+ICBkZW5hbGkt
+PnJlZyArIFRDV0FXX0FORF9BRERSXzJfREFUQSA9IDB4MDAwMDE0M2YgLT4gMHgwMDAwMTQzMgo+
+ICBkZW5hbGktPnJlZyArIFJFXzJfV0UgPSAweDAwMDAwMDE0IC0+IDB4MDAwMDAwMTkKPiAgZGVu
+YWxpLT5yZWcgKyBBQ0NfQ0xLUyA9IDB4MDAwMDAwMDQgLT4gMHgwMDAwMDAwOAo+ICBkZW5hbGkt
+PnJlZyArIFJEV1JfRU5fTE9fQ05UID0gMHgwMDAwMDAwMiAtPiAweDAwMDAwMDA5Cj4gIGRlbmFs
+aS0+cmVnICsgUkRXUl9FTl9ISV9DTlQgPSAweDAwMDAwMDAyIC0+IDB4MDAwMDAwMDQKPiAgZGVu
+YWxpLT5yZWcgKyBDU19TRVRVUF9DTlQgPSAweDAwMDAwMDAxIC0+IDB4MDAwMDAwMDUKPiAgZGVu
+YWxpLT5yZWcgKyBSRV8yX1JFID0gMHgwMDAwMDAxNCAtPiAweDAwMDAwMDE5Cj4gCj4gIGRlbmFs
+aS0+cmVnICsgVFdIUjJfQU5EX1dFXzJfUkUgPSAweDAwMDAxNDNmIC0+IDB4MDAwMDE0M2YKPiAg
+ZGVuYWxpLT5yZWcgKyBUQ1dBV19BTkRfQUREUl8yX0RBVEEgPSAweDAwMDAxNDMyIC0+IDB4MDAw
+MDE0MzIKPiAgZGVuYWxpLT5yZWcgKyBSRV8yX1dFID0gMHgwMDAwMDAxOSAtPiAweDAwMDAwMDE5
+Cj4gIGRlbmFsaS0+cmVnICsgQUNDX0NMS1MgPSAweDAwMDAwMDA4IC0+IDB4MDAwMDAwMDgKPiAg
+ZGVuYWxpLT5yZWcgKyBSRFdSX0VOX0xPX0NOVCA9IDB4MDAwMDAwMDkgLT4gMHgwMDAwMDAwOQo+
+ICBkZW5hbGktPnJlZyArIFJEV1JfRU5fSElfQ05UID0gMHgwMDAwMDAwNCAtPiAweDAwMDAwMDA0
+Cj4gIGRlbmFsaS0+cmVnICsgQ1NfU0VUVVBfQ05UID0gMHgwMDAwMDAwNSAtPiAweDAwMDAwMDA1
+Cj4gIGRlbmFsaS0+cmVnICsgUkVfMl9SRSA9IDB4MDAwMDAwMTkgLT4gMHgwMDAwMDAxOQo+IAo+
+ICBkZW5hbGktPnJlZyArIFRXSFIyX0FORF9XRV8yX1JFID0gMHgwMDAwMTQzZiAtPiAweDAwMDAx
+NDNmCj4gIGRlbmFsaS0+cmVnICsgVENXQVdfQU5EX0FERFJfMl9EQVRBID0gMHgwMDAwMTQzMiAt
+PiAweDAwMDAxNDMyCj4gIGRlbmFsaS0+cmVnICsgUkVfMl9XRSA9IDB4MDAwMDAwMTkgLT4gMHgw
+MDAwMDAxOQo+ICBkZW5hbGktPnJlZyArIEFDQ19DTEtTID0gMHgwMDAwMDAwOCAtPiAweDAwMDAw
+MDA4Cj4gIGRlbmFsaS0+cmVnICsgUkRXUl9FTl9MT19DTlQgPSAweDAwMDAwMDA5IC0+IDB4MDAw
+MDAwMDkKPiAgZGVuYWxpLT5yZWcgKyBSRFdSX0VOX0hJX0NOVCA9IDB4MDAwMDAwMDQgLT4gMHgw
+MDAwMDAwNAo+ICBkZW5hbGktPnJlZyArIENTX1NFVFVQX0NOVCA9IDB4MDAwMDAwMDUgLT4gMHgw
+MDAwMDAwNQo+ICBkZW5hbGktPnJlZyArIFJFXzJfUkUgPSAweDAwMDAwMDE5IC0+IDB4MDAwMDAw
+MTkKPiAuLi4KPiAKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3Rz
+LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
