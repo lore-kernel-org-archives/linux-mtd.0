@@ -2,96 +2,60 @@ Return-Path: <SRS0=SuWK=44=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2DB1C0044D
-	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2020 18:00:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BCFBCC0044D
+	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2020 18:35:55 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 33C5B20691
-	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2020 18:00:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 619B320736
+	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2020 18:35:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Pxj2T2zy";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TsTUXdsh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 33C5B20691
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="neTBCQJz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 619B320736
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:References:
-	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=R7lMwGKcUdDVuMUNvVATTXg3jIR2br+CSjY20lRwLrI=; b=Pxj2T2zyMFAuNHHVWU2xb8fDSa
-	5DaMp8ui408Gg4bKaXkAN1MNx06ewM3kNlm+QkN/Xqq2JTPWVzp2kg4tBMTfztsYXXDxm7Xr3G/FK
-	eSIIagz/eNF1/w/Whrsdcn0gAYdx+blBDzAyg8p2KWG8ppp4+nmHx4Jp5J7DTEaFyrud6wiZBTScS
-	sHD15xNLfDM8Nme6mBgOwvnRe+0u0vbEZs9aIX9DOpql5w7j2c3cPlHYqYnSEXHqGIFPRvX08qGo+
-	xlxGHhRj7cjdifAqAElKIRmDpHRUuA+KysiQKkAx6TRQQKdo65x5Y58e18IyqWtUrQ6SnTlw87IsK
-	P+v0uYFg==;
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:
+	In-Reply-To:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	References:List-Owner; bh=VLzOvzPeFMCce6sT2S0Ggc8LblBuouPY8nzViedygI4=; b=neT
+	BCQJznVqwKb5OxuMNdmtX1pZC6WeyqpQnwfrop9VOF8ifoMlNbrWaqAgjmw4+RJdS7pYNhSO0AOan
+	RYYz8bgOjnrwFZ9LzmSRJNvIewR+RCBV2TvNuXBqVGTND3RsZrEDOx6DxNcar68asimfks7qv4MOV
+	uxup0vTAq86Acq/1/8u/2hHZ1ObsKL4x2jquzIVq9k7srR+yb0XF0FPQgf7gUXiD9zAPojRU3wX/8
+	SmYnEMNq4Li5VIxNaU/nCjCdAXC13Wuc0ckvYkLb13x+PYvfTxiGh3vA3PPbBmSzYAmvQZwsU1YIp
+	xQ3LyD3h/8NBrHZgAgduwHjwgXAlSbw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jC5ev-0000pK-38; Wed, 11 Mar 2020 18:00:45 +0000
-Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jC5dB-0006SJ-3B
- for linux-mtd@lists.infradead.org; Wed, 11 Mar 2020 17:58:58 +0000
-Received: by mail-wr1-x444.google.com with SMTP id s5so3843200wrg.3
- for <linux-mtd@lists.infradead.org>; Wed, 11 Mar 2020 10:58:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references;
- bh=+0g3TUuCJUm9ZTQt2upCbsRVi7/9EKui7ktihNwzaDc=;
- b=TsTUXdsh8sqrSedFXRED2/dAg2vNMf1h5465VRoyvVgEc9E6uIUY6+CBePtQ7zR1oe
- rpM6XhSyyZf+l4tpClm2v/slstLRScfHQ5bJ3bmzMKR/z8iXTrdI8vWlN13rfV0/0BIN
- VvPOlu4Lw6whyjKKQtY5C+HGahEQW+YW85KXhBNjHc5D1Gy3XJNsuCFomtR0sgtKh7WL
- WwUrr1mU4WdB7rgCM798dEmsLgiQbZNDfaRRPVfFT5biQ8Qt+P6LmbQolFayf7gJXCYH
- /NAtaaScmV3PHAfQieHXFxyICJNhOqwJjqH5nCTc5fi5gJqbkNm1e+JSEAY+UgzTYUGS
- jGUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references;
- bh=+0g3TUuCJUm9ZTQt2upCbsRVi7/9EKui7ktihNwzaDc=;
- b=J2CxaJSwPd5uSOm+zsddF1hHLJnpbu++XKNrywZOCXghHhfr/Un79HgCMTS1woGlT1
- VtWcSrtdc6r8hwgFsKppKopVV0qm2nhxElInAOofKTzRv8SioGNlZXy6dytnGP4Y13df
- KY0/EHuLzrd3twBOpQkzBXbwq1P87oWE6vZilM9Ho63J/ncAyu0nCc5YpIjMVJ21LjUW
- kW0V/Kz7wMwV5seOSkVm+eOoXNTq+9cQn+Qv/begTpoXrFjaux6tAsLlYVs3raEUxrbK
- 5I/7O37OL9eYs+nZ8wGwOUClidJTsiROhg9ga8WajOkw2+WEn4cB2Jz+lnU4IuAl9+n1
- OCpA==
-X-Gm-Message-State: ANhLgQ0roynWyPpGmNJ84kH0SVT7GVYerx8oIAz7nWkA9cQ1Cti8S5FU
- +PEOOJyjsdwXJ7HxcAmqnhs=
-X-Google-Smtp-Source: ADFU+vsKK8iU4vOE0efdx2GcHjG39PrZbK6UdA0kUPdWOm9fR83Am8uyH9ngW7dnVspNsuO5kZVC/w==
-X-Received: by 2002:a05:6000:1081:: with SMTP id
- y1mr5666948wrw.52.1583949535510; 
- Wed, 11 Mar 2020 10:58:55 -0700 (PDT)
-Received: from opensdev.fritz.box
- (business-178-015-117-054.static.arcor-ip.net. [178.15.117.54])
- by smtp.gmail.com with ESMTPSA id l18sm1502107wrr.17.2020.03.11.10.58.54
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 11 Mar 2020 10:58:54 -0700 (PDT)
-From: shiva.linuxworks@gmail.com
-X-Google-Original-From: sshivamurthy@micron.com
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Chuanhong Guo <gch981213@gmail.com>,
- Frieder Schrempf <frieder.schrempf@kontron.de>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v7 6/6] mtd: spinand: micron: Add new Micron SPI NAND devices
- with multiple dies
-Date: Wed, 11 Mar 2020 18:57:35 +0100
-Message-Id: <20200311175735.2007-7-sshivamurthy@micron.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200311175735.2007-1-sshivamurthy@micron.com>
-References: <20200311175735.2007-1-sshivamurthy@micron.com>
+	id 1jC6Cg-0001lb-PC; Wed, 11 Mar 2020 18:35:38 +0000
+Received: from foss.arm.com ([217.140.110.172])
+ by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jC6Cb-0001km-T4
+ for linux-mtd@lists.infradead.org; Wed, 11 Mar 2020 18:35:35 +0000
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3869D1FB;
+ Wed, 11 Mar 2020 11:35:33 -0700 (PDT)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B02773F6CF;
+ Wed, 11 Mar 2020 11:35:32 -0700 (PDT)
+Date: Wed, 11 Mar 2020 18:35:31 +0000
+From: Mark Brown <broonie@kernel.org>
+To: John Garry <john.garry@huawei.com>
+Subject: Applied "spi: Stop selecting MTD_SPI_NOR for SPI_HISI_SFC_V3XX" to
+ the spi tree
+In-Reply-To: <1583948115-239907-1-git-send-email-john.garry@huawei.com>
+Message-Id: <applied-1583948115-239907-1-git-send-email-john.garry@huawei.com>
+X-Patchwork-Hint: ignore
+X-Bad-Reply: In-Reply-To but no 'Re:' in Subject.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200311_105857_148477_F514CEDC 
-X-CRM114-Status: GOOD (  11.78  )
+X-CRM114-CacheID: sfid-20200311_113533_990822_1F50EDD6 
+X-CRM114-Status: GOOD (  13.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,118 +67,83 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Shivamurthy Shastri <sshivamurthy@micron.com>
+Cc: sfr@canb.auug.org.au, chenxiang66@hisilicon.com,
+ Mark Brown <broonie@kernel.org>, rdunlap@infradead.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ linux-next@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Tudor.Ambarus@microchip.com, joe@perches.com
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Shivamurthy Shastri <sshivamurthy@micron.com>
+The patch
 
-Add device table for new Micron SPI NAND devices, which have multiple
-dies.
+   spi: Stop selecting MTD_SPI_NOR for SPI_HISI_SFC_V3XX
 
-Also, enable support to select the dies.
+has been applied to the spi tree at
 
-Signed-off-by: Shivamurthy Shastri <sshivamurthy@micron.com>
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+From caef2df1137adcea48b0902f310f4639b846e3a1 Mon Sep 17 00:00:00 2001
+From: John Garry <john.garry@huawei.com>
+Date: Thu, 12 Mar 2020 01:35:15 +0800
+Subject: [PATCH] spi: Stop selecting MTD_SPI_NOR for SPI_HISI_SFC_V3XX
+
+By selecting MTD_SPI_NOR for SPI_HISI_SFC_V3XX, we may introduce unmet
+dependencies:
+
+WARNING: unmet direct dependencies detected for MTD_SPI_NOR
+  Depends on [m]: MTD [=m] && SPI_MASTER [=y]
+  Selected by [y]:
+  - SPI_HISI_SFC_V3XX [=y] && SPI [=y] && SPI_MASTER [=y] && (ARM64 && ACPI [=y] || COMPILE_TEST [=y]) && HAS_IOMEM [=y]
+
+Since MTD_SPI_NOR is only selected by SPI_HISI_SFC_V3XX for practical
+reasons - slave devices use the spi-nor driver, enabled by MTD_SPI_NOR -
+just drop it.
+
+Signed-off-by: John Garry <john.garry@huawei.com>
+
+Link: https://lore.kernel.org/r/1583948115-239907-1-git-send-email-john.garry@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/mtd/nand/spi/micron.c | 58 +++++++++++++++++++++++++++++++++++
- 1 file changed, 58 insertions(+)
+ drivers/spi/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/spi/micron.c b/drivers/mtd/nand/spi/micron.c
-index d6fd63008782..5d370cfcdaaa 100644
---- a/drivers/mtd/nand/spi/micron.c
-+++ b/drivers/mtd/nand/spi/micron.c
-@@ -20,6 +20,14 @@
- 
- #define MICRON_CFG_CR			BIT(0)
- 
-+/*
-+ * As per datasheet, die selection is done by the 6th bit of Die
-+ * Select Register (Address 0xD0).
-+ */
-+#define MICRON_DIE_SELECT_REG	0xD0
-+
-+#define MICRON_SELECT_DIE(x)	((x) << 6)
-+
- static SPINAND_OP_VARIANTS(read_cache_variants,
- 		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
- 		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-@@ -66,6 +74,20 @@ static const struct mtd_ooblayout_ops micron_8_ooblayout = {
- 	.free = micron_8_ooblayout_free,
- };
- 
-+static int micron_select_target(struct spinand_device *spinand,
-+				unsigned int target)
-+{
-+	struct spi_mem_op op = SPINAND_SET_FEATURE_OP(MICRON_DIE_SELECT_REG,
-+						      spinand->scratchbuf);
-+
-+	if (target > 1)
-+		return -EINVAL;
-+
-+	*spinand->scratchbuf = MICRON_SELECT_DIE(target);
-+
-+	return spi_mem_exec_op(spinand->spimem, &op);
-+}
-+
- static int micron_8_ecc_get_status(struct spinand_device *spinand,
- 				   u8 status)
- {
-@@ -137,6 +159,18 @@ static const struct spinand_info micron_spinand_table[] = {
- 		     0,
- 		     SPINAND_ECCINFO(&micron_8_ooblayout,
- 				     micron_8_ecc_get_status)),
-+	/* M79A 4Gb 3.3V */
-+	SPINAND_INFO("MT29F4G01ADAGD",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x36),
-+		     NAND_MEMORG(1, 2048, 128, 64, 2048, 80, 2, 1, 2),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&micron_8_ooblayout,
-+				     micron_8_ecc_get_status),
-+		     SPINAND_SELECT_TARGET(micron_select_target)),
- 	/* M70A 4Gb 3.3V */
- 	SPINAND_INFO("MT29F4G01ABAFD",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x34),
-@@ -159,6 +193,30 @@ static const struct spinand_info micron_spinand_table[] = {
- 		     SPINAND_HAS_CR_FEAT_BIT,
- 		     SPINAND_ECCINFO(&micron_8_ooblayout,
- 				     micron_8_ecc_get_status)),
-+	/* M70A 8Gb 3.3V */
-+	SPINAND_INFO("MT29F8G01ADAFD",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x46),
-+		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 2),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     SPINAND_HAS_CR_FEAT_BIT,
-+		     SPINAND_ECCINFO(&micron_8_ooblayout,
-+				     micron_8_ecc_get_status),
-+		     SPINAND_SELECT_TARGET(micron_select_target)),
-+	/* M70A 8Gb 1.8V */
-+	SPINAND_INFO("MT29F8G01ADBFD",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x47),
-+		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 2),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     SPINAND_HAS_CR_FEAT_BIT,
-+		     SPINAND_ECCINFO(&micron_8_ooblayout,
-+				     micron_8_ecc_get_status),
-+		     SPINAND_SELECT_TARGET(micron_select_target)),
- };
- 
- static int micron_spinand_init(struct spinand_device *spinand)
+diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
+index 8ad267cb15cd..ad79454d8584 100644
+--- a/drivers/spi/Kconfig
++++ b/drivers/spi/Kconfig
+@@ -299,7 +299,6 @@ config SPI_HISI_SFC_V3XX
+ 	tristate "HiSilicon SPI-NOR Flash Controller for Hi16XX chipsets"
+ 	depends on (ARM64 && ACPI) || COMPILE_TEST
+ 	depends on HAS_IOMEM
+-	select MTD_SPI_NOR
+ 	help
+ 	  This enables support for HiSilicon v3xx SPI-NOR flash controller
+ 	  found in hi16xx chipsets.
 -- 
-2.17.1
+2.20.1
 
 
 ______________________________________________________
