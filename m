@@ -5,20 +5,20 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04B19C0044D
-	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2020 18:00:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2DB1C0044D
+	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2020 18:00:53 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5B0B620691
-	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2020 18:00:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 33C5B20691
+	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2020 18:00:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="eV3uFS/S";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BAO4BawG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B0B620691
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Pxj2T2zy";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TsTUXdsh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 33C5B20691
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -28,51 +28,52 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=FTeWMXWZ6c+VrUwTQwrDrCEDK4YeBmOTaWKchpfnWQg=; b=eV3uFS/S5FtOoONAhaqcYYTeB0
-	821EsW2rPAMsXcEq9r4UJ+fK/RS3fU7Mk4LDwicVDqGl6Htg5zbIEYkvtrGSCIlskrigNK02S1s4E
-	PanePfCJP1h40dYTYagkoRzlptCwGo2kl3+bHWpD8lV0FqC+M1dM60fBBV0g2rdBNFDh0x4YttDWt
-	GPNDOWmo5kcjsBajxCg6R2E2XLTcUAyJtXrnWX7IS4vr6ogF6fUHRJXbIpTbHgXZ5/sZxXldyMmxr
-	2KCTLyivknv+fZYNhj9okyF8G8SScDRSzUkv17/QKFIk9ktTfEVIdxcmYpI7AWklJ+QdIoQwFgzTf
-	KR1rFGgw==;
+	bh=R7lMwGKcUdDVuMUNvVATTXg3jIR2br+CSjY20lRwLrI=; b=Pxj2T2zyMFAuNHHVWU2xb8fDSa
+	5DaMp8ui408Gg4bKaXkAN1MNx06ewM3kNlm+QkN/Xqq2JTPWVzp2kg4tBMTfztsYXXDxm7Xr3G/FK
+	eSIIagz/eNF1/w/Whrsdcn0gAYdx+blBDzAyg8p2KWG8ppp4+nmHx4Jp5J7DTEaFyrud6wiZBTScS
+	sHD15xNLfDM8Nme6mBgOwvnRe+0u0vbEZs9aIX9DOpql5w7j2c3cPlHYqYnSEXHqGIFPRvX08qGo+
+	xlxGHhRj7cjdifAqAElKIRmDpHRUuA+KysiQKkAx6TRQQKdo65x5Y58e18IyqWtUrQ6SnTlw87IsK
+	P+v0uYFg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jC5ec-0000X1-NI; Wed, 11 Mar 2020 18:00:26 +0000
-Received: from mail-wm1-x341.google.com ([2a00:1450:4864:20::341])
+	id 1jC5ev-0000pK-38; Wed, 11 Mar 2020 18:00:45 +0000
+Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jC5d9-0006QZ-Av
- for linux-mtd@lists.infradead.org; Wed, 11 Mar 2020 17:58:56 +0000
-Received: by mail-wm1-x341.google.com with SMTP id 6so3094171wmi.5
- for <linux-mtd@lists.infradead.org>; Wed, 11 Mar 2020 10:58:55 -0700 (PDT)
+ id 1jC5dB-0006SJ-3B
+ for linux-mtd@lists.infradead.org; Wed, 11 Mar 2020 17:58:58 +0000
+Received: by mail-wr1-x444.google.com with SMTP id s5so3843200wrg.3
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Mar 2020 10:58:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references;
- bh=v2t+NVS/HW3PqacteoPv2Uzni2FFv9fx2gNtRXkNHUs=;
- b=BAO4BawGO6hw5QFFqCXXUkbiYmVYtXOIkqe/830SqK2Vb2fA69VvA0KnCugBkp7FvU
- 5CA0eXj9DP7zARLhqjCnenxIrBdw+yCTkpNisvQxJplQodfY9q91NArnWlImilJ1fXpR
- 2C/cKupvLR7rdAy5xIPintmLY6Hnhq+zyGbVSL5a2OC0xlNXcvODEim2hLYyhSFpbhHv
- JZovjsVpd/ijwgdxCClLYQcr7X0Im9fns3NsEbkMnmwtQg3ggcaQxsJ+saosb4xD7l+2
- Fgt/HcTTpIH4PRAInlg7KLEpzAvoAzpXP7ICLCb9+sM3p0jF+KkDbHBRxowWtcRfN7k3
- RFAw==
+ bh=+0g3TUuCJUm9ZTQt2upCbsRVi7/9EKui7ktihNwzaDc=;
+ b=TsTUXdsh8sqrSedFXRED2/dAg2vNMf1h5465VRoyvVgEc9E6uIUY6+CBePtQ7zR1oe
+ rpM6XhSyyZf+l4tpClm2v/slstLRScfHQ5bJ3bmzMKR/z8iXTrdI8vWlN13rfV0/0BIN
+ VvPOlu4Lw6whyjKKQtY5C+HGahEQW+YW85KXhBNjHc5D1Gy3XJNsuCFomtR0sgtKh7WL
+ WwUrr1mU4WdB7rgCM798dEmsLgiQbZNDfaRRPVfFT5biQ8Qt+P6LmbQolFayf7gJXCYH
+ /NAtaaScmV3PHAfQieHXFxyICJNhOqwJjqH5nCTc5fi5gJqbkNm1e+JSEAY+UgzTYUGS
+ jGUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references;
- bh=v2t+NVS/HW3PqacteoPv2Uzni2FFv9fx2gNtRXkNHUs=;
- b=OLDfXy+misF/d0Ir8CZKT1CumZLcmR2Qe+qHLIzaiDyW3QNdqdwr5PNYmf9ZFZb3g8
- CitkSV7Qb+bvFMgl506gLmP/ZgGfz1bAEYUtpUULSWXG+QtrIrQ6aNhZOprVrvXYo5zE
- /nw2vww0MIACquHeKqB+Plyyk6VEgRkUJj1Sez6oxXVizyZziils5mbS7qyrmPysty6H
- 6Y2Nbd4a7RWSR/B3s4iY0dJhRAmVnbHRmzs/C4PGDnd1st7/RQNRm/KWzAjdRodBZu4T
- 2Gt0mRiZbGQyG9R6atZo+HFBybTDMX+rHURwYOPZsr1lnJo5uYHehqV3kvfTpajJ1Mxt
- 1Rkw==
-X-Gm-Message-State: ANhLgQ26MbmGL4zxMiDwXMQcKVmw+5fpbSk3ie6oG1NTTyDX6GqlW+7/
- awcIpj8avK0dO10h78h6www=
-X-Google-Smtp-Source: ADFU+vuNAIZgWXGoRiNR8ZkTY6DTs4PVG0Qi5nqBJNQ0jC/0On4au6lzwFLjX/8+ov6DPZHWKpYfHw==
-X-Received: by 2002:a1c:5fc5:: with SMTP id t188mr2163818wmb.110.1583949534123; 
- Wed, 11 Mar 2020 10:58:54 -0700 (PDT)
+ bh=+0g3TUuCJUm9ZTQt2upCbsRVi7/9EKui7ktihNwzaDc=;
+ b=J2CxaJSwPd5uSOm+zsddF1hHLJnpbu++XKNrywZOCXghHhfr/Un79HgCMTS1woGlT1
+ VtWcSrtdc6r8hwgFsKppKopVV0qm2nhxElInAOofKTzRv8SioGNlZXy6dytnGP4Y13df
+ KY0/EHuLzrd3twBOpQkzBXbwq1P87oWE6vZilM9Ho63J/ncAyu0nCc5YpIjMVJ21LjUW
+ kW0V/Kz7wMwV5seOSkVm+eOoXNTq+9cQn+Qv/begTpoXrFjaux6tAsLlYVs3raEUxrbK
+ 5I/7O37OL9eYs+nZ8wGwOUClidJTsiROhg9ga8WajOkw2+WEn4cB2Jz+lnU4IuAl9+n1
+ OCpA==
+X-Gm-Message-State: ANhLgQ0roynWyPpGmNJ84kH0SVT7GVYerx8oIAz7nWkA9cQ1Cti8S5FU
+ +PEOOJyjsdwXJ7HxcAmqnhs=
+X-Google-Smtp-Source: ADFU+vsKK8iU4vOE0efdx2GcHjG39PrZbK6UdA0kUPdWOm9fR83Am8uyH9ngW7dnVspNsuO5kZVC/w==
+X-Received: by 2002:a05:6000:1081:: with SMTP id
+ y1mr5666948wrw.52.1583949535510; 
+ Wed, 11 Mar 2020 10:58:55 -0700 (PDT)
 Received: from opensdev.fritz.box
  (business-178-015-117-054.static.arcor-ip.net. [178.15.117.54])
- by smtp.gmail.com with ESMTPSA id l18sm1502107wrr.17.2020.03.11.10.58.52
+ by smtp.gmail.com with ESMTPSA id l18sm1502107wrr.17.2020.03.11.10.58.54
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 11 Mar 2020 10:58:53 -0700 (PDT)
+ Wed, 11 Mar 2020 10:58:54 -0700 (PDT)
 From: shiva.linuxworks@gmail.com
 X-Google-Original-From: sshivamurthy@micron.com
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -81,17 +82,16 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Chuanhong Guo <gch981213@gmail.com>,
  Frieder Schrempf <frieder.schrempf@kontron.de>,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v7 5/6] mtd: spinand: micron: Add M70A series Micron SPI NAND
- devices
-Date: Wed, 11 Mar 2020 18:57:34 +0100
-Message-Id: <20200311175735.2007-6-sshivamurthy@micron.com>
+Subject: [PATCH v7 6/6] mtd: spinand: micron: Add new Micron SPI NAND devices
+ with multiple dies
+Date: Wed, 11 Mar 2020 18:57:35 +0100
+Message-Id: <20200311175735.2007-7-sshivamurthy@micron.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200311175735.2007-1-sshivamurthy@micron.com>
 References: <20200311175735.2007-1-sshivamurthy@micron.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200311_105855_383564_614A12FD 
-X-CRM114-Status: UNSURE (   9.57  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200311_105857_148477_F514CEDC 
+X-CRM114-Status: GOOD (  11.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,44 +112,104 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Shivamurthy Shastri <sshivamurthy@micron.com>
 
-Add device table for M70A series Micron SPI NAND devices.
+Add device table for new Micron SPI NAND devices, which have multiple
+dies.
+
+Also, enable support to select the dies.
 
 Signed-off-by: Shivamurthy Shastri <sshivamurthy@micron.com>
 Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 ---
- drivers/mtd/nand/spi/micron.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ drivers/mtd/nand/spi/micron.c | 58 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 58 insertions(+)
 
 diff --git a/drivers/mtd/nand/spi/micron.c b/drivers/mtd/nand/spi/micron.c
-index 956f7710aca2..d6fd63008782 100644
+index d6fd63008782..5d370cfcdaaa 100644
 --- a/drivers/mtd/nand/spi/micron.c
 +++ b/drivers/mtd/nand/spi/micron.c
-@@ -137,6 +137,28 @@ static const struct spinand_info micron_spinand_table[] = {
+@@ -20,6 +20,14 @@
+ 
+ #define MICRON_CFG_CR			BIT(0)
+ 
++/*
++ * As per datasheet, die selection is done by the 6th bit of Die
++ * Select Register (Address 0xD0).
++ */
++#define MICRON_DIE_SELECT_REG	0xD0
++
++#define MICRON_SELECT_DIE(x)	((x) << 6)
++
+ static SPINAND_OP_VARIANTS(read_cache_variants,
+ 		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
+ 		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
+@@ -66,6 +74,20 @@ static const struct mtd_ooblayout_ops micron_8_ooblayout = {
+ 	.free = micron_8_ooblayout_free,
+ };
+ 
++static int micron_select_target(struct spinand_device *spinand,
++				unsigned int target)
++{
++	struct spi_mem_op op = SPINAND_SET_FEATURE_OP(MICRON_DIE_SELECT_REG,
++						      spinand->scratchbuf);
++
++	if (target > 1)
++		return -EINVAL;
++
++	*spinand->scratchbuf = MICRON_SELECT_DIE(target);
++
++	return spi_mem_exec_op(spinand->spimem, &op);
++}
++
+ static int micron_8_ecc_get_status(struct spinand_device *spinand,
+ 				   u8 status)
+ {
+@@ -137,6 +159,18 @@ static const struct spinand_info micron_spinand_table[] = {
  		     0,
  		     SPINAND_ECCINFO(&micron_8_ooblayout,
  				     micron_8_ecc_get_status)),
-+	/* M70A 4Gb 3.3V */
-+	SPINAND_INFO("MT29F4G01ABAFD",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x34),
-+		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
++	/* M79A 4Gb 3.3V */
++	SPINAND_INFO("MT29F4G01ADAGD",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x36),
++		     NAND_MEMORG(1, 2048, 128, 64, 2048, 80, 2, 1, 2),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&micron_8_ooblayout,
++				     micron_8_ecc_get_status),
++		     SPINAND_SELECT_TARGET(micron_select_target)),
+ 	/* M70A 4Gb 3.3V */
+ 	SPINAND_INFO("MT29F4G01ABAFD",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x34),
+@@ -159,6 +193,30 @@ static const struct spinand_info micron_spinand_table[] = {
+ 		     SPINAND_HAS_CR_FEAT_BIT,
+ 		     SPINAND_ECCINFO(&micron_8_ooblayout,
+ 				     micron_8_ecc_get_status)),
++	/* M70A 8Gb 3.3V */
++	SPINAND_INFO("MT29F8G01ADAFD",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x46),
++		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 2),
 +		     NAND_ECCREQ(8, 512),
 +		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
 +					      &write_cache_variants,
 +					      &update_cache_variants),
 +		     SPINAND_HAS_CR_FEAT_BIT,
 +		     SPINAND_ECCINFO(&micron_8_ooblayout,
-+				     micron_8_ecc_get_status)),
-+	/* M70A 4Gb 1.8V */
-+	SPINAND_INFO("MT29F4G01ABBFD",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x35),
-+		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
++				     micron_8_ecc_get_status),
++		     SPINAND_SELECT_TARGET(micron_select_target)),
++	/* M70A 8Gb 1.8V */
++	SPINAND_INFO("MT29F8G01ADBFD",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x47),
++		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 2),
 +		     NAND_ECCREQ(8, 512),
 +		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
 +					      &write_cache_variants,
 +					      &update_cache_variants),
 +		     SPINAND_HAS_CR_FEAT_BIT,
 +		     SPINAND_ECCINFO(&micron_8_ooblayout,
-+				     micron_8_ecc_get_status)),
++				     micron_8_ecc_get_status),
++		     SPINAND_SELECT_TARGET(micron_select_target)),
  };
  
  static int micron_spinand_init(struct spinand_device *spinand)
