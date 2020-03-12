@@ -2,83 +2,83 @@ Return-Path: <SRS0=7qHi=45=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B11CAC10DCE
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Mar 2020 21:34:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 612B3C4CECE
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Mar 2020 22:11:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 81FE0205F4
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Mar 2020 21:34:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 33D39206CD
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Mar 2020 22:11:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ipL/oZcn";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="dWo2ygHI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 81FE0205F4
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AtIjgGHb";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="lLp+JNv1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 33D39206CD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9RF+s6OYJqmEesI/apqegLbERb4hssh4BmR1sduVgyM=; b=ipL/oZcnPja9Mz
-	uEGUDu6L3li/bL8bUQLp4w9WWzuHuKZjif8TpfODQ+dsRiqEHoe2uGGapUW6e9fi7mW10OEKObb4J
-	c26W2aRX7+2aT7UUBi16EGqCvG0jCPz15wQQCzdbVTmM2FOT+d30ajyef6736iMqSoU2VARmhUQnC
-	/RBOr9VXIi9kW9cs5XtElnhl0Z3gvljAPeMYD+keTQyC89qMShuCnFNeGYn/V794PAqOybbZXLM54
-	6Y/O1OzCVmCWJXCIR7spKCHTunnEN4YW6t3yflSytgGK5D60h2zkYuSZl7POF2H+R2YkPnhO/jE/r
-	CPuenZDBEAbAwrpmyWEg==;
+	List-Owner; bh=q1S2Kf+5W2g0qYwjKkG10/9Y6afItAomVMHS6PGDK00=; b=AtIjgGHbGQYD7W
+	AV4FOsQoy2gcKxAprCDTw1I+GY7Wc4m64VQgy3fxYsjljQBlqdgsKZ3ijKGvsEeeNMOzupE4SIKnJ
+	dMvrnK6xLxeXJhzGvZLoN/1gqm/NaV7P9/SKDVfIiBenqy8O9qtcXVdWIMcP2muNrREJqbdX+8G3H
+	8PWyy2zD6rnR3i2xslYnPR02lRINVoOqfSP7yWlo3axBbJbfxSxjBGByi4jZAzYd5ryuI9iaA/ZsO
+	yIjbIMyg9F/gU414zv3BCXsC3c98q84KrMRh1ZWknMzrSKgkGjHDGuctPMVw4SUD95xlbrrazVWgE
+	cbFzzmuiGjabK9R4b//Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jCVTM-0006ky-3n; Thu, 12 Mar 2020 21:34:32 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1jCW3D-0005W6-9q; Thu, 12 Mar 2020 22:11:35 +0000
+Received: from mail-lf1-x141.google.com ([2a00:1450:4864:20::141])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jCVSx-0006N2-Om
- for linux-mtd@bombadil.infradead.org; Thu, 12 Mar 2020 21:34:07 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
- References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
- Content-Type:Content-ID:Content-Description;
- bh=pd/FdESe04KjrnZFYBdn/iabXVBk/lI2TOowByevgiU=; b=dWo2ygHIVntK+zOYTD6Yydpj2S
- 55KAglK/TalhRwcn6oXoCHmqli8DIq5Fe9wPG+ufakzvckbuP5yazfxsrFZzZuCsfHqK44Gjho77W
- y81wLYKPFSFrkG+Ib6joO3QHy5vQQpDznw9uC+PedoWJclSnG+ESsvjAu59BfsamaMZo9hUa1VhZo
- cMY4Ll5Cz3apVxcxIDmx/OiQkWfce39u1WT/0Mfsg8Wt03qOj14oZh+YlIb0uuZFAmuX8nITZM+0l
- 45Hh/A/z3vmyouS17xQb07FNi8GGMeinXgHvwr2mXX8NcWQjK8bdbCXQO1FDyFmrWesPFAUmrDa69
- i2i/VCKw==;
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
- by casper.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jCVSt-00029Z-54
- for linux-mtd@lists.infradead.org; Thu, 12 Mar 2020 21:34:06 +0000
-X-Originating-IP: 91.224.148.103
-Received: from localhost.localdomain (unknown [91.224.148.103])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 5C2D2FF804;
- Thu, 12 Mar 2020 21:33:10 +0000 (UTC)
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: shiva.linuxworks@gmail.com, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Chuanhong Guo <gch981213@gmail.com>,
- Frieder Schrempf <frieder.schrempf@kontron.de>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 5/6] mtd: spinand: micron: Add M70A series Micron SPI
- NAND devices
-Date: Thu, 12 Mar 2020 22:33:09 +0100
-Message-Id: <20200312213309.7248-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200311175735.2007-6-sshivamurthy@micron.com>
-References: 
+ id 1jCW3A-0005UW-Oi
+ for linux-mtd@lists.infradead.org; Thu, 12 Mar 2020 22:11:34 +0000
+Received: by mail-lf1-x141.google.com with SMTP id q10so6188369lfo.8
+ for <linux-mtd@lists.infradead.org>; Thu, 12 Mar 2020 15:11:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=f+nbJgOAkU3OKGNy5HAiFcAe6BZ2/dfnnfHDkezdsLM=;
+ b=lLp+JNv1GIglmiE7sOrC1qiIR92TS5cKLDQInmmSnSrfr1qRJIqEePz4qZzmCMaXQg
+ WfjeGL9/4gKBTTDka+GpLlLtpbiD1yloqRAJ0j1uaN1RPyfrSudbA4agtp71u5vQLvVh
+ kbfpE2jpEmTv+gLLK2bdDBoWn9tFPGdA8uR+LZOOg0cNSMA//V8Yzq7FYJEWfGS9egxp
+ ssrmkKAtsOcFrY+F+ktTdm/G2ys1pRbkX5kFFOvXt+HDZmd1myZbaTJUa01dn3e+L37B
+ lhEYR0ODVOxYIzPOrxSPTQoqyVKo30x+HMDzyYjtalF/Xk6Pf7WKXUgxp0pP1/UDQYLp
+ ZXFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=f+nbJgOAkU3OKGNy5HAiFcAe6BZ2/dfnnfHDkezdsLM=;
+ b=cB8O1yulu/8+t/gbxcidhYVZg0LaLeyKFjCFeCwcQJIBp/ChB4TLN4vP7hU1/Ye0Sj
+ DunC6HFlsYd9YAYfQvmfoXA1OgmrSOVW2NYT16ZzB4x/SMhlbPrw3yvTUqdDU25Mu9N0
+ SlsH0Zuevtq4Gz/6MFwCCLaR6jUGA3wXhtVujUZhQClCdtrjBjmkAWIOF3cL2/XBiOrd
+ 57DPglXxPD6iJo8VtjICqlSQM8V3tuvCnuM759U1V/e83G0itwNAfm2hSFtfNwiYg4VY
+ TtzZQltXEncU4XeFgQlisuVfO440GPw+jjW7cCz1A2xGoKtTh3s38mHbtMcMKjF0Suie
+ yC7A==
+X-Gm-Message-State: ANhLgQ3SgtrZTYOa/itKm2oC4XxeRTD/gtmJBg424cOZgzXE2OU0/Wsw
+ VJuym2TvXqyoq1baSNCfZNdQ7rZyLJnaSKon+myLEQ==
+X-Google-Smtp-Source: ADFU+vuw+qDSh0ZHQbXiX986v1sXjlwq0l/RRl8ekqAVAeCDt4hyCXShVedgqdcfYfGOHvVzkalKAjAB5l3YONcMxRA=
+X-Received: by 2002:a19:4354:: with SMTP id m20mr2516445lfj.166.1584051087657; 
+ Thu, 12 Mar 2020 15:11:27 -0700 (PDT)
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: a7e5daccc310c3b892ae5e598cadb7a9274c2547
+References: <20200307023611.204708-1-drosen@google.com>
+ <20200307023611.204708-3-drosen@google.com>
+ <20200307034850.GH23230@ZenIV.linux.org.uk>
+In-Reply-To: <20200307034850.GH23230@ZenIV.linux.org.uk>
+From: Daniel Rosenberg <drosen@google.com>
+Date: Thu, 12 Mar 2020 15:11:16 -0700
+Message-ID: <CA+PiJmR=zp9P_Mam2EuVgy-vZftDTGQWuFmuO6asPeU_jEy8OQ@mail.gmail.com>
+Subject: Re: [PATCH v8 2/8] fs: Add standard casefolding support
+To: Al Viro <viro@zeniv.linux.org.uk>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200312_213403_342403_7C8CC07E 
-X-CRM114-Status: UNSURE (   5.56  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200312_151132_829914_9059D35D 
+X-CRM114-Status: GOOD (  12.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,23 +90,44 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Shivamurthy Shastri <sshivamurthy@micron.com>
+Cc: kernel-team@android.com, Theodore Ts'o <tytso@mit.edu>,
+ Jonathan Corbet <corbet@lwn.net>, Richard Weinberger <richard@nod.at>,
+ Andreas Dilger <adilger.kernel@dilger.ca>, Chao Yu <chao@kernel.org>,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, Eric Biggers <ebiggers@kernel.org>,
+ linux-fscrypt@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
+ linux-ext4@vger.kernel.org, Gabriel Krisman Bertazi <krisman@collabora.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 2020-03-11 at 17:57:34 UTC, shiva.linuxworks@gmail.com wrote:
-> From: Shivamurthy Shastri <sshivamurthy@micron.com>
-> 
-> Add device table for M70A series Micron SPI NAND devices.
-> 
-> Signed-off-by: Shivamurthy Shastri <sshivamurthy@micron.com>
-> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+On Fri, Mar 6, 2020 at 7:48 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> On Fri, Mar 06, 2020 at 06:36:05PM -0800, Daniel Rosenberg wrote:
+>
+>         Have you even tested that?  Could you tell me where does the calculated
+> hash go?  And just what is it doing trying to check if the name we are about to
+> look up in directory specified by 'dentry' might be pointing to dentry->d_iname?
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+Turns out I tested exactly not that :/ Ran tests on the wrong kernel.
+I've fixed my setup so that shouldn't happen again. The calculated
+hash there goes exactly nowhere because I failed to copy it back into
+the original qstr.
+I'm trying to see if the name is a small name, which, if my
+understanding is correct, is the only time a name might change from
+underneath you in an RCU context. This assumes that the name either
+comes from the dentry, or is otherwise not subject to changes. It's
+based around the check that take_dentry_name_snapshot does. It does
+feel a bit sketchy to assume that, so I'm very open to other
+suggestions there.
 
-Miquel
+I'm going through that hassle because the various utf8 functions do a
+lot of dereferencing the string and manipulating pointers by those
+values, expecting them to be consistent. It might be enough to just go
+through that code and add a bunch of checks to make sure we can't
+accidentally walk off of either end.
 
 ______________________________________________________
 Linux MTD discussion mailing list
