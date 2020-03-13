@@ -2,153 +2,63 @@ Return-Path: <SRS0=YEqx=46=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C372CC2BB1D
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Mar 2020 08:28:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1374C10DCE
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Mar 2020 09:30:44 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5895C2073E
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Mar 2020 08:28:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7FBF72073E
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Mar 2020 09:30:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="B2iaOEvY";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="kso01/uS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5895C2073E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Z8Q548HV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7FBF72073E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kGY8wfXb35Rw3N2F+LGE4qQ98B2tasv9y6uypfJEb64=; b=B2iaOEvYf0gSb0
-	qoXiUOmJL7kD5+bJBV0b0USlBauM9Jv5VDrhDlIcj4poeDszIKyObyeLYjMq46o8JxiaEnrTcCzu+
-	716bCbZS9TOrUSnHt+OMbZdEo32zP1ePoAV0fEBpr5FPZUx/hlWEE33VsqffTGJ/SP9vw9Ludr96x
-	yxaKBtTL2+ozHqQP066FDt3SD2wQXFUSQJXyum3uIvWGALVfUT+IvKdrE8a25OHZEIyfqMzT+ogLn
-	89FofM7R08ivP8QTBcx3Sf/FHCrrki3rXZLRyEpTqjed7/yM4bPvy7CFShqNFzvT5yB+7XTbvT4Tn
-	hkXf5QTWeGnekhX+m8xg==;
+	List-Owner; bh=HmCWm/+83O2wx1ac2gC7UZ8MDr4/AwauVohYAjOiWn0=; b=Z8Q548HV/2pQlL
+	66QG1RXyClbiAlywVU+Y6rUa27WT2EFPZR1CSoDGtMi/KYQ3Qc4VTHmoppIC1Ow4EPNxh1BBq0yFT
+	8j0jZp9qBjMSIXTY3xil0UR6Dcieus7JXHzOenugePCfM5eeoOeismaKKtGXziwHtfNUOtMebBpCo
+	uGKco44oaZEXaIfxYBP1v+3Z7IZ22FiqLtILDP9ensSxA9scf8a2ayF+ZnqdYJlF16IKXAWWh/GI3
+	micw50eHwfNllG4yGgBYIj9yYwNbZjbGmSzhBcyWhpLY4e3nxzxquAceEj5Bo1VhhjEph7gDYHBft
+	Gk41mIH5eJGH80OQS15g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jCffg-0006tR-U0; Fri, 13 Mar 2020 08:27:56 +0000
-Received: from esa2.microchip.iphmx.com ([68.232.149.84])
+	id 1jCgeG-0004oU-9f; Fri, 13 Mar 2020 09:30:32 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jCffa-0006ry-Sd; Fri, 13 Mar 2020 08:27:54 +0000
-Received-SPF: Pass (esa2.microchip.iphmx.com: domain of
- Tudor.Ambarus@microchip.com designates 198.175.253.82 as
- permitted sender) identity=mailfrom;
- client-ip=198.175.253.82; receiver=esa2.microchip.iphmx.com;
- envelope-from="Tudor.Ambarus@microchip.com";
- x-sender="Tudor.Ambarus@microchip.com";
- x-conformance=spf_only; x-record-type="v=spf1";
- x-record-text="v=spf1 mx a:ushub1.microchip.com
- a:smtpout.microchip.com -exists:%{i}.spf.microchip.iphmx.com
- include:servers.mcsv.net include:mktomail.com
- include:spf.protection.outlook.com ~all"
-Received-SPF: None (esa2.microchip.iphmx.com: no sender
- authenticity information available from domain of
- postmaster@email.microchip.com) identity=helo;
- client-ip=198.175.253.82; receiver=esa2.microchip.iphmx.com;
- envelope-from="Tudor.Ambarus@microchip.com";
- x-sender="postmaster@email.microchip.com"; x-conformance=spf_only
-Authentication-Results: esa2.microchip.iphmx.com;
- spf=Pass smtp.mailfrom=Tudor.Ambarus@microchip.com;
- spf=None smtp.helo=postmaster@email.microchip.com;
- dmarc=pass (p=none dis=none) d=microchip.com
-IronPort-SDR: osHwBW0p4Lien6hUp5ADj52VxDTQdETFzFMfXWod8GKRZTpJO5M3ASHi+0SEqOhXnPrkbUXXOl
- M/gUu57piQKGkDep6dCAyN4pxZLdfwuqNC/cFlEcO87jlL3WdU/yH3JWEDpUd8CJ+BXrFdlZfZ
- B98bUM5XRUBk8tdGtNQ0lcutxBIrB3FIrq0l5sWwr4MzNU2HzR/2C7sJvNGIWGTLNT/4whSxqG
- SX6AqJW/wQXd0M2WmnAmSU73xzJy/LHVFrP228q8NGr+qmLoQE4ttLCgCFWr+FR34J6DlTnVXt
- MOA=
-X-IronPort-AV: E=Sophos;i="5.70,547,1574146800"; d="scan'208";a="68841831"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 13 Mar 2020 01:27:46 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 13 Mar 2020 01:27:40 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Fri, 13 Mar 2020 01:27:45 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AzrWcrRkYbYibr0YmBb7++qn3CDVqg3EaKJOXLp6/cK5cDAWxCWyNO65pWJ4JnhU2mEiWonMCNXTYhahleBd+sBL6LWhIolxZXHoeBzxl/urh4U+YlUoH4CHjPGHUunzP9NOlMTC8lLAWeaIKIYYRz0rnwl3xtahH8Ov8ce+68oDJkoQQRYxIL0Os8lj8fMkYK/UGDJ52h3H31/9d98Ab3bcapFh2MEz540M+Qgwm4s8QZOzoPwf7VgJER4sWuDjHGphSjF5YtBsTQyL7yd8xFck9R9F5BERcIdzII1ansiN65FJEfNwAtYD8kIGknZrSTdkipgrXhCTj8+ldxPxzQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=13BqfCo5ZG8SXwhcRfSDaIjmn45FUGX8rn/89BrBvnU=;
- b=BB3qbhatQ4yBNRCiPNxd25gYVM9mbmAV4rHQshGZTGIT98c+hCf/P18ppJrClgWd/776jJVarn1+lbbgkiv9HrIYBBN9WB9+GvsZrV2xVeoby49Wy5PJo9tnV02KtGwYSrC2J7hQBtHx5LaTW6ol6wqsZPzy7grTDwndmVa3cHZZkKEL/BPXijUmgBD5OwhvePFjOEXny7wZOJ0EwV+uHqQVNwDPzN/ySF+u/zOrZZaIoJPwr+xUlsgeGP5o3nEbw5WX6+wYJ6lFo5skUOa9vI6lJ94LWg3egVEU9jdh0DoIWhfQEWijumJ4d7EVvjeoPBu8p/nJgk9FP28zSfSlVA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=13BqfCo5ZG8SXwhcRfSDaIjmn45FUGX8rn/89BrBvnU=;
- b=kso01/uSl3augBpALAEBqkHjXBoMxKbvI7RouFpK1bYLEqshq7Qr0/MVZqma7HVAIbzERVenjQE81eiPQDFE+ymE5S9btiI/0ilyo4tjTNWTD6K5wwogE0RUjX429HsuFm4W84HdP1661NUWLBHWjSNybqp6/NmD7EudVm+vu+Q=
-Received: from MN2PR11MB4448.namprd11.prod.outlook.com (2603:10b6:208:193::29)
- by BN7SPR01MB7.namprd11.prod.outlook.com (2603:10b6:406:cc::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2814.13; Fri, 13 Mar
- 2020 08:27:44 +0000
-Received: from MN2PR11MB4448.namprd11.prod.outlook.com
- ([fe80::3c8f:7a55:cbd:adfb]) by MN2PR11MB4448.namprd11.prod.outlook.com
- ([fe80::3c8f:7a55:cbd:adfb%5]) with mapi id 15.20.2793.018; Fri, 13 Mar 2020
- 08:27:44 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <vigneshr@ti.com>
-Subject: Re: [PATCH 23/23] mtd: spi-nor: Trim what is exposed in spi-nor.h
-Thread-Topic: [PATCH 23/23] mtd: spi-nor: Trim what is exposed in spi-nor.h
-Thread-Index: AQHV+RFE8CpIrLOZFkGknCS7bSfDWA==
-Date: Fri, 13 Mar 2020 08:27:44 +0000
-Message-ID: <2602880.RMCP8WUqzX@192.168.1.3>
+ id 1jCgdz-0004bF-Uw; Fri, 13 Mar 2020 09:30:17 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 83AF0295CF8;
+ Fri, 13 Mar 2020 09:30:11 +0000 (GMT)
+Date: Fri, 13 Mar 2020 10:30:07 +0100
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH 01/23] mtd: spi-nor: Stop prefixing generic functions
+ with a manufacturer name
+Message-ID: <20200313103007.7d7ea6af@collabora.com>
+In-Reply-To: <91394111-cbd6-c24e-485d-88fcd6825dc7@ti.com>
 References: <20200302180730.1886678-1-tudor.ambarus@microchip.com>
- <20200302180730.1886678-24-tudor.ambarus@microchip.com>
- <fcd5742c-70df-7e97-c345-08dad6043ecb@ti.com>
-In-Reply-To: <fcd5742c-70df-7e97-c345-08dad6043ecb@ti.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [94.177.32.156]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 41d0c98a-4850-48e4-a842-08d7c7286781
-x-ms-traffictypediagnostic: BN7SPR01MB7:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BN7SPR01MB75283EF8BA078DFF79E5CF0FA0@BN7SPR01MB7.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:747;
-x-forefront-prvs: 034119E4F6
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(376002)(366004)(136003)(346002)(39860400002)(396003)(199004)(6506007)(6916009)(53546011)(2906002)(71200400001)(316002)(26005)(186003)(86362001)(7406005)(558084003)(54906003)(478600001)(7416002)(8936002)(81156014)(81166006)(6486002)(66946007)(8676002)(4326008)(91956017)(66446008)(64756008)(76116006)(5660300002)(9686003)(66476007)(66556008)(6512007)(14286002)(39026012)(31153001);
- DIR:OUT; SFP:1101; SCL:1; SRVR:BN7SPR01MB7;
- H:MN2PR11MB4448.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; A:1; 
-received-spf: None (protection.outlook.com: microchip.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: i2iGpXrEYKrMQooQ5XiZR/fOtSxDJ2TORLklxQVAerixQOwhaIN8cxw8snEe0JoI/gfAsJwrcwS+5YxeXzbdlNy3kRMs1aYYuLIC0jVmwPrqjLC9pC3/qk5JcOE1KRiDuilessT3cUSY7Hk/Sggexli7ryumoggTl5rd4bUSORwIW/1F5efMlM19yOF5fu+8fmcX2mv6MCTXhVDWXSptrOCY/WBXOOIPLZi47c0CtmgkVCUQrAHXpw/RjOOCeH016uWMur1vFI8SSopkxuViDcLMe+cgp0j+Lf8OHVWm9Hd7xF3ivylAqVykO0f1FBv/+fFlxixokMw1NyjOt6518icXWaDEC9NcZ1mXkDRsKenKakZLHv1k5cCBxyDf/aOC9N7YEcJBoRjGrZC2JTcajEZ2q8WM4AE92D8GZ+K86co9ZlyBP+5j+2mjZeq0z+IQj8Ckr0Kmpj7mqxZpgeFqWMPwHMLJGIo8WIDPQCUxnRLPSkV2CsKAj9x50LL+6NygtND+BPN8CRea8bXV6s5l2w==
-x-ms-exchange-antispam-messagedata: G8+uww4sQaR3FHlhGFRmt/oX1lcpFrlJiCrU8HedeclZO4fxNbFBmgpZm8gBEcp0+w5gZ6XaTldmVAsfdBUDpBvQdUeW0i8NJS4R9GE++d2M+aq3ehX4fAZdHC59tMoQYkCvuzln8C3or+FLEwA5hw==
-Content-ID: <766D46C1B0192D4F955576002231EB0B@namprd11.prod.outlook.com>
+ <20200302180730.1886678-2-tudor.ambarus@microchip.com>
+ <91394111-cbd6-c24e-485d-88fcd6825dc7@ti.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 41d0c98a-4850-48e4-a842-08d7c7286781
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Mar 2020 08:27:44.2426 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: udKsMPt4j4TcRfZ1E/ZDIGu+3xUayzJ6XAYgvnBhNPPTgQiYl9HqN7weLlGLHdt5UOdhsICjcVG8+I6JG2BVWP3KtFBNc2UDJDWPd56To34=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7SPR01MB7
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200313_012750_991808_ED9DC48C 
-X-CRM114-Status: UNSURE (   4.40  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200313_023016_128546_39F27EB3 
+X-CRM114-Status: GOOD (  19.17  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -165,9 +75,10 @@ Cc: kstewart@linuxfoundation.org, alexandre.belloni@bootlin.com,
  jethro@fortanix.com, rfontana@redhat.com, linux-mtd@lists.infradead.org,
  miquel.raynal@bootlin.com, opensource@jilayne.com, richard@nod.at,
  allison@lohutok.net, michal.simek@xilinx.com, Ludovic.Desroches@microchip.com,
- joel@jms.id.au, nishkadg.linux@gmail.com, john.garry@huawei.com, vz@mleia.com,
- alexander.sverdlin@nokia.com, matthias.bgg@gmail.com, tglx@linutronix.de,
- swboyd@chromium.org, mika.westerberg@linux.intel.com, ludovic.barre@st.com,
+ joel@jms.id.au, nishkadg.linux@gmail.com, Tudor.Ambarus@microchip.com,
+ john.garry@huawei.com, vz@mleia.com, alexander.sverdlin@nokia.com,
+ matthias.bgg@gmail.com, tglx@linutronix.de, swboyd@chromium.org,
+ mika.westerberg@linux.intel.com, ludovic.barre@st.com,
  linux-arm-kernel@lists.infradead.org, bbrezillon@kernel.org, andrew@aj.id.au,
  Nicolas.Ferre@microchip.com, linux-kernel@vger.kernel.org, dinguyen@kernel.org,
  michael@walle.cc, linux-mediatek@lists.infradead.org, info@metux.net
@@ -176,14 +87,99 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Friday, March 13, 2020 10:13:17 AM EET Vignesh Raghavendra wrote:
-> Should we drop SNOR_MFR_* macros as well or do you see a neeed for them?
+On Fri, 13 Mar 2020 11:34:55 +0530
+Vignesh Raghavendra <vigneshr@ti.com> wrote:
 
-Good catch. Cross-manufacturer code is unlikely and discouraged, we should get 
-rid of them.
+> On 02/03/20 11:37 pm, Tudor.Ambarus@microchip.com wrote:
+> > From: Boris Brezillon <bbrezillon@kernel.org>
+> > 
+> > Replace the manufacturer prefix by something describing more precisely
+> > what those functions do.
+> > 
+> > Signed-off-by: Boris Brezillon <bbrezillon@kernel.org>
+> > [tudor.ambarus@microchip.com: prepend spi_nor_ to all modified methods.]
+> > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> > ---
+> >  drivers/mtd/spi-nor/spi-nor.c | 88 ++++++++++++++++++-----------------
+> >  1 file changed, 45 insertions(+), 43 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> > index caf0c109cca0..b15e262765e1 100644
+> > --- a/drivers/mtd/spi-nor/spi-nor.c
+> > +++ b/drivers/mtd/spi-nor/spi-nor.c
+> > @@ -568,14 +568,15 @@ static int spi_nor_read_cr(struct spi_nor *nor, u8 *cr)
+> >  }
+> >  
+> >  /**
+> > - * macronix_set_4byte() - Set 4-byte address mode for Macronix flashes.
+> > + * spi_nor_en4_ex4_set_4byte() - Enter/Exit 4-byte mode for Macronix like
+> > + * flashes.
+> >   * @nor:	pointer to 'struct spi_nor'.
+> >   * @enable:	true to enter the 4-byte address mode, false to exit the 4-byte
+> >   *		address mode.
+> >   *
+> >   * Return: 0 on success, -errno otherwise.
+> >   */
+> > -static int macronix_set_4byte(struct spi_nor *nor, bool enable)
+> > +static int spi_nor_en4_ex4_set_4byte(struct spi_nor *nor, bool enable)  
+> 
+> 
+> Sounds a bit weird, how about simplifying this to:
+> 
+> 	spi_nor_set_4byte_addr_mode()
+> 
+> Or if you want to be specific:
+> 
+> 	spi_nor_en_ex_4byte_addr_mode()
 
-Cheers,
-ta
+You're right. Maybe we can simplify things by having a single function
+that does optional steps based on new flags
+
+SPI_NOR_EN_EX_4B_NEEDS_WEN
+SPI_NOR_CLEAR_EAR_ON_4B_EXIT
+
+This should probably be done in a separate patch though, so ack on the
+spi_nor_en_ex_4byte_addr_mode() rename, assuming we also change the
+bool argument name to enter.
+
+> 
+> >  {
+> >  	int ret;
+> >  
+> > @@ -604,14 +605,15 @@ static int macronix_set_4byte(struct spi_nor *nor, bool enable)
+> >  }
+> >  
+> >  /**
+> > - * st_micron_set_4byte() - Set 4-byte address mode for ST and Micron flashes.
+> > + * spi_nor_en4_ex4_wen_set_4byte() - Set 4-byte address mode for ST and Micron
+> > + * flashes.
+> >   * @nor:	pointer to 'struct spi_nor'.
+> >   * @enable:	true to enter the 4-byte address mode, false to exit the 4-byte
+> >   *		address mode.
+> >   *
+> >   * Return: 0 on success, -errno otherwise.
+> >   */
+> > -static int st_micron_set_4byte(struct spi_nor *nor, bool enable)
+> > +static int spi_nor_en4_ex4_wen_set_4byte(struct spi_nor *nor, bool enable)  
+> 
+> 
+> Unrelated to this patch itself, but can we just have one set_4byte
+> variant that uses WREN and drop the other one?
+
+Hm, not sure that's a good idea to insert WEN instructions for
+everyone, sounds like a recipe for regressions.
+
+> I expect sending WREN should be harmless even for cmds that don't expect
+> one.
+
+In theory yes, but you know flash chips are capricious, so let's not
+take the risk of breaking things :-).
+
+> 
+> Rest looks good to me.
+> 
+> Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
+> 
 
 
 ______________________________________________________
