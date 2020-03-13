@@ -2,82 +2,153 @@ Return-Path: <SRS0=YEqx=46=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD8CEC10DCE
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Mar 2020 17:22:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 263F3C10DCE
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Mar 2020 19:43:17 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 809A2206B1
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Mar 2020 17:22:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E7D0F206B1
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Mar 2020 19:43:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="a4Kz//T+";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="uYwRbsEj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 809A2206B1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oc1InWcz";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="e+uEnCAp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E7D0F206B1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hSPCLWIHFv/7cfeTtMP+g1M9u5Ch6gFPfw2heX5eapw=; b=a4Kz//T+/5P6RW
-	5+PgEJ5+Ff//pZAESAQdBRYFg/R3p9kOZMA6oBrVFZROKlFsnRqE3WkN+i3w2vEnao+EoMzPEB/+A
-	irZZqGD6ffr0C9jX0CQqFwOW4Vj00aHTweT4hJLFYrq7Vvb69rjyL2py4GRRqz3T72JOWqRH4W5fA
-	IBEKUQ1kRgBIhEVCNKTkfo62Y2wQkM3rn/0Ec9viRjCKAW9uYr7nEwAMapp/AEUZ5CI78HiQnKQZm
-	Ag/01kix6VHpGBOHV2s827fcYYgo74jNEKP1sYUEC4cQV+M2Brr6MQBniyymUKfJjGhysqRXl+3Q8
-	GQ2V6BeHsyXg1CU9A+kA==;
+	List-Owner; bh=Hf11442tigJy2RwRN+6DtwPs/aL5MXkDuWpgijBrwAY=; b=oc1InWczZl4rBj
+	JioUWiVTrzFLyiDaIPf4tknhMluXhWfpwL5763J8ArrVZo5OJX1j8JMPOVSWmarTsZbDGUhUvCm47
+	Qzfr2LLRejAn+cR/0k6H2h1EzTezIj4lcoEHzojoK1rScPFPMzgTgC78jbl2f7nZU9ncr9QVb0GZV
+	d3xBwAzoZObc0lnl8k5qk3wsKL1eu1nTtAi+ShlxHJaTcGuQfvmyNyIbbh76dRaiCRRUje7odTgtG
+	CuXkCSFyuhTzGWyyDWa9BnTXMqMlSPwWoXU9+vjuVn/ZLqyWypuBtwzB615xLHcKniRmtXMQVg+ck
+	ITOxhqsfbqAuiIrfxKoQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jCo0L-0003KV-SR; Fri, 13 Mar 2020 17:21:49 +0000
-Received: from mail-lf1-x141.google.com ([2a00:1450:4864:20::141])
+	id 1jCqCq-0008Jo-Gq; Fri, 13 Mar 2020 19:42:52 +0000
+Received: from esa6.microchip.iphmx.com ([216.71.154.253])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jCnzn-00039k-01
- for linux-mtd@lists.infradead.org; Fri, 13 Mar 2020 17:21:37 +0000
-Received: by mail-lf1-x141.google.com with SMTP id j11so8526941lfg.4
- for <linux-mtd@lists.infradead.org>; Fri, 13 Mar 2020 10:21:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=S8ol+aCQWfmc0Z8es3pJShdbNVzJAyKuhxdz2Y8nQ7I=;
- b=uYwRbsEjB+XRhUiZo4qoCEWwOZYRugRDu1YpX+qfEmZWexQo11MAmBzChCEg/CdFUV
- ZW1ERrmKGQRl+0iMizeaTOLk14wr39Ej05XrmuXWlq1gDaw2mh/GJOg7xZXrw50HHTqX
- 21uZlQJDd6lyqdyykz1KLcjY72jo3QEEgR8xhFehu5M87A4BG831Eeh63a2TTudYyVbd
- a7KGaN4Zv8JnuAH6WUdqZ5oPUhyPzKrgCMGw26AFrUTB6A3DTGGoT2J02Yj0Ba9rKz1p
- /AD+EvhoKXXhNnHNxp5wLfo3MAn1vgz+7SpfEi893QhvOnqQHxNnVEV7i/+WXZoFaA21
- drWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=S8ol+aCQWfmc0Z8es3pJShdbNVzJAyKuhxdz2Y8nQ7I=;
- b=tw0pJSQunwrRpSlduL1qJRcYWd/TgLOKIXKrqlO9biH5Ar8VTZ4++7hdtibsRHCT/7
- LDrKuQYHykEMR6Uq/qOfVBhLLA6QKNswbbl8AT8zgLfumBsEzQ+emkxgzT3Ry3btDluf
- urKDWxCi60XXNBoujdI6FySrs7JdVatl0eWdxs4P24QhdIB9hMFhWUHsx/AhBvyj3c4J
- oYIolCLTQSt+09YmHfMu3h9mTnGf0rfFIv97dyaHaY+sO+sfmZhBoznQKxFjhJZn2ZEi
- v1IzddMHpwFmgroXOowEYx3HeBww8aS4pqbjAJFZf6LhpPNI6Hm8QJVlyW/EDSMbeABj
- 4YdQ==
-X-Gm-Message-State: ANhLgQ3ebnWEu7wqcTqhNrfkGnDD1EYXWe7/sFEr9Lb0Es80brUayL5M
- 0hF0UKH/MpCugBq36pH5CDoMgxDLs7fZxVXt2xo=
-X-Google-Smtp-Source: ADFU+vv29Gep1CuoIYZbXZEIoH7OutCu1R14wQQsQMbrFJzqXk03SeYuYiKociE1NY8KeQxfxhcqJtRAY8yCBECcfYo=
-X-Received: by 2002:a19:cc11:: with SMTP id c17mr2137132lfg.86.1584120059230; 
- Fri, 13 Mar 2020 10:20:59 -0700 (PDT)
+ id 1jCqCj-0008HT-FG; Fri, 13 Mar 2020 19:42:48 +0000
+Received-SPF: Pass (esa6.microchip.iphmx.com: domain of
+ Tudor.Ambarus@microchip.com designates 198.175.253.82 as
+ permitted sender) identity=mailfrom;
+ client-ip=198.175.253.82; receiver=esa6.microchip.iphmx.com;
+ envelope-from="Tudor.Ambarus@microchip.com";
+ x-sender="Tudor.Ambarus@microchip.com";
+ x-conformance=spf_only; x-record-type="v=spf1";
+ x-record-text="v=spf1 mx a:ushub1.microchip.com
+ a:smtpout.microchip.com -exists:%{i}.spf.microchip.iphmx.com
+ include:servers.mcsv.net include:mktomail.com
+ include:spf.protection.outlook.com ~all"
+Received-SPF: None (esa6.microchip.iphmx.com: no sender
+ authenticity information available from domain of
+ postmaster@email.microchip.com) identity=helo;
+ client-ip=198.175.253.82; receiver=esa6.microchip.iphmx.com;
+ envelope-from="Tudor.Ambarus@microchip.com";
+ x-sender="postmaster@email.microchip.com"; x-conformance=spf_only
+Authentication-Results: esa6.microchip.iphmx.com;
+ spf=Pass smtp.mailfrom=Tudor.Ambarus@microchip.com;
+ spf=None smtp.helo=postmaster@email.microchip.com;
+ dmarc=pass (p=none dis=none) d=microchip.com
+IronPort-SDR: KO5XY+eRFMwY/79xkrOMBW/2NUhsZaIle+oD1zDEFyFCQrL+Cly+aWIyjCEZaFbs5IHbtrMu0V
+ padWIe1o6pnYG3g4DQTl+rO3G1UJYSLSsgMEIrf5qbvcKqEjcRIDuc/CVU8OnZ5fA0p0JDpyXp
+ iqsKHLM5r8zcAThhGEZGDVxQCeB+bKSc2vsJh2rfj9lp/J40970f2WLRaQ6iZWY+DBY+qwCi/V
+ RrBDPp1FG4wFbxV9bbqTRfijIAjFcAvcUpocG8OaFdx1xZQsZ3UnWFnfmrIjf7l55mdPwK7alY
+ 9C0=
+X-IronPort-AV: E=Sophos;i="5.70,549,1574146800"; 
+   d="scan'208";a="5602883"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 13 Mar 2020 12:42:41 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 13 Mar 2020 12:42:30 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Fri, 13 Mar 2020 12:42:36 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EiIEVqqothnexolXbVU84fjedhYd8kyX2UJuuTr0OBKhDYHwh4OwoEAtA230/tuf5MJcqXNeh22TAW3u4LPRDdFDhCoc/ZPUxEvC5xNkIs1pTtwX8pl7ocgWVLqdaFpq+G7lBDD3mMZvLkfpOy9nsUjKL4z4OrzFTKMM5b1E6KXQI5U5fOh5olzgiJkeZ5Wk5sI/hQnxWl51VVM9bwwerOIx3xOBhG5S8EY0NAellw/YhEvc58VnEiYk2fyoqkP5Niaeqph50I3BqPRVfrL27CgXoH9vgx+QCxZXvMhUHVEpg7j5pJo3vj1+plboVH4wIQAfXjWYnusW/9hwxjxjdQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iRmf7b+APXToBPd6P2LTydb5ldY1GMTGFdKFSZd5O98=;
+ b=ANrPiHsud1B3IxaSxbrIeTRlt9kliX1qyzJV+Py63ilAa9itkqEcFFAYttzXoXJ+4f0HYm7qs/DydCu24aEBAuQ/oR9pq2ptUn9cmcRC+QYdK0mg5Ww6BSI3AeQvUTsaNHoKhKbecs2JByB6N5uSZMeQhAKJHJD5pDfLu6FYrRrQ8lbaI8zIYyVYcgJZlGNf+jpG88OOd75nWgXCCk6Zm4cSQEbWBPqabRbEVP0f4Lug7z8NQxyBBg6MQHM/Lpf2k6Y3ktsiJ00CwEQQw7Mr8RiO6XRKqnLmvFg+lwbK4irjeUJ+kRxlwY/DEfasN7CE8Mxtf0BbCn2a8QWuvqpEmg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iRmf7b+APXToBPd6P2LTydb5ldY1GMTGFdKFSZd5O98=;
+ b=e+uEnCApvoYlTRPYOS468DNzeZri/kLtLAsy9sxbTH/m8oENkcL9cAHyx6PeUliVHp4in9NSSYy4sHsT1iaDYWttucfCRJrwH++P2VjrLQ1XP25+yTpc+9KicnX+47a7d09YQ7PuZ8rtarWG4KTLjJRmOCEKPc6xdxZBalq1vj8=
+Received: from MN2PR11MB4448.namprd11.prod.outlook.com (2603:10b6:208:193::29)
+ by MN2PR11MB4399.namprd11.prod.outlook.com (2603:10b6:208:17b::25)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2793.15; Fri, 13 Mar
+ 2020 19:42:34 +0000
+Received: from MN2PR11MB4448.namprd11.prod.outlook.com
+ ([fe80::3c8f:7a55:cbd:adfb]) by MN2PR11MB4448.namprd11.prod.outlook.com
+ ([fe80::3c8f:7a55:cbd:adfb%5]) with mapi id 15.20.2793.018; Fri, 13 Mar 2020
+ 19:42:34 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <bbrezillon@kernel.org>, <vigneshr@ti.com>
+Subject: [PATCH v2 01/25] mtd: spi-nor: Stop prefixing generic functions with
+ a manufacturer name
+Thread-Topic: [PATCH v2 01/25] mtd: spi-nor: Stop prefixing generic functions
+ with a manufacturer name
+Thread-Index: AQHV+W+KlPt51Ol/xU6uVKayMYQqaw==
+Date: Fri, 13 Mar 2020 19:42:34 +0000
+Message-ID: <20200313194130.342251-2-tudor.ambarus@microchip.com>
+References: <20200313194130.342251-1-tudor.ambarus@microchip.com>
+In-Reply-To: <20200313194130.342251-1-tudor.ambarus@microchip.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [94.177.32.156]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d9faee14-b615-44f5-637b-08d7c786ad7a
+x-ms-traffictypediagnostic: MN2PR11MB4399:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR11MB4399C4C41817150B0FF914EFF0FA0@MN2PR11MB4399.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-forefront-prvs: 034119E4F6
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(376002)(346002)(136003)(396003)(366004)(39860400002)(199004)(316002)(2616005)(186003)(71200400001)(81156014)(110136005)(26005)(86362001)(107886003)(8936002)(54906003)(6512007)(8676002)(76116006)(91956017)(66946007)(66556008)(66476007)(66446008)(64756008)(81166006)(478600001)(4326008)(5660300002)(1076003)(6506007)(6486002)(36756003)(2906002)(41533002);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:MN2PR11MB4399;
+ H:MN2PR11MB4448.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; A:1; 
+received-spf: None (protection.outlook.com: microchip.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: IihdAp4ZQ3N8XL7Xqeh5X3/g+T0T+eLJsBhoKnSLxsox+W9nK5v3T4iYSD/Ns/pCMsQ/peEE5AdCV73MS8caFf6PCGA6WWfd6ndLnU433fi5e4m0/dQ5ioBNp5kmgYaB7qhHd7/b8N1fH9O+MwEwGuhGZDI8uZ+3zTkjwL9/Bz274QsMRwJqDQMqvuLYp+SmXQvd7qR/4OBSzsFI/iuREae8EDVCUpHNINf0exzDKIyajEa2L5tYSvsQvLNp2tpDfsGm7Mnsc4jFsJt/gAZXPegWvon0whvvbQ//lrw3D7vo7APzkOvDAtFtnxwBG9pXbj4EFPczMXd88atF8vymLo/vJNNcoTQe6N+TeCJnJbGrv/O/LjtXIsZob9JUKoGOyRPbHk/Nq+cEUOmzIKSSGSRcYc5v+q3C1EPzjgiMy20lhA2sYwgk7smJTwKm/JRfRAvcl5MWcp7JwCYYbklwE4MCsTuU0sK2rNgRhcSn8UGmke7MFsIGRFBg4I8sLY0K
+x-ms-exchange-antispam-messagedata: iiGR8TE39eGyBSElK/HDuRg3CeCUSqu7wqheb0dWi7T2cN/4Mfv6nWPShlxugmElJ86Ye/+eWjHbFFFxonsB9G73IxnGcJq+RdM1xFVnC2qQDXDBS79cWbUDqJ/0vJc75Y2UevPUn2seYObNRdtjDw==
 MIME-Version: 1.0
-References: <CGME20200304110830epcas1p168bd480847959dc497ac5cc272fa2f80@epcas1p1.samsung.com>
- <20200304110800.20658-1-js07.lee@samsung.com> <2264052.42fd6meZLV@192.168.1.3>
-In-Reply-To: <2264052.42fd6meZLV@192.168.1.3>
-From: Jungseung Lee <js07.lee@gmail.com>
-Date: Sat, 14 Mar 2020 02:20:48 +0900
-Message-ID: <CAPP0e=MOKw+O=q-PjfrEQo66HSU0zy42O_9=WHmHadYx_d6mfA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] mtd: spi-nor: reimplement block protection handling
-To: Tudor.Ambarus@microchip.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d9faee14-b615-44f5-637b-08d7c786ad7a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Mar 2020 19:42:34.4889 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: C5MVIGS8irJBJD4d8m81JtsR8UuKjZ91lzKoZWubXkQDQJ9VoMER5RTK7JcLe0ijvhmx4PHYNm4Vk7TyqSDvNz4VNkOmWf0Q7vKnIAzsf4o=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4399
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200313_102125_710913_68697E60 
-X-CRM114-Status: GOOD (  14.45  )
+X-CRM114-CacheID: sfid-20200313_124245_560350_67000424 
+X-CRM114-Status: GOOD (  14.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,65 +160,222 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: michael@walle.cc, chenxiang66@hisilicon.com, linux-mtd@lists.infradead.org,
- vigneshr@ti.com, Jungseung Lee <js07.lee@samsung.com>
+Cc: richard@nod.at, Tudor.Ambarus@microchip.com, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, miquel.raynal@bootlin.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi, Tudor,
+From: Boris Brezillon <bbrezillon@kernel.org>
 
-On Sat, Mar 14, 2020 at 12:22 AM <Tudor.Ambarus@microchip.com> wrote:
->
-> Hi, Jungseung,
->
-> I'm going to respin your patches on top on the what will be the manufacturer
-> move v2 series, https://patchwork.ozlabs.org/cover/1247794/, I want both
-> included for next.
->
-> On Wednesday, March 4, 2020 1:07:58 PM EET Jungseung Lee wrote:
-> > The current mainline locking was restricted and could only be applied
-> > to flashes that has 3 block protection bit and fixed locking ratio.
-> >
-> > A new method of normalization was reached at the end of the discussion [1].
-> >
-> >     (1) - if bp slot is insufficient.
-> >     (2) - if bp slot is sufficient.
-> >
-> >     if (bp_slots_needed > bp_slots)    // (1)
-> >         min_prot_length = sector_size << (bp_slots_needed - bp_slots);
-> >     else                               // (2)
-> >         min_prot_length = sector_size;
-> >
-> > This patch changes block protection handling logic based on min_prot_length.
-> > It is suitable for the overall flashes with exception of some corner case
->
-> What corner case, do you refer to EON? Are you aware of other corner cases? We
-> should be more precise, for easier review and understanding.
->
+Replace the manufacturer prefix by something describing more precisely
+what those functions do.
 
-Yes, that is eon. eon is the only corner case I've ever seen in 3 bit
-and 4 bit block protection.
+Signed-off-by: Boris Brezillon <bbrezillon@kernel.org>
+[tudor.ambarus@microchip.com: prepend spi_nor_ to all modified methods.]
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 70 +++++++++++++++++------------------
+ 1 file changed, 35 insertions(+), 35 deletions(-)
 
-In 2 bit block protection case, a significant number of flash fully
-use available bp_slots (2 bit = 4) regardless of the above rule.
-That is the case with microchip, catalyst and more..
-
-Of course, none of the 2 bit block protection flash has been set to
-lockable so far.
-
-Thanks,
-
-> Cheers,
-> ta
->
-> > and easy to extend and apply for the case of 2bit or 4bit block protection.
-> >
-> > [1] http://lists.infradead.org/pipermail/linux-mtd/2020-February/093934.html
->
->
->
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index caf0c109cca0..0b8fac0b0299 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -755,13 +755,13 @@ static int spi_nor_xread_sr(struct spi_nor *nor, u8 *sr)
+ }
+ 
+ /**
+- * s3an_sr_ready() - Query the Status Register of the S3AN flash to see if the
+- * flash is ready for new commands.
++ * spi_nor_xsr_ready() - Query the Status Register of the S3AN flash to see if
++ * the flash is ready for new commands.
+  * @nor:	pointer to 'struct spi_nor'.
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+-static int s3an_sr_ready(struct spi_nor *nor)
++static int spi_nor_xsr_ready(struct spi_nor *nor)
+ {
+ 	int ret;
+ 
+@@ -892,7 +892,7 @@ static int spi_nor_ready(struct spi_nor *nor)
+ 	int sr, fsr;
+ 
+ 	if (nor->flags & SNOR_F_READY_XSR_RDY)
+-		sr = s3an_sr_ready(nor);
++		sr = spi_nor_xsr_ready(nor);
+ 	else
+ 		sr = spi_nor_sr_ready(nor);
+ 	if (sr < 0)
+@@ -1784,8 +1784,8 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	return ret;
+ }
+ 
+-static void stm_get_locked_range(struct spi_nor *nor, u8 sr, loff_t *ofs,
+-				 uint64_t *len)
++static void spi_nor_get_locked_range_sr(struct spi_nor *nor, u8 sr, loff_t *ofs,
++					uint64_t *len)
+ {
+ 	struct mtd_info *mtd = &nor->mtd;
+ 	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
+@@ -1813,8 +1813,8 @@ static void stm_get_locked_range(struct spi_nor *nor, u8 sr, loff_t *ofs,
+  * Return 1 if the entire region is locked (if @locked is true) or unlocked (if
+  * @locked is false); 0 otherwise
+  */
+-static int stm_check_lock_status_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
+-				    u8 sr, bool locked)
++static int spi_nor_check_lock_status_sr(struct spi_nor *nor, loff_t ofs,
++					uint64_t len, u8 sr, bool locked)
+ {
+ 	loff_t lock_offs;
+ 	uint64_t lock_len;
+@@ -1822,7 +1822,7 @@ static int stm_check_lock_status_sr(struct spi_nor *nor, loff_t ofs, uint64_t le
+ 	if (!len)
+ 		return 1;
+ 
+-	stm_get_locked_range(nor, sr, &lock_offs, &lock_len);
++	spi_nor_get_locked_range_sr(nor, sr, &lock_offs, &lock_len);
+ 
+ 	if (locked)
+ 		/* Requested range is a sub-range of locked range */
+@@ -1832,16 +1832,16 @@ static int stm_check_lock_status_sr(struct spi_nor *nor, loff_t ofs, uint64_t le
+ 		return (ofs >= lock_offs + lock_len) || (ofs + len <= lock_offs);
+ }
+ 
+-static int stm_is_locked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
+-			    u8 sr)
++static int spi_nor_is_locked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
++				u8 sr)
+ {
+-	return stm_check_lock_status_sr(nor, ofs, len, sr, true);
++	return spi_nor_check_lock_status_sr(nor, ofs, len, sr, true);
+ }
+ 
+-static int stm_is_unlocked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
+-			      u8 sr)
++static int spi_nor_is_unlocked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
++				  u8 sr)
+ {
+-	return stm_check_lock_status_sr(nor, ofs, len, sr, false);
++	return spi_nor_check_lock_status_sr(nor, ofs, len, sr, false);
+ }
+ 
+ /*
+@@ -1876,7 +1876,7 @@ static int stm_is_unlocked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
+  *
+  * Returns negative on errors, 0 on success.
+  */
+-static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
++static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ {
+ 	struct mtd_info *mtd = &nor->mtd;
+ 	int ret, status_old, status_new;
+@@ -1894,16 +1894,16 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 	status_old = nor->bouncebuf[0];
+ 
+ 	/* If nothing in our range is unlocked, we don't need to do anything */
+-	if (stm_is_locked_sr(nor, ofs, len, status_old))
++	if (spi_nor_is_locked_sr(nor, ofs, len, status_old))
+ 		return 0;
+ 
+ 	/* If anything below us is unlocked, we can't use 'bottom' protection */
+-	if (!stm_is_locked_sr(nor, 0, ofs, status_old))
++	if (!spi_nor_is_locked_sr(nor, 0, ofs, status_old))
+ 		can_be_bottom = false;
+ 
+ 	/* If anything above us is unlocked, we can't use 'top' protection */
+-	if (!stm_is_locked_sr(nor, ofs + len, mtd->size - (ofs + len),
+-				status_old))
++	if (!spi_nor_is_locked_sr(nor, ofs + len, mtd->size - (ofs + len),
++				  status_old))
+ 		can_be_top = false;
+ 
+ 	if (!can_be_bottom && !can_be_top)
+@@ -1958,11 +1958,11 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ }
+ 
+ /*
+- * Unlock a region of the flash. See stm_lock() for more info
++ * Unlock a region of the flash. See spi_nor_sr_lock() for more info
+  *
+  * Returns negative on errors, 0 on success.
+  */
+-static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
++static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ {
+ 	struct mtd_info *mtd = &nor->mtd;
+ 	int ret, status_old, status_new;
+@@ -1980,16 +1980,16 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 	status_old = nor->bouncebuf[0];
+ 
+ 	/* If nothing in our range is locked, we don't need to do anything */
+-	if (stm_is_unlocked_sr(nor, ofs, len, status_old))
++	if (spi_nor_is_unlocked_sr(nor, ofs, len, status_old))
+ 		return 0;
+ 
+ 	/* If anything below us is locked, we can't use 'top' protection */
+-	if (!stm_is_unlocked_sr(nor, 0, ofs, status_old))
++	if (!spi_nor_is_unlocked_sr(nor, 0, ofs, status_old))
+ 		can_be_top = false;
+ 
+ 	/* If anything above us is locked, we can't use 'bottom' protection */
+-	if (!stm_is_unlocked_sr(nor, ofs + len, mtd->size - (ofs + len),
+-				status_old))
++	if (!spi_nor_is_unlocked_sr(nor, ofs + len, mtd->size - (ofs + len),
++				    status_old))
+ 		can_be_bottom = false;
+ 
+ 	if (!can_be_bottom && !can_be_top)
+@@ -2046,13 +2046,13 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ }
+ 
+ /*
+- * Check if a region of the flash is (completely) locked. See stm_lock() for
+- * more info.
++ * Check if a region of the flash is (completely) locked. See spi_nor_sr_lock()
++ * for more info.
+  *
+  * Returns 1 if entire region is locked, 0 if any portion is unlocked, and
+  * negative on errors.
+  */
+-static int stm_is_locked(struct spi_nor *nor, loff_t ofs, uint64_t len)
++static int spi_nor_sr_is_locked(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ {
+ 	int ret;
+ 
+@@ -2060,13 +2060,13 @@ static int stm_is_locked(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 	if (ret)
+ 		return ret;
+ 
+-	return stm_is_locked_sr(nor, ofs, len, nor->bouncebuf[0]);
++	return spi_nor_is_locked_sr(nor, ofs, len, nor->bouncebuf[0]);
+ }
+ 
+-static const struct spi_nor_locking_ops stm_locking_ops = {
+-	.lock = stm_lock,
+-	.unlock = stm_unlock,
+-	.is_locked = stm_is_locked,
++static const struct spi_nor_locking_ops spi_nor_sr_locking_ops = {
++	.lock = spi_nor_sr_lock,
++	.unlock = spi_nor_sr_unlock,
++	.is_locked = spi_nor_sr_is_locked,
+ };
+ 
+ static int spi_nor_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+@@ -4895,7 +4895,7 @@ static void spi_nor_late_init_params(struct spi_nor *nor)
+ 	 * the default ones.
+ 	 */
+ 	if (nor->flags & SNOR_F_HAS_LOCK && !nor->params.locking_ops)
+-		nor->params.locking_ops = &stm_locking_ops;
++		nor->params.locking_ops = &spi_nor_sr_locking_ops;
+ }
+ 
+ /**
+-- 
+2.23.0
 
 ______________________________________________________
 Linux MTD discussion mailing list
