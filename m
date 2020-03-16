@@ -2,93 +2,83 @@ Return-Path: <SRS0=Xhow=5B=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C3FFC0044D
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Mar 2020 04:38:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F108C0044D
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Mar 2020 05:29:17 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4BD1C20719
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Mar 2020 04:38:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2944A20575
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Mar 2020 05:29:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="avm2P/AZ";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="E3L6ZYei"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4BD1C20719
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rBdUsrFz";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="yLmZCeYh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2944A20575
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8mVL6dEE7ygaOw1+/zF+MgUrjCY23pMeapd9EYFH6J0=; b=avm2P/AZc6Yb4L
-	HzMr/0dB04UyVnZw8PtszqbSvuwatXaI/MbfRMk+fX9RDK1/PH5umq6OCWISsUzTh5uT7cQGYeztk
-	dndXX2ittauH7HOZj7AWskFL71DVEk8qSwTu0kWFoZ6LH43xuZXxnWGA9QH/KNe684dCiV6YX9Btc
-	1MYb5uHgFpFBWqNIexRdCY5WhRAfsvb72U+Va2/QzgqhtovXWcNUR0Cnk91F0BT7VZP7zajNTjxzi
-	+r5nguXnBZnGdjHrpuZ1c1JZuydGSTY1kH7fW5hIcWp1qeHA7/Oy60tgatHh/A74UtGUwEHEMqpyP
-	z9wXV5a7/zmpdJiCDkfg==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Z4HthVt7qkuGOfZ24TECFFo6pMfMLk/JTPZdxWyk1c4=; b=rBdUsrFzJsZF90
+	siktobeKlFM53VlJfP6JXZenfFq90zITi+HFMz1VafRJMSn4PIXDVgpOQ8QcTUXN2LPkyKGJIOpus
+	twf2tX2n4sEAZ0D8rgGwv7IaVD+vjy0zaXZnSh2ELZis/70//+UwwSn90JPnd8PjnTRKfHg86d9cV
+	d6nG2MGI+VYSVCDuELYwF/5ciMiMnJMt1gfEKHALDjzSKSgk2wcWLKUTQS8eMx4gL61x4LwjCQ88z
+	DN3pZ/PyiUdMsR0U1x8HE4H9Tl0OGtKML7HlgMhglzcNtXnkhaKcREwDm/S9g+XE5DtLIxzsMgbuS
+	j0INmY2UQHWOhvuYOD3g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jDhVp-0005wv-At; Mon, 16 Mar 2020 04:38:01 +0000
-Received: from conssluserg-03.nifty.com ([210.131.2.82])
+	id 1jDiJI-0004nk-SS; Mon, 16 Mar 2020 05:29:08 +0000
+Received: from lelv0142.ext.ti.com ([198.47.23.249])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jDhVi-0005lK-88
- for linux-mtd@lists.infradead.org; Mon, 16 Mar 2020 04:37:56 +0000
-Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com
- [209.85.222.45]) (authenticated)
- by conssluserg-03.nifty.com with ESMTP id 02G4bUoZ009035
- for <linux-mtd@lists.infradead.org>; Mon, 16 Mar 2020 13:37:31 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 02G4bUoZ009035
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
- s=dec2015msa; t=1584333451;
- bh=2Lb9xicIO5Q5IREcgbcTiNzzUXbdAWrk50aMGOY8jZI=;
- h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=E3L6ZYei5xtVSCld3lt2O2BUoap8qlkCqFkAnSsZ3Wm/0LimJdiD44mI9N/8/MzmI
- QJkJGYvoUYDpDCBbEWN7XHhSJv1LZSAuQOYmJSN6qFGClcsKoKdlYSLbfWpaTXeIle
- ZKX7EHiPlbspNO4jplm0yDIoz2FaCXXeSHIjfF90JNWgteCxKuNc2KlMFKCyXZEa9c
- r8dWZvj9h6Q/BXim7Gc7/TEUrT+U56X369m5ZMwfs3ilDpx+ofdT/DjvdZYJSlq8qL
- sIgBNT4ECLhX4BLzOcp2LOc5ePbSl0jhLxXrz+Z4MKGZcidVoPfrQ4FOvFIFfDhiqe
- XZKfw54jq4vbw==
-X-Nifty-SrcIP: [209.85.222.45]
-Received: by mail-ua1-f45.google.com with SMTP id g21so6020850uaj.1
- for <linux-mtd@lists.infradead.org>; Sun, 15 Mar 2020 21:37:31 -0700 (PDT)
-X-Gm-Message-State: ANhLgQ251yTXsio5Zml9EhGMcS+YbB9CKO78IyCWz/N3GBzGVKmtGDUb
- wv8vCNKwMpZHYVtY4wdbkspPiNTm1aaO+fYMLew=
-X-Google-Smtp-Source: ADFU+vtKDjUyr8xBeVAKbKhL7FrQILw8iw0009U5Nr5bFGohCAw4Aqj/he3+ULIP3BQS/vKxO4wfjjjic2R32lBdNfA=
-X-Received: by 2002:a9f:28c5:: with SMTP id d63mr7212209uad.25.1584333449830; 
- Sun, 15 Mar 2020 21:37:29 -0700 (PDT)
+ id 1jDiJF-0004mt-1D; Mon, 16 Mar 2020 05:29:06 +0000
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 02G5SoC7066578;
+ Mon, 16 Mar 2020 00:28:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1584336530;
+ bh=VywGfyW92inbO727amnziWzaRxzKUXtHBdnwI7UMFo8=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=yLmZCeYhsIWmTL6QGooNcfKiHZ/XatY3sNP+Z+zJMo/ingX83f+E5lxHHNa3/0MdE
+ MlX5xegaIs3b49bJPk5LQuDS2NoiUvEic2H6n6Qp22Pab5JBSQ0EOXiQ0WXzVJcVRE
+ 0qQ6C2CccYp7fqC8RXUzY4yW7kIYqpx8VcCM8vAU=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 02G5SoRx034285;
+ Mon, 16 Mar 2020 00:28:50 -0500
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Mon, 16
+ Mar 2020 00:28:50 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Mon, 16 Mar 2020 00:28:50 -0500
+Received: from [172.24.145.136] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 02G5ShH8085020;
+ Mon, 16 Mar 2020 00:28:47 -0500
+Subject: Re: [PATCH v2 02/25] mtd: spi-nor: Emphasise which is the generic
+ set_4byte_addr_mode() method
+To: <Tudor.Ambarus@microchip.com>, <bbrezillon@kernel.org>
+References: <20200313194130.342251-1-tudor.ambarus@microchip.com>
+ <20200313194130.342251-3-tudor.ambarus@microchip.com>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <5c0f86db-11d5-ac9e-6a3d-234c22737071@ti.com>
+Date: Mon, 16 Mar 2020 10:59:22 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-References: <20200205070834.3087104-1-marex@denx.de>
- <20200211170707.2183625e@xps13>
- <b1a10583-e110-9568-4007-aa2b3f38a7be@denx.de>
- <CAK7LNARqYDh4AJ+N-PTHui0H89-humECskJVUxW4cTf6edEBMQ@mail.gmail.com>
- <f4e2deeb-cc0e-fb06-46fa-d6cf4f2a73ad@denx.de>
- <CAK7LNAR4MU+Rfmpz99iwLuEbD4jMwUdh91uz3zyQdvjyLEQcMQ@mail.gmail.com>
- <29cce21c-2214-7238-0bc5-db2c1a54576f@denx.de>
- <CAK7LNASckTZO-9uVjtQH8iKhU0HH9WiMK-CzMxjESQOOUM0cKA@mail.gmail.com>
- <CAK7LNAT3EG0XocC0xT0f=6MBpXLga3FehOjEYbRyP6AJUbqb2Q@mail.gmail.com>
- <311cdc3c-59b5-a46b-62f0-e78fc970134a@denx.de>
- <CAK7LNAT1Bzs68X8PiWQHg4g2bpPGd-WM9D4vwf59XfwwLVuVQQ@mail.gmail.com>
- <e86925d0-805c-d364-57ca-6400b77cffd7@denx.de>
- <CAK7LNARDp1Zru3_XAQyBZHwsRov-QWOnrrwodS8pjszsKy2ysw@mail.gmail.com>
- <d4b4abf4-1af9-d57c-5b93-2d56a5dc456b@denx.de> <20200311140807.6f56baf3@xps13>
- <5fa809a3-cd2b-74de-3615-387232051ae2@denx.de> <20200311143302.309bf468@xps13>
- <aaec50bb-05da-8d4e-3e15-17fbfeb52f68@denx.de> <20200311153923.443f3e64@xps13>
-In-Reply-To: <20200311153923.443f3e64@xps13>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Mon, 16 Mar 2020 13:36:53 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATHtG3cHx9kJo_nEVnswdJpX3RsQRrDNOFk6f++AT+kmA@mail.gmail.com>
-Message-ID: <CAK7LNATHtG3cHx9kJo_nEVnswdJpX3RsQRrDNOFk6f++AT+kmA@mail.gmail.com>
-Subject: Re: [PATCH] Revert "mtd: rawnand: denali: get ->setup_data_interface()
- working again"
-To: Miquel Raynal <miquel.raynal@bootlin.com>
+In-Reply-To: <20200313194130.342251-3-tudor.ambarus@microchip.com>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200315_213754_628520_AEEC0031 
-X-CRM114-Status: GOOD (  37.86  )
+X-CRM114-CacheID: sfid-20200315_222905_206004_CF53CF38 
+X-CRM114-Status: GOOD (  24.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,138 +90,219 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Marek Vasut <marex@denx.de>, Dinh Nguyen <dinguyen@kernel.org>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- linux-mtd <linux-mtd@lists.infradead.org>, Tim Sander <tim@krieglstein.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: richard@nod.at, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, miquel.raynal@bootlin.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkuCgoKT24gV2VkLCBNYXIgMTEsIDIwMjAgYXQgMTE6MzkgUE0gTWlxdWVsIFJheW5hbAo8bWlx
-dWVsLnJheW5hbEBib290bGluLmNvbT4gd3JvdGU6Cj4KPiBIaSBNYXJlaywKPgo+IE1hcmVrIFZh
-c3V0IDxtYXJleEBkZW54LmRlPiB3cm90ZSBvbiBXZWQsIDExIE1hciAyMDIwIDE1OjA3OjI3ICsw
-MTAwOgo+Cj4gPiBPbiAzLzExLzIwIDI6MzMgUE0sIE1pcXVlbCBSYXluYWwgd3JvdGU6Cj4gPiA+
-IEhpIE1hcmVrLAo+ID4KPiA+IEhpLAo+ID4KPiA+IFsuLi5dCj4gPgo+ID4gPj4+Pj4gZGlmZiAt
-LWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L2RlbmFsaS5jIGIvZHJpdmVycy9tdGQvbmFuZC9y
-YXcvZGVuYWxpLmMKPiA+ID4+Pj4+IGluZGV4IGIwNDgyMTA4YTEyNy4uZWEzOGFhNDI4NzNlIDEw
-MDY0NAo+ID4gPj4+Pj4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvZGVuYWxpLmMKPiA+ID4+
-Pj4+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2RlbmFsaS5jCj4gPiA+Pj4+PiBAQCAtODYw
-LDkgKzg2MCw5IEBAIHN0YXRpYyBpbnQgZGVuYWxpX3NldHVwX2RhdGFfaW50ZXJmYWNlKHN0cnVj
-dAo+ID4gPj4+Pj4gbmFuZF9jaGlwICpjaGlwLCBpbnQgY2hpcG5yLAo+ID4gPj4+Pj4KPiA+ID4+
-Pj4+ICAgICAgICAgLyoKPiA+ID4+Pj4+ICAgICAgICAgICogRGV0ZXJtaW5lIHRoZSBtaW5pbXVt
-IG9mIGFjY19jbGtzIHRvIG1lZXQgdGhlIGRhdGEgc2V0dXAgdGltaW5nLgo+ID4gPj4+Pj4gLSAg
-ICAgICAgKiAob25lIGFkZGl0aW9uYWwgY2xvY2sgY3ljbGUganVzdCBpbiBjYXNlKQo+ID4gPj4+
-Pj4gKyAgICAgICAgKiAodHdvIGFkZGl0aW9uYWwgY2xvY2sgY3ljbGVzIGp1c3QgaW4gY2FzZSkK
-PiA+ID4+Pj4+ICAgICAgICAgICovCj4gPiA+Pj4+PiAtICAgICAgIGFjY19jbGtzID0gRElWX1JP
-VU5EX1VQKHRpbWluZ3MtPnRSRUFfbWF4LCB0X3gpICsgMTsKPiA+ID4+Pj4+ICsgICAgICAgYWNj
-X2Nsa3MgPSBESVZfUk9VTkRfVVAodGltaW5ncy0+dFJFQV9tYXgsIHRfeCkgKyAyOwo+ID4gPj4+
-Pj4KPiA+ID4+Pj4+ICAgICAgICAgLyogRGV0ZXJtaW5lIHRoZSBtaW5pbXVtIG9mIHJkd3JfZW5f
-bG9fY250IGZyb20gUkUjL1dFIyBwdWxzZSB3aWR0aCAqLwo+ID4gPj4+Pj4gICAgICAgICByZHdy
-X2VuX2xvID0gRElWX1JPVU5EX1VQKG1heCh0aW1pbmdzLT50UlBfbWluLCB0aW1pbmdzLT50V1Bf
-bWluKSwgdF94KTsKPiA+ID4+Pj4KPiA+ID4+Pj4gTGlrZSB0aGUgYXR0YWNoZWQgb25lID8KPiA+
-ID4+Pj4KPiA+ID4+Pj4gVGhhdCBzZWVtcyB0byB3b3JrLCBidXQgLS0gdGhlIGNhbGN1bGF0ZWQg
-dGltaW5ncyBkaWZmZXIgZnJvbSB0aGUgb25lcwo+ID4gPj4+PiB3aGljaCBhcmUgY2FsY3VsYXRl
-ZCBieSBVLUJvb3QgYW5kIHdoaWNoIHdlcmUgdGVzdGVkIHRvIHdvcmsgd2VsbC4KPiA+ID4+Pj4g
-VGhhdCdzIG5vdCBnb29kLCBJIHdvdWxkIGV4cGVjdCBib3RoIHRpbWluZ3MgdG8gYmUgaWRlbnRp
-Y2FsOgo+ID4gPj4+Cj4gPiA+Pj4gVGhlcmUgaXMgbm8gc3VjaCAidGltaW5ncyB0ZXN0ZWQgdG8g
-d29yayB3ZWxsIi4KPiA+ID4+Cj4gPiA+PiBIbW1tLCB0aGUgYm9hcmQgd2VudCB0aHJvdWdoIGZ1
-bGwgdGVtcGVyYXR1cmUgcmFuZ2UgdGVzdGluZyBpbiBhIGNoYW1iZXIKPiA+ID4+IHdpdGggdGhv
-c2UgdGltaW5ncyBhbmQgcGFzc2VkLCBhbmQgdGhlcmUgYXJlIGJvYXJkcyB3aXRoIHRob3NlIGV4
-YWN0Cj4gPiA+PiB0aW1pbmdzIGRlcGxveWVkIGZvciB5ZWFycyBub3cgd2l0aCBvbGRlciBrZXJu
-ZWwgdmVyc2lvbiwgd2hpY2ggd29yawo+ID4gPj4gdG9vLiBTbyBJIHdvdWxkIGV4cGVjdCB0aGV5
-IGFyZSBnb29kIGFuZCAidGltaW5ncyB0ZXN0ZWQgdG8gd29yayB3ZWxsIi4KPiA+ID4+Cj4gPiA+
-Pj4gVGltaW5ncyByZXByZXNlbnQKPiA+ID4+PiBtaW5pbXVtIGFuZCBtYXhpbXVtIHZhbHVlcyBm
-b3IgY2VydGFpbiBvcGVyYXRpb25zIG9uIHRoZSBOQU5EIGJ1cywgeW91Cj4gPiA+Pj4gY2FuIGhh
-dmUgdHdvIGRpZmZlcmVudCB2YWx1ZXMgdGhhdCB3aWxsIGJvdGggd29yayBpbiB0aGUgc2FtZQo+
-ID4gPj4+IGNvbmRpdGlvbi4gQW5kIGl0IGlzIGV4cGVjdGVkIHRoYXQgTGludXggaXMgbW9yZSBj
-bGV2ZXIgdGhhbiBVLUJvb3QKPiA+ID4+Cj4gPiA+PiBFcnJyLCB3aHkgPwo+ID4gPgo+ID4gPiBC
-ZWNhdXNlIHNvbWV0aW1lcyBwZW9wbGUgd3JpdGUgc2ltcGxlciBkcml2ZXIgaW4gVS1Cb290LCBv
-ciBldmVuCj4gPiA+IGhhcmRjb2RlZCB2YWx1ZXMuCj4gPgo+ID4gSSBzZWUsIHRoaXMgaXMgbm90
-IHRoZSBjYXNlIHdpdGggZGVuYWxpIG5hbmQgZHJpdmVyIHRob3VnaC4KPiA+Cj4gPiA+IEkgY2hl
-Y2tlZCB0aGUgZGVuYWxpIGRyaXZlciBhbmQgaW5kZWVkIHUtYm9vdCBzaG91bGQgbm90IGJlIG11
-Y2ggY2xldmVyCj4gPiA+IHRoYW4gTGludXguIEFyZSB0aGUgZGlmZmVyZW5jZXMgc2lnbmlmaWNh
-bnQ/IFRoZSBjb2RlIGlzIHNvIGNsb3NlLCB5b3UKPiA+ID4gY2FuIHByb2JhYmx5IGNoZWNrIHdo
-eSB5b3UgaGF2ZSBkaWZmZXJlbmNlcy4gQWxzbyB2ZXJpZnkgdGhhdCB0aGUgc2FtZQo+ID4gPiBP
-TkZJIG1vZGUgaXMgdXNlZC4KPiA+Cj4gPiBJdCBtaWdodCd2ZSBtYWRlIHNlbnNlIHRvIGNoZWNr
-IHRob3NlIGRyaXZlciBkaWZmZXJlbmNlcyBiZWZvcmUgbWFraW5nCj4gPiBzdWNoIGFuIHN0YXRl
-bWVudCA7LSkKPiA+IFRoYXQgc2FpZCwgSSBkb24ndCB0aGluayBlaXRoZXIgVS1Cb290IG9yIExp
-bnV4IHVzZXMgdGhlIE9ORkkKPiA+IGluZm9ybWF0aW9uIGZvciB0aGlzIE5BTkQsIGJ1dCBJIG1p
-Z2h0IGJlIHdyb25nLgo+Cj4gSSBkb24ndCBrbm93IHdoYXQgaXMgdGhlIGV4YWN0IGRldmljZSBi
-dXQgbW9zdCBvZiB0aGUgdGltZSwgZXZlbiBmb3IKPiBub24gT05GSS1jb21wbGlhbnQgY2hpcHMs
-IHRoZSBjb3JlIHN0YXJ0cyB0YWxraW5nIGF0IHRoZSBsb3dlc3QgT05GSQo+IHNwZWVkIChtb2Rl
-IDApIGFuZCB0aGVuIG5lZ290aWF0ZSB3aXRoIHRoZSBOQU5EIGNoaXAgdGhlIGFjdHVhbCB0aW1p
-bmdzCj4gdG8gdXNlLiBUaGlzIHdvcmtzIGlmIGdldC9zZXRfZmVhdHVyZXMgaXMgc3VwcG9ydGVk
-LCBvdGhlcndpc2UgeW91Cj4gbWlnaHQgaGF2ZSBhIGRlZmF1bHQgbW9kZSBzb21ld2hlcmUuIElz
-IGl0IHRoZSBzYW1lIGluIGJvdGggY2FzZXM/IERvZXMKPiB0aGUgY29yZSB0cmllcyB0byBhcHBs
-eSB0aGUgc2FtZSB0aW1pbmdzPyBJcyB0aGUgY2FsY3VsYXRpb24gdGhlIHNhbWU/Cj4KPiBUaGVz
-ZSBhcmUgcG9pbnRlcnMgYnV0IEkgYW0gc3VyZSB5b3UgY2FuIGZpZ3VyZSBhbGwgdGhhdCBvdXQu
-Cj4KPiA+ID4+PiBhbmQKPiA+ID4+PiBtYXkgb3B0aW1pemUgYmV0dGVyIHRoZSB0aW1pbmdzIGRl
-cGVuZGluZyBvbiB0aGUgc2VsZWN0ZWQgbW9kZSAoWzAtNV0pCj4gPiA+Pj4gKGhlbmNlIHRoZSBk
-aWZmZXJlbnQgY2FsbHMgdG8gLT5zZXR1cF9kYXRhX2ludGVyZmFjZSgpLgo+ID4gPj4KPiA+ID4+
-IEkgd291bGQgZXhwZWN0IHRob3NlIHR3byBzaG91bGQgcHJvZHVjZSBpZGVudGljYWwgdGltaW5n
-IHBhcmFtZXRlcnMsCj4gPiA+PiBwZXJpb2QsIG90aGVyd2lzZSBvbmUgb3IgdGhlIG90aGVyIGlz
-IHdyb25nLiBUaHVzIGZhciwgaXQgd2FzIExpbnV4IHRoYXQKPiA+ID4+IHByb2R1Y2VkIG5vbi13
-b3JraW5nIHJlc3VsdHMuCj4gPiA+Cj4gPiA+IEFnYWluLCB3ZSBkZWZpbmUgbWluaW11bSBhbmQg
-bWF4aW11bSBkZWxheXMuIElmIHRoZSByaWdodCB0aGluZyBpcyB0bwo+ID4gPiBub3Qgd2FpdCBt
-b3JlIHRoYW4gNXVzIGFuZCB5b3Ugd2FpdCB1cCB0byA2LCBpdCBkb2VzIG5vdCBtZWFuIHlvdQo+
-ID4gPiB3cm90ZSAiYmFkIHRpbWluZ3MiLiA0dXMgd291bGQgYmUgYSBiYWQgdGltaW5nIHRob3Vn
-aC4gSXQgZGVwZW5kcyBvbgo+ID4gPiB3aGF0IHlvdSBhcmUgbG9va2luZyBhdC4KPiA+Cj4gPiBJ
-IGFtIGxvb2sgYXQgZm9yIGV4YW1wbGUKPiA+Cj4gPiAgZGVuYWxpLT5yZWcgKyBUQ1dBV19BTkRf
-QUREUl8yX0RBVEEgPSAweDAwMDAxNDNmIC0+IDB4MDAwMDE0MzIKPiA+Cj4gPiBSZWdpc3RlciB3
-YXMgMHgxNDNmIGJlZm9yZSwgbm93IGlzIDB4MTQzMiAsIHdoaWNoIGlzIGxlc3MuCj4gPiBJIGd1
-ZXNzIHRoYXQgd291bGQgYmUgdGhlICJiYWQgdGltaW5nIiB0aGVuID8KPgo+IFdlbGwsIGlzIGl0
-IGEgbWluaW11bSBvciBhIG1heGltdW0gPyBIb3cgZG8geW91IGtub3cgVS1Cb290IHZhbHVlIGlz
-Cj4gc3RyYWlnaHQgb24gdGhlIGVkZ2U/IElmIHlvdSB3YW50IHRvIGtub3cgaWYgdGltaW5ncyBh
-cmUgdmFsaWQsIG9wZW4KPiB0aGUgcGFydCBkYXRhc2hlZXQsIGRvIHRoZSBtYXRoIHdpdGggYSBw
-YXBlciBhbmQgY29tcGFyZS4gVGhpcyBpcyB0aGUKPiBzY2llbnRpZmljIHdheSB0byBkZWNsYXJl
-IHRpbWluZ3MgdmFsaWQgb3IgaW52YWxpZC4KCgoKSW4gb3JkZXIgbm90IHRvIHdhc3RlIHRpbWUs
-CkknZCBsaWtlIHRvIGFncmVlIHdpdGggdGhlIExpbnV4L1UtQm9vdCBkaWZmZXJlbmNlLgoKClRo
-ZSB0aW1pbmcgcmVxdWlyZW1lbnQgZm9yIGEgTkFORCBjaGlwIHByb3ZpZGVkIGJ5CmRyaXZlcnMv
-bXRkL25hbmQvcmF3L25hbmRfdGltaW5nLmMKYXJlIHJlcHJlc2VudGVkIGluIHBpY28tc2Vjb25k
-cwooc2FtZSBiZXR3ZWVuIGluIExpbnV4IGFuZCBVLUJvb3QgaW4gdGhpcyByZWdhcmQpCgoKVGhl
-IHJlZ2lzdGVycyBpbiB0aGUgRGVuYWxpIElQIHNwZWNpZmllcwoiaG93IG1hbnkgY2xvY2sgY3lj
-bGVzIHNob3VsZCBiZSBpbnNlcnRlZApiZXR3ZWVuIHJpc2luZy9mYWxsaW5nIGVkZ2VzIG9mIHNp
-Z25hbHMiLgoKU28sIHRoZSByZWdpc3RlciB2YWx1ZXMgZGVwZW5kIG9uIGJvdGgKWzFdIHRoZSB0
-aW1pbmcgbW9kZSBvZiB0aGUgY2hpcAogICBhbmQKWzJdIGNsb2NrIGZyZXF1ZW5jaWVzIGF0IHdo
-aWNoIHRoZSBEZW5hbGkgSVAgaXMgcnVubmluZwoKClRvIGNhbGN1bGF0ZSB0aGUgY2xvY2sgY3lj
-bGVzLCBkZW5hbGlfc2V0dXBfZGF0YV9pbnRlcmZhY2UoKQpuZWVkcyB0d28gY2xvY2tzIChjb250
-cm9sbGVyIGNvcmUgY2xvY2ssIGFuZCB0aGUgTkFORCBidXMgY2xvY2spLgpCdXQsIHdlIHNob3Vs
-ZCBub3QgaGFyZC1jb2RlIHRoZSBjbG9jayBmcmVxdWVuY3kgaW4gdGhlIGRlbmFsaSBkcml2ZXIu
-CihUaGUgZGVuYWxpIGRyaXZlciBoYXJkLWNvZGVkIHRoZSBjbG9jayBmcmVxdWVuY2llcyBmb3Ig
-dGhlIGJhY2t3YXJkCmNvbXBhdGliaWxpdHkgcmVhc29uLCBidXQgb3VyIHVsdGltYXRlIGdvYWwg
-aXMgdG8gbW92ZSB0aGUgY2xvY2sKaW5mbyB0byB0aGUgY2xvY2sgZHJpdmVyLikKCkluIG90aGVy
-IHdvcmRzLCB3ZSByZWx5IG9uIHRoZSBjbG9jayBkcml2ZXIgYmVpbmcgY29ycmVjdC4KCgpkZW5h
-bGlfc2V0dXBfZGF0YV9pbnRlcmZhY2UoKSBkb2VzIHRoZSBlcXVpdmFsZW50IGNvbXB1dGF0aW9u
-CmJldHdlZW4gTGludXggYW5kIFUtQm9vdC4KCkl0IGlzIG9idmlvdXMgYnkgZGlmZmluZyBkZW5h
-bGlfc2V0dXBfZGF0YV9pbnRlcmZhY2UoKS4KCmh0dHBzOi8vZ2l0aHViLmNvbS90b3J2YWxkcy9s
-aW51eC9ibG9iL3Y1LjYtcmM1L2RyaXZlcnMvbXRkL25hbmQvcmF3L2RlbmFsaS5jI0w3NjQKaHR0
-cHM6Ly9naXRodWIuY29tL3UtYm9vdC91LWJvb3QvYmxvYi92MjAyMC4wNC1yYzMvZHJpdmVycy9t
-dGQvbmFuZC9yYXcvZGVuYWxpLmMjTDkxNwoKCgpUaGUgZGlmZmVyZW5jZSBpcyB0aGUgY2xvY2sg
-ZnJlcXVlbmNpZXMgKGFuZCBoZSBrbm93cyBpdCkuCgoKSW4gdGhpcyBwYXRjaCwgTWFyZWsgY2xh
-aW1zICBkZW5hbGktPmNsa19yYXRlID0gMzEuMjUgTUh6CmRlbmFsaS0+Y2xrX3hfcmF0ZSA9IDEy
-NSBNSHogb24gTGludXggcnVubmluZyBvbiBoaXMgYm9hcmQuCgoKSSBhbSBub3Qgc3VyZSB3aGV0
-aGVyIGNvbW1pdCAzYjUwMTVjNGQ4MzQgKGkuZS4gTGludXggNS4zKQppcyByZWxhdGVkIHRvIHRo
-aXMgb3Igbm90LCBidXQgdGhlIGNsb2NrIGZyZXF1ZW5jaWVzIHdlcmUKY2hhbmdlZCBhZnRlciBM
-aW51eCA0LjE5LgoKCk1hcmVrIGFsc28gc2FpZCB0aGF0IHRoZSBTT0NGUEdBIGNsb2NrIGRyaXZl
-ciBpcyBub3QgcmVhZHkgZm9yIFUtQm9vdAphcyBoZSBwb3N0ZWQgdGhpcyB0byBVLUJvb3QgTUw6
-Cmh0dHA6Ly9wYXRjaHdvcmsub3psYWJzLm9yZy9wYXRjaC8xMjIwMjg3LwoKVGhlbiwgdGhlIGNs
-b2NrIGZyZXF1ZW5jaWVzIGZhbGwgYmFjayB0byB0aGUgaGFyZC1jb2RlZCBkZWZhdWx0OgpkZW5h
-bGktPmNsa19yYXRlID0gNTAgTUh6ICBkZW5hbGktPmNsa194X3JhdGUgPSAyMDAgTUh6Cmh0dHBz
-Oi8vZ2l0aHViLmNvbS91LWJvb3QvdS1ib290L2Jsb2IvdjIwMjAuMDQtcmMzL2RyaXZlcnMvbXRk
-L25hbmQvcmF3L2RlbmFsaV9kdC5jI0wxNDEKCgpGcm9tIHRoaXMgcG9pbnQsIGl0IGlzIG9idmlv
-dXMgdGhhdCBVLUJvb3QgdmFsdWVzIGFyZSBub3Qgc3RyYWlnaHQgb24gdGhlIGVkZ2UuCihVLUJv
-b3QgZGl2aWRlcyB0aGUgdGltaW5nIHZhbHVlcyByZXByZXNlbnRlZCBpbiBwaWNvLXNlY29uZHMK
-d2l0aCB0aGUgdG9vIHNtYWxsIGNsb2NrIHBlcmlvZC4pCgoKVGhhbmtzLgoKCgo+ID4gPj4+IFJ1
-biBhIHN0cmVzcyB0ZXN0LCBpZiBpdCBwYXNzZXMsIHlvdSBzaG91bGQgYmUgZ29vZCA6KQo+ID4g
-Pj4KPiA+ID4+IFRoYW5rIHlvdSBmb3IgdGhlIGhpbnQsIEkgdGhpbmsgdGhlIHN0cmVzcyB0ZXN0
-IHRodXMgZmFyIGNvdWxkIGJlCj4gPiA+PiBjb25zaWRlcmVkIHN1ZmZpY2llbnQuIEkgZ3Vlc3Mg
-d2UgY2FuIGFncmVlIG9uIHRoYXQgPwo+ID4gPgo+ID4gPiBPaCB5ZWFoIGFic29sdXRlbHkgOikK
-Pgo+IEp1c3QgdG8gYmUgc3VyZSwgd2UgYXJlIHRhbGtpbmcgYWJvdXQgdGhlIG5ldyB0aW1pbmdz
-IGRlcml2ZWQgd2l0aAo+IE1hc2FoaXJvJ3MgcGF0Y2ggaW4gTGludXggaGVyZSwgcmlnaHQ/Cj4K
-PiBCZWNhdXNlICJwZXJmZWN0IHRpbWluZ3MiID0+ICJ3b3JrIGluIHRoZSBvdmVuIiBidXQgbGV0
-IGJlIGNsZWFyIG9uCj4gdGhlIGZhY3QgdGhhdCAid29yayBpbiB0aGUgb3ZlbiIgZG9lcyBub3Qg
-aW1wbHkgInBlcmZlY3QgdGltaW5ncyIuCj4KPgo+IFRoYW5rcywKPiBNaXF1w6hsCi0tCkJlc3Qg
-UmVnYXJkcwpNYXNhaGlybyBZYW1hZGEKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QK
-aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+
+
+On 14/03/20 1:12 am, Tudor.Ambarus@microchip.com wrote:
+> From: Tudor Ambarus <tudor.ambarus@microchip.com>
+> 
+> Rename (*set_4byte)() to (*set_4byte_addr_mode)() for a better
+> differentiation between the 4 byte address mode and opcodes.
+> 
+> Rename macronix_set_4byte() to spi_nor_set_4byte_addr_mode(), it will be
+> the only 4 byte address mode method exposed to the manufacturer drivers.
+> 
+> Here's how the manufacturers enter and exit the 4 byte address mode:
+> - eon, gidadevice, issi, macronix, xmc use EN4B/EX4B
+> - micron-st needs WEN. st_micron_set_4byte_addr_mode() will become
+>   a private method, as they are the only ones that need WEN before the
+>   EN4B/EX4B commands.
+> - newer spansion have a 4BAM opcode (this translates to a new, public
+>   command). Older spansion  flashes use the BRWR command (legacy in
+>   core.c -> spansion_set_4byte_addr_mode())
+> - winbond's method is hackish and may be reason for just a flash
+>   fixup hook -> private method
+> 
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+
+Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
+
+spansion_set_4byte_addr() is the only function with manuf specific
+prefix in core.c.
+
+This could probably renamed to a generic one in a separate change
+
+Regards
+Vignesh
+
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 34 ++++++++++++++++++----------------
+>  include/linux/mtd/spi-nor.h   |  4 ++--
+>  2 files changed, 20 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 0b8fac0b0299..8616673ddb7c 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -568,14 +568,14 @@ static int spi_nor_read_cr(struct spi_nor *nor, u8 *cr)
+>  }
+>  
+>  /**
+> - * macronix_set_4byte() - Set 4-byte address mode for Macronix flashes.
+> + * spi_nor_set_4byte_addr_mode() - Enter/Exit 4-byte address mode.
+>   * @nor:	pointer to 'struct spi_nor'.
+>   * @enable:	true to enter the 4-byte address mode, false to exit the 4-byte
+>   *		address mode.
+>   *
+>   * Return: 0 on success, -errno otherwise.
+>   */
+> -static int macronix_set_4byte(struct spi_nor *nor, bool enable)
+> +static int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
+>  {
+>  	int ret;
+>  
+> @@ -604,14 +604,15 @@ static int macronix_set_4byte(struct spi_nor *nor, bool enable)
+>  }
+>  
+>  /**
+> - * st_micron_set_4byte() - Set 4-byte address mode for ST and Micron flashes.
+> + * st_micron_set_4byte_addr_mode() - Set 4-byte address mode for ST and Micron
+> + * flashes.
+>   * @nor:	pointer to 'struct spi_nor'.
+>   * @enable:	true to enter the 4-byte address mode, false to exit the 4-byte
+>   *		address mode.
+>   *
+>   * Return: 0 on success, -errno otherwise.
+>   */
+> -static int st_micron_set_4byte(struct spi_nor *nor, bool enable)
+> +static int st_micron_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
+>  {
+>  	int ret;
+>  
+> @@ -619,7 +620,7 @@ static int st_micron_set_4byte(struct spi_nor *nor, bool enable)
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = macronix_set_4byte(nor, enable);
+> +	ret = spi_nor_set_4byte_addr_mode(nor, enable);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -627,14 +628,15 @@ static int st_micron_set_4byte(struct spi_nor *nor, bool enable)
+>  }
+>  
+>  /**
+> - * spansion_set_4byte() - Set 4-byte address mode for Spansion flashes.
+> + * spansion_set_4byte_addr_mode() - Set 4-byte address mode for Spansion
+> + * flashes.
+>   * @nor:	pointer to 'struct spi_nor'.
+>   * @enable:	true to enter the 4-byte address mode, false to exit the 4-byte
+>   *		address mode.
+>   *
+>   * Return: 0 on success, -errno otherwise.
+>   */
+> -static int spansion_set_4byte(struct spi_nor *nor, bool enable)
+> +static int spansion_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
+>  {
+>  	int ret;
+>  
+> @@ -692,18 +694,18 @@ static int spi_nor_write_ear(struct spi_nor *nor, u8 ear)
+>  }
+>  
+>  /**
+> - * winbond_set_4byte() - Set 4-byte address mode for Winbond flashes.
+> + * winbond_set_4byte_addr_mode() - Set 4-byte address mode for Winbond flashes.
+>   * @nor:	pointer to 'struct spi_nor'.
+>   * @enable:	true to enter the 4-byte address mode, false to exit the 4-byte
+>   *		address mode.
+>   *
+>   * Return: 0 on success, -errno otherwise.
+>   */
+> -static int winbond_set_4byte(struct spi_nor *nor, bool enable)
+> +static int winbond_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
+>  {
+>  	int ret;
+>  
+> -	ret = macronix_set_4byte(nor, enable);
+> +	ret = spi_nor_set_4byte_addr_mode(nor, enable);
+>  	if (ret || enable)
+>  		return ret;
+>  
+> @@ -4655,7 +4657,7 @@ static void issi_set_default_init(struct spi_nor *nor)
+>  static void macronix_set_default_init(struct spi_nor *nor)
+>  {
+>  	nor->params.quad_enable = spi_nor_sr1_bit6_quad_enable;
+> -	nor->params.set_4byte = macronix_set_4byte;
+> +	nor->params.set_4byte_addr_mode = spi_nor_set_4byte_addr_mode;
+>  }
+>  
+>  static void sst_set_default_init(struct spi_nor *nor)
+> @@ -4668,12 +4670,12 @@ static void st_micron_set_default_init(struct spi_nor *nor)
+>  	nor->flags |= SNOR_F_HAS_LOCK;
+>  	nor->flags &= ~SNOR_F_HAS_16BIT_SR;
+>  	nor->params.quad_enable = NULL;
+> -	nor->params.set_4byte = st_micron_set_4byte;
+> +	nor->params.set_4byte_addr_mode = st_micron_set_4byte_addr_mode;
+>  }
+>  
+>  static void winbond_set_default_init(struct spi_nor *nor)
+>  {
+> -	nor->params.set_4byte = winbond_set_4byte;
+> +	nor->params.set_4byte_addr_mode = winbond_set_4byte_addr_mode;
+>  }
+>  
+>  /**
+> @@ -4759,7 +4761,7 @@ static void spi_nor_info_init_params(struct spi_nor *nor)
+>  
+>  	/* Initialize legacy flash parameters and settings. */
+>  	params->quad_enable = spi_nor_sr2_bit1_quad_enable;
+> -	params->set_4byte = spansion_set_4byte;
+> +	params->set_4byte_addr_mode = spansion_set_4byte_addr_mode;
+>  	params->setup = spi_nor_default_setup;
+>  	/* Default to 16-bit Write Status (01h) Command */
+>  	nor->flags |= SNOR_F_HAS_16BIT_SR;
+> @@ -5011,7 +5013,7 @@ static int spi_nor_init(struct spi_nor *nor)
+>  		 */
+>  		WARN_ONCE(nor->flags & SNOR_F_BROKEN_RESET,
+>  			  "enabling reset hack; may not recover from unexpected reboots\n");
+> -		nor->params.set_4byte(nor, true);
+> +		nor->params.set_4byte_addr_mode(nor, true);
+>  	}
+>  
+>  	return 0;
+> @@ -5035,7 +5037,7 @@ void spi_nor_restore(struct spi_nor *nor)
+>  	/* restore the addressing mode */
+>  	if (nor->addr_width == 4 && !(nor->flags & SNOR_F_4B_OPCODES) &&
+>  	    nor->flags & SNOR_F_BROKEN_RESET)
+> -		nor->params.set_4byte(nor, false);
+> +		nor->params.set_4byte_addr_mode(nor, false);
+>  }
+>  EXPORT_SYMBOL_GPL(spi_nor_restore);
+>  
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index de90724f62f1..2b9717b0cd62 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -520,7 +520,7 @@ struct spi_nor_locking_ops {
+>   * @erase_map:		the erase map parsed from the SFDP Sector Map Parameter
+>   *                      Table.
+>   * @quad_enable:	enables SPI NOR quad mode.
+> - * @set_4byte:		puts the SPI NOR in 4 byte addressing mode.
+> + * @set_4byte_addr_mode: puts the SPI NOR in 4 byte addressing mode.
+>   * @convert_addr:	converts an absolute address into something the flash
+>   *                      will understand. Particularly useful when pagesize is
+>   *                      not a power-of-2.
+> @@ -541,7 +541,7 @@ struct spi_nor_flash_parameter {
+>  	struct spi_nor_erase_map        erase_map;
+>  
+>  	int (*quad_enable)(struct spi_nor *nor);
+> -	int (*set_4byte)(struct spi_nor *nor, bool enable);
+> +	int (*set_4byte_addr_mode)(struct spi_nor *nor, bool enable);
+>  	u32 (*convert_addr)(struct spi_nor *nor, u32 addr);
+>  	int (*setup)(struct spi_nor *nor, const struct spi_nor_hwcaps *hwcaps);
+>  
+> 
+
+-- 
+Regards
+Vignesh
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
