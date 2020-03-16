@@ -2,61 +2,82 @@ Return-Path: <SRS0=Xhow=5B=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8351FC0044D
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Mar 2020 09:30:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43D29C0044D
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Mar 2020 09:47:00 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E8A5A20658
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Mar 2020 09:30:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F129620658
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Mar 2020 09:46:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FaecZwF7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E8A5A20658
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OGovQmEV";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Wei65B6J"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F129620658
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=m7oUqmZRax1a43cj7XencPvBvTd/xvOYZ2E30R/KlNs=; b=FaecZwF75RWKvS
-	LsGUujdQh2Vn6rvlmLodOl9lfjAfFGUro1r4iPvCVE/li7wBHA8QTwzNKqNhhIv9PhiRO1W1SrY/o
-	pw3GP08PcnLB1spJu5jEokTzOlWrr9/PcVtTvANh1o7pqj7FqXTOU4bWJJqFhC4IZ3sF3aFlciTTJ
-	yaCkVED8GNKEIhe7zV4rjbOZ93wFpiPTFY9VtGN98w6iIPBHW4xiGtVJpg2uMUpZOOlnQNFcRnN/6
-	aTbvaeKJuyAvxhK/6SyZ3P7BiLWc/KQaOQUe8jne+w/b+9WSZdrXI1zDOIqDcuSaLFfKSDXwp53Qu
-	itZ77w+ZEjbpXJvIj6sw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=qkbIFBty8gIYSmm04Rbv9pTnaV/kKVzMiV0zABdXZ28=; b=OGovQmEVsP2WYm
+	jVxvTCkrVUZ+fhh6cUKrP74reZwC7N8hKYx/z1O8JNSCiiq5X5W9TYrZqMB2Mngpf8rDUtbot6lV/
+	OVkYC5r6YXtwBDwhOJz0VQmVgu0ChBaCOwN6XBZvQwbwWNOUfFbIZFXp65eQQxiBlgEOPVqAjZX3x
+	bqlOFTfw+kZHv+UVQcTwUuLvzZuncVHQRMZaOKEyk+7Y+kNyGniWS2vuxEFUDMJpPvpJisgZ9qiwS
+	sDj19I9ldYB9xfjggSo7sM1rkekpFymJUe0ZpeuJrHZNXLKO+0rav/y4yQi+iTzp1yU+dYu1F5Pe3
+	eKs/9gcG29dN/Sryu3Iw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jDm4d-0005U1-Pb; Mon, 16 Mar 2020 09:30:15 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1jDmKY-0003ko-6u; Mon, 16 Mar 2020 09:46:42 +0000
+Received: from lelv0142.ext.ti.com ([198.47.23.249])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jDm4N-0003yH-H6; Mon, 16 Mar 2020 09:30:00 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 7D59C28DE96;
- Mon, 16 Mar 2020 09:29:56 +0000 (GMT)
-Date: Mon, 16 Mar 2020 10:29:53 +0100
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: <Tudor.Ambarus@microchip.com>
-Subject: Re: [PATCH v2 24/25] mtd: spi-nor: Drop the MFR definitions
-Message-ID: <20200316102953.3f656d67@collabora.com>
-In-Reply-To: <20200313194130.342251-25-tudor.ambarus@microchip.com>
+ id 1jDmKU-0003kE-M1; Mon, 16 Mar 2020 09:46:40 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 02G9kWvG006458;
+ Mon, 16 Mar 2020 04:46:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1584351992;
+ bh=67NfKjZCXz4JoWiD6fJ1v0YbK4GPD37mM9rvW/43LPw=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=Wei65B6JNh6HBmDkCjtnGulWnvu///dAGsrOvOF165b9GRGrqMMFp3Oe/NK0J9ZBU
+ XX552222gziFCBqf4eaxapMykFfKxqWQpgTw7KkVbKf8c7i8moA6f5nvgdPIve9Mes
+ hn0yFENE7hYuvx8w89jmHNNmWvTkcKfy1SnMFh3o=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 02G9kWxk006969
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Mon, 16 Mar 2020 04:46:32 -0500
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Mon, 16
+ Mar 2020 04:46:32 -0500
+Received: from localhost.localdomain (10.64.41.19) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Mon, 16 Mar 2020 04:46:32 -0500
+Received: from [172.24.145.136] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by localhost.localdomain (8.15.2/8.15.2) with ESMTP id 02G9kQfZ051982;
+ Mon, 16 Mar 2020 04:46:29 -0500
+Subject: Re: [PATCH v2 00/25] mtd: spi-nor: Move manufacturer/SFDP code out
+To: <Tudor.Ambarus@microchip.com>, <bbrezillon@kernel.org>
 References: <20200313194130.342251-1-tudor.ambarus@microchip.com>
- <20200313194130.342251-25-tudor.ambarus@microchip.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <28989bb7-9fe5-e4da-33c1-c3ad3442f9e2@ti.com>
+Date: Mon, 16 Mar 2020 15:17:05 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
+In-Reply-To: <20200313194130.342251-1-tudor.ambarus@microchip.com>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200316_022959_701348_F46C61DB 
-X-CRM114-Status: GOOD (  14.05  )
+X-CRM114-CacheID: sfid-20200316_024638_824561_EF1A6621 
+X-CRM114-Status: UNSURE (   8.53  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,74 +89,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vigneshr@ti.com, bbrezillon@kernel.org, richard@nod.at,
- linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
- linux-arm-kernel@lists.infradead.org
+Cc: richard@nod.at, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, miquel.raynal@bootlin.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 13 Mar 2020 19:42:52 +0000
-<Tudor.Ambarus@microchip.com> wrote:
 
-> From: Tudor Ambarus <tudor.ambarus@microchip.com>
-> 
-> Cross manufacturer code is unlikely and discouraged, get rid of the
-> MFR definitions.
-> 
-> Suggested-by: Vignesh Raghavendra <vigneshr@ti.com>
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+On 14/03/20 1:12 am, Tudor.Ambarus@microchip.com wrote:
+> Boris Brezillon (21):
+>   mtd: spi-nor: Stop prefixing generic functions with a manufacturer
+>     name
+>   mtd: spi-nor: Prepare core / manufacturer code split
+>   mtd: spi-nor: Expose stuctures and functions to manufacturer drivers
+>   mtd: spi-nor: Add the concept of SPI NOR manufacturer driver
 
-> ---
->  drivers/mtd/spi-nor/core.c  |  2 --
->  include/linux/mtd/spi-nor.h | 17 -----------------
->  2 files changed, 19 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index baee58fd8b04..b07e66f10995 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -40,8 +40,6 @@
->  
->  #define SPI_NOR_MAX_ADDR_WIDTH	4
->  
-> -#define JEDEC_MFR(info)        ((info)->id[0])
-> -
->  /**
->   * spi_nor_spimem_bounce() - check if a bounce buffer is needed for the data
->   *                           transfer
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index bf37bfc68797..2f7725525460 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -11,23 +11,6 @@
->  #include <linux/mtd/mtd.h>
->  #include <linux/spi/spi-mem.h>
->  
-> -/*
-> - * Manufacturer IDs
-> - *
-> - * The first byte returned from the flash after sending opcode SPINOR_OP_RDID.
-> - * Sometimes these are the same as CFI IDs, but sometimes they aren't.
-> - */
-> -#define SNOR_MFR_ATMEL		CFI_MFR_ATMEL
-> -#define SNOR_MFR_GIGADEVICE	0xc8
-> -#define SNOR_MFR_INTEL		CFI_MFR_INTEL
-> -#define SNOR_MFR_ST		CFI_MFR_ST	/* ST Micro */
-> -#define SNOR_MFR_MICRON		CFI_MFR_MICRON	/* Micron */
-> -#define SNOR_MFR_ISSI		CFI_MFR_PMC
-> -#define SNOR_MFR_MACRONIX	CFI_MFR_MACRONIX
-> -#define SNOR_MFR_SPANSION	CFI_MFR_AMD
-> -#define SNOR_MFR_SST		CFI_MFR_SST
-> -#define SNOR_MFR_WINBOND	0xef /* Also used by some Spansion */
-> -
->  /*
->   * Note on opcode nomenclature: some opcodes have a format like
->   * SPINOR_OP_FUNCTION{4,}_x_y_z. The numbers x, y, and z stand for the number
 
+>   mtd: spi-nor: Move Atmel bits out of core.c
+>   mtd: spi-nor: Move Eon bits out of core.c
+>   mtd: spi-nor: Move ESMT bits out of core.c
+>   mtd: spi-nor: Move Everspin bits out of core.c
+>   mtd: spi-nor: Move Fujitsu bits out of core.c
+>   mtd: spi-nor: Move GigaDevice bits out of core.c
+>   mtd: spi-nor: Move Intel bits out of core.c
+>   mtd: spi-nor: Move ISSI bits out of core.c
+>   mtd: spi-nor: Move Macronix bits out of core.c
+>   mtd: spi-nor: Move Micron/ST bits out of core.c
+>   mtd: spi-nor: Move Spansion bits out of core.c
+>   mtd: spi-nor: Move SST bits out of core.c
+>   mtd: spi-nor: Move Winbond bits out of core.c
+>   mtd: spi-nor: Move Catalyst bits out of core.c
+>   mtd: spi-nor: Move Xilinx bits out of core.c
+>   mtd: spi-nor: Move XMC bits out of core.c
+
+
+I skimmed through patches 7 to 22 and did not see any issues. No
+objections from me.
+
+-- 
+Regards
+Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
