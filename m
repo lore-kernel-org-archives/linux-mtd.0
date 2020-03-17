@@ -2,69 +2,152 @@ Return-Path: <SRS0=BLjR=5C=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C35D5C10F29
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Mar 2020 07:19:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 623D9C18E5B
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Mar 2020 07:41:04 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 94EEA20674
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Mar 2020 07:19:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 26C31205ED
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Mar 2020 07:41:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rqtlCqcp";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="dDlA8sZt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 94EEA20674
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="l6Rx3oDL";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="RtWhMwp1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26C31205ED
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=eiOuWaRbQLKcWEMUsALC9tBJWJnsiczxi8MOzNdvBBg=; b=rqt
-	lCqcpceCCNMcjPkx6+pjYySWmqaLzH3MDaA63xA+8xL/4ET8yP39PtA8mCvpj2SNVgKrXohVr5Kqx
-	bWlclpfxQSfZ89nc5mOP3/fqWKNigFmggKuSnNwyV2Yn+MFDDSC9Cg7xjqwvbcNsYJYZbD1FBsyb4
-	STuBV2xSZSCHa9d6llyEy4dszWVlB8pO92FZTx61iM2+dtrFlQc7V/43SSd0MV6qbrC7s2pvikdrG
-	ACaQ6xL34m51jXoYuA4/AfjITx72+c2/qtK4N5AxKRML8uBWPOyrdlq0Dy69CHxv8azF2VefFdJy2
-	AW/zaB4DDF8KeyoTzUqZDYJAOghgcaQ==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=gnBVYtI3PZ8qKC5H+e0BCybai0n8Z6604ZdMb7Ka9Eg=; b=l6Rx3oDLRv41hS
+	DjFIxfJZj9BkijgHYj8TeQZG25F0FWD0I8J0L1Qcg3MoFbgSzzdzupzzl0E/ItGbTRtwE7O0XLN4s
+	LFU3uRiGWBAHKEkPAIqOxsWBbbCu5YqG/RZ7fzgbckge7yfu/lFeqFuukfT8fI43xIngsza4YP7zE
+	NtYANzpRUZvBuU+lp8Ph66aqNtGKiPxhSrcrwic2lgUhr7habrGd06h5IP1r0KKbMTP2rNnot5aJT
+	KqSZCC+q0+bDtfsIqjEWbe57v35IUZKSVrx65nWZ/75mzPtethfLb8LqbFiKVqYkoSk64VovBMu+L
+	3pGmZTs8GnkFapRGsDRQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jE6Uy-0005ju-A5; Tue, 17 Mar 2020 07:18:48 +0000
-Received: from conuserg-08.nifty.com ([210.131.2.75])
+	id 1jE6qC-0001A1-0i; Tue, 17 Mar 2020 07:40:44 +0000
+Received: from esa1.microchip.iphmx.com ([68.232.147.91])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jE6Ur-0005j5-Ah
- for linux-mtd@lists.infradead.org; Tue, 17 Mar 2020 07:18:43 +0000
-Received: from localhost.localdomain (p14092-ipngnfx01kyoto.kyoto.ocn.ne.jp
- [153.142.97.92]) (authenticated)
- by conuserg-08.nifty.com with ESMTP id 02H7IOXQ030020;
- Tue, 17 Mar 2020 16:18:25 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 02H7IOXQ030020
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
- s=dec2015msa; t=1584429505;
- bh=fNnkxR8DOGQvxRfKIJdABgxeaKL0NvEnwytfHdcBJm4=;
- h=From:To:Cc:Subject:Date:From;
- b=dDlA8sZt3GUJ/yWErjaO450OkOiME1Ve7uLILGEV2WCwxjMJD/EbdP21u6pHl1iQ6
- Me8YzXp27F8Kz6gEcMc27F/g7Iuq82Rp4EWwAAWRKbvjKTgEgYty8k8XVsIYIyhFoC
- G6r1TTel5vNcWVi0f3uyP/8OFU8/NALOpxGfxo7RBBEFdTHl9tk+StMNtY1N+2Om/e
- JMi8Rv6r7fprgn4/CQ+Wl9CxNA7OmzwsTlEwDlD2H10v1AyzxcccRnzTg3N70dGqoQ
- LAqupbONuS6i8/6FRP35/WTVixKIckqfNu0I54lLOILPXdWEjPJacaYTZr1uHxZUhl
- CMao0EgSO708Q==
-X-Nifty-SrcIP: [153.142.97.92]
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2] mtd: rawnand: denali: add more delays before latching
- incoming data
-Date: Tue, 17 Mar 2020 16:18:21 +0900
-Message-Id: <20200317071821.9916-1-yamada.masahiro@socionext.com>
-X-Mailer: git-send-email 2.17.1
+ id 1jE6q6-000193-L0; Tue, 17 Mar 2020 07:40:42 +0000
+Received-SPF: Pass (esa1.microchip.iphmx.com: domain of
+ Tudor.Ambarus@microchip.com designates 198.175.253.82 as
+ permitted sender) identity=mailfrom;
+ client-ip=198.175.253.82; receiver=esa1.microchip.iphmx.com;
+ envelope-from="Tudor.Ambarus@microchip.com";
+ x-sender="Tudor.Ambarus@microchip.com";
+ x-conformance=spf_only; x-record-type="v=spf1";
+ x-record-text="v=spf1 mx a:ushub1.microchip.com
+ a:smtpout.microchip.com -exists:%{i}.spf.microchip.iphmx.com
+ include:servers.mcsv.net include:mktomail.com
+ include:spf.protection.outlook.com ~all"
+Received-SPF: None (esa1.microchip.iphmx.com: no sender
+ authenticity information available from domain of
+ postmaster@email.microchip.com) identity=helo;
+ client-ip=198.175.253.82; receiver=esa1.microchip.iphmx.com;
+ envelope-from="Tudor.Ambarus@microchip.com";
+ x-sender="postmaster@email.microchip.com"; x-conformance=spf_only
+Authentication-Results: esa1.microchip.iphmx.com;
+ spf=Pass smtp.mailfrom=Tudor.Ambarus@microchip.com;
+ spf=None smtp.helo=postmaster@email.microchip.com;
+ dmarc=pass (p=none dis=none) d=microchip.com
+IronPort-SDR: i3fAPvvEFMGf9E8k6KRN7TiEKwhb4Gui95pT1U3ObgI9CE5uBRmT0k2YJuhXmHd/cRZwaZlr2z
+ PAVMY0qM2tFj63729mVBYRVu+7jc3/IqpTEvDmFQ9aMrSUxsCFGzOSaFCfOU0QUbV+Sx/CZ4Qz
+ sPmwxs/cM2lJo9EOJ+NeVHcGIqd4VVi89mZu/JT8BXm8Nz/sVnS1LpmEOUkxf/Z0OhNE4/sIoB
+ VLJzE+7ybMnPX2aLmtjQ4t4tiXOjf+FXhK9B4/EwNKYawJJZGWNhl80OF4hXsgh4hVDEMok1Ra
+ WRU=
+X-IronPort-AV: E=Sophos;i="5.70,563,1574146800"; d="scan'208";a="72342727"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 17 Mar 2020 00:40:30 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 17 Mar 2020 00:40:21 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.71) with Microsoft SMTP Server
+ (version=TLS1_2, 
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5 via Frontend
+ Transport; Tue, 17 Mar 2020 00:40:29 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aGJuR1CfnYJc6A4JtZG/TGAlVfnt0rMkdm+GM3OuF7UsRnpbzNf4qUzZCcRyroqQbATsx5rg5MiegCfLKLgpwoFfEuYlrnxQkXklCJtUn26SkURA544sCXDpj1ZhHACLXbi6vsFzaPh9W/IT4aFr7K3Rs6DjM4lQwyueadj19RXofgyW9wX6T69x1jkUYX+O4dNTFLOFcO73Qow0OdcZ8pj1BhYnLkoKeU9luM6R4pzOO4aCK6AmgqgItU+akBphVS8QV001gZtQkeSOi3hhFvn04Y8RFAjoKbhPkqbnZ8nN5/bN2JVzSZvqfRC0kXA5gD+e2Q+hyqYWG5CRPc+lpA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ef9tfTa5ik3JnaA5m5/lsYXR9k1I6mgNqyeVq44POHc=;
+ b=Z4EMHyLnJB9GYN+LtnN+muEjm2OuLsibnM8Pond1Kjd125OPDI6rhG4yS3do+3FsMrzszIcI+FALkcar+r2ci2HdzsqjmLtsTIB8aayeslcLTDgrzt5O0kQeqkpqOvnreZM1oCe17JeOrNgjpR8+VQ/gf5WwNzG9NG0oFBiPYBQ1LLH8OnatRUhaAG8KjVaxm60kTMRBm3crpWNTcLr0H/0k4j/u0eu6oPAGmbbJCuFRBDBTubU5eYF24kyKJ7rYb5GQflk/5I60pSi5d1FUrWo7V1Ta4U6bjIuLXlbuD3n+u2xo9SMcRdZpVqN72/iDQRDeNwlTqe59UQKhQrx9sA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ef9tfTa5ik3JnaA5m5/lsYXR9k1I6mgNqyeVq44POHc=;
+ b=RtWhMwp1Rip05wJa/e1m+LRdsxYyo/kg2oNeO67e7cAWnYSNvqJwoP2GSI4bgTzOETKR9RUaI0xS3lO+aTPww3KsEGalu2B8AKqBQv6TkUVgUkVeEEL5/0J6bUXp2cG2R14knxerlK8kvhKwgIcLN+MCjxjVgu+LVbDDwbb/r9s=
+Received: from MN2PR11MB4448.namprd11.prod.outlook.com (2603:10b6:208:193::29)
+ by MN2PR11MB4662.namprd11.prod.outlook.com (2603:10b6:208:263::10)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2814.19; Tue, 17 Mar
+ 2020 07:40:28 +0000
+Received: from MN2PR11MB4448.namprd11.prod.outlook.com
+ ([fe80::3c8f:7a55:cbd:adfb]) by MN2PR11MB4448.namprd11.prod.outlook.com
+ ([fe80::3c8f:7a55:cbd:adfb%5]) with mapi id 15.20.2814.021; Tue, 17 Mar 2020
+ 07:40:28 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <bbrezillon@kernel.org>
+Subject: Re: [PATCH v2 00/25] mtd: spi-nor: Move manufacturer/SFDP code out
+Thread-Topic: [PATCH v2 00/25] mtd: spi-nor: Move manufacturer/SFDP code out
+Thread-Index: AQHV+W+KYE9fHU+ne0GupK9M0z2kHqhMa8eA
+Date: Tue, 17 Mar 2020 07:40:28 +0000
+Message-ID: <2383597.40V64ZQkGk@192.168.1.3>
+References: <20200313194130.342251-1-tudor.ambarus@microchip.com>
+In-Reply-To: <20200313194130.342251-1-tudor.ambarus@microchip.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [94.177.32.156]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: db0ded06-e416-4bbc-6f0d-08d7ca46769c
+x-ms-traffictypediagnostic: MN2PR11MB4662:
+x-microsoft-antispam-prvs: <MN2PR11MB466260FF9F4FEB86B37430E2F0F60@MN2PR11MB4662.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-forefront-prvs: 0345CFD558
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(136003)(376002)(366004)(39860400002)(346002)(396003)(199004)(26005)(186003)(6512007)(6486002)(9686003)(4326008)(5660300002)(14286002)(966005)(478600001)(6916009)(91956017)(76116006)(54906003)(86362001)(66556008)(66476007)(66946007)(66446008)(64756008)(316002)(81156014)(71200400001)(53546011)(8936002)(6506007)(8676002)(81166006)(2906002)(39026012);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:MN2PR11MB4662;
+ H:MN2PR11MB4448.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; A:1; 
+received-spf: None (protection.outlook.com: microchip.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: JB4J+g+Gr+G3HWADQjyGagGVEnRqR9FOG3FGN4jEi2SCrWYDtS1kjfWsyWuZg1aPHQmR67OulSMmKYdw59vuz5o7AM1ZQhdc94GgaWw0rQ0z9bp/WrEzSxvIfrEVmHJJbxc6iGus+NhCwkyE9CpA2fU3U2wAFr8qZ3tCL11djcaCce5yV9qeDCWDAoKSAou4hDY5aYAQq81+SDOQ4lTKCMYz5EgQaJtFw3B3uvbULawiE8aQk4wxgMUwlKSFdhworvDq3GI4KIeE57fmTsIbb1/ZpbLWSthVFoyojf9HlZjGua7egHht9O3sjao0Xbl9uShW1i9tx2VQIynsyXOrxRwKsD1E95tl7p33a3+gzyjbFwX7zdx47pAQY8pl9fgtU5j6apZd9F/ZiSI5FdNj82qrgwK0cjYBgjAe5JFZXeiShB8pNTEyixLw8jqx0hbLjGPrReEh3gPa8LKN7vRCzDYkmYquL+lKB8NMOWhncwOaavQuzPMON2M9vu3Qr/aFqvny3rRLBDXVRaWUzF3rSXIdroqJQTyvgIlwZw+mYl5cN0YKJVuK0r85TSpbzFjT
+x-ms-exchange-antispam-messagedata: rtDL9v2zLpVQ0gEDSMHuYfx49kHgcQfCNS71WZLHIAeTvAvYVKhuC7MFA2oUrXBkyTBGxGlxZHUePD5/yh1TDRb4o5tOjbh5BHNcss8BP4r9TrbXac9LBuBPnX7G6XTSQmNsRvc06X+uxKlpp1pbBw==
+x-ms-exchange-transport-forked: True
+Content-ID: <C6002666972CAF4E86286A6FD7A3F132@namprd11.prod.outlook.com>
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: db0ded06-e416-4bbc-6f0d-08d7ca46769c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Mar 2020 07:40:28.1460 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: T0mM0HZo2YIp2t1lGPyjCK4FGlI6YicUoEOBg9wgBrpjn2wmSvPltGVo/r9m7vbpSSmWXRR01zsvtiOulPzXifu5Faf+bKV+WGls0Pwfh+I=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4662
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200317_001841_707805_DB7A5096 
-X-CRM114-Status: GOOD (  14.86  )
+X-CRM114-CacheID: sfid-20200317_004038_761902_151253B5 
+X-CRM114-Status: GOOD (  15.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,151 +159,145 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Marek Vasut <marex@denx.de>, Vignesh Raghavendra <vigneshr@ti.com>,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-MIME-Version: 1.0
+Cc: richard@nod.at, linux-mtd@lists.infradead.org, vigneshr@ti.com,
+ linux-arm-kernel@lists.infradead.org, miquel.raynal@bootlin.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The Denali IP have several registers to specify how many clock cycles
-should be waited between falling/rising signals. You can improve the
-NAND access performance by programming these registers with optimized
-values.
+On Friday, March 13, 2020 9:42:33 PM EET Tudor Ambarus - M18064 wrote:
+> From: Tudor Ambarus <tudor.ambarus@microchip.com>
+> 
+> Hello,
+> 
+> This patch series is an attempt at getting all manufacturer specific
+> quirks/code out of the core to make the core logic more readable and
+> thus ease maintainance.
+> 
+> This is a respin of the last chunk of Boris's work from
+> https://patchwork.ozlabs.org/cover/1009290/.
+> 
+> (Re)tested an erase-write-read-compare with a 1MB file on the following
+> flashes: n25q256a, w25q256jvm, is25lp256, gd25q256, mx25l25635e,
+> s25fl256s0.
+> 
+> v2:
+> 1/ The mtk-quadspi driver was replaced by a new spi-mtk-nor driver.
+> In order to test these, one has to merge the mtk-mtd-spi-move from
+> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git,
+> in spi-nor/next and add this patch set on top of the merge.
+> 
+> 2/ new patch:
+> mtd: spi-nor: Emphasise which is the generic set_4byte_addr_mode()
+>     method
+> - macronix_set_4byte() is renamed to spi_nor_set_4byte_addr_mode(),
+>   it will be the only 4 byte address mode method exposed to the
+>   manufacturer drivers
+> - adapt the rest of the patches based on this
+> 
+> 3/ new patch
+> mtd: spi-nor: Drop the MFR definitions
+> - MFR definitions are unlikely to be used, drop them.
+> 
+> Boris Brezillon (21):
+>   mtd: spi-nor: Stop prefixing generic functions with a manufacturer
+>     name
+>   mtd: spi-nor: Prepare core / manufacturer code split
+>   mtd: spi-nor: Expose stuctures and functions to manufacturer drivers
+>   mtd: spi-nor: Add the concept of SPI NOR manufacturer driver
+>   mtd: spi-nor: Move Atmel bits out of core.c
+>   mtd: spi-nor: Move Eon bits out of core.c
+>   mtd: spi-nor: Move ESMT bits out of core.c
+>   mtd: spi-nor: Move Everspin bits out of core.c
+>   mtd: spi-nor: Move Fujitsu bits out of core.c
+>   mtd: spi-nor: Move GigaDevice bits out of core.c
+>   mtd: spi-nor: Move Intel bits out of core.c
+>   mtd: spi-nor: Move ISSI bits out of core.c
+>   mtd: spi-nor: Move Macronix bits out of core.c
+>   mtd: spi-nor: Move Micron/ST bits out of core.c
+>   mtd: spi-nor: Move Spansion bits out of core.c
+>   mtd: spi-nor: Move SST bits out of core.c
+>   mtd: spi-nor: Move Winbond bits out of core.c
+>   mtd: spi-nor: Move Catalyst bits out of core.c
+>   mtd: spi-nor: Move Xilinx bits out of core.c
+>   mtd: spi-nor: Move XMC bits out of core.c
+>   mtd: spi-nor: Get rid of the now empty spi_nor_ids[] table
+> 
+> Tudor Ambarus (4):
+>   mtd: spi-nor: Emphasise which is the generic set_4byte_addr_mode()
+>     method
+>   mtd: spi-nor: Move SFDP logic out of the core
+>   mtd: spi-nor: Drop the MFR definitions
+>   mtd: spi-nor: Trim what is exposed in spi-nor.h
+> 
+>  drivers/mtd/spi-nor/Kconfig                   |   75 +-
+>  drivers/mtd/spi-nor/Makefile                  |   25 +-
+>  drivers/mtd/spi-nor/atmel.c                   |   46 +
+>  drivers/mtd/spi-nor/catalyst.c                |   29 +
+>  drivers/mtd/spi-nor/controllers/Kconfig       |   75 +
+>  drivers/mtd/spi-nor/controllers/Makefile      |    8 +
+>  .../spi-nor/{ => controllers}/aspeed-smc.c    |    0
+>  .../{ => controllers}/cadence-quadspi.c       |    0
+>  .../mtd/spi-nor/{ => controllers}/hisi-sfc.c  |    0
+>  .../spi-nor/{ => controllers}/intel-spi-pci.c |    0
+>  .../{ => controllers}/intel-spi-platform.c    |    0
+>  .../mtd/spi-nor/{ => controllers}/intel-spi.c |    0
+>  .../mtd/spi-nor/{ => controllers}/intel-spi.h |    0
+>  .../mtd/spi-nor/{ => controllers}/nxp-spifi.c |    0
+>  drivers/mtd/spi-nor/{spi-nor.c => core.c}     | 2501 ++---------------
+>  drivers/mtd/spi-nor/core.h                    |  431 +++
+>  drivers/mtd/spi-nor/eon.c                     |   34 +
+>  drivers/mtd/spi-nor/esmt.c                    |   25 +
+>  drivers/mtd/spi-nor/everspin.c                |   27 +
+>  drivers/mtd/spi-nor/fujitsu.c                 |   20 +
+>  drivers/mtd/spi-nor/gigadevice.c              |   59 +
+>  drivers/mtd/spi-nor/intel.c                   |   32 +
+>  drivers/mtd/spi-nor/issi.c                    |   83 +
+>  drivers/mtd/spi-nor/macronix.c                |   98 +
+>  drivers/mtd/spi-nor/micron-st.c               |  153 +
+>  drivers/mtd/spi-nor/sfdp.c                    | 1205 ++++++++
+>  drivers/mtd/spi-nor/sfdp.h                    |   98 +
+>  drivers/mtd/spi-nor/spansion.c                |   95 +
+>  drivers/mtd/spi-nor/sst.c                     |  151 +
+>  drivers/mtd/spi-nor/winbond.c                 |  112 +
+>  drivers/mtd/spi-nor/xilinx.c                  |   94 +
+>  drivers/mtd/spi-nor/xmc.c                     |   23 +
+>  include/linux/mtd/spi-nor.h                   |  275 +-
+>  33 files changed, 3120 insertions(+), 2654 deletions(-)
+>  create mode 100644 drivers/mtd/spi-nor/atmel.c
+>  create mode 100644 drivers/mtd/spi-nor/catalyst.c
+>  create mode 100644 drivers/mtd/spi-nor/controllers/Kconfig
+>  create mode 100644 drivers/mtd/spi-nor/controllers/Makefile
+>  rename drivers/mtd/spi-nor/{ => controllers}/aspeed-smc.c (100%)
+>  rename drivers/mtd/spi-nor/{ => controllers}/cadence-quadspi.c (100%)
+>  rename drivers/mtd/spi-nor/{ => controllers}/hisi-sfc.c (100%)
+>  rename drivers/mtd/spi-nor/{ => controllers}/intel-spi-pci.c (100%)
+>  rename drivers/mtd/spi-nor/{ => controllers}/intel-spi-platform.c (100%)
+>  rename drivers/mtd/spi-nor/{ => controllers}/intel-spi.c (100%)
+>  rename drivers/mtd/spi-nor/{ => controllers}/intel-spi.h (100%)
+>  rename drivers/mtd/spi-nor/{ => controllers}/nxp-spifi.c (100%)
+>  rename drivers/mtd/spi-nor/{spi-nor.c => core.c} (51%)
+>  create mode 100644 drivers/mtd/spi-nor/core.h
+>  create mode 100644 drivers/mtd/spi-nor/eon.c
+>  create mode 100644 drivers/mtd/spi-nor/esmt.c
+>  create mode 100644 drivers/mtd/spi-nor/everspin.c
+>  create mode 100644 drivers/mtd/spi-nor/fujitsu.c
+>  create mode 100644 drivers/mtd/spi-nor/gigadevice.c
+>  create mode 100644 drivers/mtd/spi-nor/intel.c
+>  create mode 100644 drivers/mtd/spi-nor/issi.c
+>  create mode 100644 drivers/mtd/spi-nor/macronix.c
+>  create mode 100644 drivers/mtd/spi-nor/micron-st.c
+>  create mode 100644 drivers/mtd/spi-nor/sfdp.c
+>  create mode 100644 drivers/mtd/spi-nor/sfdp.h
+>  create mode 100644 drivers/mtd/spi-nor/spansion.c
+>  create mode 100644 drivers/mtd/spi-nor/sst.c
+>  create mode 100644 drivers/mtd/spi-nor/winbond.c
+>  create mode 100644 drivers/mtd/spi-nor/xilinx.c
+>  create mode 100644 drivers/mtd/spi-nor/xmc.c
 
-Because struct nand_sdr_timings represents the device requirement
-in pico seconds, denali_setup_data_interface() computes the register
-values by dividing the device timings with the clock period.
-
-Marek Vasut reported this driver in the latest kernel does not work
-on his SOCFPGA board. (The on-board NAND chip is mode 5)
-
-The suspicious parameter is acc_clks, so this commit relaxes it.
-
-The Denali NAND Flash Memory Controller User's Guide describes this
-register as follows:
-
-  acc_clks
-    signifies the number of bus interface clk_x clock cycles,
-    controller should wait from read enable going low to sending
-    out a strobe of clk_x for capturing of incoming data.
-
-Currently, acc_clks is calculated only based on tREA, the delay on the
-chip side. This does not include additional delays that come from the
-data path on the PCB and in the SoC, load capacity of the pins, etc.
-
-This relatively becomes a big factor on faster timing modes like mode 5.
-
-Before supporting the ->setup_data_interface() hook (e.g. Linux 4.12),
-the Denali driver hacks acc_clks in a couple of ways [1] [2] to support
-the timing mode 5.
-
-We would not go back to the hard-coded acc_clks, but we need to include
-this factor into the delay somehow. Let's say the amount of the additional
-delay is 10000 pico sec.
-
-In the new calculation, acc_clks is determined by timings->tREA_max +
-data_setup_on_host.
-
-Also, prolong the RE# low period to make sure the data hold is met.
-
-Finally, re-center the data latch timing for extra safety.
-
-[1] https://github.com/torvalds/linux/blob/v4.12/drivers/mtd/nand/denali.c#L276
-[2] https://github.com/torvalds/linux/blob/v4.12/drivers/mtd/nand/denali.c#L282
-
-Reported-by: Marek Vasut <marex@denx.de>
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
-
-Changes in v2:
-  - Use 'unsigned int' instead of 'u32' for data_setup_on_host
-  - Fix 'line over 80 characters' warning from checkpatch.pl
-
- drivers/mtd/nand/raw/denali.c | 45 ++++++++++++++++++++++++++---------
- 1 file changed, 34 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
-index 6a6c919b2569..2fcd2baf6e35 100644
---- a/drivers/mtd/nand/raw/denali.c
-+++ b/drivers/mtd/nand/raw/denali.c
-@@ -764,6 +764,7 @@ static int denali_write_page(struct nand_chip *chip, const u8 *buf,
- static int denali_setup_data_interface(struct nand_chip *chip, int chipnr,
- 				       const struct nand_data_interface *conf)
- {
-+	static const unsigned int data_setup_on_host = 10000;
- 	struct denali_controller *denali = to_denali_controller(chip);
- 	struct denali_chip_sel *sel;
- 	const struct nand_sdr_timings *timings;
-@@ -796,15 +797,6 @@ static int denali_setup_data_interface(struct nand_chip *chip, int chipnr,
- 
- 	sel = &to_denali_chip(chip)->sels[chipnr];
- 
--	/* tREA -> ACC_CLKS */
--	acc_clks = DIV_ROUND_UP(timings->tREA_max, t_x);
--	acc_clks = min_t(int, acc_clks, ACC_CLKS__VALUE);
--
--	tmp = ioread32(denali->reg + ACC_CLKS);
--	tmp &= ~ACC_CLKS__VALUE;
--	tmp |= FIELD_PREP(ACC_CLKS__VALUE, acc_clks);
--	sel->acc_clks = tmp;
--
- 	/* tRWH -> RE_2_WE */
- 	re_2_we = DIV_ROUND_UP(timings->tRHW_min, t_x);
- 	re_2_we = min_t(int, re_2_we, RE_2_WE__VALUE);
-@@ -862,14 +854,45 @@ static int denali_setup_data_interface(struct nand_chip *chip, int chipnr,
- 	tmp |= FIELD_PREP(RDWR_EN_HI_CNT__VALUE, rdwr_en_hi);
- 	sel->rdwr_en_hi_cnt = tmp;
- 
--	/* tRP, tWP -> RDWR_EN_LO_CNT */
-+	/*
-+	 * tREA -> ACC_CLKS
-+	 * tRP, tWP, tRHOH, tRC, tWC -> RDWR_EN_LO_CNT
-+	 */
-+
-+	/*
-+	 * Determine the minimum of acc_clks to meet the setup timing when
-+	 * capturing the incoming data.
-+	 *
-+	 * The delay on the chip side is well-defined as tREA, but we need to
-+	 * take additional delay into account. This includes a certain degree
-+	 * of unknowledge, such as signal propagation delays on the PCB and
-+	 * in the SoC, load capacity of the I/O pins, etc.
-+	 */
-+	acc_clks = DIV_ROUND_UP(timings->tREA_max + data_setup_on_host, t_x);
-+
-+	/* Determine the minimum of rdwr_en_lo_cnt from RE#/WE# pulse width */
- 	rdwr_en_lo = DIV_ROUND_UP(max(timings->tRP_min, timings->tWP_min), t_x);
-+
-+	/* Extend rdwr_en_lo to meet the data hold timing */
-+	rdwr_en_lo = max_t(int, rdwr_en_lo,
-+			   acc_clks - timings->tRHOH_min / t_x);
-+
-+	/* Extend rdwr_en_lo to meet the requirement for RE#/WE# cycle time */
- 	rdwr_en_lo_hi = DIV_ROUND_UP(max(timings->tRC_min, timings->tWC_min),
- 				     t_x);
--	rdwr_en_lo_hi = max_t(int, rdwr_en_lo_hi, mult_x);
- 	rdwr_en_lo = max(rdwr_en_lo, rdwr_en_lo_hi - rdwr_en_hi);
- 	rdwr_en_lo = min_t(int, rdwr_en_lo, RDWR_EN_LO_CNT__VALUE);
- 
-+	/* Center the data latch timing for extra safety */
-+	acc_clks = (acc_clks + rdwr_en_lo +
-+		    DIV_ROUND_UP(timings->tRHOH_min, t_x)) / 2;
-+	acc_clks = min_t(int, acc_clks, ACC_CLKS__VALUE);
-+
-+	tmp = ioread32(denali->reg + ACC_CLKS);
-+	tmp &= ~ACC_CLKS__VALUE;
-+	tmp |= FIELD_PREP(ACC_CLKS__VALUE, acc_clks);
-+	sel->acc_clks = tmp;
-+
- 	tmp = ioread32(denali->reg + RDWR_EN_LO_CNT);
- 	tmp &= ~RDWR_EN_LO_CNT__VALUE;
- 	tmp |= FIELD_PREP(RDWR_EN_LO_CNT__VALUE, rdwr_en_lo);
--- 
-2.17.1
+All applied to spi-nor/next. Thanks,
+ta
 
 
 ______________________________________________________
