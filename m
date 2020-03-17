@@ -2,94 +2,132 @@ Return-Path: <SRS0=BLjR=5C=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1ACCFC10F29
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Mar 2020 09:28:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E12D6C2BB1D
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Mar 2020 11:00:38 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DF938205ED
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Mar 2020 09:28:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BDA7F20736
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Mar 2020 11:00:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="llZkyzaB";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="FmVvBQ5N"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DF938205ED
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Zo8DN4AS";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="CApzFwyA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDA7F20736
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=samsung.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:References:Mime-Version:In-Reply-To:
+	Date:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QdWhSmB7FUNOco12XZQXcIT3lKXveGYYL59eGVyCGOc=; b=llZkyzaBT9BhnB
-	nVBQopPobaYd2o8QlFMEO27cXFfw7uHoKYUjZIgqgwUfcVwX4V7/09FVEQXCRzLBMNECFGnUqrCqo
-	F+VSzVnLXsyfYge9Zu6P22KxbA079ZHDBV9DsTFBa18bO262bTNfd0eEKSCYFxEbTqTxPG0UXbggh
-	bfNDyMiQMY9NKDYT23I/HF/PWebFGhM9hDAOS7PJpTCS60+/wQ5sgK3PJUq69pMkiygQ4o9TUjPQb
-	N34XIb5mxkBBD4YE2G0S20UF4IoulYKOh99HMJCYnHJEC6b0gksTjQnh+uCYfGD3SLLrbvSEH602K
-	/IRKHbtaYvCI7uACzmxw==;
+	List-Owner; bh=OstiYGgjVFvJMyyDbpK1aao9aHM7EHnQclQ1VTmkk70=; b=Zo8DN4AStbO7+m
+	F4nuQ9Vh047SyKDDbW1KpgPrelspADc9ka+Y5wuYzzzJF+Zu3Duj9N32TgwrenldQibRozW+DqLmb
+	IRKxk7Vztb5Icrov9aI6yOWXlSsvag9sg8OOVQ/0OpJym5maj4qT1JBRtdW8RZp2w8jv7drrTIVEm
+	Sh0UsrZjL7yowBpqtFWaD3rI2CbN8S52IRGhqBtMyYYzyFWCpSIjeISGwjC2ZvIcD+JZYFLHjGhA2
+	UNnGhWlujt2kKDLM6X/SdxwAq+F8Va3GgftTCDTvev/ZMLuJmgpKhiiZDEDaTfli1oTyC8BpGH6li
+	bpk20kwt3sU7oL1M6w4Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jE8Wc-0008G8-8h; Tue, 17 Mar 2020 09:28:38 +0000
-Received: from conssluserg-02.nifty.com ([210.131.2.81])
+	id 1jE9xM-00066R-NY; Tue, 17 Mar 2020 11:00:20 +0000
+Received: from mailout4.samsung.com ([203.254.224.34])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jE8WY-0008FJ-A5
- for linux-mtd@lists.infradead.org; Tue, 17 Mar 2020 09:28:36 +0000
-Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com
- [209.85.217.41]) (authenticated)
- by conssluserg-02.nifty.com with ESMTP id 02H9S5Ve024831
- for <linux-mtd@lists.infradead.org>; Tue, 17 Mar 2020 18:28:05 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 02H9S5Ve024831
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
- s=dec2015msa; t=1584437286;
- bh=rpOFg4qBHY2DfO2OU1up95OxAWFlrtCaX4jRZ7ivC5s=;
- h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=FmVvBQ5Nz5bpNqyE9aM392jfZwkQEFFJMwYPY1owYTIw/T0h9WC3AJnYGxGnRAtAd
- FWkYfUkwux1nEPesDnR2dpBO95hkHBFwqWUKhIbUtyBN4A93IwxYaRlOq39qdQ/6qd
- 5edsaUM7bntXLwKjKfd+5unyld/oBvKtK3gFOm5/OIYLtTgvAVu75E3JPIX8YwiEAd
- oozUisErMuvp1NqeodfmICjI9/iaMtkTLObVxNs3tTou1ryY2w1FsL0Z6BKi800E0o
- fG32/gKO01U7TRbrrqMra7UmUonX+d6BjWwjLnZcZm5JPCVAZseBYGdoxIHlmLR6gS
- hqESnYbmsj21w==
-X-Nifty-SrcIP: [209.85.217.41]
-Received: by mail-vs1-f41.google.com with SMTP id x206so4631195vsx.5
- for <linux-mtd@lists.infradead.org>; Tue, 17 Mar 2020 02:28:05 -0700 (PDT)
-X-Gm-Message-State: ANhLgQ2e9u2rXJNB9YvyKpfYSCKMq0cbVtgYlHHXpmRrE3782Dm/235+
- CDMO69zcPZ96LMLIQhfnEueGccUI+fx5ueUufkI=
-X-Google-Smtp-Source: ADFU+vvV6dqDFjXg2yV6u4pLtnn/BAWLShyzlzF3QfkxdsZKxWCzGNm4tOpiuJ2CsfM9WLC0uAdBCriSpqMQ7Te7aD4=
-X-Received: by 2002:a67:3201:: with SMTP id y1mr3021738vsy.54.1584437284481;
- Tue, 17 Mar 2020 02:28:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200205070834.3087104-1-marex@denx.de>
- <20200211170707.2183625e@xps13>
- <b1a10583-e110-9568-4007-aa2b3f38a7be@denx.de>
- <CAK7LNARqYDh4AJ+N-PTHui0H89-humECskJVUxW4cTf6edEBMQ@mail.gmail.com>
- <f4e2deeb-cc0e-fb06-46fa-d6cf4f2a73ad@denx.de>
- <CAK7LNAR4MU+Rfmpz99iwLuEbD4jMwUdh91uz3zyQdvjyLEQcMQ@mail.gmail.com>
- <29cce21c-2214-7238-0bc5-db2c1a54576f@denx.de>
- <CAK7LNASckTZO-9uVjtQH8iKhU0HH9WiMK-CzMxjESQOOUM0cKA@mail.gmail.com>
- <CAK7LNAT3EG0XocC0xT0f=6MBpXLga3FehOjEYbRyP6AJUbqb2Q@mail.gmail.com>
- <311cdc3c-59b5-a46b-62f0-e78fc970134a@denx.de>
- <CAK7LNAT1Bzs68X8PiWQHg4g2bpPGd-WM9D4vwf59XfwwLVuVQQ@mail.gmail.com>
- <e86925d0-805c-d364-57ca-6400b77cffd7@denx.de>
- <CAK7LNARDp1Zru3_XAQyBZHwsRov-QWOnrrwodS8pjszsKy2ysw@mail.gmail.com>
- <d4b4abf4-1af9-d57c-5b93-2d56a5dc456b@denx.de> <20200311140807.6f56baf3@xps13>
- <5fa809a3-cd2b-74de-3615-387232051ae2@denx.de> <20200311143302.309bf468@xps13>
- <aaec50bb-05da-8d4e-3e15-17fbfeb52f68@denx.de> <20200311153923.443f3e64@xps13>
- <45157038-8309-3c00-3019-a1c7afc059c0@denx.de>
-In-Reply-To: <45157038-8309-3c00-3019-a1c7afc059c0@denx.de>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Tue, 17 Mar 2020 18:27:28 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQK57+iNS_GVd3j1u6g2S88i+HFCGkX2A0ckUitC9HhrA@mail.gmail.com>
-Message-ID: <CAK7LNAQK57+iNS_GVd3j1u6g2S88i+HFCGkX2A0ckUitC9HhrA@mail.gmail.com>
-Subject: Re: [PATCH] Revert "mtd: rawnand: denali: get ->setup_data_interface()
- working again"
-To: Marek Vasut <marex@denx.de>
+ id 1jE9xF-0005wW-Ma
+ for linux-mtd@lists.infradead.org; Tue, 17 Mar 2020 11:00:16 +0000
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+ by mailout4.samsung.com (KnoxPortal) with ESMTP id
+ 20200317110010epoutp04f476f0de19d7599b91ea1f426cf74aa2~9EldLbaUw2187621876epoutp04U
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Mar 2020 11:00:10 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com
+ 20200317110010epoutp04f476f0de19d7599b91ea1f426cf74aa2~9EldLbaUw2187621876epoutp04U
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+ s=mail20170921; t=1584442810;
+ bh=5ekazTGTGX4U/+sxAoxQBbfJ+A5+j4kWGKldZMNQ54s=;
+ h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+ b=CApzFwyAmRNQVBAMBnpINOcTq7FYyUdtey04NkHJ0AA8Kw5kmGEqA5iIp4fsFJEgf
+ CPzC14dSHlRUsl7lHIr3qVqiOcgSvSxwcxZt9mhbmVjTt87wet39E+VEtX9ko4F+Du
+ GGJyvDkjb8yyXFeOYdrPS1ULY6c9nvJj4GWiHc+s=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+ epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+ 20200317110009epcas1p333359c58d90b2b8d18fd80eb36367904~9Elc65Yv42545325453epcas1p3U;
+ Tue, 17 Mar 2020 11:00:09 +0000 (GMT)
+Received: from epsmges1p5.samsung.com (unknown [182.195.40.161]) by
+ epsnrtp2.localdomain (Postfix) with ESMTP id 48hVZ04zpkzMqYkc; Tue, 17 Mar
+ 2020 11:00:08 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+ epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
+ 07.5D.04074.8BDA07E5; Tue, 17 Mar 2020 20:00:08 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+ epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+ 20200317110008epcas1p3d8a2c38e25ec7bd22c785c6aa2a6cb65~9Elbgpe9W2545725457epcas1p3H;
+ Tue, 17 Mar 2020 11:00:08 +0000 (GMT)
+Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
+ epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+ 20200317110008epsmtrp19745c5c6157e7544bf33f894f9341525~9ElbfruYq1678916789epsmtrp1-;
+ Tue, 17 Mar 2020 11:00:08 +0000 (GMT)
+X-AuditID: b6c32a39-58bff70000000fea-f7-5e70adb841df
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+ epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+ 98.79.04158.8BDA07E5; Tue, 17 Mar 2020 20:00:08 +0900 (KST)
+Received: from asdf (unknown [10.88.100.192]) by epsmtip1.samsung.com
+ (KnoxPortal) with ESMTPA id
+ 20200317110008epsmtip1c6fb17d6b1a0000cd4e81175e1e35349~9ElbTu1-A3156031560epsmtip1Y;
+ Tue, 17 Mar 2020 11:00:08 +0000 (GMT)
+Message-ID: <b3e7a00fb5014efefc7214e12883deb77e3ae02f.camel@samsung.com>
+Subject: Re: [PATCH 2/3] mtd: spi-nor: add 4bit block protection support
+From: Jungseung Lee <js07.lee@samsung.com>
+To: Michael Walle <michael@walle.cc>
+Date: Tue, 17 Mar 2020 20:00:07 +0900
+In-Reply-To: <ab18ece8973dbf89448d2070a78ff50b@walle.cc>
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrEJsWRmVeSWpSXmKPExsWy7bCmru6OtQVxBmeOqVpcv3aF0eLvnHdM
+ Fo9u/ma12N20jN3i7ekN7BYflzhY/D/7gd2B3WPnrLvsHo/nbmT32Lyk3uPOj6WMHn1bVjF6
+ HL+xncnjwN4WtgD2qBybjNTElNQihdS85PyUzLx0WyXv4HjneFMzA0NdQ0sLcyWFvMTcVFsl
+ F58AXbfMHKB7lBTKEnNKgUIBicXFSvp2NkX5pSWpChn5xSW2SqkFKTkFhgYFesWJucWleel6
+ yfm5VoYGBkamQJUJORlvPq5mL9gUULHqyGnmBsZr5l2MnBwSAiYSjx8dYgWxhQR2MEpc3xbT
+ xcgFZH9ilLj2bC8LhPONUWLx/+1MMB17DrQyQiT2MkpMPbOTGcJ5BNR++TELSBWvgIfErKPv
+ 2EFsYSB7xvmHYDabgJbEjd+bwPaJCKhIPP58AWwSs8ApRomD+2eBFbEIqErsnnQGyObg4BSw
+ kHj0TgZis47E21N9LCBhXgFBib87hEHCzALyEtvfzgG7QULgPpvEsSd3WSDqXSQ2PfgEZQtL
+ vDq+hR3ClpJ42d8GZRdL7Fw5kR2iuYVR4tHyJVAJY4l3b9cygyxjFtCUWL9LHyKsKLHz91xG
+ iMV8Eu++9rCClEgI8Ep0tAlBlChJvHnQArVWQuLC415WCNtD4v6ln2yQsHrNKPHvYyfjBEaF
+ WQjvzELyziyExQsYmVcxiqUWFOempxYbFpgiR/AmRnD61LLcwXjsnM8hRgEORiUe3hk5+XFC
+ rIllxZW5hxglOJiVRHgXFwKFeFMSK6tSi/Lji0pzUosPMZoCw3ois5Rocj4wteeVxBuaGhkb
+ G1uYmJmbmRorifNOvZ4TJySQnliSmp2aWpBaBNPHxMEp1cAYJGUw4XLAOhmma3/iS10ULqy/
+ WTaJbZKTH+PPogMztvgLrL0zdbVC6rwLCzba3ta/JqO3RvNmxPnXIWrX7h/wPS/QmeH31qRj
+ vlmgsrTkuYOGH5dE8yfwTVxRur3tnnu8sqdLhI+2teKXSSsnV2dHMC5fczI88ky00o5zvzS6
+ Yu5EVPT7LfmoxFKckWioxVxUnAgAEpnZhLUDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrMLMWRmVeSWpSXmKPExsWy7bCSnO6OtQVxBmeesVtcv3aF0eLvnHdM
+ Fo9u/ma12N20jN3i7ekN7BYflzhY/D/7gd2B3WPnrLvsHo/nbmT32Lyk3uPOj6WMHn1bVjF6
+ HL+xncnjwN4WtgD2KC6blNSczLLUIn27BK6MNx9XsxdsCqhYdeQ0cwPjNfMuRk4OCQETiT0H
+ Whm7GLk4hAR2M0qcer6ZBSIhIfFo5xcgmwPIFpY4fLgYouYBo8SnRR8ZQWp4BTwkZh19xw5i
+ CwPZM84/BLPZBLQkbvzexApiiwioSDz+fAFsAbPAKUaJ3dt3MIMkWARUJXZPOsMOsoBTwELi
+ 0TsZiAXvGCUuzlkEVsMsoCnRuv03O8RBOhJvT/WBHcQrICjxd4cwRIm8xPa3c5gnMArOQtIx
+ C6FqFpKqBYzMqxglUwuKc9Nziw0LjPJSy/WKE3OLS/PS9ZLzczcxgqNCS2sH44kT8YcYBTgY
+ lXh4HbLy44RYE8uKK3MPMUpwMCuJ8C4uBArxpiRWVqUW5ccXleakFh9ilOZgURLnlc8/Fikk
+ kJ5YkpqdmlqQWgSTZeLglGpgLNR+f7vWc8m7iULzN3OLiKpP/HB987ds24teZ3x0FpvrtWT2
+ ZzCkn3xvxGi90EHPJdntgXfiipaOXQzsR7P4r5kqtWS9XfS6REv5z9bVM72uuX65Z8njq/Uk
+ tuX2w/bk2tn7rnEXeK+fPF2ixcq96dLlqsVfZzAyRUSG7hT+UHOAgyf/frWzEktxRqKhFnNR
+ cSIA6l8aaoYCAAA=
+X-CMS-MailID: 20200317110008epcas1p3d8a2c38e25ec7bd22c785c6aa2a6cb65
+X-Msg-Generator: CA
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200304110833epcas1p42958d6dce0081afabfdd4200258eddb8
+References: <20200304110800.20658-1-js07.lee@samsung.com>
+ <CGME20200304110833epcas1p42958d6dce0081afabfdd4200258eddb8@epcas1p4.samsung.com>
+ <20200304110800.20658-2-js07.lee@samsung.com>
+ <ab18ece8973dbf89448d2070a78ff50b@walle.cc>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200317_022834_699135_2BA9FBAC 
-X-CRM114-Status: GOOD (  36.59  )
+X-CRM114-CacheID: sfid-20200317_040014_232392_AFD70CAA 
+X-CRM114-Status: GOOD (  36.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,182 +139,341 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Dinh Nguyen <dinguyen@kernel.org>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- linux-mtd <linux-mtd@lists.infradead.org>, Tim Sander <tim@krieglstein.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+ chenxiang <chenxiang66@hisilicon.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>, linux-mtd@lists.infradead.org,
+ js07.lee@gmail.com, js07.lee@samsung.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+Hi, Michael,
 
+On Fri, 2020-03-13 at 17:24 +0100, Michael Walle wrote:
+> Hi Jungseung,
+> 
+> sorry for the late review.
+> 
 
-On Sat, Mar 14, 2020 at 11:49 PM Marek Vasut <marex@denx.de> wrote:
->
-> On 3/11/20 3:39 PM, Miquel Raynal wrote:
-> > Hi Marek,
->
-> Hello Miquel,
->
-> [...]
->
-> >>> I checked the denali driver and indeed u-boot should not be much clever
-> >>> than Linux. Are the differences significant? The code is so close, you
-> >>> can probably check why you have differences. Also verify that the same
-> >>> ONFI mode is used.
-> >>
-> >> It might've made sense to check those driver differences before making
-> >> such an statement ;-)
-> >> That said, I don't think either U-Boot or Linux uses the ONFI
-> >> information for this NAND, but I might be wrong.
-> >
-> > I don't know what is the exact device but most of the time, even for
-> > non ONFI-compliant chips, the core starts talking at the lowest ONFI
-> > speed (mode 0) and then negotiate with the NAND chip the actual timings
-> > to use. This works if get/set_features is supported, otherwise you
-> > might have a default mode somewhere. Is it the same in both cases? Does
-> > the core tries to apply the same timings? Is the calculation the same?
-> >
-> > These are pointers but I am sure you can figure all that out.
->
-> The calculation is obviously not the same anymore, due to the recent
-> changes in the Linux driver, which seems to have broken it (in Linux).
->
-> >>>>> and
-> >>>>> may optimize better the timings depending on the selected mode ([0-5])
-> >>>>> (hence the different calls to ->setup_data_interface().
-> >>>>
-> >>>> I would expect those two should produce identical timing parameters,
-> >>>> period, otherwise one or the other is wrong. Thus far, it was Linux that
-> >>>> produced non-working results.
-> >>>
-> >>> Again, we define minimum and maximum delays. If the right thing is to
-> >>> not wait more than 5us and you wait up to 6, it does not mean you
-> >>> wrote "bad timings". 4us would be a bad timing though. It depends on
-> >>> what you are looking at.
-> >>
-> >> I am look at for example
-> >>
-> >>  denali->reg + TCWAW_AND_ADDR_2_DATA = 0x0000143f -> 0x00001432
-> >>
-> >> Register was 0x143f before, now is 0x1432 , which is less.
-> >> I guess that would be the "bad timing" then ?
-> >
-> > Well, is it a minimum or a maximum ? How do you know U-Boot value is
-> > straight on the edge? If you want to know if timings are valid, open
-> > the part datasheet, do the math with a paper and compare. This is the
-> > scientific way to declare timings valid or invalid.
->
-> If the value were straight at the edge, I would expect this would
-> trigger errors over the years, when those values were used, or maybe it
-> would trigger an error in the thermal chamber tests ? If neither of that
-> happens, then the values are probably not at the edge enough to matter.
+Not at all. thanks for your review.
 
+> Am 2020-03-04 12:07, schrieb Jungseung Lee:
+> > Currently, we are supporting block protection only for
+> > flash chips with 3 block protection bits in the SR register.
+> > This patch enables block protection support for flashes with
+> > 4 block protection bits(bp0-3).
+> > 
+> > Signed-off-by: Jungseung Lee <js07.lee@samsung.com>
+> > ---
+> >  drivers/mtd/spi-nor/spi-nor.c | 82
+> > ++++++++++++++++++++++++++++++++---
+> >  include/linux/mtd/spi-nor.h   |  4 ++
+> >  2 files changed, 79 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/spi-nor.c 
+> > b/drivers/mtd/spi-nor/spi-nor.c
+> > index c58c27552a74..31a2106e529a 100644
+> > --- a/drivers/mtd/spi-nor/spi-nor.c
+> > +++ b/drivers/mtd/spi-nor/spi-nor.c
+> > @@ -238,6 +238,14 @@ struct flash_info {
+> >  					 * status register. Must be
+> > used with
+> >  					 * SPI_NOR_HAS_TB.
+> >  					 */
+> > +#define SPI_NOR_4BIT_BP		BIT(17)	/*
+> > +					 * Flash SR has 4 bit fields
+> > (BP0-3)
+> > +					 * for block protection.
+> > +					 */
+> > +#define SPI_NOR_BP3_SR_BIT6	BIT(18)	/*
+> > +					 * BP3 is bit 6 of status
+> > register.
+> > +					 * Must be used with
+> > SPI_NOR_4BIT_BP.
+> > +					 */
+> > 
+> >  	/* Part specific fixup hooks. */
+> >  	const struct spi_nor_fixups *fixups;
+> > @@ -1786,7 +1794,16 @@ static int spi_nor_erase(struct mtd_info
+> > *mtd,
+> > struct erase_info *instr)
+> > 
+> >  static u8 spi_nor_get_bp_mask(struct spi_nor *nor)
+> >  {
+> > -	return SR_BP2 | SR_BP1 | SR_BP0;
+> > +	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
+> > +
+> 
+> can we just use the SR_BP3 eg:
+> 
+> 	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
+> 	if (nor->flags & SNOR_F_HAS_4BIT_BP)
+> 		mask |= SR_BP3;
+> 	return mask;
+> 
+> 
 
-This is a trade-off between the performance and the safety.
+I'd prefer this one too if we can, but there are some places to need
+the real mask value. It is also used in other places such as
+spi_nor_sr_lock/unlock.
 
-If you want to be very safe, you can use
-the power-on-reset defaults.
-The default register values are chosen to insert long enough
-wait time to work with any devices.
-Of course, it is slow, though.
+> > +	if (nor->flags & SNOR_F_HAS_4BIT_BP) {
+> > +		if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6)
+> > +			mask = mask | SR_BP3_BIT6;
+> > +		else
+> > +			mask = mask | SR_BP3_BIT5;
+> > +	}
+> > +
+> > +	return mask;
+> >  }
+> > 
+> >  static u8 spi_nor_get_tb_mask(struct spi_nor *nor)
+> > @@ -1797,12 +1814,26 @@ static u8 spi_nor_get_tb_mask(struct
+> > spi_nor 
+> > *nor)
+> >  		return SR_TB_BIT5;
+> >  }
+> > 
+> > +static u8 stm_get_bpval_from_sr(struct spi_nor *nor, u8 sr) {
+> > +	u8 mask = spi_nor_get_bp_mask(nor);
+> > +	u8 bp = sr & mask;
+> > +
+> > +	if (bp & SR_BP3_BIT6)
+> > +		bp = (bp & ~BIT(6)) | BIT(5);
+> > +
+> > +	bp = bp >> SR_BP_SHIFT;
+> > +
+> > +	return bp;
+> > +}
+> 
+> Don't convert this. It makes the code really hard to read. See below.
+> 
+> > +
+> >  static int stm_get_min_prot_length(struct spi_nor *nor)
+> >  {
+> >  	int bp_slots, bp_slots_needed;
+> > -	u8 mask = spi_nor_get_bp_mask(nor);
+> > 
+> > -	bp_slots = (mask >> SR_BP_SHIFT) + 1;
+> 
+> Then just keep this.
+> 
+> > +	if (nor->flags & SNOR_F_HAS_4BIT_BP)
+> > +		bp_slots = 1 << 4;
+> > +	else
+> > +		bp_slots = 1 << 3;
+> > 
+> >  	/* Reserved one for "protect none" and one for "protect all".
+> > */
+> >  	bp_slots = bp_slots - 2;
+> > @@ -1821,9 +1852,8 @@ static void stm_get_locked_range(struct
+> > spi_nor
+> > *nor, u8 sr, loff_t *ofs,
+> >  {
+> >  	struct mtd_info *mtd = &nor->mtd;
+> >  	int min_prot_len;
+> > -	u8 mask = spi_nor_get_bp_mask(nor);
+> >  	u8 tb_mask = spi_nor_get_tb_mask(nor);
+> > -	u8 bp = (sr & mask) >> SR_BP_SHIFT;
+> > +	u8 bp = stm_get_bpval_from_sr(nor, sr);
+> 
+> also this.
+> 
+> > 
+> >  	if (!bp) {
+> >  		/* No protection */
+> > @@ -1881,7 +1911,7 @@ static int stm_is_unlocked_sr(struct spi_nor
+> > *nor, loff_t ofs, uint64_t len,
+> > 
+> >  /*
+> >   * Lock a region of the flash. Compatible with ST Micro and
+> > similar 
+> > flash.
+> > - * Supports the block protection bits BP{0,1,2} in the status
+> > register
+> > + * Supports the block protection bits BP{0,1,2}/BP{0,1,2,3} in the
+> > status register
+> >   * (SR). Does not support these features found in newer SR
+> > bitfields:
+> >   *   - SEC: sector/block protect - only handle SEC=0 (block
+> > protect)
+> >   *   - CMP: complement protect - only support CMP=0 (range is not 
+> > complemented)
+> > @@ -1889,7 +1919,7 @@ static int stm_is_unlocked_sr(struct spi_nor
+> > *nor, loff_t ofs, uint64_t len,
+> >   * Support for the following is provided conditionally for some
+> > flash:
+> >   *   - TB: top/bottom protect
+> >   *
+> > - * Sample table portion for 8MB flash (Winbond w25q64fw):
+> > + * Sample table portion for 8MB flash (Winbond w25q64fw / BP0-2):
+> >   *
+> >   *   SEC  |  TB   |  BP2  |  BP1  |  BP0  |  Prot Length  |
+> > Protected 
+> > Portion
+> >   *  
+> > -----------------------------------------------------------------
+> > ---------
+> > @@ -1909,6 +1939,32 @@ static int stm_is_unlocked_sr(struct spi_nor
+> > *nor, loff_t ofs, uint64_t len,
+> >   *    0   |   1   |   1   |   0   |   1   |  2 MB         | Lower
+> > 1/4
+> >   *    0   |   1   |   1   |   1   |   0   |  4 MB         | Lower
+> > 1/2
+> >   *
+> > + * Sample table portion for 64MB flash (Micron n25q512ax3 / BP0-
+> > 3):
+> > + *
+> > + *   TB   |  BP3  |  BP2  |  BP1  |  BP0  |  Prot Length  |
+> > Protected 
+> > Portion
+> > + *  
+> > -----------------------------------------------------------------
+> > ---------
+> > + *    0   |   0   |   0   |   0   |   0   |  NONE         | NONE
+> > + *    0   |   0   |   0   |   0   |   1   |   64 KB       | Upper 
+> > 1/1024
+> > + *    0   |   0   |   0   |   1   |   0   |  128 KB       | Upper 
+> > 1/512
+> > + *    0   |   0   |   0   |   1   |   1   |  256 KB       | Upper 
+> > 1/256
+> > + *   ...
+> > + *    0   |   1   |   0   |   0   |   1   |  16 MB        | Upper
+> > 1/4
+> > + *    0   |   1   |   0   |   1   |   0   |  32 MB        | Upper
+> > 1/2
+> > + *    0   |   1   |   0   |   1   |   1   |  64 MB        | ALL
+> > + *    0   |   1   |   1   |   0   |   0   |  64 MB        | ALL
+> > + *   ...
+> > + *  
+> > ------|-------|-------|-------|-------|---------------|----------
+> > ---------
+> > + *    1   |   0   |   0   |   0   |   0   |   NONE        | NONE
+> > + *    1   |   0   |   0   |   0   |   1   |   64 KB       | Lower 
+> > 1/1024
+> > + *    1   |   0   |   0   |   1   |   0   |  128 KB       | Lower 
+> > 1/512
+> > + *    1   |   0   |   0   |   1   |   1   |  256 KB       | Lower 
+> > 1/256
+> > + *   ...
+> > + *    1   |   1   |   0   |   0   |   1   |  16 MB        | Lower
+> > 1/4
+> > + *    1   |   1   |   0   |   1   |   0   |  32 MB        | Lower
+> > 1/2
+> > + *    1   |   1   |   0   |   1   |   1   |  64 MB        | ALL
+> > + *    1   |   1   |   1   |   0   |   0   |  64 MB        | ALL
+> > + *   ...
+> > + *
+> >   * Returns negative on errors, 0 on success.
+> >   */
+> >  static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+> > @@ -1960,6 +2016,9 @@ static int stm_lock(struct spi_nor *nor,
+> > loff_t
+> > ofs, uint64_t len)
+> >  		min_prot_len = stm_get_min_prot_length(nor);
+> >  		pow = ilog2(lock_len) - ilog2(min_prot_len) + 1;
+> >  		val = pow << SR_BP_SHIFT;
+> > +
+> > +		if (val & BIT(5) && mask & SR_BP3_BIT6)
+> > +			val = (val & ~BIT(5)) | BIT(6);
+> 
+> .. and the use just the following here:
+> 
+> if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6 && val & SR_BP3)
+> 	val = (val & ~SR_BP3) | SR_BP3_BIT6;
+> 
+> Ie. just use the "normal case" where all BP bits are next to each
+> other
+> and then fixup the resulting value and shift the SR3 bit if
+> necessary.
+> This will be much easier to read.
+> 
 
-Generally speaking, the datasheet spec contains the deviation,
-so I think aligning with nand_timings.c will guarantee the
-device will work over years.
+Yes, I agree. It would be better to minimize this kind of conversion in
+one place.
 
-So, in my understanding, ->setup_data_interface() hook
-can simply encode struct nand_sdr_timings into the
-controller registers.
+> >  	}
+> > 
+> >  	if (val & ~mask)
+> > @@ -2042,6 +2101,9 @@ static int stm_unlock(struct spi_nor *nor,
+> > loff_t ofs, uint64_t len)
+> >  		pow = ilog2(lock_len) - ilog2(min_prot_len) + 1;
+> >  		val = pow << SR_BP_SHIFT;
+> > 
+> > +		if (val & BIT(5) && mask & SR_BP3_BIT6)
+> > +			val = (val & ~BIT(5)) | BIT(6);
+> > +
+> 
+> here would be the other way around:
+> 
+> if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6 && val & SR_BP3_BIT6)
+> 	val = (val & ~SR_BP3_BIT6) | SR_BP3;
+> 
+> 
+> >  		/* Some power-of-two sizes are not supported */
+> >  		if (val & ~mask)
+> >  			return -EINVAL;
+> > @@ -5244,6 +5306,12 @@ int spi_nor_scan(struct spi_nor *nor, const
+> > char 
+> > *name,
+> >  	if (info->flags & USE_CLSR)
+> >  		nor->flags |= SNOR_F_USE_CLSR;
+> > 
+> > +	if (info->flags & SPI_NOR_4BIT_BP) {
+> > +		nor->flags |= SNOR_F_HAS_4BIT_BP;
+> > +		if (info->flags & SPI_NOR_BP3_SR_BIT6)
+> > +			nor->flags |= SNOR_F_HAS_SR_BP3_BIT6;
+> > +	}
+> > +
+> >  	if (info->flags & SPI_NOR_NO_ERASE)
+> >  		mtd->flags |= MTD_NO_ERASE;
+> > 
+> > diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-
+> > nor.h
+> > index de90724f62f1..0190ed21576a 100644
+> > --- a/include/linux/mtd/spi-nor.h
+> > +++ b/include/linux/mtd/spi-nor.h
+> > @@ -129,7 +129,9 @@
+> >  #define SR_BP1			BIT(3)	/* Block protect 1
+> > */
+> >  #define SR_BP2			BIT(4)	/* Block protect 2
+> > */
+> >  #define SR_TB_BIT5		BIT(5)	/* Top/Bottom protect */
+> > +#define SR_BP3_BIT5		BIT(5)	/* Block protect 3
+> > */
+> 
+> IMHO just SR_BP3. but that is a matter of taste. But it is easier on
+> the eye in the mask = SR_BP3 | SR_BP2 etc case.
+> 
 
-One question I am still wondering is why this problem was
-triggered only after Linux 4.19
+SR_BP3 would be a more appropriate name if we could set the case with
+all BP bits next to each other as the "normal case."
 
-As you said, the clock manager on SOCFPGA can change the
-clock frequencies that drive the NAND controller.
+I'm going to write patches based on latest spi-nor/next including what
+you mentioned.
 
-In your setting,
-denali->clk_rate = 31.25 MHz and denali->clk_x_rate = 125 MHz
+Thanks,
 
-But, maybe
-denali->clk_rate = 50 MHz and denali->clk_x_rate = 200 MHz
-on somebody else's. This exactly matches to the frequencies
-the denali drivers originally used.
-So, the register values are on the edge in this case.
-But, nobody reported the problem before v4.19.
+> -michael
+> 
+> >  #define SR_TB_BIT6		BIT(6)	/* Top/Bottom protect */
+> > +#define SR_BP3_BIT6		BIT(6)	/* Block protect 3
+> > */
+> >  #define SR_SRWD			BIT(7)	/* SR write protect
+> > */
+> >  /* Spansion/Cypress specific status bits */
+> >  #define SR_E_ERR		BIT(5)
+> > @@ -240,6 +242,8 @@ enum spi_nor_option_flags {
+> >  	SNOR_F_HAS_16BIT_SR	= BIT(9),
+> >  	SNOR_F_NO_READ_CR	= BIT(10),
+> >  	SNOR_F_HAS_SR_TB_BIT6	= BIT(11),
+> > +	SNOR_F_HAS_4BIT_BP	= BIT(12),
+> > +	SNOR_F_HAS_SR_BP3_BIT6	= BIT(13),
+> > 
+> >  };
+> 
 
-
-
-
-
-> That said, timing calculations do not factor in only the datasheet
-> values, but also signal propagation delays and other details of the data
-> path on the PCB and in the SOC, so it's not as simple as you claim it
-> is.
-
-
-I think you are right.
-Most of parameters can be derived from the ONFI datasheet,
-but the acc_clks register must contain the propagation delays.
-
-This is why I was asking you to test the iffy patches
-that increment the acc_clks by 1 or 2.
-
-
-
-> Moreover, while the NAND datasheet is available in public, the
-> Denali IP datasheet is not, so "do the math with a paper and compare" is
-> inapplicable here either way, sorry.
->
-> >>>>> Run a stress test, if it passes, you should be good :)
-> >>>>
-> >>>> Thank you for the hint, I think the stress test thus far could be
-> >>>> considered sufficient. I guess we can agree on that ?
-> >>>
-> >>> Oh yeah absolutely :)
-> >
-> > Just to be sure, we are talking about the new timings derived with
-> > Masahiro's patch in Linux here, right?
->
-> The timings which went through extensive testing are the original ones.
->
-> The ones coming out of Masahiro's patch at least do not trigger those
-> massive UBI errors, however they were tested only very lightly. And I
-> feel like adding +1/-1 somewhere into the patch is rather iffy, so I
-> would hope the Denali datasheet has something about this and why this is
-> needed.
-
-
-This is iffy, but I have no idea to parameterize
-the SoC/board-dependent delay.
-
-In the posted patch, I used 'data_setup_on_host'
-to avoid the magic number.
-
-
-
-
->
-> > Because "perfect timings" => "work in the oven" but let be clear on
-> > the fact that "work in the oven" does not imply "perfect timings".
->
-> Let's be clear that I still prefer "practically working and possibly
-> imperfect" over "theoretically perfect and practically not working".
->
-> Also, correction, thermal chamber is not an owen, it does testing over
-> the entire temperature range of the device.
->
-> --
-> Best regards,
-> Marek Vasut
-
-
-
--- 
-Best Regards
-Masahiro Yamada
 
 ______________________________________________________
 Linux MTD discussion mailing list
