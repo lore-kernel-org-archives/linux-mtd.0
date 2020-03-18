@@ -1,89 +1,69 @@
-Return-Path: <SRS0=BLjR=5C=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=w4g4=5D=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64CBFC18E5B
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Mar 2020 14:52:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25FC3C1975A
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Mar 2020 01:58:11 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 39BD9206EC
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Mar 2020 14:52:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E441E206EC
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Mar 2020 01:58:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DiUoNOPR";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=walle.cc header.i=@walle.cc header.b="VJJQAwSL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 39BD9206EC
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="G6OD6pwa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E441E206EC
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
-	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=55/netU9fB+Hrg3Ube5yTlJ0qaIFMI2iNnwDOGzWo+4=; b=DiUoNOPRwESnyFjxDXHl60LZg
-	2lovi5YiXeP4f/SsiWLPADg806J06s7ugyQPAHRBkcsX+wXzyk48vedT6ncZq9gQ8UmVdz1mzx2oE
-	9rj+br/SwIeIiR0YKRkoukI2eisTTro2l3mEBfWgi8n5pMw7daTVBul6vJunZlbnN4TLrXT6P5kht
-	EeoyMvy6gFCrWPwY6fJL5RqMxrxMvxN+JRUaH3V63UYDs9Oep83i+9eZCFkV4vSJw4gJnZFGs7zuh
-	+COtM00uu0uu0k13DonbE4zkjB9LRT/eJKvRkPKpaxbWyO6RlynfYumjI+SQfobEtnNevI+W7hOrI
-	f7hpYQfxg==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=3fX25AjWnTpMD2Iln3eCrEPc7PZokqQUNRDv09Dmt/o=; b=G6OD6pwaSkNAjI
+	UVmnMOdOX5tKnmlVH1jwoLWjC8hO5KWtPQxF8Y0/gprH7MYClQm96y0IREOalxd8HZdO9sSNJTOHG
+	99BS2IImpDeUaeLICdqV5ek338xigP3OcsyvPXx8Fx0ZE+xaZ75L2xJx7ogLVDK1GOogvEInDmdyG
+	rB7iYu9m1B8F5xN4k4wzEQA54l8+t34jtdmE1LB/KLutytgm32VcQNUkW2l8kJHoV1vxLFpGuguyM
+	2ACcQ9M5xUmxNA447FcRx+KRB6PHAYbKXNo/PQ1KHgxk1Orty8Mql/A6qOBnVrpflmmlVmedhRp7/
+	ClvIn4/98pO2kYn6qBew==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jEDa7-0001W2-Oc; Tue, 17 Mar 2020 14:52:35 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1jENxy-0004ss-S6; Wed, 18 Mar 2020 01:57:54 +0000
+Received: from szxga05-in.huawei.com ([45.249.212.191] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jEDa2-0001KB-Qr
- for linux-mtd@lists.infradead.org; Tue, 17 Mar 2020 14:52:33 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 99254230E1;
- Tue, 17 Mar 2020 15:52:19 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1584456743;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=A/8uKENx48oGeyDesBV0ivaRAH+TkOdP2H/0/ke24uw=;
- b=VJJQAwSL7+ykJ6PEPTdIqf8CuDulprj86WIVRa/K6Z8YGhcE1KZ9sRJnVsCBFmMR5U4hgN
- giBiZs5BoUGr9p0ZTMKs/F6gXoptqC21rtomWVWFqWQZhgAxLHQFz4Logm68AX46H/ORn2
- hw79sWJmOYPvLSOuyzABnoxZpoWq08g=
+ id 1jENxv-0004ri-H9
+ for linux-mtd@lists.infradead.org; Wed, 18 Mar 2020 01:57:53 +0000
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+ by Forcepoint Email with ESMTP id 3483D90AF2B2C1861CA2;
+ Wed, 18 Mar 2020 09:57:33 +0800 (CST)
+Received: from [127.0.0.1] (10.133.219.224) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0;
+ Wed, 18 Mar 2020 09:57:30 +0800
+Subject: Re: [PATCH v3 2/2] ubifs: read node from wbuf when it fully sits in
+ wbuf
+To: Richard Weinberger <richard.weinberger@gmail.com>
+References: <20200305092205.127758-1-houtao1@huawei.com>
+ <20200305092205.127758-3-houtao1@huawei.com>
+ <CAFLxGvzrZm=r03VFXWV+=XU_LaVq3XPGeKJxGm-YnV_HHVu_wg@mail.gmail.com>
+From: Hou Tao <houtao1@huawei.com>
+Message-ID: <f38832ea-bf94-a466-c3af-334c7ee312e8@huawei.com>
+Date: Wed, 18 Mar 2020 09:57:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.8.0
 MIME-Version: 1.0
-Date: Tue, 17 Mar 2020 15:52:19 +0100
-From: Michael Walle <michael@walle.cc>
-To: Jungseung Lee <js07.lee@samsung.com>
-Subject: Re: [PATCH 2/3] mtd: spi-nor: add 4bit block protection support
-In-Reply-To: <f63aebbd17eba621e0cd6852743cc0b282dbdefd.camel@samsung.com>
-References: <20200304110800.20658-1-js07.lee@samsung.com>
- <CGME20200304110833epcas1p42958d6dce0081afabfdd4200258eddb8@epcas1p4.samsung.com>
- <20200304110800.20658-2-js07.lee@samsung.com>
- <ab18ece8973dbf89448d2070a78ff50b@walle.cc>
- <b3e7a00fb5014efefc7214e12883deb77e3ae02f.camel@samsung.com>
- <f63aebbd17eba621e0cd6852743cc0b282dbdefd.camel@samsung.com>
-Message-ID: <f6f3806275cef43d51c368a76596eddd@walle.cc>
-X-Sender: michael@walle.cc
-User-Agent: Roundcube Webmail/1.3.10
-X-Spamd-Bar: +
-X-Rspamd-Server: web
-X-Rspamd-Queue-Id: 99254230E1
-X-Spamd-Result: default: False [1.40 / 15.00]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; TAGGED_RCPT(0.00)[];
- MIME_GOOD(-0.10)[text/plain]; RCPT_COUNT_FIVE(0.00)[6];
- DKIM_SIGNED(0.00)[]; NEURAL_HAM(-0.00)[-0.662];
- RCVD_COUNT_ZERO(0.00)[0]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+];
- FREEMAIL_CC(0.00)[microchip.com,ti.com,lists.infradead.org,gmail.com,hisilicon.com];
- MID_RHS_MATCH_FROM(0.00)[]; SUSPICIOUS_RECIPS(1.50)[]
+In-Reply-To: <CAFLxGvzrZm=r03VFXWV+=XU_LaVq3XPGeKJxGm-YnV_HHVu_wg@mail.gmail.com>
+Content-Language: en-US
+X-Originating-IP: [10.133.219.224]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200317_075231_247745_A2A12C70 
-X-CRM114-Status: GOOD (  36.65  )
+X-CRM114-CacheID: sfid-20200317_185751_727468_A514A7A2 
+X-CRM114-Status: UNSURE (   9.95  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,453 +75,34 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: chenxiang <chenxiang66@hisilicon.com>, js07.lee@gmail.com,
- linux-mtd@lists.infradead.org, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Adrian Hunter <ext-adrian.hunter@nokia.com>, Carson.Li1@unisoc.com
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2020-03-17 12:35, schrieb Jungseung Lee:
-> Hi, Micahel
+Hi,
+
+On 2020/3/17 6:33, Richard Weinberger wrote:
+> On Thu, Mar 5, 2020 at 10:15 AM Hou Tao <houtao1@huawei.com> wrote:
+>> The actual situation of the problem is the LEB is GCed, freed and then
+>> reused as journal head, and finally ubifs_tnc_locate() reads
+>> an invalid node. And it can be reproduced by the following steps:
+>> * create 128 empty files
+>> * overwrite 8 files in backgroup repeatedly to trigger GC
+>> * drop inode cache and stat these 128 empty files repeatedly
 > 
-> On Tue, 2020-03-17 at 20:00 +0900, Jungseung Lee wrote:
->> Hi, Michael,
->> 
->> On Fri, 2020-03-13 at 17:24 +0100, Michael Walle wrote:
->> > Hi Jungseung,
->> >
->> > sorry for the late review.
->> >
->> 
->> Not at all. thanks for your review.
->> 
->> > Am 2020-03-04 12:07, schrieb Jungseung Lee:
->> > > Currently, we are supporting block protection only for
->> > > flash chips with 3 block protection bits in the SR register.
->> > > This patch enables block protection support for flashes with
->> > > 4 block protection bits(bp0-3).
->> > >
->> > > Signed-off-by: Jungseung Lee <js07.lee@samsung.com>
->> > > ---
->> > >  drivers/mtd/spi-nor/spi-nor.c | 82
->> > > ++++++++++++++++++++++++++++++++---
->> > >  include/linux/mtd/spi-nor.h   |  4 ++
->> > >  2 files changed, 79 insertions(+), 7 deletions(-)
->> > >
->> > > diff --git a/drivers/mtd/spi-nor/spi-nor.c
->> > > b/drivers/mtd/spi-nor/spi-nor.c
->> > > index c58c27552a74..31a2106e529a 100644
->> > > --- a/drivers/mtd/spi-nor/spi-nor.c
->> > > +++ b/drivers/mtd/spi-nor/spi-nor.c
->> > > @@ -238,6 +238,14 @@ struct flash_info {
->> > >  					 * status register. Must be
->> > > used with
->> > >  					 * SPI_NOR_HAS_TB.
->> > >  					 */
->> > > +#define SPI_NOR_4BIT_BP		BIT(17)	/*
->> > > +					 * Flash SR has 4 bit fields
->> > > (BP0-3)
->> > > +					 * for block protection.
->> > > +					 */
->> > > +#define SPI_NOR_BP3_SR_BIT6	BIT(18)	/*
->> > > +					 * BP3 is bit 6 of status
->> > > register.
->> > > +					 * Must be used with
->> > > SPI_NOR_4BIT_BP.
->> > > +					 */
->> > >
->> > >  	/* Part specific fixup hooks. */
->> > >  	const struct spi_nor_fixups *fixups;
->> > > @@ -1786,7 +1794,16 @@ static int spi_nor_erase(struct mtd_info
->> > > *mtd,
->> > > struct erase_info *instr)
->> > >
->> > >  static u8 spi_nor_get_bp_mask(struct spi_nor *nor)
->> > >  {
->> > > -	return SR_BP2 | SR_BP1 | SR_BP0;
->> > > +	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
->> > > +
->> >
->> > can we just use the SR_BP3 eg:
->> >
->> > 	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
->> > 	if (nor->flags & SNOR_F_HAS_4BIT_BP)
->> > 		mask |= SR_BP3;
->> > 	return mask;
->> >
->> >
->> 
->> I'd prefer this one too if we can, but there are some places to need
->> the real mask value. It is also used in other places such as
->> spi_nor_sr_lock/unlock.
->> 
->> > > +	if (nor->flags & SNOR_F_HAS_4BIT_BP) {
->> > > +		if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6)
->> > > +			mask = mask | SR_BP3_BIT6;
->> > > +		else
->> > > +			mask = mask | SR_BP3_BIT5;
->> > > +	}
->> > > +
->> > > +	return mask;
->> > >  }
->> > >
->> > >  static u8 spi_nor_get_tb_mask(struct spi_nor *nor)
->> > > @@ -1797,12 +1814,26 @@ static u8 spi_nor_get_tb_mask(struct
->> > > spi_nor
->> > > *nor)
->> > >  		return SR_TB_BIT5;
->> > >  }
->> > >
->> > > +static u8 stm_get_bpval_from_sr(struct spi_nor *nor, u8 sr) {
->> > > +	u8 mask = spi_nor_get_bp_mask(nor);
->> > > +	u8 bp = sr & mask;
->> > > +
->> > > +	if (bp & SR_BP3_BIT6)
->> > > +		bp = (bp & ~BIT(6)) | BIT(5);
->> > > +
->> > > +	bp = bp >> SR_BP_SHIFT;
->> > > +
->> > > +	return bp;
->> > > +}
->> >
->> > Don't convert this. It makes the code really hard to read. See
->> > below.
->> >
->> > > +
->> > >  static int stm_get_min_prot_length(struct spi_nor *nor)
->> > >  {
->> > >  	int bp_slots, bp_slots_needed;
->> > > -	u8 mask = spi_nor_get_bp_mask(nor);
->> > >
->> > > -	bp_slots = (mask >> SR_BP_SHIFT) + 1;
->> >
->> > Then just keep this.
->> >
->> > > +	if (nor->flags & SNOR_F_HAS_4BIT_BP)
->> > > +		bp_slots = 1 << 4;
->> > > +	else
->> > > +		bp_slots = 1 << 3;
->> > >
->> > >  	/* Reserved one for "protect none" and one for "protect all".
->> > > */
->> > >  	bp_slots = bp_slots - 2;
->> > > @@ -1821,9 +1852,8 @@ static void stm_get_locked_range(struct
->> > > spi_nor
->> > > *nor, u8 sr, loff_t *ofs,
->> > >  {
->> > >  	struct mtd_info *mtd = &nor->mtd;
->> > >  	int min_prot_len;
->> > > -	u8 mask = spi_nor_get_bp_mask(nor);
->> > >  	u8 tb_mask = spi_nor_get_tb_mask(nor);
->> > > -	u8 bp = (sr & mask) >> SR_BP_SHIFT;
->> > > +	u8 bp = stm_get_bpval_from_sr(nor, sr);
->> >
->> > also this.
->> >
+> So far I failed to reproduce. Do you have a script?
+> Or even better, a xfstest?
 > 
-> hmm, it looks like we still need some convertion here to get the exact
-> bp value.
+You can increase the probability by adding an extra delay (e.g. msleep(1))
+between the unlock of tnc_mutex and the call of ubifs_get_wbuf().
+And I will try to writ xfstest for the problem.
 
-OK I see. What has confused me before was that some "fixups" were done
-in helper functions whereas others where done in the actual
-stm_lock/stm_unlock().
+Regards,
+Tao
 
-What do you think about:
-
-(1) read the BP bits, if they are not consecutive move them around and
-     normalize the value, eg. fix them up to be
-         SR_BP3 | SR_BP2 | SR_BP1 | SR_BP0  >> SR_BP_SHIFT
-(2) do the operations on these bits, eg this should not shift the
-     value by SR_BP_SHIFT anymore. This would be done in (3)
-(3) convert it back to the representation the flash would need it.
-
-So there could be a function spi_nor_get_bp_val() for (1) and
-spi_nor_set_bp_val() for (3).
-
-u8 spi_nor_get_bp_val(u8 sr)
-{
-     u8 val;
-
-     val = sr & (SR_BP2 | SR_BP1 | SR_BP0);
-
-     if (nor->flags & SNOR_F_HAS_4BIT_BP)
-         if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6 && sr & SR_BP3_BIT6)
-             val |= SR_BP3;
-         else
-             val |= sr & SR_BP3
-
-     return val >> SR_BP_SHIFT;
-}
-
-void spi_nor_set_bp_val(u8 val, u8 *sr)
-{
-     u8 bp3_bit;
-
-     val <<= SR_BP_SHIFT;
-
-     /* clear and set common bits */
-     *sr &= ~(SR_BP2 | SR_BP1 | SR_BP0);
-     *sr |= val & (SR_BP2 | SR_BP1 | SR_BP0)
-
-     /* BP3 is special because it may be on different bits */
-     if (nor->flags & SNOR_F_HAS_4BIT_BP) {
-         if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6)
-             bp3_bit = SR_BP3_BIT6;
-         else
-             bp3_bit = SR_BP3;
-
-         if (val & SR_BP3)
-             *sr |= bp3_bit;
-         else
-             *sr &= ~bp3_bit;
-     }
-}
-
-This way we'd have all the fixups in one place.
-
-
--michael
-
->> > 	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
->> > 	if (nor->flags & SNOR_F_HAS_4BIT_BP)
->> > 		mask |= SR_BP3;
->> > 	return mask;
-
-
-}
-
-
--michael
-
-> 
-> Thanks,
-> 
->> > >
->> > >  	if (!bp) {
->> > >  		/* No protection */
->> > > @@ -1881,7 +1911,7 @@ static int stm_is_unlocked_sr(struct
->> > > spi_nor
->> > > *nor, loff_t ofs, uint64_t len,
->> > >
->> > >  /*
->> > >   * Lock a region of the flash. Compatible with ST Micro and
->> > > similar
->> > > flash.
->> > > - * Supports the block protection bits BP{0,1,2} in the status
->> > > register
->> > > + * Supports the block protection bits BP{0,1,2}/BP{0,1,2,3} in
->> > > the
->> > > status register
->> > >   * (SR). Does not support these features found in newer SR
->> > > bitfields:
->> > >   *   - SEC: sector/block protect - only handle SEC=0 (block
->> > > protect)
->> > >   *   - CMP: complement protect - only support CMP=0 (range is
->> > > not
->> > > complemented)
->> > > @@ -1889,7 +1919,7 @@ static int stm_is_unlocked_sr(struct
->> > > spi_nor
->> > > *nor, loff_t ofs, uint64_t len,
->> > >   * Support for the following is provided conditionally for some
->> > > flash:
->> > >   *   - TB: top/bottom protect
->> > >   *
->> > > - * Sample table portion for 8MB flash (Winbond w25q64fw):
->> > > + * Sample table portion for 8MB flash (Winbond w25q64fw / BP0-
->> > > 2):
->> > >   *
->> > >   *   SEC  |  TB   |  BP2  |  BP1  |  BP0  |  Prot Length  |
->> > > Protected
->> > > Portion
->> > >   *
->> > > -----------------------------------------------------------------
->> > > ---------
->> > > @@ -1909,6 +1939,32 @@ static int stm_is_unlocked_sr(struct
->> > > spi_nor
->> > > *nor, loff_t ofs, uint64_t len,
->> > >   *    0   |   1   |   1   |   0   |   1   |  2 MB         |
->> > > Lower
->> > > 1/4
->> > >   *    0   |   1   |   1   |   1   |   0   |  4 MB         |
->> > > Lower
->> > > 1/2
->> > >   *
->> > > + * Sample table portion for 64MB flash (Micron n25q512ax3 / BP0-
->> > > 3):
->> > > + *
->> > > + *   TB   |  BP3  |  BP2  |  BP1  |  BP0  |  Prot Length  |
->> > > Protected
->> > > Portion
->> > > + *
->> > > -----------------------------------------------------------------
->> > > ---------
->> > > + *    0   |   0   |   0   |   0   |   0   |  NONE         | NONE
->> > > + *    0   |   0   |   0   |   0   |   1   |   64 KB       |
->> > > Upper
->> > > 1/1024
->> > > + *    0   |   0   |   0   |   1   |   0   |  128 KB       |
->> > > Upper
->> > > 1/512
->> > > + *    0   |   0   |   0   |   1   |   1   |  256 KB       |
->> > > Upper
->> > > 1/256
->> > > + *   ...
->> > > + *    0   |   1   |   0   |   0   |   1   |  16 MB        |
->> > > Upper
->> > > 1/4
->> > > + *    0   |   1   |   0   |   1   |   0   |  32 MB        |
->> > > Upper
->> > > 1/2
->> > > + *    0   |   1   |   0   |   1   |   1   |  64 MB        | ALL
->> > > + *    0   |   1   |   1   |   0   |   0   |  64 MB        | ALL
->> > > + *   ...
->> > > + *
->> > > ------|-------|-------|-------|-------|---------------|----------
->> > > ---------
->> > > + *    1   |   0   |   0   |   0   |   0   |   NONE        | NONE
->> > > + *    1   |   0   |   0   |   0   |   1   |   64 KB       |
->> > > Lower
->> > > 1/1024
->> > > + *    1   |   0   |   0   |   1   |   0   |  128 KB       |
->> > > Lower
->> > > 1/512
->> > > + *    1   |   0   |   0   |   1   |   1   |  256 KB       |
->> > > Lower
->> > > 1/256
->> > > + *   ...
->> > > + *    1   |   1   |   0   |   0   |   1   |  16 MB        |
->> > > Lower
->> > > 1/4
->> > > + *    1   |   1   |   0   |   1   |   0   |  32 MB        |
->> > > Lower
->> > > 1/2
->> > > + *    1   |   1   |   0   |   1   |   1   |  64 MB        | ALL
->> > > + *    1   |   1   |   1   |   0   |   0   |  64 MB        | ALL
->> > > + *   ...
->> > > + *
->> > >   * Returns negative on errors, 0 on success.
->> > >   */
->> > >  static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t
->> > > len)
->> > > @@ -1960,6 +2016,9 @@ static int stm_lock(struct spi_nor *nor,
->> > > loff_t
->> > > ofs, uint64_t len)
->> > >  		min_prot_len = stm_get_min_prot_length(nor);
->> > >  		pow = ilog2(lock_len) - ilog2(min_prot_len) + 1;
->> > >  		val = pow << SR_BP_SHIFT;
->> > > +
->> > > +		if (val & BIT(5) && mask & SR_BP3_BIT6)
->> > > +			val = (val & ~BIT(5)) | BIT(6);
->> >
->> > .. and the use just the following here:
->> >
->> > if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6 && val & SR_BP3)
->> > 	val = (val & ~SR_BP3) | SR_BP3_BIT6;
->> >
->> > Ie. just use the "normal case" where all BP bits are next to each
->> > other
->> > and then fixup the resulting value and shift the SR3 bit if
->> > necessary.
->> > This will be much easier to read.
->> >
->> 
->> Yes, I agree. It would be better to minimize this kind of conversion
->> in
->> one place.
->> 
->> > >  	}
->> > >
->> > >  	if (val & ~mask)
->> > > @@ -2042,6 +2101,9 @@ static int stm_unlock(struct spi_nor *nor,
->> > > loff_t ofs, uint64_t len)
->> > >  		pow = ilog2(lock_len) - ilog2(min_prot_len) + 1;
->> > >  		val = pow << SR_BP_SHIFT;
->> > >
->> > > +		if (val & BIT(5) && mask & SR_BP3_BIT6)
->> > > +			val = (val & ~BIT(5)) | BIT(6);
->> > > +
->> >
->> > here would be the other way around:
->> >
->> > if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6 && val & SR_BP3_BIT6)
->> > 	val = (val & ~SR_BP3_BIT6) | SR_BP3;
->> >
->> >
->> > >  		/* Some power-of-two sizes are not supported */
->> > >  		if (val & ~mask)
->> > >  			return -EINVAL;
->> > > @@ -5244,6 +5306,12 @@ int spi_nor_scan(struct spi_nor *nor,
->> > > const
->> > > char
->> > > *name,
->> > >  	if (info->flags & USE_CLSR)
->> > >  		nor->flags |= SNOR_F_USE_CLSR;
->> > >
->> > > +	if (info->flags & SPI_NOR_4BIT_BP) {
->> > > +		nor->flags |= SNOR_F_HAS_4BIT_BP;
->> > > +		if (info->flags & SPI_NOR_BP3_SR_BIT6)
->> > > +			nor->flags |= SNOR_F_HAS_SR_BP3_BIT6;
->> > > +	}
->> > > +
->> > >  	if (info->flags & SPI_NOR_NO_ERASE)
->> > >  		mtd->flags |= MTD_NO_ERASE;
->> > >
->> > > diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-
->> > > nor.h
->> > > index de90724f62f1..0190ed21576a 100644
->> > > --- a/include/linux/mtd/spi-nor.h
->> > > +++ b/include/linux/mtd/spi-nor.h
->> > > @@ -129,7 +129,9 @@
->> > >  #define SR_BP1			BIT(3)	/* Block protect
->> > > 1
->> > > */
->> > >  #define SR_BP2			BIT(4)	/* Block protect
->> > > 2
->> > > */
->> > >  #define SR_TB_BIT5		BIT(5)	/* Top/Bottom
->> > > protect */
->> > > +#define SR_BP3_BIT5		BIT(5)	/* Block protect
->> > > 3
->> > > */
->> >
->> > IMHO just SR_BP3. but that is a matter of taste. But it is easier
->> > on
->> > the eye in the mask = SR_BP3 | SR_BP2 etc case.
->> >
->> 
->> SR_BP3 would be a more appropriate name if we could set the case with
->> all BP bits next to each other as the "normal case."
->> 
->> I'm going to write patches based on latest spi-nor/next including
->> what
->> you mentioned.
->> 
->> Thanks,
->> 
->> > -michael
->> >
->> > >  #define SR_TB_BIT6		BIT(6)	/* Top/Bottom
->> > > protect */
->> > > +#define SR_BP3_BIT6		BIT(6)	/* Block protect
->> > > 3
->> > > */
->> > >  #define SR_SRWD			BIT(7)	/* SR write
->> > > protect
->> > > */
->> > >  /* Spansion/Cypress specific status bits */
->> > >  #define SR_E_ERR		BIT(5)
->> > > @@ -240,6 +242,8 @@ enum spi_nor_option_flags {
->> > >  	SNOR_F_HAS_16BIT_SR	= BIT(9),
->> > >  	SNOR_F_NO_READ_CR	= BIT(10),
->> > >  	SNOR_F_HAS_SR_TB_BIT6	= BIT(11),
->> > > +	SNOR_F_HAS_4BIT_BP	= BIT(12),
->> > > +	SNOR_F_HAS_SR_BP3_BIT6	= BIT(13),
->> > >
->> > >  };
->> 
->> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
