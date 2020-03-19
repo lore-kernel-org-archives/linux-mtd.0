@@ -2,87 +2,84 @@ Return-Path: <SRS0=DkJA=5E=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F2B4C43332
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Mar 2020 09:31:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 062F4C4332D
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Mar 2020 14:39:18 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 65BEE20767
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Mar 2020 09:31:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C958B20663
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Mar 2020 14:39:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="sEzGhKEX";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="VuAyYpf/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 65BEE20767
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jt3swb/E";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cartesi-io.20150623.gappssmtp.com header.i=@cartesi-io.20150623.gappssmtp.com header.b="Pwc94d17"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C958B20663
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=cartesi.io
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sDGkVgi2A/oQBg8HB4O+F9AeJ29VpD8gRo9HpHT4aqY=; b=sEzGhKEXK1CUo+
-	6WwzVkqwmKhbHqDTwYUzI46fth50P4qNrZ8I2x+ViZy5+CLgglYt0OB/vazjVejx/z4yYgWFqAvQ3
-	shzaZJU3IM4fyNGI0OUG0FL/0wG2Qzl28X/l9qcSKqOeOQwXVwUyFUZr1ptC5sHW7ICdjwdwMbRWo
-	DGeWYCEN/MlKX+WpdujS1RA6sqD14GtZfF4XvZYtVP566Z253xyVSrQeJ/wyjmQiEZtb7yU6SwqlJ
-	IQe2BlOHg/vtmqjrbvfRaRzqg+bLTtlRSlw2FBE9uRFLjZsL6l7s7HxK5JmGI0mP9QVBMipKhO7ck
-	P7ebx6cD4tM4E7uRkUbg==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=6zc0MOD5T0lJ1Ve2xhn5eiBFPs2PTPInCzINvCiREP0=; b=jt3
+	swb/E7n0xVWwc7fVT0qlVdcTE0cfuOt1L24NJT3hhnQWNgvAOT5xt8nlTXN+OixFBL83w5F0uNbeu
+	geVL2Q+TQC7mWvLZu/vIlv5xBtLG3J62ItdZNGP5cHfc8zGQj9ZUkanwtcF+Ajps7liQhl3Kp4tHL
+	LoW585SoaKycmw2eadGixusWgtWjgJW9wi31vR5uN+84eyEK/qAHwLQlMqtPuy0kV4fA8cZxk4yx6
+	ueogQlTtW6U1oP1XBwi6Yvx0zcK9OcXXooXMVTklzMjG5VI+WhZ9iEsyX2ftSP+P3g2vxN0fAz6UP
+	2G4vy5bDgHAGvFKD076Pce8wbFbN1qg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jErWH-0007al-DQ; Thu, 19 Mar 2020 09:31:17 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1jEwKC-0004Es-BS; Thu, 19 Mar 2020 14:39:08 +0000
+Received: from mail-qk1-x742.google.com ([2607:f8b0:4864:20::742])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jErWE-0007JS-Ja
- for linux-mtd@lists.infradead.org; Thu, 19 Mar 2020 09:31:16 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 02J9UYBS011730;
- Thu, 19 Mar 2020 04:30:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1584610234;
- bh=ptAVA86iz3NfXhHh5PQXjwSG9wm973u3msedd17ZuX8=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=VuAyYpf/EBe7FQ6xvzD+INTZYdQ/Mq8HR1E/4smZY/8XVDybC7+K1KXK7I3LER6Gd
- ldEv7HsPQFy795qArDBhGezA3PoaC9xD8bLYi3rXGwCX3FARUeY9kfmOk5aDJxAsnP
- m5pWJ5QsUxkeWvwzXX29v3pQaKl3ebngcQ+2bP/Y=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 02J9UY41027080
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 19 Mar 2020 04:30:34 -0500
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Thu, 19
- Mar 2020 04:30:34 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Thu, 19 Mar 2020 04:30:33 -0500
-Received: from [10.250.132.123] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 02J9UPQM028697;
- Thu, 19 Mar 2020 04:30:26 -0500
-Subject: Re: [PATCH v12 2/4] mtd: spi-nor: add spi-mem support in
- cadence-quadspi controller driver
-To: <Tudor.Ambarus@microchip.com>, <linux-mtd@lists.infradead.org>,
- <vadivel.muruganx.ramuthevar@linux.intel.com>
-References: <20200310015213.1734-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200310015213.1734-3-vadivel.muruganx.ramuthevar@linux.intel.com>
- <3360641.Vn3sISamPi@192.168.0.120>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <cea89434-d2bf-72e6-0b3b-0e0efd0d149e@ti.com>
-Date: Thu, 19 Mar 2020 15:00:24 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <3360641.Vn3sISamPi@192.168.0.120>
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+ id 1jEwK9-0004EX-7j
+ for linux-mtd@lists.infradead.org; Thu, 19 Mar 2020 14:39:06 +0000
+Received: by mail-qk1-x742.google.com with SMTP id p6so3290032qkm.0
+ for <linux-mtd@lists.infradead.org>; Thu, 19 Mar 2020 07:39:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=cartesi-io.20150623.gappssmtp.com; s=20150623;
+ h=from:to:cc:subject:date:message-id;
+ bh=mrkPInIySQs4Ig6viEvZQbyOJf3E2L/MWew9uzARNUU=;
+ b=Pwc94d17mbO7Nj9ORNLce1J+Qb+//4u3nhjrPhmfEB7B8bz9lPNpGd8Kz/Yzo1CW+k
+ weU5fFugidMBzTX2EsBgNOd5v7ZzQ3NweE1Sdg0cw2Y53eVZJmmJ4TcPhJGXK+JugqbW
+ OLTWkwdpRaB+bcdIIUvIZP8fDWF2Sbvd3YaQnjDscyWYma+KtDUqUibPEGPHB5Zwse0O
+ LYBiPIPEgB7F4EovJXH5cT1fZCnKRT2BXudOnxeGkOPD+r+Q1uxPoPNc2wOloTVzm5rh
+ 1OlantZ3bvMTXixOeq31EbqUnf4912wewGN78NOhZT14U21ctLAX3Pg0QKgVIkROCYRs
+ I/Mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id;
+ bh=mrkPInIySQs4Ig6viEvZQbyOJf3E2L/MWew9uzARNUU=;
+ b=J9dbvukR8MZBce95yRGYOopYq7UNDET7yhjTgMeMezSdzDpMqd0wctrWv4WxKmm6AG
+ T6dMrpZ7N4rVLd7Ga9Reze/hqTaWnOTkmDFJIckdAxgD1Wz0sObPmxe2zVaBjo4ZdgH5
+ 39BnfCFbwXw1JWoHKrMvSkAwq6fhA4DSkyZjQHzmXbSLMParnqTDQsQS7lqP7btGgNIM
+ DImi2zctINrJXZrDxfPLA+KiBYvRyWn2tJVisdmgN6upoPrDvcXUScqjm1IFgDWcHiM+
+ C7NWAno0DqbNAZIS+2Uw5B+ianW5ySDbliK2nV/ar6jTM7qEvxqdbh+EGsF6R9pQpdyd
+ AHkw==
+X-Gm-Message-State: ANhLgQ3zjYAi9xA1W8GOQrRB3Vdh27qN+fO5o6xYTZtGaLaN7dFE8gPh
+ /Q2u6IlcFBWST6wG7KPt3pjNs57XWis=
+X-Google-Smtp-Source: ADFU+vs1ccVIYEquXH4E1utxmnNXEfRvFp+TcSPSely+5+wev4exkNnyzQOEX7dy93DO7KyXA6LmGw==
+X-Received: by 2002:a37:b646:: with SMTP id g67mr3288437qkf.52.1584628743417; 
+ Thu, 19 Mar 2020 07:39:03 -0700 (PDT)
+Received: from localhost.localdomain (191-45-75-85.user3p.veloxzone.com.br.
+ [191.45.75.85])
+ by smtp.gmail.com with ESMTPSA id f22sm1641851qto.79.2020.03.19.07.39.02
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 19 Mar 2020 07:39:02 -0700 (PDT)
+From: Victor Fusco <victor@cartesi.io>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: physmap: Fix mtd device name
+Date: Thu, 19 Mar 2020 14:38:33 +0000
+Message-Id: <20200319143833.24767-1-victor@cartesi.io>
+X-Mailer: git-send-email 2.17.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200319_023114_734911_0F55E2BF 
-X-CRM114-Status: GOOD (  19.73  )
+X-CRM114-CacheID: sfid-20200319_073905_415031_13FA41FE 
+X-CRM114-Status: GOOD (  12.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,125 +91,42 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: marex@denx.de, devicetree@vger.kernel.org, tien.fong.chee@intel.com,
- tudor.ambarus@gmail.com, boris.brezillon@free-electrons.com,
- computersforpeace@gmail.com, richard@nod.at, simon.k.r.goldschmidt@gmail.com,
- linux-kernel@vger.kernel.org, robh+dt@kernel.org, linux-spi@vger.kernel.org,
- dinguyen@kernel.org, broonie@kernel.org, miquel.raynal@bootlin.com,
- cheol.yong.kim@intel.com, cyrille.pitchen@atmel.com, qi-ming.wu@intel.com,
- dwmw2@infradead.org, david.oberhollenzer@sigma-star.at
+Cc: Victor Fusco <victor@cartesi.io>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+This patch fixes the mtd device name when the "linux,mtd-name" field is
+defined on the Device Tree. A verification to check if the name was
+already defined was missing causing the name to be overwritten with a
+default value.
 
+Signed-off-by: Victor Fusco <victor@cartesi.io>
+---
+ drivers/mtd/maps/physmap-core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-On 19/03/20 1:39 pm, Tudor.Ambarus@microchip.com wrote:
-> Hi,
-> 
-> On Tuesday, March 10, 2020 3:52:11 AM EET Ramuthevar, Vadivel MuruganX wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the
->> content is safe
->>
->> From: Ramuthevar Vadivel Murugan
->> <vadivel.muruganx.ramuthevar@linux.intel.com>
->>
->> This patch adds a spi-mem framework adaptation over cadence-quadspi driver.
-> 
-> you need to specify on which versions of the controller you tested this.
-> 
->>
->> Signed-off-by: Ramuthevar Vadivel Murugan
->> <vadivel.muruganx.ramuthevar@linux.intel.com> Signed-off-by: Vignesh
->> Raghavendra <vigneshr@ti.com>
->> ---
->>  drivers/mtd/spi-nor/cadence-quadspi.c | 538
->> +++++++++++++--------------------- 1 file changed, 209 insertions(+), 329
->> deletions(-)
->>
->> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c
->> b/drivers/mtd/spi-nor/cadence-quadspi.c index 494dcab4aaaa..7b52e109036e
->> 100644
->> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
->> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
->> @@ -3,6 +3,8 @@
-> 
-> cut
-> 
->>  struct cqspi_st {
->> @@ -70,23 +66,20 @@ struct cqspi_st {
->>         void __iomem            *ahb_base;
->>         resource_size_t         ahb_size;
->>         struct completion       transfer_complete;
->> -       struct mutex            bus_mutex;
-> 
-> are we now supporting just a single flash on the bus? Does 
-> CQSPI_MAX_CHIPSELECT make sense anymore?
-> 
+diff --git a/drivers/mtd/maps/physmap-core.c b/drivers/mtd/maps/physmap-core.c
+index 8f7f966fa9a7..6372197ad865 100644
+--- a/drivers/mtd/maps/physmap-core.c
++++ b/drivers/mtd/maps/physmap-core.c
+@@ -515,7 +515,8 @@ static int physmap_flash_probe(struct platform_device *dev)
+ 		dev_notice(&dev->dev, "physmap platform flash device: %pR\n",
+ 			   res);
+ 
+-		info->maps[i].name = dev_name(&dev->dev);
++		if (!info->maps[i].name)
++			info->maps[i].name = dev_name(&dev->dev);
+ 
+ 		if (!info->maps[i].phys)
+ 			info->maps[i].phys = res->start;
 
-Driver still supports multiple CS but SPI core takes care of
-serialization by holding bus_lock_mutex in spi_mem_access_start()
+base-commit: 5076190daded2197f62fe92cf69674488be44175
+-- 
+2.17.1
 
-So, I don't see a need for this mutex
-
-[...]
-
-> 
-> cut
-> 
->> -static int cqspi_of_get_pdata(struct platform_device *pdev)
->> +static int cqspi_of_get_pdata(struct cqspi_st *cqspi)
->>  {
->> -       struct device_node *np = pdev->dev.of_node;
->> -       struct cqspi_st *cqspi = platform_get_drvdata(pdev);
->> -
->> -       cqspi->is_decoded_cs = of_property_read_bool(np,
->> "cdns,is-decoded-cs"); +       struct device *dev = &cqspi->pdev->dev;
-> 
-> you dropped the reading of this property, but you kept the is_decoded_cs 
-> member, shouldn't you drop the latter too? I guess this deserves a dedicated 
-> patch.
-> 
-
-is_decoded_cs cannot be supported with spi-mem as this requires
-knowlegde of flash geometry which is not available via spi-mem
-
-I don't see any user of decoded-cs in the kernel. So, IMO its okay to
-drop entire support in a patch prior to converting driver to spi-mem.
-
-[...]
-
->> @@ -1423,16 +1295,28 @@ static int cqspi_probe(struct platform_device *pdev)
->> cqspi->current_cs = -1;
->>         cqspi->sclk = 0;
->>
->> -       ret = cqspi_setup_flash(cqspi, np);
->> +       ret = cqspi_setup_flash(cqspi);
->>         if (ret) {
->> -               dev_err(dev, "Cadence QSPI NOR probe failed %d\n", ret);
->> +               dev_err(dev, "failed to setup flash parameters %d\n", ret);
->>                 goto probe_setup_failed;
->>         }
->>
->> -       return ret;
->> +       if (cqspi->use_dac_mode) {
->> +               ret = cqspi_request_mmap_dma(cqspi);
-> 
-> the driver was requesting the mmap for each available flash and now you do it 
-> once, which is great, but this too has to be made in a dedicated patch.
->
-
-Not really, current driver does:
-
-                        if (!cqspi->rx_chan)
-                                cqspi_request_mmap_dma(cqspi);
-
-So, cqspi_request_mmap_dma() is not called again if it succeeds for at
-least one flash.
-
-Regards
-Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
