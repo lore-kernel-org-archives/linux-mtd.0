@@ -4,20 +4,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D286C4332B
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Mar 2020 22:42:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CBD52C4332D
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Mar 2020 22:44:00 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E88DE2076C
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Mar 2020 22:42:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9237020767
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Mar 2020 22:44:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="e5WBImUJ";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="zYV/IuBx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E88DE2076C
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mTo2ji6P";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="ESdCTYZb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9237020767
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,24 +26,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From
 	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=IQY1OW5R36xGfze70I4hVYUFak1zXdqjDHVwvg5cTLw=; b=e5WBImUJD2H3Qs
-	ddjKQw0uso61OKesclY3LPLVz/JS6H3eG8qUphbIs0UzL9K3hj0fe/pMyVcSGqIsu473Ks7fuDcGc
-	TQOM4K7hGMJLkFhn9/VOeb9sEHiR//+T0pGCefBbWKZNKOSfoZPOKfHqZw98aR20+1+cZfQWmpPrx
-	1+ZDD0inHXPgVJk3PgtzSJ9uV5Tj5Oc6bIiv1l7WBwFRcPxkJK0WDGFWKgBFqEOtWE3Plyg4s3vis
-	UWx29Vsn8QNV0IZlyEi9OGKyQpL07X5H0adJbZy8JeqBCgtWXmwBJJHB94Dw5YOv91Tucd/89+1Fh
-	gs5nQM2vlOmBKSeslhng==;
+	List-Owner; bh=62vMJi5LIqeWAmXrpDzZbiIusI2M2sj+kV+6DdtD/gs=; b=mTo2ji6P5UNiqQ
+	99aeQ+Wn68/CIUQ5RKi/gth+BD2LxLbduODKzZXeSGng8abglcT2K4SF1uL4mXQAiiJOKvSvO1By8
+	53y89wpFziFACWhC8ME855RtgTSrUxwHR64ECY+iR8vj4KkwzhyNYzlxr2J6JP5Zcey9avENTl+CS
+	opXGHvYLQMbHdFd/Q3Ne0CHghnVR+vkWdxe59iogQtJ4BowhCxxRdf9UVgxAlwykapyzY1A9PN9d5
+	mHZxGDFawbkH2Ex3a0ONjZPMLXRo3CTbTuyEyjlW6qwuZedHfXpEmwtjA0D5caYWexVicOEloWWgA
+	dO7wkA+k75odwGwI6LyQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jF3rj-0005yE-93; Thu, 19 Mar 2020 22:42:15 +0000
-Received: from gateway23.websitewelcome.com ([192.185.50.129])
+	id 1jF3t9-0006bz-Bq; Thu, 19 Mar 2020 22:43:43 +0000
+Received: from gateway34.websitewelcome.com ([192.185.148.194])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jF3rf-0005tr-W1
- for linux-mtd@lists.infradead.org; Thu, 19 Mar 2020 22:42:13 +0000
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
- by gateway23.websitewelcome.com (Postfix) with ESMTP id 8DC7E8E1F
- for <linux-mtd@lists.infradead.org>; Thu, 19 Mar 2020 17:42:09 -0500 (CDT)
+ id 1jF3t1-0006W7-9N
+ for linux-mtd@lists.infradead.org; Thu, 19 Mar 2020 22:43:36 +0000
+Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
+ by gateway34.websitewelcome.com (Postfix) with ESMTP id 76F6A27A159
+ for <linux-mtd@lists.infradead.org>;
+ Thu, 19 Mar 2020 17:43:33 -0500 (CDT)
 Received: from gator4166.hostgator.com ([108.167.133.22]) by cmsmtp with SMTP
- id F3rdjMNb4XVkQF3rdjdTxM; Thu, 19 Mar 2020 17:42:09 -0500
+ id F3szjDRLdEfyqF3szjDTaE; Thu, 19 Mar 2020 17:43:33 -0500
 X-Authority-Reason: nr=8
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=embeddedor.com; s=default; h=Content-Type:MIME-Version:Message-ID:Subject:
@@ -51,24 +52,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
  :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
  List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=fZXQ2lbVYWhzhwDm2fGG4/15WKAEdny8dFiE/dwqBkU=; b=zYV/IuBx1Vx/lOzlLWPcjBgSzF
- ZwgRrHiDVAjJOkrSbnSBgLkMoJaR3TjYPoEDyt17niwyA2XBBY0HAvO94DdemuY6ucPlkn7IVxAhp
- J98ZAUGdVvBei9KXigGYX8RZmbT3Oueq5O1bpVTjYUgOH6L9xq2bbXRUi6S9zxPaP8UVsAFgL7Us2
- OTSOhrQmiaFRNgBr1JmMpHJom0GLp++4lB87il+23B7JzKlcGi3dsIi7zeUhcBsxhrA8us6DbSx67
- E7lkgywA/wZ/lkpr0Y0AEvEv9souSqFcjCWUH6cvw86bjCm6WPUwzapnuBeXMoBtk1Bvahiz1/xio
- jkiz5jaQ==;
+ bh=AqMKlBtj27bhMrXNl4aQ/MWbKit8Mi+6SXoNTh+6hQk=; b=ESdCTYZbc+FAdhkMv5khiQQera
+ 21mCzk1qPKl8qVKMRV4E1lsipWGqAfOAvV5yvoqtcrKbPe2y8+X5kxpZSVdO5f0aZsqwF7fHaV9/m
+ FqIXuTQiqh9Ov7rK2DA2wHWHdq1q8ZkGGlZrA4/DhDd1FFQV2MVDaX1bFyUbznxa4yZZoB13xjJ4/
+ OagCnoiWffyruJiPpIdDS2tRh1aTpjA6KAPNNs0Cndh891Kkg/D23E5SFk2bvNT6k31NxXm5/ZxI5
+ di2q33GWJCK7kjbxsZV9IPjPSpYpHay6QP/znAOCK/tppSmhHqB4cImyRpcFmTGybONkz3PwICMNo
+ Tjj6GVcQ==;
 Received: from cablelink-189-218-116-241.hosts.intercable.net
- ([189.218.116.241]:53956 helo=embeddedor)
+ ([189.218.116.241]:53958 helo=embeddedor)
  by gator4166.hostgator.com with esmtpa (Exim 4.92)
  (envelope-from <gustavo@embeddedor.com>)
- id 1jF3ra-002CJD-IU; Thu, 19 Mar 2020 17:42:08 -0500
-Date: Thu, 19 Mar 2020 17:42:00 -0500
+ id 1jF3sw-002DJd-HZ; Thu, 19 Mar 2020 17:43:31 -0500
+Date: Thu, 19 Mar 2020 17:43:26 -0500
 From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [PATCH][next] mtd: maps: sa1100-flash: Replace zero-length array
- with flexible-array member
-Message-ID: <20200319224200.GA25162@embeddedor.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>
+Subject: [PATCH][next] mtd: spi-nor: controllers: aspeed-smc: Replace
+ zero-length array with flexible-array member
+Message-ID: <20200319224326.GA25390@embeddedor.com>
 MIME-Version: 1.0
 Content-Disposition: inline
 User-Agent: Mutt/1.9.4 (2018-02-28)
@@ -81,19 +84,19 @@ X-AntiAbuse: Sender Address Domain - embeddedor.com
 X-BWhitelist: no
 X-Source-IP: 189.218.116.241
 X-Source-L: No
-X-Exim-ID: 1jF3ra-002CJD-IU
+X-Exim-ID: 1jF3sw-002DJd-HZ
 X-Source: 
 X-Source-Args: 
 X-Source-Dir: 
 X-Source-Sender: cablelink-189-218-116-241.hosts.intercable.net (embeddedor)
- [189.218.116.241]:53956
+ [189.218.116.241]:53958
 X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 28
+X-Email-Count: 36
 X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
 X-Local-Domain: yes
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200319_154212_126626_163C824E 
-X-CRM114-Status: UNSURE (   8.65  )
+X-CRM114-CacheID: sfid-20200319_154335_420514_D9EAE0E9 
+X-CRM114-Status: UNSURE (   9.26  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -106,8 +109,9 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc: "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+ linux-mtd@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
@@ -143,22 +147,22 @@ This issue was found with the help of Coccinelle.
 
 Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 ---
- drivers/mtd/maps/sa1100-flash.c | 2 +-
+ drivers/mtd/spi-nor/controllers/aspeed-smc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/maps/sa1100-flash.c b/drivers/mtd/maps/sa1100-flash.c
-index 47602af4ee34..bb1ef650ffd2 100644
---- a/drivers/mtd/maps/sa1100-flash.c
-+++ b/drivers/mtd/maps/sa1100-flash.c
-@@ -34,7 +34,7 @@ struct sa_subdev_info {
- struct sa_info {
- 	struct mtd_info		*mtd;
- 	int			num_subdev;
--	struct sa_subdev_info	subdev[0];
-+	struct sa_subdev_info	subdev[];
+diff --git a/drivers/mtd/spi-nor/controllers/aspeed-smc.c b/drivers/mtd/spi-nor/controllers/aspeed-smc.c
+index 395127349aa8..e26a1897db0e 100644
+--- a/drivers/mtd/spi-nor/controllers/aspeed-smc.c
++++ b/drivers/mtd/spi-nor/controllers/aspeed-smc.c
+@@ -109,7 +109,7 @@ struct aspeed_smc_controller {
+ 	void __iomem *ahb_base;			/* per-chip windows resource */
+ 	u32 ahb_window_size;			/* full mapping window size */
+ 
+-	struct aspeed_smc_chip *chips[0];	/* pointers to attached chips */
++	struct aspeed_smc_chip *chips[];	/* pointers to attached chips */
  };
  
- static DEFINE_SPINLOCK(sa1100_vpp_lock);
+ /*
 -- 
 2.23.0
 
