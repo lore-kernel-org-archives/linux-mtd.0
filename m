@@ -4,59 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2
-	autolearn=ham autolearn_force=no version=3.4.0
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C76A6C4332D
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Mar 2020 17:12:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A283BC4332D
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Mar 2020 17:15:20 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 973402072C
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Mar 2020 17:12:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 771BB20709
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Mar 2020 17:15:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EophNyfn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 973402072C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="JqMlrZmi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 771BB20709
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=denx.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/p83sw2B/kIQqSVVFbTvviC6/HnOoGmEsh2I+9hJivI=; b=EophNyfnami0ZI
-	NCs3whqa8uRcrl0LoqqYBXS1hZz913iKCZZ/6oIX0ON7W9cPvVOPgEvFwcO/kXkkPdN6V0HyYk4u+
-	rRdbLw9OPfNLEeN0dXLfrKMPIsvgrbrnIdx+LgSd9YhVuH3qvqFiL61Jn92rFnJ7iBIr7OlaPawd7
-	G/DQ/YlQydOUyBDLST5cnytN7aO2c2KjAMcobjJkwcnIwrBbB1sUBdFuhT0fpketWW1K5222A8435
-	tmEOmuOsmC8OMZPbY56BQuzZlsOhqXK2OXjWlOZ91EG0Pe6HgXLcHbKhxePuU32SuhGdDd8fLRUsw
-	NW4+abGj1ibo923TrIPA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=9GSy9tT8prVdhY0XprfKes5ziT6sdPNkDL5ZnnPQwD0=; b=JqMlrZmiB6e5Ht
+	Grn1kfaoDV2tCXisFkM3fbSK289NdDHxSfjrB+8yEPnKHgJr18RnTke43/IJi5oWyOiDaZuPvmUsM
+	9UUzXekUSQAE5n9HscPqdBlLvQwIJPJ3m4oAEOmFM1JGIsEDHfCUQXxPUQERIMsWbJw1/w/xFquEW
+	bVurcDOAjRKv7sMRjmsTEs9Fogdbqs1uCHGatFPEQa1BjDce4Bfxl9lJ+6AbjTh1XQwd6ScdXKwxH
+	82EptopiwJlZOz3sqQf571nBKPRdNLL2V5uG9FOjrYGYQb5M8NxzL4nTpYvaju6QQAh5BCMHcZt26
+	X84ibHIR89KWBcLYGymg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jFLBs-0004fG-Di; Fri, 20 Mar 2020 17:12:12 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1jFLEg-0005j1-9f; Fri, 20 Mar 2020 17:15:06 +0000
+Received: from mail-out.m-online.net ([212.18.0.9])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jFLBp-0004eX-6G
- for linux-mtd@lists.infradead.org; Fri, 20 Mar 2020 17:12:11 +0000
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 6BFE2FF802;
- Fri, 20 Mar 2020 17:12:00 +0000 (UTC)
-Date: Fri, 20 Mar 2020 18:11:59 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
+ id 1jFLEc-0004yf-3f
+ for linux-mtd@lists.infradead.org; Fri, 20 Mar 2020 17:15:04 +0000
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+ by mail-out.m-online.net (Postfix) with ESMTP id 48kVl40Ggxz1qrfN;
+ Fri, 20 Mar 2020 18:14:55 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+ by mail.m-online.net (Postfix) with ESMTP id 48kVl365vBz1qrbg;
+ Fri, 20 Mar 2020 18:14:55 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+ by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new,
+ port 10024)
+ with ESMTP id VjzbTi-s-X4U; Fri, 20 Mar 2020 18:14:54 +0100 (CET)
+X-Auth-Info: gttYc16SEC5d8uweW5kSjOieA30mQYvZH0Lr9j4MciM=
+Received: from [IPv6:::1] (unknown [195.140.253.167])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.mnet-online.de (Postfix) with ESMTPSA;
+ Fri, 20 Mar 2020 18:14:54 +0100 (CET)
 Subject: Re: [PATCH] mtd: rawnand: denali: add more delays before latching
  incoming data
-Message-ID: <20200320181159.5004099f@xps13>
-In-Reply-To: <20200316104307.1891-1-yamada.masahiro@socionext.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>
 References: <20200316104307.1891-1-yamada.masahiro@socionext.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ <20200320181159.5004099f@xps13>
+From: Marek Vasut <marex@denx.de>
+Message-ID: <2d02c851-4249-053c-99e9-69b209bffad2@denx.de>
+Date: Fri, 20 Mar 2020 18:14:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <20200320181159.5004099f@xps13>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200320_101209_367772_98C36C1A 
-X-CRM114-Status: GOOD (  15.73  )
+X-CRM114-CacheID: sfid-20200320_101502_457875_828CEBCE 
+X-CRM114-Status: GOOD (  16.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,54 +83,73 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Marek Vasut <marex@denx.de>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWFyZWssCgpNYXNhaGlybyBZYW1hZGEgPHlhbWFkYS5tYXNhaGlyb0Bzb2Npb25leHQuY29t
-PiB3cm90ZSBvbiBNb24sIDE2IE1hcgoyMDIwIDE5OjQzOjA3ICswOTAwOgoKPiBUaGUgRGVuYWxp
-IElQIGhhdmUgc2V2ZXJhbCByZWdpc3RlcnMgdG8gc3BlY2lmeSBob3cgbWFueSBjbG9jayBjeWNs
-ZXMKPiBzaG91bGQgYmUgd2FpdGVkIGJldHdlZW4gZmFsbGluZy9yaXNpbmcgc2lnbmFscy4gWW91
-IGNhbiBpbXByb3ZlIHRoZQo+IE5BTkQgYWNjZXNzIHBlcmZvcm1hbmNlIGJ5IHByb2dyYW1taW5n
-IHRoZXNlIHJlZ2lzdGVycyB3aXRoIG9wdGltaXplZAo+IHZhbHVlcy4KPiAKPiBCZWNhdXNlIHN0
-cnVjdCBuYW5kX3Nkcl90aW1pbmdzIHJlcHJlc2VudHMgdGhlIGRldmljZSByZXF1aXJlbWVudAo+
-IGluIHBpY28gc2Vjb25kcywgZGVuYWxpX3NldHVwX2RhdGFfaW50ZXJmYWNlKCkgY29tcHV0ZXMg
-dGhlIHJlZ2lzdGVyCj4gdmFsdWVzIGJ5IGRpdmlkaW5nIHRoZSBkZXZpY2UgdGltaW5ncyB3aXRo
-IHRoZSBjbG9jayBwZXJpb2QuCj4gCj4gTWFyZWsgVmFzdXQgcmVwb3J0ZWQgdGhpcyBkcml2ZXIg
-aW4gdGhlIGxhdGVzdCBrZXJuZWwgZG9lcyBub3Qgd29yawo+IG9uIGhpcyBTT0NGUEdBIGJvYXJk
-LiAoVGhlIG9uLWJvYXJkIE5BTkQgY2hpcCBpcyBtb2RlIDUpCj4gCj4gVGhlIHN1c3BpY2lvdXMg
-cGFyYW1ldGVyIGlzIGFjY19jbGtzLCBzbyB0aGlzIGNvbW1pdCByZWxheGVzIGl0Lgo+IAo+IFRo
-ZSBEZW5hbGkgTkFORCBGbGFzaCBNZW1vcnkgQ29udHJvbGxlciBVc2VyJ3MgR3VpZGUgZGVzY3Jp
-YmVzIHRoaXMKPiByZWdpc3RlciBhcyBmb2xsb3dzOgo+IAo+ICAgYWNjX2Nsa3MKPiAgICAgc2ln
-bmlmaWVzIHRoZSBudW1iZXIgb2YgYnVzIGludGVyZmFjZSBjbGtfeCBjbG9jayBjeWNsZXMsCj4g
-ICAgIGNvbnRyb2xsZXIgc2hvdWxkIHdhaXQgZnJvbSByZWFkIGVuYWJsZSBnb2luZyBsb3cgdG8g
-c2VuZGluZwo+ICAgICBvdXQgYSBzdHJvYmUgb2YgY2xrX3ggZm9yIGNhcHR1cmluZyBvZiBpbmNv
-bWluZyBkYXRhLgo+IAo+IEN1cnJlbnRseSwgYWNjX2Nsa3MgaXMgY2FsY3VsYXRlZCBvbmx5IGJh
-c2VkIG9uIHRSRUEsIHRoZSBkZWxheSBvbiB0aGUKPiBjaGlwIHNpZGUuIFRoaXMgZG9lcyBub3Qg
-aW5jbHVkZSBhZGRpdGlvbmFsIGRlbGF5cyB0aGF0IGNvbWUgZnJvbSB0aGUKPiBkYXRhIHBhdGgg
-b24gdGhlIFBDQiBhbmQgaW4gdGhlIFNvQywgbG9hZCBjYXBhY2l0eSBvZiB0aGUgcGlucywgZXRj
-Lgo+IAo+IFRoaXMgcmVsYXRpdmVseSBiZWNvbWVzIGEgYmlnIGZhY3RvciBvbiBmYXN0ZXIgdGlt
-aW5nIG1vZGVzIGxpa2UgbW9kZSA1Lgo+IAo+IEJlZm9yZSBzdXBwb3J0aW5nIHRoZSAtPnNldHVw
-X2RhdGFfaW50ZXJmYWNlKCkgaG9vayAoZS5nLiBMaW51eCA0LjEyKSwKPiB0aGUgRGVuYWxpIGRy
-aXZlciBoYWNrcyBhY2NfY2xrcyBpbiBhIGNvdXBsZSBvZiB3YXlzIFsxXSBbMl0gdG8gc3VwcG9y
-dAo+IHRoZSB0aW1pbmcgbW9kZSA1Lgo+IAo+IFdlIHdvdWxkIG5vdCBnbyBiYWNrIHRvIHRoZSBo
-YXJkLWNvZGVkIGFjY19jbGtzLCBidXQgd2UgbmVlZCB0byBpbmNsdWRlCj4gdGhpcyBmYWN0b3Ig
-aW50byB0aGUgZGVsYXkgc29tZWhvdy4gTGV0J3Mgc2F5IHRoZSBhbW91bnQgb2YgdGhlIGFkZGl0
-aW9uYWwKPiBkZWxheSBpcyAxMDAwMCBwaWNvIHNlYy4KPiAKPiBJbiB0aGUgbmV3IGNhbGN1bGF0
-aW9uLCBhY2NfY2xrcyBpcyBkZXRlcm1pbmVkIGJ5IHRpbWluZ3MtPnRSRUFfbWF4ICsKPiBkYXRh
-X3NldHVwX29uX2hvc3QuCj4gCj4gQWxzbywgcHJvbG9uZyB0aGUgUkUjIGxvdyBwZXJpb2QgdG8g
-bWFrZSBzdXJlIHRoZSBkYXRhIGhvbGQgaXMgbWV0Lgo+IAo+IEZpbmFsbHksIHJlLWNlbnRlciB0
-aGUgZGF0YSBsYXRjaCB0aW1pbmcgZm9yIGV4dHJhIHNhZmV0eS4KPiAKPiBbMV0gaHR0cHM6Ly9n
-aXRodWIuY29tL3RvcnZhbGRzL2xpbnV4L2Jsb2IvdjQuMTIvZHJpdmVycy9tdGQvbmFuZC9kZW5h
-bGkuYyNMMjc2Cj4gWzJdIGh0dHBzOi8vZ2l0aHViLmNvbS90b3J2YWxkcy9saW51eC9ibG9iL3Y0
-LjEyL2RyaXZlcnMvbXRkL25hbmQvZGVuYWxpLmMjTDI4Mgo+IAo+IFJlcG9ydGVkLWJ5OiBNYXJl
-ayBWYXN1dCA8bWFyZXhAZGVueC5kZT4KPiBTaWduZWQtb2ZmLWJ5OiBNYXNhaGlybyBZYW1hZGEg
-PHlhbWFkYS5tYXNhaGlyb0Bzb2Npb25leHQuY29tPgo+IC0tLQoKQ2FuIHlvdSBwbGVhc2UgZ2l2
-ZSB0aGlzIHBhdGNoIGEgdHJ5IGFuZCByZXBvcnQgdGhlIHJlc3VsdD8KClRoYW5rcywKTWlxdcOo
-bAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On 3/20/20 6:11 PM, Miquel Raynal wrote:
+> Hi Marek,
+> 
+> Masahiro Yamada <yamada.masahiro@socionext.com> wrote on Mon, 16 Mar
+> 2020 19:43:07 +0900:
+> 
+>> The Denali IP have several registers to specify how many clock cycles
+>> should be waited between falling/rising signals. You can improve the
+>> NAND access performance by programming these registers with optimized
+>> values.
+>>
+>> Because struct nand_sdr_timings represents the device requirement
+>> in pico seconds, denali_setup_data_interface() computes the register
+>> values by dividing the device timings with the clock period.
+>>
+>> Marek Vasut reported this driver in the latest kernel does not work
+>> on his SOCFPGA board. (The on-board NAND chip is mode 5)
+>>
+>> The suspicious parameter is acc_clks, so this commit relaxes it.
+>>
+>> The Denali NAND Flash Memory Controller User's Guide describes this
+>> register as follows:
+>>
+>>   acc_clks
+>>     signifies the number of bus interface clk_x clock cycles,
+>>     controller should wait from read enable going low to sending
+>>     out a strobe of clk_x for capturing of incoming data.
+>>
+>> Currently, acc_clks is calculated only based on tREA, the delay on the
+>> chip side. This does not include additional delays that come from the
+>> data path on the PCB and in the SoC, load capacity of the pins, etc.
+>>
+>> This relatively becomes a big factor on faster timing modes like mode 5.
+>>
+>> Before supporting the ->setup_data_interface() hook (e.g. Linux 4.12),
+>> the Denali driver hacks acc_clks in a couple of ways [1] [2] to support
+>> the timing mode 5.
+>>
+>> We would not go back to the hard-coded acc_clks, but we need to include
+>> this factor into the delay somehow. Let's say the amount of the additional
+>> delay is 10000 pico sec.
+>>
+>> In the new calculation, acc_clks is determined by timings->tREA_max +
+>> data_setup_on_host.
+>>
+>> Also, prolong the RE# low period to make sure the data hold is met.
+>>
+>> Finally, re-center the data latch timing for extra safety.
+>>
+>> [1] https://github.com/torvalds/linux/blob/v4.12/drivers/mtd/nand/denali.c#L276
+>> [2] https://github.com/torvalds/linux/blob/v4.12/drivers/mtd/nand/denali.c#L282
+>>
+>> Reported-by: Marek Vasut <marex@denx.de>
+>> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+>> ---
+> 
+> Can you please give this patch a try and report the result?
+
+It's on my list, don't worry.
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
