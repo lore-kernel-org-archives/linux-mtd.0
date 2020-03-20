@@ -2,89 +2,80 @@ Return-Path: <SRS0=ekNa=5F=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31402C4332D
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Mar 2020 18:20:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92549C4332B
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Mar 2020 20:22:14 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0857820777
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Mar 2020 18:20:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 547652072C
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Mar 2020 20:22:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dj+JgskA";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ROF8fL4c"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0857820777
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fUZNtnjY";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hDmXRJ1E"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 547652072C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vLqOBx0fy9tzP95MPNP2elsL9Uxy3X4/d29ctvJT2rw=; b=dj+JgskAaTVLut
-	eVP9tQXgCPIyJijWEOhQv2aaCUWjNy3aXrHJdM9b8zdAXbTy8tqXAWo3XUKKi7xhIRVaJeWNocxhL
-	uyE1NKFi45tpneeXA8wHPffGwwJoyRgZ2MzFOKhGNkZ+dn0rpvhoWbJ2rpBiIWhWDLBhdA/6ddV23
-	50TfMPZcal0VNbjPZ0xyEu1r5bFQMhVcfGWo5Z51s9tCia46ZyeQmcIWYZqwWfcnn9pzXibPS9trx
-	2Juorh7YeHiNZIiUMTqKKZKoCXPx5K+CuAiVHTOwSMpIYrx5ZVwZoCiQIsfbF1tixG3Z2Vd+swmtW
-	0Z7u9FhY3AlC7lUo3jFA==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=NmPUbmDQjwejmwvO+92y8N44DgAjtpBOvjEnm3oUS5o=; b=fUZ
+	NtnjYWNzrsVSnnnr5GfWjLDjMmKhiKT7CG149FjJYm0zoptjBoeYKZLaFj/7jOXNPiBFZqJVF5/7X
+	aw9iu2DmARah+nnt1YxZAbBKWRHVAxaq6suw8VZNvZMtbp5pb0E2vEJY3290bO+op4KU9ekWnbo/r
+	cpKqjbRnhN/uZrSRmisWBAOWSZwAlJ/ozHOsP2VWwU2qg0uQJ573VYYEoLoxKwHLILplGU2NjCkzS
+	8qdKnjRfziOgeM1eih88av4pVCp7CtFeF1lnUoIvsMZp5R5rNXKNDZ+Nc73+ai6Aaj5Nn3JG5Wog9
+	XQx06Sw2ASghCfL6tD7NybKImXId5xg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jFMFy-0004jj-4a; Fri, 20 Mar 2020 18:20:30 +0000
-Received: from mail-pj1-x1043.google.com ([2607:f8b0:4864:20::1043])
+	id 1jFO9Y-0000Fu-Sf; Fri, 20 Mar 2020 20:22:00 +0000
+Received: from mail-ot1-x344.google.com ([2607:f8b0:4864:20::344])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jFMFu-0004dB-62
- for linux-mtd@lists.infradead.org; Fri, 20 Mar 2020 18:20:28 +0000
-Received: by mail-pj1-x1043.google.com with SMTP id hg10so2865311pjb.1
- for <linux-mtd@lists.infradead.org>; Fri, 20 Mar 2020 11:20:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to;
- bh=RVSRfcV+K0pn1zszQCXh+F75MQYeICFTBaMdga96uY8=;
- b=ROF8fL4cRZOKjexdiQjvRriYL5aMB2v6UG48zv2w65UIZVXk7AuVFSi6y696oOXNgd
- OvVHFsVQNRrgCH99H9N1yvFIVrPS6ys9mIlNNMSdcv+QWT7LmYHbymhkONJJ4Iind7wU
- XawwvMxLzn/ahDIsk46CsBzOvZd50S7qX5rI8=
+ id 1jFO9W-0000FX-4i
+ for linux-mtd@lists.infradead.org; Fri, 20 Mar 2020 20:21:59 +0000
+Received: by mail-ot1-x344.google.com with SMTP id 111so7243946oth.13
+ for <linux-mtd@lists.infradead.org>; Fri, 20 Mar 2020 13:21:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:from:date:message-id:subject:to;
+ bh=bAKLsk79MfbDU+8bgYncdTYRGIojaGJPT8x8ZSlk32M=;
+ b=hDmXRJ1EXXZBXAh20vDfIGuq2cUddKo+hBv5Wh22YQvKxhHhdhWqZhVagD1bcWBSI1
+ 52pVPuVedBRCL72064cDj8PDQagbJQ96fkSwsieLHGcpn++guvYXTtbneT6J/ZvoM/kP
+ yz7izMn/O07rava5JLHYs08eZAa8leg7uEyNAKhI/fx+zfxI+9w8jukyHPE1SgNsBViG
+ vHN4p3JGNLgHtLOasxNQAD5QzGuQUmKKAFbuY2M8FLDgSF8OFQ4jNGVfyE8abN/Pz3NQ
+ fVr0hKTDrvZOX538L2W1/Yw4Ut3QoqM0Bcz2KnPzVsGla4rZ4vBTP+id5VcQ6XI3Jpgj
+ n+4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=RVSRfcV+K0pn1zszQCXh+F75MQYeICFTBaMdga96uY8=;
- b=tQQZk7bSml8jVdSlY3FMm9vO7xO1kNidDcK8z5QLgQ1I5nLPmOR6pkGktyBHQJ2C9e
- dqo0Xb4pgz+KYPxnE5mrqamaEhxT5d9ypQdhxT/8y5JzmH4K6zO+aDB5KDIhSgyMoFpa
- soSd/C90a4cVuBIdmWyDjv0suTXZAyARrSVWijdPchnGal6jTBBdMU5vyeXcOiSc7lOo
- 8EPAS1Kjc/4W+nw6BMzo93DjvPkCKOfPplsWdLAWOVtJcx2dSMdLxd8Jhz/UcY9H7ZrQ
- dZcjl+bh5WGsnUbEYv8gLKIqctP5P4RfpX8DTbRnKe+SPEHTV+ueCQWRk1iQmb76Fi9S
- mdiA==
-X-Gm-Message-State: ANhLgQ0QF+G8AokVYATNJmnql+BYSXx6Bzo8sBdDoEykglOMEPD672sX
- LPTnuFjkQrx7pil9TrP4hJ4M/A==
-X-Google-Smtp-Source: ADFU+vvh9wNdOc6LXFIlkPM76qeYw8uzvfR7zvmRHA7t4NFIeMW1f7FJ0y8bVnB9QWXKTnZPYdAwPw==
-X-Received: by 2002:a17:902:8348:: with SMTP id
- z8mr8998254pln.342.1584728424639; 
- Fri, 20 Mar 2020 11:20:24 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
- by smtp.gmail.com with ESMTPSA id g9sm6093642pfi.37.2020.03.20.11.20.22
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 20 Mar 2020 11:20:23 -0700 (PDT)
-Date: Fri, 20 Mar 2020 11:20:22 -0700
-From: Kees Cook <keescook@chromium.org>
-To: WeiXiong Liao <liaoweixiong@allwinnertech.com>
-Subject: Re: [PATCH v2 01/11] pstore/blk: new support logger for block devices
-Message-ID: <202003201111.BE5EAB9A@keescook>
-References: <1581078355-19647-1-git-send-email-liaoweixiong@allwinnertech.com>
- <1581078355-19647-2-git-send-email-liaoweixiong@allwinnertech.com>
- <202002251626.63FE3E7C6@keescook>
- <5fd540be-6ed9-a1c7-4932-e67194dddca8@allwinnertech.com>
- <202003180944.3B36871@keescook>
- <dab67ab1-c03f-0507-3d56-4a9578e85f6b@allwinnertech.com>
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+ bh=bAKLsk79MfbDU+8bgYncdTYRGIojaGJPT8x8ZSlk32M=;
+ b=UaBkE5w23GIEBifu7a5AWtvNqTuwohrp4TQvzkFKJqsU7ZDRPTtb/wbOm/QtcPjFcf
+ VZPDvRMMdyyMS/kypNIo9FAs6C5YvckGirgK8fR6t5Nk3IqzcbZmN731m2QF8+rysrzG
+ wn2nv16NXsN5ul+imDj71PaHs1V2QVKyyCaRj4nLcXC+Eh8b8O44Y+S3HARPUAPU7IAl
+ zQnXGR7Ik1tcWSaU6KYkOvcqQVPfYuTpnBoGFkb/N8b4WvPqzIBw/XsG+1hpgYYoVNMX
+ xogpmTdD+rZrfmhcwqgY303rTh2Oe7RpD59gAXLgLm/sCWcuYQ1jeAiSoCNsfgkgqYMx
+ /llg==
+X-Gm-Message-State: ANhLgQ12x1MrXslDB1oWaLWJCYyxAUiuVpN0ajHLGMt/QUjZMOeEFWxx
+ ntufpld9qVoa21FBf50jzWhRauNmOBIcExVZ+zY=
+X-Google-Smtp-Source: ADFU+vua3D2LnGiPPPRkPSUZ5YDqHmmLal/2aFQkGjkDRJPyvezFmcZmhgwK6PZe3tqW4qXaXbqRT9tBsMq0p1jVKqs=
+X-Received: by 2002:a9d:414:: with SMTP id 20mr8629135otc.300.1584735715177;
+ Fri, 20 Mar 2020 13:21:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <dab67ab1-c03f-0507-3d56-4a9578e85f6b@allwinnertech.com>
+From: ron minnich <rminnich@gmail.com>
+Date: Fri, 20 Mar 2020 13:21:44 -0700
+Message-ID: <CAP6exYL889zuXgDhLE3SdwzC4idZ6tbe2oqXQRpZT2M6SrRbFg@mail.gmail.com>
+Subject: [PATCH 1/1] mtd: add | as a separator after mtd-id
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, 
+ Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200320_112026_275074_8FB72A76 
-X-CRM114-Status: GOOD (  18.01  )
+X-CRM114-CacheID: sfid-20200320_132158_218816_B1F0948B 
+X-CRM114-Status: GOOD (  16.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,88 +87,77 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Rob Herring <robh@kernel.org>, Tony Luck <tony.luck@intel.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Jonathan Corbet <corbet@lwn.net>,
- Richard Weinberger <richard@nod.at>, Anton Vorontsov <anton@enomsg.org>,
- linux-doc@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-kernel@vger.kernel.org, Colin Cross <ccross@android.com>,
- linux-mtd@lists.infradead.org, Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
- "David S. Miller" <davem@davemloft.net>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Mar 20, 2020 at 09:50:36AM +0800, WeiXiong Liao wrote:
-> On 2020/3/19 AM 1:23, Kees Cook wrote:
-> > On Thu, Feb 27, 2020 at 04:21:51PM +0800, liaoweixiong wrote:
-> >> On 2020/2/26 AM 8:52, Kees Cook wrote:
-> >>> On Fri, Feb 07, 2020 at 08:25:45PM +0800, WeiXiong Liao wrote:
-> >>>> +obj-$(CONFIG_PSTORE_BLK) += pstore_blk.o
-> >>>> +pstore_blk-y += blkzone.o
-> >>>
-> >>> Why this dance with files? I would just expect:
-> >>>
-> >>> obj-$(CONFIG_PSTORE_BLK)     += blkzone.o
-> >>>
-> >>
-> >> This makes the built module named blkzone.ko rather than
-> >> pstore_blk.ko.
-> > 
-> > You can just do a regular build rule:
-> > 
-> > obj-$(CONFIG_PSTORE_BLK) += blkzone.o
-> > 
-> 
-> I don't get it. If make it as your words, the built module will be
-> blkzone.ko.
-> The module is named pstore/blk, however it built out blkzone.ko. I think
-> it's confusing.
+The MTD subsystem can support command-line defined partitions
+for one or more MTD devices.
 
-I mean just pick whatever filename you want it to be named. The Makefile
-case for ramoops was that ramoops got renamed but we wanted to keep the
-old API name.
+The format is:
+ * mtdparts=<mtddef>[;<mtddef]
+ * <mtddef>  := <mtd-id>:<partdef>[,<partdef>]
 
-So, if you want it named pstore-blk.ko, just rename blkzone.c to
-pstore-blk.c.
+The ':' currently separates the id from the partdef.
 
-> >>> If you're expecting concurrent writers (use of atomic_set(), I would
-> >>> expect the whole write to be locked instead. (i.e. what happens if
-> >>> multiple callers call blkz_zone_write()?)
-> >>>
-> >>
-> >> I don't agree with it. The datalen will be updated everywhere. It's useless
-> >> to lock here.
-> > 
-> > But there could be multiple writers; locking should be needed.
-> > 
-> 
-> All the recorders such as dmesg, pmsg, console and ftrace have been
-> locked on
-> pstore and upper layers. So, a recorder will not write in parallel and
-> different
-> recorders operate privately zone. They don't have any influence on each
-> other.
+The mtdparts can define more than one part, in which case
+there will be more than one <mtd-id>:<partdef> component.
 
-Yes, sorry, I was confusing myself about pmsg, and I forgot it had a
-global lock. Each are locked or split by CPU.
+The problem comes in with newer systems which have MTDs
+attached to a PCI device, which has a PCI name including
+several :'s, e.g. 0000:00:1f.5 on an Intel chipset. Although
+this is largely an x86 problem at the moment, PCI is coming
+to newer ARM systems, and they will hit this issue in future.
 
-> The only parallel case I think is that recorder writes while dirty-flush
-> thread is
-> working. And the dirty-flusher will flush the whole zone rather than
-> part of it, so,
-> it is OK to call in parallel.
+There are two : in the name alone. strchr is used to find
+the <mtd-id>, and in this case it will return the wrong
+result. Using strrchr is not an option, as there may
+be more than one mtddef in the argument.
 
-Okay, thanks for clarifying.
+This patch defines a new delimiter, |, to seperate
+the <mtd-id> from the <partdef>. | is rarely used
+in device names, so seems a reasonable choice.
 
-> Based on these reasons, I don't think locking should be needed.
+The code first searches for | and, if that fails, searches
+for the old :. Eventually, it ought to be possible to remove
+the support for : entirely, but since mtdparts are also defined
+in FLASH in the device tree on many ARM boards, wholesale removal
+is not yet practical.
 
-Agreed.
+This code has been used on real hardware and allowed us to use a
+squashfs in SPI-NOR flash as a root file system, with partitions
+defined on the cmdline.
 
+Signed-off-by: Ronald G. Minnich <rminnich@google.com>
+Change-Id: Ifce3627cb03247bf9e54c8b19d24b60baeed2ec3
+---
+ drivers/mtd/parsers/cmdlinepart.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/parsers/cmdlinepart.c
+b/drivers/mtd/parsers/cmdlinepart.c
+index c86f2db8c882..eca8ec026d89 100644
+--- a/drivers/mtd/parsers/cmdlinepart.c
++++ b/drivers/mtd/parsers/cmdlinepart.c
+@@ -223,7 +223,14 @@ static int mtdpart_setup_real(char *s)
+         mtd_id = s;
+
+         /* fetch <mtd-id> */
+-        p = strchr(s, ':');
++        p = strchr(s, '|');
++        if (!p) {
++            /*
++             * ':' is the older separator, which conflicts
++             * with PCI IDs T:B:D.F; too many  :'s!
++             */
++            p = strchr(s, ':');
++        }
+         if (!p) {
+             pr_err("no mtd-id\n");
+             return -EINVAL;
 -- 
-Kees Cook
+2.25.1.696.g5e7596f4ac-goog
 
 ______________________________________________________
 Linux MTD discussion mailing list
