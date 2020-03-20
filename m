@@ -2,77 +2,73 @@ Return-Path: <SRS0=ekNa=5F=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1658C4332D
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Mar 2020 06:19:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8ECFFC4332B
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Mar 2020 09:34:40 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C448F20663
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Mar 2020 06:19:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5DD1B20409
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Mar 2020 09:34:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pY5Rs95L"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C448F20663
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gmaof3A2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5DD1B20409
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rock-chips.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=VVqPCqhTqrg9H4YMXXW6fY7nTITsURqCA0kPdxDXrQs=; b=pY5Rs95LlrXyV4FSJPYFSBkr5
-	TO1KxpZrJW+bb1fgDzHk3TNHvxyEE3e208slWKpGBuuOnytjwB2VGStmhG8YEIb2aQX8PbC41bYuq
-	34tw0hCvNM9MOLvKcTSqVSBNeaRugiRO5mIHhYBX43G7oYQD+IpS/AM66bQqFKR7xVuXE1sr9iT4s
-	sEolxtmqeTUh0GYMRbfNskrUvewsz9ClDwNb6XhtJ6FI4h2y7JqUnlOKVLcwlWWvWhH6EbpjVM5VO
-	cLj0brpmrNH8DlexSOR/eK7/ujOjbwXT4L7IKwMk5ikHDi1BuUPeehYneCxfcsoV+kRxJDWSTR1vt
-	kDI1pnyow==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=hAqKdJFJeTazhTn+RuApQy3W8PxiWPB+TD0xBqvSQ3Q=; b=gma
+	of3A2l8HB22GZoLBXcxsarknzh2tsg2oChvsfIEq9K7qc3faLbIO2CPYdG0vITdLdIWACH91N33Dx
+	YYFBJvHG+zdsQ8CyqkcYZmGwMw7GxVtzmcjD4bXITbOxl+XsHVByk7Uuz+yRlv14pSWz9grfL1RdR
+	xA/AtRsEUnQNmjB/91AKDJCBoTcEwWe96ids5dv3xZrZDPv1Iqeawkb6vdP5N8NC2d/0CiF2Z0ae2
+	fDXtYgaHAaB40zPDBOEpS6w8OM821Kgp4BmS5jDyH+/a5FhhmVGCBODi1EC7fn1elQWmyOIfoA8tB
+	sNLqzIrntDKq5igI1og9ZkC0pxtAf6Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jFB0W-0000kV-Lw; Fri, 20 Mar 2020 06:19:48 +0000
-Received: from mga11.intel.com ([192.55.52.93])
+	id 1jFE2q-0001tV-Lw; Fri, 20 Mar 2020 09:34:24 +0000
+Received: from lucky1.263xmail.com ([211.157.147.130])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jFB0T-0000jv-OA
- for linux-mtd@lists.infradead.org; Fri, 20 Mar 2020 06:19:47 +0000
-IronPort-SDR: BRw8wAWJYCu2lpcxHiVkJiFUh00xty+Nir8u9y5kbnvB64EARiU2uD6WDRIEcEuDOSAxhwDx4N
- 88WxbQxQizUw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Mar 2020 23:19:44 -0700
-IronPort-SDR: Rki1mw11JqeNDFWHxo4Zf/8q35aPR2PshLEnA5kL3XoJiC45euiZkKKZv93+S/dNZ45BJlof8c
- P6N/1746zoWA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,283,1580803200"; d="scan'208";a="280330807"
-Received: from linux.intel.com ([10.54.29.200])
- by fmsmga002.fm.intel.com with ESMTP; 19 Mar 2020 23:19:44 -0700
-Received: from [10.215.171.97] (unknown [10.215.171.97])
- by linux.intel.com (Postfix) with ESMTP id A3196580297;
- Thu, 19 Mar 2020 23:19:38 -0700 (PDT)
-Subject: Re: [PATCH v12 1/4] dt-bindings: spi: Add schema for Cadence QSPI
- Controller driver
-To: Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, broonie@kernel.org, robh+dt@kernel.org
-References: <20200310015213.1734-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200310015213.1734-2-vadivel.muruganx.ramuthevar@linux.intel.com>
- <c2ad909e-9042-6ba0-7213-83346c6b9908@ti.com>
-From: "Ramuthevar, Vadivel MuruganX"
- <vadivel.muruganx.ramuthevar@linux.intel.com>
-Message-ID: <13a92ddd-b7dd-0465-d747-cda9bca21dbf@linux.intel.com>
-Date: Fri, 20 Mar 2020 14:19:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <c2ad909e-9042-6ba0-7213-83346c6b9908@ti.com>
-Content-Language: en-US
+ id 1jFE2i-0001rv-Oo; Fri, 20 Mar 2020 09:34:20 +0000
+Received: from localhost (unknown [192.168.167.32])
+ by lucky1.263xmail.com (Postfix) with ESMTP id BBD2898A8E;
+ Fri, 20 Mar 2020 17:34:03 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from ubuntu18.lan (unknown [58.22.7.114])
+ by smtp.263.net (postfix) whith ESMTP id
+ P19134T140660085376768S1584696835111908_; 
+ Fri, 20 Mar 2020 17:34:01 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <a2788f8beebf89e9311c37ca470a0cdd>
+X-RL-SENDER: yifeng.zhao@rock-chips.com
+X-SENDER: zyf@rock-chips.com
+X-LOGIN-NAME: yifeng.zhao@rock-chips.com
+X-FST-TO: miquel.raynal@bootlin.com
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 0
+X-System-Flag: 0
+From: Yifeng Zhao <yifeng.zhao@rock-chips.com>
+To: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ robh+dt@kernel.org
+Subject: [PATCH v4 0/3] Add Rockchip NFC drivers for RK3308 and others
+Date: Fri, 20 Mar 2020 17:33:39 +0800
+Message-Id: <20200320093342.15470-1-yifeng.zhao@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200319_231945_797677_F91BD9D3 
-X-CRM114-Status: GOOD (  18.22  )
+X-CRM114-CacheID: sfid-20200320_023417_020491_17EBD0CA 
+X-CRM114-Status: UNSURE (   9.66  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,107 +80,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: marex@denx.de, devicetree@vger.kernel.org, tien.fong.chee@intel.com,
- tudor.ambarus@gmail.com, boris.brezillon@free-electrons.com, richard@nod.at,
- qi-ming.wu@intel.com, simon.k.r.goldschmidt@gmail.com, dinguyen@kernel.org,
- linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
- cheol.yong.kim@intel.com, cyrille.pitchen@atmel.com,
- computersforpeace@gmail.com, dwmw2@infradead.org,
- david.oberhollenzer@sigma-star.at
+Cc: devicetree@vger.kernel.org, Yifeng Zhao <yifeng.zhao@rock-chips.com>,
+ linux-mtd@lists.infradead.org, heiko@sntech.de,
+ linux-rockchip@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
 
-On 20/3/2020 2:05 pm, Vignesh Raghavendra wrote:
->
-> On 10/03/20 7:22 am, Ramuthevar,Vadivel MuruganX wrote:
->> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
->>
->> Add dt-bindings documentation for Cadence-QSPI controller to support
->> spi based flash memories.
->>
->> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
->> ---
->>   .../devicetree/bindings/mtd/cadence-quadspi.txt    |  67 -----------
->>   .../devicetree/bindings/spi/cdns,qspi-nor.yaml     | 127 +++++++++++++++++++++
->>   2 files changed, 127 insertions(+), 67 deletions(-)
->>   delete mode 100644 Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
->>   create mode 100644 Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
->>
-> [...]
->
->> +
->> +# subnode's properties
->> +patternProperties:
->> +  "^.*@[0-9a-fA-F]+$":
->> +    type: object
->> +    description:
->> +      flash device uses the subnodes below defined properties.
->> +
->> +  cdns,read-delay:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    description:
->> +      Delay in 4 microseconds, read capture logic, in clock cycles.
->
-> Not its not... See the old binding description please:
->
-> -- cdns,read-delay : Delay for read capture logic, in clock cycles
->
-> There is no mention of 4us. Range is 0x0 - 0xF
-Sure, will update as you have suggested.
->> +
->> +  cdns,tshsl-ns:
->> +    description: |
->> +      Delay in 50 nanoseconds, for the length that the master mode chip select
->> +      outputs are de-asserted between transactions.
-> Again see the description in old binding file:
->
->   cdns,tshsl-ns : Delay in nanoseconds for the length that the master
->                    mode chip select outputs are de-asserted between
-> 	  	transactions.
->
-> Need not be 50ns or its multiple
-Sure, will update as you have suggested.
->> +
->> +  cdns,tsd2d-ns:
->> +    description: |
->> +      Delay in 50 nanoseconds, between one chip select being de-activated
->> +      and the activation of another.
->> +
-> same here
->
->> +  cdns,tchsh-ns:
->> +    description: |
->> +      Delay in 4 nanoseconds, between last bit of current transaction and
->> +      deasserting the device chip select (qspi_n_ss_out).
->> +
-> Same here... Need not be 4ns...
->
->> +  cdns,tslch-ns:
->> +    description: |
->> +      Delay in 4 nanoseconds, between setting qspi_n_ss_out low and
->> +      first bit transfer.
->
-> Same here...
->
-> Above four values ( cdns,*-ns) come directly from the flash datasheets.
->
-> These values are converted appropriate number of cycles depending upon
-> the QSPI ref_clk frequency. So, there is no easy way to express the
-> constraint (or range) in DT schema. I would recommend to just stick with
-> the description that is there in the old binding file without any
-> modifications.
+Rockchp's NFC(Nand Flash Controller) has three versions: V6, V8 and V9.
+This series patch can support all  three versions.
 
-Noted, will update.
 
-Regards
-Vadivel
->
-> Regards
-> Vignesh
+Changes in v4:
+- Define platform data structure for the register offsets.
+- The compatible define with rkxx_nfc.
+- Use SET_SYSTEM_SLEEP_PM_OPS to define PM_OPS.
+- Use exec_op instead of legacy hooks.
+- The compatible define with rkxx_nfc
+- Add assigned-clocks
+- Fix some wrong define
+
+Changes in v3:
+- Change the title for the dt-bindings
+
+Changes in v2:
+- Fix compile error.
+- Include header files sorted by file name
+
+Yifeng Zhao (3):
+  mtd: rawnand: rockchip: NFC drivers for RK3308, RK3188 and others
+  dt-bindings: mtd: Describe Rockchip RK3xxx NAND flash controller
+  MAINTAINERS: add maintainers to rockchip nfc
+
+ .../bindings/mtd/rockchip,nand.yaml           |  101 ++
+ MAINTAINERS                                   |    2 +
+ drivers/mtd/nand/raw/Kconfig                  |    7 +
+ drivers/mtd/nand/raw/Makefile                 |    1 +
+ drivers/mtd/nand/raw/rockchip_nand.c          | 1315 +++++++++++++++++
+ 5 files changed, 1426 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/rockchip,nand.yaml
+ create mode 100644 drivers/mtd/nand/raw/rockchip_nand.c
+
+-- 
+2.17.1
+
+
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
