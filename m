@@ -2,89 +2,132 @@ Return-Path: <SRS0=KxgV=5I=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 095FDC3F2CD
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Mar 2020 15:03:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D83E8C54EEB
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Mar 2020 17:57:39 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D2480206F8
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Mar 2020 15:03:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ADBA02072D
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Mar 2020 17:57:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oQi4woos";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=st.com header.i=@st.com header.b="Fx6FnDq6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D2480206F8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=st.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kq8oxmo+";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="kGEr2PRu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ADBA02072D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZWle4D0wIWq4scONSGhB3Lp18q7xqm9+6Lcj2S729vs=; b=oQi4woosx8dkpj
-	uuc2Y080nLl5If2AQEVKbaHVIsAiJxFNeU/krwb4qk/PayzeBXyK0Dq9NPwAl4uI2iVHsYoEl2K0y
-	UJcNzcYpx/sCXyhMymckiHO35hsfltOqkmoIjsPvGzxAsUu/MTvMifkBpTr2SW90/y9vH5HL0cqA2
-	qdOqw101gykg/f+gkLC1bq/Kbb2kmwONvSLCBP6RjqIatR15AJAPWd/dD+d8lIZpss5Y2NSAqsGkZ
-	Ma5/CZC9rcNBy5kw5l8aEsPuiaKBLrTYIyXZziNo7GqpCh+wfYbrX/RPlBSjlFoMzSXFGbllZaVty
-	Cw6Ys81uULuROqgm2Jvw==;
+	List-Owner; bh=dn4hurkkIVfgoefPvLWtlPv7jlpi8iJSqrvJhhTYozQ=; b=kq8oxmo+24W+Uy
+	5VYUdWE6WxY53fcsgqvHCoWE8hT2EzZbwefsy7kxeNcDteF7e3oRkzBwvbeWdoSa2AYGv7MpgpENw
+	XT0Q0fC5VzGZqtllkMI5+vxJcu3QX+mfaGufI0QAux1f13lRAsxs/7aoSi78AXXzLp+AeRDpNWO8x
+	GKpEfZHyGK5ovabBnVRfgqF/76naRi/n5kd9RHOgPLgn4iZ6cvJHI9f/RrI1co6DjAm0q2PNMGdo8
+	saGmPSw5IUWPk24zW9UmIQTuMFUf+wK4hAV7FlQ11C7vs5kvvh7+Ie04ZEfTXGQpAUzpIdYzsv41o
+	Slmb4yJi2/PZbr4GQ05g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jGOc1-0003RG-Ev; Mon, 23 Mar 2020 15:03:33 +0000
-Received: from mx07-00178001.pphosted.com ([62.209.51.94])
+	id 1jGRKI-0004AH-Qn; Mon, 23 Mar 2020 17:57:26 +0000
+Received: from esa3.microchip.iphmx.com ([68.232.153.233])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jGOYv-0008Co-Dk
- for linux-mtd@lists.infradead.org; Mon, 23 Mar 2020 15:00:33 +0000
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
- by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- 02NEbU90023776; Mon, 23 Mar 2020 16:00:11 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com;
- h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=ukMrSdASDjRGk/vsLBkuZHwG8V3WaoLT6HTy5XItLQg=;
- b=Fx6FnDq6m3oYGil2LPpgHvomhJKF54nXM8wJwruXt96Cfg3tV05DtAZO6EYzBXbtuIke
- DhnKsF0snLj8huBnDIxcPxW2gwKBAtx+712m0bfSLE+dvOrHnd+FTH3FSzGpEMtlzOY/
- LZVj4PmQoU7psuYGDdwGSZNNPuwr9LfPDtSGZb3b0hqx7mvDSphB6meZu/WK134zZacv
- shhiYXWjeFFhw3mVhIQJuufWhySxMWH3ldX62xthvsumNMV5MX3s2GjW+IsOacwNsH7N
- A7RZc/dNKUPcrw1/tv698UUEuUSlSsyRqXKPpFN/qwtxcKjbR9I+HQXxo7aHP3cVtW1u Eg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com with ESMTP id 2yw995ajep-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 23 Mar 2020 16:00:11 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EEB5310002A;
- Mon, 23 Mar 2020 16:00:06 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag6node2.st.com [10.75.127.17])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id DF8C2220F8F;
- Mon, 23 Mar 2020 16:00:06 +0100 (CET)
-Received: from localhost (10.75.127.45) by SFHDAG6NODE2.st.com (10.75.127.17)
- with Microsoft SMTP Server (TLS) id 15.0.1347.2;
- Mon, 23 Mar 2020 16:00:04 +0100
-From: Christophe Kerello <christophe.kerello@st.com>
-To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
- <lee.jones@linaro.org>, <robh+dt@kernel.org>, <mark.rutland@arm.com>,
- <tony@atomide.com>
-Subject: [10/12] mtd: rawnand: stm32_fmc2: use regmap APIs
-Date: Mon, 23 Mar 2020 15:58:50 +0100
-Message-ID: <1584975532-8038-11-git-send-email-christophe.kerello@st.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1584975532-8038-1-git-send-email-christophe.kerello@st.com>
-References: <1584975532-8038-1-git-send-email-christophe.kerello@st.com>
+ id 1jGRKF-00049m-FL; Mon, 23 Mar 2020 17:57:25 +0000
+IronPort-SDR: XSmrdQYMRxakr+UvHi122eqauWoMR4pXbbndVHt6vB3kYU/9UItnUUmUCipqFTeQDZJX+gkbpl
+ Cm8J7EZk28qxIPjf1L9q7fbbOAppZUduCBl+kSZ6iJ3TWHokn/iQYLHx5Wr8KZI03HcMhxINpM
+ 23gCZdb5jfZKrB+TdcdIUGBTfqP0GnLeNPYvDYHlsI32cKRiHUeAPvOm+MiSSXC5hMz6y46git
+ wK6OnCPwSayBsjUliSP8mbPlvX/aSwXCFfyAViNLVfIykCEvinruwrpPKFEUIgzISdoVMtGGBA
+ rt4=
+X-IronPort-AV: E=Sophos;i="5.72,297,1580799600"; d="scan'208";a="70964770"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 23 Mar 2020 10:57:02 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 23 Mar 2020 10:57:02 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Mon, 23 Mar 2020 10:57:01 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UzQskDdqYA5sr7bZEOSVlrMOcPEZa8d1g/yHgUxVOoFz/5d8DbhwHzPDU6TC+Epvj8lIrYDiXUaYEAo3mwo01Atb0XbtsOXlhx+3VBS3ZYS8yATawpDYnwTiTPxSU0RYuVSUA7Mio1jAHUT58flF+bVbmSLn7q4nRi+j7AFdK5EsTZiVgEydejczoJeSMkuCw8yX+GSaIkgwuV7XO4S2YXIVkU8dhIaj/FWzmZAqtxXPGynlXgS4v9hW7q4hSnrVFi2x2bRwa43LWVpxP4E6pv+RZy75HRh6/cJGrkqNnRrJIPsqalgutrpJhFYHKljArxbrKdeHC/3MsCjdk3jGnQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RLknpR8qIUH/NTM48rvSJn8ntHIYvx69fE0ZrHkOEiA=;
+ b=RunMgiJik9Oy3LMYiLiYEjiIz1anBe9ace2dHcIPdQdSHdEbciuvII1/gxncAskAcxkH09FB+4Lnt9iO8TK0wjsYaSXza9rdJrWzYiUvfhtrm8svBGrhXIDfVcll3s/QzfLwzf6RnbsqlUk0d2f8NG5N3Vhe2bwSC6siVZY2Yuk5f8i++yxY3idGfVON/sdtuKXWCGyQi66K3T36LpamVuStbEGUgeNHwfA4CQC39OfHrXefLRUzkUe/ByMR/EdmosgXbdgFjXazVhZjT43zRDgnIOs7jFhqpxbUm5yR6p0OK+slF59+DrjQC+ZUTqueVlaV+ghBZMSXBNua6RPu5Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RLknpR8qIUH/NTM48rvSJn8ntHIYvx69fE0ZrHkOEiA=;
+ b=kGEr2PRuVPcMSIIiyG3vVn3rlL2QObipJynvmsc0FNFdeVuO/ZHDXYCraDi/vlAZisCLKYotkXFvzuSr3Tha5qqwh0ewDA4ZTAh71GFtks5dVQT0EQQ2K4sFdtiJCg+ARu7wUJq9Fs74bTCL8Xas6nkcat6cH2G6CnmYKw7JkJk=
+Received: from BY5PR11MB4419.namprd11.prod.outlook.com (2603:10b6:a03:1c8::13)
+ by BY5PR11MB3925.namprd11.prod.outlook.com (2603:10b6:a03:182::26)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.22; Mon, 23 Mar
+ 2020 17:57:00 +0000
+Received: from BY5PR11MB4419.namprd11.prod.outlook.com
+ ([fe80::e918:9196:b47e:9692]) by BY5PR11MB4419.namprd11.prod.outlook.com
+ ([fe80::e918:9196:b47e:9692%3]) with mapi id 15.20.2835.021; Mon, 23 Mar 2020
+ 17:57:00 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <lukas.bulwahn@gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: update entry after SPI NOR controller move
+Thread-Topic: [PATCH] MAINTAINERS: update entry after SPI NOR controller move
+Thread-Index: AQHWATxzB3pzaldLS0q/vR8lNGgubg==
+Date: Mon, 23 Mar 2020 17:57:00 +0000
+Message-ID: <22897927.UjJTgWM9OM@192.168.0.120>
+References: <20200321064217.6179-1-lukas.bulwahn@gmail.com>
+In-Reply-To: <20200321064217.6179-1-lukas.bulwahn@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Tudor.Ambarus@microchip.com; 
+x-originating-ip: [94.177.32.156]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b028224b-4a9d-4421-0995-08d7cf53966a
+x-ms-traffictypediagnostic: BY5PR11MB3925:
+x-microsoft-antispam-prvs: <BY5PR11MB3925F42478085D27C38119BFF0F00@BY5PR11MB3925.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-forefront-prvs: 0351D213B3
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(376002)(346002)(136003)(366004)(396003)(39860400002)(199004)(6512007)(53546011)(9686003)(81166006)(8936002)(86362001)(316002)(478600001)(2906002)(54906003)(186003)(26005)(66946007)(66476007)(66556008)(66446008)(76116006)(64756008)(91956017)(6916009)(6506007)(71200400001)(14286002)(6486002)(8676002)(81156014)(15650500001)(4326008)(5660300002)(4744005)(39026012);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:BY5PR11MB3925;
+ H:BY5PR11MB4419.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; A:1; 
+received-spf: None (protection.outlook.com: microchip.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Xg08fyhdEMqHemeyiNoWogOeosi6S1sxlipGFR/XemRX2asRWB1OlvTiM440G+wrCideQnUE00k2Vj4MobwQLHFfpMHT79A8lmzg4j2B3IxpR0F2f5JuDCvNsLMSPvZo8laZVguNFk3pst701V47YvJL+jKlr+lcl/ey+lNlwyE+FGGCxOuFqKbFaCWobJBTpdYSQXj1xLe5jyd8GI/xqQDQid1R3SyTxp8vJF7GODkW63jga7aaG/JRRH9vG73KBa008CIzehecqNc9FCn4NVv8uehv7487yGREgeMPINdsKMyT/wqM0jCwXmP0MgmrUrRZj12SJDojfb9hAHkYf5azF0iF1mu+mECsLij3ucPV0la+hFuMlu2ARg3fGEzCTgqU7T4/rrtzJX+CdFVRDrHySGelm7MqlFtzAsM1Ww1tFosVmBJiS6ibXRdSqr31nL+1lNEI+LY3VC6GQIouJaSb3L/j/AtpQoOAbvg0pV9HlFpSwFBPL2sSMBSGMEFN
+x-ms-exchange-antispam-messagedata: qywx5mUZD0KrZXMejv1SPDaQS/mFltBrWgbbT8O9zDin/DyCPl17PBLUjW81De60sA/tmVP4C2zZ9k7LG6BpvLXJ+zc6o4+6mvIlGi2R5HqTT9LwndqbhZWQsdC+M/Q1RKw7Fc5lIfNpCfNmSj46JQ==
+x-ms-exchange-transport-forked: True
+Content-ID: <253F337988CC1D479FB10CD757D5D7BC@namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG7NODE1.st.com (10.75.127.19) To SFHDAG6NODE2.st.com
- (10.75.127.17)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138, 18.0.645
- definitions=2020-03-23_05:2020-03-21,
- 2020-03-23 signatures=0
+X-MS-Exchange-CrossTenant-Network-Message-Id: b028224b-4a9d-4421-0995-08d7cf53966a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Mar 2020 17:57:00.7392 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: F6a2Yi0lm1uUc/GOoEe0dxatx2ZXFuCXcrLoEDOcAl+I/rBVnghnxrkfWE+Q+upiNSFq0iVYt+YAlBsUfUma1G5wcUgFepXfftsKqLXutcE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB3925
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200323_080021_834422_331FC928 
-X-CRM114-Status: GOOD (  19.47  )
+X-CRM114-CacheID: sfid-20200323_105723_542589_DD123550 
+X-CRM114-Status: UNSURE (   8.31  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,491 +139,39 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: marex@denx.de, Christophe Kerello <christophe.kerello@st.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com
+Cc: vigneshr@ti.com, bbrezillon@kernel.org, kernel-janitors@vger.kernel.org,
+ linux-kernel@vger.kernel.org, vz@mleia.com, linux-mtd@lists.infradead.org,
+ joe@perches.com, linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This patch uses regmap APIs to access all FMC2 registers.
+On Saturday, March 21, 2020 8:42:17 AM EET Lukas Bulwahn wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the
+> content is safe
+> 
+> Commit a0900d0195d2 ("mtd: spi-nor: Prepare core / manufacturer code
+> split") moved all SPI NOR controller drivers to a controllers/
+> sub-directory. However, the moved nxp-spifi.c file was referenced in the
+> ARM/LPC18XX ARCHITECTURE entry in MAINTAINERS.
+> 
+> Hence, since then, ./scripts/get_maintainer.pl --self-test complains:
+> 
+>   warning: no file matches F: drivers/mtd/spi-nor/nxp-spifi.c
+> 
+> Update the file entry in MAINTAINERS to its new location.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+> applies cleanly on next-20200320
+> Boris, Tudor, please pick this trivial patch. Not urgent.
+> 
+>  MAINTAINERS | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
----
- drivers/mtd/nand/raw/Kconfig           |   2 +
- drivers/mtd/nand/raw/stm32_fmc2_nand.c | 215 ++++++++++++++++-----------------
- 2 files changed, 103 insertions(+), 114 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index a80a46b..12b715a 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -419,6 +419,8 @@ config MTD_NAND_TEGRA
- config MTD_NAND_STM32_FMC2
- 	tristate "Support for NAND controller on STM32MP SoCs"
- 	depends on MACH_STM32MP157 || COMPILE_TEST
-+	select REGMAP
-+	select REGMAP_MMIO
- 	help
- 	  Enables support for NAND Flash chips on SoCs containing the FMC2
- 	  NAND controller. This controller is found on STM32MP SoCs.
-diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-index 8a3a45b..bc16614 100644
---- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-+++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-@@ -49,6 +49,16 @@
- #define FMC2_PMEM_DEFAULT		0x0a0a0a0a
- #define FMC2_PATT_DEFAULT		0x0a0a0a0a
- 
-+/* Regmap registers configuration */
-+#define FMC2_MAX_REGISTER		0x3fc
-+
-+static const struct regmap_config stm32_fmc2_regmap_cfg = {
-+	.reg_bits = 32,
-+	.val_bits = 32,
-+	.reg_stride = sizeof(u32),
-+	.max_register = FMC2_MAX_REGISTER,
-+};
-+
- enum stm32_fmc2_ecc {
- 	FMC2_ECC_HAM = 1,
- 	FMC2_ECC_BCH4 = 4,
-@@ -88,7 +98,7 @@ struct stm32_fmc2_nfc {
- 	struct nand_controller base;
- 	struct stm32_fmc2_nand nand;
- 	struct device *dev;
--	void __iomem *io_base;
-+	struct regmap *regmap;
- 	void __iomem *data_base[FMC2_MAX_CE];
- 	void __iomem *cmd_base[FMC2_MAX_CE];
- 	void __iomem *addr_base[FMC2_MAX_CE];
-@@ -123,40 +133,37 @@ static void stm32_fmc2_nfc_timings_init(struct nand_chip *chip)
- 	struct stm32_fmc2_nfc *nfc = to_stm32_nfc(chip->controller);
- 	struct stm32_fmc2_nand *nand = to_fmc2_nand(chip);
- 	struct stm32_fmc2_timings *timings = &nand->timings;
--	u32 pcr = readl_relaxed(nfc->io_base + FMC2_PCR);
- 	u32 pmem, patt;
- 
- 	/* Set tclr/tar timings */
--	pcr &= ~FMC2_PCR_TCLR;
--	pcr |= FIELD_PREP(FMC2_PCR_TCLR, timings->tclr);
--	pcr &= ~FMC2_PCR_TAR;
--	pcr |= FIELD_PREP(FMC2_PCR_TAR, timings->tar);
-+	regmap_update_bits(nfc->regmap, FMC2_PCR,
-+			   FMC2_PCR_TCLR | FMC2_PCR_TAR,
-+			   FIELD_PREP(FMC2_PCR_TCLR, timings->tclr) |
-+			   FIELD_PREP(FMC2_PCR_TAR, timings->tar));
- 
- 	/* Set tset/twait/thold/thiz timings in common bank */
- 	pmem = FIELD_PREP(FMC2_PMEM_MEMSET, timings->tset_mem);
- 	pmem |= FIELD_PREP(FMC2_PMEM_MEMWAIT, timings->twait);
- 	pmem |= FIELD_PREP(FMC2_PMEM_MEMHOLD, timings->thold_mem);
- 	pmem |= FIELD_PREP(FMC2_PMEM_MEMHIZ, timings->thiz);
-+	regmap_write(nfc->regmap, FMC2_PMEM, pmem);
- 
- 	/* Set tset/twait/thold/thiz timings in attribut bank */
- 	patt = FIELD_PREP(FMC2_PATT_ATTSET, timings->tset_att);
- 	patt |= FIELD_PREP(FMC2_PATT_ATTWAIT, timings->twait);
- 	patt |= FIELD_PREP(FMC2_PATT_ATTHOLD, timings->thold_att);
- 	patt |= FIELD_PREP(FMC2_PATT_ATTHIZ, timings->thiz);
--
--	writel_relaxed(pcr, nfc->io_base + FMC2_PCR);
--	writel_relaxed(pmem, nfc->io_base + FMC2_PMEM);
--	writel_relaxed(patt, nfc->io_base + FMC2_PATT);
-+	regmap_write(nfc->regmap, FMC2_PATT, patt);
- }
- 
- static void stm32_fmc2_nfc_setup(struct nand_chip *chip)
- {
- 	struct stm32_fmc2_nfc *nfc = to_stm32_nfc(chip->controller);
--	u32 pcr = readl_relaxed(nfc->io_base + FMC2_PCR);
-+	u32 pcr = 0, pcr_mask;
- 
- 	/* Configure ECC algorithm (default configuration is Hamming) */
--	pcr &= ~FMC2_PCR_ECCALG;
--	pcr &= ~FMC2_PCR_BCHECC;
-+	pcr_mask = FMC2_PCR_ECCALG;
-+	pcr_mask |= FMC2_PCR_BCHECC;
- 	if (chip->ecc.strength == FMC2_ECC_BCH8) {
- 		pcr |= FMC2_PCR_ECCALG;
- 		pcr |= FMC2_PCR_BCHECC;
-@@ -165,15 +172,15 @@ static void stm32_fmc2_nfc_setup(struct nand_chip *chip)
- 	}
- 
- 	/* Set buswidth */
--	pcr &= ~FMC2_PCR_PWID;
-+	pcr_mask |= FMC2_PCR_PWID;
- 	if (chip->options & NAND_BUSWIDTH_16)
- 		pcr |= FIELD_PREP(FMC2_PCR_PWID, FMC2_PCR_PWID_BUSWIDTH_16);
- 
- 	/* Set ECC sector size */
--	pcr &= ~FMC2_PCR_ECCSS;
-+	pcr_mask |= FMC2_PCR_ECCSS;
- 	pcr |= FIELD_PREP(FMC2_PCR_ECCSS, FMC2_PCR_ECCSS_512);
- 
--	writel_relaxed(pcr, nfc->io_base + FMC2_PCR);
-+	regmap_update_bits(nfc->regmap, FMC2_PCR, pcr_mask, pcr);
- }
- 
- static int stm32_fmc2_nfc_select_chip(struct nand_chip *chip, int chipnr)
-@@ -239,81 +246,63 @@ static int stm32_fmc2_nfc_select_chip(struct nand_chip *chip, int chipnr)
- 
- static void stm32_fmc2_nfc_set_buswidth_16(struct stm32_fmc2_nfc *nfc, bool set)
- {
--	u32 pcr = readl_relaxed(nfc->io_base + FMC2_PCR);
-+	u32 pcr;
- 
--	pcr &= ~FMC2_PCR_PWID;
--	if (set)
--		pcr |= FIELD_PREP(FMC2_PCR_PWID, FMC2_PCR_PWID_BUSWIDTH_16);
--	writel_relaxed(pcr, nfc->io_base + FMC2_PCR);
-+	pcr = set ? FIELD_PREP(FMC2_PCR_PWID, FMC2_PCR_PWID_BUSWIDTH_16) :
-+		    FIELD_PREP(FMC2_PCR_PWID, FMC2_PCR_PWID_BUSWIDTH_8);
-+
-+	regmap_update_bits(nfc->regmap, FMC2_PCR, FMC2_PCR_PWID, pcr);
- }
- 
- static void stm32_fmc2_nfc_set_ecc(struct stm32_fmc2_nfc *nfc, bool enable)
- {
--	u32 pcr = readl(nfc->io_base + FMC2_PCR);
--
--	pcr &= ~FMC2_PCR_ECCEN;
--	if (enable)
--		pcr |= FMC2_PCR_ECCEN;
--	writel(pcr, nfc->io_base + FMC2_PCR);
-+	regmap_update_bits(nfc->regmap, FMC2_PCR, FMC2_PCR_ECCEN,
-+			   enable ? FMC2_PCR_ECCEN : 0);
- }
- 
--static inline void stm32_fmc2_nfc_enable_seq_irq(struct stm32_fmc2_nfc *nfc)
-+static void stm32_fmc2_nfc_enable_seq_irq(struct stm32_fmc2_nfc *nfc)
- {
--	u32 csqier = readl_relaxed(nfc->io_base + FMC2_CSQIER);
--
--	csqier |= FMC2_CSQIER_TCIE;
--
- 	nfc->irq_state = FMC2_IRQ_SEQ;
- 
--	writel_relaxed(csqier, nfc->io_base + FMC2_CSQIER);
-+	regmap_update_bits(nfc->regmap, FMC2_CSQIER,
-+			   FMC2_CSQIER_TCIE, FMC2_CSQIER_TCIE);
- }
- 
--static inline void stm32_fmc2_nfc_disable_seq_irq(struct stm32_fmc2_nfc *nfc)
-+static void stm32_fmc2_nfc_disable_seq_irq(struct stm32_fmc2_nfc *nfc)
- {
--	u32 csqier = readl_relaxed(nfc->io_base + FMC2_CSQIER);
--
--	csqier &= ~FMC2_CSQIER_TCIE;
--
--	writel_relaxed(csqier, nfc->io_base + FMC2_CSQIER);
-+	regmap_update_bits(nfc->regmap, FMC2_CSQIER, FMC2_CSQIER_TCIE, 0);
- 
- 	nfc->irq_state = FMC2_IRQ_UNKNOWN;
- }
- 
--static inline void stm32_fmc2_nfc_clear_seq_irq(struct stm32_fmc2_nfc *nfc)
-+static void stm32_fmc2_nfc_clear_seq_irq(struct stm32_fmc2_nfc *nfc)
- {
--	writel_relaxed(FMC2_CSQICR_CLEAR_IRQ, nfc->io_base + FMC2_CSQICR);
-+	regmap_write(nfc->regmap, FMC2_CSQICR, FMC2_CSQICR_CLEAR_IRQ);
- }
- 
--static inline void stm32_fmc2_nfc_enable_bch_irq(struct stm32_fmc2_nfc *nfc,
--						 int mode)
-+static void stm32_fmc2_nfc_enable_bch_irq(struct stm32_fmc2_nfc *nfc, int mode)
- {
--	u32 bchier = readl_relaxed(nfc->io_base + FMC2_BCHIER);
-+	nfc->irq_state = FMC2_IRQ_BCH;
- 
- 	if (mode == NAND_ECC_WRITE)
--		bchier |= FMC2_BCHIER_EPBRIE;
-+		regmap_update_bits(nfc->regmap, FMC2_BCHIER,
-+				   FMC2_BCHIER_EPBRIE, FMC2_BCHIER_EPBRIE);
- 	else
--		bchier |= FMC2_BCHIER_DERIE;
--
--	nfc->irq_state = FMC2_IRQ_BCH;
--
--	writel_relaxed(bchier, nfc->io_base + FMC2_BCHIER);
-+		regmap_update_bits(nfc->regmap, FMC2_BCHIER,
-+				   FMC2_BCHIER_DERIE, FMC2_BCHIER_DERIE);
- }
- 
--static inline void stm32_fmc2_nfc_disable_bch_irq(struct stm32_fmc2_nfc *nfc)
-+static void stm32_fmc2_nfc_disable_bch_irq(struct stm32_fmc2_nfc *nfc)
- {
--	u32 bchier = readl_relaxed(nfc->io_base + FMC2_BCHIER);
--
--	bchier &= ~FMC2_BCHIER_DERIE;
--	bchier &= ~FMC2_BCHIER_EPBRIE;
--
--	writel_relaxed(bchier, nfc->io_base + FMC2_BCHIER);
-+	regmap_update_bits(nfc->regmap, FMC2_BCHIER,
-+			   FMC2_BCHIER_DERIE | FMC2_BCHIER_EPBRIE, 0);
- 
- 	nfc->irq_state = FMC2_IRQ_UNKNOWN;
- }
- 
--static inline void stm32_fmc2_nfc_clear_bch_irq(struct stm32_fmc2_nfc *nfc)
-+static void stm32_fmc2_nfc_clear_bch_irq(struct stm32_fmc2_nfc *nfc)
- {
--	writel_relaxed(FMC2_BCHICR_CLEAR_IRQ, nfc->io_base + FMC2_BCHICR);
-+	regmap_write(nfc->regmap, FMC2_BCHICR, FMC2_BCHICR_CLEAR_IRQ);
- }
- 
- /*
-@@ -327,13 +316,8 @@ static void stm32_fmc2_nfc_hwctl(struct nand_chip *chip, int mode)
- 	stm32_fmc2_nfc_set_ecc(nfc, false);
- 
- 	if (chip->ecc.strength != FMC2_ECC_HAM) {
--		u32 pcr = readl_relaxed(nfc->io_base + FMC2_PCR);
--
--		if (mode == NAND_ECC_WRITE)
--			pcr |= FMC2_PCR_WEN;
--		else
--			pcr &= ~FMC2_PCR_WEN;
--		writel_relaxed(pcr, nfc->io_base + FMC2_PCR);
-+		regmap_update_bits(nfc->regmap, FMC2_PCR, FMC2_PCR_WEN,
-+				   mode == NAND_ECC_WRITE ? FMC2_PCR_WEN : 0);
- 
- 		reinit_completion(&nfc->complete);
- 		stm32_fmc2_nfc_clear_bch_irq(nfc);
-@@ -348,7 +332,7 @@ static void stm32_fmc2_nfc_hwctl(struct nand_chip *chip, int mode)
-  * ECC is 3 bytes for 512 bytes of data (supports error correction up to
-  * max of 1-bit)
-  */
--static inline void stm32_fmc2_nfc_ham_set_ecc(const u32 ecc_sta, u8 *ecc)
-+static void stm32_fmc2_nfc_ham_set_ecc(const u32 ecc_sta, u8 *ecc)
- {
- 	ecc[0] = ecc_sta;
- 	ecc[1] = ecc_sta >> 8;
-@@ -362,15 +346,15 @@ static int stm32_fmc2_nfc_ham_calculate(struct nand_chip *chip, const u8 *data,
- 	u32 sr, heccr;
- 	int ret;
- 
--	ret = readl_relaxed_poll_timeout_atomic(nfc->io_base + FMC2_SR,
--						sr, sr & FMC2_SR_NWRF, 1,
--						1000 * FMC2_TIMEOUT_MS);
-+	ret = regmap_read_poll_timeout(nfc->regmap, FMC2_SR, sr,
-+				       sr & FMC2_SR_NWRF, 1,
-+				       1000 * FMC2_TIMEOUT_MS);
- 	if (ret) {
- 		dev_err(nfc->dev, "ham timeout\n");
- 		return ret;
- 	}
- 
--	heccr = readl_relaxed(nfc->io_base + FMC2_HECCR);
-+	regmap_read(nfc->regmap, FMC2_HECCR, &heccr);
- 	stm32_fmc2_nfc_ham_set_ecc(heccr, ecc);
- 	stm32_fmc2_nfc_set_ecc(nfc, false);
- 
-@@ -449,13 +433,13 @@ static int stm32_fmc2_nfc_bch_calculate(struct nand_chip *chip, const u8 *data,
- 	}
- 
- 	/* Read parity bits */
--	bchpbr = readl_relaxed(nfc->io_base + FMC2_BCHPBR1);
-+	regmap_read(nfc->regmap, FMC2_BCHPBR1, &bchpbr);
- 	ecc[0] = bchpbr;
- 	ecc[1] = bchpbr >> 8;
- 	ecc[2] = bchpbr >> 16;
- 	ecc[3] = bchpbr >> 24;
- 
--	bchpbr = readl_relaxed(nfc->io_base + FMC2_BCHPBR2);
-+	regmap_read(nfc->regmap, FMC2_BCHPBR2, &bchpbr);
- 	ecc[4] = bchpbr;
- 	ecc[5] = bchpbr >> 8;
- 	ecc[6] = bchpbr >> 16;
-@@ -463,13 +447,13 @@ static int stm32_fmc2_nfc_bch_calculate(struct nand_chip *chip, const u8 *data,
- 	if (chip->ecc.strength == FMC2_ECC_BCH8) {
- 		ecc[7] = bchpbr >> 24;
- 
--		bchpbr = readl_relaxed(nfc->io_base + FMC2_BCHPBR3);
-+		regmap_read(nfc->regmap, FMC2_BCHPBR3, &bchpbr);
- 		ecc[8] = bchpbr;
- 		ecc[9] = bchpbr >> 8;
- 		ecc[10] = bchpbr >> 16;
- 		ecc[11] = bchpbr >> 24;
- 
--		bchpbr = readl_relaxed(nfc->io_base + FMC2_BCHPBR4);
-+		regmap_read(nfc->regmap, FMC2_BCHPBR4, &bchpbr);
- 		ecc[12] = bchpbr;
- 	}
- 
-@@ -531,11 +515,11 @@ static int stm32_fmc2_nfc_bch_correct(struct nand_chip *chip, u8 *dat,
- 		return -ETIMEDOUT;
- 	}
- 
--	ecc_sta[0] = readl_relaxed(nfc->io_base + FMC2_BCHDSR0);
--	ecc_sta[1] = readl_relaxed(nfc->io_base + FMC2_BCHDSR1);
--	ecc_sta[2] = readl_relaxed(nfc->io_base + FMC2_BCHDSR2);
--	ecc_sta[3] = readl_relaxed(nfc->io_base + FMC2_BCHDSR3);
--	ecc_sta[4] = readl_relaxed(nfc->io_base + FMC2_BCHDSR4);
-+	regmap_read(nfc->regmap, FMC2_BCHDSR0, &ecc_sta[0]);
-+	regmap_read(nfc->regmap, FMC2_BCHDSR1, &ecc_sta[1]);
-+	regmap_read(nfc->regmap, FMC2_BCHDSR2, &ecc_sta[2]);
-+	regmap_read(nfc->regmap, FMC2_BCHDSR3, &ecc_sta[3]);
-+	regmap_read(nfc->regmap, FMC2_BCHDSR4, &ecc_sta[4]);
- 
- 	stm32_fmc2_nfc_set_ecc(nfc, false);
- 
-@@ -613,13 +597,9 @@ static void stm32_fmc2_nfc_rw_page_init(struct nand_chip *chip, int page,
- 	u32 csqcfgr1, csqcfgr2, csqcfgr3;
- 	u32 csqar1, csqar2;
- 	u32 ecc_offset = mtd->writesize + FMC2_BBM_LEN;
--	u32 pcr = readl_relaxed(nfc->io_base + FMC2_PCR);
- 
--	if (write_data)
--		pcr |= FMC2_PCR_WEN;
--	else
--		pcr &= ~FMC2_PCR_WEN;
--	writel_relaxed(pcr, nfc->io_base + FMC2_PCR);
-+	regmap_update_bits(nfc->regmap, FMC2_PCR, FMC2_PCR_WEN,
-+			   write_data ? FMC2_PCR_WEN : 0);
- 
- 	/*
- 	 * - Set Program Page/Page Read command
-@@ -694,11 +674,11 @@ static void stm32_fmc2_nfc_rw_page_init(struct nand_chip *chip, int page,
- 		csqcfgr1 |= FIELD_PREP(FMC2_CSQCFGR1_ACYNBR, 4);
- 	}
- 
--	writel_relaxed(csqcfgr1, nfc->io_base + FMC2_CSQCFGR1);
--	writel_relaxed(csqcfgr2, nfc->io_base + FMC2_CSQCFGR2);
--	writel_relaxed(csqcfgr3, nfc->io_base + FMC2_CSQCFGR3);
--	writel_relaxed(csqar1, nfc->io_base + FMC2_CSQAR1);
--	writel_relaxed(csqar2, nfc->io_base + FMC2_CSQAR2);
-+	regmap_write(nfc->regmap, FMC2_CSQCFGR1, csqcfgr1);
-+	regmap_write(nfc->regmap, FMC2_CSQCFGR2, csqcfgr2);
-+	regmap_write(nfc->regmap, FMC2_CSQCFGR3, csqcfgr3);
-+	regmap_write(nfc->regmap, FMC2_CSQAR1, csqar1);
-+	regmap_write(nfc->regmap, FMC2_CSQAR2, csqar2);
- }
- 
- static void stm32_fmc2_nfc_dma_callback(void *arg)
-@@ -716,7 +696,6 @@ static int stm32_fmc2_nfc_xfer(struct nand_chip *chip, const u8 *buf,
- 	struct dma_chan *dma_ch = nfc->dma_rx_ch;
- 	enum dma_data_direction dma_data_dir = DMA_FROM_DEVICE;
- 	enum dma_transfer_direction dma_transfer_dir = DMA_DEV_TO_MEM;
--	u32 csqcr = readl_relaxed(nfc->io_base + FMC2_CSQCR);
- 	int eccsteps = chip->ecc.steps;
- 	int eccsize = chip->ecc.size;
- 	unsigned long timeout = msecs_to_jiffies(FMC2_TIMEOUT_MS);
-@@ -794,8 +773,8 @@ static int stm32_fmc2_nfc_xfer(struct nand_chip *chip, const u8 *buf,
- 	stm32_fmc2_nfc_enable_seq_irq(nfc);
- 
- 	/* Start the transfer */
--	csqcr |= FMC2_CSQCR_CSQSTART;
--	writel_relaxed(csqcr, nfc->io_base + FMC2_CSQCR);
-+	regmap_update_bits(nfc->regmap, FMC2_CSQCR,
-+			   FMC2_CSQCR_CSQSTART, FMC2_CSQCR_CSQSTART);
- 
- 	/* Wait end of sequencer transfer */
- 	if (!wait_for_completion_timeout(&nfc->complete, timeout)) {
-@@ -888,11 +867,13 @@ static int stm32_fmc2_nfc_seq_write_page_raw(struct nand_chip *chip,
- }
- 
- /* Get a status indicating which sectors have errors */
--static inline u16 stm32_fmc2_nfc_get_mapping_status(struct stm32_fmc2_nfc *nfc)
-+static u16 stm32_fmc2_nfc_get_mapping_status(struct stm32_fmc2_nfc *nfc)
- {
--	u32 csqemsr = readl_relaxed(nfc->io_base + FMC2_CSQEMSR);
-+	u32 csqemsr;
- 
--	return csqemsr & FMC2_CSQEMSR_SEM;
-+	regmap_read(nfc->regmap, FMC2_CSQEMSR, &csqemsr);
-+
-+	return FIELD_GET(FMC2_CSQEMSR_SEM, csqemsr);
- }
- 
- static int stm32_fmc2_nfc_seq_correct(struct nand_chip *chip, u8 *dat,
-@@ -1148,9 +1129,9 @@ static int stm32_fmc2_nfc_waitrdy(struct nand_chip *chip,
- 	u32 isr, sr;
- 
- 	/* Check if there is no pending requests to the NAND flash */
--	if (readl_relaxed_poll_timeout_atomic(nfc->io_base + FMC2_SR, sr,
--					      sr & FMC2_SR_NWRF, 1,
--					      1000 * FMC2_TIMEOUT_MS))
-+	if (regmap_read_poll_timeout(nfc->regmap, FMC2_SR, sr,
-+				     sr & FMC2_SR_NWRF, 1,
-+				     1000 * FMC2_TIMEOUT_MS))
- 		dev_warn(nfc->dev, "Waitrdy timeout\n");
- 
- 	/* Wait tWB before R/B# signal is low */
-@@ -1158,12 +1139,12 @@ static int stm32_fmc2_nfc_waitrdy(struct nand_chip *chip,
- 	ndelay(PSEC_TO_NSEC(timings->tWB_max));
- 
- 	/* R/B# signal is low, clear high level flag */
--	writel_relaxed(FMC2_ICR_CIHLF, nfc->io_base + FMC2_ICR);
-+	regmap_write(nfc->regmap, FMC2_ICR, FMC2_ICR_CIHLF);
- 
- 	/* Wait R/B# signal is high */
--	return readl_relaxed_poll_timeout_atomic(nfc->io_base + FMC2_ISR,
--						 isr, isr & FMC2_ISR_IHLF,
--						 5, 1000 * timeout_ms);
-+	return regmap_read_poll_timeout(nfc->regmap, FMC2_ISR, isr,
-+					isr & FMC2_ISR_IHLF, 5,
-+					1000 * FMC2_TIMEOUT_MS);
- }
- 
- static int stm32_fmc2_nfc_exec_op(struct nand_chip *chip,
-@@ -1221,8 +1202,9 @@ static int stm32_fmc2_nfc_exec_op(struct nand_chip *chip,
- 
- static void stm32_fmc2_nfc_init(struct stm32_fmc2_nfc *nfc)
- {
--	u32 pcr = readl_relaxed(nfc->io_base + FMC2_PCR);
--	u32 bcr1 = readl_relaxed(nfc->io_base + FMC2_BCR1);
-+	u32 pcr;
-+
-+	regmap_read(nfc->regmap, FMC2_PCR, &pcr);
- 
- 	/* Set CS used to undefined */
- 	nfc->cs_sel = -1;
-@@ -1253,12 +1235,12 @@ static void stm32_fmc2_nfc_init(struct stm32_fmc2_nfc *nfc)
- 	pcr |= FIELD_PREP(FMC2_PCR_TAR, FMC2_PCR_TAR_DEFAULT);
- 
- 	/* Enable FMC2 controller */
--	bcr1 |= FMC2_BCR1_FMC2EN;
-+	regmap_update_bits(nfc->regmap, FMC2_BCR1,
-+			   FMC2_BCR1_FMC2EN, FMC2_BCR1_FMC2EN);
- 
--	writel_relaxed(bcr1, nfc->io_base + FMC2_BCR1);
--	writel_relaxed(pcr, nfc->io_base + FMC2_PCR);
--	writel_relaxed(FMC2_PMEM_DEFAULT, nfc->io_base + FMC2_PMEM);
--	writel_relaxed(FMC2_PATT_DEFAULT, nfc->io_base + FMC2_PATT);
-+	regmap_write(nfc->regmap, FMC2_PCR, pcr);
-+	regmap_write(nfc->regmap, FMC2_PMEM, FMC2_PMEM_DEFAULT);
-+	regmap_write(nfc->regmap, FMC2_PATT, FMC2_PATT_DEFAULT);
- }
- 
- static void stm32_fmc2_nfc_calc_timings(struct nand_chip *chip,
-@@ -1693,6 +1675,7 @@ static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	struct mtd_info *mtd;
- 	struct nand_chip *chip;
-+	void __iomem *mmio;
- 	int chip_cs, mem_region, ret, irq;
- 
- 	nfc = devm_kzalloc(dev, sizeof(*nfc), GFP_KERNEL);
-@@ -1708,9 +1691,13 @@ static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
- 		return ret;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	nfc->io_base = devm_ioremap_resource(dev, res);
--	if (IS_ERR(nfc->io_base))
--		return PTR_ERR(nfc->io_base);
-+	mmio = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(mmio))
-+		return PTR_ERR(mmio);
-+
-+	nfc->regmap = devm_regmap_init_mmio(dev, mmio, &stm32_fmc2_regmap_cfg);
-+	if (IS_ERR(nfc->regmap))
-+		return PTR_ERR(nfc->regmap);
- 
- 	nfc->io_phys_addr = res->start;
- 
--- 
-1.9.1
+Applied to spi-nor/next, thanks.
+ta
 
 
 ______________________________________________________
