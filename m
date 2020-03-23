@@ -6,133 +6,79 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 669A4C4332B
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Mar 2020 21:34:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD8E1C4332B
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Mar 2020 22:35:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2DD0520719
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Mar 2020 21:34:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7A8722073E
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Mar 2020 22:35:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Z0ScBbDg";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="AqfLYX56"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2DD0520719
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KtrnYIEL";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=walle.cc header.i=@walle.cc header.b="i1zPl9dS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A8722073E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CaWRI4yccel0wpknC0kFWWuP/GslaLPWKD+tV2dh1PE=; b=Z0ScBbDgn1veCw
-	T9ARI0QQJDJu7i9NWww3RT/Cuqib/fj4f5hJLAPwIHSZHvwG2mYHgSX3ZupoTATLuj/ZIdn6CEnuc
-	pJ8e/BpYcbBafbLyNBLklgt/uCRBjH6yPXO7wOD83AqPYhX6FA80z5lyrVIP+1Tlme4euZSDTgcUJ
-	cGciVkypUa3bdNAI08J1RvFoTihPWDYYqMIsIQ+QQw0KjKCDz5CnXyJTQXkis4DFOSUr4AVCSRMn7
-	o5iT+7FIVZYLbSdwWIk4Q0NJaLBt/dBqpCbY0GR9tsyDL/b6Gaoc/n3B1vQcgvLp1gm30k8CZqGQT
-	tke3ffs6ysgvRUJhviwA==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
+	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=uKbSgrytQoIqeZX04ATpwPFlYSDJ1z4mpZboZ5Uxv/A=; b=KtrnYIELUOwleydAVfcQkC930
+	guxyU4slRL7MOH5IqC5xLAWO3YCB5ISg7fki/n/9k7/QY+pXXqFIoQDoq0jw4bJ31leSR4wP82axv
+	Liq9IVKxJ/PA1QLHiWNI+phFvo++tr/oi/pPwCIvFTOsY4EOmVD5n3Qk52e+e4TbeCCoFdkYYs5iw
+	CA2xpIZ1JzMcz76SM+n7YYL5ktTcZkr1cFBEY9sh1XZ0E8B9CNRxnwtIyMdI2txUwS7wB5yVP74sJ
+	Uc2bxq62gkZJik/oGASZCpUBD2iZVKo+wza3m+/zoxJdv4bwC9/QxZd9AR71D/xMEzFlwkXzd0EWm
+	QrmyjOsEw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jGUhs-0005uv-8x; Mon, 23 Mar 2020 21:34:00 +0000
-Received: from esa3.microchip.iphmx.com ([68.232.153.233])
+	id 1jGVfX-0004oU-I7; Mon, 23 Mar 2020 22:35:39 +0000
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jGUho-0005uW-Rq
- for linux-mtd@lists.infradead.org; Mon, 23 Mar 2020 21:33:58 +0000
-IronPort-SDR: lHuHmNKZjfeLTwmCtrAteNY2NwYo/Us2ra7xr76gA+L7oJjxYzSNY/qV+Ug40s2Grp8eu3X9qp
- hjK14jGvXHcE4VK/cvGU0ZT7gj4613ASFJeXRWwsxab1jMNaM6WGkuYbJuyoupK5Qzw5i8qDF1
- zPwhDJOZBfq1IIo9HJ3lhjUmKx9Wxur8yUPEOy6IO5FWZkW8yohrMgblx3Xaq9QALDIZQ//y84
- Tylo8lu0unL4qqqxZZJ5gsvZtL3r7vuT2MvQu6RHzzhty1OEZndoe82ZK85SWvBbkoFprclv1l
- xLU=
-X-IronPort-AV: E=Sophos;i="5.72,297,1580799600"; d="scan'208";a="71000353"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 23 Mar 2020 14:33:56 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 23 Mar 2020 14:33:56 -0700
-Received: from NAM04-SN1-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Mon, 23 Mar 2020 14:33:56 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DNZwl6CGbxyfTaRSAIxrGHrf6OXyx0DC0MN3v9YuwSb3BXNQz5XaIXuxWIS3DRmcXjAs9pXbrBt0399yKJ4wLktkMOUk9bu6DSghoou6baOmGTcNZ6HMOpW16uZzNjM2Kh8W7q1gqq/sfx1bhrjO1WTWit2bPB5/M+hvvbEI6d/6IpBGRGtr3HYOAWvrrI4yrNH/V43DuATTGl+inCF4Lpg48oeLVK2e4FGpTT9O0m3nWnM47sepp5xm/eJcs0qK7i9YC2uc8LT0UW1HNywgzEHCm9IrI5QFKnxkfAL2YNIySC2hP/ip1SvySEMfA6/dgxo0xc0agT+vg/0NbCkwXw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r8gXbpuDC4fiRyfbWqLKX8SCSt1rOTzscz9FnMVaOF8=;
- b=NFrs13jo+TeQnz02f+sAauMItphjG8cfzRToDceXBBAT5qIkRwsOjeAWe0QWbH+EvTtFCKVP5NnNyFF7Yu67YdKCbuVDyPJBNgSOLNT+o+mkYIymyfaxYEyBnEb4OZ++3TJ0eQBwk5V+5UvE7SV9frCX+LZGtos3LZshbfIGyE9EBt7YJKcGjPfkcEtzh9loMkK7gQR93KVTft7aUssRDn4HZx+masvTyLDJfeezOW4uh7Ri0E25h2BM92vIAofLvNmFufu1B+jPQeyAMUYM/fUeHLuw3Fn5jn7y/1N3tQ/10TEG5Y4kxOYJYBk3Dfnj7d5n13j0Qlkqcw5gZxmkHw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r8gXbpuDC4fiRyfbWqLKX8SCSt1rOTzscz9FnMVaOF8=;
- b=AqfLYX56zJ5tNUAa+HotRlP85k6m9lDttgQibfbbSKgOlFuZC5pNEEblyvHTW03dJ+XjXWaFRUe4VWC+un3oMBQXWWbtQzfoM4hskdKF1ba1mtbqAgp1FaxtQ3QxrgVoIwB7iSO8XeW9ICgDRHUFj188cIz7Ik5+GpB3e15+q9s=
-Received: from BY5PR11MB4419.namprd11.prod.outlook.com (2603:10b6:a03:1c8::13)
- by BY5PR11MB4308.namprd11.prod.outlook.com (2603:10b6:a03:1b9::19)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.18; Mon, 23 Mar
- 2020 21:33:52 +0000
-Received: from BY5PR11MB4419.namprd11.prod.outlook.com
- ([fe80::e918:9196:b47e:9692]) by BY5PR11MB4419.namprd11.prod.outlook.com
- ([fe80::e918:9196:b47e:9692%3]) with mapi id 15.20.2835.021; Mon, 23 Mar 2020
- 21:33:52 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <michael@walle.cc>
+ id 1jGVfT-0004nf-Jn
+ for linux-mtd@lists.infradead.org; Mon, 23 Mar 2020 22:35:38 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 711ED2327F;
+ Mon, 23 Mar 2020 23:35:30 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1585002930;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=xAKZwdC5MBZPuNPczEha7HeU8fg9rY1BGqM2vuwHuxw=;
+ b=i1zPl9dSdfl8ZRy3EMG664/uRV/95794E5ydPp/0Eo/i+RgC675lZPzyJwBXrZCWfffvgD
+ INL06CtLu5jvYDuUW07tnGw47VGOdDpJvOzlLrTMeXgiCjxsHzi81keUyqWB7LKRcRC7PE
+ QHehetbnEb0wY2P6qN32E8p4SdFoL1g=
+MIME-Version: 1.0
+Date: Mon, 23 Mar 2020 23:35:30 +0100
+From: Michael Walle <michael@walle.cc>
+To: Tudor.Ambarus@microchip.com
 Subject: Re: [PATCH v3 1/5] mtd: spi-nor: Fix gap in SR block protection
  locking
-Thread-Topic: [PATCH v3 1/5] mtd: spi-nor: Fix gap in SR block protection
- locking
-Thread-Index: AQHWAPTc+rZUxlHsAUikj/5G7+sVP6hWs5OA
-Date: Mon, 23 Mar 2020 21:33:52 +0000
-Message-ID: <6757753.zy4y8y8RWT@192.168.0.120>
+In-Reply-To: <3123463.3oovMYBsBI@192.168.0.120>
 References: <20200323092430.1466234-1-tudor.ambarus@microchip.com>
+ <4551629.Jkd3TAmcGf@192.168.0.120>
  <401ca7a54a8d327a0397880db6a9a475@walle.cc>
  <3123463.3oovMYBsBI@192.168.0.120>
-In-Reply-To: <3123463.3oovMYBsBI@192.168.0.120>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Tudor.Ambarus@microchip.com; 
-x-originating-ip: [94.177.32.156]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c8a3e3c1-cf3f-4458-59bb-08d7cf71e1d9
-x-ms-traffictypediagnostic: BY5PR11MB4308:
-x-microsoft-antispam-prvs: <BY5PR11MB4308A00EB3C7FCF6D416BE04F0F00@BY5PR11MB4308.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:4941;
-x-forefront-prvs: 0351D213B3
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(346002)(366004)(376002)(396003)(136003)(39850400004)(81156014)(478600001)(81166006)(86362001)(6486002)(66556008)(91956017)(76116006)(66476007)(9686003)(6512007)(53546011)(6506007)(66946007)(4326008)(14286002)(5660300002)(6916009)(8676002)(8936002)(26005)(4744005)(2906002)(71200400001)(54906003)(64756008)(316002)(66446008)(186003)(39026012);
- DIR:OUT; SFP:1101; SCL:1; SRVR:BY5PR11MB4308;
- H:BY5PR11MB4419.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; 
-received-spf: None (protection.outlook.com: microchip.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: C1m3yq8m7x4Z8cUBjFqWpK6PhgTamgwnBvuD1uvm/OLtLHctQHhZzDbwBic0m0aKtNUbyJCdj7RYuVIvRe2INlwKvG6w5L0zAKJI4UxjPGcgd+uOe26LmZIIXZRJcBx7YmwAvO4quJc0ANd5L9/qrtX7ajbayF2EiiX5bcGbT8eBVtG6m/1LeqCXOgXQqMv/D5gqoHTapJ0WhdSdA5Ywm6HwE+rfJOpMzb8awBihhHyYnH6/5jxWuAGFQ1XMpFdY05y2Y0YHMnUryJMweqMpwYOYdWzsCVj/HcuLQYicuGY9CnPCljn2csgqpkP5KPTB0x4QnBZzt6YqnCE+cpw2hKNofC/8l/oWV10qikR1eZMfwdhtlAVTRCeSTWgbNNXbsccC4DFDRQoKo5UBe/Xb2YdKGhvvkMetLLjXOkyYX+jJ49RPIFCd7JJfe/mAFZ7bbXswaYvQN7eZq9N35p6zxdQlzyf9HQEHSakffcIDcIJlbetPvUgrPGFvZUkta7M5
-x-ms-exchange-antispam-messagedata: ivqOrZK7fT2Shsnlq54zgAGGsqB2z0xYGle+Xs76CyzmGsShvR0NwoO0eIcoy7djTC1x4NaRsx9te+01D4Yjb4VxSIzts4ePx3xAZ3607G+DyfZBXWrOM4NzyiWSnq3+lBU5YVkQXGiJrdDkZEubbg==
-x-ms-exchange-transport-forked: True
-Content-ID: <6F1D83DC0034F74695A8E5D95654FD36@namprd11.prod.outlook.com>
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: c8a3e3c1-cf3f-4458-59bb-08d7cf71e1d9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Mar 2020 21:33:52.1927 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: NNkIQm5UDZVqfLAN8cSMArIQ7JU0/QGlUD+g2KYsB/gVA7rKZN+nL5b86bZz+Rtw7vGhObL1Zl01xHvcYWapQpvN75OT6GMKMys9wyKln14=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4308
+Message-ID: <c107f1c352fc975519531ffb54849e35@walle.cc>
+X-Sender: michael@walle.cc
+User-Agent: Roundcube Webmail/1.3.10
+X-Spamd-Bar: /
+X-Rspamd-Server: web
+X-Rspamd-Queue-Id: 711ED2327F
+X-Spamd-Result: default: False [-0.10 / 15.00]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[4]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ MIME_GOOD(-0.10)[text/plain]; TO_DN_NONE(0.00)[];
+ DKIM_SIGNED(0.00)[]; NEURAL_HAM(-0.00)[-0.781];
+ RCVD_COUNT_ZERO(0.00)[0]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MID_RHS_MATCH_FROM(0.00)[]
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200323_143356_911827_3CD5A8AE 
-X-CRM114-Status: UNSURE (   5.90  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200323_153535_977822_B5849CC3 
+X-CRM114-Status: GOOD (  27.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -145,28 +91,247 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: linux-mtd@lists.infradead.org, vigneshr@ti.com, js07.lee@samsung.com
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Monday, March 23, 2020 11:30:44 PM EET Tudor Ambarus wrote:
-> > With this patch applied:
-> > 
-> > # flash_lock -u /dev/mtd1 0 64
-> > # cat
-> > /sys/devices/platform/soc/20c0000.spi/spi_master/spi0/spi0.0/status_reg
-> > 00
-> > # flash_lock -l /dev/mtd1 0 1
-> > flash_lock: error!: could not lock device: /dev/mtd1
-> > 
-> > error 22 (Invalid argument)
+Am 2020-03-23 22:30, schrieb Tudor.Ambarus@microchip.com:
+> On Monday, March 23, 2020 11:14:05 PM EET Michael Walle wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you know 
+>> the
+>> content is safe
+>> Am 2020-03-23 21:26, schrieb Tudor.Ambarus@microchip.com:
+>> > On Monday, March 23, 2020 9:54:38 PM EET Michael Walle wrote:
+>> >> EXTERNAL EMAIL: Do not click links or open attachments unless you know
+>> >> the
+>> >> content is safe
+>> >>
+>> >> Am 2020-03-23 20:20, schrieb Tudor.Ambarus@microchip.com:
+>> >> > On Monday, March 23, 2020 8:27:13 PM EET Michael Walle wrote:
+>> >> >> EXTERNAL EMAIL: Do not click links or open attachments unless you know
+>> >> >> the
+>> >> >> content is safe
+>> >> >>
+>> >> >> Hi,
+>> >> >>
+>> >> >> Am 2020-03-23 10:24, schrieb Tudor.Ambarus@microchip.com:
+>> >> >> > From: Tudor Ambarus <tudor.ambarus@microchip.com>
+>> >> >> >
+>> >> >> > Fix the gap for the SR block protection, the BP bits were set with
+>> >> >> > a +1 value than actually needed. This patch does not change the
+>> >> >> > behavior of the locking operations, just fixes the protected areas.
+>> >> >>
+>> >> >> So instead of rounding up, it does round down now?
+>> >> >
+>> >> > No. Why do you say that it rounds up? The behavior is not changed, the
+>> >> > patch
+>> >> > merely fix the protected area, which was wrong before. The round down
+>> >> > is
+>> >> > present before this patch.
+>> >>
+>> >> TBH I don't understand what this patch should do. Could you give an
+>> >> example?
+>> >
+>> > sure, let me try to be more explicit.
+>> >
+>> >> >> > On a 16Mbit flash with 64KByte erase sector, the following changed
+>> >>
+>> >> >> > for the lock operation:
+>> >> 16MBit is a bad example, because it is broken anyway, isn't it? We use
+>> >> a
+>> >
+>> > it's not.
+>> 
+>> If I'm not mistaken this falls into the same category like the new 
+>> 4bits
+>> BP
+>> flashes, because there are more slots free than needed. Ie. the last 
+>> one
+>> "protect all" is either 110b or 111b and thus don't work with the old
+>> formula. This was actually my reason why there is no new formula for 
+>> the
+>> 4 bits BP flashes; but the current one is not working with flashes
+>> <32Mbit.
+>> See the old long thread.
+>> 
+>> >> 32Mbit flash where 2MB are locked and the second 2MB are unlocked. Eg.
+>> >> a
+>> >> 50/50 split. I haven't seen any issued. Shouldn't it be then
+>> >> completely
+>> >> locked according this the following example?
+>> >
+>> > I don't follow.
+>> 
+>> We've successfully used the "flash_lock 0 0x200" (with 4k sectors) on
+>> our
+>> boards to lock the first half of our 4MiB flash.
+>> 
+>> > The table from below was generated for the S25FL116K 16 Mbit flash.
+>> > BTW, one
+>> > has to disable CONFIG_MTD_SPI_NOR_USE_4K_SECTORS in order to test the
+>> > locking.
+>> > When you have a 4k sector erase, the locking is simply wrong, but this
+>> > is
+>> > another topic.
+>> 
+>> it should work with that too if you convert the number to the smaller
+>> sectors,
+>> ie multiply by 16; But yeah the cli tool has a broken interface. It
+>> should
+>> accept both offset and length in bytes; not one one in bytes and one 
+>> in
+>> sectors,
+>> where the latter also changes with CONFIG_MTD_SPI_NOR_USE_4K_SECTORS.
+>> 
+>> >> >> > Number of blocks | BP2:0 before | BP2:0 now |
+>> >> >> >
+>> >> >> >                1 | 010b         | 001b      |
+>> >
+>> > - number of blocks is how many blocks you want to lock. One would do
+>> > for one
+>> >
+>> > block:
+>> >     flash_lock /dev/mtd 0 1
+>> >
+>> > i.e. lock a single erase block starting from offset 0.
+>> >
+>> > - "BP0:2 before" is the result of the operation "flash_lock /dev/mtd 0
+>> > 1"
+>> > before this patch
+>> 
+>> Without your patch applied it works like expected:
+>> 
+>> [    1.914329] spi-nor spi0.0: w25q32dw (4096 Kbytes)
+>> # flash_lock -l /dev/mtd1 0 1
+>> # cat
+>> /sys/devices/platform/soc/20c0000.spi/spi_master/spi0/spi0.0/status_reg
+>> a4
+>> 
+>> A4 is 1010_0100, ie BP[2:0] = 001b and TB=1
+>> 
+> 
+> what happens if you request flash_lock -l /dev/mtd1 0 3?
+
+with your patch applied:
+
+# flash_lock -u /dev/mtd1 0 64
+# cat 
+/sys/devices/platform/soc/20c0000.spi/spi_master/spi0/spi0.0/status_reg
+00
+# flash_lock -l /dev/mtd1 0 3
+# cat 
+/sys/devices/platform/soc/20c0000.spi/spi_master/spi0/spi0.0/status_reg
+a4
+
+
+without it:
+
+# flash_lock -u /dev/mtd1 0 64
+# cat 
+/sys/devices/platform/soc/20c0000.spi/spi_master/spi0/spi0.0/status_reg
+00
+# flash_lock -l /dev/mtd1 0 3
+# cat 
+/sys/devices/platform/soc/20c0000.spi/spi_master/spi0/spi0.0/status_reg
+a8
+
+
+>> # flash_lock -u /dev/mtd1 0 64
+>> # flash_lock -l /dev/mtd1 0 32
+>> # cat
+>> /sys/devices/platform/soc/20c0000.spi/spi_master/spi0/spi0.0/status_reg
+>> b8
+>> 
+>> 
+>> With this patch applied:
+>> 
+>> # flash_lock -u /dev/mtd1 0 64
+>> # cat
+>> /sys/devices/platform/soc/20c0000.spi/spi_master/spi0/spi0.0/status_reg
+>> 00
+>> # flash_lock -l /dev/mtd1 0 1
+>> flash_lock: error!: could not lock device: /dev/mtd1
+>> 
+>>              error 22 (Invalid argument)
 > 
 > I'm wondering what was the reason for the -EINVAL.
+> 
+>> # flash_lock -l /dev/mtd1 0 2
+>> # cat
+>> /sys/devices/platform/soc/20c0000.spi/spi_master/spi0/spi0.0/status_reg
+>> a4
+>> 
+>> which is wrong, isn't it?
+>> 
+> Looks so. You should have obtained, 0xa8, right?
 
-Probably because the BP bits would have value zero.
+correct, BP should be 010b for the first two sectors.
 
+> Will recheck tomorrow
+> morning.
+> 
+> Thanks for testing this! I don't have a 32Mbit flash ...
 
+You should be able to reproduce it with every flash >=32Mbit which has
+3 BP bits.
+
+-michael
+
+> 
+> Cheers,
+> ta
+>> 
+>> > - "BP0:2 now" is the result of the operation "flash_lock /dev/mtd 0 1"
+>> > using
+>> > this patch
+>> >
+>> > So before this patch, the lock operation was bad, because it locked 2
+>> > blocks
+>> > instead of one.
+>> >
+>> >> >> >                2 | 110b         | 010b      |
+>> >
+>> > - lock 2 erase blocks starting from offset 0. Results before this
+>> > patch, and
+>> > after this patch. Continue the logic on the following lines.
+>> >
+>> > oops there's a typo in column 2, sorry. The value in column 2 should
+>> > have been
+>> > 011b.
+>> >
+>> > So before this patch, when one requested to lock 2 block starting from
+>> > offset
+>> > 0, we would obtain 4 blocks locked, and he should have obtained just 2.
+>> >
+>> > The scope of this patch is to first fix the locking ops, so that we can
+>> > introduce a more generic formula that gives the same results as before
+>> > introducing it. Without this patch, the new formula will silently fix
+>> > the bug
+>> > that is described here.
+>> >
+>> >> >> >                3 | 110b         | 010b      |
+>> >
+>> >               ^ typo s/110b/011b
+>> >
+>> > rest of the examples are good.
+>> >
+>> > Cheers,
+>> > ta
+>> >
+>> >> >> >                4 | 100b         | 011b      |
+>> >> >> >                5 | 100b         | 011b      |
+>> >> >> >                6 | 100b         | 011b      |
+>> >> >> >                7 | 100b         | 011b      |
+>> >> >> >                8 | 101b         | 100b      |
+>> >> >> >                9 | 101b         | 100b      |
+>> >> >> >
+>> >> >> >              ... | ...          | ...       |
+>> >> >> >
+>> >> >> > For the lock operation, if one requests to lock an area that is not
+>> >> >> > matching the upper boundary of a BP protected area, we round down
+>> >> >> > the total length and lock less than the user requested, in order to
+>> >> >> > not lock more than the user actually requested.
 
 ______________________________________________________
 Linux MTD discussion mailing list
