@@ -2,83 +2,85 @@ Return-Path: <SRS0=KxgV=5I=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BD8E1C4332B
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Mar 2020 22:35:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DC80C4332B
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Mar 2020 23:20:01 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7A8722073E
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Mar 2020 22:35:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 561B320719
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Mar 2020 23:20:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KtrnYIEL";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=walle.cc header.i=@walle.cc header.b="i1zPl9dS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A8722073E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hWntXwXX";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rcBiw/Hs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 561B320719
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
-	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=uKbSgrytQoIqeZX04ATpwPFlYSDJ1z4mpZboZ5Uxv/A=; b=KtrnYIELUOwleydAVfcQkC930
-	guxyU4slRL7MOH5IqC5xLAWO3YCB5ISg7fki/n/9k7/QY+pXXqFIoQDoq0jw4bJ31leSR4wP82axv
-	Liq9IVKxJ/PA1QLHiWNI+phFvo++tr/oi/pPwCIvFTOsY4EOmVD5n3Qk52e+e4TbeCCoFdkYYs5iw
-	CA2xpIZ1JzMcz76SM+n7YYL5ktTcZkr1cFBEY9sh1XZ0E8B9CNRxnwtIyMdI2txUwS7wB5yVP74sJ
-	Uc2bxq62gkZJik/oGASZCpUBD2iZVKo+wza3m+/zoxJdv4bwC9/QxZd9AR71D/xMEzFlwkXzd0EWm
-	QrmyjOsEw==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=WAFvlATEpEglbhxsrvmIS+ejQidqm3bz+c+01Jvyi2U=; b=hWntXwXXCkSBUfcQPcJVFeyP2+
+	S18CvnYMxXxZnR6yTEExrxev7t65D2Laonzmujx/VGf/uMw0WzQoUBaeOnWrJSs2ozBfeUU+BvRkX
+	0zSVeoJwSQ1CTx6KHQ8L8FM7GnkoXRtQfOR0GgdX4DRtXdHlva81Q/k1NeUOBL2Jkwa4YlOZ/oY5M
+	oysQW/QtN9FkGjlnAV3PiUY9+Ft2Ed1SQTOLH7VMI3YvopJQR54Yh9OpcFiRa/49/L/qZb833OLU3
+	oFFxt4Sf4Dp1rT+pld2dxftjBB48jYYv0gs34eejjrTSga1AmTxwnHogQYOw8CZnptQFqnqi4kx7S
+	lABJzcVQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jGVfX-0004oU-I7; Mon, 23 Mar 2020 22:35:39 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1jGWML-0000ZC-Ob; Mon, 23 Mar 2020 23:19:53 +0000
+Received: from mail-ot1-x342.google.com ([2607:f8b0:4864:20::342])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jGVfT-0004nf-Jn
- for linux-mtd@lists.infradead.org; Mon, 23 Mar 2020 22:35:38 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 711ED2327F;
- Mon, 23 Mar 2020 23:35:30 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1585002930;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=xAKZwdC5MBZPuNPczEha7HeU8fg9rY1BGqM2vuwHuxw=;
- b=i1zPl9dSdfl8ZRy3EMG664/uRV/95794E5ydPp/0Eo/i+RgC675lZPzyJwBXrZCWfffvgD
- INL06CtLu5jvYDuUW07tnGw47VGOdDpJvOzlLrTMeXgiCjxsHzi81keUyqWB7LKRcRC7PE
- QHehetbnEb0wY2P6qN32E8p4SdFoL1g=
+ id 1jGWMI-0000Yg-Mr
+ for linux-mtd@lists.infradead.org; Mon, 23 Mar 2020 23:19:52 +0000
+Received: by mail-ot1-x342.google.com with SMTP id 111so15271792oth.13
+ for <linux-mtd@lists.infradead.org>; Mon, 23 Mar 2020 16:19:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+ bh=fH1EPOSV+aw8+C6QOLD429KadrenivP2ez5RIj645pM=;
+ b=rcBiw/HsitpdNxHKEmmuKupI+wLvxgN4d3IFaKu+cPMi8zQC/ClP9utbeIIqMi1dp5
+ U+T48zvyKcvHibkkqNp+fUYZP8EiwQiCyWj/MZTCFXj3JG92M1yAALa0oiZ0B1r2wKLb
+ vtcCRw0uu1cZwVgW8OFh0jPClQ2PeJeqc4xNFX+RG1yUCsv9GAMghNILx0q/jlH0hKVi
+ JApItkPqmDiV+mLrnmjoP7ZbCVabnKEJCOax4DkY6po6CCMk97pn26c42d1hnP6m+u7F
+ 3evm5dYo+AxFhCK7YPv8xPTLE0wINiMoZkkRHxp9Pbelxk/mIBPApI2dcNLSVtbCwQq0
+ Fgqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to;
+ bh=fH1EPOSV+aw8+C6QOLD429KadrenivP2ez5RIj645pM=;
+ b=KrZgg+own6PAHtnZNEqZgtGiH+Xa5vLlIP6AoFWLy5kx3ce6GDAdhu0ytN6BnFUgMf
+ lf04M21qec9IEKWeLou7snKllT8ZURJvhv6vnhR6B+XmYlTVP/4Zp7awdybf2LOZb7hn
+ 6HMwvr08t8XRwEhJ8N0vf/kyijBfJn2OKyqtz2DZo1GcA3HqVQ/gaxehrUIdFfuNlykL
+ gxqaic9KZJMCnXFNKLt4PYOUP1P7d1u7FuK34XGsW3NxkotF51sy7nmP2M0OI6VH+YH4
+ tkfZ9o865gE/qKAP3jqH/Y7INf5JouApC+1fN7aWAIGFnk1ZQC7GITz26mIfWJvGfZCA
+ S6Fg==
+X-Gm-Message-State: ANhLgQ0GprMHBPheeRqOi7VOvqU6z8T6iWbSYo0JGvpLrIfnDkkVObfY
+ JkuKf/HzpotA8Xp+NQxdfG9gQ4JXHx+fUMFuRVPwBsKj
+X-Google-Smtp-Source: ADFU+vu/a4PY3iKGI3RG54T9gNEpJaniGG89+68gxe7/aE8civMNpKIlRJH0l1Fs+ihxLTwGhqPvgkupGiW1w9ZI/5I=
+X-Received: by 2002:a9d:412:: with SMTP id 18mr19276568otc.134.1585005589608; 
+ Mon, 23 Mar 2020 16:19:49 -0700 (PDT)
 MIME-Version: 1.0
-Date: Mon, 23 Mar 2020 23:35:30 +0100
-From: Michael Walle <michael@walle.cc>
-To: Tudor.Ambarus@microchip.com
-Subject: Re: [PATCH v3 1/5] mtd: spi-nor: Fix gap in SR block protection
- locking
-In-Reply-To: <3123463.3oovMYBsBI@192.168.0.120>
-References: <20200323092430.1466234-1-tudor.ambarus@microchip.com>
- <4551629.Jkd3TAmcGf@192.168.0.120>
- <401ca7a54a8d327a0397880db6a9a475@walle.cc>
- <3123463.3oovMYBsBI@192.168.0.120>
-Message-ID: <c107f1c352fc975519531ffb54849e35@walle.cc>
-X-Sender: michael@walle.cc
-User-Agent: Roundcube Webmail/1.3.10
-X-Spamd-Bar: /
-X-Rspamd-Server: web
-X-Rspamd-Queue-Id: 711ED2327F
-X-Spamd-Result: default: False [-0.10 / 15.00]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[4]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_GOOD(-0.10)[text/plain]; TO_DN_NONE(0.00)[];
- DKIM_SIGNED(0.00)[]; NEURAL_HAM(-0.00)[-0.781];
- RCVD_COUNT_ZERO(0.00)[0]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; MID_RHS_MATCH_FROM(0.00)[]
+References: <CAP6exYJ3xk46PODgT=5WAdiLDNY=9MggxyaEwov6qyDQstLj7g@mail.gmail.com>
+In-Reply-To: <CAP6exYJ3xk46PODgT=5WAdiLDNY=9MggxyaEwov6qyDQstLj7g@mail.gmail.com>
+From: ron minnich <rminnich@gmail.com>
+Date: Mon, 23 Mar 2020 16:19:38 -0700
+Message-ID: <CAP6exY+W+zTtEB1LmHYDnhEnPj26Y97Ld9TBAxsgX3vGDb4LnQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mtd/intel-spi: Support cmdline-based partition
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, 
+ Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org, 
+ mika.westerberg@linux.intel.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200323_153535_977822_B5849CC3 
-X-CRM114-Status: GOOD (  27.54  )
+X-CRM114-CacheID: sfid-20200323_161950_749089_D0A2D65F 
+X-CRM114-Status: GOOD (  22.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,248 +92,113 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, vigneshr@ti.com, js07.lee@samsung.com
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2020-03-23 22:30, schrieb Tudor.Ambarus@microchip.com:
-> On Monday, March 23, 2020 11:14:05 PM EET Michael Walle wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know 
->> the
->> content is safe
->> Am 2020-03-23 21:26, schrieb Tudor.Ambarus@microchip.com:
->> > On Monday, March 23, 2020 9:54:38 PM EET Michael Walle wrote:
->> >> EXTERNAL EMAIL: Do not click links or open attachments unless you know
->> >> the
->> >> content is safe
->> >>
->> >> Am 2020-03-23 20:20, schrieb Tudor.Ambarus@microchip.com:
->> >> > On Monday, March 23, 2020 8:27:13 PM EET Michael Walle wrote:
->> >> >> EXTERNAL EMAIL: Do not click links or open attachments unless you know
->> >> >> the
->> >> >> content is safe
->> >> >>
->> >> >> Hi,
->> >> >>
->> >> >> Am 2020-03-23 10:24, schrieb Tudor.Ambarus@microchip.com:
->> >> >> > From: Tudor Ambarus <tudor.ambarus@microchip.com>
->> >> >> >
->> >> >> > Fix the gap for the SR block protection, the BP bits were set with
->> >> >> > a +1 value than actually needed. This patch does not change the
->> >> >> > behavior of the locking operations, just fixes the protected areas.
->> >> >>
->> >> >> So instead of rounding up, it does round down now?
->> >> >
->> >> > No. Why do you say that it rounds up? The behavior is not changed, the
->> >> > patch
->> >> > merely fix the protected area, which was wrong before. The round down
->> >> > is
->> >> > present before this patch.
->> >>
->> >> TBH I don't understand what this patch should do. Could you give an
->> >> example?
->> >
->> > sure, let me try to be more explicit.
->> >
->> >> >> > On a 16Mbit flash with 64KByte erase sector, the following changed
->> >>
->> >> >> > for the lock operation:
->> >> 16MBit is a bad example, because it is broken anyway, isn't it? We use
->> >> a
->> >
->> > it's not.
->> 
->> If I'm not mistaken this falls into the same category like the new 
->> 4bits
->> BP
->> flashes, because there are more slots free than needed. Ie. the last 
->> one
->> "protect all" is either 110b or 111b and thus don't work with the old
->> formula. This was actually my reason why there is no new formula for 
->> the
->> 4 bits BP flashes; but the current one is not working with flashes
->> <32Mbit.
->> See the old long thread.
->> 
->> >> 32Mbit flash where 2MB are locked and the second 2MB are unlocked. Eg.
->> >> a
->> >> 50/50 split. I haven't seen any issued. Shouldn't it be then
->> >> completely
->> >> locked according this the following example?
->> >
->> > I don't follow.
->> 
->> We've successfully used the "flash_lock 0 0x200" (with 4k sectors) on
->> our
->> boards to lock the first half of our 4MiB flash.
->> 
->> > The table from below was generated for the S25FL116K 16 Mbit flash.
->> > BTW, one
->> > has to disable CONFIG_MTD_SPI_NOR_USE_4K_SECTORS in order to test the
->> > locking.
->> > When you have a 4k sector erase, the locking is simply wrong, but this
->> > is
->> > another topic.
->> 
->> it should work with that too if you convert the number to the smaller
->> sectors,
->> ie multiply by 16; But yeah the cli tool has a broken interface. It
->> should
->> accept both offset and length in bytes; not one one in bytes and one 
->> in
->> sectors,
->> where the latter also changes with CONFIG_MTD_SPI_NOR_USE_4K_SECTORS.
->> 
->> >> >> > Number of blocks | BP2:0 before | BP2:0 now |
->> >> >> >
->> >> >> >                1 | 010b         | 001b      |
->> >
->> > - number of blocks is how many blocks you want to lock. One would do
->> > for one
->> >
->> > block:
->> >     flash_lock /dev/mtd 0 1
->> >
->> > i.e. lock a single erase block starting from offset 0.
->> >
->> > - "BP0:2 before" is the result of the operation "flash_lock /dev/mtd 0
->> > 1"
->> > before this patch
->> 
->> Without your patch applied it works like expected:
->> 
->> [    1.914329] spi-nor spi0.0: w25q32dw (4096 Kbytes)
->> # flash_lock -l /dev/mtd1 0 1
->> # cat
->> /sys/devices/platform/soc/20c0000.spi/spi_master/spi0/spi0.0/status_reg
->> a4
->> 
->> A4 is 1010_0100, ie BP[2:0] = 001b and TB=1
->> 
-> 
-> what happens if you request flash_lock -l /dev/mtd1 0 3?
-
-with your patch applied:
-
-# flash_lock -u /dev/mtd1 0 64
-# cat 
-/sys/devices/platform/soc/20c0000.spi/spi_master/spi0/spi0.0/status_reg
-00
-# flash_lock -l /dev/mtd1 0 3
-# cat 
-/sys/devices/platform/soc/20c0000.spi/spi_master/spi0/spi0.0/status_reg
-a4
-
-
-without it:
-
-# flash_lock -u /dev/mtd1 0 64
-# cat 
-/sys/devices/platform/soc/20c0000.spi/spi_master/spi0/spi0.0/status_reg
-00
-# flash_lock -l /dev/mtd1 0 3
-# cat 
-/sys/devices/platform/soc/20c0000.spi/spi_master/spi0/spi0.0/status_reg
-a8
-
-
->> # flash_lock -u /dev/mtd1 0 64
->> # flash_lock -l /dev/mtd1 0 32
->> # cat
->> /sys/devices/platform/soc/20c0000.spi/spi_master/spi0/spi0.0/status_reg
->> b8
->> 
->> 
->> With this patch applied:
->> 
->> # flash_lock -u /dev/mtd1 0 64
->> # cat
->> /sys/devices/platform/soc/20c0000.spi/spi_master/spi0/spi0.0/status_reg
->> 00
->> # flash_lock -l /dev/mtd1 0 1
->> flash_lock: error!: could not lock device: /dev/mtd1
->> 
->>              error 22 (Invalid argument)
-> 
-> I'm wondering what was the reason for the -EINVAL.
-> 
->> # flash_lock -l /dev/mtd1 0 2
->> # cat
->> /sys/devices/platform/soc/20c0000.spi/spi_master/spi0/spi0.0/status_reg
->> a4
->> 
->> which is wrong, isn't it?
->> 
-> Looks so. You should have obtained, 0xa8, right?
-
-correct, BP should be 010b for the first two sectors.
-
-> Will recheck tomorrow
-> morning.
-> 
-> Thanks for testing this! I don't have a 32Mbit flash ...
-
-You should be able to reproduce it with every flash >=32Mbit which has
-3 BP bits.
-
--michael
-
-> 
-> Cheers,
-> ta
->> 
->> > - "BP0:2 now" is the result of the operation "flash_lock /dev/mtd 0 1"
->> > using
->> > this patch
->> >
->> > So before this patch, the lock operation was bad, because it locked 2
->> > blocks
->> > instead of one.
->> >
->> >> >> >                2 | 110b         | 010b      |
->> >
->> > - lock 2 erase blocks starting from offset 0. Results before this
->> > patch, and
->> > after this patch. Continue the logic on the following lines.
->> >
->> > oops there's a typo in column 2, sorry. The value in column 2 should
->> > have been
->> > 011b.
->> >
->> > So before this patch, when one requested to lock 2 block starting from
->> > offset
->> > 0, we would obtain 4 blocks locked, and he should have obtained just 2.
->> >
->> > The scope of this patch is to first fix the locking ops, so that we can
->> > introduce a more generic formula that gives the same results as before
->> > introducing it. Without this patch, the new formula will silently fix
->> > the bug
->> > that is described here.
->> >
->> >> >> >                3 | 110b         | 010b      |
->> >
->> >               ^ typo s/110b/011b
->> >
->> > rest of the examples are good.
->> >
->> > Cheers,
->> > ta
->> >
->> >> >> >                4 | 100b         | 011b      |
->> >> >> >                5 | 100b         | 011b      |
->> >> >> >                6 | 100b         | 011b      |
->> >> >> >                7 | 100b         | 011b      |
->> >> >> >                8 | 101b         | 100b      |
->> >> >> >                9 | 101b         | 100b      |
->> >> >> >
->> >> >> >              ... | ...          | ...       |
->> >> >> >
->> >> >> > For the lock operation, if one requests to lock an area that is not
->> >> >> > matching the upper boundary of a BP protected area, we round down
->> >> >> > the total length and lock less than the user requested, in order to
->> >> >> > not lock more than the user actually requested.
+On Mon, Mar 23, 2020 at 12:58 PM ron minnich <rminnich@gmail.com> wrote:
+>
+> The MTD subsystem can support command-line defined partitions
+> for one or more MTD devices.
+>
+> The format is:
+>  * mtdparts=<mtddef>[;<mtddef]
+>  * <mtddef>  := <mtd-id>:<partdef>[,<partdef>]
+>
+> The ':' currently separates the id from the partdef.
+>
+> The mtdparts can define more than one part, in which case
+> there will be more than one <mtd-id>:<partdef> component.
+>
+> On Intel spi devices, the name is set to the PCI slot name,
+> e.g. 0000:00:1f.5.  There are two : in the name alone.
+> Since strchr is used to find the <mtd-id>,
+> in this case it will return the wrong
+> result. Using strrchr is not an option, as there may
+> be more than one mtddef in the argument.
+>
+> This change modifies the name attached to the intel spi
+> device, changing all ':' to '.', e.g. 0000:00:1f.5
+> becomes 0000.00.1f.5. It also adds command line partition
+> parsing registration to the intel_spi_probe function.
+>
+> This change has been tested and works on a modern Intel chipset with
+> a 64 MiB FLASH part.
+>
+> Signed-off-by: Ronald G. Minnich <rminnich@google.com>
+> ---
+>  drivers/mtd/spi-nor/intel-spi-pci.c | 22 ++++++++++++++++++++++
+>  drivers/mtd/spi-nor/intel-spi.c     |  4 +++-
+>  2 files changed, 25 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/mtd/spi-nor/intel-spi-pci.c
+> b/drivers/mtd/spi-nor/intel-spi-pci.c
+> index 81329f680bec..57716e53c219 100644
+> --- a/drivers/mtd/spi-nor/intel-spi-pci.c
+> +++ b/drivers/mtd/spi-nor/intel-spi-pci.c
+> @@ -24,6 +24,23 @@ static const struct intel_spi_boardinfo cnl_info = {
+>         .type = INTEL_SPI_CNL,
+>  };
+>
+> +/*
+> + * PCI names use a ':' as a separator, which conflicts
+> + * with the mtdparts cmdline parameter. Dup the name and
+> + * replace : with .
+> + */
+> +static int fixname(struct pci_dev *pdev) {
+> +       char *name;
+> +        name = kstrdup(pci_name(pdev), GFP_KERNEL);
+> +       if (! name) {
+> +               return -ENOMEM;
+> +       }
+> +       strreplace(name, ':', '.');
+> +       dev_set_name(&pdev->dev, name);
+> +       kfree(name);
+> +       return 0;
+> +}
+> +
+>  static int intel_spi_pci_probe(struct pci_dev *pdev,
+>                                const struct pci_device_id *id)
+>  {
+> @@ -41,6 +58,11 @@ static int intel_spi_pci_probe(struct pci_dev *pdev,
+>         if (!info)
+>                 return -ENOMEM;
+>
+> +       if (fixname(pdev)) {
+> +               kfree(info);
+> +               return -ENOMEM;
+> +       }
+> +
+>         /* Try to make the chip read/write */
+>         pci_read_config_dword(pdev, BCR, &bcr);
+>         if (!(bcr & BCR_WPD)) {
+> diff --git a/drivers/mtd/spi-nor/intel-spi.c b/drivers/mtd/spi-nor/intel-spi.c
+> index 61d2a0ad2131..261b10cf5076 100644
+> --- a/drivers/mtd/spi-nor/intel-spi.c
+> +++ b/drivers/mtd/spi-nor/intel-spi.c
+> @@ -894,6 +894,8 @@ static const struct spi_nor_controller_ops
+> intel_spi_controller_ops = {
+>         .erase = intel_spi_erase,
+>  };
+>
+> +static const char * const part_probes[] = { "cmdlinepart", NULL };
+> +
+>  struct intel_spi *intel_spi_probe(struct device *dev,
+>         struct resource *mem, const struct intel_spi_boardinfo *info)
+>  {
+> @@ -941,7 +943,7 @@ struct intel_spi *intel_spi_probe(struct device *dev,
+>         if (!ispi->writeable || !writeable)
+>                 ispi->nor.mtd.flags &= ~MTD_WRITEABLE;
+>
+> -       ret = mtd_device_register(&ispi->nor.mtd, &part, 1);
+> +       ret = mtd_device_parse_register(&ispi->nor.mtd, part_probes,
+> NULL, &part, 1);
+>         if (ret)
+>                 return ERR_PTR(ret);
+>
+> --
+> 2.25.1.696.g5e7596f4ac-goog
 
 ______________________________________________________
 Linux MTD discussion mailing list
