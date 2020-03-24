@@ -2,64 +2,58 @@ Return-Path: <SRS0=g+sZ=5J=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0D3DC10DCE
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Mar 2020 22:11:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99F76C10DCE
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Mar 2020 22:25:59 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9CC162078A
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Mar 2020 22:11:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4EE342080C
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Mar 2020 22:25:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hozSBQj+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9CC162078A
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Os5oOIUP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4EE342080C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8yjBnwlDUXMSyPYYwhNO8rYka/j07w0T3cV9CCUCHyQ=; b=hozSBQj+9jbso3
-	iSzbUV08Sq9rs1874C6vyy1lQhLM2pWa56ZiPz0HdycmdW3/ijKnOar3Bbkzv8ehcdt/8WvkgnRJR
-	PpJgbG25d71lIjVK4qO/KTntZN/3IF9xPNsFmv69yBa8FWiODFxqcMgjnGe9BNEgWux1aWREFBIHq
-	ztIUjw2DkszeDSQZPu3oyZNcFn/P9qZFPZp4Z8tofCsWqO+G1CkUE+kX4ugt64+FqbtWlo8fP4SkD
-	rwNJvFEkMZ7m7cOi+i53jWg+60E+paiVcYQ0EfQwkFK+lSIncXrTAUQAdzkAuEAeaN1LN03GEc772
-	cUPAcRKHtKpFyDpxjNlw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=FJGVUYjZmMshM4OCTMS91glHpToBAR+9C/n4JnAgr5A=; b=Os5oOIUPvx9nwI
+	/B+MvYNgiPGiyqSQ1px7aoR+OIZDS3WQvxuYG+ROzX42VYvXfkwII4bW2oMcMmMAuueKWvlJSpcq/
+	TMWVZmGOvCzuz85DWhnJGGq0wftxkrB46YZVFWVKgv0h7B2onxcXKzN67nRDmIsTVlGYO0pbCFTm1
+	kgcnbRWPXt+GG72UhnZcjZCDLRSCrh5IFQYqNbe9BtuOLXCpy0WWcdunZOhL81fdn25j15zhGPfkf
+	wB/HZ836k8mNpmujSRkrx5mHMHnC/4b0Lpoo57U/VP1pzRyrfxvSTs0fQ8UqLYZdcbyJ3C7Uq7rcd
+	ptdMPGH5KAP12AqO2MZw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jGrlz-0001Iu-Mu; Tue, 24 Mar 2020 22:11:47 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1jGrza-0005Y1-RN; Tue, 24 Mar 2020 22:25:50 +0000
+Received: from relay10.mail.gandi.net ([217.70.178.230])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jGrlw-0001Ia-UF
- for linux-mtd@lists.infradead.org; Tue, 24 Mar 2020 22:11:46 +0000
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
+ id 1jGrzV-0005Tu-6v
+ for linux-mtd@lists.infradead.org; Tue, 24 Mar 2020 22:25:48 +0000
+Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 42818FF804;
- Tue, 24 Mar 2020 22:11:42 +0000 (UTC)
-Date: Tue, 24 Mar 2020 23:11:40 +0100
+ by relay10.mail.gandi.net (Postfix) with ESMTPSA id 725C0240006;
+ Tue, 24 Mar 2020 22:25:40 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH] mtd: fix calculating partition end address
-Message-ID: <20200324231140.44aecf7a@xps13>
-In-Reply-To: <9fe546f30130cf3569cd139d559d9c44@milecki.pl>
-References: <20200309074445.23524-1-zajec5@gmail.com>
- <20200309150424.4b75af66@xps13>
- <6125d86fee0c83653cc281b3069e1587@milecki.pl>
- <20200324225859.56b2a301@xps13>
- <9fe546f30130cf3569cd139d559d9c44@milecki.pl>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: Convert fallthrough comments into statements
+Date: Tue, 24 Mar 2020 23:25:38 +0100
+Message-Id: <20200324222538.16446-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200324_151145_110727_2AFE4E23 
-X-CRM114-Status: GOOD (  20.43  )
+X-CRM114-CacheID: sfid-20200324_152545_526945_A29996C1 
+X-CRM114-Status: GOOD (  14.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,58 +65,509 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- linux-mtd@lists.infradead.org, Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <bbrezillon@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Joe Perches <joe@perches.com>, Miquel Raynal <miquel.raynal@bootlin.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgUmFmYcWCLAoKUmFmYcWCIE1pxYJlY2tpIDxyYWZhbEBtaWxlY2tpLnBsPiB3cm90ZSBvbiBU
-dWUsIDI0IE1hciAyMDIwIDIzOjA2OjA1CiswMTAwOgoKPiBIZXksCj4gCj4gT24gMjAyMC0wMy0y
-NCAyMjo1OCwgTWlxdWVsIFJheW5hbCB3cm90ZToKPiA+IFJhZmHFgiBNacWCZWNraSA8cmFmYWxA
-bWlsZWNraS5wbD4gd3JvdGUgb24gTW9uLCAwOSBNYXIgMjAyMCAxNToxOToxMAo+ID4gKzAxMDA6
-Cj4gPiAgIAo+ID4+IE9uIDIwMjAtMDMtMDkgMTU6MDQsIE1pcXVlbCBSYXluYWwgd3JvdGU6ICAK
-PiA+PiA+IFJhZmHFgiBNacWCZWNraSA8emFqZWM1QGdtYWlsLmNvbT4gd3JvdGUgb24gTW9uLCAg
-OSBNYXIgMjAyMCAwODo0NDo0NQo+ID4+ID4gKzAxMDA6Cj4gPj4gPiAgCj4gPj4gPj4gRnJvbTog
-UmFmYcWCIE1pxYJlY2tpIDxyYWZhbEBtaWxlY2tpLnBsPiAgCj4gPj4gPj4gPj4gVGhpcyBmaXhl
-cyBjaGVjayBmb3IgcGFydGl0aW9ucyB0aGF0IGRvbid0IHN0YXJ0IGF0IGJlZ2lubmluZyBvZiB0
-aGVpciAgCj4gPj4gPj4gcGFyZW50cy4gTWlzc2luZyBwYXJ0aXRpb24ncyBvZmZzZXQgaW4gZm9y
-bXVsYSBjb3VsZCByZXN1bHQgaW4gZm9yY2luZwo+ID4+ID4+IHJlYWQtb25seSBpbmNvcnJlY3Rs
-eS4gIAo+ID4+ID4+ID4+IEZpeGVzOiA2NzUwZjYxYTEzYTAgKCJtdGQ6IGltcHJvdmUgY2FsY3Vs
-YXRpbmcgcGFydGl0aW9uIGJvdW5kYXJpZXMgPj4gd2hlbiBjaGVja2luZyBmb3IgYWxpZ25tZW50
-IikgIAo+ID4+ID4+IFNpZ25lZC1vZmYtYnk6IFJhZmHFgiBNacWCZWNraSA8cmFmYWxAbWlsZWNr
-aS5wbD4KPiA+PiA+PiAtLS0KPiA+PiA+PiAgZHJpdmVycy9tdGQvbXRkcGFydC5jIHwgMiArLQo+
-ID4+ID4+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkgIAo+
-ID4+ID4+ID4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9tdGRwYXJ0LmMgYi9kcml2ZXJzL210
-ZC9tdGRwYXJ0LmMgIAo+ID4+ID4+IGluZGV4IDczMjhjMDY2YzViYS4uYzY4M2I0MzJjYzVlIDEw
-MDY0NAo+ID4+ID4+IC0tLSBhL2RyaXZlcnMvbXRkL210ZHBhcnQuYwo+ID4+ID4+ICsrKyBiL2Ry
-aXZlcnMvbXRkL210ZHBhcnQuYwo+ID4+ID4+IEBAIC01MjQsNyArNTI0LDcgQEAgc3RhdGljIHN0
-cnVjdCBtdGRfcGFydCAqYWxsb2NhdGVfcGFydGl0aW9uKHN0cnVjdCA+PiBtdGRfaW5mbyAqcGFy
-ZW50LAo+ID4+ID4+ICAJCQlwYXJ0LT5uYW1lKTsKPiA+PiA+PiAgCX0gIAo+ID4+ID4+ID4+IC0J
-dG1wID0gcGFydF9hYnNvbHV0ZV9vZmZzZXQocGFyZW50KSArIHNsYXZlLT5tdGQuc2l6ZTsgIAo+
-ID4+ID4+ICsJdG1wID0gcGFydF9hYnNvbHV0ZV9vZmZzZXQocGFyZW50KSArIHNsYXZlLT5vZmZz
-ZXQgKyA+PiBzbGF2ZS0+bXRkLnNpemU7ICAKPiA+PiA+Cj4gPj4gPiBJIHRoaW5rIHlvdSBhcmUg
-ZG9pbmcgdGhlIGNoYW5nZSBhdCB0aGUgd3JvbmcgcGxhY2UsIGlmIHlvdSB3YW50IHRvCj4gPj4g
-PiBjaGVjayB3aGVyZSB0aGUgcGFydGl0aW9uICpzdGFydHMqIHlvdSBzaG91bGQgZG8gaXQgYSBm
-ZXcgbGluZXMgYWJvdmUuCj4gPj4gPiBCdXQgSSB0aGluayB0aGUgY2hlY2sgc2hvdWxkIGJlIGhl
-cmUgYXMgd2VsbCwgcHJvYmFibHkuICAKPiA+PiA+PiBUaGUgY2hlY2sgd2hlcmUgdGhlIHBhcnRp
-dGlvbiAqc3RhcnRzKiBpcyBPSyBhbmQgSSBkb24ndCBtZWFuIHRvID4+IGNoYW5nZSAgCj4gPj4g
-aXQuIFRoZSBidWcgaXMgYWJvdXQgY2FsY3VsYXRpbmcgYWJzb2x1dGUgKmVuZCogYWRkcmVzcyBv
-ZiBwYXJ0aXRpb24uICAKPiA+PiA+PiA+PiA+IEFueXdheSwgSSBqdXN0IGFwcGxpZWQgb24gbXkg
-bG9jYWwgdHJlZSBhIHBhdGNoIHJld3JpdGluZyBhIGJpdCB0aGUgIAo+ID4+ID4gcGFydGl0aW9u
-aW5nIHNjaGVtZSwgY291bGQgeW91IHBsZWFzZSByZWJhc2Ugb24gdG9wIG9mIHRvZGF5J3MKPiA+
-PiA+IG10ZC9uZXh0IGFuZCByZXNlbmQgdGhpcyBwYXRjaCB1cGRhdGVkPwo+ID4+ID4KPiA+PiA+
-IEhlcmUgaXMgdGhlIGNoYW5nZSB0aGF0IEkndmUgZG9uZSBhdCB0aGlzIHBsYWNlOgo+ID4+ID4g
-CS0gICAgICAgdG1wID0gcGFydF9hYnNvbHV0ZV9vZmZzZXQocGFyZW50KSArIHNsYXZlLT5tdGQu
-c2l6ZTsKPiA+PiA+IAkrICAgICAgIHRtcCA9IG10ZF9nZXRfbWFzdGVyX29mcyhjaGlsZCwgMCkg
-KyBjaGlsZC0+c2l6ZTsgIAo+ID4+ID4+IEknbGwgZ2l2ZSBpdCBhIHRyeS4gIAo+ID4gCj4gPiBJ
-IHdvdWxkIGxpa2UgdG8gYXBwbHkgeW91ciBmaXggdGhpcyB3ZWVrLCBkbyB5b3UgdGhpbmsgeW91
-IGNhbiByZWJhc2UKPiA+IGFuZCByZXNlbmQgc29vbj8gIAo+IAo+IEl0J3Mgbm90IG5lZWRlZCBh
-bnltb3JlIGFzIHlvdSBmaXhlZCB0aGlzIGJ1ZyBpbiB5b3VyIGNvbW1pdCByZXdvcmtpbmcKPiBw
-YXJ0aXRpb25zLgoKR3JlYXQhCgoKVGhhbmtzIGZvciB0aGUgaW5mbwpNaXF1w6hsCgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVRE
-IGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Use Joe Perches cvt_fallthrough.pl script to convert "/* fallthrough
+*/" comments (and its derivativs) into a "fallthrough;"
+statement. This automatically drops useless ones.
+
+Do it MTD-wide.
+
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ drivers/mtd/chips/cfi_cmdset_0001.c             |  4 ++--
+ drivers/mtd/chips/cfi_cmdset_0002.c             |  5 ++---
+ drivers/mtd/chips/cfi_cmdset_0020.c             | 17 ++++++-----------
+ drivers/mtd/chips/cfi_util.c                    | 12 ++++++------
+ drivers/mtd/devices/block2mtd.c                 |  4 ++--
+ drivers/mtd/devices/phram.c                     |  4 ++--
+ drivers/mtd/lpddr/lpddr_cmds.c                  |  3 +--
+ drivers/mtd/maps/sa1100-flash.c                 |  3 +--
+ drivers/mtd/nand/onenand/onenand_base.c         |  2 +-
+ drivers/mtd/nand/raw/diskonchip.c               |  2 +-
+ drivers/mtd/nand/raw/fsl_elbc_nand.c            |  3 +--
+ drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c |  2 +-
+ drivers/mtd/nand/raw/ingenic/jz4725b_bch.c      |  4 ++--
+ drivers/mtd/nand/raw/ingenic/jz4780_bch.c       |  4 ++--
+ drivers/mtd/nand/raw/nand_base.c                |  9 +++------
+ drivers/mtd/nand/raw/nand_legacy.c              |  6 ++----
+ drivers/mtd/nand/raw/nandsim.c                  |  4 ++--
+ drivers/mtd/nand/raw/omap_elm.c                 |  8 ++++----
+ drivers/mtd/spi-nor/aspeed-smc.c                |  2 +-
+ drivers/mtd/spi-nor/spi-nor.c                   |  1 -
+ drivers/mtd/ubi/attach.c                        |  2 +-
+ drivers/mtd/ubi/build.c                         |  4 ++--
+ 22 files changed, 45 insertions(+), 60 deletions(-)
+
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index 00a79489067c..142c0f9485fe 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -834,7 +834,7 @@ static int chip_ready (struct map_info *map, struct flchip *chip, unsigned long
+ 			/* Someone else might have been playing with it. */
+ 			return -EAGAIN;
+ 		}
+-		/* Fall through */
++		fallthrough;
+ 	case FL_READY:
+ 	case FL_CFI_QUERY:
+ 	case FL_JEDEC_QUERY:
+@@ -907,7 +907,7 @@ static int chip_ready (struct map_info *map, struct flchip *chip, unsigned long
+ 		/* Only if there's no operation suspended... */
+ 		if (mode == FL_READY && chip->oldstate == FL_READY)
+ 			return 0;
+-		/* Fall through */
++		fallthrough;
+ 	default:
+ 	sleep:
+ 		set_current_state(TASK_UNINTERRUPTIBLE);
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index 04b383bc3947..a1f3e1031c3d 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -966,8 +966,7 @@ static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr
+ 		/* Only if there's no operation suspended... */
+ 		if (mode == FL_READY && chip->oldstate == FL_READY)
+ 			return 0;
+-		/* fall through */
+-
++		fallthrough;
+ 	default:
+ 	sleep:
+ 		set_current_state(TASK_UNINTERRUPTIBLE);
+@@ -2935,7 +2934,7 @@ static void cfi_amdstd_sync (struct mtd_info *mtd)
+ 			 * as the whole point is that nobody can do anything
+ 			 * with the chip now anyway.
+ 			 */
+-			/* fall through */
++			fallthrough;
+ 		case FL_SYNCING:
+ 			mutex_unlock(&chip->mutex);
+ 			break;
+diff --git a/drivers/mtd/chips/cfi_cmdset_0020.c b/drivers/mtd/chips/cfi_cmdset_0020.c
+index 54edae63b92d..270322bca221 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0020.c
++++ b/drivers/mtd/chips/cfi_cmdset_0020.c
+@@ -324,8 +324,7 @@ static inline int do_read_onechip(struct map_info *map, struct flchip *chip, lof
+ 	case FL_JEDEC_QUERY:
+ 		map_write(map, CMD(0x70), cmd_addr);
+ 		chip->state = FL_STATUS;
+-		/* Fall through */
+-
++		fallthrough;
+ 	case FL_STATUS:
+ 		status = map_read(map, cmd_addr);
+ 		if (map_word_andequal(map, status, status_OK, status_OK)) {
+@@ -462,8 +461,7 @@ static int do_write_buffer(struct map_info *map, struct flchip *chip,
+ #ifdef DEBUG_CFI_FEATURES
+ 	printk("%s: 1 status[%x]\n", __func__, map_read(map, cmd_adr));
+ #endif
+-		/* Fall through */
+-
++		fallthrough;
+ 	case FL_STATUS:
+ 		status = map_read(map, cmd_adr);
+ 		if (map_word_andequal(map, status, status_OK, status_OK))
+@@ -756,8 +754,7 @@ static inline int do_erase_oneblock(struct map_info *map, struct flchip *chip, u
+ 	case FL_READY:
+ 		map_write(map, CMD(0x70), adr);
+ 		chip->state = FL_STATUS;
+-		/* Fall through */
+-
++		fallthrough;
+ 	case FL_STATUS:
+ 		status = map_read(map, adr);
+ 		if (map_word_andequal(map, status, status_OK, status_OK))
+@@ -998,7 +995,7 @@ static void cfi_staa_sync (struct mtd_info *mtd)
+ 			 * as the whole point is that nobody can do anything
+ 			 * with the chip now anyway.
+ 			 */
+-			/* Fall through */
++			fallthrough;
+ 		case FL_SYNCING:
+ 			mutex_unlock(&chip->mutex);
+ 			break;
+@@ -1054,8 +1051,7 @@ static inline int do_lock_oneblock(struct map_info *map, struct flchip *chip, un
+ 	case FL_READY:
+ 		map_write(map, CMD(0x70), adr);
+ 		chip->state = FL_STATUS;
+-		/* Fall through */
+-
++		fallthrough;
+ 	case FL_STATUS:
+ 		status = map_read(map, adr);
+ 		if (map_word_andequal(map, status, status_OK, status_OK))
+@@ -1201,8 +1197,7 @@ static inline int do_unlock_oneblock(struct map_info *map, struct flchip *chip,
+ 	case FL_READY:
+ 		map_write(map, CMD(0x70), adr);
+ 		chip->state = FL_STATUS;
+-		/* Fall through */
+-
++		fallthrough;
+ 	case FL_STATUS:
+ 		status = map_read(map, adr);
+ 		if (map_word_andequal(map, status, status_OK, status_OK))
+diff --git a/drivers/mtd/chips/cfi_util.c b/drivers/mtd/chips/cfi_util.c
+index e2d4db05aeb3..99b7986002f0 100644
+--- a/drivers/mtd/chips/cfi_util.c
++++ b/drivers/mtd/chips/cfi_util.c
+@@ -109,13 +109,13 @@ map_word cfi_build_cmd(u_long cmd, struct map_info *map, struct cfi_private *cfi
+ 	case 8:
+ 		onecmd |= (onecmd << (chip_mode * 32));
+ #endif
+-		/* fall through */
++		fallthrough;
+ 	case 4:
+ 		onecmd |= (onecmd << (chip_mode * 16));
+-		/* fall through */
++		fallthrough;
+ 	case 2:
+ 		onecmd |= (onecmd << (chip_mode * 8));
+-		/* fall through */
++		fallthrough;
+ 	case 1:
+ 		;
+ 	}
+@@ -165,13 +165,13 @@ unsigned long cfi_merge_status(map_word val, struct map_info *map,
+ 	case 8:
+ 		res |= (onestat >> (chip_mode * 32));
+ #endif
+-		/* fall through */
++		fallthrough;
+ 	case 4:
+ 		res |= (onestat >> (chip_mode * 16));
+-		/* fall through */
++		fallthrough;
+ 	case 2:
+ 		res |= (onestat >> (chip_mode * 8));
+-		/* fall through */
++		fallthrough;
+ 	case 1:
+ 		;
+ 	}
+diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
+index 36aa082f6db0..c08721b11642 100644
+--- a/drivers/mtd/devices/block2mtd.c
++++ b/drivers/mtd/devices/block2mtd.c
+@@ -329,10 +329,10 @@ static int ustrtoul(const char *cp, char **endp, unsigned int base)
+ 	switch (**endp) {
+ 	case 'G' :
+ 		result *= 1024;
+-		/* fall through */
++		fallthrough;
+ 	case 'M':
+ 		result *= 1024;
+-		/* fall through */
++		fallthrough;
+ 	case 'K':
+ 	case 'k':
+ 		result *= 1024;
+diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
+index b50ec7ecd10c..087b5e86d1bf 100644
+--- a/drivers/mtd/devices/phram.c
++++ b/drivers/mtd/devices/phram.c
+@@ -148,10 +148,10 @@ static int parse_num64(uint64_t *num64, char *token)
+ 			switch (token[len - 2]) {
+ 			case 'G':
+ 				shift += 10;
+-				/* fall through */
++				fallthrough;
+ 			case 'M':
+ 				shift += 10;
+-				/* fall through */
++				fallthrough;
+ 			case 'k':
+ 				shift += 10;
+ 				token[len - 2] = 0;
+diff --git a/drivers/mtd/lpddr/lpddr_cmds.c b/drivers/mtd/lpddr/lpddr_cmds.c
+index 9341a8a592e8..fb1cbc9a2870 100644
+--- a/drivers/mtd/lpddr/lpddr_cmds.c
++++ b/drivers/mtd/lpddr/lpddr_cmds.c
+@@ -304,8 +304,7 @@ static int chip_ready(struct map_info *map, struct flchip *chip, int mode)
+ 		/* Only if there's no operation suspended... */
+ 		if (mode == FL_READY && chip->oldstate == FL_READY)
+ 			return 0;
+-		/* fall through */
+-
++		fallthrough;
+ 	default:
+ sleep:
+ 		set_current_state(TASK_UNINTERRUPTIBLE);
+diff --git a/drivers/mtd/maps/sa1100-flash.c b/drivers/mtd/maps/sa1100-flash.c
+index bb1ef650ffd2..d3d4e987c163 100644
+--- a/drivers/mtd/maps/sa1100-flash.c
++++ b/drivers/mtd/maps/sa1100-flash.c
+@@ -81,8 +81,7 @@ static int sa1100_probe_subdev(struct sa_subdev_info *subdev, struct resource *r
+ 	default:
+ 		printk(KERN_WARNING "SA1100 flash: unknown base address "
+ 		       "0x%08lx, assuming CS0\n", phys);
+-		/* Fall through */
+-
++		fallthrough;
+ 	case SA1100_CS0_PHYS:
+ 		subdev->map.bankwidth = (MSC0 & MSC_RBW) ? 2 : 4;
+ 		break;
+diff --git a/drivers/mtd/nand/onenand/onenand_base.c b/drivers/mtd/nand/onenand/onenand_base.c
+index d5326d19b136..ec18ade33262 100644
+--- a/drivers/mtd/nand/onenand/onenand_base.c
++++ b/drivers/mtd/nand/onenand/onenand_base.c
+@@ -3259,7 +3259,7 @@ static void onenand_check_features(struct mtd_info *mtd)
+ 	switch (density) {
+ 	case ONENAND_DEVICE_DENSITY_8Gb:
+ 		this->options |= ONENAND_HAS_NOP_1;
+-		/* fall through */
++		fallthrough;
+ 	case ONENAND_DEVICE_DENSITY_4Gb:
+ 		if (ONENAND_IS_DDP(this))
+ 			this->options |= ONENAND_HAS_2PLANE;
+diff --git a/drivers/mtd/nand/raw/diskonchip.c b/drivers/mtd/nand/raw/diskonchip.c
+index 2833c49c1378..c2a391ad2c35 100644
+--- a/drivers/mtd/nand/raw/diskonchip.c
++++ b/drivers/mtd/nand/raw/diskonchip.c
+@@ -1482,7 +1482,7 @@ static int __init doc_probe(unsigned long physadr)
+ 			break;
+ 		case DOC_ChipID_DocMilPlus32:
+ 			pr_err("DiskOnChip Millennium Plus 32MB is not supported, ignoring.\n");
+-			/* fall through */
++			fallthrough;
+ 		default:
+ 			ret = -ENODEV;
+ 			goto notfound;
+diff --git a/drivers/mtd/nand/raw/fsl_elbc_nand.c b/drivers/mtd/nand/raw/fsl_elbc_nand.c
+index 634c550db13a..e1dc675b12bb 100644
+--- a/drivers/mtd/nand/raw/fsl_elbc_nand.c
++++ b/drivers/mtd/nand/raw/fsl_elbc_nand.c
+@@ -324,8 +324,7 @@ static void fsl_elbc_cmdfunc(struct nand_chip *chip, unsigned int command,
+ 	/* READ0 and READ1 read the entire buffer to use hardware ECC. */
+ 	case NAND_CMD_READ1:
+ 		column += 256;
+-
+-	/* fall-through */
++		fallthrough;
+ 	case NAND_CMD_READ0:
+ 		dev_dbg(priv->dev,
+ 		        "fsl_elbc_cmdfunc: NAND_CMD_READ0, page_addr:"
+diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
+index 49afebee50db..935c4902ada7 100644
+--- a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
++++ b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
+@@ -253,7 +253,7 @@ static int ingenic_nand_attach_chip(struct nand_chip *chip)
+ 		chip->ecc.hwctl = ingenic_nand_ecc_hwctl;
+ 		chip->ecc.calculate = ingenic_nand_ecc_calculate;
+ 		chip->ecc.correct = ingenic_nand_ecc_correct;
+-		/* fall through */
++		fallthrough;
+ 	case NAND_ECC_SOFT:
+ 		dev_info(nfc->dev, "using %s (strength %d, size %d, bytes %d)\n",
+ 			 (nfc->ecc) ? "hardware ECC" : "software ECC",
+diff --git a/drivers/mtd/nand/raw/ingenic/jz4725b_bch.c b/drivers/mtd/nand/raw/ingenic/jz4725b_bch.c
+index 6c852eae09cf..2d0e0a2192ae 100644
+--- a/drivers/mtd/nand/raw/ingenic/jz4725b_bch.c
++++ b/drivers/mtd/nand/raw/ingenic/jz4725b_bch.c
+@@ -145,10 +145,10 @@ static void jz4725b_bch_read_parity(struct ingenic_ecc *bch, u8 *buf,
+ 	switch (size8) {
+ 	case 3:
+ 		dest8[2] = (val >> 16) & 0xff;
+-		/* fall-through */
++		fallthrough;
+ 	case 2:
+ 		dest8[1] = (val >> 8) & 0xff;
+-		/* fall-through */
++		fallthrough;
+ 	case 1:
+ 		dest8[0] = val & 0xff;
+ 		break;
+diff --git a/drivers/mtd/nand/raw/ingenic/jz4780_bch.c b/drivers/mtd/nand/raw/ingenic/jz4780_bch.c
+index 079266a0d6cf..d67dbfff76cc 100644
+--- a/drivers/mtd/nand/raw/ingenic/jz4780_bch.c
++++ b/drivers/mtd/nand/raw/ingenic/jz4780_bch.c
+@@ -123,10 +123,10 @@ static void jz4780_bch_read_parity(struct ingenic_ecc *bch, void *buf,
+ 	switch (size8) {
+ 	case 3:
+ 		dest8[2] = (val >> 16) & 0xff;
+-		/* fall through */
++		fallthrough;
+ 	case 2:
+ 		dest8[1] = (val >> 8) & 0xff;
+-		/* fall through */
++		fallthrough;
+ 	case 1:
+ 		dest8[0] = val & 0xff;
+ 		break;
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index f64e3b6605c6..a81e556c9fad 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -5591,8 +5591,7 @@ static int nand_scan_tail(struct nand_chip *chip)
+ 		}
+ 		if (!ecc->read_page)
+ 			ecc->read_page = nand_read_page_hwecc_oob_first;
+-		/* fall through */
+-
++		fallthrough;
+ 	case NAND_ECC_HW:
+ 		/* Use standard hwecc read page function? */
+ 		if (!ecc->read_page)
+@@ -5611,8 +5610,7 @@ static int nand_scan_tail(struct nand_chip *chip)
+ 			ecc->read_subpage = nand_read_subpage;
+ 		if (!ecc->write_subpage && ecc->hwctl && ecc->calculate)
+ 			ecc->write_subpage = nand_write_subpage_hwecc;
+-		/* fall through */
+-
++		fallthrough;
+ 	case NAND_ECC_HW_SYNDROME:
+ 		if ((!ecc->calculate || !ecc->correct || !ecc->hwctl) &&
+ 		    (!ecc->read_page ||
+@@ -5649,8 +5647,7 @@ static int nand_scan_tail(struct nand_chip *chip)
+ 			ecc->size, mtd->writesize);
+ 		ecc->mode = NAND_ECC_SOFT;
+ 		ecc->algo = NAND_ECC_HAMMING;
+-		/* fall through */
+-
++		fallthrough;
+ 	case NAND_ECC_SOFT:
+ 		ret = nand_set_ecc_soft_ops(chip);
+ 		if (ret) {
+diff --git a/drivers/mtd/nand/raw/nand_legacy.c b/drivers/mtd/nand/raw/nand_legacy.c
+index f2526ec616a6..f91e92e1b972 100644
+--- a/drivers/mtd/nand/raw/nand_legacy.c
++++ b/drivers/mtd/nand/raw/nand_legacy.c
+@@ -331,8 +331,7 @@ static void nand_command(struct nand_chip *chip, unsigned int command,
+ 		 */
+ 		if (column == -1 && page_addr == -1)
+ 			return;
+-		/* fall through */
+-
++		fallthrough;
+ 	default:
+ 		/*
+ 		 * If we don't have access to the busy pin, we apply the given
+@@ -483,8 +482,7 @@ static void nand_command_lp(struct nand_chip *chip, unsigned int command,
+ 				      NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);
+ 		chip->legacy.cmd_ctrl(chip, NAND_CMD_NONE,
+ 				      NAND_NCE | NAND_CTRL_CHANGE);
+-
+-		/* fall through - This applies to read commands */
++		fallthrough;	/* This applies to read commands */
+ 	default:
+ 		/*
+ 		 * If we don't have access to the busy pin, we apply the given
+diff --git a/drivers/mtd/nand/raw/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
+index 9a70754a61ef..1de03bb34e84 100644
+--- a/drivers/mtd/nand/raw/nandsim.c
++++ b/drivers/mtd/nand/raw/nandsim.c
+@@ -2251,10 +2251,10 @@ static int __init ns_init_module(void)
+ 	switch (bbt) {
+ 	case 2:
+ 		chip->bbt_options |= NAND_BBT_NO_OOB;
+-		/* fall through */
++		fallthrough;
+ 	case 1:
+ 		chip->bbt_options |= NAND_BBT_USE_FLASH;
+-		/* fall through */
++		fallthrough;
+ 	case 0:
+ 		break;
+ 	default:
+diff --git a/drivers/mtd/nand/raw/omap_elm.c b/drivers/mtd/nand/raw/omap_elm.c
+index 5502ffbdd1e6..3fa0e2cbbe53 100644
+--- a/drivers/mtd/nand/raw/omap_elm.c
++++ b/drivers/mtd/nand/raw/omap_elm.c
+@@ -455,13 +455,13 @@ static int elm_context_save(struct elm_info *info)
+ 					ELM_SYNDROME_FRAGMENT_5 + offset);
+ 			regs->elm_syndrome_fragment_4[i] = elm_read_reg(info,
+ 					ELM_SYNDROME_FRAGMENT_4 + offset);
+-			/* fall through */
++			fallthrough;
+ 		case BCH8_ECC:
+ 			regs->elm_syndrome_fragment_3[i] = elm_read_reg(info,
+ 					ELM_SYNDROME_FRAGMENT_3 + offset);
+ 			regs->elm_syndrome_fragment_2[i] = elm_read_reg(info,
+ 					ELM_SYNDROME_FRAGMENT_2 + offset);
+-			/* fall through */
++			fallthrough;
+ 		case BCH4_ECC:
+ 			regs->elm_syndrome_fragment_1[i] = elm_read_reg(info,
+ 					ELM_SYNDROME_FRAGMENT_1 + offset);
+@@ -503,13 +503,13 @@ static int elm_context_restore(struct elm_info *info)
+ 					regs->elm_syndrome_fragment_5[i]);
+ 			elm_write_reg(info, ELM_SYNDROME_FRAGMENT_4 + offset,
+ 					regs->elm_syndrome_fragment_4[i]);
+-			/* fall through */
++			fallthrough;
+ 		case BCH8_ECC:
+ 			elm_write_reg(info, ELM_SYNDROME_FRAGMENT_3 + offset,
+ 					regs->elm_syndrome_fragment_3[i]);
+ 			elm_write_reg(info, ELM_SYNDROME_FRAGMENT_2 + offset,
+ 					regs->elm_syndrome_fragment_2[i]);
+-			/* fall through */
++			fallthrough;
+ 		case BCH4_ECC:
+ 			elm_write_reg(info, ELM_SYNDROME_FRAGMENT_1 + offset,
+ 					regs->elm_syndrome_fragment_1[i]);
+diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
+index 395127349aa8..4a8e11d20f70 100644
+--- a/drivers/mtd/spi-nor/aspeed-smc.c
++++ b/drivers/mtd/spi-nor/aspeed-smc.c
+@@ -354,7 +354,7 @@ static void aspeed_smc_send_cmd_addr(struct spi_nor *nor, u8 cmd, u32 addr)
+ 	default:
+ 		WARN_ONCE(1, "Unexpected address width %u, defaulting to 3\n",
+ 			  nor->addr_width);
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case 3:
+ 		cmdaddr = addr & 0xFFFFFF;
+ 		cmdaddr |= cmd << 24;
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 4fc632ec18fe..9ab327e995f9 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -3813,7 +3813,6 @@ static u8 spi_nor_smpt_addr_width(const struct spi_nor *nor, const u32 settings)
+ 	case SMPT_CMD_ADDRESS_LEN_4:
+ 		return 4;
+ 	case SMPT_CMD_ADDRESS_LEN_USE_CURRENT:
+-		/* fall through */
+ 	default:
+ 		return nor->addr_width;
+ 	}
+diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
+index ea7440ac913b..ae5abe492b52 100644
+--- a/drivers/mtd/ubi/attach.c
++++ b/drivers/mtd/ubi/attach.c
+@@ -1059,7 +1059,7 @@ static int scan_peb(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 			 * be a result of power cut during erasure.
+ 			 */
+ 			ai->maybe_bad_peb_count += 1;
+-		/* fall through */
++		fallthrough;
+ 	case UBI_IO_BAD_HDR:
+ 			/*
+ 			 * If we're facing a bad VID header we have to drop *all*
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 2f93c25bbaee..12c02342149c 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -1342,10 +1342,10 @@ static int bytes_str_to_int(const char *str)
+ 	switch (*endp) {
+ 	case 'G':
+ 		result *= 1024;
+-		/* fall through */
++		fallthrough;
+ 	case 'M':
+ 		result *= 1024;
+-		/* fall through */
++		fallthrough;
+ 	case 'K':
+ 		result *= 1024;
+ 		if (endp[1] == 'i' && endp[2] == 'B')
+-- 
+2.20.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
