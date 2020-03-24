@@ -2,82 +2,92 @@ Return-Path: <SRS0=g+sZ=5J=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EBA72C4332B
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Mar 2020 09:55:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C88B5C4332B
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Mar 2020 10:38:44 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BABDD2070A
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Mar 2020 09:55:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9B4A320775
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Mar 2020 10:38:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="doSywvyc";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="rZXtaeq1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BABDD2070A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rU5oCT/z";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=st.com header.i=@st.com header.b="gENvra/K"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9B4A320775
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=st.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:Subject:
-	From:To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=qjSu9Y1wfZOY/liU903qoXKc54CyX3fkiFDLUu9SeJA=; b=doSywvycZcskwG
-	J2diGPRVIl8SJu4kG0NkAfiL/8XMBr6Wc9Wta84Dvd37ntoc8UcmVXFDmAonTy51s6VYBaWLvRiNV
-	WGrc1SAZ/MmE5wIOFXXrw9aBA4gsvcrCSBbFTHQ5t2ekxsjdkgE7TV/YXpYyZTaTTNfkJ1xMNfUCB
-	yla0wegP2/PSlgI5jeJgIzvH/R/udYyq/onDh31djNO7HwkAulXq76SfGCgx38JOn69aZCeuYd+jM
-	/d9l/KYGgH7SCmzpxYwYZnN4SBafJhIGSW6KbdDP+O4QB4LZrXxpeeVu2/76yuQECgGkLXhvPlscq
-	ze0o+WG6O8OYvaywG7ww==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=rcOHUuDpfKfkGNjNG7HrDSd1LAyWU69+P+4rlayCr8s=; b=rU5oCT/zcD/vLlMIt/8jL9D+Q
+	33ziAHeeyCaSJlE1f9TM343adQyExM2mXMmH+e4J+dRZZp7XqkS1L2ANmDueFxox0KoTjSqXwL88z
+	j7cDp0pUfgdbVJPR2D43M7/Yk8/eYBoAa1JWdw88RudFcTVAyX2/tMfpuoobpxTBkLH1iTlccECZU
+	YaymgF6kEh4K8BQ1x15Mpclom25u8Um0k3opNRK2Ul3boud6t9IdK2f7zjqjD3y1RBttBgLCqDLQN
+	uV0NRNMrrb8jk9jihLQm71A82sIY1Qa0iG2HxxTUggFZJ4gFs/kU01iwizcldjkwwy86ElzXttBIU
+	dHdqtKf1A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jGgHM-0000tZ-58; Tue, 24 Mar 2020 09:55:24 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1jGgx4-0004pf-UB; Tue, 24 Mar 2020 10:38:30 +0000
+Received: from mx07-00178001.pphosted.com ([62.209.51.94])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jGgHI-0000sz-Ua
- for linux-mtd@lists.infradead.org; Tue, 24 Mar 2020 09:55:22 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 02O9tFiZ016240;
- Tue, 24 Mar 2020 04:55:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1585043715;
- bh=fzPKUUZmm2sb5yxlF09F6LYdwQupBQrV0dqPylZjbSA=;
- h=To:CC:From:Subject:Date;
- b=rZXtaeq1OWbrF3cUEBGwg3YgBXREvXiM3ikPfriUuy+QhGlMbwKda38cENcv8eqhI
- Uf3RBqcSEZS+C2EIMHLrDQPHKBgS26s1bOG4qfZaE3K4np2UKnAZoRZRWXARG20HiS
- DJUhLODgBsavnDyzyRGprT1Ro17QmGVP6lmrPxWI=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 02O9tF1p028649
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 24 Mar 2020 04:55:15 -0500
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Tue, 24
- Mar 2020 04:55:14 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Tue, 24 Mar 2020 04:55:14 -0500
-Received: from [10.250.132.85] (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 02O9tCuV055734;
- Tue, 24 Mar 2020 04:55:13 -0500
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [GIT PULL] CFI and HyperFlash changes for v5.7-rc1
-Message-ID: <9f7fe986-bba8-e7d8-889b-2fff4a2e9a76@ti.com>
-Date: Tue, 24 Mar 2020 15:25:12 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ id 1jGgx1-0004pD-9u
+ for linux-mtd@lists.infradead.org; Tue, 24 Mar 2020 10:38:29 +0000
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+ by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
+ 02OASjEF027802; Tue, 24 Mar 2020 11:38:14 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com;
+ h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=qjix0X4rFPtS9PXPYAPD9xbtsp4+DScbfwh25ikjWl0=;
+ b=gENvra/KxMaUTgzVIC6WWgx8cNmguR7U6Oi46nV1B7+ehSp2XpF68k3i+d3gAYLXCIJ5
+ I12o+MExVwWDIMtxBcS1SaJ/ABFsQXJcG+x5f89gpjajPD1FKFi59fqXM+620PbZibgB
+ pkQm5SoMDZ862hxomvlXUp6v/Ls9Y3VfVV+vHT+ypPfWXu5knoNPCaE8PHr4uMujAV8q
+ 58RLoC7mEzpYzMQwQIN+MVZYnQ6Lglpry52Vi8mj65uXwEStg+0TgdH37PwuAYSp65D0
+ nc+Nfuz2p7Bev1D/KxKA368dwaljN0WDVB8VOqeKWyS7G0kjZDN0RQQ8OU4TJmDs3++x mA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+ by mx07-00178001.pphosted.com with ESMTP id 2yw9jyxxeq-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 24 Mar 2020 11:38:14 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 022B5100038;
+ Tue, 24 Mar 2020 11:38:10 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag6node2.st.com [10.75.127.17])
+ by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id DE9182A6EC5;
+ Tue, 24 Mar 2020 11:38:10 +0100 (CET)
+Received: from [10.211.5.183] (10.75.127.48) by SFHDAG6NODE2.st.com
+ (10.75.127.17) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Tue, 24 Mar
+ 2020 11:38:09 +0100
+Subject: Re: [10/12] mtd: rawnand: stm32_fmc2: use regmap APIs
+To: Marek Vasut <marex@denx.de>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+ <vigneshr@ti.com>, <lee.jones@linaro.org>, <robh+dt@kernel.org>,
+ <mark.rutland@arm.com>, <tony@atomide.com>
+References: <1584975532-8038-1-git-send-email-christophe.kerello@st.com>
+ <1584975532-8038-11-git-send-email-christophe.kerello@st.com>
+ <784fafd2-f1f3-f9c4-d6eb-1d2f6f8d38e4@denx.de>
+From: Christophe Kerello <christophe.kerello@st.com>
+Message-ID: <bac5f70c-5e12-2ac1-fc35-46f838f4d480@st.com>
+Date: Tue, 24 Mar 2020 11:38:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
+In-Reply-To: <784fafd2-f1f3-f9c4-d6eb-1d2f6f8d38e4@denx.de>
 Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG6NODE2.st.com
+ (10.75.127.17)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138, 18.0.645
+ definitions=2020-03-24_03:2020-03-23,
+ 2020-03-24 signatures=0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200324_025521_026124_35735DB5 
-X-CRM114-Status: GOOD (  12.11  )
+X-CRM114-CacheID: sfid-20200324_033827_793031_112A9E81 
+X-CRM114-Status: GOOD (  11.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,49 +99,42 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="us-ascii"
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel Richard,
-
-Here is the CFI and HyperFlash related PR for v5.7-rc1
-
-Regards
-Vignesh
 
 
-The following changes since commit 11a48a5a18c63fd7621bb050228cebf13566e4d8:
+On 3/24/20 1:44 AM, Marek Vasut wrote:
+> On 3/23/20 3:58 PM, Christophe Kerello wrote:
+> [...]
+>> @@ -531,11 +515,11 @@ static int stm32_fmc2_nfc_bch_correct(struct nand_chip *chip, u8 *dat,
+>>   		return -ETIMEDOUT;
+>>   	}
+>>   
+>> -	ecc_sta[0] = readl_relaxed(nfc->io_base + FMC2_BCHDSR0);
+>> -	ecc_sta[1] = readl_relaxed(nfc->io_base + FMC2_BCHDSR1);
+>> -	ecc_sta[2] = readl_relaxed(nfc->io_base + FMC2_BCHDSR2);
+>> -	ecc_sta[3] = readl_relaxed(nfc->io_base + FMC2_BCHDSR3);
+>> -	ecc_sta[4] = readl_relaxed(nfc->io_base + FMC2_BCHDSR4);
+>> +	regmap_read(nfc->regmap, FMC2_BCHDSR0, &ecc_sta[0]);
+>> +	regmap_read(nfc->regmap, FMC2_BCHDSR1, &ecc_sta[1]);
+>> +	regmap_read(nfc->regmap, FMC2_BCHDSR2, &ecc_sta[2]);
+>> +	regmap_read(nfc->regmap, FMC2_BCHDSR3, &ecc_sta[3]);
+>> +	regmap_read(nfc->regmap, FMC2_BCHDSR4, &ecc_sta[4]);
+> 
+> Would regmap_bulk_read() work here ?
+> 
 
-  Linux 5.6-rc2 (2020-02-16 13:16:59 -0800)
+Hi Marek,
 
-are available in the Git repository at:
+Yes, regmap_bulk_read can be used. It will be done on V2.
 
-  git@gitolite.kernel.org:pub/scm/linux/kernel/git/mtd/linux.git tags/cfi/for-5.7
-
-for you to fetch changes up to b6fe8bc67d2d33a9eff1b0785482bccd14979115:
-
-  mtd: hyperbus: move direct mapping setup to AM654 HBMC driver (2020-03-03 10:13:11 +0530)
-
-----------------------------------------------------------------
-HyperBus changes
-
-* Print err msg when compatible is wrong or missing
-* Move mapping of direct access window from core to individual drivers
-
-----------------------------------------------------------------
-Dirk Behme (1):
-      mtd: hyperbus: Add proper error message for missing compatible
-
-Sergei Shtylyov (1):
-      mtd: hyperbus: move direct mapping setup to AM654 HBMC driver
-
- drivers/mtd/hyperbus/hbmc-am654.c    | 12 ++++++++
- drivers/mtd/hyperbus/hyperbus-core.c | 15 ++--------
- 2 files changed, 15 insertions(+), 12 deletions(-)
-	
+Regards,
+Christophe Kerello.
 
 ______________________________________________________
 Linux MTD discussion mailing list
