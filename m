@@ -2,21 +2,21 @@ Return-Path: <SRS0=g+sZ=5J=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16DECC10DCE
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Mar 2020 06:50:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11284C2BAEE
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Mar 2020 06:50:29 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B01C22074D
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Mar 2020 06:50:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D361C2073E
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Mar 2020 06:50:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VicJq1tV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B01C22074D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="acKoyirY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D361C2073E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kioxia.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,47 +26,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=bBb9rBai9GwXcOnaB6d+lGORYE6e6/++JYvp0J50Ad4=; b=VicJq1tVKgcJUo2rp108IH2/Uj
-	e983PORmoHqqksC5q6EVJBwfGl85eK7OSeIVxcgkUK7DshdzRFNV41P258i/OQhRcL7+LvhG1XYsL
-	RIKjuEf7NY62w3rwmjAszX4e67OPEryUnXxABOhZBtIMUBTeYgiryd/UpaJoNTxHHqMNAN0tvNgZQ
-	7u2J+yLIBxLY+izgtU1Sp5xZwcHCMSFYRLbthXburQ7y4T9X2toi35zXVlYG5FVnOrBZRDY6P4GXz
-	CfkbSbHyu/xoXPayGchFdApMuW+U7ZH7UjGbkpxihY3AF3sZ+FKRfqqZzxfFvyCie06lrARWmVMbD
-	H/4zPXhg==;
+	bh=5akVW5z62kkwZu3JY35w1iHdxq6KHxcis9Be7KygHsM=; b=acKoyirY805LYGSvxP+UO/YRSf
+	VHxR1h3yk5ruGDdAJuzwo/6ioSMEXcl+VZs7SzMDGDsUqh7Vk4h5qaRgv0eRFO3449SYCjrDVAkUx
+	QVGKWGx1BAhfCl3MLke3QbN6fgnk/MQo+pZYQ2VJ6kFz/0qGJx5tkVjD0/U+CMKIl2p9njMWXPFqH
+	DduuUJ42xQRurQtRsMXg+OuiW8MmeD8zAhkwt0pobWHE05BeCAab/YjqVjVKcceTR8OwmP2GOjMnf
+	jwEFa53FQEvCIBNqiGMCF489ZTREqSQqprrAquYAiyI4Yh2rFFd56yapA5CwCQD05kLFsOS9Mwxu8
+	tv7x/Kpw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jGdNx-0004Tk-2T; Tue, 24 Mar 2020 06:50:01 +0000
-Received: from mo-csw1515.securemx.jp ([210.130.202.154]
+	id 1jGdOH-0005t0-4m; Tue, 24 Mar 2020 06:50:21 +0000
+Received: from mo-csw1514.securemx.jp ([210.130.202.153]
  helo=mo-csw.securemx.jp)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jGdNt-0004Q7-LL
- for linux-mtd@lists.infradead.org; Tue, 24 Mar 2020 06:49:59 +0000
-Received: by mo-csw.securemx.jp (mx-mo-csw1515) id 02O6nmWl029457;
- Tue, 24 Mar 2020 15:49:48 +0900
-X-Iguazu-Qid: 34trcFcTRI9OQ3pVZs
-X-Iguazu-QSIG: v=2; s=0; t=1585032588; q=34trcFcTRI9OQ3pVZs;
- m=EmoQwMXMklS5qfdk+YmVEVG4lj5CgLLx7pina2cL0mQ=
-Received: from imx2.toshiba.co.jp (imx2.toshiba.co.jp [106.186.93.51])
- by relay.securemx.jp (mx-mr1510) id 02O6nlgQ014411;
- Tue, 24 Mar 2020 15:49:47 +0900
-Received: from enc01.localdomain ([106.186.93.100])
- by imx2.toshiba.co.jp  with ESMTP id 02O765XO026120;
- Tue, 24 Mar 2020 16:06:05 +0900 (JST)
-Received: from hop001.toshiba.co.jp ([133.199.164.63])
- by enc01.localdomain  with ESMTP id 02O6nkWB010175;
- Tue, 24 Mar 2020 15:49:47 +0900
+ id 1jGdO4-000504-Go
+ for linux-mtd@lists.infradead.org; Tue, 24 Mar 2020 06:50:13 +0000
+Received: by mo-csw.securemx.jp (mx-mo-csw1514) id 02O6o0Ba026637;
+ Tue, 24 Mar 2020 15:50:00 +0900
+X-Iguazu-Qid: 34tr8v5eghfvG4TZMC
+X-Iguazu-QSIG: v=2; s=0; t=1585032600; q=34tr8v5eghfvG4TZMC;
+ m=/7nmUVTWLyYkH6rqmc7z7TbPbeiBWQL0xIEADdhLLbw=
+Received: from imx12.toshiba.co.jp (imx12.toshiba.co.jp [61.202.160.132])
+ by relay.securemx.jp (mx-mr1513) id 02O6nxCO009961;
+ Tue, 24 Mar 2020 15:49:59 +0900
+Received: from enc02.toshiba.co.jp ([61.202.160.51])
+ by imx12.toshiba.co.jp  with ESMTP id 02O6nxjY010007;
+ Tue, 24 Mar 2020 15:49:59 +0900 (JST)
+Received: from hop101.toshiba.co.jp ([133.199.85.107])
+ by enc02.toshiba.co.jp  with ESMTP id 02O6nwOg030180;
+ Tue, 24 Mar 2020 15:49:59 +0900
 From: Yoshio Furuyama <ytc-mb-yfuruyama7@kioxia.com>
 To: miquel.raynal@bootlin.com, vigneshr@ti.com
-Subject: [PATCH v5 1/2] mtd: spinand: toshiba: Rename function name to change
- suffix and prefix (8Gbit)
-Date: Tue, 24 Mar 2020 15:49:44 +0900
+Subject: [PATCH v5 2/2] mtd: spinand: toshiba: Support for new Kioxia Serial
+ NAND
+Date: Tue, 24 Mar 2020 15:49:55 +0900
 X-TSB-HOP: ON
-Message-Id: <0dedd9869569a17625822dba87878254d253ba0e.1584949601.git.ytc-mb-yfuruyama7@kioxia.com>
+Message-Id: <aa69e455beedc5ce0d7141359b9364ed8aec9e65.1584949601.git.ytc-mb-yfuruyama7@kioxia.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <cover.1584949601.git.ytc-mb-yfuruyama7@kioxia.com>
 References: <cover.1584949601.git.ytc-mb-yfuruyama7@kioxia.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200323_234957_910669_0ACD735C 
-X-CRM114-Status: GOOD (  10.89  )
+X-CRM114-CacheID: sfid-20200323_235008_855834_A8C273DC 
+X-CRM114-Status: UNSURE (   8.53  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,173 +86,204 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The suffix was changed from "G" to "J" to classify between 1st generation
-and 2nd generation serial NAND devices (which now belong to the Kioxia
-brand).
-As reference that's
-1st generation device of 1Gbit product is "TC58CVG0S3HRAIG"
-2nd generation device of 1Gbit product is "TC58CVG0S3HRAIJ".
-
-The 8Gbit type "TH58CxG3S0HRAIJ" is new to Kioxia's serial NAND lineup and
-the prefix was changed from "TC58" to "TH58".
-
-Thus the functions were renamed from tc58cxgxsx_*() to tx58cxgxsxraix_*().
+Add support for new Kioxia products.
+The new Kioxia products support program load x4 command, and have
+HOLD_D bit which is equivalent to QE bit.
 
 Signed-off-by: Yoshio Furuyama <ytc-mb-yfuruyama7@kioxia.com>
 Reviewed-by: Frieder Schrempf <frieder.schrempf@kontron.de>
 ---
 changelog[v5]:Remake on -rc6.
 changelog[v4]:Remake on top of the last -rc.
-changelog[v3]:Fixed commit message to make it easier to understand.
-changelog[v2]:Split 2 patches, and add patch description.
+changelog[v3]:No change.
+changelog[v2]:Split 2 patches.
 
- drivers/mtd/nand/spi/toshiba.c | 60 +++++++++++++++++++++---------------------
- 1 file changed, 30 insertions(+), 30 deletions(-)
+ drivers/mtd/nand/spi/toshiba.c | 128 +++++++++++++++++++++++++++++++++++------
+ 1 file changed, 111 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/mtd/nand/spi/toshiba.c b/drivers/mtd/nand/spi/toshiba.c
-index d347731..5d217dd 100644
+index 5d217dd..bc801d8 100644
 --- a/drivers/mtd/nand/spi/toshiba.c
 +++ b/drivers/mtd/nand/spi/toshiba.c
-@@ -26,8 +26,8 @@ static SPINAND_OP_VARIANTS(write_cache_variants,
- static SPINAND_OP_VARIANTS(update_cache_variants,
- 		SPINAND_PROG_LOAD(false, 0, NULL, 0));
+@@ -20,6 +20,18 @@ static SPINAND_OP_VARIANTS(read_cache_variants,
+ 		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
+ 		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
  
--static int tc58cxgxsx_ooblayout_ecc(struct mtd_info *mtd, int section,
--				     struct mtd_oob_region *region)
-+static int tx58cxgxsxraix_ooblayout_ecc(struct mtd_info *mtd, int section,
-+					struct mtd_oob_region *region)
- {
- 	if (section > 0)
- 		return -ERANGE;
-@@ -38,8 +38,8 @@ static int tc58cxgxsx_ooblayout_ecc(struct mtd_info *mtd, int section,
- 	return 0;
++static SPINAND_OP_VARIANTS(write_cache_x4_variants,
++		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
++		SPINAND_PROG_LOAD(true, 0, NULL, 0));
++
++static SPINAND_OP_VARIANTS(update_cache_x4_variants,
++		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
++		SPINAND_PROG_LOAD(false, 0, NULL, 0));
++
++/**
++ * Backward compatibility for 1st generation Serial NAND devices
++ * which don't support Quad Program Load operation.
++ */
+ static SPINAND_OP_VARIANTS(write_cache_variants,
+ 		SPINAND_PROG_LOAD(true, 0, NULL, 0));
+ 
+@@ -95,7 +107,7 @@ static int tx58cxgxsxraix_ecc_get_status(struct spinand_device *spinand,
  }
- 
--static int tc58cxgxsx_ooblayout_free(struct mtd_info *mtd, int section,
--				      struct mtd_oob_region *region)
-+static int tx58cxgxsxraix_ooblayout_free(struct mtd_info *mtd, int section,
-+					 struct mtd_oob_region *region)
- {
- 	if (section > 0)
- 		return -ERANGE;
-@@ -51,13 +51,13 @@ static int tc58cxgxsx_ooblayout_free(struct mtd_info *mtd, int section,
- 	return 0;
- }
- 
--static const struct mtd_ooblayout_ops tc58cxgxsx_ooblayout = {
--	.ecc = tc58cxgxsx_ooblayout_ecc,
--	.free = tc58cxgxsx_ooblayout_free,
-+static const struct mtd_ooblayout_ops tx58cxgxsxraix_ooblayout = {
-+	.ecc = tx58cxgxsxraix_ooblayout_ecc,
-+	.free = tx58cxgxsxraix_ooblayout_free,
- };
- 
--static int tc58cxgxsx_ecc_get_status(struct spinand_device *spinand,
--				      u8 status)
-+static int tx58cxgxsxraix_ecc_get_status(struct spinand_device *spinand,
-+					 u8 status)
- {
- 	struct nand_device *nand = spinand_to_nand(spinand);
- 	u8 mbf = 0;
-@@ -96,7 +96,7 @@ static int tc58cxgxsx_ecc_get_status(struct spinand_device *spinand,
  
  static const struct spinand_info toshiba_spinand_table[] = {
- 	/* 3.3V 1Gb */
--	SPINAND_INFO("TC58CVG0S3",
-+	SPINAND_INFO("TC58CVG0S3HRAIG",
+-	/* 3.3V 1Gb */
++	/* 3.3V 1Gb (1st generation) */
+ 	SPINAND_INFO("TC58CVG0S3HRAIG",
  		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xC2),
  		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
-@@ -104,10 +104,10 @@ static int tc58cxgxsx_ecc_get_status(struct spinand_device *spinand,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
+@@ -106,7 +118,7 @@ static int tx58cxgxsxraix_ecc_get_status(struct spinand_device *spinand,
  		     0,
--		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
--				     tc58cxgxsx_ecc_get_status)),
-+		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
-+				     tx58cxgxsxraix_ecc_get_status)),
- 	/* 3.3V 2Gb */
--	SPINAND_INFO("TC58CVG1S3",
-+	SPINAND_INFO("TC58CVG1S3HRAIG",
+ 		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
+ 				     tx58cxgxsxraix_ecc_get_status)),
+-	/* 3.3V 2Gb */
++	/* 3.3V 2Gb (1st generation) */
+ 	SPINAND_INFO("TC58CVG1S3HRAIG",
  		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xCB),
  		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
-@@ -115,10 +115,10 @@ static int tc58cxgxsx_ecc_get_status(struct spinand_device *spinand,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
+@@ -117,7 +129,7 @@ static int tx58cxgxsxraix_ecc_get_status(struct spinand_device *spinand,
  		     0,
--		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
--				     tc58cxgxsx_ecc_get_status)),
-+		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
-+				     tx58cxgxsxraix_ecc_get_status)),
- 	/* 3.3V 4Gb */
--	SPINAND_INFO("TC58CVG2S0",
-+	SPINAND_INFO("TC58CVG2S0HRAIG",
+ 		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
+ 				     tx58cxgxsxraix_ecc_get_status)),
+-	/* 3.3V 4Gb */
++	/* 3.3V 4Gb (1st generation) */
+ 	SPINAND_INFO("TC58CVG2S0HRAIG",
  		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xCD),
  		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
-@@ -126,10 +126,10 @@ static int tc58cxgxsx_ecc_get_status(struct spinand_device *spinand,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
+@@ -128,18 +140,7 @@ static int tx58cxgxsxraix_ecc_get_status(struct spinand_device *spinand,
  		     0,
--		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
--				     tc58cxgxsx_ecc_get_status)),
-+		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
-+				     tx58cxgxsxraix_ecc_get_status)),
- 	/* 3.3V 4Gb */
--	SPINAND_INFO("TC58CVG2S0",
-+	SPINAND_INFO("TC58CVG2S0HRAIJ",
- 			SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xED),
- 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
-@@ -137,10 +137,10 @@ static int tc58cxgxsx_ecc_get_status(struct spinand_device *spinand,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
- 		     0,
--		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
--				     tc58cxgxsx_ecc_get_status)),
-+		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
-+				     tx58cxgxsxraix_ecc_get_status)),
- 	/* 1.8V 1Gb */
--	SPINAND_INFO("TC58CYG0S3",
-+	SPINAND_INFO("TC58CYG0S3HRAIG",
+ 		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
+ 				     tx58cxgxsxraix_ecc_get_status)),
+-	/* 3.3V 4Gb */
+-	SPINAND_INFO("TC58CVG2S0HRAIJ",
+-			SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xED),
+-		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
+-		     NAND_ECCREQ(8, 512),
+-		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+-					      &write_cache_variants,
+-					      &update_cache_variants),
+-		     0,
+-		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
+-				     tx58cxgxsxraix_ecc_get_status)),
+-	/* 1.8V 1Gb */
++	/* 1.8V 1Gb (1st generation) */
+ 	SPINAND_INFO("TC58CYG0S3HRAIG",
  		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xB2),
  		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
-@@ -148,10 +148,10 @@ static int tc58cxgxsx_ecc_get_status(struct spinand_device *spinand,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
+@@ -150,7 +151,7 @@ static int tx58cxgxsxraix_ecc_get_status(struct spinand_device *spinand,
  		     0,
--		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
--				     tc58cxgxsx_ecc_get_status)),
-+		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
-+				     tx58cxgxsxraix_ecc_get_status)),
- 	/* 1.8V 2Gb */
--	SPINAND_INFO("TC58CYG1S3",
-+	SPINAND_INFO("TC58CYG1S3HRAIG",
+ 		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
+ 				     tx58cxgxsxraix_ecc_get_status)),
+-	/* 1.8V 2Gb */
++	/* 1.8V 2Gb (1st generation) */
+ 	SPINAND_INFO("TC58CYG1S3HRAIG",
  		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xBB),
  		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
-@@ -159,10 +159,10 @@ static int tc58cxgxsx_ecc_get_status(struct spinand_device *spinand,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
+@@ -161,7 +162,7 @@ static int tx58cxgxsxraix_ecc_get_status(struct spinand_device *spinand,
  		     0,
--		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
--				     tc58cxgxsx_ecc_get_status)),
-+		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
-+				     tx58cxgxsxraix_ecc_get_status)),
- 	/* 1.8V 4Gb */
--	SPINAND_INFO("TC58CYG2S0",
-+	SPINAND_INFO("TC58CYG2S0HRAIG",
+ 		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
+ 				     tx58cxgxsxraix_ecc_get_status)),
+-	/* 1.8V 4Gb */
++	/* 1.8V 4Gb (1st generation) */
+ 	SPINAND_INFO("TC58CYG2S0HRAIG",
  		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xBD),
  		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
-@@ -170,8 +170,8 @@ static int tc58cxgxsx_ecc_get_status(struct spinand_device *spinand,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
+@@ -172,6 +173,99 @@ static int tx58cxgxsxraix_ecc_get_status(struct spinand_device *spinand,
  		     0,
--		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
--				     tc58cxgxsx_ecc_get_status)),
+ 		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
+ 				     tx58cxgxsxraix_ecc_get_status)),
++
++	/*
++	 * 2nd generation serial nand has HOLD_D which is equivalent to
++	 * QE_BIT.
++	 */
++	/* 3.3V 1Gb (2nd generation) */
++	SPINAND_INFO("TC58CVG0S3HRAIJ",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xE2),
++		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_x4_variants,
++					      &update_cache_x4_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
++				     tx58cxgxsxraix_ecc_get_status)),
++	/* 3.3V 2Gb (2nd generation) */
++	SPINAND_INFO("TC58CVG1S3HRAIJ",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xEB),
++		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_x4_variants,
++					      &update_cache_x4_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
++				     tx58cxgxsxraix_ecc_get_status)),
++	/* 3.3V 4Gb (2nd generation) */
++	SPINAND_INFO("TC58CVG2S0HRAIJ",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xED),
++		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_x4_variants,
++					      &update_cache_x4_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
++				     tx58cxgxsxraix_ecc_get_status)),
++	/* 3.3V 8Gb (2nd generation) */
++	SPINAND_INFO("TH58CVG3S0HRAIJ",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xE4),
++		     NAND_MEMORG(1, 4096, 256, 64, 4096, 80, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_x4_variants,
++					      &update_cache_x4_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
++				     tx58cxgxsxraix_ecc_get_status)),
++	/* 1.8V 1Gb (2nd generation) */
++	SPINAND_INFO("TC58CYG0S3HRAIJ",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xD2),
++		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_x4_variants,
++					      &update_cache_x4_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
++				     tx58cxgxsxraix_ecc_get_status)),
++	/* 1.8V 2Gb (2nd generation) */
++	SPINAND_INFO("TC58CYG1S3HRAIJ",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xDB),
++		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_x4_variants,
++					      &update_cache_x4_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
++				     tx58cxgxsxraix_ecc_get_status)),
++	/* 1.8V 4Gb (2nd generation) */
++	SPINAND_INFO("TC58CYG2S0HRAIJ",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xDD),
++		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_x4_variants,
++					      &update_cache_x4_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
++				     tx58cxgxsxraix_ecc_get_status)),
++	/* 1.8V 8Gb (2nd generation) */
++	SPINAND_INFO("TH58CYG3S0HRAIJ",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xD4),
++		     NAND_MEMORG(1, 4096, 256, 64, 4096, 80, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_x4_variants,
++					      &update_cache_x4_variants),
++		     SPINAND_HAS_QE_BIT,
 +		     SPINAND_ECCINFO(&tx58cxgxsxraix_ooblayout,
 +				     tx58cxgxsxraix_ecc_get_status)),
  };
