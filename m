@@ -2,80 +2,82 @@ Return-Path: <SRS0=g+sZ=5J=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F5C1C4332B
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Mar 2020 08:49:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EBA72C4332B
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Mar 2020 09:55:41 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2EC5520786
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Mar 2020 08:49:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BABDD2070A
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Mar 2020 09:55:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ock87hO6";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=walle.cc header.i=@walle.cc header.b="iy+cBsoy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2EC5520786
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="doSywvyc";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="rZXtaeq1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BABDD2070A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
-	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=21yDur/i7hQE1eY6Ml7kiDQ660fIO0QTH+wY8RH0Z9k=; b=ock87hO6qAlMBiD6XKkFOS1ig
-	R3p8CpeSXePUGlA3mSIdliekM+Y8NoZSwr/C4gWYKa+BtVZMG89+R1WnA/NScgSJN32BDvELOs7lA
-	01E4UMdH+Oq7prOuWcG87TEO2ezwWqx+3bhQmrHIrtp86F+t/J6cv/JJA8Hi4MhjMQh1CQ2wiDe9y
-	XfESmeaZfA522orbJmJ/eOrreMG55boKNnLFCXRVycrQJLvZ+qRdDUDux/FAx8PKeRlP+Vw2mmvOS
-	pC1wR4yqiGVFScIfNYUYxe+NaCoT0KL9PW2ozUNsBaVn3B29TQdZUh1GdCnDQylfs2+ZKZfQnd1fk
-	2IhuWUkRA==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:Subject:
+	From:To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=qjSu9Y1wfZOY/liU903qoXKc54CyX3fkiFDLUu9SeJA=; b=doSywvycZcskwG
+	J2diGPRVIl8SJu4kG0NkAfiL/8XMBr6Wc9Wta84Dvd37ntoc8UcmVXFDmAonTy51s6VYBaWLvRiNV
+	WGrc1SAZ/MmE5wIOFXXrw9aBA4gsvcrCSBbFTHQ5t2ekxsjdkgE7TV/YXpYyZTaTTNfkJ1xMNfUCB
+	yla0wegP2/PSlgI5jeJgIzvH/R/udYyq/onDh31djNO7HwkAulXq76SfGCgx38JOn69aZCeuYd+jM
+	/d9l/KYGgH7SCmzpxYwYZnN4SBafJhIGSW6KbdDP+O4QB4LZrXxpeeVu2/76yuQECgGkLXhvPlscq
+	ze0o+WG6O8OYvaywG7ww==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jGfFM-0005Pf-K8; Tue, 24 Mar 2020 08:49:16 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1jGgHM-0000tZ-58; Tue, 24 Mar 2020 09:55:24 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jGfFH-0005P7-W1
- for linux-mtd@lists.infradead.org; Tue, 24 Mar 2020 08:49:14 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id AB7DD23E21;
- Tue, 24 Mar 2020 09:49:08 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1585039749;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=aDhvL9IjqDOlb1I4Fim7t6V0NkJNCKvJ/FcXq93fqbk=;
- b=iy+cBsoybPYenfxd/B1q58B1xVOShsxB43zAzES4YQUMlbUo3XbJ8WlZZoBiwRSZXVznCE
- pVzL1EFN8/TE5hyhZPSRX4vNyenrhyZcEk/uhKb8PbxyRZodHayNYHzWFi7q2FKm6l0PIc
- wvmQzNLbwVgEga+9asEfmsEtjhcAHK4=
+ id 1jGgHI-0000sz-Ua
+ for linux-mtd@lists.infradead.org; Tue, 24 Mar 2020 09:55:22 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 02O9tFiZ016240;
+ Tue, 24 Mar 2020 04:55:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1585043715;
+ bh=fzPKUUZmm2sb5yxlF09F6LYdwQupBQrV0dqPylZjbSA=;
+ h=To:CC:From:Subject:Date;
+ b=rZXtaeq1OWbrF3cUEBGwg3YgBXREvXiM3ikPfriUuy+QhGlMbwKda38cENcv8eqhI
+ Uf3RBqcSEZS+C2EIMHLrDQPHKBgS26s1bOG4qfZaE3K4np2UKnAZoRZRWXARG20HiS
+ DJUhLODgBsavnDyzyRGprT1Ro17QmGVP6lmrPxWI=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 02O9tF1p028649
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 24 Mar 2020 04:55:15 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Tue, 24
+ Mar 2020 04:55:14 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Tue, 24 Mar 2020 04:55:14 -0500
+Received: from [10.250.132.85] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 02O9tCuV055734;
+ Tue, 24 Mar 2020 04:55:13 -0500
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [GIT PULL] CFI and HyperFlash changes for v5.7-rc1
+Message-ID: <9f7fe986-bba8-e7d8-889b-2fff4a2e9a76@ti.com>
+Date: Tue, 24 Mar 2020 15:25:12 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Date: Tue, 24 Mar 2020 09:49:08 +0100
-From: Michael Walle <michael@walle.cc>
-To: Tudor.Ambarus@microchip.com
-Subject: Re: [PATCH v4 0/4] Add SR 4bit block protection support
-In-Reply-To: <20200324060123.1533917-1-tudor.ambarus@microchip.com>
-References: <20200324060123.1533917-1-tudor.ambarus@microchip.com>
-Message-ID: <03162f74ce11c001f5fb391d8a90f7ff@walle.cc>
-X-Sender: michael@walle.cc
-User-Agent: Roundcube Webmail/1.3.10
-X-Spamd-Bar: /
-X-Rspamd-Server: web
-X-Rspamd-Queue-Id: AB7DD23E21
-X-Spamd-Result: default: False [-0.10 / 15.00]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[4]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_GOOD(-0.10)[text/plain]; TO_DN_NONE(0.00)[];
- DKIM_SIGNED(0.00)[]; NEURAL_HAM(-0.00)[-0.756];
- RCVD_COUNT_ZERO(0.00)[0]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; MID_RHS_MATCH_FROM(0.00)[]
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200324_014912_182121_47AB99FA 
-X-CRM114-Status: UNSURE (   7.86  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200324_025521_026124_35735DB5 
+X-CRM114-Status: GOOD (  12.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,38 +89,49 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, vigneshr@ti.com, js07.lee@samsung.com
+Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2020-03-24 07:01, schrieb Tudor.Ambarus@microchip.com:
-> From: Tudor Ambarus <tudor.ambarus@microchip.com>
-> 
-> Hi,
-> 
-> In v4, I dropped patch 1/5 and stripped the changelog that I had
-> above my S-o-b tag in each patch.
+Hi Miquel Richard,
 
-looks, good, will you merge this into next today?
+Here is the CFI and HyperFlash related PR for v5.7-rc1
 
--michael
+Regards
+Vignesh
 
-> 
-> Jungseung Lee (3):
->   mtd: spi-nor: Add new formula for SR block protection handling
->   mtd: spi-nor: Add SR 4bit block protection support
->   mtd: spi-nor: Enable locking for n25q512ax3/n25q512a
-> 
-> Tudor Ambarus (1):
->   mtd: spi-nor: Set all BP bits to one when lock_len == mtd->size
-> 
->  drivers/mtd/spi-nor/core.c      | 144 +++++++++++++++++++++-----------
->  drivers/mtd/spi-nor/core.h      |  10 +++
->  drivers/mtd/spi-nor/micron-st.c |   8 +-
->  include/linux/mtd/spi-nor.h     |   2 +
->  4 files changed, 113 insertions(+), 51 deletions(-)
+
+The following changes since commit 11a48a5a18c63fd7621bb050228cebf13566e4d8:
+
+  Linux 5.6-rc2 (2020-02-16 13:16:59 -0800)
+
+are available in the Git repository at:
+
+  git@gitolite.kernel.org:pub/scm/linux/kernel/git/mtd/linux.git tags/cfi/for-5.7
+
+for you to fetch changes up to b6fe8bc67d2d33a9eff1b0785482bccd14979115:
+
+  mtd: hyperbus: move direct mapping setup to AM654 HBMC driver (2020-03-03 10:13:11 +0530)
+
+----------------------------------------------------------------
+HyperBus changes
+
+* Print err msg when compatible is wrong or missing
+* Move mapping of direct access window from core to individual drivers
+
+----------------------------------------------------------------
+Dirk Behme (1):
+      mtd: hyperbus: Add proper error message for missing compatible
+
+Sergei Shtylyov (1):
+      mtd: hyperbus: move direct mapping setup to AM654 HBMC driver
+
+ drivers/mtd/hyperbus/hbmc-am654.c    | 12 ++++++++
+ drivers/mtd/hyperbus/hyperbus-core.c | 15 ++--------
+ 2 files changed, 15 insertions(+), 12 deletions(-)
+	
 
 ______________________________________________________
 Linux MTD discussion mailing list
