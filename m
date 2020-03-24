@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 171B2C54EEB
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Mar 2020 22:05:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54CB5C10DCE
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Mar 2020 22:05:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CD38D2077D
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Mar 2020 22:05:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 275072077D
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Mar 2020 22:05:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uJvvh4UG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD38D2077D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FLbCATKN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 275072077D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,41 +25,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tjMSU15/j9ERm7buAYX4bK0ciuRcYmSWxPYu34OkSeM=; b=uJvvh4UGScQjui
-	KX4pQzNdMBekRrW8pNGGQ3qbrnVyJdsldCijKU+eJmLUtGVBYbSX+LK3Nvi+a2JIvsPuToygAKM3f
-	59nn3hHvUoSYv5i6us/Pw90LUv/1lfdGXlZpvIlb0pibFNtGwsi246o4522H2t8E+2pW4CZr2xRbl
-	kGiDoT7XfjawVlpdO3QtLEZN60vUXnW7NlnKtzQWwfK9rxmCQynCmRk6PXJ/BAkIV1yz3cJoZGZD2
-	9dD3wUj175zZeprfM9dyJd2/AxELKXenLwWIEo+3F5a28+4YMb5sznvR9nSu5v9Zj9Pe88TT9U6m+
-	+IxRhQQFh2/blovi6V4g==;
+	List-Owner; bh=dGQmHzSsVxRlnSbNlhF/iymv0DJ4qXAj3HHnokL33DA=; b=FLbCATKNu/nBZz
+	F69oW14QpZWJd2omqPecwecs6aAM68GAvhk9zYYBJdiICFW3ZwYwOiJAo83QLE9SvpPiR97hqs6RC
+	28BQv0bYgrMKqlbIciu3FTuzP+CUet8BqqPL7vzXlNUdQ4qc3CBHZK5eRJBCpzJfdfF9M1iVEEwGZ
+	qn02JRey8XhZi4skz897wtJX2ydoYZzLAGCt6Z8YvA0+8cg2tJBqJ2+YrUKxp503/zaEy55V1hceK
+	yzINljqqvmudFRToorzwWKCvVaEqdbkSiGz9Kdx4yE8dmWMwFT+LP4ocnWCzy90niBL5SjYy1n/Va
+	P41+/MK/t9YSIvEhTwdA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jGrg5-0005yN-EJ; Tue, 24 Mar 2020 22:05:41 +0000
-Received: from relay7-d.mail.gandi.net ([217.70.183.200])
+	id 1jGrgD-0006Bj-27; Tue, 24 Mar 2020 22:05:49 +0000
+Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jGrg2-0005xb-I5
- for linux-mtd@lists.infradead.org; Tue, 24 Mar 2020 22:05:40 +0000
+ id 1jGrg8-00060X-47
+ for linux-mtd@lists.infradead.org; Tue, 24 Mar 2020 22:05:45 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id C461E20004;
- Tue, 24 Mar 2020 22:05:34 +0000 (UTC)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id B036D240006;
+ Tue, 24 Mar 2020 22:05:41 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Xiaoming Ni <nixiaoming@huawei.com>, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com
-Subject: Re: [PATCH] mtd:Fix issue where write_cached_data() fails but write()
- still returns success
-Date: Tue, 24 Mar 2020 23:05:33 +0100
-Message-Id: <20200324220533.15273-1-miquel.raynal@bootlin.com>
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH][next] mtd: maps: sa1100-flash: Replace zero-length array
+ with flexible-array member
+Date: Tue, 24 Mar 2020 23:05:40 +0100
+Message-Id: <20200324220540.15336-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1584674111-101462-1-git-send-email-nixiaoming@huawei.com>
+In-Reply-To: <20200319224200.GA25162@embeddedor.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 4e4a9a828af29785fad12ecc11583769e1282024
+X-linux-mtd-patch-commit: f1ffdbfad00a3c424cadfd307b5bb9c466638532
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200324_150538_732981_368A7070 
-X-CRM114-Status: UNSURE (   5.90  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200324_150544_309095_2C0CEA28 
+X-CRM114-Status: GOOD (  10.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,24 +71,42 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: zhangweimin12@huawei.com, linux-mtd@lists.infradead.org, wangle6@huawei.com,
- linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2020-03-20 at 03:15:11 UTC, Xiaoming Ni wrote:
-> mtdblock_flush()
-> 	-->write_cached_data()
-> 		--->erase_write()
-> 		     mtdblock: erase of region [0x40000, 0x20000] on "xxx" failed
+On Thu, 2020-03-19 at 22:42:00 UTC, "Gustavo A. R. Silva" wrote:
+> The current codebase makes use of the zero-length array language
+> extension to the C90 standard, but the preferred mechanism to declare
+> variable-length types such as these ones is a flexible array member[1][2],
+> introduced in C99:
 > 
-> Because mtdblock_flush() always returns 0,
-> even if write_cached_data() fails and data is not written to the device,
-> syscall_write() still returns success
+> struct foo {
+>         int stuff;
+>         struct boo array[];
+> };
 > 
-> Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+> By making use of the mechanism above, we will get a compiler warning
+> in case the flexible array does not occur last in the structure, which
+> will help us prevent some kind of undefined behavior bugs from being
+> inadvertently introduced[3] to the codebase from now on.
+> 
+> Also, notice that, dynamic memory allocations won't be affected by
+> this change:
+> 
+> "Flexible array members have incomplete type, and so the sizeof operator
+> may not be applied. As a quirk of the original implementation of
+> zero-length arrays, sizeof evaluates to zero."[1]
+> 
+> This issue was found with the help of Coccinelle.
+> 
+> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> [2] https://github.com/KSPP/linux/issues/21
+> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
