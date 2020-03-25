@@ -2,72 +2,133 @@ Return-Path: <SRS0=FPAn=5K=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33EB0C18E5B
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Mar 2020 09:06:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70EE6C43331
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Mar 2020 09:43:49 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 03D6420663
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Mar 2020 09:06:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4474920714
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Mar 2020 09:43:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CDchRWFn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 03D6420663
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=allwinnertech.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dWJeE0e3";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="Krp2Gwc6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4474920714
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:References:
-	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=8UoDWKh82seQDQAQmQmJQL5j2TEd8zGC61PFfn9aMe4=; b=CDchRWFnaRh+19C8u4BFRiNJus
-	X4GJryhPXiHXQOQn9Fnzicmt6zPprHNRjqu9Lwcc6gGJ8j9wV8ea7uO2CKKjzmumJZ6gty7YtPkOx
-	25n7rX2pn8Qkf8KAN5cgq5KSMolFd+4HP8cu4kHtmIYK1Tk/yRVQW/q0R0mmiPi+FJz587h0qppS9
-	27gCOFvToEIHARS87t0sUMo3iMMxZ/R0ZwPBS8K6cBP9AUvzIsxnN1LPwh027Rqjsf8nfrdcOgzMu
-	eo9VGmGtkTiDzkaEbXalQoncNk0w220/+5MCazQJgdOQskF1lttTj8IbmQ3SGEq3T4RY7PvIIARND
-	KYJi2How==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=+i292KGndOAGQz55LCu75SldfTGuDNn7XyihesRtSP0=; b=dWJeE0e3Jww57y
+	TVfiQB5XcEPA+e2TmHy4N7fpCgc/mpSh49fqHOgjK6Y6M2fD3WddnEZYtpUyYY9sm3L6bYIJGbk9g
+	mtatfMhdbNGiHJSLpJmtasV7DMHhXhoGQ23C0H+jo9HXcWGhaQHQukFpskKV7KLDyhFsL4V41K4dT
+	Du0A1CLtE43iiyITJXgylZIbMZcqQjKv/d7Q+DLmFMoEXS+b0TdslwLDxkZK0DeK9kVQyF8tdHJ/4
+	y25FgIMjY7pjrF69BfzMHzkExDvr7X1U70m/WXbOqgOPe0GDKdGZIECbdIb2d7D0L2w8StHlasG9k
+	CdONTO8dTD6XMpmTjcvw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jH1z0-00061q-4b; Wed, 25 Mar 2020 09:05:54 +0000
-Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205])
+	id 1jH2ZU-0003IL-4v; Wed, 25 Mar 2020 09:43:36 +0000
+Received: from esa2.microchip.iphmx.com ([68.232.149.84])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jH1yw-00060V-AR
- for linux-mtd@lists.infradead.org; Wed, 25 Mar 2020 09:05:52 +0000
-X-Alimail-AntiSpam: AC=CONTINUE; BC=0.07436282|-1; CH=green;
- DM=|CONTINUE|false|;
- DS=CONTINUE|ham_system_inform|0.0775484-0.000381191-0.92207;
- FP=0|0|0|0|0|-1|-1|-1; HT=e02c03301; MF=liaoweixiong@allwinnertech.com; NM=1;
- PH=DS; RN=17; RT=17; SR=0; TI=SMTPD_---.H50xpyL_1585126516; 
-Received: from
- PC-liaoweixiong.allwinnertech.com(mailfrom:liaoweixiong@allwinnertech.com
- fp:SMTPD_---.H50xpyL_1585126516)
- by smtp.aliyun-inc.com(10.147.42.241);
- Wed, 25 Mar 2020 16:55:31 +0800
-From: WeiXiong Liao <liaoweixiong@allwinnertech.com>
-To: Kees Cook <keescook@chromium.org>, Anton Vorontsov <anton@enomsg.org>,
- Colin Cross <ccross@android.com>, Tony Luck <tony.luck@intel.com>,
- Jonathan Corbet <corbet@lwn.net>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
- Rob Herring <robh@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH v3 06/11] pstore/blk: blkoops: support ftrace recorder
-Date: Wed, 25 Mar 2020 16:55:01 +0800
-Message-Id: <1585126506-18635-7-git-send-email-liaoweixiong@allwinnertech.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1585126506-18635-1-git-send-email-liaoweixiong@allwinnertech.com>
-References: <1585126506-18635-1-git-send-email-liaoweixiong@allwinnertech.com>
+ id 1jH2ZQ-0003Hv-Ax
+ for linux-mtd@lists.infradead.org; Wed, 25 Mar 2020 09:43:35 +0000
+IronPort-SDR: T2jF2sNmC6EeB/wXbugA2q7sXlzKhKiTR3vzqi/CJ2GHpLbMboQh3ym0GeL0r9NY2O+ruUSKwJ
+ Clhuxteh2Vq04axrAUSj57rlvP0bM6B15ebZgAIf5jEGONjZy1YOuUHQj85rx3XbRgu35Rf50C
+ Ks2qlPkFRiCPOuJeIE+Qupvg9akC7vWkEdINVc3AHlF0KGxny4pXk6IvaJfzN9B2WaaqCquLrw
+ o5FQNopz7hvGnhC26R1goPcOcUG6MiSxMS/bSQ3wIgQ0srsQW1MHIuIutCqs6wc7xkk2MHNPnL
+ 3Ps=
+X-IronPort-AV: E=Sophos;i="5.72,303,1580799600"; d="scan'208";a="70115389"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 25 Mar 2020 02:43:29 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 25 Mar 2020 02:43:29 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, 
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5 via Frontend
+ Transport; Wed, 25 Mar 2020 02:43:27 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WFIDT3g5Pdp6gPcGmQN90pTBjR7Picz7afLTVSXyCN3GhL2b/hpFwOfHFdbTmgL/6ST0Wefy0XmrS+vSH6L9B0M1H/4s+4eLitQb4AguJNScoLRwxfiwHME6wCMkNn2T5fG/ProHCFSmwFuk3krCwCfcWUszR5UGGPiDBp4isKJLOjEaBydsTYHFXFJk4MgcMUI7HgB4exytYMNbyNNYsyP9dmPoY9P4wTJ1v85TIpINhnsApgPirmyRQWQmX4zPUIOFWArghjUpHV2nhSF8BrC3sB3GNYDhR4UDfSHZMP5lI49jlFI3S/aIzL95s3xwjMql9sSk8crw2VofFUr7og==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=td/tIy/My8maptDWFdBxi6OZi5dQqO2TxIEUTMZcGdk=;
+ b=fzWFmhktU0SgtTvueCxaluVRtZtXWoFjGUaBzmsjiP7uKnQPKOLoQKwlc5DmnYJ+YZaUnpYs9SfbQn8/2nouzTr2jJJvPam5JUTMen/auHXaxKReLO7mFQf58bkEGtE1I0NUEVGY8wLfKDK+VpArdxOqpS+FJFJxr1aisruHy7qRfkUDm96qGoNKvJljHHFhgcChIZW8slr/0zyVsT0QhOs/tSr+W9LEfVvgaVbLyIFXJOFA3/K6UCFNVU6Y7zgCFWhuCMWbvwIoKSfm3LYv/8C2xi4e9qKs6T12hML2b6qyA+VhCAnITjDZwEg6TYkwu/AmTOCqS/SAE1Fikf55VQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=td/tIy/My8maptDWFdBxi6OZi5dQqO2TxIEUTMZcGdk=;
+ b=Krp2Gwc64hJxfnXmtqHfSAwo/MLgWCPFueE2DcdCm5syDYzWI9c/pshwytN8GVSKMg1+y2mL+ExrftKzWQkkQ93W1E/bQ8UnLf8Fn/juVBxZSNnkBNbaX9dHg8MFkxCgpj8e7fzeObu6VZpTVxy5KU9Zq7TF3OlsLEOLMBpNlV0=
+Received: from BY5PR11MB4419.namprd11.prod.outlook.com (2603:10b6:a03:1c8::13)
+ by BY5PR11MB4370.namprd11.prod.outlook.com (2603:10b6:a03:1c3::20)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.18; Wed, 25 Mar
+ 2020 09:43:28 +0000
+Received: from BY5PR11MB4419.namprd11.prod.outlook.com
+ ([fe80::e918:9196:b47e:9692]) by BY5PR11MB4419.namprd11.prod.outlook.com
+ ([fe80::e918:9196:b47e:9692%3]) with mapi id 15.20.2835.023; Wed, 25 Mar 2020
+ 09:43:27 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
+Subject: [PATCH] MAINTAINERS: Add the IRC channel to the MTD related subsystems
+Thread-Topic: [PATCH] MAINTAINERS: Add the IRC channel to the MTD related
+ subsystems
+Thread-Index: AQHWAonVXc8Ih56XF0O/r9YkJEY3pg==
+Date: Wed, 25 Mar 2020 09:43:27 +0000
+Message-ID: <20200325094319.35841-1-tudor.ambarus@microchip.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Tudor.Ambarus@microchip.com; 
+x-originating-ip: [94.177.32.156]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d624a052-038f-4b68-b3e0-08d7d0a0f87f
+x-ms-traffictypediagnostic: BY5PR11MB4370:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR11MB43708916FD11B3AC8EB616D9F0CE0@BY5PR11MB4370.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:5516;
+x-forefront-prvs: 0353563E2B
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(376002)(39860400002)(396003)(346002)(136003)(366004)(1076003)(71200400001)(54906003)(26005)(110136005)(86362001)(6486002)(316002)(6512007)(4326008)(66476007)(91956017)(66946007)(64756008)(36756003)(478600001)(76116006)(66556008)(66446008)(8936002)(8676002)(6506007)(5660300002)(107886003)(2906002)(81156014)(81166006)(186003)(2616005);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:BY5PR11MB4370;
+ H:BY5PR11MB4419.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; 
+received-spf: None (protection.outlook.com: microchip.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: hK8VDnUbogMT02GDmh9Eu1Fhk1/79movOpgLVdYTFSC5r8JYgFQrMLivRAMsXr2s6o28lHKqMUJqpRcn7VKxepiQlUboOt94fEL53Gbe0wz+N/dEYxU4HQ/Rqkx0FO1so/PhwOfdMCgGHHcJB8KXOe8Ir2b3xs6Z2Yu1yxTt2qXTUTgk7tZlE20Z27mk9LvPh/hU04QeP6hwxEZfaTzmxGlHBbTmaxGDK0QLtX0avYRmhR/lddQ7rmGxOPt+QcxuWJjOD2BbjPeZS2666PMBAe1rKW5BbESJRieWFGlYTgSkmPaM2f4YNdOtNNsyF9zpqY+KOVe6vimFC9w7e9hjL0ktjNrXZHtyOJ6LyPb8bSH3kO+Obffx/+bT2nonuFNDeP6XYKYZBPJgNq25i2Urot5vDCnLYIbQXlxZKNyiiazee/hht8jtat9MZgHSRBhospZzndiyuIaDP7pEUZYmTxGoUlTh+DNTmYCTY/ff7EXafRHiJgZEvNoVWalXmb03CeJsXWCSqX7/W2Ve60sJgw==
+x-ms-exchange-antispam-messagedata: nz+qSUoYvnV1JqWji4eBgefogX8A6ttClAiSlpmUMjGyvC4w/zTd0riVjHC8cVs+zyLVHQVZtPddZjbQcDud7hGAE/L16ilGulWbT/uoCGO5Dv3OgXmuobbKs6zf0z7sXCJWurdDklmK/+h9QprHwQ==
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: d624a052-038f-4b68-b3e0-08d7d0a0f87f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Mar 2020 09:43:27.5689 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: XkNKgqkNvS8Q706LDOIoLD6WXc1ODmVGbcyELybbpd5FNUFjNwP2jVnThjZCb/8i/wysk8vPyOM3KJmv/zOX+z5uyTjW+9kZ8kdfr6B18Ww=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4370
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200325_020550_781410_E2ACE029 
-X-CRM114-Status: GOOD (  20.51  )
+X-CRM114-CacheID: sfid-20200325_024332_478033_3F9DA003 
+X-CRM114-Status: UNSURE (   7.39  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,401 +140,53 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: WeiXiong Liao <liaoweixiong@allwinnertech.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org
-MIME-Version: 1.0
+Cc: linux-mtd@lists.infradead.org, Tudor.Ambarus@microchip.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Support recorder for ftrace. To enable ftrace recorder, just make
-ftrace_size be greater than 0 and a multiple of 4096.
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-Signed-off-by: WeiXiong Liao <liaoweixiong@allwinnertech.com>
+The #mtd channel (on OFTC servers) is being used to discuss MTD related
+topics. Add it for better visibility to the HYPERBUS, NAND and SPI NOR
+entries.
+
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
- fs/pstore/Kconfig           |  12 ++++
- fs/pstore/pstore_blk.c      |   9 +++
- fs/pstore/pstore_zone.c     | 172 +++++++++++++++++++++++++++++++++++++++++++-
- include/linux/pstore_zone.h |   2 +
- 4 files changed, 193 insertions(+), 2 deletions(-)
+ MAINTAINERS | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/pstore/Kconfig b/fs/pstore/Kconfig
-index bf90de48ad3c..55ce726be795 100644
---- a/fs/pstore/Kconfig
-+++ b/fs/pstore/Kconfig
-@@ -237,6 +237,18 @@ config PSTORE_BLK_CONSOLE_SIZE
- 	  NOTE that, both Kconfig and module parameters can configure
- 	  pstore/blk, but module parameters have priority over Kconfig.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index f5143e248170..8124d8faa8f1 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -7769,6 +7769,7 @@ F:	Documentation/ABI/testing/debugfs-hyperv
  
-+config PSTORE_BLK_FTRACE_SIZE
-+	int "Size in Kbytes of ftarce to store"
-+	depends on PSTORE_BLK
-+	depends on PSTORE_FTRACE
-+	default 64
-+	help
-+	  This just sets size of ftrace (ftrace_size) for pstore/blk. The
-+	  size is in KB and must be a multiple of 4.
-+
-+	  NOTE that, both Kconfig and module parameters can configure
-+	  pstore/blk, but module parameters have priority over Kconfig.
-+
- config PSTORE_BLK_DUMP_OOPS
- 	bool "dump oops"
- 	depends on PSTORE_BLK
-diff --git a/fs/pstore/pstore_blk.c b/fs/pstore/pstore_blk.c
-index 2b513acaa18f..560e7b3f0945 100644
---- a/fs/pstore/pstore_blk.c
-+++ b/fs/pstore/pstore_blk.c
-@@ -34,6 +34,14 @@
- module_param(console_size, long, 0400);
- MODULE_PARM_DESC(console_size, "console size in kbytes");
- 
-+#if IS_ENABLED(CONFIG_PSTORE_FTRACE)
-+static long ftrace_size = CONFIG_PSTORE_BLK_FTRACE_SIZE;
-+#else
-+static long ftrace_size = -1;
-+#endif
-+module_param(ftrace_size, long, 0400);
-+MODULE_PARM_DESC(ftrace_size, "ftrace size in kbytes");
-+
- static int dump_oops = CONFIG_PSTORE_BLK_DUMP_OOPS;
- module_param(dump_oops, int, 0400);
- MODULE_PARM_DESC(total_size, "whether dump oops");
-@@ -141,6 +149,7 @@ static int psblk_register_do(struct psblk_device *dev)
- 	verify_size(oops_size, 4096, dev->flags & PSTORE_FLAGS_DMESG);
- 	verify_size(pmsg_size, 4096, dev->flags & PSTORE_FLAGS_PMSG);
- 	verify_size(console_size, 4096, dev->flags & PSTORE_FLAGS_CONSOLE);
-+	verify_size(ftrace_size, 4096, dev->flags & PSTORE_FLAGS_FTRACE);
- #undef verify_size
- 	dump_oops = dump_oops <= 0 ? 0 : 1;
- 
-diff --git a/fs/pstore/pstore_zone.c b/fs/pstore/pstore_zone.c
-index e1e84505b046..1da4fc760d31 100644
---- a/fs/pstore/pstore_zone.c
-+++ b/fs/pstore/pstore_zone.c
-@@ -88,11 +88,14 @@ struct psz_zone {
-  * @opszs: oops/panic storage zones
-  * @ppsz: pmsg storage zone
-  * @cpsz: console storage zone
-+ * @fpszs: ftrace storage zones
-  * @oops_max_cnt: max count of @opszs
-  * @oops_read_cnt: counter to read oops zone
-  * @oops_write_cnt: counter to write
-  * @pmsg_read_cnt: counter to read pmsg zone
-  * @console_read_cnt: counter to read console zone
-+ * @ftrace_max_cnt: max count of @fpszs
-+ * @ftrace_read_cnt: counter to read ftrace zone
-  * @oops_counter: counter to oops
-  * @panic_counter: counter to panic
-  * @recovered: whether finish recovering data from storage
-@@ -105,11 +108,14 @@ struct psz_context {
- 	struct psz_zone **opszs;
- 	struct psz_zone *ppsz;
- 	struct psz_zone *cpsz;
-+	struct psz_zone **fpszs;
- 	unsigned int oops_max_cnt;
- 	unsigned int oops_read_cnt;
- 	unsigned int oops_write_cnt;
- 	unsigned int pmsg_read_cnt;
- 	unsigned int console_read_cnt;
-+	unsigned int ftrace_max_cnt;
-+	unsigned int ftrace_read_cnt;
- 	/*
- 	 * the counter should be recovered when recover.
- 	 * It records the oops/panic times after burning rather than booting.
-@@ -308,6 +314,7 @@ static void psz_flush_all_dirty_zones(struct work_struct *work)
- 	psz_flush_dirty_zone(cxt->ppsz);
- 	psz_flush_dirty_zone(cxt->cpsz);
- 	psz_flush_dirty_zones(cxt->opszs, cxt->oops_max_cnt);
-+	psz_flush_dirty_zones(cxt->fpszs, cxt->ftrace_max_cnt);
- }
- 
- static int psz_recover_oops_data(struct psz_context *cxt)
-@@ -542,6 +549,31 @@ static int psz_recover_zone(struct psz_context *cxt, struct psz_zone *zone)
- 	return ret;
- }
- 
-+static int psz_recover_zones(struct psz_context *cxt,
-+		struct psz_zone **zones, unsigned int cnt)
-+{
-+	int ret;
-+	unsigned int i;
-+	struct psz_zone *zone;
-+
-+	if (!zones)
-+		return 0;
-+
-+	for (i = 0; i < cnt; i++) {
-+		zone = zones[i];
-+		if (unlikely(!zone))
-+			continue;
-+		ret = psz_recover_zone(cxt, zone);
-+		if (ret)
-+			goto recover_fail;
-+	}
-+
-+	return 0;
-+recover_fail:
-+	pr_debug("recover %s[%u] failed\n", zone->name, i);
-+	return ret;
-+}
-+
- /**
-  * psz_recovery() - recover data from storage
-  * @cxt: the context of pstore/zone
-@@ -569,6 +601,10 @@ static inline int psz_recovery(struct psz_context *cxt)
- 	if (ret)
- 		goto recover_fail;
- 
-+	ret = psz_recover_zones(cxt, cxt->fpszs, cxt->ftrace_max_cnt);
-+	if (ret)
-+		goto recover_fail;
-+
- 	pr_debug("recover end!\n");
- 	atomic_set(&cxt->recovered, 1);
- 	return 0;
-@@ -585,6 +621,7 @@ static int psz_pstore_open(struct pstore_info *psi)
- 	cxt->oops_read_cnt = 0;
- 	cxt->pmsg_read_cnt = 0;
- 	cxt->console_read_cnt = 0;
-+	cxt->ftrace_read_cnt = 0;
- 	return 0;
- }
- 
-@@ -651,6 +688,10 @@ static int psz_pstore_erase(struct pstore_record *record)
- 		return psz_record_erase(cxt, cxt->ppsz);
- 	case PSTORE_TYPE_CONSOLE:
- 		return psz_record_erase(cxt, cxt->cpsz);
-+	case PSTORE_TYPE_FTRACE:
-+		if (record->id >= cxt->ftrace_max_cnt)
-+			return -EINVAL;
-+		return psz_record_erase(cxt, cxt->fpszs[record->id]);
- 	default: return -EINVAL;
- 	}
- }
-@@ -806,6 +847,13 @@ static int notrace psz_pstore_write(struct pstore_record *record)
- 		return psz_record_write(cxt->cpsz, record);
- 	case PSTORE_TYPE_PMSG:
- 		return psz_record_write(cxt->ppsz, record);
-+	case PSTORE_TYPE_FTRACE: {
-+		int zonenum = smp_processor_id();
-+
-+		if (!cxt->fpszs)
-+			return -ENOSPC;
-+		return psz_record_write(cxt->fpszs[zonenum], record);
-+	}
- 	default:
- 		return -EINVAL;
- 	}
-@@ -821,6 +869,14 @@ static struct psz_zone *psz_read_next_zone(struct psz_context *cxt)
- 			return zone;
- 	}
- 
-+	if (cxt->ftrace_read_cnt < cxt->ftrace_max_cnt)
-+		/*
-+		 * No need psz_old_ok(). Let psz_ftrace_read() do so for
-+		 * combination. psz_ftrace_read() should traverse over
-+		 * all zones in case of some zone without data.
-+		 */
-+		return cxt->fpszs[cxt->ftrace_read_cnt++];
-+
- 	if (cxt->pmsg_read_cnt == 0) {
- 		cxt->pmsg_read_cnt++;
- 		zone = cxt->ppsz;
-@@ -894,6 +950,98 @@ static ssize_t psz_oops_read(struct psz_zone *zone,
- 	return size + hlen;
- }
- 
-+static int psz_ftrace_combine(char *src1_buf, size_t src1_size,
-+		char *src2_buf, size_t src2_size,
-+		char **dest_buf, size_t *dest_size)
-+{
-+	size_t src1_off, src2_off, total;
-+	size_t src1_idx = 0, src2_idx = 0, merged_idx = 0;
-+	void *merged_buf;
-+	struct pstore_ftrace_record *mrec, *s1rec, *s2rec;
-+	size_t record_size = sizeof(struct pstore_ftrace_record);
-+
-+	src1_off = src1_size % record_size;
-+	src1_size -= src1_off;
-+
-+	src2_off = src2_size % record_size;
-+	src2_size -= src2_off;
-+
-+	total = src1_size + src2_size;
-+	merged_buf = kmalloc(total, GFP_KERNEL);
-+	if (!merged_buf)
-+		return -ENOMEM;
-+
-+	s1rec = (struct pstore_ftrace_record *)(src1_buf + src1_off);
-+	s2rec = (struct pstore_ftrace_record *)(src2_buf + src2_off);
-+	mrec = (struct pstore_ftrace_record *)(merged_buf);
-+
-+	while (src1_size > 0 && src2_size > 0) {
-+		u64 s1_ts, s2_ts;
-+
-+		s1_ts = pstore_ftrace_read_timestamp(&s1rec[src1_idx]);
-+		s2_ts = pstore_ftrace_read_timestamp(&s2rec[src2_idx]);
-+		if (s1_ts < s2_ts) {
-+			mrec[merged_idx++] = s1rec[src1_idx++];
-+			src1_size -= record_size;
-+		} else {
-+			mrec[merged_idx++] = s2rec[src2_idx++];
-+			src2_size -= record_size;
-+		}
-+	}
-+
-+	while (src1_size > 0) {
-+		mrec[merged_idx++] = s1rec[src1_idx++];
-+		src1_size -= record_size;
-+	}
-+
-+	while (src2_size > 0) {
-+		mrec[merged_idx++] = s2rec[src2_idx++];
-+		src2_size -= record_size;
-+	}
-+
-+	*dest_buf = merged_buf;
-+	*dest_size = total;
-+	return 0;
-+}
-+
-+/* try to combine all ftrace zones */
-+static ssize_t psz_ftrace_read(struct psz_zone *zone,
-+		struct pstore_record *record)
-+{
-+	struct psz_context *cxt = record->psi->data;
-+	struct psz_buffer *buf;
-+	char *dest;
-+	size_t dest_size;
-+	int ret;
-+
-+	if (!zone || !record)
-+		return -ENOSPC;
-+
-+	if (!psz_old_ok(zone))
-+		goto out;
-+
-+	buf = (struct psz_buffer *)zone->oldbuf;
-+	if (!buf)
-+		return -ENOMSG;
-+
-+	ret = psz_ftrace_combine(record->buf, record->size,
-+			(char *)buf->data, atomic_read(&buf->datalen),
-+			&dest, &dest_size);
-+	if (unlikely(ret))
-+		return ret;
-+
-+	kfree(record->buf);
-+	record->buf = dest;
-+	record->size = dest_size;
-+
-+out:
-+	if (cxt->ftrace_read_cnt < cxt->ftrace_max_cnt)
-+		/* then, read next ftrace zone */
-+		return -ENOMSG;
-+	record->id = 0;
-+	return record->size ? record->size : -ENOMSG;
-+}
-+
- static ssize_t psz_record_read(struct psz_zone *zone,
- 		struct pstore_record *record)
- {
-@@ -944,6 +1092,9 @@ static ssize_t psz_pstore_read(struct pstore_record *record)
- 		readop = psz_oops_read;
- 		record->id = cxt->oops_read_cnt - 1;
- 		break;
-+	case PSTORE_TYPE_FTRACE:
-+		readop = psz_ftrace_read;
-+		break;
- 	case PSTORE_TYPE_CONSOLE:
- 		fallthrough;
- 	case PSTORE_TYPE_PMSG:
-@@ -1095,6 +1246,8 @@ static void psz_free_all_zones(struct psz_context *cxt)
- 		psz_free_zone(&cxt->ppsz);
- 	if (cxt->cpsz)
- 		psz_free_zone(&cxt->cpsz);
-+	if (cxt->fpszs)
-+		psz_free_zones(&cxt->fpszs, &cxt->ftrace_max_cnt);
- }
- 
- static int psz_alloc_zones(struct psz_context *cxt)
-@@ -1119,6 +1272,16 @@ static int psz_alloc_zones(struct psz_context *cxt)
- 		goto free_out;
- 	}
- 
-+	off_size += info->ftrace_size;
-+	cxt->fpszs = psz_init_zones(PSTORE_TYPE_FTRACE, &off,
-+			info->ftrace_size,
-+			info->ftrace_size / nr_cpu_ids,
-+			&cxt->ftrace_max_cnt);
-+	if (IS_ERR(cxt->fpszs)) {
-+		err = PTR_ERR(cxt->fpszs);
-+		goto free_out;
-+	}
-+
- 	cxt->opszs = psz_init_zones(PSTORE_TYPE_DMESG, &off,
- 			info->total_size - off_size,
- 			info->oops_size, &cxt->oops_max_cnt);
-@@ -1182,6 +1345,7 @@ int psz_register(struct psz_info *info)
- 	check_size(oops_size, SECTOR_SIZE);
- 	check_size(pmsg_size, SECTOR_SIZE);
- 	check_size(console_size, SECTOR_SIZE);
-+	check_size(ftrace_size, SECTOR_SIZE);
- 
- #undef check_size
- 
-@@ -1215,6 +1379,7 @@ int psz_register(struct psz_info *info)
- 	pr_debug("\toops size : %ld Bytes\n", info->oops_size);
- 	pr_debug("\tpmsg size : %ld Bytes\n", info->pmsg_size);
- 	pr_debug("\tconsole size : %ld Bytes\n", info->console_size);
-+	pr_debug("\tftrace size : %ld Bytes\n", info->ftrace_size);
- 
- 	err = psz_alloc_zones(cxt);
- 	if (err) {
-@@ -1238,12 +1403,15 @@ int psz_register(struct psz_info *info)
- 		cxt->pstore.flags |= PSTORE_FLAGS_PMSG;
- 	if (info->console_size)
- 		cxt->pstore.flags |= PSTORE_FLAGS_CONSOLE;
-+	if (info->ftrace_size)
-+		cxt->pstore.flags |= PSTORE_FLAGS_FTRACE;
- 
--	pr_info("Registered %s as pszone backend for%s%s%s%s\n", info->name,
-+	pr_info("Registered %s as pszone backend for%s%s%s%s%s\n", info->name,
- 			cxt->opszs && cxt->psz_info->dump_oops ? " Oops" : "",
- 			cxt->opszs && cxt->psz_info->panic_write ? " Panic" : "",
- 			cxt->ppsz ? " Pmsg" : "",
--			cxt->cpsz ? " Console" : "");
-+			cxt->cpsz ? " Console" : "",
-+			cxt->fpszs ? " Ftrace" : "");
- 
- 	err = pstore_register(&cxt->pstore);
- 	if (err) {
-diff --git a/include/linux/pstore_zone.h b/include/linux/pstore_zone.h
-index 8a1838633010..a138e8b7dc20 100644
---- a/include/linux/pstore_zone.h
-+++ b/include/linux/pstore_zone.h
-@@ -18,6 +18,7 @@
-  *		it must be multiple of SECTOR_SIZE(512 Bytes).
-  * @pmsg_size:	The size of pmsg zone which is the same as @oops_size.
-  * @console_size:The size of console zone which is the same as @oops_size.
-+ * @ftrace_size:The size of ftrace zone which is the same as @oops_size.
-  * @dump_oops:	Whether to dump oops log.
-  * @read:	The general read operation. Both of the function parameters
-  *		@size and @offset are relative value to storage.
-@@ -36,6 +37,7 @@ struct psz_info {
- 	unsigned long oops_size;
- 	unsigned long pmsg_size;
- 	unsigned long console_size;
-+	unsigned long ftrace_size;
- 	int dump_oops;
- 	psz_read_op read;
- 	psz_write_op write;
+ HYPERBUS SUPPORT
+ M:	Vignesh Raghavendra <vigneshr@ti.com>
++C:	irc://irc.oftc.net/mtd
+ S:	Supported
+ F:	drivers/mtd/hyperbus/
+ F:	include/linux/mtd/hyperbus.h
+@@ -11451,6 +11452,7 @@ M:	Miquel Raynal <miquel.raynal@bootlin.com>
+ R:	Richard Weinberger <richard@nod.at>
+ L:	linux-mtd@lists.infradead.org
+ W:	http://www.linux-mtd.infradead.org/
++C:	irc://irc.oftc.net/mtd
+ Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
+ S:	Maintained
+@@ -15689,6 +15691,7 @@ SPI NOR SUBSYSTEM
+ M:	Tudor Ambarus <tudor.ambarus@microchip.com>
+ L:	linux-mtd@lists.infradead.org
+ W:	http://www.linux-mtd.infradead.org/
++C:	irc://irc.oftc.net/mtd
+ Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git spi-nor/next
+ S:	Maintained
 -- 
-1.9.1
-
+2.23.0
 
 ______________________________________________________
 Linux MTD discussion mailing list
