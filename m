@@ -2,69 +2,60 @@ Return-Path: <SRS0=FPAn=5K=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8057C10DCE
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Mar 2020 01:10:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D18CC54FD2
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Mar 2020 03:12:37 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B4FED2073C
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Mar 2020 01:10:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5111920719
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Mar 2020 03:12:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RLoizy3J"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B4FED2073C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YRH0J8Sf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5111920719
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=hisilicon.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:
-	Subject:To:References:In-Reply-To:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=S4RZO+mDIFuhqP0IpYP8L0GYQGXsPh/M3Ps0wQbYvqE=; b=RLoizy3J+Y2WNq
-	WgsWwDcCXv+xzlG7jVBynBDNPjSNVb+h/RpJwPageYcU9a1TubsAAPzrNmMhF38CH1fL7u8YQeg0w
-	cV7xqekE5E5Q0YgUj225dhkDpQTSQN0PfBdkejGEy+o8ZjnPQGvYGUQdykyOkQnfc01R1bwnRHoQ3
-	9T1SjcIyRfzvYr4Fcv7uKqJRNIGFt8OgGl/4tT95ug0k9KsJRIDm1KV9Oy0lgTutaZb9KKr5s1jZg
-	tj8F5URFMOtF2NLdwczqTH0fZR33BJHFNnsivEorXo0BJdZzuaI/mqaZjqoe4jVsIeb3O0ZzUq2+y
-	jJ3l7aX5hW45ZyFeCQTg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=OlluvwKULVxqdm2Y27aYGNXz/r8nNdClmxyAnkj7Sek=; b=YRH0J8SfcSfV9M
+	T1O0VBMNdO24W0k+juK/pvzW8t4FIl5XexlAuXLSa6hLibHpcV5ujVcSPMOVqnl7NAbAD8En7GtwS
+	WF7wO98u5/acoJ429j0P2QuqmzZcaWPArWnCJgbmfUxtBTOIrxwVFhFI60QFU+pPmTJKZ8af78SRj
+	tRp5nWahwGnHy8Q6/6HQGE+cRFUa8S9J8VCxMmcAKKbUq1nWko5V/3N1B+OBuPkYe2x9/CQ+XMQUx
+	wira6ai5YJL1AS/ItJBrx5e2gHPWBFOSNe7MwfXcdL6+xcNxQ3njqfr5nHOXgyQioP3HAl8ijtlb8
+	YD+YLxuR51jeFdB2ZS7w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jGuZ1-0000aQ-Eh; Wed, 25 Mar 2020 01:10:35 +0000
-Received: from twhmllg4.macronix.com ([211.75.127.132])
+	id 1jGwSm-0003gF-6h; Wed, 25 Mar 2020 03:12:16 +0000
+Received: from szxga05-in.huawei.com ([45.249.212.191] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jGuYx-0000Z4-Lh
- for linux-mtd@lists.infradead.org; Wed, 25 Mar 2020 01:10:33 +0000
-Received: from twhfm1p2.macronix.com (twhfmlp2.macronix.com [172.17.20.92])
- by TWHMLLG4.macronix.com with ESMTP id 02P19dJM056234;
- Wed, 25 Mar 2020 09:09:39 +0800 (GMT-8)
- (envelope-from masonccyang@mxic.com.tw)
-Received: from MXML06C.mxic.com.tw (mxml06c.mxic.com.tw [172.17.14.55])
- by Forcepoint Email with ESMTP id 8F40FA52ED8DA1FC9596;
- Wed, 25 Mar 2020 09:09:39 +0800 (CST)
-In-Reply-To: <20200324225739.11538d08@xps13>
-References: <1584517348-14486-1-git-send-email-masonccyang@mxic.com.tw>	<1584517348-14486-3-git-send-email-masonccyang@mxic.com.tw>
- <20200324225739.11538d08@xps13>
-To: "Miquel Raynal" <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH v4 2/2] mtd: rawnand: macronix: Add support for deep power
- down mode
+ id 1jGwSi-0003fH-Q7
+ for linux-mtd@lists.infradead.org; Wed, 25 Mar 2020 03:12:14 +0000
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+ by Forcepoint Email with ESMTP id DB85197FB984ACAF3F04;
+ Wed, 25 Mar 2020 11:11:53 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 25 Mar 2020 11:11:44 +0800
+From: chenxiang <chenxiang66@hisilicon.com>
+To: <js07.lee@samsung.com>, <michael@walle.cc>, <vigneshr@ti.com>
+Subject: [PATCH] mtd: spi-nor: Enable locking for n25q128a11
+Date: Wed, 25 Mar 2020 11:07:43 +0800
+Message-ID: <1585105663-199127-1-git-send-email-chenxiang66@hisilicon.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-X-KeepSent: 7F063DBA:65AA16F3-48258536:0006374F;
- type=4; name=$KeepSent
-X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
-Message-ID: <OF7F063DBA.65AA16F3-ON48258536.0006374F-48258536.00065F7D@mxic.com.tw>
-From: masonccyang@mxic.com.tw
-Date: Wed, 25 Mar 2020 09:09:39 +0800
-X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
- HF265|July 25, 2018) at 2020/03/25 AM 09:09:39,
- Serialize complete at 2020/03/25 AM 09:09:39
-X-MAIL: TWHMLLG4.macronix.com 02P19dJM056234
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200324_181031_978397_6D8185B4 
-X-CRM114-Status: UNSURE (   5.25  )
+X-CRM114-CacheID: sfid-20200324_201213_025658_944EE0B3 
+X-CRM114-Status: UNSURE (   8.60  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -77,101 +68,42 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vigneshr@ti.com, bbrezillon@kernel.org, juliensu@mxic.com.tw,
- richard@nod.at, s.hauer@pengutronix.de, yuehaibing@huawei.com,
- linux-kernel@vger.kernel.org, frieder.schrempf@kontron.de,
- linux-mtd@lists.infradead.org, stefan@agner.ch, tglx@linutronix.de,
- allison@lohutok.net
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Cc: Xiang Chen <chenxiang66@hisilicon.com>, john.garry@huawei.com,
+ linux-mtd@lists.infradead.org, linuxarm@huawei.com,
+ Tudor.Ambarus@microchip.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+From: Xiang Chen <chenxiang66@hisilicon.com>
 
-Hi Miquel,
+As 4bit block protection pathset for some micron models are merged,
+n25q128a11 also uses 4 bit Block Protection scheme, so enable locking
+for it. Tested it on n25q128a11, the locking functions work well.
 
-> Mason Yang <masonccyang@mxic.com.tw> wrote on Wed, 18 Mar 2020 15:42:28
-> +0800:
-> =
+Signed-off-by: Xiang Chen <chenxiang66@hisilicon.com>
+---
+ drivers/mtd/spi-nor/micron-st.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-> > Macronix AD series support deep power down mode for a minimum
-> > power consumption state.
-> > =
-
-> > Overload nand_suspend() & nand_resume() in Macronix specific code to
-> > support deep power down mode.
-> > =
-
-> > Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
-> =
-
-> This was not based on nand/next so as I applied changes in this files
-> (patches 1 and 2 of the original series) this patch did not apply. I
-> manually merged it.
-
-Got it and thanks a lot for your help.
-
-> =
-
-> =
-
-> Thanks,
-> Miqu=E8l
-
-best regards,
-Mason
-
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information =
-
-and/or personal data, which is protected by applicable laws. Please be =
-
-reminded that duplication, disclosure, distribution, or use of this e-mail =
-
-(and/or its attachments) or any part thereof is prohibited. If you receive =
-
-this e-mail in error, please notify us immediately and delete this mail as =
-
-well as its attachment(s) from your system. In addition, please be =
-
-informed that collection, processing, and/or use of personal data is =
-
-prohibited unless expressly permitted by personal data protection laws. =
-
-Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information and/or=
- personal data, which is protected by applicable laws. Please be reminded t=
-hat duplication, disclosure, distribution, or use of this e-mail (and/or it=
-s attachments) or any part thereof is prohibited. If you receive this e-mai=
-l in error, please notify us immediately and delete this mail as well as it=
-s attachment(s) from your system. In addition, please be informed that coll=
-ection, processing, and/or use of personal data is prohibited unless expres=
-sly permitted by personal data protection laws. Thank you for your attentio=
-n and cooperation.
-
-Macronix International Co., Ltd.
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
+index 6c034b9..02c0b53 100644
+--- a/drivers/mtd/spi-nor/micron-st.c
++++ b/drivers/mtd/spi-nor/micron-st.c
+@@ -29,7 +29,9 @@ static const struct flash_info st_parts[] = {
+ 	{ "n25q064a",    INFO(0x20bb17, 0, 64 * 1024,  128,
+ 			      SECT_4K | SPI_NOR_QUAD_READ) },
+ 	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256,
+-			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
++			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
++			      SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
++			      SPI_NOR_4BIT_BP | SPI_NOR_BP3_SR_BIT6) },
+ 	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256,
+ 			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+ 	{ "mt25ql256a",  INFO6(0x20ba19, 0x104400, 64 * 1024,  512,
+-- 
+2.8.1
 
 
 ______________________________________________________
