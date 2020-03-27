@@ -2,81 +2,63 @@ Return-Path: <SRS0=DmJj=5M=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E575C43331
-	for <linux-mtd@archiver.kernel.org>; Fri, 27 Mar 2020 16:00:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D0FCFC2D0EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 27 Mar 2020 16:16:00 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2D37920716
-	for <linux-mtd@archiver.kernel.org>; Fri, 27 Mar 2020 16:00:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A6E4720658
+	for <linux-mtd@archiver.kernel.org>; Fri, 27 Mar 2020 16:16:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Af8XvgkX";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=walle.cc header.i=@walle.cc header.b="uTwKWOVu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2D37920716
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XYygtpaM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A6E4720658
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=STZdnWvnGbt++JCsUakY/ERrO814gEEzi5ExMroyoEM=; b=Af8XvgkX5JlgY6
-	lLMFiAO97yiScOhOf1+pELrL/lFnZG6zIwb3cY5AdmtHhr4yy5uVPyv5GJsddIjLxCCTpGKMUtnn4
-	Q8IPj5FI6l2RWpqBoRmIl3icr2ZOr8m9EdlClVq/WzCMMy7b8qWhJm5YHcKQ9cEzwB6DCOQJCDiuo
-	5j8kt4IONm5l425i/DPmjmVI2CYmHQkGnwZ9DxtBlUqpDeoTZ4kgfO0WWC2/Bk+UfgjSBud8ljGh7
-	YCquzGs1s04bMKi6HeorUGDeQ1w63s1FMaYpEkcShEQ+3iTLbq0UJVlnB01YgwiQomMOCnXomyekC
-	QF1MgJTo8/3QIQpPnJHw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=K/JQgwIHeYfNaHOr6UZSEeZ1Vka1YNAKIJeHTCjuO64=; b=XYygtpaMT+sg1Z
+	Acyh5K72JTwZni0ue7cZUN3+ENn5pIESteLKVHbN1EbIWf8rwDRzoOk8CSq80++Epz0awdnnltYnE
+	OclXy7v/E1Dgmr5ZSBaoqx9wyt6ZEWpHGwm2iudjjEeHFInDufp0iBnWCOdhrys5zyy6SHP8/Kscf
+	31OSzTSJTeIMhkPxjLVDv5sDaUHTVSqruTNhrrCAH+XYxBTv4WHz1jJO5OqtG+qRMfy1zP9+KDwwJ
+	QZiufGSOpbVsJkL3B5ftejo5jcKrkHYzKHOCFeZf8Ijmrz0hQMoPNqmx2brxP9GJh4cKg++xI2ECl
+	xI8r1InDBROAQxArehhg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jHrOn-0006dm-Oz; Fri, 27 Mar 2020 15:59:57 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1jHre5-00068S-03; Fri, 27 Mar 2020 16:15:45 +0000
+Received: from relay10.mail.gandi.net ([217.70.178.230])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jHrOj-0006dF-Cw
- for linux-mtd@lists.infradead.org; Fri, 27 Mar 2020 15:59:55 +0000
-Received: from apollo.fritz.box (unknown
- [IPv6:2a02:810c:c200:2e91:6257:18ff:fec4:ca34])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
- SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 470C422FEC;
- Fri, 27 Mar 2020 16:59:50 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1585324791;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding;
- bh=FjlOkKYgzs/AagCqR4QivljNufROU2Ie6PUxo6+Gl9E=;
- b=uTwKWOVuKUAAFSkHri8dh0TnGs2FygzV6mGC0rC0BqWtJqsJUOSiPJZpkZs84g+NiTmKh1
- xFkavdjI5CdmKVvWul3CR91m0WqQk/AWlkR77YQmQcBm1nR516ivjxkRm7Cyl291FfjvuI
- hhKEixe6jLWQ8AjzVE2nbLrd2wJZzyY=
-From: Michael Walle <michael@walle.cc>
-To: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3] mtd: spi-nor: keep lock bits if they are non-volatile
-Date: Fri, 27 Mar 2020 16:59:39 +0100
-Message-Id: <20200327155939.13153-1-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
+ id 1jHre0-000666-9Q
+ for linux-mtd@lists.infradead.org; Fri, 27 Mar 2020 16:15:42 +0000
+Received: from xps13 (unknown [91.224.148.103])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay10.mail.gandi.net (Postfix) with ESMTPSA id AA992240002;
+ Fri, 27 Mar 2020 16:15:33 +0000 (UTC)
+Date: Fri, 27 Mar 2020 17:15:31 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: ron minnich <rminnich@gmail.com>
+Subject: Re: [PATCH 1/1] mtd/intel-spi: Support cmdline-based partition
+Message-ID: <20200327171532.0947ed92@xps13>
+In-Reply-To: <CAP6exYJ_jzrB0D=RLXMNeegu4BwQq8raXVOMugkqzX2ZP_JSqw@mail.gmail.com>
+References: <CAP6exYJ3xk46PODgT=5WAdiLDNY=9MggxyaEwov6qyDQstLj7g@mail.gmail.com>
+ <CAP6exY+W+zTtEB1LmHYDnhEnPj26Y97Ld9TBAxsgX3vGDb4LnQ@mail.gmail.com>
+ <CAP6exYKrAs_OpC_qkoW2cH0MxpqxDrgP2nhJGkp=2BX-6kAWbQ@mail.gmail.com>
+ <CAP6exY+LQ4Cz3Wq3P=MP78HhHCovMYDfwhpVuASp17h3s2sgMw@mail.gmail.com>
+ <CAP6exYJ_jzrB0D=RLXMNeegu4BwQq8raXVOMugkqzX2ZP_JSqw@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Spamd-Bar: ++++
-X-Rspamd-Server: web
-X-Rspamd-Queue-Id: 470C422FEC
-X-Spamd-Result: default: False [4.90 / 15.00]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; R_MISSING_CHARSET(2.50)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
- NEURAL_SPAM(0.00)[0.221]; BROKEN_CONTENT_TYPE(1.50)[];
- DKIM_SIGNED(0.00)[]; RCPT_COUNT_SEVEN(0.00)[8];
- MID_CONTAINS_FROM(1.00)[]; RCVD_COUNT_ZERO(0.00)[0];
- FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
- ASN(0.00)[asn:31334, ipnet:2a02:810c:8000::/33, country:DE]
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200327_085953_753090_6118F403 
-X-CRM114-Status: GOOD (  29.19  )
+X-CRM114-CacheID: sfid-20200327_091540_599794_C4FDC473 
+X-CRM114-Status: GOOD (  30.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,381 +70,119 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, Michael Walle <michael@walle.cc>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Vignesh Raghavendra <vigneshr@ti.com>, mika.westerberg@linux.intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Traditionally, linux unlocks the whole flash because there are legacy
-devices which has the write protections bits set by default at startup.
-If you actually want to use the flash protection bits, eg. because there
-is a read-only part for a bootloader, this automatic unlocking is
-harmful. If there is no hardware write protection in place (usually
-called WP#), a startup of the kernel just discards this protection.
-
-I've gone through the datasheets of all the flashes (except the Intel
-ones where I could not find any datasheet nor reference) which supports
-the unlocking feature and looked how the sector protection was
-implemented. The currently supported flashes can be divided into the
-following two categories:
- (1) block protection bits are non-volatile. Thus they keep their values
-     at reset and power-cycle
- (2) flashes where these bits are volatile. After reset or power-cycle,
-     the whole memory array is protected.
-     (a) some devices needs a special "Global Unprotect" command, eg.
-         the Atmel AT25DF041A.
-     (b) some devices require to clear the BPn bits in the status
-         register.
-
-Due to the reasons above, we do not want to clear the bits for flashes
-which belong to category (1). Fortunately for us, the flashes in (2a)
-and (2b) are compatible with each other in a sense that the "Global
-Unprotect" command will clear the block protection bits in all the (2b)
-flashes.
-
-This patch adds a new flag to indicate the case (2). Only if we have
-such a flash we perform a "Global Unprotect". To be backwards compatible
-it also introduces a kernel configuration option which is by default
-set to "Disable write protection on any flashes". Hopefully, this will
-clean up "unlock the entire flash for legacy devices" once and for all.
-
-For reference here are the actually commits which introduced the legacy
-behaviour (and extended the behaviour to other chip manufacturers):
-
-commit f80e521c916cb ("mtd: m25p80: add support for the Intel/Numonyx {16,32,64}0S33B SPI flash chips")
-commit ea60658a08f8f ("mtd: m25p80: disable SST software protection bits by default")
-commit 7228982442365 ("[MTD] m25p80: fix bug - ATmel spi flash fails to be copied to")
-
-Actually, this might also fix handling of the Atmel AT25DF flashes,
-because the original commit 7228982442365 ("[MTD] m25p80: fix bug -
-ATmel spi flash fails to be copied to") was writing a 0 to the status
-register, which is a "Global Unprotect". This might not be the case in
-the current code which only handles the block protection bits BP2, BP1
-and BP0. Thus, it depends on the current contents of the status register
-if this unlock actually corresponds to a "Global Unprotect" command. In
-the worst case, the current code might leave the AT25DF flashes in a
-write protected state.
-
-The commit 191f5c2ed4b6f ("mtd: spi-nor: use 16-bit WRR command when QE
-is set on spansion flashes") changed that behaviour by just clearing BP2
-to BP0 instead of writing a 0 to the status register.
-
-Further, the commit 3e0930f109e76 ("mtd: spi-nor: Rework the disabling of
-block write protection") expanded the unlock_all() feature to ANY flash
-which supports locking.
-
-Signed-off-by: Michael Walle <michael@walle.cc>
----
-changes since v2:
- - add Kconfig option to be able to retain legacy behaviour
- - rebased the patch due to the spi-nor rewrite
- - dropped the Fixes: tag, it doens't make sense after the spi-nor rewrite
- - mention commit 3e0930f109e76 which further modified the unlock
-   behaviour.
-
-changes since v1:
- - completely rewrote patch, the first version used a device tree flag
-
- drivers/mtd/spi-nor/Kconfig | 35 +++++++++++++++++++++++++++++
- drivers/mtd/spi-nor/atmel.c | 24 +++++++++++++-------
- drivers/mtd/spi-nor/core.c  | 44 ++++++++++++++++++++++++++++---------
- drivers/mtd/spi-nor/core.h  |  6 +++++
- drivers/mtd/spi-nor/esmt.c  |  6 ++---
- drivers/mtd/spi-nor/intel.c |  6 ++---
- drivers/mtd/spi-nor/sst.c   | 21 +++++++++---------
- include/linux/mtd/spi-nor.h |  6 +++++
- 8 files changed, 114 insertions(+), 34 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-index 6e816eafb312..647de17c81e2 100644
---- a/drivers/mtd/spi-nor/Kconfig
-+++ b/drivers/mtd/spi-nor/Kconfig
-@@ -24,6 +24,41 @@ config MTD_SPI_NOR_USE_4K_SECTORS
- 	  Please note that some tools/drivers/filesystems may not work with
- 	  4096 B erase size (e.g. UBIFS requires 15 KiB as a minimum).
- 
-+choice
-+	prompt "Write protection at boot"
-+	default MTD_SPI_NOR_WP_DISABLE
-+
-+config MTD_SPI_NOR_WP_DISABLE
-+	bool "Disable WP on any flashes (legacy behaviour)"
-+	help
-+	  This option disables the write protection on any SPI flashes at
-+	  boot-up.
-+
-+	  Don't use this if you intent to use the write protection of your
-+	  SPI flash. This is only to keep backwards compatibility.
-+
-+config MTD_SPI_NOR_WP_DISABLE_ON_VOLATILE
-+	bool "Disable WP on flashes w/ volatile protection bits"
-+	help
-+	  Some SPI flashes have volatile block protection bits, ie. after a
-+	  power-up or a reset the flash is write protected by default.
-+
-+	  This option disables the write protection for these kind of flashes
-+	  while keeping it enabled for any other SPI flashes which have
-+	  non-volatile block protection bits.
-+
-+	  If you are unsure, select this option.
-+
-+config MTD_SPI_NOR_WP_KEEP
-+	bool "Keep write protection as is"
-+	help
-+	  If you select this option the write protection of any SPI flashes
-+	  will not be changed. If your flash is write protected or will be
-+	  automatically write protected after power-up you have to manually
-+	  unlock it before you are able to write to it.
-+
-+endchoice
-+
- source "drivers/mtd/spi-nor/controllers/Kconfig"
- 
- endif # MTD_SPI_NOR
-diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
-index 3f5f21a473a6..bad6736f5a47 100644
---- a/drivers/mtd/spi-nor/atmel.c
-+++ b/drivers/mtd/spi-nor/atmel.c
-@@ -13,18 +13,26 @@ static const struct flash_info atmel_parts[] = {
- 	{ "at25fs010",  INFO(0x1f6601, 0, 32 * 1024,   4, SECT_4K) },
- 	{ "at25fs040",  INFO(0x1f6604, 0, 64 * 1024,   8, SECT_4K) },
- 
--	{ "at25df041a", INFO(0x1f4401, 0, 64 * 1024,   8, SECT_4K) },
--	{ "at25df321",  INFO(0x1f4700, 0, 64 * 1024,  64, SECT_4K) },
--	{ "at25df321a", INFO(0x1f4701, 0, 64 * 1024,  64, SECT_4K) },
--	{ "at25df641",  INFO(0x1f4800, 0, 64 * 1024, 128, SECT_4K) },
-+	{ "at25df041a", INFO(0x1f4401, 0, 64 * 1024,   8,
-+			     SECT_4K | SPI_NOR_UNPROTECT) },
-+	{ "at25df321",  INFO(0x1f4700, 0, 64 * 1024,  64,
-+			     SECT_4K | SPI_NOR_UNPROTECT) },
-+	{ "at25df321a", INFO(0x1f4701, 0, 64 * 1024,  64,
-+			     SECT_4K | SPI_NOR_UNPROTECT) },
-+	{ "at25df641",  INFO(0x1f4800, 0, 64 * 1024, 128,
-+			     SECT_4K | SPI_NOR_UNPROTECT) },
- 
- 	{ "at25sl321",	INFO(0x1f4216, 0, 64 * 1024, 64,
- 			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 
--	{ "at26f004",   INFO(0x1f0400, 0, 64 * 1024,  8, SECT_4K) },
--	{ "at26df081a", INFO(0x1f4501, 0, 64 * 1024, 16, SECT_4K) },
--	{ "at26df161a", INFO(0x1f4601, 0, 64 * 1024, 32, SECT_4K) },
--	{ "at26df321",  INFO(0x1f4700, 0, 64 * 1024, 64, SECT_4K) },
-+	{ "at26f004",   INFO(0x1f0400, 0, 64 * 1024,  8,
-+			     SECT_4K | SPI_NOR_UNPROTECT) },
-+	{ "at26df081a", INFO(0x1f4501, 0, 64 * 1024, 16,
-+			     SECT_4K | SPI_NOR_UNPROTECT) },
-+	{ "at26df161a", INFO(0x1f4601, 0, 64 * 1024, 32,
-+			     SECT_4K | SPI_NOR_UNPROTECT) },
-+	{ "at26df321",  INFO(0x1f4700, 0, 64 * 1024, 64,
-+			     SECT_4K | SPI_NOR_UNPROTECT) },
- 
- 	{ "at45db081d", INFO(0x1f2500, 0, 64 * 1024, 16, SECT_4K) },
- };
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index cc68ea84318e..fd1c36d70a13 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -2916,20 +2916,38 @@ static int spi_nor_quad_enable(struct spi_nor *nor)
- }
- 
- /**
-- * spi_nor_unlock_all() - Unlocks the entire flash memory array.
-+ * spi_nor_global_unprotect() - Perform a global unprotect of the memory area.
-  * @nor:	pointer to a 'struct spi_nor'.
-  *
-  * Some SPI NOR flashes are write protected by default after a power-on reset
-  * cycle, in order to avoid inadvertent writes during power-up. Backward
-  * compatibility imposes to unlock the entire flash memory array at power-up
-- * by default.
-+ * by default. Do it only for flashes where the block protection bits
-+ * are volatile, this is indicated by SNOR_F_NEED_UNPROTECT.
-+ *
-+ * We cannot use spi_nor_unlock(nor->params.size) here because there are
-+ * legacy devices (eg. AT25DF041A) which need a "global unprotect" command.
-+ * This is done by writing 0b0x0000xx to the status register. This will also
-+ * work for all other flashes which have these bits mapped to BP0 to BP3.
-+ * The top most bit is ususally some kind of lock bit for the block
-+ * protection bits.
-  */
--static int spi_nor_unlock_all(struct spi_nor *nor)
-+static int spi_nor_global_unprotect(struct spi_nor *nor)
- {
--	if (nor->flags & SNOR_F_HAS_LOCK)
--		return spi_nor_unlock(&nor->mtd, 0, nor->params->size);
-+	int ret;
- 
--	return 0;
-+	dev_dbg(nor->dev, "unprotecting entire flash\n");
-+	ret = spi_nor_read_sr(nor, nor->bouncebuf);
-+	if (ret)
-+		return ret;
-+
-+	nor->bouncebuf[0] &= ~SR_GLOBAL_UNPROTECT_MASK;
-+
-+	/*
-+	 * Don't use spi_nor_write_sr1_and_check() because writing the status
-+	 * register might fail if the flash is hardware write protected.
-+	 */
-+	return spi_nor_write_sr(nor, nor->bouncebuf, 1);
- }
- 
- static int spi_nor_init(struct spi_nor *nor)
-@@ -2942,10 +2960,14 @@ static int spi_nor_init(struct spi_nor *nor)
- 		return err;
- 	}
- 
--	err = spi_nor_unlock_all(nor);
--	if (err) {
--		dev_dbg(nor->dev, "Failed to unlock the entire flash memory array\n");
--		return err;
-+	if (IS_ENABLED(CONFIG_MTD_SPI_NOR_WP_DISABLE) ||
-+	    (IS_ENABLED(CONFIG_MTD_SPI_NOR_WP_DISABLE_ON_VOLATILE) &&
-+	     nor->flags & SNOR_F_NEED_UNPROTECT)) {
-+		err = spi_nor_global_unprotect(nor);
-+		if (err) {
-+			dev_err(nor->dev, "global unprotect failed\n");
-+			return err;
-+		}
- 	}
- 
- 	if (nor->addr_width == 4 && !(nor->flags & SNOR_F_4B_OPCODES)) {
-@@ -3170,6 +3192,8 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
- 		nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
- 	if (info->flags & USE_CLSR)
- 		nor->flags |= SNOR_F_USE_CLSR;
-+	if (info->flags & SPI_NOR_UNPROTECT)
-+		nor->flags |= SNOR_F_NEED_UNPROTECT;
- 
- 	if (info->flags & SPI_NOR_4BIT_BP) {
- 		nor->flags |= SNOR_F_HAS_4BIT_BP;
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 6f2f6b27173f..9a33c023717f 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -26,6 +26,7 @@ enum spi_nor_option_flags {
- 	SNOR_F_HAS_SR_TB_BIT6	= BIT(11),
- 	SNOR_F_HAS_4BIT_BP      = BIT(12),
- 	SNOR_F_HAS_SR_BP3_BIT6  = BIT(13),
-+	SNOR_F_NEED_UNPROTECT	= BIT(14),
- };
- 
- struct spi_nor_read_command {
-@@ -311,6 +312,11 @@ struct flash_info {
- 					 * BP3 is bit 6 of status register.
- 					 * Must be used with SPI_NOR_4BIT_BP.
- 					 */
-+#define SPI_NOR_UNPROTECT	BIT(19)	/*
-+					 * Flash is write-protected after
-+					 * power-up and needs a global
-+					 * unprotect.
-+					 */
- 
- 	/* Part specific fixup hooks. */
- 	const struct spi_nor_fixups *fixups;
-diff --git a/drivers/mtd/spi-nor/esmt.c b/drivers/mtd/spi-nor/esmt.c
-index c93170008118..f4b603b418ae 100644
---- a/drivers/mtd/spi-nor/esmt.c
-+++ b/drivers/mtd/spi-nor/esmt.c
-@@ -11,11 +11,11 @@
- static const struct flash_info esmt_parts[] = {
- 	/* ESMT */
- 	{ "f25l32pa", INFO(0x8c2016, 0, 64 * 1024, 64,
--			   SECT_4K | SPI_NOR_HAS_LOCK) },
-+			   SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_UNPROTECT) },
- 	{ "f25l32qa", INFO(0x8c4116, 0, 64 * 1024, 64,
--			   SECT_4K | SPI_NOR_HAS_LOCK) },
-+			   SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_UNPROTECT) },
- 	{ "f25l64qa", INFO(0x8c4117, 0, 64 * 1024, 128,
--			   SECT_4K | SPI_NOR_HAS_LOCK) },
-+			   SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_UNPROTECT) },
- };
- 
- const struct spi_nor_manufacturer spi_nor_esmt = {
-diff --git a/drivers/mtd/spi-nor/intel.c b/drivers/mtd/spi-nor/intel.c
-index d8196f101368..001cafeb1b12 100644
---- a/drivers/mtd/spi-nor/intel.c
-+++ b/drivers/mtd/spi-nor/intel.c
-@@ -10,9 +10,9 @@
- 
- static const struct flash_info intel_parts[] = {
- 	/* Intel/Numonyx -- xxxs33b */
--	{ "160s33b",  INFO(0x898911, 0, 64 * 1024,  32, 0) },
--	{ "320s33b",  INFO(0x898912, 0, 64 * 1024,  64, 0) },
--	{ "640s33b",  INFO(0x898913, 0, 64 * 1024, 128, 0) },
-+	{ "160s33b",  INFO(0x898911, 0, 64 * 1024,  32, SPI_NOR_UNPROTECT) },
-+	{ "320s33b",  INFO(0x898912, 0, 64 * 1024,  64, SPI_NOR_UNPROTECT) },
-+	{ "640s33b",  INFO(0x898913, 0, 64 * 1024, 128, SPI_NOR_UNPROTECT) },
- };
- 
- static void intel_default_init(struct spi_nor *nor)
-diff --git a/drivers/mtd/spi-nor/sst.c b/drivers/mtd/spi-nor/sst.c
-index e0af6d25d573..5e0412caf40d 100644
---- a/drivers/mtd/spi-nor/sst.c
-+++ b/drivers/mtd/spi-nor/sst.c
-@@ -11,26 +11,27 @@
- static const struct flash_info sst_parts[] = {
- 	/* SST -- large erase sizes are "overlays", "sectors" are 4K */
- 	{ "sst25vf040b", INFO(0xbf258d, 0, 64 * 1024,  8,
--			      SECT_4K | SST_WRITE) },
-+			      SECT_4K | SST_WRITE | SPI_NOR_UNPROTECT) },
- 	{ "sst25vf080b", INFO(0xbf258e, 0, 64 * 1024, 16,
--			      SECT_4K | SST_WRITE) },
-+			      SECT_4K | SST_WRITE | SPI_NOR_UNPROTECT) },
- 	{ "sst25vf016b", INFO(0xbf2541, 0, 64 * 1024, 32,
--			      SECT_4K | SST_WRITE) },
-+			      SECT_4K | SST_WRITE | SPI_NOR_UNPROTECT) },
- 	{ "sst25vf032b", INFO(0xbf254a, 0, 64 * 1024, 64,
--			      SECT_4K | SST_WRITE) },
--	{ "sst25vf064c", INFO(0xbf254b, 0, 64 * 1024, 128, SECT_4K) },
-+			      SECT_4K | SST_WRITE | SPI_NOR_UNPROTECT) },
-+	{ "sst25vf064c", INFO(0xbf254b, 0, 64 * 1024, 128,
-+			      SECT_4K | SPI_NOR_UNPROTECT) },
- 	{ "sst25wf512",  INFO(0xbf2501, 0, 64 * 1024,  1,
--			      SECT_4K | SST_WRITE) },
-+			      SECT_4K | SST_WRITE | SPI_NOR_UNPROTECT) },
- 	{ "sst25wf010",  INFO(0xbf2502, 0, 64 * 1024,  2,
--			      SECT_4K | SST_WRITE) },
-+			      SECT_4K | SST_WRITE | SPI_NOR_UNPROTECT) },
- 	{ "sst25wf020",  INFO(0xbf2503, 0, 64 * 1024,  4,
--			      SECT_4K | SST_WRITE) },
-+			      SECT_4K | SST_WRITE | SPI_NOR_UNPROTECT) },
- 	{ "sst25wf020a", INFO(0x621612, 0, 64 * 1024,  4, SECT_4K) },
- 	{ "sst25wf040b", INFO(0x621613, 0, 64 * 1024,  8, SECT_4K) },
- 	{ "sst25wf040",  INFO(0xbf2504, 0, 64 * 1024,  8,
--			      SECT_4K | SST_WRITE) },
-+			      SECT_4K | SST_WRITE | SPI_NOR_UNPROTECT) },
- 	{ "sst25wf080",  INFO(0xbf2505, 0, 64 * 1024, 16,
--			      SECT_4K | SST_WRITE) },
-+			      SECT_4K | SST_WRITE | SPI_NOR_UNPROTECT) },
- 	{ "sst26wf016b", INFO(0xbf2651, 0, 64 * 1024, 32,
- 			      SECT_4K | SPI_NOR_DUAL_READ |
- 			      SPI_NOR_QUAD_READ) },
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index 1e2af0ec1f03..f0a27cf8536b 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -124,6 +124,12 @@
- 
- #define SR_BP_SHIFT		2
- 
-+/*
-+ * Global unprotect is performed by writing the 0b0x0000xx to the status
-+ * register.
-+ */
-+#define SR_GLOBAL_UNPROTECT_MASK 0xbc
-+
- /* Enhanced Volatile Configuration Register bits */
- #define EVCR_QUAD_EN_MICRON	BIT(7)	/* Micron Quad I/O */
- 
--- 
-2.20.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgUm9uYWxkLAoKcm9uIG1pbm5pY2ggPHJtaW5uaWNoQGdtYWlsLmNvbT4gd3JvdGUgb24gRnJp
+LCAyNyBNYXIgMjAyMCAwODo0ODozOQotMDcwMDoKCj4gYW55b25lPyBUaGlzIGlzIGluIG91ciBp
+bnRlcm5hbCB0cmVlIGJ1dCBJJ2QgbGlrZSB0byBnZXQgaXQgdXBzdHJlYW1lZAo+IGlmIHBvc3Np
+YmxlLgoKTWF5YmUgaXQgaXMgb25lIG9mIHlvdXIgZmlzdCBjb250cmlidXRpb25zIGFuZCBJIHRo
+YW5rIHlvdSB2ZXJ5IG11Y2gKZm9yIHRyeWluZyB0byBrZWVwIEdvb2dsZSdzIHRyZWUgYWxpZ25l
+ZCB3aXRoIG1haW5saW5lIGJ5IHVwc3RyZWFtaW5nCnRoaXMga2luZCBvZiBjaGFuZ2Ugd2l0aCBl
+bnRodXNpYXNtLCB0aGlzIGlzIGFwcHJlY2lhdGVkLgoKSG93ZXZlciwgcGxlYXNlIG5vdGUgdGhh
+dCBhIDIgZGF5cyBwaW5nIChhbmQgdGhpcyBpcyB0aGUgc2Vjb25kIHRpbWUgeW91CmRvIGl0KSBp
+cyBhIGJpdCBvZiBhbiBpbXBhdGllbnQgbW92ZS4gQWxzbywgcGxlYXNlIGhhdmUgaW4gbWluZCB0
+aGUKbWFpbnRhaW5lcidzIHNjaGVkdWxlOiB3ZSBmcmVlemUgb3VyIGJyYW5jaGVzIGFib3V0IGEg
+d2VlayBiZWZvcmUKc2VuZGluZyB0aGVtIHRvIExpbnVzLiBUaGUgU1BJLU5PUiBwdWxsLXJlcXVl
+c3QgaGFzIGJlZW4gc2VudCBlYXJsaWVyCnRoaXMgd2VlayBhbHJlYWR5IHNvIHRoaXMgcGF0Y2gg
+d2lsbCBub3QgcmVhY2ggbWFpbmxpbmUgaW4gdjUuNyBhbnl3YXkuCgpMYXN0IGdlbmVyaWMgY29t
+bWVudCwgdGhlIHN1YmplY3QgcHJlZml4IGlzIHdyb25nLCBzbyBpZiB5b3Ugd2FudCB0aGUKU1BJ
+LU5PUiBtYWludGFpbmVyIHRvIGNhcmUsIGJldHRlciB1c2UgdGhlIHJpZ2h0IG9uZSB0byBjYXRj
+aCBoaXMgZXllCjspICJtdGQ6IHNwaS1ub3I6IGludGVsLXNwaToiIHNlZW1zIG1vcmUgYXBwcm9w
+cmlhdGUuCgpNb3JlIGNvbW1lbnRzIGJlbG93IDopCgo+IAo+IE9uIFdlZCwgTWFyIDI1LCAyMDIw
+IGF0IDEwOjM0IEFNIHJvbiBtaW5uaWNoIDxybWlubmljaEBnbWFpbC5jb20+IHdyb3RlOgo+ID4K
+PiA+IFNvcnJ5LCBvbiB0aGF0IGZpcnN0IG9uZSwgSSBmb3Jnb3QgdGhlIGNoZWNrcGF0Y2guIFRo
+aXMgb25lIGlzIGNsZWFuLgoKV2hlbiByZXNlbmRpbmcsIHBsZWFzZToKLSBpbmNyZW1lbnQgdGhl
+IHZlcnNpb24gd2l0aCBnaXQtZm9ybWF0LXBhdGNoIC12PHg+Ci0gd3JpdGUgYSBjaGFuZ2Vsb2cg
+ZXhwbGFpbmluZyB3aGF0IGFyZSB0aGUgY2hhbmdlcyBiZWxvdyB0aGUgdGhyZWUKICBkYXNoZXMg
+Jy0tLScuCi0gZG8gbm90IGFuc3dlciB5b3VyIHByZXZpb3VzIHZlcnNpb24KCj4gPgo+ID4gdGhh
+bmtzCj4gPgo+ID4gT24gV2VkLCBNYXIgMjUsIDIwMjAgYXQgMTA6MzQgQU0gcm9uIG1pbm5pY2gg
+PHJtaW5uaWNoQGdtYWlsLmNvbT4gd3JvdGU6ICAKPiA+ID4KPiA+ID4gVGhlIE1URCBzdWJzeXN0
+ZW0gY2FuIHN1cHBvcnQgY29tbWFuZC1saW5lIGRlZmluZWQgcGFydGl0aW9ucwo+ID4gPiBmb3Ig
+b25lIG9yIG1vcmUgTVREIGRldmljZXMuCj4gPiA+Cj4gPiA+IFRoZSBmb3JtYXQgaXM6Cj4gPiA+
+ICAqIG10ZHBhcnRzPTxtdGRkZWY+Wzs8bXRkZGVmXQo+ID4gPiAgKiA8bXRkZGVmPiAgOj0gPG10
+ZC1pZD46PHBhcnRkZWY+Wyw8cGFydGRlZj5dCj4gPiA+Cj4gPiA+IFRoZSAnOicgY3VycmVudGx5
+IHNlcGFyYXRlcyB0aGUgaWQgZnJvbSB0aGUgcGFydGRlZi4KCnMvaWQvTGludXggTVREIGRldmlj
+ZSBJRC8gICAgICAgICAgICAgXl4KCnMvcGFydGRlZi9wYXJ0aXRpb24gZGVmaW5pdGlvbi8gICAg
+ICAgICAgICAgICAgICAgXl5eXl5eXgoKPiA+ID4KPiA+ID4gVGhlIG10ZHBhcnRzIGNhbiBkZWZp
+bmUgbW9yZSB0aGFuIG9uZSBwYXJ0LCBpbiB3aGljaCBjYXNlCgpXaGF0IGFib3V0OgoKIlRoZSBt
+dGRwYXJ0cyBjbWRsaW5lIHBhcmFtZXRlciBjYW4gZGVmaW5lIHRoZSBwYXJ0aXRpb25pbmcgb2Yg
+c2V2ZXJhbApNVEQgZGV2aWNlcywgaW4gd2hpY2ggY2FzZSIuLi4KICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAKPiA+ID4gdGhlcmUgd2lsbCBiZSBtb3JlIHRoYW4g
+b25lIDxtdGQtaWQ+OjxwYXJ0ZGVmPiBjb21wb25lbnQuCj4gPiA+Cj4gPiA+IE9uIEludGVsIHNw
+aSBkZXZpY2VzLCB0aGUgbmFtZSBpcyBzZXQgdG8gdGhlIFBDSSBzbG90IG5hbWUsCgogICAgICAg
+ICAgICAgICBTUEkKCj4gPiA+IGUuZy4gMDAwMDowMDoxZi41LiAgVGhlcmUgYXJlIHR3byA6IGlu
+IHRoZSBuYW1lIGFsb25lLgoKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICc6JwoKPiA+ID4gU2luY2Ugc3RyY2hyIGlzIHVzZWQgdG8gZmluZCB0aGUgPG10ZC1pZD4sCj4g
+PiA+IGluIHRoaXMgY2FzZSBpdCB3aWxsIHJldHVybiB0aGUgd3JvbmcKPiA+ID4gcmVzdWx0LiBV
+c2luZyBzdHJyY2hyIGlzIG5vdCBhbiBvcHRpb24sIGFzIHRoZXJlIG1heQoKV2hhdCBhYm91dDoK
+ICAgICAgcmVzdWx0IGFzICc6JyBpcyBwYXJ0IG9mIHRoZSBwYXJhbWV0ZXIgc3ludGF4LgogCj4g
+PiA+IGJlIG1vcmUgdGhhbiBvbmUgbXRkZGVmIGluIHRoZSBhcmd1bWVudC4KCk5vdCBzdXJlIHRo
+ZSBzdHJyY2hyIG1lbnRpb250IGlzIHJlbGV2YW50IGhlcmUuIEknZCBkcm9wIGl0LgoKPiA+ID4K
+PiA+ID4gVGhpcyBjaGFuZ2UgbW9kaWZpZXMgdGhlIG5hbWUgYXR0YWNoZWQgdG8gdGhlIGludGVs
+IHNwaQoKICAgICAgQ2hhbmdlIHRoZSBuYW1lIGF0dGFjaGVkIHRvIHRoZSBJbnRlbCBTUEkgZGV2
+aWNlLCAuLi4KCj4gPiA+IGRldmljZSwgY2hhbmdpbmcgYWxsICc6JyB0byAnLicsIGUuZy4gMDAw
+MDowMDoxZi41Cj4gPiA+IGJlY29tZXMgMDAwMC4wMC4xZi41LiBJdCBhbHNvIGFkZHMgY29tbWFu
+ZCBsaW5lIHBhcnRpdGlvbgo+ID4gPiBwYXJzaW5nIHJlZ2lzdHJhdGlvbiB0byB0aGUgaW50ZWxf
+c3BpX3Byb2JlIGZ1bmN0aW9uLgo+ID4gPgo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBSb25hbGQgRy4g
+TWlubmljaCA8cm1pbm5pY2hAZ29vZ2xlLmNvbT4KPiA+ID4gQ2hhbmdlLUlkOiBJYmZhNWNhYmE1
+MWI4Y2RkM2M0MWM2MGIxNWY4ZjhjNTgzZGVkODJmZgoKQ2hhbmdlLUlEIGNhbiBiZSBkcm9wcGVk
+IHRvby4KCj4gPiA+IC0tLQo+ID4gPiAgZHJpdmVycy9tdGQvc3BpLW5vci9pbnRlbC1zcGktcGNp
+LmMgfCAyMyArKysrKysrKysrKysrKysrKysrKysrKwo+ID4gPiAgZHJpdmVycy9tdGQvc3BpLW5v
+ci9pbnRlbC1zcGkuYyAgICAgfCAgNSArKysrLQo+ID4gPiAgMiBmaWxlcyBjaGFuZ2VkLCAyNyBp
+bnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCj4gPiA+Cj4gPiA+IGRpZmYgLS1naXQgYS9kcml2
+ZXJzL210ZC9zcGktbm9yL2ludGVsLXNwaS1wY2kuYwo+ID4gPiBiL2RyaXZlcnMvbXRkL3NwaS1u
+b3IvaW50ZWwtc3BpLXBjaS5jCj4gPiA+IGluZGV4IDgxMzI5ZjY4MGJlYy4uZGM2MDhkNzRlODI0
+IDEwMDY0NAo+ID4gPiAtLS0gYS9kcml2ZXJzL210ZC9zcGktbm9yL2ludGVsLXNwaS1wY2kuYwo+
+ID4gPiArKysgYi9kcml2ZXJzL210ZC9zcGktbm9yL2ludGVsLXNwaS1wY2kuYwo+ID4gPiBAQCAt
+MjQsNiArMjQsMjQgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBpbnRlbF9zcGlfYm9hcmRpbmZvIGNu
+bF9pbmZvID0gewo+ID4gPiAgICAgIC50eXBlID0gSU5URUxfU1BJX0NOTCwKPiA+ID4gIH07Cj4g
+PiA+Cj4gPiA+ICsvKgo+ID4gPiArICogUENJIG5hbWVzIHVzZSBhICc6JyBhcyBhIHNlcGFyYXRv
+ciwgd2hpY2ggY29uZmxpY3RzCj4gPiA+ICsgKiB3aXRoIHRoZSBtdGRwYXJ0cyBjbWRsaW5lIHBh
+cmFtZXRlci4gRHVwIHRoZSBuYW1lIGFuZAoKcy9kdXAvZHVwbGljYXRlLwoKPiA+ID4gKyAqIHJl
+cGxhY2UgOiB3aXRoIC4KPiA+ID4gKyAqLwo+ID4gPiArc3RhdGljIGludCBmaXhuYW1lKHN0cnVj
+dCBwY2lfZGV2ICpwZGV2KQo+ID4gPiArewo+ID4gPiArICAgIGNoYXIgKm5hbWU7Cj4gPiA+ICsK
+PiA+ID4gKyAgICBuYW1lID0ga3N0cmR1cChwY2lfbmFtZShwZGV2KSwgR0ZQX0tFUk5FTCk7Cj4g
+PiA+ICsgICAgaWYgKCFuYW1lKQo+ID4gPiArICAgICAgICByZXR1cm4gLUVOT01FTTsKCm5ldyBs
+aW5lCgo+ID4gPiArICAgIHN0cnJlcGxhY2UobmFtZSwgJzonLCAnLicpOwo+ID4gPiArICAgIGRl
+dl9zZXRfbmFtZSgmcGRldi0+ZGV2LCBuYW1lKTsKPiA+ID4gKyAgICBrZnJlZShuYW1lKTsKCm5l
+dyBsaW5lCgo+ID4gPiArICAgIHJldHVybiAwOwo+ID4gPiArfQo+ID4gPiArCj4gPiA+ICBzdGF0
+aWMgaW50IGludGVsX3NwaV9wY2lfcHJvYmUoc3RydWN0IHBjaV9kZXYgKnBkZXYsCj4gPiA+ICAg
+ICAgICAgICAgICAgICAgICAgY29uc3Qgc3RydWN0IHBjaV9kZXZpY2VfaWQgKmlkKQo+ID4gPiAg
+ewo+ID4gPiBAQCAtNDEsNiArNTksMTEgQEAgc3RhdGljIGludCBpbnRlbF9zcGlfcGNpX3Byb2Jl
+KHN0cnVjdCBwY2lfZGV2ICpwZGV2LAo+ID4gPiAgICAgIGlmICghaW5mbykKPiA+ID4gICAgICAg
+ICAgcmV0dXJuIC1FTk9NRU07Cj4gPiA+Cj4gPiA+ICsgICAgaWYgKGZpeG5hbWUocGRldikpIHsK
+CglyZXQgPSBmaXhuYW1lKHBkZXYpOwoJaWYgKHJldCkgewoJCWtmcmVlKGluZm8pOwoJCXJldHVy
+biByZXQ7Cgl9Cgo+ID4gPiArICAgICAgICBrZnJlZShpbmZvKTsKPiA+ID4gKyAgICAgICAgcmV0
+dXJuIC1FTk9NRU07Cj4gPiA+ICsgICAgfQo+ID4gPiArCj4gPiA+ICAgICAgLyogVHJ5IHRvIG1h
+a2UgdGhlIGNoaXAgcmVhZC93cml0ZSAqLwo+ID4gPiAgICAgIHBjaV9yZWFkX2NvbmZpZ19kd29y
+ZChwZGV2LCBCQ1IsICZiY3IpOwo+ID4gPiAgICAgIGlmICghKGJjciAmIEJDUl9XUEQpKSB7Cj4g
+PiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9zcGktbm9yL2ludGVsLXNwaS5jIGIvZHJpdmVy
+cy9tdGQvc3BpLW5vci9pbnRlbC1zcGkuYwo+ID4gPiBpbmRleCA2MWQyYTBhZDIxMzEuLmNiMDhl
+ZTRkMjAyOSAxMDA2NDQKPiA+ID4gLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9pbnRlbC1zcGku
+Ywo+ID4gPiArKysgYi9kcml2ZXJzL210ZC9zcGktbm9yL2ludGVsLXNwaS5jCj4gPiA+IEBAIC04
+OTQsNiArODk0LDggQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBzcGlfbm9yX2NvbnRyb2xsZXJfb3Bz
+Cj4gPiA+IGludGVsX3NwaV9jb250cm9sbGVyX29wcyA9IHsKPiA+ID4gICAgICAuZXJhc2UgPSBp
+bnRlbF9zcGlfZXJhc2UsCj4gPiA+ICB9Owo+ID4gPgo+ID4gPiArc3RhdGljIGNvbnN0IGNoYXIg
+KiBjb25zdCBwYXJ0X3Byb2Jlc1tdID0geyAiY21kbGluZXBhcnQiLCBOVUxMIH07Cj4gPiA+ICsK
+PiA+ID4gIHN0cnVjdCBpbnRlbF9zcGkgKmludGVsX3NwaV9wcm9iZShzdHJ1Y3QgZGV2aWNlICpk
+ZXYsCj4gPiA+ICAgICAgc3RydWN0IHJlc291cmNlICptZW0sIGNvbnN0IHN0cnVjdCBpbnRlbF9z
+cGlfYm9hcmRpbmZvICppbmZvKQo+ID4gPiAgewo+ID4gPiBAQCAtOTQxLDcgKzk0Myw4IEBAIHN0
+cnVjdCBpbnRlbF9zcGkgKmludGVsX3NwaV9wcm9iZShzdHJ1Y3QgZGV2aWNlICpkZXYsCj4gPiA+
+ICAgICAgaWYgKCFpc3BpLT53cml0ZWFibGUgfHwgIXdyaXRlYWJsZSkKPiA+ID4gICAgICAgICAg
+aXNwaS0+bm9yLm10ZC5mbGFncyAmPSB+TVREX1dSSVRFQUJMRTsKPiA+ID4KPiA+ID4gLSAgICBy
+ZXQgPSBtdGRfZGV2aWNlX3JlZ2lzdGVyKCZpc3BpLT5ub3IubXRkLCAmcGFydCwgMSk7Cj4gPiA+
+ICsgICAgcmV0ID0gbXRkX2RldmljZV9wYXJzZV9yZWdpc3RlcigmaXNwaS0+bm9yLm10ZCwgcGFy
+dF9wcm9iZXMsCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgIE5VTEwsICZwYXJ0LCAxKTsKCldy
+b25nIGFsaWdubWVudCBoZXJlIEkgZ3Vlc3MKCgpTaG91bGQgdGhlc2UgdHdvIGNoYW5nZXMgYmUg
+c2VwYXJhdGVkIChjaGFuZ2luZyB0aGUgbmFtZSwgcmVnaXN0ZXJpbmcKdGhlIGRldmljZSB3aXRo
+IHRoZSBjbWRsaW5lIHBhcnNlcik/Cgo+ID4gPgo+ID4gPiAgICAgIGlmIChyZXQpCj4gPiA+ICAg
+ICAgICAgIHJldHVybiBFUlJfUFRSKHJldCk7Cj4gPiA+Cj4gPiA+IC0tCj4gPiA+IDIuMjUuMS42
+OTYuZzVlNzU5NmY0YWMtZ29vZyAgCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lv
+biBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9saW51eC1tdGQvCg==
