@@ -2,59 +2,63 @@ Return-Path: <SRS0=se+M=5P=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CDE0C43331
-	for <linux-mtd@archiver.kernel.org>; Mon, 30 Mar 2020 07:55:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9223C43331
+	for <linux-mtd@archiver.kernel.org>; Mon, 30 Mar 2020 08:15:50 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 323272073B
-	for <linux-mtd@archiver.kernel.org>; Mon, 30 Mar 2020 07:55:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8B852206CC
+	for <linux-mtd@archiver.kernel.org>; Mon, 30 Mar 2020 08:15:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="k2uw9uyG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 323272073B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Bdmq05ks"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B852206CC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ryAbnCzKceq2xrls7y4r7nXHakhj2seSfevJa+HWyzM=; b=k2uw9uyGuoOc1k
-	mLhNJDDjGFQfuPEY1No2EtjuUe1bWv3zfBIBmqnOA/vxltEMmh8DTm/zZKcbtAOhr1x9Aos4FJqD+
-	Qu55CPt34tCdr/I0EV9DCXR7EuQNxpD+A6Edm53NXUxouYl7EK1wcOngYIamB9W6NHxGq4lMi4w03
-	PHoorcJtVBPMk6Stg4+N+TrmvL0kx9+rECG2OdRQx0b9JKEAURKIIop5TmGZcuEwxZ2JJMW7VBjIN
-	cwfflUOLWy/oSiVdJjp5hYYGNRH7Eoddk8jJ9deAg24XmTrVg7caTKRfnK51dnwQkUX4q4TgYfIu5
-	GFPpYeS0cZeAHjS2Fy3A==;
+	List-Owner; bh=qGMZPfL/PznzmR8j5fOznxrdSDzPnzBqsq9ejXkFCfg=; b=Bdmq05ksGa8TNl
+	+JLLJ3LXT2ShgQQLpDsrMzQFpIJNUlQVMHl6onf6RRb6Qvuk2VbEUqtYBhI1cC4lqVY4wAZziS35I
+	o1VAWEwTv/Sy4EroQau7ft98nI+g7JVXGF5d5r9gVcLFqV4+tOs2RPTBpcPjYt0voANV5cBqaJEqT
+	UxeJqq5RguqGNet1XArxBeKg01k6JK99JMy3TZs6NzqOeUKeg8z9A4OHYzQZXfTNCSeQN/6fqUkU1
+	PukJB6KHJI6SxyrB9XrmGEkckyezAoYiwyl/S1b3/SLNj/BtGW+NFDEnQCALwTKPiEnAyvBKoY7zh
+	WWcWXfg231fK68Wd3R9A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jIpG9-0003jU-AS; Mon, 30 Mar 2020 07:55:01 +0000
-Received: from relay12.mail.gandi.net ([217.70.178.232])
+	id 1jIpaB-0003qB-0T; Mon, 30 Mar 2020 08:15:43 +0000
+Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jIpG6-0003il-Eb
- for linux-mtd@lists.infradead.org; Mon, 30 Mar 2020 07:54:59 +0000
-Received: from xps13 (unknown [91.224.148.103])
+ id 1jIpa7-0003pe-FN
+ for linux-mtd@lists.infradead.org; Mon, 30 Mar 2020 08:15:41 +0000
+X-Originating-IP: 91.224.148.103
+Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay12.mail.gandi.net (Postfix) with ESMTPSA id 5A96B20000C;
- Mon, 30 Mar 2020 07:54:55 +0000 (UTC)
-Date: Mon, 30 Mar 2020 09:54:54 +0200
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 76AF124000A;
+ Mon, 30 Mar 2020 08:15:34 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Xiaoming Ni <nixiaoming@huawei.com>
-Subject: Re: [PATCH] mtd:clear cache_state to avoid writing to bad clocks
- repeatedly
-Message-ID: <20200330095454.66297f84@xps13>
-In-Reply-To: <1585400477-65705-1-git-send-email-nixiaoming@huawei.com>
-References: <1585400477-65705-1-git-send-email-nixiaoming@huawei.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2] mtd: Convert fallthrough comments into statements
+Date: Mon, 30 Mar 2020 10:15:33 +0200
+Message-Id: <20200330081533.24906-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200325212115.14170-1-miquel.raynal@bootlin.com>
+References: 
 MIME-Version: 1.0
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: 025a06c1104cd8995646b761d117816b5f28c873
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200330_005458_625524_F4B27B39 
-X-CRM114-Status: UNSURE (   4.45  )
+X-CRM114-CacheID: sfid-20200330_011539_648322_FE5CCC4D 
+X-CRM114-Status: UNSURE (   6.61  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -67,17 +71,34 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: wangle6@huawei.com, vigneshr@ti.com, richard@nod.at,
- zhangweimin12@huawei.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, houtao1@huawei.com, yebin10@huawei.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgWGlhb21pbmcsCgpYaWFvbWluZyBOaSA8bml4aWFvbWluZ0BodWF3ZWkuY29tPiB3cm90ZSBv
-biBTYXQsIDI4IE1hciAyMDIwIDIxOjAxOjE3CiswODAwOgoKUGxlYXNlIGFsc28gZml4IHRoZSB0
-aXRsZS4KCgkibXRkOiBjbGVhciAuLi4iCgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
-c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vbGludXgtbXRkLwo=
+On Wed, 2020-03-25 at 21:21:15 UTC, Miquel Raynal wrote:
+> Use Joe Perches cvt_fallthrough.pl script to convert
+> 
+> 	/* fallthrough */
+> 
+> comments (and its derivatives) into a
+> 
+> 	fallthrough;
+> 
+> statement. This automatically drops useless ones.
+> 
+> Do it MTD-wide.
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Acked-by: Vignesh Raghavendra <vigneshr@ti.com>
+> Acked-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> Acked-by: Richard Weinberger <richard@nod.at>
+
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next.
+
+Miquel
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
