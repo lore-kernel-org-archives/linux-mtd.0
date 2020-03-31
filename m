@@ -2,61 +2,68 @@ Return-Path: <SRS0=nWl7=5Q=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B2B87C43331
-	for <linux-mtd@archiver.kernel.org>; Tue, 31 Mar 2020 18:47:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ADF7AC2D0EE
+	for <linux-mtd@archiver.kernel.org>; Tue, 31 Mar 2020 21:50:17 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6C9FA2072E
-	for <linux-mtd@archiver.kernel.org>; Tue, 31 Mar 2020 18:47:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7DD2220842
+	for <linux-mtd@archiver.kernel.org>; Tue, 31 Mar 2020 21:50:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BXswvBOU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C9FA2072E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fJRobhp8";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="QBosVPQu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7DD2220842
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:To:Date:Message-Id:
+	References:In-Reply-To:From:Subject:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=k29jbMhuCJc2cm/wStkwNYtFM1F4Qd1bvZKD5U3sUuM=; b=BXswvBOUW/DKM0
-	UkCuxDj380d6cF9WffKeIQmIBSiO47GTXVYYhJiIBMYcY9icD1lk3ockIEkSOTgDCJMnKr9CZUymD
-	n9VNvbSOVromTGKrK/hmlp5ARJIKopOEmfpB3AoDNYpg1/yVuZxpNv9ddeXJqMfA+xQYOH8E9jQcR
-	hgI9KZGP51tZdGK+n8b8CEc/HyAMjPGKSTm0/JLESqw+QSlcr8BCE0d4YGdYjpYXOWq7sbCl/PBKM
-	+Z/r2KTh7Efnh0RSfKi9kXkxjZhU1Hnz1iCNWae8oCkr23lZZL1c+PJZYcGULb72pY4H4F84dcF+9
-	LzheYZADjIkmaqZFqrbQ==;
+	List-Owner; bh=2h7Z4ESru+btnjh3+MdkTyMxr2JAfEaDhf3VKYzpwPA=; b=fJRobhp80k1yRU
+	hKae7C/Zj/xLB6wy3Xl2tAoN1i0ZRpMcwKWrULgLPWZLdWK25DO5PmwPNauMai6HlJgP5ZcA/RO8z
+	+rQ9mk0pFiDxyiP4p2j6yrWIRGNss3qaIRm8cNRchcX9+IQwTLOYQPtlLMnBPKpdz/VUJ8fYvq+t5
+	3VJ+cz9AaNhf91EKokFHmKR8J3P0u3D+mVp/7haG9fZ9HzxIpa2DtzXkxwQEjc7clNE9g7AtMo9tX
+	pH3lzp/Vqk/W3noW/g02/Khzn2fEzcKlbt42/AsFnC45moo88T5nyoukXOlZwLvxLgTCXUkULvA3g
+	p5uvNSaKjfG56PPaXARA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jJLv5-0005hF-62; Tue, 31 Mar 2020 18:47:27 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1jJOlq-000407-PG; Tue, 31 Mar 2020 21:50:06 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jJLv1-0005Ud-By; Tue, 31 Mar 2020 18:47:24 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 09D86291976;
- Tue, 31 Mar 2020 19:47:20 +0100 (BST)
-Date: Tue, 31 Mar 2020 20:47:16 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Weijie Gao <weijie.gao@mediatek.com>
-Subject: Re: [PATCH 1/2] mtd: rawnand: add driver support for MT7621 nand
- flash controller
-Message-ID: <20200331204716.52f611db@collabora.com>
-In-Reply-To: <1585678079-5999-1-git-send-email-weijie.gao@mediatek.com>
-References: <1585678079-5999-1-git-send-email-weijie.gao@mediatek.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
+ id 1jJOlm-00033X-Kf
+ for linux-mtd@lists.infradead.org; Tue, 31 Mar 2020 21:50:04 +0000
+Subject: Re: [GIT PULL] fscrypt updates for 5.7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1585691402;
+ bh=LcVm+V24+2+NTOJ9JrmVVXkl728hyFi9uw2iR9GZGHU=;
+ h=From:In-Reply-To:References:Date:To:Cc:From;
+ b=QBosVPQuppbe6iZRabDz1qeEjuf4lM4SbPhgQX19V+1KKwMbxjrmHXREfGjQgEAUF
+ 1k3zIgblJ+TDv4YnoOKB9A98doinoZvVZuc8iMFiMPG+UFI7hDw4U4aD3I5STWWgcy
+ isOSyBj3OEr06AjfDkcZv2vMHRFMaEr6lNNQwIms=
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20200330165359.GA1895@sol.localdomain>
+References: <20200330165359.GA1895@sol.localdomain>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200330165359.GA1895@sol.localdomain>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git
+ tags/fscrypt-for-linus
+X-PR-Tracked-Commit-Id: 861261f2a9cc488c845fc214d9035f7a11094591
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 1455c69900c8c6442b182a74087931f4ffb1cac4
+Message-Id: <158569140192.7220.17954616110607840136.pr-tracker-bot@kernel.org>
+Date: Tue, 31 Mar 2020 21:50:01 +0000
+To: Eric Biggers <ebiggers@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200331_114723_547722_038EE867 
-X-CRM114-Status: GOOD (  10.94  )
+X-CRM114-CacheID: sfid-20200331_145002_744458_28FB26B3 
+X-CRM114-Status: UNSURE (   1.20  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,35 +75,29 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Anders Roxell <anders.roxell@linaro.org>,
- Vignesh Raghavendra <vigneshr@ti.com>, Arnd Bergmann <arnd@arndb.de>,
- Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
- Brendan Higgins <brendanhiggins@google.com>, linux-kernel@vger.kernel.org,
- Frieder Schrempf <frieder.schrempf@kontron.de>, linux-mips@vger.kernel.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Rob Herring <robh+dt@kernel.org>, linux-mediatek@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Matthias Brugger <matthias.bgg@gmail.com>, linux-mtd@lists.infradead.org,
- Mason Yang <masonccyang@mxic.com.tw>, Piotr Sroka <piotrs@cadence.com>
+Cc: Theodore Ts'o <tytso@mit.edu>, linux-kernel@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-fscrypt@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+ Jaegeuk Kim <jaegeuk@kernel.org>, linux-ext4@vger.kernel.org,
+ Linus Torvalds <torvalds@linux-foundation.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 1 Apr 2020 02:07:58 +0800
-Weijie Gao <weijie.gao@mediatek.com> wrote:
+The pull request you sent on Mon, 30 Mar 2020 09:53:59 -0700:
 
-> This patch adds NAND flash controller driver for MediaTek MT7621 SoC.
-> 
-> The NAND flash controller is similar with controllers described in
-> mtk_nand.c, except that the controller from MT7621 doesn't support DMA
-> transmission, and some registers' offset and fields are different.
-> 
+> https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
 
-Please don't duplicate driver the driver for those minor differences:
-use regmap/reg_field to abstract reg field positions and make the DMA
-optional.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/1455c69900c8c6442b182a74087931f4ffb1cac4
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
 
 ______________________________________________________
 Linux MTD discussion mailing list
