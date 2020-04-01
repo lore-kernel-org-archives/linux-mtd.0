@@ -1,80 +1,72 @@
-Return-Path: <SRS0=nWl7=5Q=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=3D+l=5R=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.7 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31F46C43331
-	for <linux-mtd@archiver.kernel.org>; Tue, 31 Mar 2020 22:01:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A55F5C43331
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Apr 2020 07:42:15 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F1F442080C
-	for <linux-mtd@archiver.kernel.org>; Tue, 31 Mar 2020 22:01:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6C37620772
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Apr 2020 07:42:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="V43tg3Ju"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F1F442080C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ssioEi7b"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C37620772
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/p23JHdQE8GP/uzhSYxV91xErVhGJrxQaj4+xu8W04A=; b=V43tg3Juvdk4wv
-	h/u0Fv4HmBnp6MkEtk8fR+LMZEgVfZvxVuesvVtDg8CXUG2RMCEbl+PLXMUGKEgwhew/vbP4bW7q5
-	826Qd6bKaCI2H/i84/MmWIrLOBWr+XzvZ8V8HeXF+TQpnT+JLkV94op1PfCbZMo9UIiHB6JkN1TnB
-	EKT+S3eMDkJHc1bMGTVDrG7hjj7xZY/bA9uTPobJrTbVP/gMvuZ1gaom7VU1bjEQ5x5FFaPpsaxmq
-	XEbqVNS3f7rXHNGL2dLM501PewD+MY0bqdPuiu4qyrBjnC6x2xjU57ojtbg9Blc1SqMPXxMY1hXiY
-	kP0L2/amlWVDkIK4X+Ow==;
+	List-Owner; bh=GMi1gFnMbwkXX4dbS9qVdt9aJ3TFSxEbWOYclVtp4wk=; b=ssioEi7bCYeOiB
+	GvT7Xa9mmjMWIYXrXoN+sS0VgSh39BpFOxwgVd7IjOBbDdy/veKTsMYqSoZwtnPhI+kiJCxSZ5hkf
+	ywCiSsy/bdZTtbRQpI3CVwY69XaSvCQ6tYnTK+oCY0z3o5KaqsFNKHdnd3n2FUru4oOahc6RPWQHh
+	bl061KB6vFp4yZytkmzFSyvdXC/COT2DutckwYAK3x9lsV+MoYvXOa8qrHR/RrdS6T+pmBzc+PXyl
+	oSvaIAcnEXKrz+4BktW5sfc2o9wdrNDKN/pewfMLAOBp+lOD6AidYf0Tl+TyGlKp3zCqrPaiRiVb9
+	20uUFelzil5Q6YzGXWkQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jJOwP-0004UO-MB; Tue, 31 Mar 2020 22:01:01 +0000
-Received: from mail-il1-f194.google.com ([209.85.166.194])
+	id 1jJY0e-0001V2-UZ; Wed, 01 Apr 2020 07:42:00 +0000
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jJOwL-0004S8-Pz; Tue, 31 Mar 2020 22:00:59 +0000
-Received: by mail-il1-f194.google.com with SMTP id p13so21013580ilp.3;
- Tue, 31 Mar 2020 15:00:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=lc33E5Df9rZgd4qmK0wjmDHg2/VwMCkladXOyRxwDEQ=;
- b=Bv/b8oDPsmRhhEE+CPMm7YL8/1k09JzfpgSwmgyOQQc0NLPW+pojBmu+Qeuhd3Ciu9
- 4FZwU7NgZ3BlK+YqkSUFVhDJrsr0sFEyDrlPQbjUA5UbDA+6ybdFg2DVQRLUU7+oTYrI
- z09paMWqmJSnNw38V1qDo7btswuR9zte0/wxwPPlgqTqPdUmFld4f/sQWvd/OCVotJO+
- W4oAxF/0Dc+L42mI9YPI6rCtxKOsjLXqSAWFOi2zV6NAEC2jKBNHIbfE7jW7HZg+g5UO
- Ejasd/BanuxojdaOwlpTnG5kdNNElu92MJzRSPPVxJB5g1aCPdkXDnLJcHqqamwKCmWL
- CniA==
-X-Gm-Message-State: ANhLgQ1oOrQaAF0t3q+1uVy0FIa8JszA1JgBxN98unqnSNQZVOYaOc0V
- DaqpwXFlu8T85FwO/Fc8Gw==
-X-Google-Smtp-Source: ADFU+vt2obj9Pp0WVbC2XhGR8Zra56tn+jusDQkYJG1LqYScGnHUFR99v3w+nmrFf44+CRhVQro3Zw==
-X-Received: by 2002:a92:1d4b:: with SMTP id d72mr18236810ild.14.1585692053642; 
- Tue, 31 Mar 2020 15:00:53 -0700 (PDT)
-Received: from rob-hp-laptop ([64.188.179.250])
- by smtp.gmail.com with ESMTPSA id n6sm43408iod.9.2020.03.31.15.00.51
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 31 Mar 2020 15:00:52 -0700 (PDT)
-Received: (nullmailer pid 19586 invoked by uid 1000);
- Tue, 31 Mar 2020 22:00:51 -0000
-Date: Tue, 31 Mar 2020 16:00:51 -0600
-From: Rob Herring <robh@kernel.org>
-To: Weijie Gao <weijie.gao@mediatek.com>
-Subject: Re: [PATCH 2/2] dt-bindings: add documentation for mt7621-nand driver
-Message-ID: <20200331220051.GA18084@bogus>
-References: <1585678079-5999-1-git-send-email-weijie.gao@mediatek.com>
- <1585678079-5999-2-git-send-email-weijie.gao@mediatek.com>
+ id 1jJY0Z-0001U6-Ln
+ for linux-mtd@lists.infradead.org; Wed, 01 Apr 2020 07:41:57 +0000
+X-Originating-IP: 91.224.148.103
+Received: from xps13 (unknown [91.224.148.103])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 6EDC9C000B;
+ Wed,  1 Apr 2020 07:41:49 +0000 (UTC)
+Date: Wed, 1 Apr 2020 09:41:48 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: ron minnich <rminnich@gmail.com>
+Subject: Re: [PATCH 1/1] mtd/intel-spi: Support cmdline-based partition
+Message-ID: <20200401094148.1786d48a@xps13>
+In-Reply-To: <CAP6exY+F2VoEZkwcYp38HNt7NyZucQrdQ8MqQyTQ62U12pAcSw@mail.gmail.com>
+References: <CAP6exY+LQ4Cz3Wq3P=MP78HhHCovMYDfwhpVuASp17h3s2sgMw@mail.gmail.com>
+ <CAP6exYJ_jzrB0D=RLXMNeegu4BwQq8raXVOMugkqzX2ZP_JSqw@mail.gmail.com>
+ <20200327155608.GM2564@lahna.fi.intel.com>
+ <20200327171907.7a7ffc73@xps13>
+ <20200327164802.GN2564@lahna.fi.intel.com>
+ <20200327175238.784cf47c@xps13>
+ <CAP6exYJ4-pBBZKA0z8TKPqh_0tKzJadjXEBZk9dc9ij8BJ9Xew@mail.gmail.com>
+ <20200327171619.GO2564@lahna.fi.intel.com>
+ <CAP6exYJWWT2SFLjPCdjAEEjmZYwqYuTxd_aRaf=xEELmXqfMpA@mail.gmail.com>
+ <CAP6exY+p-Chi2R4Y1H8UvcbE6rvEpMiK3UaX2OyBq=ZO6uULpg@mail.gmail.com>
+ <20200330060859.GR2564@lahna.fi.intel.com>
+ <20200330092722.2ff41863@xps13>
+ <CAP6exY+F2VoEZkwcYp38HNt7NyZucQrdQ8MqQyTQ62U12pAcSw@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1585678079-5999-2-git-send-email-weijie.gao@mediatek.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200331_150057_845674_D12F1DCF 
-X-CRM114-Status: GOOD (  10.60  )
+X-CRM114-CacheID: sfid-20200401_004155_845554_1E631817 
+X-CRM114-Status: GOOD (  15.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,46 +78,39 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Anders Roxell <anders.roxell@linaro.org>,
- Vignesh Raghavendra <vigneshr@ti.com>, Arnd Bergmann <arnd@arndb.de>,
- Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
- Brendan Higgins <brendanhiggins@google.com>, linux-kernel@vger.kernel.org,
- Frieder Schrempf <frieder.schrempf@kontron.de>, linux-mips@vger.kernel.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-mediatek@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- Matthias Brugger <matthias.bgg@gmail.com>, linux-mtd@lists.infradead.org,
- Mason Yang <masonccyang@mxic.com.tw>, Weijie Gao <weijie.gao@mediatek.com>,
- Piotr Sroka <piotrs@cadence.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Richard Weinberger <richard@nod.at>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 1 Apr 2020 02:07:59 +0800, Weijie Gao wrote:
-> This patch adds documentation for MediaTek MT7621 NAND flash controller
-> driver.
-> 
-> Signed-off-by: Weijie Gao <weijie.gao@mediatek.com>
-> ---
->  .../bindings/mtd/mediatek,mt7621-nfc.yaml     | 68 +++++++++++++++++++
->  1 file changed, 68 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/mediatek,mt7621-nfc.yaml
-> 
-
-My bot found errors running 'make dt_binding_check' on your patch:
-
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/mediatek,mt7621-nfc.example.dt.yaml: nand@1e003000: reg: [[503328768, 2048, 503330816, 2048]] is too short
-
-See https://patchwork.ozlabs.org/patch/1264888
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
-
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgcm9uLAoKcm9uIG1pbm5pY2ggPHJtaW5uaWNoQGdtYWlsLmNvbT4gd3JvdGUgb24gTW9uLCAz
+MCBNYXIgMjAyMCAwODo1MzoyMgotMDcwMDoKCj4gT24gTW9uLCBNYXIgMzAsIDIwMjAgYXQgMTI6
+MjcgQU0gTWlxdWVsIFJheW5hbAo+IDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPiB3cm90ZToK
+PiAKPiA+IFdvdWxkIGl0IGJlIGhhcmQgdG8gc3VwcG9ydCBhbiBleHRyYSAnOicgYWZ0ZXIgdGhl
+IE1URCBkZXZpY2UgbmFtZT8KPiA+IFRoaXMgd2F5IHdvdWxkIHdvdWxkIGFsbG93IGFueXRoaW5n
+IGluc2lkZSB0aGUgb3B0aW9uYWwgJygnICcpJyBidXQKPiA+IHdvdWxkIGtlZXAgdGhlIHRyYWls
+aW5nICc6Jy4KPiA+Cj4gPiB0b1RheToKPiA+ICAgICAgICAgbXRkcGFydHM9bmFtZTpwYXJ0MSxw
+YXJ0Mgo+ID4KPiA+IFNvOgo+ID4gICAgICAgICBtdGRwYXJ0cz0oMDAwMDowMDoxZi41KToyNTE2
+NTgyNChCSU9TKSwtKHNxdWFzaGZzKSAgCj4gCj4gCj4gSSB0aG91Z2h0IGFib3V0IHRoYXQgJzon
+IHRvby4gSXQgZG9lcyBhZGQgYSBiaXQgbW9yZSB0byB0aGUgY29kZSwgYW5kCj4gYSBiaXQgbW9y
+ZSBpbiB0aGUgd2F5IG9mIGVycm9yIGNhc2VzLiBJIGFsd2F5cyB3b3JyeSwgd2hlbiBjb2RlIGlz
+Cj4gZ29pbmcgaW50byBmbGFzaCwKPiBhYm91dCBlcnJvcnMgd2hlcmUgc29tZXRoaW5nIGxvb2tz
+IGNsb3NlIHRvIHJpZ2h0IGJ1dCBpcyB3cm9uZy4gKHNheXMKPiB0aGUgcGVyc29uIHdobyBqdXN0
+IHR5cGVkIGl0IGluc3RlYWQgb2YgaXMgYSBmZXcgdGltZXMgOi0pCj4gCj4gV2hhdCBpZiB3ZSBk
+aWQgdGhpczoKPiBtdGRwYXJ0cz1bMDAwMDowMDoxZi41XTI1MTY1ODI0KEJJT1MpLC0oc3F1YXNo
+ZnMpCj4gCj4gSXMgdGhlICJdIiAnZW5vdWdoIGRpZmZlcmVudCcgdGhhdCB3ZSBkbyBub3QgbmVl
+ZCB0aGUgJzonPwo+IAo+IEkga2luZCBvZiBsaWtlIHRoZSBbXSBiZXR0ZXIgYW55d2F5IGFzIGl0
+IG1ha2VzIHRoZSBtdGRpZCBzdGFuZCBvdXQgYQo+IGJpdCBtb3JlIGZyb20gdGhlIHBhcnQgbmFt
+ZXM/IEJ1dCBpcyBpdCBlbm91Z2ggdGhhdCB3ZSBkb24ndCBuZWVkIHRoZQo+ICc6Jz8gV291bGQg
+eW91IHN0aWxsIHByZWZlciB0aGUgKCkgYXMgb3Bwb3NlZCB0byB0aGUgW10/CgpJIGxpa2UgdGhl
+IFtdIGFzIHdlbGwsIG1heWJlIG1vcmUgdGhhbiAoKSBiZWNhdXNlIGF0IGxlYXN0IGl0IGRvZXMg
+bm90CmNvbmZsaWN0IHdpdGggdGhlIHBhcnRpdGlvbiBuYW1lcy4gQnV0IEkgcmVhbGx5IHByZWZl
+ciBrZWVwaW5nIHRoZSA6IGlmCnRoZSBjb2RlIGlzIHN0aWxsIHJlYWRhYmxlLgoKSXQgaXMgbXVj
+aCBlYXNpZXIgdG8gZXhwbGFpbiB0byBwZW9wbGUgOiAiaWYgeW91IGhhdmUgYSA6IGluIHRoZSBu
+YW1lLAplbmNsb3NlIGl0IHdpdGggW10iLgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
+c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vbGludXgtbXRkLwo=
