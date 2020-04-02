@@ -1,94 +1,78 @@
-Return-Path: <SRS0=3D+l=5R=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=KHzd=5S=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 396FEC43331
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Apr 2020 19:49:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7645C43331
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 Apr 2020 07:00:26 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0597320737
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Apr 2020 19:49:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9709C20784
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 Apr 2020 07:00:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RXBkGZfz";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bqg0WupP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0597320737
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IZUsZD8X"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9709C20784
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FEzS11SQkxw/F2SGGWxoraaSzsdTw/OwAFl7H2FOhbo=; b=RXBkGZfzgWUe01
-	DX9QlYNqg1p/55gfVSYIAC+ZRQsUX3UN6T28sio5YHePtdwwkV43Sz8OH0XO49T5viMNBOKKVDttd
-	XvUPD/Sv+/cDozPHC9vjNRkmhwK/0g0AThEybv65pKb51IhA1VnxSWo37q+S0W3sgLfnIsI4YIWIv
-	i1wZbzzwJO3Ap2Nm3pKpjNgALVj02cVO/zQMMTczjTfcMMgx5R9P4uo4q4lov5/tRPiazK1+X20qr
-	M2WV3IXNYJ0e9EHCc6JWxgokJ33sk4fNpg6vowpFzzxILCzxgKOWnwHoIw1ysNUK7k2d6x0Iq/Okl
-	SdbthLzZKJgkI+g2eWtg==;
+	List-Owner; bh=9kdevuLxfgnntbEGdVkQ0MQbl4F2GC4AjcRk6jHRvNk=; b=IZUsZD8XV3FLOY
+	a6++QjxJhCioGaJnNMe/dky99u0Nxi+6mhyghRSRs0p7jwSw84DX1aBLApqCZ32BkbD/mmQwghLqE
+	IANZK/oe4OMj1NeKKQMoIYgKGbr12TfuvJmqVp61DJscVLELJTVx8SDLArJOXQdAyiikq8tYYZZ1b
+	gvH3uno/zB68ABokCbiwCBn/wjvyAO6BY6iXCgozkExIQXen+hOstc8Hqj6b+ihkSXg2PGmyUJymf
+	tpvnR5KuVbvl+u2dADv8TZ89607Wo4KM4v6jVXvDjPQ6UWI9Ko/C8Q3joZL+oJL71MZ/hcjW7ZP++
+	VsHWP9eCECB+nHYhL9CQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jJjMj-0004MJ-4J; Wed, 01 Apr 2020 19:49:33 +0000
-Received: from mail-ot1-x342.google.com ([2607:f8b0:4864:20::342])
+	id 1jJtpc-0000rS-0z; Thu, 02 Apr 2020 07:00:04 +0000
+Received: from mail-wr1-f65.google.com ([209.85.221.65])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jJjMg-0004Ly-V4
- for linux-mtd@lists.infradead.org; Wed, 01 Apr 2020 19:49:32 +0000
-Received: by mail-ot1-x342.google.com with SMTP id m2so933909otr.1
- for <linux-mtd@lists.infradead.org>; Wed, 01 Apr 2020 12:49:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=5ctfzD/Fn2uvtGjPXPG1fL7SLdEUv+4zLQI0g9oCkIU=;
- b=Bqg0WupPTkvXDKuXU5slS2kZxi1atj0LqztnydT5rnDrMR7eW0MbRO8SGkrIh7bntw
- aDyKaHOc4ATz05PhvHsf0U82NMA69qjqiXFsv6+e1G+lUMNT8wLIyeFntdIlWo6GZJm8
- JzxylGEMyzz+N8v+qjWEX9FmFdKeTT5STchxattm9YH8NTq8nzoShO1qhwb1ULVyympf
- /uKFh86Aof1vC0ZpUnCN4dxkJCZc3BM88d1xhKBVeaDfo2Ef7kIkJuO2L9oTaHnSRdxf
- 0mzxuUDMWHB9ZjaO8Vl7Ga7aM1DeIyPofzUsZC6t1WcbrM7QjUkxXOm2chiTldDg6Avj
- jbQg==
+ id 1jJtpY-0000YP-4D
+ for linux-mtd@lists.infradead.org; Thu, 02 Apr 2020 07:00:02 +0000
+Received: by mail-wr1-f65.google.com with SMTP id c7so2817031wrx.5
+ for <linux-mtd@lists.infradead.org>; Wed, 01 Apr 2020 23:59:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=5ctfzD/Fn2uvtGjPXPG1fL7SLdEUv+4zLQI0g9oCkIU=;
- b=uBYsP4Pl2iDYHptpeOSDQ3/Y9o1q+So1hXMeIjpuWSkIftuMUusTyAAN7A+jVb8tmz
- VeS7vOuaDxSeD1ET/WQF51wGysus/R196/zX8smlgwdyvH0wapri4INXMMEtdKbySy2o
- nFRNP+bd6iNdIOzwpKiu9U00M1V02TK5J+iBe79fmyTGZHBQjUg4UOsLg+MCc1n+KKwS
- YbofUZM29xQt0b9FhJPnpG8NKoxq+7MrIW1cE7pv6w6P3EMvF0hB2wUc+ZAUUGPNjQdy
- RwQlo7zAa0ux1IOi9pNOLHBuGzQK7MUWCT5gYOuMcbbUnIqy9+znBkegC6d99JYRY+ut
- f+hQ==
-X-Gm-Message-State: ANhLgQ0HwdvlFdAc1MrsxQFMUdDTl/GtTLrWWvVvnmR7hNdCHlCCKP54
- LpfBsyfDzJhi9LZh8q3mdlCUTW0r9uhJq5zwQPlfDKG3
-X-Google-Smtp-Source: ADFU+vs0whiOBNTIMXQK+xjYlZnzQR7u3Eg95nZ/ciywfPV0uwW9BTpsqlxz5JtEP2rXMOQ+tsempeYIZf9VsS4Dvr8=
-X-Received: by 2002:a4a:2c55:: with SMTP id o82mr18642798ooo.33.1585770569783; 
- Wed, 01 Apr 2020 12:49:29 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=qCofxMPDs+Zd4BbgfZ7ibIUeNBtVsSVyW+wJb6YyFJ8=;
+ b=cUwGmJBkwJel0YI9bCgew7dUJWnI+rjyJI2CIpnua0bd93GBR3mBNVpKAK38hRHECB
+ NWh+RfMEU8eNyH07heEDffqJ3FaQGU6d/pgMaIR8V+3bMJL73tYkHFeLPwWewjwTMgZw
+ 6LhwsgYA2SvcwXOjUxI7LbJDpQAGmN4J0zE77E9EPqA8PXTs+yF8CUR1TawPC2SY9AQT
+ +kMhhzMhPu4JgD2dVK1eMS3H+b7gnQRbVQG5e11jExPIU0DtJSLNdMHlMsBp0RM69nqd
+ N3AahBMZu1VI6XjpxaiieEYVyP0sBrGAMGOXK9IuQzdeny+8Uvdnq+uJmiiXGoUshuwn
+ tWoQ==
+X-Gm-Message-State: AGi0PuY6lN9VeGDlsTGtunpnMviEiM9LaWivpqXr6vN6Ppswc6dOkq9M
+ YpyXEN6jVtgWy7eGeA5SN6g=
+X-Google-Smtp-Source: APiQypLwQtoVjWULEf+yed7mqTDJiM7gup+0FRSZGu4ydIXuDTxy7zf0dIDl1fis4S2XMMpjtDgRew==
+X-Received: by 2002:adf:8341:: with SMTP id 59mr1908286wrd.314.1585810797389; 
+ Wed, 01 Apr 2020 23:59:57 -0700 (PDT)
+Received: from piling.lan (80-71-134-83.u.parknet.dk. [80.71.134.83])
+ by smtp.gmail.com with ESMTPSA id a13sm6214221wrh.80.2020.04.01.23.59.55
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 01 Apr 2020 23:59:56 -0700 (PDT)
+From: Ricardo Ribalda Delgado <ribalda@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] mtd: Fix mtd not the same name not registered if nvmem
+Date: Thu,  2 Apr 2020 08:59:53 +0200
+Message-Id: <20200402065953.9974-1-ribalda@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200401100240.445447-1-ribalda@kernel.org>
+References: <20200401100240.445447-1-ribalda@kernel.org>
 MIME-Version: 1.0
-References: <CAP6exY+LQ4Cz3Wq3P=MP78HhHCovMYDfwhpVuASp17h3s2sgMw@mail.gmail.com>
- <CAP6exYJ_jzrB0D=RLXMNeegu4BwQq8raXVOMugkqzX2ZP_JSqw@mail.gmail.com>
- <20200327155608.GM2564@lahna.fi.intel.com> <20200327171907.7a7ffc73@xps13>
- <20200327164802.GN2564@lahna.fi.intel.com> <20200327175238.784cf47c@xps13>
- <CAP6exYJ4-pBBZKA0z8TKPqh_0tKzJadjXEBZk9dc9ij8BJ9Xew@mail.gmail.com>
- <20200327171619.GO2564@lahna.fi.intel.com>
- <CAP6exYJWWT2SFLjPCdjAEEjmZYwqYuTxd_aRaf=xEELmXqfMpA@mail.gmail.com>
- <CAP6exY+p-Chi2R4Y1H8UvcbE6rvEpMiK3UaX2OyBq=ZO6uULpg@mail.gmail.com>
- <20200330060859.GR2564@lahna.fi.intel.com> <20200330092722.2ff41863@xps13>
- <CAP6exY+F2VoEZkwcYp38HNt7NyZucQrdQ8MqQyTQ62U12pAcSw@mail.gmail.com>
- <20200401094148.1786d48a@xps13>
- <CAP6exYJYT23SiRcJUyzVzN6o_pYkakOPs5hPwWYTsjXmk3WXMg@mail.gmail.com>
-In-Reply-To: <CAP6exYJYT23SiRcJUyzVzN6o_pYkakOPs5hPwWYTsjXmk3WXMg@mail.gmail.com>
-From: ron minnich <rminnich@gmail.com>
-Date: Wed, 1 Apr 2020 12:49:17 -0700
-Message-ID: <CAP6exYKTBTQiVvBKfrcoJhziT6E=4RE0PFVg77Yp2XLTcKButw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mtd/intel-spi: Support cmdline-based partition
-To: Miquel Raynal <miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200401_124931_000333_1C0D19DE 
-X-CRM114-Status: GOOD (  24.48  )
+X-CRM114-CacheID: sfid-20200402_000000_167162_12BCFFBA 
+X-CRM114-Status: GOOD (  16.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,49 +84,127 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Ricardo Ribalda Delgado <ribalda@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-anVzdCBmeWkgdGhpcyB3b3JrcyBmaW5lIGFuZCBpdCdzIGVhc3kgb24gdGhlIGV5ZXM6Cm10ZHBh
-cnRzPVswMDAwOjAwOjFmLjVdOjI1MTY1ODI0KEJJT1MpLC0oc3F1YXNoZnMpCgpzbyBJJ20gcHJl
-cGFyaW5nIHRoZSBwYXRjaC4KCk9uIFdlZCwgQXByIDEsIDIwMjAgYXQgODo0MiBBTSByb24gbWlu
-bmljaCA8cm1pbm5pY2hAZ21haWwuY29tPiB3cm90ZToKPgo+IHllYWgsIEkgYWdyZWUgd2l0aCB5
-b3UsIGFuZCBhbSB3cmFwcGluZyB1cCB0aGUgcGF0Y2ggdG8gc3VwcG9ydCB0aGUgOgo+Cj4gdGhh
-bmtzIGZvciB5b3VyIGNvbW1lbnRzIQo+Cj4gcm9uCj4KPiBPbiBXZWQsIEFwciAxLCAyMDIwIGF0
-IDEyOjQxIEFNIE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+IHdyb3Rl
-Ogo+ID4KPiA+IEhpIHJvbiwKPiA+Cj4gPiByb24gbWlubmljaCA8cm1pbm5pY2hAZ21haWwuY29t
-PiB3cm90ZSBvbiBNb24sIDMwIE1hciAyMDIwIDA4OjUzOjIyCj4gPiAtMDcwMDoKPiA+Cj4gPiA+
-IE9uIE1vbiwgTWFyIDMwLCAyMDIwIGF0IDEyOjI3IEFNIE1pcXVlbCBSYXluYWwKPiA+ID4gPG1p
-cXVlbC5yYXluYWxAYm9vdGxpbi5jb20+IHdyb3RlOgo+ID4gPgo+ID4gPiA+IFdvdWxkIGl0IGJl
-IGhhcmQgdG8gc3VwcG9ydCBhbiBleHRyYSAnOicgYWZ0ZXIgdGhlIE1URCBkZXZpY2UgbmFtZT8K
-PiA+ID4gPiBUaGlzIHdheSB3b3VsZCB3b3VsZCBhbGxvdyBhbnl0aGluZyBpbnNpZGUgdGhlIG9w
-dGlvbmFsICcoJyAnKScgYnV0Cj4gPiA+ID4gd291bGQga2VlcCB0aGUgdHJhaWxpbmcgJzonLgo+
-ID4gPiA+Cj4gPiA+ID4gdG9UYXk6Cj4gPiA+ID4gICAgICAgICBtdGRwYXJ0cz1uYW1lOnBhcnQx
-LHBhcnQyCj4gPiA+ID4KPiA+ID4gPiBTbzoKPiA+ID4gPiAgICAgICAgIG10ZHBhcnRzPSgwMDAw
-OjAwOjFmLjUpOjI1MTY1ODI0KEJJT1MpLC0oc3F1YXNoZnMpCj4gPiA+Cj4gPiA+Cj4gPiA+IEkg
-dGhvdWdodCBhYm91dCB0aGF0ICc6JyB0b28uIEl0IGRvZXMgYWRkIGEgYml0IG1vcmUgdG8gdGhl
-IGNvZGUsIGFuZAo+ID4gPiBhIGJpdCBtb3JlIGluIHRoZSB3YXkgb2YgZXJyb3IgY2FzZXMuIEkg
-YWx3YXlzIHdvcnJ5LCB3aGVuIGNvZGUgaXMKPiA+ID4gZ29pbmcgaW50byBmbGFzaCwKPiA+ID4g
-YWJvdXQgZXJyb3JzIHdoZXJlIHNvbWV0aGluZyBsb29rcyBjbG9zZSB0byByaWdodCBidXQgaXMg
-d3JvbmcuIChzYXlzCj4gPiA+IHRoZSBwZXJzb24gd2hvIGp1c3QgdHlwZWQgaXQgaW5zdGVhZCBv
-ZiBpcyBhIGZldyB0aW1lcyA6LSkKPiA+ID4KPiA+ID4gV2hhdCBpZiB3ZSBkaWQgdGhpczoKPiA+
-ID4gbXRkcGFydHM9WzAwMDA6MDA6MWYuNV0yNTE2NTgyNChCSU9TKSwtKHNxdWFzaGZzKQo+ID4g
-Pgo+ID4gPiBJcyB0aGUgIl0iICdlbm91Z2ggZGlmZmVyZW50JyB0aGF0IHdlIGRvIG5vdCBuZWVk
-IHRoZSAnOic/Cj4gPiA+Cj4gPiA+IEkga2luZCBvZiBsaWtlIHRoZSBbXSBiZXR0ZXIgYW55d2F5
-IGFzIGl0IG1ha2VzIHRoZSBtdGRpZCBzdGFuZCBvdXQgYQo+ID4gPiBiaXQgbW9yZSBmcm9tIHRo
-ZSBwYXJ0IG5hbWVzPyBCdXQgaXMgaXQgZW5vdWdoIHRoYXQgd2UgZG9uJ3QgbmVlZCB0aGUKPiA+
-ID4gJzonPyBXb3VsZCB5b3Ugc3RpbGwgcHJlZmVyIHRoZSAoKSBhcyBvcHBvc2VkIHRvIHRoZSBb
-XT8KPiA+Cj4gPiBJIGxpa2UgdGhlIFtdIGFzIHdlbGwsIG1heWJlIG1vcmUgdGhhbiAoKSBiZWNh
-dXNlIGF0IGxlYXN0IGl0IGRvZXMgbm90Cj4gPiBjb25mbGljdCB3aXRoIHRoZSBwYXJ0aXRpb24g
-bmFtZXMuIEJ1dCBJIHJlYWxseSBwcmVmZXIga2VlcGluZyB0aGUgOiBpZgo+ID4gdGhlIGNvZGUg
-aXMgc3RpbGwgcmVhZGFibGUuCj4gPgo+ID4gSXQgaXMgbXVjaCBlYXNpZXIgdG8gZXhwbGFpbiB0
-byBwZW9wbGUgOiAiaWYgeW91IGhhdmUgYSA6IGluIHRoZSBuYW1lLAo+ID4gZW5jbG9zZSBpdCB3
-aXRoIFtdIi4KPiA+Cj4gPiBUaGFua3MsCj4gPiBNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24g
-bWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
-bGludXgtbXRkLwo=
+When the nvmem framework is enabled, a nvmem device is created per mtd
+device/partition.
+
+It is not uncommon that a device can have multiple mtd devices with
+partitions that have the same name. Eg, when there DT overlay is allowed
+and the same device with mtd is attached twice.
+
+Under that circumstances, the mtd fails to register due to a name
+duplication on the nvmem framework.
+
+With this patch we add a _1, _2, _X to the subsequent names if there is
+a collition, and throw a warning, instead of not starting the mtd
+device.
+
+[    8.948991] sysfs: cannot create duplicate filename '/bus/nvmem/devices/Production Data'
+[    8.948992] CPU: 7 PID: 246 Comm: systemd-udevd Not tainted 5.5.0-qtec-standard #13
+[    8.948993] Hardware name: AMD Dibbler/Dibbler, BIOS 05.22.04.0019 10/26/2019
+[    8.948994] Call Trace:
+[    8.948996]  dump_stack+0x50/0x70
+[    8.948998]  sysfs_warn_dup.cold+0x17/0x2d
+[    8.949000]  sysfs_do_create_link_sd.isra.0+0xc2/0xd0
+[    8.949002]  bus_add_device+0x74/0x140
+[    8.949004]  device_add+0x34b/0x850
+[    8.949006]  nvmem_register.part.0+0x1bf/0x640
+...
+[    8.948926] mtd mtd8: Failed to register NVMEM device
+
+Signed-off-by: Ricardo Ribalda Delgado <ribalda@kernel.org>
+---
+v2: I left behind on my patch a 
+
+mtd->nvmem = NULL;
+
+from my tests. Sorry.
+
+ drivers/mtd/mtdcore.c | 35 ++++++++++++++++++++++++++++++++++-
+ 1 file changed, 34 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 5fac4355b9c2..7a4b520ef3b0 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -28,6 +28,7 @@
+ #include <linux/leds.h>
+ #include <linux/debugfs.h>
+ #include <linux/nvmem-provider.h>
++#include <linux/nvmem-consumer.h>
+ 
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+@@ -545,13 +546,34 @@ static int mtd_nvmem_reg_read(void *priv, unsigned int offset,
+ 	return retlen == bytes ? 0 : -EIO;
+ }
+ 
++static int nvmem_next_name(const char *init_name, char *name, size_t len)
++{
++	unsigned int i = 0;
++	int ret = 0;
++	struct nvmem_device *dev = NULL;
++
++	strlcpy(name, init_name, len);
++
++	while ((ret < len) &&
++	       !IS_ERR(dev = nvmem_device_find(name, device_match_name))) {
++		nvmem_device_put(dev);
++		ret = snprintf(name, len, "%s_%u", init_name, ++i);
++	}
++
++	if (ret >= len)
++		return -ENOMEM;
++
++	return i;
++}
++
+ static int mtd_nvmem_add(struct mtd_info *mtd)
+ {
+ 	struct nvmem_config config = {};
++	char name[128];
++	int ret = 0;
+ 
+ 	config.id = -1;
+ 	config.dev = &mtd->dev;
+-	config.name = mtd->name;
+ 	config.owner = THIS_MODULE;
+ 	config.reg_read = mtd_nvmem_reg_read;
+ 	config.size = mtd->size;
+@@ -562,6 +584,13 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
+ 	config.no_of_node = true;
+ 	config.priv = mtd;
+ 
++	if (mtd->name) {
++		ret = nvmem_next_name(mtd->name, name, sizeof(name));
++		if (ret < 0)
++			return ret;
++		config.name = name;
++	}
++
+ 	mtd->nvmem = nvmem_register(&config);
+ 	if (IS_ERR(mtd->nvmem)) {
+ 		/* Just ignore if there is no NVMEM support in the kernel */
+@@ -573,6 +602,10 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
+ 		}
+ 	}
+ 
++	if (ret)
++		dev_warn(&mtd->dev, "mtdev %s renamed to %s due to name collision",
++				mtd->name, nvmem_dev_name(mtd->nvmem));
++
+ 	return 0;
+ }
+ 
+-- 
+2.25.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
