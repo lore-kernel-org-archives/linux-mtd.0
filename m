@@ -2,92 +2,95 @@ Return-Path: <SRS0=2QCa=5T=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 237DBC43331
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Apr 2020 20:39:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5654C43331
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Apr 2020 20:41:43 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E570621655
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Apr 2020 20:39:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A3036207FF
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Apr 2020 20:41:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="E+U++Ef2";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="H3oRzUpR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E570621655
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DpUjjpA8";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="EFBVprzK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A3036207FF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:To:Subject
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=P95bthNqXungccPkzr2TWEDZdj7QRQ2GFOlFK4MHoLY=; b=E+U++Ef218SAgA
-	vT1rX7uLDHDPqMYp5T0veGc8z1Zz38RhQKaRYE0kCAOQnaiHXIN1tVwDYxXcy2VDsaYlcuoiXYqe+
-	ZncL3B9pCSyDVRf740ot1Pg7mrTdZPq3t0OTXlDTqb20cMAsw6ROyWFo2nSzKt1BHY9YLGSfCmOvw
-	qaYCjDeJn4KtEwRD4WqxNjsKlewHuuFr5SXbBw5q2hE+q2FV6ZL6gJI9LWg+RqbUHHDPEPxjftF4G
-	L/14kOjjikZs4LjCEqGjlatz4LK72cZufPwsutiIdTFCtfALF0+JiZJBFQYQN0D/uq/Di4hgdWjee
-	oOWtskAxq0Ayf8ORoV7A==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:References:To:From:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=s9nmnfr0wZey45u+Z8iQOK6AFx/iazHgySXyaC/v8mw=; b=DpUjjpA8dPL7is
+	YxehKSQKmjMZLyi8sgavOrMvN5cH6D2T3T76v8Dl+lsSbhqH2xG4hy8iD01ab990WN5XSPY0y2dqv
+	w1+mVH9lJCDnyk3B5FjFytmi8LpcbsNrqrcfzAVySJ/GLtx4Fplmn/+FCwHtud+UtMZ22gcV2b7/U
+	TtxQhezaUT1fB4+sw1LXXv1HnMQ7HsBf1//LMdMA9UjWl6S59cOV+A9pGCTH9E+qqjt3IebhOB9gt
+	i7w2EMy45TKO7hoNHsToWgE+XRzj99oXXiqry8Ub5SQ1PEtxGAoRHkmVrLwOX6q9hwBiyPz1ej1Uw
+	6UiR2YsZvtm+cCN9nPng==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jKT6D-00045M-3N; Fri, 03 Apr 2020 20:39:33 +0000
-Received: from mail-lj1-x242.google.com ([2a00:1450:4864:20::242])
+	id 1jKT89-00070F-DG; Fri, 03 Apr 2020 20:41:33 +0000
+Received: from mail-lf1-x142.google.com ([2a00:1450:4864:20::142])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jKT6A-00044Y-AZ
- for linux-mtd@lists.infradead.org; Fri, 03 Apr 2020 20:39:31 +0000
-Received: by mail-lj1-x242.google.com with SMTP id n17so8330122lji.8
- for <linux-mtd@lists.infradead.org>; Fri, 03 Apr 2020 13:39:28 -0700 (PDT)
+ id 1jKT86-0006xu-OI
+ for linux-mtd@lists.infradead.org; Fri, 03 Apr 2020 20:41:32 +0000
+Received: by mail-lf1-x142.google.com with SMTP id r17so3340167lff.2
+ for <linux-mtd@lists.infradead.org>; Fri, 03 Apr 2020 13:41:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
- h=from:subject:to:cc:organization:message-id:date:user-agent
- :mime-version:content-language:content-transfer-encoding;
- bh=exzC5jXiQxJVrmhVG3m03w2Rdrug/iMzQPqGGhf9jA0=;
- b=H3oRzUpRS8g0rPb7ZIr/wM12o2wIs00imfNjiDuBPas7/JvMG5Xdp8KLZFrMFYq4JW
- Qg/zm80LY6Wwc9IkpTePgV8tF4YC3oJIX+hhoBTj+G7x9pZiHwbgZSw7gOMD9OvYxQYh
- T7U4PMT6m/duB0lCC6wqvyLqxGeViKJBaX/g288KG+3594nMZ3Q1ertqdSS1xTtrPSjF
- jxse92GbNIykcTSYzg0jTvmvtSzzqteHv5QOtVtHLjRK3bnlPnRVBZawnkbC0lM/Qcri
- rPB3rCnyp6eg7eWtBssbH0yPC/nT6UFFBrtqonTIEM8wfJzU6FEA2tsUh6R4QOlWGTRq
- Mltw==
+ h=subject:from:to:cc:references:organization:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=+slmtley1jCXhKQLgxF5IMEzSagvlN4ByObQY1GK57A=;
+ b=EFBVprzKDjamgabpakGgIxHFfAxy0gb02BOS9DXNPBY4eIPVP1emLadLdFdKaynyyc
+ uphuA/+GtvkHohS+cApELND47kDgUMCkyzxq/B0rsnIpBHCg3ibZgq9awCQMxU6RQkdk
+ ZoXlq/WpIJ3XFQt+5HOEKZo/ae7zhuQFfgRsZ5QEil36fPj4ICb9O88oRz74E81mIwHS
+ nUcbB06CLar4WOdc76GnHiCEnBPD0PUBR+0bEY8vWag5PsaP8EZOoTDbVJ8R+e3f0JZ3
+ seuZs4XQA5XDHHMwI8HNbNoQVpMVFsIaBuYFealvpUu4XL7rk156tUZ823SVeJMLl9lL
+ gU+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:subject:to:cc:organization:message-id:date
- :user-agent:mime-version:content-language:content-transfer-encoding;
- bh=exzC5jXiQxJVrmhVG3m03w2Rdrug/iMzQPqGGhf9jA0=;
- b=rlGLp7XkiSxoeQFyF3JyAFfz0BwMF1PbmfM+uDpqvgeLdu5oNEH6x65fQzfkFc9hxn
- ia8tuqfPwM8pFkJa3vNxC93chgsjqdmnyByf43FtzYX5E6deuE46JZwQzjQ4DrP+4vYo
- yb16qAMIYHDhjo0+9xzENnsTA0e4sHFA3Ag6hiOphYq33NhPcflKRFNIWwXqcndzunoB
- vtVldgw4D+npsv2p2ixJB+D50vx7SFL8JzxlaQRDLXz3kCQFWiOsCNCKgmL8PVIO37v3
- ODQg3mhZSf6gwJf/CHDUizbMXvlTCWIwIem3pU/COKup/r7SgYBRA8HX3C6LcHAnB+TW
- Aj9g==
-X-Gm-Message-State: AGi0PuYa9cuAKMt4fkojv9XRY4azXDbv4Svatp0RflvEXMpV77yoc4Jg
- TzaEk86+RugyXuPva4HEtnpk6X3ACpk=
-X-Google-Smtp-Source: APiQypJtf2oJROXfDfJxiqjp4IM82kv1cjYtLyHPte7orpMYuWrxjCWGV6Et55/p7g+cJJVUKm1jSQ==
-X-Received: by 2002:a2e:8511:: with SMTP id j17mr5974564lji.292.1585946367435; 
- Fri, 03 Apr 2020 13:39:27 -0700 (PDT)
+ h=x-gm-message-state:subject:from:to:cc:references:organization
+ :message-id:date:user-agent:mime-version:in-reply-to
+ :content-language:content-transfer-encoding;
+ bh=+slmtley1jCXhKQLgxF5IMEzSagvlN4ByObQY1GK57A=;
+ b=RaTZKqmJ33YiX8rw5I2MUrDOdRlSOwwkZmeWqdSRzXZ/JhmZ6ZgRl/AU7RRqUZUVpZ
+ TLj2oF+T+A6cEOp7FyCN7b53xP8vmJlOuLs7Rf5zXOYF+LTfxAGQf4AVFsYqFrKvyJEi
+ IdfcJ2DPoGkO/oNkClwhm2DJPQrkIy4K/ezZdqJjAoYIB38tkIcSCyKQ5WNd/zPtEniF
+ FUkJwtsH3JEmm65X4fLHptSti9m8QN3A04gh7H79VtsKEzO5EEXI86qEjs/l21XbtWt2
+ I4NnB9XQ98V/Bm/piTkSd3k9HKZPj1C+dneQy6EdSPnHbjRtsfpyDBj8xrDVpXM7/oWl
+ cCZA==
+X-Gm-Message-State: AGi0Pua3OD8ODhxtfr6uwB5pgyyhz/9t2UsP8MjsGXSd4syB2gFAPRHD
+ cqjAEgngrum4Q+VlsVi1vvywZw==
+X-Google-Smtp-Source: APiQypJk3KnOwBWPfwTjZ/pRc2lt9J02HfFxJEjsO/Yx7WS3J01xChmw7X/KzvTodwT8Y2DCvHvWhw==
+X-Received: by 2002:ac2:4350:: with SMTP id o16mr6525080lfl.136.1585946488988; 
+ Fri, 03 Apr 2020 13:41:28 -0700 (PDT)
 Received: from wasted.cogentembedded.com
  ([2a00:1fa0:41a:7e80:40ac:b40e:d552:2978])
- by smtp.gmail.com with ESMTPSA id r16sm5469339ljj.40.2020.04.03.13.39.26
+ by smtp.gmail.com with ESMTPSA id y20sm1519854lfh.25.2020.04.03.13.41.27
  (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Fri, 03 Apr 2020 13:39:26 -0700 (PDT)
+ Fri, 03 Apr 2020 13:41:28 -0700 (PDT)
+Subject: [PATCH v2 1/5] mtd: spi-nor: fix kernel-doc for 'struct spi_nor'
 From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: [PATCH v2 0/5] Fix kernel-doc comments for 'struct spi_nor'
 To: Tudor Ambarus <tudor.ambarus@microchip.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+References: <b82675c7-9c90-d0a5-f221-9f51f89e448e@cogentembedded.com>
 Organization: Cogent Embedded
-Message-ID: <b82675c7-9c90-d0a5-f221-9f51f89e448e@cogentembedded.com>
-Date: Fri, 3 Apr 2020 23:39:25 +0300
+Message-ID: <ce0a4ce0-fefb-7238-5ed8-bec8b27708ea@cogentembedded.com>
+Date: Fri, 3 Apr 2020 23:41:27 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
  Thunderbird/52.2.1
 MIME-Version: 1.0
+In-Reply-To: <b82675c7-9c90-d0a5-f221-9f51f89e448e@cogentembedded.com>
 Content-Language: en-MW
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200403_133930_567276_ED3A97DD 
-X-CRM114-Status: UNSURE (   9.23  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200403_134130_792023_11516A61 
+X-CRM114-Status: GOOD (  14.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,21 +109,51 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello!
+When introducing 'struct spi_nor', a number of issues was added in its
+kernel-doc comment:
 
-Here's a set of 5 patches against the 'spi-nor/next' branch of the MTD 'linux.git'
-repo. I'm fixing a number of issues in the kernel-doc comment to 'struct spi_nor'
-accumulated since its creation. Instead of a single patch, I'm fixing the kernel-doc
-comment with several patches, each fixing its own broken commit -- this simplifies
-porting to the stable kernels (if that ever happens). :-)
+- double article in the heading kernel-doc comment;
+- "point" instead of "pointer" for the 'mtd' and 'dev' fields;
+- "a" articles instead of "an" for the 'dev' field;
+- acronyms in the lower case for the 'dev' field;
+- missing "pointer to" for the 'priv' field.
 
-[1/5] mtd: spi-nor: fix kernel-doc for 'struct spi_nor'
-[2/5] mtd: spi-nor: fix kernel-doc for spi_nor::mtd
-[3/5] mtd: spi-nor: fix kernel-doc for spi_nor::reg_proto
-[4/5] mtd: spi-nor: fix kernel-doc for spi_nor::info
-[5/5] mtd: spi-nor: fix kernel-doc for spi_nor::spimem
+Fix all of those at once...
 
-MBR, Sergei
+Fixes: 6e602ef73334 ("mtd: spi-nor: add the basic data structures")
+Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+
+---
+ include/linux/mtd/spi-nor.h |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+Index: linux/include/linux/mtd/spi-nor.h
+===================================================================
+--- linux.orig/include/linux/mtd/spi-nor.h
++++ linux/include/linux/mtd/spi-nor.h
+@@ -327,10 +327,10 @@ struct spi_nor_manufacturer;
+ struct spi_nor_flash_parameter;
+ 
+ /**
+- * struct spi_nor - Structure for defining a the SPI NOR layer
+- * @mtd:		point to a mtd_info structure
++ * struct spi_nor - Structure for defining the SPI NOR layer
++ * @mtd:		pointer to an mtd_info structure
+  * @lock:		the lock for the read/write/erase/lock/unlock operations
+- * @dev:		point to a spi device, or a spi nor controller device.
++ * @dev:		pointer to an SPI device or an SPI NOR controller device
+  * @spimem:		point to the spi mem device
+  * @bouncebuf:		bounce buffer used when the buffer passed by the MTD
+  *                      layer is not DMA-able
+@@ -354,7 +354,7 @@ struct spi_nor_flash_parameter;
+  *                      settings that can be overwritten by the spi_nor_fixups
+  *                      hooks, or dynamically when parsing the SFDP tables.
+  * @dirmap:		pointers to struct spi_mem_dirmap_desc for reads/writes.
+- * @priv:		the private data
++ * @priv:		pointer to the private data
+  */
+ struct spi_nor {
+ 	struct mtd_info		mtd;
 
 ______________________________________________________
 Linux MTD discussion mailing list
