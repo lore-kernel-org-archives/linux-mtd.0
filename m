@@ -2,87 +2,82 @@ Return-Path: <SRS0=65ud=5U=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97515C2BA16
-	for <linux-mtd@archiver.kernel.org>; Sat,  4 Apr 2020 13:02:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12E55C2BA15
+	for <linux-mtd@archiver.kernel.org>; Sat,  4 Apr 2020 15:36:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 68654206E9
-	for <linux-mtd@archiver.kernel.org>; Sat,  4 Apr 2020 13:02:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D8B5C20644
+	for <linux-mtd@archiver.kernel.org>; Sat,  4 Apr 2020 15:36:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kfX9m257";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lpvEqVHb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 68654206E9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="e2uj6/xC";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="myi6YLyo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D8B5C20644
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=LUe/IoHK6anFbz486zFTp4R4gK4LB/gFX1u/+qtEy7s=; b=kfX9m257I8tkbQ
-	6Ylmpg9gev2TxZ15NHVECRayQiaOvBL3xd6Bqb6DfqAjeI9KrKlN5qymnNsOVf1omuLNB7JmFWMiN
-	CfiuPUzHAmDoZ56RUxYjzfZd7uwWvasisBDyh6G8SXqBOj027gasadtgn4ajJ2vUkekFtwRksfLXd
-	pB8pieOUXqktb3LjeW0T16EZqdpTcfa2CfoaE/1YfHh6RBU4EW2nzFYLQz79bVKNzwV+9WcZbPg89
-	7g/edHD+xN4sKKhiriilyFX27VCame+yE3C6vLtqhz1z3WOSc4h2ScdZJdi2iwoiLSOIHNtBuXk6y
-	8eH81z+QosKpd9nqfq+w==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=xGEEl9IaErIBv34XAZ2FrJtfDopZv2rbovlGHpJlqng=; b=e2u
+	j6/xCdbAoF/dfwPzij4PzQ+APPiPsx/Sky7qiH/psGBa62rgvqRPoMkoCCPO0jNYHpPKhlUduV5B7
+	BIbOHSIYfBcREnViLRKzIQ6WMm8lwIqbxfk1+KbQVjJ7w4gLRDL9mEgR4yjVibd4j7ijQuWBMJeJm
+	2ebYMkt8Hw2lqk1arPAW31QMhwRNe+J3uMB6OTrUfwZdgdyLbb30mFZerRFlziXBWgcAMK/t4hUOc
+	5aoYh5q8lzNSwykzEcVWphsY0BiAiKzdILNMd8PR9NX3YjACotBPc5L6T2rQvnUj/DRHjXoKhq+lY
+	/dnteBvzrljtrpP321CaxMFoBlxnXSQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jKiQq-0007go-7M; Sat, 04 Apr 2020 13:01:52 +0000
-Received: from mail-pl1-x642.google.com ([2607:f8b0:4864:20::642])
+	id 1jKkqb-0003z2-CT; Sat, 04 Apr 2020 15:36:37 +0000
+Received: from mail-pf1-x442.google.com ([2607:f8b0:4864:20::442])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jKiQl-0007g2-1E
- for linux-mtd@lists.infradead.org; Sat, 04 Apr 2020 13:01:48 +0000
-Received: by mail-pl1-x642.google.com with SMTP id w3so3939209plz.5
- for <linux-mtd@lists.infradead.org>; Sat, 04 Apr 2020 06:01:45 -0700 (PDT)
+ id 1jKkqZ-0003yY-Bz
+ for linux-mtd@lists.infradead.org; Sat, 04 Apr 2020 15:36:36 +0000
+Received: by mail-pf1-x442.google.com with SMTP id c138so5227038pfc.0
+ for <linux-mtd@lists.infradead.org>; Sat, 04 Apr 2020 08:36:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=QbmGGp28iLBGx2kdu0b3vnWpbi+iqdsV4klADyRej2U=;
- b=lpvEqVHbWsSI/vC2WOlhE5B7pZ591FruvYm+Oo4rRXNnPNDDJGl7teLltiQT5nn7A9
- utndRD33FUc866UH7L4t/z1o3kbnnGYnk+AI2YxgQj7KZTpP9BAtHiD+J+yLf1GDowAL
- 9olyw1DeYPBjXWFJ08IPBU9/GGpL1lXJwJE6lioc1H7pFrdEzgK8WJxE2++ab4qj5yFt
- JYjw56zlSnHnbd3WW3BwFp5YWxcXb4whiJv8gFGGwoRiZUaH5uX/az0Naw4sBwNgWIcr
- hu2PH9mBENUleRxtkEjmaE66/XnOOheSx0c9DC1oqqSN0vgAf5zc34uGBd4wDniEngmZ
- F4Ow==
+ h=sender:from:to:cc:subject:date:message-id;
+ bh=pbazCulCIKKkz9Ego4v5HD0m1P/J+HUtTSIcWpG1JoY=;
+ b=myi6YLyoE+RLHDUNGBvNMpbBa8r3y1anRiBMDobXca9RTKlmkYJPkFfUogM2JOOQdP
+ Wx50qpAwF3QvQxetWKFQL3wTH8BpostygOCO68OAEnFZq9hrKKlcsGi1TTrokdgRa/lG
+ VooGtC0aZwpvg69Rl6WvdFUFku90XFfp+iBqOX4MDh2LN0Hdi1054ptYzfpSF2Lgj/Yc
+ PS+eGFjSZSaJq1IvO1gu0gjEcoxmTjNJj9IKvZUDo4ZEa+ldGTfKi0hyuMMyawyIP8WO
+ f5OX09f1bN7Zh+wtihrvLDKMZWkjpjmGl+KlEfrjX4kg9u+tYhwfUjPJ9AE2NIW8w3CD
+ KMnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=QbmGGp28iLBGx2kdu0b3vnWpbi+iqdsV4klADyRej2U=;
- b=hyxFWwDxVmJKjfJmh9lNhNh/xM2hNqoG2jBHJZy/uJ3JLemkdDZ0IFHRcRRd4XlpdO
- lsJxx5auGKZI72XjT4/LrYqWxGeJd2rs0/sIQviXOoCXi7sjKTrjQJzlziSx30CvMMBI
- NlJyxe5inM33MtNnU8h534dHbuANBGDUQOYQKhQK5C6rljtRtgzwIXFekBc5Fbzg7yqk
- ug576sgBZN5fMAx0kGc3R1PMRbGLopcBclEEdKpml0hbX7waxi8XjeyFTwcyfuhcI3Vu
- 9ya3W8AjbqmnAqSOypNuNkdXPp10uiP3JuY/6mLD6fAsWR6iakXF7h6Sl6tQ5bSCmR4D
- I9eA==
-X-Gm-Message-State: AGi0PuYPW8NmJBr3Ptfh3g41hO7rKUH+lgoA9ZGXkJznRFuwPZVlDVm4
- A2ERVF4GhWYIAEPh6+RJwCEaK2aoRXU=
-X-Google-Smtp-Source: APiQypJBHHjo3d1FCB1Q3yDGSYQrsi6rcyZpuKwsY/nCpSkBxVSk5JCT19Ua2PZ59lsTY8tBA19OLA==
-X-Received: by 2002:a17:90b:4c0e:: with SMTP id
- na14mr15870273pjb.73.1586005304747; 
- Sat, 04 Apr 2020 06:01:44 -0700 (PDT)
-Received: from guoguo-omen.lan ([240e:379:951:6837:3b06:87cd:9fe1:1cd2])
- by smtp.gmail.com with ESMTPSA id b133sm7824814pfb.180.2020.04.04.05.59.17
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 04 Apr 2020 06:01:44 -0700 (PDT)
-From: Chuanhong Guo <gch981213@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] Revert "mtd: spi-nor: Add 4B_OPCODES flag to w25q256"
-Date: Sat,  4 Apr 2020 20:58:40 +0800
-Message-Id: <20200404125845.1381080-1-gch981213@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
+ h=x-gm-message-state:sender:from:to:cc:subject:date:message-id;
+ bh=pbazCulCIKKkz9Ego4v5HD0m1P/J+HUtTSIcWpG1JoY=;
+ b=OL9YRfm/flZ2yo3Z3awe6B71CiZGt0saD9TT3mOXJu5Ks88Pfn54S/2YJ8Bl5tKuM9
+ qeguxxlbR3sdc0M0mqAM6jqN7BOZuBAw9/TzE5hoZ9DgofnN9/s0tQb05QKOKY0y26EN
+ zEzgwadTkE6Gq3rnjRzC9aTHGTSK4u4ighdDC3/lkTX+cgnaUaUFlUNhIs1CbA1LDRzt
+ JZdFy+BfKbprd8XN18dsHh6pyWm1sd1IrD8Rr/WBdh5rfDRzXGW7Ahv+msWMjt8OAm93
+ roW56n3XZQGCgoN2Y/JwbSZy3A0W77S/ireqssKd8PEmlA6VcZyGBqd1Kd3NTNMyze0n
+ 51MA==
+X-Gm-Message-State: AGi0PuaAGFsOJMCNDVAUzbzuE6nHpc/H/v58TotWjF47+rAIIHc7GXli
+ BidqAMOWrhwXltJ1vKdUOgo=
+X-Google-Smtp-Source: APiQypK7h6kbAovnIT6y/Nq2jrHhKaImbbfuqw0UqwWnEZtaSrfx+B7XRFvZyN6Ei4FD/vezZlWRkA==
+X-Received: by 2002:a63:f113:: with SMTP id f19mr13951250pgi.168.1586014594406; 
+ Sat, 04 Apr 2020 08:36:34 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+ by smtp.gmail.com with ESMTPSA id x75sm8028885pfc.161.2020.04.04.08.36.33
+ (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+ Sat, 04 Apr 2020 08:36:33 -0700 (PDT)
+From: Guenter Roeck <linux@roeck-us.net>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: [PATCH] mtd: spi-nor: Compile files in controllers/ directory
+Date: Sat,  4 Apr 2020 08:36:31 -0700
+Message-Id: <20200404153631.103549-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.17.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200404_060147_101244_E822BEA3 
-X-CRM114-Status: UNSURE (   9.28  )
+X-CRM114-CacheID: sfid-20200404_083635_409111_FB2F83FD 
+X-CRM114-Status: UNSURE (   9.22  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -96,52 +91,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- Robert Marko <robimarko@gmail.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Chuanhong Guo <gch981213@gmail.com>
+ Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Guenter Roeck <linux@roeck-us.net>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This reverts commit 10050a02f7d508fa88f70fcfceefbacd13488ca7.
+Commit a0900d0195d2 ("mtd: spi-nor: Prepare core / manufacturer code
+split") moved various files into a new directory, but did not add the new
+directory to its parent directory Makefile. The moved files no longer
+build, and affected flash chips no longer instantiate.
 
-Winbond W25Q256FV and W25Q256JV both uses 0xef4019 as JEDEC ID,
-but only the latter has proper 4B_OPCODES support.
-W25Q256FV has all 4B read instructions but it lacks a 4B page program
-instruction, causing the entire flash to be read-only.
-Disable 4B_OPCODES for W25Q256 completely.
-Users can use broken-flash-reset as a temporary workaround.
+Adding the new directory to the parent directory Makefile fixes the
+problem.
 
-Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
+Fixes: a0900d0195d2 ("mtd: spi-nor: Prepare core / manufacturer code split")
+Cc: Boris Brezillon <bbrezillon@kernel.org>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
-"line over 80 characters" warning produced by checkpatch.pl isn't
-fixed because I think a revert commit should bring a file back to
-what it was before.
-I don't have a w25q256jv available and can't compare SFDP table
-to create a fix similar to mx25l25635 one.
+ drivers/mtd/spi-nor/Makefile | 2 ++
+ 1 file changed, 2 insertions(+)
 
- drivers/mtd/spi-nor/winbond.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index 17deabad57e1..9673ec7fa003 100644
---- a/drivers/mtd/spi-nor/winbond.c
-+++ b/drivers/mtd/spi-nor/winbond.c
-@@ -52,9 +52,7 @@ static const struct flash_info winbond_parts[] = {
- 	{ "w25q80", INFO(0xef5014, 0, 64 * 1024,  16, SECT_4K) },
- 	{ "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16, SECT_4K) },
- 	{ "w25q128", INFO(0xef4018, 0, 64 * 1024, 256, SECT_4K) },
--	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512,
--			  SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
--			  SPI_NOR_4B_OPCODES) },
-+	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "w25q256jvm", INFO(0xef7019, 0, 64 * 1024, 512,
- 			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "w25q256jw", INFO(0xef6019, 0, 64 * 1024, 512,
+diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+index 7ddb742de1fe..653923896205 100644
+--- a/drivers/mtd/spi-nor/Makefile
++++ b/drivers/mtd/spi-nor/Makefile
+@@ -18,3 +18,5 @@ spi-nor-objs			+= winbond.o
+ spi-nor-objs			+= xilinx.o
+ spi-nor-objs			+= xmc.o
+ obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
++
++obj-$(CONFIG_MTD_SPI_NOR)	+= controllers/
 -- 
-2.25.1
+2.17.1
 
 
 ______________________________________________________
