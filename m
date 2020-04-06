@@ -2,23 +2,23 @@ Return-Path: <SRS0=p/wV=5W=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1C8AC2BA17
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Apr 2020 01:20:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 60081C2BA18
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Apr 2020 05:18:51 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 726B520678
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Apr 2020 01:20:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2648420719
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Apr 2020 05:18:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oz7tkbb4";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=jms.id.au header.i=@jms.id.au header.b="HBkyOKI6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 726B520678
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=jms.id.au
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VmZEdkUr";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kqFRrl3M"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2648420719
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -26,55 +26,58 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Da9BRgAMgZ/C0OuY+xNKc7u2wo05BAepkBhvrJWg/Z0=; b=oz7tkbb4lsTmNo
-	yG7/FRWbdUK0DIHxWFyztbnwL9lJ+O0HdMlnHY01murMCWhx1JI9Yk6cqagCJ4q069qzV1vb7GGW3
-	pSqR/zj1f8VfyuXuSBKQTy/Z6OnseTAJPZYIQaBn+w61dqlo2dHasLbSAURFMHZJoOtuH0061sRPo
-	MUs1GEEe+4/TlhGsphe4zVkYY66RBxBY+HS/Iv3Woe53QL0kb1RCMtw8SIsbVRrN4M8Ze0d8ykEz2
-	uq3dy0vcDz4ptmznM6kWyBq4uLPRWj8aJYL6uJqc91CTg3I0yivUGT7mQbyMsEfB6/OfzkqTUwviF
-	xjcFT8eMQt2tXY2rizng==;
+	List-Owner; bh=ai+u4megFmRcM6AOrkUx40ZAwrIHF1pbXtLXHp+ltDE=; b=VmZEdkUrGQwoK7
+	xXQdKKJKIu9crFuuKHD0aJNK6hNF8GdfBev3/AbYiEgjeXHZi1NAIo1HWm6KGO73LIUUpmhKDPD96
+	U/BM3aeWociDdnzee26fJXHdipSyY7uzYXuOENVeLyW8aVAknQ36BMjq+9jeWLpejM8AX57vs/Rn5
+	jmg5B2Eu6zfv3YyRWJ/bFggP3KDTfzHHjeeb+5O8bHL3U97N/gfnvLBhVgy2H0fc/H6Qqw3XWewoD
+	n1eEYwh4AMy3B8a0p1ThicdOZ331EBk0PDaVg1VWOQzh/aW1r5O9gpsDuxaXYtllchY+KgacmY2WC
+	179MGNxr4upCZ6fxEfyQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jLGR4-0007s7-6k; Mon, 06 Apr 2020 01:20:22 +0000
-Received: from mail-qk1-x744.google.com ([2607:f8b0:4864:20::744])
+	id 1jLK9e-0006bG-Ro; Mon, 06 Apr 2020 05:18:38 +0000
+Received: from mail-oi1-x243.google.com ([2607:f8b0:4864:20::243])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jLGR0-0007r4-5H
- for linux-mtd@lists.infradead.org; Mon, 06 Apr 2020 01:20:20 +0000
-Received: by mail-qk1-x744.google.com with SMTP id k134so4093799qke.2
- for <linux-mtd@lists.infradead.org>; Sun, 05 Apr 2020 18:20:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jms.id.au; s=google;
+ id 1jLK9b-0006ao-UP
+ for linux-mtd@lists.infradead.org; Mon, 06 Apr 2020 05:18:37 +0000
+Received: by mail-oi1-x243.google.com with SMTP id y71so12041226oia.7
+ for <linux-mtd@lists.infradead.org>; Sun, 05 Apr 2020 22:18:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=PsmsZgemCvhriIQAgZ8Jrnu1V0u0Uy80i+4ks6YOumc=;
- b=HBkyOKI64T1XZ3uIg75dUY22JSUM5cbP/qn1UGHhdCmjF6sSrR7GhfznJT9SM18EX/
- B8iSH7m45ijOV4k+bl14QNVToBrmSm8lS+yfkMmLvmb02xYDo7M1o7hCikdokcKz1pez
- aOf8ZZ2Os4xtY2wKma46hfx3yoTH4wNjTBwvQ=
+ :cc; bh=yMbMU7WDe4dfGwLCVUZeLiiA7XDmbCMQqpwKjNc2rA0=;
+ b=kqFRrl3M92hO+CBuMyAX8SqUpmwu1/7m9El6rvLiEmjYhNcCTvg+XoQ0nZQjKiAu4u
+ W6GyC6zo7EP4EDWOT96sr2i7QQXaAQID3mdt9I1CVd0zagJfdPBVTQPP7R/84ARc+dSb
+ csF1rOYihnSmwBMBs/4+LYHm7s1wxjpMKHpl60rOy/SJMwsr/IVcu7+6iDuIkx3kz45q
+ ArkTUB3UUHHPxOU/fhdpho9O+VrDNKlf6EdTrpX/75rfwkFZWvSHKdcB5NWfG+j6brkE
+ vS3fG1T2G8n/sTghHIS7Ol04/Wt5p2v8+lV1j46TIF1u5wRWj8YQ+JYDcpEApTbP/VXE
+ mZqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=PsmsZgemCvhriIQAgZ8Jrnu1V0u0Uy80i+4ks6YOumc=;
- b=BN4VlhCu5SNPAAf77j+ab6Nmf4E4Q/MD/ZgF+qFPIW4kIQqrfokaTA2AHXh5mXhqIS
- gOwEeu2iPkLKWtaLCXh9jOh0rqIQjF93Y18opRMpyAKkWQLrCZVaqpZWiZE3FlNQYw5C
- m2/OJjCsgV3izqLtnJZOxcD/7z5AjVbnQ1eyYW6ZpGAEY+khQ4rodt7wH3knoLgnK8Me
- +TgT157LW16SE4hJH86yk6LxN0QVgHxcjaDsUZ9nyT8U4sScBo/62Pk666Pur87KLh7g
- IGOe6MQMA7FaiifcUdSnUpgk8MGHpcHzxvNy8y1wFge3ZCWg22DXVd5sEJfTMb2GkUTx
- FMFg==
-X-Gm-Message-State: AGi0PuZ6Xp67e8PrurwFVg+jdRZA5OhLnChWrgkb79iYbtmYaRaI2raJ
- 2YEGlbeWzhZoPmx/0tvWamWCVol8quOXwL0rLOA=
-X-Google-Smtp-Source: APiQypJ3e6qTmPGYSNjcv8HM2bboVabW4Mrp2r84r0j7tlusts/GgMm6UHPe2ubJX85/zQRv4hnNIBAI+Hss+FJs/DI=
-X-Received: by 2002:a37:2f43:: with SMTP id v64mr7863822qkh.330.1586136013201; 
- Sun, 05 Apr 2020 18:20:13 -0700 (PDT)
+ bh=yMbMU7WDe4dfGwLCVUZeLiiA7XDmbCMQqpwKjNc2rA0=;
+ b=pKF8YoG771XMwQ608oEJyeMnvAu7qZlvlwzER6OM7MWgGwA5/UYlejVjWSD33O2kup
+ VJsRbW5Owuqzn2I4Z4H4Etbmyv9xWIenRaJa3svA7pHIUascD5Y47C6oQMcUcWj3uPxU
+ k5Zbc6U76PNoTtxw+wG3B2rH3SJ+MiouwcuvpopKcjxnYoc8jG90bfEH1BGOZrnCBYx5
+ ijU4DTnfMXeom2AtW2LkIYPYXSpN5hyblfkRccjN2Pm5MfI00d4MLxp58/8913LvTcoa
+ neBCkBHh4l5QG1UzRmSMC0pDdrFeLHqstzN5y0o3M4uVvJmkjvyPDJ4Q9jJgGSHA6ENO
+ NV0g==
+X-Gm-Message-State: AGi0PuYtFjAeZ1Q6qu+KlpJuZYXg4kDRmdHvtr0FiZe+FG36F06mU/3w
+ 4blj0WTz/xvUMDO1q5FvdikBWT41mks02oQuTXU=
+X-Google-Smtp-Source: APiQypL7x8RkhZzn5LiyZ3hImB34Rai81E6wXfZZeI/aN4qQwVxactVM00JGTDwMSAuIGUNyC2Vcd9MIvc9Io8MlD84=
+X-Received: by 2002:aca:d553:: with SMTP id m80mr11654887oig.30.1586150313643; 
+ Sun, 05 Apr 2020 22:18:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200404153631.103549-1-linux@roeck-us.net>
-In-Reply-To: <20200404153631.103549-1-linux@roeck-us.net>
-From: Joel Stanley <joel@jms.id.au>
-Date: Mon, 6 Apr 2020 01:20:01 +0000
-Message-ID: <CACPK8Xdmjp0qg0JHHnR1MJp7zmuZHCHTOs7+qn5_16oLbe+r+g@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: Compile files in controllers/ directory
-To: Guenter Roeck <linux@roeck-us.net>,
- Tudor Ambarus <tudor.ambarus@microchip.com>
+References: <20200404125845.1381080-1-gch981213@gmail.com>
+In-Reply-To: <20200404125845.1381080-1-gch981213@gmail.com>
+From: Chuanhong Guo <gch981213@gmail.com>
+Date: Mon, 6 Apr 2020 13:18:22 +0800
+Message-ID: <CAJsYDVLA3fgjBGdStkiZeqEv8q2j2sUdDzgj3QdahB=tvyYJWg@mail.gmail.com>
+Subject: Re: [PATCH] Revert "mtd: spi-nor: Add 4B_OPCODES flag to w25q256"
+To: Robert Marko <robimarko@gmail.com>, linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200405_182018_393428_42ECEDA7 
-X-CRM114-Status: GOOD (  13.95  )
+X-CRM114-CacheID: sfid-20200405_221836_008755_AD4C7DA7 
+X-CRM114-Status: UNSURE (   9.05  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,55 +89,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- linux-aspeed <linux-aspeed@lists.ozlabs.org>,
- Boris Brezillon <bbrezillon@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
- Richard Weinberger <richard@nod.at>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ open list <linux-kernel@vger.kernel.org>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, 4 Apr 2020 at 15:37, Guenter Roeck <linux@roeck-us.net> wrote:
->
-> Commit a0900d0195d2 ("mtd: spi-nor: Prepare core / manufacturer code
-> split") moved various files into a new directory, but did not add the new
-> directory to its parent directory Makefile. The moved files no longer
-> build, and affected flash chips no longer instantiate.
->
-> Adding the new directory to the parent directory Makefile fixes the
-> problem.
->
-> Fixes: a0900d0195d2 ("mtd: spi-nor: Prepare core / manufacturer code split")
-> Cc: Boris Brezillon <bbrezillon@kernel.org>
-> Cc: Tudor Ambarus <tudor.ambarus@microchip.com>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Hi Robert!
 
-Thanks Guenter. I just discovered this too.
+On Sat, Apr 4, 2020 at 9:01 PM Chuanhong Guo <gch981213@gmail.com> wrote:
+> "line over 80 characters" warning produced by checkpatch.pl isn't
+> fixed because I think a revert commit should bring a file back to
+> what it was before.
+> I don't have a w25q256jv available and can't compare SFDP table
+> to create a fix similar to mx25l25635 one.
 
-Acked-by: Joel Stanley <joel@jms.id.au>
+I just tried and unable to dump SFDP on my W25Q256FV,
+probably because my chip is too old to have one.
+Could you check if your W25Q256JV has this and dump it?
+Just add some prints in spi_nor_read_sfdp.
+If a 4-byte address instruction table is present, current kernel
+should be able to discover 4B_OPCODES support automatically.
+Even if that's not the case we may still be able to distinguish
+W25Q256FV and W25Q256JV using SFDP table.
 
-> ---
->  drivers/mtd/spi-nor/Makefile | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-> index 7ddb742de1fe..653923896205 100644
-> --- a/drivers/mtd/spi-nor/Makefile
-> +++ b/drivers/mtd/spi-nor/Makefile
-> @@ -18,3 +18,5 @@ spi-nor-objs                  += winbond.o
->  spi-nor-objs                   += xilinx.o
->  spi-nor-objs                   += xmc.o
->  obj-$(CONFIG_MTD_SPI_NOR)      += spi-nor.o
-> +
-> +obj-$(CONFIG_MTD_SPI_NOR)      += controllers/
-> --
-> 2.17.1
->
+-- 
+Regards,
+Chuanhong Guo
 
 ______________________________________________________
 Linux MTD discussion mailing list
