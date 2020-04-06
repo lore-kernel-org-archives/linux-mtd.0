@@ -2,84 +2,90 @@ Return-Path: <SRS0=p/wV=5W=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3230C2BA19
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Apr 2020 12:49:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34F5CC2BA1B
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Apr 2020 16:10:17 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BC78E206F8
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Apr 2020 12:49:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0B3EF22838
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Apr 2020 16:10:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qyAx5iAW";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="tc47wP7v"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC78E206F8
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VWn/ciJo";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cd1Bchu2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0B3EF22838
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:To:
-	Subject:Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=rkTcZAb7/F9C63C/9f+yBAUTR028xKRt6hPyetXSoxw=; b=qyAx5iAW0kcdAAam8jh/LB3+r
-	NTQTNJndLk5Z3YTbkeTbZAaT4+2Do/J6a1otv6oXAGXWhfrKoZkPmtmiO+60grriwHO9Z5AteVVb+
-	GM9oEnVsXzf1CPOowei0fr/l3ej3iqwnyFyJrdcoiqo9vieonyWzY1OQS5JgATMTwyCknwhhPWY8P
-	/VGefPPmi/+v9cKaIoQXAxYhhrR2w1sdzWZgg+MvHgXWJa4L2hlgbRm7/46AyTRi1MtI1w2d1FUnc
-	/ebMAD5E5MOOqOu3n/YgWb+SDE2EbhEBbWFfBTJ6znuI6RIRHv6wyLWtOQ/7tl0/whjTmARSfA9VS
-	x4J6vmWxQ==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=DU8Rzetc+tb/XfQcbXiqSEONdJVkK5bv7RcXTwpMuII=; b=VWn/ciJoZL8c9n
+	ZPw91c6e6Cwz0pvItXDk1AY8f6+GbphHG0MmX1Fsd65Aa5WzL4eRCgRHRgfxiE1Td7fXX2nZ+UPMX
+	EwNzMz8vMK/s727Po398L/CePc+Aegg8z/xw0XcirEkrn8mr5l7CWbLWXVKHrprFvz9L2NeMu43ag
+	2cdi9lEYTWo0nG9fVWbe/pOitjhjE3EcRYSqLE01Rn2Gs2+575Am3gccZogLTyA3rIf9tGBThRNRx
+	XfMynf9usrxhqRXljG5weCUavUIGxTTefsnkalm8gvkgI63EnVVUJZ9/RrOnaQa2O6n4Foi2/rDdJ
+	xLRmwx/KuEJGnFfVuHMw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jLRCA-0002Ra-H7; Mon, 06 Apr 2020 12:49:42 +0000
-Received: from mail-oi1-x242.google.com ([2607:f8b0:4864:20::242])
+	id 1jLUK5-0000Mx-Fr; Mon, 06 Apr 2020 16:10:05 +0000
+Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jLRBk-0002PI-Db
- for linux-mtd@lists.infradead.org; Mon, 06 Apr 2020 12:49:32 +0000
-Received: by mail-oi1-x242.google.com with SMTP id l22so12868293oii.12
- for <linux-mtd@lists.infradead.org>; Mon, 06 Apr 2020 05:49:14 -0700 (PDT)
+ id 1jLUK2-00084B-OU
+ for linux-mtd@lists.infradead.org; Mon, 06 Apr 2020 16:10:04 +0000
+Received: by mail-pl1-x643.google.com with SMTP id v23so6087457ply.10
+ for <linux-mtd@lists.infradead.org>; Mon, 06 Apr 2020 09:10:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=fFB4VdA84Kugwzr7cseBJwu0dBCE6rHh8pgVv8EEcS0=;
- b=tc47wP7v2iRxBHrC4XRQCCKeCh3hWP45Nin6JzgR3+4GyevHAWChQgDAKOfMtyjmK9
- VOsVxkgLbMbW58sh4UpBrQRTKFdFnniHrU/yt309hGVa0gub/FsysLJMwD1xquCmQRGA
- xiHuAJuoFhQl7veK5j9wCnk3W9bbPkO2EXrmvpEJSXzypOIDJPVQDKErZodbebvt726B
- h8M5jUCKjLQUotXM4U7CGxB8CF+Vx3RWNrL/KOonulMVcijs/zR52xudTFNRPq0WJyy6
- X/MOFAgZizYVSLrK6cSA4ll9AK3iZJc5H8yorq0nmHOZcnLLK/IpwO+eBBCCzUTL8+kV
- EN/w==
+ h=from:to:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=1WkoK9eOo3jxX/ZMr07VW5CQfweVLKsOKrOBu3dllxs=;
+ b=cd1Bchu2c9ROFaCpeTSYw8aDQj9D/amAIE3E5AJ2sk4uajkqPr0368tcgzvZNw/gd5
+ A5KYbrIqj/6UHQdd420rCelaobfdCCx4exj75OWcKjgo9FWDqLL86GXRqLr/REYm7agu
+ yQaexJqpfpP4jwbfEng5PlTVd8EWJ4g7mmxmotOdgL71Nn4cd68f2DIL6NYQNH0/Xw1S
+ QLGYGGRfSDmUPLI1yI9Ga1IVA4OTZS/2QltXrHv4zRhsAzILKPbfzYUpOgfgRrBiZupF
+ hKK8GHidAfqbbaYqeEqJtbwkxSJbFiWGvptuwMeIAxHUNHkw6W+aOozPmVkYo6V/h8yG
+ +Hjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=fFB4VdA84Kugwzr7cseBJwu0dBCE6rHh8pgVv8EEcS0=;
- b=rrihNz0QnzyGzP75qqgxg/laNZzK/a3/vkGW7Ao8Clg7OJ6Qu+hC4iEwCuseIDtfrg
- 95GlaztPnMstHUnVdVL+cCNnSo49O3FcZNpo2M8dbN3Lls0X3AIDEw9Vi3e7x90uKK7U
- qDE7zvkM/K7oYQ8PL7daUpGOHORHPNbpjc7EA5FyFMBWV1Zyjyf9PVPBfQiTUdtFAnJE
- zZrjtsqc1Cq9nx9yqRB4Om48dfxthWA8JxPCFoepbM4ly7PYMoUopnd7o4sbJnY4XchF
- keBEZs4L8wssOG0FpTAjr2hBpbpNxYC6FkMVbjGCzAGBvLnAp3McC1gHg+nnGqmvzCOo
- L3bQ==
-X-Gm-Message-State: AGi0PuZBGozcUiidfRjOCpklk+Vb7Pgp+wqim6CbDzUpzf1+niihoUpS
- /OKrSolSYK7vssrxjqc5cxcl89kufxyxZ3Rq5P0=
-X-Google-Smtp-Source: APiQypK+8VytYADNh4P+zG7WCNGv9WUis8t/SIv0S1IzfcExS1VnQzKmLTrz8eNCcJ0u1hURK/PclnoAZK+H2zmiSR4=
-X-Received: by 2002:aca:3196:: with SMTP id x144mr12841366oix.77.1586177354089; 
- Mon, 06 Apr 2020 05:49:14 -0700 (PDT)
+ h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=1WkoK9eOo3jxX/ZMr07VW5CQfweVLKsOKrOBu3dllxs=;
+ b=pkQyHvvZv+XbcKKqOdGpWec7Cc1WDkix63+t8qQSNKPKv58GllOKMWY5R6LpiQw6b7
+ /SlAtmth1OjT5A+ReEqEyDSEyV9g4K6M8ydREP3Hd1+cyHhQpiDPcJWCX06qygxlgTuN
+ SeZlrWizYcHd5prt5vPET7H0N1tGp80iymBURVKyR1RAMwy/aAGu3ZKfs4eM6E8znOl9
+ ohWOmyRd7f8NUBeZphfPDncTDBSSO2UOY7y36j/VAFqUwuo2xRkgad8i8lBGfDAqcKJ8
+ wgDH1AtRQBElkcewep9QQHjTSbFckSUY0Evq0lxrDIQHODY9dMx2Hq+avLb+d0JKDf46
+ 0Q+Q==
+X-Gm-Message-State: AGi0PuYxDmUjz+oIOdXWl+WNcjuf6mPmj9Gg9oG2LuOTrgWN6e7LOylv
+ srMHNcLg33APJb/BRHQgB80=
+X-Google-Smtp-Source: APiQypLW2+hk2HRhI7Td9Jl9Sdkz5Z5glDoXOKZEYa0pW703MJ9vJ5kxV4E+ghEwKkJw4Cv7ZtixkA==
+X-Received: by 2002:a17:90a:8909:: with SMTP id u9mr3007pjn.149.1586189401046; 
+ Mon, 06 Apr 2020 09:10:01 -0700 (PDT)
+Received: from minnich.svl.corp.google.com
+ ([2620:15c:2c5:3:65f9:fd8e:a0b8:2917])
+ by smtp.googlemail.com with ESMTPSA id y3sm5242416pfy.6.2020.04.06.09.10.00
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 06 Apr 2020 09:10:00 -0700 (PDT)
+From: "Ronald G. Minnich" <rminnich@gmail.com>
+X-Google-Original-From: "Ronald G. Minnich" <rminnich@google.com>
+To: miquel.raynal@bootlin.com, rminnich@google.com, richard@nod.at,
+ vigneshr@ti.com, linus.walleij@linaro.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: parsers: Support '[]' for id in mtdparts
+Date: Mon,  6 Apr 2020 09:09:14 -0700
+Message-Id: <20200406160914.14698-1-rminnich@google.com>
+X-Mailer: git-send-email 2.26.0.292.g33ef6b2f38-goog
 MIME-Version: 1.0
-References: <20200404125845.1381080-1-gch981213@gmail.com>
- <CAJsYDVLA3fgjBGdStkiZeqEv8q2j2sUdDzgj3QdahB=tvyYJWg@mail.gmail.com>
- <CAOX2RU7ZU0Jj71YCAoP=qaqUomaHKTi=XMV8wGvwRg_fYpfoMg@mail.gmail.com>
-In-Reply-To: <CAOX2RU7ZU0Jj71YCAoP=qaqUomaHKTi=XMV8wGvwRg_fYpfoMg@mail.gmail.com>
-From: Chuanhong Guo <gch981213@gmail.com>
-Date: Mon, 6 Apr 2020 20:49:02 +0800
-Message-ID: <CAJsYDVJbczAST7HPtkPAtQXhm+RdZFyAJz4XVjwkNMPDdMnDyQ@mail.gmail.com>
-Subject: Re: [PATCH] Revert "mtd: spi-nor: Add 4B_OPCODES flag to w25q256"
-To: Robert Marko <robimarko@gmail.com>
-Content-Type: multipart/mixed; boundary="000000000000be6f7405a29eb139"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200406_054924_572435_DF8BE8F1 
-X-CRM114-Status: GOOD (  12.87  )
+X-CRM114-CacheID: sfid-20200406_091002_835438_727B7D49 
+X-CRM114-Status: GOOD (  14.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,67 +97,93 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, open list <linux-kernel@vger.kernel.org>,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---000000000000be6f7405a29eb139
-Content-Type: text/plain; charset="UTF-8"
+The MTD subsystem can support command-line defined partitions
+for one or more MTD devices.
 
-Hi!
+The format is:
+ * mtdparts=<mtddef>[;<mtddef]
+ * <mtddef>  := <mtd-id>:<partdef>[,<partdef>]
 
-On Mon, Apr 6, 2020 at 8:23 PM Robert Marko <robimarko@gmail.com> wrote:
->
-> It appears that W25Q256JV has an SFDP table and in it advertises 3B or 4B modes.
-> >
-> > [    1.957903] spi_qup 78b5000.spi: IN:block:16, fifo:64, OUT:block:16, fifo:64
-> > [    1.962185] SFDP advertises 3B or 4B
-> > [    1.977393] spi-nor spi0.0: w25q256 (32768 Kbytes)
-> >
-> I have used the attached patch to check what does the SFDP DWORD 1 advertises.
-> If FV version has or does not advertise 4B support than that can be
-> used to differentiate them.
+The ':' separates the id from the partdef.
 
-My old w25q256fv spits all 0xFF to 0x5a read sfdp instruction.
-I've asked someone with a newer w25q256fv to dump the entire SFDP
-for me and it's in the attachment. You could do a comparison between
-w25q256jv with this dump.
+On PCI MTD devices, the name can be the PCI slot name,
+e.g. 0000:00:1f.5. There are two ':' in the name alone.
 
-> Can you apply this patch and check what the FV version advertises as I
-> don't have a device using that revision.
-> FV version also should have SFDP as datasheet for it clearly advertises is.
+Change the definition of <mtd-id> so it can be bracketed
+with '[]' and hence contain any number of ':'.
+An opening '[' must be matched with a closing ']'.
+The ':' continues to separate the mtd-id from the <partdef>.
 
-I've checked the sfdp dump in the attachment and it's also advertising
-3B or 4B in 1st BFPT dword.
+Signed-off-by: Ronald G. Minnich <rminnich@google.com>
+Change-Id: I17a757e65f532b11606c7bb104f08837bcd444b9
+---
+ drivers/mtd/parsers/cmdlinepart.c | 31 ++++++++++++++++++++++++++++---
+ 1 file changed, 28 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/mtd/parsers/cmdlinepart.c b/drivers/mtd/parsers/cmdlinepart.c
+index c86f2db8c882..ef9dc0bd7724 100644
+--- a/drivers/mtd/parsers/cmdlinepart.c
++++ b/drivers/mtd/parsers/cmdlinepart.c
+@@ -10,7 +10,8 @@
+  * mtdparts=<mtddef>[;<mtddef]
+  * <mtddef>  := <mtd-id>:<partdef>[,<partdef>]
+  * <partdef> := <size>[@<offset>][<name>][ro][lk]
+- * <mtd-id>  := unique name used in mapping driver/device (mtd->name)
++ * <mtd-id>  := unique name used in mapping driver/device (mtd->name) |
++ *              '[' unique name as above, not including a "]" ']'
+  * <size>    := standard linux memsize OR "-" to denote all remaining space
+  *              size is automatically truncated at end of device
+  *              if specified or truncated size is 0 the part is skipped
+@@ -221,14 +222,38 @@ static int mtdpart_setup_real(char *s)
+ 		char *p, *mtd_id;
+ 
+ 		mtd_id = s;
++		mtd_id_len = 0;
++		p = s;
+ 
+-		/* fetch <mtd-id> */
++		/*
++		 * fetch <mtd-id>
++		 * If the first char is '[',
++		 * the form is [mtd-id]:
++		 * otherwise it is mtd-id:
++		 */
++		if (*s == '[') {
++			mtd_id++;
++			p = strchr(s, ']');
++			if (!p) {
++				pr_err("mtd (%s) has '[' but no ']'", s);
++				return -EINVAL;
++			}
++			mtd_id_len = p - mtd_id;
++		}
++
++		/* There is always a : following mtd-id. */
+ 		p = strchr(s, ':');
+ 		if (!p) {
+ 			pr_err("no mtd-id\n");
+ 			return -EINVAL;
+ 		}
+-		mtd_id_len = p - mtd_id;
++
++		/*
++		 * If the mtd-id was bracketed, mtd_id_len will be valid.
++		 * If it is still 0, we must set it here.
++		 */
++		if (mtd_id_len == 0)
++			mtd_id_len = p - mtd_id;
+ 
+ 		dbg(("parsing <%s>\n", p+1));
+ 
 -- 
-Regards,
-Chuanhong Guo
+2.26.0.292.g33ef6b2f38-goog
 
---000000000000be6f7405a29eb139
-Content-Type: application/octet-stream; name="sfdp-w25q256fvem-wson8.bin"
-Content-Disposition: attachment; filename="sfdp-w25q256fvem-wson8.bin"
-Content-Transfer-Encoding: base64
-Content-ID: <f_k8ogxpxp0>
-X-Attachment-Id: f_k8ogxpxp0
-
-U0ZEUAABAP8AAAEJgAAA////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-///////////////////lIPP/////D0TrCGsIO0K7/v//////AAD//yHrDCAPUhDYAAD/////////
-////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////w==
---000000000000be6f7405a29eb139
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---000000000000be6f7405a29eb139--
-
