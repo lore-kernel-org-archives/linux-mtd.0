@@ -2,84 +2,94 @@ Return-Path: <SRS0=p/wV=5W=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C37E1C2BA1E
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Apr 2020 12:24:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00A37C2BA19
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Apr 2020 12:40:15 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9AE29215A4
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Apr 2020 12:24:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C78192192A
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Apr 2020 12:40:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bVvt1cxN";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RwQ7UE3u"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9AE29215A4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="J1aooPmw";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Tszal4kz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C78192192A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:To:
-	Subject:Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=bVZE+QHn4eK7MYOmPDJogbaHK7gq9eWz+AKEJsCrLKk=; b=bVvt1cxNbbmh+TDBgd6VOoo9c
-	1D2izjfP+toqjWcx68DGRFxWC8N0wwD956nu34ZJOgDUq1KXouwOj8uNh9F60AZrxaMf3a88KIP0q
-	kiRiJa/cjFRkcWrtdzXqnTyH/iShNwYIGcvF/5ambSPHcFznTDYPAgUnTEFSMTEBXgd5Mi9I2/+dx
-	ao6a3nJoy/fwA3+D6CivpWT6eYHYq/0jC4v48zRwUujA6Sjl9TG+yXzi4uOZtAXedqP316FApsDj0
-	KF0MW38Q5gK6YpRjJWEglGHI0ZaOxmHEcUmfIX32mqcS8g3HbFICsD02hTi3vJfadhm5TXpBXcYHT
-	JW27CmySQ==;
+	 bh=X9zUfrfolUjQdokZ3Czx061aSY2Dc5z72lQ1Lzhoy1k=; b=J1aooPmwxxNL/5v6NuShYKmRf
+	24+/Oy76hTe1vPQatgvjvSlGS8pCI+lsgxv8VnOQBF3v0kQFawPvY7u4CkdLDRHPE9O8U+9ws9Z2w
+	8xosGm5kM1O/pqHY31pbjsljLn2jwftpb8C7zEiVHRz93HVmVtieBUzygyqmBjkYzdaRLW382Q0h5
+	QkkAZSpqJ+UpD7GHlEWhw2PN3u3JsoiB44tvTgq98qQZHbCOncejrqWsGGVS6mWH7OD0Kp4TujVtW
+	44HluMqmiMvIrOz3uSZf4hoYydrTzVlErZYFNKbRgnKCn3hH5woCsx4P10kjVLjyMpffyBqbWHkOT
+	2VTUCKi1g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jLQnK-0002l5-KZ; Mon, 06 Apr 2020 12:24:02 +0000
-Received: from mail-qt1-x843.google.com ([2607:f8b0:4864:20::843])
+	id 1jLR2p-00052O-Rp; Mon, 06 Apr 2020 12:40:03 +0000
+Received: from mail-wm1-x336.google.com ([2a00:1450:4864:20::336])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jLQnF-0002kU-NP
- for linux-mtd@lists.infradead.org; Mon, 06 Apr 2020 12:23:59 +0000
-Received: by mail-qt1-x843.google.com with SMTP id y25so12574367qtv.7
- for <linux-mtd@lists.infradead.org>; Mon, 06 Apr 2020 05:23:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=E/1a6IzRWH3Bp68ngpAFzn1GZxWmPuagYB/FM5XN8n8=;
- b=RwQ7UE3uKijyujaf1aHIBMT9zcsnYDp3aFA5Ilz4KH5WRW+qe8Ultq3NBcpANjyMar
- UDafw0FlEdplC8iUOPgTXtYLCik3h7K+bVBWQowgWX8f4JTQzmwFoBEYpdomU4L7t4+M
- AearwnEsHnUsZ46nh6PIcToTgzMXLgW+hd8smlk6ds7seRIqW25N7AGMC1RQrGLKj9ZN
- a3mkeLR+XyA9A4bKRSxLQLe+lOJmZAlqXBU4gMqyh698hlizcJUV+Z9ucEq1Pofc9OL0
- YTjILpiwYcEJvDRLALWkryL2XOTCZ3Ruae/FyEvvfKTW2FvSiD8uC/5CNwDIO5inafDT
- 1sww==
+ id 1jLR2l-0004Y5-IZ
+ for linux-mtd@lists.infradead.org; Mon, 06 Apr 2020 12:40:01 +0000
+Received: by mail-wm1-x336.google.com with SMTP id a81so15624457wmf.5
+ for <linux-mtd@lists.infradead.org>; Mon, 06 Apr 2020 05:39:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=subject:to:references:from:message-id:date:user-agent:mime-version
+ :in-reply-to:content-language:content-transfer-encoding;
+ bh=oZScMFvcrgYzW3m8ghy1+YPoCxwK039jprfSLC8eF3w=;
+ b=Tszal4kzpiCuPCX0GI19uMTRec/f1aMAfLaSqxOlbuKSj3vE8t2kVn7JkTO2AVC+WT
+ ezS44PVzNjSrIIXRBJjE9zkublO1fPp52gAc6Yi4X4ZOuXbcDsDaCUstL1IZvh8pmtQR
+ NdEB9+sRk+Y9Ttey6DAP3v0gGocV5Hed9xQ74/xNDpCwELs39daFyuhlgVcFXpu++IMY
+ xj76uOOQt9aQpEzvPn3fpsGrydZcI2JcpE659ruzNliJ4Rq529uDC5yY8vstchNkOZGK
+ Rx3mj43emPilHRzdVBmxrTXzGIwzDBCVuNvIpH827CvuniBo5tiD4XrguaPEzHuH+ohs
+ QNjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=E/1a6IzRWH3Bp68ngpAFzn1GZxWmPuagYB/FM5XN8n8=;
- b=Xh6CiO80L20yWb/4V8+GaP7Xc/gz4fdYOC88PPi+PCypqZcGz2BwxQwUdsbyAUfDLO
- +PpEN3IDB9QZ0Njxw6kwbm6H9DR1B5NxNHbZWZjZelS7e74vzY6M26+rjx0LX5rvo/JB
- grh7uSbQfaS+krkpduTCCDstSUCB1lGgNrK4Zii5hCoYgr6/sgLhBDFCIFaepYTnx6oe
- RdpNyKef3KscvU7nfVY6TPVJy/VxkDgpgdajlWIKcmLinb6jHqvr/01sWquQDDbLJzil
- 1M/NJf8tXwGLNXWED9dDAS/33YJXs8rMIFyOYioj8lsYUL1xnn9Ms6BQClVJlJxm9MVi
- 7iRg==
-X-Gm-Message-State: AGi0PubOnwQaSc5CrtaxChwAggvIREzThOjwm529mRShzlS0jwoMk1oj
- jt6GOq1MNWh5usln7IxzUgmVoRmU8BA+zgYO5sE=
-X-Google-Smtp-Source: APiQypLzs60Chii58DCEWwOXFmsiFc2iWi42Ai0IK4/jCiWYM1+2tzvL5fYGv+a12HFPLgrHONMbwMT0vD5mRmG/qCo=
-X-Received: by 2002:ac8:6051:: with SMTP id k17mr20812938qtm.163.1586175836291; 
- Mon, 06 Apr 2020 05:23:56 -0700 (PDT)
+ h=x-gm-message-state:subject:to:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=oZScMFvcrgYzW3m8ghy1+YPoCxwK039jprfSLC8eF3w=;
+ b=Q73cSFNd8cz+RayJAewKtLYj9b2kwxjCUaJRIAcR5qMfEdHxB2QF0zTgh9eujcA9/X
+ 6uiq0//ZOYQIgdCcnYdqBTz2sScq3x75FjCenaJspZJf5kDpuwPZnDffBRC+b+E76tjN
+ /UmU9B9m4oSowTjYWiAcdAqcRA25gkOltnQKVj/gB+bkvLp4szzJUL3nz2C5K1ZxBs3F
+ Xvv6c7T7KJnCECxNk/Ww+wGcD152clZnRUbZl78LAwx9cpz/XYNkgNbs1rQsPimHIKvb
+ W09B4omAhQ1utb2g9sTMYgB3t6bxoyuHRh3ia1iwZf4dKm5Zn5ZCD7IV3Vr2Z5p4CdqE
+ 6fxQ==
+X-Gm-Message-State: AGi0PuYfIfNUQlIm0aI2FYgvD6L+f9DyhTNU6wjp9qa5hjEJuEz48Xau
+ H3kg8linXzC2SwJYTGSpHl3TRK1G2Bg=
+X-Google-Smtp-Source: APiQypLRfZTaMedM3YcesdLFw5VBOsUT+tRgS8v22ZY48eGjb2PqWll1DOmIjiL0LYVsib1zMmtv5A==
+X-Received: by 2002:a1c:4e06:: with SMTP id g6mr13349556wmh.186.1586176797622; 
+ Mon, 06 Apr 2020 05:39:57 -0700 (PDT)
+Received: from [192.168.86.34]
+ (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+ by smtp.googlemail.com with ESMTPSA id c190sm9330921wme.4.2020.04.06.05.39.56
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Mon, 06 Apr 2020 05:39:56 -0700 (PDT)
+Subject: Re: NVMEM and environment variables.
+To: "Steven J. Hill" <sjhill@realitydiluted.com>,
+ Jean Delvare <jdelvare@suse.com>, linux-mtd@lists.infradead.org,
+ Wolfram Sang <wsa@the-dreams.de>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+References: <5645947b-0b42-2ae8-b568-4abe8940a73f@realitydiluted.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <f880292c-dffd-b380-4eb3-8d61ad2f5dd2@linaro.org>
+Date: Mon, 6 Apr 2020 13:39:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20200404125845.1381080-1-gch981213@gmail.com>
- <CAJsYDVLA3fgjBGdStkiZeqEv8q2j2sUdDzgj3QdahB=tvyYJWg@mail.gmail.com>
-In-Reply-To: <CAJsYDVLA3fgjBGdStkiZeqEv8q2j2sUdDzgj3QdahB=tvyYJWg@mail.gmail.com>
-From: Robert Marko <robimarko@gmail.com>
-Date: Mon, 6 Apr 2020 14:23:44 +0200
-Message-ID: <CAOX2RU7ZU0Jj71YCAoP=qaqUomaHKTi=XMV8wGvwRg_fYpfoMg@mail.gmail.com>
-Subject: Re: [PATCH] Revert "mtd: spi-nor: Add 4B_OPCODES flag to w25q256"
-To: Chuanhong Guo <gch981213@gmail.com>
-Content-Type: multipart/mixed; boundary="0000000000004629d405a29e57db"
+In-Reply-To: <5645947b-0b42-2ae8-b568-4abe8940a73f@realitydiluted.com>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200406_052357_763383_4B3FF08D 
-X-CRM114-Status: GOOD (  25.04  )
+X-CRM114-CacheID: sfid-20200406_054000_124728_80F87825 
+X-CRM114-Status: GOOD (  16.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,120 +101,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, open list <linux-kernel@vger.kernel.org>,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---0000000000004629d405a29e57db
-Content-Type: text/plain; charset="UTF-8"
 
-On Mon, 6 Apr 2020 at 07:18, Chuanhong Guo <gch981213@gmail.com> wrote:
->
-> Hi Robert!
->
-> On Sat, Apr 4, 2020 at 9:01 PM Chuanhong Guo <gch981213@gmail.com> wrote:
-> > "line over 80 characters" warning produced by checkpatch.pl isn't
-> > fixed because I think a revert commit should bring a file back to
-> > what it was before.
-> > I don't have a w25q256jv available and can't compare SFDP table
-> > to create a fix similar to mx25l25635 one.
->
-> I just tried and unable to dump SFDP on my W25Q256FV,
-> probably because my chip is too old to have one.
-> Could you check if your W25Q256JV has this and dump it?
-> Just add some prints in spi_nor_read_sfdp.
-> If a 4-byte address instruction table is present, current kernel
-> should be able to discover 4B_OPCODES support automatically.
-> Even if that's not the case we may still be able to distinguish
-> W25Q256FV and W25Q256JV using SFDP table.
 
-It appears that W25Q256JV has an SFDP table and in it advertises 3B or 4B modes.
->
-> [    1.957903] spi_qup 78b5000.spi: IN:block:16, fifo:64, OUT:block:16, fifo:64
-> [    1.962185] SFDP advertises 3B or 4B
-> [    1.977393] spi-nor spi0.0: w25q256 (32768 Kbytes)
->
-I have used the attached patch to check what does the SFDP DWORD 1 advertises.
-If FV version has or does not advertise 4B support than that can be
-used to differentiate them.
-Can you apply this patch and check what the FV version advertises as I
-don't have a device using that revision.
-FV version also should have SFDP as datasheet for it clearly advertises is.
+On 02/04/2020 17:24, Steven J. Hill wrote:
+> -----BEGIN PGP SIGNED MESSAGE-----
+> Hash: SHA1
+> 
+> The nvmem subsystem shows promise with regards to eeprom and efuse
+> driver organization and utilization of those values by other drivers.
+> Where it seems to be lacking is the use case of eeprom and environment
+> variables accessible by userspace. It seems silly to have a nvmem
+> driver with a single 'nvmem' or 'eeprom' binary attribute, but still
+> have to use 'dd' to get individual data values when they are declared
+> in the device tree. Why is a binary attribute not created in /sys for
+> each nvmem cell in the process?
+> 
+> I played with a mtd-nvmem driver that treated each eeprom environment
+> variable like a mtd character device. This was an idea so horrible the
+> code will never be public. I also tried a hybrid nvmem driver which
+> acted as producer and consumer, another monstrosity. So, in summary
+> why are binary attributes not be created for each nvmem cell? Other
+> design ideas are welcome. Cheers.
 
-Best regards
-Robert
->
-> --
-> Regards,
-> Chuanhong Guo
+There is no strong case for this requirement!
+In the existing design userspace can read or write to the nvmem sysfs 
+file along with /proc/device-tree/ entries for offset and size 
+information. Is this something that does not work for you?
+Or what exactly is the usecase here?
 
---0000000000004629d405a29e57db
-Content-Type: text/x-patch; charset="US-ASCII"; name="999-spi-nor-w25q256-sfdp.patch"
-Content-Disposition: attachment; filename="999-spi-nor-w25q256-sfdp.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_k8og0x190>
-X-Attachment-Id: f_k8og0x190
+--srini
 
-RnJvbSBiMjk5MmI4ZWM2MDdkYzY3MDRlYjliOGRhOWE5Mzc4OTRhNDA2ZDg1IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBSb2JlcnQgTWFya28gPHJvYmVydC5tYXJrb0BzYXJ0dXJhLmhy
-PgpEYXRlOiBNb24sIDYgQXByIDIwMjAgMTM6NTI6MDcgKzAyMDAKU3ViamVjdDogW1BBVENIXSBz
-cGktbm9yOiB3MjVxMjU2IHNmZHAKClNpZ25lZC1vZmYtYnk6IFJvYmVydCBNYXJrbyA8cm9iZXJ0
-Lm1hcmtvQHNhcnR1cmEuaHI+Ci0tLQogZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMgfCAz
-NyArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLQogMSBmaWxlIGNoYW5nZWQsIDM2
-IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9z
-cGktbm9yL3NwaS1ub3IuYyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jCmluZGV4IGY0
-MTdmYjY4MGNkOC4uMDlhNGE4YmNlMDdmIDEwMDY0NAotLS0gYS9kcml2ZXJzL210ZC9zcGktbm9y
-L3NwaS1ub3IuYworKysgYi9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYwpAQCAtMjE0Myw2
-ICsyMTQzLDQwIEBAIHN0YXRpYyBzdHJ1Y3Qgc3BpX25vcl9maXh1cHMgZ2QyNXEyNTZfZml4dXBz
-ID0gewogCS5kZWZhdWx0X2luaXQgPSBnZDI1cTI1Nl9kZWZhdWx0X2luaXQsCiB9OwogCitzdGF0
-aWMgaW50Cit3MjVxMjU2X3Bvc3RfYmZwdF9maXh1cHMoc3RydWN0IHNwaV9ub3IgKm5vciwKKwkJ
-CSAgICBjb25zdCBzdHJ1Y3Qgc2ZkcF9wYXJhbWV0ZXJfaGVhZGVyICpiZnB0X2hlYWRlciwKKwkJ
-CSAgICBjb25zdCBzdHJ1Y3Qgc2ZkcF9iZnB0ICpiZnB0LAorCQkJICAgIHN0cnVjdCBzcGlfbm9y
-X2ZsYXNoX3BhcmFtZXRlciAqcGFyYW1zKQoreworCS8qCisJICogVzI1UTI1NkpWIGZ1bGx5IHN1
-cHBvcnRzIDRCIG9wY29kZXMgYnV0IFcyNVEyNTZGViA0QiBwYWdlIHByb2dyYW0KKwkgKiBpbnN0
-cnVjdGlvbiwgY2F1c2luZyB0aGUgZW50aXJlIGZsYXNoIHRvIGJlIHJlYWQtb25seS4KKwkgKiBV
-bmZvcnR1bmF0ZWx5LCBXaW5ib25kIGhhcyByZS11c2VkIHRoZSBzYW1lIEpFREVDIElEIGZvciBi
-b3RoCisJICogdmFyaWFudHMgd2hpY2ggcHJldmVudHMgdXMgZnJvbSBkZWZpbmluZyBhIG5ldyBl
-bnRyeSBpbiB0aGUgcGFydHMKKwkgKiB0YWJsZS4KKwkgKiBXZSBuZWVkIGEgd2F5IHRvIGRpZmZl
-cmVudGlhdGUgVzI1UTI1NkpWIGFuZCBXMjVRMjU2RlYuCisJICovCisKKwlpZiAoKGJmcHQtPmR3
-b3Jkc1tCRlBUX0RXT1JEKDEpXSAmIEJGUFRfRFdPUkQxX0FERFJFU1NfQllURVNfTUFTSykgPT0K
-KwkJQkZQVF9EV09SRDFfQUREUkVTU19CWVRFU18zX09OTFkpCisJCXByX3dhcm4oIlNGRFAgYWR2
-ZXJ0aXNlcyAzQiBvbmx5XG4iKTsKKworCWlmICgoYmZwdC0+ZHdvcmRzW0JGUFRfRFdPUkQoMSld
-ICYgQkZQVF9EV09SRDFfQUREUkVTU19CWVRFU19NQVNLKSA9PQorCQlCRlBUX0RXT1JEMV9BRERS
-RVNTX0JZVEVTXzNfT1JfNCkKKwkJcHJfd2FybigiU0ZEUCBhZHZlcnRpc2VzIDNCIG9yIDRCXG4i
-KTsKKworCWlmICgoYmZwdC0+ZHdvcmRzW0JGUFRfRFdPUkQoMSldICYgQkZQVF9EV09SRDFfQURE
-UkVTU19CWVRFU19NQVNLKSA9PQorCQlCRlBUX0RXT1JEMV9BRERSRVNTX0JZVEVTXzRfT05MWSkK
-KwkJcHJfd2FybigiU0ZEUCBhZHZlcnRpc2VzIDRCIG9ubHlcbiIpOworCisJcmV0dXJuIDA7Cit9
-CisKK3N0YXRpYyBzdHJ1Y3Qgc3BpX25vcl9maXh1cHMgdzI1cTI1Nl9maXh1cHMgPSB7CisJLnBv
-c3RfYmZwdCA9IHcyNXEyNTZfcG9zdF9iZnB0X2ZpeHVwcywKK307CisKIC8qIE5PVEU6IGRvdWJs
-ZSBjaGVjayBjb21tYW5kIHNldHMgYW5kIG1lbW9yeSBvcmdhbml6YXRpb24gd2hlbiB5b3UgYWRk
-CiAgKiBtb3JlIG5vciBjaGlwcy4gIFRoaXMgY3VycmVudCBsaXN0IGZvY3Vzc2VzIG9uIG5ld2Vy
-IGNoaXBzLCB3aGljaAogICogaGF2ZSBiZWVuIGNvbnZlcmdpbmcgb24gY29tbWFuZCBzZXRzIHdo
-aWNoIGluY2x1ZGluZyBKRURFQyBJRC4KQEAgLTI0ODAsNyArMjUxNCw4IEBAIHN0YXRpYyBjb25z
-dCBzdHJ1Y3QgZmxhc2hfaW5mbyBzcGlfbm9yX2lkc1tdID0gewogCXsgIncyNXE4MCIsIElORk8o
-MHhlZjUwMTQsIDAsIDY0ICogMTAyNCwgIDE2LCBTRUNUXzRLKSB9LAogCXsgIncyNXE4MGJsIiwg
-SU5GTygweGVmNDAxNCwgMCwgNjQgKiAxMDI0LCAgMTYsIFNFQ1RfNEspIH0sCiAJeyAidzI1cTEy
-OCIsIElORk8oMHhlZjQwMTgsIDAsIDY0ICogMTAyNCwgMjU2LCBTRUNUXzRLKSB9LAotCXsgIncy
-NXEyNTYiLCBJTkZPKDB4ZWY0MDE5LCAwLCA2NCAqIDEwMjQsIDUxMiwgU0VDVF80SyB8IFNQSV9O
-T1JfRFVBTF9SRUFEIHwgU1BJX05PUl9RVUFEX1JFQUQpIH0sCisJeyAidzI1cTI1NiIsIElORk8o
-MHhlZjQwMTksIDAsIDY0ICogMTAyNCwgNTEyLCBTRUNUXzRLIHwgU1BJX05PUl9EVUFMX1JFQUQg
-fCBTUElfTk9SX1FVQURfUkVBRCkKKwkJCQkuZml4dXBzID0gJncyNXEyNTZfZml4dXBzLCB9LAog
-CXsgIncyNXEyNTZqdm0iLCBJTkZPKDB4ZWY3MDE5LCAwLCA2NCAqIDEwMjQsIDUxMiwKIAkJCSAg
-ICAgU0VDVF80SyB8IFNQSV9OT1JfRFVBTF9SRUFEIHwgU1BJX05PUl9RVUFEX1JFQUQpIH0sCiAJ
-eyAidzI1bTUxMmp2IiwgSU5GTygweGVmNzExOSwgMCwgNjQgKiAxMDI0LCAxMDI0LAotLSAKMi4y
-Ni4wCgo=
---0000000000004629d405a29e57db
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+
+
+
+
+> 
+> - -Steve
+> -----BEGIN PGP SIGNATURE-----
+> 
+> iF0EARECAB0WIQQ7FeQaKpedass6DAiDIrkfYhzfpwUCXoYRxAAKCRCDIrkfYhzf
+> p/AEAJ0X3cCZvbpfplAepmJ+P5SCUI132ACcC2zVtOeFm82DvRePSTri9qJtdaE=
+> =5yat
+> -----END PGP SIGNATURE-----
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---0000000000004629d405a29e57db--
-
