@@ -7,85 +7,89 @@ X-Spam-Status: No, score=-5.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6D54C2D0EC
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Apr 2020 20:39:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29B5CC2D0EC
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Apr 2020 20:47:00 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7F0112074B
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Apr 2020 20:39:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D953E20730
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Apr 2020 20:46:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LbBpuxJW";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="HiO9K4BF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7F0112074B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RV3kuzoL";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="VeQFszYj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D953E20730
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:Subject:
-	From:To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Lxqu3a1p2d3LW3w8/VPAuRT5Mln1mH1s3W/omeJXFSo=; b=LbBpuxJWXkuU6o
-	6bblgWGyZkhFI/1FE48OVAMgzSsDXYMTvfs72r8cx/coa/GRaxtkdwQt2liqE3spc8ONS/IQhYuD+
-	hBIhl+sijdHAxKgPY3vsZTJV285vPRcgpQI5kxvwM5QsAxAEtQhFj66FrRvmYIehQUGecudOSEW/f
-	3S0GcX5NxmMVViVAmejlVV0W7/TuELhVErhkSx58Dpk/1qkEF3wzggYOY7kj/4hQVXhBs840PYHai
-	+HE8F8qMQOm0tGPaQ33SSgBGlCAtpo55/y0X0/3d54Bi6FfymFKrNSkDC0lv24AJeNazfs0XZm3lg
-	U7UuvKHn4w5lxutmWNeQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:References:To:From:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Y0ysw2YdXgQPoPQuBYvUSj5hLkfrkyG2nmUqvSD6cXw=; b=RV3kuzoLby2jt6
+	9bExEkH4u06nbB4TrxvOv7rcmqUUaRZOlST+shkknJHeuXnCjr9hFJHNn1X+BHO49ak37Po4A48D/
+	at6XpUkMQd/At0HVd1u+rAZgou0+IOMcd2awZXgnkEaumKremOvttdRylO77DtYbi+Q+CND4CFBjs
+	DuVBupQTrKDsfPVxdwlOCBJQct39bCa/6oYbWvb5D7mUAd2hnnhvi19m/8b9awlFBqUik9mSAB6Rf
+	wCp1oJNgYJ6LYEIJWbMUoE4P5qEul61lbL3BlTFvrgS+6kV7Yd35xa0xCXJo5lCqaURq5758z8dYu
+	b07LbRya0JpbPC8w8bTA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jLv0B-0004BN-FZ; Tue, 07 Apr 2020 20:39:19 +0000
-Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
+	id 1jLv7S-0002Ch-G8; Tue, 07 Apr 2020 20:46:50 +0000
+Received: from mail-lf1-x142.google.com ([2a00:1450:4864:20::142])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jLv08-0004Ax-MP
- for linux-mtd@lists.infradead.org; Tue, 07 Apr 2020 20:39:18 +0000
-Received: by mail-lj1-x244.google.com with SMTP id g27so5214805ljn.10
- for <linux-mtd@lists.infradead.org>; Tue, 07 Apr 2020 13:39:15 -0700 (PDT)
+ id 1jLv7Q-00027D-EO
+ for linux-mtd@lists.infradead.org; Tue, 07 Apr 2020 20:46:49 +0000
+Received: by mail-lf1-x142.google.com with SMTP id s13so3446644lfb.9
+ for <linux-mtd@lists.infradead.org>; Tue, 07 Apr 2020 13:46:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
- h=to:cc:from:subject:organization:message-id:date:user-agent
- :mime-version:content-language:content-transfer-encoding;
- bh=VPY5v6ZzgWualN0qMBfGuP3SYLv3vPSOU4crA73tm3w=;
- b=HiO9K4BFLHWwvLnRHg9zS5FwhSPhKSZ6M2E2G/0O/PU2d3zl90DcMJGNGd8h5FogZE
- iMpeYt7pqRemXwGpxiKB859l+PLj1w5yW5oFQNzwKrOsJ0mb7pin3So3rlFYIhjN0J0h
- WZ+SmNl3LwZQU7StJePmCN7Z9XnY0Aow1A1MPjouT+otT+tqT6RY8s3aqE8b+Wa67nVs
- k3okDueoBQU72nzS+gv/wz4U1xDkm0a6THZ/8HNfsWmaQuBa1ozEOEhMjtMTy2hJ9OYl
- UlOb+OB4JavZDPQgtaLLcyDADbzFoLLRBri1DuTcQZ3jnpzVk6GXjkUar0S4v3Fp8Vk+
- mVZQ==
+ h=subject:from:to:cc:references:organization:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=gYeiaFW0jIRycL7RzJEl7jSHt9ArlYmLXlUeJtp1xyE=;
+ b=VeQFszYjlAYkSbkwbmGXG2ViWWGTIz59qB+AnhU1NbNvVQhAWNSiJu3jTG4XNkN0l0
+ 76/lxBrNfDgPrj86JrH0PErarm8piU5W4P6LXKQKYUnYoPtR8+HzTo+5TEJGoEUZnt3S
+ Tg90+EDFhpKoqiuBQsDm78olxusZ7bZSpoAfV7oaOzGgE0CodytfLIaue6nqoavOTusi
+ Ap4sMxlnSH0la7o/78QSLwPaGhgePvfJacIIdug6sViDqxG6Dthz+6m6KQRV/FCI273Q
+ T4q/DW+CPqOrlW7IFin15fmb/EXUoG67rKNcpPXiU8M5dM2uptFIPxQFFWOgQTFi0ka7
+ sjZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:to:cc:from:subject:organization:message-id:date
- :user-agent:mime-version:content-language:content-transfer-encoding;
- bh=VPY5v6ZzgWualN0qMBfGuP3SYLv3vPSOU4crA73tm3w=;
- b=pxvOMgBBFqI8/K7o2jmY+hI6HvIjDyqs1m2bwis4L9sxtvuRWa36V7Kj+eOGENbYdz
- UxzEbBsTOiiRf0RBkg6fvSAMwrVkLw0dvXtRSgh6/KbMaiV/QhykmM5lb14WhKPqP/QI
- DSetBkObYqAxtxEyI6IdPrKd4aaqQB6h3Ui13XFB+FGCpnLaAhu5nzrvByKFtMG68NWc
- X9skcUT0QI810v2mlKSczP68v7B4iVvm+xY+dPHz1j7y6AO1MKVA3tDks2tNMMt7mjNp
- sGxHzWRjJMfyMTsgRRZo/47hMiiE9AVk9AiH4uZEvBkQfUl9JpEByhR91dEb0pEExRmw
- riCg==
-X-Gm-Message-State: AGi0PubrE5Cdcgp5dofn/3BYxGR6wUtPa67jmgYoXy28i+MihBiC+9oh
- FJ4X4i//fN/btVY7XdVPP/V5qg==
-X-Google-Smtp-Source: APiQypKDcGAJSrXRObbu/sFG2pa2RuDQnxfFeWqSuvZIMLtKm7au96/enK6YUxqLpFnQEGqFiBuKTw==
-X-Received: by 2002:a2e:b0eb:: with SMTP id h11mr2877180ljl.85.1586291954440; 
- Tue, 07 Apr 2020 13:39:14 -0700 (PDT)
+ h=x-gm-message-state:subject:from:to:cc:references:organization
+ :message-id:date:user-agent:mime-version:in-reply-to
+ :content-language:content-transfer-encoding;
+ bh=gYeiaFW0jIRycL7RzJEl7jSHt9ArlYmLXlUeJtp1xyE=;
+ b=b3xPUrOD9n6mkuVJ25UOglfQSMBri3drsAr4N21ngo+lV4E/9eC98vID99ct+1e+TL
+ tL/u2PfOJyUA/DXZxmelw5OpIfKoZaOqnPF2vMG2/SDGSCPmGhLyMjhgrryTrZ35PA5h
+ B8SN2bgQVe8Jq04c4bPd8aN0349m1AFXSNbn1PL5VherCc6Adib7eI6nZkrGPLJBopmU
+ V+4T3xMlv7ZUAvXe/v8OfWJdSH9EKtkjl+d8tdC0NH1Pq4C5Fv2YDE1SqChY2ZWuivOC
+ 15ZP448MEtnlsqugBg2Bu396UpFzQXwgSs56m7JZE5RnjiF9W3bP1Kd2lNiPBEY3frLH
+ w+kw==
+X-Gm-Message-State: AGi0PubThTp3GKOpJWg8au3Lc6WfUTmEaZmOOF8lac1iNYRtIQaW+iKp
+ RkY7Mky65Rpl2KVf7Qud+pwE2RCcYJo=
+X-Google-Smtp-Source: APiQypIpoJbbrddWATqqsHoGmJBejuWrU/BQXTOli87I+xPRU3dE131wWyfKdKPErk9DrE3U9jlrtg==
+X-Received: by 2002:ac2:4342:: with SMTP id o2mr2460512lfl.195.1586292404842; 
+ Tue, 07 Apr 2020 13:46:44 -0700 (PDT)
 Received: from wasted.cogentembedded.com
  ([2a00:1fa0:44c8:4ead:6627:2c4b:d1ac:b6e2])
- by smtp.gmail.com with ESMTPSA id y29sm12345765ljd.26.2020.04.07.13.39.13
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Tue, 07 Apr 2020 13:39:13 -0700 (PDT)
-To: Tudor Ambarus <tudor.ambarus@microchip.com>, linux-mtd@lists.infradead.org
+ by smtp.gmail.com with ESMTPSA id a6sm13924512lfl.5.2020.04.07.13.46.43
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Tue, 07 Apr 2020 13:46:44 -0700 (PDT)
+Subject: Re: [PATCH] mtd: spi-nor: move #define SPINOR_OP_WRDI
 From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: [PATCH] mtd: spi-nor: move #define SPINOR_OP_WRDI
+To: Tudor Ambarus <tudor.ambarus@microchip.com>, linux-mtd@lists.infradead.org
+References: <a191e8f4-6953-4c84-6e45-204dea079bd7@cogentembedded.com>
 Organization: Cogent Embedded
-Message-ID: <a191e8f4-6953-4c84-6e45-204dea079bd7@cogentembedded.com>
-Date: Tue, 7 Apr 2020 23:39:12 +0300
+Message-ID: <b49e9767-036d-e6b2-5bf9-986d7aa58fc1@cogentembedded.com>
+Date: Tue, 7 Apr 2020 23:46:42 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
  Thunderbird/52.2.1
 MIME-Version: 1.0
+In-Reply-To: <a191e8f4-6953-4c84-6e45-204dea079bd7@cogentembedded.com>
 Content-Language: en-MW
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200407_133916_884960_DEB4CAD6 
-X-CRM114-Status: GOOD (  14.52  )
+X-CRM114-CacheID: sfid-20200407_134648_485443_57CAA7DA 
+X-CRM114-Status: GOOD (  11.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,38 +108,18 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The write disable (WRDI) opcode is not really specific to the SST flashes
-(anymore?) -- move the #define to the main opcode group, just after WREN.
+On 04/07/2020 11:39 PM, Sergei Shtylyov wrote:
 
-Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+> The write disable (WRDI) opcode is not really specific to the SST flashes
+> (anymore?) -- move the #define to the main opcode group, just after WREN.
 
----
-This patch is atop of the 'spi-nor/next' branch of the MTD 'linux.git' repo
-plus 5 kernel-doc fixes posted last week...
+   Oops, I moved #define but forgot to update the description... :-/
+   Will recast...
 
- include/linux/mtd/spi-nor.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+[...]
 
-Index: linux/include/linux/mtd/spi-nor.h
-===================================================================
---- linux.orig/include/linux/mtd/spi-nor.h
-+++ linux/include/linux/mtd/spi-nor.h
-@@ -20,6 +20,7 @@
-  */
- 
- /* Flash opcodes. */
-+#define SPINOR_OP_WRDI		0x04	/* Write disable */
- #define SPINOR_OP_WREN		0x06	/* Write enable */
- #define SPINOR_OP_RDSR		0x05	/* Read status register */
- #define SPINOR_OP_WRSR		0x01	/* Write status register 1 byte */
-@@ -80,7 +81,6 @@
- 
- /* Used for SST flashes only. */
- #define SPINOR_OP_BP		0x02	/* Byte program */
--#define SPINOR_OP_WRDI		0x04	/* Write disable */
- #define SPINOR_OP_AAI_WP	0xad	/* Auto address increment word program */
- 
- /* Used for S3AN flashes only */
+MBR, Sergei
 
 ______________________________________________________
 Linux MTD discussion mailing list
