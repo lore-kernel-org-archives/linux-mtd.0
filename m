@@ -1,92 +1,62 @@
-Return-Path: <SRS0=nDBX=5X=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=TEDC=5Z=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,URIBL_DBL_SPAM,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F60DC2D0EC
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Apr 2020 20:57:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D937C2D0EA
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 Apr 2020 09:12:16 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0C33F20730
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Apr 2020 20:57:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0032520A8B
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 Apr 2020 09:12:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gFi5598n";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="mIDQq153"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0C33F20730
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="eZNIOy8P"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0032520A8B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:To:Subject
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
 	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=w4033Lo90Ay1JeCMGx8q/b2hPMRnhMgCf6PN1mBgPDk=; b=gFi5598nOesclC
-	p2I/XGmTWkCJ22SwsMKgzCQockI3jKKFc0O2i4Er/keL+sWhmo4U7X0afV/g/NFMKMUTbz3FKdVtv
-	oe53EuwRm6ibrLcVnDY5UrrKU99RzAFTNj/+W3HbXPLTa9fSiyz+pPsz+lPvfTkt1uwSv1tK5+bpj
-	W2L1+zfHt6YTozfp/Ud9QZGZf9VfdiESkXFPFhBSQOkmRbybijl01wVGxAq288pnKY6bk8DFKnW4H
-	xDxsFgFHG2sqv4V4Eo06kvKxJ8A84QMh7Yfr4BgTbMeQA2mL1G5isnTV1+tMr9efyxdkORzHUxVVV
-	S6meyziPqfUo59Dl0EQw==;
+	List-Owner; bh=+/9MC+MdDSOfTTZIRavFwr+JoSN6lJNV+LvxUnMDed4=; b=eZNIOy8P/0n+3M
+	Pm7tE8CZJlKRLo37mT+gyfISwAoz0n++xJdIc3abPCbGVQPI2+xs1tvJoUL0KRFlIOBgu+ixz/CmH
+	22Gw40+nqZ5KI9hyFJGDQr/TOO8eFGs/TRbC+rEMbuniwRj085JgKmGoBAE2m6srPGfkPDmzgYLNb
+	eIlnM8ejF7VmBO4YKqt0Zue8jJWGqCePDIoHXEEMI002HB54UA+HIPWiLdBo66BKf+UFIpTspJ0Lg
+	b+A2BhE91NTUC3sW79NC6zNCksXJjw4gfwq77h3iu9ZruqMBZTCwJYLx/pEOkDLLEOunCnbM0vg4F
+	oUcTgSfOqqEEjHqNh2Vw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jLvHC-0000mM-D9; Tue, 07 Apr 2020 20:56:54 +0000
-Received: from mail-lj1-x22a.google.com ([2a00:1450:4864:20::22a])
+	id 1jMTEE-0007ks-HQ; Thu, 09 Apr 2020 09:12:06 +0000
+Received: from szxga07-in.huawei.com ([45.249.212.35] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jLvH9-0000lb-7w
- for linux-mtd@lists.infradead.org; Tue, 07 Apr 2020 20:56:52 +0000
-Received: by mail-lj1-x22a.google.com with SMTP id k21so5350776ljh.2
- for <linux-mtd@lists.infradead.org>; Tue, 07 Apr 2020 13:56:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
- h=from:subject:to:cc:organization:message-id:date:user-agent
- :mime-version:content-language:content-transfer-encoding;
- bh=8E93RqiJT1IY400var7NpMxIbsOq13mEa5fUe2tKz8Q=;
- b=mIDQq153Gmp6hMrzCiAqGZH4sh0kuCClO4pM6pdKeq6bCxpLLXK9tJ/vw9Ua2TZGgH
- v0TSkbyRzPsvv4eN3Dy+7Wo0/pAsItVsJ09TuksydQBiMspJDFVDKKAQWt2/aw6+YBjh
- 032uzwKzQmxgodRrLijDrRU/R/ywQv2/DUACKc80m6Wqnxv7xiiFYw8pCvlV/JZDbL8+
- qGhRBqeP6soe64iWJ6fkdfoOEPLXGY30WGkakc+JjO+u/umEPlrRB4WYLz16t7M5r2N9
- QRh8wlIl036eiPbK1CWWYlLw+yudVVnL3Separ+7uZS1TpN4AQAcF51URhG0SSt6FeMB
- IiMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:subject:to:cc:organization:message-id:date
- :user-agent:mime-version:content-language:content-transfer-encoding;
- bh=8E93RqiJT1IY400var7NpMxIbsOq13mEa5fUe2tKz8Q=;
- b=pKbYNNl2EQPJsSlUvT7sU/hQmGRwNpZt87fTYOe00/Qzlu+usoXP3zHJEhJ0ctkldQ
- 0LTh4JqcdbGR+DJ98XNyoA90r5aBuqYlgAedaHMy5PCDOZpYQL6VSdenn1kXyVsWsmcj
- VP8+RCIGBXEXv5dglhHu/LfwJEqQdH9jLH6hYff2UQM7kRBL4RJVQUHUvl8tPdK83ul7
- LVKw3kNlGm27CFTxDtpTIh/ZJFY+0PvhugaXta1TDWR3TrqxDDHo580qcmwVBhN9bHi6
- odB4vhfxDOfZjp9Ub0n79gKb8L738jdmHVvSC0OT3dUVS/uFjubTdxK9DS+44ExypX0m
- SUEg==
-X-Gm-Message-State: AGi0PuY+2QhDI8k0AZEg+PRHgOxDPU1CBYlSufrpfa9IPJ0erALddqTB
- MXyp+xN1Cn3BvjKpYbNrzJAnNw==
-X-Google-Smtp-Source: APiQypIY7Icxm7M6C768LEBnjwJ6UhkoKdnoF2cESvl03F/BD7+QPJnSCGmRzQEMDQREgguEdTMQLg==
-X-Received: by 2002:a05:651c:200c:: with SMTP id
- s12mr2666235ljo.30.1586293004846; 
- Tue, 07 Apr 2020 13:56:44 -0700 (PDT)
-Received: from wasted.cogentembedded.com
- ([2a00:1fa0:44c8:4ead:6627:2c4b:d1ac:b6e2])
- by smtp.gmail.com with ESMTPSA id u4sm12152339ljj.44.2020.04.07.13.56.43
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Tue, 07 Apr 2020 13:56:44 -0700 (PDT)
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: [PATCH v2] mtd: spi-nor: move #define SPINOR_OP_WRDI
-To: Tudor Ambarus <tudor.ambarus@microchip.com>, linux-mtd@lists.infradead.org
-Organization: Cogent Embedded
-Message-ID: <9f654612-54a5-41d1-01dc-8196f334bffd@cogentembedded.com>
-Date: Tue, 7 Apr 2020 23:56:43 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.1
+ id 1jMTEA-0007kJ-RZ
+ for linux-mtd@lists.infradead.org; Thu, 09 Apr 2020 09:12:04 +0000
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+ by Forcepoint Email with ESMTP id B625F651FF0BBC36EBA3;
+ Thu,  9 Apr 2020 17:11:55 +0800 (CST)
+Received: from SZXY1L005141301.china.huawei.com (10.40.90.207) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 9 Apr 2020 17:11:45 +0800
+From: Zhe Li <lizhe67@huawei.com>
+To: <dwmw2@infradead.org>, <richard@nod.at>, <wenwen@cs.uga.edu>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] jffs2: fix jffs2 mounting failure
+Date: Thu, 9 Apr 2020 17:11:34 +0800
+Message-ID: <20200409091134.61364-1-lizhe67@huawei.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-Content-Language: en-MW
+X-Originating-IP: [10.40.90.207]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200407_135651_282160_3BBDD641 
-X-CRM114-Status: GOOD (  15.03  )
+X-CRM114-CacheID: sfid-20200409_021203_079862_6BAB1F17 
+X-CRM114-Status: GOOD (  16.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,48 +68,132 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: yihuaijie@huawei.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The write disable (WRDI) opcode is not really specific to the SST flashes
-(anymore?) -- move the #define to the main opcode group, just before WREN.
+There is a scene that may easily case mounting failure while using
+nand flash with jffs2. The steps are listed below.
+1.erase nand flash
+2.mount jffs2 on it (this mounting operation will be successful)
+3.do chown or chmod to the mount point directory
+4.umount jffs2
+5.mount jffs2 on nand flash
+Step 5 will return I/O ERROR
 
-Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+The reason for this mounting failure is that at the end of function
+jffs2_scan_medium(), jffs2 will check the used_size and some info
+of nr_blocks.If conditions are met, it will return -EIO.
 
+In the steps listed above, step 3 will write jffs2_raw_inode into
+flash without jffs2_raw_dirent, which will cause that there are some
+jffs2_raw_inode but no jffs2_raw_dirent on flash. This will meet
+the condition at the end of function jffs2_scan_medium() and return
+-EIO if we umount jffs2 and mount it again.
+
+Typical image of this problem is like:
+Empty space found from 0x00000000 to 0x008a0000
+Inode node at xx, totlen 0x00000044, #ino 1, version 1, isize 0...
+
+This patch add a flag to fix this problem. Appropriate bits of the
+flag will be set if we scan a jffs2_raw_inode with ino != 1 and
+ino == 1. And the flag will be check at the judgment of return
+-EIO,which is mentioned above.
+
+Signed-off-by: Zhe Li <lizhe67@huawei.com>
 ---
-This patch is atop of the 'spi-nor/next' branch of the MTD 'linux.git' repo
-plus 5 kernel-doc fixes posted last week...
+ fs/jffs2/build.c       |  1 +
+ fs/jffs2/jffs2_fs_sb.h | 26 ++++++++++++++++++++++++++
+ fs/jffs2/scan.c        |  8 +++++++-
+ 3 files changed, 34 insertions(+), 1 deletion(-)
 
-Changes in version 2:
-- Fixed up the patch description to match the code.
+diff --git a/fs/jffs2/build.c b/fs/jffs2/build.c
+index b288c8a..d9fda40 100644
+--- a/fs/jffs2/build.c
++++ b/fs/jffs2/build.c
+@@ -405,6 +405,7 @@ int jffs2_do_mount_fs(struct jffs2_sb_info *c)
+ 	INIT_LIST_HEAD(&c->bad_used_list);
+ 	c->highest_ino = 1;
+ 	c->summary = NULL;
++	c->inode_flag = INODE_FLAG_INIT;
+ 
+ 	ret = jffs2_sum_init(c);
+ 	if (ret)
+diff --git a/fs/jffs2/jffs2_fs_sb.h b/fs/jffs2/jffs2_fs_sb.h
+index 778275f..a01b5f4 100644
+--- a/fs/jffs2/jffs2_fs_sb.h
++++ b/fs/jffs2/jffs2_fs_sb.h
+@@ -27,6 +27,10 @@
+ #define JFFS2_SB_FLAG_SCANNING 2 /* Flash scanning is in progress */
+ #define JFFS2_SB_FLAG_BUILDING 4 /* File system building is in progress */
+ 
++#define INODE_FLAG_INIT 0
++#define INODE_FLAG_HAS_ROOT_INODE  (0x01 << 0)
++#define INODE_FLAG_HAS_OTHER_INODE (0x01 << 1)
++
+ struct jffs2_inodirty;
+ 
+ struct jffs2_mount_opts {
+@@ -157,6 +161,28 @@ struct jffs2_sb_info {
+ #endif
+ 	/* OS-private pointer for getting back to master superblock info */
+ 	void *os_priv;
++	/* this flag show the contained inodes info */
++	int inode_flag;
+ };
+ 
++static inline void set_root_inode_flag(struct jffs2_sb_info *c)
++{
++	c->inode_flag |= INODE_FLAG_HAS_ROOT_INODE;
++}
++
++static inline void set_other_inode_flag(struct jffs2_sb_info *c)
++{
++	c->inode_flag |= INODE_FLAG_HAS_OTHER_INODE;
++}
++
++static inline int has_root_inode(struct jffs2_sb_info *c)
++{
++	return (c->inode_flag & INODE_FLAG_HAS_ROOT_INODE);
++}
++
++static inline int has_other_inode(struct jffs2_sb_info *c)
++{
++	return (c->inode_flag & INODE_FLAG_HAS_OTHER_INODE);
++}
++
+ #endif /* _JFFS2_FS_SB */
+diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
+index 5f7e284..ec13e08 100644
+--- a/fs/jffs2/scan.c
++++ b/fs/jffs2/scan.c
+@@ -261,7 +261,8 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
+ 	}
+ #endif
+ 	if (c->nr_erasing_blocks) {
+-		if ( !c->used_size && ((c->nr_free_blocks+empty_blocks+bad_blocks)!= c->nr_blocks || bad_blocks == c->nr_blocks) ) {
++		if (!c->used_size && ((c->nr_free_blocks+empty_blocks+bad_blocks) != c->nr_blocks || bad_blocks == c->nr_blocks) &&
++		    !(has_root_inode(c) && !has_other_inode(c))) {
+ 			pr_notice("Cowardly refusing to erase blocks on filesystem with no valid JFFS2 nodes\n");
+ 			pr_notice("empty_blocks %d, bad_blocks %d, c->nr_blocks %d\n",
+ 				  empty_blocks, bad_blocks, c->nr_blocks);
+@@ -1036,6 +1037,11 @@ static int jffs2_scan_inode_node(struct jffs2_sb_info *c, struct jffs2_erasebloc
+ 		jffs2_sum_add_inode_mem(s, ri, ofs - jeb->offset);
+ 	}
+ 
++	if (likely(ino != 1))
++		set_other_inode_flag(c);
++	else
++		set_root_inode_flag(c);
++
+ 	return 0;
+ }
+ 
+-- 
+2.7.4
 
- include/linux/mtd/spi-nor.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-Index: linux/include/linux/mtd/spi-nor.h
-===================================================================
---- linux.orig/include/linux/mtd/spi-nor.h
-+++ linux/include/linux/mtd/spi-nor.h
-@@ -20,6 +20,7 @@
-  */
- 
- /* Flash opcodes. */
-+#define SPINOR_OP_WRDI		0x04	/* Write disable */
- #define SPINOR_OP_WREN		0x06	/* Write enable */
- #define SPINOR_OP_RDSR		0x05	/* Read status register */
- #define SPINOR_OP_WRSR		0x01	/* Write status register 1 byte */
-@@ -80,7 +81,6 @@
- 
- /* Used for SST flashes only. */
- #define SPINOR_OP_BP		0x02	/* Byte program */
--#define SPINOR_OP_WRDI		0x04	/* Write disable */
- #define SPINOR_OP_AAI_WP	0xad	/* Auto address increment word program */
- 
- /* Used for S3AN flashes only */
 
 ______________________________________________________
 Linux MTD discussion mailing list
