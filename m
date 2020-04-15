@@ -2,77 +2,76 @@ Return-Path: <SRS0=fMXC=57=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3635C2BA2B
-	for <linux-mtd@archiver.kernel.org>; Wed, 15 Apr 2020 05:35:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 092ABC2BA2B
+	for <linux-mtd@archiver.kernel.org>; Wed, 15 Apr 2020 06:02:18 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5FE0F206D9
-	for <linux-mtd@archiver.kernel.org>; Wed, 15 Apr 2020 05:35:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CE01D206E9
+	for <linux-mtd@archiver.kernel.org>; Wed, 15 Apr 2020 06:02:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LSM/UwOs"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5FE0F206D9
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cmETKYbP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CE01D206E9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Uc3xgbk8AYecrsJks74vk6iQeNkLf9ycD+732jJL9hY=; b=LSM/UwOsgwc+QT
-	qEwBZPTuduiv/LzqSHEHZcRJ5D7R20MbAguR3QZ9JpvR9sOcMVcM3e1zJF+vGsL0BAwFE9QwHAkCS
-	PQNl1FeLkCjITrF6yk7ibctulAfAicci9seaAqGL18bfx9VVMcio+A5ZzYh/3TCIZEAcl7fOndNwD
-	emGbF5MQXbEatASf4ROYDEq4JJxA/ru/F93fLuLNOCJ+4ytKKlHwuWOUWp/V6zaXelHKzECt882Pv
-	XT5PiprZ0lr4ywHiMybpiJbkB/Mp/7jc0AiRGHcasdVUU9IQ5CLLhBWR6gll07QGXWUrrLBQ5O81D
-	0vdVe764Lx+FaRyHnszg==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=Q+2tc4a3Yqg+fBYbFOWINN6426uowyekIfoPPQoIClI=; b=cmETKYbPmVVNF8bP62TOhMwN6
+	WDDX7cIXt7ZOIOBv+WXzGq2iglIQexCTtfySdJmWhvwCrQZEAyiQsWPk5d945Jq+onGk8d0cqa0/K
+	L5Y06P6zTLLBKDF0WPAf/+F7jHdtYpdYKGXdzfjHxdBUO0MaUwPdIyU3hmSkGDCO2EUFNRqusJIpy
+	swkIMMxFmsL42duxpNXmolf+PYDn3SB9w6alPwEC8iX5ADDXavy6vcfSNTNVzwFyfmGA4yOyml6U/
+	RO3u2sbTB3mkrymmNV4tsm0gZzHvBSZ9XcYs8ZbzFF+GWXkgz69SMHealuqOScBN7BnxR1l/wZShs
+	GwG/0JK4A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jOahz-0006g2-EM; Wed, 15 Apr 2020 05:35:35 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1jOb7f-0007kQ-NC; Wed, 15 Apr 2020 06:02:07 +0000
+Received: from mga12.intel.com ([192.55.52.136])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jOahv-0006fP-H6
- for linux-mtd@lists.infradead.org; Wed, 15 Apr 2020 05:35:33 +0000
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <sha@pengutronix.de>)
- id 1jOahs-0005TP-KT; Wed, 15 Apr 2020 07:35:28 +0200
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
- (envelope-from <sha@pengutronix.de>)
- id 1jOahr-0006Dm-6Z; Wed, 15 Apr 2020 07:35:27 +0200
-Date: Wed, 15 Apr 2020 07:35:27 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Tudor.Ambarus@microchip.com
-Subject: Re: [PATCH v2] mtd: spi-nor: Add support for cy15x104q
-Message-ID: <20200415053527.GQ27288@pengutronix.de>
-References: <20200305120242.1391-1-s.hauer@pengutronix.de>
- <20200309084033.8752-1-s.hauer@pengutronix.de>
- <20200414120945.GN27288@pengutronix.de>
- <11398746.sNIsW2IRu5@192.168.0.120>
+ id 1jOb7c-0007jx-Lr
+ for linux-mtd@lists.infradead.org; Wed, 15 Apr 2020 06:02:06 +0000
+IronPort-SDR: pL4jskSHQ7wPxTbbuw6UxaB/xBOQjWcN6gC8MxYkmRiPFC9QwyO95BhqnmC3yKhjfBjSaOCpNS
+ /L0FhqSGaklA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 14 Apr 2020 23:02:03 -0700
+IronPort-SDR: XI465BG+7j67qXFLT9dIcHvFNQBQDHurw6IfghYezG/NpWEdYCVIsNDT2k6ZC1QusTyPJdtTbR
+ h6Ep06sJKl6g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,385,1580803200"; d="scan'208";a="332402681"
+Received: from linux.intel.com ([10.54.29.200])
+ by orsmga001.jf.intel.com with ESMTP; 14 Apr 2020 23:02:03 -0700
+Received: from [10.214.160.145] (unknown [10.214.160.145])
+ by linux.intel.com (Postfix) with ESMTP id 218755802C9;
+ Tue, 14 Apr 2020 23:01:56 -0700 (PDT)
+Subject: Re: [PATCH v1 2/2] mtd: rawnand: Add NAND controller support on Intel
+ LGM SoC
+To: Boris Brezillon <boris.brezillon@collabora.com>
+References: <20200414022433.36622-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20200414022433.36622-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20200414092132.525053f1@collabora.com>
+From: "Ramuthevar, Vadivel MuruganX"
+ <vadivel.muruganx.ramuthevar@linux.intel.com>
+Message-ID: <bb9d2f29-acef-cc1b-8606-bbb38b488cce@linux.intel.com>
+Date: Wed, 15 Apr 2020 14:01:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <11398746.sNIsW2IRu5@192.168.0.120>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-IRC: #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 07:32:38 up 55 days, 13:03, 71 users,  load average: 0.95, 0.50, 0.25
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+In-Reply-To: <20200414092132.525053f1@collabora.com>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200414_223531_568443_17BC5409 
-X-CRM114-Status: GOOD (  13.47  )
+X-CRM114-CacheID: sfid-20200414_230204_724181_F048045A 
+X-CRM114-Status: GOOD (  12.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,43 +83,42 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: richard@nod.at, linux-mtd@lists.infradead.org, vigneshr@ti.com,
- miquel.raynal@bootlin.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: cheol.yong.kim@intel.com, devicetree@vger.kernel.org,
+ andriy.shevchenko@intel.com, anders.roxell@linaro.org, vigneshr@ti.com,
+ arnd@arndb.de, richard@nod.at, qi-ming.wu@intel.com, brendanhiggins@google.com,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com, tglx@linutronix.de,
+ masonccyang@mxic.com.tw, piotrs@cadence.com
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Tudor,
-
-On Tue, Apr 14, 2020 at 04:41:42PM +0000, Tudor.Ambarus@microchip.com wrote:
-> On Tuesday, April 14, 2020 3:09:45 PM EEST Sascha Hauer wrote:
-> > Any feedback to this one?
-> 
-> Hi, Sascha,
-> 
-> I'm a bit busy but I'll try to allocate time to review patches sometime this 
-> week. BTW, we moved the manufacturer specific code out of the core, we now 
-> have a dedicated file for each manufacturer (this includes flash_info 
-> entries), check the spi-nor/next branch.
-
-I see. It's in master now btw.
-
-> I know that it's not your fault that
-> your patch was left behind, so I volunteer to respin your patch if you don't
-> feel like doing it.
-
-Don't worry, I can respin it. You want to have a cypress.c file, even
-though it has only a single entry, right?
-
-Sascha
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgQm9yaXMsCgogwqDCoMKgIFRoYW5rIHlvdSBzbyBtdWNoIGZvciByZXZpZXcgY29tbWVudHMg
+YW5kIHlvdXIgdGltZS4uLgoKT24gMTQvNC8yMDIwIDM6MjEgcG0sIEJvcmlzIEJyZXppbGxvbiB3
+cm90ZToKPiBIZWxsbyBSYW11dGhldmFyLAo+Cj4gT24gVHVlLCAxNCBBcHIgMjAyMCAxMDoyNDoz
+MyArMDgwMAo+ICJSYW11dGhldmFyLFZhZGl2ZWwgTXVydWdhblgiCj4gPHZhZGl2ZWwubXVydWdh
+bngucmFtdXRoZXZhckBsaW51eC5pbnRlbC5jb20+IHdyb3RlOgo+Cj4+ICsJbGdtX2hvc3QtPmNo
+aXAubGVnYWN5LnJlYWRfYnl0ZSA9IGxnbV9yZWFkX2J5dGU7Cj4+ICsJbGdtX2hvc3QtPmNoaXAu
+bGVnYWN5LnJlYWRfYnVmID0gbGdtX3JlYWRfYnVmOwo+PiArCWxnbV9ob3N0LT5jaGlwLmxlZ2Fj
+eS53cml0ZV9idWYgPSBsZ21fd3JpdGVfYnVmOwo+PiArCWxnbV9ob3N0LT5jaGlwLmxlZ2FjeS5z
+ZWxlY3RfY2hpcCA9IGxnbV9zZWxlY3RfY2hpcDsKPj4gKwlsZ21faG9zdC0+Y2hpcC5sZWdhY3ku
+ZGV2X3JlYWR5ID0gbGdtX2Rldl9yZWFkeTsKPj4gKwlsZ21faG9zdC0+Y2hpcC5sZWdhY3kuY21k
+X2N0cmwgPSBsZ21fY21kX2N0cmw7Cj4+ICsJbGdtX2hvc3QtPmNoaXAubGVnYWN5LmNoaXBfZGVs
+YXkgPSAzMDsKPj4gKwlsZ21faG9zdC0+Y2hpcC5sZWdhY3kuZHVtbXlfY29udHJvbGxlci5vcHMg
+PSAmbGdtX25hbmRfY29udHJvbGxlcl9vcHM7Cj4+ICsKPiBTZXJpb3VzbHksIHdoYXQncyBub3Qg
+Y2xlYXIgaW4gWzFdPyBPa2F5LCBsZXQncyBzYXkgeW91IG92ZXJsb29rZWQgdGhpcwo+IGNvbW1l
+bnQsIGlzbid0IHRoZSBuYW1lIG9mIHRoZSBmaWVsZCBleHBsaWNpdCBlbm91Z2g/IFdlIHJlY2Vp
+dmVkIGEKPiBmZXcgb3RoZXIgZHJpdmVycyBpbXBsZW1lbnRpbmcgdGhlIGxlZ2FjeSBpbnRlcmZh
+Y2UgaW4gdGhlIGxhc3QgZmV3Cj4gbW9udGhzIHNvIG1heWJlIHRoZXJlJ3Mgc29tZXRoaW5nIHRv
+IGltcHJvdmUgb24gb3VyIGVuZCAodXBkYXRlIHRoZQo+IGRvYywgbW92ZSBsZWdhY3kgZHJpdmVy
+cyB0byBhIGxlZ2FjeSBzdWItZGlyPykuClVuZGVyc3Rvb2QgdGhlIGxlZ2FjeSB0byBsYXRlc3Qg
+aW1wbGVtZW50YXRpb24gYmFzZWQgLT5leGVjX29wKCksIFRoYW5rcyEKPgo+IEJhY2sgdG8gbW9y
+ZSBjb25zdHJ1Y3RpdmUgY29tbWVudCBub3c6IHBsZWFzZSBpbXBsZW1lbnQgLT5leGVjX29wKCkg
+dG8KPiByZXBsYWNlIHRob3NlIGxlZ2FjeSBob29rcy4KCkFncmVlZCwgd2lsbCBkbyB0aGUgaW1w
+bGVtZW50YXRpb24gb2YgZXhlY19vcCgpIGhvb2sgYW5kIHVwZGF0ZSB0aGUgcGF0Y2hlcy4KClJl
+Z2FyZHMKVmFkaXZlbAo+Cj4gUmVnYXJkcywKPgo+IEJvcmlzCj4KPiBbMV1odHRwczovL2VsaXhp
+ci5ib290bGluLmNvbS9saW51eC92NS43LXJjMS9zb3VyY2UvaW5jbHVkZS9saW51eC9tdGQvcmF3
+bmFuZC5oI0w5ODcKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3Rz
+LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
