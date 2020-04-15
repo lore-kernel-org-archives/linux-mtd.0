@@ -2,66 +2,61 @@ Return-Path: <SRS0=fMXC=57=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32E88C2BA19
-	for <linux-mtd@archiver.kernel.org>; Wed, 15 Apr 2020 08:23:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC9FCC2BA19
+	for <linux-mtd@archiver.kernel.org>; Wed, 15 Apr 2020 08:30:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 028B720784
-	for <linux-mtd@archiver.kernel.org>; Wed, 15 Apr 2020 08:23:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8AED620784
+	for <linux-mtd@archiver.kernel.org>; Wed, 15 Apr 2020 08:30:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="h89zgS6V"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 028B720784
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="aG9WPlIw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8AED620784
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=hisilicon.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lB3hZlCEwUv69v3EE8pwdOs/2/ejo/W4Dgz+A+496lE=; b=h89zgS6VsTl41V
-	YMCdk1eM9zyx/WVianWSv8iEFXYDWN57XOAEHv54s+BBAMqpY89BIrkvOELHg+9eP03I+b79JhkrV
-	nKgN0I1aDr1wO9Axd6WFY0eePxXJCzLiRpCCvaNEGW3xNf5QKQVoZIXdLPaXCuNvevET1l/b4pI8S
-	TOJF0w8FLvrxMcyviWYW7jTU3I7WCtWR2gG+QpRnLQzoE3bkhSY+ynThC9iKD81A/ZtmlT8lk252t
-	eVaSZ/sqapnFcoglEMvZ5sdDowNYOUcQQO3V9JjDVb1E+XR5FByzepVOYAufoIByN5cFhG4lJlEKs
-	Q3yLbBbiJRcF37MU1B0Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=a/2gw8OG2vbwrPtGAWRetaWyA9hNeTJ6K7kkyKDVJI0=; b=aG9WPlIwpSNUhr
+	4VnD9PlPVGnuIqTUIKb3WDp4YVb/9whd+NztBwq+ZYqoB+n0u53wzMehx5e4+AefgtD5FWSpXlwD/
+	JBQovv6VRsix+QDCoiCcsCqE4PnKY/N2aK3UyY6owP/f9dxJkL7OubFgy1xSAy0/d9RIuHp8iCUus
+	MU6GdBFT0FlC8kcyoNqTuaYiaWRxVCMLqM4VWleDmVuDdmBOlKySfHX/TpxUHrJEYdVpmKBbw/h+K
+	WUO9KdvNf/fR6HJQi3y9UhL33yz9oJvhi/deNFprL9cRI7GBXspbgl7L9FYu2AjPMcBKNyv7aZjO6
+	C4odtCfz41gxl31VIW/Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jOdK1-00055F-6S; Wed, 15 Apr 2020 08:23:01 +0000
-Received: from szxga04-in.huawei.com ([45.249.212.190] helo=huawei.com)
+	id 1jOdRW-0003vr-Kn; Wed, 15 Apr 2020 08:30:46 +0000
+Received: from szxga07-in.huawei.com ([45.249.212.35] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jOdJy-0004qN-D2
- for linux-mtd@lists.infradead.org; Wed, 15 Apr 2020 08:22:59 +0000
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
- by Forcepoint Email with ESMTP id 9115E84851A886B992B1;
- Wed, 15 Apr 2020 16:22:47 +0800 (CST)
-Received: from [10.65.58.147] (10.65.58.147) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0;
- Wed, 15 Apr 2020 16:22:42 +0800
-Subject: Re: [PATCH v2] mtd: spi-nor: Add support for cy15x104q
-To: Sascha Hauer <s.hauer@pengutronix.de>, <Tudor.Ambarus@microchip.com>
-References: <20200305120242.1391-1-s.hauer@pengutronix.de>
- <20200309084033.8752-1-s.hauer@pengutronix.de>
- <20200414120945.GN27288@pengutronix.de> <11398746.sNIsW2IRu5@192.168.0.120>
- <20200415053527.GQ27288@pengutronix.de>
+ id 1jOdRU-0003uy-27
+ for linux-mtd@lists.infradead.org; Wed, 15 Apr 2020 08:30:45 +0000
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+ by Forcepoint Email with ESMTP id D2625B953BFCA8DB4DC5;
+ Wed, 15 Apr 2020 16:30:38 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 15 Apr 2020 16:30:32 +0800
 From: Yicong Yang <yangyicong@hisilicon.com>
-Message-ID: <bb25136d-145a-65de-9c63-cac5184ceac9@hisilicon.com>
-Date: Wed, 15 Apr 2020 16:22:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH v2] mtd: spi-nor: Add support for s25fs128s
+Date: Wed, 15 Apr 2020 16:30:33 +0800
+Message-ID: <1586939433-20861-1-git-send-email-yangyicong@hisilicon.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-In-Reply-To: <20200415053527.GQ27288@pengutronix.de>
-X-Originating-IP: [10.65.58.147]
+X-Originating-IP: [10.67.165.24]
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200415_012258_607616_2AC78898 
-X-CRM114-Status: GOOD (  11.39  )
+X-CRM114-CacheID: sfid-20200415_013044_263798_A83C2509 
+X-CRM114-Status: UNSURE (   8.51  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,46 +68,42 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: richard@nod.at, linux-mtd@lists.infradead.org, vigneshr@ti.com,
- miquel.raynal@bootlin.com
+Cc: vigneshr@ti.com, tudor.ambarus@microchip.com, richard@nod.at,
+ linuxarm@huawei.com, yangyicong@hisilicon.com, miquel.raynal@bootlin.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 2020/4/15 13:35, Sascha Hauer wrote:
-> Hi Tudor,
->
-> On Tue, Apr 14, 2020 at 04:41:42PM +0000, Tudor.Ambarus@microchip.com wrote:
->> On Tuesday, April 14, 2020 3:09:45 PM EEST Sascha Hauer wrote:
->>> Any feedback to this one?
->> Hi, Sascha,
->>
->> I'm a bit busy but I'll try to allocate time to review patches sometime this 
->> week. BTW, we moved the manufacturer specific code out of the core, we now 
->> have a dedicated file for each manufacturer (this includes flash_info 
->> entries), check the spi-nor/next branch.
-> I see. It's in master now btw.
->
->> I know that it's not your fault that
->> your patch was left behind, so I volunteer to respin your patch if you don't
->> feel like doing it.
-> Don't worry, I can respin it. You want to have a cypress.c file, even
-> though it has only a single entry, right?
+Add support for Cypress s25fs128s flash. Previously the flash is
+decoded as s25fl129p1 by mistake.
 
-Hi Sascha,
+Add it in the flash info list to correctly decode. No functional
+changes. Further capability of the flash will be parsed from bfpt.
 
-Maybe it's okay to put in spansion.c, as Spansion/Cypress may use same
-manufacturer id on some flash. Otherwise, we should spilt the Cypress ones from
-list in spansion.c to new cypress.c.
+Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+---
+Change since v1:
+- rebase the patch on v5.7 rc1
 
-Regards,
-Yicong
+ drivers/mtd/spi-nor/spansion.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-
->
-> Sascha
->
+diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+index 6756202..01640c1 100644
+--- a/drivers/mtd/spi-nor/spansion.c
++++ b/drivers/mtd/spi-nor/spansion.c
+@@ -29,6 +29,8 @@ static const struct flash_info spansion_parts[] = {
+ 	{ "s25fl512s",  INFO6(0x010220, 0x4d0080, 256 * 1024, 256,
+ 			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+ 			      SPI_NOR_HAS_LOCK | USE_CLSR) },
++	{ "s25fs128s",  INFO6(0x012018, 0x4d0181, 64 * 1024, 256,
++		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR) },
+ 	{ "s25fs512s",  INFO6(0x010220, 0x4d0081, 256 * 1024, 256,
+ 			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+ 			      USE_CLSR) },
+--
+2.8.1
 
 
 ______________________________________________________
