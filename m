@@ -2,97 +2,67 @@ Return-Path: <SRS0=O+nk=6A=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A4D7C2D0EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Apr 2020 06:43:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF350C2D0EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Apr 2020 06:52:05 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 51530206D6
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Apr 2020 06:43:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C50812087E
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Apr 2020 06:52:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="H299NZar";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cerno.tech header.i=@cerno.tech header.b="pG92PCpD";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Ybg5/gOx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 51530206D6
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cerno.tech
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DW1KODgI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C50812087E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:Cc:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=cjtHwbzQ63oYPxGN+2gS34P6RiDANtS2oGhud4/qiOc=; b=H299NZartEv7w+n81tIQCuWDt
-	BS2sZW65dxQbJ7/oa/RznT9kCA5NcjbXSTry+6dafTeCwfWqPAuvTpTPZG6lI0zgNR/dZeXJHU3OP
-	QnhgKnmZluXMFLXsbn7LJJHZqlI75EDg9iZZDELPd538gf4Y+15VNErsiLUu12UJurUUxpsyJS46L
-	GtAr1e8gBqqI1PKxcd9BBOVgDqyWCx6wvbCy9TntRQHTKhKI3CkhAuz2OmJ0mIq2+sb6Muhim9mOc
-	uJV206GUoPjl4IDCuuNqSZkcWqvxtD1v4p05vopNsgk2y4njoLngvexNWdcrL+vdTuaQv0NF5IacQ
-	cVuEF+E+w==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Date:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=cP8lBsGRWDKMqxbAL88WblUciFL3IRyP/gx6/bNmPDE=; b=DW1KODgIy5kjyg
+	7xSAD31g4XbNH9CR+7zmQWd7SRNeTgs4rc5gAzOEFAvoGjP4D9H3UkY2s1YVfqPry5/pBmKlDIxba
+	MA7hRu4a9RmF6n0GrhdA/D9UyVv0d0Wzo7nLtn5LA2pZmwMNCuE0/et7ZsDaBmhQcQI1fWVCSeiyl
+	go4vLd5mNo1xd9n9pteAFpNeVNM7fnGfdpyO3SKfaDimqOxlEDf80s0P9dyI9T/P8+/PsBu7tCjwF
+	3CK2IFECedh00UgxMymkT5Q/W+qx0VJWtRp79fR9ifBwUqhrIouxHwio8Q/HaxFO5z0HiRzbpnQo4
+	bTYT16+U7eGoVNOW5dvA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jOyFS-0007zK-2J; Thu, 16 Apr 2020 06:43:42 +0000
-Received: from wnew1-smtp.messagingengine.com ([64.147.123.26])
+	id 1jOyNY-0008Te-Sg; Thu, 16 Apr 2020 06:52:04 +0000
+Received: from smtprelay0251.hostedemail.com ([216.40.44.251]
+ helo=smtprelay.hostedemail.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jOyFO-0007ys-Lw; Thu, 16 Apr 2020 06:43:39 +0000
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
- by mailnew.west.internal (Postfix) with ESMTP id C15CD717;
- Thu, 16 Apr 2020 02:43:34 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
- by compute4.internal (MEProxy); Thu, 16 Apr 2020 02:43:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
- date:from:to:cc:subject:message-id:references:mime-version
- :content-type:in-reply-to; s=fm2; bh=eYZf6ks0Ag4vWkdY+FBeNSBOYxZ
- kZ9RWoI7L/wXDw/Q=; b=pG92PCpDKEaySEE6b3KK5owRlyOg6omtcBJRh6H2P9g
- A4+dSJ8ZhNWYumPEo8RSeGX3Y1ofqBKY5EwBKyaQ4uWCzw59hiXAUOxV0z1366xq
- iuHHZUldbuzXYDjsaxnBz0RsGbyN9Oo/wuSRdS/D5gtGdR/DOID4nUO++5rp07K7
- LG4gEmPTqHamlJRrP5V34H6lR2pNC4zXGMW/GSE2CyOUmLq5FhAQ7reYixyNSF9S
- Sk3l1mb29qIgPDMYY0/5m7I+DShBoF71j+C3gAVSuV2Nq12oir1/bimsDQytaFI9
- rw3mdDAsOxKY1bvJX6PjvfGpx+6c3IrKClpgJXpZ0wA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=eYZf6k
- s0Ag4vWkdY+FBeNSBOYxZkZ9RWoI7L/wXDw/Q=; b=Ybg5/gOxzIy3RezsVgMA1k
- TNS1SpWdG/vSznxDhwvoLrldOuulzJrzOesiyd4OdIPHp7Pvdeido6VN49AZFJjX
- vpbJjlQnZcrl0XVEenAR8HUbxv1iPLz1X4h7y0gO3Y8YvGQ+Gxco5vWU8dTZpAOa
- BZauQ/RaI9M2F28kXPygdaAyXtkuoiRko9nhnLAnG7Fj/vpriF3MX/GnDqw3vD54
- E2nE7ygWUQnJK7D2pMU5A92RDAXmSDVWG2auXATUw58gux8Zcplt8XXxS8uZEPyq
- dwoVwWzcbh8nau5x1J4Tli8kmRSzPV5DdHht5f7hGV1AlT9ldV7F13ym9Jw80idw
- ==
-X-ME-Sender: <xms:lv6XXlbZsjXCgRSobpV_OahNA0F2bAh_xQnNz30ENtpJCk6C2O5pKw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrfeeggdduudduucetufdoteggodetrfdotf
- fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
- cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
- vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecukfhppeeltd
- drkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgepvdenucfrrghrrghmpehmrghi
- lhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:lv6XXtpOixejZqr7iO1LBzaErDc2trud85HnQReIvup6Nj_ECC1-ug>
- <xmx:lv6XXtQpwDnG3Phz4jTAefVSpE0PDruqeQW4tMGm8dv07y5H0bXPXQ>
- <xmx:lv6XXhnZDnOcsLKYGPwKo5ewvcFCHv464DpLD_f1alqPkiWElJ017g>
- <xmx:lv6XXk2v6et9oVVZCGJreRdM-Z9u-aFhl26_bHzMhmr4x9e7prVi_X54wQY>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr
- [90.89.68.76])
- by mail.messagingengine.com (Postfix) with ESMTPA id D7E56306005F;
- Thu, 16 Apr 2020 02:43:33 -0400 (EDT)
-Date: Thu, 16 Apr 2020 08:43:32 +0200
-From: Maxime Ripard <maxime@cerno.tech>
-To: Rob Herring <robh@kernel.org>
+ id 1jOyNV-0008RT-TJ; Thu, 16 Apr 2020 06:52:03 +0000
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net
+ [216.40.38.60])
+ by smtprelay01.hostedemail.com (Postfix) with ESMTP id 0A616100E7B43;
+ Thu, 16 Apr 2020 06:51:59 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-HE-Tag: wheel34_84bb3b9f86d3c
+X-Filterd-Recvd-Size: 3344
+Received: from XPS-9350.home (unknown [47.151.136.130])
+ (Authenticated sender: joe@perches.com)
+ by omf07.hostedemail.com (Postfix) with ESMTPA;
+ Thu, 16 Apr 2020 06:51:52 +0000 (UTC)
+Message-ID: <d93f90bbcc99967ed5ba458ba99d7e73de12e3b2.camel@perches.com>
 Subject: Re: [PATCH 2/2] dt-bindings: Remove cases of 'allOf' containing a
  '$ref'
-Message-ID: <20200416064332.cbtmgnbwjityninz@gilmour.lan>
+From: Joe Perches <joe@perches.com>
+To: Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+Date: Wed, 15 Apr 2020 23:49:40 -0700
+In-Reply-To: <20200416005549.9683-2-robh@kernel.org>
 References: <20200416005549.9683-1-robh@kernel.org>
  <20200416005549.9683-2-robh@kernel.org>
+User-Agent: Evolution 3.34.1-2 
 MIME-Version: 1.0
-In-Reply-To: <20200416005549.9683-2-robh@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200415_234338_757406_E42BAB3D 
-X-CRM114-Status: GOOD (  11.99  )
+X-CRM114-CacheID: sfid-20200415_235202_011687_AF8C63D9 
+X-CRM114-Status: GOOD (  11.74  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,9 +76,8 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
  Heiko Stuebner <heiko@sntech.de>, Sam Ravnborg <sam@ravnborg.org>,
- linux-pwm@vger.kernel.org, linux-iio@vger.kernel.org,
- linux-pci@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
- linux-remoteproc@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-pci@vger.kernel.org,
+ Linus Walleij <linus.walleij@linaro.org>, linux-remoteproc@vger.kernel.org,
  Alexandre Belloni <alexandre.belloni@bootlin.com>,
  dri-devel@lists.freedesktop.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
  Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
@@ -120,74 +89,43 @@ Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
  Krzysztof Kozlowski <krzk@kernel.org>,
  Bartosz Golaszewski <bgolaszewski@baylibre.com>, linux-serial@vger.kernel.org,
  linux-input@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
- linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
  Alexandre Torgue <alexandre.torgue@st.com>, alsa-devel@alsa-project.org,
- linux-can@vger.kernel.org, linux-gpio@vger.kernel.org,
- Mark Brown <broonie@kernel.org>, Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+ Maxime Ripard <mripard@kernel.org>, linux-can@vger.kernel.org,
+ linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ Jacek Anaszewski <jacek.anaszewski@gmail.com>,
  Mauro Carvalho Chehab <mchehab@kernel.org>,
  linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
  Stephen Boyd <sboyd@kernel.org>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, Amit Kucheria <amit.kucheria@linaro.org>,
- linux-spi@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
- netdev@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>
-Content-Type: multipart/mixed; boundary="===============2196423421855482442=="
+ Amit Kucheria <amit.kucheria@linaro.org>, linux-spi@vger.kernel.org,
+ Vinod Koul <vkoul@kernel.org>, netdev@vger.kernel.org,
+ Jonathan Cameron <jic23@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
---===============2196423421855482442==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="wl56qmwukpbi7dfb"
-Content-Disposition: inline
-
-
---wl56qmwukpbi7dfb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Apr 15, 2020 at 07:55:49PM -0500, Rob Herring wrote:
+On Wed, 2020-04-15 at 19:55 -0500, Rob Herring wrote:
 > json-schema versions draft7 and earlier have a weird behavior in that
 > any keywords combined with a '$ref' are ignored (silently). The correct
 > form was to put a '$ref' under an 'allOf'. This behavior is now changed
 > in the 2019-09 json-schema spec and '$ref' can be mixed with other
 > keywords. The json-schema library doesn't yet support this, but the
 > tooling now does a fixup for this and either way works.
->
+> 
 > This has been a constant source of review comments, so let's change this
 > treewide so everyone copies the simpler syntax.
->
-> Signed-off-by: Rob Herring <robh@kernel.org>
 
-For allwinner,
-Acked-by: Maxime Ripard <mripard@kernel.org>
+This is a large change.
 
-Maxime
-
---wl56qmwukpbi7dfb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXpf+lAAKCRDj7w1vZxhR
-xfXZAP9GMb4mpNd2CMjZwk5BxMrLzEIpKJTiQ4orqceXOWVHrwEA79RK8mnQLFzA
-6mFAQXdPtJjk58zdTQSSSDo30M+OtQk=
-=foV0
------END PGP SIGNATURE-----
-
---wl56qmwukpbi7dfb--
+Was this done manually or by some script?
+If it was done manually, how likely is it there are defects
+in the conversion?
 
 
---===============2196423421855482442==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============2196423421855482442==--
-
