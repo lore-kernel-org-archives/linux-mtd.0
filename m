@@ -2,65 +2,93 @@ Return-Path: <SRS0=O+nk=6A=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 01A97C2BB55
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Apr 2020 12:46:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 666F2C2BB85
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Apr 2020 13:20:52 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C71ED208E4
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Apr 2020 12:46:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3DB50217D8
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Apr 2020 13:20:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KUCxMhEb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C71ED208E4
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Us6QENKO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3DB50217D8
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=j6fEYV52Eoek40aQ402MzzRjy7Zc9GE5H3HKE2J/bzo=; b=KUCxMhEbBg6m4r
-	iuefmzNhWCWICkUZ1lhV2NZ9Zftl9IBo6l4iQHwwBYFvY34TbcYY3VQlK85Qq4VcApTRJUKlsZzA6
-	FDYY3H9vSdoL6E+KZ1Gh32FaKydRKrIimu1kLtTMqk74oicYCN5e9PO0LFz0MG1vqHPNaLjCMDq5a
-	ZUCNxy/HeeYyi0kOFSoazF1JIBNqSxETtTBIE0lcpwZs+Ka99EDx7l+k8I53YZuvUf8yvUqX1wT9E
-	iLB6ZurBR0XBqHVPa+a/9e1t4bY8kaIo1059o4iiji6p1CfeSpLk+W0Xc8i6VPJrEw9r/TZQDi78Q
-	aiejgrPXtTB0vZM4JhCA==;
+	List-Owner; bh=Na5dL/EzytowehzIyKYmchja+zQA6+QZHpL50kBaNig=; b=Us6QENKOZnzluJ
+	9tE+hN79cGnT5dl00u5NdiiEPH3wd/R0wo/KizjqISd+rTBlejUq7btJ0jiouAePjSSYtC7+UH4W9
+	C5jOEgjUruhNgiUITt81co6cbDQdXgDW7KiAWckncnXvhkdlqExx5lFHkVh/U6dZLp/RhS/zCzDs+
+	46xINXWF6b8E/m3YcMGvtUuv+ZIpIiw3UQ4sR/EEkZfWiGfmSvRAuWPEWnuWkftFh1BnXJMKEH345
+	IkjxAiHZON84dvb4vJ5/v5Wrw8S156v0V54GT+g0ODE3YoIudTQaVIzuKzVEwVQJivVploZ4SExE1
+	P02kIS8GweiAYMcQf5QA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jP3uL-0004gW-Sc; Thu, 16 Apr 2020 12:46:17 +0000
-Received: from asavdk4.altibox.net ([109.247.116.15])
+	id 1jP4Rb-0003oo-Gd; Thu, 16 Apr 2020 13:20:39 +0000
+Received: from mout.kundenserver.de ([217.72.192.73])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jP3uH-0001QC-SB; Thu, 16 Apr 2020 12:46:15 +0000
-Received: from ravnborg.org (unknown [158.248.194.18])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by asavdk4.altibox.net (Postfix) with ESMTPS id 924AA80487;
- Thu, 16 Apr 2020 14:44:00 +0200 (CEST)
-Date: Thu, 16 Apr 2020 14:43:59 +0200
-From: Sam Ravnborg <sam@ravnborg.org>
-To: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH 1/2] dt-bindings: Clean-up schema indentation formatting
-Message-ID: <20200416124359.GB5785@ravnborg.org>
-References: <20200416005549.9683-1-robh@kernel.org>
+ id 1jP4RY-0003oP-2l
+ for linux-mtd@lists.infradead.org; Thu, 16 Apr 2020 13:20:37 +0000
+Received: from mail-qv1-f52.google.com ([209.85.219.52]) by
+ mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1M42b8-1jP4RV16zg-0001cx for <linux-mtd@lists.infradead.org>; Thu, 16 Apr
+ 2020 15:20:33 +0200
+Received: by mail-qv1-f52.google.com with SMTP id 37so1937797qvc.8
+ for <linux-mtd@lists.infradead.org>; Thu, 16 Apr 2020 06:20:32 -0700 (PDT)
+X-Gm-Message-State: AGi0PuZCDP0+49yqDMVHYoifKc97HTThFvHWZv+e952H6wVlp4tBBYFD
+ sdSnDW6hl4ddDexm4aMQNxQWvhGwb/s1tOCKeQ4=
+X-Google-Smtp-Source: APiQypKHZDxipZPAWZYdCIqDu16HNzhscAsVQ9lmrMyp9kN+/tCK/He2321isOUyHo5GRU/I+lGChb4COn0weT3yGEQ=
+X-Received: by 2002:a0c:a602:: with SMTP id s2mr10311429qva.222.1587043231971; 
+ Thu, 16 Apr 2020 06:20:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20200416005549.9683-1-robh@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=XpTUx2N9 c=1 sm=1 tr=0
- a=UWs3HLbX/2nnQ3s7vZ42gw==:117 a=UWs3HLbX/2nnQ3s7vZ42gw==:17
- a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10
- a=xJWM5Xtqm7-vkBAKM1YA:9 a=bxeknKLoBf6BnO7k:21 a=StjP_oZuoJ7ca4eH:21
- a=CjuIK1q_8ugA:10
+References: <20200414022433.36622-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20200415220533.733834-1-martin.blumenstingl@googlemail.com>
+ <c33c8653-16a2-5bcd-97a9-511d958b755a@linux.intel.com>
+ <20200416113822.2ef326cb@collabora.com>
+ <18568cf6-2955-472e-7b68-eb35e654a906@linux.intel.com>
+ <20200416122619.2c481792@collabora.com>
+ <d3e137fa-54a0-b4ec-eb24-3984eab2a247@linux.intel.com>
+ <20200416131725.51259573@collabora.com>
+ <de9f50b8-9215-d294-9914-e49701552185@linux.intel.com>
+ <20200416135711.039ba85c@collabora.com>
+ <CAHp75Vcpb-556imBuhsY-asrKqx7LjvQbq+P-ysK-+ii91YpWQ@mail.gmail.com>
+ <20200416144036.3ce8432f@collabora.com>
+In-Reply-To: <20200416144036.3ce8432f@collabora.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Thu, 16 Apr 2020 15:20:15 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1rYDfTW60eY3RiiSOeT9EsNxw2rxMuQ9UjaS+JDiHy3Q@mail.gmail.com>
+Message-ID: <CAK8P3a1rYDfTW60eY3RiiSOeT9EsNxw2rxMuQ9UjaS+JDiHy3Q@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] mtd: rawnand: Add NAND controller support on Intel
+ LGM SoC
+To: Boris Brezillon <boris.brezillon@collabora.com>
+X-Provags-ID: V03:K1:ZgsZOU3h8vzkW2jlTu+eGsvuhtfoqEx4pYeLQtfuAry0cEaxDHb
+ n0oRsvSak1JbN+awxiAUazgoxrviNlhknGVMQaJ25OR+osxZDByI2MMvKD/xOBga8wKJ40x
+ 5U7HniCJB/oYUd9MLSt5ZSRoU/tQ76wzNnJ+O4CcYm1FYRsP2kvY2snwtGQzNzn5blQGe0I
+ pnkBcroFWsuKmqYiWB9sQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:yz/Efi23D1k=:EAm5OkmBZjxMn673Ct26wr
+ lMof4f40YWVjsRDdJgAKO199gT0uX0+r8UkixcBIk1tyd4Zre74wdbOEFh6ex/7tjOpY/y4zd
+ Z6Wh4V+Y3MFplWCmPqg3cmEHZwbW8uzAiaolJHhO6SwJbKZwqv2u4qJVShkq7llljHwXBVlC1
+ sp8nFKwFCIKg9aSqg5Yk/G+dE0YqwgxicB2IRnKHulL2fqI2hFLpABEKMpVLwFPgSFOt0jACu
+ m6w83GZE/synAyloPPXQT2abhG78iECA1r19egDFZeJKVCRu3tvcRcww3eOd8q8bgYj1ELM4w
+ S+DxmQZe6s8bly83iBeFyLq6jimEOrqVm6FOqUtgmWeaUt9fU9MEU1HLqWGY+N2Nd4CsIQjcE
+ u0rmPmbPFaHqd8Tje6LLO59lk67UqpKOsrqBQC5fixq0IGUC1q7b89vQR3zh+ZhZSjJ/h6vnn
+ m+V3kYmIfC41+WwgikoXFgWxU7FY+3pRxUlBDXtRzzEtNJ2TE6mnHDyO37m5pzLx2DP1Mcoxm
+ +RF1g7sf1V/lOqGoPTNbtAaJCnCBAnHlIMZDHSo/22XGdq3AASPln+rlsT9djhE1Ti02UtdBn
+ S6pQ7WFTMbuNcsR85bqreAn4v0jviqiH9DjI1ZGufkm50G1nxepkkwgrZxeetKQclcXsffN/Y
+ cD47JXKERhdlK3bC1el4hQKU6ogCsqUZynZNIRzKzlWkpW6vNjGWdDFul/9EcKx/4fEzdF99a
+ TGCoII+GofuBb4EA/QjjUbUFDkVfr0muW2xhOyD8xsZBCkbpJG2rNbescQ3qoYDOUD2Hvxtp1
+ lLm2SADmIOj/DYYagT41UBd9TV4Sx32m3jRds36ocmmCiVJ1EY=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200416_054614_277690_CB7108E0 
-X-CRM114-Status: GOOD (  21.61  )
+X-CRM114-CacheID: sfid-20200416_062036_413797_51B5D676 
+X-CRM114-Status: GOOD (  17.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,124 +100,61 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
- Heiko Stuebner <heiko@sntech.de>, linux-pwm@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-pci@vger.kernel.org,
- Linus Walleij <linus.walleij@linaro.org>, linux-remoteproc@vger.kernel.org,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- dri-devel@lists.freedesktop.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
- Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
- linux-i2c@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
- linux-riscv@lists.infradead.org, Fabio Estevam <festevam@gmail.com>,
- linux-clk@vger.kernel.org, linux-leds@vger.kernel.org,
- linux-rtc@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
- Lee Jones <lee.jones@linaro.org>, Daniel Lezcano <daniel.lezcano@linaro.org>,
- Krzysztof Kozlowski <krzk@kernel.org>,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>, linux-serial@vger.kernel.org,
- linux-input@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
- linux-media@vger.kernel.org, devicetree@vger.kernel.org,
- Alexandre Torgue <alexandre.torgue@st.com>, alsa-devel@alsa-project.org,
- Maxime Ripard <mripard@kernel.org>, linux-can@vger.kernel.org,
- linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Jacek Anaszewski <jacek.anaszewski@gmail.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
- Stephen Boyd <sboyd@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, Amit Kucheria <amit.kucheria@linaro.org>,
- linux-spi@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
- netdev@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>
+Cc: Vignesh R <vigneshr@ti.com>, Brendan Higgins <brendanhiggins@google.com>,
+ yixin.zhu@linux.intel.com,
+ "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, cheol.yong.kim@intel.com,
+ Anders Roxell <anders.roxell@linaro.org>,
+ Andriy Shevchenko <andriy.shevchenko@intel.com>,
+ Richard Weinberger <richard@nod.at>, "Ramuthevar,
+ Vadivel MuruganX" <vadivel.muruganx.ramuthevar@linux.intel.com>,
+ Andy Shevchenko <andy.shevchenko@gmail.com>, masonccyang@mxic.com.tw,
+ hua.ma@linux.intel.com, Piotr Sroka <piotrs@cadence.com>,
+ devicetree <devicetree@vger.kernel.org>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ Hauke Mehrtens <hauke@hauke-m.de>, chuanhua.lei@linux.intel.com,
+ Rob Herring <robh+dt@kernel.org>, John Crispin <john@phrozen.org>,
+ qi-ming.wu@intel.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Songjun Wu <songjun.wu@linux.intel.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Rob.
+On Thu, Apr 16, 2020 at 2:40 PM Boris Brezillon
+<boris.brezillon@collabora.com> wrote:
+> On Thu, 16 Apr 2020 15:26:51 +0300
+> Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > On Thu, Apr 16, 2020 at 3:03 PM Boris Brezillon
+> > <boris.brezillon@collabora.com> wrote:
+> > > On Thu, 16 Apr 2020 19:38:03 +0800
+> > > Note that the NAND subsystem is full of unmaintained legacy drivers, so
+> > > every time we see someone who could help us get rid or update one of
+> > > them we have to take this opportunity.
+> >
+> > Don't we rather insist to have a MAINTAINERS record for new code to
+> > avoid (or delay at least) the fate of the legacy drivers?
+> >
+>
+> Well, that's what we do for new drivers, but the xway driver has been
+> added in 2012 and the policy was not enforced at that time. BTW, that
+> goes for most of the legacy drivers in have in the NAND subsystems
+> (some of them even predate the git era).
+>
+> To be clear, I just checked and there's no official maintainer for this
+> driver. Best option would be to Cc the original author and contributors
+> who proposed functional changes to the code, as well as the MIPS
+> maintainers (Xway is a MIPS platform).
 
-On Wed, Apr 15, 2020 at 07:55:48PM -0500, Rob Herring wrote:
-> Fix various inconsistencies in schema indentation. Most of these are
-> list indentation which should be 2 spaces more than the start of the
-> enclosing keyword. This doesn't matter functionally, but affects running
-> scripts which do transforms on the schema files.
+A lot of the pre-acquisition code for lantiq was contributed by Hauke
+Mehrtens and John Crispin. There was an intermediate generation of
+MIPS SoCs with patches posted for review  by Intel in 2018 (presumably
+by the same organizatiob), but those were never resubmitted after v2
+and never merged:
 
-Are there any plans to improve the tooling so we get warnigns for this?
-Otherwise I am afraid we will see a lot of patches that gets this wrong.
+https://lore.kernel.org/linux-mips/20180803030237.3366-1-songjun.wu@linux.intel.com/
 
-As a follow-up patch it would be good if example-schema.yaml
-could gain some comments about the correct indentions.
-
-Some comments in the following.
-
-> diff --git a/Documentation/devicetree/bindings/arm/altera.yaml b/Documentation/devicetree/bindings/arm/altera.yaml
-> index 49e0362ddc11..b388c5aa7984 100644
-> --- a/Documentation/devicetree/bindings/arm/altera.yaml
-> +++ b/Documentation/devicetree/bindings/arm/altera.yaml
-> @@ -13,8 +13,8 @@ properties:
->    compatible:
->      items:
->        - enum:
-> -        - altr,socfpga-cyclone5
-> -        - altr,socfpga-arria5
-> -        - altr,socfpga-arria10
-> +          - altr,socfpga-cyclone5
-> +          - altr,socfpga-arria5
-> +          - altr,socfpga-arria10
->        - const: altr,socfpga
-
-So here "- enum" do not need the extra indent.
-Is it because this is not a list?
-
->  ...
-> diff --git a/Documentation/devicetree/bindings/arm/amlogic/amlogic,meson-gx-ao-secure.yaml b/Documentation/devicetree/bindings/arm/amlogic/amlogic,meson-gx-ao-secure.yaml
-> index 66213bd95e6e..6cc74523ebfd 100644
-> --- a/Documentation/devicetree/bindings/arm/amlogic/amlogic,meson-gx-ao-secure.yaml
-> +++ b/Documentation/devicetree/bindings/arm/amlogic/amlogic,meson-gx-ao-secure.yaml
-> @@ -25,7 +25,7 @@ select:
-> 
->  properties:
->    compatible:
-> -   items:
-> +    items:
->        - const: amlogic,meson-gx-ao-secure
->        - const: syscon
-
-This is something I had expected the tooling to notice.
-I had expected the two "- const" to be indented with 4 spaces, not two.
-So there is something I do not understand.
-
-
-> diff --git a/Documentation/devicetree/bindings/arm/nxp/lpc32xx.yaml b/Documentation/devicetree/bindings/arm/nxp/lpc32xx.yaml
-> index 07f39d3eee7e..f7f024910e71 100644
-> --- a/Documentation/devicetree/bindings/arm/nxp/lpc32xx.yaml
-> +++ b/Documentation/devicetree/bindings/arm/nxp/lpc32xx.yaml
-> @@ -17,9 +17,8 @@ properties:
->            - nxp,lpc3230
->            - nxp,lpc3240
->        - items:
-> -        - enum:
-> -            - ea,ea3250
-> -            - phytec,phy3250
-> -        - const: nxp,lpc3250
-> -
-> +          - enum:
-> +              - ea,ea3250
-> +              - phytec,phy3250
-> +          - const: nxp,lpc3250
->  ...
-
-And here "- enum" receive extra indent.
-
-I trust you know what you are doing - but I do not get it.
-
-Some pointers or examples for the correct indention would be great.
-I cannot review this patch as long as I do not know the rules.
-
-My request to update example-schema.yaml was one way to teach me.
-(Some people will say that is difficult/impossible to teach me,
-but thats another story:-) ).
-
-	Sam
+        Arnd
 
 ______________________________________________________
 Linux MTD discussion mailing list
