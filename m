@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE444C2BA2B
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Apr 2020 07:28:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F130C2BA2B
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Apr 2020 07:29:15 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8232F206D5
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Apr 2020 07:28:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0137B206D5
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Apr 2020 07:29:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Vd3qSnD1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8232F206D5
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Im+WWKqZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0137B206D5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=the-dreams.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,33 +25,35 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Af2okTnF3WA9uXb1De/9O0vSNiN1ci442045h96LV60=; b=Vd3qSnD1eRDtV1cqC+Oofxo8k
-	KFaIB9I6IQzhbKv7Q8A4AXc2eGIBgMr26syNrdLmYr0rJvgIM16FHAA4cd1lfF5NZbgPvFS1WjEVB
-	+b1hzeuH4gZkfNHhOZbQFO77Qt0XVzu/5lrHDl1T97xGgPc6LnGspuqiCrPAArb4R0A1BXyvdLhBr
-	5zXxvGEhGcW11zcfyQZ5IhhnSxaQlKzjq6WgMVRdjQ2tftPc3S0zTxFvGGwipJNCe/KDzOLBv8F0O
-	xJNHOdr10AUf58kIs1So3PIIjAlDDVrNFhzoPxxR3AakGg/di29sQaP5myM1grA8gQd6Pz/zMAHce
-	lxSkFRspQ==;
+	 bh=nOVId1vuifGXoMEiRh3WvsPDTwNOoVjylQ4m91UkXH0=; b=Im+WWKqZ7NaR82d+biG4ma465
+	5EoZZ3wSoDLZvBU65Of2WHvggM+PmfxgOHceVn9RxMV8QH4N/rgI6WLxnaPE0ZA0PPLhkEz2ANlni
+	oLXtbZYwQIu5GqTK6fqvDtwnioF1cCS1a/P1D5bY/ByhUAbDny+P2jwj+sUMwY65GxafRwXvYKNgO
+	L0yyZ9Ptovbdz3/uUl/0H/awrkUtdNhpKvsF0jnfHHoB7140tZI4bwflMonw4pBjKS/kiCJrFesHP
+	6AFCdEOEWKWy/InBg8JwhMGIyjLvtgNoGMqQwOeHv61U2eTZuqihWoHkHwtKbJR4WOMLgv/0BbeYb
+	0zzmnHdug==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jOywS-0002ku-0o; Thu, 16 Apr 2020 07:28:08 +0000
+	id 1jOywA-0002TR-Lv; Thu, 16 Apr 2020 07:27:50 +0000
 Received: from sauhun.de ([88.99.104.3] helo=pokefinder.org)
  by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jOywG-0002br-Jp; Thu, 16 Apr 2020 07:28:05 +0000
+ id 1jOyvz-0002Sg-Qm; Thu, 16 Apr 2020 07:27:49 +0000
 Received: from localhost (p54B33393.dip0.t-ipconnect.de [84.179.51.147])
- by pokefinder.org (Postfix) with ESMTPSA id E4E0B2C1FDE;
- Thu, 16 Apr 2020 09:27:55 +0200 (CEST)
-Date: Thu, 16 Apr 2020 09:27:54 +0200
+ by pokefinder.org (Postfix) with ESMTPSA id 898972C1F4B;
+ Thu, 16 Apr 2020 09:27:37 +0200 (CEST)
+Date: Thu, 16 Apr 2020 09:27:37 +0200
 From: Wolfram Sang <wsa@the-dreams.de>
 To: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH 1/2] dt-bindings: Clean-up schema indentation formatting
-Message-ID: <20200416072754.GB1023@kunai>
+Subject: Re: [PATCH 2/2] dt-bindings: Remove cases of 'allOf' containing a
+ '$ref'
+Message-ID: <20200416072737.GA1023@kunai>
 References: <20200416005549.9683-1-robh@kernel.org>
+ <20200416005549.9683-2-robh@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200416005549.9683-1-robh@kernel.org>
+In-Reply-To: <20200416005549.9683-2-robh@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200416_002756_957964_A47A7BB6 
-X-CRM114-Status: GOOD (  10.55  )
+X-CRM114-CacheID: sfid-20200416_002740_160884_028443E6 
+X-CRM114-Status: GOOD (  12.13  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,57 +93,62 @@ Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
  linux-kernel@vger.kernel.org, Amit Kucheria <amit.kucheria@linaro.org>,
  linux-spi@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
  netdev@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>
-Content-Type: multipart/mixed; boundary="===============6198192554883868411=="
+Content-Type: multipart/mixed; boundary="===============0751482304089413376=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
---===============6198192554883868411==
+--===============0751482304089413376==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="PmA2V3Z32TCmWXqI"
+	protocol="application/pgp-signature"; boundary="ZGiS0Q5IWpPtfppv"
 Content-Disposition: inline
 
 
---PmA2V3Z32TCmWXqI
+--ZGiS0Q5IWpPtfppv
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 15, 2020 at 07:55:48PM -0500, Rob Herring wrote:
-> Fix various inconsistencies in schema indentation. Most of these are
-> list indentation which should be 2 spaces more than the start of the
-> enclosing keyword. This doesn't matter functionally, but affects running
-> scripts which do transforms on the schema files.
+On Wed, Apr 15, 2020 at 07:55:49PM -0500, Rob Herring wrote:
+> json-schema versions draft7 and earlier have a weird behavior in that
+> any keywords combined with a '$ref' are ignored (silently). The correct
+> form was to put a '$ref' under an 'allOf'. This behavior is now changed
+> in the 2019-09 json-schema spec and '$ref' can be mixed with other
+> keywords. The json-schema library doesn't yet support this, but the
+> tooling now does a fixup for this and either way works.
+>=20
+> This has been a constant source of review comments, so let's change this
+> treewide so everyone copies the simpler syntax.
 >=20
 > Signed-off-by: Rob Herring <robh@kernel.org>
 
 Acked-by: Wolfram Sang <wsa@the-dreams.de> # for I2C
 
 
---PmA2V3Z32TCmWXqI
+--ZGiS0Q5IWpPtfppv
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl6YCPoACgkQFA3kzBSg
-KbYO9w/+I4SkxzsKIBEPYPlNhQjpS6257EsfctnShX5MtTXuuVlEM9PKrWOlHqUv
-VPZp1gNSi0U/GchhYvzhAQ0yia0RzJoIb9lP8a+B/i2n77CDCgIRyWBqSA/dX2Ts
-FqwsTUS4HND9WJve1vPA6xRF0GlFYSCgXTHGgqxWNOdZHkTjIog1Pm+3C6pk+CbX
-eKDEHPFiVzkgUvkspatPeh/+nVLQSJ1CA0V0Qstqqu6+c2ciLJxYnh3cstsjThRS
-u+Hp1Tj1TGmJtiHEoDYpNbUuGxu8dE+iHMeM4EnePh2KraRRQ+o35bx0QdhhzcU2
-2AZf2VMtoqV5XgcyRM6B05wxjD5XQWSEcRPaA4KSiR2G3tFi+WYiVRHI8Pekbgzl
-0HPDsprCCwqNPUVqeqcyMOlYPYpOCIcCz17nZKd0ZDv9SphmwAXjvc2KNHg3lnVi
-U7BU6i+P4fM8P7Lx496uw1CjUOKtLdM74WYDliTT3timGh1ZYB9l2AC8yTJqBQDY
-zRnBeFyItoXVtZbkAQgoGOTuIn6ZUY+ZzUquour0XK2PGJuxxArp0rFcEFAAeccC
-/iHPV6k2vWKT/r/wRa5qjwZZrvi0N98xyWX89B0rfqjVasG6DqrTcEnfY/0g8JOo
-S0O569k351VYcMrKIrtqc6RsnSOAwPpJskVLGf4j5KhQ1waxcTg=
-=JRiG
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl6YCOQACgkQFA3kzBSg
+KbZcAg/7BNCS6Plzd0nif30LvUASyKL2fqZ54PDaxkVsHFZ6ILioIzHIss7e8ai/
+YkJmKgNKbLtEgg6dNTfoqLN5p52ekU7WvY/r9pDTFJiW0Lllc3aF1LNIC/owey/B
+GVXJCFK5qNr0hkMOsS55AW6rBaHMKA73o4hbAByJkdet+EtP0hMphL/0iC6P3g85
+edXGHYYNs2ZFcKE4mMMGWc6/kEFsokOp/hWh4nxpGZz9Rpe6C2Q97bvwivhJTLs8
++ef1qvMxtLOjAKNsUB6Kx8yjLKw6qMx/4o0l9ybVUc7WIUxG5E8dNenqDTyqUXej
+C1ZQLA8r7cVz6tLihoEeXMNPRBMFXwijjbDA2ai8kVt1nU5eY7/W9MmJfYOdmERQ
+fBc8c9sk7nHQGqzXlLD4uONayWHGecD52lns65PUrrCPgyH3tMK2Ds8NPthfl7A/
+sx9ezOIP+wbAP07OKg2tPI+q6GdCnGgHpIzUVS0UZjbMGawC/yeW7Kszqa8Dhsp/
+xH9sIw5p4Bmwvpct9Y/yFJ7zK0Udyd8Ro4AeF0oeHG7dmWb1RhLGZfg5yfmCJw30
+xOMgjKhuD+Uh7raT2JnX3h2lTbKtoZtHldcjOVBmwRDFd7vo3b9yU73FcuGf6QHC
+zfdSI05xzxbecqL9It624taFNLcWV0SKltTN2XHG/9EeTqfo+gA=
+=vXQq
 -----END PGP SIGNATURE-----
 
---PmA2V3Z32TCmWXqI--
+--ZGiS0Q5IWpPtfppv--
 
 
---===============6198192554883868411==
+--===============0751482304089413376==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -151,5 +158,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============6198192554883868411==--
+--===============0751482304089413376==--
 
