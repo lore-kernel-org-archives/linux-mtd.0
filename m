@@ -2,72 +2,65 @@ Return-Path: <SRS0=O+nk=6A=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD4B2C352BE
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Apr 2020 12:40:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01A97C2BB55
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Apr 2020 12:46:18 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A01B7217D8
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Apr 2020 12:40:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C71ED208E4
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Apr 2020 12:46:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cJVAtnnx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A01B7217D8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KUCxMhEb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C71ED208E4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PVoNG/fscAu1v+PICZwO+uK768zR3IwVNAXneyMM/yw=; b=cJVAtnnxK0vNs3
-	46ml7Oep/35+zq840LLWHWdLSZNjt1AP/XV9E2/ZzzhpXjlCgjKH4MSEFj1L6Opti9oO4c8T/YZDc
-	Wmi3NkLwnQ3NpRcFVyGGTxKcpTPZLJZ7MfA8T2wBVcePKPlgvzEjOjPl1eXixJLboM+urewleZl/v
-	IwKH6JOhvhzm30WXqPzUewjCj9FZRsRXLw8aClnyoKC6JT6W31aUyd4TuEkjLCY+wh0vQAXffXMJf
-	S6QXOeXrJJqqhPJSm1HT2KB9rK18OISzDyFxvZ4Io0B5PXMqoM0AcGp7xpynNdBmrBXzNtT0eYtvr
-	jQD84ab93BNAfKckaTrw==;
+	List-Owner; bh=j6fEYV52Eoek40aQ402MzzRjy7Zc9GE5H3HKE2J/bzo=; b=KUCxMhEbBg6m4r
+	iuefmzNhWCWICkUZ1lhV2NZ9Zftl9IBo6l4iQHwwBYFvY34TbcYY3VQlK85Qq4VcApTRJUKlsZzA6
+	FDYY3H9vSdoL6E+KZ1Gh32FaKydRKrIimu1kLtTMqk74oicYCN5e9PO0LFz0MG1vqHPNaLjCMDq5a
+	ZUCNxy/HeeYyi0kOFSoazF1JIBNqSxETtTBIE0lcpwZs+Ka99EDx7l+k8I53YZuvUf8yvUqX1wT9E
+	iLB6ZurBR0XBqHVPa+a/9e1t4bY8kaIo1059o4iiji6p1CfeSpLk+W0Xc8i6VPJrEw9r/TZQDi78Q
+	aiejgrPXtTB0vZM4JhCA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jP3p0-0000mn-EE; Thu, 16 Apr 2020 12:40:46 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1jP3uL-0004gW-Sc; Thu, 16 Apr 2020 12:46:17 +0000
+Received: from asavdk4.altibox.net ([109.247.116.15])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jP3ox-0000lX-VR
- for linux-mtd@lists.infradead.org; Thu, 16 Apr 2020 12:40:45 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 750ED2A20B2;
- Thu, 16 Apr 2020 13:40:40 +0100 (BST)
-Date: Thu, 16 Apr 2020 14:40:36 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v1 2/2] mtd: rawnand: Add NAND controller support on
- Intel LGM SoC
-Message-ID: <20200416144036.3ce8432f@collabora.com>
-In-Reply-To: <CAHp75Vcpb-556imBuhsY-asrKqx7LjvQbq+P-ysK-+ii91YpWQ@mail.gmail.com>
-References: <20200414022433.36622-3-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200415220533.733834-1-martin.blumenstingl@googlemail.com>
- <c33c8653-16a2-5bcd-97a9-511d958b755a@linux.intel.com>
- <20200416113822.2ef326cb@collabora.com>
- <18568cf6-2955-472e-7b68-eb35e654a906@linux.intel.com>
- <20200416122619.2c481792@collabora.com>
- <d3e137fa-54a0-b4ec-eb24-3984eab2a247@linux.intel.com>
- <20200416131725.51259573@collabora.com>
- <de9f50b8-9215-d294-9914-e49701552185@linux.intel.com>
- <20200416135711.039ba85c@collabora.com>
- <CAHp75Vcpb-556imBuhsY-asrKqx7LjvQbq+P-ysK-+ii91YpWQ@mail.gmail.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1jP3uH-0001QC-SB; Thu, 16 Apr 2020 12:46:15 +0000
+Received: from ravnborg.org (unknown [158.248.194.18])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by asavdk4.altibox.net (Postfix) with ESMTPS id 924AA80487;
+ Thu, 16 Apr 2020 14:44:00 +0200 (CEST)
+Date: Thu, 16 Apr 2020 14:43:59 +0200
+From: Sam Ravnborg <sam@ravnborg.org>
+To: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 1/2] dt-bindings: Clean-up schema indentation formatting
+Message-ID: <20200416124359.GB5785@ravnborg.org>
+References: <20200416005549.9683-1-robh@kernel.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20200416005549.9683-1-robh@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=XpTUx2N9 c=1 sm=1 tr=0
+ a=UWs3HLbX/2nnQ3s7vZ42gw==:117 a=UWs3HLbX/2nnQ3s7vZ42gw==:17
+ a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10
+ a=xJWM5Xtqm7-vkBAKM1YA:9 a=bxeknKLoBf6BnO7k:21 a=StjP_oZuoJ7ca4eH:21
+ a=CjuIK1q_8ugA:10
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200416_054044_145279_7CF5E103 
-X-CRM114-Status: GOOD (  24.02  )
+X-CRM114-CacheID: sfid-20200416_054614_277690_CB7108E0 
+X-CRM114-Status: GOOD (  21.61  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,88 +72,124 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: cheol.yong.kim@intel.com, devicetree <devicetree@vger.kernel.org>,
- qi-ming.wu@intel.com, Anders Roxell <anders.roxell@linaro.org>,
- Andriy Shevchenko <andriy.shevchenko@intel.com>, Arnd Bergmann <arnd@arndb.de>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- Richard Weinberger <richard@nod.at>,
- Brendan Higgins <brendanhiggins@google.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Vignesh R <vigneshr@ti.com>, "Ramuthevar,
- Vadivel MuruganX" <vadivel.muruganx.ramuthevar@linux.intel.com>,
- Rob Herring <robh+dt@kernel.org>,
- "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>, masonccyang@mxic.com.tw,
- piotrs@cadence.com
+Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Heiko Stuebner <heiko@sntech.de>, linux-pwm@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-pci@vger.kernel.org,
+ Linus Walleij <linus.walleij@linaro.org>, linux-remoteproc@vger.kernel.org,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ dri-devel@lists.freedesktop.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-i2c@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+ linux-riscv@lists.infradead.org, Fabio Estevam <festevam@gmail.com>,
+ linux-clk@vger.kernel.org, linux-leds@vger.kernel.org,
+ linux-rtc@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+ Lee Jones <lee.jones@linaro.org>, Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Krzysztof Kozlowski <krzk@kernel.org>,
+ Bartosz Golaszewski <bgolaszewski@baylibre.com>, linux-serial@vger.kernel.org,
+ linux-input@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+ linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+ Alexandre Torgue <alexandre.torgue@st.com>, alsa-devel@alsa-project.org,
+ Maxime Ripard <mripard@kernel.org>, linux-can@vger.kernel.org,
+ linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
+ Stephen Boyd <sboyd@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Amit Kucheria <amit.kucheria@linaro.org>,
+ linux-spi@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+ netdev@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 16 Apr 2020 15:26:51 +0300
-Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+Hi Rob.
 
-> On Thu, Apr 16, 2020 at 3:03 PM Boris Brezillon
-> <boris.brezillon@collabora.com> wrote:
-> > On Thu, 16 Apr 2020 19:38:03 +0800
-> > "Ramuthevar, Vadivel MuruganX"
-> > <vadivel.muruganx.ramuthevar@linux.intel.com> wrote:  
-> > > On 16/4/2020 7:17 pm, Boris Brezillon wrote:  
-> > > > On Thu, 16 Apr 2020 18:40:53 +0800
-> > > > "Ramuthevar, Vadivel MuruganX"
-> > > > <vadivel.muruganx.ramuthevar@linux.intel.com> wrote:  
-> 
-> ...
-> 
-> > > There are different features involved and lines of code is more, if we
-> > > add new driver patches over xway-nand driver  
-> >
-> > How about retro-fitting the xway logic into your driver then? I mean,
-> > adding a 100 lines of code to your driver to get rid of the 500+ lines
-> > we have in xway_nand.c is still a win.
-> >  
-> > >
-> > > is completely looks ugly and it may disturb the existing functionality
-> > > as well since we don't have platform to validate:'(.  
-> >
-> > How ugly? Can you show us? Maybe we can come with a solution to make it
-> > less ugly.
-> >
-> > As for the testing part, there are 4 scenarios:
-> >
-> > 1/ Your changes work perfectly fine on older platforms. Yay \o/!
-> > 2/ You break the xway driver and existing users notice it before this
-> >    series gets merged. Now you found someone to validate your changes.
-> > 3/ You break the xway driver and none of the existing users notice it
-> >    before the driver is merged, but they notice it afterwards. Too bad
-> >    this happened after we've merged the driver, but now you've found
-> >    someone to help you fix the problem :P.
-> > 4/ You break things for old platforms but no one ever complains about
-> >    it, either because there's no users left or because they never
-> >    update their kernels. In any case, that's no longer your problem.
-> >    Someone will remove those old platforms one day and get rid of the
-> >    unneeded code in the NAND driver.
-> >
-> > What's more likely to happen is #3 or #4, and I think the NAND
-> > maintainer would be fine with both.
-> >
-> > Note that the NAND subsystem is full of unmaintained legacy drivers, so
-> > every time we see someone who could help us get rid or update one of
-> > them we have to take this opportunity.  
-> 
-> Don't we rather insist to have a MAINTAINERS record for new code to
-> avoid (or delay at least) the fate of the legacy drivers?
-> 
+On Wed, Apr 15, 2020 at 07:55:48PM -0500, Rob Herring wrote:
+> Fix various inconsistencies in schema indentation. Most of these are
+> list indentation which should be 2 spaces more than the start of the
+> enclosing keyword. This doesn't matter functionally, but affects running
+> scripts which do transforms on the schema files.
 
-Well, that's what we do for new drivers, but the xway driver has been
-added in 2012 and the policy was not enforced at that time. BTW, that
-goes for most of the legacy drivers in have in the NAND subsystems
-(some of them even predate the git era).
+Are there any plans to improve the tooling so we get warnigns for this?
+Otherwise I am afraid we will see a lot of patches that gets this wrong.
 
-To be clear, I just checked and there's no official maintainer for this
-driver. Best option would be to Cc the original author and contributors
-who proposed functional changes to the code, as well as the MIPS
-maintainers (Xway is a MIPS platform).
+As a follow-up patch it would be good if example-schema.yaml
+could gain some comments about the correct indentions.
+
+Some comments in the following.
+
+> diff --git a/Documentation/devicetree/bindings/arm/altera.yaml b/Documentation/devicetree/bindings/arm/altera.yaml
+> index 49e0362ddc11..b388c5aa7984 100644
+> --- a/Documentation/devicetree/bindings/arm/altera.yaml
+> +++ b/Documentation/devicetree/bindings/arm/altera.yaml
+> @@ -13,8 +13,8 @@ properties:
+>    compatible:
+>      items:
+>        - enum:
+> -        - altr,socfpga-cyclone5
+> -        - altr,socfpga-arria5
+> -        - altr,socfpga-arria10
+> +          - altr,socfpga-cyclone5
+> +          - altr,socfpga-arria5
+> +          - altr,socfpga-arria10
+>        - const: altr,socfpga
+
+So here "- enum" do not need the extra indent.
+Is it because this is not a list?
+
+>  ...
+> diff --git a/Documentation/devicetree/bindings/arm/amlogic/amlogic,meson-gx-ao-secure.yaml b/Documentation/devicetree/bindings/arm/amlogic/amlogic,meson-gx-ao-secure.yaml
+> index 66213bd95e6e..6cc74523ebfd 100644
+> --- a/Documentation/devicetree/bindings/arm/amlogic/amlogic,meson-gx-ao-secure.yaml
+> +++ b/Documentation/devicetree/bindings/arm/amlogic/amlogic,meson-gx-ao-secure.yaml
+> @@ -25,7 +25,7 @@ select:
+> 
+>  properties:
+>    compatible:
+> -   items:
+> +    items:
+>        - const: amlogic,meson-gx-ao-secure
+>        - const: syscon
+
+This is something I had expected the tooling to notice.
+I had expected the two "- const" to be indented with 4 spaces, not two.
+So there is something I do not understand.
+
+
+> diff --git a/Documentation/devicetree/bindings/arm/nxp/lpc32xx.yaml b/Documentation/devicetree/bindings/arm/nxp/lpc32xx.yaml
+> index 07f39d3eee7e..f7f024910e71 100644
+> --- a/Documentation/devicetree/bindings/arm/nxp/lpc32xx.yaml
+> +++ b/Documentation/devicetree/bindings/arm/nxp/lpc32xx.yaml
+> @@ -17,9 +17,8 @@ properties:
+>            - nxp,lpc3230
+>            - nxp,lpc3240
+>        - items:
+> -        - enum:
+> -            - ea,ea3250
+> -            - phytec,phy3250
+> -        - const: nxp,lpc3250
+> -
+> +          - enum:
+> +              - ea,ea3250
+> +              - phytec,phy3250
+> +          - const: nxp,lpc3250
+>  ...
+
+And here "- enum" receive extra indent.
+
+I trust you know what you are doing - but I do not get it.
+
+Some pointers or examples for the correct indention would be great.
+I cannot review this patch as long as I do not know the rules.
+
+My request to update example-schema.yaml was one way to teach me.
+(Some people will say that is difficult/impossible to teach me,
+but thats another story:-) ).
+
+	Sam
 
 ______________________________________________________
 Linux MTD discussion mailing list
