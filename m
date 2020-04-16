@@ -2,21 +2,21 @@ Return-Path: <SRS0=O+nk=6A=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08119C2BB55
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Apr 2020 13:55:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6165C2BB85
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Apr 2020 14:38:19 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C434521744
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Apr 2020 13:55:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3134221D94
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Apr 2020 14:38:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dB+xzhW1";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="OJtBap6g"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C434521744
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="i764y+ND";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="UpLjGQfN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3134221D94
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,54 +25,51 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XsWOjD6KVz5BzNsL8RFgyxufYn66s1/ZSYx0PugDQdA=; b=dB+xzhW185E6dV
-	FygXotsUADZI83uu1hSFkTs1SIXq/1xi4cM1lwnXS+7S5eyGIT6qcbZmctOwbU3C1nU4empWPMqFC
-	ko1qxLP/uusYswhNQAbI0WwOHz3C8Yvp65s4eozHdZtIJnReHc5dnr/v/HLEEB/rIhzVe9SK3FQed
-	zv3pGbX93lowgFJcwMsgGEyg5kSxpku8YUSFcqgiJgc0jmTnRsElubTWj2ukcguW/hWYtIrbGwGea
-	oHV3dzcEhBwdIwO46AvW6JxrPYpfPiVFcdlLY0Op+wmEp/nRZIR1BYTdieIPujXDpmVLEkrrVrub+
-	ODaH24AYmZG4quYYO2iA==;
+	List-Owner; bh=yealvMqFE9qenTKnYlRvtt2K6rAWJzMNbrCxTTF9UU8=; b=i764y+NDp5TyBn
+	NwiMq8ZoO8D2mxbyTVPpaC/Nw1pTxAQw6AK35x5KvuvPtMl+iBPqFQo9pgEmD/XHbhQv7ub4RZzQD
+	f0vN8sxDCwjD0P7QoTvxUFhcPdMcEfopAo/gla1M4wOzlpyN1VH94BwDa2+GBF5YUK+fDF3oyNyIw
+	j44xxcmWNdyq538ycW3Q4O/5t12qmrl2zv+mYLqeITuk9ip1e2tT+IiYaF2Q0Pwr8NW/sCMue6TlD
+	Yc+m6AkrQvWmj5/ZIoP9MpLjHhz5OoPmPimKQDOaeBV0gzB/zsBPZAgmcU0TaUtQz6OV6Oa1cYu+M
+	DFT47pWdUxIf4bwssOrg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jP4zV-0003x7-Vz; Thu, 16 Apr 2020 13:55:42 +0000
+	id 1jP5ea-00012E-1v; Thu, 16 Apr 2020 14:38:08 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jP4zP-0003oy-5Y; Thu, 16 Apr 2020 13:55:36 +0000
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com
- [209.85.219.47])
+ id 1jP5eW-0000yq-4Z; Thu, 16 Apr 2020 14:38:05 +0000
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com
+ [209.85.160.176])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 154502223D;
- Thu, 16 Apr 2020 13:55:34 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id A8FBA22242;
+ Thu, 16 Apr 2020 14:38:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1587045334;
- bh=lAG6zzq1Sqen9mJhj5pG0jXwK1qfgmptfKCYtqRavfc=;
+ s=default; t=1587047883;
+ bh=MMYlJuOL0lJfSjjO9OZrF5NfvXGQobqN9Rg04mTNFAM=;
  h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=OJtBap6gxkn7B64p6YI3gTyfG+37GXhLma2wex7puLnTvEPVIckcw2EWyHIlGxpbU
- axCPq/uLuHBCHTtrTyk9e9F01ZRfk1h5UwSfOVyg7KnEYG4Mh0g9CUMFFZUUhlg6Dn
- cKIhtKmwFJOdPx1PSLWhEzhafdvl/OQ5lWzBbqUw=
-Received: by mail-qv1-f47.google.com with SMTP id v38so2014045qvf.6;
- Thu, 16 Apr 2020 06:55:34 -0700 (PDT)
-X-Gm-Message-State: AGi0PuYFwvssOWpHc8m6aID+tOwNfBf9HGPkSKSBbHrXzdixY4ZGxfV8
- m+4yPY3FQFdOV4f/p1Dp095G4Y1QL9yuAm0i9Q==
-X-Google-Smtp-Source: APiQypJP5/uECHnZPqCD8aDFNOvB3C1OTKaRvvNdGUWUD6LvJ9HnhAL59x+YqONzfmAtrwzd6yqnrOF4qnSJIJfw8nM=
-X-Received: by 2002:a05:6214:a8a:: with SMTP id
- ev10mr9484527qvb.20.1587045333124; 
- Thu, 16 Apr 2020 06:55:33 -0700 (PDT)
+ b=UpLjGQfNJ7AhEjZREeHuVboKWCCQCByhNFkhI3WqLPo8Mlcf5oIw7jZd/2OdH9yBT
+ aIZAbAKEnJu3xdtXVBzL/qPq3GoSs/S1q0m4B9Y5XFUKpQPqq24X4l78b+Pj+tLnJg
+ NtrdiAaH0zhwyAYQB4MpxL0IotfCh/UB+NTCxFbM=
+Received: by mail-qt1-f176.google.com with SMTP id b10so16495324qtt.9;
+ Thu, 16 Apr 2020 07:38:03 -0700 (PDT)
+X-Gm-Message-State: AGi0PuZRQRpdtjVxSG/WcnWoZdy9B0cECg2uyMQoTWvOfTS2/Inp0gjU
+ T1Oqak5zz79+3Ymr7xU5yrb52en+pdvZHIIshQ==
+X-Google-Smtp-Source: APiQypKfVD+tFYP8p52n1yv1KvQa1nwC0OwG10Vnv04PQ+j0umFoj6sJCylT4GddENC8rGvDyZyW05FDoL7hFDARgK8=
+X-Received: by 2002:ac8:39e5:: with SMTP id v92mr26657152qte.224.1587047882719; 
+ Thu, 16 Apr 2020 07:38:02 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200416005549.9683-1-robh@kernel.org>
- <20200416005549.9683-2-robh@kernel.org>
- <d93f90bbcc99967ed5ba458ba99d7e73de12e3b2.camel@perches.com>
-In-Reply-To: <d93f90bbcc99967ed5ba458ba99d7e73de12e3b2.camel@perches.com>
+ <20200416124359.GB5785@ravnborg.org>
+In-Reply-To: <20200416124359.GB5785@ravnborg.org>
 From: Rob Herring <robh@kernel.org>
-Date: Thu, 16 Apr 2020 08:55:21 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLcJrFow_+-o2CxoPRCv4U-ELb2FHSbUgG=Mzt8PFn_CA@mail.gmail.com>
-Message-ID: <CAL_JsqLcJrFow_+-o2CxoPRCv4U-ELb2FHSbUgG=Mzt8PFn_CA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] dt-bindings: Remove cases of 'allOf' containing a
- '$ref'
-To: Joe Perches <joe@perches.com>
+Date: Thu, 16 Apr 2020 09:37:50 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKYTRh-cgMQSD=DHS2aud9TnLjKepqd9z0F9Wj2oe=jDg@mail.gmail.com>
+Message-ID: <CAL_JsqKYTRh-cgMQSD=DHS2aud9TnLjKepqd9z0F9Wj2oe=jDg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: Clean-up schema indentation formatting
+To: Sam Ravnborg <sam@ravnborg.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200416_065535_289106_9B456E80 
-X-CRM114-Status: GOOD (  19.29  )
+X-CRM114-CacheID: sfid-20200416_073804_224826_895FBEB1 
+X-CRM114-Status: GOOD (  29.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,10 +94,10 @@ Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
  MTD Maling List <linux-mtd@lists.infradead.org>,
  Linux I2C <linux-i2c@vger.kernel.org>, Pavel Machek <pavel@ucw.cz>,
  linux-riscv <linux-riscv@lists.infradead.org>,
- Lee Jones <lee.jones@linaro.org>, linux-clk <linux-clk@vger.kernel.org>,
+ Fabio Estevam <festevam@gmail.com>, linux-clk <linux-clk@vger.kernel.org>,
  Linux LED Subsystem <linux-leds@vger.kernel.org>,
  "open list:REAL TIME CLOCK \(RTC\) SUBSYSTEM" <linux-rtc@vger.kernel.org>,
- Florian Fainelli <f.fainelli@gmail.com>, Sam Ravnborg <sam@ravnborg.org>,
+ Florian Fainelli <f.fainelli@gmail.com>, Lee Jones <lee.jones@linaro.org>,
  Daniel Lezcano <daniel.lezcano@linaro.org>,
  Krzysztof Kozlowski <krzk@kernel.org>,
  Bartosz Golaszewski <bgolaszewski@baylibre.com>,
@@ -112,7 +109,7 @@ Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
  linux-can@vger.kernel.org,
  "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
  Mark Brown <broonie@kernel.org>, Jacek Anaszewski <jacek.anaszewski@gmail.com>,
- Fabio Estevam <festevam@gmail.com>, Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
  "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE"
  <linux-arm-kernel@lists.infradead.org>,
  Linux HWMON List <linux-hwmon@vger.kernel.org>,
@@ -129,32 +126,135 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Apr 16, 2020 at 1:52 AM Joe Perches <joe@perches.com> wrote:
+On Thu, Apr 16, 2020 at 7:44 AM Sam Ravnborg <sam@ravnborg.org> wrote:
 >
-> On Wed, 2020-04-15 at 19:55 -0500, Rob Herring wrote:
-> > json-schema versions draft7 and earlier have a weird behavior in that
-> > any keywords combined with a '$ref' are ignored (silently). The correct
-> > form was to put a '$ref' under an 'allOf'. This behavior is now changed
-> > in the 2019-09 json-schema spec and '$ref' can be mixed with other
-> > keywords. The json-schema library doesn't yet support this, but the
-> > tooling now does a fixup for this and either way works.
+> Hi Rob.
+>
+> On Wed, Apr 15, 2020 at 07:55:48PM -0500, Rob Herring wrote:
+> > Fix various inconsistencies in schema indentation. Most of these are
+> > list indentation which should be 2 spaces more than the start of the
+> > enclosing keyword. This doesn't matter functionally, but affects running
+> > scripts which do transforms on the schema files.
+>
+> Are there any plans to improve the tooling so we get warnigns for this?
+
+I've been experimenting with yamllint some. I haven't figured out how
+to best integrate it in. Probably need to start with something minimal
+and warning free for the tree and then add to it.
+
+There's also yaml-format in the dtschema repo which just reads in and
+writes out a yaml file using ruamel round trip yaml parser. That's
+what I used here.
+
+> Otherwise I am afraid we will see a lot of patches that gets this wrong.
+>
+> As a follow-up patch it would be good if example-schema.yaml
+> could gain some comments about the correct indentions.
+
+Sure, I can do that.
+
+>
+> Some comments in the following.
+>
+> > diff --git a/Documentation/devicetree/bindings/arm/altera.yaml b/Documentation/devicetree/bindings/arm/altera.yaml
+> > index 49e0362ddc11..b388c5aa7984 100644
+> > --- a/Documentation/devicetree/bindings/arm/altera.yaml
+> > +++ b/Documentation/devicetree/bindings/arm/altera.yaml
+> > @@ -13,8 +13,8 @@ properties:
+> >    compatible:
+> >      items:
+> >        - enum:
+> > -        - altr,socfpga-cyclone5
+> > -        - altr,socfpga-arria5
+> > -        - altr,socfpga-arria10
+> > +          - altr,socfpga-cyclone5
+> > +          - altr,socfpga-arria5
+> > +          - altr,socfpga-arria10
+> >        - const: altr,socfpga
+>
+> So here "- enum" do not need the extra indent.
+> Is it because this is not a list?
+
+Right. Indentation is 2 more spaces than the parent keyword ignoring
+any hyphen in the parent.
+
+> > diff --git a/Documentation/devicetree/bindings/arm/amlogic/amlogic,meson-gx-ao-secure.yaml b/Documentation/devicetree/bindings/arm/amlogic/amlogic,meson-gx-ao-secure.yaml
+> > index 66213bd95e6e..6cc74523ebfd 100644
+> > --- a/Documentation/devicetree/bindings/arm/amlogic/amlogic,meson-gx-ao-secure.yaml
+> > +++ b/Documentation/devicetree/bindings/arm/amlogic/amlogic,meson-gx-ao-secure.yaml
+> > @@ -25,7 +25,7 @@ select:
 > >
-> > This has been a constant source of review comments, so let's change this
-> > treewide so everyone copies the simpler syntax.
+> >  properties:
+> >    compatible:
+> > -   items:
+> > +    items:
+> >        - const: amlogic,meson-gx-ao-secure
+> >        - const: syscon
 >
-> This is a large change.
+> This is something I had expected the tooling to notice.
+> I had expected the two "- const" to be indented with 4 spaces, not two.
+> So there is something I do not understand.
+
+As above, correct indenting is 2 spaces from the parent not counting
+any '-' in the parent, but the '-' counts for indenting the children.
+
+Arguably, this style is inconsistent that sometimes the '-' counts and
+sometimes it doesn't. However, I think this style is better because it
+distinguishes lists vs. dicts more clearly. It's easy to miss the '-'
+when the indentation is the same:
+
+- foo:
+  - bar
+  - baz
+
+- foo:
+    bar
+    baz
+
+Or worse:
+
+- foo:
+  - bar
+    baz
+
+Both styles are valid. It's just a tabs vs. spaces debate, and I just
+picked one.
+
+
+> > diff --git a/Documentation/devicetree/bindings/arm/nxp/lpc32xx.yaml b/Documentation/devicetree/bindings/arm/nxp/lpc32xx.yaml
+> > index 07f39d3eee7e..f7f024910e71 100644
+> > --- a/Documentation/devicetree/bindings/arm/nxp/lpc32xx.yaml
+> > +++ b/Documentation/devicetree/bindings/arm/nxp/lpc32xx.yaml
+> > @@ -17,9 +17,8 @@ properties:
+> >            - nxp,lpc3230
+> >            - nxp,lpc3240
+> >        - items:
+> > -        - enum:
+> > -            - ea,ea3250
+> > -            - phytec,phy3250
+> > -        - const: nxp,lpc3250
+> > -
+> > +          - enum:
+> > +              - ea,ea3250
+> > +              - phytec,phy3250
+> > +          - const: nxp,lpc3250
+> >  ...
 >
-> Was this done manually or by some script?
+> And here "- enum" receive extra indent.
+>
+> I trust you know what you are doing - but I do not get it.
+>
+> Some pointers or examples for the correct indention would be great.
 
-Scripted with python ruamel yaml, but then I had to filter out all the
-re-formatting (hence the first patch to cut down some of that).
+With this patch, the tree is all correct examples. :)
 
-> If it was done manually, how likely is it there are defects
-> in the conversion?
-
-Either way, the schemas still have to pass the meta-schema checks.
-
-Rob
+> I cannot review this patch as long as I do not know the rules.
+>
+> My request to update example-schema.yaml was one way to teach me.
+> (Some people will say that is difficult/impossible to teach me,
+> but thats another story:-) ).
+>
+>         Sam
 
 ______________________________________________________
 Linux MTD discussion mailing list
