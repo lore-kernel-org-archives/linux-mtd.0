@@ -2,89 +2,92 @@ Return-Path: <SRS0=sSnz=6B=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1DF1C2D0EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Apr 2020 15:26:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DCF9FC2D0EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Apr 2020 15:30:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7F07F208E4
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Apr 2020 15:26:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A690D208E4
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Apr 2020 15:30:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HVEKalwU";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AJHNPZGa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7F07F208E4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="f94YaiEQ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=st.com header.i=@st.com header.b="WOknlh2t"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A690D208E4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=st.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=YE5DeLeZtQh58N4UYVAf5Gx1GzrHkIGO7hePCkKGXmY=; b=HVEKalwUDj8VtR
-	e/uxpoPvf5YGQgnr4SswTrscCpNVsx3Per7X/Gw+OLGm4r/UucTeCvYHiCo1koXR2zaMLc18qJh5w
-	OTMstA9XSpFIGVbZpOFT1UCIegsox5cEFrMXS9qAl1OHSCnZ6xTjl2cswYidVDOOtxxvO5prpDx1p
-	R6+YK/KqGAPhfFoKbiX5GsLiLrQO4pd5VB2191t6QSN0uDS8JI/+00GbM+6fSYDccErgOQ60hIAGx
-	0GhEH3TGLCMkmaQHxe/10TJx57V5nP8ALPbgepY1fFWoQiaKt9IE+DjYCcQboCosuQ5mtqUzngENx
-	nbsFBNx/ksSKTB6dPutA==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=o7TNMKIXn3MRPRHHTEjIIjKUiCe4qJMnGLCf+PGc1GQ=; b=f94YaiEQAGPW+hnUcqAJVzpV5
+	804rCgK+6YpxRtzHwODkhAXcbWln+v/5EGBG0zGmnm4HHtbqYQBl892qPGIVSZyNksckUs+EaM58v
+	iIeOAuUwUSST/KDRBkZZvKUnjutLkcr9haXodZBzw3piw2Ie8A9ZXkDeUDkmaGUYOlc6q2KbuFP5M
+	tPx3f2eniP8cN1Dv1HGBJyD1fGP8FPn7yPgu6icBHoiO38GlWqL/N3hgkKtnuHlGdWKQM5hZTTmzK
+	AFxOMMJW/+pMYuIzvMFfca2dRHQDSVIOTqW6c+idVwsxI2FAsr+1C37dM1iOuwqRVjot93guGFh29
+	smy6sbv7A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jPStC-0008R5-Md; Fri, 17 Apr 2020 15:26:46 +0000
-Received: from mail-pg1-x542.google.com ([2607:f8b0:4864:20::542])
+	id 1jPSwK-0000wZ-09; Fri, 17 Apr 2020 15:30:00 +0000
+Received: from mx07-00178001.pphosted.com ([62.209.51.94])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jPSt6-0008LQ-P1
- for linux-mtd@lists.infradead.org; Fri, 17 Apr 2020 15:26:42 +0000
-Received: by mail-pg1-x542.google.com with SMTP id r4so1258778pgg.4
- for <linux-mtd@lists.infradead.org>; Fri, 17 Apr 2020 08:26:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=DH5AjWb5Y/HC4rBu1O6z9vHzFuPiXlFK1AmlrEvjj1A=;
- b=AJHNPZGamNVhXj58t/rjjOmLiPwPhdg3Cmlp2SvMNpyIAXJg83bmi/2+TShr3PED4q
- Q+oIbSREwdqz6sKTkYNsDy+2g4NVIFHK+hEsTnRDyahOhREzVwCiKh4u1+/RYg+wzQOQ
- bvycfFGUVNCpF049Gd0ffo45Z61vIZ0AKjf6DNu+s1orFIeOqJKxRc4JOO2TozTMxLwX
- 1GA/U1Hei91bRTglzUEw1StxZv3zDkxxZSzbThVAcXHfhyi6nDj5iRnX+q/TmiEd8yaL
- 8GdEOVaSOQNcRMwbq62nPCxZN4zgYtesoUzRZgo0yaBpnCECDPgQWaIutlScWzOL7mfV
- Xoug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=DH5AjWb5Y/HC4rBu1O6z9vHzFuPiXlFK1AmlrEvjj1A=;
- b=T6SdHi4kkdPWo6Zt1yVP7VYlF1PkJXhupR1A8RZ31UlUbVvMvj2n/ST097XoEupUDb
- cLpo3gXrCKAs6/6NUSxB7OUApyB10W/mkE7RgILHfiw5WllTd42TP/OMh5ZAA1AQIBlN
- T4CWs/qTe4GDgPxabYsazNq24t/UjPdi1w/BwPl0OTaTtPwiYKZHqpmKnQpOxA/65HIq
- M6o7+DD6Mdp+UWxwRxCrk8QMWOPSE+CqEG8nfZn7NjxYwz8WE04/UGCv53CxVGC9w6M8
- SUCfwGrqWOVtutZb8Hqgo0eR4pmJXOPQg3Jz7XdfI4JlyENsvLN1eJWQvcleK4CPGCW+
- Layg==
-X-Gm-Message-State: AGi0PubHN2vL1KxQMX4dHx/wy+2+ZFxN9yyvBeITA1+4rheeaFj1E/vo
- iLIxjmR31einRec4f8DsIv8=
-X-Google-Smtp-Source: APiQypKeRXG2E61w4rat3AOZywRaxqK4VdTTZAbbbIZ4/PWI3LoCg+td2GI0G3iPti4SdUu57/PgSg==
-X-Received: by 2002:aa7:9f93:: with SMTP id z19mr3832007pfr.187.1587137199052; 
- Fri, 17 Apr 2020 08:26:39 -0700 (PDT)
-Received: from minnich.svl.corp.google.com
- ([2620:15c:2c5:3:65f9:fd8e:a0b8:2917])
- by smtp.googlemail.com with ESMTPSA id z6sm18265299pgg.39.2020.04.17.08.26.38
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 17 Apr 2020 08:26:38 -0700 (PDT)
-From: "Ronald G. Minnich" <rminnich@gmail.com>
-X-Google-Original-From: "Ronald G. Minnich" <rminnich@google.com>
-To: 
-Subject: [PATCH] mtd: spi-nor: controllers: intel-spi: Add support for command
- line partitions
-Date: Fri, 17 Apr 2020 08:26:11 -0700
-Message-Id: <20200417152613.176554-1-rminnich@google.com>
-X-Mailer: git-send-email 2.26.1.301.g55bc3eb7cb9-goog
+ id 1jPSwF-0000vT-SS
+ for linux-mtd@lists.infradead.org; Fri, 17 Apr 2020 15:29:57 +0000
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+ by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
+ 03HFIR9E021936; Fri, 17 Apr 2020 17:29:38 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com;
+ h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=zg2l/xaHbJpPirEybKyuid8T5Usbcw6D5SirTrUwrsA=;
+ b=WOknlh2tWPlU+ymmYGqe/VN9kY6eh986HBuIgNpOmh6u8LL+zNMcnkXC2nVtTETWa/Qh
+ OAyc+jy48wqVIoUWuaaAQqOCznw2m2lrCQAPwHmyRjv6jZfSCihqfaFyx1QN283mAxJS
+ 9CE5BNrdgpUqvSiUSqtZEtvnMJw9luCpS1dizvC8ExxMP8n9rT91r/hatJqlqGpmfJvV
+ pMjy/snxLc4YDxWWO/dKxKDOK4HGKiQ9Z+vswmhpZTa0GEDF7zoVm/VDFC8Kn18D+rwH
+ Kbx9UxfkTBRaT431u+7pl/njiOxlqUOkw9gq11F3pq8p9KLoz9ymQUt+YePuYcXGMXWe ew== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+ by mx07-00178001.pphosted.com with ESMTP id 30dn94tb8v-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 17 Apr 2020 17:29:38 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 272C410002A;
+ Fri, 17 Apr 2020 17:29:37 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag6node2.st.com [10.75.127.17])
+ by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E3D612BF9AB;
+ Fri, 17 Apr 2020 17:29:36 +0200 (CEST)
+Received: from [10.211.0.195] (10.75.127.44) by SFHDAG6NODE2.st.com
+ (10.75.127.17) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Fri, 17 Apr
+ 2020 17:29:34 +0200
+Subject: Re: [PATCH v2 03/12] bus: stm32-fmc2-ebi: add STM32 FMC2 EBI
+ controller driver
+To: Boris Brezillon <boris.brezillon@collabora.com>
+References: <1586966256-29548-1-git-send-email-christophe.kerello@st.com>
+ <1586966256-29548-4-git-send-email-christophe.kerello@st.com>
+ <20200416215328.53982fef@collabora.com>
+From: Christophe Kerello <christophe.kerello@st.com>
+Message-ID: <e4a21df4-b01b-1215-7a3b-fea94f099b8f@st.com>
+Date: Fri, 17 Apr 2020 17:29:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
+In-Reply-To: <20200416215328.53982fef@collabora.com>
+Content-Language: en-US
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG6NODE2.st.com
+ (10.75.127.17)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138, 18.0.676
+ definitions=2020-04-17_06:2020-04-17,
+ 2020-04-17 signatures=0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200417_082640_903735_0BD41EE8 
-X-CRM114-Status: GOOD (  11.84  )
+X-CRM114-CacheID: sfid-20200417_082956_402737_28669106 
+X-CRM114-Status: GOOD (  20.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,63 +99,63 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, "Ronald G. Minnich" <rminnich@google.com>,
- Jethro Beekman <jethro@fortanix.com>, linux-kernel@vger.kernel.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Alexander Sverdlin <alexander.sverdlin@nokia.com>,
- Thomas Gleixner <tglx@linutronix.de>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Boris Brezillon <bbrezillon@kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Cc: mark.rutland@arm.com, marex@denx.de, vigneshr@ti.com,
+ devicetree@vger.kernel.org, tony@atomide.com, richard@nod.at,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com, lee.jones@linaro.org,
+ linux-stm32@st-md-mailman.stormreply.com
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Intel platforms, the usable SPI area is located several
-MiB in from the start, to leave room for descriptors and
-the Management Engine binary. Further, not all the remaining
-space can be used, as the last 16 MiB contains firmware.
 
-To make the SPI usable for mtdblock and other devices,
-it is necessary to enable command line partitions so the
-middle usable region can be specified.
 
-Add a part_probes array which includes only "cmdelineparts",
-and change to mtd_device_parse_register to use this part_probes.
+On 4/16/20 9:53 PM, Boris Brezillon wrote:
+> On Wed, 15 Apr 2020 17:57:27 +0200
+> Christophe Kerello <christophe.kerello@st.com> wrote:
+> 
+>> The driver adds the support for the STMicroelectronics FMC2 EBI controller
+>> found on STM32MP SOCs.
+>>
+>> Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
+>> Tested-by: Marek Vasut <marex@denx.de>
+>> ---
+>> Changes in v2:
+>>   - call 2 APIs to manage FMC2 enable/disable instead of ops
+>>   - call 2 APIs to manage FMC2 NWAIT shared signal instead of ops
+>>
+>>   drivers/bus/Kconfig          |   11 +
+>>   drivers/bus/Makefile         |    1 +
+>>   drivers/bus/stm32-fmc2-ebi.c | 1091 ++++++++++++++++++++++++++++++++++++++++++
+> 
+> Hm, I see that other memory bus controller drivers are placed under
+> drivers/memory/, any reason for choosing drivers/bus/? If that's where
+> we want to have all generic memory bus controllers to live it might be
+> worth moving existing drivers to the drivers/bus/ directory at some
+> point.
+> 
 
-Signed-off-by: Ronald G. Minnich <rminnich@google.com>
----
- drivers/mtd/spi-nor/controllers/intel-spi.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Hi Boris,
 
-diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
-index 61d2a0ad2131..132129e89d07 100644
---- a/drivers/mtd/spi-nor/controllers/intel-spi.c
-+++ b/drivers/mtd/spi-nor/controllers/intel-spi.c
-@@ -894,6 +894,8 @@ static const struct spi_nor_controller_ops intel_spi_controller_ops = {
- 	.erase = intel_spi_erase,
- };
- 
-+static const char * const part_probes[] = { "cmdlinepart", NULL };
-+
- struct intel_spi *intel_spi_probe(struct device *dev,
- 	struct resource *mem, const struct intel_spi_boardinfo *info)
- {
-@@ -941,7 +943,8 @@ struct intel_spi *intel_spi_probe(struct device *dev,
- 	if (!ispi->writeable || !writeable)
- 		ispi->nor.mtd.flags &= ~MTD_WRITEABLE;
- 
--	ret = mtd_device_register(&ispi->nor.mtd, &part, 1);
-+	ret = mtd_device_parse_register(&ispi->nor.mtd, part_probes,
-+				       NULL, &part, 1);
- 	if (ret)
- 		return ERR_PTR(ret);
- 
--- 
-2.26.1.301.g55bc3eb7cb9-goog
+I see this controller as an external bus interface as we are able to 
+attach different devices on it, like a PSRAM, an ethernet controller, a 
+FPGA, a LCD display, ...
+
+When I had a look at bus/Kconfig file, I have found similar drivers 
+(like IMX_WEIM or QCOM_EBI2 drivers). These drivers are able to connect 
+devices like NAND Flash, SRAM, ethernet adapters, FPGAs and LCD displays 
+as it is written in the Kconfig file.
+
+But, after checking memory/Kconfig file, it is also possible to find 
+similar drivers (like ATMEL_EBI driver that is inspired by the WEIM bus 
+driver).
+
+So, I will follow the recommendation and I will move it to 
+drivers/memory folder if it is the place where this driver should be.
+
+Regards,
+Christophe Kerello.
 
 
 ______________________________________________________
