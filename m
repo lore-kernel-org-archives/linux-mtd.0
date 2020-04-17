@@ -2,23 +2,24 @@ Return-Path: <SRS0=sSnz=6B=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2570C2D0EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Apr 2020 14:27:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1DF1C2D0EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Apr 2020 15:26:59 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A1CFA20857
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Apr 2020 14:27:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7F07F208E4
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Apr 2020 15:26:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Vkeyai9F";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QShcQD3/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A1CFA20857
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HVEKalwU";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AJHNPZGa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7F07F208E4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -26,63 +27,64 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
 	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=TPHfbqZIhbWIlPtk3ShC17oGKEYCREgiViVyN5zwIjg=; b=Vkeyai9FbP9bpE
-	8HpjPTaqL1fkAHnucldL9/YmkBLmrXW9OC8WvVOawIXlSQAsJSrXJVDQ2PwPoH7/1aeU1ttP1BL81
-	skqgoFSYEZUz8/ZsI6VxsmgGZZIJNYhVMU+MvPa9Mwhb8/l8pgUvtrQ9q+b/FExzZNQ3FWfsgzlLg
-	YAAff7AgtRc/BQoCx0LE2eeRCS3djoNcm3uhWQTFElPswOlDz1zEGjsJ5CZsD/JYs4qPtrtMD/UMp
-	PsPGPEudlxBS/GGIRE4P+aAhJtrBseVv4cf7NU9g9mH19C60x1VzRGXwCannzfOnwyo+2YJhzepwP
-	gcx3zGMu1yqXU3WHzKpA==;
+	List-Owner; bh=YE5DeLeZtQh58N4UYVAf5Gx1GzrHkIGO7hePCkKGXmY=; b=HVEKalwUDj8VtR
+	e/uxpoPvf5YGQgnr4SswTrscCpNVsx3Per7X/Gw+OLGm4r/UucTeCvYHiCo1koXR2zaMLc18qJh5w
+	OTMstA9XSpFIGVbZpOFT1UCIegsox5cEFrMXS9qAl1OHSCnZ6xTjl2cswYidVDOOtxxvO5prpDx1p
+	R6+YK/KqGAPhfFoKbiX5GsLiLrQO4pd5VB2191t6QSN0uDS8JI/+00GbM+6fSYDccErgOQ60hIAGx
+	0GhEH3TGLCMkmaQHxe/10TJx57V5nP8ALPbgepY1fFWoQiaKt9IE+DjYCcQboCosuQ5mtqUzngENx
+	nbsFBNx/ksSKTB6dPutA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jPRxT-000548-KG; Fri, 17 Apr 2020 14:27:07 +0000
-Received: from mail-wr1-x442.google.com ([2a00:1450:4864:20::442])
+	id 1jPStC-0008R5-Md; Fri, 17 Apr 2020 15:26:46 +0000
+Received: from mail-pg1-x542.google.com ([2607:f8b0:4864:20::542])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jPRxN-00053H-K6
- for linux-mtd@lists.infradead.org; Fri, 17 Apr 2020 14:27:03 +0000
-Received: by mail-wr1-x442.google.com with SMTP id a25so3315400wrd.0
- for <linux-mtd@lists.infradead.org>; Fri, 17 Apr 2020 07:27:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ id 1jPSt6-0008LQ-P1
+ for linux-mtd@lists.infradead.org; Fri, 17 Apr 2020 15:26:42 +0000
+Received: by mail-pg1-x542.google.com with SMTP id r4so1258778pgg.4
+ for <linux-mtd@lists.infradead.org>; Fri, 17 Apr 2020 08:26:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=PHFxusB8wA5WqPB2sIr0XZtrSers8hydd/1i7jfoyIM=;
- b=QShcQD3/K5G7PhsyLb+vZfLdWTAN41ha5G6ulcEMrf8GhM4uaK8YsBVonWPtth9WWd
- 6oTIBmj5FiXyMmvQAPoHg8pNnBD2gXKAYBOIlXjMYEIjzC7LvvtX1KetO0yjpjteIS/B
- S318g17YhYlnT4VwdAqdus2oUwoYJE0KnO3JZ8Fi/kZcUmY5o/ictTKsVa+uH2IOCogP
- YaYD0eN6kpvhE+TwSaXN1MwETTHUaNqEPQVdAg2eEOec0cc48M33gkY3vEE0dZDrcXby
- n9+QDI02e/PYKnPObUk1C8WZ0LtUtNeThWDUVy8icysQamXRYzki1uCbUNlXk0w89lLL
- W8Og==
+ bh=DH5AjWb5Y/HC4rBu1O6z9vHzFuPiXlFK1AmlrEvjj1A=;
+ b=AJHNPZGamNVhXj58t/rjjOmLiPwPhdg3Cmlp2SvMNpyIAXJg83bmi/2+TShr3PED4q
+ Q+oIbSREwdqz6sKTkYNsDy+2g4NVIFHK+hEsTnRDyahOhREzVwCiKh4u1+/RYg+wzQOQ
+ bvycfFGUVNCpF049Gd0ffo45Z61vIZ0AKjf6DNu+s1orFIeOqJKxRc4JOO2TozTMxLwX
+ 1GA/U1Hei91bRTglzUEw1StxZv3zDkxxZSzbThVAcXHfhyi6nDj5iRnX+q/TmiEd8yaL
+ 8GdEOVaSOQNcRMwbq62nPCxZN4zgYtesoUzRZgo0yaBpnCECDPgQWaIutlScWzOL7mfV
+ Xoug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=PHFxusB8wA5WqPB2sIr0XZtrSers8hydd/1i7jfoyIM=;
- b=AVZdfjlZ9mxDTsR94E39hgauGdZk62t1m4vOZRbXdHaszYLGee0XEIQaLomHcb/+Pc
- iLhzw5klyzhk9DJkHk8D8xk4t8ZhCgUWK7SIXoypEdkQM02P8avHKK9nimEJyOFTEO0y
- 1u4oG+oMMsb5uJuCu/gWC008BNTgSzwgyZUWs3MgqRcqloU9+H3aonGwTRQXpmN4R6nJ
- JIKur+CidDzhIR4L77dMlAehtYQ5p5H5olYidgMWmRHJ15H1GwcZhDquxe7aC4k/LQzv
- kSFC5EsXJ8lEphozVbhVqAD6Hoid/KbaCGqZ1vDPDoVVKTqoc9KM8D2Lv642ZL8eMD+K
- ln8A==
-X-Gm-Message-State: AGi0PuafN5O6zaXQno8hF0Lq7rl+zYJrVvmAyP6jZDdLR+TmRhMFlj/h
- G/JOgt5sWSBr8SM1Mz7ts+dbbsqnAWk=
-X-Google-Smtp-Source: APiQypIQeo4qw1hhOGPpOoyM89JM24bpa+h+F3bZbfjwtpTKTN/uPVbfWNixkdcH2WIW7Jp6P6/ENA==
-X-Received: by 2002:adf:97ce:: with SMTP id t14mr4271829wrb.263.1587133619437; 
- Fri, 17 Apr 2020 07:26:59 -0700 (PDT)
-Received: from localhost.localdomain
- ([2001:171b:226b:54a0:116c:c27a:3e7f:5eaf])
- by smtp.gmail.com with ESMTPSA id a205sm7863556wmh.29.2020.04.17.07.26.58
+ bh=DH5AjWb5Y/HC4rBu1O6z9vHzFuPiXlFK1AmlrEvjj1A=;
+ b=T6SdHi4kkdPWo6Zt1yVP7VYlF1PkJXhupR1A8RZ31UlUbVvMvj2n/ST097XoEupUDb
+ cLpo3gXrCKAs6/6NUSxB7OUApyB10W/mkE7RgILHfiw5WllTd42TP/OMh5ZAA1AQIBlN
+ T4CWs/qTe4GDgPxabYsazNq24t/UjPdi1w/BwPl0OTaTtPwiYKZHqpmKnQpOxA/65HIq
+ M6o7+DD6Mdp+UWxwRxCrk8QMWOPSE+CqEG8nfZn7NjxYwz8WE04/UGCv53CxVGC9w6M8
+ SUCfwGrqWOVtutZb8Hqgo0eR4pmJXOPQg3Jz7XdfI4JlyENsvLN1eJWQvcleK4CPGCW+
+ Layg==
+X-Gm-Message-State: AGi0PubHN2vL1KxQMX4dHx/wy+2+ZFxN9yyvBeITA1+4rheeaFj1E/vo
+ iLIxjmR31einRec4f8DsIv8=
+X-Google-Smtp-Source: APiQypKeRXG2E61w4rat3AOZywRaxqK4VdTTZAbbbIZ4/PWI3LoCg+td2GI0G3iPti4SdUu57/PgSg==
+X-Received: by 2002:aa7:9f93:: with SMTP id z19mr3832007pfr.187.1587137199052; 
+ Fri, 17 Apr 2020 08:26:39 -0700 (PDT)
+Received: from minnich.svl.corp.google.com
+ ([2620:15c:2c5:3:65f9:fd8e:a0b8:2917])
+ by smtp.googlemail.com with ESMTPSA id z6sm18265299pgg.39.2020.04.17.08.26.38
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 17 Apr 2020 07:26:58 -0700 (PDT)
-From: Jean-Philippe Brucker <jean-philippe@linaro.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: cfi_cmdset_0001: Support the absence of protection
- registers
-Date: Fri, 17 Apr 2020 16:23:26 +0200
-Message-Id: <20200417142325.2931423-1-jean-philippe@linaro.org>
-X-Mailer: git-send-email 2.26.0
+ Fri, 17 Apr 2020 08:26:38 -0700 (PDT)
+From: "Ronald G. Minnich" <rminnich@gmail.com>
+X-Google-Original-From: "Ronald G. Minnich" <rminnich@google.com>
+To: 
+Subject: [PATCH] mtd: spi-nor: controllers: intel-spi: Add support for command
+ line partitions
+Date: Fri, 17 Apr 2020 08:26:11 -0700
+Message-Id: <20200417152613.176554-1-rminnich@google.com>
+X-Mailer: git-send-email 2.26.1.301.g55bc3eb7cb9-goog
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200417_072702_008013_6A4C093F 
-X-CRM114-Status: GOOD (  12.76  )
+X-CRM114-CacheID: sfid-20200417_082640_903735_0BD41EE8 
+X-CRM114-Status: GOOD (  11.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,60 +96,65 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>, vigneshr@ti.com,
- richard@nod.at, miquel.raynal@bootlin.com, sudeep.holla@arm.com,
- linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Richard Weinberger <richard@nod.at>, "Ronald G. Minnich" <rminnich@google.com>,
+ Jethro Beekman <jethro@fortanix.com>, linux-kernel@vger.kernel.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Boris Brezillon <bbrezillon@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-VGhlIGZsYXNoIGNvbnRyb2xsZXIgaW1wbGVtZW50ZWQgYnkgdGhlIEFybSBCYXNlIHBsYXRmb3Jt
-IGJlaGF2ZXMgbGlrZQp0aGUgSW50ZWwgU3RyYXRhRmxhc2ggSjMgZGV2aWNlLCBidXQgb21pdHMg
-c2V2ZXJhbCBmZWF0dXJlcy4gSW4KcGFydGljdWxhciBpdCBkb2Vzbid0IGltcGxlbWVudCBhIHBy
-b3RlY3Rpb24gcmVnaXN0ZXIsIHNvICJOdW1iZXIgb2YKUHJvdGVjdGlvbiByZWdpc3RlciBmaWVs
-ZHMiIGluIHRoZSBQcmltYXJ5IFZlbmRvci1TcGVjaWZpYyBFeHRlbmRlZApRdWVyeSwgaXMgMC4K
-ClRoZSBJbnRlbCBTdHJhdGFGbGFzaCBKMyBkYXRhc2hlZXQgb25seSBsaXN0cyAxIGFzIGEgdmFs
-aWQgdmFsdWUgZm9yCk51bVByb3RlY3Rpb25GaWVsZHMuIEl0IGRlc2NyaWJlcyB0aGUgZmllbGQg
-YXM6CgoJIk51bWJlciBvZiBQcm90ZWN0aW9uIHJlZ2lzdGVyIGZpZWxkcyBpbiBKRURFQyBJRCBz
-cGFjZS4KCeKAnDAwaCzigJ0gaW5kaWNhdGVzIHRoYXQgMjU2IHByb3RlY3Rpb24gYnl0ZXMgYXJl
-IGF2YWlsYWJsZSIKCldoaWxlIGEgdmFsdWUgb2YgMCBtYXkgYXJndWFibHkgbm90IGJlIGFyY2hp
-dGVjdHVyYWxseSB2YWxpZCwgdGhlCmRyaXZlcidzIGN1cnJlbnQgYmVoYXZpb3IgaXMgY2VydGFp
-bmx5IHdyb25nOiBpZiBOdW1Qcm90ZWN0aW9uRmllbGRzIGlzCjAsIHJlYWRfcHJpX2ludGVsZXh0
-KCkgYWRkcyBhIG5lZ2F0aXZlIHZhbHVlIHRvIHRoZSB1bnNpZ25lZCBleHRyYV9zaXplLAphbmQg
-ZW5kcyB1cCBpbiBhbiBpbmZpbml0ZSBsb29wLgoKRml4IGl0IGJ5IGlnbm9yaW5nIGEgTnVtUHJv
-dGVjdGlvbkZpZWxkcyBvZiAwLgoKU2lnbmVkLW9mZi1ieTogSmVhbi1QaGlsaXBwZSBCcnVja2Vy
-IDxqZWFuLXBoaWxpcHBlQGxpbmFyby5vcmc+Ci0tLQpJIGd1ZXNzIHRoaXMgZmxhc2ggZGV2aWNl
-IGhhcyBuZXZlciBiZWVuIHRlc3RlZCBvbiBMaW51eC4gVGhlIGJ1ZyBzaG93ZWQKdXAgd2hlbiB0
-cnlpbmcgdG8gYm9vdCB0aGUgbGF0ZXN0IGFybTY0IGRlZmNvbmZpZywgd2hpY2ggZW5hYmxlZApD
-T05GSUdfTVREX1BIWVNNQVBfT0YsIG9uIHRoZSBSZXZDIEZhc3RNb2RlbC4gV2l0aG91dCB0aGlz
-IGNvbmZpZyBvcHRpb24KdGhlIGRldmljZSBpc24ndCBwcm9iZWQuCi0tLQogZHJpdmVycy9tdGQv
-Y2hpcHMvY2ZpX2NtZHNldF8wMDAxLmMgfCAxMyArKysrKysrKy0tLS0tCiAxIGZpbGUgY2hhbmdl
-ZCwgOCBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMv
-bXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMS5jIGIvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNl
-dF8wMDAxLmMKaW5kZXggMTQyYzBmOTQ4NWZlMS4uNDIwMDFjNDk4MzNiOSAxMDA2NDQKLS0tIGEv
-ZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAxLmMKKysrIGIvZHJpdmVycy9tdGQvY2hp
-cHMvY2ZpX2NtZHNldF8wMDAxLmMKQEAgLTQyMCw4ICs0MjAsOSBAQCByZWFkX3ByaV9pbnRlbGV4
-dChzdHJ1Y3QgbWFwX2luZm8gKm1hcCwgX191MTYgYWRyKQogCQlleHRyYV9zaXplID0gMDsKIAog
-CQkvKiBQcm90ZWN0aW9uIFJlZ2lzdGVyIGluZm8gKi8KLQkJZXh0cmFfc2l6ZSArPSAoZXh0cC0+
-TnVtUHJvdGVjdGlvbkZpZWxkcyAtIDEpICoKLQkJCSAgICAgIHNpemVvZihzdHJ1Y3QgY2ZpX2lu
-dGVsZXh0X290cGluZm8pOworCQlpZiAoZXh0cC0+TnVtUHJvdGVjdGlvbkZpZWxkcykKKwkJCWV4
-dHJhX3NpemUgKz0gKGV4dHAtPk51bVByb3RlY3Rpb25GaWVsZHMgLSAxKSAqCisJCQkJICAgICAg
-c2l6ZW9mKHN0cnVjdCBjZmlfaW50ZWxleHRfb3RwaW5mbyk7CiAJfQogCiAJaWYgKGV4dHAtPk1p
-bm9yVmVyc2lvbiA+PSAnMScpIHsKQEAgLTY5NSwxNCArNjk2LDE2IEBAIHN0YXRpYyBpbnQgY2Zp
-X2ludGVsZXh0X3BhcnRpdGlvbl9maXh1cChzdHJ1Y3QgbXRkX2luZm8gKm10ZCwKIAkgKi8KIAlp
-ZiAoZXh0cCAmJiBleHRwLT5NYWpvclZlcnNpb24gPT0gJzEnICYmIGV4dHAtPk1pbm9yVmVyc2lv
-biA+PSAnMycKIAkgICAgJiYgZXh0cC0+RmVhdHVyZVN1cHBvcnQgJiAoMSA8PCA5KSkgeworCQlp
-bnQgb2ZmcyA9IDA7CiAJCXN0cnVjdCBjZmlfcHJpdmF0ZSAqbmV3Y2ZpOwogCQlzdHJ1Y3QgZmxj
-aGlwICpjaGlwOwogCQlzdHJ1Y3QgZmxjaGlwX3NoYXJlZCAqc2hhcmVkOwotCQlpbnQgb2Zmcywg
-bnVtcmVnaW9ucywgbnVtcGFydHMsIHBhcnRzaGlmdCwgbnVtdmlydGNoaXBzLCBpLCBqOworCQlp
-bnQgbnVtcmVnaW9ucywgbnVtcGFydHMsIHBhcnRzaGlmdCwgbnVtdmlydGNoaXBzLCBpLCBqOwog
-CiAJCS8qIFByb3RlY3Rpb24gUmVnaXN0ZXIgaW5mbyAqLwotCQlvZmZzID0gKGV4dHAtPk51bVBy
-b3RlY3Rpb25GaWVsZHMgLSAxKSAqCi0JCSAgICAgICBzaXplb2Yoc3RydWN0IGNmaV9pbnRlbGV4
-dF9vdHBpbmZvKTsKKwkJaWYgKGV4dHAtPk51bVByb3RlY3Rpb25GaWVsZHMpCisJCQlvZmZzID0g
-KGV4dHAtPk51bVByb3RlY3Rpb25GaWVsZHMgLSAxKSAqCisJCQkgICAgICAgc2l6ZW9mKHN0cnVj
-dCBjZmlfaW50ZWxleHRfb3RwaW5mbyk7CiAKIAkJLyogQnVyc3QgUmVhZCBpbmZvICovCiAJCW9m
-ZnMgKz0gZXh0cC0+ZXh0cmFbb2ZmcysxXSsyOwotLSAKMi4yNi4wCgoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNz
-aW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2xpbnV4LW10ZC8K
+On Intel platforms, the usable SPI area is located several
+MiB in from the start, to leave room for descriptors and
+the Management Engine binary. Further, not all the remaining
+space can be used, as the last 16 MiB contains firmware.
+
+To make the SPI usable for mtdblock and other devices,
+it is necessary to enable command line partitions so the
+middle usable region can be specified.
+
+Add a part_probes array which includes only "cmdelineparts",
+and change to mtd_device_parse_register to use this part_probes.
+
+Signed-off-by: Ronald G. Minnich <rminnich@google.com>
+---
+ drivers/mtd/spi-nor/controllers/intel-spi.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
+index 61d2a0ad2131..132129e89d07 100644
+--- a/drivers/mtd/spi-nor/controllers/intel-spi.c
++++ b/drivers/mtd/spi-nor/controllers/intel-spi.c
+@@ -894,6 +894,8 @@ static const struct spi_nor_controller_ops intel_spi_controller_ops = {
+ 	.erase = intel_spi_erase,
+ };
+ 
++static const char * const part_probes[] = { "cmdlinepart", NULL };
++
+ struct intel_spi *intel_spi_probe(struct device *dev,
+ 	struct resource *mem, const struct intel_spi_boardinfo *info)
+ {
+@@ -941,7 +943,8 @@ struct intel_spi *intel_spi_probe(struct device *dev,
+ 	if (!ispi->writeable || !writeable)
+ 		ispi->nor.mtd.flags &= ~MTD_WRITEABLE;
+ 
+-	ret = mtd_device_register(&ispi->nor.mtd, &part, 1);
++	ret = mtd_device_parse_register(&ispi->nor.mtd, part_probes,
++				       NULL, &part, 1);
+ 	if (ret)
+ 		return ERR_PTR(ret);
+ 
+-- 
+2.26.1.301.g55bc3eb7cb9-goog
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
