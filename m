@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69AE0C38A30
-	for <linux-mtd@archiver.kernel.org>; Sun, 19 Apr 2020 12:53:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42CF6C38A30
+	for <linux-mtd@archiver.kernel.org>; Sun, 19 Apr 2020 12:54:46 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3AE75206D9
-	for <linux-mtd@archiver.kernel.org>; Sun, 19 Apr 2020 12:53:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E966D206D9
+	for <linux-mtd@archiver.kernel.org>; Sun, 19 Apr 2020 12:54:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hwNdqzCq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3AE75206D9
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XJMcDdlP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E966D206D9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2DLtcTWo18LFhKscz8GjgTMsDjStwg3tKQW8IstkT5g=; b=hwNdqzCqWfCDai
-	qhtrfgw/Iq1vq9Kj3/m613lQviyKzDuMguMVPLaHIa6t+VIEc3o1Gl1wklnKyG63ezxdKyNc2XBPM
-	5cS8p5YLJLnT8LC7rJHzKknuyKblA4JDvIHno/EkVf5uoo2OBE0ESQfRaaNEpNN9qNOt+qJfDdcva
-	kqYeeamDoYHmHCxuP6dlVuVNi5MShMWSkV6TxQ0/3jNTWRYaCMVk81FamT2pYvCzxUYd4E82fP893
-	txC7jlDPXTwAQb44DEOmMomhKINUGOvRGDQfJ1qwe/xKTgzI17WHYgke9zMo9Kr9KjgB3IarPBBA4
-	31Mj84sRjDtbcHttwCLw==;
+	List-Owner; bh=x3uusd+PDXEWUCCXN5DixywuBpDJdaHBKLgLK5R+n5s=; b=XJMcDdlP/mTtNW
+	2mL0cUwMQyB42CGdeMWKVFwZrK/zmfWB5oAtI5872qi+9D7VYkJJM/ayLKie4FZE0/9B1NYn1plKR
+	A5e4WYjMYJYJYotoNHsGD4y0b5t8/pK+kywSRAXl591CoSomM4QKXlWFZyh3QHzYUw77biYsz7xpN
+	8ZRrcvf4kfZh2+i96E75Q2K+X1gffmP8bYmmAaPgJ1aRBThd7e1euux4uHT9q5v96JcNTDQXnaiJ3
+	98X8CXCbQyWA2z53AqAEWxj5zllZ0IX+1hlwcvRcDQkAwmvLfGHEkxQhwjO0FA4YC+EJKp8OXRwon
+	ObpA4jcraBgHXVpOLwow==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jQ9SJ-00083V-0x; Sun, 19 Apr 2020 12:53:51 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1jQ9T1-0000LX-9h; Sun, 19 Apr 2020 12:54:35 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jQ9QJ-0005so-A4
- for linux-mtd@lists.infradead.org; Sun, 19 Apr 2020 12:51:52 +0000
+ id 1jQ9QM-0005wi-CU
+ for linux-mtd@lists.infradead.org; Sun, 19 Apr 2020 12:51:54 +0000
 Received: from localhost.localdomain (unknown
  [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id CD6A12A0D69;
- Sun, 19 Apr 2020 13:51:45 +0100 (BST)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id B9EDB2A0D95;
+ Sun, 19 Apr 2020 13:51:47 +0100 (BST)
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH 4/9] mtd: rawnand: bcm47xx: Demistify a few more things
-Date: Sun, 19 Apr 2020 14:51:35 +0200
-Message-Id: <20200419125140.1307309-5-boris.brezillon@collabora.com>
+Subject: [PATCH 9/9] mtd: rawnand: bcm47xx: Move the driver to
+ drivers/mtd/nand/raw/
+Date: Sun, 19 Apr 2020 14:51:40 +0200
+Message-Id: <20200419125140.1307309-10-boris.brezillon@collabora.com>
 X-Mailer: git-send-email 2.25.2
 In-Reply-To: <20200419125140.1307309-1-boris.brezillon@collabora.com>
 References: <20200419125140.1307309-1-boris.brezillon@collabora.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200419_055147_606024_E4AD7D17 
-X-CRM114-Status: GOOD (  16.12  )
+X-CRM114-CacheID: sfid-20200419_055150_584496_FCEDF797 
+X-CRM114-Status: GOOD (  11.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,119 +79,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There were a few places were raw hex values were used instead of the
-macro def.
-
-We also add macros to help forming the conf value (note that we still
-have one magic bit whose meaning I couldn't extract from the code), and
-add an extra macro to specify the number of DATA cycles to issue when
-the READ or WRITE flag is set.
+Now that we have a single we can move it to the directory where all
+single source file drivers live.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
 ---
- .../mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c  | 34 +++++++++++++++----
- 1 file changed, 27 insertions(+), 7 deletions(-)
+ drivers/mtd/nand/raw/Makefile                            | 1 +
+ drivers/mtd/nand/raw/{bcm47xxnflash => }/bcm47xxnflash.c | 0
+ drivers/mtd/nand/raw/bcm47xxnflash/Makefile              | 2 --
+ 3 files changed, 1 insertion(+), 2 deletions(-)
+ rename drivers/mtd/nand/raw/{bcm47xxnflash => }/bcm47xxnflash.c (100%)
+ delete mode 100644 drivers/mtd/nand/raw/bcm47xxnflash/Makefile
 
-diff --git a/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
-index 591775173034..fbb7acebc8f7 100644
---- a/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
-+++ b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
-@@ -25,12 +25,29 @@
- #define NCTL_CMD1W			0x00080000
- #define NCTL_READ			0x00100000
- #define NCTL_WRITE			0x00200000
-+/* When the SPECADDR is set CMD1 is interpreted as a single ADDR cycle */
- #define NCTL_SPECADDR			0x01000000
- #define NCTL_READY			0x04000000
- #define NCTL_ERR			0x08000000
-+/*
-+ * Number of DATA cycles to issue when NCTL_{READ,WRITE} is set. The minimum
-+ * value is 1 and the maximum value is 4. Those bytes are then stored in the
-+ * BCMA_CC_NFLASH_DATA register.
-+ */
-+#define NCTL_DATA_CYCLES(x)		((((x) - 1) & 0x3) << 28)
-+/*
-+ * The CS pin seems to be asserted even if NCTL_CSA is not set. All this bit
-+ * seems to encode is whether the CS line should stay asserted after the
-+ * operation has been executed. In other words, you should only set it if if
-+ * you intend to do more operations on the NAND bus.
-+ */
- #define NCTL_CSA			0x40000000
- #define NCTL_START			0x80000000
+diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
+index 2d136b158fb7..703d696c2d61 100644
+--- a/drivers/mtd/nand/raw/Makefile
++++ b/drivers/mtd/nand/raw/Makefile
+@@ -58,6 +58,7 @@ obj-$(CONFIG_MTD_NAND_TEGRA)		+= tegra_nand.o
+ obj-$(CONFIG_MTD_NAND_STM32_FMC2)	+= stm32_fmc2_nand.o
+ obj-$(CONFIG_MTD_NAND_MESON)		+= meson_nand.o
+ obj-$(CONFIG_MTD_NAND_CADENCE)		+= cadence-nand-controller.o
++obj-$(CONFIG_MTD_NAND_BCM47XXNFLASH)	+= bcm47xxnflash.o
  
-+#define CONF_MAGIC_BIT			0x00000002
-+#define CONF_COL_BYTES(x)		(((x) - 1) << 4)
-+#define CONF_ROW_BYTES(x)		(((x) - 1) << 6)
-+
- /**************************************************
-  * Various helpers
-  **************************************************/
-@@ -118,7 +135,7 @@ static void bcm47xxnflash_ops_bcm4706_read(struct mtd_info *mtd, uint8_t *buf,
- 
- 		/* Eventually read some data :) */
- 		for (i = 0; i < toread; i += 4, dest++) {
--			ctlcode = NCTL_CSA | 0x30000000 | NCTL_READ;
-+			ctlcode = NCTL_CSA | NCTL_DATA_CYCLES(4) | NCTL_READ;
- 			if (i == toread - 4) /* Last read goes without that */
- 				ctlcode &= ~NCTL_CSA;
- 			if (bcm47xxnflash_ops_bcm4706_ctl_cmd(b47n->cc,
-@@ -150,7 +167,7 @@ static void bcm47xxnflash_ops_bcm4706_write(struct mtd_info *mtd,
- 	for (i = 0; i < len; i += 4, data++) {
- 		bcma_cc_write32(cc, BCMA_CC_NFLASH_DATA, *data);
- 
--		ctlcode = NCTL_CSA | 0x30000000 | NCTL_WRITE;
-+		ctlcode = NCTL_CSA | NCTL_DATA_CYCLES(4) | NCTL_WRITE;
- 		if (i == len - 4) /* Last read goes without that */
- 			ctlcode &= ~NCTL_CSA;
- 		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(cc, ctlcode)) {
-@@ -229,7 +246,7 @@ static void bcm47xxnflash_ops_bcm4706_cmdfunc(struct nand_chip *nand_chip,
- 		nand_wait_ready(nand_chip);
- 		break;
- 	case NAND_CMD_READID:
--		ctlcode = NCTL_CSA | 0x01000000 | NCTL_CMD1W | NCTL_CMD0;
-+		ctlcode = NCTL_CSA | NCTL_SPECADDR | NCTL_CMD1W | NCTL_CMD0;
- 		ctlcode |= NAND_CMD_READID;
- 		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(b47n->cc, ctlcode)) {
- 			pr_err("READID error\n");
-@@ -242,7 +259,7 @@ static void bcm47xxnflash_ops_bcm4706_cmdfunc(struct nand_chip *nand_chip,
- 		 * to perform, so cache everything.
- 		 */
- 		for (i = 0; i < ARRAY_SIZE(b47n->id_data); i++) {
--			ctlcode = NCTL_CSA | NCTL_READ;
-+			ctlcode = NCTL_CSA | NCTL_READ | NCTL_DATA_CYCLES(1);
- 			if (i == ARRAY_SIZE(b47n->id_data) - 1)
- 				ctlcode &= ~NCTL_CSA;
- 			if (bcm47xxnflash_ops_bcm4706_ctl_cmd(b47n->cc,
-@@ -285,7 +302,7 @@ static void bcm47xxnflash_ops_bcm4706_cmdfunc(struct nand_chip *nand_chip,
- 				b47n->curr_page_addr);
- 
- 		/* Prepare to write */
--		ctlcode = 0x40000000 | NCTL_ROW | NCTL_COL | NCTL_CMD0;
-+		ctlcode = NCTL_CSA | NCTL_ROW | NCTL_COL | NCTL_CMD0;
- 		ctlcode |= NAND_CMD_SEQIN;
- 		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(cc, ctlcode))
- 			pr_err("SEQIN failed\n");
-@@ -320,7 +337,9 @@ static u8 bcm47xxnflash_ops_bcm4706_read_byte(struct nand_chip *nand_chip)
- 		}
- 		return b47n->id_data[b47n->curr_column++];
- 	case NAND_CMD_STATUS:
--		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(cc, NCTL_READ))
-+		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(cc,
-+						      NCTL_READ |
-+						      NCTL_DATA_CYCLES(1)))
- 			return 0;
- 		return bcma_cc_read32(cc, BCMA_CC_NFLASH_DATA) & 0xff;
- 	case NAND_CMD_READOOB:
-@@ -439,7 +458,8 @@ int bcm47xxnflash_ops_bcm4706_init(struct bcm47xxnflash *b47n)
- 	row_bits = tbits - col_bits + 1;
- 	row_bsize = (row_bits + 7) / 8;
- 
--	val = ((row_bsize - 1) << 6) | ((col_size - 1) << 4) | 2;
-+	val = CONF_ROW_BYTES(row_bsize) | CONF_COL_BYTES(col_size) |
-+	      CONF_MAGIC_BIT;
- 	bcma_cc_write32(b47n->cc, BCMA_CC_NFLASH_CONF, val);
- 
- exit:
+ nand-objs := nand_base.o nand_legacy.o nand_bbt.o nand_timings.o nand_ids.o
+ nand-objs += nand_onfi.o
+diff --git a/drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.c b/drivers/mtd/nand/raw/bcm47xxnflash.c
+similarity index 100%
+rename from drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.c
+rename to drivers/mtd/nand/raw/bcm47xxnflash.c
+diff --git a/drivers/mtd/nand/raw/bcm47xxnflash/Makefile b/drivers/mtd/nand/raw/bcm47xxnflash/Makefile
+deleted file mode 100644
+index 71a953078799..000000000000
+--- a/drivers/mtd/nand/raw/bcm47xxnflash/Makefile
++++ /dev/null
+@@ -1,2 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0-only
+-obj-$(CONFIG_MTD_NAND_BCM47XXNFLASH)	+= bcm47xxnflash.o
 -- 
 2.25.2
 
