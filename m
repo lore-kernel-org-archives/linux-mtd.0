@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE2ACC38A30
-	for <linux-mtd@archiver.kernel.org>; Sun, 19 Apr 2020 12:55:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D63CFC54FCB
+	for <linux-mtd@archiver.kernel.org>; Sun, 19 Apr 2020 12:56:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BDBC9206D9
-	for <linux-mtd@archiver.kernel.org>; Sun, 19 Apr 2020 12:55:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A612C206D9
+	for <linux-mtd@archiver.kernel.org>; Sun, 19 Apr 2020 12:56:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RigRyewV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDBC9206D9
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="El24WBbP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A612C206D9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zQZo+kBxvTMXfH8jWg16pOakCJlhK93nVrD7bPFJmGo=; b=RigRyewVcAy077
-	NWs1rikvcLCOlKMzeh3Mdf30dMf/G+zBYL6QTZnWAMJNW2LYmj1u//5INWzB1CxONuseACaF3wBHw
-	YDbZa3z6kUILWDjdTWg5PZBMCMjHoUt1Ze+7k+bT34n/SrM8erXcxr21jTrPf09Q7fWtVZeFZIh1g
-	LQddqjiJeUEMVf8+OELGtpnH9vuO/eyzg4Ib7h3uujf3cg3AChrAF10/9J33s5p59xAL9/OicSjpo
-	eU2Th8KEuq5TItej9VCOcnE5b7hmTSnlv5DlTseLJ82LSKbMK6VNKV8vBnsV8a2+5QTaGUtzFUvtV
-	+/0+Uy9w1IW6l9zxkhcg==;
+	List-Owner; bh=H5Ry881MacDInjvCbrVZr+9x6LJEMVi5UvGfB4etU/A=; b=El24WBbP1x9Dsw
+	utwkIUwE+2B9rQQCa1ktTGIfOMRzSFg3/dVkDhX216TgcRwb6u2dT5msb+Gw1gOcTMCnZ/Hf4qgRd
+	lwigGpNs1Ji7AqdSQU05epSWbcJfNm4di+rJvDqH3P9n+znBluRUD/saTcoa4dLsCjpqRCHb8q8oO
+	u4STsjq/6U3ueJBbnZuTEgb+wJGHRWa2wOI4oKGJajQoDikqfrjijqxLQW6e2KS9LZFkjiutDD+we
+	iIXmhrjevfwvCcgQTWy7j/AewvLW/REinhTSabFTdn4KcToBjOgbq7MbeUG2Qw8tHekv4rAUXv6iq
+	c+vKU+/5pbvjWdnyAdjQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jQ9UD-0003n6-N4; Sun, 19 Apr 2020 12:55:49 +0000
+	id 1jQ9UR-00041S-6x; Sun, 19 Apr 2020 12:56:03 +0000
 Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jQ9QM-0005wg-CV
+ id 1jQ9QK-0005vU-VA
  for linux-mtd@lists.infradead.org; Sun, 19 Apr 2020 12:51:56 +0000
 Received: from localhost.localdomain (unknown
  [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 55A312A0D8E;
- Sun, 19 Apr 2020 13:51:47 +0100 (BST)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 996FD2A0D73;
+ Sun, 19 Apr 2020 13:51:46 +0100 (BST)
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH 8/9] mtd: rawnand: bcm47xx: Merge all source files
-Date: Sun, 19 Apr 2020 14:51:39 +0200
-Message-Id: <20200419125140.1307309-9-boris.brezillon@collabora.com>
+Subject: [PATCH 6/9] mtd: rawnand: bcm47xx: Get rid of the legacy
+ implementation
+Date: Sun, 19 Apr 2020 14:51:37 +0200
+Message-Id: <20200419125140.1307309-7-boris.brezillon@collabora.com>
 X-Mailer: git-send-email 2.25.2
 In-Reply-To: <20200419125140.1307309-1-boris.brezillon@collabora.com>
 References: <20200419125140.1307309-1-boris.brezillon@collabora.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200419_055150_721333_6EF8C499 
-X-CRM114-Status: GOOD (  17.26  )
+X-CRM114-CacheID: sfid-20200419_055149_304632_4288C489 
+X-CRM114-Status: GOOD (  16.51  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,133 +74,385 @@ Cc: Vignesh Raghavendra <vigneshr@ti.com>,
  Richard Weinberger <richard@nod.at>, Boris Brezillon <bbrezillon@kernel.org>,
  Boris Brezillon <boris.brezillon@collabora.com>,
  bcm-kernel-feedback-list@broadcom.com, openwrt-devel@lists.openwrt.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-R2l2ZW4gdGhlIG51bWJlciBvZiBsaW5lcyBpdCBkb2Vzbid0IG1ha2UgdGhlbSB0byBzcGxpdCB0
-aGUgY29kZS4gTGV0J3MKbWVyZ2UgZXZlcnl0aGluZyBpbiBtYWluLmMgYW5kIHJlbmFtZSB0aGUg
-ZmlsZSBpbnRvIGJjbTQ3eHhuZmxhc2guYy4KClNpZ25lZC1vZmYtYnk6IEJvcmlzIEJyZXppbGxv
-biA8Ym9yaXMuYnJlemlsbG9uQGNvbGxhYm9yYS5jb20+Ci0tLQogZHJpdmVycy9tdGQvbmFuZC9y
-YXcvYmNtNDd4eG5mbGFzaC9NYWtlZmlsZSAgIHwgIDMgLQogLi4uL3tvcHNfYmNtNDcwNi5jID0+
-IGJjbTQ3eHhuZmxhc2guY30gICAgICAgIHwgODEgKysrKysrKysrKysrKysrKysrLQogLi4uL25h
-bmQvcmF3L2JjbTQ3eHhuZmxhc2gvYmNtNDd4eG5mbGFzaC5oICAgIHwgMjEgLS0tLS0KIGRyaXZl
-cnMvbXRkL25hbmQvcmF3L2JjbTQ3eHhuZmxhc2gvbWFpbi5jICAgICB8IDc3IC0tLS0tLS0tLS0t
-LS0tLS0tLQogNCBmaWxlcyBjaGFuZ2VkLCA3OCBpbnNlcnRpb25zKCspLCAxMDQgZGVsZXRpb25z
-KC0pCiByZW5hbWUgZHJpdmVycy9tdGQvbmFuZC9yYXcvYmNtNDd4eG5mbGFzaC97b3BzX2JjbTQ3
-MDYuYyA9PiBiY200N3h4bmZsYXNoLmN9ICg4MiUpCiBkZWxldGUgbW9kZSAxMDA2NDQgZHJpdmVy
-cy9tdGQvbmFuZC9yYXcvYmNtNDd4eG5mbGFzaC9iY200N3h4bmZsYXNoLmgKIGRlbGV0ZSBtb2Rl
-IDEwMDY0NCBkcml2ZXJzL210ZC9uYW5kL3Jhdy9iY200N3h4bmZsYXNoL21haW4uYwoKZGlmZiAt
-LWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L2JjbTQ3eHhuZmxhc2gvTWFrZWZpbGUgYi9kcml2
-ZXJzL210ZC9uYW5kL3Jhdy9iY200N3h4bmZsYXNoL01ha2VmaWxlCmluZGV4IGI1MzFhNjMwYzlj
-Zi4uNzFhOTUzMDc4Nzk5IDEwMDY0NAotLS0gYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9iY200N3h4
-bmZsYXNoL01ha2VmaWxlCisrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2JjbTQ3eHhuZmxhc2gv
-TWFrZWZpbGUKQEAgLTEsNSArMSwyIEBACiAjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwt
-Mi4wLW9ubHkKLWJjbTQ3eHhuZmxhc2gteQkJCQkrPSBtYWluLm8KLWJjbTQ3eHhuZmxhc2gteQkJ
-CQkrPSBvcHNfYmNtNDcwNi5vCi0KIG9iai0kKENPTkZJR19NVERfTkFORF9CQ000N1hYTkZMQVNI
-KQkrPSBiY200N3h4bmZsYXNoLm8KZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L2Jj
-bTQ3eHhuZmxhc2gvb3BzX2JjbTQ3MDYuYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2JjbTQ3eHhu
-Zmxhc2gvYmNtNDd4eG5mbGFzaC5jCnNpbWlsYXJpdHkgaW5kZXggODIlCnJlbmFtZSBmcm9tIGRy
-aXZlcnMvbXRkL25hbmQvcmF3L2JjbTQ3eHhuZmxhc2gvb3BzX2JjbTQ3MDYuYwpyZW5hbWUgdG8g
-ZHJpdmVycy9tdGQvbmFuZC9yYXcvYmNtNDd4eG5mbGFzaC9iY200N3h4bmZsYXNoLmMKaW5kZXgg
-YWI5ODlkZTU0Y2ZjLi5hZTAzOTFjMWVlMjggMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL25hbmQv
-cmF3L2JjbTQ3eHhuZmxhc2gvb3BzX2JjbTQ3MDYuYworKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jh
-dy9iY200N3h4bmZsYXNoL2JjbTQ3eHhuZmxhc2guYwpAQCAtNSwxMyArNSwxNCBAQAogICogQ29w
-eXJpZ2h0IChDKSAyMDEyIFJhZmHFgiBNacWCZWNraSA8emFqZWM1QGdtYWlsLmNvbT4KICAqLwog
-Ci0jaW5jbHVkZSAiYmNtNDd4eG5mbGFzaC5oIgotCisjaW5jbHVkZSA8bGludXgvZGVsYXkuaD4K
-ICNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4KICNpbmNsdWRlIDxsaW51eC9rZXJuZWwuaD4KICNp
-bmNsdWRlIDxsaW51eC9zbGFiLmg+Ci0jaW5jbHVkZSA8bGludXgvZGVsYXkuaD4KKyNpbmNsdWRl
-IDxsaW51eC9wbGF0Zm9ybV9kZXZpY2UuaD4KICNpbmNsdWRlIDxsaW51eC9iY21hL2JjbWEuaD4K
-KyNpbmNsdWRlIDxsaW51eC9tdGQvbXRkLmg+CisjaW5jbHVkZSA8bGludXgvbXRkL3Jhd25hbmQu
-aD4KIAogLyogQnJvYWRjb20gdXNlcyAxJzAwMCcwMDAgYnV0IGl0IHNlZW1zIHRvIGJlIHRvbyBt
-YW55LiBUZXN0cyBvbiBXTkRSNDUwMCBoYXMKICAqIHNob3duIH4xMDAwIHJldHJpZXMgYXMgbWF4
-aXVtdW0uICovCkBAIC00OCw2ICs0OSwxNyBAQAogI2RlZmluZSBDT05GX0NPTF9CWVRFUyh4KQkJ
-KCgoeCkgLSAxKSA8PCA0KQogI2RlZmluZSBDT05GX1JPV19CWVRFUyh4KQkJKCgoeCkgLSAxKSA8
-PCA2KQogCisjaWZuZGVmIHByX2ZtdAorI2RlZmluZSBwcl9mbXQoZm10KQkJS0JVSUxEX01PRE5B
-TUUgIjogIiBmbXQKKyNlbmRpZgorCitzdHJ1Y3QgYmNtNDd4eG5mbGFzaCB7CisJc3RydWN0IG5h
-bmRfY29udHJvbGxlciBiYXNlOworCXN0cnVjdCBiY21hX2Rydl9jYyAqY2M7CisKKwlzdHJ1Y3Qg
-bmFuZF9jaGlwIG5hbmRfY2hpcDsKK307CisKIC8qKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKgogICogVmFyaW91cyBoZWxwZXJzCiAgKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiovCkBAIC0yNzYsMyArMjg4LDY2
-IEBAIGludCBiY200N3h4bmZsYXNoX29wc19iY200NzA2X2luaXQoc3RydWN0IGJjbTQ3eHhuZmxh
-c2ggKmI0N24pCiAKIAlyZXR1cm4gZXJyOwogfQorCitzdGF0aWMgY29uc3QgY2hhciAqcHJvYmVz
-W10gPSB7ICJiY200N3h4cGFydCIsIE5VTEwgfTsKKworc3RhdGljIGludCBiY200N3h4bmZsYXNo
-X3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCit7CisJc3RydWN0IGJjbWFfbmZs
-YXNoICpuZmxhc2ggPSBkZXZfZ2V0X3BsYXRkYXRhKCZwZGV2LT5kZXYpOworCXN0cnVjdCBiY200
-N3h4bmZsYXNoICpiNDduOworCXN0cnVjdCBtdGRfaW5mbyAqbXRkOworCWludCBlcnIgPSAwOwor
-CisJYjQ3biA9IGRldm1fa3phbGxvYygmcGRldi0+ZGV2LCBzaXplb2YoKmI0N24pLCBHRlBfS0VS
-TkVMKTsKKwlpZiAoIWI0N24pCisJCXJldHVybiAtRU5PTUVNOworCisJbmFuZF9zZXRfY29udHJv
-bGxlcl9kYXRhKCZiNDduLT5uYW5kX2NoaXAsIGI0N24pOworCW10ZCA9IG5hbmRfdG9fbXRkKCZi
-NDduLT5uYW5kX2NoaXApOworCW10ZC0+ZGV2LnBhcmVudCA9ICZwZGV2LT5kZXY7CisJYjQ3bi0+
-Y2MgPSBjb250YWluZXJfb2YobmZsYXNoLCBzdHJ1Y3QgYmNtYV9kcnZfY2MsIG5mbGFzaCk7CisK
-KwlpZiAoYjQ3bi0+Y2MtPmNvcmUtPmJ1cy0+Y2hpcGluZm8uaWQgPT0gQkNNQV9DSElQX0lEX0JD
-TTQ3MDYpIHsKKwkJZXJyID0gYmNtNDd4eG5mbGFzaF9vcHNfYmNtNDcwNl9pbml0KGI0N24pOwor
-CX0gZWxzZSB7CisJCXByX2VycigiRGV2aWNlIG5vdCBzdXBwb3J0ZWRcbiIpOworCQllcnIgPSAt
-RU5PVFNVUFA7CisJfQorCWlmIChlcnIpIHsKKwkJcHJfZXJyKCJJbml0aWFsaXphdGlvbiBmYWls
-ZWQ6ICVkXG4iLCBlcnIpOworCQlyZXR1cm4gZXJyOworCX0KKworCXBsYXRmb3JtX3NldF9kcnZk
-YXRhKHBkZXYsIGI0N24pOworCisJZXJyID0gbXRkX2RldmljZV9wYXJzZV9yZWdpc3RlcihtdGQs
-IHByb2JlcywgTlVMTCwgTlVMTCwgMCk7CisJaWYgKGVycikgeworCQlwcl9lcnIoIkZhaWxlZCB0
-byByZWdpc3RlciBNVEQgZGV2aWNlOiAlZFxuIiwgZXJyKTsKKwkJcmV0dXJuIGVycjsKKwl9CisK
-KwlyZXR1cm4gMDsKK30KKworc3RhdGljIGludCBiY200N3h4bmZsYXNoX3JlbW92ZShzdHJ1Y3Qg
-cGxhdGZvcm1fZGV2aWNlICpwZGV2KQoreworCXN0cnVjdCBiY200N3h4bmZsYXNoICpuZmxhc2gg
-PSBwbGF0Zm9ybV9nZXRfZHJ2ZGF0YShwZGV2KTsKKworCW5hbmRfcmVsZWFzZSgmbmZsYXNoLT5u
-YW5kX2NoaXApOworCisJcmV0dXJuIDA7Cit9CisKK3N0YXRpYyBzdHJ1Y3QgcGxhdGZvcm1fZHJp
-dmVyIGJjbTQ3eHhuZmxhc2hfZHJpdmVyID0geworCS5wcm9iZQk9IGJjbTQ3eHhuZmxhc2hfcHJv
-YmUsCisJLnJlbW92ZSA9IGJjbTQ3eHhuZmxhc2hfcmVtb3ZlLAorCS5kcml2ZXIgPSB7CisJCS5u
-YW1lID0gImJjbWFfbmZsYXNoIiwKKwl9LAorfTsKK21vZHVsZV9wbGF0Zm9ybV9kcml2ZXIoYmNt
-NDd4eG5mbGFzaF9kcml2ZXIpOworCitNT0RVTEVfREVTQ1JJUFRJT04oIk5BTkQgZmxhc2ggZHJp
-dmVyIGZvciBCQ01BIGJ1cyIpOworTU9EVUxFX0xJQ0VOU0UoIkdQTCIpOworTU9EVUxFX0FVVEhP
-UigiUmFmYcWCIE1pxYJlY2tpIik7CisKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3
-L2JjbTQ3eHhuZmxhc2gvYmNtNDd4eG5mbGFzaC5oIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvYmNt
-NDd4eG5mbGFzaC9iY200N3h4bmZsYXNoLmgKZGVsZXRlZCBmaWxlIG1vZGUgMTAwNjQ0CmluZGV4
-IDhkZTBlN2UwYTNhNC4uMDAwMDAwMDAwMDAwCi0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L2Jj
-bTQ3eHhuZmxhc2gvYmNtNDd4eG5mbGFzaC5oCisrKyAvZGV2L251bGwKQEAgLTEsMjEgKzAsMCBA
-QAotLyogU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAgKi8KLSNpZm5kZWYgX19CQ000
-N1hYTkZMQVNIX0gKLSNkZWZpbmUgX19CQ000N1hYTkZMQVNIX0gKLQotI2lmbmRlZiBwcl9mbXQK
-LSNkZWZpbmUgcHJfZm10KGZtdCkJCUtCVUlMRF9NT0ROQU1FICI6ICIgZm10Ci0jZW5kaWYKLQot
-I2luY2x1ZGUgPGxpbnV4L210ZC9tdGQuaD4KLSNpbmNsdWRlIDxsaW51eC9tdGQvcmF3bmFuZC5o
-PgotCi1zdHJ1Y3QgYmNtNDd4eG5mbGFzaCB7Ci0Jc3RydWN0IG5hbmRfY29udHJvbGxlciBiYXNl
-OwotCXN0cnVjdCBiY21hX2Rydl9jYyAqY2M7Ci0KLQlzdHJ1Y3QgbmFuZF9jaGlwIG5hbmRfY2hp
-cDsKLX07Ci0KLWludCBiY200N3h4bmZsYXNoX29wc19iY200NzA2X2luaXQoc3RydWN0IGJjbTQ3
-eHhuZmxhc2ggKmI0N24pOwotCi0jZW5kaWYgLyogQkNNNDdYWE5GTEFTSCAqLwpkaWZmIC0tZ2l0
-IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvYmNtNDd4eG5mbGFzaC9tYWluLmMgYi9kcml2ZXJzL210
-ZC9uYW5kL3Jhdy9iY200N3h4bmZsYXNoL21haW4uYwpkZWxldGVkIGZpbGUgbW9kZSAxMDA2NDQK
-aW5kZXggOGRhZTk3YzFkYmU3Li4wMDAwMDAwMDAwMDAKLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9y
-YXcvYmNtNDd4eG5mbGFzaC9tYWluLmMKKysrIC9kZXYvbnVsbApAQCAtMSw3NyArMCwwIEBACi0v
-LyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMC1vbmx5Ci0vKgotICogQkNNNDdYWCBO
-QU5EIGZsYXNoIGRyaXZlcgotICoKLSAqIENvcHlyaWdodCAoQykgMjAxMiBSYWZhxYIgTWnFgmVj
-a2kgPHphamVjNUBnbWFpbC5jb20+Ci0gKi8KLQotI2luY2x1ZGUgImJjbTQ3eHhuZmxhc2guaCIK
-LQotI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPgotI2luY2x1ZGUgPGxpbnV4L2tlcm5lbC5oPgot
-I2luY2x1ZGUgPGxpbnV4L3NsYWIuaD4KLSNpbmNsdWRlIDxsaW51eC9wbGF0Zm9ybV9kZXZpY2Uu
-aD4KLSNpbmNsdWRlIDxsaW51eC9iY21hL2JjbWEuaD4KLQotTU9EVUxFX0RFU0NSSVBUSU9OKCJO
-QU5EIGZsYXNoIGRyaXZlciBmb3IgQkNNQSBidXMiKTsKLU1PRFVMRV9MSUNFTlNFKCJHUEwiKTsK
-LU1PRFVMRV9BVVRIT1IoIlJhZmHFgiBNacWCZWNraSIpOwotCi1zdGF0aWMgY29uc3QgY2hhciAq
-cHJvYmVzW10gPSB7ICJiY200N3h4cGFydCIsIE5VTEwgfTsKLQotc3RhdGljIGludCBiY200N3h4
-bmZsYXNoX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCi17Ci0Jc3RydWN0IGJj
-bWFfbmZsYXNoICpuZmxhc2ggPSBkZXZfZ2V0X3BsYXRkYXRhKCZwZGV2LT5kZXYpOwotCXN0cnVj
-dCBiY200N3h4bmZsYXNoICpiNDduOwotCXN0cnVjdCBtdGRfaW5mbyAqbXRkOwotCWludCBlcnIg
-PSAwOwotCi0JYjQ3biA9IGRldm1fa3phbGxvYygmcGRldi0+ZGV2LCBzaXplb2YoKmI0N24pLCBH
-RlBfS0VSTkVMKTsKLQlpZiAoIWI0N24pCi0JCXJldHVybiAtRU5PTUVNOwotCi0JbmFuZF9zZXRf
-Y29udHJvbGxlcl9kYXRhKCZiNDduLT5uYW5kX2NoaXAsIGI0N24pOwotCW10ZCA9IG5hbmRfdG9f
-bXRkKCZiNDduLT5uYW5kX2NoaXApOwotCW10ZC0+ZGV2LnBhcmVudCA9ICZwZGV2LT5kZXY7Ci0J
-YjQ3bi0+Y2MgPSBjb250YWluZXJfb2YobmZsYXNoLCBzdHJ1Y3QgYmNtYV9kcnZfY2MsIG5mbGFz
-aCk7Ci0KLQlpZiAoYjQ3bi0+Y2MtPmNvcmUtPmJ1cy0+Y2hpcGluZm8uaWQgPT0gQkNNQV9DSElQ
-X0lEX0JDTTQ3MDYpIHsKLQkJZXJyID0gYmNtNDd4eG5mbGFzaF9vcHNfYmNtNDcwNl9pbml0KGI0
-N24pOwotCX0gZWxzZSB7Ci0JCXByX2VycigiRGV2aWNlIG5vdCBzdXBwb3J0ZWRcbiIpOwotCQll
-cnIgPSAtRU5PVFNVUFA7Ci0JfQotCWlmIChlcnIpIHsKLQkJcHJfZXJyKCJJbml0aWFsaXphdGlv
-biBmYWlsZWQ6ICVkXG4iLCBlcnIpOwotCQlyZXR1cm4gZXJyOwotCX0KLQotCXBsYXRmb3JtX3Nl
-dF9kcnZkYXRhKHBkZXYsIGI0N24pOwotCi0JZXJyID0gbXRkX2RldmljZV9wYXJzZV9yZWdpc3Rl
-cihtdGQsIHByb2JlcywgTlVMTCwgTlVMTCwgMCk7Ci0JaWYgKGVycikgewotCQlwcl9lcnIoIkZh
-aWxlZCB0byByZWdpc3RlciBNVEQgZGV2aWNlOiAlZFxuIiwgZXJyKTsKLQkJcmV0dXJuIGVycjsK
-LQl9Ci0KLQlyZXR1cm4gMDsKLX0KLQotc3RhdGljIGludCBiY200N3h4bmZsYXNoX3JlbW92ZShz
-dHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQotewotCXN0cnVjdCBiY200N3h4bmZsYXNoICpu
-Zmxhc2ggPSBwbGF0Zm9ybV9nZXRfZHJ2ZGF0YShwZGV2KTsKLQotCW5hbmRfcmVsZWFzZSgmbmZs
-YXNoLT5uYW5kX2NoaXApOwotCi0JcmV0dXJuIDA7Ci19Ci0KLXN0YXRpYyBzdHJ1Y3QgcGxhdGZv
-cm1fZHJpdmVyIGJjbTQ3eHhuZmxhc2hfZHJpdmVyID0gewotCS5wcm9iZQk9IGJjbTQ3eHhuZmxh
-c2hfcHJvYmUsCi0JLnJlbW92ZSA9IGJjbTQ3eHhuZmxhc2hfcmVtb3ZlLAotCS5kcml2ZXIgPSB7
-Ci0JCS5uYW1lID0gImJjbWFfbmZsYXNoIiwKLQl9LAotfTsKLQotbW9kdWxlX3BsYXRmb3JtX2Ry
-aXZlcihiY200N3h4bmZsYXNoX2RyaXZlcik7Ci0tIAoyLjI1LjIKCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Np
-b24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vbGludXgtbXRkLwo=
+Now that exec_op() is implemented we don't need to implement all those
+legacy hooks, which simplifies the code quite a bit.
+
+Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+---
+ .../nand/raw/bcm47xxnflash/bcm47xxnflash.h    |   6 -
+ .../mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c  | 315 ------------------
+ 2 files changed, 321 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.h b/drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.h
+index 00d0974b73cb..8de0e7e0a3a4 100644
+--- a/drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.h
++++ b/drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.h
+@@ -14,12 +14,6 @@ struct bcm47xxnflash {
+ 	struct bcma_drv_cc *cc;
+ 
+ 	struct nand_chip nand_chip;
+-
+-	unsigned curr_command;
+-	int curr_page_addr;
+-	int curr_column;
+-
+-	u8 id_data[8];
+ };
+ 
+ int bcm47xxnflash_ops_bcm4706_init(struct bcm47xxnflash *b47n);
+diff --git a/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
+index 184f78b3d45a..4e38b685d207 100644
+--- a/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
++++ b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
+@@ -75,313 +75,10 @@ static int bcm47xxnflash_ops_bcm4706_ctl_cmd(struct bcma_drv_cc *cc, u32 code)
+ 	return 0;
+ }
+ 
+-static int bcm47xxnflash_ops_bcm4706_poll(struct bcma_drv_cc *cc)
+-{
+-	int i;
+-
+-	for (i = 0; i < NFLASH_READY_RETRIES; i++) {
+-		if (bcma_cc_read32(cc, BCMA_CC_NFLASH_CTL) & NCTL_READY) {
+-			if (bcma_cc_read32(cc, BCMA_CC_NFLASH_CTL) &
+-			    BCMA_CC_NFLASH_CTL_ERR) {
+-				pr_err("Error on polling\n");
+-				return -EBUSY;
+-			} else {
+-				return 0;
+-			}
+-		}
+-	}
+-
+-	pr_err("Polling timeout!\n");
+-	return -EBUSY;
+-}
+-
+-/**************************************************
+- * R/W
+- **************************************************/
+-
+-static void bcm47xxnflash_ops_bcm4706_read(struct mtd_info *mtd, uint8_t *buf,
+-					   int len)
+-{
+-	struct nand_chip *nand_chip = mtd_to_nand(mtd);
+-	struct bcm47xxnflash *b47n = nand_get_controller_data(nand_chip);
+-
+-	u32 ctlcode;
+-	u32 *dest = (u32 *)buf;
+-	int i;
+-	int toread;
+-
+-	BUG_ON(b47n->curr_page_addr & ~nand_chip->pagemask);
+-	/* Don't validate column using nand_chip->page_shift, it may be bigger
+-	 * when accessing OOB */
+-
+-	while (len) {
+-		/* We can read maximum of 0x200 bytes at once */
+-		toread = min(len, 0x200);
+-
+-		/* Set page and column */
+-		bcma_cc_write32(b47n->cc, BCMA_CC_NFLASH_COL_ADDR,
+-				b47n->curr_column);
+-		bcma_cc_write32(b47n->cc, BCMA_CC_NFLASH_ROW_ADDR,
+-				b47n->curr_page_addr);
+-
+-		/* Prepare to read */
+-		ctlcode = NCTL_CSA | NCTL_CMD1W | NCTL_ROW | NCTL_COL |
+-			  NCTL_CMD0;
+-		ctlcode |= NAND_CMD_READSTART << 8;
+-		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(b47n->cc, ctlcode))
+-			return;
+-		if (bcm47xxnflash_ops_bcm4706_poll(b47n->cc))
+-			return;
+-
+-		/* Eventually read some data :) */
+-		for (i = 0; i < toread; i += 4, dest++) {
+-			ctlcode = NCTL_CSA | NCTL_DATA_CYCLES(4) | NCTL_READ;
+-			if (i == toread - 4) /* Last read goes without that */
+-				ctlcode &= ~NCTL_CSA;
+-			if (bcm47xxnflash_ops_bcm4706_ctl_cmd(b47n->cc,
+-							      ctlcode))
+-				return;
+-			*dest = bcma_cc_read32(b47n->cc, BCMA_CC_NFLASH_DATA);
+-		}
+-
+-		b47n->curr_column += toread;
+-		len -= toread;
+-	}
+-}
+-
+-static void bcm47xxnflash_ops_bcm4706_write(struct mtd_info *mtd,
+-					    const uint8_t *buf, int len)
+-{
+-	struct nand_chip *nand_chip = mtd_to_nand(mtd);
+-	struct bcm47xxnflash *b47n = nand_get_controller_data(nand_chip);
+-	struct bcma_drv_cc *cc = b47n->cc;
+-
+-	u32 ctlcode;
+-	const u32 *data = (u32 *)buf;
+-	int i;
+-
+-	BUG_ON(b47n->curr_page_addr & ~nand_chip->pagemask);
+-	/* Don't validate column using nand_chip->page_shift, it may be bigger
+-	 * when accessing OOB */
+-
+-	for (i = 0; i < len; i += 4, data++) {
+-		bcma_cc_write32(cc, BCMA_CC_NFLASH_DATA, *data);
+-
+-		ctlcode = NCTL_CSA | NCTL_DATA_CYCLES(4) | NCTL_WRITE;
+-		if (i == len - 4) /* Last read goes without that */
+-			ctlcode &= ~NCTL_CSA;
+-		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(cc, ctlcode)) {
+-			pr_err("%s ctl_cmd didn't work!\n", __func__);
+-			return;
+-		}
+-	}
+-
+-	b47n->curr_column += len;
+-}
+-
+ /**************************************************
+  * NAND chip ops
+  **************************************************/
+ 
+-static void bcm47xxnflash_ops_bcm4706_cmd_ctrl(struct nand_chip *nand_chip,
+-					       int cmd, unsigned int ctrl)
+-{
+-	struct bcm47xxnflash *b47n = nand_get_controller_data(nand_chip);
+-	u32 code = 0;
+-
+-	if (cmd == NAND_CMD_NONE)
+-		return;
+-
+-	if (cmd & NAND_CTRL_CLE)
+-		code = cmd | NCTL_CMD0;
+-
+-	/* nCS is not needed for reset command */
+-	if (cmd != NAND_CMD_RESET)
+-		code |= NCTL_CSA;
+-
+-	bcm47xxnflash_ops_bcm4706_ctl_cmd(b47n->cc, code);
+-}
+-
+-/* Default nand_select_chip calls cmd_ctrl, which is not used in BCM4706 */
+-static void bcm47xxnflash_ops_bcm4706_select_chip(struct nand_chip *chip,
+-						  int cs)
+-{
+-	return;
+-}
+-
+-static int bcm47xxnflash_ops_bcm4706_dev_ready(struct nand_chip *nand_chip)
+-{
+-	struct bcm47xxnflash *b47n = nand_get_controller_data(nand_chip);
+-
+-	return !!(bcma_cc_read32(b47n->cc, BCMA_CC_NFLASH_CTL) & NCTL_READY);
+-}
+-
+-/*
+- * Default nand_command and nand_command_lp don't match BCM4706 hardware layout.
+- * For example, reading chip id is performed in a non-standard way.
+- * Setting column and page is also handled differently, we use a special
+- * registers of ChipCommon core. Hacking cmd_ctrl to understand and convert
+- * standard commands would be much more complicated.
+- */
+-static void bcm47xxnflash_ops_bcm4706_cmdfunc(struct nand_chip *nand_chip,
+-					      unsigned command, int column,
+-					      int page_addr)
+-{
+-	struct mtd_info *mtd = nand_to_mtd(nand_chip);
+-	struct bcm47xxnflash *b47n = nand_get_controller_data(nand_chip);
+-	struct bcma_drv_cc *cc = b47n->cc;
+-	u32 ctlcode;
+-	int i;
+-
+-	if (column != -1)
+-		b47n->curr_column = column;
+-	if (page_addr != -1)
+-		b47n->curr_page_addr = page_addr;
+-
+-	switch (command) {
+-	case NAND_CMD_RESET:
+-		nand_chip->legacy.cmd_ctrl(nand_chip, command, NAND_CTRL_CLE);
+-
+-		ndelay(100);
+-		nand_wait_ready(nand_chip);
+-		break;
+-	case NAND_CMD_READID:
+-		ctlcode = NCTL_CSA | NCTL_SPECADDR | NCTL_CMD1W | NCTL_CMD0;
+-		ctlcode |= NAND_CMD_READID;
+-		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(b47n->cc, ctlcode)) {
+-			pr_err("READID error\n");
+-			break;
+-		}
+-
+-		/*
+-		 * Reading is specific, last one has to go without NCTL_CSA
+-		 * bit. We don't know how many reads NAND subsystem is going
+-		 * to perform, so cache everything.
+-		 */
+-		for (i = 0; i < ARRAY_SIZE(b47n->id_data); i++) {
+-			ctlcode = NCTL_CSA | NCTL_READ | NCTL_DATA_CYCLES(1);
+-			if (i == ARRAY_SIZE(b47n->id_data) - 1)
+-				ctlcode &= ~NCTL_CSA;
+-			if (bcm47xxnflash_ops_bcm4706_ctl_cmd(b47n->cc,
+-							      ctlcode)) {
+-				pr_err("READID error\n");
+-				break;
+-			}
+-			b47n->id_data[i] =
+-				bcma_cc_read32(b47n->cc, BCMA_CC_NFLASH_DATA)
+-				& 0xFF;
+-		}
+-
+-		break;
+-	case NAND_CMD_STATUS:
+-		ctlcode = NCTL_CSA | NCTL_CMD0 | NAND_CMD_STATUS;
+-		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(cc, ctlcode))
+-			pr_err("STATUS command error\n");
+-		break;
+-	case NAND_CMD_READ0:
+-		break;
+-	case NAND_CMD_READOOB:
+-		if (page_addr != -1)
+-			b47n->curr_column += mtd->writesize;
+-		break;
+-	case NAND_CMD_ERASE1:
+-		bcma_cc_write32(cc, BCMA_CC_NFLASH_ROW_ADDR,
+-				b47n->curr_page_addr);
+-		ctlcode = NCTL_ROW | NCTL_CMD1W | NCTL_CMD0 |
+-			  NAND_CMD_ERASE1 | (NAND_CMD_ERASE2 << 8);
+-		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(cc, ctlcode))
+-			pr_err("ERASE1 failed\n");
+-		break;
+-	case NAND_CMD_ERASE2:
+-		break;
+-	case NAND_CMD_SEQIN:
+-		/* Set page and column */
+-		bcma_cc_write32(cc, BCMA_CC_NFLASH_COL_ADDR,
+-				b47n->curr_column);
+-		bcma_cc_write32(cc, BCMA_CC_NFLASH_ROW_ADDR,
+-				b47n->curr_page_addr);
+-
+-		/* Prepare to write */
+-		ctlcode = NCTL_CSA | NCTL_ROW | NCTL_COL | NCTL_CMD0;
+-		ctlcode |= NAND_CMD_SEQIN;
+-		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(cc, ctlcode))
+-			pr_err("SEQIN failed\n");
+-		break;
+-	case NAND_CMD_PAGEPROG:
+-		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(cc, NCTL_CMD0 |
+-							  NAND_CMD_PAGEPROG))
+-			pr_err("PAGEPROG failed\n");
+-		if (bcm47xxnflash_ops_bcm4706_poll(cc))
+-			pr_err("PAGEPROG not ready\n");
+-		break;
+-	default:
+-		pr_err("Command 0x%X unsupported\n", command);
+-		break;
+-	}
+-	b47n->curr_command = command;
+-}
+-
+-static u8 bcm47xxnflash_ops_bcm4706_read_byte(struct nand_chip *nand_chip)
+-{
+-	struct mtd_info *mtd = nand_to_mtd(nand_chip);
+-	struct bcm47xxnflash *b47n = nand_get_controller_data(nand_chip);
+-	struct bcma_drv_cc *cc = b47n->cc;
+-	u32 tmp = 0;
+-
+-	switch (b47n->curr_command) {
+-	case NAND_CMD_READID:
+-		if (b47n->curr_column >= ARRAY_SIZE(b47n->id_data)) {
+-			pr_err("Requested invalid id_data: %d\n",
+-			       b47n->curr_column);
+-			return 0;
+-		}
+-		return b47n->id_data[b47n->curr_column++];
+-	case NAND_CMD_STATUS:
+-		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(cc,
+-						      NCTL_READ |
+-						      NCTL_DATA_CYCLES(1)))
+-			return 0;
+-		return bcma_cc_read32(cc, BCMA_CC_NFLASH_DATA) & 0xff;
+-	case NAND_CMD_READOOB:
+-		bcm47xxnflash_ops_bcm4706_read(mtd, (u8 *)&tmp, 4);
+-		return tmp & 0xFF;
+-	}
+-
+-	pr_err("Invalid command for byte read: 0x%X\n", b47n->curr_command);
+-	return 0;
+-}
+-
+-static void bcm47xxnflash_ops_bcm4706_read_buf(struct nand_chip *nand_chip,
+-					       uint8_t *buf, int len)
+-{
+-	struct bcm47xxnflash *b47n = nand_get_controller_data(nand_chip);
+-
+-	switch (b47n->curr_command) {
+-	case NAND_CMD_READ0:
+-	case NAND_CMD_READOOB:
+-		bcm47xxnflash_ops_bcm4706_read(nand_to_mtd(nand_chip), buf,
+-					       len);
+-		return;
+-	}
+-
+-	pr_err("Invalid command for buf read: 0x%X\n", b47n->curr_command);
+-}
+-
+-static void bcm47xxnflash_ops_bcm4706_write_buf(struct nand_chip *nand_chip,
+-						const uint8_t *buf, int len)
+-{
+-	struct bcm47xxnflash *b47n = nand_get_controller_data(nand_chip);
+-
+-	switch (b47n->curr_command) {
+-	case NAND_CMD_SEQIN:
+-		bcm47xxnflash_ops_bcm4706_write(nand_to_mtd(nand_chip), buf,
+-						len);
+-		return;
+-	}
+-
+-	pr_err("Invalid command for buf write: 0x%X\n", b47n->curr_command);
+-}
+-
+ static int
+ bcm47xxnflash_ops_bcm4706_exec_cmd_addr(struct nand_chip *chip,
+ 					const struct nand_subop *subop)
+@@ -535,7 +232,6 @@ static const struct nand_controller_ops bcm47xxnflash_ops = {
+ 
+ int bcm47xxnflash_ops_bcm4706_init(struct bcm47xxnflash *b47n)
+ {
+-	struct nand_chip *nand_chip = (struct nand_chip *)&b47n->nand_chip;
+ 	int err;
+ 	u32 freq;
+ 	u16 clock;
+@@ -548,17 +244,6 @@ int bcm47xxnflash_ops_bcm4706_init(struct bcm47xxnflash *b47n)
+ 	nand_controller_init(&b47n->base);
+ 	b47n->base.ops = &bcm47xxnflash_ops;
+ 	b47n->nand_chip.controller = &b47n->base;
+-	nand_chip->legacy.select_chip = bcm47xxnflash_ops_bcm4706_select_chip;
+-	nand_chip->legacy.cmd_ctrl = bcm47xxnflash_ops_bcm4706_cmd_ctrl;
+-	nand_chip->legacy.dev_ready = bcm47xxnflash_ops_bcm4706_dev_ready;
+-	b47n->nand_chip.legacy.cmdfunc = bcm47xxnflash_ops_bcm4706_cmdfunc;
+-	b47n->nand_chip.legacy.read_byte = bcm47xxnflash_ops_bcm4706_read_byte;
+-	b47n->nand_chip.legacy.read_buf = bcm47xxnflash_ops_bcm4706_read_buf;
+-	b47n->nand_chip.legacy.write_buf = bcm47xxnflash_ops_bcm4706_write_buf;
+-	b47n->nand_chip.legacy.set_features = nand_get_set_features_notsupp;
+-	b47n->nand_chip.legacy.get_features = nand_get_set_features_notsupp;
+-
+-	nand_chip->legacy.chip_delay = 50;
+ 	b47n->nand_chip.bbt_options = NAND_BBT_USE_FLASH;
+ 	b47n->nand_chip.ecc.mode = NAND_ECC_NONE; /* TODO: implement ECC */
+ 
+-- 
+2.25.2
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
