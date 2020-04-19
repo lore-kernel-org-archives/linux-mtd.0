@@ -2,58 +2,61 @@ Return-Path: <SRS0=gdbt=6D=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19C58C38A30
-	for <linux-mtd@archiver.kernel.org>; Sun, 19 Apr 2020 12:52:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95F6EC38A30
+	for <linux-mtd@archiver.kernel.org>; Sun, 19 Apr 2020 12:52:30 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DB2242137B
-	for <linux-mtd@archiver.kernel.org>; Sun, 19 Apr 2020 12:52:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 273252137B
+	for <linux-mtd@archiver.kernel.org>; Sun, 19 Apr 2020 12:52:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="a8QrycXi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB2242137B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="T4jluyoq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 273252137B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=jKFyYupK3gQWLFL2pINJ950ZBGr0Xt9Y9aFaQJi+780=; b=a8QrycXiD6fM+S
-	zShEsYM1PiGUoGSWC2QHgJ4H7eL/RrdoVxt6z0WSHFCBA2zjvCBvtG2zxD8c2hYjen7CWdgC02b7i
-	CG7HO9PeBTmB4zxfJ3M8DZ6RBLOqCz1Swy8bHk7EPUYMkLqzxuS+AAZogo853aVrjxZVDyN5YABnf
-	VZi1HZiRGqGhpNlzNu7UXfbE1dGLalansGPFSo2njNDdAx7TWzDwgc13rCUEeRzD39ZG3KaeAuuSX
-	DRXqH6774wi8+aLpMvyAZMxa4c03iDijwA5BDQuhEHsT/TL/2ZJQoW0VHg+MNc/mxktAB66dwKHSX
-	hpEqB+ToOXaY2c8KTzzA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=tX8Mno1GQon+wW1kZTcoyG9Yxdbkjgn4uSGiuDa8HWY=; b=T4jluyoqJDufx/
+	VGm3/G15phiMe9yoAVxnEUxgdYLxYmco2vHaAee2OhdxC8HHlGUlYaB/kqNNPdSQn6K8pdVvu6EK2
+	4TqNei2Hb5Rnf5//N0jMLQXcx55DDt4Iq8PtRnBVFneX785s1Tdt4e+VZ+KZdfbPmBZf9wJWM+xya
+	wFtHCvIBizsRTrWMIhr2wvwsFjKoCdtgaaYPoVpOn+MPMjj5lNjJCG3yuo872MGsk0bxw9Y0n9PzH
+	74HtFC6hpo8vXFxnGpQ0okwEqh+HJO7Vu27jl3JBCeUIH8XW8kPZMtN7pcRBkhKtWAXgl4V9aql+Y
+	h1zR23lQLcJf1N1I90AQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jQ9QL-0005vX-Qf; Sun, 19 Apr 2020 12:51:49 +0000
+	id 1jQ9Qp-0006Nx-5K; Sun, 19 Apr 2020 12:52:19 +0000
 Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jQ9QI-0005sW-BS
- for linux-mtd@lists.infradead.org; Sun, 19 Apr 2020 12:51:47 +0000
+ id 1jQ9QI-0005sb-E3
+ for linux-mtd@lists.infradead.org; Sun, 19 Apr 2020 12:51:49 +0000
 Received: from localhost.localdomain (unknown
  [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 63CA827E609;
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id BC23F2A0072;
  Sun, 19 Apr 2020 13:51:44 +0100 (BST)
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH 0/9] mtd: rawnand: bcm47xx: Convert the driver exec_op()
-Date: Sun, 19 Apr 2020 14:51:31 +0200
-Message-Id: <20200419125140.1307309-1-boris.brezillon@collabora.com>
+Subject: [PATCH 1/9] mtd: rawnand: Add an is_last flag to nand_subop
+Date: Sun, 19 Apr 2020 14:51:32 +0200
+Message-Id: <20200419125140.1307309-2-boris.brezillon@collabora.com>
 X-Mailer: git-send-email 2.25.2
+In-Reply-To: <20200419125140.1307309-1-boris.brezillon@collabora.com>
+References: <20200419125140.1307309-1-boris.brezillon@collabora.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200419_055146_520203_35019090 
-X-CRM114-Status: GOOD (  13.82  )
+X-CRM114-CacheID: sfid-20200419_055146_604936_CE5C55E0 
+X-CRM114-Status: GOOD (  11.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,55 +78,48 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello,
+Some controllers need to know when they're passed the last subop so
+they can de-assert the CE pin.
 
-Recently I've been CC-ed on a few new driver submissions that were
-implementing the legacy interface, which made me realize the only way
-to prevent that from happening was to:
+Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+---
+ drivers/mtd/nand/raw/nand_base.c | 2 ++
+ include/linux/mtd/rawnand.h      | 2 ++
+ 2 files changed, 4 insertions(+)
 
-1/ convert all existing drivers to exec_op()
-2/ document the new way of doing things
-
-#2 is definitely needed, but I don't think it's be enough, as people
-tend to re-shuffle what they had in their downstream kernel when
-they submit something upstream, and those downstream drivers were most
-likely based on the legacy cmd_ctrl/cmdfunc() interface.
-
-So here I am, trying to convert existing drivers one by one. I'd be
-grateful if someone from the OpenWRT community (Rafal?) could test/help
-me debug that one as I don't have the HW myself.
-
-Regards,
-
-Boris
-
-Boris Brezillon (9):
-  mtd: rawnand: Add an is_last flag to nand_subop
-  mtd: rawnand: bcm47xx: Drop dependency on BCMA
-  mtd: rawnand: bcm47xx: Allow compiling the driver when COMPILE_TEST=y
-  mtd: rawnand: bcm47xx: Demistify a few more things
-  mtd: rawnand: bcm47xx: Implement the exec_op() interface
-  mtd: rawnand: bcm47xx: Get rid of the legacy implementation
-  mtd: rawnand: bcm47xx: Simplify the init() function
-  mtd: rawnand: bcm47xx: Merge all source files
-  mtd: rawnand: bcm47xx: Move the driver to drivers/mtd/nand/raw/
-
- drivers/mtd/nand/raw/Kconfig                  |   3 +-
- drivers/mtd/nand/raw/Makefile                 |   1 +
- drivers/mtd/nand/raw/bcm47xxnflash.c          | 353 ++++++++++++++
- drivers/mtd/nand/raw/bcm47xxnflash/Makefile   |   5 -
- .../nand/raw/bcm47xxnflash/bcm47xxnflash.h    |  26 -
- drivers/mtd/nand/raw/bcm47xxnflash/main.c     |  77 ---
- .../mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c  | 450 ------------------
- drivers/mtd/nand/raw/nand_base.c              |   2 +
- include/linux/mtd/rawnand.h                   |   2 +
- 9 files changed, 359 insertions(+), 560 deletions(-)
- create mode 100644 drivers/mtd/nand/raw/bcm47xxnflash.c
- delete mode 100644 drivers/mtd/nand/raw/bcm47xxnflash/Makefile
- delete mode 100644 drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.h
- delete mode 100644 drivers/mtd/nand/raw/bcm47xxnflash/main.c
- delete mode 100644 drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
-
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index fa9ac18e97a1..f81b54634061 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -2101,6 +2101,8 @@ nand_op_parser_match_pat(const struct nand_op_parser_pattern *pat,
+ 	 */
+ 	ctx->subop.ninstrs = ninstrs;
+ 	ctx->subop.last_instr_end_off = instr_offset;
++	if (ctx->subop.instrs + ninstrs == end && !instr_offset)
++		ctx->subop.is_last = true;
+ 
+ 	return true;
+ }
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 8e8d1a61e2fb..99f4ac47c8d3 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -701,6 +701,7 @@ struct nand_op_instr {
+  *			   of the sub-operation
+  * @last_instr_end_off: offset to end at (excluded) for the last instruction
+  *			of the sub-operation
++ * @is_last: this sub-operation is the last one
+  *
+  * Both @first_instr_start_off and @last_instr_end_off only apply to data or
+  * address instructions.
+@@ -715,6 +716,7 @@ struct nand_subop {
+ 	unsigned int ninstrs;
+ 	unsigned int first_instr_start_off;
+ 	unsigned int last_instr_end_off;
++	bool is_last;
+ };
+ 
+ unsigned int nand_subop_get_addr_start_off(const struct nand_subop *subop,
 -- 
 2.25.2
 
