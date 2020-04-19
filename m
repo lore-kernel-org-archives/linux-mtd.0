@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42CF6C38A30
-	for <linux-mtd@archiver.kernel.org>; Sun, 19 Apr 2020 12:54:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 086E2C3A5A0
+	for <linux-mtd@archiver.kernel.org>; Sun, 19 Apr 2020 12:54:52 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E966D206D9
-	for <linux-mtd@archiver.kernel.org>; Sun, 19 Apr 2020 12:54:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CE825206D9
+	for <linux-mtd@archiver.kernel.org>; Sun, 19 Apr 2020 12:54:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XJMcDdlP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E966D206D9
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mKFRdDgn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CE825206D9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=x3uusd+PDXEWUCCXN5DixywuBpDJdaHBKLgLK5R+n5s=; b=XJMcDdlP/mTtNW
-	2mL0cUwMQyB42CGdeMWKVFwZrK/zmfWB5oAtI5872qi+9D7VYkJJM/ayLKie4FZE0/9B1NYn1plKR
-	A5e4WYjMYJYJYotoNHsGD4y0b5t8/pK+kywSRAXl591CoSomM4QKXlWFZyh3QHzYUw77biYsz7xpN
-	8ZRrcvf4kfZh2+i96E75Q2K+X1gffmP8bYmmAaPgJ1aRBThd7e1euux4uHT9q5v96JcNTDQXnaiJ3
-	98X8CXCbQyWA2z53AqAEWxj5zllZ0IX+1hlwcvRcDQkAwmvLfGHEkxQhwjO0FA4YC+EJKp8OXRwon
-	ObpA4jcraBgHXVpOLwow==;
+	List-Owner; bh=9PllStRJktC8680tgd39cSpFYN0cIcCxuVQ4942OIrg=; b=mKFRdDgnZ4/KaZ
+	t3fnAf7lNE2lK3TSpi40AyfLTl/mMMUv2SIbfPmQqaOCRwpachTiDv3f5W4gWkeHUFM6ISrQ9CztS
+	TBfG1AxP9YoUl1zLVrF6iSS+XE7k4KCbFMV5z4luhoYrKomTn9fK5FMAEnTHxDqNWOIUdKIRgzEtN
+	0IMnPW5Cftkyt1IUiqlQkS8td54p8XwZyQVLgdePns0/qAtt8H84oMXpPNjSp39Tt7n5O+oRTYZvO
+	kPoFTnIYbZGAV3jdBSdk8SKgaKF88ruPIDImaIMnUUpDiR+8+OTM0tJOtO9kh/wce3nNcDWLPG22T
+	SsaNexSdiJTE88OR3uyA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jQ9T1-0000LX-9h; Sun, 19 Apr 2020 12:54:35 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1jQ9TH-0000bY-0F; Sun, 19 Apr 2020 12:54:51 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jQ9QM-0005wi-CU
+ id 1jQ9QK-0005vT-VN
  for linux-mtd@lists.infradead.org; Sun, 19 Apr 2020 12:51:54 +0000
 Received: from localhost.localdomain (unknown
  [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id B9EDB2A0D95;
- Sun, 19 Apr 2020 13:51:47 +0100 (BST)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 43D5A2A0D6C;
+ Sun, 19 Apr 2020 13:51:46 +0100 (BST)
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH 9/9] mtd: rawnand: bcm47xx: Move the driver to
- drivers/mtd/nand/raw/
-Date: Sun, 19 Apr 2020 14:51:40 +0200
-Message-Id: <20200419125140.1307309-10-boris.brezillon@collabora.com>
+Subject: [PATCH 5/9] mtd: rawnand: bcm47xx: Implement the exec_op() interface
+Date: Sun, 19 Apr 2020 14:51:36 +0200
+Message-Id: <20200419125140.1307309-6-boris.brezillon@collabora.com>
 X-Mailer: git-send-email 2.25.2
 In-Reply-To: <20200419125140.1307309-1-boris.brezillon@collabora.com>
 References: <20200419125140.1307309-1-boris.brezillon@collabora.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200419_055150_584496_FCEDF797 
-X-CRM114-Status: GOOD (  11.89  )
+X-CRM114-CacheID: sfid-20200419_055149_294261_FC8EF319 
+X-CRM114-Status: GOOD (  18.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,42 +78,200 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Now that we have a single we can move it to the directory where all
-single source file drivers live.
+Implement the exec_op() interface so we can get rid of the convoluted
+cmdfunc() implementation.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
 ---
- drivers/mtd/nand/raw/Makefile                            | 1 +
- drivers/mtd/nand/raw/{bcm47xxnflash => }/bcm47xxnflash.c | 0
- drivers/mtd/nand/raw/bcm47xxnflash/Makefile              | 2 --
- 3 files changed, 1 insertion(+), 2 deletions(-)
- rename drivers/mtd/nand/raw/{bcm47xxnflash => }/bcm47xxnflash.c (100%)
- delete mode 100644 drivers/mtd/nand/raw/bcm47xxnflash/Makefile
+This is based on my understanding of how this controller works, and I
+think it covers all the use cases covered by the custom cmdfunc()
+implementation. I might be wrong of course, so it'd be great to have
+someone test on real HW.
+---
+ .../nand/raw/bcm47xxnflash/bcm47xxnflash.h    |   1 +
+ .../mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c  | 150 ++++++++++++++++++
+ 2 files changed, 151 insertions(+)
 
-diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
-index 2d136b158fb7..703d696c2d61 100644
---- a/drivers/mtd/nand/raw/Makefile
-+++ b/drivers/mtd/nand/raw/Makefile
-@@ -58,6 +58,7 @@ obj-$(CONFIG_MTD_NAND_TEGRA)		+= tegra_nand.o
- obj-$(CONFIG_MTD_NAND_STM32_FMC2)	+= stm32_fmc2_nand.o
- obj-$(CONFIG_MTD_NAND_MESON)		+= meson_nand.o
- obj-$(CONFIG_MTD_NAND_CADENCE)		+= cadence-nand-controller.o
-+obj-$(CONFIG_MTD_NAND_BCM47XXNFLASH)	+= bcm47xxnflash.o
+diff --git a/drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.h b/drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.h
+index 201b9baa52a0..00d0974b73cb 100644
+--- a/drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.h
++++ b/drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.h
+@@ -10,6 +10,7 @@
+ #include <linux/mtd/rawnand.h>
  
- nand-objs := nand_base.o nand_legacy.o nand_bbt.o nand_timings.o nand_ids.o
- nand-objs += nand_onfi.o
-diff --git a/drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.c b/drivers/mtd/nand/raw/bcm47xxnflash.c
-similarity index 100%
-rename from drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.c
-rename to drivers/mtd/nand/raw/bcm47xxnflash.c
-diff --git a/drivers/mtd/nand/raw/bcm47xxnflash/Makefile b/drivers/mtd/nand/raw/bcm47xxnflash/Makefile
-deleted file mode 100644
-index 71a953078799..000000000000
---- a/drivers/mtd/nand/raw/bcm47xxnflash/Makefile
-+++ /dev/null
-@@ -1,2 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0-only
--obj-$(CONFIG_MTD_NAND_BCM47XXNFLASH)	+= bcm47xxnflash.o
+ struct bcm47xxnflash {
++	struct nand_controller base;
+ 	struct bcma_drv_cc *cc;
+ 
+ 	struct nand_chip nand_chip;
+diff --git a/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
+index fbb7acebc8f7..184f78b3d45a 100644
+--- a/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
++++ b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
+@@ -382,6 +382,153 @@ static void bcm47xxnflash_ops_bcm4706_write_buf(struct nand_chip *nand_chip,
+ 	pr_err("Invalid command for buf write: 0x%X\n", b47n->curr_command);
+ }
+ 
++static int
++bcm47xxnflash_ops_bcm4706_exec_cmd_addr(struct nand_chip *chip,
++					const struct nand_subop *subop)
++{
++	struct bcm47xxnflash *b47n = nand_get_controller_data(chip);
++	u32 nctl = 0, col = 0, row = 0, ncols = 0, nrows = 0;
++	unsigned int i, j;
++
++	for (i = 0; i < subop->ninstrs; i++) {
++		const struct nand_op_instr *instr = &subop->instrs[i];
++
++		switch (instr->type) {
++		case NAND_OP_CMD_INSTR:
++			if (WARN_ON_ONCE((nctl & NCTL_CMD0) &&
++					 (nctl & NCTL_CMD1W)))
++				return -EINVAL;
++			else if (nctl & NCTL_CMD0)
++				nctl |= NCTL_CMD1W |
++					((u32)instr->ctx.cmd.opcode << 8);
++			else
++				nctl |= NCTL_CMD0 | instr->ctx.cmd.opcode;
++			break;
++		case NAND_OP_ADDR_INSTR:
++			for (j = 0; j < instr->ctx.addr.naddrs; j++) {
++				u32 addr = instr->ctx.addr.addrs[j];
++
++				if (i < 2) {
++					col |= addr << i * 8;
++					nctl |= NCTL_COL;
++					ncols++;
++				} else {
++					row |= addr << (i - 2) * 8;
++					nctl |= NCTL_ROW;
++					nrows++;
++				}
++			}
++			break;
++		default:
++			WARN_ON_ONCE(1);
++			return -EINVAL;
++		}
++	}
++
++	/* Keep the CS line asserted if there's something else to execute. */
++	if (!subop->is_last)
++		nctl |= NCTL_CSA;
++
++	bcma_cc_write32(b47n->cc, BCMA_CC_NFLASH_CONF,
++			CONF_MAGIC_BIT |
++			CONF_COL_BYTES(ncols) |
++			CONF_ROW_BYTES(nrows));
++	return bcm47xxnflash_ops_bcm4706_ctl_cmd(b47n->cc, nctl);
++}
++
++static int
++bcm47xxnflash_ops_bcm4706_exec_waitrdy(struct nand_chip *chip,
++				       const struct nand_subop *subop)
++{
++	struct bcm47xxnflash *b47n = nand_get_controller_data(chip);
++	const struct nand_op_instr *instr = &subop->instrs[0];
++	unsigned long timeout_jiffies = jiffies;
++
++	if (WARN_ON(subop->ninstrs != 1 ||
++		    instr->type != NAND_OP_DATA_IN_INSTR))
++		return -EINVAL;
++
++	timeout_jiffies += msecs_to_jiffies(instr->ctx.waitrdy.timeout_ms) + 1;
++	do {
++		if (bcma_cc_read32(b47n->cc, BCMA_CC_NFLASH_CTL) & NCTL_READY)
++			return 0;
++
++		usleep_range(10, 100);
++	} while (time_before(jiffies, timeout_jiffies));
++
++	return -ETIMEDOUT;
++}
++
++static int
++bcm47xxnflash_ops_bcm4706_exec_rw(struct nand_chip *chip,
++				  const struct nand_subop *subop)
++{
++	struct bcm47xxnflash *b47n = nand_get_controller_data(chip);
++	const struct nand_op_instr *instr = &subop->instrs[0];
++	unsigned int i;
++	int ret;
++
++	if (WARN_ON(subop->ninstrs != 1 ||
++		    (instr->type != NAND_OP_DATA_IN_INSTR &&
++		     instr->type != NAND_OP_DATA_OUT_INSTR)))
++		return -EINVAL;
++
++	for (i = 0; i < instr->ctx.data.len; i += 4) {
++		unsigned int nbytes = min_t(unsigned int,
++					    instr->ctx.data.len - i, 4);
++		u32 nctl, data;
++
++		nctl = NCTL_CSA | NCTL_DATA_CYCLES(nbytes);
++		if (instr->type == NAND_OP_DATA_IN_INSTR) {
++			nctl |= NCTL_READ;
++		} else {
++			nctl |= NCTL_WRITE;
++			memcpy(&data, instr->ctx.data.buf.in + i, nbytes);
++			bcma_cc_write32(b47n->cc, BCMA_CC_NFLASH_DATA, data);
++		}
++
++		if (i + nbytes < instr->ctx.data.len)
++			nctl |= NCTL_CSA;
++
++		ret = bcm47xxnflash_ops_bcm4706_ctl_cmd(b47n->cc, nctl);
++		if (ret)
++			return ret;
++
++		if (instr->type == NAND_OP_DATA_IN_INSTR) {
++			data = bcma_cc_read32(b47n->cc, BCMA_CC_NFLASH_DATA);
++			memcpy(instr->ctx.data.buf.in + i, &data, nbytes);
++		}
++	}
++
++	return 0;
++}
++
++static const struct nand_op_parser bcm47xxnflash_op_parser = NAND_OP_PARSER(
++	NAND_OP_PARSER_PATTERN(bcm47xxnflash_ops_bcm4706_exec_cmd_addr,
++			       NAND_OP_PARSER_PAT_CMD_ELEM(true),
++			       NAND_OP_PARSER_PAT_ADDR_ELEM(true, 5),
++			       NAND_OP_PARSER_PAT_CMD_ELEM(true)),
++	NAND_OP_PARSER_PATTERN(bcm47xxnflash_ops_bcm4706_exec_waitrdy,
++			       NAND_OP_PARSER_PAT_WAITRDY_ELEM(false)),
++	NAND_OP_PARSER_PATTERN(bcm47xxnflash_ops_bcm4706_exec_rw,
++			       NAND_OP_PARSER_PAT_DATA_IN_ELEM(false, 0x200)),
++	NAND_OP_PARSER_PATTERN(bcm47xxnflash_ops_bcm4706_exec_rw,
++			       NAND_OP_PARSER_PAT_DATA_OUT_ELEM(false, 0x200)),
++);
++
++static int
++bcm47xxnflash_ops_bcm4706_exec_op(struct nand_chip *chip,
++				  const struct nand_operation *op,
++				  bool check_only)
++{
++	return nand_op_parser_exec_op(chip, &bcm47xxnflash_op_parser, op,
++				      check_only);
++}
++
++static const struct nand_controller_ops bcm47xxnflash_ops = {
++	.exec_op = bcm47xxnflash_ops_bcm4706_exec_op,
++};
++
+ /**************************************************
+  * Init
+  **************************************************/
+@@ -398,6 +545,9 @@ int bcm47xxnflash_ops_bcm4706_init(struct bcm47xxnflash *b47n)
+ 	u8 tbits, col_bits, col_size, row_bits, row_bsize;
+ 	u32 val;
+ 
++	nand_controller_init(&b47n->base);
++	b47n->base.ops = &bcm47xxnflash_ops;
++	b47n->nand_chip.controller = &b47n->base;
+ 	nand_chip->legacy.select_chip = bcm47xxnflash_ops_bcm4706_select_chip;
+ 	nand_chip->legacy.cmd_ctrl = bcm47xxnflash_ops_bcm4706_cmd_ctrl;
+ 	nand_chip->legacy.dev_ready = bcm47xxnflash_ops_bcm4706_dev_ready;
 -- 
 2.25.2
 
