@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95F6EC38A30
-	for <linux-mtd@archiver.kernel.org>; Sun, 19 Apr 2020 12:52:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 106EEC38A30
+	for <linux-mtd@archiver.kernel.org>; Sun, 19 Apr 2020 12:52:45 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 273252137B
-	for <linux-mtd@archiver.kernel.org>; Sun, 19 Apr 2020 12:52:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D32852137B
+	for <linux-mtd@archiver.kernel.org>; Sun, 19 Apr 2020 12:52:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="T4jluyoq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 273252137B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nm3PzHpk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D32852137B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tX8Mno1GQon+wW1kZTcoyG9Yxdbkjgn4uSGiuDa8HWY=; b=T4jluyoqJDufx/
-	VGm3/G15phiMe9yoAVxnEUxgdYLxYmco2vHaAee2OhdxC8HHlGUlYaB/kqNNPdSQn6K8pdVvu6EK2
-	4TqNei2Hb5Rnf5//N0jMLQXcx55DDt4Iq8PtRnBVFneX785s1Tdt4e+VZ+KZdfbPmBZf9wJWM+xya
-	wFtHCvIBizsRTrWMIhr2wvwsFjKoCdtgaaYPoVpOn+MPMjj5lNjJCG3yuo872MGsk0bxw9Y0n9PzH
-	74HtFC6hpo8vXFxnGpQ0okwEqh+HJO7Vu27jl3JBCeUIH8XW8kPZMtN7pcRBkhKtWAXgl4V9aql+Y
-	h1zR23lQLcJf1N1I90AQ==;
+	List-Owner; bh=5IzbBCT3ZSxJXpl1SJyZqV7AodG7YFxOQH4YppQYx8U=; b=nm3PzHpkxVY2h7
+	KhsNaQqVPZ/SGi1eyZDUKrARHG7a/a+jbRD8NwiE+s8hFtT1dhozSFGEiiEz0dJxHhR4g0HdcR/lz
+	KhM0CunsDc71FpxgaZSKaBtH75iA8nPjtffjQQ8QZtwH/QB75+og0njG1UlDytjWCbGXpuMvySifE
+	Wf5OcqSLLTrg4V2d5IXds/CNKcAszug9TXGimxUanobyjsts6ZCK82JuhIL4XvYVI6C6aTo8yDFNw
+	3zXe5N41bdZclUufzTYru33chdxoi1FVKmvJK9SUwAo1eTkfNod5zPM8XgulZfJcrEW08P0QMh8tj
+	/L4xAvHEsna+N9Hr+p/A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jQ9Qp-0006Nx-5K; Sun, 19 Apr 2020 12:52:19 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1jQ9R2-0006d0-Uf; Sun, 19 Apr 2020 12:52:32 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jQ9QI-0005sb-E3
+ id 1jQ9QI-0005si-Mm
  for linux-mtd@lists.infradead.org; Sun, 19 Apr 2020 12:51:49 +0000
 Received: from localhost.localdomain (unknown
  [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id BC23F2A0072;
- Sun, 19 Apr 2020 13:51:44 +0100 (BST)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 2028E2A0D5C;
+ Sun, 19 Apr 2020 13:51:45 +0100 (BST)
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH 1/9] mtd: rawnand: Add an is_last flag to nand_subop
-Date: Sun, 19 Apr 2020 14:51:32 +0200
-Message-Id: <20200419125140.1307309-2-boris.brezillon@collabora.com>
+Subject: [PATCH 2/9] mtd: rawnand: bcm47xx: Drop dependency on BCMA
+Date: Sun, 19 Apr 2020 14:51:33 +0200
+Message-Id: <20200419125140.1307309-3-boris.brezillon@collabora.com>
 X-Mailer: git-send-email 2.25.2
 In-Reply-To: <20200419125140.1307309-1-boris.brezillon@collabora.com>
 References: <20200419125140.1307309-1-boris.brezillon@collabora.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200419_055146_604936_CE5C55E0 
-X-CRM114-Status: GOOD (  11.27  )
+X-CRM114-CacheID: sfid-20200419_055146_881148_667D88C6 
+X-CRM114-Status: GOOD (  10.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,48 +78,26 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Some controllers need to know when they're passed the last subop so
-they can de-assert the CE pin.
+BCMA_NFLASH can only be selected if BCMA is enabled and we already
+depend on BCMA_NFLASH, making the dependency on BCMA useless.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
 ---
- drivers/mtd/nand/raw/nand_base.c | 2 ++
- include/linux/mtd/rawnand.h      | 2 ++
- 2 files changed, 4 insertions(+)
+ drivers/mtd/nand/raw/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index fa9ac18e97a1..f81b54634061 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -2101,6 +2101,8 @@ nand_op_parser_match_pat(const struct nand_op_parser_pattern *pat,
- 	 */
- 	ctx->subop.ninstrs = ninstrs;
- 	ctx->subop.last_instr_end_off = instr_offset;
-+	if (ctx->subop.instrs + ninstrs == end && !instr_offset)
-+		ctx->subop.is_last = true;
- 
- 	return true;
- }
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 8e8d1a61e2fb..99f4ac47c8d3 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -701,6 +701,7 @@ struct nand_op_instr {
-  *			   of the sub-operation
-  * @last_instr_end_off: offset to end at (excluded) for the last instruction
-  *			of the sub-operation
-+ * @is_last: this sub-operation is the last one
-  *
-  * Both @first_instr_start_off and @last_instr_end_off only apply to data or
-  * address instructions.
-@@ -715,6 +716,7 @@ struct nand_subop {
- 	unsigned int ninstrs;
- 	unsigned int first_instr_start_off;
- 	unsigned int last_instr_end_off;
-+	bool is_last;
- };
- 
- unsigned int nand_subop_get_addr_start_off(const struct nand_subop *subop,
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index a80a46bb5b8b..60c4eb9d382f 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -243,7 +243,6 @@ config MTD_NAND_BRCMNAND
+ config MTD_NAND_BCM47XXNFLASH
+ 	tristate "BCM4706 BCMA NAND controller"
+ 	depends on BCMA_NFLASH
+-	depends on BCMA
+ 	help
+ 	  BCMA bus can have various flash memories attached, they are
+ 	  registered by bcma as platform devices. This enables driver for
 -- 
 2.25.2
 
