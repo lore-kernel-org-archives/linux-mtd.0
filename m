@@ -2,157 +2,56 @@ Return-Path: <SRS0=SHbm=6E=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C52A1C3815B
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Apr 2020 16:26:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4372EC3A5A0
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Apr 2020 16:28:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 602EE20775
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Apr 2020 16:26:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 16E152074F
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Apr 2020 16:28:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tNGOZCUp";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=cisco.com header.i=@cisco.com header.b="PKhIenep";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=cisco.onmicrosoft.com header.i=@cisco.onmicrosoft.com header.b="JLAboX9o"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 602EE20775
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=cisco.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kJOLMzTl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 16E152074F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=the-dreams.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PzHCgqs5HksjSRjz6Sfbgv9sJQ9wSxPKbicnWWC0BGA=; b=tNGOZCUpcbnIZ9
-	+UgghMGcOEi7Hi4A8Gw8ldKl/FexzDRxLpAG2CZyDNL0LhtB4Gp/K78UVuTl6x/peZBNsYj2irmjw
-	OdKQrjVN0MLs5UpYeeM8OB8MNG9VUWhF9/zyLQ+uDw3KraGBh0Ozbn0UdfulpcgWAwYNAjckrTJMe
-	woNubovENa7d+hONng4ceiQJOLEJs6qsjY8T3wkJftXwAC1uIFajhtBsb3JJbXpwtfoDzfaMFY6sw
-	Ym7wGVnSH7/4hTZZ/h1yK5rdwmJFW42Dn+YD1HLyfSfIPxYZ6ghlbfAXX38a3ThK7WJNTbWVdlcET
-	QIvAsEvQSoEUDhNpX8EQ==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:Cc:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=+c1DGcDlTNGm7U0xeLdl23007GilIg0AEZOpFqM9tQw=; b=kJOLMzTlGCKZHvkQCsYaRJv4p
+	J8Qtd8Nb/mEUNgj8sLSPhu+jG3wMIlBi88Nj0jSHBb84FjQMVu5h+SPOKlP0+C/vQSn5K8nQDNYXT
+	2+W0aNwrQ93KdSV2NHmURqMwfMXVhk8/fx7nyIJpovK0DNkr574HvI8JVHHWGGFS2CzsPqSHrQc17
+	3AQ50El8X21mC2qnxtj2rKwkDfaaPEtJkKLlEjQwpuw5uFDXFl+IZBR3wUdJ/arCJ8Pg5RpCK85v6
+	C44jSfnqubhuOYqhgr5btz4mbQ7jscyVkNKOsAQJjpIolbdkbWoE6IqKbR+mgiZ0AB5V5wq7nDIlS
+	EXIpbkULg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jQZFF-0007gi-E5; Mon, 20 Apr 2020 16:26:05 +0000
-Received: from alln-iport-6.cisco.com ([173.37.142.93])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jQZF9-0007aG-43
- for linux-mtd@lists.infradead.org; Mon, 20 Apr 2020 16:26:01 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=cisco.com; i=@cisco.com; l=851; q=dns/txt; s=iport;
- t=1587399959; x=1588609559;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=utCJ3QKeNacrKEBoiI5caG8ulqWSPqIIhsv+lc5RqDo=;
- b=PKhIenephrOj2G7yJauJKE6tiozBS+osFMrnFr+54KS5d8eXQ7fA1kNB
- +4VW1Uw8p09k4S+sGY4mk9Nq77fd+Uw0e9bpwT8WUU2Cu065QakyTuxWR
- AZ1/SbPtFV8dsNnn/nlxwVz7sgJfltr1SJ+Ld57LyjGJ6raMPTCw7JYz1 g=;
-IronPort-PHdr: =?us-ascii?q?9a23=3AH7U5mRb4NwwCTV+kv7IMxmr/LSx94ef9IxIV55?=
- =?us-ascii?q?w7irlHbqWk+dH4MVfC4el20gabRp3VvvRDjeee87vtX2AN+96giDgDa9QNMn?=
- =?us-ascii?q?1NksAKh0olCc+BB1f8KavmZio7EcBdXXdu/mqwNg5eH8OtL1A=3D?=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0BFAQCUzJ1e/5RdJa1mHAEBAQEBBwE?=
- =?us-ascii?q?BEQEEBAEBgWkFAQELAYFTUQWBRCAECyoKh1kDimZOghGPJxSIaoEuFIEQA1Q?=
- =?us-ascii?q?KAQEBDAEBLQIEAQGERAKCDyQ2Bw4CAwEBCwEBBQEBAQIBBQRthVYBC4VyAQE?=
- =?us-ascii?q?BAxIoBgEBNwEPAgEIGB4QFB4nBA4FIoVQAy4BpHwCgTmILTWCJ4MAAQEFhSg?=
- =?us-ascii?q?Ygg4JFIEkAYJiiVYagUE/hCE+hA8KARIBISyFRZBvoRYKgkSNdYlqKQ6cRC2?=
- =?us-ascii?q?PQJxrAgQCBAUCDgEBBYFZATFmcHAVgyRQGA2RWINzilV0gSmNGwGBDwEB?=
-X-IronPort-AV: E=Sophos;i="5.72,407,1580774400"; d="scan'208";a="492496551"
-Received: from rcdn-core-12.cisco.com ([173.37.93.148])
- by alln-iport-6.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA;
- 20 Apr 2020 16:25:54 +0000
-Received: from XCH-ALN-003.cisco.com (xch-aln-003.cisco.com [173.36.7.13])
- by rcdn-core-12.cisco.com (8.15.2/8.15.2) with ESMTPS id 03KGPsUa000491
- (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=FAIL);
- Mon, 20 Apr 2020 16:25:54 GMT
-Received: from xhs-aln-001.cisco.com (173.37.135.118) by XCH-ALN-003.cisco.com
- (173.36.7.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
- Mon, 20 Apr 2020 11:25:54 -0500
-Received: from xhs-rtp-002.cisco.com (64.101.210.229) by xhs-aln-001.cisco.com
- (173.37.135.118) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
- Mon, 20 Apr 2020 11:25:54 -0500
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (64.101.32.56) by
- xhs-rtp-002.cisco.com (64.101.210.229) with Microsoft SMTP Server
- (TLS) id
- 15.0.1497.2 via Frontend Transport; Mon, 20 Apr 2020 12:25:53 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VSGUNbY7dya8MiTWF05rAsBgRE92TFLUxXspLfIJ9gP0B0o+39dGrTFmyRYgkfnt2Pieqg1j+8hrzqWF0SuN1v241UbvxG9LXsKJ5bILqpHETCb4fnk9P/JWIPCwAyzxFxYn7xkLKL8ZYOXTTpF+FuXMMn7MpUETUjfZam5PryqJ81Ogy40BDRl0nUL9jnTunWn4p2zmHnhXD4BeN8cZg0VkpzSfqZYLs41RHQZXUbO5tJKImbs/JfmQV11IfbPSc2BuNf/gYwO7O4eFOwdlxVh9wWStDcaofYBEuKm25LJ2kSz6XGBUyYiXwEhntumqGo7Mb08JlrZduLSrx/ydVQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=utCJ3QKeNacrKEBoiI5caG8ulqWSPqIIhsv+lc5RqDo=;
- b=GFqAu3APjDmRFuJg185jsuaIN/dku33SEr++XJdFtpzI+6CYA8/jnfiqOtylR4rv3PBwdVHQ7IGCHMSaXiYj+2f5JgkgFgiyXFSHl27pGo9dgsxlTB/Z3nsQbTWvTrZdIVKAXKUbBeQnCG24gqD0RCFD84VkrUHN69lKL3BPTfjaDbTLXIpswWvoYicQoxPWGuNmFIJjCB019itQX0mXbyxVvL8UiUiZdfZezK6NojFtpHsfF01NvYPbKVA7Ujb1rKHh0hgpp25CVhFUzoeUPNQZqUEj2wgy1SKfOHXzueoBU1KSSIl+DS9SE5zPDH5Gm+mvOOioRNebNLIvaOnUmw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cisco.com; dmarc=pass action=none header.from=cisco.com;
- dkim=pass header.d=cisco.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cisco.onmicrosoft.com; 
- s=selector2-cisco-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=utCJ3QKeNacrKEBoiI5caG8ulqWSPqIIhsv+lc5RqDo=;
- b=JLAboX9oNtKkaMct9BFwarAOT0x5ce9jA3fTpqsHFWhKfbREP8gL9ouTw1k/Xi4LAyNzZFYdJAJA4LFq+2G1HDj+xnZXhEWJvMZ1eB67avdJB+Q4Ra2Ge1STsI78yCA/vU+gty3vORAceB2fvrQMn6fKlV2hmZRvJNlzwn32YTk=
-Received: from BYAPR11MB3205.namprd11.prod.outlook.com (2603:10b6:a03:1e::32)
- by BYAPR11MB3336.namprd11.prod.outlook.com (2603:10b6:a03:1a::30)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.29; Mon, 20 Apr
- 2020 16:25:51 +0000
-Received: from BYAPR11MB3205.namprd11.prod.outlook.com
- ([fe80::d015:3039:2595:7222]) by BYAPR11MB3205.namprd11.prod.outlook.com
- ([fe80::d015:3039:2595:7222%7]) with mapi id 15.20.2921.027; Mon, 20 Apr 2020
- 16:25:51 +0000
-From: "Daniel Walker (danielwa)" <danielwa@cisco.com>
-To: "Tudor.Ambarus@microchip.com" <Tudor.Ambarus@microchip.com>
-Subject: Re: [PATCH] mtd: spi-nor: Add 4B_OPCODES flag to n25q256a
-Thread-Topic: [PATCH] mtd: spi-nor: Add 4B_OPCODES flag to n25q256a
-Thread-Index: AQHWFzBbbqQ06SrDG0Ov1Hkds10F6g==
-Date: Mon, 20 Apr 2020 16:25:51 +0000
-Message-ID: <20200420162550.GZ24466@zorba>
-References: <20200417174620.16420-1-danielwa@cisco.com>
- <12178429.kzmL6e4XO6@192.168.0.120>
-In-Reply-To: <12178429.kzmL6e4XO6@192.168.0.120>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-Auto-Response-Suppress: DR, OOF, AutoReply
-X-MS-TNEF-Correlator: 
-user-agent: Mutt/1.9.4 (2018-02-28)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=danielwa@cisco.com; 
-x-originating-ip: [128.107.241.173]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 54016b60-8d74-4013-feb6-08d7e5477ded
-x-ms-traffictypediagnostic: BYAPR11MB3336:
-x-ld-processed: 5ae1af62-9505-4097-a69a-c1553ef7840e,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR11MB33363C627A66529D0706AD43DDD40@BYAPR11MB3336.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-forefront-prvs: 03793408BA
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:BYAPR11MB3205.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFTY:;
- SFS:(10009020)(4636009)(7916004)(366004)(396003)(376002)(346002)(39860400002)(136003)(86362001)(1076003)(5660300002)(4744005)(26005)(54906003)(478600001)(33656002)(6486002)(33716001)(316002)(2906002)(6506007)(53546011)(8936002)(64756008)(66946007)(9686003)(66476007)(66556008)(6512007)(66446008)(76116006)(6916009)(4326008)(186003)(8676002)(71200400001)(81156014);
- DIR:OUT; SFP:1101; 
-received-spf: None (protection.outlook.com: cisco.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: dPCtW9dovqN52+L24n/PJDMSTR+h71eWuujwtMqeK6aHCn9NbF81Hs89ClSCWwP1K9EM+AK11SfiGqu0w4nvy1CAbnN97fvNrwjYwr7ik6YfAEMqmZoQOyuKmVpMKafJ13/G0D3mlnPkVahEL+NPFAVTqozLVm3GoL78C2KoCMWo2Tv0PV0bJq1fmdkSoB9LzFeNvl7XoZf8KRFIGrYdhu2ZW92MUFztI2Rts0tUL202myAalEtVmmrhaObZFOyzeVXGPHjgCrcKkifWXCozS190LNg5G7n8X1TXiKOoibOj769cVbTa9XitMpnA7+aAtgUW7WAtOQab6jsaKKJInrLcySrp41ooRTc1nyl8swIQAZqTUFKP8f/tcZBs1txvTnNCtlqf8hHGtjTtrovydRkeOHu2g1fxbFftt6Rg2rT4AAQ6Vs22bVyza5CV2RYG
-x-ms-exchange-antispam-messagedata: ywWbfZ0jZnkbSgGoxnPaCixZu4udcqIpJ+X5d7a0FB+1GSMx4brbGhMR57iIoxzquuRKFtRVUHfAWjRa3US+jErhrkwhqLXA8dRX150VBEfE6rncEzQgK3HqfuRbI3Robw65WiGTzepzHTw4M24KDQ==
-Content-ID: <79F3F390E17E4B4A8410F2424536F794@namprd11.prod.outlook.com>
+	id 1jQZH8-00008H-BQ; Mon, 20 Apr 2020 16:28:02 +0000
+Received: from sauhun.de ([88.99.104.3] helo=pokefinder.org)
+ by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jQZGx-0008Me-AY; Mon, 20 Apr 2020 16:27:53 +0000
+Received: from localhost (p54B335B8.dip0.t-ipconnect.de [84.179.53.184])
+ by pokefinder.org (Postfix) with ESMTPSA id A6EEB2C1F4C;
+ Mon, 20 Apr 2020 18:27:47 +0200 (CEST)
+Date: Mon, 20 Apr 2020 18:27:47 +0200
+From: Wolfram Sang <wsa@the-dreams.de>
+To: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 1/2] dt-bindings: Clean-up schema indentation formatting
+Message-ID: <20200420162747.GA3721@ninjato>
+References: <20200416005549.9683-1-robh@kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 54016b60-8d74-4013-feb6-08d7e5477ded
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Apr 2020 16:25:51.3383 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 5ae1af62-9505-4097-a69a-c1553ef7840e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: aMIKVq8LPthx6ADaNF2d369iCX9VMq2MiQQMGdKJKmzojZp+zCQzTTL5xeAd/ZY+20GO11OrD/2gjs5jYHgo3A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3336
-X-OriginatorOrg: cisco.com
-X-Outbound-SMTP-Client: 173.36.7.13, xch-aln-003.cisco.com
-X-Outbound-Node: rcdn-core-12.cisco.com
+In-Reply-To: <20200416005549.9683-1-robh@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200420_092559_327170_1D391CF6 
-X-CRM114-Status: GOOD (  10.59  )
+X-CRM114-CacheID: sfid-20200420_092751_662035_5D15463E 
+X-CRM114-Status: GOOD (  11.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -164,36 +63,97 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "vigneshr@ti.com" <vigneshr@ti.com>, "richard@nod.at" <richard@nod.at>,
- "xe-linux-external\(mailer list\)" <xe-linux-external@cisco.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Heiko Stuebner <heiko@sntech.de>, linux-pwm@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-pci@vger.kernel.org,
+ Linus Walleij <linus.walleij@linaro.org>, linux-remoteproc@vger.kernel.org,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ dri-devel@lists.freedesktop.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-i2c@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+ linux-riscv@lists.infradead.org, Lee Jones <lee.jones@linaro.org>,
+ linux-clk@vger.kernel.org, linux-leds@vger.kernel.org,
+ linux-rtc@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+ Sam Ravnborg <sam@ravnborg.org>, Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Krzysztof Kozlowski <krzk@kernel.org>,
+ Bartosz Golaszewski <bgolaszewski@baylibre.com>, linux-serial@vger.kernel.org,
+ linux-input@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+ linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+ Alexandre Torgue <alexandre.torgue@st.com>, alsa-devel@alsa-project.org,
+ Maxime Ripard <mripard@kernel.org>, linux-can@vger.kernel.org,
+ linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+ Fabio Estevam <festevam@gmail.com>, Mauro Carvalho Chehab <mchehab@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
+ Stephen Boyd <sboyd@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Amit Kucheria <amit.kucheria@linaro.org>,
+ linux-spi@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+ netdev@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>
+Content-Type: multipart/mixed; boundary="===============6479079080126694960=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Apr 20, 2020 at 03:45:59PM +0000, Tudor.Ambarus@microchip.com wrote:
-> Hi, Daniel,
-> 
-> On Friday, April 17, 2020 8:46:19 PM EEST Daniel Walker wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the
-> > content is safe
-> > 
-> > The n25q256a supports 4-byte opcodes so lets add the flag.
-> 
-> This is not true for all the n25q256a flashes. SPINOR_OP_PP_4B, 
-> SPINOR_OP_BE_4K_4B and SPINOR_OP_SE_4B are valid just for the part numbers 
-> N25Q256A83ESF40x, N25Q256A83E1240x, and N25Q256A83ESFA0F.
-> 
-> You need to differentiate between the aforementioned flashes and the rest in 
-> the n25q256a, in order to add the 4-byte opcodes flag.
 
-How do you suggest I do that ? Can I add a new entry into this table with more
-specific information about the chips ?
+--===============6479079080126694960==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="tKW2IUtsqtDRztdT"
+Content-Disposition: inline
 
-Daniel
+
+--tKW2IUtsqtDRztdT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Apr 15, 2020 at 07:55:48PM -0500, Rob Herring wrote:
+> Fix various inconsistencies in schema indentation. Most of these are
+> list indentation which should be 2 spaces more than the start of the
+> enclosing keyword. This doesn't matter functionally, but affects running
+> scripts which do transforms on the schema files.
+>=20
+> Signed-off-by: Rob Herring <robh@kernel.org>
+
+I see that people had comments but I can't judge the topics raised. So,
+I trust you guys that you find out when it is good to go and for that,
+here is my ack:
+
+Acked-by: Wolfram Sang <wsa@the-dreams.de>
+
+
+--tKW2IUtsqtDRztdT
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl6dzX8ACgkQFA3kzBSg
+KbauIw//UsNN3sTG1Vo4Bgtp5Vw0s3m8ojCBjku/VuI/dnL/nKMqOKViAqP/ihOW
+epD4QCANZZ0InnhrhnkpKlsCZ3/i+OME4nuCopTRpWH5TUrX4T0f+1NLegcwoxw/
+UZ1N+HIQrTXUqpkvVw677OEH4fd4qO2mulRZYu7EPi1zhsQs8tyc0spdKvLPg8IR
+Wi165b1RDDsH6+ZFy9+KMDjPmklcrXxWRF/Qc5ATOmaSGMEFc3BTb2uVzVO64Oh0
+dZXGDontJcsz+7KQSXatmu38Xwys1bGGxhG7nvkSS/DmaFwnbkLx2jBZFz9GzVNm
+QZz3tC7olD6edfkgyL76W7dGYQfeA03MZZ88Sgq304Cgv0QwbTM26C0MXhpG1LZR
+sIxf8ZSbwOVUAuXRtABR6Pqu4xm9qbIXtth68kmF8KGPPXIaInqZPOaL0T0ApXm8
+ggBIcp2KoH117WlUDqmLOWlvSjecvUh5WxegsaGpmzxU/XTs9YxYvWvLNG5tGBs7
+Se2LAoLynrGy7LuUQYtRfbYSULgv0cyhO3V6oRjeqNpgekKCqpzStLFWVdCniiuq
+z3guYyMgQ13m1XwXHpeXwhUaak/dp7MvZeg9YxXn1g5MGCVQBMKBAak4aBGnxPLR
+OZq32nBakfGpLUy17vQXKQ0FsM9g8+mMc0xbGgzyyjca0mQuJCs=
+=5aFH
+-----END PGP SIGNATURE-----
+
+--tKW2IUtsqtDRztdT--
+
+
+--===============6479079080126694960==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============6479079080126694960==--
+
