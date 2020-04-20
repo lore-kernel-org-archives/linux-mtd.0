@@ -2,79 +2,77 @@ Return-Path: <SRS0=SHbm=6E=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0ED2DC3815B
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Apr 2020 08:52:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6572EC3815B
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Apr 2020 08:56:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D5D922145D
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Apr 2020 08:52:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3799E20A8B
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Apr 2020 08:56:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QdbashET"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D5D922145D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VTOn5qwN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3799E20A8B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=hflw8+26sH8lByhqG25dwNyTZM9TyYyrZud3Cj6Fzq0=; b=QdbashETyst/eyqeAvxpiPsYG
-	ju/anA7UFdklskmmxA7Z1CNXmYKGf59G83vEfmLoiikG1FJaerXCf4IpVcrf6tXDEj2mngdkJ0qxc
-	JMaLv+MdvdHW123hZg1N9IzVKCpgTNLZLS5wN4rW6K3XDH+GitHbp8dk9mxja9JYJyqF/VCiVys8F
-	POpSCwLaGgv4m4k9oOlXgFYLO5JT4BKgM3z65VSIDr1Wj120PKCv01AoAkJSQ+iHIjjzyS7hMHJT+
-	6AeRpweNEZCQd7WBSnoL+13/9iU5Xb4iWbWEWapj6vJeS8IRVl2r8+7UQMCUkYVuI0s3Qg6A0nTfY
-	242WYf+Rw==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=CVEHVEUwRMnBgh+BCjihBY41N65Kflx1py2qQ6h1z7M=; b=VTOn5qwNUCGx8E
+	IiNG8PQxSASzRuNf/rAlU2fQ5QvxvSe7bDGVYyWv7SvwBc/kkoWgz8BTmCrQg0kNlBOHt7qJltXN1
+	fTNaKC0kV+B08ygqHW/FOGehGi18wtuFGgZb4LtDUcsYBE8TEiMhp0gFa62z7450q/GIpsqtd5o4j
+	qprgzSDix7RHC1P0bqppCIYHQeksXZxatuwyZxxJSaw/XSffRv1iCFgfZIgHAQf9NnJYUlW/wrVs/
+	O68qha3vHPSH+XCMsCPBOTwsi0PumpA3qpNBOXrtbCxxEA6TeSIGqqCg41TvErIO1/ImMdJnt3IVK
+	dEZjQUA/BK8DsMmThDKQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jQS9y-0001Bc-NP; Mon, 20 Apr 2020 08:52:10 +0000
-Received: from mga17.intel.com ([192.55.52.151])
+	id 1jQSEK-0004yG-2T; Mon, 20 Apr 2020 08:56:40 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jQS9v-0001AI-0Z
- for linux-mtd@lists.infradead.org; Mon, 20 Apr 2020 08:52:08 +0000
-IronPort-SDR: RwUXljRVL8kDRmx2T46FyBptZh6WicbFUwKHZNWVwI7w/jvTF+Cwexsh0nEQNd32kGzI7k5tmr
- JcFkXrO9mm6A==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Apr 2020 01:52:05 -0700
-IronPort-SDR: a4Eg2d6xmIyLQNhuk3IUdkIwFTZ6KS18J6L0i5/tGdasi0tIKLFxqKcrFcXxezFSbjfA2ZkxZR
- FrL2tcDJJcFA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,406,1580803200"; d="scan'208";a="254875643"
-Received: from linux.intel.com ([10.54.29.200])
- by orsmga003.jf.intel.com with ESMTP; 20 Apr 2020 01:52:05 -0700
-Received: from [10.249.68.96] (vramuthx-mobl1.gar.corp.intel.com
- [10.249.68.96])
- by linux.intel.com (Postfix) with ESMTP id 2D39B5802C9;
- Mon, 20 Apr 2020 01:51:59 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] mtd: rawnand: Add NAND controller support on Intel
- LGM SoC
-To: Boris Brezillon <boris.brezillon@collabora.com>
-References: <20200417082147.43384-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200417082147.43384-3-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200418105533.477ce529@collabora.com>
- <79e186a8-68fb-0e75-910b-9f1b40679ca2@linux.intel.com>
- <20200420094018.6fdbda68@collabora.com>
-From: "Ramuthevar, Vadivel MuruganX"
- <vadivel.muruganx.ramuthevar@linux.intel.com>
-Message-ID: <65120cb5-9d8d-27a1-a7c1-1e88e18e00b6@linux.intel.com>
-Date: Mon, 20 Apr 2020 16:51:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+ id 1jQSEH-0004xI-1g
+ for linux-mtd@lists.infradead.org; Mon, 20 Apr 2020 08:56:38 +0000
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <sha@pengutronix.de>)
+ id 1jQSEF-0001av-PV; Mon, 20 Apr 2020 10:56:35 +0200
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
+ (envelope-from <sha@pengutronix.de>)
+ id 1jQSEE-0006Sg-4j; Mon, 20 Apr 2020 10:56:34 +0200
+Date: Mon, 20 Apr 2020 10:56:34 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH v2] mtd: spi-nor: Add support for cy15x104q
+Message-ID: <20200420085634.GC1694@pengutronix.de>
+References: <20200305120242.1391-1-s.hauer@pengutronix.de>
+ <20200309084033.8752-1-s.hauer@pengutronix.de>
+ <8661b73d-bc4b-fa41-b5bf-6f3483d4148d@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20200420094018.6fdbda68@collabora.com>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <8661b73d-bc4b-fa41-b5bf-6f3483d4148d@ti.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-IRC: #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 10:18:27 up 60 days, 15:48, 100 users,  load average: 0.08, 0.17,
+ 0.27
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200420_015207_068262_684473EA 
-X-CRM114-Status: GOOD (  14.84  )
+X-CRM114-CacheID: sfid-20200420_015637_089146_24FB2D5B 
+X-CRM114-Status: GOOD (  26.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,40 +84,103 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: cheol.yong.kim@intel.com, devicetree@vger.kernel.org,
- andriy.shevchenko@intel.com, anders.roxell@linaro.org, vigneshr@ti.com,
- arnd@arndb.de, hauke.mehrtens@intel.com, richard@nod.at, qi-ming.wu@intel.com,
- brendanhiggins@google.com, linux-kernel@vger.kernel.org,
- linux-mips@vger.kernel.org, robh+dt@kernel.org, linux-mtd@lists.infradead.org,
- miquel.raynal@bootlin.com, tglx@linutronix.de, masonccyang@mxic.com.tw,
- piotrs@cadence.com
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Cc: Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
+ Tudor Ambarus <tudor.ambarus@microchip.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-IMKgIE9uIDIwLzQvMjAyMCAzOjQwIHBtLCBCb3JpcyBCcmV6aWxsb24gd3JvdGU6Cgo+IE9uIE1v
-biwgMjAgQXByIDIwMjAgMTI6MTg6MzQgKzA4MDAKPiAiUmFtdXRoZXZhciwgVmFkaXZlbCBNdXJ1
-Z2FuWCIKPiA8dmFkaXZlbC5tdXJ1Z2FueC5yYW11dGhldmFyQGxpbnV4LmludGVsLmNvbT4gd3Jv
-dGU6Cj4KPgo+Pj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9LY29uZmlnIGIv
-ZHJpdmVycy9tdGQvbmFuZC9yYXcvS2NvbmZpZwo+Pj4+IGluZGV4IGE4MGE0NmJiNWI4Yi4uOWVm
-YzRiYmFmNGEzIDEwMDY0NAo+Pj4+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L0tjb25maWcK
-Pj4+PiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9LY29uZmlnCj4+Pj4gQEAgLTQ1Nyw2ICs0
-NTcsMTMgQEAgY29uZmlnIE1URF9OQU5EX0NBREVOQ0UKPj4+PiAgICAJICBFbmFibGUgdGhlIGRy
-aXZlciBmb3IgTkFORCBmbGFzaCBvbiBwbGF0Zm9ybXMgdXNpbmcgYSBDYWRlbmNlIE5BTkQKPj4+
-PiAgICAJICBjb250cm9sbGVyLgo+Pj4+ICAgIAo+Pj4+ICtjb25maWcgTVREX05BTkRfSU5URUxf
-TEdNCj4+Pj4gKwl0cmlzdGF0ZSAiU3VwcG9ydCBmb3IgTkFORCBjb250cm9sbGVyIG9uIEludGVs
-IExHTSBTb0MiCj4+Pj4gKwlkZXBlbmRzIG9uIFg4Ngo+Pj4gRG8gd2UgaGF2ZSBhIGhhcmQgZGVw
-ZW5kZW5jeSBvbiB4ODYgaGVyZT8gTWF5YmUgJ2RlcGVuZHMgb24gSEFTX01NSU8nCj4+PiB3b3Vs
-ZCBiZSBlbm91Z2guCj4+IHllcyBCb3Jpcywgd2UgaGF2ZSBoYXJkIGRlcGVuZGVuY3kgb24geDg2
-Lgo+IEdpdmVuIHRoYXQgdGhlIGRyaXZlciB3aWxsIGFsc28gYmUgdXNlZCBvbiBhIE1JUFMgcGxh
-dGZvcm0gSSB3b3VsZCBzYXkKPiBubyA6UC4gSnVzdCB0byBiZSBjbGVhciwgSSB3YXMgc3VnZ2Vz
-dGluZyB0byByZXBsYWNlIHRoZSBzb29uIHRvIGVtZXJnZQo+Cj4gCWRlcGVuZHMgb24gWDg2IHx8
-IE1JUFMgfHwgQ09NUElMRV9URVNUCj4gCWRlcGVuZHMgSEFTX0lPTUVNCj4KPiBydWxlIGJ5Cj4K
-PiAJZGVwZW5kcyBvbiBPRiB8fCBDT01QSUxFX1RFU1QKPiAJZGVwZW5kcyBIQVNfSU9NRU0KClRo
-YW5rIHlvdSBmb3IgdGhlIHN1Z2dlc3Rpb24gIQoKWWVzLCB5b3UgYXJlIHJpZ2h0IHNpbmNlIE1J
-UFMgYmFzZWQgU29DcyBhbHNvIHVzaW5nIHRoZSBzYW1lIGRyaXZlciwgc28gCndlIGNhbiBhZGQg
-dGhlIGFib3ZlIHJ1bGUuCgpSZWdhcmRzClZhZGl2ZWwKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWls
-aW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
-eC1tdGQvCg==
+On Wed, Apr 15, 2020 at 10:58:36PM +0530, Vignesh Raghavendra wrote:
+> 
+> 
+> On 09/03/20 2:10 pm, Sascha Hauer wrote:
+> > The Cypress cy15b104q and cy15v104q are 4Mbit serial SPI F-RAM devices.
+> > Add support for them to the spi-nor driver.
+> > 
+> > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> > ---
+> > 
+> > Changes since v1:
+> > - Instead of specifying 1024 sectors with a sector size of 512 specify
+> >   512 * 1024 sectos with a sector size of 1. The device has no idea of
+> >   sectors and is not erasable, so a sector size of 1 seems to better
+> >   reflect reality.
+> > 
+> >  drivers/mtd/spi-nor/spi-nor.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> > index 4fc632ec18fe..a5c1d684364c 100644
+> > --- a/drivers/mtd/spi-nor/spi-nor.c
+> > +++ b/drivers/mtd/spi-nor/spi-nor.c
+> > @@ -2335,6 +2335,9 @@ static const struct flash_info spi_nor_ids[] = {
+> >  
+> >  	{ "at45db081d", INFO(0x1f2500, 0, 64 * 1024, 16, SECT_4K) },
+> >  
+> > +	/* Cypress */
+> > +	{ "cy15x104q",  INFO6(0x042cc2, 0x7f7f7f, 512 * 1024, 1, SPI_NOR_NO_ERASE) },
+> 
+> This seems wrong
+> 
+> As the datasheet for the device says:
+> 
+> "Device ID
+> The CY15B104Q device can be interrogated for its manufacturer, product
+> identification, and die revision. The RDID opcode 9Fh allows
+> the user to read the manufacturer ID and product ID, both of which are
+> read-only bytes. The JEDEC-assigned manufacturer ID places
+> the Cypress (Ramtron) identifier in bank 7; therefore, there are six
+> bytes of the continuation code 7Fh followed by the single byte C2h.
+> There are two bytes of product ID, which includes a family code, a
+> density code, a sub code, and the product revision code."
+> 
+> I am not sure how are you reading 0x4 as the first byte. It should have
+> been 6 bytes of 0x7F followed by 0xc2 right?
+> 
+> Also 0x7F is continuation code and not actual device ID (See JEDEC
+> standard JEP106). You will have to extend spi_nor_read_id() function to
+> take care of continuation code and read more bytes in order to get the
+> actual Manuf/device ID
+
+I digged a bit deeper.
+
+According to the datasheet the data sent as response to the read id
+command is:
+
+7f 7f 7f 7f 7f 7f c2 2c 04
+
+What I read from the device instead is:
+
+04 2c c2 7f 7f 7f 7f 7f 7f
+
+You see the order of the values is reversed. And in fact this matches
+the datasheet. Read on in the paragraph you cited from:
+
+| Note: The least significant data byte (Byte 0) shifts out first and
+| the most significant data byte (Byte 8) shifts out last.
+
+This sounds very buggy to me. The number of continuation codes (0x7f)
+says which bank in jep106 I have to look at. I increased
+SPI_NOR_MAX_ID_LEN to see what the device sends after the ID above and
+the device happily sends more 0x7f continuation codes. How should I
+count the number of continuation codes when the device sends any desired
+number of them at the end of the message?
+
+I don't know what's going on here, to me it looks like they accidently
+mixed the order of the bytes and instead of fixing it a note was added
+in the datasheet. I hope it's different and you tell me what's wrong in
+my understanding ;)
+
+Sascha
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
