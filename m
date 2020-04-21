@@ -1,80 +1,65 @@
-Return-Path: <SRS0=SHbm=6E=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=rRTz=6F=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ED151C3A5A0
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Apr 2020 20:36:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C255DC2BA19
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Apr 2020 03:27:14 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C2297206E9
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Apr 2020 20:36:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8EB74206F9
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Apr 2020 03:27:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QusrOhA1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C2297206E9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ixf4yb5S"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8EB74206F9
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=hisilicon.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=yeJ0Cm3j7XBldi1CfhdCRutjYiGOwDwBPM/tTLqAQ2E=; b=QusrOhA1YM0iG8
-	nh4vZb6SskGxyqfNEM9EU83SJ6FzrIKkxY+D3nXru/IRJWgJNz30jLDNLBmJBoFsxEKfa6oCji4YX
-	AptyLZqgHFP98tECotFh1+eisV4xZewxdGjf2Fp6iFuSay00IdPRQzPp5tETHw2pCrr7JAaz48hTa
-	bbOhn+vaTgO0aW2qfWBrJNLakh1w9C0ZWP5ZPf9RhUgpQ1VzATkTLUmYapgIlFlDCiJrlWXRzjOJR
-	LplxmjpZ/x2XHSbjJHhfLEeLYPy3y394vD/MZN5QtFJtuYMfyd6FQjLmmq0OFv+KZWV5rZdWKSV8S
-	EoHVDCG5cggUwVo7vLMQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=y+wuzLmbdSesQt/Xe4WudjKz9MOV1mb8v1TN0735Bc0=; b=ixf4yb5SJE1FIH
+	dvg6t1MzjqNeanQ/Q4btQPGmpNrhbWbii4bfxHoFMyas4Cm3nqbNfHGMpyNBgQWtut4PC/n6LtU90
+	oW3WEzW4Dyka2lFjtcqz1itAccM0ERLUR68o+oKfMYbbbYtZ1ugIueKvLoUEMa2TmElp0VC2UrAI1
+	2b5prcKU2yuDeO/ETl4BV4bIuR0nAotx9qUpS/QacUiMhzhx0ZzMbyvVfT+ywIXbmsKaK4OVdWT5O
+	oXxP1z75vz/4BZEfWPI5AbTzNeVGh+EvqXypTGXYN67bvG0LKkBJMHuXRzDdeIQdOgoW/T7muvxyZ
+	1G9EnOfPzEKio2rKWWyg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jQdA0-0002fQ-W1; Mon, 20 Apr 2020 20:36:56 +0000
-Received: from mail-ot1-f66.google.com ([209.85.210.66])
+	id 1jQjYo-0000XN-3i; Tue, 21 Apr 2020 03:26:58 +0000
+Received: from szxga06-in.huawei.com ([45.249.212.32] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jQd9w-0002bv-Og; Mon, 20 Apr 2020 20:36:54 +0000
-Received: by mail-ot1-f66.google.com with SMTP id z17so9370620oto.4;
- Mon, 20 Apr 2020 13:36:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=0kqh5Q9Co3AbSPBrTmVcdN3oyZQj3KIAbrC9Aw9Jey8=;
- b=hOPy4iK4mtNF+rw/BnxM/E9qR9Zkk/Xg/T2GDcQ2Bh/JtkGMldYzftv7qZAGkQhocT
- Nr/se4blpobhb/dVbS4TzNC6+FqrxCL57s9qB5BcNGCyFZgX0xgdIs+Td04YjsXdfZ8h
- qfMK9YgvKjmY9DtC6siTWeYz4eB9YSwr0lucQCJJolENmcBV7Rcq1p8+A+VWY8Md/KQG
- sYPOB1RWS3omX4iqRdnTAclYS59qVI72HnxkOeSGooRJBQSVmj8lOdZU2Ll2KLIMIcNo
- hb2qTcgY+cyJdsFbG1yhD3LTD82sZEEj3Boq2SCUw4b9bnQTuqcsvJF9XkMAG35fL6xe
- /58w==
-X-Gm-Message-State: AGi0PuZ/69SSkoyxFUD7qIQZfBTy2DMUq/caLhsYWVPfSjVXygO7Ml0m
- ML+Y0PdzueYdqSAyxSxXNg==
-X-Google-Smtp-Source: APiQypIKf0vB7yfwu8rT/KxQM+HvZK1R4I7Apur0UzYjSjNLrYCJKeDB/Ne3EnK+UZ4pWSPP25JeDQ==
-X-Received: by 2002:a9d:6a02:: with SMTP id g2mr11554009otn.196.1587415011744; 
- Mon, 20 Apr 2020 13:36:51 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net.
- [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id r21sm190334otg.67.2020.04.20.13.36.47
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 20 Apr 2020 13:36:50 -0700 (PDT)
-Received: (nullmailer pid 18971 invoked by uid 1000);
- Mon, 20 Apr 2020 20:36:47 -0000
-Date: Mon, 20 Apr 2020 15:36:47 -0500
-From: Rob Herring <robh@kernel.org>
-To: Hadar Gat <hadar.gat@arm.com>
-Subject: Re: [PATCH] of_device: removed #include that caused a recursion in
- included headers
-Message-ID: <20200420203647.GA23189@bogus>
-References: <1586784960-22692-1-git-send-email-hadar.gat@arm.com>
+ id 1jQjYl-0000Wc-0Y
+ for linux-mtd@lists.infradead.org; Tue, 21 Apr 2020 03:26:56 +0000
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+ by Forcepoint Email with ESMTP id 1294AF1EF88B3019FE46;
+ Tue, 21 Apr 2020 11:26:46 +0800 (CST)
+Received: from [10.65.58.147] (10.65.58.147) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0;
+ Tue, 21 Apr 2020 11:26:35 +0800
+Subject: Re: [PATCH v2] mtd: spi-nor: Add support for s25fs128s
+To: <Tudor.Ambarus@microchip.com>
+References: <1586939433-20861-1-git-send-email-yangyicong@hisilicon.com>
+ <3664588.JgWbhVaYgF@192.168.0.120>
+From: Yicong Yang <yangyicong@hisilicon.com>
+Message-ID: <ef9d5f4f-de37-13e0-3323-65e276f696e3@hisilicon.com>
+Date: Tue, 21 Apr 2020 11:27:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1586784960-22692-1-git-send-email-hadar.gat@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <3664588.JgWbhVaYgF@192.168.0.120>
+X-Originating-IP: [10.65.58.147]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200420_133652_815737_14A6B250 
-X-CRM114-Status: GOOD (  13.11  )
+X-CRM114-CacheID: sfid-20200420_202655_214729_5EE5DE06 
+X-CRM114-Status: GOOD (  14.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,98 +71,74 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Jose Abreu <joabreu@synopsys.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
- David Airlie <airlied@linux.ie>, Linus Walleij <linus.walleij@linaro.org>,
- Liviu Dudau <liviu.dudau@arm.com>, dri-devel@lists.freedesktop.org,
- Sandy Huang <hjc@rock-chips.com>, Thierry Reding <thierry.reding@gmail.com>,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- netdev@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>,
- Lee Jones <lee.jones@linaro.org>, linux-stm32@st-md-mailman.stormreply.com,
- Vignesh Raghavendra <vigneshr@ti.com>, linux-samsung-soc@vger.kernel.org,
- Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
- Frank Rowand <frowand.list@gmail.com>, linux-rockchip@lists.infradead.org,
- Richard Weinberger <richard@nod.at>, Joerg Roedel <joro@8bytes.org>,
- Vinod Koul <vkoul@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>,
- Jonathan Hunter <jonathanh@nvidia.com>, Tony Lindgren <tony@atomide.com>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
- Alexandre Torgue <alexandre.torgue@st.com>, linux-omap@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
- Gilad Ben-Yossef <gilad@benyossef.com>, iommu@lists.linux-foundation.org,
- linux-tegra@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
- Chen-Yu Tsai <wens@csie.org>, Sean Paul <sean@poorly.run>,
- linux-arm-kernel@lists.infradead.org, Ofir Drang <ofir.drang@arm.com>,
- linux-gpio@vger.kernel.org, JC Kuo <jckuo@nvidia.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Giuseppe Cavallaro <peppe.cavallaro@st.com>,
- Nicolas Ferre <nicolas.ferre@microchip.com>, linux-iio@vger.kernel.org,
- linux-kernel@vger.kernel.org, Rob Clark <robdclark@gmail.com>,
- Bjorn Andersson <bjorn.andersson@linaro.org>, Kukjin Kim <kgene@kernel.org>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Sudeep Holla <sudeep.holla@arm.com>, dmaengine@vger.kernel.org,
- freedreno@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>,
- Jonathan Cameron <jic23@kernel.org>
+Cc: richard@nod.at, linux-mtd@lists.infradead.org, vigneshr@ti.com,
+ linuxarm@huawei.com, miquel.raynal@bootlin.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Apr 13, 2020 at 04:35:53PM +0300, Hadar Gat wrote:
-> Both of_platform.h and of_device.h were included each other.
-> In of_device.h, removed unneeded #include to of_platform.h
-> and added include to of_platform.h in the files that needs it.
+Hi Tudor,
 
-Guess we forgot about that temporary comment!
 
-Both of these headers have a lot of things we don't want 'normal' 
-drivers calling. The most common thing needed from of_device.h is 
-of_match_device/of_device_get_match_data. A good number are only for 
-ibmebus. Maybe the header should be split or the former just moved 
-to of.h.
+On 2020/4/20 18:18, Tudor.Ambarus@microchip.com wrote:
+> On Wednesday, April 15, 2020 11:30:33 AM EEST Yicong Yang wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the
+>> content is safe
+>>
+>> Add support for Cypress s25fs128s flash. Previously the flash is
+>> decoded as s25fl129p1 by mistake.
+>>
+>> Add it in the flash info list to correctly decode. No functional
+>> changes. Further capability of the flash will be parsed from bfpt.
+>>
+>> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+>> ---
+>> Change since v1:
+>> - rebase the patch on v5.7 rc1
+>>
+>>  drivers/mtd/spi-nor/spansion.c | 2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+>> index 6756202..01640c1 100644
+>> --- a/drivers/mtd/spi-nor/spansion.c
+>> +++ b/drivers/mtd/spi-nor/spansion.c
+>> @@ -29,6 +29,8 @@ static const struct flash_info spansion_parts[] = {
+>>         { "s25fl512s",  INFO6(0x010220, 0x4d0080, 256 * 1024, 256,
+>>                               SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+>>                               SPI_NOR_HAS_LOCK | USE_CLSR) },
+>> +       { "s25fs128s",  INFO6(0x012018, 0x4d0181, 64 * 1024, 256,
+>> +               SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR) },
+> The flash should be named "s25fs128s1" - this would be the flavor with uniform 
+> 64kB sectors. One should add a "s25fs128s0" entry for the flavor with uniform 
+> 256kB sectors.
 
-For of_platform.h, it seems we have a bunch of unneeded includes:
+Yes, it's right. I'll correct it in next version.
 
-$ git grep 'of_platform\.h' drivers/ | wc
-    560    1120   36049
-$ git grep -E 'of_(platform_(pop|def)|find_device)' drivers/ | wc
-    248    1215   20630
 
-Would nice to drop those (or switch to of_device.h?) too.
+>
+> We usually don't add new flashes if they are not tested. Please specify in the 
+> commit message with which controller you tested the flash. The minimal test is 
+> a read, erase, read back, write and read back. This sequence should verify if 
+> read, erase and pp work fine.
 
-Be sure to build on Sparc. It's the oddball.
+Sorry for that. I'll mentioned the tests I've done in next version.
 
-> 
-> Signed-off-by: Hadar Gat <hadar.gat@arm.com>
-> ---
->  drivers/base/platform.c                           | 1 +
->  drivers/bus/vexpress-config.c                     | 1 +
->  drivers/dma/at_hdmac.c                            | 1 +
->  drivers/dma/stm32-dmamux.c                        | 1 +
->  drivers/dma/ti/dma-crossbar.c                     | 1 +
->  drivers/gpu/drm/msm/adreno/a6xx_gmu.c             | 1 +
->  drivers/gpu/drm/msm/hdmi/hdmi.c                   | 1 +
->  drivers/gpu/drm/msm/msm_drv.c                     | 1 +
->  drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c   | 1 +
->  drivers/gpu/drm/sun4i/sun4i_tcon.c                | 1 +
->  drivers/iio/adc/stm32-adc-core.c                  | 1 +
->  drivers/iio/adc/stm32-dfsdm-adc.c                 | 1 +
->  drivers/iio/adc/stm32-dfsdm-core.c                | 1 +
->  drivers/iommu/tegra-smmu.c                        | 1 +
->  drivers/memory/atmel-ebi.c                        | 1 +
->  drivers/mfd/palmas.c                              | 1 +
->  drivers/mfd/ssbi.c                                | 1 +
->  drivers/mtd/nand/raw/omap2.c                      | 1 +
->  drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c | 1 +
->  drivers/net/ethernet/ti/cpsw.c                    | 1 +
->  drivers/phy/tegra/xusb.c                          | 1 +
->  drivers/pinctrl/nomadik/pinctrl-nomadik.c         | 1 +
->  drivers/soc/samsung/exynos-pmu.c                  | 1 +
->  drivers/soc/sunxi/sunxi_sram.c                    | 1 +
->  include/linux/of_device.h                         | 2 --
->  lib/genalloc.c                                    | 1 +
->  26 files changed, 25 insertions(+), 2 deletions(-)
+I've tested in SPI/Dual/Quad mode with our hisi-sfc-v3xx controller.
+All the operations work well, but something wrong with Quad read and I'm managing to
+figure it out.
+
+Regards,
+Yicong
+
+
+>
+> Cheers,
+> ta
+>
+>
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
