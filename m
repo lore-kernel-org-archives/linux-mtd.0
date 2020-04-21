@@ -2,22 +2,23 @@ Return-Path: <SRS0=rRTz=6F=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C3A1C2BA19
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Apr 2020 09:21:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 020C7C2BA19
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Apr 2020 09:35:31 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6E3CC20857
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Apr 2020 09:21:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C9C47206E9
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Apr 2020 09:35:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="o3s6ti2d"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6E3CC20857
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=hisilicon.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Z/0ah89K";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="kn5JrMwu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C9C47206E9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -25,41 +26,60 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
 	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
 	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4S+znOAxwpJNLrt4RHpICJYEu3PlDzC821OHr3ruZ2U=; b=o3s6ti2d0rcDbe
-	luSGxDgMLt2ijIY4frfWAFH3k+pdC+5kqaqDpsA7gDauVs8IVuzy2oCkLBHmtndGQKhzQrQ2OdJuY
-	mO/6lXdG9iUx6uzorZqeCYrXRLGdoY2XwX8vg4gBaGdn7JiRPRhxXDrxWXaRo17EZ2IOEi9Wr12BR
-	L0U4m9YpiKFDCzFkseoUQkdJFlE9+5yMh2EVVNtmksp8zACdtREmtHrSdA7wTFA01HciPk/4VSI2/
-	YiE/pgb3MWE0AZuyULDyNiwT1dbJYzggqpz9xII6RdHNIZzXwOZ2cEirau3J87UHAxDEjXdoa9KjW
-	Eq8HouXrXI0jJyFO8HCg==;
+	List-Owner; bh=JXeuuL/MsbC+Ib8ZrwhpDIZOblhpfUyLELPsw7x5Z68=; b=Z/0ah89KKyHkeS
+	Gezmb1d885VVs5AOTcZFZse6Kp26gbDMGKVQVOabAziJL+w9n2+gwfrDSoYZWMYS4P6H8wXFr581z
+	9uOkjHTkiIWqDBG3TbiS4RykzEkjSmY5qhCrTRxRdUKGcViBxmgnYl1hypKjg7NrL50MoiFUNHPAy
+	+25rPKLwL+BeGyx2m+QvdHW46RtNtU1XrrEwU8rTdrUId8kZQDVVvf2AFTVl8/Iu7ZKQssDvV6QRD
+	OTpnjdH8WkLtHjLDZ4JQlUKOQviYN2gTJ9WOjtx2SDcXDwrEjKfGPZzgXofLrS4DGX8C/kOMGpi0+
+	DshcroHONZfq+lG4Jbjg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jQp5P-0008HV-C8; Tue, 21 Apr 2020 09:20:59 +0000
-Received: from szxga05-in.huawei.com ([45.249.212.191] helo=huawei.com)
+	id 1jQpJR-0001yj-U8; Tue, 21 Apr 2020 09:35:29 +0000
+Received: from lelv0143.ext.ti.com ([198.47.23.248])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jQp5M-0008Gk-0f
- for linux-mtd@lists.infradead.org; Tue, 21 Apr 2020 09:20:58 +0000
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
- by Forcepoint Email with ESMTP id 48C9271D5E1140AE2F6D;
- Tue, 21 Apr 2020 17:20:50 +0800 (CST)
-Received: from [10.65.58.147] (10.65.58.147) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0;
- Tue, 21 Apr 2020 17:20:46 +0800
-Subject: Re: [PATCH] mtd: spi-nor: spansion: fix writes on S25FS512S
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Tudor Ambarus
- <tudor.ambarus@microchip.com>, <linux-mtd@lists.infradead.org>
-References: <191f8894-8392-0d85-62f2-49cfa0285144@cogentembedded.com>
-From: Yicong Yang <yangyicong@hisilicon.com>
-Message-ID: <bd614869-a5d5-eb2b-eb06-23c063abecaa@hisilicon.com>
-Date: Tue, 21 Apr 2020 17:25:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+ id 1jQpJP-0001yO-DX
+ for linux-mtd@lists.infradead.org; Tue, 21 Apr 2020 09:35:29 +0000
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03L9ZEPN092019;
+ Tue, 21 Apr 2020 04:35:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1587461714;
+ bh=EeE21hMUOfk3pC387RpavuP6TsxGuhOnVMwPs3H4nSk=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=kn5JrMwuqadtuMZU6zKFo3/VxCueg+wAfvntp8l6BnvP9ar/ktulDIftrzkIkqRqV
+ gIbAhBJyXPaW0lUfjTB40Ix8pZSp3Bal/Alm632UcAe5MjIEMoR8eR5JA1gjitddGH
+ OYYDaJLcYt9FTvM/143EFgw3l29320GK002ShqRM=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03L9ZEsK034008;
+ Tue, 21 Apr 2020 04:35:14 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Tue, 21
+ Apr 2020 04:35:14 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Tue, 21 Apr 2020 04:35:14 -0500
+Received: from [10.250.234.195] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03L9Z9Qf105015;
+ Tue, 21 Apr 2020 04:35:10 -0500
+Subject: Re: [PATCH v2 0/5] mtd: spi-nor: Add support for Octal 8D-8D-8D mode
+To: Boris Brezillon <boris.brezillon@collabora.com>, Mason Yang
+ <masonccyang@mxic.com.tw>
+References: <1587451187-6889-1-git-send-email-masonccyang@mxic.com.tw>
+ <20200421092328.129308f6@collabora.com>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <56365995-fe30-534f-9dbc-7307d9b9f846@ti.com>
+Date: Tue, 21 Apr 2020 15:05:08 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <191f8894-8392-0d85-62f2-49cfa0285144@cogentembedded.com>
-X-Originating-IP: [10.65.58.147]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200421092328.129308f6@collabora.com>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200421_022056_246053_B1E110D8 
-X-CRM114-Status: GOOD (  19.89  )
+X-CRM114-CacheID: sfid-20200421_023527_587009_A10CD899 
+X-CRM114-Status: GOOD (  17.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,90 +91,65 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>,
- Alexander Sverdlin <alexander.sverdlin@nokia.com>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: tudor.ambarus@microchip.com, juliensu@mxic.com.tw, richard@nod.at,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, broonie@kernel.org,
+ linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
+ Pratyush Yadav <p.yadav@ti.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Sergei,
 
-I tested the flash and check the datasheet, s25fs128s0 may also need this fixup. So I
-will add it in the next version of my patch.
 
-Thanks,
-Yicong
+On 21/04/20 12:53 pm, Boris Brezillon wrote:
+> +Pratyush who's working on a similar patchet [1].
+> 
+> Hello Mason,
+> 
+> On Tue, 21 Apr 2020 14:39:42 +0800
+> Mason Yang <masonccyang@mxic.com.tw> wrote:
+> 
+>> Hello,
+>>
+>> This is repost of patchset from Boris Brezillon's
+>> [RFC,00/18] mtd: spi-nor: Proposal for 8-8-8 mode support [1].
+> 
+> I only quickly went through the patches you sent and saying it's a
+> repost of the RFC is a bit of a lie. You completely ignored the state
+> tracking I was trying to do to avoid leaving the flash in 8D mode when
+> suspending/resetting the board, and I think that part is crucial. If I
+> remember correctly, we already had this discussion so I must say I'm a
+> bit disappointed.
+> 
+> Can you sync with Pratyush? I think his series [1] is better in that it
+> tries to restore the flash in single-SPI mode before suspend (it's
+> missing the shutdown case, but that can be easily added I think). Of
+> course that'd be even better to have proper state tracking at the SPI
+> NOR level.
+> 
 
-On 2020/4/21 3:13, Sergei Shtylyov wrote:
-> Spansion S25FS-S family has an issue in the Basic Flash Parameter Table
-> (BFPT): Dword-11 bits 7:4 specify a page size of 512 bytes.  Actually
-> this is configurable in the vendor unique register (CR3V) and even the
-> factory default setting is to "wrap at 256 bytes", so blindly relying
-> on BFPT breaks the page writes on these chips. Add the post-BFPT fixup
-> which restores the default page size of 256 bytes -- to properly read
-> CR3V this early is quite intrusive and should better be done as a new
-> feature; Alexander Sverdlin had the patch doing that:
->
-> https://patchwork.ozlabs.org/project/linux-mtd/patch/20200227123657.26030-1-alexander.sverdlin@nokia.com/
->
-> Fixes: dfd2b74530e ("mtd: spi-nor: add Spansion S25FS512S ID")
-> Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
->
-> ---
-> This patch is against the 'mtd/fixes' branch of the MTD 'linux.git' repo.
->
->  drivers/mtd/spi-nor/spansion.c |   25 +++++++++++++++++++++++--
->  1 file changed, 23 insertions(+), 2 deletions(-)
->
-> Index: linux/drivers/mtd/spi-nor/spansion.c
-> ===================================================================
-> --- linux.orig/drivers/mtd/spi-nor/spansion.c
-> +++ linux/drivers/mtd/spi-nor/spansion.c
-> @@ -8,6 +8,27 @@
->  
->  #include "core.h"
->  
-> +static int
-> +s25fs_s_post_bfpt_fixups(struct spi_nor *nor,
-> +			 const struct sfdp_parameter_header *bfpt_header,
-> +			 const struct sfdp_bfpt *bfpt,
-> +			 struct spi_nor_flash_parameter *params)
-> +{
-> +	/*
-> +	 * The S25FS-S chip family reports 512-byte pages in BFPT but
-> +	 * in reality the write buffer still wraps at the safe default
-> +	 * of 256 bytes.  Overwrite the page size advertised by BFPT
-> +	 * to get the writes working.
-> +	 */
-> +	params->page_size = 256;
-> +
-> +	return 0;
-> +}
-> +
-> +static struct spi_nor_fixups s25fs_s_fixups = {
-> +	.post_bfpt = s25fs_s_post_bfpt_fixups,
-> +};
-> +
->  static const struct flash_info spansion_parts[] = {
->  	/* Spansion/Cypress -- single (large) sector size only, at least
->  	 * for the chips listed here (without boot sectors).
-> @@ -30,8 +51,8 @@ static const struct flash_info spansion_
->  			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
->  			      SPI_NOR_HAS_LOCK | USE_CLSR) },
->  	{ "s25fs512s",  INFO6(0x010220, 0x4d0081, 256 * 1024, 256,
-> -			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-> -			      USE_CLSR) },
-> +			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR)
-> +	  .fixups = &s25fs_s_fixups, },
->  	{ "s70fl01gs",  INFO(0x010221, 0x4d00, 256 * 1024, 256, 0) },
->  	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
->  	{ "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256, 0) },
-> .
->
+[1] does soft reset on shutdown which should put it to reset default
+state of 1S-1S-1S mode (if thats the POR default)
 
+But, there is still one open question now that we are considering
+supporting stateful modes:
+
+What to do with flashes that power up in 8D mode either due to factory
+defaults or if 8D mode NV bit is set? Do we say SPI NOR framework won't
+support such flashes?
+Auto discovery of such flashes is quite difficult as different flashes
+use different protocols for RDID cmd in 8D mode (address phase may or
+may not be present, dummy cycles vary etc) is almost impossible w/o any
+hint passed to the driver?
+
+
+> Regards,
+> 
+> Boris
+> 
+> [1]https://lkml.org/lkml/2020/3/13/659
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
