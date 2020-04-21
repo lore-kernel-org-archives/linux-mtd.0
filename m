@@ -2,84 +2,150 @@ Return-Path: <SRS0=rRTz=6F=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 020C7C2BA19
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Apr 2020 09:35:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8890EC2BA19
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Apr 2020 09:58:17 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C9C47206E9
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Apr 2020 09:35:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 45F952087E
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Apr 2020 09:58:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Z/0ah89K";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="kn5JrMwu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C9C47206E9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FoRftzXO";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="13xLrboM";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="t+fcmAyT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 45F952087E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JXeuuL/MsbC+Ib8ZrwhpDIZOblhpfUyLELPsw7x5Z68=; b=Z/0ah89KKyHkeS
-	Gezmb1d885VVs5AOTcZFZse6Kp26gbDMGKVQVOabAziJL+w9n2+gwfrDSoYZWMYS4P6H8wXFr581z
-	9uOkjHTkiIWqDBG3TbiS4RykzEkjSmY5qhCrTRxRdUKGcViBxmgnYl1hypKjg7NrL50MoiFUNHPAy
-	+25rPKLwL+BeGyx2m+QvdHW46RtNtU1XrrEwU8rTdrUId8kZQDVVvf2AFTVl8/Iu7ZKQssDvV6QRD
-	OTpnjdH8WkLtHjLDZ4JQlUKOQviYN2gTJ9WOjtx2SDcXDwrEjKfGPZzgXofLrS4DGX8C/kOMGpi0+
-	DshcroHONZfq+lG4Jbjg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=3E8ve8xQZRMZCFC1INkkFE1yphMXBh8eltt89U2gzDY=; b=FoRftzXOVSqplY
+	kSfYGTioafOWkofb8K1fvdtEWar4b67vUp+XBamQ48i01/uZ60xt6BB7ANqgzdCwFykw6NZs8pB41
+	/sKpG5FrowbhHjUH6I9AAiUUWuXOnWxMitRXgyrzUD9gEz0p0y4CHVbwtlkmUqT5CbnH4PX9aoJLo
+	PQmvLAFycI0ywIy7dVt7C9zIamQDtw/d4LxwvWs5l1CwtuI7dBiYbL6FAlAD7Vl9zl7gJiP/8YFGw
+	IOn73AcqIRvKN3kVwGYnswvu//GCd6R5NAy0lOXEXvhqZAzZ/Hbhzj1qlOi0LaCb9sZqofcvkMt79
+	GdXQrkWA26A1PQywsIgg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jQpJR-0001yj-U8; Tue, 21 Apr 2020 09:35:29 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1jQpfU-0000hx-RK; Tue, 21 Apr 2020 09:58:16 +0000
+Received: from esa4.microchip.iphmx.com ([68.232.154.123])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jQpJP-0001yO-DX
- for linux-mtd@lists.infradead.org; Tue, 21 Apr 2020 09:35:29 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03L9ZEPN092019;
- Tue, 21 Apr 2020 04:35:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1587461714;
- bh=EeE21hMUOfk3pC387RpavuP6TsxGuhOnVMwPs3H4nSk=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=kn5JrMwuqadtuMZU6zKFo3/VxCueg+wAfvntp8l6BnvP9ar/ktulDIftrzkIkqRqV
- gIbAhBJyXPaW0lUfjTB40Ix8pZSp3Bal/Alm632UcAe5MjIEMoR8eR5JA1gjitddGH
- OYYDaJLcYt9FTvM/143EFgw3l29320GK002ShqRM=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03L9ZEsK034008;
- Tue, 21 Apr 2020 04:35:14 -0500
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Tue, 21
- Apr 2020 04:35:14 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Tue, 21 Apr 2020 04:35:14 -0500
-Received: from [10.250.234.195] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03L9Z9Qf105015;
- Tue, 21 Apr 2020 04:35:10 -0500
-Subject: Re: [PATCH v2 0/5] mtd: spi-nor: Add support for Octal 8D-8D-8D mode
-To: Boris Brezillon <boris.brezillon@collabora.com>, Mason Yang
- <masonccyang@mxic.com.tw>
-References: <1587451187-6889-1-git-send-email-masonccyang@mxic.com.tw>
- <20200421092328.129308f6@collabora.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <56365995-fe30-534f-9dbc-7307d9b9f846@ti.com>
-Date: Tue, 21 Apr 2020 15:05:08 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200421092328.129308f6@collabora.com>
+ id 1jQpfQ-0000ZH-G6
+ for linux-mtd@lists.infradead.org; Tue, 21 Apr 2020 09:58:15 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1587463092; x=1618999092;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:content-transfer-encoding: mime-version;
+ bh=jZ2OIeVinnGS4a1ADx6XTqaXgnsztOnA72p6Jm5YBlw=;
+ b=13xLrboM19r9qpSIDKpgEbVepoTncpur5OGixITzQX5j97ZCnRNPJWpj
+ oZTe9Cd8ulvjjNMO2XvcPul4VEV6ViWsWPTrpK64J52m6wjsJvcxRnYIk
+ 16+4EMcM1TrpIQsQw/F6dp8KHcAk4CF27ngh4xTwUDlwJnMewx2VATKon
+ B4sbpUWCU1NodsSvL0ZRs/P6AxwUWNoGR/nLaxQK3Db6JSHkiHmYvB2OG
+ P0aEGFPPVGqxu0mn3CGJj91nqf2sj/Gkfc+GT/H2S5Rdct2/BKLSp3199
+ lqhU+CF7eRyW7Kts/wxncJYG747+CVinxNPXpJDhBG0tb2wSSl190Z6Su g==;
+IronPort-SDR: rcHkIKd9c6u11Tc5gS8Mt3tX3oUe0nOyRBVR0k7rNBMZR9ihcRS2LmJfwCuUKpTrwqP4oMTwvm
+ ba+XRj2oZL/peEgIDbYJs4xkM28IoQIclBJYkklIvYD32Hl1OZcI0T0k7fDPcf297tKDeBVjma
+ 1GgyhQTcVSzWaT+DQeS5Lwh4GEHTtE8cTFZBRYzmIWJmKd+QBpLk0NBtGApMbDoct8YOTaRGpL
+ DZTtKZYX/F040RlTiIYgw/bAFAYjpjYdNhpIitMxxaOhEMTIOKWzCU6T/ZNFEok74mqotB0aL+
+ FiY=
+X-IronPort-AV: E=Sophos;i="5.72,409,1580799600"; d="scan'208";a="71011495"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 21 Apr 2020 02:58:03 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 21 Apr 2020 02:58:03 -0700
+Received: from NAM04-BN3-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, 
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5 via Frontend
+ Transport; Tue, 21 Apr 2020 02:57:33 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jEu8RTOBdePUQalCJeFMTiL0yR2YfzJibU5FMbpBF0OE7P2MO3MCijp4UUTl4nSDynO+S6XOnEkE/yY+yUgdHH0u9B5bwXPGX12Fq7YyCwzrol5bWhGzBQ9X4B7mfspwKbxsN7M4aHLtUMYmr6Ij5F++R3pYcpMcU5eOfSVwFJEfc4ztzzEE6rK0rk//qGszlQhkLKrqcdaBGTEU9kt9yFObCHGdu9aIuXRvTKB0SVMzcg55U6Mj7IDhBsjOk9RYz13nEywklZtRxUZ0kjd/x7BUt/TyilEo6i0kA7hEFpzJS5ICrVHkel2Rsh9e7D4HvvELVREgRp0vCgOiJIhKPg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jZ2OIeVinnGS4a1ADx6XTqaXgnsztOnA72p6Jm5YBlw=;
+ b=HZhBzLUnkajhUdrPQIoaTB8tsUrouiTz76trSDj9vfNOMFUD/B9pya/CPVH6E0Oe4y+b3KzGNQafDZkQ912qZXFHxQOQT6D2+i9RFHQfbf43HZpzm5wi313pAaRKAeCItCbzJ4L7VGQiYvl7lvVG5tymRen/86N8bCQkYyMQbEbsLtIP+7/paBrmpBu+kS0uiLHyO/vM0UzzKUX3jZLitRUFo+oVAZoS6MZWsuSvfqYgH2jKYqhl/7/HLYNSHFK/JjYSvEsoIuRoauJxRjJPXnrOD+dwmNzKNpmlGciiKPjVjhFuZlIhr//7unA60UHL7QYnG57WzpK4rSndQeHWQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jZ2OIeVinnGS4a1ADx6XTqaXgnsztOnA72p6Jm5YBlw=;
+ b=t+fcmAyT+yDvwfjlPSn/pi5++wW+TtYH1Wg/psnA25/q4DLejbOFq2DibncjLyffsZtc9o1323K8vENT77Sj3hOUfE0AGQ8rilbLqZwxR4OfIpYbt0caeQM/bU+n/ThOMsaFNQP/ldNInDF9zcjpkQSjYcYJc3hOnoDSkqV9Hxc=
+Received: from BY5PR11MB4419.namprd11.prod.outlook.com (2603:10b6:a03:1c8::13)
+ by BY5PR11MB3973.namprd11.prod.outlook.com (2603:10b6:a03:185::29)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.29; Tue, 21 Apr
+ 2020 09:58:01 +0000
+Received: from BY5PR11MB4419.namprd11.prod.outlook.com
+ ([fe80::d847:5d58:5325:c536]) by BY5PR11MB4419.namprd11.prod.outlook.com
+ ([fe80::d847:5d58:5325:c536%7]) with mapi id 15.20.2921.030; Tue, 21 Apr 2020
+ 09:58:01 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <alexander.sverdlin@nokia.com>
+Subject: Re: [PATCH] mtd: spi-nor: sfdp: Fix wrong addr length and dummy when
+ perform SMPT detection command
+Thread-Topic: [PATCH] mtd: spi-nor: sfdp: Fix wrong addr length and dummy when
+ perform SMPT detection command
+Thread-Index: AQHWF7Im0s9aEwk5J0uVFa7stfIhR6iDV0kA
+Date: Tue, 21 Apr 2020 09:58:01 +0000
+Message-ID: <5032403.BAliFFt8qx@192.168.0.120>
+References: <1587439812-49387-1-git-send-email-yangyicong@hisilicon.com>
+ <f893b8d4-03e8-bce8-b14e-1584802c6d53@nokia.com>
+In-Reply-To: <f893b8d4-03e8-bce8-b14e-1584802c6d53@nokia.com>
+Accept-Language: en-US
 Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Tudor.Ambarus@microchip.com; 
+x-originating-ip: [94.177.32.156]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1ecfa2cd-512f-42eb-fada-08d7e5da7a8c
+x-ms-traffictypediagnostic: BY5PR11MB3973:
+x-microsoft-antispam-prvs: <BY5PR11MB3973D9AF2446AF1DB01CA856F0D50@BY5PR11MB3973.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:3173;
+x-forefront-prvs: 038002787A
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:BY5PR11MB4419.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFTY:;
+ SFS:(10009020)(396003)(366004)(39860400002)(136003)(376002)(346002)(8676002)(26005)(6486002)(81156014)(8936002)(53546011)(86362001)(6506007)(4326008)(478600001)(91956017)(5660300002)(2906002)(296002)(316002)(71200400001)(9686003)(4744005)(6512007)(6916009)(186003)(14286002)(54906003)(66446008)(64756008)(66556008)(66476007)(66946007)(76116006);
+ DIR:OUT; SFP:1101; 
+received-spf: None (protection.outlook.com: microchip.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 5maZGBCvtwABB/W1XMChrS98o05qWHgHpYYKVj8jbc3P48Cs+/pr/3nWUn0hw1rvVUahUxLcP4FojFbbSpGjs7uxF19d9JvEBc1G8Lb7khB6lqh0FTUzxrCOi747HBynYDSEUwWjQJVK/Clsn43COlLu5nt+KozWCCc1WRioB/+7cyqYbyEKFcRwf0w0ywontvmmth52MWDQuoB0YpD9ZIktJryTde6X+3InmGZqM9lvnWVlYEw2hH5Sz64u07BcjqWaECTWtL/zTZ2ydocqXnrOdiMQ1T8+IqmIaVvt2Yv2WANujGQblk2r/eJWEVFFnNgJSKd1QghFvmiMIiMjIqtgIJWHLA7TaoFh7VE7SN8E9k1Jt6v9SBovLEGf0Qv7hItO6nJIOVJCeEAJn4jjCA/oxdxFkyCsltdk8xwhWPGIeqM+5YwPxrp2ZERqhmLx
+x-ms-exchange-antispam-messagedata: Np/IPg2xew7GErQQy0J9mvhIxCvWhWxJRGA3mqAAIX27nsN566JXteNIHP9J6tC+BrVJe+paLvJz2gZQHFWVLJkzVIAZ+zQa58OQkeKJ1E99XnK0WKxtAMAThsabeEESSE8lq8ALa3GRtblygCl9aQ==
+x-ms-exchange-transport-forked: True
+Content-ID: <56FD0C7E2A68FF42B12F1508BB0C514A@namprd11.prod.outlook.com>
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1ecfa2cd-512f-42eb-fada-08d7e5da7a8c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Apr 2020 09:58:01.6726 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Ngm4W+qAwCyxr+vZd8WnLagdAKebg+NTj9yRe7O/CC5AJ1sx5nllcEQGojmt3NYmiVjAUcoQJOiWPeEbuAD63i3Eu8VPNUEQGfx9cFhtbcg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB3973
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200421_023527_587009_A10CD899 
-X-CRM114-Status: GOOD (  17.29  )
+X-CRM114-CacheID: sfid-20200421_025812_682527_E69F3DAB 
+X-CRM114-Status: UNSURE (   6.75  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,65 +157,25 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: tudor.ambarus@microchip.com, juliensu@mxic.com.tw, richard@nod.at,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, broonie@kernel.org,
- linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
- Pratyush Yadav <p.yadav@ti.com>
+Cc: vigneshr@ti.com, sergei.shtylyov@cogentembedded.com, richard@nod.at,
+ john.garry@huawei.com, linuxarm@huawei.com, yangyicong@hisilicon.com,
+ linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On Tuesday, April 21, 2020 10:54:45 AM EEST Alexander Sverdlin wrote:
+> Well this will work and as the maintainers ignore the proper and even
+> recommended by them solution,
 
+There will be no patch left behind or ignored. Your patch is still pending in 
+the review state because I need some time to study the problem and I couldn't 
+allocate time for this yet. But I will address it in a week or so.
 
-On 21/04/20 12:53 pm, Boris Brezillon wrote:
-> +Pratyush who's working on a similar patchet [1].
-> 
-> Hello Mason,
-> 
-> On Tue, 21 Apr 2020 14:39:42 +0800
-> Mason Yang <masonccyang@mxic.com.tw> wrote:
-> 
->> Hello,
->>
->> This is repost of patchset from Boris Brezillon's
->> [RFC,00/18] mtd: spi-nor: Proposal for 8-8-8 mode support [1].
-> 
-> I only quickly went through the patches you sent and saying it's a
-> repost of the RFC is a bit of a lie. You completely ignored the state
-> tracking I was trying to do to avoid leaving the flash in 8D mode when
-> suspending/resetting the board, and I think that part is crucial. If I
-> remember correctly, we already had this discussion so I must say I'm a
-> bit disappointed.
-> 
-> Can you sync with Pratyush? I think his series [1] is better in that it
-> tries to restore the flash in single-SPI mode before suspend (it's
-> missing the shutdown case, but that can be easily added I think). Of
-> course that'd be even better to have proper state tracking at the SPI
-> NOR level.
-> 
+Cheers,
+ta
 
-[1] does soft reset on shutdown which should put it to reset default
-state of 1S-1S-1S mode (if thats the POR default)
-
-But, there is still one open question now that we are considering
-supporting stateful modes:
-
-What to do with flashes that power up in 8D mode either due to factory
-defaults or if 8D mode NV bit is set? Do we say SPI NOR framework won't
-support such flashes?
-Auto discovery of such flashes is quite difficult as different flashes
-use different protocols for RDID cmd in 8D mode (address phase may or
-may not be present, dummy cycles vary etc) is almost impossible w/o any
-hint passed to the driver?
-
-
-> Regards,
-> 
-> Boris
-> 
-> [1]https://lkml.org/lkml/2020/3/13/659
-> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
