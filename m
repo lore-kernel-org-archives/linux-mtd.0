@@ -2,148 +2,125 @@ Return-Path: <SRS0=rRTz=6F=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AFCFC54FC9
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Apr 2020 06:31:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CB1A5C2BA19
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Apr 2020 06:33:38 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9978E20CC7
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Apr 2020 06:31:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5F2DA206E9
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Apr 2020 06:33:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ZtCNukKW";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="JG1MZyZA";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="Ae71Rh3F"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9978E20CC7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gOnok+N3";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="O8MsPioS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F2DA206E9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=samsung.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=e/zStyvltTbq3cFtgmOawaZOQAzzLy72p+H9aUeHEes=; b=ZtCNukKWmwx5Iv
-	lLTpVBP/v2STuWnBqHjfaRnk1kkeLmMBqXd2oFY9rqK8sI/MkvqEVl1RJB+T1JnWROMUg8siGQjhI
-	zZCBpXFfcp+/OPyrcAEM6QuRgiwGQQwDBpVzBvrC8S57oRFLqmtwsgLyQvp6JuZL70SKT3tHeZgI2
-	U2Y1kp37SvD6FJnH1YjylHMe5RfefocMbpa3O9NnicoDIzxnrmXelEMWvWN1sRf63lOgX52eRbl/b
-	KyHtJluh82oEI4Xixf1yepJOdhAAYeNSLWWrlSH2NYl2fn7AuGhKAIAOovmyGu6k4vRDV3N4sQWlc
-	OL94BLnFb3np8lmoDrrg==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:References:Message-Id:Date:
+	Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	List-Owner; bh=pYm7PFt+ILL5qlLxsuquzqOVhuoTXLOvRzIvzrBj73A=; b=gOnok+N3CqJMXh
+	F+nSIoqNM9CZP9AQQrQc2nB+6mrhrHLWO/WGRzfIzT7mjExcS8hmCe4vP1pvYSn8T0+jTaXyOn6cZ
+	jfQqKbUjKhPwSe4c89UmtrdRu9KGOXJgZmdJkgOPu2/F0bMICa2HJO6vWVjlwFZqzZcYrKkNWetDT
+	knjYhcSbDLYxOtru3taV4JyRVYtrjpN1XJSUX8ouykpNJ7wBnaUKBV9hs+Nvbib6m/u/Gxjvlb1N3
+	vZN5eTny4PUWgUo7VK9hXmTTgV/HZdX0TYFGHYLoZwGMtA/+MEcax6lVscwADiPUjK0+0PahXAUr4
+	QaqiHRxhdhmUQQAQDgCg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jQmRh-0005WQ-4A; Tue, 21 Apr 2020 06:31:49 +0000
-Received: from esa4.microchip.iphmx.com ([68.232.154.123])
+	id 1jQmTJ-0006TE-5s; Tue, 21 Apr 2020 06:33:29 +0000
+Received: from mailout1.samsung.com ([203.254.224.24])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jQmRc-0005Px-P1
- for linux-mtd@lists.infradead.org; Tue, 21 Apr 2020 06:31:47 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1587450705; x=1618986705;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-transfer-encoding:mime-version;
- bh=NnA9UrWrgvg27y1qmFfUO5OqNO7hy1EoBygonTnAcjY=;
- b=JG1MZyZAzRi0gyDjtbOf0RlrV6RgdKrAru8ZzaKml5Lgwe6ooA0DGBGI
- 5GeyBUlJhYRI8tNMYCChNZDLPRbkzagdAAanpwE3n0LKo0o3/OlH4pXH8
- h5dsW7z5uy4WHqSDlFyLYOqgciGcHtO7BJ+3zrKjh3YFGAbMuX8udVvVS
- 1TQnkGHGSwmzNuL8u8lWVDg5/1v1WiCmrWRYIYcQ5EkM4mdAguTYSNp8y
- viJVBaHDk4slpg75DYev7cK5on5U2JhyAKZjFH8NjWYkdLP7MPQAUx6uZ
- DmsiRUeOhYZpqvMaZDoG8oRPaiesB3kbdRXrdMImmsQTjyqHX919NJiT0 Q==;
-IronPort-SDR: dGPhLOC5hP6bhItnRnYPlN6CqkdO7uwRFJNG31GxuviUBeQ846Oh5XOhVSTYQT1vIpBb0TD5au
- xbA1YcItkx6jFmRA0bCWpfrvnO1jdufmkAYYzyy1fN6lip2WXpQQI0p9fsdbvYKZNBHvZrV/4V
- TeFNXtjC+Vlk4txWrJ3sgDkRudOIaQqKhZf+7FVJFRIofCxenExf5eedM7v+7w/Pmwwu3OMCDs
- gCG36B4y+Rb0HLOxBnV81xritslVTLQFT4ENZ7S+nH/vNEix71ITNJdgrJzLNg9yfK3Ma89pYr
- 8K4=
-X-IronPort-AV: E=Sophos;i="5.72,409,1580799600"; d="scan'208";a="70984276"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 20 Apr 2020 23:31:36 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 20 Apr 2020 23:31:35 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Mon, 20 Apr 2020 23:31:35 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XkQEourdMyUyTXUTFUtcukhz4dZfZdCwb2cMTIK4qy6aoXMmB+USQDgw1QZe32usXYyHrCuVFEla9be6H8X15Ye19LCBjpLHdkKiiIyuCUs6eM/hzc5tNOwsGCQXFWXeeEnHPtOvaJqpXurDm5W5RlmrVlFuB5DHO9NDueDwOyfQP3GqKf9vLZanr1/ArF/mmIq1+FYs1mWCqsT4BOYI2KZ19zLo4BstmGbJBDabCt9uiPI1XmeDREq5bLY+ytI82XhhGmrFGeP7+ljlpvoaGqy4b9YIu8uEfgZpl0XpfqUNxatwMorc2gEmqutJqDw7NiXkDZjGw8mzkrfs8ZmLjQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dLDgNGbSd2W/ZD1B2uy884YSH9XEHdv68v7Q2HB7nOY=;
- b=ko4QDD3RnlKuSEffIce+1ZBbGj6mjd/tu5gJ/tC3LCIP+QZYcu+BDoQNamBue69ia+DyjiOm90rHPyEDN4MkaKFmeFALSkW/8LO0+Ct+lakWRC9EixcasqgpreoH2apUr06FVO5p1UDYdFg/9FI+AuRSllWrkyrQXYV38Azebpa0AkMmPL3gjhDTpeHMxofLUj+wqfn5uEu9HZZzYeq3z3o0aQzAi2Gp3oF9rG83782SkhCIz6hgNGdC19ljraQDM2g8+UXD5dRs1OzsDJJR+ATz3XV0ydid288LrU1VYtA6x6IXv5jtkQNWuK3KQWSmhk63NMEyjpxN29SdCVicFg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dLDgNGbSd2W/ZD1B2uy884YSH9XEHdv68v7Q2HB7nOY=;
- b=Ae71Rh3FVJ+vBAvHh0lxUBrsX69OJ3+erK4WuF5LNszoArO0QDyBWxSnivKhTN/kalFkufNt/jwu+Cw15Iad6C8zau+q1yTTIphu2EBOC6VupqZ8S+OwhwuAnT+jWcBk4R2HKDGIRhEJlCbL+bBZZtUeYHWBdoMh0gjGcR0EToI=
-Received: from BY5PR11MB4419.namprd11.prod.outlook.com (2603:10b6:a03:1c8::13)
- by BY5PR11MB4481.namprd11.prod.outlook.com (2603:10b6:a03:1bf::26)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.29; Tue, 21 Apr
- 2020 06:31:32 +0000
-Received: from BY5PR11MB4419.namprd11.prod.outlook.com
- ([fe80::d847:5d58:5325:c536]) by BY5PR11MB4419.namprd11.prod.outlook.com
- ([fe80::d847:5d58:5325:c536%7]) with mapi id 15.20.2921.030; Tue, 21 Apr 2020
- 06:31:32 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <vigneshr@ti.com>, <sergei.shtylyov@cogentembedded.com>
-Subject: [PATCH 2/2] mtd: spi-nor: Fix description of the sr_ready() return
- value
-Thread-Topic: [PATCH 2/2] mtd: spi-nor: Fix description of the sr_ready()
- return value
-Thread-Index: AQHWF6Z/3awBVO2QcE269Zh7urPljA==
-Date: Tue, 21 Apr 2020 06:31:32 +0000
-Message-ID: <20200421063129.244466-2-tudor.ambarus@microchip.com>
-References: <20200421063129.244466-1-tudor.ambarus@microchip.com>
-In-Reply-To: <20200421063129.244466-1-tudor.ambarus@microchip.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Tudor.Ambarus@microchip.com; 
-x-originating-ip: [94.177.32.156]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: dea55f95-e7b7-43ed-3c2a-08d7e5bda207
-x-ms-traffictypediagnostic: BY5PR11MB4481:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR11MB448183E21CB80D29BA839639F0D50@BY5PR11MB4481.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-forefront-prvs: 038002787A
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:BY5PR11MB4419.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFTY:;
- SFS:(10009020)(376002)(346002)(396003)(136003)(39860400002)(366004)(6486002)(66946007)(64756008)(66446008)(71200400001)(66476007)(91956017)(76116006)(66556008)(186003)(86362001)(8936002)(2906002)(6506007)(36756003)(26005)(81156014)(478600001)(8676002)(1076003)(4326008)(6512007)(54906003)(2616005)(5660300002)(110136005)(107886003)(316002);
- DIR:OUT; SFP:1101; 
-received-spf: None (protection.outlook.com: microchip.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Ws4OhnAST8SrJmK99QqilsQAPiCAkKdTAmEnUe3sIWEwxmh0C1QbWJYAebbIshOPc2SSwTPMZ+IOFZkigxv7FjCSijL0Vf2rjKxyfi26q28bgOyA+O5O+muh7PiU4F4O7W2AdTKHP2XFMs6FmeWWnquTi0kVJbA7E1Kz+boo6BFhYuRIUoTr6L8s0KXyt6LatVclcDjeL9wiCjOKxgEUlydak8nIk2HMLXm9vdoeJGrucbb1rhgkEXKAcEuJB10IOf/K9BqTtcL1Viws6H96RCj1rWP737LjO+Ohn9z0ocJgxyF9d09xPTlOYvK0oEciMDtfKXIhFn/ThZqG7dl4E07iGJ9/4bBmrMdM+rAt00gfNVCcoNUn2WzJnIlTW6Y7L/6OIsF98/p/2kzV1l7+uLWblhBWQbYxbO7zstL2xfQadMzb2RfUBxhfUt+FnQJA
-x-ms-exchange-antispam-messagedata: oWe8dsXKpXxZauD7SJqCa8y0U/0Mi4Gc2Xg5xSulHfge4LMK/XYIE5BGYJzPXX0NACdrkjwKiyVZT1WOEdmu7ol+KEe0tXYZ7tpvN2c6K2W6Xzw5nn48PqJlGWmDwr50UrK9bB+vT26fJWE+W57Syw==
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: dea55f95-e7b7-43ed-3c2a-08d7e5bda207
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Apr 2020 06:31:32.3818 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: VmFE0HSWGWFoGDsQ7eedmwImT+46NyRFo/dDkzAo8X096Iqy/6t1LalURo+qENnzJ+T1xwsbBrFaA6vi4H/HOjuaoQ2xs5/nNffSXlVxB38=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4481
+ id 1jQmTD-0006LS-GM
+ for linux-mtd@lists.infradead.org; Tue, 21 Apr 2020 06:33:26 +0000
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+ by mailout1.samsung.com (KnoxPortal) with ESMTP id
+ 20200421063320epoutp011ccd3bb84c734b948c04e08bd92928ba~HwheeikUh0698206982epoutp01f
+ for <linux-mtd@lists.infradead.org>; Tue, 21 Apr 2020 06:33:20 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com
+ 20200421063320epoutp011ccd3bb84c734b948c04e08bd92928ba~HwheeikUh0698206982epoutp01f
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+ s=mail20170921; t=1587450800;
+ bh=TRFg0tTawZfs6fQO+5UxhXTPRBFWB9U3SCuDjr2m7XU=;
+ h=From:To:Subject:Date:References:From;
+ b=O8MsPioS8Lglcj7mXh7DR5PHDUI3kj4g5k/ZIIiCfgtcSmW8U3tBMzv/GcFtrlUeF
+ 1RNlCadb0V2vWNcZht7jw6zaE4jlovUvvB8hfXWICQ7JhdzuoPkLH5U0ebnhcEE/T1
+ LEuzYGi4wAduVhOMy1n1L6UeKSe/5q6y21fCJp7A=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+ epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+ 20200421063319epcas1p192e37bdbe5b65a038d1f0eab1d8e7889~Hwhd8LePp2956529565epcas1p1c;
+ Tue, 21 Apr 2020 06:33:19 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.40.166]) by
+ epsnrtp2.localdomain (Postfix) with ESMTP id 495tzy5t7PzMqYkc; Tue, 21 Apr
+ 2020 06:33:18 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+ epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+ C9.D5.04648.DA39E9E5; Tue, 21 Apr 2020 15:33:17 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+ epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+ 20200421063317epcas1p388256ada10113b38b92dca757cd11e41~Hwhb0w0Z41874418744epcas1p30;
+ Tue, 21 Apr 2020 06:33:17 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+ epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+ 20200421063317epsmtrp26b2fb0f3b6f500dc97888ec0deb0114d~Hwhb0BPrY1697116971epsmtrp2D;
+ Tue, 21 Apr 2020 06:33:17 +0000 (GMT)
+X-AuditID: b6c32a37-1f3ff70000001228-f3-5e9e93ad419e
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+ epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+ B9.30.04024.DA39E9E5; Tue, 21 Apr 2020 15:33:17 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.88.100.192]) by
+ epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+ 20200421063317epsmtip1a517270548ff2da2d4cdbf222b53b809~Hwhboig7K2798927989epsmtip1G;
+ Tue, 21 Apr 2020 06:33:17 +0000 (GMT)
+From: Jungseung Lee <js07.lee@samsung.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>, Vignesh Raghavendra
+ <vigneshr@ti.com>, linux-mtd@lists.infradead.org, js07.lee@samsung.com
+Subject: [PATCH] mtd: spi-nor: Enable locking for n25q00/n25q00a
+Date: Tue, 21 Apr 2020 15:33:13 +0900
+Message-Id: <20200421063313.32655-1-js07.lee@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrHKsWRmVeSWpSXmKPExsWy7bCmvu7ayfPiDFo3Gls8uvmb1WJ30zJ2
+ i49LHCz+n/3A7sDisXlJvcedH0sZPfq2rGL0OH5jO1MAS1SOTUZqYkpqkUJqXnJ+SmZeuq2S
+ d3C8c7ypmYGhrqGlhbmSQl5ibqqtkotPgK5bZg7QRiWFssScUqBQQGJxsZK+nU1RfmlJqkJG
+ fnGJrVJqQUpOgaFBgV5xYm5xaV66XnJ+rpWhgYGRKVBlQk7GjdsbmAu2clVs37GPsYGxlaOL
+ kZNDQsBEomH1M+YuRi4OIYEdjBLLr6yHcj4xSrTv3cAG4XxjlLhweRYTTMuMOUugqvYySvQ+
+ fcgKkhAS+MwocWobC4jNJqAlceP3JlaQIhGBXkaJKzs3gxUJCzhI9D05xgZiswioSrSuegI2
+ lVfAUmLR+gusEBvkJVZvOAC2QULgLqvE2QkHGSESLhKdhx5CnSEs8er4FnYIW0ri87u9bBB2
+ scTOlRPZIZpbGCUeLV8CVWQs8e7tWqCpHBzMApoS63fpQ4QVJXb+ngs2n1mAT+Ld1x5WkBIJ
+ AV6JjjYhiBIliTcPWlggbAmJC497oe70kJjasQnq+ViJY0t2Mk1glJmFsGABI+MqRrHUguLc
+ 9NRiwwJj5KjZxAhOO1rmOxg3nPM5xCjAwajEw7tBbF6cEGtiWXFl7iFGCQ5mJRFeCy2gEG9K
+ YmVValF+fFFpTmrxIUZTYOhNZJYSTc4HpsS8knhDUyNjY2MLEzNzM1NjJXHeqddz4oQE0hNL
+ UrNTUwtSi2D6mDg4pRoYp6Z9u7vsY1tBmbm1tEng5gvLr/Vzv78pZx73bqrtFzeh6ucxXe2p
+ ulo8v1Ru3slVXhKSm3MpVs6kSfLx601ryr/LKLCG3djx9rjpmfa6Ja6bGp2evt+p89CPgUPn
+ iEG9YV5w2Iu/vPEGPSe0Z17c+XfptZpv4ZtWvstzLf9446Xr/9eZm/i2KbEUZyQaajEXFScC
+ ADn8hUtRAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrFJMWRmVeSWpSXmKPExsWy7bCSnO7ayfPiDCYuk7B4dPM3q8XupmXs
+ Fh+XOFj8P/uB3YHFY/OSeo87P5YyevRtWcXocfzGdqYAligum5TUnMyy1CJ9uwSujBu3NzAX
+ bOWq2L5jH2MDYytHFyMnh4SAicSMOUuYuxi5OIQEdjNKtE4/xQSRkJB4tPMLSxcjB5AtLHH4
+ cDFEzUdGiVO3OthBatgEtCRu/N7ECmKLCExklHg9jRnEFhZwkOh7cowNxGYRUJVoXfUEbCav
+ gKXEovUXWCHmy0us3nCAeQIj9wJGhlWMkqkFxbnpucWGBYZ5qeV6xYm5xaV56XrJ+bmbGMEh
+ oKW5g/HykvhDjAIcjEo8vBvE5sUJsSaWFVfmHmKU4GBWEuG10AIK8aYkVlalFuXHF5XmpBYf
+ YpTmYFES532adyxSSCA9sSQ1OzW1ILUIJsvEwSnVwNi2MPdNbPTxvyfDcnrPcRs2X1y67/lS
+ jZKlUzfJnF4h9nZ6ns7rupYzh/LsXbU6Gw4KWwaI2didNkyfa3RNOmjFTrPn2/YvlVi8Jmv3
+ xTuTDLqis3QOhsfOTCyUPb/70UKns7YOJ0SWrmZ/57Uk/lvxF5WdqSp6D7h9dtWuS7/lfo59
+ iVFIXaISS3FGoqEWc1FxIgBKWuT+/QEAAA==
+X-CMS-MailID: 20200421063317epcas1p388256ada10113b38b92dca757cd11e41
+X-Msg-Generator: CA
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200421063317epcas1p388256ada10113b38b92dca757cd11e41
+References: <CGME20200421063317epcas1p388256ada10113b38b92dca757cd11e41@epcas1p3.samsung.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200420_233145_308049_9E306BC5 
-X-CRM114-Status: UNSURE (   9.72  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200420_233323_792806_D53FBFB0 
+X-CRM114-Status: GOOD (  15.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -155,63 +132,46 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, Tudor.Ambarus@microchip.com
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
+n25q00 and n25q00a use the 4 bit Block Protection scheme and support
+Top/Bottom protection via the BP and TB bits of the Status Register.
 
-The functions return 1 if ready, 0 if not ready, -errno on errors.
+This patch enables the locking for n25q00/n25q00a.
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Tested on n25q00 with cirrus controller. The other is modified
+according to the datasheet.
+
+Signed-off-by: Jungseung Lee <js07.lee@samsung.com>
 ---
- drivers/mtd/spi-nor/core.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/mtd/spi-nor/micron-st.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 9dcc53bda8b0..9611553e829f 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -499,7 +499,7 @@ int spi_nor_xread_sr(struct spi_nor *nor, u8 *sr)
-  * the flash is ready for new commands.
-  * @nor:	pointer to 'struct spi_nor'.
-  *
-- * Return: 0 on success, -errno otherwise.
-+ * Return: 1 if ready, 0 if not ready, -errno on errors.
-  */
- static int spi_nor_xsr_ready(struct spi_nor *nor)
- {
-@@ -542,7 +542,7 @@ static void spi_nor_clear_sr(struct spi_nor *nor)
-  * for new commands.
-  * @nor:	pointer to 'struct spi_nor'.
-  *
-- * Return: 0 on success, -errno otherwise.
-+ * Return: 1 if ready, 0 if not ready, -errno on errors.
-  */
- static int spi_nor_sr_ready(struct spi_nor *nor)
- {
-@@ -606,7 +606,7 @@ static void spi_nor_clear_fsr(struct spi_nor *nor)
-  * ready for new commands.
-  * @nor:	pointer to 'struct spi_nor'.
-  *
-- * Return: 0 on success, -errno otherwise.
-+ * Return: 1 if ready, 0 if not ready, -errno on errors.
-  */
- static int spi_nor_fsr_ready(struct spi_nor *nor)
- {
-@@ -647,7 +647,7 @@ static int spi_nor_fsr_ready(struct spi_nor *nor)
-  * spi_nor_ready() - Query the flash to see if it is ready for new commands.
-  * @nor:	pointer to 'struct spi_nor'.
-  *
-- * Return: 0 on success, -errno otherwise.
-+ * Return: 1 if ready, 0 if not ready, -errno on errors.
-  */
- static int spi_nor_ready(struct spi_nor *nor)
- {
+diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
+index 6c034b9718e2..51d677844480 100644
+--- a/drivers/mtd/spi-nor/micron-st.c
++++ b/drivers/mtd/spi-nor/micron-st.c
+@@ -59,9 +59,13 @@ static const struct flash_info st_parts[] = {
+ 			      SPI_NOR_4BIT_BP | SPI_NOR_BP3_SR_BIT6) },
+ 	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048,
+ 			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
++			      SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
++			      SPI_NOR_4BIT_BP | SPI_NOR_BP3_SR_BIT6 |
+ 			      NO_CHIP_ERASE) },
+ 	{ "n25q00a",     INFO(0x20bb21, 0, 64 * 1024, 2048,
+ 			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
++			      SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
++			      SPI_NOR_4BIT_BP | SPI_NOR_BP3_SR_BIT6 |
+ 			      NO_CHIP_ERASE) },
+ 	{ "mt25ql02g",   INFO(0x20ba22, 0, 64 * 1024, 4096,
+ 			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
 -- 
-2.23.0
+2.17.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
