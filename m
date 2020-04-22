@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 682F7C55189
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Apr 2020 07:11:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B61A9C55189
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Apr 2020 07:12:48 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 37743206CD
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Apr 2020 07:11:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 88C822070B
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Apr 2020 07:12:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="sNaHAsQk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 37743206CD
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="eBvAGAhw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 88C822070B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tZn0uaF2JuBLjME45oVnOcWf+UCclUutqIEID8XKx40=; b=sNaHAsQkZ0z1hx
-	3gp44O1mXDEw9tJZSN6HYTUG8Lrrq0ronSqH+9KFiKUyJdyLH3YEAz3MVMgPN5j3fDBDqO9qb+NHa
-	EEQynUNg1tyk2siwz9Fe/Jujtsp3RpkJ3/6e6tP4XFY8f76snE1NQJKqkV+morT0T5cNmYHugcezp
-	rspheuHMokmrJcBe5i7yN/o0fucUgNgnfegXuTH0HWWCFjJn2h49b1GgfhmQRCdQqm43NaTKYZbDO
-	qmHRV3mF02pma8gh7Wci1A6sb3OialuE/uFdcudDHc2esjaHl3VxHpt8CGeGo+9XWf1e5ga1SbB6n
-	FPmLcwJ+CtFbM19djsSA==;
+	List-Owner; bh=VfPfkUSJo4wmOEUt3LKjbm9p1ZoArIfh2m+WHsaEpVg=; b=eBvAGAhwU6D+Un
+	rFRLd4/1LPheF+Eo2Rv/0cvPW+NznZZ7JXwqeeOJI1obQRxdObdA33bAW7LShodlcCDunHUc2g+5c
+	5ONtWR7s2qSje4gJWpNNOTQIdjhAhFSqXO4BiBX0DIJQxW2r389zamA9CsFNc8vudG8RtOGsCwvSu
+	e2ysBMGyrljXWOqhMRKnv+0bHVJaZ4F2NkNu7NWStt9vBQxD4005c744yeA2CIcGYtbFovWFbTpEf
+	6BbTk40ZbUVcPzRA5RgtsS1Y8/u3nPAHwFGLud/9aKSB+Jb8GuvgvvjaRxKyTLJ9USWdk2YUNFmU/
+	3a+usRTBDd0KXLyKZnrw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jR9Xr-0004nk-19; Wed, 22 Apr 2020 07:11:43 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1jR9Ys-0005WI-LU; Wed, 22 Apr 2020 07:12:46 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jR9X4-0004Lw-C2
- for linux-mtd@lists.infradead.org; Wed, 22 Apr 2020 07:10:56 +0000
+ id 1jR9XR-0004dc-Sp
+ for linux-mtd@lists.infradead.org; Wed, 22 Apr 2020 07:11:20 +0000
 Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
  (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 143C32A17E5;
- Wed, 22 Apr 2020 08:10:53 +0100 (BST)
-Date: Wed, 22 Apr 2020 09:10:50 +0200
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 17F6A2A17E5;
+ Wed, 22 Apr 2020 08:11:16 +0100 (BST)
+Date: Wed, 22 Apr 2020 09:11:11 +0200
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH 5/6] mtd: rawnand: marvell: Rename a function to clarify
-Message-ID: <20200422091050.21b51f23@collabora.com>
-In-Reply-To: <20200421164857.8255-6-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 6/6] mtd: rawnand: marvell: Rename the ->correct() function
+Message-ID: <20200422091111.7316719e@collabora.com>
+In-Reply-To: <20200421164857.8255-7-miquel.raynal@bootlin.com>
 References: <20200421164857.8255-1-miquel.raynal@bootlin.com>
- <20200421164857.8255-6-miquel.raynal@bootlin.com>
+ <20200421164857.8255-7-miquel.raynal@bootlin.com>
 Organization: Collabora
 X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200422_001054_554096_22690BED 
-X-CRM114-Status: GOOD (  16.16  )
+X-CRM114-CacheID: sfid-20200422_001118_215373_192EE45A 
+X-CRM114-Status: GOOD (  20.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,43 +78,76 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 21 Apr 2020 18:48:56 +0200
+On Tue, 21 Apr 2020 18:48:57 +0200
 Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> Cosmetic change to clarify the purpose of the function.
+> There is no correction involved at this point, it is just a matter of
+> reading registers and checking whether bitflips have occurred or
+> not. Rename the function to clarify it.
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
 Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 
 > ---
->  drivers/mtd/nand/raw/marvell_nand.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+>  drivers/mtd/nand/raw/marvell_nand.c | 19 +++++++++----------
+>  1 file changed, 9 insertions(+), 10 deletions(-)
 > 
 > diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-> index cb1e1a295002..2db143a97626 100644
+> index 2db143a97626..3e448b89aaad 100644
 > --- a/drivers/mtd/nand/raw/marvell_nand.c
 > +++ b/drivers/mtd/nand/raw/marvell_nand.c
-> @@ -2166,8 +2166,8 @@ static const struct mtd_ooblayout_ops marvell_nand_ooblayout_ops = {
->  	.free = marvell_nand_ooblayout_free,
->  };
+> @@ -932,14 +932,14 @@ static void marvell_nfc_check_empty_chunk(struct nand_chip *chip,
+>  }
 >  
-> -static int marvell_nand_hw_ecc_ctrl_init(struct mtd_info *mtd,
-> -					 struct nand_ecc_ctrl *ecc)
-> +static int marvell_nand_hw_ecc_controller_init(struct mtd_info *mtd,
-> +					       struct nand_ecc_ctrl *ecc)
+>  /*
+> - * Check a chunk is correct or not according to hardware ECC engine.
+> + * Check if a chunk is correct or not according to the hardware ECC engine.
+>   * mtd->ecc_stats.corrected is updated, as well as max_bitflips, however
+>   * mtd->ecc_stats.failure is not, the function will instead return a non-zero
+>   * value indicating that a check on the emptyness of the subpage must be
+> - * performed before declaring the subpage corrupted.
+> + * performed before actually declaring the subpage as "corrupted".
+>   */
+> -static int marvell_nfc_hw_ecc_correct(struct nand_chip *chip,
+> -				      unsigned int *max_bitflips)
+> +static int marvell_nfc_hw_ecc_check_bitflips(struct nand_chip *chip,
+> +					     unsigned int *max_bitflips)
 >  {
->  	struct nand_chip *chip = mtd_to_nand(mtd);
+>  	struct mtd_info *mtd = nand_to_mtd(chip);
 >  	struct marvell_nfc *nfc = to_marvell_nfc(chip->controller);
-> @@ -2261,7 +2261,7 @@ static int marvell_nand_ecc_init(struct mtd_info *mtd,
+> @@ -1053,7 +1053,7 @@ static int marvell_nfc_hw_ecc_hmg_read_page(struct nand_chip *chip, u8 *buf,
+>  	marvell_nfc_enable_hw_ecc(chip);
+>  	marvell_nfc_hw_ecc_hmg_do_read_page(chip, buf, chip->oob_poi, false,
+>  					    page);
+> -	ret = marvell_nfc_hw_ecc_correct(chip, &max_bitflips);
+> +	ret = marvell_nfc_hw_ecc_check_bitflips(chip, &max_bitflips);
+>  	marvell_nfc_disable_hw_ecc(chip);
 >  
->  	switch (ecc->mode) {
->  	case NAND_ECC_HW:
-> -		ret = marvell_nand_hw_ecc_ctrl_init(mtd, ecc);
-> +		ret = marvell_nand_hw_ecc_controller_init(mtd, ecc);
+>  	if (!ret)
+> @@ -1336,7 +1336,7 @@ static int marvell_nfc_hw_ecc_bch_read_page(struct nand_chip *chip,
+>  		/* Read the chunk and detect number of bitflips */
+>  		marvell_nfc_hw_ecc_bch_read_chunk(chip, chunk, data, data_len,
+>  						  spare, spare_len, page);
+> -		ret = marvell_nfc_hw_ecc_correct(chip, &max_bitflips);
+> +		ret = marvell_nfc_hw_ecc_check_bitflips(chip, &max_bitflips);
 >  		if (ret)
->  			return ret;
->  		break;
+>  			failure_mask |= BIT(chunk);
+>  
+> @@ -1358,10 +1358,9 @@ static int marvell_nfc_hw_ecc_bch_read_page(struct nand_chip *chip,
+>  	 */
+>  
+>  	/*
+> -	 * In case there is any subpage read error reported by ->correct(), we
+> -	 * usually re-read only ECC bytes in raw mode and check if the whole
+> -	 * page is empty. In this case, it is normal that the ECC check failed
+> -	 * and we just ignore the error.
+> +	 * In case there is any subpage read error, we usually re-read only ECC
+> +	 * bytes in raw mode and check if the whole page is empty. In this case,
+> +	 * it is normal that the ECC check failed and we just ignore the error.
+>  	 *
+>  	 * However, it has been empirically observed that for some layouts (e.g
+>  	 * 2k page, 8b strength per 512B chunk), the controller tries to correct
 
 
 ______________________________________________________
