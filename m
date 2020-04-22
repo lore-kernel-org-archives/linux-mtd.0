@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8ECE8C5518A
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Apr 2020 10:08:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9329C55189
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Apr 2020 10:18:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 64D612076C
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Apr 2020 10:08:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 48B022075A
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Apr 2020 10:18:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mYdmYUqj";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="pz3/QuAY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 64D612076C
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pr+hY3H7";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="MXXSggWK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 48B022075A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,44 +26,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MmvchPdOnnBhgTr+7bXEl4gKDX+jJkQ6GQfGiizVWDE=; b=mYdmYUqjlrx1MS
-	3En+fCypDA+c/wXgqpevrCC83Pav2OJ965vYPPuXMaiLoSzH7LwdKo/R/G/hIs8SM15Ji5xa0/2LJ
-	8PeaMWQYYln9hUT9tlqcr5OIW3TmDMe4Cg2ajuf8NgRtm4gMh+wJtUyfHvXjNdosLiVCMkAkptT8P
-	bgeT0YNz6gNWKbb8g+RWf2kIHgllawdOJvpaVOBmujYpRkdJyJjbFatbTASmsz1CoMf1eMAeaiOu0
-	VDQuMUfb3TO3AV7WFk7ZBWsi+nnGXExCO7oDTACBD1dY3wi+WqUETB8Pmpywz/Ye2a3KKFlnySUYM
-	3peKGWdasgaB6SC+TtPQ==;
+	List-Owner; bh=PMMyZNxfg8QRQ54YJHrFFy1n7wJ69JZ26eGVSTQsNSs=; b=pr+hY3H74evZZC
+	9oGt6oGOK5xl4YbyN1ZEaw6iRRM05DHUAwi4rjR+Ja671SrbCV4gS+D0HTnsZpTR5roATEuwrXuc6
+	COmAO9XlhFSq3IKDG/jXK+QA59uhC7OAICRiCpyGNDur43laNJcL89Wn4IQS2bK9P2vbg9O7M3J13
+	lRxHWOGJvaH9TvfG1lWO16HmhxgmPjtogkEN2tlqoKw/zoMdHdfgtfjRmP/UW3JXGhRuUiWfPT7VY
+	iCHG/c/3ZhdI0yn2gTMKsa3Efje06SQD8rDcB6hLC2DkkUh5yVFjqzACSsou1JnT6k6Y0/4z/w+r8
+	wLpI4ExMYMaZTw8ZDmpA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jRCIK-0000m8-Rq; Wed, 22 Apr 2020 10:07:52 +0000
+	id 1jRCRz-0000a5-1c; Wed, 22 Apr 2020 10:17:51 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jRCII-0000kx-7n
- for linux-mtd@lists.infradead.org; Wed, 22 Apr 2020 10:07:51 +0000
+ id 1jRCQL-0008VG-6e
+ for linux-mtd@lists.infradead.org; Wed, 22 Apr 2020 10:16:10 +0000
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
  [83.86.89.107])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 39E842078C;
- Wed, 22 Apr 2020 10:07:49 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 54D4720575;
+ Wed, 22 Apr 2020 10:16:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1587550069;
- bh=cIXdAdZ5dVYSOKb5XWstUFzFLikCgwTFPtbTJkH/Hy8=;
+ s=default; t=1587550568;
+ bh=w2PUQYTQ73NwbewyrZ1u9QihBf5HuPs7RlYsAgFI3/c=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=pz3/QuAYhPv2YbXx+Q4+/0prIz/tyaKTFN9DPF+exGbYBcIImTgIHtyS90Ouv0DWf
- 88xm43c/I9CYdFq41PmirN6/VaEXsGlSP70IfSqpzOQKR73Kr0EucC1syGYELxCu3a
- aHWGR9mattO4FCqIP+C3d2d1jjLmiOiel4cEA9BM=
+ b=MXXSggWKAZIJvvqqtcGA1DDoV9ppZO3e4DsEVOsKgw4SnnRrMnXVXHMrGMX6MvYV2
+ Z6DTmGj7DnNOBhpzW/BaL0p3NLkOMzPzZYr+t9hYhZHWQE+YEyAXg04Gn7FDybSS/y
+ CLLMcPlsdM8ryl+r7Gv3ggTpNPldB2n82qTLsBVE=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 4.9 122/125] mtd: phram: fix a double free issue in error path
-Date: Wed, 22 Apr 2020 11:57:19 +0200
-Message-Id: <20200422095052.175556837@linuxfoundation.org>
+Subject: [PATCH 4.19 62/64] mtd: phram: fix a double free issue in error path
+Date: Wed, 22 Apr 2020 11:57:46 +0200
+Message-Id: <20200422095024.382706291@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
-References: <20200422095032.909124119@linuxfoundation.org>
+In-Reply-To: <20200422095008.799686511@linuxfoundation.org>
+References: <20200422095008.799686511@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200422_030750_298253_59A03086 
+X-CRM114-CacheID: sfid-20200422_031609_260453_1002D4BB 
 X-CRM114-Status: GOOD (  11.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -113,7 +113,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/mtd/devices/phram.c
 +++ b/drivers/mtd/devices/phram.c
-@@ -247,22 +247,25 @@ static int phram_setup(const char *val)
+@@ -240,22 +240,25 @@ static int phram_setup(const char *val)
  
  	ret = parse_num64(&start, token[1]);
  	if (ret) {
