@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47919C55186
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Apr 2020 08:32:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CCA7FC55186
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Apr 2020 08:48:34 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 16906206B9
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Apr 2020 08:32:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9BBEE2073A
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Apr 2020 08:48:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jVfN27v0";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="T5XU7LK0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 16906206B9
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GgQ9ewMM";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="nqcUNdDs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9BBEE2073A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,45 +25,45 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:From:To:
 	Subject:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=7wvGJo45vCvHxdfrn/rvaEeYemG9p0DQoO1WvE9r5sI=; b=jVfN27v0rypr/R
-	RVMniu0prG8qA9nwPlxKE4ymEe/TP7lrWu+w2QVTqMLlbzgpo5pl5LdW6Quw33T19GxxeczwpFVJ1
-	9Xwg/ZON/2ZQLPGQaDhYX3iZJ3UVontcSOWMf0ZM5juLd4fIoMD0VuaIeE03TLP1A/lGlnQUDuxrW
-	W0+ACJYlJxDxpqT8R5Sp0xBlWFLlmJt13eRXtLc6jyuo6r3llsf9p+DWFyX4bdfgtwah3dTev9WCs
-	3ygg6jcomXsU1MGORYjYWQSSM9ismre8prI+BxA1h/YY3D8TDLv0sJthWaN+4NhFAvLVTTPF8W2eU
-	bnSlfbMuORSaUDP3Un0A==;
+	List-Owner; bh=qDHhyTSN0e2tFP2rCbbbhjzUbvBg3hCZGFevR8o+D/U=; b=GgQ9ewMMojo6Ix
+	mFOz0iecr0rPfIICmNR97WrClgH9WdQRdmSpBL6f0aMPyRiHEfDs58Vig+kq7jMgJgIQUWnP/0aDA
+	q9/Nki0Fb9+YUB+wA22/j328m1QehZmZeh9yiENy7CuVoWsdqxpWtB3xdiHWTCOTdbQIyMSxHyKwl
+	2cFEuwFLV9x3uSeimMfukySaR5tEJhdFGHtLo2Y6WcJVgPZRpv2OAs7hljmA274BNytWaLSTPXuuA
+	ylQY3KUOFWpQk7Lu6Rto0HULK3tjWzODUiu5UQ7cYuOn9KUFJhRfnedu+Uhm+bvQDRJPxngUzXEeq
+	6oCovCGmeM0nFzWfHSYQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jRAni-000688-5K; Wed, 22 Apr 2020 08:32:10 +0000
+	id 1jRB3R-00014r-PW; Wed, 22 Apr 2020 08:48:25 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jRAnf-00066h-7Z
- for linux-mtd@lists.infradead.org; Wed, 22 Apr 2020 08:32:08 +0000
+ id 1jRB3O-00013m-4r
+ for linux-mtd@lists.infradead.org; Wed, 22 Apr 2020 08:48:23 +0000
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
  [83.86.89.107])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id E75772075E;
- Wed, 22 Apr 2020 08:32:05 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 5AA19206E9;
+ Wed, 22 Apr 2020 08:48:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1587544326;
- bh=YGDfZppuA8HZgqUZXtasAzL9bLbY/VqoPsZEVwH9G5w=;
+ s=default; t=1587545301;
+ bh=IuVePx6AtG2XArZ6qKyCV5NNk0UpNHKJuGjVNdsHAAI=;
  h=Subject:To:Cc:From:Date:From;
- b=T5XU7LK0wZGVE9evtz9j5e1q3MXBKLS2afl/pnLr1x7pxBDKaPzzQZNe35GkGtOYh
- 0IkAEqW6WfeW0zuFUoZu6bV4W/M/huqpNeoSv8SrEVT/JVIEq8BzKtlOY8jQCNfjl1
- 5R1NY/7QI1fhNYXQfNPGyuvfHFPhLV35cm9u/mrk=
+ b=nqcUNdDsgrMvzPThS8diLf+MliviI5XsRUhntngW/yKJg6FA4Cklp2fFaqJN8wJrr
+ 6nPTi4nWGn/P2godnz6ZwHSfutiJBvFZMGZHhY+uGuitcCvRS8cq/a1GsyPAxOvcv0
+ OMvv5hheswdONtDLVFXCBJPxuqk7qqpGebexrCT0=
 Subject: Patch "mtd: phram: fix a double free issue in error path" has been
- added to the 4.4-stable tree
+ added to the 4.9-stable tree
 To: gregkh@linuxfoundation.org, joern@lazybastard.org,
  linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com, richard@nod.at,
  vigneshr@ti.com, wenyang@linux.alibaba.com
 From: <gregkh@linuxfoundation.org>
-Date: Wed, 22 Apr 2020 10:31:51 +0200
-Message-ID: <158754431110593@kroah.com>
+Date: Wed, 22 Apr 2020 10:48:06 +0200
+Message-ID: <158754528619029@kroah.com>
 MIME-Version: 1.0
 X-stable: commit
 X-Patchwork-Hint: ignore 
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200422_013207_291671_5AB43B4A 
+X-CRM114-CacheID: sfid-20200422_014822_204670_081E7830 
 X-CRM114-Status: GOOD (  12.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -87,12 +87,12 @@ This is a note to let you know that I've just added the patch titled
 
     mtd: phram: fix a double free issue in error path
 
-to the 4.4-stable tree which can be found at:
+to the 4.9-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
      mtd-phram-fix-a-double-free-issue-in-error-path.patch
-and it can be found in the queue-4.4 subdirectory.
+and it can be found in the queue-4.9 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.
@@ -166,8 +166,8 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 Patches currently in stable-queue which might be from wenyang@linux.alibaba.com are
 
-queue-4.4/ipmi-fix-hung-processes-in-__get_guid.patch
-queue-4.4/mtd-phram-fix-a-double-free-issue-in-error-path.patch
+queue-4.9/ipmi-fix-hung-processes-in-__get_guid.patch
+queue-4.9/mtd-phram-fix-a-double-free-issue-in-error-path.patch
 
 ______________________________________________________
 Linux MTD discussion mailing list
