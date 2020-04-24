@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 880C2C54FD0
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 Apr 2020 16:42:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE4E3C54FD0
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 Apr 2020 16:43:06 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 47162206D7
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 Apr 2020 16:42:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A2081206D7
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 Apr 2020 16:43:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jQS1NJod"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 47162206D7
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="t9Wurnbq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A2081206D7
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hkRuxsO2CtqT5rGd458PC1kDNZrzIZb+PggljfJ9WcU=; b=jQS1NJodR1WPYn
-	pHz1MfLyCCjrmRGWf3VPqojBgXGlZ9USML5ZtBEbyVYAH7gtMCM2o3LFq5UqpO9E9gLD8Ywmf/EHY
-	D/aswXkWimYkefarEaIBmVQF+EOFycReDP/JZBLpEk1jmfbvdGHPtUT3MnjwQDY3sxn7rM3LDMFX8
-	MxROmbUWDzAf6n7RkleJef6Ug5tYOyrqgRKlKlllAfMtpWSGGcVkF/7dsG8SdmEotHmn21vvP2Ji8
-	W+dCxC8N/7SHpukRforDXU+WjMjcxrA8X/c/LQZ3z1IfDmybZLtjSbZFqlweuvlpQlaFP9oNMyJEW
-	wdMJaWXX9H43/GE3hTkA==;
+	List-Owner; bh=6lq02vzSePkUhmlh5qhGqZDYiJtKO3+KbZXtakIoahE=; b=t9WurnbqKU5EBY
+	TZdwFZDdKtPsnozmRF6BXDQd+Eqdgx+5yHGJufkzPR0mRpDwnzM5/jRZ+eFdZtFE5tmhZ7yG+vFyy
+	Hl/FLdBLgp5Xv4gAlUiGrWMnVNSubGIuJlL2fogCANnNG63abCcOjyUKPuK8461e8eHS7fq2wghZH
+	wLj0GfL9w9TNZa90Et9Fu8doXnYTZreTN4YWuHMYeW+nV0fVVagR5TSMBNuOhKIYohr3mIhi+UnkR
+	XMAFei5MHnTJPkJODShn+zaTOyLnwMfvKBLuHzOZqrlU+/R0TZR+u8IeZ3+5djRw08meraYe6q6Q3
+	SwVqX7PVbJCd5GmHWfUA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jS1PS-0005WV-0A; Fri, 24 Apr 2020 16:42:38 +0000
+	id 1jS1Pn-0005mU-78; Fri, 24 Apr 2020 16:42:59 +0000
 Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jS1Ni-0003uO-5N
- for linux-mtd@lists.infradead.org; Fri, 24 Apr 2020 16:40:53 +0000
+ id 1jS1Ng-0003tN-Vt
+ for linux-mtd@lists.infradead.org; Fri, 24 Apr 2020 16:40:52 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id BAD4920008;
- Fri, 24 Apr 2020 16:40:47 +0000 (UTC)
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id D9D1B20005;
+ Fri, 24 Apr 2020 16:40:46 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 3/9] mtd: rawnand: onfi: Fix redundancy detection check
-Date: Fri, 24 Apr 2020 18:40:36 +0200
-Message-Id: <20200424164042.26572-4-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 2/9] mtd: rawnand: timings: Fix default tR_max and tCCS_min
+ timings
+Date: Fri, 24 Apr 2020 18:40:35 +0200
+Message-Id: <20200424164042.26572-3-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200424164042.26572-1-miquel.raynal@bootlin.com>
 References: <20200424164042.26572-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200424_094050_335845_36030F29 
-X-CRM114-Status: GOOD (  12.25  )
+X-CRM114-CacheID: sfid-20200424_094049_166304_1F05F6F9 
+X-CRM114-Status: UNSURE (   9.39  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,36 +78,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-During ONFI detection, the CRC derived from the parameter page and the
-CRC supposed to be at the end of the parameter page are compared. If
-they do not match, the second then the third copies of the page are
-tried.
+tR and TCCS are currently wrongly expressed in femto seconds, while we
+expect these values to be expressed in picoseconds. Set right
+hardcoded values.
 
-The current implementation compares the newly derived CRC with the CRC
-contained in the first page only. So if this particular CRC area has
-been corrupted, then the detection will fail for a wrong reason.
-
-Fix this issue by checking the derived CRC against the right one.
-
+Fixes: 6a943386ee36 mtd: rawnand: add default values for dynamic timings
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 ---
- drivers/mtd/nand/raw/nand_onfi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/raw/nand_timings.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/nand_onfi.c b/drivers/mtd/nand/raw/nand_onfi.c
-index 0b879bd0a68c..8fe8d7bdd203 100644
---- a/drivers/mtd/nand/raw/nand_onfi.c
-+++ b/drivers/mtd/nand/raw/nand_onfi.c
-@@ -173,7 +173,7 @@ int nand_onfi_detect(struct nand_chip *chip)
- 		}
+diff --git a/drivers/mtd/nand/raw/nand_timings.c b/drivers/mtd/nand/raw/nand_timings.c
+index 0061cbaf931d..36d21be3dfe5 100644
+--- a/drivers/mtd/nand/raw/nand_timings.c
++++ b/drivers/mtd/nand/raw/nand_timings.c
+@@ -320,10 +320,9 @@ int onfi_fill_data_interface(struct nand_chip *chip,
+ 		/* microseconds -> picoseconds */
+ 		timings->tPROG_max = 1000000ULL * ONFI_DYN_TIMING_MAX;
+ 		timings->tBERS_max = 1000000ULL * ONFI_DYN_TIMING_MAX;
+-		timings->tR_max = 1000000ULL * 200000000ULL;
  
- 		if (onfi_crc16(ONFI_CRC_BASE, (u8 *)&p[i], 254) ==
--				le16_to_cpu(p->crc)) {
-+		    le16_to_cpu(p[i].crc)) {
- 			if (i)
- 				memcpy(p, &p[i], sizeof(*p));
- 			break;
+-		/* nanoseconds -> picoseconds */
+-		timings->tCCS_min = 1000UL * 500000;
++		timings->tR_max = 200000000;
++		timings->tCCS_min = 500000;
+ 	}
+ 
+ 	return 0;
 -- 
 2.20.1
 
