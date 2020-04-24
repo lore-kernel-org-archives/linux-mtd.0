@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DAADC54FD0
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 Apr 2020 13:30:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA587C54FD0
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 Apr 2020 13:36:15 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E9DAE206D7
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 Apr 2020 13:30:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AE1CA20736
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 Apr 2020 13:36:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nBACY9NT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E9DAE206D7
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dVqo85dJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE1CA20736
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=yadavpratyush.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=DrOsJguU5dAWBNoiNxvp5PCd3tM3OdQUSProV9+uadE=; b=nBACY9NTuFegVX
-	c5IGIKQL/PbR3SVDDqmUh766wL2GGK5ixMgpxnOKYl+Iv2bdXM29s46DLGceVbF5KbhHYUr/fzVhE
-	SGroOiTUptqUiGG3F6K7tsUTwF/kVyy/Gi3yPCB3f6DwyCkAZauIvfpx/Nf2ytwOAqLEssKhVjr7A
-	y+uSRYMt+swEwiAKHD9ZmI34CvQVJKdnAqy1GwXR1BEhN7qbZTDuMRz7eM3BUERYA4ygCA/9KFzuu
-	sCygUKPzXxHI57WXdFwnxAZVl0Bzq9sIrGBe7cGpDSYHSlZUJOL+MZ46BCqe/+BVScHNUBufEgmkh
-	eoeyYG7KEUjT2IaxkIbg==;
+	List-Owner; bh=zWE3pe6slzy2HqTFYuUj0WkY2C4PNGfXvvKt6H+exTM=; b=dVqo85dJSiqnMk
+	L3S+sN1b8g9/MgHXvL18VJX8GnrSRWU5Tpfymt7iTAoaaXq+8mhryifHSMR0DXZ1PKZLz7DbeasrF
+	+B3BM7QFhlbwCY7ywicjZzx414kgPZFsnI3q/OKyT32hP/kys88tkzePlRywqZ3rhwF9J4Wg/Is+q
+	F3HS6+LWG8r9ZIEcEP81HEhUQBY7zhBhShlWSP1t+omVBJ3El2SYKInrHLJyd08VrtWzZen3b+UnL
+	8biPapMlk9z1F2zDh2XL5nbKT8JAblhrdvR+NrrdqqexFcXzH8UpukvTtyw/piFxIgB5Rya1UI6me
+	9/tnUD1qlNXXJcxGuYIg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jRyPO-0003vu-DN; Fri, 24 Apr 2020 13:30:22 +0000
-Received: from relay7-d.mail.gandi.net ([217.70.183.200])
+	id 1jRyUy-0008BA-UP; Fri, 24 Apr 2020 13:36:08 +0000
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jRyPL-0003uT-N5
- for linux-mtd@lists.infradead.org; Fri, 24 Apr 2020 13:30:21 +0000
+ id 1jRyUw-00089s-1e
+ for linux-mtd@lists.infradead.org; Fri, 24 Apr 2020 13:36:07 +0000
 X-Originating-IP: 42.109.208.177
 Received: from localhost (unknown [42.109.208.177])
  (Authenticated sender: me@yadavpratyush.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 9C78420007;
- Fri, 24 Apr 2020 13:30:09 +0000 (UTC)
-Date: Fri, 24 Apr 2020 19:00:04 +0530
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 34F40C0014;
+ Fri, 24 Apr 2020 13:35:59 +0000 (UTC)
+Date: Fri, 24 Apr 2020 19:05:52 +0530
 From: Pratyush Yadav <me@yadavpratyush.com>
 To: Yicong Yang <yangyicong@hisilicon.com>
-Subject: Re: [RFC PATCH 1/2] mtd: spi-nor: Add capability to disable flash
- quad mode
-Message-ID: <20200424133004.r2oryuyocz7zmrgz@yadavpratyush.com>
+Subject: Re: [RFC PATCH 2/2] mtd: spi-nor: Disable the flash quad mode in
+ spi_nor_restore()
+Message-ID: <20200424133552.oymmxczeyuak6wo7@yadavpratyush.com>
 References: <1587720044-49172-1-git-send-email-yangyicong@hisilicon.com>
- <1587720044-49172-2-git-send-email-yangyicong@hisilicon.com>
+ <1587720044-49172-3-git-send-email-yangyicong@hisilicon.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1587720044-49172-2-git-send-email-yangyicong@hisilicon.com>
+In-Reply-To: <1587720044-49172-3-git-send-email-yangyicong@hisilicon.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200424_063019_887531_6FB89C2F 
-X-CRM114-Status: GOOD (  17.66  )
+X-CRM114-CacheID: sfid-20200424_063606_222359_9DA479A6 
+X-CRM114-Status: GOOD (  13.99  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,77 +80,38 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 Hi Yicong,
 
 On 24/04/20 05:20PM, Yicong Yang wrote:
-> Previous we didn't provide a way to disable the flash's quad mode.
-> Which means we cannot do some cleanup works when to remove or
-> poweroff the flash, like what set 4-byte address mode does in
-> spi_nor_restore().
+> If the flash's quad mode is enabled, it'll remain in the quad mode when
+> it's removed. If we drive the flash next time in SPI/Dual mode, then
+> problem occurs as the flash's quad enable bit is not cleared.
 > 
-> Add the capability to disable the flash quad mode, by introducing
-> an enable flag in the flash parameters quad_enable() hooks and
-> related functions.
+> Disable the quad mode in spi_nor_restore(), the flash will leave
+> quad mode when remove. This will make sure the flash always enter the
+> correct mode when loaded.
 > 
 > Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
 > ---
->  drivers/mtd/spi-nor/core.c | 38 ++++++++++++++++++++++++++++----------
->  drivers/mtd/spi-nor/core.h |  8 ++++----
->  2 files changed, 32 insertions(+), 14 deletions(-)
+>  drivers/mtd/spi-nor/core.c | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
 > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index cc68ea8..d0516e8 100644
+> index d0516e8..611c0b7 100644
 > --- a/drivers/mtd/spi-nor/core.c
 > +++ b/drivers/mtd/spi-nor/core.c
-> @@ -1910,12 +1910,13 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
->   * spi_nor_sr1_bit6_quad_enable() - Set the Quad Enable BIT(6) in the Status
+> @@ -3001,6 +3001,11 @@ void spi_nor_restore(struct spi_nor *nor)
+>  	if (nor->addr_width == 4 && !(nor->flags & SNOR_F_4B_OPCODES) &&
+>  	    nor->flags & SNOR_F_BROKEN_RESET)
+>  		nor->params->set_4byte_addr_mode(nor, false);
+> +
+> +	/* disable quad mode */
+> +	if (spi_nor_get_protocol_width(nor->read_proto) == 4 ||
+> +	    spi_nor_get_protocol_width(nor->write_proto) == 4)
+> +		nor->params->quad_enable(nor, false);
 
-Nitpick: This should probably be changed to "Set/unset the Quad 
-Enable...". Same in other places.
+If a flash doesn't have a quad enable function, this will lead to a NULL 
+pointer access. Please use spi_nor_quad_enable() instead.
 
->   * Register 1.
->   * @nor:	pointer to a 'struct spi_nor'
-> + * @enable:	true to enter quad mode. false to leave quad mode.
->   *
->   * Bit 6 of the Status Register 1 is the QE bit for Macronix like QSPI memories.
->   *
->   * Return: 0 on success, -errno otherwise.
->   */
-> -int spi_nor_sr1_bit6_quad_enable(struct spi_nor *nor)
-> +int spi_nor_sr1_bit6_quad_enable(struct spi_nor *nor, bool enable)
->  {
->  	int ret;
-> 
-> @@ -1923,10 +1924,14 @@ int spi_nor_sr1_bit6_quad_enable(struct spi_nor *nor)
->  	if (ret)
->  		return ret;
-> 
-> -	if (nor->bouncebuf[0] & SR1_QUAD_EN_BIT6)
-> +	if ((enable && (nor->bouncebuf[0] & SR1_QUAD_EN_BIT6)) ||
-> +	    ~(enable || (nor->bouncebuf[0] & SR1_QUAD_EN_BIT6)))
-
-This condition will always evaluate to true.
-
-Since (enable || (nor->bouncebuf[0] & SR1_QUAD_EN_BIT6)) is always a 
-boolean, it will evaluate to 0 or 1. And ~0 is 0xFFFFFFFF and ~1 is 
-0xFFFFFFFE, both of which evaluate to true.
-
-IIUC, this condition is supposed to mean "If we want to enable and it is 
-already enabled, do nothing. Or, if we want to disable and it is already 
-disabled, do nothing." This might be what you were going for:
-
-	if ((enable && (nor->bouncebuf[0] & SR1_QUAD_EN_BIT6)) ||
-	    (!enable && !(nor->bouncebuf[0] & SR1_QUAD_EN_BIT6)))
-
-Same for other places this pattern appears.
-
->  		return 0;
-> 
-> -	nor->bouncebuf[0] |= SR1_QUAD_EN_BIT6;
-> +	if (enable)
-> +		nor->bouncebuf[0] |= SR1_QUAD_EN_BIT6;
-> +	else
-> +		nor->bouncebuf[0] &= ~SR1_QUAD_EN_BIT6;
-> 
->  	return spi_nor_write_sr1_and_check(nor, nor->bouncebuf[0]);
 >  }
+>  EXPORT_SYMBOL_GPL(spi_nor_restore);
 
 -- 
 Regards,
