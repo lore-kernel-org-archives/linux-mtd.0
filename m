@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F37AC54FCB
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 Apr 2020 17:38:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39067C54FD0
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 Apr 2020 17:38:55 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 583AD206A2
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 Apr 2020 17:38:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 04A96206A2
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 Apr 2020 17:38:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mD2LRkZh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 583AD206A2
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nwFA+NQw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 04A96206A2
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=91WU1c4pH5SVRh3z36WfuYOeFpEXRXaEiH5AxMZT1D4=; b=mD2LRkZhT4UCMf
-	9FnSoVo0Oy0gREkKNvjf6gg0QmgmfuF8Eij3UykWAoLR1kSvVmLpMhgIgZFtpen1653tE5QcLY9di
-	Ein4qfE+1xY4851wNKcJqiDOa14Wg8PJ1n11NMzGPnEOK68w1YrO3QtTI5GWUCKoV8zjzShkNRbrl
-	rEP0N3jkUv32BZh0UJAR7QZq9QHjdUTxsMRepIhtgAh3DAh+Wp+v5hk3hjSQeaiKvabqYIUsotgaX
-	PTLRdwAMY/rlNq8Hhf1HAj00tqusdeAYxW2ycVl2FxYik2tPz5f0ZF4UCJ7HcYWnKCwjkIiPXWBS/
-	WaCrkh/cVljLbb9oa7LA==;
+	List-Owner; bh=bD+TyGnXFyyJ3SFypAi2fZ3zskudhtYkUWrWZwBu7LQ=; b=nwFA+NQwGy444w
+	SyE0ivJZXPTOU3KeiT08aM8c0xt4i3aaKEztZksV8KSPEPDKpY2ldql0mMk0aU5nxdOxq0XT7QPZ/
+	yqkoRK2IopR4S3T/iE2HIHtcJnYVJ9LFcHmBVjKFNwy49rhd8y5xErt1YpEpGQJQnAdPF6s+E8BHN
+	Fg2s1YtM0t7B5Cc8O9PjH9HF9myg5vC94HjQ8B+X1HyUHHOOcv7/Ju+8AbFjxpcCw57AT2kx2lO8Z
+	Pd2F+k1V3MWEmS9Jw4+LIoCgL+8yl5bPzqhaSf8//yHDHxMgyjIGgqRpNNCXr+0RhHt9mCGDRBeV1
+	Z7XgKIcBkfn6gnw1xogw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jS2HY-0007sC-3T; Fri, 24 Apr 2020 17:38:32 +0000
+	id 1jS2Hm-00085V-1c; Fri, 24 Apr 2020 17:38:46 +0000
 Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jS2Fm-000651-69
- for linux-mtd@lists.infradead.org; Fri, 24 Apr 2020 17:36:44 +0000
+ id 1jS2Fh-0005zS-0s
+ for linux-mtd@lists.infradead.org; Fri, 24 Apr 2020 17:36:38 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 0890720006;
- Fri, 24 Apr 2020 17:36:38 +0000 (UTC)
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 91A9D20009;
+ Fri, 24 Apr 2020 17:36:34 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH 05/10] mtd: rawnand: Rename the use_bufpoi variables
-Date: Fri, 24 Apr 2020 19:36:26 +0200
-Message-Id: <20200424173631.14311-6-miquel.raynal@bootlin.com>
+Subject: [PATCH 01/10] mtd: rawnand: Translate obscure bitfields into readable
+ macros
+Date: Fri, 24 Apr 2020 19:36:22 +0200
+Message-Id: <20200424173631.14311-2-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200424173631.14311-1-miquel.raynal@bootlin.com>
 References: <20200424173631.14311-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200424_103642_502031_B68F22B6 
-X-CRM114-Status: GOOD (  15.05  )
+X-CRM114-CacheID: sfid-20200424_103637_342223_0890BC89 
+X-CRM114-Status: GOOD (  11.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,113 +79,126 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Both in nand_do_read_ops() and nand_do_write_ops() there is a boolean
-called use_bufpoi which is set to true in case of unaligned request or
-when there is a need for a DMA-able buffer. It basically means "use a
-bounce buffer".
-
-Depending on the value of use_bufpoi, the bufpoi variable is always
-used and will either point to the original buffer or to the nand_chip
-structure "internal data buffer" (this buffer is allocated with
-kmalloc() on purpose so that it will be DMA-compliant).
-
-In all cases bufpoi is used so the boolean name is misleading. Rename
-use_bufpoi to be use_bouce_buf to be more accurate.
+Use the BIT() macro instead of defining a 8-digit value.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/nand_base.c | 34 ++++++++++++++++----------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
+ include/linux/mtd/rawnand.h | 38 ++++++++++++++++++-------------------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 4d8a4a20df63..0e2dd4c1b44c 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -3166,7 +3166,7 @@ static int nand_do_read_ops(struct nand_chip *chip, loff_t from,
- 	uint32_t max_oobsize = mtd_oobavail(mtd, ops);
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 21873168ba4d..c92e7ecebdea 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -129,36 +129,36 @@ enum nand_ecc_algo {
+  * features.
+  */
+ /* Buswidth is 16 bit */
+-#define NAND_BUSWIDTH_16	0x00000002
++#define NAND_BUSWIDTH_16	BIT(1)
+ /* Chip has cache program function */
+-#define NAND_CACHEPRG		0x00000008
++#define NAND_CACHEPRG		BIT(3)
+ /*
+  * Chip requires ready check on read (for auto-incremented sequential read).
+  * True only for small page devices; large page devices do not support
+  * autoincrement.
+  */
+-#define NAND_NEED_READRDY	0x00000100
++#define NAND_NEED_READRDY	BIT(8)
  
- 	uint8_t *bufpoi, *oob, *buf;
--	int use_bufpoi;
-+	int use_bounce_buf;
- 	unsigned int max_bitflips = 0;
- 	int retry_mode = 0;
- 	bool ecc_fail = false;
-@@ -3190,19 +3190,19 @@ static int nand_do_read_ops(struct nand_chip *chip, loff_t from,
- 		aligned = (bytes == mtd->writesize);
+ /* Chip does not allow subpage writes */
+-#define NAND_NO_SUBPAGE_WRITE	0x00000200
++#define NAND_NO_SUBPAGE_WRITE	BIT(9)
  
- 		if (!aligned)
--			use_bufpoi = 1;
-+			use_bounce_buf = 1;
- 		else if (chip->options & NAND_USE_DMA_BUFFER)
--			use_bufpoi = !virt_addr_valid(buf) ||
--				     !IS_ALIGNED((unsigned long)buf,
--						 chip->buf_align);
-+			use_bounce_buf = !virt_addr_valid(buf) ||
-+					 !IS_ALIGNED((unsigned long)buf,
-+						     chip->buf_align);
- 		else
--			use_bufpoi = 0;
-+			use_bounce_buf = 0;
+ /* Device is one of 'new' xD cards that expose fake nand command set */
+-#define NAND_BROKEN_XD		0x00000400
++#define NAND_BROKEN_XD		BIT(10)
  
- 		/* Is the current page in the buffer? */
- 		if (realpage != chip->pagecache.page || oob) {
--			bufpoi = use_bufpoi ? chip->data_buf : buf;
-+			bufpoi = use_bounce_buf ? chip->data_buf : buf;
+ /* Device behaves just like nand, but is readonly */
+-#define NAND_ROM		0x00000800
++#define NAND_ROM		BIT(11)
  
--			if (use_bufpoi && aligned)
-+			if (use_bounce_buf && aligned)
- 				pr_debug("%s: using read bounce buffer for buf@%p\n",
- 						 __func__, buf);
+ /* Device supports subpage reads */
+-#define NAND_SUBPAGE_READ	0x00001000
++#define NAND_SUBPAGE_READ	BIT(12)
  
-@@ -3223,7 +3223,7 @@ static int nand_do_read_ops(struct nand_chip *chip, loff_t from,
- 				ret = chip->ecc.read_page(chip, bufpoi,
- 							  oob_required, page);
- 			if (ret < 0) {
--				if (use_bufpoi)
-+				if (use_bounce_buf)
- 					/* Invalidate page cache */
- 					chip->pagecache.page = -1;
- 				break;
-@@ -3233,7 +3233,7 @@ static int nand_do_read_ops(struct nand_chip *chip, loff_t from,
- 			 * Copy back the data in the initial buffer when reading
- 			 * partial pages or when a bounce buffer is required.
- 			 */
--			if (use_bufpoi) {
-+			if (use_bounce_buf) {
- 				if (!NAND_HAS_SUBPAGE_READ(chip) && !oob &&
- 				    !(mtd->ecc_stats.failed - ecc_failures) &&
- 				    (ops->mode != MTD_OPS_RAW)) {
-@@ -4015,23 +4015,23 @@ static int nand_do_write_ops(struct nand_chip *chip, loff_t to,
- 	while (1) {
- 		int bytes = mtd->writesize;
- 		uint8_t *wbuf = buf;
--		int use_bufpoi;
-+		int use_bounce_buf;
- 		int part_pagewr = (column || writelen < mtd->writesize);
+ /*
+  * Some MLC NANDs need data scrambling to limit bitflips caused by repeated
+  * patterns.
+  */
+-#define NAND_NEED_SCRAMBLING	0x00002000
++#define NAND_NEED_SCRAMBLING	BIT(13)
  
- 		if (part_pagewr)
--			use_bufpoi = 1;
-+			use_bounce_buf = 1;
- 		else if (chip->options & NAND_USE_DMA_BUFFER)
--			use_bufpoi = !virt_addr_valid(buf) ||
--				     !IS_ALIGNED((unsigned long)buf,
--						 chip->buf_align);
-+			use_bounce_buf = !virt_addr_valid(buf) ||
-+					 !IS_ALIGNED((unsigned long)buf,
-+						     chip->buf_align);
- 		else
--			use_bufpoi = 0;
-+			use_bounce_buf = 0;
+ /* Device needs 3rd row address cycle */
+-#define NAND_ROW_ADDR_3		0x00004000
++#define NAND_ROW_ADDR_3		BIT(14)
  
- 		/*
- 		 * Copy the data from the initial buffer when doing partial page
- 		 * writes or when a bounce buffer is required.
- 		 */
--		if (use_bufpoi) {
-+		if (use_bounce_buf) {
- 			pr_debug("%s: using write bounce buffer for buf@%p\n",
- 					 __func__, buf);
- 			if (part_pagewr)
+ /* Options valid for Samsung large page devices */
+ #define NAND_SAMSUNG_LP_OPTIONS NAND_CACHEPRG
+@@ -173,9 +173,9 @@ enum nand_ecc_algo {
+  * Position within the block: Each of these pages needs to be checked for a
+  * bad block marking pattern.
+  */
+-#define NAND_BBM_FIRSTPAGE		0x01000000
+-#define NAND_BBM_SECONDPAGE		0x02000000
+-#define NAND_BBM_LASTPAGE		0x04000000
++#define NAND_BBM_FIRSTPAGE	BIT(24)
++#define NAND_BBM_SECONDPAGE	BIT(25)
++#define NAND_BBM_LASTPAGE	BIT(26)
+ 
+ /* Position within the OOB data of the page */
+ #define NAND_BBM_POS_SMALL		5
+@@ -183,21 +183,21 @@ enum nand_ecc_algo {
+ 
+ /* Non chip related options */
+ /* This option skips the bbt scan during initialization. */
+-#define NAND_SKIP_BBTSCAN	0x00010000
++#define NAND_SKIP_BBTSCAN	BIT(16)
+ /* Chip may not exist, so silence any errors in scan */
+-#define NAND_SCAN_SILENT_NODEV	0x00040000
++#define NAND_SCAN_SILENT_NODEV	BIT(18)
+ /*
+  * Autodetect nand buswidth with readid/onfi.
+  * This suppose the driver will configure the hardware in 8 bits mode
+  * when calling nand_scan_ident, and update its configuration
+  * before calling nand_scan_tail.
+  */
+-#define NAND_BUSWIDTH_AUTO      0x00080000
++#define NAND_BUSWIDTH_AUTO      BIT(19)
+ /*
+  * This option could be defined by controller drivers to protect against
+  * kmap'ed, vmalloc'ed highmem buffers being passed from upper layers
+  */
+-#define NAND_USE_BOUNCE_BUFFER	0x00100000
++#define NAND_USE_BOUNCE_BUFFER	BIT(22)
+ 
+ /*
+  * In case your controller is implementing ->legacy.cmd_ctrl() and is relying
+@@ -207,20 +207,20 @@ enum nand_ecc_algo {
+  * If your controller already takes care of this delay, you don't need to set
+  * this flag.
+  */
+-#define NAND_WAIT_TCCS		0x00200000
++#define NAND_WAIT_TCCS		BIT(21)
+ 
+ /*
+  * Whether the NAND chip is a boot medium. Drivers might use this information
+  * to select ECC algorithms supported by the boot ROM or similar restrictions.
+  */
+-#define NAND_IS_BOOT_MEDIUM	0x00400000
++#define NAND_IS_BOOT_MEDIUM	BIT(20)
+ 
+ /*
+  * Do not try to tweak the timings at runtime. This is needed when the
+  * controller initializes the timings on itself or when it relies on
+  * configuration done by the bootloader.
+  */
+-#define NAND_KEEP_TIMINGS	0x00800000
++#define NAND_KEEP_TIMINGS	BIT(23)
+ 
+ /* Cell info constants */
+ #define NAND_CI_CHIPNR_MSK	0x03
 -- 
 2.20.1
 
