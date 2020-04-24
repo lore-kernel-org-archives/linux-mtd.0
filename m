@@ -2,97 +2,60 @@ Return-Path: <SRS0=YgIB=6I=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2379DC54FD0
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 Apr 2020 17:34:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC8DAC54FCB
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 Apr 2020 17:38:10 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EA31420736
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 Apr 2020 17:34:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9E7E820736
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 Apr 2020 17:38:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="k1PTyq9c";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=st.com header.i=@st.com header.b="o1qnsmD2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EA31420736
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=st.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tjYvWR5w"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E7E820736
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=TmSe7FKpgWZLfmKvP4ifVRcAj8aTteinSv6DUYEzqfA=; b=k1PTyq9cF8QlfaF16nAotZNeu
-	LTO2dZ+6Mv9YJEhT6ODKNSaRR2B4xpFl0yjbulWuDBiMS562Oxd+LceUm2nE15oNTj+ef1vWbpPUE
-	xaOCKK16skFSI0W9FsgJyA6cfpfRWWXXaihfF1pNJG6lP4I68NabhKiczEk5VPUnvKjtZGrR2lEN7
-	WeI7FwMb3dbeSZwPUp9fKoq4+goLFSnAX5Dg5GH5Vx7GT9Cevn/vO3TBx8O7sIg2NBpzVMnOCVb7J
-	PyD7X9rlcBo+y0jTZd8vuEfr4+/FeTvW8PD17i4e1P6ObnJKxONNr3M4DXLcLqmhMtvZPQfzJEwNM
-	jOTsMoATA==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=2UqkaMJGzqn6ZKElMwUj2dMkVBCnEqpbeD3xByRNTbY=; b=tjYvWR5wAKtixf
+	kKNsc+Kcuhkyua959iotLuOYHcewbUjihZd4TYBHV3X6gl3GBETTe31hISTtWaNQ8tXzfVDilJoii
+	1uReB2NRaizBVJzoOEKaUIk4J5AU3Iu9yvxEXgq5rg89pLUiYOUxUWKeJKzuA3FKb5JuAOjPocug2
+	XhmhiP45fYoQwOA5er2bMq0vLciek79AoAdu6Tn/SvsChz3msOyjBsUUpiUrFxfLi8pmU4yvPD15Q
+	j6NqFkwqmtDj9ypojAAEbVDzKhtlBFe043/yeAQABhomi71TdtD8xmVtFWkBJCUP/Nr9wWyaYXeZv
+	PCgkk5SeRKxD/hb7t2Yw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jS2Dm-0002re-2F; Fri, 24 Apr 2020 17:34:38 +0000
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]
- helo=mx07-00178001.pphosted.com)
+	id 1jS2Gz-0007EA-JX; Fri, 24 Apr 2020 17:37:57 +0000
+Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jS2Dh-0002pw-Ou
- for linux-mtd@lists.infradead.org; Fri, 24 Apr 2020 17:34:36 +0000
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
- by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- 03OHIcO7004610; Fri, 24 Apr 2020 19:34:15 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com;
- h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=7wG2Vp8lq+S8b/LB+iD0GNb0tPurIz2sA90USoBdA/0=;
- b=o1qnsmD2IFxDVLCSAUTVPc2bH3Qbay4CA5yCsLOiayJAXUGFIZ3LMP3wxZDuVSN0b9Rf
- xoH5PS+1xoL+2eXWit/yTmUirAw4F3reGPJH2XrwJ1dcJoWq3JrzljPMvpI8DSqRz7fj
- hJw6JoaD5uraa7bZJv9pHDqDgHVVTeKJj7LPdQ5O0j1AMKWikfH/amvjBKepwOPW/Rni
- 2yjoutrJ5j1+No7rpVzJqBhZY7gc+I7mWtF1EDTD6NZV0oRw1TxCMnb2Nv5FxMokh4Gc
- c1U0KkeOATHznXEro/4kJJ03fu9eIZNoh68kkYicrZvfoyx6zFU1EyQ80aOUtb4HT2uQ sw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com with ESMTP id 30fpp9d073-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 24 Apr 2020 19:34:15 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id CEDC210002A;
- Fri, 24 Apr 2020 19:34:14 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag6node2.st.com [10.75.127.17])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 95E162CAD55;
- Fri, 24 Apr 2020 19:34:14 +0200 (CEST)
-Received: from [10.211.2.59] (10.75.127.51) by SFHDAG6NODE2.st.com
- (10.75.127.17) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Fri, 24 Apr
- 2020 19:34:12 +0200
-Subject: Re: [PATCH v2 02/12] mfd: stm32-fmc2: add STM32 FMC2 controller driver
-To: Boris Brezillon <boris.brezillon@collabora.com>
-References: <1586966256-29548-1-git-send-email-christophe.kerello@st.com>
- <1586966256-29548-3-git-send-email-christophe.kerello@st.com>
- <20200424074517.GN3612@dell> <8b625f1c-9ded-c07a-a20e-8cd44c1ca46d@denx.de>
- <20200424105053.GC8414@dell> <e5e6c279-28d0-f423-aa6d-5c7aca563352@denx.de>
- <268ea231-eb4a-6144-c632-1bc8e9f21582@st.com>
- <20200424171412.5f65ff05@collabora.com>
- <b136632f-51ce-f72e-f145-1b6b4cba485c@st.com>
- <20200424192222.28efd55f@collabora.com>
-From: Christophe Kerello <christophe.kerello@st.com>
-Message-ID: <cc02d1d2-08a8-1f72-f4eb-6eaa7e48e817@st.com>
-Date: Fri, 24 Apr 2020 19:34:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+ id 1jS2Fg-0005yP-2D
+ for linux-mtd@lists.infradead.org; Fri, 24 Apr 2020 17:36:37 +0000
+X-Originating-IP: 91.224.148.103
+Received: from localhost.localdomain (unknown [91.224.148.103])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id C884920003;
+ Fri, 24 Apr 2020 17:36:32 +0000 (UTC)
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ <linux-mtd@lists.infradead.org>
+Subject: [PATCH 00/10] Supporting restricted NAND controllers
+Date: Fri, 24 Apr 2020 19:36:21 +0200
+Message-Id: <20200424173631.14311-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20200424192222.28efd55f@collabora.com>
-Content-Language: en-US
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG5NODE2.st.com (10.75.127.14) To SFHDAG6NODE2.st.com
- (10.75.127.17)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138, 18.0.676
- definitions=2020-04-24_08:2020-04-24,
- 2020-04-24 signatures=0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200424_103434_168249_4E35D6DF 
-X-CRM114-Status: GOOD (  29.20  )
+X-CRM114-CacheID: sfid-20200424_103636_414055_A54ECFB6 
+X-CRM114-Status: UNSURE (   8.21  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,227 +67,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Marek Vasut <marex@denx.de>, mark.rutland@arm.com, vigneshr@ti.com,
- devicetree@vger.kernel.org, tony@atomide.com, richard@nod.at,
- linux-kernel@vger.kernel.org, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
- Geert Uytterhoeven <geert@linux-m68k.org>, Lee Jones <lee.jones@linaro.org>,
- linux-stm32@st-md-mailman.stormreply.com
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Cc: Michal Simek <monstr@monstr.eu>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Naga Sureshkumar Relli <nagasure@xilinx.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-On 4/24/20 7:22 PM, Boris Brezillon wrote:
-> On Fri, 24 Apr 2020 18:42:59 +0200
-> Christophe Kerello <christophe.kerello@st.com> wrote:
-> 
->> On 4/24/20 5:14 PM, Boris Brezillon wrote:
->>> On Fri, 24 Apr 2020 13:47:34 +0200
->>> Christophe Kerello <christophe.kerello@st.com> wrote:
->>>    
->>>> On 4/24/20 1:06 PM, Marek Vasut wrote:
->>>>> On 4/24/20 12:50 PM, Lee Jones wrote:
->>>>>> On Fri, 24 Apr 2020, Marek Vasut wrote:
->>>>>>      
->>>>>>> On 4/24/20 9:45 AM, Lee Jones wrote:
->>>>>>>> On Wed, 15 Apr 2020, Christophe Kerello wrote:
->>>>>>>>      
->>>>>>>>> The driver adds the support for the STMicroelectronics FMC2 controller
->>>>>>>>> found on STM32MP SOCs.
->>>>>>>>>
->>>>>>>>> The FMC2 functional block makes the interface with: synchronous and
->>>>>>>>> asynchronous static memories (such as PSNOR, PSRAM or other
->>>>>>>>> memory-mapped peripherals) and NAND flash memories.
->>>>>>>>>
->>>>>>>>> Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
->>>>>>>>> ---
->>>>>>>>> Changes in v2:
->>>>>>>>>     - remove ops from stm32_fmc2 structure
->>>>>>>>>     - add 2 APIs to manage FMC2 enable/disable
->>>>>>>>>     - add 2 APIs to manage FMC2 NWAIT shared signal
->>>>>>>>>
->>>>>>>>>     drivers/mfd/Kconfig            |  12 +++
->>>>>>>>>     drivers/mfd/Makefile           |   1 +
->>>>>>>>>     drivers/mfd/stm32-fmc2.c       | 136 +++++++++++++++++++++++++
->>>>>>>>>     include/linux/mfd/stm32-fmc2.h | 225 +++++++++++++++++++++++++++++++++++++++++
->>>>>>>>>     4 files changed, 374 insertions(+)
->>>>>>>>>     create mode 100644 drivers/mfd/stm32-fmc2.c
->>>>>>>>>     create mode 100644 include/linux/mfd/stm32-fmc2.h
->>>>>>>>>
->>>>>>>>> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
->>>>>>>>> index 2b20329..5260582 100644
->>>>>>>>> --- a/drivers/mfd/Kconfig
->>>>>>>>> +++ b/drivers/mfd/Kconfig
->>>>>>>>> @@ -1922,6 +1922,18 @@ config MFD_ROHM_BD71828
->>>>>>>>>     	  Also included is a Coulomb counter, a real-time clock (RTC), and
->>>>>>>>>     	  a 32.768 kHz clock gate.
->>>>>>>>>     
->>>>>>>>> +config MFD_STM32_FMC2
->>>>>>>>> +	tristate "Support for FMC2 controllers on STM32MP SoCs"
->>>>>>>>> +	depends on MACH_STM32MP157 || COMPILE_TEST
->>>>>>>>> +	select MFD_CORE
->>>>>>>>> +	select REGMAP
->>>>>>>>> +	select REGMAP_MMIO
->>>>>>>>> +	help
->>>>>>>>> +	  Select this option to enable STM32 FMC2 driver used for FMC2 External
->>>>>>>>> +	  Bus Interface controller and FMC2 NAND flash controller. This driver
->>>>>>>>> +	  provides core support for the STM32 FMC2 controllers, in order to use
->>>>>>>>> +	  the actual functionality of the device other drivers must be enabled.
->>>>>>>>
->>>>>>>> Not sure how many times I have to say this before people stop
->>>>>>>> attempting to pass these kinds of relationships off as MFDs:
->>>>>>>>
->>>>>>>> A memory device and its bus is not an MFD.  In a similar vain to the
->>>>>>>> thousands of USB, I2C, SPI, PCI and the like devices that aren't MFDs
->>>>>>>> either.
->>>>>>>>
->>>>>>>> Please find another way to associate your device with its bus.
->>>>>>>
->>>>>>> This FMC2 is however an IP which can either operate external devices
->>>>>>> (like ethernet chip on this parallel bus) or external flashes (like NOR
->>>>>>> and NAND chips).
->>>>>>
->>>>>> I'm sure that it *can*.  Although that's not its main purpose.
->>>>>
->>>>> I use it to operate KSZ8851-16MLL ethernet chip, which has async bus
->>>>> interface. Linux just didn't have support for that mode of operation
->>>>> thus far and the FMC was used to operate NANDs and NORs only. This
->>>>> series, or rather, the first three patches in this series, add support
->>>>> for operating other bus devices, like this ethernet controller.
->>>>>       
->>>>>> The
->>>>>> clue is in the nomenclature ("Flexible *Memory* Controller").  Nor is
->>>>>> it how the device is being used in this submission:
->>>>>>
->>>>>>      "The FMC2 functional block makes the interface with: synchronous and
->>>>>>       asynchronous static memories (such as PSNOR, PSRAM or other
->>>>>>       memory-mapped peripherals) and NAND flash memories."
->>>>>>
->>>>>> As I mentioned, this is just another memory device and its bus.
->>>>>
->>>>> I don't think it's _just_ a memory controller, it's more universal than
->>>>> that, see above. Note that SRAM interface basically boils down to
->>>>> anything which has external parallel bus, e.g. Davicom DM9000, that
->>>>> KSZ8851-16MLL etc.
->>>>>       
->>>>>>> Can you provide a suggestion how this should be handled, if not as MFD?
->>>>>>> It seems to me, that this is a Multi-Function Device .
->>>>>>
->>>>>> Simply move it into the MTD or Memory subsystems and set up the
->>>>>> dependencies via Kconfig.
->>>>>>      
->>>>>>> If this discussion is a recurring topic, is there some documentation
->>>>>>> which explains how such devices should be handled ?
->>>>>>
->>>>>> Not that I'm aware of.
->>>>>
->>>>> I see.
->>>>>      
->>>>
->>>> Hi Lee, Marek,
->>>>
->>>> I will move this source code in the FMC2 bus driver. I think that I
->>>> should be able to manage the 2 controllers with 2 drivers (the FMC2 bus
->>>> driver and the FMC2 raw NAND driver).
->>>
->>> FWIW, that's what I did for the Atmel EBI (External Bus Interface)
->>> controller (see [1]).
->>>
->>> [1]https://elixir.bootlin.com/linux/v5.6/source/drivers/memory/atmel-ebi.c
->>>    
->>
->> Hi Boris,
->>
->> Thanks for your help.
->>
->> I was thinking about the bindings and I think that the bindings below
->> are close to what has been done for Atmel EBI/Raw NAND bindings (in
->> terms of structure of bindings if I have well understood).
->> I think that these proposed bindings are very close to the first
->> proposed version (V1/V2).
-> 
-> Yep, makes sense to me, just one minor comment.
-> 
->>
->>       fmc@58002000 {
->>         #address-cells = <2>;
->>         #size-cells = <1>;
->>         compatible = "st,stm32mp1-fmc2";
->>         reg = <0x58002000 0x1000>;
->>         clocks = <&rcc FMC_K>;
->>         resets = <&rcc FMC_R>;
->>
->>         ranges = <0 0 0x60000000 0x4000000>, /* EBI bank 1 */
->>                  <1 0 0x64000000 0x4000000>, /* EBI bank 2 */
->>                  <2 0 0x68000000 0x4000000>, /* EBI bank 3 */
->>                  <3 0 0x6c000000 0x4000000>, /* EBI bank 4 */
->>                  <4 0 0x80000000 0x4000000>, /* NAND common memory space */
->>                  <5 0 0x88000000 0x4000000>; /* NAND attribute memory
->> space */
->> 	
->>         psram@0 {
->>           compatible = "mtd-ram";
->>           reg = <0 0x00000000 0x100000>;
->>           bank-width = <2>;
->>
->>           st,fmc2_ebi_cs_transaction_type = <1>;
->>           st,fmc2_ebi_cs_address_setup = <60>;
->>           st,fmc2_ebi_cs_data_setup = <30>;
->>           st,fmc2_ebi_cs_bus_turnaround = <5>;
-> 
-> Not sure what the unit is for those timings, but I'd recommend using a
-> time unit (nanoseconds?) and not clk-cycles here.
->
-
-Hi Boris,
-
-Yes, it is the case in the documentation. The time unit is nanoseconds:
-       st,fmc2_ebi_cs_address_setup:
-         description: This property defines the duration of the address
-                      setup phase in ns used for asynchronous read/write 
-transactions.
-         $ref: /schemas/types.yaml#/definitions/uint32
-
-Thanks to have review this proposal.
-
-Regards,
-Christophe Kerello.
-
->>         };
->>
->>         nand-controller@4 {
->>           #address-cells = <1>;
->>           #size-cells = <0>;
->>           compatible = "st,stm32mp15-fmc2";
->>           reg = <4 0x00000000 0x1000>,
->>                 <5 0x00010000 0x1000>,
->>                 <5 0x00020000 0x1000>,
->>                 <4 0x01000000 0x1000>,
->>                 <5 0x01010000 0x1000>,
->>                 <5 0x01020000 0x1000>;
->>           interrupts = <GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>;
->>           dmas = <&mdma1 20 0x2 0x12000a02 0x0 0x0>,
->>                  <&mdma1 20 0x2 0x12000a08 0x0 0x0>,
->>                  <&mdma1 21 0x2 0x12000a0a 0x0 0x0>;
->>           dma-names = "tx", "rx", "ecc";
->>
->>           nand@0 {
->>             reg = <0>;
->>             nand-on-flash-bbt;
->>             #address-cells = <1>;
->>             #size-cells = <1>;
->>           };
->>         };
->>       };
->>
->> Regards,
->> Christophe Kerello.
->>
-> 
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgpUaGUgZmlyc3QgNiBwYXRjaGVzIGFyZSBqdXN0IG1pc2NlbGxhbmVvdXMgY2hhbmdl
+cywgdGhhdCBkbyBub3QgYnJpbmcKZnVuY3Rpb25hbCBjaGFuZ2VzIGJ1dCBjbGFyaWZ5IGEgZmV3
+IGNvcmUgYXJlYXMuCgpQYXRoIDcgYWRkcyBhIHdheSB0byB0ZXN0IHdoYXQgdGhlIGNvbnRyb2xs
+ZXIgLT5leGVjX29wKCkKaW1wbGVtZW50YXRpb24gYWN0dWFsbHkgc3VwcG9ydHMgYW5kIGRlY2lk
+ZSB0byBlaXRoZXIgInBhY2siIHRoZSBOQU5ECm9wZXJhdGlvbnMgYXMgbXVjaCBhcyBwb3NzaWJs
+ZSwgb3RoZXJ3aXNlIGNvbnRpbnVlIHRvIHNwbGl0IG9wZXJhdGlvbnMKYXMgdXN1YWwuCgpQYXRj
+aGVzIDggYW5kIDkgdXNlIHRoaXMgZmxhZyB0byBmYWxsYmFjayBvbiBwYWNrZWQgb3BlcmF0aW9u
+cyBkdXJpbmcKT05GSS9KRURFQyBwYXJhbWV0ZXIgcGFnZSByZWFkcyAodGhlIGlkZWEgb2YgdGhl
+c2UgdHdvIHBhdGNoZXMgaXMKaW1wb3J0ZWQgZnJvbSBhIHByZXZpb3VzIHNlcmllcykuCgpGaW5h
+bGx5LCBwYXRjaCAxMCBkb2VzIHRoZSBzYW1lIGluIHRoZSBjb3JlLCBpbiB0aGUgcmVhZC93cml0
+ZV9wYWdlCmhlbHBlcnMuCgpUaGlzIHNlcmllcyBpcyBuZWVkZWQgaW4gb3JkZXIgdG8gc3VwcG9y
+dCBjb250cm9sbGVycyBsaWtlIEFyYXNhbidzLgoKVGhhbmtzLApNaXF1w6hsCgpNaXF1ZWwgUmF5
+bmFsICgxMCk6CiAgbXRkOiByYXduYW5kOiBUcmFuc2xhdGUgb2JzY3VyZSBiaXRmaWVsZHMgaW50
+byByZWFkYWJsZSBtYWNyb3MKICBtdGQ6IHJhd25hbmQ6IFJlb3JkZXIgdGhlIG5hbmRfY2hpcC0+
+b3B0aW9ucyBmbGFncwogIG10ZDogcmF3bmFuZDogUmVuYW1lIGEgTkFORCBjaGlwIG9wdGlvbgog
+IG10ZDogcmF3bmFuZDogRml4IGNvbW1lbnRzIGFib3V0IHRoZSB1c2Ugb2YgYnVmcG9pCiAgbXRk
+OiByYXduYW5kOiBSZW5hbWUgdGhlIHVzZV9idWZwb2kgdmFyaWFibGVzCiAgbXRkOiByYXduYW5k
+OiBBdm9pZCBpbmRpcmVjdCBhY2Nlc3MgdG8gLT5kYXRhX2J1ZigpCiAgbXRkOiByYXduYW5kOiBI
+ZWxwIHN1cHBvcnRpbmcgY29udHJvbGxlcnMgdGhhdCBhcmUgbm90IGFibGUgdG8gc3BsaXQKICAg
+IG9wZXJhdGlvbnMKICBtdGQ6IHJhd25hbmQ6IG9uZmk6IEFkZCBhbiBhbHRlcm5hdGl2ZSBwYXJh
+bWV0ZXIgcGFnZSByZWFkCiAgbXRkOiByYXduYW5kOiBqZWRlYzogQWRkIGFuIGFsdGVybmF0aXZl
+IHBhcmFtZXRlciBwYWdlIHJlYWQKICBtdGQ6IHJhd25hbmQ6IEZhbGxiYWNrIG9uIGVhc2llciBv
+cGVyYXRpb25zIHdoZW4gbmVlZGVkCgogZHJpdmVycy9tdGQvbmFuZC9yYXcvYXRtZWwvbmFuZC1j
+b250cm9sbGVyLmMgfCAgIDIgKy0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2JyY21u
+YW5kLmMgICAgIHwgICAyICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9kZW5hbGkuYyAgICAgICAg
+ICAgICAgICB8ICAgMiArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvaW50ZXJuYWxzLmggICAgICAg
+ICAgICAgfCAgIDUgKwogZHJpdmVycy9tdGQvbmFuZC9yYXcvbWVzb25fbmFuZC5jICAgICAgICAg
+ICAgfCAgIDIgKy0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L210a19uYW5kLmMgICAgICAgICAgICAg
+IHwgICAyICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2Jhc2UuYyAgICAgICAgICAgICB8
+IDExMCArKysrKysrKysrKysrKystLS0tCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2plZGVj
+LmMgICAgICAgICAgICB8ICAzMSArKysrLS0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfb25m
+aS5jICAgICAgICAgICAgIHwgIDE3ICsrLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvcWNvbV9uYW5k
+Yy5jICAgICAgICAgICAgfCAgIDIgKy0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L3N0bTMyX2ZtYzJf
+bmFuZC5jICAgICAgIHwgICAyICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9zdW54aV9uYW5kLmMg
+ICAgICAgICAgICB8ICAgMiArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvdGFuZ29fbmFuZC5jICAg
+ICAgICAgICAgfCAgIDIgKy0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L3RlZ3JhX25hbmQuYyAgICAg
+ICAgICAgIHwgICAyICstCiBpbmNsdWRlL2xpbnV4L210ZC9yYXduYW5kLmggICAgICAgICAgICAg
+ICAgICB8IDEwNSArKysrKysrKysrLS0tLS0tLS0KIDE1IGZpbGVzIGNoYW5nZWQsIDE5MSBpbnNl
+cnRpb25zKCspLCA5NyBkZWxldGlvbnMoLSkKCi0tIAoyLjIwLjEKCgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Np
+b24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vbGludXgtbXRkLwo=
