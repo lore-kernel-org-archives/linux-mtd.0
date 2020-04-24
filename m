@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65B54C54FD0
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 Apr 2020 16:43:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59FE9C54FCB
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 Apr 2020 16:43:51 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 37DD2206D7
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 Apr 2020 16:43:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 24FBC206D7
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 Apr 2020 16:43:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="p39lx9D1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 37DD2206D7
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lsNl5jy/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 24FBC206D7
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PyLrsJmSipFEReLUVtuYR26bQ2pg9l4auCvzLDWkUiE=; b=p39lx9D1m3hzpn
-	d5iI3JI0RODap++mVzeaw7K1nOqu5ihZ2PMX8410vcX4LaRMheJfUSLv6me6rSmhqckdSxDoDDpL5
-	GFNHdIKKLUtimz1VV53GcyYTu9II1FAPipiLbKerEzSUNyaVCjPSJ7CjYbbGtvSaOCniLBljzhvgZ
-	ioY6FKoPUO0rXfX4C1IfV1ZH7LBMiy9uVLttpj0oitITs0ficO4vhTyMMz72mqNDHNyNFMrF7twtB
-	NajrHmc3W/l4pmHtVqS/N6xQ5mq6J/dEHN1cqoRoeWuYI328mTtQdpQmnZeNcYbwvfNrFa+Rf0sEL
-	c1x2IcF6B4yVz2j0zB4A==;
+	List-Owner; bh=uQugcUwARznSEkX2TQhunUasGZLHfRVwYmFqzvKPD30=; b=lsNl5jy/SI5YY9
+	AAIGkczyN+Ez4ppZFnAFPDTFBQCXml0d7bxbZun2s7dUfhdtkBkCJcSU3zOU7RjkfQM9inAbd1EeK
+	94ceYSIjE31xqRFXInLb4Jf3EAxqE6mcnozGJq93f4CdF8166zzJa7CsH30Zis6Z6v414AmDurugR
+	imon4XufBPSOo85DjgdSePz/crjU0axgI3aVlowrkBLnQW8tn8zDUso6vKxeaMLym1dp+HnZc/aR1
+	M77XANmG+kvosojwpCdzHlDHdIf6n8R2ckL6bkGRAsIIMQJLaGzPBcvi6EJU8RwZIkskIdDPWmTUA
+	8SBOi5rg1uOvCsAWmX1w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jS1QF-0006Fn-Fi; Fri, 24 Apr 2020 16:43:28 +0000
+	id 1jS1QT-0006U7-AR; Fri, 24 Apr 2020 16:43:41 +0000
 Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jS1Nl-0003yI-AJ
- for linux-mtd@lists.infradead.org; Fri, 24 Apr 2020 16:40:56 +0000
+ id 1jS1Ng-0003sW-68
+ for linux-mtd@lists.infradead.org; Fri, 24 Apr 2020 16:40:52 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 2769220007;
- Fri, 24 Apr 2020 16:40:51 +0000 (UTC)
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id CA45420006;
+ Fri, 24 Apr 2020 16:40:45 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 7/9] mtd: rawnand: onfi: Drop a useless parameter page read
-Date: Fri, 24 Apr 2020 18:40:40 +0200
-Message-Id: <20200424164042.26572-8-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 1/9] mtd: rawnand: timings: Add mode information to the
+ timings structure
+Date: Fri, 24 Apr 2020 18:40:34 +0200
+Message-Id: <20200424164042.26572-2-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200424164042.26572-1-miquel.raynal@bootlin.com>
 References: <20200424164042.26572-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200424_094054_340622_870494FC 
-X-CRM114-Status: GOOD (  10.96  )
+X-CRM114-CacheID: sfid-20200424_094048_407924_3EAD07AA 
+X-CRM114-Status: GOOD (  10.92  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,45 +77,94 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-During detection the logic on the NAND bus is:
-
-    /* Regular ONFI detection */
-    1/ read the three NAND parameter pages
-
-    /* Extended parameter page detection */
-    2/ send "read the NAND parameter page" commands without reading
-       actual data
-    3/ move the column pointer to the extended page and read it
-
-If fact, as long as there is nothing happening on the NAND bus between
-1/ and 3/, the operation 2/ is redundant so remove it.
+Convert the timings union into a structure containing the mode and the
+actual values. The values are still a union in prevision of the
+addition of the NVDDR modes.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 ---
- drivers/mtd/nand/raw/nand_onfi.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ drivers/mtd/nand/raw/nand_timings.c |  6 ++++++
+ include/linux/mtd/rawnand.h         | 10 +++++++---
+ 2 files changed, 13 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/nand_onfi.c b/drivers/mtd/nand/raw/nand_onfi.c
-index 6576b841bc56..2fc71b7c361f 100644
---- a/drivers/mtd/nand/raw/nand_onfi.c
-+++ b/drivers/mtd/nand/raw/nand_onfi.c
-@@ -47,12 +47,10 @@ static int nand_flash_detect_ext_param_page(struct nand_chip *chip,
- 	if (!ep)
- 		return -ENOMEM;
+diff --git a/drivers/mtd/nand/raw/nand_timings.c b/drivers/mtd/nand/raw/nand_timings.c
+index f64b06a71dfa..0061cbaf931d 100644
+--- a/drivers/mtd/nand/raw/nand_timings.c
++++ b/drivers/mtd/nand/raw/nand_timings.c
+@@ -16,6 +16,7 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
+ 	/* Mode 0 */
+ 	{
+ 		.type = NAND_SDR_IFACE,
++		.timings.mode = 0,
+ 		.timings.sdr = {
+ 			.tCCS_min = 500000,
+ 			.tR_max = 200000000,
+@@ -58,6 +59,7 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
+ 	/* Mode 1 */
+ 	{
+ 		.type = NAND_SDR_IFACE,
++		.timings.mode = 1,
+ 		.timings.sdr = {
+ 			.tCCS_min = 500000,
+ 			.tR_max = 200000000,
+@@ -100,6 +102,7 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
+ 	/* Mode 2 */
+ 	{
+ 		.type = NAND_SDR_IFACE,
++		.timings.mode = 2,
+ 		.timings.sdr = {
+ 			.tCCS_min = 500000,
+ 			.tR_max = 200000000,
+@@ -142,6 +145,7 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
+ 	/* Mode 3 */
+ 	{
+ 		.type = NAND_SDR_IFACE,
++		.timings.mode = 3,
+ 		.timings.sdr = {
+ 			.tCCS_min = 500000,
+ 			.tR_max = 200000000,
+@@ -184,6 +188,7 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
+ 	/* Mode 4 */
+ 	{
+ 		.type = NAND_SDR_IFACE,
++		.timings.mode = 4,
+ 		.timings.sdr = {
+ 			.tCCS_min = 500000,
+ 			.tR_max = 200000000,
+@@ -226,6 +231,7 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
+ 	/* Mode 5 */
+ 	{
+ 		.type = NAND_SDR_IFACE,
++		.timings.mode = 5,
+ 		.timings.sdr = {
+ 			.tCCS_min = 500000,
+ 			.tR_max = 200000000,
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 1e76196f9829..21873168ba4d 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -491,13 +491,17 @@ enum nand_data_interface_type {
+ /**
+  * struct nand_data_interface - NAND interface timing
+  * @type:	 type of the timing
+- * @timings:	 The timing, type according to @type
++ * @timings:	 The timing information
++ * @timings.mode: Timing mode as defined in the specification
+  * @timings.sdr: Use it when @type is %NAND_SDR_IFACE.
+  */
+ struct nand_data_interface {
+ 	enum nand_data_interface_type type;
+-	union {
+-		struct nand_sdr_timings sdr;
++	struct nand_timings {
++		unsigned int mode;
++		union {
++			struct nand_sdr_timings sdr;
++		};
+ 	} timings;
+ };
  
--	/* Send our own NAND_CMD_PARAM. */
--	ret = nand_read_param_page_op(chip, 0, NULL, 0);
--	if (ret)
--		goto ext_out;
--
--	/* Use the Change Read Column command to skip the ONFI param pages. */
-+	/*
-+	 * Use the Change Read Column command to skip the ONFI param pages and
-+	 * ensure we read at the right location.
-+	 */
- 	ret = nand_change_read_column_op(chip,
- 					 sizeof(*p) * p->num_of_param_pages,
- 					 ep, len, true);
 -- 
 2.20.1
 
