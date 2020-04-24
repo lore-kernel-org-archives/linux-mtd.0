@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA927C54FD0
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 Apr 2020 16:45:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 492C7C54FCB
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 Apr 2020 16:46:16 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5958020774
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 Apr 2020 16:45:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0D63B20728
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 Apr 2020 16:46:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NkB6qZVG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5958020774
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PR6eZbyX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D63B20728
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WJJ43JGRChklO/Fu0PD8YvLDkMAh/kr7vogv7ayesOc=; b=NkB6qZVGFdr+5/
-	fWszPecHxMtzJeLj2i8P5PxoUAas7Vti9TWLQURSiL2oOn0ypNBbc9aCizpQ8Y1JbGT83RgQigwfF
-	IdO52xTiU0ARYrO4glnQynJr6uBzpNJnIB7e1tpATuCB4OXTUQ1EDMlNMmmOznF2T9EgKVYLolsgH
-	DMEiQ1IEiO1fM77QIAfpFYipGx1ZaJtCVHR4q/cjM0Ogk+BG3Qwnimov/30a3fkoCakbzXIPZAR/o
-	cnsOQdl0u4yV9MMb3JlSxBuuYFD4cm5gzhJmWPuGQHefZnbJVYyuuHiphATcE/q9PEjD+eRCcfPcy
-	eFCZ6THzKLq4ItiU8PFg==;
+	List-Owner; bh=Pcl+V8owYg65TRsO85BBG8a61UAVt7iOWuBNkTKEcjc=; b=PR6eZbyX/RXb+Q
+	ZfqwvUa6LmLc2nfLcyaWV7r0M+r76JhvVXuPE2VTS5SIxCRM0dmQvIiuNgO/0KLDSehpopUe9w8yb
+	MuJbzH/vcp7tslp/e8H+1mRm6EgtoeZWIPbADm8MhCl4Hoc1xaoZ32ix4hKSlU48UOyoGGCVfL6R3
+	IEjWpdasfuSMimXKVxJcsjFyO1Lt2ySRTh/m6qr6mqwOxa7muWxxOTNUKQ2nxRMg688yQyKtLWxVB
+	qsKWtmNDxL0aiOZPAKCK8CuOJ46NuatG6qU4RE3YG/tGy6WsuoEazd+n6Npz6FZdMIeJYfQXZvY5F
+	Hks/pACHuJM0hYdY5+Sg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jS1SR-0002BA-W7; Fri, 24 Apr 2020 16:45:43 +0000
+	id 1jS1Sm-0002XA-Jw; Fri, 24 Apr 2020 16:46:04 +0000
 Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jS1Rs-00006n-Hv
- for linux-mtd@lists.infradead.org; Fri, 24 Apr 2020 16:45:10 +0000
+ id 1jS1Rt-0000Uh-KG
+ for linux-mtd@lists.infradead.org; Fri, 24 Apr 2020 16:45:12 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id D55D1240002;
- Fri, 24 Apr 2020 16:45:05 +0000 (UTC)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 94D5E24000D;
+ Fri, 24 Apr 2020 16:45:07 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 1/6] mtd: rawnand: marvell: Fix the condition on a return
- code
-Date: Fri, 24 Apr 2020 18:44:56 +0200
-Message-Id: <20200424164501.26719-2-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 3/6] mtd: rawnand: marvell: Use nand_cleanup() when the
+ device is not yet registered
+Date: Fri, 24 Apr 2020 18:44:58 +0200
+Message-Id: <20200424164501.26719-4-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200424164501.26719-1-miquel.raynal@bootlin.com>
 References: <20200424164501.26719-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200424_094508_744656_7C556A23 
-X-CRM114-Status: GOOD (  13.30  )
+X-CRM114-CacheID: sfid-20200424_094509_822797_9F421161 
+X-CRM114-Status: GOOD (  12.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,28 +77,10 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In a previous fix, I changed the condition on which the timeout of an
-IRQ is reached from:
+Do not call nand_release() while the MTD device has not been
+registered, use nand_cleanup() instead.
 
-    if (!ret)
-
-into:
-
-    if (ret && !pending)
-
-While having a non-zero return code is usual in the Linux kernel, here
-ret comes from a wait_for_completion_timeout() which returns 0 when
-the waiting period is too long.
-
-Hence, the revised condition should be:
-
-    if (!ret && !pending)
-
-The faulty patch did not produce any error because of the !pending
-condition so this change is finally purely cosmetic and does not
-change the actual driver behavior.
-
-Fixes: cafb56dd741e ("mtd: rawnand: marvell: prevent timeouts on a loaded machine")
+Fixes: 02f26ecf8c77 ("mtd: nand: add reworked Marvell NAND controller driver")
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 ---
@@ -106,18 +88,18 @@ Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-index 179f0ca585f8..f2bf88336326 100644
+index 7906bd3fc8cb..350949b34eee 100644
 --- a/drivers/mtd/nand/raw/marvell_nand.c
 +++ b/drivers/mtd/nand/raw/marvell_nand.c
-@@ -707,7 +707,7 @@ static int marvell_nfc_wait_op(struct nand_chip *chip, unsigned int timeout_ms)
- 	 * In case the interrupt was not served in the required time frame,
- 	 * check if the ISR was not served or if something went actually wrong.
- 	 */
--	if (ret && !pending) {
-+	if (!ret && !pending) {
- 		dev_err(nfc->dev, "Timeout waiting for RB signal\n");
- 		return -ETIMEDOUT;
+@@ -2664,7 +2664,7 @@ static int marvell_nand_chip_init(struct device *dev, struct marvell_nfc *nfc,
+ 		ret = mtd_device_register(mtd, NULL, 0);
+ 	if (ret) {
+ 		dev_err(dev, "failed to register mtd device: %d\n", ret);
+-		nand_release(chip);
++		nand_cleanup(chip);
+ 		return ret;
  	}
+ 
 -- 
 2.20.1
 
