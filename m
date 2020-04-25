@@ -2,63 +2,97 @@ Return-Path: <SRS0=IAjr=6J=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48778C55186
-	for <linux-mtd@archiver.kernel.org>; Sat, 25 Apr 2020 09:11:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A96CC55185
+	for <linux-mtd@archiver.kernel.org>; Sat, 25 Apr 2020 09:40:34 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 16C4A2064A
-	for <linux-mtd@archiver.kernel.org>; Sat, 25 Apr 2020 09:11:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 623CA20714
+	for <linux-mtd@archiver.kernel.org>; Sat, 25 Apr 2020 09:40:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YvY8k7at"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 16C4A2064A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ksXIqig0";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="Go0nlJqH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 623CA20714
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=45zd9MuLdDMI/LdJxSlq15HQzpVuZ8mYmHhfRt0H1gk=; b=YvY8k7atOTYeM+
-	25RFUqNMqa5LCPZv1uxlTQaFKCcy/ylTqVvuLl7kh4CcHEQf0+aFYnE6aLuFpNasEcTXiZ/o1MwQh
-	tk+tM6aB0kSUNXVEl2JEiq0CHME6n0/UM07ZjGVwPTG3Q8f5ZogYHe/Ze/ul+yxZzJn7ztKCLbv3f
-	mmqC3MLMs2Ivd9+Y+LttoQoqaL74IJN3nv78XBW/qAVr6Pa9Git/yF93eeF6lefCCsdMjuRxjZNM1
-	hA0gnYe1TrtRbw8d+44c5ORIfyhtc6GeO6F9yRAVXbVZyUZ4+/nu64Km/dUOK8PvcdEREdLS+Ov6I
-	K+TI2YeJ8e9RY6Vjjk6g==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=sHUBmWr0Mcf79OURxM1/szu8mu8N531hEHFEI2+O4BA=; b=ksXIqig0NMpfrWq9LKRMDhw2E
+	iKtiRvfcMeg50l2zMTzDgd4Vo39xbtrly7ib6h+AUAy8hQIFqrJe1E4pPSaci6mV3n+fS/qIObIOC
+	aU1XbSICjYIlJe8QS0a5BP1YiYIrHvS5fO+dPRV3Wp+c9Dl6Ms5JHBzuD9RD8O6JxNo+FifrIgwCv
+	KwFz2xL/nbWDFxaQ8WVSlJNb62LQgG2BUXG1GAwFhy2/7YyuzkQ98YHNNzC6zBigOesRm89+mfIzQ
+	FXNxXFh6EH3sS0a7+ku8RT2weaD0nBrIdIBJt+8ZOsToISxIZhnclibng2gU4QVYOovHKA852DsES
+	eW6oTLtRA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jSGqB-0001SQ-VM; Sat, 25 Apr 2020 09:11:15 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1jSHIO-0002e0-Ms; Sat, 25 Apr 2020 09:40:24 +0000
+Received: from mail-lf1-x141.google.com ([2a00:1450:4864:20::141])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jSGq8-0001RQ-5V
- for linux-mtd@lists.infradead.org; Sat, 25 Apr 2020 09:11:13 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id EF79A2A2F95;
- Sat, 25 Apr 2020 10:11:09 +0100 (BST)
-Date: Sat, 25 Apr 2020 11:11:05 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH 07/10] mtd: rawnand: Help supporting controllers that
- are not able to split operations
-Message-ID: <20200425111105.4a5a7861@collabora.com>
-In-Reply-To: <20200424173631.14311-8-miquel.raynal@bootlin.com>
-References: <20200424173631.14311-1-miquel.raynal@bootlin.com>
- <20200424173631.14311-8-miquel.raynal@bootlin.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1jSHIL-0002dB-0G
+ for linux-mtd@lists.infradead.org; Sat, 25 Apr 2020 09:40:22 +0000
+Received: by mail-lf1-x141.google.com with SMTP id w145so9760906lff.3
+ for <linux-mtd@lists.infradead.org>; Sat, 25 Apr 2020 02:40:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=XXLMhjR9CllxCwfxt59gj/WJpVeUwfWLZokasQqQa4E=;
+ b=Go0nlJqHEu0fD9w/PFJAFszOq74RMGtxkitnptd118EVyv90ax1rCehQE/cgUhTBm8
+ EJrQH/azNWv3Gw1wsJcpotNFD8+w1phTCqcgnxgCRgES6XMHdRop/1b0rmgz0LN6q9fy
+ GI6RKlhdXSQk4Gcqk/yAnYkbU/W4y1q9XaZaOA389OoZ3zP1g6yThygUtxuFTEmJ+WAN
+ kpbc+SSxKhB4mTDQqLbr/NaYXjzbGSMhe+RTL177sqSKbvVPzAHDKf7+oqeiSQ40XveL
+ mF5TvA+GbXyEnU3jkqfUF2g3nu88158ZhSfU57ZHuKggp92OR6n4ip70JRq4gH/wURpf
+ dyuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=XXLMhjR9CllxCwfxt59gj/WJpVeUwfWLZokasQqQa4E=;
+ b=FA5ruXbloZp6jieerEPKO1KeA5Qgx1MAuO+7tXkv40isawCZw6dTTAmZvbANfz/5RL
+ PQHE1qhrFsGsbmNB/s746QtHfc/zH3KnqF+m4d2SH305BUWeXpEIDnJy0zgQBfhI+fwD
+ HBtI64coQIbT0YiefcfsZS/+/UTQnMglWirvlXJH+fl7PDyytLjblhyOIAvK2kTNlpJi
+ jBfrRU0Yu+GSJlm3Qt/jjvZPRK43ZhxEnYpFIAzm56+N0TCl9+YJG2uPJdMc6w4p0lg/
+ 4DrM2CzYm875AW7TCDHW0JGAwHhLNF+bH3/wl9i75BA4EkwWh/2ysFvryorrZ3MHHdhd
+ 1O3Q==
+X-Gm-Message-State: AGi0Puaym98ym/MSbwMnCebxGIc7Iqv/GwfUqABNvrnVBmZ1v/1dKofK
+ 1XO8Y3bhYmtY9fFb92vSI2vMuyoJA6jv1A==
+X-Google-Smtp-Source: APiQypKf+baUR2odRGq1HGoS43RU/1OD01UGOiWsfTw2UEuA2yGVKOq5MVdxLzR3tGANcxBadZ5bFQ==
+X-Received: by 2002:ac2:48b1:: with SMTP id u17mr8976036lfg.187.1587807618447; 
+ Sat, 25 Apr 2020 02:40:18 -0700 (PDT)
+Received: from ?IPv6:2a00:1fa0:4665:495f:803b:99db:9ef7:e977?
+ ([2a00:1fa0:4665:495f:803b:99db:9ef7:e977])
+ by smtp.gmail.com with ESMTPSA id m13sm6432656lfk.12.2020.04.25.02.40.17
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Sat, 25 Apr 2020 02:40:17 -0700 (PDT)
+Subject: Re: [PATCH v2 2/9] mtd: rawnand: timings: Fix default tR_max and
+ tCCS_min timings
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org
+References: <20200424164042.26572-1-miquel.raynal@bootlin.com>
+ <20200424164042.26572-3-miquel.raynal@bootlin.com>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Message-ID: <53e0aaf1-f522-1e71-58c3-d007a8cd19fb@cogentembedded.com>
+Date: Sat, 25 Apr 2020 12:40:02 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <20200424164042.26572-3-miquel.raynal@bootlin.com>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200425_021112_468557_A2F4A6A0 
-X-CRM114-Status: GOOD (  27.99  )
+X-CRM114-CacheID: sfid-20200425_024021_197929_5406143F 
+X-CRM114-Status: UNSURE (   8.15  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,167 +104,30 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Michal Simek <monstr@monstr.eu>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Naga Sureshkumar Relli <nagasure@xilinx.com>
-Content-Type: text/plain; charset="us-ascii"
+Cc: Boris Brezillon <boris.brezillon@collabora.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 24 Apr 2020 19:36:28 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+Hello!
 
-> While performing any NAND operation is as simple as following the
-> cores order and send "command", "address" and "data" cycles as
-> provided in a list of instructions, certain controllers are "too
-> clever" and are not able to split the sending of these cycles.
+On 24.04.2020 19:40, Miquel Raynal wrote:
+
+> tR and TCCS are currently wrongly expressed in femto seconds, while we
+
+    tCCS? Femtoseconds?
+
+> expect these values to be expressed in picoseconds. Set right
+> hardcoded values.
 > 
-> Try to find out at boot time if the controller will be problematic and
-> flag it. Additional changes will make use of this flag to workaround
-> the capricious controllers by proposing "packed" operations as an
-> alternative.
-> 
+> Fixes: 6a943386ee36 mtd: rawnand: add default values for dynamic timings
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  drivers/mtd/nand/raw/internals.h |  5 ++++
->  drivers/mtd/nand/raw/nand_base.c | 44 ++++++++++++++++++++++++++++++++
->  include/linux/mtd/rawnand.h      |  8 ++++++
->  3 files changed, 57 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
-> index 9d0caadf940e..38898b8639ee 100644
-> --- a/drivers/mtd/nand/raw/internals.h
-> +++ b/drivers/mtd/nand/raw/internals.h
-> @@ -130,6 +130,11 @@ static inline bool nand_has_setup_data_iface(struct nand_chip *chip)
->  	return true;
->  }
->  
-> +static inline bool nand_pack_ops(struct nand_chip *chip)
-> +{
-> +	return (chip->options & NAND_PACK_OPS);
-> +}
-> +
->  /* BBT functions */
->  int nand_markbad_bbt(struct nand_chip *chip, loff_t offs);
->  int nand_isreserved_bbt(struct nand_chip *chip, loff_t offs);
-> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> index 15a9189b2307..6e4eabb9dc11 100644
-> --- a/drivers/mtd/nand/raw/nand_base.c
-> +++ b/drivers/mtd/nand/raw/nand_base.c
-> @@ -5031,6 +5031,44 @@ static int nand_dt_init(struct nand_chip *chip)
->  	return 0;
->  }
->  
-> +/**
-> + * nand_controller_needs_packed_op - Check the controller habilities to perform
-> + *                                   a set of split operations that the core is
-> + *                                   very likely to try. If one of them do not
-> + *                                   pass, then try to pack operations together.
-> + * @chip: The NAND chip
-> + *
-> + * Returns @true if packing is needed, false otherwise.
-> + */
-> +static bool nand_controller_needs_packed_op(struct nand_chip *chip)
-> +{
-> +	u8 tmp[8];
-> +	struct nand_op_instr data_in_instrs[] = {
-> +		NAND_OP_DATA_IN(8, tmp, 0),
-> +	};
-> +	struct nand_op_instr data_out_instrs[] = {
-> +		NAND_OP_DATA_OUT(8, tmp, 0),
-> +	};
-> +	struct nand_operation ops[] = {
-> +		NAND_OPERATION(0, data_in_instrs),
-> +		NAND_OPERATION(0, data_out_instrs),
-> +	};
-> +	int ret, i;
-> +
-> +	if (!nand_has_exec_op(chip))
-> +		return false;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(ops); i++) {
-> +		ret = chip->controller->ops->exec_op(chip, &ops[i], true);
-> +		if (ret) {
-> +			pr_debug("Using ->exec_op() packed operations only\n");
-> +			return true;
-> +		}
-> +	}
+> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+[...]
 
-Hm, I'm not sure that's enough to detect all weird cases that the
-controller might support or not. The check should really be done on
-actual operations with accurate sizes instead of using a randomly chosen
-8byte data in/out pattern to decide whether all ops need to be
-monolithic or not.
-
-So, let's take a step back and analyze your use cases. You seem to have
-3 here:
-
-1/ read param page
-2/ program page
-3/ read page
-
-For #1, we can just do the check before executing the operation because
-it's only done once at init time (not in the read/write/erase path
-where we care about perfs). For that one I'd suggest extending the
-nand_read_param_page_op() function to take a check_only parameter and
-doing the check directly in nand_{onfi,jedec}_detect().
-
-For #2 and #3, I'd rather have per operation flags to pick the right
-variant, but maybe a simpler option would be to add new helpers for
-those monolithic read/write until we come up with a generic way to
-determine which variants of each perf-sensitive sequences should be
-used based on exec_op() checks.
-
-int nand_monolithic_read_page_raw(struct nand_chip *chip, u8 *buf,
-				  int oob_required, int page)
-{
-	struct mtd_info *mtd = nand_to_mtd(chip);
-	unsigned int size = mtd->writesize;
-	u8 *read_buf = buf;
-	int ret;
-
-	if (oob_required) {
-		size += mtd->oobsize;
-
-		if (buf != chip->data_buf) {
-			chip->pagecache.page = -1;
-			read_buf = chip->data_buf;
-		}
-	}
-
-	ret = nand_read_page_op(chip, page, 0, read_buf, size);
-	if (ret)
-		return ret;
-
-	if (buf != read_buf)
-		memcpy(buf, read_buf, mtd->writesize)
-
-	return 0;
-}
-
-int nand_monolithic_write_page_raw(struct nand_chip *chip, const u8 *buf,
-				   int oob_required, int page)
-{
-	struct mtd_info *mtd = nand_to_mtd(chip);
-	unsigned int size = mtd->writesize;
-	const u8 *write_buf = buf;
-	int ret;
-
-	if (oob_required) {
-		size += mtd->oobsize;
-
-		if (buf != chip->data_buf) {
-			chip->pagecache.page = -1;
-			memcpy(chip->data_buf, buf, mtd->writesize);
-			write_buf = chip->data_buf;
-		}
-	}
-
-	return nand_prog_page_op(chip, page, 0, write_buf, size);
-}
+MBR, Sergei
 
 ______________________________________________________
 Linux MTD discussion mailing list
