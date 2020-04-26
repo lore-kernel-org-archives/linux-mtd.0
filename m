@@ -1,98 +1,67 @@
-Return-Path: <SRS0=IAjr=6J=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=FVTc=6K=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A96CC55185
-	for <linux-mtd@archiver.kernel.org>; Sat, 25 Apr 2020 09:40:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 161FEC55186
+	for <linux-mtd@archiver.kernel.org>; Sun, 26 Apr 2020 02:45:07 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 623CA20714
-	for <linux-mtd@archiver.kernel.org>; Sat, 25 Apr 2020 09:40:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D9BFA2071E
+	for <linux-mtd@archiver.kernel.org>; Sun, 26 Apr 2020 02:45:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ksXIqig0";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="Go0nlJqH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 623CA20714
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Lhf7rMBQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D9BFA2071E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=hisilicon.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=sHUBmWr0Mcf79OURxM1/szu8mu8N531hEHFEI2+O4BA=; b=ksXIqig0NMpfrWq9LKRMDhw2E
-	iKtiRvfcMeg50l2zMTzDgd4Vo39xbtrly7ib6h+AUAy8hQIFqrJe1E4pPSaci6mV3n+fS/qIObIOC
-	aU1XbSICjYIlJe8QS0a5BP1YiYIrHvS5fO+dPRV3Wp+c9Dl6Ms5JHBzuD9RD8O6JxNo+FifrIgwCv
-	KwFz2xL/nbWDFxaQ8WVSlJNb62LQgG2BUXG1GAwFhy2/7YyuzkQ98YHNNzC6zBigOesRm89+mfIzQ
-	FXNxXFh6EH3sS0a7+ku8RT2weaD0nBrIdIBJt+8ZOsToISxIZhnclibng2gU4QVYOovHKA852DsES
-	eW6oTLtRA==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=lpYIGqXskuobxK3ZyoO2Nbo5aBzxi5pDNxRW7kLcUw8=; b=Lhf7rMBQcDKUh2
+	VuQRCqi5iuv6HCbN11op/wcV1YiVZd9LHUrx1GqvGjWuL1xqYFo3eKfDTRvm8uCXpaE9PieB006VQ
+	XxMqXBp4rNs4GPMXx6UJSgBfcMXcIA78Ddi+Jy1kJiV0hVdsdHvfwqgtTqy0HjIOYcRFICEpMzNhC
+	CjBloTeXLvxW4kRks84jXIiKRwd8i2RWdOzlEesH+fC93SMbglKtWdViPytpbi4nriAMVImUgwDtr
+	7kLu8RGCSPsbAOB5W2XWdD49T8Hk6Icq5AzqozobJtV/E9vGDpezAGpV+nNX9ov5RcksRJjzB7Ebj
+	3JsB5UFn4OacxgTXGd6w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jSHIO-0002e0-Ms; Sat, 25 Apr 2020 09:40:24 +0000
-Received: from mail-lf1-x141.google.com ([2a00:1450:4864:20::141])
+	id 1jSXHo-0000QY-Bl; Sun, 26 Apr 2020 02:44:52 +0000
+Received: from szxga06-in.huawei.com ([45.249.212.32] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jSHIL-0002dB-0G
- for linux-mtd@lists.infradead.org; Sat, 25 Apr 2020 09:40:22 +0000
-Received: by mail-lf1-x141.google.com with SMTP id w145so9760906lff.3
- for <linux-mtd@lists.infradead.org>; Sat, 25 Apr 2020 02:40:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=XXLMhjR9CllxCwfxt59gj/WJpVeUwfWLZokasQqQa4E=;
- b=Go0nlJqHEu0fD9w/PFJAFszOq74RMGtxkitnptd118EVyv90ax1rCehQE/cgUhTBm8
- EJrQH/azNWv3Gw1wsJcpotNFD8+w1phTCqcgnxgCRgES6XMHdRop/1b0rmgz0LN6q9fy
- GI6RKlhdXSQk4Gcqk/yAnYkbU/W4y1q9XaZaOA389OoZ3zP1g6yThygUtxuFTEmJ+WAN
- kpbc+SSxKhB4mTDQqLbr/NaYXjzbGSMhe+RTL177sqSKbvVPzAHDKf7+oqeiSQ40XveL
- mF5TvA+GbXyEnU3jkqfUF2g3nu88158ZhSfU57ZHuKggp92OR6n4ip70JRq4gH/wURpf
- dyuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=XXLMhjR9CllxCwfxt59gj/WJpVeUwfWLZokasQqQa4E=;
- b=FA5ruXbloZp6jieerEPKO1KeA5Qgx1MAuO+7tXkv40isawCZw6dTTAmZvbANfz/5RL
- PQHE1qhrFsGsbmNB/s746QtHfc/zH3KnqF+m4d2SH305BUWeXpEIDnJy0zgQBfhI+fwD
- HBtI64coQIbT0YiefcfsZS/+/UTQnMglWirvlXJH+fl7PDyytLjblhyOIAvK2kTNlpJi
- jBfrRU0Yu+GSJlm3Qt/jjvZPRK43ZhxEnYpFIAzm56+N0TCl9+YJG2uPJdMc6w4p0lg/
- 4DrM2CzYm875AW7TCDHW0JGAwHhLNF+bH3/wl9i75BA4EkwWh/2ysFvryorrZ3MHHdhd
- 1O3Q==
-X-Gm-Message-State: AGi0Puaym98ym/MSbwMnCebxGIc7Iqv/GwfUqABNvrnVBmZ1v/1dKofK
- 1XO8Y3bhYmtY9fFb92vSI2vMuyoJA6jv1A==
-X-Google-Smtp-Source: APiQypKf+baUR2odRGq1HGoS43RU/1OD01UGOiWsfTw2UEuA2yGVKOq5MVdxLzR3tGANcxBadZ5bFQ==
-X-Received: by 2002:ac2:48b1:: with SMTP id u17mr8976036lfg.187.1587807618447; 
- Sat, 25 Apr 2020 02:40:18 -0700 (PDT)
-Received: from ?IPv6:2a00:1fa0:4665:495f:803b:99db:9ef7:e977?
- ([2a00:1fa0:4665:495f:803b:99db:9ef7:e977])
- by smtp.gmail.com with ESMTPSA id m13sm6432656lfk.12.2020.04.25.02.40.17
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sat, 25 Apr 2020 02:40:17 -0700 (PDT)
-Subject: Re: [PATCH v2 2/9] mtd: rawnand: timings: Fix default tR_max and
- tCCS_min timings
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org
-References: <20200424164042.26572-1-miquel.raynal@bootlin.com>
- <20200424164042.26572-3-miquel.raynal@bootlin.com>
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Message-ID: <53e0aaf1-f522-1e71-58c3-d007a8cd19fb@cogentembedded.com>
-Date: Sat, 25 Apr 2020 12:40:02 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ id 1jSXHl-0000Mf-95
+ for linux-mtd@lists.infradead.org; Sun, 26 Apr 2020 02:44:50 +0000
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+ by Forcepoint Email with ESMTP id 50727C02D76675834FCD;
+ Sun, 26 Apr 2020 10:44:36 +0800 (CST)
+Received: from [10.65.58.147] (10.65.58.147) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0;
+ Sun, 26 Apr 2020 10:44:28 +0800
+Subject: Re: [RFC PATCH 1/2] mtd: spi-nor: Add capability to disable flash
+ quad mode
+To: Pratyush Yadav <me@yadavpratyush.com>
+References: <1587720044-49172-1-git-send-email-yangyicong@hisilicon.com>
+ <1587720044-49172-2-git-send-email-yangyicong@hisilicon.com>
+ <20200424133004.r2oryuyocz7zmrgz@yadavpratyush.com>
+From: Yicong Yang <yangyicong@hisilicon.com>
+Message-ID: <af86e219-160d-40fe-1a61-6bc8b81cca14@hisilicon.com>
+Date: Sun, 26 Apr 2020 10:44:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-In-Reply-To: <20200424164042.26572-3-miquel.raynal@bootlin.com>
-Content-Language: en-US
+In-Reply-To: <20200424133004.r2oryuyocz7zmrgz@yadavpratyush.com>
+X-Originating-IP: [10.65.58.147]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200425_024021_197929_5406143F 
-X-CRM114-Status: UNSURE (   8.15  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200425_194449_485551_11F38ECC 
+X-CRM114-Status: GOOD (  17.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,30 +73,102 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Boris Brezillon <boris.brezillon@collabora.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Cc: vigneshr@ti.com, sergei.shtylyov@cogentembedded.com,
+ tudor.ambarus@microchip.com, richard@nod.at, john.garry@huawei.com,
+ linuxarm@huawei.com, linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
+ alexander.sverdlin@nokia.com
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello!
+Hi Pratyush,
 
-On 24.04.2020 19:40, Miquel Raynal wrote:
 
-> tR and TCCS are currently wrongly expressed in femto seconds, while we
+On 2020/4/24 21:30, Pratyush Yadav wrote:
+> Hi Yicong,
+>
+> On 24/04/20 05:20PM, Yicong Yang wrote:
+>> Previous we didn't provide a way to disable the flash's quad mode.
+>> Which means we cannot do some cleanup works when to remove or
+>> poweroff the flash, like what set 4-byte address mode does in
+>> spi_nor_restore().
+>>
+>> Add the capability to disable the flash quad mode, by introducing
+>> an enable flag in the flash parameters quad_enable() hooks and
+>> related functions.
+>>
+>> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+>> ---
+>>  drivers/mtd/spi-nor/core.c | 38 ++++++++++++++++++++++++++++----------
+>>  drivers/mtd/spi-nor/core.h |  8 ++++----
+>>  2 files changed, 32 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+>> index cc68ea8..d0516e8 100644
+>> --- a/drivers/mtd/spi-nor/core.c
+>> +++ b/drivers/mtd/spi-nor/core.c
+>> @@ -1910,12 +1910,13 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>>   * spi_nor_sr1_bit6_quad_enable() - Set the Quad Enable BIT(6) in the Status
+> Nitpick: This should probably be changed to "Set/unset the Quad 
+> Enable...". Same in other places.
+>
+>>   * Register 1.
+>>   * @nor:	pointer to a 'struct spi_nor'
+>> + * @enable:	true to enter quad mode. false to leave quad mode.
+>>   *
+>>   * Bit 6 of the Status Register 1 is the QE bit for Macronix like QSPI memories.
+>>   *
+>>   * Return: 0 on success, -errno otherwise.
+>>   */
+>> -int spi_nor_sr1_bit6_quad_enable(struct spi_nor *nor)
+>> +int spi_nor_sr1_bit6_quad_enable(struct spi_nor *nor, bool enable)
+>>  {
+>>  	int ret;
+>>
+>> @@ -1923,10 +1924,14 @@ int spi_nor_sr1_bit6_quad_enable(struct spi_nor *nor)
+>>  	if (ret)
+>>  		return ret;
+>>
+>> -	if (nor->bouncebuf[0] & SR1_QUAD_EN_BIT6)
+>> +	if ((enable && (nor->bouncebuf[0] & SR1_QUAD_EN_BIT6)) ||
+>> +	    ~(enable || (nor->bouncebuf[0] & SR1_QUAD_EN_BIT6)))
+> This condition will always evaluate to true.
+>
+> Since (enable || (nor->bouncebuf[0] & SR1_QUAD_EN_BIT6)) is always a 
+> boolean, it will evaluate to 0 or 1. And ~0 is 0xFFFFFFFF and ~1 is 
+> 0xFFFFFFFE, both of which evaluate to true.
+>
+> IIUC, this condition is supposed to mean "If we want to enable and it is 
+> already enabled, do nothing. Or, if we want to disable and it is already 
+> disabled, do nothing." This might be what you were going for:
+>
+> 	if ((enable && (nor->bouncebuf[0] & SR1_QUAD_EN_BIT6)) ||
+> 	    (!enable && !(nor->bouncebuf[0] & SR1_QUAD_EN_BIT6)))
+>
+> Same for other places this pattern appears.
 
-    tCCS? Femtoseconds?
+Seems type error. It should be
+     !(enable || (nor->bouncebuf[0] & SR1_QUAD_EN_BIT6))
+Thanks for pointing it out.
 
-> expect these values to be expressed in picoseconds. Set right
-> hardcoded values.
-> 
-> Fixes: 6a943386ee36 mtd: rawnand: add default values for dynamic timings
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-[...]
+Thanks,
+Yicong
 
-MBR, Sergei
+
+
+>
+>>  		return 0;
+>>
+>> -	nor->bouncebuf[0] |= SR1_QUAD_EN_BIT6;
+>> +	if (enable)
+>> +		nor->bouncebuf[0] |= SR1_QUAD_EN_BIT6;
+>> +	else
+>> +		nor->bouncebuf[0] &= ~SR1_QUAD_EN_BIT6;
+>>
+>>  	return spi_nor_write_sr1_and_check(nor, nor->bouncebuf[0]);
+>>  }
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
