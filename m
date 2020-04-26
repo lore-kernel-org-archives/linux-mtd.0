@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A0F4C54FCB
-	for <linux-mtd@archiver.kernel.org>; Sun, 26 Apr 2020 19:01:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 061A6C54FCB
+	for <linux-mtd@archiver.kernel.org>; Sun, 26 Apr 2020 19:01:50 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CC382206BF
-	for <linux-mtd@archiver.kernel.org>; Sun, 26 Apr 2020 19:01:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C8A25206BF
+	for <linux-mtd@archiver.kernel.org>; Sun, 26 Apr 2020 19:01:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pA3J7oCI";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="O5EufCZr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC382206BF
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cZkKnC20";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="odiYDHWn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C8A25206BF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=crapouillou.net
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,39 +26,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TJYASmyqfR010kddpPMrZZnVi0as5Nc9x0x8M/IMvKU=; b=pA3J7oCIsvatUB
-	V+13wHPv0N7FiTcaBJpumvDxOZF57g0k8LsyKqTaMVzyBk1L09zEzuG5gmFwrHK9/eFezq6GFnMiq
-	/9/68tRuzZtHVdmcHLMoFWgBa6znfTLzveEXPHCGaboEuWpf8Q88rDPNdUgooPYK2vZ1SsHCUVHlS
-	n7PsDNgQjzyzrQX1Wf4X2Z2YbmdMbXzcVn3fKbGjMdboH4BfZof7DVsUDS9d3p8LbZlgaR6rOWi4z
-	uHZUC4VU4ezFk1KbMUVwyAr00s+VEISKsxZ/6uZy/T3ql0Szdib14B/f9Cas4MBWNndamzdYBYajJ
-	49+91BghBN0ojN0z3i+g==;
+	List-Owner; bh=F8VcA2CkeQe80l1S1A2tyj+BFKCcME+3KCpxNFFVobI=; b=cZkKnC20xR5UIN
+	sVFr9chOqThM5Uz5dx+tYagGRyH9IbhXrNAIVXqPXbmXNES24gIxOFU3o9EpK2Zyc/7WVFsZHQknU
+	hWIcMO7PawbtkRnNxD/H40rvgZ/UR4fS1uy2iXqfoMiWr0bw8HYLhSvY3qnVTSAOOr/ZHr/vMxAPV
+	+y52XiJI7ub7aPSwVuXh3+7ms5uB8xABmG7hZ5iRvpyjMeMk95DSroGY3I+QyK0/AreKJ2TmqL/RR
+	e0BwG3xDM8X1j0vZbxKT8sSB+SPA99OwyKMpYqq5NsaHjhtuWSkT3jzcSOvkbwaZsyZZp+XJpfgQn
+	GMmU+jev6iMkYRdPvR3Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jSmWm-0002xv-Ou; Sun, 26 Apr 2020 19:01:20 +0000
+	id 1jSmX4-0003F8-Tg; Sun, 26 Apr 2020 19:01:38 +0000
 Received: from outils.crapouillou.net ([89.234.176.41] helo=crapouillou.net)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jSmVR-0007mE-HC
- for linux-mtd@lists.infradead.org; Sun, 26 Apr 2020 19:00:01 +0000
+ id 1jSmVd-0008WB-R0
+ for linux-mtd@lists.infradead.org; Sun, 26 Apr 2020 19:00:14 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
- s=mail; t=1587927549; h=from:from:sender:reply-to:subject:subject:date:date:
+ s=mail; t=1587927551; h=from:from:sender:reply-to:subject:subject:date:date:
  message-id:message-id:to:to:cc:cc:mime-version:mime-version:
  content-type:content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=qcPYXBQWWEakfdDh0+58PZ8fYrMYUkgAapK6RXkbctg=;
- b=O5EufCZryTGF4MtIFGJnDH4Mq090BQri4cjf70EXas0dqO1V+jk5ebrVn/Tc98QgjA/7kP
- QNNugGlXrL++xGPXbEfqI+zVcoZXhfH746DfYVdXd5E94vzE80+M5Q5yQ1svT/st6FQwkr
- Akn6f2K1aBaB/4VI/4HDLqh3gOzZx3o=
+ bh=4g9D4y5gDtWMMffSqwXa5g3+cluAqfYCl9HnWWe2i54=;
+ b=odiYDHWnFPVSxmcMC8qtWCwc2Zt9LEnWgvXRbcr3KT6IdjyQbI2tDd5ZyS++f2DvZgh+bn
+ 1OeHDLyfoPZTnxbZjK6DPB/95K61//aVz/92NgXI3Zl1a9HtrYDHI9gFnUgmjeZbBcrdwk
+ iVhkBOZU1Qvoew2RkpkAI7LWAavNOHs=
 From: Paul Cercueil <paul@crapouillou.net>
 To: Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH 5/8] dt-bindings: mtd: Convert ingenic, jz4780-nand.txt to YAML
-Date: Sun, 26 Apr 2020 20:58:53 +0200
-Message-Id: <20200426185856.38826-5-paul@crapouillou.net>
+Subject: [PATCH 6/8] dt-bindings: i2c: Convert i2c-jz4780.txt to YAML
+Date: Sun, 26 Apr 2020 20:58:54 +0200
+Message-Id: <20200426185856.38826-6-paul@crapouillou.net>
 In-Reply-To: <20200426185856.38826-1-paul@crapouillou.net>
 References: <20200426185856.38826-1-paul@crapouillou.net>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200426_115958_043800_0B80FFC3 
-X-CRM114-Status: GOOD (  13.73  )
+X-CRM114-CacheID: sfid-20200426_120010_300974_8DC39B63 
+X-CRM114-Status: GOOD (  12.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,251 +82,147 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Convert the ingenic,jz4780-nand.txt doc file to ingenic,nand.yaml.
+Convert the i2c-jz4780.txt file to ingenic,i2c.yaml.
+
+Two things were changed in the process:
+- the clock-frequency property can now only be set to the two values
+  that can be set by the hardware;
+- the dmas and dma-names properties are now required.
 
 Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 ---
- .../bindings/mtd/ingenic,jz4780-nand.txt      |  92 ------------
- .../devicetree/bindings/mtd/ingenic,nand.yaml | 133 ++++++++++++++++++
- 2 files changed, 133 insertions(+), 92 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
- create mode 100644 Documentation/devicetree/bindings/mtd/ingenic,nand.yaml
+ .../devicetree/bindings/i2c/i2c-jz4780.txt    | 33 --------
+ .../devicetree/bindings/i2c/ingenic,i2c.yaml  | 83 +++++++++++++++++++
+ 2 files changed, 83 insertions(+), 33 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-jz4780.txt
+ create mode 100644 Documentation/devicetree/bindings/i2c/ingenic,i2c.yaml
 
-diff --git a/Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt b/Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
+diff --git a/Documentation/devicetree/bindings/i2c/i2c-jz4780.txt b/Documentation/devicetree/bindings/i2c/i2c-jz4780.txt
 deleted file mode 100644
-index c02259353327..000000000000
---- a/Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
+index d229eff5ca1b..000000000000
+--- a/Documentation/devicetree/bindings/i2c/i2c-jz4780.txt
 +++ /dev/null
-@@ -1,92 +0,0 @@
--* Ingenic JZ4780 NAND/ECC
+@@ -1,33 +0,0 @@
+-* Ingenic JZ4780 I2C Bus controller
 -
--This file documents the device tree bindings for NAND flash devices on the
--JZ4780. NAND devices are connected to the NEMC controller (described in
--memory-controllers/ingenic,jz4780-nemc.txt), and thus NAND device nodes must
--be children of the NEMC node.
+-Required properties:
+-- compatible: should be one of the following:
+-  - "ingenic,jz4780-i2c" for the JZ4780
+-  - "ingenic,x1000-i2c" for the X1000
+-- reg: Should contain the address & size of the I2C controller registers.
+-- interrupts: Should specify the interrupt provided by parent.
+-- clocks: Should contain a single clock specifier for the JZ4780 I2C clock.
+-- clock-frequency: desired I2C bus clock frequency in Hz.
 -
--Required NAND controller device properties:
--- compatible: Should be one of:
--  * ingenic,jz4740-nand
--  * ingenic,jz4725b-nand
--  * ingenic,jz4780-nand
--- reg: For each bank with a NAND chip attached, should specify a bank number,
--  an offset of 0 and a size of 0x1000000 (i.e. the whole NEMC bank).
+-Recommended properties:
+-- pinctrl-names: should be "default";
+-- pinctrl-0: phandle to pinctrl function
 -
--Optional NAND controller device properties:
--- ecc-engine: To make use of the hardware ECC controller, this
--  property must contain a phandle for the ECC controller node. The required
--  properties for this node are described below. If this is not specified,
--  software ECC will be used instead.
+-Example
 -
--Optional children nodes:
--- Individual NAND chips are children of the NAND controller node.
+-/ {
+-	i2c4: i2c4@10054000 {
+-		compatible = "ingenic,jz4780-i2c";
+-		reg = <0x10054000 0x1000>;
 -
--Required children node properties:
--- reg: An integer ranging from 1 to 6 representing the CS line to use.
+-		interrupt-parent = <&intc>;
+-		interrupts = <56>;
 -
--Optional children node properties:
--- nand-ecc-step-size: ECC block size in bytes.
--- nand-ecc-strength: ECC strength (max number of correctable bits).
--- nand-ecc-mode: String, operation mode of the NAND ecc mode. "hw" by default
--- nand-on-flash-bbt: boolean to enable on flash bbt option, if not present false
--- rb-gpios: GPIO specifier for the busy pin.
--- wp-gpios: GPIO specifier for the write protect pin.
+-		clocks = <&cgu JZ4780_CLK_SMB4>;
+-		clock-frequency = <100000>;
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&pins_i2c4_data>;
 -
--Optional child node of NAND chip nodes:
--- partitions: see Documentation/devicetree/bindings/mtd/partition.txt
--
--Example:
--
--nemc: nemc@13410000 {
--	...
--
--	nandc: nand-controller@1 {
--		compatible = "ingenic,jz4780-nand";
--		reg = <1 0 0x1000000>;	/* Bank 1 */
--
--		#address-cells = <1>;
--		#size-cells = <0>;
--
--		ecc-engine = <&bch>;
--
--		nand@1 {
--			reg = <1>;
--
--			nand-ecc-step-size = <1024>;
--			nand-ecc-strength = <24>;
--			nand-ecc-mode = "hw";
--			nand-on-flash-bbt;
--
--			rb-gpios = <&gpa 20 GPIO_ACTIVE_LOW>;
--			wp-gpios = <&gpf 22 GPIO_ACTIVE_LOW>;
--
--			partitions {
--				#address-cells = <2>;
--				#size-cells = <2>;
--				...
--			}
--		};
 -	};
 -};
 -
--The ECC controller is a separate SoC component used for error correction on
--NAND devices. The following is a description of the device properties for a
--ECC controller.
--
--Required ECC properties:
--- compatible: Should be one of:
--  * ingenic,jz4740-ecc
--  * ingenic,jz4725b-bch
--  * ingenic,jz4780-bch
--- reg: Should specify the ECC controller registers location and length.
--- clocks: Clock for the ECC controller.
--
--Example:
--
--bch: bch@134d0000 {
--	compatible = "ingenic,jz4780-bch";
--	reg = <0x134d0000 0x10000>;
--
--	clocks = <&cgu JZ4780_CLK_BCH>;
--};
-diff --git a/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml b/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml
+diff --git a/Documentation/devicetree/bindings/i2c/ingenic,i2c.yaml b/Documentation/devicetree/bindings/i2c/ingenic,i2c.yaml
 new file mode 100644
-index 000000000000..0e4cb1b55385
+index 000000000000..4759b9a3eb18
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml
-@@ -0,0 +1,133 @@
++++ b/Documentation/devicetree/bindings/i2c/ingenic,i2c.yaml
+@@ -0,0 +1,83 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/mtd/ingenic,nand.yaml#
++$id: http://devicetree.org/schemas/i2c/ingenic,i2c.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Ingenic SoCs NAND controller devicetree bindings
++title: Ingenic SoCs I2C controller devicetree bindings
 +
 +maintainers:
 +  - Paul Cercueil <paul@crapouillou.net>
 +
-+allOf:
-+  - $ref: ../memory-controllers/ingenic,nemc-client.yaml#
-+  - $ref: nand-controller.yaml#
-+
 +properties:
++  $nodename:
++    pattern: "^i2c@[0-9a-f]+$"
++
 +  compatible:
 +    enum:
-+      - ingenic,jz4740-nand
-+      - ingenic,jz4725b-nand
-+      - ingenic,jz4780-nand
++      - ingenic,jz4780-i2c
++      - ingenic,x1000-i2c
 +
 +  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  clock-frequency:
++    enum: [ 100000, 400000 ]
++
++  dmas:
 +    items:
-+      - description: Bank number, offset and size of first attached NAND chip
-+      - description: Bank number, offset and size of second attached NAND chip
-+      - description: Bank number, offset and size of third attached NAND chip
-+      - description: Bank number, offset and size of fourth attached NAND chip
-+    minItems: 1
++      - description: DMA controller phandle and request line for RX
++      - description: DMA controller phandle and request line for TX
 +
-+  ecc-engine: true
-+
-+patternProperties:
-+  "^nand@[a-f0-9]$":
-+    type: object
-+    properties:
-+      rb-gpios:
-+        description: GPIO specifier for the busy pin.
-+        maxItems: 1
-+
-+      wp-gpios:
-+        description: GPIO specifier for the write-protect pin.
-+        maxItems: 1
-+
-+  "^partitions$":
-+    type: object
-+    description:
-+      Node containing description of fixed partitions.
-+      See Documentation/devicetree/bindings/mtd/partition.txt
++  dma-names:
++    items:
++      - const: rx
++      - const: tx
 +
 +required:
 +  - compatible
 +  - reg
++  - interrupts
++  - clocks
++  - clock-frequency
++  - dmas
++  - dma-names
 +
 +examples:
 +  - |
 +    #include <dt-bindings/clock/jz4780-cgu.h>
-+    nemc: memory-controller@13410000 {
-+      compatible = "ingenic,jz4780-nemc";
-+      reg = <0x13410000 0x10000>;
-+      #address-cells = <2>;
-+      #size-cells = <1>;
-+      ranges = <1 0 0x1b000000 0x1000000>,
-+         <2 0 0x1a000000 0x1000000>,
-+         <3 0 0x19000000 0x1000000>,
-+         <4 0 0x18000000 0x1000000>,
-+         <5 0 0x17000000 0x1000000>,
-+         <6 0 0x16000000 0x1000000>;
++    #include <dt-bindings/dma/jz4780-dma.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++    i2c@10054000 {
++      compatible = "ingenic,jz4780-i2c";
++      #address-cells = <1>;
++      #size-cells = <0>;
++      reg = <0x10054000 0x1000>;
 +
-+      clocks = <&cgu JZ4780_CLK_NEMC>;
++      interrupt-parent = <&intc>;
++      interrupts = <56>;
 +
-+      nand-controller@1 {
-+        compatible = "ingenic,jz4780-nand";
-+        reg = <1 0 0x1000000>;
++      clocks = <&cgu JZ4780_CLK_SMB4>;
++      pinctrl-names = "default";
++      pinctrl-0 = <&pins_i2c4_data>;
 +
-+        #address-cells = <1>;
-+        #size-cells = <0>;
++      dmas = <&dma JZ4780_DMA_SMB4_RX 0xffffffff>,
++             <&dma JZ4780_DMA_SMB4_TX 0xffffffff>;
++      dma-names = "rx", "tx";
 +
-+        ecc-engine = <&bch>;
++      clock-frequency = <400000>;
 +
-+        ingenic,nemc-tAS = <10>;
-+        ingenic,nemc-tAH = <5>;
-+        ingenic,nemc-tBP = <10>;
-+        ingenic,nemc-tAW = <15>;
-+        ingenic,nemc-tSTRV = <100>;
++      rtc@51 {
++        compatible = "nxp,pcf8563";
++        reg = <0x51>;
 +
-+        pinctrl-names = "default";
-+        pinctrl-0 = <&pins_nemc>;
-+
-+        nand@1 {
-+          reg = <1>;
-+
-+          nand-ecc-step-size = <1024>;
-+          nand-ecc-strength = <24>;
-+          nand-ecc-mode = "hw";
-+          nand-on-flash-bbt;
-+
-+          pinctrl-names = "default";
-+          pinctrl-0 = <&pins_nemc_cs1>;
-+
-+          partitions {
-+            compatible = "fixed-partitions";
-+            #address-cells = <2>;
-+            #size-cells = <2>;
-+
-+            partition@0 {
-+              label = "u-boot-spl";
-+              reg = <0x0 0x0 0x0 0x800000>;
-+            };
-+
-+            partition@800000 {
-+              label = "u-boot";
-+              reg = <0x0 0x800000 0x0 0x200000>;
-+            };
-+
-+            partition@a00000 {
-+              label = "u-boot-env";
-+              reg = <0x0 0xa00000 0x0 0x200000>;
-+            };
-+
-+            partition@c00000 {
-+              label = "boot";
-+              reg = <0x0 0xc00000 0x0 0x4000000>;
-+            };
-+
-+            partition@4c00000 {
-+              label = "system";
-+              reg = <0x0 0x4c00000 0x1 0xfb400000>;
-+            };
-+          };
-+        };
++        interrupt-parent = <&gpf>;
++        interrupts = <30 IRQ_TYPE_LEVEL_LOW>;
 +      };
 +    };
 -- 
