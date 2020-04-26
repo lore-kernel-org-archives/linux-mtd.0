@@ -2,149 +2,93 @@ Return-Path: <SRS0=FVTc=6K=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11312C54FCB
-	for <linux-mtd@archiver.kernel.org>; Sun, 26 Apr 2020 15:40:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F05B5C54FCB
+	for <linux-mtd@archiver.kernel.org>; Sun, 26 Apr 2020 15:59:36 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C1757206DD
-	for <linux-mtd@archiver.kernel.org>; Sun, 26 Apr 2020 15:40:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B8AC520706
+	for <linux-mtd@archiver.kernel.org>; Sun, 26 Apr 2020 15:59:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NBPiW/Pr";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="dCHc1jXE";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="Q+7M95JO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C1757206DD
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WtAGgAVj";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PUg3Rf9a"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B8AC520706
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=izMbR+jw7eCLPndHvbvRaUFjd0GOLjbyA6Dc8iO+de8=; b=NBPiW/Prb4k1fs
-	N+ptueRxRpldgUyDVNgNV6jXaEuLDq37v5SRXra5Nauw6w2ymJmVc5IyiPQ4+G7oibfecPmERAF2L
-	vsbvcaXZ3wFLxoae+y5y7SJ13KiCJvHGI8V6H0Eln2WvZQc/23c0mLbTP23FONzvlp/6RUHRWQ2WC
-	UeQvXAEkk/HzrrDSzAKel38OpC8rHN46UbHVNsVq8cDeqCWRr7Rs4DU2e7WEctu8oSCkrpoRObgp0
-	+4JGpqchvYVsSDUwaY4QwNKjYlBh9gCwT8bQS6BZIH7xvzX6KwQZlwOqD4OfQXTfqbVQkAacxWXCv
-	3E4Yy2A7TOoftMlQcWWA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=PygcDKz3dCQ9Srj/qkuQ7d96YBcHumajb+2LlYClJ5M=; b=WtAGgAVj22rw8B
+	ollOLhPf1yEDqh49k8I95w/kKoWbHFyXQvnUQJSp5nhqkkFimBkVtyXVbh5y/EThtEDApOENSNoUh
+	fQxOgyOyyiLFXZAmd75IUQc+ZKYG2ZuSMlfLr0WM5Nm3HjY/kFZikiK6fktmhJ2kU6kFldFTeXH4b
+	NEU/ZgW5Plc0yf7Qn3T3LSOUpTJraZVis0fQ5H1aimj/RJf1+km8yJVppSyqTTdblOVXxVwXgRxNz
+	IwsLJdKocQUMughs+11gMh2OgdMMWyWJbQNBbtRp5QbhaJiu40j8i5NuKGz16wyomdpR7yH03rvYZ
+	9gJJaZktdst4mREppvRA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jSjOa-0000Zb-LH; Sun, 26 Apr 2020 15:40:40 +0000
-Received: from esa4.microchip.iphmx.com ([68.232.154.123])
+	id 1jSjgl-0007cX-UR; Sun, 26 Apr 2020 15:59:27 +0000
+Received: from mail-wm1-x342.google.com ([2a00:1450:4864:20::342])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jSjOW-0008FR-Oo
- for linux-mtd@lists.infradead.org; Sun, 26 Apr 2020 15:40:38 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1587915636; x=1619451636;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=nU3rYDd7GQkWPMz3Kj6QRnk1cweVqL+a2y09rWEmLRY=;
- b=dCHc1jXEB8tiHWXkjt5PCJeb/LiaVkC89rKLhnN0372P4PDwqjvUubF8
- zcGD3ORkK1tfJgqkCJnhXQ1llsCTkoK9/7+/KJXoZQ4jsKi5JeclPeZgv
- qXib3Yj4L4DZqkMjjd1RnYPg4A/6Px+U23ZKpUFJQ19YIclAOb2UQy9XR
- lHPdRl6K9Tf6Cwe9v1cYQOkXTFtTY7oQqgiJ+rtqK6c1KVrjrnZaD4Ujx
- GwKx0eXfLJDVt3zDQ9CkSKEzwBD7c7GE4y/wLAFLgBT6ePiNm67wZS8L8
- d4NPiP/F8fmI4F2R7FtQvtAf7/AsHeFPHOUMyUMH8Qjq/5ztwKARH6NVF Q==;
-IronPort-SDR: yq0OSX3wvyl4xt/W+GjpflUWsaXJ8W0zau65FU+9Dszs1rkAo4AKho0TxNqfLtfgrT9d8GCjvL
- /ss0GikvC8SzMnIkTnpJEefoQGX8ZBQdUb3jdfresd3oCxdTMJLkC09bPjJCy31XtOMhzIQurl
- SF7GJMQaX7zk/XF/OqevNnMwjwQJoYqpjoisJZe9D4HtPi8VzUbHcPARPRa8REaPRfsn37wGX7
- XjFzbyPO8OyitdR21D9I7AwzBUrKGeLv6uI2M3dABIDnd37mgNCj18oy+x1MrqnSMFEYh7En/F
- W7Q=
-X-IronPort-AV: E=Sophos;i="5.73,320,1583218800"; d="scan'208";a="71558383"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 26 Apr 2020 08:40:36 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Sun, 26 Apr 2020 08:40:35 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Sun, 26 Apr 2020 08:40:35 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VlQ0UZPIwovpp2Me1nKk6dHoiLKA6jjU3LQgIi/0ysbNAg4FXOPiAkJdenIuW0cSMHd1Hc64q5pHTbHeVHspuPhTb3p7FGRPvu14XwtH7VevK2q9nAzlmLU9w/oVldyIYpVJQs0QLbGsRtwwj8aInXybma78WpfUWIce3Jy5ITK5RYc8D0BgQHjJ+3q6KQm1cZAWeb3YDvbu0bxc5T3JvkIMR4GWPmGARinu0GqvgN60s5ygywK5OJYU7EBdPUWhCL9CDHS+pJF/26wG0pzpYFDWTY/I1dhjPzx6I0g+uSxlAtRbGAFLq6y4zJBJ3dnmE3Ynq5SL+ixhSOD7Oso9kg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fNxj2ytlkVrB1f6tqFZGq5e7F9cMcFXNwjrUsoSMn0I=;
- b=SN6RdYx3rbYL7LYO2/G0YZC4cGu65vjleI5BEi1EycXKIxSiIH7W38VNitSf/0VALjWAClbDK86KZHFFzxaHPI091VJn4ry7kSIyQy5c7pzNw3xnzl4PYKRY7MN1yjJccz99T0B5lmH3LdIOeNLJrWaWkV0LjbRKg9QFY8H0IkENMseh6W4emq89JZkKwRxM6ls3RXHq8OSEnYU25o69kLyOgIY0jf1UNaCQ730k7O05IIBxG1zuDgMfPws6lbFoZ02QW/rDI1ViO5neVMkvx01wSO3mSJfsUuI2Of2dizOvR8ZD/uhULZuR7cWqWTgVCiAIODQjq5eeGE01MiDKvg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fNxj2ytlkVrB1f6tqFZGq5e7F9cMcFXNwjrUsoSMn0I=;
- b=Q+7M95JOGrBN7zXlSIiZ/faDN8X8VKG7d2YReouGDOPvr9DHNnXDFZk+ihE/lRFXVfHuYzoZo49EkOYCzfnPUVYsvJBAtUTQ/14NuVsZjeL2f7LiE+Ir58hZ2Iqg1MmqHpo78CxiWqDv8SNPsHPtmkC+mRURPaM1Fc/DxrKHDMI=
-Received: from BY5PR11MB4419.namprd11.prod.outlook.com (2603:10b6:a03:1c8::13)
- by BY5PR11MB4292.namprd11.prod.outlook.com (2603:10b6:a03:1cb::33)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.22; Sun, 26 Apr
- 2020 15:40:31 +0000
-Received: from BY5PR11MB4419.namprd11.prod.outlook.com
- ([fe80::d847:5d58:5325:c536]) by BY5PR11MB4419.namprd11.prod.outlook.com
- ([fe80::d847:5d58:5325:c536%7]) with mapi id 15.20.2937.020; Sun, 26 Apr 2020
- 15:40:31 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <alexander.sverdlin@nokia.com>
-Subject: Re: [PATCH] mtd: spi-nor: Fixup page size and map selection for
- S25FS-S
-Thread-Topic: [PATCH] mtd: spi-nor: Fixup page size and map selection for
- S25FS-S
-Thread-Index: AQHWG+EDIWpaopvk8EurQ9gTxEc0wA==
-Date: Sun, 26 Apr 2020 15:40:30 +0000
-Message-ID: <2670775.TqFIqkCU4V@192.168.0.120>
-References: <20200227123657.26030-1-alexander.sverdlin@nokia.com>
-In-Reply-To: <20200227123657.26030-1-alexander.sverdlin@nokia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Tudor.Ambarus@microchip.com; 
-x-originating-ip: [94.177.32.156]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a995de54-3778-4c15-d696-08d7e9f826f6
-x-ms-traffictypediagnostic: BY5PR11MB4292:
-x-microsoft-antispam-prvs: <BY5PR11MB42923BA2527EC791A35B4E58F0AE0@BY5PR11MB4292.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 03853D523D
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:BY5PR11MB4419.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFTY:;
- SFS:(136003)(366004)(39850400004)(396003)(376002)(346002)(478600001)(66946007)(66476007)(4326008)(6512007)(9686003)(91956017)(76116006)(66556008)(64756008)(66446008)(54906003)(296002)(316002)(186003)(6506007)(53546011)(8936002)(81156014)(6486002)(2906002)(26005)(86362001)(71200400001)(8676002)(6916009)(14286002)(5660300002)(39026012);
- DIR:OUT; SFP:1101; 
-received-spf: None (protection.outlook.com: microchip.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: abO54QmymRdTU6jUH19xYNlcguqdtGWybwbMhaoziSakQIsuFqSD5AfNJbqaJau/fSN3JvzLxmifdjO5eJpeXSORzs7BiWzgRuzssJ2qc59uer6BC8DvYeoQsyKLwF3hB3+PYGbBeXPTVm9DDocDu08hGotLLzsWXB9FsY6BzltbI2C3i5vd+sg0P1Tcb6CBa8RVp2hI4dIzsQhp1xL7Tu1DCVuHHwzCB42Tv86PQpXmGmcEohdBo0Hmt9+hzBwRDYnFe3rle5Kqc4ky1u55AzJmAtv/GWA2vWt3AEGF1J4M85k9NoovNVzkH2EytgAe3TzuneAiIqWakIze0lKraVe0fWQtHG+2h9iAEkxKV0s1VrKtqnfMScu237w9xRNPU8I2/4EhoVUTbNosvGMkgrvQ3aOmIgp55d/yQXX8SPRu46EkC70BDBQn3tRz20mp/szc6V49anLuca8XxCrZbUc9SpJq6mvm9uiGuV/zq5sUmGRPxZVwKnZGWGLRJFGn
-x-ms-exchange-antispam-messagedata: zWaj+fKgoAdraR8YU9BMu3uU+2+j0ygT6SkiayQlAYlak2xTScDBr8cuVW6CN/dzuUUs3dUWZXJZ/iwpBkjZRGSVsvYLCvZXo1yyk9Qpp8ZXI6BzPsECqfN1QkAzAtB3cwFYdisHNeJsFFAJpyvyToHewFDlU9IjWx3dQHEgilthaPl++fH9lh0nC/rPN3lvEatUypHz2fxwzEfW7RtXG2ekSo0YtEUNB+tJof3PjatTLz5l6XRZc29KJAEr467yQ7KAwUm90o/M/DX62VOBX4D50tDGJJpNdv85ef3zN83vIWOipF0oho/Thrh7Vv2qHQnQ0nb4RsnYctLGuAwyNOCwLtWq1wJcs3A7xssF+xnO/+VkGDFYA7Cl8BOj3T931a7WUmYDKK8jrfcvnD5W/L9aWdY7PmTuJ9YP2FRbQKJe9ihPJaTNhVWplCDaXkdZ46b3G/jFnj20cbh9lXNtn3vbQkxuzEMtQXOba9GRxx1vXiGAZhRx6if1uxi0hfuji6LyimHIxTDUVWH/ujWUIgN+EUQtU7V4IBTPz77QcGa3EhU6I4hCkQ3hSpRfe6sK9ZX1KXox+CPvHDVj146BcRL5PtX173qy8F1f8PfNy/mFgJwZjLmdWEa9ZClxXHmUS1WzjCiGujverZBbRfZoztz4HDzz5699lB7FQYvS0wB3kfMAAKXXHd2Z2fHinLI32Nw8NG63hc1p/4urur63LtgAuCHLkXCYW/gQAup5eIdRfAm+GdvQfKvCaOMZdlkaShEsHHUuLVC15slKbO4dmDVzUiyXF9W9CzlxWpWif1A=
-x-ms-exchange-transport-forked: True
-Content-ID: <A26D32D83F408A43B867B2A22A89A2DF@namprd11.prod.outlook.com>
+ id 1jSjgf-0007ak-DY; Sun, 26 Apr 2020 15:59:25 +0000
+Received: by mail-wm1-x342.google.com with SMTP id z6so17540885wml.2;
+ Sun, 26 Apr 2020 08:59:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=AMdZxam1vedMJ6lZ6DpmKbTocx6w2pGIDALI1fZv84A=;
+ b=PUg3Rf9aXSPtXiaHbLY6WBnF5Mw5A6VbP8V4HFUG/qqrRBw0Kl4ioTSpxZSVpohMYb
+ 05GFfPu+yk9c0iwblEpSHewkqCFnbZgIQlHcGOvJ/jE3gtWQQerMvXREoIhdI0drJBAh
+ akCvJDSMSq5fwSXrSEhlVOYUFb1bZMVnodYHUym7O2+NRTiSXumPWN84IiUksRV7ze9y
+ TRiYhNvioqh7R3/ZWE7whLq75wiL48i3sHL3rxk/fP3PxzhDUufc7uQj6Qy41lzsIItz
+ UeahpoOH79jUzUZ6l2jpWLNjXZXZOzEl0QohBmzCqBBXrokqQsJmXaCpycy/4FgKEQ8G
+ iDHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=AMdZxam1vedMJ6lZ6DpmKbTocx6w2pGIDALI1fZv84A=;
+ b=fGm3MCb8oXh1kvY6QOoiwZhNvIc0GrlFJfB1DCJYJVp7i74rBmV/wm207bbMokc65e
+ 9851gnlL8vZWlef4tpktsB+HgJV9ljRiWtWOw6AIYD//dqjoyKGQ6H31lmErwn6PybV4
+ sckMetx8zZ/bDaMKaCA9s29VvG/np82cOXSfAGYOIEA77UeTjn5BnmKfCoT19sX7aPhC
+ KCLO57tjTe61KZtqQwbks5mRl+oFmeY+CZIa9Z/tAxSlo/dnh6nGK0/6IgEMgC2XqTKm
+ z3udwqFbdWkIj5kQ7Yu1t/pVPQiCx60Q76DOU6HoOGs/uKfOAv7sK9RBPBgbCjUV0F6L
+ 0tFw==
+X-Gm-Message-State: AGi0PuZ2dtTP39zpTHxi/i7CaO/qMtu1Wwa+2FIZL/ot7BBvmA/JJIrI
+ 1n/UHht8l2O8QaUxbELgiITtABDi
+X-Google-Smtp-Source: APiQypLJOhf50fhkujVlMo2XJpjwIb8N2fUGfwJFZEwYT0o9+h0usHr6FK28IIgou3ovF6ILd1FEzA==
+X-Received: by 2002:a1c:4144:: with SMTP id o65mr22585329wma.78.1587916757986; 
+ Sun, 26 Apr 2020 08:59:17 -0700 (PDT)
+Received: from [192.168.2.1] (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
+ by smtp.gmail.com with ESMTPSA id a10sm6517564wrg.32.2020.04.26.08.59.16
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Sun, 26 Apr 2020 08:59:17 -0700 (PDT)
+Subject: Re: [PATCH v5 2/7] mtd: rawnand: rockchip: NFC drivers for RK3308,
+ RK3188 and others
+To: Yifeng Zhao <yifeng.zhao@rock-chips.com>, miquel.raynal@bootlin.com,
+ richard@nod.at, vigneshr@ti.com, robh+dt@kernel.org
+References: <20200426100250.14678-1-yifeng.zhao@rock-chips.com>
+ <20200426100250.14678-3-yifeng.zhao@rock-chips.com>
+From: Johan Jonker <jbx6244@gmail.com>
+Message-ID: <bcf46013-20b3-bbd6-9559-85aee4a0c87b@gmail.com>
+Date: Sun, 26 Apr 2020 17:59:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: a995de54-3778-4c15-d696-08d7e9f826f6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Apr 2020 15:40:30.9887 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: dlqj74tEP1yJ+SdADYfovEQVVm3YiDG+n6D5gtutrDxHuIRsPbyoTR496cKYECL9+RBfXs6DkMCDygn496guxXZDU6SFhyLP9yGW/7ABtVQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4292
+In-Reply-To: <20200426100250.14678-3-yifeng.zhao@rock-chips.com>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200426_084036_889101_8AA9D011 
-X-CRM114-Status: UNSURE (   7.88  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200426_085921_492947_8AA9E2D0 
+X-CRM114-Status: GOOD (  32.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -156,65 +100,1611 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: bbrezillon@kernel.org, richard@nod.at, john.garry@huawei.com,
- stable@vger.kernel.org, marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
- computersforpeace@gmail.com, dwmw2@infradead.org
+Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org, heiko@sntech.de,
+ linux-rockchip@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thursday, February 27, 2020 2:36:57 PM EEST Alexander A Sverdlin wrote:
-> Spansion S25FS-S family has an issue in Basic Flash Parameter Table:
+Hi Yifeng,
 
-But you modify the s25fl256s0 entry. We have to fix the flash identification 
-first. How about the patch from below?
+Thank you for version 5.
+
+- This patch doesn't compile.
+
+make ARCH=arm CROSS_COMPILE=/usr/bin/arm-linux-gnueabi- modules
+
+make[4]: *** No rule to make target
+'drivers/mtd/nand/raw/rockchip_nand.o', needed by '__build'.  Stop.
+
+The Makefile is in need for a change.
+
+- Add more mail lists.
+
+./scripts/get_maintainer.pl --nogit-fallback [patch]
+
+linux-arm-kernel@lists.infradead.org
+linux-kernel@vger.kernel.org
+
+- A few more comments below for now (part 1).
+Code review is for the maintainers.
+Key point for acceptance is bad block detection.
+Could you give us a status update on that subject?
+
+Kind regards,
+
+Johan
+
+On 4/26/20 12:02 PM, Yifeng Zhao wrote:
+> This driver supports Rockchip NFC (NAND Flash Controller) found on RK3308,
+> RK3368, RKPX30, RV1108 and other SOCs. The driver has been tested using
+> 8-bit NAND interface on the ARM based RK3308 platform.
+> 
+> Support Rockchip NFC versions:
+> - V6: ECC 16, 24, 40 and 60 bits per 1KB data. Found on RK3066, RK3368,
+>       RK3229, RK3188, RK3288, RK3128, RKPX3SE, RKPx3, RKPX5, RK3036 and
+>       RK3126.
+> - V8: ECC 16 bits per 1KB data. Found on RV1108/7, RK3308.
+> - V9: ECC 16, 40, 60 and 70 bits per 1KB data. Found on RK3326, RKPX30.
+> 
+> Support feature:
+> - Read full page data by DMA.
+> - Support HW ECC(one step is 1KB).
+> - Support 2 - 32K page size.
+> - Support 4 CS(depend on Soc)
+> 
+> Limitations:
+> - Unsupport 512B ecc step.
+> - Raw page read and write without ecc redundancy code. So could not support
+>   raw data dump and restore.
+> - Untested on some SOCs.
+> - Unsupport subpage.
+> - Unsupport randomizer.
+> - The original bad block mask is not supported. It is recommended to use
+>   the BBT(bad block table).
+> 
+> Signed-off-by: Yifeng Zhao <yifeng.zhao@rock-chips.com>
+> ---
+> 
+> Changes in v5:
+> - Add boot blocks support  with different ecc for bootrom
+> - Rename rockchip-nand.c to rockchip-nand-controller.c
+> - Unification of other variable names
+> - Remove some compatible define
+> 
+> Changes in v4:
+> - Define platform data structure for the register offsets.
+> - The compatible define with rkxx_nfc.
+> - Use SET_SYSTEM_SLEEP_PM_OPS to define PM_OPS.
+> - Use exec_op instead of legacy hooks.
+> 
+> Changes in v3: None
+> Changes in v2:
+> - Fix compile error.
+> - Include header files sorted by file name
+> 
+>  drivers/mtd/nand/raw/Kconfig                  |    7 +
+>  drivers/mtd/nand/raw/Makefile                 |    1 +
+>  .../mtd/nand/raw/rockchip-nand-controller.c   | 1344 +++++++++++++++++
+>  3 files changed, 1352 insertions(+)
+>  create mode 100644 drivers/mtd/nand/raw/rockchip-nand-controller.c
+> 
+> diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+> index a80a46bb5b8b..8313b12a9d85 100644
+> --- a/drivers/mtd/nand/raw/Kconfig
+> +++ b/drivers/mtd/nand/raw/Kconfig
+> @@ -433,6 +433,13 @@ config MTD_NAND_MESON
+>  	  Enables support for NAND controller on Amlogic's Meson SoCs.
+>  	  This controller is found on Meson SoCs.
+>  
+
+> +config MTD_NAND_ROCKCHIP
+> +	tristate "Rockchip NAND controller"
+> +	depends on ARCH_ROCKCHIP || COMPILE_TEST
+> +	depends on HAS_IOMEM
+> +	help
+> +	  Enables support for NAND controller on Rockchip SoCs.
+> +
+
+New entries are added down the Kconfig list I think.
+
+From Miquel:
+> Can you write an exhaustive list if you know it? Or at least the
+> families? It is quite challenging when you are not in the Rockchip
+> world to know what SoC is similar to another random SoC.
 
 
-Author: Tudor Ambarus <tudor.ambarus@microchip.com>
-Date:   Sun Apr 26 18:33:33 2020 +0300
 
-    mtd: spi-nor: spansion: Differentiate between s25fl256s and s25fs256s
-    
-    s25fs256s was identified as s25fl256s. Differentiate between them by
-    the Family ID using the INFO6 macro.
-    
-    Fixes: c4b3eacc1dfe ("spi-nor: Recover from Spansion/Cypress errors")
-    Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+>  config MTD_NAND_GPIO
+>  	tristate "GPIO assisted NAND controller"
+>  	depends on GPIOLIB || COMPILE_TEST
+> diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
+> index 2d136b158fb7..8bafa59b8940 100644
+> --- a/drivers/mtd/nand/raw/Makefile
+> +++ b/drivers/mtd/nand/raw/Makefile
+> @@ -58,6 +58,7 @@ obj-$(CONFIG_MTD_NAND_TEGRA)		+= tegra_nand.o
+>  obj-$(CONFIG_MTD_NAND_STM32_FMC2)	+= stm32_fmc2_nand.o
+>  obj-$(CONFIG_MTD_NAND_MESON)		+= meson_nand.o
+>  obj-$(CONFIG_MTD_NAND_CADENCE)		+= cadence-nand-controller.o
 
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index ea72f0e5be73..8ea30491cdd7 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -25,15 +25,21 @@ static const struct flash_info spansion_parts[] = {
-        { "s25fs128s1", INFO6(0x012018, 0x4d0181,  64 * 1024, 256,
-                              SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-                              USE_CLSR) },
--       { "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128,
--                            SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
--                            USE_CLSR) },
--       { "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512,
--                            SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
--                            USE_CLSR) },
-+       { "s25fl256s0", INFO6(0x010219, 0x4d0080, 256 * 1024, 128,
-+                             SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+                             USE_CLSR) },
-+       { "s25fl256s1", INFO6(0x010219, 0x4d0180, 64 * 1024, 512,
-+                             SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+                             USE_CLSR) },
-        { "s25fl512s",  INFO6(0x010220, 0x4d0080, 256 * 1024, 256,
-                              SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-                              SPI_NOR_HAS_LOCK | USE_CLSR) },
-+       { "s25fs256s0", INFO6(0x010219, 0x4d0081, 256 * 1024, 128,
-+                             SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+                             USE_CLSR) },
-+       { "s25fs256s1", INFO6(0x010219, 0x4d0181, 64 * 1024, 512,
-+                             SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+                             USE_CLSR) },
-        { "s25fs512s",  INFO6(0x010220, 0x4d0081, 256 * 1024, 256,
-                              SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-                              USE_CLSR) },
+> +obj-$(CONFIG_MTD_NAND_ROCKCHIP)		+= rockchip_nand.o
 
+-obj-$(CONFIG_MTD_NAND_ROCKCHIP)                += rockchip_nand.o
++obj-$(CONFIG_MTD_NAND_ROCKCHIP)                +=
+rockchip-nand-controller.o
+
+
+>  
+>  nand-objs := nand_base.o nand_legacy.o nand_bbt.o nand_timings.o nand_ids.o
+>  nand-objs += nand_onfi.o
+> diff --git a/drivers/mtd/nand/raw/rockchip-nand-controller.c b/drivers/mtd/nand/raw/rockchip-nand-controller.c
+> new file mode 100644
+> index 000000000000..cf473ed01999
+> --- /dev/null
+> +++ b/drivers/mtd/nand/raw/rockchip-nand-controller.c
+> @@ -0,0 +1,1344 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR MIT
+> +/*
+> + * Rockchip NAND Flash controller driver.
+> + * Copyright (C) 2020 Rockchip Inc.
+
+> + * Authors: Yifeng Zhao <yifeng.zhao@rock-chips.com>
+
+Author:
+
+> + */
+> +
+
+> +#include <linux/clk.h>
+> +#include <linux/delay.h>
+> +#include <linux/dma-mapping.h>
+> +#include <linux/dmaengine.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/iopoll.h>
+
+> +#include <linux/mtd/rawnand.h>
+> +#include <linux/mtd/mtd.h>
+
+Sort includes.
+
+> +#include <linux/module.h>
+
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+> +#include <linux/platform_device.h>
+
+> +
+> +/*
+> + * NFC Page Data Layout:
+> + *	1024 Bytes Data + 4Bytes sys data + 28Bytes~124Bytes ecc +
+> + *	1024 Bytes Data + 4Bytes sys data + 28Bytes~124Bytes ecc +
+> + *	......
+> + * NAND Page Data Layout:
+> + *	1024 * n Data + m Bytes oob
+> + * Original Bad Block Mask Location:
+> + *	first byte of oob(spare)
+> + * nand_chip->oob_poi data layout:
+> + *	4Bytes sys data + .... + 4Bytes sys data + ecc data
+> + */
+> +
+> +/* NAND controller register definition */
+> +#define	NFC_READ		(0)
+> +#define	NFC_WRITE		(1)
+
+> +#define	NFC_FMCTL		(0x00)
+> +#define		FMCTL_CE_SEL_M		0xFF
+> +#define		FMCTL_CE_SEL(x)		(1 << (x))
+> +#define		FMCTL_WP		BIT(8)
+> +#define		FMCTL_RDY		BIT(9)
+
+> +#define	NFC_FMWAIT		(0x04)
+
+Move somewhere more logical.
+
+> +#define		FLCTL_RST		BIT(0)
+> +#define		FLCTL_WR		(1)	/* 0: read, 1: write */
+> +#define		FLCTL_XFER_ST		BIT(2)
+> +#define		FLCTL_XFER_EN		BIT(3)
+> +#define		FLCTL_ACORRECT		BIT(10) /* auto correct error bits */
+> +#define		FLCTL_XFER_READY	BIT(20)
+> +#define		FLCTL_XFER_SECTOR	(22)
+> +#define		FLCTL_TOG_FIX		BIT(29)
+
+Sort defines on bit. Remove extra TAB.
+Ask Miquel for exact prefix.
+
+> +#define		BCHCTL_BANK_M	(7 << 5)
+> +#define		BCHCTL_BANK	(5)
+> +#define		DMA_ST			BIT(0)
+> +#define		DMA_WR			(1)	/* 0: write, 1: read */
+> +#define		DMA_EN			BIT(2)
+> +#define		DMA_AHB_SIZE		(3)	/* 0: 1, 1: 2, 2: 4 */
+> +#define		DMA_BURST_SIZE		(6)	/* 0: 1, 3: 4, 5: 8, 7: 16 */
+> +#define		DMA_INC_NUM		(9)	/* 1 - 16 */
+> +#define		ECC_ERR_CNT(x, e) ((((x) >> (e).low) & (e).low_mask) \
+> +			| (((x) >> (e).high) & (e).high_mask) << (e).low_bn)
+> +#define		INT_DMA			BIT(0)
+> +#define	NFC_BANK		(0x800)
+> +#define	NFC_BANK_STEP		(0x100)
+> +#define		BANK_DATA		(0x00)
+> +#define		BANK_ADDR		(0x04)
+> +#define		BANK_CMD		(0x08)
+> +#define	NFC_SRAM0		(0x1000)
+> +#define	NFC_SRAM1		(0x1400)
+> +#define	NFC_SRAM_SIZE		(0x400)
+> +#define	THIS_NAME		"rk-nand"
+> +#define	NFC_TIMEOUT		(500000)
+> +#define	NFC_MAX_OOB_PER_STEP	128
+> +#define	NFC_MIN_OOB_PER_STEP	64
+> +#define	MAX_DATA_SIZE		0xFFFC
+> +#define	MAX_ADDRESS_CYC		6
+> +#define	NFC_ECC_MAX_MODES	4
+> +#define	NFC_MAX_NSELS		(4) /* Some Soc only has 1 or 2 CSs */
+> +#define	NFC_SYS_DATA_SIZE	(4) /* 4 bytes sys data in oob pre 1024 data */
+> +#define	RK_DEFAULT_CLOCK_RATE	(150 * 1000 * 1000) /* 150 Mhz*/
+> +#define	ACCTIMING(csrw, rwpw, rwcs) ((csrw) << 12 | (rwpw) << 5 | (rwcs))
+> +
+> +enum nfc_type {
+> +	NFC_V6,
+> +	NFC_V8,
+> +	NFC_V9,
+> +};
+> +
+> +/**
+> + * struct rk_ecc_cnt_status: represent a ecc status data.
+> + * @err_flag_bit: error flag bit index at register.
+> + * @low: ecc count low bit index at register.
+> + * @low_mask: mask bit.
+> + * @low_bn: ecc count low bit number.
+> + * @high: ecc count high bit index at register.
+> + * @high_mask: mask bit
+> + */
+> +struct ecc_cnt_status {
+> +	u8 err_flag_bit;
+> +	u8 low;
+> +	u8 low_mask;
+> +	u8 low_bn;
+> +	u8 high;
+> +	u8 high_mask;
+> +};
+> +
+> +/**
+> + * @type: nfc version
+> + * @ecc_strengths: ecc strengths
+> + * @ecc_cfgs: ecc config values
+> + * @flctl_off: FLCTL register offset
+> + * @bchctl_off: BCHCTL register offset
+> + * @dma_data_buf_off: DMA_DATA_BUF register offset
+> + * @dma_oob_buf_off: DMA_OOB_BUF register offset
+> + * @dma_cfg_off: DMA_CFG register offset
+> + * @dma_st_off: DMA_ST register offset
+> + * @bch_st_off: BCG_ST register offset
+> + * @randmz_off: RANDMZ register offset
+> + * @int_en_off: interrupt enable register offset
+> + * @int_clr_off: interrupt clean register offset
+> + * @int_st_off: interrupt status register offset
+> + * @oob0_off: oob0 register offset
+> + * @oob1_off: oob1 register offset
+> + * @ecc0: represent ECC0 status data
+> + * @ecc1: represent ECC1 status data
+> + */
+> +struct nfc_cfg {
+> +	enum nfc_type type;
+> +	u8 ecc_strengths[NFC_ECC_MAX_MODES];
+> +	u32 ecc_cfgs[NFC_ECC_MAX_MODES];
+> +	u32 flctl_off;
+> +	u32 bchctl_off;
+> +	u32 dma_cfg_off;
+> +	u32 dma_data_buf_off;
+> +	u32 dma_oob_buf_off;
+> +	u32 dma_st_off;
+> +	u32 bch_st_off;
+> +	u32 randmz_off;
+> +	u32 int_en_off;
+> +	u32 int_clr_off;
+> +	u32 int_st_off;
+> +	u32 oob0_off;
+> +	u32 oob1_off;
+> +	struct ecc_cnt_status ecc0;
+> +	struct ecc_cnt_status ecc1;
+> +};
+> +
+> +struct rk_nfc_nand_chip {
+> +	struct list_head node;
+> +	struct nand_chip chip;
+> +
+> +	u32 spare_per_sector;
+> +	u32 oob_buf_per_sector;
+> +	u32 boot_blks;
+> +	u32 boot_ecc;
+> +
+> +	int nsels;
+> +	u8 sels[0];
+> +	/* nothing after this field */
+> +};
+> +
+> +struct rk_nfc_clk {
+> +	int nfc_rate;
+> +	struct clk *nfc_clk;
+> +	struct clk *ahb_clk;
+> +};
+> +
+> +struct rk_nfc {
+> +	struct nand_controller controller;
+> +	struct rk_nfc_clk clk;
+> +
+> +	struct device *dev;
+> +	const struct nfc_cfg *cfg;
+> +	void __iomem *regs;
+> +
+> +	int selected_bank;
+> +	int band_offset;
+> +
+> +	struct completion done;
+> +	struct list_head chips;
+> +
+> +	u8 *buffer;
+> +	u8 *page_buf;
+> +	u32 *oob_buf;
+> +
+> +	unsigned long assigned_cs;
+> +};
+> +
+> +static inline struct rk_nfc_nand_chip *to_rk_nand(struct nand_chip *chip)
+> +{
+> +	return container_of(chip, struct rk_nfc_nand_chip, chip);
+> +}
+> +
+> +static inline u8 *data_ptr(struct nand_chip *chip, const u8 *p, int i)
+> +{
+> +	return (u8 *)p + i * chip->ecc.size;
+> +}
+> +
+> +static inline u8 *oob_ptr(struct nand_chip *chip, int i)
+> +{
+> +	u8 *poi;
+> +
+> +	poi = chip->oob_poi + i * NFC_SYS_DATA_SIZE;
+> +
+> +	return poi;
+> +}
+> +
+> +static inline int rk_data_len(struct nand_chip *chip)
+> +{
+> +	struct rk_nfc_nand_chip *rk_nand = to_rk_nand(chip);
+> +
+> +	return chip->ecc.size + rk_nand->spare_per_sector;
+> +}
+> +
+> +static inline u8 *rk_data_ptr(struct nand_chip *chip,  int i)
+> +{
+> +	struct rk_nfc *nfc = nand_get_controller_data(chip);
+> +
+> +	return nfc->buffer + i * rk_data_len(chip);
+> +}
+> +
+> +static inline u8 *rk_oob_ptr(struct nand_chip *chip, int i)
+> +{
+> +	struct rk_nfc *nfc = nand_get_controller_data(chip);
+> +
+> +	return nfc->buffer + i * rk_data_len(chip) + chip->ecc.size;
+> +}
+> +
+> +static void rk_nfc_select_chip(struct nand_chip *chip, int cs)
+> +{
+> +	struct rk_nfc *nfc = nand_get_controller_data(chip);
+> +	struct rk_nfc_nand_chip *rk_nand = to_rk_nand(chip);
+> +	u32 val;
+> +
+> +	if (cs < 0) {
+> +		nfc->selected_bank = -1;
+
+> +		/* Deselect the currently selected target */
+
+/* Deselect the currently selected target. */
+
+A phrase starts with a capital and ends with a dot.
+Check the rest as well.
+
+> +		val = readl_relaxed(nfc->regs + NFC_FMCTL);
+> +		val &= ~FMCTL_CE_SEL_M;
+> +		writel(val, nfc->regs + NFC_FMCTL);
+> +		return;
+> +	}
+> +
+> +	nfc->selected_bank = rk_nand->sels[cs];
+> +	nfc->band_offset = NFC_BANK + nfc->selected_bank * NFC_BANK_STEP;
+> +
+> +	val = readl_relaxed(nfc->regs + NFC_FMCTL);
+> +	val &= ~FMCTL_CE_SEL_M;
+> +	val |= FMCTL_CE_SEL(nfc->selected_bank);
+> +
+> +	writel(val, nfc->regs + NFC_FMCTL);
+> +}
+> +
+> +static inline void rk_nfc_wait_ioready(struct rk_nfc *nfc)
+> +{
+> +	int rc;
+> +	u32 val;
+> +
+> +	rc = readl_poll_timeout_atomic(nfc->regs + NFC_FMCTL, val,
+> +				       val & FMCTL_RDY, 10, NFC_TIMEOUT);
+
+> +	if (rc < 0)
+> +		dev_err(nfc->dev, "data not ready\n");
+
+Do we need debug here or move to call function?
+
+> +}
+> +
+> +static inline u8 rk_nfc_read_byte(struct nand_chip *chip)
+> +{
+> +	struct rk_nfc *nfc = nand_get_controller_data(chip);
+> +
+> +	return readb_relaxed(nfc->regs + nfc->band_offset + BANK_DATA);
+> +}
+> +
+> +static void rk_nfc_read_buf(struct nand_chip *chip, u8 *buf, int len)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < len; i++)
+> +		buf[i] = rk_nfc_read_byte(chip);
+> +}
+> +
+> +static void rk_nfc_write_byte(struct nand_chip *chip, u8 byte)
+> +{
+> +	struct rk_nfc *nfc = nand_get_controller_data(chip);
+> +
+> +	writeb(byte, nfc->regs + nfc->band_offset + BANK_DATA);
+> +}
+> +
+> +static void rk_nfc_write_buf(struct nand_chip *chip, const u8 *buf, int len)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < len; i++)
+> +		rk_nfc_write_byte(chip, buf[i]);
+> +}
+> +
+> +static int rk_nfc_cmd(struct nand_chip *chip,
+> +		      const struct nand_subop *subop)
+> +{
+> +	struct rk_nfc *nfc = nand_get_controller_data(chip);
+> +	u32 cnt = 0;
+> +	unsigned int i, j, remaining, start;
+> +	int reg_offset = nfc->band_offset;
+> +	u8 *inbuf = NULL;
+> +	const u8 *outbuf;
+> +	void __iomem *data_reg;
+> +
+> +	for (i = 0; i < subop->ninstrs; i++) {
+> +		const struct nand_op_instr *instr = &subop->instrs[i];
+> +
+> +		switch (instr->type) {
+> +		case NAND_OP_CMD_INSTR:
+> +			writeb(instr->ctx.cmd.opcode,
+> +			       nfc->regs + reg_offset + BANK_CMD);
+> +			break;
+> +
+> +		case NAND_OP_ADDR_INSTR:
+> +			remaining = nand_subop_get_num_addr_cyc(subop, i);
+> +			start = nand_subop_get_addr_start_off(subop, i);
+> +
+> +			for (j = 0; j < 8 && j + start < remaining; j++)
+> +				writeb(instr->ctx.addr.addrs[j + start],
+> +				       nfc->regs + reg_offset + BANK_ADDR);
+> +			break;
+> +
+> +		case NAND_OP_DATA_IN_INSTR:
+> +		case NAND_OP_DATA_OUT_INSTR:
+> +			start = nand_subop_get_data_start_off(subop, i);
+> +			cnt = nand_subop_get_data_len(subop, i);
+> +			data_reg = nfc->regs + nfc->band_offset + BANK_DATA;
+> +
+> +			if (instr->type == NAND_OP_DATA_OUT_INSTR) {
+> +				outbuf = instr->ctx.data.buf.out + start;
+> +				for (j = 0; j < cnt; j++)
+> +					writeb(outbuf[j], data_reg);
+> +			} else {
+> +				inbuf = instr->ctx.data.buf.in + start;
+> +				for (j = 0; j < cnt; j++)
+> +					inbuf[j] = readb_relaxed(data_reg);
+> +			}
+> +			break;
+> +
+> +		case NAND_OP_WAITRDY_INSTR:
+> +			rk_nfc_wait_ioready(nfc);
+> +			break;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct nand_op_parser rk_nfc_op_parser = NAND_OP_PARSER(
+> +	NAND_OP_PARSER_PATTERN(
+> +		rk_nfc_cmd,
+> +		NAND_OP_PARSER_PAT_CMD_ELEM(true),
+> +		NAND_OP_PARSER_PAT_ADDR_ELEM(true, MAX_ADDRESS_CYC),
+> +		NAND_OP_PARSER_PAT_CMD_ELEM(true),
+> +		NAND_OP_PARSER_PAT_WAITRDY_ELEM(true),
+> +		NAND_OP_PARSER_PAT_DATA_IN_ELEM(true, MAX_DATA_SIZE)),
+> +	NAND_OP_PARSER_PATTERN(
+> +		rk_nfc_cmd,
+> +		NAND_OP_PARSER_PAT_CMD_ELEM(true),
+> +		NAND_OP_PARSER_PAT_ADDR_ELEM(true, MAX_ADDRESS_CYC),
+> +		NAND_OP_PARSER_PAT_DATA_OUT_ELEM(true, MAX_DATA_SIZE),
+> +		NAND_OP_PARSER_PAT_CMD_ELEM(true),
+> +		NAND_OP_PARSER_PAT_WAITRDY_ELEM(true)),
+> +);
+> +
+> +static int rk_nfc_exec_op(struct nand_chip *chip,
+> +			  const struct nand_operation *op,
+> +			  bool check_only)
+> +{
+> +	rk_nfc_select_chip(chip, op->cs);
+> +	return nand_op_parser_exec_op(chip, &rk_nfc_op_parser, op,
+> +				      check_only);
+> +}
+> +
+> +static int rk_nfc_setup_data_interface(struct nand_chip *chip, int csline,
+> +				       const struct nand_data_interface *conf)
+> +{
+> +	struct rk_nfc *nfc = nand_get_controller_data(chip);
+> +	const struct nand_sdr_timings *timings;
+> +	u32 rate, tc2rw, trwpw, trw2c;
+> +	u32 temp;
+> +
+> +	if (csline == NAND_DATA_IFACE_CHECK_ONLY)
+> +		return 0;
+> +
+> +	/* not onfi nand flash */
+> +	if (!chip->parameters.onfi)
+> +		return 0;
+> +
+> +	timings = nand_get_sdr_timings(conf);
+> +	if (IS_ERR(timings))
+> +		return -ENOTSUPP;
+> +
+> +	if (IS_ERR(nfc->clk.nfc_clk))
+> +		rate = clk_get_rate(nfc->clk.ahb_clk);
+> +	else
+> +		rate = clk_get_rate(nfc->clk.nfc_clk);
+> +
+> +	/* turn clock rate into KHZ */
+> +	rate /= 1000;
+> +
+> +	tc2rw = 1;
+> +	trw2c = 1;
+> +
+> +	trwpw = max(timings->tWC_min, timings->tRC_min) / 1000;
+> +	trwpw = DIV_ROUND_UP(trwpw * rate, 1000000);
+> +
+> +	temp = timings->tREA_max / 1000;
+> +	temp = DIV_ROUND_UP(temp * rate, 1000000);
+> +
+> +	if (trwpw < temp)
+> +		trwpw = temp;
+> +
+> +	/*
+> +	 * ACCON: access timing control register
+> +	 * -------------------------------------
+> +	 * 31:18: reserved
+> +	 * 17:12: csrw, clock cycles from the falling edge of CSn to the
+> +		 falling edge of RDn or WRn
+> +	 * 11:11: reserved
+> +	 * 10:05: rwpw, the width of RDn or WRn in processor clock cycles
+> +	 * 04:00: rwcs, clock cycles from the rising edge of RDn or WRn to the
+> +		 rising edge of CSn
+> +	 */
+> +	temp = ACCTIMING(tc2rw, trwpw, trw2c);
+> +	writel(temp, nfc->regs + NFC_FMWAIT);
+> +
+> +	return 0;
+> +}
+> +
+> +static int rk_nfc_hw_ecc_setup(struct nand_chip *chip,
+> +			       struct nand_ecc_ctrl *ecc,
+> +			       uint32_t strength)
+> +{
+> +	struct rk_nfc *nfc = nand_get_controller_data(chip);
+> +	u32 reg, i;
+> +
+> +	for (i = 0; i < NFC_ECC_MAX_MODES; i++) {
+> +		if (ecc->strength == nfc->cfg->ecc_strengths[i]) {
+> +			reg = nfc->cfg->ecc_cfgs[i];
+> +			break;
+> +		}
+> +	}
+> +
+> +	if (i >= NFC_ECC_MAX_MODES)
+> +		return -EINVAL;
+> +
+> +	writel(reg, nfc->regs + nfc->cfg->bchctl_off);
+> +
+> +	return 0;
+> +}
+> +
+> +static void rk_nfc_xfer_start(struct rk_nfc *nfc, u8 rw, u8 n_KB,
+> +			      dma_addr_t dma_data, dma_addr_t dma_oob)
+> +{
+> +	u32 dma_reg, fl_reg, bch_reg;
+> +
+> +	dma_reg = DMA_ST | ((!rw) << DMA_WR)  | DMA_EN | (2 << DMA_AHB_SIZE) |
+> +	      (7 << DMA_BURST_SIZE) | (16 << DMA_INC_NUM);
+> +
+> +	fl_reg = (rw << FLCTL_WR) | FLCTL_XFER_EN | FLCTL_ACORRECT |
+> +		 (n_KB << FLCTL_XFER_SECTOR) | FLCTL_TOG_FIX;
+> +
+> +	if (nfc->cfg->type == NFC_V6 || nfc->cfg->type == NFC_V8) {
+> +		bch_reg = readl_relaxed(nfc->regs + nfc->cfg->bchctl_off);
+> +		bch_reg = (bch_reg & (~BCHCTL_BANK_M)) |
+> +			  (nfc->selected_bank << BCHCTL_BANK);
+> +		writel(bch_reg, nfc->regs + nfc->cfg->bchctl_off);
+> +	}
+> +
+> +	writel(dma_reg, nfc->regs + nfc->cfg->dma_cfg_off);
+> +	writel((u32)dma_data, nfc->regs + nfc->cfg->dma_data_buf_off);
+> +	writel((u32)dma_oob, nfc->regs + nfc->cfg->dma_oob_buf_off);
+> +	writel(fl_reg, nfc->regs + nfc->cfg->flctl_off);
+> +	fl_reg |= FLCTL_XFER_ST;
+> +	writel(fl_reg, nfc->regs + nfc->cfg->flctl_off);
+> +}
+> +
+> +static int rk_nfc_wait_for_xfer_done(struct rk_nfc *nfc)
+> +{
+> +	u32 reg;
+> +	int ret = 0;
+> +	void __iomem *ptr;
+> +
+> +	ptr = nfc->regs + nfc->cfg->flctl_off;
+> +
+> +	ret = readl_poll_timeout_atomic(ptr, reg,
+> +					reg & FLCTL_XFER_READY,
+> +					10, NFC_TIMEOUT);
+
+> +	if (ret)
+> +		dev_err(nfc->dev, "timeout reg=%x\n", reg);
+
+Leave debug/action up to the call function.
+
+> +
+> +	return ret;
+> +}
+> +
+> +static int rk_nfc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+> +			     const u8 *buf, int page, int raw)
+> +{
+> +	struct rk_nfc *nfc = nand_get_controller_data(chip);
+> +	struct rk_nfc_nand_chip *rk_nand = to_rk_nand(chip);
+> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
+> +	int oob_step = (ecc->bytes > 60) ? NFC_MAX_OOB_PER_STEP :
+> +			NFC_MIN_OOB_PER_STEP;
+> +	int pages_per_blk = mtd->erasesize / mtd->writesize;
+> +	int ret = 0, i, boot_rom_mode = 0;
+> +	dma_addr_t dma_data, dma_oob;
+> +	u32 reg;
+> +	u8 *oob;
+> +
+> +	nand_prog_page_begin_op(chip, page, 0, NULL, 0);
+> +
+> +	if (!raw) {
+> +		memcpy(nfc->page_buf, buf, mtd->writesize);
+> +		memset(nfc->oob_buf, 0xff, oob_step * ecc->steps);
+> +
+> +		/*
+> +		 * The first 8(some device is 4 or 16) blocks in use by
+                                                             ^
+                                                            are
+> +		 * the bootloader. And the first 32 bits of oob need link
+                                                                    ^
+                                                                    to
+> +		 * to next page address in the same block for Bootrom.
+> +		 * Swap the first oob with the seventh oob, and bad block
+
+                                                          ^
+                                                        remove comma
+> +		 * mask save at seventh oob.
+                       ^       ^
+                   is saved   the
+> +		 */
+
+Recheck the phrase above.
+
+> +		if (page < pages_per_blk * rk_nand->boot_blks &&
+> +		    chip->options & NAND_IS_BOOT_MEDIUM) {
+> +			boot_rom_mode = 1;
+> +			if (rk_nand->boot_ecc != ecc->strength)
+> +				rk_nfc_hw_ecc_setup(chip, ecc,
+> +						    rk_nand->boot_ecc);
+> +		}
+
+From Miquel:
+> This would probably deserve a helper
+
+> +
+> +		swap(chip->oob_poi[0], chip->oob_poi[7]);
+> +
+> +		for (i = 0; i < ecc->steps; i++) {
+> +			oob = chip->oob_poi + i * NFC_SYS_DATA_SIZE;
+> +			reg = oob[0] | oob[1] << 8 | oob[2] << 16 |
+> +			      oob[3] << 24;
+> +			if (!i && boot_rom_mode)
+> +				reg = (page & (pages_per_blk - 1)) * 4;
+> +
+> +			if (nfc->cfg->type == NFC_V6 ||
+> +			    nfc->cfg->type == NFC_V8)
+> +				nfc->oob_buf[i * oob_step / 4] = reg;
+> +			else
+> +				nfc->oob_buf[i] = reg;
+> +		}
+> +
+> +		dma_data = dma_map_single(nfc->dev, (void *)nfc->page_buf,
+> +					  mtd->writesize, DMA_TO_DEVICE);
+> +		dma_oob = dma_map_single(nfc->dev, nfc->oob_buf,
+> +					 ecc->steps * oob_step,
+> +					 DMA_TO_DEVICE);
+> +
+
+> +		init_completion(&nfc->done);
+
+From Miquel:
+> One init_completion is needed (in the probe, probably) then please use
+> reinit_completion().
+
+> +		writel(INT_DMA, nfc->regs + nfc->cfg->int_en_off);
+> +
+> +		rk_nfc_xfer_start(nfc, NFC_WRITE, ecc->steps, dma_data,
+> +				  dma_oob);
+> +		ret = wait_for_completion_timeout(&nfc->done,
+> +						  msecs_to_jiffies(100));
+> +		if (!ret)
+> +			ret = -ETIMEDOUT;
+> +		ret = rk_nfc_wait_for_xfer_done(nfc);
+> +
+> +		dma_unmap_single(nfc->dev, dma_data, mtd->writesize,
+> +				 DMA_TO_DEVICE);
+> +		dma_unmap_single(nfc->dev, dma_oob, ecc->steps * oob_step,
+> +				 DMA_TO_DEVICE);
+> +
+> +		if (boot_rom_mode && rk_nand->boot_ecc != ecc->strength)
+> +			rk_nfc_hw_ecc_setup(chip, ecc, ecc->strength);
+> +	} else {
+> +		rk_nfc_write_buf(chip, buf, mtd->writesize + + mtd->oobsize);
+> +	}
+> +
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = nand_prog_page_end_op(chip);
+> +
+> +	/* Deselect the currently selected target */
+> +	rk_nfc_select_chip(chip, -1);
+> +
+> +	return ret;
+> +}
+> +
+> +static int rk_nfc_write_page_raw(struct nand_chip *chip, const u8 *buf,
+> +				 int oob_on, int page)
+> +{
+> +	struct mtd_info *mtd = nand_to_mtd(chip);
+> +	struct rk_nfc *nfc = nand_get_controller_data(chip);
+> +	u32 i;
+> +
+> +	memset(nfc->buffer, 0xff, mtd->writesize + mtd->oobsize);
+> +	swap(chip->oob_poi[0], chip->oob_poi[7]);
+> +	for (i = 0; i < chip->ecc.steps; i++) {
+> +		if (buf)
+> +			memcpy(rk_data_ptr(chip, i), data_ptr(chip, buf, i),
+> +			       chip->ecc.size);
+> +
+> +		memcpy(rk_oob_ptr(chip, i), oob_ptr(chip, i),
+> +		       NFC_SYS_DATA_SIZE);
+> +	}
+> +
+> +	return rk_nfc_write_page(mtd, chip, nfc->buffer, page, 1);
+> +}
+> +
+> +static int rk_nfc_write_oob_std(struct nand_chip *chip, int page)
+> +{
+> +	return rk_nfc_write_page_raw(chip, NULL, 1, page);
+> +}
+> +
+> +static int rk_nfc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+> +			    u32 data_offs, u32 readlen,
+> +			    u8 *buf, int page, int raw)
+> +{
+> +	struct rk_nfc *nfc = nand_get_controller_data(chip);
+> +	struct rk_nfc_nand_chip *rk_nand = to_rk_nand(chip);
+> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
+> +	int oob_step = (ecc->bytes > 60) ? NFC_MAX_OOB_PER_STEP :
+> +			NFC_MIN_OOB_PER_STEP;
+> +	int pages_per_blk = mtd->erasesize / mtd->writesize;
+> +	dma_addr_t dma_data, dma_oob;
+> +	int ret = 0, i, boot_rom_mode = 0;
+> +	int bitflips = 0, bch_st;
+> +	u8 *oob;
+> +	u32 tmp;
+> +
+> +	nand_read_page_op(chip, page, 0, NULL, 0);
+> +	if (!raw) {
+> +		dma_data = dma_map_single(nfc->dev, nfc->page_buf,
+> +					  mtd->writesize,
+> +					  DMA_FROM_DEVICE);
+> +		dma_oob = dma_map_single(nfc->dev, nfc->oob_buf,
+> +					 ecc->steps * oob_step,
+> +					 DMA_FROM_DEVICE);
+> +
+
+> +		if (page < pages_per_blk * rk_nand->boot_blks &&
+> +		    chip->options & NAND_IS_BOOT_MEDIUM) {
+> +			boot_rom_mode = 1;
+> +			if (rk_nand->boot_ecc != ecc->strength)
+> +				rk_nfc_hw_ecc_setup(chip, ecc,
+> +						    rk_nand->boot_ecc);
+> +		}
+
+From Miquel:
+> This would probably deserve a helper
+> +
+
+> +		init_completion(&nfc->done);
+
+From Miquel:
+> One init_completion is needed (in the probe, probably) then please use
+> reinit_completion().
+> +		writel(INT_DMA, nfc->regs + nfc->cfg->int_en_off);
+> +		rk_nfc_xfer_start(nfc, NFC_READ, ecc->steps, dma_data,
+> +				  dma_oob);
+
+> +		ret = wait_for_completion_timeout(&nfc->done,
+> +						  msecs_to_jiffies(100));
+> +		if (!ret)
+> +			dev_warn(nfc->dev, "read ahb/dma done timeout\n");
+
+No action?
+
+> +		rk_nfc_wait_for_xfer_done(nfc);
+
+No action?
+
+> +		dma_unmap_single(nfc->dev, dma_data, mtd->writesize,
+> +				 DMA_FROM_DEVICE);
+> +		dma_unmap_single(nfc->dev, dma_oob, ecc->steps * oob_step,
+> +				 DMA_FROM_DEVICE);
+> +
+> +		for (i = 0; i < ecc->steps; i++) {
+> +			oob = chip->oob_poi + i * NFC_SYS_DATA_SIZE;
+> +			if (nfc->cfg->type == NFC_V6 ||
+> +			    nfc->cfg->type == NFC_V8)
+> +				tmp = nfc->oob_buf[i * oob_step / 4];
+> +			else
+> +				tmp = nfc->oob_buf[i];
+> +			*oob++ = (u8)tmp;
+> +			*oob++ = (u8)(tmp >> 8);
+> +			*oob++ = (u8)(tmp >> 16);
+> +			*oob++ = (u8)(tmp >> 24);
+> +		}
+> +		swap(chip->oob_poi[0], chip->oob_poi[7]);
+> +		for (i = 0; i < ecc->steps / 2; i++) {
+> +			bch_st = readl_relaxed(nfc->regs +
+> +					       nfc->cfg->bch_st_off + i * 4);
+> +			if (bch_st & BIT(nfc->cfg->ecc0.err_flag_bit) ||
+> +			    bch_st & BIT(nfc->cfg->ecc1.err_flag_bit)) {
+> +				mtd->ecc_stats.failed++;
+> +				bitflips = -1;
+> +			} else {
+> +				ret = ECC_ERR_CNT(bch_st, nfc->cfg->ecc0);
+> +				mtd->ecc_stats.corrected += ret;
+> +				bitflips = max_t(u32, bitflips, ret);
+> +
+> +				ret = ECC_ERR_CNT(bch_st, nfc->cfg->ecc1);
+> +				mtd->ecc_stats.corrected += ret;
+> +				bitflips = max_t(u32, bitflips, ret);
+> +			}
+> +		}
+> +		memcpy(buf, nfc->page_buf, mtd->writesize);
+> +
+> +		if (boot_rom_mode && rk_nand->boot_ecc != ecc->strength)
+> +			rk_nfc_hw_ecc_setup(chip, ecc, ecc->strength);
+> +
+> +		if (bitflips == -1)
+
+> +			dev_err(nfc->dev, "read_page %x %x %x %x %x %x\n",
+> +				page, bitflips, bch_st, ((u32 *)buf)[0],
+> +				((u32 *)buf)[1], (u32)dma_data);
+
+From Miquel:
+> This is not very informative, please write a real error message. Avoid
+> putting too much debug information, people will troubleshoot themselves
+> if needed.
+
+
+
+> +	} else {
+> +		rk_nfc_read_buf(chip, buf, mtd->writesize + mtd->oobsize);
+> +	}
+> +
+> +	/* Deselect the currently selected target */
+> +	rk_nfc_select_chip(chip, -1);
+> +
+
+> +	return bitflips;
+
+Return value use by MTD bad block detection?
+
+> +}
+> +
+> +static int rk_nfc_write_page_hwecc(struct nand_chip *chip, const u8 *buf,
+> +				   int oob_on, int page)
+> +{
+> +	return rk_nfc_write_page(nand_to_mtd(chip), chip, buf, page, 0);
+> +}
+> +
+> +static int rk_nfc_read_page_hwecc(struct nand_chip *chip, u8 *p, int oob_on,
+> +				  int pg)
+> +{
+> +	struct mtd_info *mtd = nand_to_mtd(chip);
+> +
+> +	return rk_nfc_read_page(mtd, chip, 0, mtd->writesize, p, pg, 0);
+> +}
+> +
+> +static int rk_nfc_read_page_raw(struct nand_chip *chip, u8 *buf, int oob_on,
+> +				int page)
+> +{
+> +	struct mtd_info *mtd = nand_to_mtd(chip);
+> +	struct rk_nfc *nfc = nand_get_controller_data(chip);
+> +	int i, ret;
+> +
+> +	ret = rk_nfc_read_page(mtd, chip, 0, mtd->writesize, nfc->buffer,
+> +			       page, 1);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	for (i = 0; i < chip->ecc.steps; i++) {
+> +		memcpy(oob_ptr(chip, i), rk_oob_ptr(chip, i),
+> +		       NFC_SYS_DATA_SIZE);
+> +
+> +		if (buf)
+> +			memcpy(data_ptr(chip, buf, i), rk_data_ptr(chip, i),
+> +			       chip->ecc.size);
+> +	}
+> +	swap(chip->oob_poi[0], chip->oob_poi[7]);
+> +
+> +	return ret;
+> +}
+> +
+> +static int rk_nfc_read_oob_std(struct nand_chip *chip, int page)
+> +{
+> +	return rk_nfc_read_page_raw(chip, NULL, 1, page);
+> +}
+> +
+> +static inline void rk_nfc_hw_init(struct rk_nfc *nfc)
+> +{
+> +	/* disable flash wp */
+> +	writel(FMCTL_WP, nfc->regs + NFC_FMCTL);
+> +	/* config default timing */
+
+> +	writel(0x1081, nfc->regs + NFC_FMWAIT);
+
+Explain 0x1081 with define?
+Fixed value for timing ns.
+
+> +	/* disable randomizer and dma */
+> +	writel(0, nfc->regs + nfc->cfg->randmz_off);
+> +	writel(0, nfc->regs + nfc->cfg->dma_cfg_off);
+> +	writel(FLCTL_RST, nfc->regs + nfc->cfg->flctl_off);
+> +}
+> +
+> +static irqreturn_t rk_nfc_irq(int irq, void *id)
+> +{
+> +	struct rk_nfc *nfc = id;
+> +	u32 sta, ien;
+> +
+> +	sta = readl_relaxed(nfc->regs + nfc->cfg->int_st_off);
+> +	ien = readl_relaxed(nfc->regs + nfc->cfg->int_en_off);
+> +
+> +	if (!(sta & ien))
+> +		return IRQ_NONE;
+> +
+> +	writel(sta, nfc->regs + nfc->cfg->int_clr_off);
+> +	writel(~sta & ien, nfc->regs + nfc->cfg->int_en_off);
+> +
+> +	complete(&nfc->done);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static int rk_nfc_enable_clk(struct device *dev, struct rk_nfc_clk *clk)
+> +{
+> +	int ret;
+> +
+> +	if (!IS_ERR(clk->nfc_clk)) {
+> +		ret = clk_prepare_enable(clk->nfc_clk);
+> +		if (ret) {
+> +			dev_err(dev, "failed to enable nfc clk\n");
+> +			return ret;
+> +		}
+> +	}
+> +
+> +	ret = clk_prepare_enable(clk->ahb_clk);
+> +	if (ret) {
+> +		dev_err(dev, "failed to enable ahb clk\n");
+> +		if (!IS_ERR(clk->nfc_clk))
+> +			clk_disable_unprepare(clk->nfc_clk);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void rk_nfc_disable_clk(struct rk_nfc_clk *clk)
+> +{
+> +	if (!IS_ERR(clk->nfc_clk))
+> +		clk_disable_unprepare(clk->nfc_clk);
+> +	clk_disable_unprepare(clk->ahb_clk);
+> +}
+> +
+> +static int rk_nfc_ooblayout_free(struct mtd_info *mtd, int section,
+> +				 struct mtd_oob_region *oob_region)
+> +{
+> +	struct nand_chip *chip = mtd_to_nand(mtd);
+> +
+> +	if (section >= chip->ecc.steps)
+> +		return -ERANGE;
+> +
+> +	if (!section) {
+> +		/* The first byte is bad block mask flag */
+> +		oob_region->length = NFC_SYS_DATA_SIZE - 1;
+> +		oob_region->offset = 1;
+> +	} else {
+> +		oob_region->length = NFC_SYS_DATA_SIZE;
+> +		oob_region->offset = section * NFC_SYS_DATA_SIZE;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int rk_nfc_ooblayout_ecc(struct mtd_info *mtd, int section,
+> +				struct mtd_oob_region *oob_region)
+> +{
+> +	struct nand_chip *chip = mtd_to_nand(mtd);
+> +
+> +	if (section)
+> +		return -ERANGE;
+> +
+> +	oob_region->offset = NFC_SYS_DATA_SIZE * chip->ecc.steps;
+> +	oob_region->length = mtd->oobsize - oob_region->offset;
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct mtd_ooblayout_ops rk_nfc_ooblayout_ops = {
+> +	.free = rk_nfc_ooblayout_free,
+> +	.ecc = rk_nfc_ooblayout_ecc,
+> +};
+> +
+> +static int rk_nfc_ecc_init(struct device *dev, struct mtd_info *mtd)
+> +{
+> +	struct nand_chip *chip = mtd_to_nand(mtd);
+> +	struct rk_nfc *nfc = nand_get_controller_data(chip);
+> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
+> +	const u8 *strengths = nfc->cfg->ecc_strengths;
+> +	u8 max_strength, nfc_max_strength;
+> +	int i;
+> +
+> +	nfc_max_strength = nfc->cfg->ecc_strengths[0];
+> +	/* if optional dt settings not present */
+> +	if (!ecc->size || !ecc->strength ||
+> +	    ecc->strength > nfc_max_strength) {
+> +		/* use datasheet requirements */
+> +		ecc->strength = chip->base.eccreq.strength;
+> +		ecc->size = chip->base.eccreq.step_size;
+> +
+> +		/*
+> +		 * align eccstrength and eccsize
+> +		 * this controller only supports 512 and 1024 sizes
+> +		 */
+> +		if (chip->ecc.size < 1024) {
+> +			if (mtd->writesize > 512) {
+> +				chip->ecc.size = 1024;
+> +				chip->ecc.strength <<= 1;
+> +			} else {
+> +				dev_err(dev, "ecc.size not supported\n");
+> +				return -EINVAL;
+> +			}
+> +		} else {
+> +			chip->ecc.size = 1024;
+> +		}
+> +
+> +		ecc->steps = mtd->writesize / ecc->size;
+> +		max_strength = ((mtd->oobsize / ecc->steps) - 4) * 8 / 14;
+> +		if (max_strength > nfc_max_strength)
+> +			max_strength = nfc_max_strength;
+> +
+> +		for (i = 0; i < 4; i++) {
+> +			if (max_strength >= strengths[i])
+> +				break;
+> +		}
+> +
+> +		if (i >= 4) {
+> +			dev_err(nfc->dev, "unsupported strength\n");
+> +			return -ENOTSUPP;
+> +		}
+> +
+> +		ecc->strength = strengths[i];
+> +	}
+> +	ecc->steps = mtd->writesize / ecc->size;
+
+/* HW ECC always request ECC bytes for 1024 bytes blocks */
+
+> +	ecc->bytes = DIV_ROUND_UP(ecc->strength * 14, 8);
+
+14 is replacement for fls(8 * 1024)
+
+Show intention.
+
+	ecc->bytes = DIV_ROUND_UP(ecc->strength * fls(8 * 1024), 8);
+
+> +	/* HW ECC always work with even numbers of ECC bytes */
+> +	ecc->bytes = ALIGN(ecc->bytes, 2);
+> +
+> +	rk_nfc_hw_ecc_setup(chip, ecc, ecc->strength);
+> +
+> +	return 0;
+> +}
+> +
+> +static int rk_nfc_attach_chip(struct nand_chip *chip)
+> +{
+> +	struct mtd_info *mtd = nand_to_mtd(chip);
+> +	struct device *dev = mtd->dev.parent;
+> +	struct rk_nfc *nfc = nand_get_controller_data(chip);
+> +	struct rk_nfc_nand_chip *rk_nand = to_rk_nand(chip);
+> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
+> +	int len;
+> +	int ret;
+> +
+> +	if (chip->options & NAND_BUSWIDTH_16) {
+
+> +		dev_err(dev, "16bits buswidth not supported");
+
+16 bits bus width
+
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (ecc->mode != NAND_ECC_HW)
+> +		return 0;
+> +
+> +	ret = rk_nfc_ecc_init(dev, mtd);
+> +	if (ret)
+> +		return ret;
+> +	rk_nand->spare_per_sector = ecc->bytes + NFC_SYS_DATA_SIZE;
+> +
+> +	/* Check buffer first, avoid duplicate alloc buffer */
+> +	if (nfc->buffer)
+> +		return 0;
+> +
+> +	len = mtd->writesize + mtd->oobsize;
+> +	nfc->buffer = devm_kzalloc(dev, len, GFP_KERNEL | GFP_DMA);
+> +	if (!nfc->buffer)
+> +		return -ENOMEM;
+> +
+> +	nfc->page_buf = nfc->buffer;
+> +	len = ecc->steps * NFC_MAX_OOB_PER_STEP;
+> +	nfc->oob_buf = devm_kzalloc(dev, len, GFP_KERNEL | GFP_DMA);
+> +	if (!nfc->oob_buf) {
+> +		devm_kfree(dev, nfc->buffer);
+> +		nfc->buffer = NULL;
+> +		nfc->oob_buf = NULL;
+> +		return -ENOMEM;
+> +	}
+> +
+> +	chip->ecc.write_page_raw = rk_nfc_write_page_raw;
+> +	chip->ecc.write_page = rk_nfc_write_page_hwecc;
+> +	chip->ecc.write_oob_raw = rk_nfc_write_oob_std;
+> +	chip->ecc.write_oob = rk_nfc_write_oob_std;
+> +
+> +	chip->ecc.read_page_raw = rk_nfc_read_page_raw;
+> +	chip->ecc.read_page = rk_nfc_read_page_hwecc;
+> +	chip->ecc.read_oob_raw = rk_nfc_read_oob_std;
+> +	chip->ecc.read_oob = rk_nfc_read_oob_std;
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct nand_controller_ops rk_nfc_controller_ops = {
+> +	.attach_chip = rk_nfc_attach_chip,
+> +	.exec_op = rk_nfc_exec_op,
+> +	.setup_data_interface = rk_nfc_setup_data_interface,
+> +};
+> +
+> +static int rk_nfc_nand_chip_init(struct device *dev, struct rk_nfc *nfc,
+> +				 struct device_node *np)
+> +{
+> +	struct rk_nfc_nand_chip *nand;
+> +	struct nand_chip *chip;
+> +	struct mtd_info *mtd;
+> +	int nsels;
+> +	u32 tmp;
+> +	int ret;
+> +	int i;
+> +
+> +	if (!of_get_property(np, "reg", &nsels))
+> +		return -ENODEV;
+> +	nsels /= sizeof(u32);
+> +	if (!nsels || nsels > NFC_MAX_NSELS) {
+> +		dev_err(dev, "invalid reg property size %d\n", nsels);
+> +		return -EINVAL;
+> +	}
+> +
+> +	nand = devm_kzalloc(dev, sizeof(*nand) + nsels * sizeof(u8),
+> +			    GFP_KERNEL);
+> +	if (!nand)
+> +		return -ENOMEM;
+> +
+> +	nand->nsels = nsels;
+> +	for (i = 0; i < nsels; i++) {
+> +		ret = of_property_read_u32_index(np, "reg", i, &tmp);
+> +		if (ret) {
+> +			dev_err(dev, "reg property failure : %d\n", ret);
+> +			return ret;
+> +		}
+> +
+> +		if (tmp >= NFC_MAX_NSELS) {
+> +			dev_err(dev, "invalid CS: %u\n", tmp);
+> +			return -EINVAL;
+> +		}
+> +
+> +		if (test_and_set_bit(tmp, &nfc->assigned_cs)) {
+> +			dev_err(dev, "CS %u already assigned\n", tmp);
+> +			return -EINVAL;
+> +		}
+> +
+> +		nand->sels[i] = tmp;
+> +	}
+> +
+> +	chip = &nand->chip;
+> +	chip->controller = &nfc->controller;
+> +
+> +	nand_set_flash_node(chip, np);
+> +	nand_set_controller_data(chip, nfc);
+> +
+> +	chip->options |= NAND_USE_BOUNCE_BUFFER | NAND_NO_SUBPAGE_WRITE;
+> +	chip->bbt_options = NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB;
+> +
+> +	/* set default mode in case dt entry is missing */
+> +	chip->ecc.mode = NAND_ECC_HW;
+> +
+> +	mtd = nand_to_mtd(chip);
+> +	mtd->owner = THIS_MODULE;
+> +	mtd->dev.parent = dev;
+> +	mtd->name = THIS_NAME;
+> +	mtd_set_ooblayout(mtd, &rk_nfc_ooblayout_ops);
+> +	rk_nfc_hw_init(nfc);
+> +	ret = nand_scan(chip, nsels);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (chip->options & NAND_IS_BOOT_MEDIUM) {
+> +		ret = of_property_read_u32(np, "rockchip-boot-blks", &tmp);
+> +		nand->boot_blks = ret ? 0 : tmp;
+> +
+> +		ret = of_property_read_u32(np, "rockchip-boot-ecc-strength",
+> +					   &tmp);
+> +		nand->boot_ecc = ret ? chip->ecc.strength : tmp;
+> +	}
+> +
+> +	ret = mtd_device_register(mtd, NULL, 0);
+> +	if (ret) {
+> +		dev_err(dev, "mtd parse partition error\n");
+> +		nand_release(chip);
+> +		return ret;
+> +	}
+> +
+> +	list_add_tail(&nand->node, &nfc->chips);
+> +
+> +	return 0;
+> +}
+> +
+> +static int rk_nfc_nand_chips_init(struct device *dev, struct rk_nfc *nfc)
+> +{
+> +	struct device_node *np = dev->of_node;
+> +	struct device_node *nand_np;
+> +	int ret = -EINVAL;
+> +	int tmp;
+> +
+> +	for_each_child_of_node(np, nand_np) {
+> +		tmp = rk_nfc_nand_chip_init(dev, nfc, nand_np);
+> +		if (tmp) {
+> +			of_node_put(nand_np);
+> +			return ret;
+> +		}
+> +		/* At least one nand chip is initialized */
+> +		ret = 0;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static struct nfc_cfg nfc_v6_cfg = {
+> +		.type			= NFC_V6,
+> +		.ecc_strengths		= {60, 40, 24, 16},
+> +		.ecc_cfgs		= {
+> +			0x00040011, 0x00040001, 0x00000011, 0x00000001,
+> +		},
+> +		.flctl_off		= 0x08,
+> +		.bchctl_off		= 0x0C,
+> +		.dma_cfg_off		= 0x10,
+> +		.dma_data_buf_off	= 0x14,
+> +		.dma_oob_buf_off	= 0x18,
+> +		.dma_st_off		= 0x1C,
+> +		.bch_st_off		= 0x20,
+> +		.randmz_off		= 0x150,
+> +		.int_en_off		= 0x16C,
+> +		.int_clr_off		= 0x170,
+> +		.int_st_off		= 0x174,
+> +		.oob0_off		= 0x200,
+> +		.oob1_off		= 0x230,
+> +		.ecc0			= {
+> +			.err_flag_bit	= 2,
+> +			.low		= 3,
+> +			.low_mask	= 0x1F,
+> +			.low_bn		= 5,
+> +			.high		= 27,
+> +			.high_mask	= 0x1,
+> +		},
+> +		.ecc1			= {
+> +			.err_flag_bit	= 15,
+> +			.low		= 16,
+> +			.low_mask	= 0x1F,
+> +			.low_bn		= 5,
+> +			.high		= 29,
+> +			.high_mask	= 0x1,
+> +		},
+> +};
+> +
+> +static struct nfc_cfg nfc_v8_cfg = {
+> +		.type			= NFC_V8,
+> +		.ecc_strengths		= {16, 16, 16, 16},
+> +		.ecc_cfgs		= {
+> +			0x00000001, 0x00000001, 0x00000001, 0x00000001,
+> +		},
+> +		.flctl_off		= 0x08,
+> +		.bchctl_off		= 0x0C,
+> +		.dma_cfg_off		= 0x10,
+> +		.dma_data_buf_off	= 0x14,
+> +		.dma_oob_buf_off	= 0x18,
+> +		.dma_st_off		= 0x1C,
+> +		.bch_st_off		= 0x20,
+> +		.bch_st_off		= 0x20,
+> +		.randmz_off		= 0x150,
+> +		.int_en_off		= 0x16C,
+> +		.int_clr_off		= 0x170,
+> +		.int_st_off		= 0x174,
+> +		.oob0_off		= 0x200,
+> +		.oob1_off		= 0x230,
+> +		.ecc0			= {
+> +			.err_flag_bit	= 2,
+> +			.low		= 3,
+> +			.low_mask	= 0x1F,
+> +			.low_bn		= 5,
+> +			.high		= 27,
+> +			.high_mask	= 0x1,
+> +		},
+> +		.ecc1			= {
+> +			.err_flag_bit	= 15,
+> +			.low		= 16,
+> +			.low_mask	= 0x1F,
+> +			.low_bn		= 5,
+> +			.high		= 29,
+> +			.high_mask	= 0x1,
+> +		},
+> +};
+> +
+> +static struct nfc_cfg nfc_v9_cfg = {
+> +		.type			= NFC_V9,
+> +		.ecc_strengths		= {70, 60, 40, 16},
+> +		.ecc_cfgs		= {
+> +			0x00000001, 0x06000001, 0x04000001, 0x02000001,
+> +		},
+> +		.flctl_off		= 0x10,
+> +		.bchctl_off		= 0x20,
+> +		.dma_cfg_off		= 0x30,
+> +		.dma_data_buf_off	= 0x34,
+> +		.dma_oob_buf_off	= 0x38,
+> +		.dma_st_off		= 0x3C,
+> +		.bch_st_off		= 0x150,
+> +		.randmz_off		= 0x208,
+> +		.int_en_off		= 0x120,
+> +		.int_clr_off		= 0x124,
+> +		.int_st_off		= 0x128,
+> +		.oob0_off		= 0x200,
+> +		.oob1_off		= 0x204,
+> +		.ecc0			= {
+> +			.err_flag_bit	= 2,
+> +			.low		= 3,
+> +			.low_mask	= 0x7F,
+> +			.low_bn		= 7,
+> +			.high		= 0,
+> +			.high_mask	= 0x0,
+> +		},
+> +		.ecc1			= {
+> +			.err_flag_bit	= 18,
+> +			.low		= 19,
+> +			.low_mask	= 0x7F,
+> +			.low_bn		= 7,
+> +			.high		= 0,
+> +			.high_mask	= 0x0,
+> +		},
+> +};
+> +
+> +static const struct of_device_id rk_nfc_id_table[] = {
+> +	{.compatible = "rockchip,px30_nfc",
+> +		.data = &nfc_v9_cfg },
+> +	{.compatible = "rockchip,rk3xxx_nfc",
+> +		.data = &nfc_v6_cfg },
+> +	{.compatible = "rockchip,rk3308_nfc",
+> +		.data = &nfc_v8_cfg },
+> +	{.compatible = "rockchip,rv1108_nfc",
+> +		.data = &nfc_v8_cfg },
+
+> +	{}
+
+	{ /* sentinel */ },
+
+> +};
+> +MODULE_DEVICE_TABLE(of, rk_nfc_id_table);
+> +
+> +static int rk_nfc_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct rk_nfc *nfc;
+> +	struct resource *res;
+> +	int ret, irq;
+> +
+> +	nfc = devm_kzalloc(dev, sizeof(*nfc), GFP_KERNEL);
+> +	if (!nfc)
+> +		return -ENOMEM;
+> +
+> +	nand_controller_init(&nfc->controller);
+> +	INIT_LIST_HEAD(&nfc->chips);
+> +	nfc->controller.ops = &rk_nfc_controller_ops;
+> +
+> +	nfc->cfg = of_device_get_match_data(dev);
+> +	nfc->dev = dev;
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	nfc->regs = devm_ioremap_resource(dev, res);
+> +	if (IS_ERR(nfc->regs)) {
+> +		ret = PTR_ERR(nfc->regs);
+> +		goto release_nfc;
+> +	}
+> +
+> +	nfc->clk.nfc_clk = devm_clk_get(dev, "nfc");
+> +	if (IS_ERR(nfc->clk.nfc_clk)) {
+
+> +		dev_err(dev, "no nfc clk\n");
+> +		/* Some old device, sush as rk3036, has no nfc clk. */
+
+/* Some older devices, such as rk3036, have no nfc clock. */
+
+This is not an error, but normal for rk3066.
+Maybe change to dev_dbg.
+
+> +	}
+> +
+> +	nfc->clk.ahb_clk = devm_clk_get(dev, "ahb");
+> +	if (IS_ERR(nfc->clk.ahb_clk)) {
+> +		dev_err(dev, "no ahb clk\n");
+> +		ret = PTR_ERR(nfc->clk.ahb_clk);
+> +		goto release_nfc;
+> +	}
+> +
+> +	ret = rk_nfc_enable_clk(dev, &nfc->clk);
+> +	if (ret)
+> +		goto release_nfc;
+> +
+> +	irq = platform_get_irq(pdev, 0);
+> +	if (irq < 0) {
+> +		dev_err(dev, "no nfc irq resource\n");
+> +		ret = -EINVAL;
+> +		goto clk_disable;
+> +	}
+> +
+> +	writel(0, nfc->regs + nfc->cfg->int_en_off);
+> +	ret = devm_request_irq(dev, irq, rk_nfc_irq, 0x0, "rk-nand", nfc);
+> +	if (ret) {
+> +		dev_err(dev, "failed to request nfc irq\n");
+> +		goto clk_disable;
+> +	}
+> +
+> +	platform_set_drvdata(pdev, nfc);
+> +
+> +	ret = rk_nfc_nand_chips_init(dev, nfc);
+> +	if (ret) {
+> +		dev_err(dev, "failed to init nand chips\n");
+> +		goto clk_disable;
+> +	}
+> +	return 0;
+> +
+> +clk_disable:
+> +	rk_nfc_disable_clk(&nfc->clk);
+> +release_nfc:
+> +	return ret;
+> +}
+> +
+> +static int rk_nfc_remove(struct platform_device *pdev)
+> +{
+> +	struct rk_nfc *nfc = platform_get_drvdata(pdev);
+> +	struct rk_nfc_nand_chip *nand;
+> +
+> +	while (!list_empty(&nfc->chips)) {
+> +		nand = list_first_entry(&nfc->chips, struct rk_nfc_nand_chip,
+> +					node);
+> +		nand_release(&nand->chip);
+> +		list_del(&nand->node);
+> +	}
+> +
+> +	rk_nfc_disable_clk(&nfc->clk);
+> +
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused rk_nfc_suspend(struct device *dev)
+> +{
+> +	struct rk_nfc *nfc = dev_get_drvdata(dev);
+> +
+> +	rk_nfc_disable_clk(&nfc->clk);
+> +
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused rk_nfc_resume(struct device *dev)
+> +{
+> +	struct rk_nfc *nfc = dev_get_drvdata(dev);
+> +	struct rk_nfc_nand_chip *nand;
+> +	struct nand_chip *chip;
+> +	int ret;
+> +	u32 i;
+> +
+> +	ret = rk_nfc_enable_clk(dev, &nfc->clk);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* reset NAND chip if VCC was powered off */
+> +	list_for_each_entry(nand, &nfc->chips, node) {
+> +		chip = &nand->chip;
+> +		for (i = 0; i < nand->nsels; i++)
+> +			nand_reset(chip, i);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct dev_pm_ops rk_nfc_pm_ops = {
+> +	SET_SYSTEM_SLEEP_PM_OPS(rk_nfc_suspend, rk_nfc_resume)
+> +};
+> +
+> +static struct platform_driver rk_nfc_driver = {
+> +	.probe  = rk_nfc_probe,
+> +	.remove = rk_nfc_remove,
+> +	.driver = {
+> +		.name  = THIS_NAME,
+> +		.of_match_table = rk_nfc_id_table,
+> +		.pm = &rk_nfc_pm_ops,
+> +	},
+> +};
+> +
+> +module_platform_driver(rk_nfc_driver);
+> +
+> +MODULE_LICENSE("Dual MIT/GPL");
+> +MODULE_AUTHOR("Yifeng Zhao <yifeng.zhao@rock-chips.com>");
+> +MODULE_DESCRIPTION("Rockchip Nand Flash Controller Driver");
+> +MODULE_ALIAS("platform:rockchip_nand");
+> 
 
 
 ______________________________________________________
