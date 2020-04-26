@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DDD8FC54FCB
-	for <linux-mtd@archiver.kernel.org>; Sun, 26 Apr 2020 19:02:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D46ACC55194
+	for <linux-mtd@archiver.kernel.org>; Sun, 26 Apr 2020 19:02:21 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B6502206BF
-	for <linux-mtd@archiver.kernel.org>; Sun, 26 Apr 2020 19:02:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8062D206BF
+	for <linux-mtd@archiver.kernel.org>; Sun, 26 Apr 2020 19:02:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VTKyJYIs";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="pOeCX0LY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B6502206BF
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LmWW62wA";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="vSPLGrsl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8062D206BF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=crapouillou.net
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,39 +26,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rncFLbfyj5LMSFYovNNRCH4GODkwwPookBvnCDMwQxE=; b=VTKyJYIsF3t28y
-	+142+RTHxdzxouecT1p5QyTb3h018ABll/5Gxr34VtSIKa2np2DdTBBEeQZmdB/6/+0BR4hEQB+lA
-	2+OluRZq7xRyAp7hFSWFB1MU70UpSRsPHsvUlhhBnLw4duaYp1DB30A2wgRfeZ/hYHQdhWWo2VkW/
-	kknlaJF+PjMB9cz1jxeYLsTdLcTojUXIs4jebsP3BsrsI6KSg7ShDO+AHEjQsOqi0kqB3/gylew2E
-	doDzun8EQe/nOokDMBIgNGBK6O7IaLHUAlHePKakb6SqoSN7n42/3vPiW+hdBBTeUb0ymYSbrapoK
-	f9nYMJ9ZdVb0+Ro6uBVA==;
+	List-Owner; bh=XrmoOresV/fExrnUkeJiyZMQto5LsP6sZ3aYRzzsgOA=; b=LmWW62wAKp9wDb
+	05kOnjKToCd2ukNvnkUtVF6AnJ5yOmzhdo1j3ZP3ljGL+XoB51NcDjuH8hUq8SDfYblf7k9Rnkd5y
+	f7ZoU7LdsDhHJlHwYqt+rUiLI3IVdkviqP0An2qaBazkbXWqWb/X8s7CxArvtfqtaIBIJWXKgi689
+	juxmy0DQWhw3w0/uf+hqvWGKz6C+8POxpmmpNjJNWCtf6PxiUtcbsbfk9VTyWJwn0No5hD7T4lFXT
+	d8BiHOROcRPkMH386lq57AntBILhmkYK1tH7+TAXaeeP4mJb7q+sdPashp/cktD+wEkdosWa8Iu1f
+	BCxq7HL3PJadxld1ltJQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jSmXJ-0003W1-Au; Sun, 26 Apr 2020 19:01:53 +0000
+	id 1jSmXZ-0003kQ-14; Sun, 26 Apr 2020 19:02:09 +0000
 Received: from outils.crapouillou.net ([89.234.176.41] helo=crapouillou.net)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jSmVq-0001yv-AB
- for linux-mtd@lists.infradead.org; Sun, 26 Apr 2020 19:00:24 +0000
+ id 1jSmVz-0002Al-DJ
+ for linux-mtd@lists.infradead.org; Sun, 26 Apr 2020 19:00:37 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
- s=mail; t=1587927552; h=from:from:sender:reply-to:subject:subject:date:date:
+ s=mail; t=1587927554; h=from:from:sender:reply-to:subject:subject:date:date:
  message-id:message-id:to:to:cc:cc:mime-version:mime-version:
  content-type:content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Jh2ddJMVI7j8PzDuCFU41+bSxoW1q7AM13axcnTvN5s=;
- b=pOeCX0LYioFgu/D4E6/DRhHGVFLi1F4A6C6Vu6Hgd85n6Dzd6QuXzQoZvR6OfRpnNpEkE8
- MbILWvBsuQOJVE8eUZ7coJ+ZFYfxpeyocbnfTmyFwFsMwLgDKrW2V6gohDJ1H9PFhkO1vT
- CWXjW3opKnhvBj7MQpYM84UA/fflAhM=
+ bh=lozQm5cUkRzX/D1RhqthQ7AWiCa273YjHW3E+nR6jsg=;
+ b=vSPLGrslCbSH7fxxJOBgw8RSrDw5vKfyWZZT1Kmj2ygGh2g0ssvW60J8xqVN5HdVI31Uqd
+ HEw0PZ0VI2xNa8hOnYoljwGsrPfXVdDqqxq6NAVGayyep9litDT7N3YSWrhSbQULBktX6p
+ Y8t+pvrKjD7VKryZ5eF3cY5DY93rmIU=
 From: Paul Cercueil <paul@crapouillou.net>
 To: Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH 7/8] dt-bindings: serial: Convert ingenic,uart.txt to YAML
-Date: Sun, 26 Apr 2020 20:58:55 +0200
-Message-Id: <20200426185856.38826-7-paul@crapouillou.net>
+Subject: [PATCH 8/8] dt-bindings: display: Convert ingenic,lcd.txt to YAML
+Date: Sun, 26 Apr 2020 20:58:56 +0200
+Message-Id: <20200426185856.38826-8-paul@crapouillou.net>
 In-Reply-To: <20200426185856.38826-1-paul@crapouillou.net>
 References: <20200426185856.38826-1-paul@crapouillou.net>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200426_120022_753932_9A098E5A 
-X-CRM114-Status: GOOD (  11.18  )
+X-CRM114-CacheID: sfid-20200426_120031_830030_185CEA39 
+X-CRM114-Status: GOOD (  10.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,94 +82,97 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Convert the ingenic,uart.txt to a new ingenic,uart.yaml file.
+Convert the ingenic,lcd.txt to a new ingenic,lcd.yaml file.
 
-A few things were changed in the process:
-- the dmas and dma-names properties are now required.
-- the ingenic,jz4770-uart and ingenic,jz4775-uart compatible strings now
-  require the ingenic,jz4760-uart string to be used as fallback, since
-  the hardware is compatible.
-- the ingenic,jz4725b-uart compatible string was added, with a fallback
-  to ingenic,jz4740-uart.
+In the process, the new ingenic,jz4780-lcd compatible string has been
+added.
 
 Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 ---
- .../bindings/serial/ingenic,uart.txt          | 28 ------
- .../bindings/serial/ingenic,uart.yaml         | 94 +++++++++++++++++++
- 2 files changed, 94 insertions(+), 28 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/serial/ingenic,uart.txt
- create mode 100644 Documentation/devicetree/bindings/serial/ingenic,uart.yaml
+ .../bindings/display/ingenic,lcd.txt          |  45 -------
+ .../bindings/display/ingenic,lcd.yaml         | 113 ++++++++++++++++++
+ 2 files changed, 113 insertions(+), 45 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/display/ingenic,lcd.txt
+ create mode 100644 Documentation/devicetree/bindings/display/ingenic,lcd.yaml
 
-diff --git a/Documentation/devicetree/bindings/serial/ingenic,uart.txt b/Documentation/devicetree/bindings/serial/ingenic,uart.txt
+diff --git a/Documentation/devicetree/bindings/display/ingenic,lcd.txt b/Documentation/devicetree/bindings/display/ingenic,lcd.txt
 deleted file mode 100644
-index 24ed8769f4af..000000000000
---- a/Documentation/devicetree/bindings/serial/ingenic,uart.txt
+index 01e3261defb6..000000000000
+--- a/Documentation/devicetree/bindings/display/ingenic,lcd.txt
 +++ /dev/null
-@@ -1,28 +0,0 @@
--* Ingenic SoC UART
+@@ -1,45 +0,0 @@
+-Ingenic JZ47xx LCD driver
 -
 -Required properties:
--- compatible : One of:
--  - "ingenic,jz4740-uart",
--  - "ingenic,jz4760-uart",
--  - "ingenic,jz4770-uart",
--  - "ingenic,jz4775-uart",
--  - "ingenic,jz4780-uart",
--  - "ingenic,x1000-uart".
--- reg : offset and length of the register set for the device.
--- interrupts : should contain uart interrupt.
--- clocks : phandles to the module & baud clocks.
--- clock-names: tuple listing input clock names.
--	Required elements: "baud", "module"
+-- compatible: one of:
+-  * ingenic,jz4740-lcd
+-  * ingenic,jz4725b-lcd
+-  * ingenic,jz4770-lcd
+-- reg: LCD registers location and length
+-- clocks: LCD pixclock and device clock specifiers.
+-	   The device clock is only required on the JZ4740.
+-- clock-names: "lcd_pclk" and "lcd"
+-- interrupts: Specifies the interrupt line the LCD controller is connected to.
 -
 -Example:
 -
--uart0: serial@10030000 {
--	compatible = "ingenic,jz4740-uart";
--	reg = <0x10030000 0x100>;
+-panel {
+-	compatible = "sharp,ls020b1dd01d";
+-
+-	backlight = <&backlight>;
+-	power-supply = <&vcc>;
+-
+-	port {
+-		panel_input: endpoint {
+-			remote-endpoint = <&panel_output>;
+-		};
+-	};
+-};
+-
+-
+-lcd: lcd-controller@13050000 {
+-	compatible = "ingenic,jz4725b-lcd";
+-	reg = <0x13050000 0x1000>;
 -
 -	interrupt-parent = <&intc>;
--	interrupts = <9>;
+-	interrupts = <31>;
 -
--	clocks = <&ext>, <&cgu JZ4740_CLK_UART0>;
--	clock-names = "baud", "module";
+-	clocks = <&cgu JZ4725B_CLK_LCD>;
+-	clock-names = "lcd";
+-
+-	port {
+-		panel_output: endpoint {
+-			remote-endpoint = <&panel_input>;
+-		};
+-	};
 -};
-diff --git a/Documentation/devicetree/bindings/serial/ingenic,uart.yaml b/Documentation/devicetree/bindings/serial/ingenic,uart.yaml
+diff --git a/Documentation/devicetree/bindings/display/ingenic,lcd.yaml b/Documentation/devicetree/bindings/display/ingenic,lcd.yaml
 new file mode 100644
-index 000000000000..c023d650e9c1
+index 000000000000..8e9c851dc7c5
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/serial/ingenic,uart.yaml
-@@ -0,0 +1,94 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++++ b/Documentation/devicetree/bindings/display/ingenic,lcd.yaml
+@@ -0,0 +1,113 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/serial/ingenic,uart.yaml#
++$id: http://devicetree.org/schemas/display/ingenic,lcd.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Ingenic SoCs UART controller devicetree bindings
++title: Ingenic SoCs LCD controller devicetree bindings
 +
 +maintainers:
 +  - Paul Cercueil <paul@crapouillou.net>
 +
 +properties:
 +  $nodename:
-+    pattern: "^serial@[0-9a-f]+$"
++    pattern: "^lcd-controller@[0-9a-f]+$"
 +
 +  compatible:
-+    oneOf:
-+      - enum:
-+        - ingenic,jz4740-uart
-+        - ingenic,jz4760-uart
-+        - ingenic,jz4780-uart
-+        - ingenic,x1000-uart
-+      - items:
-+        - enum:
-+          - ingenic,jz4770-uart
-+          - ingenic,jz4775-uart
-+        - const: ingenic,jz4760-uart
-+      - items:
-+        - const: ingenic,jz4725b-uart
-+        - const: ingenic,jz4740-uart
++    enum:
++      - ingenic,jz4740-lcd
++      - ingenic,jz4725b-lcd
++      - ingenic,jz4770-lcd
++      - ingenic,jz4780-lcd
 +
 +  reg:
 +    maxItems: 1
@@ -179,59 +182,87 @@ index 000000000000..c023d650e9c1
 +
 +  clocks:
 +    items:
-+      - description: Baud clock
-+      - description: UART module clock
++      - description: Module clock
++      - description: Pixel clock
++    minItems: 1
 +
 +  clock-names:
 +    items:
-+      - const: baud
-+      - const: module
++      - const: lcd
++      - const: lcd_pclk
++    minItems: 1
 +
-+  dmas:
-+    items:
-+      - description: DMA controller phandle and request line for RX
-+      - description: DMA controller phandle and request line for TX
-+
-+  dma-names:
-+    items:
-+      - const: rx
-+      - const: tx
++  port:
++    type: object
++    description:
++      A port node with endpoint definitions as defined in
++      Documentation/devicetree/bindings/media/video-interfaces.txt
 +
 +required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+  - dmas
-+  - dma-names
++    - compatible
++    - reg
++    - interrupts
++    - clocks
++    - clock-names
++
++if:
++  properties:
++    compatible:
++      contains:
++        enum:
++          - ingenic,jz4740-lcd
++          - ingenic,jz4780-lcd
++then:
++  properties:
++    clocks:
++      minItems: 2
++    clock-names:
++      minItems: 2
++else:
++  properties:
++    clocks:
++      maxItems: 1
++    clock-names:
++      maxItems: 1
++
++additionalProperties: false
 +
 +examples:
 +  - |
-+    #include <dt-bindings/clock/jz4780-cgu.h>
-+    #include <dt-bindings/dma/jz4780-dma.h>
-+    #include <dt-bindings/gpio/gpio.h>
-+    serial@10032000 {
-+      compatible = "ingenic,jz4780-uart";
-+      reg = <0x10032000 0x100>;
++    #include <dt-bindings/clock/jz4740-cgu.h>
++    lcd-controller@13050000 {
++      compatible = "ingenic,jz4740-lcd";
++      reg = <0x13050000 0x1000>;
 +
 +      interrupt-parent = <&intc>;
-+      interrupts = <49>;
++      interrupts = <30>;
 +
-+      clocks = <&ext>, <&cgu JZ4780_CLK_UART2>;
-+      clock-names = "baud", "module";
++      clocks = <&cgu JZ4740_CLK_LCD>, <&cgu JZ4740_CLK_LCD_PCLK>;
++      clock-names = "lcd", "lcd_pclk";
 +
-+      dmas = <&dma JZ4780_DMA_UART2_RX 0xffffffff>,
-+             <&dma JZ4780_DMA_UART2_TX 0xffffffff>;
-+      dma-names = "rx", "tx";
++      port {
++        endpoint {
++          remote-endpoint = <&panel_input>;
++        };
++      };
++    };
 +
-+      bluetooth {
-+        compatible = "brcm,bcm4330-bt";
-+        reset-gpios = <&gpf 8 GPIO_ACTIVE_HIGH>;
-+        vcc-supply = <&wlan0_power>;
-+        device-wakeup-gpios = <&gpf 5 GPIO_ACTIVE_HIGH>;
-+        host-wakeup-gpios = <&gpf 6 GPIO_ACTIVE_HIGH>;
-+        shutdown-gpios = <&gpf 4 GPIO_ACTIVE_LOW>;
++  - |
++    #include <dt-bindings/clock/jz4725b-cgu.h>
++    lcd-controller@13050000 {
++      compatible = "ingenic,jz4725b-lcd";
++      reg = <0x13050000 0x1000>;
++
++      interrupt-parent = <&intc>;
++      interrupts = <31>;
++
++      clocks = <&cgu JZ4725B_CLK_LCD>;
++      clock-names = "lcd";
++
++      port {
++        endpoint {
++          remote-endpoint = <&panel_input>;
++        };
 +      };
 +    };
 -- 
