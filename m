@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EEA9C54FD0
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 08:28:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E2059C54FD0
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 08:28:54 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C0B852064A
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 08:28:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B5D692064A
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 08:28:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EVPMVxZW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C0B852064A
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hB4VOlV/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B5D692064A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,37 +25,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1SHTrjblSHBsFePcdqZ0CoNWGCepx/AOYK/YlOZ9rrE=; b=EVPMVxZWCGN9RG
-	3T8zvzDwLDzeiCjh+EWRf6Ja2K4Mp07fTExO3W81Ju+BTGq1fCHZw4/2a0VI2BT9Yjcmds3TLVIZ/
-	pR4GlzVDMS6OJV+rGmq1ppNRFMvi8RN+TabMOlcdxorJzddEbRSVKoXTZJwtoH7+/JKm9DKNZEbgG
-	LGSs43s5nqE7o2ofwAj1NpQd0JHNOYmSPro7dk0ypxIT3hUwVS9Xyptf3T5ti4+zABea8SgAOSPi4
-	u3YUX6JAvSXbFMxh8Y7dCnTyF/A2LZ+hYKt6E/ilBCwZPT7rnADFJCu9+hzFY0hcAz5SI73LhDAtP
-	urTyoi3chvfVjuYaW+cQ==;
+	List-Owner; bh=1SHTrjblSHBsFePcdqZ0CoNWGCepx/AOYK/YlOZ9rrE=; b=hB4VOlV/BDFMjB
+	k96w8Zv/O1st6Fgp/QnaOtjZ+DQ0Rld4F/QUevPb+VzfAG58aE8kNuapRBz1xGTkUCvhUQSCc7tLF
+	kmNIQcD7HjL8uhcCpEoMuMqJwSJIbkRTudciiGQ1A+Veyu9wle5I7rb/DH/uDUNX5y6ysnWYyVntU
+	BhzFM1BM8eKSxz9jdwWNcf9KOKv03F9C1Cen/f9tPSVu/npDurNHJ5LOCP66AVtUWYjQ+gEKshQ6e
+	B3M/57QCf+4WxWbfuGAyv7vD5yxBrLTkg8XQuZeCbexpC9qxse7VVBLQUvF33oXHC+0qQUplcxy96
+	jfIGF2tlL1QaGCvPKo5w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jSz7p-0006hz-3b; Mon, 27 Apr 2020 08:28:25 +0000
+	id 1jSz85-0006xP-4e; Mon, 27 Apr 2020 08:28:41 +0000
 Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jSz0P-0006Er-2K
+ id 1jSz0P-0006Es-5K
  for linux-mtd@lists.infradead.org; Mon, 27 Apr 2020 08:20:50 +0000
 Received: from localhost.localdomain (unknown
  [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 8E80E2A0B53;
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 3B4F32A08B4;
  Mon, 27 Apr 2020 09:20:41 +0100 (BST)
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 17/17] mtd: rawnand: s/uint{8,16,32}_t/u{8,16,32}/
-Date: Mon, 27 Apr 2020 10:20:28 +0200
-Message-Id: <20200427082028.394719-19-boris.brezillon@collabora.com>
+Subject: [PATCH 17/17] mtd: rawnand: cafe: s/uint{8,16,32}_t/u{8,16,32}/
+Date: Mon, 27 Apr 2020 10:20:27 +0200
+Message-Id: <20200427082028.394719-18-boris.brezillon@collabora.com>
 X-Mailer: git-send-email 2.25.3
 In-Reply-To: <20200427082028.394719-1-boris.brezillon@collabora.com>
 References: <20200427082028.394719-1-boris.brezillon@collabora.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200427_012045_241682_6E3AC26F 
+X-CRM114-CacheID: sfid-20200427_012045_364761_F6BFDDF1 
 X-CRM114-Status: GOOD (  14.17  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
