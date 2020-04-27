@@ -2,93 +2,73 @@ Return-Path: <SRS0=6x0o=6L=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B372AC54FD0
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 09:12:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C8CBC54FD0
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 09:16:43 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8468D2064A
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 09:12:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 976ED206B6
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 09:16:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IthVIPFf";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="raiJTN/H"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8468D2064A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LD+txomt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 976ED206B6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=+rty6aLevUpU4kGOCkOmLRCWFw3m0f3P3jyIrOaexYA=; b=IthVIPFftHX6I8dUZEkfKQ5VF
-	ts4BeaTZjjP1B5ffHRlSJTyN9en2m6lCB7WXq4orbETDlinH6/sk0xS6VH/r+tLMbI7UQnS1ExxWG
-	4t8qyWRnU8nXe52wfYmiPyn2u2AxtOFomfSOlXbQEO/jGDdsooeHyxHu9FJc3mYAgX2OCognUnxdO
-	h9QoAachyMs6AdxCLn2y2QMK8Xc4StEN/LqwTsDPEoNnjVQvY0HPB8GC1JTUyghd0jvLVlT9CiETI
-	GMauJcjy/tNcVxt3JnGgCkIMUswo0OhXsGPSPyPEpKiMfBopVxu2TntofqahhY7j5SnCrOOKL7naY
-	bQ2nXIWOg==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=uazDJy7cSX8/9XINzMuH/3FBAHK0zz7+8RtsxTxnkr8=; b=LD+txomt2kFDtd
+	/xvnsg7fVX3q+dZXNXvka8Jd9V4+Y7LYW4ahzQVAoeeRBGa9MZZGlCd0qU9owQX85owVbPryxZwCo
+	h+lemolkZsI2hQnLRA7he93I6Rz/9D8B24CafWSa6WOv+b0zVZkXFRgXOxDrml2TfeVsFrekYW+nP
+	a2+2MQBSQW5peET40YvZN1MevkGui92Fk0WSZRSTe6SnDCLMIQRQyJVeV/SSZTmKAiiL8SCm9sVAP
+	o+6XJffoUks/kGagY6wNJvw1pq/kCeH0kfW9CAKMyLFzHe3fywQ5Bxcp01fTolqfcrZLSQ3mRLT+G
+	2CJbUcIkDsBqw+ipI0MQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jSznx-0000WA-Gx; Mon, 27 Apr 2020 09:11:57 +0000
-Received: from mail-lf1-x141.google.com ([2a00:1450:4864:20::141])
+	id 1jSzsM-0004En-6F; Mon, 27 Apr 2020 09:16:30 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jSznu-0000VI-GD
- for linux-mtd@lists.infradead.org; Mon, 27 Apr 2020 09:11:55 +0000
-Received: by mail-lf1-x141.google.com with SMTP id 198so13211439lfo.7
- for <linux-mtd@lists.infradead.org>; Mon, 27 Apr 2020 02:11:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=yBDkRvrTx74S5+gZjwEZ9iACmQsB1T2mQm+OV8dNjho=;
- b=raiJTN/HRYGaHVksUpfYX1wyYGDzcsdeCn7DrhKbOfDdjw/MLRxJJ8twCfPbR+Hi+d
- m8bbSAERhc78/7BNmN1M53+RrtZEJ6gtB3M4L/MvDLvZWeuPCjfITc/mc+iiDbRI3jjR
- G56jqF9qTkDPlKs5mhLYIS5vYGfrbcvcZP6AW/yU1q9cczrf8qBd6r6oWB5XL28M/Frw
- orziZWnsTcshI8t2j3gcbvEYPcMnUScLotRV1QDBsU66EKXEGD/B5hQGFC8FNcH0EZn5
- 2nZz6AH/d9ZmaJHEkzCchnk/7O80CEbGvOIVKmb/R/WB+M2sfP/FfJQ89qshWJydfTWv
- l8cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=yBDkRvrTx74S5+gZjwEZ9iACmQsB1T2mQm+OV8dNjho=;
- b=Xb6LvG3FktvWqJX2iX55N+MM20SVT0U8qRkp0y8MFWs3ife0KzCSTs+6A9DTSVDwtW
- uIXk8Up2ji0isu7MTkiq0J8e0pybmpPFkDv20rmS2GBsXwYNmLIFfgphF19JKNemXfcR
- tqwFiEMqNc7bdZcpksInmEw50E1J37SJrmoKESj+aMr2ac1QnXxqnCpGjbvg9DkxhKVv
- KWagDd8o8DaUmu2PFdJtwhgzZm17nDFGQI35QQ3LdNXBB7xDqpXu5qJAWULz5GkRMTK/
- s+RUSwPvqkEvtpgC0lzQggZtRErpoO6asEy5+0vHkahZiREymk+ifjCVi9o8Adxdsf3/
- Z6oQ==
-X-Gm-Message-State: AGi0Puau18KbkelotH++3oxImCeKP8PzkNWXoU/TvQY8KTvSwmgWz7AR
- IKwgOHgPLDywW9pYHcIBdZOZRw==
-X-Google-Smtp-Source: APiQypJyVX/9wGU9KkPKAbdOn5EfnQbiZMB1wIjiO7M9xszAG/gddAjg0bucMZClaTTySjGPgz8dTA==
-X-Received: by 2002:ac2:5930:: with SMTP id v16mr14736464lfi.103.1587978712022; 
- Mon, 27 Apr 2020 02:11:52 -0700 (PDT)
-Received: from ?IPv6:2a00:1fa0:468e:1152:9c79:cdeb:725:5fa4?
- ([2a00:1fa0:468e:1152:9c79:cdeb:725:5fa4])
- by smtp.gmail.com with ESMTPSA id h6sm9088671ljj.29.2020.04.27.02.11.50
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 27 Apr 2020 02:11:51 -0700 (PDT)
-Subject: Re: [PATCH 2/8] dt-bindings: intc: Convert ingenic,intc.txt to YAML
-To: Paul Cercueil <paul@crapouillou.net>, Rob Herring <robh+dt@kernel.org>
-References: <20200426185856.38826-1-paul@crapouillou.net>
- <20200426185856.38826-2-paul@crapouillou.net>
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Message-ID: <f865b39a-3e8d-a367-45b2-aa5e7412e81a@cogentembedded.com>
-Date: Mon, 27 Apr 2020 12:11:46 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ id 1jSzsJ-0004E0-QJ
+ for linux-mtd@lists.infradead.org; Mon, 27 Apr 2020 09:16:29 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 553DC2A09BA;
+ Mon, 27 Apr 2020 10:16:26 +0100 (BST)
+Date: Mon, 27 Apr 2020 11:16:23 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 1/1] mtd/intel-spi: Support cmdline-based partition
+Message-ID: <20200427111623.5f93842d@collabora.com>
+In-Reply-To: <20200401094148.1786d48a@xps13>
+References: <CAP6exY+LQ4Cz3Wq3P=MP78HhHCovMYDfwhpVuASp17h3s2sgMw@mail.gmail.com>
+ <CAP6exYJ_jzrB0D=RLXMNeegu4BwQq8raXVOMugkqzX2ZP_JSqw@mail.gmail.com>
+ <20200327155608.GM2564@lahna.fi.intel.com>
+ <20200327171907.7a7ffc73@xps13>
+ <20200327164802.GN2564@lahna.fi.intel.com>
+ <20200327175238.784cf47c@xps13>
+ <CAP6exYJ4-pBBZKA0z8TKPqh_0tKzJadjXEBZk9dc9ij8BJ9Xew@mail.gmail.com>
+ <20200327171619.GO2564@lahna.fi.intel.com>
+ <CAP6exYJWWT2SFLjPCdjAEEjmZYwqYuTxd_aRaf=xEELmXqfMpA@mail.gmail.com>
+ <CAP6exY+p-Chi2R4Y1H8UvcbE6rvEpMiK3UaX2OyBq=ZO6uULpg@mail.gmail.com>
+ <20200330060859.GR2564@lahna.fi.intel.com>
+ <20200330092722.2ff41863@xps13>
+ <CAP6exY+F2VoEZkwcYp38HNt7NyZucQrdQ8MqQyTQ62U12pAcSw@mail.gmail.com>
+ <20200401094148.1786d48a@xps13>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200426185856.38826-2-paul@crapouillou.net>
-Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200427_021154_537756_389EB860 
-X-CRM114-Status: GOOD (  11.39  )
+X-CRM114-CacheID: sfid-20200427_021627_980468_1CDA4864 
+X-CRM114-Status: GOOD (  25.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,75 +80,72 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org,
- =?UTF-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>,
- linux-gpio@vger.kernel.org, od@zcrc.me, linux-mtd@lists.infradead.org,
- linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-clk@vger.kernel.org
+Cc: ron minnich <rminnich@gmail.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
+ Richard Weinberger <richard@nod.at>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello!
+Hi all,
 
-On 26.04.2020 21:58, Paul Cercueil wrote:
+On Wed, 1 Apr 2020 09:41:48 +0200
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> Convert the ingenic,intc.txt doc file to ingenic,intc.yaml.
+> Hi ron,
 > 
-> Some compatible strings now require a fallback, as the controller
-> generally works the same across the SoCs families.
+> ron minnich <rminnich@gmail.com> wrote on Mon, 30 Mar 2020 08:53:22
+> -0700:
 > 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-[...]
-> diff --git a/Documentation/devicetree/bindings/interrupt-controller/ingenic,intc.yaml b/Documentation/devicetree/bindings/interrupt-controller/ingenic,intc.yaml
-> new file mode 100644
-> index 000000000000..28b27e1a6e9d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/interrupt-controller/ingenic,intc.yaml
-> @@ -0,0 +1,63 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/interrupt-controller/ingenic,intc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Ingenic SoCs interrupt controller devicetree bindings
-> +
-> +maintainers:
-> +  - Paul Cercueil <paul@crapouillou.net>
-> +
-> +properties:
-> +  $nodename:
-> +    pattern: "^interrupt-controller@[0-9a-f]+$"
-> +
-> +  compatible:
-> +    oneOf:
-> +      - enum:
-> +        - ingenic,jz4740-intc
-> +        - ingenic,jz4760-intc
-> +        - ingenic,jz4780-intc
-> +      - items:
-> +        - enum:
-> +          - ingenic,jz4775-intc
-> +          - ingenic,jz4770-intc
-> +        - const: ingenic,jz4760-intc
-> +      - items:
-> +        - const: ingenic,x1000-intc
-> +        - const: ingenic,jz4780-intc
-> +      - items:
-> +        - const: ingenic,jz4725b-intc
-> +        - const: ingenic,jz4740-intc
-> +
-> +  "#interrupt-cells":
-> +    const: 1
+> > On Mon, Mar 30, 2020 at 12:27 AM Miquel Raynal
+> > <miquel.raynal@bootlin.com> wrote:
+> >   
+> > > Would it be hard to support an extra ':' after the MTD device name?
+> > > This way would would allow anything inside the optional '(' ')' but
+> > > would keep the trailing ':'.
+> > >
+> > > toTay:
+> > >         mtdparts=name:part1,part2
+> > >
+> > > So:
+> > >         mtdparts=(0000:00:1f.5):25165824(BIOS),-(squashfs)    
+> > 
+> > 
+> > I thought about that ':' too. It does add a bit more to the code, and
+> > a bit more in the way of error cases. I always worry, when code is
+> > going into flash,
+> > about errors where something looks close to right but is wrong. (says
+> > the person who just typed it instead of is a few times :-)
+> > 
+> > What if we did this:
+> > mtdparts=[0000:00:1f.5]25165824(BIOS),-(squashfs)
+> > 
+> > Is the "]" 'enough different' that we do not need the ':'?
+> > 
+> > I kind of like the [] better anyway as it makes the mtdid stand out a
+> > bit more from the part names? But is it enough that we don't need the
+> > ':'? Would you still prefer the () as opposed to the []?  
+> 
+> I like the [] as well, maybe more than () because at least it does not
+> conflict with the partition names. But I really prefer keeping the : if
+> the code is still readable.
+> 
+> It is much easier to explain to people : "if you have a : in the name,
+> enclose it with []".
 
-    Do double quotes work the same as the single ones?
+Sorry to chime in so late in the discussion, but I wonder if any of
+that is necessary. Can't we just split the string per device (split
+strings every time we see a ';'), and then find the last ':' in each of
+those strings and consider everything before that last ':' to be the MTD
+name. That should work even if the MTD name contains one or more ':'.
 
-[...]
-
-MBR, Sergei
+Don't get me wrong, I'm perfectly fine with intel enclosing the PCI
+address in [] to make it clearer, but I see that other drivers use ':'
+in their MTD device names (the atmel raw NAND controller driver to name
+one), so I think it'd be good to make the mtd part parsing robust to
+this use case.
 
 ______________________________________________________
 Linux MTD discussion mailing list
