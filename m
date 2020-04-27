@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50F87C54FCB
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 17:03:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC8CDC54FD0
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 17:03:43 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1BFB220738
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 17:03:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 67AE52076A
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 17:03:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DCDRNuWB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1BFB220738
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="T3ypXazT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 67AE52076A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,29 +25,29 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=uoNd26lPzRyp4mqS5Hm3GRZhNg4xi2y1vx1Zsmj1Zg4=; b=DCDRNuWBsswpwF
-	S/c8P3lUUsZsUmv8PX3+HB8FaBOzFexi7e2jlFW1KZm4jV0bCDNuCeBqnIFXsufFn+FxCABguDKvd
-	xXozpd9pXJwmMG8DoVx8e9zrsT9fu8vO9eCiaAVO8qrO6LBGeGYZkC9vjz77orwAx2fvXvJ/YjzAf
-	A2lpayX3szNWhVzGyKDQcaKam5IHViDYteC2z2lIy+LYdBh73n/tiwqc8QN0QrXDMX3HLxqw5pZCA
-	rb8NagIkS5U1TnOu5FI3QnrOYvYbQiXnN7ke13RmyP2Q5z5eSCbol545mTf1ZOxNOMWVOEb2VZco0
-	/ZJQYHBVhvHH6jS4qtMA==;
+	List-Owner; bh=uoNd26lPzRyp4mqS5Hm3GRZhNg4xi2y1vx1Zsmj1Zg4=; b=T3ypXazTlYLjMi
+	8ojA5GL9J3jTXZstZt4EgDC8dyd0VAxVIgt3a3w6ZnHJHMxVFTG2tNoRxoUw+zfH4PHsnPBIZjXfk
+	VX4dDGaOfRCawiCZOkMBBQIca+mWjsBQJcoYQjUcxsXyArmJSwU7Yj5Yy67JF+e19VRw/KsWUoQeN
+	ncFnaBpwd8sMQUude/S/Fg9Tcs//GTAEPUeHzbzUyRReldKiL6h8Fm7qdeIzEQ/EBhwqRppzv2/4r
+	09Y40SBrqB6IzyOX+XopKB7Zd9G47xGvQkD1ca5PBq/scHyDDgLBRQvXTHyTidp4vzRTroJp9UpGI
+	wHgBHS200GBtJzNV2NVw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jT79w-0001oS-78; Mon, 27 Apr 2020 17:03:08 +0000
-Received: from relay6-d.mail.gandi.net ([217.70.183.198])
+	id 1jT7AM-0002Gy-9r; Mon, 27 Apr 2020 17:03:34 +0000
+Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jT79t-0001nB-Df
- for linux-mtd@lists.infradead.org; Mon, 27 Apr 2020 17:03:06 +0000
+ id 1jT7AC-00025v-PX
+ for linux-mtd@lists.infradead.org; Mon, 27 Apr 2020 17:03:26 +0000
 X-Originating-IP: 91.224.148.103
 Received: from xps13 (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 005ECC0002;
- Mon, 27 Apr 2020 17:03:00 +0000 (UTC)
-Date: Mon, 27 Apr 2020 19:02:59 +0200
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 5A1DE2000B;
+ Mon, 27 Apr 2020 17:03:19 +0000 (UTC)
+Date: Mon, 27 Apr 2020 19:03:17 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@collabora.com>
 Subject: Re: [PATCH 1/9] mtd: rawnand: Add an is_last flag to nand_subop
-Message-ID: <20200427190259.43aeac03@xps13>
+Message-ID: <20200427190317.34f65e1f@xps13>
 In-Reply-To: <20200419125140.1307309-2-boris.brezillon@collabora.com>
 References: <20200419125140.1307309-1-boris.brezillon@collabora.com>
  <20200419125140.1307309-2-boris.brezillon@collabora.com>
@@ -55,7 +55,7 @@ Organization: Bootlin
 X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200427_100305_591046_52B550DB 
+X-CRM114-CacheID: sfid-20200427_100325_017642_60470616 
 X-CRM114-Status: UNSURE (   6.03  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
