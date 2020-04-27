@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 940BEC4CECC
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 19:46:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3501EC4CECD
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 19:47:22 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4BE3C206B8
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 19:46:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F2470206B8
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 19:47:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="q2v9gNBm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4BE3C206B8
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gD7pVpA5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F2470206B8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=emUVJSwK16tfm6kS/Gf+FjJahUMPaGk9fv9m7lNMUjc=; b=q2v9gNBmR8Tyoa
-	2vyXiqjrPlPBPTjWNKuaiwdHyCKG6L69AqcD1ng6z6tzaE59EgVsKMoKlZWqRrTaXtyyb/t2V0bCh
-	Ky7dbBP+DvvF7OoWaUS5kOt/mkuStLrSpUCXf6qX65D9ulsNrr47HnbiVn1Fd2y2/K/ENzJwimjXg
-	KNxcqfPq4POe8KBJ7kNwuq9p1DAB65VOxBoxvok6f571Hs4zpLErfo1B9iTxnFbebL0898NNOYbh6
-	2mGDU334lOopqAhoUHEu6tS6zkWryraNrbroR5KCCRpK0dwoWc0phDm/9pFBqhHQH0iFS+0bsQPTJ
-	ut4CV03sxdnwtICORX8A==;
+	List-Owner; bh=eBsAHssIm+1NusXBC3MUVLNmKPjLnGj0+zvGBg5SP2c=; b=gD7pVpA5OvmQwv
+	3ftEN5+puMBNWqwyK74fX+6DSUXE17Uptx79NHUaDHKm0nUxH5p9FslLEG0kCLoP/jCWJXMKrGlLw
+	MXKKnQ0GgiGMvep/HlZQpo2un6LlICVq6jNzp9hrWC93rdCT528qACIHUYUZigy6US7awksnkaJIf
+	etv/YFeN/xmPFkp7yPzLfkUOr++q/owD3+xs3ZaqpLyF78Mi38HsppX6OnJEccV+qphc3tiirQzVw
+	kJlAaxLgiexAUiALilG9TcscwSOY7I/33P/ACS+odS4QkPJlajKlT+e36aLAykNvAJSsagI0abZrT
+	55mj4kFCkGY+zdMkRAcQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jT9iM-0000qU-Rw; Mon, 27 Apr 2020 19:46:50 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1jT9ii-0001I4-5O; Mon, 27 Apr 2020 19:47:12 +0000
+Received: from relay12.mail.gandi.net ([217.70.178.232])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jT9hz-0000VS-Tt
- for linux-mtd@lists.infradead.org; Mon, 27 Apr 2020 19:46:33 +0000
-X-Originating-IP: 91.224.148.103
+ id 1jT9ic-0001Cw-FU
+ for linux-mtd@lists.infradead.org; Mon, 27 Apr 2020 19:47:08 +0000
 Received: from xps13 (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 49EFCFF802;
- Mon, 27 Apr 2020 19:46:25 +0000 (UTC)
-Date: Mon, 27 Apr 2020 21:46:24 +0200
+ by relay12.mail.gandi.net (Postfix) with ESMTPSA id 30912200002;
+ Mon, 27 Apr 2020 19:47:04 +0000 (UTC)
+Date: Mon, 27 Apr 2020 21:47:02 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@collabora.com>
-Subject: Re: [PATCH 07/17] mtd: rawnand: cafe: Get rid of the debug module
- param
-Message-ID: <20200427214624.12853774@xps13>
-In-Reply-To: <20200427082028.394719-8-boris.brezillon@collabora.com>
+Subject: Re: [PATCH 08/17] mtd: rawnand: cafe: Use devm_kzalloc and
+ devm_request_irq()
+Message-ID: <20200427214702.299f0098@xps13>
+In-Reply-To: <20200427082028.394719-9-boris.brezillon@collabora.com>
 References: <20200427082028.394719-1-boris.brezillon@collabora.com>
- <20200427082028.394719-8-boris.brezillon@collabora.com>
+ <20200427082028.394719-9-boris.brezillon@collabora.com>
 Organization: Bootlin
 X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200427_124628_109462_30BDCE7E 
-X-CRM114-Status: UNSURE (   6.65  )
+X-CRM114-CacheID: sfid-20200427_124706_656339_C95F7FEF 
+X-CRM114-Status: UNSURE (   6.40  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -79,12 +78,10 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 SGkgQm9yaXMsCgpCb3JpcyBCcmV6aWxsb24gPGJvcmlzLmJyZXppbGxvbkBjb2xsYWJvcmEuY29t
-PiB3cm90ZSBvbiBNb24sIDI3IEFwcgoyMDIwIDEwOjIwOjE3ICswMjAwOgoKPiBEeW5hbWljIHBy
-aW5rIGFscmVhZHkgb2ZmZXJzIGNvbmRpdGlvbmFsIGRlYnVnIHRyYWNlcyBlbmFibGVtZW50LCBs
-ZXQncwo+IG5vdCBkZWZpbmUgYSBuZXcgd2F5IHRvIGRvIHRoZSBzYW1lIHRoaW5nLgo+IAo+IFNp
-Z25lZC1vZmYtYnk6IEJvcmlzIEJyZXppbGxvbiA8Ym9yaXMuYnJlemlsbG9uQGNvbGxhYm9yYS5j
-b20+Cj4gLS0tCgpSZXZpZXdlZC1ieTogTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290
-bGluLmNvbT4KCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxp
-c3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQv
-Cg==
+PiB3cm90ZSBvbiBNb24sIDI3IEFwcgoyMDIwIDEwOjIwOjE4ICswMjAwOgoKPiBUaGlzIHNpbXBs
+aWZpZXMgdGhlIGVycm9yL3JlbW92ZSBwYXRoLgo+IAo+IFNpZ25lZC1vZmYtYnk6IEJvcmlzIEJy
+ZXppbGxvbiA8Ym9yaXMuYnJlemlsbG9uQGNvbGxhYm9yYS5jb20+Cj4gLS0tCgpSZXZpZXdlZC1i
+eTogTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4KCgpUaGFua3MsCk1p
+cXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
