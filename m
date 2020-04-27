@@ -2,59 +2,77 @@ Return-Path: <SRS0=6x0o=6L=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78971C4CECC
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 17:58:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 590DFC4CECC
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 18:00:07 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 485FB20B1F
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 17:58:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0FC6820656
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 18:00:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dTskuTDX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 485FB20B1F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=yadavpratyush.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lOsr+BF8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0FC6820656
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=denx.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NKHWqiNHK2/S933eDqREVkQ9tX8gF/EMJlFl8i6yMA0=; b=dTskuTDX02+rrP
-	5mhzXWRWSOGaGkr6jq9RVxPcrfKpVZtJ/T/YzeQrf8MVsqYsPPPSR8BGBqEFitxDEEyZnJW6Xe8I/
-	Gs5Vw+HS+H5Q0JQe0amfRSvD9KHBVr25GoXt3t2oC+hmGiBzNug5LCFPPAGQw2ag1oREWiXOG9uvD
-	dGxN9HRUosKF0wtjGZITPFNiGy9ldCvEks/f4DGyr8LyTivKwQ9B44OHMgkR9IQaqgUqG9a8SwWvW
-	98DTCIvdHcGNTTS9yBKzpxMPLtA8vY87RXf+PAGlCU2kBWqc0kGCj2BKAMKh8sWRsU/G5WNN7ZZQh
-	yzxqADRnEiapFdaG56EQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=5ip4cTzgfg7CycFFwpra5IskdDKpRtq6vzcswNa+3Sc=; b=lOsr+BF8nONrW2
+	WOOBXCZBCcZAQpqD2lsg+E2nGQ+WcwWyUwCu2AdheyN6tIp4OLTTqSV8eJaEitlkcROudVoOiSrhH
+	HSAdUM0q2dajISCQsfhEmLLUWwb2d4Cp4KV3wAMGJEUSLKNrtmOx7VfjY/QgnYxjkLyqyeB4XSkJm
+	rN7dCc4x9N6lgYAbITOHSCpFgSLxl/kH5JjaUnpYjnkOPK/WnxBzUE/puTE+8O7mmIedgUGglTLVj
+	sjWj0oxBOuDaPdwwAjRrnuLOt67zAdG/9eN/yTg9fd1v95uJooLqpc4ONCBzNwe0Qf8WauMNiE3jF
+	DAiQNRPp+eR43vJ8CfNw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jT81D-0003vX-9P; Mon, 27 Apr 2020 17:58:11 +0000
-Received: from relay5-d.mail.gandi.net ([217.70.183.197])
+	id 1jT82l-0004ZU-PJ; Mon, 27 Apr 2020 17:59:47 +0000
+Received: from mail-out.m-online.net ([212.18.0.9])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jT819-0003uA-Lm
- for linux-mtd@lists.infradead.org; Mon, 27 Apr 2020 17:58:09 +0000
-X-Originating-IP: 42.111.30.142
-Received: from localhost (unknown [42.111.30.142])
- (Authenticated sender: me@yadavpratyush.com)
- by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 6DE7B1C0005;
- Mon, 27 Apr 2020 17:57:52 +0000 (UTC)
-Date: Mon, 27 Apr 2020 23:25:36 +0530
-From: Pratyush Yadav <me@yadavpratyush.com>
-To: Boris Brezillon <boris.brezillon@collabora.com>
-Subject: Re: [PATCH v2 0/5] mtd: spi-nor: Add support for Octal 8D-8D-8D mode
-Message-ID: <20200427175536.2mmei2fy6f7bg6jm@yadavpratyush.com>
-References: <1587451187-6889-1-git-send-email-masonccyang@mxic.com.tw>
- <20200421092328.129308f6@collabora.com>
+ id 1jT82i-0004YO-Jr
+ for linux-mtd@lists.infradead.org; Mon, 27 Apr 2020 17:59:46 +0000
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+ by mail-out.m-online.net (Postfix) with ESMTP id 499sx50vRCz1qsjt;
+ Mon, 27 Apr 2020 19:59:37 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+ by mail.m-online.net (Postfix) with ESMTP id 499sx46dKXz1r5Pw;
+ Mon, 27 Apr 2020 19:59:36 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+ by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new,
+ port 10024)
+ with ESMTP id cP7Ci3_fzOg3; Mon, 27 Apr 2020 19:59:35 +0200 (CEST)
+X-Auth-Info: 3Q/kzkEfkeKb3xddfAmFowML8Maab4nXQx8zhUFn5rA=
+Received: from [IPv6:::1] (unknown [195.140.253.167])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.mnet-online.de (Postfix) with ESMTPSA;
+ Mon, 27 Apr 2020 19:59:35 +0200 (CEST)
+Subject: Re: [PATCH v2 04/12] mtd: rawnand: stm32_fmc2: manage all errors
+ cases at probe time
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Christophe Kerello <christophe.kerello@st.com>
+References: <1586966256-29548-1-git-send-email-christophe.kerello@st.com>
+ <1586966256-29548-5-git-send-email-christophe.kerello@st.com>
+ <20200427194747.224a2402@xps13>
+From: Marek Vasut <marex@denx.de>
+Message-ID: <40a9bac7-9ed4-b781-f2c2-2d90b4e82749@denx.de>
+Date: Mon, 27 Apr 2020 19:59:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20200421092328.129308f6@collabora.com>
+In-Reply-To: <20200427194747.224a2402@xps13>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200427_105807_846920_5553A84C 
-X-CRM114-Status: GOOD (  13.86  )
+X-CRM114-CacheID: sfid-20200427_105944_960446_CA9A5C7C 
+X-CRM114-Status: GOOD (  20.80  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,52 +84,105 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vigneshr@ti.com, tudor.ambarus@microchip.com, juliensu@mxic.com.tw,
- richard@nod.at, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
- broonie@kernel.org, linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
- Mason Yang <masonccyang@mxic.com.tw>, Pratyush Yadav <p.yadav@ti.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, vigneshr@ti.com,
+ tony@atomide.com, richard@nod.at, linux-kernel@vger.kernel.org,
+ robh+dt@kernel.org, linux-mtd@lists.infradead.org, lee.jones@linaro.org,
+ linux-stm32@st-md-mailman.stormreply.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 21/04/20 09:23AM, Boris Brezillon wrote:
-> +Pratyush who's working on a similar patchet [1].
+On 4/27/20 7:47 PM, Miquel Raynal wrote:
+> Hi Christophe,
 > 
-> Hello Mason,
+> Christophe Kerello <christophe.kerello@st.com> wrote on Wed, 15 Apr
+> 2020 17:57:28 +0200:
 > 
-> On Tue, 21 Apr 2020 14:39:42 +0800
-> Mason Yang <masonccyang@mxic.com.tw> wrote:
+>> This patch defers its probe when the expected reset control is not
+>> yet ready. This patch also handles properly all errors cases at probe
+>> time.
+>>
+>> Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
+>> ---
+>>  drivers/mtd/nand/raw/stm32_fmc2_nand.c | 13 +++++++++----
+>>  1 file changed, 9 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+>> index b6d45cd..0a96797 100644
+>> --- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+>> +++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+>> @@ -1967,7 +1967,11 @@ static int stm32_fmc2_probe(struct platform_device *pdev)
+>>  	}
+>>  
+>>  	rstc = devm_reset_control_get(dev, NULL);
+>> -	if (!IS_ERR(rstc)) {
+>> +	if (IS_ERR(rstc)) {
+>> +		ret = PTR_ERR(rstc);
+>> +		if (ret == -EPROBE_DEFER)
+>> +			goto err_clk_disable;
+>> +	} else {
+>>  		reset_control_assert(rstc);
+>>  		reset_control_deassert(rstc);
+>>  	}
+>> @@ -1975,7 +1979,7 @@ static int stm32_fmc2_probe(struct platform_device *pdev)
+>>  	/* DMA setup */
+>>  	ret = stm32_fmc2_dma_setup(fmc2);
+>>  	if (ret)
+>> -		return ret;
+>> +		goto err_dma_setup;
+>>  
+>>  	/* FMC2 init routine */
+>>  	stm32_fmc2_init(fmc2);
+>> @@ -1997,7 +2001,7 @@ static int stm32_fmc2_probe(struct platform_device *pdev)
+>>  	/* Scan to find existence of the device */
+>>  	ret = nand_scan(chip, nand->ncs);
+>>  	if (ret)
+>> -		goto err_scan;
+>> +		goto err_dma_setup;
+>>  
+>>  	ret = mtd_device_register(mtd, NULL, 0);
+>>  	if (ret)
+>> @@ -2010,7 +2014,7 @@ static int stm32_fmc2_probe(struct platform_device *pdev)
+>>  err_device_register:
+>>  	nand_cleanup(chip);
+>>  
+>> -err_scan:
+>> +err_dma_setup:
+>>  	if (fmc2->dma_ecc_ch)
+>>  		dma_release_channel(fmc2->dma_ecc_ch);
+>>  	if (fmc2->dma_tx_ch)
+>> @@ -2021,6 +2025,7 @@ static int stm32_fmc2_probe(struct platform_device *pdev)
+>>  	sg_free_table(&fmc2->dma_data_sg);
+>>  	sg_free_table(&fmc2->dma_ecc_sg);
+>>  
+>> +err_clk_disable:
+>>  	clk_disable_unprepare(fmc2->clk);
+>>  
+>>  	return ret;
 > 
-> > Hello,
-> > 
-> > This is repost of patchset from Boris Brezillon's
-> > [RFC,00/18] mtd: spi-nor: Proposal for 8-8-8 mode support [1].
+> I didn't spot it during my earlier reviews but I really prefer using
+> labels explaining what you do than having the same name of the function
+> which failed. This way you don't have to rework the error path when
+> you handle an additional error.
 > 
-> I only quickly went through the patches you sent and saying it's a
-> repost of the RFC is a bit of a lie. You completely ignored the state
-> tracking I was trying to do to avoid leaving the flash in 8D mode when
-> suspending/resetting the board, and I think that part is crucial. If I
-> remember correctly, we already had this discussion so I must say I'm a
-> bit disappointed.
+> So, would you mind doing this in two steps:
 > 
-> Can you sync with Pratyush? I think his series [1] is better in that it
-> tries to restore the flash in single-SPI mode before suspend (it's
-> missing the shutdown case, but that can be easily added I think). Of
-> course that'd be even better to have proper state tracking at the SPI
-> NOR level.
+> 1/
+> Replace
+> 
+>     err_scan:
+> 
+> with, eg.
+> 
+>     release_dma_objs:
 
-Hi Mason,
+The ^err_ prefix in failpath labels is useful, since it's easily
+possible to match on it with regexes ; not so much on arbitrary label name.
 
-I posted a re-roll of my series here [0]. Could you please base your 
-changes on top of it? Let me know if the series is missing something you 
-need.
- 
-[0]  https://lore.kernel.org/linux-mtd/20200424184410.8578-1-p.yadav@ti.com/
-
--- 
-Regards,
-Pratyush Yadav
+btw would it make sense to split the first three patches of this series
+into a separate series ? This rawnand part seems more like an unrelated
+cleanup.
 
 ______________________________________________________
 Linux MTD discussion mailing list
