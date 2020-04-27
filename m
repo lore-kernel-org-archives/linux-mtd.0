@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FF87C54FD0
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 08:27:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4ABEFC55199
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 08:28:05 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4216E20661
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 08:27:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1226020661
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 08:28:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Woh2vlKu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4216E20661
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="negIzHli"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1226020661
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=x/RZNMx4gw9C+u5LWXTeMA7NzUYaimq8Kw3n282BIjg=; b=Woh2vlKu0xhm+7
-	cMuYAk+pWwBFNkoXJFjr0CeEkHxTl2oQ9n73T/hEUXa/O9AKJU98tM/91QqDIZEzEQOxQDFwdUoQr
-	uLM/iKql60cMePk4fsClM449i36UErH6K+aW38Bcr/RtPloogGamakia/ff3LZ7c0SWbVP1Ybx7NP
-	yEkIvVusvf5r4+uCmS2BQ/OtEOsXHBwpJoL0DOhgRSb9O7mo0Ys7qY/D+6fs7sdKCZUDnLI4OsiUU
-	yQ/4kXaK7bTvX7teQyLXZT+iXGyc/4gLPNufJmhKms+LD0DtHXptZtQ/uvZpn3m57sskwvc+GUnPe
-	8nTVF2iBKm4xWVik90tw==;
+	List-Owner; bh=sCY+rGi/V3Zl32rxbGubuZTfjrSHQHdmb6EkM6+2Dc8=; b=negIzHliug/KyI
+	iOWe6DDcwHtzFEYz/omu5jlpTQbdIIWgPBgxMgouH7VxwRzqzTOWdw/CUXzdjZPCwB5VcSId6yTuL
+	vfTvxdsjxKAIyODspDqUHEwQgNrFDdYu6LaG/tI5didU3NW5L+ZYyYxPGwdtqk7FdigslfoEwE7o+
+	/4uizWtO4S8L2spoPuMcUNCYVS7s76cs9dt90b7X3ZrPQXZp3XERqZkJFNJuh1cMa4yTBUR/GRWw1
+	1mcEjxT2/GQir0k+p4LdUUVHbVPRjYHc85M9SA1eEGJUV+JVTsxxUDt0SuKgLPXZuLmc0FpjY96KV
+	pjEFxyT7Os6JZjgUqX/A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jSz76-00062O-Bk; Mon, 27 Apr 2020 08:27:40 +0000
+	id 1jSz7L-0006Go-Mx; Mon, 27 Apr 2020 08:27:55 +0000
 Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jSz0L-0006B2-P9
- for linux-mtd@lists.infradead.org; Mon, 27 Apr 2020 08:20:45 +0000
+ id 1jSz0N-0006E4-US
+ for linux-mtd@lists.infradead.org; Mon, 27 Apr 2020 08:20:48 +0000
 Received: from localhost.localdomain (unknown
  [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id CF4472A0A20;
- Mon, 27 Apr 2020 09:20:39 +0100 (BST)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id ED0192A08E5;
+ Mon, 27 Apr 2020 09:20:40 +0100 (BST)
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 12/17] mtd: rawnand: cafe: Don't split things when
- reading/writing a page
-Date: Mon, 27 Apr 2020 10:20:22 +0200
-Message-Id: <20200427082028.394719-13-boris.brezillon@collabora.com>
+Subject: [PATCH 16/17] mtd: rawnand: cafe: Handle non-32bit aligned
+ reads/writes
+Date: Mon, 27 Apr 2020 10:20:26 +0200
+Message-Id: <20200427082028.394719-17-boris.brezillon@collabora.com>
 X-Mailer: git-send-email 2.25.3
 In-Reply-To: <20200427082028.394719-1-boris.brezillon@collabora.com>
 References: <20200427082028.394719-1-boris.brezillon@collabora.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200427_012041_955555_2A75A610 
-X-CRM114-Status: GOOD (  12.51  )
+X-CRM114-CacheID: sfid-20200427_012044_238553_8E3CDF89 
+X-CRM114-Status: GOOD (  13.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,64 +78,63 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Calling nand_read_page_op(pagesize)/nand_prog_page_begin_op(pagesize)
-and expecting to get a pagesize+oobsize read from/written to the
-read/write buffer is fragile and only works because of hacks done
-in cmdfunc(). Let's read/write the page in one go, using the page
-cache buffer as a bounce buffer.
+The spec says the write/read buffers should be filled/read 32bits at a
+time. While most of the time the reads/writes are aligned on 4 bytes,
+we should make the implementation more robust to non-usual NAND
+operations.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
 ---
- drivers/mtd/nand/raw/cafe_nand.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/raw/cafe_nand.c | 27 +++++++++++++++++++++------
+ 1 file changed, 21 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/cafe_nand.c b/drivers/mtd/nand/raw/cafe_nand.c
-index 31493a201a02..edf65197604b 100644
+index 26495085f285..955dc78c57be 100644
 --- a/drivers/mtd/nand/raw/cafe_nand.c
 +++ b/drivers/mtd/nand/raw/cafe_nand.c
-@@ -472,6 +472,7 @@ static int cafe_nand_read_page(struct nand_chip *chip, uint8_t *buf,
+@@ -184,10 +184,18 @@ static void cafe_write_buf(struct nand_chip *chip, const void *buf,
  {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
  	struct cafe_priv *cafe = nand_get_controller_data(chip);
-+	void *pagebuf = nand_get_data_buf(chip);
- 	unsigned int max_bitflips = 0;
- 	u32 ecc_result, status;
  
-@@ -479,8 +480,11 @@ static int cafe_nand_read_page(struct nand_chip *chip, uint8_t *buf,
- 		cafe_readl(cafe, NAND_ECC_RESULT),
- 		cafe_readl(cafe, NAND_ECC_SYN_REG(0)));
- 
--	nand_read_page_op(chip, page, 0, buf, mtd->writesize);
--	chip->legacy.read_buf(chip, chip->oob_poi, mtd->oobsize);
-+	nand_read_page_op(chip, page, 0, pagebuf,
-+			  mtd->writesize + mtd->oobsize);
+-	if (cafe->usedma)
++	if (cafe->usedma) {
+ 		memcpy(cafe->dmabuf, buf, len);
+-	else
+-		memcpy_toio(cafe->mmio + CAFE_NAND_WRITE_DATA, buf, len);
++	} else {
++		memcpy_toio(cafe->mmio + CAFE_NAND_WRITE_DATA, buf,
++			    len & ~0x3);
++		if (len & 0x3) {
++			u32 tmp = 0;
 +
-+	if (buf != pagebuf)
-+		memcpy(buf, pagebuf, mtd->writesize);
++			memcpy(&tmp, buf + (len & ~0x3), len & 0x3);
++			cafe_writel(cafe, tmp, NAND_WRITE_DATA);
++		}
++	}
  
- 	ecc_result = cafe_readl(cafe, NAND_ECC_RESULT);
- 	status = CAFE_FIELD_GET(NAND_ECC_RESULT, STATUS, ecc_result);
-@@ -642,15 +646,17 @@ static int cafe_nand_write_page(struct nand_chip *chip,
+ 	dev_dbg(&cafe->pdev->dev, "Copy 0x%x bytes to write buffer.\n",	len);
+ }
+@@ -196,10 +204,17 @@ static void cafe_read_buf(struct nand_chip *chip, void *buf, unsigned int len)
  {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
  	struct cafe_priv *cafe = nand_get_controller_data(chip);
-+	void *pagebuf = nand_get_data_buf(chip);
- 	int ret;
  
--	nand_prog_page_begin_op(chip, page, 0, buf, mtd->writesize);
--	chip->legacy.write_buf(chip, chip->oob_poi, mtd->oobsize);
-+	if (pagebuf != buf)
-+		memcpy(pagebuf, buf, mtd->writesize);
+-	if (cafe->usedma)
++	if (cafe->usedma) {
+ 		memcpy(buf, cafe->dmabuf, len);
+-	else
+-		memcpy_fromio(buf, cafe->mmio + CAFE_NAND_READ_DATA, len);
++	} else {
++		memcpy_fromio(buf, cafe->mmio + CAFE_NAND_READ_DATA,
++			      len & ~0x3);
++		if (len & 0x3) {
++			u32 tmp = cafe_readl(cafe, NAND_READ_DATA);
++
++			memcpy(buf + (len & ~0x3), &tmp, len & 0x3);
++		}
++	}
  
- 	/* Set up ECC autogeneration */
- 	cafe->ctl2 |= CAFE_NAND_CTRL2_AUTO_WRITE_ECC;
- 
--	ret = nand_prog_page_end_op(chip);
-+	ret = nand_prog_page_op(chip, page, 0, pagebuf,
-+				mtd->writesize + mtd->oobsize);
- 
- 	/*
- 	 * And clear it before returning so that following write operations
+ 	dev_dbg(&cafe->pdev->dev, "Copy 0x%x bytes from read buffer.\n", len);
+ }
 -- 
 2.25.3
 
