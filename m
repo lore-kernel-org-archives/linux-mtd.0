@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4ABEFC55199
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 08:28:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29CCEC55199
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 08:28:26 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1226020661
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 08:28:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D78C720661
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 08:28:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="negIzHli"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1226020661
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bth0kF+N"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D78C720661
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sCY+rGi/V3Zl32rxbGubuZTfjrSHQHdmb6EkM6+2Dc8=; b=negIzHliug/KyI
-	iOWe6DDcwHtzFEYz/omu5jlpTQbdIIWgPBgxMgouH7VxwRzqzTOWdw/CUXzdjZPCwB5VcSId6yTuL
-	vfTvxdsjxKAIyODspDqUHEwQgNrFDdYu6LaG/tI5didU3NW5L+ZYyYxPGwdtqk7FdigslfoEwE7o+
-	/4uizWtO4S8L2spoPuMcUNCYVS7s76cs9dt90b7X3ZrPQXZp3XERqZkJFNJuh1cMa4yTBUR/GRWw1
-	1mcEjxT2/GQir0k+p4LdUUVHbVPRjYHc85M9SA1eEGJUV+JVTsxxUDt0SuKgLPXZuLmc0FpjY96KV
-	pjEFxyT7Os6JZjgUqX/A==;
+	List-Owner; bh=lY6QreAt6C73DV4P1TXN6Z1XnXlOFAtPzMWr0w0ZRO8=; b=bth0kF+NSykxfT
+	nGKV0fZ7a6ll17LdrkIyH7RdpeMdcg0diULghv0Brzh/CPxVsutkFSMZioQNNkCu7mzscxUskpnke
+	Ql4XIflD6M2N933RVlmm7MYBQGLfU9c8dzfs3eS2jx/9VCGPlUJRT5BtIB6295KbllNGHjW8qLnOO
+	9785FTsIFsLkC7AhlvVktoAOtJCLFKU0TB/SI3BQEECvtlaX4Ge5l2QaLkbvTJdp+rs/+FHCdaTRg
+	RhZ3w/B9wqj62gSwSV4eqrykYFmefXp+TzUUUMOP23DABxDg9a1tkiZ/8xtwFOr18ri0ZkV7Hyi/r
+	Avaj5csaI+KydcNAY8dQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jSz7L-0006Go-Mx; Mon, 27 Apr 2020 08:27:55 +0000
+	id 1jSz7c-0006Up-IF; Mon, 27 Apr 2020 08:28:12 +0000
 Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jSz0N-0006E4-US
- for linux-mtd@lists.infradead.org; Mon, 27 Apr 2020 08:20:48 +0000
+ id 1jSz0N-0006E3-UU
+ for linux-mtd@lists.infradead.org; Mon, 27 Apr 2020 08:20:47 +0000
 Received: from localhost.localdomain (unknown
  [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id ED0192A08E5;
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id A8EA32A08D5;
  Mon, 27 Apr 2020 09:20:40 +0100 (BST)
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 16/17] mtd: rawnand: cafe: Handle non-32bit aligned
- reads/writes
-Date: Mon, 27 Apr 2020 10:20:26 +0200
-Message-Id: <20200427082028.394719-17-boris.brezillon@collabora.com>
+Subject: [PATCH 15/17] mtd: rawnand: cafe: Adjust the cafe_{read,
+ write}_buf() prototypes
+Date: Mon, 27 Apr 2020 10:20:25 +0200
+Message-Id: <20200427082028.394719-16-boris.brezillon@collabora.com>
 X-Mailer: git-send-email 2.25.3
 In-Reply-To: <20200427082028.394719-1-boris.brezillon@collabora.com>
 References: <20200427082028.394719-1-boris.brezillon@collabora.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200427_012044_238553_8E3CDF89 
-X-CRM114-Status: GOOD (  13.41  )
+X-CRM114-CacheID: sfid-20200427_012044_230118_5C4E9738 
+X-CRM114-Status: GOOD (  12.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,63 +78,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The spec says the write/read buffers should be filled/read 32bits at a
-time. While most of the time the reads/writes are aligned on 4 bytes,
-we should make the implementation more robust to non-usual NAND
-operations.
+Replace the uint8_t pointer by a void pointer and make the length
+unsigned so it matches what's passed through the nand instructions.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
 ---
- drivers/mtd/nand/raw/cafe_nand.c | 27 +++++++++++++++++++++------
- 1 file changed, 21 insertions(+), 6 deletions(-)
+ drivers/mtd/nand/raw/cafe_nand.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/cafe_nand.c b/drivers/mtd/nand/raw/cafe_nand.c
-index 26495085f285..955dc78c57be 100644
+index 5b38d496d923..26495085f285 100644
 --- a/drivers/mtd/nand/raw/cafe_nand.c
 +++ b/drivers/mtd/nand/raw/cafe_nand.c
-@@ -184,10 +184,18 @@ static void cafe_write_buf(struct nand_chip *chip, const void *buf,
+@@ -179,7 +179,8 @@ static const char *part_probes[] = { "cmdlinepart", "RedBoot", NULL };
+ #define cafe_readl(cafe, addr)			readl((cafe)->mmio + CAFE_##addr)
+ #define cafe_writel(cafe, datum, addr)		writel(datum, (cafe)->mmio + CAFE_##addr)
+ 
+-static void cafe_write_buf(struct nand_chip *chip, const uint8_t *buf, int len)
++static void cafe_write_buf(struct nand_chip *chip, const void *buf,
++			   unsigned int len)
  {
  	struct cafe_priv *cafe = nand_get_controller_data(chip);
  
--	if (cafe->usedma)
-+	if (cafe->usedma) {
- 		memcpy(cafe->dmabuf, buf, len);
--	else
--		memcpy_toio(cafe->mmio + CAFE_NAND_WRITE_DATA, buf, len);
-+	} else {
-+		memcpy_toio(cafe->mmio + CAFE_NAND_WRITE_DATA, buf,
-+			    len & ~0x3);
-+		if (len & 0x3) {
-+			u32 tmp = 0;
-+
-+			memcpy(&tmp, buf + (len & ~0x3), len & 0x3);
-+			cafe_writel(cafe, tmp, NAND_WRITE_DATA);
-+		}
-+	}
- 
+@@ -191,7 +192,7 @@ static void cafe_write_buf(struct nand_chip *chip, const uint8_t *buf, int len)
  	dev_dbg(&cafe->pdev->dev, "Copy 0x%x bytes to write buffer.\n",	len);
  }
-@@ -196,10 +204,17 @@ static void cafe_read_buf(struct nand_chip *chip, void *buf, unsigned int len)
+ 
+-static void cafe_read_buf(struct nand_chip *chip, uint8_t *buf, int len)
++static void cafe_read_buf(struct nand_chip *chip, void *buf, unsigned int len)
  {
  	struct cafe_priv *cafe = nand_get_controller_data(chip);
  
--	if (cafe->usedma)
-+	if (cafe->usedma) {
- 		memcpy(buf, cafe->dmabuf, len);
--	else
--		memcpy_fromio(buf, cafe->mmio + CAFE_NAND_READ_DATA, len);
-+	} else {
-+		memcpy_fromio(buf, cafe->mmio + CAFE_NAND_READ_DATA,
-+			      len & ~0x3);
-+		if (len & 0x3) {
-+			u32 tmp = cafe_readl(cafe, NAND_READ_DATA);
-+
-+			memcpy(buf + (len & ~0x3), &tmp, len & 0x3);
-+		}
-+	}
- 
- 	dev_dbg(&cafe->pdev->dev, "Copy 0x%x bytes from read buffer.\n", len);
- }
 -- 
 2.25.3
 
