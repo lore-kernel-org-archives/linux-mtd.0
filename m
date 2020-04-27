@@ -7,54 +7,56 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D38E3C54FD0
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 07:25:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CC78C54FD0
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 07:25:28 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9E8E72072D
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 07:25:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5E48C2072D
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 07:25:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="MFIHB32B"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E8E72072D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="i2Z7/Ppo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E48C2072D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=CU2lECvofMAlqC3pQs5zkLYUIjDkoJRpZnh6zz59v8s=; b=MFIHB32Bpbe5nx
-	bSZFB8sEVHdNAjgwCOOSAlalVKzx+AuPLJlzOobNBNtc6T50cSPo58RxiBuZMTbX9ZmnXvvhjNAVb
-	vvNsMxGlfVpy0xQfcC95u+fgjUsZKF99z2WT4q9Oom8DRDJmddiMKBul4Hbry5HDLU4a99RNqIQd/
-	rtQ830W/4pQ7njIMhxcWyGClVhU8drW4iw97ZdQ1G46GY3bXbW8/0pqdpdKeMBcv2saWSIlCvVx8f
-	YbqC6nyhTxIeksu+IldTRcKX+RWjNe6nX6BJP+XxLi3dLixKa0+t4ySQoE6fzXvBkOXKUcJkUw0RT
-	hCt4jJd77TQFrMghulJA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=k2ty0hBykAmr2oTlSflXhxHzKJLtxAXCLHFJMqpPtFg=; b=i2Z7/PpoybUyrC
+	siivyYkDRJtwDZF/4Yk202aLzET5NAdUjVoODS3FRntS1DO4ZRkoWFFlHIs595pFs0hEBR11DgJH6
+	2BhWduQZ6O8GF8RgnfSZYjktDT6nSZ13gt0ZXFrhwIZJw8otVJsmKpfPRmmg3lV9Aj/beePXXWm8m
+	4rcfxSkl9SUE/uq2ZkL4bwyMeODNika8kHXRCSmemRhVmkcGiwHHFUJQh1lBQgvZX+AvEY6jYHKdD
+	Vg1jEs/ZLaZU5D/NG+zCpB7g7BLlPspRyFZ8/RpyD5Caes7ySVxNvPoW2FzI6Z3EdieU0yVjZM+cp
+	y2KQRTn6QYN3SZ+9Abpg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jSy8V-00015R-KK; Mon, 27 Apr 2020 07:25:03 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1jSy8m-0003OE-Tu; Mon, 27 Apr 2020 07:25:20 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jSy8S-0000oG-5H
+ id 1jSy8S-0000oH-5B
  for linux-mtd@lists.infradead.org; Mon, 27 Apr 2020 07:25:01 +0000
 Received: from localhost.localdomain (unknown
  [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id E20692A0E91;
- Mon, 27 Apr 2020 08:24:56 +0100 (BST)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 2B29E2A0E92;
+ Mon, 27 Apr 2020 08:24:57 +0100 (BST)
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH 1/3] mtd: rawnand: Add a NAND_NO_BBM_QUIRK flag
-Date: Mon, 27 Apr 2020 09:24:51 +0200
-Message-Id: <20200427072453.375642-1-boris.brezillon@collabora.com>
+Subject: [PATCH 2/3] mtd: rawnand: cafe: Set the NAND_NO_BBM_QUIRK flag
+Date: Mon, 27 Apr 2020 09:24:52 +0200
+Message-Id: <20200427072453.375642-2-boris.brezillon@collabora.com>
 X-Mailer: git-send-email 2.25.3
+In-Reply-To: <20200427072453.375642-1-boris.brezillon@collabora.com>
+References: <20200427072453.375642-1-boris.brezillon@collabora.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200427_002500_324507_D838B504 
-X-CRM114-Status: GOOD (  11.80  )
+X-CRM114-CacheID: sfid-20200427_002500_324024_8B878344 
+X-CRM114-Status: GOOD (  12.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,53 +77,43 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Some controllers with embedded ECC engines override the BBM marker with
-data or ECC bytes, thus making bad block detection through bad block
-marker impossible. Let's flag those chips so the core knows it shouldn't
-check the BBM and consider all blocks good.
-
-This should allow us to get rid of two implementers of the
-legacy.block_bad() hook.
+We have a dummy block_bad() implementation returning 0. Let's set the
+NAND_NO_BBM_QUIRK flag and let the core take care of that.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
 ---
- drivers/mtd/nand/raw/nand_base.c | 3 +++
- include/linux/mtd/rawnand.h      | 8 ++++++++
- 2 files changed, 11 insertions(+)
+ drivers/mtd/nand/raw/cafe_nand.c | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index f81b54634061..749ef0b40684 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -345,6 +345,9 @@ static int nand_block_bad(struct nand_chip *chip, loff_t ofs)
+diff --git a/drivers/mtd/nand/raw/cafe_nand.c b/drivers/mtd/nand/raw/cafe_nand.c
+index 2d1c22dc88c1..2a0df13df5f3 100644
+--- a/drivers/mtd/nand/raw/cafe_nand.c
++++ b/drivers/mtd/nand/raw/cafe_nand.c
+@@ -546,11 +546,6 @@ static int cafe_nand_write_page_lowlevel(struct nand_chip *chip,
+ 	return nand_prog_page_end_op(chip);
+ }
  
- static int nand_isbad_bbm(struct nand_chip *chip, loff_t ofs)
+-static int cafe_nand_block_bad(struct nand_chip *chip, loff_t ofs)
+-{
+-	return 0;
+-}
+-
+ /* F_2[X]/(X**6+X+1)  */
+ static unsigned short gf64_mul(u8 a, u8 b)
  {
-+	if (chip->options & NAND_NO_BBM_QUIRK)
-+		return 0;
-+
- 	if (chip->legacy.block_bad)
- 		return chip->legacy.block_bad(chip, ofs);
+@@ -718,10 +713,8 @@ static int cafe_nand_probe(struct pci_dev *pdev,
+ 	/* Enable the following for a flash based bad block table */
+ 	cafe->nand.bbt_options = NAND_BBT_USE_FLASH;
  
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 99f4ac47c8d3..37613dd9e04b 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -222,6 +222,14 @@ enum nand_ecc_algo {
-  */
- #define NAND_KEEP_TIMINGS	0x00800000
+-	if (skipbbt) {
+-		cafe->nand.options |= NAND_SKIP_BBTSCAN;
+-		cafe->nand.legacy.block_bad = cafe_nand_block_bad;
+-	}
++	if (skipbbt)
++		cafe->nand.options |= NAND_SKIP_BBTSCAN | NAND_NO_BBM_QUIRK;
  
-+/*
-+ * Some controllers with pipelined ECC engines override the BBM marker with
-+ * data or ECC bytes, thus making bad block detection through bad block marker
-+ * impossible. Let's flag those chips so the core knows it shouldn't check the
-+ * BBM and consider all blocks good.
-+ */
-+#define NAND_NO_BBM_QUIRK	0
-+
- /* Cell info constants */
- #define NAND_CI_CHIPNR_MSK	0x03
- #define NAND_CI_CELLTYPE_MSK	0x0C
+ 	if (numtimings && numtimings != 3) {
+ 		dev_warn(&cafe->pdev->dev, "%d timing register values ignored; precisely three are required\n", numtimings);
 -- 
 2.25.3
 
