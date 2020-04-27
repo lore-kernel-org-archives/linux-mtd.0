@@ -3,144 +3,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C66EC4CECC
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 19:07:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94C7BC4CECD
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 19:10:41 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C64502173E
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 19:07:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6C6F2214AF
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 19:10:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="UHtp8ktF";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="WA1/jIwe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C64502173E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="V/igY/3S"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C6F2214AF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7WsMiNtVIDDGmYGB5/EFIGc8m1bkMqmhapGQlXGDeCw=; b=UHtp8ktFhpxMpX
-	wnhBccT/Zwhq4/3j/Kypw57/ctrjKqj3sJdMlPHAIvL1ZpZ24v1mOCml6AlTPGzmEONHlswn879R9
-	EQlwLAeh1wMU6/vr8hbOZGxQsWGD90wK4bgVf9rpOfUcKGrceKMzGGqQ57q/63TmG1JvV7oY6fZuQ
-	HfMggLVrjQzV7xl0pL+jW265mT5ZQUNGlReqaQLzGdPmsfRdXU9tQtLJ0yOPfJsrqZuQzedAlJSbw
-	yagZVGng7Jgm1R+ioYZ+oFSgrAN4aBULJKhFmwpvEEe7+hEogcywn04cE4BGdT7a2TixFFoSbZ0K2
-	BJFBM1mCORqDotogh8MA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=m2b+4sBa1DtD/rOKp35nsEWEE8DXzWZj38eGWhglknc=; b=V/igY/3SrJX2VX
+	P/C6G9XxTnK65zjdipLfVmlpb79dyePbFJYYCbWCX9GuKb69PV0i6FUFPCZ/RAnSwxKIF2KeYwbhG
+	IitwKvKA0H9tQrEFCO4lKqXHAmmmgL7E4ahcFbZzBd095yMuhjeQ8+iMA2Hca7cEBztsi4SGauM9j
+	MAS0iPGBVyaukozmC1eHqYAUMhaEJokkZ2HMX+nDu/URNf6jx2r3yDOtJm3LJkrTOV2sRp7UbyQkk
+	b/+dIwU1vxUiEFcB0WZOh0H8DkYBtSfAhpD+WP+2wdvWRQxpJr6/cVVMSJVkBBZYlPs9vkWkyfM3A
+	2PTHxFzcY+EmgSGgU+Lg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jT95y-0000L0-U3; Mon, 27 Apr 2020 19:07:10 +0000
-Received: from gateway32.websitewelcome.com ([192.185.145.171])
+	id 1jT99G-0003Kf-1i; Mon, 27 Apr 2020 19:10:34 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jT95v-0000KG-HC
- for linux-mtd@lists.infradead.org; Mon, 27 Apr 2020 19:07:08 +0000
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
- by gateway32.websitewelcome.com (Postfix) with ESMTP id DE15F103A2AB
- for <linux-mtd@lists.infradead.org>; Mon, 27 Apr 2020 14:07:05 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22]) by cmsmtp with SMTP
- id T95tjelTPAGTXT95tjxbat; Mon, 27 Apr 2020 14:07:05 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
- In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
- :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
- Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
- List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=FZZr/uE2hTuM5pu2r5aXLhMCx8nc6adhDHFuFcVEsyA=; b=WA1/jIwebfelRf4LEBvLyycLnu
- DV/Lk2mdT0rMwm89mbuBPayhi7Z1kuizZM3sc0zKUjWxIg/EBCqQGsoEqA2TXU4ttL6J0ojveIFCP
- O4q+14phcbmeFrOVmbasMNyIymsS9v7Nxbm251DiXE3MruSDx6QgKzl/kOkIGNDurXRK/9KAgI384
- +HTdwE6usPu5/cX44OoHNi96ns2pp3MvPqgpYciB87rgqeY2ZT7mVT8hPmP14Ferkkhe/W4kmKOpU
- hNEGE9e3it8BbPA2o7NrvbuKtQaYfaPn8OMuhbEgcc3J4eVFeAp7aCdlj6d68TDsZR/uUN9g9gcKh
- /CJWSWJQ==;
-Received: from [201.162.241.110] (port=23532 helo=[192.168.43.132])
- by gator4166.hostgator.com with esmtpsa
- (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.92)
- (envelope-from <gustavo@embeddedor.com>)
- id 1jT95t-000fE1-F5; Mon, 27 Apr 2020 14:07:05 -0500
-Subject: Re: [PATCH 3/3] mtd: lpddr: Move function print_drs_error to
- lpddr_cmds.c
-To: Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org
-References: <cover.1588013366.git.gustavo@embeddedor.com>
- <5cc0d2e83e971693d974235608c8d96fe94c849d.1588013366.git.gustavo@embeddedor.com>
- <ce8be38d71da0a9020a42359152dad7ee217d18c.camel@perches.com>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- VtSixD1uOgytAP7RWS474w==
-Message-ID: <3a6e7112-341f-6c98-70b7-0a43c3106464@embeddedor.com>
-Date: Mon, 27 Apr 2020 14:11:22 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ id 1jT99C-0003K5-Gf
+ for linux-mtd@lists.infradead.org; Mon, 27 Apr 2020 19:10:32 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id BF9392A05B6;
+ Mon, 27 Apr 2020 20:10:28 +0100 (BST)
+Date: Mon, 27 Apr 2020 21:10:24 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v2] mtd: Fix mtd not the same name not registered if nvmem
+Message-ID: <20200427211024.174f5830@collabora.com>
+In-Reply-To: <20200427164922.5829717f@xps13>
+References: <20200401100240.445447-1-ribalda@kernel.org>
+ <20200402065953.9974-1-ribalda@kernel.org>
+ <CAPybu_34nSmbu4JMK-uA3SWrj_eMUftZ8S6zf1Vpg3Etkz3SPw@mail.gmail.com>
+ <20200427162222.1c2b2c85@xps13>
+ <20200427163711.07614619@collabora.com>
+ <20200427164922.5829717f@xps13>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <ce8be38d71da0a9020a42359152dad7ee217d18c.camel@perches.com>
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse,
- please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - lists.infradead.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 201.162.241.110
-X-Source-L: No
-X-Exim-ID: 1jT95t-000fE1-F5
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.43.132]) [201.162.241.110]:23532
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 18
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200427_120707_658017_33572B61 
-X-CRM114-Status: UNSURE (   8.60  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200427_121030_685827_237ED0A7 
+X-CRM114-Status: GOOD (  27.51  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -152,39 +73,101 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+Cc: Ricardo Ribalda Delgado <ribalda@kernel.org>,
  Vignesh Raghavendra <vigneshr@ti.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Richard Weinberger <richard@nod.at>, LKML <linux-kernel@vger.kernel.org>,
+ linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On Mon, 27 Apr 2020 16:49:22 +0200
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-
-On 4/27/20 14:03, Joe Perches wrote:
-> On Mon, 2020-04-27 at 14:04 -0500, Gustavo A. R. Silva wrote:
->> Function print_drs_error is only used in drivers/mtd/lpddr/lpddr_cmds.c
->> so, better to move it there.
-> []
->> diff --git a/drivers/mtd/lpddr/lpddr_cmds.c b/drivers/mtd/lpddr/lpddr_cmds.c
-> []
->> @@ -94,6 +94,39 @@ struct mtd_info *lpddr_cmdset(struct map_info *map)
->>  }
->>  EXPORT_SYMBOL(lpddr_cmdset);
->>  
->> +static inline void print_drs_error(unsigned int dsr)
+> Hi Boris,
 > 
-> There's no need for inline as it's used once.
+> Boris Brezillon <boris.brezillon@collabora.com> wrote on Mon, 27 Apr
+> 2020 16:37:11 +0200:
 > 
+> > On Mon, 27 Apr 2020 16:22:22 +0200
+> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> >   
+> > > Hi Ricardo,
+> > > 
+> > > Ricardo Ribalda Delgado <ribalda@kernel.org> wrote on Tue, 14 Apr 2020
+> > > 15:47:23 +0200:
+> > >     
+> > > > Ping?
+> > > > 
+> > > > On Thu, Apr 2, 2020 at 8:59 AM Ricardo Ribalda Delgado
+> > > > <ribalda@kernel.org> wrote:      
+> > > > >
+> > > > > When the nvmem framework is enabled, a nvmem device is created per mtd
+> > > > > device/partition.
+> > > > >
+> > > > > It is not uncommon that a device can have multiple mtd devices with
+> > > > > partitions that have the same name. Eg, when there DT overlay is allowed
+> > > > > and the same device with mtd is attached twice.
+> > > > >
+> > > > > Under that circumstances, the mtd fails to register due to a name
+> > > > > duplication on the nvmem framework.
+> > > > >
+> > > > > With this patch we add a _1, _2, _X to the subsequent names if there is
+> > > > > a collition, and throw a warning, instead of not starting the mtd
+> > > > > device.
+> > > > >
+> > > > > [    8.948991] sysfs: cannot create duplicate filename '/bus/nvmem/devices/Production Data'
+> > > > > [    8.948992] CPU: 7 PID: 246 Comm: systemd-udevd Not tainted 5.5.0-qtec-standard #13
+> > > > > [    8.948993] Hardware name: AMD Dibbler/Dibbler, BIOS 05.22.04.0019 10/26/2019
+> > > > > [    8.948994] Call Trace:
+> > > > > [    8.948996]  dump_stack+0x50/0x70
+> > > > > [    8.948998]  sysfs_warn_dup.cold+0x17/0x2d
+> > > > > [    8.949000]  sysfs_do_create_link_sd.isra.0+0xc2/0xd0
+> > > > > [    8.949002]  bus_add_device+0x74/0x140
+> > > > > [    8.949004]  device_add+0x34b/0x850
+> > > > > [    8.949006]  nvmem_register.part.0+0x1bf/0x640
+> > > > > ...
+> > > > > [    8.948926] mtd mtd8: Failed to register NVMEM device
+> > > > >
+> > > > > Signed-off-by: Ricardo Ribalda Delgado <ribalda@kernel.org>      
+> > > 
+> > > Thanks for proposing this change. Indeed we are aware of the problem
+> > > and the best solution that we could come up with was to create an
+> > > additional "unique_name" field to the mtd_info structure. This new
+> > > field would have the form:
+> > > 
+> > >     [<parent-unique-name><separator>]<mtd-name>
+> > > 
+> > > The separator might be '~' (but I am completely open on that), and that
+> > > would give for instance:
+> > > 
+> > >     my-controller~my-device~my-part~mysub-part    
+> > 
+> > I'd prefer something slightly more standard for the separator, like '/',
+> > which is what we usually use when we want to represent a path in a tree.
+> > I do agree on the general approach though.  
+> 
+> I am not sure / is a valid separator here we would use this
+> name to create a sysfs entry. Would it work?
 
-That's correct. I didn't notice that at first sight.
+Hm, you're probably right, I didn't check how the name was used by
+nvmem. I also see that partition names can contain spaces, which is
+not that great. So, if we want to use mtd->unique_name we should
+probably sanitize it before passing it to nvmem. All this makes me
+reconsider your initial proposal: use 'mtdX' as the nvmem name. It's
+unique and it's simple enough to not require this extra sanitization
+pass, on the other hand, guessing the nvmem partition based on such an
+opaque name is not simple, not to mention that the mtd device name can
+change depending on the probe order.
 
-I'll remove it in V2.
+I also wonder if creating nvmem devs unconditionally for all mtd
+devices is a good idea. Sounds like we should only do that if there's an
+explicit request to have one partition exposed as an nvmem.
 
-Thanks
---
-Gustavo
+Note that, no matter what we decide about nvmem, I think having unique
+names at the MTD level is a good thing.
 
 ______________________________________________________
 Linux MTD discussion mailing list
