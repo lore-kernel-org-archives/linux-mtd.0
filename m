@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64AC5C5519B
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 08:25:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 103CBC54FD0
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 08:25:49 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 09754206D4
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 08:25:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9E34B20661
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 08:25:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BtsTGO57"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 09754206D4
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mo+Ufx8W"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E34B20661
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=H4RhdOJZuzUGjql9cyQQ1jm/qPiiE/8MZwX5vLRjI+U=; b=BtsTGO57k7GZOj
-	6wfSfcl668NtDm6YgeJXM0xsY+mTa/iGVmg9yZceEpw/wog8hhR1i/sF4dD1ftBSr24iN4aNjLLIh
-	oDdcZRbtut61htRjUFCcg8gYD5WGAhHRDmUqp/pZzohKtYjWa01BMyY/yd9M1sn3ksvJcHbkgl7xk
-	UgXO5I812U4ztMD4HJK8PEmFg7ientgNfdsGQvi+WrbB+C8SdaRudbSMJMYQotUP2M9TElg+zo+9J
-	Me7/1XgWgqb+RcdA51+iBy847gP7pcmNv0S94P05HtEsx0F42ibmBsRX09ySisdZRnyX1SYhX0DZQ
-	fAv4GuP8q5LHdW0WPd/A==;
+	List-Owner; bh=VGjR4+I55E+3CWUN5j5Bjlh0y6idRk3vTfTJcQF0r4M=; b=mo+Ufx8WbS1URs
+	6yxB1rsZQKvgE22/FWybZAwrhXrOG/TP7m2b1bWWNTjWaPt3KFqLLHd7ceOP6V+kLqTsRUVVonCh0
+	x218aObslG0RFxm6oGaEFQ5t55ZYdyx4OqtQOgGrj/ObT7ec/OZSBBZaT7V2ow+fniFGDXyuypSAK
+	bIhxVo3IiUeLlgH/xuvQpgzL+GomrTd+MN81m2Eu4yQiHM5QexD8inqK/+KVmf0KzaU0/Gfu2HUuC
+	JglqFcikKkBX6DRC1B8BAaNT9ZjAFVsltlHvOwNicckm8vrh9+KMmlTkLxSK/Cra6NzlSkbQ+6VRQ
+	+LcT6OFsqWfQ15K9b3ow==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jSz4o-0003h5-KL; Mon, 27 Apr 2020 08:25:18 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1jSz54-0004KE-4n; Mon, 27 Apr 2020 08:25:34 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jSz0J-00068N-RP
- for linux-mtd@lists.infradead.org; Mon, 27 Apr 2020 08:20:42 +0000
+ id 1jSz0L-0006Ap-Ex
+ for linux-mtd@lists.infradead.org; Mon, 27 Apr 2020 08:20:45 +0000
 Received: from localhost.localdomain (unknown
  [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 22F612A0A17;
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 65C052A0630;
  Mon, 27 Apr 2020 09:20:38 +0100 (BST)
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 08/17] mtd: rawnand: cafe: Use devm_kzalloc and
- devm_request_irq()
-Date: Mon, 27 Apr 2020 10:20:18 +0200
-Message-Id: <20200427082028.394719-9-boris.brezillon@collabora.com>
+Subject: [PATCH 09/17] mtd: rawnand: cafe: Get rid of a useless label
+Date: Mon, 27 Apr 2020 10:20:19 +0200
+Message-Id: <20200427082028.394719-10-boris.brezillon@collabora.com>
 X-Mailer: git-send-email 2.25.3
 In-Reply-To: <20200427082028.394719-1-boris.brezillon@collabora.com>
 References: <20200427082028.394719-1-boris.brezillon@collabora.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200427_012040_050319_C8B94632 
-X-CRM114-Status: GOOD (  12.44  )
+X-CRM114-CacheID: sfid-20200427_012041_662786_A3E75B1A 
+X-CRM114-Status: GOOD (  12.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,72 +77,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This simplifies the error/remove path.
+We can return 0 directly instead of branching to the out label.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
 ---
- drivers/mtd/nand/raw/cafe_nand.c | 14 ++++----------
- 1 file changed, 4 insertions(+), 10 deletions(-)
+ drivers/mtd/nand/raw/cafe_nand.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/cafe_nand.c b/drivers/mtd/nand/raw/cafe_nand.c
-index 55fa0bf2806a..3eab57e63215 100644
+index 3eab57e63215..348debbc04af 100644
 --- a/drivers/mtd/nand/raw/cafe_nand.c
 +++ b/drivers/mtd/nand/raw/cafe_nand.c
-@@ -848,7 +848,7 @@ static int cafe_nand_probe(struct pci_dev *pdev,
+@@ -932,7 +932,7 @@ static int cafe_nand_probe(struct pci_dev *pdev,
+ 	if (err)
+ 		goto out_cleanup_nand;
  
- 	pci_set_master(pdev);
+-	goto out;
++	return 0;
  
--	cafe = kzalloc(sizeof(*cafe), GFP_KERNEL);
-+	cafe = devm_kzalloc(&pdev->dev, sizeof(*cafe), GFP_KERNEL);
- 	if (!cafe)
- 		return  -ENOMEM;
- 
-@@ -860,8 +860,7 @@ static int cafe_nand_probe(struct pci_dev *pdev,
- 	cafe->mmio = pci_iomap(pdev, 0, 0);
- 	if (!cafe->mmio) {
- 		dev_warn(&pdev->dev, "failed to iomap\n");
--		err = -ENOMEM;
--		goto out_free_mtd;
-+		return -ENOMEM;
- 	}
- 
- 	cafe->rs = init_rs_non_canonical(12, &cafe_mul, 0, 1, 8);
-@@ -910,8 +909,8 @@ static int cafe_nand_probe(struct pci_dev *pdev,
- 
- 	cafe_nand_init(cafe);
- 
--	err = request_irq(pdev->irq, &cafe_nand_interrupt, IRQF_SHARED,
--			  "CAFE NAND", mtd);
-+	err = devm_request_irq(&pdev->dev, pdev->irq, cafe_nand_interrupt,
-+			       IRQF_SHARED, "CAFE NAND", mtd);
- 	if (err) {
- 		dev_warn(&pdev->dev, "Could not register IRQ %d\n", pdev->irq);
- 		goto out_ior;
-@@ -942,11 +941,8 @@ static int cafe_nand_probe(struct pci_dev *pdev,
- 	cafe_writel(cafe,
- 		    cafe_readl(cafe, GLOBAL_IRQ_MASK) & ~CAFE_GLOBAL_IRQ_NAND,
+  out_cleanup_nand:
+ 	nand_cleanup(&cafe->nand);
+@@ -943,7 +943,6 @@ static int cafe_nand_probe(struct pci_dev *pdev,
  		    GLOBAL_IRQ_MASK);
--	free_irq(pdev->irq, mtd);
   out_ior:
  	pci_iounmap(pdev, cafe->mmio);
-- out_free_mtd:
--	kfree(cafe);
-  out:
+- out:
  	return err;
  }
-@@ -961,12 +957,10 @@ static void cafe_nand_remove(struct pci_dev *pdev)
- 	cafe_writel(cafe,
- 		    cafe_readl(cafe, GLOBAL_IRQ_MASK) & ~CAFE_GLOBAL_IRQ_NAND,
- 		    GLOBAL_IRQ_MASK);
--	free_irq(pdev->irq, mtd);
- 	nand_release(chip);
- 	free_rs(cafe->rs);
- 	pci_iounmap(pdev, cafe->mmio);
- 	dma_free_coherent(&cafe->pdev->dev, 2112, cafe->dmabuf, cafe->dmaaddr);
--	kfree(cafe);
- }
  
- static const struct pci_device_id cafe_nand_tbl[] = {
 -- 
 2.25.3
 
