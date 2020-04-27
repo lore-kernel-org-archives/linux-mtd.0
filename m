@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A8A7C4CECD
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 19:06:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C66EC4CECC
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 19:07:18 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 417132173E
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 19:06:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C64502173E
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2020 19:07:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="A9saSDr+";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="IX5ru19H"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 417132173E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="UHtp8ktF";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="WA1/jIwe"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C64502173E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,24 +26,24 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
 	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
 	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WAaEPaz3HpL5m3oFBkfF0qHKZGazRsK5RzSNEJ0bM7o=; b=A9saSDr+H9bWZf
-	oOi7j84bLihiXIq2FzUTcHdLLBVZqdhwsx73MWXhdkY2Y9GI+lEjDinDWD2ZfR/aAJQQuM/m/mZqQ
-	wzKTV1q+OwSaa6gGaOpiQIWvbn9kxX3GYSMXVG3rZyTdb8G5RbSVqznvY4dijZKh+B9bMvv3+pcJ0
-	T45JalWM7wALOBg9LDllZUx2iphh75c9SlCU5z3CP7KIreVyWTopG7s18YKcKED8gSNd2s8TvomkT
-	2aXuoJbeQM8cHlzt2pN40n0dj5mP2GGVWZKxIdQVY4P/BQR4tevtUYCBn6Ah5dPisb10zLdKzHfmw
-	Bpf+NJ+a1R7qEK768ZYQ==;
+	List-Owner; bh=7WsMiNtVIDDGmYGB5/EFIGc8m1bkMqmhapGQlXGDeCw=; b=UHtp8ktFhpxMpX
+	wnhBccT/Zwhq4/3j/Kypw57/ctrjKqj3sJdMlPHAIvL1ZpZ24v1mOCml6AlTPGzmEONHlswn879R9
+	EQlwLAeh1wMU6/vr8hbOZGxQsWGD90wK4bgVf9rpOfUcKGrceKMzGGqQ57q/63TmG1JvV7oY6fZuQ
+	HfMggLVrjQzV7xl0pL+jW265mT5ZQUNGlReqaQLzGdPmsfRdXU9tQtLJ0yOPfJsrqZuQzedAlJSbw
+	yagZVGng7Jgm1R+ioYZ+oFSgrAN4aBULJKhFmwpvEEe7+hEogcywn04cE4BGdT7a2TixFFoSbZ0K2
+	BJFBM1mCORqDotogh8MA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jT95D-0008U8-0o; Mon, 27 Apr 2020 19:06:23 +0000
-Received: from gateway22.websitewelcome.com ([192.185.47.100])
+	id 1jT95y-0000L0-U3; Mon, 27 Apr 2020 19:07:10 +0000
+Received: from gateway32.websitewelcome.com ([192.185.145.171])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jT95A-0008TL-NM
- for linux-mtd@lists.infradead.org; Mon, 27 Apr 2020 19:06:22 +0000
-Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
- by gateway22.websitewelcome.com (Postfix) with ESMTP id 40258520
- for <linux-mtd@lists.infradead.org>; Mon, 27 Apr 2020 14:06:19 -0500 (CDT)
+ id 1jT95v-0000KG-HC
+ for linux-mtd@lists.infradead.org; Mon, 27 Apr 2020 19:07:08 +0000
+Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
+ by gateway32.websitewelcome.com (Postfix) with ESMTP id DE15F103A2AB
+ for <linux-mtd@lists.infradead.org>; Mon, 27 Apr 2020 14:07:05 -0500 (CDT)
 Received: from gator4166.hostgator.com ([108.167.133.22]) by cmsmtp with SMTP
- id T959j8qabSl8qT959jYNj5; Mon, 27 Apr 2020 14:06:19 -0500
+ id T95tjelTPAGTXT95tjxbat; Mon, 27 Apr 2020 14:07:05 -0500
 X-Authority-Reason: nr=8
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
@@ -51,22 +51,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
  Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
  List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=/58bSLWDDjzcT2tctTT4jLGloRKm4Hg0aZzs/rxPU5M=; b=IX5ru19HgOo45+YLXdG5xp7hn+
- jtd/UfqU9FzoYjS1ov7orVAZNooQfanRT7IHGrTmPOuMsBkD+BCfV00LuNjMypmZM7p+BDkt/ONfT
- 2sUUZKBY7tvHv2WCscmUQt88qZUpBqEDdhra1BNVLtOx8YpoV7Xu+xv76ykfiY74Fi4JZjJwXmrf6
- IFPDG2cvWUxhW7vfw3+anQ9gVAyFhJJcW5+DVTVcVe8qXxkqt/gcTp1ydNM7dZs/J5OFdU4YZWIbD
- +lhrSIKgyBbE2KoPx7QYXDmY+ysLLAv7t1aLQin7uq7TFx6XddIpTYkgZrCUBGgeSD3HHJL1XiTUq
- A+jRTUPA==;
-Received: from [201.162.241.110] (port=23674 helo=[192.168.43.132])
+ bh=FZZr/uE2hTuM5pu2r5aXLhMCx8nc6adhDHFuFcVEsyA=; b=WA1/jIwebfelRf4LEBvLyycLnu
+ DV/Lk2mdT0rMwm89mbuBPayhi7Z1kuizZM3sc0zKUjWxIg/EBCqQGsoEqA2TXU4ttL6J0ojveIFCP
+ O4q+14phcbmeFrOVmbasMNyIymsS9v7Nxbm251DiXE3MruSDx6QgKzl/kOkIGNDurXRK/9KAgI384
+ +HTdwE6usPu5/cX44OoHNi96ns2pp3MvPqgpYciB87rgqeY2ZT7mVT8hPmP14Ferkkhe/W4kmKOpU
+ hNEGE9e3it8BbPA2o7NrvbuKtQaYfaPn8OMuhbEgcc3J4eVFeAp7aCdlj6d68TDsZR/uUN9g9gcKh
+ /CJWSWJQ==;
+Received: from [201.162.241.110] (port=23532 helo=[192.168.43.132])
  by gator4166.hostgator.com with esmtpsa
  (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.92)
  (envelope-from <gustavo@embeddedor.com>)
- id 1jT958-000euX-NC; Mon, 27 Apr 2020 14:06:18 -0500
-Subject: Re: [PATCH 2/3] mtd: lpddr: Replace printk with pr_notice
+ id 1jT95t-000fE1-F5; Mon, 27 Apr 2020 14:07:05 -0500
+Subject: Re: [PATCH 3/3] mtd: lpddr: Move function print_drs_error to
+ lpddr_cmds.c
 To: Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org
 References: <cover.1588013366.git.gustavo@embeddedor.com>
- <c9684a22b661fdeff9efcd5b18be01653911fc89.1588013366.git.gustavo@embeddedor.com>
- <d036dbad02241fdeb0a6400896f73ff11e98e53b.camel@perches.com>
+ <5cc0d2e83e971693d974235608c8d96fe94c849d.1588013366.git.gustavo@embeddedor.com>
+ <ce8be38d71da0a9020a42359152dad7ee217d18c.camel@perches.com>
 From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
 Autocrypt: addr=gustavo@embeddedor.com; keydata=
  xsFNBFssHAwBEADIy3ZoPq3z5UpsUknd2v+IQud4TMJnJLTeXgTf4biSDSrXn73JQgsISBwG
@@ -111,12 +112,12 @@ Autocrypt: addr=gustavo@embeddedor.com; keydata=
  YJWH93PN+ZUh6i6Rd2U/i8jH5WvzR57UeWxE4P8bQc0hNGrUsHQH6bpHV2lbuhDdqo+cM9eh
  GZEO3+gCDFmKrjspZjkJbB5Gadzvts5fcWGOXEvuT8uQSvl+vEL0g6vczsyPBtqoBLa9SNrS
  VtSixD1uOgytAP7RWS474w==
-Message-ID: <67c4b34d-019d-e4c9-ebd2-3a8477470048@embeddedor.com>
-Date: Mon, 27 Apr 2020 14:10:36 -0500
+Message-ID: <3a6e7112-341f-6c98-70b7-0a43c3106464@embeddedor.com>
+Date: Mon, 27 Apr 2020 14:11:22 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <d036dbad02241fdeb0a6400896f73ff11e98e53b.camel@perches.com>
+In-Reply-To: <ce8be38d71da0a9020a42359152dad7ee217d18c.camel@perches.com>
 Content-Language: en-US
 X-AntiAbuse: This header was added to track abuse,
  please include it with any abuse report
@@ -127,18 +128,18 @@ X-AntiAbuse: Sender Address Domain - embeddedor.com
 X-BWhitelist: no
 X-Source-IP: 201.162.241.110
 X-Source-L: No
-X-Exim-ID: 1jT958-000euX-NC
+X-Exim-ID: 1jT95t-000fE1-F5
 X-Source: 
 X-Source-Args: 
 X-Source-Dir: 
-X-Source-Sender: ([192.168.43.132]) [201.162.241.110]:23674
+X-Source-Sender: ([192.168.43.132]) [201.162.241.110]:23532
 X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 12
+X-Email-Count: 18
 X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
 X-Local-Domain: yes
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200427_120620_851751_C1A3F8CD 
-X-CRM114-Status: UNSURE (   8.84  )
+X-CRM114-CacheID: sfid-20200427_120707_658017_33572B61 
+X-CRM114-Status: UNSURE (   8.60  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -161,30 +162,25 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
 
-On 4/27/20 14:01, Joe Perches wrote:
-> On Mon, 2020-04-27 at 14:03 -0500, Gustavo A. R. Silva wrote:
->> pr_notice is preferred over printk.
-> 
-> So is coalescing formats
-> 
-> ? diff --git a/include/linux/mtd/pfow.h b/include/linux/mtd/pfow.h
+On 4/27/20 14:03, Joe Perches wrote:
+> On Mon, 2020-04-27 at 14:04 -0500, Gustavo A. R. Silva wrote:
+>> Function print_drs_error is only used in drivers/mtd/lpddr/lpddr_cmds.c
+>> so, better to move it there.
 > []
->> @@ -127,31 +127,31 @@ static inline void print_drs_error(unsigned dsr)
->>  	int prog_status = (dsr & DSR_RPS) >> 8;
+>> diff --git a/drivers/mtd/lpddr/lpddr_cmds.c b/drivers/mtd/lpddr/lpddr_cmds.c
+> []
+>> @@ -94,6 +94,39 @@ struct mtd_info *lpddr_cmdset(struct map_info *map)
+>>  }
+>>  EXPORT_SYMBOL(lpddr_cmdset);
 >>  
->>  	if (!(dsr & DSR_AVAILABLE))
->> -		printk(KERN_NOTICE"DSR.15: (0) Device not Available\n");
->> +		pr_notice("DSR.15: (0) Device not Available\n");
->>  	if ((prog_status & 0x03) == 0x03)
->> -		printk(KERN_NOTICE"DSR.9,8: (11) Attempt to program invalid "
->> +		pr_notice("DSR.9,8: (11) Attempt to program invalid "
->>  						"half with 41h command\n");
+>> +static inline void print_drs_error(unsigned int dsr)
 > 
-> 		pr_notice("DSR.9,8: (11) Attempt to program invalid half with 41h command\n");
+> There's no need for inline as it's used once.
 > 
 
-I didn't want to mess with the rest of format, because some maintainers
-don't like that. If Miquel is OK with that, I can fix that up, too.
+That's correct. I didn't notice that at first sight.
+
+I'll remove it in V2.
 
 Thanks
 --
