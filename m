@@ -2,146 +2,131 @@ Return-Path: <SRS0=F3bs=6M=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9A89C83000
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Apr 2020 08:35:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 23F3FC83000
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Apr 2020 08:35:52 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3F91D2053B
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Apr 2020 08:35:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E4FF22053B
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Apr 2020 08:35:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LVpXIwdA";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="oU23cSyB";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="Garzaohi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3F91D2053B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bHjaOfI/";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="CG872Kpt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E4FF22053B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=samsung.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:References:Mime-Version:In-Reply-To:
+	Date:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=GSMHxXNV361XHVRcAoHQW4xN0Kenk+HWJj0IBzJCfhg=; b=LVpXIwdA/tnqer
-	mdVnGxaWo6ukoF2cVH+n8vWZOqzUfJiu9epzPa4PukrTA8oe4Q9upOH03z+v9Q5MbagVrvJefuvJ4
-	canMAlX85ISJUCzu7mG8LeV3Bj4t9Qw4FdXf/mJsVGdnf3kfY48RIt5GBD2oGthCXakm41fLgH5rR
-	ZBgYoSLD+4rS07TAI9PV5tseKUv/XAGYcrzAVnA8SxhuuhG3GLBwlTpQ4FbwPsa8FDBScEylxWbE7
-	w7aR3JUPVGFxYwMnhIwP7PoJQ/IUXXV4FNnHmGqjyT/Htk+uTPWLeEWldGKSS2Dda8qkQls6T0y4l
-	wZc6LxVwH6rPVkdkCpfg==;
+	List-Owner; bh=1NdbJFgccUFOlyOlqzFnTNhR8jycJQVVcue7PaGwVYk=; b=bHjaOfI/vPfEiA
+	FlxpyUyLhLPLYAUM+sGS5GQmoNSP+z5WGezSatvFzEQsbL/Jx+t07E3VTdXp10JNPiDpi3UBg8V2E
+	vL+QJ5CaIdAYsVMGJMObw5j1R7cfGAcwsJA20BeeCERcKAwJgRKBKGpdtxkNXUQWlDX9VchnmJiTI
+	cMPYF4xya3tqdoHI/uCj0VaaxdOteZqvf/g2Y7rrTWdA8wwoOoBbv16NOXi1leyyt5jRDJzGR72NC
+	4nActQwBZB6IcKnAR3RWC3Dm04NCTL4adCIvhrlqcC592xAqTscCJ5TLwZ4SuWo16F7bmq4Xxl+sk
+	tfWMhLvvRS09EbC7f+pA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jTLi5-0008F4-A5; Tue, 28 Apr 2020 08:35:21 +0000
-Received: from esa2.microchip.iphmx.com ([68.232.149.84])
+	id 1jTLiF-0008Qu-1O; Tue, 28 Apr 2020 08:35:31 +0000
+Received: from mailout3.samsung.com ([203.254.224.33])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jTLi0-0008E7-75
- for linux-mtd@lists.infradead.org; Tue, 28 Apr 2020 08:35:20 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1588062916; x=1619598916;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=CQvmQ89Zev6zx2chl0SX+spqBm5a7RpYk2jAtxGg5qg=;
- b=oU23cSyBK1ydVtUAoPTHIHYyEtd1Vkqzmtxb9G2KzwES7KYoMez826MD
- hxkRmM2KIwrIvG9R4Zc/8ZIs8Y9CdoNUJE5WMobtSXHNPXPxfHK0pfq6m
- zzSLXQxDgrsf4O02YYNY/MNYCilmUbuVTbnLNSapJLDN0Ler1HKxCY+mW
- 29mFNhvoxBmD/mCH0pZThUwUv2rFeW24bpT4AYPIoJK/tnQbbIESTHnrL
- ZLsvq2fPBC0zP5ST6yau0EhOE9peQuTY9FBJhpVxqwhGhpWd+SvOLRpeh
- mhJrWDTCWLhL0a+5Imoo5gIJnfNAlORqoj26Jw1p+ViHV+jf9ixz3MFeV Q==;
-IronPort-SDR: Xd/UAr3GbZyV9xh0bXyNm6cAdV1bW6aazvik9sO1whgihyTkhqxMtnwhUbSSwpfxebU4OkJ+9m
- 1ujV5YOllknPyJ+ay+R84Sm4ABbdDsc+79gLOo5NZ160ruejQaj1uqusWtQnDTRCUnP3qi1dOS
- OS/ZYssG5VQoi8qOYgxHlym81iMym1mZU3wdgsJYMnqG7QjYN+EG+JSwZQp5/vpeFdmKBzQlfg
- wFF8NSTbErdxLWW0Dhng/TZE/u41hpMGh13pfpQPy8W/NaqLLShr8zMTZ/lwvkfcPhjmNZU0Zv
- CgE=
-X-IronPort-AV: E=Sophos;i="5.73,327,1583218800"; d="scan'208";a="73533831"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 28 Apr 2020 01:35:13 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 28 Apr 2020 01:35:12 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, 
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5 via Frontend
- Transport; Tue, 28 Apr 2020 01:35:11 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jEHnTDblzP7UQeIKonVIda7Z9vvKVb7vZ5KZQUuloKrgB0+z2FnTNrHxSepxLDA0mo0xjXvMNcIZP1zLD1QPKTf8g82ZkwoeGfyKp3QZ6nW+DIvCK+DHplSpf7EszYNUYls1RKjjHDnjDvN8miJY5Spb31u1qzs2B2bq1Gtf/2mSnKds1RHZKJvwCbZSCPCIomH/vZ9PlhdtlYTfDCnciCJyAqSrmKEOj88PPWkHjeZzUirq8dYoCERqox6pM1tzVQQ1BDP5nG4XVnv1281x3eyJy7rComXwsOVonpB7Q+1lsmxkg/fuwdIhuXi3ne/JtOcEw26iKeqLl+VEXLETVQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CQvmQ89Zev6zx2chl0SX+spqBm5a7RpYk2jAtxGg5qg=;
- b=SM/Yac2DwRzarKwvN361nuryplHi6JDsZgtZGe3qR69wcZXK1kb8MG1du3miv1wr+w6ewdcNOsPBewqDL7Z4FXY7mSuxGVpI9DwyFeto8eTqSQ5q9p5puQpAhefywLPqzTMB6J7xlKMfZmTNZmn1V6BOF34OqDvc6Jk1bLCi+TvsU6w3sWEDrkS3Q3jDN6RshQO6NAlSnpolOmwTOmWsP2ZW7j4U9XHcG7oXdJKrpcc6sDWG6mhlgK3TzguCSrKVSJB9G0AnSEzMAdsQ23s3DFJEk1/rbA2AemjSS5lg65omv0h74i18XhagwunkN3RNO5JtNSBUsxTZHVD6a2fbcg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CQvmQ89Zev6zx2chl0SX+spqBm5a7RpYk2jAtxGg5qg=;
- b=GarzaohiDMQQndwkWqu9h+/JPKDjWQWymu3d9sP44xmeX/HVilw4/vSVlGHDXWcIIyyzdJyY8aiQkSunwAQ5cmZREJcSpgqwbOxr9fZaGKqnazd4HK2B/Alu29iz0HyfpF5h8RUM4fGYMhYqwzI5ZPZpCdcFkWSxeMjlvpgEP1o=
-Received: from BY5PR11MB4419.namprd11.prod.outlook.com (2603:10b6:a03:1c8::13)
- by BY5PR11MB3925.namprd11.prod.outlook.com (2603:10b6:a03:182::26)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13; Tue, 28 Apr
- 2020 08:35:06 +0000
-Received: from BY5PR11MB4419.namprd11.prod.outlook.com
- ([fe80::d847:5d58:5325:c536]) by BY5PR11MB4419.namprd11.prod.outlook.com
- ([fe80::d847:5d58:5325:c536%7]) with mapi id 15.20.2937.023; Tue, 28 Apr 2020
- 08:35:06 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <sergei.shtylyov@cogentembedded.com>
-Subject: Re: [PATCH v2 0/5] Fix kernel-doc comments for 'struct spi_nor'
-Thread-Topic: [PATCH v2 0/5] Fix kernel-doc comments for 'struct spi_nor'
-Thread-Index: AQHWHTfr4xFx0Wnx8UuacHeE+DzauQ==
-Date: Tue, 28 Apr 2020 08:35:06 +0000
-Message-ID: <2604434.NqclOjlLZl@192.168.0.120>
-References: <b82675c7-9c90-d0a5-f221-9f51f89e448e@cogentembedded.com>
-In-Reply-To: <b82675c7-9c90-d0a5-f221-9f51f89e448e@cogentembedded.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: cogentembedded.com; dkim=none (message not signed)
- header.d=none;cogentembedded.com; dmarc=none action=none
- header.from=microchip.com;
-x-originating-ip: [94.177.32.156]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 2e7bb3e5-ca2b-4d4d-864d-08d7eb4f0dcd
-x-ms-traffictypediagnostic: BY5PR11MB3925:
-x-microsoft-antispam-prvs: <BY5PR11MB39254A86B0A5F906E3AE98EFF0AC0@BY5PR11MB3925.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:983;
-x-forefront-prvs: 0387D64A71
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:BY5PR11MB4419.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFTY:;
- SFS:(376002)(366004)(136003)(346002)(396003)(39860400002)(64756008)(76116006)(6512007)(66476007)(66446008)(9686003)(66556008)(4326008)(66946007)(2906002)(14286002)(4744005)(5660300002)(6916009)(186003)(6486002)(71200400001)(54906003)(316002)(81156014)(8936002)(6506007)(86362001)(53546011)(26005)(8676002)(478600001);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: NyehRw2wPKQvBRPyZ9OiTAW4wtXkVac2Yo5SlsaOiQ4tfhInra2qlWN6aG7rSDgX+ak1gUJ4ajaXvCWsq2AhoG6zE95AUY8hNAE+yAPBycV36yLYZ+K7IBkGcBLHcvgeAXAY1gmPCEnNrbYEr45p5AljUiH4XKnSJIq+O8bMucB4JR6ikRJIUDNPh+YdVaBjGuLPUW5/D6fIcHT7gVgvDvI7ORXF6ZP9U72AF0mr53J55YwxZ+jBFrZQoi/ZzBY5YE25aJGh1MTmzCrJ7jIqmSngeizIqVKM7YvgnmRMmPcnUUMgz+i3X3hKW2uN2p31ZpEpx64KmvofMzpWBevf2Iir/YXJLFPALZk1EDRlkZ8uZoRZugl1cDlBvaNw/i6GAW2uQq7K3Lnop4DeHlZHRLkT3CnIVOB8dnzH6sG16qVvcZ/JbwlXWoC02OEZQEh2
-x-ms-exchange-antispam-messagedata: tKGslc/Vx+Z8/FGZ87gshoVyqG0WGNC+QbTCGH0t7VbtSH4Z178jLIsWo2zfrbXFyRfdVSe33TUOoAju6q4fI87JHLreYE5FUkVdDN/6nE3ZhkeJHMcYrscO5c7GRvBDRi0LkAQptCJPoiKbZzsOuf9KZEwoFRwvJfPTxesyITEwTZyMPjz3sr0d6vQjcuNX72yH9DNNZSUzemVr7UNNVSjgmPvuZ9RrVqEWQVMe5T9JIbVsriIHeWoE1LZxo1HSqSF0qzVBfxgFSTqFwdf13T26ugFugWaBRoucufaL4ceg51tkeGB3Qjh0qdvS2KmNhMa9NAk6YVNzLUf7C0kEQ/62fOzvX8gBjTYu4UgUgD6yiRazuojPfI96DFTquUKHEL/4X9aOkXggwbITGDvlj4J6SphnOpWU6YTB3f5nkMHTbbeNhfVpxrNr6saK9jTorpElQ75+0NBBTMDecgzamLlhw0gqS2yng5in2BkXf2Xm5xXxdmVmiP1q3ual7eFN8muhPQXhFK6syYTxVG4UG6D9HOolR4a2DpVfGEOiaHLAsMt+rjCf48qjzqlL+/0WfUU/4/oHdAFdixnSzZBkAl0NB1s8ZmwytnmPyAkjF5izO4C3CwD/et0zN4zStB27uF42Nz3+cy2x/Lah1k8NFCRrZ/5qsRr8BaxgOnUAjarSO/GgcIusB92A8sUQQJbo6hOV9h+J16DJP5DkrYRNaBFQJpzV5cKfp1H27zBkHS9sTCkP4f5uRT7hplnNg9J50/Jtx/ZQpBVMQDUb133BqjLPQn3u/TCEu7o1McN61bU=
-x-ms-exchange-transport-forked: True
-Content-ID: <BF04BF5D62429742A9D31FB93D70C7FF@namprd11.prod.outlook.com>
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2e7bb3e5-ca2b-4d4d-864d-08d7eb4f0dcd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Apr 2020 08:35:06.1032 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZDBZcrYfRfRFtUEOaKaTamMx1k40E6GtKBL8I4erg4Dka+i/YioRzf/jPqISf4Nykl9WAB2AdqP4mLAWgp58oRj5cDFH9DIOj2RgTvJZbus=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB3925
+ id 1jTLi3-0008EL-Cf
+ for linux-mtd@lists.infradead.org; Tue, 28 Apr 2020 08:35:21 +0000
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+ by mailout3.samsung.com (KnoxPortal) with ESMTP id
+ 20200428083515epoutp035315ef683e2e24ea68ce71eb16827175~J7s7hTGzE2971929719epoutp03G
+ for <linux-mtd@lists.infradead.org>; Tue, 28 Apr 2020 08:35:15 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com
+ 20200428083515epoutp035315ef683e2e24ea68ce71eb16827175~J7s7hTGzE2971929719epoutp03G
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+ s=mail20170921; t=1588062915;
+ bh=kj0AZQjyB8bq7HfiZAC5pa5OvHgV5bBZZJJqk04y/cc=;
+ h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+ b=CG872KptafMKpswNyh4WQExkfWgUS6gR+6Qjlc/AhQemENd0kw+uYQSDe8Bbei1dD
+ i0KSilE1FxX8nbFiwQ05liBfmyLgJE7thruEC4POlgiyMyI/c20v9pI5SuuOetAyha
+ /Smir7iy+bsiJJcS66yuziwVIh4mP5w/2ZEh4IFw=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+ epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+ 20200428083515epcas1p40ba271813631d02b91503db36250fd30~J7s7ODLtq0191301913epcas1p4d;
+ Tue, 28 Apr 2020 08:35:15 +0000 (GMT)
+Received: from epsmges1p5.samsung.com (unknown [182.195.40.166]) by
+ epsnrtp4.localdomain (Postfix) with ESMTP id 49BFMQ3r3gzMqYl0; Tue, 28 Apr
+ 2020 08:35:14 +0000 (GMT)
+Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
+ epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
+ 7B.27.04658.2CAE7AE5; Tue, 28 Apr 2020 17:35:14 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+ epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+ 20200428083513epcas1p3d03bcebf546e668eea3a28405c9a0b60~J7s5pX03K1921019210epcas1p3G;
+ Tue, 28 Apr 2020 08:35:13 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+ epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+ 20200428083513epsmtrp1b81f6be4ab5c2defe29bfcadc6b3c5bd~J7s5oog_60285202852epsmtrp1X;
+ Tue, 28 Apr 2020 08:35:13 +0000 (GMT)
+X-AuditID: b6c32a39-a81ff70000001232-92-5ea7eac28798
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+ epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+ BF.F4.18461.1CAE7AE5; Tue, 28 Apr 2020 17:35:13 +0900 (KST)
+Received: from asdf (unknown [10.88.100.192]) by epsmtip1.samsung.com
+ (KnoxPortal) with ESMTPA id
+ 20200428083513epsmtip1b841a5b76808f3cb90122ab1473347db~J7s5eY-tR0370303703epsmtip1F;
+ Tue, 28 Apr 2020 08:35:13 +0000 (GMT)
+Message-ID: <dd59f801a3eb175afba5c28fb628bdf1be38df2e.camel@samsung.com>
+Subject: Re: [PATCH] mtd: spi-nor: Enable locking for n25q00/n25q00a
+From: Jungseung Lee <js07.lee@samsung.com>
+To: Tudor.Ambarus@microchip.com
+Date: Tue, 28 Apr 2020 17:35:13 +0900
+In-Reply-To: <8977895.SZaA0p1QKD@192.168.0.120>
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Se0hTcRTu573brtHkNh8dJHBelNB8bM7pKi1BiYEKUv9FuG7usol3D3Y3
+ yehhFqLma9GLoSS2lIQUp+i07GGhEhSJZE/I1oOUFJNeaMPuvBP97zvfOd/5fuf8DoHJzomj
+ iVKznbGZaZYSb8UHHiekJI/OdRYrbtSSGt+bFZHmblWHRPPDnaNZfbYoycG1fe6z2vd/byFt
+ Y38X0o6/Hgwpwo+wWUaG1jM2OWMusehLzYZsKv+wLlenzlAok5V7NJmU3EybmGwqr6Ao+WAp
+ yztS8nKadfBUEc1xVOr+LJvFYWfkRgtnz6YYq561KhXWFI42cQ6zIaXEYtqrVCjS1HzlMdZY
+ /WUVty6LT/Q8rUWVqF1Uh0IJINOh7scAj7cSMtKLoLOxfi0hI5cQLH0rERK/EbS2XxSvK7q+
+ LgcVIwg+dj8UC4GPDwYH8DpEEFJSC+19pwMwnMyDuy4U0IrJRHi94hEF6AgyBkY6ZQEa44uH
+ Z6+v+eJkPIxNOfEADiVTobvrnkSwTYL5p43B5tvB7w0XpDEwON+CBR4A5LQEnnwYQUJ9Hvjf
+ /QnicJgb7w/2iYbZpuog5mDotlMiiC8g8HW6gwkVLMzfwQJmGJkAPcOpAh0LQyutSDAOg4Vf
+ 9WujACmFmmqZUELB95kLuIABXnxqCO5ZC1dqPMGteRC8a/6ONSO5a2Mc16ZxXBvGbQjrQlGM
+ lTMZGE5pVW/+XQ9aO7/EPV409rxgFJEEorZJZx50FMtEdDlXYRpFQGBUhNRn5Cmpnq44ydgs
+ OpuDZbhRpOaX7cSiI0ss/DGb7TqlOk2lUmnSMzIz1Cpqh/TKK7ZYRhpoO1PGMFbGtq4LIUKj
+ K5EuMsz1OW3JE5fU8Lw3kt2pOFgQtbCa3HB1i7Jv+tqpptqOn6HZcSfO5P9KSnQ/CNM431dv
+ aYk/5Dz6trDeb3AUxro1u/zF93VXJ725l+qrfPOXy159nJljlht9U/7F+/e85/f9vjlRNZnr
+ /Te2NPEyc/lAW+SgPiKqcvfxXlHWp0cUzhlpZSJm4+j/AhFDEZQDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrCLMWRmVeSWpSXmKPExsWy7bCSnO7BV8vjDK6tN7J4dPM3q8XupmXs
+ Fh+XOFj8P/uB3YHFY/OSeo87P5YyevRtWcXocfzGdqYAligum5TUnMyy1CJ9uwSujLan/1kK
+ frFVrD/VydjAuIi1i5GTQ0LARGLVs19gtpDAbkaJ7k2ZEHEJiUc7v7B0MXIA2cIShw8XdzFy
+ AZU8YJT417yRCSTOK+AhsWhzLYgpLOAisXsWI0gnm4CWxI3fm1hBwiIC8hJ7lwuBhJmBine9
+ nAG2iEVAVeLY5YksIDangL7EulV72CGmb2eUuNKwnhmiQVOidftvdohrdCTenupjgdgqKPF3
+ hzBEibzE9rdzmCcwCs5C0jELoWoWkqoFjMyrGCVTC4pz03OLDQsM81LL9YoTc4tL89L1kvNz
+ NzGCA1pLcwfj9lUf9A4xMnEwHmKU4GBWEuF9lLEsTog3JbGyKrUoP76oNCe1+BCjNAeLkjjv
+ jcKFcUIC6YklqdmpqQWpRTBZJg5OqQam0FWJS+4d1J/R68srs3kvV1Psiwl6obtOxWyUv9/J
+ NOnn5H9bTLP/aEsx7bGeINTU65mS2rdgqWfKzL0S+hJSi7sWbOOZ+ffnTj4m/WP/VGVuVKz4
+ MH1S7c82kxkb8r4+n/tEh/PCrSdvSu1r7Ko0Z1xVPb/D4YFx1t6T637w7ZLNjPzVpnAhNnXv
+ 8+RKZovp6hEzJD/d+pMgttE7PvCZdusvZ2Evjxmi7SG3IroC3SqjX0rZKb7SnhnLfJUle+lJ
+ xrka2YFPTvFsM8wNeBk6xWHaJuO/F14raPgsnPc2Oe6M27wD1YUWE7bbaGp3e3r36eTyh/BY
+ v5j/0MamMrb19oH6DSvPdgqYXr7hbVWixFKckWioxVxUnAgA0XvNc9cCAAA=
+X-CMS-MailID: 20200428083513epcas1p3d03bcebf546e668eea3a28405c9a0b60
+X-Msg-Generator: CA
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200421063317epcas1p388256ada10113b38b92dca757cd11e41
+References: <CGME20200421063317epcas1p388256ada10113b38b92dca757cd11e41@epcas1p3.samsung.com>
+ <20200421063313.32655-1-js07.lee@samsung.com>
+ <8977895.SZaA0p1QKD@192.168.0.120>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200428_013516_876395_2904B982 
-X-CRM114-Status: UNSURE (   9.45  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200428_013519_957917_AAC7FEEB 
+X-CRM114-Status: GOOD (  16.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -153,36 +138,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: richard@nod.at, linux-mtd@lists.infradead.org, vigneshr@ti.com,
- miquel.raynal@bootlin.com
+Cc: linux-mtd@lists.infradead.org, vigneshr@ti.com, js07.lee@samsung.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Friday, April 3, 2020 11:39:25 PM EEST Sergei Shtylyov wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the
-> content is safe
-> 
-> Hello!
-> 
-> Here's a set of 5 patches against the 'spi-nor/next' branch of the MTD
-> 'linux.git' repo. I'm fixing a number of issues in the kernel-doc comment
-> to 'struct spi_nor' accumulated since its creation. Instead of a single
-> patch, I'm fixing the kernel-doc comment with several patches, each fixing
-> its own broken commit -- this simplifies porting to the stable kernels (if
-> that ever happens). :-)
-> 
-> [1/5] mtd: spi-nor: fix kernel-doc for 'struct spi_nor'
-> [2/5] mtd: spi-nor: fix kernel-doc for spi_nor::mtd
-> [3/5] mtd: spi-nor: fix kernel-doc for spi_nor::reg_proto
-> [4/5] mtd: spi-nor: fix kernel-doc for spi_nor::info
-> [5/5] mtd: spi-nor: fix kernel-doc for spi_nor::spimem
-> 
-> MBR, Sergei
+Hi, Tudor,
 
-s/SPI-NOR/SPI NOR in 4/5. All applied, thanks.
+On Tue, 2020-04-28 at 07:34 +0000, Tudor.Ambarus@microchip.com wrote:
+> Hi, Jungseung,
+> 
+> On Tuesday, April 21, 2020 9:33:13 AM EEST Jungseung Lee wrote:
+> > Tested on n25q00 with cirrus controller. The other is modified
+> > according to the datasheet.
+> 
+> What is the difference between n25q00 and n25q00a? I'm reluctant to
+> add flags 
+> to flashes solely by datasheet info, without testing. I saw too many
+> faults in 
+> the past.
+> 
 
+The device ID of n25q00 is 0x20ba21, and the the device ID of n25q00a
+is 0x20bb21. BAh = 3V, BBh = 1.8V. 
+
+The Vcc they are using is differ. That's only one I could find in their
+datasheet and they are also sharing their datasheet.
+
+> Let me know if you're ok with applying just the changes for n25q00,
+> they look 
+> fine.
+> 
+
+I understand. It's also good for me.
+
+Thanks,
+
+> Cheers,
+> ta
+> 
+> 
+> 
 
 
 ______________________________________________________
