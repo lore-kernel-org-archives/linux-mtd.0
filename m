@@ -2,85 +2,146 @@ Return-Path: <SRS0=F3bs=6M=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6603BC83000
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Apr 2020 08:28:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9A89C83000
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Apr 2020 08:35:37 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 34A752064A
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Apr 2020 08:28:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3F91D2053B
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Apr 2020 08:35:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mpZR3AXV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 34A752064A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LVpXIwdA";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="oU23cSyB";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="Garzaohi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3F91D2053B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:Reply-To:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=y15J63LZSSsSzMI4sqq44XDO+4gUeIsUThKT0i1RbeA=; b=mpZR3AXV86mN9c
-	07GMwEL+soxiwYhQlye3/Q4eEJbU8YQM71ul4M8engk8VUFfOzyh6RkNTQrIGsfyeezMuXmZL+6Gk
-	Vll++gacecVr/VfpGq55HuWrVJNHwNx1IzYqpZbhH6vG0//rcUPScZPLKN+Tgn4VZZCyGd/cdmd+e
-	MAtcpBS6FFpj3ZsQ6V3QI2lGLUinLh0on1DoZtw7bIp4FMSgSHRyKktQmxasl/ssXbxVnzexvGdQX
-	sVf/bbCu5LjD15DSoYr9MlDmpZBOXwz4Y+uT+lFMzqIvZy2pyQXkX/2WU15iaHRA9IskutGwwUct2
-	BndTKuTONvWLbI7bS4DQ==;
+	List-Owner; bh=GSMHxXNV361XHVRcAoHQW4xN0Kenk+HWJj0IBzJCfhg=; b=LVpXIwdA/tnqer
+	mdVnGxaWo6ukoF2cVH+n8vWZOqzUfJiu9epzPa4PukrTA8oe4Q9upOH03z+v9Q5MbagVrvJefuvJ4
+	canMAlX85ISJUCzu7mG8LeV3Bj4t9Qw4FdXf/mJsVGdnf3kfY48RIt5GBD2oGthCXakm41fLgH5rR
+	ZBgYoSLD+4rS07TAI9PV5tseKUv/XAGYcrzAVnA8SxhuuhG3GLBwlTpQ4FbwPsa8FDBScEylxWbE7
+	w7aR3JUPVGFxYwMnhIwP7PoJQ/IUXXV4FNnHmGqjyT/Htk+uTPWLeEWldGKSS2Dda8qkQls6T0y4l
+	wZc6LxVwH6rPVkdkCpfg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jTLbd-00026h-43; Tue, 28 Apr 2020 08:28:41 +0000
-Received: from mga04.intel.com ([192.55.52.120])
+	id 1jTLi5-0008F4-A5; Tue, 28 Apr 2020 08:35:21 +0000
+Received: from esa2.microchip.iphmx.com ([68.232.149.84])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jTLba-00026D-F5
- for linux-mtd@lists.infradead.org; Tue, 28 Apr 2020 08:28:39 +0000
-IronPort-SDR: w65KafUChMLKKOSE0Jag5DLkufCY9no9yVUlIr/ze7xtlrSVrjGZaWrcl2K38KBG2X97z6e4yo
- 5tD5Fx6ksvsQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 28 Apr 2020 01:28:38 -0700
-IronPort-SDR: cXF0nyAj5HPxlSisvPTOTOweP9i/MFPapWw0UV9p1jNLtkuxqInvF0mnwzyPpwM0AyPx+4SQo2
- cUiwjg1mD0JQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,327,1583222400"; d="scan'208";a="282070540"
-Received: from linux.intel.com ([10.54.29.200])
- by fmsmga004.fm.intel.com with ESMTP; 28 Apr 2020 01:28:36 -0700
-Received: from [10.214.149.60] (vramuthx-MOBL1.gar.corp.intel.com
- [10.214.149.60])
- by linux.intel.com (Postfix) with ESMTP id 87A465804B6;
- Tue, 28 Apr 2020 01:28:28 -0700 (PDT)
-Subject: Re: [PATCH v3 2/2] mtd: rawnand: Add NAND controller support on Intel
- LGM SoC
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-References: <20200423162113.38055-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200423162113.38055-3-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200424183612.4cfdbb6a@collabora.com> <20200427175127.0518c193@xps13>
- <cba30ccb-c190-d4d6-eab9-6083bd5d2aad@linux.intel.com>
- <20200428082759.25065146@collabora.com>
- <38334812-21b9-5b2c-db84-01c9eacc84d0@linux.intel.com>
- <20200428084704.5e04232a@collabora.com>
- <f72b5ae0-b0ac-61b8-8f64-c0e0f48afe02@linux.intel.com>
- <20200428094049.3c0d4730@xps13>
- <3ebc42d9-f8a8-0764-ff7f-82beeb0b5bb7@linux.intel.com>
- <20200428095459.6727fab0@xps13>
-From: "Ramuthevar, Vadivel MuruganX"
- <vadivel.muruganx.ramuthevar@linux.intel.com>
-Message-ID: <5c086349-d17f-2ebd-1a70-005fa64e050f@linux.intel.com>
-Date: Tue, 28 Apr 2020 16:28:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200428095459.6727fab0@xps13>
+ id 1jTLi0-0008E7-75
+ for linux-mtd@lists.infradead.org; Tue, 28 Apr 2020 08:35:20 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1588062916; x=1619598916;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:content-transfer-encoding: mime-version;
+ bh=CQvmQ89Zev6zx2chl0SX+spqBm5a7RpYk2jAtxGg5qg=;
+ b=oU23cSyBK1ydVtUAoPTHIHYyEtd1Vkqzmtxb9G2KzwES7KYoMez826MD
+ hxkRmM2KIwrIvG9R4Zc/8ZIs8Y9CdoNUJE5WMobtSXHNPXPxfHK0pfq6m
+ zzSLXQxDgrsf4O02YYNY/MNYCilmUbuVTbnLNSapJLDN0Ler1HKxCY+mW
+ 29mFNhvoxBmD/mCH0pZThUwUv2rFeW24bpT4AYPIoJK/tnQbbIESTHnrL
+ ZLsvq2fPBC0zP5ST6yau0EhOE9peQuTY9FBJhpVxqwhGhpWd+SvOLRpeh
+ mhJrWDTCWLhL0a+5Imoo5gIJnfNAlORqoj26Jw1p+ViHV+jf9ixz3MFeV Q==;
+IronPort-SDR: Xd/UAr3GbZyV9xh0bXyNm6cAdV1bW6aazvik9sO1whgihyTkhqxMtnwhUbSSwpfxebU4OkJ+9m
+ 1ujV5YOllknPyJ+ay+R84Sm4ABbdDsc+79gLOo5NZ160ruejQaj1uqusWtQnDTRCUnP3qi1dOS
+ OS/ZYssG5VQoi8qOYgxHlym81iMym1mZU3wdgsJYMnqG7QjYN+EG+JSwZQp5/vpeFdmKBzQlfg
+ wFF8NSTbErdxLWW0Dhng/TZE/u41hpMGh13pfpQPy8W/NaqLLShr8zMTZ/lwvkfcPhjmNZU0Zv
+ CgE=
+X-IronPort-AV: E=Sophos;i="5.73,327,1583218800"; d="scan'208";a="73533831"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 28 Apr 2020 01:35:13 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 28 Apr 2020 01:35:12 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, 
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5 via Frontend
+ Transport; Tue, 28 Apr 2020 01:35:11 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jEHnTDblzP7UQeIKonVIda7Z9vvKVb7vZ5KZQUuloKrgB0+z2FnTNrHxSepxLDA0mo0xjXvMNcIZP1zLD1QPKTf8g82ZkwoeGfyKp3QZ6nW+DIvCK+DHplSpf7EszYNUYls1RKjjHDnjDvN8miJY5Spb31u1qzs2B2bq1Gtf/2mSnKds1RHZKJvwCbZSCPCIomH/vZ9PlhdtlYTfDCnciCJyAqSrmKEOj88PPWkHjeZzUirq8dYoCERqox6pM1tzVQQ1BDP5nG4XVnv1281x3eyJy7rComXwsOVonpB7Q+1lsmxkg/fuwdIhuXi3ne/JtOcEw26iKeqLl+VEXLETVQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CQvmQ89Zev6zx2chl0SX+spqBm5a7RpYk2jAtxGg5qg=;
+ b=SM/Yac2DwRzarKwvN361nuryplHi6JDsZgtZGe3qR69wcZXK1kb8MG1du3miv1wr+w6ewdcNOsPBewqDL7Z4FXY7mSuxGVpI9DwyFeto8eTqSQ5q9p5puQpAhefywLPqzTMB6J7xlKMfZmTNZmn1V6BOF34OqDvc6Jk1bLCi+TvsU6w3sWEDrkS3Q3jDN6RshQO6NAlSnpolOmwTOmWsP2ZW7j4U9XHcG7oXdJKrpcc6sDWG6mhlgK3TzguCSrKVSJB9G0AnSEzMAdsQ23s3DFJEk1/rbA2AemjSS5lg65omv0h74i18XhagwunkN3RNO5JtNSBUsxTZHVD6a2fbcg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CQvmQ89Zev6zx2chl0SX+spqBm5a7RpYk2jAtxGg5qg=;
+ b=GarzaohiDMQQndwkWqu9h+/JPKDjWQWymu3d9sP44xmeX/HVilw4/vSVlGHDXWcIIyyzdJyY8aiQkSunwAQ5cmZREJcSpgqwbOxr9fZaGKqnazd4HK2B/Alu29iz0HyfpF5h8RUM4fGYMhYqwzI5ZPZpCdcFkWSxeMjlvpgEP1o=
+Received: from BY5PR11MB4419.namprd11.prod.outlook.com (2603:10b6:a03:1c8::13)
+ by BY5PR11MB3925.namprd11.prod.outlook.com (2603:10b6:a03:182::26)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13; Tue, 28 Apr
+ 2020 08:35:06 +0000
+Received: from BY5PR11MB4419.namprd11.prod.outlook.com
+ ([fe80::d847:5d58:5325:c536]) by BY5PR11MB4419.namprd11.prod.outlook.com
+ ([fe80::d847:5d58:5325:c536%7]) with mapi id 15.20.2937.023; Tue, 28 Apr 2020
+ 08:35:06 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <sergei.shtylyov@cogentembedded.com>
+Subject: Re: [PATCH v2 0/5] Fix kernel-doc comments for 'struct spi_nor'
+Thread-Topic: [PATCH v2 0/5] Fix kernel-doc comments for 'struct spi_nor'
+Thread-Index: AQHWHTfr4xFx0Wnx8UuacHeE+DzauQ==
+Date: Tue, 28 Apr 2020 08:35:06 +0000
+Message-ID: <2604434.NqclOjlLZl@192.168.0.120>
+References: <b82675c7-9c90-d0a5-f221-9f51f89e448e@cogentembedded.com>
+In-Reply-To: <b82675c7-9c90-d0a5-f221-9f51f89e448e@cogentembedded.com>
+Accept-Language: en-US
 Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: cogentembedded.com; dkim=none (message not signed)
+ header.d=none;cogentembedded.com; dmarc=none action=none
+ header.from=microchip.com;
+x-originating-ip: [94.177.32.156]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2e7bb3e5-ca2b-4d4d-864d-08d7eb4f0dcd
+x-ms-traffictypediagnostic: BY5PR11MB3925:
+x-microsoft-antispam-prvs: <BY5PR11MB39254A86B0A5F906E3AE98EFF0AC0@BY5PR11MB3925.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:983;
+x-forefront-prvs: 0387D64A71
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:BY5PR11MB4419.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFTY:;
+ SFS:(376002)(366004)(136003)(346002)(396003)(39860400002)(64756008)(76116006)(6512007)(66476007)(66446008)(9686003)(66556008)(4326008)(66946007)(2906002)(14286002)(4744005)(5660300002)(6916009)(186003)(6486002)(71200400001)(54906003)(316002)(81156014)(8936002)(6506007)(86362001)(53546011)(26005)(8676002)(478600001);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: NyehRw2wPKQvBRPyZ9OiTAW4wtXkVac2Yo5SlsaOiQ4tfhInra2qlWN6aG7rSDgX+ak1gUJ4ajaXvCWsq2AhoG6zE95AUY8hNAE+yAPBycV36yLYZ+K7IBkGcBLHcvgeAXAY1gmPCEnNrbYEr45p5AljUiH4XKnSJIq+O8bMucB4JR6ikRJIUDNPh+YdVaBjGuLPUW5/D6fIcHT7gVgvDvI7ORXF6ZP9U72AF0mr53J55YwxZ+jBFrZQoi/ZzBY5YE25aJGh1MTmzCrJ7jIqmSngeizIqVKM7YvgnmRMmPcnUUMgz+i3X3hKW2uN2p31ZpEpx64KmvofMzpWBevf2Iir/YXJLFPALZk1EDRlkZ8uZoRZugl1cDlBvaNw/i6GAW2uQq7K3Lnop4DeHlZHRLkT3CnIVOB8dnzH6sG16qVvcZ/JbwlXWoC02OEZQEh2
+x-ms-exchange-antispam-messagedata: tKGslc/Vx+Z8/FGZ87gshoVyqG0WGNC+QbTCGH0t7VbtSH4Z178jLIsWo2zfrbXFyRfdVSe33TUOoAju6q4fI87JHLreYE5FUkVdDN/6nE3ZhkeJHMcYrscO5c7GRvBDRi0LkAQptCJPoiKbZzsOuf9KZEwoFRwvJfPTxesyITEwTZyMPjz3sr0d6vQjcuNX72yH9DNNZSUzemVr7UNNVSjgmPvuZ9RrVqEWQVMe5T9JIbVsriIHeWoE1LZxo1HSqSF0qzVBfxgFSTqFwdf13T26ugFugWaBRoucufaL4ceg51tkeGB3Qjh0qdvS2KmNhMa9NAk6YVNzLUf7C0kEQ/62fOzvX8gBjTYu4UgUgD6yiRazuojPfI96DFTquUKHEL/4X9aOkXggwbITGDvlj4J6SphnOpWU6YTB3f5nkMHTbbeNhfVpxrNr6saK9jTorpElQ75+0NBBTMDecgzamLlhw0gqS2yng5in2BkXf2Xm5xXxdmVmiP1q3ual7eFN8muhPQXhFK6syYTxVG4UG6D9HOolR4a2DpVfGEOiaHLAsMt+rjCf48qjzqlL+/0WfUU/4/oHdAFdixnSzZBkAl0NB1s8ZmwytnmPyAkjF5izO4C3CwD/et0zN4zStB27uF42Nz3+cy2x/Lah1k8NFCRrZ/5qsRr8BaxgOnUAjarSO/GgcIusB92A8sUQQJbo6hOV9h+J16DJP5DkrYRNaBFQJpzV5cKfp1H27zBkHS9sTCkP4f5uRT7hplnNg9J50/Jtx/ZQpBVMQDUb133BqjLPQn3u/TCEu7o1McN61bU=
+x-ms-exchange-transport-forked: True
+Content-ID: <BF04BF5D62429742A9D31FB93D70C7FF@namprd11.prod.outlook.com>
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2e7bb3e5-ca2b-4d4d-864d-08d7eb4f0dcd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Apr 2020 08:35:06.1032 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ZDBZcrYfRfRFtUEOaKaTamMx1k40E6GtKBL8I4erg4Dka+i/YioRzf/jPqISf4Nykl9WAB2AdqP4mLAWgp58oRj5cDFH9DIOj2RgTvJZbus=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB3925
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200428_012838_516937_42834A4B 
-X-CRM114-Status: GOOD (  19.38  )
+X-CRM114-CacheID: sfid-20200428_013516_876395_2904B982 
+X-CRM114-Status: UNSURE (   9.45  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,91 +153,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
-Cc: cheol.yong.kim@intel.com, devicetree@vger.kernel.org,
- masonccyang@mxic.com.tw, vigneshr@ti.com, arnd@arndb.de,
- hauke.mehrtens@intel.com, richard@nod.at, brendanhiggins@google.com,
- linux-kernel@vger.kernel.org, robh+dt@kernel.org, linux-mips@vger.kernel.org,
- Boris Brezillon <boris.brezillon@collabora.com>, linux-mtd@lists.infradead.org,
- tglx@linutronix.de, qi-ming.wu@intel.com, andriy.shevchenko@intel.com
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Cc: richard@nod.at, linux-mtd@lists.infradead.org, vigneshr@ti.com,
+ miquel.raynal@bootlin.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWlxdWVsLAoKT24gMjgvNC8yMDIwIDM6NTQgcG0sIE1pcXVlbCBSYXluYWwgd3JvdGU6Cj4g
-SGVsbG8sCj4gCj4gIlJhbXV0aGV2YXIsIFZhZGl2ZWwgTXVydWdhblgiCj4gPHZhZGl2ZWwubXVy
-dWdhbngucmFtdXRoZXZhckBsaW51eC5pbnRlbC5jb20+IHdyb3RlIG9uIFR1ZSwgMjggQXByIDIw
-MjAKPiAxNTo1MDowNiArMDgwMDoKPiAKPj4gSGkgTWlxdWVsLAo+Pgo+PiBPbiAyOC80LzIwMjAg
-Mzo0MCBwbSwgTWlxdWVsIFJheW5hbCB3cm90ZToKPj4+IEhpIFZhZGl2ZWwgTXVydWdhblgsCj4+
-Pgo+Pj4gIlJhbXV0aGV2YXIsIFZhZGl2ZWwgTXVydWdhblgiCj4+PiA8dmFkaXZlbC5tdXJ1Z2Fu
-eC5yYW11dGhldmFyQGxpbnV4LmludGVsLmNvbT4gd3JvdGUgb24gVHVlLCAyOCBBcHIgMjAyMAo+
-Pj4gMTQ6NTA6MzUgKzA4MDA6Cj4+PiAgICAKPj4+PiBIaSBCb3JpcywKPj4+Pgo+Pj4+IE9uIDI4
-LzQvMjAyMCAyOjQ3IHBtLCBCb3JpcyBCcmV6aWxsb24gd3JvdGU6Cj4+Pj4+IE9uIFR1ZSwgMjgg
-QXByIDIwMjAgMTQ6NDA6NTggKzA4MDAKPj4+Pj4gIlJhbXV0aGV2YXIsIFZhZGl2ZWwgTXVydWdh
-blgiCj4+Pj4+IDx2YWRpdmVsLm11cnVnYW54LnJhbXV0aGV2YXJAbGludXguaW50ZWwuY29tPiB3
-cm90ZToKPj4+Pj4gICAgID4+Pj4gSGkgQm9yaXMsCj4+Pj4+Pgo+Pj4+Pj4gT24gMjgvNC8yMDIw
-IDI6MjcgcG0sIEJvcmlzIEJyZXppbGxvbiB3cm90ZToKPj4+Pj4+PiBPbiBUdWUsIDI4IEFwciAy
-MDIwIDE0OjE3OjMwICswODAwCj4+Pj4+Pj4gIlJhbXV0aGV2YXIsIFZhZGl2ZWwgTXVydWdhblgi
-Cj4+Pj4+Pj4gPHZhZGl2ZWwubXVydWdhbngucmFtdXRoZXZhckBsaW51eC5pbnRlbC5jb20+IHdy
-b3RlOgo+Pj4+Pj4+ICAgICAgPj4+PiBIaSBNaXF1ZWwsCj4+Pj4+Pj4+Cj4+Pj4+Pj4+ICAgICAg
-ICAgVGhhbmsgeW91IHZlcnkgbXVjaCBmb3IgdGhlIHJldmlldyBjb21tZW50cyBhbmQgeW91ciB0
-aW1lLi4uCj4+Pj4+Pj4+Cj4+Pj4+Pj4+IE9uIDI3LzQvMjAyMCAxMTo1MSBwbSwgTWlxdWVsIFJh
-eW5hbCB3cm90ZToKPj4+Pj4+Pj4+IEhpIFJhbXV0aGV2YXIsCj4+Pj4+Pj4+PiAgICAgICAgID4+
-Pj4+Pj4gK3N0YXRpYyBpbnQgZWJ1X25hbmRfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAq
-cGRldikKPj4+Pj4+Pj4+Pj4gK3sKPj4+Pj4+Pj4+Pj4gKwlzdHJ1Y3QgZGV2aWNlICpkZXYgPSAm
-cGRldi0+ZGV2Owo+Pj4+Pj4+Pj4+PiArCXN0cnVjdCBlYnVfbmFuZF9jb250cm9sbGVyICplYnVf
-aG9zdDsKPj4+Pj4+Pj4+Pj4gKwlzdHJ1Y3QgbmFuZF9jaGlwICpuYW5kOwo+Pj4+Pj4+Pj4+PiAr
-CXBoeXNfYWRkcl90IG5hbmRhZGRyX3BhOwo+Pj4+Pj4+Pj4+PiArCXN0cnVjdCBtdGRfaW5mbyAq
-bXRkOwo+Pj4+Pj4+Pj4+PiArCXN0cnVjdCByZXNvdXJjZSAqcmVzOwo+Pj4+Pj4+Pj4+PiArCWlu
-dCByZXQ7Cj4+Pj4+Pj4+Pj4+ICsJdTMyIGNzOwo+Pj4+Pj4+Pj4+PiArCj4+Pj4+Pj4+Pj4+ICsJ
-ZWJ1X2hvc3QgPSBkZXZtX2t6YWxsb2MoZGV2LCBzaXplb2YoKmVidV9ob3N0KSwgR0ZQX0tFUk5F
-TCk7Cj4+Pj4+Pj4+Pj4+ICsJaWYgKCFlYnVfaG9zdCkKPj4+Pj4+Pj4+Pj4gKwkJcmV0dXJuIC1F
-Tk9NRU07Cj4+Pj4+Pj4+Pj4+ICsKPj4+Pj4+Pj4+Pj4gKwllYnVfaG9zdC0+ZGV2ID0gZGV2Owo+
-Pj4+Pj4+Pj4+PiArCW5hbmRfY29udHJvbGxlcl9pbml0KCZlYnVfaG9zdC0+Y29udHJvbGxlcik7
-Cj4+Pj4+Pj4+Pj4+ICsKPj4+Pj4+Pj4+Pj4gKwlyZXMgPSBwbGF0Zm9ybV9nZXRfcmVzb3VyY2Vf
-YnluYW1lKHBkZXYsIElPUkVTT1VSQ0VfTUVNLCAiZWJ1bmFuZCIpOwo+Pj4+Pj4+Pj4+PiArCWVi
-dV9ob3N0LT5lYnVfYWRkciA9IGRldm1faW9yZW1hcF9yZXNvdXJjZSgmcGRldi0+ZGV2LCByZXMp
-Owo+Pj4+Pj4+Pj4+PiArCWlmIChJU19FUlIoZWJ1X2hvc3QtPmVidV9hZGRyKSkKPj4+Pj4+Pj4+
-Pj4gKwkJcmV0dXJuIFBUUl9FUlIoZWJ1X2hvc3QtPmVidV9hZGRyKTsKPj4+Pj4+Pj4+Pj4gKwo+
-Pj4+Pj4+Pj4+PiArCXJlcyA9IHBsYXRmb3JtX2dldF9yZXNvdXJjZV9ieW5hbWUocGRldiwgSU9S
-RVNPVVJDRV9NRU0sICJoc25hbmQiKTsKPj4+Pj4+Pj4+Pj4gKwllYnVfaG9zdC0+bmFuZF9hZGRy
-ID0gZGV2bV9pb3JlbWFwX3Jlc291cmNlKCZwZGV2LT5kZXYsIHJlcyk7Cj4+Pj4+Pj4+Pj4+ICsJ
-aWYgKElTX0VSUihlYnVfaG9zdC0+bmFuZF9hZGRyKSkKPj4+Pj4+Pj4+Pj4gKwkJcmV0dXJuIFBU
-Ul9FUlIoZWJ1X2hvc3QtPm5hbmRfYWRkcik7Cj4+Pj4+Pj4+Pj4+ICsKPj4+Pj4+Pj4+Pj4gKwly
-ZXQgPSBkZXZpY2VfcHJvcGVydHlfcmVhZF91MzIoZGV2LCAibmFuZCxjcyIsICZjcyk7Cj4+Pj4+
-Pj4+Pj4KPj4+Pj4+Pj4+PiBDUyBpZHMgc2hvdWxkIGJlIGVuY29kZWQgaW4gdGhlIHJlZyBwcm9w
-ZXJ0eSAoc2VlIFsxXSkuCj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4gSXMgaXQgeW91ciBjaG9pY2UgdG8g
-b25seSBzdXBwb3J0IGEgc2luZ2xlIENTIG9yIGlzIGl0IGFjdHVhbGx5IGEKPj4+Pj4+Pj4+IGNv
-bnRyb2xsZXIgbGltaXRhdGlvbj8KPj4+Pj4+Pj4KPj4+Pj4+Pj4gWWVzICwgaXRzIGNvbnRyb2xs
-ZXIgbGltaXRhdGlvbiB0byBzdXBwb3J0IG9ubHkgb25lIENTCj4+Pj4+Pj4KPj4+Pj4+PiBJJ20g
-cHJldHR5IHN1cmUgdGhhdCdzIG5vdCB0cnVlLCBvdGhlcndpc2UgeW91IHdvdWxkbid0IGhhdmUg
-dG8gc2VsZWN0Cj4+Pj4+Pj4gdGhlIENTIHlvdSB3YW50IHRvIHVzZSA6UC4KPj4+Pj4+Cj4+Pj4+
-PiBBdCBhIHRpbWUgaXQgc3VwcG9ydHMgb25seSBvbmUgY2hpcCBzZWxlY3QuCj4+Pj4+Cj4+Pj4+
-IFllcywgbGlrZSA5OSUgb2YgdGhlIE5BTkQgY29udHJvbGxlcnMsIGJ1dCB0aGF0IGRvZXNuJ3Qg
-bWVhbiB5b3UgY2FuJ3QKPj4+Pj4gc3VwcG9ydCBtdWx0aS1DUyBjaGlwcy4gQWxsIHlvdSBoYXZl
-IHRvIGRvIGlzIGF0dGFjaCBhbiBhcnJheSBvZgo+Pj4+PiBlYnVfbmFuZF9jcyB0byB5b3VyIGVi
-dV9uYW5kX2NoaXAgKGFzIGRvbmUgaW4gdGhlIGF0bWVsIGRyaXZlciBJCj4+Pj4+IHBvaW50ZWQg
-dG8pLiBuYW5kX29wZXJhdGlvbi5jcyB0ZWxscyB5b3Ugd2hpY2ggQ1MgKGluZGV4IGluIHlvdXIK
-Pj4+Pj4gZWJ1X25hbmRfY3MgYXJyYXkpIGEgc3BlY2lmaWMgb3BlcmF0aW9uIGlzIHRhcmdldGlu
-ZywgYW5kIHlvdSBjYW4gcGljawo+Pj4+PiB0aGUgcmlnaHQgTU1JTyByYW5nZS9yZWcgdmFsdWUg
-YmFzZWQgb24gdGhhdC4KPj4+Pgo+Pj4+IEFncmVlZCwgc3VyZSBJIHdpbGwgYWRkIHRoYXQgYW5k
-IHVwZGF0ZSBuZXh0IHNlcmllcyBvZiBwYXRjaGVzIC4KPj4+Cj4+PiBUaGVyZSBhcmUgYWxzbyBt
-YW55IG90aGVyIHBsYWNlcyB3aGVyZSB5b3UgYXNzdW1lIGJsaW5kbHkgdGhhdCB0aGVyZQo+Pj4g
-aXMgb25seSBvbmUgQ1MuIFlvdSBjYW4gY2hlY2sgdGhlIEF0bWVsIE5BTkQgY29udHJvbGxlciBk
-cml2ZXIgYXMgQm9yaXMKPj4+IHNhaWQgYW5kIHdlIHdpbGwgcHJvYmFibHkgcHJvcG9zZSBtb3Jl
-IGxpdHRsZSBjaGFuZ2VzIHRvIGJlIG1vcmUKPj4+IGdlbmVyaWMuCj4+IHNpbmNlIExHTSBFQlVf
-TkFORCBjb250cm9sbGVyIHN1cHBvcnRzIG9ubHkgb25lIGNoaXAgc2VsZWN0IGF0IGEgdGltZSwg
-c28gYXNzdW1lZCBsaWtlIHRoYXQsIHdpbGwgY2hhbmdlIGFzIGdlbmVyaWMgd2F5IGlmIGNvbnNp
-ZGVyIGxpa2UgbW9yZSBjaGlwIHNlbGVjdCBzdXBwb3J0cywgVGhhbmtzIQo+IAo+IFdoYXQgZG8g
-eW91IG1lYW4gImF0IGEgdGltZSI/CgpJIG1lYW4gaXQgc3VwcG9ydHMgbXVsdGktQ1MsIGR1cmlu
-ZyB0aGUgcnVuIHRpbWUgaXQgc2VsZWN0cyBvbmUuClRoYW5rcyEKClJlZ2FyZHMKVmFkaXZlbAo+
-IAo+IERvIHdlIGhhdmUgYWNjZXNzIHRvIHRoZSBzcGVjIG9yIGEgcmVnaXN0ZXIgbWFwPyBXZSBj
-b3VsZCB0ZWxsIHlvdSB2ZXJ5Cj4gcXVpY2tseSBpZiBpdCBpcyB3b3J0aCB0aGUgdHJvdWJsZS4g
-QnV0IEkgYW0gcHJldHR5IHN1cmUgYXMgd2VsbCB0aGF0Cj4gdGhlIGNvbnRyb2xsZXIgc3VwcG9y
-dHMgbW9yZSB0aGFuIDEgQ1MuCj4gCj4+IFN1cmUgLCBJIHdpbGwgZG8gdGhlIGNoYW5nZXMgYXMg
-cGVyIHlvdXIgcmV2aWV3IGNvbW1lbnRzLgo+Pj4KPj4+IFRoYW5rcywKPj4+IE1pcXXDqGwKPj4+
-ICAgIAo+IAo+IFRoYW5rcywKPiBNaXF1w6hsCj4gCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGlu
-ZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
-bXRkLwo=
+On Friday, April 3, 2020 11:39:25 PM EEST Sergei Shtylyov wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the
+> content is safe
+> 
+> Hello!
+> 
+> Here's a set of 5 patches against the 'spi-nor/next' branch of the MTD
+> 'linux.git' repo. I'm fixing a number of issues in the kernel-doc comment
+> to 'struct spi_nor' accumulated since its creation. Instead of a single
+> patch, I'm fixing the kernel-doc comment with several patches, each fixing
+> its own broken commit -- this simplifies porting to the stable kernels (if
+> that ever happens). :-)
+> 
+> [1/5] mtd: spi-nor: fix kernel-doc for 'struct spi_nor'
+> [2/5] mtd: spi-nor: fix kernel-doc for spi_nor::mtd
+> [3/5] mtd: spi-nor: fix kernel-doc for spi_nor::reg_proto
+> [4/5] mtd: spi-nor: fix kernel-doc for spi_nor::info
+> [5/5] mtd: spi-nor: fix kernel-doc for spi_nor::spimem
+> 
+> MBR, Sergei
+
+s/SPI-NOR/SPI NOR in 4/5. All applied, thanks.
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
