@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88EFFC83004
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Apr 2020 06:06:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 245EDC83000
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Apr 2020 06:07:13 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4BF47206B9
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Apr 2020 06:06:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E25BC206B9
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Apr 2020 06:07:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oqkBbKqR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4BF47206B9
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PLc/9i7+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E25BC206B9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,42 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sI6p5IjOpSWBffOmFbWQgPa+oOnoIjMvpFZX8xZJkfo=; b=oqkBbKqReo4YBB
-	4SM215yzzqGNDXO8fu7l4XvHYwvWghEfpM9oTwhZzxhYwcsGkKSJGmTpGMjGiOba8WM7mnkUikDWz
-	E+Ro0Zwt6zmZyOFVyOplSGagW5fyWw1ew3yHSGeqJe1rmAJmkQQVC5RLa/1UpYU4xk4n16Rxkm0P6
-	lwh+jUtqaa1EQQKa+bnGn7WxTl9N+kGv7bwjgincXF1Fham79eFaTgf92Bu0GVneVyhMzRsxqlgC7
-	nfEKVkBtyfnO+pZjkrQ8q5jY2pu07GbvDqll3uAgvast31gY+1Mate6DjocrMTL+6Tx9RD+ckd9W1
-	rTk8lQrgaPIkQvHRfnoQ==;
+	List-Owner; bh=2zVrnTKmkLE8LaZEqhYAIxxgPdPVX76ZDO+i8W/wDew=; b=PLc/9i7+ztlaAP
+	NtwtDDsVmV97JLb/61LE1GH0K6l1QPiNbCw/DKGZyG5PeGCnlfBy7r0sk0po7iDYAxpYOapfnZsZU
+	2DPJy3ukTKAlQ29MzFOzSkdOpQwT6b+H7gazQD+9Qh+sVAjOJxfaj5k9rHozrC1fjXeL7yY3TTMPe
+	c9qVoUbMCoU/OmEajnpnHytRyP3Z085jKvV5UTsg/jY0SrIv0NxakgWVr38evpeL0nMqjpkXoOHyf
+	DNYW6h70Yxf4I4pfgPKoEW5CRHaFIro0Kjv6UDQHpOBqRm/AXamqDjktdHOaJfJazCUC9dBk2hc6h
+	VKxZ6nvuEQzoN9tnj89w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jTJNu-0002oy-GQ; Tue, 28 Apr 2020 06:06:22 +0000
+	id 1jTJOZ-00035j-7L; Tue, 28 Apr 2020 06:07:03 +0000
 Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jTJNr-0002nc-Hr
- for linux-mtd@lists.infradead.org; Tue, 28 Apr 2020 06:06:20 +0000
+ id 1jTJOW-00035I-EL
+ for linux-mtd@lists.infradead.org; Tue, 28 Apr 2020 06:07:01 +0000
 Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
  (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id EBAF42A0B89;
- Tue, 28 Apr 2020 07:06:11 +0100 (BST)
-Date: Tue, 28 Apr 2020 08:06:07 +0200
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 2FB122A0B89;
+ Tue, 28 Apr 2020 07:06:59 +0100 (BST)
+Date: Tue, 28 Apr 2020 08:06:56 +0200
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH 05/17] mtd: rawnand: cafe: Demistify register fields
-Message-ID: <20200428080607.237a2591@collabora.com>
-In-Reply-To: <20200427214116.3ea7fa82@xps13>
+Subject: Re: [PATCH 06/17] mtd: rawnand: cafe: Factor out the controller
+ initialization logic
+Message-ID: <20200428080656.5ea012b2@collabora.com>
+In-Reply-To: <20200427214535.7d424c8f@xps13>
 References: <20200427082028.394719-1-boris.brezillon@collabora.com>
- <20200427082028.394719-6-boris.brezillon@collabora.com>
- <20200427214116.3ea7fa82@xps13>
+ <20200427082028.394719-7-boris.brezillon@collabora.com>
+ <20200427214535.7d424c8f@xps13>
 Organization: Collabora
 X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200427_230619_720968_53DABBD7 
-X-CRM114-Status: GOOD (  15.35  )
+X-CRM114-CacheID: sfid-20200427_230700_615850_32CD6A7B 
+X-CRM114-Status: UNSURE (   9.62  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,51 +80,21 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 27 Apr 2020 21:42:11 +0200
+On Mon, 27 Apr 2020 21:45:35 +0200
 Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> >  struct cafe_priv {
-> >  	struct nand_chip nand;
-> > @@ -104,7 +195,8 @@ static const char *part_probes[] = { "cmdlinepart", "RedBoot", NULL };
-> >  static int cafe_device_ready(struct nand_chip *chip)
-> >  {
-> >  	struct cafe_priv *cafe = nand_get_controller_data(chip);
-> > -	int result = !!(cafe_readl(cafe, NAND_STATUS) & 0x40000000);
-> > +	int result = !!(cafe_readl(cafe, NAND_STATUS) &
-> > +			CAFE_NAND_STATUS_FLASH_BUSY);
-> >  	uint32_t irqs = cafe_readl(cafe, NAND_IRQ);
-> >  
-> >  	cafe_writel(cafe, irqs, NAND_IRQ);  
+> > -	/* Enable NAND IRQ in global IRQ mask register */
+> > -	cafe_writel(cafe,
+> > -		    CAFE_GLOBAL_IRQ_PCI_ERROR |
+> > -		    CAFE_GLOBAL_IRQ_CCIC |
+> > -		    CAFE_GLOBAL_IRQ_SDH |
+> > -		    CAFE_GLOBAL_IRQ_NAND,
+> > -		    GLOBAL_IRQ_MASK);
+> > +	cafe_nand_init(cafe);  
 > 
-> [...]
-> 
-> > @@ -318,14 +430,14 @@ static void cafe_select_chip(struct nand_chip *chip, int chipnr)
-> >  {
-> >  	struct cafe_priv *cafe = nand_get_controller_data(chip);
-> >  
-> > +	if (chipnr < 0 || chipnr > 1)
-> > +		return;
-> > +  
-> 
-> I think this change should not be part of this patch?
+> A new line would be nice here :p
 
-Or dropped entirely, since we're getting rid of this function anyway.
-
-> 
-> >  	cafe_dev_dbg(&cafe->pdev->dev, "select_chip %d\n", chipnr);
-> >  
-> >  	/* Mask the appropriate bit into the stored value of ctl1
-> >  	   which will be used by cafe_nand_cmdfunc() */
-> > -	if (chipnr)
-> > -		cafe->ctl1 |= CTRL1_CHIPSELECT;
-> > -	else
-> > -		cafe->ctl1 &= ~CTRL1_CHIPSELECT;
-> > +	cafe->ctl1 |= CAFE_FIELD_PREP(NAND_CTRL1, CE, chipnr);  
-> 
-> I don't master these macros yet, but are you sure CTRL1_CHIPSELECT will
-> actually get cleared if (!chipnr) ?
-
-You're correct, I only ever set the field. I'll fix that.
+Will add one.
 
 ______________________________________________________
 Linux MTD discussion mailing list
