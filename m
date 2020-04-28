@@ -2,84 +2,66 @@ Return-Path: <SRS0=F3bs=6M=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23D00C83006
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Apr 2020 12:22:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1496C83000
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Apr 2020 14:10:41 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E78202072A
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Apr 2020 12:22:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7206F206D9
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Apr 2020 14:10:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XPSd1cnm";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ylFhF8Ds"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E78202072A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NTtYfWDi";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="vOy6cik5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7206F206D9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=crapouillou.net
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IPwkHQYoTha9cly2TTzjsiFsYYU7OE3b6VkPAGPNv3g=; b=XPSd1cnmqrg3zz
-	fSvYFu4yFXEK1kIw4Ot7HiPJtJou4xyQDtwHxmAEZsyxsinU7gzEZZE2IQr7/k6MvjD8c9dzCqOVl
-	IX8wsjD+aCgvAbrK1xD6tpWqUR6KwrAS68YG7629u/3vaE7BGjihFHjI3tEcP14ixzdID44uACxyq
-	tn4e1pQ1aLm/viks5+VbUFI4XcrETmLW5lSOr9mjyff0hbDzqnpV5L2OnTabPZ46R6ZAo3k2QgZtr
-	BnH28+a9W1Iw2mOLYSfsx9u6jFZrBMxTnqwqu4G2MP8C5EJhaYAdLPsY7rCRBBAFV8XYRcC1k/8Bn
-	nf6hPb+2NlycJ2TjQQVA==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:To:
+	Subject:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=TDbnNO30LOH6W1yy7/7YDtBOue8dOu9uaXW3gh4joGg=; b=NTtYfWDirqHoyz0GmDi8IZ/1m
+	HoWjzwU/O/P/HxUHj1asgsQ5vqo/03pL1vzmcbJraI0LjwYReXIsgpGrXdbs5nJsdVDxemj1NPNsj
+	NwNbjyPN6CZAjLuEaFdihzliVq7sgeHYveZ9digJIQl4u8nwN4DCUzxYimeRcpJKAiXuunAnBZjfl
+	kR3GxnHkQKoayAJs7u6PnFHNTSkEj0H+fI6zL0sxpaIkPHwfacYq7aYI/TDA4qW6jFcATUafraoEk
+	sLEsbmt49x6XWEHO9mhHwLIvh4hhwBuIF1Qn5UY+qhsWr0Im31FZ7NVDXrJLt4iAAoBIqX4ClPCA1
+	igpVuAuVQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jTPFT-0008It-TP; Tue, 28 Apr 2020 12:22:03 +0000
-Received: from lelv0142.ext.ti.com ([198.47.23.249])
+	id 1jTQwO-0004zn-GE; Tue, 28 Apr 2020 14:10:28 +0000
+Received: from outils.crapouillou.net ([89.234.176.41] helo=crapouillou.net)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jTPFQ-0008I2-Pg
- for linux-mtd@lists.infradead.org; Tue, 28 Apr 2020 12:22:02 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03SCLu4G113738;
- Tue, 28 Apr 2020 07:21:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1588076516;
- bh=cImtLORUdZvsPKiqfSv9Ud6qcgGfbWq9noxbh0+5EWA=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=ylFhF8DsFhHh2EI9XRTGnUESR7d32GeLhsm5N5c+S7xaaq5WSCRZz7BFxi6R/56YE
- UmnZoGcwgeTtRmlPhwZ8D3MoQujLGTD8Z2+Q1xaBVORSlhGhFBi6l7DyvMiShQGbPg
- AMoWW0dJEmwrBmU1ZqZxdwj0+mIEIGOa2thxnrRs=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03SCLuh1095732;
- Tue, 28 Apr 2020 07:21:56 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 28
- Apr 2020 07:21:55 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 28 Apr 2020 07:21:55 -0500
-Received: from [10.250.234.195] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03SCLrX5038934;
- Tue, 28 Apr 2020 07:21:54 -0500
-Subject: Re: [PATCH 2/2] mtd: spi-nor: Fix description of the sr_ready()
- return value
-To: <Tudor.Ambarus@microchip.com>, <sergei.shtylyov@cogentembedded.com>
-References: <20200421063129.244466-1-tudor.ambarus@microchip.com>
- <20200421063129.244466-2-tudor.ambarus@microchip.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <14162c9a-2189-024f-7af2-e072ea1511da@ti.com>
-Date: Tue, 28 Apr 2020 17:51:53 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ id 1jTQwJ-0004wu-0U
+ for linux-mtd@lists.infradead.org; Tue, 28 Apr 2020 14:10:24 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+ s=mail; t=1588083017; h=from:from:sender:reply-to:subject:subject:date:date:
+ message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+ content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=2+w+KwDzaOwV/ww7pNfZrsFBOSdK2uRoIyYyszXC2jE=;
+ b=vOy6cik5Ke533LRPLshMJ+qzIX64H6Cij9kixdoYn7wlFWU7BcpUORTgGjl00q+cPNyTHh
+ BbFCg7mLoK1rJVPcplaMCp9tjrNaBELaA/yLJ5L01LwPb6aiWQha9Riei2/T2hz8Wp0kvk
+ mMmfgtX5WwOdDWnDWKeSk5Jfz8HZyCs=
+Date: Tue, 28 Apr 2020 16:10:05 +0200
+From: Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 2/8] dt-bindings: intc: Convert ingenic,intc.txt to YAML
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Message-Id: <TO4I9Q.UQRWC3A2ABT52@crapouillou.net>
+In-Reply-To: <f865b39a-3e8d-a367-45b2-aa5e7412e81a@cogentembedded.com>
+References: <20200426185856.38826-1-paul@crapouillou.net>
+ <20200426185856.38826-2-paul@crapouillou.net>
+ <f865b39a-3e8d-a367-45b2-aa5e7412e81a@cogentembedded.com>
 MIME-Version: 1.0
-In-Reply-To: <20200421063129.244466-2-tudor.ambarus@microchip.com>
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200428_052200_913585_53AD4B24 
-X-CRM114-Status: GOOD (  16.39  )
+X-CRM114-CacheID: sfid-20200428_071023_249957_DD05D76C 
+X-CRM114-Status: UNSURE (   6.46  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,68 +73,108 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, od@zcrc.me, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org,
+ =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>,
+ linux-gpio@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+ linux-serial@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-clk@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hi Sergei,
+
+Le lun. 27 avril 2020 =E0 12:11, Sergei Shtylyov =
+
+<sergei.shtylyov@cogentembedded.com> a =E9crit :
+> Hello!
+> =
+
+> On 26.04.2020 21:58, Paul Cercueil wrote:
+> =
+
+>> Convert the ingenic,intc.txt doc file to ingenic,intc.yaml.
+>> =
+
+>> Some compatible strings now require a fallback, as the controller
+>> generally works the same across the SoCs families.
+>> =
+
+>> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> [...]
+>> diff --git =
+
+>> a/Documentation/devicetree/bindings/interrupt-controller/ingenic,intc.ya=
+ml =
+
+>> b/Documentation/devicetree/bindings/interrupt-controller/ingenic,intc.ya=
+ml
+>> new file mode 100644
+>> index 000000000000..28b27e1a6e9d
+>> --- /dev/null
+>> +++ =
+
+>> b/Documentation/devicetree/bindings/interrupt-controller/ingenic,intc.ya=
+ml
+>> @@ -0,0 +1,63 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: =
+
+>> http://devicetree.org/schemas/interrupt-controller/ingenic,intc.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Ingenic SoCs interrupt controller devicetree bindings
+>> +
+>> +maintainers:
+>> +  - Paul Cercueil <paul@crapouillou.net>
+>> +
+>> +properties:
+>> +  $nodename:
+>> +    pattern: "^interrupt-controller@[0-9a-f]+$"
+>> +
+>> +  compatible:
+>> +    oneOf:
+>> +      - enum:
+>> +        - ingenic,jz4740-intc
+>> +        - ingenic,jz4760-intc
+>> +        - ingenic,jz4780-intc
+>> +      - items:
+>> +        - enum:
+>> +          - ingenic,jz4775-intc
+>> +          - ingenic,jz4770-intc
+>> +        - const: ingenic,jz4760-intc
+>> +      - items:
+>> +        - const: ingenic,x1000-intc
+>> +        - const: ingenic,jz4780-intc
+>> +      - items:
+>> +        - const: ingenic,jz4725b-intc
+>> +        - const: ingenic,jz4740-intc
+>> +
+>> +  "#interrupt-cells":
+>> +    const: 1
+> =
+
+>    Do double quotes work the same as the single ones?
+
+Yes. The only difference is that you can escape characters in double =
+
+quotes.
+
+-Paul
+
+> =
+
+> [...]
+> =
+
+> MBR, Sergei
 
 
-On 21/04/20 12:01 pm, Tudor.Ambarus@microchip.com wrote:
-> From: Tudor Ambarus <tudor.ambarus@microchip.com>
-> 
-> The functions return 1 if ready, 0 if not ready, -errno on errors.
-
-Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
-
-> 
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> ---
->  drivers/mtd/spi-nor/core.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 9dcc53bda8b0..9611553e829f 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -499,7 +499,7 @@ int spi_nor_xread_sr(struct spi_nor *nor, u8 *sr)
->   * the flash is ready for new commands.
->   * @nor:	pointer to 'struct spi_nor'.
->   *
-> - * Return: 0 on success, -errno otherwise.
-> + * Return: 1 if ready, 0 if not ready, -errno on errors.
->   */
->  static int spi_nor_xsr_ready(struct spi_nor *nor)
->  {
-> @@ -542,7 +542,7 @@ static void spi_nor_clear_sr(struct spi_nor *nor)
->   * for new commands.
->   * @nor:	pointer to 'struct spi_nor'.
->   *
-> - * Return: 0 on success, -errno otherwise.
-> + * Return: 1 if ready, 0 if not ready, -errno on errors.
->   */
->  static int spi_nor_sr_ready(struct spi_nor *nor)
->  {
-> @@ -606,7 +606,7 @@ static void spi_nor_clear_fsr(struct spi_nor *nor)
->   * ready for new commands.
->   * @nor:	pointer to 'struct spi_nor'.
->   *
-> - * Return: 0 on success, -errno otherwise.
-> + * Return: 1 if ready, 0 if not ready, -errno on errors.
->   */
->  static int spi_nor_fsr_ready(struct spi_nor *nor)
->  {
-> @@ -647,7 +647,7 @@ static int spi_nor_fsr_ready(struct spi_nor *nor)
->   * spi_nor_ready() - Query the flash to see if it is ready for new commands.
->   * @nor:	pointer to 'struct spi_nor'.
->   *
-> - * Return: 0 on success, -errno otherwise.
-> + * Return: 1 if ready, 0 if not ready, -errno on errors.
->   */
->  static int spi_nor_ready(struct spi_nor *nor)
->  {
-> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
