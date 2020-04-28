@@ -2,21 +2,21 @@ Return-Path: <SRS0=F3bs=6M=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82CD6C83000
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Apr 2020 06:20:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0621CC83000
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Apr 2020 06:24:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 53A02206B8
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Apr 2020 06:20:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CC1AD206B8
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Apr 2020 06:24:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IixYB4bx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 53A02206B8
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CLDgvp/Y"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC1AD206B8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,41 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4bPujcgvj3lCS2TIobYnM9ACHEWf6At42icec7tbNho=; b=IixYB4bx37qBSX
-	oKAEEX79MVJiL9ka6qkjE+cHoThTo32kCoDGvtFmkzCi7lcb/u/KYX0JIIE0WPo6TAu1MNpwsT/mF
-	AlKHCfi0PTeEsYCp3FPxJY0M7WdlbqkVfqpSrz7WsiLeK58FaVkzLowaEX2k9owDJlUT5rHtBlyeB
-	i0e/H9kmxA3Fa/okmiI4OE4BXr+54naF+lQz4y4FsM71m2ARvE0Tp6bbVe7u82KqTiybaQChzouGs
-	OfKOJUV3+nKQ8SXcJZRjq574XVx6mWEixYfrbVxNgi9uRLO05NA1qjgCjcApANNc4oCLh9kRktDlI
-	1Jji+rKRjUGW7rxOKdmw==;
+	List-Owner; bh=Km/tNzX4SEYQAXyRJqrgUlIFKtHM6vODaZCNmN9c5sQ=; b=CLDgvp/YSlVTDs
+	5jVGaCGOSo3j9Ckf4oBre9+iCj8Z/eNRfD7CAYhfNjTcGcBf4vQav+/zBwF4U4WCiLiexbJzkLgjv
+	v9eAGwtEzS9hisOeYLuS4mUY8/w8cR+ZNR7Q29JCgpSgPQTwWmYXuQA6u/obfYsgdfmz7ib3Rz+x5
+	RM9BCCFDacmRrfvgZObP4Ec3Nr6g7gCUt/h9FzEeaUsXX6t7VRrdAl8HvFK/unZLYBSgBbO11xQTk
+	4By+Xh+GJggh722ZSHBCviHXlRczZ1gL9iaiym8aYD0JY73UnV3prLVBdoduKVxR9EFFARf53/7Hv
+	yTftpH9sdxnfpbnc8oRg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jTJbc-0005C3-20; Tue, 28 Apr 2020 06:20:32 +0000
+	id 1jTJfK-0006BG-WE; Tue, 28 Apr 2020 06:24:23 +0000
 Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jTJbZ-0005BE-1a
- for linux-mtd@lists.infradead.org; Tue, 28 Apr 2020 06:20:30 +0000
+ id 1jTJfH-0006AM-N3
+ for linux-mtd@lists.infradead.org; Tue, 28 Apr 2020 06:24:21 +0000
 Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
  (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 9B36A2A0BB2;
- Tue, 28 Apr 2020 07:20:27 +0100 (BST)
-Date: Tue, 28 Apr 2020 08:20:24 +0200
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 638442A0BA2;
+ Tue, 28 Apr 2020 07:24:18 +0100 (BST)
+Date: Tue, 28 Apr 2020 08:24:15 +0200
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH 12/17] mtd: rawnand: cafe: Don't split things when
- reading/writing a page
-Message-ID: <20200428082024.5e0ce40b@collabora.com>
-In-Reply-To: <20200427215353.3ced34d3@xps13>
+Subject: Re: [PATCH 13/17] mtd: rawnand: cafe: Add exec_op() support
+Message-ID: <20200428082415.3c6e2db1@collabora.com>
+In-Reply-To: <20200427215933.13fb1bbc@xps13>
 References: <20200427082028.394719-1-boris.brezillon@collabora.com>
- <20200427082028.394719-13-boris.brezillon@collabora.com>
- <20200427215353.3ced34d3@xps13>
+ <20200427082028.394719-14-boris.brezillon@collabora.com>
+ <20200427215933.13fb1bbc@xps13>
 Organization: Collabora
 X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200427_232029_220247_3C9137A7 
-X-CRM114-Status: GOOD (  21.40  )
+X-CRM114-CacheID: sfid-20200427_232420_017003_29F73B5A 
+X-CRM114-Status: GOOD (  19.17  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,86 +78,162 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 27 Apr 2020 21:53:53 +0200
+On Mon, 27 Apr 2020 21:59:33 +0200
 Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> Hi Boris,
-> 
-> Boris Brezillon <boris.brezillon@collabora.com> wrote on Mon, 27 Apr
-> 2020 10:20:22 +0200:
-> 
-> > Calling nand_read_page_op(pagesize)/nand_prog_page_begin_op(pagesize)
-> > and expecting to get a pagesize+oobsize read from/written to the
-> > read/write buffer is fragile and only works because of hacks done
-> > in cmdfunc(). Let's read/write the page in one go, using the page
-> > cache buffer as a bounce buffer.
-> > 
-> > Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
-> > ---
-> >  drivers/mtd/nand/raw/cafe_nand.c | 16 +++++++++++-----
-> >  1 file changed, 11 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/nand/raw/cafe_nand.c b/drivers/mtd/nand/raw/cafe_nand.c
-> > index 31493a201a02..edf65197604b 100644
-> > --- a/drivers/mtd/nand/raw/cafe_nand.c
-> > +++ b/drivers/mtd/nand/raw/cafe_nand.c
-> > @@ -472,6 +472,7 @@ static int cafe_nand_read_page(struct nand_chip *chip, uint8_t *buf,
-> >  {
-> >  	struct mtd_info *mtd = nand_to_mtd(chip);
-> >  	struct cafe_priv *cafe = nand_get_controller_data(chip);
-> > +	void *pagebuf = nand_get_data_buf(chip);
-> >  	unsigned int max_bitflips = 0;
-> >  	u32 ecc_result, status;
-> >  
-> > @@ -479,8 +480,11 @@ static int cafe_nand_read_page(struct nand_chip *chip, uint8_t *buf,
-> >  		cafe_readl(cafe, NAND_ECC_RESULT),
-> >  		cafe_readl(cafe, NAND_ECC_SYN_REG(0)));
-> >  
-> > -	nand_read_page_op(chip, page, 0, buf, mtd->writesize);
-> > -	chip->legacy.read_buf(chip, chip->oob_poi, mtd->oobsize);
-> > +	nand_read_page_op(chip, page, 0, pagebuf,
-> > +			  mtd->writesize + mtd->oobsize);
+> > +	if (WARN_ON(subop->cs > 1))
+> > +		return -EINVAL;
 > > +
-> > +	if (buf != pagebuf)
-> > +		memcpy(buf, pagebuf, mtd->writesize);
-> >  
-> >  	ecc_result = cafe_readl(cafe, NAND_ECC_RESULT);
-> >  	status = CAFE_FIELD_GET(NAND_ECC_RESULT, STATUS, ecc_result);
-> > @@ -642,15 +646,17 @@ static int cafe_nand_write_page(struct nand_chip *chip,
-> >  {
-> >  	struct mtd_info *mtd = nand_to_mtd(chip);
-> >  	struct cafe_priv *cafe = nand_get_controller_data(chip);
-> > +	void *pagebuf = nand_get_data_buf(chip);
-> >  	int ret;
-> >  
-> > -	nand_prog_page_begin_op(chip, page, 0, buf, mtd->writesize);
-> > -	chip->legacy.write_buf(chip, chip->oob_poi, mtd->oobsize);
-> > +	if (pagebuf != buf)
-> > +		memcpy(pagebuf, buf, mtd->writesize);
-> >  
-> >  	/* Set up ECC autogeneration */
-> >  	cafe->ctl2 |= CAFE_NAND_CTRL2_AUTO_WRITE_ECC;
-> >  
-> > -	ret = nand_prog_page_end_op(chip);
-> > +	ret = nand_prog_page_op(chip, page, 0, pagebuf,
-> > +				mtd->writesize + mtd->oobsize);
-> >  
-> >  	/*
-> >  	 * And clear it before returning so that following write operations  
+> > +	cafe->datalen = 0;
+> > +	ctrl1 |= CAFE_FIELD_PREP(NAND_CTRL1, CE, subop->cs);
+> > +
+> > +	for (i = 0; i < subop->ninstrs; i++) {
+> > +		const struct nand_op_instr *instr = &subop->instrs[i];
+> > +
+> > +		switch (instr->type) {
+> > +		case NAND_OP_CMD_INSTR:
+> > +			if (WARN_ON((ctrl1 & CAFE_NAND_CTRL1_HAS_CMD) &&
+> > +				    (ctrl2 & CAFE_NAND_CTRL2_HAS_CMD2)))
+> > +				return -EINVAL;  
 > 
-> 
-> You are replacing ->read/write_buf() calls into memcpy() calls,
-> shouldn't this be cleaned before? or at least mentioned?
+> Same comment as in the previous drivers, just showing it to do not
+> foget.
 
-Actually, those read/write_buf are still there, they're just hidden in
-the nand_{prog,read}_page_op() call now (to be accurate, the read/write
-buf in there now covers the data and oob portions). It's really what
-should be done, the reason this worked so far is because cmdfunc()
-guesses that the full page will be read/written and issues a read/write
-of the data+oob portion. The extra memcpy that's added here is done to
-account for the fact that the core might pass 2 different buffers for
-OOB and data, but we want things to be done in one step, so we're using
-the bounce buffer to do the transfer.
+Will remove those WARN_ON()s.
+
+> 
+> > +
+> > +			if (!(ctrl1 & CAFE_NAND_CTRL1_HAS_CMD))
+> > +				ctrl1 |= CAFE_NAND_CTRL1_HAS_CMD |
+> > +					 CAFE_FIELD_PREP(NAND_CTRL1, CMD,
+> > +							 instr->ctx.cmd.opcode);
+> > +			else
+> > +				ctrl2 |= CAFE_NAND_CTRL2_HAS_CMD2 |
+> > +					 CAFE_FIELD_PREP(NAND_CTRL2, CMD2,
+> > +							 instr->ctx.cmd.opcode);
+> > +			break;
+> > +
+> > +		case NAND_OP_ADDR_INSTR:
+> > +			if (WARN_ON(instr->ctx.addr.naddrs > 5 ||
+> > +				    !instr->ctx.addr.naddrs))
+> > +				return -EINVAL;
+> > +
+> > +			for (j = 0; j < instr->ctx.addr.naddrs; j++) {
+> > +				u32 addr = instr->ctx.addr.addrs[j];
+> > +
+> > +				if (j < 2)
+> > +					addr1 |= addr << (8 * j);
+> > +				else
+> > +					addr2 |= addr << (8 * (j - 2));
+> > +			}
+> > +
+> > +			ctrl1 |= CAFE_NAND_CTRL1_HAS_ADDR |
+> > +				 CAFE_FIELD_PREP(NAND_CTRL1, NUM_ADDR_CYC,
+> > +						 instr->ctx.addr.naddrs - 1);
+> > +			cafe_writel(cafe, addr1, NAND_ADDR1);
+> > +			if (instr->ctx.addr.naddrs > 2)
+> > +				cafe_writel(cafe, addr2, NAND_ADDR2);  
+> 
+> Maybe it is safer to always write this register, no? I don't know if
+> the IP clears registers between operations. If it does not, you might
+> end up sending extra command cycles.
+
+The number of cycles is controller by NUM_ADDR_CYC so that shouldn't be
+a problem, but you're right, writing ADDR2 unconditionally shouldn't
+hurt.
+
+> 
+> > +			break;
+> > +
+> > +		case NAND_OP_DATA_IN_INSTR:
+> > +			data_instr = instr;
+> > +			ctrl1 |= CAFE_NAND_CTRL1_HAS_DATA_IN;
+> > +			break;
+> > +
+> > +		case NAND_OP_DATA_OUT_INSTR:
+> > +			data_instr = instr;
+> > +			ctrl1 |= CAFE_NAND_CTRL1_HAS_DATA_OUT;
+> > +			cafe_write_buf(chip, instr->ctx.data.buf.out,
+> > +				       instr->ctx.data.len);
+> > +			break;
+> > +
+> > +		case NAND_OP_WAITRDY_INSTR:
+> > +			wait |= CAFE_NAND_IRQ_FLASH_RDY;
+> > +			waitrdy = true;
+> > +			break;
+> > +		}
+> > +	}
+> > +
+> > +	if (data_instr)
+> > +		cafe_writel(cafe, data_instr->ctx.data.len, NAND_DATA_LEN);
+> > +
+> > +	if (cafe->usedma && data_instr) {
+> > +		u32 dmactrl = CAFE_NAND_DMA_CTRL_ENABLE |
+> > +			      CAFE_NAND_DMA_CTRL_RESERVED;
+> > +
+> > +		wait |= CAFE_NAND_IRQ_DMA_DONE;
+> > +		dmactrl |= CAFE_FIELD_PREP(NAND_DMA_CTRL, DATA_LEN,
+> > +					   data_instr->ctx.data.len);
+> > +		if (ctrl1 & CAFE_NAND_CTRL1_HAS_DATA_IN)
+> > +			dmactrl |= CAFE_NAND_DMA_CTRL_DATA_IN;
+> > +
+> > +		cafe_writel(cafe, dmactrl, NAND_DMA_CTRL);
+> > +	}
+> > +
+> > +	/* Clear the pending interrupts before starting the operation. */
+> > +	cafe_writel(cafe, wait, NAND_IRQ);
+> > +
+> > +	cafe_writel(cafe, ctrl2, NAND_CTRL2);
+> > +	cafe_writel(cafe, ctrl1, NAND_CTRL1);
+> > +
+> > +	ret = readl_poll_timeout(cafe->mmio + CAFE_NAND_IRQ, status,
+> > +				 (status & wait) == wait, 1, USEC_PER_SEC);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	if (ctrl1 & CAFE_NAND_DMA_CTRL_DATA_IN)
+> > +		cafe_read_buf(chip, data_instr->ctx.data.buf.in,
+> > +			      data_instr->ctx.data.len);  
+> 
+> As you are limiting the amount of data to 2112B and the number of
+> address cycles to 5, you should probably use the core's helper
+> nand_subop_data_len, nand_subob_data_buf and nand_subop_addr_len in
+> this function.
+
+Indeed. I'll fix that.
+
+> 
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static const struct nand_op_parser cafe_nand_op_parser = NAND_OP_PARSER(
+> > +	NAND_OP_PARSER_PATTERN(cafe_nand_exec_subop,
+> > +			       NAND_OP_PARSER_PAT_CMD_ELEM(true),
+> > +			       NAND_OP_PARSER_PAT_ADDR_ELEM(true, 5),
+> > +			       NAND_OP_PARSER_PAT_CMD_ELEM(true),
+> > +			       NAND_OP_PARSER_PAT_WAITRDY_ELEM(true),
+> > +			       NAND_OP_PARSER_PAT_DATA_IN_ELEM(true, 2112)),
+> > +	NAND_OP_PARSER_PATTERN(cafe_nand_exec_subop,
+> > +			       NAND_OP_PARSER_PAT_CMD_ELEM(true),
+> > +			       NAND_OP_PARSER_PAT_ADDR_ELEM(true, 5),
+> > +			       NAND_OP_PARSER_PAT_CMD_ELEM(true),
+> > +			       NAND_OP_PARSER_PAT_DATA_IN_ELEM(true, 2112),
+> > +			       NAND_OP_PARSER_PAT_WAITRDY_ELEM(true))
+> > +);
+> > +
+> > +static int cafe_nand_exec_op(struct nand_chip *chip,
+> > +			     const struct nand_operation *op,
+> > +			     bool check_only)
+> > +{  
+> 
+> I didn't check but are you sure there is no chip-select/timings
+> handling to do here?
+
+Apparently no. Having the CS propagated to subops is enough here (CS
+selection is done in the subop handler).
+
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
