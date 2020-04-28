@@ -2,64 +2,68 @@ Return-Path: <SRS0=F3bs=6M=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
-	version=3.4.0
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 232F4C83000
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Apr 2020 06:09:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5F73C83000
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Apr 2020 06:15:38 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B1C3B206D7
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Apr 2020 06:09:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 52E89206B8
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Apr 2020 06:15:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fLgcx3pj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B1C3B206D7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Skmgzt87"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 52E89206B8
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:
+	Subject:To:References:In-Reply-To:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=k5jXdJT6PR5CgUw9DFNYVeeVcAmaD6YdcI+hMPgeFOc=; b=fLgcx3pjp4zepm
-	Gnhl11t8VvcBfNxz6jWB21AgMkXg9YEgIt5KzoK5svqQ+qqqCjAW7nNRb2KcqCagnGFb63Pk0NfZj
-	2iK5F5mi6dUC3mgO8Fl4HrS3RwOKtcj2XuFo8hDwh6sAv4ywWFknXPiU2aeuCzF0MhEg3X0fTcsM2
-	knn3vb/iZbnJ4xhY3A5OcjfXStQNSDUEoa5s0k5YDs44gng2a9z+A7VvcAgSYbGh5BIc+AwENbB5/
-	NP9uklUy1VbJccCs0TcshocT44GIrMV2X80Uym9bgpfpe3YclkOkMj15S5BYhHurKWZ+qs/RcIvaP
-	z9rfid7A1P27V9WJnpXQ==;
+	List-Owner; bh=zxqXn2Y6wRobO9ENdOaMNuM7GOS8ndrQduz5TxeZ2+c=; b=Skmgzt87R5gbXG
+	itT/LtNI+iJ3tXNlDG8zsL0UazEVmOdexm7lzYEt1aj7l3ZIXvpwN4QyXXfTO0uF+5vQTkcZSQIiq
+	9o+eDPT/cKJ8TzCp3R1c76WEwQqp8ZJIAEGjRm1HSgWyAZOGdOi9PJxGK8Z/e8nDx0wDu1uE1x0fb
+	qVBXEDzJrPtkjzheQj7DqSyxtg6qP5jnhkunl0luA0/tu5yLDIafAWrvTgloWNQV9coATpPVY4jo1
+	GEw7CAZtUKSShEV3tkffLTGwKy+F7tzePLjDaMlzh2oqbSifYpt/kpGAzqPRCgo/7GmeUsJfHQUci
+	18FLRSOE9d8QZrLqcS2g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jTJQX-0003Va-5H; Tue, 28 Apr 2020 06:09:05 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1jTJWc-0001ae-4c; Tue, 28 Apr 2020 06:15:22 +0000
+Received: from twhmllg4.macronix.com ([122.147.135.202])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jTJQU-0003U6-Tg
- for linux-mtd@lists.infradead.org; Tue, 28 Apr 2020 06:09:04 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id AC79A2A0B89;
- Tue, 28 Apr 2020 07:09:01 +0100 (BST)
-Date: Tue, 28 Apr 2020 08:08:58 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH 11/17] mtd: rawnand: cafe: Don't leave ECC enabled in
- the write path
-Message-ID: <20200428080858.4914306f@collabora.com>
-In-Reply-To: <20200427215132.1331d4f5@xps13>
-References: <20200427082028.394719-1-boris.brezillon@collabora.com>
- <20200427082028.394719-12-boris.brezillon@collabora.com>
- <20200427215132.1331d4f5@xps13>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1jTJWX-0001LH-Hs
+ for linux-mtd@lists.infradead.org; Tue, 28 Apr 2020 06:15:19 +0000
+Received: from twhfm1p2.macronix.com (twhfmlp2.macronix.com [172.17.20.92])
+ by TWHMLLG4.macronix.com with ESMTP id 03S6EUUt046234;
+ Tue, 28 Apr 2020 14:14:30 +0800 (GMT-8)
+ (envelope-from masonccyang@mxic.com.tw)
+Received: from MXML06C.mxic.com.tw (mxml06c.macronix.com [172.17.14.55])
+ by Forcepoint Email with ESMTP id 213FFAD9CBDD7EF05409;
+ Tue, 28 Apr 2020 14:14:31 +0800 (CST)
+In-Reply-To: <20200427175536.2mmei2fy6f7bg6jm@yadavpratyush.com>
+References: <1587451187-6889-1-git-send-email-masonccyang@mxic.com.tw>
+ <20200421092328.129308f6@collabora.com>
+ <20200427175536.2mmei2fy6f7bg6jm@yadavpratyush.com>
+To: "Pratyush Yadav" <me@yadavpratyush.com>
+Subject: Re: [PATCH v2 0/5] mtd: spi-nor: Add support for Octal 8D-8D-8D mode
 MIME-Version: 1.0
+X-KeepSent: 18214CA5:6A9B2B30-48258558:001D894C;
+ type=4; name=$KeepSent
+X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
+Message-ID: <OF18214CA5.6A9B2B30-ON48258558.001D894C-48258558.002249E0@mxic.com.tw>
+From: masonccyang@mxic.com.tw
+Date: Tue, 28 Apr 2020 14:14:31 +0800
+X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
+ HF265|July 25, 2018) at 2020/04/28 PM 02:14:31,
+ Serialize complete at 2020/04/28 PM 02:14:31
+X-MAIL: TWHMLLG4.macronix.com 03S6EUUt046234
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200427_230903_088818_6C16BB9D 
-X-CRM114-Status: GOOD (  15.19  )
+X-CRM114-CacheID: sfid-20200427_231517_887330_35962DC3 
+X-CRM114-Status: GOOD (  16.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,57 +75,147 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, Tudor Ambarus <tudor.ambarus@microchip.com>,
- David Woodhouse <dwmw2@infradead.org>, Vignesh Raghavendra <vigneshr@ti.com>,
- Richard Weinberger <richard@nod.at>
+Cc: vigneshr@ti.com, tudor.ambarus@microchip.com, juliensu@mxic.com.tw,
+ richard@nod.at, miquel.raynal@bootlin.com, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, broonie@kernel.org, linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Pratyush Yadav <p.yadav@ti.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 27 Apr 2020 21:51:32 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> Hi Boris,
-> 
-> Boris Brezillon <boris.brezillon@collabora.com> wrote on Mon, 27 Apr
-> 2020 10:20:21 +0200:
-> 
-> > cafe_nand_write_page_lowlevel() sets the ECC auto-generation flag but  
-> 
-> IIRC you renamed this function in patch 1 so now it is named
-> "_write_page()".
-> 
-> > never clears it, thus forcing the cafe_nand_cmdfunc() to clear it
-> > in certain circumstances. Let's just clear this flag in
-> > cafe_nand_write_page_lowlevel() instead.  
-> 
-> Same here              ^
-> 
+Hi Pratyush,
 
-Right. That's what happens when you re-order commits without paying
-attention to the commit message.
-
-
-> > -	return nand_prog_page_end_op(chip);
-> > +	ret = nand_prog_page_end_op(chip);
-> > +
-> > +	/*
-> > +	 * And clear it before returning so that following write operations
-> > +	 * that do not involve ECC don't generate ECC bytes.
-> > +	 */
-> > +	cafe->ctl2 &= ~CAFE_NAND_CTRL2_AUTO_WRITE_ECC;  
+> > On Tue, 21 Apr 2020 14:39:42 +0800
+> > Mason Yang <masonccyang@mxic.com.tw> wrote:
+> > 
+> > > Hello,
+> > > 
+> > > This is repost of patchset from Boris Brezillon's
+> > > [RFC,00/18] mtd: spi-nor: Proposal for 8-8-8 mode support [1].
+> > 
+> > I only quickly went through the patches you sent and saying it's a
+> > repost of the RFC is a bit of a lie. You completely ignored the state
+> > tracking I was trying to do to avoid leaving the flash in 8D mode when
+> > suspending/resetting the board, and I think that part is crucial. If I
+> > remember correctly, we already had this discussion so I must say I'm a
+> > bit disappointed.
+> > 
+> > Can you sync with Pratyush? I think his series [1] is better in that 
+it
+> > tries to restore the flash in single-SPI mode before suspend (it's
+> > missing the shutdown case, but that can be easily added I think). Of
+> > course that'd be even better to have proper state tracking at the SPI
+> > NOR level.
 > 
-> I like spaces before returning, but again it's really a nitpick, you
-> can ignore that :)
->
+> Hi Mason,
+> 
+> I posted a re-roll of my series here [0]. Could you please base your 
+> changes on top of it? Let me know if the series is missing something you 
 
-Will add a blank line here as well.
- 
-> > +	return ret;
-> >  }
-> >  
-> >  /* F_2[X]/(X**6+X+1)  */  
+> need.
+> 
+> [0]  
+https://lore.kernel.org/linux-mtd/20200424184410.8578-1-p.yadav@ti.com/
+
+
+Our mx25uw51245g supports BFPT DWORD-18,19 and 20 data and xSPI profile 
+1.0,
+and it comply with BFPT DWORD-19, octal mode enable sequences by write CFG 
+Reg2 
+with instruction 0x72. Therefore, I can't apply your patches.
+
+I quickly went through your patches but can't reply them in each your 
+patches.
+
+i.e,.
+1) [v4,03/16] spi: spi-mem: allow specifying a command's extension
+
+-                                u8 opcode;
++                                u16 opcode;
+
+big/little Endian issue, right? 
+why not just u8 ext_opcode;
+No any impact for exist code and actually only xSPI device use extension 
+command.
+
+
+2) [v4,08/16] mtd: spi-nor: parse xSPI Profile 1.0 table
+
+need extract more data from xSPI profile 1.0 table and no other specific 
+setting. 
+
+
+3) [v4,11/16] mtd: spi-nor: enable octal DTR mode when possible
+
++static int spi_nor_octal_dtr_enable(struct spi_nor *nor, bool enable)
++{
++                int ret;
++
++                if (!nor->params->octal_dtr_enable)
++                                return 0;
++
++                if (!(spi_nor_get_protocol_width(nor->read_proto) == 8 ||
++                      spi_nor_get_protocol_width(nor->write_proto) == 8))
++                                return 0;
++
++                ret = nor->params->octal_dtr_enable(nor, enable);
++                if (ret)
++                                return ret;
++
++                if (enable)
++                                nor->reg_proto = SNOR_PROTO_8_8_8_DTR;
++                else
++                                nor->reg_proto = SNOR_PROTO_1_1_1;
++
++                return 0;
++}
++
+
+it seems you enable device in Octal mode after SPI-NOR Framework is 
+already
+in Octal protocol.
+Driver should set device by SPI 1-1-1 mode to enter Octal mode and then 
+setup
+Read/PP command and protocol by spi_nor_set_read/pp_setting() for Octal 
+mode,
+right ?
+
+
+thanks & best regards,
+Mason
+
+
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information 
+and/or personal data, which is protected by applicable laws. Please be 
+reminded that duplication, disclosure, distribution, or use of this e-mail 
+(and/or its attachments) or any part thereof is prohibited. If you receive 
+this e-mail in error, please notify us immediately and delete this mail as 
+well as its attachment(s) from your system. In addition, please be 
+informed that collection, processing, and/or use of personal data is 
+prohibited unless expressly permitted by personal data protection laws. 
+Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
+
+
+
+============================================================================
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
 
 
 ______________________________________________________
