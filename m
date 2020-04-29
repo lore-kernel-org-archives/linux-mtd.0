@@ -2,65 +2,59 @@ Return-Path: <SRS0=TDhY=6N=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E93A7C83006
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 14:48:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A92F9C83004
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 14:56:51 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BC4782073E
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 14:48:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7E315206F0
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 14:56:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NbI+MYWL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC4782073E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nQoPdpBq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7E315206F0
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
+	Date:References:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hrdq59mKv5875z3WVIdXaXKjcQN4i6NATeIH3Fd6s7E=; b=NbI+MYWL5M/g71
-	fCujEmjFN96+q8dmVux5JwKOB0kVS6EsnvQEaS71dEuY7EsdmusIXTbnl7nNWpRURFwFrecu3CcKA
-	i9wutgkwvmLBrGSskMz6SI+VSid7L7+p85OyY9/eUFXX0ZGY3yi7Dax3zsSwWBAbNguUwRhpAoalf
-	zjvjfCmsVrJvVk1BIIv8VEMLgRlJQaE4rANpxlGsFh5NtyAghV2wzrzOfBRp7KdANOi9eQy9KWnNZ
-	xCVesdejQ8IBg/oP5hB67nKE7zg8N4CPszASImc372XegLmSR+fn0mO+MaWI7P9K+sdArRAS9sPN3
-	ICYeRtbyU2PtIUlOzY4Q==;
+	List-Owner; bh=oZ1ugoooVx9al8BCrnx1ZL7phYzqiGQthCVXZVU40DA=; b=nQoPdpBqVmcK86
+	2BAoZW3z6Mg98vnGxDp+/hlyrN5XmS6EgF6BugN0Ole0dwYScLADRNfE4I3bFYHGt2GRnag0zggX6
+	bdEFUHZ39bAI5/s4xh93oL3Hjj6Gd5yV+vcnEFDkexUoGIVZmIEelTCdPm8dJ5HwVPHSptiecJLKj
+	VNNSflOw/iAZO6bmeWdGG3E97vEEv7ImW+dX3w/QGc7qJUTtD9TaVGipN+e7aTI3ylAtqVx8AEjh3
+	xCI3/7Vuvtct3ebykF1V405N1sndCd+qooPolw6j6c76ApkVWacUCGy7UsI1sAWsn+6rGDUT93NcN
+	2m8d70H8qjqAta0+j2Dg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jTo0t-0002fg-VC; Wed, 29 Apr 2020 14:48:39 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1jTo8f-0001RM-6F; Wed, 29 Apr 2020 14:56:41 +0000
+Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jTo0r-0002dy-Fm
- for linux-mtd@lists.infradead.org; Wed, 29 Apr 2020 14:48:38 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 632B52A224A;
- Wed, 29 Apr 2020 15:48:35 +0100 (BST)
-Date: Wed, 29 Apr 2020 16:48:32 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: "Ramuthevar, Vadivel MuruganX"
- <vadivel.muruganx.ramuthevar@linux.intel.com>, qi-ming.wu@intel.com
-Subject: Re: [PATCH v4 2/2] mtd: rawnand: Add NAND controller support on
- Intel LGM SoC
-Message-ID: <20200429164832.6800fc70@collabora.com>
-In-Reply-To: <9d77c64c-d0f9-7a13-3391-d05bf458bdb1@linux.intel.com>
-References: <20200429104205.18780-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200429104205.18780-3-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200429162249.55d38ee8@collabora.com>
- <9d77c64c-d0f9-7a13-3391-d05bf458bdb1@linux.intel.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1jTo8b-0001Q2-Rn
+ for linux-mtd@lists.infradead.org; Wed, 29 Apr 2020 14:56:39 +0000
+Received: from localhost ([127.0.0.1] helo=vostro)
+ by Galois.linutronix.de with esmtps (TLS1.2:RSA_AES_256_CBC_SHA1:256)
+ (Exim 4.80) (envelope-from <john.ogness@linutronix.de>)
+ id 1jTo8X-0001n7-9E; Wed, 29 Apr 2020 16:56:33 +0200
+From: John Ogness <john.ogness@linutronix.de>
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH] ubifs: Fix ubifs_tnc_lookup() usage in do_kill_orphans()
+References: <20200119215233.7292-1-richard@nod.at>
+Date: Wed, 29 Apr 2020 16:56:31 +0200
+In-Reply-To: <20200119215233.7292-1-richard@nod.at> (Richard Weinberger's
+ message of "Sun, 19 Jan 2020 22:52:33 +0100")
+Message-ID: <875zdibasg.fsf@vostro.fn.ogness.net>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200429_074837_658298_2C5ED567 
-X-CRM114-Status: GOOD (  14.66  )
+X-CRM114-CacheID: sfid-20200429_075638_037214_14257EBA 
+X-CRM114-Status: GOOD (  16.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,72 +66,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: cheol.yong.kim@intel.com, devicetree@vger.kernel.org,
- anders.roxell@linaro.org, vigneshr@ti.com, arnd@arndb.de,
- hauke.mehrtens@intel.com, richard@nod.at, brendanhiggins@google.com,
- linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com, tglx@linutronix.de,
- masonccyang@mxic.com.tw, andriy.shevchenko@intel.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 29 Apr 2020 22:33:37 +0800
-"Ramuthevar, Vadivel MuruganX"
-<vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
-
-> Hi Boris,
-> 
-> On 29/4/2020 10:22 pm, Boris Brezillon wrote:
-> > On Wed, 29 Apr 2020 18:42:05 +0800
-> > "Ramuthevar, Vadivel MuruganX"
-> > <vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
-> >   
-> >> +
-> >> +#define EBU_ADDR_SEL(n)		(0x20 + (n) * 4)
-> >> +#define EBU_ADDR_MASK		(5 << 4)  
-> > 
-> > It's still unclear what ADDR_MASK is for. Can you add a comment
-> > explaining what it does?  
-> 
-> Thank you Boris, keep review and giving inputs, will update.
-
-Can you please explain it here before sending a new version?
-
-> >   
-> >> +#define EBU_ADDR_SEL_REGEN	0x1  
-> > 
-> >   
-> >> +
-> >> +	writel(lower_32_bits(ebu_host->cs[ebu_host->cs_num].nand_pa) |
-> >> +	       EBU_ADDR_SEL_REGEN | EBU_ADDR_MASK,
-> >> +	       ebu_host->ebu + EBU_ADDR_SEL(reg));
-> >> +
-> >> +	writel(EBU_MEM_BASE_CS_0 | EBU_ADDR_MASK | EBU_ADDR_SEL_REGEN,
-> >> +	       ebu_host->ebu + EBU_ADDR_SEL(0));
-> >> +	writel(EBU_MEM_BASE_CS_1 | EBU_ADDR_MASK | EBU_ADDR_SEL_REGEN,
-> >> +	       ebu_host->ebu + EBU_ADDR_SEL(reg));  
-> > 
-> > That's super weird. You seem to set EBU_ADDR_SEL(reg) twice. Are you
-> > sure that's needed, and are we setting EBU_ADDR_SEL(0) here?  
-> 
-> You are right, its weird only, but we need it, since different chip 
-> select has different memory region access address.
-
-Well, that doesn't make any sense, the second write to
-EBU_ADDR_SEL(reg) overrides the first one, meaning that nand_pa is
-actually never written to ADDR_SEL(reg).
-
-> 
-> Yes , we are setting both CS0 and CS1 memory access region, if you have 
-> any concern to optimize, please suggest me, Thanks!
-
-If you want to setup both CS, and the address written in EBU_ADDR_SEL(x)
-is really related to the nand_pa address, then retrieve resources for
-all CS ranges. If it's not related, please explain what those
-EBU_MEM_BASE_CS_X values encode.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgUmljaGFyZCwKCkNvdWxkIHlvdSBDQyB0aGlzIHBhdGNoIHRvIHN0YWJsZT8gSXQgZml4ZXMg
+YSBzZXJpb3VzIHByb2JsZW0gdGhhdCBJIGFtCnNlZWluZyBvbiByZWFsIGRldmljZXMgKGkuZS4g
+TGludXggbm90IGJlaW5nIGFibGUgdG8gbW91bnQgaXRzIHJvb3QKZmlsZXN5c3RlbSBhZnRlciBh
+IHBvd2VyIGN1dCkuIFRoYW5rcy4KCkpvaG4gT2duZXNzCgpPbiAyMDIwLTAxLTE5LCBSaWNoYXJk
+IFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0PiB3cm90ZToKPiBPcnBoYW5zIGFyZSBhbGxvd2Vk
+IHRvIHBvaW50IHRvIGRlbGV0ZWQgaW5vZGVzLgo+IFNvIC1FTk9FTlQgaXMgbm90IGEgZmF0YWwg
+ZXJyb3IuCj4KPiBSZXBvcnRlZC1ieTog0JrQvtGH0LXRgtC60L7QsiDQnNCw0LrRgdC40LwgPGZp
+ZG9fbWF4QGluYm94LnJ1Pgo+IFJlcG9ydGVkLWFuZC10ZXN0ZWQtYnk6ICJDaHJpc3RpYW4gQmVy
+Z2VyIiA8Q2hyaXN0aWFuLkJlcmdlckBkZS5ib3NjaC5jb20+Cj4gRml4ZXM6IGVlMTQzOGNlNWRj
+NCAoInViaWZzOiBDaGVjayBsaW5rIGNvdW50IG9mIGlub2RlcyB3aGVuIGtpbGxpbmcgb3JwaGFu
+cy4iKQo+IFNpZ25lZC1vZmYtYnk6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+
+Cj4gLS0tCj4gIGZzL3ViaWZzL29ycGhhbi5jIHwgNCArKy0tCj4gIDEgZmlsZSBjaGFuZ2VkLCAy
+IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCj4KPiBkaWZmIC0tZ2l0IGEvZnMvdWJpZnMv
+b3JwaGFuLmMgYi9mcy91Ymlmcy9vcnBoYW4uYwo+IGluZGV4IDU0ZDZkYjYxMTA2Zi4uMjY0NTkx
+NzM2MGI5IDEwMDY0NAo+IC0tLSBhL2ZzL3ViaWZzL29ycGhhbi5jCj4gKysrIGIvZnMvdWJpZnMv
+b3JwaGFuLmMKPiBAQCAtNjg4LDE0ICs2ODgsMTQgQEAgc3RhdGljIGludCBkb19raWxsX29ycGhh
+bnMoc3RydWN0IHViaWZzX2luZm8gKmMsIHN0cnVjdCB1Ymlmc19zY2FuX2xlYiAqc2xlYiwKPiAg
+Cj4gIAkJCWlub19rZXlfaW5pdChjLCAma2V5MSwgaW51bSk7Cj4gIAkJCWVyciA9IHViaWZzX3Ru
+Y19sb29rdXAoYywgJmtleTEsIGlubyk7Cj4gLQkJCWlmIChlcnIpCj4gKwkJCWlmIChlcnIgJiYg
+ZXJyICE9IC1FTk9FTlQpCj4gIAkJCQlnb3RvIG91dF9mcmVlOwo+ICAKPiAgCQkJLyoKPiAgCQkJ
+ICogQ2hlY2sgd2hldGhlciBhbiBpbm9kZSBjYW4gcmVhbGx5IGdldCBkZWxldGVkLgo+ICAJCQkg
+KiBsaW5rYXQoKSB3aXRoIE9fVE1QRklMRSBhbGxvd3MgcmViaXJ0aCBvZiBhbiBpbm9kZS4KPiAg
+CQkJICovCj4gLQkJCWlmIChpbm8tPm5saW5rID09IDApIHsKPiArCQkJaWYgKGVyciA9PSAwICYm
+IGluby0+bmxpbmsgPT0gMCkgewo+ICAJCQkJZGJnX3JjdnJ5KCJkZWxldGluZyBvcnBoYW5lZCBp
+bm9kZSAlbHUiLAo+ICAJCQkJCSAgKHVuc2lnbmVkIGxvbmcpaW51bSk7CgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
+c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vbGludXgtbXRkLwo=
