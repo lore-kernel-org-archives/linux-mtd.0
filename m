@@ -4,90 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0132CC83004
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 09:35:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97667C83003
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 09:35:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C3B7D20731
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 09:35:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 39CB82074A
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 09:35:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XRJahyR4";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=st.com header.i=@st.com header.b="LP35zI4u"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C3B7D20731
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=st.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AAY8k9kQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 39CB82074A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=54bgHa0To/+4LoouV3CEk3UFXqTtpMm1eiq/iA1xv/Y=; b=XRJahyR4bhXoWSXMk2dx236zM
-	Bc/lILdYaY1SknOTI1Wk+Rzz3MvRCtpPVMeM9R9uMRyfXjv0686Ca0t0w1pMkVI//kLvGzfbym0F7
-	052S4xZxtS+W+jr0H1/o1OSto3pC8g2Lth5Ecw8aEMhfOCR+cca636XBhAL2dhbrvjSESXct156qI
-	jPhv+A7c+cwfR2CDGR0FH7jO2lEPJPvRqXT+8u8x/aPdseeXe6zxrM9yIwgTxrmXdKtqb6S1PznYq
-	75fEjND09K4+kpy7WI4ZMUQ+LumZLlvgZfE0unV6rjGLdgH52YkOZrvA+r0TclLQ6jR55w6SH7wAf
-	Obk24j1uw==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ee424C4e6u6myUSQfP6FdmomD94BKkvvHPVf166GpNo=; b=AAY8k9kQ9DX22W
+	AIxHx90L3u7wIx1df2hZ4+nBNt8WrN91aBLJh5Bf1tYV0hD5bSYFiV8DLPUOCxjTFlIsTFhV7BBwp
+	bC+j0ceIQc30oTKemBQFSkDcBTLD5n62EsgCrPUr/5YsShfS9YxFi319AozAYE3oSQImg5do0pmhK
+	fZX+82AHMBkfKZu8ZrlahR1auWhnlxkune9nYvqizooOQiqm6OGTR9P9l8FY8pvvh2l2tofJgSspS
+	2Xc+I0tAD94m3qRlcKGqPRumWS3PHnnPkiav+hF5H0kQW7+gvF/N4P1TdZ+FpMIvChqmqCgrmWUAQ
+	w2nk1A/rMO61YPwe0QpQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jTj7u-0006tm-Me; Wed, 29 Apr 2020 09:35:34 +0000
-Received: from mx07-00178001.pphosted.com ([62.209.51.94])
+	id 1jTj88-000788-7L; Wed, 29 Apr 2020 09:35:48 +0000
+Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jTj7q-0006se-BG
- for linux-mtd@lists.infradead.org; Wed, 29 Apr 2020 09:35:32 +0000
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
- by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- 03T9SJi6013131; Wed, 29 Apr 2020 11:35:18 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com;
- h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=++zRpDiALeUxrxlFUi0Ix+YSc7jWQuWjbZ2z8MduMk8=;
- b=LP35zI4uQnpzhEXRjVaLAMph7uJ58A50TweS66v+F2mrZ7CnnNi3es7n25BA/aHuHdCK
- CGhbu6HwzqQoacDjp5d98vvfkXe6YDDXSFx2xO8brrD/xdOzCQE2KAdLVl2QjlCYiH41
- pNUDiLk7eSIps64zKhvxI1NlVoAP71eJRgo+XGUKrcp942x8azvmJicol3WpqoSKjUwz
- vwwnqnm1BnFDEW6cFUN7xBPI9M2UYllxKekSunmL7CCAk6B0PYgpplCDDp8eBTjngzu+
- 4jX7tZOBFVvvtutus8MoIqygKkh4p46H43EndFOS7dFXK4yyInWF0fM0pn6yO9/IkXmg wg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com with ESMTP id 30n4j61k4y-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 29 Apr 2020 11:35:18 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B0C0F100034;
- Wed, 29 Apr 2020 11:35:17 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag6node2.st.com [10.75.127.17])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 77E3B207598;
- Wed, 29 Apr 2020 11:35:17 +0200 (CEST)
-Received: from [10.211.9.35] (10.75.127.46) by SFHDAG6NODE2.st.com
- (10.75.127.17) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Wed, 29 Apr
- 2020 11:35:15 +0200
-Subject: Re: [PATCH v2 01/12] dt-bindings: mfd: stm32-fmc2: add STM32 FMC2
- controller documentation
-To: Rob Herring <robh@kernel.org>
+ id 1jTj7x-0006u0-7X
+ for linux-mtd@lists.infradead.org; Wed, 29 Apr 2020 09:35:39 +0000
+X-Originating-IP: 91.224.148.103
+Received: from xps13 (unknown [91.224.148.103])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 26FB2240016;
+ Wed, 29 Apr 2020 09:35:30 +0000 (UTC)
+Date: Wed, 29 Apr 2020 11:35:29 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Christophe Kerello <christophe.kerello@st.com>
+Subject: Re: [PATCH v2 06/12] mtd: rawnand: stm32_fmc2: use FMC2_TIMEOUT_MS
+ for timeouts
+Message-ID: <20200429113529.5ddc3ad9@xps13>
+In-Reply-To: <0e2c9a6a-aa21-7814-9af8-629de6568fab@st.com>
 References: <1586966256-29548-1-git-send-email-christophe.kerello@st.com>
- <1586966256-29548-2-git-send-email-christophe.kerello@st.com>
- <20200428152843.GA8088@bogus>
-From: Christophe Kerello <christophe.kerello@st.com>
-Message-ID: <49372e0d-259c-a431-1f99-d40bd1aa5a99@st.com>
-Date: Wed, 29 Apr 2020 11:35:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+ <1586966256-29548-7-git-send-email-christophe.kerello@st.com>
+ <20200427202212.0235d987@xps13>
+ <0e2c9a6a-aa21-7814-9af8-629de6568fab@st.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200428152843.GA8088@bogus>
-Content-Language: en-US
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG4NODE2.st.com (10.75.127.11) To SFHDAG6NODE2.st.com
- (10.75.127.17)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138, 18.0.676
- definitions=2020-04-29_03:2020-04-28,
- 2020-04-29 signatures=0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200429_023530_687322_26C880A9 
-X-CRM114-Status: GOOD (  26.23  )
+X-CRM114-CacheID: sfid-20200429_023537_595797_0CB988CB 
+X-CRM114-Status: GOOD (  23.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,444 +73,74 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, marex@denx.de,
  vigneshr@ti.com, tony@atomide.com, richard@nod.at,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- miquel.raynal@bootlin.com, lee.jones@linaro.org,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, lee.jones@linaro.org,
  linux-stm32@st-md-mailman.stormreply.com
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi rob,
-
-On 4/28/20 5:28 PM, Rob Herring wrote:
-> On Wed, Apr 15, 2020 at 05:57:25PM +0200, Christophe Kerello wrote:
->> This patch adds the documentation of the device tree bindings for the STM32
->> FMC2 controller.
->>
->> Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
->> ---
->>   .../devicetree/bindings/mfd/st,stm32-fmc2.yaml     | 370 +++++++++++++++++++++
->>   1 file changed, 370 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/mfd/st,stm32-fmc2.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/mfd/st,stm32-fmc2.yaml b/Documentation/devicetree/bindings/mfd/st,stm32-fmc2.yaml
->> new file mode 100644
->> index 0000000..0ce1340
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mfd/st,stm32-fmc2.yaml
->> @@ -0,0 +1,370 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/mfd/st,stm32-fmc2.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: STMicroelectronics Flexible Memory Controller 2 (FMC2) Bindings
->> +
->> +description: |
->> +  The FMC2 functional block makes the interface with: synchronous and
->> +  asynchronous static devices (such as PSNOR, PSRAM or other memory-mapped
->> +  peripherals) and NAND flash memories.
->> +  Its main purposes are:
->> +    - to translate AXI transactions into the appropriate external device
->> +      protocol
->> +    - to meet the access time requirements of the external devices
->> +  All external devices share the addresses, data and control signals with the
->> +  controller. Each external device is accessed by means of a unique Chip
->> +  Select. The FMC2 performs only one access at a time to an external device.
->> +
->> +maintainers:
->> +  - Christophe Kerello <christophe.kerello@st.com>
->> +
->> +properties:
->> +  compatible:
->> +    const: st,stm32mp1-fmc2
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  clocks:
->> +    maxItems: 1
->> +
->> +  resets:
->> +    maxItems: 1
->> +
->> +  "#address-cells":
->> +    const: 1
->> +
->> +  "#size-cells":
->> +    const: 1
->> +
->> +  ranges: true
->> +
->> +patternProperties:
->> +  "^ebi(@.*)?":
->> +    type: object
->> +
->> +    properties:
->> +      compatible:
->> +        const: st,stm32mp1-fmc2-ebi
->> +
->> +      "#address-cells":
->> +        const: 2
->> +
->> +      "#size-cells":
->> +        const: 1
->> +
->> +      ranges: true
->> +
->> +    patternProperties:
->> +      "^[a-zA-Z]*-ebi@[a-f0-9,]*$":
-> 
-> These nodes should be named based on the device connected and we can be
-> a bit more precise on the unit-address:
-> 
-> "@[0-9a-f],[0-9a-f]+$"
-> 
-> Adjust for how many chip selects there are. 15 seems unlikely.
-> 
-
-Ok. It will be modified in v3.
-
->> +        type: object
->> +
->> +        properties:
->> +          reg:
->> +            maxItems: 1
->> +
->> +          st,fmc2_ebi_cs_transaction_type:
-> 
-> s/_/-/
-> 
-> And for the rest of the vendor properties...
-> 
-
-Ok. It will be modified in v3.
-
->> +            allOf:
->> +              - $ref: /schemas/types.yaml#/definitions/uint32
->> +              - minimum: 0
->> +                maximum: 11
->> +            description: |
->> +                         Select one of the transactions type supported
->> +                           0: Asynchronous mode 1 SRAM/FRAM
->> +                           1: Asynchronous mode 1 PSRAM.
->> +                           2: Asynchronous mode A SRAM/FRAM.
->> +                           3: Asynchronous mode A PSRAM.
->> +                           4: Asynchronous mode 2 NOR.
->> +                           5: Asynchronous mode B NOR.
->> +                           6: Asynchronous mode C NOR.
->> +                           7: Asynchronous mode D NOR.
->> +                           8: Synchronous read synchronous write PSRAM.
->> +                           9: Synchronous read asynchronous write PSRAM.
->> +                           10: Synchronous read synchronous write NOR.
->> +                           11: Synchronous read asynchronous write NOR.
->> +
->> +          st,fmc2_ebi_cs_cclk_enable:
->> +            $ref: /schemas/types.yaml#/definitions/flag
->> +            description: Continuous clock enable (first bank must be configured
->> +                         in synchronous mode). The FMC_CLK is generated continuously
->> +                         during asynchronous and synchronous access. By default, the
->> +                         FMC_CLK is only generated during synchronous access.
->> +
->> +          st,fmc2_ebi_cs_mux_enable:
->> +            $ref: /schemas/types.yaml#/definitions/flag
->> +            description: Address/Data multiplexed on databus (valid only with
->> +                         NOR and PSRAM transactions type). By default, Address/Data are
->> +                         not multiplexed.
->> +
->> +          st,fmc2_ebi_cs_buswidth:
->> +            allOf:
->> +              - $ref: /schemas/types.yaml#/definitions/uint32
->> +              - enum: [ 8, 16 ]
->> +              - default: 16
->> +            description: Data bus width
->> +
->> +          st,fmc2_ebi_cs_waitpol_high:
->> +            $ref: /schemas/types.yaml#/definitions/flag
->> +            description: Wait signal polarity (NWAIT signal active high).
->> +                         By default, NWAIT is active low.
->> +
->> +          st,fmc2_ebi_cs_waitcfg_enable:
->> +            $ref: /schemas/types.yaml#/definitions/flag
->> +            description: The NWAIT signal indicates wheither the data from the
->> +                         device are valid or if a wait state must be inserted when
->> +                         accessing the device in synchronous mode. By default, the NWAIT
->> +                         signal is active one data cycle before wait state.
->> +
->> +          st,fmc2_ebi_cs_wait_enable:
->> +            $ref: /schemas/types.yaml#/definitions/flag
->> +            description: The NWAIT signal is enabled (its level is taken into
->> +                         account after the programmed latency period to insert wait states
->> +                         if asserted). By default, the NWAIT signal is disabled.
->> +
->> +          st,fmc2_ebi_cs_asyncwait_enable:
->> +            $ref: /schemas/types.yaml#/definitions/flag
->> +            description: The NWAIT signal is taken into account during
->> +                         asynchronous transactions. By default, the NWAIT signal is not
->> +                         taken into account during asynchronous transactions.
->> +
->> +          st,fmc2_ebi_cs_cpsize:
->> +            allOf:
->> +              - $ref: /schemas/types.yaml#/definitions/uint32
->> +              - enum: [ 0, 128, 256, 512, 1024 ]
->> +              - default: 0
->> +            description: CRAM page size. The controller splits the burst access
->> +                         when the memory page is reached. By default, no burst split when
->> +                         crossing page boundary.
->> +
->> +          st,fmc2_ebi_cs_byte_lane_setup:
->> +            allOf:
->> +              - $ref: /schemas/types.yaml#/definitions/uint32
->> +            description: This property configures the byte lane setup timing
->> +                         defined in ns from NBLx low to Chip Select NEx low.
-> 
-> If units are nsec, then use the standard unit suffixes. Then you don't
-> need to define the type either.
-> 
-
-Ok. It will be modified in v3.
-
->> +
->> +          st,fmc2_ebi_cs_address_setup:
->> +            allOf:
->> +              - $ref: /schemas/types.yaml#/definitions/uint32
->> +            description: This property defines the duration of the address
->> +                         setup phase in ns used for asynchronous read/write transactions.
->> +
->> +          st,fmc2_ebi_cs_address_hold:
->> +            allOf:
->> +              - $ref: /schemas/types.yaml#/definitions/uint32
->> +            description: This property defines the duration of the address
->> +                         hold phase in ns used for asynchronous multiplexed
->> +                         read/write transactions.
->> +
->> +          st,fmc2_ebi_cs_data_setup:
->> +            allOf:
->> +              - $ref: /schemas/types.yaml#/definitions/uint32
->> +            description: This property defines the duration of the data
->> +                         setup phase in ns used for asynchronous read/write transactions.
->> +
->> +          st,fmc2_ebi_cs_bus_turnaround:
->> +            allOf:
->> +              - $ref: /schemas/types.yaml#/definitions/uint32
->> +            description: This property defines the delay between the end of
->> +                         current read/write transaction and the next transaction.
->> +
->> +          st,fmc2_ebi_cs_data_hold:
->> +            allOf:
->> +              - $ref: /schemas/types.yaml#/definitions/uint32
->> +            description: This property defines the duration of the data
->> +                         hold phase in ns used for asynchronous read/write transactions.
->> +
->> +          st,fmc2_ebi_cs_clk_period:
->> +            allOf:
->> +              - $ref: /schemas/types.yaml#/definitions/uint32
->> +            description: This property defines the FMC_CLK output signal period in ns.
->> +
->> +          st,fmc2_ebi_cs_data_latency:
->> +            allOf:
->> +              - $ref: /schemas/types.yaml#/definitions/uint32
->> +            description: This property defines the data latency before reading or writing
->> +                         the first data. This timing is expressed in FMC_CLK periods.
->> +
->> +          st,fmc2_ebi_cs_write_address_setup:
->> +            allOf:
->> +              - $ref: /schemas/types.yaml#/definitions/uint32
->> +            description: This property defines the duration of the address
->> +                         setup phase in ns used for asynchronous write transactions.
->> +
->> +          st,fmc2_ebi_cs_write_address_hold:
->> +            allOf:
->> +              - $ref: /schemas/types.yaml#/definitions/uint32
->> +            description: This property defines the duration of the address hold phase in
->> +                         ns used for asynchronous multiplexed write transactions.
->> +
->> +          st,fmc2_ebi_cs_write_data_setup:
->> +            allOf:
->> +              - $ref: /schemas/types.yaml#/definitions/uint32
->> +            description: This property defines the duration of the data setup phase in
->> +                         ns used for asynchronous write transactions.
->> +
->> +          st,fmc2_ebi_cs_write_bus_turnaround:
->> +            allOf:
->> +              - $ref: /schemas/types.yaml#/definitions/uint32
->> +            description: This property defines the delay between the end of current
->> +                         write transaction and the next transaction.
->> +
->> +          st,fmc2_ebi_cs_write_data_hold:
->> +            allOf:
->> +              - $ref: /schemas/types.yaml#/definitions/uint32
->> +            description: This property defines the duration of the data hold phase
->> +                         in ns used for asynchronous write transactions.
->> +
->> +          st,fmc2_ebi_cs_max_low_pulse:
->> +            allOf:
->> +              - $ref: /schemas/types.yaml#/definitions/uint32
->> +            description: This property defines the maximum chip select low pulse duration
->> +                         in ns for synchronous transactions. When this timing reaches 0,
->> +                         the controller splits the current access, toggles NE to allow
->> +                         device refresh and restarts a new access.
->> +
->> +        required:
->> +          - reg
->> +          - st,fmc2_ebi_cs_transaction_type
->> +
->> +    additionalProperties: false
->> +
->> +    required:
->> +      - compatible
->> +      - "#address-cells"
->> +      - "#size-cells"
->> +      - ranges
->> +
->> +  nand-controller:
->> +    allOf:
->> +      - $ref: "../mtd/nand-controller.yaml#"
->> +
->> +    type: object
->> +
->> +    properties:
->> +      compatible:
->> +        const: st,stm32mp1-fmc2-nand
->> +
->> +      reg:
->> +        items:
->> +          - description: Chip select 0 data
->> +          - description: Chip select 0 command
->> +          - description: Chip select 0 address space
->> +          - description: Chip select 1 data
->> +          - description: Chip select 1 command
->> +          - description: Chip select 1 address space
->> +
->> +      interrupts:
->> +        maxItems: 1
->> +
->> +      dmas:
->> +        items:
->> +          - description: tx DMA channel
->> +          - description: rx DMA channel
->> +          - description: ecc DMA channel
->> +
->> +      dma-names:
->> +        items:
->> +          - const: tx
->> +          - const: rx
->> +          - const: ecc
->> +
->> +      "#address-cells":
->> +        const: 1
->> +
->> +      "#size-cells":
->> +        const: 0
->> +
->> +    patternProperties:
->> +      "^nand@[a-f0-9]$":
->> +        type: object
->> +
->> +        properties:
->> +          nand-ecc-step-size:
->> +            const: 512
->> +
->> +          nand-ecc-strength:
->> +            enum: [1, 4 ,8 ]
->> +
->> +    additionalProperties: false
->> +
->> +    required:
->> +      - "#address-cells"
->> +      - "#size-cells"
->> +      - compatible
->> +      - reg
->> +      - interrupts
->> +
->> +  additionalProperties: false
-> 
-> Wrong indentation. You are defining a DT property called
-> 'additionalProperties'. You need 2 of these at 0 and 4 spaces
-> indentation. I have a check for this error in dt-schema pending.
-> 
-
-Ok. It will be modified in v3.
-
-Regards,
-Christophe Kerello.
-
->> +
->> +required:
->> +  - "#address-cells"
->> +  - "#size-cells"
->> +  - compatible
->> +  - reg
->> +  - clocks
->> +  - ranges
->> +
->> +examples:
->> +  - |
->> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
->> +    #include <dt-bindings/clock/stm32mp1-clks.h>
->> +    #include <dt-bindings/reset/stm32mp1-resets.h>
->> +    fmc@58002000 {
->> +      #address-cells = <1>;
->> +      #size-cells = <1>;
->> +      compatible = "st,stm32mp1-fmc2";
->> +      reg = <0x58002000 0x1000>;
->> +      clocks = <&rcc FMC_K>;
->> +      resets = <&rcc FMC_R>;
->> +      ranges;
->> +
->> +      ebi@0 {
->> +        #address-cells = <2>;
->> +        #size-cells = <1>;
->> +        compatible = "st,stm32mp1-fmc2-ebi";
->> +        ranges = <0 0 0x60000000 0x4000000>,
->> +                 <1 0 0x64000000 0x4000000>,
->> +                 <2 0 0x68000000 0x4000000>,
->> +                 <3 0 0x6c000000 0x4000000>;
->> +
->> +        psram-ebi@0,0 {
->> +          compatible = "mtd-ram";
->> +          reg = <0 0x00000000 0x100000>;
->> +          bank-width = <2>;
->> +
->> +          st,fmc2_ebi_cs_transaction_type = <1>;
->> +          st,fmc2_ebi_cs_address_setup = <60>;
->> +          st,fmc2_ebi_cs_data_setup = <30>;
->> +          st,fmc2_ebi_cs_bus_turnaround = <5>;
->> +        };
->> +      };
->> +
->> +      nand-controller@1 {
->> +        #address-cells = <1>;
->> +        #size-cells = <0>;
->> +        compatible = "st,stm32mp1-fmc2-nand";
->> +        reg = <0x80000000 0x1000>,
->> +              <0x88010000 0x1000>,
->> +              <0x88020000 0x1000>,
->> +              <0x81000000 0x1000>,
->> +              <0x89010000 0x1000>,
->> +              <0x89020000 0x1000>;
->> +        interrupts = <GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>;
->> +        dmas = <&mdma1 20 0x2 0x12000a02 0x0 0x0>,
->> +               <&mdma1 20 0x2 0x12000a08 0x0 0x0>,
->> +               <&mdma1 21 0x2 0x12000a0a 0x0 0x0>;
->> +        dma-names = "tx", "rx", "ecc";
->> +
->> +        nand@0 {
->> +          reg = <0>;
->> +          nand-on-flash-bbt;
->> +          #address-cells = <1>;
->> +          #size-cells = <1>;
->> +        };
->> +      };
->> +    };
->> +
->> +...
->> -- 
->> 1.9.1
->>
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgQ2hyaXN0b3BoZSwKCkNocmlzdG9waGUgS2VyZWxsbyA8Y2hyaXN0b3BoZS5rZXJlbGxvQHN0
+LmNvbT4gd3JvdGUgb24gV2VkLCAyOSBBcHIKMjAyMCAxMToyNzo0MyArMDIwMDoKCj4gSGkgTWlx
+dcOobCwKPiAKPiBPbiA0LzI3LzIwIDg6MjIgUE0sIE1pcXVlbCBSYXluYWwgd3JvdGU6Cj4gPiBI
+aSBDaHJpc3RvcGhlLAo+ID4gCj4gPiBDaHJpc3RvcGhlIEtlcmVsbG8gPGNocmlzdG9waGUua2Vy
+ZWxsb0BzdC5jb20+IHdyb3RlIG9uIFdlZCwgMTUgQXByCj4gPiAyMDIwIDE3OjU3OjMwICswMjAw
+Ogo+ID4gICAKPiA+PiBUaGlzIHBhdGNoIHJlbW92ZXMgdGhlIGNvbnN0YW50IEZNQzJfVElNRU9V
+VF9VUy4KPiA+PiBGTUMyX1RJTUVPVVRfTVMgaXMgc2V0IHRvIDUgc2Vjb25kcyBhbmQgdGhpcyBj
+b25zdGFudCBpcyB1c2VkCj4gPj4gZWFjaCB0aW1lIHRoYXQgd2UgbmVlZCB0byB3YWl0IChleGNl
+cHQgd2hlbiB0aGUgdGltZW91dCB2YWx1ZQo+ID4+IGlzIHNldCBieSB0aGUgZnJhbWV3b3JrKQo+
+ID4+Cj4gPj4gU2lnbmVkLW9mZi1ieTogQ2hyaXN0b3BoZSBLZXJlbGxvIDxjaHJpc3RvcGhlLmtl
+cmVsbG9Ac3QuY29tPgo+ID4+IC0tLQo+ID4+ICAgZHJpdmVycy9tdGQvbmFuZC9yYXcvc3RtMzJf
+Zm1jMl9uYW5kLmMgfCAxMSArKysrKy0tLS0tLQo+ID4+ICAgMSBmaWxlIGNoYW5nZWQsIDUgaW5z
+ZXJ0aW9ucygrKSwgNiBkZWxldGlvbnMoLSkKPiA+Pgo+ID4+IGRpZmYgLS1naXQgYS9kcml2ZXJz
+L210ZC9uYW5kL3Jhdy9zdG0zMl9mbWMyX25hbmQuYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L3N0
+bTMyX2ZtYzJfbmFuZC5jCj4gPj4gaW5kZXggYWI1MzMxNC4uZjE1OWMzOSAxMDA2NDQKPiA+PiAt
+LS0gYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9zdG0zMl9mbWMyX25hbmQuYwo+ID4+ICsrKyBiL2Ry
+aXZlcnMvbXRkL25hbmQvcmF3L3N0bTMyX2ZtYzJfbmFuZC5jCj4gPj4gQEAgLTM3LDggKzM3LDcg
+QEAKPiA+PiAgIC8qIE1heCBFQ0MgYnVmZmVyIGxlbmd0aCAqLwo+ID4+ICAgI2RlZmluZSBGTUMy
+X01BWF9FQ0NfQlVGX0xFTgkJKEZNQzJfQkNIRFNSU19MRU4gKiBGTUMyX01BWF9TRykgIAo+ID4+
+ICAgPj4gLSNkZWZpbmUgRk1DMl9USU1FT1VUX1VTCQkJMTAwMCAgCj4gPj4gLSNkZWZpbmUgRk1D
+Ml9USU1FT1VUX01TCQkJMTAwMAo+ID4+ICsjZGVmaW5lIEZNQzJfVElNRU9VVF9NUwkJCTUwMDAg
+IAo+ID4+ICAgPj4gICAvKiBUaW1pbmdzICovICAKPiA+PiAgICNkZWZpbmUgRk1DMl9USElaCQkJ
+MQo+ID4+IEBAIC01MjUsOSArNTI0LDkgQEAgc3RhdGljIGludCBzdG0zMl9mbWMyX2hhbV9jYWxj
+dWxhdGUoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwgY29uc3QgdTggKmRhdGEsCj4gPj4gICAJdTMy
+IHNyLCBoZWNjcjsKPiA+PiAgIAlpbnQgcmV0OyAgCj4gPj4gICA+PiAtCXJldCA9IHJlYWRsX3Jl
+bGF4ZWRfcG9sbF90aW1lb3V0KGZtYzItPmlvX2Jhc2UgKyBGTUMyX1NSLCAgCj4gPj4gLQkJCQkJ
+IHNyLCBzciAmIEZNQzJfU1JfTldSRiwgMTAsCj4gPj4gLQkJCQkJIEZNQzJfVElNRU9VVF9NUyk7
+Cj4gPj4gKwlyZXQgPSByZWFkbF9yZWxheGVkX3BvbGxfdGltZW91dF9hdG9taWMoZm1jMi0+aW9f
+YmFzZSArIEZNQzJfU1IsCj4gPj4gKwkJCQkJCXNyLCBzciAmIEZNQzJfU1JfTldSRiwgMSwKPiA+
+PiArCQkJCQkJMTAwMCAqIEZNQzJfVElNRU9VVF9NUyk7ICAKPiA+IAo+ID4gSXMgdGhlIF9hdG9t
+aWMgc3VmZml4IG5lZWRlZCBoZXJlPyBJZiB5ZXMgaXQgd291bGQgZGVzZXJ2ZSBhIHNlcGFyYXRl
+Cj4gPiBwYXRjaCB3aXRoIEZpeGVzL1N0YWJsZSB0YWdzLgo+ID4gICAKPiAKPiBJIGhhdmUgY3Vy
+cmVudGx5IG5vdCBzZWVuIGFueSBpc3N1ZXMuIFNvLCBJIHdpbGwgcmVtb3ZlIHRoaXMgbW9kaWZp
+Y2F0aW9uIGFzIHdlIHdpbGwgbW92ZSB0byByZWdtYXBfcmVhZF9wb2xsX3RpbWVvdXQgaW4gcGF0
+Y2ggMTAuCj4gCj4gPj4gICAJaWYgKHJldCkgewo+ID4+ICAgCQlkZXZfZXJyKGZtYzItPmRldiwg
+ImhhbSB0aW1lb3V0XG4iKTsKPiA+PiAgIAkJcmV0dXJuIHJldDsKPiA+PiBAQCAtMTMxNSw3ICsx
+MzE0LDcgQEAgc3RhdGljIGludCBzdG0zMl9mbWMyX3dhaXRyZHkoc3RydWN0IG5hbmRfY2hpcCAq
+Y2hpcCwgdW5zaWduZWQgbG9uZyB0aW1lb3V0X21zKQo+ID4+ICAgCS8qIENoZWNrIGlmIHRoZXJl
+IGlzIG5vIHBlbmRpbmcgcmVxdWVzdHMgdG8gdGhlIE5BTkQgZmxhc2ggKi8KPiA+PiAgIAlpZiAo
+cmVhZGxfcmVsYXhlZF9wb2xsX3RpbWVvdXRfYXRvbWljKGZtYzItPmlvX2Jhc2UgKyBGTUMyX1NS
+LCBzciwKPiA+PiAgIAkJCQkJICAgICAgc3IgJiBGTUMyX1NSX05XUkYsIDEsCj4gPj4gLQkJCQkJ
+ICAgICAgRk1DMl9USU1FT1VUX1VTKSkKPiA+PiArCQkJCQkgICAgICAxMDAwICogRk1DMl9USU1F
+T1VUX01TKSkKPiA+PiAgIAkJZGV2X3dhcm4oZm1jMi0+ZGV2LCAiV2FpdHJkeSB0aW1lb3V0XG4i
+KTsgIAo+ID4+ICAgPj4gICAJLyogV2FpdCB0V0IgYmVmb3JlIFIvQiMgc2lnbmFsIGlzIGxvdyAq
+LyAgCj4gPiAKPiA+IFlvdSBjaGFuZ2UgdGhlIHRpbWVvdXRzIGZyb20gMW1zIHRvIDVzLgo+ID4g
+Cj4gPiBNYXliZSA1cyBpcyBhIGxpdHRsZSBiaXQgdG9vIG11Y2ggSU1ITyBidXQgd2UgZG9uJ3Qg
+cmVhbGx5IGNhcmUgYXMgdGhpcwo+ID4gaXMgYSB0aW1lb3V0LiBIb3dldmVyIDFtcyBpcyB0aWdo
+dC4gSWYgeW91IGFyZSBjaGFuZ2luZyB0aGlzIHZhbHVlCj4gPiBiZWNhdXNlIGl0IHRyaWdnZXJz
+IGVycm9yIChlZy4gd2hlbiB0aGUgbWFjaGluZSBpcyBsb2FkZWQpLCB0aGVuIGl0IGlzCj4gPiBh
+IGZpeCBhbmQgc2hvdWxkIGFwcGVhciBsaWtlIGl0Lgo+ID4gCj4gPiBUaGFua3MsCj4gPiBNaXF1
+w6hsCj4gPiAgIAo+IAo+IE5vIGVycm9ycyBjdXJyZW50bHkgaGFwcGVucy4KPiBEdXJpbmcgb3Vy
+IHN0cmVzcyB0ZXN0cywgaW4gYSBvdmVybG9hZGVkIHN5c3RlbSwgd2UgaGF2ZSBzZWVuIHRoYXQg
+d2UgY291bGQgYmUgY2xvc2UgdG8gMSBzZWNvbmQsIGV2ZW4gaWYgd2UgbmV2ZXIgbWV0IHRoaXMg
+dmFsdWUuCj4gU28sIHRvIGJlIHNhZmUsIEkgaGF2ZSBzZXQgdGhpcyB0aW1lb3V0IHRvIDUgc2Vj
+b25kcy4KPiBBcyBpdCBpcyBqdXN0IGEgdGltZW91dCB2YWx1ZSwgSSBoYXZlIG5vdCBzZWVuIGFu
+eSBzaWRlIGVmZmVjdC4KPiBJIGFtIHVzaW5nIHRoZSBzYW1lIHRpbWVvdXQgY29uc3RhbnQgdG8g
+YXZvaWQgdG8gaGF2ZSBvbmUgdGltZW91dCBwZXIgY2FzZXMuCgpTb21ldGhpbmcgaXMgd3Jvbmcg
+aW4gbXkgbWluZDoKWW91IHNheSB5b3Ugb2JzZXJ2ZSBkZWxheXMgb2YgYWxtb3N0IHVwIHRvIDEg
+c2Vjb25kLCBidXQgdGhlIHBvbGxpbmcKY3VycmVudGx5IGhhcHBlbnMgb24gMTAwMCB1cyA9IDFt
+cywgZWl0aGVyIHlvdSBoYWQgdGltZW91dHMgb3IgSQptaXNyZWFkIHNvbWV0aGluZz8KClRoYW5r
+cywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMu
+aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
