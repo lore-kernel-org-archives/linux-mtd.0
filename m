@@ -2,93 +2,95 @@ Return-Path: <SRS0=TDhY=6N=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 182C5C83003
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 08:53:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 051E6C83003
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 09:07:38 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D737220775
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 08:53:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CB19F2076B
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 09:07:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KWx1fSvs";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ukQXkZ1W"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D737220775
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PPN/V3en";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=st.com header.i=@st.com header.b="J+GPW50H"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CB19F2076B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=st.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eC1Ta5/+CZVULHbnpDG1BtBQcY7YVYgsJcD1tdocWW4=; b=KWx1fSvs6ZHQsg
-	0UAbUsk8kER+aknBFJY33meMib9OosaYuxfzay8jTerGJVqYnZEJLOQs6e6MzyP1KG2JGNTbmA0Z8
-	tb1/c4qsp1OSV2p1Yvw44PVK+5EGoPac/WXWNvgAw7vJEtRirDqwJ45V5rIu7HFzLmW5OJLuhActO
-	OYeNUC5qSqG9E2T6cxUAoB8rO4iAId++bLo+MoFhxAFy7NpodXLlkpmT8zCiJLL+FdM+l+Zqe/5mi
-	xfJJd507Lch3KdPG0EOat+E87sZVEBOBrKhYp4MDZ6aH/9UcOLTe+FNlqRp0xs/YVrp6Dijd0m9Vp
-	rmLNS+vN3IkwCXJ+nGGA==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=O3CjcIc82Q4SKlqA53ApxJopCwcWFlrVdxpQC20NITg=; b=PPN/V3enLHcH/dgsIHpNQaKSy
+	/daZLPZZqSnAtzGTbzDgRD3oP0RiMaDnnnyI4aciK9qsHxs8DBld1ZCoqRb+Chxkm5XuYRZUQaGwf
+	b0FJEXrU56wZRiHzaNy6NU50R08kKf8sHlWAM1uEt9JHxsYIwbfsDUljO9840PGXvnPj5rNVeiEQy
+	tIJ9POCmNpHP7BYhRtcQpvF+efme9vb163cvwo73IDSPpI9+kIbv1QawqOpyVMCEtxKIHpSxwrgUo
+	QDox1PvWJB+WSPP14DXXhF6MhXv4elgDpazWVHWBvJCRPf0A4TjiPC5wG09E+HOfv+InbYO43Xc00
+	ZJVmge7cA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jTiTL-0007Q2-CF; Wed, 29 Apr 2020 08:53:39 +0000
-Received: from mail-wr1-x443.google.com ([2a00:1450:4864:20::443])
+	id 1jTigk-0000vx-7h; Wed, 29 Apr 2020 09:07:30 +0000
+Received: from mx07-00178001.pphosted.com ([62.209.51.94])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jTiTI-0007Om-2S; Wed, 29 Apr 2020 08:53:38 +0000
-Received: by mail-wr1-x443.google.com with SMTP id b11so1498204wrs.6;
- Wed, 29 Apr 2020 01:53:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=MIh2ncJiTZhfe64QhwPMePJs/eQD84MVUzEErJCAjiA=;
- b=ukQXkZ1W6Y2M6mH1m2+aUdQA5J0SUy0PsWuRa0wektx13MB/62XG0d4PTieYldfCzh
- SfND5fo25WbH8JpkD39CWm7iclX2vg6Q8J5oh6Z3mAPcf+TNWIOkkE4VRoR3zuW0iZNO
- Oy16u/STlaTs6UqtpP8obGCiQ5NYi0roe81e23epdF5zSq84WdbUlfWscdNPgOLcW0Ji
- beiCh/FIPzTE47urFlLSoOyGhfA/20BSQGpVKmJVoxUzp6a6+yN3RRDMQ9KwhiCieEWq
- 18UMOlkx641gYXz0KV3nzClb7iW3iPMk9rzJzZ10kvVtsq+bmSOFAq+QzRnflx3kOPUG
- SDlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=MIh2ncJiTZhfe64QhwPMePJs/eQD84MVUzEErJCAjiA=;
- b=ZkpCpf1+1qENdE4qupBnBAUknG7Dr5AF0FltqnTqFrlrUpecx1VaiJ6Kb9jaVrv4x1
- z1STGtepKQ9/9iK7jXDpzLG9++m08YCzwZVqcWO69jiS93lWjUT2P75Z7ktoxC7gnsRm
- jKDOyCZCtODFtn9ZCPoMWsHUcWIgoxm/OYUHHYkOHS0gZ1DIAT3Ru4x3eGSfu+Cv8Zna
- gBu2Wz8QxghjTpFWWjsn6B4PT3M8fLU6cwR1Sw/pnrpqYeDH0Lkit+Jpb6UeMlAS0qz6
- 5kEKSOwpo79meZsstZ8l264KaYc5GMsl2zF7F2qHT3d53F1gNuEt+q6zO5p1+7IrRRtc
- cxug==
-X-Gm-Message-State: AGi0PuZ8A/E9LV9+XJnINoKd//X+O6+4EC7nHs4144sAkCYzWtuQahwF
- TsujzEqiWYFI+eV8FNB0xo8wyFQa
-X-Google-Smtp-Source: APiQypLUT1pkgcsuIiAPKNC1PvSAyJ/ek0HeKIDtu81ArgNglkqPdz7ylEH4zdRzcuS8Xj5mijy7qA==
-X-Received: by 2002:adf:bb94:: with SMTP id q20mr41054561wrg.105.1588150413129; 
- Wed, 29 Apr 2020 01:53:33 -0700 (PDT)
-Received: from [192.168.2.1] (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
- by smtp.gmail.com with ESMTPSA id e21sm30356499wrc.1.2020.04.29.01.53.31
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 29 Apr 2020 01:53:32 -0700 (PDT)
-Subject: Re: [PATCH v5 1/7] dt-bindings: mtd: Describe Rockchip RK3xxx NAND
- flash controller
-To: Yifeng Zhao <yifeng.zhao@rock-chips.com>, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com, robh+dt@kernel.org
-References: <20200426100250.14678-1-yifeng.zhao@rock-chips.com>
- <20200426100250.14678-2-yifeng.zhao@rock-chips.com>
-From: Johan Jonker <jbx6244@gmail.com>
-Message-ID: <4a83e5d2-90cc-1db7-cdfd-47b7ceb4fcef@gmail.com>
-Date: Wed, 29 Apr 2020 10:53:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ id 1jTigg-0000ti-SG
+ for linux-mtd@lists.infradead.org; Wed, 29 Apr 2020 09:07:28 +0000
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+ by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
+ 03T8wSHn005185; Wed, 29 Apr 2020 11:07:13 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com;
+ h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=e9NwN/IhCOM3jYLOzfdAEssprCoON8TaVJUaQG+tcnY=;
+ b=J+GPW50HYzS2dnXExZqnZ0XHPX4HJhPak2/+H/VoXthCvYrz3BF1nP/uko5izwrQMNrv
+ wzs46w4f3d+w94AXcFAmi/Sn0y2zTTLH7HbtwL3gYNS285nPHK/AKxJHNb/NVW3lhXhR
+ T2kTZS6oyyPzvOu8DFUZQUhnFsEtEcoyvnDoMDHoOsOmxbjE2gV6PXTvpWMdJA+kAxjP
+ hBOCr4gJ9hAiFo5EXXhQnWFVTWLITdlztngvL8b9CnozBWDP18OBf3Rre6DMTfrx/zQv
+ KsnOasx7zbGbEwn+21S0q6vY6vbOKZEhyJqVQ9HDfeCaZUpNu0HeQwE4apqCgH3oyzwT 7w== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+ by mx07-00178001.pphosted.com with ESMTP id 30n4j61dnw-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 29 Apr 2020 11:07:13 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3325C10002A;
+ Wed, 29 Apr 2020 11:07:09 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag6node2.st.com [10.75.127.17])
+ by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1819920749E;
+ Wed, 29 Apr 2020 11:07:09 +0200 (CEST)
+Received: from [10.211.9.35] (10.75.127.44) by SFHDAG6NODE2.st.com
+ (10.75.127.17) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Wed, 29 Apr
+ 2020 11:07:07 +0200
+Subject: Re: [PATCH v2 04/12] mtd: rawnand: stm32_fmc2: manage all errors
+ cases at probe time
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Marek Vasut <marex@denx.de>
+References: <1586966256-29548-1-git-send-email-christophe.kerello@st.com>
+ <1586966256-29548-5-git-send-email-christophe.kerello@st.com>
+ <20200427194747.224a2402@xps13>
+ <40a9bac7-9ed4-b781-f2c2-2d90b4e82749@denx.de>
+ <20200427200848.722f4c56@xps13>
+ <3527f3b8-225d-6e5a-dd8a-0421d475f70b@denx.de>
+ <20200427220806.13741ec0@xps13>
+From: Christophe Kerello <christophe.kerello@st.com>
+Message-ID: <75a430de-54af-c4db-9d93-6b3d5e65874c@st.com>
+Date: Wed, 29 Apr 2020 11:07:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <20200426100250.14678-2-yifeng.zhao@rock-chips.com>
+In-Reply-To: <20200427220806.13741ec0@xps13>
 Content-Language: en-US
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG8NODE2.st.com (10.75.127.23) To SFHDAG6NODE2.st.com
+ (10.75.127.17)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138, 18.0.676
+ definitions=2020-04-29_03:2020-04-28,
+ 2020-04-29 signatures=0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200429_015336_139567_49667BAD 
-X-CRM114-Status: GOOD (  24.63  )
+X-CRM114-CacheID: sfid-20200429_020727_213533_164FE1B3 
+X-CRM114-Status: GOOD (  14.61  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,347 +102,31 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org, heiko@sntech.de,
- linux-rockchip@lists.infradead.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, vigneshr@ti.com,
+ tony@atomide.com, richard@nod.at, linux-kernel@vger.kernel.org,
+ robh+dt@kernel.org, linux-mtd@lists.infradead.org, lee.jones@linaro.org,
+ linux-stm32@st-md-mailman.stormreply.com
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Yifeng,
-
-> On Sun, Apr 26, 2020 at 06:02:44PM +0800, Yifeng Zhao wrote:
->> Documentation support for Rockchip RK3xxx NAND flash controllers
->> 
->> Signed-off-by: Yifeng Zhao <yifeng.zhao@rock-chips.com>
->> ---
->> 
->> Changes in v5:
->> - Fix some wrong define
->> - Add boot-medium define
->> - Remove some compatible define
->> 
->> Changes in v4:
->> - The compatible define with rkxx_nfc
->> - Add assigned-clocks
->> - Fix some wrong define
->> 
->> Changes in v3:
->> - Change the title for the dt-bindings
->> 
->> Changes in v2: None
->> 
->>  .../mtd/rockchip,nand-controller.yaml         | 124 ++++++++++++++++++
->>  1 file changed, 124 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
->> 
->> diff --git a/Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml b/Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
-
-The name of this file is based on Miquel's opinion, but the
-compatibility strings, (for which robh has given a 'reviewed by' tag) in
-version 4 don't fit with this format.
-
->> new file mode 100644
->> index 000000000000..12354c79d275
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
->> @@ -0,0 +1,124 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/mtd/rockchip,nand-controller.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Rockchip SoCs NAND FLASH Controller (NFC)
->> +
-
->> +allOf:
->> +  - $ref: "nand-controller.yaml#"
-
-The idea of a common file is that you add additional properties that are
-not already included. This document has a more restricting character.
-Therefore you must the same property names and patterns to be effective.
-See comment about "^nand@[0-3]$".
-
->> +
->> +maintainers:
->> +  - Heiko Stuebner <heiko@sntech.de>
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - rockchip,px30_nfc
->> +      - rockchip,rk3xxx_nfc
-
-As told before the binding strings are SoC orientated.
-Use the Soc first in line for V600 and replace
-'rockchip,rk3xxx_nfc' by 'rockchip,rk3066-nfc'
-
->> +      - rockchip,rk3308_nfc
->> +      - rockchip,rv1108_nfc
-> 
-> Use '-', not '_'.
-> 
-
-In your driver there are currently 3 data sets:
-V622, V800, V900
-Each additional SoC will then use a fallback string.
-
-properties:
-  compatible:
-    oneOf:
-      - const: rockchip,px30-nfc
-      - const: rockchip,rk3066-nfc
-      - const: rockchip,rk3308-nfc
-      - Item:
-          - enum:
-              - rockchip,rv1108-nfc
-          - const: rockchip,rk3308-nfc
-
-I propose to also include a V600 data set in the driver and an extra dts
-entry for rk3288 to this serie. Add support for CS 8 to your driver.
-
-properties:
-  compatible:
-    oneOf:
-      - const: rockchip,px30-nfc
-      - const: rockchip,rk3066-nfc
-      - const: rockchip,rk3288-nfc
-      - const: rockchip,rk3308-nfc
-      - Item:
-          - enum:
-              - rockchip,rk3368-nfc
-          - const: rockchip,rk3288-nfc
-      - Item:
-          - enum:
-              - rockchip,rv1108-nfc
-          - const: rockchip,rk3308-nfc
-
-
->> +
->> +  reg:
-
->> +    minItems: 1
-
-Change this back to version 4:
-
-    maxItems: 1
-
->> +
->> +  interrupts:
-
->> +    minItems: 1
-
-Change this back to version 4:
-
-    maxItems: 1
-
->> +
->> +  clocks:
->> +    minItems: 1
->> +    items:
->> +      - description: Bus Clock
->> +      - description: Module Clock
->> +
->> +  clock-names:
->> +    minItems: 1
-> 
-> So 'ahb' is required and 'nfc' is optional? That's what you defined, but 
-> that seems backwards.
-
-This is needed for rk3066 V600.
-
-> 
->> +    items:
->> +      - const: ahb
->> +      - const: nfc
->> +
-
-Also the use of allOf doesn't check for bogus properties without the use
-of: 'additionalProperties: false'. Check this document by combining it
-into a single file and add additionalProperties.
-
-  assigned-clocks:
-    maxItems: 1
-
-  assigned-clock-rates:
-    maxItems: 1
-
-  pinctrl-0:
-    maxItems: 1
-
-  pinctrl-names:
-    const: default
-
->> +patternProperties:
-
->> +  "^nand@[0-3]$":
-
-In combination with $ref: "nand-controller.yaml#" you create 2 reg-exes.
-One with:
-"^nand@[0-3]$" + minimum 0 and maximum 3
-
-A second with:
-"^nand@[a-f0-9]$" + no restrictions
-
-Result all pass, so use the same regex as in the common file.
-Don't try to restrict both in the regex and in the reg properties.
-
->> +    type: object
->> +    properties:
->> +      reg:
->> +        minimum: 0
->> +        maximum: 3
-
-V600 has CS 8.
-Maybe use this if a V600 data set is included:
-
-if:
-  properties:
-    compatible:
-      contains:
-        const: rockchip,rk3066-nfc
-
-then:
-      reg:
-        minimum: 0
-        maximum: 7
-
-else:
-      reg:
-        minimum: 0
-        maximum: 3
-
->> +
->> +      nand-ecc-mode:
->> +        const: hw
->> +
->> +      nand-ecc-step-size:
->> +        const: 1024
->> +
->> +      nand-ecc-strength:
-
->> +        enum: [16,24,40,60,70]
-
-Add space             ^  ^  ^  ^
-
-        enum: [16, 24, 40, 60, 70]
-
->> +
->> +      nand-bus-width:
->> +        const: 8
->> +
-
->> +      nand-is-boot-medium: true
-
-Nothing changed. Already in nand-controller.yaml => remove
-
->> +
->> +      rockchip-boot-blks:
-> 
-> rockchip,boot-blks
-> 
->> +        minimum: 2
->> +        default: 16
->> +        allOf:
->> +        - $ref: /schemas/types.yaml#/definitions/uint32
->> +        description:
->> +          For legacy devices where the bootrom can only handle 16/24 bit
->> +          BCH/ECC, and for some other devices where the bootrom can support
->> +          60/70 bit BCH/ECC.
->> +          In addition, when programming the loader, a linked list needs to
-
-Could you use a better description?                          ^
-Is this a bit, byte, word, pointer or custom and at what position?
-
->> +          be written in oob for Bootrom to read the correct data sequence.
->> +          If specified it indicates the number of erase blocks in use by
->> +          the bootloader that need a different BCH/ECC setting.
->> +          Only used in combination with 'nand-is-boot-medium'.
-
-Could you disclose the flow/response of the bootrom if we hit a bad
-block? Does it mark that block bad?
-
-Describe why we have a minimum of 2 (1 standard + 1 spare block).
-Does the bootrom for V600, V622 have a maximum from the software point
-of view?
-
->> +
->> +      rockchip-boot-ecc-strength:
-> 
-> rockchip,boot-ecc-strength
-> 
->> +        enum: [16,24,40,60,70]
-
-Add space             ^  ^  ^  ^
-
-        enum: [16, 24, 40, 60, 70]
-
->> +        description:
->> +          If specified it indicates that use a different BCH/ECC setting for
->> +          bootrom.
-
-The phrase above is in need for some improvement.
-Could an English speaker help here?
-
-If specified it indicates that a different BCH/ECC setting is used by
-the bootrom.
-
-If specified it describes the BCH/ECC setting used by the bootrom.
-
->> +          Only used in combination with 'nand-is-boot-medium'.
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - interrupts
->> +  - clocks
->> +  - clock-names
->> +
->> +examples:
->> +  - |
->> +    #include <dt-bindings/clock/rk3308-cru.h>
->> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
->> +    nfc: nand-controller@ff4b0000 {
->> +      compatible = "rockchip,rk3308_nfc";
->> +      reg = <0x0 0xff4b0000 0x0 0x4000>;
->> +      interrupts = <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>;
->> +      clocks = <&cru HCLK_NANDC>, <&cru SCLK_NANDC>;
->> +      clock-names = "ahb", "nfc";
->> +      assigned-clocks = <&clks SCLK_NANDC>;
->> +      assigned-clock-rates = <150000000>;
->> +
->> +      pinctrl-0 = <&flash_ale &flash_bus8 &flash_cle &flash_csn0
->> +                   &flash_rdn &flash_rdy &flash_wrn>;
->> +      pinctrl-names = "default";
->> +
->> +      #address-cells = <1>;
->> +      #size-cells = <0>;
->> +
->> +      nand@0 {
->> +        reg = <0>;
->> +        nand-bus-width = <8>;
->> +        nand-ecc-mode = "hw";
-
->> +        nand-ecc-strength = <16>;
->> +        nand-ecc-step-size = <1024>;
-
-sort
-
->> +        nand-is-boot-medium;
->> +        rockchip-boot-blks = <8>;
->> +        rockchip-boot-ecc-strength = <16>;
->> +      };
->> +    };
->> +
->> +...
->> -- 
->> 2.17.1
->> 
->> 
->>
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWlxdcOobCwKCk9uIDQvMjcvMjAgMTA6MDggUE0sIE1pcXVlbCBSYXluYWwgd3JvdGU6Clsu
+Li5dCj4+Pj4gYnR3IHdvdWxkIGl0IG1ha2Ugc2Vuc2UgdG8gc3BsaXQgdGhlIGZpcnN0IHRocmVl
+IHBhdGNoZXMgb2YgdGhpcyBzZXJpZXMKPj4+PiBpbnRvIGEgc2VwYXJhdGUgc2VyaWVzID8gVGhp
+cyByYXduYW5kIHBhcnQgc2VlbXMgbW9yZSBsaWtlIGFuIHVucmVsYXRlZAo+Pj4+IGNsZWFudXAu
+Cj4+PiBBcyBpdCBzZWVtcyB0aGF0IHRoZSBNRkQgZGlzY3Vzc2lvbiBjYW4gdGFrZSBsb25nZXIs
+IHRoZW4gSSB3b3VsZCBzYXkKPj4+IHllcywgYXQgbGVhc3QgZm9yIHRoZSBjbGVhbnVwL21pc2Mg
+Y2hhbmdlcyBwYXJ0Lgo+PiBSaWdodAo+PgoKSSB0aGluayB0aGF0IGl0IGlzIGJldHRlciB0byBv
+bmx5IGhhdmUgb25lIHNldCBvZiBwYXRjaGVzIGFzIHRoZXJlIGlzIApkaWZmZXJlbnQgbWFpbnRh
+aW5lcnMgdGhhdCB3aWxsIHJldmlldyB0aGUgd2hvbGUgc2V0IG9mIHBhdGNoZXMuCkkgZXhwZWN0
+IHRvIGJlIGFibGUgdG8gcHJvcG9zZSBhIHYzIG5leHQgd2VlayB0byBhZGQgdGhlIEVCSSBkcml2
+ZXIgYW5kIAp0aGUgdXBkYXRlcyBvbiBOQU5EIGRyaXZlciAoYXMgc29tZSBwYXRjaGVzIGFyZSBs
+aW5rZWQpCkEgcHJvcG9zYWwgY291bGQgYmUgdG8gcHV0IGFsbCB0aGUgTkFORCBwYXRjaGVzIHRo
+YXQgeW91IGhhdmUgc3RhcnRlZCB0byAKcmV2aWV3IGF0IHRoZSBiZWdpbm5pbmcgb2YgdGhlIHNl
+dCBvZiBwYXRjaGVzIChwYXRjaCA0LzUvNi83LzgpLgpZb3Ugd2lsbCBiZSBmcmVlIHRvIGFwcGx5
+IHRoZW0gYWZ0ZXIgdGhlIHJldmlldyBhbmQgSSB3aWxsIG9ubHkgcmVzdWJtaXQgCnRoZSBwYXRj
+aGVzIHRoYXQgaGF2ZSBub3QgYmVlbiBhcHBsaWVkIGluIHRoZSBuZXh0IHZlcnNpb24uCgpSZWdh
+cmRzLApDaHJpc3RvcGhlIEtlcmVsbG8uCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0
+Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
