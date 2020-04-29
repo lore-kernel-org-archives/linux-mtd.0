@@ -7,18 +7,18 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4836BC83003
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 06:48:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7FF6C83003
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 06:49:36 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1AA5B206D6
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 06:48:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7660B206D6
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 06:49:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Tcl2qcAu";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="ZZN2FTdA";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="iWPy6ybo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1AA5B206D6
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WhTREwCL";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="1rg0sR/A";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="assR+egw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7660B206D6
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,56 +27,56 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
 	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=DmTGW8wU8p0/7ev3C3ajZAqHJze0qjNePMjv9W6t9N4=; b=Tcl2qcAux99g8T
-	N1vffL0KVvoiTSNjb9gHYuX4fbexo1FLCKzq6e5hMf3Eo8usTGGD2ABpgVWZAiikeVffbACPOmI0F
-	hpI+lPg2l1yXh+/bR+jrf7JjEjdxTSsVAIKxGyT55Ayi3eM4SR8Tk75rxZwt16HO7UbA6IodYF7Od
-	CLvUwPy28jZl1GxoT3fS4+ZKRciz9lzrehvPrzSOtDiMXfPAKh6gKkCPAwr3Ui50YZ6G/nfeMCCxS
-	qBfkkoIjvNhOLxKkLb2i8qYW049uhBDBVT1+/eSyji3o7JH5MMDzZlx7WkehxRjYr0mjen+r2M1+Q
-	R5gXs9it1x9QDE1wD+OQ==;
+	List-Owner; bh=2qe2JUE9T6t+6eerEn2zLjFjalBvFpkI/ye7Vydl3/I=; b=WhTREwCLmsKRV1
+	qugWH6JpuBJlsM6sOLzxjnQh8EAt90e/LoGweUgh7uJTIe7l2fQsXk8RIEuyPSPQAOJShjvOaNPMc
+	HP/vt2+T0RgFmvj8mnfxOdlhTm+8hrOuF5TqtsgIlGPyDvH2G8WXPBev0NkKc4pa9ji60lNYdT26h
+	fLtoh+3tnFSIhmzRBNQqGk5siTfIBOQxV1UlG8PPi1QZoaBiXckiIFKLF0G9MoQUDbEslS6LDUNfP
+	KXfw9w7w1ohjHbNKeO7cvJJfCRQj8tNBi5omZKBjNvtmZxg7CmSDxxWz3OJRovG/GNr+OP+N661Zk
+	6w52meOgxFGpQ7r5UCuQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jTgW7-0007QE-De; Wed, 29 Apr 2020 06:48:23 +0000
-Received: from esa3.microchip.iphmx.com ([68.232.153.233])
+	id 1jTgX7-0007nS-Od; Wed, 29 Apr 2020 06:49:25 +0000
+Received: from esa2.microchip.iphmx.com ([68.232.149.84])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jTgW5-0007Pm-3T
- for linux-mtd@lists.infradead.org; Wed, 29 Apr 2020 06:48:22 +0000
+ id 1jTgX4-0007mb-4N
+ for linux-mtd@lists.infradead.org; Wed, 29 Apr 2020 06:49:23 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1588142901; x=1619678901;
+ t=1588142962; x=1619678962;
  h=from:to:cc:subject:date:message-id:references:
  in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=9EwwuObO3NuTLCJRWt/nQ9meQBQzlwX1uZH6VQTX634=;
- b=ZZN2FTdAxKVb4P/zj4gFhYVJcG0Wt3MCAeDoAuDf5usg0bNQw7oQPqHE
- Ijcg4szCdE/bV6pU55JHXDVV1TpeKEIdN6U+/678dV0PU83CtXpwkRiD6
- rfvCr8wTsZaRPZjeeYU5e/etywukama5++YQrdswF1HvnQC8ZsmvJKCrI
- rendmc93tLzbEbmdn5IcM8PhBBjiLNIhj1czjemugrfi26Pr98CGIdlPv
- vvfnoBRmdwJYiZiJkGSA+ESTenGFv3dvgGK0WKQPez6sjCAZVidd4TpTw
- /UVde5aMrtpZs6+AQNIsxnMbi1/kJZqKkDEPlAFV4/6IhUaz6Z5vY+DNQ Q==;
-IronPort-SDR: 65P4fenYF2oV1LneIuhBTK6RPmtGdDUpqFJ8+q2ldGNUWDURM5zp1VORkLx4+zCJqbPfr4XJXF
- Q3SRT+MxU1cOrfYDoAvaFH1kPupVOzTmwmWeBq5zkpkyFZnbNlPEKll39SQHowZl+v6RJXwktM
- sQQlNdBIPCmUGAz0+waWkauMgtEy0viaH7MwPlUPRRMUu6EWAg8TsDYbiilG/1/6zZsOkCMxtE
- 7TL8Jec9t6HGgUM9sCnOamlCb6zh6QIA4VIdNHCV3ZI0a6xaFFDa8wsv9RAlZs+QW8+hxaR5WJ
- EtU=
-X-IronPort-AV: E=Sophos;i="5.73,330,1583218800"; d="scan'208";a="74897272"
+ bh=hnKpW/ZlXNNlARixQ9G3gk8JjxDTPq2k4hir7QWfbkA=;
+ b=1rg0sR/AdehnMTY5oHVd+8qXyiKMf+mOvndDHZROnveYZvrEu/kzeVkO
+ Pxt6jBgCU+c9Yq0RVWz56Kd/+VqX8EUFl97NwGoGJqVKcKX4R/UQOy3nI
+ SYMGVcDIsESYzrS3Jth/X9oQwnmRrh4zXp29/aI8+hsmoFpzanoUZ2NUq
+ /165H2L08M24WxLWKmlLwpSCceqt/FotLjlmxsr7fVMw4uW+7x6NNx7h8
+ IQIy+4wZ+yFe1zOsVs/fCFsyrdmqHhKOxS01FhAi6zenNBw0ekDu4j/vO
+ 22DxyZQn+eHlsZCd1dVmyfyNQQxEoqB8h7okZfJLdcoIcte2Xn4Fw0kse w==;
+IronPort-SDR: y4bfobj24nmNedbHPX72qjjdRjtbb6WO6bi35tU/hjz9LMHT5JyBoiQuNNdKRNxQcnw31WRTgH
+ HCYT56QLRD4SV4EzQ0ZmOqsaaBy/3wEXS0fUiiwGayClH+HMXj5KnWZheZ9RgSJhNzBc5nKzVK
+ 9CFOD+6MPgEWJVmu653fEqGeaj5/e0kQy1bF/jhPgLxoNo1ZLwT/tLwyASM1PG2vrVGPYU0yid
+ b5dE2QowoBGA+y1joK/Q5nCnmOT4BWfPADEKiuDL6UuAojqshsb9bMAtGwItENKljdcIvdPyLG
+ Q3M=
+X-IronPort-AV: E=Sophos;i="5.73,330,1583218800"; d="scan'208";a="73653169"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
- by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 28 Apr 2020 23:48:20 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 28 Apr 2020 23:49:19 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 28 Apr 2020 23:48:19 -0700
+ 15.1.1713.5; Tue, 28 Apr 2020 23:49:18 -0700
 Received: from NAM12-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.152) with Microsoft SMTP Server
+ email.microchip.com (10.10.87.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Tue, 28 Apr 2020 23:48:20 -0700
+ via Frontend Transport; Tue, 28 Apr 2020 23:49:18 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Uho/fVVKTi7zTpneAcnEHTjHWFVbyvxxT3bAbgcwkz8HPYUDKw5kjwfFdXP9vHMnlVnNkqAsrD1hDLzBCGbdLLcJ4ztB0noN+MlCp/uW6bRSlkXZtGvdLmIA/ssyDBxgTaM526XLmczbWcNG4DB4GLZEyZu8pvo8Spvc7FMX01niPA2tajmK1y2Wm1jf+kfZmQDyE+xWfjIc+PNyCk/hteVXBnR57gDHZVPaGsy7CeFP659E3d6mu8aPR7ZcWmeD/ifOv2VosYQpHEd4wR3Z95rj2+k537L16v5M8opMu2DWTrIQWVS4xT/twP5QD/+4VjKtmFqTUu1zCXdXTn/5aQ==
+ b=hbkptR0O5DTXT6LKIArdniGPimBGhu2JVmpqEnVWkq44VWG4RAeINukUGq1k6yBFnwFzJ6/Gh0w/d7GmgqyxNkMANcP2svHAYzVP8mCVpPDzgUmgNUQr8dsHnbY2AYuJfWcvfpm6UzOUAaF0gYYfI/qi9UZISonTG0CTyyX+41lwk+0zoLOBKmtdKDAzIJJg6zV9UScSOcUUI3/Ewk3+LOCdkoddrWIp4CzKVXOj0piJIVa+NCgmhdoufvegCfwLqoHKEm5ZNOVnRDPYOjIxC7MIQclCqjywXymwkbf8tFQDmDYE3KMutgekb7kBfJJxfJ00k4SoyaEiRGfTTcInQg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9EwwuObO3NuTLCJRWt/nQ9meQBQzlwX1uZH6VQTX634=;
- b=ICsOmSjQvktLycL2ZOpxWvR+Sjzrx73Z92GEUx597x+u6TBxJOFvwvan/RGNNa6prwRGJ6cU6ZdrmuDJtoSbWmPbEnVhAdx2bkcP2O7sxfayFSLaAhQurhsaEZ6c9xznGXjrtgEZDOISr1GPtWbfMm4SBJ67ZVrNEUoc1l3Owi0b6UZqDw/Y0XD+u8bO4effqsmH04YVmuX/XRfoOmvQHvJrR0JqYZVzKVAZmUXhu5y0sljJd58LI/xKMdGjLcQVuVY2SbgLbQldVewjHcGgmU9/pWnqkEkf/SOBzctD+3RIMEndbnv3q1Zf0XuwuA6Zghj/t7q1GDMs88scWUfVpQ==
+ bh=hnKpW/ZlXNNlARixQ9G3gk8JjxDTPq2k4hir7QWfbkA=;
+ b=SkxpcRvYYCsLIRohjN2snk0/rnHGQ2YO0I/lWzRv76dioUHWPr3NC4uBGKE9RsZwyII+ydKQDA+wfR/nnd5gmcvuMFZK6VPr41JcboOv3LTw/m0Pl4AAkgrvTxfp18lXPUFzdwvLjwYemEbUz06GsheB0H2ZKYqntLvEKrS5xd8K0lIpqOYxj2Lfm1Ow0nzwjRb2OI0vAcaBV7ydDHdO0qmeGASa6tbGDMs1aBQnTgbO+wg2130LyEro/gHZJSdO7QeOcvIB4nZCXoQujB7OH31cs6hZuT0UvxeNOWH+GMa78Jqc6box+P+YUIvXPfGKUV8l1xMJdE/qFK5nqZZmwQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=microchip.com; dmarc=pass action=none
  header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
@@ -84,29 +84,30 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=microchiptechnology.onmicrosoft.com;
  s=selector2-microchiptechnology-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9EwwuObO3NuTLCJRWt/nQ9meQBQzlwX1uZH6VQTX634=;
- b=iWPy6ybomXLbAAz/pJ+TjnhS/fZN+LNkHq4ZHu6ji1KPGXQ/7o/VveSvJ/OPbePPbXuMW0U+PtZ3gdx5SpItPuEeCo49+ToFBJiUJkdbnQzXFnBv4qv0xC7mmdcDtk7DQsvn8oKH/vxnUEVkida3pVIxNHVX8KI9jHPOrU0LVEY=
+ bh=hnKpW/ZlXNNlARixQ9G3gk8JjxDTPq2k4hir7QWfbkA=;
+ b=assR+egwhr6DFHZ5xZ9DzQC+g0hZxBKS1fvbgasMiuzZVnYhGMa1qFH1gp5HcemnFiuDHsFUMdAWkN46Q4hULAL1vP3BIVnxd8UKmgWGXmTZQaCFCfEK8AbO+aTnw36apGY6Ki/iQIOS/gTf7psMU96SjlnGPM+FBryUNmgb5SQ=
 Received: from BY5PR11MB4419.namprd11.prod.outlook.com (2603:10b6:a03:1c8::13)
  by BY5PR11MB4289.namprd11.prod.outlook.com (2603:10b6:a03:1ce::23)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.22; Wed, 29 Apr
- 2020 06:48:19 +0000
+ 2020 06:49:17 +0000
 Received: from BY5PR11MB4419.namprd11.prod.outlook.com
  ([fe80::d847:5d58:5325:c536]) by BY5PR11MB4419.namprd11.prod.outlook.com
  ([fe80::d847:5d58:5325:c536%7]) with mapi id 15.20.2937.028; Wed, 29 Apr 2020
- 06:48:19 +0000
+ 06:49:17 +0000
 From: <Tudor.Ambarus@microchip.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH 1/2] mtd: spi-nor: Uniformize the return value in
- spi_nor_*_ready()
-Thread-Topic: [PATCH 1/2] mtd: spi-nor: Uniformize the return value in
- spi_nor_*_ready()
-Thread-Index: AQHWF6Z/y2HPIm6OI06flI5wCCnJXQ==
-Date: Wed, 29 Apr 2020 06:48:18 +0000
-Message-ID: <1596773.Crg54zjmCZ@192.168.0.120>
+Subject: Re: [PATCH 2/2] mtd: spi-nor: Fix description of the sr_ready()
+ return value
+Thread-Topic: [PATCH 2/2] mtd: spi-nor: Fix description of the sr_ready()
+ return value
+Thread-Index: AQHWF6Z/3awBVO2QcE269Zh7urPljA==
+Date: Wed, 29 Apr 2020 06:49:17 +0000
+Message-ID: <4172206.dUhbE6RG6t@192.168.0.120>
 References: <20200421063129.244466-1-tudor.ambarus@microchip.com>
- <38a730a2-2a16-6ed4-3203-31e1fbe8dd99@ti.com>
-In-Reply-To: <38a730a2-2a16-6ed4-3203-31e1fbe8dd99@ti.com>
+ <20200421063129.244466-2-tudor.ambarus@microchip.com>
+ <14162c9a-2189-024f-7af2-e072ea1511da@ti.com>
+In-Reply-To: <14162c9a-2189-024f-7af2-e072ea1511da@ti.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -116,11 +117,11 @@ authentication-results: lists.infradead.org; dkim=none (message not signed)
  header.from=microchip.com;
 x-originating-ip: [94.177.32.156]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: cfe67175-d65a-45cc-d8cf-08d7ec094d3b
+x-ms-office365-filtering-correlation-id: b6e6e240-5145-43f1-d1d1-08d7ec096fe7
 x-ms-traffictypediagnostic: BY5PR11MB4289:
-x-microsoft-antispam-prvs: <BY5PR11MB428954B7F2B73EF891054954F0AD0@BY5PR11MB4289.namprd11.prod.outlook.com>
+x-microsoft-antispam-prvs: <BY5PR11MB42890F35DD0D86113460D77EF0AD0@BY5PR11MB4289.namprd11.prod.outlook.com>
 x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:5236;
+x-ms-oob-tlc-oobclassifiers: OLM:1122;
 x-forefront-prvs: 03883BD916
 x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:BY5PR11MB4419.namprd11.prod.outlook.com; PTR:; CAT:NONE;
@@ -129,21 +130,21 @@ x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  DIR:OUT; SFP:1101; 
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: eiYltrrVMsuQHLdFspp7RsEoSgUZ8Px/O9nJu+h/TMcMX74/Wo7NEH+ZIR08vMXWb/aomnR1t862BhbXOU7bAIzoG5RBxXnLQ+mv9q0GwK/SvZPfJQ1Kd+4OfvLNV00ZLRBWnK6FsWFXADjLo1QJtOMZclvbOK991/dmrcO1u/UYTabji/gefzaHQwlUZCyZbGpgYpCL6wRqa1gTcZ6Rnhge0t90avSMCEt3pv0LsZAvUtdGCaCS3ongEPvwlCSTqtX2DnnxbiSIfgWH+PbbIVlW94UrLZ7xhrfZJ6vKel/7r4JTnhGJq2c/wTnNGknK38rcWnMyFKHL04WS/El5sfJWeeIMmQi1PmXnjMDx9zOw4RGrNFdTx5rsInfn4H6Wwt42r5Q8LWpeE3QJKbfYmM9zvMUpmVbdPCoQeI2oOIO0wgZRuZkKxCUl1LJM22JL/orQrbAO165hqtYQrWNt7S8nISurkmwJ1tTkO75ik7EM8ASxYcQ75B36X2ULBbyZ
-x-ms-exchange-antispam-messagedata: Zo77QTWmBnxUwJkZRAqz3ryYqNB8lYSQ1K18efTV+g7zN7UQLt/MmLvpi32WeV3QiZVzvX3936L+F6v7DMFga/50mkGtSQECJ5TP7l7QkNvxuoa9XyS6GiPnSjZCFAfme3t4fSNUln0Hhm1vnz8t9gWxEkggc2HBJcf2/47tmwtR2+YbOnU81sPguyllKegnB3dUKyXlFjDK9FU+O2BtupNEQ9Oqop/jVg/sYNPHfzYmLCrHOcPE+wlv2D02DJkLdxjB7fgTJJdX6Sa5th/IHUiWDcrP8Dcx92s7mVuPyN3ZtoPEC11ETgZ9NKKbMyMkU4PkcSyXksotVJvcYHskeDO1d83iQNqzs/jOQQoH3AEJcTfpTAGCmfGJfvIg0N8mLZ956i5CsYh06u5nxAKUk/BGDyLbrtUhqghukp6sglPBG7q2yJw3sQa6W2vGfqjcm0Do38AX5nZvYnoXjjZ+WoIx9HssbCZrIwE73mZhLnWbPOl32ZRCW+07lOZ5jkWzA+sWStX8PePtskPZIh6EKEBaHlXeCo+SgnbSF4548zDEdE5HWoLph33cBrHCBRqif5MIT0/5ekRQiI77mqjnUQYsPo93dB6Cz4TuURPkgTwrKdXl4hh4W3Ht0FxRdUr9wdZcGwFRThVhLv3O/79DQFbFe5XX3JSwt492/itbuFFrJOpFGIwzYI9yaksFXQbkSglzmxGWJmQUMsR3CZTXbzB8EzFhSaXUZZUNnRSh7qL4rgf4JLKk9RIw2njuS0JwZYjZBoyegpG38sjaY5yohjcPcIEiP5Uzlo4/gruPB1s=
+x-microsoft-antispam-message-info: MBc80AfmM/jH8MSGKA2KG/oCAE6JgtxG4beCMoZPmyCTPDkmlqoJzIj7UvPHDVsCdpSG+h0/uX8NuL/moD6hUBeaG/sqGaUvWFGo3sEaS3/k/LkAmVEBg8skMD2AQQovDNRAjh5EP14ln3i/8t4IKImweM3EiF2beFoCrhSDavCfAzK4NKlNcUWtc7y6d7xHXYFQJQHW+7z78qVoyWazT+NnG1OECtlWtEW+PftIMZWHV5mVTnCm3SC6n0Bz4yCuRrIv8mtliDUBXEe9CM90rsWFI8Ib1IyUIgy6Qfi+HWYulWpmGeDm8bXpAblYvPHfBd2KKq9AWM/yueQ680MhLDImkQXVCQS0v+KvHvzlzkmCjsmSG7tUg+NmRwRI+qi1p5D+C3Y6sAtYwwiESG+LFmWlf6uPKhxbfyMztry4116jb39hnXe8ipK6Dnm7C8hTp1hxbKC+KlzvwRcnAUAYCXU714xUPxTTDFQVLW5UIRMuhhBEPV1RxZ2gxH0YL41/
+x-ms-exchange-antispam-messagedata: wqYQxe49N8m4uKMMwmkQxh4otNUclWAmtPD7TmStz0aV46R4YcfotYj9/9zBtf9YacOwrXwfS+zP/I39fPNR1NshI6D+Tg8btGAPeYnKzPHy9jPi7v+mgQEskxE0BXDO0MkYlkBgdCRT3KqnxXCr2bKvEutBQj029tJ7LgD5X5mZ9wvoBT2Y/xQFWcBCMosxbDzdr6Ktw01H0h705IYeTN1wDvgs9TNI1FIFbJ0IRCeZxGuHSubbb6t56jfTA9osfPEo66hpW8Cb8NvMwqu9oqNrpxj8ZYE7yBwMx6ltVKGNw5iWr0O34Rhk1QiwDbc3oJjL+EI5jnGONEGWzQcZIuyQ+GvdfPWdeOV7s5qmhYHq9n6BA5vliTXRErj7p4tu/iwCpZWI5t/Jtipv85R1ESSVxgY26xpv6Fk+r2d/Xv+0zX0i19WFrU2cUGF2U1p4/KmLMVOLWxwS93wLqeFS7SWwaR64iXGSNRjjbfippTimlpw7bh+6Z6iFCtgWDpKAGiex9gRLY8OzAJdb2HrSoEsrrskwISeWhZIjUC7eZwR+l15lL4pJO/+IL264619gOg6VESKgjhTCMckVVmZl1Ky57EDHvr2YcR+MLenp7d+yJ7TMY8r0KnezkmnOt9H43qED0m8mc/8+Y4P4a9x49U1F/5o0ZAdftJhOLAVnIefI35V7zawuXIRAgq6/OiPjqUMSYcwq3eldY8taI1OA6QO5p+o5wZlFl/SSx86UooX60lGE7dshvVbpBui+infRy4jKe9BUF7LAPErcefk7t2AUuX0PJ3t/c03TwnO+NrU=
 x-ms-exchange-transport-forked: True
-Content-ID: <1D129C7869110244829A19CDD2594980@namprd11.prod.outlook.com>
+Content-ID: <DDD1935A9388D04A8937EDC261E81704@namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: cfe67175-d65a-45cc-d8cf-08d7ec094d3b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Apr 2020 06:48:18.8824 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: b6e6e240-5145-43f1-d1d1-08d7ec096fe7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Apr 2020 06:49:17.0569 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: zqOj74Ma+0LbHUEHSJJFO5Cjb4EKckNnIskWc3IlYPQ+JWrhUhLCQFqCKHi2oVoEaTAtRJxf6I+hu570DQeSTCl4JrC5wlFbfgOtfZhhVAM=
+X-MS-Exchange-CrossTenant-userprincipalname: hEJ3Di6lcB83z076gx1Ihp/+/AfApU2UXXE/BIBVmmJE4H/GzPNuz2FcSb9/TShzs0bNCrr6Ylj2N+4ymmzSw93REDcChcopecV+aU1+3So=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4289
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200428_234821_153446_95F13A77 
-X-CRM114-Status: UNSURE (   8.87  )
+X-CRM114-CacheID: sfid-20200428_234922_226324_81841473 
+X-CRM114-Status: UNSURE (   8.88  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -162,27 +163,21 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tuesday, April 28, 2020 3:06:19 PM EEST Vignesh Raghavendra wrote:
+On Tuesday, April 28, 2020 3:21:53 PM EEST Vignesh Raghavendra wrote:
+> On 21/04/20 12:01 pm, Tudor.Ambarus@microchip.com wrote:
 > > From: Tudor Ambarus <tudor.ambarus@microchip.com>
 > > 
-> > spi_nor_ready() returns 1 if ready, 0 if not ready and -errono on errors.
-> 
-> s/-errono/-errno
-> 
-> With that:
+> > The functions return 1 if ready, 0 if not ready, -errno on errors.
 > 
 > Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
-
-Fixed the typo and applied. Cheers.
-
 > 
-> > Do the same in all the spi_nor_*_ready() children.
-> > 
 > > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 > > ---
-> > drivers/mtd/spi-nor/core.c | 2 +-
+> > drivers/mtd/spi-nor/core.c | 8 ++++----
+> > 1 file changed, 4 insertions(+), 4 deletions(-)
 
-
+Applied. Cheers.
+ta
 
 
 ______________________________________________________
