@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80D83C83000
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 15:56:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9892C83000
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 15:57:06 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5356E20775
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 15:56:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 74AA820775
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 15:57:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Z8eMkQoj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5356E20775
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RQc1s/fN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 74AA820775
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TixrERtDF57KRei7kIh8y/AHKg38lpjgMAIphgk0+3E=; b=Z8eMkQojPhMs9x
-	KazLz9KZZmy1RIOxp3Etc0rcTeKvEX+iFD3oo2/71V2Fz93gvfeqZjkKTplsaEplo/KD+OuJN8Bzs
-	SVpPQyVrzNUuYmb30z9wt/PNnSNzrEKsrkQ0G+AFmuKczYHF+81WOmWWA2lxOyXKNFSUTHNneuWnX
-	mVZbBtaU5Ah6Pj1+D2Ljr/K9bLQuBGgY1fPGPqaKkDjBGb31kr5E+kI9/c3QgIV8ze1KvU1AaueC8
-	00W8yG5UVAw+kMytE2PU6cXARCBxo8q8M6s08sVdwCQcev1E80LZpkhv8FqOjwZ72zzWXsz5tRHGt
-	+OWIpuSHcCsy1lc6kPsQ==;
+	List-Owner; bh=vnYXDkirCEDGAZmE5MtIIHxgCn3nCKXQ9GRjJWlFiks=; b=RQc1s/fNe0PSyF
+	2q5rlWE9GQxMDdDQf5XJjM0sXa9FZN56qWNeQJWukPCD3FLyUHJeI/kyruZtdfV1qZ7IG/GsL7r3y
+	zbmF/v+K4HR/Xwa6gFzgyj7d8KU/JGK7zrOcXK/auyvcta+NxjLK8rq0xKjkakKHfqqT0EFBQ6/QT
+	XTMIX2x3zMAoZrJfe5z4FTRx5UrCbNUyll3x1+ImSWqYoJeFvfFYNO8/nkZwsUNq6jl+EXmmP/Ioh
+	hHTVqNJpNxcKeckL35HwoSarqS5KFuSrBRDn480RcA5q5khxwoCj9cbByXDhpzDA4ihP0x1kyLO+c
+	/KUqfsENWdAbYfWCAwYQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jTp4i-0004gJ-QV; Wed, 29 Apr 2020 15:56:40 +0000
+	id 1jTp4x-0004v5-C3; Wed, 29 Apr 2020 15:56:55 +0000
 Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jTp3w-0003vC-8b
+ id 1jTp3w-0003vj-VE
  for linux-mtd@lists.infradead.org; Wed, 29 Apr 2020 15:55:54 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 92BBB20014;
- Wed, 29 Apr 2020 15:55:48 +0000 (UTC)
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id A9DCA20016;
+ Wed, 29 Apr 2020 15:55:50 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 04/11] mtd: rawnand: Fix comments about the use of bufpoi
-Date: Wed, 29 Apr 2020 17:55:33 +0200
-Message-Id: <20200429155540.22048-5-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 06/11] mtd: rawnand: Avoid indirect access to ->data_buf()
+Date: Wed, 29 Apr 2020 17:55:35 +0200
+Message-Id: <20200429155540.22048-7-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200429155540.22048-1-miquel.raynal@bootlin.com>
 References: <20200429155540.22048-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200429_085552_431159_6F8FA458 
-X-CRM114-Status: GOOD (  11.45  )
+X-CRM114-CacheID: sfid-20200429_085553_155111_8424AC7E 
+X-CRM114-Status: GOOD (  12.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,43 +78,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Clarify these comments which are not very accurate (even wrong in the
-read case).
+The logic in nand_do_read_ops() is to use a bufpoi variable, either
+set to the original buffer, or set to a bounce buffer which in the end
+happens to be chip->data_buf depending on the value of the
+use_bounce_buf boolean. This is not a reason to call chip->data_buf
+directly when we know that we are using the bounce buffer. Let's use
+bufpoi instead to be consistent.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 ---
- drivers/mtd/nand/raw/nand_base.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/raw/nand_base.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index db2745cf4f15..4d8a4a20df63 100644
+index 0e2dd4c1b44c..15a9189b2307 100644
 --- a/drivers/mtd/nand/raw/nand_base.c
 +++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -3229,7 +3229,10 @@ static int nand_do_read_ops(struct nand_chip *chip, loff_t from,
- 				break;
+@@ -3243,7 +3243,7 @@ static int nand_do_read_ops(struct nand_chip *chip, loff_t from,
+ 					/* Invalidate page cache */
+ 					chip->pagecache.page = -1;
+ 				}
+-				memcpy(buf, chip->data_buf + col, bytes);
++				memcpy(buf, bufpoi + col, bytes);
  			}
  
--			/* Transfer not aligned data */
-+			/*
-+			 * Copy back the data in the initial buffer when reading
-+			 * partial pages or when a bounce buffer is required.
-+			 */
- 			if (use_bufpoi) {
- 				if (!NAND_HAS_SUBPAGE_READ(chip) && !oob &&
- 				    !(mtd->ecc_stats.failed - ecc_failures) &&
-@@ -4024,7 +4027,10 @@ static int nand_do_write_ops(struct nand_chip *chip, loff_t to,
- 		else
- 			use_bufpoi = 0;
- 
--		/* Partial page write?, or need to use bounce buffer */
-+		/*
-+		 * Copy the data from the initial buffer when doing partial page
-+		 * writes or when a bounce buffer is required.
-+		 */
- 		if (use_bufpoi) {
- 			pr_debug("%s: using write bounce buffer for buf@%p\n",
- 					 __func__, buf);
+ 			if (unlikely(oob)) {
 -- 
 2.20.1
 
