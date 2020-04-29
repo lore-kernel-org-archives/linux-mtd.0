@@ -2,63 +2,58 @@ Return-Path: <SRS0=TDhY=6N=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CEFB5C83004
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 15:35:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DA6AC83000
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 15:56:10 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9DB30206F0
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 15:35:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E4BB220775
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 15:56:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="SBgHi7zt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9DB30206F0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HDKDnpIG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E4BB220775
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=b7GGKZJgR7dbpSpBRFc2Uby60bi+8DgLa5i634SrQ/M=; b=SBgHi7ztV1eMDa
-	KOUCadzjFNWkv/W4G6i+2q4b/lThYYqtCQJcDWWKWxJkcBCvAXCCRpmyb8i/aFoyT/4SQiZu0O8Th
-	rxWPfbSCKT6RFz97fMQMr6r9KQav3/A5P7wRqwZqOOI56FQWK/V9h7lk72sSPP2zPGOTVpTGkgV/M
-	ZnYiM9sleZ4ZoxivHjBwketJVhZ1XLSdlTflixJZhZs9o4xKn9OG5hLgL/M6qPvoq64tfYiTaehL1
-	fbNHVhWg8tNbCjlM0iErgMuJ7qGj2h4VDuj9hvT5/uP/vYjQImB3DqvRgF2hMc83PSCGrdq/obXd7
-	jOMB4HxNbE13NMGin6Zg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=kg/sIS6H0fgifFK6v9cqTWCBal6bHBOAWF1MNpVEOso=; b=HDKDnpIGEyuUeW
+	58I5LGDDcjACj7R8am2UV2efIyt2ESXznRKWjdYopoV3yhw7XZsT+llnIfBYp7gbtMIwVAbg7tMJ5
+	b5dUaETWvWMORauJUhvB4fQppvbpNjLcn2IL0KgVBQQfeUYC0+iv2chr43b6XG7AhSt+tBpy3P3p6
+	hWUt8eqWY8GdqNm+GJl1OJ+M2tOm7jaARWzAWNDub33hnVaQMGxRxBlhSyRBzYuECgDwYakmKKlDF
+	Hnu2s5YNFYncbf8xOpWfTjIMg4v2a1Am6vpnfpVVhcmlwH51ZeGrKHtlVuUIacMo3+1Dxqpd1ftrp
+	RQiYSJ5/sAwHoEAGDJfw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jTojf-00035r-2L; Wed, 29 Apr 2020 15:34:55 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1jTp3x-0003wl-VO; Wed, 29 Apr 2020 15:55:53 +0000
+Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jTojb-00034d-P6
- for linux-mtd@lists.infradead.org; Wed, 29 Apr 2020 15:34:53 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id BE9912A03C9;
- Wed, 29 Apr 2020 16:34:48 +0100 (BST)
-Date: Wed, 29 Apr 2020 17:34:46 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: "Ramuthevar,Vadivel MuruganX" <vadivel.muruganx.ramuthevar@linux.intel.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: mtd: Add YAML for Nand Flash
- Controller support
-Message-ID: <20200429173446.6682dfb8@collabora.com>
-In-Reply-To: <20200429104205.18780-2-vadivel.muruganx.ramuthevar@linux.intel.com>
-References: <20200429104205.18780-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200429104205.18780-2-vadivel.muruganx.ramuthevar@linux.intel.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1jTp3v-0003ue-8l
+ for linux-mtd@lists.infradead.org; Wed, 29 Apr 2020 15:55:52 +0000
+X-Originating-IP: 91.224.148.103
+Received: from localhost.localdomain (unknown [91.224.148.103])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id AAD5020005;
+ Wed, 29 Apr 2020 15:55:41 +0000 (UTC)
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ <linux-mtd@lists.infradead.org>
+Subject: [PATCH v2 00/11] Supporting restricted NAND controllers
+Date: Wed, 29 Apr 2020 17:55:29 +0200
+Message-Id: <20200429155540.22048-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200429_083451_952529_768AB2D8 
-X-CRM114-Status: GOOD (  14.00  )
+X-CRM114-CacheID: sfid-20200429_085551_444931_374ACA74 
+X-CRM114-Status: GOOD (  10.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,103 +65,64 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: cheol.yong.kim@intel.com, devicetree@vger.kernel.org, qi-ming.wu@intel.com,
- anders.roxell@linaro.org, vigneshr@ti.com, arnd@arndb.de,
- hauke.mehrtens@intel.com, richard@nod.at, brendanhiggins@google.com,
- linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com, tglx@linutronix.de,
- masonccyang@mxic.com.tw, andriy.shevchenko@intel.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Michal Simek <monstr@monstr.eu>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Naga Sureshkumar Relli <nagasure@xilinx.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 29 Apr 2020 18:42:04 +0800
-"Ramuthevar,Vadivel MuruganX"
-<vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
-
-> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> 
-> Add YAML file for dt-bindings to support NAND Flash Controller
-> on Intel's Lightning Mountain SoC.
-> 
-> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> ---
->  .../devicetree/bindings/mtd/intel,lgm-nand.yaml    | 61 ++++++++++++++++++++++
->  1 file changed, 61 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml b/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
-> new file mode 100644
-> index 000000000000..6dd899d367b4
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
-> @@ -0,0 +1,61 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/intel,lgm-nand.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Intel LGM SoC NAND Controller Device Tree Bindings
-> +
-> +allOf:
-> +  - $ref: "nand-controller.yaml"
-> +
-> +maintainers:
-> +  - Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: intel,lgm-nand-controller
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  dmas:
-> +    maxItems: 2
-> +
-> +  dma-names:
-> +    enum:
-> +      - rx
-> +      - tx
-> +
-> +  pinctrl-names: true
-> +
-> +patternProperties:
-> +  "^pinctrl-[0-9]+$": true
-> +
-> +  "^nand@[a-f0-9]+$":
-> +    type: object
-> +    properties:
-> +      reg:
-> +        minimum: 0
-> +        maximum: 7
-> +
-> +      nand-ecc-mode: true
-> +
-> +      nand-ecc-algo:
-> +        const: hw
-> +
-> +    additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - dmas
-> +
-> +additionalProperties: false
-> +
-> +...
-
-Can you provide an example? I'd like to make sure the binding looks
-good.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgpUaGUgZmlyc3QgNiBwYXRjaGVzIGFyZSBqdXN0IG1pc2NlbGxhbmVvdXMgY2hhbmdl
+cywgdGhhdCBkbyBub3QgYnJpbmcKZnVuY3Rpb25hbCBjaGFuZ2VzIGJ1dCBjbGFyaWZ5IGEgZmV3
+IGNvcmUgYXJlYXMuCgpQYXRjaGVzIDcgYW5kIDggY2hhbmdlIHRoZSBOQU5EIG9wZXJhdGlvbiB1
+c2VkIHRvIHJlYWQgT05GSS9KRURFQwpwYXJhbWV0ZXIgcGFnZXMuIEkgZXhwZWN0IGFsbCBjb250
+cm9sbGVycyB0byBzdXBwb3J0IGl0LgoKUGF0Y2ggOSBhZGQgbmV3IG5hbmRfbW9ub2xpdGhpY19y
+ZWFkL3dyaXRlX3BhZ2VfcmF3KCkgaGVscGVycywgdGhhdApjb3VsZCBiZSB1c2VkIGJ5IGRyaXZl
+cnMgd2hpY2ggYXJlICJjb25zdHJhaW5lZCIuCgpGaW5hbGx5LCBwYXRjaGVzIDEwIGFuZCAxMSBz
+b2Z0ZW4gdGhlIHJ1bGVzIHNvIHRoYXQgdGhlIGhvb2tzIGxpbmtlZAp0byB0aGUgYWJvdmUgaGVs
+cGVycyBhcmUgbm90IG92ZXJ3cml0dGVuIGJ5IHRoZSBjb3JlIG9yIE5BTkQgY2hpcApkcml2ZXJz
+LgoKVGhpcyBzZXJpZXMgaXMgbmVlZGVkIGluIG9yZGVyIHRvIHN1cHBvcnQgY29udHJvbGxlcnMg
+bGlrZSBBcmFzYW4ncy4KClRoYW5rcywKTWlxdcOobAoKQ2hhbmdlcyBpbiB2MjoKKiBGaXhlZCB0
+aGUgdHdvIHdyb25nIGNvbnZlcnNpb25zIG9mIGZsYWcgdmFsdWVzIGZyb20gOC1iaXQgZGlnaXRz
+CiAgaW50byBCSVQoKSBtYWNyb3MuCiogRHJvcHBlZCAiSGVscCBzdXBwb3J0aW5nIGNvbnRyb2xs
+ZXJzIHRoYXQgYXJlIG5vdCBhYmxlIHRvIHNwbGl0CiAgb3BlcmF0aW9ucyIuIEluc3RlYWQsIGRl
+Y2lkZWQgb24gdGhlIGZseSBmb3IgdGhlIHJlYWRfcGFyYW1fcGFnZSgpCiAgdXNlcyAoT05GSSBh
+bmQgSkVERUMgZGlzY292ZXJ5KSBhbmQgd3JvdGUgc2VwYXJhdGUgaGVscGVycyBmb3IKICByZWFk
+L3dyaXRlX3BhZ2VfcmF3KCkgKHRoZSBBcmFzYW4gZHJpdmVyIHdpbGwgdXNlIHRoZW0pLgoqIFBy
+ZXZlbnQgdGhlIGNvcmUgYW5kIE5BTkQgY2hpcCBkcml2ZXJzIHRvIG92ZXJsb2FkIHRoZQogIGVj
+Yy0+cmVhZC93cml0ZV9wYWdlX3JhdygpIGhvb2tzLgoqIEFkZGVkIFJldmlld2VkLWJ5IHRhZ3Mu
+CgpNaXF1ZWwgUmF5bmFsICgxMSk6CiAgbXRkOiByYXduYW5kOiBUcmFuc2xhdGUgb2JzY3VyZSBi
+aXRmaWVsZHMgaW50byByZWFkYWJsZSBtYWNyb3MKICBtdGQ6IHJhd25hbmQ6IFJlb3JkZXIgdGhl
+IG5hbmRfY2hpcC0+b3B0aW9ucyBmbGFncwogIG10ZDogcmF3bmFuZDogUmVuYW1lIGEgTkFORCBj
+aGlwIG9wdGlvbgogIG10ZDogcmF3bmFuZDogRml4IGNvbW1lbnRzIGFib3V0IHRoZSB1c2Ugb2Yg
+YnVmcG9pCiAgbXRkOiByYXduYW5kOiBSZW5hbWUgdGhlIHVzZV9idWZwb2kgdmFyaWFibGVzCiAg
+bXRkOiByYXduYW5kOiBBdm9pZCBpbmRpcmVjdCBhY2Nlc3MgdG8gLT5kYXRhX2J1ZigpCiAgbXRk
+OiByYXduYW5kOiBvbmZpOiBBZGFwdCB0aGUgcGFyYW1ldGVyIHBhZ2UgcmVhZCB0byBjb25zdHJh
+aW50CiAgICBjb250cm9sbGVycwogIG10ZDogcmF3bmFuZDogamVkZWM6IEFkYXB0IHRoZSBwYXJh
+bWV0ZXIgcGFnZSByZWFkIHRvIGNvbnN0cmFpbnQKICAgIGNvbnRyb2xsZXJzCiAgbXRkOiByYXdu
+YW5kOiBFeHBvc2UgbW9ub2xpdGhpYyByZWFkL3dyaXRlX3BhZ2VfcmF3KCkgaGVscGVycwogIG10
+ZDogcmF3bmFuZDogQWxsb3cgY29udHJvbGxlcnMgdG8gb3ZlcmxvYWQgc29mdCBFQ0MgaG9va3MK
+ICBtdGQ6IHJhd25hbmQ6IG1pY3JvbjogQWxsb3cgY29udHJvbGxlcnMgdG8gb3ZlcmxvYWQgcmF3
+IGFjY2Vzc29ycwoKIGRyaXZlcnMvbXRkL25hbmQvcmF3L2F0bWVsL25hbmQtY29udHJvbGxlci5j
+IHwgICAyICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9icmNtbmFuZC9icmNtbmFuZC5jICAgICB8
+ICAgMiArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvZGVuYWxpLmMgICAgICAgICAgICAgICAgfCAg
+IDIgKy0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L21lc29uX25hbmQuYyAgICAgICAgICAgIHwgICAy
+ICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9tdGtfbmFuZC5jICAgICAgICAgICAgICB8ICAgMiAr
+LQogZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9iYXNlLmMgICAgICAgICAgICAgfCAxMjIgKysr
+KysrKysrKysrKysrLS0tLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9qZWRlYy5jICAgICAg
+ICAgICAgfCAgMjggKysrLS0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfbWljcm9uLmMgICAg
+ICAgICAgIHwgICA2ICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX29uZmkuYyAgICAgICAg
+ICAgICB8ICAxNCArLS0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L3Fjb21fbmFuZGMuYyAgICAgICAg
+ICAgIHwgICAyICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9zdG0zMl9mbWMyX25hbmQuYyAgICAg
+ICB8ICAgMiArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvc3VueGlfbmFuZC5jICAgICAgICAgICAg
+fCAgIDIgKy0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L3RhbmdvX25hbmQuYyAgICAgICAgICAgIHwg
+ICAyICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy90ZWdyYV9uYW5kLmMgICAgICAgICAgICB8ICAg
+MiArLQogaW5jbHVkZS9saW51eC9tdGQvcmF3bmFuZC5oICAgICAgICAgICAgICAgICAgfCAgOTcg
+KysrKysrKystLS0tLS0tCiAxNSBmaWxlcyBjaGFuZ2VkLCAxODQgaW5zZXJ0aW9ucygrKSwgMTAz
+IGRlbGV0aW9ucygtKQoKLS0gCjIuMjAuMQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxp
+c3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQv
+Cg==
