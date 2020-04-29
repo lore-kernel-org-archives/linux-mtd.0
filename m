@@ -2,61 +2,59 @@ Return-Path: <SRS0=TDhY=6N=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54CFFC83000
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 22:33:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE79BC83000
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 22:33:59 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 22C542076B
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 22:33:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8DAE42076B
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 22:33:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Mg5VJMXG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 22C542076B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mCw0UtM7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8DAE42076B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5fllgHaFJBzKg3iYV0EUorx49v/2EiDALpKoipt+25k=; b=Mg5VJMXGqs8y5b
-	9on2FLHiDdkRom3uc4w1PoNYey29fFgrgZNqxLzk2kkPARhZ4tnkzmYNM4Ao/DDy7Lr0Hd2iPXJwq
-	zL6j9MIuKw7E6XGtAjj1vwzAIdCnNmTyIe4BSdqlwiFEREyOyyh+GQWpnlLnB3Co9C+FeoomKX94U
-	twxi8kvMXVnIuKORrdStKqLph9zVIwCbzaVGw5XDXjdnVEXZb5/Vmb0Llkjo524aChsbYyr/S2SW9
-	ZiIsibtDLWAIeJFXhYI2iqWtP2cfloPILT1wez5qW6vnav8GztbL/llydefBhtLqDBHixSRauTyQn
-	u4pf5jj8Zc/2+Qo0fArg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=zYlyfsGbQoW87xFTV+09ztb1/yBcG9Tijz+aauvPRDA=; b=mCw0UtM7fjRuU9
+	LWw0r8QJx4OrvPszmJ1F+UDOHluT73CwcdEl9xaEDljBs9zHJyADiFLswGfwPSHsilGBdPMVAltlP
+	IHItn1voVTNSmGMFJUh79OtC1gtbQnFdAI/81KQBt2FmiNsbjfWNpf7bjuF9YxAM4TJvgNLa7L66T
+	8SU4Lbjrzjp8YoW8MIcfqjnokfydkoaGO3HLEKNHOq19CzlLFodkaalNV+70c8bA6WK0wZK2sXD/i
+	A0Un1aT1ybxkBmZWIc2JedOTMhIgzHRfsA4fHs2jccAquD/Kcev+V+8UscUiaRhYFLtVtkPaVgAPA
+	ZJGTQOR0A1O60e7u2U5Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jTvGr-0005vd-QH; Wed, 29 Apr 2020 22:33:37 +0000
+	id 1jTvH4-0006BV-Uk; Wed, 29 Apr 2020 22:33:50 +0000
 Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jTvFL-0004Tj-Ov; Wed, 29 Apr 2020 22:32:06 +0000
+ id 1jTvFL-0004Tb-Ot; Wed, 29 Apr 2020 22:32:06 +0000
 Received: from localhost.localdomain (unknown
  [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id BA2412A1755;
- Wed, 29 Apr 2020 23:31:59 +0100 (BST)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id A4B5F2A1735;
+ Wed, 29 Apr 2020 23:31:58 +0100 (BST)
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  Robert Jarzmik <robert.jarzmik@free.fr>,
  Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 3/3] mtd: rawnand: Remove the cmx270 NAND controller driver
-Date: Thu, 30 Apr 2020 00:31:34 +0200
-Message-Id: <20200429223134.789322-4-boris.brezillon@collabora.com>
+Subject: [PATCH 0/3] mtd: rawnand: Get rid of the cmx270 driver
+Date: Thu, 30 Apr 2020 00:31:31 +0200
+Message-Id: <20200429223134.789322-1-boris.brezillon@collabora.com>
 X-Mailer: git-send-email 2.25.3
-In-Reply-To: <20200429223134.789322-1-boris.brezillon@collabora.com>
-References: <20200429223134.789322-1-boris.brezillon@collabora.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200429_153204_073974_833A0983 
-X-CRM114-Status: GOOD (  20.70  )
+X-CRM114-CacheID: sfid-20200429_153203_944458_CDA86974 
+X-CRM114-Status: GOOD (  12.61  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,132 +71,44 @@ Cc: Vignesh Raghavendra <vigneshr@ti.com>, Arnd Bergmann <arnd@arndb.de>,
  Richard Weinberger <richard@nod.at>,
  Boris Brezillon <boris.brezillon@collabora.com>,
  Mike Rapoport <mike@compulab.co.il>, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-VGhlIENNLVgyNzAgTkFORCBpcyBub3cgaGFuZGxlZCB0aHJvdWdoIHRoZSBnZW5fbmFuZCBkcml2
-ZXIsIGFzIGRvbmUKZm9yIHRoZSBFTS1YMjcwIHBsYXRmb3JtLgoKU2lnbmVkLW9mZi1ieTogQm9y
-aXMgQnJlemlsbG9uIDxib3Jpcy5icmV6aWxsb25AY29sbGFib3JhLmNvbT4KLS0tCiBkcml2ZXJz
-L210ZC9uYW5kL3Jhdy9LY29uZmlnICAgICAgIHwgICA0IC0KIGRyaXZlcnMvbXRkL25hbmQvcmF3
-L01ha2VmaWxlICAgICAgfCAgIDEgLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvY214MjcwX25hbmQu
-YyB8IDIzNiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogMyBmaWxlcyBjaGFuZ2VkLCAy
-NDEgZGVsZXRpb25zKC0pCiBkZWxldGUgbW9kZSAxMDA2NDQgZHJpdmVycy9tdGQvbmFuZC9yYXcv
-Y214MjcwX25hbmQuYwoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L0tjb25maWcg
-Yi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9LY29uZmlnCmluZGV4IDFmOGFhMzUzZjc2NC4uNTMzNmZl
-ZGMxZDY0IDEwMDY0NAotLS0gYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9LY29uZmlnCisrKyBiL2Ry
-aXZlcnMvbXRkL25hbmQvcmF3L0tjb25maWcKQEAgLTIxMywxMCArMjEzLDYgQEAgY29uZmlnIE1U
-RF9OQU5EX01MQ19MUEMzMlhYCiAJICBQbGVhc2UgY2hlY2sgdGhlIGFjdHVhbCBOQU5EIGNoaXAg
-Y29ubmVjdGVkIGFuZCBpdHMgc3VwcG9ydAogCSAgYnkgdGhlIE1MQyBOQU5EIGNvbnRyb2xsZXIu
-CiAKLWNvbmZpZyBNVERfTkFORF9DTV9YMjcwCi0JdHJpc3RhdGUgIkNNLVgyNzAgbW9kdWxlcyBO
-QU5EIGNvbnRyb2xsZXIiCi0JZGVwZW5kcyBvbiBNQUNIX0FSTUNPUkUKLQogY29uZmlnIE1URF9O
-QU5EX1BBU0VNSQogCXRyaXN0YXRlICJQQSBTZW1pIFBXUmZpY2llbnQgTkFORCBjb250cm9sbGVy
-IgogCWRlcGVuZHMgb24gUFBDX1BBU0VNSQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9y
-YXcvTWFrZWZpbGUgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9NYWtlZmlsZQppbmRleCA4NTQxMDcz
-NjU3NzQuLjBhODkzNzg2YTdhMiAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvTWFr
-ZWZpbGUKKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvTWFrZWZpbGUKQEAgLTI1LDcgKzI1LDYg
-QEAgb2JqLSQoQ09ORklHX01URF9OQU5EX0dQSU8pCQkrPSBncGlvLm8KIG9tYXAyX25hbmQtb2Jq
-cyA6PSBvbWFwMi5vCiBvYmotJChDT05GSUdfTVREX05BTkRfT01BUDIpIAkJKz0gb21hcDJfbmFu
-ZC5vCiBvYmotJChDT05GSUdfTVREX05BTkRfT01BUF9CQ0hfQlVJTEQpCSs9IG9tYXBfZWxtLm8K
-LW9iai0kKENPTkZJR19NVERfTkFORF9DTV9YMjcwKQkJKz0gY214MjcwX25hbmQubwogb2JqLSQo
-Q09ORklHX01URF9OQU5EX01BUlZFTEwpCQkrPSBtYXJ2ZWxsX25hbmQubwogb2JqLSQoQ09ORklH
-X01URF9OQU5EX1RNSU8pCQkrPSB0bWlvX25hbmQubwogb2JqLSQoQ09ORklHX01URF9OQU5EX1BM
-QVRGT1JNKQkJKz0gcGxhdF9uYW5kLm8KZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3
-L2NteDI3MF9uYW5kLmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9jbXgyNzBfbmFuZC5jCmRlbGV0
-ZWQgZmlsZSBtb2RlIDEwMDY0NAppbmRleCAwNDViNjE3NWFlNzkuLjAwMDAwMDAwMDAwMAotLS0g
-YS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9jbXgyNzBfbmFuZC5jCisrKyAvZGV2L251bGwKQEAgLTEs
-MjM2ICswLDAgQEAKLS8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wLW9ubHkKLS8q
-Ci0gKiAgQ29weXJpZ2h0IChDKSAyMDA2IENvbXB1bGFiLCBMdGQuCi0gKiAgTWlrZSBSYXBvcG9y
-dCA8bWlrZUBjb21wdWxhYi5jby5pbD4KLSAqCi0gKiAgRGVyaXZlZCBmcm9tIGRyaXZlcnMvbXRk
-L25hbmQvaDE5MTAuYyAocmVtb3ZlZCBpbiB2My4xMCkKLSAqICAgICAgIENvcHlyaWdodCAoQykg
-MjAwMiBNYXJpdXMgR3LDtmdlciAobWFnQHN5c2dvLmRlKQotICogICAgICAgQ29weXJpZ2h0IChj
-KSAyMDAxIFRob21hcyBHbGVpeG5lciAoZ2xlaXhuZXJAYXV0cm9uaXguZGUpCi0gKgotICogIE92
-ZXJ2aWV3OgotICogICBUaGlzIGlzIGEgZGV2aWNlIGRyaXZlciBmb3IgdGhlIE5BTkQgZmxhc2gg
-ZGV2aWNlIGZvdW5kIG9uIHRoZQotICogICBDTS1YMjcwIGJvYXJkLgotICovCi0KLSNpbmNsdWRl
-IDxsaW51eC9tdGQvcmF3bmFuZC5oPgotI2luY2x1ZGUgPGxpbnV4L210ZC9wYXJ0aXRpb25zLmg+
-Ci0jaW5jbHVkZSA8bGludXgvc2xhYi5oPgotI2luY2x1ZGUgPGxpbnV4L2dwaW8uaD4KLSNpbmNs
-dWRlIDxsaW51eC9tb2R1bGUuaD4KLQotI2luY2x1ZGUgPGFzbS9pby5oPgotI2luY2x1ZGUgPGFz
-bS9pcnEuaD4KLSNpbmNsdWRlIDxhc20vbWFjaC10eXBlcy5oPgotCi0jaW5jbHVkZSA8bWFjaC9w
-eGEyeHgtcmVncy5oPgotCi0jZGVmaW5lIEdQSU9fTkFORF9DUwkoMTEpCi0jZGVmaW5lIEdQSU9f
-TkFORF9SQgkoODkpCi0KLS8qIE1URCBzdHJ1Y3R1cmUgZm9yIENNLVgyNzAgYm9hcmQgKi8KLXN0
-YXRpYyBzdHJ1Y3QgbXRkX2luZm8gKmNteDI3MF9uYW5kX210ZDsKLQotLyogcmVtYXBlZCBJTyBh
-ZGRyZXNzIG9mIHRoZSBkZXZpY2UgKi8KLXN0YXRpYyB2b2lkIF9faW9tZW0gKmNteDI3MF9uYW5k
-X2lvOwotCi0vKgotICogRGVmaW5lIHN0YXRpYyBwYXJ0aXRpb25zIGZvciBmbGFzaCBkZXZpY2UK
-LSAqLwotc3RhdGljIGNvbnN0IHN0cnVjdCBtdGRfcGFydGl0aW9uIHBhcnRpdGlvbl9pbmZvW10g
-PSB7Ci0JWzBdID0gewotCQkubmFtZQk9ICJjbXgyNzAtMCIsCi0JCS5vZmZzZXQJPSAwLAotCQku
-c2l6ZQk9IE1URFBBUlRfU0laX0ZVTEwKLQl9Ci19OwotI2RlZmluZSBOVU1fUEFSVElUSU9OUyAo
-QVJSQVlfU0laRShwYXJ0aXRpb25faW5mbykpCi0KLXN0YXRpYyB1X2NoYXIgY214MjcwX3JlYWRf
-Ynl0ZShzdHJ1Y3QgbmFuZF9jaGlwICp0aGlzKQotewotCXJldHVybiAocmVhZGwodGhpcy0+bGVn
-YWN5LklPX0FERFJfUikgPj4gMTYpOwotfQotCi1zdGF0aWMgdm9pZCBjbXgyNzBfd3JpdGVfYnVm
-KHN0cnVjdCBuYW5kX2NoaXAgKnRoaXMsIGNvbnN0IHVfY2hhciAqYnVmLAotCQkJICAgICBpbnQg
-bGVuKQotewotCWludCBpOwotCi0JZm9yIChpPTA7IGk8bGVuOyBpKyspCi0JCXdyaXRlbCgoKmJ1
-ZisrIDw8IDE2KSwgdGhpcy0+bGVnYWN5LklPX0FERFJfVyk7Ci19Ci0KLXN0YXRpYyB2b2lkIGNt
-eDI3MF9yZWFkX2J1ZihzdHJ1Y3QgbmFuZF9jaGlwICp0aGlzLCB1X2NoYXIgKmJ1ZiwgaW50IGxl
-bikKLXsKLQlpbnQgaTsKLQotCWZvciAoaT0wOyBpPGxlbjsgaSsrKQotCQkqYnVmKysgPSByZWFk
-bCh0aGlzLT5sZWdhY3kuSU9fQUREUl9SKSA+PiAxNjsKLX0KLQotc3RhdGljIGlubGluZSB2b2lk
-IG5hbmRfY3Nfb24odm9pZCkKLXsKLQlncGlvX3NldF92YWx1ZShHUElPX05BTkRfQ1MsIDApOwot
-fQotCi1zdGF0aWMgdm9pZCBuYW5kX2NzX29mZih2b2lkKQotewotCWRzYigpOwotCi0JZ3Bpb19z
-ZXRfdmFsdWUoR1BJT19OQU5EX0NTLCAxKTsKLX0KLQotLyoKLSAqCWhhcmR3YXJlIHNwZWNpZmlj
-IGFjY2VzcyB0byBjb250cm9sLWxpbmVzCi0gKi8KLXN0YXRpYyB2b2lkIGNteDI3MF9od2NvbnRy
-b2woc3RydWN0IG5hbmRfY2hpcCAqdGhpcywgaW50IGRhdCwKLQkJCSAgICAgdW5zaWduZWQgaW50
-IGN0cmwpCi17Ci0JdW5zaWduZWQgaW50IG5hbmRhZGRyID0gKHVuc2lnbmVkIGludCl0aGlzLT5s
-ZWdhY3kuSU9fQUREUl9XOwotCi0JZHNiKCk7Ci0KLQlpZiAoY3RybCAmIE5BTkRfQ1RSTF9DSEFO
-R0UpIHsKLQkJaWYgKCBjdHJsICYgTkFORF9BTEUgKQotCQkJbmFuZGFkZHIgfD0gICgxIDw8IDMp
-OwotCQllbHNlCi0JCQluYW5kYWRkciAmPSB+KDEgPDwgMyk7Ci0JCWlmICggY3RybCAmIE5BTkRf
-Q0xFICkKLQkJCW5hbmRhZGRyIHw9ICAoMSA8PCAyKTsKLQkJZWxzZQotCQkJbmFuZGFkZHIgJj0g
-figxIDw8IDIpOwotCQlpZiAoIGN0cmwgJiBOQU5EX05DRSApCi0JCQluYW5kX2NzX29uKCk7Ci0J
-CWVsc2UKLQkJCW5hbmRfY3Nfb2ZmKCk7Ci0JfQotCi0JZHNiKCk7Ci0JdGhpcy0+bGVnYWN5LklP
-X0FERFJfVyA9ICh2b2lkIF9faW9tZW0qKW5hbmRhZGRyOwotCWlmIChkYXQgIT0gTkFORF9DTURf
-Tk9ORSkKLQkJd3JpdGVsKChkYXQgPDwgMTYpLCB0aGlzLT5sZWdhY3kuSU9fQUREUl9XKTsKLQot
-CWRzYigpOwotfQotCi0vKgotICoJcmVhZCBkZXZpY2UgcmVhZHkgcGluCi0gKi8KLXN0YXRpYyBp
-bnQgY214MjcwX2RldmljZV9yZWFkeShzdHJ1Y3QgbmFuZF9jaGlwICp0aGlzKQotewotCWRzYigp
-OwotCi0JcmV0dXJuIChncGlvX2dldF92YWx1ZShHUElPX05BTkRfUkIpKTsKLX0KLQotLyoKLSAq
-IE1haW4gaW5pdGlhbGl6YXRpb24gcm91dGluZQotICovCi1zdGF0aWMgaW50IF9faW5pdCBjbXgy
-NzBfaW5pdCh2b2lkKQotewotCXN0cnVjdCBuYW5kX2NoaXAgKnRoaXM7Ci0JaW50IHJldDsKLQot
-CWlmICghKG1hY2hpbmVfaXNfYXJtY29yZSgpICYmIGNwdV9pc19weGEyN3goKSkpCi0JCXJldHVy
-biAtRU5PREVWOwotCi0JcmV0ID0gZ3Bpb19yZXF1ZXN0KEdQSU9fTkFORF9DUywgIk5BTkQgQ1Mi
-KTsKLQlpZiAocmV0KSB7Ci0JCXByX3dhcm4oIkNNLVgyNzA6IGZhaWxlZCB0byByZXF1ZXN0IE5B
-TkQgQ1MgZ3Bpb1xuIik7Ci0JCXJldHVybiByZXQ7Ci0JfQotCi0JZ3Bpb19kaXJlY3Rpb25fb3V0
-cHV0KEdQSU9fTkFORF9DUywgMSk7Ci0KLQlyZXQgPSBncGlvX3JlcXVlc3QoR1BJT19OQU5EX1JC
-LCAiTkFORCBSL0IiKTsKLQlpZiAocmV0KSB7Ci0JCXByX3dhcm4oIkNNLVgyNzA6IGZhaWxlZCB0
-byByZXF1ZXN0IE5BTkQgUi9CIGdwaW9cbiIpOwotCQlnb3RvIGVycl9ncGlvX3JlcXVlc3Q7Ci0J
-fQotCi0JZ3Bpb19kaXJlY3Rpb25faW5wdXQoR1BJT19OQU5EX1JCKTsKLQotCS8qIEFsbG9jYXRl
-IG1lbW9yeSBmb3IgTVREIGRldmljZSBzdHJ1Y3R1cmUgYW5kIHByaXZhdGUgZGF0YSAqLwotCXRo
-aXMgPSBremFsbG9jKHNpemVvZihzdHJ1Y3QgbmFuZF9jaGlwKSwgR0ZQX0tFUk5FTCk7Ci0JaWYg
-KCF0aGlzKSB7Ci0JCXJldCA9IC1FTk9NRU07Ci0JCWdvdG8gZXJyX2t6YWxsb2M7Ci0JfQotCi0J
-Y214MjcwX25hbmRfaW8gPSBpb3JlbWFwKFBYQV9DUzFfUEhZUywgMTIpOwotCWlmICghY214Mjcw
-X25hbmRfaW8pIHsKLQkJcHJfZGVidWcoIlVuYWJsZSB0byBpb3JlbWFwIE5BTkQgZGV2aWNlXG4i
-KTsKLQkJcmV0ID0gLUVJTlZBTDsKLQkJZ290byBlcnJfaW9yZW1hcDsKLQl9Ci0KLQljbXgyNzBf
-bmFuZF9tdGQgPSBuYW5kX3RvX210ZCh0aGlzKTsKLQotCS8qIExpbmsgdGhlIHByaXZhdGUgZGF0
-YSB3aXRoIHRoZSBNVEQgc3RydWN0dXJlICovCi0JY214MjcwX25hbmRfbXRkLT5vd25lciA9IFRI
-SVNfTU9EVUxFOwotCi0JLyogaW5zZXJ0IGNhbGxiYWNrcyAqLwotCXRoaXMtPmxlZ2FjeS5JT19B
-RERSX1IgPSBjbXgyNzBfbmFuZF9pbzsKLQl0aGlzLT5sZWdhY3kuSU9fQUREUl9XID0gY214Mjcw
-X25hbmRfaW87Ci0JdGhpcy0+bGVnYWN5LmNtZF9jdHJsID0gY214MjcwX2h3Y29udHJvbDsKLQl0
-aGlzLT5sZWdhY3kuZGV2X3JlYWR5ID0gY214MjcwX2RldmljZV9yZWFkeTsKLQotCS8qIDE1IHVz
-IGNvbW1hbmQgZGVsYXkgdGltZSAqLwotCXRoaXMtPmxlZ2FjeS5jaGlwX2RlbGF5ID0gMjA7Ci0J
-dGhpcy0+ZWNjLm1vZGUgPSBOQU5EX0VDQ19TT0ZUOwotCXRoaXMtPmVjYy5hbGdvID0gTkFORF9F
-Q0NfSEFNTUlORzsKLQotCS8qIHJlYWQvd3JpdGUgZnVuY3Rpb25zICovCi0JdGhpcy0+bGVnYWN5
-LnJlYWRfYnl0ZSA9IGNteDI3MF9yZWFkX2J5dGU7Ci0JdGhpcy0+bGVnYWN5LnJlYWRfYnVmID0g
-Y214MjcwX3JlYWRfYnVmOwotCXRoaXMtPmxlZ2FjeS53cml0ZV9idWYgPSBjbXgyNzBfd3JpdGVf
-YnVmOwotCi0JLyogU2NhbiB0byBmaW5kIGV4aXN0ZW5jZSBvZiB0aGUgZGV2aWNlICovCi0JcmV0
-ID0gbmFuZF9zY2FuKHRoaXMsIDEpOwotCWlmIChyZXQpIHsKLQkJcHJfbm90aWNlKCJObyBOQU5E
-IGRldmljZVxuIik7Ci0JCWdvdG8gZXJyX3NjYW47Ci0JfQotCi0JLyogUmVnaXN0ZXIgdGhlIHBh
-cnRpdGlvbnMgKi8KLQlyZXQgPSBtdGRfZGV2aWNlX3JlZ2lzdGVyKGNteDI3MF9uYW5kX210ZCwg
-cGFydGl0aW9uX2luZm8sCi0JCQkJICBOVU1fUEFSVElUSU9OUyk7Ci0JaWYgKHJldCkKLQkJZ290
-byBlcnJfc2NhbjsKLQotCS8qIFJldHVybiBoYXBweSAqLwotCXJldHVybiAwOwotCi1lcnJfc2Nh
-bjoKLQlpb3VubWFwKGNteDI3MF9uYW5kX2lvKTsKLWVycl9pb3JlbWFwOgotCWtmcmVlKHRoaXMp
-OwotZXJyX2t6YWxsb2M6Ci0JZ3Bpb19mcmVlKEdQSU9fTkFORF9SQik7Ci1lcnJfZ3Bpb19yZXF1
-ZXN0OgotCWdwaW9fZnJlZShHUElPX05BTkRfQ1MpOwotCi0JcmV0dXJuIHJldDsKLQotfQotbW9k
-dWxlX2luaXQoY214MjcwX2luaXQpOwotCi0vKgotICogQ2xlYW4gdXAgcm91dGluZQotICovCi1z
-dGF0aWMgdm9pZCBfX2V4aXQgY214MjcwX2NsZWFudXAodm9pZCkKLXsKLQkvKiBSZWxlYXNlIHJl
-c291cmNlcywgdW5yZWdpc3RlciBkZXZpY2UgKi8KLQluYW5kX3JlbGVhc2UobXRkX3RvX25hbmQo
-Y214MjcwX25hbmRfbXRkKSk7Ci0KLQlncGlvX2ZyZWUoR1BJT19OQU5EX1JCKTsKLQlncGlvX2Zy
-ZWUoR1BJT19OQU5EX0NTKTsKLQotCWlvdW5tYXAoY214MjcwX25hbmRfaW8pOwotCi0Ja2ZyZWUo
-bXRkX3RvX25hbmQoY214MjcwX25hbmRfbXRkKSk7Ci19Ci1tb2R1bGVfZXhpdChjbXgyNzBfY2xl
-YW51cCk7Ci0KLU1PRFVMRV9MSUNFTlNFKCJHUEwiKTsKLU1PRFVMRV9BVVRIT1IoIk1pa2UgUmFw
-b3BvcnQgPG1pa2VAY29tcHVsYWIuY28uaWw+Iik7Ci1NT0RVTEVfREVTQ1JJUFRJT04oIk5BTkQg
-Zmxhc2ggZHJpdmVyIGZvciBDb21wdWxhYiBDTS1YMjcwIE1vZHVsZSIpOwotLSAKMi4yNS4zCgoK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxp
-bnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Hello,
+
+As part of my attempt to convert all NAND drivers to exec_op() I noticed
+the cmx270 board didn't really deserve a custom driver since other boards
+using the same SoC (em-x270 to name one) are using the gen_nand driver.
+I think the only issue with the CM-X270 is that the chip is connected
+to D[16:23] (or D[16:31] if it's a 16bit bus). Adjusting the mem
+resource offset should do the trick.
+
+I hope someone still has a board to test that.
+
+Regards,
+
+Boris
+
+Boris Brezillon (3):
+  ARM: pxa: cm-x270: Use gen_nand to expose the NAND device
+  ARM: pxa: Stop selecting CONFIG_MTD_NAND_CM_X270
+  mtd: rawnand: Remove the cmx270 NAND controller driver
+
+ arch/arm/configs/cm_x2xx_defconfig |   1 -
+ arch/arm/configs/pxa_defconfig     |   1 -
+ arch/arm/mach-pxa/cm-x270.c        | 131 ++++++++++++++++
+ drivers/mtd/nand/raw/Kconfig       |   4 -
+ drivers/mtd/nand/raw/Makefile      |   1 -
+ drivers/mtd/nand/raw/cmx270_nand.c | 236 -----------------------------
+ 6 files changed, 131 insertions(+), 243 deletions(-)
+ delete mode 100644 drivers/mtd/nand/raw/cmx270_nand.c
+
+-- 
+2.25.3
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
