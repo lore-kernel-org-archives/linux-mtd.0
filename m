@@ -4,75 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3050C83004
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 13:30:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E108C83004
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 13:32:20 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 928952085B
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 13:30:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 61DB62085B
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 13:32:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="E+ewCP6J"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 928952085B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="t8efiy2v"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 61DB62085B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:Reply-To:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mjK75B84xyXt8wBccUouFDLN8UlvBKj/irM21fasy5k=; b=E+ewCP6J1pzSpZ
-	oDN4G0igie5YhYS6KGSS6vbJY/u1qpuZCQrDVt3WTSYi6Kktu1yvD10uumesgnan6BPMegp/yOSoY
-	QET7nw/5LYgwOySqEhTrEG1ufn9eySPHRgpqQoi9rGKbZ7D8vNV/wqf8nt7Gcf2uAHlj4CneBrfRw
-	cnWqvl8epTeQGbyWggKZJ+dy01aW5E/Rcjz0gdX4okxKhxaF/yK6kbB9Kaigtw9opD4a4PA1oBC5J
-	H46uwcUT0MO+T75Imp1dFrWkhdbSfL+U2K1xCCAZtR9tfVGaXptWTFNW7E1UAohQEwJKrU1ELFHCm
-	oxYh7p9oskeRsIaaLoFA==;
+	List-Owner; bh=9L95F3nP2wtKcISBkyrdlD8kgSPGn+/vrEsEjY9ez3k=; b=t8efiy2vukN0eM
+	yf3uvu2QALc41S2DlheyMC0nddpZiM9q4rlNXvUDb2Is2McZHeZOZG0Sz87XDdn52+7a5GOmVDXAV
+	K38mMIcxFWF3Mnsg4XeqbkfW63zfiy0LpUFiSatN/7ktiW4sC6i1IbJqwPK5BDaX+w7tkEER5Xr/v
+	6n2NZlHQIx+ToITt+1Za2CcEDmW0Zdt+NNTQATAJjjPYMTuNuV6CbnX4/OVbuZQYtjoqVFwB832lF
+	ZnI6335k4TDKGwRt6vJ7S9L2CQLpYkCfjm832y5rOSVxmODUqItAq6NMj2e9mt7LHp8rh+b9Iwx7o
+	lo5xKN5VSaHHXAjYd2Kw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jTmmd-00072C-8Z; Wed, 29 Apr 2020 13:29:51 +0000
-Received: from mga18.intel.com ([134.134.136.126])
+	id 1jTmov-0001m3-WC; Wed, 29 Apr 2020 13:32:14 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jTmma-00070Z-3g
- for linux-mtd@lists.infradead.org; Wed, 29 Apr 2020 13:29:49 +0000
-IronPort-SDR: xXq/IGSaq2ko5K/bAZowkst9YygAekKUe+m0Q2B8hri7a5MIj8qh4Rruu/wvUMhwwEpkwIXNtT
- 0yC4x1KM+FBA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 29 Apr 2020 06:29:46 -0700
-IronPort-SDR: WdiZ3VTqUAC9PwDAok0fNz7oAnmVxNVdLqjv1Gij+Nsbo0DVhNxRuGMqYOBoeta3hm+gxGDjM+
- BFPlQFRaLb6w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,332,1583222400"; d="scan'208";a="247989062"
-Received: from linux.intel.com ([10.54.29.200])
- by fmsmga007.fm.intel.com with ESMTP; 29 Apr 2020 06:29:46 -0700
-Received: from [10.255.166.42] (weehongg-mobl.gar.corp.intel.com
- [10.255.166.42])
- by linux.intel.com (Postfix) with ESMTP id 4E3C15802C8;
- Wed, 29 Apr 2020 06:29:42 -0700 (PDT)
-Subject: Re: [PATCH v4 2/2] mtd: rawnand: Add NAND controller support on Intel
- LGM SoC
-To: Boris Brezillon <boris.brezillon@collabora.com>
+ id 1jTmos-0001lA-R0
+ for linux-mtd@lists.infradead.org; Wed, 29 Apr 2020 13:32:12 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 147BA2A21EE;
+ Wed, 29 Apr 2020 14:32:09 +0100 (BST)
+Date: Wed, 29 Apr 2020 15:32:05 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: "Ramuthevar, Vadivel MuruganX"
+ <vadivel.muruganx.ramuthevar@linux.intel.com>
+Subject: Re: [PATCH v4 2/2] mtd: rawnand: Add NAND controller support on
+ Intel LGM SoC
+Message-ID: <20200429153205.09c498cd@collabora.com>
+In-Reply-To: <4c946dbc-1518-0f0d-fac7-b2cfb4836440@linux.intel.com>
 References: <20200429104205.18780-1-vadivel.muruganx.ramuthevar@linux.intel.com>
  <20200429104205.18780-3-vadivel.muruganx.ramuthevar@linux.intel.com>
  <20200429133308.4f91c35c@collabora.com>
-From: "Ramuthevar, Vadivel MuruganX"
- <vadivel.muruganx.ramuthevar@linux.intel.com>
-Message-ID: <4c946dbc-1518-0f0d-fac7-b2cfb4836440@linux.intel.com>
-Date: Wed, 29 Apr 2020 21:29:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ <4c946dbc-1518-0f0d-fac7-b2cfb4836440@linux.intel.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200429133308.4f91c35c@collabora.com>
-Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200429_062948_213849_11413517 
-X-CRM114-Status: GOOD (  11.04  )
+X-CRM114-CacheID: sfid-20200429_063211_001597_337452D2 
+X-CRM114-Status: GOOD (  10.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,39 +73,40 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
 Cc: cheol.yong.kim@intel.com, devicetree@vger.kernel.org, qi-ming.wu@intel.com,
  anders.roxell@linaro.org, vigneshr@ti.com, arnd@arndb.de,
  hauke.mehrtens@intel.com, richard@nod.at, brendanhiggins@google.com,
  linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, robh+dt@kernel.org,
  linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com, tglx@linutronix.de,
  masonccyang@mxic.com.tw, andriy.shevchenko@intel.com
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Boris,
+On Wed, 29 Apr 2020 21:29:40 +0800
+"Ramuthevar, Vadivel MuruganX"
+<vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
 
-    Thank you very much for the review comments and your time..
-
-On 29/4/2020 7:33 pm, Boris Brezillon wrote:
-> On Wed, 29 Apr 2020 18:42:05 +0800
-> "Ramuthevar,Vadivel MuruganX"
-> <vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
+> Hi Boris,
 > 
->> +#define NAND_WRITE_CMD		(EBU_CON_CS_P_LOW | HSNAND_CLE_OFFS)
->> +#define NAND_WRITE_ADDR		(EBU_CON_CS_P_LOW | HSNAND_ALE_OFFS)
->> +
+>     Thank you very much for the review comments and your time..
 > 
-> I thought we agreed on dropping those definitions.
-
-Yes , we agreed upon it, due to assertion/de-assertion of CS kept it.
-Thanks!
-
-Regards
-Vadivel
+> On 29/4/2020 7:33 pm, Boris Brezillon wrote:
+> > On Wed, 29 Apr 2020 18:42:05 +0800
+> > "Ramuthevar,Vadivel MuruganX"
+> > <vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
+> >   
+> >> +#define NAND_WRITE_CMD		(EBU_CON_CS_P_LOW | HSNAND_CLE_OFFS)
+> >> +#define NAND_WRITE_ADDR		(EBU_CON_CS_P_LOW | HSNAND_ALE_OFFS)
+> >> +  
+> > 
+> > I thought we agreed on dropping those definitions.  
 > 
+> Yes , we agreed upon it, due to assertion/de-assertion of CS kept it.
+
+And I keep thinking we don't need that, just pass
+'HSNAND_CLE_OFFS | HSNAND_CS_OFFS' directly.
 
 ______________________________________________________
 Linux MTD discussion mailing list
