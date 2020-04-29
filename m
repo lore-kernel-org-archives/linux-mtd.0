@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02226C83004
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 13:21:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7384C83003
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 13:22:05 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C73332087E
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 13:21:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B7FB12087E
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 13:22:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="os+nt4+0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C73332087E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="P4HM4sDq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B7FB12087E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rP1HrdHdQQ52yIRxErTQSHyv+3CQSVmResEnQLUPcv4=; b=os+nt4+0yO8Kxe
-	WKz0017pJnE6+JS7vqkZfRgT6/IpESt0u2Ycjyor0Fum5GUI+bOsdnToMpe+dScJrqsVQteKN0cIl
-	X5wGwcE3RGBugVKgfPYbdfHZtZhNwq4lMEtNKN5IYxiNMjX2rHJ3WH15+2ogeC+vpUGa3Fe2Zdi4k
-	JDNm9xTsqvTlGDM6CwhO11NYctKbtqg+8GCCOFeb4oZI2+5BJSfXo8ERJE38yZvLnk4LiQoE2UT6Y
-	xPteRmqJUVYJikRQGiL8UtJ2n3YaYG+FDK0q7/FOhtHMrkdbdazRP7zO2QIY7LT7uSbtMFm+TuCtr
-	iJ4N8GeAcefOsu7mBLDA==;
+	List-Owner; bh=5wGo3Y1zcKD9N2+oDn3ObVVtIsjtBmmZi9N3AFn0G8c=; b=P4HM4sDqHBaxzu
+	mS4GMUH3iho2qffi4+FPVMvQctopAcLmoK5fGGbz+BE951zUtXoQaiRJMrdtjR0R3DfTT2Fkntu0t
+	689aX2LkXfonn8DeU5oeoJ2IrrYJZkxqTcc1DDOjO58avAhvqimKXX4APoXazT7Q50HU5EE7vdva6
+	FBrkyhFUt6B6ByaF7Qj0IPisoD5osIaRDO4e8DsKEC3E/Fno5DsS1KLVEvRUI0u4gylH8eGggBgHz
+	pWBlFqrBnHio/3kcCkbf1bdGM5Est2+PztinUJSHCN6gWMWuMQUvn0L3phbIqxZmLhbVfMvpYNe0n
+	L3tj0VlYVbiw/0R/R0cw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jTmef-0001UZ-Hs; Wed, 29 Apr 2020 13:21:37 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1jTmet-0001iV-0M; Wed, 29 Apr 2020 13:21:51 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jTmdw-0000ma-Q0
+ id 1jTmdx-0000mu-4l
  for linux-mtd@lists.infradead.org; Wed, 29 Apr 2020 13:20:54 +0000
 Received: from localhost.localdomain (unknown
  [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 720ED2A21C3;
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id C60C62A21C4;
  Wed, 29 Apr 2020 14:20:51 +0100 (BST)
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
  Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [PATCH v2 3/6] mtd: rawnand: atmel: Use nand_{write,read}_data_op()
-Date: Wed, 29 Apr 2020 15:20:43 +0200
-Message-Id: <20200429132046.583658-4-boris.brezillon@collabora.com>
+Subject: [PATCH v2 4/6] mtd: rawnand: atmel: Use nand_prog_page_end_op()
+Date: Wed, 29 Apr 2020 15:20:44 +0200
+Message-Id: <20200429132046.583658-5-boris.brezillon@collabora.com>
 X-Mailer: git-send-email 2.25.3
 In-Reply-To: <20200429132046.583658-1-boris.brezillon@collabora.com>
 References: <20200429132046.583658-1-boris.brezillon@collabora.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200429_062052_968240_0F009825 
-X-CRM114-Status: GOOD (  12.20  )
+X-CRM114-CacheID: sfid-20200429_062053_308527_7295E467 
+X-CRM114-Status: GOOD (  12.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,60 +78,51 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use the nand_{write,read}_data_op() helpers instead of calling the
-atmel_nand_{read,write}_buf() functions directly. This will ease the
-transition to exec_op().
+The nand_prog_page_end_op() sequence is open-coded in
+atmel_hsmc_nand_pmecc_write_pg(). Let's use the generic helper here.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
 ---
 Changes in v2:
 * New patch
 ---
- drivers/mtd/nand/raw/atmel/nand-controller.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/raw/atmel/nand-controller.c | 16 ++--------------
+ 1 file changed, 2 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
-index 8e5cfb5cf70b..8be911ef9a6c 100644
+index 8be911ef9a6c..4bd131a34408 100644
 --- a/drivers/mtd/nand/raw/atmel/nand-controller.c
 +++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
-@@ -833,7 +833,7 @@ static int atmel_nand_pmecc_write_pg(struct nand_chip *chip, const u8 *buf,
- 	if (ret)
- 		return ret;
+@@ -902,7 +902,7 @@ static int atmel_hsmc_nand_pmecc_write_pg(struct nand_chip *chip,
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	struct atmel_nand *nand = to_atmel_nand(chip);
+ 	struct atmel_hsmc_nand_controller *nc;
+-	int ret, status;
++	int ret;
  
--	atmel_nand_write_buf(chip, buf, mtd->writesize);
-+	nand_write_data_op(chip, buf, mtd->writesize, false);
+ 	nc = to_hsmc_nand_controller(chip->controller);
  
- 	ret = atmel_nand_pmecc_generate_eccbytes(chip, raw);
- 	if (ret) {
-@@ -843,7 +843,7 @@ static int atmel_nand_pmecc_write_pg(struct nand_chip *chip, const u8 *buf,
+@@ -936,19 +936,7 @@ static int atmel_hsmc_nand_pmecc_write_pg(struct nand_chip *chip,
  
- 	atmel_nand_pmecc_disable(chip, raw);
+ 	nand_write_data_op(chip, chip->oob_poi, mtd->oobsize, false);
  
--	atmel_nand_write_buf(chip, chip->oob_poi, mtd->oobsize);
-+	nand_write_data_op(chip, chip->oob_poi, mtd->oobsize, false);
- 
- 	return nand_prog_page_end_op(chip);
+-	nc->op.cmds[0] = NAND_CMD_PAGEPROG;
+-	nc->op.ncmds = 1;
+-	nc->op.cs = nand->activecs->id;
+-	ret = atmel_nfc_exec_op(nc, false);
+-	if (ret)
+-		dev_err(nc->base.dev, "Failed to program NAND page (err = %d)\n",
+-			ret);
+-
+-	status = chip->legacy.waitfunc(chip);
+-	if (status & NAND_STATUS_FAIL)
+-		return -EIO;
+-
+-	return ret;
++	return nand_prog_page_end_op(chip);
  }
-@@ -873,8 +873,8 @@ static int atmel_nand_pmecc_read_pg(struct nand_chip *chip, u8 *buf,
- 	if (ret)
- 		return ret;
  
--	atmel_nand_read_buf(chip, buf, mtd->writesize);
--	atmel_nand_read_buf(chip, chip->oob_poi, mtd->oobsize);
-+	nand_read_data_op(chip, buf, mtd->writesize, false);
-+	nand_read_data_op(chip, chip->oob_poi, mtd->oobsize, false);
- 
- 	ret = atmel_nand_pmecc_correct_data(chip, buf, raw);
- 
-@@ -934,7 +934,7 @@ static int atmel_hsmc_nand_pmecc_write_pg(struct nand_chip *chip,
- 	if (ret)
- 		return ret;
- 
--	atmel_nand_write_buf(chip, chip->oob_poi, mtd->oobsize);
-+	nand_write_data_op(chip, chip->oob_poi, mtd->oobsize, false);
- 
- 	nc->op.cmds[0] = NAND_CMD_PAGEPROG;
- 	nc->op.ncmds = 1;
+ static int atmel_hsmc_nand_pmecc_write_page(struct nand_chip *chip,
 -- 
 2.25.3
 
