@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 30651C83004
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 13:21:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B6DCC83003
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 13:21:44 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 07A802087E
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 13:21:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D0E032087E
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 13:21:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="m7rQi+co"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 07A802087E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mAbomAiI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D0E032087E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=yWt6QFddp3snRjNrVOBpWhvk31I4YsCL5VAXmlp4P5w=; b=m7rQi+coL8C9uz
-	6gbjkC8ykAT5GsCFtJshAw+MuTqt0xu4MPe7vwxq+Qh1vfq5Pzc3Rkb8Y/84483KUD4W3EnbwYFW8
-	P6xLhZGrU2s3CzUZnza6kvhxPw2SJehsm7ZuojfbnPojZCDGqZN/+x+hOo+KEikpyfFdbfxVCx9vI
-	GLJwK+rlEKhRpA7hNLDmOFjPEYCRCODRJP1xwXuER6xLi0yJL+SFEIpwkIMEC5g1qmPVirR+nt9Ew
-	EXcLxBjS+6OXfRy/PGxK/XVcA2WOoElswf4WtNhofHm7sT7pHKMYM+KFKX4c0gevJi0+setcunMc+
-	CUguS9U4ur5EkKC0Dtsw==;
+	List-Owner; bh=2B3MQCbn4CYQv/Io8DabxTtnuY+075rz/6mq27BhUPg=; b=mAbomAiIGMEH21
+	HcFEWCTbat9yHqOgOcU+0S2WjVbheJ+WSTaJ+ddwcKEVzsWhw8EEtIahXk1ngPsWHwcSDwS325y8+
+	UO+fxgKmTSLrAC+WS2Hc4jvdN9YxRJ0TdK/fvBVnKM1Fatv4o4uw15TdYolq2CUVThUTp0LuXXIuF
+	0sdZOVZMNDlfPGOCtT4K+qlgHBwrISG06hwR5SK4wa06wH2RsN8wmNHUXokhmooq/FF31O4VIf2Hd
+	/y3A22r+HkYLhpRn0Zu9Yc5BibHwC0H4YWYtOfUIeJszixJUwaZ47VqOLlo/wzI2dSXzbgz8Pprz0
+	yE9mcJM9XWXtmUdQOB0A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jTme9-0000zG-CA; Wed, 29 Apr 2020 13:21:05 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1jTmeP-0001Em-Hg; Wed, 29 Apr 2020 13:21:21 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jTmdw-0000mQ-3Q
- for linux-mtd@lists.infradead.org; Wed, 29 Apr 2020 13:20:53 +0000
+ id 1jTmdw-0000mT-JQ
+ for linux-mtd@lists.infradead.org; Wed, 29 Apr 2020 13:20:54 +0000
 Received: from localhost.localdomain (unknown
  [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 916F62A21BF;
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id DFD492A21C2;
  Wed, 29 Apr 2020 14:20:50 +0100 (BST)
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
  Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [PATCH v2 1/6] mtd: rawnand: atmel: Enable the NFC controller at
- probe time
-Date: Wed, 29 Apr 2020 15:20:41 +0200
-Message-Id: <20200429132046.583658-2-boris.brezillon@collabora.com>
+Subject: [PATCH v2 2/6] mtd: rawnand: atmel: Drop redundant nand_read_page_op()
+Date: Wed, 29 Apr 2020 15:20:42 +0200
+Message-Id: <20200429132046.583658-3-boris.brezillon@collabora.com>
 X-Mailer: git-send-email 2.25.3
 In-Reply-To: <20200429132046.583658-1-boris.brezillon@collabora.com>
 References: <20200429132046.583658-1-boris.brezillon@collabora.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200429_062052_289182_798B77BB 
-X-CRM114-Status: GOOD (  12.10  )
+X-CRM114-CacheID: sfid-20200429_062052_766898_0D2AB64F 
+X-CRM114-Status: GOOD (  12.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,64 +78,36 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-No need to enable it everytime select_chip() is called. If we really
-care about PM, we should implement runtime PM hooks and disable the
-controller and all its clocks when the controller has been unused for
-some time.
+The legacy page read path in atmel_hsmc_nand_pmecc_read_pg() issues
+a nand_read_page_op() that's already issued by
+atmel_nand_pmecc_read_pg(). Let's get rid of the unneeded one.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
 ---
 Changes in v2:
 * New patch
 ---
- drivers/mtd/nand/raw/atmel/nand-controller.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/mtd/nand/raw/atmel/nand-controller.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
-index 3ba17a98df4d..1ba60b61dedc 100644
+index 1ba60b61dedc..8e5cfb5cf70b 100644
 --- a/drivers/mtd/nand/raw/atmel/nand-controller.c
 +++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
-@@ -525,11 +525,8 @@ static void atmel_hsmc_nand_select_chip(struct nand_chip *chip, int cs)
- 
- 	atmel_nand_select_chip(chip, cs);
- 
--	if (!nand->activecs) {
--		regmap_write(nc->base.smc, ATMEL_HSMC_NFC_CTRL,
--			     ATMEL_HSMC_NFC_CTRL_DIS);
-+	if (!nand->activecs)
- 		return;
+@@ -983,12 +983,9 @@ static int atmel_hsmc_nand_pmecc_read_pg(struct nand_chip *chip, u8 *buf,
+ 	 * connected to a native SoC R/B pin. If that's not the case, fallback
+ 	 * to the non-optimized one.
+ 	 */
+-	if (nand->activecs->rb.type != ATMEL_NAND_NATIVE_RB) {
+-		nand_read_page_op(chip, page, 0, NULL, 0);
+-
++	if (nand->activecs->rb.type != ATMEL_NAND_NATIVE_RB)
+ 		return atmel_nand_pmecc_read_pg(chip, buf, oob_required, page,
+ 						raw);
 -	}
  
- 	if (nand->activecs->rb.type == ATMEL_NAND_NATIVE_RB)
- 		chip->legacy.dev_ready = atmel_hsmc_nand_dev_ready;
-@@ -542,8 +539,6 @@ static void atmel_hsmc_nand_select_chip(struct nand_chip *chip, int cs)
- 			   ATMEL_HSMC_NFC_CFG_PAGESIZE(mtd->writesize) |
- 			   ATMEL_HSMC_NFC_CFG_SPARESIZE(mtd->oobsize) |
- 			   ATMEL_HSMC_NFC_CFG_RSPARE);
--	regmap_write(nc->base.smc, ATMEL_HSMC_NFC_CTRL,
--		     ATMEL_HSMC_NFC_CTRL_EN);
- }
+ 	nc->op.cmds[nc->op.ncmds++] = NAND_CMD_READ0;
  
- static int atmel_nfc_exec_op(struct atmel_hsmc_nand_controller *nc, bool poll)
-@@ -2248,6 +2243,9 @@ atmel_hsmc_nand_controller_remove(struct atmel_nand_controller *nc)
- 		return ret;
- 
- 	hsmc_nc = container_of(nc, struct atmel_hsmc_nand_controller, base);
-+	regmap_write(hsmc_nc->base.smc, ATMEL_HSMC_NFC_CTRL,
-+		     ATMEL_HSMC_NFC_CTRL_DIS);
-+
- 	if (hsmc_nc->sram.pool)
- 		gen_pool_free(hsmc_nc->sram.pool,
- 			      (unsigned long)hsmc_nc->sram.virt,
-@@ -2300,6 +2298,8 @@ static int atmel_hsmc_nand_controller_probe(struct platform_device *pdev,
- 	/* Initial NFC configuration. */
- 	regmap_write(nc->base.smc, ATMEL_HSMC_NFC_CFG,
- 		     ATMEL_HSMC_NFC_CFG_DTO_MAX);
-+	regmap_write(nc->base.smc, ATMEL_HSMC_NFC_CTRL,
-+		     ATMEL_HSMC_NFC_CTRL_EN);
- 
- 	ret = atmel_nand_controller_add_nands(&nc->base);
- 	if (ret)
 -- 
 2.25.3
 
