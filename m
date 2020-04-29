@@ -2,145 +2,70 @@ Return-Path: <SRS0=TDhY=6N=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5777CC83003
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 07:11:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BA8CC83003
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 07:32:24 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2A00B2073E
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 07:11:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4B780206D6
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2020 07:32:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WIQJPv0x";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="2AlLYQVT";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="K4SckDp5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2A00B2073E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HozGHnsw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4B780206D6
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=sPNsVq7MPtDQumQYeYiO63Ui2PdgfaBpT2LPEXi0bAE=; b=WIQJPv0xYm8lc7
-	cYmrUZ0Hr71PpZFvMT/YdLJotU2vo+02XEWz23GiYDfyoG+NIy+my2ZW+waw+HzK3rqzYftbO/5q/
-	aF7oxSdo3wTZnr2vA+y64J2e0h6kZQlMcHrAXtbVOe1EvGhm1CH9c2diXX+6g0gpAeB9MldbmNvJ7
-	M+0SpvfqBJ7OEXyRK+ZAsAyUnrBx12lZLDfNHxrOdwThoG3oCJ86sdEWiScS4EXm+uxFFx61LSSEv
-	NEurVrrDjUuXHSrYFiwwEFDG+QBGPF1H3Z8Enxx7CigaPGLK7HNHM57CHCCCVYYW8Zp8ssNu1JgWo
-	eDmNnAWWUWgDy3KRK8ug==;
+	List-Archive:List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:
+	Subject:To:References:In-Reply-To:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=8KD5JGyZ/cy0nG1wrJ3/LpQw4e0mRHAPBSAawhiRDJE=; b=HozGHnswOlRZ9o
+	YP8TUVUf7OcT58nu7bhXMRPWaofZD0LHXSj4dLeUx2bul9/P4n9j/v00vJ9vbgGBDjySSQIKbmvrg
+	nDfzRzV4tu4UWfWfmaVJLsOvb8MeQPlvLf4Qip9JLyJorHFa/aelwRzpIhlffEJPVngF/lY1y2SH7
+	mZ7eaVERMDVVt7CwIF2RjyFDVBKq3yN9id3jbz1NLGaprwgKmfbJksG4kVNoIknC3KLIXva+X3pQj
+	YRhOO4lFHFX+oYuj1RvxvF0nFDyr6xBBPk7bJWZ9LsAvjByQKUzyjPcES4uumFQWuaNXr2STehZSj
+	IwXj+PtBgymwc9bfaU2Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jTgs6-0006zL-Hn; Wed, 29 Apr 2020 07:11:06 +0000
-Received: from esa3.microchip.iphmx.com ([68.232.153.233])
+	id 1jThCa-0004tM-MP; Wed, 29 Apr 2020 07:32:16 +0000
+Received: from twhmllg3.macronix.com ([122.147.135.201])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jTgs3-0006yk-Tm
- for linux-mtd@lists.infradead.org; Wed, 29 Apr 2020 07:11:05 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1588144263; x=1619680263;
- h=from:to:cc:subject:date:message-id:
- content-transfer-encoding:mime-version;
- bh=fpmsbRkS2O0tswvYxDR2db3l4W2CkpEmK+WEz1XNG+c=;
- b=2AlLYQVTsGNqHvuo34e9Tqz0MCEMq31fQsgiHciscfBmFEfo+tHH/lNJ
- 4OdhyuL+aqBo1uCLf0RvoAn4igfrM1VJSG1+WzqIEs1ucSJavNiC1a+dA
- DB0TJ/E5U2RNv+qxcfxSaq4bAaCcp03z2XBEUcjOaU45/Ay1hXkdvN00d
- FpzgCod75Pfv4iJ19C82ZWVepWmbvQEgWdo/ZFlIg9wCVxoCiyoKAdlQo
- xApoTbjPlriOhKQaNKJWsZowZospKrYV3TMERMoDDJHcKFUAP3xxAoWpe
- uu+675xUG+FytRumUC53pIAzw/rdSP8IG+g8X8Tedcrl4ITct8G6YJczi Q==;
-IronPort-SDR: Hytqi98lzZAG45SlglxOrIWew/VH9e9OIkLNu3EQ05nDuN8CcqLTe+G1ncZAuEhAwdQ1l7AjRs
- bFtWw9YGW1EiYwCzMnf8trSAqdCT39kGBQ8tcp07aei63z/vmKiMwo7LxilNRusDbv+ovMtPVw
- eVp+8uZeb3ykSyEXGYYLeQl2ZFMF47riOxklexg/9gx4AkEFTa9NVALcolfNeDeFWWZE+X3VsW
- k6USs8ok9un54tbjrRxJz4iwWnlac1j1U7B/8h8jy1DdMh0gyAH24ZzNpAu3GZegJdHa00hEnm
- NMU=
-X-IronPort-AV: E=Sophos;i="5.73,330,1583218800"; d="scan'208";a="74903903"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 29 Apr 2020 00:11:03 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 29 Apr 2020 00:11:01 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Wed, 29 Apr 2020 00:11:03 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=P+fzSSScOAA0TiDIjK26Vw0zzRgsoGfJr1lZRQVZIOmUUf4W/Vre5wxFOTJN8zR8Rzpo0I4bsf65bKEqbz63o7/iGO5Gjks+vYJDVv4fmmX3ynt2InSu0BUasvLWuDbMaRzyK/9JhXQHnxDcy2R5r0IyJXb6MKgHCJrwxj8+hVlCvs43w2+0iLQQUsKZYph+wHBVub+xfSRCBxdfGE40sFU1WAmERJh+GkV5VNf3+HljDYxFcaJtqTNtoRnBiR0PTObth6x0QiL6KZGTkDrhUmtoEZ4/mDRE8C2wqkal/lGQ8H1uJP5vAZynNV9VgCMNbA6pI1Nil/6Me3fkGKSphA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jKobq6Dh6Kkwm2lhEu7oRnaXEQYavBydCcLAxKBvzxM=;
- b=KKwwH9JS+3ytMKg47H1iChaI1Vyvs2t1ofY04uROLDjX5ExzI2Rqv+iBpzRDs/WSb36oBAlqReFz/X4tst5TKgpVdhWy9X9YNxnvQu8+xpj3R+tPfFEkssee3ZJ/9repjQjamUaHPeVn62XZ6jdrsWRPyAM39mhQWJJVqRLJ0gq+7oWPijNLCicsMaHyA/FdFruDXrQVALF84rkzfpqegzF2dIp8oaaPvTSgiAS5G8aypgoCOGMxQtSFnBDCKQnOvvMC4SRK+3WMmhzAHgAzleNJTAPj2q2uEa5mIgbLsCQrWsCg3P2ao5+BLtKIBmnZsyFlS0EA3XUnji4gPxvA+Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jKobq6Dh6Kkwm2lhEu7oRnaXEQYavBydCcLAxKBvzxM=;
- b=K4SckDp5IqPtPptnrkw8UWdURcEuDO5hW27rwBgziIiINpNsWB276zQBwnfT6gwLMgSmbChfy7qFGoouy2x3bjwtfKASnE6xrKk8Auh+sPluxj2BuOENBr5yaWGg+14rtO6bOclLYi5yIsOJcURHmIM4/WfpbygXte+tSA/+Mow=
-Received: from BY5PR11MB4419.namprd11.prod.outlook.com (2603:10b6:a03:1c8::13)
- by BY5PR11MB4007.namprd11.prod.outlook.com (2603:10b6:a03:189::28)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13; Wed, 29 Apr
- 2020 07:11:01 +0000
-Received: from BY5PR11MB4419.namprd11.prod.outlook.com
- ([fe80::d847:5d58:5325:c536]) by BY5PR11MB4419.namprd11.prod.outlook.com
- ([fe80::d847:5d58:5325:c536%7]) with mapi id 15.20.2937.028; Wed, 29 Apr 2020
- 07:11:01 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <alexander.sverdlin@nokia.com>, <vigneshr@ti.com>,
- <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: spi-nor: spansion: Differentiate between s25fl256s and
- s25fs256s
-Thread-Topic: [PATCH] mtd: spi-nor: spansion: Differentiate between s25fl256s
- and s25fs256s
-Thread-Index: AQHWHfVWQssMLhsP7EynPsc3LqjCPQ==
-Date: Wed, 29 Apr 2020 07:11:01 +0000
-Message-ID: <20200429071058.34385-1-tudor.ambarus@microchip.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nokia.com; dkim=none (message not signed)
- header.d=none;nokia.com; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [94.177.32.156]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7039d9cc-cf97-4d68-540e-08d7ec0c792d
-x-ms-traffictypediagnostic: BY5PR11MB4007:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR11MB4007CB91E47423300D8E4D2FF0AD0@BY5PR11MB4007.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-forefront-prvs: 03883BD916
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:BY5PR11MB4419.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFTY:;
- SFS:(136003)(366004)(396003)(346002)(376002)(39860400002)(6512007)(110136005)(36756003)(8676002)(2616005)(8936002)(478600001)(4326008)(1076003)(296002)(316002)(86362001)(66476007)(64756008)(5660300002)(66556008)(66446008)(66946007)(186003)(76116006)(91956017)(26005)(71200400001)(6486002)(107886003)(6506007)(2906002)(138113003);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: oRd6VagHEfViFzIwS3Gi2awI7CEAOgejxmGpPUKaKAIjzXb+9YObpfjwjugdHABtDxZur4EIffSvGAmZ0913vGpOHxK3KQRuYlEayCaOb7kKYk3QJRhZiQYVEzV7ggVjg73oXHgumjJuuYPTN8BEbU3FMKrPg8m0e1eq2dkQqxc+7rVYIOZ21yyYdavoJIwF3opSAU9EDWxdAG3WfBRx5Ic1RheEqn5rDHWDXMVQLqrhpLQBsIbcz1mkpktt0aKtNOSB62rXZSxJVF8q/jhqus13dfCxJSQe7hexASc6qBU8M7gcVT0JwlFr5ScsuQbDAAkrtXfhLVszc0nABEi2qRGHdrZ56br2pZIGYLbcVZvI/XOGzR5VTgpPJhmQzkVeVspEuIPpB1uCNe5ySb127gLgaB/uxF54t0CnWp6o7hOD4GOyhGvzIzyA/wciyStLQXj4VG7vJsk7pw+QO+9xXb7QRY1OhxMmt8uOZ2PBQW6GM9BsYuG8B9fwXjzLuIJs
-x-ms-exchange-antispam-messagedata: lND/GGyYOx7OK/4jnBJFc7v20IJyu1y+0zZNKB5iuEm/rAhI6DrcDfi7f4mW/UqiUy/0HBw4jSXPt9jrvc2rzd22JfZAdq1VYCwfGcSup+bLfwgWXk3LOuHo6YpaQglzzHOGvMnzFainqgy/N9ebewvQ/BdeoCQ8K1DjDuJDCvfwCeCHd/v0sFhkYxgy/zD+ssNjJzguK8E9vdXb9B1zWtkBA5sgRXSeZnevrq9Tl0Nvd3zKqh5vV7EN6sk+L/gm2zb84MUYQ816BeOryYkdefbE2PgtEeXGXBQ6uNIWae2/E+3Gw56Nxfy4AmPF1KKC2QAjXMogXuzbV/+fVQTpwX9aXuZU2m+57MQlYR33uGXf5u6p0tU9yKhlHm543xRny0I3Sn0Q/RynwLu+u5fSxIsk7PL4fpNOjWFnYPDT2i/4ULjQywnPNeK2Z8aaGKcF+meE3Y0ZN/hByfbWtmC2N/RpyrNYNILKPmdt0quW81W9Bu7sfZ6o3/VsxDFp0VE6UTwi2gnLfCQjAMTAWpVF47GmJ1hBS0Vg0B8KEOanbEBsAY3ONQ4L8g84kZLH+1yA2cNY/k7ig3Ws6rUzftwoOcpSK1RcoUK1y4DZJeETQLfTKQtTjeq3awcHNRD0vTcmMn/1t7k20iSEzhaOlf3IiZLkFMkxyBJuyTt6u3g88cF2sEEngXq472JedR4V884gb4pwu/eMzzVSTgg64RcFDARCjhl52ntvZhDCynXHj1uqNJMLAPad0S16tI44RiyiDueqP7ikg/OHJS5D8vlTyNdceNypxAlz3tcyYJBlltw=
+ id 1jThCW-0004sI-RR
+ for linux-mtd@lists.infradead.org; Wed, 29 Apr 2020 07:32:14 +0000
+Received: from twhfmlp1.macronix.com (twhfmlp1.macronix.com [172.17.20.91])
+ by TWHMLLG3.macronix.com with ESMTP id 03T7VZk4069210;
+ Wed, 29 Apr 2020 15:31:35 +0800 (GMT-8)
+ (envelope-from masonccyang@mxic.com.tw)
+Received: from MXML06C.mxic.com.tw (mxml06c.mxic.com.tw [172.17.14.55])
+ by Forcepoint Email with ESMTP id A53D1E36517895FA5976;
+ Wed, 29 Apr 2020 15:31:35 +0800 (CST)
+In-Reply-To: <20200428085401.574wmo6qddmumd7q@yadavpratyush.com>
+References: <1587451187-6889-1-git-send-email-masonccyang@mxic.com.tw>
+ <20200421092328.129308f6@collabora.com>
+ <20200427175536.2mmei2fy6f7bg6jm@yadavpratyush.com>
+ <OF18214CA5.6A9B2B30-ON48258558.001D894C-48258558.002249E0@mxic.com.tw>
+ <20200428085401.574wmo6qddmumd7q@yadavpratyush.com>
+To: "Pratyush Yadav" <me@yadavpratyush.com>
+Subject: Re: [PATCH v2 0/5] mtd: spi-nor: Add support for Octal 8D-8D-8D mode
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7039d9cc-cf97-4d68-540e-08d7ec0c792d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Apr 2020 07:11:01.1661 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: xXM6TD25CHn4Xic7L4VM4lUePAEwg924amGtlcw2HSy6QPBqRMRRbN0EA3W480TtfT0EKm6eTUycWoCBiuHnBuMA4/B9SWtZPT/CF9EG3eU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4007
+X-KeepSent: 04289CE2:B346916F-48258559:002280BD;
+ type=4; name=$KeepSent
+X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
+Message-ID: <OF04289CE2.B346916F-ON48258559.002280BD-48258559.00295800@mxic.com.tw>
+From: masonccyang@mxic.com.tw
+Date: Wed, 29 Apr 2020 15:31:35 +0800
+X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
+ HF265|July 25, 2018) at 2020/04/29 PM 03:31:35,
+ Serialize complete at 2020/04/29 PM 03:31:35
+X-MAIL: TWHMLLG3.macronix.com 03T7VZk4069210
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200429_001103_967243_B4CF5969 
-X-CRM114-Status: UNSURE (   7.23  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200429_003213_164152_E6D7DD02 
+X-CRM114-Status: GOOD (  32.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -152,57 +77,289 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Tudor.Ambarus@microchip.com
+Cc: vigneshr@ti.com, tudor.ambarus@microchip.com, juliensu@mxic.com.tw,
+ richard@nod.at, miquel.raynal@bootlin.com, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, broonie@kernel.org, linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Pratyush Yadav <p.yadav@ti.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-s25fs256s was identified as s25fl256s. Differentiate between them by
-the Family ID using the INFO6 macro.
+Hi Pratyush,
 
-Fixes: b199489d37b2 ("mtd: spi-nor: add the framework for SPI NOR")
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
----
- drivers/mtd/spi-nor/spansion.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+ 
+> > > > On Tue, 21 Apr 2020 14:39:42 +0800
+> > > > Mason Yang <masonccyang@mxic.com.tw> wrote:
+> > > > 
+> > > > > Hello,
+> > > > > 
+> > > > > This is repost of patchset from Boris Brezillon's
+> > > > > [RFC,00/18] mtd: spi-nor: Proposal for 8-8-8 mode support [1].
+> > > > 
+> > > > I only quickly went through the patches you sent and saying it's a
+> > > > repost of the RFC is a bit of a lie. You completely ignored the 
+state
+> > > > tracking I was trying to do to avoid leaving the flash in 8D mode 
+when
+> > > > suspending/resetting the board, and I think that part is crucial. 
+If I
+> > > > remember correctly, we already had this discussion so I must say 
+I'm a
+> > > > bit disappointed.
+> > > > 
+> > > > Can you sync with Pratyush? I think his series [1] is better in 
+that 
+> > it
+> > > > tries to restore the flash in single-SPI mode before suspend (it's
+> > > > missing the shutdown case, but that can be easily added I think). 
+Of
+> > > > course that'd be even better to have proper state tracking at the 
+SPI
+> > > > NOR level.
+> > > 
+> > > Hi Mason,
+> > > 
+> > > I posted a re-roll of my series here [0]. Could you please base your 
 
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index 88183eba8ac1..a68975eb5303 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -22,15 +22,21 @@ static const struct flash_info spansion_parts[] = {
- 	{ "s25fl128s1", INFO6(0x012018, 0x4d0180, 64 * 1024, 256,
- 			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
- 			      USE_CLSR) },
--	{ "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128,
--			     SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
--			     USE_CLSR) },
--	{ "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512,
--			     SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
--			     USE_CLSR) },
-+	{ "s25fl256s0", INFO6(0x010219, 0x4d0080, 256 * 1024, 128,
-+			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+			      USE_CLSR) },
-+	{ "s25fl256s1", INFO6(0x010219, 0x4d0180, 64 * 1024, 512,
-+			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+			      USE_CLSR) },
- 	{ "s25fl512s",  INFO6(0x010220, 0x4d0080, 256 * 1024, 256,
- 			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
- 			      SPI_NOR_HAS_LOCK | USE_CLSR) },
-+	{ "s25fs256s0", INFO6(0x010219, 0x4d0081, 256 * 1024, 128,
-+			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+			      USE_CLSR) },
-+	{ "s25fs256s1", INFO6(0x010219, 0x4d0181, 64 * 1024, 512,
-+			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+			      USE_CLSR) },
- 	{ "s25fs512s",  INFO6(0x010220, 0x4d0081, 256 * 1024, 256,
- 			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
- 			      USE_CLSR) },
--- 
-2.23.0
+> > > changes on top of it? Let me know if the series is missing something 
+you 
+> > 
+> > > need.
+> > > 
+> > > [0] 
+> > 
+https://lore.kernel.org/linux-mtd/20200424184410.8578-1-p.yadav@ti.com/
+> > 
+> > 
+> > Our mx25uw51245g supports BFPT DWORD-18,19 and 20 data and xSPI 
+profile 
+> > 1.0,
+> > and it comply with BFPT DWORD-19, octal mode enable sequences by write 
+CFG 
+> > Reg2 
+> > with instruction 0x72. Therefore, I can't apply your patches.
+> 
+> I didn't mean apply my patches directly. I meant more along the lines of 
+
+> edit your patches to work on top of my series. It should be as easy as 
+> adding your flash's fixup hooks and its octal DTR enable hook, but if my 
+
+> series is missing something you need (like complete Profile 1.0 parsing, 
+
+> which I left out because I wanted to be conservative and didn't see any 
+> immediate use-case for us), let me know, and we can work together to 
+> address it.
+
+yes,sure!
+let's work together to upstream the Octal 8D-8D-8D driver to mainline.
+
+The main concern is where and how to enable xSPI octal mode?
+
+Vignesh don't agree to enable it in fixup hooks and that's why I patched
+it to spi_nor_late_init_params() and confirmed the device support xSPI 
+Octal mode after BFPT DWORD-19 and xSPI pf 1.0 have been parsed.
+
+I can't apply your patches to enable xSPI Octal mode for mx25uw51245g 
+because your patches set up Octal protocol first and then using Octal 
+protocol to write Configuration Register 2(CFG Reg2). I think driver
+should write CFG Reg2 in SPI 1-1-1 mode (power on state) and make sure
+write CFG Reg 2 is success and then setup Octa protocol in the last.
+
+As JESD216F description on BFPT DOWRD 19th, only two way to enable 
+xSPI Octal mode;
+one is by two instruction: issue instruction 06h(WREN) and then E8h.
+the other is issue instruction 06h, then issue instruction 72h (Write
+CFG Reg2), address 0h and data 02h (8D-8D-8D).
+
+Let our patches comply with this. you may refer to my patches
+[v2,3/5] mtd: spi-nor: Parse BFPT DWORD-18, 19 and 20 for Octal 8D-8D-8D 
+mode
+
+                 /* Octal mode enable sequences. */
+                 switch (bfpt.dwords[BFPT_DWORD(19)] & 
+BFPT_DWORD19_OCTAL_SEQ_MASK) {
+                 case BFPT_DWORD19_TWO_INST:
++       ----> to patch here.
+                                 break;
+                 case BFPT_DWORD19_CFG_REG2:
+                                 params->xspi_enable = 
+spi_nor_cfg_reg2_octal_enable;
+                                 break;
+                 default:
+                                 break;
+                 }
+
+
+> 
+> > I quickly went through your patches but can't reply them in each your 
+> > patches.
+> > 
+> > i.e,.
+> > 1) [v4,03/16] spi: spi-mem: allow specifying a command's extension
+> > 
+> > -                                u8 opcode;
+> > +                                u16 opcode;
+> > 
+> > big/little Endian issue, right? 
+> > why not just u8 ext_opcode;
+> > No any impact for exist code and actually only xSPI device use 
+extension 
+> > command.
+> 
+> Boris already explained the reasoning behind it.
+
+yup, I got his point and please make sure CPU data access.
+
+i.e,.
+Fix endianness of the BFPT DWORDs and xSPI in sfdp.c
+
+and your patch,
++                                ext = spi_nor_get_cmd_ext(nor, op);
++                                op->cmd.opcode = (op->cmd.opcode << 8) | 
+ext;
++                                op->cmd.nbytes = 2;
+
+I think maybe using u8 opcode[2] could avoid endianness.
+
+Moreover, Vignesh think it's fine to use u8 ext_opcode in my v1 patches.
+please check his comments on
+https://patchwork.ozlabs.org/project/linux-mtd/patch/1573808288-19365-3-git-send-email-masonccyang@mxic.com.tw/ 
+
+
+
+Let's open this discussion and maybe Vighesh and Tudor could have some 
+comments on it.
+thanks a lot.
+
+> 
+> > 2) [v4,08/16] mtd: spi-nor: parse xSPI Profile 1.0 table
+> > 
+> > need extract more data from xSPI profile 1.0 table and no other 
+specific 
+> > setting. 
+> 
+> Not sure what you mean by "no other specific setting".
+
+I mean this function just do xSPI profile 1.0 table parse, no read/pp 
+setting
+i.e,.
+
++                /*
++                 * Update the fast read settings. We set the default 
+dummy cycles to 20
++                 * here. Flashes can change this value if they need to 
+when enabling
++                 * octal mode.
++                 */
++                params->hwcaps.mask |= SNOR_HWCAPS_READ_8_8_8_DTR;
++ spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_8_8_8_DTR],
++                                                                  0, 20, 
+opcode,
++ SNOR_PROTO_8_8_8_DTR);
++
++                /*
++                 * Since the flash supports xSPI DTR reads, it should 
+also support DTR
++                 * Page Program opcodes.
++                 */
++                params->hwcaps.mask |= SNOR_HWCAPS_PP_8_8_8_DTR;
+
+
+> 
+> > 3) [v4,11/16] mtd: spi-nor: enable octal DTR mode when possible
+> > 
+> > +static int spi_nor_octal_dtr_enable(struct spi_nor *nor, bool enable)
+> > +{
+> > +                int ret;
+> > +
+> > +                if (!nor->params->octal_dtr_enable)
+> > +                                return 0;
+> > +
+> > +                if (!(spi_nor_get_protocol_width(nor->read_proto) == 
+8 ||
+> > +                      spi_nor_get_protocol_width(nor->write_proto) == 
+8))
+> > +                                return 0;
+> > +
+> > +                ret = nor->params->octal_dtr_enable(nor, enable);
+> > +                if (ret)
+> > +                                return ret;
+> > +
+> > +                if (enable)
+> > +                                nor->reg_proto = 
+SNOR_PROTO_8_8_8_DTR;
+> > +                else
+> > +                                nor->reg_proto = SNOR_PROTO_1_1_1;
+> > +
+> > +                return 0;
+> > +}
+> > +
+> > 
+> > it seems you enable device in Octal mode after SPI-NOR Framework is 
+> > already
+> > in Octal protocol.
+> > Driver should set device by SPI 1-1-1 mode to enter Octal mode and 
+then 
+> > setup
+> > Read/PP command and protocol by spi_nor_set_read/pp_setting() for 
+Octal 
+> > mode,
+> > right ?
+> 
+> No. We need to setup Read and PP settings first. The overall flow is 
+> that we first run spi_nor_setup(). This will perform a "negotiation" 
+> between the controller and the flash to find out a common protocol they 
+> both support, and then change to that protocol in spi_nor_init(). Even 
+> if the flash supports octal DTR protocol, we can't use if if the 
+> controller doesn't. That is why we want to first select the protocol in 
+> the framework, and only then change the flash to that protocol.
+> 
+> In case the controller doesn't support 8D-8D-8D protocol, we would want 
+> to use 1S-1S-1S protocol so the flash is at least usable. Changing to 8D 
+
+> mode before finding this out would make the flash unusable.
+> 
+
+as my concern above.
+
+> -- 
+> Regards,
+> Pratyush Yadav
+
+thanks & best regards,
+Mason
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information 
+and/or personal data, which is protected by applicable laws. Please be 
+reminded that duplication, disclosure, distribution, or use of this e-mail 
+(and/or its attachments) or any part thereof is prohibited. If you receive 
+this e-mail in error, please notify us immediately and delete this mail as 
+well as its attachment(s) from your system. In addition, please be 
+informed that collection, processing, and/or use of personal data is 
+prohibited unless expressly permitted by personal data protection laws. 
+Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
+
+
+
+============================================================================
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
