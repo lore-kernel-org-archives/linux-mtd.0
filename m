@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86647C47253
-	for <linux-mtd@archiver.kernel.org>; Fri,  1 May 2020 09:08:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64016C4724C
+	for <linux-mtd@archiver.kernel.org>; Fri,  1 May 2020 09:08:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5D3CC20731
-	for <linux-mtd@archiver.kernel.org>; Fri,  1 May 2020 09:08:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1E31720731
+	for <linux-mtd@archiver.kernel.org>; Fri,  1 May 2020 09:08:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Vr4QQp7k"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5D3CC20731
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KZvu/aQT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E31720731
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ycEE2CkJbl3covXC67baGYRBP12KErQB1CX3QuHMIL0=; b=Vr4QQp7kAPf9KK
-	yyFj//hiiqOmPBOZzlOsV2mMmMnjp1QSFNYK5jNpYqKNMPLjGQCSZW58F+bBqXcJutRdJV/91rUlO
-	bdZucqsNAys/ELfjXPdkkyVm7Na/yS0HdDQASEsQIeKv9USExwbJLhQQFBaqvTHKSqUA3XsM0d/LY
-	PN/8ot94Y6/rQ9rfqKL8RJMN1vIxeYt4j9YyG1yrSWLPuhwhHIaH5l/c0PS2WDiK9AEkAdGv05CMa
-	2n2JqdfdBuZevcVE3GZvD4DjBTlxkO68Cgptaf0eXnRIH0wO57n2G3dZ/eOKz5umSWF+UBbc2koT2
-	ZBkQSy66O0AH5brffcAw==;
+	List-Owner; bh=Tb+7vmIOWVeYS0KdqMJYx3uK6qb5GFFoZebRislO+bk=; b=KZvu/aQTlAsGE6
+	9T/ZZyWDbEQ8mH2N1Pf+j0bpyN0rvUJHBL8/oXokLnWsTtdRrumOj8CBzZMY1IDLfS920hp6FEg0W
+	Rc+Biy+QBRj0Z9RQx2q6Rcu6FphB5a39byPndXueh420M0R0ocJ+/pP3W2lRoKD4r2P+BPqeW9njz
+	PSCBZgeKjfEcNOWlJYygY/ScKXn7bFyoODH2OOmXJWuC7TxwT0rgxd2dgLB4rW30mbMH5v1fPc1xC
+	Jae4qXG5c3oGD+1PUjA1UA3WhOlVlEIUjy9ILCsQz5EWZN1ngFJusobiEePNz3PN0lGamdoueK8LR
+	HoRrJyJEuq+T4kSS9xsA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jUReK-0001sy-UO; Fri, 01 May 2020 09:08:00 +0000
+	id 1jURee-000282-Nm; Fri, 01 May 2020 09:08:20 +0000
 Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jURdO-00019A-EV; Fri, 01 May 2020 09:07:05 +0000
+ id 1jURdO-00019F-P2; Fri, 01 May 2020 09:07:05 +0000
 Received: from localhost.localdomain (unknown
  [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 2A3952A2D4F;
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 7286F2A2D50;
  Fri,  1 May 2020 10:07:01 +0100 (BST)
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH 2/4] mtd: rawnand: cs553x: Stop using chip->legacy.IO_ADDR_{R,
- W}
-Date: Fri,  1 May 2020 11:06:48 +0200
-Message-Id: <20200501090650.1138200-3-boris.brezillon@collabora.com>
+Subject: [PATCH 3/4] mtd: rawnand: cs553x: Implement exec_op()
+Date: Fri,  1 May 2020 11:06:49 +0200
+Message-Id: <20200501090650.1138200-4-boris.brezillon@collabora.com>
 X-Mailer: git-send-email 2.25.3
 In-Reply-To: <20200501090650.1138200-1-boris.brezillon@collabora.com>
 References: <20200501090650.1138200-1-boris.brezillon@collabora.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200501_020702_780174_4B83B3D4 
-X-CRM114-Status: GOOD (  14.47  )
+X-CRM114-CacheID: sfid-20200501_020703_069083_EF9599FA 
+X-CRM114-Status: GOOD (  15.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,173 +77,173 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Now that we have our own controller struct we can keep the MMIO pointer
-in there and use instead of using the chip->legacy.IO_ADDR_{R,W} fields.
+So we can later get rid of the legacy hooks.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
 ---
- drivers/mtd/nand/raw/cs553x_nand.c | 57 ++++++++++++++++++------------
- 1 file changed, 34 insertions(+), 23 deletions(-)
+ drivers/mtd/nand/raw/cs553x_nand.c | 126 ++++++++++++++++++++++++++++-
+ 1 file changed, 125 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/raw/cs553x_nand.c b/drivers/mtd/nand/raw/cs553x_nand.c
-index 970de727679f..84cf87f02bd3 100644
+index 84cf87f02bd3..3596edc6b777 100644
 --- a/drivers/mtd/nand/raw/cs553x_nand.c
 +++ b/drivers/mtd/nand/raw/cs553x_nand.c
-@@ -92,51 +92,66 @@
- struct cs553x_nand_controller {
- 	struct nand_controller base;
- 	struct nand_chip chip;
-+	void __iomem *mmio;
- };
+@@ -21,9 +21,9 @@
+ #include <linux/mtd/rawnand.h>
+ #include <linux/mtd/nand_ecc.h>
+ #include <linux/mtd/partitions.h>
++#include <linux/iopoll.h>
  
-+static struct cs553x_nand_controller *
-+to_cs553x(struct nand_controller *controller)
-+{
-+	return container_of(controller, struct cs553x_nand_controller, base);
-+}
-+
- static void cs553x_read_buf(struct nand_chip *this, u_char *buf, int len)
- {
-+	struct cs553x_nand_controller *cs553x = to_cs553x(this->controller);
-+
- 	while (unlikely(len > 0x800)) {
--		memcpy_fromio(buf, this->legacy.IO_ADDR_R, 0x800);
-+		memcpy_fromio(buf, cs553x->mmio, 0x800);
- 		buf += 0x800;
- 		len -= 0x800;
- 	}
--	memcpy_fromio(buf, this->legacy.IO_ADDR_R, len);
-+	memcpy_fromio(buf, cs553x->mmio, len);
- }
+ #include <asm/msr.h>
+-#include <asm/io.h>
  
- static void cs553x_write_buf(struct nand_chip *this, const u_char *buf, int len)
- {
-+	struct cs553x_nand_controller *cs553x = to_cs553x(this->controller);
-+
- 	while (unlikely(len > 0x800)) {
--		memcpy_toio(this->legacy.IO_ADDR_R, buf, 0x800);
-+		memcpy_toio(cs553x->mmio, buf, 0x800);
- 		buf += 0x800;
- 		len -= 0x800;
- 	}
--	memcpy_toio(this->legacy.IO_ADDR_R, buf, len);
-+	memcpy_toio(cs553x->mmio, buf, len);
- }
+ #define NR_CS553X_CONTROLLERS	4
  
- static unsigned char cs553x_read_byte(struct nand_chip *this)
- {
--	return readb(this->legacy.IO_ADDR_R);
-+	struct cs553x_nand_controller *cs553x = to_cs553x(this->controller);
-+
-+	return readb(cs553x->mmio);
- }
- 
- static void cs553x_write_byte(struct nand_chip *this, u_char byte)
- {
-+	struct cs553x_nand_controller *cs553x = to_cs553x(this->controller);
- 	int i = 100000;
- 
--	while (i && readb(this->legacy.IO_ADDR_R + MM_NAND_STS) & CS_NAND_CTLR_BUSY) {
-+	while (i && readb(cs553x->mmio + MM_NAND_STS) & CS_NAND_CTLR_BUSY) {
- 		udelay(1);
- 		i--;
- 	}
--	writeb(byte, this->legacy.IO_ADDR_W + 0x801);
-+	writeb(byte, cs553x->mmio + 0x801);
- }
- 
- static void cs553x_hwcontrol(struct nand_chip *this, int cmd,
- 			     unsigned int ctrl)
- {
--	void __iomem *mmio_base = this->legacy.IO_ADDR_R;
-+	struct cs553x_nand_controller *cs553x = to_cs553x(this->controller);
-+
- 	if (ctrl & NAND_CTRL_CHANGE) {
- 		unsigned char ctl = (ctrl & ~NAND_CTRL_CHANGE ) ^ 0x01;
--		writeb(ctl, mmio_base + MM_NAND_CTL);
-+		writeb(ctl, cs553x->mmio + MM_NAND_CTL);
- 	}
- 	if (cmd != NAND_CMD_NONE)
- 		cs553x_write_byte(this, cmd);
-@@ -144,26 +159,26 @@ static void cs553x_hwcontrol(struct nand_chip *this, int cmd,
- 
- static int cs553x_device_ready(struct nand_chip *this)
- {
--	void __iomem *mmio_base = this->legacy.IO_ADDR_R;
--	unsigned char foo = readb(mmio_base + MM_NAND_STS);
-+	struct cs553x_nand_controller *cs553x = to_cs553x(this->controller);
-+	unsigned char foo = readb(cs553x->mmio + MM_NAND_STS);
- 
+@@ -165,6 +165,125 @@ static int cs553x_device_ready(struct nand_chip *this)
  	return (foo & CS_NAND_STS_FLASH_RDY) && !(foo & CS_NAND_CTLR_BUSY);
  }
  
++static int cs553x_write_ctrl_byte(struct cs553x_nand_controller *cs553x,
++				  u32 ctl, u8 data)
++{
++	u8 status;
++	int ret;
++
++	writeb(ctl, cs553x->mmio + MM_NAND_CTL);
++	writeb(data, cs553x->mmio + MM_NAND_IO);
++	ret = readb_poll_timeout_atomic(cs553x->mmio + MM_NAND_STS, status,
++					!(status & CS_NAND_CTLR_BUSY), 1,
++					100000);
++	if (ret)
++		return ret;
++
++	return 0;
++}
++
++static void cs553x_data_in(struct cs553x_nand_controller *cs553x, void *buf,
++			   unsigned int len)
++{
++	writeb(0, cs553x->mmio + MM_NAND_CTL);
++	while (unlikely(len > 0x800)) {
++		memcpy_fromio(buf, cs553x->mmio, 0x800);
++		buf += 0x800;
++		len -= 0x800;
++	}
++	memcpy_fromio(buf, cs553x->mmio, len);
++}
++
++static void cs553x_data_out(struct cs553x_nand_controller *cs553x,
++			    const void *buf, unsigned int len)
++{
++	writeb(0, cs553x->mmio + MM_NAND_CTL);
++	while (unlikely(len > 0x800)) {
++		memcpy_toio(cs553x->mmio, buf, 0x800);
++		buf += 0x800;
++		len -= 0x800;
++	}
++	memcpy_toio(cs553x->mmio, buf, len);
++}
++
++static int cs553x_wait_ready(struct cs553x_nand_controller *cs553x,
++			     unsigned int timeout_ms)
++{
++	u8 mask = CS_NAND_CTLR_BUSY | CS_NAND_STS_FLASH_RDY;
++	u8 status;
++
++	return readb_poll_timeout(cs553x->mmio + MM_NAND_STS, status,
++				  (status & mask) == CS_NAND_STS_FLASH_RDY, 100,
++				  timeout_ms * 1000);
++}
++
++static int cs553x_exec_instr(struct cs553x_nand_controller *cs553x,
++			     const struct nand_op_instr *instr)
++{
++	unsigned int i;
++	int ret = 0;
++
++	switch (instr->type) {
++	case NAND_OP_CMD_INSTR:
++		ret = cs553x_write_ctrl_byte(cs553x, CS_NAND_CTL_CLE,
++					     instr->ctx.cmd.opcode);
++		break;
++
++	case NAND_OP_ADDR_INSTR:
++		for (i = 0; i < instr->ctx.addr.naddrs; i++) {
++			ret = cs553x_write_ctrl_byte(cs553x, CS_NAND_CTL_ALE,
++						     instr->ctx.addr.addrs[i]);
++			if (ret)
++				break;
++		}
++		break;
++
++	case NAND_OP_DATA_IN_INSTR:
++		cs553x_data_in(cs553x, instr->ctx.data.buf.in,
++			       instr->ctx.data.len);
++		break;
++
++	case NAND_OP_DATA_OUT_INSTR:
++		cs553x_data_out(cs553x, instr->ctx.data.buf.out,
++				instr->ctx.data.len);
++		break;
++
++	case NAND_OP_WAITRDY_INSTR:
++		ret = cs553x_wait_ready(cs553x, instr->ctx.waitrdy.timeout_ms);
++		break;
++	}
++
++	if (instr->delay_ns)
++		ndelay(instr->delay_ns);
++
++	return ret;
++}
++
++static int cs553x_exec_op(struct nand_chip *this,
++			  const struct nand_operation *op,
++			  bool check_only)
++{
++	struct cs553x_nand_controller *cs553x = to_cs553x(this->controller);
++	unsigned int i;
++	int ret;
++
++	if (check_only)
++		return true;
++
++	/* De-assert the CE pin */
++	writeb(0, cs553x->mmio + MM_NAND_CTL);
++	for (i = 0; i < op->ninstrs; i++) {
++		ret = cs553x_exec_instr(cs553x, &op->instrs[i]);
++		if (ret)
++			break;
++	}
++
++	/* Re-assert the CE pin. */
++	writeb(CS_NAND_CTL_CE, cs553x->mmio + MM_NAND_CTL);
++
++	return ret;
++}
++
  static void cs_enable_hwecc(struct nand_chip *this, int mode)
  {
--	void __iomem *mmio_base = this->legacy.IO_ADDR_R;
-+	struct cs553x_nand_controller *cs553x = to_cs553x(this->controller);
+ 	struct cs553x_nand_controller *cs553x = to_cs553x(this->controller);
+@@ -188,6 +307,10 @@ static int cs_calculate_ecc(struct nand_chip *this, const u_char *dat,
  
--	writeb(0x07, mmio_base + MM_NAND_ECC_CTL);
-+	writeb(0x07, cs553x->mmio + MM_NAND_ECC_CTL);
- }
+ static struct cs553x_nand_controller *controllers[4];
  
- static int cs_calculate_ecc(struct nand_chip *this, const u_char *dat,
- 			    u_char *ecc_code)
++static const struct nand_controller_ops cs553x_nand_controller_ops = {
++	.exec_op = cs553x_exec_op,
++};
++
+ static int __init cs553x_init_one(int cs, int mmio, unsigned long adr)
  {
-+	struct cs553x_nand_controller *cs553x = to_cs553x(this->controller);
- 	uint32_t ecc;
--	void __iomem *mmio_base = this->legacy.IO_ADDR_R;
+ 	struct cs553x_nand_controller *controller;
+@@ -212,6 +335,7 @@ static int __init cs553x_init_one(int cs, int mmio, unsigned long adr)
  
--	ecc = readl(mmio_base + MM_NAND_STS);
-+	ecc = readl(cs553x->mmio + MM_NAND_STS);
+ 	this = &controller->chip;
+ 	nand_controller_init(&controller->base);
++	controller->base.ops = &cs553x_nand_controller_ops;
+ 	this->controller = &controller->base;
+ 	new_mtd = nand_to_mtd(this);
  
- 	ecc_code[1] = ecc >> 8;
- 	ecc_code[0] = ecc >> 16;
-@@ -204,8 +219,8 @@ static int __init cs553x_init_one(int cs, int mmio, unsigned long adr)
- 	new_mtd->owner = THIS_MODULE;
- 
- 	/* map physical address */
--	this->legacy.IO_ADDR_R = this->legacy.IO_ADDR_W = ioremap(adr, 4096);
--	if (!this->legacy.IO_ADDR_R) {
-+	controller->mmio = ioremap(adr, 4096);
-+	if (!controller->mmio) {
- 		pr_warn("ioremap cs553x NAND @0x%08lx failed\n", adr);
- 		err = -EIO;
- 		goto out_mtd;
-@@ -247,7 +262,7 @@ static int __init cs553x_init_one(int cs, int mmio, unsigned long adr)
- out_free:
- 	kfree(new_mtd->name);
- out_ior:
--	iounmap(this->legacy.IO_ADDR_R);
-+	iounmap(controller->mmio);
- out_mtd:
- 	kfree(controller);
- out:
-@@ -322,7 +337,6 @@ static void __exit cs553x_cleanup(void)
- 	int i;
- 
- 	for (i = 0; i < NR_CS553X_CONTROLLERS; i++) {
--		void __iomem *mmio_base;
- 		struct cs553x_nand_controller *controller = controllers[i];
- 		struct nand_chip *this = &controller->chip;
- 		struct mtd_info *mtd = nand_to_mtd(this);
-@@ -330,16 +344,13 @@ static void __exit cs553x_cleanup(void)
- 		if (!mtd)
- 			continue;
- 
--		this = mtd_to_nand(mtd);
--		mmio_base = this->legacy.IO_ADDR_R;
--
- 		/* Release resources, unregister device */
- 		nand_release(this);
- 		kfree(mtd->name);
- 		controllers[i] = NULL;
- 
- 		/* unmap physical address */
--		iounmap(mmio_base);
-+		iounmap(controller->mmio);
- 
- 		/* Free the MTD device structure */
- 		kfree(controller);
 -- 
 2.25.3
 
