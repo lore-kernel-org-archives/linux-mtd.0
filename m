@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A742C4724C
-	for <linux-mtd@archiver.kernel.org>; Fri,  1 May 2020 10:08:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA7A8C47253
+	for <linux-mtd@archiver.kernel.org>; Fri,  1 May 2020 10:08:24 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 428992071C
-	for <linux-mtd@archiver.kernel.org>; Fri,  1 May 2020 10:08:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 872352071C
+	for <linux-mtd@archiver.kernel.org>; Fri,  1 May 2020 10:08:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ak6EBnpT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 428992071C
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rbddyAqa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 872352071C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4+sQkQZXWKqztH0QKqRpfinhSL1dRZmoS28+sqW1Ap8=; b=ak6EBnpTQcR7R8
-	pSSPj3NrnJHDB000AP5dLrxY7Pky9imLfmcY2DAmUVqIyL5A/TA2akVOa2zDZJkIOvlu+eFOYTWTa
-	yJT9H9yCXb4Qf7gsuOedNlY0KccUtksejLSrnWzXRjLtBifMVvheK6HwQ/8WwVCZ8n0lKBS3PQGsl
-	K9PddGjafhqt5+WRUFWkTZvDitVBmTlwTanaiMnusX2t8D2KK0wc1pWv3/+OzRF8Ls99OB7gGIzvw
-	3CTFWLA/CDUg7fAB8tC34jfiqSy0lEr4O/xw/Sf3Vce+dW8hhVl4QbVK7GRGUoAmVOl6Cif0nsfU+
-	NiWkOpnKrgSuTR+67TvA==;
+	List-Owner; bh=VsUfLdSoyqMv1tzBmVsM5eU3BZky70L+HrGCSYZv5qc=; b=rbddyAqaMXKSSl
+	9LhgSctsYuO/DuXTRkPug7brhVGVhv25LVy1Oo88J3hTjEjqHkITc2L+sp+kgI38NF12tWzSNp4t/
+	idUxGtoXMuKn5TtN8oJvBVmESnkee/+EPtr7xVknj2sDlnTc+7pOd4ffl+CpqxUIFQ2YwQTqjRXae
+	piTv4Xy9kCQ9Pt/qP//SADCfpmBjYtgAR+0XjxQUiIGvwYxbYjaofTY8EHhAHNXOZ1nObfzXYsEbM
+	cY2GfvHz09UwWXwCttE+dx8XN/CiZkbYqWjawk+sCf9TUdeM1mR98TsSFro1YBDfPvDUzgNBa1T4j
+	JW6NNzUrLZKcGfifJWaw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jUSaO-0000NN-88; Fri, 01 May 2020 10:08:00 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1jUSaf-0000eU-As; Fri, 01 May 2020 10:08:17 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jUSZz-0008Pb-KY
+ id 1jUSZz-0008Pc-M1
  for linux-mtd@lists.infradead.org; Fri, 01 May 2020 10:07:38 +0000
 Received: from localhost.localdomain (unknown
  [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 1384F2A2DC6;
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 5B4A92A2DC8;
  Fri,  1 May 2020 11:07:34 +0100 (BST)
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
  Sekhar Nori <nsekhar@ti.com>,
  Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 2/5] mtd: rawnand: davinci: Stop using
- nand_chip.legacy.IO_ADDR_{R, W}
-Date: Fri,  1 May 2020 12:07:26 +0200
-Message-Id: <20200501100729.1237040-3-boris.brezillon@collabora.com>
+Subject: [PATCH 3/5] mtd: rawnand: davinci: Implement exec_op()
+Date: Fri,  1 May 2020 12:07:27 +0200
+Message-Id: <20200501100729.1237040-4-boris.brezillon@collabora.com>
 X-Mailer: git-send-email 2.25.3
 In-Reply-To: <20200501100729.1237040-1-boris.brezillon@collabora.com>
 References: <20200501100729.1237040-1-boris.brezillon@collabora.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200501_030735_799984_9B91F869 
-X-CRM114-Status: GOOD (  13.11  )
+X-CRM114-CacheID: sfid-20200501_030735_844028_18CCD08F 
+X-CRM114-Status: GOOD (  14.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,95 +78,106 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-We can use info->current_cs directly instead of doing this weird
-IO_ADDR_{R,W} re-assignment dance.
+Implement exec_op() so we can later get rid of the legacy interface
+implementation.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
 ---
- drivers/mtd/nand/raw/davinci_nand.c | 36 ++++++++++++-----------------
- 1 file changed, 15 insertions(+), 21 deletions(-)
+ drivers/mtd/nand/raw/davinci_nand.c | 72 ++++++++++++++++++++++++++++-
+ 1 file changed, 71 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/raw/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
-index 0312c632d86a..779f708c791f 100644
+index 779f708c791f..296047884c6a 100644
 --- a/drivers/mtd/nand/raw/davinci_nand.c
 +++ b/drivers/mtd/nand/raw/davinci_nand.c
-@@ -91,18 +91,13 @@ static void nand_davinci_hwcontrol(struct nand_chip *nand, int cmd,
- 	struct davinci_nand_info *info = to_davinci_nand(nand_to_mtd(nand));
- 	void __iomem			*addr = info->current_cs;
- 
--	/* Did the control lines change? */
--	if (ctrl & NAND_CTRL_CHANGE) {
--		if ((ctrl & NAND_CTRL_CLE) == NAND_CTRL_CLE)
--			addr += info->mask_cle;
--		else if ((ctrl & NAND_CTRL_ALE) == NAND_CTRL_ALE)
--			addr += info->mask_ale;
--
--		nand->legacy.IO_ADDR_W = addr;
--	}
-+	if (ctrl & NAND_CTRL_CLE)
-+		addr += info->mask_cle;
-+	else if (ctrl & NAND_CTRL_ALE)
-+		addr += info->mask_ale;
- 
- 	if (cmd != NAND_CMD_NONE)
--		iowrite8(cmd, nand->legacy.IO_ADDR_W);
-+		iowrite8(cmd, addr);
+@@ -14,7 +14,7 @@
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+ #include <linux/err.h>
+-#include <linux/io.h>
++#include <linux/iopoll.h>
+ #include <linux/mtd/rawnand.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/slab.h>
+@@ -678,8 +678,78 @@ static int davinci_nand_attach_chip(struct nand_chip *chip)
+ 	return ret;
  }
  
- static void nand_davinci_select_chip(struct nand_chip *nand, int chip)
-@@ -114,9 +109,6 @@ static void nand_davinci_select_chip(struct nand_chip *nand, int chip)
- 	/* maybe kick in a second chipselect */
- 	if (chip > 0)
- 		info->current_cs += info->mask_chipsel;
--
--	info->chip.legacy.IO_ADDR_W = info->current_cs;
--	info->chip.legacy.IO_ADDR_R = info->chip.legacy.IO_ADDR_W;
- }
- 
- /*----------------------------------------------------------------------*/
-@@ -425,23 +417,27 @@ static int nand_davinci_correct_4bit(struct nand_chip *chip, u_char *data,
- static void nand_davinci_read_buf(struct nand_chip *chip, uint8_t *buf,
- 				  int len)
- {
-+	struct davinci_nand_info *info = to_davinci_nand(nand_to_mtd(chip));
++static int davinci_nand_exec_instr(struct davinci_nand_info *info,
++				   const struct nand_op_instr *instr)
++{
++	unsigned int i, timeout_us;
++	u32 status;
++	int ret;
 +
- 	if ((0x03 & ((uintptr_t)buf)) == 0 && (0x03 & len) == 0)
--		ioread32_rep(chip->legacy.IO_ADDR_R, buf, len >> 2);
-+		ioread32_rep(info->current_cs, buf, len >> 2);
- 	else if ((0x01 & ((uintptr_t)buf)) == 0 && (0x01 & len) == 0)
--		ioread16_rep(chip->legacy.IO_ADDR_R, buf, len >> 1);
-+		ioread16_rep(info->current_cs, buf, len >> 1);
- 	else
--		ioread8_rep(chip->legacy.IO_ADDR_R, buf, len);
-+		ioread8_rep(info->current_cs, buf, len);
- }
- 
- static void nand_davinci_write_buf(struct nand_chip *chip, const uint8_t *buf,
- 				   int len)
- {
-+	struct davinci_nand_info *info = to_davinci_nand(nand_to_mtd(chip));
++	switch (instr->type) {
++	case NAND_OP_CMD_INSTR:
++		iowrite8(instr->ctx.cmd.opcode,
++			 info->current_cs + info->mask_cle);
++		break;
 +
- 	if ((0x03 & ((uintptr_t)buf)) == 0 && (0x03 & len) == 0)
--		iowrite32_rep(chip->legacy.IO_ADDR_R, buf, len >> 2);
-+		iowrite32_rep(info->current_cs, buf, len >> 2);
- 	else if ((0x01 & ((uintptr_t)buf)) == 0 && (0x01 & len) == 0)
--		iowrite16_rep(chip->legacy.IO_ADDR_R, buf, len >> 1);
-+		iowrite16_rep(info->current_cs, buf, len >> 1);
- 	else
--		iowrite8_rep(chip->legacy.IO_ADDR_R, buf, len);
-+		iowrite8_rep(info->current_cs, buf, len);
- }
++	case NAND_OP_ADDR_INSTR:
++		for (i = 0; i < instr->ctx.addr.naddrs; i++) {
++			iowrite8(instr->ctx.addr.addrs[i],
++				 info->current_cs + info->mask_ale);
++		}
++		break;
++
++	case NAND_OP_DATA_IN_INSTR:
++		nand_davinci_read_buf(&info->chip, instr->ctx.data.buf.in,
++				      instr->ctx.data.len);
++		break;
++
++	case NAND_OP_DATA_OUT_INSTR:
++		nand_davinci_write_buf(&info->chip, instr->ctx.data.buf.out,
++				       instr->ctx.data.len);
++		break;
++
++	case NAND_OP_WAITRDY_INSTR:
++		timeout_us = instr->ctx.waitrdy.timeout_ms * 1000;
++		ret = readl_relaxed_poll_timeout(info->base + NANDFSR_OFFSET,
++						 status, status & BIT(0), 100,
++						 timeout_us);
++		if (ret)
++			return ret;
++
++		break;
++	}
++
++	if (instr->delay_ns)
++		ndelay(instr->delay_ns);
++
++	return 0;
++}
++
++static int davinci_nand_exec_op(struct nand_chip *chip,
++				const struct nand_operation *op,
++				bool check_only)
++{
++	struct davinci_nand_info *info = to_davinci_nand(nand_to_mtd(chip));
++	unsigned int i;
++	int ret;
++
++	if (check_only)
++		return true;
++
++	info->current_cs = info->vaddr + (op->cs * info->mask_chipsel);
++
++	for (i = 0; i < op->ninstrs; i++) {
++		ret = davinci_nand_exec_instr(info, &op->instrs[i]);
++		if (ret)
++			break;
++	}
++
++	return ret;
++}
++
+ static const struct nand_controller_ops davinci_nand_controller_ops = {
+ 	.attach_chip = davinci_nand_attach_chip,
++	.exec_op = davinci_nand_exec_op,
+ };
  
- /*
-@@ -747,8 +743,6 @@ static int nand_davinci_probe(struct platform_device *pdev)
- 	mtd->dev.parent		= &pdev->dev;
- 	nand_set_flash_node(&info->chip, pdev->dev.of_node);
- 
--	info->chip.legacy.IO_ADDR_R	= vaddr;
--	info->chip.legacy.IO_ADDR_W	= vaddr;
- 	info->chip.legacy.chip_delay	= 0;
- 	info->chip.legacy.select_chip	= nand_davinci_select_chip;
- 
+ static int nand_davinci_probe(struct platform_device *pdev)
 -- 
 2.25.3
 
