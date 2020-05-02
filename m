@@ -1,83 +1,67 @@
-Return-Path: <SRS0=+Ogn=6P=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=DU2W=6Q=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AEFBC35280
-	for <linux-mtd@archiver.kernel.org>; Fri,  1 May 2020 21:26:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D0170C3A5A9
+	for <linux-mtd@archiver.kernel.org>; Sat,  2 May 2020 05:33:55 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 668A120857
-	for <linux-mtd@archiver.kernel.org>; Fri,  1 May 2020 21:26:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9CFB32071E
+	for <linux-mtd@archiver.kernel.org>; Sat,  2 May 2020 05:33:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GbhEPjlg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 668A120857
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VGUKgI2p";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="EuFRJQF7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9CFB32071E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bzl69TN1oLPsqKY8B2WjLofTdgjwbgZgY6a82UiG/Uw=; b=GbhEPjlgoZTGX0
-	mAstp/f5nm/JTe93gGdIvtRgqytjQ6yKFKeRYzAqSR3NpV6aYjZZHymLexM1k+Tncq0TbJIVU/HTo
-	BeeTtpTzHvL0fwb1rAnSGC28su4yaMIa/JJek0VDCixolz0B3O2O3BxBKXKqKgkr+fA1zliTz34Px
-	pRYu6BH7OJBX15Euidz24NBbhEDOLkIZUXZePVYBw6vapb+byL7iVcQZmBDIvdXtYQusnDRQtm10q
-	NoGgS0slm/ZcRntQn6iB+uuqwJjoeo7Kndgq+q+f3ll3IBgqz3SHovTaIbkfgESboNw1pLgdZ05pk
-	MZ8KdAwgQ3XQiMmS36ig==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=RjvcAZ05kneKKyzz57+tLh/3QeoZjfzEZ6uUEiasdRU=; b=VGUKgI2phXakXt
+	m3GkOeuZNM0DjUaw6S5Sgaftu2I88Tr5S6yfCV98QjzzuxpZWgLEUr/LAcqV+0SCSc5ux8axSMIOH
+	oCQH4aNnAZGsQ/cps/Vm/CaqcEme+DKQzPyUbb854cWDjSl/QfhUVQyj06uk2SbcWXpC8KORhwjdU
+	Kz+bEz3ACCRrGmlBcOwUOC7zNT1AZG1bgwMvUo+wSRPJFt4lKygVxM/YqPhFiFxWLPL8zA+4a5xB0
+	hDg5Gt5crsWUpwkyKKUVlQ9n0/+YVVTrItFYLR4TlTl5whq73Gg6bV0P6/TgnfqMXtx4chLEFjN5Q
+	CQbjrkInh+B1XAgMDf+g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jUdAt-0003Qx-Gx; Fri, 01 May 2020 21:26:23 +0000
-Received: from mail-ot1-f67.google.com ([209.85.210.67])
+	id 1jUkmJ-0004RP-Mq; Sat, 02 May 2020 05:33:31 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jUdAM-0002rP-Ip
- for linux-mtd@lists.infradead.org; Fri, 01 May 2020 21:25:52 +0000
-Received: by mail-ot1-f67.google.com with SMTP id j4so3631380otr.11
- for <linux-mtd@lists.infradead.org>; Fri, 01 May 2020 14:25:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=IODh8vaskvY8EIkReJH8wMEH0J80lOImbjARnLzzvcQ=;
- b=fCAYdp2MVPTmC6oGcqz1Bm55rV4c7AcGCOYT/l7PDNefQQJjcrvRpjc0pNHXfpptmz
- Pd8Pu+xoz6faJim3XlGGrNfMCx5eZNyP6SUmclDwB9IyQpOw0U6/w+JAyCelTgY3ITaf
- 3fwlOt+UubF2oKqxOThe5HNc7I6aKvYj8v+A/gA0fF98PqCtKg3LQ4TlXOKLKLQmFkUG
- ZkJjVl9U7Gm/2cr0E+kAjwI+uNZzq3G/rYecOPYDGUaTgJ1Trc5HDBgZWl/ppUfg0IWL
- mhEAtt5Flbg/gSdQy4JpCC2JcP1HHx5nz5rWwJb8QAF8IhDyxBs0eWXC9A6YXeHoBHUc
- DxXQ==
-X-Gm-Message-State: AGi0PubwHlBKN3UD3VJo7yecoVInTLrwvt490J3Ddp0eKiqtK7unFX7v
- PQIM/tsWOob+QHaEP/EhrBegB6M=
-X-Google-Smtp-Source: APiQypK6GnwgIp5q8Fl8YttocWPKhKXxC4m7JVG3OzxdYotva83r0Pcn/EVz6ZtR+YXkGyZH07amqQ==
-X-Received: by 2002:a9d:7f04:: with SMTP id j4mr5397739otq.185.1588368349023; 
- Fri, 01 May 2020 14:25:49 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net.
- [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id b19sm269926oii.1.2020.05.01.14.25.48
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 01 May 2020 14:25:48 -0700 (PDT)
-Received: (nullmailer pid 25490 invoked by uid 1000);
- Fri, 01 May 2020 21:25:48 -0000
-Date: Fri, 1 May 2020 16:25:48 -0500
-From: Rob Herring <robh@kernel.org>
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: memory: document Renesas RPC-IF
- bindings
-Message-ID: <20200501212547.GB15294@bogus>
-References: <812e6e58-d13f-3f44-5f55-22266b690c57@cogentembedded.com>
- <116683d1-d402-4d7f-3357-1c8cde807076@cogentembedded.com>
+ id 1jUkmG-0004P7-TA
+ for linux-mtd@lists.infradead.org; Sat, 02 May 2020 05:33:30 +0000
+Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net
+ [107.3.166.239])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id F0D5D208DB;
+ Sat,  2 May 2020 05:33:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1588397607;
+ bh=MYhkXQ8M6ehjcKnUAHPgBXgoMFSmViXmlsVaKB/2/iE=;
+ h=From:To:Cc:Subject:Date:From;
+ b=EuFRJQF7AGrZKvzyKctf8/XBXbFdmS7XU+HXEDsVj1Uiclh02NaQ+LErt1Tlyg7nq
+ wxqZntoSP2TMAzTR92QeFiKii2Pyrj26p5GQzuQv4F3MuyWA7XqVLcGGdg36Y16fux
+ LWOXU+/+qXQZC3nDixS7relR/AF8g3aPbd7kM2D8=
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-crypto@vger.kernel.org
+Subject: [PATCH 00/20] crypto: introduce crypto_shash_tfm_digest()
+Date: Fri,  1 May 2020 22:31:02 -0700
+Message-Id: <20200502053122.995648-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <116683d1-d402-4d7f-3357-1c8cde807076@cogentembedded.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200501_142550_674901_F4D5A898 
-X-CRM114-Status: GOOD (  18.13  )
+X-CRM114-CacheID: sfid-20200501_223328_980870_23D1367B 
+X-CRM114-Status: UNSURE (   9.12  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,147 +73,100 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, Chris Brandt <chris.brandt@renesas.com>,
- Mason Yang <masonccyang@mxic.com.tw>, linux-mtd@lists.infradead.org,
- linux-spi@vger.kernel.org
+Cc: Tom Lendacky <thomas.lendacky@amd.com>,
+ Jesper Nilsson <jesper.nilsson@axis.com>, linux-bluetooth@vger.kernel.org,
+ Kamil Konieczny <k.konieczny@samsung.com>,
+ Robert Baldyga <r.baldyga@samsung.com>, ecryptfs@vger.kernel.org,
+ Krzysztof Opasiak <k.opasiak@samsung.com>, linux-nfs@vger.kernel.org,
+ Krzysztof Kozlowski <krzk@kernel.org>, Vladimir Zapolskiy <vz@mleia.com>,
+ Gilad Ben-Yossef <gilad@benyossef.com>, linux-sctp@vger.kernel.org,
+ keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Lars Persson <lars.persson@axis.com>,
+ Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+ Guenter Roeck <groeck@chromium.org>, Zaibo Xu <xuzaibo@huawei.com>,
+ Cheng-Yi Chiang <cychiang@chromium.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Apr 30, 2020 at 11:47:25PM +0300, Sergei Shtylyov wrote:
-> Renesas Reduced Pin Count Interface (RPC-IF) allows a SPI flash or
-> HyperFlash connected to the SoC to be accessed via the external address
-> space read mode or the manual mode.
-> 
-> Document the device tree bindings for the Renesas RPC-IF found in the R-Car
-> gen3 SoCs.
-> 
-> Based on the original patch by Mason Yang <masonccyang@mxic.com.tw>.
-> 
-> Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-> 
-> ---
-> Changes in version 2:
-> - rewrote the bindings in YAML.
-> 
->  Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml |   88 ++++++++++
+This series introduces a helper function crypto_shash_tfm_digest() which
+replaces the following common pattern:
 
-Not where we normally put SPI flash controllers...
+	{
+		SHASH_DESC_ON_STACK(desc, tfm);
+		int err;
 
->  1 file changed, 88 insertions(+)
-> 
-> Index: linux/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml
-> ===================================================================
-> --- /dev/null
-> +++ linux/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml
-> @@ -0,0 +1,88 @@
-> +# SPDX-License-Identifier: (GPL-2.0)
+		desc->tfm = tfm;
 
-Dual license new bindings:
+		err = crypto_shash_digest(desc, data, len, out);
 
-(GPL-2.0-only OR BSD-2-Clause)
+		shash_desc_zero(desc);
+	}
 
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/memory-controllers/renesas,rpc-if.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Renesas Reduced Pin Count Interface (RPC-IF)
-> +
-> +maintainers:
-> +  - Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-> +
-> +description: |
-> +  Renesas RPC-IF allows a SPI flash or HyperFlash connected to the SoC to
-> +  be accessed via the external address space read mode or the manual mode.
-> +
-> +  The flash chip itself should be represented by a subnode of the RPC-IF node.
-> +  The flash interface is selected based on the "compatible" property of this
-> +  subnode:
-> +  - if it contains "jedec,spi-nor", then SPI is used;
-> +  - if it contains "cfi-flash", then HyperFlash is used.
-> +
-> +allOf:
-> +  - $ref: "/schemas/spi/spi-controller.yaml#"
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +        renesas,r8a77980-rpc-if # device is a part of R8A77980 SoC
-> +	renesas,r8a77995-rpc-if # device is a part of R8A77995 SoC
+with:
 
-Not valid yaml with tab and not valid json-schema as 'enum' is a list 
-(needs '-').
+	err = crypto_shash_tfm_digest(tfm, data, len, out);
 
-> +      - enum:
-> +        renesas,rcar-gen3-rpc-if # a generic R-Car gen3 device
-> +
-> +  reg:
-> +    items:
-> +       - description: RPC-IF registers
-> +       - description: direct mapping read mode area
-> +       - description: write buffer area
+Patch 1 introduces this helper function, and patches 2-20 convert all
+relevant users to use it.
 
-Wrong indentation.
+IMO, it would be easiest to take all these patches through the crypto
+tree.  But taking just the "crypto:" ones and then me trying to get the
+rest merged later via subsystem trees is also an option.
 
-> +
-> +  reg-names:
-> +    items:
-> +      - const: regs
-> +      - const: dirmap
-> +      - const: wbuf
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  resets:
-> +    maxItems: 1
-> +
-> +patternProperties:
-> +  "^.*@[0-9a-f]+$":
+Eric Biggers (20):
+  crypto: hash - introduce crypto_shash_tfm_digest()
+  crypto: arm64/aes-glue - use crypto_shash_tfm_digest()
+  crypto: essiv - use crypto_shash_tfm_digest()
+  crypto: artpec6 - use crypto_shash_tfm_digest()
+  crypto: ccp - use crypto_shash_tfm_digest()
+  crypto: ccree - use crypto_shash_tfm_digest()
+  crypto: hisilicon/sec2 - use crypto_shash_tfm_digest()
+  crypto: mediatek - use crypto_shash_tfm_digest()
+  crypto: n2 - use crypto_shash_tfm_digest()
+  crypto: omap-sham - use crypto_shash_tfm_digest()
+  crypto: s5p-sss - use crypto_shash_tfm_digest()
+  nfc: s3fwrn5: use crypto_shash_tfm_digest()
+  fscrypt: use crypto_shash_tfm_digest()
+  ecryptfs: use crypto_shash_tfm_digest()
+  nfsd: use crypto_shash_tfm_digest()
+  ubifs: use crypto_shash_tfm_digest()
+  Bluetooth: use crypto_shash_tfm_digest()
+  sctp: use crypto_shash_tfm_digest()
+  KEYS: encrypted: use crypto_shash_tfm_digest()
+  ASoC: cros_ec_codec: use crypto_shash_tfm_digest()
 
-^flash@... if you're that restrictive.
+ arch/arm64/crypto/aes-glue.c               |  4 +--
+ crypto/essiv.c                             |  4 +--
+ crypto/shash.c                             | 16 +++++++++
+ drivers/crypto/axis/artpec6_crypto.c       | 10 ++----
+ drivers/crypto/ccp/ccp-crypto-sha.c        |  9 ++---
+ drivers/crypto/ccree/cc_cipher.c           |  9 ++---
+ drivers/crypto/hisilicon/sec2/sec_crypto.c |  5 ++-
+ drivers/crypto/mediatek/mtk-sha.c          |  7 ++--
+ drivers/crypto/n2_core.c                   |  7 ++--
+ drivers/crypto/omap-sham.c                 | 20 +++--------
+ drivers/crypto/s5p-sss.c                   | 39 ++++------------------
+ drivers/nfc/s3fwrn5/firmware.c             | 10 +-----
+ fs/crypto/fname.c                          |  7 +---
+ fs/crypto/hkdf.c                           |  6 +---
+ fs/ecryptfs/crypto.c                       | 17 +---------
+ fs/nfsd/nfs4recover.c                      | 26 ++++-----------
+ fs/ubifs/auth.c                            | 20 ++---------
+ fs/ubifs/master.c                          |  9 ++---
+ fs/ubifs/replay.c                          | 14 ++------
+ include/crypto/hash.h                      | 19 +++++++++++
+ net/bluetooth/smp.c                        |  6 +---
+ net/sctp/auth.c                            | 10 ++----
+ net/sctp/sm_make_chunk.c                   | 23 +++++--------
+ security/keys/encrypted-keys/encrypted.c   | 18 ++--------
+ sound/soc/codecs/cros_ec_codec.c           |  9 +----
+ 25 files changed, 95 insertions(+), 229 deletions(-)
 
-> +    type: object
-> +    properties:
-> +      compatible:
-> +        oneOf:
-> +          - const: cfi-flash
-> +          - const: jedec,spi-nor
+-- 
+2.26.2
 
-enum is better than oneOf+const.
-
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/renesas-cpg-mssr.h>
-> +    #include <dt-bindings/power/r8a77995-sysc.h>
-> +
-> +    spi@ee200000 {
-> +      compatible = "renesas,r8a77995-rpc-if", "renesas,rcar-gen3-rpc-if";
-> +      reg = <0 0xee200000 0 0x200>,
-> +            <0 0x08000000 0 0x4000000>,
-> +            <0 0xee208000 0 0x100>;
-> +      reg-names = "regs", "dirmap", "wbuf";
-> +      clocks = <&cpg CPG_MOD 917>;
-> +      power-domains = <&sysc R8A77995_PD_ALWAYS_ON>;
-> +      resets = <&cpg 917>;
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +
-> +      flash@0 {
-> +        compatible = "jedec,spi-nor";
-> +        reg = <0>;
-> +        spi-max-frequency = <40000000>;
-> +        spi-tx-bus-width = <1>;
-> +        spi-rx-bus-width = <1>;
-> +      };
-> +    };
 
 ______________________________________________________
 Linux MTD discussion mailing list
