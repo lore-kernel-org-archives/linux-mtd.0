@@ -2,21 +2,21 @@ Return-Path: <SRS0=DU2W=6Q=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6B4BC3A5A9
-	for <linux-mtd@archiver.kernel.org>; Sat,  2 May 2020 13:15:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B86AC3A5A9
+	for <linux-mtd@archiver.kernel.org>; Sat,  2 May 2020 13:18:40 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6D47B21974
-	for <linux-mtd@archiver.kernel.org>; Sat,  2 May 2020 13:15:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2114721974
+	for <linux-mtd@archiver.kernel.org>; Sat,  2 May 2020 13:18:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="a/QvilF3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D47B21974
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ggjut5+p"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2114721974
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BuTsfJvSvns/YCTBeaoUoWjDDvFv9T/0QLE4JgumYEI=; b=a/QvilF3DTM6GK
-	rV9DRIkfZ46vX7vg2eoHszQBK7I92FMAL286yhLWPMcaYsSTvNYpRWrlFI4LmZj1OFV2prFC6NpWZ
-	09To89AWYQij5wAp8ohsu5hF4CxPjVW8gUZ3D/vwctIjDCS4RVMRJlntWFrzEWo+RADI24hIPtqDd
-	9rVBRxcTFg2dm4zs0LX7SeVE9JkixReQ/6kZ34KWaX6GQC6yb7zd6iWyZt5TiGwF9AVFiRbcNbIDE
-	9bfyvphlVOpR46nbC9rjMYfjZhZnuFO6Zvi5b4+qSmLttSdEyuFTudGzpX+uoe9akJeMBxiLkjYwb
-	0c53GUu2pMA+6RHk7Dgw==;
+	List-Owner; bh=WzZyo4TyS5zKwrAkQKeaCZNf44J31odSmaq2sN4R3Lg=; b=ggjut5+pJjTIfM
+	PyPKQSUsgEP9C9x7oqTMPeD5d7cho+QucIW1uBZLbfkoS/KUSZnsiA3c0yiBT271kLdE/a/JDoh0N
+	KlMmDs39hyG5QG4KOLYKlf0y+WVqmd3K+iazdSPW5GZJgEGkVXMG6KNIUSm3Szof6kCYeGjx+4uXT
+	4P7UI4r5Lws+YecNimgcfU0AyijUWB+BUDbrgiFJ1UFbTmNQUYazEL+iYc7UMUwXWfyVgc6fCmcHQ
+	X22ZKGA+xphGs/DWAEgMGZhlhIZr6sfh3w78zWRP0xQm6c568Zoxce+sFNxklnF3U+KeUXs16nLp0
+	hC+yQbNSccqXuOvN385g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jUrzD-0000aj-GV; Sat, 02 May 2020 13:15:19 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1jUs27-0001np-HS; Sat, 02 May 2020 13:18:19 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jUrz9-0000YY-UZ
- for linux-mtd@lists.infradead.org; Sat, 02 May 2020 13:15:18 +0000
+ id 1jUs24-0001n9-9t
+ for linux-mtd@lists.infradead.org; Sat, 02 May 2020 13:18:18 +0000
 Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
  (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id B50A527F310;
- Sat,  2 May 2020 14:15:13 +0100 (BST)
-Date: Sat, 2 May 2020 15:15:10 +0200
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id A607C27F310;
+ Sat,  2 May 2020 14:18:14 +0100 (BST)
+Date: Sat, 2 May 2020 15:18:11 +0200
 From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Lubomir Rintel <lkundrak@v3.sk>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 00/17] mtd: rawnand: cafe: Convert to exec_op() (and more)
-Message-ID: <20200502151510.59a690a8@collabora.com>
-In-Reply-To: <20200502112732.330971-1-lkundrak@v3.sk>
-References: <20200427082028.394719-1-boris.brezillon@collabora.com>
- <20200502112732.330971-1-lkundrak@v3.sk>
+To: Lubomir Rintel <lkundrak@v3.sk>
+Subject: Re: [PATCH 13/17] mtd: rawnand: cafe: Add exec_op() support
+Message-ID: <20200502151811.328eebb0@collabora.com>
+In-Reply-To: <20200502111410.330584-1-lkundrak@v3.sk>
+References: <20200427082028.394719-14-boris.brezillon@collabora.com>
+ <20200502111410.330584-1-lkundrak@v3.sk>
 Organization: Collabora
 X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200502_061516_696549_5D4F612E 
-X-CRM114-Status: GOOD (  29.11  )
+X-CRM114-CacheID: sfid-20200502_061816_480283_9579147E 
+X-CRM114-Status: GOOD (  22.93  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,109 +76,97 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat,  2 May 2020 13:27:32 +0200
+On Sat,  2 May 2020 13:14:10 +0200
 Lubomir Rintel <lkundrak@v3.sk> wrote:
 
 > Boris Brezillon wrote:
-> > Hello,
+> > Implementing exec_op() will help us get rid of the legacy interface and
+> > should make drivers much cleaner too.
 > > 
-> > A bit of context to explain the motivation behind those conversions
-> > I've been sending for the last couple of weeks. The raw NAND subsystem
-> > carries a lot of history which makes any rework not only painful, but
-> > also subject to regressions which we only detect when someone dares to
-> > update its kernel on one of those ancient HW. While carrying drivers
-> > for old HW is not a problem per se, carrying ancient and unmaintained
-> > drivers that are not converted to new APIs is a maintenance burden,
-> > hence this massive conversion attempt I'm conducting here.
+> > Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+> > ---
+> >  drivers/mtd/nand/raw/cafe_nand.c | 137 ++++++++++++++++++++++++++++++-
+> >  1 file changed, 136 insertions(+), 1 deletion(-)
 > > 
-> > So here it is, a series converting the CAFE NAND controller driver to
-> > exec_op(), plus a bunch of minor improvements done along the way.
-> > I hope I'll find someone to test those changes, but if there's no one
-> > still owning OLPC HW or no interest in keeping it supported in recent
-> > kernel versions, we should definitely consider removing the driver
-> > instead.
-> > 
-> > Regards,
-> > 
-> > Boris
-> > 
-> > Boris Brezillon (17):
-> >   mtd: rawnand: cafe: Get rid of an inaccurate kernel doc header
-> >   mtd: rawnand: cafe: Rename cafe_nand_write_page_lowlevel()
-> >   mtd: rawnand: cafe: Use a correct ECC mode and pass the ECC alg
-> >   mtd: rawnand: cafe: Include linux/io.h instead of asm/io.h
-> >   mtd: rawnand: cafe: Demistify register fields
-> >   mtd: rawnand: cafe: Factor out the controller initialization logic
-> >   mtd: rawnand: cafe: Get rid of the debug module param
-> >   mtd: rawnand: cafe: Use devm_kzalloc and devm_request_irq()
-> >   mtd: rawnand: cafe: Get rid of a useless label
-> >   mtd: rawnand: cafe: Explicitly inherit from nand_controller
-> >   mtd: rawnand: cafe: Don't leave ECC enabled in the write path
-> >   mtd: rawnand: cafe: Don't split things when reading/writing a page
-> >   mtd: rawnand: cafe: Add exec_op() support
-> >   mtd: rawnand: cafe: Get rid of the legacy interface implementation
-> >   mtd: rawnand: cafe: Adjust the cafe_{read,write}_buf() prototypes
-> >   mtd: rawnand: cafe: Handle non-32bit aligned reads/writes
-> >   mtd: rawnand: cafe: s/uint{8,16,32}_t/u{8,16,32}/
-> > 
-> >  drivers/mtd/nand/raw/cafe_nand.c | 805 ++++++++++++++++---------------
-> >  1 file changed, 423 insertions(+), 382 deletions(-)  
+> > diff --git a/drivers/mtd/nand/raw/cafe_nand.c b/drivers/mtd/nand/raw/cafe_nand.c
+> > index edf65197604b..ada9c8b06a41 100644
+> > --- a/drivers/mtd/nand/raw/cafe_nand.c
+> > +++ b/drivers/mtd/nand/raw/cafe_nand.c  
+> ...
 > 
-> Thanks for doing this. With a couple of changes I've indicated in responses to
-> some of the patches this has been:
+> > +	ret = readl_poll_timeout(cafe->mmio + CAFE_NAND_IRQ, status,
+> > +				 (status & wait) == wait, 1, USEC_PER_SEC);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	if (ctrl1 & CAFE_NAND_DMA_CTRL_DATA_IN)  
+>                     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> s/CAFE_NAND_DMA_CTRL_DATA_IN/CAFE_NAND_CTRL1_HAS_DATA_IN/ here please.
 > 
-> Tested-by: Lubomir Rintel <lkundrak@v3.sk>
+> 
+> > +		cafe_read_buf(chip, data_instr->ctx.data.buf.in,
+> > +			      data_instr->ctx.data.len);
+> > +
+> > +	return 0;
+> > +}  
+> ...
+> 
+> Other than that, when DMA is in use, only CAFE_NAND_IRQ_DMA_DONE seem to pop
+> up in CAFE_NAND_IRQ when the command completes, not CAFE_NAND_IRQ_CMD_DONE.
+> I suppose you ought to do this or something equivalent:
 
-Thanks a lot for testing *and debugging* my changes. I must admit that
-was unexpected, and I'm amazed by how fast I got feedback on that one
-:-). Kudos to Thomas as well for noticing the email and getting us in
-touch.
+I suspect it has to do with the fact that you might have operations with
+DATA_IN() instructions only. I pushed an alternate fix [1] to my branch.
+Would you mind testing it?
 
 > 
-> Other than that, I have a couple of suggestions (I'm not really in a position 
-> to demand them, but they would've done the review easier for me):
-> 
-> 1.) I'm wondering if we could remove these:
-> 
->   /* Make it easier to switch to PIO if we need to */
->   #define cafe_readl(cafe, addr)                  readl((cafe)->mmio + CAFE_##addr)
->   #define cafe_writel(cafe, datum, addr)          writel(datum, (cafe)->mmio + CAFE_##addr)
-> 
-> Or at least don't add new calls to them in our patches and call 
-> readl()/writel() directly. The string pasting makes it impossible to grep
-> for the register names.
-> 
-> It's not like a switch to PIO is ever going to happen and with an instance
-> of readl_poll_timeout() added it's not like it would be a matter of
-> rewriting those macros.
-
-I can certainly do that.
-
-> 
-> 2.) When the block after a conditional is multiple lines, could you please
-> include the curly braces? That is:
-> 
->         if (ctrl1 & CAFE_NAND_CTRL1_HAS_DATA_IN) {
->                 cafe_read_buf(chip,
->                               subop->instrs[data_instr].ctx.data.buf.in +
->                               nand_subop_get_data_start_off(subop, data_instr),
->                               nand_subop_get_data_len(subop, data_instr));
+> diff --git a/drivers/mtd/nand/raw/cafe_nand.c b/drivers/mtd/nand/raw/cafe_nand.c
+> index 307c9a68afa9..356a07e61c88 100644
+> --- a/drivers/mtd/nand/raw/cafe_nand.c
+> +++ b/drivers/mtd/nand/raw/cafe_nand.c
+> @@ -778,7 +778,7 @@ static int cafe_nand_exec_subop(struct nand_chip *chip,
+>  {
+>         struct cafe_priv *cafe = nand_get_controller_data(chip);
+>         u32 ctrl1 = 0, ctrl2 = cafe->ctl2, addr1 = 0, addr2 = 0;
+> -       u32 status, wait = CAFE_NAND_IRQ_CMD_DONE;
+> +       u32 status, wait = 0;
+>         int ret, data_instr = -1;
+>         bool waitrdy = false;
+>         unsigned int i, j;
+> @@ -856,6 +856,8 @@ static int cafe_nand_exec_subop(struct nand_chip *chip,
+>                         dmactrl |= CAFE_NAND_DMA_CTRL_DATA_IN;
+>  
+>                 cafe_writel(cafe, dmactrl, NAND_DMA_CTRL);
+> +       } else {
+> +               wait |= CAFE_NAND_IRQ_CMD_DONE;
 >         }
+>  
+>         /* Clear the pending interrupts before starting the operation. */
 > 
-> Instead of:
+> cafe_nand_cmdfunc() seems to do the same thing (note the "=" instead of
+> "|=") though the use of word "just" in the comment is somewhat misleading:
 > 
->         if (ctrl1 & CAFE_NAND_CTRL1_HAS_DATA_IN)
->                 cafe_read_buf(chip,
->                               subop->instrs[data_instr].ctx.data.buf.in +
->                               nand_subop_get_data_start_off(subop, data_instr),
->                               nand_subop_get_data_len(subop, data_instr));
+>  244 static void cafe_nand_cmdfunc(struct nand_chip *chip, unsigned command,
+>  245                               int column, int page_addr)
+>  246 {
+>  ...
+>  359                 /* If WR or RD bits set, set up DMA */
+>  360                 if (ctl1 & CAFE_NAND_CTRL1_HAS_DATA_IN) {
+>  361                         /* It's a read */
+>  362                         dmactl |= CAFE_NAND_DMA_CTRL_DATA_IN;
+>  363                         /* ... so it's done when the DMA is done, not just
+>  364                            the command. */
+>  365                         doneint = CAFE_NAND_IRQ_DMA_DONE;
+>  366                 }
 > 
-> This makes things significantly easier to read for me, not to mention that it
-> comes handy to have the braces around for printf debugging.
+> With the changes I suggested above, you can add:
+> 
+> Reviewed-by: Lubomir Rintel <lkundrak@v3.sk>
+> 
+> Thank you!
+> Lubo
 
-I do prefer the version without brackets, but given you debugged it,
-I'd be okay changing that one ;-) (assuming Miquel is okay with that
-too, of course).
+[1]https://github.com/bbrezillon/linux/commit/ecf93c3c2e94ab0710babe856f272ff2e8b2a35b
 
 ______________________________________________________
 Linux MTD discussion mailing list
