@@ -2,57 +2,63 @@ Return-Path: <SRS0=DU2W=6Q=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45827C3A5A9
-	for <linux-mtd@archiver.kernel.org>; Sat,  2 May 2020 06:45:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7977C3A5A9
+	for <linux-mtd@archiver.kernel.org>; Sat,  2 May 2020 08:12:32 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1632E206F0
-	for <linux-mtd@archiver.kernel.org>; Sat,  2 May 2020 06:45:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6F5F32137B
+	for <linux-mtd@archiver.kernel.org>; Sat,  2 May 2020 08:12:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DtF56Dh9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1632E206F0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=holtmann.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="SbGiQeDq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6F5F32137B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:References:Message-Id:Date:
-	In-Reply-To:From:Subject:Mime-Version:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MdB6uEfF+W9bR62au3Sr1FGfMMufdVH9PutUQdcEDHQ=; b=DtF56Dh9MH4v6b
-	fGODS6Ar2t+wLPyC4vK+JPtAAkXwWdwxf3nE/tamsTl/CV28SKyItYrCXzJpDb/aNEkwmFMhUy7h7
-	egPkG7of7Yvg+4P6MVsO8Q5cdV5j35manjZEycliwukbC15+aUn9+wN+2BOeyRq0OtbKf108FSgIz
-	x8DJNnYxcozX1KVGHHThSOQ/HybykdUrpSDrPsgNrgVIrdajvVAmGlZQX3Ax8srjWBqBTtWHu5sic
-	iuoBWW+vXucvS2o60pK1m8Q4p73rqHhmusRVdNMPANMgKs0EonnXJExuDAbKBX5AAbD5J2ubV2spU
-	+bqJozXKt2nlmeJ9+JCQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Kda28utGLjfX0FHbB+IBQsWPlQSR4i+B4IyNy2TuJXI=; b=SbGiQeDqq1F1E9
+	f6B21ZSURqb0zMfkpuD9Fqu70UBk0mVCSRZ8aKkcwD06bWSL2w1JO/zI85a55VF6ZqSXENL4V5zsL
+	5ud4gClGiJZM8dy30VOsXkh0wzGaJew2XjjdixpE3amo8qvtmGL+gp20hTWBmkDvCopE2v4rGbHAp
+	CzbS5XhE1XZRzxRpu2IHjx6YfcKC3XE66+1dgwx6yGesKaz3BoQbpBZBybDdu5lxDP5pQqFwvPk5X
+	TxVnOly2u7RrPHqp+Fyu4JEMGx8DAmdrvYHS7gYP3qo83LXyDo/LV2abgLYx0dZvznkYCCsdYUakW
+	5njf4+d9GfU7Ent18IVA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jUltu-0005Fu-T0; Sat, 02 May 2020 06:45:26 +0000
-Received: from coyote.holtmann.net ([212.227.132.17] helo=mail.holtmann.org)
- by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jUltq-0005Ep-6j
- for linux-mtd@lists.infradead.org; Sat, 02 May 2020 06:45:25 +0000
-Received: from [192.168.1.91] (p4FEFC5A7.dip0.t-ipconnect.de [79.239.197.167])
- by mail.holtmann.org (Postfix) with ESMTPSA id 45329CED2C;
- Sat,  2 May 2020 08:54:48 +0200 (CEST)
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH 00/20] crypto: introduce crypto_shash_tfm_digest()
-From: Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20200502053122.995648-1-ebiggers@kernel.org>
-Date: Sat, 2 May 2020 08:44:37 +0200
-Message-Id: <5E6F9382-3D91-4587-980A-377E7CB086E4@holtmann.org>
-References: <20200502053122.995648-1-ebiggers@kernel.org>
-To: Eric Biggers <ebiggers@kernel.org>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+	id 1jUnG3-0000wM-Sx; Sat, 02 May 2020 08:12:23 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jUnG0-0000vd-Jr
+ for linux-mtd@lists.infradead.org; Sat, 02 May 2020 08:12:22 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id B05122A2F53;
+ Sat,  2 May 2020 09:12:18 +0100 (BST)
+Date: Sat, 2 May 2020 10:12:15 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v2 07/11] mtd: rawnand: onfi: Adapt the parameter page
+ read to constraint controllers
+Message-ID: <20200502101215.49e11fa5@collabora.com>
+In-Reply-To: <20200429155540.22048-8-miquel.raynal@bootlin.com>
+References: <20200429155540.22048-1-miquel.raynal@bootlin.com>
+ <20200429155540.22048-8-miquel.raynal@bootlin.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200501_234522_390586_0E4B5AD6 
-X-CRM114-Status: UNSURE (   9.03  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200502_011220_786454_27EE1EDD 
+X-CRM114-Status: GOOD (  22.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -64,58 +70,74 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>,
- Jesper Nilsson <jesper.nilsson@axis.com>,
- linux-bluetooth <linux-bluetooth@vger.kernel.org>,
- Kamil Konieczny <k.konieczny@samsung.com>,
- Robert Baldyga <r.baldyga@samsung.com>, ecryptfs@vger.kernel.org,
- Krzysztof Opasiak <k.opasiak@samsung.com>, linux-nfs@vger.kernel.org,
- Krzysztof Kozlowski <krzk@kernel.org>, Vladimir Zapolskiy <vz@mleia.com>,
- Gilad Ben-Yossef <gilad@benyossef.com>, linux-sctp@vger.kernel.org,
- keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-crypto@vger.kernel.org,
- Enric Balletbo i Serra <enric.balletbo@collabora.com>,
- Guenter Roeck <groeck@chromium.org>, Zaibo Xu <xuzaibo@huawei.com>,
- Lars Persson <lars.persson@axis.com>, Cheng-Yi Chiang <cychiang@chromium.org>
+Cc: Michal Simek <monstr@monstr.eu>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Naga Sureshkumar Relli <nagasure@xilinx.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Eric,
+On Wed, 29 Apr 2020 17:55:36 +0200
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> This series introduces a helper function crypto_shash_tfm_digest() which
-> replaces the following common pattern:
+> We already know that there are controllers not able to read the three
+> copies of the parameter page in one go. The workaround was to first
+> request the controller to assert command and address cycles on the
+> NAND bus to trigger a parameter page read, and then do a read
+> operation for each page.
 > 
-> 	{
-> 		SHASH_DESC_ON_STACK(desc, tfm);
-> 		int err;
+> But there are also controllers which are not able to split the
+> parameter page read between the command/address cycles and the actual
+> data operation.
 > 
-> 		desc->tfm = tfm;
+> All controllers are expected to be able to change the read column
+> though. So let's use a regular parameter page read operation for the
+> first iteration and use a change read column operation for the
+> following copies.
 > 
-> 		err = crypto_shash_digest(desc, data, len, out);
+> The extra command and address cycles sent over the NAND bus are
+> negligible compared to the amount of data that is being transferred
+> anyway.
 > 
-> 		shash_desc_zero(desc);
-> 	}
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+>  drivers/mtd/nand/raw/nand_onfi.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
 > 
-> with:
-> 
-> 	err = crypto_shash_tfm_digest(tfm, data, len, out);
-> 
-> Patch 1 introduces this helper function, and patches 2-20 convert all
-> relevant users to use it.
-> 
-> IMO, it would be easiest to take all these patches through the crypto
-> tree.  But taking just the "crypto:" ones and then me trying to get the
-> rest merged later via subsystem trees is also an option.
+> diff --git a/drivers/mtd/nand/raw/nand_onfi.c b/drivers/mtd/nand/raw/nand_onfi.c
+> index ee0f2c2549c1..19e1be94c7e3 100644
+> --- a/drivers/mtd/nand/raw/nand_onfi.c
+> +++ b/drivers/mtd/nand/raw/nand_onfi.c
+> @@ -160,14 +160,14 @@ int nand_onfi_detect(struct nand_chip *chip)
+>  	if (!pbuf)
+>  		return -ENOMEM;
+>  
+> -	ret = nand_read_param_page_op(chip, 0, NULL, 0);
+> -	if (ret) {
+> -		ret = 0;
+> -		goto free_onfi_param_page;
+> -	}
+> -
+>  	for (i = 0; i < ONFI_PARAM_PAGES; i++) {
+> -		ret = nand_read_data_op(chip, &pbuf[i], sizeof(*pbuf), true);
+> +		if (!i)
+> +			ret = nand_read_param_page_op(chip, 0, &pbuf[i],
+> +						      sizeof(*pbuf));
+> +		else
+> +			ret = nand_change_read_column_op(chip, sizeof(*pbuf) * i,
+> +							 &pbuf[i], sizeof(*pbuf),
+> +							 true);
 
-I am fine if you take the net/bluetooth/smp.c change through the crypto tree.
+Oops! Looks like this this change will break at least 3 drivers which
+support NAND_CMD_PARAM but don't support NAND_CMD_RNDOUT:
+fsl_ifc_nand, mxc_nand and qcom_nandc.
 
-Acked-by: Marcel Holtmann <marcel@holtmann.org>
-
-Regards
-
-Marcel
+>  		if (ret) {
+>  			ret = 0;
+>  			goto free_onfi_param_page;
 
 
 ______________________________________________________
