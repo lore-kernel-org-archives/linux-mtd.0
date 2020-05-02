@@ -2,57 +2,60 @@ Return-Path: <SRS0=DU2W=6Q=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5064C3A5A9
-	for <linux-mtd@archiver.kernel.org>; Sat,  2 May 2020 16:35:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 795A5C3A5A9
+	for <linux-mtd@archiver.kernel.org>; Sat,  2 May 2020 16:35:15 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 921B521775
-	for <linux-mtd@archiver.kernel.org>; Sat,  2 May 2020 16:35:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 404C821775
+	for <linux-mtd@archiver.kernel.org>; Sat,  2 May 2020 16:35:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qxUJI0uw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 921B521775
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cYfJB43x"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 404C821775
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=7VgFZXriqLC/5NfQI6VSgXp3LQ2+hE66KEGZ8j8cIys=; b=qxUJI0uwhyl+EU
-	c/B1yRQqF3tnwSoWvuCJc2rcofvfoXkO5nsvdhC17cVUNwtkrmH5pID0qYUCwx3qro3lJglYhUJ/Q
-	B5J8OnQeQsaE+O+z1wyiN9MWqw5W0od+ObsewjWXI8FT3KFt6J54eJh7NZG/gmOJr3XJ4ZEfedXfJ
-	yIHzqGYLJ3dC+2aFHML4I/o69zomJtI2r2/L6UM+o2QnUhf/o71wqSt8Y7XDzTQOMQcYTAY7hP7mQ
-	oPi7SbhFl1dke3IQHafHTV3k3j7ymtVRiveDu55p3d9Jdh3wo0oT+K6Ov3rc2qGvzGWtySMB8Hy95
-	8V1cyWLbNhZAGSPVXaHQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=FW3I/Cdr4nmYVP2UW6VThFZO+2VPxAnK+URpr7xcIj4=; b=cYfJB43xOilqTD
+	laA3GM1bg6nfNTI2b2U97ehQE+jH30M3vS/Cc9e257NwYEhZDvWFQLUj4qDH4rqvQ6HMomsRMFe2p
+	qDnilAV7Emwubxnzo+QA8hdJShIRXYTDte1q4WRFGFpLRryM/xwbzQZ2GaOG/aYAzxwbzHz0lFleK
+	Os1tpj6fILUMyjo3Rtc460gJ94b/Ui+JGed66bTyScQOY1/rJKCKlcdbW8XqGu2emJwBqqcB8JqQf
+	7JSAvWmPGODJo6qRl9S4EfPCMoRhsCeguFFE6lhMHUlMEwLxBNInjctMC0Myj6+bmfMDxKyCJ+Xor
+	ejAuA1GQUhXFY5rciRaA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jUv6D-0000nR-V1; Sat, 02 May 2020 16:34:45 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1jUv6M-0000vG-Ti; Sat, 02 May 2020 16:34:54 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jUv67-0000kN-SZ; Sat, 02 May 2020 16:34:41 +0000
+ id 1jUv68-0000kS-4I; Sat, 02 May 2020 16:34:41 +0000
 Received: from localhost.localdomain (unknown
  [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 35F9E263955;
- Sat,  2 May 2020 17:34:36 +0100 (BST)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 29BB72A0C07;
+ Sat,  2 May 2020 17:34:37 +0100 (BST)
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Kamal Dasu <kdasu.kdev@gmail.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 0/3] mtd: rawnand: brcmnand: Convert to exec_op()
-Date: Sat,  2 May 2020 18:34:29 +0200
-Message-Id: <20200502163432.1543243-1-boris.brezillon@collabora.com>
+Subject: [PATCH 2/3] mtd: rawnand: bcrmnand: Add exec_op() support
+Date: Sat,  2 May 2020 18:34:31 +0200
+Message-Id: <20200502163432.1543243-3-boris.brezillon@collabora.com>
 X-Mailer: git-send-email 2.25.3
+In-Reply-To: <20200502163432.1543243-1-boris.brezillon@collabora.com>
+References: <20200502163432.1543243-1-boris.brezillon@collabora.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200502_093440_051019_12C6C182 
-X-CRM114-Status: GOOD (  17.11  )
+X-CRM114-CacheID: sfid-20200502_093440_302271_62328D34 
+X-CRM114-Status: GOOD (  15.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,50 +80,106 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello,
+This implementation of exec_op() relies on low-level operations only. We
+could add support for high-level operations too through an op parser,
+but the gain is likely to be negligible since read/write page operations
+already have a fast path ({readwrite}_page[raw]() implementations).
 
-A bit of context to explain the motivation behind those conversions
-I've been sending for the last couple of weeks. The raw NAND subsystem
-carries a lot of history which makes any rework not only painful, but
-also subject to regressions which we only detect when someone dares to
-update its kernel on one of those ancient HW (I'm not saying brcmnand
-is one of those ancient hardware BTW, but others in the NAND directory
-are pretty old). While carrying drivers for old HW is not a problem per
-se, carrying ancient and unmaintained drivers that are not converted to
-new APIs is a maintenance burden (again, that does not really apply to
-brcmnand, as Kamal as always prompt to reply to patches targeting this
-driver), hence this massive conversion attempt I'm conducting here.
+Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+---
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c | 72 ++++++++++++++++++++++++
+ 1 file changed, 72 insertions(+)
 
-So here is a series converting the brcmnand NAND controller driver to
-exec_op(). It's worth noting that I took the simplest path for this
-implementation, using low-level operations for everything that's passed
-to exec_op(). There are 2 reasons to that, the first one is that I
-don't have the hardware to test and also don't know how this series
-will be received so, I decided to take the quickest approach. But even
-if we put that aside, I'm not sure the extra complexity implied by
-the specialized operation handlers would be worth it, given that the
-read/write page paths (those where performance really matters) are
-already optimized (see the {read,write}_page[_raw]() implementations).
-That leaves us with things that are only executed at boot time (ID,
-PARAM_PAGE reads), or things that are simple enough (STATUS read,
-ERASE) to not generate to much overhead if we don't use the dedicated
-hardware functions. I'm of course open to reworking that part if someone
-can validate my changes and come up with numbers showing that the
-dedicated functions approach improves perfs.
-
-Regards,
-
-Boris
-
-Boris Brezillon (3):
-  mtd: rawnand: Add the concept of destructive operation
-  mtd: rawnand: bcrmnand: Add exec_op() support
-  mtd: rawnand: brcmnand: Get rid of the legacy interface implementation
-
- drivers/mtd/nand/raw/brcmnand/brcmnand.c | 248 +++++------------------
- include/linux/mtd/rawnand.h              |  11 +
- 2 files changed, 66 insertions(+), 193 deletions(-)
-
+diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+index e4e3ceeac38f..e70117146755 100644
+--- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+@@ -1599,6 +1599,77 @@ static int brcmnand_low_level_op(struct brcmnand_host *host,
+ 	return brcmnand_waitfunc(chip);
+ }
+ 
++static void brcmnand_exec_instr(struct brcmnand_host *host,
++				const struct nand_op_instr *instr,
++				bool last_op)
++{
++	unsigned int i;
++	const u8 *out;
++	u8 *in;
++
++	switch (instr->type) {
++	case NAND_OP_CMD_INSTR:
++		brcmnand_low_level_op(host, LL_OP_CMD,
++				      instr->ctx.cmd.opcode, last_op);
++		break;
++
++	case NAND_OP_ADDR_INSTR:
++		for (i = 0; i < instr->ctx.addr.naddrs; i++)
++			brcmnand_low_level_op(host, LL_OP_ADDR,
++					      instr->ctx.addr.addrs[i],
++					      last_op);
++		break;
++
++	case NAND_OP_DATA_IN_INSTR:
++		in = instr->ctx.data.buf.in;
++		for (i = 0; i < instr->ctx.data.len; i++) {
++			brcmnand_low_level_op(host, LL_OP_RD, 0, last_op);
++			in[i] = brcmnand_read_reg(host->ctrl,
++						  BRCMNAND_LL_RDATA);
++		}
++		break;
++
++	case NAND_OP_DATA_OUT_INSTR:
++		out = instr->ctx.data.buf.out;
++		for (i = 0; i < instr->ctx.data.len; i++)
++			brcmnand_low_level_op(host, LL_OP_WR, out[i], last_op);
++		break;
++
++	case NAND_OP_WAITRDY_INSTR:
++		/*
++		 * Nothing to do here, brcmnand_low_level_op() already waits on
++		 * FLASH_READY every time it's called.
++		 */
++		break;
++
++	default:
++		break;
++	}
++}
++
++static int brcmnand_exec_op(struct nand_chip *chip,
++			    const struct nand_operation *op,
++			    bool check_only)
++{
++	struct brcmnand_host *host = nand_get_controller_data(chip);
++	struct mtd_info *mtd = nand_to_mtd(chip);
++	unsigned int i;
++
++	if (check_only)
++		return 0;
++
++	if (op->deassert_wp)
++		brcmnand_wp(mtd, 0);
++
++	for (i = 0; i < op->ninstrs; i++)
++		brcmnand_exec_instr(host, &op->instrs[i], i == op->ninstrs - 1);
++
++	if (op->deassert_wp)
++		brcmnand_wp(mtd, 1);
++
++	return 0;
++}
++
+ static void brcmnand_cmdfunc(struct nand_chip *chip, unsigned command,
+ 			     int column, int page_addr)
+ {
+@@ -2597,6 +2668,7 @@ static int brcmnand_attach_chip(struct nand_chip *chip)
+ 
+ static const struct nand_controller_ops brcmnand_controller_ops = {
+ 	.attach_chip = brcmnand_attach_chip,
++	.exec_op = brcmnand_exec_op,
+ };
+ 
+ static int brcmnand_init_cs(struct brcmnand_host *host, struct device_node *dn)
 -- 
 2.25.3
 
