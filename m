@@ -2,58 +2,62 @@ Return-Path: <SRS0=EGP2=6R=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19F35C28CBC
-	for <linux-mtd@archiver.kernel.org>; Sun,  3 May 2020 15:54:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06F47C47256
+	for <linux-mtd@archiver.kernel.org>; Sun,  3 May 2020 15:54:24 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CBD11206EB
-	for <linux-mtd@archiver.kernel.org>; Sun,  3 May 2020 15:54:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CABC220757
+	for <linux-mtd@archiver.kernel.org>; Sun,  3 May 2020 15:54:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TrLrdAuh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CBD11206EB
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Y2NBa+x3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CABC220757
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=KYxPgGhnk55cQtOmCMpzCW/FqMKUlqMEPW8tRZs6nAs=; b=TrLrdAuhnNkKo1
-	xB7B6mHHJEmVjFr5kKlN7QtiVlZs1gr4rEmEt1yCJbixP1CrIDQfKsaRUKRrep4iyloZOGbb5jtha
-	8M/JV7WoXIuhPgJH/0s4bCpA8xwaXbVlx0hEq2L6rwerSWWjFdCDI/fLmGpy8nSIPaDjktsA0NGpy
-	Z/WQ3jog8GK6stJ5jecW5WX1TvbT8LkXQxzlPPiZQUhdHJpgH2EiBsy0GnTzvKxkrw7vtkrb4ASxd
-	m8WGGuwa75z57nRlEoIIPYPQyAeFoQikxglpfjZq5RftjUbC+k6lI2sOXxpewditpFEgoB+xSZfUM
-	KSaYaIBZkfVuCihXTRKw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=mOqSCvTslIsO9593q+jPj3gK61uZKpLtcgZEpN5bvr4=; b=Y2NBa+x3r13/RM
+	mRkCcYsqSG561lWyRcMRykPWak7s+1UB1Li3l49DqGBpFX/6AfiCRJCE9CjW5Pndrsz+FLCWIZh7O
+	0WmTvss5bxcT/++PNWrAXJLV6p7VU8CAcyoLF/ru9a8igBGCyD/ptGXHzJLCvlgwSsSu4Fekbpw40
+	cknN4KIBMAcvjTjSFT4iDLT2UvIVNsB1prY8y3ywMkfMz+AIfu1P/JRH35SHkrr83N8ntOsEAlKWR
+	iofZDBxZYZxYq1clLKC3t25PvzqCMfuGXW6pvclZn5u46RaIJJxDPgzl1puH5q5YzzooX0vpxizE2
+	VZ9JmrfNY5J4R9kBBaJA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jVGwK-0002qC-QJ; Sun, 03 May 2020 15:54:00 +0000
+	id 1jVGwY-00034V-Lx; Sun, 03 May 2020 15:54:14 +0000
 Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jVGw8-0002dA-Dv
- for linux-mtd@lists.infradead.org; Sun, 03 May 2020 15:53:49 +0000
+ id 1jVGw9-0002dm-Bn
+ for linux-mtd@lists.infradead.org; Sun, 03 May 2020 15:53:51 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id A6E83240007;
- Sun,  3 May 2020 15:53:42 +0000 (UTC)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 1712B24000A;
+ Sun,  3 May 2020 15:53:47 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 0/8] MLC in SLC mode
-Date: Sun,  3 May 2020 17:53:33 +0200
-Message-Id: <20200503155341.16712-1-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 3/8] mtd: rawnand: toshiba: Set the pairing scheme for
+ TC58TEG5DCLTA00
+Date: Sun,  3 May 2020 17:53:36 +0200
+Message-Id: <20200503155341.16712-4-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200503155341.16712-1-miquel.raynal@bootlin.com>
+References: <20200503155341.16712-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200503_085348_607879_03EC3A0F 
-X-CRM114-Status: UNSURE (   9.41  )
+X-CRM114-CacheID: sfid-20200503_085349_531070_B5F8A741 
+X-CRM114-Status: UNSURE (   9.71  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -66,48 +70,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Boris Brezillon <boris.brezillon@collabora.com>,
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
  Maxime Ripard <maxime@cerno.tech>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ Boris Brezillon <bbrezillon@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgpUaGlzIHNlcmllcyBoYXMgYmVlbiBseWluZyBmb3IgYSBsb25nIHRpbWUgaW4gQm9y
-aXMnIHRyZWUsIGl0IGlzCmNsZWFuIGVub3VnaCB0byBiZSB1cHN0cmVhbWVkIG5vdy4KCkl0IGJh
-c2ljYWxseSBhbGxvd3MgdG8gd29yayAic2FmZWx5IiB3aXRoIE1MQyBOQU5EcywgZGV0YWlscyBp
-bnNpZGUuCgpJIHRlc3RlZCBpdCB3aXRoIGEgQy5ILkkuUCBhbmQgaXQgbG9va3Mgc3RhYmxlLiBN
-b3JlIGV4dGVuc2l2ZSB0ZXN0aW5nCmlzIHdlbGNvbWUuCgpDaGVlcnMsCk1pcXXDqGwKCkNoYW5n
-ZXMgaW4gdjI6CiogUmVtb3ZlZCB1bndhbnRlZCBmaWxlcyBzcG90dGVkIGJ5IEZsb3JpYW4uCiog
-QWRkIFJpY2hhcmQncyBBY2sgb24gdGhlICJyZWxheCB0aGUgbm8gTUxDIHJ1bGUiIHBhdGNoLgoq
-IFJlbmFtZSBNVERfTUxDX0lOX1NMQ19NT0RFIGludG8gTVREX1NMQ19PTl9NTENfRU1VTEFUSU9O
-LgoqIFJlbmFtZSB0aGUgaGVscGVyIG10ZF9vb2JfaW9fc2xjKCkgaW50byBtdGRfaW9fZW11bGF0
-ZWRfc2xjKCkuCiogQ2hhbmdlZCBib3VuY2luZyBlLW1haWwgYWRkcmVzcyBmcm9tIEJvcmlzIHRv
-IGhpcyBrZXJuZWwub3JnLgoKQm9yaXMgQnJlemlsbG9uICg4KToKICBtdGQ6IHJhd25hbmQ6IHRv
-c2hpYmE6IEFkZCBhIHNwZWNpZmljIGluaXQgZm9yIFRDNThURUc1RENMVEEwMAogIG10ZDogcmF3
-bmFuZDogRGVmaW5lIHRoZSAiZGlzdGFuY2UgMyIgTUxDIHBhaXJpbmcgc2NoZW1lCiAgbXRkOiBy
-YXduYW5kOiB0b3NoaWJhOiBTZXQgdGhlIHBhaXJpbmcgc2NoZW1lIGZvciBUQzU4VEVHNURDTFRB
-MDAKICBtdGQ6IEFkZCBzdXBwb3J0IGZvciBlbXVsYXRlZCBTTEMgbW9kZSBvbiBNTEMgTkFORHMK
-ICBkdC1iaW5kaW5nczogbXRkOiBwYXJ0aXRpb246IERvY3VtZW50IHRoZSBzbGMtbW9kZSBwcm9w
-ZXJ0eQogIG10ZDogcGFydGl0aW9uczogb2ZwYXJ0OiBQYXJzZSB0aGUgc2xjLW1vZGUgcHJvcGVy
-dHkKICBtdGQ6IGNtZGxpbmVwYXJ0OiBBZGQgYW4gc2xjIG9wdGlvbiB0byB1c2UgU0xDIG1vZGUg
-b24gYSBwYXJ0CiAgdWJpOiBSZWxheCB0aGUgJ25vIE1MQycgcnVsZSBhbmQgYWxsb3cgTUxDcyBv
-cGVyYXRpbmcgaW4gU0xDIG1vZGUKCiAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvcGFydGl0
-aW9uLnR4dCAgICAgfCAgIDMgKwogZHJpdmVycy9tdGQvbXRkY29yZS5jICAgICAgICAgICAgICAg
-ICAgICAgICAgIHwgMTg5ICsrKysrKysrKysrKysrKystLQogZHJpdmVycy9tdGQvbXRkcGFydC5j
-ICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDU0ICsrLS0tCiBkcml2ZXJzL210ZC9uYW5kL3Jh
-dy9pbnRlcm5hbHMuaCAgICAgICAgICAgICAgfCAgIDMgKwogZHJpdmVycy9tdGQvbmFuZC9yYXcv
-bmFuZF9iYXNlLmMgICAgICAgICAgICAgIHwgIDUwICsrKysrCiBkcml2ZXJzL210ZC9uYW5kL3Jh
-dy9uYW5kX3Rvc2hpYmEuYyAgICAgICAgICAgfCAgMTQgKysKIGRyaXZlcnMvbXRkL3BhcnNlcnMv
-Y21kbGluZXBhcnQuYyAgICAgICAgICAgICB8ICAxMiArLQogZHJpdmVycy9tdGQvcGFyc2Vycy9v
-ZnBhcnQuYyAgICAgICAgICAgICAgICAgIHwgICAzICsKIGRyaXZlcnMvbXRkL3ViaS9idWlsZC5j
-ICAgICAgICAgICAgICAgICAgICAgICB8ICAgNSArLQogaW5jbHVkZS9saW51eC9tdGQvbXRkLmgg
-ICAgICAgICAgICAgICAgICAgICAgIHwgICA3ICstCiBpbmNsdWRlL2xpbnV4L210ZC9wYXJ0aXRp
-b25zLmggICAgICAgICAgICAgICAgfCAgIDIgKwogaW5jbHVkZS91YXBpL210ZC9tdGQtYWJpLmgg
-ICAgICAgICAgICAgICAgICAgIHwgICAxICsKIDEyIGZpbGVzIGNoYW5nZWQsIDMwMCBpbnNlcnRp
-b25zKCspLCA0MyBkZWxldGlvbnMoLSkKCi0tIAoyLjIwLjEKCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24g
-bWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
-bGludXgtbXRkLwo=
+From: Boris Brezillon <bbrezillon@kernel.org>
+
+TC58TEG5DCLTA00 uses a stride of 3 between its lower and upper page.
+Set the appropriate pairing scheme at init time.
+
+Signed-off-by: Boris Brezillon <bbrezillon@kernel.org>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ drivers/mtd/nand/raw/nand_toshiba.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/mtd/nand/raw/nand_toshiba.c b/drivers/mtd/nand/raw/nand_toshiba.c
+index 6b887ce20f30..ae069905d7e4 100644
+--- a/drivers/mtd/nand/raw/nand_toshiba.c
++++ b/drivers/mtd/nand/raw/nand_toshiba.c
+@@ -196,8 +196,11 @@ static void toshiba_nand_decode_id(struct nand_chip *chip)
+ 
+ static int tc58teg5dclta00_init(struct nand_chip *chip)
+ {
++	struct mtd_info *mtd = nand_to_mtd(chip);
++
+ 	chip->onfi_timing_mode_default = 5;
+ 	chip->options |= NAND_NEED_SCRAMBLING;
++	mtd_set_pairing_scheme(mtd, &dist3_pairing_scheme);
+ 
+ 	return 0;
+ }
+-- 
+2.20.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
