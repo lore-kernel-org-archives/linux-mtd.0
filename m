@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48F85C28CBC
-	for <linux-mtd@archiver.kernel.org>; Sun,  3 May 2020 11:41:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3FB0C28CBC
+	for <linux-mtd@archiver.kernel.org>; Sun,  3 May 2020 11:41:26 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 032AF205ED
-	for <linux-mtd@archiver.kernel.org>; Sun,  3 May 2020 11:41:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 81E57205ED
+	for <linux-mtd@archiver.kernel.org>; Sun,  3 May 2020 11:41:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DK3oF0qY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 032AF205ED
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uI644iGT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 81E57205ED
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=STSDtxuDpEGTP1JxLcb/jxGpwsU1nllOW0+LZffT2To=; b=DK3oF0qYaHoXnO
-	WcXG04Tv7L9dXaqnoK0VqNEiN0XRVlVV+fEI9sZWWNS39Y+N6S6hZONdtRfxg0eY0Ymht45aMnRzP
-	7vWWi5npNsNI5tkGvzQ6F5gZLcJ/pUlVUNlcOaDfukeX+GVGrMGJom/2w+dbILrkRYeOgMcMrBpIn
-	6Onf6YTowXSK8RQOwwslAG9GVlMW4i9z7awvezZIz6b1bcBO1tA/yyZ+v9JOxrMF3pVcGANSFLysq
-	p6+5co0igDcA6WhdlpCkia/Cvr+pooCXel9ZC+EZOzF5NZ+dTECGjWDg2FBHfONNs0Q6G9r2u2zPm
-	dfwSvOkce2eEs/SV3Hcg==;
+	List-Owner; bh=QQAfbqZyz/xLsR0Hzhkq2FEs++Y9kFNbF2jEy7dpxeg=; b=uI644iGTjpAXSJ
+	NPBOGU8ZQSnB+pN05CuXicCGKE8B2sfaJzaPSK9VTvVVnLBhz65iyEay5sJ2xutA4sPzFAPRsCDhs
+	eLC6GgHlo894t7t6f1qRi2I+FMKoP+uproYeLmHSarG998yivyo9G6pVwVnPntFQM7wzrXMa7Ly50
+	BbEBIb8td4krFjLQ4KZch4CKZ5RdlUuGqXG0szi8pGeNzPyBTSlODIdCgki/2oAFFY04vhk3/4U6F
+	6K0xiivF3jNwmYP/wWUxJYp1wQPwqFmOLdP6jewrfDbVAwqn1/xVCM2wWr/DAvvxfVsR2dKxtSkr+
+	tD4or0ydrsK3N+gmMufQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jVCzT-0003gk-Ra; Sun, 03 May 2020 11:40:59 +0000
+	id 1jVCzj-0003vA-9Z; Sun, 03 May 2020 11:41:15 +0000
 Received: from relay9-d.mail.gandi.net ([217.70.183.199])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jVCz7-0003HC-0R
- for linux-mtd@lists.infradead.org; Sun, 03 May 2020 11:40:38 +0000
+ id 1jVCz8-0003Hg-8N
+ for linux-mtd@lists.infradead.org; Sun, 03 May 2020 11:40:40 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 737C3FF807;
- Sun,  3 May 2020 11:40:34 +0000 (UTC)
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id C0A32FF808;
+ Sun,  3 May 2020 11:40:35 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 2/3] mtd: rawnand: Add the nand_chip->write_oob hook
-Date: Sun,  3 May 2020 13:40:28 +0200
-Message-Id: <20200503114029.30257-3-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 3/3] mtd: rawnand: micron: Address the shallow erase issue
+Date: Sun,  3 May 2020 13:40:29 +0200
+Message-Id: <20200503114029.30257-4-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200503114029.30257-1-miquel.raynal@bootlin.com>
 References: <20200503114029.30257-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200503_044037_315176_212D7C67 
-X-CRM114-Status: GOOD (  12.44  )
+X-CRM114-CacheID: sfid-20200503_044038_574158_082F20D8 
+X-CRM114-Status: GOOD (  19.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,81 +79,176 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-With the same approach as for the ->erase hook, in order to solve an
-issue with Micron NANDs, we must be able to overload the write
-operation. With this in mind, we create a ->write_oob hook in the
-nand_chip structure which points by default to the
-currently in use nand_write_oob() helper, renamed
-nand_write_oob_nand() for the parallel with the nand_erase_nand()
-one.
+With recent SLC NANDs, Micron admits that a "shallow erase" issue may
+be observable. It is actually the chip itself not doing a correct
+erase operation because of its internal machinery stating that the
+pages have not been programmed. Micron told us that there is a way to
+workaround this issue: ensure that all the odd pages in the 16 first
+ones of each block to erase have been fully written.
+
+To avoid a very big performance drawback by re-writting all the pages
+for each erase operation, the fix proposed here overloads the ->erase
+and ->write_oob hooks to count the pages actually written at runtime
+and avoid re-writting them if not needed.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/internals.h | 2 ++
- drivers/mtd/nand/raw/nand_base.c | 8 ++++++++
- include/linux/mtd/rawnand.h      | 3 +++
- 3 files changed, 13 insertions(+)
+ drivers/mtd/nand/raw/nand_micron.c | 121 +++++++++++++++++++++++++++++
+ 1 file changed, 121 insertions(+)
 
-diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
-index 9d0caadf940e..caf534a6586a 100644
---- a/drivers/mtd/nand/raw/internals.h
-+++ b/drivers/mtd/nand/raw/internals.h
-@@ -81,6 +81,8 @@ int nand_bbm_get_next_page(struct nand_chip *chip, int page);
- int nand_markbad_bbm(struct nand_chip *chip, loff_t ofs);
- int nand_erase_nand(struct nand_chip *chip, struct erase_info *instr,
- 		    int allowbbt);
-+int nand_write_oob_nand(struct nand_chip *chip, loff_t to,
-+			struct mtd_oob_ops *ops);
- int onfi_fill_data_interface(struct nand_chip *chip,
- 			     enum nand_data_interface_type type,
- 			     int timing_mode);
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 7c7ac722d88b..f9cf30949f49 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -4121,6 +4121,13 @@ static int nand_write_oob(struct mtd_info *mtd, loff_t to,
- 			  struct mtd_oob_ops *ops)
- {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
-+
-+	return chip->write_oob(chip, to, ops);
-+}
-+
-+int nand_write_oob_nand(struct nand_chip *chip, loff_t to,
-+			struct mtd_oob_ops *ops)
-+{
- 	int ret;
+diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
+index 56654030ec7f..a9afd1b9a9e8 100644
+--- a/drivers/mtd/nand/raw/nand_micron.c
++++ b/drivers/mtd/nand/raw/nand_micron.c
+@@ -36,6 +36,15 @@
+ #define NAND_ECC_STATUS_1_3_CORRECTED	BIT(4)
+ #define NAND_ECC_STATUS_7_8_CORRECTED	(BIT(4) | BIT(3))
  
- 	ops->retlen = 0;
-@@ -4423,6 +4430,7 @@ static void nand_set_defaults(struct nand_chip *chip)
- 		chip->buf_align = 1;
++/*
++ * Micron SLC chips are subject to a shallow erase issue: if the first
++ * pages of a block have not enough bytes programmed, the internal
++ * machinery might declare the block empty and skip the actual erase
++ * operation. This is the number of pages we check by software.
++ */
++#define MICRON_SHALLOW_ERASE_MIN_PAGE 16
++#define MICRON_PAGE_MASK_TRIGGER GENMASK(MICRON_SHALLOW_ERASE_MIN_PAGE, 0)
++
+ struct nand_onfi_vendor_micron {
+ 	u8 two_plane_read;
+ 	u8 read_cache;
+@@ -64,6 +73,7 @@ struct micron_on_die_ecc {
  
- 	chip->erase = nand_erase_nand;
-+	chip->write_oob = nand_write_oob_nand;
+ struct micron_nand {
+ 	struct micron_on_die_ecc ecc;
++	u16 *writtenp;
+ };
+ 
+ static int micron_nand_setup_read_retry(struct nand_chip *chip, int retry_mode)
+@@ -429,6 +439,106 @@ static int micron_supports_on_die_ecc(struct nand_chip *chip)
+ 	return MICRON_ON_DIE_SUPPORTED;
  }
  
- /* Sanitize ONFI strings so we can safely print them */
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 505c13f7a2ba..7fbbd5d7088f 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -1021,6 +1021,7 @@ struct nand_legacy {
-  * @setup_read_retry:	[FLASHSPECIFIC] flash (vendor) specific function for
-  *			setting the read-retry mode. Mostly needed for MLC NAND.
-  * @erase:		Raw NAND erase operation.
-+ * @write_oob:		Raw NAND write operation.
-  * @ecc:		[BOARDSPECIFIC] ECC control structure
-  * @buf_align:		minimum buffer alignment required by a platform
-  * @oob_poi:		"poison value buffer," used for laying out OOB data
-@@ -1092,6 +1093,8 @@ struct nand_chip {
- 	int (*setup_read_retry)(struct nand_chip *chip, int retry_mode);
- 	int (*erase)(struct nand_chip *chip, struct erase_info *instr,
- 		     int allowbbt);
-+	int (*write_oob)(struct nand_chip *chip, loff_t to,
-+			 struct mtd_oob_ops *ops);
++static int micron_nand_avoid_shallow_erase(struct nand_chip *chip,
++					   unsigned int eb)
++{
++	struct micron_nand *micron = nand_get_manufacturer_data(chip);
++	unsigned int page = eb * nanddev_pages_per_eraseblock(&chip->base);
++	u8 *databuf = nand_get_data_buf(chip);
++	int ret, i;
++
++	memset(databuf, 0x00, nanddev_page_size(&chip->base));
++
++	/* Micron advises to only write the first 8 odd pages, counting from 1 */
++	for (i = 0; i < MICRON_SHALLOW_ERASE_MIN_PAGE; i += 2, page += 2) {
++		if (!(micron->writtenp[eb] & BIT(i))) {
++			ret = nand_write_page_raw(chip, databuf, false, page);
++			if (ret)
++				return ret;
++		}
++	}
++
++	return 0;
++}
++
++static int micron_nand_erase(struct nand_chip *chip, struct erase_info *instr,
++			int allowbbt)
++{
++	struct micron_nand *micron = nand_get_manufacturer_data(chip);
++	unsigned int eb_sz = nanddev_eraseblock_size(&chip->base);
++	unsigned int first_eb = DIV_ROUND_DOWN_ULL(instr->addr, eb_sz);
++	unsigned int nb_eb = DIV_ROUND_UP_ULL(instr->len, eb_sz);
++	unsigned int eb;
++
++	if (!micron)
++		return -EINVAL;
++
++	/*
++	 * Check that enough pages have been written in each block.
++	 * If not, write them before actually erasing.
++	 */
++	for (eb = first_eb; eb < first_eb + nb_eb; eb++) {
++		/* Il all the first pages are not written yet, do it */
++		if (micron->writtenp[eb] != MICRON_PAGE_MASK_TRIGGER)
++			micron_nand_avoid_shallow_erase(chip, eb);
++
++		micron->writtenp[eb] = 0;
++	}
++
++	return nand_erase_nand(chip, instr, allowbbt);
++}
++static int micron_nand_write_oob(struct nand_chip *chip, loff_t to,
++				 struct mtd_oob_ops *ops)
++{
++	struct micron_nand *micron = nand_get_manufacturer_data(chip);
++	unsigned int eb_sz = nanddev_eraseblock_size(&chip->base);
++	unsigned int p_sz = nanddev_page_size(&chip->base);
++	unsigned int ppeb = nanddev_pages_per_eraseblock(&chip->base);
++	unsigned int nb_p_tot = ops->len / p_sz;
++	unsigned int first_eb = DIV_ROUND_DOWN_ULL(to, eb_sz);
++	unsigned int first_p = DIV_ROUND_UP_ULL(to - (first_eb * eb_sz), p_sz);
++	unsigned int nb_eb = DIV_ROUND_UP_ULL(first_p + nb_p_tot, ppeb);
++	unsigned int remaining_p, eb, nb_p;
++	int ret;
++
++	ret = nand_write_oob_nand(chip, to, ops);
++	if (ret || (ops->len != ops->retlen))
++		return ret;
++
++	/* Mark the last pages of the first erase block to write */
++	nb_p = min(nb_p_tot, ppeb - first_p);
++	micron->writtenp[first_eb] |= GENMASK(first_p + nb_p, first_p) &
++				      MICRON_PAGE_MASK_TRIGGER;
++	remaining_p = nb_p_tot - nb_p;
++
++	/* Mark all the pages of all "in-the-middle" erase blocks */
++	for (eb = first_eb + 1; eb < first_eb + nb_eb - 1; eb++) {
++		micron->writtenp[eb] |= MICRON_PAGE_MASK_TRIGGER;
++		remaining_p -= ppeb;
++	}
++
++	/* Mark the first pages of the last erase block to write */
++	if (remaining_p)
++		micron->writtenp[eb] |= GENMASK(remaining_p - 1, 0) &
++					MICRON_PAGE_MASK_TRIGGER;
++
++	return 0;
++}
++
++static bool micron_nand_with_shallow_erase_issue(struct nand_chip *chip)
++{
++	/*
++	 * The shallow erase issue has been observed with MT29F*G*A
++	 * parts but Micron suspects that the issue can happen with
++	 * almost all recent SLC but at such a low probability that it
++	 * is almost invisible. Nevertheless, as we mitigate the
++	 * performance penalty at runtime by following the number of
++	 * written pages in a block before erasing it, we may want to
++	 * enable this fix by default.
++	 */
++	return nand_is_slc(chip);
++}
++
+ static int micron_nand_init(struct nand_chip *chip)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+@@ -513,6 +623,17 @@ static int micron_nand_init(struct nand_chip *chip)
+ 		}
+ 	}
  
- 	unsigned int options;
- 	unsigned int bbt_options;
++	if (micron_nand_with_shallow_erase_issue(chip)) {
++		micron->writtenp = kzalloc(sizeof(u16) *
++					   nanddev_neraseblocks(&chip->base),
++					   GFP_KERNEL);
++		if (!micron->writtenp)
++			goto err_free_manuf_data;
++
++		chip->erase = micron_nand_erase;
++		chip->write_oob = micron_nand_write_oob;
++	}
++
+ 	return 0;
+ 
+ err_free_manuf_data:
 -- 
 2.20.1
 
