@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-7.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6F2AC28CBC
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 May 2020 01:58:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 656CCC28CBC
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 May 2020 02:02:58 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 99C782073E
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 May 2020 01:58:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 377D52071C
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 May 2020 02:02:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="aopkLqVk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 99C782073E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="aaoJl9JW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 377D52071C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,36 +25,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
 	Message-ID:From:References:To:Subject:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ufW16T9rf5GiJPBdud2vlj6I9xb0ReRYkK5/BY2bTuY=; b=aopkLqVkbp97FD
-	0WmFMCsdkEF9Wl13H+imqYYAbXr1L06O5sqN3raDnsGRlM930G9DT0cIZYUc0FFLkSaKnJ/lIpFvj
-	9DEp2PA8vHS47EvnDyc/zcExPQD0Va7BpqWKLQeSGJ/r7ZjAUHD9/ChMCKcvPSMfXK6A9tB6r0JOZ
-	0AQ0GNy5xQy7SQu+fWbLRbOe7tsY7haY19mGr0Jb35jvV7jsl4WzbDrI7FCgq2XBkyPpxiyKcdF2s
-	6wA0dBlnECxRKBKhK2TM1zfW0i7ldejbR6bVqeMwtIPJifI6Wn9gN4/G9sEwQu5vS4Wb0P7AAndY1
-	fsvxxb/Luk/7HAGiASdQ==;
+	List-Owner; bh=zM08AHUmjIZd7OZb5+cwJCZJjAXCdy9F8GTOdL/SHhc=; b=aaoJl9JWoIXJTL
+	MHF4zcJ6HwrAjkK5SoPkUoNaP2dN2AKO5HRmtONOPPMUjkXfDpuVf6stcH3XQX7CrZpQVFheqQGwI
+	6mm0bghV6q7S7ZtIExxRWeZ0lL6R5Z3TNI+w56LEXecYqIVxsexmBTl1VIXKuCajZu8WKUcYbxY+p
+	Xmuixm9uIipb1TW08SXRoZmAhWkEBfRY/YBOdARIO4FMo+0rFfclj7lkk25K3MqfUB9/YOWyd3rVy
+	QAMsyjFN+sTEDt94tSFxkf/30V8XR9QaZPoluk5cy9U9YMZMoR0U06/JfPMeji3gL0oZvm8DdcmsN
+	ONYmIvUoElXiSaBiNrSA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jVQNA-0004po-8e; Mon, 04 May 2020 01:58:20 +0000
-Received: from mga03.intel.com ([134.134.136.65])
+	id 1jVQRT-0007ud-JS; Mon, 04 May 2020 02:02:47 +0000
+Received: from mga14.intel.com ([192.55.52.115])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jVQN7-0004pT-4x
- for linux-mtd@lists.infradead.org; Mon, 04 May 2020 01:58:18 +0000
-IronPort-SDR: C/uTGzXaWm+r7PeL08rUxXqsti22iDf7CUEBQ31xSdTiEVXHO/ZY0fnRfJUqabLMRDhLlk4MKJ
- cPxbMgze5+IA==
+ id 1jVQRQ-0007to-47
+ for linux-mtd@lists.infradead.org; Mon, 04 May 2020 02:02:45 +0000
+IronPort-SDR: tS1BHCzMp+Bw7O8eLrei2qVKSye/iLm/aH979ZPd8cUMRAuPwYK3B15N1L5CSmrR93OvUZj202
+ buCiTmkx0dew==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 May 2020 18:58:15 -0700
-IronPort-SDR: Ff3Y4xZ2QEk7wxYUQl6+j0WiEaUTuZZrEcn2LGSUgpJZeG8g0PG+BE1CCGK1w7xYYrWgwaxpSR
- qjMzawbxhmnQ==
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 May 2020 19:02:42 -0700
+IronPort-SDR: EEjwDPx5Hc8B2aMX+Qv9J67cB0Go8Ng30rmw+2h0TPOuzUXrrQW+TXYihNo1zgWj//FtpI8l5k
+ vIaq4vleTu8A==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,350,1583222400"; d="scan'208";a="262680308"
+X-IronPort-AV: E=Sophos;i="5.73,350,1583222400"; d="scan'208";a="433947100"
 Received: from linux.intel.com ([10.54.29.200])
- by orsmga006.jf.intel.com with ESMTP; 03 May 2020 18:58:15 -0700
+ by orsmga005.jf.intel.com with ESMTP; 03 May 2020 19:02:42 -0700
 Received: from [10.214.154.10] (vramuthx-mobl1.gar.corp.intel.com
  [10.214.154.10])
- by linux.intel.com (Postfix) with ESMTP id 773DE580609;
- Sun,  3 May 2020 18:58:09 -0700 (PDT)
+ by linux.intel.com (Postfix) with ESMTP id 91507580609;
+ Sun,  3 May 2020 19:02:36 -0700 (PDT)
 Subject: Re: [PATCH v4 2/2] mtd: rawnand: Add NAND controller support on Intel
  LGM SoC
 To: Boris Brezillon <boris.brezillon@collabora.com>
@@ -74,16 +74,16 @@ References: <20200429104205.18780-1-vadivel.muruganx.ramuthevar@linux.intel.com>
  <20200430150124.7856d112@collabora.com>
 From: "Ramuthevar, Vadivel MuruganX"
  <vadivel.muruganx.ramuthevar@linux.intel.com>
-Message-ID: <5bf637de-0ac1-1a24-0e91-aeb18bb563b4@linux.intel.com>
-Date: Mon, 4 May 2020 09:58:08 +0800
+Message-ID: <df7c1952-bc9b-bad7-bf31-d09707a0829e@linux.intel.com>
+Date: Mon, 4 May 2020 10:02:35 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
 In-Reply-To: <20200430150124.7856d112@collabora.com>
 Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200503_185817_262427_F1E80091 
-X-CRM114-Status: GOOD (  18.85  )
+X-CRM114-CacheID: sfid-20200503_190244_197613_88B95453 
+X-CRM114-Status: GOOD (  19.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,8 +108,6 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Hi Boris,
-
-   Thank you very much for the review comments and your time...
 
 On 30/4/2020 9:01 pm, Boris Brezillon wrote:
 > On Thu, 30 Apr 2020 14:36:00 +0200
@@ -184,15 +182,14 @@ On 30/4/2020 9:01 pm, Boris Brezillon wrote:
 > 
 > [1]https://github.com/xieyaxiongfly/Atheros_CSI_tool_OpenWRT_src/blob/master/target/linux/lantiq/files-4.14/arch/mips/boot/dts/vr9.dtsi#L162
 
-for the ebu-nand node in the dts file.
 
-       ebu_nand: ebu_nand@e0f00000 {
+  ebu_nand: ebu_nand@e0f00000 {
                   compatible = "intel,lgm-ebu-nand";
-                  reg = <0xe0f00000 0x100 //EBU_NAND controller
-                   0xe1000000 0x300       //NAND ECC Extension access
+                  reg = <0xe0f00000 0x100
+                  0xe1000000 0x300
                   0xe1400000 0x80000
                   0xe1c00000 0x10000>;
-                  reg-names = "ebunand", "hsnand", "nand_cs0", "nand_cs1";
+                  reg-names = "ebunand", "hsnand", "nand_cs0", nand_cs1";
                   dmas = <&dma0 8>, <&dma0 9>;
                   dma-names = "ebu_rx", "ebu_tx";
                   clocks =  <&cgu0 LGM_GCLK_EBU>;
@@ -207,10 +204,6 @@ for the ebu-nand node in the dts file.
 	        pinctrl-0 = <&ebu_nand_base &ebu_cs1>;
 	};
 
-This is not comes under fpi in our devicetree.
-
-Regards
-Vadivel
 > 
 
 ______________________________________________________
