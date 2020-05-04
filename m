@@ -2,57 +2,61 @@ Return-Path: <SRS0=hi6L=6S=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FD2CC3A5A9
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 May 2020 09:55:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B84DDC47247
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 May 2020 09:58:07 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 326D42071C
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 May 2020 09:55:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8E51B20735
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 May 2020 09:58:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="u8mHzz3+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 326D42071C
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jag9D3rT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8E51B20735
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Z23s45q1Qv/SBuE1ZgjpJQdE75YEnQOSc8R1QCDngdU=; b=u8mHzz3+cj8HbN
-	miHHwjey/XT3sKGl6lCjY6xIzr/AY2DOGVW/1yVuKqdT+jXl8NOqwAzIuSuNGpF0w0R1W3UzKqCGx
-	GTNtn1w/vXz6Rnvg/M9bGHURx6k5zjQ7VPTuTZTnXN7xzFYKYkvNwMKuuYk/8aMCLJfFsPPQT5zpM
-	gWXl9rYLG7/sWrVs9Ov3b/94dwU4j0W1AjqxwUnpAWGraOrguL3OXmDI4drVPmh+2HNJeR5gCZly5
-	fpTY2BtNcff4zvirhMzR2RDQwbX/Mw6qCImXiDmPpVjmuD5dMMRDpFncOmZyHnnQGJAUMWyi1Lki9
-	iDW6hDQ6cESzOjUBwILA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=/VRKQFucUNfRSgEDmL4YiCoY658BuWBnUwAKdRXUoj0=; b=jag9D3rTMOxwr8
+	Zx7elK7NV2SaZBeWBubgSJ/4iE16TsrG/Te48C/NB+w6+3qo3TN0g+pQlt44CZ6tIgwksfbBBSCKe
+	f8rZyoCm19uQDp5b/BgwvFCMWshm0qPfJhltYrrPpLJbiCIrLF3bENFmN2fkVC0eJTMwAq9YxkQ0a
+	UFcvnbwhktfo1T6ijz7AnkV8daL0o2dcENI+o9PB1YaJhg0eSiBDtJK+e/mDkY22r4FBarE2juYda
+	k0jhYcuQqyN5TMGWDSxRNKvfhYmrVMyVaSWHik8t3SjacLpJHAxcLR3dF+OMqddU506BI0AE6O594
+	iAg0RdOgSYL/dDnHWqgw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jVXon-0006uP-8B; Mon, 04 May 2020 09:55:21 +0000
+	id 1jVXrM-0007gd-6E; Mon, 04 May 2020 09:58:00 +0000
 Received: from relay10.mail.gandi.net ([217.70.178.230])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jVXok-0006tA-An
- for linux-mtd@lists.infradead.org; Mon, 04 May 2020 09:55:20 +0000
+ id 1jVXrJ-0007et-Ew
+ for linux-mtd@lists.infradead.org; Mon, 04 May 2020 09:57:59 +0000
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay10.mail.gandi.net (Postfix) with ESMTPSA id 96F20240025;
- Mon,  4 May 2020 09:52:38 +0000 (UTC)
+ by relay10.mail.gandi.net (Postfix) with ESMTPSA id 59577240011;
+ Mon,  4 May 2020 09:55:14 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH v4 00/13] Supporting restricted NAND controllers
-Date: Mon,  4 May 2020 11:52:24 +0200
-Message-Id: <20200504095237.1654-1-miquel.raynal@bootlin.com>
+Subject: [PATCH v4 01/13] mtd: rawnand: Translate obscure bitfields into
+ readable macros
+Date: Mon,  4 May 2020 11:52:25 +0200
+Message-Id: <20200504095237.1654-2-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200504095237.1654-1-miquel.raynal@bootlin.com>
+References: <20200504095237.1654-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200504_025518_649581_55FCF135 
-X-CRM114-Status: GOOD (  14.00  )
+X-CRM114-CacheID: sfid-20200504_025757_772025_5AF99D4F 
+X-CRM114-Status: GOOD (  11.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,81 +73,136 @@ Cc: Michal Simek <monstr@monstr.eu>,
  Naga Sureshkumar Relli <nagasure@xilinx.com>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgpUaGUgZmlyc3QgNiBwYXRjaGVzIGFyZSBqdXN0IG1pc2NlbGxhbmVvdXMgY2hhbmdl
-cywgdGhhdCBkbyBub3QgYnJpbmcKZnVuY3Rpb25hbCBjaGFuZ2VzIGJ1dCBjbGFyaWZ5IGEgZmV3
-IGNvcmUgYXJlYXMuCgpQYXRjaGVzIDcgdG8gMTAgY2hhbmdlIHRoZSBOQU5EIG9wZXJhdGlvbnMg
-dXNlZCB0byByZWFkIE9ORkkvSkVERUMKcGFyYW1ldGVyIHBhZ2VzLiBJIGV4cGVjdCBhbGwgY29u
-dHJvbGxlcnMgdG8gc3VwcG9ydCBpdCBub3cuCgpQYXRjaCAxMSBhZGQgbmV3IG5hbmRfbW9ub2xp
-dGhpY19yZWFkL3dyaXRlX3BhZ2VfcmF3KCkgaGVscGVycywgdGhhdApjb3VsZCBiZSB1c2VkIGJ5
-IGRyaXZlcnMgd2hpY2ggYXJlICJjb25zdHJhaW5lZCIuCgpGaW5hbGx5LCBwYXRjaGVzIDEyIGFu
-ZCAxMyBzb2Z0ZW4gdGhlIHJ1bGVzIHNvIHRoYXQgdGhlIGhvb2tzIGxpbmtlZAp0byB0aGUgYWJv
-dmUgaGVscGVycyBhcmUgbm90IG92ZXJ3cml0dGVuIGJ5IHRoZSBjb3JlIG9yIE5BTkQgY2hpcApk
-cml2ZXJzLgoKVGhpcyBzZXJpZXMgaXMgbmVlZGVkIGluIG9yZGVyIHRvIHN1cHBvcnQgY29udHJv
-bGxlcnMgbGlrZSBBcmFzYW4ncy4KClRoYW5rcywKTWlxdcOobAoKQ2hhbmdlcyBpbiB2NDoKKiBD
-b2xsZWN0ZWQgUmV2aWV3ZWQtYnkgdGFncy4KKiBDaGFuZ2VkIHRoZSB4eHgoKSA9PSAwIGNvbmRp
-dGlvbnMgaW50byAheHh4KCkKKiBSZW1vdmVkIHRoZSB1c2Ugb2YgcGJ1ZiBpbiB0aGUgSkVERUMg
-ZHJpdmVyLCBrZWVwIHVzaW5nIHAgb25seQoqIERyb3BwZWQgdGhlIGV4dHJhIHNlbnRlbmNlIGlu
-IHRoZSBrZXJuZWwgZG9jIG9mIG1vbm9saXRoaWMgaGVscGVycwoKQ2hhbmdlcyBpbiB2MzoKKiBz
-L05BTkRfVVNFX0RNQV9CVUZGRVIvTkFORF9VU0VTX0RNQS8gYXMgc3VnZ2VzdGVkIGJ5IEJvcmlz
-LgoqIENvbGxlY3RlZCBSZXZpZXdlZC1ieSB0YWdzLgoqIEVuaGFuY2UgdGhlIGtlcm5lbCBkb2Mg
-b2YgdGhlIG1vbm9saXRoaWMgaGVscGVycy4KKiBBZGRlZCBhIG5hbmRfY2hlY2tfc3VwcG9ydGVk
-X29wKCkgaGVscGVyLgoqIEFkZCBhIGNoZWNrX29ubHkgYXJndW1lbnQgdG8gdGhlIG5hbmRfcmVh
-ZF9kYXRhX29wKCkgaGVscGVyIHNvIHRoYXQKICB3ZSBjYW4gY2hlY2sgaWYgaXQgaXMgc3VwcG9y
-dGVkIGJ5IHRoZSBjb250cm9sbGVyIGRyaXZlciAodGhpcyB1c2VzCiAgdGhlIG5hbmRfY2hlY2tf
-c3VwcG9ydGVkX29wKCkgaGVscGVyKS4KKiBFbmhhbmNlIHRoZSBPTkZJL0pFREVDIHBhcmFtZXRl
-ciBwYWdlIGRpc2NvdmVyaWVzOiBpbiBjYXNlIHRoZQogIGRyaXZlciBkb2VzIG5vdCBzdXBwb3J0
-IC0+ZXhlY19vcCgpLCB3ZSBzdGlsbCB1c2UgdGhlIHNhbWUgYmVoYXZpb3IKICBhcyBiZWZvcmUg
-KHJlYWRpbmcgZGF0YSBieXRlcyBvbmx5KSwgb3RoZXJ3aXNlIHdlIGNoZWNrIGlmIHJlYWRpbmcK
-ICBkYXRhIGJ5dGVzIGlzIHN1cHBvcnRlZCBvciBub3QuIElmIGl0IGlzIG5vdCwgdGhlbiB3ZSBm
-YWxsYmFjayB0byBhCiAgQ0hBTkdFIFJFQUQgQ09MVU1OIG9wZXJhdGlvbi4KCkNoYW5nZXMgaW4g
-djI6CiogRml4ZWQgdGhlIHR3byB3cm9uZyBjb252ZXJzaW9ucyBvZiBmbGFnIHZhbHVlcyBmcm9t
-IDgtYml0IGRpZ2l0cwogIGludG8gQklUKCkgbWFjcm9zLgoqIERyb3BwZWQgIkhlbHAgc3VwcG9y
-dGluZyBjb250cm9sbGVycyB0aGF0IGFyZSBub3QgYWJsZSB0byBzcGxpdAogIG9wZXJhdGlvbnMi
-LiBJbnN0ZWFkLCBkZWNpZGVkIG9uIHRoZSBmbHkgZm9yIHRoZSByZWFkX3BhcmFtX3BhZ2UoKQog
-IHVzZXMgKE9ORkkgYW5kIEpFREVDIGRpc2NvdmVyeSkgYW5kIHdyb3RlIHNlcGFyYXRlIGhlbHBl
-cnMgZm9yCiAgcmVhZC93cml0ZV9wYWdlX3JhdygpICh0aGUgQXJhc2FuIGRyaXZlciB3aWxsIHVz
-ZSB0aGVtKS4KKiBQcmV2ZW50IHRoZSBjb3JlIGFuZCBOQU5EIGNoaXAgZHJpdmVycyB0byBvdmVy
-bG9hZCB0aGUKICBlY2MtPnJlYWQvd3JpdGVfcGFnZV9yYXcoKSBob29rcy4KKiBBZGRlZCBSZXZp
-ZXdlZC1ieSB0YWdzLgoKTWlxdWVsIFJheW5hbCAoMTMpOgogIG10ZDogcmF3bmFuZDogVHJhbnNs
-YXRlIG9ic2N1cmUgYml0ZmllbGRzIGludG8gcmVhZGFibGUgbWFjcm9zCiAgbXRkOiByYXduYW5k
-OiBSZW9yZGVyIHRoZSBuYW5kX2NoaXAtPm9wdGlvbnMgZmxhZ3MKICBtdGQ6IHJhd25hbmQ6IFJl
-bmFtZSBhIE5BTkQgY2hpcCBvcHRpb24KICBtdGQ6IHJhd25hbmQ6IEZpeCBjb21tZW50cyBhYm91
-dCB0aGUgdXNlIG9mIGJ1ZnBvaQogIG10ZDogcmF3bmFuZDogUmVuYW1lIHRoZSB1c2VfYnVmcG9p
-IHZhcmlhYmxlcwogIG10ZDogcmF3bmFuZDogQXZvaWQgaW5kaXJlY3QgYWNjZXNzIHRvIC0+ZGF0
-YV9idWYoKQogIG10ZDogcmF3bmFuZDogQWRkIGEgaGVscGVyIHRvIGNoZWNrIHN1cHBvcnRlZCBv
-cGVyYXRpb25zCiAgbXRkOiByYXduYW5kOiBHaXZlIHRoZSBwb3NzaWJpbGl0eSB0byB2ZXJpZnkg
-YSByZWFkIG9wZXJhdGlvbiBpcwogICAgc3VwcG9ydGVkCiAgbXRkOiByYXduYW5kOiBvbmZpOiBB
-ZGFwdCB0aGUgcGFyYW1ldGVyIHBhZ2UgcmVhZCB0byBjb25zdHJhaW50CiAgICBjb250cm9sbGVy
-cwogIG10ZDogcmF3bmFuZDogamVkZWM6IEFkYXB0IHRoZSBwYXJhbWV0ZXIgcGFnZSByZWFkIHRv
-IGNvbnN0cmFpbnQKICAgIGNvbnRyb2xsZXJzCiAgbXRkOiByYXduYW5kOiBFeHBvc2UgbW9ub2xp
-dGhpYyByZWFkL3dyaXRlX3BhZ2VfcmF3KCkgaGVscGVycwogIG10ZDogcmF3bmFuZDogQWxsb3cg
-Y29udHJvbGxlcnMgdG8gb3ZlcmxvYWQgc29mdCBFQ0MgaG9va3MKICBtdGQ6IHJhd25hbmQ6IG1p
-Y3JvbjogQWxsb3cgY29udHJvbGxlcnMgdG8gb3ZlcmxvYWQgcmF3IGFjY2Vzc29ycwoKIGRyaXZl
-cnMvbXRkL25hbmQvcmF3L2F0bWVsL25hbmQtY29udHJvbGxlci5jIHwgICAyICstCiBkcml2ZXJz
-L210ZC9uYW5kL3Jhdy9icmNtbmFuZC9icmNtbmFuZC5jICAgICB8ICAgMiArLQogZHJpdmVycy9t
-dGQvbmFuZC9yYXcvZGVuYWxpLmMgICAgICAgICAgICAgICAgfCAgIDIgKy0KIGRyaXZlcnMvbXRk
-L25hbmQvcmF3L2ZzbWNfbmFuZC5jICAgICAgICAgICAgIHwgICAyICstCiBkcml2ZXJzL210ZC9u
-YW5kL3Jhdy9pbnRlcm5hbHMuaCAgICAgICAgICAgICB8ICAgOSArCiBkcml2ZXJzL210ZC9uYW5k
-L3Jhdy9tYXJ2ZWxsX25hbmQuYyAgICAgICAgICB8ICAgNCArLQogZHJpdmVycy9tdGQvbmFuZC9y
-YXcvbWVzb25fbmFuZC5jICAgICAgICAgICAgfCAgIDIgKy0KIGRyaXZlcnMvbXRkL25hbmQvcmF3
-L210a19uYW5kLmMgICAgICAgICAgICAgIHwgICAyICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9u
-YW5kX2Jhc2UuYyAgICAgICAgICAgICB8IDE4NyArKysrKysrKysrKysrKy0tLS0tCiBkcml2ZXJz
-L210ZC9uYW5kL3Jhdy9uYW5kX2plZGVjLmMgICAgICAgICAgICB8ICAxOSArLQogZHJpdmVycy9t
-dGQvbmFuZC9yYXcvbmFuZF9sZWdhY3kuYyAgICAgICAgICAgfCAgIDggKy0KIGRyaXZlcnMvbXRk
-L25hbmQvcmF3L25hbmRfbWljcm9uLmMgICAgICAgICAgIHwgIDEyICstCiBkcml2ZXJzL210ZC9u
-YW5kL3Jhdy9uYW5kX29uZmkuYyAgICAgICAgICAgICB8ICAyMCArLQogZHJpdmVycy9tdGQvbmFu
-ZC9yYXcvcWNvbV9uYW5kYy5jICAgICAgICAgICAgfCAgIDIgKy0KIGRyaXZlcnMvbXRkL25hbmQv
-cmF3L3N0bTMyX2ZtYzJfbmFuZC5jICAgICAgIHwgICAyICstCiBkcml2ZXJzL210ZC9uYW5kL3Jh
-dy9zdW54aV9uYW5kLmMgICAgICAgICAgICB8ICAgMiArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcv
-dGFuZ29fbmFuZC5jICAgICAgICAgICAgfCAgIDIgKy0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L3Rl
-Z3JhX25hbmQuYyAgICAgICAgICAgIHwgICAyICstCiBpbmNsdWRlL2xpbnV4L210ZC9yYXduYW5k
-LmggICAgICAgICAgICAgICAgICB8ICA5OSArKysrKy0tLS0tCiAxOSBmaWxlcyBjaGFuZ2VkLCAy
-NTYgaW5zZXJ0aW9ucygrKSwgMTI0IGRlbGV0aW9ucygtKQoKLS0gCjIuMjAuMQoKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQg
-ZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9saW51eC1tdGQvCg==
+Use the BIT() macro instead of defining a 8-digit value.
+
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+---
+ include/linux/mtd/rawnand.h | 38 ++++++++++++++++++-------------------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
+
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 21873168ba4d..4b58de842340 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -129,36 +129,36 @@ enum nand_ecc_algo {
+  * features.
+  */
+ /* Buswidth is 16 bit */
+-#define NAND_BUSWIDTH_16	0x00000002
++#define NAND_BUSWIDTH_16	BIT(1)
+ /* Chip has cache program function */
+-#define NAND_CACHEPRG		0x00000008
++#define NAND_CACHEPRG		BIT(3)
+ /*
+  * Chip requires ready check on read (for auto-incremented sequential read).
+  * True only for small page devices; large page devices do not support
+  * autoincrement.
+  */
+-#define NAND_NEED_READRDY	0x00000100
++#define NAND_NEED_READRDY	BIT(8)
+ 
+ /* Chip does not allow subpage writes */
+-#define NAND_NO_SUBPAGE_WRITE	0x00000200
++#define NAND_NO_SUBPAGE_WRITE	BIT(9)
+ 
+ /* Device is one of 'new' xD cards that expose fake nand command set */
+-#define NAND_BROKEN_XD		0x00000400
++#define NAND_BROKEN_XD		BIT(10)
+ 
+ /* Device behaves just like nand, but is readonly */
+-#define NAND_ROM		0x00000800
++#define NAND_ROM		BIT(11)
+ 
+ /* Device supports subpage reads */
+-#define NAND_SUBPAGE_READ	0x00001000
++#define NAND_SUBPAGE_READ	BIT(12)
+ 
+ /*
+  * Some MLC NANDs need data scrambling to limit bitflips caused by repeated
+  * patterns.
+  */
+-#define NAND_NEED_SCRAMBLING	0x00002000
++#define NAND_NEED_SCRAMBLING	BIT(13)
+ 
+ /* Device needs 3rd row address cycle */
+-#define NAND_ROW_ADDR_3		0x00004000
++#define NAND_ROW_ADDR_3		BIT(14)
+ 
+ /* Options valid for Samsung large page devices */
+ #define NAND_SAMSUNG_LP_OPTIONS NAND_CACHEPRG
+@@ -173,9 +173,9 @@ enum nand_ecc_algo {
+  * Position within the block: Each of these pages needs to be checked for a
+  * bad block marking pattern.
+  */
+-#define NAND_BBM_FIRSTPAGE		0x01000000
+-#define NAND_BBM_SECONDPAGE		0x02000000
+-#define NAND_BBM_LASTPAGE		0x04000000
++#define NAND_BBM_FIRSTPAGE	BIT(24)
++#define NAND_BBM_SECONDPAGE	BIT(25)
++#define NAND_BBM_LASTPAGE	BIT(26)
+ 
+ /* Position within the OOB data of the page */
+ #define NAND_BBM_POS_SMALL		5
+@@ -183,21 +183,21 @@ enum nand_ecc_algo {
+ 
+ /* Non chip related options */
+ /* This option skips the bbt scan during initialization. */
+-#define NAND_SKIP_BBTSCAN	0x00010000
++#define NAND_SKIP_BBTSCAN	BIT(16)
+ /* Chip may not exist, so silence any errors in scan */
+-#define NAND_SCAN_SILENT_NODEV	0x00040000
++#define NAND_SCAN_SILENT_NODEV	BIT(18)
+ /*
+  * Autodetect nand buswidth with readid/onfi.
+  * This suppose the driver will configure the hardware in 8 bits mode
+  * when calling nand_scan_ident, and update its configuration
+  * before calling nand_scan_tail.
+  */
+-#define NAND_BUSWIDTH_AUTO      0x00080000
++#define NAND_BUSWIDTH_AUTO      BIT(19)
+ /*
+  * This option could be defined by controller drivers to protect against
+  * kmap'ed, vmalloc'ed highmem buffers being passed from upper layers
+  */
+-#define NAND_USE_BOUNCE_BUFFER	0x00100000
++#define NAND_USE_BOUNCE_BUFFER	BIT(20)
+ 
+ /*
+  * In case your controller is implementing ->legacy.cmd_ctrl() and is relying
+@@ -207,20 +207,20 @@ enum nand_ecc_algo {
+  * If your controller already takes care of this delay, you don't need to set
+  * this flag.
+  */
+-#define NAND_WAIT_TCCS		0x00200000
++#define NAND_WAIT_TCCS		BIT(21)
+ 
+ /*
+  * Whether the NAND chip is a boot medium. Drivers might use this information
+  * to select ECC algorithms supported by the boot ROM or similar restrictions.
+  */
+-#define NAND_IS_BOOT_MEDIUM	0x00400000
++#define NAND_IS_BOOT_MEDIUM	BIT(22)
+ 
+ /*
+  * Do not try to tweak the timings at runtime. This is needed when the
+  * controller initializes the timings on itself or when it relies on
+  * configuration done by the bootloader.
+  */
+-#define NAND_KEEP_TIMINGS	0x00800000
++#define NAND_KEEP_TIMINGS	BIT(23)
+ 
+ /* Cell info constants */
+ #define NAND_CI_CHIPNR_MSK	0x03
+-- 
+2.20.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
