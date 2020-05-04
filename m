@@ -2,22 +2,22 @@ Return-Path: <SRS0=hi6L=6S=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2C07C3A5A9
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 May 2020 07:18:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7CC0C3A5A9
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 May 2020 08:03:21 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6FFDF2078E
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 May 2020 07:18:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ADF1120658
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 May 2020 08:03:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CzG6bCWR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6FFDF2078E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BnXz+7zs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ADF1120658
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -25,57 +25,42 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qrFut+Js5xa5TjmfjlOT/8enCv4ZTHj1rp0D/9NbMts=; b=CzG6bCWR0J6xqb
-	h/VPLuyd+Ihxp1quCjbysYR3WJq6qcimdiNNxPgtG5Be40/OfnDCVYRoHwPBC7eriNjhNhiusqaF+
-	Pe6eTwPEzJSZI1PhZJR7IQmlVc1+Oqim3TLPFAeCU22gLsGVJ2O/4bw75AUCiJuuwjPrO1i6O3SwM
-	qQ/FVhWcZjPSF72BYrW29JV7zH8Rf5go82ugmspAOQ8EEmlR2moQwj806XftqmBuBPJ51RNu2FZCC
-	1aMjHkFV087JxOWZwAMiEK78aGp260hsGW50aXGwIhFwHe9AJsgOk5G82hhckrBXMh9jdV0XjpUQy
-	6f9sVJnVPjKxesu+JE6Q==;
+	List-Owner; bh=vTlVR7KL8zIag4aXsKMHk96FnVag82WPWshRfctfOn8=; b=BnXz+7zsaNB3Fn
+	xTUcTVZFqwRCdWz1WaI6MU/k6olecu/1CB8nZPy/bWorNBURPDkXBVTSaq72SfouHEbmtejRy3+/h
+	fNg25j+QiZXgRu4Sf3Pr4Dfcd2J46nUAbVWCdPslZgLvunj5qoLav1eEKixwuFrxRiHX59vBQ4Uee
+	yfNhnHaMy7vfxCZTPiP7yLqd2Yp9E/csONU3Jfv93IfvTRpSXC7Pj/BH7YpChMDDyHHdAGIDrnYLt
+	YfGFTas6smx/5j/u4e9eYGcn7AxSOCJGHmWVJT+RNyMCo1QH3VbEffFTTHcpj+60EK5kqkx64TQU3
+	n+l/2AzsmsTaOTFpcEpQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jVVMb-0006hL-1p; Mon, 04 May 2020 07:18:05 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1jVW42-0002hN-Dv; Mon, 04 May 2020 08:02:58 +0000
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jVVMW-0006gY-TI
- for linux-mtd@lists.infradead.org; Mon, 04 May 2020 07:18:02 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 21FB52A0DAA;
- Mon,  4 May 2020 08:17:59 +0100 (BST)
-Date: Mon, 4 May 2020 09:17:55 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: "Ramuthevar, Vadivel MuruganX"
- <vadivel.muruganx.ramuthevar@linux.intel.com>, tglx@linutronix.de,
- cheol.yong.kim@intel.com, devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] mtd: rawnand: Add NAND controller support on
- Intel LGM SoC
-Message-ID: <20200504091755.0d0e73aa@collabora.com>
-In-Reply-To: <854521ed-b0f9-0f0f-2cd7-5ad11b2d059a@linux.intel.com>
-References: <20200429104205.18780-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200429104205.18780-3-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200429162249.55d38ee8@collabora.com>
- <9d77c64c-d0f9-7a13-3391-d05bf458bdb1@linux.intel.com>
- <20200429164832.6800fc70@collabora.com>
- <2e83a2f7-853c-f0e2-f686-daf1e0649eae@linux.intel.com>
- <20200429173107.5c6d2f55@collabora.com>
- <1de9ba29-30f1-6829-27e0-6f141e9bb1e6@linux.intel.com>
- <20200430102114.29b6552f@collabora.com>
- <1df71cf7-4cae-4cd0-864c-0812bb2cc123@linux.intel.com>
- <20200430103658.4b0b979e@collabora.com>
- <1d5aec11-a7b5-01c2-6614-16e57c64511b@linux.intel.com>
- <20200430143600.27031639@collabora.com>
- <20200430150124.7856d112@collabora.com>
- <df7c1952-bc9b-bad7-bf31-d09707a0829e@linux.intel.com>
- <20200504090824.1eb16b78@collabora.com>
- <854521ed-b0f9-0f0f-2cd7-5ad11b2d059a@linux.intel.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1jVW3z-0002g8-6V
+ for linux-mtd@lists.infradead.org; Mon, 04 May 2020 08:02:57 +0000
+X-Originating-IP: 91.224.148.103
+Received: from xps13 (unknown [91.224.148.103])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id CAD4FC0021;
+ Mon,  4 May 2020 08:02:46 +0000 (UTC)
+Date: Mon, 4 May 2020 10:02:45 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@collabora.com>
+Subject: Re: [PATCH v2 08/11] mtd: rawnand: jedec: Adapt the parameter page
+ read to constraint controllers
+Message-ID: <20200504100245.6fa81a31@xps13>
+In-Reply-To: <20200503214403.5f68fb93@collabora.com>
+References: <20200429155540.22048-1-miquel.raynal@bootlin.com>
+ <20200429155540.22048-9-miquel.raynal@bootlin.com>
+ <20200429180405.5bf69447@collabora.com>
+ <20200503210623.25d384c4@xps13>
+ <20200503214403.5f68fb93@collabora.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200504_001801_209818_4D61C60A 
-X-CRM114-Status: GOOD (  24.02  )
+X-CRM114-CacheID: sfid-20200504_010255_372985_FBA05CB5 
+X-CRM114-Status: GOOD (  24.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,170 +72,80 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: hauke.mehrtens@intel.com, qi-ming.wu@intel.com, anders.roxell@linaro.org,
- vigneshr@ti.com, arnd@arndb.de, richard@nod.at, brendanhiggins@google.com,
- linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
- masonccyang@mxic.com.tw, andriy.shevchenko@intel.com
+Cc: Michal Simek <monstr@monstr.eu>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Naga Sureshkumar Relli <nagasure@xilinx.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 4 May 2020 15:15:08 +0800
-"Ramuthevar, Vadivel MuruganX"
-<vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
 
-> Hi Boris,
+Boris Brezillon <boris.brezillon@collabora.com> wrote on Sun, 3 May
+2020 21:44:03 +0200:
+
+> On Sun, 3 May 2020 21:06:23 +0200
+> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 > 
->    Thank you very much for the prompt review and suggestions...
-> 
-> On 4/5/2020 3:08 pm, Boris Brezillon wrote:
-> > On Mon, 4 May 2020 10:02:35 +0800
-> > "Ramuthevar, Vadivel MuruganX"
-> > <vadivel.muruganx.ramuthevar@linux.intel.com>  wrote:
+> > Hi Boris,
+> > 
+> > Boris Brezillon <boris.brezillon@collabora.com> wrote on Wed, 29 Apr
+> > 2020 18:04:05 +0200:
 > >   
-> >> Hi Boris,
-> >>
-> >> On 30/4/2020 9:01 pm, Boris Brezillon wrote:  
-> >>> On Thu, 30 Apr 2020 14:36:00 +0200
-> >>> Boris Brezillon<boris.brezillon@collabora.com>  wrote:
-> >>>      
-> >>>> On Thu, 30 Apr 2020 17:07:03 +0800
-> >>>> "Ramuthevar, Vadivel MuruganX"
-> >>>> <vadivel.muruganx.ramuthevar@linux.intel.com>  wrote:
-> >>>>     
-> >>>>>>>> The question is, is it the same value we have in nand_pa or it is
-> >>>>>>>> different?
-> >>>>>>>>              
-> >>>>>>> Different address which is 0xE1400000 NAND_BASE_PHY address.  
-> >>>>>> Then why didn't you tell me they didn't match when I suggested to pass  
-> >>>>> sorry, because you keep asking nand_pa after that only I realized that.
-> >>>>>         
-> >>>>>> nand_pa? So now the question is, what does this address represent?  
-> >>>>>                   EBU-MODULE
-> >>>>>     _________     _______________________
-> >>>>> |         |   |            |NAND CTRL  |
-> >>>>> | FPI BUS |==>| CS0(0x174) | 0xE100    ( 0xE14/0xE1C) NAND_PHY_BASE
-> >>>>> |_________|   |_CS1(0x17C)_|__________ |
-> >>>>>
-> >>>>> EBU_CONRTROLLER_BASE : 0xE0F0_0000
-> >>>>> HSNAND_BASE: 0xE100_0000
-> >>>>> NAND_CS0: 0xE140_0000
-> >>>>> NAND_CS1: 0xE1C0_0000
-> >>>>>
-> >>>>> MEM_REGION_BASE_CS0: 0x17400 (internal to ebu controller )
-> >>>>> MEM_REGION_BASE_CS1: 0x17C00
-> >>>>>         
-> >>>> Hm, I wonder if we shouldn't use a 'ranges' property to describe this
-> >>>> address translation. Something like
-> >>>>
-> >>>> 	ebu@xxx {
-> >>>> 		ranges = <0x17400000 0xe1400000 0x1000>,
-> >>>> 			 <0x17c00000 0xe1c00000 0x1000>;
-> >>>> 		reg = <0x17400000>, <0x17c00000>;
-> >>>> 		reg-names = "cs-0", "cs-1";
-> >>>> 	}
-> >>>>
-> >>>> The translated address (0xE1X00000) will be available in res->start,
-> >>>> and the non-translated one (0x17X00000) can be retrieved with
-> >>>> of_get_address(). All you'd have to do then would be calculate the
-> >>>> mask:
-> >>>>
-> >>>> 	mask = (translated_address & original_address) >> 22;
-> >>>> 	num_comp_bits = fls(mask);
-> >>>> 	WARN_ON(mask != GENMASK(num_comp_bits - 1, 0));
-> >>>>
-> >>>> Which allows you to properly set the ADDR_SEL() register without
-> >>>> relying on some hardcoded values:
-> >>>>
-> >>>> 	writel(original_address | EBU_ADDR_SEL_REGEN |
-> >>>> 	       EBU_ADDR_COMP_BITS(num_comp_bits),
-> >>>> 	       ebu_host->ebu + EBU_ADDR_SEL(csid));
-> >>>>
-> >>>> That's quite important if we want to merge the xway NAND driver with
-> >>>> this one.  
-> >>> Looks like the translation is done at the FPI bus declaration level (see
-> >>> [1]). We really need to see the big picture to take a wise decision
-> >>> about the bindings. Would you mind pasting your dsti/dts files
-> >>> somewhere? It feels like the NAND controller is a sub-part of a more
-> >>> generic 'memory' controller, in which case the NAND controller should be
-> >>> declared as a child of this generic memory bus (called localbus in [1],
-> >>> but maybe EBU is more accurate).
-> >>>
-> >>> [1]https://github.com/xieyaxiongfly/Atheros_CSI_tool_OpenWRT_src/blob/master/target/linux/lantiq/files-4.14/arch/mips/boot/dts/vr9.dtsi#L162     
-> >>
-> >>    ebu_nand: ebu_nand@e0f00000 {
-> >>                    compatible = "intel,lgm-ebu-nand";
-> >>                    reg = <0xe0f00000 0x100
-> >>                    0xe1000000 0x300
-> >>                    0xe1400000 0x80000
-> >>                    0xe1c00000 0x10000>;
-> >>                    reg-names = "ebunand", "hsnand", "nand_cs0", nand_cs1";
-> >>                    dmas = <&dma0 8>, <&dma0 9>;
-> >>                    dma-names = "ebu_rx", "ebu_tx";
-> >>                    clocks =  <&cgu0 LGM_GCLK_EBU>;
-> >>            };
-> >>
-> >>
-> >> 	 &ebu_nand {
-> >> 	         status = "disabled";
-> >> 	        nand,cs = <1>;
-> >> 	        nand-ecc-mode = "hw";
-> >> 	        pinctrl-names = "default";
-> >> 	        pinctrl-0 = <&ebu_nand_base &ebu_cs1>;
-> >> 	};
-> >>  
-> >>>      
-> > Ok. If I understand the SoC topology correctly it should actually be
-> > something like that:
+> > > On Wed, 29 Apr 2020 17:55:37 +0200
+> > > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> > >     
+> > > > We already know that there are controllers not able to read the three
+> > > > copies of the parameter page in one go. The workaround was to first
+> > > > request the controller to assert command and address cycles on the
+> > > > NAND bus to trigger a parameter page read, and then do a read
+> > > > operation for each page.
+> > > > 
+> > > > But there are also controllers which are not able to split the
+> > > > parameter page read between the command/address cycles and the actual
+> > > > data operation.
+> > > > 
+> > > > All controllers are expected to be able to change the read column
+> > > > though. So let's use a regular parameter page read operation for the
+> > > > first iteration and use a change read column operation for the
+> > > > following copies.
+> > > > 
+> > > > The extra command and address cycles sent over the NAND bus are
+> > > > negligible compared to the amount of data that is being transferred
+> > > > anyway.
+> > > > 
+> > > > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > > > ---
+> > > >  drivers/mtd/nand/raw/nand_jedec.c | 28 +++++++++++++++-------------
+> > > >  1 file changed, 15 insertions(+), 13 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/mtd/nand/raw/nand_jedec.c b/drivers/mtd/nand/raw/nand_jedec.c
+> > > > index 15937e02c64f..b2be9056759a 100644
+> > > > --- a/drivers/mtd/nand/raw/nand_jedec.c
+> > > > +++ b/drivers/mtd/nand/raw/nand_jedec.c
+> > > > @@ -25,7 +25,7 @@ int nand_jedec_detect(struct nand_chip *chip)
+> > > >  {
+> > > >  	struct mtd_info *mtd = nand_to_mtd(chip);
+> > > >  	struct nand_memory_organization *memorg;
+> > > > -	struct nand_jedec_params *p;
+> > > > +	struct nand_jedec_params *p = NULL, *pbuf;      
+> > > 
+> > > Looks like you've merged 2 different commits here. I remember you had a
+> > > separate commit adding pbuf to avoid an extra memcpy().    
 > > 
-> > {
-> > 	...
-> > 	fpi@xxxxx {
-> > 		compatible = "intel,lgm-fpi", "simple-bus";
+> > Actually this was only fixed in the onfi detection routine. The jedec
+> > equivalent does not copy the page (the copy came from the 3-way merge
+> > that has only been added to onfi detection).
 > > 
-> > 		/* You might have other ranges to define here */
-> > 		ranges = <0x16000000 0xe0000000 0x1000000>;
-> > 
-> > 		...  
+> > Here pbuf represents the buffer containing the three pages while p now
+> > only points to the actual page that is correct.  
 > 
-> Sorry, we do not have fpi tree node in our dts/dtsi file instead we have 
-> the below one.. , that also not included the major peripherals 
-> controllers node.
->          /* Special part from CPU core */
->          core: core {
->                  compatible = "intel,core", "simple-bus";
->                  #address-cells = <1>;
->                  #size-cells = <1>;
->                  ranges;
-> 
->                  ioapic1: interrupt-controller@fec00000 {
->                          #interrupt-cells = <2>;
->                          #address-cells = <0>;
->                          compatible = "intel,ce4100-ioapic";
->                          interrupt-controller;
->                          reg = <0xfec00000 0x1000>;
->                          nr_entries = <256>;
->                  };
-> 
->                  hpet: timer@fed00000 {
->                          compatible = "intel,ce4100-hpet";
->                          reg = <0xfed00000 0x400>;
->                  };
-> 
->                  lapic0: interrupt-controller@fee00000 {
->                          compatible = "intel,ce4100-lapic";
->                          reg = <0xfee00000 0x1000>;
->                          no_pic_mode;
->                  };
->          };
-> 
-> other than this, rest all in independent node .
+> Oh, I see. Looks like the p = pbuf assignment is wrong BTW (should be
+> p = &pbuf[i]).
 
-But you do have an FPI bus, right? If this is the case it should be
-represented. Or is the "intel,core" bus actually the FPI bus that you
-named differently?
+Good catch!
 
 ______________________________________________________
 Linux MTD discussion mailing list
