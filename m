@@ -2,94 +2,115 @@ Return-Path: <SRS0=lVZn=6T=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B512C47247
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 May 2020 07:17:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1990AC47247
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 May 2020 07:19:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 29E7E206B8
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 May 2020 07:17:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DE53D206B8
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 May 2020 07:19:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qr2YO8CR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 29E7E206B8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="SsYyR1Pv";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sifive.com header.i=@sifive.com header.b="SYT1PFtf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE53D206B8
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sifive.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:Reply-To:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=otgeNuiWgFCTPC8k1l99840LuFPSSExRC4tPzmVqZrY=; b=qr2YO8CRn+FDpk
-	/QzoEd+2FMB8RmmL96LWqoUecwj2TWP+Cmm5Qbs/hgQpBaimvXFpDqIGDgCBU382HpBO1euKvnMDl
-	iGe9g7zY/3+7+TMPXw01n31XSTyZJ5fiv+Yd3KShPp7hQBF8LxKVkyksaSaz92qlPKelzwb64D4RY
-	n1Q2pobW4Daqe41b9/Ny5szjLQ6bqHb6/8LiwCtfsbKsECK2rlNfsW+L1YT5voAH7CHnwgKkRzDGF
-	JJMgcGQuu4tjmsry8/K7UyouBjK5iCFSAKfhZXL9EO2V8MU734KataM7gVMTKHtjFMKb1wBC7oB8+
-	R7/3xM/FnacV7+SZDUcg==;
+	List-Owner; bh=jF/gw/cA6YZ0eaqLQstczsXViDoslSic9UMaCrbABXk=; b=SsYyR1Pv7E4zOU
+	B6zXLgAKXGJlalAn255lezkuaaSE8LaMAYqSePnzB4hGvZ4hs/D1BG5jBPeAiUOhm/Z8Jiwf15V0r
+	rG9V8ehCecYXEJk0MoYsVCzh4kigRQRl4ZC6kmJD218I3gU1MJqLaLCFpUezZy3IPxG2We1TS0GYV
+	hqjRaQu3pjpDZgcrVW5BlztNkaSJEKht4h+xOVN+fiuvl3OxPdBjsCIEEl3U/sGWENxbKaB2OIx9q
+	OpEgPuqJ+CMZJMnmbhjNYH+gdvWhrw/dGvihI1HmJedagArjZlp9bPs+4477pdyi99ReYcbOS1DNT
+	oNSlOk35phCEVQbalhWA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jVrpS-0000VF-3G; Tue, 05 May 2020 07:17:22 +0000
-Received: from mga01.intel.com ([192.55.52.88])
+	id 1jVrqx-0001A3-Qt; Tue, 05 May 2020 07:18:55 +0000
+Received: from mail-mw2nam12on2085.outbound.protection.outlook.com
+ ([40.107.244.85] helo=NAM12-MW2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jVrpO-0000Tk-VD
- for linux-mtd@lists.infradead.org; Tue, 05 May 2020 07:17:20 +0000
-IronPort-SDR: BeQ8++ppmbE7zGYuzbakLusQdFfvkcSG8psgbknsFKmiuH6PQ9CLfRRafZLoUN1hadJ97AhhIB
- cONxaUfKhFzw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 May 2020 00:17:18 -0700
-IronPort-SDR: CC3/PNanzsn5BqWUZt+7YJ+y/t91tFE6zd+4MjFJHGOSqjZ7ac6q3Yc4vOTkEwUP+v5gVrYBss
- z9qHprK9oJDA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,354,1583222400"; d="scan'208";a="434380983"
-Received: from linux.intel.com ([10.54.29.200])
- by orsmga005.jf.intel.com with ESMTP; 05 May 2020 00:17:18 -0700
-Received: from [10.255.159.65] (vramuthx-mobl1.gar.corp.intel.com
- [10.255.159.65])
- by linux.intel.com (Postfix) with ESMTP id 501815803E3;
- Tue,  5 May 2020 00:17:13 -0700 (PDT)
-Subject: Re: [PATCH v4 2/2] mtd: rawnand: Add NAND controller support on Intel
- LGM SoC
-To: Boris Brezillon <boris.brezillon@collabora.com>
-References: <20200429104205.18780-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <9d77c64c-d0f9-7a13-3391-d05bf458bdb1@linux.intel.com>
- <20200429164832.6800fc70@collabora.com>
- <2e83a2f7-853c-f0e2-f686-daf1e0649eae@linux.intel.com>
- <20200429173107.5c6d2f55@collabora.com>
- <1de9ba29-30f1-6829-27e0-6f141e9bb1e6@linux.intel.com>
- <20200430102114.29b6552f@collabora.com>
- <1df71cf7-4cae-4cd0-864c-0812bb2cc123@linux.intel.com>
- <20200430103658.4b0b979e@collabora.com>
- <1d5aec11-a7b5-01c2-6614-16e57c64511b@linux.intel.com>
- <20200430143600.27031639@collabora.com>
- <20200430150124.7856d112@collabora.com>
- <df7c1952-bc9b-bad7-bf31-d09707a0829e@linux.intel.com>
- <20200504090824.1eb16b78@collabora.com>
- <854521ed-b0f9-0f0f-2cd7-5ad11b2d059a@linux.intel.com>
- <20200504091755.0d0e73aa@collabora.com>
- <db023399-8b4d-c75c-30c8-b35e38e2e5f8@linux.intel.com>
- <20200504105828.72aaf7b8@collabora.com>
- <6a41963b-e018-1a2d-88d4-5bb59d56a7e5@linux.intel.com>
- <20200505090001.145c5e8e@collabora.com>
-From: "Ramuthevar, Vadivel MuruganX"
- <vadivel.muruganx.ramuthevar@linux.intel.com>
-Message-ID: <e0de2e2f-0960-217e-7555-7a37b8781ee4@linux.intel.com>
-Date: Tue, 5 May 2020 15:17:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200505090001.145c5e8e@collabora.com>
+ id 1jVrqt-00017j-03; Tue, 05 May 2020 07:18:52 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lnpaoj0d7n3TE/REzU5qqxiG3D+v/ryzcRqZs7dXBF6ad7Vb3kWhE/fXc6GmlenQVe4vdvvWkUGQFaewfZQOPMfYCgODYOAf+HBC/fJOY85wTbLK6zY9bBvUObKyg3ImB8h2dJ0H5voZxHxoaLu8QtOMK0KxmkQPwANXCXzSXXLyRFwmeb1ZrzJ0yPm+UKoAgDTEP96g0W2MvMaSRrlPAeVFsT8tCpUVcSBfS6XMDfoguLnrv27lgjcLzP1EZjm6DlnmsOcvYZRFakto9h1DPYOJQp3131mmlUwv+sttZLLxnYGjYjTbxrkgCH3r8Cld164YoVyKP8Agj9o4aSQFIA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=k/QFNF3T5wQNGasslckKe/KavHRLP8gOWWei1IDodUY=;
+ b=eKpKyUep86a6SK6kGmJVB/oU2wsGjMteLNY93NQgM3rxg8YjQYMGD4tcRY5KETuk1yqDk/tkwQGV8C1kr7PRiGbn6YFKNu++FkH0wgEsVPOzPLPriMbScpGQQdHcChYPjNzHb6TnKGeE1pQBVxvtAG6pgFfywHmujPY9qjlu7V4v25sAsZl0+vzDTadNsengE5cDdPj6VL4dkRIIyPteWWuviQNr5u1h1pNFybE7Wa6b+ddf1+xrAJoLHUWeBrNIo7nuN07LIO63TxuV+15zsmIJDtK5kDcAHDLsYKCs1/KwHQrYSizLzuEsqZ1kHR/HHOEdNqxlKPx/rXvezCI8UQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=sifive.com; dmarc=pass action=none header.from=sifive.com;
+ dkim=pass header.d=sifive.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sifive.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=k/QFNF3T5wQNGasslckKe/KavHRLP8gOWWei1IDodUY=;
+ b=SYT1PFtf+IfV4MUjnRObBRgKJnWckOSTjSal6KIaZJ0XPrbsoFsUNbeW+vF5x76q2vGn9ws9WTpvBNuw1geBevd9ohCaX2xQd2TVfySXvDJ0jf9ewGIryOfEzQlm/Wx5V12KmmGXWxr9BLkTZOlh4LXdkZbCpAswZ1SRk+Z9Ri8=
+Received: from BN8PR13MB2611.namprd13.prod.outlook.com (2603:10b6:408:81::17)
+ by BN8PR13MB2900.namprd13.prod.outlook.com (2603:10b6:408:91::33)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.18; Tue, 5 May
+ 2020 07:18:46 +0000
+Received: from BN8PR13MB2611.namprd13.prod.outlook.com
+ ([fe80::c129:8fca:5ed:8929]) by BN8PR13MB2611.namprd13.prod.outlook.com
+ ([fe80::c129:8fca:5ed:8929%6]) with mapi id 15.20.2979.024; Tue, 5 May 2020
+ 07:18:46 +0000
+From: Sagar Kadam <sagar.kadam@sifive.com>
+To: Palmer Dabbelt <palmer@dabbelt.com>
+Subject: RE: [PATCH 1/2] riscv: defconfig: enable spi nor on Hifive Unleashed
+ A00 board.
+Thread-Topic: [PATCH 1/2] riscv: defconfig: enable spi nor on Hifive Unleashed
+ A00 board.
+Thread-Index: AQHWHtYDB/cpTmsjKkuAl+bHjseykqiYg+KAgABe/XA=
+Date: Tue, 5 May 2020 07:18:45 +0000
+Message-ID: <BN8PR13MB2611968A7252308925FF18B399A70@BN8PR13MB2611.namprd13.prod.outlook.com>
+References: <1588240732-13905-2-git-send-email-sagar.kadam@sifive.com>
+ <mhng-ccfe9c83-41d6-47a0-b7bc-347573973fec@palmerdabbelt-glaptop1>
+In-Reply-To: <mhng-ccfe9c83-41d6-47a0-b7bc-347573973fec@palmerdabbelt-glaptop1>
+Accept-Language: en-US
 Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dabbelt.com; dkim=none (message not signed)
+ header.d=none;dabbelt.com; dmarc=none action=none header.from=sifive.com;
+x-originating-ip: [116.74.144.6]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e97f01f1-c2e9-462b-5d2a-08d7f0c48cc9
+x-ms-traffictypediagnostic: BN8PR13MB2900:
+x-ld-processed: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BN8PR13MB2900900A939FFA2A3409DB2A99A70@BN8PR13MB2900.namprd13.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-forefront-prvs: 0394259C80
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: RZEd6Mw1zvJA9Fo24kkBXoN1TMQlGyhcOZ41lfSAizcLfCFDdYtZTKEfkLPZo3UlN2p3xgeDCl87R6IMgWMFAtUh9vlJIPR7uivr2SVMRjfAWm8jTU2AL43mhuwG4vjaGefhfrV1wcKrumOoEsPHDnzOVRJAVwhbrEna5ppf77SiXSRZg2Z9a/NeKKBvdYKV8hipX0XmVg4FylgElW/xIE0ggL6u0V7L2XnRJMpF1yHb1BH4EsqO/BMPuLSKN3DcipNYw597XVm9oQ/WMHAmAAg1Yy/KqAPbDCMNIE9GOFQs/d9gBpLWpjS2LO3vOLzMmC2bMpkv3+dSam6DYWwdActO5X2HvKX26TrH1xyL3ZT9f1p+eHofll5qUpOKo+SMdaIpnt0BmYDCSanHZCuv3N9iKUwNBzGFJZ9TkaF96e2UJK50KKN1Q48TyExVuMLgRL2+T5loen/44fLLoKbsuwkA3GmsP0dco9XYnfmqEEoYCaRqxqKAS5tr3kA4TJHlhSPWWX2DZagBEJc4QjEvIA==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:BN8PR13MB2611.namprd13.prod.outlook.com; PTR:; CAT:NONE;
+ SFTY:;
+ SFS:(376002)(136003)(39850400004)(366004)(396003)(346002)(33430700001)(26005)(8676002)(66946007)(9686003)(76116006)(33656002)(6506007)(55236004)(55016002)(316002)(7696005)(53546011)(33440700001)(66476007)(66556008)(66446008)(186003)(64756008)(5660300002)(8936002)(52536014)(478600001)(4326008)(6916009)(71200400001)(54906003)(2906002)(44832011)(86362001);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata: PVZ89RCxLDNc26znQyR49wBjqHomIWlZTJ1qthsEmVPPW2t8yzB6yHthPK3z9ERV282wExFE0tPBrbXuyxJLmyE0mdadcNk4TBHSF+DucdoS6nph7PgSfNzhpXHCeWZyr2OGbTcdIHxxXYBu1zQSXxQlc8ZPqnlJTrnMFDNN+m6jUpcqCGskaKRydJ21NBBoMAjeGinSvXqLl7aVzRulnLRQxACemUwLT8zKFprPwLVFPs1sRArRLiimjVAYBxpXDSN45FNz1Db5Np7QsLjkZTSyRd8y+28T2POIsiW6RSBiDGsVuNeoAGiPjpfBYauT+A4J1RXC0Ru0G1lGCSFgthZNpi6MvQbFCblYGb8oNnWqemHCxQH/M/kKQ1Eeyq8O/+uWhR/7c7+vf3IJGWa3BGoxpWPqQ3NP14eBBXpyld4ePxrjlOoPQ4tpT568FpHUfw494cZd+2k0PqANllmG+hkQncooIMqLQbmiKs+mRjz4oJ52Tk6hKZWaHQ72CE7oZY3cRRYp/lKylWtfydl3s9y+nafj9T/f6VGTIzlxfKbkKIOuqygaC0LSy0ExCqufbMJioewPJkDMADhLsLmbvKJ/OgAwjClDjkqHLXaPljMzAn9R94wbmXqeIOj1T17Hss/YnyGHiKbvGh3GRVUC8dJWaIY2Ekr1+XJuj2e+lGGW1LgM5FEPADYacln92JkrRhMUvslHQa3a+9o7IRpQFtxKDq5uDTol9I/KWK1qnSixP+My/Lnqh/q2bmk98LsKDnaQX8kEr+Uyj1wm0REOCUNy7K1cVewLGKqJ9WM5cqo=
+MIME-Version: 1.0
+X-OriginatorOrg: sifive.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e97f01f1-c2e9-462b-5d2a-08d7f0c48cc9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 May 2020 07:18:46.1268 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jGFmdleT8bebgLO90su8Y+EsPPc0P3Z3XpnWCQcPhLgOrhqjs0cdCPrVJ8ac1lmuYKAMxXP5w9fxgvtU5OXt6g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR13MB2900
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200505_001719_020130_D327CEF5 
-X-CRM114-Status: GOOD (  19.65  )
+X-CRM114-CacheID: sfid-20200505_001851_103650_6876AB67 
+X-CRM114-Status: GOOD (  15.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,148 +122,114 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
-Cc: cheol.yong.kim@intel.com, devicetree@vger.kernel.org, qi-ming.wu@intel.com,
- anders.roxell@linaro.org, vigneshr@ti.com, arnd@arndb.de,
- hauke.mehrtens@intel.com, richard@nod.at, brendanhiggins@google.com,
- linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com, tglx@linutronix.de,
- masonccyang@mxic.com.tw, andriy.shevchenko@intel.com
+Cc: "vigneshr@ti.com" <vigneshr@ti.com>,
+ "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
+ "richard@nod.at" <richard@nod.at>, Paul Walmsley <paul.walmsley@sifive.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Boris,
+Hello Palmer,
 
-On 5/5/2020 3:00 pm, Boris Brezillon wrote:
-> Hello Vadivel,
+> -----Original Message-----
+> From: Palmer Dabbelt <palmer@dabbelt.com>
+> Sent: Tuesday, May 5, 2020 3:40 AM
+> To: Sagar Kadam <sagar.kadam@sifive.com>
+> Cc: tudor.ambarus@microchip.com; miquel.raynal@bootlin.com;
+> richard@nod.at; vigneshr@ti.com; Paul Walmsley
+> <paul.walmsley@sifive.com>; linux-riscv@lists.infradead.org; linux-
+> kernel@vger.kernel.org; linux-mtd@lists.infradead.org; Sagar Kadam
+> <sagar.kadam@sifive.com>
+> Subject: Re: [PATCH 1/2] riscv: defconfig: enable spi nor on Hifive Unleashed
+> A00 board.
 > 
-> On Tue, 5 May 2020 13:28:58 +0800
-> "Ramuthevar, Vadivel MuruganX"
-> <vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
->   
->>>>>>>>
->>>>>>>>       ebu_nand: ebu_nand@e0f00000 {
->>>>>>>>                       compatible = "intel,lgm-ebu-nand";
->>>>>>>>                       reg = <0xe0f00000 0x100
->>>>>>>>                       0xe1000000 0x300
->>>>>>>>                       0xe1400000 0x80000
->>>>>>>>                       0xe1c00000 0x10000>;
->>>>>>>>                       reg-names = "ebunand", "hsnand", "nand_cs0", nand_cs1";
->>>>>>>>                       dmas = <&dma0 8>, <&dma0 9>;
->>>>>>>>                       dma-names = "ebu_rx", "ebu_tx";
->>>>>>>>                       clocks =  <&cgu0 LGM_GCLK_EBU>;
->>>>>>>>               };
->>>>>>>>
->>>>>>>>
->>>>>>>> 	 &ebu_nand {
->>>>>>>> 	         status = "disabled";
->>>>>>>> 	        nand,cs = <1>;
->>>>>>>> 	        nand-ecc-mode = "hw";
->>>>>>>> 	        pinctrl-names = "default";
->>>>>>>> 	        pinctrl-0 = <&ebu_nand_base &ebu_cs1>;
->>>>>>>> 	};
->>>>>>>>         
->>>>>>>>>             
->>>>>>> Ok. If I understand the SoC topology correctly it should actually be
->>>>>>> something like that:
->>>>>>>
->>>>>>> {
->>>>>>> 	...
->>>>>>> 	fpi@xxxxx {
->>>>>>> 		compatible = "intel,lgm-fpi", "simple-bus";
->>>>>>>
->>>>>>> 		/* You might have other ranges to define here */
->>>>>>> 		ranges = <0x16000000 0xe0000000 0x1000000>;
->>>>>>>
->>>>>>> 		...
->>>>>>
->>>>>> Sorry, we do not have fpi tree node in our dts/dtsi file instead we have
->>>>>> the below one.. , that also not included the major peripherals
->>>>>> controllers node.
->>>>>>             /* Special part from CPU core */
->>>>>>             core: core {
->>>>>>                     compatible = "intel,core", "simple-bus";
->>>>>>                     #address-cells = <1>;
->>>>>>                     #size-cells = <1>;
->>>>>>                     ranges;
->>>>>>
->>>>>>                     ioapic1: interrupt-controller@fec00000 {
->>>>>>                             #interrupt-cells = <2>;
->>>>>>                             #address-cells = <0>;
->>>>>>                             compatible = "intel,ce4100-ioapic";
->>>>>>                             interrupt-controller;
->>>>>>                             reg = <0xfec00000 0x1000>;
->>>>>>                             nr_entries = <256>;
->>>>>>                     };
->>>>>>
->>>>>>                     hpet: timer@fed00000 {
->>>>>>                             compatible = "intel,ce4100-hpet";
->>>>>>                             reg = <0xfed00000 0x400>;
->>>>>>                     };
->>>>>>
->>>>>>                     lapic0: interrupt-controller@fee00000 {
->>>>>>                             compatible = "intel,ce4100-lapic";
->>>>>>                             reg = <0xfee00000 0x1000>;
->>>>>>                             no_pic_mode;
->>>>>>                     };
->>>>>>             };
->>>>>>
->>>>>> other than this, rest all in independent node .
->>>>>
->>>>> But you do have an FPI bus, right? If this is the case it should be
->>>>> represented.
->>>>
->>>> Yes, FPI bus is slave to core which connects all the peripherals.
->>>>
->>>>     Or is the "intel,core" bus actually the FPI bus that you
->>>>> named differently?
->>>>
->>>> FPI slave bus connects to core bus by OCP bridge, so here it is named
->>>> FPI bus, but SW perspective didn't have root tree which has all
->>>> sub-nodes, as of now each peripheral has its own node.
->>>
->>> Duh, not sure that's a good idea to hide that, especially since you
->>> have to describe the address translation that happens when crossing the
->>> FPI bus (the ranges thing I mentioned previously).
->>
->> Thanks! for the keep reviewing.
->>
->> SW Address translation is not required, after discussion with HW team ,
->> came to know that 0x17400 and 0x17C00 internal to the SoC.
->>
->> NOC will translate 0xE1XX... to FPI address 0x17X... internally.
->> There is an address translation in the NOC.
->> 0x17X... is not visible to user.
->>
->> so far added hard-coded values to CS0 and CS1 is not at required.
->> I will change the code accordingly and sent to you.
+> [External Email] Do not click links or attachments unless you recognize the
+> sender and know the content is safe
 > 
-> Hm, you told me last week that writing wrong values to this register
-> caused the NAND controller to not work properly (you even had code that
-> was overwriting the dynamically calculated values by hardcoded ones, so
-> I suspect it indeed didn't work) and now you say this write to
-> EBU_ADDR_SEL() is optional?! Sorry but it's hard to believe, and I've
-> received so many contradictory information from you on that matter that
-> I can't really tell which one is correct. Not sure I want to keep
-> reviewing new versions of this driver in this context.
+> On Thu, 30 Apr 2020 02:58:51 PDT (-0700), sagar.kadam@sifive.com wrote:
+> > Enable MTD based SPI-NOR framework in order to use spi flash available
+> > on HiFive Unleashed A00 board.
+> >
+> > Signed-off-by: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
+> > ---
+> >  arch/riscv/configs/defconfig | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/arch/riscv/configs/defconfig
+> > b/arch/riscv/configs/defconfig index 4da4886..970580b 100644
+> > --- a/arch/riscv/configs/defconfig
+> > +++ b/arch/riscv/configs/defconfig
+> > @@ -80,6 +80,8 @@ CONFIG_USB_STORAGE=y  CONFIG_USB_UAS=y
+> CONFIG_MMC=y
+> > CONFIG_MMC_SPI=y
+> > +CONFIG_MTD=y
+> > +CONFIG_MTD_SPI_NOR=y
+> >  CONFIG_RTC_CLASS=y
+> >  CONFIG_VIRTIO_PCI=y
+> >  CONFIG_VIRTIO_BALLOON=y
+> 
+> From the second patch's description I'm assuming that MTD still functions
+> correctly without that change?
 
-oh my bad really sorry , since last week based on the input given from 
-person who has worked on legacy IP, but now I have discussed with 
-low-level HW team and confirmed. also we don't have proper document 
-reference manual since it's new SoC.
+Yes Palmer, the second patch is to enable QUAD write to nor flash..
+MTD  function's correctly without second patch.
 
-Please forgive me , this shouldn't be happen once again, Thanks a lot!!
+Using the character interface (/dev/mtd0) mtd_utils (mtd_debug : erase/read/write) work fine.
+We might require CONFIG_MTD_BLOCK, CONFIG_MTD_CMDLINE_PARTS  in order to use MTD partitioning.
+IMHO it can be at user's choice weather to use flash partitions or not, so I have not enabled. Please let me 
+know if I should enable these features as well.
 
-Regards
-Vadivel
-> 
-> Regards,
-> 
-> Boris
-> 
+To demonstrate a bit more with linux 5.7-rc3 
 
+Specify on U-boot prompt:
+# setenv bootargs "root=/dev/ram rw console=ttySIF0 mtdparts=spi0.0:1024k(loader1),4096K(loader2),26M(rootfs)"
+
+After booting linux will enumerate mtd partitions:
+# cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 00100000 00001000 "loader1"
+mtd1: 00400000 00001000 "loader2"
+mtd2: 01a00000 00001000 "rootfs"
+
+# cat /proc/partitions
+major minor  #blocks  name
+  31        0       1024 mtdblock0
+  31        1       4096 mtdblock1
+  31        2      26624 mtdblock2
+
+#Format mtdblock2 with mkfs.ext3/4 and mount results in
+# mkfs.ext3 /dev/mtdblock2
+mke2fs 1.44.5 (15-Dec-2018)
+/dev/mtdblock2 contains a ext3 file system
+        last mounted on /mnt on Thu Jan  1 00:00:14 1970
+Proceed anyway? (y,N) y
+Creating filesystem with 26624 1k blocks and 6656 inodes
+Filesystem UUID: 1b09252d-e313-430c-9ecb-79b0cef003ca
+Superblock backups stored on blocks:
+        8193, 24577
+
+Allocating group tables: done
+Writing inode tables: done
+Creating journal (1024 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+# mount
+none on / type rootfs (rw)
+proc on /proc type proc (rw,relatime)
+devpts on /dev/pts type devpts (rw,relatime,gid=5,mode=620,ptmxmode=666)
+tmpfs on /dev/shm type tmpfs (rw,relatime,mode=777)
+tmpfs on /tmp type tmpfs (rw,relatime)
+tmpfs on /run type tmpfs (rw,nosuid,nodev,relatime,mode=755)
+sysfs on /sys type sysfs (rw,relatime)
+/dev/mtdblock2 on /mnt type ext3 (rw,relatime)
+
+Thanks & BR,
+Sagar Kadam
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
