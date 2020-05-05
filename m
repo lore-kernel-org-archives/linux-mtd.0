@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E77EC47247
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 May 2020 10:17:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36418C47254
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 May 2020 10:17:21 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6548420675
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 May 2020 10:17:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E153C20675
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 May 2020 10:17:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DhHOs9dM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6548420675
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LLn0JB6q"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E153C20675
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SfSMBFrezOMTFQWOgTX6pw4HpRCxjrJy5qhknu0/8wU=; b=DhHOs9dMA6Q3Je
-	0LsPFyhrZAj40Jon3k5jz5A2JsFYj9+A4GWcmTWxEvZ7nQQ9j9mhq5LmnlibhODl8ybEuXy58YhSW
-	3Rg0l7dYNGWrALBdkwbataZMLG1xVzmwDg4xQwAr5/3N7sDnYBk+75mTrNKQHxJYZ8MARpxxV1Xaf
-	hrxrECGSMoDU1QFcrJgNyNzlCuzRV9yjGRxKanE2v7bBadBf/ddgLsXSvoG+9f8gsO0DOmfSpgfVc
-	2oymj0vEX9yHkZ7jLQCY0aAUE6b76Ytg1ppRK15Zj/cB4B3J9n97aOO6UMd6HJFnJ5HFwlBagA7+l
-	SBIbuo1S29iKcYkU9z+g==;
+	List-Owner; bh=aT8cQLJOuYkjvRI1SRcJCYeiLYRUYiZBdbuLYXMDEh8=; b=LLn0JB6q4w9U/k
+	mtdIuStIDvtxPpJNJq6jVQGrFMNFKEkQ9AJCIrOne6gaZZCypkHUgWT1uNOy82CZ0Vf9op0yycZxi
+	13woJU4iAu+/z1YVU9FO/e3vnut7DVOdk+6KM8dYw3DFoSGziQjwxt8w4jzvwuRiBvH/d40HqJtFf
+	LnKVJckZNgNG1NN2w9FPT1Wsnh3tAONQkDlgnRCioiAfqaCzGRgaHoOsMpQoEL9REzIKkLMsa0Twd
+	a/bDpg7Vy9v2YhX6w+cV+OO3Mee2nqJKrgl4LzkofB2goIwiS4BX54Scsk1deSmmnmoceDTHFELHC
+	kNAmbQzbfNps6aU6cwfA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jVudB-0003it-KG; Tue, 05 May 2020 10:16:53 +0000
+	id 1jVudR-0003xt-IF; Tue, 05 May 2020 10:17:09 +0000
 Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jVuaV-0007Ct-EA
- for linux-mtd@lists.infradead.org; Tue, 05 May 2020 10:14:09 +0000
+ id 1jVuaR-000787-Cr
+ for linux-mtd@lists.infradead.org; Tue, 05 May 2020 10:14:08 +0000
 Received: from localhost.localdomain (unknown
  [IPv6:2a01:e0a:2c:6930:d3ea:1c7:41fd:3038])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 661622A1CFA;
- Tue,  5 May 2020 11:14:03 +0100 (BST)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 6065B2A1B17;
+ Tue,  5 May 2020 11:14:01 +0100 (BST)
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
  Lubomir Rintel <lkundrak@v3.sk>
-Subject: [PATCH v2 19/19] mtd: rawnand: cafe: Get rid of the last printk()
-Date: Tue,  5 May 2020 12:13:53 +0200
-Message-Id: <20200505101353.1776394-20-boris.brezillon@collabora.com>
+Subject: [PATCH v2 12/19] mtd: rawnand: cafe: Don't leave ECC enabled in the
+ write path
+Date: Tue,  5 May 2020 12:13:46 +0200
+Message-Id: <20200505101353.1776394-13-boris.brezillon@collabora.com>
 X-Mailer: git-send-email 2.25.3
 In-Reply-To: <20200505101353.1776394-1-boris.brezillon@collabora.com>
 References: <20200505101353.1776394-1-boris.brezillon@collabora.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200505_031407_637601_3063B981 
-X-CRM114-Status: GOOD (  10.71  )
+X-CRM114-CacheID: sfid-20200505_031403_627872_0270B483 
+X-CRM114-Status: GOOD (  13.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,29 +78,60 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Replace the last printk() by a dev_dbg().
+cafe_nand_write_pagel() sets the ECC auto-generation flag but
+never clears it, thus forcing cafe_nand_cmdfunc() to clear it
+in certain circumstances. Let's just clear this flag in
+where it's been set instead.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Tested-by: Lubomir Rintel <lkundrak@v3.sk>
 ---
- drivers/mtd/nand/raw/cafe_nand.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Changes in v2:
+* Add R-b/T-b
+* Fix commit message
+* Add blank line before return statement
+---
+ drivers/mtd/nand/raw/cafe_nand.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/cafe_nand.c b/drivers/mtd/nand/raw/cafe_nand.c
-index 2f20032b4df7..9df02ad951d8 100644
+index e41ea95b3088..f7e537836d55 100644
 --- a/drivers/mtd/nand/raw/cafe_nand.c
 +++ b/drivers/mtd/nand/raw/cafe_nand.c
-@@ -315,8 +315,9 @@ static int cafe_nand_read_page(struct nand_chip *chip, u8 *buf,
- 				"Failed to correct ECC at %08x\n",
- 				readl(cafe->mmio + CAFE_NAND_ADDR2) * 2048);
- 			for (i = 0; i < 0x5c; i += 4)
--				printk("Register %x: %08x\n", i,
--				       readl(cafe->mmio + i));
-+				dev_dbg(&cafe->pdev->dev,
-+					"Register %x: %08x\n", i,
-+					readl(cafe->mmio + i));
- 			mtd->ecc_stats.failed++;
- 		} else {
- 			dev_dbg(&cafe->pdev->dev, "Corrected %d symbol errors\n", n);
+@@ -261,7 +261,6 @@ static void cafe_nand_cmdfunc(struct nand_chip *chip, unsigned command,
+ 			    CAFE_FIELD_PREP(NAND_CTRL2, CMD2, command),
+ 			    NAND_CTRL2);
+ 		ctl1 = cafe->ctl1;
+-		cafe->ctl2 &= ~CAFE_NAND_CTRL2_AUTO_WRITE_ECC;
+ 		dev_dbg(&cafe->pdev->dev, "Continue command, ctl1 %08x, #data %d\n",
+ 			cafe->ctl1, cafe->nr_data);
+ 		goto do_command;
+@@ -641,6 +640,7 @@ static int cafe_nand_write_page(struct nand_chip *chip,
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	struct cafe_priv *cafe = nand_get_controller_data(chip);
++	int ret;
+ 
+ 	nand_prog_page_begin_op(chip, page, 0, buf, mtd->writesize);
+ 	chip->legacy.write_buf(chip, chip->oob_poi, mtd->oobsize);
+@@ -648,7 +648,15 @@ static int cafe_nand_write_page(struct nand_chip *chip,
+ 	/* Set up ECC autogeneration */
+ 	cafe->ctl2 |= CAFE_NAND_CTRL2_AUTO_WRITE_ECC;
+ 
+-	return nand_prog_page_end_op(chip);
++	ret = nand_prog_page_end_op(chip);
++
++	/*
++	 * And clear it before returning so that following write operations
++	 * that do not involve ECC don't generate ECC bytes.
++	 */
++	cafe->ctl2 &= ~CAFE_NAND_CTRL2_AUTO_WRITE_ECC;
++
++	return ret;
+ }
+ 
+ /* F_2[X]/(X**6+X+1)  */
 -- 
 2.25.3
 
