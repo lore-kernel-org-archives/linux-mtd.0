@@ -2,115 +2,94 @@ Return-Path: <SRS0=lVZn=6T=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1990AC47247
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 May 2020 07:19:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F654C47254
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 May 2020 08:21:16 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DE53D206B8
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 May 2020 07:19:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 72B742068E
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 May 2020 08:21:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="SsYyR1Pv";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sifive.com header.i=@sifive.com header.b="SYT1PFtf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE53D206B8
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sifive.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AJn0WEwn";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hfCvpOqo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72B742068E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jF/gw/cA6YZ0eaqLQstczsXViDoslSic9UMaCrbABXk=; b=SsYyR1Pv7E4zOU
-	B6zXLgAKXGJlalAn255lezkuaaSE8LaMAYqSePnzB4hGvZ4hs/D1BG5jBPeAiUOhm/Z8Jiwf15V0r
-	rG9V8ehCecYXEJk0MoYsVCzh4kigRQRl4ZC6kmJD218I3gU1MJqLaLCFpUezZy3IPxG2We1TS0GYV
-	hqjRaQu3pjpDZgcrVW5BlztNkaSJEKht4h+xOVN+fiuvl3OxPdBjsCIEEl3U/sGWENxbKaB2OIx9q
-	OpEgPuqJ+CMZJMnmbhjNYH+gdvWhrw/dGvihI1HmJedagArjZlp9bPs+4477pdyi99ReYcbOS1DNT
-	oNSlOk35phCEVQbalhWA==;
+	List-Owner; bh=zNunJaBIpS0ak/oDj2XdVRdYUjzKaH776aILlbE/Sy8=; b=AJn0WEwnaHASQZ
+	OsVX6bH88IocesSjgJrGyRSiNxPfGCAefMkwzLr4xDxnDa4GezeyfkvY3A1dVA9Df/g6moLm/6dVF
+	eSVa5MoaQEzS1KfXgg6E9Ez/x68EXdvfzCR9IG+NkLrz4JLncsVpAgmVc4Iu6HrAp26/oDAYtSXeV
+	xyB6eAM2JPGI7cZB7Bkt6z+yRpqZ0Ol5LYaOm1G2+kEprWYnvnjLmhWte3X/90lsVpk0oWRp0w5LC
+	+UFlCNAdHGhPM1VgbH2zQyjvRBzwiebQOWtKcrmnxq7Pbx8cPWvW1jw58OHW7ue07cL4F0Uvg7BVP
+	DTjYvxOu5xBYZGxxpFVw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jVrqx-0001A3-Qt; Tue, 05 May 2020 07:18:55 +0000
-Received: from mail-mw2nam12on2085.outbound.protection.outlook.com
- ([40.107.244.85] helo=NAM12-MW2-obe.outbound.protection.outlook.com)
+	id 1jVsp7-0007IP-98; Tue, 05 May 2020 08:21:05 +0000
+Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jVrqt-00017j-03; Tue, 05 May 2020 07:18:52 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lnpaoj0d7n3TE/REzU5qqxiG3D+v/ryzcRqZs7dXBF6ad7Vb3kWhE/fXc6GmlenQVe4vdvvWkUGQFaewfZQOPMfYCgODYOAf+HBC/fJOY85wTbLK6zY9bBvUObKyg3ImB8h2dJ0H5voZxHxoaLu8QtOMK0KxmkQPwANXCXzSXXLyRFwmeb1ZrzJ0yPm+UKoAgDTEP96g0W2MvMaSRrlPAeVFsT8tCpUVcSBfS6XMDfoguLnrv27lgjcLzP1EZjm6DlnmsOcvYZRFakto9h1DPYOJQp3131mmlUwv+sttZLLxnYGjYjTbxrkgCH3r8Cld164YoVyKP8Agj9o4aSQFIA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k/QFNF3T5wQNGasslckKe/KavHRLP8gOWWei1IDodUY=;
- b=eKpKyUep86a6SK6kGmJVB/oU2wsGjMteLNY93NQgM3rxg8YjQYMGD4tcRY5KETuk1yqDk/tkwQGV8C1kr7PRiGbn6YFKNu++FkH0wgEsVPOzPLPriMbScpGQQdHcChYPjNzHb6TnKGeE1pQBVxvtAG6pgFfywHmujPY9qjlu7V4v25sAsZl0+vzDTadNsengE5cDdPj6VL4dkRIIyPteWWuviQNr5u1h1pNFybE7Wa6b+ddf1+xrAJoLHUWeBrNIo7nuN07LIO63TxuV+15zsmIJDtK5kDcAHDLsYKCs1/KwHQrYSizLzuEsqZ1kHR/HHOEdNqxlKPx/rXvezCI8UQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=sifive.com; dmarc=pass action=none header.from=sifive.com;
- dkim=pass header.d=sifive.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sifive.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k/QFNF3T5wQNGasslckKe/KavHRLP8gOWWei1IDodUY=;
- b=SYT1PFtf+IfV4MUjnRObBRgKJnWckOSTjSal6KIaZJ0XPrbsoFsUNbeW+vF5x76q2vGn9ws9WTpvBNuw1geBevd9ohCaX2xQd2TVfySXvDJ0jf9ewGIryOfEzQlm/Wx5V12KmmGXWxr9BLkTZOlh4LXdkZbCpAswZ1SRk+Z9Ri8=
-Received: from BN8PR13MB2611.namprd13.prod.outlook.com (2603:10b6:408:81::17)
- by BN8PR13MB2900.namprd13.prod.outlook.com (2603:10b6:408:91::33)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.18; Tue, 5 May
- 2020 07:18:46 +0000
-Received: from BN8PR13MB2611.namprd13.prod.outlook.com
- ([fe80::c129:8fca:5ed:8929]) by BN8PR13MB2611.namprd13.prod.outlook.com
- ([fe80::c129:8fca:5ed:8929%6]) with mapi id 15.20.2979.024; Tue, 5 May 2020
- 07:18:46 +0000
-From: Sagar Kadam <sagar.kadam@sifive.com>
-To: Palmer Dabbelt <palmer@dabbelt.com>
-Subject: RE: [PATCH 1/2] riscv: defconfig: enable spi nor on Hifive Unleashed
- A00 board.
-Thread-Topic: [PATCH 1/2] riscv: defconfig: enable spi nor on Hifive Unleashed
- A00 board.
-Thread-Index: AQHWHtYDB/cpTmsjKkuAl+bHjseykqiYg+KAgABe/XA=
-Date: Tue, 5 May 2020 07:18:45 +0000
-Message-ID: <BN8PR13MB2611968A7252308925FF18B399A70@BN8PR13MB2611.namprd13.prod.outlook.com>
-References: <1588240732-13905-2-git-send-email-sagar.kadam@sifive.com>
- <mhng-ccfe9c83-41d6-47a0-b7bc-347573973fec@palmerdabbelt-glaptop1>
-In-Reply-To: <mhng-ccfe9c83-41d6-47a0-b7bc-347573973fec@palmerdabbelt-glaptop1>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dabbelt.com; dkim=none (message not signed)
- header.d=none;dabbelt.com; dmarc=none action=none header.from=sifive.com;
-x-originating-ip: [116.74.144.6]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e97f01f1-c2e9-462b-5d2a-08d7f0c48cc9
-x-ms-traffictypediagnostic: BN8PR13MB2900:
-x-ld-processed: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BN8PR13MB2900900A939FFA2A3409DB2A99A70@BN8PR13MB2900.namprd13.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-forefront-prvs: 0394259C80
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: RZEd6Mw1zvJA9Fo24kkBXoN1TMQlGyhcOZ41lfSAizcLfCFDdYtZTKEfkLPZo3UlN2p3xgeDCl87R6IMgWMFAtUh9vlJIPR7uivr2SVMRjfAWm8jTU2AL43mhuwG4vjaGefhfrV1wcKrumOoEsPHDnzOVRJAVwhbrEna5ppf77SiXSRZg2Z9a/NeKKBvdYKV8hipX0XmVg4FylgElW/xIE0ggL6u0V7L2XnRJMpF1yHb1BH4EsqO/BMPuLSKN3DcipNYw597XVm9oQ/WMHAmAAg1Yy/KqAPbDCMNIE9GOFQs/d9gBpLWpjS2LO3vOLzMmC2bMpkv3+dSam6DYWwdActO5X2HvKX26TrH1xyL3ZT9f1p+eHofll5qUpOKo+SMdaIpnt0BmYDCSanHZCuv3N9iKUwNBzGFJZ9TkaF96e2UJK50KKN1Q48TyExVuMLgRL2+T5loen/44fLLoKbsuwkA3GmsP0dco9XYnfmqEEoYCaRqxqKAS5tr3kA4TJHlhSPWWX2DZagBEJc4QjEvIA==
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:BN8PR13MB2611.namprd13.prod.outlook.com; PTR:; CAT:NONE;
- SFTY:;
- SFS:(376002)(136003)(39850400004)(366004)(396003)(346002)(33430700001)(26005)(8676002)(66946007)(9686003)(76116006)(33656002)(6506007)(55236004)(55016002)(316002)(7696005)(53546011)(33440700001)(66476007)(66556008)(66446008)(186003)(64756008)(5660300002)(8936002)(52536014)(478600001)(4326008)(6916009)(71200400001)(54906003)(2906002)(44832011)(86362001);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata: PVZ89RCxLDNc26znQyR49wBjqHomIWlZTJ1qthsEmVPPW2t8yzB6yHthPK3z9ERV282wExFE0tPBrbXuyxJLmyE0mdadcNk4TBHSF+DucdoS6nph7PgSfNzhpXHCeWZyr2OGbTcdIHxxXYBu1zQSXxQlc8ZPqnlJTrnMFDNN+m6jUpcqCGskaKRydJ21NBBoMAjeGinSvXqLl7aVzRulnLRQxACemUwLT8zKFprPwLVFPs1sRArRLiimjVAYBxpXDSN45FNz1Db5Np7QsLjkZTSyRd8y+28T2POIsiW6RSBiDGsVuNeoAGiPjpfBYauT+A4J1RXC0Ru0G1lGCSFgthZNpi6MvQbFCblYGb8oNnWqemHCxQH/M/kKQ1Eeyq8O/+uWhR/7c7+vf3IJGWa3BGoxpWPqQ3NP14eBBXpyld4ePxrjlOoPQ4tpT568FpHUfw494cZd+2k0PqANllmG+hkQncooIMqLQbmiKs+mRjz4oJ52Tk6hKZWaHQ72CE7oZY3cRRYp/lKylWtfydl3s9y+nafj9T/f6VGTIzlxfKbkKIOuqygaC0LSy0ExCqufbMJioewPJkDMADhLsLmbvKJ/OgAwjClDjkqHLXaPljMzAn9R94wbmXqeIOj1T17Hss/YnyGHiKbvGh3GRVUC8dJWaIY2Ekr1+XJuj2e+lGGW1LgM5FEPADYacln92JkrRhMUvslHQa3a+9o7IRpQFtxKDq5uDTol9I/KWK1qnSixP+My/Lnqh/q2bmk98LsKDnaQX8kEr+Uyj1wm0REOCUNy7K1cVewLGKqJ9WM5cqo=
+ id 1jVsp4-0007Hi-Vh
+ for linux-mtd@lists.infradead.org; Tue, 05 May 2020 08:21:04 +0000
+Received: by mail-wr1-x444.google.com with SMTP id s8so1573063wrt.9
+ for <linux-mtd@lists.infradead.org>; Tue, 05 May 2020 01:21:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=tu5nPp2tsr/xXDZw6NiH6JY/janBM8/TqJS/baK6bXk=;
+ b=hfCvpOqo590T0shuE1cPR7Tyz4uhd2A/5uh7k+1VU2jedYxG9T1l4vgT1N5LVp7/rU
+ tBOap/HTZwM8PxrP/4Ry1VPhX+JjSr7aTQj32sKsZ361l7KSOldxc+/lOT4bb08zXTIY
+ bGsadrq+6cxj1FWYpnXSU1qMjEJQcvbHecedCmrt9tDQfKV5bNW1DJCKuqHw6OqylKyK
+ 0nVefIu/SOI2KBuHsym/FdIb5P6Oza1bDm+mZMzXdIDrCWd106b5mQDChyD92l0ppLwI
+ pSAuWHwF8e1cLmCubRyxw+0jZgwwurLfMxVchOT31Zqja55LvsEICbiRb/7Zxlh3MSFy
+ TSaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=tu5nPp2tsr/xXDZw6NiH6JY/janBM8/TqJS/baK6bXk=;
+ b=VBS5iAfGZIWY1q8/uqZtm0p1jdYftRX6WhHz0v9ErigvDBHgpNjhHZSImgdqyi38EB
+ 1okW8wdtuBIqf4R6oZ73mrG/kNTds67lTsKwE8icadXqqDZAo/QV42Kxlu7R29SCvrYH
+ RnMvSxKZcux6qgOnIgOipZNtoMq/miYkKOMGLT+KPnsHseVyAO/dl6pogloCkK2AWWQ0
+ BIt83fiwcQXe9WvLd9kLvEs5k333LhSGRWk0nyPSwohNC2xmqfUJCqxonRhCNx1ThHEk
+ 7ldSo5avnbtPA9Q2SQw8qXAEbb6UCqdz/njKDIPjn5iqsDXDJ9sGo4lvBHWe9Aarj5PH
+ /IiA==
+X-Gm-Message-State: AGi0PuaLJ4FpMze23CQkuCXsjSr8uA41FgkdGJaYI0wOSx3+jQ1z68AN
+ QVENbmRckjfPhoOt7jtikKA=
+X-Google-Smtp-Source: APiQypLrjmQKo6d9M8OL1hHuv8HTAuaj9UpwYWqHt0WxaUQvw0OPHJw9ZyiR41AHYzey4MuSaYo7Cw==
+X-Received: by 2002:adf:fa41:: with SMTP id y1mr2198454wrr.131.1588666860081; 
+ Tue, 05 May 2020 01:21:00 -0700 (PDT)
+Received: from skynet.lan (246.red-83-44-9.dynamicip.rima-tde.net.
+ [83.44.9.246])
+ by smtp.gmail.com with ESMTPSA id k9sm1969160wrd.17.2020.05.05.01.20.58
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 05 May 2020 01:20:59 -0700 (PDT)
+From: =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= <noltari@gmail.com>
+To: computersforpeace@gmail.com, kdasu.kdev@gmail.com,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ sumit.semwal@linaro.org, linux-mtd@lists.infradead.org,
+ bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linaro-mm-sig@lists.linaro.org
+Subject: [PATCH v2] nand: brcmnand: correctly verify erased pages
+Date: Tue,  5 May 2020 10:20:55 +0200
+Message-Id: <20200505082055.2843847-1-noltari@gmail.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200504092943.2739784-1-noltari@gmail.com>
+References: <20200504092943.2739784-1-noltari@gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: sifive.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e97f01f1-c2e9-462b-5d2a-08d7f0c48cc9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 May 2020 07:18:46.1268 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jGFmdleT8bebgLO90su8Y+EsPPc0P3Z3XpnWCQcPhLgOrhqjs0cdCPrVJ8ac1lmuYKAMxXP5w9fxgvtU5OXt6g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR13MB2900
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200505_001851_103650_6876AB67 
-X-CRM114-Status: GOOD (  15.05  )
+X-CRM114-CacheID: sfid-20200505_012103_024812_036D1D9F 
+X-CRM114-Status: GOOD (  12.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -122,114 +101,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "vigneshr@ti.com" <vigneshr@ti.com>,
- "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
- "richard@nod.at" <richard@nod.at>, Paul Walmsley <paul.walmsley@sifive.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= <noltari@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello Palmer,
-
-> -----Original Message-----
-> From: Palmer Dabbelt <palmer@dabbelt.com>
-> Sent: Tuesday, May 5, 2020 3:40 AM
-> To: Sagar Kadam <sagar.kadam@sifive.com>
-> Cc: tudor.ambarus@microchip.com; miquel.raynal@bootlin.com;
-> richard@nod.at; vigneshr@ti.com; Paul Walmsley
-> <paul.walmsley@sifive.com>; linux-riscv@lists.infradead.org; linux-
-> kernel@vger.kernel.org; linux-mtd@lists.infradead.org; Sagar Kadam
-> <sagar.kadam@sifive.com>
-> Subject: Re: [PATCH 1/2] riscv: defconfig: enable spi nor on Hifive Unleashed
-> A00 board.
-> 
-> [External Email] Do not click links or attachments unless you recognize the
-> sender and know the content is safe
-> 
-> On Thu, 30 Apr 2020 02:58:51 PDT (-0700), sagar.kadam@sifive.com wrote:
-> > Enable MTD based SPI-NOR framework in order to use spi flash available
-> > on HiFive Unleashed A00 board.
-> >
-> > Signed-off-by: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
-> > ---
-> >  arch/riscv/configs/defconfig | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/arch/riscv/configs/defconfig
-> > b/arch/riscv/configs/defconfig index 4da4886..970580b 100644
-> > --- a/arch/riscv/configs/defconfig
-> > +++ b/arch/riscv/configs/defconfig
-> > @@ -80,6 +80,8 @@ CONFIG_USB_STORAGE=y  CONFIG_USB_UAS=y
-> CONFIG_MMC=y
-> > CONFIG_MMC_SPI=y
-> > +CONFIG_MTD=y
-> > +CONFIG_MTD_SPI_NOR=y
-> >  CONFIG_RTC_CLASS=y
-> >  CONFIG_VIRTIO_PCI=y
-> >  CONFIG_VIRTIO_BALLOON=y
-> 
-> From the second patch's description I'm assuming that MTD still functions
-> correctly without that change?
-
-Yes Palmer, the second patch is to enable QUAD write to nor flash..
-MTD  function's correctly without second patch.
-
-Using the character interface (/dev/mtd0) mtd_utils (mtd_debug : erase/read/write) work fine.
-We might require CONFIG_MTD_BLOCK, CONFIG_MTD_CMDLINE_PARTS  in order to use MTD partitioning.
-IMHO it can be at user's choice weather to use flash partitions or not, so I have not enabled. Please let me 
-know if I should enable these features as well.
-
-To demonstrate a bit more with linux 5.7-rc3 
-
-Specify on U-boot prompt:
-# setenv bootargs "root=/dev/ram rw console=ttySIF0 mtdparts=spi0.0:1024k(loader1),4096K(loader2),26M(rootfs)"
-
-After booting linux will enumerate mtd partitions:
-# cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 00100000 00001000 "loader1"
-mtd1: 00400000 00001000 "loader2"
-mtd2: 01a00000 00001000 "rootfs"
-
-# cat /proc/partitions
-major minor  #blocks  name
-  31        0       1024 mtdblock0
-  31        1       4096 mtdblock1
-  31        2      26624 mtdblock2
-
-#Format mtdblock2 with mkfs.ext3/4 and mount results in
-# mkfs.ext3 /dev/mtdblock2
-mke2fs 1.44.5 (15-Dec-2018)
-/dev/mtdblock2 contains a ext3 file system
-        last mounted on /mnt on Thu Jan  1 00:00:14 1970
-Proceed anyway? (y,N) y
-Creating filesystem with 26624 1k blocks and 6656 inodes
-Filesystem UUID: 1b09252d-e313-430c-9ecb-79b0cef003ca
-Superblock backups stored on blocks:
-        8193, 24577
-
-Allocating group tables: done
-Writing inode tables: done
-Creating journal (1024 blocks): done
-Writing superblocks and filesystem accounting information: done
-
-# mount
-none on / type rootfs (rw)
-proc on /proc type proc (rw,relatime)
-devpts on /dev/pts type devpts (rw,relatime,gid=5,mode=620,ptmxmode=666)
-tmpfs on /dev/shm type tmpfs (rw,relatime,mode=777)
-tmpfs on /tmp type tmpfs (rw,relatime)
-tmpfs on /run type tmpfs (rw,nosuid,nodev,relatime,mode=755)
-sysfs on /sys type sysfs (rw,relatime)
-/dev/mtdblock2 on /mnt type ext3 (rw,relatime)
-
-Thanks & BR,
-Sagar Kadam
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhlIGN1cnJlbnQgY29kZSBjaGVja3MgdGhhdCB0aGUgd2hvbGUgT09CIGFyZWEgaXMgZXJhc2Vk
+LgpUaGlzIGlzIGEgcHJvYmxlbSB3aGVuIEpGRlMyIGNsZWFubWFya2VycyBhcmUgYWRkZWQgdG8g
+dGhlIE9PQiwgc2luY2UgaXQgd2lsbApmYWlsIGR1ZSB0byB0aGUgdXNhYmxlIE9PQiBieXRlcyBu
+b3QgYmVpbmcgMHhmZi4KQ29ycmVjdCB0aGlzIGJ5IG9ubHkgY2hlY2tpbmcgdGhhdCB0aGUgRUND
+IGFyZW4ndCAweGZmLgoKRml4ZXM6IDAyYjg4ZWVhOWY5YyAoIm10ZDogYnJjbW5hbmQ6IEFkZCBj
+aGVjayBmb3IgZXJhc2VkIHBhZ2UgYml0ZmxpcHMiKQoKU2lnbmVkLW9mZi1ieTogw4FsdmFybyBG
+ZXJuw6FuZGV6IFJvamFzIDxub2x0YXJpQGdtYWlsLmNvbT4KLS0tCiB2MjogQWRkIEZpeGVzIHRh
+ZwoKIGRyaXZlcnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2JyY21uYW5kLmMgfCAyMiArKysrKysr
+KysrKysrKysrKystLS0tCiAxIGZpbGUgY2hhbmdlZCwgMTggaW5zZXJ0aW9ucygrKSwgNCBkZWxl
+dGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9icmNtbmFuZC9icmNt
+bmFuZC5jIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvYnJjbW5hbmQvYnJjbW5hbmQuYwppbmRleCBl
+NGUzY2VlYWMzOGYuLjU0NmYwODA3Yjg4NyAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9y
+YXcvYnJjbW5hbmQvYnJjbW5hbmQuYworKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9icmNtbmFu
+ZC9icmNtbmFuZC5jCkBAIC0yMDE4LDYgKzIwMTgsNyBAQCBzdGF0aWMgaW50IGJyY21uYW5kX3Jl
+YWRfYnlfcGlvKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLAog
+c3RhdGljIGludCBicmNtc3RiX25hbmRfdmVyaWZ5X2VyYXNlZF9wYWdlKHN0cnVjdCBtdGRfaW5m
+byAqbXRkLAogCQkgIHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsIHZvaWQgKmJ1ZiwgdTY0IGFkZHIp
+CiB7CisJc3RydWN0IG10ZF9vb2JfcmVnaW9uIG9vYmVjYzsKIAlpbnQgaSwgc2FzOwogCXZvaWQg
+Km9vYiA9IGNoaXAtPm9vYl9wb2k7CiAJaW50IGJpdGZsaXBzID0gMDsKQEAgLTIwMzUsMTEgKzIw
+MzYsMjQgQEAgc3RhdGljIGludCBicmNtc3RiX25hbmRfdmVyaWZ5X2VyYXNlZF9wYWdlKHN0cnVj
+dCBtdGRfaW5mbyAqbXRkLAogCWlmIChyZXQpCiAJCXJldHVybiByZXQ7CiAKLQlmb3IgKGkgPSAw
+OyBpIDwgY2hpcC0+ZWNjLnN0ZXBzOyBpKyssIG9vYiArPSBzYXMpIHsKKwlmb3IgKGkgPSAwOyBp
+IDwgY2hpcC0+ZWNjLnN0ZXBzOyBpKyspIHsKIAkJZWNjX2NodW5rID0gYnVmICsgY2hpcC0+ZWNj
+LnNpemUgKiBpOwotCQlyZXQgPSBuYW5kX2NoZWNrX2VyYXNlZF9lY2NfY2h1bmsoZWNjX2NodW5r
+LAotCQkJCQkJICBjaGlwLT5lY2Muc2l6ZSwKLQkJCQkJCSAgb29iLCBzYXMsIE5VTEwsIDAsCisK
+KwkJcmV0ID0gbmFuZF9jaGVja19lcmFzZWRfZWNjX2NodW5rKGVjY19jaHVuaywgY2hpcC0+ZWNj
+LnNpemUsCisJCQkJCQkgIE5VTEwsIDAsIE5VTEwsIDAsCisJCQkJCQkgIGNoaXAtPmVjYy5zdHJl
+bmd0aCk7CisJCWlmIChyZXQgPCAwKQorCQkJcmV0dXJuIHJldDsKKworCQliaXRmbGlwcyA9IG1h
+eChiaXRmbGlwcywgcmV0KTsKKwl9CisKKwlmb3IgKGkgPSAwOyBtdGQtPm9vYmxheW91dC0+ZWNj
+KG10ZCwgaSwgJm9vYmVjYykgIT0gLUVSQU5HRTsgaSsrKQorCXsKKwkJcmV0ID0gbmFuZF9jaGVj
+a19lcmFzZWRfZWNjX2NodW5rKE5VTEwsIDAsCisJCQkJCQkgIG9vYiArIG9vYmVjYy5vZmZzZXQs
+CisJCQkJCQkgIG9vYmVjYy5sZW5ndGgsCisJCQkJCQkgIE5VTEwsIDAsCiAJCQkJCQkgIGNoaXAt
+PmVjYy5zdHJlbmd0aCk7CiAJCWlmIChyZXQgPCAwKQogCQkJcmV0dXJuIHJldDsKLS0gCjIuMjYu
+MgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVh
+ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
