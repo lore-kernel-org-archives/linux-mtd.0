@@ -2,64 +2,76 @@ Return-Path: <SRS0=/Eax=6V=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70FEFC38A24
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 16:20:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54524C38A2A
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 16:21:23 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 40BCB2083B
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 16:20:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1CFFA2083B
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 16:21:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EpRll7MB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 40BCB2083B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lvgRcF07";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=cisco.com header.i=@cisco.com header.b="jH6LNejz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1CFFA2083B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=cisco.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+MFsrjx/WCd1orPbfycWYy0AFBkftkZKBwB17RKEMi4=; b=EpRll7MBwBJJ+S
-	JZUHxyMdiiSTq9OxNoHRpjwlWLBh8I3wa6HIertFSf3fkIQE49d+Vnvlckl4mloVwmZVqpqH/MDiM
-	9c8yvxjXbY0+fOLC6lGx6McWTuEZIKc7ibCbDqYX73c+XpsVNU6Vd3Kb4b4kt/Tz2Z6ZoyTymm5xZ
-	oZ3ehWWZUI6cMApkXoIVVZ0cb3XHnufvsM1EvXQXxs/+fyMCKSh/r6S3qGQyikaSddn/C8T/b6PXF
-	vKEx+7D3wBU1TYz1HpEC1xSCVGrUiWMm/t/IQRraRDJsRUjqLKOqXe1RcTP429cTIOfRzKv8zBZ5Z
-	SE79e6cvQGr/vjiQgTSg==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=2yMLcN8UHfZwvjeN+Zzv5/6dyO/dF+2ndH/NOAP2tsI=; b=lvg
+	RcF07R5liagFJzUWjmgtSTmIRfUjaPNpSJ5SgAAmahom9BhnvH9dg5CzQrf4lZ7l9jjNMWG15wFyt
+	FthHAVwI9fq9Ttf4hR6VjQsP0MyR3r0LGjPoxiEjRG5WFO5NO7wOZh/ncwQtItr2+4aBYNlxQUztb
+	c82gQ4zQBVe5sy3Ti1YomNOUa4fipNdNkdxb77v7Z2Q5iyanplwDf8wG8ytmyIG+qkETW5NNWeXhe
+	NBZRK5xk9BNMtGW8gcUSnP/tAvIQbw0n4nI8JPQIFq8rZj62StsP5ah/cISECxIx10+bi2Cjn2pjY
+	pU49riFnigOPoqLj2hTtCvo73TQerwg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jWjFp-0005DC-JN; Thu, 07 May 2020 16:20:09 +0000
-Received: from relay7-d.mail.gandi.net ([217.70.183.200])
+	id 1jWjGW-0006V7-S6; Thu, 07 May 2020 16:20:52 +0000
+Received: from rcdn-iport-8.cisco.com ([173.37.86.79])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jWjFj-0003qn-5e
- for linux-mtd@lists.infradead.org; Thu, 07 May 2020 16:20:07 +0000
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 9527120002;
- Thu,  7 May 2020 16:19:57 +0000 (UTC)
-Date: Thu, 7 May 2020 18:19:56 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@collabora.com>
-Subject: Re: [PATCH v3 7/8] mtd: rawnand: arasan: Add new Arasan NAND
- controller
-Message-ID: <20200507181956.24cc93d2@xps13>
-In-Reply-To: <20200507181139.0fc36c39@collabora.com>
-References: <20200507110034.14736-1-miquel.raynal@bootlin.com>
- <20200507110034.14736-8-miquel.raynal@bootlin.com>
- <20200507145127.71615ed8@collabora.com>
- <20200507174559.58b57452@xps13>
- <20200507181139.0fc36c39@collabora.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
+ id 1jWjGU-0006Uh-1H
+ for linux-mtd@lists.infradead.org; Thu, 07 May 2020 16:20:51 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=cisco.com; i=@cisco.com; l=2367; q=dns/txt; s=iport;
+ t=1588868450; x=1590078050;
+ h=from:to:cc:subject:date:message-id;
+ bh=OV1yKebG18sSumlGTXlTtESd45PL10aWA2PsPs4tVwc=;
+ b=jH6LNejzpnfuwgidJQ/9rnKlknLWPDo3NONIeikzBMNO+1XoBGVrrUQz
+ yUxibpFVq2cL832ZbDEZG9gG3mfaEYbM5hq9DCuVd/VeT1y8wzEX6rqsk
+ sVF3xvcjkgw5oj4HH89QAdGPHO0dHoPMjRLrt2VD5+RvdkLaRDUcJjaVz Y=;
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0CLBACRNLRe/51dJa1mHgEBCxIMgXw?=
+ =?us-ascii?q?LgiqBQzIqrxCBewsBAQEOLwQBAYREggkkNgcOAgMBAQsBAQUBAQECAQUEbYV?=
+ =?us-ascii?q?ihh9SgT4TgyaCfa94gXUziSGBQBSBJIddhGcagUE/gRGDToQVhisEmAOBUJh?=
+ =?us-ascii?q?+glKBA5cHDB2dIK1bgVgBMoFWMxoIGxWDJFAYDZ8qIQMwNwIGCAEBAwmQAYJ?=
+ =?us-ascii?q?FAQE?=
+X-IronPort-AV: E=Sophos;i="5.73,364,1583193600"; d="scan'208";a="763140748"
+Received: from rcdn-core-6.cisco.com ([173.37.93.157])
+ by rcdn-iport-8.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA;
+ 07 May 2020 16:20:48 +0000
+Received: from zorba.cisco.com ([10.24.9.129])
+ by rcdn-core-6.cisco.com (8.15.2/8.15.2) with ESMTP id 047GKmsX010956;
+ Thu, 7 May 2020 16:20:48 GMT
+From: Daniel Walker <danielwa@cisco.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: [RFC-PATCH] mtd: spi-nor: add conditional 4B opcodes
+Date: Thu,  7 May 2020 09:20:47 -0700
+Message-Id: <20200507162047.30788-1-danielwa@cisco.com>
+X-Mailer: git-send-email 2.17.1
+X-Auto-Response-Suppress: DR, OOF, AutoReply
+X-Outbound-SMTP-Client: 10.24.9.129, [10.24.9.129]
+X-Outbound-Node: rcdn-core-6.cisco.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200507_092003_491334_D803BEBF 
-X-CRM114-Status: GOOD (  27.01  )
+X-CRM114-CacheID: sfid-20200507_092050_152321_CB2A1EC8 
+X-CRM114-Status: GOOD (  10.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,192 +83,76 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Michal Simek <monstr@monstr.eu>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Naga Sureshkumar Relli <nagasure@xilinx.com>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
+ xe-linux-external@cisco.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Boris,
+Some chips have 4B opcodes, but there is no way to know if they have
+them. This device tree option allows platform owners to force enable 4b
+opcodes when they know their chips support it even when it can be
+automatically identified.
 
-Boris Brezillon <boris.brezillon@collabora.com> wrote on Thu, 7 May
-2020 18:11:39 +0200:
+Cc: xe-linux-external@cisco.com
+Signed-off-by: Daniel Walker <danielwa@cisco.com>
+---
+ drivers/mtd/spi-nor/core.c      | 5 +++++
+ drivers/mtd/spi-nor/core.h      | 5 +++++
+ drivers/mtd/spi-nor/micron-st.c | 2 +-
+ 3 files changed, 11 insertions(+), 1 deletion(-)
 
-> On Thu, 7 May 2020 17:45:59 +0200
-> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> 
-> > > > +	}
-> > > > +
-> > > > +	return steps;      
-> > > 
-> > > I guess you have a limit on steps. It's probably worth checking
-> > > that steps is in bounds.    
-> > 
-> > The upper limit is 2048, I'm not sure it is relevant to add a check
-> > here?  
-> 
-> Well, it wouldn't hurt to add it, just for correctness.
-> 
-> > >     
-> > > > +}
-> > > > +
-> > > > +/* NAND framework ->exec_op() hooks and related helpers */
-> > > > +static void anfc_parse_instructions(struct nand_chip *chip,
-> > > > +				    const struct nand_subop *subop,
-> > > > +				    struct anfc_op *nfc_op)
-> > > > +{
-> > > > +	struct anand *anand = to_anand(chip);
-> > > > +	const struct nand_op_instr *instr = NULL;
-> > > > +	bool first_cmd = true;
-> > > > +	unsigned int op_id;
-> > > > +	int i;
-> > > > +
-> > > > +	memset(nfc_op, 0, sizeof(*nfc_op));
-> > > > +	nfc_op->addr2_reg = ADDR2_CS(anand->cs);
-> > > > +	nfc_op->cmd_reg = CMD_PAGE_SIZE(anand->page_sz);
-> > > > +
-> > > > +	for (op_id = 0; op_id < subop->ninstrs; op_id++) {
-> > > > +		unsigned int offset, naddrs, pktsize;
-> > > > +		const u8 *addrs;
-> > > > +		u8 *buf;
-> > > > +
-> > > > +		instr = &subop->instrs[op_id];
-> > > > +
-> > > > +		switch (instr->type) {
-> > > > +		case NAND_OP_CMD_INSTR:
-> > > > +			if (first_cmd)
-> > > > +				nfc_op->cmd_reg |= CMD_1(instr->ctx.cmd.opcode);
-> > > > +			else
-> > > > +				nfc_op->cmd_reg |= CMD_2(instr->ctx.cmd.opcode);
-> > > > +
-> > > > +			first_cmd = false;
-> > > > +			break;
-> > > > +
-> > > > +		case NAND_OP_ADDR_INSTR:
-> > > > +			offset = nand_subop_get_addr_start_off(subop, op_id);
-> > > > +			naddrs = nand_subop_get_num_addr_cyc(subop, op_id);
-> > > > +			addrs = &instr->ctx.addr.addrs[offset];
-> > > > +			nfc_op->cmd_reg |= CMD_NADDRS(naddrs);
-> > > > +
-> > > > +			for (i = 0; i < min(ANFC_MAX_ADDR_CYC, naddrs); i++) {
-> > > > +				if (i < 4)
-> > > > +					nfc_op->addr1_reg |= (u32)addrs[i] << i * 8;
-> > > > +				else
-> > > > +					nfc_op->addr2_reg |= addrs[i];
-> > > > +			}
-> > > > +
-> > > > +			break;
-> > > > +		case NAND_OP_DATA_IN_INSTR:
-> > > > +			nfc_op->read = true;
-> > > > +			fallthrough;
-> > > > +		case NAND_OP_DATA_OUT_INSTR:
-> > > > +			offset = nand_subop_get_data_start_off(subop, op_id);
-> > > > +			buf = instr->ctx.data.buf.in;
-> > > > +			nfc_op->buf = &buf[offset];
-> > > > +			nfc_op->len = nand_subop_get_data_len(subop, op_id);
-> > > > +			nfc_op->steps = anfc_len_to_steps(chip, nfc_op->len);
-> > > > +			pktsize = DIV_ROUND_UP(nfc_op->len, nfc_op->steps);
-> > > > +			nfc_op->pkt_reg |= PKT_SIZE(round_up(pktsize, 4)) |      
-> > > 
-> > > Hm, pktsize has to be aligned on 4? Again, that's not great since you
-> > > adjust the size without letting the core know you did that.    
-> > 
-> > Mmmh probably not, I will test that.
-> > 
-> > But a FIFO read is 4 bytes long so anyway, it will probably read/write
-> > more no matter what I request (and move the SRAM pointer).  
-> 
-> The FIFO/SRAM pointer and actual DATA len are most of the time not
-> correlated, meaning that you can write/read more to/from the FIFO/SRAM
-> without having extra DATA cycles issued on the bus.
-> 
-> > > > +static const struct nand_op_parser anfc_op_parser = NAND_OP_PARSER(
-> > > > +	NAND_OP_PARSER_PATTERN(
-> > > > +		anfc_param_read_type_exec,
-> > > > +		NAND_OP_PARSER_PAT_CMD_ELEM(false),
-> > > > +		NAND_OP_PARSER_PAT_ADDR_ELEM(false, ANFC_MAX_ADDR_CYC),
-> > > > +		NAND_OP_PARSER_PAT_WAITRDY_ELEM(true),
-> > > > +		NAND_OP_PARSER_PAT_DATA_IN_ELEM(false, ANFC_MAX_CHUNK_SIZE)),
-> > > > +	NAND_OP_PARSER_PATTERN(
-> > > > +		anfc_param_write_type_exec,
-> > > > +		NAND_OP_PARSER_PAT_CMD_ELEM(false),
-> > > > +		NAND_OP_PARSER_PAT_ADDR_ELEM(false, ANFC_MAX_ADDR_CYC),
-> > > > +		NAND_OP_PARSER_PAT_DATA_OUT_ELEM(false, ANFC_MAX_PARAM_SIZE)),
-> > > > +	NAND_OP_PARSER_PATTERN(
-> > > > +		anfc_data_read_type_exec,
-> > > > +		NAND_OP_PARSER_PAT_CMD_ELEM(false),
-> > > > +		NAND_OP_PARSER_PAT_ADDR_ELEM(false, ANFC_MAX_ADDR_CYC),
-> > > > +		NAND_OP_PARSER_PAT_CMD_ELEM(false),
-> > > > +		NAND_OP_PARSER_PAT_WAITRDY_ELEM(true),
-> > > > +		NAND_OP_PARSER_PAT_DATA_IN_ELEM(false, ANFC_MAX_CHUNK_SIZE)),
-> > > > +	NAND_OP_PARSER_PATTERN(
-> > > > +		anfc_data_write_type_exec,
-> > > > +		NAND_OP_PARSER_PAT_CMD_ELEM(false),
-> > > > +		NAND_OP_PARSER_PAT_ADDR_ELEM(false, ANFC_MAX_ADDR_CYC),
-> > > > +		NAND_OP_PARSER_PAT_DATA_OUT_ELEM(false, ANFC_MAX_CHUNK_SIZE),
-> > > > +		NAND_OP_PARSER_PAT_CMD_ELEM(false)),
-> > > > +	NAND_OP_PARSER_PATTERN(
-> > > > +		anfc_reset_type_exec,
-> > > > +		NAND_OP_PARSER_PAT_CMD_ELEM(false),
-> > > > +		NAND_OP_PARSER_PAT_WAITRDY_ELEM(false)),
-> > > > +	NAND_OP_PARSER_PATTERN(
-> > > > +		anfc_erase_type_exec,
-> > > > +		NAND_OP_PARSER_PAT_CMD_ELEM(false),
-> > > > +		NAND_OP_PARSER_PAT_ADDR_ELEM(false, ANFC_MAX_ADDR_CYC),
-> > > > +		NAND_OP_PARSER_PAT_CMD_ELEM(false),
-> > > > +		NAND_OP_PARSER_PAT_WAITRDY_ELEM(false)),
-> > > > +	NAND_OP_PARSER_PATTERN(
-> > > > +		anfc_status_type_exec,
-> > > > +		NAND_OP_PARSER_PAT_CMD_ELEM(false),
-> > > > +		NAND_OP_PARSER_PAT_DATA_IN_ELEM(false, ANFC_MAX_CHUNK_SIZE)),
-> > > > +	NAND_OP_PARSER_PATTERN(
-> > > > +		anfc_wait_type_exec,
-> > > > +		NAND_OP_PARSER_PAT_WAITRDY_ELEM(false)),
-> > > > +	);
-> > > > +      
-> > > 
-> > > Okay, no DATA-only patterns, so my suggestion to split non-aligned data
-> > > reads doesn't work. I'd suggest to describe data-lengths
-> > > constraints rather than automatically adjusting the data length to
-> > > something bigger when we can't do exactly the number of requested DATA
-> > > cycles.    
-> > 
-> > Well, we *must* adjust the data length automatically. But the below
-> > change is interesting and should be extended and then this controller
-> > updated (see the next sentence).  
-> 
-> What's probably as important as allowing controllers to exceed the
-> amount of DATA cycles is flagging operations where that's allowed. I
-> can think of any READ/WRITE operations where you can issue a
-> RNDOUT/RNDIN to move the pointer after reading/writing data. READID
-> would also qualify here as data are just wrapping around, and I think
-> SET/GET_FEATURES allow that too, but I'm not sure.
-> 
-> Note that the mxc driver is probably even worse in that it only allows
-> 512byte reads/writes, so we'll need the feature if we want to convert
-> that one.
-> 
-> >   
-> > > I started doing something similar here [1], except you'd need
-> > > much more fined-grained constraints, so maybe we should add an optional
-> > > check hook to data patterns.    
-> > 
-> > We could describe a "round_up" limitation too. That's definitely
-> > something that we can add in this driver on top of [1].
-> > 
-> > Would apply to Marvell NFC as well for instance.  
-> 
-> Until we have that working, may I suggest to return ENOTSUPP when you
-> can't issue exactly the number of DATA cycles requested? That implies
-> doing an extra check to make sure any DATA instruction is either
-> smaller than MAX_PKT_SIZE or has a valid NUM_PKTS divisor.
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index cc68ea84318e..2bd130687f4b 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -3134,6 +3134,11 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 	if (info->flags & SPI_NOR_HAS_LOCK)
+ 		nor->flags |= SNOR_F_HAS_LOCK;
+ 
++	/* Add SPI_NOR_4B_OPCODES if force in the device tree */
++	if (info->flags & SPI_NOR_COND_4B_OPCODES &&
++		of_property_read_bool(np, "force-4b-opcodes"))
++		info->flags |= SPI_NOR_4B_OPCODES;
++
+ 	mtd->_write = spi_nor_write;
+ 
+ 	/* Init flash parameters based on flash_info struct and SFDP */
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index 6f2f6b27173f..49e17415d834 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -312,6 +312,11 @@ struct flash_info {
+ 					 * Must be used with SPI_NOR_4BIT_BP.
+ 					 */
+ 
++#define SPI_NOR_COND_4B_OPCODES	BIT(19) /*
++					 * Same as SPI_NOR_4B_OPCODES, but
++					 * must also be force in the device
++					 * tree.
++					 */
+ 	/* Part specific fixup hooks. */
+ 	const struct spi_nor_fixups *fixups;
+ };
+diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
+index 6c034b9718e2..f827454eaa5f 100644
+--- a/drivers/mtd/spi-nor/micron-st.c
++++ b/drivers/mtd/spi-nor/micron-st.c
+@@ -37,7 +37,7 @@ static const struct flash_info st_parts[] = {
+ 			       SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+ 	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K |
+ 			      USE_FSR | SPI_NOR_DUAL_READ |
+-			      SPI_NOR_QUAD_READ) },
++			      SPI_NOR_QUAD_READ | SPI_NOR_COND_4B_OPCODES) },
+ 	{ "mt25qu256a",  INFO6(0x20bb19, 0x104400, 64 * 1024,  512,
+ 			       SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
+ 			       SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+-- 
+2.17.1
 
-Sure!
 
 ______________________________________________________
 Linux MTD discussion mailing list
