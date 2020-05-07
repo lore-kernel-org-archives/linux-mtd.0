@@ -2,61 +2,63 @@ Return-Path: <SRS0=/Eax=6V=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E18A5C38A2A
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 11:01:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7917C38A2A
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 11:01:29 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B1E9D2083B
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 11:01:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6327B208E4
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 11:01:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PHDv/mCa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B1E9D2083B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="a8fV2mcn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6327B208E4
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=ymawIIvPIFdl1oM7ELgKnJNuKdAWuBUbaACZ13ELdBg=; b=PHDv/mCauucSG6
-	A/E5C8zOAwVNg+feCd908/rFJsbcEI3jjvD9imj+JuwZ7gkVvka7qCTTMVEJMc+cyKia4Z0Zje36O
-	THeuGRT7RyCD4iuymeUkpIdm65jepTUrazaELzm+zphilW19VpewFp84ADLr8WAGCucJkqGuLeB1Q
-	WbfyscD2bTc34RjlGOhrzLhlu5gYv12XiaRgBkyDt7UR4cv5/nnTUkpLvolhR4oiBhS6wpiybRvo1
-	etX6LtiGUg4KnWzspY88H5tKFyWObki6wiJsqAix6HNjQljM6zAyubGC2pe9d5OlGHCYwr69gRGaB
-	mpjEfoIIRhot9NCtUU9Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=/KWO2xv5oDBxVAp8py4IM/1hT1hdK6m+CAHGYMhy9dc=; b=a8fV2mcnKKGX6c
+	LngQJCDm6JJZPmckIroJ3noImiimybzS2YDsqAIO1enECxjf0Civyqw1foytCuGOjSdsja/BQEj1A
+	60EM/xU+4dyRTkz/0jGTps6LunOj2UCNMJ2urg9usVTH6vB2eqp88tj4xBKounSTvXj0r8edpOwuF
+	ULk4VB/X9Bl9FE44EL5Qbfr8BOdLiX9gNyZdASzrcHX3+k2Ca2LiVBL7T97yitz6q1wcDiX28rbOv
+	qfcOIfMaLgpzUBReMkzc/n6UceP5rUIml7M7lfoRTEi3c1SkqY0k+z1dGWvFQDgy5udYPP/EX7XRv
+	gIXtE1dE+w5G6bNnXClQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jWeGq-0004qd-JJ; Thu, 07 May 2020 11:00:52 +0000
+	id 1jWeHO-0005M6-SJ; Thu, 07 May 2020 11:01:26 +0000
 Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jWeGo-0004pd-0m
- for linux-mtd@lists.infradead.org; Thu, 07 May 2020 11:00:51 +0000
+ id 1jWeHD-0005CM-M9
+ for linux-mtd@lists.infradead.org; Thu, 07 May 2020 11:01:21 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 935CF20004;
- Thu,  7 May 2020 11:00:35 +0000 (UTC)
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 366D620009;
+ Thu,  7 May 2020 11:01:00 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
  <devicetree@vger.kernel.org>, Richard Weinberger <richard@nod.at>,
  Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH v3 0/8] New Arasan NAND controller driver
-Date: Thu,  7 May 2020 13:00:26 +0200
-Message-Id: <20200507110034.14736-1-miquel.raynal@bootlin.com>
+Subject: [PATCH v3 2/8] lib/bch: Allow easy bit swapping
+Date: Thu,  7 May 2020 13:00:28 +0200
+Message-Id: <20200507110034.14736-3-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200507110034.14736-1-miquel.raynal@bootlin.com>
+References: <20200507110034.14736-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200507_040050_202299_8DD9BABC 
-X-CRM114-Status: GOOD (  11.53  )
+X-CRM114-CacheID: sfid-20200507_040116_015586_0F9DE066 
+X-CRM114-Status: GOOD (  15.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,54 +74,182 @@ Cc: Michal Simek <monstr@monstr.eu>,
  Boris Brezillon <boris.brezillon@collabora.com>,
  Naga Sureshkumar Relli <nagasure@xilinx.com>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Ivan Djelic <ivan.djelic@parrot.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-TmV3IEFyYXNhbiBOQU5EIGNvbnRyb2xsZXIgZHJpdmVyCgpIZWxsbywKClRoaXMgaXMgYSBkZWVw
-IHJld29yayBvZiBOYWdhJ3MgQXJhc2FuIE5BTkQgY29udHJvbGxlciBkcml2ZXIuIFRoaXMKdmVy
-c2lvbiBpcyB0aGUgZmluYWwgdmVyc2lvbiBhbmQgd29ya3Mgd2l0aCBzb2Z0d2FyZSBFQ0MuIEl0
-IHJlbGllcyBvbgphIHByZXZpb3VzIHNlcmllcyBjYWxsZWQgIlN1cHBvcnRpbmcgcmVzdHJpY3Rl
-ZCBOQU5EIGNvbnRyb2xsZXJzIiB0aGF0CmJyaW5ncyBtb3JlIGZsZXhpYmlsaXR5IHRvIHRoZSBO
-QU5EIHdpdGggdGhlIGdvYWwgdG8gc3VwcG9ydApyZXN0cmljdGVkIGNvbnRyb2xsZXJzIGxpa2Ug
-dGhpcyBvbmUuCgpDaGVlcnMsCk1pcXXDqGwKCkNoYW5nZXMgaW4gdjM6CiogUHJlZml4IHNwZWNp
-ZmljIGNsb2NrIGRlZmluaXRpb25zIHdpdGggWExOWCBhcyB0aGV5IGRvIG5vdCBhcHBseSBmb3IK
-ICBhbnkgb3RoZXIgU29DIGFuZCBhcmUgYXR0YWNoZWQgdG8gYSBzaW5nbGUgY29tcGF0aWJsZS4K
-KiBVc2VkIGZpZWxkIGdldHRlcnMvc2V0dGVycyBhcyBkZWZpbmVkIGluIGJpdGZpZWxkLmguCiog
-Rm9yY2UgY2FzdGluZyB0byB1MzIgYmVmb3JlIHNoaWZ0aW5nIHU4IHZhbHVlcyBieSA4IDE2IG9y
-IDI0IGJpdHMuCiogQ29tcGx5IHdpdGggdGhlIHJlY2VudCBjb3JlIGNoYW5nZXMgYW5kIHNlbGVj
-dCBtYW51YWxseQogIG5hbmRfbW9ub2xpdGhpY19yZWFkL3dyaXRlX3BhZ2VfcmF3KCkgaGVscGVy
-cy4KKiBBZGQgTUFJTlRBSU5FUiBwYXRjaC4KKiBBZGQgYSBiaXQgZXh0cmFjdGlvbiBoZWxwZXIg
-aW4gdGhlIGNvcmUuCiogUmVuYW1lIEJDSCBmdW5jdGlvbnMuCiogQWRkIGEgc3dhcHBpbmcgYml0
-IG1lY2hhbmlzbSB0byBCQ0guCiogU3VwcG9ydCB0aGUgaGFyZHdhcmUgRUNDIGVuZ2luZS4KCkNo
-YW5nZXMgaW4gdjI6CiogV29ya2luZyAtPmV4ZWNfb3AoKSBpbXBsZW1lbnRhdGlvbiByZWx5aW5n
-IG9uIGNvcmUgY2hhbmdlcy4KKiBEcm9wcGVkIHRoZSBFQ0Mgc3VwcG9ydCBmb3Igbm93LCB3aWxs
-IGJlIHBhcnQgb2YgYW5vdGhlciBzZXJpZXMgaWYKICB0aGlzIHBhdGNoIGlzIGFjY2VwdGVkLgoK
-Qm9yaXMgQnJlemlsbG9uICgxKToKICBsaWIvYmNoOiBBbGxvdyBlYXN5IGJpdCBzd2FwcGluZwoK
-TWlxdWVsIFJheW5hbCAoNyk6CiAgbGliL2JjaDogUmV3b3JrIGEgbGl0dGxlIGJpdCB0aGUgZXhw
-b3J0ZWQgZnVuY3Rpb24gbmFtZXMKICBtdGQ6IHJhd25hbmQ6IEVuc3VyZSB0aGUgbnVtYmVyIG9m
-IGJpdGZsaXBzIGlzIGNvbnNpc3RlbnQKICBtdGQ6IHJhd25hbmQ6IEFkZCBuYW5kX2V4dHJhY3Rf
-Yml0cygpCiAgTUFJTlRBSU5FUlM6IEFkZCBBcmFzYW4gTkFORCBjb250cm9sbGVyIGFuZCBiaW5k
-aW5ncwogIGR0LWJpbmRpbmdzOiBtdGQ6IERvY3VtZW50IEFSQVNBTiBOQU5EIGJpbmRpbmdzCiAg
-bXRkOiByYXduYW5kOiBhcmFzYW46IEFkZCBuZXcgQXJhc2FuIE5BTkQgY29udHJvbGxlcgogIG10
-ZDogcmF3bmFuZDogYXJhc2FuOiBTdXBwb3J0IHRoZSBoYXJkd2FyZSBCQ0ggRUNDIGVuZ2luZQoK
-IC4uLi9iaW5kaW5ncy9tdGQvYXJhc2FuLG5hbmQtY29udHJvbGxlci55YW1sICB8ICAgNjMgKwog
-TUFJTlRBSU5FUlMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgNyArCiBk
-cml2ZXJzL210ZC9kZXZpY2VzL2RvY2czLmMgICAgICAgICAgICAgICAgICAgfCAgIDEwICstCiBk
-cml2ZXJzL210ZC9uYW5kL3Jhdy9LY29uZmlnICAgICAgICAgICAgICAgICAgfCAgICA3ICsKIGRy
-aXZlcnMvbXRkL25hbmQvcmF3L01ha2VmaWxlICAgICAgICAgICAgICAgICB8ICAgIDEgKwogZHJp
-dmVycy9tdGQvbmFuZC9yYXcvYXJhc2FuLW5hbmQtY29udHJvbGxlci5jIHwgMTIwNyArKysrKysr
-KysrKysrKysrKwogZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9iYXNlLmMgICAgICAgICAgICAg
-IHwgICA0MSArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9iY2guYyAgICAgICAgICAgICAg
-IHwgICAxMCArLQogaW5jbHVkZS9saW51eC9iY2guaCAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgICAgOSArLQogaW5jbHVkZS9saW51eC9tdGQvcmF3bmFuZC5oICAgICAgICAgICAgICAgICAg
-IHwgICAgNCArCiBsaWIvYmNoLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-fCAgMTQ4ICstCiAxMSBmaWxlcyBjaGFuZ2VkLCAxNDQzIGluc2VydGlvbnMoKyksIDY0IGRlbGV0
-aW9ucygtKQogY3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
-aW5ncy9tdGQvYXJhc2FuLG5hbmQtY29udHJvbGxlci55YW1sCiBjcmVhdGUgbW9kZSAxMDA2NDQg
-ZHJpdmVycy9tdGQvbmFuZC9yYXcvYXJhc2FuLW5hbmQtY29udHJvbGxlci5jCgotLSAKMi4yMC4x
-CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+From: Boris Brezillon <boris.brezillon@collabora.com>
+
+It seems that several hardware ECC engine use a swapped representation
+of bytes compared to software. It means that when the software BCH
+engine is working in conjunction with data generated with hardware, we
+must swap the bits inside bytes, eg:
+
+    0x0A = b0000_1010 -> b0101_0000 = 0x50
+
+Make it possible just by flipping a boolean in the BCH control
+structure.
+
+Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Ivan Djelic <ivan.djelic@parrot.com>
+---
+ include/linux/bch.h |  1 +
+ lib/bch.c           | 84 ++++++++++++++++++++++++++++++++++++++-------
+ 2 files changed, 72 insertions(+), 13 deletions(-)
+
+diff --git a/include/linux/bch.h b/include/linux/bch.h
+index 9c35e7cd5890..c42f50cacfdc 100644
+--- a/include/linux/bch.h
++++ b/include/linux/bch.h
+@@ -51,6 +51,7 @@ struct bch_control {
+ 	int            *cache;
+ 	struct gf_poly *elp;
+ 	struct gf_poly *poly_2t[4];
++	bool		swap_bits;
+ };
+ 
+ struct bch_control *bch_init(int m, int t, unsigned int prim_poly);
+diff --git a/lib/bch.c b/lib/bch.c
+index 1091841ac716..81bf8b426eea 100644
+--- a/lib/bch.c
++++ b/lib/bch.c
+@@ -114,6 +114,49 @@ struct gf_poly_deg1 {
+ 	unsigned int   c[2];
+ };
+ 
++static u8 swap_bits_table[] = {
++	0x00, 0x80, 0x40, 0xc0, 0x20, 0xa0, 0x60, 0xe0,
++	0x10, 0x90, 0x50, 0xd0, 0x30, 0xb0, 0x70, 0xf0,
++	0x08, 0x88, 0x48, 0xc8, 0x28, 0xa8, 0x68, 0xe8,
++	0x18, 0x98, 0x58, 0xd8, 0x38, 0xb8, 0x78, 0xf8,
++	0x04, 0x84, 0x44, 0xc4, 0x24, 0xa4, 0x64, 0xe4,
++	0x14, 0x94, 0x54, 0xd4, 0x34, 0xb4, 0x74, 0xf4,
++	0x0c, 0x8c, 0x4c, 0xcc, 0x2c, 0xac, 0x6c, 0xec,
++	0x1c, 0x9c, 0x5c, 0xdc, 0x3c, 0xbc, 0x7c, 0xfc,
++	0x02, 0x82, 0x42, 0xc2, 0x22, 0xa2, 0x62, 0xe2,
++	0x12, 0x92, 0x52, 0xd2, 0x32, 0xb2, 0x72, 0xf2,
++	0x0a, 0x8a, 0x4a, 0xca, 0x2a, 0xaa, 0x6a, 0xea,
++	0x1a, 0x9a, 0x5a, 0xda, 0x3a, 0xba, 0x7a, 0xfa,
++	0x06, 0x86, 0x46, 0xc6, 0x26, 0xa6, 0x66, 0xe6,
++	0x16, 0x96, 0x56, 0xd6, 0x36, 0xb6, 0x76, 0xf6,
++	0x0e, 0x8e, 0x4e, 0xce, 0x2e, 0xae, 0x6e, 0xee,
++	0x1e, 0x9e, 0x5e, 0xde, 0x3e, 0xbe, 0x7e, 0xfe,
++	0x01, 0x81, 0x41, 0xc1, 0x21, 0xa1, 0x61, 0xe1,
++	0x11, 0x91, 0x51, 0xd1, 0x31, 0xb1, 0x71, 0xf1,
++	0x09, 0x89, 0x49, 0xc9, 0x29, 0xa9, 0x69, 0xe9,
++	0x19, 0x99, 0x59, 0xd9, 0x39, 0xb9, 0x79, 0xf9,
++	0x05, 0x85, 0x45, 0xc5, 0x25, 0xa5, 0x65, 0xe5,
++	0x15, 0x95, 0x55, 0xd5, 0x35, 0xb5, 0x75, 0xf5,
++	0x0d, 0x8d, 0x4d, 0xcd, 0x2d, 0xad, 0x6d, 0xed,
++	0x1d, 0x9d, 0x5d, 0xdd, 0x3d, 0xbd, 0x7d, 0xfd,
++	0x03, 0x83, 0x43, 0xc3, 0x23, 0xa3, 0x63, 0xe3,
++	0x13, 0x93, 0x53, 0xd3, 0x33, 0xb3, 0x73, 0xf3,
++	0x0b, 0x8b, 0x4b, 0xcb, 0x2b, 0xab, 0x6b, 0xeb,
++	0x1b, 0x9b, 0x5b, 0xdb, 0x3b, 0xbb, 0x7b, 0xfb,
++	0x07, 0x87, 0x47, 0xc7, 0x27, 0xa7, 0x67, 0xe7,
++	0x17, 0x97, 0x57, 0xd7, 0x37, 0xb7, 0x77, 0xf7,
++	0x0f, 0x8f, 0x4f, 0xcf, 0x2f, 0xaf, 0x6f, 0xef,
++	0x1f, 0x9f, 0x5f, 0xdf, 0x3f, 0xbf, 0x7f, 0xff,
++};
++
++static u8 swap_bits(struct bch_control *bch, u8 in)
++{
++	if (!bch->swap_bits)
++		return in;
++
++	return swap_bits_table[in];
++}
++
+ /*
+  * same as bch_encode(), but process input data one byte at a time
+  */
+@@ -126,7 +169,9 @@ static void bch_encode_unaligned(struct bch_control *bch,
+ 	const int l = BCH_ECC_WORDS(bch)-1;
+ 
+ 	while (len--) {
+-		p = bch->mod8_tab + (l+1)*(((ecc[0] >> 24)^(*data++)) & 0xff);
++		u8 tmp = swap_bits(bch, *data++);
++
++		p = bch->mod8_tab + (l+1)*(((ecc[0] >> 24)^(tmp)) & 0xff);
+ 
+ 		for (i = 0; i < l; i++)
+ 			ecc[i] = ((ecc[i] << 8)|(ecc[i+1] >> 24))^(*p++);
+@@ -145,10 +190,16 @@ static void load_ecc8(struct bch_control *bch, uint32_t *dst,
+ 	unsigned int i, nwords = BCH_ECC_WORDS(bch)-1;
+ 
+ 	for (i = 0; i < nwords; i++, src += 4)
+-		dst[i] = (src[0] << 24)|(src[1] << 16)|(src[2] << 8)|src[3];
++		dst[i] = ((u32)swap_bits(bch, src[0]) << 24) |
++			 ((u32)swap_bits(bch, src[1]) << 16) |
++			 ((u32)swap_bits(bch, src[2]) << 8) |
++			 swap_bits(bch, src[3]);
+ 
+ 	memcpy(pad, src, BCH_ECC_BYTES(bch)-4*nwords);
+-	dst[nwords] = (pad[0] << 24)|(pad[1] << 16)|(pad[2] << 8)|pad[3];
++	dst[nwords] = ((u32)swap_bits(bch, pad[0]) << 24) |
++		      ((u32)swap_bits(bch, pad[1]) << 16) |
++		      ((u32)swap_bits(bch, pad[2]) << 8) |
++		      swap_bits(bch, pad[3]);
+ }
+ 
+ /*
+@@ -161,15 +212,15 @@ static void store_ecc8(struct bch_control *bch, uint8_t *dst,
+ 	unsigned int i, nwords = BCH_ECC_WORDS(bch)-1;
+ 
+ 	for (i = 0; i < nwords; i++) {
+-		*dst++ = (src[i] >> 24);
+-		*dst++ = (src[i] >> 16) & 0xff;
+-		*dst++ = (src[i] >>  8) & 0xff;
+-		*dst++ = (src[i] >>  0) & 0xff;
++		*dst++ = swap_bits(bch, src[i] >> 24);
++		*dst++ = swap_bits(bch, src[i] >> 16);
++		*dst++ = swap_bits(bch, src[i] >> 8);
++		*dst++ = swap_bits(bch, src[i]);
+ 	}
+-	pad[0] = (src[nwords] >> 24);
+-	pad[1] = (src[nwords] >> 16) & 0xff;
+-	pad[2] = (src[nwords] >>  8) & 0xff;
+-	pad[3] = (src[nwords] >>  0) & 0xff;
++	pad[0] = swap_bits(bch, src[nwords] >> 24);
++	pad[1] = swap_bits(bch, src[nwords] >> 16);
++	pad[2] = swap_bits(bch, src[nwords] >> 8);
++	pad[3] = swap_bits(bch, src[nwords]);
+ 	memcpy(dst, pad, BCH_ECC_BYTES(bch)-4*nwords);
+ }
+ 
+@@ -240,7 +291,12 @@ void bch_encode(struct bch_control *bch, const uint8_t *data,
+ 	 */
+ 	while (mlen--) {
+ 		/* input data is read in big-endian format */
+-		w = r[0]^cpu_to_be32(*pdata++);
++		w = cpu_to_be32(*pdata++);
++		w = (u32)swap_bits(bch, w) |
++		    ((u32)swap_bits(bch, w >> 8) << 8) |
++		    ((u32)swap_bits(bch, w >> 16) << 16) |
++		    ((u32)swap_bits(bch, w >> 24) << 24);
++		w ^= r[0];
+ 		p0 = tab0 + (l+1)*((w >>  0) & 0xff);
+ 		p1 = tab1 + (l+1)*((w >>  8) & 0xff);
+ 		p2 = tab2 + (l+1)*((w >> 16) & 0xff);
+@@ -1048,7 +1104,9 @@ int bch_decode(struct bch_control *bch, const uint8_t *data, unsigned int len,
+ 				break;
+ 			}
+ 			errloc[i] = nbits-1-errloc[i];
+-			errloc[i] = (errloc[i] & ~7)|(7-(errloc[i] & 7));
++			if (!bch->swap_bits)
++				errloc[i] = (errloc[i] & ~7) |
++					    (7-(errloc[i] & 7));
+ 		}
+ 	}
+ 	return (err >= 0) ? err : -EBADMSG;
+-- 
+2.20.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
