@@ -2,72 +2,95 @@ Return-Path: <SRS0=/Eax=6V=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
-	version=3.4.0
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 647ABC38A24
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 09:40:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B8C5C38A2A
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 10:03:14 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 36CFE208E4
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 09:40:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E0E5B20643
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 10:03:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OA6g835n"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 36CFE208E4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PfTVKqL4";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="q1wIJSVh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E0E5B20643
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nNz7P4svPeDzwWPX3nV4eCEvL6+kd5bvaLAStfXReHk=; b=OA6g835n8GBTIn
-	uHFtNwocxmkubYOTwT02XxiZVSX5BDOeTyTdAE2LDRnEaZZew9lelKyI8hEVDcmaybsPbu3MXmTXP
-	ufw9IhKnhGp8ED8zyt95FwN4GJBjhgJUdvtFxYF5LrwwZi83G/1RpEVyw1+hncqO7bwxCpb7tLvn4
-	oJKXjZ7NI0Dvmrd/iiSUsRO6lF+a9xcjB6VlGu+/EYoF8XQ17QK6SwsR1mTzcx6utvS7YZLwlzfqN
-	UWAfq5GbPDoTcMnKwGgVvl+wxX2bxjPe1dByXbIpdziZT0o6ihI+Mi5VTFJfVldAvyaI48dwNsIZx
-	RlkoOvGdFfnIjcmW7Beg==;
+	List-Owner; bh=u651HYGz4pbPQ/Nx6fSsLuxJzczzHEpmO8LR0UHl4N8=; b=PfTVKqL4PuS85R
+	1C/jK6YzPC2Kbp20d8VFgf90C6UtAIBT3PmU+urWL6VD84+/etRAijA6cRe8Mzl5NowtVPWs1q76M
+	NZihvAVKhpEbBLZLzui6h3bM9UP/eiFPs6rwrGgJZlCMXlnQ74tBl/n2TVzGl1CEo+L8f6q6kmzj+
+	nBbqae61d+S/f5bjTNQHeulws9QTPR9xrQYzJUkEYveEeP13chdGB/UNyp0Gv6fJYwShzq1Eawdy3
+	4Y0q8xWcySRsed9YXhkqsinELzLJ06LtnLQ7SdEqsL8Eoihs7LqCHdR0SuKFw8FxHq90y1sOpjEEP
+	dN4di02OvPMTeXK1JjrQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jWd1R-0001Ob-KB; Thu, 07 May 2020 09:40:53 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1jWdMv-0008Kj-JY; Thu, 07 May 2020 10:03:05 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jWd1O-0001MC-6I
- for linux-mtd@lists.infradead.org; Thu, 07 May 2020 09:40:51 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 2C3DA2A039A;
- Thu,  7 May 2020 10:40:47 +0100 (BST)
-Date: Thu, 7 May 2020 11:40:44 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: "Bean Huo (beanhuo)" <beanhuo@micron.com>
-Subject: Re: [EXT] [PATCH v2 3/3] mtd: rawnand: micron: Address the shallow
- erase issue
-Message-ID: <20200507114044.1f0b51af@collabora.com>
-In-Reply-To: <BN7PR08MB568434AC9C9168C016CC1592DBA50@BN7PR08MB5684.namprd08.prod.outlook.com>
+ id 1jWdMt-0008KH-L6
+ for linux-mtd@bombadil.infradead.org; Thu, 07 May 2020 10:03:03 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+ MIME-Version:Subject:References:In-Reply-To:Message-ID:Cc:To:From:Date:Sender
+ :Reply-To:Content-ID:Content-Description;
+ bh=+4X+AW0ZYVjh+CHHdUSHlpnRmrfp9/kPFIjWdR90Kc8=; b=q1wIJSVhLz7yaGE1eHMZXtQk6v
+ ssyAmUWqqqHXgh2IRnkOLKR2QAXbkeQRU6+U7brdqdlhyHBXxQ3q6TvyLpw45zKjhyRWHZx+DDIyl
+ t3k0TSVSZsamBDlflLjA6yKWt5VYFpUysYk1z/3yt9tQk3yPdj6J3+s1xnXX0Z2v6dqeHTRMNU3gG
+ VhraGCVYWHIB080//BdsLwhvicYvAe4EeIUKcOU08OpvMrFbFHageoR27CESKjyfKvLpidRwEljmA
+ 8f+s1olSYNgenzLF/6VhFz3Tu+xmuOyEbEFGGhuvZBxwM5eiYzHJ6kY3kJybj7D9gQMDvWfPSTHvQ
+ Q5tLQ0wQ==;
+Received: from lithops.sigma-star.at ([195.201.40.130])
+ by casper.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jWdMo-0006Dy-74
+ for linux-mtd@lists.infradead.org; Thu, 07 May 2020 10:03:00 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 467466075EB6;
+ Thu,  7 May 2020 12:02:16 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id cFjHhroT6IJe; Thu,  7 May 2020 12:02:13 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id DA6EB608311C;
+ Thu,  7 May 2020 12:02:13 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id hzYKOmsiAjPR; Thu,  7 May 2020 12:02:13 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+ by lithops.sigma-star.at (Postfix) with ESMTP id AFAD0608932E;
+ Thu,  7 May 2020 12:02:13 +0200 (CEST)
+Date: Thu, 7 May 2020 12:02:13 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: Boris Brezillon <boris.brezillon@collabora.com>
+Message-ID: <791376627.195447.1588845733613.JavaMail.zimbra@nod.at>
+In-Reply-To: <20200507113050.71b6a27f@collabora.com>
 References: <20200503114029.30257-1-miquel.raynal@bootlin.com>
- <BN7PR08MB5684D8DFC50CB93B53705619DBA40@BN7PR08MB5684.namprd08.prod.outlook.com>
- <20200506180420.13996633@collabora.com>
- <BN7PR08MB56843895500F4ADA88262C59DBA40@BN7PR08MB5684.namprd08.prod.outlook.com>
  <1414270659.192477.1588790669444.JavaMail.zimbra@nod.at>
  <20200506210158.7fe33cec@collabora.com>
  <662469728.192614.1588792998746.JavaMail.zimbra@nod.at>
  <20200506224016.2d48d0b4@collabora.com>
  <130342272.192940.1588798779898.JavaMail.zimbra@nod.at>
- <20200506231116.2d16b747@collabora.com>
- <BN7PR08MB568434AC9C9168C016CC1592DBA50@BN7PR08MB5684.namprd08.prod.outlook.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ <BN7PR08MB5684AFAA722A0633357C064ADBA50@BN7PR08MB5684.namprd08.prod.outlook.com>
+ <20200507113050.71b6a27f@collabora.com>
+Subject: Re: [EXT] [PATCH v2 3/3] mtd: rawnand: micron: Address the shallow
+ erase issue
 MIME-Version: 1.0
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF68 (Linux)/8.8.12_GA_3809)
+Thread-Topic: rawnand: micron: Address the shallow erase issue
+Thread-Index: PQzS55Pk92rdJiZ8mIxUWRglbulx4w==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200507_024050_364955_55A90674 
-X-CRM114-Status: GOOD (  20.00  )
+X-CRM114-CacheID: sfid-20200507_110258_672021_20E3058B 
+X-CRM114-Status: UNSURE (   5.44  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,71 +104,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, Steve deRosier <derosier@gmail.com>,
- "Zoltan Szubbocsev \(zszubbocsev\)" <zszubbocsev@micron.com>,
+ Steve deRosier <derosier@gmail.com>, "Zoltan Szubbocsev,
+ zszubbocsev" <zszubbocsev@micron.com>,
  linux-mtd <linux-mtd@lists.infradead.org>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>, tglx <tglx@linutronix.de>,
- Piotr Wojtaszczyk <WojtaszczykP@cumminsallison.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+ Piotr Wojtaszczyk <WojtaszczykP@cumminsallison.com>, "Bean Huo,
+ beanhuo" <beanhuo@micron.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 7 May 2020 09:28:29 +0000
-"Bean Huo (beanhuo)" <beanhuo@micron.com> wrote:
-
-> Hi, Boris, Richard 
-> 
-> > >
-> > > A missing VID header plus good payload will cause UBI to stop
-> > > attaching since it violates the IO model.  
-> > 
-> > Sure, and that's not what we want to do anyway. We basically have 2 choices
-> > here:
-> > 
-> > 1/ overwrite all pages starting from page 0 and ending at page 15. This will lead
-> > to ECC errors on already written pages, and 0-filled pages for others (unless we
-> > go for a raw write, in which case it might actually lead to ECC errors depending
-> > on the engine).  
-> 
-> No need for overwriting all pages. I overwrite EC and VID page just for prevent of 
-> Erase power loss issue. But you hate this since FS-specific approach.
-> According to Richard's emails, we don't need to overwrite page0,  overwrite page1
-> Is enough.
-
-It's still UBI specific, so that's still a no-go for me.
-
-> 
-> > 2/ track already written pages (by reading them first), and only writes those that
-> > have not been written yet. That means no ECC error in that case, and no
-> > corrupted EC/VID header as well.  
-> 
-> This is similar with my patch approach, but corrupted EC and VID headers. 
-> 
-> I have two proposals:
-> 1.  rebase my patch, and copy one idea from Miquel's patch which records the programmed pages.
-> But page 1 should be overwrote considering the UBIFS re-erase mechanism.
-
-See above, and remember we do all that because Micron broke one of the
-base assumptions we have about NANDs => erase should reset all bits to
-1 or return an error if that fails.
-
-> 
-> 2.  add a new padding structure in the MTD,  which is used to filling empty page in the MTD.
-> And once FS layer detects this padding data, just ignore or trigger re-erase this block. 
-
-Not sure what you mean by padding structure, but yes, filling empty
-pages with 0s and expecting the FS/wear-leveling layers to be happy
-with that would be ideal. But, as for the "erase only 2-page because
-this is where UBI puts its VID header" thing, that's a NACK on my side
-if you want to introduce a new pattern that's only understood by
-UBI/UBIFS.
-
-I really wish FS/wear-leveling layers were immune to corrupted/invalid
-LEBs they should no longer reference, but according to Richard, that's
-not that simple.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIkJvcmlzIEJyZXppbGxvbiIg
+PGJvcmlzLmJyZXppbGxvbkBjb2xsYWJvcmEuY29tPgo+IEFuOiAiQmVhbiBIdW8sIGJlYW5odW8i
+IDxiZWFuaHVvQG1pY3Jvbi5jb20+LCAiTWlxdWVsIFJheW5hbCIgPG1pcXVlbC5yYXluYWxAYm9v
+dGxpbi5jb20+Cj4gQ0M6ICJyaWNoYXJkIiA8cmljaGFyZEBub2QuYXQ+LCAiVmlnbmVzaCBSYWdo
+YXZlbmRyYSIgPHZpZ25lc2hyQHRpLmNvbT4sICJUdWRvciBBbWJhcnVzIiA8VHVkb3IuQW1iYXJ1
+c0BtaWNyb2NoaXAuY29tPiwKPiAibGludXgtbXRkIiA8bGludXgtbXRkQGxpc3RzLmluZnJhZGVh
+ZC5vcmc+LCAiU3RldmUgZGVSb3NpZXIiIDxkZXJvc2llckBnbWFpbC5jb20+LCAiVGhvbWFzIFBl
+dGF6em9uaSIKPiA8dGhvbWFzLnBldGF6em9uaUBib290bGluLmNvbT4sICJ0Z2x4IiA8dGdseEBs
+aW51dHJvbml4LmRlPiwgIlpvbHRhbiBTenViYm9jc2V2LCB6c3p1YmJvY3NldiIgPHpzenViYm9j
+c2V2QG1pY3Jvbi5jb20+LAo+ICJQaW90ciBXb2p0YXN6Y3p5ayIgPFdvanRhc3pjenlrUEBjdW1t
+aW5zYWxsaXNvbi5jb20+Cj4gR2VzZW5kZXQ6IERvbm5lcnN0YWcsIDcuIE1haSAyMDIwIDExOjMw
+OjUwCj4gQmV0cmVmZjogUmU6IFtFWFRdIFtQQVRDSCB2MiAzLzNdIG10ZDogcmF3bmFuZDogbWlj
+cm9uOiBBZGRyZXNzIHRoZSBzaGFsbG93IGVyYXNlIGlzc3VlCgo+IE9uIFRodSwgNyBNYXkgMjAy
+MCAwOToyODo1OSArMDAwMAo+ICJCZWFuIEh1byAoYmVhbmh1bykiIDxiZWFuaHVvQG1pY3Jvbi5j
+b20+IHdyb3RlOgo+IAo+PiBIaSBSaWNoYXJkCj4+IFRoYW5rcy4KPj4gCj4+IEhvdyBhYm91dCB0
+aGlzIHNwZWNpYWwgIHNpdHVhdGlvbjoKPj4gCj4+IFBhZ2UgMChFQykgaXMgZ29vZDsKPj4gUGFn
+ZSAxKFZJRCkgaXMgYmFkOwo+IAo+IFVCSSBzaG91bGQgcmVqZWN0IHRoZSBMRUIgYmVjYXVzZSBv
+ZiB0aGlzIFZJRCBjb3JydXB0aW9uLCBidXQgSSdtIG5vdAo+IHN1cmUgaG93IHdlbGwgdGhhdCB3
+b3JrcyB3aGVuIHlvdSBhZGQgZmFzdG1hcCBpbiB0aGUgbWl4IDotLy4KCkZhc3RtYXAgY2FuIGRl
+YWwgd2l0aCB0aGF0LgpVcG9uIGZpcnN0IGFjY2VzcyBpdCBjaGVja3MgZm9yIGEgVklEIGhlYWRl
+ci4KClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0
+dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
