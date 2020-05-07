@@ -5,18 +5,18 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8CECC38A24
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 11:02:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A09FC38A2A
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 11:02:16 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B5A302083B
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 11:02:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C33D32083B
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 11:02:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uf72tUin"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B5A302083B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="sMSMPJQ0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C33D32083B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,41 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Y86w41R5/0E+4Lt+tUR6vGVUGcCVtqeCr+3T3V0AC7E=; b=uf72tUinA5eK2x
-	iYMmFWkwHKnrB2CQlHwDAdermmTfnYfpKyLagyjGRHZvsAzmQObgitKHNRFFP+fXM+sG7LWbOFE3M
-	JMJ/O0wu4IGSDzwzDbfWIjuvT9Wkx2AeabzlwArWINLdHgwhLx9lkm170VJiDvMojXGuRgeFA3H4a
-	IHFbMnntXlNlrUvUC1typEzgSWnYlH65EMx8MApQ1Uf6xttbeRrelZ8bZHKB9gTIHAjMNaOu4B5RG
-	Yx06mWpJBxXJxRzNGV97EXKKAYLoAU6+Yveb3mG5zbc01OanQ/YhgglHdkCy7nnNskVlpGNBUlG0K
-	DsDUkUxca2AWpIvcme7A==;
+	List-Owner; bh=zP77F3nllt+rLzdIlw5+zBJgX5uBhz4Vqm+7Vjeinvk=; b=sMSMPJQ0jM9eZ0
+	Wbf/PhD7tAtgeaY1QOBeVrS8k5J0B/psa1vd0xutOy5mTuRHDrI4w8fIiOqwFUOWvMlz+9nGPla3q
+	hey4a6l/2pEzUrRirBINARpmwEZ9csOPNEBZ/WLvH9J8ufJetClGYS/3L2jkuNSWlnsK/PHjeJWWs
+	xONvt9BwIRovBpEJNj5kegKImZpIurqkadY/x5r3FSN9y1StCkBUqXML1j915wwFAtROtknwvya/N
+	jJSiHDvP575wY3zifbzm0ZRHpGQ2Tqj5gM18z+BDqAYj4K2JUkyERlCC4BoMIVFx92PdKUdlpgHfk
+	LF+g3SNhAOQnxWL+Itmw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jWeHl-0005hF-8r; Thu, 07 May 2020 11:01:49 +0000
+	id 1jWeHz-0005xp-DA; Thu, 07 May 2020 11:02:03 +0000
 Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jWeHH-0005Eu-9c
- for linux-mtd@lists.infradead.org; Thu, 07 May 2020 11:01:25 +0000
+ id 1jWeHK-0005IA-Vt
+ for linux-mtd@lists.infradead.org; Thu, 07 May 2020 11:01:28 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 7A56520003;
- Thu,  7 May 2020 11:01:14 +0000 (UTC)
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 115A22000B;
+ Thu,  7 May 2020 11:01:17 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
  <devicetree@vger.kernel.org>, Richard Weinberger <richard@nod.at>,
  Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH v3 3/8] mtd: rawnand: Ensure the number of bitflips is
- consistent
-Date: Thu,  7 May 2020 13:00:29 +0200
-Message-Id: <20200507110034.14736-4-miquel.raynal@bootlin.com>
+Subject: [PATCH v3 4/8] mtd: rawnand: Add nand_extract_bits()
+Date: Thu,  7 May 2020 13:00:30 +0200
+Message-Id: <20200507110034.14736-5-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200507110034.14736-1-miquel.raynal@bootlin.com>
 References: <20200507110034.14736-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200507_040119_489926_42099194 
-X-CRM114-Status: GOOD (  14.05  )
+X-CRM114-CacheID: sfid-20200507_040123_185821_4920C278 
+X-CRM114-Status: GOOD (  10.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,62 +80,74 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The main NAND read page function can loop over "page reads" many times
-in if the reading reports uncorrectable error(s) and if the chip
-supports the read_retry feature.
+There are cases where ECC bytes are not byte-aligned. Indeed, BCH
+implies using a number of ECC bits, which are not always a multiple of
+8. We then need a helper like nand_extract_bits() to extract these
+syndromes from a buffer.
 
-In this case, the number of bitflips is summarized between
-attempts. Fix this by re-initializing the entire mtd_ecc_stats object
-each time we retry.
-
-Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/nand_base.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/raw/nand_base.c | 31 +++++++++++++++++++++++++++++++
+ include/linux/mtd/rawnand.h      |  4 ++++
+ 2 files changed, 35 insertions(+)
 
 diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index dda82217e12c..25d298938aa9 100644
+index 25d298938aa9..b236e1bdddaf 100644
 --- a/drivers/mtd/nand/raw/nand_base.c
 +++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -3235,7 +3235,7 @@ static int nand_do_read_ops(struct nand_chip *chip, loff_t from,
- 	oob_required = oob ? 1 : 0;
+@@ -224,6 +224,37 @@ static int check_offs_len(struct nand_chip *chip, loff_t ofs, uint64_t len)
+ 	return ret;
+ }
  
- 	while (1) {
--		unsigned int ecc_failures = mtd->ecc_stats.failed;
-+		struct mtd_ecc_stats ecc_stats = mtd->ecc_stats;
++/* Copy unaligned bits from one buffer to another one (no overlap) */
++void nand_extract_bits(u8 *dst, const u8 *src, unsigned int src_off,
++		       unsigned int nbits)
++{
++	unsigned int dst_off = 0, tmp, n;
++
++	src += src_off / 8;
++	src_off %= 8;
++
++	while (nbits) {
++		n = min3(8 - dst_off, 8 - src_off, nbits);
++
++		tmp = (*src >> src_off) & GENMASK(n - 1, 0);
++		*dst |= tmp << dst_off;
++
++		dst_off += n;
++		if (dst_off >= 8) {
++			dst++;
++			dst_off -= 8;
++		}
++
++		src_off += n;
++		if (src_off >= 8) {
++			src++;
++			src_off -= 8;
++		}
++
++		nbits -= n;
++	}
++}
++
+ /**
+  * nand_select_target() - Select a NAND target (A.K.A. die)
+  * @chip: NAND chip object
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 406e9ff0f45c..734564232545 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -1404,6 +1404,10 @@ int nand_gpio_waitrdy(struct nand_chip *chip, struct gpio_desc *gpiod,
+ void nand_select_target(struct nand_chip *chip, unsigned int cs);
+ void nand_deselect_target(struct nand_chip *chip);
  
- 		bytes = min(mtd->writesize - col, readlen);
- 		aligned = (bytes == mtd->writesize);
-@@ -3286,7 +3286,7 @@ static int nand_do_read_ops(struct nand_chip *chip, loff_t from,
- 			 */
- 			if (use_bounce_buf) {
- 				if (!NAND_HAS_SUBPAGE_READ(chip) && !oob &&
--				    !(mtd->ecc_stats.failed - ecc_failures) &&
-+				    !(mtd->ecc_stats.failed - ecc_stats.failed) &&
- 				    (ops->mode != MTD_OPS_RAW)) {
- 					chip->pagecache.page = realpage;
- 					chip->pagecache.bitflips = ret;
-@@ -3309,7 +3309,7 @@ static int nand_do_read_ops(struct nand_chip *chip, loff_t from,
- 
- 			nand_wait_readrdy(chip);
- 
--			if (mtd->ecc_stats.failed - ecc_failures) {
-+			if (mtd->ecc_stats.failed - ecc_stats.failed) {
- 				if (retry_mode + 1 < chip->read_retries) {
- 					retry_mode++;
- 					ret = nand_setup_read_retry(chip,
-@@ -3317,8 +3317,8 @@ static int nand_do_read_ops(struct nand_chip *chip, loff_t from,
- 					if (ret < 0)
- 						break;
- 
--					/* Reset failures; retry */
--					mtd->ecc_stats.failed = ecc_failures;
-+					/* Reset ecc_stats; retry */
-+					mtd->ecc_stats = ecc_stats;
- 					goto read_retry;
- 				} else {
- 					/* No more retry modes; real failure */
++/* Bitops */
++void nand_extract_bits(u8 *dst, const u8 *src, unsigned int src_off,
++		       unsigned int nbits);
++
+ /**
+  * nand_get_data_buf() - Get the internal page buffer
+  * @chip: NAND chip object
 -- 
 2.20.1
 
