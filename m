@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D08AC38A2A
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 10:55:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DF17C38A2A
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 10:55:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2DD472083B
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 10:55:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 303222083B
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 10:55:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HDcSPtD3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2DD472083B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KL8zZOqq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 303222083B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=opKfEh0jgNCV31125eUmiiLJls07gptoaxsSTdIy8ng=; b=HDcSPtD3oWp+Na
-	buUIS+w/WU+HgFhX6kkJS3D8XL9tgLnMuuMinyth1UGAXSsRbOplIVE1F6BkQhgerghFRracbUM7Y
-	2Wj5n6oe9lG+juhr5dHQ20aX1eXFqd7Oo1B8pkpEYk6Cx05lz3DKHYyy0649qP7+2t7g/082SRqgE
-	APKKKcInJtJflklbOCt9s/SGaxf4WpHsXZEawd7vIg6CYMGFF/XCO3m9sIxhqqKGs2g0RygvHTaR4
-	VtkXaFPAhoThkgkn7eGDYapjTbDTwZHSkOzspadRS3n3DEgkulOVbOZCb1Bs/ITYrYBWH3+li1aH5
-	Ge6cNAY8bo8Lvj/5d/uw==;
+	List-Owner; bh=GRD9UKhroAxN9fjxghdpZkhrmIoQ3owje5vSJS6LwoU=; b=KL8zZOqqZdXefT
+	vQMC1YJHJjhAZKArLWhpO5vTZWa7TTYeRm1afLNNqY1kWKV4ZMebV2VFzj6xh0mqDL8w2gde7h5+V
+	BxcQWUuVD6HxZKyOtStE5dndSulUA5Ux8TVGUC35GlWq3OPy9tISZjI3wp2mSM/Kd8nV3aE53tJPu
+	/psmy4JxVMr+/xiofB54mmkWw5ceBbA6fhOeMnvV4f3EaGjf+MlAAwW1vX1iQTM+1M9dN5r78yfy6
+	aoqgHAPUfwfGQatgg1d8KoKWRYet6BQnEexwHevOEqRw5xJjm1cdbkjhC9B1H/53Fry+hwnSIzLL7
+	A3q4OkRJzQ9apvf8q/0Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jWeBe-0000Rl-2u; Thu, 07 May 2020 10:55:30 +0000
+	id 1jWeBw-0000gk-CZ; Thu, 07 May 2020 10:55:48 +0000
 Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jWe9B-0004B1-Rw
- for linux-mtd@lists.infradead.org; Thu, 07 May 2020 10:52:59 +0000
+ id 1jWe9E-0004Di-1d
+ for linux-mtd@lists.infradead.org; Thu, 07 May 2020 10:53:01 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 33772240016;
- Thu,  7 May 2020 10:52:55 +0000 (UTC)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 6C38124000D;
+ Thu,  7 May 2020 10:52:57 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH v5 10/13] mtd: rawnand: jedec: Adapt the parameter page read
- to constraint controllers
-Date: Thu,  7 May 2020 12:52:38 +0200
-Message-Id: <20200507105241.14299-11-miquel.raynal@bootlin.com>
+Subject: [PATCH v5 12/13] mtd: rawnand: Allow controllers to overload soft ECC
+ hooks
+Date: Thu,  7 May 2020 12:52:40 +0200
+Message-Id: <20200507105241.14299-13-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200507105241.14299-1-miquel.raynal@bootlin.com>
 References: <20200507105241.14299-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200507_035258_047997_8AE69834 
-X-CRM114-Status: GOOD (  13.11  )
+X-CRM114-CacheID: sfid-20200507_035300_247928_D97E4AA2 
+X-CRM114-Status: GOOD (  10.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,67 +79,47 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-We already know that there are controllers not able to read the three
-copies of the parameter page in one go. The workaround was to first
-request the controller to assert command and address cycles on the
-NAND bus to trigger a parameter page read, and then do a read
-operation for each page.
-
-But there are also controllers which are not able to split the
-parameter page read between the command/address cycles and the actual
-data operation.
-
-Let's use a regular PARAMETER PAGE READ operation for the first
-iteration and use eithe a CHANGE READ COLUMN or a simple DATA READ
-operation for the following copies, depending on what the controller
-supports. The default for non-exec-op compliant drivers remains
-unchanged: use a SIMPLE READ.
+Some controller drivers do not support executing regular
+nand_read/write_page_raw() helpers. For that, we created
+nand_monolithic_read/write_page_raw() alternatives. Let's now allow
+the driver to overload the ECC ->read/write_page_raw() hooks.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 ---
- drivers/mtd/nand/raw/nand_jedec.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ drivers/mtd/nand/raw/nand_base.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/nand_jedec.c b/drivers/mtd/nand/raw/nand_jedec.c
-index 63069f1948a8..b15c42f48755 100644
---- a/drivers/mtd/nand/raw/nand_jedec.c
-+++ b/drivers/mtd/nand/raw/nand_jedec.c
-@@ -27,6 +27,7 @@ int nand_jedec_detect(struct nand_chip *chip)
- 	struct nand_memory_organization *memorg;
- 	struct nand_jedec_params *p;
- 	struct jedec_ecc_info *ecc;
-+	bool use_datain = false;
- 	int jedec_version = 0;
- 	char id[5];
- 	int i, val, ret;
-@@ -44,14 +45,20 @@ int nand_jedec_detect(struct nand_chip *chip)
- 	if (!p)
- 		return -ENOMEM;
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 065ce31fcf6b..dda82217e12c 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -5233,8 +5233,10 @@ static int nand_set_ecc_soft_ops(struct nand_chip *chip)
+ 		ecc->read_page = nand_read_page_swecc;
+ 		ecc->read_subpage = nand_read_subpage;
+ 		ecc->write_page = nand_write_page_swecc;
+-		ecc->read_page_raw = nand_read_page_raw;
+-		ecc->write_page_raw = nand_write_page_raw;
++		if (!ecc->read_page_raw)
++			ecc->read_page_raw = nand_read_page_raw;
++		if (!ecc->write_page_raw)
++			ecc->write_page_raw = nand_write_page_raw;
+ 		ecc->read_oob = nand_read_oob_std;
+ 		ecc->write_oob = nand_write_oob_std;
+ 		if (!ecc->size)
+@@ -5256,8 +5258,10 @@ static int nand_set_ecc_soft_ops(struct nand_chip *chip)
+ 		ecc->read_page = nand_read_page_swecc;
+ 		ecc->read_subpage = nand_read_subpage;
+ 		ecc->write_page = nand_write_page_swecc;
+-		ecc->read_page_raw = nand_read_page_raw;
+-		ecc->write_page_raw = nand_write_page_raw;
++		if (!ecc->read_page_raw)
++			ecc->read_page_raw = nand_read_page_raw;
++		if (!ecc->write_page_raw)
++			ecc->write_page_raw = nand_write_page_raw;
+ 		ecc->read_oob = nand_read_oob_std;
+ 		ecc->write_oob = nand_write_oob_std;
  
--	ret = nand_read_param_page_op(chip, 0x40, NULL, 0);
--	if (ret) {
--		ret = 0;
--		goto free_jedec_param_page;
--	}
-+	if (!nand_has_exec_op(chip) ||
-+	    !nand_read_data_op(chip, p, sizeof(*p), true, true))
-+		use_datain = true;
- 
- 	for (i = 0; i < JEDEC_PARAM_PAGES; i++) {
--		ret = nand_read_data_op(chip, p, sizeof(*p), true, false);
-+		if (!i)
-+			ret = nand_read_param_page_op(chip, 0x40, p,
-+						      sizeof(*p));
-+		else if (use_datain)
-+			ret = nand_read_data_op(chip, p, sizeof(*p), true,
-+						false);
-+		else
-+			ret = nand_change_read_column_op(chip, sizeof(*p) * i,
-+							 p, sizeof(*p), true);
- 		if (ret) {
- 			ret = 0;
- 			goto free_jedec_param_page;
 -- 
 2.20.1
 
