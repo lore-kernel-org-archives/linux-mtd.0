@@ -2,63 +2,63 @@ Return-Path: <SRS0=/Eax=6V=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B058C38A2A
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 11:03:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 413AFC38A24
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 11:43:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CEB372083B
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 11:03:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 11EE0208CA
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 11:43:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VuEOcHiZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CEB372083B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Sa3KnYZ/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 11EE0208CA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bbCJMY6pd4GPRCobffEpssyijmXhOIo49Od2AEXaQqY=; b=VuEOcHiZqZeyhi
-	UFhtr6jArh1HN00FVuaGBiA7Nhp2/lDY9b1GPJXEK5N74AZ6JhgRv2VyQdT43xkMPLkscfRhk+J47
-	lvFTDZWms9guDmY4uXc1yJgrKSKG3owB2t+0DlxF3Og7iboUJ70gtLN/eXg7i0cdiSZ9Zs6gFKTFE
-	i1BIcJ4PmGYPIvpy8YbPG1uks06BD2IKNKpAo8xBNfzjkRRXn2a+x3qYPWRg8upxc7HwsaimdONTu
-	n4GyvEw4V6pH5Kzyc5ShqDJk9AC1VVwcCIQfmd4I4lFxTnYQCr6Gp98spqALAjELO121PmqF9CEFv
-	fTeWRCNkOnUCy6LAvHyA==;
+	List-Owner; bh=uOFAhxCHwYhXlMLI1u8Dc8H7SbwrevsgjX4dcf70Ods=; b=Sa3KnYZ/iNdlRb
+	lbIQBCS3iNDNHXCTcsnRUpFNagd3atKurgxGp5gYpVHtQK06sqiR+sPoAXNcOB9B+pDpmw7U5MZL9
+	g8n4f7jiOUVuQ1nHbObXXXr0dHxhC9Bm8PQKqHPeA40JtKYAcmGXSXzSznhtt5WUB8fHQ/+A+jR7o
+	Jr5ZRiYn1/k4CEgQkPm+QsrgFtyWZgyqrYREmjEV9X1Bxk3fQAP7zBdlcXdBw9nhxyo+9kDvGf6KT
+	dGqibyFqHmzp/Vy6rGkAShl+GKXHd5SqVmowLl43sNeaz63DgwweYY01hnpZihBe9tuNYFG06bzE1
+	SMaYQUEj5TiF5xL0lCNA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jWeJ7-00075t-9U; Thu, 07 May 2020 11:03:13 +0000
-Received: from relay7-d.mail.gandi.net ([217.70.183.200])
+	id 1jWewG-0000Q7-1Z; Thu, 07 May 2020 11:43:40 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jWeHR-0005OQ-Q9
- for linux-mtd@lists.infradead.org; Thu, 07 May 2020 11:01:39 +0000
-X-Originating-IP: 91.224.148.103
-Received: from localhost.localdomain (unknown [91.224.148.103])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 0080E20003;
- Thu,  7 May 2020 11:01:25 +0000 (UTC)
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- <devicetree@vger.kernel.org>, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- <linux-mtd@lists.infradead.org>
-Subject: [PATCH v3 7/8] mtd: rawnand: arasan: Add new Arasan NAND controller
-Date: Thu,  7 May 2020 13:00:33 +0200
-Message-Id: <20200507110034.14736-8-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200507110034.14736-1-miquel.raynal@bootlin.com>
+ id 1jWewD-0000P7-7C
+ for linux-mtd@lists.infradead.org; Thu, 07 May 2020 11:43:39 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 0E1192A0C07;
+ Thu,  7 May 2020 12:43:33 +0100 (BST)
+Date: Thu, 7 May 2020 13:43:30 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Tudor Ambarus
+ <Tudor.Ambarus@microchip.com>
+Subject: Re: [PATCH v3 2/8] lib/bch: Allow easy bit swapping
+Message-ID: <20200507134330.6e8a9f80@collabora.com>
+In-Reply-To: <20200507110034.14736-3-miquel.raynal@bootlin.com>
 References: <20200507110034.14736-1-miquel.raynal@bootlin.com>
+ <20200507110034.14736-3-miquel.raynal@bootlin.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200507_040130_325064_2729CCC9 
-X-CRM114-Status: GOOD (  22.07  )
+X-CRM114-CacheID: sfid-20200507_044337_528986_8CA2B798 
+X-CRM114-Status: GOOD (  28.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,936 +70,220 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Michal Simek <monstr@monstr.eu>,
- Boris Brezillon <boris.brezillon@collabora.com>,
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Michal Simek <monstr@monstr.eu>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>,
+ linux-mtd@lists.infradead.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Naga Sureshkumar Relli <nagasure@xilinx.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
+ Ivan Djelic <ivan.djelic@parrot.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add the Arasan NAND controller driver. This brings only NAND
-controller support. The ECC engine being a bit subtle, hardware ECC
-support will be added in a second time.
+On Thu,  7 May 2020 13:00:28 +0200
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-This work is based on contributions from Naga Sureshkumar Relli.
+> From: Boris Brezillon <boris.brezillon@collabora.com>
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/mtd/nand/raw/Kconfig                  |   7 +
- drivers/mtd/nand/raw/Makefile                 |   1 +
- drivers/mtd/nand/raw/arasan-nand-controller.c | 867 ++++++++++++++++++
- 3 files changed, 875 insertions(+)
- create mode 100644 drivers/mtd/nand/raw/arasan-nand-controller.c
+Hehe. I sent a raw diff and now there's my name on this patch :-).
+Given you debugged/polished it, I'd rather have you take the ownership
+here.
 
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index a80a46bb5b8b..579474baa75d 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -457,6 +457,13 @@ config MTD_NAND_CADENCE
- 	  Enable the driver for NAND flash on platforms using a Cadence NAND
- 	  controller.
- 
-+config MTD_NAND_ARASAN
-+	tristate "Support for Arasan NAND flash controller"
-+	depends on HAS_IOMEM && HAS_DMA
-+	help
-+	  Enables the driver for the Arasan NAND flash controller on
-+	  Zynq Ultrascale+ MPSoC.
-+
- comment "Misc"
- 
- config MTD_SM_COMMON
-diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
-index 2d136b158fb7..6f80a205e940 100644
---- a/drivers/mtd/nand/raw/Makefile
-+++ b/drivers/mtd/nand/raw/Makefile
-@@ -58,6 +58,7 @@ obj-$(CONFIG_MTD_NAND_TEGRA)		+= tegra_nand.o
- obj-$(CONFIG_MTD_NAND_STM32_FMC2)	+= stm32_fmc2_nand.o
- obj-$(CONFIG_MTD_NAND_MESON)		+= meson_nand.o
- obj-$(CONFIG_MTD_NAND_CADENCE)		+= cadence-nand-controller.o
-+obj-$(CONFIG_MTD_NAND_ARASAN)		+= arasan-nand-controller.o
- 
- nand-objs := nand_base.o nand_legacy.o nand_bbt.o nand_timings.o nand_ids.o
- nand-objs += nand_onfi.o
-diff --git a/drivers/mtd/nand/raw/arasan-nand-controller.c b/drivers/mtd/nand/raw/arasan-nand-controller.c
-new file mode 100644
-index 000000000000..61ea90ecf86e
---- /dev/null
-+++ b/drivers/mtd/nand/raw/arasan-nand-controller.c
-@@ -0,0 +1,867 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Arasan NAND Flash Controller Driver
-+ *
-+ * Copyright (C) 2014 - 2020 Xilinx, Inc.
-+ * Author:
-+ *   Miquel Raynal <miquel.raynal@bootlin.com>
-+ * Original work (fully rewritten):
-+ *   Punnaiah Choudary Kalluri <punnaia@xilinx.com>
-+ *   Naga Sureshkumar Relli <nagasure@xilinx.com>
-+ */
-+
-+#include <linux/bitfield.h>
-+#include <linux/clk.h>
-+#include <linux/delay.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/interrupt.h>
-+#include <linux/iopoll.h>
-+#include <linux/module.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/partitions.h>
-+#include <linux/mtd/rawnand.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+
-+#define PKT_REG				0x00
-+#define   PKT_SIZE(x)			FIELD_PREP(GENMASK(10, 0), (x))
-+#define   PKT_STEPS(x)			FIELD_PREP(GENMASK(23, 12), (x))
-+
-+#define MEM_ADDR1_REG			0x04
-+
-+#define MEM_ADDR2_REG			0x08
-+#define   ADDR2_STRENGTH(x)		FIELD_PREP(GENMASK(27, 25), (x))
-+#define   ADDR2_CS(x)			FIELD_PREP(GENMASK(31, 30), (x))
-+
-+#define CMD_REG				0x0C
-+#define   CMD_1(x)			FIELD_PREP(GENMASK(7, 0), (x))
-+#define   CMD_2(x)			FIELD_PREP(GENMASK(15, 8), (x))
-+#define   CMD_PAGE_SIZE(x)		FIELD_PREP(GENMASK(25, 23), (x))
-+#define   CMD_DMA_ENABLE		BIT(27)
-+#define   CMD_NADDRS(x)			FIELD_PREP(GENMASK(30, 28), (x))
-+#define   CMD_ECC_ENABLE		BIT(31)
-+
-+#define PROG_REG			0x10
-+#define   PROG_PGRD			BIT(0)
-+#define   PROG_ERASE			BIT(2)
-+#define   PROG_STATUS			BIT(3)
-+#define   PROG_PGPROG			BIT(4)
-+#define   PROG_RDID			BIT(6)
-+#define   PROG_RDPARAM			BIT(7)
-+#define   PROG_RST			BIT(8)
-+#define   PROG_GET_FEATURE		BIT(9)
-+#define   PROG_SET_FEATURE		BIT(10)
-+
-+#define INTR_STS_EN_REG			0x14
-+#define INTR_SIG_EN_REG			0x18
-+#define INTR_STS_REG			0x1C
-+#define   WRITE_READY			BIT(0)
-+#define   READ_READY			BIT(1)
-+#define   XFER_COMPLETE			BIT(2)
-+#define   DMA_BOUNDARY			BIT(6)
-+#define   EVENT_MASK			GENMASK(7, 0)
-+
-+#define READY_STS_REG			0x20
-+
-+#define DMA_ADDR0_REG			0x50
-+#define DMA_ADDR1_REG			0x24
-+
-+#define FLASH_STS_REG			0x28
-+
-+#define DATA_PORT_REG			0x30
-+
-+#define ECC_CONF_REG			0x34
-+#define   ECC_CONF_COL(x)		FIELD_PREP(GENMASK(15, 0), (x))
-+#define   ECC_CONF_LEN(x)		FIELD_PREP(GENMASK(26, 16), (x))
-+#define   ECC_CONF_BCH_EN		BIT(27)
-+
-+#define ECC_ERR_CNT_REG			0x38
-+#define   GET_PKT_ERR_CNT(x)		FIELD_GET(GENMASK(7, 0), (x))
-+#define   GET_PAGE_ERR_CNT(x)		FIELD_GET(GENMASK(16, 8), (x))
-+
-+#define ECC_SP_REG			0x3C
-+#define   ECC_SP_CMD1(x)		FIELD_PREP(GENMASK(7, 0), (x))
-+#define   ECC_SP_CMD2(x)		FIELD_PREP(GENMASK(15, 8), (x))
-+#define   ECC_SP_ADDRS(x)		FIELD_PREP(GENMASK(30, 28), (x))
-+
-+#define ECC_1ERR_CNT_REG		0x40
-+#define ECC_2ERR_CNT_REG		0x44
-+
-+#define DATA_INTERFACE_REG		0x6C
-+#define   DIFACE_SDR_MODE(x)		FIELD_PREP(GENMASK(2, 0), (x))
-+#define   DIFACE_DDR_MODE(x)		FIELD_PREP(GENMASK(5, 3), (X))
-+#define   DIFACE_SDR			0
-+#define   DIFACE_NVDDR			BIT(9)
-+
-+#define ANFC_MAX_CS			2
-+#define ANFC_DFLT_TIMEOUT_US		1000000
-+#define ANFC_MAX_CHUNK_SIZE		SZ_1M
-+#define ANFC_MAX_PARAM_SIZE		SZ_4K
-+#define ANFC_MAX_PKT_SIZE		(SZ_2K - 1)
-+#define ANFC_MAX_ADDR_CYC		5U
-+#define ANFC_RSVD_ECC_BYTES		21
-+
-+#define ANFC_XLNX_SDR_DFLT_CORE_CLK	100000000
-+#define ANFC_XLNX_SDR_HS_CORE_CLK	80000000
-+
-+/**
-+ * struct anfc_op - Defines how to execute an operation
-+ * @pkt_reg: Packet register
-+ * @addr1_reg: Memory address 1 register
-+ * @addr2_reg: Memory address 2 register
-+ * @cmd_reg: Command register
-+ * @prog_reg: Program register
-+ * @rdy_timeout_ms: Timeout for waits on Ready/Busy pin
-+ * @steps: Number of "packets" to read/write
-+ * @len: Data transfer length
-+ * @read: Data transfer direction from the controller point of view
-+ */
-+struct anfc_op {
-+	u32 pkt_reg;
-+	u32 addr1_reg;
-+	u32 addr2_reg;
-+	u32 cmd_reg;
-+	u32 prog_reg;
-+	unsigned int rdy_timeout_ms;
-+	unsigned int steps;
-+	unsigned int len;
-+	bool read;
-+	u8 *buf;
-+};
-+
-+/**
-+ * struct anand - Defines the NAND chip related information
-+ * @node:		Used to store NAND chips into a list
-+ * @chip:		NAND chip information structure
-+ * @cs:			Chip select line
-+ * @rb:			Ready-busy line
-+ * @page_sz:		Register value of the page_sz field to use
-+ * @clk:		Expected clock frequency to use
-+ * @timings:		Data interface timing mode to use
-+ * @ecc_conf:		Hardware ECC configuration value
-+ * @strength:		Register value of the ECC strength
-+ * @raddr_cycles:	Row address cycle information
-+ * @caddr_cycles:	Column address cycle information
-+ */
-+struct anand {
-+	struct list_head node;
-+	struct nand_chip chip;
-+	unsigned int cs;
-+	unsigned int rb;
-+	unsigned int page_sz;
-+	unsigned long clk;
-+	u32 timings;
-+	u32 ecc_conf;
-+	u32 strength;
-+	u16 raddr_cycles;
-+	u16 caddr_cycles;
-+};
-+
-+/**
-+ * struct arasan_nfc - Defines the Arasan NAND flash controller driver instance
-+ * @dev:		Pointer to the device structure
-+ * @base:		Remapped register area
-+ * @controller_clk:		Pointer to the system clock
-+ * @bus_clk:		Pointer to the flash clock
-+ * @controller:		Base controller structure
-+ * @chips:		List of all NAND chips attached to the controller
-+ * @assigned_cs:	Bitmask describing already assigned CS lines
-+ * @cur_clk:		Current clock rate
-+ * @bf:			Array of bitflips read in each ECC step
-+ */
-+struct arasan_nfc {
-+	struct device *dev;
-+	void __iomem *base;
-+	struct clk *controller_clk;
-+	struct clk *bus_clk;
-+	struct nand_controller controller;
-+	struct list_head chips;
-+	unsigned long assigned_cs;
-+	unsigned int cur_clk;
-+	u8 *bf;
-+};
-+
-+static struct anand *to_anand(struct nand_chip *nand)
-+{
-+	return container_of(nand, struct anand, chip);
-+}
-+
-+static struct arasan_nfc *to_anfc(struct nand_controller *ctrl)
-+{
-+	return container_of(ctrl, struct arasan_nfc, controller);
-+}
-+
-+static void anfc_disable_int(struct arasan_nfc *nfc, u32 mask)
-+{
-+	mask &= ~EVENT_MASK;
-+	mask &= EVENT_MASK;
-+	writel_relaxed(mask, nfc->base + INTR_SIG_EN_REG);
-+}
-+
-+static int anfc_wait_for_event(struct arasan_nfc *nfc, unsigned int event)
-+{
-+	u32 val;
-+	int ret;
-+
-+	ret = readl_relaxed_poll_timeout(nfc->base + INTR_STS_REG, val,
-+					 val & event, 0,
-+					 ANFC_DFLT_TIMEOUT_US);
-+	if (ret) {
-+		dev_err(nfc->dev, "Timeout waiting for event 0x%x\n", event);
-+		return -ETIMEDOUT;
-+	}
-+
-+	writel_relaxed(event, nfc->base + INTR_STS_REG);
-+
-+	return 0;
-+}
-+
-+static int anfc_wait_for_rb(struct arasan_nfc *nfc, struct nand_chip *chip,
-+			    unsigned int timeout_ms)
-+{
-+	struct anand *anand = to_anand(chip);
-+	u32 val;
-+	int ret;
-+
-+	ret = readl_relaxed_poll_timeout(nfc->base + READY_STS_REG, val,
-+					 val & BIT(anand->rb),
-+					 0, timeout_ms * 1000);
-+	if (ret) {
-+		dev_err(nfc->dev, "Timeout waiting for R/B 0x%x\n",
-+			readl_relaxed(nfc->base + READY_STS_REG));
-+		return -ETIMEDOUT;
-+	}
-+
-+	return 0;
-+}
-+
-+static void anfc_trigger_op(struct arasan_nfc *nfc, struct anfc_op *nfc_op)
-+{
-+	writel_relaxed(nfc_op->pkt_reg, nfc->base + PKT_REG);
-+	writel_relaxed(nfc_op->addr1_reg, nfc->base + MEM_ADDR1_REG);
-+	writel_relaxed(nfc_op->addr2_reg, nfc->base + MEM_ADDR2_REG);
-+	writel_relaxed(nfc_op->cmd_reg, nfc->base + CMD_REG);
-+	writel_relaxed(nfc_op->prog_reg, nfc->base + PROG_REG);
-+}
-+
-+static int anfc_len_to_steps(struct nand_chip *chip, unsigned int len)
-+{
-+	unsigned int steps = 1, pktsize = len;
-+
-+	while (pktsize > ANFC_MAX_PKT_SIZE) {
-+		steps *= 2;
-+		pktsize = DIV_ROUND_UP(len, steps);
-+	}
-+
-+	return steps;
-+}
-+
-+/* NAND framework ->exec_op() hooks and related helpers */
-+static void anfc_parse_instructions(struct nand_chip *chip,
-+				    const struct nand_subop *subop,
-+				    struct anfc_op *nfc_op)
-+{
-+	struct anand *anand = to_anand(chip);
-+	const struct nand_op_instr *instr = NULL;
-+	bool first_cmd = true;
-+	unsigned int op_id;
-+	int i;
-+
-+	memset(nfc_op, 0, sizeof(*nfc_op));
-+	nfc_op->addr2_reg = ADDR2_CS(anand->cs);
-+	nfc_op->cmd_reg = CMD_PAGE_SIZE(anand->page_sz);
-+
-+	for (op_id = 0; op_id < subop->ninstrs; op_id++) {
-+		unsigned int offset, naddrs, pktsize;
-+		const u8 *addrs;
-+		u8 *buf;
-+
-+		instr = &subop->instrs[op_id];
-+
-+		switch (instr->type) {
-+		case NAND_OP_CMD_INSTR:
-+			if (first_cmd)
-+				nfc_op->cmd_reg |= CMD_1(instr->ctx.cmd.opcode);
-+			else
-+				nfc_op->cmd_reg |= CMD_2(instr->ctx.cmd.opcode);
-+
-+			first_cmd = false;
-+			break;
-+
-+		case NAND_OP_ADDR_INSTR:
-+			offset = nand_subop_get_addr_start_off(subop, op_id);
-+			naddrs = nand_subop_get_num_addr_cyc(subop, op_id);
-+			addrs = &instr->ctx.addr.addrs[offset];
-+			nfc_op->cmd_reg |= CMD_NADDRS(naddrs);
-+
-+			for (i = 0; i < min(ANFC_MAX_ADDR_CYC, naddrs); i++) {
-+				if (i < 4)
-+					nfc_op->addr1_reg |= (u32)addrs[i] << i * 8;
-+				else
-+					nfc_op->addr2_reg |= addrs[i];
-+			}
-+
-+			break;
-+		case NAND_OP_DATA_IN_INSTR:
-+			nfc_op->read = true;
-+			fallthrough;
-+		case NAND_OP_DATA_OUT_INSTR:
-+			offset = nand_subop_get_data_start_off(subop, op_id);
-+			buf = instr->ctx.data.buf.in;
-+			nfc_op->buf = &buf[offset];
-+			nfc_op->len = nand_subop_get_data_len(subop, op_id);
-+			nfc_op->steps = anfc_len_to_steps(chip, nfc_op->len);
-+			pktsize = DIV_ROUND_UP(nfc_op->len, nfc_op->steps);
-+			nfc_op->pkt_reg |= PKT_SIZE(round_up(pktsize, 4)) |
-+					   PKT_STEPS(nfc_op->steps);
-+			break;
-+		case NAND_OP_WAITRDY_INSTR:
-+			nfc_op->rdy_timeout_ms = instr->ctx.waitrdy.timeout_ms;
-+			break;
-+		}
-+	}
-+}
-+
-+static int anfc_rw_pio_op(struct arasan_nfc *nfc, struct anfc_op *nfc_op)
-+{
-+	unsigned int dwords = (nfc_op->len / 4) / nfc_op->steps;
-+	unsigned int last_len = nfc_op->len % 4;
-+	unsigned int offset, dir;
-+	u8 *buf = nfc_op->buf;
-+	int ret, i;
-+
-+	for (i = 0; i < nfc_op->steps; i++) {
-+		dir = nfc_op->read ? READ_READY : WRITE_READY;
-+		ret = anfc_wait_for_event(nfc, dir);
-+		if (ret) {
-+			dev_err(nfc->dev, "PIO %s ready signal not received\n",
-+				nfc_op->read ? "Read" : "Write");
-+			return ret;
-+		}
-+
-+		offset = i * (dwords * 4);
-+		if (nfc_op->read)
-+			ioread32_rep(nfc->base + DATA_PORT_REG, &buf[offset],
-+				     dwords);
-+		else
-+			iowrite32_rep(nfc->base + DATA_PORT_REG, &buf[offset],
-+				      dwords);
-+	}
-+
-+	if (last_len) {
-+		u32 remainder;
-+
-+		offset = nfc_op->len - last_len;
-+
-+		if (nfc_op->read) {
-+			remainder = readl_relaxed(nfc->base + DATA_PORT_REG);
-+			memcpy(&buf[offset], &remainder, last_len);
-+		} else {
-+			memcpy(&remainder, &buf[offset], last_len);
-+			writel_relaxed(remainder, nfc->base + DATA_PORT_REG);
-+		}
-+	}
-+
-+	return anfc_wait_for_event(nfc, XFER_COMPLETE);
-+}
-+
-+static int anfc_misc_data_type_exec(struct nand_chip *chip,
-+				    const struct nand_subop *subop,
-+				    u32 prog_reg)
-+{
-+	struct arasan_nfc *nfc = to_anfc(chip->controller);
-+	struct anfc_op nfc_op = {};
-+	int ret;
-+
-+	anfc_parse_instructions(chip, subop, &nfc_op);
-+	nfc_op.prog_reg = prog_reg;
-+	anfc_trigger_op(nfc, &nfc_op);
-+
-+	if (nfc_op.rdy_timeout_ms) {
-+		ret = anfc_wait_for_rb(nfc, chip, nfc_op.rdy_timeout_ms);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return anfc_rw_pio_op(nfc, &nfc_op);
-+}
-+
-+static int anfc_param_read_type_exec(struct nand_chip *chip,
-+				     const struct nand_subop *subop)
-+{
-+	return anfc_misc_data_type_exec(chip, subop, PROG_RDPARAM);
-+}
-+
-+static int anfc_data_read_type_exec(struct nand_chip *chip,
-+				    const struct nand_subop *subop)
-+{
-+	return anfc_misc_data_type_exec(chip, subop, PROG_PGRD);
-+}
-+
-+static int anfc_param_write_type_exec(struct nand_chip *chip,
-+				      const struct nand_subop *subop)
-+{
-+	return anfc_misc_data_type_exec(chip, subop, PROG_SET_FEATURE);
-+}
-+
-+static int anfc_data_write_type_exec(struct nand_chip *chip,
-+				     const struct nand_subop *subop)
-+{
-+	return anfc_misc_data_type_exec(chip, subop, PROG_PGPROG);
-+}
-+
-+static int anfc_misc_zerolen_type_exec(struct nand_chip *chip,
-+				       const struct nand_subop *subop,
-+				       u32 prog_reg)
-+{
-+	struct arasan_nfc *nfc = to_anfc(chip->controller);
-+	struct anfc_op nfc_op = {};
-+	int ret;
-+
-+	anfc_parse_instructions(chip, subop, &nfc_op);
-+	nfc_op.prog_reg = prog_reg;
-+	anfc_trigger_op(nfc, &nfc_op);
-+
-+	ret = anfc_wait_for_event(nfc, XFER_COMPLETE);
-+	if (ret)
-+		return ret;
-+
-+	if (nfc_op.rdy_timeout_ms)
-+		ret = anfc_wait_for_rb(nfc, chip, nfc_op.rdy_timeout_ms);
-+
-+	return ret;
-+}
-+
-+static int anfc_status_type_exec(struct nand_chip *chip,
-+				 const struct nand_subop *subop)
-+{
-+	struct arasan_nfc *nfc = to_anfc(chip->controller);
-+	u32 tmp;
-+	int ret;
-+
-+	/*
-+	 * This controller does not allow to proceed with a CMD+DATA_IN cycle
-+	 * manually on the bus by reading data from the data register. Instead,
-+	 * the controller abstract the status read operation with its own status
-+	 * register after ordering a read status operation. Hence, the following
-+	 * hack.
-+	 */
-+	if (subop->instrs[0].ctx.cmd.opcode != NAND_CMD_STATUS)
-+		return -ENOTSUPP;
-+
-+	ret = anfc_misc_zerolen_type_exec(chip, subop, PROG_STATUS);
-+	if (ret)
-+		return ret;
-+
-+	tmp = readl_relaxed(nfc->base + FLASH_STS_REG);
-+	memcpy(subop->instrs[1].ctx.data.buf.in, &tmp, 1);
-+
-+	return 0;
-+}
-+
-+static int anfc_reset_type_exec(struct nand_chip *chip,
-+				const struct nand_subop *subop)
-+{
-+	return anfc_misc_zerolen_type_exec(chip, subop, PROG_RST);
-+}
-+
-+static int anfc_erase_type_exec(struct nand_chip *chip,
-+				const struct nand_subop *subop)
-+{
-+	return anfc_misc_zerolen_type_exec(chip, subop, PROG_ERASE);
-+}
-+
-+static int anfc_wait_type_exec(struct nand_chip *chip,
-+			       const struct nand_subop *subop)
-+{
-+	struct arasan_nfc *nfc = to_anfc(chip->controller);
-+	struct anfc_op nfc_op = {};
-+
-+	anfc_parse_instructions(chip, subop, &nfc_op);
-+
-+	return anfc_wait_for_rb(nfc, chip, nfc_op.rdy_timeout_ms);
-+}
-+
-+static const struct nand_op_parser anfc_op_parser = NAND_OP_PARSER(
-+	NAND_OP_PARSER_PATTERN(
-+		anfc_param_read_type_exec,
-+		NAND_OP_PARSER_PAT_CMD_ELEM(false),
-+		NAND_OP_PARSER_PAT_ADDR_ELEM(false, ANFC_MAX_ADDR_CYC),
-+		NAND_OP_PARSER_PAT_WAITRDY_ELEM(true),
-+		NAND_OP_PARSER_PAT_DATA_IN_ELEM(false, ANFC_MAX_CHUNK_SIZE)),
-+	NAND_OP_PARSER_PATTERN(
-+		anfc_param_write_type_exec,
-+		NAND_OP_PARSER_PAT_CMD_ELEM(false),
-+		NAND_OP_PARSER_PAT_ADDR_ELEM(false, ANFC_MAX_ADDR_CYC),
-+		NAND_OP_PARSER_PAT_DATA_OUT_ELEM(false, ANFC_MAX_PARAM_SIZE)),
-+	NAND_OP_PARSER_PATTERN(
-+		anfc_data_read_type_exec,
-+		NAND_OP_PARSER_PAT_CMD_ELEM(false),
-+		NAND_OP_PARSER_PAT_ADDR_ELEM(false, ANFC_MAX_ADDR_CYC),
-+		NAND_OP_PARSER_PAT_CMD_ELEM(false),
-+		NAND_OP_PARSER_PAT_WAITRDY_ELEM(true),
-+		NAND_OP_PARSER_PAT_DATA_IN_ELEM(false, ANFC_MAX_CHUNK_SIZE)),
-+	NAND_OP_PARSER_PATTERN(
-+		anfc_data_write_type_exec,
-+		NAND_OP_PARSER_PAT_CMD_ELEM(false),
-+		NAND_OP_PARSER_PAT_ADDR_ELEM(false, ANFC_MAX_ADDR_CYC),
-+		NAND_OP_PARSER_PAT_DATA_OUT_ELEM(false, ANFC_MAX_CHUNK_SIZE),
-+		NAND_OP_PARSER_PAT_CMD_ELEM(false)),
-+	NAND_OP_PARSER_PATTERN(
-+		anfc_reset_type_exec,
-+		NAND_OP_PARSER_PAT_CMD_ELEM(false),
-+		NAND_OP_PARSER_PAT_WAITRDY_ELEM(false)),
-+	NAND_OP_PARSER_PATTERN(
-+		anfc_erase_type_exec,
-+		NAND_OP_PARSER_PAT_CMD_ELEM(false),
-+		NAND_OP_PARSER_PAT_ADDR_ELEM(false, ANFC_MAX_ADDR_CYC),
-+		NAND_OP_PARSER_PAT_CMD_ELEM(false),
-+		NAND_OP_PARSER_PAT_WAITRDY_ELEM(false)),
-+	NAND_OP_PARSER_PATTERN(
-+		anfc_status_type_exec,
-+		NAND_OP_PARSER_PAT_CMD_ELEM(false),
-+		NAND_OP_PARSER_PAT_DATA_IN_ELEM(false, ANFC_MAX_CHUNK_SIZE)),
-+	NAND_OP_PARSER_PATTERN(
-+		anfc_wait_type_exec,
-+		NAND_OP_PARSER_PAT_WAITRDY_ELEM(false)),
-+	);
-+
-+static int anfc_select_target(struct nand_chip *chip, int target)
-+{
-+	struct anand *anand = to_anand(chip);
-+	struct arasan_nfc *nfc = to_anfc(chip->controller);
-+	int ret;
-+
-+	/* Update the controller timings and the potential ECC configuration */
-+	writel_relaxed(anand->timings, nfc->base + DATA_INTERFACE_REG);
-+
-+	/* Update clock frequency */
-+	if (nfc->cur_clk != anand->clk) {
-+		clk_disable_unprepare(nfc->controller_clk);
-+		ret = clk_set_rate(nfc->controller_clk, anand->clk);
-+		if (ret) {
-+			dev_err(nfc->dev, "Failed to change clock rate\n");
-+			return ret;
-+		}
-+
-+		ret = clk_prepare_enable(nfc->controller_clk);
-+		if (ret) {
-+			dev_err(nfc->dev,
-+				"Failed to re-enable the controller clock\n");
-+			return ret;
-+		}
-+
-+		nfc->cur_clk = anand->clk;
-+	}
-+
-+	return 0;
-+}
-+
-+static int anfc_exec_op(struct nand_chip *chip,
-+			const struct nand_operation *op,
-+			bool check_only)
-+{
-+	int ret;
-+
-+	if (!check_only) {
-+		ret = anfc_select_target(chip, op->cs);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return nand_op_parser_exec_op(chip, &anfc_op_parser, op, check_only);
-+}
-+
-+static int anfc_setup_data_interface(struct nand_chip *chip, int target,
-+				     const struct nand_data_interface *conf)
-+{
-+	struct anand *anand = to_anand(chip);
-+	struct arasan_nfc *nfc = to_anfc(chip->controller);
-+	struct device_node *np = nfc->dev->of_node;
-+
-+	if (target < 0)
-+		return 0;
-+
-+	anand->timings = DIFACE_SDR | DIFACE_SDR_MODE(conf->timings.mode);
-+	anand->clk = ANFC_XLNX_SDR_DFLT_CORE_CLK;
-+
-+	/*
-+	 * Due to a hardware bug in the ZynqMP SoC, SDR timing modes 0-1 work
-+	 * with f > 90MHz (default clock is 100MHz) but signals are unstable
-+	 * with higher modes. Hence we decrease a little bit the clock rate to
-+	 * 80MHz when using modes 2-5 with this SoC.
-+	 */
-+	if (of_device_is_compatible(np, "xlnx,zynqmp-nand-controller") &&
-+	    conf->timings.mode >= 2)
-+		anand->clk = ANFC_XLNX_SDR_HS_CORE_CLK;
-+
-+	return 0;
-+}
-+
-+static int anfc_attach_chip(struct nand_chip *chip)
-+{
-+	struct anand *anand = to_anand(chip);
-+	struct arasan_nfc *nfc = to_anfc(chip->controller);
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	int ret = 0;
-+
-+	if (mtd->writesize <= SZ_512)
-+		anand->caddr_cycles = 1;
-+	else
-+		anand->caddr_cycles = 2;
-+
-+	if (chip->options & NAND_ROW_ADDR_3)
-+		anand->raddr_cycles = 3;
-+	else
-+		anand->raddr_cycles = 2;
-+
-+	switch (mtd->writesize) {
-+	case 512:
-+		anand->page_sz = 0;
-+		break;
-+	case 1024:
-+		anand->page_sz = 5;
-+		break;
-+	case 2048:
-+		anand->page_sz = 1;
-+		break;
-+	case 4096:
-+		anand->page_sz = 2;
-+		break;
-+	case 8192:
-+		anand->page_sz = 3;
-+		break;
-+	case 16384:
-+		anand->page_sz = 4;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	/* These hooks are valid for all ECC providers */
-+	chip->ecc.read_page_raw = nand_monolithic_read_page_raw;
-+	chip->ecc.write_page_raw = nand_monolithic_write_page_raw;
-+
-+	switch (chip->ecc.mode) {
-+	case NAND_ECC_NONE:
-+	case NAND_ECC_SOFT:
-+	case NAND_ECC_ON_DIE:
-+		break;
-+	case NAND_ECC_HW:
-+	default:
-+		dev_err(nfc->dev, "Unsupported ECC mode: %d\n",
-+			chip->ecc.mode);
-+		return -EINVAL;
-+	}
-+
-+	return ret;
-+}
-+
-+static const struct nand_controller_ops anfc_ops = {
-+	.exec_op = anfc_exec_op,
-+	.setup_data_interface = anfc_setup_data_interface,
-+	.attach_chip = anfc_attach_chip,
-+};
-+
-+static int anfc_chip_init(struct arasan_nfc *nfc, struct device_node *np)
-+{
-+	struct anand *anand;
-+	struct nand_chip *chip;
-+	struct mtd_info *mtd;
-+	int cs, rb, ret;
-+
-+	anand = devm_kzalloc(nfc->dev, sizeof(*anand), GFP_KERNEL);
-+	if (!anand)
-+		return -ENOMEM;
-+
-+	/* Only one CS can be asserted at a time */
-+	if (of_property_count_elems_of_size(np, "reg", sizeof(u32)) != 1) {
-+		dev_err(nfc->dev, "Invalid reg property\n");
-+		return -EINVAL;
-+	}
-+
-+	ret = of_property_read_u32(np, "reg", &cs);
-+	if (ret)
-+		return ret;
-+
-+	ret = of_property_read_u32(np, "nand-rb", &rb);
-+	if (ret)
-+		return ret;
-+
-+	if (cs >= ANFC_MAX_CS || rb >= ANFC_MAX_CS) {
-+		dev_err(nfc->dev, "Wrong CS %d or RB %d\n", cs, rb);
-+		return -EINVAL;
-+	}
-+
-+	if (test_and_set_bit(cs, &nfc->assigned_cs)) {
-+		dev_err(nfc->dev, "Already assigned CS %d\n", cs);
-+		return -EINVAL;
-+	}
-+
-+	anand->cs = cs;
-+	anand->rb = rb;
-+
-+	chip = &anand->chip;
-+	mtd = nand_to_mtd(chip);
-+	mtd->dev.parent = nfc->dev;
-+	chip->controller = &nfc->controller;
-+	chip->options = NAND_BUSWIDTH_AUTO | NAND_NO_SUBPAGE_WRITE |
-+			NAND_USES_DMA;
-+
-+	nand_set_flash_node(chip, np);
-+	if (!mtd->name) {
-+		dev_err(nfc->dev, "NAND label property is mandatory\n");
-+		return -EINVAL;
-+	}
-+
-+	ret = nand_scan(chip, 1);
-+	if (ret) {
-+		dev_err(nfc->dev, "Scan operation failed\n");
-+		return ret;
-+	}
-+
-+	ret = mtd_device_register(mtd, NULL, 0);
-+	if (ret) {
-+		nand_release(chip);
-+		return ret;
-+	}
-+
-+	list_add_tail(&anand->node, &nfc->chips);
-+
-+	return 0;
-+}
-+
-+static void anfc_chips_cleanup(struct arasan_nfc *nfc)
-+{
-+	struct anand *anand, *tmp;
-+
-+	list_for_each_entry_safe(anand, tmp, &nfc->chips, node) {
-+		nand_release(&anand->chip);
-+		list_del(&anand->node);
-+	}
-+}
-+
-+static int anfc_chips_init(struct arasan_nfc *nfc)
-+{
-+	struct device_node *np = nfc->dev->of_node, *nand_np;
-+	int nchips = of_get_child_count(np);
-+	int ret;
-+
-+	if (!nchips || nchips > ANFC_MAX_CS) {
-+		dev_err(nfc->dev, "Incorrect number of NAND chips (%d)\n",
-+			nchips);
-+		return -EINVAL;
-+	}
-+
-+	for_each_child_of_node(np, nand_np) {
-+		ret = anfc_chip_init(nfc, nand_np);
-+		if (ret) {
-+			of_node_put(nand_np);
-+			anfc_chips_cleanup(nfc);
-+			break;
-+		}
-+	}
-+
-+	return ret;
-+}
-+
-+static void anfc_reset(struct arasan_nfc *nfc)
-+{
-+	anfc_disable_int(nfc, EVENT_MASK);
-+
-+	/* Enable all interrupt status */
-+	writel_relaxed(EVENT_MASK, nfc->base + INTR_STS_EN_REG);
-+}
-+
-+static int anfc_probe(struct platform_device *pdev)
-+{
-+	struct arasan_nfc *nfc;
-+	int ret;
-+
-+	nfc = devm_kzalloc(&pdev->dev, sizeof(*nfc), GFP_KERNEL);
-+	if (!nfc)
-+		return -ENOMEM;
-+
-+	nfc->dev = &pdev->dev;
-+	nand_controller_init(&nfc->controller);
-+	nfc->controller.ops = &anfc_ops;
-+	INIT_LIST_HEAD(&nfc->chips);
-+
-+	nfc->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(nfc->base))
-+		return PTR_ERR(nfc->base);
-+
-+	anfc_reset(nfc);
-+
-+	nfc->controller_clk = devm_clk_get(&pdev->dev, "controller");
-+	if (IS_ERR(nfc->controller_clk))
-+		return PTR_ERR(nfc->controller_clk);
-+
-+	nfc->bus_clk = devm_clk_get(&pdev->dev, "bus");
-+	if (IS_ERR(nfc->bus_clk))
-+		return PTR_ERR(nfc->bus_clk);
-+
-+	ret = clk_prepare_enable(nfc->controller_clk);
-+	if (ret)
-+		return ret;
-+
-+	ret = clk_prepare_enable(nfc->bus_clk);
-+	if (ret)
-+		goto disable_controller_clk;
-+
-+	ret = anfc_chips_init(nfc);
-+	if (ret)
-+		goto disable_bus_clk;
-+
-+	platform_set_drvdata(pdev, nfc);
-+
-+	return 0;
-+
-+disable_bus_clk:
-+	clk_disable_unprepare(nfc->bus_clk);
-+
-+disable_controller_clk:
-+	clk_disable_unprepare(nfc->controller_clk);
-+
-+	return ret;
-+}
-+
-+static int anfc_remove(struct platform_device *pdev)
-+{
-+	struct arasan_nfc *nfc = platform_get_drvdata(pdev);
-+
-+	anfc_chips_cleanup(nfc);
-+
-+	clk_disable_unprepare(nfc->bus_clk);
-+	clk_disable_unprepare(nfc->controller_clk);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id anfc_ids[] = {
-+	{
-+		.compatible = "xlnx,zynqmp-nand-controller",
-+	},
-+	{
-+		.compatible = "arasan,nfc-v3p10",
-+	},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, anfc_ids);
-+
-+static struct platform_driver anfc_driver = {
-+	.driver = {
-+		.name = "arasan-nand-controller",
-+		.of_match_table = anfc_ids,
-+	},
-+	.probe = anfc_probe,
-+	.remove = anfc_remove,
-+};
-+module_platform_driver(anfc_driver);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_AUTHOR("Punnaiah Choudary Kalluri <punnaia@xilinx.com>");
-+MODULE_AUTHOR("Naga Sureshkumar Relli <nagasure@xilinx.com>");
-+MODULE_AUTHOR("Miquel Raynal <miquel.raynal@bootlin.com>");
-+MODULE_DESCRIPTION("Arasan NAND Flash Controller Driver");
--- 
-2.20.1
+> 
+> It seems that several hardware ECC engine use a swapped representation
+> of bytes compared to software.
 
+Some more details here. I think it has to do with how the ECC engine
+is wired to the NAND controller or the order the bits are passed to the
+HW BCH logic. Given the sunxi NAND controller driver has the same
+bit-swapping, I suspect it's actually pretty common.
+
+> It means that when the software BCH
+> engine is working in conjunction with data generated with hardware, we
+> must swap the bits inside bytes, eg:
+> 
+>     0x0A = b0000_1010 -> b0101_0000 = 0x50
+> 
+> Make it possible just by flipping a boolean in the BCH control
+
+		   ^ by adding a swap_bits boolen to the ...
+
+> structure.
+
+Regarding the implementation itself, I came up with something simple
+because I didn't want to spend too much time looking at how things
+could be changed to avoid those swap_bits(). I suspect we can prepare
+the ->a_{mod,pow}_tab tables to avoid that. Ivan, any opinion?
+
+Note that we can also optimize that in a second step, so Miquel can get
+the rest of the series merged.
+
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Cc: Ivan Djelic <ivan.djelic@parrot.com>
+> ---
+>  include/linux/bch.h |  1 +
+>  lib/bch.c           | 84 ++++++++++++++++++++++++++++++++++++++-------
+>  2 files changed, 72 insertions(+), 13 deletions(-)
+> 
+> diff --git a/include/linux/bch.h b/include/linux/bch.h
+> index 9c35e7cd5890..c42f50cacfdc 100644
+> --- a/include/linux/bch.h
+> +++ b/include/linux/bch.h
+> @@ -51,6 +51,7 @@ struct bch_control {
+>  	int            *cache;
+>  	struct gf_poly *elp;
+>  	struct gf_poly *poly_2t[4];
+> +	bool		swap_bits;
+
+This new field should be documented.
+
+>  };
+>  
+>  struct bch_control *bch_init(int m, int t, unsigned int prim_poly);
+> diff --git a/lib/bch.c b/lib/bch.c
+> index 1091841ac716..81bf8b426eea 100644
+> --- a/lib/bch.c
+> +++ b/lib/bch.c
+> @@ -114,6 +114,49 @@ struct gf_poly_deg1 {
+>  	unsigned int   c[2];
+>  };
+>  
+> +static u8 swap_bits_table[] = {
+> +	0x00, 0x80, 0x40, 0xc0, 0x20, 0xa0, 0x60, 0xe0,
+> +	0x10, 0x90, 0x50, 0xd0, 0x30, 0xb0, 0x70, 0xf0,
+> +	0x08, 0x88, 0x48, 0xc8, 0x28, 0xa8, 0x68, 0xe8,
+> +	0x18, 0x98, 0x58, 0xd8, 0x38, 0xb8, 0x78, 0xf8,
+> +	0x04, 0x84, 0x44, 0xc4, 0x24, 0xa4, 0x64, 0xe4,
+> +	0x14, 0x94, 0x54, 0xd4, 0x34, 0xb4, 0x74, 0xf4,
+> +	0x0c, 0x8c, 0x4c, 0xcc, 0x2c, 0xac, 0x6c, 0xec,
+> +	0x1c, 0x9c, 0x5c, 0xdc, 0x3c, 0xbc, 0x7c, 0xfc,
+> +	0x02, 0x82, 0x42, 0xc2, 0x22, 0xa2, 0x62, 0xe2,
+> +	0x12, 0x92, 0x52, 0xd2, 0x32, 0xb2, 0x72, 0xf2,
+> +	0x0a, 0x8a, 0x4a, 0xca, 0x2a, 0xaa, 0x6a, 0xea,
+> +	0x1a, 0x9a, 0x5a, 0xda, 0x3a, 0xba, 0x7a, 0xfa,
+> +	0x06, 0x86, 0x46, 0xc6, 0x26, 0xa6, 0x66, 0xe6,
+> +	0x16, 0x96, 0x56, 0xd6, 0x36, 0xb6, 0x76, 0xf6,
+> +	0x0e, 0x8e, 0x4e, 0xce, 0x2e, 0xae, 0x6e, 0xee,
+> +	0x1e, 0x9e, 0x5e, 0xde, 0x3e, 0xbe, 0x7e, 0xfe,
+> +	0x01, 0x81, 0x41, 0xc1, 0x21, 0xa1, 0x61, 0xe1,
+> +	0x11, 0x91, 0x51, 0xd1, 0x31, 0xb1, 0x71, 0xf1,
+> +	0x09, 0x89, 0x49, 0xc9, 0x29, 0xa9, 0x69, 0xe9,
+> +	0x19, 0x99, 0x59, 0xd9, 0x39, 0xb9, 0x79, 0xf9,
+> +	0x05, 0x85, 0x45, 0xc5, 0x25, 0xa5, 0x65, 0xe5,
+> +	0x15, 0x95, 0x55, 0xd5, 0x35, 0xb5, 0x75, 0xf5,
+> +	0x0d, 0x8d, 0x4d, 0xcd, 0x2d, 0xad, 0x6d, 0xed,
+> +	0x1d, 0x9d, 0x5d, 0xdd, 0x3d, 0xbd, 0x7d, 0xfd,
+> +	0x03, 0x83, 0x43, 0xc3, 0x23, 0xa3, 0x63, 0xe3,
+> +	0x13, 0x93, 0x53, 0xd3, 0x33, 0xb3, 0x73, 0xf3,
+> +	0x0b, 0x8b, 0x4b, 0xcb, 0x2b, 0xab, 0x6b, 0xeb,
+> +	0x1b, 0x9b, 0x5b, 0xdb, 0x3b, 0xbb, 0x7b, 0xfb,
+> +	0x07, 0x87, 0x47, 0xc7, 0x27, 0xa7, 0x67, 0xe7,
+> +	0x17, 0x97, 0x57, 0xd7, 0x37, 0xb7, 0x77, 0xf7,
+> +	0x0f, 0x8f, 0x4f, 0xcf, 0x2f, 0xaf, 0x6f, 0xef,
+> +	0x1f, 0x9f, 0x5f, 0xdf, 0x3f, 0xbf, 0x7f, 0xff,
+> +};
+> +
+> +static u8 swap_bits(struct bch_control *bch, u8 in)
+> +{
+> +	if (!bch->swap_bits)
+> +		return in;
+> +
+> +	return swap_bits_table[in];
+> +}
+> +
+>  /*
+>   * same as bch_encode(), but process input data one byte at a time
+>   */
+> @@ -126,7 +169,9 @@ static void bch_encode_unaligned(struct bch_control *bch,
+>  	const int l = BCH_ECC_WORDS(bch)-1;
+>  
+>  	while (len--) {
+> -		p = bch->mod8_tab + (l+1)*(((ecc[0] >> 24)^(*data++)) & 0xff);
+> +		u8 tmp = swap_bits(bch, *data++);
+> +
+> +		p = bch->mod8_tab + (l+1)*(((ecc[0] >> 24)^(tmp)) & 0xff);
+>  
+>  		for (i = 0; i < l; i++)
+>  			ecc[i] = ((ecc[i] << 8)|(ecc[i+1] >> 24))^(*p++);
+> @@ -145,10 +190,16 @@ static void load_ecc8(struct bch_control *bch, uint32_t *dst,
+>  	unsigned int i, nwords = BCH_ECC_WORDS(bch)-1;
+>  
+>  	for (i = 0; i < nwords; i++, src += 4)
+> -		dst[i] = (src[0] << 24)|(src[1] << 16)|(src[2] << 8)|src[3];
+> +		dst[i] = ((u32)swap_bits(bch, src[0]) << 24) |
+> +			 ((u32)swap_bits(bch, src[1]) << 16) |
+> +			 ((u32)swap_bits(bch, src[2]) << 8) |
+> +			 swap_bits(bch, src[3]);
+>  
+>  	memcpy(pad, src, BCH_ECC_BYTES(bch)-4*nwords);
+> -	dst[nwords] = (pad[0] << 24)|(pad[1] << 16)|(pad[2] << 8)|pad[3];
+> +	dst[nwords] = ((u32)swap_bits(bch, pad[0]) << 24) |
+> +		      ((u32)swap_bits(bch, pad[1]) << 16) |
+> +		      ((u32)swap_bits(bch, pad[2]) << 8) |
+> +		      swap_bits(bch, pad[3]);
+>  }
+>  
+>  /*
+> @@ -161,15 +212,15 @@ static void store_ecc8(struct bch_control *bch, uint8_t *dst,
+>  	unsigned int i, nwords = BCH_ECC_WORDS(bch)-1;
+>  
+>  	for (i = 0; i < nwords; i++) {
+> -		*dst++ = (src[i] >> 24);
+> -		*dst++ = (src[i] >> 16) & 0xff;
+> -		*dst++ = (src[i] >>  8) & 0xff;
+> -		*dst++ = (src[i] >>  0) & 0xff;
+> +		*dst++ = swap_bits(bch, src[i] >> 24);
+> +		*dst++ = swap_bits(bch, src[i] >> 16);
+> +		*dst++ = swap_bits(bch, src[i] >> 8);
+> +		*dst++ = swap_bits(bch, src[i]);
+>  	}
+> -	pad[0] = (src[nwords] >> 24);
+> -	pad[1] = (src[nwords] >> 16) & 0xff;
+> -	pad[2] = (src[nwords] >>  8) & 0xff;
+> -	pad[3] = (src[nwords] >>  0) & 0xff;
+> +	pad[0] = swap_bits(bch, src[nwords] >> 24);
+> +	pad[1] = swap_bits(bch, src[nwords] >> 16);
+> +	pad[2] = swap_bits(bch, src[nwords] >> 8);
+> +	pad[3] = swap_bits(bch, src[nwords]);
+>  	memcpy(dst, pad, BCH_ECC_BYTES(bch)-4*nwords);
+>  }
+>  
+> @@ -240,7 +291,12 @@ void bch_encode(struct bch_control *bch, const uint8_t *data,
+>  	 */
+>  	while (mlen--) {
+>  		/* input data is read in big-endian format */
+> -		w = r[0]^cpu_to_be32(*pdata++);
+> +		w = cpu_to_be32(*pdata++);
+> +		w = (u32)swap_bits(bch, w) |
+> +		    ((u32)swap_bits(bch, w >> 8) << 8) |
+> +		    ((u32)swap_bits(bch, w >> 16) << 16) |
+> +		    ((u32)swap_bits(bch, w >> 24) << 24);
+
+We should make the bit swapping conditional (only do it if
+bch->swap_bit is true) to not penalize the !swap_bits case.
+
+> +		w ^= r[0];
+>  		p0 = tab0 + (l+1)*((w >>  0) & 0xff);
+>  		p1 = tab1 + (l+1)*((w >>  8) & 0xff);
+>  		p2 = tab2 + (l+1)*((w >> 16) & 0xff);
+> @@ -1048,7 +1104,9 @@ int bch_decode(struct bch_control *bch, const uint8_t *data, unsigned int len,
+>  				break;
+>  			}
+>  			errloc[i] = nbits-1-errloc[i];
+> -			errloc[i] = (errloc[i] & ~7)|(7-(errloc[i] & 7));
+> +			if (!bch->swap_bits)
+> +				errloc[i] = (errloc[i] & ~7) |
+> +					    (7-(errloc[i] & 7));
+>  		}
+>  	}
+>  	return (err >= 0) ? err : -EBADMSG;
+
+Oh, and we should patch bch_init() to take a bool swap_bits. I'm not
+comfortable having users set bch_control fields on their own,
+especially one that's marked 'private'.
 
 ______________________________________________________
 Linux MTD discussion mailing list
