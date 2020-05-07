@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7917C38A2A
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 11:01:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C8B4C38A2A
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 11:01:33 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6327B208E4
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 11:01:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 17776208CA
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 11:01:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="a8fV2mcn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6327B208E4
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FuhjKyaX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 17776208CA
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/KWO2xv5oDBxVAp8py4IM/1hT1hdK6m+CAHGYMhy9dc=; b=a8fV2mcnKKGX6c
-	LngQJCDm6JJZPmckIroJ3noImiimybzS2YDsqAIO1enECxjf0Civyqw1foytCuGOjSdsja/BQEj1A
-	60EM/xU+4dyRTkz/0jGTps6LunOj2UCNMJ2urg9usVTH6vB2eqp88tj4xBKounSTvXj0r8edpOwuF
-	ULk4VB/X9Bl9FE44EL5Qbfr8BOdLiX9gNyZdASzrcHX3+k2Ca2LiVBL7T97yitz6q1wcDiX28rbOv
-	qfcOIfMaLgpzUBReMkzc/n6UceP5rUIml7M7lfoRTEi3c1SkqY0k+z1dGWvFQDgy5udYPP/EX7XRv
-	gIXtE1dE+w5G6bNnXClQ==;
+	List-Owner; bh=Ryr6KArA8Wmdeg5maF2KjFr96F8R1NwoIMoxCzvw5CU=; b=FuhjKyaXhmfFGv
+	4Kko4ons4hnFu7/V/+xU2CKbH69Xa2M6byWPXNf5/q4kD401n0p3UrTWwFmqcJFJxksY5ayKYaZ25
+	dx+uWblprSJfRhfE8tGKnTgsOdDZG6JcRzZx2my8BavHMnNpWL8jyLl8tbURyfBe3BEOICC2Xpg/Z
+	Ry/a6LS0kfv2njppJrLvWTXnxxy32rZKmho3iWPtkUD2++4dp8k8qUFblOA8kQnlIMR6dpOm3SmPs
+	UNnI+FkdLPx2cXpW/km93tLwu/v/GFUuWz7wxFCONJbm2ZO1soqokLgW7Oi14k5/QCwCYC4G5KOnh
+	uGdppnTcfCbahy/zvTVw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jWeHO-0005M6-SJ; Thu, 07 May 2020 11:01:26 +0000
+	id 1jWeH5-00054U-40; Thu, 07 May 2020 11:01:07 +0000
 Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jWeHD-0005CM-M9
- for linux-mtd@lists.infradead.org; Thu, 07 May 2020 11:01:21 +0000
+ id 1jWeH0-00050A-8h
+ for linux-mtd@lists.infradead.org; Thu, 07 May 2020 11:01:05 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 366D620009;
- Thu,  7 May 2020 11:01:00 +0000 (UTC)
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 9836720014;
+ Thu,  7 May 2020 11:00:46 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
  <devicetree@vger.kernel.org>, Richard Weinberger <richard@nod.at>,
  Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH v3 2/8] lib/bch: Allow easy bit swapping
-Date: Thu,  7 May 2020 13:00:28 +0200
-Message-Id: <20200507110034.14736-3-miquel.raynal@bootlin.com>
+Subject: [PATCH v3 1/8] lib/bch: Rework a little bit the exported function
+ names
+Date: Thu,  7 May 2020 13:00:27 +0200
+Message-Id: <20200507110034.14736-2-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200507110034.14736-1-miquel.raynal@bootlin.com>
 References: <20200507110034.14736-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200507_040116_015586_0F9DE066 
-X-CRM114-Status: GOOD (  15.58  )
+X-CRM114-CacheID: sfid-20200507_040102_624302_5F22932A 
+X-CRM114-Status: GOOD (  19.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,171 +82,343 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Boris Brezillon <boris.brezillon@collabora.com>
+There are four exported functions, all suffixed by _bch, which is clearly not the norm. Before exporting more functions, let's rename them by prefixing them with bch_ instead.
 
-It seems that several hardware ECC engine use a swapped representation
-of bytes compared to software. It means that when the software BCH
-engine is working in conjunction with data generated with hardware, we
-must swap the bits inside bytes, eg:
+This is a mechanical change:
+    init_bch -> bch_init
+    free_bch -> bch_free
+    encode_bch -> bch_encode
+    decode_bch -> bch_decode
 
-    0x0A = b0000_1010 -> b0101_0000 = 0x50
-
-Make it possible just by flipping a boolean in the BCH control
-structure.
-
-Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Ivan Djelic <ivan.djelic@parrot.com>
 ---
- include/linux/bch.h |  1 +
- lib/bch.c           | 84 ++++++++++++++++++++++++++++++++++++++-------
- 2 files changed, 72 insertions(+), 13 deletions(-)
+ drivers/mtd/devices/docg3.c     | 10 +++---
+ drivers/mtd/nand/raw/nand_bch.c | 10 +++---
+ include/linux/bch.h             |  8 ++---
+ lib/bch.c                       | 64 ++++++++++++++++-----------------
+ 4 files changed, 46 insertions(+), 46 deletions(-)
 
+diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
+index eb0f4600efd1..799df8d03357 100644
+--- a/drivers/mtd/devices/docg3.c
++++ b/drivers/mtd/devices/docg3.c
+@@ -647,7 +647,7 @@ static int doc_ecc_bch_fix_data(struct docg3 *docg3, void *buf, u8 *hwecc)
+ 
+ 	for (i = 0; i < DOC_ECC_BCH_SIZE; i++)
+ 		ecc[i] = bitrev8(hwecc[i]);
+-	numerrs = decode_bch(docg3->cascade->bch, NULL,
++	numerrs = bch_decode(docg3->cascade->bch, NULL,
+ 			     DOC_ECC_BCH_COVERED_BYTES,
+ 			     NULL, ecc, NULL, errorpos);
+ 	BUG_ON(numerrs == -EINVAL);
+@@ -1984,8 +1984,8 @@ static int __init docg3_probe(struct platform_device *pdev)
+ 		return ret;
+ 	cascade->base = base;
+ 	mutex_init(&cascade->lock);
+-	cascade->bch = init_bch(DOC_ECC_BCH_M, DOC_ECC_BCH_T,
+-			     DOC_ECC_BCH_PRIMPOLY);
++	cascade->bch = bch_init(DOC_ECC_BCH_M, DOC_ECC_BCH_T,
++				DOC_ECC_BCH_PRIMPOLY);
+ 	if (!cascade->bch)
+ 		return ret;
+ 
+@@ -2021,7 +2021,7 @@ static int __init docg3_probe(struct platform_device *pdev)
+ 	ret = -ENODEV;
+ 	dev_info(dev, "No supported DiskOnChip found\n");
+ err_probe:
+-	free_bch(cascade->bch);
++	bch_free(cascade->bch);
+ 	for (floor = 0; floor < DOC_MAX_NBFLOORS; floor++)
+ 		if (cascade->floors[floor])
+ 			doc_release_device(cascade->floors[floor]);
+@@ -2045,7 +2045,7 @@ static int docg3_release(struct platform_device *pdev)
+ 		if (cascade->floors[floor])
+ 			doc_release_device(cascade->floors[floor]);
+ 
+-	free_bch(docg3->cascade->bch);
++	bch_free(docg3->cascade->bch);
+ 	return 0;
+ }
+ 
+diff --git a/drivers/mtd/nand/raw/nand_bch.c b/drivers/mtd/nand/raw/nand_bch.c
+index 17527310c3a1..d95fcc7358e9 100644
+--- a/drivers/mtd/nand/raw/nand_bch.c
++++ b/drivers/mtd/nand/raw/nand_bch.c
+@@ -41,7 +41,7 @@ int nand_bch_calculate_ecc(struct nand_chip *chip, const unsigned char *buf,
+ 	unsigned int i;
+ 
+ 	memset(code, 0, chip->ecc.bytes);
+-	encode_bch(nbc->bch, buf, chip->ecc.size, code);
++	bch_encode(nbc->bch, buf, chip->ecc.size, code);
+ 
+ 	/* apply mask so that an erased page is a valid codeword */
+ 	for (i = 0; i < chip->ecc.bytes; i++)
+@@ -67,7 +67,7 @@ int nand_bch_correct_data(struct nand_chip *chip, unsigned char *buf,
+ 	unsigned int *errloc = nbc->errloc;
+ 	int i, count;
+ 
+-	count = decode_bch(nbc->bch, NULL, chip->ecc.size, read_ecc, calc_ecc,
++	count = bch_decode(nbc->bch, NULL, chip->ecc.size, read_ecc, calc_ecc,
+ 			   NULL, errloc);
+ 	if (count > 0) {
+ 		for (i = 0; i < count; i++) {
+@@ -130,7 +130,7 @@ struct nand_bch_control *nand_bch_init(struct mtd_info *mtd)
+ 	if (!nbc)
+ 		goto fail;
+ 
+-	nbc->bch = init_bch(m, t, 0);
++	nbc->bch = bch_init(m, t, 0);
+ 	if (!nbc->bch)
+ 		goto fail;
+ 
+@@ -182,7 +182,7 @@ struct nand_bch_control *nand_bch_init(struct mtd_info *mtd)
+ 		goto fail;
+ 
+ 	memset(erased_page, 0xff, eccsize);
+-	encode_bch(nbc->bch, erased_page, eccsize, nbc->eccmask);
++	bch_encode(nbc->bch, erased_page, eccsize, nbc->eccmask);
+ 	kfree(erased_page);
+ 
+ 	for (i = 0; i < eccbytes; i++)
+@@ -205,7 +205,7 @@ EXPORT_SYMBOL(nand_bch_init);
+ void nand_bch_free(struct nand_bch_control *nbc)
+ {
+ 	if (nbc) {
+-		free_bch(nbc->bch);
++		bch_free(nbc->bch);
+ 		kfree(nbc->errloc);
+ 		kfree(nbc->eccmask);
+ 		kfree(nbc);
 diff --git a/include/linux/bch.h b/include/linux/bch.h
-index 9c35e7cd5890..c42f50cacfdc 100644
+index aa765af85c38..9c35e7cd5890 100644
 --- a/include/linux/bch.h
 +++ b/include/linux/bch.h
-@@ -51,6 +51,7 @@ struct bch_control {
- 	int            *cache;
- 	struct gf_poly *elp;
+@@ -53,14 +53,14 @@ struct bch_control {
  	struct gf_poly *poly_2t[4];
-+	bool		swap_bits;
  };
  
- struct bch_control *bch_init(int m, int t, unsigned int prim_poly);
+-struct bch_control *init_bch(int m, int t, unsigned int prim_poly);
++struct bch_control *bch_init(int m, int t, unsigned int prim_poly);
+ 
+-void free_bch(struct bch_control *bch);
++void bch_free(struct bch_control *bch);
+ 
+-void encode_bch(struct bch_control *bch, const uint8_t *data,
++void bch_encode(struct bch_control *bch, const uint8_t *data,
+ 		unsigned int len, uint8_t *ecc);
+ 
+-int decode_bch(struct bch_control *bch, const uint8_t *data, unsigned int len,
++int bch_decode(struct bch_control *bch, const uint8_t *data, unsigned int len,
+ 	       const uint8_t *recv_ecc, const uint8_t *calc_ecc,
+ 	       const unsigned int *syn, unsigned int *errloc);
+ 
 diff --git a/lib/bch.c b/lib/bch.c
-index 1091841ac716..81bf8b426eea 100644
+index 052d3fb753a0..1091841ac716 100644
 --- a/lib/bch.c
 +++ b/lib/bch.c
-@@ -114,6 +114,49 @@ struct gf_poly_deg1 {
- 	unsigned int   c[2];
+@@ -23,15 +23,15 @@
+  * This library provides runtime configurable encoding/decoding of binary
+  * Bose-Chaudhuri-Hocquenghem (BCH) codes.
+  *
+- * Call init_bch to get a pointer to a newly allocated bch_control structure for
++ * Call bch_init to get a pointer to a newly allocated bch_control structure for
+  * the given m (Galois field order), t (error correction capability) and
+  * (optional) primitive polynomial parameters.
+  *
+- * Call encode_bch to compute and store ecc parity bytes to a given buffer.
+- * Call decode_bch to detect and locate errors in received data.
++ * Call bch_encode to compute and store ecc parity bytes to a given buffer.
++ * Call bch_decode to detect and locate errors in received data.
+  *
+  * On systems supporting hw BCH features, intermediate results may be provided
+- * to decode_bch in order to skip certain steps. See decode_bch() documentation
++ * to bch_decode in order to skip certain steps. See bch_decode() documentation
+  * for details.
+  *
+  * Option CONFIG_BCH_CONST_PARAMS can be used to force fixed values of
+@@ -115,9 +115,9 @@ struct gf_poly_deg1 {
  };
  
-+static u8 swap_bits_table[] = {
-+	0x00, 0x80, 0x40, 0xc0, 0x20, 0xa0, 0x60, 0xe0,
-+	0x10, 0x90, 0x50, 0xd0, 0x30, 0xb0, 0x70, 0xf0,
-+	0x08, 0x88, 0x48, 0xc8, 0x28, 0xa8, 0x68, 0xe8,
-+	0x18, 0x98, 0x58, 0xd8, 0x38, 0xb8, 0x78, 0xf8,
-+	0x04, 0x84, 0x44, 0xc4, 0x24, 0xa4, 0x64, 0xe4,
-+	0x14, 0x94, 0x54, 0xd4, 0x34, 0xb4, 0x74, 0xf4,
-+	0x0c, 0x8c, 0x4c, 0xcc, 0x2c, 0xac, 0x6c, 0xec,
-+	0x1c, 0x9c, 0x5c, 0xdc, 0x3c, 0xbc, 0x7c, 0xfc,
-+	0x02, 0x82, 0x42, 0xc2, 0x22, 0xa2, 0x62, 0xe2,
-+	0x12, 0x92, 0x52, 0xd2, 0x32, 0xb2, 0x72, 0xf2,
-+	0x0a, 0x8a, 0x4a, 0xca, 0x2a, 0xaa, 0x6a, 0xea,
-+	0x1a, 0x9a, 0x5a, 0xda, 0x3a, 0xba, 0x7a, 0xfa,
-+	0x06, 0x86, 0x46, 0xc6, 0x26, 0xa6, 0x66, 0xe6,
-+	0x16, 0x96, 0x56, 0xd6, 0x36, 0xb6, 0x76, 0xf6,
-+	0x0e, 0x8e, 0x4e, 0xce, 0x2e, 0xae, 0x6e, 0xee,
-+	0x1e, 0x9e, 0x5e, 0xde, 0x3e, 0xbe, 0x7e, 0xfe,
-+	0x01, 0x81, 0x41, 0xc1, 0x21, 0xa1, 0x61, 0xe1,
-+	0x11, 0x91, 0x51, 0xd1, 0x31, 0xb1, 0x71, 0xf1,
-+	0x09, 0x89, 0x49, 0xc9, 0x29, 0xa9, 0x69, 0xe9,
-+	0x19, 0x99, 0x59, 0xd9, 0x39, 0xb9, 0x79, 0xf9,
-+	0x05, 0x85, 0x45, 0xc5, 0x25, 0xa5, 0x65, 0xe5,
-+	0x15, 0x95, 0x55, 0xd5, 0x35, 0xb5, 0x75, 0xf5,
-+	0x0d, 0x8d, 0x4d, 0xcd, 0x2d, 0xad, 0x6d, 0xed,
-+	0x1d, 0x9d, 0x5d, 0xdd, 0x3d, 0xbd, 0x7d, 0xfd,
-+	0x03, 0x83, 0x43, 0xc3, 0x23, 0xa3, 0x63, 0xe3,
-+	0x13, 0x93, 0x53, 0xd3, 0x33, 0xb3, 0x73, 0xf3,
-+	0x0b, 0x8b, 0x4b, 0xcb, 0x2b, 0xab, 0x6b, 0xeb,
-+	0x1b, 0x9b, 0x5b, 0xdb, 0x3b, 0xbb, 0x7b, 0xfb,
-+	0x07, 0x87, 0x47, 0xc7, 0x27, 0xa7, 0x67, 0xe7,
-+	0x17, 0x97, 0x57, 0xd7, 0x37, 0xb7, 0x77, 0xf7,
-+	0x0f, 0x8f, 0x4f, 0xcf, 0x2f, 0xaf, 0x6f, 0xef,
-+	0x1f, 0x9f, 0x5f, 0xdf, 0x3f, 0xbf, 0x7f, 0xff,
-+};
-+
-+static u8 swap_bits(struct bch_control *bch, u8 in)
-+{
-+	if (!bch->swap_bits)
-+		return in;
-+
-+	return swap_bits_table[in];
-+}
-+
  /*
-  * same as bch_encode(), but process input data one byte at a time
+- * same as encode_bch(), but process input data one byte at a time
++ * same as bch_encode(), but process input data one byte at a time
   */
-@@ -126,7 +169,9 @@ static void bch_encode_unaligned(struct bch_control *bch,
- 	const int l = BCH_ECC_WORDS(bch)-1;
- 
- 	while (len--) {
--		p = bch->mod8_tab + (l+1)*(((ecc[0] >> 24)^(*data++)) & 0xff);
-+		u8 tmp = swap_bits(bch, *data++);
-+
-+		p = bch->mod8_tab + (l+1)*(((ecc[0] >> 24)^(tmp)) & 0xff);
- 
- 		for (i = 0; i < l; i++)
- 			ecc[i] = ((ecc[i] << 8)|(ecc[i+1] >> 24))^(*p++);
-@@ -145,10 +190,16 @@ static void load_ecc8(struct bch_control *bch, uint32_t *dst,
- 	unsigned int i, nwords = BCH_ECC_WORDS(bch)-1;
- 
- 	for (i = 0; i < nwords; i++, src += 4)
--		dst[i] = (src[0] << 24)|(src[1] << 16)|(src[2] << 8)|src[3];
-+		dst[i] = ((u32)swap_bits(bch, src[0]) << 24) |
-+			 ((u32)swap_bits(bch, src[1]) << 16) |
-+			 ((u32)swap_bits(bch, src[2]) << 8) |
-+			 swap_bits(bch, src[3]);
- 
- 	memcpy(pad, src, BCH_ECC_BYTES(bch)-4*nwords);
--	dst[nwords] = (pad[0] << 24)|(pad[1] << 16)|(pad[2] << 8)|pad[3];
-+	dst[nwords] = ((u32)swap_bits(bch, pad[0]) << 24) |
-+		      ((u32)swap_bits(bch, pad[1]) << 16) |
-+		      ((u32)swap_bits(bch, pad[2]) << 8) |
-+		      swap_bits(bch, pad[3]);
+-static void encode_bch_unaligned(struct bch_control *bch,
++static void bch_encode_unaligned(struct bch_control *bch,
+ 				 const unsigned char *data, unsigned int len,
+ 				 uint32_t *ecc)
+ {
+@@ -174,7 +174,7 @@ static void store_ecc8(struct bch_control *bch, uint8_t *dst,
  }
  
- /*
-@@ -161,15 +212,15 @@ static void store_ecc8(struct bch_control *bch, uint8_t *dst,
- 	unsigned int i, nwords = BCH_ECC_WORDS(bch)-1;
- 
- 	for (i = 0; i < nwords; i++) {
--		*dst++ = (src[i] >> 24);
--		*dst++ = (src[i] >> 16) & 0xff;
--		*dst++ = (src[i] >>  8) & 0xff;
--		*dst++ = (src[i] >>  0) & 0xff;
-+		*dst++ = swap_bits(bch, src[i] >> 24);
-+		*dst++ = swap_bits(bch, src[i] >> 16);
-+		*dst++ = swap_bits(bch, src[i] >> 8);
-+		*dst++ = swap_bits(bch, src[i]);
+ /**
+- * encode_bch - calculate BCH ecc parity of data
++ * bch_encode - calculate BCH ecc parity of data
+  * @bch:   BCH control structure
+  * @data:  data to encode
+  * @len:   data length in bytes
+@@ -187,7 +187,7 @@ static void store_ecc8(struct bch_control *bch, uint8_t *dst,
+  * The exact number of computed ecc parity bits is given by member @ecc_bits of
+  * @bch; it may be less than m*t for large values of t.
+  */
+-void encode_bch(struct bch_control *bch, const uint8_t *data,
++void bch_encode(struct bch_control *bch, const uint8_t *data,
+ 		unsigned int len, uint8_t *ecc)
+ {
+ 	const unsigned int l = BCH_ECC_WORDS(bch)-1;
+@@ -215,7 +215,7 @@ void encode_bch(struct bch_control *bch, const uint8_t *data,
+ 	m = ((unsigned long)data) & 3;
+ 	if (m) {
+ 		mlen = (len < (4-m)) ? len : 4-m;
+-		encode_bch_unaligned(bch, data, mlen, bch->ecc_buf);
++		bch_encode_unaligned(bch, data, mlen, bch->ecc_buf);
+ 		data += mlen;
+ 		len  -= mlen;
  	}
--	pad[0] = (src[nwords] >> 24);
--	pad[1] = (src[nwords] >> 16) & 0xff;
--	pad[2] = (src[nwords] >>  8) & 0xff;
--	pad[3] = (src[nwords] >>  0) & 0xff;
-+	pad[0] = swap_bits(bch, src[nwords] >> 24);
-+	pad[1] = swap_bits(bch, src[nwords] >> 16);
-+	pad[2] = swap_bits(bch, src[nwords] >> 8);
-+	pad[3] = swap_bits(bch, src[nwords]);
- 	memcpy(dst, pad, BCH_ECC_BYTES(bch)-4*nwords);
- }
+@@ -255,13 +255,13 @@ void encode_bch(struct bch_control *bch, const uint8_t *data,
  
-@@ -240,7 +291,12 @@ void bch_encode(struct bch_control *bch, const uint8_t *data,
- 	 */
- 	while (mlen--) {
- 		/* input data is read in big-endian format */
--		w = r[0]^cpu_to_be32(*pdata++);
-+		w = cpu_to_be32(*pdata++);
-+		w = (u32)swap_bits(bch, w) |
-+		    ((u32)swap_bits(bch, w >> 8) << 8) |
-+		    ((u32)swap_bits(bch, w >> 16) << 16) |
-+		    ((u32)swap_bits(bch, w >> 24) << 24);
-+		w ^= r[0];
- 		p0 = tab0 + (l+1)*((w >>  0) & 0xff);
- 		p1 = tab1 + (l+1)*((w >>  8) & 0xff);
- 		p2 = tab2 + (l+1)*((w >> 16) & 0xff);
-@@ -1048,7 +1104,9 @@ int bch_decode(struct bch_control *bch, const uint8_t *data, unsigned int len,
- 				break;
- 			}
- 			errloc[i] = nbits-1-errloc[i];
--			errloc[i] = (errloc[i] & ~7)|(7-(errloc[i] & 7));
-+			if (!bch->swap_bits)
-+				errloc[i] = (errloc[i] & ~7) |
-+					    (7-(errloc[i] & 7));
- 		}
+ 	/* process last unaligned bytes */
+ 	if (len)
+-		encode_bch_unaligned(bch, data, len, bch->ecc_buf);
++		bch_encode_unaligned(bch, data, len, bch->ecc_buf);
+ 
+ 	/* store ecc parity bytes into original parity buffer */
+ 	if (ecc)
+ 		store_ecc8(bch, ecc, bch->ecc_buf);
+ }
+-EXPORT_SYMBOL_GPL(encode_bch);
++EXPORT_SYMBOL_GPL(bch_encode);
+ 
+ static inline int modulo(struct bch_control *bch, unsigned int v)
+ {
+@@ -952,7 +952,7 @@ static int chien_search(struct bch_control *bch, unsigned int len,
+ #endif /* USE_CHIEN_SEARCH */
+ 
+ /**
+- * decode_bch - decode received codeword and find bit error locations
++ * bch_decode - decode received codeword and find bit error locations
+  * @bch:      BCH control structure
+  * @data:     received data, ignored if @calc_ecc is provided
+  * @len:      data length in bytes, must always be provided
+@@ -966,22 +966,22 @@ static int chien_search(struct bch_control *bch, unsigned int len,
+  *  invalid parameters were provided
+  *
+  * Depending on the available hw BCH support and the need to compute @calc_ecc
+- * separately (using encode_bch()), this function should be called with one of
++ * separately (using bch_encode()), this function should be called with one of
+  * the following parameter configurations -
+  *
+  * by providing @data and @recv_ecc only:
+- *   decode_bch(@bch, @data, @len, @recv_ecc, NULL, NULL, @errloc)
++ *   bch_decode(@bch, @data, @len, @recv_ecc, NULL, NULL, @errloc)
+  *
+  * by providing @recv_ecc and @calc_ecc:
+- *   decode_bch(@bch, NULL, @len, @recv_ecc, @calc_ecc, NULL, @errloc)
++ *   bch_decode(@bch, NULL, @len, @recv_ecc, @calc_ecc, NULL, @errloc)
+  *
+  * by providing ecc = recv_ecc XOR calc_ecc:
+- *   decode_bch(@bch, NULL, @len, NULL, ecc, NULL, @errloc)
++ *   bch_decode(@bch, NULL, @len, NULL, ecc, NULL, @errloc)
+  *
+  * by providing syndrome results @syn:
+- *   decode_bch(@bch, NULL, @len, NULL, NULL, @syn, @errloc)
++ *   bch_decode(@bch, NULL, @len, NULL, NULL, @syn, @errloc)
+  *
+- * Once decode_bch() has successfully returned with a positive value, error
++ * Once bch_decode() has successfully returned with a positive value, error
+  * locations returned in array @errloc should be interpreted as follows -
+  *
+  * if (errloc[n] >= 8*len), then n-th error is located in ecc (no need for
+@@ -993,7 +993,7 @@ static int chien_search(struct bch_control *bch, unsigned int len,
+  * Note that this function does not perform any data correction by itself, it
+  * merely indicates error locations.
+  */
+-int decode_bch(struct bch_control *bch, const uint8_t *data, unsigned int len,
++int bch_decode(struct bch_control *bch, const uint8_t *data, unsigned int len,
+ 	       const uint8_t *recv_ecc, const uint8_t *calc_ecc,
+ 	       const unsigned int *syn, unsigned int *errloc)
+ {
+@@ -1012,7 +1012,7 @@ int decode_bch(struct bch_control *bch, const uint8_t *data, unsigned int len,
+ 			/* compute received data ecc into an internal buffer */
+ 			if (!data || !recv_ecc)
+ 				return -EINVAL;
+-			encode_bch(bch, data, len, NULL);
++			bch_encode(bch, data, len, NULL);
+ 		} else {
+ 			/* load provided calculated ecc */
+ 			load_ecc8(bch, bch->ecc_buf, calc_ecc);
+@@ -1053,7 +1053,7 @@ int decode_bch(struct bch_control *bch, const uint8_t *data, unsigned int len,
  	}
  	return (err >= 0) ? err : -EBADMSG;
+ }
+-EXPORT_SYMBOL_GPL(decode_bch);
++EXPORT_SYMBOL_GPL(bch_decode);
+ 
+ /*
+  * generate Galois field lookup tables
+@@ -1236,7 +1236,7 @@ static uint32_t *compute_generator_polynomial(struct bch_control *bch)
+ }
+ 
+ /**
+- * init_bch - initialize a BCH encoder/decoder
++ * bch_init - initialize a BCH encoder/decoder
+  * @m:          Galois field order, should be in the range 5-15
+  * @t:          maximum error correction capability, in bits
+  * @prim_poly:  user-provided primitive polynomial (or 0 to use default)
+@@ -1246,17 +1246,17 @@ static uint32_t *compute_generator_polynomial(struct bch_control *bch)
+  *
+  * This initialization can take some time, as lookup tables are built for fast
+  * encoding/decoding; make sure not to call this function from a time critical
+- * path. Usually, init_bch() should be called on module/driver init and
+- * free_bch() should be called to release memory on exit.
++ * path. Usually, bch_init() should be called on module/driver init and
++ * bch_free() should be called to release memory on exit.
+  *
+  * You may provide your own primitive polynomial of degree @m in argument
+- * @prim_poly, or let init_bch() use its default polynomial.
++ * @prim_poly, or let bch_init() use its default polynomial.
+  *
+- * Once init_bch() has successfully returned a pointer to a newly allocated
++ * Once bch_init() has successfully returned a pointer to a newly allocated
+  * BCH control structure, ecc length in bytes is given by member @ecc_bytes of
+  * the structure.
+  */
+-struct bch_control *init_bch(int m, int t, unsigned int prim_poly)
++struct bch_control *bch_init(int m, int t, unsigned int prim_poly)
+ {
+ 	int err = 0;
+ 	unsigned int i, words;
+@@ -1347,16 +1347,16 @@ struct bch_control *init_bch(int m, int t, unsigned int prim_poly)
+ 	return bch;
+ 
+ fail:
+-	free_bch(bch);
++	bch_free(bch);
+ 	return NULL;
+ }
+-EXPORT_SYMBOL_GPL(init_bch);
++EXPORT_SYMBOL_GPL(bch_init);
+ 
+ /**
+- *  free_bch - free the BCH control structure
++ *  bch_free - free the BCH control structure
+  *  @bch:    BCH control structure to release
+  */
+-void free_bch(struct bch_control *bch)
++void bch_free(struct bch_control *bch)
+ {
+ 	unsigned int i;
+ 
+@@ -1377,7 +1377,7 @@ void free_bch(struct bch_control *bch)
+ 		kfree(bch);
+ 	}
+ }
+-EXPORT_SYMBOL_GPL(free_bch);
++EXPORT_SYMBOL_GPL(bch_free);
+ 
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Ivan Djelic <ivan.djelic@parrot.com>");
 -- 
 2.20.1
 
