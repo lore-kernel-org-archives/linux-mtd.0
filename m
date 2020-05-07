@@ -2,67 +2,63 @@ Return-Path: <SRS0=/Eax=6V=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9A05C47257
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 18:56:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57C06C38A24
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 19:13:25 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 87FDF20575
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 18:56:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 21706208D6
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2020 19:13:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uR5B5OdK";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="lUIjDc43"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 87FDF20575
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YUSZkKAS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 21706208D6
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From
-	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=i2pxnw3Uf5RTogvlHK1o4eYdsV0D1FzuobqYn2PkMA0=; b=uR5B5OdKjBRWb4
-	CGV0fyj53bhE1BbsDCqOHQF2fj5lDmFBGy+ImS+sv931sNYX6W4Akr3SLwues65JQo4VijJlsq4gF
-	e44r8eL0rATbJSxGGtE6E0g95Hyix+g1w9inr94keZXBwYM1emP4lGaEoA6p+NP3QNTB/Al7AL/ZE
-	cFSmDdV9InRdeWOLMUOqnZr2pDvh0QwD7vdgSR4zr0j/ZzQqTxkGsKvCcLqsEG2VD49XcDUgwqiC/
-	9EsN52Cpolol73J100FnEi/+inXJrwvVyBhRQ4GDFU6chqMTi09LAoaBJLMvQSpY6GpTXWjclnEq+
-	5o6WgH7/eZza25sbVBwg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=SMhU63yz8If9rShzeDycIRj7B9DBgE5JjqUONZKqMnk=; b=YUSZkKASPH9lZ5
+	L5M63MRZ31c3sStjFJ08QouxbYICG1G1+bimiQacWzh37J4tDXyywwNqEkFPCoU8sG5N7WCpCk7UJ
+	lYGC7u1dooCDEo4ZW+1ljeRwDtSL3v5+c8MbeaFouuEBLg0JYzO0PzEpWONLbLn75VXL3XaSmorK3
+	FLGb2hg+IbbAyXGkhrMYmPrSdFL9MuQiV75dzhWUyjhGQ7hWu8h3vusOQNcGRyNms4gonjzlBWizc
+	zPNLbWAKP8crfiFOLPVHADpvqp9Vi/VzzbBYapJ8c+QF0y1/Wqsh726hEBWujo33iIdIh+pXa6af5
+	Et5EOJhPs6IY9S3PhqOQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jWlgp-0002QB-Gv; Thu, 07 May 2020 18:56:11 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1jWlxI-0005NJ-P4; Thu, 07 May 2020 19:13:12 +0000
+Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jWlgm-0002PL-AW
- for linux-mtd@lists.infradead.org; Thu, 07 May 2020 18:56:09 +0000
-Received: from embeddedor (unknown [189.207.59.248])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 59D6D20575;
- Thu,  7 May 2020 18:56:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588877766;
- bh=zfyJqFsl52hg8MspTQ7ZLvYaM+kZM5XIzKGPNp9tS0M=;
- h=Date:From:To:Cc:Subject:From;
- b=lUIjDc43mnN3s1tQ3rk7rBVGyC4MQITWAKNnSvlP9Os25A3B2tkhR7fBcPW0JBvHk
- NRIC3bHkeU4TjjB/eGKYGj9P8FFvdPIyHfZUg03GQZIDfJGEAomxShu/5ZWSu5uPvf
- 0wXiAARkdO4CTdsE34effG0LjFiwQxu12v4CmONc=
-Date: Thu, 7 May 2020 14:00:33 -0500
-From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [PATCH] mtd: Replace zero-length array with flexible-array
-Message-ID: <20200507190033.GA15215@embeddedor>
+ id 1jWlxF-0005Mk-Uq
+ for linux-mtd@lists.infradead.org; Thu, 07 May 2020 19:13:11 +0000
+X-Originating-IP: 91.224.148.103
+Received: from xps13 (unknown [91.224.148.103])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 12C4924000A;
+ Thu,  7 May 2020 19:13:03 +0000 (UTC)
+Date: Thu, 7 May 2020 21:13:02 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@collabora.com>
+Subject: Re: [PATCH v3 7/8] mtd: rawnand: arasan: Add new Arasan NAND
+ controller
+Message-ID: <20200507211302.59f7c2ba@xps13>
+In-Reply-To: <20200507145127.71615ed8@collabora.com>
+References: <20200507110034.14736-1-miquel.raynal@bootlin.com>
+ <20200507110034.14736-8-miquel.raynal@bootlin.com>
+ <20200507145127.71615ed8@collabora.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200507_115608_406966_FCA24B8B 
-X-CRM114-Status: GOOD (  14.32  )
+X-CRM114-CacheID: sfid-20200507_121310_127295_4114D983 
+X-CRM114-Status: GOOD (  10.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,97 +70,94 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Michal Simek <monstr@monstr.eu>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>,
+ linux-mtd@lists.infradead.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Naga Sureshkumar Relli <nagasure@xilinx.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The current codebase makes use of the zero-length array language
-extension to the C90 standard, but the preferred mechanism to declare
-variable-length types such as these ones is a flexible array member[1][2],
-introduced in C99:
+Hi Boris,
 
-struct foo {
-        int stuff;
-        struct boo array[];
-};
+Boris Brezillon <boris.brezillon@collabora.com> wrote on Thu, 7 May
+2020 14:51:27 +0200:
 
-By making use of the mechanism above, we will get a compiler warning
-in case the flexible array does not occur last in the structure, which
-will help us prevent some kind of undefined behavior bugs from being
-inadvertently introduced[3] to the codebase from now on.
+> > +/* NAND framework ->exec_op() hooks and related helpers */
+> > +static void anfc_parse_instructions(struct nand_chip *chip,
+> > +				    const struct nand_subop *subop,
+> > +				    struct anfc_op *nfc_op)
+> > +{
+> > +	struct anand *anand = to_anand(chip);
+> > +	const struct nand_op_instr *instr = NULL;
+> > +	bool first_cmd = true;
+> > +	unsigned int op_id;
+> > +	int i;
+> > +
+> > +	memset(nfc_op, 0, sizeof(*nfc_op));
+> > +	nfc_op->addr2_reg = ADDR2_CS(anand->cs);
+> > +	nfc_op->cmd_reg = CMD_PAGE_SIZE(anand->page_sz);
+> > +
+> > +	for (op_id = 0; op_id < subop->ninstrs; op_id++) {
+> > +		unsigned int offset, naddrs, pktsize;
+> > +		const u8 *addrs;
+> > +		u8 *buf;
+> > +
+> > +		instr = &subop->instrs[op_id];
+> > +
+> > +		switch (instr->type) {
+> > +		case NAND_OP_CMD_INSTR:
+> > +			if (first_cmd)
+> > +				nfc_op->cmd_reg |= CMD_1(instr->ctx.cmd.opcode);
+> > +			else
+> > +				nfc_op->cmd_reg |= CMD_2(instr->ctx.cmd.opcode);
+> > +
+> > +			first_cmd = false;
+> > +			break;
+> > +
+> > +		case NAND_OP_ADDR_INSTR:
+> > +			offset = nand_subop_get_addr_start_off(subop, op_id);
+> > +			naddrs = nand_subop_get_num_addr_cyc(subop, op_id);
+> > +			addrs = &instr->ctx.addr.addrs[offset];
+> > +			nfc_op->cmd_reg |= CMD_NADDRS(naddrs);
+> > +
+> > +			for (i = 0; i < min(ANFC_MAX_ADDR_CYC, naddrs); i++) {
+> > +				if (i < 4)
+> > +					nfc_op->addr1_reg |= (u32)addrs[i] << i * 8;
+> > +				else
+> > +					nfc_op->addr2_reg |= addrs[i];
+> > +			}
+> > +
+> > +			break;
+> > +		case NAND_OP_DATA_IN_INSTR:
+> > +			nfc_op->read = true;
+> > +			fallthrough;
+> > +		case NAND_OP_DATA_OUT_INSTR:
+> > +			offset = nand_subop_get_data_start_off(subop, op_id);
+> > +			buf = instr->ctx.data.buf.in;
+> > +			nfc_op->buf = &buf[offset];
+> > +			nfc_op->len = nand_subop_get_data_len(subop, op_id);
+> > +			nfc_op->steps = anfc_len_to_steps(chip, nfc_op->len);
+> > +			pktsize = DIV_ROUND_UP(nfc_op->len, nfc_op->steps);
+> > +			nfc_op->pkt_reg |= PKT_SIZE(round_up(pktsize, 4)) |  
+> 
+> Hm, pktsize has to be aligned on 4? Again, that's not great since you
+> adjust the size without letting the core know you did that.
 
-Also, notice that, dynamic memory allocations won't be affected by
-this change:
+I confirm the round_up() is needed. It does not work without.
 
-"Flexible array members have incomplete type, and so the sizeof operator
-may not be applied. As a quirk of the original implementation of
-zero-length arrays, sizeof evaluates to zero."[1]
-
-sizeof(flexible-array-member) triggers a warning because flexible array
-members have incomplete type[1]. There are some instances of code in
-which the sizeof operator is being incorrectly/erroneously applied to
-zero-length arrays and the result is zero. Such instances may be hiding
-some bugs. So, this work (flexible-array member conversions) will also
-help to get completely rid of those sorts of issues.
-
-This issue was found with the help of Coccinelle.
-
-[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-[2] https://github.com/KSPP/linux/issues/21
-[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- include/linux/mtd/cfi.h   |    6 +++---
- include/linux/mtd/qinfo.h |    2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
-index c98a21108688..fd1ecb821106 100644
---- a/include/linux/mtd/cfi.h
-+++ b/include/linux/mtd/cfi.h
-@@ -138,7 +138,7 @@ struct cfi_ident {
- 	uint16_t InterfaceDesc;
- 	uint16_t MaxBufWriteSize;
- 	uint8_t  NumEraseRegions;
--	uint32_t EraseRegionInfo[0]; /* Not host ordered */
-+	uint32_t EraseRegionInfo[]; /* Not host ordered */
- } __packed;
- 
- /* Extended Query Structure for both PRI and ALT */
-@@ -165,7 +165,7 @@ struct cfi_pri_intelext {
- 	uint16_t ProtRegAddr;
- 	uint8_t  FactProtRegSize;
- 	uint8_t  UserProtRegSize;
--	uint8_t  extra[0];
-+	uint8_t  extra[];
- } __packed;
- 
- struct cfi_intelext_otpinfo {
-@@ -286,7 +286,7 @@ struct cfi_private {
- 	map_word sector_erase_cmd;
- 	unsigned long chipshift; /* Because they're of the same type */
- 	const char *im_name;	 /* inter_module name for cmdset_setup */
--	struct flchip chips[0];  /* per-chip data structure for each chip */
-+	struct flchip chips[];  /* per-chip data structure for each chip */
- };
- 
- uint32_t cfi_build_cmd_addr(uint32_t cmd_ofs,
-diff --git a/include/linux/mtd/qinfo.h b/include/linux/mtd/qinfo.h
-index df5b9fddea16..2e3f43788d48 100644
---- a/include/linux/mtd/qinfo.h
-+++ b/include/linux/mtd/qinfo.h
-@@ -24,7 +24,7 @@ struct lpddr_private {
- 	struct qinfo_chip *qinfo;
- 	int numchips;
- 	unsigned long chipshift;
--	struct flchip chips[0];
-+	struct flchip chips[];
- };
- 
- /* qinfo_query_info structure contains request information for
+> 
+> > +					   PKT_STEPS(nfc_op->steps);
+> > +			break;
+> > +		case NAND_OP_WAITRDY_INSTR:
+> > +			nfc_op->rdy_timeout_ms = instr->ctx.waitrdy.timeout_ms;
+> > +			break;
+> > +		}
+> > +	}
+> > +}
 
 
 ______________________________________________________
