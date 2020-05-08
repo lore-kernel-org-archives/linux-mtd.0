@@ -2,67 +2,61 @@ Return-Path: <SRS0=/+zL=6W=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27C0DC38A2A
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 May 2020 12:47:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4433DC47255
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 May 2020 17:13:52 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F15CE2495E
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 May 2020 12:47:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 180D2218AC
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 May 2020 17:13:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jb6P1kcK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F15CE2495E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=allwinnertech.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="m0xKvt56"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 180D2218AC
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gXPFgVPNlCOjQ+HGs2DgaHbwLyNsE1oQRinfRcATjSo=; b=jb6P1kcKSEtWfM
-	Vs8ERMBgeUR0h7rfmOehGFyFYj8/anluPKopmkf3dgQ+wRSp4X8nB4EKXht4WjQE2LN5rSr3ae5Bm
-	xWY56dJPq/xeBFbkA6MtJsLiDidE22fRLy3VMECdFmndCqA0GPIr9DgRggUcE8ed+ncWyfBo+dhf0
-	/VvjlgIxQPGdPuMrqDSlQpK3Lbg5ySCU5dHqyjT6FjkOyJwGaVgB4oZeXihTk+6nti3bq6BDvbS0C
-	xKJ/ElanEDSaBV2/DtvW8nl1LNjO92wcsLhUpwbCVeWm1ZyjDuq8DFwHheTqcZMxfH+6bPGT2rkkO
-	ea2tp9qUQB66lgEq6Nsw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=lEVp7ddbjPEd6gaQPkhefyuBGd94Z+3GY9CcvO3acEk=; b=m0xKvt56PDshC0
+	WYGQFBYMj0tgcE1OYVjGJCfvJ2o/SpWzzl7SaUz7qh5+KUZD+9V0jtHOCGStjDZBYmBT86XvZhhNC
+	eOFNSkDKKtMaciap9X8f8e4yDL/NW2z7u1sdK1df662TxrbxSyLqZLY/GW5+QTx8XxhsFWDU1tZVS
+	bRCx9s2c3xmPIs6yt8SSYxni9v07gBKSFRpuz7rck5k1Gpj1JtW9Y+Yu06XQ3gaUKkCdQgNFNs//z
+	7Fk4yzUeSWbU9lZuEb37mEx+FSnSrzvkRJ3193ycW1beq/vHtnkQbkNZli8heIlQNp8MvZSZMrV5y
+	fgIa9/LnK2iVRz8so/yQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jX2P9-0003vn-6H; Fri, 08 May 2020 12:47:03 +0000
-Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205])
+	id 1jX6ZJ-0005rK-Vh; Fri, 08 May 2020 17:13:49 +0000
+Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jX2P4-0003is-H8
- for linux-mtd@lists.infradead.org; Fri, 08 May 2020 12:47:01 +0000
-X-Alimail-AntiSpam: AC=CONTINUE; BC=0.07441439|-1; CH=green;
- DM=|CONTINUE|false|;
- DS=CONTINUE|ham_system_inform|0.221532-0.00382694-0.774641;
- FP=0|0|0|0|0|-1|-1|-1; HT=e02c03293; MF=liaoweixiong@allwinnertech.com; NM=1;
- PH=DS; RN=16; RT=16; SR=0; TI=SMTPD_---.HVGJWfr_1588942007; 
-Received: from 172.16.10.102(mailfrom:liaoweixiong@allwinnertech.com
- fp:SMTPD_---.HVGJWfr_1588942007)
- by smtp.aliyun-inc.com(10.147.41.121);
- Fri, 08 May 2020 20:46:48 +0800
-Subject: Re: [PATCH v3 02/11] pstore/blk: new support logger for block devices
-To: Kees Cook <keescook@chromium.org>
-References: <1585126506-18635-1-git-send-email-liaoweixiong@allwinnertech.com>
- <1585126506-18635-3-git-send-email-liaoweixiong@allwinnertech.com>
- <202005072301.57F73B61CC@keescook>
-From: WeiXiong Liao <liaoweixiong@allwinnertech.com>
-Message-ID: <6dcadbb0-8720-7973-8b33-747ae0579567@allwinnertech.com>
-Date: Fri, 8 May 2020 20:46:52 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+ id 1jX6ZG-0005l6-IJ
+ for linux-mtd@lists.infradead.org; Fri, 08 May 2020 17:13:48 +0000
+X-Originating-IP: 91.224.148.103
+Received: from localhost.localdomain (unknown [91.224.148.103])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 1B572240004;
+ Fri,  8 May 2020 17:13:40 +0000 (UTC)
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ <devicetree@vger.kernel.org>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ <linux-mtd@lists.infradead.org>
+Subject: [PATCH v4 0/8] New Arasan NAND controller driver
+Date: Fri,  8 May 2020 19:13:31 +0200
+Message-Id: <20200508171339.8052-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <202005072301.57F73B61CC@keescook>
-Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200508_054658_942212_C63426A5 
-X-CRM114-Status: GOOD (  19.55  )
+X-CRM114-CacheID: sfid-20200508_101346_881895_84292750 
+X-CRM114-Status: GOOD (  12.86  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,120 +68,73 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Rob Herring <robh@kernel.org>, Tony Luck <tony.luck@intel.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Jonathan Corbet <corbet@lwn.net>,
- Richard Weinberger <richard@nod.at>, Anton Vorontsov <anton@enomsg.org>,
- linux-doc@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-kernel@vger.kernel.org, Colin Cross <ccross@android.com>,
- linux-mtd@lists.infradead.org, Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
- "David S. Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Michal Simek <monstr@monstr.eu>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Naga Sureshkumar Relli <nagasure@xilinx.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-hi Kees Cook,
-
-On 2020/5/8 PM 2:07, Kees Cook wrote:
-> On Wed, Mar 25, 2020 at 04:54:57PM +0800, WeiXiong Liao wrote:
->> pstore/blk is similar to pstore/ram, but dump log to block device
->> rather than persistent ram.
->> [...]
->> +int psblk_register_blkdev(unsigned int major, psblk_panic_write_op panic_write)
->> +{
->> +	struct block_device *bdev;
->> +	struct psblk_device dev = {0};
->> +	struct bdev_info *binfo;
->> +	int ret = -ENODEV;
->> +	void *holder = blkdev;
->> +
->> +	binfo = psblk_get_bdev_info();
->> +	if (IS_ERR(binfo))
->> +		return PTR_ERR(binfo);
->> +
->> +	/* only allow driver matching the @blkdev */
->> +	if (!binfo->devt || MAJOR(binfo->devt) != major) {
->> +		pr_debug("invalid major %u (expect %u)\n",
->> +				major, MAJOR(binfo->devt));
->> +		return -ENODEV;
->> +	}
->> +
->> +	/* hold bdev exclusively */
->> +	bdev = psblk_get_bdev(holder);
->> +	if (IS_ERR(bdev)) {
->> +		pr_err("failed to open '%s'!\n", blkdev);
->> +		return PTR_ERR(bdev);
->> +	}
->> +
->> +	/* psblk_bdev must be assigned before register to pstore/blk */
->> +	psblk_bdev = bdev;
->> +	blkdev_panic_write = panic_write;
->> +
->> +	dev.total_size = psblk_bdev_size(bdev);
->> +	dev.panic_write = panic_write ? psblk_blk_panic_write : NULL;
->> +	dev.read = psblk_generic_blk_read;
->> +	dev.write = psblk_generic_blk_write;
->> +
->> +	ret = psblk_register_do(&dev);
->> +	if (ret)
->> +		goto err_put_bdev;
->> +
->> +	pr_info("using '%s'\n", blkdev);
->> +	return 0;
->> +
->> +err_put_bdev:
->> +	psblk_bdev = NULL;
->> +	blkdev_panic_write = NULL;
->> +	psblk_put_bdev(bdev, holder);
->> +	return ret;
->> +}
->> +EXPORT_SYMBOL_GPL(psblk_register_blkdev);
-> 
-> I've gotten this series refactored on top of current pstore, and I've
-> been making various bikeshed changes to names, etc, and as I went to go
-> start testing, I realized that nothing actually uses
-> psblk_register_blkdev().
-> 
-> It seems like it should be possible to just start using this on any
-> block device of the user's choosing. I assume the idea is to allow for
-> drivers to register panic_write handlers, but even without that, it'd be
-> nice to just be able to test this with something like /dev/loop0.
-> 
-
-Yes. psblk_register_blkdev() is there for block drivers to register
-panic_write()
-handlers. The panic_wrire() is used only when panic occurs. Not only the
-panic
-log, but also all data on dirty zones. I implement the panic_write() of mmc
-and nand on the platform of Allwinner, but I think it is not ready to
-submit to
-community.
-
-All other front-ends but dmesg for panic are available since pstore/blk
-provides
-the general write/read through IO stack. That's why /dev/loop0 seemed to
-works well.
-
-> What's your thinking on how this would happen? It seems like if
-> pstore/blk uses pstore/zone, and mtdpstore uses pstore/blk, there should
-> be a blkoops that uses pstore/blk too?  I guess I need to learn a bit> more about how block device probing works so pstore/blk can notice
-> devices as they're brought online, etc.
-> 
-
-pstore/blk provides all  user options and register function for device
-drivers.
-The mtdpstore is the implementation case using pstore/blk. How about
-'mmc_pstore' for mmc and *_pstore for others block device?
-
-I guess I need to learn more about how pstore/blk can notice devices too.
-I think pstore/blk can be better if block device can do like mtd device that
-not only notifies but also provides generic panic_write().
-
--- 
-WeiXiong Liao
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgpUaGlzIGlzIGEgZGVlcCByZXdvcmsgb2YgTmFnYSdzIEFyYXNhbiBOQU5EIGNvbnRy
+b2xsZXIgZHJpdmVyLiBUaGlzCnZlcnNpb24gaXMgdGhlIGZpbmFsIHZlcnNpb24gYW5kIHdvcmtz
+IHdpdGggc29mdHdhcmUgRUNDLiBJdCByZWxpZXMgb24KYSBwcmV2aW91cyBzZXJpZXMgY2FsbGVk
+ICJTdXBwb3J0aW5nIHJlc3RyaWN0ZWQgTkFORCBjb250cm9sbGVycyIgdGhhdApicmluZ3MgbW9y
+ZSBmbGV4aWJpbGl0eSB0byB0aGUgTkFORCB3aXRoIHRoZSBnb2FsIHRvIHN1cHBvcnQKcmVzdHJp
+Y3RlZCBjb250cm9sbGVycyBsaWtlIHRoaXMgb25lLgoKQ2hlZXJzLApNaXF1w6hsCgpDaGFuZ2Vz
+IGluIHY0OgoqIENvbGxlY3RlZCBSZXZpZXdlZC1ieSB0YWdzLgoqIERyb3BwZWQgSXZhbiBmcm9t
+IHRoZSBsaXN0IChkaWQgbm90IGZpbmQgaGlzIGNvbnRhY3QpLgoqIFdyYXBwZWQgY29tbWl0IGxv
+Zy4KKiBGaXhlZCB0eXBvcyBpbiB0aGUgY29tbWl0IGxvZ3MvY29tbWVudHMuCiogVG9vayBhdXRo
+b3JzaGlwIG9mIGFsbCBwYXRjaGVzLgoqIEFkZGVkIG1vcmUgZGV0YWlscyBvbiB0aGUgQkNIIGNo
+YW5nZXMuCiogRG9jdW1lbnRlZCB0aGUgbmV3IGJjaF9jb250cm9sIGVudHJ5LgoqIE1hZGUgdGhl
+IHN3YXAgYml0IGNhbGxzIGNvbmRpdGlvbmFscyBpbiBiY2hfZW5jb2RlIHRvIGF2b2lkCiAgcGVu
+YWxpemluZyBwZW9wbGUgdGhhdCBkbyBub3QgdXNlIGl0LgoqIFBhdGNoZWQgYmNoX2luaXQoKSB0
+byB0YWtlIGFuIGV4dHJhIGFyZ3VtZW50LgoqIERyb3BwZWQgY2FsbHMgdG8gbmFuZF9yZWxlYXNl
+KCksIHVzZSB0aGUgY29uc3RydWN0aW9uIHByb3Bvc2VkIGJ5CiAgQm9yaXMgaW5zdGVhZC4KKiBE
+cm9wcGVkIGEgdXNlbGVzcyBORkMgc3RydWN0IGZpZWxkLgoqIEFkZGVkIGEgY29tbWVudCBvbiBu
+b3QgaGF2aW5nIGFuIGludGVycnVwdCBmb3IgUkIuCiogQ2hlY2tlZCB0aGUgbnVtYmVyIG9mIHN0
+ZXBzIHJlcXVlc3RlZCBpcyBjb21wYXRpYmxlIHdpdGggdGhlCiAgY29udHJvbGxlciBsaW1pdGF0
+aW9ucy4KKiBSZXdvcmtlZCBhbmZjX2V4ZWNfb3AgYXMgc3VnZ2VzdGVkIHRvIHRyZWF0IHRoZSBj
+aGVja19vbmx5IGFyZ3VtZW50CiAgYW5vdGhlciB3YXkuCiogQ2hhbmdlIHRoZSBjb21tZW50IHN0
+YXRpbmcgdGhhdCB0aGUgY29udHJvbGxlciBoYXMgb25seSBvbmUgQ1MuCiogQ2xhcmlmaWVkIHRo
+ZSBpbnRlcnJ1cHRzIHNpZ25hbHMgdnMuIGludGVycnVwdCBzdGF0dXMgYml0cy4KCkNoYW5nZXMg
+aW4gdjM6CiogUHJlZml4IHNwZWNpZmljIGNsb2NrIGRlZmluaXRpb25zIHdpdGggWExOWCBhcyB0
+aGV5IGRvIG5vdCBhcHBseSBmb3IKICBhbnkgb3RoZXIgU29DIGFuZCBhcmUgYXR0YWNoZWQgdG8g
+YSBzaW5nbGUgY29tcGF0aWJsZS4KKiBVc2VkIGZpZWxkIGdldHRlcnMvc2V0dGVycyBhcyBkZWZp
+bmVkIGluIGJpdGZpZWxkLmguCiogRm9yY2UgY2FzdGluZyB0byB1MzIgYmVmb3JlIHNoaWZ0aW5n
+IHU4IHZhbHVlcyBieSA4IDE2IG9yIDI0IGJpdHMuCiogQ29tcGx5IHdpdGggdGhlIHJlY2VudCBj
+b3JlIGNoYW5nZXMgYW5kIHNlbGVjdCBtYW51YWxseQogIG5hbmRfbW9ub2xpdGhpY19yZWFkL3dy
+aXRlX3BhZ2VfcmF3KCkgaGVscGVycy4KKiBBZGQgTUFJTlRBSU5FUiBwYXRjaC4KKiBBZGQgYSBi
+aXQgZXh0cmFjdGlvbiBoZWxwZXIgaW4gdGhlIGNvcmUuCiogUmVuYW1lIEJDSCBmdW5jdGlvbnMu
+CiogQWRkIGEgc3dhcHBpbmcgYml0IG1lY2hhbmlzbSB0byBCQ0guCiogU3VwcG9ydCB0aGUgaGFy
+ZHdhcmUgRUNDIGVuZ2luZS4KCkNoYW5nZXMgaW4gdjI6CiogV29ya2luZyAtPmV4ZWNfb3AoKSBp
+bXBsZW1lbnRhdGlvbiByZWx5aW5nIG9uIGNvcmUgY2hhbmdlcy4KKiBEcm9wcGVkIHRoZSBFQ0Mg
+c3VwcG9ydCBmb3Igbm93LCB3aWxsIGJlIHBhcnQgb2YgYW5vdGhlciBzZXJpZXMgaWYKICB0aGlz
+IHBhdGNoIGlzIGFjY2VwdGVkLgoKTWlxdWVsIFJheW5hbCAoOCk6CiAgbGliL2JjaDogUmV3b3Jr
+IGEgbGl0dGxlIGJpdCB0aGUgZXhwb3J0ZWQgZnVuY3Rpb24gbmFtZXMKICBsaWIvYmNoOiBBbGxv
+dyBlYXN5IGJpdCBzd2FwcGluZwogIG10ZDogcmF3bmFuZDogRW5zdXJlIHRoZSBudW1iZXIgb2Yg
+Yml0ZmxpcHMgaXMgY29uc2lzdGVudAogIG10ZDogcmF3bmFuZDogQWRkIG5hbmRfZXh0cmFjdF9i
+aXRzKCkKICBNQUlOVEFJTkVSUzogQWRkIEFyYXNhbiBOQU5EIGNvbnRyb2xsZXIgYW5kIGJpbmRp
+bmdzCiAgZHQtYmluZGluZ3M6IG10ZDogRG9jdW1lbnQgQVJBU0FOIE5BTkQgYmluZGluZ3MKICBt
+dGQ6IHJhd25hbmQ6IGFyYXNhbjogQWRkIG5ldyBBcmFzYW4gTkFORCBjb250cm9sbGVyCiAgbXRk
+OiByYXduYW5kOiBhcmFzYW46IFN1cHBvcnQgdGhlIGhhcmR3YXJlIEJDSCBFQ0MgZW5naW5lCgog
+Li4uL2JpbmRpbmdzL210ZC9hcmFzYW4sbmFuZC1jb250cm9sbGVyLnlhbWwgIHwgICA2MyArCiBN
+QUlOVEFJTkVSUyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICA3ICsKIGRy
+aXZlcnMvbXRkL2RldmljZXMvZG9jZzMuYyAgICAgICAgICAgICAgICAgICB8ICAgMTAgKy0KIGRy
+aXZlcnMvbXRkL25hbmQvcmF3L0tjb25maWcgICAgICAgICAgICAgICAgICB8ICAgIDcgKwogZHJp
+dmVycy9tdGQvbmFuZC9yYXcvTWFrZWZpbGUgICAgICAgICAgICAgICAgIHwgICAgMSArCiBkcml2
+ZXJzL210ZC9uYW5kL3Jhdy9hcmFzYW4tbmFuZC1jb250cm9sbGVyLmMgfCAxMjI3ICsrKysrKysr
+KysrKysrKysrCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2Jhc2UuYyAgICAgICAgICAgICAg
+fCAgIDUyICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2JjaC5jICAgICAgICAgICAgICAg
+fCAgIDEwICstCiBpbmNsdWRlL2xpbnV4L2JjaC5oICAgICAgICAgICAgICAgICAgICAgICAgICAg
+fCAgIDExICstCiBpbmNsdWRlL2xpbnV4L210ZC9yYXduYW5kLmggICAgICAgICAgICAgICAgICAg
+fCAgICA0ICsKIGxpYi9iY2guYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8
+ICAxNTIgKy0KIDExIGZpbGVzIGNoYW5nZWQsIDE0ODAgaW5zZXJ0aW9ucygrKSwgNjQgZGVsZXRp
+b25zKC0pCiBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
+bmdzL210ZC9hcmFzYW4sbmFuZC1jb250cm9sbGVyLnlhbWwKIGNyZWF0ZSBtb2RlIDEwMDY0NCBk
+cml2ZXJzL210ZC9uYW5kL3Jhdy9hcmFzYW4tbmFuZC1jb250cm9sbGVyLmMKCi0tIAoyLjIwLjEK
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+TGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
+b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
