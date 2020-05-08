@@ -2,61 +2,84 @@ Return-Path: <SRS0=/+zL=6W=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,FAKE_REPLY_C,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E27CC38A2A
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 May 2020 06:07:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34AF4C47247
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 May 2020 06:40:30 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D150320720
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 May 2020 06:07:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CDCD520870
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 May 2020 06:40:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="iOM40pPl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D150320720
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gondor.apana.org.au
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gUj5VlyA";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="AGitAEjA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CDCD520870
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
-	List-Owner; bh=OGCdPEkBakBmpLk63TzQWrjJCnhCU168pCQzhlSs7S8=; b=iOM40pPlNZqHcg
-	QAfMkFhwaFSpMWRLZa5fDQ3yF4wI68+4DCN1GSgzGNjTvgcwq05Mml4d+zOI4nVkyC6cE2kpMVjFh
-	kaEW3GGcldrU3yu6/xq+klOj7A/tXq2nZ3fiYu9DfnAilpycEGSr2s0Wh5RZ+7zckG9i93cmngAug
-	uo3kBKBLmXQnPv7UchDz/FaWoGRb0Etj82VtUO90HiLVNrC2C41j4SPooZ8r+NPYO/6c4cWDpkbyB
-	U2d2kBmrHM+SKH7q4IoufqOpzzNt+I7RZ08NZyayXkoz2FhcV3SELG/aw2mN28OaMVAsYGWB9OUXT
-	Sr598SMDIJhzZuvIcT5Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=a/Q83nqwoi2anorYQYXrxGo3Ynml2ZNZvBowWmQ2wPQ=; b=gUj5VlyAe+Y5Ah
+	a3o5ziPx63cfh2VOQD8WafCUkHnxpvI4CuZhGviVlPWMRtLxLYi37ohkDVWxri2+eeQrwlMt8yart
+	CdjHrFlozydyAFZGsQanKc9ebTsl2sKp0Ebjc2HLiB1+5lnLWAJ7kf/dpoiMzRzpsiDO66Rdsuc0o
+	TG9ZURSS2zBTJy7Xbe9miR6cjhXamm/vBwwphaqzHnZsPqQdkO9AiYKfHFfdXbuXvD/cdmHmvx6dL
+	STe6t+KRLRP0lFEXV0gXyd19fGQmkE5c3r/Zm07W6UCBHDqDcIoUSNx18HNqSoyqo6Gi+Rcqmzagd
+	pXjpZtGVyvIUyf1gtG9Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jWwAU-0003yC-2Y; Fri, 08 May 2020 06:07:30 +0000
-Received: from helcar.hmeau.com ([216.24.177.18] helo=fornost.hmeau.com)
+	id 1jWwgD-0008DV-PG; Fri, 08 May 2020 06:40:17 +0000
+Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jWwAQ-0003sJ-PL
- for linux-mtd@lists.infradead.org; Fri, 08 May 2020 06:07:28 +0000
-Received: from gwarestrin.me.apana.org.au ([192.168.0.7]
- helo=gwarestrin.arnor.me.apana.org.au)
- by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
- id 1jWw3Z-00053g-CX; Fri, 08 May 2020 16:00:22 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation);
- Fri, 08 May 2020 16:07:01 +1000
-Date: Fri, 8 May 2020 16:07:01 +1000
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Eric Biggers <ebiggers@kernel.org>
-Subject: Re: [PATCH 00/20] crypto: introduce crypto_shash_tfm_digest()
-Message-ID: <20200508060700.GA24956@gondor.apana.org.au>
+ id 1jWwgA-0008Cd-GZ
+ for linux-mtd@lists.infradead.org; Fri, 08 May 2020 06:40:16 +0000
+Received: by mail-pg1-x544.google.com with SMTP id d22so432575pgk.3
+ for <linux-mtd@lists.infradead.org>; Thu, 07 May 2020 23:40:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=qiQcUnaOsTuYIdMr9pQhA9E0vZ/bgcYyUJ6NKwIoiA8=;
+ b=AGitAEjAmIYuKXy+lG43wJaRD8vsDY21A7oS+DPw/WXhdya0M2b77Hp2SjGy4IDeA7
+ 0mXKCAbk5gyUBklW+6pHdkHCR05KcSgPpdfyhoVoNan7SFIeqEK/VVjckLgwFwrYPTDZ
+ OpOCzvcEaiQZBjlPAHAPh8sFU5hMWxw/60ScM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=qiQcUnaOsTuYIdMr9pQhA9E0vZ/bgcYyUJ6NKwIoiA8=;
+ b=Cb0QP4wKOAlSlMcQ8TcgLik8T8/0LySbFFLIlY94T3vSEV6tS7M+nSPPjCk1uSHdU9
+ 9/3N3g/EBDXiwKtJE6yj1hUYhcWKTPxdG9CVYGZUUinqA5EpOZwH5QLlT2TwnoQWFCyi
+ BJ5iqUV+G/1Fj9roNrVCeLYeQSqP1+wQ9Sy8lpQQiGwSyA65mb6AE6uMVgv1vZnw9t7Z
+ zY3fvODa/F4gbMmSOgoutS5RoPyO9wNRd4whG58qyofZSAYZV8XpLZN78ELkgAVxYb+b
+ 7wWGwhXBXJcb0z4SQr03sBZ4Qe5cxV/Ik/6XuhaX11yyZPwConcmFbov8CY20yDq154w
+ thsA==
+X-Gm-Message-State: AGi0PuZzMctZ77RUi9BXoMPcM9BPUZgvUeGW0CMbrG/rIRRR4wsROGuB
+ B8I5Rg3fw6PViWMSvfF2cVwWTw==
+X-Google-Smtp-Source: APiQypLhC9jPG3VyD0chnEVvbTzcUfM6EnXrvWXuM3nZ1Jmch+lbDR8507FGYLZRkZnFAwwsLzJRtg==
+X-Received: by 2002:a63:b649:: with SMTP id v9mr832219pgt.402.1588920013880;
+ Thu, 07 May 2020 23:40:13 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+ by smtp.gmail.com with ESMTPSA id 140sm757265pfw.96.2020.05.07.23.40.12
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 07 May 2020 23:40:12 -0700 (PDT)
+From: Kees Cook <keescook@chromium.org>
+To: WeiXiong Liao <liaoweixiong@allwinnertech.com>
+Subject: [PATCH v4 00/12] pstore: mtd: support crash log to block and mtd
+ device
+Date: Thu,  7 May 2020 23:39:52 -0700
+Message-Id: <20200508064004.57898-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20200502053122.995648-1-ebiggers@kernel.org>
-X-Newsgroups: apana.lists.os.linux.cryptoapi
-User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200507_230727_110062_C3D58214 
-X-CRM114-Status: GOOD (  11.27  )
+X-CRM114-CacheID: sfid-20200507_234014_579344_607EF21A 
+X-CRM114-Status: UNSURE (   9.61  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,99 +91,109 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: thomas.lendacky@amd.com, jesper.nilsson@axis.com,
- linux-bluetooth@vger.kernel.org, k.konieczny@samsung.com,
- r.baldyga@samsung.com, ecryptfs@vger.kernel.org, k.opasiak@samsung.com,
- linux-nfs@vger.kernel.org, krzk@kernel.org, vz@mleia.com, gilad@benyossef.com,
- linux-sctp@vger.kernel.org, keyrings@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-crypto@vger.kernel.org,
- enric.balletbo@collabora.com, groeck@chromium.org, xuzaibo@huawei.com,
- lars.persson@axis.com, cychiang@chromium.org
+Cc: Petr Mladek <pmladek@suse.com>, Tony Luck <tony.luck@intel.com>,
+ Kees Cook <keescook@chromium.org>, linux-doc@vger.kernel.org,
+ Anton Vorontsov <anton@enomsg.org>, linux-kernel@vger.kernel.org,
+ Steven Rostedt <rostedt@goodmis.org>,
+ Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+ linux-mtd@lists.infradead.org, Colin Cross <ccross@android.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Eric Biggers <ebiggers@kernel.org> wrote:
-> This series introduces a helper function crypto_shash_tfm_digest() which
-> replaces the following common pattern:
-> 
->        {
->                SHASH_DESC_ON_STACK(desc, tfm);
->                int err;
-> 
->                desc->tfm = tfm;
-> 
->                err = crypto_shash_digest(desc, data, len, out);
-> 
->                shash_desc_zero(desc);
->        }
-> 
-> with:
-> 
->        err = crypto_shash_tfm_digest(tfm, data, len, out);
-> 
-> Patch 1 introduces this helper function, and patches 2-20 convert all
-> relevant users to use it.
-> 
-> IMO, it would be easiest to take all these patches through the crypto
-> tree.  But taking just the "crypto:" ones and then me trying to get the
-> rest merged later via subsystem trees is also an option.
-> 
-> Eric Biggers (20):
->  crypto: hash - introduce crypto_shash_tfm_digest()
->  crypto: arm64/aes-glue - use crypto_shash_tfm_digest()
->  crypto: essiv - use crypto_shash_tfm_digest()
->  crypto: artpec6 - use crypto_shash_tfm_digest()
->  crypto: ccp - use crypto_shash_tfm_digest()
->  crypto: ccree - use crypto_shash_tfm_digest()
->  crypto: hisilicon/sec2 - use crypto_shash_tfm_digest()
->  crypto: mediatek - use crypto_shash_tfm_digest()
->  crypto: n2 - use crypto_shash_tfm_digest()
->  crypto: omap-sham - use crypto_shash_tfm_digest()
->  crypto: s5p-sss - use crypto_shash_tfm_digest()
->  nfc: s3fwrn5: use crypto_shash_tfm_digest()
->  fscrypt: use crypto_shash_tfm_digest()
->  ecryptfs: use crypto_shash_tfm_digest()
->  nfsd: use crypto_shash_tfm_digest()
->  ubifs: use crypto_shash_tfm_digest()
->  Bluetooth: use crypto_shash_tfm_digest()
->  sctp: use crypto_shash_tfm_digest()
->  KEYS: encrypted: use crypto_shash_tfm_digest()
->  ASoC: cros_ec_codec: use crypto_shash_tfm_digest()
-> 
-> arch/arm64/crypto/aes-glue.c               |  4 +--
-> crypto/essiv.c                             |  4 +--
-> crypto/shash.c                             | 16 +++++++++
-> drivers/crypto/axis/artpec6_crypto.c       | 10 ++----
-> drivers/crypto/ccp/ccp-crypto-sha.c        |  9 ++---
-> drivers/crypto/ccree/cc_cipher.c           |  9 ++---
-> drivers/crypto/hisilicon/sec2/sec_crypto.c |  5 ++-
-> drivers/crypto/mediatek/mtk-sha.c          |  7 ++--
-> drivers/crypto/n2_core.c                   |  7 ++--
-> drivers/crypto/omap-sham.c                 | 20 +++--------
-> drivers/crypto/s5p-sss.c                   | 39 ++++------------------
-> drivers/nfc/s3fwrn5/firmware.c             | 10 +-----
-> fs/crypto/fname.c                          |  7 +---
-> fs/crypto/hkdf.c                           |  6 +---
-> fs/ecryptfs/crypto.c                       | 17 +---------
-> fs/nfsd/nfs4recover.c                      | 26 ++++-----------
-> fs/ubifs/auth.c                            | 20 ++---------
-> fs/ubifs/master.c                          |  9 ++---
-> fs/ubifs/replay.c                          | 14 ++------
-> include/crypto/hash.h                      | 19 +++++++++++
-> net/bluetooth/smp.c                        |  6 +---
-> net/sctp/auth.c                            | 10 ++----
-> net/sctp/sm_make_chunk.c                   | 23 +++++--------
-> security/keys/encrypted-keys/encrypted.c   | 18 ++--------
-> sound/soc/codecs/cros_ec_codec.c           |  9 +----
-> 25 files changed, 95 insertions(+), 229 deletions(-)
+Hi!
 
-All applied.  Thanks.
+This is a v4 of WeiXiong Liao's series. I spent time porting this on top
+of the latest pstore (mainly to support max_reason), and I started making
+various other changes, mostly just bikeshed stuff.
+
+Changes since v3:
+	fixing up various typos, alternate phrases, and language. For
+	example:
+	        recorder -> frontend
+	        Pstore -> pstore
+
+	filenames:
+	        rename pstore_*.c -> *.c and adjust Makefile
+		(I decided fs/pstore/pstore_zone.c repeated "pstore" one too many time. ;)
+		pstore-block.rst -> pstore_blk.rst
+
+	conversion of dump_oops -> max_reason
+
+	refactor/rename get_reason_str() and move to kernel/printk/printk.c
+
+	psz* -> pstore_zone* renamings:
+	        psblk_usr_info() ->... pstore_blk_usr_info()
+	        psz_zone -> pstore_zone
+	        pszinfo -> pstore_zone_info
+
+	register_pstore_zone():
+	        registration reporting via pr_cont(), with max_reason
+	        remove needless get/put_module()
+
+	public API renamings: VERB_NOUN()
+	        psz_*register() -> *register_pstore_zone()
+
+v3: https://lore.kernel.org/lkml/1585126506-18635-1-git-send-email-liaoweixiong@allwinnertech.com/
+v2: https://lore.kernel.org/lkml/1581078355-19647-1-git-send-email-liaoweixiong@allwinnertech.com/
+v1: https://lore.kernel.org/lkml/1579482233-2672-1-git-send-email-liaoweixiong@allwinnertech.com/
+
+So far, I've identified the following stuff left to do:
+        - settle on various function/struct renamings
+        - review locking
+        - implement ramoops-like probe feature for pstore/blk
+	- spend time seeing how ramoops might use pstore/zone
+
+But I wanted to get this update published just to show what I've done
+so far in my bikeshed review. :)
+
+Thanks!
+
+-Kees
+
+
+Kees Cook (1):
+  printk: Introduce kmsg_dump_reason_str()
+
+WeiXiong Liao (11):
+  pstore/zone: Introduce common layer to manage storage zones
+  pstore/blk: Introduce backend for block devices
+  pstore/blk: Provide way to choose pstore frontend support
+  pstore/blk: Add support for pmsg frontend
+  pstore/blk: Add console frontend support
+  pstore/blk: Add ftrace frontend support
+  Documentation: Add details for pstore/blk
+  pstore/zone: Provide way to skip "broken" zone for MTD devices
+  pstore/blk: Provide way to query pstore configuration
+  pstore/blk: Support non-block storage devices
+  mtd: Support kmsg dumper based on pstore/blk
+
+ Documentation/admin-guide/pstore-blk.rst |  243 ++++
+ MAINTAINERS                              |    1 +
+ drivers/mtd/Kconfig                      |   10 +
+ drivers/mtd/Makefile                     |    1 +
+ drivers/mtd/mtdpstore.c                  |  564 ++++++++
+ fs/pstore/Kconfig                        |  109 ++
+ fs/pstore/Makefile                       |    6 +
+ fs/pstore/blk.c                          |  481 +++++++
+ fs/pstore/platform.c                     |   22 +-
+ fs/pstore/zone.c                         | 1498 ++++++++++++++++++++++
+ include/linux/kmsg_dump.h                |    7 +
+ include/linux/pstore_blk.h               |   77 ++
+ include/linux/pstore_zone.h              |   60 +
+ kernel/printk/printk.c                   |   21 +
+ 14 files changed, 3079 insertions(+), 21 deletions(-)
+ create mode 100644 Documentation/admin-guide/pstore-blk.rst
+ create mode 100644 drivers/mtd/mtdpstore.c
+ create mode 100644 fs/pstore/blk.c
+ create mode 100644 fs/pstore/zone.c
+ create mode 100644 include/linux/pstore_blk.h
+ create mode 100644 include/linux/pstore_zone.h
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.20.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
