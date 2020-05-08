@@ -5,61 +5,56 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9D46C38A2A
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 May 2020 17:16:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43605C38A2A
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 May 2020 17:18:30 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 913A821775
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 May 2020 17:16:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 14C2721775
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 May 2020 17:18:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KolFFt1D"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 913A821775
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Enz/NgI7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 14C2721775
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MKtF0tIQOd/DoMW9pghcO4kNT5ze0VJY47WvXUUdtss=; b=KolFFt1DQfy4Tr
-	wGGgXBhrxaZE+FHvHR6nUpw2hP7lqaDu7Oy+m2sGmTBjpgXOV5JxVyMFr0UX9RMvV5cOZlx6miulE
-	jvfWeRAxqi44qtnROW1rEkrO5I1V/VjKEn01Uascu07LO8ztMdwPgxxbVvqjgiNR1BjgxITYtsdbj
-	ReWjk5wg48pw2e9Ly7+pG+atL4x5HiZ3NQGU4xAJiP91QklNYH7bb9PRqFiF7wnaaPQ1cfS9NMoFe
-	fyFNCoQpdusd0msnUFKiAZRdEZ5cKcRS+lhh42VkyLP4hBJ4Eyc81n6GIoZ2UF8ueM6lQgbgAC+W5
-	WV6P7KAjSFGnXjevsR7g==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=VyrXUeum94N6J3Hkl5VkznHfEdWubtK40Q8+DpwloME=; b=Enz/NgI7Z7iP48
+	SwWOw7bCrL043fNa8Gu+bykaf9wIbAjRlKfE1MOhcGeD0LlcoLpRNBlMKoRcNtoiCM2CgX1mDkYkH
+	LOsxQIRGrEj4Zij5lICmB9FiiGFyErv34jmR++IitxDJj3szZv7tAam8KAD+OkBaxMB9Tn/mz46zB
+	nVryGGIDAzGd47ZVMpxFTXF/gUcVTIEYLE7LTOTxHScnScuLPkpoqC3UyEPmv9I7lNKSv1wECPFJ/
+	0Udd0cwtM0aMPYCvpKidGR5xzFNm/yVS+nLgHDmxHCIhp4v7Hy7rm79twe0wLSLA0V5DwDK7LV0GS
+	k3XZSnmS672NS0O6EP4A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jX6bX-0002F0-95; Fri, 08 May 2020 17:16:07 +0000
-Received: from relay1-d.mail.gandi.net ([217.70.183.193])
+	id 1jX6da-0002yX-RQ; Fri, 08 May 2020 17:18:14 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jX6ZQ-0005wo-SJ
- for linux-mtd@lists.infradead.org; Fri, 08 May 2020 17:14:01 +0000
+ id 1jX6dX-0002yC-4f
+ for linux-mtd@lists.infradead.org; Fri, 08 May 2020 17:18:13 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id B846B240006;
- Fri,  8 May 2020 17:13:53 +0000 (UTC)
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 02047FF805;
+ Fri,  8 May 2020 17:18:06 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- <devicetree@vger.kernel.org>, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>,
+To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH v4 8/8] mtd: rawnand: arasan: Support the hardware BCH ECC
- engine
-Date: Fri,  8 May 2020 19:13:39 +0200
-Message-Id: <20200508171339.8052-9-miquel.raynal@bootlin.com>
+Subject: [PATCH] mtd: rawnand: gpmi: Use nand_extract_bits()
+Date: Fri,  8 May 2020 19:18:05 +0200
+Message-Id: <20200508171805.8627-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200508171339.8052-1-miquel.raynal@bootlin.com>
-References: <20200508171339.8052-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200508_101357_258055_B21CF936 
-X-CRM114-Status: GOOD (  20.73  )
+X-CRM114-CacheID: sfid-20200508_101811_457825_CBE9E04F 
+X-CRM114-Status: GOOD (  18.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,433 +66,149 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Michal Simek <monstr@monstr.eu>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Naga Sureshkumar Relli <nagasure@xilinx.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+Cc: Han Xu <han.xu@nxp.com>, Boris Brezillon <boris.brezillon@collabora.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add support for the hardware ECC BCH engine.
-
-Please mind that this engine has an important limitation:
-BCH implementation does not inform the user when an uncorrectable ECC
-error occurs. To workaround this, we avoid using the hardware engine
-in the read path and do the computation with the software BCH
-implementation, which is faster than mixing hardware (for correction)
-and software (for verification).
-
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/mtd/nand/raw/arasan-nand-controller.c | 342 ++++++++++++++++++
- 1 file changed, 342 insertions(+)
-
-diff --git a/drivers/mtd/nand/raw/arasan-nand-controller.c b/drivers/mtd/nand/raw/arasan-nand-controller.c
-index feba72405f6c..22a28d98dec6 100644
---- a/drivers/mtd/nand/raw/arasan-nand-controller.c
-+++ b/drivers/mtd/nand/raw/arasan-nand-controller.c
-@@ -10,6 +10,7 @@
-  *   Naga Sureshkumar Relli <nagasure@xilinx.com>
-  */
- 
-+#include <linux/bch.h>
- #include <linux/bitfield.h>
- #include <linux/clk.h>
- #include <linux/delay.h>
-@@ -144,6 +145,11 @@ struct anfc_op {
-  * @strength:		Register value of the ECC strength
-  * @raddr_cycles:	Row address cycle information
-  * @caddr_cycles:	Column address cycle information
-+ * @ecc_bits:		Exact number of ECC bits per syndrome
-+ * @ecc_total:		Total number of ECC bytes
-+ * @errloc:		Array of errors located with soft BCH
-+ * @hw_ecc:		Buffer to store syndromes computed by hardware
-+ * @bch:		BCH structure
-  */
- struct anand {
- 	struct list_head node;
-@@ -157,6 +163,11 @@ struct anand {
- 	u32 strength;
- 	u16 raddr_cycles;
- 	u16 caddr_cycles;
-+	unsigned int ecc_bits;
-+	unsigned int ecc_total;
-+	unsigned int *errloc;
-+	u8 *hw_ecc;
-+	struct bch_control *bch;
- };
- 
- /**
-@@ -253,6 +264,194 @@ static int anfc_len_to_steps(struct nand_chip *chip, unsigned int len)
- 	return steps;
- }
- 
-+/*
-+ * When using the embedded hardware ECC engine, the controller is in charge of
-+ * feeding the engine with, first, the ECC residue present in the data array.
-+ * A typical read operation is:
-+ * 1/ Assert the read operation by sending the relevant command/address cycles
-+ *    but targeting the column of the first ECC bytes in the OOB area instead of
-+ *    the main data directly.
-+ * 2/ After having read the relevant number of ECC bytes, the controller uses
-+ *    the RNDOUT/RNDSTART commands which are set into the "ECC Spare Command
-+ *    Register" to move the pointer back at the beginning of the main data.
-+ * 3/ It will read the content of the main area for a given size (pktsize) and
-+ *    will feed the ECC engine with this buffer again.
-+ * 4/ The ECC engine derives the ECC bytes for the given data and compare them
-+ *    with the ones already received. It eventually trigger status flags and
-+ *    then set the "Buffer Read Ready" flag.
-+ * 5/ The corrected data is then available for reading from the data port
-+ *    register.
-+ *
-+ * The hardware BCH ECC engine is known to be inconstent in BCH mode and never
-+ * reports uncorrectable errors. Because of this bug, we have to use the
-+ * software BCH implementation in the read path.
-+ */
-+static int anfc_read_page_hw_ecc(struct nand_chip *chip, u8 *buf,
-+				 int oob_required, int page)
-+{
-+	struct arasan_nfc *nfc = to_anfc(chip->controller);
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	struct anand *anand = to_anand(chip);
-+	unsigned int len = mtd->writesize + (oob_required ? mtd->oobsize : 0);
-+	unsigned int max_bitflips = 0;
-+	dma_addr_t paddr;
-+	int step, ret;
-+	struct anfc_op nfc_op = {
-+		.pkt_reg =
-+			PKT_SIZE(chip->ecc.size) |
-+			PKT_STEPS(chip->ecc.steps),
-+		.addr1_reg =
-+			(page & 0xFF) << (8 * (anand->caddr_cycles)) |
-+			(((page >> 8) & 0xFF) << (8 * (1 + anand->caddr_cycles))),
-+		.addr2_reg =
-+			((page >> 16) & 0xFF) |
-+			ADDR2_STRENGTH(anand->strength) |
-+			ADDR2_CS(anand->cs),
-+		.cmd_reg =
-+			CMD_1(NAND_CMD_READ0) |
-+			CMD_2(NAND_CMD_READSTART) |
-+			CMD_PAGE_SIZE(anand->page_sz) |
-+			CMD_DMA_ENABLE |
-+			CMD_NADDRS(anand->caddr_cycles +
-+				   anand->raddr_cycles),
-+		.prog_reg = PROG_PGRD,
-+	};
-+
-+	paddr = dma_map_single(nfc->dev, (void *)buf, len, DMA_FROM_DEVICE);
-+	if (dma_mapping_error(nfc->dev, paddr)) {
-+		dev_err(nfc->dev, "Buffer mapping error");
-+		return -EIO;
-+	}
-+
-+	writel_relaxed(paddr, nfc->base + DMA_ADDR0_REG);
-+	writel_relaxed((paddr >> 32), nfc->base + DMA_ADDR1_REG);
-+
-+	anfc_trigger_op(nfc, &nfc_op);
-+
-+	ret = anfc_wait_for_event(nfc, XFER_COMPLETE);
-+	dma_unmap_single(nfc->dev, paddr, len, DMA_FROM_DEVICE);
-+	if (ret) {
-+		dev_err(nfc->dev, "Error reading page %d\n", page);
-+		return ret;
-+	}
-+
-+	/* Store the raw OOB bytes as well */
-+	ret = nand_change_read_column_op(chip, mtd->writesize, chip->oob_poi,
-+					 mtd->oobsize, 0);
-+	if (ret)
-+		return ret;
-+
-+	/*
-+	 * For each step, compute by softare the BCH syndrome over the raw data.
-+	 * Compare the theoretical amount of errors and compare with the
-+	 * hardware engine feedback.
-+	 */
-+	for (step = 0; step < chip->ecc.steps; step++) {
-+		u8 *raw_buf = &buf[step * chip->ecc.size];
-+		unsigned int bit, byte;
-+		int bf, i;
-+
-+		/* Extract the syndrome, it is not necessarily aligned */
-+		memset(anand->hw_ecc, 0, chip->ecc.bytes);
-+		nand_extract_bits(anand->hw_ecc, 0,
-+				  &chip->oob_poi[mtd->oobsize - anand->ecc_total],
-+				  anand->ecc_bits * step, anand->ecc_bits);
-+
-+		bf = bch_decode(anand->bch, raw_buf, chip->ecc.size,
-+				anand->hw_ecc, NULL, NULL, anand->errloc);
-+		if (!bf) {
-+			continue;
-+		} else if (bf > 0) {
-+			for (i = 0; i < bf; i++) {
-+				/* Only correct the data, not the syndrome */
-+				if (anand->errloc[i] < (chip->ecc.size * 8)) {
-+					bit = BIT(anand->errloc[i] & 7);
-+					byte = anand->errloc[i] >> 3;
-+					raw_buf[byte] ^= bit;
-+				}
-+			}
-+
-+			mtd->ecc_stats.corrected += bf;
-+			max_bitflips = max_t(unsigned int, max_bitflips, bf);
-+
-+			continue;
-+		}
-+
-+		bf = nand_check_erased_ecc_chunk(raw_buf, chip->ecc.size,
-+						 NULL, 0, NULL, 0,
-+						 chip->ecc.strength);
-+		if (bf > 0) {
-+			mtd->ecc_stats.corrected += bf;
-+			max_bitflips = max_t(unsigned int, max_bitflips, bf);
-+			memset(raw_buf, 0xFF, chip->ecc.size);
-+		} else if (bf < 0) {
-+			mtd->ecc_stats.failed++;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int anfc_write_page_hw_ecc(struct nand_chip *chip, const u8 *buf,
-+				  int oob_required, int page)
-+{
-+	struct anand *anand = to_anand(chip);
-+	struct arasan_nfc *nfc = to_anfc(chip->controller);
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	unsigned int len = mtd->writesize + (oob_required ? mtd->oobsize : 0);
-+	dma_addr_t paddr;
-+	int ret;
-+	struct anfc_op nfc_op = {
-+		.pkt_reg =
-+			PKT_SIZE(chip->ecc.size) |
-+			PKT_STEPS(chip->ecc.steps),
-+		.addr1_reg =
-+			(page & 0xFF) << (8 * (anand->caddr_cycles)) |
-+			(((page >> 8) & 0xFF) << (8 * (1 + anand->caddr_cycles))),
-+		.addr2_reg =
-+			((page >> 16) & 0xFF) |
-+			ADDR2_STRENGTH(anand->strength) |
-+			ADDR2_CS(anand->cs),
-+		.cmd_reg =
-+			CMD_1(NAND_CMD_SEQIN) |
-+			CMD_2(NAND_CMD_PAGEPROG) |
-+			CMD_PAGE_SIZE(anand->page_sz) |
-+			CMD_DMA_ENABLE |
-+			CMD_NADDRS(anand->caddr_cycles +
-+				   anand->raddr_cycles) |
-+			CMD_ECC_ENABLE,
-+		.prog_reg = PROG_PGPROG,
-+	};
-+
-+	writel_relaxed(anand->ecc_conf, nfc->base + ECC_CONF_REG);
-+	writel_relaxed(ECC_SP_CMD1(NAND_CMD_RNDIN) |
-+		       ECC_SP_ADDRS(anand->caddr_cycles),
-+		       nfc->base + ECC_SP_REG);
-+
-+	paddr = dma_map_single(nfc->dev, (void *)buf, len, DMA_TO_DEVICE);
-+	if (dma_mapping_error(nfc->dev, paddr)) {
-+		dev_err(nfc->dev, "Buffer mapping error");
-+		return -EIO;
-+	}
-+
-+	writel_relaxed(paddr, nfc->base + DMA_ADDR0_REG);
-+	writel_relaxed((paddr >> 32), nfc->base + DMA_ADDR1_REG);
-+
-+	anfc_trigger_op(nfc, &nfc_op);
-+	ret = anfc_wait_for_event(nfc, XFER_COMPLETE);
-+	dma_unmap_single(nfc->dev, paddr, len, DMA_TO_DEVICE);
-+	if (ret) {
-+		dev_err(nfc->dev, "Error writing page %d\n", page);
-+		return ret;
-+	}
-+
-+	/* Spare data is not protected */
-+	if (oob_required)
-+		ret = nand_write_oob_std(chip, page);
-+
-+	return ret;
-+}
-+
- /* NAND framework ->exec_op() hooks and related helpers */
- static int anfc_parse_instructions(struct nand_chip *chip,
- 				   const struct nand_subop *subop,
-@@ -611,6 +810,138 @@ static int anfc_setup_data_interface(struct nand_chip *chip, int target,
- 	return 0;
- }
- 
-+static int anfc_calc_hw_ecc_bytes(int step_size, int strength)
-+{
-+	unsigned int bch_gf_mag, ecc_bits;
-+
-+	switch (step_size) {
-+	case SZ_512:
-+		bch_gf_mag = 13;
-+		break;
-+	case SZ_1K:
-+		bch_gf_mag = 14;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	ecc_bits = bch_gf_mag * strength;
-+
-+	return DIV_ROUND_UP(ecc_bits, 8);
-+}
-+
-+static const int anfc_hw_ecc_512_strengths[] = {4, 8, 12};
-+
-+static const int anfc_hw_ecc_1024_strengths[] = {24};
-+
-+static const struct nand_ecc_step_info anfc_hw_ecc_step_infos[] = {
-+	{
-+		.stepsize = SZ_512,
-+		.strengths = anfc_hw_ecc_512_strengths,
-+		.nstrengths = ARRAY_SIZE(anfc_hw_ecc_512_strengths),
-+	},
-+	{
-+		.stepsize = SZ_1K,
-+		.strengths = anfc_hw_ecc_1024_strengths,
-+		.nstrengths = ARRAY_SIZE(anfc_hw_ecc_1024_strengths),
-+	},
-+};
-+
-+static const struct nand_ecc_caps anfc_hw_ecc_caps = {
-+	.stepinfos = anfc_hw_ecc_step_infos,
-+	.nstepinfos = ARRAY_SIZE(anfc_hw_ecc_step_infos),
-+	.calc_ecc_bytes = anfc_calc_hw_ecc_bytes,
-+};
-+
-+static int anfc_init_hw_ecc_controller(struct arasan_nfc *nfc,
-+				       struct nand_chip *chip)
-+{
-+	struct anand *anand = to_anand(chip);
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	struct nand_ecc_ctrl *ecc = &chip->ecc;
-+	unsigned int bch_prim_poly = 0, bch_gf_mag = 0, ecc_offset;
-+	int ret;
-+
-+	switch (mtd->writesize) {
-+	case SZ_512:
-+	case SZ_2K:
-+	case SZ_4K:
-+	case SZ_8K:
-+	case SZ_16K:
-+		break;
-+	default:
-+		dev_err(nfc->dev, "Unsupported page size %d\n", mtd->writesize);
-+		return -EINVAL;
-+	}
-+
-+	ret = nand_ecc_choose_conf(chip, &anfc_hw_ecc_caps, mtd->oobsize);
-+	if (ret)
-+		return ret;
-+
-+	switch (ecc->strength) {
-+	case 12:
-+		anand->strength = 0x1;
-+		break;
-+	case 8:
-+		anand->strength = 0x2;
-+		break;
-+	case 4:
-+		anand->strength = 0x3;
-+		break;
-+	case 24:
-+		anand->strength = 0x4;
-+		break;
-+	default:
-+		dev_err(nfc->dev, "Unsupported strength %d\n", ecc->strength);
-+		return -EINVAL;
-+	}
-+
-+	switch (ecc->size) {
-+	case SZ_512:
-+		bch_gf_mag = 13;
-+		bch_prim_poly = 0x201b;
-+		break;
-+	case SZ_1K:
-+		bch_gf_mag = 14;
-+		bch_prim_poly = 0x4443;
-+		break;
-+	default:
-+		dev_err(nfc->dev, "Unsupported step size %d\n", ecc->strength);
-+		return -EINVAL;
-+	}
-+
-+	mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
-+
-+	ecc->steps = mtd->writesize / ecc->size;
-+	ecc->algo = NAND_ECC_BCH;
-+	anand->ecc_bits = bch_gf_mag * ecc->strength;
-+	ecc->bytes = DIV_ROUND_UP(anand->ecc_bits, 8);
-+	anand->ecc_total = DIV_ROUND_UP(anand->ecc_bits * ecc->steps, 8);
-+	ecc_offset = mtd->writesize + mtd->oobsize - anand->ecc_total;
-+	anand->ecc_conf = ECC_CONF_COL(ecc_offset) |
-+			  ECC_CONF_LEN(anand->ecc_total) |
-+			  ECC_CONF_BCH_EN;
-+
-+	anand->errloc = devm_kmalloc_array(nfc->dev, ecc->strength,
-+					   sizeof(*anand->errloc), GFP_KERNEL);
-+	if (!anand->errloc)
-+		return -ENOMEM;
-+
-+	anand->hw_ecc = devm_kmalloc(nfc->dev, ecc->bytes, GFP_KERNEL);
-+	if (!anand->hw_ecc)
-+		return -ENOMEM;
-+
-+	/* Enforce bit swapping to fit the hardware */
-+	anand->bch = bch_init(bch_gf_mag, ecc->strength, bch_prim_poly, true);
-+	if (!anand->bch)
-+		return -EINVAL;
-+
-+	ecc->read_page = anfc_read_page_hw_ecc;
-+	ecc->write_page = anfc_write_page_hw_ecc;
-+
-+	return 0;
-+}
-+
- static int anfc_attach_chip(struct nand_chip *chip)
- {
- 	struct anand *anand = to_anand(chip);
-@@ -661,6 +992,8 @@ static int anfc_attach_chip(struct nand_chip *chip)
- 	case NAND_ECC_ON_DIE:
- 		break;
- 	case NAND_ECC_HW:
-+		ret = anfc_init_hw_ecc_controller(nfc, chip);
-+		break;
- 	default:
- 		dev_err(nfc->dev, "Unsupported ECC mode: %d\n",
- 			chip->ecc.mode);
-@@ -670,10 +1003,19 @@ static int anfc_attach_chip(struct nand_chip *chip)
- 	return ret;
- }
- 
-+static void anfc_detach_chip(struct nand_chip *chip)
-+{
-+	struct anand *anand = to_anand(chip);
-+
-+	if (anand->bch)
-+		bch_free(anand->bch);
-+}
-+
- static const struct nand_controller_ops anfc_ops = {
- 	.exec_op = anfc_exec_op,
- 	.setup_data_interface = anfc_setup_data_interface,
- 	.attach_chip = anfc_attach_chip,
-+	.detach_chip = anfc_detach_chip,
- };
- 
- static int anfc_chip_init(struct arasan_nfc *nfc, struct device_node *np)
--- 
-2.20.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RHJvcCB0aGUgdXNlIG9mIGdwbWlfY29weV9iaXRzKCkgaW4gZmF2b3Igb2YgdGhlIE5BTkQgaGVs
+cGVyCm5hbmRfZXh0cmFjdF9iaXRzKCkuCgpTaWduZWQtb2ZmLWJ5OiBNaXF1ZWwgUmF5bmFsIDxt
+aXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPgotLS0KCkhlbGxvLApUaGlzIHBhdGNoIGFwcGxpZXMg
+b24gdG9wIG9mOgpodHRwczovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2xpbnV4LW10
+ZC8yMDIwLU1heS8wOTU4MzEuaHRtbApDaGVlcnMsCk1pcXXDqGwKCiBkcml2ZXJzL210ZC9uYW5k
+L3Jhdy9ncG1pLW5hbmQvZ3BtaS1uYW5kLmMgfCAxNzQgKystLS0tLS0tLS0tLS0tLS0tLS0tCiAx
+IGZpbGUgY2hhbmdlZCwgMTAgaW5zZXJ0aW9ucygrKSwgMTY0IGRlbGV0aW9ucygtKQoKZGlmZiAt
+LWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L2dwbWktbmFuZC9ncG1pLW5hbmQuYyBiL2RyaXZl
+cnMvbXRkL25hbmQvcmF3L2dwbWktbmFuZC9ncG1pLW5hbmQuYwppbmRleCBjYzRjYjE5MDk2OGUu
+Ljk3YjQ2MGQ4ZDBjMSAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvZ3BtaS1uYW5k
+L2dwbWktbmFuZC5jCisrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2dwbWktbmFuZC9ncG1pLW5h
+bmQuYwpAQCAtODM0LDE1OCArODM0LDYgQEAgc3RhdGljIGJvb2wgcHJlcGFyZV9kYXRhX2RtYShz
+dHJ1Y3QgZ3BtaV9uYW5kX2RhdGEgKnRoaXMsIGNvbnN0IHZvaWQgKmJ1ZiwKIAlyZXR1cm4gZmFs
+c2U7CiB9CiAKLS8qKgotICogZ3BtaV9jb3B5X2JpdHMgLSBjb3B5IGJpdHMgZnJvbSBvbmUgbWVt
+b3J5IHJlZ2lvbiB0byBhbm90aGVyCi0gKiBAZHN0OiBkZXN0aW5hdGlvbiBidWZmZXIKLSAqIEBk
+c3RfYml0X29mZjogYml0IG9mZnNldCB3ZSdyZSBzdGFydGluZyB0byB3cml0ZSBhdAotICogQHNy
+Yzogc291cmNlIGJ1ZmZlcgotICogQHNyY19iaXRfb2ZmOiBiaXQgb2Zmc2V0IHdlJ3JlIHN0YXJ0
+aW5nIHRvIHJlYWQgZnJvbQotICogQG5iaXRzOiBudW1iZXIgb2YgYml0cyB0byBjb3B5Ci0gKgot
+ICogVGhpcyBmdW5jdGlvbnMgY29waWVzIGJpdHMgZnJvbSBvbmUgbWVtb3J5IHJlZ2lvbiB0byBh
+bm90aGVyLCBhbmQgaXMgdXNlZCBieQotICogdGhlIEdQTUkgZHJpdmVyIHRvIGNvcHkgRUNDIHNl
+Y3Rpb25zIHdoaWNoIGFyZSBub3QgZ3VhcmFudGVlZCB0byBiZSBieXRlCi0gKiBhbGlnbmVkLgot
+ICoKLSAqIHNyYyBhbmQgZHN0IHNob3VsZCBub3Qgb3ZlcmxhcC4KLSAqCi0gKi8KLXN0YXRpYyB2
+b2lkIGdwbWlfY29weV9iaXRzKHU4ICpkc3QsIHNpemVfdCBkc3RfYml0X29mZiwgY29uc3QgdTgg
+KnNyYywKLQkJCSAgIHNpemVfdCBzcmNfYml0X29mZiwgc2l6ZV90IG5iaXRzKQotewotCXNpemVf
+dCBpOwotCXNpemVfdCBuYnl0ZXM7Ci0JdTMyIHNyY19idWZmZXIgPSAwOwotCXNpemVfdCBiaXRz
+X2luX3NyY19idWZmZXIgPSAwOwotCi0JaWYgKCFuYml0cykKLQkJcmV0dXJuOwotCi0JLyoKLQkg
+KiBNb3ZlIHNyYyBhbmQgZHN0IHBvaW50ZXJzIHRvIHRoZSBjbG9zZXN0IGJ5dGUgcG9pbnRlciBh
+bmQgc3RvcmUgYml0Ci0JICogb2Zmc2V0cyB3aXRoaW4gYSBieXRlLgotCSAqLwotCXNyYyArPSBz
+cmNfYml0X29mZiAvIDg7Ci0Jc3JjX2JpdF9vZmYgJT0gODsKLQotCWRzdCArPSBkc3RfYml0X29m
+ZiAvIDg7Ci0JZHN0X2JpdF9vZmYgJT0gODsKLQotCS8qCi0JICogSW5pdGlhbGl6ZSB0aGUgc3Jj
+X2J1ZmZlciB2YWx1ZSB3aXRoIGJpdHMgYXZhaWxhYmxlIGluIHRoZSBmaXJzdAotCSAqIGJ5dGUg
+b2YgZGF0YSBzbyB0aGF0IHdlIGVuZCB1cCB3aXRoIGEgYnl0ZSBhbGlnbmVkIHNyYyBwb2ludGVy
+LgotCSAqLwotCWlmIChzcmNfYml0X29mZikgewotCQlzcmNfYnVmZmVyID0gc3JjWzBdID4+IHNy
+Y19iaXRfb2ZmOwotCQlpZiAobmJpdHMgPj0gKDggLSBzcmNfYml0X29mZikpIHsKLQkJCWJpdHNf
+aW5fc3JjX2J1ZmZlciArPSA4IC0gc3JjX2JpdF9vZmY7Ci0JCX0gZWxzZSB7Ci0JCQlzcmNfYnVm
+ZmVyICY9IEdFTk1BU0sobmJpdHMgLSAxLCAwKTsKLQkJCWJpdHNfaW5fc3JjX2J1ZmZlciArPSBu
+Yml0czsKLQkJfQotCQluYml0cyAtPSBiaXRzX2luX3NyY19idWZmZXI7Ci0JCXNyYysrOwotCX0K
+LQotCS8qIENhbGN1bGF0ZSB0aGUgbnVtYmVyIG9mIGJ5dGVzIHRoYXQgY2FuIGJlIGNvcGllZCBm
+cm9tIHNyYyB0byBkc3QuICovCi0JbmJ5dGVzID0gbmJpdHMgLyA4OwotCi0JLyogVHJ5IHRvIGFs
+aWduIGRzdCB0byBhIGJ5dGUgYm91bmRhcnkuICovCi0JaWYgKGRzdF9iaXRfb2ZmKSB7Ci0JCWlm
+IChiaXRzX2luX3NyY19idWZmZXIgPCAoOCAtIGRzdF9iaXRfb2ZmKSAmJiBuYnl0ZXMpIHsKLQkJ
+CXNyY19idWZmZXIgfD0gc3JjWzBdIDw8IGJpdHNfaW5fc3JjX2J1ZmZlcjsKLQkJCWJpdHNfaW5f
+c3JjX2J1ZmZlciArPSA4OwotCQkJc3JjKys7Ci0JCQluYnl0ZXMtLTsKLQkJfQotCi0JCWlmIChi
+aXRzX2luX3NyY19idWZmZXIgPj0gKDggLSBkc3RfYml0X29mZikpIHsKLQkJCWRzdFswXSAmPSBH
+RU5NQVNLKGRzdF9iaXRfb2ZmIC0gMSwgMCk7Ci0JCQlkc3RbMF0gfD0gc3JjX2J1ZmZlciA8PCBk
+c3RfYml0X29mZjsKLQkJCXNyY19idWZmZXIgPj49ICg4IC0gZHN0X2JpdF9vZmYpOwotCQkJYml0
+c19pbl9zcmNfYnVmZmVyIC09ICg4IC0gZHN0X2JpdF9vZmYpOwotCQkJZHN0X2JpdF9vZmYgPSAw
+OwotCQkJZHN0Kys7Ci0JCQlpZiAoYml0c19pbl9zcmNfYnVmZmVyID4gNykgewotCQkJCWJpdHNf
+aW5fc3JjX2J1ZmZlciAtPSA4OwotCQkJCWRzdFswXSA9IHNyY19idWZmZXI7Ci0JCQkJZHN0Kys7
+Ci0JCQkJc3JjX2J1ZmZlciA+Pj0gODsKLQkJCX0KLQkJfQotCX0KLQotCWlmICghYml0c19pbl9z
+cmNfYnVmZmVyICYmICFkc3RfYml0X29mZikgewotCQkvKgotCQkgKiBCb3RoIHNyYyBhbmQgZHN0
+IHBvaW50ZXJzIGFyZSBieXRlIGFsaWduZWQsIHRodXMgd2UgY2FuCi0JCSAqIGp1c3QgdXNlIHRo
+ZSBvcHRpbWl6ZWQgbWVtY3B5IGZ1bmN0aW9uLgotCQkgKi8KLQkJaWYgKG5ieXRlcykKLQkJCW1l
+bWNweShkc3QsIHNyYywgbmJ5dGVzKTsKLQl9IGVsc2UgewotCQkvKgotCQkgKiBzcmMgYnVmZmVy
+IGlzIG5vdCBieXRlIGFsaWduZWQsIGhlbmNlIHdlIGhhdmUgdG8gY29weSBlYWNoCi0JCSAqIHNy
+YyBieXRlIHRvIHRoZSBzcmNfYnVmZmVyIHZhcmlhYmxlIGJlZm9yZSBleHRyYWN0aW5nIGEgYnl0
+ZQotCQkgKiB0byBzdG9yZSBpbiBkc3QuCi0JCSAqLwotCQlmb3IgKGkgPSAwOyBpIDwgbmJ5dGVz
+OyBpKyspIHsKLQkJCXNyY19idWZmZXIgfD0gc3JjW2ldIDw8IGJpdHNfaW5fc3JjX2J1ZmZlcjsK
+LQkJCWRzdFtpXSA9IHNyY19idWZmZXI7Ci0JCQlzcmNfYnVmZmVyID4+PSA4OwotCQl9Ci0JfQot
+CS8qIFVwZGF0ZSBkc3QgYW5kIHNyYyBwb2ludGVycyAqLwotCWRzdCArPSBuYnl0ZXM7Ci0Jc3Jj
+ICs9IG5ieXRlczsKLQotCS8qCi0JICogbmJpdHMgaXMgdGhlIG51bWJlciBvZiByZW1haW5pbmcg
+Yml0cy4gSXQgc2hvdWxkIG5vdCBleGNlZWQgOCBhcwotCSAqIHdlJ3ZlIGFscmVhZHkgY29waWVk
+IGFzIG11Y2ggYnl0ZXMgYXMgcG9zc2libGUuCi0JICovCi0JbmJpdHMgJT0gODsKLQotCS8qCi0J
+ICogSWYgdGhlcmUncyBubyBtb3JlIGJpdHMgdG8gY29weSB0byB0aGUgZGVzdGluYXRpb24gYW5k
+IHNyYyBidWZmZXIKLQkgKiB3YXMgYWxyZWFkeSBieXRlIGFsaWduZWQsIHRoZW4gd2UncmUgZG9u
+ZS4KLQkgKi8KLQlpZiAoIW5iaXRzICYmICFiaXRzX2luX3NyY19idWZmZXIpCi0JCXJldHVybjsK
+LQotCS8qIENvcHkgdGhlIHJlbWFpbmluZyBiaXRzIHRvIHNyY19idWZmZXIgKi8KLQlpZiAobmJp
+dHMpCi0JCXNyY19idWZmZXIgfD0gKCpzcmMgJiBHRU5NQVNLKG5iaXRzIC0gMSwgMCkpIDw8Ci0J
+CQkgICAgICBiaXRzX2luX3NyY19idWZmZXI7Ci0JYml0c19pbl9zcmNfYnVmZmVyICs9IG5iaXRz
+OwotCi0JLyoKLQkgKiBJbiBjYXNlIHRoZXJlIHdlcmUgbm90IGVub3VnaCBiaXRzIHRvIGdldCBh
+IGJ5dGUgYWxpZ25lZCBkc3QgYnVmZmVyCi0JICogcHJlcGFyZSB0aGUgc3JjX2J1ZmZlciB2YXJp
+YWJsZSB0byBtYXRjaCB0aGUgZHN0IG9yZ2FuaXphdGlvbiAoc2hpZnQKLQkgKiBzcmNfYnVmZmVy
+IGJ5IGRzdF9iaXRfb2ZmIGFuZCByZXRyaWV2ZSB0aGUgbGVhc3Qgc2lnbmlmaWNhbnQgYml0cwot
+CSAqIGZyb20gZHN0KS4KLQkgKi8KLQlpZiAoZHN0X2JpdF9vZmYpCi0JCXNyY19idWZmZXIgPSAo
+c3JjX2J1ZmZlciA8PCBkc3RfYml0X29mZikgfAotCQkJICAgICAoKmRzdCAmIEdFTk1BU0soZHN0
+X2JpdF9vZmYgLSAxLCAwKSk7Ci0JYml0c19pbl9zcmNfYnVmZmVyICs9IGRzdF9iaXRfb2ZmOwot
+Ci0JLyoKLQkgKiBLZWVwIG1vc3Qgc2lnbmlmaWNhbnQgYml0cyBmcm9tIGRzdCBpZiB3ZSBlbmQg
+dXAgd2l0aCBhbiB1bmFsaWduZWQKLQkgKiBudW1iZXIgb2YgYml0cy4KLQkgKi8KLQluYnl0ZXMg
+PSBiaXRzX2luX3NyY19idWZmZXIgLyA4OwotCWlmIChiaXRzX2luX3NyY19idWZmZXIgJSA4KSB7
+Ci0JCXNyY19idWZmZXIgfD0gKGRzdFtuYnl0ZXNdICYKLQkJCSAgICAgICBHRU5NQVNLKDcsIGJp
+dHNfaW5fc3JjX2J1ZmZlciAlIDgpKSA8PAotCQkJICAgICAgKG5ieXRlcyAqIDgpOwotCQluYnl0
+ZXMrKzsKLQl9Ci0KLQkvKiBDb3B5IHRoZSByZW1haW5pbmcgYnl0ZXMgdG8gZHN0ICovCi0JZm9y
+IChpID0gMDsgaSA8IG5ieXRlczsgaSsrKSB7Ci0JCWRzdFtpXSA9IHNyY19idWZmZXI7Ci0JCXNy
+Y19idWZmZXIgPj49IDg7Ci0JfQotfQotCiAvKiBhZGQgb3VyIG93bmVyIGJidCBkZXNjcmlwdG9y
+ICovCiBzdGF0aWMgdWludDhfdCBzY2FuX2ZmX3BhdHRlcm5bXSA9IHsgMHhmZiB9Owogc3RhdGlj
+IHN0cnVjdCBuYW5kX2JidF9kZXNjciBncG1pX2JidF9kZXNjciA9IHsKQEAgLTE3MTMsNyArMTU2
+MSw3IEBAIHN0YXRpYyBpbnQgZ3BtaV9lY2Nfd3JpdGVfb29iKHN0cnVjdCBuYW5kX2NoaXAgKmNo
+aXAsIGludCBwYWdlKQogICogaW5saW5lIChpbnRlcmxlYXZlZCB3aXRoIHBheWxvYWQgREFUQSks
+IGFuZCBkbyBub3QgYWxpZ24gZGF0YSBjaHVuayBvbgogICogYnl0ZSBib3VuZGFyaWVzLgogICog
+V2UgdGh1cyBuZWVkIHRvIHRha2UgY2FyZSBtb3ZpbmcgdGhlIHBheWxvYWQgZGF0YSBhbmQgRUND
+IGJpdHMgc3RvcmVkIGluIHRoZQotICogcGFnZSBpbnRvIHRoZSBwcm92aWRlZCBidWZmZXJzLCB3
+aGljaCBpcyB3aHkgd2UncmUgdXNpbmcgZ3BtaV9jb3B5X2JpdHMuCisgKiBwYWdlIGludG8gdGhl
+IHByb3ZpZGVkIGJ1ZmZlcnMsIHdoaWNoIGlzIHdoeSB3ZSdyZSB1c2luZyBuYW5kX2V4dHJhY3Rf
+Yml0cygpLgogICoKICAqIFNlZSBzZXRfZ2VvbWV0cnlfYnlfZWNjX2luZm8gaW5saW5lIGNvbW1l
+bnRzIHRvIGhhdmUgYSBmdWxsIGRlc2NyaXB0aW9uCiAgKiBvZiB0aGUgbGF5b3V0IHVzZWQgYnkg
+dGhlIEdQTUkgY29udHJvbGxlci4KQEAgLTE3NjIsOSArMTYxMCw4IEBAIHN0YXRpYyBpbnQgZ3Bt
+aV9lY2NfcmVhZF9wYWdlX3JhdyhzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLCB1aW50OF90ICpidWYs
+CiAJLyogRXh0cmFjdCBpbnRlcmxlYXZlZCBwYXlsb2FkIGRhdGEgYW5kIEVDQyBiaXRzICovCiAJ
+Zm9yIChzdGVwID0gMDsgc3RlcCA8IG5mY19nZW8tPmVjY19jaHVua19jb3VudDsgc3RlcCsrKSB7
+CiAJCWlmIChidWYpCi0JCQlncG1pX2NvcHlfYml0cyhidWYsIHN0ZXAgKiBlY2NzaXplICogOCwK
+LQkJCQkgICAgICAgdG1wX2J1Ziwgc3JjX2JpdF9vZmYsCi0JCQkJICAgICAgIGVjY3NpemUgKiA4
+KTsKKwkJCW5hbmRfZXh0cmFjdF9iaXRzKGJ1Ziwgc3RlcCAqIGVjY3NpemUsIHRtcF9idWYsCisJ
+CQkJCSAgc3JjX2JpdF9vZmYsIGVjY3NpemUgKiA4KTsKIAkJc3JjX2JpdF9vZmYgKz0gZWNjc2l6
+ZSAqIDg7CiAKIAkJLyogQWxpZ24gbGFzdCBFQ0MgYmxvY2sgdG8gYWxpZ24gYSBieXRlIGJvdW5k
+YXJ5ICovCkBAIC0xNzczLDkgKzE2MjAsOCBAQCBzdGF0aWMgaW50IGdwbWlfZWNjX3JlYWRfcGFn
+ZV9yYXcoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwgdWludDhfdCAqYnVmLAogCQkJZWNjYml0cyAr
+PSA4IC0gKChvb2JfYml0X29mZiArIGVjY2JpdHMpICUgOCk7CiAKIAkJaWYgKG9vYl9yZXF1aXJl
+ZCkKLQkJCWdwbWlfY29weV9iaXRzKG9vYiwgb29iX2JpdF9vZmYsCi0JCQkJICAgICAgIHRtcF9i
+dWYsIHNyY19iaXRfb2ZmLAotCQkJCSAgICAgICBlY2NiaXRzKTsKKwkJCW5hbmRfZXh0cmFjdF9i
+aXRzKG9vYiwgb29iX2JpdF9vZmYsIHRtcF9idWYsCisJCQkJCSAgc3JjX2JpdF9vZmYsIGVjY2Jp
+dHMpOwogCiAJCXNyY19iaXRfb2ZmICs9IGVjY2JpdHM7CiAJCW9vYl9iaXRfb2ZmICs9IGVjY2Jp
+dHM7CkBAIC0xODAwLDcgKzE2NDYsNyBAQCBzdGF0aWMgaW50IGdwbWlfZWNjX3JlYWRfcGFnZV9y
+YXcoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwgdWludDhfdCAqYnVmLAogICogaW5saW5lIChpbnRl
+cmxlYXZlZCB3aXRoIHBheWxvYWQgREFUQSksIGFuZCBkbyBub3QgYWxpZ24gZGF0YSBjaHVuayBv
+bgogICogYnl0ZSBib3VuZGFyaWVzLgogICogV2UgdGh1cyBuZWVkIHRvIHRha2UgY2FyZSBtb3Zp
+bmcgdGhlIE9PQiBhcmVhIGF0IHRoZSByaWdodCBwbGFjZSBpbiB0aGUKLSAqIGZpbmFsIHBhZ2Us
+IHdoaWNoIGlzIHdoeSB3ZSdyZSB1c2luZyBncG1pX2NvcHlfYml0cy4KKyAqIGZpbmFsIHBhZ2Us
+IHdoaWNoIGlzIHdoeSB3ZSdyZSB1c2luZyBuYW5kX2V4dHJhY3RfYml0cygpLgogICoKICAqIFNl
+ZSBzZXRfZ2VvbWV0cnlfYnlfZWNjX2luZm8gaW5saW5lIGNvbW1lbnRzIHRvIGhhdmUgYSBmdWxs
+IGRlc2NyaXB0aW9uCiAgKiBvZiB0aGUgbGF5b3V0IHVzZWQgYnkgdGhlIEdQTUkgY29udHJvbGxl
+ci4KQEAgLTE4MzksOCArMTY4NSw4IEBAIHN0YXRpYyBpbnQgZ3BtaV9lY2Nfd3JpdGVfcGFnZV9y
+YXcoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwgY29uc3QgdWludDhfdCAqYnVmLAogCS8qIEludGVy
+bGVhdmUgcGF5bG9hZCBkYXRhIGFuZCBFQ0MgYml0cyAqLwogCWZvciAoc3RlcCA9IDA7IHN0ZXAg
+PCBuZmNfZ2VvLT5lY2NfY2h1bmtfY291bnQ7IHN0ZXArKykgewogCQlpZiAoYnVmKQotCQkJZ3Bt
+aV9jb3B5X2JpdHModG1wX2J1ZiwgZHN0X2JpdF9vZmYsCi0JCQkJICAgICAgIGJ1Ziwgc3RlcCAq
+IGVjY3NpemUgKiA4LCBlY2NzaXplICogOCk7CisJCQluYW5kX2V4dHJhY3RfYml0cyh0bXBfYnVm
+LCBkc3RfYml0X29mZiwgYnVmLAorCQkJCQkgIHN0ZXAgKiBlY2NzaXplICogOCwgZWNjc2l6ZSAq
+IDgpOwogCQlkc3RfYml0X29mZiArPSBlY2NzaXplICogODsKIAogCQkvKiBBbGlnbiBsYXN0IEVD
+QyBibG9jayB0byBhbGlnbiBhIGJ5dGUgYm91bmRhcnkgKi8KQEAgLTE4NDksOCArMTY5NSw4IEBA
+IHN0YXRpYyBpbnQgZ3BtaV9lY2Nfd3JpdGVfcGFnZV9yYXcoc3RydWN0IG5hbmRfY2hpcCAqY2hp
+cCwgY29uc3QgdWludDhfdCAqYnVmLAogCQkJZWNjYml0cyArPSA4IC0gKChvb2JfYml0X29mZiAr
+IGVjY2JpdHMpICUgOCk7CiAKIAkJaWYgKG9vYl9yZXF1aXJlZCkKLQkJCWdwbWlfY29weV9iaXRz
+KHRtcF9idWYsIGRzdF9iaXRfb2ZmLAotCQkJCSAgICAgICBvb2IsIG9vYl9iaXRfb2ZmLCBlY2Ni
+aXRzKTsKKwkJCW5hbmRfZXh0cmFjdF9iaXRzKHRtcF9idWYsIGRzdF9iaXRfb2ZmLCBvb2IsCisJ
+CQkJCSAgb29iX2JpdF9vZmYsIGVjY2JpdHMpOwogCiAJCWRzdF9iaXRfb2ZmICs9IGVjY2JpdHM7
+CiAJCW9vYl9iaXRfb2ZmICs9IGVjY2JpdHM7Ci0tIAoyLjIwLjEKCgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Np
+b24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vbGludXgtbXRkLwo=
