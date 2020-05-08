@@ -5,19 +5,19 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8F71C38A2A
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 May 2020 18:55:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 598F0C38A2A
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 May 2020 18:55:53 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7BE8E2083B
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 May 2020 18:55:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 257992083B
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 May 2020 18:55:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VGPazdk1";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="MEskzfXV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7BE8E2083B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="szIAsB4f";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="YPf/qtfB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 257992083B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,58 +26,59 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=74rPVVXqJRc1wWo5sk3dPQlGeBDsfOTclZeYRMZmRA8=; b=VGPazdk1IfY3+l
-	Es7sz12R4oqHZl4Qy4OSHEpFuHHJwDzmrY3eP2414lKNRoTBh0pmo0cx768YZt3QYWrS/Ss/5W1+/
-	e3g4OvHkR2Fav7NKHY/mujYEtAkpIzGRQXjVZpuxIgbW1PHkfHKaYdteiA9kNaJCSnRNYUzCivSuX
-	B+Bmkl9Gc14y/XmjPNKWTPgX+0HHM2uY96PTiK591ArEO0T3c2rA34b+tcvbTA84/jw6Ea7LDUtU5
-	yvOMgQsBQOKtCs2AQ6kh+zQwVLDMg6nSeNbzWbkCHxtsZURIUfqqvNO2pNhvWvvAxkz8Oq+9Jyqnn
-	IaEJS0PgsdDW1CvIka0w==;
+	List-Owner; bh=BxlbI4V1pLicmfpnBAcvnwfEv91xYG52ocZIU7HEgG0=; b=szIAsB4f42t3Rx
+	7BSa//0ngGsU2bekN4JapmDaqoc8n+NPktuTJqQmi28x+3iA529gw3WNMP9ZwcGvCiTBDpTPH/iHp
+	iM5t7OPCnE5cXtM1TT6Q3bu/Cakqf5t3Btk1a0KCxlpqArYf9nyTcbo6R/jTy4AWuk18QMfXU+Bhs
+	rx0C98/Scox3dg20ky9Ny0ZEXpBhN2n13vDaZ65ff6bgSrL8xz/3hg3k884m2YmzfUv/WPbfeQzg0
+	OuFem2vb7cvqNt3aHYj+XhEYPehUrx/rwIFBWVOseplmA9b7W1LNlfiQejEtOKZIjG4XYVENhuuJ1
+	qFCyH7ASNVyrwOaWS0YQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jX89a-0007Jv-DG; Fri, 08 May 2020 18:55:22 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1jX89p-0007aW-Gt; Fri, 08 May 2020 18:55:37 +0000
+Received: from lelv0143.ext.ti.com ([198.47.23.248])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jX890-0004Ty-Hp
- for linux-mtd@lists.infradead.org; Fri, 08 May 2020 18:54:48 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 048IsQRZ041420;
- Fri, 8 May 2020 13:54:26 -0500
+ id 1jX894-0004ZI-Oy
+ for linux-mtd@lists.infradead.org; Fri, 08 May 2020 18:54:52 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 048IsfLP054662;
+ Fri, 8 May 2020 13:54:41 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1588964066;
- bh=toNupare+j2SQ6enk8i6S7cHswN/UrZuCnT/Z5/dVbA=;
+ s=ti-com-17Q1; t=1588964081;
+ bh=nEbscNX33RKbq+zFcQZwVu/alXuHc+8pSIbituzNk2U=;
  h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=MEskzfXVUnoGbHeTvQfc1g3MrlzA9L7cqBcrgfzARtZS/mvLp1fBZmntPAlOt2ymX
- J76x6cy9kV0DS1RAfnggxeoRytzkjA/YUqW/dy3grii0iiwQpwGLqZUE3pIoIoOz6d
- SvDaDA8LN6b1XqNtSrs7ALzhtSS47s42qVLHXobA=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 048IsQW0117476;
- Fri, 8 May 2020 13:54:26 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ b=YPf/qtfBOPqSSxs07alqxbOcnDU/LuYK5LEzzfr3mfCwHTyTrt041c51ah7IbB8o9
+ sS5TZ8IWNydtR2Mu1EtQBw0w+bnZscWz6Nu6OrIkT8paj5p3aS2JFkZAQ/WlSOdExp
+ sE/fCcuJDxxGq3EwPoUYtFVDcQ7WcV2iRa8F6XeU=
+Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 048IsfeV097209
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Fri, 8 May 2020 13:54:41 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 8 May
- 2020 13:54:26 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ 2020 13:54:40 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 8 May 2020 13:54:26 -0500
+ Frontend Transport; Fri, 8 May 2020 13:54:40 -0500
 Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 048IsGpT077355;
- Fri, 8 May 2020 13:54:22 -0500
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 048IsGpW077355;
+ Fri, 8 May 2020 13:54:36 -0500
 From: Vignesh Raghavendra <vigneshr@ti.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>, Mark Brown
  <broonie@kernel.org>
-Subject: [PATCH 1/6] mtd: spi-nor: cadence-quadspi: Drop cdns,
- is-decoded-cs property
-Date: Sat, 9 May 2020 00:24:06 +0530
-Message-ID: <20200508185411.487-2-vigneshr@ti.com>
+Subject: [PATCH 4/6] mtd: spi-nor: cadence-quadspi: Fix error path on failure
+ to acquire reset lines
+Date: Sat, 9 May 2020 00:24:09 +0530
+Message-ID: <20200508185411.487-5-vigneshr@ti.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200508185411.487-1-vigneshr@ti.com>
 References: <20200508185411.487-1-vigneshr@ti.com>
 MIME-Version: 1.0
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200508_115446_680215_CBBF9D9F 
-X-CRM114-Status: GOOD (  14.88  )
+X-CRM114-CacheID: sfid-20200508_115450_926169_FD1149A1 
+X-CRM114-Status: GOOD (  10.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,128 +101,52 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Cadence QSPI provides a way to automatically decode CS based on the
-offset accessed within memory map window. This feature cannot be
-supported in spi-mem framework as controller driver would not have
-access to flash geometry. Therefore drop this feature in preparation to
-moving to spi-mem.
-
-Note that, this feature never worked in the driver (Direct/Indirect mode
-accesses did not take into account size of flash on other CSs) and there
-are no users of this feature in kernel. Therefore dropping this should
-not cause a regression
+Make sure to undo the prior changes done by the driver when exiting due
+to failure to acquire reset lines.
 
 Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
 ---
- .../mtd/spi-nor/controllers/cadence-quadspi.c | 59 +++----------------
- 1 file changed, 9 insertions(+), 50 deletions(-)
+ drivers/mtd/spi-nor/controllers/cadence-quadspi.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/controllers/cadence-quadspi.c b/drivers/mtd/spi-nor/controllers/cadence-quadspi.c
-index 494dcab4aaaa..fa54f85e16d7 100644
+index 6feb94a38dff..51ed644f58c5 100644
 --- a/drivers/mtd/spi-nor/controllers/cadence-quadspi.c
 +++ b/drivers/mtd/spi-nor/controllers/cadence-quadspi.c
-@@ -77,11 +77,7 @@ struct cqspi_st {
- 	dma_addr_t		mmap_phys_base;
- 
- 	int			current_cs;
--	int			current_page_size;
--	int			current_erase_size;
--	int			current_addr_width;
- 	unsigned long		master_ref_clk_hz;
--	bool			is_decoded_cs;
- 	u32			fifo_depth;
- 	u32			fifo_width;
- 	bool			rclk_en;
-@@ -715,19 +711,15 @@ static void cqspi_chipselect(struct spi_nor *nor)
- 	unsigned int reg;
- 
- 	reg = readl(reg_base + CQSPI_REG_CONFIG);
--	if (cqspi->is_decoded_cs) {
--		reg |= CQSPI_REG_CONFIG_DECODE_MASK;
--	} else {
--		reg &= ~CQSPI_REG_CONFIG_DECODE_MASK;
-+	reg &= ~CQSPI_REG_CONFIG_DECODE_MASK;
- 
--		/* Convert CS if without decoder.
--		 * CS0 to 4b'1110
--		 * CS1 to 4b'1101
--		 * CS2 to 4b'1011
--		 * CS3 to 4b'0111
--		 */
--		chip_select = 0xF & ~(1 << chip_select);
--	}
-+	/* Convert CS if without decoder.
-+	 * CS0 to 4b'1110
-+	 * CS1 to 4b'1101
-+	 * CS2 to 4b'1011
-+	 * CS3 to 4b'0111
-+	 */
-+	chip_select = 0xF & ~(1 << chip_select);
- 
- 	reg &= ~(CQSPI_REG_CONFIG_CHIPSELECT_MASK
- 		 << CQSPI_REG_CONFIG_CHIPSELECT_LSB);
-@@ -736,32 +728,6 @@ static void cqspi_chipselect(struct spi_nor *nor)
- 	writel(reg, reg_base + CQSPI_REG_CONFIG);
- }
- 
--static void cqspi_configure_cs_and_sizes(struct spi_nor *nor)
--{
--	struct cqspi_flash_pdata *f_pdata = nor->priv;
--	struct cqspi_st *cqspi = f_pdata->cqspi;
--	void __iomem *iobase = cqspi->iobase;
--	unsigned int reg;
--
--	/* configure page size and block size. */
--	reg = readl(iobase + CQSPI_REG_SIZE);
--	reg &= ~(CQSPI_REG_SIZE_PAGE_MASK << CQSPI_REG_SIZE_PAGE_LSB);
--	reg &= ~(CQSPI_REG_SIZE_BLOCK_MASK << CQSPI_REG_SIZE_BLOCK_LSB);
--	reg &= ~CQSPI_REG_SIZE_ADDRESS_MASK;
--	reg |= (nor->page_size << CQSPI_REG_SIZE_PAGE_LSB);
--	reg |= (ilog2(nor->mtd.erasesize) << CQSPI_REG_SIZE_BLOCK_LSB);
--	reg |= (nor->addr_width - 1);
--	writel(reg, iobase + CQSPI_REG_SIZE);
--
--	/* configure the chip select */
--	cqspi_chipselect(nor);
--
--	/* Store the new configuration of the controller */
--	cqspi->current_page_size = nor->page_size;
--	cqspi->current_erase_size = nor->mtd.erasesize;
--	cqspi->current_addr_width = nor->addr_width;
--}
--
- static unsigned int calculate_ticks_for_ns(const unsigned int ref_clk_hz,
- 					   const unsigned int ns_val)
- {
-@@ -867,18 +833,13 @@ static void cqspi_configure(struct spi_nor *nor)
- 	int switch_cs = (cqspi->current_cs != f_pdata->cs);
- 	int switch_ck = (cqspi->sclk != sclk);
- 
--	if ((cqspi->current_page_size != nor->page_size) ||
--	    (cqspi->current_erase_size != nor->mtd.erasesize) ||
--	    (cqspi->current_addr_width != nor->addr_width))
--		switch_cs = 1;
--
- 	if (switch_cs || switch_ck)
- 		cqspi_controller_enable(cqspi, 0);
- 
- 	/* Switch chip select. */
- 	if (switch_cs) {
- 		cqspi->current_cs = f_pdata->cs;
--		cqspi_configure_cs_and_sizes(nor);
-+		cqspi_chipselect(nor);
+@@ -1352,13 +1352,13 @@ static int cqspi_probe(struct platform_device *pdev)
+ 	rstc = devm_reset_control_get_optional_exclusive(dev, "qspi");
+ 	if (IS_ERR(rstc)) {
+ 		dev_err(dev, "Cannot get QSPI reset.\n");
+-		return PTR_ERR(rstc);
++		goto probe_reset_failed;
  	}
  
- 	/* Setup baudrate divisor and delays */
-@@ -1145,8 +1106,6 @@ static int cqspi_of_get_pdata(struct platform_device *pdev)
- 	struct device_node *np = pdev->dev.of_node;
- 	struct cqspi_st *cqspi = platform_get_drvdata(pdev);
+ 	rstc_ocp = devm_reset_control_get_optional_exclusive(dev, "qspi-ocp");
+ 	if (IS_ERR(rstc_ocp)) {
+ 		dev_err(dev, "Cannot get QSPI OCP reset.\n");
+-		return PTR_ERR(rstc_ocp);
++		goto probe_reset_failed;
+ 	}
  
--	cqspi->is_decoded_cs = of_property_read_bool(np, "cdns,is-decoded-cs");
--
- 	if (of_property_read_u32(np, "cdns,fifo-depth", &cqspi->fifo_depth)) {
- 		dev_err(&pdev->dev, "couldn't determine fifo-depth\n");
- 		return -ENXIO;
+ 	reset_control_assert(rstc);
+@@ -1377,7 +1377,7 @@ static int cqspi_probe(struct platform_device *pdev)
+ 			       pdev->name, cqspi);
+ 	if (ret) {
+ 		dev_err(dev, "Cannot request IRQ.\n");
+-		goto probe_irq_failed;
++		goto probe_reset_failed;
+ 	}
+ 
+ 	cqspi_wait_idle(cqspi);
+@@ -1394,7 +1394,7 @@ static int cqspi_probe(struct platform_device *pdev)
+ 	return ret;
+ probe_setup_failed:
+ 	cqspi_controller_enable(cqspi, 0);
+-probe_irq_failed:
++probe_reset_failed:
+ 	clk_disable_unprepare(cqspi->clk);
+ probe_clk_failed:
+ 	pm_runtime_put_sync(dev);
 -- 
 2.26.2
 
