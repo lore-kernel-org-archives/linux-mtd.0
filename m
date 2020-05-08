@@ -2,21 +2,21 @@ Return-Path: <SRS0=/+zL=6W=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A5CC3C54E4A
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 May 2020 17:15:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A92DC54E49
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 May 2020 17:15:40 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6312421775
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 May 2020 17:15:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0FC1224954
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 May 2020 17:15:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ayMAvopJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6312421775
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dVMmyyTR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0FC1224954
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,41 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gylTKUShYUutqvtPpsROhMLVhhmPG3b9GcxzB/R1cgA=; b=ayMAvopJ37ImnT
-	cZIIlk7+gY8ou3gPZo2ZqcWD1ObnKYXBAh/s087DTevUjPciTcVadcGIzfnCU8i9nY3kO22DnXCo9
-	Sk0cmT6ZKJQQOjsbFVqqCfVG2doOYiEoqTTpUy4oqjQob2T8hRbYXmmBx291zXDvgY3WViqWPtHhh
-	EmGmQVgNWkJIIyFCMF7eJXAG2Gs7Ou88V555KsXUBI/W+zJBHu7nR586wu1bm5SMjAHv0QY/kObau
-	Ej0nVVsciFAmRdIk2WefyRbky1CGUU8rvCFa8bkzWm6heB23cmi6u6ZFQsddZqCV4DNiBUPyGH5xe
-	DrXdSEPRdbtVCLGUS2GA==;
+	List-Owner; bh=UX0oZhI7ajotEOWeEeSM+OWXlFDMZG6yFPkHRh3ifm0=; b=dVMmyyTR+kcMrv
+	gjL6Cu3YxZbhjfuye/LAMfUoM40+PHSMi1q2WZRR1lvrZNMw/lxya9b+IbTMWcPSLExmv2rQMSvrR
+	QXYPTp26BHEHdayas/cqGcnS62uhVgSzPbHDA/hr0+G9IVCYtWEK+pyzCVTwjikg/nGz4sbWIHI9a
+	L1ol1fTUOA+OMBuZgCINIW1qpPo/8G3vzpqjSvwhPgvLCuOcQENUPhU5cat8Rjf3nd/t/DeZPcoX/
+	nLKF2wffh395GsgerjvoeuqP6Se0hI+ZqviRwO+6c2Bq/vHJ6rUJzXyPx7N2/9xCKqu/8HdQyjmjc
+	eU8ezx3pLeJpPwaRZ1PA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jX6aZ-0007PJ-SL; Fri, 08 May 2020 17:15:07 +0000
+	id 1jX6ax-0001XN-W6; Fri, 08 May 2020 17:15:31 +0000
 Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jX6ZM-0005sI-4n
+ id 1jX6ZO-0005tj-1q
  for linux-mtd@lists.infradead.org; Fri, 08 May 2020 17:13:56 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 797F2240010;
- Fri,  8 May 2020 17:13:49 +0000 (UTC)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id DEE4D24000E;
+ Fri,  8 May 2020 17:13:50 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
  <devicetree@vger.kernel.org>, Richard Weinberger <richard@nod.at>,
  Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH v4 5/8] MAINTAINERS: Add Arasan NAND controller and bindings
-Date: Fri,  8 May 2020 19:13:36 +0200
-Message-Id: <20200508171339.8052-6-miquel.raynal@bootlin.com>
+Subject: [PATCH v4 6/8] dt-bindings: mtd: Document ARASAN NAND bindings
+Date: Fri,  8 May 2020 19:13:37 +0200
+Message-Id: <20200508171339.8052-7-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200508171339.8052-1-miquel.raynal@bootlin.com>
 References: <20200508171339.8052-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200508_101352_331191_DF9D6014 
-X-CRM114-Status: UNSURE (   7.71  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200508_101354_257218_32A4D28E 
+X-CRM114-Status: GOOD (  10.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,31 +80,83 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Fill a new entry for the Arasan NAND controller.
+Document the Arasan NAND controller bindings.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+ .../bindings/mtd/arasan,nand-controller.yaml  | 63 +++++++++++++++++++
+ 1 file changed, 63 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/arasan,nand-controller.yaml
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b816a453b10e..1f2c83ead00b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1285,6 +1285,13 @@ S:	Supported
- W:	http://www.aquantia.com
- F:	drivers/net/ethernet/aquantia/atlantic/aq_ptp*
- 
-+ARASAN NAND CONTROLLER DRIVER
-+M:	Naga Sureshkumar Relli <nagasure@xilinx.com>
-+L:	linux-mtd@lists.infradead.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/mtd/arasan,nand-controller.yaml
-+F:	drivers/mtd/nand/raw/arasan-nand-controller.c
+diff --git a/Documentation/devicetree/bindings/mtd/arasan,nand-controller.yaml b/Documentation/devicetree/bindings/mtd/arasan,nand-controller.yaml
+new file mode 100644
+index 000000000000..db8f115a13ec
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/arasan,nand-controller.yaml
+@@ -0,0 +1,63 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/arasan,nand-controller.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- ARC FRAMEBUFFER DRIVER
- M:	Jaya Kumar <jayalk@intworks.biz>
- S:	Maintained
++title: Arasan NAND Flash Controller with ONFI 3.1 support device tree bindings
++
++allOf:
++  - $ref: "nand-controller.yaml"
++
++maintainers:
++  - Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
++
++properties:
++  compatible:
++    oneOf:
++      - items:
++        - enum:
++          - xlnx,zynqmp-nand-controller
++        - enum:
++          - arasan,nfc-v3p10
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: Controller clock
++      - description: NAND bus clock
++
++  clock-names:
++    items:
++      - const: controller
++      - const: bus
++
++  interrupts:
++    maxItems: 1
++
++  "#address-cells": true
++  "#size-cells": true
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - interrupts
++
++additionalProperties: true
++
++examples:
++  - |
++    nfc: nand-controller@ff100000 {
++        compatible = "xlnx,zynqmp-nand-controller", "arasan,nfc-v3p10";
++        reg = <0x0 0xff100000 0x0 0x1000>;
++        clock-names = "controller", "bus";
++        clocks = <&clk200>, <&clk100>;
++        interrupt-parent = <&gic>;
++        interrupts = <0 14 4>;
++        #address-cells = <1>;
++        #size-cells = <0>;
++    };
 -- 
 2.20.1
 
