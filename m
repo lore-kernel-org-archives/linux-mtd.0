@@ -2,80 +2,84 @@ Return-Path: <SRS0=/+zL=6W=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8321C35280
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 May 2020 02:31:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C983C38A2A
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 May 2020 06:07:24 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BD207207DD
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 May 2020 02:31:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2AFA520720
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 May 2020 06:07:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mOS2aeTy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BD207207DD
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Pr4FYESQ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="GXE6bm+/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2AFA520720
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:Reply-To:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wU9vaJJeXTTJatUywRxEvEWuaq7x91VwRp2XSSo6vjw=; b=mOS2aeTy4VSkG6
-	wWKi34bGI80wjos2pHwctvVVZwQlngBVAYUPEUO9sv7NsS2ywa9K8hTGOQGz4k+rJEJSWIeZfItlY
-	NyTB4RYygAyH+9YGlMJbUzQ27yUCiKOrdKItiA0BYzJBB20kmJugK+Oi58fwmJkKhGu7FITbVy0aP
-	8/9PMjAPPmGSZiiFosTbyHLRWmlRdeftDnJDljgeVm4emChdOrWOVUUWQEFfiV+H82RdlfkLxj8So
-	wK0wvy7Yin/heO2YZYe7v4HFqa05vvrI9CvP9w4WOLrQK0d7c9RAv8gWbo41ezTM+0wouEsL8cRsg
-	iIjDMy7Z3sypLWOJkZKg==;
+	List-Owner; bh=VUOeAPl/KrmnMBJwXSnqLMl6v25ZE7nuTLyv349fbs4=; b=Pr4FYESQdgKYqG
+	4XkGp81/2zaifN2gfl4b52Ei9s5JCEkchLP3GK54p9MeeVNSfhscl5uLxa1alJNcPNvnOpbwQDmKd
+	yTteSIyrE490AcyyoXAcsjFweMxhK0gjh7T5Xmi6JIAzsyfBAGqn+QsDLPpQ/z67+FRsFFVNVbxW4
+	OkGU1SGuWfrrnuaUs10hru504vosL85feYeidUXvycK5gGF2bQKvuJ/4z+KZiYM2RHKrvMNJLP6xy
+	LDgHLYC49JHbZAForjpNZjdcF9O/DPs4gFpJI28QJ119N/uhT3lRB6dc7bWJSYGkVaMzcLvulCFgP
+	E3Qfja0mJLuSVE3oQLnA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jWsnT-00041c-Rt; Fri, 08 May 2020 02:31:31 +0000
-Received: from mga01.intel.com ([192.55.52.88])
+	id 1jWwAM-0003ny-3b; Fri, 08 May 2020 06:07:22 +0000
+Received: from mail-pg1-x543.google.com ([2607:f8b0:4864:20::543])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jWsnO-0003wD-Dc
- for linux-mtd@lists.infradead.org; Fri, 08 May 2020 02:31:28 +0000
-IronPort-SDR: VLLc2nVA2tgGCI4IN3ooQZuGqLl1Uqfjx4S2D6exaIG7av+DE8GN/rbZiGixjCGdvxWUygG4N8
- CGm7fi6MlrhA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 May 2020 19:31:25 -0700
-IronPort-SDR: CjOhS/m/S5QJz2g+WvbIMHXFxFQoeuzgIpCgt6bhRN43uycCy6cj+bYZcbgbqLgcXnSzSXFqZG
- u343lCOsI7Eg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,366,1583222400"; d="scan'208";a="296724654"
-Received: from linux.intel.com ([10.54.29.200])
- by orsmga008.jf.intel.com with ESMTP; 07 May 2020 19:31:24 -0700
-Received: from [10.213.154.115] (vramuthx-MOBL1.gar.corp.intel.com
- [10.213.154.115])
- by linux.intel.com (Postfix) with ESMTP id 642A1580378;
- Thu,  7 May 2020 19:31:20 -0700 (PDT)
-Subject: Re: [PATCH v5 2/2] mtd: rawnand: Add NAND controller support on Intel
- LGM SoC
-To: Boris Brezillon <boris.brezillon@collabora.com>
-References: <20200507001537.4034-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200507001537.4034-3-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200507072831.1bf7f784@collabora.com>
- <440c0002-e572-7b8b-ba08-773932370eb0@linux.intel.com>
- <20200507082730.6425cd96@collabora.com>
- <69a06362-1f9d-bf65-4a9b-98fc6b63a391@linux.intel.com>
- <20200507084831.1483b19a@collabora.com>
-From: "Ramuthevar, Vadivel MuruganX"
- <vadivel.muruganx.ramuthevar@linux.intel.com>
-Message-ID: <547af0d0-a304-8fd8-12a3-263a900da6af@linux.intel.com>
-Date: Fri, 8 May 2020 10:31:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ id 1jWwAJ-0003nW-Au
+ for linux-mtd@lists.infradead.org; Fri, 08 May 2020 06:07:21 +0000
+Received: by mail-pg1-x543.google.com with SMTP id b8so379023pgi.11
+ for <linux-mtd@lists.infradead.org>; Thu, 07 May 2020 23:07:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to;
+ bh=YVeRZZUHFH3YFPDWCfBx69wZVfQpp/EEA0nPL773ZGE=;
+ b=GXE6bm+/eihbO9FZYZXzo33Q8p58K1PLmCmbx2lnDEo9heJ/5wAFgtMibiLz6h1vpu
+ 4T+jy2i+uzoxFA9Cl8FgGS9eLkFU7xccdPORN9aqQVlcqtrQbvmlBdw0C/H4GtGx1xp5
+ ljPagTm2rOZoZONqjaS14h5GGGYY/M0XUp5lY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=YVeRZZUHFH3YFPDWCfBx69wZVfQpp/EEA0nPL773ZGE=;
+ b=Dft1rNr50cHRcEbxDpjyTtMGq17Jb43k+ElpJ5nYkUyLxyZAOW+Mz/fZSec8czDNq1
+ oo9+VZhMpqLUyI4Q2XRfpbjKdF43o7AJG0RPdNi+WJiYx3oX518/ma1C1CEk0jIl2PoN
+ cyagFEKIL+LpyT34legw8s+W0AXn9FI0y80y4OUN1rUdCKsT0VeB3xVFf0YIcrj6JVP5
+ /phYdpkodiqPV8iR5U6ESgTDmbeS3teuHMwdoChSIc8lvOmnB4/feJ+V4OqHguIkfVgV
+ fW53SKNvCRVUG7y4CrjN97XNP+X7o4FODdShBmzM4jeD6SBjKEkev2w00Lb7YTlLzeIN
+ cQNA==
+X-Gm-Message-State: AGi0PuYUXXvZDVNPpmp4T6SpfmifLVfAANR5AUVUxxFdQrSusJ9h8PVm
+ gTvEfIXJjNbOz6D4gtfIzZ1mtQ==
+X-Google-Smtp-Source: APiQypL6/ve1p+CULUBjLX95ozq6LKlzyLNOdsl6iqGHnULRpNmN3haFOkySOgtz84GqfZP6rf89qg==
+X-Received: by 2002:a62:a106:: with SMTP id b6mr1119513pff.23.1588918038521;
+ Thu, 07 May 2020 23:07:18 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+ by smtp.gmail.com with ESMTPSA id k6sm1456658pju.44.2020.05.07.23.07.17
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 07 May 2020 23:07:17 -0700 (PDT)
+Date: Thu, 7 May 2020 23:07:16 -0700
+From: Kees Cook <keescook@chromium.org>
+To: WeiXiong Liao <liaoweixiong@allwinnertech.com>
+Subject: Re: [PATCH v3 02/11] pstore/blk: new support logger for block devices
+Message-ID: <202005072301.57F73B61CC@keescook>
+References: <1585126506-18635-1-git-send-email-liaoweixiong@allwinnertech.com>
+ <1585126506-18635-3-git-send-email-liaoweixiong@allwinnertech.com>
 MIME-Version: 1.0
-In-Reply-To: <20200507084831.1483b19a@collabora.com>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <1585126506-18635-3-git-send-email-liaoweixiong@allwinnertech.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200507_193126_480181_16540C3D 
-X-CRM114-Status: GOOD (  18.13  )
+X-CRM114-CacheID: sfid-20200507_230719_397751_0A67C8AF 
+X-CRM114-Status: GOOD (  15.93  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,109 +91,92 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
-Cc: cheol.yong.kim@intel.com, devicetree@vger.kernel.org, qi-ming.wu@intel.com,
- anders.roxell@linaro.org, vigneshr@ti.com, arnd@arndb.de,
- hauke.mehrtens@intel.com, richard@nod.at, brendanhiggins@google.com,
- linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com, tglx@linutronix.de,
- masonccyang@mxic.com.tw, andriy.shevchenko@intel.com
+Cc: Rob Herring <robh@kernel.org>, Tony Luck <tony.luck@intel.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Jonathan Corbet <corbet@lwn.net>,
+ Richard Weinberger <richard@nod.at>, Anton Vorontsov <anton@enomsg.org>,
+ linux-doc@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-kernel@vger.kernel.org, Colin Cross <ccross@android.com>,
+ linux-mtd@lists.infradead.org, Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Boris,
+On Wed, Mar 25, 2020 at 04:54:57PM +0800, WeiXiong Liao wrote:
+> pstore/blk is similar to pstore/ram, but dump log to block device
+> rather than persistent ram.
+> [...]
+> +int psblk_register_blkdev(unsigned int major, psblk_panic_write_op panic_write)
+> +{
+> +	struct block_device *bdev;
+> +	struct psblk_device dev = {0};
+> +	struct bdev_info *binfo;
+> +	int ret = -ENODEV;
+> +	void *holder = blkdev;
+> +
+> +	binfo = psblk_get_bdev_info();
+> +	if (IS_ERR(binfo))
+> +		return PTR_ERR(binfo);
+> +
+> +	/* only allow driver matching the @blkdev */
+> +	if (!binfo->devt || MAJOR(binfo->devt) != major) {
+> +		pr_debug("invalid major %u (expect %u)\n",
+> +				major, MAJOR(binfo->devt));
+> +		return -ENODEV;
+> +	}
+> +
+> +	/* hold bdev exclusively */
+> +	bdev = psblk_get_bdev(holder);
+> +	if (IS_ERR(bdev)) {
+> +		pr_err("failed to open '%s'!\n", blkdev);
+> +		return PTR_ERR(bdev);
+> +	}
+> +
+> +	/* psblk_bdev must be assigned before register to pstore/blk */
+> +	psblk_bdev = bdev;
+> +	blkdev_panic_write = panic_write;
+> +
+> +	dev.total_size = psblk_bdev_size(bdev);
+> +	dev.panic_write = panic_write ? psblk_blk_panic_write : NULL;
+> +	dev.read = psblk_generic_blk_read;
+> +	dev.write = psblk_generic_blk_write;
+> +
+> +	ret = psblk_register_do(&dev);
+> +	if (ret)
+> +		goto err_put_bdev;
+> +
+> +	pr_info("using '%s'\n", blkdev);
+> +	return 0;
+> +
+> +err_put_bdev:
+> +	psblk_bdev = NULL;
+> +	blkdev_panic_write = NULL;
+> +	psblk_put_bdev(bdev, holder);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(psblk_register_blkdev);
 
-   Thank you very much for the review comments and your time...
-On 7/5/2020 2:48 pm, Boris Brezillon wrote:
- > On Thu, 7 May 2020 14:38:52 +0800
- > "Ramuthevar, Vadivel MuruganX"
- > <vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
- >
- >> Hi Boris,
- >>
- >>    Thank you very much for the review comments and your time...
- >>
- >> On 7/5/2020 2:27 pm, Boris Brezillon wrote:
- >>> On Thu, 7 May 2020 14:13:42 +0800
- >>> "Ramuthevar, Vadivel MuruganX"
- >>> <vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
- >>>
- >>>> Hi Boris,
- >>>>
- >>>>      Thank you very much for the review comments and your time...
- >>>>
- >>>> On 7/5/2020 1:28 pm, Boris Brezillon wrote:
- >>>>> On Thu,  7 May 2020 08:15:37 +0800
- >>>>> "Ramuthevar,Vadivel MuruganX"
- >>>>> <vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
- >>>>>
- >>>>>> +	reg = readl(ebu_host->ebu + EBU_ADDR_SEL(ebu_host->cs_num));
- >>>>>> +	writel(reg | EBU_ADDR_MASK(5) | EBU_ADDR_SEL_REGEN,
- >>>>>> +	       ebu_host->ebu + EBU_ADDR_SEL(ebu_host->cs_num));
- >>>>> Seriously, did you really think I would not notice what you're doing
- >>>>> here?
- >>>> Yes , I know that you have very good understanding about this.
- >>>>    You're reading the previous value which either contains a default
- >>>>> mapping or has the mapping set by the bootloader, and write it 
-back to
- >>>>> the register along with a new mask and the REGEN bit set (which
- >>>>> BTW is wrong since you don't mask out other fields before updating
- >>>>> them).
- >>>> There is no other field get overwritten
- >>>>    This confirms that this Core -> FPI address translation exists
- >>>>> and has to be set properly, so please stop lying about that.
- >>>> Sorry, there is no SW translation, as I have mentioned that it's
- >>>> optional only, for safer side , reading and writing the default 
-values.
- >>> Then write EBU_ADDR_SEL_REGEN and we'll if see that works. I suspect it
- >>> won't.
- >> You mean, without reading just writing EBU_ADDR_SEL_REGEN bit alone in
- >> EBU_ADDR_SELx , as you said it won't work because it overwrites 0x174
- >> with 0x0 values so BASE is lost.
- > Which confirms that this mapping has to be defined.
-Sure, Noted.
- >> either we can leave it or read & write with ORed | EBU_ADDR_SEL_REGEN
- > None of this is acceptable IMO. You have to build the value based on the
- > address translation described in the DT. Why are you so reluctant to
- > this approach?
-Agreed!, will derive the values(0x174/0x17C) to be written into these 
-registers based on the chip select (CS0/CS1)
-Address_sel0_register: 0xE0F0_0020
-Address_sel1_register: 0xE0F0_0024
-Bits : 31...12|11...8| 7..4 |3..2|  1   |  0
-flags:  BASE  |------| MASK | -- | MRME | REGEN
+I've gotten this series refactored on top of current pstore, and I've
+been making various bikeshed changes to names, etc, and as I went to go
+start testing, I realized that nothing actually uses
+psblk_register_blkdev().
 
-BASE : 0x17400 /0x17C00 to be written into 31:12 based on the chip selection
-MASK: 5: bits 26:22 to included address comparison
-MRME: Memory Region Memory Enable
-REGEN: Memory Region Access Enable
+It seems like it should be possible to just start using this on any
+block device of the user's choosing. I assume the idea is to allow for
+drivers to register panic_write handlers, but even without that, it'd be
+nice to just be able to test this with something like /dev/loop0.
 
-As you have suggested to get the above base values from DT and update in 
-driver, will do that.
+What's your thinking on how this would happen? It seems like if
+pstore/blk uses pstore/zone, and mtdpstore uses pstore/blk, there should
+be a blkoops that uses pstore/blk too? I guess I need to learn a bit
+more about how block device probing works so pstore/blk can notice
+devices as they're brought online, etc.
 
-Thanks!
-Regards
-Vadivel
- >> Please correct me if anything is wrong, Thanks!
- >>>
- >>>> The memory region to enabled that's my concern so written the same
- >>>> register values.
- >>> I don't buy that, sorry.
- >>>
- >>>> This will not be impact other fields, so please see below for 
-reference
- >>>>
- >>>> The EBU Address Select Registers EBU_ADDR_SEL_0 to EBU_ADDSEL3 
-establish
- >>>> and control memory regions for external accesses.
- >>>>
- >>>> Reset Value: 17400001H
- >>> See, as suspected the reset value is exactly what you expect.
- >> Yes , that's the reason said being optional.
- > Then it's not optional. It just works because you use the default
- > va
+-- 
+Kees Cook
 
 ______________________________________________________
 Linux MTD discussion mailing list
