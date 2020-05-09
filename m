@@ -1,163 +1,66 @@
-Return-Path: <SRS0=/+zL=6W=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=nfTR=6X=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C184C38A2A
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 May 2020 19:28:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1950EC38A2A
+	for <linux-mtd@archiver.kernel.org>; Sat,  9 May 2020 03:09:38 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F25532054F
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 May 2020 19:28:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D7DE121655
+	for <linux-mtd@archiver.kernel.org>; Sat,  9 May 2020 03:09:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lia32XL8";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=cisco.com header.i=@cisco.com header.b="HTI4zaB1";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=cisco.onmicrosoft.com header.i=@cisco.onmicrosoft.com header.b="IwwtK2Tj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F25532054F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=cisco.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DSQbOne8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D7DE121655
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=allwinnertech.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZNuwHQ12mqDzWKgBnJOUeKl675LfdbPPotVHjbhT9qU=; b=lia32XL8GMtlI4
-	HE66PDTJGWatVsQHq/IR8NGyaUS6MM/83CBeq0DrMXoPjaUDcPc3kdSnmY7zsMsQxrdODmzTnHTkk
-	7WKmwjm/e6cNMZu46ZDfIjkl1zGz2zLEobid89wUPB6rNNt0SaEc8ZsUH7l8bxDzdPQP3BiU5XW+l
-	Q8N2h3fo5KMqk+qMHTmY/w+xLc+cvRYloqWKwCgQAbDEAK5rl3xCXGI8gLTvcKLf+81PBZgWkYM5u
-	QPnZndeuB6r6YhdPU9nAwc8YpacLlU8fpoVrcNCNyQdKwXJGXyGLNVkTHPc1I/OXVowubpSKSD32a
-	KCwPKKIwDVuSyZFhhBtA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=45UI9w59R5IkVOYdR2B/D9QGH5F+3HMNcju9l5kYjbE=; b=DSQbOne8A4uTUA
+	ZtkMTQWdUDYvuHicUEN2kYL2Yp1NrMlaW8sMSB71XD8BbBvv4COOiO/2mS68g8ABk4ZKxzOta06SY
+	b4ubLsr7PmIpU1CwxYZ8MFeF8cmf/6QXhTfBl58Hr/6E6whF57S1OxDytJSW7kl+RTc+qIRlhZVcS
+	Stno1pUbYDxveNMCP/eSpvg6b3csDT5JoCET//eHC5kIBzgjw5kU4BI+f3VHNAAQ85mFGqX875Rp8
+	VHY8TzYLka2of8fPxx1d/jmJinbpm/hGdQ+Pl3JO5NeK9VuWOpmwCP5bxKmS5eFBfmeyej21/xXlo
+	nhBAu8sXHCzmGPXIhOeA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jX8fl-0003Ck-LA; Fri, 08 May 2020 19:28:37 +0000
-Received: from rcdn-iport-3.cisco.com ([173.37.86.74])
+	id 1jXFrf-0004SR-DH; Sat, 09 May 2020 03:09:23 +0000
+Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jX8fh-0003Bm-Fd
- for linux-mtd@lists.infradead.org; Fri, 08 May 2020 19:28:35 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=cisco.com; i=@cisco.com; l=1842; q=dns/txt; s=iport;
- t=1588966113; x=1590175713;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=TS1qTdpm2wisa8diOiSQ1dQ8px9NWQokDooT8w2S2Vw=;
- b=HTI4zaB1svtmyOEkv/UsjOYMCvKcRf2WeqIsvIsjnilz6OobFm4/Gyaz
- iyR7Z/EbPm5gfHcUwPmw51gBDgorBrEZoE//pJgaYWkzzQQjmfTAcQ7m7
- hKBQesovwgrmZ4Q2H+u32awPrJVVUy9oUdvyCyWO094tmWhMHNAAFhg0O A=;
-IronPort-PHdr: =?us-ascii?q?9a23=3A8dvPah07xix5W09tsmDT+zVfbzU7u7jyIg8e44?=
- =?us-ascii?q?YmjLQLaKm44pD+JxWEv6d8hVPAQ53B4u5VlvHW9avnXD9I7ZWAtSUEd5pBH1?=
- =?us-ascii?q?8AhN4NlgMtSMiCFQXgLfHsYiB7eaYKVFJs83yhd0QAHsH4ag7Dq3G78yYIEw?=
- =?us-ascii?q?nuKBF1YO/yH92ag8G+zevn/ZrVbk1Bjya8ZrUnKhKwoGCz/skbiIdvMOA/0B?=
- =?us-ascii?q?zM93BJYO9Rg2hvIAGe?=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0B1AABfsrVe/4sNJK1mGwEBAQEBAQE?=
- =?us-ascii?q?BBQEBARIBAQEDAwEBAUCBNQQBAQELAYFTUQWBRy8sCodgA4sxghGPNBSIcIE?=
- =?us-ascii?q?ugSQDVAsBAQEMAQEtAgQBAYREAoIOJDYHDgIDAQELAQEFAQEBAgEFBG2FVgy?=
- =?us-ascii?q?FcgEBAQMSKAYBATcBDwIBCA4KHhAUHicEDieFUAMuAaUHAoE5iGF0gTSDAQE?=
- =?us-ascii?q?BBYUjGIIOCRSBJAGCYolhGoFBP4QhPoROhXSRFqFZCoJKmBwpDoJOjWiMdq1?=
- =?us-ascii?q?HAgQCBAUCDgEBBYFZATGBVnAVgyRQGA2QQINyilZ0NwIGCAEBAwl8kA0BgQ8?=
- =?us-ascii?q?BAQ?=
-X-IronPort-AV: E=Sophos;i="5.73,368,1583193600"; d="scan'208";a="749108059"
-Received: from alln-core-6.cisco.com ([173.36.13.139])
- by rcdn-iport-3.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA;
- 08 May 2020 19:28:30 +0000
-Received: from XCH-ALN-002.cisco.com (xch-aln-002.cisco.com [173.36.7.12])
- by alln-core-6.cisco.com (8.15.2/8.15.2) with ESMTPS id 048JSUcA011817
- (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=FAIL);
- Fri, 8 May 2020 19:28:30 GMT
-Received: from xhs-rcd-001.cisco.com (173.37.227.246) by XCH-ALN-002.cisco.com
- (173.36.7.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
- Fri, 8 May 2020 14:28:30 -0500
-Received: from xhs-rcd-002.cisco.com (173.37.227.247) by xhs-rcd-001.cisco.com
- (173.37.227.246) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
- Fri, 8 May 2020 14:28:29 -0500
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (72.163.14.9) by
- xhs-rcd-002.cisco.com (173.37.227.247) with Microsoft SMTP Server
- (TLS) id
- 15.0.1497.2 via Frontend Transport; Fri, 8 May 2020 14:28:29 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DQ3uxVoypOaMjjZZsPM/IVIVTJr5RUvqDryiMeZUc5pHWSEhaokRHNXvkCuywyo4LV+5zTg3kVXwtUikQf35RiGRKlbVH8LLFkWu5b7dM2tmoZMbdZQJ3NQCdyIhm2WJvvU98TThwEJYpz6aOFj94GTtgeewJ9yGYsfyP3GpI5S8ta3L63iCvfMIz9RLWXDhiCp2Mgz/gejegHa0sYWpqOgeSH4rFhY/h7DOmrlkzC2RPxq6nmMLZcF9xK5qcUbuV/N34mhTv4h2CsimIww53rA0EWrr7tc8fH9eUrJPl/rHACNIkJotrqkRlHGz1n3WFk7zlMleVJ1ZgEHP3xicrQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QpZS0OjABjZ8ieGxoRHZZKh76p1z+Issuc2QSnojrCk=;
- b=jdi+JnqEyKwc9a3WKqPKA083lIADvL1ZUZoFKH+Bj3AedVkEIxnR+cgktbSfmXzQssJOU/+bhuaefr+KseJbbhFF99D+o4MnX3PHcOZ3VG7MH7jWYXZoualdRqUjWx55352XdrZ05UxLPZ3up7UpIjBZEDEL6cmD+ZFdC1mCNIlAyj+iJjAtinaLYqjm+7qQMEZvP7lTaV0KwkPE19hQLcEJibypY7bNdZEBWAyyCkD7rQrkLk5HhNdv469nqRCfP3FjatUx8OKl55patbiORrQ51aNedUsat2c7kgs2UJ5Rv7MTRvIY7XvHY6hsvN8DArfm4PllhmR7OxufEyQstw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cisco.com; dmarc=pass action=none header.from=cisco.com;
- dkim=pass header.d=cisco.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cisco.onmicrosoft.com; 
- s=selector2-cisco-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QpZS0OjABjZ8ieGxoRHZZKh76p1z+Issuc2QSnojrCk=;
- b=IwwtK2TjhsLV55mocjp/7LwTJSdKPM/wsHSbg5pcecthU15j7WcftmYzaDwwX+NpM5YOnxDycdfGg0EJ0PNkHkxBX+w7wYhjtxO2K1uKqORmYpF6I8duUNYgjzlqA8CrbbVQRLminljS9qXe17/pQel/S4vIJwGH8r7BipHCTFs=
-Received: from BYAPR11MB3205.namprd11.prod.outlook.com (2603:10b6:a03:1e::32)
- by BYAPR11MB3223.namprd11.prod.outlook.com (2603:10b6:a03:1b::26)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.29; Fri, 8 May
- 2020 19:28:27 +0000
-Received: from BYAPR11MB3205.namprd11.prod.outlook.com
- ([fe80::e40c:b886:639e:9472]) by BYAPR11MB3205.namprd11.prod.outlook.com
- ([fe80::e40c:b886:639e:9472%5]) with mapi id 15.20.2979.027; Fri, 8 May 2020
- 19:28:27 +0000
-From: "Daniel Walker (danielwa)" <danielwa@cisco.com>
-To: Pratyush Yadav <me@yadavpratyush.com>
-Subject: Re: [RFC-PATCH] mtd: spi-nor: add conditional 4B opcodes
-Thread-Topic: [RFC-PATCH] mtd: spi-nor: add conditional 4B opcodes
-Thread-Index: AQHWJW7Z+Cwh12LwKkae6PRXuOQSAg==
-Date: Fri, 8 May 2020 19:28:27 +0000
-Message-ID: <20200508192827.GH9016@zorba>
-References: <20200507162047.30788-1-danielwa@cisco.com>
- <20200507180346.gwni4hf6kb6gd2e5@yadavpratyush.com>
- <20200507181356.GZ9016@zorba>
- <20200508190735.tpgeuirsnyjexfz4@yadavpratyush.com>
-In-Reply-To: <20200508190735.tpgeuirsnyjexfz4@yadavpratyush.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-Auto-Response-Suppress: DR, OOF, AutoReply
-X-MS-TNEF-Correlator: 
-user-agent: Mutt/1.9.4 (2018-02-28)
-authentication-results: yadavpratyush.com; dkim=none (message not signed)
- header.d=none;yadavpratyush.com; dmarc=none action=none
- header.from=cisco.com;
-x-originating-ip: [128.107.241.179]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 924b21f8-dcef-4b65-7240-08d7f385fbf2
-x-ms-traffictypediagnostic: BYAPR11MB3223:
-x-ld-processed: 5ae1af62-9505-4097-a69a-c1553ef7840e,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR11MB3223BE3B8E68410830C462C7DDA20@BYAPR11MB3223.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-forefront-prvs: 039735BC4E
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: FvuoiaX4c4Cj0TVFtIzARDWV1h8WhnHXmvt9otSEQsXd9tpS5wGp8HMJaD46qZHN9kLDt7y6koN66l5AEt0AMrYF1Oa+VYKVVD+PWJ80njUXg0A2uTgUcaBBkjGsZOp8OGxdgWcPX2tFhmb39OJ9ydWD02/bZN0NCwNAuOb2R9k+SwPBykYrKW6oWTWXcdOlKq6j4YqcaUpc1E6Ooblegi0bNHAzj55NYTqJ3JNFkXped9S0GhS60aQJiZq5tE7rSvk+8uvMH/6Q5C3KEdWvtEHLU6NRXqBkGoM94ry0xFRWGo0A4St1ZT/Tri1SiobJi8Um0bv8KgyQWPQ1RSnia+PM/7nxr3PuehMRpPkMmUCJoc9smn/rz3hDVg6hdmyl/pZ9OJtyW21ZjtwPxt18fMsyUtFoWf3ll/nPlM2ehfRlBAYZ84fSZn2L/DqUPscqzl2kdUrktXuSdyMwlp94SsdWDZLO79VNW7LWTwBppHQ+95kjheYV3z4FkSMsbyBCh+/rDSv32EFIglKGBdblAQ==
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:BYAPR11MB3205.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFTY:;
- SFS:(4636009)(7916004)(376002)(396003)(346002)(39860400002)(136003)(366004)(33430700001)(5660300002)(2906002)(4326008)(76116006)(186003)(33656002)(71200400001)(86362001)(1076003)(66946007)(66556008)(316002)(66446008)(66476007)(8676002)(83300400001)(83310400001)(54906003)(83320400001)(8936002)(9686003)(64756008)(6512007)(33440700001)(33716001)(26005)(6916009)(6506007)(478600001)(6486002);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata: ay9i8OtZ7LGSYlquaFCLskFI8ByD4QXTjjCx/JlIcnmgqxiMcl9O5mJFH2Ar8iD/rTsK3xVzk4ygCceNuoR1C7ITlSz/aqExK5tvzWdw43L9pHP2CXLv2LS5IBQuhIgNHNareYG3hfAub1uoBghF+mtPrQL+iSabWIRVW/GEfvX/e4TW2ldteql5yhckhJcQLuYtdXgRIEBiweLTpTJg+xix432nzkbvIYNgjJy1raZf0qSMoz2U5BHIG1fm2UU5SQM8CSZw8G1m+pGWq7yIviJF804f1qGxod2WJI8+yFrlC/B41CHcVY6uK16eQkbx4HIXcCs036gCcIvdbHZp1hkkw9bWw2a5BqfY6vKS+tJG8iaC+cAHQiZJHFZZNHZ1Hw7zF6qmAGma+Cn7zXQqAJgyYxKVANin3uW5ihBvWT0VhPsvv/GeKBzqbUtkof1gAEmMKM5A/jiUr8ifTnnfobZMcq/ox0DQAS8XTOF9rJbn+F67C/ePvq3SSoenb4WU
-Content-ID: <6B11C1EBAE0E464DA452B67A8F78F5FD@namprd11.prod.outlook.com>
+ id 1jXFrX-0004RK-VR
+ for linux-mtd@lists.infradead.org; Sat, 09 May 2020 03:09:21 +0000
+X-Alimail-AntiSpam: AC=CONTINUE; BC=0.07436282|-1; CH=green;
+ DM=|CONTINUE|false|; DS=CONTINUE|ham_alarm|0.648234-0.000769406-0.350997;
+ FP=0|0|0|0|0|-1|-1|-1; HT=e02c03295; MF=liaoweixiong@allwinnertech.com; NM=1;
+ PH=DS; RN=10; RT=10; SR=0; TI=SMTPD_---.HVazYgv_1588993740; 
+Received: from 172.16.10.102(mailfrom:liaoweixiong@allwinnertech.com
+ fp:SMTPD_---.HVazYgv_1588993740)
+ by smtp.aliyun-inc.com(10.147.43.95); Sat, 09 May 2020 11:09:01 +0800
+Subject: Re: [PATCH v4 02/12] pstore/zone: Introduce common layer to manage
+ storage zones
+To: Kees Cook <keescook@chromium.org>
+References: <20200508064004.57898-1-keescook@chromium.org>
+ <20200508064004.57898-3-keescook@chromium.org>
+From: WeiXiong Liao <liaoweixiong@allwinnertech.com>
+Message-ID: <9caa2026-13c6-0340-942a-879c5ed6c88e@allwinnertech.com>
+Date: Sat, 9 May 2020 11:09:05 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 924b21f8-dcef-4b65-7240-08d7f385fbf2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 May 2020 19:28:27.7705 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 5ae1af62-9505-4097-a69a-c1553ef7840e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Jzk/uhnG9Ae3iUvKN5SEikE75RMz6P8trluiql6kcxYXNLIOz8yteFz2HwO2R68RGlTWMKVMtgDeg+Nmv1YAhw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3223
-X-OriginatorOrg: cisco.com
-X-Outbound-SMTP-Client: 173.36.7.12, xch-aln-002.cisco.com
-X-Outbound-Node: alln-core-6.cisco.com
+In-Reply-To: <20200508064004.57898-3-keescook@chromium.org>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200508_122833_698909_18F8CC42 
-X-CRM114-Status: GOOD (  19.00  )
+X-CRM114-CacheID: sfid-20200508_200916_377876_DE71AD93 
+X-CRM114-Status: GOOD (  27.99  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -169,52 +72,1130 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, Miquel
- Raynal <miquel.raynal@bootlin.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "xe-linux-external\(mailer list\)" <xe-linux-external@cisco.com>
+Cc: Petr Mladek <pmladek@suse.com>, Tony Luck <tony.luck@intel.com>,
+ linux-doc@vger.kernel.org, Anton Vorontsov <anton@enomsg.org>,
+ linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+ Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+ linux-mtd@lists.infradead.org, Colin Cross <ccross@android.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, May 09, 2020 at 12:37:35AM +0530, Pratyush Yadav wrote:
-> Hi Daniel,
+hi Kees Cook,
+
+On 2020/5/8 PM 2:39, Kees Cook wrote:
+> From: WeiXiong Liao <liaoweixiong@allwinnertech.com>
 > 
-> On 07/05/20 06:13PM, Daniel Walker (danielwa) wrote:
-> > On Thu, May 07, 2020 at 11:33:46PM +0530, Pratyush Yadav wrote:
-> > > On 07/05/20 09:20AM, Daniel Walker wrote:
-> > > > Some chips have 4B opcodes, but there is no way to know if they have
-> > > > them. This device tree option allows platform owners to force enable 4b
-> > > > opcodes when they know their chips support it even when it can be
-> > > > automatically identified.
-> > > 
-> > > Do you mean that two chips might have the same ID but one of them can 
-> > > support 4B opcodes and the other can not? Is it possible to detect this 
-> > > in a fixup hook? I think it would be better to do something like this in 
-> > > a fixup hook instead of via device tree.
-> >   
-> > Yes. The chip I added the option for is an example of this, it's n25q256a. I'm not familiar with the
-> > fixup hook mechanism, but I would assume you need some way to tell between the 4B
-> > opcode chips and the non-4B opcode chips. For n25q256a, we have not found a way
-> > to do that.
+> Implement a common set of APIs needed to support pstore storage zones,
+> based on how ramoops is designed. This will be used by pstore/blk with
+> the intention of migrating pstore/ram in the future.
 > 
-> I'm assuming this patch is related to [0]. If all you want is to address 
-> memory above 16M, why not switch to 4-byte addressing mode instead? 
-> Taking a quick look at the datasheet tells me this can be done via the 
-> "Enter 4-byte address mode" command (0xB7). Then just use the regular 
-> read/program commands with 4-byte addresses. Does that work for you? Is 
-> there any reason you _have_ to use dedicated 4B opcodes?
+> Signed-off-by: WeiXiong Liao <liaoweixiong@allwinnertech.com>
+> Link: https://lore.kernel.org/r/1585126506-18635-2-git-send-email-liaoweixiong@allwinnertech.com
+> Co-developed-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  fs/pstore/Kconfig           |   7 +
+>  fs/pstore/Makefile          |   3 +
+>  fs/pstore/zone.c            | 973 ++++++++++++++++++++++++++++++++++++
+>  include/linux/pstore_zone.h |  44 ++
+>  4 files changed, 1027 insertions(+)
+>  create mode 100644 fs/pstore/zone.c
+>  create mode 100644 include/linux/pstore_zone.h
+> 
+> diff --git a/fs/pstore/Kconfig b/fs/pstore/Kconfig
+> index 8f0369aad22a..98d2457bdd9f 100644
+> --- a/fs/pstore/Kconfig
+> +++ b/fs/pstore/Kconfig
+> @@ -153,3 +153,10 @@ config PSTORE_RAM
+>  	  "ramoops.ko".
+>  
+>  	  For more information, see Documentation/admin-guide/ramoops.rst.
+> +
+> +config PSTORE_ZONE
+> +	tristate
+> +	depends on PSTORE
+> +	help
+> +	  The common layer for pstore/blk (and pstore/ram in the future)
+> +	  to manage storage in zones.
+> diff --git a/fs/pstore/Makefile b/fs/pstore/Makefile
+> index 967b5891f325..58a967cbe4af 100644
+> --- a/fs/pstore/Makefile
+> +++ b/fs/pstore/Makefile
+> @@ -12,3 +12,6 @@ pstore-$(CONFIG_PSTORE_PMSG)	+= pmsg.o
+>  
+>  ramoops-objs += ram.o ram_core.o
+>  obj-$(CONFIG_PSTORE_RAM)	+= ramoops.o
+> +
+> +pstore_zone-objs += zone.o
+> +obj-$(CONFIG_PSTORE_ZONE)	+= pstore_zone.o
+> diff --git a/fs/pstore/zone.c b/fs/pstore/zone.c
+> new file mode 100644
+> index 000000000000..6c25c443c8e2
+> --- /dev/null
+> +++ b/fs/pstore/zone.c
+> @@ -0,0 +1,973 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#define MODNAME "pstore-zone"
+> +#define pr_fmt(fmt) MODNAME ": " fmt
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/slab.h>
+> +#include <linux/pstore.h>
+> +#include <linux/mount.h>
+> +#include <linux/printk.h>
+> +#include <linux/fs.h>
+> +#include <linux/pstore_zone.h>
+> +#include <linux/kdev_t.h>
+> +#include <linux/device.h>
+> +#include <linux/namei.h>
+> +#include <linux/fcntl.h>
+> +#include <linux/uio.h>
+> +#include <linux/writeback.h>
+> +
+> +/**
+> + * struct psz_head - header of zone to flush to storage
+> + *
+> + * @sig: signature to indicate header (PSZ_SIG xor PSZONE-type value)
+> + * @datalen: length of data in @data
+> + * @data: zone data.
+> + */
+> +struct psz_buffer {
+> +#define PSZ_SIG (0x43474244) /* DBGC */
+> +	uint32_t sig;
+> +	atomic_t datalen;
+> +	uint8_t data[];
+> +};
+> +
+> +/**
+> + * struct psz_oops_header - sub header of oops zones to flush to storage
+> + *
+> + * @magic: magic num for oops header
+> + * @time: oops/panic trigger time
+> + * @compressed: whether conpressed
+> + * @counter: oops/panic counter
+> + * @reason: identify oops or panic
+> + * @data: pointer to log data
+> + *
+> + * It's a sub-header of oops zone, trailing after &psz_buffer.
+> + */
+> +struct psz_oops_header {
+> +#define OOPS_HEADER_MAGIC 0x4dfc3ae5 /* Just a ramdom number */
+> +	uint32_t magic;
+> +	struct timespec64 time;
+> +	bool compressed;
+> +	uint32_t counter;
+> +	enum kmsg_dump_reason reason;
+> +	uint8_t data[];
+> +};
+> +
+> +/**
+> + * struct pstore_zone - zone information
+> + *
+> + * @off: zone offset of storage
+> + * @type: front-end type for this zone
+> + * @name: front-end name for this zone
+> + * @buffer: pointer to data buffer managed by this zone
+> + * @oldbuf: pointer to old data buffer.
+> + * @buffer_size: bytes in @buffer->data
+> + * @should_recover: whether this zone should recover from storage
+> + * @dirty: whether the data in @buffer dirty
+> + *
+> + * zone structure in memory.
+> + */
+> +struct pstore_zone {
+> +	loff_t off;
+> +	const char *name;
+> +	enum pstore_type_id type;
+> +
+> +	struct psz_buffer *buffer;
+> +	struct psz_buffer *oldbuf;
+> +	size_t buffer_size;
+> +	bool should_recover;
+> +	atomic_t dirty;
+> +};
+> +
+> +/**
+> + * struct psz_context - all about running state of pstore/zone
+> + *
+> + * @opszs: oops/panic storage zones
+> + * @oops_max_cnt: max count of @opszs
+> + * @oops_read_cnt: counter to read oops zone
+> + * @oops_write_cnt: counter to write
+> + * @oops_counter: counter to oops
+> + * @panic_counter: counter to panic
+> + * @recovered: whether finish recovering data from storage
+> + * @on_panic: whether occur panic
+> + * @pstore_zone_info_lock: lock to @pstore_zone_info
+> + * @pstore_zone_info: information from back-end
+> + * @pstore: structure for pstore
+> + */
+> +struct psz_context {
+> +	struct pstore_zone **opszs;
+> +	unsigned int oops_max_cnt;
+> +	unsigned int oops_read_cnt;
+> +	unsigned int oops_write_cnt;
+> +	/*
+> +	 * the counter should be recovered when recover.
+> +	 * It records the oops/panic times after burning rather than booting.
+> +	 */
+> +	unsigned int oops_counter;
+> +	unsigned int panic_counter;
+> +	atomic_t recovered;
+> +	atomic_t on_panic;
+> +
+> +	/*
+> +	 * pstore_zone_info_lock just protects "pstore_zone_info" during calls to
+> +	 * register_pstore_zone/unregister_pstore_zone
+> +	 */
+> +	struct mutex pstore_zone_info_lock;
+> +	struct pstore_zone_info *pstore_zone_info;
+> +	struct pstore_info pstore;
+> +};
+> +static struct psz_context psz_cxt;
+> +
+> +/**
+> + * enum psz_flush_mode - flush mode for psz_zone_write()
+> + *
+> + * @FLUSH_NONE: do not flush to storage but update data on memory
+> + * @FLUSH_PART: just flush part of data including meta data to storage
+> + * @FLUSH_META: just flush meta data of zone to storage
+> + * @FLUSH_ALL: flush all of zone
+> + */
+> +enum psz_flush_mode {
+> +	FLUSH_NONE = 0,
+> +	FLUSH_PART,
+> +	FLUSH_META,
+> +	FLUSH_ALL,
+> +};
+> +
+> +static inline int buffer_datalen(struct pstore_zone *zone)
+> +{
+> +	return atomic_read(&zone->buffer->datalen);
+> +}
+> +
+> +static inline bool is_on_panic(void)
+> +{
+> +	struct psz_context *cxt = &psz_cxt;
+> +
+> +	return atomic_read(&cxt->on_panic);
+> +}
+> +
+> +static ssize_t psz_zone_read(struct pstore_zone *zone, char *buf,
+> +		size_t len, unsigned long off)
+> +{
+> +	if (!buf || !zone->buffer)
+> +		return -EINVAL;
+> +	if (off > zone->buffer_size)
+> +		return -EINVAL;
+> +	len = min_t(size_t, len, zone->buffer_size - off);
+> +	memcpy(buf, zone->buffer->data + off, len);
+> +	return len;
+> +}
+> +
+> +static int psz_zone_write(struct pstore_zone *zone,
+> +		enum psz_flush_mode flush_mode, const char *buf,
+> +		size_t len, unsigned long off)
+> +{
+> +	struct pstore_zone_info *info = psz_cxt.pstore_zone_info;
+> +	ssize_t wcnt = 0;
+> +	ssize_t (*writeop)(const char *buf, size_t bytes, loff_t pos);
+> +	size_t wlen;
+> +
+> +	if (off > zone->buffer_size)
+> +		return -EINVAL;
+> +
+> +	wlen = min_t(size_t, len, zone->buffer_size - off);
+> +	if (buf && wlen) {
+> +		memcpy(zone->buffer->data + off, buf, wlen);
+> +		atomic_set(&zone->buffer->datalen, wlen + off);
+> +	}
+> +
+> +	/* avoid to damage old records */
+> +	if (!is_on_panic() && !atomic_read(&psz_cxt.recovered))
+> +		goto dirty;
+> +
+> +	writeop = is_on_panic() ? info->panic_write : info->write;
+> +	if (!writeop)
+> +		goto dirty;
+> +
+> +	switch (flush_mode) {
+> +	case FLUSH_NONE:
+> +		if (unlikely(buf && wlen))
+> +			goto dirty;
+> +		return 0;
+> +	case FLUSH_PART:
+> +		wcnt = writeop((const char *)zone->buffer->data + off, wlen,
+> +				zone->off + sizeof(*zone->buffer) + off);
+> +		if (wcnt != wlen)
+> +			goto dirty;
+> +		fallthrough;
+> +	case FLUSH_META:
+> +		wlen = sizeof(struct psz_buffer);
+> +		wcnt = writeop((const char *)zone->buffer, wlen, zone->off);
+> +		if (wcnt != wlen)
+> +			goto dirty;
+> +		break;
+> +	case FLUSH_ALL:
+> +		wlen = zone->buffer_size + sizeof(*zone->buffer);
+> +		wcnt = writeop((const char *)zone->buffer, wlen, zone->off);
+> +		if (wcnt != wlen)
+> +			goto dirty;
+> +		break;
+> +	}
+> +
+> +	return 0;
+> +dirty:
+> +	atomic_set(&zone->dirty, true);
+> +	return -EBUSY;
+> +}
+> +
+> +static int psz_flush_dirty_zone(struct pstore_zone *zone)
+> +{
+> +	int ret;
+> +
+> +	if (!zone)
+> +		return -EINVAL;
+> +
+> +	if (!atomic_read(&zone->dirty))
+> +		return 0;
+> +
+> +	if (!atomic_read(&psz_cxt.recovered))
+> +		return -EBUSY;
+> +
+> +	ret = psz_zone_write(zone, FLUSH_ALL, NULL, 0, 0);
+> +	if (!ret)
+> +		atomic_set(&zone->dirty, false);
+> +	return ret;
+> +}
 
-It might, I don't think we need anything beyond access to move than 16M. Your
-proposal would be to have a hook which enters the 0xB7 command?
+To avoid multi writers call flush_dirty_zone(), I prefer to
+use atomic_xchg() as follow:
 
-I guess the question would be do all the chips have this ability.
+	static int psz_flush_dirty_zone(struct pstore_zone *zone)
+	{
+	        int ret;
 
-Daniel
+	        if (unlikely(!zone))
+	                return -EINVAL;
+
+	        if (unlikely(!atomic_read(&psz_cxt.recovered)))
+	                return -EBUSY;
+
+	       if (!atomic_xchg(&zone->dirty, false))
+	                return 0;
+
+	        ret = psz_zone_write(zone, FLUSH_ALL, NULL, 0, 0);
+	        if (ret)
+	                atomic_set(&zone->dirty, true);
+	        return ret;
+	}
+
+> +
+> +static int psz_flush_dirty_zones(struct pstore_zone **zones, unsigned int cnt)
+> +{
+> +	int i, ret;
+> +	struct pstore_zone *zone;
+> +
+> +	if (!zones)
+> +		return -EINVAL;
+> +
+> +	for (i = 0; i < cnt; i++) {
+> +		zone = zones[i];
+> +		if (!zone)
+> +			return -EINVAL;
+> +		ret = psz_flush_dirty_zone(zone);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int psz_move_zone(struct pstore_zone *old, struct pstore_zone *new)
+> +{
+> +	const char *data = (const char *)old->buffer->data;
+> +	int ret;
+> +
+> +	ret = psz_zone_write(new, FLUSH_ALL, data, buffer_datalen(old), 0);
+> +	if (ret) {
+> +		atomic_set(&new->buffer->datalen, 0);
+> +		atomic_set(&new->dirty, false);
+> +		return ret;
+> +	}
+> +	atomic_set(&old->buffer->datalen, 0);
+> +	return 0;
+> +}
+> +
+> +static int psz_recover_oops_data(struct psz_context *cxt)
+> +{
+> +	struct pstore_zone_info *info = cxt->pstore_zone_info;
+> +	struct pstore_zone *zone = NULL;
+> +	struct psz_buffer *buf;
+> +	unsigned long i;
+> +	ssize_t rcnt;
+> +
+> +	if (!info->read)
+> +		return -EINVAL;
+> +
+> +	for (i = 0; i < cxt->oops_max_cnt; i++) {
+> +		zone = cxt->opszs[i];
+> +		if (unlikely(!zone))
+> +			return -EINVAL;
+> +		if (atomic_read(&zone->dirty)) {
+> +			unsigned int wcnt = cxt->oops_write_cnt;
+> +			struct pstore_zone *new = cxt->opszs[wcnt];
+> +			int ret;
+> +
+> +			ret = psz_move_zone(zone, new);
+> +			if (ret) {
+> +				pr_err("move zone from %lu to %d failed\n",
+> +						i, wcnt);
+> +				return ret;
+> +			}
+> +			cxt->oops_write_cnt = (wcnt + 1) % cxt->oops_max_cnt;
+> +		}
+> +		if (!zone->should_recover)
+> +			continue;
+> +		buf = zone->buffer;
+> +		rcnt = info->read((char *)buf, zone->buffer_size + sizeof(*buf),
+> +				zone->off);
+> +		if (rcnt != zone->buffer_size + sizeof(*buf))
+> +			return (int)rcnt < 0 ? (int)rcnt : -EIO;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int psz_recover_oops_meta(struct psz_context *cxt)
+> +{
+> +	struct pstore_zone_info *info = cxt->pstore_zone_info;
+> +	struct pstore_zone *zone;
+> +	size_t rcnt, len;
+> +	struct psz_buffer *buf;
+> +	struct psz_oops_header *hdr;
+> +	struct timespec64 time = {0};
+> +	unsigned long i;
+> +	/*
+> +	 * Recover may on panic, we can't allocate any memory by kmalloc.
+> +	 * So, we use local array instead.
+> +	 */
+> +	char buffer_header[sizeof(*buf) + sizeof(*hdr)] = {0};
+> +
+> +	if (!info->read)
+> +		return -EINVAL;
+> +
+> +	len = sizeof(*buf) + sizeof(*hdr);
+> +	buf = (struct psz_buffer *)buffer_header;
+> +	for (i = 0; i < cxt->oops_max_cnt; i++) {
+> +		zone = cxt->opszs[i];
+> +		if (unlikely(!zone))
+> +			return -EINVAL;
+> +
+> +		rcnt = info->read((char *)buf, len, zone->off);
+> +		if (rcnt != len) {
+> +			pr_err("read %s with id %lu failed\n", zone->name, i);
+> +			return (int)rcnt < 0 ? (int)rcnt : -EIO;
+> +		}
+> +
+> +		if (buf->sig != zone->buffer->sig) {
+> +			pr_debug("no valid data in oops zone %lu\n", i);
+> +			continue;
+> +		}
+> +
+> +		if (zone->buffer_size < atomic_read(&buf->datalen)) {
+> +			pr_info("found overtop zone: %s: id %lu, off %lld, size %zu\n",
+> +					zone->name, i, zone->off,
+> +					zone->buffer_size);
+> +			continue;
+> +		}
+> +
+> +		hdr = (struct psz_oops_header *)buf->data;
+> +		if (hdr->magic != OOPS_HEADER_MAGIC) {
+> +			pr_info("found invalid zone: %s: id %lu, off %lld, size %zu\n",
+> +					zone->name, i, zone->off,
+> +					zone->buffer_size);
+> +			continue;
+> +		}
+> +
+> +		/*
+> +		 * we get the newest zone, and the next one must be the oldest
+> +		 * or unused zone, because we do write one by one like a circle.
+> +		 */
+> +		if (hdr->time.tv_sec >= time.tv_sec) {
+> +			time.tv_sec = hdr->time.tv_sec;
+> +			cxt->oops_write_cnt = (i + 1) % cxt->oops_max_cnt;
+> +		}
+> +
+> +		if (hdr->reason == KMSG_DUMP_OOPS)
+> +			cxt->oops_counter =
+> +				max(cxt->oops_counter, hdr->counter);
+> +		else
+> +			cxt->panic_counter =
+> +				max(cxt->panic_counter, hdr->counter);
+> +
+> +		if (!atomic_read(&buf->datalen)) {
+> +			pr_debug("found erased zone: %s: id %lu, off %lld, size %zu, datalen %d\n",
+> +					zone->name, i, zone->off,
+> +					zone->buffer_size,
+> +					atomic_read(&buf->datalen));
+> +			continue;
+> +		}
+> +
+> +		if (!is_on_panic())
+> +			zone->should_recover = true;
+> +		pr_debug("found nice zone: %s: id %lu, off %lld, size %zu, datalen %d\n",
+> +				zone->name, i, zone->off,
+> +				zone->buffer_size, atomic_read(&buf->datalen));
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int psz_recover_oops(struct psz_context *cxt)
+> +{
+> +	int ret;
+> +
+> +	if (!cxt->opszs)
+> +		return 0;
+> +
+> +	ret = psz_recover_oops_meta(cxt);
+> +	if (ret)
+> +		goto recover_fail;
+> +
+> +	ret = psz_recover_oops_data(cxt);
+> +	if (ret)
+> +		goto recover_fail;
+> +
+> +	return 0;
+> +recover_fail:
+> +	pr_debug("recover oops failed\n");
+> +	return ret;
+> +}
+> +
+> +/**
+> + * psz_recovery() - recover data from storage
+> + * @cxt: the context of pstore/zone
+> + *
+> + * recovery means reading data back from storage after rebooting
+> + *
+> + * Return: 0 on success, others on failure.
+> + */
+> +static inline int psz_recovery(struct psz_context *cxt)
+> +{
+> +	int ret = -EBUSY;
+> +
+> +	if (atomic_read(&cxt->recovered))
+> +		return 0;
+> +
+> +	ret = psz_recover_oops(cxt);
+> +	if (ret)
+> +		goto recover_fail;
+> +
+> +	pr_debug("recover end!\n");
+> +	atomic_set(&cxt->recovered, 1);
+> +	return 0;
+> +
+> +recover_fail:
+> +	pr_err("recover failed\n");
+> +	return ret;
+> +}
+> +
+> +static int psz_pstore_open(struct pstore_info *psi)
+> +{
+> +	struct psz_context *cxt = psi->data;
+> +
+> +	cxt->oops_read_cnt = 0;
+> +	return 0;
+> +}
+> +
+> +static inline bool psz_ok(struct pstore_zone *zone)
+> +{
+> +	if (zone && zone->buffer && buffer_datalen(zone))
+> +		return true;
+> +	return false;
+> +}
+> +
+> +static inline int psz_oops_erase(struct psz_context *cxt,
+> +		struct pstore_zone *zone, struct pstore_record *record)
+> +{
+> +	struct psz_buffer *buffer = zone->buffer;
+> +	struct psz_oops_header *hdr =
+> +		(struct psz_oops_header *)buffer->data;
+> +
+> +	if (unlikely(!psz_ok(zone)))
+> +		return 0;
+> +	/* this zone is already updated, no need to erase */
+> +	if (record->count != hdr->counter)
+> +		return 0;
+> +
+> +	atomic_set(&zone->buffer->datalen, 0);
+> +	return psz_zone_write(zone, FLUSH_META, NULL, 0, 0);
+> +}
+> +
+> +static int psz_pstore_erase(struct pstore_record *record)
+> +{
+> +	struct psz_context *cxt = record->psi->data;
+> +
+> +	switch (record->type) {
+> +	case PSTORE_TYPE_DMESG:
+> +		if (record->id >= cxt->oops_max_cnt)
+> +			return -EINVAL;
+> +		return psz_oops_erase(cxt, cxt->opszs[record->id], record);
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static void psz_write_kmsg_hdr(struct pstore_zone *zone,
+> +		struct pstore_record *record)
+> +{
+> +	struct psz_context *cxt = record->psi->data;
+> +	struct psz_buffer *buffer = zone->buffer;
+> +	struct psz_oops_header *hdr =
+> +		(struct psz_oops_header *)buffer->data;
+> +
+> +	hdr->magic = OOPS_HEADER_MAGIC;
+> +	hdr->compressed = record->compressed;
+> +	hdr->time.tv_sec = record->time.tv_sec;
+> +	hdr->time.tv_nsec = record->time.tv_nsec;
+> +	hdr->reason = record->reason;
+> +	if (hdr->reason == KMSG_DUMP_OOPS)
+> +		hdr->counter = ++cxt->oops_counter;
+> +	else
+> +		hdr->counter = ++cxt->panic_counter;
+> +}
+> +
+> +static inline int notrace psz_oops_write_record(struct psz_context *cxt,
+> +		struct pstore_record *record)
+> +{
+> +	size_t size, hlen;
+> +	struct pstore_zone *zone;
+> +	unsigned int zonenum;
+> +
+> +	zonenum = cxt->oops_write_cnt;
+> +	zone = cxt->opszs[zonenum];
+> +	if (unlikely(!zone))
+> +		return -ENOSPC;
+> +	cxt->oops_write_cnt = (zonenum + 1) % cxt->oops_max_cnt;
+> +
+> +	pr_debug("write %s to zone id %d\n", zone->name, zonenum);
+> +	psz_write_kmsg_hdr(zone, record);
+> +	hlen = sizeof(struct psz_oops_header);
+> +	size = min_t(size_t, record->size, zone->buffer_size - hlen);
+> +	return psz_zone_write(zone, FLUSH_ALL, record->buf, size, hlen);
+> +}
+> +
+> +static int notrace psz_oops_write(struct psz_context *cxt,
+> +		struct pstore_record *record)
+> +{
+> +	int ret;
+> +
+> +	/*
+> +	 * Explicitly only take the first part of any new crash.
+> +	 * If our buffer is larger than kmsg_bytes, this can never happen,
+> +	 * and if our buffer is smaller than kmsg_bytes, we don't want the
+> +	 * report split across multiple records.
+> +	 */
+> +	if (record->part != 1)
+> +		return -ENOSPC;
+> +
+> +	if (!cxt->opszs)
+> +		return -ENOSPC;
+> +
+> +	ret = psz_oops_write_record(cxt, record);
+> +	if (!ret) {
+> +		pr_debug("try to flush other dirty oops zones\n");
+> +		psz_flush_dirty_zones(cxt->opszs, cxt->oops_max_cnt);
+> +	}
+> +
+> +	/* always return 0 as we had handled it on buffer */
+> +	return 0;
+> +}
+> +
+> +static int notrace psz_pstore_write(struct pstore_record *record)
+> +{
+> +	struct psz_context *cxt = record->psi->data;
+> +
+> +	if (record->type == PSTORE_TYPE_DMESG &&
+> +			record->reason == KMSG_DUMP_PANIC)
+> +		atomic_set(&cxt->on_panic, 1);
+> +
+> +	switch (record->type) {
+> +	case PSTORE_TYPE_DMESG:
+> +		return psz_oops_write(cxt, record);
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static struct pstore_zone *psz_read_next_zone(struct psz_context *cxt)
+> +{
+> +	struct pstore_zone *zone = NULL;
+> +
+> +	while (cxt->oops_read_cnt < cxt->oops_max_cnt) {
+> +		zone = cxt->opszs[cxt->oops_read_cnt++];
+> +		if (psz_ok(zone))
+> +			return zone;
+> +	}
+> +
+> +	return NULL;
+> +}
+> +
+> +static int psz_read_oops_hdr(struct pstore_zone *zone,
+> +		struct pstore_record *record)
+> +{
+> +	struct psz_buffer *buffer = zone->buffer;
+> +	struct psz_oops_header *hdr =
+> +		(struct psz_oops_header *)buffer->data;
+> +
+> +	if (hdr->magic != OOPS_HEADER_MAGIC)
+> +		return -EINVAL;
+> +	record->compressed = hdr->compressed;
+> +	record->time.tv_sec = hdr->time.tv_sec;
+> +	record->time.tv_nsec = hdr->time.tv_nsec;
+> +	record->reason = hdr->reason;
+> +	record->count = hdr->counter;
+> +	return 0;
+> +}
+> +
+> +static ssize_t psz_oops_read(struct pstore_zone *zone,
+> +		struct pstore_record *record)
+> +{
+> +	ssize_t size, hlen = 0;
+> +
+> +	size = buffer_datalen(zone);
+> +	/* Clear and skip this oops record if it has no valid header */
+> +	if (psz_read_oops_hdr(zone, record)) {
+> +		atomic_set(&zone->buffer->datalen, 0);
+> +		atomic_set(&zone->dirty, 0);
+> +		return -ENOMSG;
+> +	}
+> +	size -= sizeof(struct psz_oops_header);
+> +
+> +	if (!record->compressed) {
+> +		char *buf = kasprintf(GFP_KERNEL, "%s: Total %d times\n",
+> +				      kmsg_dump_reason_str(record->reason),
+> +				      record->count);
+> +		hlen = strlen(buf);
+> +		record->buf = krealloc(buf, hlen + size, GFP_KERNEL);
+> +		if (!record->buf) {
+> +			kfree(buf);
+> +			return -ENOMEM;
+> +		}
+> +	} else {
+> +		record->buf = kmalloc(size, GFP_KERNEL);
+> +		if (!record->buf)
+> +			return -ENOMEM;
+> +	}
+> +
+> +	size = psz_zone_read(zone, record->buf + hlen, size,
+> +			sizeof(struct psz_oops_header) < 0);
+
+Here should be:
+	sizeof(struct psz_oops_header));
+
+That's the reason why all the compressed files were failing to
+decompress.
+
+> +	if (unlikely(size < 0)) {
+> +		kfree(record->buf);
+> +		return -ENOMSG;
+> +	}
+> +
+> +	return size + hlen;
+> +}
+> +
+> +static ssize_t psz_pstore_read(struct pstore_record *record)
+> +{
+> +	struct psz_context *cxt = record->psi->data;
+> +	ssize_t (*readop)(struct pstore_zone *zone,
+> +			struct pstore_record *record);
+> +	struct pstore_zone *zone;
+> +	ssize_t ret;
+> +
+> +	/* before read, we must recover from storage */
+> +	ret = psz_recovery(cxt);
+> +	if (ret)
+> +		return ret;
+> +
+> +next_zone:
+> +	zone = psz_read_next_zone(cxt);
+> +	if (!zone)
+> +		return 0;
+> +
+> +	record->type = zone->type;
+> +	switch (record->type) {
+> +	case PSTORE_TYPE_DMESG:
+> +		readop = psz_oops_read;
+> +		record->id = cxt->oops_read_cnt - 1;
+> +		break;
+> +	default:
+> +		goto next_zone;
+> +	}
+> +
+> +	ret = readop(zone, record);
+> +	if (ret == -ENOMSG)
+> +		goto next_zone;
+> +	return ret;
+> +}
+> +
+> +static struct psz_context psz_cxt = {
+> +	.pstore_zone_info_lock = __MUTEX_INITIALIZER(psz_cxt.pstore_zone_info_lock),
+> +	.recovered = ATOMIC_INIT(0),
+> +	.on_panic = ATOMIC_INIT(0),
+> +	.pstore = {
+> +		.owner = THIS_MODULE,
+> +		.name = MODNAME,
+> +		.open = psz_pstore_open,
+> +		.read = psz_pstore_read,
+> +		.write = psz_pstore_write,
+> +		.erase = psz_pstore_erase,
+> +	},
+> +};
+> +
+> +static struct pstore_zone *psz_init_zone(enum pstore_type_id type,
+> +		loff_t *off, size_t size)
+> +{
+> +	struct pstore_zone_info *info = psz_cxt.pstore_zone_info;
+> +	struct pstore_zone *zone;
+> +	const char *name = pstore_type_to_name(type);
+> +
+> +	if (!size)
+> +		return NULL;
+> +
+> +	if (*off + size > info->total_size) {
+> +		pr_err("no room for %s (0x%zx@0x%llx over 0x%lx)\n",
+> +			name, size, *off, info->total_size);
+> +		return ERR_PTR(-ENOMEM);
+> +	}
+> +
+> +	zone = kzalloc(sizeof(struct pstore_zone), GFP_KERNEL);
+> +	if (!zone)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	zone->buffer = kmalloc(size, GFP_KERNEL);
+> +	if (!zone->buffer) {
+> +		kfree(zone);
+> +		return ERR_PTR(-ENOMEM);
+> +	}
+> +	memset(zone->buffer, 0xFF, size);
+> +	zone->off = *off;
+> +	zone->name = name;
+> +	zone->type = type;
+> +	zone->buffer_size = size - sizeof(struct psz_buffer);
+> +	zone->buffer->sig = type ^ PSZ_SIG;
+> +	atomic_set(&zone->dirty, 0);
+> +	atomic_set(&zone->buffer->datalen, 0);
+> +
+> +	*off += size;
+> +
+> +	pr_debug("pszone %s: off 0x%llx, %zu header, %zu data\n", zone->name,
+> +			zone->off, sizeof(*zone->buffer), zone->buffer_size);
+> +	return zone;
+> +}
+> +
+> +static struct pstore_zone **psz_init_zones(enum pstore_type_id type,
+> +	loff_t *off, size_t total_size, ssize_t record_size,
+> +	unsigned int *cnt)
+> +{
+> +	struct pstore_zone_info *info = psz_cxt.pstore_zone_info;
+> +	struct pstore_zone **zones, *zone;
+> +	const char *name = pstore_type_to_name(type);
+> +	int c, i;
+> +
+> +	if (!total_size || !record_size)
+> +		return NULL;
+> +
+> +	if (*off + total_size > info->total_size) {
+> +		pr_err("no room for zones %s (0x%zx@0x%llx over 0x%lx)\n",
+> +			name, total_size, *off, info->total_size);
+> +		return ERR_PTR(-ENOMEM);
+> +	}
+> +
+> +	c = total_size / record_size;
+> +	zones = kcalloc(c, sizeof(*zones), GFP_KERNEL);
+> +	if (!zones) {
+> +		pr_err("allocate for zones %s failed\n", name);
+> +		return ERR_PTR(-ENOMEM);
+> +	}
+> +	memset(zones, 0, c * sizeof(*zones));
+> +
+> +	for (i = 0; i < c; i++) {
+> +		zone = psz_init_zone(type, off, record_size);
+> +		if (!zone || IS_ERR(zone)) {
+> +			pr_err("initialize zones %s failed\n", name);
+> +			while (--i >= 0) {
+> +				kfree(zones[i]->buffer);
+> +				kfree(zones[i]);
+> +			}
+> +			kfree(zones);
+> +			return (void *)zone;
+> +		}
+> +		zones[i] = zone;
+> +	}
+> +
+> +	*cnt = c;
+> +	return zones;
+> +}
+> +
+> +static void psz_free_zone(struct pstore_zone **pszone)
+> +{
+> +	struct pstore_zone *zone = *pszone;
+> +
+> +	if (!zone)
+> +		return;
+> +
+> +	kfree(zone->buffer);
+> +	kfree(zone);
+> +	*pszone = NULL;
+> +}
+> +
+> +static void psz_free_zones(struct pstore_zone ***pszones, unsigned int *cnt)
+> +{
+> +	struct pstore_zone **zones = *pszones;
+> +
+> +	if (!zones)
+> +		return;
+> +
+> +	while (*cnt > 0) {
+> +		psz_free_zone(&zones[*cnt]);
+> +		(*cnt)--;
+> +	}
+> +	kfree(zones);
+> +	*pszones = NULL;
+> +}
+> +
+> +static void psz_free_all_zones(struct psz_context *cxt)
+> +{
+> +	if (cxt->opszs)
+> +		psz_free_zones(&cxt->opszs, &cxt->oops_max_cnt);
+> +}
+> +
+> +static int psz_alloc_zones(struct psz_context *cxt)
+> +{
+> +	struct pstore_zone_info *info = cxt->pstore_zone_info;
+> +	loff_t off = 0;
+> +	int err;
+> +	size_t size;
+> +
+> +	size = info->total_size;
+> +	cxt->opszs = psz_init_zones(PSTORE_TYPE_DMESG, &off, size,
+> +			info->kmsg_size, &cxt->oops_max_cnt);
+> +	if (IS_ERR(cxt->opszs)) {
+> +		err = PTR_ERR(cxt->opszs);
+> +		goto fail_out;
+> +	}
+> +
+> +	return 0;
+> +fail_out:
+> +	return err;
+> +}
+> +
+> +/**
+> + * register_pstore_zone() - register to pstore/zone
+> + *
+> + * @info: back-end driver information. See &struct pstore_zone_info.
+> + *
+> + * Only one back-end at one time.
+> + *
+> + * Return: 0 on success, others on failure.
+> + */
+> +int register_pstore_zone(struct pstore_zone_info *info)
+> +{
+> +	int err = -EINVAL;
+> +	struct psz_context *cxt = &psz_cxt;
+> +
+> +	if (!info->total_size) {
+> +		pr_warn("the total size must be non-zero\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (!info->kmsg_size) {
+> +		pr_warn("at least one of the records be non-zero\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (!info->name || !info->name[0])
+> +		return -EINVAL;
+> +
+> +	if (info->total_size < 4096) {
+> +		pr_err("total size must be greater than 4096 bytes\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +#define check_size(name, size) {					\
+> +		if (info->name > 0 && info->name < (size)) {		\
+> +			pr_err(#name " must be over %d\n", (size));	\
+> +			return -EINVAL;					\
+> +		}							\
+> +		if (info->name & (size - 1)) {				\
+> +			pr_err(#name " must be a multiple of %d\n",	\
+> +					(size));			\
+> +			return -EINVAL;					\
+> +		}							\
+> +	}
+> +
+> +	check_size(total_size, 4096);
+> +	check_size(kmsg_size, SECTOR_SIZE);
+> +
+> +#undef check_size
+> +
+> +	/*
+> +	 * the @read and @write must be applied.
+> +	 * if no @read, pstore may mount failed.
+> +	 * if no @write, pstore do not support to remove record file.
+> +	 */
+> +	if (!info->read || !info->write) {
+> +		pr_err("no valid general read/write interface\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	mutex_lock(&cxt->pstore_zone_info_lock);
+> +	if (cxt->pstore_zone_info) {
+> +		pr_warn("'%s' already loaded: ignoring '%s'\n",
+> +				cxt->pstore_zone_info->name, info->name);
+> +		mutex_unlock(&cxt->pstore_zone_info_lock);
+> +		return -EBUSY;
+> +	}
+> +	cxt->pstore_zone_info = info;
+> +	mutex_unlock(&cxt->pstore_zone_info_lock);
+> +
+> +	pr_debug("register %s with properties:\n", info->name);
+> +	pr_debug("\ttotal size : %ld Bytes\n", info->total_size);
+> +	pr_debug("\toops size : %ld Bytes\n", info->kmsg_size);
+> +
+> +	err = psz_alloc_zones(cxt);
+> +	if (err) {
+> +		pr_err("alloc zones failed\n");
+> +		goto fail_out;
+> +	}
+> +
+> +	if (info->kmsg_size) {
+> +		cxt->pstore.bufsize = cxt->opszs[0]->buffer_size -
+> +			sizeof(struct psz_oops_header);
+> +		cxt->pstore.buf = kzalloc(cxt->pstore.bufsize, GFP_KERNEL);
+> +		if (!cxt->pstore.buf) {
+> +			err = -ENOMEM;
+> +			goto free_all_zones;
+> +		}
+> +	}
+> +	cxt->pstore.data = cxt;
+> +
+> +	pr_info("registered %s as backend for", info->name);
+> +	cxt->pstore.max_reason = info->max_reason;
+> +	if (info->kmsg_size) {
+> +		cxt->pstore.flags |= PSTORE_FLAGS_DMESG;
+> +		pr_cont(" kmsg(%s",
+> +			kmsg_dump_reason_str(cxt->pstore.max_reason));
+> +		if (cxt->pstore_zone_info->panic_write)
+> +			pr_cont(",panic_write");
+> +		pr_cont(")");
+> +	}
+> +	pr_cont("\n");
+> +
+> +	err = pstore_register(&cxt->pstore);
+> +	if (err) {
+> +		pr_err("registering with pstore failed\n");
+> +		goto free_pstore_buf;
+> +	}
+> +
+> +	return 0;
+> +
+> +free_pstore_buf:
+> +	kfree(cxt->pstore.buf);
+> +free_all_zones:
+> +	psz_free_all_zones(cxt);
+> +fail_out:
+> +	mutex_lock(&psz_cxt.pstore_zone_info_lock);
+> +	psz_cxt.pstore_zone_info = NULL;
+> +	mutex_unlock(&psz_cxt.pstore_zone_info_lock);
+> +	return err;
+> +}
+> +EXPORT_SYMBOL_GPL(register_pstore_zone);
+> +
+> +/**
+> + * unregister_pstore_zone() - unregister to pstore/zone
+> + *
+> + * @info: back-end driver information. See struct pstore_zone_info.
+> + */
+> +void unregister_pstore_zone(struct pstore_zone_info *info)
+> +{
+> +	struct psz_context *cxt = &psz_cxt;
+> +
+> +	pstore_unregister(&cxt->pstore);
+> +	kfree(cxt->pstore.buf);
+> +	cxt->pstore.bufsize = 0;
+> +
+> +	mutex_lock(&cxt->pstore_zone_info_lock);
+> +	cxt->pstore_zone_info = NULL;
+> +	mutex_unlock(&cxt->pstore_zone_info_lock);
+> +
+> +	psz_free_all_zones(cxt);
+> +}
+> +EXPORT_SYMBOL_GPL(unregister_pstore_zone);
+> +
+> +MODULE_LICENSE("GPL");
+> +MODULE_AUTHOR("WeiXiong Liao <liaoweixiong@allwinnertech.com>");
+> +MODULE_DESCRIPTION("Storage Manager for pstore/blk");
+> diff --git a/include/linux/pstore_zone.h b/include/linux/pstore_zone.h
+> new file mode 100644
+> index 000000000000..a6a79ff1351b
+> --- /dev/null
+> +++ b/include/linux/pstore_zone.h
+> @@ -0,0 +1,44 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +#ifndef __PSTORE_ZONE_H_
+> +#define __PSTORE_ZONE_H_
+> +
+> +#include <linux/types.h>
+> +
+> +typedef ssize_t (*psz_read_op)(char *, size_t, loff_t);
+> +typedef ssize_t (*psz_write_op)(const char *, size_t, loff_t);
+> +/**
+> + * struct pstore_zone_info - pstore/zone back-end driver structure
+> + *
+> + * @owner:	Module which is responsible for this back-end driver.
+> + * @name:	Name of the back-end driver.
+> + * @total_size: The total size in bytes pstore/zone can use. It must be greater
+> + *		than 4096 and be multiple of 4096.
+> + * @kmsg_size:	The size of oops/panic zone. Zero means disabled, otherwise,
+> + *		it must be multiple of SECTOR_SIZE(512 Bytes).
+> + * @max_reason: Maximum kmsg dump reason to store.
+> + * @read:	The general read operation. Both of the function parameters
+> + *		@size and @offset are relative value to storage.
+> + *		On success, the number of bytes should be returned, others
+> + *		means error.
+> + * @write:	The same as @read.
+> + * @panic_write:The write operation only used for panic case. It's optional
+> + *		if you do not care panic log. The parameters and return value
+> + *		are the same as @read.
+> + */
+> +struct pstore_zone_info {
+> +	struct module *owner;
+> +	const char *name;
+> +
+> +	unsigned long total_size;
+> +	unsigned long kmsg_size;
+> +	int max_reason;
+> +	psz_read_op read;
+> +	psz_write_op write;
+> +	psz_write_op panic_write;
+> +};
+> +
+> +extern int register_pstore_zone(struct pstore_zone_info *info);
+> +extern void unregister_pstore_zone(struct pstore_zone_info *info);
+> +
+> +#endif
+> 
+
+I will try to send v5 as soon as possable.
+
+-- 
+WeiXiong Liao
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
