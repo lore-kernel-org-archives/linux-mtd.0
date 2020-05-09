@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 267AAC28CBC
-	for <linux-mtd@archiver.kernel.org>; Sat,  9 May 2020 19:15:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 041B3C28CBC
+	for <linux-mtd@archiver.kernel.org>; Sat,  9 May 2020 19:15:39 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CCACC214D8
-	for <linux-mtd@archiver.kernel.org>; Sat,  9 May 2020 19:15:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A425920722
+	for <linux-mtd@archiver.kernel.org>; Sat,  9 May 2020 19:15:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="unHqxXhP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CCACC214D8
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="C0M3vv3M"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A425920722
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,37 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=63Z7cznqkblDUwqm5iIogBdpJLNKoKcrUq1S5j6li8U=; b=unHqxXhPINw5Gu
-	odYMn5bEkok0cMnbZ01A2hBq6dwT0mhFDAkWIw+5utqPtl8fLd+Q9msFAfiytbwOtBN6rXlPYudnw
-	l6td9CLwnNcwPC7MyghkCWKhLJdbH4tin9C9OSNXPEJunm3p58UX5IvCyrHJtfkfd0MoqSenHL/Xb
-	8fc76/7n65fQ5njJ9UNJm4tUHhCxp6cbmntmY6bJb/7tChfyefmb8UtFv70qJPxHnj2ZqaQPxVDwz
-	IB+F2l3s2ToUCecH8dte3b3pwf/r3HeTk1zOR47EJtJQjAywvic2ryd7EtbkG9K7x8T/ASo/JtTb2
-	gV1NC/0qVoyx+Y9Wl+5w==;
+	List-Owner; bh=WsW038D0D87hcqSDz4qEDvuVtRzPTgU7OLXpJMfJVxc=; b=C0M3vv3MGigVJ0
+	TnXxBFlixpq8AlW06RPYMpI+YxkKdPj02g4jOzENZXpMUoCthimuvMNcvsN6hrrmAACbPjw+OU+Rf
+	SjsSFAxvm3m4v58EUFX0LNRQtNt9/Y/DRzRB7E6qOw3pQdDGvdyt/N+t2ZaQRs074zeFa5gtnlpA2
+	zmmKdWm7w9RNVNCD11BM6mvixyMRFZAw201LJoiSn7EOCaW0jAsKimQqARb8CzqcM1mQd5gguE+zd
+	EQqZLPA4zjEw3sew7SZtBG0bjcQPOYPS4IbkSlYtwm/7heEqAboeXQIAexBVE3ppq/u3Qn84fFHxY
+	xZFvMOU47sLHtYJq2QFw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jXUwT-0004fV-69; Sat, 09 May 2020 19:15:21 +0000
+	id 1jXUwd-0004rj-53; Sat, 09 May 2020 19:15:31 +0000
 Received: from relay11.mail.gandi.net ([217.70.178.231])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jXUvm-0001mA-Gp
+ id 1jXUvm-0001lv-0y
  for linux-mtd@lists.infradead.org; Sat, 09 May 2020 19:14:41 +0000
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay11.mail.gandi.net (Postfix) with ESMTPSA id 73AB110000A;
- Sat,  9 May 2020 19:14:36 +0000 (UTC)
+ by relay11.mail.gandi.net (Postfix) with ESMTPSA id 82857100006;
+ Sat,  9 May 2020 19:14:34 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH 04/17] mtd: rawnand: nandsim: Clean error handling
-Date: Sat,  9 May 2020 21:14:17 +0200
-Message-Id: <20200509191431.15862-5-miquel.raynal@bootlin.com>
+Subject: [PATCH 02/17] mtd: rawnand: nandsim: Use octal permissions
+Date: Sat,  9 May 2020 21:14:15 +0200
+Message-Id: <20200509191431.15862-3-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200509191431.15862-1-miquel.raynal@bootlin.com>
 References: <20200509191431.15862-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200509_121438_823226_658B7A09 
-X-CRM114-Status: GOOD (  13.26  )
+X-CRM114-CacheID: sfid-20200509_121438_195348_04FB9C02 
+X-CRM114-Status: UNSURE (   9.76  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,153 +75,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Many function calls are done this way:
-
-        if ((retval = func()) != 0)
-	        return retval;
-
-while we expect in the kernel function calls like:
-
-        retval = func();
-	if (retval)
-	        return retval;
-
-Apply this change where possible and also use "ret" instead of
-"retval" in ns_init_module for consistency, as it is only used in this
-function.
+Symbolic permissions 'S_IRUSR' are not preferred. Checkpatch.pl
+advises to use octal permissions '0400'.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/nandsim.c | 46 ++++++++++++++++++++--------------
- 1 file changed, 27 insertions(+), 19 deletions(-)
+ drivers/mtd/nand/raw/nandsim.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/raw/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
-index 2c335cc8bcdf..5b427a50bc27 100644
+index 0062e4fedcc0..ea46f7011a0f 100644
 --- a/drivers/mtd/nand/raw/nandsim.c
 +++ b/drivers/mtd/nand/raw/nandsim.c
-@@ -739,7 +739,8 @@ static int __init ns_init(struct mtd_info *mtd)
- 	printk("sector address bytes: %u\n",    ns->geom.secaddrbytes);
- 	printk("options: %#x\n",                ns->options);
- 
--	if ((ret = ns_alloc_device(ns)) != 0)
-+	ret = ns_alloc_device(ns);
-+	if (ret)
- 		return ret;
- 
- 	/* Allocate / initialize the internal buffer */
-@@ -1747,7 +1748,7 @@ static void ns_switch_state(struct nandsim *ns)
- 
- 		NS_DBG("switch_state: operation is unknown, try to find it\n");
- 
--		if (ns_find_operation(ns, 0) != 0)
-+		if (!ns_find_operation(ns, 0))
- 			return;
- 
- 		if ((ns->state & ACTION_MASK) &&
-@@ -2243,7 +2244,7 @@ static int __init ns_init_module(void)
- {
- 	struct nand_chip *chip;
- 	struct nandsim *ns;
--	int retval = -ENOMEM, i;
-+	int ret, i;
- 
- 	if (bus_width != 8 && bus_width != 16) {
- 		NS_ERR("wrong bus width (%d), use only 8 or 16\n", bus_width);
-@@ -2276,7 +2277,7 @@ static int __init ns_init_module(void)
- 		break;
- 	default:
- 		NS_ERR("bbt has to be 0..2\n");
--		retval = -EINVAL;
-+		ret = -EINVAL;
- 		goto error;
- 	}
- 	/*
-@@ -2302,21 +2303,24 @@ static int __init ns_init_module(void)
- 
- 	nsmtd->owner = THIS_MODULE;
- 
--	if ((retval = ns_parse_weakblocks()) != 0)
-+	ret = ns_parse_weakblocks();
-+	if (ret)
- 		goto error;
- 
--	if ((retval = ns_parse_weakpages()) != 0)
-+	ret = ns_parse_weakpages();
-+	if (ret)
- 		goto error;
- 
--	if ((retval = ns_parse_gravepages()) != 0)
-+	ret = ns_parse_gravepages();
-+	if (ret)
- 		goto error;
- 
- 	nand_controller_init(&ns->base);
- 	ns->base.ops = &ns_controller_ops;
- 	chip->controller = &ns->base;
- 
--	retval = nand_scan(chip, 1);
--	if (retval) {
-+	ret = nand_scan(chip, 1);
-+	if (ret) {
- 		NS_ERR("Could not scan NAND Simulator device\n");
- 		goto error;
- 	}
-@@ -2330,7 +2334,7 @@ static int __init ns_init_module(void)
- 
- 		if (new_size >> overridesize != nsmtd->erasesize) {
- 			NS_ERR("overridesize is too big\n");
--			retval = -EINVAL;
-+			ret = -EINVAL;
- 			goto err_exit;
- 		}
- 
-@@ -2342,25 +2346,29 @@ static int __init ns_init_module(void)
- 		chip->pagemask = (targetsize >> chip->page_shift) - 1;
+@@ -508,7 +508,7 @@ static int nandsim_debugfs_create(struct nandsim *ns)
+ 		return 0;
  	}
  
--	if ((retval = ns_setup_wear_reporting(nsmtd)) != 0)
-+	ret = ns_setup_wear_reporting(nsmtd);
-+	if (ret)
- 		goto err_exit;
- 
--	if ((retval = ns_init(nsmtd)) != 0)
-+	ret = ns_init(nsmtd);
-+	if (ret)
- 		goto err_exit;
- 
--	if ((retval = nand_create_bbt(chip)) != 0)
-+	ret = nand_create_bbt(chip);
-+	if (ret)
- 		goto err_exit;
- 
--	if ((retval = ns_parse_badblocks(ns, nsmtd)) != 0)
-+	ret = ns_parse_badblocks(ns, nsmtd);
-+	if (ret)
- 		goto err_exit;
- 
- 	/* Register NAND partitions */
--	retval = mtd_device_register(nsmtd, &ns->partitions[0],
--				     ns->nbparts);
--	if (retval != 0)
-+	ret = mtd_device_register(nsmtd, &ns->partitions[0], ns->nbparts);
-+	if (ret)
- 		goto err_exit;
- 
--	if ((retval = ns_debugfs_create(ns)) != 0)
-+	ret = ns_debugfs_create(ns);
-+	if (ret)
- 		goto err_exit;
- 
-         return 0;
-@@ -2374,7 +2382,7 @@ static int __init ns_init_module(void)
- 	kfree(ns);
- 	ns_free_lists();
- 
--	return retval;
-+	return ret;
- }
- 
- module_init(ns_init_module);
+-	dent = debugfs_create_file("nandsim_wear_report", S_IRUSR, root, ns,
++	dent = debugfs_create_file("nandsim_wear_report", 0400, root, ns,
+ 				   &nandsim_fops);
+ 	if (IS_ERR_OR_NULL(dent)) {
+ 		NS_ERR("cannot create \"nandsim_wear_report\" debugfs entry\n");
 -- 
 2.20.1
 
