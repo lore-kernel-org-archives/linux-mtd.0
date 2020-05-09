@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 578ABC28CBC
-	for <linux-mtd@archiver.kernel.org>; Sat,  9 May 2020 19:18:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B283CC28CBC
+	for <linux-mtd@archiver.kernel.org>; Sat,  9 May 2020 19:18:38 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2BAB920722
-	for <linux-mtd@archiver.kernel.org>; Sat,  9 May 2020 19:18:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 681C520644
+	for <linux-mtd@archiver.kernel.org>; Sat,  9 May 2020 19:18:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bN8ADgKm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2BAB920722
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="n+8GTPkW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 681C520644
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4q2kP/QXjWbBBGapWAk0kCa4MK99TNBxhaDx/oJ4+nk=; b=bN8ADgKmirOOIP
-	wzI7yWCAU0kHsJsBMuMOh3cmIaQ+235n1+Hyg8nLxHgaafKQieoPZutZ6M1+1Z96vaICNXEfcdDnn
-	AJXJEeKyxyvbwgLoklODTFHIc5l/4XfAD2TWecwz6C3cifnSg/7oaUr9JUi12Ml1YnxEK5RnLoaJx
-	nV88glagHDWp4xYt9ibYtAbqoH8xeRQlrzJU9mW1uLoK6Ztaf2m1+mt6ekF7VIOdAkAoq8sau+f+C
-	Jh3nW7d3OXJoDfECmR94LrKy+/jed8MAW0heOqIFWQ5F3ztHMMzyE3/flYfShJtGqbRK4O2LxNPDB
-	leNEJwTHYxelKooHZh4w==;
+	List-Owner; bh=csyRT9JrgCsEKmDAaIYI/+ocxQ30ry1kVukKtd5GT3U=; b=n+8GTPkWkfwaay
+	pUokCJkKfVvSpR69jf61L91SLf7XjhtLB6yJoUS8wuCFVRxyJiJceU/9AjLFw+tndkdmOePgZHVNp
+	tpO3B/Ialc2do2/9M+EBUjz7YoAWqKkMVMYJNafYAxUj8EbtGXWovYx8oDk0qGaq7EDbRO2OhGakt
+	hKtOtEPJP3OH79pdRSprMpYF7PkDXsTr6qRE20qqK1nfPKd8Aod6GKf0lwiiOVhAntr50cFOh7f07
+	EBxK3XSOb8uWHhlf0V2DTd17dbjqJpdqAOL9jzO2bdnqv8mHUOPgvNqIznWsd1KeDKvj4CQUENgGi
+	oWjzRd54eVhSIYjQZZtg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jXUzG-0007Gb-TK; Sat, 09 May 2020 19:18:14 +0000
+	id 1jXUzU-0007UB-Kb; Sat, 09 May 2020 19:18:28 +0000
 Received: from relay11.mail.gandi.net ([217.70.178.231])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jXUvu-0001t0-GL
- for linux-mtd@lists.infradead.org; Sat, 09 May 2020 19:14:47 +0000
+ id 1jXUvv-0001ty-KA
+ for linux-mtd@lists.infradead.org; Sat, 09 May 2020 19:14:49 +0000
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay11.mail.gandi.net (Postfix) with ESMTPSA id 5B98C100006;
- Sat,  9 May 2020 19:14:44 +0000 (UTC)
+ by relay11.mail.gandi.net (Postfix) with ESMTPSA id 34D8110000A;
+ Sat,  9 May 2020 19:14:45 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH 13/17] mtd: rawnand: nandsim: Free erase_block_wear on error
-Date: Sat,  9 May 2020 21:14:26 +0200
-Message-Id: <20200509191431.15862-14-miquel.raynal@bootlin.com>
+Subject: [PATCH 14/17] mtd: rawnand: nandsim: Fix the label pointing on
+ nand_cleanup()
+Date: Sat,  9 May 2020 21:14:27 +0200
+Message-Id: <20200509191431.15862-15-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200509191431.15862-1-miquel.raynal@bootlin.com>
 References: <20200509191431.15862-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200509_121446_703982_F1918282 
-X-CRM114-Status: UNSURE (   9.66  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200509_121447_803858_C769AB72 
+X-CRM114-Status: GOOD (  11.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,33 +75,48 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Free erase_block_wear on error, which is allocated by
-ns_setup_wear_reporting().
+Drop the generic err_exit.
+
+The remaining operation to do from this goto statement is to cleanup
+the NAND allocations, so rename it.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/nandsim.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/raw/nandsim.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
-index 7f119703f170..c5ebcf667641 100644
+index c5ebcf667641..e41866e49206 100644
 --- a/drivers/mtd/nand/raw/nandsim.c
 +++ b/drivers/mtd/nand/raw/nandsim.c
-@@ -2383,7 +2383,7 @@ static int __init ns_init_module(void)
+@@ -2366,7 +2366,7 @@ static int __init ns_init_module(void)
+ 		if (new_size >> overridesize != nsmtd->erasesize) {
+ 			NS_ERR("overridesize is too big\n");
+ 			ret = -EINVAL;
+-			goto err_exit;
++			goto cleanup_nand;
+ 		}
+ 
+ 		/* N.B. This relies on nand_scan not doing anything with the size before we change it */
+@@ -2379,7 +2379,7 @@ static int __init ns_init_module(void)
+ 
+ 	ret = ns_setup_wear_reporting(nsmtd);
+ 	if (ret)
+-		goto err_exit;
++		goto cleanup_nand;
  
  	ret = ns_init(nsmtd);
  	if (ret)
--		goto err_exit;
-+		goto free_ebw;
+@@ -2406,11 +2406,11 @@ static int __init ns_init_module(void)
  
- 	ret = nand_create_bbt(chip);
- 	if (ret)
-@@ -2409,6 +2409,8 @@ static int __init ns_init_module(void)
- err_exit:
+ unregister_mtd:
+ 	WARN_ON(mtd_device_unregister(nsmtd));
+-err_exit:
  free_ns_object:
  	ns_free(ns);
-+free_ebw:
-+	kfree(erase_block_wear);
+ free_ebw:
+ 	kfree(erase_block_wear);
++cleanup_nand:
  	nand_cleanup(chip);
  error:
  	kfree(ns);
