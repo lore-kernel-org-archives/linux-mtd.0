@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6195EC28CBC
-	for <linux-mtd@archiver.kernel.org>; Sat,  9 May 2020 19:17:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE3A1C28CBC
+	for <linux-mtd@archiver.kernel.org>; Sat,  9 May 2020 19:17:30 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E9F84214D8
-	for <linux-mtd@archiver.kernel.org>; Sat,  9 May 2020 19:17:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 83CC020722
+	for <linux-mtd@archiver.kernel.org>; Sat,  9 May 2020 19:17:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="vDIto7h1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E9F84214D8
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ho9Q8dSf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 83CC020722
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=cib+3KYyc2ehmx45W0RnAHoXBGPdZs6RTD8Yv9JCbQk=; b=vDIto7h1ngC8PL
-	oINaeP47gY6vmbfUB7+UU2scsLlFDPk/6q8DdRa+QPoiMbxAOhxS/LCFLNLMblyWooloT83g1OZIp
-	bP1BB6c7yq9FPSwbCdAeroiI+ntuBpny7A8D/6dwTY/S/ir3YyTPfbNjKhAkcegOoT8A52ZvsKzvD
-	kbQ3QIrGx7z+G5F9YR9xKErMsae1F2HazfuxMUFKo3vp2gqjMz5APNLp4rw0Ccrl4aP/3qYkwEwPm
-	2z8xehwpdaB2+D0vTpR7qeEF+DaE9EHGivPuDv7ERcTz+S7CGPWmEYKiThhqEOD/eqH3NStwu+1Fg
-	n2DuOUDCkcfGLVt+uC/Q==;
+	List-Owner; bh=KDc4TtsREWCju3vM1/DRKV+e8ouanfVyONyXJSALnrc=; b=ho9Q8dSf8hx/+l
+	qmJrZeQDsSLOZC6/3FPR8LSSqVEIpHXzT4Sr37e9hvEIPcaNIg9WOmnAZzfudpGrc3ZDOWIUY3mvL
+	Px7C6in7wFLRh4GG+O8MyfNI9CW1+oO/uxe1bEDgpnWReDj77qDY1P64TAG+JcgBle8rNE5uzuvPh
+	IUo7bAC1zdrv+Coc7Cw9UK7VImWJJy7d5GJaf/u48VsryI/qGBGtNfWgu5sTqDXHogSht55DSBjOW
+	RBZ3FSJQ0vZ+0BKooAnHYpyB9X8ZNJZRfX0hXUtBYnpONx1RA0pqQI65ka2oCC62iAwZoCmeQI/z4
+	WmY5pbxeamZ2A2Gz97RQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jXUyE-0006LI-5T; Sat, 09 May 2020 19:17:10 +0000
+	id 1jXUyX-0006a0-5Y; Sat, 09 May 2020 19:17:29 +0000
 Received: from relay11.mail.gandi.net ([217.70.178.231])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jXUvp-0001nh-4b
- for linux-mtd@lists.infradead.org; Sat, 09 May 2020 19:14:43 +0000
+ id 1jXUvr-0001ps-QF
+ for linux-mtd@lists.infradead.org; Sat, 09 May 2020 19:14:45 +0000
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay11.mail.gandi.net (Postfix) with ESMTPSA id 112C510000B;
- Sat,  9 May 2020 19:14:38 +0000 (UTC)
+ by relay11.mail.gandi.net (Postfix) with ESMTPSA id ABAEB100008;
+ Sat,  9 May 2020 19:14:41 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH 07/17] mtd: rawnand: nandsim: Fix the two ns_alloc_device()
- error paths
-Date: Sat,  9 May 2020 21:14:20 +0200
-Message-Id: <20200509191431.15862-8-miquel.raynal@bootlin.com>
+Subject: [PATCH 10/17] mtd: rawnand: nandsim: Free the partition names in
+ ns_free()
+Date: Sat,  9 May 2020 21:14:23 +0200
+Message-Id: <20200509191431.15862-11-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200509191431.15862-1-miquel.raynal@bootlin.com>
 References: <20200509191431.15862-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200509_121441_325358_F2A22C69 
-X-CRM114-Status: GOOD (  10.14  )
+X-CRM114-CacheID: sfid-20200509_121444_019519_8BBD0137 
+X-CRM114-Status: GOOD (  11.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,81 +75,65 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The ns_alloc_device() helper has actually two distinct path. Handle
-errors in both of them.
+ns_free() is the helper that is called symmetrically to ns_init() and
+so should free the same objects, including the partition names.
+
+Now, callers of ns_free() do not need to free this partition names
+themselves.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/nandsim.c | 26 +++++++++++++++++---------
- 1 file changed, 17 insertions(+), 9 deletions(-)
+ drivers/mtd/nand/raw/nandsim.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
-index 7862c65e32ad..7ffb46b01380 100644
+index c71bbcde154c..0e17d7e0fd68 100644
 --- a/drivers/mtd/nand/raw/nandsim.c
 +++ b/drivers/mtd/nand/raw/nandsim.c
-@@ -543,12 +543,12 @@ static int __init ns_alloc_device(struct nandsim *ns)
- 		if (!(cfile->f_mode & FMODE_CAN_READ)) {
- 			NS_ERR("alloc_device: cache file not readable\n");
- 			err = -EINVAL;
--			goto err_close;
-+			goto err_close_filp;
- 		}
- 		if (!(cfile->f_mode & FMODE_CAN_WRITE)) {
- 			NS_ERR("alloc_device: cache file not writeable\n");
- 			err = -EINVAL;
--			goto err_close;
-+			goto err_close_filp;
- 		}
- 		ns->pages_written =
- 			vzalloc(array_size(sizeof(unsigned long),
-@@ -556,16 +556,24 @@ static int __init ns_alloc_device(struct nandsim *ns)
- 		if (!ns->pages_written) {
- 			NS_ERR("alloc_device: unable to allocate pages written array\n");
- 			err = -ENOMEM;
--			goto err_close;
-+			goto err_close_filp;
- 		}
- 		ns->file_buf = kmalloc(ns->geom.pgszoob, GFP_KERNEL);
- 		if (!ns->file_buf) {
- 			NS_ERR("alloc_device: unable to allocate file buf\n");
- 			err = -ENOMEM;
--			goto err_free;
-+			goto err_free_pw;
- 		}
- 		ns->cfile = cfile;
+@@ -786,6 +786,11 @@ static int __init ns_init(struct mtd_info *mtd)
+  */
+ static void ns_free(struct nandsim *ns)
+ {
++	int i;
 +
- 		return 0;
++	for (i = 0; i < ARRAY_SIZE(ns->partitions); ++i)
++		kfree(ns->partitions[i].name);
 +
-+err_free_pw:
-+		vfree(ns->pages_written);
-+err_close_filp:
-+		filp_close(cfile, NULL);
-+
-+		return err;
- 	}
+ 	kfree(ns->buf.byte);
+ 	ns_free_device(ns);
  
- 	ns->pages = vmalloc(array_size(sizeof(union ns_mem), ns->geom.pgnum));
-@@ -580,15 +588,15 @@ static int __init ns_alloc_device(struct nandsim *ns)
- 						ns->geom.pgszoob, 0, 0, NULL);
- 	if (!ns->nand_pages_slab) {
- 		NS_ERR("cache_create: unable to create kmem_cache\n");
--		return -ENOMEM;
-+		err = -ENOMEM;
-+		goto err_free_pg;
- 	}
+@@ -2270,7 +2275,7 @@ static int __init ns_init_module(void)
+ {
+ 	struct nand_chip *chip;
+ 	struct nandsim *ns;
+-	int ret, i;
++	int ret;
  
- 	return 0;
+ 	if (bus_width != 8 && bus_width != 16) {
+ 		NS_ERR("wrong bus width (%d), use only 8 or 16\n", bus_width);
+@@ -2402,8 +2407,6 @@ static int __init ns_init_module(void)
+ err_exit:
+ 	ns_free(ns);
+ 	nand_release(chip);
+-	for (i = 0;i < ARRAY_SIZE(ns->partitions); ++i)
+-		kfree(ns->partitions[i].name);
+ error:
+ 	kfree(ns);
+ 	ns_free_lists();
+@@ -2420,13 +2423,10 @@ static void __exit ns_cleanup_module(void)
+ {
+ 	struct nand_chip *chip = mtd_to_nand(nsmtd);
+ 	struct nandsim *ns = nand_get_controller_data(chip);
+-	int i;
  
--err_free:
--	vfree(ns->pages_written);
--err_close:
--	filp_close(cfile, NULL);
-+err_free_pg:
-+	vfree(ns->pages);
-+
- 	return err;
+ 	ns_debugfs_remove(ns);
+ 	ns_free(ns);    /* Free nandsim private resources */
+ 	nand_release(chip); /* Unregister driver */
+-	for (i = 0;i < ARRAY_SIZE(ns->partitions); ++i)
+-		kfree(ns->partitions[i].name);
+ 	kfree(ns);        /* Free other structures */
+ 	ns_free_lists();
  }
- 
 -- 
 2.20.1
 
