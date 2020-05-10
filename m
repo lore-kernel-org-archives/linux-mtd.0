@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AFA0AC54E49
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 08:42:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E925C54E8A
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 08:54:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 80A9A20820
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 08:42:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EADC020731
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 08:54:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nJE+CE0d"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 80A9A20820
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BOaxGi3J"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EADC020731
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -24,42 +24,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RjI+mgDxY36HdDmTyslzPXaju7Afhr4ortJrgOnnrQQ=; b=nJE+CE0dK05uiO
-	ju9iz2egpDK/A3PabI0aW6ndZj1Hb6poXRPpJ0adKpvicfqMwPImh+PD23JR0j6ePk7DzvDyr48kv
-	Qhzzv2q93lLINe4NsaajzEVqI6tqFyhxBCenClnvmCikUA4W9jtAI6u8E4dXU54cyAARiZ7Wnus9Y
-	x2DbAkA8v8tu2PZf5U5NGSSdJHb5LSp8gxImcWL3JpZckiDViVD1+ksEah3nehJZuI7t418S7Y96Q
-	PEdyDneG3SxSfbFYlt67QH5ruP4ROWW0+GoEsuQHLYMj0YPHpyiE1znisfaYHbcIEPNSdV85ft7Hv
-	YGHAjvhTpDVaGO4r3fKQ==;
+	List-Owner; bh=2DGaOnXE2HO+hdpueBmQ7PWXqs4fMRJelaCKmwe/gS0=; b=BOaxGi3JXdLMq0
+	kmCiJacmud2qVaJchCQy93FLsO6JdOUOHO9CvP32YkUh0KdgqXsVbjxt8/Ut+LFL/bfczHO2i8CFn
+	j+/jznX+Teyt6mii6/3Od0XgskjxyML2aSbSfblDO5eZ1xk+an6w/v9t4O3C+Ra3OoowocUQOgts7
+	kAaU/XQmqSOPCNN14fhXVKrIp7IIMtRLQa4WqqI0FZ5hrOqXqBALVaVnz6tj7PNDBdZDtvMxkufQm
+	AFlhH8lLmiUKovYiNyLTIZaDFI8ZrQqiEKAxZChZD2t+P2/fXKWlrIU5XcVRGz+IGBaGWvaIje4Oj
+	YwJUXNWYqChH8wTDV4Jw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jXhX2-00042s-7E; Sun, 10 May 2020 08:41:56 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1jXhim-0001xh-Nt; Sun, 10 May 2020 08:54:04 +0000
+Received: from relay10.mail.gandi.net ([217.70.178.230])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jXhWy-00042R-TH
- for linux-mtd@lists.infradead.org; Sun, 10 May 2020 08:41:54 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 5F8AC2A139F;
- Sun, 10 May 2020 09:41:48 +0100 (BST)
-Date: Sun, 10 May 2020 10:41:45 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
+ id 1jXhij-0001wu-JY
+ for linux-mtd@lists.infradead.org; Sun, 10 May 2020 08:54:03 +0000
+Received: from xps13 (unknown [91.224.148.103])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay10.mail.gandi.net (Postfix) with ESMTPSA id 8C273240006;
+ Sun, 10 May 2020 08:53:55 +0000 (UTC)
+Date: Sun, 10 May 2020 10:53:54 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@collabora.com>
 Subject: Re: [PATCH v4 7/8] mtd: rawnand: arasan: Add new Arasan NAND
  controller
-Message-ID: <20200510104145.7d53a58b@collabora.com>
-In-Reply-To: <20200510103547.7399eba3@xps13>
+Message-ID: <20200510105354.2a6725a8@xps13>
+In-Reply-To: <20200510104145.7d53a58b@collabora.com>
 References: <20200508171339.8052-1-miquel.raynal@bootlin.com>
  <20200508171339.8052-8-miquel.raynal@bootlin.com>
  <20200510090230.1ba6f6d7@collabora.com>
  <20200510103547.7399eba3@xps13>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ <20200510104145.7d53a58b@collabora.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200510_014153_075445_37F45CD0 
-X-CRM114-Status: GOOD (  14.04  )
+X-CRM114-CacheID: sfid-20200510_015401_778486_1C151779 
+X-CRM114-Status: GOOD (  13.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,58 +81,66 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sun, 10 May 2020 10:35:47 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+Hi Boris,
 
-> Hi Boris,
+Boris Brezillon <boris.brezillon@collabora.com> wrote on Sun, 10 May
+2020 10:41:45 +0200:
+
+> On Sun, 10 May 2020 10:35:47 +0200
+> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 > 
-> Boris Brezillon <boris.brezillon@collabora.com> wrote on Sun, 10 May
-> 2020 09:02:30 +0200:
-> 
-> > On Fri,  8 May 2020 19:13:38 +0200
-> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> > Hi Boris,
+> > 
+> > Boris Brezillon <boris.brezillon@collabora.com> wrote on Sun, 10 May
+> > 2020 09:02:30 +0200:
 > >   
-> > > +static int anfc_len_to_steps(struct nand_chip *chip, unsigned int len)
-> > > +{
-> > > +	unsigned int steps = 1, pktsize = len;
-> > > +
-> > > +	while (pktsize > ANFC_MAX_PKT_SIZE) {
-> > > +		steps *= 2;
-> > > +		pktsize = DIV_ROUND_UP(len, steps);
-> > > +	}    
+> > > On Fri,  8 May 2020 19:13:38 +0200
+> > > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> > >     
+> > > > +static int anfc_len_to_steps(struct nand_chip *chip, unsigned int len)
+> > > > +{
+> > > > +	unsigned int steps = 1, pktsize = len;
+> > > > +
+> > > > +	while (pktsize > ANFC_MAX_PKT_SIZE) {
+> > > > +		steps *= 2;
+> > > > +		pktsize = DIV_ROUND_UP(len, steps);
+> > > > +	}      
+> > > 
+> > > 
+> > > Same here, you shouldn't have a round_up() but instead complain if
+> > > "len != pkt_size * steps"
+> > > 
+> > > 	if (len % 4)
+> > > 		return -ENOTSUPP;    
 > > 
-> > 
-> > Same here, you shouldn't have a round_up() but instead complain if
-> > "len != pkt_size * steps"
-> > 
-> > 	if (len % 4)
-> > 		return -ENOTSUPP;  
+> > This is not possible, we need unaligned accesses for NAND detection.  
 > 
-> This is not possible, we need unaligned accesses for NAND detection.
+> Duh, this really calls for a comment saying how wrong this is and how
+> it should be fixed (discussions we had about data size constraints and
+> the 'can-issue-more' flag on data_in/out instructions).
 
-Duh, this really calls for a comment saying how wrong this is and how
-it should be fixed (discussions we had about data size constraints and
-the 'can-issue-more' flag on data_in/out instructions).
+Agreed, I'll add a comment there :/
 
 > 
+> >   
+> > > 
+> > > 	if (len < ANFC_MAX_PKT_SIZE)
+> > > 		return len;
+> > > 
+> > > 	for (steps = 2; steps < ANFC_MAX_STEPS; steps *= 2) {
+> > > 		pkt_size = len / steps;
+> > > 		if (pkt_size <= ANFC_MAX_PKT_SIZE)
+> > > 			break;
+> > > 	}
+> > > 
+> > > 	if (pkt_size * steps != len)
+> > > 		return -ENOTSUPP;
+> > > 
+> > > 	return pkt_size;    
 > > 
-> > 	if (len < ANFC_MAX_PKT_SIZE)
-> > 		return len;
-> > 
-> > 	for (steps = 2; steps < ANFC_MAX_STEPS; steps *= 2) {
-> > 		pkt_size = len / steps;
-> > 		if (pkt_size <= ANFC_MAX_PKT_SIZE)
-> > 			break;
-> > 	}
-> > 
-> > 	if (pkt_size * steps != len)
-> > 		return -ENOTSUPP;
-> > 
-> > 	return pkt_size;  
+> > The rest looks fine, I will change it and also add these checks in  
+> > ->exec_op() check_nonly path.    
 > 
-> The rest looks fine, I will change it and also add these checks in
-> ->exec_op() check_nonly path.  
-
 
 ______________________________________________________
 Linux MTD discussion mailing list
