@@ -2,22 +2,22 @@ Return-Path: <SRS0=JbbF=6Y=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75EEBC38A2A
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:29:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D2D5C54E8C
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:32:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3B52C20731
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:29:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 26B952098B
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:32:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Fp7GGpOZ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="YO/36Hir"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B52C20731
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gzOACzhG";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Fw8KyfeR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26B952098B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,61 +26,60 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+/Y6nD3t0whO/ogGC376T2FtLXUOk1nMHvfcdlo8j/k=; b=Fp7GGpOZajaXhu
-	Q3FTJmGHNCmnY7YOvm/EC02OP5yZzP+xlehOzdbnVWpgjw0zGMN1vyoYg9zG/O9kPGANiBuLibdOs
-	8KZzMXgARkSTrUBfPOrIOcIDOH92qGBeMPyn3rrPiBUjI2GFa6wi5LN90cNW1TIXI3Z6fbBVl2bi9
-	/7Q/RCbgxvez0YYuce2uFjXXG4CXc2lNrZndxh5EwH7NZpNAmwLSWnGEvevfUfuTyslKLhLAEyp2T
-	Kj7MJMNDC+Msdz9i15/tPwm4O7+WsMu1KaWyVFw6TjVdJ3LCZAx08GoYw/sJAWxUN4n3SBa7RZtVh
-	4nah96r4lVPxwyiKpN9g==;
+	List-Owner; bh=jGLvFoNtFLp4OkqLUMTQBFQ+8lFYOdpN+dKmwbAAs90=; b=gzOACzhGogBQNy
+	jtx8Bm/j5etoQwBTPIqZNhpdJxc6+y1JjlVsLTzWgldKHZqEw9lhN3AVr9yppvQXDicQP4D86MA86
+	z+3pgm4xyRVYOTUqVOTMf5p3EwTPEGORMP6VdCy+HKN/43+nIXyr66XtxIVI0v7QDRB4dwZ4/OUzo
+	6C5TfJFEsu+o7KBOZPG3c2rCkBGnPdrVHfaZ4o6jqCZnqcFKpETX/SCyQlPoPBNZq0yHQCr4XGpQH
+	dFxb7b+7QtFgrHlhiylhFVUOEZNu7jeYXdjmrsT0D/hnVwjVR4+kFO8rm80n2KxA04RS7qJvO/zEK
+	Os/Rs9f3OA7mstNIUu7w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jXsZh-0000iM-94; Sun, 10 May 2020 20:29:25 +0000
-Received: from mail-pl1-x644.google.com ([2607:f8b0:4864:20::644])
+	id 1jXscD-0004DC-3I; Sun, 10 May 2020 20:32:01 +0000
+Received: from mail-pg1-x541.google.com ([2607:f8b0:4864:20::541])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jXsVM-0002bo-9X
- for linux-mtd@lists.infradead.org; Sun, 10 May 2020 20:25:03 +0000
-Received: by mail-pl1-x644.google.com with SMTP id u22so3011817plq.12
- for <linux-mtd@lists.infradead.org>; Sun, 10 May 2020 13:24:55 -0700 (PDT)
+ id 1jXsc9-0004Bp-Kr
+ for linux-mtd@lists.infradead.org; Sun, 10 May 2020 20:31:58 +0000
+Received: by mail-pg1-x541.google.com with SMTP id l12so3546373pgr.10
+ for <linux-mtd@lists.infradead.org>; Sun, 10 May 2020 13:31:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=B4KToDakeSIDINzenNlRbKu8/1saqdpIGQDx77bj6t4=;
- b=YO/36Hirq2tXPfKm+WDOVx/THJ2QSfgXwCnutQ1EfFTV2EVY2xNWE5mhhE0c03X/f6
- +sDbJXQoCGb6QmyD2NCW+X31+wl0C+EP6EHJkyDPVKHUChtStF3OsFR5gfSQZAHztqGr
- G3QbbRUuZIQYuIDDB7TJUBZc2RF7e80Kgv9dg=
+ bh=IGhCzVMcFSG8RfD2dnuoWGbvQKbAh3BbNL764FWITOg=;
+ b=Fw8KyfeRY2o+iHX91RUx34YBABbxf6VuNlYyNsnrWdXif3s/ACuQVflYL+CJptaAuw
+ gTkwG01vIwsxYH9f/tLpXxU2UnH3b3f+//pWjovG+r86XkEYeKe1/MFAGtf/PMTdBtIm
+ McUum85+3EHfgMNTrU3qDsZ2l6EjV1jWiANN8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=B4KToDakeSIDINzenNlRbKu8/1saqdpIGQDx77bj6t4=;
- b=Z5nfKUPYZPi1s5KCGoP588j5QTd7tTRTnsZC8ZDtprXWwz/nUZROCmSQJqijZEMFTP
- TAuP9gc/niNmye0aGuY8kHnWTZAn4gTuKIJYrmNyKtLaLuXgRKWP+EIQO8bfpEX4ctvG
- J6dFgLB8Qm/TLJGpASxYI6LaocMmjL9zbaUer7V1WFFJICWWXF3mTfeCZRzNEmsyE2Di
- LYdegsKygku8TZcGF9sotgSDtgIv+dRLp7s/JMZB1KWVmhhsZOtZnZBkfmAb1Bk0gGWX
- NKCoZVBkpklpwQKXHlEEkX5gGW75t7yZ2pgRPi9WRPxp562Y956Kq2JZuEQBoi6W86ot
- WBgA==
-X-Gm-Message-State: AGi0PuakOH7Dwjup6WLRp6+aFBUkNRjgbhzA8JRrxCl7mxeZXaBXHSEi
- RZbZ5xX7NJG/zuR8Pl4+Hzo5ZA==
-X-Google-Smtp-Source: APiQypL0QdKk6bSnO901J4d5LYI5jRWQFDcJ7l+38P1hDVDppXzPcL5UTmdyJxUbphAiPce96jVmTQ==
-X-Received: by 2002:a17:90a:db46:: with SMTP id
- u6mr18239979pjx.15.1589142294621; 
- Sun, 10 May 2020 13:24:54 -0700 (PDT)
+ bh=IGhCzVMcFSG8RfD2dnuoWGbvQKbAh3BbNL764FWITOg=;
+ b=eiDHEFZq4h2CiEmR6/GH6p3ATI5Q2t6GZgl7tGgjM9CzUAXj2U2s3RGOVC5iWBLnbM
+ 3qH3bSD01UEUjm1cq5cePm1BWWVVOtzTzbbwxGhX+Ajb/qhLTSBw7e+Bnon/As8skn0Q
+ fsgfHltg+VxZkRcZ+zyHNiGpfsHo3Q4AscLd8K5IH6+6dJL+aobofBe++Dts+K4lk8ts
+ UDVrcxt6UOhg4npLXgwfL/1RYq4Ug3lImEMQWl2eCEl//3DTMNJdp9dkdcM3s4dT47gr
+ bwrAjiS5oI62HfMgcuKoH+ziRp1t9MJ6WXaIEqPbyobQrxdNxjYvOLoA5U6ZnrxFhMcE
+ vwzw==
+X-Gm-Message-State: AGi0Pub7aQmko4SLoEnJbEcMAVrc+d7XNQZwRoDIlEiSOkrMK0GDxyxg
+ Pi4v5mb/gxTrWDjpk4TiRFp6bA==
+X-Google-Smtp-Source: APiQypJsRU9h+Mob7IV8V9hVnNZaLYlsu6I2Ml5FQNRy6o1udqUOVm9mMtwEsQaiHAaxP5NUL+g+Lg==
+X-Received: by 2002:a63:dd51:: with SMTP id g17mr10543432pgj.2.1589142717130; 
+ Sun, 10 May 2020 13:31:57 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
- by smtp.gmail.com with ESMTPSA id gz14sm7937183pjb.42.2020.05.10.13.24.46
+ by smtp.gmail.com with ESMTPSA id f30sm8149570pje.29.2020.05.10.13.31.56
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 10 May 2020 13:24:52 -0700 (PDT)
+ Sun, 10 May 2020 13:31:56 -0700 (PDT)
 From: Kees Cook <keescook@chromium.org>
 To: WeiXiong Liao <liaoweixiong@allwinnertech.com>
-Subject: [PATCH v7 13/18] Documentation: Add details for pstore/blk
-Date: Sun, 10 May 2020 13:24:31 -0700
-Message-Id: <20200510202436.63222-14-keescook@chromium.org>
+Subject: [PATCH v7 18/18] pstore/blk: Introduce "best_effort" mode
+Date: Sun, 10 May 2020 13:24:36 -0700
+Message-Id: <20200510202436.63222-19-keescook@chromium.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200510202436.63222-1-keescook@chromium.org>
 References: <20200510202436.63222-1-keescook@chromium.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200510_132456_945092_057FB324 
-X-CRM114-Status: GOOD (  24.42  )
+X-CRM114-CacheID: sfid-20200510_133157_706419_B9867F41 
+X-CRM114-Status: GOOD (  13.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,281 +106,61 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: WeiXiong Liao <liaoweixiong@allwinnertech.com>
+In order to use arbitrary block devices as a pstore backend, provide a
+new module param named "best_effort", which will allow using any block
+device, even if it has not provided a panic_write callback.
 
-Add details on using pstore/blk, the new backend of pstore to record
-dumps to block devices, in Documentation/admin-guide/pstore-blk.rst
-
-Signed-off-by: WeiXiong Liao <liaoweixiong@allwinnertech.com>
-Link: https://lore.kernel.org/r/1585126506-18635-8-git-send-email-liaoweixiong@allwinnertech.com
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- Documentation/admin-guide/pstore-blk.rst | 229 +++++++++++++++++++++++
- MAINTAINERS                              |   1 +
- fs/pstore/Kconfig                        |   2 +
- 3 files changed, 232 insertions(+)
- create mode 100644 Documentation/admin-guide/pstore-blk.rst
+ fs/pstore/blk.c | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/admin-guide/pstore-blk.rst b/Documentation/admin-guide/pstore-blk.rst
-new file mode 100644
-index 000000000000..bef8c7436721
---- /dev/null
-+++ b/Documentation/admin-guide/pstore-blk.rst
-@@ -0,0 +1,229 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+pstore block oops/panic logger
-+==============================
-+
-+Introduction
-+------------
-+
-+pstore block (pstore/blk) is an oops/panic logger that writes its logs to a
-+block device before the system crashes. You can get these log files by
-+mounting pstore filesystem like::
-+
-+    mount -t pstore pstore /sys/fs/pstore
-+
-+
-+pstore block concepts
-+---------------------
-+
-+pstore/blk provides efficient configuration method for pstore/blk, which
-+divides all configurations into two parts, configurations for user and
-+configurations for driver.
-+
-+Configurations for user determine how pstore/blk works, such as pmsg_size,
-+kmsg_size and so on. All of them support both Kconfig and module parameters,
-+but module parameters have priority over Kconfig.
-+
-+Configurations for driver are all about block device, such as total_size
-+of block device and read/write operations.
-+
-+Configurations for user
-+-----------------------
-+
-+All of these configurations support both Kconfig and module parameters, but
-+module parameters have priority over Kconfig.
-+
-+Here is an example for module parameters::
-+
-+        pstore_blk.blkdev=179:7 pstore_blk.kmsg_size=64
-+
-+The detail of each configurations may be of interest to you.
-+
-+blkdev
-+~~~~~~
-+
-+The block device to use. Most of the time, it is a partition of block device.
-+It's required for pstore/blk.
-+
-+It accepts the following variants:
-+
-+1. <hex_major><hex_minor> device number in hexadecimal represents itself; no
-+   leading 0x, for example b302.
-+#. /dev/<disk_name> represents the device number of disk
-+#. /dev/<disk_name><decimal> represents the device number of partition - device
-+   number of disk plus the partition number
-+#. /dev/<disk_name>p<decimal> - same as the above; this form is used when disk
-+   name of partitioned disk ends with a digit.
-+#. PARTUUID=00112233-4455-6677-8899-AABBCCDDEEFF represents the unique id of
-+   a partition if the partition table provides it. The UUID may be either an
-+   EFI/GPT UUID, or refer to an MSDOS partition using the format SSSSSSSS-PP,
-+   where SSSSSSSS is a zero-filled hex representation of the 32-bit
-+   "NT disk signature", and PP is a zero-filled hex representation of the
-+   1-based partition number.
-+#. PARTUUID=<UUID>/PARTNROFF=<int> to select a partition in relation to a
-+   partition with a known unique id.
-+#. <major>:<minor> major and minor number of the device separated by a colon.
-+
-+kmsg_size
-+~~~~~~~~~
-+
-+The chunk size in KB for oops/panic front-end. It **MUST** be a multiple of 4.
-+It's optional if you do not care oops/panic log.
-+
-+There are multiple chunks for oops/panic front-end depending on the remaining
-+space except other pstore front-ends.
-+
-+pstore/blk will log to oops/panic chunks one by one, and always overwrite the
-+oldest chunk if there is no more free chunk.
-+
-+pmsg_size
-+~~~~~~~~~
-+
-+The chunk size in KB for pmsg front-end. It **MUST** be a multiple of 4.
-+It's optional if you do not care pmsg log.
-+
-+Unlike oops/panic front-end, there is only one chunk for pmsg front-end.
-+
-+Pmsg is a user space accessible pstore object. Writes to */dev/pmsg0* are
-+appended to the chunk. On reboot the contents are available in
-+*/sys/fs/pstore/pmsg-pstore-blk-0*.
-+
-+console_size
-+~~~~~~~~~~~~
-+
-+The chunk size in KB for console front-end.  It **MUST** be a multiple of 4.
-+It's optional if you do not care console log.
-+
-+Similar to pmsg front-end, there is only one chunk for console front-end.
-+
-+All log of console will be appended to the chunk. On reboot the contents are
-+available in */sys/fs/pstore/console-pstore-blk-0*.
-+
-+ftrace_size
-+~~~~~~~~~~~
-+
-+The chunk size in KB for ftrace front-end. It **MUST** be a multiple of 4.
-+It's optional if you do not care console log.
-+
-+Similar to oops front-end, there are multiple chunks for ftrace front-end
-+depending on the count of cpu processors. Each chunk size is equal to
-+ftrace_size / processors_count.
-+
-+All log of ftrace will be appended to the chunk. On reboot the contents are
-+combined and available in */sys/fs/pstore/ftrace-pstore-blk-0*.
-+
-+Persistent function tracing might be useful for debugging software or hardware
-+related hangs. Here is an example of usage::
-+
-+ # mount -t pstore pstore /sys/fs/pstore
-+ # mount -t debugfs debugfs /sys/kernel/debug/
-+ # echo 1 > /sys/kernel/debug/pstore/record_ftrace
-+ # reboot -f
-+ [...]
-+ # mount -t pstore pstore /sys/fs/pstore
-+ # tail /sys/fs/pstore/ftrace-pstore-blk-0
-+ CPU:0 ts:5914676 c0063828  c0063b94  call_cpuidle <- cpu_startup_entry+0x1b8/0x1e0
-+ CPU:0 ts:5914678 c039ecdc  c006385c  cpuidle_enter_state <- call_cpuidle+0x44/0x48
-+ CPU:0 ts:5914680 c039e9a0  c039ecf0  cpuidle_enter_freeze <- cpuidle_enter_state+0x304/0x314
-+ CPU:0 ts:5914681 c0063870  c039ea30  sched_idle_set_state <- cpuidle_enter_state+0x44/0x314
-+ CPU:1 ts:5916720 c0160f59  c015ee04  kernfs_unmap_bin_file <- __kernfs_remove+0x140/0x204
-+ CPU:1 ts:5916721 c05ca625  c015ee0c  __mutex_lock_slowpath <- __kernfs_remove+0x148/0x204
-+ CPU:1 ts:5916723 c05c813d  c05ca630  yield_to <- __mutex_lock_slowpath+0x314/0x358
-+ CPU:1 ts:5916724 c05ca2d1  c05ca638  __ww_mutex_lock <- __mutex_lock_slowpath+0x31c/0x358
-+
-+max_reason
-+~~~~~~~~~~
-+
-+Limiting which kinds of kmsg dumps are stored can be controlled via
-+the ``max_reason`` value, as defined in include/linux/kmsg_dump.h's
-+``enum kmsg_dump_reason``. For example, to store both Oopses and Panics,
-+``max_reason`` should be set to 2 (KMSG_DUMP_OOPS), to store only Panics
-+``max_reason`` should be set to 1 (KMSG_DUMP_PANIC). Setting this to 0
-+(KMSG_DUMP_UNDEF), means the reason filtering will be controlled by the
-+``printk.always_kmsg_dump`` boot param: if unset, it'll be KMSG_DUMP_OOPS,
-+otherwise KMSG_DUMP_MAX.
-+
-+Configurations for driver
-+-------------------------
-+
-+Only a block device driver cares about these configurations. A block device
-+driver uses ``register_pstore_blk`` to register to pstore/blk.
-+
-+.. kernel-doc:: fs/pstore/blk.c
-+   :identifiers: register_pstore_blk
-+
-+Compression and header
-+----------------------
-+
-+Block device is large enough for uncompressed oops data. Actually we do not
-+recommend data compression because pstore/blk will insert some information into
-+the first line of oops/panic data. For example::
-+
-+        Panic: Total 16 times
-+
-+It means that it's OOPS|Panic for the 16th time since the first booting.
-+Sometimes the number of occurrences of oops|panic since the first booting is
-+important to judge whether the system is stable.
-+
-+The following line is inserted by pstore filesystem. For example::
-+
-+        Oops#2 Part1
-+
-+It means that it's OOPS for the 2nd time on the last boot.
-+
-+Reading the data
-+----------------
-+
-+The dump data can be read from the pstore filesystem. The format for these
-+files is ``dmesg-pstore-blk-[N]`` for oops/panic front-end,
-+``pmsg-pstore-blk-0`` for pmsg front-end and so on.  The timestamp of the
-+dump file records the trigger time. To delete a stored record from block
-+device, simply unlink the respective pstore file.
-+
-+Attentions in panic read/write APIs
-+-----------------------------------
-+
-+If on panic, the kernel is not going to run for much longer, the tasks will not
-+be scheduled and most kernel resources will be out of service. It
-+looks like a single-threaded program running on a single-core computer.
-+
-+The following points require special attention for panic read/write APIs:
-+
-+1. Can **NOT** allocate any memory.
-+   If you need memory, just allocate while the block driver is initializing
-+   rather than waiting until the panic.
-+#. Must be polled, **NOT** interrupt driven.
-+   No task schedule any more. The block driver should delay to ensure the write
-+   succeeds, but NOT sleep.
-+#. Can **NOT** take any lock.
-+   There is no other task, nor any shared resource; you are safe to break all
-+   locks.
-+#. Just use CPU to transfer.
-+   Do not use DMA to transfer unless you are sure that DMA will not keep lock.
-+#. Control registers directly.
-+   Please control registers directly rather than use Linux kernel resources.
-+   Do I/O map while initializing rather than wait until a panic occurs.
-+#. Reset your block device and controller if necessary.
-+   If you are not sure of the state of your block device and controller when
-+   a panic occurs, you are safe to stop and reset them.
-+
-+pstore/blk supports psblk_blkdev_info(), which is defined in
-+*linux/pstore_blk.h*, to get information of using block device, such as the
-+device number, sector count and start sector of the whole disk.
-+
-+pstore block internals
-+----------------------
-+
-+For developer reference, here are all the important structures and APIs:
-+
-+.. kernel-doc:: fs/pstore/zone.c
-+   :internal:
-+
-+.. kernel-doc:: include/linux/pstore_zone.h
-+   :internal:
-+
-+.. kernel-doc:: fs/pstore/blk.c
-+   :export:
-+
-+.. kernel-doc:: include/linux/pstore_blk.h
-+   :internal:
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e64e5db31497..9c1f4feff418 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -13660,6 +13660,7 @@ M:	Tony Luck <tony.luck@intel.com>
- S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git for-next/pstore
- F:	Documentation/admin-guide/ramoops.rst
-+F:	Documentation/admin-guide/pstore-blk.rst
- F:	Documentation/devicetree/bindings/reserved-memory/ramoops.txt
- F:	drivers/acpi/apei/erst.c
- F:	drivers/firmware/efi/efi-pstore.c
-diff --git a/fs/pstore/Kconfig b/fs/pstore/Kconfig
-index 16a0440d8d5a..8371d29651a6 100644
---- a/fs/pstore/Kconfig
-+++ b/fs/pstore/Kconfig
-@@ -171,6 +171,8 @@ config PSTORE_BLK
- 	  This enables panic and oops message to be logged to a block dev
- 	  where it can be read back at some later point.
+diff --git a/fs/pstore/blk.c b/fs/pstore/blk.c
+index 0dea8ded2de2..ad46860d5a78 100644
+--- a/fs/pstore/blk.c
++++ b/fs/pstore/blk.c
+@@ -51,6 +51,10 @@ static long ftrace_size = -1;
+ module_param(ftrace_size, long, 0400);
+ MODULE_PARM_DESC(ftrace_size, "ftrace size in kbytes");
  
-+	  For more information, see Documentation/admin-guide/pstore-blk.rst
++static bool best_effort;
++module_param(best_effort, bool, 0400);
++MODULE_PARM_DESC(best_effort, "use best effort to write (i.e. do not require storage driver pstore support, default: off)");
 +
- 	  If unsure, say N.
+ /*
+  * blkdev - the block device to use for pstore storage
+  *
+@@ -376,7 +380,8 @@ static int __register_pstore_blk(struct pstore_blk_info *info)
+ 	}
  
- config PSTORE_BLK_BLKDEV
+ 	/* only allow driver matching the @blkdev */
+-	if (!binfo.devt || MAJOR(binfo.devt) != info->major) {
++	if (!binfo.devt || (!best_effort &&
++			    MAJOR(binfo.devt) != info->major)) {
+ 		pr_debug("invalid major %u (expect %u)\n",
+ 				info->major, MAJOR(binfo.devt));
+ 		ret = -ENODEV;
+@@ -479,6 +484,20 @@ int pstore_blk_get_config(struct pstore_blk_config *info)
+ }
+ EXPORT_SYMBOL_GPL(pstore_blk_get_config);
+ 
++static int __init pstore_blk_init(void)
++{
++	struct pstore_blk_info info = { };
++	int ret = 0;
++
++	mutex_lock(&pstore_blk_lock);
++	if (!pstore_zone_info && best_effort && blkdev[0])
++		ret = __register_pstore_blk(&info);
++	mutex_unlock(&pstore_blk_lock);
++
++	return ret;
++}
++late_initcall(pstore_blk_init);
++
+ static void __exit pstore_blk_exit(void)
+ {
+ 	mutex_lock(&pstore_blk_lock);
 -- 
 2.20.1
 
