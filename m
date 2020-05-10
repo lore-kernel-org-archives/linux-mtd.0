@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68D2DC38A2A
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 12:26:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9BE1C54E49
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 12:27:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2E3872082E
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 12:26:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 917962082E
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 12:27:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BMW0Od8f"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2E3872082E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="sN71lPvf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 917962082E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=J0XQihQLB6jmlYsu80PK6i09dLdHnGUTaRvjbdssrvM=; b=BMW0Od8f6Efle6
-	ee2jBZLhAYj6HcIU80kY6XVl3HM7JY33EPqsgwMikXNBMVpJfvwDCFEYnZ2Znchau+RVIQ/GeJlUA
-	lmgeQe/nO6rGeC9bhqNqwdWIXgCBSVTrBg6QMB0grqhsSI1wwgSj4VmgZNJaL3NF3ZiSyz8lcjtNL
-	xuQQll+fmA40r3dfWjBY5RDXsKSN+DnQuXa/khq/ncHMLP9pj05rG15nQhX8NJyyvyqd34HcdBALx
-	KlC6TLJBMF8tWaaWEBryA2OyatRJBTqFGJl26RFLhErXCEKt5JKIamgIpgQltWikQVRUIWqBNLT+P
-	VKkmVygS5nIIYLOzqOiw==;
+	List-Owner; bh=Kr4dEkWB+1NxtokLoNwV/IxTjO8QiG5Pqo1aL0W1OVE=; b=sN71lPvfi6YK8s
+	3Fc33Kp7SJ2Ol/L7HLUuCHMHJM4lzrygT0LDHfaXNrcUL/nftaVHiSyueIDxYoD+qaYv7paTHbvCu
+	S134os/ZY93BUsBdSwzNhI3UfFVP8W7argVH6UPCcfrMjY03YojMRWc0NuyzRjAqy5fbWAS9YKUeH
+	MNmvHKrd56T3Lo2fIZEF0AiKzzdmv+Npo3bjQ/w1AFSG6nYQLFu1JN1Npp7Q9LihiRvLHGnSTmGdu
+	oxb8MWh4/N72mwheBYctg+CCulmmvsJclXPMJ+EP7lFCfBmh8tqtOZEEuVA1uleZVZk/k7PoOIc2N
+	xq9uqenY59l6klkgSYiQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jXl2d-0007xj-M6; Sun, 10 May 2020 12:26:47 +0000
+	id 1jXl2q-0008BG-Bx; Sun, 10 May 2020 12:27:00 +0000
 Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jXkpY-0005eZ-4Z
+ id 1jXkpZ-0005fP-47
  for linux-mtd@lists.infradead.org; Sun, 10 May 2020 12:13:18 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id DA0FC20019;
- Sun, 10 May 2020 12:13:13 +0000 (UTC)
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id A517120008;
+ Sun, 10 May 2020 12:13:14 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH 52/62] mtd: rawnand: stm32_fmc2: Stop using nand_release()
-Date: Sun, 10 May 2020 14:12:10 +0200
-Message-Id: <20200510121220.18042-53-miquel.raynal@bootlin.com>
+Subject: [PATCH 53/62] mtd: rawnand: sunxi: Fix the probe error path
+Date: Sun, 10 May 2020 14:12:11 +0200
+Message-Id: <20200510121220.18042-54-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200510121220.18042-1-miquel.raynal@bootlin.com>
 References: <20200510121220.18042-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200510_051316_506698_68DAD889 
-X-CRM114-Status: UNSURE (   9.89  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200510_051317_327783_65570460 
+X-CRM114-Status: GOOD (  11.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,42 +68,36 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Boris Brezillon <boris.brezillon@collabora.com>,
+Cc: Boris Brezillon <boris.brezillon@collabora.com>, stable@vger.kernel.org,
  Miquel Raynal <miquel.raynal@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This helper is not very useful and very often people get confused:
-they use nand_release() instead of nand_cleanup().
+nand_release() is supposed be called after MTD device registration.
+Here, only nand_scan() happened, so use nand_cleanup() instead.
 
-Let's stop using nand_release() by calling mtd_device_unregister() and
-nand_cleanup() directly.
-
+Fixes: 1fef62c1423b ("mtd: nand: add sunxi NAND flash controller support")
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: stable@vger.kernel.org
 ---
- drivers/mtd/nand/raw/stm32_fmc2_nand.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/raw/sunxi_nand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-index c5fde09e0175..a0eb99ab0de8 100644
---- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-+++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-@@ -2030,8 +2030,12 @@ static int stm32_fmc2_remove(struct platform_device *pdev)
- {
- 	struct stm32_fmc2_nfc *fmc2 = platform_get_drvdata(pdev);
- 	struct stm32_fmc2_nand *nand = &fmc2->nand;
-+	struct nand_chip *chip = &nand->chip;
-+	int ret;
+diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
+index 26d862213cac..9f51fd20a52e 100644
+--- a/drivers/mtd/nand/raw/sunxi_nand.c
++++ b/drivers/mtd/nand/raw/sunxi_nand.c
+@@ -2004,7 +2004,7 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
+ 	ret = mtd_device_register(mtd, NULL, 0);
+ 	if (ret) {
+ 		dev_err(dev, "failed to register mtd device: %d\n", ret);
+-		nand_release(nand);
++		nand_cleanup(nand);
+ 		return ret;
+ 	}
  
--	nand_release(&nand->chip);
-+	ret = mtd_device_unregister(nand_to_mtd(chip));
-+	WARN_ON(ret);
-+	nand_cleanup(chip);
- 
- 	if (fmc2->dma_ecc_ch)
- 		dma_release_channel(fmc2->dma_ecc_ch);
 -- 
 2.20.1
 
