@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94E77C54E49
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 12:17:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0588C38A2A
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 12:17:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 696FF2082E
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 12:17:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9D9752082E
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 12:17:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BQndjFQG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 696FF2082E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ETSn29fa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D9752082E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,37 +25,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=plYp4b+khrk/2z75Bpkn/8+xhT4lK83thEHvpWcH3x0=; b=BQndjFQGYrwsuS
-	V4YIeiud1mUb7IZMUfW6082QEhiMT3towjY73ykAMIrzSXSWrcYugA4KKS9mAyWhE713unsybJN5f
-	dsB6Intfl/lAVl1IUOCrKNXIwK7cZpU0gR0CL96vcj0u0F9qpZfu+wd8/OT8gcE0TbhYmoT5GKPzh
-	OTEA3GfFuEEdm8hQ+Dw3vVhwvEPvDd1lAHAVciVufZMN+CJRIRp/+C6uLExqHm9dws4eQqSvldfqn
-	hyA5m8qET1oCmPbOXnmhtNmal+19cGW7hxbejFDrVDiuaA77DqoL1fGl5UDBTnjE4XnO4BdtN4z+j
-	tWOu4ypPIAW/PPI+3RdA==;
+	List-Owner; bh=m+RzynhUgRbn5Kho3tQUaUQwY4MW8AoF4i6qea+l2w0=; b=ETSn29fabo7BZ/
+	tYRSgIS+ApZMrVNaSa1QpR163lFmbbuZwOH5xghZWcTXjmwegLosamT/djZzgTd+b3NFWeGnVuF4J
+	ZwwNwZLIOc190A+F+VIYW/+Tq8TmMSWML8GUW34XIz/nP1T/6h242Smigfv9G1CqvhiKGP56l9Pwa
+	aaRbyTQ2lT76gn6OGrsFRWTWHrJ3jVf0HH25X90+cBoZ/MhWBU5UhmLfojew+92OsCYTgEfG4NodX
+	+iUCDz89Nngpduc6zCxckfN69nRoqv6WiXxCVzym4LD3NsbbGYP15ZacfjLkgnflzkCL+P36Ag2bd
+	6N2oGubN2bzKr17LEttA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jXkti-0003YO-10; Sun, 10 May 2020 12:17:34 +0000
+	id 1jXktw-0003lH-DW; Sun, 10 May 2020 12:17:48 +0000
 Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jXkp3-0005D8-2l
- for linux-mtd@lists.infradead.org; Sun, 10 May 2020 12:12:46 +0000
+ id 1jXkp5-0005FA-B1
+ for linux-mtd@lists.infradead.org; Sun, 10 May 2020 12:12:48 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 132C02000A;
- Sun, 10 May 2020 12:12:42 +0000 (UTC)
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id D09902000B;
+ Sun, 10 May 2020 12:12:44 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH 17/62] mtd: rawnand: fsmc: Stop using nand_release()
-Date: Sun, 10 May 2020 14:11:35 +0200
-Message-Id: <20200510121220.18042-18-miquel.raynal@bootlin.com>
+Subject: [PATCH 19/62] mtd: rawnand: gpmi: Stop using nand_release()
+Date: Sun, 10 May 2020 14:11:37 +0200
+Message-Id: <20200510121220.18042-20-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200510121220.18042-1-miquel.raynal@bootlin.com>
 References: <20200510121220.18042-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200510_051245_265055_F264FA29 
+X-CRM114-CacheID: sfid-20200510_051247_534106_014FA02E 
 X-CRM114-Status: UNSURE (   9.85  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
@@ -69,7 +69,7 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Boris Brezillon <boris.brezillon@collabora.com>,
+Cc: Han Xu <han.xu@nxp.com>, Boris Brezillon <boris.brezillon@collabora.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -83,28 +83,32 @@ Let's stop using nand_release() by calling mtd_device_unregister() and
 nand_cleanup() directly.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Han Xu <han.xu@nxp.com>
 ---
- drivers/mtd/nand/raw/fsmc_nand.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
-index 735c2216149f..d178ab2e7366 100644
---- a/drivers/mtd/nand/raw/fsmc_nand.c
-+++ b/drivers/mtd/nand/raw/fsmc_nand.c
-@@ -1135,7 +1135,12 @@ static int fsmc_nand_remove(struct platform_device *pdev)
- 	struct fsmc_nand_data *host = platform_get_drvdata(pdev);
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+index 97b460d8d0c1..0c2763523caf 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+@@ -2542,11 +2542,15 @@ static int gpmi_nand_probe(struct platform_device *pdev)
+ static int gpmi_nand_remove(struct platform_device *pdev)
+ {
+ 	struct gpmi_nand_data *this = platform_get_drvdata(pdev);
++	struct nand_chip *chip = &this->nand;
++	int ret;
  
- 	if (host) {
--		nand_release(&host->nand);
-+		struct nand_chip *chip = &host->nand;
-+		int ret;
-+
-+		ret = mtd_device_unregister(nand_to_mtd(chip));
-+		WARN_ON(ret);
-+		nand_cleanup(chip);
- 		fsmc_nand_disable(host);
+ 	pm_runtime_put_sync(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
  
- 		if (host->mode == USE_DMA_ACCESS) {
+-	nand_release(&this->nand);
++	ret = mtd_device_unregister(nand_to_mtd(chip));
++	WARN_ON(ret);
++	nand_cleanup(chip);
+ 	gpmi_free_dma_buffer(this);
+ 	release_resources(this);
+ 	return 0;
 -- 
 2.20.1
 
