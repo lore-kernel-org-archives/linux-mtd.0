@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9BE1C54E49
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 12:27:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7117C38A2A
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 12:27:22 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 917962082E
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 12:27:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 77EB02082E
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 12:27:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="sN71lPvf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 917962082E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YXdIjQn5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 77EB02082E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Kr4dEkWB+1NxtokLoNwV/IxTjO8QiG5Pqo1aL0W1OVE=; b=sN71lPvfi6YK8s
-	3Fc33Kp7SJ2Ol/L7HLUuCHMHJM4lzrygT0LDHfaXNrcUL/nftaVHiSyueIDxYoD+qaYv7paTHbvCu
-	S134os/ZY93BUsBdSwzNhI3UfFVP8W7argVH6UPCcfrMjY03YojMRWc0NuyzRjAqy5fbWAS9YKUeH
-	MNmvHKrd56T3Lo2fIZEF0AiKzzdmv+Npo3bjQ/w1AFSG6nYQLFu1JN1Npp7Q9LihiRvLHGnSTmGdu
-	oxb8MWh4/N72mwheBYctg+CCulmmvsJclXPMJ+EP7lFCfBmh8tqtOZEEuVA1uleZVZk/k7PoOIc2N
-	xq9uqenY59l6klkgSYiQ==;
+	List-Owner; bh=7n/mPKrrf57n+jivxXjLoAb86JOUwGSkyEw+OzFxU/o=; b=YXdIjQn5btvqYW
+	Sy8EWdhkwyxzH1siIC52T5MEEBG0eOwm3KbYrVm5k2NU4gvYdNui5lkh+feh3qajilDU518yp2bPo
+	5AqGEnl2tt1niaKHDC2VVbLoxTZHXtzPgwHGjLmkD+l2mItJn0EkAkOzkcUYNjZj1W0G6QDkRHSrv
+	obsqsx0aKpb7ABMs+fqvn68A14segtjkS8KLgHNT4O2+orwVoFk281zW1CrCRtDWQN5/m8IMb2dzn
+	TAirx6Vjs/Xx/VI9in76f++FKofocb5uPBbEm+VfOmHwAIJXsT8+LkmIHvk2RltIbOKkm9BMNMRba
+	6QvJaqlnFjvFvZEAUqOA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jXl2q-0008BG-Bx; Sun, 10 May 2020 12:27:00 +0000
+	id 1jXl34-0008Se-N3; Sun, 10 May 2020 12:27:14 +0000
 Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jXkpZ-0005fP-47
- for linux-mtd@lists.infradead.org; Sun, 10 May 2020 12:13:18 +0000
+ id 1jXkpa-0005gj-SM
+ for linux-mtd@lists.infradead.org; Sun, 10 May 2020 12:13:20 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id A517120008;
- Sun, 10 May 2020 12:13:14 +0000 (UTC)
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 628FB20004;
+ Sun, 10 May 2020 12:13:16 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH 53/62] mtd: rawnand: sunxi: Fix the probe error path
-Date: Sun, 10 May 2020 14:12:11 +0200
-Message-Id: <20200510121220.18042-54-miquel.raynal@bootlin.com>
+Subject: [PATCH 55/62] mtd: rawnand: tango: Stop using nand_release()
+Date: Sun, 10 May 2020 14:12:13 +0200
+Message-Id: <20200510121220.18042-56-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200510121220.18042-1-miquel.raynal@bootlin.com>
 References: <20200510121220.18042-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200510_051317_327783_65570460 
-X-CRM114-Status: GOOD (  11.38  )
+X-CRM114-CacheID: sfid-20200510_051319_262013_A6CFC4BA 
+X-CRM114-Status: GOOD (  11.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,36 +68,51 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Boris Brezillon <boris.brezillon@collabora.com>, stable@vger.kernel.org,
+Cc: Boris Brezillon <boris.brezillon@collabora.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-nand_release() is supposed be called after MTD device registration.
-Here, only nand_scan() happened, so use nand_cleanup() instead.
+This helper is not very useful and very often people get confused:
+they use nand_release() instead of nand_cleanup().
 
-Fixes: 1fef62c1423b ("mtd: nand: add sunxi NAND flash controller support")
+Let's stop using nand_release() by calling mtd_device_unregister() and
+nand_cleanup() directly.
+
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: stable@vger.kernel.org
 ---
- drivers/mtd/nand/raw/sunxi_nand.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/raw/tango_nand.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
-index 26d862213cac..9f51fd20a52e 100644
---- a/drivers/mtd/nand/raw/sunxi_nand.c
-+++ b/drivers/mtd/nand/raw/sunxi_nand.c
-@@ -2004,7 +2004,7 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
- 	ret = mtd_device_register(mtd, NULL, 0);
- 	if (ret) {
- 		dev_err(dev, "failed to register mtd device: %d\n", ret);
--		nand_release(nand);
-+		nand_cleanup(nand);
- 		return ret;
+diff --git a/drivers/mtd/nand/raw/tango_nand.c b/drivers/mtd/nand/raw/tango_nand.c
+index b92de603e6db..246871e01027 100644
+--- a/drivers/mtd/nand/raw/tango_nand.c
++++ b/drivers/mtd/nand/raw/tango_nand.c
+@@ -600,14 +600,19 @@ static int chip_init(struct device *dev, struct device_node *np)
+ 
+ static int tango_nand_remove(struct platform_device *pdev)
+ {
+-	int cs;
+ 	struct tango_nfc *nfc = platform_get_drvdata(pdev);
++	struct nand_chip *chip;
++	int cs, ret;
+ 
+ 	dma_release_channel(nfc->chan);
+ 
+ 	for (cs = 0; cs < MAX_CS; ++cs) {
+-		if (nfc->chips[cs])
+-			nand_release(&nfc->chips[cs]->nand_chip);
++		if (nfc->chips[cs]) {
++			chip = &nfc->chips[cs]->nand_chip;
++			ret = mtd_device_unregister(nand_to_mtd(chip));
++			WARN_ON(ret);
++			nand_cleanup(chip);
++		}
  	}
  
+ 	return 0;
 -- 
 2.20.1
 
