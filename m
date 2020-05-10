@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90968C54E49
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:06:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DFE6CC38A2A
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:06:36 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 405FA20725
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:06:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B944520725
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:06:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dcBtEVs7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 405FA20725
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jQzVZutp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B944520725
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7YXQDg0YWvGpxfsSOjqJR/Jg4QFg2JV4VyDTQ7SH+sA=; b=dcBtEVs775/tQf
-	1i8rJ7829i1gQStrgC1ypG6u4dHb+2jv7y54I6ht5zB2bljyzzlMK65CmIf15edbvJp3gVUNIpjB8
-	q0jGSbGliThdGNYA9phxH+Vb4D5HyHhh50Hu8tMf3gQRKIpgSHDxVZcKzt++tjTj+hLG/4pyYCf0Q
-	L4LFYgInu/LHqNWsvqtnXe8tfk5KkyHJ38COfD1qEOsQNum0bc2skKXu6OhHx76F+id/EP3TZ+3ZR
-	C8ojW6QY9fUdHkTkXPV/OxdyizgDvmgbrOvzzlHn2Zz+r4Td0Dk4MoanwHPNarjHOk+/3hBeupUbc
-	K8J8u0W1U9U2Z12LFOcg==;
+	List-Owner; bh=FKZrwQU9BNVmoLGnWKYYUIWsxWtnf7iB+mwdRpyhyqI=; b=jQzVZutpBs7nlE
+	go8StB6zVOY5oNRdKv3p6WNKNAXSk6Mlyew2TsumhUl54HwJ+syAmYQRnvA13bWvPC5hZBOLNbDux
+	5G8Cz9pdRSQMPOTJjHLhw5xJXA19QgcoYkQa+f6+m76SRwGZI4YM7WxPucUOc7BOgLNh4yducJyK6
+	P+/Yw82Ulr038/NfWq4aHC1VHHcuPuZNpyyx6TTxGYhVCcJ2Wqn8k20qjr5UawmA9KWRovE1Yqlk1
+	+1+ezUJu7W6bJOdptWwNRUaeE7Gyimr/U01fVZsX9NAhVgz3TewtREESLVNNqLXAiHVygwHiRABIf
+	qBTMXYdX5LIYRj8u45Qw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jXsD8-0001di-Ho; Sun, 10 May 2020 20:06:06 +0000
-Received: from relay10.mail.gandi.net ([217.70.178.230])
+	id 1jXsDQ-0001t4-M5; Sun, 10 May 2020 20:06:24 +0000
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jXsAz-0005gB-Ng
- for linux-mtd@lists.infradead.org; Sun, 10 May 2020 20:03:56 +0000
+ id 1jXsB4-0005kB-LR
+ for linux-mtd@lists.infradead.org; Sun, 10 May 2020 20:04:04 +0000
+X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay10.mail.gandi.net (Postfix) with ESMTPSA id EBF2F240005;
- Sun, 10 May 2020 20:03:50 +0000 (UTC)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 0853AC0002;
+ Sun, 10 May 2020 20:03:55 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v5 01/13] mtd: rawnand: Translate obscure bitfields into
- readable macros
-Date: Sun, 10 May 2020 22:03:50 +0200
-Message-Id: <20200510200350.620-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v2 8/8] ubi: Relax the 'no MLC' rule and allow MLCs
+ operating in SLC mode
+Date: Sun, 10 May 2020 22:03:55 +0200
+Message-Id: <20200510200355.687-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200507105241.14299-2-miquel.raynal@bootlin.com>
+In-Reply-To: <20200503155341.16712-9-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 810943ec066b385212e2518ac4d99a94cc1afef2
+X-linux-mtd-patch-commit: d4903199bc0743e8dc2dbb431d6ac940c6cfc5a9
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200510_130353_905621_8016D082 
-X-CRM114-Status: UNSURE (   5.60  )
+X-CRM114-CacheID: sfid-20200510_130358_867370_076DE5E9 
+X-CRM114-Status: UNSURE (   8.34  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -71,20 +72,28 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Michal Simek <monstr@monstr.eu>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Naga Sureshkumar Relli <nagasure@xilinx.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Cc: Boris Brezillon <boris.brezillon@collabora.com>,
+ Maxime Ripard <maxime@cerno.tech>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Boris Brezillon <bbrezillon@kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2020-05-07 at 10:52:29 UTC, Miquel Raynal wrote:
-> Use the BIT() macro instead of defining a 8-digit value.
+On Sun, 2020-05-03 at 15:53:41 UTC, Miquel Raynal wrote:
+> From: Boris Brezillon <bbrezillon@kernel.org>
 > 
+> The MTD layer provides an SLC mode (purely software emulation of SLC
+> behavior) addressing the paired-pages corruption issue, which was the
+> main reason for refusing attaching MLC NANDs to UBI.
+> 
+> Relax this rule and allow partitions that have the
+> MTD_EMULATE_SLC_ON_MLC flag set to be attached.
+> 
+> Signed-off-by: Boris Brezillon <bbrezillon@kernel.org>
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+> Acked-by: Richard Weinberger <richard@nod.at>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next.
 
