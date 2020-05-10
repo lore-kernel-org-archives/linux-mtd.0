@@ -2,144 +2,61 @@ Return-Path: <SRS0=JbbF=6Y=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A0AEC38A2A
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 11:22:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7348FC38A2A
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 12:12:48 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F103120820
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 11:22:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 46F5320820
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 12:12:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ChnEIwlP";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="Hkc4o4bU";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="CDu+sZti"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F103120820
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mB76SL5J"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 46F5320820
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7L+2tz/7oety1xFvukD7hAcgwP6upyvtjt6nV3Nclac=; b=ChnEIwlPy/Kv4n
-	Go985uY3ybzWOypV5Oby+bwC/p6PJXqOwgtxqjALBbAEiiKSxXrFRwDjI18Nl+yIK++xqBVh0+gvQ
-	aYkx1AWDDv5W399c0unZ+QOsdCckm3NfrgFJcsUyN+/stoQVailPqCuk/+zCdY1fgJL6c9VsguQeX
-	VOWKEHTmPHn6CIb/atDu1srvPdct1bFDEg3ONZ41OhG8LJ5c07QUAam3raw8Ffrtq8VmD5ZfvEXGN
-	+f28x3RozZ6xW0jayxzCRft+02H3HjTUoQ8YhPpywSwPru5YEw5TaZpheEWEAC80gU84QBkS7LUTx
-	49B1pLhTQUC0P07vkc5Q==;
+	List-Owner; bh=LNCo9Vi4iC3LwN+O7JBV4GNo1L97B5miBQhCnzjr2H0=; b=mB76SL5JQv1yk2
+	MCJl0tQUM74QP+gvBuIM+k8jGS7NkvswCCdx06+WcKQZdzfkN8TLiqUD3GQGFTrg0/7Oxm33QXVAo
+	DurLUVgljXlD67H9ZQ/z97uo6DhyZHTXbd9BaCsU3YqS3Jf1NJfE4m28C8AVp4yjmF5CbQigKLht7
+	KqF++BgaoUt+NjEf2TcBl+e0/qDVtA1AjGNsidj2p9ePcABlYdWqLXj3Mohq1lT+wQdFriTmu2ssR
+	s2HJZYFFkVdB51luILVNKUe+WqOPylrSZsorl3yuBWrcFPw44FqXwSOW+3tww4FiWeWvxJy/4vdk6
+	rMgeQQLHk1QdxLfitLRw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jXk2K-0002FN-O4; Sun, 10 May 2020 11:22:24 +0000
-Received: from esa3.microchip.iphmx.com ([68.232.153.233])
+	id 1jXkou-000543-Mr; Sun, 10 May 2020 12:12:36 +0000
+Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jXk2H-0002Eu-DF; Sun, 10 May 2020 11:22:22 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1589109741; x=1620645741;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=+nX9BCk3l7rzpHkoedDjsJKecoiTpzzZtC8hqcZJgAU=;
- b=Hkc4o4bU1XxoqkTaY0ChlmC0kPILUWHc+68jnL8HTbejDadz0EUdH7eC
- bm9xCwGL0bxOJV5y52LHTVZY+xMX5Jzdvk65j/t+LiY54Ec5tFHm1gEjq
- iIzvHCX/eSrLUuiju8daWbDIeieAKs+3y/NmG3b6rw8o7ZiYHMV0F18/r
- XoDme0ireNrtq+2QQUi4zzb1yvkK9u+Yw1lH3W6D1PMyJ9cwnUoELjzHZ
- yD1oVl2mNKx77jmQgMfRPM51i5fBSFeuqBjRL3EQLozIRACW/zI0caeyH
- Uzk+P0u+yqGxd9tlxOrfcT6n59rr2tq0lrf/K5ybJ9Slt8N3I43xIVxlP g==;
-IronPort-SDR: nBcJ5nL2re+B0wQJzXUohF4zO34QEyzzYxRZalMS0yvDzcv+Rh573CifEV4K1QX6n1cS6HWz8K
- 3Nvy35l7at3wy5Alzu0u/MtJWVK/B2arcatyGdY8DcP6i4lDXxn3l7CyCRDjCjHex3WAey/FqE
- uf8Eg0+mM5Pokyj7lSwOXIdZvzM0aR79XzGX+VAGniiY0l5EqpIzk4oQWr5A8Ui24nVJ1HF7ob
- l7hbnS+diyLk3qRfOHAwfW3BMZnZSB/hSBDJiRqZAlBQbG2SNWHKOXiHSlmLj31AyIuhv2gilx
- xXk=
-X-IronPort-AV: E=Sophos;i="5.73,375,1583218800"; d="scan'208";a="76113689"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 10 May 2020 04:22:19 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Sun, 10 May 2020 04:22:20 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Sun, 10 May 2020 04:22:19 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Esz9Xqnv42Ge2WtVP6sx9F0TYBvyDy8LsnDlIOG3XySrU2WTnWtiBhKijCT7JDWj1TUwYImTot7ZGSEK4zAvDFWzcqLBJxDLH46dIK+Z/nrM074ysKmigWGSHEW93rnAlelSy4LmB6MGz6Ae20JwJA6kD5oJ9JYoD5MWGwzXPFffrQKjsKN6iUjCgYRt9vfcGrX3b3OyFL0SNDlfxPMbOBKO9kNvmtDUkB0SHy1pQUZO08LGnm7puKCfUr01CsyrpB5+VEuViRCJ9BzaHMpT220+bOG9m/emWPcdopo7yICQvMCWmHPAp0PR945J93+liaEf38MU/Zj4xuhYPSt3WQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+nX9BCk3l7rzpHkoedDjsJKecoiTpzzZtC8hqcZJgAU=;
- b=BfqnkuG2Xr1qYs3MSHnM1A15mOXNYsK2ELBl1sZ+XulO5lRo0dvxVfypyfT7MqU1jTQc5FNgdl76LQXQ2dC/KQxyaozFkD7FTbg3iLoGemeGtKcOlJnGnpfnpwGlFcS/ppQXHDBl4VDPQrDrEnfFzlBJoTrB3ru3Cu1vRLY+JZ+s+k/cGyOr7Y7kT8JT804R6odbZ4oxjV1PxMt8mgssAXOqm2OflO6J2V7VnqHtxsKd5staqYlxZ2Ba/pBQCaRVwGknOn2Jit+r2BfMQ9X2OAD2y7YFM+v6rVXlz6G5abRpPX9dxYCFREniCKy89IOIA9Y56BrEUt/ZsBZmUt/36A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+nX9BCk3l7rzpHkoedDjsJKecoiTpzzZtC8hqcZJgAU=;
- b=CDu+sZtiBDCXszaeZIBGPPZy8p5XXERQhABMZA95uv11M+zLCzISitFaoF13zqVoC50Lo4KOx+uXt+h6MAJZb+IwC1WcBteGwWN1xugbdvuhwi0E02ecnWDMp67l9pl0joaHk1ZLR3gDXdzN++Ti5FTI2UrkEE5R4GSCHRC0sNY=
-Received: from BY5PR11MB4419.namprd11.prod.outlook.com (2603:10b6:a03:1c8::13)
- by BY5PR11MB3927.namprd11.prod.outlook.com (2603:10b6:a03:186::21)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.34; Sun, 10 May
- 2020 11:22:18 +0000
-Received: from BY5PR11MB4419.namprd11.prod.outlook.com
- ([fe80::d847:5d58:5325:c536]) by BY5PR11MB4419.namprd11.prod.outlook.com
- ([fe80::d847:5d58:5325:c536%7]) with mapi id 15.20.2958.035; Sun, 10 May 2020
- 11:22:17 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <p.yadav@ti.com>
-Subject: Re: [PATCH v4 12/16] mtd: spi-nor: perform a Soft Reset on shutdown
-Thread-Topic: [PATCH v4 12/16] mtd: spi-nor: perform a Soft Reset on shutdown
-Thread-Index: AQHWJr1Dp5hR4yIpUkyKNPb9KcyGvw==
-Date: Sun, 10 May 2020 11:22:17 +0000
-Message-ID: <6809202.hICg0JTlGu@192.168.0.120>
-References: <20200424184410.8578-1-p.yadav@ti.com>
- <20200424184410.8578-13-p.yadav@ti.com>
-In-Reply-To: <20200424184410.8578-13-p.yadav@ti.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: ti.com; dkim=none (message not signed)
- header.d=none;ti.com; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [94.177.32.156]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 675be7d6-573c-476c-0954-08d7f4d46618
-x-ms-traffictypediagnostic: BY5PR11MB3927:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR11MB3927538F2EC76C31051B65CDF0A00@BY5PR11MB3927.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-forefront-prvs: 039975700A
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: h5Wjmfm/Ud792C4tFKz17F44VRMFl70CfEVw+tEhf01A3iRkP8UDbYo43hV0EUpijVtW3I1VAFrRtcCXWPNhrin+v4uLHcckWJN1h5qQQJ8iLNNj+oH6ggZFqkO14AUrKhd0fIFrIIm5CxGmw1JZg4TUlwLLYMdi3/tnw+e8jy0J68DS4ihPZBaOkrnDPD6j9EV4uB9MTALrSMOo8xRcrpPCUj+cXASl6w4BJL3hXOPA598vv8Areoj/epFGilXdrlczWhq+Lf9jTds/IpGyBg0XnboLCuSfPhg5V9eXBCpwRKDCkhXWEBXBfz5GhTh6jsx0bnZYLrlNw9KcQFfpE++6mrvZZdkAmpPuf5kHpWp2u5pqh39SQYsyxKbUITt1a3vTFyrOoKQRgqHWStAA8mPpyTv8OlSXVBpsnHwU/PtQfqN6CB7Q1gEVvEY0yDOcNTfDoKGVEeW+FqZqVKixcslF3RhMu0t+DuPLem4xsX+4k4g22Clnc+m30UAiblN5vi/mJ9NP6HhM8UiToqpS9PKbvDYyCf9KTzlbiwNqg8YMbDwDZNS6u+XcgeGxtGlF
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:BY5PR11MB4419.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFTY:;
- SFS:(366004)(136003)(376002)(346002)(39850400004)(396003)(33430700001)(186003)(54906003)(71200400001)(26005)(7416002)(53546011)(6506007)(316002)(8936002)(478600001)(4744005)(33440700001)(64756008)(66556008)(66476007)(66946007)(66446008)(14286002)(6916009)(76116006)(6512007)(9686003)(86362001)(5660300002)(8676002)(4326008)(2906002)(6486002)(39026012);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata: idWlK7bsu5OceGzLLblyPBF4dEYERRP5wUPIqhzm6bqY77cFUJh3SewRSC8SQbUb2akwU7GGDnSmQquO8xxaSb8cANAWApXXNno1tNOrkSruxq0WtRyOKI3zpm1nnK2D7ro9lLYgQnA2zsKtALDK38OVbl99UBXRDQc5QO56buyeOHXxuT+zhKgA+e8iP0bKqCtZ4yTL8WRzgyKphd9ILs+FRUqqcbrXh8aVkjjiBtLk7CFyQG8DilmoUQ8OFEdp+q82KhTEyi8xoB/lZ4IwYrwa3x9aRPtIu4G8EiyLFE5MGNepOrkdqneI6lnWipHME710XS7hD5gqqbR6ydlxP+cOJdZ/eRSc+wm3gn3ywGfgMZcbBq9TNhLU0qNwaLzlfMssBymQBYYWLhqnra6a2P7PE7epBloN/ldI5xCfi5DzuatDe33cGJf6zyyrZNHfJEK6uYT5jBRwCYeaibDrNzTOXqQD6frf2u2NPaSxTIQ=
-Content-ID: <82DEBC12AFB74F43864300A63CFA5DF7@namprd11.prod.outlook.com>
+ id 1jXkor-00052Q-Ik
+ for linux-mtd@lists.infradead.org; Sun, 10 May 2020 12:12:35 +0000
+X-Originating-IP: 91.224.148.103
+Received: from localhost.localdomain (unknown [91.224.148.103])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id E346A20004;
+ Sun, 10 May 2020 12:12:29 +0000 (UTC)
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ <linux-mtd@lists.infradead.org>
+Subject: [PATCH 01/62] mtd: rawnand: ams-delta: Stop using nand_release()
+Date: Sun, 10 May 2020 14:11:19 +0200
+Message-Id: <20200510121220.18042-2-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200510121220.18042-1-miquel.raynal@bootlin.com>
+References: <20200510121220.18042-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 675be7d6-573c-476c-0954-08d7f4d46618
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 May 2020 11:22:17.8180 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ivDDrzwfanN5Rl34cg86/tytYv06e7UW1/VpzU46pzRZfEHHGcpASrL8xn8QOoNWdTMcIvCkm8hGraQ25J4PzpcZxUUSCalTh/eyhc39CJA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB3927
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200510_042221_457155_E825D7BB 
-X-CRM114-Status: UNSURE (   6.91  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200510_051233_778195_A98024F9 
+X-CRM114-Status: GOOD (  10.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -151,33 +68,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: alexandre.belloni@bootlin.com, vigneshr@ti.com, richard@nod.at,
- nsekhar@ti.com, Nicolas.Ferre@microchip.com, linux-kernel@vger.kernel.org,
- Ludovic.Desroches@microchip.com, broonie@kernel.org,
- linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
- linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: Boris Brezillon <boris.brezillon@collabora.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi, Pratyush,
+This helper is not very useful and very often people get confused:
+they use nand_release() instead of nand_cleanup().
 
-On Friday, April 24, 2020 9:44:06 PM EEST Pratyush Yadav wrote:
-> A Software Reset sequence will return the flash to Power-on-Reset (POR)
-> state. It consists of two commands: Soft Reset Enable and Soft Reset.
-> 
-> Perform a Soft Reset on shutdown on flashes that support it so that the
-> flash can be reset to its initial state and any configurations made by
-> spi-nor (given that they're only done in volatile registers) will be
-> reset. This will hand back the flash in pristine state for any further
-> operations on it.
+Let's stop using nand_release() by calling mtd_device_unregister() and
+nand_cleanup() directly.
 
-Please don't introduce SPI_NOR_SOFT_RESET yet. We should instead determine the 
-software reset sequence by inspecting BFPT[16], bits 13:8.
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ drivers/mtd/nand/raw/ams-delta.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Cheers,
-ta
+diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
+index d66dab25df20..3711e7a0436c 100644
+--- a/drivers/mtd/nand/raw/ams-delta.c
++++ b/drivers/mtd/nand/raw/ams-delta.c
+@@ -387,12 +387,15 @@ static int gpio_nand_remove(struct platform_device *pdev)
+ {
+ 	struct gpio_nand *priv = platform_get_drvdata(pdev);
+ 	struct mtd_info *mtd = nand_to_mtd(&priv->nand_chip);
++	int ret;
+ 
+ 	/* Apply write protection */
+ 	gpiod_set_value(priv->gpiod_nwp, 1);
+ 
+ 	/* Unregister device */
+-	nand_release(mtd_to_nand(mtd));
++	ret = mtd_device_unregister(mtd);
++	WARN_ON(ret);
++	nand_cleanup(mtd_to_nand(mtd));
+ 
+ 	return 0;
+ }
+-- 
+2.20.1
 
 
 ______________________________________________________
