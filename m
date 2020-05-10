@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A9E7C38A2A
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:14:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FE91C38A2A
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:14:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EC04F206F5
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:14:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 17AF4206F5
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:14:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="MtNDyS4o"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC04F206F5
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rJaUuAnf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 17AF4206F5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bl8WA+ydkHf69vOJ41scvxq9RGQpIVaQo+D4Q1FdkoA=; b=MtNDyS4oiqn5I8
-	WTtDJ0wAic/wi+vjX4jNS9hLSY8N9O+4IyxEPcN1QD3y9N+pQgFjWujHu02/ytDajQeKAG8dm4pKQ
-	NN6hlZGiuEvKhifcY1U3UaryTyf8fduX8ty+A9Tu1DH1l2fDZPjNTikpF5DhbwQSHALTkOTQnjvW8
-	/vwSzZmXP/sIAgNzJImiqoRAcL5u2VrZIgpI0/XRjknwzKrmrdgpw8dDBRE1aipfdhaiP3QoUP9g1
-	DBtCFQfTmJ/Wx50bs1/wYTXjL0RSeB817wL9PF4yJGRaAxsyVVzZW0mlyiLFMMyMkL+0+R9H7FvOq
-	YLe60y/fD+4dYmtJSCXQ==;
+	List-Owner; bh=GNgry5NsjEPcRhEpGfdpi2CvTBO9kgYHdLW5kGt+nZ8=; b=rJaUuAnfdJD65Z
+	7pAIo67KqO7hO72AXl4Hne2iX7SagQ8ygYJVbntz4MkzFvkexp4WY5mtReWrItdhYwjTU+fECJNZ8
+	Dt9BAcmoFve38g48VhWuVpM/nfWis5ACC5GEdTPcB1wcuVB8GQNByjAtwdzv9gf37IL4z3flOTXQJ
+	2zgHdWps+9ERncFsijLzkKRe/rScgEkBnPBqlcoqYbkp3S7oabKm0A61cadw9ck8z6JtFF6nCbyvc
+	1i0SDzoQjPCahg/B2WcSwyv5DaAY9TZEfEg/l2eie2PGNuA4qWwZo9+3ACV68uPlDPFUW2Qq25lY8
+	HtLXUy6vjGlmhZVzVpUA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jXsKv-0002sn-Hr; Sun, 10 May 2020 20:14:09 +0000
-Received: from relay10.mail.gandi.net ([217.70.178.230])
+	id 1jXsL8-000379-Jx; Sun, 10 May 2020 20:14:22 +0000
+Received: from relay11.mail.gandi.net ([217.70.178.231])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jXsDU-0001vS-Bn
- for linux-mtd@lists.infradead.org; Sun, 10 May 2020 20:06:29 +0000
+ id 1jXsDa-00021M-Fr
+ for linux-mtd@lists.infradead.org; Sun, 10 May 2020 20:06:38 +0000
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay10.mail.gandi.net (Postfix) with ESMTPSA id AF226240004;
- Sun, 10 May 2020 20:06:25 +0000 (UTC)
+ by relay11.mail.gandi.net (Postfix) with ESMTPSA id 5725C100002;
+ Sun, 10 May 2020 20:06:31 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@collabora.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 2/4] mtd: rawnand: au1550nd: Implement exec_op()
-Date: Sun, 10 May 2020 22:06:24 +0200
-Message-Id: <20200510200624.2910-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 1/4] mtd: rawnand: au1550nd: Stop using IO_ADDR_{R,
+ W} in au_{read, write}_buf[16]()
+Date: Sun, 10 May 2020 22:06:30 +0200
+Message-Id: <20200510200630.2987-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200419193037.1544035-3-boris.brezillon@collabora.com>
+In-Reply-To: <20200419193037.1544035-2-boris.brezillon@collabora.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: a67537ef37d8d268adee17d7bab30ea5b8d76f52
+X-linux-mtd-patch-commit: 15770370df4d51bd5ca408f0b8c46c90098d3300
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200510_130628_545097_283F1A77 
-X-CRM114-Status: UNSURE (   6.00  )
+X-CRM114-CacheID: sfid-20200510_130634_720955_5E71177E 
+X-CRM114-Status: UNSURE (   7.28  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -79,8 +80,10 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sun, 2020-04-19 at 19:30:35 UTC, Boris Brezillon wrote:
-> So we can later get rid of the legacy interface implementation.
+On Sun, 2020-04-19 at 19:30:34 UTC, Boris Brezillon wrote:
+> We are about to re-use those for the exec_op() implementation which
+> will not rely on au1550_hwcontrol(). Let's patch those helpers to
+> simply use the iomem address stored in the context.
 > 
 > Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
 > Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
