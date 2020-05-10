@@ -2,86 +2,84 @@ Return-Path: <SRS0=JbbF=6Y=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2C30C38A2A
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:25:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B52F4C38A2A
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:26:11 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 779AB206F5
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:25:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8ABD3206F5
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:26:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IGYl6bI1";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="M/cJvL8h"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 779AB206F5
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kZEdIITS";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="jxnIlVzj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8ABD3206F5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bsMgNoNHeAMTeAiVdEPBDhonMZ3xIiJojZ39UXQJPjs=; b=IGYl6bI1fSuE/V
-	KwGyVps6AwsLLcEGzJbbJtNfSb6isq3coRnUZdqnWHXNHpMWU6F1kU2MrcJ/awQpG+Khj4jnwy3px
-	k/kGD3g/YS9032u62x+hDml5yfLzB5uEbTODhRuh50h8LfUNlaor9OEzdzcg93BYalSi/Y0JCUX5x
-	Bhtr9JP6kvIH1VvwwREHqwzN17UIcdb3q/rU/XV6L+UpMOyblW6U+TVVRUIY0t60cgpuMF3yEgVqe
-	kMB4o1A0L/QPpkwydzHNz1PPKIdpCoACciBhQWO1OJg4YgeuWJhODuWQpVoynzyUrT6o7wOWUUMWB
-	JNTGZeVT/wLy1r/40+bQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=aQ/Eb/TJXXFaWbstzfZN1o8U6Pb1ZlNTR2jn6DfXIFY=; b=kZEdIITSdOz1mG
+	PhVAUX7RKJ1urphU2ONhTrd4odlxFb1lQgIRounComI1fZI/a5FPDrcVCUYpXG+xKyPS4mB1tEE2x
+	xNzHxI6YJCk3YO9QhFqIztCKx/jOeysLbrfFLReirg1QhTs6MTAmDutyLrmBwB1EAd06JsXzLp+Hy
+	4xLptMTcaPRHzaKzCMVIJoKq90N6SZhJ5c33/pObFkJWsqlgXEjGklc7Kh5tjYkdyMwVJHC5c/grU
+	TRNO1ixVrjIbeAyhf5zIg9cvrcGsW/rEBFZOs52CVaATYPE3iSLrDny+skxZs2YAlLpJYDS/jDFBh
+	Ne7ZgPRXlwkP9JkNkvNg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jXsW8-0005e0-AK; Sun, 10 May 2020 20:25:44 +0000
-Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
+	id 1jXsWS-0005tU-9b; Sun, 10 May 2020 20:26:04 +0000
+Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jXsVB-0002Qz-I4
- for linux-mtd@lists.infradead.org; Sun, 10 May 2020 20:24:46 +0000
-Received: by mail-pf1-x444.google.com with SMTP id d184so3764008pfd.4
+ id 1jXsVB-0002RQ-W8
+ for linux-mtd@lists.infradead.org; Sun, 10 May 2020 20:24:47 +0000
+Received: by mail-pl1-x643.google.com with SMTP id k19so3018981pll.9
  for <linux-mtd@lists.infradead.org>; Sun, 10 May 2020 13:24:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=5ftIoYymBGMn0ProUbxAIjGCP6irGe3xnecuHwaJ2BU=;
- b=M/cJvL8hlN3LxOR7YqQKrAGHR739tSJqQTIBdmpAhjDy0nybQzRtcOtAPrHiKVhUKj
- hsB2XqjX4rZjw8Kbgv6P7obB7m7yi8bCOQa2muYfgmO3VhYbWa1JIbtFntpsUdFnBvpg
- z2URti78Yz+e3DuPLhwr8YZHxwRBn4DNVm9MI=
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=jMnvmwdf0lD4TWDxpQeCiDqgUg/BNY/6yd0J6c0RUaw=;
+ b=jxnIlVzjg4LuX0x4ZxxB1JEkhMutYk9n+d2bj8maSEKQYCpP8QW0AvSZM2+MydWo17
+ hFg6spS4Y8qyZldiFLK7H6lD7DqCwh+ptn93hbbWPLowJU5q3HpQS2XQ7NI8YXkdrfmC
+ XKExDDq/gQbLg5YH+GX/v6KMd7og+GDHK5M8k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=5ftIoYymBGMn0ProUbxAIjGCP6irGe3xnecuHwaJ2BU=;
- b=YVZVTXM3tge78zjTKGR9Y/zhB6xhxtiBrPzmu59+1U0BkH76Q/fmP7/apC+X4mcKNJ
- NBsMaBwd7PSflN2dDK/0Bg+Tl7zcZ8VcBGKIWJOPkFf14olnDw/NdgYcEf7zGcw6p9Cv
- iTIG/pq5NxYauIqg8uCU1+nUy2zko58Peh55VhbpBNhNmAbrASznzOXryP8UA9c4CC6C
- YPwamaZlCz5c0Df8ri+H6MxOwMx2RjcI+rUpvDg93BxTQzt8/xUQbaiHuyyx1gwV4XCc
- azXuZ5ndWHzz8l6uIGvaT5SHIALyLuxx65eNkD7qT1ZPczJtWAOCby3CfeDySCoZwUir
- FKww==
-X-Gm-Message-State: AGi0PuZzA3m0An5GBXXu0RYEKrN7ti2FgsaBDAwm9sMCRPP30rENQFC+
- Sh1zyOBuwJbZ4pE29uh77dU+Rw==
-X-Google-Smtp-Source: APiQypKkKbidaXA2M8XJ6HvdzKsXRV/+gbI2nQYSE78Rxu8a98OLbZfjBGurl33BBe6rQc0sYAewRw==
-X-Received: by 2002:a62:2cd7:: with SMTP id
- s206mr12711308pfs.183.1589142284913; 
- Sun, 10 May 2020 13:24:44 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=jMnvmwdf0lD4TWDxpQeCiDqgUg/BNY/6yd0J6c0RUaw=;
+ b=Ja6zfYpsNM0ZoLhPCU61G+dp7zYYlShrSNEKoYaqWOkGkiCy+fjlOZUyQK0FiGgtXL
+ jUcsfNEUck3uf9+BxwjDXyo7+Qg2FA3LCShx/tTDd2GyPa8oCsoiz3RjAUuYm2Xo3srF
+ RjA+F6k4h9m5r2KdXyAazrDw3S9BQ64dOj2o9rufNONFxonv/nqp14oexEs2CSKMSzCn
+ BdfTqGxIljL4dpSdSLXQHAQhL0RtQJjoFxFl2tKVV+rqDlzLIgWYoJqHPD5g2HooQpQG
+ YvQGaaMZEYnVbNrhWz0vLFdYVFQV8kWwf4s+WTQcxhrnWpT9mjnXADeFDUlqmB5NNjp+
+ BBPg==
+X-Gm-Message-State: AGi0PubWzfm1mu9tWDU1hmK6A00dYHkbdI8QYOIznlD2vM7U4TwuXdOu
+ YxF5hywieToQ3wzyG7fg1zcjDw==
+X-Google-Smtp-Source: APiQypLvN7WjM+iFu647e6o7NyvuJP0SZANsYUCqdd2Q7tf4QMuUe/X50yR6CDzAlEROB6zdXlLglg==
+X-Received: by 2002:a17:902:9b8e:: with SMTP id
+ y14mr12182467plp.109.1589142285531; 
+ Sun, 10 May 2020 13:24:45 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
- by smtp.gmail.com with ESMTPSA id n9sm8014797pjt.29.2020.05.10.13.24.41
+ by smtp.gmail.com with ESMTPSA id gm3sm7871240pjb.49.2020.05.10.13.24.41
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
  Sun, 10 May 2020 13:24:41 -0700 (PDT)
 From: Kees Cook <keescook@chromium.org>
 To: WeiXiong Liao <liaoweixiong@allwinnertech.com>
-Subject: [PATCH v7 04/18] pstore/platform: Use backend name for console
- registration
-Date: Sun, 10 May 2020 13:24:22 -0700
-Message-Id: <20200510202436.63222-5-keescook@chromium.org>
+Subject: [PATCH v7 00/18] pstore: mtd: support crash log to block and mtd
+ device
+Date: Sun, 10 May 2020 13:24:18 -0700
+Message-Id: <20200510202436.63222-1-keescook@chromium.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200510202436.63222-1-keescook@chromium.org>
-References: <20200510202436.63222-1-keescook@chromium.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200510_132445_607142_F911E2BD 
-X-CRM114-Status: GOOD (  11.42  )
+X-CRM114-CacheID: sfid-20200510_132446_027744_CBF16A26 
+X-CRM114-Status: GOOD (  10.80  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,36 +106,82 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-If the pstore backend changes, there's no indication in the logs what
-the console is (it always says "pstore"). Instead, pass through the
-active backend's name.
+Hi!
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- fs/pstore/platform.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Well, I guess I spoke too soon. :) Here is v7. Hopefully this is
+it. WeiXiong, can you test this and make sure you're happy with the
+results?
 
-diff --git a/fs/pstore/platform.c b/fs/pstore/platform.c
-index bf7fa7b278bd..90d146fbc7d2 100644
---- a/fs/pstore/platform.c
-+++ b/fs/pstore/platform.c
-@@ -519,13 +519,15 @@ static void pstore_console_write(struct console *con, const char *s, unsigned c)
- }
- 
- static struct console pstore_console = {
--	.name	= "pstore",
- 	.write	= pstore_console_write,
- 	.index	= -1,
- };
- 
- static void pstore_register_console(void)
- {
-+	/* Show which backend is going to get console writes. */
-+	strscpy(pstore_console.name, psinfo->name,
-+		sizeof(pstore_console.name));
- 	/*
- 	 * Always initialize flags here since prior unregister_console()
- 	 * calls may have changed settings (specifically CON_ENABLED).
+Take care!
+
+-Kees
+
+v7:
+- more renamings in the exported APIs and structs
+- fix mtd build
+- replace psblk_blkdev_info with passing in a struct to fill
+- consolidate bdev opening/checking
+- rename psblk_device -> pstore_device_info
+- kerndoc for pstore_blk_get_config
+- fix hunks in wrong patch
+- add missing "static"s for local functions (0day)
+
+v6: https://lore.kernel.org/lkml/20200509234103.46544-1-keescook@chromium.org/
+v5: https://lore.kernel.org/lkml/1589022854-19821-1-git-send-email-liaoweixiong@allwinnertech.com/
+v4: https://lore.kernel.org/lkml/20200508064004.57898-1-keescook@chromium.org/
+v3: https://lore.kernel.org/lkml/1585126506-18635-1-git-send-email-liaoweixiong@allwinnertech.com/
+v2: https://lore.kernel.org/lkml/1581078355-19647-1-git-send-email-liaoweixiong@allwinnertech.com/
+v1: https://lore.kernel.org/lkml/1579482233-2672-1-git-send-email-liaoweixiong@allwinnertech.com/
+
+
+Kees Cook (8):
+  pstore/ram: Move dump_oops to end of module_param list
+  pstore/platform: Switch pstore_info::name to const
+  pstore/platform: Move module params after declarations
+  pstore/platform: Use backend name for console registration
+  pstore/ram: Refactor ftrace buffer merging
+  pstore/ftrace: Provide ftrace log merging routine
+  printk: Introduce kmsg_dump_reason_str()
+  pstore/blk: Introduce "best_effort" mode
+
+WeiXiong Liao (10):
+  pstore/zone: Introduce common layer to manage storage zones
+  pstore/blk: Introduce backend for block devices
+  pstore/zone,blk: Add support for pmsg frontend
+  pstore/zone,blk: Add console frontend support
+  pstore/zone,blk: Add ftrace frontend support
+  Documentation: Add details for pstore/blk
+  pstore/zone: Provide way to skip "broken" zone for MTD devices
+  pstore/blk: Provide way to query pstore configuration
+  pstore/blk: Support non-block storage devices
+  mtd: Support kmsg dumper based on pstore/blk
+
+ Documentation/admin-guide/pstore-blk.rst |  243 ++++
+ MAINTAINERS                              |    1 +
+ drivers/mtd/Kconfig                      |   10 +
+ drivers/mtd/Makefile                     |    1 +
+ drivers/mtd/mtdpstore.c                  |  564 +++++++++
+ fs/pstore/Kconfig                        |  109 ++
+ fs/pstore/Makefile                       |    6 +
+ fs/pstore/blk.c                          |  520 ++++++++
+ fs/pstore/ftrace.c                       |   54 +
+ fs/pstore/internal.h                     |    9 +
+ fs/pstore/platform.c                     |   40 +-
+ fs/pstore/ram.c                          |   70 +-
+ fs/pstore/zone.c                         | 1463 ++++++++++++++++++++++
+ include/linux/kmsg_dump.h                |    7 +
+ include/linux/pstore.h                   |    2 +-
+ include/linux/pstore_blk.h               |  118 ++
+ include/linux/pstore_zone.h              |   60 +
+ kernel/printk/printk.c                   |   21 +
+ 18 files changed, 3210 insertions(+), 88 deletions(-)
+ create mode 100644 Documentation/admin-guide/pstore-blk.rst
+ create mode 100644 drivers/mtd/mtdpstore.c
+ create mode 100644 fs/pstore/blk.c
+ create mode 100644 fs/pstore/zone.c
+ create mode 100644 include/linux/pstore_blk.h
+ create mode 100644 include/linux/pstore_zone.h
+
 -- 
 2.20.1
 
