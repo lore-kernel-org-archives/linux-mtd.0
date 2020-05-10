@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51B6FC38A2A
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:04:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C809BC38A2A
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:04:52 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0A76F20737
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:04:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9EC1120725
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:04:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fDhHsRiw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A76F20737
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Kv4sgyvk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9EC1120725
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=da26RVLY7t5RdFNKFiYrJAsxY0dcyURVREOTzr+kNds=; b=fDhHsRiw99eLrV
-	GtsbUQgL1NCb/0joUjOM70OOQauEGlYIHoS2XgHzpg07WbLLLLlbCGwwHJv4V9RWQNToUhiuWkXtb
-	uNoZ4TzUZUAYzdqMA0b1bQ4jgBadiJ9QQef29I+myOQvdW6mv9Md47yZAQMJAtmTbhHyQOhFxM3Sg
-	LEup0uxIHUPtZYgn2uyetKnwqOhzlRSL38f/tgFFgifdsadvKDA8hTGC97AX0z9ZcReOVtZDPWMlm
-	8WkvbruJUP3NRJeCE3HsxNRqtFy1IV5uTq9SWeiIShS+72sXskylkmtuz8ioEJdvxJAMe9b1g7hN2
-	FKTSXmW8Nz/9WbvRZ9iw==;
+	List-Owner; bh=Azd6lmadR63/7jP5CjDqKtn/zZer/jydkrca+vpRlZ0=; b=Kv4sgyvk4ENZig
+	mwbJ00rUqc5iEHCeTqS6cgddkpZPADymLhjCNnmJr+oMgr5HHXq+zmsBgXaER0uue/qnHrjDJJcBN
+	DLfj+2HVQ42yR8LH2fGjHATue11NkzbvfxuCdY1Ed7jF40hPA7h63hekhWhzypysq9mw6/zE3pZmd
+	hQaktuL+ULD2Zakd+MQOak1NVTLevj/kvq073hhoVr9oHCxik0qncvpKwZfeP+1e4caVO8QJeMfnY
+	uDW1fe0aWCR2SiywK0MZUT17DpflHzjbpWjVRn3wzUODbFO4KLW16H2/WBh5dUjXlLNsA2Q2VaGGO
+	HbcIWgSM8lJtdBbfXhJw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jXsBL-0005yN-Nt; Sun, 10 May 2020 20:04:15 +0000
-Received: from relay10.mail.gandi.net ([217.70.178.230])
+	id 1jXsBd-0006NV-GV; Sun, 10 May 2020 20:04:33 +0000
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jXsAS-0005BI-9W
- for linux-mtd@lists.infradead.org; Sun, 10 May 2020 20:03:22 +0000
+ id 1jXsAZ-0005He-SN
+ for linux-mtd@lists.infradead.org; Sun, 10 May 2020 20:03:30 +0000
+X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay10.mail.gandi.net (Postfix) with ESMTPSA id 7247D240005;
- Sun, 10 May 2020 20:03:15 +0000 (UTC)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id D1580C0002;
+ Sun, 10 May 2020 20:03:22 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v5 07/13] mtd: rawnand: Add a helper to check supported
- operations
-Date: Sun, 10 May 2020 22:03:14 +0200
-Message-Id: <20200510200314.32624-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v5 06/13] mtd: rawnand: Avoid indirect access to
+ ->data_buf()
+Date: Sun, 10 May 2020 22:03:21 +0200
+Message-Id: <20200510200321.32752-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200507105241.14299-8-miquel.raynal@bootlin.com>
+In-Reply-To: <20200507105241.14299-7-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 1c4db741f8e63f64a447491d1881207e3c7048a0
+X-linux-mtd-patch-commit: 23ae46a9c319b7396a9a0f6936d22702204ddcd6
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200510_130320_512977_18E96A01 
-X-CRM114-Status: UNSURE (   6.25  )
+X-CRM114-CacheID: sfid-20200510_130328_053225_F392BF52 
+X-CRM114-Status: UNSURE (   9.40  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -80,10 +81,13 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2020-05-07 at 10:52:35 UTC, Miquel Raynal wrote:
-> Let's use a helper to clearly check if an operation is supported or not.
-> 
-> Return -ENOTSUPP when ->exec_op() is not implemented as we cannot know.
+On Thu, 2020-05-07 at 10:52:34 UTC, Miquel Raynal wrote:
+> The logic in nand_do_read_ops() is to use a bufpoi variable, either
+> set to the original buffer, or set to a bounce buffer which in the end
+> happens to be chip->data_buf depending on the value of the
+> use_bounce_buf boolean. This is not a reason to call chip->data_buf
+> directly when we know that we are using the bounce buffer. Let's use
+> bufpoi instead to be consistent.
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
