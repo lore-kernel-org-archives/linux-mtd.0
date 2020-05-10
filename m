@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07E5AC38A2A
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:24:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E19C4C54E8A
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:25:20 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C996720737
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:24:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A971F206F5
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:25:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="r+CmPx94";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Knmx1HZJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C996720737
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tVulOBYn";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Vu8u0y3g"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A971F206F5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,62 +26,61 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XUQY01ZiH4gJzLSY+DwvlRdEqTNKsop2eaE8g+nh1Ts=; b=r+CmPx947n6lg8
-	KX/5EDQ+8cuNYiF7C2pOXXHUDwxEKNFsYpUJ5i0QyX+dAWYzxR7RhFE5HcsJmi0ZdSn1FAQyYODjo
-	5iol5+pWoS4qEnWIDZzUg5toE6ek+0At4nwPv5qiWsfCamXhMo+Gx4AX9z7Rjvk268dvUx2TfBsU3
-	24ZDhmNKbxNB2S1Anoth3VnyOcitX6zuM2ys3P5JEYrC+0sJHvUMVfvgJMkis/pKosWuLJS+a31qX
-	WsgimXehnMazH5DU11ilgka3uJxj/oCnNdxa2TaIXL708rbetgxHUvU/35X31fymSxtssOFdfafff
-	Sh50O+MGmInoZfowPuiA==;
+	List-Owner; bh=C3kiE2+4AVCOi3ZPLMTXEGnf9JMiNEWyv7VVqRQt8r0=; b=tVulOBYntXt0Ry
+	ioTb+UYj7uhQPmwHUJ3aYlx55hIDvfgTZd714MHqW1OoZVf5HT6Al/k77lIlL+bb6o8eha7Qgbgdq
+	ZPNoFZWE9seKZ7+zhyVxseDX0KL/W3I1WfS33uJF6NJw3MH4/wmnVsPO7+HtQqeiT49JDys86S63d
+	UXLtIbBiAsyEVVBrhRz40WOv7fCrKOiCHyHDA5AXuHJqAxMZQEXqXLNPIRLVMUb1Vm/vZBZmTQlwC
+	ZOsDjRpFx3I9JzyZrmLFD1CAjzv6bri7VoFHJ04sGIPacGfmFR5X93hK2HyHNspkIcWHMKCKSIGki
+	i9WRV0L1STsgxx+0ypjw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jXsVD-0002Rt-6H; Sun, 10 May 2020 20:24:47 +0000
-Received: from mail-pj1-x1041.google.com ([2607:f8b0:4864:20::1041])
+	id 1jXsVV-0002lG-Qz; Sun, 10 May 2020 20:25:05 +0000
+Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jXsV9-0002QA-Uj
+ id 1jXsVA-0002QC-8c
  for linux-mtd@lists.infradead.org; Sun, 10 May 2020 20:24:45 +0000
-Received: by mail-pj1-x1041.google.com with SMTP id fu13so6723714pjb.5
+Received: by mail-pl1-x643.google.com with SMTP id k19so3018955pll.9
  for <linux-mtd@lists.infradead.org>; Sun, 10 May 2020 13:24:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=BH7oPYzXzVGddb2eusJn7dvCiiIlEUY0aB5rJA7D8Lo=;
- b=Knmx1HZJZicNN2kyPSHXezy3IlidaxBgWVCKCEjmfFjqIIogaiilJAI6UQevUw+SzJ
- uxC1dHSDC2qeSRqPIKDp1GL2b47FC87gSdWL1tQCvqNJT+ecQn4XXHgGL5d4Ik6FXWoG
- Joq2ga7Uv9c5LsCL30Z7U4ze5fpY94V4y9JSI=
+ bh=a6bXV7bt3FJwO+6h7hS9wdbWbj+cKT2R8klgQdvy5V4=;
+ b=Vu8u0y3g/EsMOqGf92rFyvezCvoeKBq6M4OIMjHDXZQuVY5ATlo2kh28eB6tVdSW2u
+ HeG9wciptveXO5MHRNtJSHj4Ogkp9s7OktTbZhn/Vvp42lUU1KrIa9rIQ0bGpNOCOKeO
+ EC9TBt8Z9Lh9M/kLz05YI4DHvIcGjrjtQpGgY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=BH7oPYzXzVGddb2eusJn7dvCiiIlEUY0aB5rJA7D8Lo=;
- b=klYshOefYKZWESMDrOJPqsHZlvC+vSfdUzpuF0hr1jlepBbBdYvMCRjdh/rg9b8n22
- NKe/zr4JsGLXR/S6eI+6YTus4Y7h62+7Cp5y7vNLbRrD2BrMICxUqBY0j7F/zCoUTf1M
- JBmFuWQmuz6lcugEVGpsNgAeCkYLQH/1I3EGnEa+YH2p/LHO0yo9sqEWvPcIZjFd+PAt
- eRYyR/VaNaG4y2FHuhVuTRwjSLiadDi3+cKZQj7sewzziWovGqp3FklpkE8e9loLoVWQ
- f5kYl2tUTbeHe0vhDDD0hfYK9u9bj88mgXd8ZXjAN+enkkxYjy3p128Se0ZuwgIQgWFk
- qgfA==
-X-Gm-Message-State: AGi0PuZ3TXdCGjLz7DxQwUrjA2POVe5ggVNdFqgCHwc06u1ng4J7ZSGr
- Wm90MzH360Qebq2DNtYXnM+sRA==
-X-Google-Smtp-Source: APiQypLOl1TXjmfLr/xQcK1xr2OabtzKZy6naN7IKAuzLaAUHxg4zhucy0rFHWqKNS4VPSsObsMKkw==
-X-Received: by 2002:a17:902:c194:: with SMTP id
- d20mr12212723pld.256.1589142282837; 
- Sun, 10 May 2020 13:24:42 -0700 (PDT)
+ bh=a6bXV7bt3FJwO+6h7hS9wdbWbj+cKT2R8klgQdvy5V4=;
+ b=scamXIdJqtt2MMUTEwFItXLKmNn+h2LPPKO31mAp2LgbZwgDb33CUYpVR6IoXr1z/L
+ apblwthpV3/O8+6aFGUw5sS84tzZWURGSKRuk1Nfdl4wQclh5t98V1+rli7htbn+NvRR
+ M9kd/+e8Ups/mnCSwZDfZvKb8PLz34Lh51zUeUUqdzdHDZAYO58+FuxVjg9Yy3nLhXe7
+ uHVorAt2VHGw/LDYu40YNfYtm5GB1lgAS2RKXa1fMF/l6PsmtQuXg3yloT8bmGZGXPd2
+ j2XraNRQIyMC0GaSeOLqSFs42a9C6wTk3MusoPstoi8pVsYghW1kJ+K2T2dzsNoPUTtd
+ 484A==
+X-Gm-Message-State: AGi0PubzktYvy6T8n5XMEhf1d4ImU+t98x87qf6EUzR4M6OaL976G0mL
+ NT7IFlccXOUfUKoVIYQeFtk1/w==
+X-Google-Smtp-Source: APiQypL4ftL5PXuI6WbPG1D/aF+OyzdmBrwXgZqbvh107ELfxtW4oGZxzd33g34wmpY9M28zk4hvsQ==
+X-Received: by 2002:a17:90b:374e:: with SMTP id
+ ne14mr17664828pjb.145.1589142283365; 
+ Sun, 10 May 2020 13:24:43 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
- by smtp.gmail.com with ESMTPSA id h12sm6246248pgi.5.2020.05.10.13.24.41
+ by smtp.gmail.com with ESMTPSA id y6sm7866882pjw.15.2020.05.10.13.24.41
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
  Sun, 10 May 2020 13:24:41 -0700 (PDT)
 From: Kees Cook <keescook@chromium.org>
 To: WeiXiong Liao <liaoweixiong@allwinnertech.com>
-Subject: [PATCH v7 01/18] pstore/ram: Move dump_oops to end of module_param
- list
-Date: Sun, 10 May 2020 13:24:19 -0700
-Message-Id: <20200510202436.63222-2-keescook@chromium.org>
+Subject: [PATCH v7 02/18] pstore/platform: Switch pstore_info::name to const
+Date: Sun, 10 May 2020 13:24:20 -0700
+Message-Id: <20200510202436.63222-3-keescook@chromium.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200510202436.63222-1-keescook@chromium.org>
 References: <20200510202436.63222-1-keescook@chromium.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200510_132444_017308_F74296A6 
-X-CRM114-Status: GOOD (  11.62  )
+X-CRM114-CacheID: sfid-20200510_132444_300778_35AC4606 
+X-CRM114-Status: GOOD (  13.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,43 +107,51 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-When reading "modinfo" details, dump_oops was before max_reason, which
-seems odd given dump_oops is now considered deprecated. Move it to the
-very end instead.
+In order to more cleanly pass around backend names, make the "name" member
+const. This means the module param needs to be dynamic (technically, it
+was before, so this actually cleans up a minor memory leak if a backend
+was specified and then gets unloaded.)
 
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- fs/pstore/ram.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ fs/pstore/platform.c   | 3 ++-
+ include/linux/pstore.h | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/fs/pstore/ram.c b/fs/pstore/ram.c
-index 198d04cceb3e..7f956053f4e5 100644
---- a/fs/pstore/ram.c
-+++ b/fs/pstore/ram.c
-@@ -57,11 +57,6 @@ module_param(mem_type, uint, 0400);
- MODULE_PARM_DESC(mem_type,
- 		"set to 1 to try to use unbuffered memory (default 0)");
+diff --git a/fs/pstore/platform.c b/fs/pstore/platform.c
+index b882919b8784..e7bf22f01928 100644
+--- a/fs/pstore/platform.c
++++ b/fs/pstore/platform.c
+@@ -626,7 +626,7 @@ int pstore_register(struct pstore_info *psi)
+ 	 * Update the module parameter backend, so it is visible
+ 	 * through /sys/module/pstore/parameters/backend
+ 	 */
+-	backend = psi->name;
++	backend = kstrdup(psi->name, GFP_KERNEL);
  
--static int ramoops_dump_oops = -1;
--module_param_named(dump_oops, ramoops_dump_oops, int, 0400);
--MODULE_PARM_DESC(dump_oops,
--		 "set to 1 to dump oopses & panics, 0 to only dump panics (deprecated: use max_reason instead)");
--
- static int ramoops_max_reason = KMSG_DUMP_OOPS;
- module_param_named(max_reason, ramoops_max_reason, int, 0400);
- MODULE_PARM_DESC(max_reason,
-@@ -74,6 +69,11 @@ MODULE_PARM_DESC(ramoops_ecc,
- 		"ECC buffer size in bytes (1 is a special value, means 16 "
- 		"bytes ECC)");
+ 	pr_info("Registered %s as persistent store backend\n", psi->name);
  
-+static int ramoops_dump_oops = -1;
-+module_param_named(dump_oops, ramoops_dump_oops, int, 0400);
-+MODULE_PARM_DESC(dump_oops,
-+		 "(deprecated: use max_reason instead) set to 1 to dump oopses & panics, 0 to only dump panics");
-+
- struct ramoops_context {
- 	struct persistent_ram_zone **dprzs;	/* Oops dump zones */
- 	struct persistent_ram_zone *cprz;	/* Console zone */
+@@ -669,6 +669,7 @@ void pstore_unregister(struct pstore_info *psi)
+ 	free_buf_for_compression();
+ 
+ 	psinfo = NULL;
++	kfree(backend);
+ 	backend = NULL;
+ 	mutex_unlock(&psinfo_lock);
+ }
+diff --git a/include/linux/pstore.h b/include/linux/pstore.h
+index 16a1fdafc167..eb93a54cff31 100644
+--- a/include/linux/pstore.h
++++ b/include/linux/pstore.h
+@@ -176,7 +176,7 @@ struct pstore_record {
+  */
+ struct pstore_info {
+ 	struct module	*owner;
+-	char		*name;
++	const char	*name;
+ 
+ 	struct semaphore buf_lock;
+ 	char		*buf;
 -- 
 2.20.1
 
