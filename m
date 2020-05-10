@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75EB2C38A2A
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 21:38:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EEFFC38A2A
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 21:40:06 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3906F20708
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 21:38:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D027820708
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 21:40:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mnhjSJD5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3906F20708
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="emjAt9dp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D027820708
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eO0yHMxrg3wVdOeki/7RNZhUL+SCyafRALglNnFaIYg=; b=mnhjSJD5lgw2Zl
-	fkCShGap9VcFgvGiNNdpsWXCbmGxRUW3jW3pGcFws+zYyP8G0Fek9H1EtNo1n+lD/kO387Sbq2i9D
-	R1rB1GJrijP+RQlACXPoDcyf/I0yoPT4QLIViiiHD7uzJ9Z5Fl8JnOubceyBbkrNn4gJTffmavkkq
-	KaR21G+eetHPOjRCDqvUV/N03LTYiI8zBGuZXuVGA+PpPZ/+eMSGs0TAGodxu1yIKruysdAIDTpA0
-	Uvq9j97LG4dRRf3QuoCMJ3LdLaC3z48MxNDY3kk/thc23gDDtzndUAg9/uIjIufHd0+Q3QPYO24kl
-	vtilvqn0nSKt1M8ygfQg==;
+	List-Owner; bh=+jpTbRAgpok9eCSrQxD1t8A769NloXq2gSlGbipjiVc=; b=emjAt9dp/eQahe
+	Vlq6cSqNS0ZbdPu+YF7fBG6SJ/80P0kBKqN8QJSIhzshHkiSJ0f8UhlIiwXX61CS5MtA+J7EJ6tqD
+	bN73XpQdSCTFZrl6FUwwHp4+84pxy16ryuP0Wma/W1Z+34DJT71Kx/vxtYOQP0WqsQ8w0Khb8BqAQ
+	/BQpaYXka4cUV2NY7F+tT8l5qCNNi1v00TyJxE9Yuh9+GkDmc68lJbwUKJbRxW5S4v5PQdp3wH+rE
+	9qLSZ5G2qqjfntR6NvVxTPs2O0selcfQ4n5HHyP0n9L7R+a38TZ0kkTKQIwwWLnkXcYTk7lSssMiS
+	6RPYyrGA7Gkb3n7RMlRA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jXteg-0001zw-HG; Sun, 10 May 2020 21:38:38 +0000
-Received: from relay6-d.mail.gandi.net ([217.70.183.198])
+	id 1jXtfu-0002SY-6c; Sun, 10 May 2020 21:39:54 +0000
+Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jXted-0001zW-Vl
- for linux-mtd@lists.infradead.org; Sun, 10 May 2020 21:38:37 +0000
+ id 1jXtfr-0002RY-Bi
+ for linux-mtd@lists.infradead.org; Sun, 10 May 2020 21:39:52 +0000
 X-Originating-IP: 91.224.148.103
 Received: from xps13 (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 4A60DC0003;
- Sun, 10 May 2020 21:38:33 +0000 (UTC)
-Date: Sun, 10 May 2020 23:38:32 +0200
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id EC6D6240003;
+ Sun, 10 May 2020 21:39:48 +0000 (UTC)
+Date: Sun, 10 May 2020 23:39:47 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@collabora.com>
-Subject: Re: [PATCH 4/5] mtd: rawnand: davinci: Get rid of the legacy
- interface implementation
-Message-ID: <20200510233832.0c384acc@xps13>
-In-Reply-To: <20200501100729.1237040-5-boris.brezillon@collabora.com>
+Subject: Re: [PATCH 5/5] mtd: rawnand: davinci: Change the {read,write}_buf
+ prototypes
+Message-ID: <20200510233947.1a39b15c@xps13>
+In-Reply-To: <20200501100729.1237040-6-boris.brezillon@collabora.com>
 References: <20200501100729.1237040-1-boris.brezillon@collabora.com>
- <20200501100729.1237040-5-boris.brezillon@collabora.com>
+ <20200501100729.1237040-6-boris.brezillon@collabora.com>
 Organization: Bootlin
 X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200510_143836_157428_E21EC1F3 
-X-CRM114-Status: UNSURE (   7.06  )
+X-CRM114-CacheID: sfid-20200510_143951_538890_F7077D5C 
+X-CRM114-Status: UNSURE (   6.67  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -82,10 +82,10 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 Hi Boris,
 
 Boris Brezillon <boris.brezillon@collabora.com> wrote on Fri,  1 May
-2020 12:07:28 +0200:
+2020 12:07:29 +0200:
 
-> Now that exec_op() is implemented we can get rid of the legacy interface
-> implementation.
+> Change the {read,write}_buf() helper prototypes to pass a
+> davinci_nand_info object and match the types stored in nand_op_instr.
 > 
 > Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
 > ---
