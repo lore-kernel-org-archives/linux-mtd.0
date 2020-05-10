@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C568C38A2A
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 12:14:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 23A51C38A2A
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 12:14:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EEF982082E
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 12:14:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E6DC92082E
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 12:14:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ekomlpJN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EEF982082E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Ff65Ph6B"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E6DC92082E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WVY/TH9Ksa9zMAvxLDlrXtBBbMnSVCnlEDAACWPY2sY=; b=ekomlpJNNAUAj7
-	HvHjLwBSFPIJ4P0oK8Bx1XVt2tXh/C+tl0oN3BueY7/WqQRwKPKNeKpCt9pwLkRFo6DJkp4Sbdw7L
-	wwA3BQyuMmAg7qbSy4Ua9EJUX2qdzfJCJcAa60ca9cg+ssvolHpZ+YEjKj/OQCWfUV3TThijautmu
-	XZ3nwIJ/gEqSe2WvISF+dFV5BlZbIQmQopPN+B35DE76bGDTnHv0ylK04tLK30V10/E+62AFgrM6x
-	XVpy28xQiuf9kLkqcgEH9W5/3pW5PmhzDFupfe9jbtuoPaKOoI99C/vX7gTjByiFpORmIfmQQ+fpK
-	0UjGsZD+niI7Tg8bFchw==;
+	List-Owner; bh=Ili6tlfC7o645iO8oOaJ7QZmxOCXSaK4ubhluDnr/sY=; b=Ff65Ph6BCjyu86
+	0gdiZoWL2h0T4e/6ccwtW9QI2jvm8y0P45QbpXt75wPUZmNR9FhedC3U9HSznQHWwLd30N3tGRNz8
+	VtiW5IZXn3FQ3i70HsZ8fDhWA0XL69lciJUl4vj3VYll+cQ5/Hr8wCAmm9xKon/LYFxQco2VQGOKl
+	EL+PN9gKbbbXHdnsb/QIy7GCOTZfEiYyf8Nsik0jeoor6OYV9tZM8pjFs9ODbIx6f9qGdcRqtHwWH
+	UduVHRlCmFDJ8VftMXZss3fzh7nHb12AYUpiDBwtG3KnvAmTOp2vJEUeIcTDwXFm1/EQbaTCPa7j9
+	7YbO6UZwuq5wpauN7Aig==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jXkqp-0006gZ-7c; Sun, 10 May 2020 12:14:35 +0000
+	id 1jXkr2-0006wh-A0; Sun, 10 May 2020 12:14:48 +0000
 Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jXkou-00053c-4h
- for linux-mtd@lists.infradead.org; Sun, 10 May 2020 12:12:37 +0000
+ id 1jXkou-000542-Ug
+ for linux-mtd@lists.infradead.org; Sun, 10 May 2020 12:12:38 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 2F6AC2000C;
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id E3C122000D;
  Sun, 10 May 2020 12:12:34 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH 06/62] mtd: rawnand: cafe: Stop using nand_release()
-Date: Sun, 10 May 2020 14:11:24 +0200
-Message-Id: <20200510121220.18042-7-miquel.raynal@bootlin.com>
+Subject: [PATCH 07/62] mtd: rawnand: cmx270: Stop using nand_release()
+Date: Sun, 10 May 2020 14:11:25 +0200
+Message-Id: <20200510121220.18042-8-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200510121220.18042-1-miquel.raynal@bootlin.com>
 References: <20200510121220.18042-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200510_051236_318176_B658D548 
-X-CRM114-Status: UNSURE (   9.19  )
+X-CRM114-CacheID: sfid-20200510_051237_134103_C08D1788 
+X-CRM114-Status: UNSURE (   9.68  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -84,29 +84,27 @@ nand_cleanup() directly.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/cafe_nand.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/raw/cmx270_nand.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/cafe_nand.c b/drivers/mtd/nand/raw/cafe_nand.c
-index 2d1c22dc88c1..f14ade57219d 100644
---- a/drivers/mtd/nand/raw/cafe_nand.c
-+++ b/drivers/mtd/nand/raw/cafe_nand.c
-@@ -814,11 +814,14 @@ static void cafe_nand_remove(struct pci_dev *pdev)
- 	struct mtd_info *mtd = pci_get_drvdata(pdev);
- 	struct nand_chip *chip = mtd_to_nand(mtd);
- 	struct cafe_priv *cafe = nand_get_controller_data(chip);
+diff --git a/drivers/mtd/nand/raw/cmx270_nand.c b/drivers/mtd/nand/raw/cmx270_nand.c
+index 045b6175ae79..42c4cc030be3 100644
+--- a/drivers/mtd/nand/raw/cmx270_nand.c
++++ b/drivers/mtd/nand/raw/cmx270_nand.c
+@@ -219,8 +219,12 @@ module_init(cmx270_init);
+  */
+ static void __exit cmx270_cleanup(void)
+ {
 +	int ret;
- 
- 	/* Disable NAND IRQ in global IRQ mask register */
- 	cafe_writel(cafe, ~1 & cafe_readl(cafe, GLOBAL_IRQ_MASK), GLOBAL_IRQ_MASK);
- 	free_irq(pdev->irq, mtd);
--	nand_release(chip);
-+	ret = mtd_device_unregister(mtd);
++
+ 	/* Release resources, unregister device */
+-	nand_release(mtd_to_nand(cmx270_nand_mtd));
++	ret = mtd_device_unregister(cmx270_nand_mtd);
 +	WARN_ON(ret);
-+	nand_cleanup(chip);
- 	free_rs(cafe->rs);
- 	pci_iounmap(pdev, cafe->mmio);
- 	dma_free_coherent(&cafe->pdev->dev, 2112, cafe->dmabuf, cafe->dmaaddr);
++	nand_cleanup(mtd_to_nand(cmx270_nand_mtd));
+ 
+ 	gpio_free(GPIO_NAND_RB);
+ 	gpio_free(GPIO_NAND_CS);
 -- 
 2.20.1
 
