@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EEFFC38A2A
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 21:40:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 718D4C38A2A
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 21:43:42 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D027820708
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 21:40:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 38B312063A
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 21:43:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="emjAt9dp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D027820708
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OldFkY7X"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 38B312063A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+jpTbRAgpok9eCSrQxD1t8A769NloXq2gSlGbipjiVc=; b=emjAt9dp/eQahe
-	Vlq6cSqNS0ZbdPu+YF7fBG6SJ/80P0kBKqN8QJSIhzshHkiSJ0f8UhlIiwXX61CS5MtA+J7EJ6tqD
-	bN73XpQdSCTFZrl6FUwwHp4+84pxy16ryuP0Wma/W1Z+34DJT71Kx/vxtYOQP0WqsQ8w0Khb8BqAQ
-	/BQpaYXka4cUV2NY7F+tT8l5qCNNi1v00TyJxE9Yuh9+GkDmc68lJbwUKJbRxW5S4v5PQdp3wH+rE
-	9qLSZ5G2qqjfntR6NvVxTPs2O0selcfQ4n5HHyP0n9L7R+a38TZ0kkTKQIwwWLnkXcYTk7lSssMiS
-	6RPYyrGA7Gkb3n7RMlRA==;
+	List-Owner; bh=VthnQjQWWLXROTOLBXLgQiY26j1lz/MqKqbWQatIDbM=; b=OldFkY7Xn4PP/K
+	VQ1cTtfKxGtxRwDxrbwFqHoCg1jCfUgB8d7YzBNakEEbUZGySfB9/MJVHK4paxahhx8tbVzccCNno
+	pfvdXUgwbM46NWGm3ibQ3gGz9kETnL9xM2wPDNj+jnvYeJMCXqYovDFyhx9DuuN6w7+d+G1QGaONR
+	W0h3rlYN2EAZu/h6fkb9fhtG+uzhDGf75lic/6iOu9GZDDHIZej8Mru3BwGjFqsTXA5O03OzocY3n
+	3aZdk6VDeGjcCR1V9h9xQ3EmYkJRY/+eCNfj54i+pHSwW6qG9N+tnUIrz4+nqWP5fCAJMudpSSg/M
+	nJBquqINqOjdJl+1genQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jXtfu-0002SY-6c; Sun, 10 May 2020 21:39:54 +0000
+	id 1jXtjT-0005P1-GP; Sun, 10 May 2020 21:43:35 +0000
 Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jXtfr-0002RY-Bi
- for linux-mtd@lists.infradead.org; Sun, 10 May 2020 21:39:52 +0000
+ id 1jXtjQ-0005OU-8G
+ for linux-mtd@lists.infradead.org; Sun, 10 May 2020 21:43:33 +0000
 X-Originating-IP: 91.224.148.103
 Received: from xps13 (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id EC6D6240003;
- Sun, 10 May 2020 21:39:48 +0000 (UTC)
-Date: Sun, 10 May 2020 23:39:47 +0200
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id D6B48240002;
+ Sun, 10 May 2020 21:43:29 +0000 (UTC)
+Date: Sun, 10 May 2020 23:43:28 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@collabora.com>
-Subject: Re: [PATCH 5/5] mtd: rawnand: davinci: Change the {read,write}_buf
- prototypes
-Message-ID: <20200510233947.1a39b15c@xps13>
-In-Reply-To: <20200501100729.1237040-6-boris.brezillon@collabora.com>
-References: <20200501100729.1237040-1-boris.brezillon@collabora.com>
- <20200501100729.1237040-6-boris.brezillon@collabora.com>
+Subject: Re: [PATCH v2 19/19] mtd: rawnand: cafe: Get rid of the last printk()
+Message-ID: <20200510234328.34d9ed96@xps13>
+In-Reply-To: <20200505101353.1776394-20-boris.brezillon@collabora.com>
+References: <20200505101353.1776394-1-boris.brezillon@collabora.com>
+ <20200505101353.1776394-20-boris.brezillon@collabora.com>
 Organization: Bootlin
 X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200510_143951_538890_F7077D5C 
-X-CRM114-Status: UNSURE (   6.67  )
+X-CRM114-CacheID: sfid-20200510_144332_426336_EB01D7D8 
+X-CRM114-Status: UNSURE (   6.61  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -70,10 +69,9 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, Sekhar Nori <nsekhar@ti.com>,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>, linux-mtd@lists.infradead.org
+Cc: Lubomir Rintel <lkundrak@v3.sk>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>, linux-mtd@lists.infradead.org,
+ Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
@@ -81,11 +79,10 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Hi Boris,
 
-Boris Brezillon <boris.brezillon@collabora.com> wrote on Fri,  1 May
-2020 12:07:29 +0200:
+Boris Brezillon <boris.brezillon@collabora.com> wrote on Tue,  5 May
+2020 12:13:53 +0200:
 
-> Change the {read,write}_buf() helper prototypes to pass a
-> davinci_nand_info object and match the types stored in nand_op_instr.
+> Replace the last printk() by a dev_dbg().
 > 
 > Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
 > ---
