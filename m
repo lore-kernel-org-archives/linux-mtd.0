@@ -6,16 +6,16 @@ X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05C04C54E49
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 07:02:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AEFCEC35280
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 07:03:38 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CCA482082E
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 07:02:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7C37620644
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 07:03:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kaXWJfWA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CCA482082E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oGL3kqwi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7C37620644
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,31 +24,31 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=b+NDwlEWOn2zTph2BGQBwl3aE2t5nLF4rqR41ZovnF4=; b=kaXWJfWABq3XhP
-	UGsfnVdoLjZ/76j7Yr7elPp3eSzvFRRhaQTzyf9ZGAkQr1sdd0LZEuJ4WvPF6Zka4G9N8dgpAW713
-	VhgRpCR6ACqhaHCLodegxGToeey/jVwue3W6jlU2fDPbCb1c2WPvMJx4dnkq1Xk0+NVWQsI5+hYq5
-	loXL21aV+fY4IFJMP6HRphQ3eW524fP/nnBdzUVqs39xQ9nmNBWHjwymO5fHiI5Dd1N6cH/p7Rhfq
-	oKkiNwxFN9baJJtqF2+d9xpjPdsAVSEv5ECA/YCWavs0HuZ8x9MmeIzEYATNUrkrDwHr2H6t2cc2w
-	zGuH/Q0xJPP0vYvLlT6A==;
+	List-Owner; bh=BPC3KlN0HOjEKr7TqxzWhTFniWTRpLu1BBV09Gz+jpQ=; b=oGL3kqwiTy+oOR
+	unbczZNyhNh420xYBoP2eDPzTAOYbrTfRQsvMvOzrpF2UTDH757U9VG+Gc4Qry/h5kLMR3HKcqU12
+	r7uHPsN+JlthUu/iqNLhMQXfZRUkzsXnCUlaLatMfeIuI7tzibL0yxmuhB7tKJmp1PxZ9F+YIkwO5
+	+kLpQz0A6wRdoLQfcbjHvMW8L5gde+DqtjI3LBcVDzvQQ0lh19XX+hJTvQlDZKfcwIf2rL14xUjaB
+	kTihRSGcEkNLSrRnNJWK05h1gx1Hoxq/XLJZ318JfYhSxixkDSbo4Ix6ON4rlsdobYKy5IW7UvrW9
+	NC7pkt2eGUqXulJqJwEg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jXfz0-00011A-VO; Sun, 10 May 2020 07:02:42 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1jXfzc-0001SH-V0; Sun, 10 May 2020 07:03:20 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jXfyt-0000zh-7s
- for linux-mtd@lists.infradead.org; Sun, 10 May 2020 07:02:40 +0000
+ id 1jXfzb-0001Rl-05
+ for linux-mtd@lists.infradead.org; Sun, 10 May 2020 07:03:20 +0000
 Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
  (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 7F1902A013A;
- Sun, 10 May 2020 08:02:33 +0100 (BST)
-Date: Sun, 10 May 2020 09:02:30 +0200
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 89A162A013A;
+ Sun, 10 May 2020 08:03:17 +0100 (BST)
+Date: Sun, 10 May 2020 09:03:14 +0200
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 Subject: Re: [PATCH v4 7/8] mtd: rawnand: arasan: Add new Arasan NAND
  controller
-Message-ID: <20200510090230.1ba6f6d7@collabora.com>
+Message-ID: <20200510090314.10426b6e@collabora.com>
 In-Reply-To: <20200508171339.8052-8-miquel.raynal@bootlin.com>
 References: <20200508171339.8052-1-miquel.raynal@bootlin.com>
  <20200508171339.8052-8-miquel.raynal@bootlin.com>
@@ -56,8 +56,8 @@ Organization: Collabora
 X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200510_000239_081729_DBF5C97C 
-X-CRM114-Status: GOOD (  10.78  )
+X-CRM114-CacheID: sfid-20200510_000319_172434_96ED5A38 
+X-CRM114-Status: GOOD (  10.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,41 +83,24 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 On Fri,  8 May 2020 19:13:38 +0200
 Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> +static int anfc_len_to_steps(struct nand_chip *chip, unsigned int len)
+> +static int anfc_exec_op(struct nand_chip *chip,
+> +			const struct nand_operation *op,
+> +			bool check_only)
 > +{
-> +	unsigned int steps = 1, pktsize = len;
+> +	int ret;
 > +
-> +	while (pktsize > ANFC_MAX_PKT_SIZE) {
-> +		steps *= 2;
-> +		pktsize = DIV_ROUND_UP(len, steps);
-> +	}
+> +	if (check_only)
+> +		return nand_op_parser_exec_op(chip, &anfc_op_parser, op,
+> +					      check_only);
 
-
-Same here, you shouldn't have a round_up() but instead complain if
-"len != pkt_size * steps"
-
-	if (len % 4)
-		return -ENOTSUPP;
-
-	if (len < ANFC_MAX_PKT_SIZE)
-		return len;
-
-	for (steps = 2; steps < ANFC_MAX_STEPS; steps *= 2) {
-		pkt_size = len / steps;
-		if (pkt_size <= ANFC_MAX_PKT_SIZE)
-			break;
-	}
-
-	if (pkt_size * steps != len)
-		return -ENOTSUPP;
-
-	return pkt_size;
+You should also check the DATA_IN/OUT size here ^.
 
 > +
-> +	if (steps > ANFC_MAX_STEPS)
-> +		return -ENOTSUPP;
+> +	ret = anfc_select_target(chip, op->cs);
+> +	if (ret)
+> +		return ret;
 > +
-> +	return steps;
+> +	return nand_op_parser_exec_op(chip, &anfc_op_parser, op, check_only);
 > +}
 
 ______________________________________________________
