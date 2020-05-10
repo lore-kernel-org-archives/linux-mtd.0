@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5084C38A2A
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 12:24:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71667C54E49
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 12:24:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A340F2082E
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 12:24:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 39C7C208CA
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 12:24:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HxeHujmF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A340F2082E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mnZE0320"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 39C7C208CA
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WaOAb8ElAFzWzGii9k7teX8jACphBFloEx/v01R4+ts=; b=HxeHujmFp6cpE3
-	9s3rKfdlqoC2UnGycZFybgzGNAo8vwOrlwSyTHR9v+3isD7rk6utykXiG7ho9MNMeNes/pQBlM2+g
-	UovJBcix0pteHqDthetrtOayGwSpufov95XDBOXH5DkHiJl7EmxpXvSrXY2L/otsH8EvCAujzYxbV
-	RS/Hc+Fal1l63rq52xM9iNAb4lU270+zTlBhHnJ7si5QE8UhfAW7moRa+UsyeDGfv8JkYduDrDgY4
-	cWXFov7nfHEMsRbTD348Pgdy+HkVRuG8HHbaVbxzteEzLXe+r0tYd23gn/wN18jGtRVwf5s8x+NW3
-	96haxBIM5jB8sHqMx1XQ==;
+	List-Owner; bh=r2zYDxpsIjeQb7lO50DAAccAMnQ6L7I/qoWqP+p9Qj4=; b=mnZE0320YSbZfs
+	/dWj79D5NvNVgmuyPrsQM4yOgumLRvv6rlZLozs5X6sJrLtXjo4NvWQh35Jq6pPAFdEHra3h1x6Ny
+	X/tZGmvjPfzljFQZAWnsMqt4Hz16SDIPJ3gLusyParBWhdzESgSON74xNI0rKzefSIy2PE3J6rP+6
+	yF3UtHrRmWgjE1jfdKIzPDxj7zNeNaLaLHoYKtd93b/qUZdJUCdWCi77lxnJTouYKAKOjWZmnvsPo
+	85BwIp9xVwI+2yC1cxIp1Q8qjQCrR5fYKiYc8crCsHS4xfHBlq33lKNZBKvQqRgrUsy2tsUzSXEFu
+	U9yHg2qrmGI6KoOmhwug==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jXl0H-0003Wk-9m; Sun, 10 May 2020 12:24:21 +0000
+	id 1jXl0Y-0003ks-6g; Sun, 10 May 2020 12:24:38 +0000
 Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jXkpR-0005Ye-LZ
+ id 1jXkpQ-0005YE-PR
  for linux-mtd@lists.infradead.org; Sun, 10 May 2020 12:13:12 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 1256B20008;
- Sun, 10 May 2020 12:13:06 +0000 (UTC)
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id A50FD2001A;
+ Sun, 10 May 2020 12:13:04 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH 44/62] mtd: rawnand: qcom: Stop using nand_release()
-Date: Sun, 10 May 2020 14:12:02 +0200
-Message-Id: <20200510121220.18042-45-miquel.raynal@bootlin.com>
+Subject: [PATCH 43/62] mtd: rawnand: plat_nand: Stop using nand_release()
+Date: Sun, 10 May 2020 14:12:01 +0200
+Message-Id: <20200510121220.18042-44-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200510121220.18042-1-miquel.raynal@bootlin.com>
 References: <20200510121220.18042-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200510_051309_862068_AFA53486 
-X-CRM114-Status: UNSURE (   9.51  )
+X-CRM114-CacheID: sfid-20200510_051308_970749_D8F8D0FE 
+X-CRM114-Status: UNSURE (   9.89  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -84,31 +84,26 @@ nand_cleanup() directly.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/qcom_nandc.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/raw/plat_nand.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index 9ab22c5d4166..f1daf330951b 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -3005,10 +3005,15 @@ static int qcom_nandc_remove(struct platform_device *pdev)
- 	struct qcom_nand_controller *nandc = platform_get_drvdata(pdev);
- 	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	struct qcom_nand_host *host;
-+	struct nand_chip *chip;
+diff --git a/drivers/mtd/nand/raw/plat_nand.c b/drivers/mtd/nand/raw/plat_nand.c
+index 3a495b233443..556182f26057 100644
+--- a/drivers/mtd/nand/raw/plat_nand.c
++++ b/drivers/mtd/nand/raw/plat_nand.c
+@@ -106,8 +106,12 @@ static int plat_nand_remove(struct platform_device *pdev)
+ {
+ 	struct plat_nand_data *data = platform_get_drvdata(pdev);
+ 	struct platform_nand_data *pdata = dev_get_platdata(&pdev->dev);
++	struct nand_chip *chip = &data->chip;
 +	int ret;
  
--	list_for_each_entry(host, &nandc->host_list, node)
--		nand_release(&host->chip);
--
-+	list_for_each_entry(host, &nandc->host_list, node) {
-+		chip = &host->chip;
-+		ret = mtd_device_unregister(nand_to_mtd(chip));
-+		WARN_ON(ret);
-+		nand_cleanup(chip);
-+	}
- 
- 	qcom_nandc_unalloc(nandc);
+-	nand_release(&data->chip);
++	ret = mtd_device_unregister(nand_to_mtd(chip));
++	WARN_ON(ret);
++	nand_cleanup(chip);
+ 	if (pdata->ctrl.remove)
+ 		pdata->ctrl.remove(pdev);
  
 -- 
 2.20.1
