@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FC65C54E49
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:04:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51B6FC38A2A
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:04:30 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6525D206CC
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:04:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0A76F20737
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:04:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="sIV5+Yjv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6525D206CC
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fDhHsRiw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A76F20737
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=siaZpTfvFWztVPl5TP4PIybPNVSGOzmjqJUigwo0nI8=; b=sIV5+YjvZsWDcR
-	70qdHfodnXI2nZHcXZ6DmfYYDbxFgqkxwCwwarR/zgx8VRgRgXEU4md/4GD4956EaLI+PXNcQamfw
-	M/6UJ86aJNp/dvwVSC6tpiYZ63qLmTLghwJ6tw2LyEVjCRCnwjn/xV8dGAxcG4U0vaueeQx9TBB0u
-	sHJsq9LZDWixwhHiibCD4yyKFx+ob9ylZvaxvezlv5wQ8Sr9rrVboyXyEcdRCSumiMdjayAtDKUb2
-	djYfPuTzm2sEMcW76jeclMI3kuyTnINHv2jvtodJ/DJQO0mtFOcvdNicpVyy/B6NH1980sAbKkLrq
-	zbe6LteYkU0SbO5Q3HCQ==;
+	List-Owner; bh=da26RVLY7t5RdFNKFiYrJAsxY0dcyURVREOTzr+kNds=; b=fDhHsRiw99eLrV
+	GtsbUQgL1NCb/0joUjOM70OOQauEGlYIHoS2XgHzpg07WbLLLLlbCGwwHJv4V9RWQNToUhiuWkXtb
+	uNoZ4TzUZUAYzdqMA0b1bQ4jgBadiJ9QQef29I+myOQvdW6mv9Md47yZAQMJAtmTbhHyQOhFxM3Sg
+	LEup0uxIHUPtZYgn2uyetKnwqOhzlRSL38f/tgFFgifdsadvKDA8hTGC97AX0z9ZcReOVtZDPWMlm
+	8WkvbruJUP3NRJeCE3HsxNRqtFy1IV5uTq9SWeiIShS+72sXskylkmtuz8ioEJdvxJAMe9b1g7hN2
+	FKTSXmW8Nz/9WbvRZ9iw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jXsB3-0005jj-Uw; Sun, 10 May 2020 20:03:57 +0000
-Received: from relay11.mail.gandi.net ([217.70.178.231])
+	id 1jXsBL-0005yN-Nt; Sun, 10 May 2020 20:04:15 +0000
+Received: from relay10.mail.gandi.net ([217.70.178.230])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jXsAM-00055f-Fd
- for linux-mtd@lists.infradead.org; Sun, 10 May 2020 20:03:16 +0000
+ id 1jXsAS-0005BI-9W
+ for linux-mtd@lists.infradead.org; Sun, 10 May 2020 20:03:22 +0000
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay11.mail.gandi.net (Postfix) with ESMTPSA id 577CC100003;
- Sun, 10 May 2020 20:03:09 +0000 (UTC)
+ by relay10.mail.gandi.net (Postfix) with ESMTPSA id 7247D240005;
+ Sun, 10 May 2020 20:03:15 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v5 08/13] mtd: rawnand: Give the possibility to verify a
- read operation is supported
-Date: Sun, 10 May 2020 22:03:08 +0200
-Message-Id: <20200510200308.32558-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v5 07/13] mtd: rawnand: Add a helper to check supported
+ operations
+Date: Sun, 10 May 2020 22:03:14 +0200
+Message-Id: <20200510200314.32624-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200507105241.14299-9-miquel.raynal@bootlin.com>
+In-Reply-To: <20200507105241.14299-8-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: bd3c1e48cf97f9088f668cc017d4a43ed63e2add
+X-linux-mtd-patch-commit: 1c4db741f8e63f64a447491d1881207e3c7048a0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200510_130314_763445_229FD3C5 
-X-CRM114-Status: UNSURE (   6.51  )
+X-CRM114-CacheID: sfid-20200510_130320_512977_18E96A01 
+X-CRM114-Status: UNSURE (   6.25  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -80,10 +80,10 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2020-05-07 at 10:52:36 UTC, Miquel Raynal wrote:
-> This can be used to discriminate between two path in the parameter
-> page detection: use data_in cycles (like before) if supported, use the
-> CHANGE READ COLUMN command otherwise.
+On Thu, 2020-05-07 at 10:52:35 UTC, Miquel Raynal wrote:
+> Let's use a helper to clearly check if an operation is supported or not.
+> 
+> Return -ENOTSUPP when ->exec_op() is not implemented as we cannot know.
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
