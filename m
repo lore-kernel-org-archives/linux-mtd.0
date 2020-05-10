@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 501F5C38A2A
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 21:30:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CAA4C38A2A
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 21:32:13 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2576120708
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 21:30:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C23EA20708
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 21:32:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="eTyZxTPx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2576120708
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qHzYSUrQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C23EA20708
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,37 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=i5EbUizOv3l9qL9EbtkcSDHsZPIlTDKxauVgwhXLpmg=; b=eTyZxTPxMXYaLR
-	8YvVWJ5QCz9JoQgm0LeONrbWZg1mW/eP0DTMFlHQ+hrgm4RNGSy389QUiU+oFwM6164xmXW7fGaMp
-	vjlhlYiL1Wn0JbintXeQ2LnMJjW27cUrc1ylH7Kz2cICP1jQOJ9DYKkhP6QGLVXWj4qMdzbJy5Zra
-	zD5H4Rw/JDwN7sQAQyBinWNugVGlDoeblJCHtcCU02YFMvkpQTNIHanEdMsqQDKJgajASIdDi71lp
-	nwiRsUhfdrpyc0YIVeeaOD1St9z88i8spcOrGuXh5nu6p+b21YJuVr64+ag44rJDflj4+UQNmcZ8h
-	ke6LN2T7S6anM6A11mZg==;
+	List-Owner; bh=O8JojGRZm6kQWJX1c1OqI0pQRLeA4cpdwVSjQgny0DU=; b=qHzYSUrQmo2dZk
+	CgR25xaTlC969eymus0LZQT6PMPwi7HD82Nvve25KutPdH/VB1r24Lmpj+gd67lKMVAO4Ke9uM1CZ
+	63Xl7k/6q5VcSKZ00lwLZYi3VffEoHe85A5RZ783RMP6vIK/MLcs4alSoq8XZCa+cjlciYhTqMUiE
+	U84QyJ/zVkRauhwdZB6IoCe+68nLP5LUz5dxU2RqX3jZ4Dqxx6YuPZ4STijuv3o31Klv7IIrNbQOi
+	X8OyXyW2LKSKn5/H+4rDvmiqebKQH1EEiXarp2Zc8NkIOAtBxEBj9MhsUn3YyyZL4vmWnqGqA9Gu4
+	Q3EfbRQxmT9OctcBXwfQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jXtWw-0006f9-QV; Sun, 10 May 2020 21:30:38 +0000
-Received: from relay10.mail.gandi.net ([217.70.178.230])
+	id 1jXtYR-0006zM-8E; Sun, 10 May 2020 21:32:11 +0000
+Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jXtWu-0006eZ-3z
- for linux-mtd@lists.infradead.org; Sun, 10 May 2020 21:30:37 +0000
+ id 1jXtYO-0006yp-EM
+ for linux-mtd@lists.infradead.org; Sun, 10 May 2020 21:32:09 +0000
+X-Originating-IP: 91.224.148.103
 Received: from xps13 (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay10.mail.gandi.net (Postfix) with ESMTPSA id 996F4240003;
- Sun, 10 May 2020 21:30:33 +0000 (UTC)
-Date: Sun, 10 May 2020 23:30:32 +0200
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 3F5C220003;
+ Sun, 10 May 2020 21:32:03 +0000 (UTC)
+Date: Sun, 10 May 2020 23:32:01 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@collabora.com>
-Subject: Re: [PATCH v2 4/6] mtd: rawnand: atmel: Use nand_prog_page_end_op()
-Message-ID: <20200510233032.3129569f@xps13>
-In-Reply-To: <20200429132046.583658-5-boris.brezillon@collabora.com>
+Subject: Re: [PATCH v2 6/6] mtd: rawnand: atmel: Get rid of the legacy
+ interface implementation
+Message-ID: <20200510233201.60f6a077@xps13>
+In-Reply-To: <20200429132046.583658-7-boris.brezillon@collabora.com>
 References: <20200429132046.583658-1-boris.brezillon@collabora.com>
- <20200429132046.583658-5-boris.brezillon@collabora.com>
+ <20200429132046.583658-7-boris.brezillon@collabora.com>
 Organization: Bootlin
 X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200510_143036_293585_290837FD 
-X-CRM114-Status: UNSURE (   6.72  )
+X-CRM114-CacheID: sfid-20200510_143208_618349_89B4C3FE 
+X-CRM114-Status: UNSURE (   6.91  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -75,24 +77,18 @@ Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
  Nicolas Ferre <nicolas.ferre@microchip.com>,
  Ludovic Desroches <ludovic.desroches@microchip.com>,
  linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-Boris Brezillon <boris.brezillon@collabora.com> wrote on Wed, 29 Apr
-2020 15:20:44 +0200:
-
-> The nand_prog_page_end_op() sequence is open-coded in
-> atmel_hsmc_nand_pmecc_write_pg(). Let's use the generic helper here.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
-> ---
-
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+CkJvcmlzIEJyZXppbGxvbiA8Ym9yaXMuYnJlemlsbG9uQGNvbGxhYm9yYS5jb20+IHdyb3RlIG9u
+IFdlZCwgMjkgQXByCjIwMjAgMTU6MjA6NDYgKzAyMDA6Cgo+IE5vdyB0aGF0IGV4ZWNfb3AoKSBp
+cyBpbXBsZW1lbnRlZCwgd2UgY2FuIGdldCByaWQgb2YgYWxsIHRoZSBsZWdhY3kKPiBob29rcy4K
+PiAKPiBTaWduZWQtb2ZmLWJ5OiBCb3JpcyBCcmV6aWxsb24gPGJvcmlzLmJyZXppbGxvbkBjb2xs
+YWJvcmEuY29tPgo+IC0tLQoKUmV2aWV3ZWQtYnk6IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXlu
+YWxAYm9vdGxpbi5jb20+CgpUaGFua3MgZm9yIHRoZSBjb252ZXJzaW9uLCBob3BlZnVsbHkgc29t
+ZW9uZSB3aWxsIHRlc3QgaXQsIG90aGVyd2lzZQpJJ2xsIHRha2UgaXQgaW4gbmV4dCBzb29uLgoK
+VGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9s
+aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
