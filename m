@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BD90C38A2A
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:03:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BBABFC38A2A
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:03:37 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1CA9F2082E
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:03:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 631FC206CC
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 20:03:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EFikcmmg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1CA9F2082E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bQHTaTax"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 631FC206CC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,42 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+oIUI0BVNK4zESrUAnV9/wNitSASL2fEM2F/nqTp9GI=; b=EFikcmmgunXeb2
-	WQ0F259fxuw1ZpbWnx53UgPLcO3lFW8xbi4FfP/+RL9QnkebIV/3qsY74aTiF/scGuJBe4ahUngfp
-	7/EiRL6KkDridk8db2Ih+0KQwJSlDh6TCWCgMxdZ9TNFNTa0AQcM0l+3udvQOpwJIU3nPXE9KewON
-	opfkprwjaH3lHpUqCf4DJjJ/PDHp6oeJeiTAc3s5gtZPLH/JYjUIUTFDvHcmU3UEJZrbcHD+lz3vn
-	WYyedV3C+9zIc5Xt0arAfMX/qB08XLAzc9Puq91nJhTRbJCp5dTAtGdhjAcMXhC4kR4hnUzKe8bOX
-	Gy2LvTYw9M8h4e05JYfw==;
+	List-Owner; bh=H7wlFRjWSSLIaiFOceikq9ufGcgq4Qd+gse8MBMv6tY=; b=bQHTaTax2zPmZi
+	z7VIBP9JyB/8aVY+fpGR8Ye+5GOtEQtzISM4etFMscPUBRFIaVNqRdTnWkSwf/diB92IAm8289090
+	zAQegg1cIo7wXMBtqU5ZnWIusG+Na1LPJu/ED3x7HrMcuE8TQTgFO0liGOTGPSFeTIEYdWBiBYK8H
+	FkrPhCXf3/Cm5AZ9Y8Uvhq8XkKQ2j0qf/xWAuE/SFUOdXUGvIwaWciLlEqTfAQFnIlKgGeuv0wsHi
+	b2Dy+CWVljjOZK8iyeS7OCmS7i7z8mf6jeZPDc67zP1IXN3km0XCJ228NemBYfK98ecNtEb56xpR0
+	aZDXHl3vl+KYUga151jQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jXsAG-00051r-6O; Sun, 10 May 2020 20:03:08 +0000
-Received: from relay1-d.mail.gandi.net ([217.70.183.193])
+	id 1jXsAW-0005Fx-Cn; Sun, 10 May 2020 20:03:24 +0000
+Received: from relay12.mail.gandi.net ([217.70.178.232])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jXsA6-0004qN-Q1
- for linux-mtd@lists.infradead.org; Sun, 10 May 2020 20:03:00 +0000
-X-Originating-IP: 91.224.148.103
+ id 1jXsA9-0004tj-Ar
+ for linux-mtd@lists.infradead.org; Sun, 10 May 2020 20:03:04 +0000
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id B2049240005;
- Sun, 10 May 2020 20:02:43 +0000 (UTC)
+ by relay12.mail.gandi.net (Postfix) with ESMTPSA id 0836D200005;
+ Sun, 10 May 2020 20:02:55 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v5 11/13] mtd: rawnand: Expose monolithic
- read/write_page_raw() helpers
-Date: Sun, 10 May 2020 22:02:42 +0200
-Message-Id: <20200510200242.32372-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v5 10/13] mtd: rawnand: jedec: Adapt the parameter page
+ read to constraint controllers
+Date: Sun, 10 May 2020 22:02:55 +0200
+Message-Id: <20200510200255.32434-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200507105241.14299-12-miquel.raynal@bootlin.com>
+In-Reply-To: <20200507105241.14299-11-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 90e4ce6758c4ed6c810066913056175b242f3474
+X-linux-mtd-patch-commit: bbeb511f17527011cda3e02f233d21c2c4ec637a
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200510_130259_002978_E59DF0C0 
-X-CRM114-Status: UNSURE (   7.73  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200510_130301_515879_06A6B3D8 
+X-CRM114-Status: GOOD (  11.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,13 +79,22 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2020-05-07 at 10:52:39 UTC, Miquel Raynal wrote:
-> The current nand_read/write_page_raw() helpers are already widely used
-> but do not fit the purpose of "constrained" controllers which cannot,
-> for instance, separate command/address cycles with data cycles.
+On Thu, 2020-05-07 at 10:52:38 UTC, Miquel Raynal wrote:
+> We already know that there are controllers not able to read the three
+> copies of the parameter page in one go. The workaround was to first
+> request the controller to assert command and address cycles on the
+> NAND bus to trigger a parameter page read, and then do a read
+> operation for each page.
 > 
-> Workaround this issue by proposing alternative helpers that can be
-> used by these controller drivers instead.
+> But there are also controllers which are not able to split the
+> parameter page read between the command/address cycles and the actual
+> data operation.
+> 
+> Let's use a regular PARAMETER PAGE READ operation for the first
+> iteration and use eithe a CHANGE READ COLUMN or a simple DATA READ
+> operation for the following copies, depending on what the controller
+> supports. The default for non-exec-op compliant drivers remains
+> unchanged: use a SIMPLE READ.
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
