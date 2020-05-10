@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4789C38A2A
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 12:14:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9FADC38A2A
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 12:14:08 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A424920661
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 12:14:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 87FDC20820
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 May 2020 12:14:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QYktTe/s"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A424920661
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ksS4YGm1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 87FDC20820
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=X1bufiLj6mc5KwlH84mWavYa096m6dYBAyCZG9w+jbQ=; b=QYktTe/shv4iMN
-	fcOZczWlYZPy/p45370T1DsVwr3c0Fzs7crkHFpM5tTtAdNbGRMLTSLnfUF6Oi2aPxxwt3mduWeG1
-	D9fDz1NRwA+OOJu/gHQGaTdQ0VrV8qvWbjPtoa6wW7BU/kDQiDM/zO77RmiJcYlzNrKOcGNrhfSPC
-	3Efq+0Uw3w0b3EUgOFnf1x+z/5/3GqiqjN0ovJh5g8wi1apwXKUMnf15XtKiptRyfIbyn37LIij5F
-	d4pkAmJfHGwjpMfLIaqmyH9teeO0qxU/6fzyk0IPDI6lVkRFN17OBP09g45wS4zeRY3x+oeOAEo6u
-	NMRPzUHahwANDkpC9rUA==;
+	List-Owner; bh=4O+630EnMd0p3cBUAHJgsjR6DBVXOVDICB0aK7XBuzg=; b=ksS4YGm1rx3l1S
+	GwthN/ph873VyxFhpzaQO48SIys6Hh1ehDg04EOv1iZaCfpRh3vyqFW9iWBd+xpDPZAwg7Ksnp6Ww
+	gW6Zi5NKYo0TmOx7dd1f2y8rBWGUJ4tO/fAO3LoEI9qdsSMYWn7M8DeiAoI0udVuqlabiLPg8fmzw
+	XV6iJfQVoqRd9w2MBBodMBeWF0wrpQ3bMMbijJxCC3fLCC0/2K9l9mBbBQRGaVqyCG6nDzfI8amO6
+	EYGoBIQCcVUo0H/cF2zbt8owQIeUSQQyrldi1/+STWaedC4+ghalosG+abCQpc2M4LgE2ORkUYm92
+	/f5yCfOUU2rw9y9vTA2Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jXkpz-000604-Kl; Sun, 10 May 2020 12:13:43 +0000
+	id 1jXkqG-0006Dq-BX; Sun, 10 May 2020 12:14:00 +0000
 Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jXkos-00052W-H2
+ id 1jXkot-00053M-CJ
  for linux-mtd@lists.infradead.org; Sun, 10 May 2020 12:12:36 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 3BBE12000A;
- Sun, 10 May 2020 12:12:32 +0000 (UTC)
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 5265A2000B;
+ Sun, 10 May 2020 12:12:33 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH 04/62] mtd: rawnand: brcmnand: Stop using nand_release()
-Date: Sun, 10 May 2020 14:11:22 +0200
-Message-Id: <20200510121220.18042-5-miquel.raynal@bootlin.com>
+Subject: [PATCH 05/62] mtd: rawnand: cadence: Stop using nand_release()
+Date: Sun, 10 May 2020 14:11:23 +0200
+Message-Id: <20200510121220.18042-6-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200510121220.18042-1-miquel.raynal@bootlin.com>
 References: <20200510121220.18042-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200510_051234_695811_C3C50CB9 
-X-CRM114-Status: GOOD (  10.11  )
+X-CRM114-CacheID: sfid-20200510_051235_570889_CB2F2BA2 
+X-CRM114-Status: UNSURE (   9.47  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,9 +69,8 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Kamal Dasu <kdasu.kdev@gmail.com>, Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Boris Brezillon <boris.brezillon@collabora.com>,
+ Piotr Sroka <piotrs@cadence.com>, Miquel Raynal <miquel.raynal@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
@@ -83,34 +83,31 @@ Let's stop using nand_release() by calling mtd_device_unregister() and
 nand_cleanup() directly.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: Kamal Dasu <kdasu.kdev@gmail.com>
+Cc: Piotr Sroka <piotrs@cadence.com>
 ---
- drivers/mtd/nand/raw/brcmnand/brcmnand.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/raw/cadence-nand-controller.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index 949f50e5b817..3d43b37c0b07 100644
---- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -3046,9 +3046,15 @@ int brcmnand_remove(struct platform_device *pdev)
+diff --git a/drivers/mtd/nand/raw/cadence-nand-controller.c b/drivers/mtd/nand/raw/cadence-nand-controller.c
+index 61aff01b18e2..7840f6dc8f73 100644
+--- a/drivers/mtd/nand/raw/cadence-nand-controller.c
++++ b/drivers/mtd/nand/raw/cadence-nand-controller.c
+@@ -2780,9 +2780,14 @@ static int cadence_nand_chip_init(struct cdns_nand_ctrl *cdns_ctrl,
+ static void cadence_nand_chips_cleanup(struct cdns_nand_ctrl *cdns_ctrl)
  {
- 	struct brcmnand_controller *ctrl = dev_get_drvdata(&pdev->dev);
- 	struct brcmnand_host *host;
+ 	struct cdns_nand_chip *entry, *temp;
 +	struct nand_chip *chip;
 +	int ret;
  
--	list_for_each_entry(host, &ctrl->host_list, node)
--		nand_release(&host->chip);
-+	list_for_each_entry(host, &ctrl->host_list, node) {
-+		chip = &host->chip;
+ 	list_for_each_entry_safe(entry, temp, &cdns_ctrl->chips, node) {
+-		nand_release(&entry->chip);
++		chip = &entry->chip;
 +		ret = mtd_device_unregister(nand_to_mtd(chip));
 +		WARN_ON(ret);
 +		nand_cleanup(chip);
-+	}
- 
- 	clk_disable_unprepare(ctrl->clk);
- 
+ 		list_del(&entry->node);
+ 	}
+ }
 -- 
 2.20.1
 
