@@ -2,84 +2,85 @@ Return-Path: <SRS0=5+/X=6Z=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF018C54E8D
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 May 2020 23:32:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8CCAC54E8D
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 May 2020 23:33:13 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7A59620714
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 May 2020 23:32:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A4F8F2078A
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 May 2020 23:33:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="I4jB2kA4";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="hmkTZmcY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A59620714
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="SOdOqjm2";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="koo56XMT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A4F8F2078A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=zSLrYCOoALnr9u4Re/7KdnKF5gcowj2KVCi6GhjqP1E=; b=I4jB2kA4KGqOpc
-	TlOAgVh/rwtqd/1E3UxuC9aIUt/qqxg05mDd2LPRb/0gtcAqKAmcT8kwxZ6uAMBrfOPya0DxgLpV4
-	dw/hEpKDEOJ20RZR9+G0q+3VkOxgy4KXlhDDPxPegAwwJM2frftuUljTLSSBsqTMWQBLtPxnKpnK0
-	maQnKsfr+c1krlHV5aHIrKuiq6sOJJXfvV1bTNVkwn7P0q911r+ZcUCZQzuVxqeoFn3oMzIrhNWDD
-	RPA9LvVVq3BZrhzPeTaP5FnHqN2qaLfV4tsjz5Y2l4clhFbucMHrsXLMEcVfsHNuIo2lq+ORg/am2
-	3wS9wsMa1NydmY94hGLA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=KutesGkGkELDlgfUp/+J0c8WEZRurdL0c+80yoKrmrY=; b=SOdOqjm2CpdC+v
+	fE4rSxvJ8V9/HWC1iGpg7gEixaruh7pEo1ErPmqU+eeLayGTiwIsQiLnVn9D+JReIAaI7FlUXpB8O
+	rC3dvuTKk++lmWw2LSTSBm8QRBHpaAE/qyYql9Netkw8Krd4aqvFsx7azjFuS6d/WZicJdFk2OoIo
+	ghTOI+TlzphFVi2rPM+VzbpMAhc7QFbIsyztDE8MeQlRnJdwfJ5NR8M4v4zM+YUHQ7ybSGrbxfQRx
+	ak1ICV1J7F4VQRmpxZzmAWgvs0fiB+fWFev+3FLLHhOr/GXuoBtwrOW2yyuKAva9v+QxTNAGqw47p
+	SFTK+/0RyaIj4JRsbopA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jYHuW-0002EA-Ng; Mon, 11 May 2020 23:32:36 +0000
-Received: from mail-pj1-x1031.google.com ([2607:f8b0:4864:20::1031])
+	id 1jYHun-0002VT-R4; Mon, 11 May 2020 23:32:53 +0000
+Received: from mail-pj1-x1041.google.com ([2607:f8b0:4864:20::1041])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jYHuT-0002Cr-ME
- for linux-mtd@lists.infradead.org; Mon, 11 May 2020 23:32:35 +0000
-Received: by mail-pj1-x1031.google.com with SMTP id mq3so8607247pjb.1
- for <linux-mtd@lists.infradead.org>; Mon, 11 May 2020 16:32:33 -0700 (PDT)
+ id 1jYHuU-0002DI-KL
+ for linux-mtd@lists.infradead.org; Mon, 11 May 2020 23:32:37 +0000
+Received: by mail-pj1-x1041.google.com with SMTP id a5so8603820pjh.2
+ for <linux-mtd@lists.infradead.org>; Mon, 11 May 2020 16:32:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=xU6XMFoWF023UKxWu5DBFTUKYIQF4dpwdxpl48CmnvI=;
- b=hmkTZmcY9eimS7zi32p2CbRuT9se7M2eQNUTTR3FZqdvTCpZc3jZjXqT4gpZdmE769
- AZtNeOpQEhsX+ga2HTyU6+lHdh+IT0MBBzJ+2FOzsnYLYbCH+hTuIet0bGweiZtC+12q
- kDXwi87kgJ7ITnkNTpTREfS+Qqxxp4erB3IAE=
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=WAHLMQ0H2jjEXrgHtgoJjPvdRV41LQYIcjOK7tESAMc=;
+ b=koo56XMT4vpF+oxQNJVhv/6fKEEA13ZZsvaNXDzuv19l91zMXbAqHDpZpSqptOWCOy
+ hfgQ86oLSEm1cGRkh9mRsDX0F5Wl+wMK+NkYQDsTVfYBwOApD63hqfq83F0CxPM5DGCo
+ dbMB0uakhcAUzJIFZQR8mO7ujT7kn0WgJJyj0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=xU6XMFoWF023UKxWu5DBFTUKYIQF4dpwdxpl48CmnvI=;
- b=h80+kT7MEEfWLjdTk4XmsmYbrOUZNKE1oRfhXUdbrWsUuYuFmgDnCK/zq3uwHtoqZz
- YtdRSA7djPe7XtI084OegsNWo0bH/TzRITNt4jzT9PuIQN9KVHW9mpmwReh1/WRFzPty
- 5y4zWYz7AikBFYgGLo2YLFu6ChLxwqhVOyKPceiJTdjyyDBXn/t2Tee8tyIYtsC9ngbk
- 3UerkaZIdZMXr+5tYEd0xvbv69MitQIavqrEQvXfY3MYnC1H5Vk1JXKoLhtDGhN0ZzfL
- bh78tBTUbWwK1RgARNZpaHhktdBTShNnD2Wnx2MiLkTe8ql3tEVd7G8FBrcZ1mjuPkdm
- L9bQ==
-X-Gm-Message-State: AGi0PuZlDqodIN5wDrgXlw0NNWiXz6AFr6xsh+3Af2ANEIPfKbdrD6o3
- wnrWKNpfQfE/z6ve+uBkVHE0uXVDEyM=
-X-Google-Smtp-Source: APiQypIgnigda0IfbYZaAZeoDqi306WfjOgDzWWw5NxF50ONJAY+5AzUPXuEd44x79WdKoX43FT6NA==
-X-Received: by 2002:a17:90a:f98b:: with SMTP id
- cq11mr24781058pjb.193.1589239952517; 
- Mon, 11 May 2020 16:32:32 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=WAHLMQ0H2jjEXrgHtgoJjPvdRV41LQYIcjOK7tESAMc=;
+ b=XCMDp95mK/Nh5XH+fkTtMo1KWNIy+J3yVYwSwbIxDVNVXEHn1i2Ew6xu4ocjyukYMJ
+ m8WPlu4V46gdUrQMHxaL9eTIUPGH46i0lvy9km3Pm97WLUgsDclLoCSXCJEGlRbWG9BY
+ dyJZKJsvY0F97YoF0QGlK4fFGMB+jHsW04c3bC7SNR5XIZUlgvkhPZqqWDvo0wUPtyO0
+ bAmbvczUALPEQXnENCt1CI0dsVwsTkrknCPtTWQP26/Utr9WBwQQSOkxGdKT297iFsla
+ H6D0O1XUgtJ6FBUYLW9JVeOBIytP1Prx13dgt6Lc2kF5l1aFrO64N6ueMMThmiMjGMJY
+ rhXw==
+X-Gm-Message-State: AGi0PuY4k2d6g5E9ZT6W89KIsnEB8t6vOcgDCrtWMOZtqYxmWneXsSI7
+ hsBxw4qaCSSIRBHQVC4BqNF3FkN9XCE=
+X-Google-Smtp-Source: APiQypLQQfTip3SLWiuw6dodlp5e2jixqm4SGStLHf7SyT7mbNUnpk9xjr6H6O3vZQP8fm5OikxAWg==
+X-Received: by 2002:a17:90a:246c:: with SMTP id
+ h99mr21239205pje.125.1589239953835; 
+ Mon, 11 May 2020 16:32:33 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
- by smtp.gmail.com with ESMTPSA id 23sm8996607pgm.18.2020.05.11.16.32.31
+ by smtp.gmail.com with ESMTPSA id p190sm10444226pfp.207.2020.05.11.16.32.31
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
  Mon, 11 May 2020 16:32:31 -0700 (PDT)
 From: Kees Cook <keescook@chromium.org>
 To: WeiXiong Liao <liaoweixiong@allwinnertech.com>
-Subject: [PATCH v8 00/11] pstore: mtd: support crash log to block and mtd
- device
-Date: Mon, 11 May 2020 16:32:18 -0700
-Message-Id: <20200511233229.27745-1-keescook@chromium.org>
+Subject: [PATCH v8 03/11] pstore/zone,blk: Add support for pmsg frontend
+Date: Mon, 11 May 2020 16:32:21 -0700
+Message-Id: <20200511233229.27745-4-keescook@chromium.org>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200511233229.27745-1-keescook@chromium.org>
+References: <20200511233229.27745-1-keescook@chromium.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200511_163233_750223_91A6FE5A 
-X-CRM114-Status: UNSURE (   8.65  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200511_163234_671058_D60BD396 
+X-CRM114-Status: GOOD (  25.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,60 +104,550 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+From: WeiXiong Liao <liaoweixiong@allwinnertech.com>
 
-After some small fixes, here's v8. :) Thanks!
+Add pmsg support to pstore/blk (through pstore/zone). To enable, pmsg_size
+must be greater than 0 and a multiple of 4096.
 
--Kees
+Signed-off-by: WeiXiong Liao <liaoweixiong@allwinnertech.com>
+Link: https://lore.kernel.org/r/1585126506-18635-5-git-send-email-liaoweixiong@allwinnertech.com
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ fs/pstore/Kconfig           |  12 ++
+ fs/pstore/blk.c             |   9 ++
+ fs/pstore/zone.c            | 265 ++++++++++++++++++++++++++++++++++--
+ include/linux/pstore_zone.h |   2 +
+ 4 files changed, 279 insertions(+), 9 deletions(-)
 
-v8:
-- oops -> kmsg dump (WeiXiong)
-- typo/language fixes (Randy)
-- fix bdev failure paths (WeiXiong)
-- fix dev_err() -> pr_err (WeiXiong)
-
-v7: https://lore.kernel.org/lkml/20200510202436.63222-1-keescook@chromium.org/
-v6: https://lore.kernel.org/lkml/20200509234103.46544-1-keescook@chromium.org/
-v5: https://lore.kernel.org/lkml/1589022854-19821-1-git-send-email-liaoweixiong@allwinnertech.com/
-v4: https://lore.kernel.org/lkml/20200508064004.57898-1-keescook@chromium.org/
-v3: https://lore.kernel.org/lkml/1585126506-18635-1-git-send-email-liaoweixiong@allwinnertech.com/
-v2: https://lore.kernel.org/lkml/1581078355-19647-1-git-send-email-liaoweixiong@allwinnertech.com/
-v1: https://lore.kernel.org/lkml/1579482233-2672-1-git-send-email-liaoweixiong@allwinnertech.com/
-
-Kees Cook (1):
-  pstore/blk: Introduce "best_effort" mode
-
-WeiXiong Liao (10):
-  pstore/zone: Introduce common layer to manage storage zones
-  pstore/blk: Introduce backend for block devices
-  pstore/zone,blk: Add support for pmsg frontend
-  pstore/zone,blk: Add console frontend support
-  pstore/zone,blk: Add ftrace frontend support
-  Documentation: Add details for pstore/blk
-  pstore/zone: Provide way to skip "broken" zone for MTD devices
-  pstore/blk: Provide way to query pstore configuration
-  pstore/blk: Support non-block storage devices
-  mtd: Support kmsg dumper based on pstore/blk
-
- Documentation/admin-guide/pstore-blk.rst |  243 ++++
- MAINTAINERS                              |    1 +
- drivers/mtd/Kconfig                      |   10 +
- drivers/mtd/Makefile                     |    1 +
- drivers/mtd/mtdpstore.c                  |  563 +++++++++
- fs/pstore/Kconfig                        |  109 ++
- fs/pstore/Makefile                       |    6 +
- fs/pstore/blk.c                          |  521 ++++++++
- fs/pstore/zone.c                         | 1463 ++++++++++++++++++++++
- include/linux/pstore_blk.h               |  118 ++
- include/linux/pstore_zone.h              |   60 +
- 11 files changed, 3095 insertions(+)
- create mode 100644 Documentation/admin-guide/pstore-blk.rst
- create mode 100644 drivers/mtd/mtdpstore.c
- create mode 100644 fs/pstore/blk.c
- create mode 100644 fs/pstore/zone.c
- create mode 100644 include/linux/pstore_blk.h
- create mode 100644 include/linux/pstore_zone.h
-
+diff --git a/fs/pstore/Kconfig b/fs/pstore/Kconfig
+index 958bec75f907..ef01c48f0ff7 100644
+--- a/fs/pstore/Kconfig
++++ b/fs/pstore/Kconfig
+@@ -224,3 +224,15 @@ config PSTORE_BLK_MAX_REASON
+ 
+ 	  NOTE that, both Kconfig and module parameters can configure
+ 	  pstore/blk, but module parameters have priority over Kconfig.
++
++config PSTORE_BLK_PMSG_SIZE
++	int "Size in Kbytes of pmsg to store"
++	depends on PSTORE_BLK
++	depends on PSTORE_PMSG
++	default 64
++	help
++	  This just sets size of pmsg (pmsg_size) for pstore/blk. The size is
++	  in KB and must be a multiple of 4.
++
++	  NOTE that, both Kconfig and module parameters can configure
++	  pstore/blk, but module parameters have priority over Kconfig.
+diff --git a/fs/pstore/blk.c b/fs/pstore/blk.c
+index 6490c60af0dc..e3fa29988b0f 100644
+--- a/fs/pstore/blk.c
++++ b/fs/pstore/blk.c
+@@ -27,6 +27,14 @@ module_param(max_reason, int, 0400);
+ MODULE_PARM_DESC(max_reason,
+ 		 "maximum reason for kmsg dump (default 2: Oops and Panic)");
+ 
++#if IS_ENABLED(CONFIG_PSTORE_PMSG)
++static long pmsg_size = CONFIG_PSTORE_BLK_PMSG_SIZE;
++#else
++static long pmsg_size = -1;
++#endif
++module_param(pmsg_size, long, 0400);
++MODULE_PARM_DESC(pmsg_size, "pmsg size in kbytes");
++
+ /*
+  * blkdev - the block device to use for pstore storage
+  *
+@@ -133,6 +141,7 @@ static int psblk_register_do(struct pstore_device_info *dev)
+ 	}
+ 
+ 	verify_size(kmsg_size, 4096, dev->flags & PSTORE_FLAGS_DMESG);
++	verify_size(pmsg_size, 4096, dev->flags & PSTORE_FLAGS_PMSG);
+ #undef verify_size
+ 
+ 	pstore_zone_info->total_size = dev->total_size;
+diff --git a/fs/pstore/zone.c b/fs/pstore/zone.c
+index 20fa52385c78..fe6fde96d722 100644
+--- a/fs/pstore/zone.c
++++ b/fs/pstore/zone.c
+@@ -27,12 +27,14 @@
+  *
+  * @sig: signature to indicate header (PSZ_SIG xor PSZONE-type value)
+  * @datalen: length of data in @data
++ * @start: offset into @data where the beginning of the stored bytes begin
+  * @data: zone data.
+  */
+ struct psz_buffer {
+ #define PSZ_SIG (0x43474244) /* DBGC */
+ 	uint32_t sig;
+ 	atomic_t datalen;
++	atomic_t start;
+ 	uint8_t data[];
+ };
+ 
+@@ -88,9 +90,11 @@ struct pstore_zone {
+  * struct psz_context - all about running state of pstore/zone
+  *
+  * @kpszs: kmsg dump storage zones
++ * @ppsz: pmsg storage zone
+  * @kmsg_max_cnt: max count of @kpszs
+  * @kmsg_read_cnt: counter of total read kmsg dumps
+  * @kmsg_write_cnt: counter of total kmsg dump writes
++ * @pmsg_read_cnt: counter of total read pmsg zone
+  * @oops_counter: counter of oops dumps
+  * @panic_counter: counter of panic dumps
+  * @recovered: whether finished recovering data from storage
+@@ -101,9 +105,11 @@ struct pstore_zone {
+  */
+ struct psz_context {
+ 	struct pstore_zone **kpszs;
++	struct pstore_zone *ppsz;
+ 	unsigned int kmsg_max_cnt;
+ 	unsigned int kmsg_read_cnt;
+ 	unsigned int kmsg_write_cnt;
++	unsigned int pmsg_read_cnt;
+ 	/*
+ 	 * These counters should be calculated during recovery.
+ 	 * It records the oops/panic times after crashes rather than boots.
+@@ -143,15 +149,20 @@ static inline int buffer_datalen(struct pstore_zone *zone)
+ 	return atomic_read(&zone->buffer->datalen);
+ }
+ 
++static inline int buffer_start(struct pstore_zone *zone)
++{
++	return atomic_read(&zone->buffer->start);
++}
++
+ static inline bool is_on_panic(void)
+ {
+ 	return atomic_read(&pstore_zone_cxt.on_panic);
+ }
+ 
+-static ssize_t psz_zone_read(struct pstore_zone *zone, char *buf,
++static ssize_t psz_zone_read_buffer(struct pstore_zone *zone, char *buf,
+ 		size_t len, unsigned long off)
+ {
+-	if (!buf || !zone->buffer)
++	if (!buf || !zone || !zone->buffer)
+ 		return -EINVAL;
+ 	if (off > zone->buffer_size)
+ 		return -EINVAL;
+@@ -160,6 +171,18 @@ static ssize_t psz_zone_read(struct pstore_zone *zone, char *buf,
+ 	return len;
+ }
+ 
++static int psz_zone_read_oldbuf(struct pstore_zone *zone, char *buf,
++		size_t len, unsigned long off)
++{
++	if (!buf || !zone || !zone->oldbuf)
++		return -EINVAL;
++	if (off > zone->buffer_size)
++		return -EINVAL;
++	len = min_t(size_t, len, zone->buffer_size - off);
++	memcpy(buf, zone->oldbuf->data + off, len);
++	return 0;
++}
++
+ static int psz_zone_write(struct pstore_zone *zone,
+ 		enum psz_flush_mode flush_mode, const char *buf,
+ 		size_t len, unsigned long off)
+@@ -415,6 +438,93 @@ static int psz_kmsg_recover(struct psz_context *cxt)
+ 	return ret;
+ }
+ 
++static int psz_recover_zone(struct psz_context *cxt, struct pstore_zone *zone)
++{
++	struct pstore_zone_info *info = cxt->pstore_zone_info;
++	struct psz_buffer *oldbuf, tmpbuf;
++	int ret = 0;
++	char *buf;
++	ssize_t rcnt, len, start, off;
++
++	if (!zone || zone->oldbuf)
++		return 0;
++
++	if (is_on_panic()) {
++		/* save data as much as possible */
++		psz_flush_dirty_zone(zone);
++		return 0;
++	}
++
++	if (unlikely(!info->read))
++		return -EINVAL;
++
++	len = sizeof(struct psz_buffer);
++	rcnt = info->read((char *)&tmpbuf, len, zone->off);
++	if (rcnt != len) {
++		pr_debug("read zone %s failed\n", zone->name);
++		return (int)rcnt < 0 ? (int)rcnt : -EIO;
++	}
++
++	if (tmpbuf.sig != zone->buffer->sig) {
++		pr_debug("no valid data in zone %s\n", zone->name);
++		return 0;
++	}
++
++	if (zone->buffer_size < atomic_read(&tmpbuf.datalen) ||
++		zone->buffer_size < atomic_read(&tmpbuf.start)) {
++		pr_info("found overtop zone: %s: off %lld, size %zu\n",
++				zone->name, zone->off, zone->buffer_size);
++		/* just keep going */
++		return 0;
++	}
++
++	if (!atomic_read(&tmpbuf.datalen)) {
++		pr_debug("found erased zone: %s: off %lld, size %zu, datalen %d\n",
++				zone->name, zone->off, zone->buffer_size,
++				atomic_read(&tmpbuf.datalen));
++		return 0;
++	}
++
++	pr_debug("found nice zone: %s: off %lld, size %zu, datalen %d\n",
++			zone->name, zone->off, zone->buffer_size,
++			atomic_read(&tmpbuf.datalen));
++
++	len = atomic_read(&tmpbuf.datalen) + sizeof(*oldbuf);
++	oldbuf = kzalloc(len, GFP_KERNEL);
++	if (!oldbuf)
++		return -ENOMEM;
++
++	memcpy(oldbuf, &tmpbuf, sizeof(*oldbuf));
++	buf = (char *)oldbuf + sizeof(*oldbuf);
++	len = atomic_read(&oldbuf->datalen);
++	start = atomic_read(&oldbuf->start);
++	off = zone->off + sizeof(*oldbuf);
++
++	/* get part of data */
++	rcnt = info->read(buf, len - start, off + start);
++	if (rcnt != len - start) {
++		pr_err("read zone %s failed\n", zone->name);
++		ret = (int)rcnt < 0 ? (int)rcnt : -EIO;
++		goto free_oldbuf;
++	}
++
++	/* get the rest of data */
++	rcnt = info->read(buf + len - start, start, off);
++	if (rcnt != start) {
++		pr_err("read zone %s failed\n", zone->name);
++		ret = (int)rcnt < 0 ? (int)rcnt : -EIO;
++		goto free_oldbuf;
++	}
++
++	zone->oldbuf = oldbuf;
++	psz_flush_dirty_zone(zone);
++	return 0;
++
++free_oldbuf:
++	kfree(oldbuf);
++	return ret;
++}
++
+ /**
+  * psz_recovery() - recover data from storage
+  * @cxt: the context of pstore/zone
+@@ -434,6 +544,10 @@ static inline int psz_recovery(struct psz_context *cxt)
+ 	if (ret)
+ 		goto recover_fail;
+ 
++	ret = psz_recover_zone(cxt, cxt->ppsz);
++	if (ret)
++		goto recover_fail;
++
+ 	pr_debug("recover end!\n");
+ 	atomic_set(&cxt->recovered, 1);
+ 	return 0;
+@@ -448,9 +562,17 @@ static int psz_pstore_open(struct pstore_info *psi)
+ 	struct psz_context *cxt = psi->data;
+ 
+ 	cxt->kmsg_read_cnt = 0;
++	cxt->pmsg_read_cnt = 0;
+ 	return 0;
+ }
+ 
++static inline bool psz_old_ok(struct pstore_zone *zone)
++{
++	if (zone && zone->oldbuf && atomic_read(&zone->oldbuf->datalen))
++		return true;
++	return false;
++}
++
+ static inline bool psz_ok(struct pstore_zone *zone)
+ {
+ 	if (zone && zone->buffer && buffer_datalen(zone))
+@@ -475,6 +597,25 @@ static inline int psz_kmsg_erase(struct psz_context *cxt,
+ 	return psz_zone_write(zone, FLUSH_META, NULL, 0, 0);
+ }
+ 
++static inline int psz_record_erase(struct psz_context *cxt,
++		struct pstore_zone *zone)
++{
++	if (unlikely(!psz_old_ok(zone)))
++		return 0;
++
++	kfree(zone->oldbuf);
++	zone->oldbuf = NULL;
++	/*
++	 * if there are new data in zone buffer, that means the old data
++	 * are already invalid. It is no need to flush 0 (erase) to
++	 * block device.
++	 */
++	if (!buffer_datalen(zone))
++		return psz_zone_write(zone, FLUSH_META, NULL, 0, 0);
++	psz_flush_dirty_zone(zone);
++	return 0;
++}
++
+ static int psz_pstore_erase(struct pstore_record *record)
+ {
+ 	struct psz_context *cxt = record->psi->data;
+@@ -484,6 +625,8 @@ static int psz_pstore_erase(struct pstore_record *record)
+ 		if (record->id >= cxt->kmsg_max_cnt)
+ 			return -EINVAL;
+ 		return psz_kmsg_erase(cxt, cxt->kpszs[record->id], record);
++	case PSTORE_TYPE_PMSG:
++		return psz_record_erase(cxt, cxt->ppsz);
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -557,6 +700,53 @@ static int notrace psz_kmsg_write(struct psz_context *cxt,
+ 	return 0;
+ }
+ 
++static int notrace psz_record_write(struct pstore_zone *zone,
++		struct pstore_record *record)
++{
++	size_t start, rem;
++	int cnt = record->size;
++	bool is_full_data = false;
++	char *buf = record->buf;
++
++	if (!zone || !record)
++		return -ENOSPC;
++
++	if (atomic_read(&zone->buffer->datalen) >= zone->buffer_size)
++		is_full_data = true;
++
++	if (unlikely(cnt > zone->buffer_size)) {
++		buf += cnt - zone->buffer_size;
++		cnt = zone->buffer_size;
++	}
++
++	start = buffer_start(zone);
++	rem = zone->buffer_size - start;
++	if (unlikely(rem < cnt)) {
++		psz_zone_write(zone, FLUSH_PART, buf, rem, start);
++		buf += rem;
++		cnt -= rem;
++		start = 0;
++		is_full_data = true;
++	}
++
++	atomic_set(&zone->buffer->start, cnt + start);
++	psz_zone_write(zone, FLUSH_PART, buf, cnt, start);
++
++	/**
++	 * psz_zone_write will set datalen as start + cnt.
++	 * It work if actual data length lesser than buffer size.
++	 * If data length greater than buffer size, pmsg will rewrite to
++	 * beginning of zone, which make buffer->datalen wrongly.
++	 * So we should reset datalen as buffer size once actual data length
++	 * greater than buffer size.
++	 */
++	if (is_full_data) {
++		atomic_set(&zone->buffer->datalen, zone->buffer_size);
++		psz_zone_write(zone, FLUSH_META, NULL, 0, 0);
++	}
++	return 0;
++}
++
+ static int notrace psz_pstore_write(struct pstore_record *record)
+ {
+ 	struct psz_context *cxt = record->psi->data;
+@@ -568,6 +758,8 @@ static int notrace psz_pstore_write(struct pstore_record *record)
+ 	switch (record->type) {
+ 	case PSTORE_TYPE_DMESG:
+ 		return psz_kmsg_write(cxt, record);
++	case PSTORE_TYPE_PMSG:
++		return psz_record_write(cxt->ppsz, record);
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -583,6 +775,13 @@ static struct pstore_zone *psz_read_next_zone(struct psz_context *cxt)
+ 			return zone;
+ 	}
+ 
++	if (cxt->pmsg_read_cnt == 0) {
++		cxt->pmsg_read_cnt++;
++		zone = cxt->ppsz;
++		if (psz_old_ok(zone))
++			return zone;
++	}
++
+ 	return NULL;
+ }
+ 
+@@ -633,7 +832,7 @@ static ssize_t psz_kmsg_read(struct pstore_zone *zone,
+ 			return -ENOMEM;
+ 	}
+ 
+-	size = psz_zone_read(zone, record->buf + hlen, size,
++	size = psz_zone_read_buffer(zone, record->buf + hlen, size,
+ 			sizeof(struct psz_kmsg_header));
+ 	if (unlikely(size < 0)) {
+ 		kfree(record->buf);
+@@ -643,6 +842,32 @@ static ssize_t psz_kmsg_read(struct pstore_zone *zone,
+ 	return size + hlen;
+ }
+ 
++static ssize_t psz_record_read(struct pstore_zone *zone,
++		struct pstore_record *record)
++{
++	size_t len;
++	struct psz_buffer *buf;
++
++	if (!zone || !record)
++		return -ENOSPC;
++
++	buf = (struct psz_buffer *)zone->oldbuf;
++	if (!buf)
++		return -ENOMSG;
++
++	len = atomic_read(&buf->datalen);
++	record->buf = kmalloc(len, GFP_KERNEL);
++	if (!record->buf)
++		return -ENOMEM;
++
++	if (unlikely(psz_zone_read_oldbuf(zone, record->buf, len, 0))) {
++		kfree(record->buf);
++		return -ENOMSG;
++	}
++
++	return len;
++}
++
+ static ssize_t psz_pstore_read(struct pstore_record *record)
+ {
+ 	struct psz_context *cxt = record->psi->data;
+@@ -667,6 +892,9 @@ static ssize_t psz_pstore_read(struct pstore_record *record)
+ 		readop = psz_kmsg_read;
+ 		record->id = cxt->kmsg_read_cnt - 1;
+ 		break;
++	case PSTORE_TYPE_PMSG:
++		readop = psz_record_read;
++		break;
+ 	default:
+ 		goto next_zone;
+ 	}
+@@ -722,6 +950,8 @@ static void psz_free_all_zones(struct psz_context *cxt)
+ {
+ 	if (cxt->kpszs)
+ 		psz_free_zones(&cxt->kpszs, &cxt->kmsg_max_cnt);
++	if (cxt->ppsz)
++		psz_free_zone(&cxt->ppsz);
+ }
+ 
+ static struct pstore_zone *psz_init_zone(enum pstore_type_id type,
+@@ -755,8 +985,10 @@ static struct pstore_zone *psz_init_zone(enum pstore_type_id type,
+ 	zone->type = type;
+ 	zone->buffer_size = size - sizeof(struct psz_buffer);
+ 	zone->buffer->sig = type ^ PSZ_SIG;
++	zone->oldbuf = NULL;
+ 	atomic_set(&zone->dirty, 0);
+ 	atomic_set(&zone->buffer->datalen, 0);
++	atomic_set(&zone->buffer->start, 0);
+ 
+ 	*off += size;
+ 
+@@ -811,19 +1043,28 @@ static int psz_alloc_zones(struct psz_context *cxt)
+ 	struct pstore_zone_info *info = cxt->pstore_zone_info;
+ 	loff_t off = 0;
+ 	int err;
+-	size_t size;
++	size_t off_size = 0;
++
++	off_size += info->pmsg_size;
++	cxt->ppsz = psz_init_zone(PSTORE_TYPE_PMSG, &off, info->pmsg_size);
++	if (IS_ERR(cxt->ppsz)) {
++		err = PTR_ERR(cxt->ppsz);
++		cxt->ppsz = NULL;
++		goto free_out;
++	}
+ 
+-	size = info->total_size;
+-	cxt->kpszs = psz_init_zones(PSTORE_TYPE_DMESG, &off, size,
++	cxt->kpszs = psz_init_zones(PSTORE_TYPE_DMESG, &off,
++			info->total_size - off_size,
+ 			info->kmsg_size, &cxt->kmsg_max_cnt);
+ 	if (IS_ERR(cxt->kpszs)) {
+ 		err = PTR_ERR(cxt->kpszs);
+ 		cxt->kpszs = NULL;
+-		goto fail_out;
++		goto free_out;
+ 	}
+ 
+ 	return 0;
+-fail_out:
++free_out:
++	psz_free_all_zones(cxt);
+ 	return err;
+ }
+ 
+@@ -846,7 +1087,7 @@ int register_pstore_zone(struct pstore_zone_info *info)
+ 		return -EINVAL;
+ 	}
+ 
+-	if (!info->kmsg_size) {
++	if (!info->kmsg_size && !info->pmsg_size) {
+ 		pr_warn("at least one record size must be non-zero\n");
+ 		return -EINVAL;
+ 	}
+@@ -868,6 +1109,7 @@ int register_pstore_zone(struct pstore_zone_info *info)
+ 
+ 	check_size(total_size, 4096);
+ 	check_size(kmsg_size, SECTOR_SIZE);
++	check_size(pmsg_size, SECTOR_SIZE);
+ 
+ #undef check_size
+ 
+@@ -893,6 +1135,7 @@ int register_pstore_zone(struct pstore_zone_info *info)
+ 	pr_debug("register %s with properties:\n", info->name);
+ 	pr_debug("\ttotal size : %ld Bytes\n", info->total_size);
+ 	pr_debug("\tkmsg size : %ld Bytes\n", info->kmsg_size);
++	pr_debug("\tpmsg size : %ld Bytes\n", info->pmsg_size);
+ 
+ 	err = psz_alloc_zones(cxt);
+ 	if (err) {
+@@ -922,6 +1165,10 @@ int register_pstore_zone(struct pstore_zone_info *info)
+ 			pr_cont(",panic_write");
+ 		pr_cont(")");
+ 	}
++	if (info->pmsg_size) {
++		cxt->pstore.flags |= PSTORE_FLAGS_PMSG;
++		pr_cont(" pmsg");
++	}
+ 	pr_cont("\n");
+ 
+ 	err = pstore_register(&cxt->pstore);
+diff --git a/include/linux/pstore_zone.h b/include/linux/pstore_zone.h
+index eb005d9ae40c..29c367a3bd80 100644
+--- a/include/linux/pstore_zone.h
++++ b/include/linux/pstore_zone.h
+@@ -17,6 +17,7 @@ typedef ssize_t (*pstore_zone_write_op)(const char *, size_t, loff_t);
+  * @kmsg_size:	The size of oops/panic zone. Zero means disabled, otherwise,
+  *		it must be multiple of SECTOR_SIZE(512 Bytes).
+  * @max_reason: Maximum kmsg dump reason to store.
++ * @pmsg_size:	The size of pmsg zone which is the same as @kmsg_size.
+  * @read:	The general read operation. Both of the function parameters
+  *		@size and @offset are relative value to storage.
+  *		On success, the number of bytes should be returned, others
+@@ -33,6 +34,7 @@ struct pstore_zone_info {
+ 	unsigned long total_size;
+ 	unsigned long kmsg_size;
+ 	int max_reason;
++	unsigned long pmsg_size;
+ 	pstore_zone_read_op read;
+ 	pstore_zone_write_op write;
+ 	pstore_zone_write_op panic_write;
 -- 
 2.20.1
 
