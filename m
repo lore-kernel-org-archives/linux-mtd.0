@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C85C2C47255
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 May 2020 16:00:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A3F5C47255
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 May 2020 16:15:02 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 98257206E6
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 May 2020 16:00:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6104B206DB
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 May 2020 16:15:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HF71uMKd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 98257206E6
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dsd7i1Sc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6104B206DB
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -24,44 +24,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=42JafHLdgqz3lIqU4MugS9vcx7o0DMUMI/Wg3/Cjoyw=; b=HF71uMKdGOSlqz
-	2iorZ2heWzk9XVzy5z/m7wtCajZDnBJg0V4HARBbY2QBd2JP13KesVrNKXFcnw8i5t7sTVcFI8A+c
-	HvEn1muTi8V5sDjwTpwmb7nyEpkb5/kPEMnOxahy5NSHthWk0nTyy82pBe9UbyeM6hQ+4T6Hc5TMF
-	sXb4H5x3gYTbL4a9KN8Xr7DwKW6Sg/zNhV7vN9kLUSo6Vjl+xJZyehp2ivEb1EKmmjOZTQVDtjQLZ
-	nyeyMEembFsoEqoDxMXYWL8z5w6omM9aJ36KppSAZu7RdRnTFVS4vfEj54DQZbhDWlILA+4XKfG8+
-	eIDyezAHQF/KFeEwXoGg==;
+	List-Owner; bh=IPEdI427uqaB4Ck0elUC61OEM4sDkhBAKdORs+T/A1c=; b=dsd7i1ScsGZ4Go
+	bfrYWFUSBww5FlFHjnTsFs4/og8//RJdeNywmCrRDNvxFeaZl9r4Qwh3K2QACOIsBPFJT+CSurWqj
+	V3LaDow6w27KGrsnhhBDIkAInkOz0gtEmf99TBGHQ0DPBYNFxqXAvz2g0n96rpIRITeLFvlw1FNsj
+	RTQhv7nxDquTJdfqaYROw3y8xWpKJ/iUUC/t92JdhYbyzkx4tDYGxkfuWnHA6ZkL3f7yUCU36/nnY
+	Dpq3zPUYP9CKknqU+xcbhVpi+aq6z/O8Clxx36nukVFi05yRM0eo4OnXmNPujfSvJ2Avr6J3rkHZ2
+	8fhg/GwKGanZbkGYjQTg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jYAqD-0006sF-3X; Mon, 11 May 2020 15:59:41 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1jYB4r-0008NW-CV; Mon, 11 May 2020 16:14:49 +0000
+Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jYAq9-0006nr-HW
- for linux-mtd@lists.infradead.org; Mon, 11 May 2020 15:59:39 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id CF1FC2A0A4B;
- Mon, 11 May 2020 16:59:35 +0100 (BST)
-Date: Mon, 11 May 2020 17:59:32 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
+ id 1jYB4o-0008Mu-CD
+ for linux-mtd@lists.infradead.org; Mon, 11 May 2020 16:14:47 +0000
+X-Originating-IP: 91.224.148.103
+Received: from xps13 (unknown [91.224.148.103])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id E8D2D24000A;
+ Mon, 11 May 2020 16:14:40 +0000 (UTC)
+Date: Mon, 11 May 2020 18:14:39 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@collabora.com>
 Subject: Re: [PATCH v4 7/8] mtd: rawnand: arasan: Add new Arasan NAND
  controller
-Message-ID: <20200511175932.0864490d@collabora.com>
-In-Reply-To: <20200511174614.38058ec7@xps13>
+Message-ID: <20200511181439.0c7b2768@xps13>
+In-Reply-To: <20200510090230.1ba6f6d7@collabora.com>
 References: <20200508171339.8052-1-miquel.raynal@bootlin.com>
  <20200508171339.8052-8-miquel.raynal@bootlin.com>
- <20200510090314.10426b6e@collabora.com>
- <20200511170729.4766eeaa@xps13>
- <20200511173235.2e2fe467@collabora.com>
- <20200511174614.38058ec7@xps13>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ <20200510090230.1ba6f6d7@collabora.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200511_085937_847461_414579C1 
-X-CRM114-Status: GOOD (  32.25  )
+X-CRM114-CacheID: sfid-20200511_091446_547139_00B7EB0D 
+X-CRM114-Status: GOOD (  12.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,136 +80,95 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 11 May 2020 17:46:14 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+Hi Boris,
 
-> Hi Boris,
-> 
-> Boris Brezillon <boris.brezillon@collabora.com> wrote on Mon, 11 May
-> 2020 17:32:35 +0200:
-> 
-> > On Mon, 11 May 2020 17:07:29 +0200
-> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> >   
-> > > Hi Boris,
-> > > 
-> > > Boris Brezillon <boris.brezillon@collabora.com> wrote on Sun, 10 May
-> > > 2020 09:03:14 +0200:
-> > >     
-> > > > On Fri,  8 May 2020 19:13:38 +0200
-> > > > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> > > >       
-> > > > > +static int anfc_exec_op(struct nand_chip *chip,
-> > > > > +			const struct nand_operation *op,
-> > > > > +			bool check_only)
-> > > > > +{
-> > > > > +	int ret;
-> > > > > +
-> > > > > +	if (check_only)
-> > > > > +		return nand_op_parser_exec_op(chip, &anfc_op_parser, op,
-> > > > > +					      check_only);        
-> > > > 
-> > > > You should also check the DATA_IN/OUT size here ^.      
-> > > 
-> > > Here is my proposal:
-> > > 
-> > > ---8<---
-> > > 
-> > > +static int anfc_check_op(struct nand_chip *chip,
-> > > +                        const struct nand_operation *op)
-> > > +{
-> > > +       int op_id;
-> > > +
-> > > +       /*
-> > > +        * The controller abstracts all the NAND operations and do not support
-> > > +        * data only operations.    
-> > 
-> > 	* FIXME: The nand_op_parser framework should be extended to
-> > 	* support custom checks on DATA instructions.  
-> 
-> Oh you really want to extend the core for that? I thought having a
-> "check_op" helper like this was enough, as it gives enough freedom to
-> the controller driver to return all the corner cases that are not very
-> generic. See below for more details.
+Boris Brezillon <boris.brezillon@collabora.com> wrote on Sun, 10 May
+2020 09:02:30 +0200:
 
-Widespread enough to have at least 2 controllers needing that :P. Any
-code sharing is good to take IMO.
-
+> On Fri,  8 May 2020 19:13:38 +0200
+> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 > 
-> >   
-> > > +        */    
-> > 
-> > You also didn't mention the fact that the number of data cycles should
-> > be aligned on 4 bytes, and that the controller might read/write more
-> > than requested when that's not the case. But maybe you have that
-> > comment elsewhere in the code (where you do the round_up(4)?).  
+> > +static int anfc_len_to_steps(struct nand_chip *chip, unsigned int len)
+> > +{
+> > +	unsigned int steps = 1, pktsize = len;
+> > +
+> > +	while (pktsize > ANFC_MAX_PKT_SIZE) {
+> > +		steps *= 2;
+> > +		pktsize = DIV_ROUND_UP(len, steps);
+> > +	}  
 > 
-> Precisely, for me the previous check is not a problem from the core
-> perspective (hence not deserving a FIXME) because the driver do not lie
-> at any moment. Conversely, the driver limitations of what is supported
-> and what is not is clear and accurate.
-
-True, you can turn that into a TODO. That's still something I'd like to
-see shared. That's not to say we have to handle all weird cases in the
-core, we can simply add a ->check() hook to the pattern_elem so drivers
-can have custom per-element checks.
-
 > 
-> However for this round_up() operation you are talking about, this is an
-> issue as we have currently no mean to say to the core that something
-> different than ordered was actually requested by the driver, so there
-> is lying involved and this deserves a FIXME.
-> > 
-> > 	/*
-> > 	 * Number of DATA cycles must be aligned on 4, that means the
-> > 	 * controller might read/write more than requested This is
-> > 	 * harmless most of the time as extra DATA are discarded in
-> > 	 * the write path and read pointer adjusted in the read path.
-> > 	 * FIXME: The core should mark operations where reading/writing
-> > 	 * more is allowed so the exec_op() implementation can take
-> > 	 * the right decision when the alignment constraint is not met:
-> > 	 * adjust the number of DATA cycles when it's allowed, and
-> > 	 * reject the operation otherwise.
-> > 	 */  
+> Same here, you shouldn't have a round_up() but instead complain if
+> "len != pkt_size * steps"
 > 
-> I want to put this comment where the round_up takes place.
-
-Sounds good.
-
+> 	if (len % 4)
+> 		return -ENOTSUPP;
 > 
-> >   
-> > > +       for (op_id = 0; op_id < op->ninstrs; op_id++) {
-> > > +               instr = &op->instrs[op_id];
-> > > +
-> > > +               switch (instr->type) {
-> > > +               case NAND_OP_ADDR_INSTR:
-> > > +                       if (instr->ctx.addr.naddrs > ANFC_MAX_ADDR_CYC)
-> > > +                               return -ENOTSUPP;
-> > > +                       break;
-> > > +               case NAND_OP_DATA_IN_INSTR:
-> > > +               case NAND_OP_DATA_OUT_INSTR:
-> > > +                       if (instr->ctx.data.len > ANFC_MAX_CHUNK_SIZE)
-> > > +                               return -ENOTSUPP;
-> > > +                       break;
-> > > +               default:
-> > > +               }
-> > > +       }
-> > > +
-> > > +       /*
-> > > +        * The controller does not allow to proceed with a CMD+DATA_IN cycle
-> > > +        * manually on the bus by reading data from the data register. Instead,
-> > > +        * the controller abstract a status read operation with its own status
-> > > +        * register after ordering a read status operation. Hence, we cannot
-> > > +        * support any CMD+DATA_IN operation other than a READ STATUS.    
-> > 
-> > 	* FIXME: The nand_op_parser() framework should be extended to
-> > 	* describe fixed patterns instead of open-coding this check
-> > 	* here.  
+> 	if (len < ANFC_MAX_PKT_SIZE)
+> 		return len;
 > 
-> For this one, I am not against a FIXME as this is something that might
-> be useful for other drivers too.
+> 	for (steps = 2; steps < ANFC_MAX_STEPS; steps *= 2) {
+> 		pkt_size = len / steps;
+> 		if (pkt_size <= ANFC_MAX_PKT_SIZE)
+> 			break;
+> 	}
+> 
+> 	if (pkt_size * steps != len)
+> 		return -ENOTSUPP;
+> 
+> 	return pkt_size;
+> 
+> > +
+> > +	if (steps > ANFC_MAX_STEPS)
+> > +		return -ENOTSUPP;
+> > +
+> > +	return steps;
+> > +}  
 
-Maybe TODO more than FIXME, you're right.
+I took the logic of the above proposal and extended the helper to be
+"anfc_pkt_len_config", taking two pointers as argument: *steps and
+*pktsize, which will be updated in case of success. Otherwise
+this function returns an error and can be added to the "check_op" path
+instead of only failing at execution time.
+
+---8<---
+
++static int anfc_pkt_len_config(unsigned int len, unsigned int *steps,
++                              unsigned int *pktsize)
++{
++       unsigned int nb, sz;
++
++       for (nb = 1; nb < ANFC_MAX_STEPS; nb *= 2) {
++               sz = len / nb;
++               if (sz <= ANFC_MAX_PKT_SIZE)
++                       break;
++       }
++
++       if (sz * nb != len)
++               return -ENOTSUPP;
++
++       if (steps)
++               *steps = nb;
++
++       if (pktsize)
++               *pktsize = sz;
++
++       return 0;
++}
+
+--->8---
+
+And then, in anfc_check_op():
+
++               case NAND_OP_DATA_IN_INSTR:
++               case NAND_OP_DATA_OUT_INSTR:
++                       if (instr->ctx.data.len > ANFC_MAX_CHUNK_SIZE)
++                               return -ENOTSUPP;
++
++                       if (anfc_pkt_len_config(instr->ctx.data.len NULL, NULL))
++                               return -ENOTSUPP;
++
++                       break;
 
 ______________________________________________________
 Linux MTD discussion mailing list
