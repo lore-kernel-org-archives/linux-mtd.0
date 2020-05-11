@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-8.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2776EC47255
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 May 2020 16:43:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7627EC47255
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 May 2020 16:49:45 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E71BE20675
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 May 2020 16:43:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 09940206D7
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 May 2020 16:49:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="MujS9Hey"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E71BE20675
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="iPUNTMr/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 09940206D7
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,37 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1wuZQNOkxVHyBsUfpDlBIJLPLH73qFPk2K1FldrXRxw=; b=MujS9Hey5+Z920
-	AOgeaaWlTzSMphaHIeiaIWfwCD1y2IMAlRR0z4h1COH8Pb82xB76bF1KPED78G7B/WKRIBPo2KH2X
-	PcFOp/FDOXcMictK93wp41XUjRsehiy2YuHEpeuOJoazzveDN5ARmF9px+aDhlYCBitpDCawhm/7T
-	0UJ/EZxnN70ndBzpHT+brYMKSsibJ+CZJvYh6TFvAChnkCmtJ4Wg4c2XRnYzcTF5+Pmsqg4PHP7TN
-	mo+2BTt+x+EVVCs/8s/L72O6A+DKj4g3MfNcXmCpnce6MB/HPYdKdbduHEbr4AKFMq5OtqWSe1ZBs
-	5Rlvz9JWn0dWuTpJpdzw==;
+	List-Owner; bh=EvCC7hWhIn1XkgiJVLLlKyv6dFP3BWLdkySrAiBlZdQ=; b=iPUNTMr/aSkst3
+	tRyvUNN/yzSPgVksKlmBEuGQBOIzHz2B2PwYqvcRYSDvSSYKxuD2U0ge8BfEqW9D/0H4b/hKT+fmb
+	RLjKFltefnXVj217MORpzTv3wiUgE9r4kkbmolLowzFXwY30N1y11CYuN+0JmqRfZsMPl/SWJDezc
+	HrrtUKk4bMin0vA8Ju9rsJW2W/AK7VhFMBOZQiU6qpj/ZMFjw6+kQhR6PIIC9bc1EW9HsWvMwwnfA
+	YIA4I71qDm98u0q21YGpqo1B5wzhsNbWSIuoOvc862sqmqxATF+wr/5wRqo+1dP43yGlYtDA7M9jH
+	7jlVYFCYHyel08sYh0pA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jYBWp-0004jL-0x; Mon, 11 May 2020 16:43:43 +0000
-Received: from relay12.mail.gandi.net ([217.70.178.232])
+	id 1jYBcV-0008L2-Kn; Mon, 11 May 2020 16:49:35 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jYBWl-0004iJ-4b
- for linux-mtd@lists.infradead.org; Mon, 11 May 2020 16:43:40 +0000
+ id 1jYBcQ-0008DN-Oi; Mon, 11 May 2020 16:49:33 +0000
+X-Originating-IP: 91.224.148.103
 Received: from xps13 (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay12.mail.gandi.net (Postfix) with ESMTPSA id 5F4CC200003;
- Mon, 11 May 2020 16:43:34 +0000 (UTC)
-Date: Mon, 11 May 2020 18:43:33 +0200
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 15B56FF80F;
+ Mon, 11 May 2020 16:49:25 +0000 (UTC)
+Date: Mon, 11 May 2020 18:49:24 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6?= Rojas <noltari@gmail.com>
-Subject: Re: [PATCH v2] nand: brcmnand: correctly verify erased pages
-Message-ID: <20200511184333.20d5a560@xps13>
-In-Reply-To: <20200505082055.2843847-1-noltari@gmail.com>
-References: <20200504092943.2739784-1-noltari@gmail.com>
- <20200505082055.2843847-1-noltari@gmail.com>
+To: Boris Brezillon <boris.brezillon@collabora.com>
+Subject: Re: [PATCH 1/3] mtd: rawnand: Add the concept of destructive operation
+Message-ID: <20200511184924.0bb1358c@xps13>
+In-Reply-To: <20200503100018.308be142@collabora.com>
+References: <20200502163432.1543243-1-boris.brezillon@collabora.com>
+ <20200502163432.1543243-2-boris.brezillon@collabora.com>
+ <20200503100018.308be142@collabora.com>
 Organization: Bootlin
 X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200511_094339_316035_ADAA1777 
-X-CRM114-Status: GOOD (  18.55  )
+X-CRM114-CacheID: sfid-20200511_094931_074220_1EC7AD0F 
+X-CRM114-Status: GOOD (  23.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,65 +68,108 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vigneshr@ti.com, kdasu.kdev@gmail.com, richard@nod.at,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linaro-mm-sig@lists.linaro.org, linux-mtd@lists.infradead.org,
- bcm-kernel-feedback-list@broadcom.com, computersforpeace@gmail.com,
- sumit.semwal@linaro.org, linux-media@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Stefan Wahren <stefan.wahren@i2se.com>,
+ Florian Fainelli <f.fainelli@gmail.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Scott Branden <sbranden@broadcom.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
+ Ray Jui <rjui@broadcom.com>, Lee Jones <lee@kernel.org>,
+ Eric Anholt <eric@anholt.net>, bcm-kernel-feedback-list@broadcom.com,
+ linux-rpi-kernel@lists.infradead.org,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgw4FsdmFybywKCsOBbHZhcm8gRmVybsOhbmRleiBSb2phcyA8bm9sdGFyaUBnbWFpbC5jb20+
-IHdyb3RlIG9uIFR1ZSwgIDUgTWF5IDIwMjAKMTA6MjA6NTUgKzAyMDA6Cgo+IFRoZSBjdXJyZW50
-IGNvZGUgY2hlY2tzIHRoYXQgdGhlIHdob2xlIE9PQiBhcmVhIGlzIGVyYXNlZC4KPiBUaGlzIGlz
-IGEgcHJvYmxlbSB3aGVuIEpGRlMyIGNsZWFubWFya2VycyBhcmUgYWRkZWQgdG8gdGhlIE9PQiwg
-c2luY2UgaXQgd2lsbAo+IGZhaWwgZHVlIHRvIHRoZSB1c2FibGUgT09CIGJ5dGVzIG5vdCBiZWlu
-ZyAweGZmLgo+IENvcnJlY3QgdGhpcyBieSBvbmx5IGNoZWNraW5nIHRoYXQgdGhlIEVDQyBhcmVu
-J3QgMHhmZi4KPiAKPiBGaXhlczogMDJiODhlZWE5ZjljICgibXRkOiBicmNtbmFuZDogQWRkIGNo
-ZWNrIGZvciBlcmFzZWQgcGFnZSBiaXRmbGlwcyIpCj4gCgpUaGlzIGV4dHJhIHNwYWNlIGJldHdl
-ZW4gdGhlIEZpeGVzIHRhZyBhbmQgeW91ciBTb0Igc2hvdWxkIGJlIHJlbW92ZWQKCj4gU2lnbmVk
-LW9mZi1ieTogw4FsdmFybyBGZXJuw6FuZGV6IFJvamFzIDxub2x0YXJpQGdtYWlsLmNvbT4KPiAt
-LS0KPiAgdjI6IEFkZCBGaXhlcyB0YWcKPiAKPiAgZHJpdmVycy9tdGQvbmFuZC9yYXcvYnJjbW5h
-bmQvYnJjbW5hbmQuYyB8IDIyICsrKysrKysrKysrKysrKysrKy0tLS0KPiAgMSBmaWxlIGNoYW5n
-ZWQsIDE4IGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2Ry
-aXZlcnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2JyY21uYW5kLmMgYi9kcml2ZXJzL210ZC9uYW5k
-L3Jhdy9icmNtbmFuZC9icmNtbmFuZC5jCj4gaW5kZXggZTRlM2NlZWFjMzhmLi41NDZmMDgwN2I4
-ODcgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvYnJjbW5hbmQvYnJjbW5hbmQu
-Ywo+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2JyY21uYW5kLmMKPiBAQCAt
-MjAxOCw2ICsyMDE4LDcgQEAgc3RhdGljIGludCBicmNtbmFuZF9yZWFkX2J5X3BpbyhzdHJ1Y3Qg
-bXRkX2luZm8gKm10ZCwgc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwKPiAgc3RhdGljIGludCBicmNt
-c3RiX25hbmRfdmVyaWZ5X2VyYXNlZF9wYWdlKHN0cnVjdCBtdGRfaW5mbyAqbXRkLAo+ICAJCSAg
-c3RydWN0IG5hbmRfY2hpcCAqY2hpcCwgdm9pZCAqYnVmLCB1NjQgYWRkcikKPiAgewo+ICsJc3Ry
-dWN0IG10ZF9vb2JfcmVnaW9uIG9vYmVjYzsKPiAgCWludCBpLCBzYXM7Cj4gIAl2b2lkICpvb2Ig
-PSBjaGlwLT5vb2JfcG9pOwo+ICAJaW50IGJpdGZsaXBzID0gMDsKPiBAQCAtMjAzNSwxMSArMjAz
-NiwyNCBAQCBzdGF0aWMgaW50IGJyY21zdGJfbmFuZF92ZXJpZnlfZXJhc2VkX3BhZ2Uoc3RydWN0
-IG10ZF9pbmZvICptdGQsCj4gIAlpZiAocmV0KQo+ICAJCXJldHVybiByZXQ7Cj4gIAo+IC0JZm9y
-IChpID0gMDsgaSA8IGNoaXAtPmVjYy5zdGVwczsgaSsrLCBvb2IgKz0gc2FzKSB7Cj4gKwlmb3Ig
-KGkgPSAwOyBpIDwgY2hpcC0+ZWNjLnN0ZXBzOyBpKyspIHsKPiAgCQllY2NfY2h1bmsgPSBidWYg
-KyBjaGlwLT5lY2Muc2l6ZSAqIGk7Cj4gLQkJcmV0ID0gbmFuZF9jaGVja19lcmFzZWRfZWNjX2No
-dW5rKGVjY19jaHVuaywKPiAtCQkJCQkJICBjaGlwLT5lY2Muc2l6ZSwKPiAtCQkJCQkJICBvb2Is
-IHNhcywgTlVMTCwgMCwKPiArCj4gKwkJcmV0ID0gbmFuZF9jaGVja19lcmFzZWRfZWNjX2NodW5r
-KGVjY19jaHVuaywgY2hpcC0+ZWNjLnNpemUsCj4gKwkJCQkJCSAgTlVMTCwgMCwgTlVMTCwgMCwK
-PiArCQkJCQkJICBjaGlwLT5lY2Muc3RyZW5ndGgpOwo+ICsJCWlmIChyZXQgPCAwKQo+ICsJCQly
-ZXR1cm4gcmV0Owo+ICsKPiArCQliaXRmbGlwcyA9IG1heChiaXRmbGlwcywgcmV0KTsKPiArCX0K
-PiArCj4gKwlmb3IgKGkgPSAwOyBtdGQtPm9vYmxheW91dC0+ZWNjKG10ZCwgaSwgJm9vYmVjYykg
-IT0gLUVSQU5HRTsgaSsrKQo+ICsJewo+ICsJCXJldCA9IG5hbmRfY2hlY2tfZXJhc2VkX2VjY19j
-aHVuayhOVUxMLCAwLAo+ICsJCQkJCQkgIG9vYiArIG9vYmVjYy5vZmZzZXQsCj4gKwkJCQkJCSAg
-b29iZWNjLmxlbmd0aCwKPiArCQkJCQkJICBOVUxMLCAwLAo+ICAJCQkJCQkgIGNoaXAtPmVjYy5z
-dHJlbmd0aCk7Cj4gIAkJaWYgKHJldCA8IDApCj4gIAkJCXJldHVybiAKCklmIEkgdW5kZXJzdGFu
-ZCBjb3JyZWN0bHksIHRoZSBjbGVhbm1hcmtlciBpcyBpbiB0aGUgImF2YWlsYWJsZSBPT0IKYXJl
-YSIsIHdoaWNoIGlzIHNvbWV3aGVyZSBpbiB0aGUgT09CIGFyZWEgYmV0d2VlbiB0aGUgYmFkIGJs
-b2NrIG1hcmtlcgphbmQgdGhlIEVDQyBieXRlcy4gSSB0aGluayB0aGF0IGNoZWNraW5nIHRoZSBk
-YXRhIGJ1ZmZlciBhbmQgdGhlIEVDQwphcmVhIG9ubHkgaXMgZW5vdWdoIGFuZCB3ZSBjYW4gcHJv
-YmFibHkgbGVhdmUgdGhlIHJlbWFpbmluZyBzcGFyZSBPT0IKYXJlYS4KCkJ1dCBpbnN0ZWFkIG9m
-IGNhbGxpbmcgbmFuZF9jaGVja19lcmFzZWRfZWNjX2NodW5rIHR3aWNlLCBqdXN0IGNhbGw6Cgog
-ICAgbmFuZF9jaGVja19lcmFzZWRfZWNjX2NodW5rKGRhdGEsIGRhdGFsZW4sIGVjYywgZWNjbGVu
-LCBOVUxMLCAwLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0cmVuZ3RoKTsgCgpB
-bmQgYWxzbyBwbGVhc2UgY2xhcmlmeSB5b3VyIGNvbW1pdCBsb2c6IHlvdSBhcmUgbm90ICJqdXN0
-IGNoZWNraW5nIHRoZQpFQ0MgYnl0ZXMiIGJ1dCB5b3UgYXJlIGNoZWNraW5nIGJvdGggdGhlIG1h
-aW4gYXJlYSBhbmQgdGhlIEVDQyBieXRlcy4KCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlz
-Y3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9saW51eC1tdGQvCg==
+Hi Boris,
+
+Boris Brezillon <boris.brezillon@collabora.com> wrote on Sun, 3 May
+2020 10:00:18 +0200:
+
+> On Sat,  2 May 2020 18:34:30 +0200
+> Boris Brezillon <boris.brezillon@collabora.com> wrote:
+> 
+> > Erase and program operations need the WP (Write Protect) pin to be
+> > de-asserted to take effect. Let's add the concept of destructive
+> > operation and pass the information to exec_op() so controllers know
+> > when they should de-assert this pin without having to guess it from
+> > the command opcode.
+> > 
+> > Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+> > ---
+> >  include/linux/mtd/rawnand.h | 11 +++++++++++
+> >  1 file changed, 11 insertions(+)
+> > 
+> > diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+> > index c47cbcb86b71..6014e7389507 100644
+> > --- a/include/linux/mtd/rawnand.h
+> > +++ b/include/linux/mtd/rawnand.h
+> > @@ -854,6 +854,8 @@ struct nand_op_parser {
+> >  /**
+> >   * struct nand_operation - NAND operation descriptor
+> >   * @cs: the CS line to select for this NAND operation
+> > + * @deassert_wp: set to true when the operation requires the WP pin to be
+> > + *		 de-asserted (ERASE, PROG, ...)
+> >   * @instrs: array of instructions to execute
+> >   * @ninstrs: length of the @instrs array
+> >   *
+> > @@ -861,6 +863,7 @@ struct nand_op_parser {
+> >   */
+> >  struct nand_operation {
+> >  	unsigned int cs;
+> > +	bool deassert_wp;
+> >  	const struct nand_op_instr *instrs;
+> >  	unsigned int ninstrs;
+> >  };
+> > @@ -872,6 +875,14 @@ struct nand_operation {
+> >  		.ninstrs = ARRAY_SIZE(_instrs),			\
+> >  	}
+> >  
+> > +#define NAND_DESTRUCTIVE_OPERATION(_cs, _instrs)		\
+> > +	{							\
+> > +		.cs = _cs,					\
+> > +		.deassert_wp = true,				\
+> > +		.instrs = _instrs,				\
+> > +		.ninstrs = ARRAY_SIZE(_instrs),			\
+> > +	}
+> > +
+> >  int nand_op_parser_exec_op(struct nand_chip *chip,
+> >  			   const struct nand_op_parser *parser,
+> >  			   const struct nand_operation *op, bool check_only);  
+> 
+> The following diff should be part of this patch, otherwise none of the
+> operations are flagged as destructive. I'll fix that in v2, but I'd still
+> like to get feedback before sending a new version.
+> 
+> --->8---  
+> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> index fb8addf7637e..4111e7ac0834 100644
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -1308,7 +1308,8 @@ static int nand_exec_prog_page_op(struct nand_chip *chip, unsigned int page,
+>                 NAND_OP_CMD(NAND_CMD_PAGEPROG, PSEC_TO_NSEC(sdr->tWB_max)),
+>                 NAND_OP_WAIT_RDY(PSEC_TO_MSEC(sdr->tPROG_max), 0),
+>         };
+> -       struct nand_operation op = NAND_OPERATION(chip->cur_cs, instrs);
+> +       struct nand_operation op = NAND_DESTRUCTIVE_OPERATION(chip->cur_cs,
+> +                                                             instrs);
+>         int naddrs = nand_fill_column_cycles(chip, addrs, offset_in_page);
+>         int ret;
+>         u8 status;
+> @@ -1695,7 +1696,8 @@ int nand_erase_op(struct nand_chip *chip, unsigned int eraseblock)
+>                                     PSEC_TO_MSEC(sdr->tWB_max)),
+>                         NAND_OP_WAIT_RDY(PSEC_TO_MSEC(sdr->tBERS_max), 0),
+>                 };
+> -               struct nand_operation op = NAND_OPERATION(chip->cur_cs, instrs);
+> +               struct nand_operation op = NAND_DESTRUCTIVE_OPERATION(chip->cur_cs,
+> +                                                                     instrs);
+>  
+>                 if (chip->options & NAND_ROW_ADDR_3)
+>                         instrs[1].ctx.addr.naddrs++;
+
+What about nand_prog_page_end_op() or even
+nand_write_change_column_op()?
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
