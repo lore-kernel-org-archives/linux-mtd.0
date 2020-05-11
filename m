@@ -2,20 +2,21 @@ Return-Path: <SRS0=5+/X=6Z=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A3F5C47255
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 May 2020 16:15:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BA4DC54E8D
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 May 2020 16:29:48 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6104B206DB
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 May 2020 16:15:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D54DE2070B
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 May 2020 16:29:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dsd7i1Sc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6104B206DB
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ieZrwm0Y"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D54DE2070B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,40 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IPEdI427uqaB4Ck0elUC61OEM4sDkhBAKdORs+T/A1c=; b=dsd7i1ScsGZ4Go
-	bfrYWFUSBww5FlFHjnTsFs4/og8//RJdeNywmCrRDNvxFeaZl9r4Qwh3K2QACOIsBPFJT+CSurWqj
-	V3LaDow6w27KGrsnhhBDIkAInkOz0gtEmf99TBGHQ0DPBYNFxqXAvz2g0n96rpIRITeLFvlw1FNsj
-	RTQhv7nxDquTJdfqaYROw3y8xWpKJ/iUUC/t92JdhYbyzkx4tDYGxkfuWnHA6ZkL3f7yUCU36/nnY
-	Dpq3zPUYP9CKknqU+xcbhVpi+aq6z/O8Clxx36nukVFi05yRM0eo4OnXmNPujfSvJ2Avr6J3rkHZ2
-	8fhg/GwKGanZbkGYjQTg==;
+	List-Owner; bh=uJFKu2SO0FRsnY8cETtbD+XDNsmBLhZZqRUD9VeM830=; b=ieZrwm0YNtF3rI
+	8c4rUp0DqxU2w7aUP0hObYarW4eRhR/QmjaqR5ENlDKv26VMgPxcfQ66Mh9JIXlsi4lYe2OsMZvRj
+	ZVrCLi7cymnfMG8Wh+fIyi5XPOPeG1Lv8fJZdaHJuJ7C9dCgqrlyXzwN1XkIEVJtWnHxvjUg0zZGa
+	3egeXp0sc5u0/f9fgRwwrTeas64sdYdWplJA0rlEJzumK3l50bzh6bBpjt9umUSt31LFeChoOAoVP
+	bhkL8Bb+i/RAzQCP1K/VSk3EJi885ZFe8YEhNZdCJU+OOVVO/wpeny0WcKeLJHXvA6sEsS6C0TAYP
+	FNaPIyK4XAbT30/net/g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jYB4r-0008NW-CV; Mon, 11 May 2020 16:14:49 +0000
-Received: from relay1-d.mail.gandi.net ([217.70.183.193])
+	id 1jYBJ9-0002YY-QC; Mon, 11 May 2020 16:29:35 +0000
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jYB4o-0008Mu-CD
- for linux-mtd@lists.infradead.org; Mon, 11 May 2020 16:14:47 +0000
+ id 1jYBJ7-0002V0-5J
+ for linux-mtd@lists.infradead.org; Mon, 11 May 2020 16:29:34 +0000
 X-Originating-IP: 91.224.148.103
 Received: from xps13 (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id E8D2D24000A;
- Mon, 11 May 2020 16:14:40 +0000 (UTC)
-Date: Mon, 11 May 2020 18:14:39 +0200
+ by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id BACE960012;
+ Mon, 11 May 2020 16:29:24 +0000 (UTC)
+Date: Mon, 11 May 2020 18:29:23 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@collabora.com>
-Subject: Re: [PATCH v4 7/8] mtd: rawnand: arasan: Add new Arasan NAND
- controller
-Message-ID: <20200511181439.0c7b2768@xps13>
-In-Reply-To: <20200510090230.1ba6f6d7@collabora.com>
-References: <20200508171339.8052-1-miquel.raynal@bootlin.com>
- <20200508171339.8052-8-miquel.raynal@bootlin.com>
- <20200510090230.1ba6f6d7@collabora.com>
+Subject: Re: [PATCH] nand: raw: use write_oob_raw for MTD_OPS_AUTO_OOB mode
+Message-ID: <20200511182923.6a4961ab@xps13>
+In-Reply-To: <20200504123237.5c128668@collabora.com>
+References: <20200504094253.2741109-1-noltari@gmail.com>
+ <20200504123237.5c128668@collabora.com>
 Organization: Bootlin
 X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200511_091446_547139_00B7EB0D 
-X-CRM114-Status: GOOD (  12.22  )
+X-CRM114-CacheID: sfid-20200511_092933_336973_431FB95E 
+X-CRM114-Status: GOOD (  19.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,107 +68,58 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Michal Simek <monstr@monstr.eu>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Naga Sureshkumar Relli <nagasure@xilinx.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6?= Rojas <noltari@gmail.com>,
+ christophe.kerello@st.com, vigneshr@ti.com, richard@nod.at,
+ s.hauer@pengutronix.de, devik@eaxlabs.cz, linux-kernel@vger.kernel.org,
+ stefan@agner.ch, linux-mtd@lists.infradead.org, tglx@linutronix.de,
+ masonccyang@mxic.com.tw, piotrs@cadence.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Boris,
-
-Boris Brezillon <boris.brezillon@collabora.com> wrote on Sun, 10 May
-2020 09:02:30 +0200:
-
-> On Fri,  8 May 2020 19:13:38 +0200
-> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> 
-> > +static int anfc_len_to_steps(struct nand_chip *chip, unsigned int len)
-> > +{
-> > +	unsigned int steps = 1, pktsize = len;
-> > +
-> > +	while (pktsize > ANFC_MAX_PKT_SIZE) {
-> > +		steps *= 2;
-> > +		pktsize = DIV_ROUND_UP(len, steps);
-> > +	}  
-> 
-> 
-> Same here, you shouldn't have a round_up() but instead complain if
-> "len != pkt_size * steps"
-> 
-> 	if (len % 4)
-> 		return -ENOTSUPP;
-> 
-> 	if (len < ANFC_MAX_PKT_SIZE)
-> 		return len;
-> 
-> 	for (steps = 2; steps < ANFC_MAX_STEPS; steps *= 2) {
-> 		pkt_size = len / steps;
-> 		if (pkt_size <= ANFC_MAX_PKT_SIZE)
-> 			break;
-> 	}
-> 
-> 	if (pkt_size * steps != len)
-> 		return -ENOTSUPP;
-> 
-> 	return pkt_size;
-> 
-> > +
-> > +	if (steps > ANFC_MAX_STEPS)
-> > +		return -ENOTSUPP;
-> > +
-> > +	return steps;
-> > +}  
-
-I took the logic of the above proposal and extended the helper to be
-"anfc_pkt_len_config", taking two pointers as argument: *steps and
-*pktsize, which will be updated in case of success. Otherwise
-this function returns an error and can be added to the "check_op" path
-instead of only failing at execution time.
-
----8<---
-
-+static int anfc_pkt_len_config(unsigned int len, unsigned int *steps,
-+                              unsigned int *pktsize)
-+{
-+       unsigned int nb, sz;
-+
-+       for (nb = 1; nb < ANFC_MAX_STEPS; nb *= 2) {
-+               sz = len / nb;
-+               if (sz <= ANFC_MAX_PKT_SIZE)
-+                       break;
-+       }
-+
-+       if (sz * nb != len)
-+               return -ENOTSUPP;
-+
-+       if (steps)
-+               *steps = nb;
-+
-+       if (pktsize)
-+               *pktsize = sz;
-+
-+       return 0;
-+}
-
---->8---
-
-And then, in anfc_check_op():
-
-+               case NAND_OP_DATA_IN_INSTR:
-+               case NAND_OP_DATA_OUT_INSTR:
-+                       if (instr->ctx.data.len > ANFC_MAX_CHUNK_SIZE)
-+                               return -ENOTSUPP;
-+
-+                       if (anfc_pkt_len_config(instr->ctx.data.len NULL, NULL))
-+                               return -ENOTSUPP;
-+
-+                       break;
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgpCb3JpcyBCcmV6aWxsb24gPGJvcmlzLmJyZXppbGxvbkBjb2xsYWJvcmEuY29tPiB3
+cm90ZSBvbiBNb24sIDQgTWF5CjIwMjAgMTI6MzI6MzcgKzAyMDA6Cgo+IE9uIE1vbiwgIDQgTWF5
+IDIwMjAgMTE6NDI6NTMgKzAyMDAKPiDDgWx2YXJvIEZlcm7DoW5kZXogUm9qYXMgPG5vbHRhcmlA
+Z21haWwuY29tPiB3cm90ZToKPiAKPiA+IFNvbWUgTkFORCBjb250cm9sbGVycyBjaGFuZ2UgdGhl
+IEVDQyBieXRlcyB3aGVuIE9PQiBpcyB3cml0dGVuIHdpdGggRUNDCj4gPiBlbmFibGVkLgo+ID4g
+VGhpcyBpcyBhIHByb2JsZW0gaW4gYnJjbW5hbmQsIHNpbmNlIGFkZGluZyBKRkZTMiBjbGVhbm1h
+cmtlcnMgYWZ0ZXIgdGhlIHBhZ2UKPiA+IGhhcyBiZWVuIGVyYXNlZCB3aWxsIGNoYW5nZSB0aGUg
+RUNDIGJ5dGVzIHRvIDAgYW5kIHRoZSBjb250cm9sbGVyIHdpbGwgdGhpbmsKPiA+IHRoZSBibG9j
+ayBpcyBiYWQuCj4gPiBJdCBjYW4gYmUgZml4ZWQgYnkgdXNpbmcgd3JpdGVfb29iX3Jhdywgd2hp
+Y2ggZW5zdXJlcyBFQ0MgaXMgZGlzYWJsZWQuCj4gPiAKPiA+IFNpZ25lZC1vZmYtYnk6IMOBbHZh
+cm8gRmVybsOhbmRleiBSb2phcyA8bm9sdGFyaUBnbWFpbC5jb20+Cj4gPiAtLS0KPiA+ICBkcml2
+ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2Jhc2UuYyB8IDIgKy0KPiA+ICAxIGZpbGUgY2hhbmdlZCwg
+MSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKPiA+IAo+ID4gZGlmZiAtLWdpdCBhL2RyaXZl
+cnMvbXRkL25hbmQvcmF3L25hbmRfYmFzZS5jIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9i
+YXNlLmMKPiA+IGluZGV4IGMyNGU1ZTJiYTEzMC4uNzU1ZDI1MjAwNTIwIDEwMDY0NAo+ID4gLS0t
+IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9iYXNlLmMKPiA+ICsrKyBiL2RyaXZlcnMvbXRk
+L25hbmQvcmF3L25hbmRfYmFzZS5jCj4gPiBAQCAtNDg4LDcgKzQ4OCw3IEBAIHN0YXRpYyBpbnQg
+bmFuZF9kb193cml0ZV9vb2Ioc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwgbG9mZl90IHRvLAo+ID4g
+IAo+ID4gIAluYW5kX2ZpbGxfb29iKGNoaXAsIG9wcy0+b29iYnVmLCBvcHMtPm9vYmxlbiwgb3Bz
+KTsKPiA+ICAKPiA+IC0JaWYgKG9wcy0+bW9kZSA9PSBNVERfT1BTX1JBVykKPiA+ICsJaWYgKG9w
+cy0+bW9kZSA9PSBNVERfT1BTX0FVVE9fT09CIHx8IG9wcy0+bW9kZSA9PSBNVERfT1BTX1JBVykK
+PiA+ICAJCXN0YXR1cyA9IGNoaXAtPmVjYy53cml0ZV9vb2JfcmF3KGNoaXAsIHBhZ2UgJiBjaGlw
+LT5wYWdlbWFzayk7ICAKPiAKPiBUaGUgZG9jIHNheXM6Cj4gCj4gQE1URF9PUFNfUExBQ0VfT09C
+OiAgT09CIGRhdGEgYXJlIHBsYWNlZCBhdCB0aGUgZ2l2ZW4gb2Zmc2V0IChkZWZhdWx0KQo+IEBN
+VERfT1BTX0FVVE9fT09COiAgIE9PQiBkYXRhIGFyZSBhdXRvbWF0aWNhbGx5IHBsYWNlZCBhdCB0
+aGUgZnJlZSBhcmVhcwo+ICAgICAgICAgICAgICAgICAgICAgIHdoaWNoIGFyZSBkZWZpbmVkIGJ5
+IHRoZSBpbnRlcm5hbCBlY2NsYXlvdXQKPiBATVREX09QU19SQVc6ICAgICAgICBkYXRhIGFyZSB0
+cmFuc2ZlcnJlZCBhcy1pcywgd2l0aCBubyBlcnJvcgo+IAkJICAgICBjb3JyZWN0aW9uOyB0aGlz
+IG1vZGUgaW1wbGllcyAlTVREX09QU19QTEFDRV9PT0IKPiAKPiBUbyBtZSwgdGhhdCBtZWFucyBN
+VERfT1BTX1BMQUNFX09PQiBhbmQgTVREX09QU19BVVRPX09PQiBkbyBub3QgaW1wbHkKPiBNVERf
+T1BTX1JBVy4gQW55d2F5IHRob3NlIG1vZGVzIGFyZSBqdXN0IHRvbyB2YWd1ZS4gV2UgcmVhbGx5
+IHNob3VsZAo+IHNlcGFyYXRlIHRoZSBFQ0MtZGlzYWJsZWQvRUNDLWVuYWJsZWQgY29uY2VwdCAo
+QUtBIHJhdyB2cyBub24tcmF3IG1vZGUpCj4gZnJvbSB0aGUgT09CIHBsYWNlbWVudCBzY2hlbWUu
+IElJUkMsIE1pcXVlbCBoYWQgYSBwYXRjaHNldCBkb2luZyB0aGF0Lgo+IAo+IFdlIGFsc28gc2hv
+dWxkIGhhdmUgdGhlIGNvbmNlcHQgb2YgcHJvdGVjdGVkIE9PQi1yZWdpb24gdnMKPiB1bnByb3Rl
+Y3RlZC1PT0ItcmVnaW9uIGlmIHdlIHdhbnQgSkZGUzIgdG8gd29yayB3aXRoIGNvbnRyb2xsZXJz
+IHRoYXQKPiBwcm90ZWN0IHBhcnQgb2YgdGhlIE9PQiByZWdpb24uIE9uY2Ugd2UgaGF2ZSB0aGF0
+IHdlIGNhbiBwYXRjaCBKRkZTMgo+IHRvIHdyaXRlIHRoaW5ncyB3aXRoICJFQ0MtZGlzYWJsZWQi
+KyJhdXRvLU9PQi1wbGFjZW1lbnQtb24tdW5wcm90ZWN0ZWQKPiBhcmVhIi4KCkkgc2VlIHRoZSBw
+cm9ibGVtIGJ1dCBhcyBCb3JpcyBzYWlkIHRoZSBmaXggaXMgbm90IHZhbGlkIGFzLWlzLgpQcm9i
+bGVtIGlzOiBJIGRvbid0IGhhdmUgYSBiZXR0ZXIgcHJvcG9zYWwgeWV0LgoKSXMgZm9yY2luZyBK
+RkZTMiB0byB3cml0ZSBjbGVhbm1hcmtlcnMgaW4gcmF3IG1vZGUgb25seSBhbiBvcHRpb24/Cgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGlu
+dXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
+L21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
