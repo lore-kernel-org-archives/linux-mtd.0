@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B22A2C54E4B
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 May 2020 09:22:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5F45C54E4B
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 May 2020 09:27:36 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7251E20720
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 May 2020 09:22:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8CF11206E6
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 May 2020 09:27:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="j3DRRWGo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7251E20720
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="f11EKiUQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8CF11206E6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -24,36 +24,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tsCnuMZLlll29NlPII+3EB8cWExdUEh88D8T+yqOErg=; b=j3DRRWGoXoKez8
-	eKagCDrWex+djN8t4e55LZLg1BJ23tevNzdRmniypTffrkxUXba4TbJe45DFcGNqIljfYWLVmGL1r
-	jNj/xb0+jMAmJb9CyTSshpjMQbbrIO35b+cVlFmDoiKoeXUHuOhOkSGCwg30RI2+4fajgS7kw82ZQ
-	actfHeOUyAEliqveQLM8LKvIKVBWogPRxPrIIrc/kA4zj7+Kb8ULBdkem4bZsxfUhkRxaV1LvQyW9
-	FXs8w1eRZ+J5YEiVS64ogpxvcj5NFiEdDVUs2GsrDyNKDBpmUNGLZ5hKWYbNKeYV5+jyqb1VlyqpB
-	tztpdI8LIbhbtSe2rqDA==;
+	List-Owner; bh=sy6smiu7kIIMC8Y8KG+TVaEMHHyhA7KOIzqQqSDE44M=; b=f11EKiUQYP/hr2
+	4t+AS7HkUvkLfXSkZzJbNWWxEF+sOt6TwDICHIyzzANhnRd+Wn61bsKRzvroCqjW1iQtnoif/vtjD
+	/t3IGQNRfyix4Yx8iqZ+LbDu7PDqXJ8GH+S1ysLqz9PZi0J9Bm+CUheU3SYRSFcYSNzqLzdTWxzFB
+	L6Kv/uvUFoO2POIMKoHi08HyQJaOnMKTvgN5K5FDU5j6ic5/bTTCK2adPJWCawQ034UKjkj3hsGFU
+	FEZlnqnHWBJzXlg/Qzf3P0DX2EWzm81HU5J7vfvZvRTKB0khUiH+asWDyj/EdYAR26q4zzGNZQDF6
+	GcdQZE5DpN4D88UVNyWQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jY4e6-0003tF-NI; Mon, 11 May 2020 09:22:46 +0000
-Received: from relay10.mail.gandi.net ([217.70.178.230])
+	id 1jY4ib-00079f-6x; Mon, 11 May 2020 09:27:25 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jY4e3-0003rQ-L8
- for linux-mtd@lists.infradead.org; Mon, 11 May 2020 09:22:45 +0000
-Received: from xps13 (unknown [91.224.148.103])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay10.mail.gandi.net (Postfix) with ESMTPSA id D238124000F;
- Mon, 11 May 2020 09:22:38 +0000 (UTC)
-Date: Mon, 11 May 2020 11:22:37 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Christophe Kerello <christophe.kerello@st.com>
-Subject: Re: [PATCH v4 00/10] add STM32 FMC2 EBI controller driver
-Message-ID: <20200511112237.20751831@xps13>
-In-Reply-To: <1588756279-17289-1-git-send-email-christophe.kerello@st.com>
-References: <1588756279-17289-1-git-send-email-christophe.kerello@st.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1jY4iT-000729-PS; Mon, 11 May 2020 09:27:19 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id D85042A0F28;
+ Mon, 11 May 2020 10:27:15 +0100 (BST)
+Date: Mon, 11 May 2020 11:27:12 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: <Tudor.Ambarus@microchip.com>
+Subject: Re: [PATCH v4 00/16] mtd: spi-nor: add xSPI Octal DTR support
+Message-ID: <20200511112712.466f7246@collabora.com>
+In-Reply-To: <3649933.zuh8VGJVCz@192.168.0.120>
+References: <20200424184410.8578-1-p.yadav@ti.com>
+ <3649933.zuh8VGJVCz@192.168.0.120>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200511_022243_832780_B2621702 
-X-CRM114-Status: GOOD (  15.37  )
+X-CRM114-CacheID: sfid-20200511_022717_958156_7CE8D683 
+X-CRM114-Status: GOOD (  21.88  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -65,66 +67,88 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, marex@denx.de,
- vigneshr@ti.com, gregkh@linuxfoundation.org, richard@nod.at,
- linux-kernel@vger.kernel.org, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, boris.brezillon@collabora.com,
- linux-stm32@st-md-mailman.stormreply.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: alexandre.belloni@bootlin.com, vigneshr@ti.com, richard@nod.at,
+ nsekhar@ti.com, Nicolas.Ferre@microchip.com, linux-kernel@vger.kernel.org,
+ Ludovic.Desroches@microchip.com, broonie@kernel.org,
+ linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
+ linux-spi@vger.kernel.org, p.yadav@ti.com,
+ linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQ2hyaXN0b3BoZSwKCkNocmlzdG9waGUgS2VyZWxsbyA8Y2hyaXN0b3BoZS5rZXJlbGxvQHN0
-LmNvbT4gd3JvdGUgb24gV2VkLCA2IE1heSAyMDIwCjExOjExOjA5ICswMjAwOgoKPiBUaGUgRk1D
-MiBmdW5jdGlvbmFsIGJsb2NrIG1ha2VzIHRoZSBpbnRlcmZhY2Ugd2l0aDogc3luY2hyb25vdXMg
-YW5kCj4gYXN5bmNocm9ub3VzIHN0YXRpYyBkZXZpY2VzIChzdWNoIGFzIFBTTk9SLCBQU1JBTSBv
-ciBvdGhlciBtZW1vcnktbWFwcGVkCj4gcGVyaXBoZXJhbHMpIGFuZCBOQU5EIGZsYXNoIG1lbW9y
-aWVzLgo+IEl0cyBtYWluIHB1cnBvc2VzIGFyZToKPiAgIC0gdG8gdHJhbnNsYXRlIEFYSSB0cmFu
-c2FjdGlvbnMgaW50byB0aGUgYXBwcm9wcmlhdGUgZXh0ZXJuYWwgZGV2aWNlCj4gICAgIHByb3Rv
-Y29sCj4gICAtIHRvIG1lZXQgdGhlIGFjY2VzcyB0aW1lIHJlcXVpcmVtZW50cyBvZiB0aGUgZXh0
-ZXJuYWwgZGV2aWNlcwo+IEFsbCBleHRlcm5hbCBkZXZpY2VzIHNoYXJlIHRoZSBhZGRyZXNzZXMs
-IGRhdGEgYW5kIGNvbnRyb2wgc2lnbmFscyB3aXRoIHRoZQo+IGNvbnRyb2xsZXIuIEVhY2ggZXh0
-ZXJuYWwgZGV2aWNlIGlzIGFjY2Vzc2VkIGJ5IG1lYW5zIG9mIGEgdW5pcXVlIENoaXAKPiBTZWxl
-Y3QuIFRoZSBGTUMyIHBlcmZvcm1zIG9ubHkgb25lIGFjY2VzcyBhdCBhIHRpbWUgdG8gYW4gZXh0
-ZXJuYWwgZGV2aWNlLgo+IAo+IENoYW5nZXMgaW4gdjQ6Cj4gIC0gYmluZGluZ3M6Cj4gICAgLSBm
-aXggZmlsZW5hbWU6IHN0LHN0bTMyLWZtYzItZWJpLnlhbWwKPiAKPiBDaGFuZ2VzIGluIHYzOgo+
-ICAtIE5BTkQ6Cj4gICAgLSByZW5hbWUgbGFiZWxzIHVzZWQgb24gZXJyb3JzCj4gICAgLSBhZGQg
-aW4gdGhlIGNvbW1pdCBsb2cgdGhlIHJlYXNvbiB0byBpbmNyZWFzZSBGTUMyX1RJTUVPVVRfTVMg
-KHBhdGNoIDMpCj4gICAgLSBhZGQgTWlxdWVsIHJldmlld2VkLWJ5IHRhZyAocGF0Y2hlcyAyLzQv
-NS85KQo+ICAtIEVCSToKPiAgICAtIG1vdmUgaW4gbWVtb3J5IGZvbGRlcgo+ICAgIC0gbWVyZ2Ug
-TUZEIGFuZCBCVVMgZHJpdmVycyB0byBhdm9pZCBhIE1GRCBkcml2ZXIKPiAgLSBiaW5kaW5nczoK
-PiAgICAtIHBhdHRlcm4gbmFtZSBoYXMgYmVlbiBtb2RpZmllZAo+ICAgIC0gdmVuZG9yIHByb3Bl
-cnRpZXMgaGF2ZSBiZWVuIG1vZGlmaWVkCj4gICAgICAtIHMvXy8tLwo+ICAgICAgLSBhZGQgdW5p
-dCBzdWZmaXggKC1ucykgb24gdGltaW5nIHByb3BlcnRpZXMKPiAKPiBDaHJpc3RvcGhlIEtlcmVs
-bG8gKDEwKToKPiAgIG10ZDogcmF3bmFuZDogc3RtMzJfZm1jMjogbWFuYWdlIGFsbCBlcnJvcnMg
-Y2FzZXMgYXQgcHJvYmUgdGltZQo+ICAgbXRkOiByYXduYW5kOiBzdG0zMl9mbWMyOiByZW1vdmUg
-dXNlbGVzcyBpbmxpbmUgY29tbWVudHMKPiAgIG10ZDogcmF3bmFuZDogc3RtMzJfZm1jMjogdXNl
-IEZNQzJfVElNRU9VVF9NUyBmb3IgdGltZW91dHMKPiAgIG10ZDogcmF3bmFuZDogc3RtMzJfZm1j
-MjogY2xlYW51cAo+ICAgbXRkOiByYXduYW5kOiBzdG0zMl9mbWMyOiB1c2UgRklFTERfUFJFUC9G
-SUVMRF9HRVQgbWFjcm9zCj4gICBkdC1iaW5kaW5nczogbXRkOiB1cGRhdGUgU1RNMzIgRk1DMiBO
-QU5EIGNvbnRyb2xsZXIgZG9jdW1lbnRhdGlvbgo+ICAgZHQtYmluZGluZ3M6IG1lbW9yeS1jb250
-cm9sbGVyOiBhZGQgU1RNMzIgRk1DMiBFQkkgY29udHJvbGxlcgo+ICAgICBkb2N1bWVudGF0aW9u
-Cj4gICBtZW1vcnk6IHN0bTMyLWZtYzItZWJpOiBhZGQgU1RNMzIgRk1DMiBFQkkgY29udHJvbGxl
-ciBkcml2ZXIKPiAgIG10ZDogcmF3bmFuZDogc3RtMzJfZm1jMjogdXNlIHJlZ21hcCBBUElzCj4g
-ICBtdGQ6IHJhd25hbmQ6IHN0bTMyX2ZtYzI6IGdldCByZXNvdXJjZXMgZnJvbSBwYXJlbnQgbm9k
-ZQo+IAo+ICAuLi4vbWVtb3J5LWNvbnRyb2xsZXJzL3N0LHN0bTMyLWZtYzItZWJpLnlhbWwgICAg
-ICB8ICAyNjEgKysrKysKPiAgLi4uL2JpbmRpbmdzL210ZC9zdCxzdG0zMi1mbWMyLW5hbmQueWFt
-bCAgICAgICAgICAgfCAgIDE5ICstCj4gIGRyaXZlcnMvbWVtb3J5L0tjb25maWcgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIHwgICAxMCArCj4gIGRyaXZlcnMvbWVtb3J5L01ha2VmaWxlICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgMSArCj4gIGRyaXZlcnMvbWVtb3J5L3N0bTMy
-LWZtYzItZWJpLmMgICAgICAgICAgICAgICAgICAgIHwgMTIwNiArKysrKysrKysrKysrKysrKysr
-Kwo+ICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9LY29uZmlnICAgICAgICAgICAgICAgICAgICAgICB8
-ICAgIDEgKwo+ICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9zdG0zMl9mbWMyX25hbmQuYyAgICAgICAg
-ICAgICB8IDExNzYgKysrKysrKysrKy0tLS0tLS0tLQo+ICA3IGZpbGVzIGNoYW5nZWQsIDIwNjEg
-aW5zZXJ0aW9ucygrKSwgNjEzIGRlbGV0aW9ucygtKQo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgRG9j
-dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL21lbW9yeS1jb250cm9sbGVycy9zdCxzdG0z
-Mi1mbWMyLWViaS55YW1sCj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL21lbW9yeS9zdG0z
-Mi1mbWMyLWViaS5jCj4gCgpJJ20gZmluZSB3aXRoIHRoZSBwcmVwYXJhdGlvbiBwYXRjaGVzIDEt
-NSBidXQgdGhlIG90aGVyIHBhdGNoZXMgbmVlZApSb2IncyBoYWNrIGFuZCBwcm9iYWJseSBtb3Jl
-IGNoYW5nZXMuIElmIGl0J3MgZmluZSB3aXRoIHlvdSBJIGNhbiBhcHBseQp0aGVzZSBwYXRjaGVz
-IGZvciB0aGUgbmV4dCBtZXJnZSB3aW5kb3cgYW5kIGxldCBtb3JlIHRpbWUgdG8gd29yayBvbgp0
-aGUgbGFzdCA1LgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBs
-aXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRk
-Lwo=
+On Mon, 11 May 2020 09:00:35 +0000
+<Tudor.Ambarus@microchip.com> wrote:
+
+> Hi, Pratyush, Boris,
+> 
+> On Friday, April 24, 2020 9:43:54 PM EEST Pratyush Yadav wrote:
+> > This series adds support for octal DTR flashes in the spi-nor framework,  
+> 
+> I'm still learning about this, but I can give you my 2 cents as of now, to 
+> open the discussion. Enabling 2-2-2, 4-4-4, and 8-8-8 modes is dangerous 
+> because the flash may not recover from unexpected resets. Entering one of 
+> these modes can be:
+> 1/ volatile selectable, the device return to the 1-1-1 protocol after the next 
+> power-on. I guess this is conditioned by the optional RESET pin, but I'll have 
+> to check. Also the flash can return to the 1-1-1 mode using the software reset 
+> or through writing to its Configuration Register, without power-on or power-
+> off.
+
+My understanding is that there's no standard software reset procedure
+that guarantees no conflict with existing 1S commands, so even the
+software reset approach doesn't work here.
+
+> 2/ non-volatile selectable in which RESET# and software reset are useless, the 
+> flash defaults to the mode selected in the non volatile Configuration Register 
+> bits. The only way to get back to 1-1-1 is to write to the Configuration 
+> Register.
+
+I'm less worried about this case though, since I'd expect the ROM
+code and bootloaders to be able to deal with xD-xD-xD modes when the
+flash is set in this mode by default. That implies letting Linux know
+about this default mode of course, maybe through an extra DT
+property/cmdline param.
+
+> 
+> Not recovering from unexpected resets is unacceptable. One should always 
+> prefer option 1/ and condition the entering in 2-2-2, 4-4-4 and 8-8-8 with the 
+> presence of the optional RESET pin.
+
+Totally agree with you on that one, but we know what happens in
+practice...
+
+> 
+> For the unfortunate flashes that support just option 2/, we should not enter 
+> these modes on our own, just by discovering the capabilities from the SFDP 
+> tables or by the flags in the flash_info struct. The best we can do for them 
+> is to move the responsibility to the user. Maybe to add a Kconfig option that 
+> is disabled by default with which we condition the entering in 2-2-2, 4-4-4 or 
+> 8-8-8 modes.
+
+Hm, a Kconfig option doesn't sound like the right solution to the
+problem, since it should be a per-flash decision, not something you set
+system-wise.
+
+> Once entered in one of these modes, if an unexpected reset comes, 
+> you most likely are doomed, because early stage bootloaders may not work in 
+> these modes and you'll not be able to boot the board. Assuming that one uses 
+> other environment to boot the board, we should at least make sure that the 
+> flash works in linux after an unexpected reset. We should try to determine in 
+> which mode we are at init, so maybe an extension of the default_init hook is 
+> needed. But all this looks like a BIG compromise, I'm not yet sure if we 
+> should adress 2/. Thoughts?
+
+We should definitely not write non-volatile regs on our own, but
+instead use the mode that's been chosen there. I doubt anyone
+setting the non-volative conf to 8D-8D-8D will ever want to go back to
+1S-1S-1S anyway, so 8D -> 1S transitions are not really an issue, right?
+
+Of course, that still leaves us with the 'mode detection' issue, and I
+have no solution other than flagging it through the DT/cmdline for that
+one...
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
