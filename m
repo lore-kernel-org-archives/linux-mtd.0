@@ -2,83 +2,64 @@ Return-Path: <SRS0=zmx6=62=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6ABBC54E4A
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 May 2020 09:49:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD474C54E4A
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 May 2020 11:27:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 97D3020661
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 May 2020 09:49:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 99A482072B
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 May 2020 11:27:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="riDvKRK/";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="YaY/K/6P"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 97D3020661
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EmagT3Dv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 99A482072B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=hisilicon.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gAwSQ5BtKYeMzLVP4XUaThAEU8EeJyGEjFJlPzUuKWw=; b=riDvKRK/7xsAkP
-	NZjNWS+/7eXI4+x/L/upc/blVVOrEjtbk4j660jqIDWtceEmXufXBBecs7zF39dkpYYRU6gfOSswS
-	L/7DqnpPWjyLaKpP4BE6teC5eaNK8N+qv/GKPA/HkUdGjSIPq2xsnnzQFvYGzmsi56vsHocRPg4+p
-	+y7hbi4FCRZdqvgwj729bSkMz5RQbSlZz3NLp1p4kGPZyX5/jZI3Im3zA+snkovwdDgDtEAvakVP8
-	9rNa3ssodSldEMgQr3mtJKilNw7kZMjBxPepQlV/7vjnF9zV6TmRqaLOme+rnFmJHgFRSmVF375iU
-	B76eFAOauMouESaB0+fg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Ns6vH/0dI/dQJxbSaScxUvS0sSZa028nokm680GDHm8=; b=EmagT3DvkQHh4Q
+	ih1btlKblo0jL9sOoplxDlj0+Vc+vqVUoKMtLXU27Eph2q2Qp6M6tb/pgBXggGNBsP94voGj6K+Kf
+	2+7YjVrCrJE9fwxY4YN7Xpk/cXa6vOmJ4WBoh694bwCSk2qZddjiq2FyYJreyjoZJYxb9IjuO59js
+	4CH7nqV5YRMg1/e59b0UqvBavAYkinU7Gs3Vi45UsBYH09nfW4X4Bqcv4mWpyzJaE67erjUVwBgae
+	xCgnppys7oz9SM0KibFi+BCCAvQG305MFZ8hrL6++9KXVYUe1jmffwQivsfjeqNxoxqythpv02oeG
+	BaeeFsIXzhJ8lVfei3mw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jYRXT-0007af-GF; Tue, 12 May 2020 09:49:27 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1jYT4T-0000PC-OP; Tue, 12 May 2020 11:27:37 +0000
+Received: from szxga04-in.huawei.com ([45.249.212.190] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jYRXP-0007ZH-SC; Tue, 12 May 2020 09:49:25 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04C9nDED114366;
- Tue, 12 May 2020 04:49:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1589276953;
- bh=jUYRZICT0PRktUXP+DkHT6YPgQop3lvSvIxDQCp6Tcw=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=YaY/K/6P+NWmD68AeIpmrtjtam+dzCKmnqb9uPVuISjUb+E/3vFaEgSV7VrB5uvyC
- mWswey9Fy7l9mRqoOSgWz3pBz8a2OiRcJOmTP6xtnOAYGsZPD6FS4JGagFMFeTEuyp
- bvOKqgSLWA0o3dlznsyX7ao7M9PYEM+uqqJ/IiS4=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04C9nDoe049255;
- Tue, 12 May 2020 04:49:13 -0500
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 12
- May 2020 04:49:13 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 12 May 2020 04:49:13 -0500
-Received: from [10.250.234.195] (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04C9n7cO076689;
- Tue, 12 May 2020 04:49:08 -0500
-Subject: Re: [PATCH v4 00/16] mtd: spi-nor: add xSPI Octal DTR support
-To: <Tudor.Ambarus@microchip.com>, <boris.brezillon@collabora.com>
-References: <20200424184410.8578-1-p.yadav@ti.com>
- <3649933.zuh8VGJVCz@192.168.0.120> <20200511112712.466f7246@collabora.com>
- <144878625.o7txgtY6sz@192.168.0.120>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <49abc8f3-5bb5-bc6d-b2ec-f14b115c58dc@ti.com>
-Date: Tue, 12 May 2020 15:19:07 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ id 1jYT4Q-0000M3-EE
+ for linux-mtd@lists.infradead.org; Tue, 12 May 2020 11:27:36 +0000
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+ by Forcepoint Email with ESMTP id 3D2F489ECF9A68C7890D;
+ Tue, 12 May 2020 19:27:22 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 12 May 2020 19:27:12 +0800
+From: Yicong Yang <yangyicong@hisilicon.com>
+To: <tudor.ambarus@microchip.com>, <linux-mtd@lists.infradead.org>
+Subject: [RFC PATCH v2 2/2] mtd: spi-nor: Disable the flash quad mode in
+ spi_nor_restore()
+Date: Tue, 12 May 2020 19:26:59 +0800
+Message-ID: <1589282819-42358-3-git-send-email-yangyicong@hisilicon.com>
+X-Mailer: git-send-email 2.8.1
+In-Reply-To: <1589282819-42358-1-git-send-email-yangyicong@hisilicon.com>
+References: <1589282819-42358-1-git-send-email-yangyicong@hisilicon.com>
 MIME-Version: 1.0
-In-Reply-To: <144878625.o7txgtY6sz@192.168.0.120>
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200512_024924_040398_1778FCFD 
-X-CRM114-Status: GOOD (  15.33  )
+X-CRM114-CacheID: sfid-20200512_042734_644154_C0FDEFD7 
+X-CRM114-Status: UNSURE (   9.24  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,84 +71,44 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: alexandre.belloni@bootlin.com, richard@nod.at, nsekhar@ti.com,
- linux-kernel@vger.kernel.org, Nicolas.Ferre@microchip.com,
- Ludovic.Desroches@microchip.com, broonie@kernel.org,
- linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
- linux-spi@vger.kernel.org, p.yadav@ti.com,
- linux-arm-kernel@lists.infradead.org
+Cc: vigneshr@ti.com, sergei.shtylyov@cogentembedded.com, richard@nod.at,
+ me@yadavpratyush.com, john.garry@huawei.com, linuxarm@huawei.com,
+ yangyicong@hisilicon.com, alexander.sverdlin@nokia.com,
+ miquel.raynal@bootlin.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+If the flash's quad mode is enabled, it'll remain in the quad mode when
+it's removed. If we drive the flash next time in SPI/Dual mode, then
+problem occurs as the flash's quad enable bit is not cleared.
 
+Disable the quad mode in spi_nor_restore(), the flash will leave
+quad mode when remove. This will make sure the flash always enter the
+correct mode when loaded.
 
-On 12/05/20 11:46 am, Tudor.Ambarus@microchip.com wrote:
-> Hi, Boris, Pratyush,
-> 
-> I stripped case 2/, we'll not treat it for now.
-> 
-> On Monday, May 11, 2020 12:27:12 PM EEST Boris Brezillon wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the
->> content is safe
->>
->> On Mon, 11 May 2020 09:00:35 +0000
->>
->> <Tudor.Ambarus@microchip.com> wrote:
->>> Hi, Pratyush, Boris,
->>>
->>> On Friday, April 24, 2020 9:43:54 PM EEST Pratyush Yadav wrote:
->>>> This series adds support for octal DTR flashes in the spi-nor framework,
->>>
->>> I'm still learning about this, but I can give you my 2 cents as of now, to
->>> open the discussion. Enabling 2-2-2, 4-4-4, and 8-8-8 modes is dangerous
->>> because the flash may not recover from unexpected resets. Entering one of
->>> these modes can be:
->>> 1/ volatile selectable, the device return to the 1-1-1 protocol after the
->>> next power-on. I guess this is conditioned by the optional RESET pin, but
->>> I'll have to check. Also the flash can return to the 1-1-1 mode using the
->>> software reset or through writing to its Configuration Register, without
->>> power-on or power- off.
->>
->> My understanding is that there's no standard software reset procedure
->> that guarantees no conflict with existing 1S commands, so even the
->> software reset approach doesn't work here.
->>
-> 
-> The software reset procedure can't protect you from unexpected resets, but the 
-> hardware with its optional reset pin can. Pratyush to confirm.
-> 
-> cut
-> 
->>
->>> Not recovering from unexpected resets is unacceptable. One should always
->>> prefer option 1/ and condition the entering in 2-2-2, 4-4-4 and 8-8-8 with
->>> the presence of the optional RESET pin.
->>
->> Totally agree with you on that one, but we know what happens in
->> practice...
-> 
-> What I proposed is to condition the entering in the state-full modes with the 
-> presence of the optional RESET pin. We would introduce an optional device tree 
-> property for the RESET pin. If hardware doesn't implement the optional RESET# 
-> signal, then we will not enter in the state-full modes.
->
+Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+---
+ drivers/mtd/spi-nor/core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Are you asking for dedicated SW controllable reset line or just an
-indication from DT that OSPI reset line is connected to board level
-soft/hard reset lines?
-
-Mandating SW controllable RESET line is bit of a stretch IMO... Board
-design may not allow wasting dedicated pin due to lack of GPIOs perhaps..
-
-For eg.: TI EVM has OSPI reset line connected to board level reset out.
-This ensures any soft/warm/hard CPU reset will trigger OSPI Flash reset,
-but there is no SW control that allows OSPI flash alone to be reset.
-Isn't such a reset mechanism sufficient?
-
-Regards
-Vignesh
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 72e8d8b..564de02 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -3004,6 +3004,9 @@ void spi_nor_restore(struct spi_nor *nor)
+ 	if (nor->addr_width == 4 && !(nor->flags & SNOR_F_4B_OPCODES) &&
+ 	    nor->flags & SNOR_F_BROKEN_RESET)
+ 		nor->params->set_4byte_addr_mode(nor, false);
++
++	/* disable quad mode */
++	spi_nor_quad_enable(nor, false);
+ }
+ EXPORT_SYMBOL_GPL(spi_nor_restore);
+ 
+-- 
+2.8.1
 
 
 ______________________________________________________
