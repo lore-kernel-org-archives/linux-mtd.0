@@ -2,23 +2,23 @@ Return-Path: <SRS0=zmx6=62=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 523CACA90AF
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 May 2020 16:33:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2364CC2D0F8
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 May 2020 18:47:28 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 23698206F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 May 2020 16:33:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EC8B820673
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 May 2020 18:47:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="P9sRU3yz";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="fDh8SqPU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 23698206F5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TtCfy7ad";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="GTrAAg1h"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC8B820673
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -26,61 +26,60 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TK4kql79wP5pxSU/mt6J4bs5JOBvDgOKk4oI6yeNFqw=; b=P9sRU3yzh7CxpF
-	HUHp3CoJMUxJCKEjDyv/myYHZ8W7s3g+puL76XG4IM3etiBb2ECgIw+lGPj3p27TYvWjctqehrbyE
-	Dwjst6P4xB8PTYpOvYEGrWe2SB6DQkzTGIOl7OxHDyzOCRXPjWSO0AICMBs1o0N7deildmJ86RTgi
-	NuWTjz9+qYZWGFBSRNgE7HV8v4wGhNQWmMg73LdspwD75oN3oRutiJaxotpGCtBS5qHWK3QJNDjid
-	L7uFAtaFQR5Bx/xgNa+uO/Ahq4SaIy7Gwz7c3GGkCbMxREf25QhR26ccwAfoD0OKwBO/1TGZSVL+q
-	W8z252NqGCKktGN82ycQ==;
+	List-Owner; bh=kE7Kf6Kvq/nnSDpztuBviFqvucclU75tCFiBKm2mN2g=; b=TtCfy7adskNRE3
+	LaEfN47UFPpA47SUp+UhtwXiwNMxnJo+QauWp6JrGS5UX+wn9k7Y2T7bajoA6PE0BlA+Z+eD3yIWD
+	RFwHEcK66lNvvsMLa2+vujujb9GAg5lW10goaxLoDiT1rwGFDWYiOExvj2VipDojVr/LahQ4xSoh4
+	7k8W5O38joIw0BE4dXx10wHqcRib+5qOQqTPB6FWoNR98gPepu8EliLQ/tvQ898Kregs7Jnrj1S6Y
+	ZLpgVyaI4P466NQQdGKF76fSAgqAXygDCkxW8fGdfu6Jf27ryqLNPY+MqUmtqytf9wPIN9LlSllW2
+	Otmw6VtcUHr2FhD00M4Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jYXqA-0004W8-O5; Tue, 12 May 2020 16:33:10 +0000
-Received: from mail-pl1-x641.google.com ([2607:f8b0:4864:20::641])
+	id 1jYZw4-0004d3-PL; Tue, 12 May 2020 18:47:24 +0000
+Received: from lelv0142.ext.ti.com ([198.47.23.249])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jYXq7-0004VN-KB
- for linux-mtd@lists.infradead.org; Tue, 12 May 2020 16:33:08 +0000
-Received: by mail-pl1-x641.google.com with SMTP id b8so5580223plm.11
- for <linux-mtd@lists.infradead.org>; Tue, 12 May 2020 09:33:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to;
- bh=ctZuzP0mrOdvFXnnYs/2o1wzWdulhTSUbqXer0Ilo18=;
- b=fDh8SqPU60lI6TPXL0xB06mkxX6puiXsebxoJlaAKLmVB07HrYfUXhD8E99vO8NQwE
- gMd9eoSlJWTSue3RRnvY+pNo05ZAe5a1kCVy+1xCJMcZ08G2nqCxsmEj3J1UtO3Cx3xz
- SAZmraUZVuIR7nL0opNunUuuqkj9JxON+OMVE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=ctZuzP0mrOdvFXnnYs/2o1wzWdulhTSUbqXer0Ilo18=;
- b=qcs4YuwkmXqdOero12eO+wYWBuKSGM4PRdOBpHODo/QfOSr3W0AEJYx/WC+ETrEbAY
- G4457/1/w4PsLdNbHaeqTO7jBlw7V7NE/haB3lyLmNGoV9+dYT8C4+TLJFKnAshXXnDl
- XHyKPm+LoUWGd7i3R6V0n+jSPSORm6zDmM/6FM4QvxUr/ON4+VwOYf8PdLzx1bIUw/1a
- VjH0kpB8ZxZ7/idDt66pk96cROXKVVvhFaRi8HAbbi8ujVv7eULsFQ3nXcvWroNbHvwC
- tqo1vbNUCL3jek8GdOIWecwifAr1rk+YgZOHZ9qKyipe/ePYdb/E5HXC5+6HXKJj2I20
- lbRQ==
-X-Gm-Message-State: AOAM531/xycKXowfElKTE6AEURkJiV6U9aDEigzorDX0u+mruvKbQaIz
- OtxU13eVxO/SQBeCjVp/SikpJQ==
-X-Google-Smtp-Source: ABdhPJzVIpIBCQXJuEzutGDFzp+Vae8wcRS4XKqjUGTYDPhU9pydk6Fv13BBb3AfSRYnbNfslp36ng==
-X-Received: by 2002:a17:90b:86:: with SMTP id bb6mr154524pjb.138.1589301186185; 
- Tue, 12 May 2020 09:33:06 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
- by smtp.gmail.com with ESMTPSA id 207sm10732620pgh.34.2020.05.12.09.33.04
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 12 May 2020 09:33:05 -0700 (PDT)
-Date: Tue, 12 May 2020 09:33:03 -0700
-From: Kees Cook <keescook@chromium.org>
-To: WeiXiong Liao <liaoweixiong@allwinnertech.com>
-Subject: Re: [PATCH] mtd: offset align to block size bofore block operation
-Message-ID: <202005120932.96313EB605@keescook>
-References: <1589266715-4168-1-git-send-email-liaoweixiong@allwinnertech.com>
+ id 1jYZvq-0004RI-D7; Tue, 12 May 2020 18:47:12 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04CIl0aH042905;
+ Tue, 12 May 2020 13:47:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1589309220;
+ bh=gdpZbVGnmu82Ltylj7zMGAjghfqs8C0XbDqrJcvjIUw=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=GTrAAg1hJh7itOcW4SLu7lNpvXjddphXZysRjzEGFdlWjJXVRzwSncAD1hGESqoOq
+ Yqx1WqS6Om6TRq4h94nigWX4VYc7/sUadEfEmgQ1OEUYxPV/nkFZurLYx+A6PIN0DO
+ aB9Jjte/G2GkHBhyp1KqKrwyEGu8J6jJxMvMBxdg=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04CIl0WC011391
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 12 May 2020 13:47:00 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 12
+ May 2020 13:47:00 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 12 May 2020 13:47:00 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04CIkxg4112061;
+ Tue, 12 May 2020 13:46:59 -0500
+Date: Wed, 13 May 2020 00:16:58 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: <Tudor.Ambarus@microchip.com>
+Subject: Re: [PATCH v4 00/16] mtd: spi-nor: add xSPI Octal DTR support
+Message-ID: <20200512184656.ksudjyeqbwv6jze6@ti.com>
+References: <20200424184410.8578-1-p.yadav@ti.com>
+ <144878625.o7txgtY6sz@192.168.0.120>
+ <49abc8f3-5bb5-bc6d-b2ec-f14b115c58dc@ti.com>
+ <2352513.UHBGRE98Z5@192.168.0.120>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1589266715-4168-1-git-send-email-liaoweixiong@allwinnertech.com>
+In-Reply-To: <2352513.UHBGRE98Z5@192.168.0.120>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200512_093307_684333_9ADAE275 
-X-CRM114-Status: UNSURE (   9.37  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200512_114710_567965_85999352 
+X-CRM114-Status: GOOD (  18.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,32 +91,65 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Tony Luck <tony.luck@intel.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
- Anton Vorontsov <anton@enomsg.org>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Colin Cross <ccross@android.com>
+Cc: alexandre.belloni@bootlin.com, vigneshr@ti.com, richard@nod.at,
+ broonie@kernel.org, nsekhar@ti.com, linux-kernel@vger.kernel.org,
+ Nicolas.Ferre@microchip.com, Ludovic.Desroches@microchip.com,
+ boris.brezillon@collabora.com, linux-mtd@lists.infradead.org,
+ miquel.raynal@bootlin.com, linux-spi@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, May 12, 2020 at 02:58:35PM +0800, WeiXiong Liao wrote:
-> The off parameter on mtdpsore_block_*() does not align to block size,
-> which makes some bugs. For example, a block contains dmesg zones
-> with number 0 to 3. When user remove all these files, mapped to
-> these zones, mtdpstore is expected to check whether No.0 to No.3 is
-> unused then erase this block. However it check No.3 to No.6 because
-> it get wrongly beginning zonenum from misaligned off.
+On 12/05/20 11:29AM, Tudor.Ambarus@microchip.com wrote:
+> Hi, Vignesh,
 > 
-> Signed-off-by: WeiXiong Liao <liaoweixiong@allwinnertech.com>
+> > > The software reset procedure can't protect you from unexpected 
+> > > resets, but
+> > > the hardware with its optional reset pin can. Pratyush to confirm.
+> > > 
+> > > cut
+> > > 
+> > >>> Not recovering from unexpected resets is unacceptable. One should always
+> > >>> prefer option 1/ and condition the entering in 2-2-2, 4-4-4 and 8-8-8
+> > >>> with
+> > >>> the presence of the optional RESET pin.
+> > >> 
+> > >> Totally agree with you on that one, but we know what happens in
+> > >> practice...
+> > > 
+> > > What I proposed is to condition the entering in the state-full modes with
+> > > the presence of the optional RESET pin. We would introduce an optional
+> > > device tree property for the RESET pin. If hardware doesn't implement the
+> > > optional RESET# signal, then we will not enter in the state-full modes.
+> > 
+> > Are you asking for dedicated SW controllable reset line or just an
+> > indication from DT that OSPI reset line is connected to board level
+> > soft/hard reset lines?
+> 
+> I don't see a need for the reset line to be SW controllable, a simple 
+> indication from the device tree should be enough.
 
-Thanks! I've squashed this and will send a v8 of the mtdpstore
-separately.
-
--Kees
+We already have the property "broken-flash-reset". Should we re-use it 
+or should we have a opt-in property instead of an opt-out one?
+ 
+> > 
+> > Mandating SW controllable RESET line is bit of a stretch IMO... Board
+> > design may not allow wasting dedicated pin due to lack of GPIOs perhaps..
+> > 
+> > For eg.: TI EVM has OSPI reset line connected to board level reset out.
+> > This ensures any soft/warm/hard CPU reset will trigger OSPI Flash reset,
+> > but there is no SW control that allows OSPI flash alone to be reset.
+> > Isn't such a reset mechanism sufficient?
+> > 
+> 
+> I think it is, yes.
 
 -- 
-Kees Cook
+Regards,
+Pratyush Yadav
+Texas Instruments India
 
 ______________________________________________________
 Linux MTD discussion mailing list
