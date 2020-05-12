@@ -2,89 +2,149 @@ Return-Path: <SRS0=zmx6=62=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F1A9C54E8B
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 May 2020 11:49:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A360C54E4A
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 May 2020 13:01:09 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ED45D20747
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 May 2020 11:49:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D9A49206CC
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 May 2020 13:01:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AqajKOxT";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=st.com header.i=@st.com header.b="krDxiVt1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ED45D20747
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=st.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qpRZv2+B";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="AcB6siq7";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="cq9K7qd7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D9A49206CC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2526G42B8MOXi6c++n4bmsvJbjL/pm/MOcpvJZ2D1B4=; b=AqajKOxTH69yg2
-	bjuf2CqDTq8VRX1kprmiBWNmp9n8LNQmwWZRT+oVwDRhT/cyA12lUtbpFukHKzVlm/1EA7zLwpAYb
-	rptD4yBNN5RhdV562RCcZf2MVV1yungqP/hyuWUJncSYvUV6vLakvBzNRHQ1peyGOkrApPpi1Dxkh
-	ala1X1Al724usnoSAq56yXHPFYnC1JFIt9MoXQE+KSUR1WhS7jYCiguO+wN0qRh0FT6idGgWbbvbj
-	cOpzQY/GEwO61WhNGLnMcecmb5MokBlfqe8qXUUEcBEC0/YQMEC1a4C1Zsp1c6f/ZzuaQVHhHjXXb
-	6ifauEHDmqxOIaI1S2fA==;
+	List-Owner; bh=Z7vFK/UJd1BPt4ivlWQTauEMNC5EvPtjHvqQ+wuM9P4=; b=qpRZv2+BOnGmRX
+	ShONZ0pI8WnWAwJgkadtmP9K4WATkX1pMbTvEMH5oPWvjx0owIgLsEqYHamRVjsBeK++Uy/F8nupY
+	+BZ3pDEn+Ftxge19pji2vwPz69myMKJXY3j7vm0SAOzSR27DfCMSlMTBNoxF+osUPC20Q3FioQbxI
+	fVFiDmcvD+n3VUdd4dDPkjKSk3ZjUMoJ+2Y3lvL0nU7IzV+asHhGEg7crUBqlcEQ51R4h4+nj9KvC
+	VmSjYFp4eDi5VbLiK2ypaAS5JSxZJrNAMXk6G2XOJMkOfx1sJf2uCgfKrSHrNZtNi9J+xfFhl7NLD
+	r/0vCOJSrWJ7pGaWEaag==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jYTPI-0007em-A2; Tue, 12 May 2020 11:49:08 +0000
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]
- helo=mx07-00178001.pphosted.com)
+	id 1jYUWn-0001Q9-Uu; Tue, 12 May 2020 13:00:57 +0000
+Received: from esa5.microchip.iphmx.com ([216.71.150.166])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jYTP2-0007Qz-MK
- for linux-mtd@lists.infradead.org; Tue, 12 May 2020 11:48:55 +0000
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
- by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- 04CBm5db028469; Tue, 12 May 2020 13:48:49 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com;
- h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=MqtOlI3c//0YkPp+LdIJZhaPvay85GkbS9KLzFX5RU4=;
- b=krDxiVt1V1yj1k8D/W6LBkY+bjd/kjNDooMXsnVkaU1nRiaE3SpXX8EP+aeSrjcc+4z+
- ymI06rqZspiYGYYv1OgWgOf1VIoH3A1yHtv0EyPJgeiN6iRB8YuAWysRx3wERquF72RH
- EvICJji7x+N6NOB7Mq215pMovrtUIoWS2pig22bWkAm0T8nerloh/uV3U2EfcOUoSUYt
- HC0hZ3RtSAA6HDl9CoVdiywAd+Su5M4XZf8635MzyxdG/uJHPSdKp6SY6kMwcKehhasf
- gp+YLQlbZfDDWhi5mTbIwi1LoLvlDTLyIYY8LdWAjY5+FQ5hzYzaCqOO4biG+sXu3+xU 9w== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com with ESMTP id 30whn9g69y-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 12 May 2020 13:48:49 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5C314100034;
- Tue, 12 May 2020 13:48:49 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag6node2.st.com [10.75.127.17])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 502FA2BAE77;
- Tue, 12 May 2020 13:48:49 +0200 (CEST)
-Received: from localhost (10.75.127.50) by SFHDAG6NODE2.st.com (10.75.127.17)
- with Microsoft SMTP Server (TLS) id 15.0.1347.2;
- Tue, 12 May 2020 13:48:47 +0200
-From: Christophe Kerello <christophe.kerello@st.com>
-To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
-Subject: [PATCH v5 2/2] mtd: rawnand: stm32_fmc2: use FIELD_PREP/FIELD_GET
- macros
-Date: Tue, 12 May 2020 13:47:48 +0200
-Message-ID: <1589284068-4079-3-git-send-email-christophe.kerello@st.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1589284068-4079-1-git-send-email-christophe.kerello@st.com>
-References: <1589284068-4079-1-git-send-email-christophe.kerello@st.com>
+ id 1jYUWk-0001Ov-MV
+ for linux-mtd@lists.infradead.org; Tue, 12 May 2020 13:00:56 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1589288454; x=1620824454;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:content-transfer-encoding: mime-version;
+ bh=bsG7sbUkBlKK8BWnCxYE6GIrqrx0RFEu3ocOn+OzBsw=;
+ b=AcB6siq7rZMLssMYKPjJYauI0kMx5mN4itWmVNvqAO5+/yMEPGCBxaOh
+ vsFOrZPPkg3Xpa/OKrIlCklvmpmORhQI+zWbWOA0Y9K7vo1PG8rNo9Dt0
+ xDuaDra4VrMm8ReTjiMpxBOfMtU1c8IvVs2DR0Isi8xtW++1+WYjHstKm
+ MhAwGbeCEelHO+6mhWKdyDxBFkuGaAJT7dsLreQDcmd2WWjlU7MDb6Not
+ +oTRLwKEqQzUHUXYc3wb+tLdYAe8A63doKgXiCaeTDI+BO2Xp5zSI1pPe
+ H+i5MaX+CpmkyC63ecJo4HqecwCTfI2a/kivS9rDu6a3J/ruBdUZ7uQRZ w==;
+IronPort-SDR: W18+ITy0ZJdqxPmRUhZ5N7jxnrcJUYOwmet39mfvV1xNWScsMYE300eiH5sQVGz5aIbXH+OOXs
+ JmDWTRWZwcxrXGhMahmtIG/NCx/lJIjuhfSIDXQ80e/GZ3/AISUdgiRiPbDG4Gmzd6DKQBZ0kx
+ 2bRyGK78eIZyv2MnO5hm4m/UP35HtYDpmedNK9i277uK9TsRnLHEM/FShVR0wz4thhsia6vUOU
+ m8GsuVVmuZhwX1rlC/I7mb19uZS/5vdi31IHNG/9XpKO+b70Kus8id0bmL3UdXUjubQ51IOt7l
+ 6UE=
+X-IronPort-AV: E=Sophos;i="5.73,383,1583218800"; d="scan'208";a="75622159"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 12 May 2020 06:00:41 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 12 May 2020 06:00:43 -0700
+Received: from NAM04-SN1-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Tue, 12 May 2020 06:00:40 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PR25NqFIFG5S8BxriXuv18cnYneNKfvviCHv4pS0kWI4YJRXlK+UAajdDGfWCr1ZxVlAMkXnlhGWO47YsZtpuPO+q0tutcsL6JGf5+1b5DJfBqD1Fs1LyDq3nEon+GGpLlr1rtcFDA73Dlj63uxHD/U/YewZ+XS2ehu4TeVvMTIVMhfpW6f/tGsFOY7Bi/p8Ba+TBDniWGZYeoeS7D+1X54BlTls93ukSPNC5o6dTzdXmpMceI3YCmYaQ80fqlolue8g/D3t6JwxnQ+HFJyDUpPpCT6Jvww0LWkLdt2GsiOlXv0+CRCLAdS/oGVJR4s+P4/F8gbhykhKsemgfqfJGg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FZRcdHav58wu7xYrb5AKe1dEwtVf6WVXbSpismXhotM=;
+ b=C3AJKNsludhlL8ZIddA2RIj5CtwCqcZEh0pjV97NZYSetXUW3PWoTTkQzkTDQO81jC2ZlNXY7aHx4JS2p12TFhLLQXzQCTFM7CiKluOgdh059rQjjzZwkMV96xOshg+jdKV/ATWQ7xm36VK8E+wF3xQyLlVKqxBBFrgHiYejnQKMa4d2FijEicD2gO9FB/nh7dxwXpfHgL60pKPbTAABP/mTA33AQpLYiZH7boYvxn72DwVZ+neODjitvaDZn7El9pGhbnkmJ5o0XZzTGbK0w2pVEF7uzhJn+3aWAKnBALI2qJci8kpW52vmXepnuc96rFF+49nCRWc86mxUoAy3sQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FZRcdHav58wu7xYrb5AKe1dEwtVf6WVXbSpismXhotM=;
+ b=cq9K7qd7jX/nlFLaAg5b2BFjljovLR9TLKpo1OlUPNJmJ/zLNUwXV4m3xB3fLBSnOFNTwkkks+p33v8dwyvhWa4VgBkiFCLFzcfiwsGT+HQTe9KebZFUkbwSPU8r751kRuJYdKfH9WDR4FPGVjPcodeZ12+YyBzlMw2pAeX21UU=
+Received: from BY5PR11MB4419.namprd11.prod.outlook.com (2603:10b6:a03:1c8::13)
+ by BY5PR11MB4370.namprd11.prod.outlook.com (2603:10b6:a03:1c3::20)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.20; Tue, 12 May
+ 2020 13:00:38 +0000
+Received: from BY5PR11MB4419.namprd11.prod.outlook.com
+ ([fe80::d847:5d58:5325:c536]) by BY5PR11MB4419.namprd11.prod.outlook.com
+ ([fe80::d847:5d58:5325:c536%7]) with mapi id 15.20.2979.033; Tue, 12 May 2020
+ 13:00:38 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <boris.brezillon@collabora.com>
+Subject: Re: [PATCH v2 1/6] mtd: rawnand: atmel: Enable the NFC controller at
+ probe time
+Thread-Topic: [PATCH v2 1/6] mtd: rawnand: atmel: Enable the NFC controller at
+ probe time
+Thread-Index: AQHWKF1Vk+XiWiD4K0Wsql1D3GA7UQ==
+Date: Tue, 12 May 2020 13:00:37 +0000
+Message-ID: <2383526.aXbtAW8fS3@192.168.0.120>
+References: <20200429132046.583658-1-boris.brezillon@collabora.com>
+ <20200429132046.583658-2-boris.brezillon@collabora.com>
+In-Reply-To: <20200429132046.583658-2-boris.brezillon@collabora.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Tudor.Ambarus@microchip.com; 
+x-originating-ip: [94.177.32.156]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d92500b5-4c24-4503-1cdc-08d7f67477a3
+x-ms-traffictypediagnostic: BY5PR11MB4370:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR11MB4370CA909284031B31F4C250F0BE0@BY5PR11MB4370.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:5797;
+x-forefront-prvs: 0401647B7F
+received-spf: None (protection.outlook.com: microchip.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: lhTe+zOxq33X/s3cuPvTjRtTbWmt6SY7V6DhS+0xiZ6eCJ4gdIVVfSyru2uN5F9Qln6RENb+K4EwoPkpYMHeD1Gaq5tdNj7Z9eRwsbfGsWkD7cNGLft3C3xl6Hc5IEBk8ihYwIs7oXYX9LfC34s0uSwd44c+/y0gABWfjNoL8EZ0ffwy/vHZEbXreSDsy7H0M+0GUniqQA1izZgUQaMXwMckk8zFSsswi24dgLjpdbqzW1+JKFCCTVA9kEAhlTwoi5SNe21B5jGkN1YS5XmXZWZtytkDbTFqyaEf2Y/19NwJD7YW7tjdxdzWKY0G5Rif8qiPoL4PZjuh98LlkjpHMCcg7TIDc6/u540a/P6f/WS2iSfaAvai8gq1SNaFtZzk/ENjaLC5gPv5YxyCEO55PqQOr2rv5cFWzd0CCzxHco1Kxw1Vb/ULdgcfgNLRNdG/vkeBuUnJ5xx3QrSwSShNJucAXwCObNg7mf62YV2nWrG+ube84MRyAYfW6e1RszFw
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:BY5PR11MB4419.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFTY:;
+ SFS:(136003)(39860400002)(366004)(376002)(346002)(396003)(6486002)(5660300002)(26005)(66446008)(64756008)(66556008)(6916009)(66946007)(66476007)(478600001)(6506007)(53546011)(76116006)(4744005)(91956017)(4326008)(14286002)(2906002)(186003)(71200400001)(6512007)(9686003)(86362001)(54906003)(8936002)(316002)(8676002)(39026012);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata: pfPjSRzOTdXMKeCSeLLwWKIVzjTgNtrIopri3v/8dg1Q8maTrIzA+oVZ+oc8Ok9VdA6XQ/SQFPj4vTsEg2M/xECvRm/4n4vI3BU8nOeMwVlpDTTa+J2XJR5XIzen5A73J0V3+MQj+xcAlgYKz4oB+I26o6yztAFUAza8Dngspd/WnHKPaSvE6ik0M69TxQbIKZSIyUp8qnW17PQ8tTvrNIZBsDdf8zmRTKF8N8g4W51M1WNgmg3NaD+0XoKgmHeprLQTH09nGZUu3xqUetuv7W4zl4AkALE6rhB4sZx0L4AhP0xduMeL1gGRKQI9MieEW/VAVZGbLJlz45wDe10h72w0yNrc4wRd9U94757FJzW57/7Uvl64gxjgrt0QJd3hn7SqtJIAGD4gD0yP9h9hNY4YS+bXLFWXWbD7gC+WKn8yNw7SiT5cdIjp4DD+kee2yr66mnReBRU0G/QyJTpI2GEBbN1PnaCFVcnnpVEn+s8=
+Content-ID: <16A4200906E86F4CB33A5DBAAB90ACF5@namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG7NODE2.st.com (10.75.127.20) To SFHDAG6NODE2.st.com
- (10.75.127.17)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216, 18.0.676
- definitions=2020-05-12_03:2020-05-11,
- 2020-05-12 signatures=0
+X-MS-Exchange-CrossTenant-Network-Message-Id: d92500b5-4c24-4503-1cdc-08d7f67477a3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 May 2020 13:00:37.8742 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /1qnfWZInubUA8XUmkKjJGPFjx1xtZHm8byjjBfqf+IUPWu7v8WBe7TB51UFa0gwOC5M897tOy3/ubjlvQfvd8DK4iiMkjTUb4Hr+C331dg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4370
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200512_044853_016657_2991B1AE 
-X-CRM114-Status: GOOD (  17.72  )
+X-CRM114-CacheID: sfid-20200512_060054_831845_95EE425A 
+X-CRM114-Status: GOOD (  10.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,378 +156,29 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Christophe Kerello <christophe.kerello@st.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com
+Cc: alexandre.belloni@bootlin.com, vigneshr@ti.com, richard@nod.at,
+ Nicolas.Ferre@microchip.com, Ludovic.Desroches@microchip.com,
+ linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This patch removes custom macros and uses FIELD_PREP and FIELD_GET macros.
+On Wednesday, April 29, 2020 4:20:41 PM EEST Boris Brezillon wrote:
+> No need to enable it everytime select_chip() is called. If we really
+> care about PM, we should implement runtime PM hooks and disable the
+> controller and all its clocks when the controller has been unused for
+> some time.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+> ---
+> Changes in v2:
+> * New patch
+> ---
+>  drivers/mtd/nand/raw/atmel/nand-controller.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
 
-Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
-Changes in v5:
- - rebase on top of nand/next
-Changes in v3:
- - add Miquel reviewed-by tag
-
- drivers/mtd/nand/raw/stm32_fmc2_nand.c | 177 ++++++++++++++++-----------------
- 1 file changed, 85 insertions(+), 92 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-index 901ebd8..8f02d5e 100644
---- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-+++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-@@ -4,6 +4,7 @@
-  * Author: Christophe Kerello <christophe.kerello@st.com>
-  */
- 
-+#include <linux/bitfield.h>
- #include <linux/clk.h>
- #include <linux/dmaengine.h>
- #include <linux/dma-mapping.h>
-@@ -84,20 +85,16 @@
- /* Register: FMC2_PCR */
- #define FMC2_PCR_PWAITEN		BIT(1)
- #define FMC2_PCR_PBKEN			BIT(2)
--#define FMC2_PCR_PWID_MASK		GENMASK(5, 4)
--#define FMC2_PCR_PWID(x)		(((x) & 0x3) << 4)
-+#define FMC2_PCR_PWID			GENMASK(5, 4)
- #define FMC2_PCR_PWID_BUSWIDTH_8	0
- #define FMC2_PCR_PWID_BUSWIDTH_16	1
- #define FMC2_PCR_ECCEN			BIT(6)
- #define FMC2_PCR_ECCALG			BIT(8)
--#define FMC2_PCR_TCLR_MASK		GENMASK(12, 9)
--#define FMC2_PCR_TCLR(x)		(((x) & 0xf) << 9)
-+#define FMC2_PCR_TCLR			GENMASK(12, 9)
- #define FMC2_PCR_TCLR_DEFAULT		0xf
--#define FMC2_PCR_TAR_MASK		GENMASK(16, 13)
--#define FMC2_PCR_TAR(x)			(((x) & 0xf) << 13)
-+#define FMC2_PCR_TAR			GENMASK(16, 13)
- #define FMC2_PCR_TAR_DEFAULT		0xf
--#define FMC2_PCR_ECCSS_MASK		GENMASK(19, 17)
--#define FMC2_PCR_ECCSS(x)		(((x) & 0x7) << 17)
-+#define FMC2_PCR_ECCSS			GENMASK(19, 17)
- #define FMC2_PCR_ECCSS_512		1
- #define FMC2_PCR_ECCSS_2048		3
- #define FMC2_PCR_BCHECC			BIT(24)
-@@ -107,17 +104,17 @@
- #define FMC2_SR_NWRF			BIT(6)
- 
- /* Register: FMC2_PMEM */
--#define FMC2_PMEM_MEMSET(x)		(((x) & 0xff) << 0)
--#define FMC2_PMEM_MEMWAIT(x)		(((x) & 0xff) << 8)
--#define FMC2_PMEM_MEMHOLD(x)		(((x) & 0xff) << 16)
--#define FMC2_PMEM_MEMHIZ(x)		(((x) & 0xff) << 24)
-+#define FMC2_PMEM_MEMSET		GENMASK(7, 0)
-+#define FMC2_PMEM_MEMWAIT		GENMASK(15, 8)
-+#define FMC2_PMEM_MEMHOLD		GENMASK(23, 16)
-+#define FMC2_PMEM_MEMHIZ		GENMASK(31, 24)
- #define FMC2_PMEM_DEFAULT		0x0a0a0a0a
- 
- /* Register: FMC2_PATT */
--#define FMC2_PATT_ATTSET(x)		(((x) & 0xff) << 0)
--#define FMC2_PATT_ATTWAIT(x)		(((x) & 0xff) << 8)
--#define FMC2_PATT_ATTHOLD(x)		(((x) & 0xff) << 16)
--#define FMC2_PATT_ATTHIZ(x)		(((x) & 0xff) << 24)
-+#define FMC2_PATT_ATTSET		GENMASK(7, 0)
-+#define FMC2_PATT_ATTWAIT		GENMASK(15, 8)
-+#define FMC2_PATT_ATTHOLD		GENMASK(23, 16)
-+#define FMC2_PATT_ATTHIZ		GENMASK(31, 24)
- #define FMC2_PATT_DEFAULT		0x0a0a0a0a
- 
- /* Register: FMC2_ISR */
-@@ -132,9 +129,9 @@
- /* Register: FMC2_CSQCFGR1 */
- #define FMC2_CSQCFGR1_CMD2EN		BIT(1)
- #define FMC2_CSQCFGR1_DMADEN		BIT(2)
--#define FMC2_CSQCFGR1_ACYNBR(x)		(((x) & 0x7) << 4)
--#define FMC2_CSQCFGR1_CMD1(x)		(((x) & 0xff) << 8)
--#define FMC2_CSQCFGR1_CMD2(x)		(((x) & 0xff) << 16)
-+#define FMC2_CSQCFGR1_ACYNBR		GENMASK(6, 4)
-+#define FMC2_CSQCFGR1_CMD1		GENMASK(15, 8)
-+#define FMC2_CSQCFGR1_CMD2		GENMASK(23, 16)
- #define FMC2_CSQCFGR1_CMD1T		BIT(24)
- #define FMC2_CSQCFGR1_CMD2T		BIT(25)
- 
-@@ -142,13 +139,13 @@
- #define FMC2_CSQCFGR2_SQSDTEN		BIT(0)
- #define FMC2_CSQCFGR2_RCMD2EN		BIT(1)
- #define FMC2_CSQCFGR2_DMASEN		BIT(2)
--#define FMC2_CSQCFGR2_RCMD1(x)		(((x) & 0xff) << 8)
--#define FMC2_CSQCFGR2_RCMD2(x)		(((x) & 0xff) << 16)
-+#define FMC2_CSQCFGR2_RCMD1		GENMASK(15, 8)
-+#define FMC2_CSQCFGR2_RCMD2		GENMASK(23, 16)
- #define FMC2_CSQCFGR2_RCMD1T		BIT(24)
- #define FMC2_CSQCFGR2_RCMD2T		BIT(25)
- 
- /* Register: FMC2_CSQCFGR3 */
--#define FMC2_CSQCFGR3_SNBR(x)		(((x) & 0x1f) << 8)
-+#define FMC2_CSQCFGR3_SNBR		GENMASK(13, 8)
- #define FMC2_CSQCFGR3_AC1T		BIT(16)
- #define FMC2_CSQCFGR3_AC2T		BIT(17)
- #define FMC2_CSQCFGR3_AC3T		BIT(18)
-@@ -159,15 +156,15 @@
- #define FMC2_CSQCFGR3_RAC2T		BIT(23)
- 
- /* Register: FMC2_CSQCAR1 */
--#define FMC2_CSQCAR1_ADDC1(x)		(((x) & 0xff) << 0)
--#define FMC2_CSQCAR1_ADDC2(x)		(((x) & 0xff) << 8)
--#define FMC2_CSQCAR1_ADDC3(x)		(((x) & 0xff) << 16)
--#define FMC2_CSQCAR1_ADDC4(x)		(((x) & 0xff) << 24)
-+#define FMC2_CSQCAR1_ADDC1		GENMASK(7, 0)
-+#define FMC2_CSQCAR1_ADDC2		GENMASK(15, 8)
-+#define FMC2_CSQCAR1_ADDC3		GENMASK(23, 16)
-+#define FMC2_CSQCAR1_ADDC4		GENMASK(31, 24)
- 
- /* Register: FMC2_CSQCAR2 */
--#define FMC2_CSQCAR2_ADDC5(x)		(((x) & 0xff) << 0)
--#define FMC2_CSQCAR2_NANDCEN(x)		(((x) & 0x3) << 10)
--#define FMC2_CSQCAR2_SAO(x)		(((x) & 0xffff) << 16)
-+#define FMC2_CSQCAR2_ADDC5		GENMASK(7, 0)
-+#define FMC2_CSQCAR2_NANDCEN		GENMASK(11, 10)
-+#define FMC2_CSQCAR2_SAO		GENMASK(31, 16)
- 
- /* Register: FMC2_CSQIER */
- #define FMC2_CSQIER_TCIE		BIT(0)
-@@ -188,28 +185,23 @@
- /* Register: FMC2_BCHDSR0 */
- #define FMC2_BCHDSR0_DUE		BIT(0)
- #define FMC2_BCHDSR0_DEF		BIT(1)
--#define FMC2_BCHDSR0_DEN_MASK		GENMASK(7, 4)
--#define FMC2_BCHDSR0_DEN_SHIFT		4
-+#define FMC2_BCHDSR0_DEN		GENMASK(7, 4)
- 
- /* Register: FMC2_BCHDSR1 */
--#define FMC2_BCHDSR1_EBP1_MASK		GENMASK(12, 0)
--#define FMC2_BCHDSR1_EBP2_MASK		GENMASK(28, 16)
--#define FMC2_BCHDSR1_EBP2_SHIFT		16
-+#define FMC2_BCHDSR1_EBP1		GENMASK(12, 0)
-+#define FMC2_BCHDSR1_EBP2		GENMASK(28, 16)
- 
- /* Register: FMC2_BCHDSR2 */
--#define FMC2_BCHDSR2_EBP3_MASK		GENMASK(12, 0)
--#define FMC2_BCHDSR2_EBP4_MASK		GENMASK(28, 16)
--#define FMC2_BCHDSR2_EBP4_SHIFT		16
-+#define FMC2_BCHDSR2_EBP3		GENMASK(12, 0)
-+#define FMC2_BCHDSR2_EBP4		GENMASK(28, 16)
- 
- /* Register: FMC2_BCHDSR3 */
--#define FMC2_BCHDSR3_EBP5_MASK		GENMASK(12, 0)
--#define FMC2_BCHDSR3_EBP6_MASK		GENMASK(28, 16)
--#define FMC2_BCHDSR3_EBP6_SHIFT		16
-+#define FMC2_BCHDSR3_EBP5		GENMASK(12, 0)
-+#define FMC2_BCHDSR3_EBP6		GENMASK(28, 16)
- 
- /* Register: FMC2_BCHDSR4 */
--#define FMC2_BCHDSR4_EBP7_MASK		GENMASK(12, 0)
--#define FMC2_BCHDSR4_EBP8_MASK		GENMASK(28, 16)
--#define FMC2_BCHDSR4_EBP8_SHIFT		16
-+#define FMC2_BCHDSR4_EBP7		GENMASK(12, 0)
-+#define FMC2_BCHDSR4_EBP8		GENMASK(28, 16)
- 
- enum stm32_fmc2_ecc {
- 	FMC2_ECC_HAM = 1,
-@@ -289,22 +281,22 @@ static void stm32_fmc2_nfc_timings_init(struct nand_chip *chip)
- 	u32 pmem, patt;
- 
- 	/* Set tclr/tar timings */
--	pcr &= ~FMC2_PCR_TCLR_MASK;
--	pcr |= FMC2_PCR_TCLR(timings->tclr);
--	pcr &= ~FMC2_PCR_TAR_MASK;
--	pcr |= FMC2_PCR_TAR(timings->tar);
-+	pcr &= ~FMC2_PCR_TCLR;
-+	pcr |= FIELD_PREP(FMC2_PCR_TCLR, timings->tclr);
-+	pcr &= ~FMC2_PCR_TAR;
-+	pcr |= FIELD_PREP(FMC2_PCR_TAR, timings->tar);
- 
- 	/* Set tset/twait/thold/thiz timings in common bank */
--	pmem = FMC2_PMEM_MEMSET(timings->tset_mem);
--	pmem |= FMC2_PMEM_MEMWAIT(timings->twait);
--	pmem |= FMC2_PMEM_MEMHOLD(timings->thold_mem);
--	pmem |= FMC2_PMEM_MEMHIZ(timings->thiz);
-+	pmem = FIELD_PREP(FMC2_PMEM_MEMSET, timings->tset_mem);
-+	pmem |= FIELD_PREP(FMC2_PMEM_MEMWAIT, timings->twait);
-+	pmem |= FIELD_PREP(FMC2_PMEM_MEMHOLD, timings->thold_mem);
-+	pmem |= FIELD_PREP(FMC2_PMEM_MEMHIZ, timings->thiz);
- 
- 	/* Set tset/twait/thold/thiz timings in attribut bank */
--	patt = FMC2_PATT_ATTSET(timings->tset_att);
--	patt |= FMC2_PATT_ATTWAIT(timings->twait);
--	patt |= FMC2_PATT_ATTHOLD(timings->thold_att);
--	patt |= FMC2_PATT_ATTHIZ(timings->thiz);
-+	patt = FIELD_PREP(FMC2_PATT_ATTSET, timings->tset_att);
-+	patt |= FIELD_PREP(FMC2_PATT_ATTWAIT, timings->twait);
-+	patt |= FIELD_PREP(FMC2_PATT_ATTHOLD, timings->thold_att);
-+	patt |= FIELD_PREP(FMC2_PATT_ATTHIZ, timings->thiz);
- 
- 	writel_relaxed(pcr, nfc->io_base + FMC2_PCR);
- 	writel_relaxed(pmem, nfc->io_base + FMC2_PMEM);
-@@ -327,13 +319,13 @@ static void stm32_fmc2_nfc_setup(struct nand_chip *chip)
- 	}
- 
- 	/* Set buswidth */
--	pcr &= ~FMC2_PCR_PWID_MASK;
-+	pcr &= ~FMC2_PCR_PWID;
- 	if (chip->options & NAND_BUSWIDTH_16)
--		pcr |= FMC2_PCR_PWID(FMC2_PCR_PWID_BUSWIDTH_16);
-+		pcr |= FIELD_PREP(FMC2_PCR_PWID, FMC2_PCR_PWID_BUSWIDTH_16);
- 
- 	/* Set ECC sector size */
--	pcr &= ~FMC2_PCR_ECCSS_MASK;
--	pcr |= FMC2_PCR_ECCSS(FMC2_PCR_ECCSS_512);
-+	pcr &= ~FMC2_PCR_ECCSS;
-+	pcr |= FIELD_PREP(FMC2_PCR_ECCSS, FMC2_PCR_ECCSS_512);
- 
- 	writel_relaxed(pcr, nfc->io_base + FMC2_PCR);
- }
-@@ -403,9 +395,9 @@ static void stm32_fmc2_nfc_set_buswidth_16(struct stm32_fmc2_nfc *nfc, bool set)
- {
- 	u32 pcr = readl_relaxed(nfc->io_base + FMC2_PCR);
- 
--	pcr &= ~FMC2_PCR_PWID_MASK;
-+	pcr &= ~FMC2_PCR_PWID;
- 	if (set)
--		pcr |= FMC2_PCR_PWID(FMC2_PCR_PWID_BUSWIDTH_16);
-+		pcr |= FIELD_PREP(FMC2_PCR_PWID, FMC2_PCR_PWID_BUSWIDTH_16);
- 	writel_relaxed(pcr, nfc->io_base + FMC2_PCR);
- }
- 
-@@ -659,16 +651,16 @@ static int stm32_fmc2_nfc_bch_decode(int eccsize, u8 *dat, u32 *ecc_sta)
- 	if (unlikely(bchdsr0 & FMC2_BCHDSR0_DUE))
- 		return -EBADMSG;
- 
--	pos[0] = bchdsr1 & FMC2_BCHDSR1_EBP1_MASK;
--	pos[1] = (bchdsr1 & FMC2_BCHDSR1_EBP2_MASK) >> FMC2_BCHDSR1_EBP2_SHIFT;
--	pos[2] = bchdsr2 & FMC2_BCHDSR2_EBP3_MASK;
--	pos[3] = (bchdsr2 & FMC2_BCHDSR2_EBP4_MASK) >> FMC2_BCHDSR2_EBP4_SHIFT;
--	pos[4] = bchdsr3 & FMC2_BCHDSR3_EBP5_MASK;
--	pos[5] = (bchdsr3 & FMC2_BCHDSR3_EBP6_MASK) >> FMC2_BCHDSR3_EBP6_SHIFT;
--	pos[6] = bchdsr4 & FMC2_BCHDSR4_EBP7_MASK;
--	pos[7] = (bchdsr4 & FMC2_BCHDSR4_EBP8_MASK) >> FMC2_BCHDSR4_EBP8_SHIFT;
-+	pos[0] = FIELD_GET(FMC2_BCHDSR1_EBP1, bchdsr1);
-+	pos[1] = FIELD_GET(FMC2_BCHDSR1_EBP2, bchdsr1);
-+	pos[2] = FIELD_GET(FMC2_BCHDSR2_EBP3, bchdsr2);
-+	pos[3] = FIELD_GET(FMC2_BCHDSR2_EBP4, bchdsr2);
-+	pos[4] = FIELD_GET(FMC2_BCHDSR3_EBP5, bchdsr3);
-+	pos[5] = FIELD_GET(FMC2_BCHDSR3_EBP6, bchdsr3);
-+	pos[6] = FIELD_GET(FMC2_BCHDSR4_EBP7, bchdsr4);
-+	pos[7] = FIELD_GET(FMC2_BCHDSR4_EBP8, bchdsr4);
- 
--	den = (bchdsr0 & FMC2_BCHDSR0_DEN_MASK) >> FMC2_BCHDSR0_DEN_SHIFT;
-+	den = FIELD_GET(FMC2_BCHDSR0_DEN, bchdsr0);
- 	for (i = 0; i < den; i++) {
- 		if (pos[i] < eccsize * 8) {
- 			change_bit(pos[i], (unsigned long *)dat);
-@@ -790,11 +782,11 @@ static void stm32_fmc2_nfc_rw_page_init(struct nand_chip *chip, int page,
- 	 */
- 	csqcfgr1 = FMC2_CSQCFGR1_DMADEN | FMC2_CSQCFGR1_CMD1T;
- 	if (write_data)
--		csqcfgr1 |= FMC2_CSQCFGR1_CMD1(NAND_CMD_SEQIN);
-+		csqcfgr1 |= FIELD_PREP(FMC2_CSQCFGR1_CMD1, NAND_CMD_SEQIN);
- 	else
--		csqcfgr1 |= FMC2_CSQCFGR1_CMD1(NAND_CMD_READ0) |
-+		csqcfgr1 |= FIELD_PREP(FMC2_CSQCFGR1_CMD1, NAND_CMD_READ0) |
- 			    FMC2_CSQCFGR1_CMD2EN |
--			    FMC2_CSQCFGR1_CMD2(NAND_CMD_READSTART) |
-+			    FIELD_PREP(FMC2_CSQCFGR1_CMD2, NAND_CMD_READSTART) |
- 			    FMC2_CSQCFGR1_CMD2T;
- 
- 	/*
-@@ -804,11 +796,12 @@ static void stm32_fmc2_nfc_rw_page_init(struct nand_chip *chip, int page,
- 	 * - Set timings
- 	 */
- 	if (write_data)
--		csqcfgr2 = FMC2_CSQCFGR2_RCMD1(NAND_CMD_RNDIN);
-+		csqcfgr2 = FIELD_PREP(FMC2_CSQCFGR2_RCMD1, NAND_CMD_RNDIN);
- 	else
--		csqcfgr2 = FMC2_CSQCFGR2_RCMD1(NAND_CMD_RNDOUT) |
-+		csqcfgr2 = FIELD_PREP(FMC2_CSQCFGR2_RCMD1, NAND_CMD_RNDOUT) |
- 			   FMC2_CSQCFGR2_RCMD2EN |
--			   FMC2_CSQCFGR2_RCMD2(NAND_CMD_RNDOUTSTART) |
-+			   FIELD_PREP(FMC2_CSQCFGR2_RCMD2,
-+				      NAND_CMD_RNDOUTSTART) |
- 			   FMC2_CSQCFGR2_RCMD1T |
- 			   FMC2_CSQCFGR2_RCMD2T;
- 	if (!raw) {
-@@ -820,7 +813,7 @@ static void stm32_fmc2_nfc_rw_page_init(struct nand_chip *chip, int page,
- 	 * - Set the number of sectors to be written
- 	 * - Set timings
- 	 */
--	csqcfgr3 = FMC2_CSQCFGR3_SNBR(chip->ecc.steps - 1);
-+	csqcfgr3 = FIELD_PREP(FMC2_CSQCFGR3_SNBR, chip->ecc.steps - 1);
- 	if (write_data) {
- 		csqcfgr3 |= FMC2_CSQCFGR3_RAC2T;
- 		if (chip->options & NAND_ROW_ADDR_3)
-@@ -834,8 +827,8 @@ static void stm32_fmc2_nfc_rw_page_init(struct nand_chip *chip, int page,
- 	 * Byte 1 and byte 2 => column, we start at 0x0
- 	 * Byte 3 and byte 4 => page
- 	 */
--	csqar1 = FMC2_CSQCAR1_ADDC3(page);
--	csqar1 |= FMC2_CSQCAR1_ADDC4(page >> 8);
-+	csqar1 = FIELD_PREP(FMC2_CSQCAR1_ADDC3, page);
-+	csqar1 |= FIELD_PREP(FMC2_CSQCAR1_ADDC4, page >> 8);
- 
- 	/*
- 	 * - Set chip enable number
-@@ -843,16 +836,16 @@ static void stm32_fmc2_nfc_rw_page_init(struct nand_chip *chip, int page,
- 	 * - Calculate the number of address cycles to be issued
- 	 * - Set byte 5 of address cycle if needed
- 	 */
--	csqar2 = FMC2_CSQCAR2_NANDCEN(nfc->cs_sel);
-+	csqar2 = FIELD_PREP(FMC2_CSQCAR2_NANDCEN, nfc->cs_sel);
- 	if (chip->options & NAND_BUSWIDTH_16)
--		csqar2 |= FMC2_CSQCAR2_SAO(ecc_offset >> 1);
-+		csqar2 |= FIELD_PREP(FMC2_CSQCAR2_SAO, ecc_offset >> 1);
- 	else
--		csqar2 |= FMC2_CSQCAR2_SAO(ecc_offset);
-+		csqar2 |= FIELD_PREP(FMC2_CSQCAR2_SAO, ecc_offset);
- 	if (chip->options & NAND_ROW_ADDR_3) {
--		csqcfgr1 |= FMC2_CSQCFGR1_ACYNBR(5);
--		csqar2 |= FMC2_CSQCAR2_ADDC5(page >> 16);
-+		csqcfgr1 |= FIELD_PREP(FMC2_CSQCFGR1_ACYNBR, 5);
-+		csqar2 |= FIELD_PREP(FMC2_CSQCAR2_ADDC5, page >> 16);
- 	} else {
--		csqcfgr1 |= FMC2_CSQCFGR1_ACYNBR(4);
-+		csqcfgr1 |= FIELD_PREP(FMC2_CSQCFGR1_ACYNBR, 4);
- 	}
- 
- 	writel_relaxed(csqcfgr1, nfc->io_base + FMC2_CSQCFGR1);
-@@ -1393,7 +1386,7 @@ static void stm32_fmc2_nfc_init(struct stm32_fmc2_nfc *nfc)
- 	pcr |= FMC2_PCR_PBKEN;
- 
- 	/* Set buswidth to 8 bits mode for identification */
--	pcr &= ~FMC2_PCR_PWID_MASK;
-+	pcr &= ~FMC2_PCR_PWID;
- 
- 	/* ECC logic is disabled */
- 	pcr &= ~FMC2_PCR_ECCEN;
-@@ -1404,14 +1397,14 @@ static void stm32_fmc2_nfc_init(struct stm32_fmc2_nfc *nfc)
- 	pcr &= ~FMC2_PCR_WEN;
- 
- 	/* Set default ECC sector size */
--	pcr &= ~FMC2_PCR_ECCSS_MASK;
--	pcr |= FMC2_PCR_ECCSS(FMC2_PCR_ECCSS_2048);
-+	pcr &= ~FMC2_PCR_ECCSS;
-+	pcr |= FIELD_PREP(FMC2_PCR_ECCSS, FMC2_PCR_ECCSS_2048);
- 
- 	/* Set default tclr/tar timings */
--	pcr &= ~FMC2_PCR_TCLR_MASK;
--	pcr |= FMC2_PCR_TCLR(FMC2_PCR_TCLR_DEFAULT);
--	pcr &= ~FMC2_PCR_TAR_MASK;
--	pcr |= FMC2_PCR_TAR(FMC2_PCR_TAR_DEFAULT);
-+	pcr &= ~FMC2_PCR_TCLR;
-+	pcr |= FIELD_PREP(FMC2_PCR_TCLR, FMC2_PCR_TCLR_DEFAULT);
-+	pcr &= ~FMC2_PCR_TAR;
-+	pcr |= FIELD_PREP(FMC2_PCR_TAR, FMC2_PCR_TAR_DEFAULT);
- 
- 	/* Enable FMC2 controller */
- 	bcr1 |= FMC2_BCR1_FMC2EN;
--- 
-1.9.1
+Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 
 
 ______________________________________________________
