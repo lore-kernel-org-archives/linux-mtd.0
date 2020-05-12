@@ -1,86 +1,69 @@
-Return-Path: <SRS0=5+/X=6Z=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=zmx6=62=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0ED8CC47255
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 May 2020 23:36:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B2D6C47255
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 May 2020 00:50:55 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CE9CC206CC
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 May 2020 23:36:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CFE232070B
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 May 2020 00:50:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AhL5QeQa";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="HPR5Cl2N"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CE9CC206CC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="n59IxGsp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CFE232070B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HgBoqN2sgn8G7FK4e/Nk+u02yURsFdxSZz+/3/C5Qy4=; b=AhL5QeQaKeZwHG
-	iQ8bjXTVzXF7PZWIctkRFq7z3KINvHzP8Yb4Q2DhR2ItrA4ujdx75LltIL2EIi5+0l7UALGNlLzxr
-	0uGXrD76E/dL1eN1NXMU4u7Gu5oWBpxviVDPlBt34nqwRVyPtxQpHBYuLM6Q+BRHb9VG7O5OrFFVP
-	ZQ84Kljxf1SBvLSykKs62lqMP/Fo3Lhq+FmNoxs2x3l9tc958Codk3TBnvnhQ16CGZuFZ/fMnkZCM
-	B8UKd6RoLqxdRajRyY/Wb3c/2BF1rnqleWWVKs8PonfswVZS91991UJklv0nbx4hKotNnJskrNoX8
-	CKj0B/E83P0j+FfgCTAA==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=8Di05lTy8OS+ejtMTPToS//7IpGTejxlqOgBEAFzbgY=; b=n59
+	IxGspKVqQ4fSqzWcRllzyLQLnQFBTc3OOJ7wML7oXmrzQnfDEP7NjnJQXTDFDjNp7AzYthvudrehI
+	Rd2PuqhBN3p8z6gMBZ0Hlg79DwbBHU6EU/VEREEmC2eS3+whHr1MNP3AZJfgy5xgLjKKTJNZHT8Cz
+	RnY0Z4E9BjF34iUcIQZ+IANeDbP8g123kcq7E6BWYttMihlwzqsItLCsHwD33k2aXvq4++s+d0h1q
+	ZuxrI7y9SdO9k8OQtNvtpIYTrPnnc5Q+LS9FXYsmFnwJObrgQYclF8wBTFsGi1DU9bHassFxLbkq9
+	LZCLVzpSpq+SLLV95p5PUIVny+KYShg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jYHy2-0007S1-8b; Mon, 11 May 2020 23:36:14 +0000
-Received: from mail-pl1-x642.google.com ([2607:f8b0:4864:20::642])
+	id 1jYJ81-0007mE-3q; Tue, 12 May 2020 00:50:37 +0000
+Received: from mga07.intel.com ([134.134.136.100])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jYHue-0002LJ-K8
- for linux-mtd@lists.infradead.org; Mon, 11 May 2020 23:32:48 +0000
-Received: by mail-pl1-x642.google.com with SMTP id b12so2660307plz.13
- for <linux-mtd@lists.infradead.org>; Mon, 11 May 2020 16:32:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=EonzMrSQ5xoIpulNRIFPEIW9ivTufOr3sl2TimdVQ8s=;
- b=HPR5Cl2Nzighy+CnMw4A5dYNsJBqZGDixXiGX6W0cT0lxYLFmcS5w1sqyIjPcory0w
- 1VElw14qIgoJFzWuNzfU33huJZzVW0yP9bKEWhBIMdjp9LnFG5u6P+fAjS24IVqeFums
- y9s0bYgNDAu1l3Fp85Bga6SIRLs2JRA+ufGBU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=EonzMrSQ5xoIpulNRIFPEIW9ivTufOr3sl2TimdVQ8s=;
- b=skqp+I3vnku4j+5v0mjbU/MYP8RGA2F9NUww0jCAtxY8vt5KXQpCA65az9/OOqQXL7
- K/5fuTeUxMpBXJUSLkjEJ/o/TW5gr/YNsIR4ehhQ9Ytni4UQvttgd48ZzbNt3KU87Ayi
- Whj2+g/hYgXA7pgxC0wIrFZamSwY8v2BOWTesBZCJWF28IwQGKjpox1yoMJCVGaOlx1f
- XrJw+0WcakpIswzgDhNaCmJ3jf2326Q7+HFG77yxYEImH0OVoeVDThtaGPxf41m57NgO
- HjbfqTg14saIDGLour8aYr7m12f9wqBrRtpR5rIZ6yCORCrVAxhNw1wRK5fy8aK991JW
- qHeQ==
-X-Gm-Message-State: AGi0PuYyGYCnuTNtqNZRBDTiIzRbtjQQ9k+0qdKeYPVJwhISlkODp/tW
- v15mUFP0fKU3izVkP6oikG7s4Q==
-X-Google-Smtp-Source: APiQypJf8xd6VCLDMUk5dgSV3427oa7JtIVQY8aWUEOJWjWx27qX3neLxq+4fhV6VLLM85eRr5s0yQ==
-X-Received: by 2002:a17:90a:5287:: with SMTP id
- w7mr25852185pjh.66.1589239958666; 
- Mon, 11 May 2020 16:32:38 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
- by smtp.gmail.com with ESMTPSA id l6sm10098779pfl.128.2020.05.11.16.32.33
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 11 May 2020 16:32:35 -0700 (PDT)
-From: Kees Cook <keescook@chromium.org>
-To: WeiXiong Liao <liaoweixiong@allwinnertech.com>
-Subject: [PATCH v8 06/11] Documentation: Add details for pstore/blk
-Date: Mon, 11 May 2020 16:32:24 -0700
-Message-Id: <20200511233229.27745-7-keescook@chromium.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200511233229.27745-1-keescook@chromium.org>
-References: <20200511233229.27745-1-keescook@chromium.org>
-MIME-Version: 1.0
+ id 1jYJ7x-0007kp-Qc
+ for linux-mtd@lists.infradead.org; Tue, 12 May 2020 00:50:35 +0000
+IronPort-SDR: 1yzYvPxsjOz35+D6A7W+Ao7B3CwaX7t7v9BBGXRsUFiVNS8/LetaCC7ZbnJ8JH8nE0MwvCnKf6
+ dOi1Ylan5LaA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 May 2020 17:50:29 -0700
+IronPort-SDR: xQ2TKBf4oTDzmT2AwqIkszjctBIssO+0sBKjfjFru85qp9Vdsy429sp777xfdOtjso/9TSxJxo
+ fklO0iemkidQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,381,1583222400"; d="scan'208";a="279950205"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+ by orsmga002.jf.intel.com with ESMTP; 11 May 2020 17:50:26 -0700
+From: "Ramuthevar,
+ Vadivel MuruganX" <vadivel.muruganx.ramuthevar@linux.intel.com>
+To: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+ robh+dt@kernel.org
+Subject: [PATCH v1] dt-bindings: spi: Add schema for Cadence QSPI Controller
+ driver
+Date: Tue, 12 May 2020 08:49:19 +0800
+Message-Id: <20200512004919.40685-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200511_163244_685154_015D1E6D 
-X-CRM114-Status: GOOD (  24.55  )
+X-CRM114-CacheID: sfid-20200511_175033_907174_57672DCC 
+X-CRM114-Status: GOOD (  16.66  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,295 +75,236 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Rob Herring <robh@kernel.org>, Tony Luck <tony.luck@intel.com>,
- Kees Cook <keescook@chromium.org>, Jonathan Corbet <corbet@lwn.net>,
- Richard Weinberger <richard@nod.at>, Anton Vorontsov <anton@enomsg.org>,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- Colin Cross <ccross@android.com>, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>
+Cc: cheol.yong.kim@intel.com,
+ Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>,
+ qi-ming.wu@intel.com, broonie@kernel.org, vigneshr@ti.com
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: WeiXiong Liao <liaoweixiong@allwinnertech.com>
+From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
 
-Add details on using pstore/blk, the new backend of pstore to record
-dumps to block devices, in Documentation/admin-guide/pstore-blk.rst
+Add dt-bindings documentation for Cadence-QSPI controller to support
+spi based flash memories.
 
-Signed-off-by: WeiXiong Liao <liaoweixiong@allwinnertech.com>
-Link: https://lore.kernel.org/r/1585126506-18635-8-git-send-email-liaoweixiong@allwinnertech.com
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
 ---
- Documentation/admin-guide/pstore-blk.rst | 229 +++++++++++++++++++++++
- MAINTAINERS                              |   1 +
- fs/pstore/Kconfig                        |   2 +
- 3 files changed, 232 insertions(+)
- create mode 100644 Documentation/admin-guide/pstore-blk.rst
+ .../devicetree/bindings/mtd/cadence-quadspi.txt    |  67 -----------
+ .../devicetree/bindings/spi/cdns,qspi-nor.yaml     | 127 +++++++++++++++++++++
+ 2 files changed, 127 insertions(+), 67 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
+ create mode 100644 Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
 
-diff --git a/Documentation/admin-guide/pstore-blk.rst b/Documentation/admin-guide/pstore-blk.rst
+diff --git a/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
+deleted file mode 100644
+index 945be7d5b236..000000000000
+--- a/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
++++ /dev/null
+@@ -1,67 +0,0 @@
+-* Cadence Quad SPI controller
+-
+-Required properties:
+-- compatible : should be one of the following:
+-	Generic default - "cdns,qspi-nor".
+-	For TI 66AK2G SoC - "ti,k2g-qspi", "cdns,qspi-nor".
+-	For TI AM654 SoC  - "ti,am654-ospi", "cdns,qspi-nor".
+-- reg : Contains two entries, each of which is a tuple consisting of a
+-	physical address and length. The first entry is the address and
+-	length of the controller register set. The second entry is the
+-	address and length of the QSPI Controller data area.
+-- interrupts : Unit interrupt specifier for the controller interrupt.
+-- clocks : phandle to the Quad SPI clock.
+-- cdns,fifo-depth : Size of the data FIFO in words.
+-- cdns,fifo-width : Bus width of the data FIFO in bytes.
+-- cdns,trigger-address : 32-bit indirect AHB trigger address.
+-
+-Optional properties:
+-- cdns,is-decoded-cs : Flag to indicate whether decoder is used or not.
+-- cdns,rclk-en : Flag to indicate that QSPI return clock is used to latch
+-  the read data rather than the QSPI clock. Make sure that QSPI return
+-  clock is populated on the board before using this property.
+-
+-Optional subnodes:
+-Subnodes of the Cadence Quad SPI controller are spi slave nodes with additional
+-custom properties:
+-- cdns,read-delay : Delay for read capture logic, in clock cycles
+-- cdns,tshsl-ns : Delay in nanoseconds for the length that the master
+-                  mode chip select outputs are de-asserted between
+-		  transactions.
+-- cdns,tsd2d-ns : Delay in nanoseconds between one chip select being
+-                  de-activated and the activation of another.
+-- cdns,tchsh-ns : Delay in nanoseconds between last bit of current
+-                  transaction and deasserting the device chip select
+-		  (qspi_n_ss_out).
+-- cdns,tslch-ns : Delay in nanoseconds between setting qspi_n_ss_out low
+-                  and first bit transfer.
+-- resets	: Must contain an entry for each entry in reset-names.
+-		  See ../reset/reset.txt for details.
+-- reset-names	: Must include either "qspi" and/or "qspi-ocp".
+-
+-Example:
+-
+-	qspi: spi@ff705000 {
+-		compatible = "cdns,qspi-nor";
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		reg = <0xff705000 0x1000>,
+-		      <0xffa00000 0x1000>;
+-		interrupts = <0 151 4>;
+-		clocks = <&qspi_clk>;
+-		cdns,is-decoded-cs;
+-		cdns,fifo-depth = <128>;
+-		cdns,fifo-width = <4>;
+-		cdns,trigger-address = <0x00000000>;
+-		resets = <&rst QSPI_RESET>, <&rst QSPI_OCP_RESET>;
+-		reset-names = "qspi", "qspi-ocp";
+-
+-		flash0: n25q00@0 {
+-			...
+-			cdns,read-delay = <4>;
+-			cdns,tshsl-ns = <50>;
+-			cdns,tsd2d-ns = <50>;
+-			cdns,tchsh-ns = <4>;
+-			cdns,tslch-ns = <4>;
+-		};
+-	};
+diff --git a/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml b/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
 new file mode 100644
-index 000000000000..bef8c7436721
+index 000000000000..28112b38e6a9
 --- /dev/null
-+++ b/Documentation/admin-guide/pstore-blk.rst
-@@ -0,0 +1,229 @@
-+.. SPDX-License-Identifier: GPL-2.0
++++ b/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
+@@ -0,0 +1,127 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/spi/cdns,qspi-nor.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 +
-+pstore block oops/panic logger
-+==============================
++title: Cadence QSPI Flash Controller support
 +
-+Introduction
-+------------
++maintainers:
++  - Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
 +
-+pstore block (pstore/blk) is an oops/panic logger that writes its logs to a
-+block device before the system crashes. You can get these log files by
-+mounting pstore filesystem like::
++allOf:
++  - $ref: "spi-controller.yaml#"
 +
-+    mount -t pstore pstore /sys/fs/pstore
++description: |
++  Binding Documentation for Cadence QSPI controller,This controller is
++  present in the Intel LGM, Altera SoCFPGA and TI SoCs and this driver
++  has been tested On Intel's LGM SoC.
 +
++properties:
++  compatible:
++     enum:
++       - cdns,qspi-nor
++       - ti,k2g-qspi
++       - ti,am654-ospi
++       - intel,lgm-qspi
 +
-+pstore block concepts
-+---------------------
++  reg:
++    maxItems: 2
 +
-+pstore/blk provides efficient configuration method for pstore/blk, which
-+divides all configurations into two parts, configurations for user and
-+configurations for driver.
++  interrupts:
++    maxItems: 1
 +
-+Configurations for user determine how pstore/blk works, such as pmsg_size,
-+kmsg_size and so on. All of them support both Kconfig and module parameters,
-+but module parameters have priority over Kconfig.
++  clocks:
++    maxItems: 1
 +
-+Configurations for driver are all about block device, such as total_size
-+of block device and read/write operations.
++  cdns,fifo-depth:
++    description:
++     Depth of hardware FIFOs.
++    allOf:
++      - $ref: "/schemas/types.yaml#/definitions/uint32"
++      - enum: [ 128, 256 ]
++      - default: 128
 +
-+Configurations for user
-+-----------------------
++  cdns,fifo-width:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      4 byte bus width of the data FIFO in bytes.
 +
-+All of these configurations support both Kconfig and module parameters, but
-+module parameters have priority over Kconfig.
++  cdns,trigger-address:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      32-bit indirect AHB trigger address.
 +
-+Here is an example for module parameters::
++  cdns,rclk-en:
++    type: boolean
++    description: |
++      Flag to indicate that QSPI return clock is used to latch the read data
++      rather than the QSPI clock. Make sure that QSPI return clock is populated
++      on the board before using this property.
 +
-+        pstore_blk.blkdev=179:7 pstore_blk.kmsg_size=64
++# subnode's properties
++patternProperties:
++  "^.*@[0-9a-fa-f]+$":
++    type: object
++    description:
++      flash device uses the subnodes below defined properties.
 +
-+The detail of each configurations may be of interest to you.
++  cdns,read-delay:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      Delay for read capture logic, in clock cycles.
 +
-+blkdev
-+~~~~~~
++  cdns,tshsl-ns:
++    description: |
++      Delay in nanoseconds for the length that the master mode chip select
++      outputs are de-asserted between transactions.
 +
-+The block device to use. Most of the time, it is a partition of block device.
-+It's required for pstore/blk.
++  cdns,tsd2d-ns:
++    description: |
++      Delay in nanoseconds between one chip select being de-activated
++      and the activation of another.
 +
-+It accepts the following variants:
++  cdns,tchsh-ns:
++    description: |
++      Delay in nanoseconds between last bit of current transaction and
++      deasserting the device chip select (qspi_n_ss_out).
 +
-+1. <hex_major><hex_minor> device number in hexadecimal represents itself; no
-+   leading 0x, for example b302.
-+#. /dev/<disk_name> represents the device number of disk
-+#. /dev/<disk_name><decimal> represents the device number of partition - device
-+   number of disk plus the partition number
-+#. /dev/<disk_name>p<decimal> - same as the above; this form is used when disk
-+   name of partitioned disk ends with a digit.
-+#. PARTUUID=00112233-4455-6677-8899-AABBCCDDEEFF represents the unique id of
-+   a partition if the partition table provides it. The UUID may be either an
-+   EFI/GPT UUID, or refer to an MSDOS partition using the format SSSSSSSS-PP,
-+   where SSSSSSSS is a zero-filled hex representation of the 32-bit
-+   "NT disk signature", and PP is a zero-filled hex representation of the
-+   1-based partition number.
-+#. PARTUUID=<UUID>/PARTNROFF=<int> to select a partition in relation to a
-+   partition with a known unique id.
-+#. <major>:<minor> major and minor number of the device separated by a colon.
++  cdns,tslch-ns:
++    description: |
++      Delay in nanoseconds between setting qspi_n_ss_out low and
++      first bit transfer.
 +
-+kmsg_size
-+~~~~~~~~~
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - cdns,fifo-depth
++  - cdns,fifo-width
++  - cdns,trigger-address
 +
-+The chunk size in KB for oops/panic front-end. It **MUST** be a multiple of 4.
-+It's optional if you do not care oops/panic log.
++examples:
++  - |
++    spi@ff705000 {
++          compatible = "cdns,qspi-nor";
++          #address-cells = <1>;
++          #size-cells = <0>;
++          reg = <0xff705000 0x1000>,
++                <0xffa00000 0x1000>;
++          interrupts = <0 151 4>;
++          clocks = <&qspi_clk>;
++          cdns,fifo-depth = <128>;
++          cdns,fifo-width = <4>;
++          cdns,trigger-address = <0x00000000>;
 +
-+There are multiple chunks for oops/panic front-end depending on the remaining
-+space except other pstore front-ends.
++          flash@0 {
++              compatible = "jedec,spi-nor";
++              reg = <0x0>;
++              cdns,read-delay = <4>;
++              cdns,tshsl-ns = <50>;
++              cdns,tsd2d-ns = <50>;
++              cdns,tchsh-ns = <4>;
++              cdns,tslch-ns = <4>;
++          };
++    };
 +
-+pstore/blk will log to oops/panic chunks one by one, and always overwrite the
-+oldest chunk if there is no more free chunk.
-+
-+pmsg_size
-+~~~~~~~~~
-+
-+The chunk size in KB for pmsg front-end. It **MUST** be a multiple of 4.
-+It's optional if you do not care pmsg log.
-+
-+Unlike oops/panic front-end, there is only one chunk for pmsg front-end.
-+
-+Pmsg is a user space accessible pstore object. Writes to */dev/pmsg0* are
-+appended to the chunk. On reboot the contents are available in
-+*/sys/fs/pstore/pmsg-pstore-blk-0*.
-+
-+console_size
-+~~~~~~~~~~~~
-+
-+The chunk size in KB for console front-end.  It **MUST** be a multiple of 4.
-+It's optional if you do not care console log.
-+
-+Similar to pmsg front-end, there is only one chunk for console front-end.
-+
-+All log of console will be appended to the chunk. On reboot the contents are
-+available in */sys/fs/pstore/console-pstore-blk-0*.
-+
-+ftrace_size
-+~~~~~~~~~~~
-+
-+The chunk size in KB for ftrace front-end. It **MUST** be a multiple of 4.
-+It's optional if you do not care console log.
-+
-+Similar to oops front-end, there are multiple chunks for ftrace front-end
-+depending on the count of cpu processors. Each chunk size is equal to
-+ftrace_size / processors_count.
-+
-+All log of ftrace will be appended to the chunk. On reboot the contents are
-+combined and available in */sys/fs/pstore/ftrace-pstore-blk-0*.
-+
-+Persistent function tracing might be useful for debugging software or hardware
-+related hangs. Here is an example of usage::
-+
-+ # mount -t pstore pstore /sys/fs/pstore
-+ # mount -t debugfs debugfs /sys/kernel/debug/
-+ # echo 1 > /sys/kernel/debug/pstore/record_ftrace
-+ # reboot -f
-+ [...]
-+ # mount -t pstore pstore /sys/fs/pstore
-+ # tail /sys/fs/pstore/ftrace-pstore-blk-0
-+ CPU:0 ts:5914676 c0063828  c0063b94  call_cpuidle <- cpu_startup_entry+0x1b8/0x1e0
-+ CPU:0 ts:5914678 c039ecdc  c006385c  cpuidle_enter_state <- call_cpuidle+0x44/0x48
-+ CPU:0 ts:5914680 c039e9a0  c039ecf0  cpuidle_enter_freeze <- cpuidle_enter_state+0x304/0x314
-+ CPU:0 ts:5914681 c0063870  c039ea30  sched_idle_set_state <- cpuidle_enter_state+0x44/0x314
-+ CPU:1 ts:5916720 c0160f59  c015ee04  kernfs_unmap_bin_file <- __kernfs_remove+0x140/0x204
-+ CPU:1 ts:5916721 c05ca625  c015ee0c  __mutex_lock_slowpath <- __kernfs_remove+0x148/0x204
-+ CPU:1 ts:5916723 c05c813d  c05ca630  yield_to <- __mutex_lock_slowpath+0x314/0x358
-+ CPU:1 ts:5916724 c05ca2d1  c05ca638  __ww_mutex_lock <- __mutex_lock_slowpath+0x31c/0x358
-+
-+max_reason
-+~~~~~~~~~~
-+
-+Limiting which kinds of kmsg dumps are stored can be controlled via
-+the ``max_reason`` value, as defined in include/linux/kmsg_dump.h's
-+``enum kmsg_dump_reason``. For example, to store both Oopses and Panics,
-+``max_reason`` should be set to 2 (KMSG_DUMP_OOPS), to store only Panics
-+``max_reason`` should be set to 1 (KMSG_DUMP_PANIC). Setting this to 0
-+(KMSG_DUMP_UNDEF), means the reason filtering will be controlled by the
-+``printk.always_kmsg_dump`` boot param: if unset, it'll be KMSG_DUMP_OOPS,
-+otherwise KMSG_DUMP_MAX.
-+
-+Configurations for driver
-+-------------------------
-+
-+Only a block device driver cares about these configurations. A block device
-+driver uses ``register_pstore_blk`` to register to pstore/blk.
-+
-+.. kernel-doc:: fs/pstore/blk.c
-+   :identifiers: register_pstore_blk
-+
-+Compression and header
-+----------------------
-+
-+Block device is large enough for uncompressed oops data. Actually we do not
-+recommend data compression because pstore/blk will insert some information into
-+the first line of oops/panic data. For example::
-+
-+        Panic: Total 16 times
-+
-+It means that it's OOPS|Panic for the 16th time since the first booting.
-+Sometimes the number of occurrences of oops|panic since the first booting is
-+important to judge whether the system is stable.
-+
-+The following line is inserted by pstore filesystem. For example::
-+
-+        Oops#2 Part1
-+
-+It means that it's OOPS for the 2nd time on the last boot.
-+
-+Reading the data
-+----------------
-+
-+The dump data can be read from the pstore filesystem. The format for these
-+files is ``dmesg-pstore-blk-[N]`` for oops/panic front-end,
-+``pmsg-pstore-blk-0`` for pmsg front-end and so on.  The timestamp of the
-+dump file records the trigger time. To delete a stored record from block
-+device, simply unlink the respective pstore file.
-+
-+Attentions in panic read/write APIs
-+-----------------------------------
-+
-+If on panic, the kernel is not going to run for much longer, the tasks will not
-+be scheduled and most kernel resources will be out of service. It
-+looks like a single-threaded program running on a single-core computer.
-+
-+The following points require special attention for panic read/write APIs:
-+
-+1. Can **NOT** allocate any memory.
-+   If you need memory, just allocate while the block driver is initializing
-+   rather than waiting until the panic.
-+#. Must be polled, **NOT** interrupt driven.
-+   No task schedule any more. The block driver should delay to ensure the write
-+   succeeds, but NOT sleep.
-+#. Can **NOT** take any lock.
-+   There is no other task, nor any shared resource; you are safe to break all
-+   locks.
-+#. Just use CPU to transfer.
-+   Do not use DMA to transfer unless you are sure that DMA will not keep lock.
-+#. Control registers directly.
-+   Please control registers directly rather than use Linux kernel resources.
-+   Do I/O map while initializing rather than wait until a panic occurs.
-+#. Reset your block device and controller if necessary.
-+   If you are not sure of the state of your block device and controller when
-+   a panic occurs, you are safe to stop and reset them.
-+
-+pstore/blk supports psblk_blkdev_info(), which is defined in
-+*linux/pstore_blk.h*, to get information of using block device, such as the
-+device number, sector count and start sector of the whole disk.
-+
-+pstore block internals
-+----------------------
-+
-+For developer reference, here are all the important structures and APIs:
-+
-+.. kernel-doc:: fs/pstore/zone.c
-+   :internal:
-+
-+.. kernel-doc:: include/linux/pstore_zone.h
-+   :internal:
-+
-+.. kernel-doc:: fs/pstore/blk.c
-+   :export:
-+
-+.. kernel-doc:: include/linux/pstore_blk.h
-+   :internal:
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e64e5db31497..9c1f4feff418 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -13660,6 +13660,7 @@ M:	Tony Luck <tony.luck@intel.com>
- S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git for-next/pstore
- F:	Documentation/admin-guide/ramoops.rst
-+F:	Documentation/admin-guide/pstore-blk.rst
- F:	Documentation/devicetree/bindings/reserved-memory/ramoops.txt
- F:	drivers/acpi/apei/erst.c
- F:	drivers/firmware/efi/efi-pstore.c
-diff --git a/fs/pstore/Kconfig b/fs/pstore/Kconfig
-index c2237984b407..e16a49ebfe54 100644
---- a/fs/pstore/Kconfig
-+++ b/fs/pstore/Kconfig
-@@ -171,6 +171,8 @@ config PSTORE_BLK
- 	  This enables panic and oops message to be logged to a block dev
- 	  where it can be read back at some later point.
- 
-+	  For more information, see Documentation/admin-guide/pstore-blk.rst
-+
- 	  If unsure, say N.
- 
- config PSTORE_BLK_BLKDEV
 -- 
-2.20.1
+2.11.0
 
 
 ______________________________________________________
