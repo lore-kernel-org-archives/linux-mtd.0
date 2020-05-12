@@ -2,63 +2,145 @@ Return-Path: <SRS0=zmx6=62=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CB66C54E4A
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 May 2020 11:28:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F840C54E4A
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 May 2020 11:30:26 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1A11A2072B
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 May 2020 11:28:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D719720675
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 May 2020 11:30:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="H+eYLM8y"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1A11A2072B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=hisilicon.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="iR/LXbv7";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="JsXJcElV";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="o8ubR84T"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D719720675
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=E7PQdFLPH0ujnvnFtAT+Y2Mdrj/60k9KCL5DXDWZEe8=; b=H+eYLM8ypxOX60
-	YFl78BQPrW99ORLBEsAN5h+5KAU8wrvnxqxYKopyOPr/rLyU2ZCNXh+AJ0KFAJgjEnRXew4SvCczH
-	PewL7SE78MJR+EK0Dtg6YMpxsYlo9K6YwMY1V3oryi2vrTfGO1nhU+DSYCbahsRzjeswN/ROLozxK
-	RHINHqgzeEfNT3BFZ4vgE1w1gWiDkCmXySaQ/1vnQADRfLSBpLQB7c/gq7MZb8DOgXtssgzVkG1dV
-	lxMDHkfaTMItgpTvrMXiK63MK1rM/vVlHFYBLRt+jVIQqpm57cOE5yMrFWtXHUYbdAIgQpy7dlLiT
-	1G8NvJUdrFEbz7menw5A==;
+	List-Owner; bh=rf4WFWUd7xJwgirLdAOpz2hd5HCxjmZOGbO8oDMHkfk=; b=iR/LXbv7A+r8dL
+	Q9A/zDXieBnLLXheAXL4okrYk3kPYYMr1nxq3Wnaqs8k0fh7xGVrbFcDsdRenndvQdWceLPvPUuWl
+	jnVC/kOAe++c+uehJLMAIWotoDJD9WpfykqV9n9XpTpucJIHO1gz7IQ2AcnaDLH3ubC386YYWBOmY
+	eQClBEq47dgmyjEl/X74kRVBAHaPv+aASzstHHwjXTq+58L9oarin1e2w867AeTLH3YLvaBEtKGMN
+	Pb7mWa/y9+9KctY4P6f2QsPzu4Zv1va6aRDfRbVRl5noZda5oaAwfVncwwdqel4gatMbMKSBVuOCC
+	9nTT5xGMAVpTeP7oxgjA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jYT4p-0000qM-O9; Tue, 12 May 2020 11:27:59 +0000
-Received: from szxga07-in.huawei.com ([45.249.212.35] helo=huawei.com)
+	id 1jYT73-0003yG-MR; Tue, 12 May 2020 11:30:17 +0000
+Received: from esa5.microchip.iphmx.com ([216.71.150.166])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jYT4Q-0000MX-EV
- for linux-mtd@lists.infradead.org; Tue, 12 May 2020 11:27:37 +0000
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
- by Forcepoint Email with ESMTP id 6E3D9FEEF6689CC9A0A3;
- Tue, 12 May 2020 19:27:22 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 12 May 2020 19:27:12 +0800
-From: Yicong Yang <yangyicong@hisilicon.com>
-To: <tudor.ambarus@microchip.com>, <linux-mtd@lists.infradead.org>
-Subject: [RFC PATCH v2 1/2] mtd: spi-nor: Add capability to disable flash quad
- mode
-Date: Tue, 12 May 2020 19:26:58 +0800
-Message-ID: <1589282819-42358-2-git-send-email-yangyicong@hisilicon.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1589282819-42358-1-git-send-email-yangyicong@hisilicon.com>
-References: <1589282819-42358-1-git-send-email-yangyicong@hisilicon.com>
+ id 1jYT70-0003wc-2X; Tue, 12 May 2020 11:30:15 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1589283014; x=1620819014;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:content-transfer-encoding: mime-version;
+ bh=dxXmUhUPpxBKko4J3joFmmQRuvEUizeiEmBAqHTdng0=;
+ b=JsXJcElVuoPFTBcSII7WOMh90Yu7c2wO5pZPrpkL3E63TCuOC1ibSTJZ
+ X14KCLVd3fEYpvmp2KiwUUWDh+O9EFaj/Bsah3YAYBL1LOZmHBHErJUw3
+ kkYQAHt+xvGx6+nAUzD0cc/2iU86fqUblHAykqT75h5KDqsUP/2NTxcXN
+ Er6QzjXIPymSP5Bf+uIFJ4Y9ReWZ94lTMuKMXfitI6n7F1a/Q7Z7Uckew
+ ADpNdumQ8jZLASUfbfuNEEs/5BHT7uxah64Aw4ZadSGMEMbmgVA4ngUca
+ E0cY0ptSQCrcxFJT9opyiHhtLfHqX/694qr7Bb4HIg3XqWjnfu2u1CcxG w==;
+IronPort-SDR: 5M8CTnBYortKXeUXnXoaWD43z8iq4uXFSiMmFNKQUa0HYmvyHUtNioYCYEmd8JhlWEvtNftJH4
+ SrqbDPwYCgVgK60V47+5j9n0Eq674akHwdDbaMaSbkuMyx9l8JaLa7i0QVxtVbPOwK1AgJ3Xtj
+ siQWsTSoESVTtRmFtqoDDHj4iwX9VfW1JgQ3MdG/mh2d/98k40YIzi/fFgIaTtkO9cTa/uaTCe
+ g1ZUOOi5mVJSit2nkdck789HegZFbz1Gqcy9XlFyYyh4CmVKqONE6d7m9ah+BtP6WvNhX/ViSv
+ n84=
+X-IronPort-AV: E=Sophos;i="5.73,383,1583218800"; d="scan'208";a="75610674"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 12 May 2020 04:29:57 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 12 May 2020 04:29:58 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Tue, 12 May 2020 04:29:55 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aC5x1LyfSHAa+XdkBuQ7lJZutuTazpgDZ8vCaUpJBR4f7d+HMrTyF93gc582X1vciVjuLxsvrD2bvaA9R4Tij01e0IIrkjdCWJo0lAbgr/QEOKw48dQoCbxPsuBjg3B3gEwmNdQFCkJkGn3+u0JkVPMX87Pf9vxth/apcOFLet+gQGmhq65YTtIVmuzkE/9mNe4TgbtoLGJSsmt5A2dVk73/xq1yJoZOfxHj18fpTRt3xW3xCkS5JZjZ/JA5kz6c8xFMQGIYXK7rszAIEBIzWHPfBhRQggU+nKxMCeDPbf00djokbgtdC3xcIXZL4GTUFuY27xDPl445vIaToBsztg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dxXmUhUPpxBKko4J3joFmmQRuvEUizeiEmBAqHTdng0=;
+ b=CVy574zK5msFvTX0B+Tf9fnwpX/0THhSlnlMAaAZfFETAi2MkCqsQNVYKZkN4b0UEn9LNjR+1khilZRcxafy1CCrvD6xauSMs2ny+FJmyMNAMVUWKyoNPi3HjDsfMM4J4IIRocPr+o52xBEVN9NBSrugOZnJKEG+b8DnLOvXSUMEfArzfq7XiO4RAgd0JptiybVwdaf+tw+qW5gSS2Dhv8HhGytlRhZmajUhiSrNMc1XV/dhlXdrlghqiDBTezTLIFodzavb1Pcqjh+qIb0/bos3E9cuP3nfnpT+LBwzWe8Ji4Eq+d1gBGcR0cXsGdubKaNFm+5ol3haPnVSwM49ag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dxXmUhUPpxBKko4J3joFmmQRuvEUizeiEmBAqHTdng0=;
+ b=o8ubR84TsqTKlrbeH5Qboe10KvxqaqEfwJBXK+bJSfLwdjqAU8OgMstkKZBW1flx1sRPY7Jx2elm6YrnerAS7DM25jnS0ny3UJ4tF3eCqDyupwLz9QUbtvauFfeZlNgcrtrRAVZdJWDOJi9sPBUGIie8H2SRpm0HzChxV3AHRQw=
+Received: from BY5PR11MB4419.namprd11.prod.outlook.com (2603:10b6:a03:1c8::13)
+ by BY5PR11MB4273.namprd11.prod.outlook.com (2603:10b6:a03:1c9::32)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.20; Tue, 12 May
+ 2020 11:29:52 +0000
+Received: from BY5PR11MB4419.namprd11.prod.outlook.com
+ ([fe80::d847:5d58:5325:c536]) by BY5PR11MB4419.namprd11.prod.outlook.com
+ ([fe80::d847:5d58:5325:c536%7]) with mapi id 15.20.2979.033; Tue, 12 May 2020
+ 11:29:51 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH v4 00/16] mtd: spi-nor: add xSPI Octal DTR support
+Thread-Topic: [PATCH v4 00/16] mtd: spi-nor: add xSPI Octal DTR support
+Thread-Index: AQHWJ3Khn/aolf/mv0usqjltSIxTLg==
+Date: Tue, 12 May 2020 11:29:51 +0000
+Message-ID: <2352513.UHBGRE98Z5@192.168.0.120>
+References: <20200424184410.8578-1-p.yadav@ti.com>
+ <144878625.o7txgtY6sz@192.168.0.120>
+ <49abc8f3-5bb5-bc6d-b2ec-f14b115c58dc@ti.com>
+In-Reply-To: <49abc8f3-5bb5-bc6d-b2ec-f14b115c58dc@ti.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=none action=none
+ header.from=microchip.com;
+x-originating-ip: [94.177.32.156]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a709c7c3-0de1-4d26-de04-08d7f667c97e
+x-ms-traffictypediagnostic: BY5PR11MB4273:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR11MB4273E99AF8E2073EAD9CE1DCF0BE0@BY5PR11MB4273.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 0401647B7F
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 4Gv0WOjS+9tYsBLjdISMnxZsyY9Jv77VM6xy06AZZ2r/iQweAreCiYPj1OD0Y1KVSgxXez0ct8CfAwH4VGxWsy/Y6ywKy4lle/0BoGtmwE2n89iOdB432vGOQqUOi7LKvFFRujIhfPxnnNg/mH1UUa+W58+xPayZGnJZ5+6GrS5ov4GEVL5wYCqyj9XYI8GTBw0iOycX5tadsrSs4LQ6bpH2TmkUmG93hFs7v9TbnCNYPCkaJW5ss/dRs4XRb8JGVZI1tfxFoyL83TjAu4W4XaRaywtvIZwraDNgTDUd/837dHa2iVTvi66Sgn20jWz3gbsjLcq3dE5nku3aSAKD93Ze9F/rDpHZt38j4JzreiKi1/t23jatdq240cicqNIZjhALrwbcPi/jQ1+MUClLJ+/P2SKq5KQ5Sqovgew0FUy+gmR5R+8D0URZHZk1MWN/U/1a/9ExNazNJrgd/u+tgrCB0UZCXxq1Iqze/a0kKKklwMpip8sfQvsVKV8kzRnTdfiDcrqdD3g10OaBfqD3Bg==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:BY5PR11MB4419.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFTY:;
+ SFS:(376002)(39860400002)(366004)(346002)(136003)(396003)(33430700001)(6512007)(9686003)(6506007)(8676002)(53546011)(54906003)(6486002)(316002)(26005)(186003)(2906002)(14286002)(5660300002)(33656002)(86362001)(71200400001)(478600001)(4326008)(8936002)(7416002)(6916009)(33440700001)(66946007)(64756008)(66556008)(66446008)(66476007)(91956017)(76116006);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata: 0z/9iDby6r1RomoUT3gx21JWxqrI3EYVWQLLFJi8jVtrhXxxYhJos+kiyjBaBuEbINB7Yut+1BS7RYLATStFiQVB9Hin/yGEDQyngsglkEtxCWTVWVi4YKOGQuoGnb8vuUit3LGMWu+PqKJDElC6o+7yDUXIlDZpl+VhBVhekW5ZKRH+BQ49coEQQAwSekBerkdd2FHBG53rPS7ajcOoTPhYgQOnJ8dQHomtZWqg66ncY370sDG7HP/7JksGO+tF0k9iu4FUY7ouza4eHorXs1HPwyH/2AyYa7HWSAogyeskJYgVLBC5ve4+MgY0s6xh+Bt22Q+8vqguJOTtvs/4VMAP1F8bzIB02UuUT6uaOfSCMnH6fqXBVH9gDW5BocI20gY5pNGobcCosEpocvCPajZR/Vy8jes95mJN+xFTgJPxQLAM+jC5Iyh4UOxEbfPpuxYSptFI4+zPWMpaxHRwvlEA68SdrYIYg0eG40A1Wa4=
+Content-ID: <44CDA89EFFB0AE4D9EC0B1C246CED218@namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+X-MS-Exchange-CrossTenant-Network-Message-Id: a709c7c3-0de1-4d26-de04-08d7f667c97e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 May 2020 11:29:51.6335 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: z468bkByZ2ePhuJQZSoQnWSjgQw18GCKblKph7YUtgNcrIkd4qfNYzyvlkusdQlQo+RfuO6hymhUdA/Yok6xr7p3AkyyGTNx11Oj901DsjM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4273
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200512_042734_663847_F78EE728 
-X-CRM114-Status: GOOD (  14.60  )
+X-CRM114-CacheID: sfid-20200512_043014_176763_AD8F3E0E 
+X-CRM114-Status: GOOD (  19.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,210 +152,99 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vigneshr@ti.com, sergei.shtylyov@cogentembedded.com, richard@nod.at,
- me@yadavpratyush.com, john.garry@huawei.com, linuxarm@huawei.com,
- yangyicong@hisilicon.com, alexander.sverdlin@nokia.com,
- miquel.raynal@bootlin.com
+Cc: alexandre.belloni@bootlin.com, vigneshr@ti.com, richard@nod.at,
+ broonie@kernel.org, nsekhar@ti.com, linux-kernel@vger.kernel.org,
+ Nicolas.Ferre@microchip.com, Ludovic.Desroches@microchip.com,
+ boris.brezillon@collabora.com, miquel.raynal@bootlin.com,
+ linux-spi@vger.kernel.org, p.yadav@ti.com,
+ linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Previous we didn't provide a way to disable the flash's quad mode.
-Which means we cannot do some cleanup works when to remove or
-poweroff the flash, like what set 4-byte address mode does in
-spi_nor_restore().
+Hi, Vignesh,
 
-Add the capability to disable the flash quad mode, by introducing
-an enable flag in the flash parameters quad_enable() hooks and
-related functions.
+On Tuesday, May 12, 2020 12:49:07 PM EEST Vignesh Raghavendra wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the
+> content is safe
+> On 12/05/20 11:46 am, Tudor.Ambarus@microchip.com wrote:
+> > Hi, Boris, Pratyush,
+> > 
+> > I stripped case 2/, we'll not treat it for now.
+> > 
+> > On Monday, May 11, 2020 12:27:12 PM EEST Boris Brezillon wrote:
+> >> EXTERNAL EMAIL: Do not click links or open attachments unless you know
+> >> the
+> >> content is safe
+> >> 
+> >> On Mon, 11 May 2020 09:00:35 +0000
+> >> 
+> >> <Tudor.Ambarus@microchip.com> wrote:
+> >>> Hi, Pratyush, Boris,
+> >>> 
+> >>> On Friday, April 24, 2020 9:43:54 PM EEST Pratyush Yadav wrote:
+> >>>> This series adds support for octal DTR flashes in the spi-nor
+> >>>> framework,
+> >>> 
+> >>> I'm still learning about this, but I can give you my 2 cents as of now,
+> >>> to
+> >>> open the discussion. Enabling 2-2-2, 4-4-4, and 8-8-8 modes is dangerous
+> >>> because the flash may not recover from unexpected resets. Entering one
+> >>> of
+> >>> these modes can be:
+> >>> 1/ volatile selectable, the device return to the 1-1-1 protocol after
+> >>> the
+> >>> next power-on. I guess this is conditioned by the optional RESET pin,
+> >>> but
+> >>> I'll have to check. Also the flash can return to the 1-1-1 mode using
+> >>> the
+> >>> software reset or through writing to its Configuration Register, without
+> >>> power-on or power- off.
+> >> 
+> >> My understanding is that there's no standard software reset procedure
+> >> that guarantees no conflict with existing 1S commands, so even the
+> >> software reset approach doesn't work here.
+> > 
+> > The software reset procedure can't protect you from unexpected resets, but
+> > the hardware with its optional reset pin can. Pratyush to confirm.
+> > 
+> > cut
+> > 
+> >>> Not recovering from unexpected resets is unacceptable. One should always
+> >>> prefer option 1/ and condition the entering in 2-2-2, 4-4-4 and 8-8-8
+> >>> with
+> >>> the presence of the optional RESET pin.
+> >> 
+> >> Totally agree with you on that one, but we know what happens in
+> >> practice...
+> > 
+> > What I proposed is to condition the entering in the state-full modes with
+> > the presence of the optional RESET pin. We would introduce an optional
+> > device tree property for the RESET pin. If hardware doesn't implement the
+> > optional RESET# signal, then we will not enter in the state-full modes.
+> 
+> Are you asking for dedicated SW controllable reset line or just an
+> indication from DT that OSPI reset line is connected to board level
+> soft/hard reset lines?
 
-Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
----
- drivers/mtd/spi-nor/core.c | 53 ++++++++++++++++++++++++++++++++--------------
- drivers/mtd/spi-nor/core.h |  8 +++----
- 2 files changed, 41 insertions(+), 20 deletions(-)
+I don't see a need for the reset line to be SW controllable, a simple 
+indication from the device tree should be enough.
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index cc68ea8..72e8d8b 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -1907,15 +1907,17 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- }
- 
- /**
-- * spi_nor_sr1_bit6_quad_enable() - Set the Quad Enable BIT(6) in the Status
-+ * spi_nor_sr1_bit6_quad_enable() - Set/Unset the Quad Enable BIT(6) in the
-+ *                                  Status
-  * Register 1.
-  * @nor:	pointer to a 'struct spi_nor'
-+ * @enable:	true to enter quad mode. false to leave quad mode.
-  *
-  * Bit 6 of the Status Register 1 is the QE bit for Macronix like QSPI memories.
-  *
-  * Return: 0 on success, -errno otherwise.
-  */
--int spi_nor_sr1_bit6_quad_enable(struct spi_nor *nor)
-+int spi_nor_sr1_bit6_quad_enable(struct spi_nor *nor, bool enable)
- {
- 	int ret;
- 
-@@ -1923,45 +1925,59 @@ int spi_nor_sr1_bit6_quad_enable(struct spi_nor *nor)
- 	if (ret)
- 		return ret;
- 
--	if (nor->bouncebuf[0] & SR1_QUAD_EN_BIT6)
-+	if ((enable && (nor->bouncebuf[0] & SR1_QUAD_EN_BIT6)) ||
-+	    !(enable || (nor->bouncebuf[0] & SR1_QUAD_EN_BIT6)))
- 		return 0;
- 
--	nor->bouncebuf[0] |= SR1_QUAD_EN_BIT6;
-+	if (enable)
-+		nor->bouncebuf[0] |= SR1_QUAD_EN_BIT6;
-+	else
-+		nor->bouncebuf[0] &= ~SR1_QUAD_EN_BIT6;
- 
- 	return spi_nor_write_sr1_and_check(nor, nor->bouncebuf[0]);
- }
- 
- /**
-- * spi_nor_sr2_bit1_quad_enable() - set the Quad Enable BIT(1) in the Status
-+ * spi_nor_sr2_bit1_quad_enable() - set/unset the Quad Enable BIT(1) in the
-+ *                                  Status
-  * Register 2.
-  * @nor:       pointer to a 'struct spi_nor'.
-+ * @enable:	true to enter quad mode. false to leave quad mode.
-  *
-  * Bit 1 of the Status Register 2 is the QE bit for Spansion like QSPI memories.
-  *
-  * Return: 0 on success, -errno otherwise.
-  */
--int spi_nor_sr2_bit1_quad_enable(struct spi_nor *nor)
-+int spi_nor_sr2_bit1_quad_enable(struct spi_nor *nor, bool enable)
- {
- 	int ret;
- 
- 	if (nor->flags & SNOR_F_NO_READ_CR)
--		return spi_nor_write_16bit_cr_and_check(nor, SR2_QUAD_EN_BIT1);
-+		return spi_nor_write_16bit_cr_and_check(nor,
-+						enable ? SR2_QUAD_EN_BIT1 : 0);
- 
- 	ret = spi_nor_read_cr(nor, nor->bouncebuf);
- 	if (ret)
- 		return ret;
- 
--	if (nor->bouncebuf[0] & SR2_QUAD_EN_BIT1)
-+	if ((enable && (nor->bouncebuf[0] & SR2_QUAD_EN_BIT1)) ||
-+	    !(enable || (nor->bouncebuf[0] & SR2_QUAD_EN_BIT1)))
- 		return 0;
- 
- 	nor->bouncebuf[0] |= SR2_QUAD_EN_BIT1;
- 
-+	if (enable)
-+		nor->bouncebuf[0] |= SR2_QUAD_EN_BIT1;
-+	else
-+		nor->bouncebuf[0] &= ~SR2_QUAD_EN_BIT1;
-+
- 	return spi_nor_write_16bit_cr_and_check(nor, nor->bouncebuf[0]);
- }
- 
- /**
-- * spi_nor_sr2_bit7_quad_enable() - set QE bit in Status Register 2.
-+ * spi_nor_sr2_bit7_quad_enable() - set/unset QE bit in Status Register 2.
-  * @nor:	pointer to a 'struct spi_nor'
-+ * @enable:	true to enter quad mode. false to leave quad mode.
-  *
-  * Set the Quad Enable (QE) bit in the Status Register 2.
-  *
-@@ -1971,7 +1987,7 @@ int spi_nor_sr2_bit1_quad_enable(struct spi_nor *nor)
-  *
-  * Return: 0 on success, -errno otherwise.
-  */
--int spi_nor_sr2_bit7_quad_enable(struct spi_nor *nor)
-+int spi_nor_sr2_bit7_quad_enable(struct spi_nor *nor, bool enable)
- {
- 	u8 *sr2 = nor->bouncebuf;
- 	int ret;
-@@ -1981,11 +1997,15 @@ int spi_nor_sr2_bit7_quad_enable(struct spi_nor *nor)
- 	ret = spi_nor_read_sr2(nor, sr2);
- 	if (ret)
- 		return ret;
--	if (*sr2 & SR2_QUAD_EN_BIT7)
-+	if ((enable && (*sr2 & SR2_QUAD_EN_BIT7)) ||
-+	    !(enable || (*sr2 & SR2_QUAD_EN_BIT7)))
- 		return 0;
- 
- 	/* Update the Quad Enable bit. */
--	*sr2 |= SR2_QUAD_EN_BIT7;
-+	if (enable)
-+		*sr2 |= SR2_QUAD_EN_BIT7;
-+	else
-+		*sr2 &= ~SR2_QUAD_EN_BIT7;
- 
- 	ret = spi_nor_write_sr2(nor, sr2);
- 	if (ret)
-@@ -2898,12 +2918,13 @@ static int spi_nor_init_params(struct spi_nor *nor)
- }
- 
- /**
-- * spi_nor_quad_enable() - enable Quad I/O if needed.
-+ * spi_nor_quad_enable() - enable/disable Quad I/O if needed.
-  * @nor:                pointer to a 'struct spi_nor'
-+ * @enable:             true to enable quad mode. false to disable.
-  *
-  * Return: 0 on success, -errno otherwise.
-  */
--static int spi_nor_quad_enable(struct spi_nor *nor)
-+static int spi_nor_quad_enable(struct spi_nor *nor, bool enable)
- {
- 	if (!nor->params->quad_enable)
- 		return 0;
-@@ -2912,7 +2933,7 @@ static int spi_nor_quad_enable(struct spi_nor *nor)
- 	      spi_nor_get_protocol_width(nor->write_proto) == 4))
- 		return 0;
- 
--	return nor->params->quad_enable(nor);
-+	return nor->params->quad_enable(nor, enable);
- }
- 
- /**
-@@ -2936,7 +2957,7 @@ static int spi_nor_init(struct spi_nor *nor)
- {
- 	int err;
- 
--	err = spi_nor_quad_enable(nor);
-+	err = spi_nor_quad_enable(nor, true);
- 	if (err) {
- 		dev_dbg(nor->dev, "quad mode not supported\n");
- 		return err;
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 6f2f6b2..719a31d 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -219,7 +219,7 @@ struct spi_nor_flash_parameter {
- 
- 	struct spi_nor_erase_map        erase_map;
- 
--	int (*quad_enable)(struct spi_nor *nor);
-+	int (*quad_enable)(struct spi_nor *nor, bool enable);
- 	int (*set_4byte_addr_mode)(struct spi_nor *nor, bool enable);
- 	u32 (*convert_addr)(struct spi_nor *nor, u32 addr);
- 	int (*setup)(struct spi_nor *nor, const struct spi_nor_hwcaps *hwcaps);
-@@ -406,9 +406,9 @@ int spi_nor_write_ear(struct spi_nor *nor, u8 ear);
- int spi_nor_wait_till_ready(struct spi_nor *nor);
- int spi_nor_lock_and_prep(struct spi_nor *nor);
- void spi_nor_unlock_and_unprep(struct spi_nor *nor);
--int spi_nor_sr1_bit6_quad_enable(struct spi_nor *nor);
--int spi_nor_sr2_bit1_quad_enable(struct spi_nor *nor);
--int spi_nor_sr2_bit7_quad_enable(struct spi_nor *nor);
-+int spi_nor_sr1_bit6_quad_enable(struct spi_nor *nor, bool enable);
-+int spi_nor_sr2_bit1_quad_enable(struct spi_nor *nor, bool enable);
-+int spi_nor_sr2_bit7_quad_enable(struct spi_nor *nor, bool enable);
- 
- int spi_nor_xread_sr(struct spi_nor *nor, u8 *sr);
- ssize_t spi_nor_read_data(struct spi_nor *nor, loff_t from, size_t len,
--- 
-2.8.1
+> 
+> Mandating SW controllable RESET line is bit of a stretch IMO... Board
+> design may not allow wasting dedicated pin due to lack of GPIOs perhaps..
+> 
+> For eg.: TI EVM has OSPI reset line connected to board level reset out.
+> This ensures any soft/warm/hard CPU reset will trigger OSPI Flash reset,
+> but there is no SW control that allows OSPI flash alone to be reset.
+> Isn't such a reset mechanism sufficient?
+> 
+
+I think it is, yes.
+
+Cheers,
+ta
 
 
 ______________________________________________________
