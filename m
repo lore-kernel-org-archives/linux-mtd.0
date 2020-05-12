@@ -2,66 +2,63 @@ Return-Path: <SRS0=zmx6=62=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A04ADC54E8B
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 May 2020 06:58:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51034C54E4B
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 May 2020 06:59:40 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5A38820674
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 May 2020 06:58:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 202F6206D6
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 May 2020 06:59:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DUw+ewp2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5A38820674
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=allwinnertech.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FdiZZhoM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 202F6206D6
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=mCs9tYjDSq/sEr/9BnrU3zFQ/GAzPX9fe/S3Sq6fBX4=; b=DUw
-	+ewp2qEegTGL9vZVPDqcakJJcz3pcjdSfgKYTFvFol6jxgxoUWRgdrvwZtiaDIVNGh6+aEbNCLChb
-	rE+VhCNjdM5FGJ0ThwqiHOPTNqY68YWIcRY/tdUXcPPeselPJM30RAQuDiQJ16WA701w0MF0OU6Pr
-	DY5DQ13eWEDlACzjgQRW2HBFqSeTVZo9da1acZ/nSccq0n3WChDHm5hzGQNo2B34i/Bzg7RYLR+tg
-	p++t0sl/ZQlUaXw1vFq2OUb36KUppAFhdaTny2w2aMnABEq9D24iVgM/p2fiPcaguauDbp841EM46
-	gxrlLisBkaSlV7VvR2Kpm/xbB5F9Tbg==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=8T4doHWnCsK/kTNU8BMF5+rp+vDchwkEUpHz5oti3iM=; b=FdiZZhoMNVfsJr
+	n/UukXAI4Y0KdEWPUjFsi23rLUQSSJ2Y9MrGOkxyNh3z2Z0DMcKCDTV8ZxR9rAyOXX1fSUaNciAMZ
+	O3uZZAg3MwZhTw5Z1t+K3rL1q8Zhnjo11+faSH9g7ySN3NKECnmtATMdS1iFB30RL+WQfQrDRxu/f
+	ke85nbtFUAXQ7YuBMrAkBhvX/dynwFcA9V4mdCa3otDPNRIut3RZBDykroyTslPoNeqYWNGjbhnQJ
+	6oJz3FjaPdL0fS7xxQYc8+Hbj8uvkt3bOXuZJgYm/+N5Xy3DmpUncLGq49GREaGObuMxaDR7ZWpNM
+	rrxUrhoCQKP8KaT/W2bg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jYOsC-0004AL-KC; Tue, 12 May 2020 06:58:40 +0000
-Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205])
+	id 1jYOt3-0004Qr-DO; Tue, 12 May 2020 06:59:33 +0000
+Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jYOs8-00049O-SH
- for linux-mtd@lists.infradead.org; Tue, 12 May 2020 06:58:38 +0000
-X-Alimail-AntiSpam: AC=CONTINUE; BC=0.07436289|-1; CH=green;
- DM=|CONTINUE|false|;
- DS=CONTINUE|ham_system_inform|0.118451-0.00916542-0.872384;
- FP=0|0|0|0|0|-1|-1|-1; HT=e01a16378; MF=liaoweixiong@allwinnertech.com; NM=1;
- PH=DS; RN=10; RT=10; SR=0; TI=SMTPD_---.HXGIgNF_1589266705; 
-Received: from
- PC-liaoweixiong.allwinnertech.com(mailfrom:liaoweixiong@allwinnertech.com
- fp:SMTPD_---.HXGIgNF_1589266705)
- by smtp.aliyun-inc.com(10.147.41.143);
- Tue, 12 May 2020 14:58:30 +0800
-From: WeiXiong Liao <liaoweixiong@allwinnertech.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Kees Cook <keescook@chromium.org>, Anton Vorontsov <anton@enomsg.org>,
- Colin Cross <ccross@android.com>, Tony Luck <tony.luck@intel.com>
-Subject: [PATCH] mtd: offset align to block size bofore block operation
-Date: Tue, 12 May 2020 14:58:35 +0800
-Message-Id: <1589266715-4168-1-git-send-email-liaoweixiong@allwinnertech.com>
-X-Mailer: git-send-email 1.9.1
+ id 1jYOt0-0004Po-Km
+ for linux-mtd@lists.infradead.org; Tue, 12 May 2020 06:59:32 +0000
+X-Originating-IP: 91.224.148.103
+Received: from xps13 (unknown [91.224.148.103])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id A607E20006;
+ Tue, 12 May 2020 06:59:24 +0000 (UTC)
+Date: Tue, 12 May 2020 08:59:22 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Christophe Kerello <christophe.kerello@st.com>
+Subject: Re: [PATCH v4 04/10] mtd: rawnand: stm32_fmc2: cleanup
+Message-ID: <20200512085922.3fc3e4dd@xps13>
+In-Reply-To: <49c51a13-96a1-0241-f4d1-c5ff7d52921d@st.com>
+References: <1588756279-17289-1-git-send-email-christophe.kerello@st.com>
+ <1588756279-17289-5-git-send-email-christophe.kerello@st.com>
+ <20200511223900.030fe5f4@xps13>
+ <49c51a13-96a1-0241-f4d1-c5ff7d52921d@st.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200511_235837_094229_1C56F0B9 
-X-CRM114-Status: UNSURE (   9.54  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200511_235930_821295_4E0148D1 
+X-CRM114-Status: GOOD (  15.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,145 +70,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: WeiXiong Liao <liaoweixiong@allwinnertech.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, marex@denx.de,
+ vigneshr@ti.com, gregkh@linuxfoundation.org, richard@nod.at,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, boris.brezillon@collabora.com,
+ linux-stm32@st-md-mailman.stormreply.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The off parameter on mtdpsore_block_*() does not align to block size,
-which makes some bugs. For example, a block contains dmesg zones
-with number 0 to 3. When user remove all these files, mapped to
-these zones, mtdpstore is expected to check whether No.0 to No.3 is
-unused then erase this block. However it check No.3 to No.6 because
-it get wrongly beginning zonenum from misaligned off.
-
-Signed-off-by: WeiXiong Liao <liaoweixiong@allwinnertech.com>
----
-
-This patch bases on series v8 of pstore/blk.
-Series Link: https://lore.kernel.org/lkml/20200511233229.27745-1-keescook@chromium.org/
-
- drivers/mtd/mtdpstore.c | 39 +++++++++++++++++++++++++++------------
- 1 file changed, 27 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/mtd/mtdpstore.c b/drivers/mtd/mtdpstore.c
-index 06084eff1004..a4fe6060b960 100644
---- a/drivers/mtd/mtdpstore.c
-+++ b/drivers/mtd/mtdpstore.c
-@@ -27,7 +27,10 @@ static int mtdpstore_block_isbad(struct mtdpstore_context *cxt, loff_t off)
- {
- 	int ret;
- 	struct mtd_info *mtd = cxt->mtd;
--	u64 blknum = div_u64(off, mtd->erasesize);
-+	u64 blknum;
-+
-+	off = ALIGN_DOWN(off, mtd->erasesize);
-+	blknum = div_u64(off, mtd->erasesize);
- 
- 	if (test_bit(blknum, cxt->badmap))
- 		return true;
-@@ -46,8 +49,10 @@ static inline int mtdpstore_panic_block_isbad(struct mtdpstore_context *cxt,
- 		loff_t off)
- {
- 	struct mtd_info *mtd = cxt->mtd;
--	u64 blknum = div_u64(off, mtd->erasesize);
-+	u64 blknum;
- 
-+	off = ALIGN_DOWN(off, mtd->erasesize);
-+	blknum = div_u64(off, mtd->erasesize);
- 	return test_bit(blknum, cxt->badmap);
- }
- 
-@@ -75,9 +80,11 @@ static inline void mtdpstore_block_mark_unused(struct mtdpstore_context *cxt,
- 		loff_t off)
- {
- 	struct mtd_info *mtd = cxt->mtd;
--	u64 zonenum = div_u64(off, cxt->info.kmsg_size);
--	u32 zonecnt = cxt->mtd->erasesize / cxt->info.kmsg_size;
-+	u32 zonecnt = mtd->erasesize / cxt->info.kmsg_size;
-+	u64 zonenum;
- 
-+	off = ALIGN_DOWN(off, mtd->erasesize);
-+	zonenum = div_u64(off, cxt->info.kmsg_size);
- 	while (zonecnt > 0) {
- 		dev_dbg(&mtd->dev, "mark zone %llu unused\n", zonenum);
- 		clear_bit(zonenum, cxt->usedmap);
-@@ -99,9 +106,12 @@ static inline int mtdpstore_is_used(struct mtdpstore_context *cxt, loff_t off)
- static int mtdpstore_block_is_used(struct mtdpstore_context *cxt,
- 		loff_t off)
- {
--	u64 zonenum = div_u64(off, cxt->info.kmsg_size);
--	u32 zonecnt = cxt->mtd->erasesize / cxt->info.kmsg_size;
-+	struct mtd_info *mtd = cxt->mtd;
-+	u32 zonecnt = mtd->erasesize / cxt->info.kmsg_size;
-+	u64 zonenum;
- 
-+	off = ALIGN_DOWN(off, mtd->erasesize);
-+	zonenum = div_u64(off, cxt->info.kmsg_size);
- 	while (zonecnt > 0) {
- 		if (test_bit(zonenum, cxt->usedmap))
- 			return true;
-@@ -138,9 +148,12 @@ static void mtdpstore_mark_removed(struct mtdpstore_context *cxt, loff_t off)
- static void mtdpstore_block_clear_removed(struct mtdpstore_context *cxt,
- 		loff_t off)
- {
--	u64 zonenum = div_u64(off, cxt->info.kmsg_size);
--	u32 zonecnt = cxt->mtd->erasesize / cxt->info.kmsg_size;
-+	struct mtd_info *mtd = cxt->mtd;
-+	u32 zonecnt = mtd->erasesize / cxt->info.kmsg_size;
-+	u64 zonenum;
- 
-+	off = ALIGN_DOWN(off, mtd->erasesize);
-+	zonenum = div_u64(off, cxt->info.kmsg_size);
- 	while (zonecnt > 0) {
- 		clear_bit(zonenum, cxt->rmmap);
- 		zonenum++;
-@@ -151,9 +164,12 @@ static void mtdpstore_block_clear_removed(struct mtdpstore_context *cxt,
- static int mtdpstore_block_is_removed(struct mtdpstore_context *cxt,
- 		loff_t off)
- {
--	u64 zonenum = div_u64(off, cxt->info.kmsg_size);
--	u32 zonecnt = cxt->mtd->erasesize / cxt->info.kmsg_size;
-+	struct mtd_info *mtd = cxt->mtd;
-+	u32 zonecnt = mtd->erasesize / cxt->info.kmsg_size;
-+	u64 zonenum;
- 
-+	off = ALIGN_DOWN(off, mtd->erasesize);
-+	zonenum = div_u64(off, cxt->info.kmsg_size);
- 	while (zonecnt > 0) {
- 		if (test_bit(zonenum, cxt->rmmap))
- 			return true;
-@@ -169,6 +185,7 @@ static int mtdpstore_erase_do(struct mtdpstore_context *cxt, loff_t off)
- 	struct erase_info erase;
- 	int ret;
- 
-+	off = ALIGN_DOWN(off, cxt->mtd->erasesize);
- 	dev_dbg(&mtd->dev, "try to erase off 0x%llx\n", off);
- 	erase.len = cxt->mtd->erasesize;
- 	erase.addr = off;
-@@ -205,7 +222,6 @@ static ssize_t mtdpstore_erase(size_t size, loff_t off)
- 	}
- 
- 	/* all zones are unused, erase it */
--	off = ALIGN_DOWN(off, cxt->mtd->erasesize);
- 	return mtdpstore_erase_do(cxt, off);
- }
- 
-@@ -235,7 +251,6 @@ static int mtdpstore_security(struct mtdpstore_context *cxt, loff_t off)
- 	}
- 
- 	/* If there is no any empty zone, we have no way but to do erase */
--	off = ALIGN_DOWN(off, erasesize);
- 	while (blkcnt--) {
- 		div64_u64_rem(off + erasesize, cxt->mtd->size, (u64 *)&off);
- 
--- 
-1.9.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgQ2hyaXN0b3BoZSwKCkNocmlzdG9waGUgS2VyZWxsbyA8Y2hyaXN0b3BoZS5rZXJlbGxvQHN0
+LmNvbT4gd3JvdGUgb24gVHVlLCAxMiBNYXkKMjAyMCAwODo0OTo1NCArMDIwMDoKCj4gSGkgTWlx
+dWVsLAo+IAo+IE9uIDUvMTEvMjAgMTA6MzkgUE0sIE1pcXVlbCBSYXluYWwgd3JvdGU6Cj4gPiAK
+PiA+IENocmlzdG9waGUgS2VyZWxsbyA8Y2hyaXN0b3BoZS5rZXJlbGxvQHN0LmNvbT4gd3JvdGUg
+b24gV2VkLCA2IE1heSAyMDIwCj4gPiAxMToxMToxMyArMDIwMDoKPiA+ICAgCj4gPj4gVGhpcyBw
+YXRjaCByZW5hbWVzIGZ1bmN0aW9ucyBhbmQgbG9jYWwgdmFyaWFibGVzLgo+ID4+IFRoaXMgY2xl
+YW51cCBpcyBkb25lIHRvIGdldCBhbGwgZnVuY3Rpb25zIHN0YXJ0aW5nIGJ5IHN0bTMyX2ZtYzJf
+bmZjCj4gPj4gaW4gdGhlIEZNQzIgcmF3IE5BTkQgZHJpdmVyIHdoZW4gYWxsIGZ1bmN0aW9ucyB3
+aWxsIHN0YXJ0IGJ5Cj4gPj4gc3RtMzJfZm1jMl9lYmkgaW4gdGhlIEZNQzIgRUJJIGRyaXZlci4K
+PiA+Pgo+ID4+IFNpZ25lZC1vZmYtYnk6IENocmlzdG9waGUgS2VyZWxsbyA8Y2hyaXN0b3BoZS5r
+ZXJlbGxvQHN0LmNvbT4KPiA+PiBSZXZpZXdlZC1ieTogTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJh
+eW5hbEBib290bGluLmNvbT4gIAo+ID4gCj4gPiBBcHBsaWVkIHRvIG5hbmQvbmV4dCBhcyB3ZWxs
+IGJ1dCBmb3IgYW4gdW5rbm93biByZWFzb24gSSBoYWQgdG8gZG8gaXQKPiA+IGJ5IGhhbmQgYmVj
+YXVzZSB0aGUgcGF0Y2ggd291bGQgbm90IGFwcGx5Lgo+ID4gCj4gPiBUaGFua3MsCj4gPiBNaXF1
+w6hsCj4gPiAgIAo+IFRoaXMgaXMgc3RyYW5nZSwgSSBjYW4gYXBwbHkgdGhpcyBwYXRjaCBvbiBt
+eSB0cmVlIHdpdGhvdXQgYW55IGNvbmZsaWN0cy4KPiBUaGVyZSBpcyBhIGNvbXBpbGF0aW9uIGlz
+c3VlIGxpbmUgMTMwMS4KPiAKPiBAQCAtMTMwMiw0NCArMTI5OCw0NSBAQCBzdGF0aWMgdm9pZCBz
+dG0zMl9mbWMyX3dyaXRlX2RhdGEoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwgY29uc3Qgdm9pZCAq
+YnVmLAo+IAo+ICAgCWlmIChmb3JjZV84Yml0ICYmIGNoaXAtPm9wdGlvbnMgJiBOQU5EX0JVU1dJ
+RFRIXzE2KQo+ICAgCQkvKiBSZWNvbmZpZ3VyZSBidXMgd2lkdGggdG8gMTYtYml0ICovCj4gLQkJ
+c3RtMzJfZm1jMl9zZXRfYnVzd2lkdGhfMTYoZm1jMiwgdHJ1ZSk7Cj4gKwkJc3RtMzJfZm1jMl9u
+ZmNfc2V0X2J1c3dpZHRoXzE2KG5mYywgdHJ1ZSk7Cj4gICB9Cj4gCj4gSSB3aWxsIHJlYmFzZSBv
+biB0b3Agb2YgbmFuZC9uZXh0IHRvZGF5IHRvIGNoZWNrIHRoYXQgdGhlcmUgaXMgbm8gaXNzdWVz
+IHdpdGggdGhlIGRyaXZlci4KCkkgaGFkIHRvIGRvIHNvbWUgY2hhbmdlcyBtYW51YWxseSwgbWFp
+YmUgSSBtaXNzZWQgdGhpcyBvbmUsIGJ1dCBJIGRvbid0CnJlbWVtYmVyIHRvdWNoaW5nIHRoaXMg
+aGVscGVyLgoKQW55d2F5LCBJIGp1c3QgZHJvcHBlZCB0aGUgdHdvIGxhc3QgcGF0Y2hlcyBvZiB5
+b3VyIHNlcmllcywgcGxlYXNlCnJlYmEmc2Ugbm93IG9uIG5hbmQvbmV4dCBhbmQganVzdCByZXNl
+bmQgcGF0Y2hlcyA0IGFuZCA1LgoKQWxzbywgd2hpbGUgYXQgaXQsIHdvdWxkIHlvdSBtaW5kIGNo
+YW5naW5nIHRoZSBjb21taXQgdGl0bGUgdG8Kc29tZXRoaW5nIG1vcmUgbWVhbmluZ2Z1bD8gImNs
+ZWFudXAiIGlzIGEgYml0IHZhZ3VlIGFuZCBub3QgdmVyeQphY2N1cmF0ZS4gTWF5YmUgc29tZXRo
+aW5nIGxpa2UgIkNvc21ldGljIGNoYW5nZSB0byB1c2UgbmZjIGluc3RlYWQgb2YKZm1jMiB3aGVy
+ZSByZWxldmFudCIuCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
+IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
+dGQvCg==
