@@ -2,81 +2,92 @@ Return-Path: <SRS0=hs7p=63=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31449C433E0
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 May 2020 20:40:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8599C433E0
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 May 2020 20:43:41 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 666A9205ED
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 May 2020 20:40:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D5FEE205ED
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 May 2020 20:43:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="t7V0/I/t"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 666A9205ED
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="giiM6jpG";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="DJFOB2jU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D5FEE205ED
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Ff2sEk8t7XDgFsILJIYtIqT0qof+var6n4SrdeKx1TM=; b=t7V0/I/tvd/YzW
-	hMLsokcsklw3Ur1UGuVoLhQsa05mPOeMDj6g2d3SW6YcMPj8VBQy48uEAUam6ZvJwfL3ROfPw8QN/
-	WIAlyppDEK3wWNp7HLjOCyga+x/wJ8sE/lWwSyPIZ00hW9ONVE+qKiVLJoF05JZKUB5TS54/DFLe7
-	4mQCpTrCU9pvvKsKGopT4tcW9u+PQTDxs2ILau3iiAwZ/Zb69Z8r+pw1MhnoipYnM2Mdr4KG0kYJR
-	QIEA0vc/1mtrj8ZfhB+Lyk6ROrWswIoABQSt6BTDayX6sR/nZfysBqCoS4PgTKXCLjZW2GedpBGQE
-	rLp7p5KqqhQQT8MSYyHg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:To:Subject
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=LzI3n9m1U1avzyTnG1u/1koKiCv8XbouoxtBAVvMvJA=; b=giiM6jpGYGQWLH
+	/VNFTo3SD7rBFtbNufFkaOMkWTxmWi4MgbXEB3sXOO71uMkjahnbexmduIR8pmsDMCe+964D/xVOl
+	99JT1syMy8AxSU6410wwm0llB8JrGOLC3BiTmOhtVHUJMk0NzgYo52P6ICeg6FEyWV5rA7IGh1wZt
+	a7TY/LOmLTDoSfCDsQStam3NLaydNPo38rOFeeFJFqJbQhdxLGZ8+JdmEH7gpkSEbcJivDtmPAsCm
+	9MAm4uc7CJobRKR0r0f3AhV/5gVvb4n/zSRg4qcnCMdCQPfUYc4cUBWGrWEbVLBMAxEwHGWLlbX0D
+	/ugnaMeYK+8uhoYQWl0g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jYyB4-000214-Fi; Wed, 13 May 2020 20:40:30 +0000
-Received: from mout.kundenserver.de ([212.227.126.135])
+	id 1jYyDr-0002cT-PG; Wed, 13 May 2020 20:43:23 +0000
+Received: from mail-lj1-x243.google.com ([2a00:1450:4864:20::243])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jYyAv-0001tm-JW; Wed, 13 May 2020 20:40:23 +0000
-Received: from mail-qv1-f53.google.com ([209.85.219.53]) by
- mrelayeu.kundenserver.de (mreue011 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1MwfrG-1jBMXz0GJ0-00y9eD; Wed, 13 May 2020 22:40:17 +0200
-Received: by mail-qv1-f53.google.com with SMTP id l3so606610qvo.7;
- Wed, 13 May 2020 13:40:16 -0700 (PDT)
-X-Gm-Message-State: AOAM532SdQqE+M+LzPEt8bDD+UJFr0OfP9LuTo+mjnsRu5qUNe74/UdS
- YQzXZWElazWzQVIbuEr+qpRbYXY/LJGeXRGVQo0=
-X-Google-Smtp-Source: ABdhPJyu/xX11FWdClo6HWSu4TpgBMlV8v9Pi4w77fA3SXjBu1Qa2OHWtCpV7yTatT8fuCfnCBk283iywb7jOe+dkPQ=
-X-Received: by 2002:a05:6214:3f0:: with SMTP id
- cf16mr1579766qvb.4.1589402415719; 
- Wed, 13 May 2020 13:40:15 -0700 (PDT)
+ id 1jYyDo-0002b1-4n
+ for linux-mtd@lists.infradead.org; Wed, 13 May 2020 20:43:22 +0000
+Received: by mail-lj1-x243.google.com with SMTP id u15so1115194ljd.3
+ for <linux-mtd@lists.infradead.org>; Wed, 13 May 2020 13:43:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
+ h=from:subject:to:cc:organization:message-id:date:user-agent
+ :mime-version:content-language:content-transfer-encoding;
+ bh=3KrLM2Cb1WPMu5OEl0lNUyE+yS/VxOzuugKj4jPkQ4I=;
+ b=DJFOB2jUaSIaNvKq84KZ4DBCjNlm7TEZIPPSOrSQ/aaRIpfztqbOUFcAYrEZNySrfr
+ cZ55FeboMgj6FOKHnlrdfJu35SaGnDBnSKpItJBvKweyJXFo9f76+03FoGPsmB9M2788
+ PPf7XesVowYT0RKnJnt8XhFA2hZdhvzKcDkEAxJ7WefdHtGU7gqkcKFxagAzbP0pJTyy
+ IIKqY2NccLGGq5Dv6r+6xu9gGhPIubslQR7YX7MoS9wB8Avu7MvSCpgsCo+R7zAy6hMU
+ Y4PsIuTOazDikUEy9Op1w/49I4QrXyW1z8cmOY+Dh52R4zgg41FaClv2sF3O9vYTRc9f
+ KDyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:subject:to:cc:organization:message-id:date
+ :user-agent:mime-version:content-language:content-transfer-encoding;
+ bh=3KrLM2Cb1WPMu5OEl0lNUyE+yS/VxOzuugKj4jPkQ4I=;
+ b=Ix32StCUdplMlN83dYsuUiV3edp02vVQOTAbDoz1wcXA/lhmeLs+7SxwXZCnDpahxY
+ o5I1wdAbMopSMKlQB3uItZ7FnunQh+TyNVgXP0qYl1xTgUJK9s7zI/qvK2aLqyhXaRq8
+ ugN+Bp3aXEjCra8VZEGiNI7/SVAhRG9+LGniBq+/JP4jd8Gzd7pEcFuHdsSNmAbeypVD
+ V2toX/EmY0B8QkG74+VMJ6iI9w9CBJZJMvk8tIQWmrFNaWNmKEPDygrJbBp+/RWt6N/O
+ Rhwxk3Gww81idSPdKq9Fu0LgqKrOGe8b3JC5Vnh6uwtv31g/CpeTidYgTfZrDT3/tZTX
+ ESfQ==
+X-Gm-Message-State: AOAM531a5mKfoYdZfQcHFXQmipfgBhDX/aDJGFcTYGtfT4fYn0/I1wB4
+ SevyiFNF1BNJ3CjwuOEAtHKIlGWgXNQ=
+X-Google-Smtp-Source: ABdhPJx4g2FbhJBv01Vg8sDnWLTmEdJhyIEeKIT0C+T25GT2dvjJc2fXDBtN4xQW+4cj3fncFEALQQ==
+X-Received: by 2002:a2e:986:: with SMTP id 128mr531033ljj.202.1589402593601;
+ Wed, 13 May 2020 13:43:13 -0700 (PDT)
+Received: from wasted.cogentembedded.com
+ ([2a00:1fa0:44ec:2b72:d06f:611f:aa9d:3af9])
+ by smtp.gmail.com with ESMTPSA id l2sm283600ljg.89.2020.05.13.13.43.12
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Wed, 13 May 2020 13:43:12 -0700 (PDT)
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Subject: [PATCH v2] mtd: hyperbus: add Renesas RPC-IF driver
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org
+Organization: Cogent Embedded
+Message-ID: <3e4cf141-52a3-ef88-5e25-eb5c75b16186@cogentembedded.com>
+Date: Wed, 13 May 2020 23:43:11 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.1
 MIME-Version: 1.0
-References: <20200513170132.1446-1-robert.jarzmik@free.fr>
-In-Reply-To: <20200513170132.1446-1-robert.jarzmik@free.fr>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Wed, 13 May 2020 22:39:59 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3E=Fq6ZXLkeQgufeJCP0gZiN1uXA2J=HzpH3D49GOMXQ@mail.gmail.com>
-Message-ID: <CAK8P3a3E=Fq6ZXLkeQgufeJCP0gZiN1uXA2J=HzpH3D49GOMXQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] ARM: pxa: remove Compulab pxa2xx boards
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-X-Provags-ID: V03:K1:Uu/yBZz6G2qJ8MrwCyvfYpWm5Hyp1YrZIC+neyQwogVLzVzHCs5
- E27YlD7g3uGShn8yX61/8xdImllEA4IAGuP23g/w9Z3DbHHJPCGp22/CFyD4075WXAvkA0Z
- ycYEJ8Exya6WU0omn1gnuUdfWXpMBz4V/KXdu0CVHYpGhQL2ZlfUe1wYRYrcFQkYw1SrZTU
- 80VnNGfaQEQ1tqwJ+K+PA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:RKNsOtfE3xI=:44VCvbEXLjC2cTGguwxBZJ
- yteFcl19XC8a5dSsSeeCdeWQx1CEf7FDFJP7357iYvR7pTiC6+jk9ui68qbaL4UQLID8YCHjM
- AERtl65O18axS0+2G/uiWjueP8d0sS1dwm6pHH3CLB+Kj4ZyZRFZ7jZ/8/Qt6OVoaRfWiPbi6
- XE/vOVFUDS7fw3LF9hJuibYgmeulHj7WcHMZ4l/Ma52Pi0W9JwvVKqncRKJvDUIJAx9J2Lgjs
- v2l2da6S7yTfJCoJEFjNVqTU+vtwwTjASQ2Ry2gWqv51FdryIPU96SKRt4w7kAqYhmF/TOObH
- SbHtVzPZeZuW8MmyXYhQQdySI1M0/py7QGCQVgewA0ZBh5LoFSoMnqbrhiYuNNTcV5EVa/psE
- tXo2mMIQMsTyPWx9x2TtqNgeQH5xtvbAn5IG3vRxO1I3GjQw3OANgcCc5lfk3LZRqaiH16okd
- S7qnw6/Cf1xoXAcykPXO0ePERGBC0tcvK2RKZzDpTxK6AzN9fykG1nq1DbpwxpokZFwYguH05
- qd+R1IdjSVsRl/a9Tb3ISZAtNHykyXqoBD2OBM5nKcsiQJlCQZmRzmwaE8vHshW+UbrlrCJKQ
- BgzdWZ1lkmeRrz6Z7KHlFhiCLOEGJf0d0SpucffqXFez6bPgrGxFSsfZ4fVdMIhWy80g8NAla
- TsFOGFSkiwSbpFLpPCIijWdQHa4Cf90vYiZjh6Ws0bM4b+Cyi8UFLnnUHuVlZTZCinxwa/REa
- 6Q7y2gezlujB9JqZaAHKtv7QmdxDR4PyLXrB286zuiWxlGcYCCJn9rVUvEBlQsgHj40tdt8ZB
- pwZAxt7beFTDD7THTNJXozWrdj0NgnLB+2IXZHtmn/ohkk0ZVI=
+Content-Language: en-MW
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200513_134021_931446_1A8FE89C 
-X-CRM114-Status: GOOD (  21.71  )
+X-CRM114-CacheID: sfid-20200513_134320_366710_BD6D0B69 
+X-CRM114-Status: GOOD (  18.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,125 +99,239 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, igor <igor@compulab.co.il>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- linux-mtd <linux-mtd@lists.infradead.org>, Mike Rapoport <mike@compulab.co.il>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>
+Cc: Dirk Behme <dirk.behme@de.bosch.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, May 13, 2020 at 7:01 PM Robert Jarzmik <robert.jarzmik@free.fr> wrote:
->
-> As these boards have no more users nor testers, and patching them has
-> become a burden, be that because of the PCI part or the MTD NAND
-> support, let's remove them.
->
-> The cm-x300 will for now remain and represent Compulab boards at its
-> best in the PXA department.
->
-> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+Add the HyperFLash driver for the Renesas RPC-IF.  It's the "front end"
+driver using the "back end" APIs in the main driver to talk to the real
+hardware.
 
-Thanks for taking care of this!
+Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
 
-I went through the patch looking for additional code that has become obsolete:
+---
+This patch is against the 'mtd/next' branch of the MTD 'linux.git' repo.
+Requires  the RPC-IF main driver patch in order to build/work:
 
-> diff --git a/arch/arm/configs/pxa_defconfig b/arch/arm/configs/pxa_defconfig
-> index b817c57f05f1..e6559e3350e6 100644
-> --- a/arch/arm/configs/pxa_defconfig
-> +++ b/arch/arm/configs/pxa_defconfig
-> @@ -38,8 +38,6 @@ CONFIG_MACH_ARCOM_ZEUS=y
->  CONFIG_MACH_BALLOON3=y
->  CONFIG_MACH_CSB726=y
->  CONFIG_CSB726_CSB701=y
-> -CONFIG_MACH_ARMCORE=y
-> -CONFIG_MACH_EM_X270=y
->  CONFIG_MACH_EXEDA=y
+[1] https://patchwork.kernel.org/patch/11283127/
 
-CONFIG_MACH_EXEDA should be removed here as well, it refers
-to part of em-x270.c
+Changes in version 2:
+- added 'select MTD_CFI_ADV_OPTIONS' to the Kconfig entry, added #ifndef
+  CONFIG_MTD_CFI_BE_BYTE_SWAP #error in the driver, and removed  be16_to_cpu()
+  call in the read16() method;
+- zeroed the target and burst type bits of the HyperBus command codes;
+- passed the address of 16-bit entity to rpcif_prepare() in the copy_from()
+  method;
+- added an empty line between rpcif_prepare() and rpcif_drirmap_read() calls
+  in the copy_from() method;
+- renamed rpcif_io_xfer() to rpcif_manual_xfer();
+- removed the C++ style comments to rpcif_prepare() calls;
+- removed dev_err() call from the probe() method;
+- renamed the 'status' local variable to 'error' in the probe() method;
+- extended the driver copyright to this year.
 
-Similarly, the whole em_x270_defconfig can be removed.
+ drivers/mtd/hyperbus/Kconfig  |    7 +
+ drivers/mtd/hyperbus/Makefile |    1 
+ drivers/mtd/hyperbus/rpc-if.c |  165 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 173 insertions(+)
 
-> diff --git a/arch/arm/mach-pxa/Kconfig b/arch/arm/mach-pxa/Kconfig
-> index f60bc29aef68..8931a2424676 100644
-> --- a/arch/arm/mach-pxa/Kconfig
-> +++ b/arch/arm/mach-pxa/Kconfig
-> @@ -123,19 +123,6 @@ config CSB726_CSB701
->         bool "Enable support for CSB701 baseboard"
->         depends on MACH_CSB726
->
-> -config MACH_ARMCORE
-> -       bool "CompuLab CM-X255/CM-X270 modules"
-> -       select ARCH_HAS_DMA_SET_COHERENT_MASK if PCI
-> -       select IWMMXT
-> -       select HAVE_PCI
-> -       select NEED_MACH_IO_H if PCI
-
-Now arch/arm/mach-pxa/include/mach/io.h is unused and
-can be removed.
-
-With MACH_ARMCORE gone, the MTD_NAND_CM_X270 and
-PCI_HOST_ITE8152 become impossible to select, and
-a part of PCMCIA_PXA2XX (pxa2xx_cm_x2xx_cs.c) becomes
-unused.
-
-FB_MBX can still be selected, but there are no boards defining
-the platform data any more, so I'd like to remove that as well.
-
-> -       select PXA25x
-> -       select PXA27x
-> -
-> -config MACH_EM_X270
-> -       bool "CompuLab EM-x270 platform"
-> -       select PXA27x
-> -
->  config MACH_EXEDA
->         bool "CompuLab eXeda platform"
->         select PXA27x
-
-MACH_EXEDA here is also obsolete, and I'd probably want to
-update the SND_PXA2XX_SOC_EM_X270 dependencies in the
-same patch.
-
-It would make sense to rename it in theory, but it's probably
-easier to leave it as it is aside from the dependency.
-
-> -static struct spi_board_info spi_board_info[] __initdata = {
-> -       [0] = {
-> -               .modalias       = "rtc-max6902",
-> -               .max_speed_hz   = 1000000,
-> -               .bus_num        = 1,
-> -               .chip_select    = 0,
-
-Another last reference, so we can remove that the corresponding driver.
-
-> -static struct platform_device cmx270_rtc_device = {
-> -       .name           = "v3020",
-> -       .num_resources  = ARRAY_SIZE(cmx270_v3020_resource),
-> -       .resource       = cmx270_v3020_resource,
-> -       .id             = -1,
-> -       .dev            = {
-> -               .platform_data = &cmx270_v3020_pdata,
-> -       }
-> -};
-
-This is now only used in cm-x300, so it has to stay for now.
-
-> -static struct spi_board_info cm_x270_spi_devices[] __initdata = {
-> -       {
-> -               .modalias               = "libertas_spi",
->-               .max_speed_hz           = 13000000,
-
-Same here, there is still one more user left (MACH_ZIPIT2), though
-at some point that might get removed if we decide to drop the handhelds
-with 32MB RAM or less.  That is probably something to be left for
-another time, but I see that pxa_defconfig produces a 9.5MB kernel
-image, so this is getting rather tight, and 32MB wasn't much when this
-got added in 2010.
-
-       Arnd
+Index: linux/drivers/mtd/hyperbus/Kconfig
+===================================================================
+--- linux.orig/drivers/mtd/hyperbus/Kconfig
++++ linux/drivers/mtd/hyperbus/Kconfig
+@@ -22,4 +22,11 @@ config HBMC_AM654
+ 	 This is the driver for HyperBus controller on TI's AM65x and
+ 	 other SoCs
+ 
++config RPCIF_HYPERBUS
++	tristate "Renesas RPC-IF HyperBus driver"
++	depends on RENESAS_RPCIF
++	select MTD_CFI_ADV_OPTIONS
++	help
++	  This option includes Renesas RPC-IF HyperFlash support.
++
+ endif # MTD_HYPERBUS
+Index: linux/drivers/mtd/hyperbus/Makefile
+===================================================================
+--- linux.orig/drivers/mtd/hyperbus/Makefile
++++ linux/drivers/mtd/hyperbus/Makefile
+@@ -2,3 +2,4 @@
+ 
+ obj-$(CONFIG_MTD_HYPERBUS)	+= hyperbus-core.o
+ obj-$(CONFIG_HBMC_AM654)	+= hbmc-am654.o
++obj-$(CONFIG_RPCIF_HYPERBUS)	+= rpc-if.o
+Index: linux/drivers/mtd/hyperbus/rpc-if.c
+===================================================================
+--- /dev/null
++++ linux/drivers/mtd/hyperbus/rpc-if.c
+@@ -0,0 +1,165 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Linux driver for RPC-IF HyperFlash
++ *
++ * Copyright (C) 2019-2020 Cogent Embedded, Inc.
++ */
++
++#include <linux/err.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/mtd/hyperbus.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mux/consumer.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
++#include <linux/types.h>
++
++#include <memory/renesas-rpc-if.h>
++
++/* FIXME: How to drop this? */
++#ifndef CONFIG_MTD_CFI_BE_BYTE_SWAP
++#error Enable config "Flash cmd/query data swapping (BIG_ENDIAN_BYTE)"
++#endif
++
++ struct	rpcif_hyperbus {
++	struct rpcif rpc;
++	struct hyperbus_ctlr ctlr;
++	struct hyperbus_device hbdev;
++};
++
++static const struct rpcif_op rpcif_op_tmpl = {
++	.cmd = {
++		.buswidth = 8,
++		.ddr = true,
++	},
++	.ocmd = {
++		.buswidth = 8,
++		.ddr = true,
++	},
++	.addr = {
++		.nbytes = 1,
++		.buswidth = 8,
++		.ddr = true,
++	},
++	.data = {
++		.buswidth = 8,
++		.ddr = true,
++	},
++};
++
++static u16 rpcif_hb_read16(struct hyperbus_device *hbdev, unsigned long addr)
++{
++	struct rpcif_hyperbus *hyperbus =
++		container_of(hbdev, struct rpcif_hyperbus, hbdev);
++	struct rpcif_op op = rpcif_op_tmpl;
++	map_word data;
++
++	op.cmd.opcode = 0x80;
++	op.addr.val = addr >> 1;
++	op.dummy.buswidth = 1;
++	op.dummy.ncycles = 15;
++	op.data.dir = RPCIF_DATA_IN;
++	op.data.nbytes = 2;
++	op.data.buf.in = &data;
++	rpcif_prepare(&hyperbus->rpc, &op, NULL, NULL);
++	rpcif_manual_xfer(&hyperbus->rpc);
++
++	return data.x[0];
++}
++
++static void rpcif_hb_write16(struct hyperbus_device *hbdev, unsigned long addr,
++			     u16 data)
++{
++	struct rpcif_hyperbus *hyperbus =
++		container_of(hbdev, struct rpcif_hyperbus, hbdev);
++	struct rpcif_op op = rpcif_op_tmpl;
++
++	op.cmd.opcode = 0;
++	op.addr.val = addr >> 1;
++	op.data.dir = RPCIF_DATA_OUT;
++	op.data.nbytes = 2;
++	op.data.buf.out = &data;
++	rpcif_prepare(&hyperbus->rpc, &op, NULL, NULL);
++	rpcif_manual_xfer(&hyperbus->rpc);
++}
++
++static void rpcif_hb_copy_from(struct hyperbus_device *hbdev, void *to,
++			       unsigned long from, ssize_t len)
++{
++	struct rpcif_hyperbus *hyperbus =
++		container_of(hbdev, struct rpcif_hyperbus, hbdev);
++	struct rpcif_op op = rpcif_op_tmpl;
++
++	op.cmd.opcode = 0x80;
++	op.addr.val = from >> 1;
++	op.dummy.buswidth = 1;
++	op.dummy.ncycles = 15;
++	op.data.dir = RPCIF_DATA_IN;
++	op.data.nbytes = len;
++	op.data.buf.in = to;
++	rpcif_prepare(&hyperbus->rpc, &op, NULL, NULL);
++
++	rpcif_dirmap_read(&hyperbus->rpc, from, len, to);
++}
++
++static const struct hyperbus_ops rpcif_hb_ops = {
++	.read16 = rpcif_hb_read16,
++	.write16 = rpcif_hb_write16,
++	.copy_from = rpcif_hb_copy_from,
++};
++
++static int rpcif_hb_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct rpcif_hyperbus *hyperbus;
++	int error;
++
++	hyperbus = devm_kzalloc(dev, sizeof(*hyperbus), GFP_KERNEL);
++	if (!hyperbus)
++		return -ENOMEM;
++
++	rpcif_sw_init(&hyperbus->rpc, pdev->dev.parent);
++
++	platform_set_drvdata(pdev, hyperbus);
++
++	rpcif_enable_rpm(&hyperbus->rpc);
++
++	rpcif_hw_init(&hyperbus->rpc, true);
++
++	hyperbus->hbdev.map.size = hyperbus->rpc.size;
++	hyperbus->hbdev.map.virt = hyperbus->rpc.dirmap;
++
++	hyperbus->ctlr.dev = dev;
++	hyperbus->ctlr.ops = &rpcif_hb_ops;
++	hyperbus->hbdev.ctlr = &hyperbus->ctlr;
++	hyperbus->hbdev.np = of_get_next_child(pdev->dev.parent->of_node, NULL);
++	error = hyperbus_register_device(&hyperbus->hbdev);
++	if (error)
++		rpcif_disable_rpm(&hyperbus->rpc);
++
++	return error;
++}
++
++static int rpcif_hb_remove(struct platform_device *pdev)
++{
++	struct rpcif_hyperbus *hyperbus = platform_get_drvdata(pdev);
++	int error = hyperbus_unregister_device(&hyperbus->hbdev);
++	struct rpcif *rpc = dev_get_drvdata(pdev->dev.parent);
++
++	rpcif_disable_rpm(rpc);
++	return error;
++}
++
++static struct platform_driver rpcif_platform_driver = {
++	.probe	= rpcif_hb_probe,
++	.remove	= rpcif_hb_remove,
++	.driver	= {
++		.name	= "rpc-if-hyperflash",
++	},
++};
++
++module_platform_driver(rpcif_platform_driver);
++
++MODULE_DESCRIPTION("Renesas RPC-IF HyperFlash driver");
++MODULE_LICENSE("GPL v2");
 
 ______________________________________________________
 Linux MTD discussion mailing list
