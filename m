@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7F8DC433E0
-	for <linux-mtd@archiver.kernel.org>; Thu, 14 May 2020 17:28:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5283AC433DF
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 May 2020 17:28:55 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 640A1206D8
-	for <linux-mtd@archiver.kernel.org>; Thu, 14 May 2020 17:28:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 007ED206D8
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 May 2020 17:28:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Ug5O+YYE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 640A1206D8
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="djPYyiJ/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 007ED206D8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,35 +25,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=L3C1lYfzHmQ9HVlP6ZTlF2AnEAflV2T0FBOJCDkkfhg=; b=Ug5O+YYEQ4Q68a
-	scemAxuN1ACZgJi/OrQTfm0eV9JRQbDl0UnnnR5A7QsruIZAsPHbMZx88tfNkP4BqbwwrjZZ19tBa
-	UDlFY/79/yxc3kezMqHUDE7T6G2RWjehK5W1YUepivjd1Fz1TopBs9BsZLbVvK3ukQQpaTYVFCAAD
-	m9WaXQvsC2iQv5LPgup9QHwMwGppXJ0Jmu8vxXrRY5wLXUMFYGxluM3H/hBxevbvBhpBAhsSQE8IM
-	5CHSIllzoK0aCrS5yuKWFB6RgWzHaOx+gx9FDVir8bfUVi8mBVrvUpdk8r78wq+JPSe4equeF4+Vt
-	+53m/pwRO6qvGYaJi0XA==;
+	List-Owner; bh=yLYkGTPwHQoy0KkWhA7WIEb5gOTbJG7+QmJVkvc3+oI=; b=djPYyiJ/U5vv6x
+	z7OnqDnwdxSmjUtAIAMtvn75eW8AE+5DPUO4E5JIItL9R0Q436ECGSHDANan4yr5np4ZKxSyShiMc
+	dxQqgg1+vvkqTD6Kv3Wo5k9aOSX8tB9WUCrJaD7hBQ2XNs0++zeSnwRB6EUm5sftkNic7aNy4+CbQ
+	CqnyaUCFgviwBnPPW+rvU+Z6crks4RfXRVXtaPGU84ahJeSZHd13WXsCy9xPS/WT9jSPtswx14BQf
+	lcDHbvgz4zByCxlqtV1ZLjwE76w7OpB9uVtoE95tpf22N6e8WOF7l2+P9hrYjhOkq21E+FNuo9GEA
+	N7mrWP5QmPc0syJMXOmA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jZHeh-0003s5-8S; Thu, 14 May 2020 17:28:23 +0000
+	id 1jZHez-00046l-Dd; Thu, 14 May 2020 17:28:41 +0000
 Received: from relay10.mail.gandi.net ([217.70.178.230])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jZHUC-0005MC-I5; Thu, 14 May 2020 17:17:35 +0000
+ id 1jZHU9-0005KI-Ed; Thu, 14 May 2020 17:17:34 +0000
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay10.mail.gandi.net (Postfix) with ESMTPSA id 74541240008;
- Thu, 14 May 2020 17:17:29 +0000 (UTC)
+ by relay10.mail.gandi.net (Postfix) with ESMTPSA id 42B4D24000E;
+ Thu, 14 May 2020 17:17:26 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Subject: [PATCH v5 19/21] mtd: nand: Drop useless 'depends on' in Kconfig
-Date: Thu, 14 May 2020 19:16:49 +0200
-Message-Id: <20200514171651.24851-20-miquel.raynal@bootlin.com>
+Subject: [PATCH v5 17/21] mtd: nand: Move nand_device forward declaration to
+ the top
+Date: Thu, 14 May 2020 19:16:47 +0200
+Message-Id: <20200514171651.24851-18-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200514171651.24851-1-miquel.raynal@bootlin.com>
 References: <20200514171651.24851-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200514_101732_752815_9267669F 
-X-CRM114-Status: UNSURE (   9.89  )
+X-CRM114-CacheID: sfid-20200514_101729_655227_D1A3DAF7 
+X-CRM114-Status: UNSURE (   8.88  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -80,41 +81,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Both OneNAND and raw NAND bits can't be compiled if MTD is disabled
-because of the if/endif logic in drivers/mtd/Kconfig. There is no need
-for an extra "depends on MTD" in their respective Kconfig files.
+This structure might be used earlier in this file, let's move the
+forward declaration at the top.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 ---
- drivers/mtd/nand/onenand/Kconfig | 1 -
- drivers/mtd/nand/raw/Kconfig     | 1 -
- 2 files changed, 2 deletions(-)
+ include/linux/mtd/nand.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/onenand/Kconfig b/drivers/mtd/nand/onenand/Kconfig
-index 572b8fe69abb..1a0e65bc246e 100644
---- a/drivers/mtd/nand/onenand/Kconfig
-+++ b/drivers/mtd/nand/onenand/Kconfig
-@@ -1,7 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
- menuconfig MTD_ONENAND
- 	tristate "OneNAND Device Support"
--	depends on MTD
- 	depends on HAS_IOMEM
- 	help
- 	  This enables support for accessing all type of OneNAND flash
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index a80a46bb5b8b..eb7c2973f940 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -12,7 +12,6 @@ config MTD_NAND_ECC_SW_HAMMING_SMC
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 0c7483843a32..a1f38c778d0e 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -12,6 +12,8 @@
  
- menuconfig MTD_RAW_NAND
- 	tristate "Raw/Parallel NAND Device Support"
--	depends on MTD
- 	select MTD_NAND_CORE
- 	select MTD_NAND_ECC_SW_HAMMING
- 	help
+ #include <linux/mtd/mtd.h>
+ 
++struct nand_device;
++
+ /**
+  * struct nand_memory_organization - Memory organization structure
+  * @bits_per_cell: number of bits per NAND cell
+@@ -133,8 +135,6 @@ struct nand_bbt {
+ 	unsigned long *cache;
+ };
+ 
+-struct nand_device;
+-
+ /**
+  * struct nand_ops - NAND operations
+  * @erase: erase a specific block. No need to check if the block is bad before
 -- 
 2.20.1
 
