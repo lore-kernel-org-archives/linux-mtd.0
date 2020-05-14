@@ -1,93 +1,78 @@
-Return-Path: <SRS0=hs7p=63=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=QwSX=64=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8599C433E0
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 May 2020 20:43:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 666BFC433DF
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 May 2020 01:02:43 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D5FEE205ED
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 May 2020 20:43:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6BB8F2065C
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 May 2020 01:02:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="giiM6jpG";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="DJFOB2jU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D5FEE205ED
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="JmnWRpPQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6BB8F2065C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:To:Subject
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=LzI3n9m1U1avzyTnG1u/1koKiCv8XbouoxtBAVvMvJA=; b=giiM6jpGYGQWLH
-	/VNFTo3SD7rBFtbNufFkaOMkWTxmWi4MgbXEB3sXOO71uMkjahnbexmduIR8pmsDMCe+964D/xVOl
-	99JT1syMy8AxSU6410wwm0llB8JrGOLC3BiTmOhtVHUJMk0NzgYo52P6ICeg6FEyWV5rA7IGh1wZt
-	a7TY/LOmLTDoSfCDsQStam3NLaydNPo38rOFeeFJFqJbQhdxLGZ8+JdmEH7gpkSEbcJivDtmPAsCm
-	9MAm4uc7CJobRKR0r0f3AhV/5gVvb4n/zSRg4qcnCMdCQPfUYc4cUBWGrWEbVLBMAxEwHGWLlbX0D
-	/ugnaMeYK+8uhoYQWl0g==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:Reply-To:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=mjNZW8c98TLAQVgVwgFyxDcExqLHD0voQF5ynxUAFjA=; b=JmnWRpPQZr5F2g
+	eboflXlNTepjz+5Kd0xU+2upKHhjgmqvXpL71Ofsj1P7gY/Of7vTTXjs5wWkCgxxEgjaYhtd7hZJz
+	lYkY9xoz+LVAz2UR4/uf8Ti0ZE3vsK1tcYp8N3tvZKK1IAbNmTjwXbEN2fNu1vEycWPxD5YBCapgF
+	0MoUh09SRuAkcfFJAy5Z4hqa5Gz4YjcWJd9OZIoP8FJ0GYONaFAz2SLULwRQqGO54wljATVSeeZHo
+	Enas1guaeQxzN0MwKKmu+sC9A9BzKslsr4H18DW7mS0p2QSPT/0ic67xQuc/vGHtqHXPOa10oRMzt
+	e+93T1xXpwRwhMbcZs2Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jYyDr-0002cT-PG; Wed, 13 May 2020 20:43:23 +0000
-Received: from mail-lj1-x243.google.com ([2a00:1450:4864:20::243])
+	id 1jZ2Ge-0001Nn-3D; Thu, 14 May 2020 01:02:32 +0000
+Received: from mga17.intel.com ([192.55.52.151])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jYyDo-0002b1-4n
- for linux-mtd@lists.infradead.org; Wed, 13 May 2020 20:43:22 +0000
-Received: by mail-lj1-x243.google.com with SMTP id u15so1115194ljd.3
- for <linux-mtd@lists.infradead.org>; Wed, 13 May 2020 13:43:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
- h=from:subject:to:cc:organization:message-id:date:user-agent
- :mime-version:content-language:content-transfer-encoding;
- bh=3KrLM2Cb1WPMu5OEl0lNUyE+yS/VxOzuugKj4jPkQ4I=;
- b=DJFOB2jUaSIaNvKq84KZ4DBCjNlm7TEZIPPSOrSQ/aaRIpfztqbOUFcAYrEZNySrfr
- cZ55FeboMgj6FOKHnlrdfJu35SaGnDBnSKpItJBvKweyJXFo9f76+03FoGPsmB9M2788
- PPf7XesVowYT0RKnJnt8XhFA2hZdhvzKcDkEAxJ7WefdHtGU7gqkcKFxagAzbP0pJTyy
- IIKqY2NccLGGq5Dv6r+6xu9gGhPIubslQR7YX7MoS9wB8Avu7MvSCpgsCo+R7zAy6hMU
- Y4PsIuTOazDikUEy9Op1w/49I4QrXyW1z8cmOY+Dh52R4zgg41FaClv2sF3O9vYTRc9f
- KDyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:subject:to:cc:organization:message-id:date
- :user-agent:mime-version:content-language:content-transfer-encoding;
- bh=3KrLM2Cb1WPMu5OEl0lNUyE+yS/VxOzuugKj4jPkQ4I=;
- b=Ix32StCUdplMlN83dYsuUiV3edp02vVQOTAbDoz1wcXA/lhmeLs+7SxwXZCnDpahxY
- o5I1wdAbMopSMKlQB3uItZ7FnunQh+TyNVgXP0qYl1xTgUJK9s7zI/qvK2aLqyhXaRq8
- ugN+Bp3aXEjCra8VZEGiNI7/SVAhRG9+LGniBq+/JP4jd8Gzd7pEcFuHdsSNmAbeypVD
- V2toX/EmY0B8QkG74+VMJ6iI9w9CBJZJMvk8tIQWmrFNaWNmKEPDygrJbBp+/RWt6N/O
- Rhwxk3Gww81idSPdKq9Fu0LgqKrOGe8b3JC5Vnh6uwtv31g/CpeTidYgTfZrDT3/tZTX
- ESfQ==
-X-Gm-Message-State: AOAM531a5mKfoYdZfQcHFXQmipfgBhDX/aDJGFcTYGtfT4fYn0/I1wB4
- SevyiFNF1BNJ3CjwuOEAtHKIlGWgXNQ=
-X-Google-Smtp-Source: ABdhPJx4g2FbhJBv01Vg8sDnWLTmEdJhyIEeKIT0C+T25GT2dvjJc2fXDBtN4xQW+4cj3fncFEALQQ==
-X-Received: by 2002:a2e:986:: with SMTP id 128mr531033ljj.202.1589402593601;
- Wed, 13 May 2020 13:43:13 -0700 (PDT)
-Received: from wasted.cogentembedded.com
- ([2a00:1fa0:44ec:2b72:d06f:611f:aa9d:3af9])
- by smtp.gmail.com with ESMTPSA id l2sm283600ljg.89.2020.05.13.13.43.12
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 13 May 2020 13:43:12 -0700 (PDT)
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: [PATCH v2] mtd: hyperbus: add Renesas RPC-IF driver
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org
-Organization: Cogent Embedded
-Message-ID: <3e4cf141-52a3-ef88-5e25-eb5c75b16186@cogentembedded.com>
-Date: Wed, 13 May 2020 23:43:11 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.1
+ id 1jZ2Ga-0001NO-UR
+ for linux-mtd@lists.infradead.org; Thu, 14 May 2020 01:02:30 +0000
+IronPort-SDR: WX2ORI+5EFlbN7DR5Yvdu+M/GMGvkV02q1oUgptRO8zDHTaoGKVhaSpwpb06GK9/CL4ENX5/Cu
+ ThVM51rS/2WA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 May 2020 18:02:27 -0700
+IronPort-SDR: vejgvzA8ElnatyBbGq5Yk3x7aJmddwFE43yalkoKiZyRJVGbZCjtnvH7KN49EAuDbWO+QSQmWh
+ CP+RQZsvJIrw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,389,1583222400"; d="scan'208";a="409887144"
+Received: from linux.intel.com ([10.54.29.200])
+ by orsmga004.jf.intel.com with ESMTP; 13 May 2020 18:02:27 -0700
+Received: from [10.249.66.53] (vramuthx-mobl1.gar.corp.intel.com
+ [10.249.66.53])
+ by linux.intel.com (Postfix) with ESMTP id 0D32E580646;
+ Wed, 13 May 2020 18:02:19 -0700 (PDT)
+Subject: Re: [PATCH v6 2/2] mtd: rawnand: Add NAND controller support on Intel
+ LGM SoC
+To: Andy Shevchenko <andriy.shevchenko@intel.com>
+References: <20200513104615.7905-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20200513104615.7905-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20200513153405.GS185537@smile.fi.intel.com>
+From: "Ramuthevar, Vadivel MuruganX"
+ <vadivel.muruganx.ramuthevar@linux.intel.com>
+Message-ID: <9d3fc773-d7ed-f2cd-808e-78748c43b81b@linux.intel.com>
+Date: Thu, 14 May 2020 09:02:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Language: en-MW
+In-Reply-To: <20200513153405.GS185537@smile.fi.intel.com>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200513_134320_366710_BD6D0B69 
-X-CRM114-Status: GOOD (  18.11  )
+X-CRM114-CacheID: sfid-20200513_180228_991986_29DC5759 
+X-CRM114-Status: GOOD (  16.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,239 +84,143 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Dirk Behme <dirk.behme@de.bosch.com>
-Content-Type: text/plain; charset="us-ascii"
+Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
+Cc: cheol.yong.kim@intel.com, devicetree@vger.kernel.org, qi-ming.wu@intel.com,
+ anders.roxell@linaro.org, vigneshr@ti.com, arnd@arndb.de,
+ hauke.mehrtens@intel.com, richard@nod.at, brendanhiggins@google.com,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org, linux-mips@vger.kernel.org,
+ boris.brezillon@collabora.com, linux-mtd@lists.infradead.org,
+ miquel.raynal@bootlin.com, tglx@linutronix.de, masonccyang@mxic.com.tw
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add the HyperFLash driver for the Renesas RPC-IF.  It's the "front end"
-driver using the "back end" APIs in the main driver to talk to the real
-hardware.
+Hi Andy,
+On 13/5/2020 11:34 pm, Andy Shevchenko wrote:
+> On Wed, May 13, 2020 at 06:46:15PM +0800, Ramuthevar,Vadivel MuruganX wrote:
+>> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+>>
+>> This patch adds the new IP of Nand Flash Controller(NFC) support
+>> on Intel's Lightning Mountain(LGM) SoC.
+>>
+>> DMA is used for burst data transfer operation, also DMA HW supports
+>> aligned 32bit memory address and aligned data access by default.
+>> DMA burst of 8 supported. Data register used to support the read/write
+>> operation from/to device.
+>>
+>> NAND controller driver implements ->exec_op() to replace legacy hooks,
+>> these specific call-back method to execute NAND operations.
+> 
+> ...
+> 
+>> +static int ebu_nand_probe(struct platform_device *pdev)
+>> +{
+>> +	struct device *dev = &pdev->dev;
+>> +	struct ebu_nand_controller *ebu_host;
+>> +	struct nand_chip *nand;
+>> +	struct mtd_info *mtd;
+>> +	struct resource *res;
+>> +	char *resname;
+>> +	int ret, i;
+>> +	u32 reg;
+>> +
+>> +	ebu_host = devm_kzalloc(dev, sizeof(*ebu_host), GFP_KERNEL);
+>> +	if (!ebu_host)
+>> +		return -ENOMEM;
+>> +
+>> +	ebu_host->dev = dev;
+>> +	nand_controller_init(&ebu_host->controller);
+>> +
+>> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ebunand");
+>> +	ebu_host->ebu = devm_ioremap_resource(&pdev->dev, res);
+> 
+> devm_platform_ioremap_resource_byname
+> 
+>> +	if (IS_ERR(ebu_host->ebu))
+>> +		return PTR_ERR(ebu_host->ebu);
+>> +
+>> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "hsnand");
+>> +	ebu_host->hsnand = devm_ioremap_resource(&pdev->dev, res);
+> 
+> devm_platform_ioremap_resource_byname
+Thanks for the review comments
+As Boris suggested , split into 2 API's.
 
-Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+> 
+>> +	if (IS_ERR(ebu_host->hsnand))
+>> +		return PTR_ERR(ebu_host->hsnand);
+>> +
+>> +	ret = device_property_read_u32(dev, "nand,cs", &reg);
+>> +	if (ret) {
+>> +		dev_err(dev, "failed to get chip select: %d\n", ret);
+>> +		return ret;
+>> +	}
+>> +	ebu_host->cs_num = reg;
+>> +
+>> +	for (i = 0; i < MAX_CS; i++) {
+>> +		resname = devm_kasprintf(dev, GFP_KERNEL, "nand_cs%d", i);
+>> +		res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+>> +						   resname);
+> 
+> if res is NULL?
+Noted.
+> 
+>> +		ebu_host->cs[i].chipaddr = devm_ioremap_resource(dev, res);
+>> +		ebu_host->cs[i].nand_pa = res->start;
+>> +			if (IS_ERR(ebu_host->cs[i].chipaddr))
+>> +				return PTR_ERR(ebu_host->cs[i].chipaddr);
+> 
+> Something happened with ordering / indentation along these lines...
+Noted.
+> 
+>> +	}
+>> +
+> 
+>> +	for (i = 0; i < MAX_CS; i++) {
+>> +		resname = devm_kasprintf(dev, GFP_KERNEL, "addr_sel%d", i);
+>> +		res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+>> +						   resname);
+> 
+> if res is NULL?
+Noted.
 
----
-This patch is against the 'mtd/next' branch of the MTD 'linux.git' repo.
-Requires  the RPC-IF main driver patch in order to build/work:
-
-[1] https://patchwork.kernel.org/patch/11283127/
-
-Changes in version 2:
-- added 'select MTD_CFI_ADV_OPTIONS' to the Kconfig entry, added #ifndef
-  CONFIG_MTD_CFI_BE_BYTE_SWAP #error in the driver, and removed  be16_to_cpu()
-  call in the read16() method;
-- zeroed the target and burst type bits of the HyperBus command codes;
-- passed the address of 16-bit entity to rpcif_prepare() in the copy_from()
-  method;
-- added an empty line between rpcif_prepare() and rpcif_drirmap_read() calls
-  in the copy_from() method;
-- renamed rpcif_io_xfer() to rpcif_manual_xfer();
-- removed the C++ style comments to rpcif_prepare() calls;
-- removed dev_err() call from the probe() method;
-- renamed the 'status' local variable to 'error' in the probe() method;
-- extended the driver copyright to this year.
-
- drivers/mtd/hyperbus/Kconfig  |    7 +
- drivers/mtd/hyperbus/Makefile |    1 
- drivers/mtd/hyperbus/rpc-if.c |  165 ++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 173 insertions(+)
-
-Index: linux/drivers/mtd/hyperbus/Kconfig
-===================================================================
---- linux.orig/drivers/mtd/hyperbus/Kconfig
-+++ linux/drivers/mtd/hyperbus/Kconfig
-@@ -22,4 +22,11 @@ config HBMC_AM654
- 	 This is the driver for HyperBus controller on TI's AM65x and
- 	 other SoCs
- 
-+config RPCIF_HYPERBUS
-+	tristate "Renesas RPC-IF HyperBus driver"
-+	depends on RENESAS_RPCIF
-+	select MTD_CFI_ADV_OPTIONS
-+	help
-+	  This option includes Renesas RPC-IF HyperFlash support.
-+
- endif # MTD_HYPERBUS
-Index: linux/drivers/mtd/hyperbus/Makefile
-===================================================================
---- linux.orig/drivers/mtd/hyperbus/Makefile
-+++ linux/drivers/mtd/hyperbus/Makefile
-@@ -2,3 +2,4 @@
- 
- obj-$(CONFIG_MTD_HYPERBUS)	+= hyperbus-core.o
- obj-$(CONFIG_HBMC_AM654)	+= hbmc-am654.o
-+obj-$(CONFIG_RPCIF_HYPERBUS)	+= rpc-if.o
-Index: linux/drivers/mtd/hyperbus/rpc-if.c
-===================================================================
---- /dev/null
-+++ linux/drivers/mtd/hyperbus/rpc-if.c
-@@ -0,0 +1,165 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Linux driver for RPC-IF HyperFlash
-+ *
-+ * Copyright (C) 2019-2020 Cogent Embedded, Inc.
-+ */
-+
-+#include <linux/err.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/mtd/hyperbus.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mux/consumer.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <linux/types.h>
-+
-+#include <memory/renesas-rpc-if.h>
-+
-+/* FIXME: How to drop this? */
-+#ifndef CONFIG_MTD_CFI_BE_BYTE_SWAP
-+#error Enable config "Flash cmd/query data swapping (BIG_ENDIAN_BYTE)"
-+#endif
-+
-+ struct	rpcif_hyperbus {
-+	struct rpcif rpc;
-+	struct hyperbus_ctlr ctlr;
-+	struct hyperbus_device hbdev;
-+};
-+
-+static const struct rpcif_op rpcif_op_tmpl = {
-+	.cmd = {
-+		.buswidth = 8,
-+		.ddr = true,
-+	},
-+	.ocmd = {
-+		.buswidth = 8,
-+		.ddr = true,
-+	},
-+	.addr = {
-+		.nbytes = 1,
-+		.buswidth = 8,
-+		.ddr = true,
-+	},
-+	.data = {
-+		.buswidth = 8,
-+		.ddr = true,
-+	},
-+};
-+
-+static u16 rpcif_hb_read16(struct hyperbus_device *hbdev, unsigned long addr)
-+{
-+	struct rpcif_hyperbus *hyperbus =
-+		container_of(hbdev, struct rpcif_hyperbus, hbdev);
-+	struct rpcif_op op = rpcif_op_tmpl;
-+	map_word data;
-+
-+	op.cmd.opcode = 0x80;
-+	op.addr.val = addr >> 1;
-+	op.dummy.buswidth = 1;
-+	op.dummy.ncycles = 15;
-+	op.data.dir = RPCIF_DATA_IN;
-+	op.data.nbytes = 2;
-+	op.data.buf.in = &data;
-+	rpcif_prepare(&hyperbus->rpc, &op, NULL, NULL);
-+	rpcif_manual_xfer(&hyperbus->rpc);
-+
-+	return data.x[0];
-+}
-+
-+static void rpcif_hb_write16(struct hyperbus_device *hbdev, unsigned long addr,
-+			     u16 data)
-+{
-+	struct rpcif_hyperbus *hyperbus =
-+		container_of(hbdev, struct rpcif_hyperbus, hbdev);
-+	struct rpcif_op op = rpcif_op_tmpl;
-+
-+	op.cmd.opcode = 0;
-+	op.addr.val = addr >> 1;
-+	op.data.dir = RPCIF_DATA_OUT;
-+	op.data.nbytes = 2;
-+	op.data.buf.out = &data;
-+	rpcif_prepare(&hyperbus->rpc, &op, NULL, NULL);
-+	rpcif_manual_xfer(&hyperbus->rpc);
-+}
-+
-+static void rpcif_hb_copy_from(struct hyperbus_device *hbdev, void *to,
-+			       unsigned long from, ssize_t len)
-+{
-+	struct rpcif_hyperbus *hyperbus =
-+		container_of(hbdev, struct rpcif_hyperbus, hbdev);
-+	struct rpcif_op op = rpcif_op_tmpl;
-+
-+	op.cmd.opcode = 0x80;
-+	op.addr.val = from >> 1;
-+	op.dummy.buswidth = 1;
-+	op.dummy.ncycles = 15;
-+	op.data.dir = RPCIF_DATA_IN;
-+	op.data.nbytes = len;
-+	op.data.buf.in = to;
-+	rpcif_prepare(&hyperbus->rpc, &op, NULL, NULL);
-+
-+	rpcif_dirmap_read(&hyperbus->rpc, from, len, to);
-+}
-+
-+static const struct hyperbus_ops rpcif_hb_ops = {
-+	.read16 = rpcif_hb_read16,
-+	.write16 = rpcif_hb_write16,
-+	.copy_from = rpcif_hb_copy_from,
-+};
-+
-+static int rpcif_hb_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct rpcif_hyperbus *hyperbus;
-+	int error;
-+
-+	hyperbus = devm_kzalloc(dev, sizeof(*hyperbus), GFP_KERNEL);
-+	if (!hyperbus)
-+		return -ENOMEM;
-+
-+	rpcif_sw_init(&hyperbus->rpc, pdev->dev.parent);
-+
-+	platform_set_drvdata(pdev, hyperbus);
-+
-+	rpcif_enable_rpm(&hyperbus->rpc);
-+
-+	rpcif_hw_init(&hyperbus->rpc, true);
-+
-+	hyperbus->hbdev.map.size = hyperbus->rpc.size;
-+	hyperbus->hbdev.map.virt = hyperbus->rpc.dirmap;
-+
-+	hyperbus->ctlr.dev = dev;
-+	hyperbus->ctlr.ops = &rpcif_hb_ops;
-+	hyperbus->hbdev.ctlr = &hyperbus->ctlr;
-+	hyperbus->hbdev.np = of_get_next_child(pdev->dev.parent->of_node, NULL);
-+	error = hyperbus_register_device(&hyperbus->hbdev);
-+	if (error)
-+		rpcif_disable_rpm(&hyperbus->rpc);
-+
-+	return error;
-+}
-+
-+static int rpcif_hb_remove(struct platform_device *pdev)
-+{
-+	struct rpcif_hyperbus *hyperbus = platform_get_drvdata(pdev);
-+	int error = hyperbus_unregister_device(&hyperbus->hbdev);
-+	struct rpcif *rpc = dev_get_drvdata(pdev->dev.parent);
-+
-+	rpcif_disable_rpm(rpc);
-+	return error;
-+}
-+
-+static struct platform_driver rpcif_platform_driver = {
-+	.probe	= rpcif_hb_probe,
-+	.remove	= rpcif_hb_remove,
-+	.driver	= {
-+		.name	= "rpc-if-hyperflash",
-+	},
-+};
-+
-+module_platform_driver(rpcif_platform_driver);
-+
-+MODULE_DESCRIPTION("Renesas RPC-IF HyperFlash driver");
-+MODULE_LICENSE("GPL v2");
+Regards
+Vadivel
+> 
+>> +		ebu_host->cs[i].addr_sel = res->start;
+>> +		writel(ebu_host->cs[i].addr_sel | EBU_ADDR_MASK(5) |
+>> +		       EBU_ADDR_SEL_REGEN, ebu_host->ebu + EBU_ADDR_SEL(i));
+>> +	}
+> 
+>> +	return ret;
+>> +}
+> 
+> ...
+> 
+>> +static int ebu_nand_remove(struct platform_device *pdev)
+>> +{
+>> +	struct ebu_nand_controller *ebu_host = platform_get_drvdata(pdev);
+>> +
+> 
+>> +	if (ebu_host) {
+> 
+> How it can be NULL here?
+> 
+>> +		mtd_device_unregister(nand_to_mtd(&ebu_host->chip));
+>> +		nand_cleanup(&ebu_host->chip);
+>> +		ebu_nand_disable(&ebu_host->chip);
+>> +
+>> +		if (ebu_host->dma_rx || ebu_host->dma_tx)
+>> +			ebu_dma_cleanup(ebu_host);
+>> +
+>> +		clk_disable_unprepare(ebu_host->clk);
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+> 
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
