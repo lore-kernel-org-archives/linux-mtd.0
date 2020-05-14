@@ -2,58 +2,77 @@ Return-Path: <SRS0=QwSX=64=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0330C433DF
-	for <linux-mtd@archiver.kernel.org>; Thu, 14 May 2020 17:29:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0740CC433DF
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 May 2020 17:56:02 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8B3A9206D8
-	for <linux-mtd@archiver.kernel.org>; Thu, 14 May 2020 17:29:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BE75320657
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 May 2020 17:56:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oagNtDLD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B3A9206D8
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pOT9ZKvT";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="0jxg65I7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BE75320657
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XV0xMiOpm6saoBMeEluaZwV6+KIaghg42Em1kIFcsH8=; b=oagNtDLD55pVU2
-	wa0RxGOg9kPRyKSUvwN6v00YnhKfLI/XAqcu52J+nQFJOd7H1XJob2pLJ/9CJp2a/MkjMaPOQ4kQv
-	X6NLZynPUhAszQjE2zSbdQW9I0L64UQg4G0Ro3BxDysXfLE48f26E+n96aTT0dc5W7Ktd/+ajHtK9
-	TQ4+mw3+xIt/D79+ac05/uzr73/JI9bO652aTI3WkHrJAMoyinWHc9wovbrIaLZN6iH6voLZ3RlBH
-	mcTPqNPCx0uC1FDf1VNtBaZXRmoW+vsF5J4padxNHMcIfD3FIs+qLwPUmWQ4CSwGJA5adJ1zeJ2GK
-	8lV/OavIIKTeMmKOYCJg==;
+	List-Owner; bh=eWNazRd20W6TpEsbHRE9hf5KJ7c1ZBH7VgKPbCAtciY=; b=pOT9ZKvT4ao8aK
+	hC/xIu4h7MYomHsFV6LAeOGiRxLhlP2rSqJQCn6IEeWULU9dsz1IbisNhzlj5TgUWcj09kVlhhnvY
+	hseqYoWXKHTcZfAYHNvZn13C479vtDI0rq0a6zRIudUmSsE/E77e0t/jU68ahMs9FNQFqVxzVfF/y
+	Tf16+OMeMINEeHomyhmdtM63g8SIRQ2c3Q3l4KEME8BY23dknme/wnoMTnlOxBTfzDlGPNBLA0pvn
+	OpBIugQR4VuEySHcFgZD8RR6a7nmbOMIUcwJH+80t2snlicc2KW98SWDZzQwvNGQX2MAyisnY8bVn
+	jhXzRh+kVdyFvhx6CcOA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jZHg4-0005IW-6y; Thu, 14 May 2020 17:29:48 +0000
-Received: from relay10.mail.gandi.net ([217.70.178.230])
+	id 1jZI5C-0004vN-P3; Thu, 14 May 2020 17:55:46 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jZHUF-0005OO-NM; Thu, 14 May 2020 17:17:37 +0000
-Received: from localhost.localdomain (unknown [91.224.148.103])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay10.mail.gandi.net (Postfix) with ESMTPSA id A637624000F;
- Thu, 14 May 2020 17:17:32 +0000 (UTC)
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Subject: [PATCH v5 21/21] mtd: nand: Rename a core structure
-Date: Thu, 14 May 2020 19:16:51 +0200
-Message-Id: <20200514171651.24851-22-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200514171651.24851-1-miquel.raynal@bootlin.com>
-References: <20200514171651.24851-1-miquel.raynal@bootlin.com>
+ id 1jZI59-0004uu-Ft
+ for linux-mtd@lists.infradead.org; Thu, 14 May 2020 17:55:44 +0000
+Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com
+ [209.85.161.47])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id B459420657
+ for <linux-mtd@lists.infradead.org>; Thu, 14 May 2020 17:55:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1589478942;
+ bh=YuV4JmNCFxZTXRRZDTourQqWeIzvbe4ZSXIszNZz9GA=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=0jxg65I7U1YC+2QZiesMn4vGp0WIuky80HBNGuRpR4HrtMFBsrL2SYVIr8paioqjs
+ OvzoxVMjpM65TtU5at+jbcxTLZNlpU/7+IJqoD1Xn4P8t85g+ml4GEY/dhiT0YrdN3
+ WUnsRJ4QDgq8jEgj5E0UTeFMkJrwirLa6BbtTIjs=
+Received: by mail-oo1-f47.google.com with SMTP id a83so906688oob.9
+ for <linux-mtd@lists.infradead.org>; Thu, 14 May 2020 10:55:42 -0700 (PDT)
+X-Gm-Message-State: AOAM533zXCH73YqdCkKB8WlZaLStx7SRECwAxsFawbhgCcnTord2emQL
+ /q9FCLo/gkxk8lVmaS+zhFrQHWMQR09BqxKySw==
+X-Google-Smtp-Source: ABdhPJyYQ1f7xwVyNWr/S3JB/4XJ/2dszYIEcPkkumlKlHYG1FOqs0/y0vGXRbvvDqR04i1DfUOOMXv5SZ6p1Vso3BA=
+X-Received: by 2002:a4a:894d:: with SMTP id g13mr4522354ooi.81.1589478941954; 
+ Thu, 14 May 2020 10:55:41 -0700 (PDT)
 MIME-Version: 1.0
+References: <1588756279-17289-1-git-send-email-christophe.kerello@st.com>
+ <1588756279-17289-7-git-send-email-christophe.kerello@st.com>
+ <20200514150028.GB28489@bogus> <9ffc04cf-137f-5ee5-57ff-39a876abfb34@st.com>
+In-Reply-To: <9ffc04cf-137f-5ee5-57ff-39a876abfb34@st.com>
+From: Rob Herring <robh@kernel.org>
+Date: Thu, 14 May 2020 12:55:30 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLTyDHBHncrQqtPdkCNgKDkEbp+ts7BOeqWmGv64kcAsg@mail.gmail.com>
+Message-ID: <CAL_JsqLTyDHBHncrQqtPdkCNgKDkEbp+ts7BOeqWmGv64kcAsg@mail.gmail.com>
+Subject: Re: [PATCH v4 06/10] dt-bindings: mtd: update STM32 FMC2 NAND
+ controller documentation
+To: Christophe Kerello <christophe.kerello@st.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200514_101735_901321_2D0FA520 
-X-CRM114-Status: GOOD (  10.65  )
+X-CRM114-CacheID: sfid-20200514_105543_576694_6A4AC132 
+X-CRM114-Status: GOOD (  26.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -65,80 +84,104 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
- Julien Su <juliensu@mxic.com.tw>,
- Schrempf Frieder <frieder.schrempf@kontron.de>,
- Paul Cercueil <paul@crapouillou.net>,
- Boris Brezillon <boris.brezillon@collabora.com>, linux-mtd@lists.infradead.org,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Mason Yang <masonccyang@mxic.com.tw>, Chuanhong Guo <gch981213@gmail.com>,
- linux-arm-kernel@lists.infradead.org
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marex@denx.de>, Vignesh R <vigneshr@ti.com>,
+ Richard Weinberger <richard@nod.at>,
+ =?UTF-8?Q?Miqu=C3=A8l_Raynal?= <miquel.raynal@bootlin.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-stm32@st-md-mailman.stormreply.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Prepare the migration to a generic ECC engine by renaming the
-nand_ecc_req structure into nand_ecc_props. This structure will be the
-base of a wider 'nand_ecc' structure.
+On Thu, May 14, 2020 at 11:35 AM Christophe Kerello
+<christophe.kerello@st.com> wrote:
+>
+> Hi Rob,
+>
+> On 5/14/20 5:00 PM, Rob Herring wrote:
+> > On Wed, May 06, 2020 at 11:11:15AM +0200, Christophe Kerello wrote:
+> >> These bindings can be used on SOCs where the FMC2 NAND controller is
+> >> in standalone. In case that the FMC2 embeds 2 controllers (an external
+> >> bus controller and a raw NAND controller), the register base and the
+> >> clock will be defined in the parent node. It is the reason why the
+> >> register base address and the clock are now optional.
+> >>
+> >> Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
+> >> ---
+> >>   .../devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml   | 19 ++++++++++---------
+> >>   1 file changed, 10 insertions(+), 9 deletions(-)
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml b/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
+> >> index b059267..68fac1a 100644
+> >> --- a/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
+> >> +++ b/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
+> >> @@ -18,13 +18,15 @@ properties:
+> >>
+> >>     reg:
+> >>       items:
+> >> -      - description: Registers
+> >> +      - description: Registers (optional)
+> >
+> > The only thing that can be optional are the last entries. You have to do
+> > a 'oneOf' with 6 entries and 7 entries.
+>
+> Ok, so the way to describe the reg property in my case should be:
+>         reg:
+>           oneOf:
+>             - description: FMC2 embeds the NFC controller in standalone.
+>               items:
+>                 - description: Registers
+>                 - description: Chip select 0 data
+>                 - description: Chip select 0 command
+>                 - description: Chip select 0 address space
+>                 - description: Chip select 1 data
+>                 - description: Chip select 1 command
+>                 - description: Chip select 1 address space
+>
+>             - description: FMC2 embeds the NFC controller and the EBI
+>                 controller.
+>               items:
+>                 - description: Chip select 0 data
+>                 - description: Chip select 0 command
+>                 - description: Chip select 0 address space
+>                 - description: Chip select 1 data
+>                 - description: Chip select 1 command
+>                 - description: Chip select 1 address space
+>
+> >
+> > And where's your new compatible string for this different h/w?
+>
+>  From NFC controller point of view, it is the same HW.
 
-In nand_device, these properties are still named "eccreq" even if
-"eccprops" might be more descriptive. This is just a transition step,
-this field is being replaced very soon by a much wider structure. The
-impact of renaming this field would be huge compared to its interest.
+That's what everyone says until they have some quirk or integration
+difference to handle.
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
----
- include/linux/mtd/nand.h    | 8 ++++----
- include/linux/mtd/spinand.h | 2 +-
- 2 files changed, 5 insertions(+), 5 deletions(-)
+> In the case that we have 2 controllers embedded, the register base is
+> shared.
+> The NFC driver will check at probe time the compatible string of its
+> parent node.
+> In case that it is "st,stm32mp1-fmc2-ebi", then the driver will find the
+> register base in the parent node (EBI node), otherwise it will find it
+> in the NFC node.
+> Is it better to have 2 compatible strings (one for each reg description)
+> than checking the parent's compatible string and have only one
+> compatible string?
 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 60d158e183ce..6add464fd18b 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -128,11 +128,11 @@ struct nand_page_io_req {
- };
- 
- /**
-- * struct nand_ecc_req - NAND ECC requirements
-+ * struct nand_ecc_props - NAND ECC properties
-  * @strength: ECC strength
-- * @step_size: ECC step/block size
-+ * @step_size: Number of bytes per step
-  */
--struct nand_ecc_req {
-+struct nand_ecc_props {
- 	unsigned int strength;
- 	unsigned int step_size;
- };
-@@ -191,7 +191,7 @@ struct nand_ops {
- struct nand_device {
- 	struct mtd_info mtd;
- 	struct nand_memory_organization memorg;
--	struct nand_ecc_req eccreq;
-+	struct nand_ecc_props eccreq;
- 	struct nand_row_converter rowconv;
- 	struct nand_bbt bbt;
- 	const struct nand_ops *ops;
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index 1077c45721ff..7b78c4ba9b3e 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -309,7 +309,7 @@ struct spinand_info {
- 	struct spinand_devid devid;
- 	u32 flags;
- 	struct nand_memory_organization memorg;
--	struct nand_ecc_req eccreq;
-+	struct nand_ecc_props eccreq;
- 	struct spinand_ecc_info eccinfo;
- 	struct {
- 		const struct spinand_op_variants *read_cache;
--- 
-2.20.1
+Why not just put the register base into the child node too? While
+overlapping 'reg' regions for siblings is bad, it's fine for child
+nodes. I guess since there are chip selects for the child nodes that
+may not work here.
 
+It doesn't hurt to have another compatible. You can always make the
+old one a fallback. With different compatibles you can make sure reg
+has the right number of entries.
+
+Rob
 
 ______________________________________________________
 Linux MTD discussion mailing list
