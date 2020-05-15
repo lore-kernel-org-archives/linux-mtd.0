@@ -2,78 +2,116 @@ Return-Path: <SRS0=xunr=65=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4C32C433DF
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 May 2020 08:07:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5614C433E0
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 May 2020 08:42:08 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 940B220657
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 May 2020 08:07:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B09F12054F
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 May 2020 08:42:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qXklP3NN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 940B220657
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="W83/rooI";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sifive.com header.i=@sifive.com header.b="Wj+TOXnd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B09F12054F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sifive.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:Reply-To:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:References:To:From:Subject:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=AgYqt1ARQRZqFXfM9U9QR8RaCMnfmTSiRursavk64h8=; b=qXklP3NNqz5MwQ
-	7gC0KGkCb81ggV/5/X/Y8JjnbMANXrSHQvanih5yETYl+etmWJqXfUgt2W6p6I0asxzGMU1q25ThI
-	lvoAMzBWsU/Zl6K3FsvQyYbQG5PoO7yRXqRMZCILBS1lWOkDK5jYusSQoo0QOtSGh9/FRG62tmh+l
-	xuDYOmjMrSZoaRAWnhtUF7y7kNhxYATY8Fn8MqSffMRaIjyYo6RMQCGWL6KHjiZzHgaG2C/lpZNyW
-	SPeI41/ACyopNXt/syR948p19Ykps1Nr5LQZA4cQ/rCuZV8hylxZQqjSrgFQzrroGASCz7dyQsV0f
-	zE0soGaE+FfDiGkVChSA==;
+	List-Owner; bh=uY5PgpGfvf0/ZQoTzzK3M6eTCzXcl9iLPTK5ron+i7U=; b=W83/rooIciLWCI
+	gMVHjQMKMQjeBigeUqoJKJdgns53bHhVipX77Qtf/nH66/Y6kReg+mKAbAsboXRk+WFdV9sD3FGOz
+	lHw8x+8s5l2kGBtApuTlY9HlGElfEbSdqozXHk5G4QltAa09/OoKeAWZModHfKLVK5+r6MT0y14hZ
+	sYqfEFrdDWVfSju/ckVL2UUyOoFaBZ2+3RsJyPlxvA26/bxdiDkkg73TfkrWbKNmzc7hRG2KCh4PA
+	mAJnxe9WzPbCnzHg44UDrxP7vEoDeHgg8rqGzUpi5wRPfUdgZ6UBGPWTaA/9xeTW0bAGaKxiZTyNT
+	Y3ZIwlxLLKk7k9Or19bQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jZVN2-0006tY-MB; Fri, 15 May 2020 08:07:04 +0000
-Received: from mga01.intel.com ([192.55.52.88])
+	id 1jZVua-0005ie-Q5; Fri, 15 May 2020 08:41:44 +0000
+Received: from mail-co1nam11on2067.outbound.protection.outlook.com
+ ([40.107.220.67] helo=NAM11-CO1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jZVMx-0006sM-Jf
- for linux-mtd@lists.infradead.org; Fri, 15 May 2020 08:07:03 +0000
-IronPort-SDR: QerRrXnR3onoFG7pvRpC8Vobk19tMUjW2uRwrhwKG0jonNEQ/p1LOYGxHsn8g1KxNgrt2dnSU6
- K7wdERwycy3Q==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 May 2020 01:06:57 -0700
-IronPort-SDR: y1UJqPzbkrsTCq4XzGUKwEyG7DqyQY5ttccd+stBOvqgSOZtIqrtZgGAdio0BI/x+gY5HlMblj
- MYOuE+kpJedw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,394,1583222400"; d="scan'208";a="464826884"
-Received: from linux.intel.com ([10.54.29.200])
- by fmsmga006.fm.intel.com with ESMTP; 15 May 2020 01:06:56 -0700
-Received: from [10.213.147.163] (vramuthx-mobl1.gar.corp.intel.com
- [10.213.147.163])
- by linux.intel.com (Postfix) with ESMTP id 361965804E0;
- Fri, 15 May 2020 01:06:43 -0700 (PDT)
-Subject: Re: [PATCH v6 1/2] dt-bindings: mtd: Add Nand Flash Controller
- support for Intel LGM SoC
-From: "Ramuthevar, Vadivel MuruganX"
- <vadivel.muruganx.ramuthevar@linux.intel.com>
-To: Rob Herring <robh@kernel.org>
-References: <20200513104615.7905-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200513104615.7905-2-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200514125709.GA8436@bogus>
- <dc51e6af-bda8-d8b9-1782-f5c4d5d3fed7@linux.intel.com>
-Message-ID: <0ca30041-b2eb-5cff-9a90-f3021bc82622@linux.intel.com>
-Date: Fri, 15 May 2020 16:06:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <dc51e6af-bda8-d8b9-1782-f5c4d5d3fed7@linux.intel.com>
+ id 1jZVuR-0005fU-Vx; Fri, 15 May 2020 08:41:39 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CGoGJ1qFcUckiq566mdX4ob9IwJmzHm+szmp7MaWL/COH13cLRlAR4IllCW4Lp7VQic1ItOsuFwhXX2WOhdPzkrY7dpje4jKW7+dqMPyAE7LenzEV4iu4Lnc+FMbxKs3iSFvHKtCYQUk5zeeJVjWGopc5etNmPqDA8terAaZAUpmlV/I9W1C8dakqWX6YN7nVrM6yPaJ5hyFLbhxaqJrHLSk+VZIE44M/070X6m5oCieqIFbJKrTYkIptwE88sbwD+wgy0HrY+H/daDa6KDgVC+vX3IwrQed/MkBvaC8ABU15A2ijKt/RHw0W5HNdztE/al9nlCwP/nFdHcI4CUO8A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8EEAKB5esFSlZ8D/393HhvPTpht8CVcE54s1sgwTmcc=;
+ b=gOL5Rabczid9hTu0dO/uAZaK5C+a6F+kp5DCZ/W5OHSedOsIRfpug9PDKuJhFduymtzTGAdMyLi8r2GfCLhMdqX7VFXQFr7Kp2g8GVrXIPKiy0HhhR/GgfB7StkrPhWv4OeIOQ2cRassK4TidtrCapf1sNKudp04bDocN2hkCct8p9sV43+E0RkqZPfObiD3HthnIs1U3p/d+llZzoJg9MmD4t+D/HgYiMgu8XkDoX4P5lQm+vfOcsuzrypxAC4bPsL+vI1G6ipZO/z62d3oI4xC1B6I/Y0zaozz2DMLIAa23FUwA7V7RRBOi97DHedbm6yLbazHU3sI1QQxp8dCfQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=sifive.com; dmarc=pass action=none header.from=sifive.com;
+ dkim=pass header.d=sifive.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sifive.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8EEAKB5esFSlZ8D/393HhvPTpht8CVcE54s1sgwTmcc=;
+ b=Wj+TOXndMybcFZAjtk4Ysm/QIjRTnojy8YWV9yntzg7ytOooSkWrynm8Gk6Xym2nUe/GAxcdrcoItE9o/K+BS/teyVX4mX6m0inAkjDHaeiWn9Q6KPBpVMLJsM113XQoiApZ6NsF0+fdG+73RsR8uqGRRTYRVizsz9nuIItTQF8=
+Received: from BYAPR13MB2614.namprd13.prod.outlook.com (20.178.206.140) by
+ BYAPR13MB2725.namprd13.prod.outlook.com (20.178.206.212) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3000.13; Fri, 15 May 2020 08:41:30 +0000
+Received: from BYAPR13MB2614.namprd13.prod.outlook.com
+ ([fe80::c0fc:30a3:5e5f:c2b6]) by BYAPR13MB2614.namprd13.prod.outlook.com
+ ([fe80::c0fc:30a3:5e5f:c2b6%7]) with mapi id 15.20.3000.013; Fri, 15 May 2020
+ 08:41:29 +0000
+From: Sagar Kadam <sagar.kadam@sifive.com>
+To: Pratyush Yadav <me@yadavpratyush.com>
+Subject: RE: [PATCH v1 2/2] spi: nor: update page program settings for
+ is25wp256 using post bfpt fixup
+Thread-Topic: [PATCH v1 2/2] spi: nor: update page program settings for
+ is25wp256 using post bfpt fixup
+Thread-Index: AQHWKeYAxlvBjs/+4kCjqacoVp02OaioumMAgAAX5fA=
+Date: Fri, 15 May 2020 08:41:29 +0000
+Message-ID: <BYAPR13MB2614A8044A8AA51A3C0E020A99BD0@BYAPR13MB2614.namprd13.prod.outlook.com>
+References: <1589457051-5410-1-git-send-email-sagar.kadam@sifive.com>
+ <1589457051-5410-3-git-send-email-sagar.kadam@sifive.com>
+ <20200515070436.hk5ho7ygluqznpcq@yadavpratyush.com>
+In-Reply-To: <20200515070436.hk5ho7ygluqznpcq@yadavpratyush.com>
+Accept-Language: en-US
 Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: yadavpratyush.com; dkim=none (message not signed)
+ header.d=none;yadavpratyush.com; dmarc=none action=none
+ header.from=sifive.com;
+x-originating-ip: [116.74.150.29]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8fdd7f0a-8395-4fd2-d43f-08d7f8abc379
+x-ms-traffictypediagnostic: BYAPR13MB2725:
+x-ld-processed: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR13MB2725B1615CAF711AFA951A2499BD0@BYAPR13MB2725.namprd13.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 04041A2886
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Ajdq5p4KbsqPnT7sbFaSt8HKM7kCVHbV/XeG/KvokAE90QL6OfeE5pL9T0g64qpvV0TCtQHS22L5qvXYZefnHwB8Fs26tdUHQ4Y8RGqfpupDq26TozlYpfeQePEXVGBbmTNAAu035m28wzlmJjt+EIy22U8e4ZNum4WLCyl8ukXF/oVMCqoAlMOgELrB7PPBHpyBnh/QTUL9B16WFqwwTcVbhYM2J1RyCrV5o4/AaKo1M/oK9yEOkCSR3eLC/cAWYf/1xWhSvD4zwK1UwW52qZOn5eCbg1N2oHOtoSYLtHOSLe/WhUrBxx/x6Ixc/rNMJb/GhDovKeFuiMizWglzi2IhKblW+sOd6vCo9oExWT+JKa6LFaHs0ScjSlkLmaIZXZJ29HuusPxvbJcFDePtNNz7/lAn7EO2pMWzaKZv8g5fjRbJFDZZrSNsWs4m43KH
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:BYAPR13MB2614.namprd13.prod.outlook.com; PTR:; CAT:NONE;
+ SFTY:;
+ SFS:(346002)(376002)(39850400004)(136003)(396003)(366004)(316002)(66446008)(9686003)(6506007)(8676002)(71200400001)(26005)(86362001)(55236004)(4326008)(53546011)(7696005)(7416002)(64756008)(66476007)(478600001)(66556008)(8936002)(44832011)(15650500001)(33656002)(2906002)(6916009)(54906003)(76116006)(107886003)(5660300002)(55016002)(66946007)(52536014)(186003);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata: lvd+oDoykGMn8dliuf1v0n1ADn1Fp/W3Z+Tc6G9PqQ605TuEGAY5wKL+mE3SmfqSK4CkQ0U8R/nejcJunNDOuqx7hjZUoQTdXJdR87ubOjhMrYLOH3My2MeT1HJF1ptW7gSJAXY14oD4ycdwqmTz9y9DlxchZSSq9Jj5kLKUtexactVXrE8LSEKx7l5IZWcVCeoekL+JkeGowvBrfVVfcmeXe+/Vu2zInRx3miQ9YpP3w2v7bHUCqSzhtSXwH5y7itS+fgDdnAn8CttQOLqmCfzEnTWhIPedIG0yoCscpCT8CcmeNd1GXK4RtpUUWZ2lA5XhuE4SNR68fsZSrcsR+NQyuxxZtMhuFIXGbOT7P/CHeqq7UNe1OdxD5uIF/mn24GRyFDWKjSA4pddhNQTUaref37sHWRKrboySMVstXbX5L2wGbNLzXFwYEtnYcZv0BovapQFaZeVqmETtP/APfVo8aJMezQYX7UMPsfTnM0w=
+MIME-Version: 1.0
+X-OriginatorOrg: sifive.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8fdd7f0a-8395-4fd2-d43f-08d7f8abc379
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 May 2020 08:41:29.6673 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vgXSQfxrF5eor72FFZSYnPwV24LvVmHw5Cr1n4qpZtDJhm/OfxxikI51/FuZfsGYZe8lsT4fWlUEqPcAfHYB5w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR13MB2725
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200515_010659_664246_D53804C4 
-X-CRM114-Status: GOOD (  10.96  )
+X-CRM114-CacheID: sfid-20200515_014136_095748_8D84F2D2 
+X-CRM114-Status: GOOD (  21.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,43 +123,120 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
-Cc: cheol.yong.kim@intel.com, hauke.mehrtens@intel.com, qi-ming.wu@intel.com,
- anders.roxell@linaro.org, vigneshr@ti.com, arnd@arndb.de,
- devicetree@vger.kernel.org, richard@nod.at, brendanhiggins@google.com,
- linux-mips@vger.kernel.org, robh+dt@kernel.org, linux-kernel@vger.kernel.org,
- boris.brezillon@collabora.com, linux-mtd@lists.infradead.org,
- miquel.raynal@bootlin.com, tglx@linutronix.de, masonccyang@mxic.com.tw,
- andriy.shevchenko@intel.com
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Cc: "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+ "vigneshr@ti.com" <vigneshr@ti.com>,
+ "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
+ "richard@nod.at" <richard@nod.at>, "anup.patel@wdc.com" <anup.patel@wdc.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Paul Walmsley <paul.walmsley@sifive.com>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "palmer@dabbelt.com" <palmer@dabbelt.com>,
+ "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgUm9iLAoKT24gMTUvNS8yMDIwIDEwOjA4IGFtLCBSYW11dGhldmFyLCBWYWRpdmVsIE11cnVn
-YW5YIHdyb3RlOgo+IEhpIFJvYiwKPiAKPiBPbiAxNC81LzIwMjAgODo1NyBwbSwgUm9iIEhlcnJp
-bmcgd3JvdGU6Cj4+IE9uIFdlZCwgMTMgTWF5IDIwMjAgMTg6NDY6MTQgKzA4MDAsIFJhbXV0aGV2
-YXIsVmFkaXZlbCBNdXJ1Z2FuWCB3cm90ZToKPj4+IEZyb206IFJhbXV0aGV2YXIgVmFkaXZlbCBN
-dXJ1Z2FuIAo+Pj4gPHZhZGl2ZWwubXVydWdhbngucmFtdXRoZXZhckBsaW51eC5pbnRlbC5jb20+
-Cj4+Pgo+Pj4gQWRkIFlBTUwgZmlsZSBmb3IgZHQtYmluZGluZ3MgdG8gc3VwcG9ydCBOQU5EIEZs
-YXNoIENvbnRyb2xsZXIKPj4+IG9uIEludGVsJ3MgTGlnaHRuaW5nIE1vdW50YWluIFNvQy4KPj4+
-Cj4+PiBTaWduZWQtb2ZmLWJ5OiBSYW11dGhldmFyIFZhZGl2ZWwgTXVydWdhbiAKPj4+IDx2YWRp
-dmVsLm11cnVnYW54LnJhbXV0aGV2YXJAbGludXguaW50ZWwuY29tPgo+Pj4gLS0tCj4+PiDCoCAu
-Li4vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvaW50ZWwsbGdtLW5hbmQueWFtbMKgwqDCoCB8IDgz
-IAo+Pj4gKysrKysrKysrKysrKysrKysrKysrKwo+Pj4gwqAgMSBmaWxlIGNoYW5nZWQsIDgzIGlu
-c2VydGlvbnMoKykKPj4+IMKgIGNyZWF0ZSBtb2RlIDEwMDY0NCAKPj4+IERvY3VtZW50YXRpb24v
-ZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvaW50ZWwsbGdtLW5hbmQueWFtbAo+Pj4KPj4KPj4KPj4g
-TXkgYm90IGZvdW5kIGVycm9ycyBydW5uaW5nICdtYWtlIGR0X2JpbmRpbmdfY2hlY2snIG9uIHlv
-dXIgcGF0Y2g6Cj4+Cj4+IC9idWlsZHMvcm9iaGVycmluZy9saW51eC1kdC1yZXZpZXcvRG9jdW1l
-bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9pbnRlbCxsZ20tbmFuZC5leGFtcGxlLmR0
-LnlhbWw6IAo+PiBuYW5kLWNvbnRyb2xsZXJAZTBmMDAwMDA6ICdkbWFzJyBpcyBhIGRlcGVuZGVu
-Y3kgb2YgJ2RtYS1uYW1lcycKPj4KPj4gU2VlIGh0dHBzOi8vcGF0Y2h3b3JrLm96bGFicy5vcmcv
-cGF0Y2gvMTI4OTE2MAo+Pgo+PiBJZiB5b3UgYWxyZWFkeSByYW4gJ21ha2UgZHRfYmluZGluZ19j
-aGVjaycgYW5kIGRpZG4ndCBzZWUgdGhlIGFib3ZlCj4+IGVycm9yKHMpLCB0aGVuIG1ha2Ugc3Vy
-ZSBkdC1zY2hlbWEgaXMgdXAgdG8gZGF0ZToKPj4KPj4gcGlwMyBpbnN0YWxsIAo+PiBnaXQraHR0
-cHM6Ly9naXRodWIuY29tL2RldmljZXRyZWUtb3JnL2R0LXNjaGVtYS5naXRAbWFzdGVyIC0tdXBn
-cmFkZQo+Pgo+PiBQbGVhc2UgY2hlY2sgYW5kIHJlLXN1Ym1pdC5TdXJlLCB3aWxsIGNoZWNrIGFu
-ZCByZS1zdWJtaXQsIFRoYW5rcyEKClJlZ2FyZHMKVmFkaXZlbAoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9u
-IG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2xpbnV4LW10ZC8K
+Hi Pratyush,
+
+> -----Original Message-----
+> From: Pratyush Yadav <me@yadavpratyush.com>
+> Sent: Friday, May 15, 2020 12:35 PM
+> To: Sagar Kadam <sagar.kadam@sifive.com>
+> Cc: linux-riscv@lists.infradead.org; linux-kernel@vger.kernel.org; linux-
+> mtd@lists.infradead.org; tudor.ambarus@microchip.com;
+> miquel.raynal@bootlin.com; richard@nod.at; vigneshr@ti.com;
+> anup.patel@wdc.com; aou@eecs.berkeley.edu; palmer@dabbelt.com; Paul
+> Walmsley <paul.walmsley@sifive.com>
+> Subject: Re: [PATCH v1 2/2] spi: nor: update page program settings for
+> is25wp256 using post bfpt fixup
+> 
+> [External Email] Do not click links or attachments unless you recognize the
+> sender and know the content is safe
+> 
+> Hi Sagar,
+> 
+> On 14/05/20 04:50AM, Sagar Shrikant Kadam wrote:
+> > During SFDP parsing it is seen that the IS25WP256d device is missing 4BAIT
+> > (4-Byte address instruction table), due to which it's page program
+> > capacity doesn't get correctly populated and the device gets configured
+> > with 4-byte Address Serial Input Page Program i.e. SNOR_PROTO_1_1_1
+> > even though it can work with SNOR_PROTO_1_1_4.
+> >
+> > Here using the post bfpt fixup hooks we update the page program
+> > settings to 4-byte QUAD Input Page program operations.
+> >
+> > The patch is tested on HiFive Unleashed A00 board and it benefits
+> > few seconds of average write time for entire flash write.
+> >
+> > QUAD Input Page Program operations:
+> > > time mtd_debug write /dev/mtd0 0 33554432 rd32M
+> > Copied 33554432 bytes from rd32M to address 0x00000000 in flash
+> > real    0m 32.85s
+> > user    0m 0.00s
+> > sys     0m 31.79s
+> >
+> > Serial Input Page Program operations:
+> > > time mtd_debug write /dev/mtd0 0 33554432 rd32M
+> > Copied 33554432 bytes from rd32M to address 0x00000000 in flash
+> > real    0m 35.87s
+> > user    0m 0.00s
+> > sys     0m 35.42s
+> >
+> > Signed-off-by: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
+> > ---
+> >  drivers/mtd/spi-nor/issi.c | 16 ++++++++++++++++
+> >  1 file changed, 16 insertions(+)
+> >
+> > diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
+> > index ffcb60e..9eb6e82 100644
+> > --- a/drivers/mtd/spi-nor/issi.c
+> > +++ b/drivers/mtd/spi-nor/issi.c
+> > @@ -23,6 +23,22 @@ is25lp256_post_bfpt_fixups(struct spi_nor *nor,
+> >               BFPT_DWORD1_ADDRESS_BYTES_3_ONLY)
+> >               nor->addr_width = 4;
+> >
+> > +     /*
+> > +      * On IS25WP256d device 4-Byte address instruction table doesn't
+> > +      * get populated and so the device get's configured with 4-byte
+> > +      * Address Serial Input Page Program i.e. SNOR_PROTO_1_1_1 even
+> > +      * though it supports SNOR_PROTO_1_1_4, so priorotize QUAD write
+> > +      * over SINGLE write if device id table holds SPI_NOR_QUAD_READ.
+> > +      */
+> > +     if (strcmp(nor->info->name, "is25wp256") == 0) {
+> 
+> Instead of doing this, wouldn't it make more sense to have a separate
+> fixup hook for is25wp256? Does this device also need the above address
+> width fixup? If it does, maybe that can be split into a separate
+> function, and used by both the fixups?
+> 
+Thanks for suggestion. Yes this device requires the above address width fixup.
+I suspect that this QUAD mode fix might also be required for "is25lp256" device.
+But since I don't have it on my board, I couldn't validate it. If someone could give it a try
+on "is25lp256" device and confirm this, then I guess we can remove this check from 
+here "if (strcmp(nor->info->name, "is25wp256") == 0)" and rename the is25lp256_post_bfpt_fixups
+to is25lpwp256_post_bfpt_fixups to use command fixup for both flash devices,
+else I am also ok to split it into separate function as suggested that can be used by both fixup's
+
+Thanks & BR,
+Sagar Kadam
+
+> > +             if (nor->info->flags & SPI_NOR_QUAD_READ) {
+> > +                     params->hwcaps.mask |= SNOR_HWCAPS_PP_1_1_4;
+> > +                     spi_nor_set_pp_settings
+> > +                             (&params->page_programs[SNOR_CMD_PP_1_1_4],
+> > +                              SPINOR_OP_PP_1_1_4,
+> > +                              SNOR_PROTO_1_1_4);
+> > +             }
+> > +     }
+> >       return 0;
+> >  }
+> 
+> --
+> Regards,
+> Pratyush Yadav
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
