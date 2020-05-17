@@ -1,74 +1,83 @@
-Return-Path: <SRS0=mbup=66=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=YkXI=67=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 13F5EC433E0
-	for <linux-mtd@archiver.kernel.org>; Sat, 16 May 2020 20:18:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C76EDC433E0
+	for <linux-mtd@archiver.kernel.org>; Sun, 17 May 2020 11:28:11 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C3285206F4
-	for <linux-mtd@archiver.kernel.org>; Sat, 16 May 2020 20:18:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 94612206D4
+	for <linux-mtd@archiver.kernel.org>; Sun, 17 May 2020 11:28:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jpqgF/7c"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C3285206F4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jAGsfh6+";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eYroECOf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 94612206D4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0kb8IJupjjdGCwtzIoKWTrCmJral2zYVlvgJrIrcqBA=; b=jpqgF/7cOWK+hc
-	Fcsc0EljMjsECUn4Jd1QV9zRWuANaRpXfsZwDEnwPAV38DStwUKV5JxFTGrJ6I8FEhaDKthEVcDeU
-	rx5WVnaY1FpPZ3M2EguNTLxaO60xhiE/VDnZoIm8wiMjHWQdlaaiaHqMHPOcyZvveM8gacbLsqC49
-	4YY0Zehabv3eLDwEFETrik8Lf4EmxSvkAQWxCyQxjcrbDJ0oLW5j2ykFg2Sf0oI86caOxxBSk5u0p
-	KTpvtCz016g7673W6BRaexeY2JvdyU7O/1HKW+2HC63AcGhoHxQC1ZwMthJdIlMPwNvEkBtPdTaCu
-	wMYsWO4xoLzTVTCYn2LQ==;
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=ptZ84cKo6eeBg9adcCSztSQCZIgVmhvAMf84Al0vXDg=; b=jAGsfh6+/aNvm3
+	jX/jD7zlG1QszLMfcInbLmavUySSLwF7L9n0pKwRuH3huqu+dejveq5qd063PdZyyx5nv7U0AKVht
+	C9KqOKDd5MYkpXDiXlgYOPh1nYJ7lzO/Iz0NS7bEma/TJSR6HOyH2q0CjPVXYH/QUsYZSHvEWWFnw
+	NSwFf0DGuxKXaUVGVaf/bVJ0JBLuHAsim98hArgxPFw9+/2oWV47WricHqzNGz19WyVv+YDM2A50b
+	u7xTEeY/8AKn+o/wr4O+07n2G2cvI1ZeVIqpEmNQWDkn53fnpCerlF2qkiqOH1TJJOXQpMYe6Tw5P
+	Wtt3gEUoDwqGzpHsUNBQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ja3Gg-0001Tt-Uz; Sat, 16 May 2020 20:18:46 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1jaHSV-00012d-Im; Sun, 17 May 2020 11:27:55 +0000
+Received: from mail-ej1-x62d.google.com ([2a00:1450:4864:20::62d])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ja3Gd-0001TN-2R
- for linux-mtd@lists.infradead.org; Sat, 16 May 2020 20:18:45 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 5190B27DF56;
- Sat, 16 May 2020 21:18:40 +0100 (BST)
-Date: Sat, 16 May 2020 22:18:37 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Lubomir Rintel <lkundrak@v3.sk>
-Subject: Re: [PATCH v2 00/19] mtd: rawnand: cafe: Convert to exec_op() (and
- more)
-Message-ID: <20200516221837.6559944c@collabora.com>
-In-Reply-To: <20200516210857.2b579ae4@collabora.com>
-References: <20200509202855.GB524772@furthur.local>
- <20200510083105.4bcfa71b@collabora.com>
- <20200510084541.29e4069e@collabora.com>
- <20200510072108.GA587379@furthur.local>
- <20200510093549.56f74e61@collabora.com>
- <20200511102305.7d843fbc@collabora.com>
- <20200512164057.GC604838@furthur.local>
- <20200513191038.49a4fdf3@collabora.com>
- <20200515144703.GA1245784@furthur.local>
- <20200515192540.GB1245784@furthur.local>
- <20200516145650.GA1433661@furthur.local>
- <20200516210857.2b579ae4@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1jaHSS-00011m-J9
+ for linux-mtd@lists.infradead.org; Sun, 17 May 2020 11:27:53 +0000
+Received: by mail-ej1-x62d.google.com with SMTP id j21so1692025ejy.1
+ for <linux-mtd@lists.infradead.org>; Sun, 17 May 2020 04:27:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:from:date:message-id:subject:to:cc;
+ bh=wFo4edMgiMvDCE2ZNhrsI8JxusUUeYELSKbsEkZuweU=;
+ b=eYroECOfkbshRN4UHce19TarI42rYOPdoOO+Ae5Nvz54wRupZXnV/wp734PaIrRK0I
+ Gwbbwr5pIrfyRL71CrZCuQz1hOOrysD7VYolrMJeWbTGk/r/cwk7z2kvL2SFp/NobJs1
+ jbsyODoR/xA4Qtm6Jv3KSg+v8Kyi5Y1L+73MRedIKQkNlNwU41vWNU2jRyiNJbu4pVlJ
+ FRtBNsCL8lK+huBmker8gzIrDYc7PtoP0tbPSF3YeI/99t+S9O+2S9Ax9oCd/Oy4Z/CG
+ 4Jf+aZD4U1vLPo64fMAPtSrs3BluE/GSPeaVvERlI0d+l6eHYm/WQhuormaWhcJF6NGc
+ 071w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+ bh=wFo4edMgiMvDCE2ZNhrsI8JxusUUeYELSKbsEkZuweU=;
+ b=Md3jbPOxI90Eklpla01xmZw244ngFchNR/Z1nHQrzaUT7sBx0onjGuDJy6dDQa2jSv
+ AESjRDgemrz5R96gY0eZ2rL89SF4LfxSGDWLbobja4Nyjihj0vvOC18lBIgnISsYe1eF
+ JOkrdafxc5RtsTzb7eova+xnDgz29wAqnQXhKMFvFY9uK7Kwx0JE9vfDD5nAbGS1c2NL
+ 7epuakILgAOQ3gu15HJc7tGhPYqGMtUp3KB0W6K24fJtYeZ98UpV1BdOzVA/SGBbf00X
+ Md9C4F+yP6yk+CwdA7a7kbhFjtJaHqj19fMW4cxqJRXPTaZ5d1zy7jcychvUyJ8sXypB
+ lstQ==
+X-Gm-Message-State: AOAM531m49N/YqdbsA4KDop9A4BSQNTn8GRmzi3ychZ0MsIddIXkwk+e
+ HSMHngWbconFZiSF/T2MEksD5JQV8ZYX5xfmxd34kzPu
+X-Google-Smtp-Source: ABdhPJzEzPGimMRiyAfg2Ypa5oq0NmZuWJm0dAmlAp0WVhFv98aBqUbL9NK3nj9Y8vhrka8EL/zGBz9rbOgRuDmRLvs=
+X-Received: by 2002:a17:906:4c8e:: with SMTP id
+ q14mr11262106eju.208.1589714864311; 
+ Sun, 17 May 2020 04:27:44 -0700 (PDT)
 MIME-Version: 1.0
+Received: by 2002:ab4:a881:0:0:0:0:0 with HTTP; Sun, 17 May 2020 04:27:43
+ -0700 (PDT)
+From: Jupiter <jupiter.hce@gmail.com>
+Date: Sun, 17 May 2020 21:27:43 +1000
+Message-ID: <CAA=hcWQ8ZjjdzdTVtBas42L0_qbhJhayqogz_Gg5wgtDBVo+hg@mail.gmail.com>
+Subject: Issue with 'ubi part' ubi_io_read: error -74 (ECC error)
+To: linux-mtd <linux-mtd@lists.infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200516_131843_376085_7631F411 
-X-CRM114-Status: GOOD (  32.55  )
+X-CRM114-CacheID: sfid-20200517_042752_630133_E95A1361 
+X-CRM114-Status: UNSURE (   7.92  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,147 +89,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>,
- Tudor Ambarus <tudor.ambarus@microchip.com>, linux-mtd@lists.infradead.org,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: u-boot@lists.denx.de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, 16 May 2020 21:08:57 +0200
-Boris Brezillon <boris.brezillon@collabora.com> wrote:
+Sorry for a bit recalcitrant with the issue of calling 'ubi part"
+error -74 -EBADMSG, is it MTD issue or u-boot issue?
 
-> On Sat, 16 May 2020 16:56:50 +0200
-> Lubomir Rintel <lkundrak@v3.sk> wrote:
-> 
-> > On Fri, May 15, 2020 at 09:25:43PM +0200, Lubomir Rintel wrote:  
-> > > On Fri, May 15, 2020 at 04:47:07PM +0200, Lubomir Rintel wrote:    
-> > > > On Wed, May 13, 2020 at 07:10:38PM +0200, Boris Brezillon wrote:    
-> > > > > Hi Lubomir,
-> > > > > 
-> > > > > On Tue, 12 May 2020 18:40:57 +0200
-> > > > > Lubomir Rintel <lkundrak@v3.sk> wrote:
-> > > > >     
-> > > > > > I don't really mind the patch; I was just not sure why you removed the
-> > > > > > acks and re-set the mask and suspected that maybe it was not
-> > > > > > intentional.
-> > > > > > 
-> > > > > > That said, I've now disabled the camera and mmc and did my usual test
-> > > > > > of mounting the filesystem and I'm seeing zero interrupts.
-> > > > > > 
-> > > > > > I suppose it's safe to assume that contrary to what I was imagining,
-> > > > > > the masking works well and the interrupts I was seeing are indeed from
-> > > > > > elsewhere (I guess the MMC driver polling the controller or something).
-> > > > > > 
-> > > > > > Also, the re-set of the mask from the interrupt handler is not realy
-> > > > > > necessary (but I certainly wouldn't complain if you keep it in place).    
-> > > > > 
-> > > > > I pushed a new version to my nand/cafe-nand-exec-op-debug branch. This
-> > > > > time I get rid of the IRQ handler as it's not used anyway. Let me know
-> > > > > if that keeps working an I'll send a v3.    
-> > > > 
-> > > > I can confirm that your branch (as of 12ef1918985f "mtd: rawnand: cafe: Get
-> > > > rid of the last printk()") is working great here:
-> > > > 
-> > > >   bash-5.0# time mount -t jffs2 mtd0 /mnt
-> > > >   jffs2: notice: (101) jffs2_build_xattr_subsystem: complete building xattr subsystem, 0 of xdatum (0 unchecked, 0 orphan) and 0 of xref (0 dead, 0 orphan) .
-> > > >   
-> > > >   real    0m7.319s
-> > > >   user    0m0.000s
-> > > >   sys     0m7.294s
-> > > >   bash-5.0# uname -a
-> > > >   Linux (none) 5.7.0-rc3-00097-g12ef1918985f #114 PREEMPT Fri May 15 16:35:01 CEST 2020 i586 GNU/Linux
-> > > >   bash-5.0#     
-> > > 
-> > > Spoke too soon again. Seems like the writes don't make it to the device:
-> > > 
-> > >   bash-5.0# mount -t jffs2 /dev/mtdblock0 /mnt
-> > >   jffs2: Empty flash at 0x045a5798 ends at 0x045a5800
-> > >   jffs2: notice: (98) jffs2_build_xattr_subsystem: complete building xattr subsystem, 1 of xdatum (0 unchecked, 0 orphan) and 1 of xref (0 dead, 0 orphan) f.
-> > >   bash-5.0# touch /mnt/meh
-> > >   bash-5.0# sync 
-> > >   jffs2: jffs2_flush_wbuf(): Write failed with -5
-> > >   jffs2: jffs2_flush_wbuf(): Write failed with -5
-> > >   jffs2: jffs2_flush_wbuf(): Write failed with -5
-> > >   jffs2: jffs2_flush_wbuf(): Write failed with -5
-> > >   bash-5.0# 
-> > > 
-> > > I'll follow up once I know more; with some traces or hopefully a fix.    
-> > 
-> > Hi again. Hope you're having a good weekend.
-> > 
-> > Some good news and some bad news. Good news is that now I got around to
-> > building an image with mtd_debug and got around to making erase, write
-> > adn read work, withut the hassle of dealing with jffs2 (and hassle of
-> > dealing with corrupted image from eariler attempts).
-> > 
-> > The bad news is that I have very little idea about what I'm actually
-> > doing. Here's the branch with changes I've done, with my notes in
-> > the commit messages:
-> > 
-> >   git fetch git://git.kernel.org/pub/scm/linux/kernel/git/lkundrak/linux.git \
-> >       lr/nand/cafe-nand-exec-op-debug
-> > 
-> > The relevant changes:
-> > 
-> >   6ee7e0d11e19 fixup! mtd: rawnand: cafe: Demistify register fields  
-> 
-> This one is valid.
-> 
-> >   565d5f126e86 fixup! mtd: rawnand: cafe: Demistify register fields  
-> 
-> Here it should be
-> 
-> #define CAFE_NAND_ECC_SYN_REG(x)		((((x) / 2) * 4) + 0x50)
-> 
-> but maybe the loop is no longer valid after that.
-> 
-> >   064d381b4615 fixup! mtd: rawnand: cafe: Demistify register fields  
-> 
-> This one looks good too.
-> 
-> > 
-> >     During the test with JFFS2 filesystem, I was seeing a metric ton of ECC
-> >     errors. I have no clue where they came from because they presumably happened
-> >     on an asynchronous writeback, but they no longer happen and I believe
-> >     some of the above was to blame. Unfortunely I didn't investigate
-> >     further, because in my setup it is hugely inconvenient to beat the image
-> >     back into shape.
-> > 
-> >   085a6ad43151 Revert "mtd: rawnand: cafe: Don't leave ECC enabled in the write path"
-> > 
-> >     This triggered a WARN_ON(). Probably not too important, because the
-> >     code in question gets thrown out afterwards.  
-> 
-> Oops. Maybe I should move it after the exec_op() conversion then.
-> 
-> > 
-> >   4a9d95bf6d6b fixup! mtd: rawnand: cafe: Add exec_op() support
-> > 
-> >     An straightforward fix for page write op.  
-> 
-> Yep, that one is valid, thanks for the fix.
-> 
-> > 
-> >   6959a724994d XXX add address to CMD_STATUS
-> > 
-> >     Tricky, and I have no idea what's going on. Perhaps you'll have an
-> >     idea how to either address this more reasonably. As usual, I'm happy
-> >     to apply patches with extra tracing if necessary.  
-> 
-> Duh, that one is super weird. I wonder if it doesn't have to do with
-> the fact we're using DMA. Can you try with the DMA disabled? I see
-> there's also a non-memory read mode, but even the standard mode should
-> work according to the diagram page 37 of the spec [1].
+I used Linux kernel 4.19 to flash UBIFS volume images ubi.img to
+imx6ull NAND using following command in Linux:
 
-Can you also dump the timing registers and find what's the NAND clk
-rate? It could be that tCLR (Timing reg 3) is not big enough.
+flash_erase /dev/mtd2 0 0
+ubiformat /dev/mtd2 -f ubi.img
 
-> 
-> [1]http://wiki.laptop.org/images/5/5c/88ALP01_Datasheet_July_2007.pdf
+The flashing image process went well, not errors, but in NAND booting
+(u-boot version 2018), running "ubi part" stuck following errors:
 
+ubi0 error: ubi_io_read: error -74 (ECC error) while reading 64 bytes from PEB 2
+35:0, read 64 bytes
+ubi0 error: ubi_io_read: error -74 (ECC error) while reading 2048 bytes from PEB
+ 235:2048, read 2048 bytes
+
+The document says "The -74 error code is -EBADMSG and means an ECC
+error. In other words, UBI tried to read some data from the flash, but
+the flash driver found that there is an uncorrectable ECC error, and
+returned -EBADMSG."
+
+My question for ubiformat, how does it write ECC to UBIFS volume
+partition when it flashed UBIFS image to NAND?
+
+In NAND booting, how does the "ubi part" read ECC (DTB) from?
+
+Thank you very much, appreciate your kind advice.
+
+- j
+
+
+-- 
+"A man can fail many times, but he isn't a failure until he begins to
+blame somebody else."
+-- John Burroughs
 
 ______________________________________________________
 Linux MTD discussion mailing list
