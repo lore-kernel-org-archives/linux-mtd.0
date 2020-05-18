@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F0D3C433DF
-	for <linux-mtd@archiver.kernel.org>; Mon, 18 May 2020 16:33:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A69C9C433DF
+	for <linux-mtd@archiver.kernel.org>; Mon, 18 May 2020 16:56:59 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 41DDA20709
-	for <linux-mtd@archiver.kernel.org>; Mon, 18 May 2020 16:33:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7B1DA20758
+	for <linux-mtd@archiver.kernel.org>; Mon, 18 May 2020 16:56:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="e+fgLC+K"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 41DDA20709
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Ql1/ibzp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B1DA20758
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,37 +25,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
 	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=kxD/QHiT8T05JMl4B3n6WzCWy5n7ZbV/9DLI7pYrd8w=; b=e+fgLC+KmT5+2j
-	JPvktyPc3e+aLOmIhnYDKsKlTHMqAPl8d5T5Ju7fNY6WwhiPPWIMHWB1JJwxGV78mKG38VxGmrpC7
-	2CjjqKFxLa7yqvNdUzwqpzXmIoDvkYtA+2c00mToHV6D0sGhYUVMX62WPJRuhyVLmNsPhNDwGi5IY
-	VaoNH6xvHfOdris2fkkbxizSebU/91gKN0d0lbcay2r7iK0s/V3IIABEuaKpXiZXwwmRkGFh5j9Tx
-	Sn+GlKU/ShVgKPJHx95RMKnbzmbpZt8IPeAfAEZSU/fR1dFnMEsxTyu3ZLWbkKZwzPZJvyRzDkBv3
-	8Ww4bkCbfAeV/XSAcwbg==;
+	List-Owner; bh=yoaJiHJY3tJ5WN9qZGxBddQjA8YkNTmdLdmsZFAxGDg=; b=Ql1/ibzpoOrglx
+	1xbKs8jJow8Jw9EI5HBd0183HiTcFuwDgQmZ4tSA7UA1EgPHPJrR4hZqOhFXM5LxWwEbGgiCwM6vq
+	SUGDMEysHqY4PwMSSC5HBs2eJCmtRSEuSCKfTg6lRl5Sl7MpC6Bxuyl5y3PsuAEZxBDPFfDk+TujZ
+	hFvje/hsAFqgYhZQ23fin5oXQlzt1bEKxOo/Ipiz8KqbVt99NYc2TMc/Hpc816cj0J/jnS48U0JrX
+	WlqmlBDNA9Vz8tOMdI51ADODXKIVdUxfpknswbPQDwuwsEuF7nn1ua+i4NybIOpRaAsRsDP70ytfF
+	X2POYBzfkGlNMpFvhnTg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jaihR-0003LT-Ii; Mon, 18 May 2020 16:33:09 +0000
+	id 1jaj4K-0004LW-8D; Mon, 18 May 2020 16:56:48 +0000
 Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jaihN-0003KV-KB
- for linux-mtd@lists.infradead.org; Mon, 18 May 2020 16:33:07 +0000
+ id 1jaj4H-0004Kx-TY
+ for linux-mtd@lists.infradead.org; Mon, 18 May 2020 16:56:47 +0000
 Received: from localhost.localdomain (unknown
  [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 3068C2A0BCD;
- Mon, 18 May 2020 17:33:04 +0100 (BST)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 7B8AA2A1010;
+ Mon, 18 May 2020 17:56:43 +0100 (BST)
 From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
- Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: [PATCH v2] mtd: rawnand: Remove the cmx270 NAND controller driver
-Date: Mon, 18 May 2020 18:33:00 +0200
-Message-Id: <20200518163300.304732-1-boris.brezillon@collabora.com>
+To: Paul Cercueil <paul@crapouillou.net>,
+ Harvey Hunt <harveyhuntnexus@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: rawnand: ingenic: Convert the driver to exec_op()
+Date: Mon, 18 May 2020 18:56:40 +0200
+Message-Id: <20200518165640.312220-1-boris.brezillon@collabora.com>
 X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200518_093305_922627_E03BFA36 
-X-CRM114-Status: GOOD (  20.26  )
+X-CRM114-CacheID: sfid-20200518_095646_211134_94011D2A 
+X-CRM114-Status: GOOD (  16.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,133 +71,208 @@ Cc: Richard Weinberger <richard@nod.at>,
  Boris Brezillon <boris.brezillon@collabora.com>,
  Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <tudor.ambarus@microchip.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-VGhlIENNLVgyNzAgYm9hcmQgaGFzIGJlZW4gcmVtb3ZlZCwgd2UgY2FuIHJlbW92ZSB0aGUgY3Vz
-dG9tIE5BTkQKZHJpdmVyIGFzIHdlbGwuCgpTaWduZWQtb2ZmLWJ5OiBCb3JpcyBCcmV6aWxsb24g
-PGJvcmlzLmJyZXppbGxvbkBjb2xsYWJvcmEuY29tPgotLS0KQ2hhbmdlcyBpbiB2MjoKKiBVcGRh
-dGUgdGhlIGNvbW1pdCBtZXNzYWdlCi0tLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvS2NvbmZpZyAg
-ICAgICB8ICAgNCAtCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9NYWtlZmlsZSAgICAgIHwgICAxIC0K
-IGRyaXZlcnMvbXRkL25hbmQvcmF3L2NteDI3MF9uYW5kLmMgfCAyMzYgLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0KIDMgZmlsZXMgY2hhbmdlZCwgMjQxIGRlbGV0aW9ucygtKQogZGVsZXRl
-IG1vZGUgMTAwNjQ0IGRyaXZlcnMvbXRkL25hbmQvcmF3L2NteDI3MF9uYW5kLmMKCmRpZmYgLS1n
-aXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9LY29uZmlnIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcv
-S2NvbmZpZwppbmRleCAxZjhhYTM1M2Y3NjQuLjUzMzZmZWRjMWQ2NCAxMDA2NDQKLS0tIGEvZHJp
-dmVycy9tdGQvbmFuZC9yYXcvS2NvbmZpZworKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9LY29u
-ZmlnCkBAIC0yMTMsMTAgKzIxMyw2IEBAIGNvbmZpZyBNVERfTkFORF9NTENfTFBDMzJYWAogCSAg
-UGxlYXNlIGNoZWNrIHRoZSBhY3R1YWwgTkFORCBjaGlwIGNvbm5lY3RlZCBhbmQgaXRzIHN1cHBv
-cnQKIAkgIGJ5IHRoZSBNTEMgTkFORCBjb250cm9sbGVyLgogCi1jb25maWcgTVREX05BTkRfQ01f
-WDI3MAotCXRyaXN0YXRlICJDTS1YMjcwIG1vZHVsZXMgTkFORCBjb250cm9sbGVyIgotCWRlcGVu
-ZHMgb24gTUFDSF9BUk1DT1JFCi0KIGNvbmZpZyBNVERfTkFORF9QQVNFTUkKIAl0cmlzdGF0ZSAi
-UEEgU2VtaSBQV1JmaWNpZW50IE5BTkQgY29udHJvbGxlciIKIAlkZXBlbmRzIG9uIFBQQ19QQVNF
-TUkKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L01ha2VmaWxlIGIvZHJpdmVycy9t
-dGQvbmFuZC9yYXcvTWFrZWZpbGUKaW5kZXggODU0MTA3MzY1Nzc0Li4wYTg5Mzc4NmE3YTIgMTAw
-NjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L01ha2VmaWxlCisrKyBiL2RyaXZlcnMvbXRk
-L25hbmQvcmF3L01ha2VmaWxlCkBAIC0yNSw3ICsyNSw2IEBAIG9iai0kKENPTkZJR19NVERfTkFO
-RF9HUElPKQkJKz0gZ3Bpby5vCiBvbWFwMl9uYW5kLW9ianMgOj0gb21hcDIubwogb2JqLSQoQ09O
-RklHX01URF9OQU5EX09NQVAyKSAJCSs9IG9tYXAyX25hbmQubwogb2JqLSQoQ09ORklHX01URF9O
-QU5EX09NQVBfQkNIX0JVSUxEKQkrPSBvbWFwX2VsbS5vCi1vYmotJChDT05GSUdfTVREX05BTkRf
-Q01fWDI3MCkJCSs9IGNteDI3MF9uYW5kLm8KIG9iai0kKENPTkZJR19NVERfTkFORF9NQVJWRUxM
-KQkJKz0gbWFydmVsbF9uYW5kLm8KIG9iai0kKENPTkZJR19NVERfTkFORF9UTUlPKQkJKz0gdG1p
-b19uYW5kLm8KIG9iai0kKENPTkZJR19NVERfTkFORF9QTEFURk9STSkJCSs9IHBsYXRfbmFuZC5v
-CmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9jbXgyNzBfbmFuZC5jIGIvZHJpdmVy
-cy9tdGQvbmFuZC9yYXcvY214MjcwX25hbmQuYwpkZWxldGVkIGZpbGUgbW9kZSAxMDA2NDQKaW5k
-ZXggMDQ1YjYxNzVhZTc5Li4wMDAwMDAwMDAwMDAKLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcv
-Y214MjcwX25hbmQuYworKysgL2Rldi9udWxsCkBAIC0xLDIzNiArMCwwIEBACi0vLyBTUERYLUxp
-Y2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMC1vbmx5Ci0vKgotICogIENvcHlyaWdodCAoQykgMjAw
-NiBDb21wdWxhYiwgTHRkLgotICogIE1pa2UgUmFwb3BvcnQgPG1pa2VAY29tcHVsYWIuY28uaWw+
-Ci0gKgotICogIERlcml2ZWQgZnJvbSBkcml2ZXJzL210ZC9uYW5kL2gxOTEwLmMgKHJlbW92ZWQg
-aW4gdjMuMTApCi0gKiAgICAgICBDb3B5cmlnaHQgKEMpIDIwMDIgTWFyaXVzIEdyw7ZnZXIgKG1h
-Z0BzeXNnby5kZSkKLSAqICAgICAgIENvcHlyaWdodCAoYykgMjAwMSBUaG9tYXMgR2xlaXhuZXIg
-KGdsZWl4bmVyQGF1dHJvbml4LmRlKQotICoKLSAqICBPdmVydmlldzoKLSAqICAgVGhpcyBpcyBh
-IGRldmljZSBkcml2ZXIgZm9yIHRoZSBOQU5EIGZsYXNoIGRldmljZSBmb3VuZCBvbiB0aGUKLSAq
-ICAgQ00tWDI3MCBib2FyZC4KLSAqLwotCi0jaW5jbHVkZSA8bGludXgvbXRkL3Jhd25hbmQuaD4K
-LSNpbmNsdWRlIDxsaW51eC9tdGQvcGFydGl0aW9ucy5oPgotI2luY2x1ZGUgPGxpbnV4L3NsYWIu
-aD4KLSNpbmNsdWRlIDxsaW51eC9ncGlvLmg+Ci0jaW5jbHVkZSA8bGludXgvbW9kdWxlLmg+Ci0K
-LSNpbmNsdWRlIDxhc20vaW8uaD4KLSNpbmNsdWRlIDxhc20vaXJxLmg+Ci0jaW5jbHVkZSA8YXNt
-L21hY2gtdHlwZXMuaD4KLQotI2luY2x1ZGUgPG1hY2gvcHhhMnh4LXJlZ3MuaD4KLQotI2RlZmlu
-ZSBHUElPX05BTkRfQ1MJKDExKQotI2RlZmluZSBHUElPX05BTkRfUkIJKDg5KQotCi0vKiBNVEQg
-c3RydWN0dXJlIGZvciBDTS1YMjcwIGJvYXJkICovCi1zdGF0aWMgc3RydWN0IG10ZF9pbmZvICpj
-bXgyNzBfbmFuZF9tdGQ7Ci0KLS8qIHJlbWFwZWQgSU8gYWRkcmVzcyBvZiB0aGUgZGV2aWNlICov
-Ci1zdGF0aWMgdm9pZCBfX2lvbWVtICpjbXgyNzBfbmFuZF9pbzsKLQotLyoKLSAqIERlZmluZSBz
-dGF0aWMgcGFydGl0aW9ucyBmb3IgZmxhc2ggZGV2aWNlCi0gKi8KLXN0YXRpYyBjb25zdCBzdHJ1
-Y3QgbXRkX3BhcnRpdGlvbiBwYXJ0aXRpb25faW5mb1tdID0gewotCVswXSA9IHsKLQkJLm5hbWUJ
-PSAiY214MjcwLTAiLAotCQkub2Zmc2V0CT0gMCwKLQkJLnNpemUJPSBNVERQQVJUX1NJWl9GVUxM
-Ci0JfQotfTsKLSNkZWZpbmUgTlVNX1BBUlRJVElPTlMgKEFSUkFZX1NJWkUocGFydGl0aW9uX2lu
-Zm8pKQotCi1zdGF0aWMgdV9jaGFyIGNteDI3MF9yZWFkX2J5dGUoc3RydWN0IG5hbmRfY2hpcCAq
-dGhpcykKLXsKLQlyZXR1cm4gKHJlYWRsKHRoaXMtPmxlZ2FjeS5JT19BRERSX1IpID4+IDE2KTsK
-LX0KLQotc3RhdGljIHZvaWQgY214MjcwX3dyaXRlX2J1ZihzdHJ1Y3QgbmFuZF9jaGlwICp0aGlz
-LCBjb25zdCB1X2NoYXIgKmJ1ZiwKLQkJCSAgICAgaW50IGxlbikKLXsKLQlpbnQgaTsKLQotCWZv
-ciAoaT0wOyBpPGxlbjsgaSsrKQotCQl3cml0ZWwoKCpidWYrKyA8PCAxNiksIHRoaXMtPmxlZ2Fj
-eS5JT19BRERSX1cpOwotfQotCi1zdGF0aWMgdm9pZCBjbXgyNzBfcmVhZF9idWYoc3RydWN0IG5h
-bmRfY2hpcCAqdGhpcywgdV9jaGFyICpidWYsIGludCBsZW4pCi17Ci0JaW50IGk7Ci0KLQlmb3Ig
-KGk9MDsgaTxsZW47IGkrKykKLQkJKmJ1ZisrID0gcmVhZGwodGhpcy0+bGVnYWN5LklPX0FERFJf
-UikgPj4gMTY7Ci19Ci0KLXN0YXRpYyBpbmxpbmUgdm9pZCBuYW5kX2NzX29uKHZvaWQpCi17Ci0J
-Z3Bpb19zZXRfdmFsdWUoR1BJT19OQU5EX0NTLCAwKTsKLX0KLQotc3RhdGljIHZvaWQgbmFuZF9j
-c19vZmYodm9pZCkKLXsKLQlkc2IoKTsKLQotCWdwaW9fc2V0X3ZhbHVlKEdQSU9fTkFORF9DUywg
-MSk7Ci19Ci0KLS8qCi0gKgloYXJkd2FyZSBzcGVjaWZpYyBhY2Nlc3MgdG8gY29udHJvbC1saW5l
-cwotICovCi1zdGF0aWMgdm9pZCBjbXgyNzBfaHdjb250cm9sKHN0cnVjdCBuYW5kX2NoaXAgKnRo
-aXMsIGludCBkYXQsCi0JCQkgICAgIHVuc2lnbmVkIGludCBjdHJsKQotewotCXVuc2lnbmVkIGlu
-dCBuYW5kYWRkciA9ICh1bnNpZ25lZCBpbnQpdGhpcy0+bGVnYWN5LklPX0FERFJfVzsKLQotCWRz
-YigpOwotCi0JaWYgKGN0cmwgJiBOQU5EX0NUUkxfQ0hBTkdFKSB7Ci0JCWlmICggY3RybCAmIE5B
-TkRfQUxFICkKLQkJCW5hbmRhZGRyIHw9ICAoMSA8PCAzKTsKLQkJZWxzZQotCQkJbmFuZGFkZHIg
-Jj0gfigxIDw8IDMpOwotCQlpZiAoIGN0cmwgJiBOQU5EX0NMRSApCi0JCQluYW5kYWRkciB8PSAg
-KDEgPDwgMik7Ci0JCWVsc2UKLQkJCW5hbmRhZGRyICY9IH4oMSA8PCAyKTsKLQkJaWYgKCBjdHJs
-ICYgTkFORF9OQ0UgKQotCQkJbmFuZF9jc19vbigpOwotCQllbHNlCi0JCQluYW5kX2NzX29mZigp
-OwotCX0KLQotCWRzYigpOwotCXRoaXMtPmxlZ2FjeS5JT19BRERSX1cgPSAodm9pZCBfX2lvbWVt
-KiluYW5kYWRkcjsKLQlpZiAoZGF0ICE9IE5BTkRfQ01EX05PTkUpCi0JCXdyaXRlbCgoZGF0IDw8
-IDE2KSwgdGhpcy0+bGVnYWN5LklPX0FERFJfVyk7Ci0KLQlkc2IoKTsKLX0KLQotLyoKLSAqCXJl
-YWQgZGV2aWNlIHJlYWR5IHBpbgotICovCi1zdGF0aWMgaW50IGNteDI3MF9kZXZpY2VfcmVhZHko
-c3RydWN0IG5hbmRfY2hpcCAqdGhpcykKLXsKLQlkc2IoKTsKLQotCXJldHVybiAoZ3Bpb19nZXRf
-dmFsdWUoR1BJT19OQU5EX1JCKSk7Ci19Ci0KLS8qCi0gKiBNYWluIGluaXRpYWxpemF0aW9uIHJv
-dXRpbmUKLSAqLwotc3RhdGljIGludCBfX2luaXQgY214MjcwX2luaXQodm9pZCkKLXsKLQlzdHJ1
-Y3QgbmFuZF9jaGlwICp0aGlzOwotCWludCByZXQ7Ci0KLQlpZiAoIShtYWNoaW5lX2lzX2FybWNv
-cmUoKSAmJiBjcHVfaXNfcHhhMjd4KCkpKQotCQlyZXR1cm4gLUVOT0RFVjsKLQotCXJldCA9IGdw
-aW9fcmVxdWVzdChHUElPX05BTkRfQ1MsICJOQU5EIENTIik7Ci0JaWYgKHJldCkgewotCQlwcl93
-YXJuKCJDTS1YMjcwOiBmYWlsZWQgdG8gcmVxdWVzdCBOQU5EIENTIGdwaW9cbiIpOwotCQlyZXR1
-cm4gcmV0OwotCX0KLQotCWdwaW9fZGlyZWN0aW9uX291dHB1dChHUElPX05BTkRfQ1MsIDEpOwot
-Ci0JcmV0ID0gZ3Bpb19yZXF1ZXN0KEdQSU9fTkFORF9SQiwgIk5BTkQgUi9CIik7Ci0JaWYgKHJl
-dCkgewotCQlwcl93YXJuKCJDTS1YMjcwOiBmYWlsZWQgdG8gcmVxdWVzdCBOQU5EIFIvQiBncGlv
-XG4iKTsKLQkJZ290byBlcnJfZ3Bpb19yZXF1ZXN0OwotCX0KLQotCWdwaW9fZGlyZWN0aW9uX2lu
-cHV0KEdQSU9fTkFORF9SQik7Ci0KLQkvKiBBbGxvY2F0ZSBtZW1vcnkgZm9yIE1URCBkZXZpY2Ug
-c3RydWN0dXJlIGFuZCBwcml2YXRlIGRhdGEgKi8KLQl0aGlzID0ga3phbGxvYyhzaXplb2Yoc3Ry
-dWN0IG5hbmRfY2hpcCksIEdGUF9LRVJORUwpOwotCWlmICghdGhpcykgewotCQlyZXQgPSAtRU5P
-TUVNOwotCQlnb3RvIGVycl9remFsbG9jOwotCX0KLQotCWNteDI3MF9uYW5kX2lvID0gaW9yZW1h
-cChQWEFfQ1MxX1BIWVMsIDEyKTsKLQlpZiAoIWNteDI3MF9uYW5kX2lvKSB7Ci0JCXByX2RlYnVn
-KCJVbmFibGUgdG8gaW9yZW1hcCBOQU5EIGRldmljZVxuIik7Ci0JCXJldCA9IC1FSU5WQUw7Ci0J
-CWdvdG8gZXJyX2lvcmVtYXA7Ci0JfQotCi0JY214MjcwX25hbmRfbXRkID0gbmFuZF90b19tdGQo
-dGhpcyk7Ci0KLQkvKiBMaW5rIHRoZSBwcml2YXRlIGRhdGEgd2l0aCB0aGUgTVREIHN0cnVjdHVy
-ZSAqLwotCWNteDI3MF9uYW5kX210ZC0+b3duZXIgPSBUSElTX01PRFVMRTsKLQotCS8qIGluc2Vy
-dCBjYWxsYmFja3MgKi8KLQl0aGlzLT5sZWdhY3kuSU9fQUREUl9SID0gY214MjcwX25hbmRfaW87
-Ci0JdGhpcy0+bGVnYWN5LklPX0FERFJfVyA9IGNteDI3MF9uYW5kX2lvOwotCXRoaXMtPmxlZ2Fj
-eS5jbWRfY3RybCA9IGNteDI3MF9od2NvbnRyb2w7Ci0JdGhpcy0+bGVnYWN5LmRldl9yZWFkeSA9
-IGNteDI3MF9kZXZpY2VfcmVhZHk7Ci0KLQkvKiAxNSB1cyBjb21tYW5kIGRlbGF5IHRpbWUgKi8K
-LQl0aGlzLT5sZWdhY3kuY2hpcF9kZWxheSA9IDIwOwotCXRoaXMtPmVjYy5tb2RlID0gTkFORF9F
-Q0NfU09GVDsKLQl0aGlzLT5lY2MuYWxnbyA9IE5BTkRfRUNDX0hBTU1JTkc7Ci0KLQkvKiByZWFk
-L3dyaXRlIGZ1bmN0aW9ucyAqLwotCXRoaXMtPmxlZ2FjeS5yZWFkX2J5dGUgPSBjbXgyNzBfcmVh
-ZF9ieXRlOwotCXRoaXMtPmxlZ2FjeS5yZWFkX2J1ZiA9IGNteDI3MF9yZWFkX2J1ZjsKLQl0aGlz
-LT5sZWdhY3kud3JpdGVfYnVmID0gY214MjcwX3dyaXRlX2J1ZjsKLQotCS8qIFNjYW4gdG8gZmlu
-ZCBleGlzdGVuY2Ugb2YgdGhlIGRldmljZSAqLwotCXJldCA9IG5hbmRfc2Nhbih0aGlzLCAxKTsK
-LQlpZiAocmV0KSB7Ci0JCXByX25vdGljZSgiTm8gTkFORCBkZXZpY2VcbiIpOwotCQlnb3RvIGVy
-cl9zY2FuOwotCX0KLQotCS8qIFJlZ2lzdGVyIHRoZSBwYXJ0aXRpb25zICovCi0JcmV0ID0gbXRk
-X2RldmljZV9yZWdpc3RlcihjbXgyNzBfbmFuZF9tdGQsIHBhcnRpdGlvbl9pbmZvLAotCQkJCSAg
-TlVNX1BBUlRJVElPTlMpOwotCWlmIChyZXQpCi0JCWdvdG8gZXJyX3NjYW47Ci0KLQkvKiBSZXR1
-cm4gaGFwcHkgKi8KLQlyZXR1cm4gMDsKLQotZXJyX3NjYW46Ci0JaW91bm1hcChjbXgyNzBfbmFu
-ZF9pbyk7Ci1lcnJfaW9yZW1hcDoKLQlrZnJlZSh0aGlzKTsKLWVycl9remFsbG9jOgotCWdwaW9f
-ZnJlZShHUElPX05BTkRfUkIpOwotZXJyX2dwaW9fcmVxdWVzdDoKLQlncGlvX2ZyZWUoR1BJT19O
-QU5EX0NTKTsKLQotCXJldHVybiByZXQ7Ci0KLX0KLW1vZHVsZV9pbml0KGNteDI3MF9pbml0KTsK
-LQotLyoKLSAqIENsZWFuIHVwIHJvdXRpbmUKLSAqLwotc3RhdGljIHZvaWQgX19leGl0IGNteDI3
-MF9jbGVhbnVwKHZvaWQpCi17Ci0JLyogUmVsZWFzZSByZXNvdXJjZXMsIHVucmVnaXN0ZXIgZGV2
-aWNlICovCi0JbmFuZF9yZWxlYXNlKG10ZF90b19uYW5kKGNteDI3MF9uYW5kX210ZCkpOwotCi0J
-Z3Bpb19mcmVlKEdQSU9fTkFORF9SQik7Ci0JZ3Bpb19mcmVlKEdQSU9fTkFORF9DUyk7Ci0KLQlp
-b3VubWFwKGNteDI3MF9uYW5kX2lvKTsKLQotCWtmcmVlKG10ZF90b19uYW5kKGNteDI3MF9uYW5k
-X210ZCkpOwotfQotbW9kdWxlX2V4aXQoY214MjcwX2NsZWFudXApOwotCi1NT0RVTEVfTElDRU5T
-RSgiR1BMIik7Ci1NT0RVTEVfQVVUSE9SKCJNaWtlIFJhcG9wb3J0IDxtaWtlQGNvbXB1bGFiLmNv
-LmlsPiIpOwotTU9EVUxFX0RFU0NSSVBUSU9OKCJOQU5EIGZsYXNoIGRyaXZlciBmb3IgQ29tcHVs
-YWIgQ00tWDI3MCBNb2R1bGUiKTsKLS0gCjIuMjUuNAoKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWls
-aW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
-eC1tdGQvCg==
+Let's convert the driver to exec_op() to have one less driver relying
+on the legacy interface.
+
+Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+---
+ .../mtd/nand/raw/ingenic/ingenic_nand_drv.c   | 136 ++++++++++--------
+ 1 file changed, 80 insertions(+), 56 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
+index e7bd845fdbf5..dcecd54af20b 100644
+--- a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
++++ b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
+@@ -27,9 +27,6 @@
+ 
+ #define DRV_NAME	"ingenic-nand"
+ 
+-/* Command delay when there is no R/B pin. */
+-#define RB_DELAY_US	100
+-
+ struct jz_soc_info {
+ 	unsigned long data_offset;
+ 	unsigned long addr_offset;
+@@ -49,7 +46,6 @@ struct ingenic_nfc {
+ 	struct nand_controller controller;
+ 	unsigned int num_banks;
+ 	struct list_head chips;
+-	int selected;
+ 	struct ingenic_nand_cs cs[];
+ };
+ 
+@@ -142,51 +138,6 @@ static const struct mtd_ooblayout_ops jz4725b_ooblayout_ops = {
+ 	.free = jz4725b_ooblayout_free,
+ };
+ 
+-static void ingenic_nand_select_chip(struct nand_chip *chip, int chipnr)
+-{
+-	struct ingenic_nand *nand = to_ingenic_nand(nand_to_mtd(chip));
+-	struct ingenic_nfc *nfc = to_ingenic_nfc(nand->chip.controller);
+-	struct ingenic_nand_cs *cs;
+-
+-	/* Ensure the currently selected chip is deasserted. */
+-	if (chipnr == -1 && nfc->selected >= 0) {
+-		cs = &nfc->cs[nfc->selected];
+-		jz4780_nemc_assert(nfc->dev, cs->bank, false);
+-	}
+-
+-	nfc->selected = chipnr;
+-}
+-
+-static void ingenic_nand_cmd_ctrl(struct nand_chip *chip, int cmd,
+-				  unsigned int ctrl)
+-{
+-	struct ingenic_nand *nand = to_ingenic_nand(nand_to_mtd(chip));
+-	struct ingenic_nfc *nfc = to_ingenic_nfc(nand->chip.controller);
+-	struct ingenic_nand_cs *cs;
+-
+-	if (WARN_ON(nfc->selected < 0))
+-		return;
+-
+-	cs = &nfc->cs[nfc->selected];
+-
+-	jz4780_nemc_assert(nfc->dev, cs->bank, ctrl & NAND_NCE);
+-
+-	if (cmd == NAND_CMD_NONE)
+-		return;
+-
+-	if (ctrl & NAND_ALE)
+-		writeb(cmd, cs->base + nfc->soc_info->addr_offset);
+-	else if (ctrl & NAND_CLE)
+-		writeb(cmd, cs->base + nfc->soc_info->cmd_offset);
+-}
+-
+-static int ingenic_nand_dev_ready(struct nand_chip *chip)
+-{
+-	struct ingenic_nand *nand = to_ingenic_nand(nand_to_mtd(chip));
+-
+-	return !gpiod_get_value_cansleep(nand->busy_gpio);
+-}
+-
+ static void ingenic_nand_ecc_hwctl(struct nand_chip *chip, int mode)
+ {
+ 	struct ingenic_nand *nand = to_ingenic_nand(nand_to_mtd(chip));
+@@ -298,8 +249,88 @@ static int ingenic_nand_attach_chip(struct nand_chip *chip)
+ 	return 0;
+ }
+ 
++static int ingenic_nand_exec_instr(struct nand_chip *chip,
++				   struct ingenic_nand_cs *cs,
++				   const struct nand_op_instr *instr)
++{
++	struct ingenic_nand *nand = to_ingenic_nand(nand_to_mtd(chip));
++	struct ingenic_nfc *nfc = to_ingenic_nfc(chip->controller);
++	unsigned int i;
++
++	switch (instr->type) {
++	case NAND_OP_CMD_INSTR:
++		writeb(instr->ctx.cmd.opcode,
++		       cs->base + nfc->soc_info->cmd_offset);
++		return 0;
++	case NAND_OP_ADDR_INSTR:
++		for (i = 0; i < instr->ctx.addr.naddrs; i++)
++			writeb(instr->ctx.addr.addrs[i],
++			       cs->base + nfc->soc_info->cmd_offset);
++		return 0;
++	case NAND_OP_DATA_IN_INSTR:
++		if (instr->ctx.data.force_8bit ||
++		    !(chip->options & NAND_BUSWIDTH_16))
++			ioread8_rep(cs->base + nfc->soc_info->data_offset,
++				    instr->ctx.data.buf.in,
++				    instr->ctx.data.len);
++		else
++			ioread16_rep(cs->base + nfc->soc_info->data_offset,
++				     instr->ctx.data.buf.in,
++				     instr->ctx.data.len);
++		return 0;
++	case NAND_OP_DATA_OUT_INSTR:
++		if (instr->ctx.data.force_8bit ||
++		    !(chip->options & NAND_BUSWIDTH_16))
++			iowrite8_rep(cs->base + nfc->soc_info->data_offset,
++				     instr->ctx.data.buf.out,
++				     instr->ctx.data.len);
++		else
++			iowrite16_rep(cs->base + nfc->soc_info->data_offset,
++				      instr->ctx.data.buf.out,
++				      instr->ctx.data.len);
++		return 0;
++	case NAND_OP_WAITRDY_INSTR:
++		if (!nand->busy_gpio)
++			return nand_soft_waitrdy(chip,
++						 instr->ctx.waitrdy.timeout_ms);
++
++		return nand_gpio_waitrdy(chip, nand->busy_gpio,
++					 instr->ctx.waitrdy.timeout_ms);
++	default:
++		break;
++	}
++
++	return -EINVAL;
++}
++
++static int ingenic_nand_exec_op(struct nand_chip *chip,
++				const struct nand_operation *op,
++				bool check_only)
++{
++	struct ingenic_nand *nand = to_ingenic_nand(nand_to_mtd(chip));
++	struct ingenic_nfc *nfc = to_ingenic_nfc(nand->chip.controller);
++	struct ingenic_nand_cs *cs;
++	unsigned int i;
++	int ret = 0;
++
++	if (check_only)
++		return 0;
++
++	cs = &nfc->cs[op->cs];
++	jz4780_nemc_assert(nfc->dev, cs->bank, true);
++	for (i = 0; i < op->ninstrs; i++) {
++		ret = ingenic_nand_exec_instr(chip, cs, &op->instrs[i]);
++		if (ret)
++			break;
++	}
++	jz4780_nemc_assert(nfc->dev, cs->bank, false);
++
++	return ret;
++}
++
+ static const struct nand_controller_ops ingenic_nand_controller_ops = {
+ 	.attach_chip = ingenic_nand_attach_chip,
++	.exec_op = ingenic_nand_exec_op,
+ };
+ 
+ static int ingenic_nand_init_chip(struct platform_device *pdev,
+@@ -339,8 +370,6 @@ static int ingenic_nand_init_chip(struct platform_device *pdev,
+ 		ret = PTR_ERR(nand->busy_gpio);
+ 		dev_err(dev, "failed to request busy GPIO: %d\n", ret);
+ 		return ret;
+-	} else if (nand->busy_gpio) {
+-		nand->chip.legacy.dev_ready = ingenic_nand_dev_ready;
+ 	}
+ 
+ 	nand->wp_gpio = devm_gpiod_get_optional(dev, "wp", GPIOD_OUT_LOW);
+@@ -359,12 +388,7 @@ static int ingenic_nand_init_chip(struct platform_device *pdev,
+ 		return -ENOMEM;
+ 	mtd->dev.parent = dev;
+ 
+-	chip->legacy.IO_ADDR_R = cs->base + nfc->soc_info->data_offset;
+-	chip->legacy.IO_ADDR_W = cs->base + nfc->soc_info->data_offset;
+-	chip->legacy.chip_delay = RB_DELAY_US;
+ 	chip->options = NAND_NO_SUBPAGE_WRITE;
+-	chip->legacy.select_chip = ingenic_nand_select_chip;
+-	chip->legacy.cmd_ctrl = ingenic_nand_cmd_ctrl;
+ 	chip->ecc.mode = NAND_ECC_HW;
+ 	chip->controller = &nfc->controller;
+ 	nand_set_flash_node(chip, np);
+-- 
+2.25.4
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
