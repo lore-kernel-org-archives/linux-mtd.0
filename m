@@ -2,64 +2,71 @@ Return-Path: <SRS0=rUMq=7A=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A86B3C433E0
-	for <linux-mtd@archiver.kernel.org>; Mon, 18 May 2020 17:50:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D613EC433E1
+	for <linux-mtd@archiver.kernel.org>; Mon, 18 May 2020 17:59:46 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 817E320674
-	for <linux-mtd@archiver.kernel.org>; Mon, 18 May 2020 17:50:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 68E7720835
+	for <linux-mtd@archiver.kernel.org>; Mon, 18 May 2020 17:59:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="iDiFp7aJ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="Lp1Rd+uW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 817E320674
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=crapouillou.net
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="u8nSJlKE";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=cisco.com header.i=@cisco.com header.b="TzJhRkI4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 68E7720835
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=cisco.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:To:
-	Subject:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=HYwpsh+tS1hDr/0EbDZ09xx0MtMU4rtrP5FRa5RFY6k=; b=iDiFp7aJJlTZRhL5XmVIM8EkQ
-	capkFrv70DhS/67+XnYcx/DUaeVgYcNUusNgTVyvfgb5tp29TnTtCC7zYAoIAztQj5WsAmjyM63Qs
-	Ovrt6nkp8umzfEF5EFpbwkWcfcKdz/9jQ/fszov1N0iE0PNS/jLpdBkfYBrGxMXQ3l/gOrgTBoOed
-	J9yjxKZ9Emc3PYrPepWN6ZY65rxNngyFKmVBSxyLE38PB/8Fsoxm7wCtv+1WOpHzEW22Tmm3JyNfe
-	W0dIsq9w7xhGnNPWNjXYsJQATXvvr7P38DRaOWoETj9TfYmlZE9aWzDhbuph+gY3TNI8pRV+HdwPN
-	90VbXWBxw==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=b5dCjglqd+hYGwz6VckR1rYkCSis4n9ufhi5wH5ayjc=; b=u8n
+	SJlKEyPaBA2FnZdgesbX9Vti6AUfHUd22bMtVsbqOYFBHAPB7J7qOm+fCvGdSF0oADC5p1cIwKuyS
+	qGT1RByaVZ3GP6qFZ/rNoAZGorLukXNiW4yq39JlF9FxgddprvmwTDNoGiT5qJjyl0Do9YS4F0yBS
+	tzF2J8k/1NKnrTo8+KKbEZ4oZuR2cQUUE3tEDHdVraMIz4kMlNvl4Jv13bBG/Z0PECK5WTFYlPffH
+	r6Ep1CJX+kvz8EuN1pyquRGQpEvsRyVHmSw+Cu1NnJHwRHjqEGfBx6RIZrsqQEtS5oWJ2IJIHeuXy
+	+wOtKfeQGjPG8f5GyOeLIQNANst8zVA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jajuC-0003BI-3M; Mon, 18 May 2020 17:50:24 +0000
-Received: from outils.crapouillou.net ([89.234.176.41] helo=crapouillou.net)
+	id 1jak36-0008AN-VE; Mon, 18 May 2020 17:59:36 +0000
+Received: from rcdn-iport-8.cisco.com ([173.37.86.79])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jaju8-0003Aq-QE
- for linux-mtd@lists.infradead.org; Mon, 18 May 2020 17:50:22 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
- s=mail; t=1589824215; h=from:from:sender:reply-to:subject:subject:date:date:
- message-id:message-id:to:to:cc:cc:mime-version:mime-version:
- content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=choxfgjwtTJ2J7hkuR0GL31Fmrhpxg0imC0yJxk9Svo=;
- b=Lp1Rd+uWKTTYBGH0NgRJ8zXVEq0E6+NKIT5Ubi4+F8FqHiG6OS5aE/FiTURz6Ts5g6kb/E
- 4DbYm1vqKOL4OLVjXDk0+Pumk1BgCWk4buPRKI3Ap06oUYygYUr3x6B7/pAySnxuYlYDS7
- jqRIYW3i/tGH2R34Aiv/wZ2n77l8dSM=
-Date: Mon, 18 May 2020 19:50:04 +0200
-From: Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH] mtd: rawnand: ingenic: Convert the driver to exec_op()
-To: Boris Brezillon <boris.brezillon@collabora.com>
-Message-Id: <G7GJAQ.0VIFSQUDMC9H2@crapouillou.net>
-In-Reply-To: <20200518165640.312220-1-boris.brezillon@collabora.com>
-References: <20200518165640.312220-1-boris.brezillon@collabora.com>
-MIME-Version: 1.0
+ id 1jak33-000899-JT
+ for linux-mtd@lists.infradead.org; Mon, 18 May 2020 17:59:35 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=cisco.com; i=@cisco.com; l=3585; q=dns/txt; s=iport;
+ t=1589824773; x=1591034373;
+ h=from:to:cc:subject:date:message-id;
+ bh=E6wUvoksm92tkLhsV1QtOJo4fFsp8OB5V3olcAzEjgg=;
+ b=TzJhRkI4lIwg7JrziDfi2HiOktBM6a3/Xfr7d7eF0Z7fwZIFI6DqD8V2
+ sBXIqYX34tg800wBudh6thNbpUT5SbWFeVMS2RY1XTmFBECxSzeI/lQbG
+ eCufqD9+Lea/DQWy33ToNmv0BptevGh4HKcKW+6XEk2KE2JHDy3Hb5x1Y E=;
+X-IronPort-AV: E=Sophos;i="5.73,407,1583193600"; d="scan'208";a="768458442"
+Received: from rcdn-core-10.cisco.com ([173.37.93.146])
+ by rcdn-iport-8.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA;
+ 18 May 2020 17:59:31 +0000
+Received: from zorba.cisco.com ([10.24.1.223])
+ by rcdn-core-10.cisco.com (8.15.2/8.15.2) with ESMTP id 04IHxUGK000659;
+ Mon, 18 May 2020 17:59:31 GMT
+From: Daniel Walker <danielwa@cisco.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH 1/2] mtd: spi-nor: create/Export parameter softwareseq for
+ intel-spi driver to user
+Date: Mon, 18 May 2020 10:59:29 -0700
+Message-Id: <20200518175930.10948-1-danielwa@cisco.com>
+X-Mailer: git-send-email 2.17.1
+X-Auto-Response-Suppress: DR, OOF, AutoReply
+X-Outbound-SMTP-Client: 10.24.1.223, [10.24.1.223]
+X-Outbound-Node: rcdn-core-10.cisco.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200518_105021_245931_12383E2F 
-X-CRM114-Status: GOOD (  16.49  )
+X-CRM114-CacheID: sfid-20200518_105933_719608_2D2C196A 
+X-CRM114-Status: GOOD (  13.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,250 +78,103 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+Cc: Bobby Liu <bobbliu@cisco.com>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <tudor.ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, Harvey Hunt <harveyhuntnexus@gmail.com>,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
+ Richard Weinberger <richard@nod.at>, xe-linux-external@cisco.com,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Boris,
+From: Bobby Liu <bobbliu@cisco.com>
 
-Le lun. 18 mai 2020 =E0 18:56, Boris Brezillon =
+How to use:
+append softwareseq=1 while probe the driver.
+example:
+modprobe intel-spi writeable=1 softwareseq=1
+it will let driver use software sequence to write register for opt=EN4B
+by default it's 0 if not specified, driver will do usual HW cycle
 
-<boris.brezillon@collabora.com> a =E9crit :
-> Let's convert the driver to exec_op() to have one less driver relying
-> on the legacy interface.
+Why this parameter is posted to user:
+Intel PCH provides two groups of registers for SPI flash operation,
+Hard Sequence registers and Software Sequence registers,
+corresponding to intel_spi_hw_cycle() and intel_spi_sw_cycle()
+respectively in driver code. But HW sequence register won't send EN4B
+opcode to SPI flash. BIOS code use SW register to send EN4B.
 
-Great work, thanks for that.
+On some Cisco routers, two 32M SPI flashes, which require 4-byte address mode enabled,
+are physically connected to an FPGA, one flash is active and one is inactive.
+When we do BIOS upgrade, we need switch to the inactive one,
+but unfortunately, this one is still 3-byte address mode as default,
+after we do real-time switch, we need reload SPI driver to send EN4B code to
+enable 4-byte address mode.
 
-However it does not work :( nand_scan() returns error -145.
+Refering to our BIOS code, Software sequence register is processed
+while sending EN4B opcode. So here we use sw_cycle in driver for EN4B as well.
 
-- Paul
+Why I don't just easily use software sequence for all:
+1.It will impact all flash operation, include flash W/R, high risk
+2.The only SPI type I can use is INTEL_SPI_BXT according to datasheet,
+  this will require using hw seq.
+  I tried to specify other SPI type, it couldn't work with Intel PCH.
+  If I force SW seq for all, during boot up, sw_cycle fails to read
+  vendor ID.
 
+In conclusion, I only use SW cycle for EN4B opcode to minimize impact.
+It won't impact other users as well.
 
-> Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
-> ---
->  .../mtd/nand/raw/ingenic/ingenic_nand_drv.c   | 136 =
+Why the default flash can work at 4-byte address mode:
+BIOS sets 4-byte address mode for the current active SPI flash with SW seq registers.
+So we don't need append softwareseq=1 for normal boot up script,
+it will only be used in BIOS upgrade script.
 
-> ++++++++++--------
->  1 file changed, 80 insertions(+), 56 deletions(-)
-> =
+Cc: xe-linux-external@cisco.com
+Signed-off-by: Bobby Liu <bobbliu@cisco.com>
+[ danielwa: edited the commit message a little. ]
+Signed-off-by: Daniel Walker <danielwa@cisco.com>
+---
+ drivers/mtd/spi-nor/controllers/intel-spi.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-> diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c =
-
-> b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-> index e7bd845fdbf5..dcecd54af20b 100644
-> --- a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-> +++ b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-> @@ -27,9 +27,6 @@
-> =
-
->  #define DRV_NAME	"ingenic-nand"
-> =
-
-> -/* Command delay when there is no R/B pin. */
-> -#define RB_DELAY_US	100
-> -
->  struct jz_soc_info {
->  	unsigned long data_offset;
->  	unsigned long addr_offset;
-> @@ -49,7 +46,6 @@ struct ingenic_nfc {
->  	struct nand_controller controller;
->  	unsigned int num_banks;
->  	struct list_head chips;
-> -	int selected;
->  	struct ingenic_nand_cs cs[];
->  };
-> =
-
-> @@ -142,51 +138,6 @@ static const struct mtd_ooblayout_ops =
-
-> jz4725b_ooblayout_ops =3D {
->  	.free =3D jz4725b_ooblayout_free,
->  };
-> =
-
-> -static void ingenic_nand_select_chip(struct nand_chip *chip, int =
-
-> chipnr)
-> -{
-> -	struct ingenic_nand *nand =3D to_ingenic_nand(nand_to_mtd(chip));
-> -	struct ingenic_nfc *nfc =3D to_ingenic_nfc(nand->chip.controller);
-> -	struct ingenic_nand_cs *cs;
-> -
-> -	/* Ensure the currently selected chip is deasserted. */
-> -	if (chipnr =3D=3D -1 && nfc->selected >=3D 0) {
-> -		cs =3D &nfc->cs[nfc->selected];
-> -		jz4780_nemc_assert(nfc->dev, cs->bank, false);
-> -	}
-> -
-> -	nfc->selected =3D chipnr;
-> -}
-> -
-> -static void ingenic_nand_cmd_ctrl(struct nand_chip *chip, int cmd,
-> -				  unsigned int ctrl)
-> -{
-> -	struct ingenic_nand *nand =3D to_ingenic_nand(nand_to_mtd(chip));
-> -	struct ingenic_nfc *nfc =3D to_ingenic_nfc(nand->chip.controller);
-> -	struct ingenic_nand_cs *cs;
-> -
-> -	if (WARN_ON(nfc->selected < 0))
-> -		return;
-> -
-> -	cs =3D &nfc->cs[nfc->selected];
-> -
-> -	jz4780_nemc_assert(nfc->dev, cs->bank, ctrl & NAND_NCE);
-> -
-> -	if (cmd =3D=3D NAND_CMD_NONE)
-> -		return;
-> -
-> -	if (ctrl & NAND_ALE)
-> -		writeb(cmd, cs->base + nfc->soc_info->addr_offset);
-> -	else if (ctrl & NAND_CLE)
-> -		writeb(cmd, cs->base + nfc->soc_info->cmd_offset);
-> -}
-> -
-> -static int ingenic_nand_dev_ready(struct nand_chip *chip)
-> -{
-> -	struct ingenic_nand *nand =3D to_ingenic_nand(nand_to_mtd(chip));
-> -
-> -	return !gpiod_get_value_cansleep(nand->busy_gpio);
-> -}
-> -
->  static void ingenic_nand_ecc_hwctl(struct nand_chip *chip, int mode)
->  {
->  	struct ingenic_nand *nand =3D to_ingenic_nand(nand_to_mtd(chip));
-> @@ -298,8 +249,88 @@ static int ingenic_nand_attach_chip(struct =
-
-> nand_chip *chip)
->  	return 0;
->  }
-> =
-
-> +static int ingenic_nand_exec_instr(struct nand_chip *chip,
-> +				   struct ingenic_nand_cs *cs,
-> +				   const struct nand_op_instr *instr)
-> +{
-> +	struct ingenic_nand *nand =3D to_ingenic_nand(nand_to_mtd(chip));
-> +	struct ingenic_nfc *nfc =3D to_ingenic_nfc(chip->controller);
-> +	unsigned int i;
-> +
-> +	switch (instr->type) {
-> +	case NAND_OP_CMD_INSTR:
-> +		writeb(instr->ctx.cmd.opcode,
-> +		       cs->base + nfc->soc_info->cmd_offset);
-> +		return 0;
-> +	case NAND_OP_ADDR_INSTR:
-> +		for (i =3D 0; i < instr->ctx.addr.naddrs; i++)
-> +			writeb(instr->ctx.addr.addrs[i],
-> +			       cs->base + nfc->soc_info->cmd_offset);
-> +		return 0;
-> +	case NAND_OP_DATA_IN_INSTR:
-> +		if (instr->ctx.data.force_8bit ||
-> +		    !(chip->options & NAND_BUSWIDTH_16))
-> +			ioread8_rep(cs->base + nfc->soc_info->data_offset,
-> +				    instr->ctx.data.buf.in,
-> +				    instr->ctx.data.len);
-> +		else
-> +			ioread16_rep(cs->base + nfc->soc_info->data_offset,
-> +				     instr->ctx.data.buf.in,
-> +				     instr->ctx.data.len);
-> +		return 0;
-> +	case NAND_OP_DATA_OUT_INSTR:
-> +		if (instr->ctx.data.force_8bit ||
-> +		    !(chip->options & NAND_BUSWIDTH_16))
-> +			iowrite8_rep(cs->base + nfc->soc_info->data_offset,
-> +				     instr->ctx.data.buf.out,
-> +				     instr->ctx.data.len);
-> +		else
-> +			iowrite16_rep(cs->base + nfc->soc_info->data_offset,
-> +				      instr->ctx.data.buf.out,
-> +				      instr->ctx.data.len);
-> +		return 0;
-> +	case NAND_OP_WAITRDY_INSTR:
-> +		if (!nand->busy_gpio)
-> +			return nand_soft_waitrdy(chip,
-> +						 instr->ctx.waitrdy.timeout_ms);
-> +
-> +		return nand_gpio_waitrdy(chip, nand->busy_gpio,
-> +					 instr->ctx.waitrdy.timeout_ms);
-> +	default:
-> +		break;
-> +	}
-> +
-> +	return -EINVAL;
-> +}
-> +
-> +static int ingenic_nand_exec_op(struct nand_chip *chip,
-> +				const struct nand_operation *op,
-> +				bool check_only)
-> +{
-> +	struct ingenic_nand *nand =3D to_ingenic_nand(nand_to_mtd(chip));
-> +	struct ingenic_nfc *nfc =3D to_ingenic_nfc(nand->chip.controller);
-> +	struct ingenic_nand_cs *cs;
-> +	unsigned int i;
-> +	int ret =3D 0;
-> +
-> +	if (check_only)
-> +		return 0;
-> +
-> +	cs =3D &nfc->cs[op->cs];
-> +	jz4780_nemc_assert(nfc->dev, cs->bank, true);
-> +	for (i =3D 0; i < op->ninstrs; i++) {
-> +		ret =3D ingenic_nand_exec_instr(chip, cs, &op->instrs[i]);
-> +		if (ret)
-> +			break;
-> +	}
-> +	jz4780_nemc_assert(nfc->dev, cs->bank, false);
-> +
-> +	return ret;
-> +}
-> +
->  static const struct nand_controller_ops ingenic_nand_controller_ops =
-
-> =3D {
->  	.attach_chip =3D ingenic_nand_attach_chip,
-> +	.exec_op =3D ingenic_nand_exec_op,
->  };
-> =
-
->  static int ingenic_nand_init_chip(struct platform_device *pdev,
-> @@ -339,8 +370,6 @@ static int ingenic_nand_init_chip(struct =
-
-> platform_device *pdev,
->  		ret =3D PTR_ERR(nand->busy_gpio);
->  		dev_err(dev, "failed to request busy GPIO: %d\n", ret);
->  		return ret;
-> -	} else if (nand->busy_gpio) {
-> -		nand->chip.legacy.dev_ready =3D ingenic_nand_dev_ready;
->  	}
-> =
-
->  	nand->wp_gpio =3D devm_gpiod_get_optional(dev, "wp", GPIOD_OUT_LOW);
-> @@ -359,12 +388,7 @@ static int ingenic_nand_init_chip(struct =
-
-> platform_device *pdev,
->  		return -ENOMEM;
->  	mtd->dev.parent =3D dev;
-> =
-
-> -	chip->legacy.IO_ADDR_R =3D cs->base + nfc->soc_info->data_offset;
-> -	chip->legacy.IO_ADDR_W =3D cs->base + nfc->soc_info->data_offset;
-> -	chip->legacy.chip_delay =3D RB_DELAY_US;
->  	chip->options =3D NAND_NO_SUBPAGE_WRITE;
-> -	chip->legacy.select_chip =3D ingenic_nand_select_chip;
-> -	chip->legacy.cmd_ctrl =3D ingenic_nand_cmd_ctrl;
->  	chip->ecc.mode =3D NAND_ECC_HW;
->  	chip->controller =3D &nfc->controller;
->  	nand_set_flash_node(chip, np);
-> --
-> 2.25.4
-> =
-
-
+diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
+index 61d2a0ad2131..e5a3d51a2e4d 100644
+--- a/drivers/mtd/spi-nor/controllers/intel-spi.c
++++ b/drivers/mtd/spi-nor/controllers/intel-spi.c
+@@ -163,6 +163,10 @@ static bool writeable;
+ module_param(writeable, bool, 0);
+ MODULE_PARM_DESC(writeable, "Enable write access to SPI flash chip (default=0)");
+ 
++static bool softwareseq;
++module_param(softwareseq, bool, 0);
++MODULE_PARM_DESC(softwareseq, "Use software sequence for register write (default=0)");
++
+ static void intel_spi_dump_regs(struct intel_spi *ispi)
+ {
+ 	u32 value;
+@@ -619,6 +623,18 @@ static int intel_spi_write_reg(struct spi_nor *nor, u8 opcode, const u8 *buf,
+ 	if (ret)
+ 		return ret;
+ 
++	/*
++	 * Intel Skylake will not send EN4B to SPI flash if we use HW sequence
++	 * Here export one interface "softwareseq" to OS,
++	 * let driver user decide if use SW sequence or not
++	 */
++	if (opcode == SPINOR_OP_EN4B && softwareseq) {
++	    dev_info(ispi->dev,
++		"Write register opcode is SPINOR_OP_EN4B, do SW cycle\n");
++	    return intel_spi_sw_cycle(ispi, opcode, len,
++		OPTYPE_WRITE_NO_ADDR);
++	}
++
+ 	if (ispi->swseq_reg)
+ 		return intel_spi_sw_cycle(ispi, opcode, len,
+ 					  OPTYPE_WRITE_NO_ADDR);
+-- 
+2.17.1
 
 
 ______________________________________________________
