@@ -2,90 +2,94 @@ Return-Path: <SRS0=rUMq=7A=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2424AC433DF
-	for <linux-mtd@archiver.kernel.org>; Mon, 18 May 2020 20:31:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BC47C433E0
+	for <linux-mtd@archiver.kernel.org>; Mon, 18 May 2020 20:33:38 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EAC6820829
-	for <linux-mtd@archiver.kernel.org>; Mon, 18 May 2020 20:31:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5E96920829
+	for <linux-mtd@archiver.kernel.org>; Mon, 18 May 2020 20:33:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Z+DXaeR2";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="S/V2meIH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EAC6820829
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="o/E6Gnb2";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="Z9kyWJ0b"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E96920829
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:To:Subject
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=iLVf/r3yc3MlvYP3XjrC8tIc38QeX7pr9Fw3sVg+79U=; b=Z+DXaeR20uWZ1I
-	QZcRu8G2tCg8O89kLAJw0UqTOA9MIlNpUOhoq6kj+y30wD9jk/aMzyVC8Lj+fdbSF1fbQSNs5OCff
-	3RvRV2tWoh1ta0PsUepEiVl6yyBS76crZePy8OIbsrDi9juL9bsUuA9Yo42jCllrLxcw684z5hQqy
-	qg2niHLHdL3e8fz60qFx6YpFIx9nEmXXS4oHr/NBwzifVEsW8YEAET/90mmXfgfI1vhUTkCmuBVHM
-	PxiDeFneXPzWvwtwK+5NmYEnQimVtQMRs5qB8fzGEpQePsHB7r2Ulmr65a68eeSpbv+kRgTpooj5U
-	PT3xdFVaV2vWOvEqrjKg==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:References:To:From:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=GZrMB3WtRzZLRVHPmyX3XTEuDXTZyKvnYByI1gssrrY=; b=o/E6Gnb2l6rj0K
+	AAH0uOr3iNk/rCxEqiFr7LxV4fS8EB88MweNXzwkt7C5MhCl0p827qcIxh6vC+NF+8vcLgU4yuIsR
+	TGTLShwjLwzHn8OpMVbubMImJHN2DbTxLDz39KCIg3FtXybLnvOMpTUIU/T87c7myNdfRUdIQMcCM
+	mqJgwhyZ3HZShyiwtadIhOweSDSvD0xjwm9OgwQt2s3PmPrQz/OIgCYSqqbYw9CXjZ+BedmFI7bCk
+	zjcf4REU0HweSYbcUbH9OEzN9qnF4HeT523gVoar6Z9PLW1djk5r7KsVK+zMpe3Wd3R59CfTXjJuW
+	GuZUVj2W02oYXSwQnlIw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jamQX-0006Yy-MB; Mon, 18 May 2020 20:31:57 +0000
-Received: from mail-lf1-x133.google.com ([2a00:1450:4864:20::133])
+	id 1jamRv-0006rV-Pk; Mon, 18 May 2020 20:33:23 +0000
+Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jamQV-0006Ya-8f
- for linux-mtd@lists.infradead.org; Mon, 18 May 2020 20:31:56 +0000
-Received: by mail-lf1-x133.google.com with SMTP id a4so9245410lfh.12
- for <linux-mtd@lists.infradead.org>; Mon, 18 May 2020 13:31:54 -0700 (PDT)
+ id 1jamRr-0006qZ-06
+ for linux-mtd@lists.infradead.org; Mon, 18 May 2020 20:33:22 +0000
+Received: by mail-lj1-x244.google.com with SMTP id b6so11336491ljj.1
+ for <linux-mtd@lists.infradead.org>; Mon, 18 May 2020 13:33:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
- h=from:subject:to:cc:organization:message-id:date:user-agent
- :mime-version:content-language:content-transfer-encoding;
- bh=BmSBD7h3njitpLi5QsmTDnHJWiGkucDb02pMa3UrBRI=;
- b=S/V2meIHX6iNtfRVQH6gN/h2Lyp5uwDpI0DvK0EGXJdBE8jiAkFT97P5mkXdh2m3qW
- ubkAh6O+D9ZIP0TmMu3wEF23N+L0d1FbplsFxsXfmJkWqBx/FecsnSOhqcbJSZalCmSX
- ab2E8KVO0NHXnv45BislI93lru50zeVPdIXNKU8o7U2BmVysz3A37I1k07XWaEjHG9tt
- QCNMsjiHo9N9IDnZAKrkwUP4eE2k4MJ0+/P7m2/02hKLGgbf1HVZsvZVfuDJpKcGOkeU
- V3Sm5fQgFuy8ce7soIHMMb1eQvOblNhAIkIaWlcnoPIUqVXoXZ0WnYTvkon9naCb3Zky
- fmmw==
+ h=subject:from:to:cc:references:organization:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=liHKqxPDfHVVAMe49jNM18y8LkLl/eTVodLyOf08iew=;
+ b=Z9kyWJ0bCSMgkNVQNprs0p9ElBUZMWunXXKovi1gCeePt63EGFWNOTIXJNiK7RxICM
+ pYnXnqFK6CCyk7o8AgTlQr2X866t+Cb6InifE37VtBOmN9CWjjJ1uAfEiveCErasJyXc
+ KDlmX2WTwI0FXaadpDBfy/v759Oo/Ya2xcUs34N/Nj84R/zYQFXEP/bwJAiL4Qwt82gL
+ rFjKt6XPCaYRb5LR8Ng1T5c4uEsKgxbl/5Au5rHAwQGt5CBhJOpM+tg2FE+cshWVl3/R
+ WdVSSHY4q4XwdCnIr2VVD1aXsfqS+CZcEqPCRXISnKU0ojZH6QRH/YALN6/9kVZfM/RB
+ D4OQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:subject:to:cc:organization:message-id:date
- :user-agent:mime-version:content-language:content-transfer-encoding;
- bh=BmSBD7h3njitpLi5QsmTDnHJWiGkucDb02pMa3UrBRI=;
- b=Xi+pp4UJ2zh7k3EUc5KgBdbk4MTXypupSjEXTAoeWmus3H0o2Si0xWqSv88Ov5fozX
- TKQur4CKarx955YdktCayM0obBDrRWLze0Yo/Ad0vTHTdpdRlK3pyh22ZG63P6Sqj7wR
- GIzoVciobDSYFrA+pxr3IFGZk7nOgAp8f/lqWwjka9Gh11rQiLTLsE0y7YyOz15ViHK7
- /i+0rNgXzy2dMubR3pbeaqA8/gzdsOL6+j0O1+I/g7zcQc4kXxQcAGOZ6BhZcQsC3vbU
- d3nwecAiuJbP7o/L6/ZHeGfJhQWgDtazpJNAb1DREpiln7etyLj57aRaETJoNPb9a4p9
- Rsgg==
-X-Gm-Message-State: AOAM531EB6tM4bzsEL3dmhouLqcI9bhxrgWupvfVCdK30ZRf06HJIcb8
- L729Chj87Fq5euFxBXKYb93kv/URL54=
-X-Google-Smtp-Source: ABdhPJwbeRgWCUksn3Rp9PyliuSUUrgdtDgGrHAVgDph+uCNv8e0tKIc/Q6nrbUUHFC0gCY5cMqmTg==
-X-Received: by 2002:a19:990:: with SMTP id 138mr7817351lfj.135.1589833912488; 
- Mon, 18 May 2020 13:31:52 -0700 (PDT)
+ h=x-gm-message-state:subject:from:to:cc:references:organization
+ :message-id:date:user-agent:mime-version:in-reply-to
+ :content-language:content-transfer-encoding;
+ bh=liHKqxPDfHVVAMe49jNM18y8LkLl/eTVodLyOf08iew=;
+ b=cVfIS+P3XGMp+nzbna50m3A0A9UiFD29s6Lmb6vgQq6JTmGSoZeOXrwdiCl65RkMcT
+ +xTYB1/bLxlSKYtp2st0ikAd7/T5UYHg3f+VwS1RNaWlMxvHf4IhEC92KymgBaQ7QVaY
+ /EV49iGL74CJ07ZudJ8qetR1gr+5+IwTmbj5+dStj7O6y6GkvkSkYWMOcAsKJWDgyaqy
+ /UGJGhuLhYJlp+jHgS0OfXqsB+MhJwGpOgJNKNOwihEY3JoMmJNGFYESpjU85jYG4eyj
+ Jb+IMhPPyyAEhoJPsdD6iPqRTT8lpxffsObeQgeZAOSR403Oarcsn/7+DFZdkpXIpV5h
+ qSVg==
+X-Gm-Message-State: AOAM532gOvACL5TnDG1Gl0rSNht16WbDP3wzuJTOf+6p0Lcrmbx98xQE
+ Lk57czFGkEULhXiTDtpjHh42R8bjNGQ=
+X-Google-Smtp-Source: ABdhPJygyemdqFQlq/o6Y01iMbh3GsruajVNklcTckAaeWeAzQSjVCpFhoglBRdLyzrg1ftL9kUoEQ==
+X-Received: by 2002:a2e:1451:: with SMTP id 17mr10680226lju.30.1589833996859; 
+ Mon, 18 May 2020 13:33:16 -0700 (PDT)
 Received: from wasted.cogentembedded.com
  ([2a00:1fa0:4650:c10:49f1:792f:a411:29a7])
- by smtp.gmail.com with ESMTPSA id z17sm7136988ljc.81.2020.05.18.13.31.51
+ by smtp.gmail.com with ESMTPSA id d8sm7514470lfl.51.2020.05.18.13.33.15
  (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Mon, 18 May 2020 13:31:51 -0700 (PDT)
+ Mon, 18 May 2020 13:33:16 -0700 (PDT)
+Subject: [PATCH v3 1/2] dt-bindings: memory: document Renesas RPC-IF bindings
 From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: [PATCH v3 0/2] Add Renesas RPC-IF support
 To: Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+References: <26faf5e8-26eb-cceb-a500-f0fd64609737@cogentembedded.com>
 Organization: Cogent Embedded
-Message-ID: <26faf5e8-26eb-cceb-a500-f0fd64609737@cogentembedded.com>
-Date: Mon, 18 May 2020 23:31:50 +0300
+Message-ID: <f998fe6c-c586-17cb-9343-30460ce0bf9d@cogentembedded.com>
+Date: Mon, 18 May 2020 23:33:15 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
  Thunderbird/52.2.1
 MIME-Version: 1.0
+In-Reply-To: <26faf5e8-26eb-cceb-a500-f0fd64609737@cogentembedded.com>
 Content-Language: en-MW
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200518_133155_453201_07152172 
-X-CRM114-Status: UNSURE (   9.66  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200518_133319_042330_6BC0D6F4 
+X-CRM114-Status: GOOD (  15.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,22 +110,123 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello!
+Renesas Reduced Pin Count Interface (RPC-IF) allows a SPI flash or
+HyperFlash connected to the SoC to be accessed via the external address
+space read mode or the manual mode.
 
-Here's a set of 2 patches against Linus' repo. Renesas Reduced Pin Count
-Interface (RPC-IF) allows a SPI flash or HyperFlash connected to the SoC
-to be accessed via the external address space read mode or the manual mode.
-The memory controller driver for RPC-IF registers either SPI or HyperFLash
-subdevice, depending on the contents of the device tree subnode; it also
-provides the abstract "back end" API that can be used by the "front end"
-SPI/MTD drivers to talk to the real hardware...
+Document the device tree bindings for the Renesas RPC-IF found in the R-Car
+gen3 SoCs.
 
 Based on the original patch by Mason Yang <masonccyang@mxic.com.tw>.
 
-[1/2] dt-bindings: memory: document Renesas RPC-IF bindings
-[2/2] memory: add Renesas RPC-IF driver
+Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
 
-MBR, Sergei
+---
+Changes in version 3:
+- fixed up the whitespace and added hyphens in the "compatible" prop text, also
+  removed the comments;
+- specified the subnode name as "flash", and used "enum" in the subnode text; 
+- fixed up the SPDX-License-Identifier: tag.
+
+Changes in version 2:
+- rewrote the bindings in YAML.
+
+ Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml |   88 ++++++++++
+ 1 file changed, 88 insertions(+)
+
+Index: linux/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml
+===================================================================
+--- /dev/null
++++ linux/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml
+@@ -0,0 +1,88 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/memory-controllers/renesas,rpc-if.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Renesas Reduced Pin Count Interface (RPC-IF)
++
++maintainers:
++  - Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
++
++description: |
++  Renesas RPC-IF allows a SPI flash or HyperFlash connected to the SoC to
++  be accessed via the external address space read mode or the manual mode.
++
++  The flash chip itself should be represented by a subnode of the RPC-IF node.
++  The flash interface is selected based on the "compatible" property of this
++  subnode:
++  - if it contains "jedec,spi-nor", then SPI is used;
++  - if it contains "cfi-flash", then HyperFlash is used.
++
++allOf:
++  - $ref: "/schemas/spi/spi-controller.yaml#"
++
++properties:
++  compatible:
++    items:
++      - enum:
++        - renesas,r8a77980-rpc-if
++        - renesas,r8a77995-rpc-if
++      - enum:
++        - renesas,rcar-gen3-rpc-if # a generic R-Car gen3 device
++
++  reg:
++    items:
++      - description: RPC-IF registers
++      - description: direct mapping read mode area
++      - description: write buffer area
++
++  reg-names:
++    items:
++      - const: regs
++      - const: dirmap
++      - const: wbuf
++
++  clocks:
++    maxItems: 1
++
++  power-domains:
++    maxItems: 1
++
++  resets:
++    maxItems: 1
++
++patternProperties:
++  "flash@[0-9a-f]+$":
++    type: object
++    properties:
++      compatible:
++        - enum:
++          - cfi-flash
++          - jedec,spi-nor
++
++examples:
++  - |
++    #include <dt-bindings/clock/renesas-cpg-mssr.h>
++    #include <dt-bindings/power/r8a77995-sysc.h>
++
++    spi@ee200000 {
++      compatible = "renesas,r8a77995-rpc-if", "renesas,rcar-gen3-rpc-if";
++      reg = <0 0xee200000 0 0x200>,
++            <0 0x08000000 0 0x4000000>,
++            <0 0xee208000 0 0x100>;
++      reg-names = "regs", "dirmap", "wbuf";
++      clocks = <&cpg CPG_MOD 917>;
++      power-domains = <&sysc R8A77995_PD_ALWAYS_ON>;
++      resets = <&cpg 917>;
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      flash@0 {
++        compatible = "jedec,spi-nor";
++        reg = <0>;
++        spi-max-frequency = <40000000>;
++        spi-tx-bus-width = <1>;
++        spi-rx-bus-width = <1>;
++      };
++    };
 
 ______________________________________________________
 Linux MTD discussion mailing list
