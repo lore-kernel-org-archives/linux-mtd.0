@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3FF9C433E0
-	for <linux-mtd@archiver.kernel.org>; Mon, 18 May 2020 16:30:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7F49C433E0
+	for <linux-mtd@archiver.kernel.org>; Mon, 18 May 2020 16:31:19 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5756A20709
-	for <linux-mtd@archiver.kernel.org>; Mon, 18 May 2020 16:30:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6C58120709
+	for <linux-mtd@archiver.kernel.org>; Mon, 18 May 2020 16:31:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tiCEWpC7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5756A20709
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KpbCnpjR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C58120709
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,41 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gZGoODk14ADa+Q7CCwmI4oPxhb7Y4AGIqiFh+VOsJOw=; b=tiCEWpC7qMAOXP
-	d4fZfeY/EsSAr8/qatU5Xvp7B8Lwb7jJ49mGYRVlHRqOvtXovITFt/A4q4CNexNlcU3bwgaho/qNm
-	4CVDUcIli/gqNFzkEwtt/COYww3IjAxDs6Riueo4J5cLFHGknd//vJJXNqOVE/KsO68RURy0xaGyy
-	PBC2t9TyICtCfKMnGCkJn83aG8QHPwGHN9Yu3LXP2lzSIwgas5MTK5QqLSrqnJILFADkBFJmENv5B
-	akIXf0xhIroS4aWOOV2k93l9AXJOyKLj4ITYIFVyayxqXA+z+QsbE32Vb6V2vFyt0eKt3wAeSooW2
-	lhtY66G7fuyzesXB91qQ==;
+	List-Owner; bh=GRhko5HwdZjjkeploFdSxcW7Mim7+Nx50xdIVKgUPuk=; b=KpbCnpjR1ybd9E
+	YmaBlQSqWhFyaSSnLyBFnPVmX4TPvC3FbWT8MwM25wkoNsAlkg8cMAZzsKSbfxD8yz4kep1xFwZnO
+	b4MXLtBbREgxvmtwFSwGwbRrR0Q1jlzBV9kSa4NeCktOSpLLnKKx0/JjIdc/bk9aQv4LMU/jR63+P
+	5SPiiywczt2REuMwCKjgsUKIZkAxV3+pMme7Nc+lWWE1xIz18pb1LnUtal0x6BzE1WXLXL3kzdvGJ
+	3BeOlxmvnJ2OL72QKGJ6HlkN8PRLglzVvUlRxTTB9utEprcAydilhX9pOBYlS5G0pcpr2428A3woB
+	RwymrmhAZq9OKlMfwaIg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jaif3-0001vI-0J; Mon, 18 May 2020 16:30:41 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1jaifL-0002A0-Vx; Mon, 18 May 2020 16:31:00 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jaidB-0006I5-Jz
- for linux-mtd@lists.infradead.org; Mon, 18 May 2020 16:28:48 +0000
+ id 1jaidB-0006I8-Lp
+ for linux-mtd@lists.infradead.org; Mon, 18 May 2020 16:28:49 +0000
 Received: from localhost.localdomain (unknown
  [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 131EB2A0B14;
- Mon, 18 May 2020 17:28:43 +0100 (BST)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 0C0CC2A0F0D;
+ Mon, 18 May 2020 17:28:44 +0100 (BST)
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
  Hauke Mehrtens <hauke@hauke-m.de>,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
  linux-mips@vger.kernel.org
-Subject: [PATCH v2 5/8] mtd: rawnand: bcm47xx: Implement the exec_op()
- interface
-Date: Mon, 18 May 2020 18:28:34 +0200
-Message-Id: <20200518162837.304471-6-boris.brezillon@collabora.com>
+Subject: [PATCH v2 8/8] mtd: rawnand: bcm47xx: Merge all source files
+Date: Mon, 18 May 2020 18:28:37 +0200
+Message-Id: <20200518162837.304471-9-boris.brezillon@collabora.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20200518162837.304471-1-boris.brezillon@collabora.com>
 References: <20200518162837.304471-1-boris.brezillon@collabora.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200518_092845_932373_77854759 
-X-CRM114-Status: GOOD (  18.49  )
+X-CRM114-CacheID: sfid-20200518_092846_024287_42268245 
+X-CRM114-Status: GOOD (  19.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,203 +74,148 @@ Cc: Richard Weinberger <richard@nod.at>,
  Boris Brezillon <boris.brezillon@collabora.com>,
  Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <tudor.ambarus@microchip.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Implement the exec_op() interface so we can get rid of the convoluted
-cmdfunc() implementation.
-
-Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
----
-This is based on my understanding of how this controller works, and I
-think it covers all the use cases covered by the custom cmdfunc()
-implementation. I might be wrong of course, so it'd be great to have
-someone test on real HW.
-
-Changes in v2:
- * s/i/j/ in exec_cmd_addr()
- * Drop WARN_ON()s
----
- .../nand/raw/bcm47xxnflash/bcm47xxnflash.h    |   1 +
- .../mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c  | 140 ++++++++++++++++++
- 2 files changed, 141 insertions(+)
-
-diff --git a/drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.h b/drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.h
-index 201b9baa52a0..00d0974b73cb 100644
---- a/drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.h
-+++ b/drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.h
-@@ -10,6 +10,7 @@
- #include <linux/mtd/rawnand.h>
- 
- struct bcm47xxnflash {
-+	struct nand_controller base;
- 	struct bcma_drv_cc *cc;
- 
- 	struct nand_chip nand_chip;
-diff --git a/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
-index 543fcff6e4d2..edf0c3d7b561 100644
---- a/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
-+++ b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
-@@ -382,6 +382,143 @@ static void bcm47xxnflash_ops_bcm4706_write_buf(struct nand_chip *nand_chip,
- 	pr_err("Invalid command for buf write: 0x%X\n", b47n->curr_command);
- }
- 
-+static int
-+bcm47xxnflash_ops_bcm4706_exec_cmd_addr(struct nand_chip *chip,
-+					const struct nand_subop *subop)
-+{
-+	struct bcm47xxnflash *b47n = nand_get_controller_data(chip);
-+	u32 nctl = 0, col = 0, row = 0, ncols = 0, nrows = 0;
-+	unsigned int i, j;
-+
-+	for (i = 0; i < subop->ninstrs; i++) {
-+		const struct nand_op_instr *instr = &subop->instrs[i];
-+
-+		switch (instr->type) {
-+		case NAND_OP_CMD_INSTR:
-+			if (WARN_ON_ONCE((nctl & NCTL_CMD0) &&
-+					 (nctl & NCTL_CMD1W)))
-+				return -EINVAL;
-+			else if (nctl & NCTL_CMD0)
-+				nctl |= NCTL_CMD1W |
-+					((u32)instr->ctx.cmd.opcode << 8);
-+			else
-+				nctl |= NCTL_CMD0 | instr->ctx.cmd.opcode;
-+			break;
-+		case NAND_OP_ADDR_INSTR:
-+			for (j = 0; j < instr->ctx.addr.naddrs; j++) {
-+				u32 addr = instr->ctx.addr.addrs[j];
-+
-+				if (j < 2) {
-+					col |= addr << (j * 8);
-+					nctl |= NCTL_COL;
-+					ncols++;
-+				} else {
-+					row |= addr << ((j - 2) * 8);
-+					nctl |= NCTL_ROW;
-+					nrows++;
-+				}
-+			}
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
-+	}
-+
-+	/* Keep the CS line asserted if there's something else to execute. */
-+	if (!subop->is_last)
-+		nctl |= NCTL_CSA;
-+
-+	bcma_cc_write32(b47n->cc, BCMA_CC_NFLASH_CONF,
-+			CONF_MAGIC_BIT |
-+			CONF_COL_BYTES(ncols) |
-+			CONF_ROW_BYTES(nrows));
-+	return bcm47xxnflash_ops_bcm4706_ctl_cmd(b47n->cc, nctl);
-+}
-+
-+static int
-+bcm47xxnflash_ops_bcm4706_exec_waitrdy(struct nand_chip *chip,
-+				       const struct nand_subop *subop)
-+{
-+	struct bcm47xxnflash *b47n = nand_get_controller_data(chip);
-+	const struct nand_op_instr *instr = &subop->instrs[0];
-+	unsigned long timeout_jiffies = jiffies;
-+
-+	timeout_jiffies += msecs_to_jiffies(instr->ctx.waitrdy.timeout_ms) + 1;
-+	do {
-+		if (bcma_cc_read32(b47n->cc, BCMA_CC_NFLASH_CTL) & NCTL_READY)
-+			return 0;
-+
-+		usleep_range(10, 100);
-+	} while (time_before(jiffies, timeout_jiffies));
-+
-+	return -ETIMEDOUT;
-+}
-+
-+static int
-+bcm47xxnflash_ops_bcm4706_exec_rw(struct nand_chip *chip,
-+				  const struct nand_subop *subop)
-+{
-+	struct bcm47xxnflash *b47n = nand_get_controller_data(chip);
-+	const struct nand_op_instr *instr = &subop->instrs[0];
-+	unsigned int i;
-+	int ret;
-+
-+	for (i = 0; i < instr->ctx.data.len; i += 4) {
-+		unsigned int nbytes = min_t(unsigned int,
-+					    instr->ctx.data.len - i, 4);
-+		u32 nctl, data;
-+
-+		nctl = NCTL_CSA | NCTL_DATA_CYCLES(nbytes);
-+		if (instr->type == NAND_OP_DATA_IN_INSTR) {
-+			nctl |= NCTL_READ;
-+		} else {
-+			nctl |= NCTL_WRITE;
-+			memcpy(&data, instr->ctx.data.buf.in + i, nbytes);
-+			bcma_cc_write32(b47n->cc, BCMA_CC_NFLASH_DATA, data);
-+		}
-+
-+		if (i + nbytes < instr->ctx.data.len)
-+			nctl |= NCTL_CSA;
-+
-+		ret = bcm47xxnflash_ops_bcm4706_ctl_cmd(b47n->cc, nctl);
-+		if (ret)
-+			return ret;
-+
-+		if (instr->type == NAND_OP_DATA_IN_INSTR) {
-+			data = bcma_cc_read32(b47n->cc, BCMA_CC_NFLASH_DATA);
-+			memcpy(instr->ctx.data.buf.in + i, &data, nbytes);
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct nand_op_parser bcm47xxnflash_op_parser = NAND_OP_PARSER(
-+	NAND_OP_PARSER_PATTERN(bcm47xxnflash_ops_bcm4706_exec_cmd_addr,
-+			       NAND_OP_PARSER_PAT_CMD_ELEM(true),
-+			       NAND_OP_PARSER_PAT_ADDR_ELEM(true, 5),
-+			       NAND_OP_PARSER_PAT_CMD_ELEM(true)),
-+	NAND_OP_PARSER_PATTERN(bcm47xxnflash_ops_bcm4706_exec_waitrdy,
-+			       NAND_OP_PARSER_PAT_WAITRDY_ELEM(false)),
-+	NAND_OP_PARSER_PATTERN(bcm47xxnflash_ops_bcm4706_exec_rw,
-+			       NAND_OP_PARSER_PAT_DATA_IN_ELEM(false, 0x200)),
-+	NAND_OP_PARSER_PATTERN(bcm47xxnflash_ops_bcm4706_exec_rw,
-+			       NAND_OP_PARSER_PAT_DATA_OUT_ELEM(false, 0x200)),
-+);
-+
-+static int
-+bcm47xxnflash_ops_bcm4706_exec_op(struct nand_chip *chip,
-+				  const struct nand_operation *op,
-+				  bool check_only)
-+{
-+	return nand_op_parser_exec_op(chip, &bcm47xxnflash_op_parser, op,
-+				      check_only);
-+}
-+
-+static const struct nand_controller_ops bcm47xxnflash_ops = {
-+	.exec_op = bcm47xxnflash_ops_bcm4706_exec_op,
-+};
-+
- /**************************************************
-  * Init
-  **************************************************/
-@@ -398,6 +535,9 @@ int bcm47xxnflash_ops_bcm4706_init(struct bcm47xxnflash *b47n)
- 	u8 tbits, col_bits, col_size, row_bits, row_bsize;
- 	u32 val;
- 
-+	nand_controller_init(&b47n->base);
-+	b47n->base.ops = &bcm47xxnflash_ops;
-+	b47n->nand_chip.controller = &b47n->base;
- 	nand_chip->legacy.select_chip = bcm47xxnflash_ops_bcm4706_select_chip;
- 	nand_chip->legacy.cmd_ctrl = bcm47xxnflash_ops_bcm4706_cmd_ctrl;
- 	nand_chip->legacy.dev_ready = bcm47xxnflash_ops_bcm4706_dev_ready;
--- 
-2.25.4
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+R2l2ZW4gdGhlIG51bWJlciBvZiBsaW5lcyBpdCBkb2Vzbid0IG1ha2Ugc2Vuc2UgdG8gc3BsaXQg
+dGhlIGNvZGUuCkxldCdzIG1lcmdlIGV2ZXJ5dGhpbmcgYW5kIG1vdmUgdGhlIGRyaXZlciB0byBk
+cml2ZXJzL210ZC9uYW5kL3Jhdy4KClNpZ25lZC1vZmYtYnk6IEJvcmlzIEJyZXppbGxvbiA8Ym9y
+aXMuYnJlemlsbG9uQGNvbGxhYm9yYS5jb20+Ci0tLQpDaGFuZ2VzIGluIHYyOgoqIEZpeCB0aGUg
+TWFrZWZpbGUgZW50cnkKKiBNZXJnZSBjb21taXRzIGRvaW5nIHRoZSBzb3VyY2UgbWVyZ2UgYW5k
+IHRoZSBmaWxlIG1vdmUKKiBSZW5hbWUgdGhlIGRyaXZlciBiY200N3h4LW5hbmQtY29udHJvbGxl
+cgotLS0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L01ha2VmaWxlICAgICAgICAgICAgICAgICB8ICAy
+ICstCiAuLi5wc19iY200NzA2LmMgPT4gYmNtNDd4eC1uYW5kLWNvbnRyb2xsZXIuY30gfCA4MSAr
+KysrKysrKysrKysrKysrKystCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9iY200N3h4bmZsYXNoL01h
+a2VmaWxlICAgfCAgNSAtLQogLi4uL25hbmQvcmF3L2JjbTQ3eHhuZmxhc2gvYmNtNDd4eG5mbGFz
+aC5oICAgIHwgMjEgLS0tLS0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L2JjbTQ3eHhuZmxhc2gvbWFp
+bi5jICAgICB8IDc3IC0tLS0tLS0tLS0tLS0tLS0tLQogNSBmaWxlcyBjaGFuZ2VkLCA3OSBpbnNl
+cnRpb25zKCspLCAxMDcgZGVsZXRpb25zKC0pCiByZW5hbWUgZHJpdmVycy9tdGQvbmFuZC9yYXcv
+e2JjbTQ3eHhuZmxhc2gvb3BzX2JjbTQ3MDYuYyA9PiBiY200N3h4LW5hbmQtY29udHJvbGxlci5j
+fSAoODElKQogZGVsZXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvbXRkL25hbmQvcmF3L2JjbTQ3eHhu
+Zmxhc2gvTWFrZWZpbGUKIGRlbGV0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL210ZC9uYW5kL3Jhdy9i
+Y200N3h4bmZsYXNoL2JjbTQ3eHhuZmxhc2guaAogZGVsZXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMv
+bXRkL25hbmQvcmF3L2JjbTQ3eHhuZmxhc2gvbWFpbi5jCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9t
+dGQvbmFuZC9yYXcvTWFrZWZpbGUgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9NYWtlZmlsZQppbmRl
+eCAyZDEzNmIxNThmYjcuLjg1NDEwNzM2NTc3NCAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvbmFu
+ZC9yYXcvTWFrZWZpbGUKKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvTWFrZWZpbGUKQEAgLTQ3
+LDcgKzQ3LDcgQEAgb2JqLSQoQ09ORklHX01URF9OQU5EX1JJQ09IKQkJKz0gcjg1Mi5vCiBvYmot
+eQkJCQkJKz0gaW5nZW5pYy8KIG9iai0kKENPTkZJR19NVERfTkFORF9HUE1JX05BTkQpCSs9IGdw
+bWktbmFuZC8KIG9iai0kKENPTkZJR19NVERfTkFORF9YV0FZKQkJKz0geHdheV9uYW5kLm8KLW9i
+ai0kKENPTkZJR19NVERfTkFORF9CQ000N1hYTkZMQVNIKQkrPSBiY200N3h4bmZsYXNoLworb2Jq
+LSQoQ09ORklHX01URF9OQU5EX0JDTTQ3WFhORkxBU0gpCSs9IGJjbTQ3eHgtbmFuZC1jb250cm9s
+bGVyLm8KIG9iai0kKENPTkZJR19NVERfTkFORF9TVU5YSSkJCSs9IHN1bnhpX25hbmQubwogb2Jq
+LSQoQ09ORklHX01URF9OQU5EX0hJU0k1MDQpCSAgICAgICAgKz0gaGlzaTUwNF9uYW5kLm8KIG9i
+ai0kKENPTkZJR19NVERfTkFORF9CUkNNTkFORCkJCSs9IGJyY21uYW5kLwpkaWZmIC0tZ2l0IGEv
+ZHJpdmVycy9tdGQvbmFuZC9yYXcvYmNtNDd4eG5mbGFzaC9vcHNfYmNtNDcwNi5jIGIvZHJpdmVy
+cy9tdGQvbmFuZC9yYXcvYmNtNDd4eC1uYW5kLWNvbnRyb2xsZXIuYwpzaW1pbGFyaXR5IGluZGV4
+IDgxJQpyZW5hbWUgZnJvbSBkcml2ZXJzL210ZC9uYW5kL3Jhdy9iY200N3h4bmZsYXNoL29wc19i
+Y200NzA2LmMKcmVuYW1lIHRvIGRyaXZlcnMvbXRkL25hbmQvcmF3L2JjbTQ3eHgtbmFuZC1jb250
+cm9sbGVyLmMKaW5kZXggZTM0YTEzYjdmOTE5Li5mZjhiODZhOGU5MjMgMTAwNjQ0Ci0tLSBhL2Ry
+aXZlcnMvbXRkL25hbmQvcmF3L2JjbTQ3eHhuZmxhc2gvb3BzX2JjbTQ3MDYuYworKysgYi9kcml2
+ZXJzL210ZC9uYW5kL3Jhdy9iY200N3h4LW5hbmQtY29udHJvbGxlci5jCkBAIC01LDEzICs1LDE0
+IEBACiAgKiBDb3B5cmlnaHQgKEMpIDIwMTIgUmFmYcWCIE1pxYJlY2tpIDx6YWplYzVAZ21haWwu
+Y29tPgogICovCiAKLSNpbmNsdWRlICJiY200N3h4bmZsYXNoLmgiCi0KKyNpbmNsdWRlIDxsaW51
+eC9kZWxheS5oPgogI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPgogI2luY2x1ZGUgPGxpbnV4L2tl
+cm5lbC5oPgogI2luY2x1ZGUgPGxpbnV4L3NsYWIuaD4KLSNpbmNsdWRlIDxsaW51eC9kZWxheS5o
+PgorI2luY2x1ZGUgPGxpbnV4L3BsYXRmb3JtX2RldmljZS5oPgogI2luY2x1ZGUgPGxpbnV4L2Jj
+bWEvYmNtYS5oPgorI2luY2x1ZGUgPGxpbnV4L210ZC9tdGQuaD4KKyNpbmNsdWRlIDxsaW51eC9t
+dGQvcmF3bmFuZC5oPgogCiAvKiBCcm9hZGNvbSB1c2VzIDEnMDAwJzAwMCBidXQgaXQgc2VlbXMg
+dG8gYmUgdG9vIG1hbnkuIFRlc3RzIG9uIFdORFI0NTAwIGhhcwogICogc2hvd24gfjEwMDAgcmV0
+cmllcyBhcyBtYXhpdW11bS4gKi8KQEAgLTQ4LDYgKzQ5LDE3IEBACiAjZGVmaW5lIENPTkZfQ09M
+X0JZVEVTKHgpCQkoKCh4KSAtIDEpIDw8IDQpCiAjZGVmaW5lIENPTkZfUk9XX0JZVEVTKHgpCQko
+KCh4KSAtIDEpIDw8IDYpCiAKKyNpZm5kZWYgcHJfZm10CisjZGVmaW5lIHByX2ZtdChmbXQpCQlL
+QlVJTERfTU9ETkFNRSAiOiAiIGZtdAorI2VuZGlmCisKK3N0cnVjdCBiY200N3h4bmZsYXNoIHsK
+KwlzdHJ1Y3QgbmFuZF9jb250cm9sbGVyIGJhc2U7CisJc3RydWN0IGJjbWFfZHJ2X2NjICpjYzsK
+KworCXN0cnVjdCBuYW5kX2NoaXAgbmFuZF9jaGlwOworfTsKKwogLyoqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCiAgKiBWYXJpb3VzIGhlbHBlcnMKICAq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKi8KQEAgLTI2
+NiwzICsyNzgsNjYgQEAgaW50IGJjbTQ3eHhuZmxhc2hfb3BzX2JjbTQ3MDZfaW5pdChzdHJ1Y3Qg
+YmNtNDd4eG5mbGFzaCAqYjQ3bikKIAogCXJldHVybiBlcnI7CiB9CisKK3N0YXRpYyBjb25zdCBj
+aGFyICpwcm9iZXNbXSA9IHsgImJjbTQ3eHhwYXJ0IiwgTlVMTCB9OworCitzdGF0aWMgaW50IGJj
+bTQ3eHhuZmxhc2hfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKK3sKKwlzdHJ1
+Y3QgYmNtYV9uZmxhc2ggKm5mbGFzaCA9IGRldl9nZXRfcGxhdGRhdGEoJnBkZXYtPmRldik7CisJ
+c3RydWN0IGJjbTQ3eHhuZmxhc2ggKmI0N247CisJc3RydWN0IG10ZF9pbmZvICptdGQ7CisJaW50
+IGVyciA9IDA7CisKKwliNDduID0gZGV2bV9remFsbG9jKCZwZGV2LT5kZXYsIHNpemVvZigqYjQ3
+biksIEdGUF9LRVJORUwpOworCWlmICghYjQ3bikKKwkJcmV0dXJuIC1FTk9NRU07CisKKwluYW5k
+X3NldF9jb250cm9sbGVyX2RhdGEoJmI0N24tPm5hbmRfY2hpcCwgYjQ3bik7CisJbXRkID0gbmFu
+ZF90b19tdGQoJmI0N24tPm5hbmRfY2hpcCk7CisJbXRkLT5kZXYucGFyZW50ID0gJnBkZXYtPmRl
+djsKKwliNDduLT5jYyA9IGNvbnRhaW5lcl9vZihuZmxhc2gsIHN0cnVjdCBiY21hX2Rydl9jYywg
+bmZsYXNoKTsKKworCWlmIChiNDduLT5jYy0+Y29yZS0+YnVzLT5jaGlwaW5mby5pZCA9PSBCQ01B
+X0NISVBfSURfQkNNNDcwNikgeworCQllcnIgPSBiY200N3h4bmZsYXNoX29wc19iY200NzA2X2lu
+aXQoYjQ3bik7CisJfSBlbHNlIHsKKwkJcHJfZXJyKCJEZXZpY2Ugbm90IHN1cHBvcnRlZFxuIik7
+CisJCWVyciA9IC1FTk9UU1VQUDsKKwl9CisJaWYgKGVycikgeworCQlwcl9lcnIoIkluaXRpYWxp
+emF0aW9uIGZhaWxlZDogJWRcbiIsIGVycik7CisJCXJldHVybiBlcnI7CisJfQorCisJcGxhdGZv
+cm1fc2V0X2RydmRhdGEocGRldiwgYjQ3bik7CisKKwllcnIgPSBtdGRfZGV2aWNlX3BhcnNlX3Jl
+Z2lzdGVyKG10ZCwgcHJvYmVzLCBOVUxMLCBOVUxMLCAwKTsKKwlpZiAoZXJyKSB7CisJCXByX2Vy
+cigiRmFpbGVkIHRvIHJlZ2lzdGVyIE1URCBkZXZpY2U6ICVkXG4iLCBlcnIpOworCQlyZXR1cm4g
+ZXJyOworCX0KKworCXJldHVybiAwOworfQorCitzdGF0aWMgaW50IGJjbTQ3eHhuZmxhc2hfcmVt
+b3ZlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCit7CisJc3RydWN0IGJjbTQ3eHhuZmxh
+c2ggKm5mbGFzaCA9IHBsYXRmb3JtX2dldF9kcnZkYXRhKHBkZXYpOworCisJbmFuZF9yZWxlYXNl
+KCZuZmxhc2gtPm5hbmRfY2hpcCk7CisKKwlyZXR1cm4gMDsKK30KKworc3RhdGljIHN0cnVjdCBw
+bGF0Zm9ybV9kcml2ZXIgYmNtNDd4eG5mbGFzaF9kcml2ZXIgPSB7CisJLnByb2JlCT0gYmNtNDd4
+eG5mbGFzaF9wcm9iZSwKKwkucmVtb3ZlID0gYmNtNDd4eG5mbGFzaF9yZW1vdmUsCisJLmRyaXZl
+ciA9IHsKKwkJLm5hbWUgPSAiYmNtYV9uZmxhc2giLAorCX0sCit9OworbW9kdWxlX3BsYXRmb3Jt
+X2RyaXZlcihiY200N3h4bmZsYXNoX2RyaXZlcik7CisKK01PRFVMRV9ERVNDUklQVElPTigiTkFO
+RCBmbGFzaCBkcml2ZXIgZm9yIEJDTUEgYnVzIik7CitNT0RVTEVfTElDRU5TRSgiR1BMIik7CitN
+T0RVTEVfQVVUSE9SKCJSYWZhxYIgTWnFgmVja2kiKTsKKwpkaWZmIC0tZ2l0IGEvZHJpdmVycy9t
+dGQvbmFuZC9yYXcvYmNtNDd4eG5mbGFzaC9NYWtlZmlsZSBiL2RyaXZlcnMvbXRkL25hbmQvcmF3
+L2JjbTQ3eHhuZmxhc2gvTWFrZWZpbGUKZGVsZXRlZCBmaWxlIG1vZGUgMTAwNjQ0CmluZGV4IGI1
+MzFhNjMwYzljZi4uMDAwMDAwMDAwMDAwCi0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L2JjbTQ3
+eHhuZmxhc2gvTWFrZWZpbGUKKysrIC9kZXYvbnVsbApAQCAtMSw1ICswLDAgQEAKLSMgU1BEWC1M
+aWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAtb25seQotYmNtNDd4eG5mbGFzaC15CQkJCSs9IG1h
+aW4ubwotYmNtNDd4eG5mbGFzaC15CQkJCSs9IG9wc19iY200NzA2Lm8KLQotb2JqLSQoQ09ORklH
+X01URF9OQU5EX0JDTTQ3WFhORkxBU0gpCSs9IGJjbTQ3eHhuZmxhc2gubwpkaWZmIC0tZ2l0IGEv
+ZHJpdmVycy9tdGQvbmFuZC9yYXcvYmNtNDd4eG5mbGFzaC9iY200N3h4bmZsYXNoLmggYi9kcml2
+ZXJzL210ZC9uYW5kL3Jhdy9iY200N3h4bmZsYXNoL2JjbTQ3eHhuZmxhc2guaApkZWxldGVkIGZp
+bGUgbW9kZSAxMDA2NDQKaW5kZXggOGRlMGU3ZTBhM2E0Li4wMDAwMDAwMDAwMDAKLS0tIGEvZHJp
+dmVycy9tdGQvbmFuZC9yYXcvYmNtNDd4eG5mbGFzaC9iY200N3h4bmZsYXNoLmgKKysrIC9kZXYv
+bnVsbApAQCAtMSwyMSArMCwwIEBACi0vKiBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIu
+MCAqLwotI2lmbmRlZiBfX0JDTTQ3WFhORkxBU0hfSAotI2RlZmluZSBfX0JDTTQ3WFhORkxBU0hf
+SAotCi0jaWZuZGVmIHByX2ZtdAotI2RlZmluZSBwcl9mbXQoZm10KQkJS0JVSUxEX01PRE5BTUUg
+IjogIiBmbXQKLSNlbmRpZgotCi0jaW5jbHVkZSA8bGludXgvbXRkL210ZC5oPgotI2luY2x1ZGUg
+PGxpbnV4L210ZC9yYXduYW5kLmg+Ci0KLXN0cnVjdCBiY200N3h4bmZsYXNoIHsKLQlzdHJ1Y3Qg
+bmFuZF9jb250cm9sbGVyIGJhc2U7Ci0Jc3RydWN0IGJjbWFfZHJ2X2NjICpjYzsKLQotCXN0cnVj
+dCBuYW5kX2NoaXAgbmFuZF9jaGlwOwotfTsKLQotaW50IGJjbTQ3eHhuZmxhc2hfb3BzX2JjbTQ3
+MDZfaW5pdChzdHJ1Y3QgYmNtNDd4eG5mbGFzaCAqYjQ3bik7Ci0KLSNlbmRpZiAvKiBCQ000N1hY
+TkZMQVNIICovCmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9iY200N3h4bmZsYXNo
+L21haW4uYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2JjbTQ3eHhuZmxhc2gvbWFpbi5jCmRlbGV0
+ZWQgZmlsZSBtb2RlIDEwMDY0NAppbmRleCA4ZGFlOTdjMWRiZTcuLjAwMDAwMDAwMDAwMAotLS0g
+YS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9iY200N3h4bmZsYXNoL21haW4uYworKysgL2Rldi9udWxs
+CkBAIC0xLDc3ICswLDAgQEAKLS8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wLW9u
+bHkKLS8qCi0gKiBCQ000N1hYIE5BTkQgZmxhc2ggZHJpdmVyCi0gKgotICogQ29weXJpZ2h0IChD
+KSAyMDEyIFJhZmHFgiBNacWCZWNraSA8emFqZWM1QGdtYWlsLmNvbT4KLSAqLwotCi0jaW5jbHVk
+ZSAiYmNtNDd4eG5mbGFzaC5oIgotCi0jaW5jbHVkZSA8bGludXgvbW9kdWxlLmg+Ci0jaW5jbHVk
+ZSA8bGludXgva2VybmVsLmg+Ci0jaW5jbHVkZSA8bGludXgvc2xhYi5oPgotI2luY2x1ZGUgPGxp
+bnV4L3BsYXRmb3JtX2RldmljZS5oPgotI2luY2x1ZGUgPGxpbnV4L2JjbWEvYmNtYS5oPgotCi1N
+T0RVTEVfREVTQ1JJUFRJT04oIk5BTkQgZmxhc2ggZHJpdmVyIGZvciBCQ01BIGJ1cyIpOwotTU9E
+VUxFX0xJQ0VOU0UoIkdQTCIpOwotTU9EVUxFX0FVVEhPUigiUmFmYcWCIE1pxYJlY2tpIik7Ci0K
+LXN0YXRpYyBjb25zdCBjaGFyICpwcm9iZXNbXSA9IHsgImJjbTQ3eHhwYXJ0IiwgTlVMTCB9Owot
+Ci1zdGF0aWMgaW50IGJjbTQ3eHhuZmxhc2hfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAq
+cGRldikKLXsKLQlzdHJ1Y3QgYmNtYV9uZmxhc2ggKm5mbGFzaCA9IGRldl9nZXRfcGxhdGRhdGEo
+JnBkZXYtPmRldik7Ci0Jc3RydWN0IGJjbTQ3eHhuZmxhc2ggKmI0N247Ci0Jc3RydWN0IG10ZF9p
+bmZvICptdGQ7Ci0JaW50IGVyciA9IDA7Ci0KLQliNDduID0gZGV2bV9remFsbG9jKCZwZGV2LT5k
+ZXYsIHNpemVvZigqYjQ3biksIEdGUF9LRVJORUwpOwotCWlmICghYjQ3bikKLQkJcmV0dXJuIC1F
+Tk9NRU07Ci0KLQluYW5kX3NldF9jb250cm9sbGVyX2RhdGEoJmI0N24tPm5hbmRfY2hpcCwgYjQ3
+bik7Ci0JbXRkID0gbmFuZF90b19tdGQoJmI0N24tPm5hbmRfY2hpcCk7Ci0JbXRkLT5kZXYucGFy
+ZW50ID0gJnBkZXYtPmRldjsKLQliNDduLT5jYyA9IGNvbnRhaW5lcl9vZihuZmxhc2gsIHN0cnVj
+dCBiY21hX2Rydl9jYywgbmZsYXNoKTsKLQotCWlmIChiNDduLT5jYy0+Y29yZS0+YnVzLT5jaGlw
+aW5mby5pZCA9PSBCQ01BX0NISVBfSURfQkNNNDcwNikgewotCQllcnIgPSBiY200N3h4bmZsYXNo
+X29wc19iY200NzA2X2luaXQoYjQ3bik7Ci0JfSBlbHNlIHsKLQkJcHJfZXJyKCJEZXZpY2Ugbm90
+IHN1cHBvcnRlZFxuIik7Ci0JCWVyciA9IC1FTk9UU1VQUDsKLQl9Ci0JaWYgKGVycikgewotCQlw
+cl9lcnIoIkluaXRpYWxpemF0aW9uIGZhaWxlZDogJWRcbiIsIGVycik7Ci0JCXJldHVybiBlcnI7
+Ci0JfQotCi0JcGxhdGZvcm1fc2V0X2RydmRhdGEocGRldiwgYjQ3bik7Ci0KLQllcnIgPSBtdGRf
+ZGV2aWNlX3BhcnNlX3JlZ2lzdGVyKG10ZCwgcHJvYmVzLCBOVUxMLCBOVUxMLCAwKTsKLQlpZiAo
+ZXJyKSB7Ci0JCXByX2VycigiRmFpbGVkIHRvIHJlZ2lzdGVyIE1URCBkZXZpY2U6ICVkXG4iLCBl
+cnIpOwotCQlyZXR1cm4gZXJyOwotCX0KLQotCXJldHVybiAwOwotfQotCi1zdGF0aWMgaW50IGJj
+bTQ3eHhuZmxhc2hfcmVtb3ZlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCi17Ci0Jc3Ry
+dWN0IGJjbTQ3eHhuZmxhc2ggKm5mbGFzaCA9IHBsYXRmb3JtX2dldF9kcnZkYXRhKHBkZXYpOwot
+Ci0JbmFuZF9yZWxlYXNlKCZuZmxhc2gtPm5hbmRfY2hpcCk7Ci0KLQlyZXR1cm4gMDsKLX0KLQot
+c3RhdGljIHN0cnVjdCBwbGF0Zm9ybV9kcml2ZXIgYmNtNDd4eG5mbGFzaF9kcml2ZXIgPSB7Ci0J
+LnByb2JlCT0gYmNtNDd4eG5mbGFzaF9wcm9iZSwKLQkucmVtb3ZlID0gYmNtNDd4eG5mbGFzaF9y
+ZW1vdmUsCi0JLmRyaXZlciA9IHsKLQkJLm5hbWUgPSAiYmNtYV9uZmxhc2giLAotCX0sCi19Owot
+Ci1tb2R1bGVfcGxhdGZvcm1fZHJpdmVyKGJjbTQ3eHhuZmxhc2hfZHJpdmVyKTsKLS0gCjIuMjUu
+NAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVh
+ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
