@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EACFC433E1
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 14:34:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F01DFC433E0
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 14:35:21 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E9BA72081A
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 14:34:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9BC9C204EA
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 14:35:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Lf89pag6";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="YBXGZ25N"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E9BA72081A
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NdN/Chrj";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="HAlaCfLs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9BC9C204EA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,44 +26,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sk6Bly92E9G4cXtSKvAPlw4/Jfa08R0nNjELoNvdncs=; b=Lf89pag6BXcYGu
-	o/SAk2EGwSPO4iCpCYDy2LukpLWf/XCO94dmilWDdVf4h5FFvbGgpd4ix8f0g+J0sZExPVp+r0y0u
-	gSR0eqqoUI9QnMAcY743+4A+KGizldMR+4kcvGh+5JHehtN1/3b9aGHChdh84Srh4svw7s4kHN6Wt
-	yIW2fKfOkNG8qyBTKvV0lD1QMM9irc/NKhdVmk6czKTd7FASRc3J5wGEGL9v/5ROZUt+ExDJh/MYq
-	7xkyz6ND0FMtS0YD9qO6ci5WTJ6FvozflXl1rbUQg5Sc64LccweksgQs7PWjFAL6tsu3SgWdvEJt2
-	QGamJu0Ol3/3Kku+C52w==;
+	List-Owner; bh=7JMNkkRKOl9keaLZUiAiDhajsf1uqbYK6u8ZxUOLlgk=; b=NdN/ChrjrUe1md
+	Fsgj68FIpCavEFDYfCx0j17KKHFpiTinlutYPCs/p+TGsbzTFNXvT5z2CKR8oURDI0K3iSJHY1P6z
+	TgcK/QQQyZuAGBFvnKR7pSU3ONsf1QII7KrZcsqlMfl1XWn512+ERrU1H8c6IYfYsmufm9fSDK7jA
+	1RIJBVgOJ6uv2txu9CTl8f/kVSjUEIZURwy12rrTV8S+iJlykL+Ce+JuHf+b0YGwDwCnUa7b/NGkN
+	EQn3/sSyl/ASOq2iJg+CIJFqI7W1NFxF3DmoHOP24dIAZvDRZIo2rCn2resBBPh4NQ7YNaF7o1e3f
+	3rNjCoZ+gmvTCfEOU6wA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jb3K3-0008LJ-LE; Tue, 19 May 2020 14:34:23 +0000
+	id 1jb3Kd-0000Pi-A2; Tue, 19 May 2020 14:34:59 +0000
 Received: from lelv0143.ext.ti.com ([198.47.23.248])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jb3Dg-0000cQ-M0; Tue, 19 May 2020 14:27:51 +0000
+ id 1jb3Dm-0000fv-1O; Tue, 19 May 2020 14:27:56 +0000
 Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04JERhke062708;
- Tue, 19 May 2020 09:27:43 -0500
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04JERmWZ062728;
+ Tue, 19 May 2020 09:27:48 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1589898463;
- bh=c7C3r3QF/TMH/epmeuxUZDNfTYW7xsLdZE5YulWo4ZQ=;
+ s=ti-com-17Q1; t=1589898468;
+ bh=IaOq1DZIFb0ZXk7jE3XNt8/zfIsBjFRDz0kUbFwztL0=;
  h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=YBXGZ25NJhwEXR4yQ+KnYmqKXaaDebAeM+t7deatTCuJqzcJ96iqPNfSFoEf3ybuH
- SpPAC5wWiKhtcxxd2G1WZ0bx3y0Zm6yqOiyxRL2WIBa16FovPN0MSDeoi3JkQ2sNNh
- hCbIsOqJH8eHpTVBvxEU8uSWm+cEXu50Fq6BnyqI=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04JERhwZ082065
+ b=HAlaCfLsml2CSJ8ENQ9G9xirpmpm9whbdpC5XED2hdJr2LKJi7HLEaJYiqXcxwp0g
+ LOBdJ8W+Yl8/RDNHsjI4mdESlSJ57JpGudHdn4IE9XYjV1RXO7AIPJ0yWLUORSK8OE
+ dQGGw/3DUujejrotCYKvuefstpQ28ZdWUazJkdj0=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04JERmev082138
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 19 May 2020 09:27:43 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ Tue, 19 May 2020 09:27:48 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 19
- May 2020 09:27:43 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ May 2020 09:27:48 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 19 May 2020 09:27:43 -0500
+ Frontend Transport; Tue, 19 May 2020 09:27:48 -0500
 Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com
  [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04JEQgjT008313;
- Tue, 19 May 2020 09:27:38 -0500
+ by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04JEQgjU008313;
+ Tue, 19 May 2020 09:27:43 -0500
 From: Pratyush Yadav <p.yadav@ti.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
  <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
@@ -75,18 +75,18 @@ To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <linux-spi@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
  <linux-mediatek@lists.infradead.org>
-Subject: [PATCH v5 11/19] mtd: spi-nor: core: do 2 byte reads for SR and FSR
- in DTR mode
-Date: Tue, 19 May 2020 19:56:33 +0530
-Message-ID: <20200519142642.24131-12-p.yadav@ti.com>
+Subject: [PATCH v5 12/19] mtd: spi-nor: core: enable octal DTR mode when
+ possible
+Date: Tue, 19 May 2020 19:56:34 +0530
+Message-ID: <20200519142642.24131-13-p.yadav@ti.com>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20200519142642.24131-1-p.yadav@ti.com>
 References: <20200519142642.24131-1-p.yadav@ti.com>
 MIME-Version: 1.0
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200519_072749_168481_01D3DE68 
-X-CRM114-Status: GOOD (  14.08  )
+X-CRM114-CacheID: sfid-20200519_072754_205346_C235F97F 
+X-CRM114-Status: GOOD (  14.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,62 +106,88 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Some controllers, like the cadence qspi controller, have trouble reading
-only 1 byte in DTR mode. So, do 2 byte reads for SR and FSR commands in
-DTR mode, and then discard the second byte.
+Allow flashes to specify a hook to enable octal DTR mode. Use this hook
+whenever possible to get optimal transfer speeds.
 
 Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/mtd/spi-nor/core.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ drivers/mtd/spi-nor/core.c | 35 +++++++++++++++++++++++++++++++++++
+ drivers/mtd/spi-nor/core.h |  2 ++
+ 2 files changed, 37 insertions(+)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 2ad248140b6c..5cb7e391cd29 100644
+index 5cb7e391cd29..a94376344be5 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -350,7 +350,7 @@ int spi_nor_write_disable(struct spi_nor *nor)
-  * spi_nor_read_sr() - Read the Status Register.
-  * @nor:	pointer to 'struct spi_nor'.
-  * @sr:		pointer to a DMA-able buffer where the value of the
-- *              Status Register will be written.
-+ *              Status Register will be written. Should be at least 2 bytes.
-  *
-  * Return: 0 on success, -errno otherwise.
-  */
-@@ -371,6 +371,11 @@ static int spi_nor_read_sr(struct spi_nor *nor, u8 *sr)
- 			op.addr.nbytes = addr_bytes;
- 			op.addr.val = 0;
- 			op.dummy.nbytes = dummy;
-+			/*
-+			 * We don't want to read only one byte in DTR mode. So,
-+			 * read 2 and then discard the second byte.
-+			 */
-+			op.data.nbytes = 2;
- 		}
+@@ -3097,6 +3097,35 @@ static int spi_nor_init_params(struct spi_nor *nor)
+ 	return 0;
+ }
  
- 		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
-@@ -394,7 +399,8 @@ static int spi_nor_read_sr(struct spi_nor *nor, u8 *sr)
-  * spi_nor_read_fsr() - Read the Flag Status Register.
-  * @nor:	pointer to 'struct spi_nor'
-  * @fsr:	pointer to a DMA-able buffer where the value of the
-- *              Flag Status Register will be written.
-+ *              Flag Status Register will be written. Should be at least 2
-+ *              bytes.
-  *
-  * Return: 0 on success, -errno otherwise.
-  */
-@@ -415,6 +421,11 @@ static int spi_nor_read_fsr(struct spi_nor *nor, u8 *fsr)
- 			op.addr.nbytes = addr_bytes;
- 			op.addr.val = 0;
- 			op.dummy.nbytes = dummy;
-+			/*
-+			 * We don't want to read only one byte in DTR mode. So,
-+			 * read 2 and then discard the second byte.
-+			 */
-+			op.data.nbytes = 2;
- 		}
++/** spi_nor_octal_dtr_enable() - enable Octal DTR I/O if needed
++ * @nor:                 pointer to a 'struct spi_nor'
++ * @enable:              whether to enable or disable Octal DTR
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++static int spi_nor_octal_dtr_enable(struct spi_nor *nor, bool enable)
++{
++	int ret;
++
++	if (!nor->params->octal_dtr_enable)
++		return 0;
++
++	if (!(nor->read_proto == SNOR_PROTO_8_8_8_DTR &&
++	      nor->write_proto == SNOR_PROTO_8_8_8_DTR))
++		return 0;
++
++	ret = nor->params->octal_dtr_enable(nor, enable);
++	if (ret)
++		return ret;
++
++	if (enable)
++		nor->reg_proto = SNOR_PROTO_8_8_8_DTR;
++	else
++		nor->reg_proto = SNOR_PROTO_1_1_1;
++
++	return 0;
++}
++
+ /**
+  * spi_nor_quad_enable() - enable Quad I/O if needed.
+  * @nor:                pointer to a 'struct spi_nor'
+@@ -3136,6 +3165,12 @@ static int spi_nor_init(struct spi_nor *nor)
+ {
+ 	int err;
  
- 		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
++	err = spi_nor_octal_dtr_enable(nor, true);
++	if (err) {
++		dev_dbg(nor->dev, "octal mode not supported\n");
++		return err;
++	}
++
+ 	err = spi_nor_quad_enable(nor);
+ 	if (err) {
+ 		dev_dbg(nor->dev, "quad mode not supported\n");
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index 7e6df8322da0..6338d32a0d77 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -203,6 +203,7 @@ struct spi_nor_locking_ops {
+  *                      higher index in the array, the higher priority.
+  * @erase_map:		the erase map parsed from the SFDP Sector Map Parameter
+  *                      Table.
++ * @octal_dtr_enable:	enables SPI NOR octal DTR mode.
+  * @quad_enable:	enables SPI NOR quad mode.
+  * @set_4byte_addr_mode: puts the SPI NOR in 4 byte addressing mode.
+  * @convert_addr:	converts an absolute address into something the flash
+@@ -226,6 +227,7 @@ struct spi_nor_flash_parameter {
+ 
+ 	struct spi_nor_erase_map        erase_map;
+ 
++	int (*octal_dtr_enable)(struct spi_nor *nor, bool enable);
+ 	int (*quad_enable)(struct spi_nor *nor);
+ 	int (*set_4byte_addr_mode)(struct spi_nor *nor, bool enable);
+ 	u32 (*convert_addr)(struct spi_nor *nor, u32 addr);
 -- 
 2.26.2
 
