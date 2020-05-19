@@ -2,59 +2,88 @@ Return-Path: <SRS0=qFGM=7B=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FDE1C433DF
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 13:18:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A166EC433E0
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 14:27:15 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2E708206D4
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 13:18:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 71FEE20709
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 14:27:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QM338mTq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2E708206D4
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hI1QPeZd";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ZNCWrQCv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 71FEE20709
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
 	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=OPimL0xOG8v0ylkjKEyOptA+n4RpOnBZrMbD8eZ0wQc=; b=QM338mTqdohq22
-	gY/NgHCCNdpEYYGUQrK5lenEZ+lx3fWPsl95Ag8oPAM1CxjNcy6uuDm5OH+M4/A1BCYvSZMt0JQ+T
-	lixtqwLKFOx3vSMH6yJDhQmc8lI7xmvx97rJQsLFIt7aoJuG3sRsjo6fVLyr4FNi4zlZ+gzJAMRPY
-	DHhee2rpl61v6MsuMGXXx4foBJa/UrDz3os4RZFC7eTGCID97Gox8vOSevlF3Dw+wiEDA00QQTd7j
-	Nukh9d8gMbPHCGFFx+2Lz/yW2sQUekWooTPFLt/Eqkkbi7UT+IpGZ76+O3A0UsEaYXb5N2BLbqtQ3
-	4zfmvDC1z8zb4rSEkTEw==;
+	List-Owner; bh=E/Jlvv9SopESM1+VA/gN3tvGvD+g+FyH0iHnNnE8NVU=; b=hI1QPeZdYz5t+Q
+	7CwLISRC17rLp5MberabUF0GqvZKECz4+hfjizuqyNavV0B/dqncx+WnoJihxQSjtlCLVzM6WGMgJ
+	VITw4DGNy/DTXmSu0ttJSU4a8vXwKc0IBiHNIlGQKGu/ggEairtnFaFRuROSetonbGY018/qvCFEp
+	8mzdUqYcI6KLdVjZZlsLTlalPwla1FQ8aUohgogZXtWIAfAsXH52kg6Si1yr6eVWqMxM4XbTJZty9
+	9yQz7KztNv2pQBIA1HgDn97hjk9L4YVUpgp7tiDAe7lLnjWccGR9fsorZOOaybl/vbqkua4jujCES
+	ofWCHwngvhvxiWTDaJdA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jb28y-0008Ef-4m; Tue, 19 May 2020 13:18:52 +0000
-Received: from relay12.mail.gandi.net ([217.70.178.232])
+	id 1jb3Cw-0008TF-5z; Tue, 19 May 2020 14:27:02 +0000
+Received: from lelv0143.ext.ti.com ([198.47.23.248])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jb1z5-0002hb-P7
- for linux-mtd@lists.infradead.org; Tue, 19 May 2020 13:08:42 +0000
-Received: from localhost.localdomain (unknown [91.224.148.103])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay12.mail.gandi.net (Postfix) with ESMTPSA id 6D297200004;
- Tue, 19 May 2020 13:08:35 +0000 (UTC)
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- <linux-mtd@lists.infradead.org>
-Subject: [RESEND PATCH v2] mtd: rawnand: micron: Adapt the PAGE READ flow to
- constraint controllers
-Date: Tue, 19 May 2020 15:08:34 +0200
-Message-Id: <20200519130834.2918-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.20.1
+ id 1jb3Ct-0008SJ-0V; Tue, 19 May 2020 14:27:00 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04JEQmtp062554;
+ Tue, 19 May 2020 09:26:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1589898408;
+ bh=nld47umMctPIIViH8mIfnth8wdpODIMC9+0TGQ4md1M=;
+ h=From:To:CC:Subject:Date;
+ b=ZNCWrQCv+q6Y5YUcXLVKCwR5rC4wfjTfqnddHYZkggBuEQ2A34ONiTwxZCI70pUox
+ q9Pnf/b2GQ5oE0hRbmR0vQy2Pqb8Nw32uUunfAHXLZAScCpB6FLcrIbSiTgJlID1Uq
+ U9oZpXG4DGWVzpL68rjDFAzFKTkTGLTp2KUzbQR0=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04JEQmwI068401
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 19 May 2020 09:26:48 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 19
+ May 2020 09:26:48 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 19 May 2020 09:26:47 -0500
+Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com
+ [10.172.224.153])
+ by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04JEQgjI008313;
+ Tue, 19 May 2020 09:26:43 -0500
+From: Pratyush Yadav <p.yadav@ti.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Mark Brown <broonie@kernel.org>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>, Alexandre Belloni
+ <alexandre.belloni@bootlin.com>, Ludovic Desroches
+ <ludovic.desroches@microchip.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <linux-spi@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>
+Subject: [PATCH v5 00/19] mtd: spi-nor: add xSPI Octal DTR support
+Date: Tue, 19 May 2020 19:56:22 +0530
+Message-ID: <20200519142642.24131-1-p.yadav@ti.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200519_060840_103998_C16B0F90 
-X-CRM114-Status: GOOD (  17.43  )
+X-CRM114-CacheID: sfid-20200519_072659_133723_E903C9CF 
+X-CRM114-Status: GOOD (  21.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,138 +95,176 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Michal Simek <monstr@monstr.eu>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Naga Sureshkumar Relli <nagasure@xilinx.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Mason Yang <masonccyang@mxic.com.tw>,
+ Boris Brezillon <boris.brezillon@collabora.com>, Sekhar Nori <nsekhar@ti.com>,
+ Pratyush Yadav <p.yadav@ti.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There are controllers not able to just read data cycles on the
-bus. There are controllers not able to do a change column.
+Hi,
 
-If we want to support both, we need to check which operation is
-supported first. This is the exact same mechanism that is in use for
-parameter page reads (ONFI/JEDEC) as the same problem occurs.
+This series adds support for octal DTR flashes in the spi-nor framework,
+and then adds hooks for the Cypress Semper and Mircom Xcella flashes to
+allow running them in octal DTR mode. This series assumes that the flash
+is handed to the kernel in Legacy SPI mode.
 
-Speed testing does not show any throughput penalty so we do not
-optimize more than that. However it is likely that, in the future, a
-more robust and exhaustive test will run at boot time to avoid
-re-checking what is supported and what is not at every call.
+Tested on TI J721e EVM with 1-bit ECC on the Cypress flash.
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
----
+Changes in v5:
+- Do not enable stateful X-X-X modes if the reset line is broken.
 
-Resent:
-* Actually integrate the comments...
+- Instead of setting SNOR_READ_HWCAPS_8_8_8_DTR from Profile 1.0 table
+  parsing, do it in spi_nor_info_init_params() instead based on the
+  SPI_NOR_OCTAL_DTR_READ flag instead.
+
+- Set SNOR_HWCAPS_PP_8_8_8_DTR in s28hs post_sfdp hook since this
+  capability is no longer set in Profile 1.0 parsing.
+
+- Instead of just checking for spi_nor_get_protocol_width() in
+  spi_nor_octal_dtr_enable(), make sure the protocol is
+  SNOR_PROTO_8_8_8_DTR since get_protocol_width() only cares about data
+  width.
+
+- Drop flag SPI_NOR_SOFT_RESET. Instead, discover soft reset capability
+  via BFPT.
+
+- Do not make an invalid Quad Enable BFPT field a fatal error. Silently
+  ignore it by assuming no quad enable bit is present.
+
+- Set dummy cycles for Cypress Semper flash to 24 instead of 20. This
+  allows for 200MHz operation in 8D mode compared to the 166MHz with 20.
+
+- Rename spi_nor_cypress_octal_enable() to
+  spi_nor_cypress_octal_dtr_enable().
+
+- Update spi-mtk-nor.c to reject DTR ops since it doesn't call
+  spi_mem_default_supports_op().
+
+Changes in v4:
+- Refactor the series to use the new spi-nor framework with the
+  manufacturer-specific bits separated from the core.
+
+- Add support for Micron MT35XU512ABA.
+
+- Use cmd.nbytes as the criteria of whether the data phase exists or not
+  instead of cmd.buf.in || cmd.buf.out in spi_nor_spimem_setup_op().
+
+- Update Read FSR to use the same dummy cycles and address width as Read
+  SR.
+
+- Fix BFPT parsing stopping too early for JESD216 rev B flashes.
+
+- Use 2 byte reads for Read SR and FSR commands in DTR mode.
+
+Changes in v3:
+- Drop the DT properties "spi-rx-dtr" and "spi-tx-dtr". Instead, if
+  later a need is felt to disable DTR in case someone has a board with
+  Octal DTR capable flash but does not support DTR transactions for some
+  reason, a property like "spi-no-dtr" can be added.
+
+- Remove mode bits SPI_RX_DTR and SPI_TX_DTR.
+
+- Remove the Cadence Quadspi controller patch to un-block this series. I
+  will submit it as a separate patch.
+
+- Rebase on latest 'master' and fix merge conflicts.
+
+- Update read and write dirmap templates to use DTR.
+
+- Rename 'is_dtr' to 'dtr'.
+
+- Make 'dtr' a bitfield.
+
+- Reject DTR ops in spi_mem_default_supports_op().
+
+- Update atmel-quadspi to reject DTR ops. All other controller drivers
+  call spi_mem_default_supports_op() so they will automatically reject
+  DTR ops.
+
+- Add support for both enabling and disabling DTR modes.
+
+- Perform a Software Reset on flashes that support it when shutting
+  down.
+
+- Disable Octal DTR mode on suspend, and re-enable it on resume.
+
+- Drop enum 'spi_mem_cmd_ext' and make command opcode u16 instead.
+  Update spi-nor to use the 2-byte command instead of the command
+  extension. Since we still need a "extension type", mode that enum to
+  spi-nor and name it 'spi_nor_cmd_ext'.
+
+- Default variable address width to 3 to fix SMPT parsing.
+
+- Drop non-volatile change to uniform sector mode and rely on parsing
+  SMPT.
 
 Changes in v2:
-* Added a comment before each check which is a condensate of the
-  commit message.  
+- Add DT properties "spi-rx-dtr" and "spi-tx-dtr" to allow expressing
+  DTR capabilities.
 
- drivers/mtd/nand/raw/nand_micron.c | 61 +++++++++++++++++++++++++-----
- 1 file changed, 52 insertions(+), 9 deletions(-)
+- Set the mode bits SPI_RX_DTR and SPI_TX_DTR when we discover the DT
+  properties "spi-rx-dtr" and spi-tx-dtr".
 
-diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
-index b2b047b245f4..3589b4fce0d4 100644
---- a/drivers/mtd/nand/raw/nand_micron.c
-+++ b/drivers/mtd/nand/raw/nand_micron.c
-@@ -192,6 +192,7 @@ static int micron_nand_on_die_ecc_status_4(struct nand_chip *chip, u8 status,
- 	struct micron_nand *micron = nand_get_manufacturer_data(chip);
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	unsigned int step, max_bitflips = 0;
-+	bool use_datain = false;
- 	int ret;
- 
- 	if (!(status & NAND_ECC_STATUS_WRITE_RECOMMENDED)) {
-@@ -211,8 +212,27 @@ static int micron_nand_on_die_ecc_status_4(struct nand_chip *chip, u8 status,
- 	 * in non-raw mode, even if the user did not request those bytes.
- 	 */
- 	if (!oob_required) {
--		ret = nand_read_data_op(chip, chip->oob_poi, mtd->oobsize,
--					false, false);
-+		/*
-+		 * We first check which operation is supported by the controller
-+		 * before running it. This trick makes it possible to support
-+		 * all controllers, even the most constraints, without almost
-+		 * any performance hit.
-+		 *
-+		 * TODO: could be enhanced to avoid repeating the same check
-+		 * over and over in the fast path.
-+		 */
-+		if (!nand_has_exec_op(chip) ||
-+		    !nand_read_data_op(chip, chip->oob_poi, mtd->oobsize, false,
-+				       true))
-+			use_datain = true;
-+
-+		if (use_datain)
-+			ret = nand_read_data_op(chip, chip->oob_poi,
-+						mtd->oobsize, false, false);
-+		else
-+			ret = nand_change_read_column_op(chip, mtd->writesize,
-+							 chip->oob_poi,
-+							 mtd->oobsize, false);
- 		if (ret)
- 			return ret;
- 	}
-@@ -285,6 +305,7 @@ micron_nand_read_page_on_die_ecc(struct nand_chip *chip, uint8_t *buf,
- 				 int oob_required, int page)
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
-+	bool use_datain = false;
- 	u8 status;
- 	int ret, max_bitflips = 0;
- 
-@@ -300,14 +321,36 @@ micron_nand_read_page_on_die_ecc(struct nand_chip *chip, uint8_t *buf,
- 	if (ret)
- 		goto out;
- 
--	ret = nand_exit_status_op(chip);
--	if (ret)
--		goto out;
-+	/*
-+	 * We first check which operation is supported by the controller before
-+	 * running it. This trick makes it possible to support all controllers,
-+	 * even the most constraints, without almost any performance hit.
-+	 *
-+	 * TODO: could be enhanced to avoid repeating the same check over and
-+	 * over in the fast path.
-+	 */
-+	if (!nand_has_exec_op(chip) ||
-+	    !nand_read_data_op(chip, buf, mtd->writesize, false, true))
-+		use_datain = true;
- 
--	ret = nand_read_data_op(chip, buf, mtd->writesize, false, false);
--	if (!ret && oob_required)
--		ret = nand_read_data_op(chip, chip->oob_poi, mtd->oobsize,
--					false, false);
-+	if (use_datain) {
-+		ret = nand_exit_status_op(chip);
-+		if (ret)
-+			goto out;
-+
-+		ret = nand_read_data_op(chip, buf, mtd->writesize, false,
-+					false);
-+		if (!ret && oob_required)
-+			ret = nand_read_data_op(chip, chip->oob_poi,
-+						mtd->oobsize, false, false);
-+	} else {
-+		ret = nand_change_read_column_op(chip, 0, buf, mtd->writesize,
-+						 false);
-+		if (!ret && oob_required)
-+			ret = nand_change_read_column_op(chip, mtd->writesize,
-+							 chip->oob_poi,
-+							 mtd->oobsize, false);
-+	}
- 
- 	if (chip->ecc.strength == 4)
- 		max_bitflips = micron_nand_on_die_ecc_status_4(chip, status,
--- 
-2.20.1
+- spi_nor_cypress_octal_enable() was updating nor->params.read[] with
+  the intention of setting the correct number of dummy cycles. But this
+  function is called _after_ selecting the read so setting
+  nor->params.read[] will have no effect. So, update nor->read_dummy
+  directly.
+
+- Fix spi_nor_spimem_check_readop() and spi_nor_spimem_check_pp()
+  passing nor->read_proto and nor->write_proto to
+  spi_nor_spimem_setup_op() instead of read->proto and pp->proto
+  respectively.
+
+- Move the call to cqspi_setup_opcode_ext() inside cqspi_enable_dtr().
+  This avoids repeating the 'if (f_pdata->is_dtr)
+  cqspi_setup_opcode_ext()...` snippet multiple times.
+
+- Call the default 'supports_op()' from cqspi_supports_mem_op(). This
+  makes sure the buswidth requirements are also enforced along with the
+  DTR requirements.
+
+- Drop the 'is_dtr' argument from spi_check_dtr_req(). We only call it
+  when a phase is DTR so it is redundant.
+
+Pratyush Yadav (19):
+  spi: spi-mem: allow specifying whether an op is DTR or not
+  spi: atmel-quadspi: reject DTR ops
+  spi: spi-mtk-nor: reject DTR ops
+  spi: spi-mem: allow specifying a command's extension
+  mtd: spi-nor: add support for DTR protocol
+  mtd: spi-nor: sfdp: default to addr_width of 3 for configurable widths
+  mtd: spi-nor: sfdp: prepare BFPT parsing for JESD216 rev D
+  mtd: spi-nor: sfdp: get command opcode extension type from BFPT
+  mtd: spi-nor: sfdp: parse xSPI Profile 1.0 table
+  mtd: spi-nor: core: use dummy cycle and address width info from SFDP
+  mtd: spi-nor: core: do 2 byte reads for SR and FSR in DTR mode
+  mtd: spi-nor: core: enable octal DTR mode when possible
+  mtd: spi-nor: sfdp: do not make invalid quad enable fatal
+  mtd: spi-nor: sfdp: detect Soft Reset sequence support from BFPT
+  mtd: spi-nor: core: perform a Soft Reset on shutdown
+  mtd: spi-nor: core: disable Octal DTR mode on suspend.
+  mtd: spi-nor: core: expose spi_nor_default_setup() in core.h
+  mtd: spi-nor: spansion: add support for Cypress Semper flash
+  mtd: spi-nor: micron-st: allow using MT35XU512ABA in Octal DTR mode
+
+ drivers/mtd/spi-nor/core.c      | 446 +++++++++++++++++++++++++++-----
+ drivers/mtd/spi-nor/core.h      |  22 ++
+ drivers/mtd/spi-nor/micron-st.c | 112 +++++++-
+ drivers/mtd/spi-nor/sfdp.c      | 117 ++++++++-
+ drivers/mtd/spi-nor/sfdp.h      |  13 +-
+ drivers/mtd/spi-nor/spansion.c  | 167 ++++++++++++
+ drivers/spi/atmel-quadspi.c     |   4 +
+ drivers/spi/spi-mem.c           |   3 +
+ drivers/spi/spi-mtk-nor.c       |   4 +
+ include/linux/mtd/spi-nor.h     |  53 +++-
+ include/linux/spi/spi-mem.h     |  13 +-
+ 11 files changed, 862 insertions(+), 92 deletions(-)
+
+--
+2.26.2
 
 
 ______________________________________________________
