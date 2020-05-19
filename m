@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 876EFC433DF
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 13:11:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40F6CC433DF
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 13:12:00 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 48F9E206C3
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 13:11:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0D37D206C3
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 13:12:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oP4Pat/6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 48F9E206C3
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gOd3flHD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D37D206C3
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,37 +25,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qIItS+yA4V+IDvGvV/8oiXybN3TFgE3y/UWOkSniokM=; b=oP4Pat/6au1oi7
-	8v8vTjB1L3Rl4yUzy+4LTATil23uafSgt4dze47OyYPDwm4vO8K0O+192h84ntXUmQ4T/G04bPf++
-	2rzUlTYj70n3H/nlnop2TGVcvg/UGxreWPix/dLEBjX0Um0GxKN9Ta9OY1cuVGUk/YlUpf6kl/zjm
-	NTUkk8j39DL247x63+W3ZXL2QnoQCZ5HqjtQnGVM8hyNVRTH2lV5wFmlLoM15bNjaA1fq/PAbuSM0
-	BqpzK9UBk5/ShPUVV2B06GhdmMpQ1eB+EtnKL2+UM1gormqhBB2aEqhymGXPsqXy+A2KGWOQsjma2
-	JqI+97i/M77lb2eP6x7w==;
+	List-Owner; bh=gq7fRV5SRnCADImmudfrgAMKSLtLuROlHtaZiy38rHo=; b=gOd3flHDotllbd
+	gkQiW7hUXrHNtfqcKE0JEDIXhC+WTYQk2XlZgxuGyQjjJMsY+ytElfRbPptNipPUC7/hSnRFgxrXK
+	QhNdzQUa2y6N/f2fRZZaOUtbGQ3lpxhNwUXtpyRmawJ3mZlr6tONm9gj7vuNA2rMvAydYgDBepzoR
+	RcRCLudOUlScNnPTAXD4QWr/ryTxdwMvpK6NACjEuvGQeYMhogIgnRaBxCJ1pVxG5kL+JWoMpIwRA
+	6I16LwY7ohzVr6bZEcmVoMpa7EkoxOS5Z4sxXfEYnxS9rUwGcadxCP9lKUmorJJwBMwOC66ggn/+Y
+	IFeJ5cGjD43pcixzP1vQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jb21x-0007mi-Od; Tue, 19 May 2020 13:11:37 +0000
+	id 1jb22D-000806-9a; Tue, 19 May 2020 13:11:53 +0000
 Received: from relay9-d.mail.gandi.net ([217.70.183.199])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jb1ri-00023A-Pj
+ id 1jb1ri-00021p-0O
  for linux-mtd@lists.infradead.org; Tue, 19 May 2020 13:01:07 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 02355FF82A;
- Tue, 19 May 2020 13:01:00 +0000 (UTC)
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id CF19EFF825;
+ Tue, 19 May 2020 13:00:59 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 41/62] mtd: rawnand: pasemi: Stop using nand_release()
-Date: Tue, 19 May 2020 15:00:14 +0200
-Message-Id: <20200519130035.1883-42-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 39/62] mtd: rawnand: oxnas: Stop using nand_release()
+Date: Tue, 19 May 2020 15:00:12 +0200
+Message-Id: <20200519130035.1883-40-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200519130035.1883-1-miquel.raynal@bootlin.com>
 References: <20200519130035.1883-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200519_060103_005453_1AC5B41A 
-X-CRM114-Status: UNSURE (   9.81  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200519_060102_246489_45E3B9AF 
+X-CRM114-Status: GOOD (  10.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,32 +80,23 @@ nand_cleanup() directly.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/pasemi_nand.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/raw/oxnas_nand.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/pasemi_nand.c b/drivers/mtd/nand/raw/pasemi_nand.c
-index be40b2f32237..37570f0c3a36 100644
---- a/drivers/mtd/nand/raw/pasemi_nand.c
-+++ b/drivers/mtd/nand/raw/pasemi_nand.c
-@@ -169,6 +169,7 @@ static int pasemi_nand_probe(struct platform_device *ofdev)
- static int pasemi_nand_remove(struct platform_device *ofdev)
- {
- 	struct nand_chip *chip;
-+	int ret;
+diff --git a/drivers/mtd/nand/raw/oxnas_nand.c b/drivers/mtd/nand/raw/oxnas_nand.c
+index 23c222b6c40e..8d0d76ad319d 100644
+--- a/drivers/mtd/nand/raw/oxnas_nand.c
++++ b/drivers/mtd/nand/raw/oxnas_nand.c
+@@ -182,7 +182,8 @@ static int oxnas_nand_remove(struct platform_device *pdev)
  
- 	if (!pasemi_nand_mtd)
- 		return 0;
-@@ -176,7 +177,9 @@ static int pasemi_nand_remove(struct platform_device *ofdev)
- 	chip = mtd_to_nand(pasemi_nand_mtd);
+ 	for (i = 0; i < oxnas->nchips; i++) {
+ 		chip = oxnas->chips[i];
+-		nand_release(chip);
++		WARN_ON(mtd_device_unregister(nand_to_mtd(chip)));
++		nand_cleanup(chip);
+ 	}
  
- 	/* Release resources, unregister device */
--	nand_release(chip);
-+	ret = mtd_device_unregister(pasemi_nand_mtd);
-+	WARN_ON(ret);
-+	nand_cleanup(chip);
- 
- 	release_region(lpcctl, 4);
- 
+ 	clk_disable_unprepare(oxnas->clk);
 -- 
 2.20.1
 
