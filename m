@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6A06C433E0
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 13:01:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B51BC433E0
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 13:01:46 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7840520709
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 13:01:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CA69620709
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 13:01:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="i1DCiLGq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7840520709
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="h42GzdtP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA69620709
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,36 +25,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vJFrCv5WrmezIQYea6ZJjkAuWokgLlFXADjynAcOtps=; b=i1DCiLGqhv8kJC
-	g6dh/OVlA7JjidLyKYljtDevQnqJCJnPtFds4ldvCtaAm/CNP7uvEzAYX8yAQyj61QZW3x9r35aLO
-	Kqr5Nq5/jvVsBHfdwILek2fyjCPzMZ+n8/ghebszQYMpXeKFYYYkmymYMvcc1nDqqIfqcrEhyi+Se
-	azAaANiz7hehS5ujBiXhF+SUxScPK8and2kiGv21UpE878H2j6Hpe1RASC/txzsH6Qmq/6tglDUEH
-	LO7Q0jk2OEQCvGRA4hSZP34mMxXD3lsS+RTEHm/gjxZL5oTeG0/CSGZnzsPdmNLWzyy+IpQXVOSsQ
-	bj5U0qiZReYKIdLFt/Ew==;
+	List-Owner; bh=LNCo9Vi4iC3LwN+O7JBV4GNo1L97B5miBQhCnzjr2H0=; b=h42GzdtPeyJGC/
+	Y+nNS1T7mjwR38+qPg6j0bpPHkSO4A+aQ0uy/zH6Kd7hWkmHvLE3122H3AAuq7CZtK2Vt/Fzx3G87
+	Ly66hTHtUk8W95LUmq/OJdaiwsMekR5OaK5W99V1s89RgwxByx4GHrH8Wc0pR7UE3f8edJnTVE5MS
+	gu0QFD9+aFnzMIZqR4lcdZol3mdUaoMQXR5OUOXw/Xy3GqgGYSJE/abMtkiSpBzjNjk4/dlmV6iqN
+	Ku2yX0pF7rj5Va4KT7tR46VC65GJggTQggpijIQTclDu4tiIaTvCWKdA8en1PGlOIudxwQ+1TK8Or
+	ijT7ygsMGSJj5fGSZZgw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jb1rl-00022k-Gt; Tue, 19 May 2020 13:01:05 +0000
+	id 1jb1s8-0002RM-1q; Tue, 19 May 2020 13:01:28 +0000
 Received: from relay9-d.mail.gandi.net ([217.70.183.199])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jb1rP-0001gX-Hd
+ id 1jb1rP-0001fy-Hr
  for linux-mtd@lists.infradead.org; Tue, 19 May 2020 13:00:45 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id D422CFF806;
- Tue, 19 May 2020 13:00:41 +0000 (UTC)
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 0FBADFF802;
+ Tue, 19 May 2020 13:00:40 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 03/62] mtd: rawnand: bcm47xx: Stop using nand_release()
-Date: Tue, 19 May 2020 14:59:36 +0200
-Message-Id: <20200519130035.1883-4-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 01/62] mtd: rawnand: ams-delta: Stop using nand_release()
+Date: Tue, 19 May 2020 14:59:34 +0200
+Message-Id: <20200519130035.1883-2-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200519130035.1883-1-miquel.raynal@bootlin.com>
 References: <20200519130035.1883-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200519_060043_789624_91F5A4BF 
-X-CRM114-Status: GOOD (  10.43  )
+X-CRM114-CacheID: sfid-20200519_060043_776933_EB7EEC85 
+X-CRM114-Status: GOOD (  10.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,24 +80,27 @@ nand_cleanup() directly.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/bcm47xxnflash/main.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/raw/ams-delta.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/bcm47xxnflash/main.c b/drivers/mtd/nand/raw/bcm47xxnflash/main.c
-index 8dae97c1dbe7..dcc70d9dc6e5 100644
---- a/drivers/mtd/nand/raw/bcm47xxnflash/main.c
-+++ b/drivers/mtd/nand/raw/bcm47xxnflash/main.c
-@@ -60,8 +60,12 @@ static int bcm47xxnflash_probe(struct platform_device *pdev)
- static int bcm47xxnflash_remove(struct platform_device *pdev)
+diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
+index d66dab25df20..3711e7a0436c 100644
+--- a/drivers/mtd/nand/raw/ams-delta.c
++++ b/drivers/mtd/nand/raw/ams-delta.c
+@@ -387,12 +387,15 @@ static int gpio_nand_remove(struct platform_device *pdev)
  {
- 	struct bcm47xxnflash *nflash = platform_get_drvdata(pdev);
-+	struct nand_chip *chip = &nflash->nand_chip;
+ 	struct gpio_nand *priv = platform_get_drvdata(pdev);
+ 	struct mtd_info *mtd = nand_to_mtd(&priv->nand_chip);
 +	int ret;
  
--	nand_release(&nflash->nand_chip);
-+	ret = mtd_device_unregister(nand_to_mtd(chip));
+ 	/* Apply write protection */
+ 	gpiod_set_value(priv->gpiod_nwp, 1);
+ 
+ 	/* Unregister device */
+-	nand_release(mtd_to_nand(mtd));
++	ret = mtd_device_unregister(mtd);
 +	WARN_ON(ret);
-+	nand_cleanup(chip);
++	nand_cleanup(mtd_to_nand(mtd));
  
  	return 0;
  }
