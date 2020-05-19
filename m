@@ -8,17 +8,17 @@ X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B9E0C433E0
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 10:18:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9A05C433E0
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 10:19:15 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CE3E120756
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 10:18:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7CE0C206D4
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 10:19:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="A5JJ30Uy";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OTrHYfkH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CE3E120756
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="sKQIxUrJ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bhUgcoRl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7CE0C206D4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -28,61 +28,62 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=Q2ncklAOSIwv20mK0Fm0ka8gKwJwMfprrkQUQ6jc9WU=; b=A5JJ30UyhWEjAf9Xiu2pr7empX
-	KoCjMJ5Y0KBZFT/HmUcHY7PUjGKtpaYyevYZSd+t8PUHLXb2mx7YXxZIsNlviyhv72kYBXCr4EOIC
-	vD35sJ06LEDk4DyFkxDvzz57vEIP2yHbKw963KpwNmds01REN9caZXxkQ4cu/IjSIUvEypOFnAXQ5
-	jV1XfPqnLu7+9Ntvp7Ij2N/P599pCiHJd/1l3aYJizd6GJiLm3k+KXC6TqtdXS49pJqWBeOGOz2bg
-	n+ZialkSKuSgWvKUvyrtlXasmTGMn+ChA2s+el/VF+VALha2hyhP6MzkRojrpQbhlJI2sQtdgVuvx
-	mNtLBZKg==;
+	bh=xfOpUHalt/uWCucBY9pPZLouihvqfMmYZyuc0vNtkaQ=; b=sKQIxUrJpnSpuv53wQUB6wpyq6
+	EdLRlwYvG+i87CKUXIU3bF6M48RfiDT6aNWiAvGohUayySi3XVYqm5fADGTAEFFagoFvXQCVE+Z7S
+	O4fzkQDy+RiwDUDhXOKeU61rDfziy4zetWRpbv4JjuMwYRa4DSajSVcqnEGQ5xTndeOpC2AbkxcjT
+	E/lGMK1HdNFEMI7k6clZvbTACUZZpCxw3wd4ZYmVAjyUEiEIrxoh+EmvnQLo5GXhtL85dqZjTi9xp
+	/cYmVSqZvMsRgWB/PcUlCgAIWLB8DGYnihmOb2rWcOyECY3qLicRHzE/VOLeZMK9Kv2Ws2nYMaOyf
+	zRWE6Xlg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jazKb-0001Jn-10; Tue, 19 May 2020 10:18:41 +0000
-Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
+	id 1jazKs-0001a9-Id; Tue, 19 May 2020 10:18:58 +0000
+Received: from mail-wm1-x343.google.com ([2a00:1450:4864:20::343])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jazJq-0000U2-V4
- for linux-mtd@lists.infradead.org; Tue, 19 May 2020 10:17:56 +0000
-Received: by mail-wr1-x444.google.com with SMTP id y3so15276821wrt.1
- for <linux-mtd@lists.infradead.org>; Tue, 19 May 2020 03:17:54 -0700 (PDT)
+ id 1jazJs-0000aa-SW
+ for linux-mtd@lists.infradead.org; Tue, 19 May 2020 10:17:58 +0000
+Received: by mail-wm1-x343.google.com with SMTP id m185so2842436wme.3
+ for <linux-mtd@lists.infradead.org>; Tue, 19 May 2020 03:17:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references;
- bh=A0dzsFd7YATdAmh4B3Ufb/iHlKjHhY14r5pPPWljdn0=;
- b=OTrHYfkHzzmIKmL1oQTQzaP6hizd0MYkrJcpEaKfFmT6JKEdv6qVTE1lg+LBXOpWW/
- B6qyGK1TH2ZsRlpPaUXSdqmZzZ2/ma+OyRUSdJYCCDKIJffmBgqM5yiAZjSJD3Xuhspn
- X7NJQ6jlDLEriz8QHi5ttb63Zh0Q8EOL9x4CVDyCBBxXZ0A4SrHavP+BIDM06uv8XeEN
- ey0mHmZRBgOAegD1bJYAH2ly38v3vIdm9DqIIwrI3mhQwN/2/R2GpJ9fagNqgi6JsG9M
- C30fFLNOiu6l4UaS+vBnYeUeLjK1kIc75BAhITE5LIW+VX+AHrzxlW+2qP4RLSHuE8UF
- LLow==
+ bh=Fw6/rheGBigvdKbfBBLuoQxU/TmSkSKuizeWdRgiMEo=;
+ b=bhUgcoRlGk/CHPSzeBIJuBbFMldNRehsCtiaScsoniU5k9tnwiteBislmiXObQiYrv
+ uAdTee/MMmxgHGVBLuWOk4YbgN6/63XwirRvw/ImqZrXUmqDpBv3ERl7ns1y9iAw9KvZ
+ GEohowe7+glTPaGPExzxgS8LvsUU5wbkEb1PZfzJyjOFeou80TtEkT8mAsPtSn2dKhsX
+ vNE57xFz+6uSzQM6w8YI4wVwmwdUc4NI91fVTk4lgREygGaeBRP8tOcKzOt3P3Su1Po8
+ N3B0GqOkvpDZexOsP9+UXB2tYRUijMYjQgyTZSJDY4mcZWUDFyi2GL6+JfPIqe92lRp2
+ c+hA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references;
- bh=A0dzsFd7YATdAmh4B3Ufb/iHlKjHhY14r5pPPWljdn0=;
- b=p5GYty8RKfKPj8N8/rbUdYojKfRMlcV8xaun8xjmquuNPeGeud6EH0R4uKkgmJRfjI
- Agfc5jmn9TQCUYg+7xvqsmF1Gdpm9FB4qPBhq1x7aVwLH+8THylshKTdiWTFlxZHFsSJ
- tlf4xADdhC+MqqS/n37xg197TRw8WWpq3DpIk3Qpu1bhKNETfl7eMuKHEXDVFkkSca23
- L/7DEBtNtTvD6A3mHSVTxbKajBKkN33tZigLw0y/qyQSCLwqJKJIVtIml4LTkC3peDhV
- mLwp5Z0xfKULi01eTXpM0wsF8toANMLpfnKcbd8Yy3hGfojc3GL5J7021V/023tlqi6O
- 5nIw==
-X-Gm-Message-State: AOAM530XFNRMTK+06hpUa+gIBBZaCLPlPAShm70J5wn+Ja0NGrsQQDSS
- aiEUEQxppfzS/wHrbj0fXiE=
-X-Google-Smtp-Source: ABdhPJzIO0FRdhKzhVIcXSDXsYNgM+AY6/roJHSk4k92JS+Nf2+35NB/qFXpKWpr+9usDiHz5dL04Q==
-X-Received: by 2002:adf:a35c:: with SMTP id d28mr23884503wrb.37.1589883473241; 
- Tue, 19 May 2020 03:17:53 -0700 (PDT)
+ bh=Fw6/rheGBigvdKbfBBLuoQxU/TmSkSKuizeWdRgiMEo=;
+ b=O/CiWRP0vuSszUxoPzmCO0QRzDuSH3iD4zmLQgw2U9WcNfD/6961J63vsweHneEDXy
+ cMHuUiNk+5Gd415QpMe38mXX2WmUJl73gagi7pixkW1pObJihULBRgyC54bSuCkPtwJK
+ g0d5mdEwCiCzY8pmRYs6belG/mZiBtzyi/csPLDYot1fBPJtMB2qrk5sFi2SF6ldzUOk
+ ntMUSoUCc6G+1d88axBVyo/8yJFaP5hAyLeBFjWXyrm3MsVE41OjTxXgjjiRYw3s7Of8
+ 3q73LbV/znT5vMFVd9vRwL+DrGCvaAkIKwCH02U1ymBP99qqTWkeLdFihgLd/F530F7S
+ bxmw==
+X-Gm-Message-State: AOAM533sVFCQe7jAWPSmrM8gnzaZQP0ortEMLABAQyn2a1jYA/DDpxGy
+ 8nyml82bY7lI5gjtS12TfYE=
+X-Google-Smtp-Source: ABdhPJwar6JPscVQ2VJ4NDhUmfxW/yUbFSMSjlV8YwyjbE5MVOzrG9NvLQj9pGAw8yEaxzQG9uUWog==
+X-Received: by 2002:a7b:cf15:: with SMTP id l21mr4579351wmg.172.1589883475326; 
+ Tue, 19 May 2020 03:17:55 -0700 (PDT)
 Received: from ubuntu-G3.micron.com ([165.225.86.140])
- by smtp.gmail.com with ESMTPSA id w15sm3062488wmi.35.2020.05.19.03.17.51
+ by smtp.gmail.com with ESMTPSA id w15sm3062488wmi.35.2020.05.19.03.17.53
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 19 May 2020 03:17:52 -0700 (PDT)
+ Tue, 19 May 2020 03:17:54 -0700 (PDT)
 From: Bean Huo <huobean@gmail.com>
 To: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
  s.hauer@pengutronix.de, boris.brezillon@collabora.com, derosier@gmail.com
-Subject: [RESET PATCH v5 3/5] mtd: rawnand: Add write_oob hook in nand_chip_ops
-Date: Tue, 19 May 2020 12:17:32 +0200
-Message-Id: <20200519101734.19927-4-huobean@gmail.com>
+Subject: [RESET PATCH v5 4/5] mtd: rawnand: Introduce a new function
+ nand_check_is_erased_page()
+Date: Tue, 19 May 2020 12:17:33 +0200
+Message-Id: <20200519101734.19927-5-huobean@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200519101734.19927-1-huobean@gmail.com>
 References: <20200519101734.19927-1-huobean@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200519_031755_029124_A286A596 
+X-CRM114-CacheID: sfid-20200519_031756_945297_4C452A30 
 X-CRM114-Status: GOOD (  12.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -105,81 +106,79 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Bean Huo <beanhuo@micron.com>
 
-Break the function nand_write_oob() into two functions, and one of them
-is named nand_write_oob_nand(), which will be assigned to new added hook
-write_oob by default. The hook write_oob will be overwritten in the NAND
-vendor lower-level driver if needed.
+Add a new function nand_check_is_erased_page() in nand_base.c, which is
+used to check whether one programmable page is empty or already programmed.
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Signed-off-by: Bean Huo <beanhuo@micron.com>
 ---
- drivers/mtd/nand/raw/internals.h | 3 ++-
- drivers/mtd/nand/raw/nand_base.c | 9 +++++++++
- include/linux/mtd/rawnand.h      | 3 +++
- 3 files changed, 14 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/raw/nand_base.c | 40 ++++++++++++++++++++++++++++++++
+ include/linux/mtd/rawnand.h      |  2 ++
+ 2 files changed, 42 insertions(+)
 
-diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
-index 03866b0aadea..94d300a207ac 100644
---- a/drivers/mtd/nand/raw/internals.h
-+++ b/drivers/mtd/nand/raw/internals.h
-@@ -99,7 +99,8 @@ int nand_read_param_page_op(struct nand_chip *chip, u8 page, void *buf,
- void nand_decode_ext_id(struct nand_chip *chip);
- void panic_nand_wait(struct nand_chip *chip, unsigned long timeo);
- void sanitize_string(uint8_t *s, size_t len);
--
-+int nand_write_oob_nand(struct nand_chip *chip, loff_t to,
-+			 struct mtd_oob_ops *ops);
- static inline bool nand_has_exec_op(struct nand_chip *chip)
- {
- 	if (!chip->controller || !chip->controller->ops ||
 diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index e90b7ae878e2..09ee490c08a9 100644
+index 09ee490c08a9..932a8cae4e84 100644
 --- a/drivers/mtd/nand/raw/nand_base.c
 +++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -4267,6 +4267,13 @@ static int nand_write_oob(struct mtd_info *mtd, loff_t to,
- 			  struct mtd_oob_ops *ops)
- {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
-+
-+	return chip->ops.write_oob(chip, to, ops);
-+}
-+
-+int nand_write_oob_nand(struct nand_chip *chip, loff_t to,
-+			struct mtd_oob_ops *ops)
-+{
- 	int ret;
- 
- 	ops->retlen = 0;
-@@ -4573,6 +4580,8 @@ static void nand_set_defaults(struct nand_chip *chip)
- 
- 	if (!chip->buf_align)
- 		chip->buf_align = 1;
-+
-+	chip->ops.write_oob = nand_write_oob_nand;
+@@ -2646,6 +2646,46 @@ int nand_check_erased_ecc_chunk(void *data, int datalen,
  }
+ EXPORT_SYMBOL(nand_check_erased_ecc_chunk);
  
- /* Sanitize ONFI strings so we can safely print them */
++/**
++ * nand_check_is_erased_page - check if this page is a empty page
++ * @chip: nand chip info structure
++ * @page_data: data buffer containing the data in the page being checked
++ * @oob: indicate if chip->oob_poi points to oob date of the page
++ *
++ * Returns true if this is an un-programmed page, false otherwise.
++ */
++int nand_check_is_erased_page(struct nand_chip *chip, u8 *page_data, bool oob)
++{
++	struct mtd_info *mtd = nand_to_mtd(chip);
++	int ret, i;
++	u8 *databuf, *eccbuf = NULL;
++	struct mtd_oob_region oobregion;
++	int datasize, eccbytes = 0;
++
++	databuf = page_data;
++	datasize = chip->ecc.size;
++
++	if (oob) {
++		mtd_ooblayout_ecc(mtd, 0, &oobregion);
++		eccbuf = chip->oob_poi + oobregion.offset;
++		eccbytes = chip->ecc.bytes;
++	}
++
++	for (i = 0; i < chip->ecc.steps; i++) {
++		ret = nand_check_erased_ecc_chunk(databuf, datasize,
++						  eccbuf, eccbytes,
++						  NULL, 0, chip->ecc.strength);
++		if (ret < 0)
++			return false;
++
++		databuf += chip->ecc.size;
++		eccbuf += chip->ecc.bytes;
++	}
++
++	return true;
++}
++EXPORT_SYMBOL(nand_check_is_erased_page);
++
+ /**
+  * nand_read_page_raw_notsupp - dummy read raw page function
+  * @chip: nand chip info structure
 diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index df3d4b3ef2f6..3d75e50e5b75 100644
+index 3d75e50e5b75..718ce81eb111 100644
 --- a/include/linux/mtd/rawnand.h
 +++ b/include/linux/mtd/rawnand.h
-@@ -1035,6 +1035,7 @@ struct nand_legacy {
-  *			setting the read-retry mode. Mostly needed for MLC NAND.
-  * @pre_erase:		[FLASHSPECIFIC] prepare a physical erase block
-  * @post_erase:		[FLASHSPECIFIC] physical block erase post
-+ * @write_oob:		[REPLACEABLE] Raw NAND write operation
-  */
- struct nand_chip_ops {
- 	int (*suspend)(struct nand_chip *chip);
-@@ -1044,6 +1045,8 @@ struct nand_chip_ops {
- 	int (*setup_read_retry)(struct nand_chip *chip, int retry_mode);
- 	int (*pre_erase)(struct nand_chip *chip, u32 eraseblock);
- 	int (*post_erase)(struct nand_chip *chip, u32 eraseblock);
-+	int (*write_oob)(struct nand_chip *chip, loff_t to,
-+			 struct mtd_oob_ops *ops);
- };
+@@ -1337,6 +1337,8 @@ int nand_check_erased_ecc_chunk(void *data, int datalen,
+ 				void *extraoob, int extraooblen,
+ 				int threshold);
  
- /**
++int nand_check_is_erased_page(struct nand_chip *chip, u8 *page_data, bool oob);
++
+ int nand_ecc_choose_conf(struct nand_chip *chip,
+ 			 const struct nand_ecc_caps *caps, int oobavail);
+ 
 -- 
 2.17.1
 
