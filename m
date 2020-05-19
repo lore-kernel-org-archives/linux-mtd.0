@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89108C433E0
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 07:47:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FAA5C433E0
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 07:47:27 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 587A3207C4
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 07:47:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 11029207C4
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 07:47:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hKAp9sva"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 587A3207C4
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cSkNrgEX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 11029207C4
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=u13FH4aB2UJQO5Db1HExfKdZR9NDVY0G4sEP4v+uLb0=; b=hKAp9sva6/eig/
-	laZaXg/ZAelboPUHF0+I0ZhZ2hnIwxYBMNf6ZedlHYdyNIlKI/rXoEEr0wSbnIAB+CqifiqXIYgke
-	LucszrUiudlD5FONjNAlAM1p0NGwUBL3m/H9UN+yyG3SnDEtjR5lZEuIu8aM95LyvFPtVh6Mo5M1H
-	yt4R9qHen1TCwbqld1f/JwDJXak9gEgj56z5YFrEqJCV7QYmTv0wTUCiws5oPKKhOdBWaEFyVzrK5
-	Oj025Rbc7MZMk78k2cwvssOLXiRT1aqjW007baS2s4bD5uljW5JI2qfT5cxc0008OwgR1hTc7N8Zh
-	Nrs7fR3s2iTykxJsP51w==;
+	List-Owner; bh=iDr/6yHKaSV58NKFtBxVRtEuqppt1qcPsK7cZRL7Cys=; b=cSkNrgEXgNLxOP
+	875lulCzo8VAnYVyZj7uEjONQpkXF+WWsbTVfHsMP2VHvPk1dYYn6mSJ+x3Y47fzkNyf2ORlyIzd2
+	Fbo7tp0z4ILSo5oxnu8JI/+hI9fYa0vtQvuK/bU0/661DAHoA6mFKkBaUJQRNb89T5sil7x7TaVyo
+	o5zWi7OB5h2oTBwKM7tW7YfNwOO8rGrfMYMgJG2OcwHczzr7TogHDfFJoSF5wY/lMUQ5kW5Otx8j6
+	q2OMye6y1p4Ks2/1GQ7RgpFndQFYAMEaMrEgIUcybS6L9Zpq1THfUn1utcCS7ZC8LfZLmi4rEIRE2
+	CYdty6euBRw1aUVPRoqw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jawxr-0007jf-Mr; Tue, 19 May 2020 07:47:03 +0000
+	id 1jawy6-0007yp-0Y; Tue, 19 May 2020 07:47:18 +0000
 Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jawwp-0006qO-J8
- for linux-mtd@lists.infradead.org; Tue, 19 May 2020 07:46:01 +0000
+ id 1jawwq-0006qo-PL
+ for linux-mtd@lists.infradead.org; Tue, 19 May 2020 07:46:02 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 4B80624000A;
- Tue, 19 May 2020 07:45:57 +0000 (UTC)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 61B6A240010;
+ Tue, 19 May 2020 07:45:58 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH v5 4/8] mtd: rawnand: Add nand_extract_bits()
-Date: Tue, 19 May 2020 09:45:45 +0200
-Message-Id: <20200519074549.23673-5-miquel.raynal@bootlin.com>
+Subject: [PATCH v5 5/8] MAINTAINERS: Add Arasan NAND controller and bindings
+Date: Tue, 19 May 2020 09:45:46 +0200
+Message-Id: <20200519074549.23673-6-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200519074549.23673-1-miquel.raynal@bootlin.com>
 References: <20200519074549.23673-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200519_004559_765090_ACDB3833 
-X-CRM114-Status: GOOD (  11.24  )
+X-CRM114-CacheID: sfid-20200519_004600_976813_CE487CC1 
+X-CRM114-Status: UNSURE (   7.81  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,85 +79,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There are cases where ECC bytes are not byte-aligned. Indeed, BCH
-implies using a number of ECC bits, which are not always a multiple of
-8. We then need a helper like nand_extract_bits() to extract these
-syndromes from a buffer.
+Fill a new entry for the Arasan NAND controller.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/nand_base.c | 42 ++++++++++++++++++++++++++++++++
- include/linux/mtd/rawnand.h      |  4 +++
- 2 files changed, 46 insertions(+)
+ MAINTAINERS | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 65e9b2fa2fc5..14387b967e8b 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -274,6 +274,48 @@ static int check_offs_len(struct nand_chip *chip, loff_t ofs, uint64_t len)
- 	return ret;
- }
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 26f281d9f32a..8864b9320aaa 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1284,6 +1284,13 @@ S:	Supported
+ W:	http://www.aquantia.com
+ F:	drivers/net/ethernet/aquantia/atlantic/aq_ptp*
  
-+/** nand_extract_bits - Copy unaligned bits from one buffer to another one
-+ * @dst: destination buffer
-+ * @dst_off: bit offset at which the writing starts
-+ * @src: source buffer
-+ * @src_off: bit offset at which the reading starts
-+ * @nbits: number of bits to copy from @src to @dst
-+ *
-+ * Copy bits from one memory region to another (overlap authorized).
-+ */
-+void nand_extract_bits(u8 *dst, unsigned int dst_off, const u8 *src,
-+		       unsigned int src_off, unsigned int nbits)
-+{
-+	unsigned int tmp, n;
++ARASAN NAND CONTROLLER DRIVER
++M:	Naga Sureshkumar Relli <nagasure@xilinx.com>
++L:	linux-mtd@lists.infradead.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/mtd/arasan,nand-controller.yaml
++F:	drivers/mtd/nand/raw/arasan-nand-controller.c
 +
-+	dst += dst_off / 8;
-+	dst_off %= 8;
-+	src += src_off / 8;
-+	src_off %= 8;
-+
-+	while (nbits) {
-+		n = min3(8 - dst_off, 8 - src_off, nbits);
-+
-+		tmp = (*src >> src_off) & GENMASK(n - 1, 0);
-+		*dst &= ~GENMASK(n - 1 + dst_off, dst_off);
-+		*dst |= tmp << dst_off;
-+
-+		dst_off += n;
-+		if (dst_off >= 8) {
-+			dst++;
-+			dst_off -= 8;
-+		}
-+
-+		src_off += n;
-+		if (src_off >= 8) {
-+			src++;
-+			src_off -= 8;
-+		}
-+
-+		nbits -= n;
-+	}
-+}
-+
- /**
-  * nand_select_target() - Select a NAND target (A.K.A. die)
-  * @chip: NAND chip object
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 0f45b6984ad1..45dd57e2a223 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -1412,6 +1412,10 @@ int nand_gpio_waitrdy(struct nand_chip *chip, struct gpio_desc *gpiod,
- void nand_select_target(struct nand_chip *chip, unsigned int cs);
- void nand_deselect_target(struct nand_chip *chip);
- 
-+/* Bitops */
-+void nand_extract_bits(u8 *dst, unsigned int dst_off, const u8 *src,
-+		       unsigned int src_off, unsigned int nbits);
-+
- /**
-  * nand_get_data_buf() - Get the internal page buffer
-  * @chip: NAND chip object
+ ARC FRAMEBUFFER DRIVER
+ M:	Jaya Kumar <jayalk@intworks.biz>
+ S:	Maintained
 -- 
 2.20.1
 
