@@ -2,62 +2,59 @@ Return-Path: <SRS0=qFGM=7B=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9069C433E0
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 13:18:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FDE1C433DF
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 13:18:54 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 53435206D4
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 13:18:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2E708206D4
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 13:18:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PVMg3fzJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 53435206D4
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QM338mTq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2E708206D4
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jG54TqwtW9ZD1GJWfj2rlpn2YIbcZOb/5kel9bNUxXM=; b=PVMg3fzJrCrm07
-	QnMndPJYt+t/x0dCHlcciTaVGIU0HWSsf6jgze5g90/MKyiUKFLgpkPfkEPlxPxj2tlKiBhUwnsLP
-	4HJI1oO0vWh7MtR9HusI0vgVe2WPb/KJUHca60nVPh1U+8Y+36xJJ5Kl+zaVZAx59IRx79Fepg+il
-	qXTiWYK1NnBiGlA4UsRsyoc9Vvb6OiC0IpD0+KPBzxkxR7XBRkLBnD/UdMtv1tP5A9OwDA0WTnOO9
-	UXPbPAG4X0JmTzJRVgXvlDHcKyY5nVjRWeICxOUGe5a69wCD2jVqvOiJRdc9/4k+jog6+5xzfBhv2
-	xtXtCrfyX1eU3k3LReDQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=OPimL0xOG8v0ylkjKEyOptA+n4RpOnBZrMbD8eZ0wQc=; b=QM338mTqdohq22
+	gY/NgHCCNdpEYYGUQrK5lenEZ+lx3fWPsl95Ag8oPAM1CxjNcy6uuDm5OH+M4/A1BCYvSZMt0JQ+T
+	lixtqwLKFOx3vSMH6yJDhQmc8lI7xmvx97rJQsLFIt7aoJuG3sRsjo6fVLyr4FNi4zlZ+gzJAMRPY
+	DHhee2rpl61v6MsuMGXXx4foBJa/UrDz3os4RZFC7eTGCID97Gox8vOSevlF3Dw+wiEDA00QQTd7j
+	Nukh9d8gMbPHCGFFx+2Lz/yW2sQUekWooTPFLt/Eqkkbi7UT+IpGZ76+O3A0UsEaYXb5N2BLbqtQ3
+	4zfmvDC1z8zb4rSEkTEw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jb28l-00080A-7b; Tue, 19 May 2020 13:18:39 +0000
-Received: from relay1-d.mail.gandi.net ([217.70.183.193])
+	id 1jb28y-0008Ef-4m; Tue, 19 May 2020 13:18:52 +0000
+Received: from relay12.mail.gandi.net ([217.70.178.232])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jb1wT-00006b-EN
- for linux-mtd@lists.infradead.org; Tue, 19 May 2020 13:05:59 +0000
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
+ id 1jb1z5-0002hb-P7
+ for linux-mtd@lists.infradead.org; Tue, 19 May 2020 13:08:42 +0000
+Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id D11FA240011;
- Tue, 19 May 2020 13:05:52 +0000 (UTC)
-Date: Tue, 19 May 2020 15:05:51 +0200
+ by relay12.mail.gandi.net (Postfix) with ESMTPSA id 6D297200004;
+ Tue, 19 May 2020 13:08:35 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@collabora.com>
-Subject: Re: [PATCH v2] mtd: rawnand: micron: Adapt the PAGE READ flow to
+To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ <linux-mtd@lists.infradead.org>
+Subject: [RESEND PATCH v2] mtd: rawnand: micron: Adapt the PAGE READ flow to
  constraint controllers
-Message-ID: <20200519150551.624cc4c4@xps13>
-In-Reply-To: <20200519150157.7b668605@collabora.com>
-References: <20200519123032.32547-1-miquel.raynal@bootlin.com>
- <20200519150157.7b668605@collabora.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Date: Tue, 19 May 2020 15:08:34 +0200
+Message-Id: <20200519130834.2918-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200519_060557_623725_F31DD460 
-X-CRM114-Status: GOOD (  17.60  )
+X-CRM114-CacheID: sfid-20200519_060840_103998_C16B0F90 
+X-CRM114-Status: GOOD (  17.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,48 +66,138 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Michal Simek <monstr@monstr.eu>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+Cc: Michal Simek <monstr@monstr.eu>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Naga Sureshkumar Relli <nagasure@xilinx.com>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Naga Sureshkumar Relli <nagasure@xilinx.com>
+ Miquel Raynal <miquel.raynal@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+There are controllers not able to just read data cycles on the
+bus. There are controllers not able to do a change column.
 
-Boris Brezillon <boris.brezillon@collabora.com> wrote on Tue, 19 May
-2020 15:01:57 +0200:
+If we want to support both, we need to check which operation is
+supported first. This is the exact same mechanism that is in use for
+parameter page reads (ONFI/JEDEC) as the same problem occurs.
 
-> On Tue, 19 May 2020 14:30:32 +0200
-> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> 
-> > There are controllers not able to just read data cycles on the
-> > bus. There are controllers not able to do a change column.
-> > 
-> > If we want to support both, we need to check which operation is
-> > supported first. This is the exact same mechanism that is in use for
-> > parameter page reads (ONFI/JEDEC) as the same problem occurs.
-> > 
-> > Speed testing does not show any throughput penalty so we do not
-> > optimize more than that. However it is likely that, in the future, a
-> > more robust and exhaustive test will run at boot time to avoid
-> > re-checking what is supported and what is not at every call.
-> > 
-> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-> > ---
-> > 
-> > Changes in v2:
-> > * Added a comment before each check which is a condensate of the
-> >   commit message.  
-> 
-> I don't see those comments :P.
+Speed testing does not show any throughput penalty so we do not
+optimize more than that. However it is likely that, in the future, a
+more robust and exhaustive test will run at boot time to avoid
+re-checking what is supported and what is not at every call.
 
-Do you think I forgot a "git add ."?...
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+---
 
-Let me resend this one.
+Resent:
+* Actually integrate the comments...
+
+Changes in v2:
+* Added a comment before each check which is a condensate of the
+  commit message.  
+
+ drivers/mtd/nand/raw/nand_micron.c | 61 +++++++++++++++++++++++++-----
+ 1 file changed, 52 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
+index b2b047b245f4..3589b4fce0d4 100644
+--- a/drivers/mtd/nand/raw/nand_micron.c
++++ b/drivers/mtd/nand/raw/nand_micron.c
+@@ -192,6 +192,7 @@ static int micron_nand_on_die_ecc_status_4(struct nand_chip *chip, u8 status,
+ 	struct micron_nand *micron = nand_get_manufacturer_data(chip);
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	unsigned int step, max_bitflips = 0;
++	bool use_datain = false;
+ 	int ret;
+ 
+ 	if (!(status & NAND_ECC_STATUS_WRITE_RECOMMENDED)) {
+@@ -211,8 +212,27 @@ static int micron_nand_on_die_ecc_status_4(struct nand_chip *chip, u8 status,
+ 	 * in non-raw mode, even if the user did not request those bytes.
+ 	 */
+ 	if (!oob_required) {
+-		ret = nand_read_data_op(chip, chip->oob_poi, mtd->oobsize,
+-					false, false);
++		/*
++		 * We first check which operation is supported by the controller
++		 * before running it. This trick makes it possible to support
++		 * all controllers, even the most constraints, without almost
++		 * any performance hit.
++		 *
++		 * TODO: could be enhanced to avoid repeating the same check
++		 * over and over in the fast path.
++		 */
++		if (!nand_has_exec_op(chip) ||
++		    !nand_read_data_op(chip, chip->oob_poi, mtd->oobsize, false,
++				       true))
++			use_datain = true;
++
++		if (use_datain)
++			ret = nand_read_data_op(chip, chip->oob_poi,
++						mtd->oobsize, false, false);
++		else
++			ret = nand_change_read_column_op(chip, mtd->writesize,
++							 chip->oob_poi,
++							 mtd->oobsize, false);
+ 		if (ret)
+ 			return ret;
+ 	}
+@@ -285,6 +305,7 @@ micron_nand_read_page_on_die_ecc(struct nand_chip *chip, uint8_t *buf,
+ 				 int oob_required, int page)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
++	bool use_datain = false;
+ 	u8 status;
+ 	int ret, max_bitflips = 0;
+ 
+@@ -300,14 +321,36 @@ micron_nand_read_page_on_die_ecc(struct nand_chip *chip, uint8_t *buf,
+ 	if (ret)
+ 		goto out;
+ 
+-	ret = nand_exit_status_op(chip);
+-	if (ret)
+-		goto out;
++	/*
++	 * We first check which operation is supported by the controller before
++	 * running it. This trick makes it possible to support all controllers,
++	 * even the most constraints, without almost any performance hit.
++	 *
++	 * TODO: could be enhanced to avoid repeating the same check over and
++	 * over in the fast path.
++	 */
++	if (!nand_has_exec_op(chip) ||
++	    !nand_read_data_op(chip, buf, mtd->writesize, false, true))
++		use_datain = true;
+ 
+-	ret = nand_read_data_op(chip, buf, mtd->writesize, false, false);
+-	if (!ret && oob_required)
+-		ret = nand_read_data_op(chip, chip->oob_poi, mtd->oobsize,
+-					false, false);
++	if (use_datain) {
++		ret = nand_exit_status_op(chip);
++		if (ret)
++			goto out;
++
++		ret = nand_read_data_op(chip, buf, mtd->writesize, false,
++					false);
++		if (!ret && oob_required)
++			ret = nand_read_data_op(chip, chip->oob_poi,
++						mtd->oobsize, false, false);
++	} else {
++		ret = nand_change_read_column_op(chip, 0, buf, mtd->writesize,
++						 false);
++		if (!ret && oob_required)
++			ret = nand_change_read_column_op(chip, mtd->writesize,
++							 chip->oob_poi,
++							 mtd->oobsize, false);
++	}
+ 
+ 	if (chip->ecc.strength == 4)
+ 		max_bitflips = micron_nand_on_die_ecc_status_4(chip, status,
+-- 
+2.20.1
 
 
 ______________________________________________________
