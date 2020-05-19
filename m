@@ -2,70 +2,67 @@ Return-Path: <SRS0=qFGM=7B=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 568E5C433E1
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 21:15:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0B7CC433DF
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 23:14:10 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2911F2075F
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 21:15:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 70CAA20578
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 23:14:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rhdsn7MQ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="LquIhs1P"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2911F2075F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=crapouillou.net
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rHCCRv2h"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 70CAA20578
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:To:
-	Subject:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=3rfuPgH/ouAvFtYtC7OdgiEIQxPcMRG3DOIe27WmNM0=; b=rhdsn7MQYPT+bXglnGjyrnpxg
-	SntNHnP9vKA/aL8Vp20b4cacqMUc/3+PTTn8MmkncZwIgtq9yZzE3YOq4HNXTBnJZXlihJzl/X4YX
-	G+IdQH6H9y/40KE+LWjN6AxrRH4hvpXGN1ALf/Xp1t58LkcarVz0A+kW3R+lDVs8l5atSRRAFBJjf
-	xxwDORqu4PmSmkQflX6ywofDSHunti/YKXfLMpZVHzM5Nx8lYNEXSGCzKii3xvARhcq1YtyI/gH3y
-	G8CHl5xDsEA4VNqZyfdmUVGYWVYC/vtpbfIOLlTcwNABTVOBiCkZ+jOpb3OA8OP4EvASmm7nBGdgH
-	tFuPIPTfw==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=0zX3Zhnk6aIBEpLQEIWXac83oNDsFn1FDrIMJ8BqNZo=; b=rHCCRv2hvoz0pZ
+	uHWf1QWjGP5yUlYGJG1ugw4If8VQUz7LDt+pYGwI9ZDYK9MbzbmmN2BXkc06qxW3r0bMB4yoGEMJF
+	wnpUpQxkDk38ngU97Kuke/y4u2hq4+fqbOaFE6HRMVoQ5otrYu3nn75BJpwSg/Gw9Kxu5bojEUXLW
+	22p7hQzaOzYdscdAUiwKlRQgUU374lu8gFv8OodqpTtEuAXIyhewtf949Mfbn8gOZ3og+SytIs80r
+	qfi2Q560hZGcDQ6e+xAKazjpbHPmUF7t00ySiZ86eog/SymOCdroinYyV40uZNa5i8wVgwR39hNNm
+	ABuyNgGvPZ4RAfNflHGg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jb9aK-0006kH-2G; Tue, 19 May 2020 21:15:36 +0000
-Received: from outils.crapouillou.net ([89.234.176.41] helo=crapouillou.net)
+	id 1jbBR2-0005oZ-3w; Tue, 19 May 2020 23:14:08 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jb9aG-0006js-4U
- for linux-mtd@lists.infradead.org; Tue, 19 May 2020 21:15:33 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
- s=mail; t=1589922930; h=from:from:sender:reply-to:subject:subject:date:date:
- message-id:message-id:to:to:cc:cc:mime-version:mime-version:
- content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=mtrpXjFC1Y8gSgOpr/X9Ejsg5okIDIdG8WWwu4d06ew=;
- b=LquIhs1Pxf4ADptkwCQKEIXgcZ1yyz8Z7roOVmux3s9Tn/owFmfSw5qq3IV6zMyHbWTZ0b
- UFTSPUbFISMXMCZ1qVJRUqtSZ5FSiQaAmvkbB//YtqiT3IrNuW9jIizm0BjZP3Xsn4UfRS
- j/rLBusujkluVSKGA3dPvjOTp6rXhsY=
-Date: Tue, 19 May 2020 23:15:20 +0200
-From: Paul Cercueil <paul@crapouillou.net>
+ id 1jbBQy-0005mf-7a
+ for linux-mtd@lists.infradead.org; Tue, 19 May 2020 23:14:05 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 8787F2A2523;
+ Wed, 20 May 2020 00:14:02 +0100 (BST)
+Date: Wed, 20 May 2020 01:13:59 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Paul Cercueil <paul@crapouillou.net>
 Subject: Re: [PATCH] mtd: rawnand: ingenic: Convert the driver to exec_op()
-To: Boris Brezillon <boris.brezillon@collabora.com>
-Message-Id: <KDKLAQ.4DRTL98VT0JT1@crapouillou.net>
-In-Reply-To: <20200519193558.77f4c3d7@collabora.com>
+Message-ID: <20200520011359.37477358@collabora.com>
+In-Reply-To: <L8KLAQ.KW09884RLNR6@crapouillou.net>
 References: <20200518165640.312220-1-boris.brezillon@collabora.com>
  <G7GJAQ.0VIFSQUDMC9H2@crapouillou.net>
  <20200518212422.23316760@collabora.com>
- <FN2LAQ.2U7L7XR4D02L@crapouillou.net>
- <20200519170130.77543c8e@collabora.com>
- <0H3LAQ.G5DAMEP9GDQC2@crapouillou.net>
- <20200519193558.77f4c3d7@collabora.com>
+ <20200518213555.38e3a570@collabora.com>
+ <P73LAQ.QZS4PIAER4ZK@crapouillou.net>
+ <20200519192805.30fbf4fa@collabora.com>
+ <L8KLAQ.KW09884RLNR6@crapouillou.net>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200519_141532_561126_F24F2F50 
-X-CRM114-Status: GOOD (  22.21  )
+X-CRM114-CacheID: sfid-20200519_161404_403363_E986F12C 
+X-CRM114-Status: GOOD (  24.99  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,194 +78,66 @@ Cc: Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <tudor.ambarus@microchip.com>,
  Richard Weinberger <richard@nod.at>, Harvey Hunt <harveyhuntnexus@gmail.com>,
  linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Boris,
-
-Le mar. 19 mai 2020 =E0 19:35, Boris Brezillon =
-
-<boris.brezillon@collabora.com> a =E9crit :
-> On Tue, 19 May 2020 17:10:12 +0200
-> Paul Cercueil <paul@crapouillou.net> wrote:
-> =
-
->>  Le mar. 19 mai 2020 =E0 17:01, Boris Brezillon
->>  <boris.brezillon@collabora.com> a =E9crit :
->>  > On Tue, 19 May 2020 16:52:27 +0200
->>  > Paul Cercueil <paul@crapouillou.net> wrote:
->>  >
->>  >>  Hi Boris,
->>  >>
->>  >>  Le lun. 18 mai 2020 =E0 21:24, Boris Brezillon
->>  >>  <boris.brezillon@collabora.com> a =E9crit :
->>  >>  > On Mon, 18 May 2020 19:50:04 +0200
->>  >>  > Paul Cercueil <paul@crapouillou.net> wrote:
->>  >>  >
->>  >>  >>  Hi Boris,
->>  >>  >>
->>  >>  >>  Le lun. 18 mai 2020 =E0 18:56, Boris Brezillon
->>  >>  >>  <boris.brezillon@collabora.com> a =E9crit :
->>  >>  >>  > Let's convert the driver to exec_op() to have one less =
-
->> driver
->>  >>  >> relying
->>  >>  >>  > on the legacy interface.
->>  >>  >>
->>  >>  >>  Great work, thanks for that.
->>  >>  >>
->>  >>  >>  However it does not work :( nand_scan() returns error -145.
->>  >>  >
->>  >>  > Looks like the R/B signal is inverted. Can you try with the
->>  >>  > following diff applied?
->>  >>
->>  >>  Still doesn't work properly. I get -ENODEV in nand_detect(), at =
-
->> the
->>  >>  "second ID read did not match..." pr_info().
->>  >>
->>  >>  The R/B signal doesn't seem to be the primary cause, if I use
->>  >>  nand_soft_waitrdy() it doesn't work any better.
->>  >
->>  > Well, it does solve the ETIMEDOUT issue, so we're one step further
->>  > ;-).
->>  > Can you print the returned ID?
->> =
-
->>  It reads 00/00, so it doesn't seem to be able to read any data.
->> =
-
->>  >>
->>  >>  One thing I noticed that jz4780_nemc_assert() is called with
->>  >>  assert=3Dtrue unconditionally, while before it was called with =
-
->> (ctrl &
->>  >>  NAND_NCE), whatever that is. Whether or not that's a problem, I
->>  >> have no
->>  >>  idea.
->>  >
->>  > Yes, we really want to assert the CE signal unconditionally here, =
-
->> but
->>  > maybe we should add a delay after asserting it/before =
-
->> de-asserting it.
->> =
-
->>  I added some udelay() here and there, unfortunately it didn't change
->>  anything.
-> =
-
-> Can you try with this diff? It's basically the same as before except
-> there's an additional fix (s/cmd_offset/addr_offset/ in the address
-> emission path).
-
-Oops, I'm sorry I didn't even spot that.
-
-With the diff below, it works, so:
-Tested-by: Paul Cercueil <paul@crapouillou.net>
-
-Thank you for the patch.
-
-Cheers,
--Paul
-
-> =
-
-> --->8---
-> diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c =
-
-> b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-> index dcecd54af20b..2668135f2d26 100644
-> --- a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-> +++ b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-> @@ -249,6 +249,26 @@ static int ingenic_nand_attach_chip(struct =
-
-> nand_chip *chip)
->         return 0;
->  }
-> =
-
-> +static int ingenic_nand_gpio_waitrdy(struct gpio_desc *gpiod,
-> +                                    unsigned long timeout_ms)
-> +{
-> +       /*
-> +        * Wait until R/B pin indicates chip is ready or timeout =
-
-> occurs.
-> +        * +1 below is necessary because if we are now in the last =
-
-> fraction
-> +        * of jiffy and msecs_to_jiffies is 1 then we will wait only =
-
-> that
-> +        * small jiffy fraction - possibly leading to false timeout.
-> +       */
-> +       timeout_ms =3D jiffies + msecs_to_jiffies(timeout_ms) + 1;
-> +       do {
-> +               if (!gpiod_get_value_cansleep(gpiod))
-> +                       return 0;
-> +
-> +               cond_resched();
-> +       } while (time_before(jiffies, timeout_ms));
-> +
-> +       return !gpiod_get_value_cansleep(gpiod) ? 0 : -ETIMEDOUT;
-> +};
-> +
->  static int ingenic_nand_exec_instr(struct nand_chip *chip,
->                                    struct ingenic_nand_cs *cs,
->                                    const struct nand_op_instr *instr)
-> @@ -265,7 +285,7 @@ static int ingenic_nand_exec_instr(struct =
-
-> nand_chip *chip,
->         case NAND_OP_ADDR_INSTR:
->                 for (i =3D 0; i < instr->ctx.addr.naddrs; i++)
->                         writeb(instr->ctx.addr.addrs[i],
-> -                              cs->base + nfc->soc_info->cmd_offset);
-> +                              cs->base + nfc->soc_info->addr_offset);
->                 return 0;
->         case NAND_OP_DATA_IN_INSTR:
->                 if (instr->ctx.data.force_8bit ||
-> @@ -294,8 +314,8 @@ static int ingenic_nand_exec_instr(struct =
-
-> nand_chip *chip,
->                         return nand_soft_waitrdy(chip,
->                                                  =
-
-> instr->ctx.waitrdy.timeout_ms);
-> =
-
-> -               return nand_gpio_waitrdy(chip, nand->busy_gpio,
-> -                                        =
-
-> instr->ctx.waitrdy.timeout_ms);
-> +               return ingenic_nand_gpio_waitrdy(nand->busy_gpio,
-> +                                                =
-
-> instr->ctx.waitrdy.timeout_ms);
->         default:
->                 break;
->         }
-> @@ -322,6 +342,9 @@ static int ingenic_nand_exec_op(struct nand_chip =
-
-> *chip,
->                 ret =3D ingenic_nand_exec_instr(chip, cs, =
-
-> &op->instrs[i]);
->                 if (ret)
->                         break;
-> +
-> +               if (op->instrs[i].delay_ns)
-> +                       ndelay(op->instrs[i].delay_ns);
->         }
->         jz4780_nemc_assert(nfc->dev, cs->bank, false);
-> =
-
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gVHVlLCAxOSBNYXkgMjAyMCAyMzoxMjoyMSArMDIwMApQYXVsIENlcmN1ZWlsIDxwYXVsQGNy
+YXBvdWlsbG91Lm5ldD4gd3JvdGU6Cgo+IExlIG1hci4gMTkgbWFpIDIwMjAgw6AgMTk6MjgsIEJv
+cmlzIEJyZXppbGxvbiAKPiA8Ym9yaXMuYnJlemlsbG9uQGNvbGxhYm9yYS5jb20+IGEgw6ljcml0
+IDoKPiA+IE9uIFR1ZSwgMTkgTWF5IDIwMjAgMTc6MDQ6MzcgKzAyMDAKPiA+IFBhdWwgQ2VyY3Vl
+aWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PiB3cm90ZToKPiA+ICAgCj4gPj4gIExlIGx1bi4gMTgg
+bWFpIDIwMjAgw6AgMjE6MzUsIEJvcmlzIEJyZXppbGxvbgo+ID4+ICA8Ym9yaXMuYnJlemlsbG9u
+QGNvbGxhYm9yYS5jb20+IGEgw6ljcml0IDogIAo+ID4+ICA+IE9uIE1vbiwgMTggTWF5IDIwMjAg
+MjE6MjQ6MjIgKzAyMDAKPiA+PiAgPiBCb3JpcyBCcmV6aWxsb24gPGJvcmlzLmJyZXppbGxvbkBj
+b2xsYWJvcmEuY29tPiB3cm90ZToKPiA+PiAgPiAgCj4gPj4gID4+ICBPbiBNb24sIDE4IE1heSAy
+MDIwIDE5OjUwOjA0ICswMjAwCj4gPj4gID4+ICBQYXVsIENlcmN1ZWlsIDxwYXVsQGNyYXBvdWls
+bG91Lm5ldD4gd3JvdGU6Cj4gPj4gID4+ICAKPiA+PiAgPj4gID4gSGkgQm9yaXMsCj4gPj4gID4+
+ICA+Cj4gPj4gID4+ICA+IExlIGx1bi4gMTggbWFpIDIwMjAgw6AgMTg6NTYsIEJvcmlzIEJyZXpp
+bGxvbgo+ID4+ICA+PiAgPiA8Ym9yaXMuYnJlemlsbG9uQGNvbGxhYm9yYS5jb20+IGEgw6ljcml0
+IDogIAo+ID4+ICA+PiAgPiA+IExldCdzIGNvbnZlcnQgdGhlIGRyaXZlciB0byBleGVjX29wKCkg
+dG8gaGF2ZSBvbmUgbGVzcyAgIAo+ID4+IGRyaXZlciAgCj4gPj4gID4+IHJlbHlpbmcgIAo+ID4+
+ICA+PiAgPiA+IG9uIHRoZSBsZWdhY3kgaW50ZXJmYWNlLiAgCj4gPj4gID4+ICA+Cj4gPj4gID4+
+ICA+IEdyZWF0IHdvcmssIHRoYW5rcyBmb3IgdGhhdC4KPiA+PiAgPj4gID4KPiA+PiAgPj4gID4g
+SG93ZXZlciBpdCBkb2VzIG5vdCB3b3JrIDooIG5hbmRfc2NhbigpIHJldHVybnMgZXJyb3IgLTE0
+NS4gIAo+ID4+ICA+Pgo+ID4+ICA+PiAgTG9va3MgbGlrZSB0aGUgUi9CIHNpZ25hbCBpcyBpbnZl
+cnRlZC4gQ2FuIHlvdSB0cnkgd2l0aCB0aGUKPiA+PiAgPj4gIGZvbGxvd2luZyBkaWZmIGFwcGxp
+ZWQ/ICAKPiA+PiAgPgo+ID4+ICA+IEkgY2hlY2tlZCB0aGUgRFQsIGFuZCB0aGUgR1BJTyBpcyBp
+bmRlZWQgZGVjbGFyZWQgR1BJT19BQ1RJVkVfTE9XLAo+ID4+ICA+IHdoaWNoIGV4cGxhaW4gd2h5
+IHRoZSB0ZXN0IGlzIGludmVydGVkLiBCZWNhdXNlIG9mIERUIEFCSSAgIAo+ID4+IHN0YWJpbGl0
+eSBpdCAgCj4gPj4gID4gbWlnaHQgbm90IGJlIGFuIG9wdGlvbiB0byBjaGFuZ2UgdGhhdCwgYnV0
+IHRoZSBzaWduYWwgc2hvdWxkICAgCj4gPj4gYWN0dWFsbHkgIAo+ID4+ICA+IGJlCj4gPj4gID4g
+ZGVjbGFyZWQgR1BJT19BQ1RJVkVfSElHSC4gIAo+ID4+IAo+ID4+ICBJdCBkZXBlbmRzIHdoYXQg
+eW91IGNvbnNpZGVyIHdoYXQgaXMgdGhlIGFjdGl2ZSBzdGF0ZSwgaXMgaXQgd2hlbgo+ID4+ICAi
+YnVzeSIgb3IgInJlYWR5Ij8gOykgIAo+ID4gCj4gPiBUcnVlLCB0aGlzIHNob3VsZCByZWFsbHkg
+YmUgZG9jdW1lbnRlZCBpbiB0aGUgZ2VuZXJpYyBiaW5kaW5nIHBhcnQuIEFzCj4gPiB5b3UgcHJv
+YmFibHkgZ3Vlc3NlZCBmcm9tIHRoaXMgZGlzY3Vzc2lvbiwgYWxsIG90aGVyIGRyaXZlcnMgKGFu
+ZCB0aGUKPiA+IGZyYW1ld29yaykgaXMgYXNzdW1pbmcgInJlYWR5IiBpcyB0aGUgc3RhdGUgd2Un
+cmUgbW9uaXRvcmluZywgc28gaXQncwo+ID4gZWZmZWN0aXZlbHkgYWN0aXZlIGhpZ2guCj4gPiAg
+IAo+ID4+IAo+ID4+ICBJIGNhbiBmaXggaXQgaW4gdGhlIGRldmljZXRyZWUsIGFuZCB0aGUgZHJp
+dmVyIHdvdWxkIHJldHVybgo+ID4+ICAoZ3Bpb2RfZ2V0X3ZhbHVlX2NhbnNsZWVwKGdwaW9kKSBe
+IGdwaW9kX2lzX2FjdGl2ZV9sb3coZ3Bpb2QpKSBmb3IKPiA+PiAgY29tcGF0aWJpbGl0eSB3aXRo
+IHRoZSBvbGQgZGV2aWNldHJlZS4gIAo+ID4gCj4gPiBPciB5b3UgY291bGQgcmVhZCB0aGUgcmF3
+IHZhbHVlIChncGlvZF9nZXRfcmF3X3ZhbHVlX2NhbnNsZWVwKCkpLAo+ID4gYnV0IHRoYXQgc3Rp
+bGwgbWVhbnMgeW91IGNhbid0IG1vdmUgYXdheSBmcm9tIHRoZSBvbGQgc2VtYW50aWNzIAo+ID4g
+d2l0aG91dAo+ID4gYnJlYWtpbmcgdGhlIGV4aXN0aW5nIERUIHdpdGggdGhlIGVycm9uZW91cyBh
+Y3RpdmUtbG93LiBJIG1lYW4sCj4gPiBhY3RpdmUtbG93IGlzIHN0aWxsIHZhbGlkIGlmIHNvbWVv
+bmUgaGFzIHRoZSBSL0Igc2lnbmFsIGludmVydGVkLAo+ID4gYnV0IHlvdSBjYW4ndCBkaXNjcmlt
+aW5hdGUgd2hlbiBpdCdzIHZhbGlkIGFuZCB3aGVuIGl0J3Mgbm90Lgo+ID4gCj4gPiBJIGd1ZXNz
+IGhhdmluZyBhIGN1c3RvbSBoZWxwZXIsIGFuZCBkb2N1bWVudGluZyB0aGF0IHRoZSBhY3RpdmUg
+c3RhdGUKPiA+IGZvciBpbmdlbmljIGlzIEJVU1kgd291bGQgYmUgb2theS4gVW5sZXNzIHlvdSdk
+IGJlIHdpbGxpbmcgdG8gYnJlYWsKPiA+IHRoZSBiYWNrd2FyZCBjb21wYXQgZm9yIHRoZSBvbmx5
+IGJvYXJkIHRoYXQgaGFzIGEgcmItZ3Bpb3MgcHJvcGVydHkKPiA+IGRlZmluZWQuICAKPiAKPiBX
+aGF0IEkgc3VnZ2VzdCwgaW4gdGhlIHByb2JlOgo+IAo+IGlmIChvZl9tYWNoaW5lX2lzX2NvbXBh
+dGlibGUoInFpLGxiNjAiKSAmJiAKPiBncGlvZF9pc19hY3RpdmVfbG93KG5hbmQtPmJ1c3lfZ3Bp
+bykpIHsKPiAgICAgZ3Bpb2RfdG9nZ2xlX2FjdGl2ZV9sb3cobmFuZC0+YnVzeV9ncGlvKTsKPiB9
+Cj4gCgpPaCwgSSBkaWRuJ3Qgbm90aWNlIHRoaXMgZ3Bpb2RfdG9nZ2xlX2FjdGl2ZV9sb3coKSBp
+biB0aGUgQVBJLgoKPiBUaGVuIGl0J3MgYmFja3dhcmQtY29tcGF0aWJsZSwgd291bGQgYWxsb3cg
+bWUgdG8gZml4IHRoZSByYi1ncGlvcyBpbiAKPiBkZXZpY2V0cmVlLCBhbmQgd291bGRuJ3QgcmVx
+dWlyZSBhIGN1c3RvbSBuYW5kX2dwaW9fd2FpdHJkeSgpIGZ1bmN0aW9uLgoKVGhhdCdzIGluZGVl
+ZCB0aGUgYmVzdCBvcHRpb24gSU1ITy4gSSdsbCBhZGQgYSBwYXRjaCBkb2luZyB0aGF0IGluIG15
+CnYyLiBUaGFua3MgZm9yIHRoZSBzdWdnZXN0aW9uLgoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxp
+bmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
+LW10ZC8K
