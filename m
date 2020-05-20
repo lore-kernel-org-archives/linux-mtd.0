@@ -1,63 +1,93 @@
-Return-Path: <SRS0=qFGM=7B=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=rTSM=7C=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35815C433E2
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 23:26:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21207C433DF
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 May 2020 00:01:04 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 05F9520823
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 May 2020 23:26:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D78FC20709
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 May 2020 00:01:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="u9/y4Jnz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 05F9520823
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="i3uxZ9Dn";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="2rXOscJY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D78FC20709
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=alliedtelesis.co.nz
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3OE8cRxn3kMUWSmWA+vADsp4ULYJsxLABIr1KTtuWio=; b=u9/y4Jnza2PFLw
-	AnNnAmzFXKZq9TPRHqZ3oOecj3Da62j4pcZYyeudxBhH8X5U5MAIS1BvBiC/uTPReQXX1W1IMCt9k
-	N7RC4AK6sGfwIyJh4HfvmjNfPrdRL9B7pSuuJJp5YJXX9w+0QFy0K2yuwHVhIB6YyRGxVr1578nbM
-	ViXDYunGNqiecgCSitQ/idAqYcoj0usNncwH7kBXYe0Tpjb5vdByeeU8Q+Onz083lPn5YZHqDIjYH
-	f9PnlhSubWFOcGiU14ndFqqg6yEgRZn2lbyLY1emcvZQvkdOTHf9PnXRbCUyDVQ/3+6fUAc6LQj4o
-	1yiMzCWxyzCoNYsO4vNw==;
+	List-Owner; bh=ni05sXiLQve0W+ME8Ms/ONmI97XG+RpuimifBt0nJV0=; b=i3uxZ9Dn/0Irtv
+	nSqvPev9JuMJUh+0yzXC2Z1TKc0npQfDSrW7QnZOCBqHPqHDxPZHYgDiLtrhT6BDKoJO7iRqbkZo6
+	IoqNWXZSpOgclndi+JOgJA9rIUF3hFI70fTnZ/J81y6FR7PfeVAd2gQKHSN2UUzKNPdoJkIXhKxSh
+	6Gav9X8RS9wyy4yJ2b7e4XvHlDCRATt/S605KnfkbLoVX2mbxpDxjM26p/646xtFIkEt+5uAeQGkW
+	GDSYOXhRip/b+m2fZzHNw8VfOlsgrVTixIrsUtoLrd1Sx56U6SYW6szhwMX5qC9FSvkiSQUh2MJE0
+	/OqkwoHFIFAJ5o3sYlDw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jbBcK-0006Pr-47; Tue, 19 May 2020 23:25:48 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1jbC9x-00059e-75; Wed, 20 May 2020 00:00:33 +0000
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jbBbb-0003U8-80
- for linux-mtd@lists.infradead.org; Tue, 19 May 2020 23:25:05 +0000
-Received: from localhost.localdomain (unknown
- [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
+ id 1jbC9s-00051b-NC
+ for linux-mtd@lists.infradead.org; Wed, 20 May 2020 00:00:31 +0000
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested) (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 764542A26CB;
- Wed, 20 May 2020 00:25:01 +0100 (BST)
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Paul Cercueil <paul@crapouillou.net>,
- Harvey Hunt <harveyhuntnexus@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH v2 4/4] mtd: rawnand: ingenic: Convert the driver to exec_op()
-Date: Wed, 20 May 2020 01:24:54 +0200
-Message-Id: <20200519232454.374081-4-boris.brezillon@collabora.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200519232454.374081-1-boris.brezillon@collabora.com>
-References: <20200519232454.374081-1-boris.brezillon@collabora.com>
+ (Client did not present a certificate)
+ by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 713A88066C;
+ Wed, 20 May 2020 12:00:10 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+ s=mail181024; t=1589932810;
+ bh=eXWSKaZTPx/G1ud57Vocs+0U//C3VlFUjlW9uCsZFIY=;
+ h=From:To:CC:Subject:Date:References:In-Reply-To;
+ b=2rXOscJYB75yYKwQGoI/M8E9hu/ELzi7Q96EnTsbAbAeedkqYvZ8eFlmAxwTi3aEa
+ 7eAmTPA0M9on+0KZWShenVWp7s6hdNfu8dehI0ZQ9LRO3mvvYvrXblOhk9abMbdApJ
+ +y9wVjSKeKIlg1dH7xRG7aTyuMKRaXDKdkqWVMtD3BoYm2IlHA80SGYw4/QHdMG2JL
+ 6siheRnqJn9TY/iIHI16Y/fZw1jpS25cRTzBRPRuefIr2Zfjpo1mXDxQcWhxhqHGKa
+ kz/WKvSlNIPEI+8IehfT9orlD2m1vszs0muhgTNhBHNhC/+AKbpFF5vmTf4cfjAXDe
+ Qax+Mb5mbwM/w==
+Received: from svr-chch-ex1.atlnz.lc (Not Verified[10.32.16.77]) by
+ mmarshal3.atlnz.lc with Trustwave SEG (v7, 5, 8, 10121)
+ id <B5ec4730a0001>; Wed, 20 May 2020 12:00:10 +1200
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
+ svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Wed, 20 May 2020 12:00:10 +1200
+Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
+ svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
+ 15.00.1497.006; Wed, 20 May 2020 12:00:10 +1200
+From: Hamish Martin <Hamish.Martin@alliedtelesis.co.nz>
+To: "richard.weinberger@gmail.com" <richard.weinberger@gmail.com>, Kyeong Yoo
+ <Kyeong.Yoo@alliedtelesis.co.nz>
+Subject: Re: [PATCH] jffs2: GC deadlock reading a page that is used in
+ jffs2_write_begin()
+Thread-Topic: [PATCH] jffs2: GC deadlock reading a page that is used in
+ jffs2_write_begin()
+Thread-Index: AQHWLjitLM2lX48lqUusjztLB0eiP6ivTaSA
+Date: Wed, 20 May 2020 00:00:09 +0000
+Message-ID: <1589932809.26085.25.camel@alliedtelesis.co.nz>
+References: <149914202384.24318.7331828698981799313.stgit@kyeongy-dl.atlnz.lc>
+ <CAFLxGvy4NbfHHoHXaH=sR-3e10+EAbDwLsdM1_Eyk_gT5=HE8Q@mail.gmail.com>
+In-Reply-To: <CAFLxGvy4NbfHHoHXaH=sR-3e10+EAbDwLsdM1_Eyk_gT5=HE8Q@mail.gmail.com>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Evolution 3.18.5.2-0ubuntu3.2 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [2001:df5:b000:24:44bc:5773:a998:1d51]
+Content-ID: <2414249FAFD61645BF1DE1B7392CC21B@atlnz.lc>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200519_162503_566037_0560D336 
-X-CRM114-Status: GOOD (  18.96  )
+X-CRM114-CacheID: sfid-20200519_170029_311274_A969DD5A 
+X-CRM114-Status: GOOD (  32.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,224 +99,146 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>,
- Boris Brezillon <boris.brezillon@collabora.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Let's convert the driver to exec_op() to have one less driver relying
-on the legacy interface.
-
-Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
----
-Changes in v2:
-* Add a delay after instructions when needed
-* s/cmd_offset/addr_offset/
-
-Paul, I didn't add your T-b since this new version follows the path
-you proposed for the R/B polarity inversion issue. Feel free to add
-it back if it still works.
----
- .../mtd/nand/raw/ingenic/ingenic_nand_drv.c   | 139 +++++++++++-------
- 1 file changed, 83 insertions(+), 56 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-index e939404e1383..3659e62829f9 100644
---- a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-+++ b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-@@ -27,9 +27,6 @@
- 
- #define DRV_NAME	"ingenic-nand"
- 
--/* Command delay when there is no R/B pin. */
--#define RB_DELAY_US	100
--
- struct jz_soc_info {
- 	unsigned long data_offset;
- 	unsigned long addr_offset;
-@@ -49,7 +46,6 @@ struct ingenic_nfc {
- 	struct nand_controller controller;
- 	unsigned int num_banks;
- 	struct list_head chips;
--	int selected;
- 	struct ingenic_nand_cs cs[];
- };
- 
-@@ -142,51 +138,6 @@ static const struct mtd_ooblayout_ops jz4725b_ooblayout_ops = {
- 	.free = jz4725b_ooblayout_free,
- };
- 
--static void ingenic_nand_select_chip(struct nand_chip *chip, int chipnr)
--{
--	struct ingenic_nand *nand = to_ingenic_nand(nand_to_mtd(chip));
--	struct ingenic_nfc *nfc = to_ingenic_nfc(nand->chip.controller);
--	struct ingenic_nand_cs *cs;
--
--	/* Ensure the currently selected chip is deasserted. */
--	if (chipnr == -1 && nfc->selected >= 0) {
--		cs = &nfc->cs[nfc->selected];
--		jz4780_nemc_assert(nfc->dev, cs->bank, false);
--	}
--
--	nfc->selected = chipnr;
--}
--
--static void ingenic_nand_cmd_ctrl(struct nand_chip *chip, int cmd,
--				  unsigned int ctrl)
--{
--	struct ingenic_nand *nand = to_ingenic_nand(nand_to_mtd(chip));
--	struct ingenic_nfc *nfc = to_ingenic_nfc(nand->chip.controller);
--	struct ingenic_nand_cs *cs;
--
--	if (WARN_ON(nfc->selected < 0))
--		return;
--
--	cs = &nfc->cs[nfc->selected];
--
--	jz4780_nemc_assert(nfc->dev, cs->bank, ctrl & NAND_NCE);
--
--	if (cmd == NAND_CMD_NONE)
--		return;
--
--	if (ctrl & NAND_ALE)
--		writeb(cmd, cs->base + nfc->soc_info->addr_offset);
--	else if (ctrl & NAND_CLE)
--		writeb(cmd, cs->base + nfc->soc_info->cmd_offset);
--}
--
--static int ingenic_nand_dev_ready(struct nand_chip *chip)
--{
--	struct ingenic_nand *nand = to_ingenic_nand(nand_to_mtd(chip));
--
--	return gpiod_get_value_cansleep(nand->busy_gpio);
--}
--
- static void ingenic_nand_ecc_hwctl(struct nand_chip *chip, int mode)
- {
- 	struct ingenic_nand *nand = to_ingenic_nand(nand_to_mtd(chip));
-@@ -298,8 +249,91 @@ static int ingenic_nand_attach_chip(struct nand_chip *chip)
- 	return 0;
- }
- 
-+static int ingenic_nand_exec_instr(struct nand_chip *chip,
-+				   struct ingenic_nand_cs *cs,
-+				   const struct nand_op_instr *instr)
-+{
-+	struct ingenic_nand *nand = to_ingenic_nand(nand_to_mtd(chip));
-+	struct ingenic_nfc *nfc = to_ingenic_nfc(chip->controller);
-+	unsigned int i;
-+
-+	switch (instr->type) {
-+	case NAND_OP_CMD_INSTR:
-+		writeb(instr->ctx.cmd.opcode,
-+		       cs->base + nfc->soc_info->cmd_offset);
-+		return 0;
-+	case NAND_OP_ADDR_INSTR:
-+		for (i = 0; i < instr->ctx.addr.naddrs; i++)
-+			writeb(instr->ctx.addr.addrs[i],
-+			       cs->base + nfc->soc_info->addr_offset);
-+		return 0;
-+	case NAND_OP_DATA_IN_INSTR:
-+		if (instr->ctx.data.force_8bit ||
-+		    !(chip->options & NAND_BUSWIDTH_16))
-+			ioread8_rep(cs->base + nfc->soc_info->data_offset,
-+				    instr->ctx.data.buf.in,
-+				    instr->ctx.data.len);
-+		else
-+			ioread16_rep(cs->base + nfc->soc_info->data_offset,
-+				     instr->ctx.data.buf.in,
-+				     instr->ctx.data.len);
-+		return 0;
-+	case NAND_OP_DATA_OUT_INSTR:
-+		if (instr->ctx.data.force_8bit ||
-+		    !(chip->options & NAND_BUSWIDTH_16))
-+			iowrite8_rep(cs->base + nfc->soc_info->data_offset,
-+				     instr->ctx.data.buf.out,
-+				     instr->ctx.data.len);
-+		else
-+			iowrite16_rep(cs->base + nfc->soc_info->data_offset,
-+				      instr->ctx.data.buf.out,
-+				      instr->ctx.data.len);
-+		return 0;
-+	case NAND_OP_WAITRDY_INSTR:
-+		if (!nand->busy_gpio)
-+			return nand_soft_waitrdy(chip,
-+						 instr->ctx.waitrdy.timeout_ms);
-+
-+		return nand_gpio_waitrdy(chip, nand->busy_gpio,
-+					 instr->ctx.waitrdy.timeout_ms);
-+	default:
-+		break;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static int ingenic_nand_exec_op(struct nand_chip *chip,
-+				const struct nand_operation *op,
-+				bool check_only)
-+{
-+	struct ingenic_nand *nand = to_ingenic_nand(nand_to_mtd(chip));
-+	struct ingenic_nfc *nfc = to_ingenic_nfc(nand->chip.controller);
-+	struct ingenic_nand_cs *cs;
-+	unsigned int i;
-+	int ret = 0;
-+
-+	if (check_only)
-+		return 0;
-+
-+	cs = &nfc->cs[op->cs];
-+	jz4780_nemc_assert(nfc->dev, cs->bank, true);
-+	for (i = 0; i < op->ninstrs; i++) {
-+		ret = ingenic_nand_exec_instr(chip, cs, &op->instrs[i]);
-+		if (ret)
-+			break;
-+
-+		if (op->instrs[i].delay_ns)
-+			ndelay(op->instrs[i].delay_ns);
-+	}
-+	jz4780_nemc_assert(nfc->dev, cs->bank, false);
-+
-+	return ret;
-+}
-+
- static const struct nand_controller_ops ingenic_nand_controller_ops = {
- 	.attach_chip = ingenic_nand_attach_chip,
-+	.exec_op = ingenic_nand_exec_op,
- };
- 
- static int ingenic_nand_init_chip(struct platform_device *pdev,
-@@ -339,8 +373,6 @@ static int ingenic_nand_init_chip(struct platform_device *pdev,
- 		ret = PTR_ERR(nand->busy_gpio);
- 		dev_err(dev, "failed to request busy GPIO: %d\n", ret);
- 		return ret;
--	} else if (nand->busy_gpio) {
--		nand->chip.legacy.dev_ready = ingenic_nand_dev_ready;
- 	}
- 
- 	/*
-@@ -371,12 +403,7 @@ static int ingenic_nand_init_chip(struct platform_device *pdev,
- 		return -ENOMEM;
- 	mtd->dev.parent = dev;
- 
--	chip->legacy.IO_ADDR_R = cs->base + nfc->soc_info->data_offset;
--	chip->legacy.IO_ADDR_W = cs->base + nfc->soc_info->data_offset;
--	chip->legacy.chip_delay = RB_DELAY_US;
- 	chip->options = NAND_NO_SUBPAGE_WRITE;
--	chip->legacy.select_chip = ingenic_nand_select_chip;
--	chip->legacy.cmd_ctrl = ingenic_nand_cmd_ctrl;
- 	chip->ecc.mode = NAND_ECC_HW;
- 	chip->controller = &nfc->controller;
- 	nand_set_flash_node(chip, np);
--- 
-2.25.4
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gU2F0LCAyMDE4LTEyLTE1IGF0IDIzOjM3ICswMTAwLCBSaWNoYXJkIFdlaW5iZXJnZXIgd3Jv
+dGU6DQo+IE9uIFR1ZSwgSnVsIDQsIDIwMTcgYXQgNjoyMyBBTSBLeWVvbmcgWW9vDQo+IDxreWVv
+bmcueW9vQGFsbGllZHRlbGVzaXMuY28ubno+IHdyb3RlOg0KPiA+IA0KPiA+IA0KPiA+IEdDIHRh
+c2sgY2FuIGRlYWRsb2NrIGluIHJlYWRfY2FjaGVfcGFnZSgpIGJlY2F1c2UgaXQgbWF5IGF0dGVt
+cHQNCj4gPiB0byByZWxlYXNlIGEgcGFnZSB0aGF0IGlzIGFjdHVhbGx5IGFsbG9jYXRlZCBieSBh
+bm90aGVyIHRhc2sgaW4NCj4gPiBqZmZzMl93cml0ZV9iZWdpbigpLg0KPiA+IFRoZSByZWFzb24g
+aXMgdGhhdCBpbiBqZmZzMl93cml0ZV9iZWdpbigpIHRoZXJlIGlzIGEgc21hbGwgd2luZG93DQo+
+ID4gYSBjYWNoZSBwYWdlIGlzIGFsbG9jYXRlZCBmb3IgdXNlIGJ1dCBub3Qgc2V0IFVwdG9kYXRl
+IHlldC4NCj4gPiANCj4gPiBUaGlzIGVuZHMgdXAgd2l0aCBhIGRlYWRsb2NrIGJldHdlZW4gdHdv
+IHRhc2tzOg0KPiA+IDEpIEEgdGFzayAoZS5nLiBmaWxlIGNvcHkpDQo+ID4gwqDCoMKgLSBqZmZz
+Ml93cml0ZV9iZWdpbigpIGxvY2tzIGEgY2FjaGUgcGFnZQ0KPiA+IMKgwqDCoC0gamZmczJfd3Jp
+dGVfZW5kKCkgdHJpZXMgdG8gbG9jayAiYWxsb2Nfc2VtIiBmcm9tDQo+ID4gwqDCoMKgwqDCoMKg
+wqDCoMKgamZmczJfcmVzZXJ2ZV9zcGFjZSgpIDwtLSBTVFVDSw0KPiA+IDIpIEdDIHRhc2sgKGpm
+ZnMyX2djZF9tdGQzKQ0KPiA+IMKgwqDCoC0gamZmczJfZ2FyYmFnZV9jb2xsZWN0X3Bhc3MoKSBs
+b2NrcyAiYWxsb2Nfc2VtIg0KPiA+IMKgwqDCoC0gdHJ5IHRvIGxvY2sgdGhlIHNhbWUgY2FjaGUg
+cGFnZSBpbiByZWFkX2NhY2hlX3BhZ2UoKSA8LS0gU1RVQ0sNCj4gPiANCj4gPiBTbyB0byBhdm9p
+ZCB0aGlzIGRlYWRsb2NrLCBob2xkICJhbGxvY19zZW0iIGluIGpmZnMyX3dyaXRlX2JlZ2luKCkN
+Cj4gPiB3aGlsZSByZWFkaW5nIGRhdGEgaW4gYSBjYWNoZSBwYWdlLg0KPiA+IA0KPiA+IFNpZ25l
+ZC1vZmYtYnk6IEt5ZW9uZyBZb28gPGt5ZW9uZy55b29AYWxsaWVkdGVsZXNpcy5jby5uej4NCj4g
+PiAtLS0NCj4gPiANCj4gPiBOb3RlOiBJJ20gcmVzZW5kaW5nIHRoaXMgcGF0Y2ggdG8gbGludXgt
+bXRkLg0KPiA+IA0KPiA+IMKgZnMvamZmczIvZmlsZS5jIHzCoMKgwqA0MCArKysrKysrKysrKysr
+KysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tDQo+ID4gwqAxIGZpbGUgY2hhbmdlZCwgMjUgaW5z
+ZXJ0aW9ucygrKSwgMTUgZGVsZXRpb25zKC0pDQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBhL2ZzL2pm
+ZnMyL2ZpbGUuYyBiL2ZzL2pmZnMyL2ZpbGUuYw0KPiA+IGluZGV4IGMxMjQ3NmUzMDljNi4uZWI0
+ZTRkNzg0ZDI2IDEwMDY0NA0KPiA+IC0tLSBhL2ZzL2pmZnMyL2ZpbGUuYw0KPiA+ICsrKyBiL2Zz
+L2pmZnMyL2ZpbGUuYw0KPiA+IEBAIC0xMzUsMjAgKzEzNSwxNSBAQCBzdGF0aWMgaW50IGpmZnMy
+X3dyaXRlX2JlZ2luKHN0cnVjdCBmaWxlDQo+ID4gKmZpbHAsIHN0cnVjdCBhZGRyZXNzX3NwYWNl
+ICptYXBwaW5nLA0KPiA+IMKgwqDCoMKgwqDCoMKgwqBzdHJ1Y3QgcGFnZSAqcGc7DQo+ID4gwqDC
+oMKgwqDCoMKgwqDCoHN0cnVjdCBpbm9kZSAqaW5vZGUgPSBtYXBwaW5nLT5ob3N0Ow0KPiA+IMKg
+wqDCoMKgwqDCoMKgwqBzdHJ1Y3QgamZmczJfaW5vZGVfaW5mbyAqZiA9IEpGRlMyX0lOT0RFX0lO
+Rk8oaW5vZGUpOw0KPiA+ICvCoMKgwqDCoMKgwqDCoHN0cnVjdCBqZmZzMl9zYl9pbmZvICpjID0g
+SkZGUzJfU0JfSU5GTyhpbm9kZS0+aV9zYik7DQo+ID4gwqDCoMKgwqDCoMKgwqDCoHBnb2ZmX3Qg
+aW5kZXggPSBwb3MgPj4gUEFHRV9TSElGVDsNCj4gPiDCoMKgwqDCoMKgwqDCoMKgdWludDMyX3Qg
+cGFnZW9mcyA9IGluZGV4IDw8IFBBR0VfU0hJRlQ7DQo+ID4gwqDCoMKgwqDCoMKgwqDCoGludCBy
+ZXQgPSAwOw0KPiA+IA0KPiA+IC3CoMKgwqDCoMKgwqDCoHBnID0gZ3JhYl9jYWNoZV9wYWdlX3dy
+aXRlX2JlZ2luKG1hcHBpbmcsIGluZGV4LCBmbGFncyk7DQo+ID4gLcKgwqDCoMKgwqDCoMKgaWYg
+KCFwZykNCj4gPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuIC1FTk9NRU07
+DQo+ID4gLcKgwqDCoMKgwqDCoMKgKnBhZ2VwID0gcGc7DQo+ID4gLQ0KPiA+IMKgwqDCoMKgwqDC
+oMKgwqBqZmZzMl9kYmcoMSwgIiVzKClcbiIsIF9fZnVuY19fKTsNCj4gPiANCj4gPiDCoMKgwqDC
+oMKgwqDCoMKgaWYgKHBhZ2VvZnMgPiBpbm9kZS0+aV9zaXplKSB7DQo+ID4gwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAvKiBNYWtlIG5ldyBob2xlIGZyYWcgZnJvbSBvbGQgRU9GIHRv
+IG5ldyBwYWdlICovDQo+ID4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHN0cnVjdCBq
+ZmZzMl9zYl9pbmZvICpjID0gSkZGUzJfU0JfSU5GTyhpbm9kZS0NCj4gPiA+aV9zYik7DQo+ID4g
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBzdHJ1Y3QgamZmczJfcmF3X2lub2RlIHJp
+Ow0KPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc3RydWN0IGpmZnMyX2Z1bGxf
+ZG5vZGUgKmZuOw0KPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgdWludDMyX3Qg
+YWxsb2NfbGVuOw0KPiA+IEBAIC0xNTksNyArMTU0LDcgQEAgc3RhdGljIGludCBqZmZzMl93cml0
+ZV9iZWdpbihzdHJ1Y3QgZmlsZSAqZmlscCwNCj4gPiBzdHJ1Y3QgYWRkcmVzc19zcGFjZSAqbWFw
+cGluZywNCj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldCA9IGpmZnMyX3Jl
+c2VydmVfc3BhY2UoYywgc2l6ZW9mKHJpKSwNCj4gPiAmYWxsb2NfbGVuLA0KPiA+IMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoEFMTE9DX05PUk1BTCwNCj4gPiBKRkZTMl9TVU1NQVJZX0lOT0RF
+X1NJWkUpOw0KPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgaWYgKHJldCkNCj4g
+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGdvdG8gb3V0
+X3BhZ2U7DQo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqBnb3RvIG91dF9lcnI7DQo+ID4gDQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqBtdXRleF9sb2NrKCZmLT5zZW0pOw0KPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgbWVtc2V0KCZyaSwgMCwgc2l6ZW9mKHJpKSk7DQo+ID4gQEAgLTE4OSw3ICsxODQsNyBAQCBz
+dGF0aWMgaW50IGpmZnMyX3dyaXRlX2JlZ2luKHN0cnVjdCBmaWxlICpmaWxwLA0KPiA+IHN0cnVj
+dCBhZGRyZXNzX3NwYWNlICptYXBwaW5nLA0KPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldCA9IFBUUl9FUlIoZm4pOw0KPiA+IMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGpmZnMyX2NvbXBsZXRlX3Jlc2Vy
+dmF0aW9uKGMpOw0KPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoG11dGV4X3VubG9jaygmZi0+c2VtKTsNCj4gPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGdvdG8gb3V0X3BhZ2U7DQo+ID4gK8KgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBnb3RvIG91dF9lcnI7DQo+ID4gwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB9DQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqByZXQgPSBqZmZzMl9hZGRfZnVsbF9kbm9kZV90b19pbm9kZShjLCBmLCBmbik7
+DQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAoZi0+bWV0YWRhdGEpIHsN
+Cj4gPiBAQCAtMjA0LDcgKzE5OSw3IEBAIHN0YXRpYyBpbnQgamZmczJfd3JpdGVfYmVnaW4oc3Ry
+dWN0IGZpbGUgKmZpbHAsDQo+ID4gc3RydWN0IGFkZHJlc3Nfc3BhY2UgKm1hcHBpbmcsDQo+ID4g
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgamZmczJfZnJl
+ZV9mdWxsX2Rub2RlKGZuKTsNCj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqBqZmZzMl9jb21wbGV0ZV9yZXNlcnZhdGlvbihjKTsNCj4gPiDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBtdXRleF91bmxvY2soJmYt
+PnNlbSk7DQo+ID4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqBnb3RvIG91dF9wYWdlOw0KPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgZ290byBvdXRfZXJyOw0KPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgfQ0KPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgamZmczJfY29tcGxl
+dGVfcmVzZXJ2YXRpb24oYyk7DQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBp
+bm9kZS0+aV9zaXplID0gcGFnZW9mczsNCj4gPiBAQCAtMjEyLDYgKzIwNywxOSBAQCBzdGF0aWMg
+aW50IGpmZnMyX3dyaXRlX2JlZ2luKHN0cnVjdCBmaWxlDQo+ID4gKmZpbHAsIHN0cnVjdCBhZGRy
+ZXNzX3NwYWNlICptYXBwaW5nLA0KPiA+IMKgwqDCoMKgwqDCoMKgwqB9DQo+ID4gDQo+ID4gwqDC
+oMKgwqDCoMKgwqDCoC8qDQo+ID4gK8KgwqDCoMKgwqDCoMKgwqAqIFdoaWxlIGdldHRpbmcgYSBw
+YWdlIGFuZCByZWFkaW5nIGRhdGEgaW4sIGxvY2sgYy0NCj4gPiA+YWxsb2Nfc2VtIHVudGlsDQo+
+ID4gK8KgwqDCoMKgwqDCoMKgwqAqIHRoZSBwYWdlIGlzIFVwdG9kYXRlLiBPdGhlcndpc2UgR0Mg
+dGFzayBtYXkgYXR0ZW1wdCB0bw0KPiA+IHJlYWQgdGhlIHNhbWUNCj4gPiArwqDCoMKgwqDCoMKg
+wqDCoCogcGFnZSBpbiByZWFkX2NhY2hlX3BhZ2UoKSwgd2hpY2ggY2F1c2VzIGEgZGVhZGxvY2su
+DQo+ID4gK8KgwqDCoMKgwqDCoMKgwqAqLw0KPiA+ICvCoMKgwqDCoMKgwqDCoG11dGV4X2xvY2so
+JmMtPmFsbG9jX3NlbSk7DQo+ID4gK8KgwqDCoMKgwqDCoMKgcGcgPSBncmFiX2NhY2hlX3BhZ2Vf
+d3JpdGVfYmVnaW4obWFwcGluZywgaW5kZXgsIGZsYWdzKTsNCj4gPiArwqDCoMKgwqDCoMKgwqBp
+ZiAoIXBnKSB7DQo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldCA9IC1FTk9N
+RU07DQo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGdvdG8gcmVsZWFzZV9zZW07
+DQo+ID4gK8KgwqDCoMKgwqDCoMKgfQ0KPiA+ICvCoMKgwqDCoMKgwqDCoCpwYWdlcCA9IHBnOw0K
+PiA+ICsNCj4gPiArwqDCoMKgwqDCoMKgwqAvKg0KPiA+IMKgwqDCoMKgwqDCoMKgwqDCoCogUmVh
+ZCBpbiB0aGUgcGFnZSBpZiBpdCB3YXNuJ3QgYWxyZWFkeSBwcmVzZW50LiBDYW5ub3QNCj4gPiBv
+cHRpbWl6ZSBhd2F5DQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgKiB0aGUgd2hvbGUgcGFnZSB3cml0
+ZSBjYXNlIHVudGlsIGpmZnMyX3dyaXRlX2VuZCBjYW4NCj4gPiBoYW5kbGUgdGhlDQo+ID4gwqDC
+oMKgwqDCoMKgwqDCoMKgKiBjYXNlIG9mIGEgc2hvcnQtY29weS4NCj4gPiBAQCAtMjIwLDE1ICsy
+MjgsMTcgQEAgc3RhdGljIGludCBqZmZzMl93cml0ZV9iZWdpbihzdHJ1Y3QgZmlsZQ0KPiA+ICpm
+aWxwLCBzdHJ1Y3QgYWRkcmVzc19zcGFjZSAqbWFwcGluZywNCj4gPiDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoG11dGV4X2xvY2soJmYtPnNlbSk7DQo+ID4gwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqByZXQgPSBqZmZzMl9kb19yZWFkcGFnZV9ub2xvY2soaW5vZGUsIHBn
+KTsNCj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoG11dGV4X3VubG9jaygmZi0+
+c2VtKTsNCj4gPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgaWYgKHJldCkNCj4gPiAt
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGdvdG8gb3V0X3Bh
+Z2U7DQo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlmIChyZXQpIHsNCj4gPiAr
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHVubG9ja19wYWdl
+KHBnKTsNCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oHB1dF9wYWdlKHBnKTsNCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoGdvdG8gcmVsZWFzZV9zZW07DQo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoH0NCj4gPiDCoMKgwqDCoMKgwqDCoMKgfQ0KPiA+IMKgwqDCoMKgwqDCoMKgwqBqZmZz
+Ml9kYmcoMSwgImVuZCB3cml0ZV9iZWdpbigpLiBwZy0+ZmxhZ3MgJWx4XG4iLCBwZy0NCj4gPiA+
+ZmxhZ3MpOw0KPiA+IC3CoMKgwqDCoMKgwqDCoHJldHVybiByZXQ7DQo+ID4gDQo+ID4gLW91dF9w
+YWdlOg0KPiA+IC3CoMKgwqDCoMKgwqDCoHVubG9ja19wYWdlKHBnKTsNCj4gPiAtwqDCoMKgwqDC
+oMKgwqBwdXRfcGFnZShwZyk7DQo+ID4gK3JlbGVhc2Vfc2VtOg0KPiA+ICvCoMKgwqDCoMKgwqDC
+oG11dGV4X3VubG9jaygmYy0+YWxsb2Nfc2VtKTsNCj4gPiArb3V0X2VycjoNCj4gPiDCoMKgwqDC
+oMKgwqDCoMKgcmV0dXJuIHJldDsNCj4gPiDCoH0NCj4gS3llb25nLA0KPiANCj4gZmlyc3Qgb2Yg
+YWxsLCBzb3JyeSBmb3IgdGhlIG1hc3NpdmUgZGVsYXkhDQo+IA0KPiBSaWdodCBub3cgSSdtIHRy
+eWluZyB0byBnZXQgamZmczIgYmFjayBpbiBzaGFwZSBhbmQgc3R1bWJsZWQgYWNyb3NzDQo+IHlv
+dXIgcGF0Y2guDQo+IE15IHRlc3Qgc3VpdGUgY2FuIGFjdHVhbGx5IHRyaWdnZXIgdGhpcyBkZWFk
+bG9jayBhbmQgSSB0aGluayB5b3VyDQo+IHBhdGNoIGlzIGxpa2VseSB0aGUNCj4gcmlnaHQgc29s
+dXRpb24uIEknbSBzdGlsbCByZXZpZXdpbmcgYW5kIHRyeSB0byBtYWtlIHZlcnkgc3VyZSB0aGF0
+IGl0DQo+IHdvcmtzIGFzIGV4cGVjdGVkLg0KPiANCj4gRGF2aWQsIHVubGVzcyB5b3UgaGF2ZSBv
+YmplY3Rpb25zIEknZCBjYXJyeSB0aGlzIHBhdGNoIHZpYSB0aGUgTVREDQo+IHRyZWUuDQo+IA0K
+DQpIaSBSaWNoYXJkLA0KDQpJJ20gaW50ZXJlc3RlZCB0byBrbm93IHdoYXQgaGFwcGVuZWQgdG8g
+dGhpcyBwYXRjaC4gSSBjYW4ndCBzZWUgdGhhdCBpdA0KbWFkZSBpdCBpbiB0byB0aGUgTGludXMn
+IHRyZWUgb3IgYW55IG90aGVyIG1haW50YWluZXJzIHRyZWUuDQoNCkknbSBrZWVuIHRvIGhlbHAg
+ZmluaXNoIGl0IG9mZiBhbmQgSSBub3RlIHRoYXQgeW91IHNhaWQgeW91IHdlcmUgYWJsZQ0KdG8g
+bWFrZSB0aGUgZmF1bHQgb2NjdXIgd2l0aCB5b3VyIHRlc3RzLiBXb3VsZCB5b3UgYmUgYWJsZSB0
+byBzaGFyZQ0Kd2hhdCB0ZXN0IHlvdSB3ZXJlIHJ1bm5pbmc/DQoNClBsZWFzZSBsZXQgbWUga25v
+dyBpZiB5b3UnZCBsaWtlIG1lIHRvIHRlc3QgYSBtb2RpZmllZCBwYXRjaCwgb3IgaWYNCnlvdSdk
+IGxpa2UgYW55IGZ1cnRoZXIgYXNzaXN0YW5jZSB0byBnZXQgdGhpcyBwYXRjaCBjb21wbGV0ZWQu
+DQoNClRoYW5rcywNCkhhbWlzaCBNYXJ0aW4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
+dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
