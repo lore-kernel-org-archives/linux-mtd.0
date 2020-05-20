@@ -2,76 +2,64 @@ Return-Path: <SRS0=rTSM=7C=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44CDEC433E2
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 May 2020 10:06:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68F56C433E1
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 May 2020 10:22:25 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1AFAA20872
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 May 2020 10:06:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 250F4207C4
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 May 2020 10:22:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oBL0hHs8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1AFAA20872
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="iljQ8QKf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 250F4207C4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=free.fr
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:Reply-To:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nsgitKTdOLEhS4OXhIG7yuwJs0h2hF9qDHFNz/1p9a0=; b=oBL0hHs8IQDpbP
-	5aMT4cPY6jEXlj8PHv8oNiEFY82g1lea1sw0i6aGncgkM8BQDiobQwS1J6JJ2rhlPTm2VAQzEdX4l
-	7nCVbxs6SPneO/7wNw9EA0A+9chZc8zssIn+xrTOERQfvvrx0Dp2RYZCNmitu1D2+yzXwcBv1BTSI
-	3ROhTtPlGrZvaB/uznjaEYfbdCMiICSdCAYnBOla4YycFgB08IQZap5TlzhOjn3ItzIm83XQnAvmJ
-	lvVlt4XtamZWdl198O12EFRnOa6IIlkYQ22MVTGzNQtHABsmT9ekOsdIRSPnPSYHe7JNMXfmCRUMQ
-	WoidC+h+RgSVxSCYyIPQ==;
+	List-Owner; bh=Hqmzm+KVsMDy9dlqnK8LB2yvXn9ggwfU2exj6cM16jk=; b=iljQ8QKfQm+iqL
+	oeREf12f+xfIaeQYI9ufIpKNrXiG54LBEhOk7nMZFWNGW669vnNaMwfnup7ejSDGbSUy+VEGVTmr9
+	vr3is41lg7wQfFIO7jK03yA6Il3s9l/ooein5K6DP4XQHe5Vobn8IKb12JuZocREhWM0PWuLQU79r
+	k09mvvuyCwFcD+q+jd8TEaHdkin7je166qnaLjI0JGvDGKv9oSUPIuUy8fB5Pp9fh3H3Eo3H5r23+
+	WeHiBRLR+UDeapTLrXTTomlOARMC+U95zS+e8FfxLA5X7UUlNcYNTMWzmaIJWGwZDon/CuqTKp7Ki
+	VBxq4xIngxslWUTQwxvw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jbLby-0001xP-No; Wed, 20 May 2020 10:06:06 +0000
-Received: from mga02.intel.com ([134.134.136.20])
+	id 1jbLrP-0004xN-Kv; Wed, 20 May 2020 10:22:03 +0000
+Received: from smtp10.smtpout.orange.fr ([80.12.242.132]
+ helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jbLbm-0001lt-Fs
- for linux-mtd@lists.infradead.org; Wed, 20 May 2020 10:05:56 +0000
-IronPort-SDR: Gzk0Pnq/JahN7LKDb5YpYTTsvQuDfLQL8apT1Ylnfhhd7cvQSvDneFyXIWR6v3dSRMvreE9zj5
- Axp5TRx6rYDg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 May 2020 03:05:53 -0700
-IronPort-SDR: k4MGfed4z1V1QVYLnzSUq5BUEJDxC8Nx3fg8RDLK32tCZX6T2hV40qFS+LbhjTUpdrb7tn/L3B
- eEdR5roby4/A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,413,1583222400"; d="scan'208";a="466330359"
-Received: from linux.intel.com ([10.54.29.200])
- by fmsmga005.fm.intel.com with ESMTP; 20 May 2020 03:05:53 -0700
-Received: from [10.213.128.101] (vramuthx-MOBL1.gar.corp.intel.com
- [10.213.128.101])
- by linux.intel.com (Postfix) with ESMTP id 441C6580101;
- Wed, 20 May 2020 03:05:50 -0700 (PDT)
-Subject: Re: [PATCH v1] dt-bindings: spi: Add schema for Cadence QSPI
- Controller driver
-To: Rob Herring <robh@kernel.org>
-References: <20200512004919.40685-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200519184415.GA441457@bogus>
-From: "Ramuthevar, Vadivel MuruganX"
- <vadivel.muruganx.ramuthevar@linux.intel.com>
-Message-ID: <b685ed91-e25b-4a1e-2779-d39dc56cecb3@linux.intel.com>
-Date: Wed, 20 May 2020 18:05:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ id 1jbLrM-0004v2-AO
+ for linux-mtd@lists.infradead.org; Wed, 20 May 2020 10:22:02 +0000
+Received: from belgarion.home ([86.210.245.36]) by mwinf5d33 with ME
+ id gyMk220040nqnCN03yMw31; Wed, 20 May 2020 12:21:56 +0200
+X-ME-Helo: belgarion.home
+X-ME-Auth: amFyem1pay5yb2JlcnRAb3JhbmdlLmZy
+X-ME-Date: Wed, 20 May 2020 12:21:56 +0200
+X-ME-IP: 86.210.245.36
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Arnd Bergmann <arnd@arndb.de>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Mike Rapoport <mike@compulab.co.il>
+Subject: [PATCH v2 2/3] MAINTAINERS: pxa: remove Compulab arm/pxa support
+Date: Wed, 20 May 2020 12:21:24 +0200
+Message-Id: <20200520102125.8934-2-robert.jarzmik@free.fr>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200520102125.8934-1-robert.jarzmik@free.fr>
+References: <20200520102125.8934-1-robert.jarzmik@free.fr>
 MIME-Version: 1.0
-In-Reply-To: <20200519184415.GA441457@bogus>
-Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200520_030554_568101_973E8368 
-X-CRM114-Status: GOOD (  25.78  )
+X-CRM114-CacheID: sfid-20200520_032200_635575_BE05715A 
+X-CRM114-Status: GOOD (  10.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,272 +71,41 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
-Cc: cheol.yong.kim@intel.com, devicetree@vger.kernel.org, vigneshr@ti.com,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, broonie@kernel.org,
- linux-mtd@lists.infradead.org, qi-ming.wu@intel.com
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Rob,
+These boards support is removed from the kernel, so remove the
+MAINTAINERS entry for them.
 
-   Thank you very much for the review comments...
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+---
+ MAINTAINERS | 5 -----
+ 1 file changed, 5 deletions(-)
 
-On 20/5/2020 2:44 am, Rob Herring wrote:
-> On Tue, May 12, 2020 at 08:49:19AM +0800, Ramuthevar,Vadivel MuruganX wrote:
->> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
->>
->> Add dt-bindings documentation for Cadence-QSPI controller to support
->> spi based flash memories.
->>
->> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
->> ---
->>   .../devicetree/bindings/mtd/cadence-quadspi.txt    |  67 -----------
->>   .../devicetree/bindings/spi/cdns,qspi-nor.yaml     | 127 +++++++++++++++++++++
->>   2 files changed, 127 insertions(+), 67 deletions(-)
->>   delete mode 100644 Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
->>   create mode 100644 Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
->> deleted file mode 100644
->> index 945be7d5b236..000000000000
->> --- a/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
->> +++ /dev/null
->> @@ -1,67 +0,0 @@
->> -* Cadence Quad SPI controller
->> -
->> -Required properties:
->> -- compatible : should be one of the following:
->> -	Generic default - "cdns,qspi-nor".
->> -	For TI 66AK2G SoC - "ti,k2g-qspi", "cdns,qspi-nor".
->> -	For TI AM654 SoC  - "ti,am654-ospi", "cdns,qspi-nor".
->> -- reg : Contains two entries, each of which is a tuple consisting of a
->> -	physical address and length. The first entry is the address and
->> -	length of the controller register set. The second entry is the
->> -	address and length of the QSPI Controller data area.
->> -- interrupts : Unit interrupt specifier for the controller interrupt.
->> -- clocks : phandle to the Quad SPI clock.
->> -- cdns,fifo-depth : Size of the data FIFO in words.
->> -- cdns,fifo-width : Bus width of the data FIFO in bytes.
->> -- cdns,trigger-address : 32-bit indirect AHB trigger address.
->> -
->> -Optional properties:
->> -- cdns,is-decoded-cs : Flag to indicate whether decoder is used or not.
->> -- cdns,rclk-en : Flag to indicate that QSPI return clock is used to latch
->> -  the read data rather than the QSPI clock. Make sure that QSPI return
->> -  clock is populated on the board before using this property.
->> -
->> -Optional subnodes:
->> -Subnodes of the Cadence Quad SPI controller are spi slave nodes with additional
->> -custom properties:
->> -- cdns,read-delay : Delay for read capture logic, in clock cycles
->> -- cdns,tshsl-ns : Delay in nanoseconds for the length that the master
->> -                  mode chip select outputs are de-asserted between
->> -		  transactions.
->> -- cdns,tsd2d-ns : Delay in nanoseconds between one chip select being
->> -                  de-activated and the activation of another.
->> -- cdns,tchsh-ns : Delay in nanoseconds between last bit of current
->> -                  transaction and deasserting the device chip select
->> -		  (qspi_n_ss_out).
->> -- cdns,tslch-ns : Delay in nanoseconds between setting qspi_n_ss_out low
->> -                  and first bit transfer.
->> -- resets	: Must contain an entry for each entry in reset-names.
->> -		  See ../reset/reset.txt for details.
->> -- reset-names	: Must include either "qspi" and/or "qspi-ocp".
->> -
->> -Example:
->> -
->> -	qspi: spi@ff705000 {
->> -		compatible = "cdns,qspi-nor";
->> -		#address-cells = <1>;
->> -		#size-cells = <0>;
->> -		reg = <0xff705000 0x1000>,
->> -		      <0xffa00000 0x1000>;
->> -		interrupts = <0 151 4>;
->> -		clocks = <&qspi_clk>;
->> -		cdns,is-decoded-cs;
->> -		cdns,fifo-depth = <128>;
->> -		cdns,fifo-width = <4>;
->> -		cdns,trigger-address = <0x00000000>;
->> -		resets = <&rst QSPI_RESET>, <&rst QSPI_OCP_RESET>;
->> -		reset-names = "qspi", "qspi-ocp";
->> -
->> -		flash0: n25q00@0 {
->> -			...
->> -			cdns,read-delay = <4>;
->> -			cdns,tshsl-ns = <50>;
->> -			cdns,tsd2d-ns = <50>;
->> -			cdns,tchsh-ns = <4>;
->> -			cdns,tslch-ns = <4>;
->> -		};
->> -	};
->> diff --git a/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml b/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
->> new file mode 100644
->> index 000000000000..28112b38e6a9
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
->> @@ -0,0 +1,127 @@
->> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: "http://devicetree.org/schemas/spi/cdns,qspi-nor.yaml#"
->> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
->> +
->> +title: Cadence QSPI Flash Controller support
->> +
->> +maintainers:
->> +  - Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
->> +
->> +allOf:
->> +  - $ref: "spi-controller.yaml#"
->> +
->> +description: |
->> +  Binding Documentation for Cadence QSPI controller,This controller is
->> +  present in the Intel LGM, Altera SoCFPGA and TI SoCs and this driver
->> +  has been tested On Intel's LGM SoC.
->> +
->> +properties:
->> +  compatible:
->> +     enum:
->> +       - cdns,qspi-nor
->> +       - ti,k2g-qspi
->> +       - ti,am654-ospi
->> +       - intel,lgm-qspi
->> +
->> +  reg:
->> +    maxItems: 2
-> 
-> Need to define what each entry is.
-Noted.
-> 
->> +
->> +  interrupts:
->> +    maxItems: 1
->> +
->> +  clocks:
->> +    maxItems: 1
->> +
->> +  cdns,fifo-depth:
->> +    description:
->> +     Depth of hardware FIFOs.
-> 
-> ...FIFO in words.
-Good catch.
-> 
->> +    allOf:
->> +      - $ref: "/schemas/types.yaml#/definitions/uint32"
->> +      - enum: [ 128, 256 ]
->> +      - default: 128
->> +
->> +  cdns,fifo-width:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    description:
->> +      4 byte bus width of the data FIFO in bytes.
-> 
-> Constraints? Perhaps:
-> 
-> multipleOf: 4
-Noted, will update.
-> 
-> if an enum doesn't work here.
-> 
->> +
->> +  cdns,trigger-address:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    description:
->> +      32-bit indirect AHB trigger address.
->> +
->> +  cdns,rclk-en:
->> +    type: boolean
->> +    description: |
->> +      Flag to indicate that QSPI return clock is used to latch the read data
->> +      rather than the QSPI clock. Make sure that QSPI return clock is populated
->> +      on the board before using this property.
->> +
->> +# subnode's properties
->> +patternProperties:
->> +  "^.*@[0-9a-fa-f]+$":
-> 
-> 'a-f' is twice. What's the max number of chip selects? If less than 10,
-> then '@[0-9]$' is enough. '^.*' can be dropped too.
-16 chip select supports.
-> 
->> +    type: object
->> +    description:
->> +      flash device uses the subnodes below defined properties.
->> +
->> +  cdns,read-delay:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    description:
->> +      Delay for read capture logic, in clock cycles.
->> +
->> +  cdns,tshsl-ns:
->> +    description: |
->> +      Delay in nanoseconds for the length that the master mode chip select
->> +      outputs are de-asserted between transactions.
->> +
->> +  cdns,tsd2d-ns:
->> +    description: |
->> +      Delay in nanoseconds between one chip select being de-activated
->> +      and the activation of another.
->> +
->> +  cdns,tchsh-ns:
->> +    description: |
->> +      Delay in nanoseconds between last bit of current transaction and
->> +      deasserting the device chip select (qspi_n_ss_out).
->> +
->> +  cdns,tslch-ns:
->> +    description: |
->> +      Delay in nanoseconds between setting qspi_n_ss_out low and
->> +      first bit transfer.
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - interrupts
->> +  - clocks
->> +  - cdns,fifo-depth
->> +  - cdns,fifo-width
->> +  - cdns,trigger-address
->> +
->> +examples:
->> +  - |
->> +    spi@ff705000 {
->> +          compatible = "cdns,qspi-nor";
->> +          #address-cells = <1>;
->> +          #size-cells = <0>;
->> +          reg = <0xff705000 0x1000>,
->> +                <0xffa00000 0x1000>;
-> 
-> Seems kind of small for a data area if this is like most SPI flash
-> controllers.yes you are right, following the existing example as it is.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 091ec22c1a23..ad58388fa822 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1684,11 +1684,6 @@ S:	Maintained
+ T:	git git://git.armlinux.org.uk/~rmk/linux-arm.git clkdev
+ F:	drivers/clk/clkdev.c
+ 
+-ARM/COMPULAB CM-X270/EM-X270 and CM-X300 MACHINE SUPPORT
+-M:	Mike Rapoport <mike@compulab.co.il>
+-L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+-S:	Maintained
+-
+ ARM/CONEXANT DIGICOLOR MACHINE SUPPORT
+ M:	Baruch Siach <baruch@tkos.co.il>
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+-- 
+2.26.2
 
-Regards
-Vadivel
-
-> 
->> +          interrupts = <0 151 4>;
->> +          clocks = <&qspi_clk>;
->> +          cdns,fifo-depth = <128>;
->> +          cdns,fifo-width = <4>;
->> +          cdns,trigger-address = <0x00000000>;
->> +
->> +          flash@0 {
->> +              compatible = "jedec,spi-nor";
->> +              reg = <0x0>;
->> +              cdns,read-delay = <4>;
->> +              cdns,tshsl-ns = <50>;
->> +              cdns,tsd2d-ns = <50>;
->> +              cdns,tchsh-ns = <4>;
->> +              cdns,tslch-ns = <4>;
->> +          };
->> +    };
->> +
->> -- 
->> 2.11.0
->>
 
 ______________________________________________________
 Linux MTD discussion mailing list
