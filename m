@@ -2,90 +2,63 @@ Return-Path: <SRS0=rTSM=7C=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FC4CC433E0
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 May 2020 16:46:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58231C433E0
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 May 2020 16:47:41 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F2B552065F
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 May 2020 16:46:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1E9612065F
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 May 2020 16:47:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="o61kdRc8";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="xsBDpi6A"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F2B552065F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="H6KGM/G4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E9612065F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vv5iGQ0if6bacim2sHy4Oac6cr+PN4dlTanIjnm3mYk=; b=o61kdRc8Y7MbXX
-	LtHLhUMIke/m+viIbkbakDPLIYBVf3J7kuo5TPv+n1cwdP+JKJSIOaaETEDZE7uuOTsvxMd5ZkD4X
-	O+m5tT/9DW7F7gNk3nz4l2GJXm+48eouNXA2BFArmVInWaiXGmVvkboLHpghhTCYmmw2kQNkjl75j
-	lFM7oUdMA8PfGewwwSGF+RVxQUvbfVrzc688btVe/aQVNBl4wolYmXwbUacDdacyp9jrM069wF+ZX
-	/kMId+vaFw75Oc3AkG4LRXCaDUu5H+bqLv36XWbKdz93GyA/QxACItk+XP34j/yKZJDrj9071/xBm
-	4bmD+uslDaPAvI3f3lLQ==;
+	List-Owner; bh=8eqF5sVtIOiQma46049yhuSXzRLsJlYDhq4S7H53zo0=; b=H6KGM/G4vtB4fO
+	qQ0Mj1lwatQxFoIIroVeHrOhuIKPXD2pVBCsZzqhGgAlt5a6349U+8MJ5eRR5wAAe39H5woSfmvfi
+	qpzmwrE8VmEOyBTzh/xAU5iU1HbvPt4x9DXyRM143Pj38uEnRisWh8smLeJe4c7Jn8LW7GmdOZApX
+	7snS/nsFcdqpr+hB/fu2qgCpI7OBuxkyotFtfNvZ+5Nc6H8Vij2VdNUrk7nnGDqHuIeI77aOJ9TzJ
+	SMkd+vxQ1Do1DAi1L8PaVqY1G53ZQco/XEb9WzCc+EPO+9X00SJW4q+F0vq460ZNKxZNY4JLg9YpG
+	8NDic8jIiNSlboL8ogtg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jbRqr-0005ot-Jw; Wed, 20 May 2020 16:45:53 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1jbRsY-0007L2-6N; Wed, 20 May 2020 16:47:38 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jbRe4-0004ts-Dy; Wed, 20 May 2020 16:32:42 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04KGWZf8064345;
- Wed, 20 May 2020 11:32:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1589992355;
- bh=kv17vzIbbuAt+RZqE4vM8KTFUmvobKYZHpLC7UN2u9I=;
- h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=xsBDpi6AO8dQSj/DR+hGcqiQ3LorO4By3oB3q3HlP+sNJ3tOCPZQoPhvHBgIug3vX
- Y8pQvxZXW3zOhjTLPGmxNWesQ2MsY1KSLIYpg4P9af5wjnOwQHaErcZ1Tbt7AhvTVB
- 9gCb28kSH/+97h4X3rGGeXf7V8tgG4r/ABddPDqs=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04KGWZiB110942;
- Wed, 20 May 2020 11:32:35 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 20
- May 2020 11:32:34 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 20 May 2020 11:32:34 -0500
-Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com
- [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04KGUsxi001551;
- Wed, 20 May 2020 11:32:30 -0500
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Mark Brown <broonie@kernel.org>,
- Nicolas Ferre <nicolas.ferre@microchip.com>, Alexandre Belloni
- <alexandre.belloni@bootlin.com>, Ludovic Desroches
- <ludovic.desroches@microchip.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <linux-spi@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>
-Subject: [PATCH v6 19/19] mtd: spi-nor: micron-st: allow using MT35XU512ABA in
- Octal DTR mode
-Date: Wed, 20 May 2020 22:00:53 +0530
-Message-ID: <20200520163053.24357-20-p.yadav@ti.com>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200520163053.24357-1-p.yadav@ti.com>
-References: <20200520163053.24357-1-p.yadav@ti.com>
+ id 1jbRlf-0005tM-OY
+ for linux-mtd@lists.infradead.org; Wed, 20 May 2020 16:40:36 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id AE8672A2CE1;
+ Wed, 20 May 2020 17:40:29 +0100 (BST)
+Date: Wed, 20 May 2020 18:40:26 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Rickard X Andersson <Rickard.Andersson@axis.com>
+Subject: Re: [PATCH v2 1/2] mtd: rawnand: Add a helper for testing data
+ interface
+Message-ID: <20200520184026.6629eaa8@collabora.com>
+In-Reply-To: <1589986371551.27178@axis.com>
+References: <20200520133854.25241-1-rickaran@axis.com>
+ <20200520155529.3d959e96@xps13> <1589986371551.27178@axis.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200520_093240_614296_02414EE5 
-X-CRM114-Status: GOOD (  13.94  )
+X-CRM114-CacheID: sfid-20200520_094032_031039_F0653995 
+X-CRM114-Status: GOOD (  11.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,159 +70,29 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Mason Yang <masonccyang@mxic.com.tw>,
- Boris Brezillon <boris.brezillon@collabora.com>, Sekhar Nori <nsekhar@ti.com>,
- Pratyush Yadav <p.yadav@ti.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Since this flash doesn't have a Profile 1.0 table, the Octal DTR
-capabilities are enabled in the post SFDP fixup, along with the 8D-8D-8D
-fast read settings.
-
-Enable Octal DTR mode with 20 dummy cycles to allow running at the
-maximum supported frequency of 200Mhz.
-
-The flash supports the soft reset sequence. So, add the flag in the
-flash's info.
-
-Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
----
- drivers/mtd/spi-nor/micron-st.c | 112 +++++++++++++++++++++++++++++++-
- 1 file changed, 111 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
-index 3dca5b9af3b6..3414c44a5c96 100644
---- a/drivers/mtd/spi-nor/micron-st.c
-+++ b/drivers/mtd/spi-nor/micron-st.c
-@@ -8,10 +8,120 @@
- 
- #include "core.h"
- 
-+#define SPINOR_OP_MT_DTR_RD	0xfd	/* Fast Read opcode in DTR mode */
-+#define SPINOR_OP_MT_RD_ANY_REG	0x85	/* Read volatile register */
-+#define SPINOR_OP_MT_WR_ANY_REG	0x81	/* Write volatile register */
-+#define SPINOR_REG_MT_CFR0V	0x00	/* For setting octal DTR mode */
-+#define SPINOR_REG_MT_CFR1V	0x01	/* For setting dummy cycles */
-+#define SPINOR_MT_DTR_NO_DQS	0xc7	/* Enable Octal DTR without DQS. */
-+#define SPINOR_MT_EXSPI		0xff	/* Enable Extended SPI (default) */
-+
-+static int spi_nor_micron_octal_dtr_enable(struct spi_nor *nor, bool enable)
-+{
-+	struct spi_mem_op op;
-+	u8 *buf = nor->bouncebuf;
-+	u8 addr_width;
-+	int ret;
-+
-+	if (enable)
-+		addr_width = 3;
-+	else
-+		addr_width = 4;
-+
-+	ret = spi_nor_write_enable(nor);
-+	if (ret)
-+		return ret;
-+
-+	if (enable)
-+		*buf = SPINOR_MT_DTR_NO_DQS;
-+	else
-+		*buf = SPINOR_MT_EXSPI;
-+	op = (struct spi_mem_op)
-+		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_MT_WR_ANY_REG, 1),
-+			   SPI_MEM_OP_ADDR(addr_width, SPINOR_REG_MT_CFR0V, 1),
-+			   SPI_MEM_OP_NO_DUMMY,
-+			   SPI_MEM_OP_DATA_OUT(1, buf, 1));
-+
-+	if (!enable)
-+		spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
-+
-+	ret = spi_mem_exec_op(nor->spimem, &op);
-+	if (ret) {
-+		dev_err(nor->dev, "Failed to enable octal DTR mode\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int mt35xu512aba_setup(struct spi_nor *nor,
-+			      const struct spi_nor_hwcaps *hwcaps)
-+{
-+	struct spi_mem_op op;
-+	u8 *buf = nor->bouncebuf;
-+	u8 addr_width = 3;
-+	int ret;
-+
-+	if (!nor->spimem) {
-+		dev_err(nor->dev,
-+			"operation not supported for non-spimem drivers\n");
-+		return -ENOTSUPP;
-+	}
-+
-+	/* Set dummy cycles for Fast Read to the default of 20. */
-+	ret = spi_nor_write_enable(nor);
-+	if (ret)
-+		return ret;
-+
-+	*buf = 20;
-+	op = (struct spi_mem_op)
-+		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_MT_WR_ANY_REG, 1),
-+			   SPI_MEM_OP_ADDR(addr_width, SPINOR_REG_MT_CFR1V, 1),
-+			   SPI_MEM_OP_NO_DUMMY,
-+			   SPI_MEM_OP_DATA_OUT(1, buf, 1));
-+	ret = spi_mem_exec_op(nor->spimem, &op);
-+	if (ret)
-+		return ret;
-+
-+	ret = spi_nor_wait_till_ready(nor);
-+	if (ret)
-+		return ret;
-+
-+
-+	return spi_nor_default_setup(nor, hwcaps);
-+}
-+
-+static void mt35xu512aba_default_init(struct spi_nor *nor)
-+{
-+	nor->params->octal_dtr_enable = spi_nor_micron_octal_dtr_enable;
-+	nor->params->setup = mt35xu512aba_setup;
-+}
-+
-+static void mt35xu512aba_post_sfdp_fixup(struct spi_nor *nor)
-+{
-+	/* Set the Fast Read settings. */
-+	nor->params->hwcaps.mask |= SNOR_HWCAPS_READ_8_8_8_DTR;
-+	spi_nor_set_read_settings(&nor->params->reads[SNOR_CMD_READ_8_8_8_DTR],
-+				  0, 20, SPINOR_OP_MT_DTR_RD,
-+				  SNOR_PROTO_8_8_8_DTR);
-+
-+	nor->params->hwcaps.mask |= SNOR_HWCAPS_PP_8_8_8_DTR;
-+
-+	nor->cmd_ext_type = SPI_NOR_EXT_REPEAT;
-+	nor->params->rdsr_dummy = 8;
-+	nor->params->rdsr_addr_nbytes = 0;
-+}
-+
-+static struct spi_nor_fixups mt35xu512aba_fixups = {
-+	.default_init = mt35xu512aba_default_init,
-+	.post_sfdp = mt35xu512aba_post_sfdp_fixup,
-+};
-+
- static const struct flash_info micron_parts[] = {
- 	{ "mt35xu512aba", INFO(0x2c5b1a, 0, 128 * 1024, 512,
- 			       SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
--			       SPI_NOR_4B_OPCODES) },
-+			       SPI_NOR_4B_OPCODES | SPI_NOR_OCTAL_DTR_READ)
-+		.fixups = &mt35xu512aba_fixups},
- 	{ "mt35xu02g", INFO(0x2c5b1c, 0, 128 * 1024, 2048,
- 			    SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
- 			    SPI_NOR_4B_OPCODES) },
--- 
-2.26.2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gV2VkLCAyMCBNYXkgMjAyMCAxNDo1Mjo1MiArMDAwMApSaWNrYXJkIFggQW5kZXJzc29uIDxS
+aWNrYXJkLkFuZGVyc3NvbkBheGlzLmNvbT4gd3JvdGU6Cgo+IEhpIE1pcXVlbCwKPiAKPiBDb21t
+ZW50cyBvbiB0d28gb2YgeW91ciBjb21tZW50cy4gKEkgYW0gZmluZSB3aXRoIGFsbCB0aGUgb3Ro
+ZXIgY29tbWVudHMuKQo+IAo+ID4gPiArIMKgIMKgIC8qCj4gPiA+ICsgwqAgwqAgwqAqIFBhc3Mg
+TkFORF9EQVRBX0lGQUNFX0NIRUNLX09OTFkgdG8gb25seSBjaGVjayBpZiB0aGUKPiA+ID4gKyDC
+oCDCoCDCoCogY29udHJvbGxlciBzdXBwb3J0cyB0aGUgcmVxdWVzdGVkIHRpbWluZ3MuCj4gPiA+
+ICsgwqAgwqAgwqAqLwo+ID4gPiArIMKgIMKgIHJldCA9IGNoaXAtPmNvbnRyb2xsZXItPm9wcy0+
+c2V0dXBfZGF0YV9pbnRlcmZhY2UoY2hpcCwKPiA+ID4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoE5BTkRfREFUQV9J
+RkFDRV9DSEVDS19PTkxZLAo+ID4gPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgJmNoaXAtPmRhdGFfaW50ZXJmYWNl
+KTsgIAo+ID4KPiA+IENvdWxkIHlvdSBhbGlnbiB0aGVzZSBsaW5lcyB0byB0aGUgb3BlbmVkIHBh
+cmVudGhlc2lzPyAgCj4gCj4gVGhlbiB0aGUgbGluZXMgd2lsbCBoYXZlIDgwKyBjaGFyYWN0ZXJz
+LgoKSnVzdCBhZGQgYSBsb2NhbCBvcHMgdmFyLgoKCWNvbnN0IHN0cnVjdCBuYW5kX2NvbnRyb2xs
+ZXJfb3BzICpvcHMgPSBjaGlwLT5jb250cm9sbGVyLT5vcHM7CgoJcmV0ID0gb3BzLT5zZXR1cF9k
+YXRhX2ludGVyZmFjZShjaGlwLMKgTkFORF9EQVRBX0lGQUNFX0NIRUNLX09OTFksCgkJCQkJwqAm
+Y2hpcC0+ZGF0YV9pbnRlcmZhY2UpOwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApo
+dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
