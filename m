@@ -2,63 +2,80 @@ Return-Path: <SRS0=rTSM=7C=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97E24C433E0
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 May 2020 15:13:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D2DC8C433DF
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 May 2020 15:22:23 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5B78320671
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 May 2020 15:13:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8876F206F1
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 May 2020 15:22:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ftnOKUne"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B78320671
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Z3yLTEn+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8876F206F1
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OmDv9G/KKE30eweGGGhNL8eUaCkg7fKlbRo/WI9ch6Y=; b=ftnOKUnesSFC6w
-	+nVoYydyw3pQlC1H/F+TKqgrzMlp28Q78ox3QJj7aZwWKDBXzZWBBhUqE2owus9691wfTAZsOIs5b
-	6bD7nPb3IyvBE3WpkTsLpY16RLFeTdOebnTkLM9obJ8081/1eLgV16sl7ifEttZpx0IALBlZQfCpn
-	I/zGIukwmkVJPbLQUbnvTJ2q/FL+s77jcHdqnxOSU0DZ7WXTaOuHvTR51Btktiv+kQWyEnMzU2g8M
-	SDIRZDEgnVjeuSAHFGbwaTBmAhWwq4ynGDy2T9ifdJF0m8kU0I8h3p3ImUaw8EZrG/DkgamHNtzjI
-	rQqSzGaPbc+qn+Cn6LHQ==;
+	List-Owner; bh=bKc/3ePS4PdXyHT41hBEV6ieFVty3q8cA9r2N3IFh+A=; b=Z3yLTEn+n1O0yW
+	5cNADnMjya6s8mp/K+uwy1c7hmw8DouxrQI/82ArUCHlLHIyDCue6t2R165Vb7tB7ANHs2/ROVnfO
+	KWimGInw7WnEnyZxQYa7V/oaRhXbnhWGEY1xWDOfunNLjOb5Xl9d+BVuSpJ1Ok106LrxxGf/GC1uA
+	l+hTZHPjQWiaKIOoW4AEXc5EwC0KSM2q15HP2+XiAnOaUUu+oNQdYhL25ewSplkW1covVBPPDZ3tc
+	GZeQkzmPQTq4expcApSopI44ItT+cD1gFgLEXqTzniPwJiqnGvsnyYcXj6K+R0w6I2SlfXC66e56F
+	CIAamJPhnj56RbZmK3Ow==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jbQOu-00043t-Lq; Wed, 20 May 2020 15:12:56 +0000
-Received: from relay6-d.mail.gandi.net ([217.70.183.198])
+	id 1jbQXv-0001wy-Uu; Wed, 20 May 2020 15:22:15 +0000
+Received: from mout.kundenserver.de ([217.72.192.75])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jbQOr-00042p-G2
- for linux-mtd@lists.infradead.org; Wed, 20 May 2020 15:12:55 +0000
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 0C1F0C000B;
- Wed, 20 May 2020 15:12:47 +0000 (UTC)
-Date: Wed, 20 May 2020 17:12:46 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@collabora.com>
-Subject: Re: [PATCH 2/2] mtd: rawnand: Add timings for Kioxia TH58NVG2S3HBAI4
-Message-ID: <20200520171246.538823eb@xps13>
-In-Reply-To: <20200520165022.1e241604@collabora.com>
-References: <1589981533129.2663@axis.com> <20200520154343.2ce58cc6@xps13>
- <1589984216684.8771@axis.com> <20200520162936.6eb499fb@xps13>
- <1589985750394.77181@axis.com>
- <20200520165022.1e241604@collabora.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1jbQXt-0001wJ-5k; Wed, 20 May 2020 15:22:14 +0000
+Received: from mail-qt1-f181.google.com ([209.85.160.181]) by
+ mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1Mgf8s-1j7scw34RQ-00h3tE; Wed, 20 May 2020 17:22:10 +0200
+Received: by mail-qt1-f181.google.com with SMTP id d7so2783654qtn.11;
+ Wed, 20 May 2020 08:22:10 -0700 (PDT)
+X-Gm-Message-State: AOAM531BN42DDCDLGYJel2TwjBt36WfeenyaOyjQn10FJOaopj2AJFKD
+ zZCFCjGAXEffr6QCR5BbYKNeIcLQIbnkNPleKQA=
+X-Google-Smtp-Source: ABdhPJxPaIcts5txZj5QVL3rWtmCCyq5PMXDICJ646QfX7NaTKW5ny+4Lx6EVHwuZMSzUg8JEBr5SbaSH10UJr6q+WI=
+X-Received: by 2002:ac8:691:: with SMTP id f17mr5677921qth.204.1589988129396; 
+ Wed, 20 May 2020 08:22:09 -0700 (PDT)
 MIME-Version: 1.0
+References: <20200520102125.8934-1-robert.jarzmik@free.fr>
+In-Reply-To: <20200520102125.8934-1-robert.jarzmik@free.fr>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Wed, 20 May 2020 17:21:51 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2+auSWBROZR-hobM_qSWtKiG1DRYP3Y7uvbCy_ZLy+gg@mail.gmail.com>
+Message-ID: <CAK8P3a2+auSWBROZR-hobM_qSWtKiG1DRYP3Y7uvbCy_ZLy+gg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] ARM: pxa: remove Compulab pxa2xx boards
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+X-Provags-ID: V03:K1:2xudLmAnhJ2hVD56vWWrBrEVUUptCoSx68vYrb/cilR3qBMD3RK
+ gNa/F7m6WC9MvWrm5794BAn8Cik83+7n/EhRVuQMk0TwrIb4c0ePSl7SEgL1HaI3vWNmwXv
+ A5DQgPfgTmx2+uarDtrigHy6Pc5R20wgs7/lE32EsODlrlaz7RjhK750X72ub2eNeuWqA1U
+ tC46jOFei3mnFqW+0vivg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Ja2pbpv5lHk=:glyVndeE/QLjA8rmndynwy
+ y+DvF2E46rrdVmzw5DTQu7bN+lV+/8sFj/vSb6d13HuE3617AHaqAQoC4UrLJAsvpJpO8GsQB
+ re4EsgWDW/rChRo+qqznnnplGub2IPfN+Unh/QL+JraV+mnJyLPaWXxccFoAJW4Jv9SggrDtC
+ rsp3QfldMY7sScexzbjRu+iQFt6TmpiEzzajrvjXKK2VxHrQYqE984GjqyyepmwTRpSd1/dVE
+ +NaQ6hdl25b37AshAed1vlAbZ5/Bfnflf9+Uph833gecRQyhdVXAA9SlsoZf+WfYAFUrLjdTz
+ /hdIkf3ebxg6OT0m03RjIAJijGhqlZ+A1uHj73NOeFDcvGeKIq4+MEECr7tyYFHHt2nDuRjFJ
+ J2t+KCIGcE7jmeFXzoFRRkJ2g2f/COBkN6XERVpPjOeqWGr4Wc/F125CXLbFKB0tTTFoR0fh+
+ J2RejLf+K/NxLs6hlOXdBOU0zo19Z4VtSyNaaN7v1yt5oeUpZ8VibRAp7g+sexCjfBpTfcpID
+ YVssxySPGn8XYQRz7pTsW43vB/8aTOtygv6LAEYnyn20mE5tPPkomq+5XhjSJ6gxqhcxP4JUv
+ ZmwmnfDJISj+nh8jlgF10uSnTGj+gi5m2V85k0lsdNyw6ASgvDisp3jkj112dNpBLU7Ly6kuO
+ YuxEHOTABDOZcDYDlLrxZLbjuS0dnqRbNblyYwqbPLaaLjIKxK18L3FWaXPZCE5TWN07VlRLf
+ jjIyiJtxDuKctuR37de/rujx+Gw5Jk95GHy4MISs0bZC8DHEnSyxVwnQ5jfx4j8LaFSISKeCD
+ 9JEA2wIV9zcY+1AygVoNs1opW2MotaIefPFlghON4KPUDx3L1A=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200520_081253_672815_81F47946 
-X-CRM114-Status: GOOD (  19.36  )
+X-CRM114-CacheID: sfid-20200520_082213_509358_9653131E 
+X-CRM114-Status: GOOD (  10.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,51 +87,34 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Boris Brezillon <bbrezillon@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Rickard X Andersson <Rickard.Andersson@axis.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Boris Brezillon <boris.brezillon@collabora.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>, Mike Rapoport <rppt@kernel.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQm9yaXMsCgpCb3JpcyBCcmV6aWxsb24gPGJvcmlzLmJyZXppbGxvbkBjb2xsYWJvcmEuY29t
-PiB3cm90ZSBvbiBXZWQsIDIwIE1heQoyMDIwIDE2OjUwOjIyICswMjAwOgoKPiBPbiBXZWQsIDIw
-IE1heSAyMDIwIDE0OjQyOjMxICswMDAwCj4gUmlja2FyZCBYIEFuZGVyc3NvbiA8Umlja2FyZC5B
-bmRlcnNzb25AYXhpcy5jb20+IHdyb3RlOgo+IAo+ID4gPiA+IElmIEkgdW5kZXJzdGFuZCB5b3Ug
-Y29ycmVjdGx5IHlvdSB3YW50IG1lIHRvIHVzZSBvbmZpX2ZpbmRfZXF1aXZhbGVudF9zZHJfbW9k
-ZSBpbiBvcmRlciB0byBmaW5kIHRoZSBjb3JyZXNwb25kaW5nIG9uZmkgbW9kZS4gVGhlbiB5b3Ug
-d2FudCBtZSB0byB1c2Ugb25maV9maWxsX2RhdGFfaW50ZXJmYWNlIGFuZCBsb29wIHRvd2FyZHMg
-bW9kZSAwIGNoZWNraW5nIHdoaWNoIG1vZGUgdGhlIGNvbnRyb2xsZXIgYWNjZXB0cz8gSSBqdXN0
-IHRob3VnaHQgaXQgd2FzIGEgIm1lc3N5IiB0byBkdXBsaWNhdGUgdGhpcyBjb2RlIGluIGFsbCB2
-ZW5kb3IgZHJpdmVycy4KPiA+ID4gPiBPciBkbyB5b3UgbWVhbiB0aGF0IEkgc2hvdWxkIGp1c3Qg
-dXNlIG9uZmlfZmluZF9lcXVpdmFsZW50X3Nkcl9tb2RlIHRvIHNldCAuInRpbWluZ3MubW9kZSIg
-YW5kIGxldCBuYW5kX2Jhc2UgdG8gZG8gdGhlIGxvb3BpbmcgaW4gY2FzZSBlcnJvciBpcyByZXR1
-cm5lZCBmcm9tIHRoNThudmcyczNoYmFpNF9jaG9vc2VfZGF0YV9pbnRlcmZhY2UgKGkuZSBzcGVj
-aWFsaXplZCB0aW1pbmdzIG5vdCBhY2NlcHRlZCBieSB0aGUgY29udHJvbGxlcikuICAgIAo+ID4g
-Pgo+ID4gPiBTb3JyeSBmb3IgdGhlIG1pc3VuZGVyc3RhbmRpbmcuIFdoYXQgSSB0aGluayB5b3Ug
-c2hvdWxkIHRyeSBpczoKPiA+ID4gMS8gY2FsbCBvbmZpX2ZpbmRfZXF1aXZhbGVudF9zZHJfbW9k
-ZSgpIHRvIHNldCB0aGUgdGltaW5ncy5tb2RlIGZpZWxkLgo+ID4gPiAyLyBjYWxsIG5hbmRfY29u
-dHJvbGxlcl9zdXBwb3J0c19kYXRhX2ludGVyZmFjZSgpCj4gPiA+IDMvIGlmIHRoZSBjb250cm9s
-bGVyIHN1cHBvcnRzIHRoZSB0aW1pbmdzLCBzZXQKPiA+ID4gY2hpcC0+ZGVmYXVsdF90aW1pbmdf
-bW9kZSBhY2NvcmRpbmdseSBhbmQgcmV0dXJuIDAuICAKPiAKPiBXaHkgZG8gd2UgaGF2ZSB0byBz
-ZXQgdGhlIGRlZmF1bHRfdGltaW5nX21vZGUgZmllbGQ/IENhbid0IHdlIGp1c3Qgc2V0Cj4gdGlt
-aW5ncy5tb2RlIGRpcmVjdGx5Pwo+IAo+ID4gPiA0LyBpZiB0aGUgY29udHJvbGxlciBkb2VzIG5v
-dCBzdXBwb3J0IHRoZSB0aW1pbmdzLCB5b3UgbWF5IHdhbnQgdG8KPiA+ID4gcHJvcG9zZSBvdGhl
-ciBzdGFuZGFyZCB0aW1pbmdzIHRvIHRlc3QgYnkgc2V0dGluZwo+ID4gPiBjaGlwLT5kZWZhdWx0
-X3RpbWluZ19tb2RlIGFueXdheSBidXQgcmV0dXJuaW5nIGFuIGVycm9yIHdoaWNoIG1lYW5zCj4g
-PiA+ICJiZXN0IGludGVyZmFjZSBoYXMgbm90IGJlZW4gZm91bmQgeWV0IiBzbyB0aGUgcmVzdCBv
-ZiB0aGUKPiA+ID4gY2hvb3NlX2RhdGFfaW50ZXJmYWNlKCkgaGVscGVyIHdpbGwgdHJ5IHRoZSBy
-ZW1haW5pbmcgT05GSSBtb2Rlcwo+ID4gPiBhdXRvbWF0aWNhbGx5IChmYWxsYmFja3MgdG8gMCBh
-bnl3YXkpLiAgCj4gCj4gQWdhaW4sIEkgZG9uJ3Qgc2VlIHdoeSBzZXR0aW5nIGNoaXAtPmRlZmF1
-bHRfdGltaW5nX21vZGUgaXMgbmVlZGVkIGhlcmUsCj4gYW5kIEknbSBub3Qgc3VyZSB0cnlpbmcg
-cmVtYWluaW5nIE9ORkkgbW9kZXMgaXMgdXNlZnVsLCBJIGd1ZXNzIHdlIGNhbgo+IGp1c3QgZmFs
-bCBiYWNrIG9uIG1vZGUgMCBpbiB0aGF0IGNhc2UuCgpJdCBpcyBuZWVkZWQgYmVjYXVzZSBvZiB0
-aGUgbG9naWMgaW4gbmFuZF9yZXNldCgpIHdoaWNoIGRvZXMgbm90IGFwcGx5CnRoZSBkYXRhIGlu
-dGVyZmFjZSBhZnRlciBhIHJlc2V0IGlmIHRoaXMgZmllbGQgaXMgbnVsbC4KCk90aGVyd2lzZSBJ
-IGFsc28gd29uZGVyZWQgaWYgZmFsbGluZyBiYWNrIHRvIHJlZ3VsYXIgT05GSSBtb2RlIHdhcwp1
-c2VmdWwuIElmIHRoaXMgaXMgbm90LCB3ZSBjYW4ganVzdCByZXR1cm4gYWZ0ZXIgdGhlIGNhbGwg
-dG8KY2hpcC0+b3BzLmNob29zZV9kYXRhX2ludGVyZmFjZSgpLgoKVGhhbmtzLApNaXF1w6hsCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGlu
-dXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
-L21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Wed, May 20, 2020 at 12:21 PM Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+>
+> As these boards have no more users nor testers, and patching them has
+> become a burden, be that because of the PCI part or the MTD NAND
+> support, let's remove them.
+>
+> The cm-x300 will for now remain and represent Compulab boards at its
+> best in the PXA department.
+>
+> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+
+Should we take the series through the soc tree? If so, please
+send them to soc@kernel.org if there are no objections;
+or along with other patches you might have in the pull requests.
+
+      Arnd
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
