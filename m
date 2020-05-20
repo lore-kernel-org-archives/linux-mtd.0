@@ -2,63 +2,71 @@ Return-Path: <SRS0=rTSM=7C=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58231C433E0
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 May 2020 16:47:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22931C433DF
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 May 2020 19:49:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1E9612065F
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 May 2020 16:47:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BEC11207D8
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 May 2020 19:49:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="H6KGM/G4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E9612065F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jeYtBMzO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BEC11207D8
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8eqF5sVtIOiQma46049yhuSXzRLsJlYDhq4S7H53zo0=; b=H6KGM/G4vtB4fO
-	qQ0Mj1lwatQxFoIIroVeHrOhuIKPXD2pVBCsZzqhGgAlt5a6349U+8MJ5eRR5wAAe39H5woSfmvfi
-	qpzmwrE8VmEOyBTzh/xAU5iU1HbvPt4x9DXyRM143Pj38uEnRisWh8smLeJe4c7Jn8LW7GmdOZApX
-	7snS/nsFcdqpr+hB/fu2qgCpI7OBuxkyotFtfNvZ+5Nc6H8Vij2VdNUrk7nnGDqHuIeI77aOJ9TzJ
-	SMkd+vxQ1Do1DAi1L8PaVqY1G53ZQco/XEb9WzCc+EPO+9X00SJW4q+F0vq460ZNKxZNY4JLg9YpG
-	8NDic8jIiNSlboL8ogtg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:Message-ID:To:From
+	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=YuH1dcWAPzWr+p9t7UkjHdOMpml3iVtzBbgJDkri/cU=; b=jeYtBMzONaTepg
+	H7aQJ4iN0C5qYQ4szGkyNC4Ij3q7lswwvEEj1RdfXABmL0DC6NajrRrVPGf2QJKlHN8eb3im8MRpx
+	9VpUkNVK/m1vrXyrggiVA7QZkwF5a3ATaLJbhNlDctcd8yml+sPCO7OUZ7aaUSdG0VcgXyYcmIaAp
+	+804oi9KliZQ6tETxnURcC9EppkPAvWzyZ2MjSmBlGaJSYfZUsMbrnLhJ7w/nBPFas1+3KJHFD5R/
+	Zh0sXa0UUj2u8+1AJb+nYOVHKSJvFes0egtJtwtFkX+K8P6NHBx6SnMHTCOp1Ponx0KMmq5CUuo1m
+	PnMCjN29UmQ51zF23PbA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jbRsY-0007L2-6N; Wed, 20 May 2020 16:47:38 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1jbUiw-0003K0-0l; Wed, 20 May 2020 19:49:54 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jbRlf-0005tM-OY
- for linux-mtd@lists.infradead.org; Wed, 20 May 2020 16:40:36 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id AE8672A2CE1;
- Wed, 20 May 2020 17:40:29 +0100 (BST)
-Date: Wed, 20 May 2020 18:40:26 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Rickard X Andersson <Rickard.Andersson@axis.com>
-Subject: Re: [PATCH v2 1/2] mtd: rawnand: Add a helper for testing data
- interface
-Message-ID: <20200520184026.6629eaa8@collabora.com>
-In-Reply-To: <1589986371551.27178@axis.com>
-References: <20200520133854.25241-1-rickaran@axis.com>
- <20200520155529.3d959e96@xps13> <1589986371551.27178@axis.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1jbUiq-0003Ej-Od
+ for linux-mtd@lists.infradead.org; Wed, 20 May 2020 19:49:50 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 2A69E609D2FA;
+ Wed, 20 May 2020 21:49:40 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id B_oiLUskh1rM; Wed, 20 May 2020 21:49:39 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id DB8C0609D2CC;
+ Wed, 20 May 2020 21:49:39 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id HB01SdQYLnl2; Wed, 20 May 2020 21:49:39 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+ by lithops.sigma-star.at (Postfix) with ESMTP id BEA53623A7C5;
+ Wed, 20 May 2020 21:49:39 +0200 (CEST)
+Date: Wed, 20 May 2020 21:49:39 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: torvalds <torvalds@linux-foundation.org>
+Message-ID: <1270319593.249344.1590004179760.JavaMail.zimbra@nod.at>
+Subject: [GIT PULL] MTD fixes for 5.7 final
 MIME-Version: 1.0
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF68 (Linux)/8.8.12_GA_3809)
+Thread-Index: zzLpiIOUyD076SaYCqVKbuiKIraQlg==
+Thread-Topic: MTD fixes for 5.7 final
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200520_094032_031039_F0653995 
-X-CRM114-Status: GOOD (  11.89  )
+X-CRM114-CacheID: sfid-20200520_124948_943158_433D79C8 
+X-CRM114-Status: UNSURE (   7.89  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,29 +78,50 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: linux-kernel <linux-kernel@vger.kernel.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>, vigneshr@ti.com,
+ miquel.raynal@bootlin.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gV2VkLCAyMCBNYXkgMjAyMCAxNDo1Mjo1MiArMDAwMApSaWNrYXJkIFggQW5kZXJzc29uIDxS
-aWNrYXJkLkFuZGVyc3NvbkBheGlzLmNvbT4gd3JvdGU6Cgo+IEhpIE1pcXVlbCwKPiAKPiBDb21t
-ZW50cyBvbiB0d28gb2YgeW91ciBjb21tZW50cy4gKEkgYW0gZmluZSB3aXRoIGFsbCB0aGUgb3Ro
-ZXIgY29tbWVudHMuKQo+IAo+ID4gPiArIMKgIMKgIC8qCj4gPiA+ICsgwqAgwqAgwqAqIFBhc3Mg
-TkFORF9EQVRBX0lGQUNFX0NIRUNLX09OTFkgdG8gb25seSBjaGVjayBpZiB0aGUKPiA+ID4gKyDC
-oCDCoCDCoCogY29udHJvbGxlciBzdXBwb3J0cyB0aGUgcmVxdWVzdGVkIHRpbWluZ3MuCj4gPiA+
-ICsgwqAgwqAgwqAqLwo+ID4gPiArIMKgIMKgIHJldCA9IGNoaXAtPmNvbnRyb2xsZXItPm9wcy0+
-c2V0dXBfZGF0YV9pbnRlcmZhY2UoY2hpcCwKPiA+ID4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoE5BTkRfREFUQV9J
-RkFDRV9DSEVDS19PTkxZLAo+ID4gPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgJmNoaXAtPmRhdGFfaW50ZXJmYWNl
-KTsgIAo+ID4KPiA+IENvdWxkIHlvdSBhbGlnbiB0aGVzZSBsaW5lcyB0byB0aGUgb3BlbmVkIHBh
-cmVudGhlc2lzPyAgCj4gCj4gVGhlbiB0aGUgbGluZXMgd2lsbCBoYXZlIDgwKyBjaGFyYWN0ZXJz
-LgoKSnVzdCBhZGQgYSBsb2NhbCBvcHMgdmFyLgoKCWNvbnN0IHN0cnVjdCBuYW5kX2NvbnRyb2xs
-ZXJfb3BzICpvcHMgPSBjaGlwLT5jb250cm9sbGVyLT5vcHM7CgoJcmV0ID0gb3BzLT5zZXR1cF9k
-YXRhX2ludGVyZmFjZShjaGlwLMKgTkFORF9EQVRBX0lGQUNFX0NIRUNLX09OTFksCgkJCQkJwqAm
-Y2hpcC0+ZGF0YV9pbnRlcmZhY2UpOwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApo
-dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Linus,
+
+The following changes since commit 9b1f2cbdb6d3062c468d3f9b579501f0f7ce330b:
+
+  Merge tag 'clk-fixes-for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/clk/linux (2020-05-17 12:33:00 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/fixes-for-5.7-rc6
+
+for you to fetch changes up to f3a6a6c5e0f5a303fd8ec84ea33c0da5869d715f:
+
+  mtd:rawnand: brcmnand: Fix PM resume crash (2020-05-19 10:24:49 +0200)
+
+----------------------------------------------------------------
+This pull request contains the following bug fixes for MTD:
+
+- Fix a PM regression in brcmnand driver
+- Propagate ECC information correctly on SPI-NAND
+- Make sure no MTD name is used multiple time in nvmem
+
+----------------------------------------------------------------
+Kamal Dasu (1):
+      mtd:rawnand: brcmnand: Fix PM resume crash
+
+Miquel Raynal (1):
+      mtd: spinand: Propagate ECC information to the MTD structure
+
+Ricardo Ribalda Delgado (1):
+      mtd: Fix mtd not registered due to nvmem name collision
+
+ drivers/mtd/mtdcore.c                    | 2 +-
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c | 3 +--
+ drivers/mtd/nand/spi/core.c              | 4 ++++
+ 3 files changed, 6 insertions(+), 3 deletions(-)
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
