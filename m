@@ -2,92 +2,67 @@ Return-Path: <SRS0=rTSM=7C=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21207C433DF
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 May 2020 00:01:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2448C433E2
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 May 2020 00:07:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D78FC20709
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 May 2020 00:01:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5FBC020823
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 May 2020 00:07:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="i3uxZ9Dn";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="2rXOscJY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D78FC20709
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=alliedtelesis.co.nz
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gTJAJM72"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5FBC020823
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ni05sXiLQve0W+ME8Ms/ONmI97XG+RpuimifBt0nJV0=; b=i3uxZ9Dn/0Irtv
-	nSqvPev9JuMJUh+0yzXC2Z1TKc0npQfDSrW7QnZOCBqHPqHDxPZHYgDiLtrhT6BDKoJO7iRqbkZo6
-	IoqNWXZSpOgclndi+JOgJA9rIUF3hFI70fTnZ/J81y6FR7PfeVAd2gQKHSN2UUzKNPdoJkIXhKxSh
-	6Gav9X8RS9wyy4yJ2b7e4XvHlDCRATt/S605KnfkbLoVX2mbxpDxjM26p/646xtFIkEt+5uAeQGkW
-	GDSYOXhRip/b+m2fZzHNw8VfOlsgrVTixIrsUtoLrd1Sx56U6SYW6szhwMX5qC9FSvkiSQUh2MJE0
-	/OqkwoHFIFAJ5o3sYlDw==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=yP1X0FprKC5/XbKjTroK0osUWgbmGZZUhpeWamSxr6c=; b=gTJ
+	AJM7243bXXhq/Cfi8ugIN5p+/XzcKNKkcTz/Z6M1EA4ZaRHMr2JMxikUQDwb5RuX8tSWoHDtiQw82
+	7e53TD+Yl9ZO2kXr/KWAOu6Yw+u4bKedVX3RoUeKP/d30Vu82GUdIplov3g3qRuHHh6m6ZZmr1Gbb
+	waKYvFElNIyFcUH+6CmrIrRROa6BGIhthIUOHvka9Kv9PLuCt92DAFXQ/NlHDZaSa5L+M5TmOhQU0
+	HQIizhClpecuZMB/JaLLR2dPLt2AjPE2SqgvOjci1ecG4tVDMWxvC/PJsoEFzVct6o+5AAzRLCV/L
+	wiGurzkWF2ZayU5ErR5cVcnSvz3+y2Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jbC9x-00059e-75; Wed, 20 May 2020 00:00:33 +0000
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
+	id 1jbCGu-0000M5-Lb; Wed, 20 May 2020 00:07:44 +0000
+Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jbC9s-00051b-NC
- for linux-mtd@lists.infradead.org; Wed, 20 May 2020 00:00:31 +0000
-Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (Client did not present a certificate)
- by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 713A88066C;
- Wed, 20 May 2020 12:00:10 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
- s=mail181024; t=1589932810;
- bh=eXWSKaZTPx/G1ud57Vocs+0U//C3VlFUjlW9uCsZFIY=;
- h=From:To:CC:Subject:Date:References:In-Reply-To;
- b=2rXOscJYB75yYKwQGoI/M8E9hu/ELzi7Q96EnTsbAbAeedkqYvZ8eFlmAxwTi3aEa
- 7eAmTPA0M9on+0KZWShenVWp7s6hdNfu8dehI0ZQ9LRO3mvvYvrXblOhk9abMbdApJ
- +y9wVjSKeKIlg1dH7xRG7aTyuMKRaXDKdkqWVMtD3BoYm2IlHA80SGYw4/QHdMG2JL
- 6siheRnqJn9TY/iIHI16Y/fZw1jpS25cRTzBRPRuefIr2Zfjpo1mXDxQcWhxhqHGKa
- kz/WKvSlNIPEI+8IehfT9orlD2m1vszs0muhgTNhBHNhC/+AKbpFF5vmTf4cfjAXDe
- Qax+Mb5mbwM/w==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[10.32.16.77]) by
- mmarshal3.atlnz.lc with Trustwave SEG (v7, 5, 8, 10121)
- id <B5ec4730a0001>; Wed, 20 May 2020 12:00:10 +1200
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
- svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Wed, 20 May 2020 12:00:10 +1200
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.006; Wed, 20 May 2020 12:00:10 +1200
-From: Hamish Martin <Hamish.Martin@alliedtelesis.co.nz>
-To: "richard.weinberger@gmail.com" <richard.weinberger@gmail.com>, Kyeong Yoo
- <Kyeong.Yoo@alliedtelesis.co.nz>
-Subject: Re: [PATCH] jffs2: GC deadlock reading a page that is used in
- jffs2_write_begin()
-Thread-Topic: [PATCH] jffs2: GC deadlock reading a page that is used in
- jffs2_write_begin()
-Thread-Index: AQHWLjitLM2lX48lqUusjztLB0eiP6ivTaSA
-Date: Wed, 20 May 2020 00:00:09 +0000
-Message-ID: <1589932809.26085.25.camel@alliedtelesis.co.nz>
-References: <149914202384.24318.7331828698981799313.stgit@kyeongy-dl.atlnz.lc>
- <CAFLxGvy4NbfHHoHXaH=sR-3e10+EAbDwLsdM1_Eyk_gT5=HE8Q@mail.gmail.com>
-In-Reply-To: <CAFLxGvy4NbfHHoHXaH=sR-3e10+EAbDwLsdM1_Eyk_gT5=HE8Q@mail.gmail.com>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Evolution 3.18.5.2-0ubuntu3.2 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [2001:df5:b000:24:44bc:5773:a998:1d51]
-Content-ID: <2414249FAFD61645BF1DE1B7392CC21B@atlnz.lc>
-MIME-Version: 1.0
+ id 1jbCGq-0000LI-S4
+ for linux-mtd@lists.infradead.org; Wed, 20 May 2020 00:07:43 +0000
+IronPort-SDR: LcltcHajIuEFlQGHRVEHRMuKe1t6PVg/WOBLe39QIdYCCuG0t7QA2Mqj8+0ZJVi47OYzwwFot8
+ eRNJPptzVz7g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 May 2020 17:07:38 -0700
+IronPort-SDR: U4U0klmwTkCKIxGqP9u2+bEPZdNRGJN9zT3fa+Z7P2nU8dDiEYrbZsKLHmCNi8iJEdG7lt8iYm
+ YAy7HP0JDOVQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,411,1583222400"; d="scan'208";a="264487902"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+ by orsmga003.jf.intel.com with ESMTP; 19 May 2020 17:07:34 -0700
+From: "Ramuthevar,
+ Vadivel MuruganX" <vadivel.muruganx.ramuthevar@linux.intel.com>
+To: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org
+Subject: [RESENDPATCH v8 0/2] mtd: rawnand: Add NAND controller support on
+ Intel LGM SoC
+Date: Wed, 20 May 2020 08:06:19 +0800
+Message-Id: <20200520000621.49152-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200519_170029_311274_A969DD5A 
-X-CRM114-Status: GOOD (  32.72  )
+X-CRM114-CacheID: sfid-20200519_170740_950262_7C2E5A55 
+X-CRM114-Status: GOOD (  13.33  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,146 +74,105 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: cheol.yong.kim@intel.com, hauke.mehrtens@intel.com, qi-ming.wu@intel.com,
+ anders.roxell@linaro.org, vigneshr@ti.com, arnd@arndb.de, richard@nod.at,
+ brendanhiggins@google.com, linux-mips@vger.kernel.org, robh+dt@kernel.org,
+ "Ramuthevar, Vadivel MuruganX" <vadivel.muruganx.ramuthevar@linux.intel.com>,
+ boris.brezillon@collabora.com, miquel.raynal@bootlin.com, tglx@linutronix.de,
+ masonccyang@mxic.com.tw, andriy.shevchenko@intel.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gU2F0LCAyMDE4LTEyLTE1IGF0IDIzOjM3ICswMTAwLCBSaWNoYXJkIFdlaW5iZXJnZXIgd3Jv
-dGU6DQo+IE9uIFR1ZSwgSnVsIDQsIDIwMTcgYXQgNjoyMyBBTSBLeWVvbmcgWW9vDQo+IDxreWVv
-bmcueW9vQGFsbGllZHRlbGVzaXMuY28ubno+IHdyb3RlOg0KPiA+IA0KPiA+IA0KPiA+IEdDIHRh
-c2sgY2FuIGRlYWRsb2NrIGluIHJlYWRfY2FjaGVfcGFnZSgpIGJlY2F1c2UgaXQgbWF5IGF0dGVt
-cHQNCj4gPiB0byByZWxlYXNlIGEgcGFnZSB0aGF0IGlzIGFjdHVhbGx5IGFsbG9jYXRlZCBieSBh
-bm90aGVyIHRhc2sgaW4NCj4gPiBqZmZzMl93cml0ZV9iZWdpbigpLg0KPiA+IFRoZSByZWFzb24g
-aXMgdGhhdCBpbiBqZmZzMl93cml0ZV9iZWdpbigpIHRoZXJlIGlzIGEgc21hbGwgd2luZG93DQo+
-ID4gYSBjYWNoZSBwYWdlIGlzIGFsbG9jYXRlZCBmb3IgdXNlIGJ1dCBub3Qgc2V0IFVwdG9kYXRl
-IHlldC4NCj4gPiANCj4gPiBUaGlzIGVuZHMgdXAgd2l0aCBhIGRlYWRsb2NrIGJldHdlZW4gdHdv
-IHRhc2tzOg0KPiA+IDEpIEEgdGFzayAoZS5nLiBmaWxlIGNvcHkpDQo+ID4gwqDCoMKgLSBqZmZz
-Ml93cml0ZV9iZWdpbigpIGxvY2tzIGEgY2FjaGUgcGFnZQ0KPiA+IMKgwqDCoC0gamZmczJfd3Jp
-dGVfZW5kKCkgdHJpZXMgdG8gbG9jayAiYWxsb2Nfc2VtIiBmcm9tDQo+ID4gwqDCoMKgwqDCoMKg
-wqDCoMKgamZmczJfcmVzZXJ2ZV9zcGFjZSgpIDwtLSBTVFVDSw0KPiA+IDIpIEdDIHRhc2sgKGpm
-ZnMyX2djZF9tdGQzKQ0KPiA+IMKgwqDCoC0gamZmczJfZ2FyYmFnZV9jb2xsZWN0X3Bhc3MoKSBs
-b2NrcyAiYWxsb2Nfc2VtIg0KPiA+IMKgwqDCoC0gdHJ5IHRvIGxvY2sgdGhlIHNhbWUgY2FjaGUg
-cGFnZSBpbiByZWFkX2NhY2hlX3BhZ2UoKSA8LS0gU1RVQ0sNCj4gPiANCj4gPiBTbyB0byBhdm9p
-ZCB0aGlzIGRlYWRsb2NrLCBob2xkICJhbGxvY19zZW0iIGluIGpmZnMyX3dyaXRlX2JlZ2luKCkN
-Cj4gPiB3aGlsZSByZWFkaW5nIGRhdGEgaW4gYSBjYWNoZSBwYWdlLg0KPiA+IA0KPiA+IFNpZ25l
-ZC1vZmYtYnk6IEt5ZW9uZyBZb28gPGt5ZW9uZy55b29AYWxsaWVkdGVsZXNpcy5jby5uej4NCj4g
-PiAtLS0NCj4gPiANCj4gPiBOb3RlOiBJJ20gcmVzZW5kaW5nIHRoaXMgcGF0Y2ggdG8gbGludXgt
-bXRkLg0KPiA+IA0KPiA+IMKgZnMvamZmczIvZmlsZS5jIHzCoMKgwqA0MCArKysrKysrKysrKysr
-KysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tDQo+ID4gwqAxIGZpbGUgY2hhbmdlZCwgMjUgaW5z
-ZXJ0aW9ucygrKSwgMTUgZGVsZXRpb25zKC0pDQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBhL2ZzL2pm
-ZnMyL2ZpbGUuYyBiL2ZzL2pmZnMyL2ZpbGUuYw0KPiA+IGluZGV4IGMxMjQ3NmUzMDljNi4uZWI0
-ZTRkNzg0ZDI2IDEwMDY0NA0KPiA+IC0tLSBhL2ZzL2pmZnMyL2ZpbGUuYw0KPiA+ICsrKyBiL2Zz
-L2pmZnMyL2ZpbGUuYw0KPiA+IEBAIC0xMzUsMjAgKzEzNSwxNSBAQCBzdGF0aWMgaW50IGpmZnMy
-X3dyaXRlX2JlZ2luKHN0cnVjdCBmaWxlDQo+ID4gKmZpbHAsIHN0cnVjdCBhZGRyZXNzX3NwYWNl
-ICptYXBwaW5nLA0KPiA+IMKgwqDCoMKgwqDCoMKgwqBzdHJ1Y3QgcGFnZSAqcGc7DQo+ID4gwqDC
-oMKgwqDCoMKgwqDCoHN0cnVjdCBpbm9kZSAqaW5vZGUgPSBtYXBwaW5nLT5ob3N0Ow0KPiA+IMKg
-wqDCoMKgwqDCoMKgwqBzdHJ1Y3QgamZmczJfaW5vZGVfaW5mbyAqZiA9IEpGRlMyX0lOT0RFX0lO
-Rk8oaW5vZGUpOw0KPiA+ICvCoMKgwqDCoMKgwqDCoHN0cnVjdCBqZmZzMl9zYl9pbmZvICpjID0g
-SkZGUzJfU0JfSU5GTyhpbm9kZS0+aV9zYik7DQo+ID4gwqDCoMKgwqDCoMKgwqDCoHBnb2ZmX3Qg
-aW5kZXggPSBwb3MgPj4gUEFHRV9TSElGVDsNCj4gPiDCoMKgwqDCoMKgwqDCoMKgdWludDMyX3Qg
-cGFnZW9mcyA9IGluZGV4IDw8IFBBR0VfU0hJRlQ7DQo+ID4gwqDCoMKgwqDCoMKgwqDCoGludCBy
-ZXQgPSAwOw0KPiA+IA0KPiA+IC3CoMKgwqDCoMKgwqDCoHBnID0gZ3JhYl9jYWNoZV9wYWdlX3dy
-aXRlX2JlZ2luKG1hcHBpbmcsIGluZGV4LCBmbGFncyk7DQo+ID4gLcKgwqDCoMKgwqDCoMKgaWYg
-KCFwZykNCj4gPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuIC1FTk9NRU07
-DQo+ID4gLcKgwqDCoMKgwqDCoMKgKnBhZ2VwID0gcGc7DQo+ID4gLQ0KPiA+IMKgwqDCoMKgwqDC
-oMKgwqBqZmZzMl9kYmcoMSwgIiVzKClcbiIsIF9fZnVuY19fKTsNCj4gPiANCj4gPiDCoMKgwqDC
-oMKgwqDCoMKgaWYgKHBhZ2VvZnMgPiBpbm9kZS0+aV9zaXplKSB7DQo+ID4gwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAvKiBNYWtlIG5ldyBob2xlIGZyYWcgZnJvbSBvbGQgRU9GIHRv
-IG5ldyBwYWdlICovDQo+ID4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHN0cnVjdCBq
-ZmZzMl9zYl9pbmZvICpjID0gSkZGUzJfU0JfSU5GTyhpbm9kZS0NCj4gPiA+aV9zYik7DQo+ID4g
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBzdHJ1Y3QgamZmczJfcmF3X2lub2RlIHJp
-Ow0KPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc3RydWN0IGpmZnMyX2Z1bGxf
-ZG5vZGUgKmZuOw0KPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgdWludDMyX3Qg
-YWxsb2NfbGVuOw0KPiA+IEBAIC0xNTksNyArMTU0LDcgQEAgc3RhdGljIGludCBqZmZzMl93cml0
-ZV9iZWdpbihzdHJ1Y3QgZmlsZSAqZmlscCwNCj4gPiBzdHJ1Y3QgYWRkcmVzc19zcGFjZSAqbWFw
-cGluZywNCj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldCA9IGpmZnMyX3Jl
-c2VydmVfc3BhY2UoYywgc2l6ZW9mKHJpKSwNCj4gPiAmYWxsb2NfbGVuLA0KPiA+IMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoEFMTE9DX05PUk1BTCwNCj4gPiBKRkZTMl9TVU1NQVJZX0lOT0RF
-X1NJWkUpOw0KPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgaWYgKHJldCkNCj4g
-PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGdvdG8gb3V0
-X3BhZ2U7DQo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqBnb3RvIG91dF9lcnI7DQo+ID4gDQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqBtdXRleF9sb2NrKCZmLT5zZW0pOw0KPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgbWVtc2V0KCZyaSwgMCwgc2l6ZW9mKHJpKSk7DQo+ID4gQEAgLTE4OSw3ICsxODQsNyBAQCBz
-dGF0aWMgaW50IGpmZnMyX3dyaXRlX2JlZ2luKHN0cnVjdCBmaWxlICpmaWxwLA0KPiA+IHN0cnVj
-dCBhZGRyZXNzX3NwYWNlICptYXBwaW5nLA0KPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldCA9IFBUUl9FUlIoZm4pOw0KPiA+IMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGpmZnMyX2NvbXBsZXRlX3Jlc2Vy
-dmF0aW9uKGMpOw0KPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoG11dGV4X3VubG9jaygmZi0+c2VtKTsNCj4gPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGdvdG8gb3V0X3BhZ2U7DQo+ID4gK8KgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBnb3RvIG91dF9lcnI7DQo+ID4gwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB9DQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqByZXQgPSBqZmZzMl9hZGRfZnVsbF9kbm9kZV90b19pbm9kZShjLCBmLCBmbik7
-DQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAoZi0+bWV0YWRhdGEpIHsN
-Cj4gPiBAQCAtMjA0LDcgKzE5OSw3IEBAIHN0YXRpYyBpbnQgamZmczJfd3JpdGVfYmVnaW4oc3Ry
-dWN0IGZpbGUgKmZpbHAsDQo+ID4gc3RydWN0IGFkZHJlc3Nfc3BhY2UgKm1hcHBpbmcsDQo+ID4g
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgamZmczJfZnJl
-ZV9mdWxsX2Rub2RlKGZuKTsNCj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqBqZmZzMl9jb21wbGV0ZV9yZXNlcnZhdGlvbihjKTsNCj4gPiDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBtdXRleF91bmxvY2soJmYt
-PnNlbSk7DQo+ID4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqBnb3RvIG91dF9wYWdlOw0KPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgZ290byBvdXRfZXJyOw0KPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgfQ0KPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgamZmczJfY29tcGxl
-dGVfcmVzZXJ2YXRpb24oYyk7DQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBp
-bm9kZS0+aV9zaXplID0gcGFnZW9mczsNCj4gPiBAQCAtMjEyLDYgKzIwNywxOSBAQCBzdGF0aWMg
-aW50IGpmZnMyX3dyaXRlX2JlZ2luKHN0cnVjdCBmaWxlDQo+ID4gKmZpbHAsIHN0cnVjdCBhZGRy
-ZXNzX3NwYWNlICptYXBwaW5nLA0KPiA+IMKgwqDCoMKgwqDCoMKgwqB9DQo+ID4gDQo+ID4gwqDC
-oMKgwqDCoMKgwqDCoC8qDQo+ID4gK8KgwqDCoMKgwqDCoMKgwqAqIFdoaWxlIGdldHRpbmcgYSBw
-YWdlIGFuZCByZWFkaW5nIGRhdGEgaW4sIGxvY2sgYy0NCj4gPiA+YWxsb2Nfc2VtIHVudGlsDQo+
-ID4gK8KgwqDCoMKgwqDCoMKgwqAqIHRoZSBwYWdlIGlzIFVwdG9kYXRlLiBPdGhlcndpc2UgR0Mg
-dGFzayBtYXkgYXR0ZW1wdCB0bw0KPiA+IHJlYWQgdGhlIHNhbWUNCj4gPiArwqDCoMKgwqDCoMKg
-wqDCoCogcGFnZSBpbiByZWFkX2NhY2hlX3BhZ2UoKSwgd2hpY2ggY2F1c2VzIGEgZGVhZGxvY2su
-DQo+ID4gK8KgwqDCoMKgwqDCoMKgwqAqLw0KPiA+ICvCoMKgwqDCoMKgwqDCoG11dGV4X2xvY2so
-JmMtPmFsbG9jX3NlbSk7DQo+ID4gK8KgwqDCoMKgwqDCoMKgcGcgPSBncmFiX2NhY2hlX3BhZ2Vf
-d3JpdGVfYmVnaW4obWFwcGluZywgaW5kZXgsIGZsYWdzKTsNCj4gPiArwqDCoMKgwqDCoMKgwqBp
-ZiAoIXBnKSB7DQo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldCA9IC1FTk9N
-RU07DQo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGdvdG8gcmVsZWFzZV9zZW07
-DQo+ID4gK8KgwqDCoMKgwqDCoMKgfQ0KPiA+ICvCoMKgwqDCoMKgwqDCoCpwYWdlcCA9IHBnOw0K
-PiA+ICsNCj4gPiArwqDCoMKgwqDCoMKgwqAvKg0KPiA+IMKgwqDCoMKgwqDCoMKgwqDCoCogUmVh
-ZCBpbiB0aGUgcGFnZSBpZiBpdCB3YXNuJ3QgYWxyZWFkeSBwcmVzZW50LiBDYW5ub3QNCj4gPiBv
-cHRpbWl6ZSBhd2F5DQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgKiB0aGUgd2hvbGUgcGFnZSB3cml0
-ZSBjYXNlIHVudGlsIGpmZnMyX3dyaXRlX2VuZCBjYW4NCj4gPiBoYW5kbGUgdGhlDQo+ID4gwqDC
-oMKgwqDCoMKgwqDCoMKgKiBjYXNlIG9mIGEgc2hvcnQtY29weS4NCj4gPiBAQCAtMjIwLDE1ICsy
-MjgsMTcgQEAgc3RhdGljIGludCBqZmZzMl93cml0ZV9iZWdpbihzdHJ1Y3QgZmlsZQ0KPiA+ICpm
-aWxwLCBzdHJ1Y3QgYWRkcmVzc19zcGFjZSAqbWFwcGluZywNCj4gPiDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoG11dGV4X2xvY2soJmYtPnNlbSk7DQo+ID4gwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqByZXQgPSBqZmZzMl9kb19yZWFkcGFnZV9ub2xvY2soaW5vZGUsIHBn
-KTsNCj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoG11dGV4X3VubG9jaygmZi0+
-c2VtKTsNCj4gPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgaWYgKHJldCkNCj4gPiAt
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGdvdG8gb3V0X3Bh
-Z2U7DQo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlmIChyZXQpIHsNCj4gPiAr
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHVubG9ja19wYWdl
-KHBnKTsNCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oHB1dF9wYWdlKHBnKTsNCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoGdvdG8gcmVsZWFzZV9zZW07DQo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoH0NCj4gPiDCoMKgwqDCoMKgwqDCoMKgfQ0KPiA+IMKgwqDCoMKgwqDCoMKgwqBqZmZz
-Ml9kYmcoMSwgImVuZCB3cml0ZV9iZWdpbigpLiBwZy0+ZmxhZ3MgJWx4XG4iLCBwZy0NCj4gPiA+
-ZmxhZ3MpOw0KPiA+IC3CoMKgwqDCoMKgwqDCoHJldHVybiByZXQ7DQo+ID4gDQo+ID4gLW91dF9w
-YWdlOg0KPiA+IC3CoMKgwqDCoMKgwqDCoHVubG9ja19wYWdlKHBnKTsNCj4gPiAtwqDCoMKgwqDC
-oMKgwqBwdXRfcGFnZShwZyk7DQo+ID4gK3JlbGVhc2Vfc2VtOg0KPiA+ICvCoMKgwqDCoMKgwqDC
-oG11dGV4X3VubG9jaygmYy0+YWxsb2Nfc2VtKTsNCj4gPiArb3V0X2VycjoNCj4gPiDCoMKgwqDC
-oMKgwqDCoMKgcmV0dXJuIHJldDsNCj4gPiDCoH0NCj4gS3llb25nLA0KPiANCj4gZmlyc3Qgb2Yg
-YWxsLCBzb3JyeSBmb3IgdGhlIG1hc3NpdmUgZGVsYXkhDQo+IA0KPiBSaWdodCBub3cgSSdtIHRy
-eWluZyB0byBnZXQgamZmczIgYmFjayBpbiBzaGFwZSBhbmQgc3R1bWJsZWQgYWNyb3NzDQo+IHlv
-dXIgcGF0Y2guDQo+IE15IHRlc3Qgc3VpdGUgY2FuIGFjdHVhbGx5IHRyaWdnZXIgdGhpcyBkZWFk
-bG9jayBhbmQgSSB0aGluayB5b3VyDQo+IHBhdGNoIGlzIGxpa2VseSB0aGUNCj4gcmlnaHQgc29s
-dXRpb24uIEknbSBzdGlsbCByZXZpZXdpbmcgYW5kIHRyeSB0byBtYWtlIHZlcnkgc3VyZSB0aGF0
-IGl0DQo+IHdvcmtzIGFzIGV4cGVjdGVkLg0KPiANCj4gRGF2aWQsIHVubGVzcyB5b3UgaGF2ZSBv
-YmplY3Rpb25zIEknZCBjYXJyeSB0aGlzIHBhdGNoIHZpYSB0aGUgTVREDQo+IHRyZWUuDQo+IA0K
-DQpIaSBSaWNoYXJkLA0KDQpJJ20gaW50ZXJlc3RlZCB0byBrbm93IHdoYXQgaGFwcGVuZWQgdG8g
-dGhpcyBwYXRjaC4gSSBjYW4ndCBzZWUgdGhhdCBpdA0KbWFkZSBpdCBpbiB0byB0aGUgTGludXMn
-IHRyZWUgb3IgYW55IG90aGVyIG1haW50YWluZXJzIHRyZWUuDQoNCkknbSBrZWVuIHRvIGhlbHAg
-ZmluaXNoIGl0IG9mZiBhbmQgSSBub3RlIHRoYXQgeW91IHNhaWQgeW91IHdlcmUgYWJsZQ0KdG8g
-bWFrZSB0aGUgZmF1bHQgb2NjdXIgd2l0aCB5b3VyIHRlc3RzLiBXb3VsZCB5b3UgYmUgYWJsZSB0
-byBzaGFyZQ0Kd2hhdCB0ZXN0IHlvdSB3ZXJlIHJ1bm5pbmc/DQoNClBsZWFzZSBsZXQgbWUga25v
-dyBpZiB5b3UnZCBsaWtlIG1lIHRvIHRlc3QgYSBtb2RpZmllZCBwYXRjaCwgb3IgaWYNCnlvdSdk
-IGxpa2UgYW55IGZ1cnRoZXIgYXNzaXN0YW5jZSB0byBnZXQgdGhpcyBwYXRjaCBjb21wbGV0ZWQu
-DQoNClRoYW5rcywNCkhhbWlzaCBNYXJ0aW4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
-dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+This patch adds the new IP of Nand Flash Controller(NFC) support
+on Intel's Lightning Mountain(LGM) SoC.
+
+DMA is used for burst data transfer operation, also DMA HW supports
+aligned 32bit memory address and aligned data access by default.
+DMA burst of 8 supported. Data register used to support the read/write
+operation from/to device.
+
+NAND controller also supports in-built HW ECC engine.
+
+NAND controller driver implements ->exec_op() to replace legacy hooks,
+these specific call-back method to execute NAND operations.
+
+Thanks Boris, Andy and Arnd for the review comments and suggestions.
+---
+v8:
+  - fix the kbuild bot warnings
+  - correct the typo's
+v7:
+  - indentation issue is fixed
+  - add error check for retrieve the resource from dt
+  - Rob's review comments addressed
+  - dt-schema build issue fixed with upgraded dt-schema
+v6:
+  - update EBU_ADDR_SELx register base value build it from DT
+  - Add tabs in in Kconfig
+  - Rob's review comments addressed in YAML file
+  - add addr_sel0 and addr_sel1 reg-names in YAML example
+v5:
+  - replace by 'HSNAND_CLE_OFFS | HSNAND_CS_OFFS' to NAND_WRITE_CMD and NAND_WRITE_ADDR
+  - remove the unused macros
+  - update EBU_ADDR_MASK(x) macro
+  - update the EBU_ADDR_SELx register values to be written
+  - add the example in YAML file
+v4:
+  - add ebu_nand_cs structure for multiple-CS support
+  - mask/offset encoding for 0x51 value
+  - update macro HSNAND_CTL_ENABLE_ECC
+  - drop the op argument and un-used macros.
+  - updated the datatype and macros
+  - add function disable nand module
+  - remove ebu_host->dma_rx = NULL;
+  - rename MMIO address range variables to ebu and hsnand
+  - implement ->setup_data_interface()
+  - update label err_cleanup_nand and err_cleanup_dma
+  - add return value check in the nand_remove function
+  - add/remove tabs and spaces as per coding standard
+  - encoded CS ids by reg property
+v3:
+  - Add depends on MACRO in Kconfig
+  - file name update in Makefile
+  - file name update to intel-nand-controller
+  - modification of MACRO divided like EBU, HSNAND and NAND
+  - add NAND_ALE_OFFS, NAND_CLE_OFFS and NAND_CS_OFFS
+  - rename lgm_ to ebu_ and _va suffix is removed in the whole file
+  - rename structure and varaibles as per review comments.
+  - remove lgm_read_byte(), lgm_dev_ready() and cmd_ctrl() un-used function
+  - update in exec_op() as per review comments
+  - rename function lgm_dma_exit() by lgm_dma_cleanup()
+  - hardcoded magic value  for base and offset replaced by MACRO defined
+  - mtd_device_unregister() + nand_cleanup() instead of nand_release()
+v2:
+  - implement the ->exec_op() to replaces the legacy hook-up.
+  - update the commit message
+  - YAML compatible string update to intel, lgm-nand-controller
+  - add MIPS maintainers and xway_nand driver author in CC
+
+v1:
+ - initial version
+
+
+Ramuthevar Vadivel Murugan (2):
+  dt-bindings: mtd: Add Nand Flash Controller support for Intel LGM SoC
+  mtd: rawnand: Add NAND controller support on Intel LGM SoC
+
+ .../devicetree/bindings/mtd/intel,lgm-nand.yaml    |  91 +++
+ drivers/mtd/nand/raw/Kconfig                       |   8 +
+ drivers/mtd/nand/raw/Makefile                      |   1 +
+ drivers/mtd/nand/raw/intel-nand-controller.c       | 747 +++++++++++++++++++++
+ 4 files changed, 847 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
+ create mode 100644 drivers/mtd/nand/raw/intel-nand-controller.c
+
+-- 
+2.11.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
