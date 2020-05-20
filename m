@@ -7,68 +7,71 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EEBDC433E0
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 May 2020 13:39:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66002C433DF
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 May 2020 13:39:26 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B872A207D3
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 May 2020 13:39:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 305A9207D3
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 May 2020 13:39:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="e45w3xyy";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=axis.com header.i=@axis.com header.b="ISibGjTK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B872A207D3
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CnSnQEuP";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=axis.com header.i=@axis.com header.b="dH1veYv/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 305A9207D3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=axis.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=lamzOboIZLixhL4YEOjHYxFtEBAauwgp9G/XLprNTsQ=; b=e45w3xyyVBBJ3Y
-	AiM8b884SmIoXh2zqBoKF6jaGtu/Yp1VPHWw0itivLiHWmEmoC25cus0nz/nbdrUmGb5QmB98EpS4
-	uZh7FJHpHopi4gUxgBs1T8HtJfHgBgiyTl1UZWuGDZgDwbYg+03zY6Dlks5/TplfBTysxrulfsnfN
-	hwYF9DRkOqNWKWXaRahO4o0pJOWt+3je0aeSVJTj8fz7LTLMViPXyMooCxT7Fxiv7UovbGQ/a0e6N
-	PblIPWzoy2JXuW48kajeYb703oaKRKT1VjzCNfXrmeNg5mhg/rfmh3Q/pvb1HwijKR3ujjya+Y7Dq
-	oQbOVpORpuQ4F2BEFxBQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=TpCWHDzOSp3pMNRIq7S6CvyhO2OrxsiVqFACCkuMg78=; b=CnSnQEuPabW8l4
+	FUnaZCUCIYN+MD7yB1nzzdVZPk4tXx8Wk/dDMRsP7L9dLy5eKO9FyCUm2I1Sik7VIvgFdNDz/43LT
+	cLQoT2HHX9c57mx4A+gRsyCv9+qKwtRWcZMOWBq/c8PvrbtwNmZ5mws4r1JmtlKAQr7pxWH7DtoG7
+	MFZyLX4bgg8NndQaozxtHAPKvItOqNWaEd/WtEoW7+EM49+7EeXnwzq7yeEhuLZdmBABn1n/LC+nS
+	kBMPI8nd047CE4GVoyyD5XlESqIPPZeD/wBdC0YE1+9r25TVc5smTIsw7KLKi1MR3qbqT/tLGDodz
+	nxYBRS8wE2yV5rxaSing==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jbOwC-0008Lu-81; Wed, 20 May 2020 13:39:12 +0000
+	id 1jbOwJ-0008To-3Q; Wed, 20 May 2020 13:39:19 +0000
 Received: from smtp1.axis.com ([195.60.68.17])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jbOw8-0008L1-Nm
- for linux-mtd@lists.infradead.org; Wed, 20 May 2020 13:39:10 +0000
+ id 1jbOwA-0008L1-U7
+ for linux-mtd@lists.infradead.org; Wed, 20 May 2020 13:39:12 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=axis.com; l=2928; q=dns/txt; s=axis-central1;
- t=1589981949; x=1621517949;
- h=from:to:cc:subject:date:message-id:mime-version;
- bh=tQIob49oErWJNjeZ07jZd7MI+DFwy7ZMLrme+zWlXKM=;
- b=ISibGjTKfHVtrxyuN44BachJ3ndP6iLQmY/Bcehbizv4t/Xvt+bw2oyN
- O56HT176yFl3+yCfxcCd5VLVcTU7EFR6yxyTmXINWdwZH4wpu9/N4PfgH
- ZgPaLAG7yqnSu3q1TDuXr+hVSx0PCQ4Kq9ySUcykJuSUvZPZYEgmhe+fB
- ZDf1cQ3x7eNBkdrY1cuR+ze/83wB/T5ESexc2xWZ2zVPP3BBmsI5VJBLT
- QM7aFdY2oS67ra0Z8hXVmfL1Ki1td4jKFLYyv+f0uSKMJw3/opRv0RCVA
- OUnYbwc+jfOWTu7/nUMuFG6P0Gbh3kgYEGJAvLM9d+rOqCmKaIY1CZgPp g==;
-IronPort-SDR: Dt2IuQ2K+7ocdVezmP/K47R3V2l3BeJYVM6m8FMvFJBRe+yfA0T46qenj8u3wVqpD7hw8zVRv4
- YF/xAyvmIQ05tndulYiHoF6AVQmsTr+E698yRGDkDS1KZOEzMvNwC/YhIJHA+IaqVfyQgYdBBb
- H0E+0G2L9uPPgLbraMVmA6y2dktfP0Vp5qabNrjSojf7yP+RgxrIfFNeIvJ2GVkpQ910KX7CZS
- aQexvjJ4bJ3aRtAv6swvVvCcLQU8jwVMUXjWxKorTmr35kZnesALJWwbiNUC3iDqTBBfzOiEZ/
- eUU=
+ d=axis.com; l=3818; q=dns/txt; s=axis-central1;
+ t=1589981951; x=1621517951;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version;
+ bh=8Z+TP1nqnvZAL5BU/cb+CpSHbpx22lN/Pj4qTpGdF7U=;
+ b=dH1veYv/8dqiIGD1KYh2b4U14rER2ShSLSsi4kPRC15cdMh9209jx9gX
+ accRBTyfeT5fBcTI97kC/rOI0Baww5s6EbWozaNFR97Gjppl9ZtIsrnys
+ s8O5GQ+3jCqnYDhXK9IVsaRJao8oUT8y6gCPlhuwKoL6O0iNMDgaDcHm3
+ ZolA2ciw4c4srK4xJB+OlKq8MIvgtgwiK3OZwHyCBV/wXQRvsdEYeAwgF
+ ZYhR5qbWbaSkD7sI4fE/NYNyhUhEHVLqOPhTrVyhzdEDtcEAk2Y9hNga6
+ KE2Lq7l2M5o7oWC7vdHV2SHYusQJPGVKXOggsLTHwSfawVwoSeE1T50fK g==;
+IronPort-SDR: U7Rz53LGzMW6yUcIfPSqPPSgogmiO4AulCNjKkBng8THgXToqBg67SxbMgwYe84s6s7XB1uNOD
+ G3llcZ1o9Z5OE8qw2CUJvK4ftHPCpsDIgiUYjGf6VbCQvMFgMNPSmW+5fZrkq7gj58CUnEH4Z0
+ fP5pTgYgMTdjAiLjOBtAKBXiJ8JOLoWLD1cWjj4MLgse/7xgszrGENwVmM3kvy0sBOfytXjc3T
+ Q2VuszOepoYJZgD1NjlL5Xl89E9GxrvNR6onLQhCo57I9F0Pbj6yAkRhFVFqC1/SeMGUOJu97b
+ 2q8=
 X-IronPort-AV: E=Sophos;i="5.73,414,1583190000"; 
-   d="scan'208";a="8924573"
+   d="scan'208";a="8924575"
 From: Rickard Andersson <rickaran@axis.com>
 To: <miquel.raynal@bootlin.com>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 1/2] mtd: rawnand: Add a helper for testing data interface
-Date: Wed, 20 May 2020 15:38:53 +0200
-Message-ID: <20200520133854.25241-1-rickaran@axis.com>
+Subject: [PATCH v2 2/2] mtd: rawnand: Add timings for Kioxia TH58NVG2S3HBAI4
+Date: Wed, 20 May 2020 15:38:54 +0200
+Message-ID: <20200520133854.25241-2-rickaran@axis.com>
 X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20200520133854.25241-1-rickaran@axis.com>
+References: <20200520133854.25241-1-rickaran@axis.com>
 MIME-Version: 1.0
 X-Originating-IP: [10.0.5.60]
 X-ClientProxiedBy: XBOX03.axis.com (10.0.5.17) To XBOX02.axis.com (10.0.5.16)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200520_063909_114091_71112EAD 
-X-CRM114-Status: GOOD (  13.87  )
+X-CRM114-CacheID: sfid-20200520_063911_307198_88A5AD20 
+X-CRM114-Status: GOOD (  12.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,92 +91,135 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Rickard x Andersson <rickaran@axis.com>
 
-This helper tests the current data interface timings. If
-the controller does not accept the timings then the timings
-are erased and onfi mode 0 timings are chosen at a later
-stage.
+The Kioxia/Toshiba TH58NVG2S3HBAI4 NAND memory is not a
+ONFI compliant memory. The timings of the memory is quite
+close to ONFI mode 4 but is breaking that spec.
+
+Erase block read speed is increased from 6910 KiB/s to
+13490 KiB/s. Erase block write speed is increased from
+3350 KiB/s to 4410 KiB/s.
+
+Tested on IMX6SX which has a NAND controller supporting
+EDO mode.
 
 Signed-off-by: Rickard x Andersson <rickaran@axis.com>
 ---
- drivers/mtd/nand/raw/internals.h |  1 +
- drivers/mtd/nand/raw/nand_base.c | 38 ++++++++++++++++++++++++++++----------
- 2 files changed, 29 insertions(+), 10 deletions(-)
+ drivers/mtd/nand/raw/nand_ids.c     |  3 ++
+ drivers/mtd/nand/raw/nand_toshiba.c | 66 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 69 insertions(+)
 
-diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
-index 615677820338..7df0a8e674cb 100644
---- a/drivers/mtd/nand/raw/internals.h
-+++ b/drivers/mtd/nand/raw/internals.h
-@@ -100,6 +100,7 @@ int nand_read_param_page_op(struct nand_chip *chip, u8 page, void *buf,
- void nand_decode_ext_id(struct nand_chip *chip);
- void panic_nand_wait(struct nand_chip *chip, unsigned long timeo);
- void sanitize_string(uint8_t *s, size_t len);
-+int nand_test_data_interface(struct nand_chip *chip);
+diff --git a/drivers/mtd/nand/raw/nand_ids.c b/drivers/mtd/nand/raw/nand_ids.c
+index e0dbc2e316c7..8b676e8b481b 100644
+--- a/drivers/mtd/nand/raw/nand_ids.c
++++ b/drivers/mtd/nand/raw/nand_ids.c
+@@ -52,6 +52,9 @@ struct nand_flash_dev nand_flash_ids[] = {
+ 		{ .id = {0xad, 0xde, 0x94, 0xda, 0x74, 0xc4} },
+ 		  SZ_8K, SZ_8K, SZ_2M, NAND_NEED_SCRAMBLING, 6, 640,
+ 		  NAND_ECC_INFO(40, SZ_1K), 4 },
++	{"TH58NVG2S3HBAI4 4G 3.3V 8-bit",
++		{ .id = {0x98, 0xdc, 0x91, 0x15, 0x76} },
++		  SZ_2K, SZ_512, SZ_128K, 0, 5, 128, NAND_ECC_INFO(8, SZ_512) },
  
- static inline bool nand_has_exec_op(struct nand_chip *chip)
+ 	LEGACY_ID_NAND("NAND 4MiB 5V 8-bit",   0x6B, 4, SZ_8K, SP_OPTIONS),
+ 	LEGACY_ID_NAND("NAND 4MiB 3,3V 8-bit", 0xE3, 4, SZ_8K, SP_OPTIONS),
+diff --git a/drivers/mtd/nand/raw/nand_toshiba.c b/drivers/mtd/nand/raw/nand_toshiba.c
+index b6efaf5195bb..60ca895b1775 100644
+--- a/drivers/mtd/nand/raw/nand_toshiba.c
++++ b/drivers/mtd/nand/raw/nand_toshiba.c
+@@ -26,6 +26,52 @@
+ /* Max ECC Steps for BENAND */
+ #define TOSHIBA_NAND_MAX_ECC_STEPS		8
+ 
++static const struct nand_data_interface th58nvg2s3hbai4_timings = {
++	.type = NAND_SDR_IFACE,
++	.timings.mode = 0,
++	.timings.sdr = {
++		.tPROG_max = 700000000,
++		.tBERS_max = 5000000000,
++		.tCCS_min = 500000,
++		.tR_max = 200000000,
++		.tADL_min = 400000,
++		.tALH_min = 5000,
++		.tALS_min = 12000,
++		.tAR_min = 10000,
++		.tCEA_max = 25000,
++		.tCEH_min = 20000,
++		.tCH_min = 5000,
++		.tCHZ_max = 20000,
++		.tCLH_min = 5000,
++		.tCLR_min = 10000,
++		.tCLS_min = 12000,
++		.tCOH_min = 0,
++		.tCS_min = 20000,
++		.tDH_min = 5000,
++		.tDS_min = 12000,
++		.tFEAT_max = 1000000,
++		.tIR_min = 0,
++		.tITC_max = 1000000,
++		.tRC_min = 25000,
++		.tREA_max = 20000,
++		.tREH_min = 10000,
++		.tRHOH_min = 25000,
++		.tRHW_min = 30000,
++		.tRHZ_max = 60000,
++		.tRLOH_min = 5000,
++		.tRP_min = 12000,
++		.tRR_min = 20000,
++		.tRST_max = 500000000,
++		.tWB_max = 100000,
++		.tWC_min = 25000,
++		.tWH_min = 10000,
++		.tWHR_min = 60000,
++		.tWP_min = 12000,
++		.tWW_min = 100000,
++	}
++};
++
++
+ static int toshiba_nand_benand_read_eccstatus_op(struct nand_chip *chip,
+ 						 u8 *buf)
  {
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index c42cbeb7e446..29e7be3811e7 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -956,6 +956,32 @@ static int nand_setup_data_interface(struct nand_chip *chip, int chipnr)
+@@ -194,6 +240,18 @@ static void toshiba_nand_decode_id(struct nand_chip *chip)
+ 	}
  }
  
- /**
-+ * nand_test_data_interface - Check if controller can handle the current
-+ * timings. Clear timings if not usable.
-+ *
-+ * @chip: The NAND chip
-+ */
-+int nand_test_data_interface(struct nand_chip *chip)
++static int th58nvg2s3hbai4_choose_data_interface(struct nand_chip *chip)
 +{
 +	int ret;
-+	/*
-+	 * Pass NAND_DATA_IFACE_CHECK_ONLY to only check if the
-+	 * controller supports the requested timings.
-+	 */
-+	ret = chip->controller->ops->setup_data_interface(chip,
-+						 NAND_DATA_IFACE_CHECK_ONLY,
-+						 &chip->data_interface);
 +
-+	if (ret) {
-+		/* The provided data interface timings did not work */
-+		memset(&chip->data_interface, 0,
-+		       sizeof(struct nand_data_interface));
-+	}
++	chip->data_interface = th58nvg2s3hbai4_timings;
++
++	/* Check if the controller can handle the timings */
++	ret = nand_test_data_interface(chip);
 +
 +	return ret;
 +}
 +
-+/**
-  * nand_choose_data_interface - find the best data interface and timings
-  * @chip: The NAND chip
-  *
-@@ -994,9 +1020,6 @@ static int nand_choose_data_interface(struct nand_chip *chip)
- 	if (chip->parameters.onfi) {
- 		modes = chip->parameters.onfi->async_timing_mode;
- 	} else {
--		if (!chip->default_timing_mode)
--			return 0;
--
- 		modes = GENMASK(chip->default_timing_mode, 0);
- 	}
+ static int tc58teg5dclta00_init(struct nand_chip *chip)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+@@ -205,6 +263,12 @@ static int tc58teg5dclta00_init(struct nand_chip *chip)
+ 	return 0;
+ }
  
-@@ -1005,13 +1028,8 @@ static int nand_choose_data_interface(struct nand_chip *chip)
- 		if (ret)
- 			continue;
++static int th58nvg2s3hbai4_init(struct nand_chip *chip)
++{
++	chip->ops.choose_data_interface = th58nvg2s3hbai4_choose_data_interface;
++	return 0;
++}
++
+ static int toshiba_nand_init(struct nand_chip *chip)
+ {
+ 	if (nand_is_slc(chip))
+@@ -217,6 +281,8 @@ static int toshiba_nand_init(struct nand_chip *chip)
  
--		/*
--		 * Pass NAND_DATA_IFACE_CHECK_ONLY to only check if the
--		 * controller supports the requested timings.
--		 */
--		ret = chip->controller->ops->setup_data_interface(chip,
--						 NAND_DATA_IFACE_CHECK_ONLY,
--						 &chip->data_interface);
-+		/* Check if the controller supports the requested timings. */
-+		ret = nand_test_data_interface(chip);
- 		if (!ret) {
- 			chip->default_timing_mode = mode;
- 			break;
+ 	if (!strcmp("TC58TEG5DCLTA00", chip->parameters.model))
+ 		tc58teg5dclta00_init(chip);
++	if (!strncmp("TH58NVG2S3HBAI4", chip->parameters.model, 15))
++		th58nvg2s3hbai4_init(chip);
+ 
+ 	return 0;
+ }
 -- 
 2.11.0
 
