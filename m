@@ -2,77 +2,73 @@ Return-Path: <SRS0=CeWw=7D=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96542C433E0
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 May 2020 12:14:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42D8DC433E0
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 May 2020 12:20:49 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5964F2072C
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 May 2020 12:14:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 056242070A
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 May 2020 12:20:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="o7YaeutO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5964F2072C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TIO/kRWX";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="S6sdA04c"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 056242070A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:Reply-To:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KrCTnenTXjiAaMZWu/NQES/YmPJkZQvm2+CKJpqclTw=; b=o7YaeutOhXzlUD
-	PpfDGF3h7LAgvrE1srHTrTsYgQRX4h83c+pVOOShG9XxB+J4cO9KQTScpv2htcYZJc6Zy2ZkVhsc9
-	uVsUMfZArqAzx3wX1kWIpIMsCLQ4J2h1mqyKpi1eHdg8IUGgTS1hXgkpT/QjDvJ3+YcZezlshlR9Y
-	kK+d2IiUctOCWgNEC8YwTRHfRvsMpgScW3/+hRdB88AJQDRSDPjprGuVL1s4MAtt3/wg7EbyNAmbD
-	bLRCpyK42oMuAvzP0FTyq/gXFzPt3R3TY8m9dURG28pROdL2LXQQKadpYemY6yCnITLeoannZ4vg7
-	wiVuUvn76rG93I79c9Jg==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:Cc:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=HgKUd0PUHdNyfNOe5zM2cEhv7ZihtSYDxJitC0oVx0E=; b=TIO/kRWXomo3IpEz5GQqnduRQ
+	gVFVQn/F9VA3/Yhw+JZLi+oJ92DNQUUKQL2yFxuhPUGOlLp/Dy7tHwUxdgnEzfg/wNuv1iuc+mwPM
+	C6t9FMwJmqlJDF5a58Sgt1YDFp5Q1P8iaIgeak4OPVKfqFOQOn2679eEbS1kvG9hS2WGkdRaRnhmi
+	NsXpjlBcnne88+y94cyBKhWhwhXxnH5z47i2ACbvS8dTzy/dRmw8NloDyysgd39YhA2yTFWtqdJ9H
+	Nwf/nregNdsLzGg43washxmanO0UnVE+1DlC1YIEisRjCYrkdNKV0BbtEcLdYsZhN9F6BhUzy9vJU
+	l75m1yVMw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jbk5X-0001f3-90; Thu, 21 May 2020 12:14:15 +0000
-Received: from mga01.intel.com ([192.55.52.88])
+	id 1jbkBl-00070P-Ot; Thu, 21 May 2020 12:20:41 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jbk5U-0001eO-NN
- for linux-mtd@lists.infradead.org; Thu, 21 May 2020 12:14:13 +0000
-IronPort-SDR: cMdCnwiwxRokIYRsAkIi3UvO56d0AP8JJVtPDZ0n9pH0w1usTZ6DtYjYimldCKeJxJ+RaHakhC
- 1DDK9eBB5Eew==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 May 2020 05:14:12 -0700
-IronPort-SDR: MFQk67iCXel4hNSRiGw0kw3tkSFQSs0WGWIE0LscF3gapHDp7VHSj1sMLjVmuLywmuKyIbkWIl
- 2i7szTVcA3ug==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,417,1583222400"; d="scan'208";a="466762230"
-Received: from linux.intel.com ([10.54.29.200])
- by fmsmga005.fm.intel.com with ESMTP; 21 May 2020 05:14:11 -0700
-Received: from [10.215.164.158] (vramuthx-mobl1.gar.corp.intel.com
- [10.215.164.158])
- by linux.intel.com (Postfix) with ESMTP id AD60A5804B4;
- Thu, 21 May 2020 05:14:05 -0700 (PDT)
+ id 1jbkBi-0006zj-V3
+ for linux-mtd@lists.infradead.org; Thu, 21 May 2020 12:20:40 +0000
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id AE5702070A;
+ Thu, 21 May 2020 12:20:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1590063638;
+ bh=ibFoIIyMF1Cq5K82d+d9TeF08+OR/OuKj6IPDBv1eCg=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=S6sdA04cTnvXYoly+hZLJSJzYe2wasbfZ02IuM3wTto6o/oXeugLu+X+5sUrImmdA
+ +XeyGwWZyprjvvHR395Cpu/yvFuSgjMoJiwts0sj7M+0lU9rLk07V8SXNnJG7k6UHK
+ 9eXkLBREWeFM4y3W5VdZgw4K19OjDmMvaAfJULZ8=
+Date: Thu, 21 May 2020 13:20:35 +0100
+From: Mark Brown <broonie@kernel.org>
+To: "Ramuthevar,
+ Vadivel MuruganX" <vadivel.muruganx.ramuthevar@linux.intel.com>
 Subject: Re: [PATCH v2 1/1] dt-bindings: spi: Add schema for Cadence QSPI
  Controller driver
-To: Mark Brown <broonie@kernel.org>
+Message-ID: <20200521122035.GB4770@sirena.org.uk>
 References: <20200520123612.11797-1-vadivel.muruganx.ramuthevar@linux.intel.com>
  <20200520124329.GF4823@sirena.org.uk>
  <fd086da7-7e18-83bc-d423-56095b0cff96@linux.intel.com>
  <20200521105646.GA4770@sirena.org.uk>
-From: "Ramuthevar, Vadivel MuruganX"
- <vadivel.muruganx.ramuthevar@linux.intel.com>
-Message-ID: <24b0297c-5c33-f690-9514-68b76fc2c9ea@linux.intel.com>
-Date: Thu, 21 May 2020 20:14:04 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ <24b0297c-5c33-f690-9514-68b76fc2c9ea@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200521105646.GA4770@sirena.org.uk>
-Content-Language: en-US
+In-Reply-To: <24b0297c-5c33-f690-9514-68b76fc2c9ea@linux.intel.com>
+X-Cookie: Keep your laws off my body!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200521_051412_782237_348CA97F 
-X-CRM114-Status: GOOD (  15.13  )
+X-CRM114-CacheID: sfid-20200521_052039_019067_1A63B649 
+X-CRM114-Status: GOOD (  11.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,50 +80,67 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
 Cc: cheol.yong.kim@intel.com, robh@kernel.org, vigneshr@ti.com,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, qi-ming.wu@intel.com
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: multipart/mixed; boundary="===============7900951545579417104=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
-Hi Mark,
+--===============7900951545579417104==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="JP+T4n/bALQSJXh8"
+Content-Disposition: inline
 
-On 21/5/2020 6:56 pm, Mark Brown wrote:
-> On Thu, May 21, 2020 at 10:18:26AM +0800, Ramuthevar, Vadivel MuruganX wrote:
->> On 20/5/2020 8:43 pm, Mark Brown wrote:
->>> On Wed, May 20, 2020 at 08:36:12PM +0800, Ramuthevar,Vadivel MuruganX wrote:
-> 
->>>>    .../devicetree/bindings/mtd/cadence-quadspi.txt    |  67 -----------
->>>>    .../devicetree/bindings/spi/cdns,qspi-nor.yaml     | 133 +++++++++++++++++++++
-> 
->>> The changelog says this is adding a new binding but the actual change is
->>> mostly a conversion to YAML.  Please split the additions out into a
->>> separate change, ideally doing that before the conversion since there is
->>> a backlog on review of YAML conversions.
-> 
->> Initially was sending the only YAML file alone, then reviewers suggest to me
->> do this way so I did, next by split the patches like below...
-> 
->> 1. remove the cadence-quadspi.txt (patch1)
->> 2. convert txt to YAML (patch2)
-> 
-> That doesn't address either of the issues.  The removal of the old
-> bindings and addition of the YAML ones needs to be in a single patch
-> doing that conversion.  What I'm suggesting should be done separately is
-> whatever changes to the semantics of the bindings you are (according to
-> your changelog) doing.
-You mean semantics of the binding as a single patch you are suggesting 
-me, right? , Thanks!
 
-Regards
-Vadivel
+--JP+T4n/bALQSJXh8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> 
+On Thu, May 21, 2020 at 08:14:04PM +0800, Ramuthevar, Vadivel MuruganX wrote:
+> On 21/5/2020 6:56 pm, Mark Brown wrote:
+
+> > That doesn't address either of the issues.  The removal of the old
+> > bindings and addition of the YAML ones needs to be in a single patch
+> > doing that conversion.  What I'm suggesting should be done separately is
+> > whatever changes to the semantics of the bindings you are (according to
+> > your changelog) doing.
+
+> You mean semantics of the binding as a single patch you are suggesting me,
+> right? , Thanks!
+
+I mean that any changes to the bindings ought to be split out into
+separate patches, if there's multiple changes it may make sense for
+there to be multiple patches.
+
+--JP+T4n/bALQSJXh8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7GchIACgkQJNaLcl1U
+h9BBmwf/TAx18MCyJnkJz/cUdXiSZ/+3KxoqHwPbafjuXp6qJnMplcEAKFr4GKRQ
+PTqDr6x+1BLU9teHxr+zvvTjM291hIaF9Nvrf/UxkM3IpOAmBUSzPV1frd0hN2sZ
+eGhxkeI9d/+Vke4/koh+o4e89xis1Rk197LwrBSCBqS17mnXXu9CcJxxCOAmGlQn
+0PPfp8vz+tLT400Cf9QaP5U4cpKom24uz5GbjmOaq7mIHs+U+PZdjFJJ6gxKxV3K
+uUsaW2MnVnkPmgQlC0jMdaOYvxwduiCYCH4nT1zLLs+iSqJkoOiB4uMI0/QuFm4c
+kPWfhUXiqDm2eSA4sTcD4e/5YvDhfg==
+=I4eQ
+-----END PGP SIGNATURE-----
+
+--JP+T4n/bALQSJXh8--
+
+
+--===============7900951545579417104==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============7900951545579417104==--
+
