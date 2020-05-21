@@ -1,64 +1,77 @@
-Return-Path: <SRS0=rTSM=7C=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=CeWw=7D=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 00E21C433DF
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 May 2020 21:15:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FE04C433E0
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 May 2020 02:20:55 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 760E0206C3
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 May 2020 21:15:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 61AED2067B
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 May 2020 02:20:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="l4huugyW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 760E0206C3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Y/BhMmqO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 61AED2067B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:Reply-To:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vOQmzhApCnjThDwPk8cC7v40Ddse8fS2zjgCOK7KEP8=; b=l4huugyW6Cf3AT
-	5DjPCbY+hjJrtZnHRs0AfzEQ/pR4RawadrMu8iIene9nRPW1GvYvkMS5GmhESlTX7yNbS8nKeIcga
-	C5XIPo+I2PKyAcYpG5g8VLfdRpHIIHAfJLDXRVwnwxhSEkxvDtPDkVp7YfQ8z2kwI78EHgmgWLjjK
-	xixLBKqnogRCFaVxfq7ez5W4BJZimmwLi7+1X6J8n76cs80QM1l8Q9H1o2lGRrYbwKXYtx3qzyxzX
-	iJ3fvfM0mstIGrgJ5YO29IaFqZ6HuJOgIJ1Vk3/UANyuHIHN9e1h0dL2ax2PmEiKButRWkFYpGs/k
-	jS0VvvD6sRtRGgEOEH3Q==;
+	List-Owner; bh=Mzg0YgR31fGlofx9J2AqMm4rNY3eH0Wsjy9R2t5xT5g=; b=Y/BhMmqORs02mL
+	XTV2B/pPWFukgY1fqvGbADqmZdNO+qGbNYKduqkB8YhmXNugYK5nSgL0jCRi9udZ+O+4LixGOp2ji
+	Z6yGhYRRazMvjjnUyGuLtOZQYEjRJF5JyGj4x0WioJ9UD2LYUp+yYfOP2YeEcmzEqM1CvUpfzQW2O
+	vTFd4G9yatVVyg0V0fWGnGlSCadiLA3lLcunYWeKJIDOResU45lDc0rDn9YC5oQguqYouO71bGf3c
+	WIFJ1nanAGA1j2QJ1NZBj/KXXCbdNJOXvVyIazfbsVE148L6xKO3XJRsTrG7FhCb/0aHMU6k/GtDK
+	aueZWbv0YRPcv+Zx4v+A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jbW3a-00004q-VU; Wed, 20 May 2020 21:15:18 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1jbap2-0008CX-J7; Thu, 21 May 2020 02:20:36 +0000
+Received: from mga03.intel.com ([134.134.136.65])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jbW3V-0008NR-DA
- for linux-mtd@lists.infradead.org; Wed, 20 May 2020 21:15:15 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id F2C2F2A22BD;
- Wed, 20 May 2020 22:15:11 +0100 (BST)
-Date: Wed, 20 May 2020 23:15:08 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Rickard Andersson <rickaran@axis.com>
-Subject: Re: [PATCH v2 2/2] mtd: rawnand: Add timings for Kioxia
- TH58NVG2S3HBAI4
-Message-ID: <20200520231508.7216afe8@collabora.com>
-In-Reply-To: <20200520133854.25241-2-rickaran@axis.com>
-References: <20200520133854.25241-1-rickaran@axis.com>
- <20200520133854.25241-2-rickaran@axis.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1jbaoz-0005ZQ-OD
+ for linux-mtd@lists.infradead.org; Thu, 21 May 2020 02:20:34 +0000
+IronPort-SDR: KRTzYJ5umSBOzcwk71E1yjMTbAKyx3izfI0sPFg1GmAYSGVolbMLO+GjGl0Eh7opzC+rf3Njh3
+ f2c9rZGV0UUw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 May 2020 19:18:31 -0700
+IronPort-SDR: ej73RVr5VXW1YFsQO2RnXxS2Gz6PpL1WryA3R0i9OZOzz47haLbA6uGuM5NSc3gblLeTdBhlYP
+ ofEnlu51jN9g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,416,1583222400"; d="scan'208";a="300642970"
+Received: from linux.intel.com ([10.54.29.200])
+ by orsmga008.jf.intel.com with ESMTP; 20 May 2020 19:18:31 -0700
+Received: from [10.214.148.54] (vramuthx-MOBL1.gar.corp.intel.com
+ [10.214.148.54])
+ by linux.intel.com (Postfix) with ESMTP id 99B9E580613;
+ Wed, 20 May 2020 19:18:28 -0700 (PDT)
+Subject: Re: [PATCH v2 1/1] dt-bindings: spi: Add schema for Cadence QSPI
+ Controller driver
+To: Mark Brown <broonie@kernel.org>
+References: <20200520123612.11797-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20200520124329.GF4823@sirena.org.uk>
+From: "Ramuthevar, Vadivel MuruganX"
+ <vadivel.muruganx.ramuthevar@linux.intel.com>
+Message-ID: <fd086da7-7e18-83bc-d423-56095b0cff96@linux.intel.com>
+Date: Thu, 21 May 2020 10:18:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
+In-Reply-To: <20200520124329.GF4823@sirena.org.uk>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200520_141513_588272_1E7437AD 
-X-CRM114-Status: GOOD (  21.35  )
+X-CRM114-CacheID: sfid-20200520_192033_831301_4C0D0FDB 
+X-CRM114-Status: GOOD (  12.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,163 +83,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com
-Content-Type: text/plain; charset="us-ascii"
+Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
+Cc: cheol.yong.kim@intel.com, robh@kernel.org, vigneshr@ti.com,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, qi-ming.wu@intel.com
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 20 May 2020 15:38:54 +0200
-Rickard Andersson <rickaran@axis.com> wrote:
+Hi Mark,
 
-> From: Rickard x Andersson <rickaran@axis.com>
+  Thank you for the review comments...
+
+On 20/5/2020 8:43 pm, Mark Brown wrote:
+> On Wed, May 20, 2020 at 08:36:12PM +0800, Ramuthevar,Vadivel MuruganX wrote:
+>> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+>>
+>> Add dt-bindings documentation for Cadence-QSPI controller to support
+>> spi based flash memories.
+>>
+>> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+>> ---
+>>   .../devicetree/bindings/mtd/cadence-quadspi.txt    |  67 -----------
+>>   .../devicetree/bindings/spi/cdns,qspi-nor.yaml     | 133 +++++++++++++++++++++
 > 
-> The Kioxia/Toshiba TH58NVG2S3HBAI4 NAND memory is not a
-> ONFI compliant memory. The timings of the memory is quite
-> close to ONFI mode 4 but is breaking that spec.
+> The changelog says this is adding a new binding but the actual change is
+> mostly a conversion to YAML.  Please split the additions out into a
+> separate change, ideally doing that before the conversion since there is
+> a backlog on review of YAML conversions.
+
+Initially was sending the only YAML file alone, then reviewers suggest 
+to me do this way so I did, next by split the patches like below...
+
+1. remove the cadence-quadspi.txt (patch1)
+2. convert txt to YAML (patch2)
+
+Regards
+Vadivel
 > 
-> Erase block read speed is increased from 6910 KiB/s to
-> 13490 KiB/s. Erase block write speed is increased from
-> 3350 KiB/s to 4410 KiB/s.
-> 
-> Tested on IMX6SX which has a NAND controller supporting
-> EDO mode.
-> 
-> Signed-off-by: Rickard x Andersson <rickaran@axis.com>
-> ---
->  drivers/mtd/nand/raw/nand_ids.c     |  3 ++
->  drivers/mtd/nand/raw/nand_toshiba.c | 66 +++++++++++++++++++++++++++++++++++++
->  2 files changed, 69 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/raw/nand_ids.c b/drivers/mtd/nand/raw/nand_ids.c
-> index e0dbc2e316c7..8b676e8b481b 100644
-> --- a/drivers/mtd/nand/raw/nand_ids.c
-> +++ b/drivers/mtd/nand/raw/nand_ids.c
-> @@ -52,6 +52,9 @@ struct nand_flash_dev nand_flash_ids[] = {
->  		{ .id = {0xad, 0xde, 0x94, 0xda, 0x74, 0xc4} },
->  		  SZ_8K, SZ_8K, SZ_2M, NAND_NEED_SCRAMBLING, 6, 640,
->  		  NAND_ECC_INFO(40, SZ_1K), 4 },
-> +	{"TH58NVG2S3HBAI4 4G 3.3V 8-bit",
-> +		{ .id = {0x98, 0xdc, 0x91, 0x15, 0x76} },
-> +		  SZ_2K, SZ_512, SZ_128K, 0, 5, 128, NAND_ECC_INFO(8, SZ_512) },
->  
->  	LEGACY_ID_NAND("NAND 4MiB 5V 8-bit",   0x6B, 4, SZ_8K, SP_OPTIONS),
->  	LEGACY_ID_NAND("NAND 4MiB 3,3V 8-bit", 0xE3, 4, SZ_8K, SP_OPTIONS),
-> diff --git a/drivers/mtd/nand/raw/nand_toshiba.c b/drivers/mtd/nand/raw/nand_toshiba.c
-> index b6efaf5195bb..60ca895b1775 100644
-> --- a/drivers/mtd/nand/raw/nand_toshiba.c
-> +++ b/drivers/mtd/nand/raw/nand_toshiba.c
-> @@ -26,6 +26,52 @@
->  /* Max ECC Steps for BENAND */
->  #define TOSHIBA_NAND_MAX_ECC_STEPS		8
->  
-> +static const struct nand_data_interface th58nvg2s3hbai4_timings = {
-> +	.type = NAND_SDR_IFACE,
-> +	.timings.mode = 0,
-> +	.timings.sdr = {
-> +		.tPROG_max = 700000000,
-> +		.tBERS_max = 5000000000,
-> +		.tCCS_min = 500000,
-> +		.tR_max = 200000000,
-> +		.tADL_min = 400000,
-> +		.tALH_min = 5000,
-> +		.tALS_min = 12000,
-> +		.tAR_min = 10000,
-> +		.tCEA_max = 25000,
-> +		.tCEH_min = 20000,
-> +		.tCH_min = 5000,
-> +		.tCHZ_max = 20000,
-> +		.tCLH_min = 5000,
-> +		.tCLR_min = 10000,
-> +		.tCLS_min = 12000,
-> +		.tCOH_min = 0,
-> +		.tCS_min = 20000,
-> +		.tDH_min = 5000,
-> +		.tDS_min = 12000,
-> +		.tFEAT_max = 1000000,
-> +		.tIR_min = 0,
-> +		.tITC_max = 1000000,
-> +		.tRC_min = 25000,
-> +		.tREA_max = 20000,
-> +		.tREH_min = 10000,
-> +		.tRHOH_min = 25000,
-> +		.tRHW_min = 30000,
-> +		.tRHZ_max = 60000,
-> +		.tRLOH_min = 5000,
-> +		.tRP_min = 12000,
-> +		.tRR_min = 20000,
-> +		.tRST_max = 500000000,
-> +		.tWB_max = 100000,
-> +		.tWC_min = 25000,
-> +		.tWH_min = 10000,
-> +		.tWHR_min = 60000,
-> +		.tWP_min = 12000,
-> +		.tWW_min = 100000,
-> +	}
-> +};
-
-If we don't want the RO section to grow considerably we should try to
-come with a solution to express things in term of deviation from an
-existing ONFI timing mode. I'd expect most parameters to match.
-
-> +
-> +
->  static int toshiba_nand_benand_read_eccstatus_op(struct nand_chip *chip,
->  						 u8 *buf)
->  {
-> @@ -194,6 +240,18 @@ static void toshiba_nand_decode_id(struct nand_chip *chip)
->  	}
->  }
->  
-> +static int th58nvg2s3hbai4_choose_data_interface(struct nand_chip *chip)
-> +{
-> +	int ret;
-> +
-> +	chip->data_interface = th58nvg2s3hbai4_timings;
-
-Something like:
-
-	/* Start from the closest timing mode. */
-	onfi_fill_data_interface(chip, SDR, modeX);
-
-	/* Patch only what you need to patch. */
-	chip->data_interface.timings.tXX = YY;
-
-	...
-	
-
-> +
-> +	/* Check if the controller can handle the timings */
-> +	ret = nand_test_data_interface(chip);
-> +
-> +	return ret;
-> +}
-> +
->  static int tc58teg5dclta00_init(struct nand_chip *chip)
->  {
->  	struct mtd_info *mtd = nand_to_mtd(chip);
-> @@ -205,6 +263,12 @@ static int tc58teg5dclta00_init(struct nand_chip *chip)
->  	return 0;
->  }
->  
-> +static int th58nvg2s3hbai4_init(struct nand_chip *chip)
-> +{
-> +	chip->ops.choose_data_interface = th58nvg2s3hbai4_choose_data_interface;
-> +	return 0;
-> +}
-> +
->  static int toshiba_nand_init(struct nand_chip *chip)
->  {
->  	if (nand_is_slc(chip))
-> @@ -217,6 +281,8 @@ static int toshiba_nand_init(struct nand_chip *chip)
->  
->  	if (!strcmp("TC58TEG5DCLTA00", chip->parameters.model))
->  		tc58teg5dclta00_init(chip);
-> +	if (!strncmp("TH58NVG2S3HBAI4", chip->parameters.model, 15))
-> +		th58nvg2s3hbai4_init(chip);
-
-I think we should add a table with all the chips needing a specific
-initialization.
 
 ______________________________________________________
 Linux MTD discussion mailing list
