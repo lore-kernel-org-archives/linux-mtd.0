@@ -2,71 +2,64 @@ Return-Path: <SRS0=CeWw=7D=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1752C433DF
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 May 2020 10:57:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C137AC433DF
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 May 2020 11:24:37 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 787F9206F6
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 May 2020 10:57:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7EB012072C
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 May 2020 11:24:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ku30WrxF";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="jZbg4vvc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 787F9206F6
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WCEh8EGi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7EB012072C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=hisilicon.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:Cc:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=3uGpmQ2xXIbN7q0RjD6ilj3spDfd2pcwOVgbM/XMMII=; b=ku30WrxF1pj3AqVktrhDqBOd6
-	QKow0dZIR4QSBAFgqDeoPGDDflK3yEVTrVjcWdEnssDX5ReLJCw5pjk4K+QH2eUwAqR6XNaL/9SWe
-	NHOp/Vx7VZVCoYKjSIlwld4oKsUOZ2fXY/KaBJ1qsfutLyzhD5XvCMsvtXH2T5CIrxlVg5rvHNsWe
-	dXMgd2kZlH2iUJe1CulcvIM1jVbTwIviyMRGnh0KpzrhWVEf6bYxt/ib+nL2x1+a6rou8z2qqxIve
-	cpPHCEj30f5CeOBhww7BHm/Ynsg8UuGjWYwu6Gi185stg8v65A+oIArcPosIiujXROk8Ou5E3nK6L
-	rlPlCBQyQ==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=wTh/dmczDWCmfDLOIz2EeHpF9/OKB7q8VftkHcExQ1Q=; b=WCEh8EGigsxiP3
+	2qVSPsjm/uZjZzy5H7J0TSjX+K95SgkhGp3bBdG9tDP06289+7Fro+EC30J6jYWzGTEfbBmKbygnn
+	X8V4khXGmZBdqU53wkYy0YKBt9JHB8XVd8tYD4EwMZdttbykx3xUSYIgNtuC524BTCgGqzD1ICmW7
+	0vDJR34HWi0gCPMwQLjDnseUUdhrh2ATTC8YoE6a+FBuAhOsEJAH0QooGlxaScFG0+ml1PWmrPf6O
+	YIWhMsgQjgU08QWHSCARpdAhGKyEd1kJGoyLTxn8jee3On2cfa38UCALX+l/s50fDbJ7cimupa+EP
+	K63d7SomruBWIz7ZqGYQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jbise-0003zz-Ip; Thu, 21 May 2020 10:56:52 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1jbjJK-0003o4-04; Thu, 21 May 2020 11:24:26 +0000
+Received: from szxga07-in.huawei.com ([45.249.212.35] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jbisb-0003zf-QC
- for linux-mtd@lists.infradead.org; Thu, 21 May 2020 10:56:51 +0000
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id D1F30206F6;
- Thu, 21 May 2020 10:56:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1590058609;
- bh=seW5V778px/AgzonYSOezyKQVmV3Co7HCNgbinTsjyg=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=jZbg4vvcLz0BWO3+7f3IRMU9tzhJygn8ioscFP/ZqnGFrF8ie91HV+nRvRe7qZKIL
- S4NZZiLfJgP7Eo4tw1u7++Vd48k3aP42ktKeKc4oOt/epvOoOm3tlg+XEVahGyWWCX
- SCivWjO4FdwbrEKnERNBtyqMub/z9gqjdOyvQsgw=
-Date: Thu, 21 May 2020 11:56:46 +0100
-From: Mark Brown <broonie@kernel.org>
-To: "Ramuthevar,
- Vadivel MuruganX" <vadivel.muruganx.ramuthevar@linux.intel.com>
-Subject: Re: [PATCH v2 1/1] dt-bindings: spi: Add schema for Cadence QSPI
- Controller driver
-Message-ID: <20200521105646.GA4770@sirena.org.uk>
-References: <20200520123612.11797-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200520124329.GF4823@sirena.org.uk>
- <fd086da7-7e18-83bc-d423-56095b0cff96@linux.intel.com>
+ id 1jbjJG-0003mx-OL
+ for linux-mtd@lists.infradead.org; Thu, 21 May 2020 11:24:24 +0000
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
+ by Forcepoint Email with ESMTP id F079B301C4E315FE73B4;
+ Thu, 21 May 2020 19:24:17 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 21 May 2020 19:24:07 +0800
+From: Yicong Yang <yangyicong@hisilicon.com>
+To: <broonie@kernel.org>, <tudor.ambarus@microchip.com>,
+ <linux-spi@vger.kernel.org>, <linux-mtd@lists.infradead.org>
+Subject: [RFC PATCH 1/3] spi: spi-mem: add optional prepare/unprepare methods
+ in spi_controller_mem_ops
+Date: Thu, 21 May 2020 19:23:49 +0800
+Message-ID: <1590060231-23242-2-git-send-email-yangyicong@hisilicon.com>
+X-Mailer: git-send-email 2.8.1
+In-Reply-To: <1590060231-23242-1-git-send-email-yangyicong@hisilicon.com>
+References: <1590060231-23242-1-git-send-email-yangyicong@hisilicon.com>
 MIME-Version: 1.0
-In-Reply-To: <fd086da7-7e18-83bc-d423-56095b0cff96@linux.intel.com>
-X-Cookie: Keep your laws off my body!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200521_035649_867071_BA05FA01 
-X-CRM114-Status: GOOD (  13.16  )
+X-CRM114-CacheID: sfid-20200521_042422_961534_B56AE3E3 
+X-CRM114-Status: GOOD (  12.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,75 +71,99 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: cheol.yong.kim@intel.com, robh@kernel.org, vigneshr@ti.com,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, qi-ming.wu@intel.com
-Content-Type: multipart/mixed; boundary="===============6627168544161533690=="
+Cc: richard@nod.at, john.garry@huawei.com, vigneshr@ti.com,
+ miquel.raynal@bootlin.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Some prepare/unprepare works may be necessary before/after a set of
+operations of the spimem device. For example, before/after spi-nor
+flash's read/write/erase/lock/unlock.
 
---===============6627168544161533690==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="0OAP2g/MAC+5xKAE"
-Content-Disposition: inline
+Add optional prepare/unprepare methods in spi_controller_mem_ops to allow
+the controller to do specific works after/before the operations. The upper
+user can use spi_mem_{prepare, unprepare}() to call the methods of the
+controller.
 
+Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+---
+ drivers/spi/spi-mem.c       | 20 ++++++++++++++++++++
+ include/linux/spi/spi-mem.h | 11 +++++++++++
+ 2 files changed, 31 insertions(+)
 
---0OAP2g/MAC+5xKAE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+index adaa0c4..f09cef1 100644
+--- a/drivers/spi/spi-mem.c
++++ b/drivers/spi/spi-mem.c
+@@ -220,6 +220,26 @@ bool spi_mem_supports_op(struct spi_mem *mem, const struct spi_mem_op *op)
+ }
+ EXPORT_SYMBOL_GPL(spi_mem_supports_op);
+ 
++int spi_mem_prepare(struct spi_mem *mem)
++{
++	struct spi_controller *ctlr = mem->spi->controller;
++
++	if (ctlr->mem_ops && ctlr->mem_ops->prepare)
++		return ctlr->mem_ops->prepare(mem);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(spi_mem_prepare);
++
++void spi_mem_unprepare(struct spi_mem *mem)
++{
++	struct spi_controller *ctlr = mem->spi->controller;
++
++	if (ctlr->mem_ops && ctlr->mem_ops->unprepare)
++		ctlr->mem_ops->unprepare(mem);
++}
++EXPORT_SYMBOL_GPL(spi_mem_unprepare);
++
+ static int spi_mem_access_start(struct spi_mem *mem)
+ {
+ 	struct spi_controller *ctlr = mem->spi->controller;
+diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+index af9ff2f..e40b5c3 100644
+--- a/include/linux/spi/spi-mem.h
++++ b/include/linux/spi/spi-mem.h
+@@ -215,6 +215,12 @@ static inline void *spi_mem_get_drvdata(struct spi_mem *mem)
+  *		    limitations)
+  * @supports_op: check if an operation is supported by the controller
+  * @exec_op: execute a SPI memory operation
++ * @prepare: do some prepare works before a set of operations. for example,
++ *	     read/write/erase/lock/unlock operations of spi-nor flash. This
++ *	     method is optional.
++ * @unprepare: do some post works after a set of operations. for example,
++ *	       read/write/erase/lock/unlock operations of spi-nor flash. This
++ *	       method is optional.
+  * @get_name: get a custom name for the SPI mem device from the controller.
+  *	      This might be needed if the controller driver has been ported
+  *	      to use the SPI mem layer and a custom name is used to keep
+@@ -253,6 +259,8 @@ struct spi_controller_mem_ops {
+ 	int (*adjust_op_size)(struct spi_mem *mem, struct spi_mem_op *op);
+ 	bool (*supports_op)(struct spi_mem *mem,
+ 			    const struct spi_mem_op *op);
++	int (*prepare)(struct spi_mem *mem);
++	void (*unprepare)(struct spi_mem *mem);
+ 	int (*exec_op)(struct spi_mem *mem,
+ 		       const struct spi_mem_op *op);
+ 	const char *(*get_name)(struct spi_mem *mem);
+@@ -329,6 +337,9 @@ int spi_mem_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op);
+ bool spi_mem_supports_op(struct spi_mem *mem,
+ 			 const struct spi_mem_op *op);
+ 
++int spi_mem_prepare(struct spi_mem *mem);
++void spi_mem_unprepare(struct spi_mem *mem);
++
+ int spi_mem_exec_op(struct spi_mem *mem,
+ 		    const struct spi_mem_op *op);
+ 
+-- 
+2.8.1
 
-On Thu, May 21, 2020 at 10:18:26AM +0800, Ramuthevar, Vadivel MuruganX wrote:
-> On 20/5/2020 8:43 pm, Mark Brown wrote:
-> > On Wed, May 20, 2020 at 08:36:12PM +0800, Ramuthevar,Vadivel MuruganX wrote:
-
-> > >   .../devicetree/bindings/mtd/cadence-quadspi.txt    |  67 -----------
-> > >   .../devicetree/bindings/spi/cdns,qspi-nor.yaml     | 133 +++++++++++++++++++++
-
-> > The changelog says this is adding a new binding but the actual change is
-> > mostly a conversion to YAML.  Please split the additions out into a
-> > separate change, ideally doing that before the conversion since there is
-> > a backlog on review of YAML conversions.
-
-> Initially was sending the only YAML file alone, then reviewers suggest to me
-> do this way so I did, next by split the patches like below...
-
-> 1. remove the cadence-quadspi.txt (patch1)
-> 2. convert txt to YAML (patch2)
-
-That doesn't address either of the issues.  The removal of the old
-bindings and addition of the YAML ones needs to be in a single patch
-doing that conversion.  What I'm suggesting should be done separately is
-whatever changes to the semantics of the bindings you are (according to
-your changelog) doing.
-
---0OAP2g/MAC+5xKAE
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7GXmsACgkQJNaLcl1U
-h9BdFwgAgFljcWTcMb6Us4MfVHcgy1YEqUmIwGaqY2UIBzMVQryRSOVEhQ4rpXHl
-axvDWQGwewuHB1d0UU8Ec+YKWRJl/MYTCtmTHuE4OYL5ZY1YCM5udJ05u/8FuWB6
-Z1Pqt3iJ/QHc76gNqZ+BXnUMGh222ixJSSci5lTKkznlratWhtyz1wJU8IJ2I+M1
-zRwl78qMsTvBE8abg7NBXHMlQae0yQVcr0ndYjJkx8z/5C6RvFQ+WGCPjf+xTH7E
-IEQxy2zRFVI5EJjofGLCDWitAZSLDULZqh0LObpKRJN6X9aOriK+dQzSVAH2EhvE
-ElA/2sH+NZpcz19Wlp6+U+5xNYTNqw==
-=Xvew
------END PGP SIGNATURE-----
-
---0OAP2g/MAC+5xKAE--
-
-
---===============6627168544161533690==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============6627168544161533690==--
-
