@@ -2,67 +2,71 @@ Return-Path: <SRS0=CeWw=7D=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39232C433DF
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 May 2020 09:24:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1752C433DF
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 May 2020 10:57:05 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F3D782072C
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 May 2020 09:24:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 787F9206F6
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 May 2020 10:57:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="iiSlhgws"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F3D782072C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ku30WrxF";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="jZbg4vvc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 787F9206F6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:
-	Subject:To:References:In-Reply-To:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NMCy1OipZ4gYJ2EG3EWq3BURWYQAeTneFfM+JtdKsUs=; b=iiSlhgws0VQqCg
-	DodDgyhHT1sn+oCy++R7vAdnhTE3foe4Kxywbdxw+mLcOYiWkQlwGSLL7GsZQzsx7knWSg6vv5Df8
-	5YXhQld8UbAG1s18UOf5Wv18BBSfzFrVexyej/HisRG8le9aHw+Kh+rVg6NapbbTmVQeyeJn6ucoF
-	MXQEIqnyNGg/a1AAgFUOBgVZiYJa2cJ9LO84NkbgVQNNTbSRBaiPGrrxZLa+a1PKDJHbiyIjiX73C
-	VX3YLlYftKAuVEkGQmFIG5xy5PxBkyoW5EUjGsSKqdWVGd/uAG1qeL2mo2c01mFF1t8nNgQtPrLw3
-	q+xqTRGWxozPxbdF5K+g==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:Cc:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=3uGpmQ2xXIbN7q0RjD6ilj3spDfd2pcwOVgbM/XMMII=; b=ku30WrxF1pj3AqVktrhDqBOd6
+	QKow0dZIR4QSBAFgqDeoPGDDflK3yEVTrVjcWdEnssDX5ReLJCw5pjk4K+QH2eUwAqR6XNaL/9SWe
+	NHOp/Vx7VZVCoYKjSIlwld4oKsUOZ2fXY/KaBJ1qsfutLyzhD5XvCMsvtXH2T5CIrxlVg5rvHNsWe
+	dXMgd2kZlH2iUJe1CulcvIM1jVbTwIviyMRGnh0KpzrhWVEf6bYxt/ib+nL2x1+a6rou8z2qqxIve
+	cpPHCEj30f5CeOBhww7BHm/Ynsg8UuGjWYwu6Gi185stg8v65A+oIArcPosIiujXROk8Ou5E3nK6L
+	rlPlCBQyQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jbhRO-0000rh-FI; Thu, 21 May 2020 09:24:38 +0000
-Received: from twhmllg3.macronix.com ([122.147.135.201])
+	id 1jbise-0003zz-Ip; Thu, 21 May 2020 10:56:52 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jbhRM-0000q7-6h; Thu, 21 May 2020 09:24:37 +0000
-Received: from twhfmlp1.macronix.com (twhfmlp1.macronix.com [172.17.20.91])
- by TWHMLLG3.macronix.com with ESMTP id 04L9O5xV009999;
- Thu, 21 May 2020 17:24:05 +0800 (GMT-8)
- (envelope-from masonccyang@mxic.com.tw)
-Received: from MXML06C.mxic.com.tw (mxml06c.macronix.com [172.17.14.55])
- by Forcepoint Email with ESMTP id 625C4A326BAAEB7806BC;
- Thu, 21 May 2020 17:24:06 +0800 (CST)
-In-Reply-To: <20200519142642.24131-6-p.yadav@ti.com>
-References: <20200519142642.24131-1-p.yadav@ti.com>
- <20200519142642.24131-6-p.yadav@ti.com>
-To: "Pratyush Yadav" <p.yadav@ti.com>
-Subject: Re: [PATCH v5 05/19] mtd: spi-nor: add support for DTR protocol
+ id 1jbisb-0003zf-QC
+ for linux-mtd@lists.infradead.org; Thu, 21 May 2020 10:56:51 +0000
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id D1F30206F6;
+ Thu, 21 May 2020 10:56:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1590058609;
+ bh=seW5V778px/AgzonYSOezyKQVmV3Co7HCNgbinTsjyg=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=jZbg4vvcLz0BWO3+7f3IRMU9tzhJygn8ioscFP/ZqnGFrF8ie91HV+nRvRe7qZKIL
+ S4NZZiLfJgP7Eo4tw1u7++Vd48k3aP42ktKeKc4oOt/epvOoOm3tlg+XEVahGyWWCX
+ SCivWjO4FdwbrEKnERNBtyqMub/z9gqjdOyvQsgw=
+Date: Thu, 21 May 2020 11:56:46 +0100
+From: Mark Brown <broonie@kernel.org>
+To: "Ramuthevar,
+ Vadivel MuruganX" <vadivel.muruganx.ramuthevar@linux.intel.com>
+Subject: Re: [PATCH v2 1/1] dt-bindings: spi: Add schema for Cadence QSPI
+ Controller driver
+Message-ID: <20200521105646.GA4770@sirena.org.uk>
+References: <20200520123612.11797-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20200520124329.GF4823@sirena.org.uk>
+ <fd086da7-7e18-83bc-d423-56095b0cff96@linux.intel.com>
 MIME-Version: 1.0
-X-KeepSent: 6C754784:29BF11CD-4825856F:0032D83F;
- type=4; name=$KeepSent
-X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
-Message-ID: <OF6C754784.29BF11CD-ON4825856F.0032D83F-4825856F.0033A4F1@mxic.com.tw>
-From: masonccyang@mxic.com.tw
-Date: Thu, 21 May 2020 17:24:05 +0800
-X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
- HF265|July 25, 2018) at 2020/05/21 PM 05:24:06,
- Serialize complete at 2020/05/21 PM 05:24:06
-X-MAIL: TWHMLLG3.macronix.com 04L9O5xV009999
+In-Reply-To: <fd086da7-7e18-83bc-d423-56095b0cff96@linux.intel.com>
+X-Cookie: Keep your laws off my body!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200521_022436_538545_1B74C6FF 
-X-CRM114-Status: UNSURE (   5.58  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200521_035649_867071_BA05FA01 
+X-CRM114-Status: GOOD (  13.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,70 +78,75 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>,
- Nicolas Ferre <nicolas.ferre@microchip.com>, Sekhar Nori <nsekhar@ti.com>,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- linux-mediatek@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- Matthias Brugger <matthias.bgg@gmail.com>, linux-mtd@lists.infradead.org,
- Pratyush Yadav <p.yadav@ti.com>, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: cheol.yong.kim@intel.com, robh@kernel.org, vigneshr@ti.com,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, qi-ming.wu@intel.com
+Content-Type: multipart/mixed; boundary="===============6627168544161533690=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
-Hi Pratyush,
+--===============6627168544161533690==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="0OAP2g/MAC+5xKAE"
+Content-Disposition: inline
 
 
-> @@ -311,6 +313,7 @@ struct flash_info {
->                  * BP3 is bit 6 of status register.
->                  * Must be used with SPI_NOR_4BIT_BP.
->                  */
-> +#define SPI_NOR_OCTAL_DTR_READ   BIT(19) /* Flash supports octal DTR 
-Read. */
+--0OAP2g/MAC+5xKAE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-#define SPI_NOR_OCTAL_DTR_RDWR  BIT(19) /* Support Octal DTR Read & Write 
-*/
+On Thu, May 21, 2020 at 10:18:26AM +0800, Ramuthevar, Vadivel MuruganX wrote:
+> On 20/5/2020 8:43 pm, Mark Brown wrote:
+> > On Wed, May 20, 2020 at 08:36:12PM +0800, Ramuthevar,Vadivel MuruganX wrote:
 
-more precisely and clearly ?
+> > >   .../devicetree/bindings/mtd/cadence-quadspi.txt    |  67 -----------
+> > >   .../devicetree/bindings/spi/cdns,qspi-nor.yaml     | 133 +++++++++++++++++++++
 
-thanks,
-Mason
+> > The changelog says this is adding a new binding but the actual change is
+> > mostly a conversion to YAML.  Please split the additions out into a
+> > separate change, ideally doing that before the conversion since there is
+> > a backlog on review of YAML conversions.
 
-CONFIDENTIALITY NOTE:
+> Initially was sending the only YAML file alone, then reviewers suggest to me
+> do this way so I did, next by split the patches like below...
 
-This e-mail and any attachments may contain confidential information 
-and/or personal data, which is protected by applicable laws. Please be 
-reminded that duplication, disclosure, distribution, or use of this e-mail 
-(and/or its attachments) or any part thereof is prohibited. If you receive 
-this e-mail in error, please notify us immediately and delete this mail as 
-well as its attachment(s) from your system. In addition, please be 
-informed that collection, processing, and/or use of personal data is 
-prohibited unless expressly permitted by personal data protection laws. 
-Thank you for your attention and cooperation.
+> 1. remove the cadence-quadspi.txt (patch1)
+> 2. convert txt to YAML (patch2)
 
-Macronix International Co., Ltd.
+That doesn't address either of the issues.  The removal of the old
+bindings and addition of the YAML ones needs to be in a single patch
+doing that conversion.  What I'm suggesting should be done separately is
+whatever changes to the semantics of the bindings you are (according to
+your changelog) doing.
 
-=====================================================================
+--0OAP2g/MAC+5xKAE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7GXmsACgkQJNaLcl1U
+h9BdFwgAgFljcWTcMb6Us4MfVHcgy1YEqUmIwGaqY2UIBzMVQryRSOVEhQ4rpXHl
+axvDWQGwewuHB1d0UU8Ec+YKWRJl/MYTCtmTHuE4OYL5ZY1YCM5udJ05u/8FuWB6
+Z1Pqt3iJ/QHc76gNqZ+BXnUMGh222ixJSSci5lTKkznlratWhtyz1wJU8IJ2I+M1
+zRwl78qMsTvBE8abg7NBXHMlQae0yQVcr0ndYjJkx8z/5C6RvFQ+WGCPjf+xTH7E
+IEQxy2zRFVI5EJjofGLCDWitAZSLDULZqh0LObpKRJN6X9aOriK+dQzSVAH2EhvE
+ElA/2sH+NZpcz19Wlp6+U+5xNYTNqw==
+=Xvew
+-----END PGP SIGNATURE-----
+
+--0OAP2g/MAC+5xKAE--
 
 
-
-============================================================================
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
+--===============6627168544161533690==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============6627168544161533690==--
+
