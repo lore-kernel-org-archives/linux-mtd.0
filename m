@@ -7,77 +7,78 @@ X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64A24C433E0
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 May 2020 12:44:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AAD84C433E1
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 May 2020 12:52:58 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2433520721
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 May 2020 12:44:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 802682072C
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 May 2020 12:52:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YG23R0J2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2433520721
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="aoDViNFi";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="B6AX0Bme"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 802682072C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:Reply-To:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7/gf3/2dftN7nglUo+uPjjKAAmgElDGtY05VtqziTDc=; b=YG23R0J2Jrre7V
-	nbYZ93SuSPRvXI2he/ZSliVfcjeKdWfA19/WWzU6uI7qBRKcV5n5LgYZkL8DEVEtHACyW3xqFgzx3
-	bz+O76+RmF7zbd9QDd1J0NJRW9oA0YsR3hnsfjJfLVBRe8Np467FebPODfN+403e1p5OFy4rmTphh
-	fqDTyQXseYaK1lyQsCrWkZqjRtjKlhhMtDdSIzC7ag1p6OhDvEvmHemOHoBqcG/4n06aafzBlgTu4
-	HQ3ou+83pjQbv4En1H/o8uSGLjNmKPFGaXFoOpphQMmpgtOqb0/U9fSxs7u9xOxjzAzX6t+K5AMlK
-	wfrL+f60rygcwQYTAY4g==;
+	List-Owner; bh=27JGia9fiGUqP6gOUPfIGsB+jAscxHMbyRP8cmGAA1g=; b=aoDViNFi3D/hQF
+	5amzLUQwnrifN0N98d41pmHflA5tAYCZt60ETQ3fjzvqhKpq4mgfBWn+MnFR2JziRYhK/PlF9G8Uz
+	F8+mgY1bP1I1K0qipY43BProm0oAp6ztish0kEHSY0n9vvzFZYjBoiZID0fJYpFZV3knr3u2p9eyL
+	o5aImRXpzkVfAHmt171J5r8W4niFPHW3+OK2W/GIdWWCmNQhomV+puhOgV9Mzv8PBTnjcvFFqaQJT
+	0V/Pi0y9IwHznhAommgLMb+sVZ3einJQ0qACjS9ZR5USlRZejsPhfNzL0cZ1FmX1FTKzYkIODSwKP
+	sXLue3fWq0OboUlmSgAw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jbkYO-0004Vn-Uo; Thu, 21 May 2020 12:44:04 +0000
-Received: from mga03.intel.com ([134.134.136.65])
+	id 1jbkgp-0002HH-Se; Thu, 21 May 2020 12:52:47 +0000
+Received: from lelv0143.ext.ti.com ([198.47.23.248])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jbkYL-0004Un-EM
- for linux-mtd@lists.infradead.org; Thu, 21 May 2020 12:44:03 +0000
-IronPort-SDR: areje04OFwT8j9wGhMGyUFTPl6mglQLWBaYEPa2VXrbVgwI1Z4AgLr82pqBtyZy/6FwzLdhbvN
- +5BsjAsPqD8w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 May 2020 05:44:00 -0700
-IronPort-SDR: aHzqo4PXnOejTBUW6P+vTkEhj/SEhiL123RZpfLwQmtEa6X671yVZFbDI44O4F2YeKwIAyFhWt
- 6SSKRUz/9s7A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,417,1583222400"; d="scan'208";a="412380047"
-Received: from linux.intel.com ([10.54.29.200])
- by orsmga004.jf.intel.com with ESMTP; 21 May 2020 05:44:00 -0700
-Received: from [10.215.164.158] (vramuthx-mobl1.gar.corp.intel.com
- [10.215.164.158])
- by linux.intel.com (Postfix) with ESMTP id D70DA5804B4;
- Thu, 21 May 2020 05:43:52 -0700 (PDT)
-Subject: Re: [PATCH v2 1/1] dt-bindings: spi: Add schema for Cadence QSPI
- Controller driver
-To: Mark Brown <broonie@kernel.org>
-References: <20200520123612.11797-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200520124329.GF4823@sirena.org.uk>
- <fd086da7-7e18-83bc-d423-56095b0cff96@linux.intel.com>
- <20200521105646.GA4770@sirena.org.uk>
- <24b0297c-5c33-f690-9514-68b76fc2c9ea@linux.intel.com>
- <20200521122035.GB4770@sirena.org.uk>
- <463b24a4-0a6a-9fcf-7eb9-8fde602c0c13@linux.intel.com>
- <20200521123735.GC4770@sirena.org.uk>
-From: "Ramuthevar, Vadivel MuruganX"
- <vadivel.muruganx.ramuthevar@linux.intel.com>
-Message-ID: <f2f15cc2-e2e4-3379-f3b8-ca31a65ded54@linux.intel.com>
-Date: Thu, 21 May 2020 20:43:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ id 1jbkgc-00025l-8r; Thu, 21 May 2020 12:52:35 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04LCqQBM073519;
+ Thu, 21 May 2020 07:52:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1590065547;
+ bh=HhdS0k1uvFyYcnFyKdAE7u2FGKBzACV32jA6ddp5U90=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=B6AX0BmewPmUOKJI5DJ3cIZn+mQtSxDXO9Avzp912H0DIeRRFYLdBCq5F1P0K/PX7
+ ZBFr4KNidcljuogeJKGXNVIzLhPqoT8rUaNRB9jQktX4F+5LUYW8hpz+7HKo+ea875
+ 9xBCwVXNAZY05h0iL5muyCMfD/8jR9tAittuvtXQ=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04LCqQkD089935
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Thu, 21 May 2020 07:52:26 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 21
+ May 2020 07:52:26 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 21 May 2020 07:52:26 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04LCqPlK071033;
+ Thu, 21 May 2020 07:52:26 -0500
+Date: Thu, 21 May 2020 18:22:25 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: <masonccyang@mxic.com.tw>
+Subject: Re: [PATCH v5 05/19] mtd: spi-nor: add support for DTR protocol
+Message-ID: <20200521125225.odxcdjkoy5lckrbx@ti.com>
+References: <20200519142642.24131-1-p.yadav@ti.com>
+ <20200519142642.24131-6-p.yadav@ti.com>
+ <OF6C754784.29BF11CD-ON4825856F.0032D83F-4825856F.0033A4F1@mxic.com.tw>
 MIME-Version: 1.0
-In-Reply-To: <20200521123735.GC4770@sirena.org.uk>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <OF6C754784.29BF11CD-ON4825856F.0032D83F-4825856F.0033A4F1@mxic.com.tw>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200521_054401_523215_85309ABA 
-X-CRM114-Status: GOOD (  13.03  )
+X-CRM114-CacheID: sfid-20200521_055234_431777_E895E230 
+X-CRM114-Status: GOOD (  10.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,39 +90,52 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
-Cc: cheol.yong.kim@intel.com, robh@kernel.org, vigneshr@ti.com,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, qi-ming.wu@intel.com
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>, Sekhar Nori <nsekhar@ti.com>,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ Ludovic Desroches <ludovic.desroches@microchip.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ linux-mediatek@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Mark,
+Hi,
 
-On 21/5/2020 8:37 pm, Mark Brown wrote:
-> On Thu, May 21, 2020 at 08:34:43PM +0800, Ramuthevar, Vadivel MuruganX wrote:
->> On 21/5/2020 8:20 pm, Mark Brown wrote:
+On 21/05/20 05:24PM, masonccyang@mxic.com.tw wrote:
 > 
->>> I mean that any changes to the bindings ought to be split out into
->>> separate patches, if there's multiple changes it may make sense for
->>> there to be multiple patches.
+> Hi Pratyush,
 > 
->> Got it, we do not have multiple changes since it is new YAML file.
->> in case if we feel anything to be added , we add as separate patches.
 > 
-> If this is just a conversion to YAML then your changelog is wildly
-> inaccurate and needs to be improved, your changelog says you are adding
-> new things.
-Yes , You are right, just conversion only, over that adding/modifying 
-few of the properties like compatible and node name in  the example..etc
-Sure I will make a multiple patches , Thanks!
+> > @@ -311,6 +313,7 @@ struct flash_info {
+> >                  * BP3 is bit 6 of status register.
+> >                  * Must be used with SPI_NOR_4BIT_BP.
+> >                  */
+> > +#define SPI_NOR_OCTAL_DTR_READ   BIT(19) /* Flash supports octal DTR 
+> Read. */
+> 
+> #define SPI_NOR_OCTAL_DTR_RDWR  BIT(19) /* Support Octal DTR Read & Write 
+> */
 
-Regards
-Vadivel
-
+This flag only enables SNOR_HWCAPS_READ_8_8_8_DTR. It does not affect 
+SNOR_HWCAPS_PP_8_8_8_DTR. So it shouldn't be called RDWR.
+ 
+> more precisely and clearly ?
 > 
+> thanks,
+> Mason
+> 
+
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments India
 
 ______________________________________________________
 Linux MTD discussion mailing list
