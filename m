@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4476BC433DF
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 00:15:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 268AAC433E0
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 00:15:29 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 75CE5206BE
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 00:15:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E0D4C2072C
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 00:15:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="T4PZzWlX";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="FzA4RfVN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 75CE5206BE
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GNGV1xuN";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="shXL14aI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E0D4C2072C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,43 +26,43 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:In-Reply-To:Subject:To:From:Date:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=wzNjIwGChOZS+Pu1I92S/E8I9kyELVQ+IM5XPBaUmTo=; b=T4PZzWlXs9ytllX1DqHUoy+8bx
-	ogXAFV0fuGuP6W0ujDPZ+47e2ebkbzvRv4X9y9Dpl3foF8phP9FbgFy91TBwON7BmUmt/fNDVC5fP
-	d92dYavzI8RnX2m2qWai8vGUjNY0xovCGOBQBoeL0yYbCYy77cCLShLTfl3SQfe1SO1apgBKFRC5L
-	jK+huxFl6nPeptC264W3Y6GuOqkbAvH990fMsG+pM0b+Hw7di9zTvVfV5LA2fyJd6W3xBgUtztopp
-	eBDJImZ2411Z8xoZkYeCQBTSsei46LTx8PcfM65XuD5uYIB3/uwE8uSqYKVnBqxe6C4jipIaww9pZ
-	p1uGjmww==;
+	bh=ivFFVTVYUkff050N+qdx8iiEbO9XV9LMdXmo3+uRVlY=; b=GNGV1xuN/UcGgxzf1OYo++Wgnn
+	BtAAB/b4lsDqaOIvTMXkwJ6WeATNqVFBX9/ac8qrALtFhySadKFdwcJLrE8jmPXKrWBobvTMAzX7C
+	j/5zg8eF8ekNuHcO9FY4BTcYUZ5QAcCbn3Mnbx2MYf1hKE6Bab+uwnDa/yd68Xl6SlAfdO/3S7lCj
+	l1bMS2icwzM/qM/TPjinSnUHsInmEgbjMmRxq8N0O0qId55KA7SiSezdvAml7i74gYkb0ADJzpbVm
+	BzE9pr6FVm6gRbjipLS+K9KI5YMezs6GvysUAVoE3zAq8uTA1pmKuFH9WcAWDvpaVwqWUVGKfUzVT
+	Gbjnkmkw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jbvKv-0001oi-6I; Fri, 22 May 2020 00:14:53 +0000
+	id 1jbvLM-0004e4-Ka; Fri, 22 May 2020 00:15:21 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jbvIm-0007zP-8U
- for linux-mtd@lists.infradead.org; Fri, 22 May 2020 00:12:41 +0000
+ id 1jbvIn-00081I-Vm
+ for linux-mtd@lists.infradead.org; Fri, 22 May 2020 00:12:44 +0000
 Received: from localhost (unknown [137.135.114.1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id BD81C2078B;
- Fri, 22 May 2020 00:12:38 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 0C1B420874;
+ Fri, 22 May 2020 00:12:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1590106359;
- bh=Bd+J7l4ozEAKcpKr3XQqKk9VsnlMCH0rOTdDOqvscmQ=;
+ s=default; t=1590106361;
+ bh=WOiqB0GpcVWMKmnet1Sc0/6IqMPI2nyLCQayz4Y0Ccw=;
  h=Date:From:To:To:To:Cc:Cc:Cc:Subject:In-Reply-To:References:From;
- b=FzA4RfVN/fZ63DkRQg5RZsBNqXUEfmXLheKcRZ6y5gmSmJj8Gc2Rv1Vn2rtbEKFE2
- fk4lwIWCZxLmVBLB9bPjqavIg4IXMBJKzk3B4gq7xeqorBabAAUMHJ7u2ZzSgEwHvg
- +qfCOdCAu/4wm+6Xb5O0yF2Rp9WzraJv9zCD1HIw=
-Date: Fri, 22 May 2020 00:12:38 +0000
+ b=shXL14aIJY516IgdQpOqo9DvswkPQPQS6fMp+EnFYbK+EB+au+HNdAjeaoTmEJLOq
+ orZx5IQL/RLGJepwYV7L/XMHJiOKUK7ewoywhdMOW0dg5mIsY5x8bcukGGCXfhTMEp
+ RwYoheVtM1vRd13u47K3oZYXybpYYWv0lEMAIjP4=
+Date: Fri, 22 May 2020 00:12:40 +0000
 From: Sasha Levin <sashal@kernel.org>
 To: Sasha Levin <sashal@kernel.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v2 40/62] mtd: rawnand: pasemi: Fix the probe error path
-In-Reply-To: <20200519130035.1883-41-miquel.raynal@bootlin.com>
-References: <20200519130035.1883-41-miquel.raynal@bootlin.com>
-Message-Id: <20200522001238.BD81C2078B@mail.kernel.org>
+Subject: Re: [PATCH v2 33/62] mtd: rawnand: orion: Fix the probe error path
+In-Reply-To: <20200519130035.1883-34-miquel.raynal@bootlin.com>
+References: <20200519130035.1883-34-miquel.raynal@bootlin.com>
+Message-Id: <20200522001241.0C1B420874@mail.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200521_171240_447580_9F769FC6 
-X-CRM114-Status: UNSURE (   6.98  )
+X-CRM114-CacheID: sfid-20200521_171242_579868_9409286C 
+X-CRM114-Status: UNSURE (   7.19  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -93,12 +93,33 @@ The bot has tested the following trees: v5.6.13, v5.4.41, v4.19.123, v4.14.180, 
 
 v5.6.13: Build OK!
 v5.4.41: Build OK!
-v4.19.123: Build OK!
+v4.19.123: Failed to apply! Possible dependencies:
+    59ac276f2227 ("mtd: rawnand: Pass a nand_chip object to nand_release()")
+
 v4.14.180: Failed to apply! Possible dependencies:
-    Unable to calculate
+    02f26ecf8c77 ("mtd: nand: add reworked Marvell NAND controller driver")
+    256c4fc76a80 ("mtd: rawnand: add a way to pass an ID table with nand_scan()")
+    39b77c586e17 ("mtd: rawnand: fsl_elbc: fix probe function error path")
+    59ac276f2227 ("mtd: rawnand: Pass a nand_chip object to nand_release()")
+    63fa37f0c512 ("mtd: rawnand: Replace printk() with appropriate pr_*() macro")
+    97d90da8a886 ("mtd: nand: provide several helpers to do common NAND operations")
+    98732da1a08e ("mtd: rawnand: do not export nand_scan_[ident|tail]() anymore")
+    acfc33091f7a ("mtd: rawnand: fsl_ifc: fix probe function error path")
 
 v4.9.223: Failed to apply! Possible dependencies:
-    Unable to calculate
+    24755a55b01f ("Documentation/00-index: update for new core-api folder")
+    4ad4b21b1b81 ("docs-rst: convert usb docbooks to ReST")
+    59ac276f2227 ("mtd: rawnand: Pass a nand_chip object to nand_release()")
+    609f212f6a12 ("docs-rst: convert mtdnand book to ReST")
+    66115335fbb4 ("docs: Fix build failure")
+    7ddedebb03b7 ("ALSA: doc: ReSTize writing-an-alsa-driver document")
+    8551914a5e19 ("ALSA: doc: ReSTize alsa-driver-api document")
+    90f9f118b75c ("docs-rst: convert filesystems book to ReST")
+    93dc3a112bf8 ("doc: Convert the debugobjects DocBook template to sphinx")
+    c441a4781ff1 ("crypto: doc - remove crypto API DocBook")
+    d6ba7a9c8b5a ("doc: Sphinxify the tracepoint docbook")
+    e7f08ffb1855 ("Documentation/workqueue.txt: convert to ReST markup")
+    f3fc83e55533 ("docs: Fix htmldocs build failure")
 
 
 NOTE: The patch will not be queued to stable trees until it is upstream.
