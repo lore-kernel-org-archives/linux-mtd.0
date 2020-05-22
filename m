@@ -5,19 +5,19 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6B52C433DF
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 10:24:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D94F9C433DF
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 10:24:45 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A29E82072C
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 10:24:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B0DD42072C
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 10:24:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NYMSzOsZ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="BYFX+3fn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A29E82072C
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Hzmrjibi";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="KQLsWfIP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B0DD42072C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,44 +26,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5pIw5jZPTOeo07CqbPlVAbDbzUYxN0Dqhp7nymNBY6U=; b=NYMSzOsZoykLY/
-	rTqXqPL5aFjtFUix2s9Bt+aC3ia8ASbDwwInVrxAcYPub87a+qt1QQRJOkveCvA73EqslGnTZqdcP
-	xUW1vCdIBPWh7xOrnFXO38EezbB/mlnFxNOYxZsPBF8k4orclqw7gLuoQkmCiWcNaQc9bBPJG1ijH
-	k8v2I5Tz6LzZfQJG5MDb6F0BAN4986wKlLMbPUbiWV964yHIsCx0H9ps2UrLu64OxkxmDNmdLoWpK
-	ArM4FidMI4mnSaZB6hBj4DPIMDk4SWQt0n94r/Xp4W2Wa1HpPV0aO2M2acMFAvkkkt/51t/xGUfBh
-	if1I6LMtgkxcOIeeVadg==;
+	List-Owner; bh=/AictyLj7hnaF9ewzGkSVl8+C1VE1S+0loPU7Da/1lU=; b=HzmrjibiDtyK3S
+	nScZI6lLwbVFBofdjuYOZyEw3K4XAL7Y7+SBn7m2KL2GcEivG3sSQYQHDdNoIBGO5wh6s9A4n/Xwq
+	XQb9G6XiDlIpOsHvgFG+TtnbJJfc1WlmoZaPschLuarBssdSJ6zon2+QRkVV+KTP+rrDTbz4x1uUO
+	aoobd0mUOb6rWRCe/UtKUL0jGI3XLY02QVarBPGNhsgKYXv6Mmu2K7FfTmecuuNzHaONBErG9PoO6
+	z7yFIWYkhcFHOxg1g6QejY4JV5HCSZHlVLGDF7ZkeMIacy76AwlJ5NEYpXlL6BuxTuOsx4/UilXfU
+	5VBq5TXydoMBk2GJ2cEA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jc4qR-0007BC-KX; Fri, 22 May 2020 10:24:03 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1jc4r0-0007jr-Bt; Fri, 22 May 2020 10:24:38 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jc4hH-0002z1-PS; Fri, 22 May 2020 10:14:37 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04MAEUU0009182;
- Fri, 22 May 2020 05:14:30 -0500
+ id 1jc4hN-00032n-8A; Fri, 22 May 2020 10:14:42 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04MAEZ15038173;
+ Fri, 22 May 2020 05:14:35 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1590142470;
- bh=ZfUbh82N6QxYzzf9GICZYBFd0OVcUih5gJ0g44AGOsU=;
+ s=ti-com-17Q1; t=1590142476;
+ bh=70FeLQTtJkyVxVIkf8YVfc8xOxYWAvnHPgHRRqee0UU=;
  h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=BYFX+3fnKWFqRaDS44aUxAD3zFtXltR1urt6B6ZbPQOHheIoFc+j2B3uTyhyDRX+R
- 1LVzBMfZUNSeb2S3QH/2REWz4FyHTr5qND5oRpM6c0PvvczIH52y7tXGkTix27Q2EA
- 3a02uOSCqPSxq9DVoe2N/g9kpj9EW77vTr99bLLU=
+ b=KQLsWfIP34S0daoWMOfBTQeaHgWJstoC5RMXDXIIe3R7z3ehdQrkozInyZDfgR+PV
+ 6uaz8xMtaiLg04ov0/0XWHXvZ1K0nM12nvVu2wts3GlZ4HjA8ig618CA1THTHmC7gd
+ 4bN/EigVprGbSLVOsKKH0C1jyaCpDWKKS/M8QnRA=
 Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04MAEUqM082702
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04MAEZIg085584
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 22 May 2020 05:14:30 -0500
+ Fri, 22 May 2020 05:14:35 -0500
 Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE104.ent.ti.com
  (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 22
- May 2020 05:14:30 -0500
+ May 2020 05:14:35 -0500
 Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE100.ent.ti.com
  (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 22 May 2020 05:14:30 -0500
+ Frontend Transport; Fri, 22 May 2020 05:14:35 -0500
 Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com
  [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04MAD1aH041179;
- Fri, 22 May 2020 05:14:25 -0500
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04MAD1aI041179;
+ Fri, 22 May 2020 05:14:30 -0500
 From: Pratyush Yadav <p.yadav@ti.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
  <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
@@ -75,17 +75,18 @@ To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <linux-spi@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
  <linux-mediatek@lists.infradead.org>
-Subject: [PATCH v7 16/20] mtd: spi-nor: core: perform a Soft Reset on shutdown
-Date: Fri, 22 May 2020 15:42:57 +0530
-Message-ID: <20200522101301.26909-17-p.yadav@ti.com>
+Subject: [PATCH v7 17/20] mtd: spi-nor: core: disable Octal DTR mode on
+ suspend.
+Date: Fri, 22 May 2020 15:42:58 +0530
+Message-ID: <20200522101301.26909-18-p.yadav@ti.com>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20200522101301.26909-1-p.yadav@ti.com>
 References: <20200522101301.26909-1-p.yadav@ti.com>
 MIME-Version: 1.0
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200522_031436_047085_4CEB81E3 
-X-CRM114-Status: GOOD (  13.86  )
+X-CRM114-CacheID: sfid-20200522_031441_369920_8DCAA5D6 
+X-CRM114-Status: GOOD (  11.12  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,98 +106,49 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Perform a Soft Reset on shutdown on flashes that support it so that the
-flash can be reset to its initial state and any configurations made by
-spi-nor (given that they're only done in volatile registers) will be
-reset. This will hand back the flash in pristine state for any further
-operations on it.
+On resume, the init procedure will be run that will re-enable it.
 
 Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/mtd/spi-nor/core.c  | 42 +++++++++++++++++++++++++++++++++++++
- include/linux/mtd/spi-nor.h |  2 ++
- 2 files changed, 44 insertions(+)
+ drivers/mtd/spi-nor/core.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index a94376344be5..68559386f6f8 100644
+index 68559386f6f8..63ab588299f4 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -40,6 +40,9 @@
- 
- #define SPI_NOR_MAX_ADDR_WIDTH	4
- 
-+#define SPI_NOR_SRST_SLEEP_MIN 200
-+#define SPI_NOR_SRST_SLEEP_MAX 400
-+
- /**
-  * spi_nor_get_cmd_ext() - Get the command opcode extension based on the
-  *			   extension type.
-@@ -3201,6 +3204,41 @@ static int spi_nor_init(struct spi_nor *nor)
- 	return 0;
+@@ -3239,6 +3239,23 @@ static void spi_nor_soft_reset(struct spi_nor *nor)
+ 	usleep_range(SPI_NOR_SRST_SLEEP_MIN, SPI_NOR_SRST_SLEEP_MAX);
  }
  
-+static void spi_nor_soft_reset(struct spi_nor *nor)
++/* mtd suspend handler */
++static int spi_nor_suspend(struct mtd_info *mtd)
 +{
-+	struct spi_mem_op op;
++	struct spi_nor *nor = mtd_to_spi_nor(mtd);
++	struct device *dev = nor->dev;
 +	int ret;
 +
-+	op = (struct spi_mem_op)SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_SRSTEN, 8),
-+			SPI_MEM_OP_NO_DUMMY,
-+			SPI_MEM_OP_NO_ADDR,
-+			SPI_MEM_OP_NO_DATA);
-+	spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
-+	ret = spi_mem_exec_op(nor->spimem, &op);
++	/* Disable octal DTR mode if we enabled it. */
++	ret = spi_nor_octal_dtr_enable(nor, false);
 +	if (ret) {
-+		dev_warn(nor->dev, "Software reset failed: %d\n", ret);
-+		return;
++		dev_err(dev, "suspend() failed\n");
++		return ret;
 +	}
 +
-+	op = (struct spi_mem_op)SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_SRST, 8),
-+			SPI_MEM_OP_NO_DUMMY,
-+			SPI_MEM_OP_NO_ADDR,
-+			SPI_MEM_OP_NO_DATA);
-+	spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
-+	ret = spi_mem_exec_op(nor->spimem, &op);
-+	if (ret) {
-+		dev_warn(nor->dev, "Software reset failed: %d\n", ret);
-+		return;
-+	}
-+
-+	/*
-+	 * Software Reset is not instant, and the delay varies from flash to
-+	 * flash. Looking at a few flashes, most range somewhere below 100
-+	 * microseconds. So, sleep for a range of 200-400 us.
-+	 */
-+	usleep_range(SPI_NOR_SRST_SLEEP_MIN, SPI_NOR_SRST_SLEEP_MAX);
++	return 0;
 +}
 +
  /* mtd resume handler */
  static void spi_nor_resume(struct mtd_info *mtd)
  {
-@@ -3220,6 +3258,10 @@ void spi_nor_restore(struct spi_nor *nor)
- 	if (nor->addr_width == 4 && !(nor->flags & SNOR_F_4B_OPCODES) &&
- 	    nor->flags & SNOR_F_BROKEN_RESET)
- 		nor->params->set_4byte_addr_mode(nor, false);
-+
-+	if (nor->info->flags & SPI_NOR_OCTAL_DTR_READ &&
-+	    nor->flags & SNOR_F_SOFT_RESET)
-+		spi_nor_soft_reset(nor);
- }
- EXPORT_SYMBOL_GPL(spi_nor_restore);
+@@ -3432,6 +3449,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 	mtd->size = nor->params->size;
+ 	mtd->_erase = spi_nor_erase;
+ 	mtd->_read = spi_nor_read;
++	mtd->_suspend = spi_nor_suspend;
+ 	mtd->_resume = spi_nor_resume;
  
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index d251a5d02be2..06884a188315 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -51,6 +51,8 @@
- #define SPINOR_OP_CLFSR		0x50	/* Clear flag status register */
- #define SPINOR_OP_RDEAR		0xc8	/* Read Extended Address Register */
- #define SPINOR_OP_WREAR		0xc5	/* Write Extended Address Register */
-+#define SPINOR_OP_SRSTEN	0x66	/* Software Reset Enable */
-+#define SPINOR_OP_SRST		0x99	/* Software Reset */
- 
- /* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
- #define SPINOR_OP_READ_4B	0x13	/* Read data bytes (low frequency) */
+ 	if (nor->params->locking_ops) {
 -- 
 2.26.2
 
