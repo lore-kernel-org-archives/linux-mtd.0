@@ -5,19 +5,19 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB669C433E0
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 10:16:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44C1EC433DF
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 10:18:16 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 849D02065C
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 10:16:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 09975205CB
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 10:18:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HBo2/wrR";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="j/5lfROX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 849D02065C
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QHgaX1QR";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="FPyRu0Qt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 09975205CB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,44 +26,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hRw70Ea4r68sdMSVmHcEOtDcD1kXN9KVzf37F2Tuz10=; b=HBo2/wrRkfEaYf
-	6OkFrq3e01zXEl6RVbLkuvUHLaCmemYnKxPp8odPa8p7MuUELnDnbwkOkkweW6pgMunrqyhrI1duj
-	71YEW2UUWE2WhSgDsavLJEH8cQ+/eyCLIhgZhAnINFWw/NyEuLQBL3yuHusaGjV5AOh7K+EX74lM7
-	WqQSqhnC42wTiEdkDFJZx9INFiViTfHqjr03ioCZ4ZHYZgLRbPW2gdPE0n0wPE12dhqjeq2RD31nB
-	1YHnNWe8GTyOgfFrDjipx928OTkFPVvkHS1W36rhHK0ff21M5v3IyzTSU7IFVlyhf8x+JckQ9pb4/
-	SLr4WKpkGWJ0CXAEGmXg==;
+	List-Owner; bh=pbrPfbDjdTwfJ4c24rkU8J8o3vyW6xt0o3+E1z4OFi0=; b=QHgaX1QRsz0hCt
+	1QGALWepf9ymYpCCxHJTW4Xc5NsQagd3zjAjgjYdGWSF9Oub5PGgCVK3AEFMaDVPiw7nj1JONoeQ3
+	FfEpYjUC890HZIv4Dp9oaKuXG5VTjY+59r6Qfb8pDmJg6JQKPL2JSC8FrjrF7qOZ2enTxnH1B/LHI
+	cAF7cyu/QWHWykQTSZ11Y6PLL+5luKsv0dGJWuKQHJ20IkBMItwAh09vBROmeQZc2QsnawkyCKhie
+	Fq6he4Q8YddQslRSDMgRztpFTt9ysfjLQJ9RfoKkddqVOlKThNFGqvMskmK/WJGRVF1Q4VsEEzVBu
+	aX66V+ha5TAsSffHH7vQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jc4jK-0006tz-Cr; Fri, 22 May 2020 10:16:42 +0000
-Received: from lelv0142.ext.ti.com ([198.47.23.249])
+	id 1jc4kf-0007sx-0t; Fri, 22 May 2020 10:18:05 +0000
+Received: from lelv0143.ext.ti.com ([198.47.23.248])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jc4gd-0002T2-Fr; Fri, 22 May 2020 10:13:57 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04MADn5X013793;
- Fri, 22 May 2020 05:13:49 -0500
+ id 1jc4gh-0002XO-Hs; Fri, 22 May 2020 10:14:03 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04MADshi009092;
+ Fri, 22 May 2020 05:13:54 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1590142429;
- bh=oMN/iHiwQjDWS2EDa3kGydbVWyIjwSamwfacAnOEz7U=;
+ s=ti-com-17Q1; t=1590142434;
+ bh=+kdCqxPz5/4OP/AHIHE49Ao1j90AE/7lGHfW+4glVB8=;
  h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=j/5lfROXxFwnALnYGLLcRzqDJr/2PAMDRGLn01Qk5xKsbfrtahzv2Iqe9T8R/9KFC
- I0l+uYj6wR9NUtOMmumU85wPez68tIeD2rtTYLbpWNldLfk/3qHLeueUA4TO8/55cj
- wN+iXPlTevegRtvNQ5lcLoBdMemdZoKSJ2fPHOC4=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04MADn7U083928
+ b=FPyRu0QtX3Sr2IyRBBGkXOJN7UMpxk7jKKu0c0eFU6vjGS7okKuiIuGPGkY1O2FGk
+ nX8pTQ8cdcoMUnT2+GSwLIZ4I1v2Z3y5wB0uiG/SbSQcBFj8tHSaIZDeGk4W4t6kic
+ Y/bcnr0LBkYwKv8eSDrE9mhYe0y9sqlFajEJC4vY=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04MADsJo033051
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 22 May 2020 05:13:49 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ Fri, 22 May 2020 05:13:54 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 22
- May 2020 05:13:48 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ May 2020 05:13:33 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 22 May 2020 05:13:48 -0500
+ Frontend Transport; Fri, 22 May 2020 05:13:33 -0500
 Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com
  [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04MAD1a9041179;
- Fri, 22 May 2020 05:13:44 -0500
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04MAD1a6041179;
+ Fri, 22 May 2020 05:13:28 -0500
 From: Pratyush Yadav <p.yadav@ti.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
  <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
@@ -75,18 +75,18 @@ To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <linux-spi@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
  <linux-mediatek@lists.infradead.org>
-Subject: [PATCH v7 08/20] mtd: spi-nor: sfdp: prepare BFPT parsing for JESD216
- rev D
-Date: Fri, 22 May 2020 15:42:49 +0530
-Message-ID: <20200522101301.26909-9-p.yadav@ti.com>
+Subject: [PATCH v7 05/20] spi: mxic: Avoid endianness problems with 2-byte
+ opcodes
+Date: Fri, 22 May 2020 15:42:46 +0530
+Message-ID: <20200522101301.26909-6-p.yadav@ti.com>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20200522101301.26909-1-p.yadav@ti.com>
 References: <20200522101301.26909-1-p.yadav@ti.com>
 MIME-Version: 1.0
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200522_031355_613798_4A17DF19 
-X-CRM114-Status: GOOD (  13.93  )
+X-CRM114-CacheID: sfid-20200522_031359_732235_0194100B 
+X-CRM114-Status: GOOD (  12.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,76 +106,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-JESD216 rev D makes BFPT 20 DWORDs. Update the BFPT size define to
-reflect that.
+spi-mem now supports 2-byte opcodes. Since we directly use the address
+of the opcode in data transfer, the result can be different based on
+whether the machine is little endian or big endian. So instead extract
+the individual bytes from the opcode before using them.
 
-The check for rev A or later compared the BFPT header length with the
-maximum BFPT length, BFPT_DWORD_MAX. Since BFPT_DWORD_MAX was 16, and so
-was the BFPT length for both rev A and B, this check worked fine. But
-now, since BFPT_DWORD_MAX is 20, it means this check will also stop BFPT
-parsing for rev A or B, since their length is 16.
-
-So, instead check for BFPT_DWORD_MAX_JESD216 to stop BFPT parsing for
-the first JESD216 version, and check for BFPT_DWORD_MAX_JESD216B for the
-next two versions.
-
+Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
 Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/mtd/spi-nor/sfdp.c | 7 ++++++-
- drivers/mtd/spi-nor/sfdp.h | 5 +++--
- 2 files changed, 9 insertions(+), 3 deletions(-)
+ drivers/spi/spi-mxic.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index 5cecc4ba2141..96960f2f3d7a 100644
---- a/drivers/mtd/spi-nor/sfdp.c
-+++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -549,7 +549,7 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
- 				  SNOR_ERASE_TYPE_MASK;
+diff --git a/drivers/spi/spi-mxic.c b/drivers/spi/spi-mxic.c
+index 69491f3a515d..c3f4136a7c1d 100644
+--- a/drivers/spi/spi-mxic.c
++++ b/drivers/spi/spi-mxic.c
+@@ -356,6 +356,7 @@ static int mxic_spi_mem_exec_op(struct spi_mem *mem,
+ 	int nio = 1, i, ret;
+ 	u32 ss_ctrl;
+ 	u8 addr[8];
++	u8 cmd[2];
  
- 	/* Stop here if not JESD216 rev A or later. */
--	if (bfpt_header->length < BFPT_DWORD_MAX)
-+	if (bfpt_header->length == BFPT_DWORD_MAX_JESD216)
- 		return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt,
- 						params);
+ 	ret = mxic_spi_set_freq(mxic, mem->spi->max_speed_hz);
+ 	if (ret)
+@@ -393,7 +394,10 @@ static int mxic_spi_mem_exec_op(struct spi_mem *mem,
+ 	writel(readl(mxic->regs + HC_CFG) | HC_CFG_MAN_CS_ASSERT,
+ 	       mxic->regs + HC_CFG);
  
-@@ -605,6 +605,11 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
- 		return -EINVAL;
- 	}
- 
-+	/* Stop here if JESD216 rev B. */
-+	if (bfpt_header->length == BFPT_DWORD_MAX_JESD216B)
-+		return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt,
-+						params);
+-	ret = mxic_spi_data_xfer(mxic, &op->cmd.opcode, NULL, 1);
++	for (i = 0; i < op->cmd.nbytes; i++)
++		cmd[i] = op->cmd.opcode >> (8 * (op->cmd.nbytes - i - 1));
 +
- 	return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt, params);
- }
++	ret = mxic_spi_data_xfer(mxic, cmd, NULL, op->cmd.nbytes);
+ 	if (ret)
+ 		goto out;
  
-diff --git a/drivers/mtd/spi-nor/sfdp.h b/drivers/mtd/spi-nor/sfdp.h
-index e0a8ded04890..f8198af43a63 100644
---- a/drivers/mtd/spi-nor/sfdp.h
-+++ b/drivers/mtd/spi-nor/sfdp.h
-@@ -10,11 +10,11 @@
- /* Basic Flash Parameter Table */
- 
- /*
-- * JESD216 rev B defines a Basic Flash Parameter Table of 16 DWORDs.
-+ * JESD216 rev D defines a Basic Flash Parameter Table of 20 DWORDs.
-  * They are indexed from 1 but C arrays are indexed from 0.
-  */
- #define BFPT_DWORD(i)		((i) - 1)
--#define BFPT_DWORD_MAX		16
-+#define BFPT_DWORD_MAX		20
- 
- struct sfdp_bfpt {
- 	u32	dwords[BFPT_DWORD_MAX];
-@@ -22,6 +22,7 @@ struct sfdp_bfpt {
- 
- /* The first version of JESD216 defined only 9 DWORDs. */
- #define BFPT_DWORD_MAX_JESD216			9
-+#define BFPT_DWORD_MAX_JESD216B			16
- 
- /* 1st DWORD. */
- #define BFPT_DWORD1_FAST_READ_1_1_2		BIT(16)
 -- 
 2.26.2
 
