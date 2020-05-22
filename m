@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2C94C433E0
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 00:14:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39450C433DF
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 00:14:27 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 15AAB206BE
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 00:14:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0B4CA206BE
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 00:14:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="migURm0Y";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="mWwpa3zq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 15AAB206BE
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BuP+qDJQ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="iREwEX88"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0B4CA206BE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,43 +26,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:In-Reply-To:Subject:To:From:Date:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=ivFFVTVYUkff050N+qdx8iiEbO9XV9LMdXmo3+uRVlY=; b=migURm0YO+kAk570WAHzjRamDT
-	7ev5Y4Qd8YWYvqImXYXTc3e0Q0lqMiSPGefu5QyHqTaygosPmT7DZDdjzUyb74HCtTm9/AFNDMdsq
-	+W08AXPup/RhLR1OXDfWyt1Vtvv2o/q+SKoY5GDbRKyoVWJRHTLn5woXg2+otKoYKrSou64aWWVW5
-	t9U5oTBeKa4PRlSzqvx6aSspcDqgVr1Iu0CHAviWqkCZdfr2jNspBQT9BycAtRYZbUCBmBLNxhsqj
-	IvJWroNxc4sY0VJPHApxC+KSo4P1Ni2D58VTvtqrlMDyc7lLKKZnQHXVHFVtDWa+sjA5TsuOJ8749
-	vbKI3vyg==;
+	bh=ivFFVTVYUkff050N+qdx8iiEbO9XV9LMdXmo3+uRVlY=; b=BuP+qDJQ+RRr0sXNQy6mZKm443
+	x/ia0N0ew+0y0++KMg2AHkgt1GshSBeZny5AyD10K/m4O12MBVlZGX4yX8oN+U5Dh9lQH9NCCbHbL
+	xZyh9bkpPkrH8iSHOAY+d0YyvBeUdYqPC1OOBz+r8CrHUsk+WfH0jQ6NnnnVksUXN/fOHDuYyqRA7
+	muJglzMWg/wXx1ytuvFq59u5N3kUTJK/G5Jrfq7J3jBQxyTnlUNH95C1DMoB4dDm6VzEbG+g/syCS
+	BhFBhysgNGePUQcKQnkEg/l+Vge2zOnAf5mEXMl13Q4XBr2l8CQvRk/h3YRfWARMBPPhgfCxUDKoh
+	CN5hONrg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jbvKE-00012g-7V; Fri, 22 May 2020 00:14:10 +0000
+	id 1jbvKT-0001Ja-M9; Fri, 22 May 2020 00:14:25 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jbvIf-0007rq-L3
- for linux-mtd@lists.infradead.org; Fri, 22 May 2020 00:12:34 +0000
+ id 1jbvIg-0007sw-RI
+ for linux-mtd@lists.infradead.org; Fri, 22 May 2020 00:12:36 +0000
 Received: from localhost (unknown [137.135.114.1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 2089B2078B;
- Fri, 22 May 2020 00:12:33 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 42F1B207D8;
+ Fri, 22 May 2020 00:12:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1590106353;
+ s=default; t=1590106354;
  bh=WOiqB0GpcVWMKmnet1Sc0/6IqMPI2nyLCQayz4Y0Ccw=;
- h=Date:From:To:To:To:Cc:Cc:Cc:Subject:In-Reply-To:References:From;
- b=mWwpa3zqpufLBW+phqV0nfiRAz4rO+8GYca8dRvH4lc4SAXCHj0SuL10iCvaOjvz/
- 8pg4LhWYL6F7X5dTL4mr+CBMfLD8zN324/WK263e7SypnGnte5UOCWwJVmeU7/zqLc
- 5RarpUcjUfYkIbGEbpFIejQhJmQYlWb45qKpBNEo=
-Date: Fri, 22 May 2020 00:12:32 +0000
+ h=Date:From:To:To:To:Cc:Cc:Cc:Cc:Cc:Subject:In-Reply-To:References:
+ From;
+ b=iREwEX881kotOjIFdIP9OTQWzhylrqim7J3Ra7CPVtwNKGVbOtGvmXubDNvwCfOBF
+ 3Z21cOZ/xozgnxEFEILG/0gWSPmwVwj5GLX/rsHJ0ypxIcsgQ/FZ4vA4CHoGUHAmmB
+ icSlCNO2MXbbE9/mMcz9SWINoOpvD5dIaquXx1Z8=
+Date: Fri, 22 May 2020 00:12:33 +0000
 From: Sasha Levin <sashal@kernel.org>
 To: Sasha Levin <sashal@kernel.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v2 42/62] mtd: rawnand: plat_nand: Fix the probe error path
-In-Reply-To: <20200519130035.1883-43-miquel.raynal@bootlin.com>
-References: <20200519130035.1883-43-miquel.raynal@bootlin.com>
-Message-Id: <20200522001233.2089B2078B@mail.kernel.org>
+Subject: Re: [PATCH v2 21/62] mtd: rawnand: ingenic: Fix the probe error path
+In-Reply-To: <20200519130035.1883-22-miquel.raynal@bootlin.com>
+References: <20200519130035.1883-22-miquel.raynal@bootlin.com>
+Message-Id: <20200522001234.42F1B207D8@mail.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200521_171233_733541_A5AB0E3A 
-X-CRM114-Status: UNSURE (   7.19  )
+X-CRM114-CacheID: sfid-20200521_171234_948069_28755BB3 
+X-CRM114-Status: UNSURE (   7.28  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -75,7 +76,9 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Paul Cercueil <paul@crapouillou.net>,
+ Harvey Hunt <harveyhuntnexus@gmail.com>, stable@vger.kernel.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
