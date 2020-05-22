@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 268AAC433E0
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 00:15:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C11F8C433E0
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 00:15:36 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E0D4C2072C
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 00:15:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 71D962072C
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 00:15:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GNGV1xuN";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="shXL14aI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E0D4C2072C
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fk05XPXI";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y0gHGNb+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 71D962072C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,42 +26,42 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:In-Reply-To:Subject:To:From:Date:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=ivFFVTVYUkff050N+qdx8iiEbO9XV9LMdXmo3+uRVlY=; b=GNGV1xuN/UcGgxzf1OYo++Wgnn
-	BtAAB/b4lsDqaOIvTMXkwJ6WeATNqVFBX9/ac8qrALtFhySadKFdwcJLrE8jmPXKrWBobvTMAzX7C
-	j/5zg8eF8ekNuHcO9FY4BTcYUZ5QAcCbn3Mnbx2MYf1hKE6Bab+uwnDa/yd68Xl6SlAfdO/3S7lCj
-	l1bMS2icwzM/qM/TPjinSnUHsInmEgbjMmRxq8N0O0qId55KA7SiSezdvAml7i74gYkb0ADJzpbVm
-	BzE9pr6FVm6gRbjipLS+K9KI5YMezs6GvysUAVoE3zAq8uTA1pmKuFH9WcAWDvpaVwqWUVGKfUzVT
-	Gbjnkmkw==;
+	bh=ivFFVTVYUkff050N+qdx8iiEbO9XV9LMdXmo3+uRVlY=; b=fk05XPXIhr1GJZv4bx6t20FYVT
+	TQURROwmH6iYWSSEBDsBkquW3j/FQUctLBkQKcCq4jmxFrTB+kzGBuFFztYJ5z6D1zbgLqcH6xyP6
+	Rb4B0RrY1u2eMHy/v0sTS0kQFEBgvTXPeAVu/shAPGQG5+UQGtWgPzZsV/Equm084GfQSEm9hXPC9
+	YMhg7e0n/VsrbvoQvN3e2UXYbYDjFhzN1YiLnhwWya89urO7hzu93lcqLIepE4h56kaGzQ5lL5Q3r
+	rle7BM1/P5+zZpDJdwz1e4EaSKspEE2wtA5bL3i/t8iZ5KK8TCn5GYLmSgpwZh9cZG24SgeOK7hFF
+	I2g6evSg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jbvLM-0004e4-Ka; Fri, 22 May 2020 00:15:21 +0000
+	id 1jbvLa-0004uL-QJ; Fri, 22 May 2020 00:15:34 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jbvIn-00081I-Vm
- for linux-mtd@lists.infradead.org; Fri, 22 May 2020 00:12:44 +0000
+ id 1jbvIr-00082q-GS
+ for linux-mtd@lists.infradead.org; Fri, 22 May 2020 00:12:47 +0000
 Received: from localhost (unknown [137.135.114.1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 0C1B420874;
- Fri, 22 May 2020 00:12:40 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 43E43207D8;
+ Fri, 22 May 2020 00:12:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1590106361;
+ s=default; t=1590106363;
  bh=WOiqB0GpcVWMKmnet1Sc0/6IqMPI2nyLCQayz4Y0Ccw=;
  h=Date:From:To:To:To:Cc:Cc:Cc:Subject:In-Reply-To:References:From;
- b=shXL14aIJY516IgdQpOqo9DvswkPQPQS6fMp+EnFYbK+EB+au+HNdAjeaoTmEJLOq
- orZx5IQL/RLGJepwYV7L/XMHJiOKUK7ewoywhdMOW0dg5mIsY5x8bcukGGCXfhTMEp
- RwYoheVtM1vRd13u47K3oZYXybpYYWv0lEMAIjP4=
-Date: Fri, 22 May 2020 00:12:40 +0000
+ b=Y0gHGNb+Hj+WhIJSg+bSCrOnUQqv6oQUfjsGtTGPIZojSHPOgDCVsjvDaF94+3hj4
+ r7pGrJotnx7NJoO6nczDANzpIV+doNIbGGm9rA7Z4v/cvffqmUkdKSr+2U2Xmz4jQI
+ zpuHczMIVL7oEbHKN94HNa7UyLOnLv0uQCoS3mi8=
+Date: Fri, 22 May 2020 00:12:42 +0000
 From: Sasha Levin <sashal@kernel.org>
 To: Sasha Levin <sashal@kernel.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v2 33/62] mtd: rawnand: orion: Fix the probe error path
-In-Reply-To: <20200519130035.1883-34-miquel.raynal@bootlin.com>
-References: <20200519130035.1883-34-miquel.raynal@bootlin.com>
-Message-Id: <20200522001241.0C1B420874@mail.kernel.org>
+Subject: Re: [PATCH v2 48/62] mtd: rawnand: sharpsl: Fix the probe error path
+In-Reply-To: <20200519130035.1883-49-miquel.raynal@bootlin.com>
+References: <20200519130035.1883-49-miquel.raynal@bootlin.com>
+Message-Id: <20200522001243.43E43207D8@mail.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200521_171242_579868_9409286C 
+X-CRM114-CacheID: sfid-20200521_171245_732914_670E1AD1 
 X-CRM114-Status: UNSURE (   7.19  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
