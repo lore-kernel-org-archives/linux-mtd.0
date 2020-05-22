@@ -2,66 +2,86 @@ Return-Path: <SRS0=/JSY=7E=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 307D3C433E0
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 13:18:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA24DC433E0
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 13:22:51 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DF1E32065F
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 13:18:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7DC7420679
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 13:22:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="F0Ew6xDJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DF1E32065F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gW8ZxHPz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7DC7420679
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=doEMYlvgUmlfjQQWAAbwPFPQt9FfQQ0hlleraKK3xKw=; b=F0Ew6xDJGa3aq9
-	kmh83NDxWBXRpsV8XgKj61OHbQB5+ypSmKBbIHfHdg8HD/09sqlbnBKZadNi6CirGNfkAz3bdrkwT
-	erf3mJuUFdPcdi3UWtvhF0Fs9POcWQ11hWed1lrl/ySuqDbBpUuJQzq7061MEUKVaBgERPVx9vMHi
-	fvbgMNDY2Nmu8KLeu8TVeynBS7mLm7SWw9yEYaRfFm9Z0wIlhDQ1sOL92l1RjRclcl+z1Mn5HIMfR
-	n02ZhB5aPNHlQvuwo2XG9kj/iIvzWU6KcyDSvMkD4w3hGBA/q80w32PyjmCjChzxdv8EEh/nYmnYB
-	uByPfMf1/WfrRQcoJnWw==;
+	List-Owner; bh=nvV4/tw7f/wOGxXL9SLlbtUjJV6RL16xVdrDcT0zPHs=; b=gW8ZxHPz13fTMv
+	ZRwAzg5IFQxzh5MU+gsIcU9YS5dXw3SWYsvbdrXXZbmigQxnvzz2a5DVLNIq3dS07TuycXana8jng
+	hLTrqroZkKpQ37uQQXTjsxXGZUWnlBSK0BWBfSFiXshyb5VWyEBDMdacRNo/q01mRD4XZjcJXWPjc
+	r8KhoIr8UCD145pCNmApHbvtz/tCAgD+K27S0hzqa+TVuizXtxX9sQmHqmrVIxTzcsia3QsUGA7Uk
+	S/pMk+X0rhDMyQQ7pvPy/fFaXwFQn3WpyevIKXQKQ8vMrXwz+J97Wq++vFaiZYzRoQjBYuKNKX2s+
+	bt31YgTrlWX0L08iNNkw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jc7Yu-0007Ub-My; Fri, 22 May 2020 13:18:08 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1jc7dI-000257-U6; Fri, 22 May 2020 13:22:40 +0000
+Received: from mout.kundenserver.de ([217.72.192.75])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jc7Yi-0007Km-DL; Fri, 22 May 2020 13:17:58 +0000
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 1DBE5FF804;
- Fri, 22 May 2020 13:17:51 +0000 (UTC)
-Date: Fri, 22 May 2020 15:17:50 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v2 1/3] ARM: pxa: remove Compulab pxa2xx boards
-Message-ID: <20200522151750.369dd4d9@xps13>
-In-Reply-To: <CAK8P3a2Z-UxktGn+_aBVaaBTStT7f177V2ED2RfVCQS8QDBamg@mail.gmail.com>
+ id 1jc7dG-00024X-2v; Fri, 22 May 2020 13:22:39 +0000
+Received: from mail-qk1-f176.google.com ([209.85.222.176]) by
+ mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1Mlvr3-1jAnMy1k83-00j45p; Fri, 22 May 2020 15:22:31 +0200
+Received: by mail-qk1-f176.google.com with SMTP id g185so10609309qke.7;
+ Fri, 22 May 2020 06:22:31 -0700 (PDT)
+X-Gm-Message-State: AOAM532kFUkzVxdxXutSr5cRdvl8lIOfYx7Z7ZC1MC7Z0y/Ei22gl8+y
+ t2EMcN4EaOz0PdSl9tO5NQ8+LzgEM5sISM5gJP4=
+X-Google-Smtp-Source: ABdhPJxhnlG5KCUbhs9s5v3bwa/HT0C7ENLgIwsfSWwbs1luda3nkNB7pXQbPW3nAVV/zeWXF3QLzRH5hBefOaAU2uw=
+X-Received: by 2002:a37:bc7:: with SMTP id 190mr14741809qkl.286.1590153750128; 
+ Fri, 22 May 2020 06:22:30 -0700 (PDT)
+MIME-Version: 1.0
 References: <20200520102125.8934-1-robert.jarzmik@free.fr>
  <CAK8P3a2+auSWBROZR-hobM_qSWtKiG1DRYP3Y7uvbCy_ZLy+gg@mail.gmail.com>
  <20200521071213.GI1118872@kernel.org>
  <CAK8P3a2XdG_u6_o2NbQDTb5dbdzByBkUXZNM6nZ3wz0c-LFT5w@mail.gmail.com>
- <20200521190158.GL1118872@kernel.org>
- <20200521211016.3ad62148@collabora.com>
+ <20200521190158.GL1118872@kernel.org> <20200521211016.3ad62148@collabora.com>
  <20200522131818.3adbac78@xps13>
  <CAK8P3a2Z-UxktGn+_aBVaaBTStT7f177V2ED2RfVCQS8QDBamg@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
+ <20200522151750.369dd4d9@xps13>
+In-Reply-To: <20200522151750.369dd4d9@xps13>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Fri, 22 May 2020 15:22:14 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0twq9Uc5B8FrobLt7fzssXGtJb-nafAH49uur_idZTaQ@mail.gmail.com>
+Message-ID: <CAK8P3a0twq9Uc5B8FrobLt7fzssXGtJb-nafAH49uur_idZTaQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] ARM: pxa: remove Compulab pxa2xx boards
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+X-Provags-ID: V03:K1:V+QL+QBbLHM6GP+60YtKdpiA47SoyKVlnLzmhJMnVgwCh7KqUht
+ wrqXf1Uc1TBg8ZRnJXSa8uAeVl1duIZcuvGz8ZpBpTlcuEl2EgLeMV9jwtssVgUl8cbjVJd
+ HyTWWHWd/ZlQrRWJk1oN+JWrytAb97Wo2uYEdDuIThBONtDjgMZIo/UVVG6RfCcF3gaNMva
+ iy4FFAzHylNb/cyjNIQGA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:h/Iq43bJUyU=:BN45geNsyye57epcnXIgOV
+ I9+49/HWW49qnzYcp1+HbMK0Iss7xlMHBZdqWNX7DY/jShoTa1jscobeWU5IudhoTeIat8CTq
+ K7GuSIhpjnnoYvKTumcaJ2XThfrwNW+ouyTPxVaAjoX0sjq+jEW7iI8C+7F6DoDhCGMYEQquq
+ snHFooJIiNJlqUtJ1dAiFONoO9cu/BDihPk8Kmav9UuVgA9xd2I8HqoKhxS/zkD8F+FGB1S9e
+ PpgmnY1kXz2bRAOXzRZfzExJoGEA9PBk7mDqhPRaweyuc8rrvHrWAXliGUs7KVMsiMmym+xx6
+ nPyW1pt0NhSqzZZSRMs4hIi5VpxWETvLmX2T6pZoOTsjDORiWD58PLRl65kgneVYtNeyvo/JQ
+ EqXJx4gBrrAMwogESjNTXck+RhrHEKD9ApV5LMsHGuBTx5SM4XFhZOyH0P7Psf+aZT6gNOcok
+ 2asYgyhTEg63TYsJNpnq9AoqGRgSilfsvHm0BQv51VUlTPIJdEV/CZXcVR/wWMw2uyyQda/Ok
+ KFBX9GIS406fGBJkpF0ttdhpK2dMHaR+XKd4pZ9660vUW2Eiy7qu9GnRiw+MAwt41ApWtqn2Q
+ aMySQKrEjBmN4f/kcD8Uehnbqj3axu59qi90TFuuHgUFkvIH8jkjgKx2yL3ufgD9hWfQ/YjSD
+ GeBcpsu7nWJ4X3pp9k+USbRA3TIPZPUTfHdgQBOpovqliVL/dwsi1jGKO8b4K+z7+xZesMF/H
+ WYQqxDbeqYhD22frpS+umP/FeqvDIeEePDAF71/rNthXkF3P8yCqMX5l2e8qzkAt1KUBI/mzd
+ qYf04adD5jiHkb4l+goIXBbyn/WfNdflBwbWNxsCCDem/hPKGU=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200522_061756_722472_F1323D2B 
-X-CRM114-Status: GOOD (  25.16  )
+X-CRM114-CacheID: sfid-20200522_062238_423944_8FEAA38D 
+X-CRM114-Status: GOOD (  17.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,64 +98,42 @@ Cc: linux-mtd <linux-mtd@lists.infradead.org>,
  Robert Jarzmik <robert.jarzmik@free.fr>,
  Linux ARM <linux-arm-kernel@lists.infradead.org>,
  Mike Rapoport <rppt@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQXJuZCwKCkFybmQgQmVyZ21hbm4gPGFybmRAYXJuZGIuZGU+IHdyb3RlIG9uIEZyaSwgMjIg
-TWF5IDIwMjAgMTU6MTQ6NDMgKzAyMDA6Cgo+IE9uIEZyaSwgTWF5IDIyLCAyMDIwIGF0IDE6MTgg
-UE0gTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4gd3JvdGU6Cj4gPiBC
-b3JpcyBCcmV6aWxsb24gPGJvcmlzLmJyZXppbGxvbkBjb2xsYWJvcmEuY29tPiB3cm90ZSBvbiBU
-aHUsIDIxIE1heQo+ID4gMjAyMCAyMToxMDoxNiArMDIwMDoKPiA+ICAKPiA+ID4gT24gVGh1LCAy
-MSBNYXkgMjAyMCAyMjowMTo1OCArMDMwMAo+ID4gPiBNaWtlIFJhcG9wb3J0IDxycHB0QGtlcm5l
-bC5vcmc+IHdyb3RlOgo+ID4gPiAgCj4gPiA+ID4gT24gVGh1LCBNYXkgMjEsIDIwMjAgYXQgMDk6
-MjY6MTBBTSArMDIwMCwgQXJuZCBCZXJnbWFubiB3cm90ZTogIAo+ID4gPiA+ID4gT24gVGh1LCBN
-YXkgMjEsIDIwMjAgYXQgOToxMiBBTSBNaWtlIFJhcG9wb3J0IDxycHB0QGtlcm5lbC5vcmc+IHdy
-b3RlOiAgCj4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+IE9uIFdlZCwgTWF5IDIwLCAyMDIwIGF0IDA1
-OjIxOjUxUE0gKzAyMDAsIEFybmQgQmVyZ21hbm4gd3JvdGU6ICAKPiA+ID4gPiA+ID4gPiBPbiBX
-ZWQsIE1heSAyMCwgMjAyMCBhdCAxMjoyMSBQTSBSb2JlcnQgSmFyem1payA8cm9iZXJ0Lmphcnpt
-aWtAZnJlZS5mcj4gd3JvdGU6ICAKPiA+ID4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+ID4gPiBBcyB0
-aGVzZSBib2FyZHMgaGF2ZSBubyBtb3JlIHVzZXJzIG5vciB0ZXN0ZXJzLCBhbmQgcGF0Y2hpbmcg
-dGhlbSBoYXMKPiA+ID4gPiA+ID4gPiA+IGJlY29tZSBhIGJ1cmRlbiwgYmUgdGhhdCBiZWNhdXNl
-IG9mIHRoZSBQQ0kgcGFydCBvciB0aGUgTVREIE5BTkQKPiA+ID4gPiA+ID4gPiA+IHN1cHBvcnQs
-IGxldCdzIHJlbW92ZSB0aGVtLgo+ID4gPiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4gPiA+IFRoZSBj
-bS14MzAwIHdpbGwgZm9yIG5vdyByZW1haW4gYW5kIHJlcHJlc2VudCBDb21wdWxhYiBib2FyZHMg
-YXQgaXRzCj4gPiA+ID4gPiA+ID4gPiBiZXN0IGluIHRoZSBQWEEgZGVwYXJ0bWVudC4gIAo+ID4g
-PiA+ID4gPgo+ID4gPiA+ID4gPiBJIHRoaW5rIHRoaXMgc2VyaWVzIG1pc3NlZCB0aGUgY20teDI3
-MCBOQU5EIGRyaXZlciwgc28gdGhpcyBjb3VsZCBiZQo+ID4gPiA+ID4gPiBQQVRDSCA0LzMgKG5v
-dCBldmVuIGNvbXBpbGUgdGVzdGVkKS4KPiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4gRnJvbSA1NmEx
-MTk4N2Y4MmVmOGIzMmIyNWRmYzE3Yjg0OWY5YmJiZjAzZTRkIE1vbiBTZXAgMTcgMDA6MDA6MDAg
-MjAwMQo+ID4gPiA+ID4gPiBGcm9tOiBNaWtlIFJhcG9wb3J0IDxycHB0QGxpbnV4LmlibS5jb20+
-Cj4gPiA+ID4gPiA+IERhdGU6IFRodSwgMjEgTWF5IDIwMjAgMTA6MDk6NDcgKzAzMDAKPiA+ID4g
-PiA+ID4gU3ViamVjdDogW1BBVENIXSBtdGQ6IHJhd25hbmQ6IHJlbW92ZSBDTS1YMjcwIE5BTkQg
-ZHJpdmVyCj4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+IFRoZSBjbS14MjcwIGJvYXJkIGhhdmUgYmVl
-biByZW1vdmVkIGFuZCB0aGVyZXMgaXMgbm8gcG9pbnQgdG8ga2VlcCB0aGlzCj4gPiA+ID4gPiA+
-IGRyaXZlci4KPiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4gU2lnbmVkLW9mZi1ieTogTWlrZSBSYXBv
-cG9ydCA8cnBwdEBsaW51eC5pYm0uY29tPiAgCj4gPiA+ID4gPgo+ID4gPiA+ID4gVGhhbmtzISBS
-ZW1vdmluZyB0aGF0IGRyaXZlciB3YXMgYWN0dWFsbHkgaG93IHRoZSBkaXNjdXNzaW9uIHN0YXJ0
-ZWQsCj4gPiA+ID4gPiBzbyB3ZSBkZWZpbml0ZWx5IHdhbnQgdG8gZG8gdGhhdC4gQm9yaXMgZWFy
-bGllciBwYXRjaCAibXRkOiByYXduYW5kOiBHZXQKPiA+ID4gPiA+IHJpZCBvZiB0aGUgY214Mjcw
-IGRyaXZlciIgZGlkIGl0IGJ5IGNoYW5naW5nIHRoZSBib2FyZCBmaWxlLCBub3cgeW91cgo+ID4g
-PiA+ID4gcGF0Y2ggaXMgdGhlIHJpZ2h0IHRoaW5nIHRvIGRvLCBhbmQgd2Ugc2hvdWxkIHJlbWVt
-YmVyIHRvIGRvIHRoZSBzYW1lCj4gPiA+ID4gPiBmb3IgbWJ4ZmIuICAKPiA+ID4gPgo+ID4gPiA+
-IEFybmQsIHdpbGwgeW91IHBpY2sgdGhpcyB0byB0aGUgU29DIHRyZWUgb3Igc2hvdWxkIEkgcmVz
-ZW5kPyAgCj4gPiA+Cj4gPiA+IEFjdHVhbGx5IEkgc2VudCBhIHYyIHJlbW92aW5nIG9ubHkgdGhl
-IE1URCBkcml2ZXIuIFlvdSBzaG91bGQgcHJvYmFibHkKPiA+ID4gc3luYyB3aXRoIE1pcXVlbCB0
-byBtYWtlIHN1cmUgdGhlIHNhbWUgcGF0Y2ggaXMgbm90IGFwcGxpZWQgdHdpY2UuICAKPiA+Cj4g
-PiBBY3R1YWxseSBJIHdhcyBhYm91dCB0aGUgbWVyZ2UgdGhpcyBwYXRjaCBpbiB0aGUgTVREIHRy
-ZWUgYmVjYXVzZSBJCj4gPiBoYXZlIGEgYmlnIGNsZWFudXAgc2VyaWVzIHdoaWNoIGRlcGVuZHMg
-b24gaXQuIEFybmQgY291bGQgeW91IGNvbmZpcm0KPiA+IHRoYXQgaXQncyBva2F5IGZvciB5b3U/
-ICAKPiAKPiBZZXMsIHRoYXQgc291bmRzIGdvb2QuIEkgYXNzdW1lIHRoZSBwYXRjaCBpcyBiYXNp
-Y2FsbHkgaWRlbnRpY2FsIHRvIHRoZSBvbmUKPiB0aGF0IE1pa2UganVzdCBzZW50LCByaWdodD8g
-SWYgdGhlcmUgYXJlIGNoYW5nZXMgdG8gYXJjaC9hcm0sIEkgZ3Vlc3MgdGhvc2UgY2FuCj4gYmUg
-ZHJvcHBlZCBub3cgYXMgSSdtIG1lcmdpbmcgUm9iZXJ0J3MgcGF0Y2hlcyB0byByZW1vdmUgdGhv
-c2UgYm9hcmQKPiBmaWxlcy4KPiAKPiAgICAgICBBcm5kCgpIZXJlIGlzIHRoZSBkaWZmc3RhdDoK
-CiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9LY29uZmlnICAgICAgIHwgICA0IC0KIGRyaXZlcnMvbXRk
-L25hbmQvcmF3L01ha2VmaWxlICAgICAgfCAgIDEgLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvY214
-MjcwX25hbmQuYyB8IDIzNiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogMyBmaWxlcyBj
-aGFuZ2VkLCAyNDEgZGVsZXRpb25zKC0pCiBkZWxldGUgbW9kZSAxMDA2NDQgZHJpdmVycy9tdGQv
-bmFuZC9yYXcvY214MjcwX25hbmQuYwoKU28gaXQgc2hvdWxkIGJlIGZpbmUuCgpUaGFua3MsCk1p
-cXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On Fri, May 22, 2020 at 3:17 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> Arnd Bergmann <arnd@arndb.de> wrote on Fri, 22 May 2020 15:14:43 +0200:
+>
+> > On Fri, May 22, 2020 at 1:18 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> > > Boris Brezillon <boris.brezillon@collabora.com> wrote on Thu, 21 May
+
+> > > Actually I was about the merge this patch in the MTD tree because I
+> > > have a big cleanup series which depends on it. Arnd could you confirm
+> > > that it's okay for you?
+> >
+> > Yes, that sounds good. I assume the patch is basically identical to the one
+> > that Mike just sent, right? If there are changes to arch/arm, I guess those can
+> > be dropped now as I'm merging Robert's patches to remove those board
+> > files.
+> >
+> >       Arnd
+>
+> Here is the diffstat:
+>
+>  drivers/mtd/nand/raw/Kconfig       |   4 -
+>  drivers/mtd/nand/raw/Makefile      |   1 -
+>  drivers/mtd/nand/raw/cmx270_nand.c | 236 -----------------------------
+>  3 files changed, 241 deletions(-)
+>  delete mode 100644 drivers/mtd/nand/raw/cmx270_nand.c
+>
+> So it should be fine.
+
+Agreed, please apply it.
+
+     Arnd
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
