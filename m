@@ -2,90 +2,93 @@ Return-Path: <SRS0=/JSY=7E=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-3.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB083C433E0
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 12:12:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55FB6C433E0
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 12:15:41 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6467B206B6
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 12:12:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0BF00207CB
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 12:15:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mdr7DOG4";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="r+FNl2Kw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6467B206B6
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oufcXUo3";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U350gRFZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0BF00207CB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:References:Message-Id:Date:
-	In-Reply-To:From:Subject:Mime-Version:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=iFGwqYx+oGVwhkDaY2e0aSCIBhdB/WRA3qh9KcLMAJg=; b=mdr7DOG4xjDmb9
-	7n1GzODvUlrMiyGc9nEHtFlSr6E7jd6cyuKH9h7Tvoqd6vWIefOomNeAEdi1wsg4vXHoCiYLEYQro
-	o6+oHrv8/t9CYrXsFcZVDftkJ3bj54qwcGKrYZazZPxhOIZIbviH8x4FJex06g0svjSXOL0NjbGkB
-	0B8zXAPni4p3HIxpk1hdYYiRoNpdtlSj/V/3Q0Kid1LFQuK29Kww40geEKFWS7HefAenAKNw34gCz
-	qUW9tKgBlNkUfENboONP4ZXbt4EvuuCtqXDXm2Gx+6UYpPABDyUO+1FGHu2X6jqFQsomYWGOzuT3V
-	fOruvQSY20/fd+/eU3og==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=WpbAT6RT+UGpTZ+WqcPsRM6S+AnZMmRrNDXTJhd1gxc=; b=oufcXUo3WtMi6a
+	aDcdjSU9xl5ljslj4NaF2wpWzSgA3XOM88I4h7Ulwkxu77fiX+kVKzCsW0TnPlMq5FQAUtomCgP+H
+	ZHkLe6zqXX4XAnkUp56aVeOtZeQDNpoUjJDjwtxO0E4KYUCFWEw5wu34ZRY/tRSjC4fXQ1ZLY8wYt
+	07AchqyFPq16c1SkITLr0UdhV/ghe5L0l6WeBcBuTH76XeBZ8qQHm/M6GcH5nT6wCiBKncIz4KFUj
+	Rd4X/AimeNUq1SrY0NSsB4RplaQifQKXL8CYsFi2rHxRqVoUMZ953OFq8pJ8h7kodKFFzZb9h7hbZ
+	S+RY5lHXqFkB+EwRwwMw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jc6X3-0001fd-Uq; Fri, 22 May 2020 12:12:09 +0000
-Received: from mail-wm1-x32f.google.com ([2a00:1450:4864:20::32f])
+	id 1jc6aJ-0005pP-Em; Fri, 22 May 2020 12:15:31 +0000
+Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jc6Uj-0005V3-MX
- for linux-mtd@lists.infradead.org; Fri, 22 May 2020 12:09:47 +0000
-Received: by mail-wm1-x32f.google.com with SMTP id f13so8422348wmc.5
- for <linux-mtd@lists.infradead.org>; Fri, 22 May 2020 05:09:44 -0700 (PDT)
+ id 1jc6aG-0005np-Ml
+ for linux-mtd@lists.infradead.org; Fri, 22 May 2020 12:15:29 +0000
+Received: by mail-wr1-x441.google.com with SMTP id k13so9987222wrx.3
+ for <linux-mtd@lists.infradead.org>; Fri, 22 May 2020 05:15:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:subject:from:in-reply-to:date:cc
- :content-transfer-encoding:message-id:references:to;
- bh=0aJqkYrdM+sgbvUusxT8hDNKtBoLOQG92w0wNo7M1w4=;
- b=r+FNl2KwIQ7JgjPzvrnUaW17rVNutC2CTeAMUaRHvvsnpUtCkm2JjIRnFLtESPgc98
- bWET8r1VtyWvDebFioaQQdSqQywAIbHbtgWvJCboIHty4zcCRsHDLPEUVn206M/Y/lnC
- L1XGN0wmoFwCyTs5yYSag1A0IG431c3PHrdm9Qz2iQLbemMw7CkeUtG8zXO3x+wt6Saa
- rYi/yzSDTQervbLrgj2+Xr4TS4PITujdbP4xgZ1QXafnuii+JTLb/S1JAhpKwiQbq7ir
- s3qXFCpg/IzTKu9btruMwy1c9ljrzeWgvJHZnKXBTE4hZJk2EWBzK3bIV5Wpg1ZyxbLe
- jFIw==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=fQoBl3iAB4AAXzroqv3WcbLITd0lPVqqa2vsLWJSegM=;
+ b=U350gRFZNFttFLFDn7l6Ua1iUdEfSGq+wqwtW6wCoLJj1Pz/ANf1sGDDYOG85/hXjb
+ 1Wy5kKSUwgY1Q1nHUaNS/TqKkxIs0a5m8qp5dSYt0sfqXvXZzKdzWtGRyR9NheoUC/bM
+ 7UgkPGJIT4uQehBOuaNUNs8iCVYp4a+bbf/pHOehAcBv+sgxrDIoxw0/3lhBwYDYlcAz
+ LBd1hgMpCKX0WhUdIhYsFzdvrlwWGcV4UEuABPEemGik9iq/icN6z7Kx+ajfJZWnI6MZ
+ 4StIIgeHCSZDejXLiQdE+ZB/v0UR5DPyvlmCpbqD9dPwY/Y4bzPbjXTaqGvLGy5zp+x7
+ lnsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
- :content-transfer-encoding:message-id:references:to;
- bh=0aJqkYrdM+sgbvUusxT8hDNKtBoLOQG92w0wNo7M1w4=;
- b=T/eFyl9BhTWpBbfSOcc3GHpxnek0xKZuF1ywCoyMrGpyQoKo8W5aIxRB9TbeDerULF
- gjFTdQaifet7T130zFbncrKH7mYsUaBlrpcjCfm+eGQfTCu5SCjctK3e7BTA8cyAMZXd
- 94KK6Nd2jdknvdBXerv4juVa8MK5HHSfqbOkXOAY8hVvSl18zBWAFpaKou6NxSbU4VSz
- EUOwcGqm2oaqOFSYQ925MWoWex7RwRVWDW4NdD/V2Q8B9iac21Khz/Yqq+BlnBLoQZzs
- hM/zXFOJSn5gAKuZ9qrI3cpJj2/rjk52kI7K+B4x6dnKZ12I8DM4sa6esu/v/97VTJDe
- I9Tg==
-X-Gm-Message-State: AOAM533gz9Z30MwvP0s2WkZKkiKnI+3hFIBsTamEPz8ioRZkGHCcJDVg
- dWwzdSX4q79w+Ob93jZEoQk=
-X-Google-Smtp-Source: ABdhPJwcDofe/8iI1LchV/4xbq+fLSJ7DSsUdZR+A9tox/LGZa0X/bncsOu4qrCpcFWpKdta9zQA7Q==
-X-Received: by 2002:a1c:2013:: with SMTP id g19mr3470829wmg.143.1590149383522; 
- Fri, 22 May 2020 05:09:43 -0700 (PDT)
-Received: from macbook-pro-alvaro-eth.lan
- (159.red-83-44-12.dynamicip.rima-tde.net. [83.44.12.159])
- by smtp.gmail.com with ESMTPSA id x17sm9259500wrp.71.2020.05.22.05.09.42
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Fri, 22 May 2020 05:09:42 -0700 (PDT)
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH v3 5/5] nand: brcmnand: support v2.1-v2.2 controllers
-From: =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
-In-Reply-To: <20200522132211.16c657aa@xps13>
-Date: Fri, 22 May 2020 14:09:42 +0200
-Message-Id: <4153A581-0894-4A4F-AE8D-22E5A976FE06@gmail.com>
-References: <20200512073329.742893-1-noltari@gmail.com>
- <20200522072525.3919332-1-noltari@gmail.com>
- <20200522072525.3919332-6-noltari@gmail.com> <20200522132211.16c657aa@xps13>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=fQoBl3iAB4AAXzroqv3WcbLITd0lPVqqa2vsLWJSegM=;
+ b=IdbPO7vuB15AL0KZa7VC83b+xBOcwt8GzXVGcq7ASjYDwWxC1uELB8E3e8p+Pk2CgL
+ O/HvEk2fmBCEUpfrNYLsQooDGFkgegdTBsros3o1Vaiy5t5zXXud2/imvcPUJaPe5Rsq
+ O4sLAK5pCzAzvnhv1s/aOWszqpFea/hzOmfbKlY1yKNy8a58hQCFTG9lOvLR0yheA5xF
+ TPXd6TLKNbzxyGc5pfeFGcxHdIc7vqOQsHqvT9bHL+8kF25iipwbxLveJDdyeSWQLiRi
+ 7+11uCtuGPd8KOV1qqSdD9krqTYvQy0GnB3BOB5TA/wVJiZ4QeQdghtPJwlWfAVUxAKB
+ B4ug==
+X-Gm-Message-State: AOAM530MIWENnkXNC2Zj8AFIscTlVFac1O3lpVguajC2SB9zVznHzafX
+ bO8pyZbLTmpdgQSqBkEpmVM=
+X-Google-Smtp-Source: ABdhPJy9YsaQM1hIz0EqZ7h7vCKorss2/EuI/RFW7gjWph4x4T+L9tElIO36RODgl0g69l+kHetDzQ==
+X-Received: by 2002:adf:9507:: with SMTP id 7mr3128224wrs.63.1590149727152;
+ Fri, 22 May 2020 05:15:27 -0700 (PDT)
+Received: from skynet.lan (159.red-83-44-12.dynamicip.rima-tde.net.
+ [83.44.12.159])
+ by smtp.gmail.com with ESMTPSA id g6sm9293784wrp.75.2020.05.22.05.15.26
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 22 May 2020 05:15:26 -0700 (PDT)
+From: =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= <noltari@gmail.com>
+To: computersforpeace@gmail.com, kdasu.kdev@gmail.com,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ sumit.semwal@linaro.org, linux-mtd@lists.infradead.org,
+ bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linaro-mm-sig@lists.linaro.org
+Subject: [PATCH v4 0/5] mtd: rawnand: brcmnand: support v2.1-v2.2 controllers
+Date: Fri, 22 May 2020 14:15:19 +0200
+Message-Id: <20200522121524.4161539-1-noltari@gmail.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200522072525.3919332-1-noltari@gmail.com>
+References: <20200522072525.3919332-1-noltari@gmail.com>
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200522_050945_755069_E701A59C 
-X-CRM114-Status: UNSURE (   5.84  )
+X-CRM114-CacheID: sfid-20200522_051528_743508_6101B775 
+X-CRM114-Status: UNSURE (   6.37  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -98,21 +101,23 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vigneshr@ti.com, kdasu.kdev@gmail.com, richard@nod.at,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linaro-mm-sig@lists.linaro.org, linux-mtd@lists.infradead.org,
- bcm-kernel-feedback-list@broadcom.com, computersforpeace@gmail.com,
- sumit.semwal@linaro.org, linux-media@vger.kernel.org
+Cc: =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= <noltari@gmail.com>
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gTWlxdWVsLAoKTm8sIG5vdGhpbmcgZWxzZSBjaGFuZ2VkLgpJIHdpbGwgY2hhbmdlIGl0
-IGFnYWluIHdpdGggdGhlIHByb3BlciBzdWJqZWN0LCBzb3JyeSBmb3IgdGhhdC4KCkJlc3QgcmVn
-YXJkcywKw4FsdmFyby4KCj4gRWwgMjIgbWF5IDIwMjAsIGEgbGFzIDEzOjIyLCBNaXF1ZWwgUmF5
-bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPiBlc2NyaWJpw7M6Cj4gCj4+IHYyLjE6IHRl
-c3RlZCBvbiBOZXRnZWFyIERHTkQzNzAwdjEgKEJDTTYzNjgpCgoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9u
-IG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2xpbnV4LW10ZC8K
+QWRkIHN1cHBvcnQgZm9yIHYyLjEgYW5kIHYyLjIgTkFORCBjb250cm9sbGVycy4KCnY0OiBmaXgg
+Y29tbWl0IHN1YmplY3QuCnYzOiBmaXggdjIuMSBwYWdlIHNpemUgc2hpZnQKdjI6IGludHJvZHVj
+ZSBjaGFuZ2VzIHN1Z2dlc3RlZCBieSBNaXF1w6hsLgoKw4FsdmFybyBGZXJuw6FuZGV6IFJvamFz
+ICg1KToKICBtdGQ6IHJhd25hbmQ6IGJyY21uYW5kOiByZW5hbWUgdjQgcmVnaXN0ZXJzCiAgbXRk
+OiByYXduYW5kOiBicmNtbmFuZDogZml4IENTMCBsYXlvdXQKICBtdGQ6IHJhd25hbmQ6IGJyY21u
+YW5kOiByZW5hbWUgcGFnZSBzaXplcwogIGR0OiBiaW5kaW5nczogYnJjbW5hbmQ6IGFkZCB2Mi4x
+IGFuZCB2Mi4yIHN1cHBvcnQKICBuYW5kOiBicmNtbmFuZDogc3VwcG9ydCB2Mi4xLXYyLjIgY29u
+dHJvbGxlcnMKCiAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvYnJjbSxicmNtbmFuZC50eHQg
+fCAgIDIgKwogZHJpdmVycy9tdGQvbmFuZC9yYXcvYnJjbW5hbmQvYnJjbW5hbmQuYyAgICAgIHwg
+MTAwICsrKysrKysrKysrKysrKy0tLQogMiBmaWxlcyBjaGFuZ2VkLCA4NiBpbnNlcnRpb25zKCsp
+LCAxNiBkZWxldGlvbnMoLSkKCi0tIAoyLjI2LjIKCgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGlu
+ZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
+bXRkLwo=
