@@ -1,66 +1,69 @@
-Return-Path: <SRS0=CeWw=7D=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=/JSY=7E=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=unavailable
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF61BC433E1
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 May 2020 20:17:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DB1FC433E0
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 00:12:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 92C74207D3
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 May 2020 20:17:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 101F2206BE
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 00:12:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PesgkfUd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 92C74207D3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ByABmYjk";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="vKc1ANog"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 101F2206BE
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZYStVTEAIzz/PVaWJskRkklVSOR/oYct+i2yzlAdIM8=; b=PesgkfUdEBe3cE
-	gLceRTuuGr6yqHCniJ6HZgi/SErwG1k20WHixbhaX7WwhVEjvnlk7YutSikml5Fr//EwKgxbHHrNz
-	ubEqL2ndrCxBHLI7tPPb0fjXJ5nBgk17Kl2W8vlOF+B1LjjYTjNd2pPYmDnQWXiToxI44EUQRIH+F
-	Fy5U7s7K/g8dBw43jv6Z+G6cKmpJUJ8c7AeuSNkTbBxmS3Yrp7oiVcD6TKsO7ObhDYHamfgdyWZap
-	RdcFDwnkSJp9PvMlSgKL6XKgv5JRSu4DYzfRWO8QN6zQeaVke8jVizO6ptQLhHis8t0NbTKTP2C0e
-	g8Ez53fQprB480c9whqg==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:
+	References:In-Reply-To:Subject:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=ivFFVTVYUkff050N+qdx8iiEbO9XV9LMdXmo3+uRVlY=; b=ByABmYjkr6ENhO3Wqn9zV5SCle
+	U1FBvwtEw5YndR4zUZjY6ODW9PuUNeLvIkXP0t0m2tjElL2ufTCaxy0eCZvQ4n40Hbv2rcJSTfgKH
+	l+hZPKAjCrrczSRTMqfBrGIGzHYqSBNoXEyAcZBfpcOb7v51rEGcDTvS0N4ruPgdwlEH6WIrjpWNp
+	7F6RcxVjOPrS4sybeVYlGSxGkVnOQK7vvo2u2v0q3tQsIJv5piJKt8LrlEigun/fw/K9TuT92hLhm
+	X48L3kBY50BGtMU3SbwRWtqzI7pJfmJDqhtRalF280H3y8wzpII+V5s8Gu8vrQqm1IIArUR8I85Ce
+	9DJmli+A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jbrcz-0000BO-Sy; Thu, 21 May 2020 20:17:17 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1jbvIc-0007oe-Ms; Fri, 22 May 2020 00:12:30 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jbrcm-0008Ra-Dp; Thu, 21 May 2020 20:17:06 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id D0AD82A0667;
- Thu, 21 May 2020 21:17:01 +0100 (BST)
-Date: Thu, 21 May 2020 22:16:58 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Pratyush Yadav <p.yadav@ti.com>
-Subject: Re: [PATCH v6 04/19] spi: spi-mem: allow specifying a command's
- extension
-Message-ID: <20200521221658.037b802b@collabora.com>
-In-Reply-To: <20200521200313.bnil6a4u3dhiizr4@ti.com>
-References: <20200520163053.24357-1-p.yadav@ti.com>
- <20200520163053.24357-5-p.yadav@ti.com>
- <20200521202256.5816eb32@collabora.com>
- <20200521194129.3lqdormmcs4zadh2@ti.com>
- <20200521200313.bnil6a4u3dhiizr4@ti.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
+ id 1jbvIZ-0007nM-5y
+ for linux-mtd@lists.infradead.org; Fri, 22 May 2020 00:12:28 +0000
+Received: from localhost (unknown [137.135.114.1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 4C2DA2078B;
+ Fri, 22 May 2020 00:12:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1590106345;
+ bh=WOiqB0GpcVWMKmnet1Sc0/6IqMPI2nyLCQayz4Y0Ccw=;
+ h=Date:From:To:To:To:Cc:Cc:Cc:Subject:In-Reply-To:References:From;
+ b=vKc1ANogCT/J9uFQoFts3Hv7iFE/uiMLYgR8ppl8YWVltDLQTo/2EQn7BqXHdEcnq
+ XEPLD483fKkm+HmAX5hMcx445Mwtnfh92Gu1+9ziBchJ0L3JTAkk4EQBod/ZKXBKpA
+ yEUhPuaKhOGy0a2j7EGgm6gWwuwhWaP5pU5PtHOI=
+Date: Fri, 22 May 2020 00:12:24 +0000
+From: Sasha Levin <sashal@kernel.org>
+To: Sasha Levin <sashal@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH v2 50/62] mtd: rawnand: socrates: Fix the probe error path
+In-Reply-To: <20200519130035.1883-51-miquel.raynal@bootlin.com>
+References: <20200519130035.1883-51-miquel.raynal@bootlin.com>
+Message-Id: <20200522001225.4C2DA2078B@mail.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200521_131704_601700_2B3FF85A 
-X-CRM114-Status: GOOD (  25.32  )
+X-CRM114-CacheID: sfid-20200521_171227_246041_DB245A16 
+X-CRM114-Status: UNSURE (   7.19  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,112 +75,60 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Mason Yang <masonccyang@mxic.com.tw>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, Sekhar Nori <nsekhar@ti.com>,
- Nicolas Ferre <nicolas.ferre@microchip.com>, linux-kernel@vger.kernel.org,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Matthias Brugger <matthias.bgg@gmail.com>, linux-mediatek@lists.infradead.org,
- linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 22 May 2020 01:33:15 +0530
-Pratyush Yadav <p.yadav@ti.com> wrote:
+Hi
 
-> On 22/05/20 01:11AM, Pratyush Yadav wrote:
-> > On 21/05/20 08:22PM, Boris Brezillon wrote:  
-> > > On Wed, 20 May 2020 22:00:38 +0530
-> > > Pratyush Yadav <p.yadav@ti.com> wrote:
-> > >   
-> > > > In xSPI mode, flashes expect 2-byte opcodes. The second byte is called
-> > > > the "command extension". There can be 3 types of extensions in xSPI:
-> > > > repeat, invert, and hex. When the extension type is "repeat", the same
-> > > > opcode is sent twice. When it is "invert", the second byte is the
-> > > > inverse of the opcode. When it is "hex" an additional opcode byte based
-> > > > is sent with the command whose value can be anything.
-> > > > 
-> > > > So, make opcode a 16-bit value and add a 'nbytes', similar to how
-> > > > multiple address widths are handled.
-> > > > 
-> > > > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> > > > ---
-> > > >  include/linux/spi/spi-mem.h | 5 ++++-
-> > > >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
-> > > > index e3dcb956bf61..731bb64c6ba6 100644
-> > > > --- a/include/linux/spi/spi-mem.h
-> > > > +++ b/include/linux/spi/spi-mem.h
-> > > > @@ -69,6 +69,8 @@ enum spi_mem_data_dir {
-> > > >  
-> > > >  /**
-> > > >   * struct spi_mem_op - describes a SPI memory operation
-> > > > + * @cmd.nbytes: number of opcode bytes (only 1 or 2 are valid). The opcode is
-> > > > + *		sent MSB-first.
-> > > >   * @cmd.buswidth: number of IO lines used to transmit the command
-> > > >   * @cmd.opcode: operation opcode
-> > > >   * @cmd.dtr: whether the command opcode should be sent in DTR mode or not
-> > > > @@ -94,9 +96,10 @@ enum spi_mem_data_dir {
-> > > >   */
-> > > >  struct spi_mem_op {
-> > > >  	struct {
-> > > > +		u8 nbytes;
-> > > >  		u8 buswidth;
-> > > >  		u8 dtr : 1;
-> > > > -		u8 opcode;
-> > > > +		u16 opcode;
-> > > >  	} cmd;
-> > > >  
-> > > >  	struct {  
-> > > 
-> > > As mentioned in one of my previous review, you should patch the mxic
-> > > driver before extending the opcode field:  
-> > 
-> > IIUC, this patchset doesn't break original functionality of the driver. 
-> > It will work like before with 1-byte opcodes. So I don't think it is the 
-> > responsibility of this patchset to enhance the driver. It didn't work 
-> > before with 2-byte opcodes, it won't work now. IMO this should be a 
-> > separate, independent change.  
-> 
-> Scratch that. Big/little endian issue. If you'd drop your Signed-off-by, 
-> I'll write the commit message and patch it in.
+[This is an automated email]
 
-Just add a Suggested-by, that should be fine.
+This commit has been processed because it contains a "Fixes:" tag
+fixing commit: d44154f969a4 ("mtd: nand: Provide nand_cleanup() function to free NAND related resources").
 
->   
-> > > --->8---  
-> > > diff --git a/drivers/spi/spi-mxic.c b/drivers/spi/spi-mxic.c
-> > > index 69491f3a515d..c3f4136a7c1d 100644
-> > > --- a/drivers/spi/spi-mxic.c
-> > > +++ b/drivers/spi/spi-mxic.c
-> > > @@ -356,6 +356,7 @@ static int mxic_spi_mem_exec_op(struct spi_mem *mem,
-> > >         int nio = 1, i, ret;
-> > >         u32 ss_ctrl;
-> > >         u8 addr[8];
-> > > +       u8 cmd[2];
-> > >  
-> > >         ret = mxic_spi_set_freq(mxic, mem->spi->max_speed_hz);
-> > >         if (ret)
-> > > @@ -393,7 +394,10 @@ static int mxic_spi_mem_exec_op(struct spi_mem *mem,
-> > >         writel(readl(mxic->regs + HC_CFG) | HC_CFG_MAN_CS_ASSERT,
-> > >                mxic->regs + HC_CFG);
-> > >  
-> > > -       ret = mxic_spi_data_xfer(mxic, &op->cmd.opcode, NULL, 1);
-> > > +       for (i = 0; i < op->cmd.nbytes; i++)
-> > > +               cmd[i] = op->cmd.opcode >> (8 * (op->cmd.nbytes - i - 1));
-> > > +
-> > > +       ret = mxic_spi_data_xfer(mxic, cmd, NULL, op->cmd.nbytes);
-> > >         if (ret)
-> > >                 goto out;
-> > >    
-> 
+The bot has tested the following trees: v5.6.13, v5.4.41, v4.19.123, v4.14.180, v4.9.223.
 
+v5.6.13: Build OK!
+v5.4.41: Build OK!
+v4.19.123: Failed to apply! Possible dependencies:
+    59ac276f2227 ("mtd: rawnand: Pass a nand_chip object to nand_release()")
+
+v4.14.180: Failed to apply! Possible dependencies:
+    02f26ecf8c77 ("mtd: nand: add reworked Marvell NAND controller driver")
+    256c4fc76a80 ("mtd: rawnand: add a way to pass an ID table with nand_scan()")
+    39b77c586e17 ("mtd: rawnand: fsl_elbc: fix probe function error path")
+    59ac276f2227 ("mtd: rawnand: Pass a nand_chip object to nand_release()")
+    63fa37f0c512 ("mtd: rawnand: Replace printk() with appropriate pr_*() macro")
+    97d90da8a886 ("mtd: nand: provide several helpers to do common NAND operations")
+    98732da1a08e ("mtd: rawnand: do not export nand_scan_[ident|tail]() anymore")
+    acfc33091f7a ("mtd: rawnand: fsl_ifc: fix probe function error path")
+
+v4.9.223: Failed to apply! Possible dependencies:
+    24755a55b01f ("Documentation/00-index: update for new core-api folder")
+    4ad4b21b1b81 ("docs-rst: convert usb docbooks to ReST")
+    59ac276f2227 ("mtd: rawnand: Pass a nand_chip object to nand_release()")
+    609f212f6a12 ("docs-rst: convert mtdnand book to ReST")
+    66115335fbb4 ("docs: Fix build failure")
+    7ddedebb03b7 ("ALSA: doc: ReSTize writing-an-alsa-driver document")
+    8551914a5e19 ("ALSA: doc: ReSTize alsa-driver-api document")
+    90f9f118b75c ("docs-rst: convert filesystems book to ReST")
+    93dc3a112bf8 ("doc: Convert the debugobjects DocBook template to sphinx")
+    c441a4781ff1 ("crypto: doc - remove crypto API DocBook")
+    d6ba7a9c8b5a ("doc: Sphinxify the tracepoint docbook")
+    e7f08ffb1855 ("Documentation/workqueue.txt: convert to ReST markup")
+    f3fc83e55533 ("docs: Fix htmldocs build failure")
+
+
+NOTE: The patch will not be queued to stable trees until it is upstream.
+
+How should we proceed with this patch?
+
+-- 
+Thanks
+Sasha
 
 ______________________________________________________
 Linux MTD discussion mailing list
