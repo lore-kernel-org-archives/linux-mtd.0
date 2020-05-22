@@ -2,86 +2,62 @@ Return-Path: <SRS0=/JSY=7E=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA24DC433E0
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 13:22:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D14C9C433E0
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 15:33:28 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7DC7420679
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 13:22:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 972DE20663
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 15:33:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gW8ZxHPz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7DC7420679
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ErwW0Vn9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 972DE20663
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nvV4/tw7f/wOGxXL9SLlbtUjJV6RL16xVdrDcT0zPHs=; b=gW8ZxHPz13fTMv
-	ZRwAzg5IFQxzh5MU+gsIcU9YS5dXw3SWYsvbdrXXZbmigQxnvzz2a5DVLNIq3dS07TuycXana8jng
-	hLTrqroZkKpQ37uQQXTjsxXGZUWnlBSK0BWBfSFiXshyb5VWyEBDMdacRNo/q01mRD4XZjcJXWPjc
-	r8KhoIr8UCD145pCNmApHbvtz/tCAgD+K27S0hzqa+TVuizXtxX9sQmHqmrVIxTzcsia3QsUGA7Uk
-	S/pMk+X0rhDMyQQ7pvPy/fFaXwFQn3WpyevIKXQKQ8vMrXwz+J97Wq++vFaiZYzRoQjBYuKNKX2s+
-	bt31YgTrlWX0L08iNNkw==;
+	List-Owner; bh=5xqfWTrRngTmiq31645quWTHesDX+mCZLGsyhZW9hHU=; b=ErwW0Vn9hpPV8D
+	/rzBTiYikL2hygdTLB4mKgJEVJ4vXmAK7/1pk4zh1jXZIu6M+KAy9K8rqrT/JGIQRhvjv5CZZyKCf
+	bdIDjiZvhF0eULSjVGB9XKeGf1Dt4iQDyhWoo6trN8oUJzeXtOqQnSKtMXH0K4kIQtM6kwE55Tme6
+	+jj5+J3t9tfNWXD3686XsjjnXcDK7FpQvc06lzWGgpBeQKtLd9XYafuQnWvS7frZeVvcyExOcYX4H
+	QRw1DxoRJI4JTvQ5TfFLSfEVNP5zTKI25KmNhEPgKowOTj5ATbGpm2cwAf0o5Sa5UZz8EGTAmk+Yz
+	sQvHRfGs+WG2G/6vFLqQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jc7dI-000257-U6; Fri, 22 May 2020 13:22:40 +0000
-Received: from mout.kundenserver.de ([217.72.192.75])
+	id 1jc9fg-0002J2-Mt; Fri, 22 May 2020 15:33:16 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jc7dG-00024X-2v; Fri, 22 May 2020 13:22:39 +0000
-Received: from mail-qk1-f176.google.com ([209.85.222.176]) by
- mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1Mlvr3-1jAnMy1k83-00j45p; Fri, 22 May 2020 15:22:31 +0200
-Received: by mail-qk1-f176.google.com with SMTP id g185so10609309qke.7;
- Fri, 22 May 2020 06:22:31 -0700 (PDT)
-X-Gm-Message-State: AOAM532kFUkzVxdxXutSr5cRdvl8lIOfYx7Z7ZC1MC7Z0y/Ei22gl8+y
- t2EMcN4EaOz0PdSl9tO5NQ8+LzgEM5sISM5gJP4=
-X-Google-Smtp-Source: ABdhPJxhnlG5KCUbhs9s5v3bwa/HT0C7ENLgIwsfSWwbs1luda3nkNB7pXQbPW3nAVV/zeWXF3QLzRH5hBefOaAU2uw=
-X-Received: by 2002:a37:bc7:: with SMTP id 190mr14741809qkl.286.1590153750128; 
- Fri, 22 May 2020 06:22:30 -0700 (PDT)
+ id 1jc9fQ-00025Q-EG; Fri, 22 May 2020 15:33:02 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 2744D2A3A00;
+ Fri, 22 May 2020 16:32:58 +0100 (BST)
+Date: Fri, 22 May 2020 17:32:54 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Pratyush Yadav <p.yadav@ti.com>, Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH v7 02/20] spi: spi-mem: allow specifying a command's
+ extension
+Message-ID: <20200522173254.05316d47@collabora.com>
+In-Reply-To: <20200522101301.26909-3-p.yadav@ti.com>
+References: <20200522101301.26909-1-p.yadav@ti.com>
+ <20200522101301.26909-3-p.yadav@ti.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20200520102125.8934-1-robert.jarzmik@free.fr>
- <CAK8P3a2+auSWBROZR-hobM_qSWtKiG1DRYP3Y7uvbCy_ZLy+gg@mail.gmail.com>
- <20200521071213.GI1118872@kernel.org>
- <CAK8P3a2XdG_u6_o2NbQDTb5dbdzByBkUXZNM6nZ3wz0c-LFT5w@mail.gmail.com>
- <20200521190158.GL1118872@kernel.org> <20200521211016.3ad62148@collabora.com>
- <20200522131818.3adbac78@xps13>
- <CAK8P3a2Z-UxktGn+_aBVaaBTStT7f177V2ED2RfVCQS8QDBamg@mail.gmail.com>
- <20200522151750.369dd4d9@xps13>
-In-Reply-To: <20200522151750.369dd4d9@xps13>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Fri, 22 May 2020 15:22:14 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0twq9Uc5B8FrobLt7fzssXGtJb-nafAH49uur_idZTaQ@mail.gmail.com>
-Message-ID: <CAK8P3a0twq9Uc5B8FrobLt7fzssXGtJb-nafAH49uur_idZTaQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] ARM: pxa: remove Compulab pxa2xx boards
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-X-Provags-ID: V03:K1:V+QL+QBbLHM6GP+60YtKdpiA47SoyKVlnLzmhJMnVgwCh7KqUht
- wrqXf1Uc1TBg8ZRnJXSa8uAeVl1duIZcuvGz8ZpBpTlcuEl2EgLeMV9jwtssVgUl8cbjVJd
- HyTWWHWd/ZlQrRWJk1oN+JWrytAb97Wo2uYEdDuIThBONtDjgMZIo/UVVG6RfCcF3gaNMva
- iy4FFAzHylNb/cyjNIQGA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:h/Iq43bJUyU=:BN45geNsyye57epcnXIgOV
- I9+49/HWW49qnzYcp1+HbMK0Iss7xlMHBZdqWNX7DY/jShoTa1jscobeWU5IudhoTeIat8CTq
- K7GuSIhpjnnoYvKTumcaJ2XThfrwNW+ouyTPxVaAjoX0sjq+jEW7iI8C+7F6DoDhCGMYEQquq
- snHFooJIiNJlqUtJ1dAiFONoO9cu/BDihPk8Kmav9UuVgA9xd2I8HqoKhxS/zkD8F+FGB1S9e
- PpgmnY1kXz2bRAOXzRZfzExJoGEA9PBk7mDqhPRaweyuc8rrvHrWAXliGUs7KVMsiMmym+xx6
- nPyW1pt0NhSqzZZSRMs4hIi5VpxWETvLmX2T6pZoOTsjDORiWD58PLRl65kgneVYtNeyvo/JQ
- EqXJx4gBrrAMwogESjNTXck+RhrHEKD9ApV5LMsHGuBTx5SM4XFhZOyH0P7Psf+aZT6gNOcok
- 2asYgyhTEg63TYsJNpnq9AoqGRgSilfsvHm0BQv51VUlTPIJdEV/CZXcVR/wWMw2uyyQda/Ok
- KFBX9GIS406fGBJkpF0ttdhpK2dMHaR+XKd4pZ9660vUW2Eiy7qu9GnRiw+MAwt41ApWtqn2Q
- aMySQKrEjBmN4f/kcD8Uehnbqj3axu59qi90TFuuHgUFkvIH8jkjgKx2yL3ufgD9hWfQ/YjSD
- GeBcpsu7nWJ4X3pp9k+USbRA3TIPZPUTfHdgQBOpovqliVL/dwsi1jGKO8b4K+z7+xZesMF/H
- WYQqxDbeqYhD22frpS+umP/FeqvDIeEePDAF71/rNthXkF3P8yCqMX5l2e8qzkAt1KUBI/mzd
- qYf04adD5jiHkb4l+goIXBbyn/WfNdflBwbWNxsCCDem/hPKGU=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200522_062238_423944_8FEAA38D 
-X-CRM114-Status: GOOD (  17.82  )
+X-CRM114-CacheID: sfid-20200522_083300_607658_77B0B342 
+X-CRM114-Status: GOOD (  20.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,46 +69,103 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- Mike Rapoport <rppt@kernel.org>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Mason Yang <masonccyang@mxic.com.tw>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>, Sekhar Nori <nsekhar@ti.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>, linux-kernel@vger.kernel.org,
+ Ludovic Desroches <ludovic.desroches@microchip.com>,
+ Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>, linux-mediatek@lists.infradead.org,
+ linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, May 22, 2020 at 3:17 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> Arnd Bergmann <arnd@arndb.de> wrote on Fri, 22 May 2020 15:14:43 +0200:
->
-> > On Fri, May 22, 2020 at 1:18 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> > > Boris Brezillon <boris.brezillon@collabora.com> wrote on Thu, 21 May
+On Fri, 22 May 2020 15:42:43 +0530
+Pratyush Yadav <p.yadav@ti.com> wrote:
 
-> > > Actually I was about the merge this patch in the MTD tree because I
-> > > have a big cleanup series which depends on it. Arnd could you confirm
-> > > that it's okay for you?
-> >
-> > Yes, that sounds good. I assume the patch is basically identical to the one
-> > that Mike just sent, right? If there are changes to arch/arm, I guess those can
-> > be dropped now as I'm merging Robert's patches to remove those board
-> > files.
-> >
-> >       Arnd
->
-> Here is the diffstat:
->
->  drivers/mtd/nand/raw/Kconfig       |   4 -
->  drivers/mtd/nand/raw/Makefile      |   1 -
->  drivers/mtd/nand/raw/cmx270_nand.c | 236 -----------------------------
->  3 files changed, 241 deletions(-)
->  delete mode 100644 drivers/mtd/nand/raw/cmx270_nand.c
->
-> So it should be fine.
+> In xSPI mode, flashes expect 2-byte opcodes. The second byte is called
+> the "command extension". There can be 3 types of extensions in xSPI:
+> repeat, invert, and hex. When the extension type is "repeat", the same
+> opcode is sent twice. When it is "invert", the second byte is the
+> inverse of the opcode. When it is "hex" an additional opcode byte based
+> is sent with the command whose value can be anything.
+> 
+> So, make opcode a 16-bit value and add a 'nbytes', similar to how
+> multiple address widths are handled.
 
-Agreed, please apply it.
+A slightly different version of patch 5 should go before this patch,
+otherwise your series is not bisectable. By slightly different, I mean
+that you should only write one byte, but put this byte in a temporary
+var. Or maybe you can squash patch 5 in this one and mention why you do
+so in your commit message.
 
-     Arnd
+> 
+> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> ---
+>  drivers/spi/spi-mem.c       | 5 ++++-
+>  include/linux/spi/spi-mem.h | 6 +++++-
+>  2 files changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+> index 93e255287ab9..29dcd1d62710 100644
+> --- a/drivers/spi/spi-mem.c
+> +++ b/drivers/spi/spi-mem.c
+> @@ -159,6 +159,9 @@ bool spi_mem_default_supports_op(struct spi_mem *mem,
+>  	if (op->cmd.dtr || op->addr.dtr || op->dummy.dtr || op->data.dtr)
+>  		return false;
+>  
+> +	if (op->cmd.nbytes != 1)
+> +		return false;
+> +
+>  	return true;
+>  }
+>  EXPORT_SYMBOL_GPL(spi_mem_default_supports_op);
+> @@ -173,7 +176,7 @@ static bool spi_mem_buswidth_is_valid(u8 buswidth)
+>  
+>  static int spi_mem_check_op(const struct spi_mem_op *op)
+>  {
+> -	if (!op->cmd.buswidth)
+> +	if (!op->cmd.buswidth || !op->cmd.nbytes)
+>  		return -EINVAL;
+>  
+>  	if ((op->addr.nbytes && !op->addr.buswidth) ||
+> diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+> index e3dcb956bf61..159463cc659c 100644
+> --- a/include/linux/spi/spi-mem.h
+> +++ b/include/linux/spi/spi-mem.h
+> @@ -17,6 +17,7 @@
+>  	{							\
+>  		.buswidth = __buswidth,				\
+>  		.opcode = __opcode,				\
+> +		.nbytes = 1,					\
+>  	}
+>  
+>  #define SPI_MEM_OP_ADDR(__nbytes, __val, __buswidth)		\
+> @@ -69,6 +70,8 @@ enum spi_mem_data_dir {
+>  
+>  /**
+>   * struct spi_mem_op - describes a SPI memory operation
+> + * @cmd.nbytes: number of opcode bytes (only 1 or 2 are valid). The opcode is
+> + *		sent MSB-first.
+>   * @cmd.buswidth: number of IO lines used to transmit the command
+>   * @cmd.opcode: operation opcode
+>   * @cmd.dtr: whether the command opcode should be sent in DTR mode or not
+> @@ -94,9 +97,10 @@ enum spi_mem_data_dir {
+>   */
+>  struct spi_mem_op {
+>  	struct {
+> +		u8 nbytes;
+>  		u8 buswidth;
+>  		u8 dtr : 1;
+> -		u8 opcode;
+> +		u16 opcode;
+>  	} cmd;
+>  
+>  	struct {
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
