@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8FA8C433DF
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 22:44:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19330C433E1
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 22:45:15 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8C5E9204EA
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 22:44:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D770F204EA
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 22:45:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uSwG5ptn";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="vwSNKYaB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8C5E9204EA
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ivtTJKLG";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="iF0dRiq1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D770F204EA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,44 +26,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=34+owmPi1iX7eZUVA6mtOT6bs5/an/VLzidS4INV8ZU=; b=uSwG5ptn/ONdht
-	CHkSYFM0dArsk2An0WcO0pA6OXej0AP+Xaimly+S6XqCWisc4FcH7lw+QgRFslwqA+UhWlqqEYdLg
-	Qxn2bIfjC7BA1tAJDEu+BC/jX2cbzKpV7Ujs3GxSH+vkPHNcuyadkZ6DiVcKEkIJuh82U9lkDzkiM
-	T8PGfpm8QIvqsRBN9WKM5EMfw+rQconqoOK7mtfehOVwQ3DRFstWPo0JaJYae37urpo8F+LhovGQO
-	PG4kClZ9DgLkFZ6gU7xCedNHBv++kryRJP3zvvDUJTmvOAYsM/uf1WdYGDf8FgFjWJxiDl3btBdvr
-	N1cG8/jNcWht+QCQ3dGg==;
+	List-Owner; bh=KWuhXfutMO7FG8JznYWFnw8N+t91chCDkbNXK+ROuIc=; b=ivtTJKLGBuBDEo
+	9eJtHrOvniUJweRcI1+DcX0+6yZ8E/J+d3yYn+yUh5S9iqpsP8s5WPjm5rjBh922nOWKjSA9xp9QT
+	Kh1dtDDv286PoHcet/5J38yN1PcDehLPimEoEl0jrtLsaG8bJQqch1aXK1XIL5CU77ztDaecvtR4d
+	n3E+rwTVHRjlk1Hf2ZhoQLS7Ul4FOiP9430rYGhdP3e4X7Gt+4i0uE6LVkLAJnIs9UE9bDxnYhFr4
+	A0c5U5efztYSQCrclcEc1LVHBAHuOxkKWqWDh9Xe7MUxymrhmlZ0p3g3WGJD7MRMtkf5HRE/inolq
+	enjXxhhfSfvyj9dE9xoA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jcGOR-0004tN-O9; Fri, 22 May 2020 22:43:55 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1jcGPg-0006sn-39; Fri, 22 May 2020 22:45:12 +0000
+Received: from lelv0142.ext.ti.com ([198.47.23.249])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jcGLn-0002y2-H0; Fri, 22 May 2020 22:41:13 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04MMf55k086262;
- Fri, 22 May 2020 17:41:05 -0500
+ id 1jcGLr-00032E-W8; Fri, 22 May 2020 22:41:17 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04MMfA7j072377;
+ Fri, 22 May 2020 17:41:10 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1590187265;
- bh=d4a8/B8RJ1QRHlItn/FpHiKY2BYYAQOc8eQivs7iF4g=;
+ s=ti-com-17Q1; t=1590187270;
+ bh=yw3uCae+isK3AHGXPUAgu6JyO09SGQwwFtzMuvBbEew=;
  h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=vwSNKYaBtUg7B86bUD/uCiZFEDEKvmh2ZQAvdGddu6veITNb3xaJjLwMhCfbksdzP
- PB9qB+HIDx8UG/NBL+tYVdzfyK+p+YtlGIaBbTumooIElJTIoxImpdy8RCRknH3vz5
- npJ0hMleLABl2COcG1QAAAm2L9gygWhjgzXCs86k=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04MMf4Jk106202
+ b=iF0dRiq1a5kNgTN7Pw/EoTG97PuXfes6ACvzWKUNHgOdUDQ6/FNg1SBRRUAA9hQls
+ IWYEihxuaHmKgm5eOCf1Rl4fcWxEBdsIvMEE0AJI30pu3mzNkCbCtYbMAmMvvRfGnI
+ WNnkTCh/sCuz0CaTcM4yJfcZpt6mImj+ExmQJtg4=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04MMfAsd079136
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 22 May 2020 17:41:04 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ Fri, 22 May 2020 17:41:10 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 22
- May 2020 17:41:04 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ May 2020 17:41:09 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 22 May 2020 17:41:04 -0500
+ Frontend Transport; Fri, 22 May 2020 17:41:09 -0500
 Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com
  [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04MMeh5a044559;
- Fri, 22 May 2020 17:40:59 -0500
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04MMeh5b044559;
+ Fri, 22 May 2020 17:41:05 -0500
 From: Pratyush Yadav <p.yadav@ti.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
  <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
@@ -76,17 +76,17 @@ To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <linux-spi@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
  <linux-mediatek@lists.infradead.org>
-Subject: [PATCH v8 03/19] spi: atmel-quadspi: reject DTR ops
-Date: Sat, 23 May 2020 04:10:26 +0530
-Message-ID: <20200522224042.29970-4-p.yadav@ti.com>
+Subject: [PATCH v8 04/19] spi: spi-mtk-nor: reject DTR ops
+Date: Sat, 23 May 2020 04:10:27 +0530
+Message-ID: <20200522224042.29970-5-p.yadav@ti.com>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20200522224042.29970-1-p.yadav@ti.com>
 References: <20200522224042.29970-1-p.yadav@ti.com>
 MIME-Version: 1.0
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200522_154111_655478_F6688976 
-X-CRM114-Status: GOOD (  10.64  )
+X-CRM114-CacheID: sfid-20200522_154116_130341_5EA0E154 
+X-CRM114-Status: GOOD (  10.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,15 +113,15 @@ supports_op().
 
 Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/spi/atmel-quadspi.c | 6 ++++++
+ drivers/spi/spi-mtk-nor.c | 6 ++++++
  1 file changed, 6 insertions(+)
 
-diff --git a/drivers/spi/atmel-quadspi.c b/drivers/spi/atmel-quadspi.c
-index cb44d1e169aa..a898755fb41e 100644
---- a/drivers/spi/atmel-quadspi.c
-+++ b/drivers/spi/atmel-quadspi.c
-@@ -285,6 +285,12 @@ static bool atmel_qspi_supports_op(struct spi_mem *mem,
- 		op->dummy.nbytes == 0)
+diff --git a/drivers/spi/spi-mtk-nor.c b/drivers/spi/spi-mtk-nor.c
+index d5f393871619..b08d8e9a8ee9 100644
+--- a/drivers/spi/spi-mtk-nor.c
++++ b/drivers/spi/spi-mtk-nor.c
+@@ -211,6 +211,12 @@ static bool mtk_nor_supports_op(struct spi_mem *mem,
+ 	if (op->cmd.buswidth != 1)
  		return false;
  
 +	/* DTR ops not supported. */
@@ -130,9 +130,9 @@ index cb44d1e169aa..a898755fb41e 100644
 +	if (op->cmd.nbytes != 1)
 +		return false;
 +
- 	return true;
- }
- 
+ 	if ((op->addr.nbytes == 3) || (op->addr.nbytes == 4)) {
+ 		if ((op->data.dir == SPI_MEM_DATA_IN) && mtk_nor_match_read(op))
+ 			return true;
 -- 
 2.26.2
 
