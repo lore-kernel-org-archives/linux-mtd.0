@@ -3,20 +3,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DB1FC433E0
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 00:12:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BB23C433E0
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 00:13:02 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 101F2206BE
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 00:12:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3F53C206BE
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 00:13:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ByABmYjk";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="vKc1ANog"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 101F2206BE
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KbQ+WVG9";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="h3sPkUZu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3F53C206BE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,42 +26,42 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:In-Reply-To:Subject:To:From:Date:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=ivFFVTVYUkff050N+qdx8iiEbO9XV9LMdXmo3+uRVlY=; b=ByABmYjkr6ENhO3Wqn9zV5SCle
-	U1FBvwtEw5YndR4zUZjY6ODW9PuUNeLvIkXP0t0m2tjElL2ufTCaxy0eCZvQ4n40Hbv2rcJSTfgKH
-	l+hZPKAjCrrczSRTMqfBrGIGzHYqSBNoXEyAcZBfpcOb7v51rEGcDTvS0N4ruPgdwlEH6WIrjpWNp
-	7F6RcxVjOPrS4sybeVYlGSxGkVnOQK7vvo2u2v0q3tQsIJv5piJKt8LrlEigun/fw/K9TuT92hLhm
-	X48L3kBY50BGtMU3SbwRWtqzI7pJfmJDqhtRalF280H3y8wzpII+V5s8Gu8vrQqm1IIArUR8I85Ce
-	9DJmli+A==;
+	bh=ivFFVTVYUkff050N+qdx8iiEbO9XV9LMdXmo3+uRVlY=; b=KbQ+WVG9x8iHTUNjXrtnYgNWKz
+	5k8X/qY2YyuTiXqTvCoGjlibvd9f0qKvsAWVcyeyiuA1dq5yrD2mWih6zlgaaV5MgjTIztHDb9TQI
+	MmaqI2TjkvxLUNSpo6cRl267o2yATYQOgiUxjUj4AcehW6eoLDTwUT77i7k/FemvO9UKLnqAFAEwp
+	MW8yP21mdx+vdJ2vb1Xnec+ucPicd0Tyz1qwdnopwZonT1sG617vd4CB500JTXZ+yBJ+7xFzNTmMP
+	60nnoI1PC4K/vXthCVXzk+vxP60AsRXtsHhixTXyYb3vguMaipVHpxUkykh6dtZq9TVsMJFQ1JrAb
+	mpUey6xw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jbvIc-0007oe-Ms; Fri, 22 May 2020 00:12:30 +0000
+	id 1jbvIj-0007wr-Qw; Fri, 22 May 2020 00:12:37 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jbvIZ-0007nM-5y
+ id 1jbvIZ-0007nN-6A
  for linux-mtd@lists.infradead.org; Fri, 22 May 2020 00:12:28 +0000
 Received: from localhost (unknown [137.135.114.1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 4C2DA2078B;
- Fri, 22 May 2020 00:12:25 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 6731B207D8;
+ Fri, 22 May 2020 00:12:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1590106345;
+ s=default; t=1590106346;
  bh=WOiqB0GpcVWMKmnet1Sc0/6IqMPI2nyLCQayz4Y0Ccw=;
  h=Date:From:To:To:To:Cc:Cc:Cc:Subject:In-Reply-To:References:From;
- b=vKc1ANogCT/J9uFQoFts3Hv7iFE/uiMLYgR8ppl8YWVltDLQTo/2EQn7BqXHdEcnq
- XEPLD483fKkm+HmAX5hMcx445Mwtnfh92Gu1+9ziBchJ0L3JTAkk4EQBod/ZKXBKpA
- yEUhPuaKhOGy0a2j7EGgm6gWwuwhWaP5pU5PtHOI=
-Date: Fri, 22 May 2020 00:12:24 +0000
+ b=h3sPkUZuAoB0s0l1gfbvqo3HwXX31uqJQOrz5dK7r08y832CG9oCLa59YV8mI7Kiy
+ 1Msmr9lyis2hSGfE1Kh1Y6BXPSd2UEHUh++iPpuzqP2aGE+LlaR2LLbFGpjObyclai
+ Pp3kBgMa4y4a/eOkOvmkbmuftVkLCaDY5ZsRDz3I=
+Date: Fri, 22 May 2020 00:12:25 +0000
 From: Sasha Levin <sashal@kernel.org>
 To: Sasha Levin <sashal@kernel.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v2 50/62] mtd: rawnand: socrates: Fix the probe error path
-In-Reply-To: <20200519130035.1883-51-miquel.raynal@bootlin.com>
-References: <20200519130035.1883-51-miquel.raynal@bootlin.com>
-Message-Id: <20200522001225.4C2DA2078B@mail.kernel.org>
+Subject: Re: [PATCH v2 56/62] mtd: rawnand: tmio: Fix the probe error path
+In-Reply-To: <20200519130035.1883-57-miquel.raynal@bootlin.com>
+References: <20200519130035.1883-57-miquel.raynal@bootlin.com>
+Message-Id: <20200522001226.6731B207D8@mail.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200521_171227_246041_DB245A16 
+X-CRM114-CacheID: sfid-20200521_171227_245724_3EE121D3 
 X-CRM114-Status: UNSURE (   7.19  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
