@@ -8,17 +8,17 @@ X-Spam-Status: No, score=-5.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA79CC433DF
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 15:37:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1189C433E0
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 15:38:02 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 80C2520823
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 15:37:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 772DA208E4
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 15:38:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qp5Iszvr";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QmiQilkr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 80C2520823
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YQsmdlSO";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="of6/20nR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 772DA208E4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -28,53 +28,54 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:From:References:To:Subject:Reply-To:Cc:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=y3hgvObTY6pRMDfEDlH6STqilJtE2KiN9SarLeCFiVg=; b=qp5IszvrUaFwq5FjW0uWi8vJCT
-	czhHGSze3wj7FsDRNvpY9Ka3cXUra/mIL2qQrMZOpTqGKF+/aQMGdbvDVoKqQ59NOKv7DeNY5W6zt
-	sl48QCWXb+/xbS/dJY4K2L9bXPfrosWZRqqSa4Or2WfR4z9HQFsZ6rl+phYrqgEcNfBTrqphfa/Ba
-	ytZTsVWyG61nf2olNFmg01WCX152Og0pttYD0RNj2c3lSzbujk5MfTRNqmacMGHCYpV1NdTWheGmM
-	iKUEz9bQ8WfEhzmtwS/WLABzv3PuTB7ooub5j6zEusc4yCOyLMo2tDzmsQeoScxeg5TIJpONbilMl
-	XmmMrfVQ==;
+	bh=Zy4U/Zh013MYmWsKa7iMLpDnR1XhqhQ1qpIl/s7PuG4=; b=YQsmdlSOUD0OJ2dK2y4NfqIPvg
+	MV+Xzc7/sHKWhDvTO6JhX8M3ZbiSmO7aVfsMtA/Lojp34WmwpWy5l/ZClJ19HisZ0/LJsP9Wf+ALL
+	OmP8fu938DLWvBqrFV9onP4dooQeY3/UVnUTCphtzr4yHHwuKGB0IbpHl+xXMW9wv0Zd0K0GLQ7vK
+	JMEriFUq/lMcUuIEqDpqzqUZ4Ql6N/ST/si7Vo7Kzy9MSDWQPKFeMUJqvNFhakMAm54BSlvc5XbL/
+	nVMUGR1WHPXEm2StauL/RXySk/PmKavm7SufKyLkjK1Ro213LTDTcmtzL2zkhJejag1AOlHZHCZ/4
+	Y4Dk94+g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jc9jD-0006pf-IX; Fri, 22 May 2020 15:36:55 +0000
-Received: from mail-pf1-x433.google.com ([2607:f8b0:4864:20::433])
+	id 1jc9kH-0007fF-Fm; Fri, 22 May 2020 15:38:01 +0000
+Received: from mail-pf1-x443.google.com ([2607:f8b0:4864:20::443])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jc9id-0006Mc-KQ
- for linux-mtd@lists.infradead.org; Fri, 22 May 2020 15:36:20 +0000
-Received: by mail-pf1-x433.google.com with SMTP id y198so5364902pfb.4
- for <linux-mtd@lists.infradead.org>; Fri, 22 May 2020 08:36:19 -0700 (PDT)
+ id 1jc9kF-0007eI-1k
+ for linux-mtd@lists.infradead.org; Fri, 22 May 2020 15:38:00 +0000
+Received: by mail-pf1-x443.google.com with SMTP id y198so5366663pfb.4
+ for <linux-mtd@lists.infradead.org>; Fri, 22 May 2020 08:37:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=subject:to:references:from:message-id:date:user-agent:mime-version
  :in-reply-to:content-language:content-transfer-encoding;
- bh=lnZ2WUm5gsoHVGLrikaUs+9dOq4WzhfyiayZ5tcorxY=;
- b=QmiQilkrdsdW7escgA0eMPFnT4ESnOYHA3VvFSSsblONz8F3ljC5oJSjHRSN/Hk5Lz
- H+NK796zZH2R+HfLsSD+MZeu6Gndlde05bXvqHNHRYDgDvNwlvcxRe6Vv546gUbJru4Y
- Qc8RmxHxg5AbG2YJ+J2oof+brW9Bca6apzHVVxT5k/g+L4xXaDcMu815ZiePspVMkHbV
- TxFwE1cPBAUfsch9aGjwBiSomzCTwZGRQutpUyXE97tog3VabZEynqYltU7VA6uWdPnQ
- fQNLnx04gGbYnxS38RsDVol8zMAvtCedd1sKCPuIaZfhSTozJe7mbANv6ObPH6409u/J
- AKEw==
+ bh=+fdIAJRjmy/rRR+RCbZVMEUtca3wMVBf5rN50QMs3So=;
+ b=of6/20nR4qUZHgnavujGqmJRI1sCVIF8UQic9SqHgWtJ6xKMPVtzRsFzCtVpXSjYWZ
+ Ky7pYD/Wws7A57tCGkRyQYXfdainh/VVp4nem55oyyuqIxHzQRM0C0Bq7aCM79Px3P6O
+ s4qJ0iGWyMY8DfmDJxdmT514qEQBx9moXcxPeSj22Iw0rqcOKu5Ad41EEIi0oZN0tZKX
+ h71o6hsLvzLZLkU0h8HxbRDQZ3/bM4tYYtvNo49QzoxQ9w5d2HBMD5ERA+hYbAueQD28
+ r65WU58ZSNYdriAz6HFBk+Z8qA8iHxeAvK7cpfUB93lcnc5FWwc00qnmwDFg8uuGromN
+ rhVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:subject:to:references:from:message-id:date
  :user-agent:mime-version:in-reply-to:content-language
  :content-transfer-encoding;
- bh=lnZ2WUm5gsoHVGLrikaUs+9dOq4WzhfyiayZ5tcorxY=;
- b=UQ1KHDgko8ENSyaP/JyAjNhMld/71ejBAX/DQyys7fQuZUXtKioF+gMfgcw0mkviYP
- oIHOAFULpW+xKyrcqyJsFAQf6vl/K7nG/xd+g6TzPmeGS0ECjJZK9G3lCWhxLfKAHhfC
- cRmC7c7MD11YM4h8yGgB2BCdm+FqwzzbN17P4irJ3mLCG7H+tBXirX3tY+M9f/hBmfqP
- dI/am+71eCebU58Y24y08+dsms1f9DYhtKQc88bX51oIODgmRfEbOCAUCyA8TiDiVMAW
- /dbOjdn03ImiGpIqzkyHC7ot5SNV1G2KzWpraEM2TZPKt58LYxqiF9ycIWIsNJdDuI3U
- nEpg==
-X-Gm-Message-State: AOAM531g0zTHzjnGdyyj5U2JJCKsvKcTBr1E3+LKXJUgJXz35MnUOA+m
- v8ddEme6vCifAYYtmFEUri3+18iW
-X-Google-Smtp-Source: ABdhPJxCwZDXgvMJcaOXUWcZ2PD97knGPGulsi1s9hQZScdEGIe+g4LIaYmUPWF2UsEdb50ExqvRQA==
-X-Received: by 2002:a63:794a:: with SMTP id u71mr13725179pgc.89.1590161778568; 
- Fri, 22 May 2020 08:36:18 -0700 (PDT)
+ bh=+fdIAJRjmy/rRR+RCbZVMEUtca3wMVBf5rN50QMs3So=;
+ b=AGHdb18JKEaK5/HDIBBMYowko1FuPeYt1GCLuIfTzDShT5RYCOg2f6eXQr3KN4bXBu
+ rofi4LKVnmTHHaU0QDEkhrdl1ZK2EQt649vW3COj84skqGkGZAI+XRPHFBSqdSHAbMyx
+ YTJrsyKGUPn/aYvbrQRWwJg4Svbr9gyDAGxSHQMqpgBll+KLFKd6q4evqynhnHDdELD8
+ 25F0HILTtVud+465A1fnOHsALFu5ihacPL46la4lu4082pB7UQMbkJnFR2Fx4Wnk/MZx
+ M9XFTm4KwM9kv6cLnuMlmXts2y2+cuWPAKVXNC5Xs0Y08rYDt3mrUPInwPdA2A0Xo2Mu
+ MUhQ==
+X-Gm-Message-State: AOAM533dyl4SU2NvOO3OtGwUWO8E91jAjcdjblNWaKfTFvOwZD1yexI0
+ Qu63JpFj9ohS9C3ixLeHlVo=
+X-Google-Smtp-Source: ABdhPJw7osy8VN0SR5WZS9ScPFqC3cP54TjG/bI/cqK0VsExF/NxvIMn/kzCXpkqssM0ilra1PLL8A==
+X-Received: by 2002:a62:80ca:: with SMTP id j193mr4242287pfd.41.1590161877344; 
+ Fri, 22 May 2020 08:37:57 -0700 (PDT)
 Received: from [10.230.188.43] ([192.19.223.252])
- by smtp.gmail.com with ESMTPSA id o25sm6395243pgn.84.2020.05.22.08.36.16
+ by smtp.gmail.com with ESMTPSA id h4sm8086838pje.29.2020.05.22.08.37.55
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 22 May 2020 08:36:17 -0700 (PDT)
-Subject: Re: [PATCH v4 4/5] dt: bindings: brcmnand: add v2.1 and v2.2 support
+ Fri, 22 May 2020 08:37:56 -0700 (PDT)
+Subject: Re: [PATCH v4 5/5] mtd: rawnand: brcmnand: support v2.1-v2.2
+ controllers
 To: =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>,
  computersforpeace@gmail.com, kdasu.kdev@gmail.com,
  miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
@@ -84,18 +85,18 @@ To: =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>,
  linaro-mm-sig@lists.linaro.org
 References: <20200522072525.3919332-1-noltari@gmail.com>
  <20200522121524.4161539-1-noltari@gmail.com>
- <20200522121524.4161539-5-noltari@gmail.com>
+ <20200522121524.4161539-6-noltari@gmail.com>
 From: Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <742a0b02-6958-608e-1e8e-6da2dbedb2f8@gmail.com>
-Date: Fri, 22 May 2020 08:36:16 -0700
+Message-ID: <47f870ef-55d8-54b3-97df-2bdab8f1d77c@gmail.com>
+Date: Fri, 22 May 2020 08:37:54 -0700
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Firefox/68.0 Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200522121524.4161539-5-noltari@gmail.com>
+In-Reply-To: <20200522121524.4161539-6-noltari@gmail.com>
 Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200522_083619_681426_CD44E82D 
-X-CRM114-Status: UNSURE (   6.56  )
+X-CRM114-CacheID: sfid-20200522_083759_089621_83ABD5B0 
+X-CRM114-Status: UNSURE (   6.26  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -114,11 +115,10 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 CgpPbiA1LzIyLzIwMjAgNToxNSBBTSwgw4FsdmFybyBGZXJuw6FuZGV6IFJvamFzIHdyb3RlOgo+
-IEFkZGVkIGJyY20sYnJjbW5hbmQtdjIuMSBhbmQgYnJjbSxicmNtbmFuZC12Mi4yIGFzIHBvc3Np
-YmxlIGNvbXBhdGlibGUKPiBzdHJpbmdzIHRvIHN1cHBvcnQgYnJjbW5hbmQgY29udHJvbGxlcnMg
-djIuMSBhbmQgdjIuMi4KPiAKPiBTaWduZWQtb2ZmLWJ5OiDDgWx2YXJvIEZlcm7DoW5kZXogUm9q
-YXMgPG5vbHRhcmlAZ21haWwuY29tPgoKQWNrZWQtYnk6IEZsb3JpYW4gRmFpbmVsbGkgPGYuZmFp
-bmVsbGlAZ21haWwuY29tPgotLQpGbG9yaWFuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBs
-aXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRk
-Lwo=
+IHYyLjE6IHRlc3RlZCBvbiBOZXRnZWFyIERHTkQzNzAwdjEgKEJDTTYzNjgpCj4gdjIuMjogdGVz
+dGVkIG9uIE5ldGdlYXIgREdORDM3MDB2MiAoQkNNNjM2MikKPiAKPiBTaWduZWQtb2ZmLWJ5OiDD
+gWx2YXJvIEZlcm7DoW5kZXogUm9qYXMgPG5vbHRhcmlAZ21haWwuY29tPgoKQWNrZWQtYnk6IEZs
+b3JpYW4gRmFpbmVsbGkgPGYuZmFpbmVsbGlAZ21haWwuY29tPgotLSAKRmxvcmlhbgoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1U
+RCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
