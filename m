@@ -1,92 +1,76 @@
-Return-Path: <SRS0=/JSY=7E=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=u3RZ=7F=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 110F1C433E2
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 22:54:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E693FC433DF
+	for <linux-mtd@archiver.kernel.org>; Sat, 23 May 2020 14:37:54 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C71DF20723
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2020 22:54:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B533A2072C
+	for <linux-mtd@archiver.kernel.org>; Sat, 23 May 2020 14:37:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pIRWTZW+";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="sXnAHnZz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C71DF20723
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GNa6J2fM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B533A2072C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vv5iGQ0if6bacim2sHy4Oac6cr+PN4dlTanIjnm3mYk=; b=pIRWTZW+mGk9p3
-	c6BAq9yrHL3oYCgtunY5MSrWo2TZ9tWVlUKMa/W/K/aadK7UPsjvAmfJ8QBMn1i418LNDelYHdJ0X
-	1P4uXXz64bK0nTauOYEzMiTdzeAIna8/IC5VdGYJ0fNqNny1PgRfMnIA2YVEZGYja9TZjTsuoirEz
-	Sz4O8sIKsfSLUjSASesEpclPGj1eXsZNg+Vd8q5pZejMmwQ7U5fVZyQhaf7ecs873R4b4YrbCoYGA
-	ObEtIZlCD+vjbWVTFYFmWeSmSzoH9I4kP26+y5+wTlj5P2c9ARBxD+xsnV1mCRPPhLLwnssPiuKBa
-	aNX7MW9aFJgxIBXUy+BQ==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:From:Subject:Message-ID:In-Reply-To:
+	Date:MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+	List-Owner; bh=0orqyVD/y8DWI0hBEQKv7gxgmK8Z6tWtOpDr5KccbK0=; b=GNa6J2fMP6dRGn
+	7WezJOT7LbL0aE6co0WQrAPUkBHa+C/ntpOXvnmuuTSLckEbv86Gv9rLWl+o7KnhkbZKVhBeTCGj8
+	NR6xlCrHsHCOrw8RvD9hioqAToT9lzqr7r2fRavL8N4EK6RoSKSPsAMKmjX+ZBIuB7PfqjU3hr0WH
+	hYibfH+A0mGVrXI0MfOVc0YkKIXJUTPz8Yf6x7MYE7qWSZp4t3rXC7ZqfRxL1s3WddG3Y8g2e8cDD
+	PgwQM86lqb+lWhVfQT89mD4uki2ZsC9akKXgRgoYjkqwoThbQaGAjnQ7W5ZcT5KJrP5GXgoxGox1t
+	MzuXGyXKHpFOFBitDXGg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jcGYX-0001Qb-55; Fri, 22 May 2020 22:54:21 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1jcVH7-0003tm-E9; Sat, 23 May 2020 14:37:21 +0000
+Received: from mail-il1-f199.google.com ([209.85.166.199])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jcGN7-00041q-Na; Fri, 22 May 2020 22:42:35 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04MMgTRH061415;
- Fri, 22 May 2020 17:42:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1590187349;
- bh=kv17vzIbbuAt+RZqE4vM8KTFUmvobKYZHpLC7UN2u9I=;
- h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=sXnAHnZzU8ssnhgNkz6JWSDz/vtJJEgdQjyTsNG9K4X9Is48m262+a1XSVQh3dWLk
- 06h9nyP3yff0FHn8kFCO4MTw3rkFk1t/I+vYK79YyZl3pwIzDE0IBGRuoZPOufFypp
- 65dhnFmnQihnfPoGheV4mbMAab7unONg63c5sl5c=
-Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04MMgSOR036886;
- Fri, 22 May 2020 17:42:29 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 22
- May 2020 17:42:28 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 22 May 2020 17:42:28 -0500
-Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com
- [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04MMeh5q044559;
- Fri, 22 May 2020 17:42:23 -0500
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Mark Brown <broonie@kernel.org>,
- Nicolas Ferre <nicolas.ferre@microchip.com>, Alexandre Belloni
- <alexandre.belloni@bootlin.com>, Ludovic Desroches
- <ludovic.desroches@microchip.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Michal Simek <michal.simek@xilinx.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <linux-spi@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>
-Subject: [PATCH v8 19/19] mtd: spi-nor: micron-st: allow using MT35XU512ABA in
- Octal DTR mode
-Date: Sat, 23 May 2020 04:10:42 +0530
-Message-ID: <20200522224042.29970-20-p.yadav@ti.com>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200522224042.29970-1-p.yadav@ti.com>
-References: <20200522224042.29970-1-p.yadav@ti.com>
+ id 1jcVH2-0003ss-19
+ for linux-mtd@lists.infradead.org; Sat, 23 May 2020 14:37:17 +0000
+Received: by mail-il1-f199.google.com with SMTP id g13so11239987ild.16
+ for <linux-mtd@lists.infradead.org>; Sat, 23 May 2020 07:37:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+ :from:to;
+ bh=JTLjpJotlBYtj20lijo2JeDWAKa3e3dTd3xmvcIoBYI=;
+ b=IyITC+6ikSb0rmkLihHqbvR6f/0aUxfEeQHZsQkwwkxR0kR9rc7Y27yW/K1Bvxwb2T
+ oH2L8THmOx7HKosN7ANZqFMvoTTjrzrNDKUnShHdVN2s3kR7TemIihAqFdv7kw63b7Gm
+ G+dfuBXhKIF+ylP4q/qNd9U+5oWcyCx+lTBnCUJJGtnoMQ1g88QBEjiXAVzQXCpuOErr
+ 1aYKaTuUjIG6sNdQ1D609YrJgyGokbbdO7sou4q7CwJpeNFyZGGHvhElf1RoS7EC1FNK
+ 7C7m3FFtXv+TOdFqAiSyxBaBC2W+JZGghDtjFKITDQl3vnrGSL4SnlLMpZ/JSl8AjtIs
+ Zq7g==
+X-Gm-Message-State: AOAM533OTBsxa675ysTcPe1lTuwZ9lK6DhpYcRDSEudI15+DGQEzOEP2
+ EyB7Ivojp5XH+x1xTlAW6r+jskmNBTCNLtiBTj8KwuTC4JX0
+X-Google-Smtp-Source: ABdhPJzmXUW14Bq0SeNAnekAkCASeu/xxBnvKP50jWRGrH4tFotHPrcng9yJ87dXkQYDYPw46RgWRPAWYc5S7kx6l/IAKI/LhPqv
 MIME-Version: 1.0
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Received: by 2002:a02:6649:: with SMTP id l9mr12136458jaf.94.1590244634684; 
+ Sat, 23 May 2020 07:37:14 -0700 (PDT)
+Date: Sat, 23 May 2020 07:37:14 -0700
+In-Reply-To: <000000000000ba47b705a6443a0d@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008e6f7b05a651ae10@google.com>
+Subject: Re: KASAN: use-after-free Read in uif_close
+From: syzbot <syzbot+0ce97ea45b008ba3b8bd@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
+ miquel.raynal@bootlin.com, richard@nod.at, syzkaller-bugs@googlegroups.com, 
+ vigneshr@ti.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200522_154233_954958_E1785964 
-X-CRM114-Status: GOOD (  13.05  )
+X-CRM114-CacheID: sfid-20200523_073716_073043_E4102C24 
+X-CRM114-Status: UNSURE (   5.13  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,157 +82,118 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Mason Yang <masonccyang@mxic.com.tw>,
- Boris Brezillon <boris.brezillon@collabora.com>, Sekhar Nori <nsekhar@ti.com>,
- Pratyush Yadav <p.yadav@ti.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Since this flash doesn't have a Profile 1.0 table, the Octal DTR
-capabilities are enabled in the post SFDP fixup, along with the 8D-8D-8D
-fast read settings.
+syzbot has found a reproducer for the following crash on:
 
-Enable Octal DTR mode with 20 dummy cycles to allow running at the
-maximum supported frequency of 200Mhz.
+HEAD commit:    c11d28ab Add linux-next specific files for 20200522
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=158d1baa100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3f6dbdea4159fb66
+dashboard link: https://syzkaller.appspot.com/bug?extid=0ce97ea45b008ba3b8bd
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14b23f06100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=111b0172100000
 
-The flash supports the soft reset sequence. So, add the flag in the
-flash's info.
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+0ce97ea45b008ba3b8bd@syzkaller.appspotmail.com
 
-Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
----
- drivers/mtd/spi-nor/micron-st.c | 112 +++++++++++++++++++++++++++++++-
- 1 file changed, 111 insertions(+), 1 deletion(-)
+ubi0: detaching mtd0
+==================================================================
+BUG: KASAN: use-after-free in uif_close+0x15e/0x190 drivers/mtd/ubi/build.c:502
+Read of size 4 at addr ffff8880a6ff09e8 by task syz-executor247/8078
 
-diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
-index 3dca5b9af3b6..3414c44a5c96 100644
---- a/drivers/mtd/spi-nor/micron-st.c
-+++ b/drivers/mtd/spi-nor/micron-st.c
-@@ -8,10 +8,120 @@
- 
- #include "core.h"
- 
-+#define SPINOR_OP_MT_DTR_RD	0xfd	/* Fast Read opcode in DTR mode */
-+#define SPINOR_OP_MT_RD_ANY_REG	0x85	/* Read volatile register */
-+#define SPINOR_OP_MT_WR_ANY_REG	0x81	/* Write volatile register */
-+#define SPINOR_REG_MT_CFR0V	0x00	/* For setting octal DTR mode */
-+#define SPINOR_REG_MT_CFR1V	0x01	/* For setting dummy cycles */
-+#define SPINOR_MT_DTR_NO_DQS	0xc7	/* Enable Octal DTR without DQS. */
-+#define SPINOR_MT_EXSPI		0xff	/* Enable Extended SPI (default) */
-+
-+static int spi_nor_micron_octal_dtr_enable(struct spi_nor *nor, bool enable)
-+{
-+	struct spi_mem_op op;
-+	u8 *buf = nor->bouncebuf;
-+	u8 addr_width;
-+	int ret;
-+
-+	if (enable)
-+		addr_width = 3;
-+	else
-+		addr_width = 4;
-+
-+	ret = spi_nor_write_enable(nor);
-+	if (ret)
-+		return ret;
-+
-+	if (enable)
-+		*buf = SPINOR_MT_DTR_NO_DQS;
-+	else
-+		*buf = SPINOR_MT_EXSPI;
-+	op = (struct spi_mem_op)
-+		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_MT_WR_ANY_REG, 1),
-+			   SPI_MEM_OP_ADDR(addr_width, SPINOR_REG_MT_CFR0V, 1),
-+			   SPI_MEM_OP_NO_DUMMY,
-+			   SPI_MEM_OP_DATA_OUT(1, buf, 1));
-+
-+	if (!enable)
-+		spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
-+
-+	ret = spi_mem_exec_op(nor->spimem, &op);
-+	if (ret) {
-+		dev_err(nor->dev, "Failed to enable octal DTR mode\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int mt35xu512aba_setup(struct spi_nor *nor,
-+			      const struct spi_nor_hwcaps *hwcaps)
-+{
-+	struct spi_mem_op op;
-+	u8 *buf = nor->bouncebuf;
-+	u8 addr_width = 3;
-+	int ret;
-+
-+	if (!nor->spimem) {
-+		dev_err(nor->dev,
-+			"operation not supported for non-spimem drivers\n");
-+		return -ENOTSUPP;
-+	}
-+
-+	/* Set dummy cycles for Fast Read to the default of 20. */
-+	ret = spi_nor_write_enable(nor);
-+	if (ret)
-+		return ret;
-+
-+	*buf = 20;
-+	op = (struct spi_mem_op)
-+		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_MT_WR_ANY_REG, 1),
-+			   SPI_MEM_OP_ADDR(addr_width, SPINOR_REG_MT_CFR1V, 1),
-+			   SPI_MEM_OP_NO_DUMMY,
-+			   SPI_MEM_OP_DATA_OUT(1, buf, 1));
-+	ret = spi_mem_exec_op(nor->spimem, &op);
-+	if (ret)
-+		return ret;
-+
-+	ret = spi_nor_wait_till_ready(nor);
-+	if (ret)
-+		return ret;
-+
-+
-+	return spi_nor_default_setup(nor, hwcaps);
-+}
-+
-+static void mt35xu512aba_default_init(struct spi_nor *nor)
-+{
-+	nor->params->octal_dtr_enable = spi_nor_micron_octal_dtr_enable;
-+	nor->params->setup = mt35xu512aba_setup;
-+}
-+
-+static void mt35xu512aba_post_sfdp_fixup(struct spi_nor *nor)
-+{
-+	/* Set the Fast Read settings. */
-+	nor->params->hwcaps.mask |= SNOR_HWCAPS_READ_8_8_8_DTR;
-+	spi_nor_set_read_settings(&nor->params->reads[SNOR_CMD_READ_8_8_8_DTR],
-+				  0, 20, SPINOR_OP_MT_DTR_RD,
-+				  SNOR_PROTO_8_8_8_DTR);
-+
-+	nor->params->hwcaps.mask |= SNOR_HWCAPS_PP_8_8_8_DTR;
-+
-+	nor->cmd_ext_type = SPI_NOR_EXT_REPEAT;
-+	nor->params->rdsr_dummy = 8;
-+	nor->params->rdsr_addr_nbytes = 0;
-+}
-+
-+static struct spi_nor_fixups mt35xu512aba_fixups = {
-+	.default_init = mt35xu512aba_default_init,
-+	.post_sfdp = mt35xu512aba_post_sfdp_fixup,
-+};
-+
- static const struct flash_info micron_parts[] = {
- 	{ "mt35xu512aba", INFO(0x2c5b1a, 0, 128 * 1024, 512,
- 			       SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
--			       SPI_NOR_4B_OPCODES) },
-+			       SPI_NOR_4B_OPCODES | SPI_NOR_OCTAL_DTR_READ)
-+		.fixups = &mt35xu512aba_fixups},
- 	{ "mt35xu02g", INFO(0x2c5b1c, 0, 128 * 1024, 2048,
- 			    SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
- 			    SPI_NOR_4B_OPCODES) },
--- 
-2.26.2
+CPU: 1 PID: 8078 Comm: syz-executor247 Not tainted 5.7.0-rc6-next-20200522-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0xd3/0x413 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+ uif_close+0x15e/0x190 drivers/mtd/ubi/build.c:502
+ ubi_detach_mtd_dev+0x226/0x432 drivers/mtd/ubi/build.c:1110
+ ctrl_cdev_ioctl+0x1bf/0x2b0 drivers/mtd/ubi/cdev.c:1068
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ ksys_ioctl+0x11a/0x180 fs/ioctl.c:753
+ __do_sys_ioctl fs/ioctl.c:762 [inline]
+ __se_sys_ioctl fs/ioctl.c:760 [inline]
+ __x64_sys_ioctl+0x6f/0xb0 fs/ioctl.c:760
+ do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
+ entry_SYSCALL_64_after_hwframe+0x49/0xb3
+RIP: 0033:0x44af69
+Code: e8 7c e6 ff ff 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 1b 05 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f48c29a8ce8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00000000006e7a08 RCX: 000000000044af69
+RDX: 000000000076006e RSI: 0000000040046f41 RDI: 0000000000000003
+RBP: 00000000006e7a00 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006e7a0c
+R13: 00007ffe9ed2c70f R14: 00007f48c29a99c0 R15: 20c49ba5e353f7cf
+
+Allocated by task 8070:
+ save_stack+0x1b/0x40 mm/kasan/common.c:48
+ set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc mm/kasan/common.c:494 [inline]
+ __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:467
+ kmem_cache_alloc_trace+0x153/0x7d0 mm/slab.c:3551
+ kmalloc include/linux/slab.h:555 [inline]
+ kzalloc include/linux/slab.h:669 [inline]
+ ubi_attach_mtd_dev+0x2e7/0x27c0 drivers/mtd/ubi/build.c:901
+ ctrl_cdev_ioctl+0x229/0x2b0 drivers/mtd/ubi/cdev.c:1043
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ ksys_ioctl+0x11a/0x180 fs/ioctl.c:753
+ __do_sys_ioctl fs/ioctl.c:762 [inline]
+ __se_sys_ioctl fs/ioctl.c:760 [inline]
+ __x64_sys_ioctl+0x6f/0xb0 fs/ioctl.c:760
+ do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
+ entry_SYSCALL_64_after_hwframe+0x49/0xb3
+
+Freed by task 8078:
+ save_stack+0x1b/0x40 mm/kasan/common.c:48
+ set_track mm/kasan/common.c:56 [inline]
+ kasan_set_free_info mm/kasan/common.c:316 [inline]
+ __kasan_slab_free+0xf7/0x140 mm/kasan/common.c:455
+ __cache_free mm/slab.c:3426 [inline]
+ kfree+0x109/0x2b0 mm/slab.c:3757
+ device_release+0x71/0x200 drivers/base/core.c:1541
+ kobject_cleanup lib/kobject.c:701 [inline]
+ kobject_release lib/kobject.c:732 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ kobject_put+0x1c8/0x2f0 lib/kobject.c:749
+ cdev_device_del+0x69/0x80 fs/char_dev.c:575
+ uif_close+0xea/0x190 drivers/mtd/ubi/build.c:501
+ ubi_detach_mtd_dev+0x226/0x432 drivers/mtd/ubi/build.c:1110
+ ctrl_cdev_ioctl+0x1bf/0x2b0 drivers/mtd/ubi/cdev.c:1068
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ ksys_ioctl+0x11a/0x180 fs/ioctl.c:753
+ __do_sys_ioctl fs/ioctl.c:762 [inline]
+ __se_sys_ioctl fs/ioctl.c:760 [inline]
+ __x64_sys_ioctl+0x6f/0xb0 fs/ioctl.c:760
+ do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
+ entry_SYSCALL_64_after_hwframe+0x49/0xb3
+
+The buggy address belongs to the object at ffff8880a6ff0000
+ which belongs to the cache kmalloc-8k of size 8192
+The buggy address is located 2536 bytes inside of
+ 8192-byte region [ffff8880a6ff0000, ffff8880a6ff2000)
+The buggy address belongs to the page:
+page:ffffea00029bfc00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 head:ffffea00029bfc00 order:2 compound_mapcount:0 compound_pincount:0
+flags: 0xfffe0000010200(slab|head)
+raw: 00fffe0000010200 ffffea0002382708 ffffea00028eb008 ffff8880aa0021c0
+raw: 0000000000000000 ffff8880a6ff0000 0000000100000001 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff8880a6ff0880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff8880a6ff0900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff8880a6ff0980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                                          ^
+ ffff8880a6ff0a00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff8880a6ff0a80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
 
 
 ______________________________________________________
