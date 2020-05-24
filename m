@@ -2,22 +2,22 @@ Return-Path: <SRS0=Oy4p=7G=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-6.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D636C433E0
-	for <linux-mtd@archiver.kernel.org>; Sun, 24 May 2020 21:37:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ABCABC433DF
+	for <linux-mtd@archiver.kernel.org>; Sun, 24 May 2020 21:40:10 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5227F204EF
-	for <linux-mtd@archiver.kernel.org>; Sun, 24 May 2020 21:37:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 77D2A207FB
+	for <linux-mtd@archiver.kernel.org>; Sun, 24 May 2020 21:40:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="suCVB2Oy";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ooosN1a9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5227F204EF
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="r1XKGIgk";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lGVJ5PjZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 77D2A207FB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,60 +26,59 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=e1C9acxXgGp4VJ3ayA7W7+aIUJM610xh2oX4eYqsPEE=; b=suCVB2OyvGkr/f
-	gniyOxYHZklUkDUnZUbEdFC3ub59zH10sCgJ5SFB+oQSRHNmzQwZs2hkQrY648Pt9J44Cc/yGzAmC
-	4pdkJ6GaIgo867dVZrdAClMKUYy5p/vqCzmvjggHTe96ysjAuLE4QdBkolMfg1Xm0yAyNt4olSfEp
-	ujkdmkeZcMljYW56K+gmbCwXTE5sGh+ipPZRg6q+bIOSQAPkU3/wcmmvbTl8fO9nIqIF4/JZrikEn
-	SCyLy2DWuNInpY3/QzdulQufGISGy1kraI40VnyQin42uo3XiY4X5DgPe73iR+2lm+w7QNNwQncfr
-	gK6uGRVhA3q75umtN+gA==;
+	List-Owner; bh=KDrX1pawAloArqTfhUlUFL7jNd+iwo2Ey0N0cO+NdRI=; b=r1XKGIgkeRNvET
+	jsNaGCTZco2u92F6u4SVOdcEIW/oPtyPjQmlZ+VynXSfE8vN02fa6eY9MfC1QCVjGhh26Ss47Nx88
+	25mZ0WFvxdRd4KFF4pVJgT7NpU5Py2jWMF1x/fMNjNS11OvO3Dv1CkqOb0MHo6EcJ8MZdFynannzE
+	Z3lFU9Smp6qYGP8Zv6nVUl40l+rboipuz0KGcWNRo4xgTuiKAYoHTl6h5J8LD0oORxbfWaAnpTfsV
+	xXlgFUDaSteHeO1ZorL9rAmiDOicubAe4OSa4RIQ7tG94WV6/iv6G52sotq+g3kKDf/AtXZW1d5yh
+	IZ6EuupCbpbD3VYhI49w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jcyJG-0005RE-SP; Sun, 24 May 2020 21:37:30 +0000
-Received: from mail-qt1-x843.google.com ([2607:f8b0:4864:20::843])
+	id 1jcyLf-0005nk-2f; Sun, 24 May 2020 21:39:59 +0000
+Received: from mail-qt1-x842.google.com ([2607:f8b0:4864:20::842])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jcyJE-0005Qh-AZ
- for linux-mtd@lists.infradead.org; Sun, 24 May 2020 21:37:29 +0000
-Received: by mail-qt1-x843.google.com with SMTP id a23so12631366qto.1
- for <linux-mtd@lists.infradead.org>; Sun, 24 May 2020 14:37:25 -0700 (PDT)
+ id 1jcyLc-0005nI-25
+ for linux-mtd@lists.infradead.org; Sun, 24 May 2020 21:39:57 +0000
+Received: by mail-qt1-x842.google.com with SMTP id v4so12620519qte.3
+ for <linux-mtd@lists.infradead.org>; Sun, 24 May 2020 14:39:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=cPqEORj2aZiuNCYLTIhgC5NbG10KitnTK1sIy1C9g2c=;
- b=ooosN1a92ljS60e3xUm07BGZAQKJb2vDWhcgWbUXxcz9NLmgoI538k1XN/Gcg9MQYs
- q+OY0C+nfcwGzlAocqMhca6Dj354Q+rTrNT0z+qYtZge1Pl918FOGSQirDJmhE2CFBnC
- nDjo0xfdhw1tvom9kw5FPcEaDObhSMw/dTVZqjCeOvSxI+f4U3Hn6omqPW5WN9G3veUZ
- UnHHj3VdO72WfQBxabgy4sJ8bv4qOT7ptGKrmGKYt/MKIX4j6dNq8o67tcYJibXqi50M
- 3I+nRiRrmVDHmPoW84oo2S0SB9q89nsBKQPniVayrSlmnsIZmtwnorCJjcmVuty1XFWK
- +TPA==
+ :cc; bh=c6U8M3uiY3KxKv0abfkt8b3IstKJVE4yKExXzMtLcKI=;
+ b=lGVJ5PjZ4f9edCe+CgK0H2qCy5NRMEaGHF0o9SbGxaWJWY26iqh5MZyb7SSBCj2a8R
+ 4T1v+AZaUZ8U25ETy2afx+uRpYPadY3WYAf1LU4DHL4hyVcJsPbaMfDhg57gLJO0Tkku
+ M9HO2zfMPJGRw7MIoiLrKyz7nRYA+HZGUFKztpDWmmFsJkyfDeGR9jwa5/AABFxJIVjN
+ qpjcYxG05VLdK9ONBq2TWZ5qDqgckaMRfSwCNW3/410GUL9wlkNzu9epoZJgIdBVJSXH
+ 3oYvN9esth7k0ory+OHwdQwW0CFmFnslW84fdqYg2SaZCzIZskU5PY7lZ36RKgl3B0T3
+ ffpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=cPqEORj2aZiuNCYLTIhgC5NbG10KitnTK1sIy1C9g2c=;
- b=BPVP351Zo+10yrqB/jaSntX6BO3MYh/Ui3ty/opTDLnAbUpERLQIkSgcChBbN6CP7K
- BBepeRShsX+xhUPwA4w5aNYDZ4yKp50hEtqOqsQMkWcbJTPETb5XA4O9IYUKPYBRiOTh
- Ohr2wkcyhdC/rz59qgM0hsG6T+5ngMJLoBUMVYI2OpCVsY4/mhFwZMkQpUKsuz5loeaO
- s4JlDHVpusb6WPz1YE+AElcj5/0For8GmziMK75YVhoCtI1eWxaAoJ9NVQuyecxO58r4
- wkrHCWt42kZd+R29fF3brjo/Lu/a3mEIQPVoyC2jhfU/YUWOGrMz7HJfl7Xz+dAUAB1S
- AdPQ==
-X-Gm-Message-State: AOAM5314gvdjmB1HY+jstzLifAlSifJMfQTnVpJ9du860xM4TlBXl8cW
- TV54Rf4F6LatihQqA+c59EMGzcpNtFfTSta3saQ=
-X-Google-Smtp-Source: ABdhPJxqlP2qq1jPoDsgGTNUm4DAUWSw35Y/t3k4WUAbjcUuoAeAqhL2ui+8oD+4Uup0FgVAbUvfI0es53TyZRXIVyI=
-X-Received: by 2002:ac8:3f88:: with SMTP id d8mr1643183qtk.164.1590356244593; 
- Sun, 24 May 2020 14:37:24 -0700 (PDT)
+ bh=c6U8M3uiY3KxKv0abfkt8b3IstKJVE4yKExXzMtLcKI=;
+ b=Xyp6GKaIHKhIv9Dxg4zaDg5wm7W7dvVvMOhyLSs16/jWOj3uGZlYcNmsvuxi+2J/Wv
+ aoX6C5SrT8mXMDwJGmh5RV1fa9xRikmtMrVjCUgzDMfpb8ES/2fG3aR1/oE3Oecxrucn
+ ArgSvOJAX7Ud9mrdoYAr3sEpitoweTzqnaSZDsY+PuNabyapKwSUZnPq5/sh/fSa3Pd1
+ rBJTUFGqIZ0FGmmv5+wo5Pqym5FTAtbmZtQUQBPFxIq7AIeQzWYMzZeyO7Dp5B16wrmN
+ ri5BP0rNSDNFB0zpR2tgQ2untmwEs5RMuAk9xn0XX033dmxndDz2H5QtGSrORwXuqMT2
+ AMsg==
+X-Gm-Message-State: AOAM533E9bSw991k9psdv5s3MnNWu4v2e69+QbwN2PLQoYEPTUoMW08p
+ o70uowoJE+cQFGqkHOfICEA9JAm9gHdUZR+CJuA=
+X-Google-Smtp-Source: ABdhPJzBBPXxmteLywE/LHNgcE1DmRs00Pn27xvju63xWuN6ybjpFHPEOfV49p25jdL2ZrPNE5OofbnZtwzrTCeMq28=
+X-Received: by 2002:ac8:3f88:: with SMTP id d8mr1648078qtk.164.1590356394852; 
+ Sun, 24 May 2020 14:39:54 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200509191431.15862-1-miquel.raynal@bootlin.com>
- <20200509191431.15862-18-miquel.raynal@bootlin.com>
-In-Reply-To: <20200509191431.15862-18-miquel.raynal@bootlin.com>
+ <20200509191431.15862-16-miquel.raynal@bootlin.com>
+In-Reply-To: <20200509191431.15862-16-miquel.raynal@bootlin.com>
 From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Sun, 24 May 2020 23:37:13 +0200
-Message-ID: <CAFLxGvzU2ESxZ74cve9w=CLBY2v95MMMJqzOFEmCAhVHYF5VvA@mail.gmail.com>
-Subject: Re: [PATCH 17/17] mtd: rawnand: nandsim: Reorganize
- ns_cleanup_module()
+Date: Sun, 24 May 2020 23:39:43 +0200
+Message-ID: <CAFLxGvwPutAzkhWo=hT51F4+KDAS52O0AFgv+jiQUv+Z1Ct0Fw@mail.gmail.com>
+Subject: Re: [PATCH 15/17] mtd: rawnand: nandsim: Manage lists on error in
+ ns_init_module()
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200524_143728_381829_93647947 
-X-CRM114-Status: UNSURE (   7.71  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200524_143956_100505_76111940 
+X-CRM114-Status: GOOD (  17.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,21 +100,88 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On Sat, May 9, 2020 at 9:19 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
->         ns_debugfs_remove(ns);
-> -       ns_free(ns);    /* Free nandsim private resources */
-> -       nand_release(chip); /* Unregister driver */
-> -       kfree(ns);        /* Free other structures */
-> -       ns_free_lists();
-> +       WARN_ON(mtd_device_unregister(nsmtd));
-> +       ns_free(ns);
-> +       kfree(erase_block_wear);
-> +       nand_cleanup(chip);
+>
+> Lists are filled with calls to ns_parse_weakblocks(),
+> ns_parse_weakpages() and ns_parse_gravepages(). Handle them in the
+> error path, all at the same time.
+>
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+>  drivers/mtd/nand/raw/nandsim.c | 23 +++++++++++++++++++----
+>  1 file changed, 19 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/raw/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
+> index e41866e49206..26d23ab5b794 100644
+> --- a/drivers/mtd/nand/raw/nandsim.c
+> +++ b/drivers/mtd/nand/raw/nandsim.c
+> @@ -2273,6 +2273,7 @@ static const struct nand_controller_ops ns_controller_ops = {
+>   */
+>  static int __init ns_init_module(void)
+>  {
+> +       struct list_head *pos, *n;
+>         struct nand_chip *chip;
+>         struct nandsim *ns;
+>         int ret;
+> @@ -2340,11 +2341,11 @@ static int __init ns_init_module(void)
+>
+>         ret = ns_parse_weakpages();
+>         if (ret)
+> -               goto error;
+> +               goto free_wb_list;
+>
+>         ret = ns_parse_gravepages();
+>         if (ret)
+> -               goto error;
+> +               goto free_wp_list;
+>
+>         nand_controller_init(&ns->base);
+>         ns->base.ops = &ns_controller_ops;
+> @@ -2353,7 +2354,7 @@ static int __init ns_init_module(void)
+>         ret = nand_scan(chip, 1);
+>         if (ret) {
+>                 NS_ERR("Could not scan NAND Simulator device\n");
+> -               goto error;
+> +               goto free_gp_list;
+>         }
+>
+>         if (overridesize) {
+> @@ -2412,9 +2413,23 @@ static int __init ns_init_module(void)
+>         kfree(erase_block_wear);
+>  cleanup_nand:
+>         nand_cleanup(chip);
+> +free_gp_list:
 > +       list_for_each_safe(pos, n, &grave_pages) {
 > +               kfree(list_entry(pos, struct grave_page, list));
 > +               list_del(pos);
 
-Are you sure you can use pos after freeing the entry?
-Smells like use after free.
+Like said before, this pattern looks odd.
+
+> +       }
+> +free_wp_list:
+> +       list_for_each_safe(pos, n, &weak_pages) {
+> +               kfree(list_entry(pos, struct weak_page, list));
+> +               list_del(pos);
+> +       }
+> +free_wb_list:
+> +       list_for_each_safe(pos, n, &weak_blocks) {
+> +               kfree(list_entry(pos, struct weak_block, list));
+> +               list_del(pos);
+> +       }
+>  error:
+>         kfree(ns);
+> -       ns_free_lists();
+>
+>         return ret;
+>  }
+> --
+> 2.20.1
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+
 
 -- 
 Thanks,
