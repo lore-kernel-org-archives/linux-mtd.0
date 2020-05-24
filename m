@@ -2,62 +2,87 @@ Return-Path: <SRS0=Oy4p=7G=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC26AC433DF
-	for <linux-mtd@archiver.kernel.org>; Sun, 24 May 2020 20:18:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1406CC433E0
+	for <linux-mtd@archiver.kernel.org>; Sun, 24 May 2020 21:28:26 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 822562073B
-	for <linux-mtd@archiver.kernel.org>; Sun, 24 May 2020 20:18:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D68D720812
+	for <linux-mtd@archiver.kernel.org>; Sun, 24 May 2020 21:28:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VABa/use"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 822562073B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DizN0BhU";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ib6C/+YE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D68D720812
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=unWy4ztR8edB+nFh/ZzjAmr7E6qaGWUC1rxVuJxoOIc=; b=VABa/useI4th8z
-	mD8U1k4nOD+KyNuWiZPzhhfgMuHLLK92QKyu+r3zX2iFp9a8ZjqbgxiD0S+HiHV5sVj0JhS2K2JFT
-	+ygZommq5X+R0Yod8/fdoew01oPOf1ejTmdSbTA8j/CVg7NepNIPdwxMguTjZhS8vVIXvrVBr58wN
-	paihKp6kXFG4wFhdj/tqk8WLf8qOKIAgmeuq4khvYldne/4nt244h5l4b+jBA28OoZ3feiG1ffLjv
-	tvZ19j+aqrnqH+kwl7u8KL1jmlnhsrsFBgzOzsJANDIKFYdnoTJaZNKLKzpQGY934C54I0N0LRhSR
-	KDnU/AbSs8mkJQZzwCqQ==;
+	List-Owner; bh=V9eoG3T1Yp++mfqluUQAoIeoRe5ZipjMQVA12QjPNQU=; b=DizN0BhUi+jrce
+	sa6fwgG/g3y3ORNo7txaYywrRomcBSS7ywxL0mtgLDemD7wKZvbsJ7cmu3b9M60vLjjjilW7V7K9N
+	07AZ/SUwGirkiCtFTVfeZJZMQvUpw9XLp6FnaXca8oVE3FfRtBZzhwhuSqcOBfCyjLrt68I+sfNKJ
+	8VuCDjpvKRbfiXvpTYTip99mpIzmI8efab+a1TJ9HTZRL2944eH//oJIrAdEpk3snENFjFFn+Vjz8
+	AT+hViv6jSkSIvc3Sg9WKnxolRQAhLd8kg++CbJ2zmZ5K1djTHAVJCYP8Pn3c9TIUKTWFilFpLaoY
+	/RntFPVshZXBeBa/iGoQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jcx4b-0000Fe-UC; Sun, 24 May 2020 20:18:17 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1jcyA2-0007mg-Pd; Sun, 24 May 2020 21:27:58 +0000
+Received: from mail-qk1-x744.google.com ([2607:f8b0:4864:20::744])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jcx4O-00005z-AY; Sun, 24 May 2020 20:18:05 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 2A9BD26107D;
- Sun, 24 May 2020 21:18:02 +0100 (BST)
-Date: Sun, 24 May 2020 22:17:58 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Pratyush Yadav <p.yadav@ti.com>
-Subject: Re: [PATCH v8 02/19] spi: spi-mem: allow specifying a command's
- extension
-Message-ID: <20200524221758.7c30f336@collabora.com>
-In-Reply-To: <20200522224042.29970-3-p.yadav@ti.com>
-References: <20200522224042.29970-1-p.yadav@ti.com>
- <20200522224042.29970-3-p.yadav@ti.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1jcyA0-0007mN-Hl
+ for linux-mtd@lists.infradead.org; Sun, 24 May 2020 21:27:57 +0000
+Received: by mail-qk1-x744.google.com with SMTP id c185so1907447qke.7
+ for <linux-mtd@lists.infradead.org>; Sun, 24 May 2020 14:27:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=K+OEY7lK1Db+EgbE+rbT0EtjxC66i0NhuCxPpBJbiRs=;
+ b=ib6C/+YEc/fcU7rZocmLNanXn6/Gw2Wcj8LfOPbr1ZYU5PUjE8b/5dgftC+Updpd5/
+ KCsjPELoDLZC5AyF3V5fKAT16kb7nWuQHvrhAF+cUp3JebdybTfQWV+1kDyqm+Np425r
+ uyfwcUb/kjPwUgfg6gm1Sgw7GHbnu5UdAgdrq41dWvexhj82Z6sjNV2+fsAWNbrlc/EF
+ hRNjezr36EqkggxNJNfi0lYqA79ujUgGrziHZ2oWAYcKp4FvJHEYiGO+oPTuSrDsVkc1
+ NKMCWlAsBsuZnnqTU60v4Gh6garoByN9ITrBmqKseanFdwKEwqsCUuDiCXozNFC6es5x
+ FEjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=K+OEY7lK1Db+EgbE+rbT0EtjxC66i0NhuCxPpBJbiRs=;
+ b=tlAWwKIHyGraiL1+LDxiLzAxXXqg5ibcskK/lKqVAswNQJDJWxtcvG/TuijfMxoeoD
+ HPnRoA9Nz+CotPvcgvVA2X85e1vsMMMpg54xORr3Fykp/woTurp4E608fYPPkBZowPVy
+ P12i4U6/avr6pbQMlT7sYE8S/XXAm6AYEqHCR329XM/cu7T8g5190l1S6c+tH3+Nk4vP
+ 6ivJQSHD2TiPp8pQEpU0PPQcEn+ECBgefTLEIU2H2E69JilztWDx2GcfKwVxDDkM0Bdt
+ g7j8Z91zqdp14hRft8t56pEPOGYFb6hmgZpSj2rOnHxQYSoJnLkFyw9NdUvlz4O0Km2X
+ Qa1A==
+X-Gm-Message-State: AOAM532SyY20lcpJ/iFvP6oLvsdSrnJSS9wq70TFLigGIdQS1uH1Yq/V
+ LFjEAmDUIiAA+c29XbfcVTo3PruLEkHb8y6g31Y=
+X-Google-Smtp-Source: ABdhPJyFvWYLRqodwEfmUn70oAW9SG6P709a98yc3yKjquKNcWHG3n/QI1llG6aSt0Z5018fJ9wAt8lIYNSHD3buiNE=
+X-Received: by 2002:a05:620a:15f4:: with SMTP id
+ p20mr10202561qkm.283.1590355674568; 
+ Sun, 24 May 2020 14:27:54 -0700 (PDT)
 MIME-Version: 1.0
+References: <20200509191431.15862-1-miquel.raynal@bootlin.com>
+ <20200509191431.15862-7-miquel.raynal@bootlin.com>
+ <1221365235.202803.1589056980096.JavaMail.zimbra@nod.at>
+ <20200510002949.6ef593ba@xps13>
+In-Reply-To: <20200510002949.6ef593ba@xps13>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Sun, 24 May 2020 23:27:43 +0200
+Message-ID: <CAFLxGvy58k35yMpxRTidq68dr3R1d+aFF0mmxsz6T=q2fajx0A@mail.gmail.com>
+Subject: Re: [PATCH 06/17] mtd: rawnand: nandsim: Remove debugfs entries at
+ unload time
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200524_131804_493015_B8CF42F1 
-X-CRM114-Status: GOOD (  13.70  )
+X-CRM114-CacheID: sfid-20200524_142756_587716_5135A200 
+X-CRM114-Status: GOOD (  18.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,91 +94,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Mason Yang <masonccyang@mxic.com.tw>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, Sekhar Nori <nsekhar@ti.com>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Michal Simek <michal.simek@xilinx.com>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Matthias Brugger <matthias.bgg@gmail.com>, linux-mediatek@lists.infradead.org,
- linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>, dedekind@infradead.org,
+ Richard Weinberger <richard@nod.at>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, 23 May 2020 04:10:25 +0530
-Pratyush Yadav <p.yadav@ti.com> wrote:
-
-> diff --git a/drivers/spi/spi-mxic.c b/drivers/spi/spi-mxic.c
-> index 69491f3a515d..4e4292f0ee1d 100644
-> --- a/drivers/spi/spi-mxic.c
-> +++ b/drivers/spi/spi-mxic.c
-> @@ -356,6 +356,7 @@ static int mxic_spi_mem_exec_op(struct spi_mem *mem,
->  	int nio = 1, i, ret;
->  	u32 ss_ctrl;
->  	u8 addr[8];
-> +	u8 opcode = op->cmd.opcode & 0xff;
-
-You don't need the '& 0xff' here, the cast to an u8 will truncate the
-value anyway.
-
->  
->  	ret = mxic_spi_set_freq(mxic, mem->spi->max_speed_hz);
->  	if (ret)
-> @@ -393,7 +394,7 @@ static int mxic_spi_mem_exec_op(struct spi_mem *mem,
->  	writel(readl(mxic->regs + HC_CFG) | HC_CFG_MAN_CS_ASSERT,
->  	       mxic->regs + HC_CFG);
->  
-> -	ret = mxic_spi_data_xfer(mxic, &op->cmd.opcode, NULL, 1);
-> +	ret = mxic_spi_data_xfer(mxic, &opcode, NULL, 1);
->  	if (ret)
->  		goto out;
->  
-> diff --git a/drivers/spi/spi-zynq-qspi.c b/drivers/spi/spi-zynq-qspi.c
-> index 17641157354d..41389856e14a 100644
-> --- a/drivers/spi/spi-zynq-qspi.c
-> +++ b/drivers/spi/spi-zynq-qspi.c
-> @@ -527,20 +527,21 @@ static int zynq_qspi_exec_mem_op(struct spi_mem *mem,
->  	struct zynq_qspi *xqspi = spi_controller_get_devdata(mem->spi->master);
->  	int err = 0, i;
->  	u8 *tmpbuf;
-> +	u8 opcode = op->cmd.opcode & 0xff;
->  
-
-Ditto.
-
->  	dev_dbg(xqspi->dev, "cmd:%#x mode:%d.%d.%d.%d\n",
-> -		op->cmd.opcode, op->cmd.buswidth, op->addr.buswidth,
-> +		opcode, op->cmd.buswidth, op->addr.buswidth,
->  		op->dummy.buswidth, op->data.buswidth);
->  
->  	zynq_qspi_chipselect(mem->spi, true);
->  	zynq_qspi_config_op(xqspi, mem->spi);
->  
-> -	if (op->cmd.opcode) {
-> +	if (opcode) {
-
-Unrelated to this patch, but this test is wrong. I don't see why we
-couldn't have a '0' opcode. The test should be dropped or done on the
-new op->cmd.nbytes field.
-
->  		reinit_completion(&xqspi->data_completion);
-> -		xqspi->txbuf = (u8 *)&op->cmd.opcode;
-> +		xqspi->txbuf = &opcode;
->  		xqspi->rxbuf = NULL;
-> -		xqspi->tx_bytes = sizeof(op->cmd.opcode);
-> -		xqspi->rx_bytes = sizeof(op->cmd.opcode);
-> +		xqspi->tx_bytes = op->cmd.nbytes;
-> +		xqspi->rx_bytes = op->cmd.nbytes;
->  		zynq_qspi_write_op(xqspi, ZYNQ_QSPI_FIFO_DEPTH, true);
->  		zynq_qspi_write(xqspi, ZYNQ_QSPI_IEN_OFFSET,
->  				ZYNQ_QSPI_IXR_RXTX_MASK);
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gU3VuLCBNYXkgMTAsIDIwMjAgYXQgMTI6MzAgQU0gTWlxdWVsIFJheW5hbAo8bWlxdWVsLnJh
+eW5hbEBib290bGluLmNvbT4gd3JvdGU6Cj4KPiBIaSBSaWNoYXJkLAo+Cj4gUmljaGFyZCBXZWlu
+YmVyZ2VyIDxyaWNoYXJkQG5vZC5hdD4gd3JvdGUgb24gU2F0LCA5IE1heSAyMDIwIDIyOjQzOjAw
+Cj4gKzAyMDAgKENFU1QpOgo+Cj4gPiAtLS0tLSBVcnNwcsO8bmdsaWNoZSBNYWlsIC0tLS0tCj4g
+PiA+IFZvbjogIk1pcXVlbCBSYXluYWwiIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPgo+ID4g
+PiBBbjogInJpY2hhcmQiIDxyaWNoYXJkQG5vZC5hdD4sICJWaWduZXNoIFJhZ2hhdmVuZHJhIiA8
+dmlnbmVzaHJAdGkuY29tPiwgIlR1ZG9yIEFtYmFydXMiIDxUdWRvci5BbWJhcnVzQG1pY3JvY2hp
+cC5jb20+LAo+ID4gPiAibGludXgtbXRkIiA8bGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc+
+Cj4gPiA+IENDOiAiQm9yaXMgQnJlemlsbG9uIiA8Ym9yaXMuYnJlemlsbG9uQGNvbGxhYm9yYS5j
+b20+LCBkZWRla2luZEBpbmZyYWRlYWQub3JnLCAiTWlxdWVsIFJheW5hbCIKPiA+ID4gPG1pcXVl
+bC5yYXluYWxAYm9vdGxpbi5jb20+Cj4gPiA+IEdlc2VuZGV0OiBTYW1zdGFnLCA5LiBNYWkgMjAy
+MCAyMToxNDoxOQo+ID4gPiBCZXRyZWZmOiBbUEFUQ0ggMDYvMTddIG10ZDogcmF3bmFuZDogbmFu
+ZHNpbTogUmVtb3ZlIGRlYnVnZnMgZW50cmllcyBhdCB1bmxvYWQgdGltZQo+ID4KPiA+ID4gQ3Jl
+YXRlIGEgbnNfZGVidWdmc19yZW1vdmUoKSBoZWxwZXIgZm9yIHRoYXQgYW5kIGNhbGwgaXQgaW4K
+PiA+ID4gbnNfY2xlYW51cF9tb2R1bGUoKS4KPiA+ID4KPiA+ID4gU2lnbmVkLW9mZi1ieTogTWlx
+dWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4KPiA+ID4gLS0tCj4gPiA+IGRy
+aXZlcnMvbXRkL25hbmQvcmF3L25hbmRzaW0uYyB8IDYgKysrKysrCj4gPiA+IDEgZmlsZSBjaGFu
+Z2VkLCA2IGluc2VydGlvbnMoKykKPiA+ID4KPiA+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRk
+L25hbmQvcmF3L25hbmRzaW0uYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRzaW0uYwo+ID4g
+PiBpbmRleCBjOGU5YzcwYTY2NDEuLjc4NjJjNjVlMzJhZCAxMDA2NDQKPiA+ID4gLS0tIGEvZHJp
+dmVycy9tdGQvbmFuZC9yYXcvbmFuZHNpbS5jCj4gPiA+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQv
+cmF3L25hbmRzaW0uYwo+ID4gPiBAQCAtNTIwLDYgKzUyMCwxMSBAQCBzdGF0aWMgaW50IG5zX2Rl
+YnVnZnNfY3JlYXRlKHN0cnVjdCBuYW5kc2ltICpucykKPiA+ID4gICAgIHJldHVybiAwOwo+ID4g
+PiB9Cj4gPiA+Cj4gPiA+ICtzdGF0aWMgdm9pZCBuc19kZWJ1Z2ZzX3JlbW92ZShzdHJ1Y3QgbmFu
+ZHNpbSAqbnMpCj4gPiA+ICt7Cj4gPiA+ICsgICBkZWJ1Z2ZzX3JlbW92ZShucy0+ZGVudCk7Cj4g
+PiA+ICt9Cj4gPiA+ICsKPiA+ID4gLyoKPiA+ID4gICogQWxsb2NhdGUgYXJyYXkgb2YgcGFnZSBw
+b2ludGVycywgY3JlYXRlIHNsYWIgYWxsb2NhdGlvbiBmb3IgYW4gYXJyYXkKPiA+ID4gICogYW5k
+IGluaXRpYWxpemUgdGhlIGFycmF5IGJ5IE5VTEwgcG9pbnRlcnMuCj4gPiA+IEBAIC0yMzk4LDYg
+KzI0MDMsNyBAQCBzdGF0aWMgdm9pZCBfX2V4aXQgbnNfY2xlYW51cF9tb2R1bGUodm9pZCkKPiA+
+ID4gICAgIHN0cnVjdCBuYW5kc2ltICpucyA9IG5hbmRfZ2V0X2NvbnRyb2xsZXJfZGF0YShjaGlw
+KTsKPiA+ID4gICAgIGludCBpOwo+ID4gPgo+ID4gPiArICAgbnNfZGVidWdmc19yZW1vdmUobnMp
+Owo+ID4gPiAgICAgbnNfZnJlZShucyk7ICAgIC8qIEZyZWUgbmFuZHNpbSBwcml2YXRlIHJlc291
+cmNlcyAqLwo+ID4KPiA+IFdoeSBpcyB0aGlzIHNwZWNpYWwgYW5kIGNhbm5vdCBkb25lIGluIG5z
+X2ZyZWUoKT8KPiA+Cj4KPiBuc19kZWJ1Z2ZzX2NyZWF0ZSgpIGlzIGNhbGxlZCBpbiBuc19pbml0
+X21vZHVsZSgpLCBzbyBmb3IgbWUgaXQgaXMKPiBuYXR1cmFsIHRvIGNhbGwgbnNfZGVidWdmc19y
+ZW1vdmUgaW4gbnNfY2xlYW51cF9tb2R1bGUoKS4gTW9yZSB0aGFuCj4gY2FsbGluZyBpdCBmcm9t
+IG5zX2ZyZWUoKSB3aGljaCBpcyB0aGUgc3ltbWV0cnkgb2YgbnNfaW5pdCgpLiBObz8KCk9rYXku
+IE1ha2VzIHNlbnNlLgoKLS0gClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24g
+bWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
+bGludXgtbXRkLwo=
