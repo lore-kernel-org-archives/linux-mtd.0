@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0171C433E0
-	for <linux-mtd@archiver.kernel.org>; Sun, 24 May 2020 19:15:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 553A4C433DF
+	for <linux-mtd@archiver.kernel.org>; Sun, 24 May 2020 19:16:01 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A3E51207D8
-	for <linux-mtd@archiver.kernel.org>; Sun, 24 May 2020 19:15:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2457F207D8
+	for <linux-mtd@archiver.kernel.org>; Sun, 24 May 2020 19:16:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rmkBEZ/d"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A3E51207D8
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ZRwVcIr6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2457F207D8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lnTyOySjFmgKddORNFjlitQYrkI+fKwXs5gpY+zXorQ=; b=rmkBEZ/d0ctCuj
-	IaRY+5D8Aon2EQWyZYT4skv7PHYbOdCyJgl87LHsvpXR7QRUVAGCD5/jQ0sglPPfsBR9bgj2Jl3wM
-	+boeNZpSZed5Os899k08XEG79OC+TCZNyTqDhATrSsGKppj1+QQB9BuTtM514UJESneiKG/V022aE
-	7MkQKE1lOkMK0oaWuNS5DmeHLiS9GtbWjF9T5BtTu4nXcoWSp4LObmukL6/BgNtYw9WhR9wFpYDrg
-	Q+wM6CbqgeRzd8J6mJRvVqgz3tlwFJeJt1Sayh/ZftYjUlba4z34ESit60LngRLMeOsfmF9LLrX85
-	ci09NYAF4XIPk7E/o0sw==;
+	List-Owner; bh=AJiswNj6ZwBFbHD105F+fz+RcZIbpjM++QtCOJ12n70=; b=ZRwVcIr6Iv47g5
+	n9p84KGILii+x6FuI0dMVEnyGBRvziZxZlltn6RT6/WJKyR867Boyst8plVTZ3ZAvlIeuQm8xwmwD
+	+MW/3pjTiYwGxMisn8JXY5SSLJ8y+3ZW4DA7m1gZBZ2LSDSDzsXFWn1/2YAZumJxwd6itO9PRzxcl
+	rTMsgLJZoZm/YjkiHpBVQwAz3L8M9/9iWFTPWg17V0N1Yp/1bMGbQRS+Ks3aUnN+T4WLko6+CpV81
+	y+9M73XlQnr89vtVsWWkDSx+ie/ZR/Rd1ZYYg+VvSo2iCXP6xrk4/SVWICsrnjNwYrxZq38J2Jg4T
+	pHnrHCmWgcz2XYX9VckQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jcw5p-0000dg-3d; Sun, 24 May 2020 19:15:29 +0000
+	id 1jcw66-0000sh-Kf; Sun, 24 May 2020 19:15:46 +0000
 Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jcvxf-000598-23
- for linux-mtd@lists.infradead.org; Sun, 24 May 2020 19:07:05 +0000
+ id 1jcvxl-0005Dg-Ec
+ for linux-mtd@lists.infradead.org; Sun, 24 May 2020 19:07:11 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 4BD47240002;
- Sun, 24 May 2020 19:07:01 +0000 (UTC)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 6A897240002;
+ Sun, 24 May 2020 19:07:07 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 24/62] mtd: rawnand: lpc32xx_slc: Stop using
+Subject: Re: [PATCH v2 23/62] mtd: rawnand: lpc32xx_mlc: Stop using
  nand_release()
-Date: Sun, 24 May 2020 21:07:00 +0200
-Message-Id: <20200524190700.31122-1-miquel.raynal@bootlin.com>
+Date: Sun, 24 May 2020 21:07:06 +0200
+Message-Id: <20200524190706.31814-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200519130035.1883-25-miquel.raynal@bootlin.com>
+In-Reply-To: <20200519130035.1883-24-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 5b6635c302bbf869e8e9728df32f67746818ee0f
+X-linux-mtd-patch-commit: 6dd4e748fb662fdfc72010780410c96e77f48502
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200524_120703_273405_A466AD48 
+X-CRM114-CacheID: sfid-20200524_120709_707208_7EB3552C 
 X-CRM114-Status: UNSURE (   6.08  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
@@ -76,7 +76,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2020-05-19 at 12:59:57 UTC, Miquel Raynal wrote:
+On Tue, 2020-05-19 at 12:59:56 UTC, Miquel Raynal wrote:
 > This helper is not very useful and very often people get confused:
 > they use nand_release() instead of nand_cleanup().
 > 
