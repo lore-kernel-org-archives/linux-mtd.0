@@ -2,66 +2,67 @@ Return-Path: <SRS0=Oy4p=7G=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F12EEC433E0
-	for <linux-mtd@archiver.kernel.org>; Sun, 24 May 2020 19:33:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38151C433DF
+	for <linux-mtd@archiver.kernel.org>; Sun, 24 May 2020 19:33:53 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B61822073B
-	for <linux-mtd@archiver.kernel.org>; Sun, 24 May 2020 19:33:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CE21A2073B
+	for <linux-mtd@archiver.kernel.org>; Sun, 24 May 2020 19:33:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Ygr+Zp2H"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B61822073B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LaamunaA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CE21A2073B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
+	Message-ID:Subject:To:From:Date:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2VzBHhQKSsNx2ticT5tJrroua0lgTDWcAGG916rEHwI=; b=Ygr+Zp2Hgjmtlb
-	S5GoP50+3uFxhiAQxxYpLPMb96ciGJDIRBGoe7nrZZEqoshg1ru2S6NVFI9FdTCpNyfkWW2Pd/EuT
-	cxy2V/gpf0IFj0VfolctHp0VBKXn80U1quLqiMSVF1KEARQvy2etjl5ad4DOJRt55xF7BVIVZWVrY
-	gcxM+gxImgMBWNVrWA8FK2pdUnCzgAuJ2BWkZo3GYNgx6n2TaE3A5mz2zAmvT/rg7LeJzFN1rdJs0
-	vbb2S8AsDRmSJGbc+FRRypxLAxtnc5pZ7YPOG8eoLPbKxOpxfj7XIdxEtNYVzXFz72qIzHb3ttuh/
-	QnQ32haJJcuN/6FIyHpQ==;
+	List-Owner; bh=7VuBnAlJo9BlalTh2HBXxlbbU/wjrrKBzYAJJJXnsAU=; b=LaamunaAZHE3H7
+	Ca7tKPHpeyC9jd9WOXtEa/A1I/kOpdnxr0O+32W6dVlkAwR0+m0PonSHqR5y5Ee1EPpS7oiyRb12r
+	leXiOTSAeuRDwqf4uGd5F630OPUOD6FxPbPWDLqqB+qocMUF0Q+rfJ1701tnkiEw74aTQDmtWKzx/
+	CnfPMQsm3Yg4fY9IVqvlgdzdn3WLmtEExzkunKN5R/tAFQ6U3jKol3+TNF6DuqaGVyr7K0AMEJ/Pt
+	6s7Hj+X+KYkweMR53KhmdEQtg6r+V6gGXhbzkDvVRqstL5r4bbPtXX9atlQMhthOWpyYfgVRwM90b
+	Qmb8stJoSqdBpK8NcSbQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jcwMw-0006P0-9J; Sun, 24 May 2020 19:33:10 +0000
-Received: from relay12.mail.gandi.net ([217.70.178.232])
+	id 1jcwNV-0006xo-30; Sun, 24 May 2020 19:33:45 +0000
+Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jcwGW-000723-52
- for linux-mtd@lists.infradead.org; Sun, 24 May 2020 19:26:34 +0000
-Received: from localhost.localdomain (unknown [91.224.148.103])
+ id 1jcwHh-0007v9-Dy
+ for linux-mtd@lists.infradead.org; Sun, 24 May 2020 19:27:47 +0000
+X-Originating-IP: 91.224.148.103
+Received: from xps13 (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay12.mail.gandi.net (Postfix) with ESMTPSA id 4ECF3200005;
- Sun, 24 May 2020 19:26:28 +0000 (UTC)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 1F098240003;
+ Sun, 24 May 2020 19:27:41 +0000 (UTC)
+Date: Sun, 24 May 2020 21:27:40 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: =?utf-8?q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>,
+To: =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6?= Rojas <noltari@gmail.com>,
  computersforpeace@gmail.com, kdasu.kdev@gmail.com,
  miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
  sumit.semwal@linaro.org, linux-mtd@lists.infradead.org,
  bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org,
  linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
  linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH v4 1/5] mtd: rawnand: brcmnand: rename v4 registers
-Date: Sun, 24 May 2020 21:26:27 +0200
-Message-Id: <20200524192627.8999-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200522121524.4161539-2-noltari@gmail.com>
-References: 
+Subject: Re: [PATCH v4 4/5] dt: bindings: brcmnand: add v2.1 and v2.2 support
+Message-ID: <20200524212740.08c2810f@xps13>
+In-Reply-To: <20200524192550.4559-1-miquel.raynal@bootlin.com>
+References: <20200522121524.4161539-5-noltari@gmail.com>
+ <20200524192550.4559-1-miquel.raynal@bootlin.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 6b707aa37d62646d458b30471518f69d64ccceb9
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200524_122632_350045_C609DEFE 
-X-CRM114-Status: UNSURE (   4.96  )
+X-CRM114-CacheID: sfid-20200524_122745_624892_F20A5061 
+X-CRM114-Status: UNSURE (   6.86  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -79,13 +80,17 @@ Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gRnJpLCAyMDIwLTA1LTIyIGF0IDEyOjE1OjIwIFVUQywgPT91dGYtOD9xPz1DMz04MWx2YXJv
-X0Zlcm49QzM9QTFuZGV6X1JvamFzPz0gd3JvdGU6Cj4gVGhlc2UgcmVnaXN0ZXJzIGFyZSBhbHNv
-IHVzZWQgb24gdjMuMy4KPiAKPiBTaWduZWQtb2ZmLWJ5OiDDgWx2YXJvIEZlcm7DoW5kZXogUm9q
-YXMgPG5vbHRhcmlAZ21haWwuY29tPgo+IFJldmlld2VkLWJ5OiBNaXF1ZWwgUmF5bmFsIDxtaXF1
-ZWwucmF5bmFsQGJvb3RsaW4uY29tPgo+IEFja2VkLWJ5OiBGbG9yaWFuIEZhaW5lbGxpIDxmLmZh
-aW5lbGxpQGdtYWlsLmNvbT4KCkFwcGxpZWQgdG8gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIv
-c2NtL2xpbnV4L2tlcm5lbC9naXQvbXRkL2xpbnV4LmdpdCBuYW5kL25leHQsIHRoYW5rcy4KCk1p
-cXVlbAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Ck1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+IHdyb3RlIG9uIFN1biwg
+MjQgTWF5IDIwMjAKMjE6MjU6NTAgKzAyMDA6Cgo+IE9uIEZyaSwgMjAyMC0wNS0yMiBhdCAxMjox
+NToyMyBVVEMsID0/dXRmLTg/cT89QzM9ODFsdmFyb19GZXJuPUMzPUExbmRlel9Sb2phcz89IHdy
+b3RlOgo+ID4gQWRkZWQgYnJjbSxicmNtbmFuZC12Mi4xIGFuZCBicmNtLGJyY21uYW5kLXYyLjIg
+YXMgcG9zc2libGUgY29tcGF0aWJsZQo+ID4gc3RyaW5ncyB0byBzdXBwb3J0IGJyY21uYW5kIGNv
+bnRyb2xsZXJzIHYyLjEgYW5kIHYyLjIuCj4gPiAKPiA+IFNpZ25lZC1vZmYtYnk6IMOBbHZhcm8g
+RmVybsOhbmRleiBSb2phcyA8bm9sdGFyaUBnbWFpbC5jb20+Cj4gPiBBY2tlZC1ieTogRmxvcmlh
+biBGYWluZWxsaSA8Zi5mYWluZWxsaUBnbWFpbC5jb20+ICAKPiAKPiBBcHBsaWVkIHRvIGh0dHBz
+Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L210ZC9saW51eC5naXQg
+bmFuZC9uZXh0LCB0aGFua3MuCgpGWUkgSSB1cGRhdGVkIHRoZSBjb21taXQgbG9nOgpzL2R0OiBi
+aW5kaW5nczovZHQtYmluZGluZ3M6IG10ZDovCnMvQWRkZWQvQWRkLwoKVGhhbmtzLApNaXF1w6hs
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+TGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
+b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
