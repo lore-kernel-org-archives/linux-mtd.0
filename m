@@ -7,57 +7,57 @@ X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87E74C433E0
-	for <linux-mtd@archiver.kernel.org>; Sun, 24 May 2020 19:08:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3176BC433DF
+	for <linux-mtd@archiver.kernel.org>; Sun, 24 May 2020 19:09:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 50828207D8
-	for <linux-mtd@archiver.kernel.org>; Sun, 24 May 2020 19:08:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E1F1C207D8
+	for <linux-mtd@archiver.kernel.org>; Sun, 24 May 2020 19:09:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gv3Mq6iy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 50828207D8
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QNnBKRys"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E1F1C207D8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5g+6acMtmEcatZFw2mvun68fHHoU9GZiuzy8nSedJ0Q=; b=gv3Mq6iyieKBYf
-	LWH/povxg8lDjMoJMy/f5Tiz5SW3OHIf5o0NwZKI8E/zRQcRSLYhfHmnZIo8J8yZSkDeonzRW8ioM
-	5FMyfXRJU8II+BZ7hVoYgEmL6NlzlNrFbWlyysBchOb4o6Iy/zmOO1iKqlMdoKQmunjPDfLX9LSnL
-	tHUgqpgByEnv1pBAV3ipN0IiFqGJYfW4aFr4S49UnzSLblJfH61x/4Cm4pz/KiZ4ygj6w8+JQZLo4
-	XnvK/d3e4vT0TLOmRktVFQa1nyNyMlTQaAoq+PzoiWsjzWnTv8m2MOWp+cYVtZ2+zVtu5Gy5JsIhy
-	uXc35r9uYQdqv46xgbpQ==;
+	List-Owner; bh=3/DhOaD+wOi+yc4sC63WvGFD5QfR/jyXjSJO+ifXuBU=; b=QNnBKRysRn1I79
+	r69f3mUx0HjvNnr/yYN+wF0b24v9savn7jmH0h+M+fxXMDFXo46eXk0WhvH2g5QPS1s7tI1APUc9H
+	+Zu2OqsQ/etxUauJHTrVZo53+gtZXzm2qIi4hKLWKwb2HTsDGHay5SDCkO6vG1NMfvs8JBlxBrKX/
+	AJRq2wLyZD6ucmCXvRXzccZLlGctiLVsXi6OgqhrSbuFitwNhfiISOdXEJpKme4H1PTYOf0YjrGIJ
+	TSUmHDWyMpoOW4qNQroyHUYbdMsB87/cF6UaQwAmu7SwoEkYnFO1QxbDh13De6CtgUKLnK40vEqJ9
+	O5f+Lv8tRZAyxDXGaYmA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jcvzD-0006Un-QM; Sun, 24 May 2020 19:08:39 +0000
-Received: from relay1-d.mail.gandi.net ([217.70.183.193])
+	id 1jcvzX-0006mt-5h; Sun, 24 May 2020 19:08:59 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jcvvN-0000xA-Bt
- for linux-mtd@lists.infradead.org; Sun, 24 May 2020 19:04:43 +0000
+ id 1jcvvS-000129-Jh
+ for linux-mtd@lists.infradead.org; Sun, 24 May 2020 19:04:48 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id F3086240004;
- Sun, 24 May 2020 19:04:37 +0000 (UTC)
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id D37CFFF805;
+ Sun, 24 May 2020 19:04:43 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 48/62] mtd: rawnand: sharpsl: Fix the probe error path
-Date: Sun, 24 May 2020 21:04:36 +0200
-Message-Id: <20200524190436.9655-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v2 47/62] mtd: rawnand: sh_flctl: Stop using nand_release()
+Date: Sun, 24 May 2020 21:04:42 +0200
+Message-Id: <20200524190442.10858-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200519130035.1883-49-miquel.raynal@bootlin.com>
+In-Reply-To: <20200519130035.1883-48-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 91fbdcef8c19f18d1616ab4f7ab3a79a0cde12d1
+X-linux-mtd-patch-commit: 9d8afc8a1ccde38891820ae7fe6f09684e125cd5
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200524_120441_575233_7B605151 
-X-CRM114-Status: UNSURE (   7.99  )
+X-CRM114-CacheID: sfid-20200524_120446_841640_3AB39E48 
+X-CRM114-Status: UNSURE (   6.08  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -70,25 +70,19 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: stable@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2020-05-19 at 13:00:21 UTC, Miquel Raynal wrote:
-> nand_release() is supposed be called after MTD device registration.
-> Here, only nand_scan() happened, so use nand_cleanup() instead.
+On Tue, 2020-05-19 at 13:00:20 UTC, Miquel Raynal wrote:
+> This helper is not very useful and very often people get confused:
+> they use nand_release() instead of nand_cleanup().
 > 
-> There is no Fixes tag applying here as the use of nand_release()
-> in this driver predates by far the introduction of nand_cleanup() in
-> commit d44154f969a4 ("mtd: nand: Provide nand_cleanup() function to free NAND related resources")
-> which makes this change possible. However, pointing this commit as the
-> culprit for backporting purposes makes sense.
+> Let's stop using nand_release() by calling mtd_device_unregister() and
+> nand_cleanup() directly.
 > 
-> Fixes: d44154f969a4 ("mtd: nand: Provide nand_cleanup() function to free NAND related resources")
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> Cc: stable@vger.kernel.org
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next.
 
