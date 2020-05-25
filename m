@@ -4,59 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68677C433E0
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 May 2020 09:04:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47553C433E0
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 May 2020 09:17:01 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1A0AD206DD
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 May 2020 09:04:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1ADA72073B
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 May 2020 09:17:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bmAO/1hI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1A0AD206DD
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hh/87cQU";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Mires9iT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1ADA72073B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NT2hSGFZZeVXxnvx9CGxeiw+7bO7FuukRYU0vKanFbY=; b=bmAO/1hI8N1Z5b
-	vsJ9ZxFVnt3mjuI5Ljd2pYFvWWKj65sO56678Byvp73H7MygFhclkKk+gucVATFUfdILjdi+kkV3r
-	ysXYHIDhVqBkMKG+HUtGGRiJugAM6p6NjsNym62vL/RRNM4mVe+n/32DgzvFSqk8rvMGVh+FK3UqH
-	NmOY+iyJ5eVVmB2BzMnOtOJf+rvibAPQPSNVgi9YOJVgGyYXX1mqXkd5QpQeHVVHdnMbI3XgZaAcn
-	HfnF0bV4LDNShpSQ878P5e2FSRhFuD/rJFgJ8EL1UlL0/AL/XoxIOUgiT0YXCNQvQFs37OdcXn0A7
-	j1PKmk9mxtC9rdQtXiRw==;
+	List-Owner; bh=hyhzFQSfkthUew+rSJ8o0PHlFByuBp/kNZsvCDIuT0M=; b=hh/87cQUGVEcDm
+	tqYly0hufQyo5WoG15zVmK3fzWD3r+yM/QYWRQj6IVZ+TeVT0ryRdZnqcMInNJVPcGlPZ9l3GiIc1
+	GufQo/HvXKp0Qaew4eQEQpP921MnKZMr6YNJzbI2bumuJ0M72TKZtN5AyaHPfL7SpOFiVoisyx9AI
+	s+9L0+9WnqHPwPMFCvcY32redH5uxcKUwg9nFOy+z3GYpTHMNtvFJ3CYhtRqSfO51/fSQBFK0xDzb
+	QDhXmXI7sj05sKFBKSY08zzxMVFRr8SmHsF4VOc7hbXPhBLW8QOgOvJu9IQS2vCPolM/xlOWeIcRn
+	1yWZv4UdQas4OnhB4aQg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jd91V-0003A7-5s; Mon, 25 May 2020 09:03:53 +0000
-Received: from relay10.mail.gandi.net ([217.70.178.230])
+	id 1jd9E3-00079m-58; Mon, 25 May 2020 09:16:51 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jd8x5-0004gV-2v
- for linux-mtd@lists.infradead.org; Mon, 25 May 2020 08:59:20 +0000
-Received: from localhost.localdomain (unknown [91.224.148.103])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay10.mail.gandi.net (Postfix) with ESMTPSA id 4B427240006;
- Mon, 25 May 2020 08:59:16 +0000 (UTC)
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 16/17] mtd: rawnand: nandsim: Rename a label in
- ns_init_module()
-Date: Mon, 25 May 2020 10:58:50 +0200
-Message-Id: <20200525085851.17682-17-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200525085851.17682-1-miquel.raynal@bootlin.com>
-References: <20200525085851.17682-1-miquel.raynal@bootlin.com>
+ id 1jd9DJ-0006Qn-S3; Mon, 25 May 2020 09:16:07 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04P9FvYP076695;
+ Mon, 25 May 2020 04:15:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1590398157;
+ bh=QVVBkRYpNpHNnM3DtoOcxGwPAsP60fEAqbUuQ94mGJM=;
+ h=From:To:CC:Subject:Date:In-Reply-To:References;
+ b=Mires9iTV1NukuxtOCluQKxPpDBJrIR/7QJApoR7/FXOtebhOVipYdRtUWZFOn+Zv
+ UdIeVluKb7X5dssb5HpYd1fhZW23bnO69yXwri0P5xNNj2sOHchBwPmRnjHMRWKxX2
+ hc3dxTOUd3kPA4O6rl2osak71ydFRaX27J3usEDo=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04P9Fvts012847
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Mon, 25 May 2020 04:15:57 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 25
+ May 2020 04:15:56 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 25 May 2020 04:15:56 -0500
+Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com
+ [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04P9FjA1034800;
+ Mon, 25 May 2020 04:15:51 -0500
+From: Pratyush Yadav <p.yadav@ti.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Mark Brown <broonie@kernel.org>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>, Alexandre Belloni
+ <alexandre.belloni@bootlin.com>, Ludovic Desroches
+ <ludovic.desroches@microchip.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Michal Simek <michal.simek@xilinx.com>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <linux-spi@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>
+Subject: [PATCH v9 01/19] spi: spi-mem: allow specifying whether an op is DTR
+ or not
+Date: Mon, 25 May 2020 14:45:26 +0530
+Message-ID: <20200525091544.17270-2-p.yadav@ti.com>
+X-Mailer: git-send-email 2.25.0
+In-Reply-To: <20200525091544.17270-1-p.yadav@ti.com>
+References: <20200525091544.17270-1-p.yadav@ti.com>
 MIME-Version: 1.0
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200525_015919_336374_1D438855 
-X-CRM114-Status: GOOD (  11.96  )
+X-CRM114-CacheID: sfid-20200525_021605_985783_D304ADE0 
+X-CRM114-Status: GOOD (  13.12  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,53 +99,92 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Boris Brezillon <boris.brezillon@collabora.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Mason Yang <masonccyang@mxic.com.tw>,
+ Boris Brezillon <boris.brezillon@collabora.com>, Sekhar Nori <nsekhar@ti.com>,
+ Pratyush Yadav <p.yadav@ti.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Rename the "error" label to gave it a meaning.
+Each phase is given a separate 'dtr' field so mixed protocols like
+4S-4D-4D can be supported.
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/mtd/nand/raw/nandsim.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/spi/spi-mem.c       | 3 +++
+ include/linux/spi/spi-mem.h | 8 ++++++++
+ 2 files changed, 11 insertions(+)
 
-diff --git a/drivers/mtd/nand/raw/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
-index 4492b9a9962e..7076acfbe0f4 100644
---- a/drivers/mtd/nand/raw/nandsim.c
-+++ b/drivers/mtd/nand/raw/nandsim.c
-@@ -2310,7 +2310,7 @@ static int __init ns_init_module(void)
- 	default:
- 		NS_ERR("bbt has to be 0..2\n");
- 		ret = -EINVAL;
--		goto error;
-+		goto free_ns_struct;
- 	}
- 	/*
- 	 * Perform minimum nandsim structure initialization to handle
-@@ -2337,7 +2337,7 @@ static int __init ns_init_module(void)
+diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+index 9a86cc27fcc0..93e255287ab9 100644
+--- a/drivers/spi/spi-mem.c
++++ b/drivers/spi/spi-mem.c
+@@ -156,6 +156,9 @@ bool spi_mem_default_supports_op(struct spi_mem *mem,
+ 				   op->data.dir == SPI_MEM_DATA_OUT))
+ 		return false;
  
- 	ret = ns_parse_weakblocks();
- 	if (ret)
--		goto error;
-+		goto free_ns_struct;
++	if (op->cmd.dtr || op->addr.dtr || op->dummy.dtr || op->data.dtr)
++		return false;
++
+ 	return true;
+ }
+ EXPORT_SYMBOL_GPL(spi_mem_default_supports_op);
+diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+index af9ff2f0f1b2..e3dcb956bf61 100644
+--- a/include/linux/spi/spi-mem.h
++++ b/include/linux/spi/spi-mem.h
+@@ -71,9 +71,11 @@ enum spi_mem_data_dir {
+  * struct spi_mem_op - describes a SPI memory operation
+  * @cmd.buswidth: number of IO lines used to transmit the command
+  * @cmd.opcode: operation opcode
++ * @cmd.dtr: whether the command opcode should be sent in DTR mode or not
+  * @addr.nbytes: number of address bytes to send. Can be zero if the operation
+  *		 does not need to send an address
+  * @addr.buswidth: number of IO lines used to transmit the address cycles
++ * @addr.dtr: whether the address should be sent in DTR mode or not
+  * @addr.val: address value. This value is always sent MSB first on the bus.
+  *	      Note that only @addr.nbytes are taken into account in this
+  *	      address value, so users should make sure the value fits in the
+@@ -81,7 +83,9 @@ enum spi_mem_data_dir {
+  * @dummy.nbytes: number of dummy bytes to send after an opcode or address. Can
+  *		  be zero if the operation does not require dummy bytes
+  * @dummy.buswidth: number of IO lanes used to transmit the dummy bytes
++ * @dummy.dtr: whether the dummy bytes should be sent in DTR mode or not
+  * @data.buswidth: number of IO lanes used to send/receive the data
++ * @data.dtr: whether the data should be sent in DTR mode or not
+  * @data.dir: direction of the transfer
+  * @data.nbytes: number of data bytes to send/receive. Can be zero if the
+  *		 operation does not involve transferring data
+@@ -91,22 +95,26 @@ enum spi_mem_data_dir {
+ struct spi_mem_op {
+ 	struct {
+ 		u8 buswidth;
++		u8 dtr : 1;
+ 		u8 opcode;
+ 	} cmd;
  
- 	ret = ns_parse_weakpages();
- 	if (ret)
-@@ -2428,7 +2428,7 @@ static int __init ns_init_module(void)
- 		list_del(pos);
- 		kfree(list_entry(pos, struct weak_block, list));
- 	}
--error:
-+free_ns_struct:
- 	kfree(ns);
+ 	struct {
+ 		u8 nbytes;
+ 		u8 buswidth;
++		u8 dtr : 1;
+ 		u64 val;
+ 	} addr;
  
- 	return ret;
+ 	struct {
+ 		u8 nbytes;
+ 		u8 buswidth;
++		u8 dtr : 1;
+ 	} dummy;
+ 
+ 	struct {
+ 		u8 buswidth;
++		u8 dtr : 1;
+ 		enum spi_mem_data_dir dir;
+ 		unsigned int nbytes;
+ 		union {
 -- 
-2.20.1
+2.26.2
 
 
 ______________________________________________________
