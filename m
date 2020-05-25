@@ -2,60 +2,58 @@ Return-Path: <SRS0=SzYL=7H=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7B43C433E0
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 May 2020 08:53:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7449C433E1
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 May 2020 08:53:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 91BB3206D5
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 May 2020 08:53:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BE177206D5
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 May 2020 08:53:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dw/1Ek65"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 91BB3206D5
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="N95anyql"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BE177206D5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LNCo9Vi4iC3LwN+O7JBV4GNo1L97B5miBQhCnzjr2H0=; b=dw/1Ek65NnsdLA
-	QZNHABQ0uNnBtBQ0iJgaDD2AAnCDNsFD078ImqkuK7meaCgQHuw8OY3vUPhTyYryTkwI/RodadoEu
-	kmOhfAiSE2rq154puG9AF/eICu5G8nUcGUIvf4Fbf4Zml+dvIgjiuiU5wY5X0q2Sqypcpofrz/qhy
-	CsB1CDWc1fOK9ylyGgRlh2seC4AXe2hf+pinZWkwf2PpEOo/ZugmzGaN55ApRuIkpxgO/EnBZ5cMY
-	jiXssLlMuFm33tcwlZalL3vsZK5gizRP2b5x3cQFxbBhuGXJhu+/8Jkwkj+rHXt5sLjpkMp8YYWik
-	DfjdWxvjr2ckI2CHIiFA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=6s3lt4LnQGQC4PAs4avcM4CKU2fZ0cUdk/yoJQ+tvjk=; b=N95anyqlHGp4Zz
+	yCKpFJya2Pnj60ynXrVf0oQpKKs3TDvKrxuuwFD7Qez7QLlN97PAwCUx/D6DUL5KzIqCcIfmxCNs8
+	i5HgzQ0WqrAAJeumhXuiEZTKcozHw2YMXG+PRgf1oBexlc3XBvXqFVN4cjFN3Z21CAL6+lplNrR/t
+	ZxB80hWbptO0K0kc0xjHeV0pJ4mtxK7ugGjlnXs9v9ZmCqLAnNC4g7aZmdp/dRaPZDcfP3JfZfUKD
+	isjg8/Ecpm3CQDziys0oTNHcJN8JwIUIi2IAuXZCGyqssIWQ7CWWXuzPLFXL8NJqyeOwD9Qphfmq+
+	/d9z2hKr62EXSRlKTeBQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jd8rb-0000Dq-Gr; Mon, 25 May 2020 08:53:39 +0000
+	id 1jd8rk-0000NH-7W; Mon, 25 May 2020 08:53:48 +0000
 Received: from relay12.mail.gandi.net ([217.70.178.232])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jd8rY-0000CC-4c
+ id 1jd8rY-0000C7-4Z
  for linux-mtd@lists.infradead.org; Mon, 25 May 2020 08:53:37 +0000
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay12.mail.gandi.net (Postfix) with ESMTPSA id E4AA0200006;
- Mon, 25 May 2020 08:53:33 +0000 (UTC)
+ by relay12.mail.gandi.net (Postfix) with ESMTPSA id DAD9B200016;
+ Mon, 25 May 2020 08:53:30 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 01/62] mtd: rawnand: ams-delta: Stop using nand_release()
-Date: Mon, 25 May 2020 10:52:11 +0200
-Message-Id: <20200525085329.17259-2-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 00/17] Clean nandsim error path
+Date: Mon, 25 May 2020 10:52:10 +0200
+Message-Id: <20200525085329.17259-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200525085329.17259-1-miquel.raynal@bootlin.com>
-References: <20200525085329.17259-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200525_015336_321827_AB5AA07E 
-X-CRM114-Status: GOOD (  10.48  )
+X-CRM114-CacheID: sfid-20200525_015336_319839_352CB7C0 
+X-CRM114-Status: UNSURE (   8.23  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,47 +67,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Boris Brezillon <boris.brezillon@collabora.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This helper is not very useful and very often people get confused:
-they use nand_release() instead of nand_cleanup().
-
-Let's stop using nand_release() by calling mtd_device_unregister() and
-nand_cleanup() directly.
-
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/mtd/nand/raw/ams-delta.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
-index d66dab25df20..3711e7a0436c 100644
---- a/drivers/mtd/nand/raw/ams-delta.c
-+++ b/drivers/mtd/nand/raw/ams-delta.c
-@@ -387,12 +387,15 @@ static int gpio_nand_remove(struct platform_device *pdev)
- {
- 	struct gpio_nand *priv = platform_get_drvdata(pdev);
- 	struct mtd_info *mtd = nand_to_mtd(&priv->nand_chip);
-+	int ret;
- 
- 	/* Apply write protection */
- 	gpiod_set_value(priv->gpiod_nwp, 1);
- 
- 	/* Unregister device */
--	nand_release(mtd_to_nand(mtd));
-+	ret = mtd_device_unregister(mtd);
-+	WARN_ON(ret);
-+	nand_cleanup(mtd_to_nand(mtd));
- 
- 	return 0;
- }
--- 
-2.20.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgpBcyBwYXJ0IG9mIGEgYmlnZ2VyIGNsZWFudXAgSSByZWFsaXplZCB0aGUgZXJyb3Ig
+cGF0aCBvZiBuYW5kc2ltLmMgd2FzCmhvcnJpYmx5IHdyb25nLiBUaGVyZSBhcmUgYSBmZXcgYWRk
+aXRpb25hbCBjaGFuZ2VzLCBsaWtlIGhhdmluZyBhCmNvbnNpc3RlbnQgbmFtaW5nIGZvciBhIGdp
+dmVuIG9iamVjdCwgYnV0IG1vcmVvdmVyIHRoaXMgaXMgYW4gZXJyb3IKcGF0aCBjbGVhbnVwLCBk
+cml2ZXItd2lkZS4KCkNoZWVycywKTWlxdcOobAoKQ2hhbmdlcyBpbiB2MjoKKiBSZW9yZGVyZWQg
+dGhlIGtmcmVlKCkgYW5kIHRoZSBsaXN0X2RlbCgpIHRvIGF2b2lkIGEgdXNlIGFmdGVyIGZyZWUK
+ICBpc3N1ZSB0aGF0IEkgaW50cm9kdWNlZCBpbiB2MS4KKiBVc2VkIGRlYnVnZnNfcmVtb3ZlX3Jl
+Y3Vyc2l2ZSgpIGluc3RlYWQgb2YganVzdCBkZWJ1Z2ZzX3JlbW92ZSgpLgoKTWlxdWVsIFJheW5h
+bCAoMTcpOgogIG10ZDogcmF3bmFuZDogbmFuZHNpbTogQ29uc2lzdGVudCB1c2Ugb2YgJ25zJyBp
+bnN0ZWFkIG9mICdkZXYnCiAgbXRkOiByYXduYW5kOiBuYW5kc2ltOiBVc2Ugb2N0YWwgcGVybWlz
+c2lvbnMKICBtdGQ6IHJhd25hbmQ6IG5hbmRzaW06IFVzZSBhIGNvbnNpc3RlbnQgbnNfIHByZWZp
+eCBmb3IgYWxsIGZ1bmN0aW9ucwogIG10ZDogcmF3bmFuZDogbmFuZHNpbTogQ2xlYW4gZXJyb3Ig
+aGFuZGxpbmcKICBtdGQ6IHJhd25hbmQ6IG5hbmRzaW06IEtlZXAgdHJhY2sgb2YgdGhlIGNyZWF0
+ZWQgZGVidWdmcyBlbnRyaWVzCiAgbXRkOiByYXduYW5kOiBuYW5kc2ltOiBSZW1vdmUgZGVidWdm
+cyBlbnRyaWVzIGF0IHVubG9hZCB0aW1lCiAgbXRkOiByYXduYW5kOiBuYW5kc2ltOiBGaXggdGhl
+IHR3byBuc19hbGxvY19kZXZpY2UoKSBlcnJvciBwYXRocwogIG10ZDogcmF3bmFuZDogbmFuZHNp
+bTogRnJlZSBwYXJ0aXRpb24gbmFtZXMgb24gZXJyb3IgaW4gbnNfaW5pdCgpCiAgbXRkOiByYXdu
+YW5kOiBuYW5kc2ltOiBGcmVlIHRoZSBhbGxvY2F0ZWQgZGV2aWNlIG9uIGVycm9yIGluIG5zX2lu
+aXQoKQogIG10ZDogcmF3bmFuZDogbmFuZHNpbTogRnJlZSB0aGUgcGFydGl0aW9uIG5hbWVzIGlu
+IG5zX2ZyZWUoKQogIG10ZDogcmF3bmFuZDogbmFuZHNpbTogU3RvcCB1c2luZyBuYW5kX3JlbGVh
+c2UoKQogIG10ZDogcmF3bmFuZDogbmFuZHNpbTogVXNlIGFuIGFkZGl0aW9uYWwgbGFiZWwgd2hl
+biBmcmVlaW5nIHRoZQogICAgbmFuZHNpbSBvYmplY3QKICBtdGQ6IHJhd25hbmQ6IG5hbmRzaW06
+IEZyZWUgZXJhc2VfYmxvY2tfd2VhciBvbiBlcnJvcgogIG10ZDogcmF3bmFuZDogbmFuZHNpbTog
+Rml4IHRoZSBsYWJlbCBwb2ludGluZyBvbiBuYW5kX2NsZWFudXAoKQogIG10ZDogcmF3bmFuZDog
+bmFuZHNpbTogTWFuYWdlIGxpc3RzIG9uIGVycm9yIGluIG5zX2luaXRfbW9kdWxlKCkKICBtdGQ6
+IHJhd25hbmQ6IG5hbmRzaW06IFJlbmFtZSBhIGxhYmVsIGluIG5zX2luaXRfbW9kdWxlKCkKICBt
+dGQ6IHJhd25hbmQ6IG5hbmRzaW06IFJlb3JnYW5pemUgbnNfY2xlYW51cF9tb2R1bGUoKQoKIGRy
+aXZlcnMvbXRkL25hbmQvcmF3L25hbmRzaW0uYyB8IDQzNyArKysrKysrKysrKysrKysrKysrLS0t
+LS0tLS0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAyNTMgaW5zZXJ0aW9ucygrKSwgMTg0IGRlbGV0
+aW9ucygtKQoKLS0gCjIuMjAuMQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0
+cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
