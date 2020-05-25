@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E4C3C433DF
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 May 2020 18:34:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD711C433E0
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 May 2020 18:36:28 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5201C20671
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 May 2020 18:34:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 89C5220723
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 May 2020 18:36:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="MgUfZIGP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5201C20671
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="X+OqtKKN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 89C5220723
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=v9WdAzwI/ubsILjPBLXlDV65KS2hGGypRPFk9YOT670=; b=MgUfZIGPq3PnMH
-	1FVbmJ7RVDBapgAnTSGn1zRHE4AEMLXMP9MaMdASomMUHkqWaAfrkeOdE2iWqOoW5lLQ0upmc00/Z
-	/w80XqA9f+VnMeINgujRncI320tSVx6NMYWFjXtJTrKVoiYWZhA1opPDcOQopIG97DBSE5NoHHA84
-	PPc+Aqk++WUj0hxttOS/fpUcSadspeuy7XFhKtgW+2p4egfG9JvigZBdVE7Nm50s+v4tU9FKseO9e
-	nMRDUuWODDc2r8ZzVzqNMYsJls48FclZu9HUxbsYXktf4DaLrdSEHWShY1aLEyiF/JSwdNTyOwOTF
-	cUfOzEYv98PodSdz4XcA==;
+	List-Owner; bh=+D7KxdS3Rl1izbRb/wC1wvi2o+uHwJdCFW1j06ljAnA=; b=X+OqtKKN5CBOFh
+	vLfNfqiYIsAZMUipMjGroy+pNep9ZKqfN+/iat8CJngBbQmkbla3qjJlCP2HjALyARpJwznJrGxxz
+	Wl41YD2qzR45dbGsNBur2WWsbymG81N+tGBIB4fDvC2AcIGsH+zoHiPwN2Z7Ou+3qNqhyZSUm0kth
+	lv2ZEWgEl38gMC+GNVmjvOz/K0a5v7FvQvzlzbbR5wPXyJtZ03w4JUN4njaWdD3toGjed3MbSnDv3
+	cTzF6oXHaNEimN64alBZ/t4h/HmkZiOo59cC1QW75Jsv957lRqkd+5ds71K5z/uh4aaedpghAY8ct
+	oVpuHnSa6LPr8vUIlOlg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jdHvC-0001jn-8i; Mon, 25 May 2020 18:33:58 +0000
+	id 1jdHxS-0004RR-Th; Mon, 25 May 2020 18:36:18 +0000
 Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jdHvA-0001jG-0a
- for linux-mtd@lists.infradead.org; Mon, 25 May 2020 18:33:57 +0000
+ id 1jdHxP-0004R8-ML
+ for linux-mtd@lists.infradead.org; Mon, 25 May 2020 18:36:16 +0000
 Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
  (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 2B9F92A1899;
- Mon, 25 May 2020 19:33:51 +0100 (BST)
-Date: Mon, 25 May 2020 20:33:48 +0200
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 496EE2A02B5;
+ Mon, 25 May 2020 19:36:14 +0100 (BST)
+Date: Mon, 25 May 2020 20:36:11 +0200
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH v4 01/19] mtd: rawnand: Use unsigned types for nand_chip
- unsigned values
-Message-ID: <20200525203348.7c41a7eb@collabora.com>
-In-Reply-To: <20200525174239.11349-2-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v4 02/19] mtd: rawnand: Only use u8 instead of uint8_t
+ in nand_chip structure
+Message-ID: <20200525203611.3e80c52c@collabora.com>
+In-Reply-To: <20200525174239.11349-3-miquel.raynal@bootlin.com>
 References: <20200525174239.11349-1-miquel.raynal@bootlin.com>
- <20200525174239.11349-2-miquel.raynal@bootlin.com>
+ <20200525174239.11349-3-miquel.raynal@bootlin.com>
 Organization: Collabora
 X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200525_113356_184000_17A556AD 
-X-CRM114-Status: GOOD (  14.25  )
+X-CRM114-CacheID: sfid-20200525_113615_856698_1A51241F 
+X-CRM114-Status: GOOD (  15.93  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,58 +78,43 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 25 May 2020 19:42:21 +0200
+On Mon, 25 May 2020 19:42:22 +0200
 Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> page_shift, phys_erase_shift, bbt_erase_shift, chip_shift, pagemask,
-> subpagesize and badblockbits are all positive values, so declare
-> them as unsigned.
+> Mechanical change to avoid using old types.
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
 Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 
-though patching code to get rid of those fields (in favor of
-nanddev_xxx() calls) would be much more valuable IMHO.
+Same comment as for patch 1: I'd prefer to have the BBT code transition
+to  nanddev_bbt_xxx() and re-use the generic layer, but I guess that'll
+have to wait.
 
 > ---
->  include/linux/mtd/rawnand.h | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
+>  include/linux/mtd/rawnand.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
 > diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-> index 2804c13e5662..8a1e0192f78e 100644
+> index 8a1e0192f78e..7d62e0e719ac 100644
 > --- a/include/linux/mtd/rawnand.h
 > +++ b/include/linux/mtd/rawnand.h
-> @@ -1110,11 +1110,11 @@ struct nand_chip {
->  	unsigned int options;
->  	unsigned int bbt_options;
+> @@ -1141,13 +1141,13 @@ struct nand_chip {
+>  	int (*suspend)(struct nand_chip *chip);
+>  	void (*resume)(struct nand_chip *chip);
 >  
-> -	int page_shift;
-> -	int phys_erase_shift;
-> -	int bbt_erase_shift;
-> -	int chip_shift;
-> -	int pagemask;
-> +	unsigned int page_shift;
-> +	unsigned int phys_erase_shift;
-> +	unsigned int bbt_erase_shift;
-> +	unsigned int chip_shift;
-> +	unsigned int pagemask;
->  	u8 *data_buf;
+> -	uint8_t *oob_poi;
+> +	u8 *oob_poi;
+>  	struct nand_controller *controller;
 >  
->  	struct {
-> @@ -1122,10 +1122,10 @@ struct nand_chip {
->  		int page;
->  	} pagecache;
+>  	struct nand_ecc_ctrl ecc;
+>  	unsigned long buf_align;
 >  
-> -	int subpagesize;
-> +	unsigned int subpagesize;
->  	int onfi_timing_mode_default;
->  	unsigned int badblockpos;
-> -	int badblockbits;
-> +	unsigned int badblockbits;
+> -	uint8_t *bbt;
+> +	u8 *bbt;
+>  	struct nand_bbt_descr *bbt_td;
+>  	struct nand_bbt_descr *bbt_md;
 >  
->  	struct nand_id id;
->  	struct nand_parameters parameters;
 
 
 ______________________________________________________
