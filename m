@@ -4,20 +4,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DDAAC433E0
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 May 2020 09:21:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AEBBAC433E0
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 May 2020 09:22:31 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 317DC2071A
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 May 2020 09:21:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1843C20787
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 May 2020 09:22:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kYIPct//";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="J9DXUF4h"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 317DC2071A
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hJSGLP1s";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="nvRJ+9IE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1843C20787
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,43 +26,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=34+owmPi1iX7eZUVA6mtOT6bs5/an/VLzidS4INV8ZU=; b=kYIPct//IQQbsX
-	OfLILtwnnrrleevsIjkSL7YdMufSr+9NU6y01BTopYJig3oco5uWgQuYBkvY5HwFSKHsfN/wKW/hd
-	Z59F69wUAB16yG2s5yervQxGe52GQHQyUr6FRhE4+XJj//gvJxkvlUO7wlsJHvj+xjPU+++lS6fWy
-	G/Mxrb04KMLIt3LYruCpATwqrf9aYmX0ZJ85IkO3673ByGT5Clxck2I1nUVdZ+gWKInkWlYgleUTB
-	u6OwE4/OI4umP45DLH694VdLx852jL0/C70aLP4Y0oT+XECZKwXZ3Ju8Tu/SMXeNdNM/8Yn755b2H
-	Pvk6SIcH3CdmhKCKOiQg==;
+	List-Owner; bh=EWuaTACov1yJ9PfpRugr1oEq9/i3QwFwvF5crmLK/G0=; b=hJSGLP1sBa4YPs
+	qFMuYGEobhesKnpDuCnYjqC6BQ7dnkqvYITzFRUfLST83/PCK+Dzm1uKYz7Z1vw/rCIUFAyE1P8tb
+	AgXPVq9DL5UyjW8mnkS6AA0k7+orPMrgbOn1kRSvQ728pwM6ilMhvwaZoxJrR3uT3A7bJFsq1wQY3
+	QfbDJf8KsFVB63BXEuyHcqfd5kAkLU/+D1bRrn/RRz4vnD4R95KvUSJVe3GLsvNas577or0GjY5Gv
+	HY+6ul78VZUrUsGB7T/nG68u2WK2J9H/2Bl0PoJD9HxXngbOEtbS1a0g01hJS37Y0R+tLXrEUtF44
+	Jp19hzAN8DRD2HC7Jd7g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jd9Ii-0004im-B6; Mon, 25 May 2020 09:21:40 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1jd9JV-0005SS-8A; Mon, 25 May 2020 09:22:29 +0000
+Received: from lelv0142.ext.ti.com ([198.47.23.249])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jd9Du-00073A-Ea; Mon, 25 May 2020 09:16:44 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04P9GXX4095594;
- Mon, 25 May 2020 04:16:33 -0500
+ id 1jd9Du-00073S-JI; Mon, 25 May 2020 09:16:47 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04P9GZYn105196;
+ Mon, 25 May 2020 04:16:35 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1590398193;
- bh=d4a8/B8RJ1QRHlItn/FpHiKY2BYYAQOc8eQivs7iF4g=;
+ s=ti-com-17Q1; t=1590398195;
+ bh=8U5j3EpmZjALS0efVhhezXkuXnpSFM9S8zpuLAfKQGc=;
  h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=J9DXUF4hBnduy+OlatE1Dv7pznJfno9VlDabfN58cN70+ztg4WxXg8WGFMLwn6Pfn
- WAS9LBnE0qUVIrCkTL8twX6sLxTV+4n5xf/XMoaLjtw5413yfTZtMbEQFt79ciN1hU
- jGwZ2a42xh0Seb+d52NyXk2ZgXKOzEqGB7dXp8w8=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04P9GXoI018250;
- Mon, 25 May 2020 04:16:33 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ b=nvRJ+9IElC/wpZL/NOAP/T29ZRWX/5apcUWTb71GS9lp1lfmdrMUjTtZl8Ya6iHRH
+ 5uMRNGD7ujeJCkVH/iUOMMRBtOxIbUMNyd+H4zslT8UcPy4oN+L0f0fanmbh+IlpHL
+ uIVfx+j2+/ML/vbo6iugFpOxGGo7PYgezs6d1b3A=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04P9GZI3013888
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Mon, 25 May 2020 04:16:35 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 25
- May 2020 04:16:08 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ May 2020 04:16:35 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 25 May 2020 04:16:07 -0500
+ Frontend Transport; Mon, 25 May 2020 04:16:35 -0500
 Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com
  [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04P9FjA3034800;
- Mon, 25 May 2020 04:16:03 -0500
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04P9FjA8034800;
+ Mon, 25 May 2020 04:16:30 -0500
 From: Pratyush Yadav <p.yadav@ti.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
  <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
@@ -75,17 +76,18 @@ To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <linux-spi@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
  <linux-mediatek@lists.infradead.org>
-Subject: [PATCH v9 03/19] spi: atmel-quadspi: reject DTR ops
-Date: Mon, 25 May 2020 14:45:28 +0530
-Message-ID: <20200525091544.17270-4-p.yadav@ti.com>
+Subject: [PATCH v9 08/19] mtd: spi-nor: sfdp: get command opcode extension
+ type from BFPT
+Date: Mon, 25 May 2020 14:45:33 +0530
+Message-ID: <20200525091544.17270-9-p.yadav@ti.com>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20200525091544.17270-1-p.yadav@ti.com>
 References: <20200525091544.17270-1-p.yadav@ti.com>
 MIME-Version: 1.0
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200525_021642_978297_2EC2C269 
-X-CRM114-Status: GOOD (  10.53  )
+X-CRM114-CacheID: sfid-20200525_021642_985602_0A4BC549 
+X-CRM114-Status: GOOD (  11.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,33 +107,63 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Double Transfer Rate (DTR) ops are added in spi-mem. But this controller
-doesn't support DTR transactions. Since we don't use the default
-supports_op(), which rejects all DTR ops, do that explicitly in our
-supports_op().
+Some devices in DTR mode expect an extra command byte called the
+extension. The extension can either be same as the opcode, bitwise
+inverse of the opcode, or another additional byte forming a 16-byte
+opcode. Get the extension type from the BFPT. For now, only flashes with
+"repeat" and "inverse" extensions are supported.
 
 Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/spi/atmel-quadspi.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/mtd/spi-nor/sfdp.c | 17 +++++++++++++++++
+ drivers/mtd/spi-nor/sfdp.h |  6 ++++++
+ 2 files changed, 23 insertions(+)
 
-diff --git a/drivers/spi/atmel-quadspi.c b/drivers/spi/atmel-quadspi.c
-index cb44d1e169aa..a898755fb41e 100644
---- a/drivers/spi/atmel-quadspi.c
-+++ b/drivers/spi/atmel-quadspi.c
-@@ -285,6 +285,12 @@ static bool atmel_qspi_supports_op(struct spi_mem *mem,
- 		op->dummy.nbytes == 0)
- 		return false;
- 
-+	/* DTR ops not supported. */
-+	if (op->cmd.dtr || op->addr.dtr || op->dummy.dtr || op->data.dtr)
-+		return false;
-+	if (op->cmd.nbytes != 1)
-+		return false;
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index 96960f2f3d7a..ab086aa4746f 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -609,6 +609,23 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+ 	if (bfpt_header->length == BFPT_DWORD_MAX_JESD216B)
+ 		return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt,
+ 						params);
++	/* 8D-8D-8D command extension. */
++	switch (bfpt.dwords[BFPT_DWORD(18)] & BFPT_DWORD18_CMD_EXT_MASK) {
++	case BFPT_DWORD18_CMD_EXT_REP:
++		nor->cmd_ext_type = SPI_NOR_EXT_REPEAT;
++		break;
 +
- 	return true;
- }
++	case BFPT_DWORD18_CMD_EXT_INV:
++		nor->cmd_ext_type = SPI_NOR_EXT_INVERT;
++		break;
++
++	case BFPT_DWORD18_CMD_EXT_RES:
++		return -EINVAL;
++
++	case BFPT_DWORD18_CMD_EXT_16B:
++		dev_err(nor->dev, "16-bit opcodes not supported\n");
++		return -ENOTSUPP;
++	}
  
+ 	return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt, params);
+ }
+diff --git a/drivers/mtd/spi-nor/sfdp.h b/drivers/mtd/spi-nor/sfdp.h
+index f8198af43a63..e15e30796d62 100644
+--- a/drivers/mtd/spi-nor/sfdp.h
++++ b/drivers/mtd/spi-nor/sfdp.h
+@@ -84,6 +84,12 @@ struct sfdp_bfpt {
+ #define BFPT_DWORD15_QER_SR2_BIT1_NO_RD		(0x4UL << 20)
+ #define BFPT_DWORD15_QER_SR2_BIT1		(0x5UL << 20) /* Spansion */
+ 
++#define BFPT_DWORD18_CMD_EXT_MASK		GENMASK(30, 29)
++#define BFPT_DWORD18_CMD_EXT_REP		(0x0UL << 29) /* Repeat */
++#define BFPT_DWORD18_CMD_EXT_INV		(0x1UL << 29) /* Invert */
++#define BFPT_DWORD18_CMD_EXT_RES		(0x2UL << 29) /* Reserved */
++#define BFPT_DWORD18_CMD_EXT_16B		(0x3UL << 29) /* 16-bit opcode */
++
+ struct sfdp_parameter_header {
+ 	u8		id_lsb;
+ 	u8		minor;
 -- 
 2.26.2
 
