@@ -2,91 +2,85 @@ Return-Path: <SRS0=SzYL=7H=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D16D9C433E0
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 May 2020 09:30:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 155DBC433DF
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 May 2020 12:18:39 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A62AE2071A
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 May 2020 09:30:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CC2E72073B
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 May 2020 12:18:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gLK46TgV";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Pr14J2DG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A62AE2071A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FxlV2suH";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MbVfr7Mr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC2E72073B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gUIuyf5ItYbMUXM9Ks83C1lQFGbzmaWXlxT03y+iyX0=; b=gLK46TgV/rZra/
-	Qd4vMRK6/Ic1e9wnDhywHSZ6u0N4IXmhEi4ywavtCz7uYkmx1RquqFEiO9EZyskDT9v7BWfKPx+r6
-	R65EUoLy+n+tThKIv4w9T/GKeTDdETOZofqnLepC1+rZ+gdJ233FmGISdWLPvCj0qSZzTL6eSX6X0
-	2ax5LRzbCuro5zfeledPvyP+9D4L0QmriMp1Ai5wqcWzEgiO8JKyJKzQhZevDkL8KfmCDwdTR1TEZ
-	wVyrjP5JHu8oARMLtFGyYVToq6TIjNruSA4IdknVKOV24eStCKa+9ROUA4q9wvoeqrNOfKMmKAyhh
-	7cAjFnP5gRBX5pnFHHbg==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=fwQFMM1RIccH6wKwpmZ6Ee21hKJ3fNRTpNYTbIkBEeY=; b=Fxl
+	V2suH/WVKQzlosluZ+b+lCTEshFuitmnts4A/6hlKSOvwtPj7OYkYdpy5i8eVTm3/sMzn08yVI6Dl
+	BI6wil2O+qh78vOt2z9ZAm0rDsTGOo0Tip9F8p2B4rvMJCkeIL2IKl5g52EHheceKFvIMQb8kAyI4
+	2qnLRCX+08VGAJrBv1lGhj+x73i1ZVlcXTgW0osianPWy7EHXa4gdxGUvjja4S2fb3TayvNG04Bgq
+	FzDgPNolUtoFwXCtJNJL/5n2I/8EzXE9o4r/CHTezmA39jz6QwV3d5RxFH8WyBsjqiXGDMSUYRAaM
+	fdDPfbkUpCOY34+u2mKqZUUng1pysdw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jd9RV-0000Uq-Lf; Mon, 25 May 2020 09:30:45 +0000
-Received: from lelv0142.ext.ti.com ([198.47.23.249])
+	id 1jdC3w-0001Ih-Su; Mon, 25 May 2020 12:18:36 +0000
+Received: from mail-wm1-x344.google.com ([2a00:1450:4864:20::344])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jd9Em-0007lA-3a; Mon, 25 May 2020 09:17:45 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04P9HUjs105461;
- Mon, 25 May 2020 04:17:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1590398250;
- bh=5UCOPWk6X92olYrZDfeJHWtjgVM9Dl85CVT55A/y+Lg=;
- h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=Pr14J2DGeOLevNwAjvb2vF4SEmuWQpHEEMP6TQ9OMW4W3DJWZrtOH345gRTAOygkU
- iw/0tS1ClFohaDSQC0rNaEMXcM90nYzdcHhDx/2wQTF6LkUeNng/X8jdyXWXQipFmt
- f1n/m0qci7MzN3jVrTR2BrdMWf/+mmYMfTBWjP7o=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04P9HU09020053;
- Mon, 25 May 2020 04:17:30 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 25
- May 2020 04:17:30 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 25 May 2020 04:17:30 -0500
-Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com
- [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04P9FjAI034800;
- Mon, 25 May 2020 04:17:25 -0500
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Mark Brown <broonie@kernel.org>,
- Nicolas Ferre <nicolas.ferre@microchip.com>, Alexandre Belloni
- <alexandre.belloni@bootlin.com>, Ludovic Desroches
- <ludovic.desroches@microchip.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Michal Simek <michal.simek@xilinx.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <linux-spi@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>
-Subject: [PATCH v9 18/19] mtd: spi-nor: spansion: add support for Cypress
- Semper flash
-Date: Mon, 25 May 2020 14:45:43 +0530
-Message-ID: <20200525091544.17270-19-p.yadav@ti.com>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200525091544.17270-1-p.yadav@ti.com>
-References: <20200525091544.17270-1-p.yadav@ti.com>
-MIME-Version: 1.0
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+ id 1jdC3u-0001HS-29
+ for linux-mtd@lists.infradead.org; Mon, 25 May 2020 12:18:35 +0000
+Received: by mail-wm1-x344.google.com with SMTP id n5so16472479wmd.0
+ for <linux-mtd@lists.infradead.org>; Mon, 25 May 2020 05:18:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id;
+ bh=7o+lBWeHtPJY1L0YtKPVz2MqPUZpsoWKhePxIs0CqiI=;
+ b=MbVfr7MrXvBV5N80SFzd2eQYB/pkfICrxxEfMysOmJN67ykUDmZ6bpSUaHadGpBbdO
+ 19xNFQkfG0F/EriJO6/ry3wDRO5Ap5Y6AlmXAG49iNxedgS0Iz1+3gK8CY2XX/ppZUSz
+ RgREvlnYzbQo/y6b4EK91m8RuTc1d80aTclU0sJfS0xmu200uSFXnCXciS7YUP9qtTbg
+ Z/rQXJ3TTcY7vYWMLzf4jbHWssPTSJSD34O/YTrzTEEGNGE6ltH/aO6Ba6Vb6bO+eF/B
+ A99tsG5gYs/zjqxc8rchS2FlbucZ2tdlwVQewQo970NtCn3QLWJ4xnrQbBaEzoIacWR1
+ jaaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id;
+ bh=7o+lBWeHtPJY1L0YtKPVz2MqPUZpsoWKhePxIs0CqiI=;
+ b=uZ48La/cNbZmIw747dJlyJoaNolOOE2wD7b7Nm49gKHd1AQKeJc7WO3Go/0XaEMMF0
+ mD/OQ1Lam6aWaObkg/dlndcrWD3kXQlyLnOT62KHjpGZtyK8fnDY+WrHFO7oNdHuxXz8
+ RH7tSsfDmcLPAjc455sccFmWV89RbWFYTrwpSibyc4EUlvDrPbT1OnZ1/IRdN+eNXsPF
+ mNmmn6hjZ57EBibVQj5tUxo8+MxD/CYnHd3vmUCm77LGnvb1Q3PuoFJHhuyZVJotdVzR
+ nzBK2cyuN45UdtUr+/Po2FW6NIbcgwUVWhsQT2kdttbKIVZrs3pVnSfLAXZwZ0yhdzq/
+ uEcg==
+X-Gm-Message-State: AOAM531JTvUSF+NC/TKINPXem1URZXWLdiczEj3CrVtmFAs9lVkPOlMo
+ 63ZTe5xb26sxckLyadgbm6M=
+X-Google-Smtp-Source: ABdhPJy7pbFO73FzMiOp6qJbFO6JT0WJYrjBOJQOBGLomMGz8xNQri52lKtcpDMPk8VFljekvgxxIw==
+X-Received: by 2002:a05:600c:48e:: with SMTP id
+ d14mr8876912wme.133.1590409107994; 
+ Mon, 25 May 2020 05:18:27 -0700 (PDT)
+Received: from ubuntu-G3.micron.com ([165.225.203.62])
+ by smtp.gmail.com with ESMTPSA id 10sm18136635wmw.26.2020.05.25.05.18.25
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 25 May 2020 05:18:27 -0700 (PDT)
+From: Bean Huo <huobean@gmail.com>
+To: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ s.hauer@pengutronix.de, boris.brezillon@collabora.com, derosier@gmail.com
+Subject: [PATCH v6 0/5] Micron SLC NAND filling block
+Date: Mon, 25 May 2020 14:18:08 +0200
+Message-Id: <20200525121814.31934-1-huobean@gmail.com>
+X-Mailer: git-send-email 2.17.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200525_021736_260712_8381CADA 
-X-CRM114-Status: GOOD (  19.88  )
+X-CRM114-CacheID: sfid-20200525_051834_105666_7ADC2598 
+X-CRM114-Status: GOOD (  12.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,220 +92,88 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Mason Yang <masonccyang@mxic.com.tw>,
- Boris Brezillon <boris.brezillon@collabora.com>, Sekhar Nori <nsekhar@ti.com>,
- Pratyush Yadav <p.yadav@ti.com>
+Cc: huobean@gmail.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Bean Huo <beanhuo@micron.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The Cypress Semper flash is an xSPI compliant octal DTR flash. Add
-support for using it in octal DTR mode.
+From: Bean Huo <beanhuo@micron.com>
 
-The flash by default boots in a hybrid sector mode. But the sector map
-table on the part I had was programmed incorrectly and the SMPT values
-on the flash don't match the public datasheet. Specifically, in some
-places erase type 3 was used instead of 4. In addition, the region sizes
-were incorrect in some places. So, for testing I set CFR3N[3] to enable
-uniform sector sizes. Since the uniform sector mode bit is a
-non-volatile bit, this series does not change it to avoid making any
-permanent changes to the flash configuration. The correct data to
-implement a fixup is not available right now and will be done in a
-follow-up patch if needed.
+Hi,
+On planar 2D Micron NAND devices when a block erase command is issued,
+occasionally even though a block erase operation completes and returns a pass
+status, the flash block may not be completely erased. Subsequent operations to
+this block on very rare cases can result in subtle failures or corruption. These
+extremely rare cases should nevertheless be considered. This patchset is to
+address this potential issue.
 
-Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
----
- drivers/mtd/spi-nor/spansion.c | 167 +++++++++++++++++++++++++++++++++
- 1 file changed, 167 insertions(+)
+After submission of patch V1 [1] and V2 [2], we stopped its update since we get
+stuck in the solution on how to avoid the power-loss issue in case power-cut
+hits the block filling. In the v1 and v2, to avoid this issue, we always damaged
+page0, page1, this's based on the hypothesis that NAND FS is UBIFS. This
+FS-specifical code is unacceptable in the MTD layer. Also, it cannot cover all
+NAND based file system. Based on the current discussion, seems that re-write all
+first 15 page from page0 is a satisfactory solution.
 
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index 88183eba8ac1..e5dc36b70e4e 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -8,6 +8,169 @@
- 
- #include "core.h"
- 
-+/* For Cypress flash. */
-+#define SPINOR_OP_RD_ANY_REG			0x65	/* Read any register */
-+#define SPINOR_OP_WR_ANY_REG			0x71	/* Write any register */
-+#define SPINOR_REG_CYPRESS_CFR2V		0x00800003
-+#define SPINOR_REG_CYPRESS_CFR2V_MEMLAT_11_24	0xb
-+#define SPINOR_REG_CYPRESS_CFR3V		0x00800004
-+#define SPINOR_REG_CYPRESS_CFR3V_PGSZ		BIT(4) /* Page size. */
-+#define SPINOR_REG_CYPRESS_CFR5V		0x00800006
-+#define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_EN	0x3
-+#define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS	0
-+#define SPINOR_OP_CYPRESS_RD_FAST		0xee
-+
-+/**
-+ * spi_nor_cypress_octal_dtr_enable() - Enable octal DTR on Cypress flashes.
-+ * @nor:		pointer to a 'struct spi_nor'
-+ *
-+ * This also sets the memory access latency cycles to 24 to allow the flash to
-+ * run at up to 200MHz.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int spi_nor_cypress_octal_dtr_enable(struct spi_nor *nor, bool enable)
-+{
-+	struct spi_mem_op op;
-+	u8 *buf = nor->bouncebuf;
-+	u8 addr_width;
-+	int ret;
-+
-+	if (enable)
-+		addr_width = 3;
-+	else
-+		addr_width = 4;
-+
-+	if (enable) {
-+		/* Use 24 dummy cycles for memory array reads. */
-+		ret = spi_nor_write_enable(nor);
-+		if (ret)
-+			return ret;
-+
-+		*buf = SPINOR_REG_CYPRESS_CFR2V_MEMLAT_11_24;
-+		op = (struct spi_mem_op)
-+			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_ANY_REG, 1),
-+				   SPI_MEM_OP_ADDR(addr_width,
-+						   SPINOR_REG_CYPRESS_CFR2V,
-+						   1),
-+				   SPI_MEM_OP_NO_DUMMY,
-+				   SPI_MEM_OP_DATA_OUT(1, buf, 1));
-+		ret = spi_mem_exec_op(nor->spimem, &op);
-+		if (ret) {
-+			dev_warn(nor->dev,
-+				 "failed to set default memory latency value: %d\n",
-+				 ret);
-+			return ret;
-+		}
-+		ret = spi_nor_wait_till_ready(nor);
-+		if (ret)
-+			return ret;
-+
-+		nor->read_dummy = 24;
-+	}
-+
-+	/* Set/unset the octal and DTR enable bits. */
-+	ret = spi_nor_write_enable(nor);
-+	if (ret)
-+		return ret;
-+
-+	if (enable)
-+		*buf = SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_EN;
-+	else
-+		*buf = SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS;
-+	op = (struct spi_mem_op)
-+		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_ANY_REG, 1),
-+			   SPI_MEM_OP_ADDR(addr_width,
-+					   SPINOR_REG_CYPRESS_CFR5V,
-+					   1),
-+			   SPI_MEM_OP_NO_DUMMY,
-+			   SPI_MEM_OP_DATA_OUT(1, buf, 1));
-+
-+	if (!enable)
-+		spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
-+
-+	ret = spi_mem_exec_op(nor->spimem, &op);
-+	if (ret) {
-+		dev_warn(nor->dev, "Failed to enable octal DTR mode\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static void s28hs512t_default_init(struct spi_nor *nor)
-+{
-+	nor->params->octal_dtr_enable = spi_nor_cypress_octal_dtr_enable;
-+}
-+
-+static void s28hs512t_post_sfdp_fixup(struct spi_nor *nor)
-+{
-+	/*
-+	 * On older versions of the flash the xSPI Profile 1.0 table has the
-+	 * 8D-8D-8D Fast Read opcode as 0x00. But it actually should be 0xEE.
-+	 */
-+	if (nor->params->reads[SNOR_CMD_READ_8_8_8_DTR].opcode == 0)
-+		nor->params->reads[SNOR_CMD_READ_8_8_8_DTR].opcode =
-+			SPINOR_OP_CYPRESS_RD_FAST;
-+
-+	nor->params->hwcaps.mask |= SNOR_HWCAPS_PP_8_8_8_DTR;
-+
-+	/* This flash is also missing the 4-byte Page Program opcode bit. */
-+	spi_nor_set_pp_settings(&nor->params->page_programs[SNOR_CMD_PP],
-+				SPINOR_OP_PP_4B, SNOR_PROTO_1_1_1);
-+	/*
-+	 * Since xSPI Page Program opcode is backward compatible with
-+	 * Legacy SPI, use Legacy SPI opcode there as well.
-+	 */
-+	spi_nor_set_pp_settings(&nor->params->page_programs[SNOR_CMD_PP_8_8_8_DTR],
-+				SPINOR_OP_PP_4B, SNOR_PROTO_8_8_8_DTR);
-+
-+	/*
-+	 * The xSPI Profile 1.0 table advertises the number of additional
-+	 * address bytes needed for Read Status Register command as 0 but the
-+	 * actual value for that is 4.
-+	 */
-+	nor->params->rdsr_addr_nbytes = 4;
-+}
-+
-+static int s28hs512t_post_bfpt_fixup(struct spi_nor *nor,
-+				     const struct sfdp_parameter_header *bfpt_header,
-+				     const struct sfdp_bfpt *bfpt,
-+				     struct spi_nor_flash_parameter *params)
-+{
-+	struct spi_mem_op op;
-+	u8 *buf = nor->bouncebuf;
-+	u8 addr_width = 3;
-+	int ret;
-+
-+	/*
-+	 * The BFPT table advertises a 512B page size but the page size is
-+	 * actually configurable (with the default being 256B). Read from
-+	 * CFR3V[4] and set the correct size.
-+	 */
-+	op = (struct spi_mem_op)
-+		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RD_ANY_REG, 1),
-+			   SPI_MEM_OP_ADDR(addr_width, SPINOR_REG_CYPRESS_CFR3V, 1),
-+			   SPI_MEM_OP_NO_DUMMY,
-+			   SPI_MEM_OP_DATA_IN(1, buf, 1));
-+	ret = spi_mem_exec_op(nor->spimem, &op);
-+	if (ret)
-+		return ret;
-+
-+	if (*buf & SPINOR_REG_CYPRESS_CFR3V_PGSZ)
-+		params->page_size = 512;
-+	else
-+		params->page_size = 256;
-+
-+	return 0;
-+}
-+
-+static struct spi_nor_fixups s28hs512t_fixups = {
-+	.default_init = s28hs512t_default_init,
-+	.post_sfdp = s28hs512t_post_sfdp_fixup,
-+	.post_bfpt = s28hs512t_post_bfpt_fixup,
-+};
-+
- static const struct flash_info spansion_parts[] = {
- 	/* Spansion/Cypress -- single (large) sector size only, at least
- 	 * for the chips listed here (without boot sectors).
-@@ -72,6 +235,10 @@ static const struct flash_info spansion_parts[] = {
- 	{ "s25fl256l",  INFO(0x016019,      0,  64 * 1024, 512,
- 			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
- 			     SPI_NOR_4B_OPCODES) },
-+	{ "s28hs512t",   INFO(0x345b1a,      0, 256 * 1024, 256,
-+			     SECT_4K | SPI_NOR_OCTAL_DTR_READ)
-+		.fixups = &s28hs512t_fixups,
-+	},
- };
- 
- static void spansion_post_sfdp_fixups(struct spi_nor *nor)
+Meanwhile, I borrowed one idea from Miquel Raynal patchset [3], in which keeps
+a recode of programmed pages, base on it, for most of the cases, we don't need
+to read every page to see if current erasing block is a partially programmed
+block.
+
+Changelog:
+
+v5 - v6:
+    1. Fix a misleading-indentation in patch 5/5
+       (Reported-by: kbuild test robot <lkp@intel.com>)
+    2. Rebase patch to
+       git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
+v4 - v5:
+    1. Add Miquel Raynal Authorship and SoB in 4/5 and 5/5 (Miquel Raynal)
+    2. Change  commit message in 5/5. (Steve deRosier)
+    3. delete unused variable max_bitflips in 4/5
+v3 - v4:
+    1. In the patch 4/5, change to directly use ecc.strength to judge the page
+       is a empty page or not, rather than max_bitflips < mtd->bitflip_threshold
+    2. In the patch 5/5, for the powerloss case, from the next time boot up,
+       lots of page will be programmed from >page15 address, if still using
+       first_p as GENMASK() bitmask starting position, writtenp will be always 0.
+       fix it by changing its bitmask starting at bit position 0.
+v2 - v3:
+    1. Rebase patch to the latest MTD git tree
+    2. Add a record that keeps tracking the programmed pages in the first 16 pages
+    3. Change from program odd pages, damage page 0 and page 1, to program all
+       first 15 pages
+    4. Address issues which exist in the V2.
+v1 - v2:
+    1. Rebased V1 to latest Linux kernel.
+    2. Add erase preparation function pointer in nand_manufacturer_ops.
+
+[1] https://www.spinics.net/lists/linux-mtd/msg04112.html
+[2] https://www.spinics.net/lists/linux-mtd/msg04450.html
+[3] https://www.spinics.net/lists/linux-mtd/msg13083.html
+
+Bean Huo (3):
+  mtd: rawnand: group all NAND specific ops into new nand_chip_ops
+  mtd: rawnand: Add {pre,post}_erase hooks in nand_chip_ops
+  mtd: rawnand: Introduce a new function nand_check_is_erased_page()
+
+Miquel Raynal (2):
+  mtd: rawnand: Add write_oob hook in nand_chip_ops
+  mtd: rawnand: micron: Micron SLC NAND filling block
+
+ drivers/mtd/nand/raw/internals.h     |   3 +-
+ drivers/mtd/nand/raw/nand_base.c     |  87 ++++++++++++++++++----
+ drivers/mtd/nand/raw/nand_hynix.c    |   2 +-
+ drivers/mtd/nand/raw/nand_macronix.c |  10 +--
+ drivers/mtd/nand/raw/nand_micron.c   | 104 ++++++++++++++++++++++++++-
+ include/linux/mtd/rawnand.h          |  40 +++++++----
+ 6 files changed, 211 insertions(+), 35 deletions(-)
+
 -- 
-2.26.2
+2.17.1
 
 
 ______________________________________________________
