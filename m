@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9324C433E0
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 May 2020 17:44:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8045CC433DF
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 May 2020 17:44:26 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BAE39207DA
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 May 2020 17:44:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4F60D2078B
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 May 2020 17:44:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DobPgb3y"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BAE39207DA
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="iXKKI2kw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4F60D2078B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qM40oY6k8zCH4+52AISwMuwyPnUpNatqtoqqXdPnUEw=; b=DobPgb3yBBrVKo
-	CvfRTZ6f/pJly4+jbj2rOHdHMugFrUZR2uEB8kXo+vx4KES+CF9SbDLA1wA+GgWL57nUawbeo+eVa
-	4LtNbiCWxuQBlXXu4qAo//EI9TMo8vZA7QZfKpW9OysS/PTRO4ub98iDTjSSV/cfCkf5Tuw/J2bj1
-	YNheoLri1pJM01ijEJe83+QWJJNS1eAndH8yuJrx/5A6Rzp+gnF2vkG1E2QJTvBVruOIFmonLYofx
-	JFGxA5p6c5PH8wNqbBEWJlKFLD8jsPN16CwrPXtVPqqkQpqGfmM6DPkEg0hjjH8heMC4Fpdt20zwF
-	JHIPG5dgtPHSGSW1kfCw==;
+	List-Owner; bh=nJaVhYZSFTTqwvwKHfwYz9eXxkbMjXAI+rb2zBtAe6s=; b=iXKKI2kwZm1vDf
+	YFk2fU9YNepgsbq2khmlVzUhmg0QSv9pwZaaiSUv81PGrl3XCuPaons/u+ba4ebWgeR84RLdI+NOP
+	UJcZ75e9QAvXx54YLW1q1/Ui7sU4W+lwvfFb8KGC31vPIPrfMo5OPo4PitERf8vKzch7skUV4uMnX
+	hRGph3X0Ao6EolPjrZYHFFErKCY2GOnLrBCUK+J+ls5AZLIoIOElBL4FcqgDZCwjiKkmqw50PQ4Yp
+	XGdPtEZGj3MK3xPFZVweSL9rvZxZ0SfNRWAE8+79CBDErg2p4p4GlBusJPMa5GSUKrS1R7pCujQ0H
+	3bbyjUcBE4/btbzJn1lw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jdH8q-000459-HX; Mon, 25 May 2020 17:44:00 +0000
+	id 1jdH96-0004Jd-BO; Mon, 25 May 2020 17:44:16 +0000
 Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jdH7k-00038t-NG
- for linux-mtd@lists.infradead.org; Mon, 25 May 2020 17:42:54 +0000
+ id 1jdH7l-00039T-MN
+ for linux-mtd@lists.infradead.org; Mon, 25 May 2020 17:42:55 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 94F2624000A;
- Mon, 25 May 2020 17:42:50 +0000 (UTC)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 800FB24000C;
+ Mon, 25 May 2020 17:42:51 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH v4 04/19] mtd: rawnand: Rename the manufacturer structure
-Date: Mon, 25 May 2020 19:42:24 +0200
-Message-Id: <20200525174239.11349-5-miquel.raynal@bootlin.com>
+Subject: [PATCH v4 05/19] mtd: rawnand: Declare the nand_manufacturer
+ structure out of nand_chip
+Date: Mon, 25 May 2020 19:42:25 +0200
+Message-Id: <20200525174239.11349-6-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200525174239.11349-1-miquel.raynal@bootlin.com>
 References: <20200525174239.11349-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200525_104253_027875_2C2806B1 
-X-CRM114-Status: GOOD (  14.52  )
+X-CRM114-CacheID: sfid-20200525_104253_869500_BB280BBF 
+X-CRM114-Status: GOOD (  11.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,154 +77,67 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-It is currently called nand_manufacturer but could actually be called
-nand_manufacturer_desc, like its instances, so that the former name is
-left unused for now.
+Now that struct nand_manufacturer type is free, use it to store the
+nand_manufacturer_desc and the manufacturer's private data.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/internals.h |  6 +++---
- drivers/mtd/nand/raw/nand_base.c | 14 +++++++-------
- drivers/mtd/nand/raw/nand_ids.c  | 16 ++++++++--------
- include/linux/mtd/rawnand.h      |  2 +-
- 4 files changed, 19 insertions(+), 19 deletions(-)
+ include/linux/mtd/rawnand.h | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
-index 03866b0aadea..a518acfd9b3f 100644
---- a/drivers/mtd/nand/raw/internals.h
-+++ b/drivers/mtd/nand/raw/internals.h
-@@ -53,12 +53,12 @@ struct nand_manufacturer_ops {
- };
- 
- /**
-- * struct nand_manufacturer - NAND Flash Manufacturer structure
-+ * struct nand_manufacturer_desc - NAND Flash Manufacturer descriptor
-  * @name: Manufacturer name
-  * @id: manufacturer ID code of device.
-  * @ops: manufacturer operations
-  */
--struct nand_manufacturer {
-+struct nand_manufacturer_desc {
- 	int id;
- 	char *name;
- 	const struct nand_manufacturer_ops *ops;
-@@ -79,7 +79,7 @@ extern const struct nand_manufacturer_ops toshiba_nand_manuf_ops;
- extern const struct mtd_pairing_scheme dist3_pairing_scheme;
- 
- /* Core functions */
--const struct nand_manufacturer *nand_get_manufacturer(u8 id);
-+const struct nand_manufacturer_desc *nand_get_manufacturer_desc(u8 id);
- int nand_bbm_get_next_page(struct nand_chip *chip, int page);
- int nand_markbad_bbm(struct nand_chip *chip, loff_t ofs);
- int nand_erase_nand(struct nand_chip *chip, struct erase_info *instr,
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index b86f641f6d74..14f1359a60b8 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -4880,9 +4880,9 @@ static void nand_manufacturer_cleanup(struct nand_chip *chip)
- }
- 
- static const char *
--nand_manufacturer_name(const struct nand_manufacturer *manufacturer)
-+nand_manufacturer_name(const struct nand_manufacturer_desc *manufacturer_desc)
- {
--	return manufacturer ? manufacturer->name : "Unknown";
-+	return manufacturer_desc ? manufacturer_desc->name : "Unknown";
- }
- 
- /*
-@@ -4890,7 +4890,7 @@ nand_manufacturer_name(const struct nand_manufacturer *manufacturer)
-  */
- static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
- {
--	const struct nand_manufacturer *manufacturer;
-+	const struct nand_manufacturer_desc *manufacturer_desc;
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct nand_memory_organization *memorg;
- 	int busw, ret;
-@@ -4947,8 +4947,8 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
- 	chip->id.len = nand_id_len(id_data, ARRAY_SIZE(chip->id.data));
- 
- 	/* Try to identify manufacturer */
--	manufacturer = nand_get_manufacturer(maf_id);
--	chip->manufacturer.desc = manufacturer;
-+	manufacturer_desc = nand_get_manufacturer_desc(maf_id);
-+	chip->manufacturer.desc = manufacturer_desc;
- 
- 	if (!type)
- 		type = nand_flash_ids;
-@@ -5027,7 +5027,7 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
- 		 */
- 		pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
- 			maf_id, dev_id);
--		pr_info("%s %s\n", nand_manufacturer_name(manufacturer),
-+		pr_info("%s %s\n", nand_manufacturer_name(manufacturer_desc),
- 			mtd->name);
- 		pr_warn("bus width %d instead of %d bits\n", busw ? 16 : 8,
- 			(chip->options & NAND_BUSWIDTH_16) ? 16 : 8);
-@@ -5062,7 +5062,7 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
- 
- 	pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
- 		maf_id, dev_id);
--	pr_info("%s %s\n", nand_manufacturer_name(manufacturer),
-+	pr_info("%s %s\n", nand_manufacturer_name(manufacturer_desc),
- 		chip->parameters.model);
- 	pr_info("%d MiB, %s, erase size: %d KiB, page size: %d, OOB size: %d\n",
- 		(int)(targetsize >> 20), nand_is_slc(chip) ? "SLC" : "MLC",
-diff --git a/drivers/mtd/nand/raw/nand_ids.c b/drivers/mtd/nand/raw/nand_ids.c
-index ba27902fc54b..e0dbc2e316c7 100644
---- a/drivers/mtd/nand/raw/nand_ids.c
-+++ b/drivers/mtd/nand/raw/nand_ids.c
-@@ -166,7 +166,7 @@ struct nand_flash_dev nand_flash_ids[] = {
- };
- 
- /* Manufacturer IDs */
--static const struct nand_manufacturer nand_manufacturers[] = {
-+static const struct nand_manufacturer_desc nand_manufacturer_descs[] = {
- 	{NAND_MFR_AMD, "AMD/Spansion", &amd_nand_manuf_ops},
- 	{NAND_MFR_ATO, "ATO"},
- 	{NAND_MFR_EON, "Eon"},
-@@ -186,20 +186,20 @@ static const struct nand_manufacturer nand_manufacturers[] = {
- };
- 
- /**
-- * nand_get_manufacturer - Get manufacturer information from the manufacturer
-- *			   ID
-+ * nand_get_manufacturer_desc - Get manufacturer information from the
-+ *                              manufacturer ID
-  * @id: manufacturer ID
-  *
-- * Returns a pointer a nand_manufacturer object if the manufacturer is defined
-+ * Returns a nand_manufacturer_desc object if the manufacturer is defined
-  * in the NAND manufacturers database, NULL otherwise.
-  */
--const struct nand_manufacturer *nand_get_manufacturer(u8 id)
-+const struct nand_manufacturer_desc *nand_get_manufacturer_desc(u8 id)
- {
- 	int i;
- 
--	for (i = 0; i < ARRAY_SIZE(nand_manufacturers); i++)
--		if (nand_manufacturers[i].id == id)
--			return &nand_manufacturers[i];
-+	for (i = 0; i < ARRAY_SIZE(nand_manufacturer_descs); i++)
-+		if (nand_manufacturer_descs[i].id == id)
-+			return &nand_manufacturer_descs[i];
- 
- 	return NULL;
- }
 diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index b33cd68852c4..d8492d966b40 100644
+index d8492d966b40..2a9b5d5b315b 100644
 --- a/include/linux/mtd/rawnand.h
 +++ b/include/linux/mtd/rawnand.h
-@@ -1163,7 +1163,7 @@ struct nand_chip {
- 	void *priv;
- 
- 	struct {
--		const struct nand_manufacturer *desc;
-+		const struct nand_manufacturer_desc *desc;
- 		void *priv;
- 	} manufacturer;
+@@ -1043,10 +1043,21 @@ struct nand_chip_ops {
+ 	int (*setup_read_retry)(struct nand_chip *chip, int retry_mode);
  };
+ 
++/**
++ * struct nand_manufacturer - NAND manufacturer structure
++ * @desc: The manufacturer description
++ * @priv: Private information for the manufacturer driver
++ */
++struct nand_manufacturer {
++	const struct nand_manufacturer_desc *desc;
++	void *priv;
++};
++
+ /**
+  * struct nand_chip - NAND Private Flash Chip Data
+  * @base:		Inherit from the generic NAND device
+  * @ops:		NAND chip operations
++ * @manufacturer:	Manufacturer information
+  * @legacy:		All legacy fields/hooks. If you develop a new driver,
+  *			don't even try to use any of these fields/hooks, and if
+  *			you're modifying an existing driver that is using those
+@@ -1106,13 +1117,11 @@ struct nand_chip_ops {
+  *			structure which is shared among multiple independent
+  *			devices.
+  * @priv:		[OPTIONAL] pointer to private chip data
+- * @manufacturer:	[INTERN] Contains manufacturer information
+- * @manufacturer.desc:	[INTERN] Contains manufacturer's description
+- * @manufacturer.priv:	[INTERN] Contains manufacturer private information
+  */
+ 
+ struct nand_chip {
+ 	struct nand_device base;
++	struct nand_manufacturer manufacturer;
+ 	struct nand_chip_ops ops;
+ 	struct nand_legacy legacy;
+ 
+@@ -1161,11 +1170,6 @@ struct nand_chip {
+ 	struct nand_bbt_descr *badblock_pattern;
+ 
+ 	void *priv;
+-
+-	struct {
+-		const struct nand_manufacturer_desc *desc;
+-		void *priv;
+-	} manufacturer;
+ };
+ 
+ extern const struct mtd_ooblayout_ops nand_ooblayout_sp_ops;
 -- 
 2.20.1
 
