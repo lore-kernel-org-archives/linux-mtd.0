@@ -2,77 +2,61 @@ Return-Path: <SRS0=SzYL=7H=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E06FC433E0
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 May 2020 14:52:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E466C433DF
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 May 2020 16:15:05 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D32312078B
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 May 2020 14:52:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 16C872071A
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 May 2020 16:15:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ondJZpdO";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=axis.com header.i=@axis.com header.b="bSlYt3GN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D32312078B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=axis.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RWfgr5qQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 16C872071A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=yadavpratyush.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QJoB9sRYe0XhBnodCwcWhFnMYZ6wG9ggOIwQYa3xS1Y=; b=ondJZpdOwsqA3o
-	4yjSid1+DtOQj7fLHcS2TggN/2GYZbIu0thmC3htg+clhP9C/90PUUAaLXvDs4SsaGuL0sNOrD/h/
-	KYnN8kFdmc+gILZ4NYDNilCSIh6hDfETqhTTjkvgn1wQ/32ePR25eqMk7HNmGJugcWOdmFsDR7E2m
-	BYWTSDn+psLi68Lxtg7Zg6zpKKj2iuYdUTTf+afH2UUThf/LJknefZnZiPTEKs3I7nF1MhMYzaiPj
-	FMPbq/Rhx56gfbJC0kloIx1Uzbl65bDd7FxU5V2OfZZPedfFDSwb1+cDryXr77lsmVVP+LoDRK1UX
-	dJw3G7p7Cbj/gMGMApsw==;
+	List-Owner; bh=fTOEea2jC1JE69nrs+1ZRvx+iW4lW/xQ2BjW/8hiyoo=; b=RWfgr5qQvkF0JC
+	lIFFaPx/8Wliizg542MMKrnWyCL4dWco1ImIcS/ntRbUI2jFMM7h4ZHfzYc0ozmBXW92e5w5BWaML
+	nsuGiWe7jZzRFmGg3UsgtKKTKDzJPgn+ruTuj2QoEQCCYfOKlLjdCviTNFmjF4cx1zTbAgPPzoF6N
+	DuxFcrRUww6TvRklcHXoaxmX+idHHuMwQ4eFDrlz4Y8QuK2AQjNJTF0w7dhVCqkIf3/AcPzulAySr
+	kXh4+6tw+s/XemPlweZ7kwSEKSBtm6+MiAB+58LXL4eWGGnyyvKMaL7owG3FWd91QxryLdmV6+UsY
+	WApcHbwyfju3ufp0iY1Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jdESP-0001CF-Pm; Mon, 25 May 2020 14:52:01 +0000
-Received: from smtp1.axis.com ([195.60.68.17])
+	id 1jdFka-0000N9-Vu; Mon, 25 May 2020 16:14:52 +0000
+Received: from relay4-d.mail.gandi.net ([217.70.183.196])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jdESH-00014c-FX
- for linux-mtd@lists.infradead.org; Mon, 25 May 2020 14:51:55 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=axis.com; l=3433; q=dns/txt; s=axis-central1;
- t=1590418313; x=1621954313;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version;
- bh=NWo4hNWQ1Zmi6ZYeN+iZd74zaTr5XBo3LdSMQTED/mQ=;
- b=bSlYt3GNmgC+xdml1c9WHSYQAuLlROLVnRWKaN/psW9EBuyacc46bWbc
- Ngd08TVKpaMatRz0vZwLqaffa7FIm5pnKYzIUDdF0FZXOnbqqkmUe5dCZ
- dZovQoGbkJQgHCG8dNIrXQGQ6fhyRWs2jH6h8hgOlAjUUryJsMrHCDZ08
- I7tqijiQ2h7bPXEr5OV5SezRIj4eDm2r67j0IwdaxVhxu3saWQ6b6J1tB
- ICkPZbAYo5EhYhp/DeNdgAl881aNIBdWl9eKS4cucbJqLfNibR1UeENA+
- 5JMKXuNrE81JTDG4V+0xbqXdvpxvKG03CzclzF+yed8TR6nQEgAWfYjZI w==;
-IronPort-SDR: Vrsx4tfN0Igr8J3v10crrfq78iRdk4HihVXz6IxsmblfXdITJ9frme78KOZRgdpvVCiMhUKvf5
- j1wrF5AE+miSfsnOnEYjF8XcLALa4yVUrgQsQgBytBEo/6SbPmqlc8kHHMg744+vMpTMVvV4+a
- x+Cu2BtXymGHMnZ+kRzEAU9j1syja9gAi27G6LUj7VxJRe4cBMKsrw4QMZ5V53QgyIVDd3RjlQ
- St7xkZT3tEiSSWMF7l0Z4qLuPYNk02Qh98ZuyzOGOMc6ySj4qTxkGCPiKfKd/f5hGiuyHceeqM
- wL8=
-X-IronPort-AV: E=Sophos;i="5.73,433,1583190000"; 
-   d="scan'208";a="9086798"
-From: Rickard Andersson <rickaran@axis.com>
-To: <miquel.raynal@bootlin.com>, <linux-mtd@lists.infradead.org>,
- <boris.brezillon@collabora.com>
-Subject: [PATCH v3 2/2] mtd: rawnand: Add timings for Kioxia TH58NVG2S3HBAI4
-Date: Mon, 25 May 2020 16:51:33 +0200
-Message-ID: <20200525145133.8298-2-rickaran@axis.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200525145133.8298-1-rickaran@axis.com>
-References: <20200525145133.8298-1-rickaran@axis.com>
+ id 1jdFkV-0000MZ-TM
+ for linux-mtd@lists.infradead.org; Mon, 25 May 2020 16:14:49 +0000
+X-Originating-IP: 157.36.22.112
+Received: from localhost (unknown [157.36.22.112])
+ (Authenticated sender: me@yadavpratyush.com)
+ by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 08342E0005;
+ Mon, 25 May 2020 16:14:39 +0000 (UTC)
+Date: Mon, 25 May 2020 21:44:36 +0530
+From: Pratyush Yadav <me@yadavpratyush.com>
+To: Yicong Yang <yangyicong@hisilicon.com>
+Subject: Re: [RFC PATCH 3/3] spi: hisi-sfc-v3xx: Add prepare/unprepare
+ methods to avoid race condition
+Message-ID: <20200525161436.c5h6d27pm3jptwbo@yadavpratyush.com>
+References: <1590060231-23242-1-git-send-email-yangyicong@hisilicon.com>
+ <1590060231-23242-4-git-send-email-yangyicong@hisilicon.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.0.5.60]
-X-ClientProxiedBy: XBOX04.axis.com (10.0.5.18) To XBOX02.axis.com (10.0.5.16)
+Content-Disposition: inline
+In-Reply-To: <1590060231-23242-4-git-send-email-yangyicong@hisilicon.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200525_075153_839906_1E831A7E 
-X-CRM114-Status: GOOD (  14.55  )
+X-CRM114-CacheID: sfid-20200525_091448_216362_6D9C78CD 
+X-CRM114-Status: GOOD (  28.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,117 +68,143 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: rickaran@axis.com
+Cc: vigneshr@ti.com, tudor.ambarus@microchip.com, richard@nod.at,
+ john.garry@huawei.com, linux-spi@vger.kernel.org, broonie@kernel.org,
+ linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Rickard x Andersson <rickaran@axis.com>
+Hi Yicong,
 
-The Kioxia/Toshiba TH58NVG2S3HBAI4 NAND memory is not a
-ONFI compliant memory. The timings of the memory is quite
-close to ONFI mode 4 but is breaking that spec.
+On 21/05/20 07:23PM, Yicong Yang wrote:
+> The controller can be shared with the firmware, which may cause race
+> problems. As most read/write/erase/lock/unlock of spi-nor flash are
+> composed of a set of operations, while the firmware may use the controller
+> and start its own operation in the middle of the process started by the
+> kernel driver, which may lead to the kernel driver's function broken.
+> 
+> Bit[20] in HISI_SFC_V3XX_CMD_CFG register plays a role of a lock, to
+> protect the controller from firmware access, which means the firmware
+> cannot reach the controller if the driver set the bit. Add prepare/
+> unprepare methods for the controller, we'll hold the lock in prepare
+> method and release it in unprepare method, which will solve the race
+> issue.
 
-Erase block read speed is increased from 6910 KiB/s to
-13490 KiB/s. Erase block write speed is increased from
-3350 KiB/s to 4410 KiB/s.
+I'm trying to understand the need for this change. What's wrong with
+performing the lock/unlock procedure in hisi_sfc_v3xx_exec_op()? You can 
+probably do something like:
 
-Tested on IMX6SX which has a NAND controller supporting
-EDO mode.
+  hisi_sfc_v3xx_lock();
+  ret = hisi_sfc_v3xx_generic_exec_op(host, op, chip_select);
+  hisi_sfc_v3xx_unlock();
+  return ret;
 
-Signed-off-by: Rickard x Andersson <rickaran@axis.com>
----
- drivers/mtd/nand/raw/nand_ids.c     |  3 +++
- drivers/mtd/nand/raw/nand_toshiba.c | 44 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 47 insertions(+)
+What's the benefit of making upper layers do this? Acquiring the lock is 
+a simple register write, so it should be relatively fast. Unless there 
+is a lot of contention on the lock between the firmware and kernel, I 
+would expect the performance impact to be minimal. Maybe you can run 
+some benchmarks and see if there is a real difference.
 
-diff --git a/drivers/mtd/nand/raw/nand_ids.c b/drivers/mtd/nand/raw/nand_ids.c
-index e0dbc2e316c7..8b676e8b481b 100644
---- a/drivers/mtd/nand/raw/nand_ids.c
-+++ b/drivers/mtd/nand/raw/nand_ids.c
-@@ -52,6 +52,9 @@ struct nand_flash_dev nand_flash_ids[] = {
- 		{ .id = {0xad, 0xde, 0x94, 0xda, 0x74, 0xc4} },
- 		  SZ_8K, SZ_8K, SZ_2M, NAND_NEED_SCRAMBLING, 6, 640,
- 		  NAND_ECC_INFO(40, SZ_1K), 4 },
-+	{"TH58NVG2S3HBAI4 4G 3.3V 8-bit",
-+		{ .id = {0x98, 0xdc, 0x91, 0x15, 0x76} },
-+		  SZ_2K, SZ_512, SZ_128K, 0, 5, 128, NAND_ECC_INFO(8, SZ_512) },
- 
- 	LEGACY_ID_NAND("NAND 4MiB 5V 8-bit",   0x6B, 4, SZ_8K, SP_OPTIONS),
- 	LEGACY_ID_NAND("NAND 4MiB 3,3V 8-bit", 0xE3, 4, SZ_8K, SP_OPTIONS),
-diff --git a/drivers/mtd/nand/raw/nand_toshiba.c b/drivers/mtd/nand/raw/nand_toshiba.c
-index b6efaf5195bb..bea6bd1beece 100644
---- a/drivers/mtd/nand/raw/nand_toshiba.c
-+++ b/drivers/mtd/nand/raw/nand_toshiba.c
-@@ -194,6 +194,42 @@ static void toshiba_nand_decode_id(struct nand_chip *chip)
- 	}
- }
- 
-+static int th58nvg2s3hbai4_choose_data_interface(struct nand_chip *chip)
-+{
-+	int ret;
-+	struct nand_sdr_timings *timings = &chip->data_interface.timings.sdr;
-+
-+	/* Start with timings from the closest timing mode, mode 4. */
-+	ret = onfi_fill_data_interface(chip, NAND_SDR_IFACE, 4);
-+	if (ret)
-+		return ret;
-+
-+	/* Patch timings that differ from mode 4. */
-+	timings->tALS_min = 12000;
-+	timings->tCHZ_max = 20000;
-+	timings->tCLS_min = 12000;
-+	timings->tCOH_min = 0;
-+	timings->tDS_min = 12000;
-+	timings->tRHOH_min = 25000;
-+	timings->tRHW_min = 30000;
-+	timings->tRHZ_max = 60000;
-+	timings->tWHR_min = 60000;
-+
-+	/* Patch timings not part of onfi timing mode. */
-+	timings->tPROG_max = 700000000;
-+	timings->tBERS_max = 5000000000;
-+
-+	/*
-+	 * Find the corresponding onfi timing mode that is safe to use. This
-+	 * will only be used if the controller does not handle the specific
-+	 * timings that were provided.
-+	 */
-+	chip->data_interface.timings.mode =
-+		onfi_find_equivalent_sdr_mode(timings);
-+
-+	return ret;
-+}
-+
- static int tc58teg5dclta00_init(struct nand_chip *chip)
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
-@@ -205,6 +241,12 @@ static int tc58teg5dclta00_init(struct nand_chip *chip)
- 	return 0;
- }
- 
-+static int th58nvg2s3hbai4_init(struct nand_chip *chip)
-+{
-+	chip->ops.choose_data_interface = th58nvg2s3hbai4_choose_data_interface;
-+	return 0;
-+}
-+
- static int toshiba_nand_init(struct nand_chip *chip)
- {
- 	if (nand_is_slc(chip))
-@@ -217,6 +259,8 @@ static int toshiba_nand_init(struct nand_chip *chip)
- 
- 	if (!strcmp("TC58TEG5DCLTA00", chip->parameters.model))
- 		tc58teg5dclta00_init(chip);
-+	if (!strncmp("TH58NVG2S3HBAI4", chip->parameters.model, 15))
-+		th58nvg2s3hbai4_init(chip);
- 
- 	return 0;
- }
+> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+> ---
+>  drivers/spi/spi-hisi-sfc-v3xx.c | 41 ++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 40 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/spi/spi-hisi-sfc-v3xx.c b/drivers/spi/spi-hisi-sfc-v3xx.c
+> index e3b5725..13c161c 100644
+> --- a/drivers/spi/spi-hisi-sfc-v3xx.c
+> +++ b/drivers/spi/spi-hisi-sfc-v3xx.c
+> @@ -18,6 +18,7 @@
+>  #define HISI_SFC_V3XX_VERSION (0x1f8)
+>  
+>  #define HISI_SFC_V3XX_CMD_CFG (0x300)
+> +#define HISI_SFC_V3XX_CMD_CFG_LOCK BIT(20)
+>  #define HISI_SFC_V3XX_CMD_CFG_DUAL_IN_DUAL_OUT (1 << 17)
+>  #define HISI_SFC_V3XX_CMD_CFG_DUAL_IO (2 << 17)
+>  #define HISI_SFC_V3XX_CMD_CFG_FULL_DIO (3 << 17)
+> @@ -41,6 +42,34 @@ struct hisi_sfc_v3xx_host {
+>  	int max_cmd_dword;
+>  };
+>  
+> +int hisi_sfc_v3xx_op_prepare(struct spi_mem *mem)
+> +{
+> +	struct spi_device *spi = mem->spi;
+> +	struct hisi_sfc_v3xx_host *host;
+> +	u32 reg = HISI_SFC_V3XX_CMD_CFG_LOCK;
+> +
+> +	host = spi_controller_get_devdata(spi->master);
+> +
+> +	writel(reg, host->regbase + HISI_SFC_V3XX_CMD_CFG);
+> +
+> +	reg = readl(host->regbase + HISI_SFC_V3XX_CMD_CFG);
+> +	if (!(reg & HISI_SFC_V3XX_CMD_CFG_LOCK))
+> +		return -EIO;
+
+IIUC, you are checking if you actually got the lock, and you won't get 
+the lock if the firmware is using the controller. So, is it a good idea 
+to give up so easily? Maybe we should do this in a loop at some 
+intervals, and only error out when we reach a number of failed attempts?
+
+> +
+> +	return 0;
+> +}
+> +
+> +void hisi_sfc_v3xx_op_unprepare(struct spi_mem *mem)
+> +{
+> +	struct spi_device *spi = mem->spi;
+> +	struct hisi_sfc_v3xx_host *host;
+> +
+> +	host = spi_controller_get_devdata(spi->master);
+> +
+> +	/* Release the lock and clear the command register. */
+> +	writel(0, host->regbase + HISI_SFC_V3XX_CMD_CFG);
+> +}
+> +
+>  #define HISI_SFC_V3XX_WAIT_TIMEOUT_US		1000000
+>  #define HISI_SFC_V3XX_WAIT_POLL_INTERVAL_US	10
+>  
+> @@ -163,7 +192,15 @@ static int hisi_sfc_v3xx_generic_exec_op(struct hisi_sfc_v3xx_host *host,
+>  					 u8 chip_select)
+>  {
+>  	int ret, len = op->data.nbytes;
+> -	u32 config = 0;
+> +	u32 config;
+> +
+> +	/*
+> +	 * The lock bit is in the command register. Clear the command
+> +	 * field with lock bit held if it has been set in
+> +	 * .prepare().
+> +	 */
+> +	config = readl(host->regbase + HISI_SFC_V3XX_CMD_CFG);
+> +	config &= HISI_SFC_V3XX_CMD_CFG_LOCK;
+
+This will unlock the controller _before_ the driver issues 
+hisi_sfc_v3xx_read_databuf(). I'm not very familiar with the hardware, 
+but to me it seems like it can lead to a race. What if the firmware 
+issues a command that over-writes the databuf (I assume this is shared 
+between the two) before the driver gets a chance to copy that data to 
+the kernel buffer?
+  
+>  	if (op->addr.nbytes)
+>  		config |= HISI_SFC_V3XX_CMD_CFG_ADDR_EN_MSK;
+> @@ -248,6 +285,8 @@ static int hisi_sfc_v3xx_exec_op(struct spi_mem *mem,
+>  
+>  static const struct spi_controller_mem_ops hisi_sfc_v3xx_mem_ops = {
+>  	.adjust_op_size = hisi_sfc_v3xx_adjust_op_size,
+> +	.prepare	= hisi_sfc_v3xx_op_prepare,
+> +	.unprepare	= hisi_sfc_v3xx_op_unprepare,
+>  	.exec_op = hisi_sfc_v3xx_exec_op,
+>  };
+>  
+
+FWIW, the other two patches in the series look good to me given you can 
+justify the need for having the API.
+
 -- 
-2.11.0
-
+Regards,
+Pratyush Yadav
 
 ______________________________________________________
 Linux MTD discussion mailing list
