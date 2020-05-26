@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EE90C433E2
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 23:12:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE390C433E0
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 23:22:11 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 15CCE207D3
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 23:12:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A955E206D5
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 23:22:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TmGKU0pe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 15CCE207D3
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="k8ieUmWA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A955E206D5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+NUv1tsxiuf1n4hOh8tuxWlH7dungHqHNX0ehHSTr/c=; b=TmGKU0pe5NM2lj
-	fvbSC4uAwrYLfTcfHNjRGBKjzSy7oTPDXmTmTAEZdPtRaiLYYKLM7/vYaID8yTaxNu+nGralVNs3i
-	SkqfChLLlBS93FN7Or3f0Q6MXH0hqgip8GXWJ+FdY0d/WK5gvSj3Sojg4fzN5jb13r34XDBxAK+Y6
-	pXE871mRl8rA2wHBVas1yGx525tUnbEyekWY2CyIAWwn5pWWYWxpBqs0vTzzmUyOgIi8T/Eli0Oqd
-	e9h7BlAFVPRHeomPLOJ4dlubLu9vnB1DBG4SACy8zr6jR34PkvXNnTLj3aoce3YBtfFYWpRKHrk06
-	8lGPQygtFDBWA4qtszlA==;
+	List-Owner; bh=jit5W1n7jsR1U+abvXm2IN4VvG1BY4/TYKUznS5mTv0=; b=k8ieUmWA6mmcl7
+	HSWYom2xfdhs4QLCE/2GiISo/xChnFBss3dz7L9bE8taU/AryjpITf1dwsRI6KTz7kf2SC+hjCkIr
+	qNdcyMHfUVmo2OjwsdkqvlufVQx2bHobG5gPQIFYOhXNoGN35Qc4AUiTY/Nzpij866Kjm0MJ/u53C
+	37QsoUpDMoQg9LZRq4/oRseHsXXWAk5x/jzpC04Q4GJ+SIEHSphVTTS2JDVdBonfx64f531Y/OhFU
+	vLIvOvNPtbSX3rQ1OtLr0k+e0uyb/NkOIAmL2JeY/BNaB+C6nANQ/fiEuiRJaKzYBYk/5xvgxAr75
+	KnMzu3qbr6Uz1QLajGnQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jdikH-0002S3-V0; Tue, 26 May 2020 23:12:29 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1jditU-0000Ek-I4; Tue, 26 May 2020 23:22:00 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jdikE-0002RO-Rl
- for linux-mtd@lists.infradead.org; Tue, 26 May 2020 23:12:28 +0000
+ id 1jditQ-0000Dn-Ub
+ for linux-mtd@lists.infradead.org; Tue, 26 May 2020 23:21:58 +0000
 Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
  (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id C11952A0FD0;
- Wed, 27 May 2020 00:12:21 +0100 (BST)
-Date: Wed, 27 May 2020 01:12:18 +0200
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id DE40D2A3151;
+ Wed, 27 May 2020 00:21:54 +0100 (BST)
+Date: Wed, 27 May 2020 01:21:48 +0200
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [RESEND v5 16/21] dt-bindings: mtd: Deprecate the nand-ecc-mode
- property
-Message-ID: <20200527011218.3e7a6269@collabora.com>
-In-Reply-To: <20200526195633.11543-17-miquel.raynal@bootlin.com>
+Subject: Re: [RESEND v5 09/21] mtd: rawnand: Create a new enumeration to
+ describe properly ECC types
+Message-ID: <20200527012148.5b68ce4e@collabora.com>
+In-Reply-To: <20200527005518.2d780ecc@collabora.com>
 References: <20200526195633.11543-1-miquel.raynal@bootlin.com>
- <20200526195633.11543-17-miquel.raynal@bootlin.com>
+ <20200526195633.11543-10-miquel.raynal@bootlin.com>
+ <20200527005518.2d780ecc@collabora.com>
 Organization: Collabora
 X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200526_161227_032440_D7102360 
-X-CRM114-Status: GOOD (  21.58  )
+X-CRM114-CacheID: sfid-20200526_162157_112704_06A67E91 
+X-CRM114-Status: GOOD (  21.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,65 +81,93 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 26 May 2020 21:56:28 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+On Wed, 27 May 2020 00:55:18 +0200
+Boris Brezillon <boris.brezillon@collabora.com> wrote:
 
-> This property does not describe very well its purpose: it describes
-> the ECC engine type, also called provider. Deprecate it in favor of
-> nand-ecc-provider. In the mean time, update a bit the description of
-> the property to make it more accurate.
+> On Tue, 26 May 2020 21:56:21 +0200
+> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 > 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  .../devicetree/bindings/mtd/nand-controller.yaml  | 15 ++++++++-------
->  1 file changed, 8 insertions(+), 7 deletions(-)
+> > Now that the misleading mix between ECC engine type and OOB placement
+> > has been addressed, add a new enumeration to properly define ECC types
+> > (also called provider or mode).  
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/nand-controller.yaml b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-> index a35ff8227427..256080ba50bd 100644
-> --- a/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-> @@ -46,16 +46,17 @@ patternProperties:
->          description:
->            Contains the native Ready/Busy IDs.
->  
-> -      nand-ecc-mode:
-> +      nand-ecc-provider:
->          allOf:
->            - $ref: /schemas/types.yaml#/definitions/string
->            - enum: [ none, soft, hw, on-die ]
+> Let's pick a name and stick to it. I think "ECC provider type" or
+> "ECC engine type" are good names.
 
-				   ^"on-controller" ?
+Okay, I think I remember now where the 'ECC provider' concept comes
+from. IIRC, the property will be used to select one ECC engine among
+possibly more than one choice: there are systems with both
+on-controller and on-die ECC engines, and you can always decide to use
+the SW implementation of course.
 
->          description:
-> -          Desired ECC engine, either hardware (most of the time
-> -          embedded in the NAND controller) or software correction
-> -          (Linux will handle the calculations). soft_bch is deprecated
-> -          and should be replaced by soft and nand-ecc-algo.
-> -	  hw_syndrome is deprecated and should be
-> +          Desired ECC engine provider, either hardware (most of the time
-
-	     ^Preferred ECC engine type, ... 
-
-> +          embedded in the NAND controller, but can also be external) or
-> +          software correction (the OS will handle the calculations).
-> +          The nand-ecc-mode property is deprecated in favor of this one.
-> +          soft_bch is deprecated and should be replaced by soft and
-> +          nand-ecc-algo. hw_syndrome is deprecated and should be
->            replaced by hw and nand-ecc-placement.
-
-Which you do here, so patch 15 is not needed.
-
->  
->        nand-ecc-placement:
-> @@ -148,7 +149,7 @@ examples:
->  
->        nand@0 {
->          reg = <0>;
-> -        nand-ecc-mode = "soft";
-> +        nand-ecc-provider = "soft";
->          nand-ecc-algo = "bch";
->  
->          /* controller specific properties */
+> 
+> > 
+> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+> > ---
+> >  drivers/mtd/nand/raw/nand_base.c |  7 +++++++
+> >  include/linux/mtd/rawnand.h      | 16 ++++++++++++++++
+> >  2 files changed, 23 insertions(+)
+> > 
+> > diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> > index 515cd4681660..5c6ab5b93270 100644
+> > --- a/drivers/mtd/nand/raw/nand_base.c
+> > +++ b/drivers/mtd/nand/raw/nand_base.c
+> > @@ -5018,6 +5018,13 @@ static const char * const nand_ecc_modes[] = {
+> >  	[NAND_ECC_ON_DIE]	= "on-die",
+> >  };
+> >  
+> > +static const char * const nand_ecc_engine_providers[] = {  
+> 
+> I'd rename that one nand_ecc_engine_types or nand_ecc_provider_types.
+> 
+> > +	[NAND_ECC_ENGINE_NONE] = "none",
+> > +	[NAND_ECC_ENGINE_SOFT] = "soft",
+> > +	[NAND_ECC_ENGINE_CONTROLLER] = "hw",
+> > +	[NAND_ECC_ENGINE_ON_DIE] = "on-die",
+> > +};
+> > +
+> >  static const char * const nand_ecc_placement[] = {
+> >  	[NAND_ECC_PLACEMENT_INTERLEAVED] = "interleaved",
+> >  };
+> > diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+> > index dc909fb977c7..a2078c5f3d21 100644
+> > --- a/include/linux/mtd/rawnand.h
+> > +++ b/include/linux/mtd/rawnand.h
+> > @@ -92,6 +92,22 @@ enum nand_ecc_mode {
+> >  	NAND_ECC_ON_DIE,
+> >  };
+> >  
+> > +/**
+> > + * enum nand_ecc_engine_type - NAND ECC engine type/provider
+> > + * @NAND_ECC_ENGINE_INVALID: Invalid value
+> > + * @NAND_ECC_ENGINE_NONE: No ECC correction
+> > + * @NAND_ECC_ENGINE_SOFT: Software ECC correction
+> > + * @NAND_ECC_ENGINE_CONTROLLER: Hardware controller ECC correction
+> > + * @NAND_ECC_ENGINE_ON_DIE: On chip hardware ECC correction
+> > + */
+> > +enum nand_ecc_engine_type {  
+> 
+> Looks like you went for ecc_engine_type here, so let's stick to that.
+> 
+> > +	NAND_ECC_ENGINE_INVALID,  
+> 
+> NAND_ECC_ENGINE_TYPE_xxx
+> 
+> > +	NAND_ECC_ENGINE_NONE,  
+> 
+> Do we really need a value for NONE? I'd expect the engine type to be
+> applicable to NAND that have some sort of ECC engine connected to them.
+> 
+> > +	NAND_ECC_ENGINE_SOFT,
+> > +	NAND_ECC_ENGINE_CONTROLLER,
+> > +	NAND_ECC_ENGINE_ON_DIE,
+> > +};
+> > +
+> >  /**
+> >   * enum nand_ecc_placement - NAND ECC placement
+> >   * @NAND_ECC_PLACEMENT_FREE: The driver can decide where to put ECC bytes.  
+> 
 
 
 ______________________________________________________
