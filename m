@@ -2,63 +2,62 @@ Return-Path: <SRS0=PBLV=7I=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7731AC433DF
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 22:55:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB3B8C433E1
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 22:59:19 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 49DCF2071A
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 22:55:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 38D2B2075F
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 22:59:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="o6/Sr3tO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 49DCF2071A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qdO/JncU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 38D2B2075F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baikalelectronics.ru
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JzZokiBE/5lCjVHOJbS5xVvReI//8ovWp46YBI7a49I=; b=o6/Sr3tOWyFOaY
-	qaS3Lr5BB/myptXbaVMLycPWE7OszwKDbdeS9VbiHb2IEQ5ywO9I1Aaf0RL9/0kNvbtD5wOW2B9m3
-	cn385Wb96TXZPEM2ubqiGqMeGaViGt8XjodL3FoITnzTUIRxygbc0aIRru420i124Psla4znrHNZ3
-	P3TZY6QJ6aJbCe1NvxJG35q86BmGYiNNzlGPf5kL1Pdc/o1/T9g7upgtT/1i1p+sM0eBzfQEO6JHQ
-	ZS5YiF0LVPAbL7x3SLaDC3j5ZKt2YUCdLol9RLDyiuoqw2heLghbJ6RHyrOwnlOzqkMDsRI9SoMA6
-	Hnzb9HR3OZ+D/Vr7dO9w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=4YZYbsQlIdcNTR6ZMZgFVmK05WYOzL8RF/9E63a/1Yc=; b=qdO/JncUBFNEGu
+	iXCUnkAwQJ0XPUHTmznUKgRKlp61ztRlEmSUEhYr9wrbjuN9flwWHJCY/Gf7qzKsgCGXzr7U3aP6O
+	d+mFldP+ZE2H8xtStJhBRWntAI1NYbo+Lb2Ic9WZjKOs7oNePZF+EzoXrDNC4DeVrLqF4Uvhl4/Bz
+	42oZmM0n6R6YvDSqQN8FWZPOSUf6sxlvP8cbnG3yYSHKK3HbRTzglOp6Vn9TOpp6rQ4Qiv/GFFnkI
+	gRWMTh6NOtfUcVnHNMWbD14VKeBPummqTTw0orsAXiqdz0826W+xT+mAzPjrY7k5SeiZjruH6sr+t
+	K4SzWuspNp8aj1AnDbxA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jdiTn-00089B-5E; Tue, 26 May 2020 22:55:27 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jdiTk-00088k-6j
- for linux-mtd@lists.infradead.org; Tue, 26 May 2020 22:55:25 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id BA6DB2A083B;
- Tue, 26 May 2020 23:55:22 +0100 (BST)
-Date: Wed, 27 May 2020 00:55:18 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [RESEND v5 09/21] mtd: rawnand: Create a new enumeration to
- describe properly ECC types
-Message-ID: <20200527005518.2d780ecc@collabora.com>
-In-Reply-To: <20200526195633.11543-10-miquel.raynal@bootlin.com>
-References: <20200526195633.11543-1-miquel.raynal@bootlin.com>
- <20200526195633.11543-10-miquel.raynal@bootlin.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+	id 1jdiXO-0000Q6-Cj; Tue, 26 May 2020 22:59:10 +0000
+Received: from mail.baikalelectronics.com ([87.245.175.226]
+ helo=mail.baikalelectronics.ru)
+ by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jdiXK-0000P4-0y
+ for linux-mtd@lists.infradead.org; Tue, 26 May 2020 22:59:08 +0000
+Received: from localhost (unknown [127.0.0.1])
+ by mail.baikalelectronics.ru (Postfix) with ESMTP id 86F55803086D;
+ Tue, 26 May 2020 22:59:02 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+ by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id IAHkLLPlnR-a; Wed, 27 May 2020 01:59:01 +0300 (MSK)
+From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [PATCH RESEND v2] mtd: physmap: Add Baikal-T1 physically mapped ROMs
+ support
+Date: Wed, 27 May 2020 01:58:48 +0300
+Message-ID: <20200526225849.20985-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200526_155524_380815_C797225A 
-X-CRM114-Status: GOOD (  18.28  )
+X-CRM114-CacheID: sfid-20200526_155906_429153_AE2EF25F 
+X-CRM114-Status: GOOD (  25.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,92 +69,363 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org
+Cc: Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Vadim Vlasov <V.Vlasov@baikalelectronics.ru>,
+ Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>,
+ Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+ linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+ Serge Semin <fancer.lancer@gmail.com>,
+ Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+ Serge Semin <Sergey.Semin@baikalelectronics.ru>, Arnd Bergmann <arnd@arndb.de>,
+ Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+ Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>,
+ linux-mtd@lists.infradead.org, Lee Jones <lee.jones@linaro.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 26 May 2020 21:56:21 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+Baikal-T1 Boot Controller provides an access to a RO storages, which are
+physically mapped into the MMIO space. In particularly there are the
+Internal ROM embedded into the SoC with a pre-installed firmware,
+externally attached SPI flash (also accessed in the read-only mode) and a
+memory region, which mirrors one of them in accordance with the currently
+enabled system boot mode (also called Boot ROM).
 
-> Now that the misleading mix between ECC engine type and OOB placement
-> has been addressed, add a new enumeration to properly define ECC types
-> (also called provider or mode).
+This commit adds the ROMs support to the physmap driver of the MTD kernel
+subsystem. Currently the driver only supports the Internal ROM, since
+physically mapped SPI flash is utilized by the Baikal-T1 System Boot
+Controller driver so won't be available over mtd-rom interface and
+the Boot ROM mirror mapping has dependency on the SPI flash mapping
+switcher available within the SPI flash registers space. The real access
+to the Boot ROM memory will be added in future.
 
-Let's pick a name and stick to it. I think "ECC provider type" or
-"ECC engine type" are good names.
+Note we had to create a dedicated code for the ROMs since read from the
+corresponding memory regions must be done via the dword-aligned addresses.
+In addition the driver in future states will have to take into account
+that the Boot ROM might mirror the SPI flash region so before accessing it
+the SPI flash direct mapping must be enabled by means of a dedicated flag
+in the Baikal-T1 System SPI register flag.
 
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-> ---
->  drivers/mtd/nand/raw/nand_base.c |  7 +++++++
->  include/linux/mtd/rawnand.h      | 16 ++++++++++++++++
->  2 files changed, 23 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> index 515cd4681660..5c6ab5b93270 100644
-> --- a/drivers/mtd/nand/raw/nand_base.c
-> +++ b/drivers/mtd/nand/raw/nand_base.c
-> @@ -5018,6 +5018,13 @@ static const char * const nand_ecc_modes[] = {
->  	[NAND_ECC_ON_DIE]	= "on-die",
->  };
->  
-> +static const char * const nand_ecc_engine_providers[] = {
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>
+Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
+Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
+Cc: Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>
+Cc: Vadim Vlasov <V.Vlasov@baikalelectronics.ru>
+Cc: Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Lee Jones <lee.jones@linaro.org>
+Cc: linux-mips@vger.kernel.org
 
-I'd rename that one nand_ecc_engine_types or nand_ecc_provider_types.
+---
 
-> +	[NAND_ECC_ENGINE_NONE] = "none",
-> +	[NAND_ECC_ENGINE_SOFT] = "soft",
-> +	[NAND_ECC_ENGINE_CONTROLLER] = "hw",
-> +	[NAND_ECC_ENGINE_ON_DIE] = "on-die",
-> +};
-> +
->  static const char * const nand_ecc_placement[] = {
->  	[NAND_ECC_PLACEMENT_INTERLEAVED] = "interleaved",
->  };
-> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-> index dc909fb977c7..a2078c5f3d21 100644
-> --- a/include/linux/mtd/rawnand.h
-> +++ b/include/linux/mtd/rawnand.h
-> @@ -92,6 +92,22 @@ enum nand_ecc_mode {
->  	NAND_ECC_ON_DIE,
->  };
->  
-> +/**
-> + * enum nand_ecc_engine_type - NAND ECC engine type/provider
-> + * @NAND_ECC_ENGINE_INVALID: Invalid value
-> + * @NAND_ECC_ENGINE_NONE: No ECC correction
-> + * @NAND_ECC_ENGINE_SOFT: Software ECC correction
-> + * @NAND_ECC_ENGINE_CONTROLLER: Hardware controller ECC correction
-> + * @NAND_ECC_ENGINE_ON_DIE: On chip hardware ECC correction
-> + */
-> +enum nand_ecc_engine_type {
+Miquel, Richard, Vignesh, the merge window is upon us, please review/merge
+in/whatever this patch.
 
-Looks like you went for ecc_engine_type here, so let's stick to that.
+This patchset is rebased and tested on the mainline Linux kernel 5.7-rc4:
+base-commit: 0e698dfa2822 ("Linux 5.7-rc4")
+tag: v5.7-rc4
 
-> +	NAND_ECC_ENGINE_INVALID,
+New vendor prefix will be added in the framework of the next patchset:
+https://lkml.org/lkml/2020/5/6/1047
 
-NAND_ECC_ENGINE_TYPE_xxx
+Note since the next patchset is no longer relevant (as a result of a
+discussion with @Lee and @Miquel)
+https://lkml.org/lkml/2020/3/6/421
+and Boot ROM mtd is currently unsupported I can freely submit this patch,
+while in former case I had to wait for the patchset merged.
 
-> +	NAND_ECC_ENGINE_NONE,
+Link: https://lore.kernel.org/linux-mtd/20200508100905.5854-1-Sergey.Semin@baikalelectronics.ru/
+Changelog v2:
+- Resend.
+---
+ drivers/mtd/maps/Kconfig           |   8 ++
+ drivers/mtd/maps/Makefile          |   1 +
+ drivers/mtd/maps/physmap-bt1-rom.c | 189 +++++++++++++++++++++++++++++
+ drivers/mtd/maps/physmap-bt1-rom.h |  17 +++
+ drivers/mtd/maps/physmap-core.c    |   5 +
+ 5 files changed, 220 insertions(+)
+ create mode 100644 drivers/mtd/maps/physmap-bt1-rom.c
+ create mode 100644 drivers/mtd/maps/physmap-bt1-rom.h
 
-Do we really need a value for NONE? I'd expect the engine type to be
-applicable to NAND that have some sort of ECC engine connected to them.
-
-> +	NAND_ECC_ENGINE_SOFT,
-> +	NAND_ECC_ENGINE_CONTROLLER,
-> +	NAND_ECC_ENGINE_ON_DIE,
-> +};
-> +
->  /**
->   * enum nand_ecc_placement - NAND ECC placement
->   * @NAND_ECC_PLACEMENT_FREE: The driver can decide where to put ECC bytes.
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index b28225a7c4f3..60b4285cd86a 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -107,6 +107,14 @@ config MTD_PHYSMAP_IXP4XX
+ 	  This provides some extra DT physmap parsing for the Intel IXP4xx
+ 	  platforms, some elaborate endianness handling in particular.
+ 
++config MTD_PHYSMAP_BT1_ROM
++	bool "Baikal-T1 Boot ROMs OF-based physical memory map handling"
++	depends on (MIPS_BAIKAL_T1 && MTD_PHYSMAP_OF) || COMPILE_TEST
++	select MTD_COMPLEX_MAPPINGS
++	help
++	  This provides some extra DT physmap parsing for the Baikal-T1
++	  platforms, some detection and setting up ROMs-specific accessors.
++
+ config MTD_PHYSMAP_GPIO_ADDR
+ 	bool "GPIO-assisted Flash Chip Support"
+ 	depends on MTD_PHYSMAP
+diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+index c0da86a5d26f..45f3a151f568 100644
+--- a/drivers/mtd/maps/Makefile
++++ b/drivers/mtd/maps/Makefile
+@@ -21,6 +21,7 @@ physmap-objs-y			+= physmap-core.o
+ physmap-objs-$(CONFIG_MTD_PHYSMAP_VERSATILE) += physmap-versatile.o
+ physmap-objs-$(CONFIG_MTD_PHYSMAP_GEMINI) += physmap-gemini.o
+ physmap-objs-$(CONFIG_MTD_PHYSMAP_IXP4XX) += physmap-ixp4xx.o
++physmap-objs-$(CONFIG_MTD_PHYSMAP_BT1_ROM) += physmap-bt1-rom.o
+ physmap-objs			:= $(physmap-objs-y)
+ obj-$(CONFIG_MTD_PHYSMAP)	+= physmap.o
+ obj-$(CONFIG_MTD_PISMO)		+= pismo.o
+diff --git a/drivers/mtd/maps/physmap-bt1-rom.c b/drivers/mtd/maps/physmap-bt1-rom.c
+new file mode 100644
+index 000000000000..55149af18729
+--- /dev/null
++++ b/drivers/mtd/maps/physmap-bt1-rom.c
+@@ -0,0 +1,189 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (C) 2020 BAIKAL ELECTRONICS, JSC
++ *
++ * Authors:
++ *   Serge Semin <Sergey.Semin@baikalelectronics.ru>
++ *
++ * Baikal-T1 Physically Mapped ROMs driver
++ */
++#include <linux/kernel.h>
++#include <linux/types.h>
++#include <linux/device.h>
++#include <linux/platform_device.h>
++#include <linux/of.h>
++#include <linux/of_device.h>
++#include <linux/bits.h>
++#include <linux/mtd/map.h>
++#include <linux/mtd/xip.h>
++#include <linux/string.h>
++
++#include "physmap-bt1-rom.h"
++
++struct bt1_rom_io {
++	map_word (*read)(struct map_info *map, unsigned long ofs);
++	void (*copy_from)(struct map_info *map, void *to, unsigned long from,
++			  ssize_t len);
++};
++
++/*
++ * Baikal-T1 SoC ROMs are only accessible by the dword-aligned instructions.
++ * We have to take this into account when implementing the data read-methods.
++ * Note there is no need in bothering with endianness, since both Baikal-T1
++ * CPU and MMIO are LE.
++ */
++static map_word __xipram bt1_rom_map_read(struct map_info *map,
++					  unsigned long ofs)
++{
++	void __iomem *src = map->virt + ofs;
++	unsigned long shift;
++	map_word ret;
++	u32 data;
++
++	/* Read data within offset dword. */
++	shift = (unsigned long)src & 0x3;
++	data = readl_relaxed(src - shift);
++	if (!shift) {
++		ret.x[0] = data;
++		return ret;
++	}
++	ret.x[0] = data >> (shift * BITS_PER_BYTE);
++
++	/* Read data from the next dword. */
++	shift = 4 - shift;
++	if (ofs + shift >= map->size)
++		return ret;
++
++	data = readl_relaxed(src + shift);
++	ret.x[0] |= data << (shift * BITS_PER_BYTE);
++
++	return ret;
++}
++
++static void __xipram bt1_rom_map_copy_from(struct map_info *map,
++					   void *to, unsigned long from,
++					   ssize_t len)
++{
++	void __iomem *src = map->virt + from;
++	ssize_t shift, chunk;
++	u32 data;
++
++	if (len <= 0 || from >= map->size)
++		return;
++
++	/* Make sure we don't go over the map limit. */
++	len = min_t(ssize_t, map->size - from, len);
++
++	/*
++	 * Since requested data size can be pretty big we have to implement
++	 * the copy procedure as optimal as possible. That's why it's split
++	 * up into the next three stages: unaligned head, aligned body,
++	 * unaligned tail.
++	 */
++	shift = (ssize_t)src & 0x3;
++	if (shift) {
++		chunk = min_t(ssize_t, 4 - shift, len);
++		data = readl_relaxed(src - shift);
++		memcpy(to, &data + shift, chunk);
++		src += chunk;
++		to += chunk;
++		len -= chunk;
++	}
++
++	while (len >= 4) {
++		data = readl_relaxed(src);
++		memcpy(to, &data, 4);
++		src += 4;
++		to += 4;
++		len -= 4;
++	}
++
++	if (len) {
++		data = readl_relaxed(src);
++		memcpy(to, &data, len);
++	}
++}
++
++static map_word __xipram bt1_rom_dummy_read(struct map_info *map,
++					  unsigned long ofs)
++{
++	map_word ret;
++
++	ret.x[0] = 0xFF;
++
++	return ret;
++}
++
++static void __xipram bt1_rom_dummy_copy_from(struct map_info *map,
++					   void *to, unsigned long from,
++					   ssize_t len)
++{
++	if (len <= 0 || from >= map->size)
++		return;
++
++	len = min_t(ssize_t, map->size - from, len);
++
++	memset(to, 0xFF, len);
++}
++
++static const struct bt1_rom_io bt1_rom_normal_io = {
++	.read = bt1_rom_map_read,
++	.copy_from = bt1_rom_map_copy_from
++};
++
++static const struct bt1_rom_io bt1_rom_dummy_io = {
++	.read = bt1_rom_dummy_read,
++	.copy_from = bt1_rom_dummy_copy_from
++};
++
++/*
++ * Currently Baikal-T1 SoC internal ROM is only supported. Boot ROM region is
++ * dummy-data filled for now since in case of the system booted up from an
++ * external SPI flash the ROM will mirror the Baikal-T1 System Boot SPI direct
++ * mapping memory region. That region can be only accessed when transparent
++ * mode is enabled, which we unable to do here because this feature is provided
++ * by the SPI controller config space occupied by the corresponding driver.
++ * In future we'll export the mode setting method from the Baikal-T1 System
++ * Boot SPI Controller driver to also have the Boot ROM supported here.
++ */
++static const struct of_device_id bt1_rom_of_match[] = {
++	{
++		.compatible = "baikal,bt1-int-rom",
++		.data = &bt1_rom_normal_io
++	},
++	{
++		.compatible = "baikal,bt1-boot-rom",
++		.data = &bt1_rom_dummy_io
++	},
++	{ }
++};
++
++int of_flash_probe_bt1_rom(struct platform_device *pdev,
++			   struct device_node *np,
++			   struct map_info *map)
++{
++	const struct of_device_id *match;
++	struct device *dev = &pdev->dev;
++	const struct bt1_rom_io *io;
++
++	/* It's supposed to be read-only MTD. */
++	if (!of_device_is_compatible(np, "mtd-rom")) {
++		dev_info(dev, "No mtd-rom compatible string\n");
++		return 0;
++	}
++
++	/* Multiplatform guard. */
++	match = of_match_device(bt1_rom_of_match, dev);
++	if (!match)
++		return 0;
++
++	/* Sanity check the device parameters retrieved from DTB. */
++	if (map->bankwidth != 4)
++		dev_warn(dev, "Bank width is supposed to be 32 bits wide\n");
++
++	io = match->data;
++	map->read = io->read;
++	map->copy_from = io->copy_from;
++
++	return 0;
++}
+diff --git a/drivers/mtd/maps/physmap-bt1-rom.h b/drivers/mtd/maps/physmap-bt1-rom.h
+new file mode 100644
+index 000000000000..5874f2acf929
+--- /dev/null
++++ b/drivers/mtd/maps/physmap-bt1-rom.h
+@@ -0,0 +1,17 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++#include <linux/of.h>
++#include <linux/mtd/map.h>
++
++#ifdef CONFIG_MTD_PHYSMAP_BT1_ROM
++int of_flash_probe_bt1_rom(struct platform_device *pdev,
++			   struct device_node *np,
++			   struct map_info *map);
++#else
++static inline
++int of_flash_probe_bt1_rom(struct platform_device *pdev,
++			   struct device_node *np,
++			   struct map_info *map)
++{
++	return 0;
++}
++#endif
+diff --git a/drivers/mtd/maps/physmap-core.c b/drivers/mtd/maps/physmap-core.c
+index 8f7f966fa9a7..a0716da933b5 100644
+--- a/drivers/mtd/maps/physmap-core.c
++++ b/drivers/mtd/maps/physmap-core.c
+@@ -44,6 +44,7 @@
+ #include "physmap-gemini.h"
+ #include "physmap-ixp4xx.h"
+ #include "physmap-versatile.h"
++#include "physmap-bt1-rom.h"
+ 
+ struct physmap_flash_info {
+ 	unsigned int		nmaps;
+@@ -383,6 +384,10 @@ static int physmap_flash_of_init(struct platform_device *dev)
+ 		if (err)
+ 			return err;
+ 
++		err = of_flash_probe_bt1_rom(dev, dp, &info->maps[i]);
++		if (err)
++			return err;
++
+ 		/*
+ 		 * On some platforms (e.g. MPC5200) a direct 1:1 mapping
+ 		 * may cause problems with JFFS2 usage, as the local bus (LPB)
+-- 
+2.26.2
 
 
 ______________________________________________________
