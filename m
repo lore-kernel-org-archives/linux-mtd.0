@@ -2,57 +2,60 @@ Return-Path: <SRS0=PBLV=7I=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48D19C433DF
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 19:18:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74103C433DF
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 19:18:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 18C6D20776
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 19:18:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3C12A20776
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 19:18:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LYaqJLQC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 18C6D20776
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dZm3Lkab"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C12A20776
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=zBvc0M7z78WzElFwIqxCkvMHBdYEQOeyX05pNG/OywE=; b=LYaqJLQC/WYwl1
-	1GXlJiMMYtbzsv3+8Gcnw28IMByO3YYqWW+kgljyINfBzXU611GK+6sa856Lp1nzishUgP2B26jNp
-	nauBDoVS8POVQlq4znAQGEC0zIClflqpJl9Yy/bY8hbqWXk7IaIyxVEFHtuvF5oDxbEA06VM7+Oh/
-	omlEKh4laUHhq1gK0Gvk49e1lvJ+HoSGiSXSiKKW0qsklgrsK7/n9vPzg7nxipwhikYvB3XuuvG+h
-	3UKn6N6txXYukWXcFG2S26sbQnAzRwtrYgf/zdnO3YJMMMtaE2CvYiTyaGHpH3csBhjx4gB8sBEZj
-	HFOTBsZ2hqrcfJlzTg3Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=nw1JQI1RFETMlqRfwJdscgGFMjqnBS8xlspzQpkpEvc=; b=dZm3Lkab0QiC4G
+	39wTny6aL0ulnNO1/QK1ysyy3BTT6dF9emvBcDDV3HrKxFDlQKD17uqRrxT84+MKbBf72BToau8Uz
+	EXq0MmuXl70pjhJpxZmPbVbhazrEBVAKAE0L4+ZVjdyTtut0R4afVD5ZyUP+VJ05gw1sMNYoma+sv
+	bPaNc3hbDLVq9Rn4n9rtgfYYEy1Rpl01tKBRwxIKXq98cOB3GK4YmRKo2uMPA9plR5w/H8TyFF6E+
+	U0TI9GwsEVrPZR9pL+WbXGKlY/6EDU+VcxsG+htdWMPFHffDPZND9IjWxqm6VSoZ1npWy5WakmYPT
+	ADhnEvARDYrSa4XjJZdA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jdf5f-0001tb-7S; Tue, 26 May 2020 19:18:19 +0000
+	id 1jdf5z-000292-8u; Tue, 26 May 2020 19:18:39 +0000
 Received: from relay10.mail.gandi.net ([217.70.178.230])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jdf4x-0001Hj-JO
- for linux-mtd@lists.infradead.org; Tue, 26 May 2020 19:17:38 +0000
+ id 1jdf4z-0001Ia-J3
+ for linux-mtd@lists.infradead.org; Tue, 26 May 2020 19:17:39 +0000
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay10.mail.gandi.net (Postfix) with ESMTPSA id 7B275240007;
- Tue, 26 May 2020 19:17:26 +0000 (UTC)
+ by relay10.mail.gandi.net (Postfix) with ESMTPSA id 4678324000D;
+ Tue, 26 May 2020 19:17:35 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH v5 00/28] Allow vendor drivers to propose their own timings
-Date: Tue, 26 May 2020 21:16:57 +0200
-Message-Id: <20200526191725.7591-1-miquel.raynal@bootlin.com>
+Subject: [PATCH v5 03/28] mtd: rawnand: Create a nand_chip operations structure
+Date: Tue, 26 May 2020 21:17:00 +0200
+Message-Id: <20200526191725.7591-4-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200526191725.7591-1-miquel.raynal@bootlin.com>
+References: <20200526191725.7591-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200526_121735_904716_75A6BEE5 
-X-CRM114-Status: GOOD (  10.43  )
+X-CRM114-CacheID: sfid-20200526_121737_900383_94EB4FA0 
+X-CRM114-Status: GOOD (  17.61  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,97 +70,241 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Cc: Rickard Andersson <rickaran@axis.com>,
  Boris Brezillon <boris.brezillon@collabora.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-QXMgcmFpc2VkIGJ5IFJpY2thcmQsIGNlcnRhaW4gY2hpcHMgbGlrZSBUb3NoaWJhL0tpb3hpYQpU
-SDU4TlZHMlMzSEJBSTQgYXJlIG5vdCBPTkZJIGNvbXBsaWFudCBhbmQgYmVjYXVzZSBvZiB0aGF0
-LCB3b3JrIGF0IGEKdmVyeSBzbG93IHBhY2UuIFRoaXMgY2hpcCBpbiBwYXJ0aWN1bGFyIHN1cHBv
-cnRzIHJ1bm5pbmcgYXQgYSBwYWNlCiJjbG9zZSIgdG8gT05GSSBtb2RlIDQuCgpUaGlzIHNlcmll
-cyBwcm92aWRlcyBhIHdheSB0byBtYW51ZmFjdHVyZXIgZHJpdmVycyB0byBwcm9wb3NlIGEgZGF0
-YQppbnRlcmZhY2UgdG8gdGhlIGNvcmUgd2l0aCBhIHZlcnkgc2ltcGxlIGludGVyZmFjZSBhbmQg
-YWxzbyBpbXByb3Zlcwp0aGUgY29yZSBieSBhbGxvY2F0aW5nIHRoZSBkYXRhIGludGVyZmFjZSBk
-eW5hbWljYWxseSBhbmQgdXNlIGEgc3RhdGljCmRlZmF1bHQgcmVzZXQgaW50ZXJmYWNlLgoKQ2hl
-ZXJzLApNaXF1w6hsCgpDaGFuZ2VzIGluIHY1OgoqIENvbGxlY3RlZCBSLWJ5IHRhZ3MuCiogRHJv
-cHBlZCB0aGUgcmVuYW1lIG9mIG9uZmlfdGltaW5nX21vZGVfZGVmYXVsdCwgZ290IHJpZCBvZiBp
-dCBpbnN0ZWFkLgoqIENvbnZlcnRlZCBIeW5peCBhbmQgVG9zaGliYSBkcml2ZXJzIHRvIC0+Y2hv
-b3NlX2RhdGFfaW50ZXJmYWNlKCkuCiogQ3JlYXRlZCBhIHN0YXRpYyBkZWZhdWx0IHJlc2V0IGRh
-dGEgaW50ZXJmYWNlIG9iamVjdC4KKiBBbGxvY2F0ZWQgZHluYW1pY2FsbHkgdGhlIHRpbWluZ3Mu
-CiogUmVuYW1lZCBvbmZpX2ZpbmRfY2xvc2VzdF9zZHJfbW9kZSgpIGFuZCBpdHMgcGFyYW1ldGVy
-LgoqIERyb3BwZWQgdGhlIGNvbXBhcmlzb24gd2l0aCBtYXhpbXVtIHZhbHVlcyBpbgogIG9uZmlf
-ZmluZF9jbG9zZXN0X3Nkcl9tb2RlKCkuCiogVXNlICJiZXN0X3RpbWluZ3MiIGluc3RlYWQgb2Yg
-ImJlc3RfaWZhY2UiIGFzIEREUiBpcyBub3Qgc3VwcG9ydGVkCiAgeWV0LgoqIERyb3BwZWQgY2hv
-b3NlX2Jlc3RfdmVuZG9yX3Nkcl90aW1pbmdzKCkgYW5kIHVuaWZlZCBpdHMgY29udGVudCB3aXRo
-CiAgY2hvb3NlX2Jlc3Rfc2RyX3RpbWluZ3MoKS4KKiBJZiB0aGUgc3BlY2lmaWMgdGltaW5nIHNl
-dCBjbG9zZSB0byBPTkZJIG1vZGUgWCBpcyBub3Qgc3VwcG9ydGVkLAogIGZhbGxiYWNrIHRvIE9O
-RkkgbW9kZSBYIGZpcnN0LCBub3QgWCAtIDEuCgpDaGFuZ2VzIGluIHY0OgoqIFRvb2sgUmlja2Fy
-ZCBwYXRjaCBiYXNlZCBvbiBteSBwcmV2aW91cyBwcm9wb3NhbHMgb3ZlciBHaXRodWIgYW5kCiAg
-dHdlYWtlZCBhIGZldyBtb3JlIHRoaW5nczoKICAtIEFkZGVkIGEgImdlbmVyaWMiIGhlbHBlciB0
-byBmYWxsYmFjayBvbiBzbG93ZXIgT05GSSBtb2RlcyB3aGVuIHRoZQogICAgcHJvcG9zZWQgaW50
-ZXJmYWNlIGlzIG5vdCBzdXBwb3J0ZWQgYnkgdGhlIGNvbnRyb2xsZXIuCiAgLSBGaXhlZCBtb3Jl
-IGtkb2MuCiAgLSBTaW1wbGlmaWVkIHRoZSB2ZW5kb3IgZHJpdmVyIHNpZGUgYnkgcHJvdmlkaW5n
-IGFkZGl0aW9uYWwgaGVscGVycy4KKiBUd2Vha2VkIGEgbGl0dGxlIGJpdCBSaWNrYXJkIHBhdGNo
-IHRvIGZpdCB0aGUgbGF0ZXN0IGNoYW5nZXMuCgpNaXF1ZWwgUmF5bmFsICgyNyk6CiAgbXRkOiBy
-YXduYW5kOiBVc2UgdW5zaWduZWQgdHlwZXMgZm9yIG5hbmRfY2hpcCB1bnNpZ25lZCB2YWx1ZXMK
-ICBtdGQ6IHJhd25hbmQ6IE9ubHkgdXNlIHU4IGluc3RlYWQgb2YgdWludDhfdCBpbiBuYW5kX2No
-aXAgc3RydWN0dXJlCiAgbXRkOiByYXduYW5kOiBDcmVhdGUgYSBuYW5kX2NoaXAgb3BlcmF0aW9u
-cyBzdHJ1Y3R1cmUKICBtdGQ6IHJhd25hbmQ6IFJlbmFtZSB0aGUgbWFudWZhY3R1cmVyIHN0cnVj
-dHVyZQogIG10ZDogcmF3bmFuZDogRGVjbGFyZSB0aGUgbmFuZF9tYW51ZmFjdHVyZXIgc3RydWN0
-dXJlIG91dCBvZiBuYW5kX2NoaXAKICBtdGQ6IHJhd25hbmQ6IFJlb3JnYW5pemUgdGhlIG5hbmRf
-Y2hpcCBzdHJ1Y3R1cmUKICBtdGQ6IHJhd25hbmQ6IENvbXBhcmUgdGhlIGFjdHVhbCB0aW1pbmcg
-dmFsdWVzCiAgbXRkOiByYXduYW5kOiBVc2UgdGhlIGRhdGEgaW50ZXJmYWNlIG1vZGUgZW50cnkg
-d2hlbiByZWxldmFudAogIG10ZDogcmF3bmFuZDogUmVuYW1lIG5hbmRfaGFzX3NldHVwX2RhdGFf
-aW50ZXJmYWNlKCkKICBtdGQ6IHJhd25hbmQ6IEZpeCBuYW5kX3NldHVwX2RhdGFfaW50ZXJmYWNl
-KCkgZGVzY3JpcHRpb24KICBtdGQ6IHJhd25hbmQ6IFJlbmFtZSBuYW5kX2luaXRfZGF0YV9pbnRl
-cmZhY2UoKQogIG10ZDogcmF3bmFuZDogdGltaW5nczogVXBkYXRlIG9uZmlfZmlsbF9kYXRhX2lu
-dGVyZmFjZSgpIGtlcm5lbCBkb2MKICBtdGQ6IHJhd25hbmQ6IHRpbWluZ3M6IFByb3ZpZGUgb25m
-aV9maWxsX2RhdGFfaW50ZXJmYWNlKCkgd2l0aCBhIGRhdGEKICAgIGludGVyZmFjZQogIG10ZDog
-cmF3bmFuZDogdGltaW5nczogQWRkIGEgaGVscGVyIHRvIGZpbmQgdGhlIGNsb3Nlc3QgT05GSSBt
-b2RlCiAgbXRkOiByYXduYW5kOiB0aW1pbmdzOiBBdm9pZCByZWRlZmluaW5nIHRSX21heCBhbmQg
-dENDU19taW4KICBtdGQ6IHJhd25hbmQ6IHRpbWluZ3M6IFVzZSBkZWZhdWx0IHZhbHVlcyBmb3Ig
-dFBST0dfbWF4IGFuZCB0QkVSU19tYXgKICBtdGQ6IHJhd25hbmQ6IERlZmluZSBhIHVuaXF1ZSBy
-ZXNldCBkYXRhIGludGVyZmFjZQogIG10ZDogcmF3bmFuZDogbWFydmVsbDogVXNlIGEgaGVscGVy
-IHRvIGFjY2VzcyB0aGUgdGltaW5ncwogIG10ZDogcmF3bmFuZDogbGVnYWN5OiBVc2UgYSBoZWxw
-ZXIgdG8gYWNjZXNzIHRoZSB0aW1pbmdzCiAgbXRkOiByYXduYW5kOiBIaWRlIHRoZSBjaGlwLT5k
-YXRhX2ludGVyZmFjZSBpbmRpcmVjdGlvbgogIG10ZDogcmF3bmFuZDogSW50cm9kdWNlIG5hbmRf
-Y2hvb3NlX2Jlc3Rfc2RyX3RpbWluZ3MoKQogIG10ZDogcmF3bmFuZDogQWRkIHRoZSAtPmNob29z
-ZV9kYXRhX2ludGVyZmFjZSgpIGhvb2sKICBtdGQ6IHJhd25hbmQ6IHRvc2hpYmE6IEltcGxlbWVu
-dCAtPmNob29zZV9kYXRhX2ludGVyZmFjZSgpIGZvcgogICAgVEM1OFRFRzVEQ0xUQTAwCiAgbXRk
-OiByYXduYW5kOiB0b3NoaWJhOiBJbXBsZW1lbnQgLT5jaG9vc2VfZGF0YV9pbnRlcmZhY2UoKSBm
-b3IKICAgIFRDNThOVkcwUzNFCiAgbXRkOiByYXduYW5kOiBoeW5peDogSW1wbGVtZW50IC0+Y2hv
-b3NlX2RhdGFfaW50ZXJmYWNlKCkgZm9yCiAgICBIMjdVQ0c4VDJBVFItQkMKICBtdGQ6IHJhd25h
-bmQ6IEdldCByaWQgb2YgdGhlIGRlZmF1bHQgT05GSSB0aW1pbmcgbW9kZQogIG10ZDogcmF3bmFu
-ZDogQWxsb2NhdGUgdGhlIGJlc3QgZGF0YSBpbnRlcmZhY2Ugc3RydWN0dXJlIGR5bmFtaWNhbGx5
-CgpSaWNrYXJkIHggQW5kZXJzc29uICgxKToKICBtdGQ6IHJhd25hbmQ6IHRvc2hpYmE6IENob29z
-ZSB0aGUgZGF0YSBpbnRlcmZhY2UgZm9yIFRINThOVkcyUzNIQkFJNAoKIGRyaXZlcnMvbXRkL25h
-bmQvcmF3L2Ftcy1kZWx0YS5jICAgICAgICAgICAgICB8ICAgMiArLQogLi4uL210ZC9uYW5kL3Jh
-dy9jYWRlbmNlLW5hbmQtY29udHJvbGxlci5jICAgIHwgICAyICstCiBkcml2ZXJzL210ZC9uYW5k
-L3Jhdy9kZW5hbGkuYyAgICAgICAgICAgICAgICAgfCAgIDIgKy0KIGRyaXZlcnMvbXRkL25hbmQv
-cmF3L2ZzbWNfbmFuZC5jICAgICAgICAgICAgICB8ICAgMiArLQogZHJpdmVycy9tdGQvbmFuZC9y
-YXcvZ3BtaS1uYW5kL2dwbWktbmFuZC5jICAgIHwgICAyICstCiBkcml2ZXJzL210ZC9uYW5kL3Jh
-dy9pbnRlcm5hbHMuaCAgICAgICAgICAgICAgfCAgMTQgKy0KIGRyaXZlcnMvbXRkL25hbmQvcmF3
-L21hcnZlbGxfbmFuZC5jICAgICAgICAgICB8ICAxMCArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcv
-bWVzb25fbmFuZC5jICAgICAgICAgICAgIHwgICA4ICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9t
-dGtfbmFuZC5jICAgICAgICAgICAgICAgfCAgIDIgKy0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L214
-Y19uYW5kLmMgICAgICAgICAgICAgICB8ICAgMiArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvbXhp
-Y19uYW5kLmMgICAgICAgICAgICAgIHwgICAyICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5k
-X2Jhc2UuYyAgICAgICAgICAgICAgfCAyNDQgKysrKysrKysrLS0tLS0tLS0KIGRyaXZlcnMvbXRk
-L25hbmQvcmF3L25hbmRfaHluaXguYyAgICAgICAgICAgICB8ICAxOCArLQogZHJpdmVycy9tdGQv
-bmFuZC9yYXcvbmFuZF9pZHMuYyAgICAgICAgICAgICAgIHwgIDI0ICstCiBkcml2ZXJzL210ZC9u
-YW5kL3Jhdy9uYW5kX2xlZ2FjeS5jICAgICAgICAgICAgfCAgIDYgKy0KIGRyaXZlcnMvbXRkL25h
-bmQvcmF3L25hbmRfbWFjcm9uaXguYyAgICAgICAgICB8ICAxMCArLQogZHJpdmVycy9tdGQvbmFu
-ZC9yYXcvbmFuZF9taWNyb24uYyAgICAgICAgICAgIHwgICAyICstCiBkcml2ZXJzL210ZC9uYW5k
-L3Jhdy9uYW5kX3RpbWluZ3MuYyAgICAgICAgICAgfCAgODkgKysrKystLQogZHJpdmVycy9tdGQv
-bmFuZC9yYXcvbmFuZF90b3NoaWJhLmMgICAgICAgICAgIHwgIDc4ICsrKysrLQogZHJpdmVycy9t
-dGQvbmFuZC9yYXcvczNjMjQxMC5jICAgICAgICAgICAgICAgIHwgICAyICstCiBkcml2ZXJzL210
-ZC9uYW5kL3Jhdy9zdG0zMl9mbWMyX25hbmQuYyAgICAgICAgfCAgIDQgKy0KIGRyaXZlcnMvbXRk
-L25hbmQvcmF3L3N1bnhpX25hbmQuYyAgICAgICAgICAgICB8ICAgMiArLQogZHJpdmVycy9tdGQv
-bmFuZC9yYXcvdGFuZ29fbmFuZC5jICAgICAgICAgICAgIHwgICAyICstCiBkcml2ZXJzL210ZC9u
-YW5kL3Jhdy90ZWdyYV9uYW5kLmMgICAgICAgICAgICAgfCAgIDIgKy0KIGluY2x1ZGUvbGludXgv
-bXRkL3Jhd25hbmQuaCAgICAgICAgICAgICAgICAgICB8IDI1MCArKysrKysrKystLS0tLS0tLS0K
-IDI1IGZpbGVzIGNoYW5nZWQsIDQ3NiBpbnNlcnRpb25zKCspLCAzMDUgZGVsZXRpb25zKC0pCgot
-LSAKMi4yMC4xCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+And move nand_chip hooks there.
+
+While moving entries from one structure to the other, adapt the
+documentation style.
+
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+---
+ drivers/mtd/nand/raw/nand_base.c     | 20 ++++++++---------
+ drivers/mtd/nand/raw/nand_hynix.c    |  2 +-
+ drivers/mtd/nand/raw/nand_macronix.c | 10 ++++-----
+ drivers/mtd/nand/raw/nand_micron.c   |  2 +-
+ include/linux/mtd/rawnand.h          | 32 ++++++++++++++++------------
+ 5 files changed, 35 insertions(+), 31 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 6a6a0a36b3fd..b86f641f6d74 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -3285,10 +3285,10 @@ static int nand_setup_read_retry(struct nand_chip *chip, int retry_mode)
+ 	if (retry_mode >= chip->read_retries)
+ 		return -EINVAL;
+ 
+-	if (!chip->setup_read_retry)
++	if (!chip->ops.setup_read_retry)
+ 		return -EOPNOTSUPP;
+ 
+-	return chip->setup_read_retry(chip, retry_mode);
++	return chip->ops.setup_read_retry(chip, retry_mode);
+ }
+ 
+ static void nand_wait_readrdy(struct nand_chip *chip)
+@@ -4532,8 +4532,8 @@ static int nand_suspend(struct mtd_info *mtd)
+ 	int ret = 0;
+ 
+ 	mutex_lock(&chip->lock);
+-	if (chip->suspend)
+-		ret = chip->suspend(chip);
++	if (chip->ops.suspend)
++		ret = chip->ops.suspend(chip);
+ 	if (!ret)
+ 		chip->suspended = 1;
+ 	mutex_unlock(&chip->lock);
+@@ -4551,8 +4551,8 @@ static void nand_resume(struct mtd_info *mtd)
+ 
+ 	mutex_lock(&chip->lock);
+ 	if (chip->suspended) {
+-		if (chip->resume)
+-			chip->resume(chip);
++		if (chip->ops.resume)
++			chip->ops.resume(chip);
+ 		chip->suspended = 0;
+ 	} else {
+ 		pr_err("%s called for a chip which is not in suspended state\n",
+@@ -4581,10 +4581,10 @@ static int nand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ {
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+ 
+-	if (!chip->lock_area)
++	if (!chip->ops.lock_area)
+ 		return -ENOTSUPP;
+ 
+-	return chip->lock_area(chip, ofs, len);
++	return chip->ops.lock_area(chip, ofs, len);
+ }
+ 
+ /**
+@@ -4597,10 +4597,10 @@ static int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ {
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+ 
+-	if (!chip->unlock_area)
++	if (!chip->ops.unlock_area)
+ 		return -ENOTSUPP;
+ 
+-	return chip->unlock_area(chip, ofs, len);
++	return chip->ops.unlock_area(chip, ofs, len);
+ }
+ 
+ /* Set default functions */
+diff --git a/drivers/mtd/nand/raw/nand_hynix.c b/drivers/mtd/nand/raw/nand_hynix.c
+index 7caedaa5b9e5..7d1be53f27f3 100644
+--- a/drivers/mtd/nand/raw/nand_hynix.c
++++ b/drivers/mtd/nand/raw/nand_hynix.c
+@@ -337,7 +337,7 @@ static int hynix_mlc_1xnm_rr_init(struct nand_chip *chip,
+ 	rr->nregs = nregs;
+ 	rr->regs = hynix_1xnm_mlc_read_retry_regs;
+ 	hynix->read_retry = rr;
+-	chip->setup_read_retry = hynix_nand_setup_read_retry;
++	chip->ops.setup_read_retry = hynix_nand_setup_read_retry;
+ 	chip->read_retries = nmodes;
+ 
+ out:
+diff --git a/drivers/mtd/nand/raw/nand_macronix.c b/drivers/mtd/nand/raw/nand_macronix.c
+index 09c254c97b5c..1472f925f386 100644
+--- a/drivers/mtd/nand/raw/nand_macronix.c
++++ b/drivers/mtd/nand/raw/nand_macronix.c
+@@ -130,7 +130,7 @@ static void macronix_nand_onfi_init(struct nand_chip *chip)
+ 		return;
+ 
+ 	chip->read_retries = MACRONIX_NUM_READ_RETRY_MODES;
+-	chip->setup_read_retry = macronix_nand_setup_read_retry;
++	chip->ops.setup_read_retry = macronix_nand_setup_read_retry;
+ 
+ 	if (p->supports_set_get_features) {
+ 		bitmap_set(p->set_feature_list,
+@@ -242,8 +242,8 @@ static void macronix_nand_block_protection_support(struct nand_chip *chip)
+ 	bitmap_set(chip->parameters.set_feature_list,
+ 		   ONFI_FEATURE_ADDR_MXIC_PROTECTION, 1);
+ 
+-	chip->lock_area = mxic_nand_lock;
+-	chip->unlock_area = mxic_nand_unlock;
++	chip->ops.lock_area = mxic_nand_lock;
++	chip->ops.unlock_area = mxic_nand_unlock;
+ }
+ 
+ static int nand_power_down_op(struct nand_chip *chip)
+@@ -312,8 +312,8 @@ static void macronix_nand_deep_power_down_support(struct nand_chip *chip)
+ 	if (i < 0)
+ 		return;
+ 
+-	chip->suspend = mxic_nand_suspend;
+-	chip->resume = mxic_nand_resume;
++	chip->ops.suspend = mxic_nand_suspend;
++	chip->ops.resume = mxic_nand_resume;
+ }
+ 
+ static int macronix_nand_init(struct nand_chip *chip)
+diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
+index 3589b4fce0d4..4385092a9325 100644
+--- a/drivers/mtd/nand/raw/nand_micron.c
++++ b/drivers/mtd/nand/raw/nand_micron.c
+@@ -84,7 +84,7 @@ static int micron_nand_onfi_init(struct nand_chip *chip)
+ 		struct nand_onfi_vendor_micron *micron = (void *)p->onfi->vendor;
+ 
+ 		chip->read_retries = micron->read_retry_options;
+-		chip->setup_read_retry = micron_nand_setup_read_retry;
++		chip->ops.setup_read_retry = micron_nand_setup_read_retry;
+ 	}
+ 
+ 	if (p->supports_set_get_features) {
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 7d62e0e719ac..b33cd68852c4 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -1027,16 +1027,31 @@ struct nand_legacy {
+ 	struct nand_controller dummy_controller;
+ };
+ 
++/**
++ * struct nand_chip_ops - NAND chip operations
++ * @suspend: Suspend operation
++ * @resume: Resume operation
++ * @lock_area: Lock operation
++ * @unlock_area: Unlock operation
++ * @setup_read_retry: Set the read-retry mode (mostly needed for MLC NANDs)
++ */
++struct nand_chip_ops {
++	int (*suspend)(struct nand_chip *chip);
++	void (*resume)(struct nand_chip *chip);
++	int (*lock_area)(struct nand_chip *chip, loff_t ofs, uint64_t len);
++	int (*unlock_area)(struct nand_chip *chip, loff_t ofs, uint64_t len);
++	int (*setup_read_retry)(struct nand_chip *chip, int retry_mode);
++};
++
+ /**
+  * struct nand_chip - NAND Private Flash Chip Data
+  * @base:		Inherit from the generic NAND device
++ * @ops:		NAND chip operations
+  * @legacy:		All legacy fields/hooks. If you develop a new driver,
+  *			don't even try to use any of these fields/hooks, and if
+  *			you're modifying an existing driver that is using those
+  *			fields/hooks, you should consider reworking the driver
+  *			avoid using them.
+- * @setup_read_retry:	[FLASHSPECIFIC] flash (vendor) specific function for
+- *			setting the read-retry mode. Mostly needed for MLC NAND.
+  * @ecc:		[BOARDSPECIFIC] ECC control structure
+  * @buf_align:		minimum buffer alignment required by a platform
+  * @oob_poi:		"poison value buffer," used for laying out OOB data
+@@ -1081,8 +1096,6 @@ struct nand_legacy {
+  * @lock:		lock protecting the suspended field. Also used to
+  *			serialize accesses to the NAND device.
+  * @suspended:		set to 1 when the device is suspended, 0 when it's not.
+- * @suspend:		[REPLACEABLE] specific NAND device suspend operation
+- * @resume:		[REPLACEABLE] specific NAND device resume operation
+  * @bbt:		[INTERN] bad block table pointer
+  * @bbt_td:		[REPLACEABLE] bad block table descriptor for flash
+  *			lookup.
+@@ -1096,17 +1109,13 @@ struct nand_legacy {
+  * @manufacturer:	[INTERN] Contains manufacturer information
+  * @manufacturer.desc:	[INTERN] Contains manufacturer's description
+  * @manufacturer.priv:	[INTERN] Contains manufacturer private information
+- * @lock_area:		[REPLACEABLE] specific NAND chip lock operation
+- * @unlock_area:	[REPLACEABLE] specific NAND chip unlock operation
+  */
+ 
+ struct nand_chip {
+ 	struct nand_device base;
+-
++	struct nand_chip_ops ops;
+ 	struct nand_legacy legacy;
+ 
+-	int (*setup_read_retry)(struct nand_chip *chip, int retry_mode);
+-
+ 	unsigned int options;
+ 	unsigned int bbt_options;
+ 
+@@ -1138,8 +1147,6 @@ struct nand_chip {
+ 
+ 	struct mutex lock;
+ 	unsigned int suspended : 1;
+-	int (*suspend)(struct nand_chip *chip);
+-	void (*resume)(struct nand_chip *chip);
+ 
+ 	u8 *oob_poi;
+ 	struct nand_controller *controller;
+@@ -1159,9 +1166,6 @@ struct nand_chip {
+ 		const struct nand_manufacturer *desc;
+ 		void *priv;
+ 	} manufacturer;
+-
+-	int (*lock_area)(struct nand_chip *chip, loff_t ofs, uint64_t len);
+-	int (*unlock_area)(struct nand_chip *chip, loff_t ofs, uint64_t len);
+ };
+ 
+ extern const struct mtd_ooblayout_ops nand_ooblayout_sp_ops;
+-- 
+2.20.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
