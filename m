@@ -5,18 +5,18 @@ X-Spam-Level:
 X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4594BC433E1
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 22:29:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3369CC433E0
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 22:39:23 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1BE4C2088E
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 22:29:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0536F208C3
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 22:39:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cemyDAuo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1BE4C2088E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kt+7zCgK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0536F208C3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0gGNo4CGdNYCp8n/E5IfiGG7XKqPODH896uPguZx2+c=; b=cemyDAuovqj04Z
-	ZKbXg0xxCizM4sgWjj8xT7Xqb1be9zbYIhzEy4HXUrZQP5Q/ussFiO2C2cT05qIxv1p30EiR5JD1s
-	HREJEO60t6jhom8iK9AbQAEUvwVK+gs0GQdSjBCR2tPy3WZOwVGSMGVN6D940FIdthzqfMMBvZWiB
-	VZRm0xWLOtDdawoMz/DB/SqQ3ESViNwMquBIQ28GzpOaXBPl9CLrPdGxq/4jyhJwQjgHP1hNDimMI
-	g2ik5DTcr2w5WiDqQtU0LFs75pduSHX/iUq9BbNwDS/011xHPqUoPxBN/i2PWh2j9/XfoYKtD1RR0
-	/eDHCHReugdgHFsissBQ==;
+	List-Owner; bh=5ULjn6z6Qj982XHDdHqKqVGdEJNcKCdwWieRYXzcXAk=; b=kt+7zCgKIGYokI
+	alYqENgetuhGbCvVwhsWSZWiQ9aBLHNQ/WfsZk5vLab+GjkGslgueilt0tFZL7yvPSPld5Y5CcOAw
+	T0sdtiipLQoI1bkFxMALlRnQd1CK3Q9drgKUNpH7X8QVvH8kneipZXbdKaT2p92WQ8gvJdJJxix8e
+	vA2FKn8FOWh/tl2YyipZU4iLbd5ysdCFKzAray3psmKSO/rIkJ0YpVVrQJHSjAqumsdBwNRrGS9y+
+	oP/1qV2OWb1i43TEFTXb1qmW+RMl4GlYw7l1SEw5jvtqlOWta7CUJb21IT1MpzJ8olIyOLl+D6Pzm
+	IMSFMVpQqMYoJ+A9powg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jdi44-0004Co-BA; Tue, 26 May 2020 22:28:52 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1jdiE4-0002vZ-P2; Tue, 26 May 2020 22:39:12 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jdi41-0004CC-GP
- for linux-mtd@lists.infradead.org; Tue, 26 May 2020 22:28:51 +0000
+ id 1jdiE2-0002tW-JV
+ for linux-mtd@lists.infradead.org; Tue, 26 May 2020 22:39:11 +0000
 Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
  (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id D34832A35F5;
- Tue, 26 May 2020 23:28:47 +0100 (BST)
-Date: Wed, 27 May 2020 00:28:44 +0200
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 2D5ED2A35F8;
+ Tue, 26 May 2020 23:39:07 +0100 (BST)
+Date: Wed, 27 May 2020 00:39:04 +0200
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH v5 28/28] mtd: rawnand: Allocate the best data interface
- structure dynamically
-Message-ID: <20200527002844.7e54aa22@collabora.com>
-In-Reply-To: <20200526191725.7591-29-miquel.raynal@bootlin.com>
-References: <20200526191725.7591-1-miquel.raynal@bootlin.com>
- <20200526191725.7591-29-miquel.raynal@bootlin.com>
+Subject: Re: [RESEND v5 07/21] mtd: rawnand: Create a new enumeration to
+ describe OOB placement
+Message-ID: <20200527003904.362e59e4@collabora.com>
+In-Reply-To: <20200526195633.11543-8-miquel.raynal@bootlin.com>
+References: <20200526195633.11543-1-miquel.raynal@bootlin.com>
+ <20200526195633.11543-8-miquel.raynal@bootlin.com>
 Organization: Collabora
 X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200526_152849_807723_94832BCC 
-X-CRM114-Status: GOOD (  28.01  )
+X-CRM114-CacheID: sfid-20200526_153910_773051_7B24AFF1 
+X-CRM114-Status: GOOD (  19.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,208 +70,82 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Rickard Andersson <rickaran@axis.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>,
+ linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 26 May 2020 21:17:25 +0200
+On Tue, 26 May 2020 21:56:19 +0200
 Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> Instead of manipulating the statically allocated structure and copy
-> timings around, allocate one at identification time and save it in the
-> nand_chip structure once it has been initialized.
+> There is currently a confusion between the ECC type/mode/provider
+> (eg. hardware, software, on-die or none) and the ECC bytes placement.
 > 
-> This way, either there is a "best data interface" and the requested
-> timings will be these, or there is none, forcing the core to use the
-> default set, statically defined in the core, shared across all NAND
-> chips.
+> Create a new enumeration to describe this placement.
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 > ---
->  drivers/mtd/nand/raw/nand_base.c | 42 ++++++++++++++++++++++----------
->  include/linux/mtd/rawnand.h      | 13 +++++++---
->  2 files changed, 39 insertions(+), 16 deletions(-)
+>  drivers/mtd/nand/raw/nand_base.c |  4 ++++
+>  include/linux/mtd/rawnand.h      | 12 ++++++++++++
+>  2 files changed, 16 insertions(+)
 > 
 > diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> index 2547136a9cd7..247bf5faaf55 100644
+> index ef70ca0828c3..a4470a19c805 100644
 > --- a/drivers/mtd/nand/raw/nand_base.c
 > +++ b/drivers/mtd/nand/raw/nand_base.c
-> @@ -947,7 +947,7 @@ static int nand_reset_data_interface(struct nand_chip *chip, int chipnr)
->   */
->  static int nand_setup_data_interface(struct nand_chip *chip, int chipnr)
+> @@ -5018,6 +5018,10 @@ static const char * const nand_ecc_modes[] = {
+>  	[NAND_ECC_ON_DIE]	= "on-die",
+>  };
+>  
+> +static const char * const nand_ecc_placement[] = {
+> +	[NAND_ECC_PLACEMENT_INTERLEAVED] = "interleaved",
+> +};
+> +
+>  static int of_get_nand_ecc_mode(struct device_node *np)
 >  {
-> -	u8 mode = chip->data_interface.timings.mode;
-> +	u8 mode = chip->best_iface->timings.mode;
->  	u8 tmode_param[ONFI_SUBFEATURE_PARAM_LEN] = { mode, };
->  	int ret;
->  
-> @@ -966,7 +966,7 @@ static int nand_setup_data_interface(struct nand_chip *chip, int chipnr)
->  
->  	/* Change the mode on the controller side */
->  	ret = chip->controller->ops->setup_data_interface(chip, chipnr,
-> -							&chip->data_interface);
-> +							  chip->best_iface);
->  	if (ret)
->  		return ret;
->  
-> @@ -1030,8 +1030,10 @@ int nand_choose_best_sdr_timings(struct nand_chip *chip,
->  		ret = ops->setup_data_interface(chip,
->  						NAND_DATA_IFACE_CHECK_ONLY,
->  						iface);
-> -		if (!ret)
-> +		if (!ret) {
-> +			chip->best_iface = iface;
->  			return ret;
-> +		}
->  
->  		/* Fallback to slower modes */
->  		best_mode = iface->timings.mode;
-> @@ -1052,6 +1054,8 @@ int nand_choose_best_sdr_timings(struct nand_chip *chip,
->  			break;
->  	}
->  
-> +	chip->best_iface = iface;
-> +
->  	return 0;
->  }
->  
-> @@ -1070,14 +1074,25 @@ int nand_choose_best_sdr_timings(struct nand_chip *chip,
->   */
->  static int nand_choose_data_interface(struct nand_chip *chip)
->  {
-> +	struct nand_data_interface *iface;
-> +	int ret;
-> +
->  	if (!nand_controller_has_setup_data_iface(chip))
->  		return 0;
->  
-> +	iface = kzalloc(sizeof(*iface), GFP_KERNEL);
-> +	if (!iface)
-> +		return -ENOMEM;
-> +
->  	if (chip->ops.choose_data_interface)
-> -		return chip->ops.choose_data_interface(chip,
-> -						       &chip->data_interface);
-> +		ret = chip->ops.choose_data_interface(chip, iface);
-> +	else
-> +		ret = nand_choose_best_sdr_timings(chip, iface, NULL);
->  
-> -	return nand_choose_best_sdr_timings(chip, &chip->data_interface, NULL);
-> +	if (ret)
-> +		kfree(iface);
-> +
-> +	return ret;
->  }
->  
->  /**
-> @@ -2514,8 +2529,7 @@ int nand_reset(struct nand_chip *chip, int chipnr)
->  	 * nand_setup_data_interface() uses ->set/get_features() which would
->  	 * fail anyway as the parameter page is not available yet.
->  	 */
-> -	if (!memcmp(&chip->data_interface, nand_reset_data_iface,
-> -		    sizeof(*nand_reset_data_iface)))
-> +	if (!chip->best_iface)
->  		return 0;
->  
-
-If you assign ->best_iface for mode 0 (as done above) and keep the
-!chip->best_iface test that means you apply timing mode 0 twice. Not
-a big deal but I wanted to point it out.
-
->  	ret = nand_setup_data_interface(chip, chipnr);
-> @@ -5252,9 +5266,6 @@ static int nand_scan_ident(struct nand_chip *chip, unsigned int maxchips,
->  
->  	mutex_init(&chip->lock);
->  
-> -	/* Enforce the right timings for reset/detection */
-> -	onfi_fill_data_interface(chip, &chip->data_interface, NAND_SDR_IFACE, 0);
-> -
->  	ret = nand_dt_init(chip);
->  	if (ret)
->  		return ret;
-> @@ -6059,7 +6070,7 @@ static int nand_scan_tail(struct nand_chip *chip)
->  	for (i = 0; i < nanddev_ntargets(&chip->base); i++) {
->  		ret = nand_setup_data_interface(chip, i);
->  		if (ret)
-> -			goto err_nanddev_cleanup;
-> +			goto err_free_data_iface;
->  	}
->  
->  	/* Check, if we should skip the bad block table scan */
-> @@ -6069,10 +6080,12 @@ static int nand_scan_tail(struct nand_chip *chip)
->  	/* Build bad block table */
->  	ret = nand_create_bbt(chip);
->  	if (ret)
-> -		goto err_nanddev_cleanup;
-> +		goto err_free_data_iface;
->  
->  	return 0;
->  
-> +err_free_data_iface:
-> +	kfree(chip->best_iface);
->  
->  err_nanddev_cleanup:
->  	nanddev_cleanup(&chip->base);
-> @@ -6166,6 +6179,9 @@ void nand_cleanup(struct nand_chip *chip)
->  			& NAND_BBT_DYNAMICSTRUCT)
->  		kfree(chip->badblock_pattern);
->  
-> +	/* Free the data interface */
-> +	kfree(chip->best_iface);
-> +
->  	/* Free manufacturer priv data. */
->  	nand_manufacturer_cleanup(chip);
->  
+>  	const char *pm;
 > diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-> index 00557e553827..0f215faa3072 100644
+> index 8187056dd3a0..6eb4d91b07eb 100644
 > --- a/include/linux/mtd/rawnand.h
 > +++ b/include/linux/mtd/rawnand.h
-> @@ -1070,7 +1070,9 @@ struct nand_manufacturer {
->   * @options: Various chip options. They can partly be set to inform nand_scan
->   *           about special functionality. See the defines for further
->   *           explanation.
-> - * @data_interface: NAND interface timing information
-> + * @best_iface: The best NAND data interface which fits both the NAND chip and
-
-						^ configuration
-
-> + *              NAND controller constraints. If unset, the default reset data
-> + *              interface must be used.
->   * @bbt_erase_shift: Number of address bits in a bbt entry
->   * @bbt_options: Bad block table specific options. All options used here must
->   *               come from bbm.h. By default, these options will be copied to
-> @@ -1117,7 +1119,7 @@ struct nand_chip {
->  	unsigned int options;
+> @@ -92,6 +92,18 @@ enum nand_ecc_mode {
+>  	NAND_ECC_ON_DIE,
+>  };
 >  
->  	/* Data interface */
-> -	struct nand_data_interface data_interface;
-> +	struct nand_data_interface *best_iface;
+> +/**
+> + * enum nand_ecc_placement - NAND ECC placement
+> + * @NAND_ECC_PLACEMENT_FREE: The driver can decide where to put ECC bytes.
 
-Not sure why you rename this field, but if we go for a name update, I'd
-vote for best_iface_cfg (or something that clarifies the fact that this
-is the data interface configuration).
+Can we name that one UNDEFINED instead of FREE, and it's not really the
+driver that decides (unless you have a choice or use SW ECC), more the ECC
+engine itself.
 
->  
->  	/* Bad block information */
->  	unsigned int bbt_erase_shift;
-> @@ -1212,7 +1214,12 @@ extern const struct nand_data_interface *nand_reset_data_iface;
->  static inline const struct nand_sdr_timings *
->  nand_get_sdr_timings(struct nand_chip *chip)
->  {
-> -	return nand_extract_sdr_timings(&chip->data_interface);
-> +	const struct nand_data_interface *iface = chip->best_iface;
+> + *                           Default behavior is to put them at the end of the
+> + *                           OOB area.
+
+I wouldn't even define a default behavior here, but instead add a value for
+OOB/TAIL placement.
+
+> + * @NAND_ECC_PLACEMENT_INTERLEAVED: Syndrome layout: interleave data and OOB.
+
+
+									     ^ECC bytes
+
+> + */
+> +enum nand_ecc_placement {
+> +	NAND_ECC_PLACEMENT_FREE,
+> +	NAND_ECC_PLACEMENT_INTERLEAVED,
+> +};
 > +
-> +	if (!iface)
-> +		iface = nand_reset_data_iface;
-> +
-> +	return nand_extract_sdr_timings(iface);
->  }
->  
->  /*
+>  enum nand_ecc_algo {
+>  	NAND_ECC_UNKNOWN,
+>  	NAND_ECC_HAMMING,
 
 
 ______________________________________________________
