@@ -2,80 +2,83 @@ Return-Path: <SRS0=PBLV=7I=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AFD9DC433DF
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 09:37:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 91E5BC433E2
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 09:37:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 81F63207ED
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 09:37:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 33021205CB
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 09:37:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LqHGUibF";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="nLVPrNId"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 81F63207ED
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HZVWn52S";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="QEEXSpmp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 33021205CB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=s+Dz00vfx0X8d/Hp89wrt1Gx01uISjy/PvUpnJTBOgA=; b=LqHGUibFVMvfxS
-	9z5z+HluuWReX04wiaKYt+MVWy6i7GEy64NZ6ThW82/jUQ30asUvfaueFkoGC2Z+7wdyDrkqQMOXi
-	VzzA/tSrM9k9caQdRSzrBP60B/AZwlL1JWE+9iEmOCsDugkmI3DJ9Bq6yEqlblCt834ZeZUmZnYTV
-	2C4lYnJ8Ezuiq0wLzpDSyntxtkSgv0sWf/6WiY0Wy63qziqv7j9Ab/3ADFllAlV692Yq7gCws1sZt
-	WLsvEm5UlGlrjKcwDJ+ZFTMG4+4r1HMySPvNZFiElF0GwQmOjvg+H/GveJeNt+1B3xwWxxvZC8rfL
-	HqNTslyY33yYzAE7xjlA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=9VWD+1WBfPb1bNKEFqtokZAFywhu5XQFz7JHjUVHPTg=; b=HZVWn52S74Hbs/
+	UKKkwOK/nfDcapiRmo5tGcmQsAJnsPax23/DWe8Dyhd92ccH8ZCsMK6HnHzM3Auqv1qBrsVJebqDY
+	gZETY1RmAFJedIiXJlqlzw7RlrUKqrj3kHNAF2gbcSKZyylwN7e4DSSwRWoTPRXl93G0Mu6BzBPoS
+	4gVXYqqQua9aPCYBMBU+TCr0oKvTZEnIMg4GE+EUkYSVuq2Pspjh8rnbRwBzmAnwIcjq+ld+mKoWy
+	oC1cZukt6DYk90gktmMxJUDbH6xxOBMRHaGfwAF/4RgvrndeWvU6veShAjgQnZxcbeA2zZ/XhlNb2
+	bljMkaWkmHZnt4g98cVQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jdW1b-0005El-An; Tue, 26 May 2020 09:37:31 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1jdW1o-0005Sl-ON; Tue, 26 May 2020 09:37:44 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jdW1Z-0005DT-1G
- for linux-mtd@lists.infradead.org; Tue, 26 May 2020 09:37:30 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04Q9bFA8034059;
- Tue, 26 May 2020 04:37:15 -0500
+ id 1jdW1Z-0005Dx-W5
+ for linux-mtd@lists.infradead.org; Tue, 26 May 2020 09:37:31 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04Q9bK5M068665;
+ Tue, 26 May 2020 04:37:20 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1590485835;
- bh=9aC5z2QPUSspxTgWIOcSf4RjNcIj4QMhk56xxtrcX2c=;
- h=From:To:CC:Subject:Date;
- b=nLVPrNIdpj0DwMapU7Wxvf2n+EVCK+A/Pkb7shPi+2vvPx+VHnu1lS0cLaQPjTcZz
- qFdrtCeZYGQKp6dkR/busOQnblTgRQeNvH4HA4TsTdyxAK3PEBNQQsxE9K8QRplAZz
- HCpOECDP3TZsaFYgub6+Gw3t1tmvDXFMG+lQv1bM=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04Q9bFN2099815
+ s=ti-com-17Q1; t=1590485840;
+ bh=49K/f3vTIBXO8kwRFOg3JVbwPq6EjYxyjeJq81jcrOY=;
+ h=From:To:CC:Subject:Date:In-Reply-To:References;
+ b=QEEXSpmpahCdh/VqaDlUgePLvY0hk+auroybjTmprn1gmdScclKM+2gu5CM9K9I5R
+ cJtLFz5iuhariJIsYQhnOuRUa4BR8BAKJ0c31+p8paxro5d3LJhAMqcyPXWzVXuGmp
+ irD83cLddoFifodbD0K+NsIpGojLrGGMTAIV27pQ=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04Q9bJR9041226
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 26 May 2020 04:37:15 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ Tue, 26 May 2020 04:37:20 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 26
- May 2020 04:37:15 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ May 2020 04:37:19 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 26 May 2020 04:37:15 -0500
+ Frontend Transport; Tue, 26 May 2020 04:37:19 -0500
 Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04Q9b9hJ066907;
- Tue, 26 May 2020 04:37:10 -0500
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04Q9b9hK066907;
+ Tue, 26 May 2020 04:37:15 -0500
 From: Vignesh Raghavendra <vigneshr@ti.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>, Mark Brown
  <broonie@kernel.org>
-Subject: [PATCH v2 0/6] mtd: spi-nor: Move cadence-qaudspi to spi-mem framework
-Date: Tue, 26 May 2020 15:05:58 +0530
-Message-ID: <20200526093604.11846-1-vigneshr@ti.com>
+Subject: [PATCH v2 1/6] mtd: spi-nor: cadence-quadspi: Make driver independent
+ of flash geometry
+Date: Tue, 26 May 2020 15:05:59 +0530
+Message-ID: <20200526093604.11846-2-vigneshr@ti.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200526093604.11846-1-vigneshr@ti.com>
+References: <20200526093604.11846-1-vigneshr@ti.com>
 MIME-Version: 1.0
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200526_023729_162174_C35CEF0B 
-X-CRM114-Status: GOOD (  10.38  )
+X-CRM114-CacheID: sfid-20200526_023730_108105_915E9D7A 
+X-CRM114-Status: GOOD (  16.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,56 +101,88 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-mtd: spi-nor: Move cadence-qaudspi to spi-mem framework
+Drop configuration of Flash size, erase size and page size
+configuration. Flash size is needed only if using AHB decoder (BIT 23 of
+CONFIG_REG) which is not used by the driver.
+Erase size and page size are needed if IP is configured to send WREN
+automatically. But since SPI NOR layer takes care of sending WREN, there
+is no need to configure these fields either.
 
-This series is a subset of "[PATCH v12 0/4] spi: cadence-quadspi: Add
-support for the Cadence QSPI controller" by Ramuthevar,Vadivel MuruganX
-<vadivel.muruganx.ramuthevar@linux.intel.com> that intended to move
-cadence-quadspi driver to spi-mem framework
+Therefore drop these in preparation to move the driver to spi-mem
+framework where flash geometry is not visible to controller driver.
 
-Those patches were trying to accomplish too many things in a single set
-of patches and need to split into smaller patches. This is reduced
-version of above series.
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+---
+ .../mtd/spi-nor/controllers/cadence-quadspi.c | 36 +------------------
+ 1 file changed, 1 insertion(+), 35 deletions(-)
 
-Changes that are intended to make migration easy are split into separate
-patches. Patches 1 to 3 drop features that cannot be supported under
-spi-mem at the moment (backward compatibility is maintained).
-Patch 4-5 are trivial cleanups. Patch 6 does the actual conversion to
-spi-mem and patch 7 moves the driver to drivers/spi folder.
-
-I have tested both INDAC mode (used by non TI platforms like Altera
-SoCFPGA) and DAC mode (used by TI platforms) on TI EVMs.
-
-Patches to move move bindings over to
-"Documentation/devicetree/bindings/spi/" directory and also conversion
-of bindig doc to YAML will be posted separately.  Support for Intel
-platform would follow that.
-
-v2:
-Rework patch 1/6 to keep "cdns,is-decoded-cs" property supported.
-
-
-Ramuthevar Vadivel Murugan (2):
-  mtd: spi-nor: Convert cadence-quadspi to use spi-mem framework
-  spi: Move cadence-quadspi driver to drivers/spi/
-
-Vignesh Raghavendra (4):
-  mtd: spi-nor: cadence-quadspi: Make driver independent of flash
-    geometry
-  mtd: spi-nor: cadence-quadspi: Provide a way to disable DAC mode
-  mtd: spi-nor: cadence-quadspi: Don't initialize rx_dma_complete on
-    failure
-  mtd: spi-nor: cadence-quadspi: Fix error path on failure to acquire
-    reset lines
-
- drivers/mtd/spi-nor/controllers/Kconfig       |  11 -
- drivers/mtd/spi-nor/controllers/Makefile      |   1 -
- drivers/spi/Kconfig                           |  11 +
- drivers/spi/Makefile                          |   1 +
- .../spi-cadence-quadspi.c}                    | 521 +++++++-----------
- 5 files changed, 206 insertions(+), 339 deletions(-)
- rename drivers/{mtd/spi-nor/controllers/cadence-quadspi.c => spi/spi-cadence-quadspi.c} (74%)
-
+diff --git a/drivers/mtd/spi-nor/controllers/cadence-quadspi.c b/drivers/mtd/spi-nor/controllers/cadence-quadspi.c
+index 494dcab4aaaa..9b8554d44fac 100644
+--- a/drivers/mtd/spi-nor/controllers/cadence-quadspi.c
++++ b/drivers/mtd/spi-nor/controllers/cadence-quadspi.c
+@@ -77,9 +77,6 @@ struct cqspi_st {
+ 	dma_addr_t		mmap_phys_base;
+ 
+ 	int			current_cs;
+-	int			current_page_size;
+-	int			current_erase_size;
+-	int			current_addr_width;
+ 	unsigned long		master_ref_clk_hz;
+ 	bool			is_decoded_cs;
+ 	u32			fifo_depth;
+@@ -736,32 +733,6 @@ static void cqspi_chipselect(struct spi_nor *nor)
+ 	writel(reg, reg_base + CQSPI_REG_CONFIG);
+ }
+ 
+-static void cqspi_configure_cs_and_sizes(struct spi_nor *nor)
+-{
+-	struct cqspi_flash_pdata *f_pdata = nor->priv;
+-	struct cqspi_st *cqspi = f_pdata->cqspi;
+-	void __iomem *iobase = cqspi->iobase;
+-	unsigned int reg;
+-
+-	/* configure page size and block size. */
+-	reg = readl(iobase + CQSPI_REG_SIZE);
+-	reg &= ~(CQSPI_REG_SIZE_PAGE_MASK << CQSPI_REG_SIZE_PAGE_LSB);
+-	reg &= ~(CQSPI_REG_SIZE_BLOCK_MASK << CQSPI_REG_SIZE_BLOCK_LSB);
+-	reg &= ~CQSPI_REG_SIZE_ADDRESS_MASK;
+-	reg |= (nor->page_size << CQSPI_REG_SIZE_PAGE_LSB);
+-	reg |= (ilog2(nor->mtd.erasesize) << CQSPI_REG_SIZE_BLOCK_LSB);
+-	reg |= (nor->addr_width - 1);
+-	writel(reg, iobase + CQSPI_REG_SIZE);
+-
+-	/* configure the chip select */
+-	cqspi_chipselect(nor);
+-
+-	/* Store the new configuration of the controller */
+-	cqspi->current_page_size = nor->page_size;
+-	cqspi->current_erase_size = nor->mtd.erasesize;
+-	cqspi->current_addr_width = nor->addr_width;
+-}
+-
+ static unsigned int calculate_ticks_for_ns(const unsigned int ref_clk_hz,
+ 					   const unsigned int ns_val)
+ {
+@@ -867,18 +838,13 @@ static void cqspi_configure(struct spi_nor *nor)
+ 	int switch_cs = (cqspi->current_cs != f_pdata->cs);
+ 	int switch_ck = (cqspi->sclk != sclk);
+ 
+-	if ((cqspi->current_page_size != nor->page_size) ||
+-	    (cqspi->current_erase_size != nor->mtd.erasesize) ||
+-	    (cqspi->current_addr_width != nor->addr_width))
+-		switch_cs = 1;
+-
+ 	if (switch_cs || switch_ck)
+ 		cqspi_controller_enable(cqspi, 0);
+ 
+ 	/* Switch chip select. */
+ 	if (switch_cs) {
+ 		cqspi->current_cs = f_pdata->cs;
+-		cqspi_configure_cs_and_sizes(nor);
++		cqspi_chipselect(nor);
+ 	}
+ 
+ 	/* Setup baudrate divisor and delays */
 -- 
 2.26.2
 
