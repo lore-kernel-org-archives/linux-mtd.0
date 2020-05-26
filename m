@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74103C433DF
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 19:18:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32DC1C433E1
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 19:19:00 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3C12A20776
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 19:18:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 05DEB20776
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 19:19:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dZm3Lkab"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C12A20776
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WUXsUDAE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 05DEB20776
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,37 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nw1JQI1RFETMlqRfwJdscgGFMjqnBS8xlspzQpkpEvc=; b=dZm3Lkab0QiC4G
-	39wTny6aL0ulnNO1/QK1ysyy3BTT6dF9emvBcDDV3HrKxFDlQKD17uqRrxT84+MKbBf72BToau8Uz
-	EXq0MmuXl70pjhJpxZmPbVbhazrEBVAKAE0L4+ZVjdyTtut0R4afVD5ZyUP+VJ05gw1sMNYoma+sv
-	bPaNc3hbDLVq9Rn4n9rtgfYYEy1Rpl01tKBRwxIKXq98cOB3GK4YmRKo2uMPA9plR5w/H8TyFF6E+
-	U0TI9GwsEVrPZR9pL+WbXGKlY/6EDU+VcxsG+htdWMPFHffDPZND9IjWxqm6VSoZ1npWy5WakmYPT
-	ADhnEvARDYrSa4XjJZdA==;
+	List-Owner; bh=8Nj2ha/rDkBwOaPYb0wUSofKRIuXE3Gak554fkhhBK8=; b=WUXsUDAE8OBSrA
+	1nblw8wSU4t+PGf8RLNTRA7qpFpF15h/DXRDSS76MbMLJ6rAqN3leIKQy5HRiRrAkqTIl4Hp1VULq
+	6tJqwtHr8Lgog8zDYVaNcLECtFcHZJI+KpILoQmhrZmylTwSVoXZFynvsX9uGqiztsht8jyWEfYs4
+	cQHXO2qV/RMxukYTLVjy25TXXNCIlafVVaHXAadGBiwRGJQElwGOGyd6kxrNjfZew9SK0mkUwMiJf
+	YW2xwsqdKPUeo/3EIPPs1wvVBGHiHXubq+6jICsRyIgauaMesAiXWixCLShpTCPpKk0S1t8MeVoJO
+	UvJkvfy3dusyzKqNm3Tw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jdf5z-000292-8u; Tue, 26 May 2020 19:18:39 +0000
+	id 1jdf6I-0002Ph-JR; Tue, 26 May 2020 19:18:58 +0000
 Received: from relay10.mail.gandi.net ([217.70.178.230])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jdf4z-0001Ia-J3
- for linux-mtd@lists.infradead.org; Tue, 26 May 2020 19:17:39 +0000
+ id 1jdf51-0001Js-VZ
+ for linux-mtd@lists.infradead.org; Tue, 26 May 2020 19:17:41 +0000
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay10.mail.gandi.net (Postfix) with ESMTPSA id 4678324000D;
- Tue, 26 May 2020 19:17:35 +0000 (UTC)
+ by relay10.mail.gandi.net (Postfix) with ESMTPSA id 9AA17240006;
+ Tue, 26 May 2020 19:17:37 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH v5 03/28] mtd: rawnand: Create a nand_chip operations structure
-Date: Tue, 26 May 2020 21:17:00 +0200
-Message-Id: <20200526191725.7591-4-miquel.raynal@bootlin.com>
+Subject: [PATCH v5 05/28] mtd: rawnand: Declare the nand_manufacturer
+ structure out of nand_chip
+Date: Tue, 26 May 2020 21:17:02 +0200
+Message-Id: <20200526191725.7591-6-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200526191725.7591-1-miquel.raynal@bootlin.com>
 References: <20200526191725.7591-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200526_121737_900383_94EB4FA0 
-X-CRM114-Status: GOOD (  17.61  )
+X-CRM114-CacheID: sfid-20200526_121740_158326_1053770D 
+X-CRM114-Status: GOOD (  11.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,229 +76,65 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-And move nand_chip hooks there.
-
-While moving entries from one structure to the other, adapt the
-documentation style.
+Now that struct nand_manufacturer type is free, use it to store the
+nand_manufacturer_desc and the manufacturer's private data.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 ---
- drivers/mtd/nand/raw/nand_base.c     | 20 ++++++++---------
- drivers/mtd/nand/raw/nand_hynix.c    |  2 +-
- drivers/mtd/nand/raw/nand_macronix.c | 10 ++++-----
- drivers/mtd/nand/raw/nand_micron.c   |  2 +-
- include/linux/mtd/rawnand.h          | 32 ++++++++++++++++------------
- 5 files changed, 35 insertions(+), 31 deletions(-)
+ include/linux/mtd/rawnand.h | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 6a6a0a36b3fd..b86f641f6d74 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -3285,10 +3285,10 @@ static int nand_setup_read_retry(struct nand_chip *chip, int retry_mode)
- 	if (retry_mode >= chip->read_retries)
- 		return -EINVAL;
- 
--	if (!chip->setup_read_retry)
-+	if (!chip->ops.setup_read_retry)
- 		return -EOPNOTSUPP;
- 
--	return chip->setup_read_retry(chip, retry_mode);
-+	return chip->ops.setup_read_retry(chip, retry_mode);
- }
- 
- static void nand_wait_readrdy(struct nand_chip *chip)
-@@ -4532,8 +4532,8 @@ static int nand_suspend(struct mtd_info *mtd)
- 	int ret = 0;
- 
- 	mutex_lock(&chip->lock);
--	if (chip->suspend)
--		ret = chip->suspend(chip);
-+	if (chip->ops.suspend)
-+		ret = chip->ops.suspend(chip);
- 	if (!ret)
- 		chip->suspended = 1;
- 	mutex_unlock(&chip->lock);
-@@ -4551,8 +4551,8 @@ static void nand_resume(struct mtd_info *mtd)
- 
- 	mutex_lock(&chip->lock);
- 	if (chip->suspended) {
--		if (chip->resume)
--			chip->resume(chip);
-+		if (chip->ops.resume)
-+			chip->ops.resume(chip);
- 		chip->suspended = 0;
- 	} else {
- 		pr_err("%s called for a chip which is not in suspended state\n",
-@@ -4581,10 +4581,10 @@ static int nand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
- 
--	if (!chip->lock_area)
-+	if (!chip->ops.lock_area)
- 		return -ENOTSUPP;
- 
--	return chip->lock_area(chip, ofs, len);
-+	return chip->ops.lock_area(chip, ofs, len);
- }
- 
- /**
-@@ -4597,10 +4597,10 @@ static int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
- 
--	if (!chip->unlock_area)
-+	if (!chip->ops.unlock_area)
- 		return -ENOTSUPP;
- 
--	return chip->unlock_area(chip, ofs, len);
-+	return chip->ops.unlock_area(chip, ofs, len);
- }
- 
- /* Set default functions */
-diff --git a/drivers/mtd/nand/raw/nand_hynix.c b/drivers/mtd/nand/raw/nand_hynix.c
-index 7caedaa5b9e5..7d1be53f27f3 100644
---- a/drivers/mtd/nand/raw/nand_hynix.c
-+++ b/drivers/mtd/nand/raw/nand_hynix.c
-@@ -337,7 +337,7 @@ static int hynix_mlc_1xnm_rr_init(struct nand_chip *chip,
- 	rr->nregs = nregs;
- 	rr->regs = hynix_1xnm_mlc_read_retry_regs;
- 	hynix->read_retry = rr;
--	chip->setup_read_retry = hynix_nand_setup_read_retry;
-+	chip->ops.setup_read_retry = hynix_nand_setup_read_retry;
- 	chip->read_retries = nmodes;
- 
- out:
-diff --git a/drivers/mtd/nand/raw/nand_macronix.c b/drivers/mtd/nand/raw/nand_macronix.c
-index 09c254c97b5c..1472f925f386 100644
---- a/drivers/mtd/nand/raw/nand_macronix.c
-+++ b/drivers/mtd/nand/raw/nand_macronix.c
-@@ -130,7 +130,7 @@ static void macronix_nand_onfi_init(struct nand_chip *chip)
- 		return;
- 
- 	chip->read_retries = MACRONIX_NUM_READ_RETRY_MODES;
--	chip->setup_read_retry = macronix_nand_setup_read_retry;
-+	chip->ops.setup_read_retry = macronix_nand_setup_read_retry;
- 
- 	if (p->supports_set_get_features) {
- 		bitmap_set(p->set_feature_list,
-@@ -242,8 +242,8 @@ static void macronix_nand_block_protection_support(struct nand_chip *chip)
- 	bitmap_set(chip->parameters.set_feature_list,
- 		   ONFI_FEATURE_ADDR_MXIC_PROTECTION, 1);
- 
--	chip->lock_area = mxic_nand_lock;
--	chip->unlock_area = mxic_nand_unlock;
-+	chip->ops.lock_area = mxic_nand_lock;
-+	chip->ops.unlock_area = mxic_nand_unlock;
- }
- 
- static int nand_power_down_op(struct nand_chip *chip)
-@@ -312,8 +312,8 @@ static void macronix_nand_deep_power_down_support(struct nand_chip *chip)
- 	if (i < 0)
- 		return;
- 
--	chip->suspend = mxic_nand_suspend;
--	chip->resume = mxic_nand_resume;
-+	chip->ops.suspend = mxic_nand_suspend;
-+	chip->ops.resume = mxic_nand_resume;
- }
- 
- static int macronix_nand_init(struct nand_chip *chip)
-diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
-index 3589b4fce0d4..4385092a9325 100644
---- a/drivers/mtd/nand/raw/nand_micron.c
-+++ b/drivers/mtd/nand/raw/nand_micron.c
-@@ -84,7 +84,7 @@ static int micron_nand_onfi_init(struct nand_chip *chip)
- 		struct nand_onfi_vendor_micron *micron = (void *)p->onfi->vendor;
- 
- 		chip->read_retries = micron->read_retry_options;
--		chip->setup_read_retry = micron_nand_setup_read_retry;
-+		chip->ops.setup_read_retry = micron_nand_setup_read_retry;
- 	}
- 
- 	if (p->supports_set_get_features) {
 diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 7d62e0e719ac..b33cd68852c4 100644
+index d8492d966b40..2a9b5d5b315b 100644
 --- a/include/linux/mtd/rawnand.h
 +++ b/include/linux/mtd/rawnand.h
-@@ -1027,16 +1027,31 @@ struct nand_legacy {
- 	struct nand_controller dummy_controller;
+@@ -1043,10 +1043,21 @@ struct nand_chip_ops {
+ 	int (*setup_read_retry)(struct nand_chip *chip, int retry_mode);
  };
  
 +/**
-+ * struct nand_chip_ops - NAND chip operations
-+ * @suspend: Suspend operation
-+ * @resume: Resume operation
-+ * @lock_area: Lock operation
-+ * @unlock_area: Unlock operation
-+ * @setup_read_retry: Set the read-retry mode (mostly needed for MLC NANDs)
++ * struct nand_manufacturer - NAND manufacturer structure
++ * @desc: The manufacturer description
++ * @priv: Private information for the manufacturer driver
 + */
-+struct nand_chip_ops {
-+	int (*suspend)(struct nand_chip *chip);
-+	void (*resume)(struct nand_chip *chip);
-+	int (*lock_area)(struct nand_chip *chip, loff_t ofs, uint64_t len);
-+	int (*unlock_area)(struct nand_chip *chip, loff_t ofs, uint64_t len);
-+	int (*setup_read_retry)(struct nand_chip *chip, int retry_mode);
++struct nand_manufacturer {
++	const struct nand_manufacturer_desc *desc;
++	void *priv;
 +};
 +
  /**
   * struct nand_chip - NAND Private Flash Chip Data
   * @base:		Inherit from the generic NAND device
-+ * @ops:		NAND chip operations
+  * @ops:		NAND chip operations
++ * @manufacturer:	Manufacturer information
   * @legacy:		All legacy fields/hooks. If you develop a new driver,
   *			don't even try to use any of these fields/hooks, and if
   *			you're modifying an existing driver that is using those
-  *			fields/hooks, you should consider reworking the driver
-  *			avoid using them.
-- * @setup_read_retry:	[FLASHSPECIFIC] flash (vendor) specific function for
-- *			setting the read-retry mode. Mostly needed for MLC NAND.
-  * @ecc:		[BOARDSPECIFIC] ECC control structure
-  * @buf_align:		minimum buffer alignment required by a platform
-  * @oob_poi:		"poison value buffer," used for laying out OOB data
-@@ -1081,8 +1096,6 @@ struct nand_legacy {
-  * @lock:		lock protecting the suspended field. Also used to
-  *			serialize accesses to the NAND device.
-  * @suspended:		set to 1 when the device is suspended, 0 when it's not.
-- * @suspend:		[REPLACEABLE] specific NAND device suspend operation
-- * @resume:		[REPLACEABLE] specific NAND device resume operation
-  * @bbt:		[INTERN] bad block table pointer
-  * @bbt_td:		[REPLACEABLE] bad block table descriptor for flash
-  *			lookup.
-@@ -1096,17 +1109,13 @@ struct nand_legacy {
-  * @manufacturer:	[INTERN] Contains manufacturer information
-  * @manufacturer.desc:	[INTERN] Contains manufacturer's description
-  * @manufacturer.priv:	[INTERN] Contains manufacturer private information
-- * @lock_area:		[REPLACEABLE] specific NAND chip lock operation
-- * @unlock_area:	[REPLACEABLE] specific NAND chip unlock operation
+@@ -1106,13 +1117,11 @@ struct nand_chip_ops {
+  *			structure which is shared among multiple independent
+  *			devices.
+  * @priv:		[OPTIONAL] pointer to private chip data
+- * @manufacturer:	[INTERN] Contains manufacturer information
+- * @manufacturer.desc:	[INTERN] Contains manufacturer's description
+- * @manufacturer.priv:	[INTERN] Contains manufacturer private information
   */
  
  struct nand_chip {
  	struct nand_device base;
--
-+	struct nand_chip_ops ops;
++	struct nand_manufacturer manufacturer;
+ 	struct nand_chip_ops ops;
  	struct nand_legacy legacy;
  
--	int (*setup_read_retry)(struct nand_chip *chip, int retry_mode);
+@@ -1161,11 +1170,6 @@ struct nand_chip {
+ 	struct nand_bbt_descr *badblock_pattern;
+ 
+ 	void *priv;
 -
- 	unsigned int options;
- 	unsigned int bbt_options;
- 
-@@ -1138,8 +1147,6 @@ struct nand_chip {
- 
- 	struct mutex lock;
- 	unsigned int suspended : 1;
--	int (*suspend)(struct nand_chip *chip);
--	void (*resume)(struct nand_chip *chip);
- 
- 	u8 *oob_poi;
- 	struct nand_controller *controller;
-@@ -1159,9 +1166,6 @@ struct nand_chip {
- 		const struct nand_manufacturer *desc;
- 		void *priv;
- 	} manufacturer;
--
--	int (*lock_area)(struct nand_chip *chip, loff_t ofs, uint64_t len);
--	int (*unlock_area)(struct nand_chip *chip, loff_t ofs, uint64_t len);
+-	struct {
+-		const struct nand_manufacturer_desc *desc;
+-		void *priv;
+-	} manufacturer;
  };
  
  extern const struct mtd_ooblayout_ops nand_ooblayout_sp_ops;
