@@ -2,80 +2,63 @@ Return-Path: <SRS0=PBLV=7I=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E8F5C433E0
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 20:43:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08140C433E0
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 21:24:04 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2A8FF207CB
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 20:43:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CDCDF20870
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 21:24:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XDfbrrzb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2A8FF207CB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NC8pRrYZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CDCDF20870
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=od1SWPOAqJnohysWfkYLZ5Pw0tHENOOey3EQkdDo808=; b=XDfbrrzbBtYpKf
-	j9S61BSqb5k4P1NLG0mGm7al/84Lh+GEp9egJPHDnkTl3wI6DRhjW5B3ggMpyxxLgxor19Nfi6CmO
-	aZVCCJ7mQL49e1U2po0BqDmuX/nmYSn656skVbMeiSAd+S1LpLbL5HGdAxxPLv+Mf/18dnTltwf/D
-	KxpMu4i8LVg94z9Xmike/8J/9ZYm0qRXIKkWtn6oV5ei0EFodwMRHoRqbVD+gMeZbOpjgf0t0SijY
-	pSeQM2ZRh9dE3/Ny+lq/lz+vnNjln7Z9CpuXVQ4us6pPR/UshIxmiuq3/zErVqjzFwv33jjjKjkIB
-	qFgPgQ+Gter8cQoLAKrQ==;
+	List-Owner; bh=pyhJkmn1AJ8NWuHxYW2PQUJWszx+fkd3Sc9N8h9jGdo=; b=NC8pRrYZ4syoFV
+	hF4YhW3uvOJa4NZUWzpsBdIprm8C+wdsQZIjiI0eWlS4xBGAhci5Wwbod99dUuK4F+INePTDx6GZA
+	h4a9n42oi/EUdwgZmkDapyBqRVCohIw/nmMrxRp3ie7ULUjkbAEpN4/wbn7k8AOvHvyPa2ZUMFZBS
+	PSrXBZoPSHO4Em1Q+xI7tm9tPXj2URrap/U3nRVoV/lMI3jhhvn36AAdbh46kyhk0/cuzHIxQDzNg
+	dC5ITYoAgGRqW7AmXTIxAYr+e6owXNNTRQKUjH+mKAE0Fnl+jOb8WGOFRg7T9bhtLXfSB2EXC5oK4
+	KGQOogzyi6x1jPoC1/yw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jdgPr-0006VQ-0H; Tue, 26 May 2020 20:43:15 +0000
-Received: from mail-io1-f51.google.com ([209.85.166.51])
+	id 1jdh34-0004oY-F2; Tue, 26 May 2020 21:23:46 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jdgPn-0006Un-VK
- for linux-mtd@lists.infradead.org; Tue, 26 May 2020 20:43:13 +0000
-Received: by mail-io1-f51.google.com with SMTP id r2so13267518ioo.4
- for <linux-mtd@lists.infradead.org>; Tue, 26 May 2020 13:43:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=05fRtb3l7CU2Nk1q80iQghWcohiFEtAdOdLPDPtrgQM=;
- b=XESRZX77B2kjCs5DiYOB0IESGA8imR+AFWJ+r/w4N/ab8MRBA0dXxl8DvDYWaXSUfk
- JzHNi6zmLubq/f8P98OXzOpGZNQmtHYyVN2GhaHmPi7TITPvn5NynOinRYAjnfH2FEcN
- je7bjTFJF9wQwLO1ur+gPT4F57tKyP7XsVbr0MdR8XvIe71GfVwapuOnnXNT5U+QI1KX
- Sn3JAmZ3M60fXkn+/KJXI5eP11au1W59Kf41Faruq/poFFQSAfNFgrcT56tX/QyYTSK+
- plDmUSp3UG9aiG1RMf2iyvSoSpftdrDKxleviHlEhgfILl9tBkCSIQY5c7459V7cm/s0
- GYTQ==
-X-Gm-Message-State: AOAM532ryz9SGT9Sl9Z9AosPkZ78tJbaTQS4p5vWDoFDxi/0RW0XIHwx
- Aj609o/cVYcZ+DBkS2fKZw==
-X-Google-Smtp-Source: ABdhPJxxQMajEHw93bHjLSQCqQRRc4712FyKVp3vy1T0XvKvvTb5ijKU9eVHfPZ2tLAlUqaZQiKdzg==
-X-Received: by 2002:a02:c4c8:: with SMTP id h8mr2848837jaj.64.1590525789124;
- Tue, 26 May 2020 13:43:09 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
- by smtp.gmail.com with ESMTPSA id w70sm531218ili.78.2020.05.26.13.43.07
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 26 May 2020 13:43:08 -0700 (PDT)
-Received: (nullmailer pid 335891 invoked by uid 1000);
- Tue, 26 May 2020 20:43:06 -0000
-Date: Tue, 26 May 2020 14:43:06 -0600
-From: Rob Herring <robh@kernel.org>
-To: "Ramuthevar,
- Vadivel MuruganX" <vadivel.muruganx.ramuthevar@linux.intel.com>
-Subject: Re: [RESENDPATCH v8 1/2] dt-bindings: mtd: Add Nand Flash Controller
- support for Intel LGM SoC
-Message-ID: <20200526204306.GA224630@bogus>
-References: <20200520000621.49152-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200520000621.49152-2-vadivel.muruganx.ramuthevar@linux.intel.com>
+ id 1jdh31-0004o9-JA
+ for linux-mtd@lists.infradead.org; Tue, 26 May 2020 21:23:45 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id A36972A01C1;
+ Tue, 26 May 2020 22:23:41 +0100 (BST)
+Date: Tue, 26 May 2020 23:23:38 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v5 17/28] mtd: rawnand: Define a unique reset data
+ interface
+Message-ID: <20200526232338.7d061be9@collabora.com>
+In-Reply-To: <20200526191725.7591-18-miquel.raynal@bootlin.com>
+References: <20200526191725.7591-1-miquel.raynal@bootlin.com>
+ <20200526191725.7591-18-miquel.raynal@bootlin.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20200520000621.49152-2-vadivel.muruganx.ramuthevar@linux.intel.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200526_134312_007370_AF9864C6 
-X-CRM114-Status: GOOD (  16.33  )
+X-CRM114-CacheID: sfid-20200526_142343_762856_A5D4E185 
+X-CRM114-Status: GOOD (  20.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,148 +70,102 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: cheol.yong.kim@intel.com, devicetree@vger.kernel.org, qi-ming.wu@intel.com,
- anders.roxell@linaro.org, vigneshr@ti.com, arnd@arndb.de,
- hauke.mehrtens@intel.com, richard@nod.at, brendanhiggins@google.com,
- linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
- boris.brezillon@collabora.com, linux-mtd@lists.infradead.org,
- miquel.raynal@bootlin.com, tglx@linutronix.de, masonccyang@mxic.com.tw,
- andriy.shevchenko@intel.com
+Cc: Rickard Andersson <rickaran@axis.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, May 20, 2020 at 08:06:20AM +0800, Ramuthevar,Vadivel MuruganX wrote:
-> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+On Tue, 26 May 2020 21:17:14 +0200
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+
+> All NAND chips will always use the same data interface for reset and
+> at startup: SDR mode 0. Instead of copying around the data interface
+> timings, let's just have a default reset data interface for that.
 > 
-> Add YAML file for dt-bindings to support NAND Flash Controller
-> on Intel's Lightning Mountain SoC.
-> 
-> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > ---
->  .../devicetree/bindings/mtd/intel,lgm-nand.yaml    | 91 ++++++++++++++++++++++
->  1 file changed, 91 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
+>  drivers/mtd/nand/raw/nand_base.c    | 9 +++------
+>  drivers/mtd/nand/raw/nand_timings.c | 3 +++
+>  include/linux/mtd/rawnand.h         | 3 +++
+>  3 files changed, 9 insertions(+), 6 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml b/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
-> new file mode 100644
-> index 000000000000..cd4e983a449e
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
-> @@ -0,0 +1,91 @@
-> +# SPDX-License-Identifier: GPL-2.0
+> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> index 89f10a8c1d62..1005035c233a 100644
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -927,9 +927,8 @@ static int nand_reset_data_interface(struct nand_chip *chip, int chipnr)
+>  	 * timings to timing mode 0.
+>  	 */
+>  
+> -	onfi_fill_data_interface(chip, &chip->data_interface, NAND_SDR_IFACE, 0);
+>  	ret = chip->controller->ops->setup_data_interface(chip, chipnr,
+> -							&chip->data_interface);
+> +							  nand_reset_data_iface);
+>  	if (ret)
+>  		pr_err("Failed to configure data interface to SDR timing mode 0\n");
+>  
+> @@ -2484,7 +2483,6 @@ EXPORT_SYMBOL_GPL(nand_subop_get_data_len);
+>   */
+>  int nand_reset(struct nand_chip *chip, int chipnr)
+>  {
+> -	struct nand_data_interface saved_data_intf = chip->data_interface;
+>  	int ret;
+>  
+>  	ret = nand_reset_data_interface(chip, chipnr);
+> @@ -2509,11 +2507,10 @@ int nand_reset(struct nand_chip *chip, int chipnr)
+>  	 * nand_setup_data_interface() uses ->set/get_features() which would
+>  	 * fail anyway as the parameter page is not available yet.
+>  	 */
+> -	if (!memcmp(&chip->data_interface, &saved_data_intf,
+> -		    sizeof(saved_data_intf)))
+> +	if (!memcmp(&chip->data_interface, nand_reset_data_iface,
+> +		    sizeof(*nand_reset_data_iface)))
+>  		return 0;
+>  
+> -	chip->data_interface = saved_data_intf;
+>  	ret = nand_setup_data_interface(chip, chipnr);
+>  	if (ret)
+>  		return ret;
+> diff --git a/drivers/mtd/nand/raw/nand_timings.c b/drivers/mtd/nand/raw/nand_timings.c
+> index 52ee83e75646..343284c43e81 100644
+> --- a/drivers/mtd/nand/raw/nand_timings.c
+> +++ b/drivers/mtd/nand/raw/nand_timings.c
+> @@ -285,6 +285,9 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
+>  	},
+>  };
+>  
+> +/* All NAND chips share the same reset data interface: SDR mode 0 */
+> +const struct nand_data_interface *nand_reset_data_iface = &onfi_sdr_timings[0];
 
-Still not dual licensed.
+Can we make that one a function?
 
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/intel,lgm-nand.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Intel LGM SoC NAND Controller Device Tree Bindings
-> +
-> +allOf:
-> +  - $ref: "nand-controller.yaml"
-> +
-> +maintainers:
-> +  - Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: intel,lgm-nand-controller
-
-Still doesn't match the example. And the example will fail when it does.
-
-> +
-> +  reg:
-> +    items:
-> +       - description: ebunand registers
-> +       - description: hsnand registers
-> +       - description: nand_cs0 external flash access
-> +       - description: nand_cs1 external flash access
-> +       - description: addr_sel0 memory region enable and access
-> +       - description: addr_sel1 memory region enable and access
-
-reg-names?
-
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  dmas:
-> +    maxItems: 2
-> +
-> +  dma-names:
-> +    items:
-> +      - const: tx
-> +      - const: rx
-> +
-> +patternProperties:
-> +  "^nand@[a-f0-9]+$":
-> +    type: object
-> +    properties:
-> +      reg:
-> +        minimum: 0
-> +        maximum: 7
-> +
-> +      nand-ecc-mode: true
-> +
-> +      nand-ecc-algo:
-> +        const: hw
-> +
-> +    additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-
-Not documented or should be dropped.
-
-> +  - dmas
-> +  - dma-names
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    nand-controller@e0f00000 {
-> +      compatible = "intel,lgm-nand";
-> +      reg = <0xe0f00000 0x100>,
-> +            <0xe1000000 0x300>,
-> +            <0xe1400000 0x8000>,
-> +            <0xe1c00000 0x1000>,
-> +            <0x17400000 0x4>,
-> +            <0x17c00000 0x4>;
-> +      reg-names = "ebunand", "hsnand", "nand_cs0", "nand_cs1",
-> +        "addr_sel0","addr_sel1";
-
-Not documented. And needs a space after the ','.
-
-> +      clocks = <&cgu0 125>;
-> +      dmas = <&dma0 8>, <&dma0 9>;
-> +      dma-names = "tx", "rx";
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +      #clock-cells = <1>;
-
-Should be removed?
+const struct nand_data_interface *nand_get_reset_data_interface(void)
+{
+	return &onfi_sdr_timings[0];
+}
 
 > +
-> +      nand@0 {
-> +        reg = <0>;
-> +        nand-on-flash-bbt;
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +      };
-> +    };
+>  /**
+>   * onfi_find_closest_sdr_mode - Derive the closest ONFI SDR timing mode given a
+>   *                              set of timings
+> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+> index 622da6527a36..6c334cca3977 100644
+> --- a/include/linux/mtd/rawnand.h
+> +++ b/include/linux/mtd/rawnand.h
+> @@ -1203,6 +1203,9 @@ static inline struct device_node *nand_get_flash_node(struct nand_chip *chip)
+>  	return mtd_get_of_node(nand_to_mtd(chip));
+>  }
+>  
+> +/* Default/reset data interface */
+> +extern const struct nand_data_interface *nand_reset_data_iface;
 > +
-> +...
-> -- 
-> 2.11.0
-> 
+>  /*
+>   * A helper for defining older NAND chips where the second ID byte fully
+>   * defined the chip, including the geometry (chip size, eraseblock size, page
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
