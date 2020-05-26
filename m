@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B391C433E0
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 20:01:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D07C1C433E0
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 20:01:42 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 31C4A207CB
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 20:01:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9EBFA207CB
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 20:01:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="B9B3B9oj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 31C4A207CB
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fr88Tfs2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9EBFA207CB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vEbAz7+9Zn3eGkqbWuFuFRRpRSDgqlmguJTQcich1zM=; b=B9B3B9ojZjz6PM
-	vd2fBQ38ob2n/sqofly/6Ry1z4EJmpfXvOXpV+w7VeZKhoiQgkEBZ3fRcjSUiDO6bfZKj6NyUEVBs
-	Sa0MDOoBfNA1B/2PlyK43NnueJ4FiSWXgLvspB0AoxKRF72QwusW6BOrlqyTHJjitLOaFLMhIOKSX
-	cMI6vU4qJfnO4nEciG8WIqDPq1mGuVUjZ4lZu5ikuwYJYEdqaco5WTooPvIs8Cc7Q5xm3x3hOxKU1
-	ZbPr1uK7ZSPzC9BgT2fMKGhorvn65jFKYJHh8LyboHCalMbVCW1ay/R9ou6qZeIZH29J5/8xebv6l
-	6vU/ORkQPnXYc3BNYmzw==;
+	List-Owner; bh=U4X1DZ+7R9JtZ1Hh0ta7q7sJVDAlUe4RztybV1APkz4=; b=fr88Tfs2D+VPvM
+	rHr7d8l8ICdMItZ+3WOnumLPgiOMbsduiSE8UtT2/JLdflLvm3SCMd77wTboaDv3DlPaDV/uwdVv6
+	fqGyCIiktZaLnSWIuKlnPifLoCxWlonR/PCMnPsZTTp+rh4zMIn3LutUSH3/mOsbvLLsKWXUcpAgi
+	ZqfTS2+PqFBwbrVnQfKuduCxYqM8s/lMk+EeK3+NhNDbyXLRl/BASHIDR8YyKPHvJiSY3xkOPhiZF
+	oYyLL+etMxJIKkZvyJU3rCYzGKWn91Rhp3qCX8cYUlVoTiTm/MvZYdRP1ujKSlY62s4PJkDSeSPV6
+	Yrlg5Q3cwq//Feuvgc/A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jdflF-0005Is-6Q; Tue, 26 May 2020 20:01:17 +0000
+	id 1jdflV-0005X6-Vc; Tue, 26 May 2020 20:01:33 +0000
 Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jdfh2-0007eq-9T
- for linux-mtd@lists.infradead.org; Tue, 26 May 2020 19:56:58 +0000
+ id 1jdfh4-0007hD-MG
+ for linux-mtd@lists.infradead.org; Tue, 26 May 2020 19:57:00 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id C6144C000C;
- Tue, 26 May 2020 19:56:53 +0000 (UTC)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 17F4BC0007;
+ Tue, 26 May 2020 19:56:55 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [RESEND v5 16/21] dt-bindings: mtd: Deprecate the nand-ecc-mode
- property
-Date: Tue, 26 May 2020 21:56:28 +0200
-Message-Id: <20200526195633.11543-17-miquel.raynal@bootlin.com>
+Subject: [RESEND v5 18/21] mtd: nand: Add an extra level in the Kconfig
+ hierarchy
+Date: Tue, 26 May 2020 21:56:30 +0200
+Message-Id: <20200526195633.11543-19-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200526195633.11543-1-miquel.raynal@bootlin.com>
 References: <20200526195633.11543-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200526_125656_510620_E624C3B5 
-X-CRM114-Status: GOOD (  11.65  )
+X-CRM114-CacheID: sfid-20200526_125659_029958_14513FE5 
+X-CRM114-Status: UNSURE (   7.95  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,53 +78,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This property does not describe very well its purpose: it describes
-the ECC engine type, also called provider. Deprecate it in favor of
-nand-ecc-provider. In the mean time, update a bit the description of
-the property to make it more accurate.
+Use an extra level in Kconfig for all NAND related entries.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 ---
- .../devicetree/bindings/mtd/nand-controller.yaml  | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ drivers/mtd/nand/Kconfig | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/nand-controller.yaml b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-index a35ff8227427..256080ba50bd 100644
---- a/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-+++ b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-@@ -46,16 +46,17 @@ patternProperties:
-         description:
-           Contains the native Ready/Busy IDs.
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index a5d8a211cb8a..c1a45b071165 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -1,7 +1,12 @@
+ # SPDX-License-Identifier: GPL-2.0-only
++
++menu "NAND"
++
+ config MTD_NAND_CORE
+ 	tristate
  
--      nand-ecc-mode:
-+      nand-ecc-provider:
-         allOf:
-           - $ref: /schemas/types.yaml#/definitions/string
-           - enum: [ none, soft, hw, on-die ]
-         description:
--          Desired ECC engine, either hardware (most of the time
--          embedded in the NAND controller) or software correction
--          (Linux will handle the calculations). soft_bch is deprecated
--          and should be replaced by soft and nand-ecc-algo.
--	  hw_syndrome is deprecated and should be
-+          Desired ECC engine provider, either hardware (most of the time
-+          embedded in the NAND controller, but can also be external) or
-+          software correction (the OS will handle the calculations).
-+          The nand-ecc-mode property is deprecated in favor of this one.
-+          soft_bch is deprecated and should be replaced by soft and
-+          nand-ecc-algo. hw_syndrome is deprecated and should be
-           replaced by hw and nand-ecc-placement.
- 
-       nand-ecc-placement:
-@@ -148,7 +149,7 @@ examples:
- 
-       nand@0 {
-         reg = <0>;
--        nand-ecc-mode = "soft";
-+        nand-ecc-provider = "soft";
-         nand-ecc-algo = "bch";
- 
-         /* controller specific properties */
+ source "drivers/mtd/nand/onenand/Kconfig"
+ source "drivers/mtd/nand/raw/Kconfig"
+ source "drivers/mtd/nand/spi/Kconfig"
++
++endmenu
 -- 
 2.20.1
 
