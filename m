@@ -2,86 +2,79 @@ Return-Path: <SRS0=PBLV=7I=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60457C433E0
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 11:42:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B63F7C433E0
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 15:55:19 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 30263207CB
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 11:42:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 37FE1206F1
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 15:55:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FGrjObU/";
-	dkim=fail reason="length tag value exceeds body size" (2048-bit key) header.d=axis.com header.i=@axis.com header.b="hXke1NcY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 30263207CB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=axis.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hkngsO6e";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mtgq2Y1e"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 37FE1206F1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pzjabhmrrjD+Vf+qmf4dhqkDu/aIj3EynyTTpofzZtE=; b=FGrjObU/j9TGkR
-	L5mA0JMe3aZgsjb/fV6sqAbGjZLiX0iaLSR87YaShCMAM7QcTQ3WyrgBGulDNajBvSSNwifGXlspC
-	SQmSFd5dHWrvZkurEr3osAsi6BjKuKrMOO77d0MRBxYzw5Jh09KtLKLWYy0lOImIHKuYSPGUnznqX
-	ktWwLl93Qukk1emTu208K0utZn4W5k1znuV0L5YGD729fCwTKSsPTmbcEc8kkA0V2cYbOC4qIqxB6
-	iKlYAtkgaUenXgjQijok0TaMRnzpPbJjDrsPI/oYZiG8JgJOGS/JLFNsf5nSxF0RBAHR6ypAZz9fA
-	nMqJq/mz8K7Iq6MGk/GA==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=qf8dCK2rZAlPiaMjKNh+TWSTQj1H3EvldzkB3qvr0YI=; b=hkn
+	gsO6es1GA044XxaVkv+1REMjPhA1Z3Zl/xhu/7uXseJL+HTjnXvM6dDQrFtPRS/ALwnzfRuvU21+t
+	H51G5f7CmB1+j3VeZZRihugn9PhWj+3xGc3xsdpEbCP4Fg1NmIadqiDfDm733hKbW4n03uPlyqtCn
+	Hz75HCy98CtaVTXgZkMpOZtFiGzf9Zo9cbLADMD0XHYi5kTcZeyzuEEO4ygRmupQmbliFqSz8mwX3
+	kX2ihzNPocWRCn46XAkrroUJV+IS+5F2RB/khg3bzY0f1HWsnK7nxJ7loS2CcrKDPIaFz7fm89iM6
+	WJrEYLZDmmr8e85JJfYekTPKaKd/jNw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jdXyE-00063H-0u; Tue, 26 May 2020 11:42:10 +0000
-Received: from smtp1.axis.com ([195.60.68.17])
+	id 1jdbux-0007f1-8d; Tue, 26 May 2020 15:55:03 +0000
+Received: from mail-qv1-xf32.google.com ([2607:f8b0:4864:20::f32])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jdXyB-00062W-LN
- for linux-mtd@lists.infradead.org; Tue, 26 May 2020 11:42:09 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=axis.com; l=3804; q=dns/txt; s=axis-central1;
- t=1590493327; x=1622029327;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-transfer-encoding:mime-version;
- bh=acBsamI4FHYZP8LDPSTeZee/0NKp1PQ9Ydd8tWW27gE=;
- b=hXke1NcY/e186yz3yL5RINh1guD+GkURmZRSn4FnXKiKjpHqE89GnZ5d
- VuCQjJJO8LnBuAl2vMpSjieQM6T7btln0YpkGuPWjpVsGlm7B14sLYuf0
- K83iz5N71c5rKIAZPiIkQIOMAXUzfVKKRrkEwa27rMMUkajwV3N9UYi9n
- sKiRg3fZr/MqOYMqs7H9LOTnJXgUSgVqObZ1UR0httZ07JvqK8NLpvTNa
- EqL6E4E1jUAF7YGyrbqqUCk25TxxdzficAB26L3OvDvh+90vi1cT30Wz4
- Xrb6Kkj0zR4tvfI3A8DKDQWGWY03SI/1rswZbLti31viBJekaXz5VBY/I w==;
-IronPort-SDR: bMrQgenH+y5YVR/OVfHyfCrpUgXg95YdSSQiuPIZ8dVYKz+2c8C/Ne2pqfQ9hr1SlX3QEf1SoZ
- VTgsxp4nQhhyK44VOQg/4sljSty4qZ2HSSjQfjYuv/7mCivtOXy9pIPODnkE7jr3QDR73IS9MW
- X/BzYfKDtl8SQQb+jTOczOV9DWcyloaaunxRiGFLba9M0gSRvjiFSGdtSmnB6aan0EKgzHE2rk
- QgBO4+czNeHYClieLl5DPv0RFtZCvMrPwBW/3kQABKK7hjtTTsMBoM72Jp3/h8UoTeDhQZxizO
- PeY=
-X-IronPort-AV: E=Sophos;i="5.73,437,1583190000"; 
-   d="scan'208";a="9115345"
-From: Rickard X Andersson <Rickard.Andersson@axis.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: SV: [PATCH v4 17/19] mtd: rawnand: Introduce
- nand_choose_best_vendor_sdr_iface()
-Thread-Topic: [PATCH v4 17/19] mtd: rawnand: Introduce
- nand_choose_best_vendor_sdr_iface()
-Thread-Index: AQHWMrvx0GB+9nbIC0qgjza4H/ESQKi5ExgAgAEHpST//+NCgIAAJh/+///p5oCAAC+o+A==
-Date: Tue, 26 May 2020 11:42:04 +0000
-Message-ID: <1590493324794.851@axis.com>
-References: <20200525174239.11349-1-miquel.raynal@bootlin.com>
- <20200525174239.11349-18-miquel.raynal@bootlin.com>
- <20200525214530.16cd59c1@collabora.com>	<1590485738758.69301@axis.com>
- <20200526114615.287cba5d@xps13>
- <1590487858465.24768@axis.com>,<20200526124335.7f1ad8c4@xps13>
-In-Reply-To: <20200526124335.7f1ad8c4@xps13>
-Accept-Language: sv-SE, en-US
-Content-Language: sv-SE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.20.13.13]
+ id 1jdbuu-0007bD-GQ
+ for linux-mtd@lists.infradead.org; Tue, 26 May 2020 15:55:01 +0000
+Received: by mail-qv1-xf32.google.com with SMTP id er16so9677107qvb.0
+ for <linux-mtd@lists.infradead.org>; Tue, 26 May 2020 08:54:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:from:date:message-id:subject:to;
+ bh=BsQP6fRdg5RL1dFc3HchazhBnmpsv8sSvKvK9eUTOHI=;
+ b=mtgq2Y1e/Er0KeNdiILN6oU0lWb72ncJILMV11PpEKcacEWFYa8/2ZUAuLrTBe+C7j
+ dgvQIzF99QnUBluRX7Vko4D062YQCYgMn7t2TrGUr+/76u0LXU8oR7NZKVG0rm8Ztpma
+ 3I0ZlYAtSz0JKaJCXgzkCKf5ZjL7mlps1IJdAhklY3GBQX01Z3ZYQfXwSTDIY6J6YDiD
+ Ju8R7YY0IScatEq886iQySZH9qcgs5IeEyYol6L6funb8juM/CPp61c+/rFdmIcb+7lC
+ vBJsFOjb7HLYy+2WzZ6dmN9DkdB/1giyGJ4yVV4LqS9AbzALJP0k/KldYxrm9r+Te/CT
+ T32A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+ bh=BsQP6fRdg5RL1dFc3HchazhBnmpsv8sSvKvK9eUTOHI=;
+ b=JK64ZCD9TEIHMS4eGeXrhzevFL6oO5h88m5htCd6ewy4G6ypUTvmQiPnqmzRtRGXDP
+ Dk4yQhTXCL3ij5sGvWjzZNLmnHQp+gRCAb+C2V0TFTKvS1x/6yUkS31EO61S1A4L6Nnr
+ lsVdtgs56w/f2tLu6p90ntpp3V4RFVT9DljMCL/cjcXQEEf4ySFvFUUwK+qNlgW/IWsW
+ gQcxR0L0EdAzOwzehcux1kAfsCiYNdyRtSgaeFU5ZCB3fhlxbU+wFlFH8sWdbKWtB1v/
+ enm8dD8WQN9kecvJgJ3oaIsX8HXdDNWaJGzlNrM44X32jcS/Zmjr/70cQgAZeKCTOsOs
+ /xlw==
+X-Gm-Message-State: AOAM531pkn6pIijmgZsMAv83J7FiKiGBDUNls59JNZYIZFjaUr9hpvMS
+ Ioh8LmnqtlKR+g/5emxIQ/rYQ3ImnDnJQhNLKx1VekD7
+X-Google-Smtp-Source: ABdhPJwz8S7RNCnF4LB0v/UZdBBYpEXlzXnakuCbPpyfu+D+vAE5yn1zu03B4sTIH0jXG22EKb4JbCa5XCJw3pQzEC8=
+X-Received: by 2002:a0c:a8cf:: with SMTP id h15mr3617798qvc.104.1590508496497; 
+ Tue, 26 May 2020 08:54:56 -0700 (PDT)
 MIME-Version: 1.0
+From: Patrick Doyle <wpdster@gmail.com>
+Date: Tue, 26 May 2020 11:54:30 -0400
+Message-ID: <CAF_dkJBQJSY_Fg5H=OcFHvio1-FcDEfgbKwhRmc=KhvdcnNAVg@mail.gmail.com>
+Subject: Missing 2 blocks on my UBI partition
+To: linux-mtd <linux-mtd@lists.infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200526_044208_100622_5A044878 
-X-CRM114-Status: GOOD (  14.09  )
+X-CRM114-CacheID: sfid-20200526_085500_542767_3F0E4ED4 
+X-CRM114-Status: UNSURE (   5.47  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,106 +86,128 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Vignesh Raghavendra <vigneshr@ti.com>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, May 26, 2020 at 12:44 PM Miquel Raynal <miquel.raynal@bootlin.com> =
-wrote:
-> > > > > +/**
-> > > > > + * nand_choose_best_sdr_iface - given a data interface, find the=
- closest
-> > > > > + * =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0mo=
-de/timings set for this interface supported
-> > > > > + * =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0by=
- both the NAND controller and the NAND chip
-> > > > > + * @chip: the NAND chip
-> > > > > + * @best_iface: the best data interface (can eventually be updat=
-ed)
-> > > > > + */
-> > > > > +static int nand_choose_best_sdr_iface(struct nand_chip *chip,
-> > > > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 struct nand_data_interface *best_iface)
-> > > > > +{
-> > > > > + =A0 =A0 =A0 const struct nand_controller_ops *ops =3D chip->con=
-troller->ops;
-> > > > > + =A0 =A0 =A0 int mode, ret;
-> > > > > +
-> > > > > + =A0 =A0 =A0 /* Verify the controller supports the requested int=
-erface */
-> > > > > + =A0 =A0 =A0 ret =3D ops->setup_data_interface(chip, NAND_DATA_I=
-FACE_CHECK_ONLY,
-> > > > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 =A0 best_iface);
-> > > > > + =A0 =A0 =A0 if (!ret)
-> > > > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return ret;
-> > > > > +
-> > > > > + =A0 =A0 =A0 /* Fallback to slower modes */
-> > > > > + =A0 =A0 =A0 for (mode =3D best_iface->timings.mode - 1; mode >=
-=3D 0; mode--) {
-> > > > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D onfi_fill_data_interface(ch=
-ip, best_iface,
-> > > > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 =A0 =A0 =A0 =A0 =A0NAND_SDR_IFACE, mode);
-> > > > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (ret)
-> > > > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 continue;
-> > > > > +
-> > > > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D ops->setup_data_interface(c=
-hip,
-> > > > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 =A0 =A0 =A0 =A0 =A0 NAND_DATA_IFACE_CHECK_ONLY,
-> > > > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 =A0 =A0 =A0 =A0 =A0 best_iface);
-> > > > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (!ret)
-> > > > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
-> > > > > + =A0 =A0 =A0 }
-> > > > > +
-> > > > > + =A0 =A0 =A0 return 0;
-> > > > > +}
-> > > > > + =A0 =
+I'm curious to learn where 2 blocks went missing from my UBI NAND
+device... can anybody help me out:
 
-> > > >
-> > > > Should we not start looping from "mode =3D best_iface->timings.mode=
-" ? The first setup_data_interface call in the above function tests the spe=
-cific timings or am I missing something? =
+# ubinfo -a
+UBI version:                    1
+Count of UBI devices:           1
+UBI control device major/minor: 10:57
+Present UBI devices:            ubi0
 
-> > >
-> > > Indeed, we assume that the controller driver will not support the
-> > > "official" ONFI timings mode X if it did not support the specific
-> > > timings close to mode X.
-> > >
-> > > This is an assumption, but I don't think we are far from the reality
-> > > here.
-> > >
-> > > Miqu=E8l =
+ubi0
+Volumes count:                           8
+Logical eraseblock size:                 126976 bytes, 124.0 KiB
+Total amount of logical eraseblocks:     1024 (130023424 bytes, 124.0 MiB)
+Amount of available logical eraseblocks: 99 (12570624 bytes, 11.9 MiB)
+Maximum count of volumes                 128
+Count of bad physical eraseblocks:       0
+Count of reserved physical eraseblocks:  20
+Current maximum erase counter value:     33
+Minimum input/output unit size:          2048 bytes
+Character device major/minor:            252:0
+Present volumes:                         0, 1, 2, 3, 4, 5, 6, 7
 
-> >
-> > It could be that the "corresponding onfi mode" is quite low due to devi=
-ation of some parameter that are actually not checked/used by the controlle=
-r drivers.
->
-> That might happen. I'll change it.
->
-> > Another thing, should we not check in order to be sure that mode does n=
-ot become negative? I.e if best_iface->timings.mode is zero before executin=
-g the loop.
->
-> I think the for-loop "mode >=3D 0" condition ensures this will never
-> happen, right?
->
-> Thanks,
-> Miqu=E8l
+Volume ID:   0 (on ubi0)
+Type:        static
+Alignment:   1
+Size:        127 LEBs (16125952 bytes, 15.3 MiB)
+Data bytes:  16031744 bytes (15.2 MiB)
+State:       OK
+Name:        rootfs
+Character device major/minor: 252:1
+-----------------------------------
+Volume ID:   1 (on ubi0)
+Type:        dynamic
+Alignment:   1
+Size:        529 LEBs (67170304 bytes, 64.0 MiB)
+State:       OK
+Name:        persistent
+Character device major/minor: 252:2
+-----------------------------------
+Volume ID:   2 (on ubi0)
+Type:        static
+Alignment:   1
+Size:        30 LEBs (3809280 bytes, 3.6 MiB)
+Data bytes:  3746638 bytes (3.5 MiB)
+State:       OK
+Name:        kernel
+Character device major/minor: 252:3
+-----------------------------------
+Volume ID:   3 (on ubi0)
+Type:        static
+Alignment:   1
+Size:        143 LEBs (18157568 bytes, 17.3 MiB)
+Data bytes:  18145280 bytes (17.3 MiB)
+State:       OK
+Name:        old_rootfs
+Character device major/minor: 252:4
+-----------------------------------
+Volume ID:   4 (on ubi0)
+Type:        static
+Alignment:   1
+Size:        30 LEBs (3809280 bytes, 3.6 MiB)
+Data bytes:  3745994 bytes (3.5 MiB)
+State:       OK
+Name:        old_kernel
+Character device major/minor: 252:5
+-----------------------------------
+Volume ID:   5 (on ubi0)
+Type:        static
+Alignment:   1
+Size:        38 LEBs (4825088 bytes, 4.6 MiB)
+Data bytes:  4763648 bytes (4.5 MiB)
+State:       OK
+Name:        language
+Character device major/minor: 252:6
+-----------------------------------
+Volume ID:   6 (on ubi0)
+Type:        static
+Alignment:   1
+Size:        1 LEBs (126976 bytes, 124.0 KiB)
+Data bytes:  65536 bytes (64.0 KiB)
+State:       OK
+Name:        crypto
+Character device major/minor: 252:7
+-----------------------------------
+Volume ID:   7 (on ubi0)
+Type:        static
+Alignment:   1
+Size:        1 LEBs (126976 bytes, 124.0 KiB)
+Data bytes:  65536 bytes (64.0 KiB)
+State:       OK
+Name:        prev_crypto
+Character device major/minor: 252:8
 
-If best_iface->timings.mode is zero before entering the loop we will not ca=
-ll onfi_fill_data_interface at all.
+This shows that I have 8 UBI Volumes with sized as:
+Size:        127 LEBs (16125952 bytes, 15.3 MiB)
+Size:        529 LEBs (67170304 bytes, 64.0 MiB)
+Size:        30 LEBs (3809280 bytes, 3.6 MiB)
+Size:        143 LEBs (18157568 bytes, 17.3 MiB)
+Size:        30 LEBs (3809280 bytes, 3.6 MiB)
+Size:        38 LEBs (4825088 bytes, 4.6 MiB)
+Size:        1 LEBs (126976 bytes, 124.0 KiB)
+Size:        1 LEBs (126976 bytes, 124.0 KiB)
+Total: 899 LEBs
+There are 99 blocks free, 20 blocks reserved, and (according to the
+documentation, 4 blocks of UBI management overhead
 
-BR,
-Rickard
+899+99+20+4=1022
+
+But my NAND flash has 1024 blocks.  According to ubinfo, none of them
+are marked as bad.
+
+Where did the other 2 blocks go?
+
+What am I missing?
+
+--wpd
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
