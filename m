@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB6EEC433DF
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 19:22:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CBAAC433DF
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 19:22:29 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7014F2145D
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 19:22:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 20DB820849
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2020 19:22:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dy3SzPH5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7014F2145D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="eA2SG2N7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 20DB820849
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=K2Fbixg2KtEn+1zhehTA+tKx515N31TeT5vyPj/w3s8=; b=dy3SzPH5rICveJ
-	C9EPCFCxsOJxt/EyhnZYHzNpQ+jpJKw28yxkG/TD7xIj468YIhG6MSDW3RSN8AX/EvCSvoXGwS5Y+
-	n0vaMvqPlL1/c2a2v3+pBJ2Ga0U5rU5CWbL75BnI8FdkDnszWpDqrvA7duXrpvqRmsqDoD8jUy3lY
-	nNmmJxDGAfx5JXwGQ/C6h5b5RSTD609g850abRlsVN1FgLKDT6TpR8fo9Ojt/jnLuRBm3ElnRNlHI
-	/iVVps+4LUik+Q3wTleAGgGg8uCEN+sBDOFJ8d+sDwVOkcr0u6Tiayz+Ea4TY+nppKdmp8cGgsaGb
-	Ph01qCXfuyPSwco2qIWw==;
+	List-Owner; bh=5KA5+j2fFbCFMRPvwtqUABTlFj5XE7qEBNxsfTNM3Vg=; b=eA2SG2N7jqWQWQ
+	DhW4+P0udaWUJI73+PJ8eJsTHu0ln6YJBNzxCDu0lfkSRxkB4aRTeIIddIhv4X3oly2hnMOF58gQH
+	ksAC7emBXMN9obUdZ8spRoeCMh/SJTLuqoJ1is2ljLexPlm03VPvhhiiWMRo9R4/m8IL/Xcn6a8RR
+	7GBfy97CvhujlbxDm3vGI//Z0gz0CHQMuxYSMIxfX7e+ZvsNS3+17s2Qdi/4W8IJux089iK4qjP/x
+	XIbS7ZZMzwrWlYs1PAOnhlMLi1F2zO+eh73RTgOMTSoNDLG5sloCne/K7G6bZdLRyM1ueoRKLKMKz
+	gxvl/TnjjXYQCWw+F1aQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jdf98-0007VQ-Lu; Tue, 26 May 2020 19:21:54 +0000
+	id 1jdf9S-0007nL-MC; Tue, 26 May 2020 19:22:14 +0000
 Received: from relay10.mail.gandi.net ([217.70.178.230])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jdf5E-0001W9-0D
- for linux-mtd@lists.infradead.org; Tue, 26 May 2020 19:17:53 +0000
+ id 1jdf5F-0001XK-RU
+ for linux-mtd@lists.infradead.org; Tue, 26 May 2020 19:17:55 +0000
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay10.mail.gandi.net (Postfix) with ESMTPSA id 17CC4240006;
- Tue, 26 May 2020 19:17:48 +0000 (UTC)
+ by relay10.mail.gandi.net (Postfix) with ESMTPSA id BB5D4240007;
+ Tue, 26 May 2020 19:17:50 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH v5 14/28] mtd: rawnand: timings: Add a helper to find the
- closest ONFI mode
-Date: Tue, 26 May 2020 21:17:11 +0200
-Message-Id: <20200526191725.7591-15-miquel.raynal@bootlin.com>
+Subject: [PATCH v5 15/28] mtd: rawnand: timings: Avoid redefining tR_max and
+ tCCS_min
+Date: Tue, 26 May 2020 21:17:12 +0200
+Message-Id: <20200526191725.7591-16-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200526191725.7591-1-miquel.raynal@bootlin.com>
 References: <20200526191725.7591-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200526_121752_412445_79B6E36A 
-X-CRM114-Status: GOOD (  12.56  )
+X-CRM114-CacheID: sfid-20200526_121754_030851_23AE62D8 
+X-CRM114-Status: UNSURE (   8.35  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,90 +77,28 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Vendors are allowed to provide their own set of timings. In this case,
-we provide a way to derive the "closest" timing mode so that, if the
-NAND controller does not support tweaking these parameters, it will be
-able to configure itself anyway.
+These two values are already hardcoded in the default ONFI timing
+structure, no need to redefine them here.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/internals.h    |  2 ++
- drivers/mtd/nand/raw/nand_timings.c | 49 +++++++++++++++++++++++++++++
- 2 files changed, 51 insertions(+)
+ drivers/mtd/nand/raw/nand_timings.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
-index dc84e3b55d48..c7357ae86eeb 100644
---- a/drivers/mtd/nand/raw/internals.h
-+++ b/drivers/mtd/nand/raw/internals.h
-@@ -88,6 +88,8 @@ int onfi_fill_data_interface(struct nand_chip *chip,
- 			     struct nand_data_interface *iface,
- 			     enum nand_data_interface_type type,
- 			     int timing_mode);
-+unsigned int
-+onfi_find_closest_sdr_mode(const struct nand_sdr_timings *spec_timings);
- int nand_get_features(struct nand_chip *chip, int addr, u8 *subfeature_param);
- int nand_set_features(struct nand_chip *chip, int addr, u8 *subfeature_param);
- int nand_read_page_raw_notsupp(struct nand_chip *chip, u8 *buf,
 diff --git a/drivers/mtd/nand/raw/nand_timings.c b/drivers/mtd/nand/raw/nand_timings.c
-index ce6bb87db2e8..3c44c4b90536 100644
+index 3c44c4b90536..c2286a75d134 100644
 --- a/drivers/mtd/nand/raw/nand_timings.c
 +++ b/drivers/mtd/nand/raw/nand_timings.c
-@@ -273,6 +273,55 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
- 	},
- };
+@@ -371,9 +371,6 @@ int onfi_fill_data_interface(struct nand_chip *chip,
+ 		/* microseconds -> picoseconds */
+ 		timings->tPROG_max = 1000000ULL * ONFI_DYN_TIMING_MAX;
+ 		timings->tBERS_max = 1000000ULL * ONFI_DYN_TIMING_MAX;
+-
+-		timings->tR_max = 200000000;
+-		timings->tCCS_min = 500000;
+ 	}
  
-+/**
-+ * onfi_find_closest_sdr_mode - Derive the closest ONFI SDR timing mode given a
-+ *                              set of timings
-+ * @spec_timings: the timings to challenge
-+ */
-+unsigned int
-+onfi_find_closest_sdr_mode(const struct nand_sdr_timings *spec_timings)
-+{
-+	const struct nand_sdr_timings *onfi_timings;
-+	int mode;
-+
-+	for (mode = ARRAY_SIZE(onfi_sdr_timings) - 1; mode > 0; mode--) {
-+		onfi_timings = &onfi_sdr_timings[mode].timings.sdr;
-+
-+		if (spec_timings->tCCS_min > onfi_timings->tCCS_min ||
-+		    spec_timings->tADL_min > onfi_timings->tADL_min ||
-+		    spec_timings->tALH_min > onfi_timings->tALH_min ||
-+		    spec_timings->tALS_min > onfi_timings->tALS_min ||
-+		    spec_timings->tAR_min > onfi_timings->tAR_min ||
-+		    spec_timings->tCEH_min > onfi_timings->tCEH_min ||
-+		    spec_timings->tCH_min > onfi_timings->tCH_min ||
-+		    spec_timings->tCLH_min > onfi_timings->tCLH_min ||
-+		    spec_timings->tCLR_min > onfi_timings->tCLR_min ||
-+		    spec_timings->tCLS_min > onfi_timings->tCLS_min ||
-+		    spec_timings->tCOH_min > onfi_timings->tCOH_min ||
-+		    spec_timings->tCS_min > onfi_timings->tCS_min ||
-+		    spec_timings->tDH_min > onfi_timings->tDH_min ||
-+		    spec_timings->tDS_min > onfi_timings->tDS_min ||
-+		    spec_timings->tIR_min > onfi_timings->tIR_min ||
-+		    spec_timings->tRC_min > onfi_timings->tRC_min ||
-+		    spec_timings->tREH_min > onfi_timings->tREH_min ||
-+		    spec_timings->tRHOH_min > onfi_timings->tRHOH_min ||
-+		    spec_timings->tRHW_min > onfi_timings->tRHW_min ||
-+		    spec_timings->tRLOH_min > onfi_timings->tRLOH_min ||
-+		    spec_timings->tRP_min > onfi_timings->tRP_min ||
-+		    spec_timings->tRR_min > onfi_timings->tRR_min ||
-+		    spec_timings->tWC_min > onfi_timings->tWC_min ||
-+		    spec_timings->tWH_min > onfi_timings->tWH_min ||
-+		    spec_timings->tWHR_min > onfi_timings->tWHR_min ||
-+		    spec_timings->tWP_min > onfi_timings->tWP_min ||
-+		    spec_timings->tWW_min > onfi_timings->tWW_min)
-+			continue;
-+
-+		return mode;
-+	}
-+
-+	return 0;
-+}
-+
- /**
-  * onfi_fill_data_interface - Initialize a data interface from a given ONFI mode
-  * @chip: The NAND chip
+ 	return 0;
 -- 
 2.20.1
 
