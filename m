@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA275C433DF
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 May 2020 07:46:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BF09C433E0
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 May 2020 07:46:50 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BC91B207CB
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 May 2020 07:46:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4AC9D207CB
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 May 2020 07:46:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nUtHw/NI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC91B207CB
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nnkwpf6X"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4AC9D207CB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rZJUHTf5wwi/QaTBlKcOJnGzZh2VCpqjBNenTHFLUgw=; b=nUtHw/NICFcqjI
-	scqIgBu9gCRx3oMzxLgYXMnEMi9jcgGd98FEKuVRtKs1trF069Sog+mLdOtUhk2X2jRpmeX2e4q3q
-	pNJHXNVuLJzN/iRBcEWCzuFSVK7pjqveblQfSaf9x6/pk055Q5kWT7m27EFpg9LP4MVA0LfL604vN
-	TuLKGcAiz2Re+wcukb8Nom6U3Bq8d0cbJmvy4A1csHZoMwHEK0YayMtteo+EOO8AzUzy6SgL8MlC5
-	B7nwLwipcOSHSc8UsYA6lMDYYnqE9fEiVZ9Gf8ctK2mxsoyOXgSaGf/C2YwC2RmwgEc0WijiGN1iT
-	HqPESLVYnsDocB6aVe1A==;
+	List-Owner; bh=ClW6IfFen+NK/UwZD5b9dquNWQfy7pJupFHSxrJNqZU=; b=nnkwpf6XlV0zfT
+	8gFRTfcjshWB5sVOtaYgPhA2UrwUY0N5vqHUTPGjIAqW1JmTtN59ppTMG0kvcNx4nBrx6BGnCTyEZ
+	5qXsGHJofeGrcidLIoY9HHmDVBfDnS72YliCwr5+6S7Ma14EqmycaWxbmXFWtO3U27nDwb7XUZAJs
+	ss6/eKviGiz82i8brDoxrem9QnU+RCvAA6s8uOG3CvjK8vPD4yRahAHaVBzHh6jMOOyzgQDPSeibI
+	KKXccAx3h4m7ijp+mOAVRACmTwJWYxO8dh+miZlBXHgVE3A5EXp5XWCAYR7l0pVxhW3es/+F7fWFp
+	GfwNQw2JLd2GQO1j057Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jdqlG-0002FN-E9; Wed, 27 May 2020 07:46:02 +0000
-Received: from relay6-d.mail.gandi.net ([217.70.183.198])
+	id 1jdqlq-0002Ub-VY; Wed, 27 May 2020 07:46:38 +0000
+Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jdqlD-0002Ex-BG
- for linux-mtd@lists.infradead.org; Wed, 27 May 2020 07:46:01 +0000
+ id 1jdqln-0002U1-Cd
+ for linux-mtd@lists.infradead.org; Wed, 27 May 2020 07:46:37 +0000
 X-Originating-IP: 91.224.148.103
 Received: from xps13 (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id E7B98C0015;
- Wed, 27 May 2020 07:45:53 +0000 (UTC)
-Date: Wed, 27 May 2020 09:45:51 +0200
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id DCE3C24000E;
+ Wed, 27 May 2020 07:46:29 +0000 (UTC)
+Date: Wed, 27 May 2020 09:46:28 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@collabora.com>
-Subject: Re: [PATCH v5 21/28] mtd: rawnand: Introduce
- nand_choose_best_sdr_timings()
-Message-ID: <20200527094551.59a72f2f@xps13>
-In-Reply-To: <20200526235003.5bb0ba91@collabora.com>
+Subject: Re: [PATCH v5 22/28] mtd: rawnand: Add the
+ ->choose_data_interface() hook
+Message-ID: <20200527094628.12441520@xps13>
+In-Reply-To: <20200526235225.6e0f0ce2@collabora.com>
 References: <20200526191725.7591-1-miquel.raynal@bootlin.com>
- <20200526191725.7591-22-miquel.raynal@bootlin.com>
- <20200526235003.5bb0ba91@collabora.com>
+ <20200526191725.7591-23-miquel.raynal@bootlin.com>
+ <20200526235225.6e0f0ce2@collabora.com>
 Organization: Bootlin
 X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200527_004559_660433_60A592DF 
-X-CRM114-Status: GOOD (  27.55  )
+X-CRM114-CacheID: sfid-20200527_004635_695377_1A18C010 
+X-CRM114-Status: GOOD (  19.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,183 +78,87 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Boris,
 
 Boris Brezillon <boris.brezillon@collabora.com> wrote on Tue, 26 May
-2020 23:50:03 +0200:
+2020 23:52:25 +0200:
 
-> On Tue, 26 May 2020 21:17:18 +0200
+> On Tue, 26 May 2020 21:17:19 +0200
 > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 > 
-> > Extract the logic out of nand_choose_data_interface() to create a
-> > public helper that can be reused by manufacturer drivers. Add the
-> > possibility to provide a specific set of timings.
+> > This hook can be overloaded by NAND manufacturer drivers to propose
+> > alternative timings when not following the main standards. In this
+> > case, the manufacturer drivers is responsible for choosing the best
+> > data interface and configuration that fits both the controller and  
+> 
+> 		  ^ s/and//
+> 
+> > chip capabilities.
 > > 
 > > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > > ---
-> >  drivers/mtd/nand/raw/internals.h |   3 +
-> >  drivers/mtd/nand/raw/nand_base.c | 104 +++++++++++++++++++------------
-> >  2 files changed, 66 insertions(+), 41 deletions(-)
+> >  drivers/mtd/nand/raw/nand_base.c | 9 +++++++--
+> >  include/linux/mtd/rawnand.h      | 3 +++
+> >  2 files changed, 10 insertions(+), 2 deletions(-)
 > > 
-> > diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
-> > index c7357ae86eeb..5c49c4d1e231 100644
-> > --- a/drivers/mtd/nand/raw/internals.h
-> > +++ b/drivers/mtd/nand/raw/internals.h
-> > @@ -90,6 +90,9 @@ int onfi_fill_data_interface(struct nand_chip *chip,
-> >  			     int timing_mode);
-> >  unsigned int
-> >  onfi_find_closest_sdr_mode(const struct nand_sdr_timings *spec_timings);
-> > +int nand_choose_best_sdr_timings(struct nand_chip *chip,
-> > +				 struct nand_data_interface *iface,
-> > +				 struct nand_sdr_timings *spec_timings);
-> >  int nand_get_features(struct nand_chip *chip, int addr, u8 *subfeature_param);
-> >  int nand_set_features(struct nand_chip *chip, int addr, u8 *subfeature_param);
-> >  int nand_read_page_raw_notsupp(struct nand_chip *chip, u8 *buf,
 > > diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> > index 6a7edd2e1357..b2e833a8ab9d 100644
+> > index b2e833a8ab9d..f14d297c50f4 100644
 > > --- a/drivers/mtd/nand/raw/nand_base.c
 > > +++ b/drivers/mtd/nand/raw/nand_base.c
-> > @@ -1003,61 +1003,83 @@ static int nand_setup_data_interface(struct nand_chip *chip, int chipnr)
-> >  	return ret;
-> >  }
+> > @@ -1046,7 +1046,6 @@ int nand_choose_best_sdr_timings(struct nand_chip *chip,
+> >  		}
+> >  	}
 > >  
-> > +/**
-> > + * nand_choose_best_sdr_timings - Pick up the best SDR timings that both the
-> > + *                                NAND controller and the NAND chip support
-> > + * @chip: the NAND chip
-> > + * @iface: the data interface (can eventually be updated)
-> > + * @spec_timings: specific timings, when not fitting the ONFI specification
-> > + *
-> > + * If specific timings are provided, use them. Otherwise, try to retrieve
-> > + * supported timing modes from ONFI information. Finally, if the NAND chip does
-> > + * not follow the ONFI specification, rely on the ->default_timing_mode
-> > + * specified in the nand_ids table.
-> > + */
-> > +int nand_choose_best_sdr_timings(struct nand_chip *chip,
-> > +				 struct nand_data_interface *iface,
-> > +				 struct nand_sdr_timings *spec_timings)
-> > +{
-> > +	const struct nand_controller_ops *ops = chip->controller->ops;
-> > +	int best_mode = 0, onfi_modes, mode, ret;
-> > +
-> > +	iface->type = NAND_SDR_IFACE;
-> > +
-> > +	if (spec_timings) {
-> > +		iface->timings.sdr = *spec_timings;
-> > +		iface->timings.mode = onfi_find_closest_sdr_mode(spec_timings);
-> > +
-> > +		/* Verify the controller supports the requested interface */
-> > +		ret = ops->setup_data_interface(chip,
-> > +						NAND_DATA_IFACE_CHECK_ONLY,
-> > +						iface);
-> > +		if (!ret)
-> > +			return ret;
-> > +
-> > +		/* Fallback to slower modes */
-> > +		best_mode = iface->timings.mode;
-> > +	} else {
-> > +		if (chip->parameters.onfi) {  
+> > -  
 > 
-> onfi_modes var should be declared here.
+> Should this line removal be part of another patch?
 
-Ok
+Absoluely.
 
 > 
-> > +			onfi_modes = chip->parameters.onfi->async_timing_mode;
-> > +			best_mode = fls(onfi_modes) - 1;
-> > +		} else {
-> > +			best_mode = chip->onfi_timing_mode_default;
-> > +		}
-> > +	}
-> > +
-> > +
-> > +	for (mode = best_mode; mode >= 0; mode--) {
-> > +		ret = onfi_fill_data_interface(chip, iface, NAND_SDR_IFACE,
-> > +					       mode);
-> > +		if (ret)
-> > +			continue;  
-> 
-> In practice onfi_fill_data_interface() will only return an error if you
-> pass a type that's not SDR (not the case here, or a mode that's outside
-> the SDR mode bounds). Maybe we should just clamp the value/warn when
-> that happens and make onfi_fill_data_interface() a void function.
-
-Agreed, I'll call WARN_ON() in it and return void. This function should
-"never" fail.
-
-> 
-> > +
-> > +		ret = ops->setup_data_interface(chip,
-> > +						NAND_DATA_IFACE_CHECK_ONLY,
-> > +						iface);
-> > +		if (!ret)
-> > +			break;  
-> 
-> 			return 0;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >  /**
-> >   * nand_choose_data_interface - find the best data interface and timings
+> >  	for (mode = best_mode; mode >= 0; mode--) {
+> >  		ret = onfi_fill_data_interface(chip, iface, NAND_SDR_IFACE,
+> >  					       mode);
+> > @@ -1068,7 +1067,9 @@ int nand_choose_best_sdr_timings(struct nand_chip *chip,
 > >   * @chip: The NAND chip
 > >   *
 > >   * Find the best data interface and NAND timings supported by the chip
-> >   * and the driver.
-> > - * First tries to retrieve supported timing modes from ONFI information,
-> > - * and if the NAND chip does not support ONFI, relies on the
-> > - * ->onfi_timing_mode_default specified in the nand_ids table. After this
-> > - * function nand_chip->data_interface is initialized with the best timing mode
-> > - * available.
-> > + * After this function nand_chip->data_interface is initialized with the best
-> > + * timing mode available.
+> > - * and the driver.
+> > + * and the driver. Eventually let the NAND manufacturer driver propose his own
+> > + * set of timings.
+> > + *
+> >   * After this function nand_chip->data_interface is initialized with the best
+> >   * timing mode available.
 > >   *
-> >   * Returns 0 for success or negative error code otherwise.
-> >   */
-> >  static int nand_choose_data_interface(struct nand_chip *chip)
-> >  {
-> > -	int modes, mode, ret;
-> > -
+> > @@ -1079,6 +1080,10 @@ static int nand_choose_data_interface(struct nand_chip *chip)
 > >  	if (!nand_controller_has_setup_data_iface(chip))
 > >  		return 0;
 > >  
-> > -	/*
-> > -	 * First try to identify the best timings from ONFI parameters and
-> > -	 * if the NAND does not support ONFI, fallback to the default ONFI
-> > -	 * timing mode.
-> > -	 */
-> > -	if (chip->parameters.onfi) {
-> > -		modes = chip->parameters.onfi->async_timing_mode;
-> > -	} else {
-> > -		if (!chip->onfi_timing_mode_default)
-> > -			return 0;
-> > -
-> > -		modes = GENMASK(chip->onfi_timing_mode_default, 0);
-> > -	}
-> > -
-> > -	for (mode = fls(modes) - 1; mode >= 0; mode--) {
-> > -		ret = onfi_fill_data_interface(chip, &chip->data_interface,
-> > -					       NAND_SDR_IFACE, mode);
-> > -		if (ret)
-> > -			continue;
-> > -
-> > -		/*
-> > -		 * Pass NAND_DATA_IFACE_CHECK_ONLY to only check if the
-> > -		 * controller supports the requested timings.
-> > -		 */
-> > -		ret = chip->controller->ops->setup_data_interface(chip,
-> > -						 NAND_DATA_IFACE_CHECK_ONLY,
-> > -						 &chip->data_interface);
-> > -		if (!ret) {
-> > -			chip->onfi_timing_mode_default = mode;
-> > -			break;
-> > -		}
-> > -	}
-> > -
-> > -	return 0;
-> > +	return nand_choose_best_sdr_timings(chip, &chip->data_interface, NULL);
+> > +	if (chip->ops.choose_data_interface)
+> > +		return chip->ops.choose_data_interface(chip,
+> > +						       &chip->data_interface);
+> > +
+> >  	return nand_choose_best_sdr_timings(chip, &chip->data_interface, NULL);
 > >  }
+> >  
+> > diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+> > index 2995d29587c3..5bd79e853140 100644
+> > --- a/include/linux/mtd/rawnand.h
+> > +++ b/include/linux/mtd/rawnand.h
+> > @@ -1034,6 +1034,7 @@ struct nand_legacy {
+> >   * @lock_area: Lock operation
+> >   * @unlock_area: Unlock operation
+> >   * @setup_read_retry: Set the read-retry mode (mostly needed for MLC NANDs)
+> > + * @choose_data_interface: Choose the best data interface
+> >   */
+> >  struct nand_chip_ops {
+> >  	int (*suspend)(struct nand_chip *chip);
+> > @@ -1041,6 +1042,8 @@ struct nand_chip_ops {
+> >  	int (*lock_area)(struct nand_chip *chip, loff_t ofs, uint64_t len);
+> >  	int (*unlock_area)(struct nand_chip *chip, loff_t ofs, uint64_t len);
+> >  	int (*setup_read_retry)(struct nand_chip *chip, int retry_mode);
+> > +	int (*choose_data_interface)(struct nand_chip *chip,
+> > +				     struct nand_data_interface *iface);
+> >  };
 > >  
 > >  /**  
 > 
