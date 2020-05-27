@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1179C433E0
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 May 2020 14:14:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0F65C433E0
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 May 2020 14:15:17 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7F9EE2073B
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 May 2020 14:14:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5D5142073B
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 May 2020 14:15:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lgMwVFP6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7F9EE2073B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VIHU7AGc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5D5142073B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KzzXzt4kkKBGEUDN7pcsNvgA9gU2MYyH8F4fPlGo16k=; b=lgMwVFP6JIy/se
-	6xSm8hXB75/RjniGYWXhCTz75pNQ1K8wNf2QWxUd8V/Z0ERfOMwcgdWIXRhtDiwfj1hr26n7Myuz3
-	G2Ut46eQ/dCWbDUN28VbfaN56+tf4SLaoCIKoZj9Pf66YRHk3KijmEalVJ4m1uL9dMtJZnZ/GkXKi
-	GnWwtGCbyP1XC9Vo4qfWAlmiAmySpthMbwO0N6qWwJmF6sGYESOr+WFBxV6ygaPNWxvn297H8Muwg
-	aU4aSk7cnW6Wu8wsWspKwYnIXrP2uHxw3EK6iKEKEtiuf6fOAkZRwz04Njt3TaSV4clG45swLbBEA
-	qsw6y8+DQrVOUf01AnQA==;
+	List-Owner; bh=wNZvQxoB64ntlHlYqH5JDD3OJekDcakccdlIEILyr7g=; b=VIHU7AGcujHFIf
+	gH0WbDzdEZ+vT/e5I3zXdpwSLnKL9H1QfyxGXd3fhPZxAFLpKYsaCb5g45l/A8C1bbWb3dmxEpxZp
+	Y8/ExrUF2A2JuqOz+lhcVfGLRry6byhfoQpK0wPmQbY7AELHoDf8Sj+I3wLH48Txe05sTL/zfvBXy
+	wRANSuDADsxygKCgzYiGqVhtT+4tqtL5NEaRDoGQm/9b1AJSRnJLumtZ2L+haTQ6xCdHFzlx6Y6sr
+	pb2tctzqBbBs990LJTANszIw3vnQNCQN+oV3E1GTCmgeN+ytuQ8OQCH0C7Z3sNRAEA6HJAL2wB2rS
+	RmdeTBjNxbiolRveB/sQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jdwpO-0006Ap-A6; Wed, 27 May 2020 14:14:42 +0000
-Received: from relay11.mail.gandi.net ([217.70.178.231])
+	id 1jdwph-0006QH-E3; Wed, 27 May 2020 14:15:01 +0000
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jdwnP-0004Rq-4z
- for linux-mtd@lists.infradead.org; Wed, 27 May 2020 14:12:42 +0000
+ id 1jdwnU-0004WD-8w
+ for linux-mtd@lists.infradead.org; Wed, 27 May 2020 14:12:45 +0000
+X-Originating-IP: 93.23.196.54
 Received: from localhost.localdomain (54.196.23.93.rev.sfr.net [93.23.196.54])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay11.mail.gandi.net (Postfix) with ESMTPSA id 9FF89100011;
- Wed, 27 May 2020 14:12:36 +0000 (UTC)
+ by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 5D01E60003;
+ Wed, 27 May 2020 14:12:41 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 11/17] mtd: rawnand: nandsim: Stop using nand_release()
-Date: Wed, 27 May 2020 16:12:35 +0200
-Message-Id: <20200527141235.24675-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v2 10/17] mtd: rawnand: nandsim: Free the partition names
+ in ns_free()
+Date: Wed, 27 May 2020 16:12:40 +0200
+Message-Id: <20200527141240.24738-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200525085851.17682-12-miquel.raynal@bootlin.com>
+In-Reply-To: <20200525085851.17682-11-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 4cf1415b946ebd18cb6448b1aee08f31b6b811ec
+X-linux-mtd-patch-commit: bd03e47c0858e79485c87bda11db8c0a76dba93b
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200527_071239_457118_699AC4C8 
-X-CRM114-Status: UNSURE (   6.90  )
+X-CRM114-CacheID: sfid-20200527_071244_470661_4F15497B 
+X-CRM114-Status: UNSURE (   7.83  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -76,12 +78,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2020-05-25 at 08:58:45 UTC, Miquel Raynal wrote:
-> nand_release() basically calls mtd_device_unregister() and
-> nand_cleanup(). Both helpers should be called after MTD device
-> registration and NAND scan, respectively. Drop nand_release() and use
-> the two helpers directly so that they fit the error path and the
-> labels there.
+On Mon, 2020-05-25 at 08:58:44 UTC, Miquel Raynal wrote:
+> ns_free() is the helper that is called symmetrically to ns_init() and
+> so should free the same objects, including the partition names.
+> 
+> Now, callers of ns_free() do not need to free this partition names
+> themselves.
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
