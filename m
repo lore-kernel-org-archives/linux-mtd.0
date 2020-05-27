@@ -2,79 +2,74 @@ Return-Path: <SRS0=kTjQ=7J=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA38AC433E0
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 May 2020 13:21:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DBB1C433E0
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 May 2020 13:42:33 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BB50720899
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 May 2020 13:21:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DA2BB207D8
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 May 2020 13:42:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XUpTIxbi";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=axis.com header.i=@axis.com header.b="YjfNqmaf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BB50720899
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=axis.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oqtaCmaB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA2BB207D8
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
-	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=M1pNz4saayPHyZ6YY684Hza0MMhnNSTqmOcsGVrriII=; b=XUpTIxbiSZ03KH
-	KRCl3US1xn0BEBkyWPym1Cb8lrYUJTDSBC29wiGbGgPYHuIAgDjgqiu1Do0zyNj7Bpf3p/Wi1WhyK
-	KVtexZgktQy7LCrsHqyryAwPmqWdOVXLso3bbTVeyB/5J0FrTVsjLDrGhEWIyp+DWIsSgxSRkQ5x0
-	Ni7UAjM0T0i5s+tpLrrChLEku6TDn6/6Tx5NennHJwpLLvsSrX1hc1i+TVHEoXMOj/3h/vYFx+cOb
-	g85FRM9A2M2PhndhfisIpZdPw3sQVzpnA/Dt9Fre049/3dzmoRZkPTUbaaHHphLL0R78o44QKvpQq
-	isrjoawEUAbzoCJyOYXg==;
+	List-Owner; bh=iz2SmUIMXBT1JgIoTAu6VsTTkSzuxloOSl1EPlQiHN0=; b=oqtaCmaB5AtBrv
+	vrG2yOA5snPEhtbwWUhcdoqAtXPU9e9EPtiaXbRGu1jh1VWapafgA4d46GTNyHBww4/WzMEcvZEfq
+	gBHnF+81fIVSsFEnVFZhd5ck7QFLEcdaegwTw8xxf7KKuzPEQORFmqoy2uW2XgnC6lPhuLIebtw4c
+	DOBdITe8joJ6JBd0Weabw/vsrbaJqkOLMSHC/OkJNK421DBUTHGzlnSjqP/5PkvjExc1oJiHLVxD2
+	BHMije5GRYjmtJFv6kFP3f9Ql/OTPjTJ6jW0VfwtfNpTK/iY8f0Uc0B5nWBXdaYZXJ6TJcwflWUK9
+	g2UcAHbLz518KAr0kJlQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jdvzN-0006U7-3O; Wed, 27 May 2020 13:20:57 +0000
-Received: from smtp1.axis.com ([195.60.68.17])
+	id 1jdwKF-0006ce-8v; Wed, 27 May 2020 13:42:31 +0000
+Received: from mout.kundenserver.de ([212.227.126.133])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jdvzI-0006SV-Ly
- for linux-mtd@lists.infradead.org; Wed, 27 May 2020 13:20:54 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=axis.com; l=812; q=dns/txt; s=axis-central1;
- t=1590585652; x=1622121652; h=from:to:subject:date:message-id:
- content-transfer-encoding:mime-version;
- bh=f2WWzDnTb2Um4Z2e90rPrY854YD2gGya9nMvR8iED9E=;
- b=YjfNqmafhvKNMp+JEtqTlmlcxcE+9JAW2aUq/HwqzQStyPLtAxmY4Cu9
- tQuKPFKm/Fw2OZ1pED56tF6l3wQ4etZ8OWnSOHywQjNJw8Dzn9wdQCVw0
- eMlQYjwreA9KudHiC5sbFMOg7wpc0m4MnlcoBSXs1MbrkLNC1lAHMBO3E
- qGD9aA25OI06gkc8/pdHsfg9SFMVKa3+vokztSso1ffyKYuRCcR0MCUFh
- t9umCwYwuU7oYJcWCnmPPiXH5GDSZ/B0avyAwj/01xLsC7dAxSbpU69fI
- S2ZwQDjNFuYkLStPmMLUMkSbNK6yW3O+in5whssYJrLawCVx7iaMlSZlS A==;
-IronPort-SDR: Z4gLSQLUrrfz43+Ijjxx1tz6GeYWXTc+N4wbm23ZKFpCjUvd8K68MdJSYLjPLIYSch4SJ3T+0n
- gj7f/WH/EEGp3xoXdjASrds8PAMB/gSVVDXS1Sqbx4urfqwkrmBcYqpJCI11rGfnBg4mwTrnsM
- ftDV/W8UU4EXLjRHcqqMbT6vQ45kEIF272II3vn6cH1TLJjauKcQu3qs4SE4SbbP0oItSVZln+
- dhqAAEMLQojKFa+e5HRYm4+JNL/gS3uV9w8+ymo+l3jnj57RVwl1815WBtPmRcG+xas9ARMToO
- kv8=
-X-IronPort-AV: E=Sophos;i="5.73,441,1583190000"; 
-   d="scan'208";a="9169103"
-From: Rickard X Andersson <Rickard.Andersson@axis.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>, "richard@nod.at"
- <richard@nod.at>
-Subject: ubi2 error: ubi_refill_pools: no free eraseblocks
-Thread-Topic: ubi2 error: ubi_refill_pools: no free eraseblocks
-Thread-Index: AQHWNCmh5PR4WfFjGUiBNr9/Hpaoaw==
-Date: Wed, 27 May 2020 13:20:47 +0000
-Message-ID: <e90b59f8c1f842cca8a6db59239a9d67@XBOX02.axis.com>
-Accept-Language: sv-SE, en-US
-Content-Language: sv-SE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.0.5.60]
+ id 1jdwKB-0006bf-Ey
+ for linux-mtd@lists.infradead.org; Wed, 27 May 2020 13:42:28 +0000
+Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
+ (mreue010 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1MaIrN-1jYcro1YGL-00WCjo; Wed, 27 May 2020 15:42:13 +0200
+From: Arnd Bergmann <arnd@arndb.de>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>
+Subject: [PATCH] mtd: rawnand: arasan: select CONFIG_BCH
+Date: Wed, 27 May 2020 15:42:03 +0200
+Message-Id: <20200527134210.847411-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
+X-Provags-ID: V03:K1:0ERleDGDoYzZSO351/qcuQ53P9BOoY8n9kiIrDVxRwankQHZJKf
+ q0LF7oeTmAubbA5uNTQKrD28V3IGepb0X6rPuNYuwHPTlRA4Vcx2h+MxTaSMfUTQRgHdqUE
+ iL7XTOg4B0iJBExr22T1i764EAj9WNVWVts5wJOYYfZlLVF13fcdJ37PH+7lbbWC/YL5Pz4
+ joHLK8o3erWRfgZ6koFrg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:TcWRwqlhomw=:27oxfRCh9GEKpKasOksz0+
+ tqu0k7N/C+sN91belOMslygH/VVIX6C0L8VWWIeL1TCNn535PCE8Bk1xMlakycYSXv5uQIYjo
+ ekmDmeuY4xe3jdt9oq3w1Mk2ybck1vmiUvMviRJ9W6FpvSaIIAeGJFWFlnRp591KUpTczegI2
+ evePeEBRX/sn3AzSFBXFRL6c2fGEskiwkZoFrXjs30tXAEVzdbZGHe1ZsiDxQ8hR7d532jKak
+ 16k2No9kaC/VLMxjnf35RIelieaPnAB4wgoKW9PW+k767RGx72PQjybOYSc39nGYOX/kgtcYs
+ nJiNfg3Qhc5wMDh7R0kxBTZLBVyVAQqoJZshWED7ee/euxetggP/iWKCO5MSBwyeDOu51e5nY
+ 46Ot3QpUXVMDNxpNR711+yLb1d0CLMiU6JpH80QsWSBjm0uiwQ0PYzjijx/DvvWRPEYo0BrUr
+ 6IDkwthIdyTZTJqe1/kJ7zZH1S6TiB189Nmn8BP/EmS9sEzTH4sVuzCRAPDO8xIkfxB7Vua2Y
+ 3K2tAhHaqJ6DPSNgKyOEqVyD2YCL/CefkZ7obf5kwwcsW1Zoz9GxVepDBPKomLUM96VOaXwXK
+ UzwMO8JIUdJZ2sAUmo2BqRM2FHvvZTkeEtdB9F+nIBT2bnW2qUV2T1EP1VEqLBm2L1/2DqIu5
+ VwY+v5rtp5aAlhp1evVZZZerXyxSMVEzS3uDQWMHEiGzC2A9X1t984fI0pixF19MeX5FrML0M
+ JyJdrz3ods9BApsl3DCCO457qikGmcDKC+gCT6FNT5EBJVax4oWo0yh9a/P8h3DN6hMaqQwi8
+ nC38W5X1AxIk4DQcemNb1njF3vlFbs1VLZ8EiUADPLc6mw3PYM=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200527_062053_145382_99C4029C 
-X-CRM114-Status: UNSURE (   3.34  )
+X-CRM114-CacheID: sfid-20200527_064227_789676_0F45F3FD 
+X-CRM114-Status: UNSURE (   9.51  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -87,31 +82,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Cc: Arnd Bergmann <arnd@arndb.de>, Brendan Higgins <brendanhiggins@google.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Mason Yang <masonccyang@mxic.com.tw>, Piotr Sroka <piotrs@cadence.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+Like several other nand flash drivers, this one requires the BCH
+library to be selected from Kconfig.
 
-During a stress test we get the following error:
+arm-linux-gnueabi-ld: drivers/mtd/nand/raw/arasan-nand-controller.o: in function `anfc_attach_chip':
+arasan-nand-controller.c:(.text+0x894): undefined reference to `bch_init'
+arm-linux-gnueabi-ld: drivers/mtd/nand/raw/arasan-nand-controller.o: in function `anfc_detach_chip':
+arasan-nand-controller.c:(.text+0x98c): undefined reference to `bch_free'
+arm-linux-gnueabi-ld: drivers/mtd/nand/raw/arasan-nand-controller.o: in function `anfc_read_page_hw_ecc':
+arasan-nand-controller.c:(.text+0x1080): undefined reference to `bch_decode'
 
-"ubi2 error: ubi_refill_pools: no free eraseblocks"
+Fixes: 197b88fecc50 ("mtd: rawnand: arasan: Add new Arasan NAND controller")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/mtd/nand/raw/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-Is this something we need to take some action to solve or is it unharmful?
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index e2bc87779bf9..113f61052269 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -456,6 +456,7 @@ config MTD_NAND_CADENCE
+ config MTD_NAND_ARASAN
+ 	tristate "Support for Arasan NAND flash controller"
+ 	depends on HAS_IOMEM && HAS_DMA
++	select BCH
+ 	help
+ 	  Enables the driver for the Arasan NAND flash controller on
+ 	  Zynq Ultrascale+ MPSoC.
+-- 
+2.26.2
 
-We write 50000 database entries via sqlcipher and the error is printed when we are almost finished. Everything seems to work alright and all entries seems to be in place.
-Each entry is about 1,5kB size. After all entries has been written the partition is 41 % full:
-
-ubi2:mydata_volume        457368    183528    269004  41% /var/lib/mypath
-
-The following NAND memory is used:
-
-nand: Toshiba TH58NVG2S3HBAI4 4G 3.3V 8-bit
-nand: 512 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 128
-
-Best regards,
-Rickard Andersson
 
 ______________________________________________________
 Linux MTD discussion mailing list
