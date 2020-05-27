@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BFCEAC433E0
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 May 2020 14:11:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE0F0C433E0
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 May 2020 14:12:06 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 92C792073B
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 May 2020 14:11:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5E2CD2073B
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 May 2020 14:12:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KLrwgM/4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 92C792073B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="K1So9zh6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E2CD2073B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,41 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8CRjsyZY7TokWiKX6LCCMuk37nIh44zA/zN0jj1noIo=; b=KLrwgM/4s5UovC
-	IMH9nrmS5yxGJKPwRUglJ6GOFca3iNv+z+Ll29hg4cQEY4XJZaXG0+TfkhBbE0nIUFyxdYn5SVyLq
-	ILy8ZjB9GyUdYI81jAQsrUwBiLd1U4ZCPwml4v/m26XwJ5lCCmcqyb1Bf+l/2HCutcv/jDxSNet2Z
-	Upg1i0HGzPvkYiM8IUREknPhV6x9lf47R6xInG5GgX9vH2pA/2Dt982VdDKIg+TLA6wjI68decAiV
-	XCzt2qzMB828MBNnhqn12RUQTcnUp70DjsqLy7ry/kPY/aUWoM2M1eVVpik7bu8Dd+d/BVkVp63k6
-	fy9T/guDNoITL7ekVxGQ==;
+	List-Owner; bh=UPvmyk9LXt1nyk8HZsu0J+soQsKM+nLyje9OAw1iPGU=; b=K1So9zh66zxMZc
+	YMRotGV5I6N580+uqGWsYLDTvhx5DiJPuX3BkZOcuW5/AFj/k+ykv2mrzsjB1PWeAYmSyovCerVAN
+	icXr+dq3sI/4XMKcBVMnWCa5C8Dxjg89NMfWugJwFDVRYPew6/9Ja5R191j3E3o1GSi+5f1oaEV1Z
+	aknAn1Xb1QGfUNSPMyoMGU6RK7xCtrKEXzdPJdfjnFMXpbnfxMDnqQoK6p2ZNwqEK6D9HmIjHriTF
+	tTiCDH5IxZ3bBv4b5X7tGDgl+vsrL/fw2raDkTdvakdoTm8vnkQssPmb+aWkGUiaeI3U3koXRrnJt
+	ZjzzIKBDjTC8G45/xAhA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jdwmJ-0003RX-7J; Wed, 27 May 2020 14:11:31 +0000
-Received: from relay4-d.mail.gandi.net ([217.70.183.196])
+	id 1jdwma-0003hq-0U; Wed, 27 May 2020 14:11:48 +0000
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jdwmA-0003Gi-AP
- for linux-mtd@lists.infradead.org; Wed, 27 May 2020 14:11:24 +0000
+ id 1jdwmI-0003P0-Bg
+ for linux-mtd@lists.infradead.org; Wed, 27 May 2020 14:11:32 +0000
 X-Originating-IP: 93.23.196.54
 Received: from localhost.localdomain (54.196.23.93.rev.sfr.net [93.23.196.54])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id E7D65E0008;
- Wed, 27 May 2020 14:11:15 +0000 (UTC)
+ by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id C2A0960008;
+ Wed, 27 May 2020 14:11:23 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org
-Subject: Re: [RESEND v5 04/21] dt-bindings: mtd: Deprecate OOB_FIRST mode
-Date: Wed, 27 May 2020 16:11:14 +0200
-Message-Id: <20200527141114.23952-1-miquel.raynal@bootlin.com>
+Subject: Re: [RESEND v5 03/21] mtd: rawnand: Drop OOB_FIRST placement scheme
+Date: Wed, 27 May 2020 16:11:22 +0200
+Message-Id: <20200527141122.24019-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200526195633.11543-5-miquel.raynal@bootlin.com>
+In-Reply-To: <20200526195633.11543-4-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 1777341d933563494ff842109e84916c5a8abc45
+X-linux-mtd-patch-commit: 8d4b52e8e24b96dbddf30eff7b9d36d6d4c7eaa4
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200527_071122_505966_2EA121A3 
-X-CRM114-Status: UNSURE (   8.95  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200527_071130_570602_75F44F48 
+X-CRM114-Status: GOOD (  11.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,11 +78,17 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2020-05-26 at 19:56:16 UTC, Miquel Raynal wrote:
-> This mode has never actually been used, it was introduced for a single
-> driver and even this driver did not use it in the DT but only in the
-> code. Now that this mode has been removed, let's trim the bindings
-> definition to avoid carrying useless properties.
+On Tue, 2020-05-26 at 19:56:15 UTC, Miquel Raynal wrote:
+> This scheme has been introduced for the Davinci controller and means
+> that the OOB area must be read *before* the rest of the data. This has
+> nothing to do with the ECC in OOB placement as it could be understood
+> and most importantly, there is no point in having this function out of
+> the Davinci NAND controller driver. A DT property for this scheme has
+> been added but never used, even by the Davinci driver which only uses
+> this scheme to change the default nand_read_page().
+> 
+> Move the main read_page() helper into the Davinci driver and remove
+> the remaining boilerplate.
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
