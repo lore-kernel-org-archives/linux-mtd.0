@@ -2,68 +2,80 @@ Return-Path: <SRS0=kTjQ=7J=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1869AC433E0
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 May 2020 10:34:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA38AC433E0
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 May 2020 13:21:06 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D4D14207CB
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 May 2020 10:34:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BB50720899
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 May 2020 13:21:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="N+wkdCDi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D4D14207CB
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=hisilicon.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XUpTIxbi";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=axis.com header.i=@axis.com header.b="YjfNqmaf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BB50720899
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=axis.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1B9Woe9NxXj0R4Muf3q/dqyG3rHycAXWg/fn/uMRb7Q=; b=N+wkdCDiBliTih
-	klnW2TrswVPU8L2PqePTzPErnvjHtmWwQixM2VBrcW6qosGO+ZwoBwGHHJTGGFTorxBp2cfgaDkM+
-	vZ8tYy8n05xrVOrUziOn9Y1BZgZewLzxYaR3ea/xNuROlt4om9mOzBlT+gmx+jqHiR7spYqUXzYAA
-	pc5spKTQYDxhn0G8BceSIeGKCMO5uwfnoSNrLS4pSkE/JcB1UpGLm9jJNusbtQE2AjjsRun8lYeg4
-	jD5MyRAK7Ikt6GRSVOv9vfOUVwyC+En+xp045XGQD60RbyspCsM+SZpjKdXVlhKAJ2Juzmrk96exJ
-	xdEQkG9ilAY/UYPY2EnA==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=M1pNz4saayPHyZ6YY684Hza0MMhnNSTqmOcsGVrriII=; b=XUpTIxbiSZ03KH
+	KRCl3US1xn0BEBkyWPym1Cb8lrYUJTDSBC29wiGbGgPYHuIAgDjgqiu1Do0zyNj7Bpf3p/Wi1WhyK
+	KVtexZgktQy7LCrsHqyryAwPmqWdOVXLso3bbTVeyB/5J0FrTVsjLDrGhEWIyp+DWIsSgxSRkQ5x0
+	Ni7UAjM0T0i5s+tpLrrChLEku6TDn6/6Tx5NennHJwpLLvsSrX1hc1i+TVHEoXMOj/3h/vYFx+cOb
+	g85FRM9A2M2PhndhfisIpZdPw3sQVzpnA/Dt9Fre049/3dzmoRZkPTUbaaHHphLL0R78o44QKvpQq
+	isrjoawEUAbzoCJyOYXg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jdtNs-0002Qo-Hy; Wed, 27 May 2020 10:34:04 +0000
-Received: from szxga04-in.huawei.com ([45.249.212.190] helo=huawei.com)
+	id 1jdvzN-0006U7-3O; Wed, 27 May 2020 13:20:57 +0000
+Received: from smtp1.axis.com ([195.60.68.17])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jdtNp-0002QK-2L
- for linux-mtd@lists.infradead.org; Wed, 27 May 2020 10:34:03 +0000
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
- by Forcepoint Email with ESMTP id 1D7B8E44C1524EFBC1F4;
- Wed, 27 May 2020 18:33:53 +0800 (CST)
-Received: from [10.65.58.147] (10.65.58.147) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0;
- Wed, 27 May 2020 18:33:45 +0800
-Subject: Re: [RFC PATCH 3/3] spi: hisi-sfc-v3xx: Add prepare/unprepare methods
- to avoid race condition
-To: Pratyush Yadav <me@yadavpratyush.com>
-References: <1590060231-23242-1-git-send-email-yangyicong@hisilicon.com>
- <1590060231-23242-4-git-send-email-yangyicong@hisilicon.com>
- <20200525161436.c5h6d27pm3jptwbo@yadavpratyush.com>
- <6a41fb13-e746-54f3-24ef-197384dde6ab@hisilicon.com>
- <20200527093325.247l6tnxaicsqdst@yadavpratyush.com>
-From: Yicong Yang <yangyicong@hisilicon.com>
-Message-ID: <30d0d896-47cc-db61-39da-d145dbe06dc6@hisilicon.com>
-Date: Wed, 27 May 2020 18:33:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+ id 1jdvzI-0006SV-Ly
+ for linux-mtd@lists.infradead.org; Wed, 27 May 2020 13:20:54 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=axis.com; l=812; q=dns/txt; s=axis-central1;
+ t=1590585652; x=1622121652; h=from:to:subject:date:message-id:
+ content-transfer-encoding:mime-version;
+ bh=f2WWzDnTb2Um4Z2e90rPrY854YD2gGya9nMvR8iED9E=;
+ b=YjfNqmafhvKNMp+JEtqTlmlcxcE+9JAW2aUq/HwqzQStyPLtAxmY4Cu9
+ tQuKPFKm/Fw2OZ1pED56tF6l3wQ4etZ8OWnSOHywQjNJw8Dzn9wdQCVw0
+ eMlQYjwreA9KudHiC5sbFMOg7wpc0m4MnlcoBSXs1MbrkLNC1lAHMBO3E
+ qGD9aA25OI06gkc8/pdHsfg9SFMVKa3+vokztSso1ffyKYuRCcR0MCUFh
+ t9umCwYwuU7oYJcWCnmPPiXH5GDSZ/B0avyAwj/01xLsC7dAxSbpU69fI
+ S2ZwQDjNFuYkLStPmMLUMkSbNK6yW3O+in5whssYJrLawCVx7iaMlSZlS A==;
+IronPort-SDR: Z4gLSQLUrrfz43+Ijjxx1tz6GeYWXTc+N4wbm23ZKFpCjUvd8K68MdJSYLjPLIYSch4SJ3T+0n
+ gj7f/WH/EEGp3xoXdjASrds8PAMB/gSVVDXS1Sqbx4urfqwkrmBcYqpJCI11rGfnBg4mwTrnsM
+ ftDV/W8UU4EXLjRHcqqMbT6vQ45kEIF272II3vn6cH1TLJjauKcQu3qs4SE4SbbP0oItSVZln+
+ dhqAAEMLQojKFa+e5HRYm4+JNL/gS3uV9w8+ymo+l3jnj57RVwl1815WBtPmRcG+xas9ARMToO
+ kv8=
+X-IronPort-AV: E=Sophos;i="5.73,441,1583190000"; 
+   d="scan'208";a="9169103"
+From: Rickard X Andersson <Rickard.Andersson@axis.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>, "richard@nod.at"
+ <richard@nod.at>
+Subject: ubi2 error: ubi_refill_pools: no free eraseblocks
+Thread-Topic: ubi2 error: ubi_refill_pools: no free eraseblocks
+Thread-Index: AQHWNCmh5PR4WfFjGUiBNr9/Hpaoaw==
+Date: Wed, 27 May 2020 13:20:47 +0000
+Message-ID: <e90b59f8c1f842cca8a6db59239a9d67@XBOX02.axis.com>
+Accept-Language: sv-SE, en-US
+Content-Language: sv-SE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.0.5.60]
 MIME-Version: 1.0
-In-Reply-To: <20200527093325.247l6tnxaicsqdst@yadavpratyush.com>
-X-Originating-IP: [10.65.58.147]
-X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200527_033401_282129_FA7FD25C 
-X-CRM114-Status: GOOD (  28.49  )
+X-CRM114-CacheID: sfid-20200527_062053_145382_99C4029C 
+X-CRM114-Status: UNSURE (   3.34  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,132 +87,31 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vigneshr@ti.com, tudor.ambarus@microchip.com, richard@nod.at,
- john.garry@huawei.com, linux-spi@vger.kernel.org, broonie@kernel.org,
- linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hi,
 
-On 2020/5/27 17:33, Pratyush Yadav wrote:
-> On 27/05/20 04:18PM, Yicong Yang wrote:
->> Hi Pratyush,
->>
->> On 2020/5/26 0:14, Pratyush Yadav wrote:
->>> Hi Yicong,
->>>
->>> On 21/05/20 07:23PM, Yicong Yang wrote:
->>>> The controller can be shared with the firmware, which may cause race
->>>> problems. As most read/write/erase/lock/unlock of spi-nor flash are
->>>> composed of a set of operations, while the firmware may use the controller
->>>> and start its own operation in the middle of the process started by the
->>>> kernel driver, which may lead to the kernel driver's function broken.
->>>>
->>>> Bit[20] in HISI_SFC_V3XX_CMD_CFG register plays a role of a lock, to
->>>> protect the controller from firmware access, which means the firmware
->>>> cannot reach the controller if the driver set the bit. Add prepare/
->>>> unprepare methods for the controller, we'll hold the lock in prepare
->>>> method and release it in unprepare method, which will solve the race
->>>> issue.
->>> I'm trying to understand the need for this change. What's wrong with
->>> performing the lock/unlock procedure in hisi_sfc_v3xx_exec_op()? You can 
->>> probably do something like:
->>>
->>>   hisi_sfc_v3xx_lock();
->>>   ret = hisi_sfc_v3xx_generic_exec_op(host, op, chip_select);
->>>   hisi_sfc_v3xx_unlock();
->>>   return ret;
->> if doing like this, suppose we perform a sequential operations like below:
->>
->> lock()->exec_op(cmd1)->unlock()->lock()->exec_op(cmd2)->unlock()->lock()->exec_op(cmd3)->unlock()
->>                        ^==========^is unlocked          ^==========^is unlocked
->>
->> As shown above, we cannot lock the device continuously during the whole operations.
-> Correct. My argument is based on the assumption that lock() and unlock() 
-> are cheap/fast operations. If you spend very little time in lock() and 
-> unlock(), it doesn't make a big difference if you do all 3 operations in 
-> one go or one at a time.
+During a stress test we get the following error:
 
-okay. we'd better not make such assumption and do what hardware suggests.
+"ubi2 error: ubi_refill_pools: no free eraseblocks"
 
+Is this something we need to take some action to solve or is it unharmful?
 
->
-> In other words, since register write should be pretty fast, locking and 
-> unlocking should be pretty fast. If we don't spend a lot of time in 
-> lock() and unlock(), we don't gain a lot of performance by reducing 
-> those calls.
+We write 50000 database entries via sqlcipher and the error is printed when we are almost finished. Everything seems to work alright and all entries seems to be in place.
+Each entry is about 1,5kB size. After all entries has been written the partition is 41 % full:
 
-I know your worries. But it won't reduce the performance as we only do lock
-and unlock in the beginning or end. See what have implemented in spi-nor
-framework, as for read:
+ubi2:mydata_volume        457368    183528    269004  41% /var/lib/mypath
 
-->spi_nor_read()
---->spi_nor_lock_and_prep() // lock the device if necessary
---->spi_nor_read_data() // maybe called several times to read wanted bytes
---->spi_nor_unlock_and_unprep() // unlock the device
+The following NAND memory is used:
 
-we don't call lock/unlock at every spi_nor_read_data(), but just in the beginning
-/ending of the whole sequence. And we can do the same thing in
-nand framework to avoid performance reduction, if prepare/unprepare is also needed.
+nand: Toshiba TH58NVG2S3HBAI4 4G 3.3V 8-bit
+nand: 512 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 128
 
-
->
->> But if we use upper layer method then it looks like
->>
->> prepare()->exec_op(cmd1)->exec_op(cmd2)->exec_op(cmd3)->unprepare()
->>         ^locked here                                              ^unlocked here
->>
->> we can hold the lock during the all 3 operations' execution.
-> If you still think doing all operations in one go is a better idea, I  
-> like Boris's idea of batching operations and its worth considering.
-
-sure. it do worth discussion and maybe we need more suggestions.
-
-
->  
->>> What's the benefit of making upper layers do this? Acquiring the lock is 
->>> a simple register write, so it should be relatively fast. Unless there 
->>> is a lot of contention on the lock between the firmware and kernel, I 
->>> would expect the performance impact to be minimal. Maybe you can run 
->>> some benchmarks and see if there is a real difference.
->>>
->>>> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
->>>> ---
->>>>  drivers/spi/spi-hisi-sfc-v3xx.c | 41 ++++++++++++++++++++++++++++++++++++++++-
->>>>  1 file changed, 40 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/spi/spi-hisi-sfc-v3xx.c b/drivers/spi/spi-hisi-sfc-v3xx.c
->>>> index e3b5725..13c161c 100644
->>>> --- a/drivers/spi/spi-hisi-sfc-v3xx.c
->>>> +++ b/drivers/spi/spi-hisi-sfc-v3xx.c
->>>> @@ -163,7 +192,15 @@ static int hisi_sfc_v3xx_generic_exec_op(struct hisi_sfc_v3xx_host *host,
->>>>  					 u8 chip_select)
->>>>  {
->>>>  	int ret, len = op->data.nbytes;
->>>> -	u32 config = 0;
->>>> +	u32 config;
->>>> +
->>>> +	/*
->>>> +	 * The lock bit is in the command register. Clear the command
->>>> +	 * field with lock bit held if it has been set in
->>>> +	 * .prepare().
->>>> +	 */
->>>> +	config = readl(host->regbase + HISI_SFC_V3XX_CMD_CFG);
->>>> +	config &= HISI_SFC_V3XX_CMD_CFG_LOCK;
->>> This will unlock the controller _before_ the driver issues 
->>> hisi_sfc_v3xx_read_databuf(). I'm not very familiar with the hardware, 
->>> but to me it seems like it can lead to a race. What if the firmware 
->>> issues a command that over-writes the databuf (I assume this is shared 
->>> between the two) before the driver gets a chance to copy that data to 
->>> the kernel buffer?
->> It won't unlock the controller if it has been locked in prepare(). It will clear
->> the other bits in the register other than the lock bit. For single operations, as 
->> prepare() method is not called, the bit is 0 and it won't change here.
-> Right. I misread the code. Sorry.
->
-
+Best regards,
+Rickard Andersson
 
 ______________________________________________________
 Linux MTD discussion mailing list
