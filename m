@@ -5,18 +5,18 @@ X-Spam-Level:
 X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92959C433DF
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 14:23:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0119CC433DF
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 14:26:29 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5984D207D3
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 14:23:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C5727207D3
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 14:26:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="JmScTXKy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5984D207D3
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IGAOj0Dy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C5727207D3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EFW0XSUwvyALjkV9KE/uNxOSlDjLHE3LaXSodJohBSo=; b=JmScTXKyypa99Z
-	1Gzz7OygvGR8r4wqZM7OqgRHFK8VzGw2XYj4g5r6rGgHjWc5g6SFWv3MtW5DuExL+OUE5NUtzcLL3
-	Luqgg45TD2ONf3psT6qwaLLG/LSmz1XLNGlzBqdq7u9mtZUGXbI5nwPTGOY1VJcIwBqoR0bRlCYao
-	lnlzQmELT3yorHoj1M0YFEAJ63swoC8ed++rx67stdnBZC6pMenRh5FhiuV9VUu5j2/kx4x95KAe7
-	RTRN3Y/AmLxUZMHOCLuDNVJAsdXV1+c2sRZJLEI1YK5Eh5o8gdS4aJxtxuD72DNkfcyJoXsTPpHzp
-	roXEuSq0NNdWdege154A==;
+	List-Owner; bh=hfRrYAXBfDw8pj9HamQWPKp03VfcqLyz8whdsAuvFoc=; b=IGAOj0DyI1j3R3
+	N8ZPPvJ2en8hdUIhyU7alyaTV98xbaQMUCQ4pNvzbBw70YqQVPY7nGDkw0hS+vXkJbHa9gCiEFSdz
+	T4YA3AIkpegkvrXSknimFK5ZgPKcWsNWwOMPI9t8f9w04jkNU1Xv9Eoy1i95R9V0duUnfKDlqsMm5
+	BAVf6R42Gzm1QIMXplQO1m+mWb4R+aCVNRYZiRcBuM31Dl5uks4W6rjC+Q7rHIER4JYTqMRM8tcYD
+	wPca624wb/K6DMDigWiPRSTKEH9kdMmbfUYBzgBzeSRh02Dtt+f5NZOx+DE6z1ikSrA6wb4/AfgVn
+	K8jhGGG7VIACqC0zlRUA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jeJR1-0002T3-Io; Thu, 28 May 2020 14:23:03 +0000
+	id 1jeJU9-0007gV-HI; Thu, 28 May 2020 14:26:17 +0000
 Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jeJQn-0002Cr-DP; Thu, 28 May 2020 14:22:50 +0000
+ id 1jeJTx-0007WW-N6; Thu, 28 May 2020 14:26:07 +0000
 Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
  (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id BC36F2A3DAD;
- Thu, 28 May 2020 15:22:47 +0100 (BST)
-Date: Thu, 28 May 2020 16:22:44 +0200
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 12D392A18CB;
+ Thu, 28 May 2020 15:26:04 +0100 (BST)
+Date: Thu, 28 May 2020 16:26:01 +0200
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH v6 04/18] mtd: rawnand: Create a helper to retrieve the
- ECC placement
-Message-ID: <20200528162244.7f1c6c50@collabora.com>
-In-Reply-To: <20200528113113.9166-5-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v6 05/18] mtd: rawnand: Add a kernel doc to the ECC
+ algorithm enumeration
+Message-ID: <20200528162601.78e87d5b@collabora.com>
+In-Reply-To: <20200528113113.9166-6-miquel.raynal@bootlin.com>
 References: <20200528113113.9166-1-miquel.raynal@bootlin.com>
- <20200528113113.9166-5-miquel.raynal@bootlin.com>
+ <20200528113113.9166-6-miquel.raynal@bootlin.com>
 Organization: Collabora
 X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200528_072249_581781_2F303FF6 
-X-CRM114-Status: GOOD (  17.58  )
+X-CRM114-CacheID: sfid-20200528_072605_881292_9DA412C2 
+X-CRM114-Status: GOOD (  14.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,68 +82,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 28 May 2020 13:30:59 +0200
+On Thu, 28 May 2020 13:31:00 +0200
 Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> Use it from nand_dt_init() to initialize the ECC structure.
-> 
-> This allows the deprecation of the hw_syndrome ECC mode.
+> Before moving it to the generic raw NAND core, ensure the enumeration
+> is properly described.
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
 Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 
 > ---
->  drivers/mtd/nand/raw/nand_base.c | 29 +++++++++++++++++++++++++++++
->  1 file changed, 29 insertions(+)
+>  include/linux/mtd/rawnand.h | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
-> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> index 9fbd2a474b62..fd0bfe9bf7ae 100644
-> --- a/drivers/mtd/nand/raw/nand_base.c
-> +++ b/drivers/mtd/nand/raw/nand_base.c
-> @@ -5047,6 +5047,34 @@ static int of_get_nand_ecc_mode(struct device_node *np)
->  	return -ENODEV;
->  }
+> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+> index f6ffd174abb7..6699ec7f4d40 100644
+> --- a/include/linux/mtd/rawnand.h
+> +++ b/include/linux/mtd/rawnand.h
+> @@ -106,6 +106,13 @@ enum nand_ecc_placement {
+>  	NAND_ECC_PLACEMENT_INTERLEAVED,
+>  };
 >  
-> +enum nand_ecc_placement of_get_nand_ecc_placement(struct device_node *np)
-> +{
-> +	enum nand_ecc_placement placement;
-> +	const char *pm;
-> +	int err;
-> +
-> +	err = of_property_read_string(np, "nand-ecc-placement", &pm);
-> +	if (!err) {
-> +		for (placement = NAND_ECC_PLACEMENT_INTERLEAVED;
-> +		     placement < ARRAY_SIZE(nand_ecc_placement); placement++) {
-> +			if (!strcasecmp(pm, nand_ecc_placement[placement]))
-> +				return placement;
-> +		}
-> +	}
-> +
-> +	/*
-> +	 * For backward compatibility we support few obsoleted values that don't
-> +	 * have their mappings into the nand_ecc_placement enum anymore.
-> +	 */
-> +	err = of_property_read_string(np, "nand-ecc-mode", &pm);
-> +	if (!err) {
-> +		if (!strcasecmp(pm, "hw_syndrome"))
-> +			return NAND_ECC_PLACEMENT_INTERLEAVED;
-> +	}
-> +
-> +	return NAND_ECC_PLACEMENT_UNKNOWN;
-> +}
-> +
->  static const char * const nand_ecc_algos[] = {
->  	[NAND_ECC_HAMMING]	= "hamming",
->  	[NAND_ECC_BCH]		= "bch",
-> @@ -5143,6 +5171,7 @@ static int nand_dt_init(struct nand_chip *chip)
->  
->  	ecc_mode = of_get_nand_ecc_mode(dn);
->  	ecc_algo = of_get_nand_ecc_algo(dn);
-> +	chip->ecc.placement = of_get_nand_ecc_placement(dn);
->  	ecc_strength = of_get_nand_ecc_strength(dn);
->  	ecc_step = of_get_nand_ecc_step_size(dn);
->  
+> +/**
+> + * enum nand_ecc_algo - NAND ECC algorithm
+> + * @NAND_ECC_UNKNOWN: Unknown algorithm
+> + * @NAND_ECC_HAMMING: Hamming algorithm
+> + * @NAND_ECC_BCH: Bose-Chaudhuri-Hocquenghem algorithm
+> + * @NAND_ECC_RS: Reed-Solomon algorithm
+> + */
+>  enum nand_ecc_algo {
+>  	NAND_ECC_UNKNOWN,
+>  	NAND_ECC_HAMMING,
 
 
 ______________________________________________________
