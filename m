@@ -2,88 +2,65 @@ Return-Path: <SRS0=EQmy=7K=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C77BC433E0
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 10:31:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9B29C433DF
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 10:43:09 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 13CDC208A7
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 10:31:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9A59A207D3
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 10:43:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HeBwR2tC";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="QMaBLY1D"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 13CDC208A7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="seQI5/DD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9A59A207D3
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baikalelectronics.ru
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=sZRxVjlDxokv2GTHFznuX7KxeoUUeMDdoMcoAHmi/lM=; b=HeBwR2tCGC4S3/yoHjGSv9/ig+
-	JZLCfU3xg3IKh9Pb7MBFslIIF5ncq6A7ZXX0o/8P8e/ZOmgyigG+n4l6uNNsOETVbEACGz2TCGIwW
-	K/HQ2LjeAl0n0JuiZGe/mwf4YwlqHlf1wRyU0qUqdkFlZHgUV1YncviIvf519yRNTMnhLWUsmT4n3
-	X4QUQ4Mj6nJ+otOtTRefdjl1ohdkbcFEOV3p5dDeME3up6QTSVcLr4QlU53FASBRKSh/Rwn+mBA+X
-	Im4DlKMpqVFccBO968ib6YP46/WfXTv/TSStvrnlw/REJ08P/02oh+OrSJTkmCUTAOp3VaJB2RS9m
-	byPQilrQ==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=cwhwAZjAG9am0VyUjVAyJqwHQ5Jv0ckTo5tfzZRNsow=; b=seQI5/DDu0PSgP
+	+YGn24RE8H3nzkdS+NoDj5jG35v3KS421DUxK1/L15ppC+OgE7pB6fVBqap5/rewU7Q4A68vS5FbX
+	kzd/ZAzBOrFYPoKmiLs3gaFmhUZ3LUxwQQjDOblVA+Z6BD5U519QO9X3TJgm/ad/YipggNrbFunkt
+	LPXgGFvCLRzkfGCWrRXgrTMYdWUfEcDoFO4HPQehgT7hPxWPmZuss00vf048yx6ZI1yJ2yisNAy2p
+	lDy6CPFCgy7s36awIh6MP0VvpzTZ+h4rqKjDCNXOctFXtqS/lO2si1dRZtANmIWNtSa4hCsifq/5R
+	naovviaEVH1+kPSYi/iQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jeFp2-0003Lu-0F; Thu, 28 May 2020 10:31:36 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jeFoy-0003LL-R4
- for linux-mtd@lists.infradead.org; Thu, 28 May 2020 10:31:34 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04SAVSRj081848;
- Thu, 28 May 2020 05:31:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1590661888;
- bh=AEQTkef1+kNlzNaEHtQu4Pn0JuBaAy+rLXTEbnti/Us=;
- h=Subject:To:References:From:Date:In-Reply-To;
- b=QMaBLY1DCBcVNqupoVs0TM5pAtsLZi10NcXap32Gn+sTFLTJJGQAw68+uxr38Mdia
- u98YUmnGEdA1a5nkDdbcyoW/KpjNRJv6eWG/HgYB1HDuquF/mFwhXiZx4HYNxEv/+l
- /heW0alJzxC8z6R5D5eafJRU96x49KQZbRp2M//Q=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04SAVSwP037047
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 28 May 2020 05:31:28 -0500
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 28
- May 2020 05:30:42 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 28 May 2020 05:30:42 -0500
-Received: from [10.250.234.195] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04SAUdGW082256;
- Thu, 28 May 2020 05:30:40 -0500
-Subject: Re: [PATCH v1 1/1] drivers: mtd: spi-nor: update read capabilities
- for w25q64 and s25fl064k
-To: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>, Tudor Ambarus
- <tudor.ambarus@microchip.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-References: <20200521052608.32667-1-rayagonda.kokatanur@broadcom.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <9dc3722e-497f-b092-6a97-01e0f7e3843c@ti.com>
-Date: Thu, 28 May 2020 16:00:38 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+	id 1jeG0B-0001Nm-LW; Thu, 28 May 2020 10:43:07 +0000
+Received: from mail.baikalelectronics.com ([87.245.175.226]
+ helo=mail.baikalelectronics.ru)
+ by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jeG08-0001MS-Gt
+ for linux-mtd@lists.infradead.org; Thu, 28 May 2020 10:43:06 +0000
+Received: from localhost (unknown [127.0.0.1])
+ by mail.baikalelectronics.ru (Postfix) with ESMTP id 9237780307C0;
+ Thu, 28 May 2020 10:42:48 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+ by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id BDWl3gmag4Ug; Thu, 28 May 2020 13:42:47 +0300 (MSK)
+Date: Thu, 28 May 2020 13:42:45 +0300
+From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To: Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH RESEND v2] mtd: physmap: Add Baikal-T1 physically mapped
+ ROMs support
+Message-ID: <20200528104245.jurucbblufluyjut@mobilestation>
+References: <20200526225849.20985-1-Sergey.Semin@baikalelectronics.ru>
+ <5f5fc883-1cf0-f0b8-11bb-a60b45d135cd@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20200521052608.32667-1-rayagonda.kokatanur@broadcom.com>
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Disposition: inline
+In-Reply-To: <5f5fc883-1cf0-f0b8-11bb-a60b45d135cd@ti.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200528_033132_997481_B8043EC4 
-X-CRM114-Status: GOOD (  15.15  )
+X-CRM114-CacheID: sfid-20200528_034304_914091_A4046C9A 
+X-CRM114-Status: GOOD (  29.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,59 +72,197 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Vadim Vlasov <V.Vlasov@baikalelectronics.ru>,
+ Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>,
+ Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+ Richard Weinberger <richard@nod.at>, linux-mips@vger.kernel.org,
+ Serge Semin <fancer.lancer@gmail.com>,
+ Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+ Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>,
+ Arnd Bergmann <arnd@arndb.de>,
+ Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+ Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
+ Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+On Thu, May 28, 2020 at 03:36:55PM +0530, Vignesh Raghavendra wrote:
+> Hi,
+> 
+> On 27/05/20 4:28 am, Serge Semin wrote:
+> > Baikal-T1 Boot Controller provides an access to a RO storages, which are
+> > physically mapped into the MMIO space. In particularly there are the
+> > Internal ROM embedded into the SoC with a pre-installed firmware,
+> > externally attached SPI flash (also accessed in the read-only mode) and a
+> > memory region, which mirrors one of them in accordance with the currently
+> > enabled system boot mode (also called Boot ROM).
+> > 
+> > This commit adds the ROMs support to the physmap driver of the MTD kernel
+> > subsystem. Currently the driver only supports the Internal ROM, since
+> > physically mapped SPI flash is utilized by the Baikal-T1 System Boot
+> > Controller driver so won't be available over mtd-rom interface and
+> > the Boot ROM mirror mapping has dependency on the SPI flash mapping
+> > switcher available within the SPI flash registers space. The real access
+> > to the Boot ROM memory will be added in future.
+> > 
+> > Note we had to create a dedicated code for the ROMs since read from the
+> > corresponding memory regions must be done via the dword-aligned addresses.
+> > In addition the driver in future states will have to take into account
+> > that the Boot ROM might mirror the SPI flash region so before accessing it
+> > the SPI flash direct mapping must be enabled by means of a dedicated flag
+> > in the Baikal-T1 System SPI register flag.
+> > 
+> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> > Cc: Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>
+> > Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
+> > Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
+> > Cc: Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>
+> > Cc: Vadim Vlasov <V.Vlasov@baikalelectronics.ru>
+> > Cc: Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>
+> > Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> > Cc: Arnd Bergmann <arnd@arndb.de>
+> > Cc: Lee Jones <lee.jones@linaro.org>
+> > Cc: linux-mips@vger.kernel.org
+> > 
+> > ---
+> > 
+> > Miquel, Richard, Vignesh, the merge window is upon us, please review/merge
+> > in/whatever this patch.
+> > 
+> > This patchset is rebased and tested on the mainline Linux kernel 5.7-rc4:
+> > base-commit: 0e698dfa2822 ("Linux 5.7-rc4")
+> > tag: v5.7-rc4
+> > 
+> > New vendor prefix will be added in the framework of the next patchset:
+> > https://lkml.org/lkml/2020/5/6/1047
+> 
+> 
+> Sorry, driver patch and dt bindings have to be proposed together...
+> Driver cannot be accepted ahead of DT bindings been reviewed.
 
-On 21/05/20 10:56 am, Rayagonda Kokatanur wrote:
-> Both w25q64 and s25fl064k nor flash support QUAD and DUAL read
-> command, hence update the same in flash_info table.
+Understood. I'll fix it in v3. Thanks.
+
+> 
+> > 
+> > Note since the next patchset is no longer relevant (as a result of a
+> > discussion with @Lee and @Miquel)
+> > https://lkml.org/lkml/2020/3/6/421
+> > and Boot ROM mtd is currently unsupported I can freely submit this patch,
+> > while in former case I had to wait for the patchset merged.
+> > 
+> 
+> [...]
+> > +static void __xipram bt1_rom_map_copy_from(struct map_info *map,
+> > +					   void *to, unsigned long from,
+> > +					   ssize_t len)
+> > +{
+> > +	void __iomem *src = map->virt + from;
+> > +	ssize_t shift, chunk;
+> > +	u32 data;
+> > +
+> > +	if (len <= 0 || from >= map->size)
+> > +		return;
+> > +
+> > +	/* Make sure we don't go over the map limit. */
+> > +	len = min_t(ssize_t, map->size - from, len);
+> > +
+> > +	/*
+> > +	 * Since requested data size can be pretty big we have to implement
+> > +	 * the copy procedure as optimal as possible. That's why it's split
+> > +	 * up into the next three stages: unaligned head, aligned body,
+> > +	 * unaligned tail.
+> > +	 */
+> > +	shift = (ssize_t)src & 0x3;
+> > +	if (shift) {
+> > +		chunk = min_t(ssize_t, 4 - shift, len);
+> > +		data = readl_relaxed(src - shift);
+> > +		memcpy(to, &data + shift, chunk);
+> > +		src += chunk;
+> > +		to += chunk;
+> > +		len -= chunk;
+> > +	}
+> > +
+> > +	while (len >= 4) {
+> > +		data = readl_relaxed(src);
+> > +		memcpy(to, &data, 4);
+> > +		src += 4;
+> > +		to += 4;
+> > +		len -= 4;
+> > +	}
+> > +
+> > +	if (len) {
+> > +		data = readl_relaxed(src);
+> > +		memcpy(to, &data, len);
+> > +	}
+> > +}
+> > +
+> > +static map_word __xipram bt1_rom_dummy_read(struct map_info *map,
+> > +					  unsigned long ofs)
+> > +{
+> > +	map_word ret;
+> > +
+> > +	ret.x[0] = 0xFF;
+> > +
+> > +	return ret;
+> > +}
 > 
 
-I am guessing both modes were tested on some platform?
-Could you add that info here?
+> Why define dummy_io for "baikal,bt1-boot-rom"? I don't see any use of
+> adding a driver that always reads 0xFFs
 
-> Signed-off-by: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
-> ---
->  drivers/mtd/spi-nor/spansion.c | 3 ++-
->  drivers/mtd/spi-nor/winbond.c  | 3 ++-
->  2 files changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-> index 6756202ace4b..c91bbb8d9cd6 100644
-> --- a/drivers/mtd/spi-nor/spansion.c
-> +++ b/drivers/mtd/spi-nor/spansion.c
-> @@ -52,7 +52,8 @@ static const struct flash_info spansion_parts[] = {
->  			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->  	{ "s25fl016k",  INFO(0xef4015,      0,  64 * 1024,  32,
->  			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> -	{ "s25fl064k",  INFO(0xef4017,      0,  64 * 1024, 128, SECT_4K) },
-> +	{ "s25fl064k",  INFO(0xef4017,      0,  64 * 1024, 128,
-> +			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->  	{ "s25fl116k",  INFO(0x014015,      0,  64 * 1024,  32,
->  			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->  	{ "s25fl132k",  INFO(0x014016,      0,  64 * 1024,  64, SECT_4K) },
-> diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-> index 17deabad57e1..2028cab3eff9 100644
-> --- a/drivers/mtd/spi-nor/winbond.c
-> +++ b/drivers/mtd/spi-nor/winbond.c
-> @@ -39,7 +39,8 @@ static const struct flash_info winbond_parts[] = {
->  			    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
->  			    SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
->  	{ "w25x64", INFO(0xef3017, 0, 64 * 1024, 128, SECT_4K) },
-> -	{ "w25q64", INFO(0xef4017, 0, 64 * 1024, 128, SECT_4K) },
-> +	{ "w25q64", INFO(0xef4017, 0, 64 * 1024, 128,
-> +			 SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->  	{ "w25q64dw", INFO(0xef6017, 0, 64 * 1024, 128,
->  			   SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
->  			   SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
-> 
+This is supposed to be temporary solution for the baikal,bt1-boot-rom ROM.
+The Boot ROM mirror might reflect either an embedded firmware or the SPI flash
+directly mapped into the memory. In former case there is no problem, we can
+freely read from the Boot ROM region. But in the later case the mirrored region
+(memory mapped SPI flash) is not always accessible. If normal Boot SPI
+controller is enabled, then the SPI flash mapping isn't accessible (any attempt
+will cause a bus-error). In order to fix this we'd need a mutual exclusive lock,
+which would disable the SPI controller while the mirrored memory mapped SPI flash
+region needs to be accessed. Such mechanism isn't currently implemented, but it
+will in be in the framework of my patch created for the SPI subsystem.
 
-Regards
-Vignesh
+My idea was to just provide a dummy callback for now and replace it with normal
+IO-methods with mutual exclusive lock-unlocks when the corresponding SPI driver
+is accepted.
+
+-Sergey
+
+> 
+> 
+> > +
+> > +/*
+> > + * Currently Baikal-T1 SoC internal ROM is only supported. Boot ROM region is
+> > + * dummy-data filled for now since in case of the system booted up from an
+> > + * external SPI flash the ROM will mirror the Baikal-T1 System Boot SPI direct
+> > + * mapping memory region. That region can be only accessed when transparent
+> > + * mode is enabled, which we unable to do here because this feature is provided
+> > + * by the SPI controller config space occupied by the corresponding driver.
+> > + * In future we'll export the mode setting method from the Baikal-T1 System
+> > + * Boot SPI Controller driver to also have the Boot ROM supported here.
+> > + */
+> > +static const struct of_device_id bt1_rom_of_match[] = {
+> > +	{
+> > +		.compatible = "baikal,bt1-int-rom",
+> > +		.data = &bt1_rom_normal_io
+> > +	},
+> 
+> > +	{
+> > +		.compatible = "baikal,bt1-boot-rom",
+> > +		.data = &bt1_rom_dummy_io
+> > +	},
+> > +	{ }
+> 
+> 
+> 
+> [...]
+> 
+> Regards
+> Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
