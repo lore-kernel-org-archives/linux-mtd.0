@@ -2,61 +2,59 @@ Return-Path: <SRS0=EQmy=7K=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A6A4C433E0
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 23:17:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CC02C433E1
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 23:18:10 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 35EAE20776
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 23:17:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4D39F207BC
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 23:18:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Hht9fKyw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 35EAE20776
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mVntuEho"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D39F207BC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8bDftVjO5u0kM7vj82q5EPlL3jzB7Aqw4yutedj68kQ=; b=Hht9fKywracf8z
-	G4raeQBCK6tep1x/YQo3FMKzfjbC3NSvxrUzSDPk4ox3VWLwxPKVAlKLo/15Ar63YY6cCj/0CsvpP
-	X+18V9CTx6b7DPvJp9PJ67fVqCJGTDgPVBNptrEQNsX56x1oA0zIXlpyyekDA9D8paMI6aCmkbWo3
-	v/zWlnOKHSYD5s6/Jw6y2INMiZk362oxkFCoyflnhcBGAQ1Md6jpJmLMSN1NaYLPidIWE0u1qrwRd
-	NBRB8SsBNiOrx/cXkLwz6dMOIG5C/nb8n9otBUbjR7SStF0Iuzy4DrzBBqzVj14poSdO3amvTD21f
-	LISmXjfMaHz1U+EGSkkQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=29CU+cFfd2nJU4ZixKs/HEG1phNqcAaIpqdJVefhVdQ=; b=mVntuEhomC34MB
+	uk23D+59gBqIgS0TtEQCfrFIF4D4gOtTSzJCiGW4D2sDC7teUoXrXMLakckUx0EzIXKZmDGnvc+uS
+	vJbnFNWwEVvf8gAJO9JXHfVTZYox1dOGnNk5zRRTWZyHHdaUqbcUJ4a0CjOVre287ipWLTlxgDDeI
+	jFuZsB3lTPTnxtZi1qHFTeDDDLg/7cazkyrIUiLpKgJgadwNbqxfft2lX8lxJJ3MBKL9f8LB5MzvI
+	Z0afSeY1YJmvjHJAiqgL05VuZA8+au8VO0ha6N4WRy+uWEgIC6F9c/4zAG0GNTXhN1gLJEdz1hy65
+	n4wz9AVEZO2buH/YudRw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jeRmK-000763-Lw; Thu, 28 May 2020 23:17:36 +0000
+	id 1jeRmb-0007KA-9P; Thu, 28 May 2020 23:17:53 +0000
 Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jeRl8-00064K-Cj
+ id 1jeRl8-00063j-Cl
  for linux-mtd@lists.infradead.org; Thu, 28 May 2020 23:16:25 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id EE4EF240007;
- Thu, 28 May 2020 23:16:19 +0000 (UTC)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 98D16240002;
+ Thu, 28 May 2020 23:16:13 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH v6 04/30] mtd: rawnand: Rename the manufacturer structure
-Date: Fri, 29 May 2020 01:15:46 +0200
-Message-Id: <20200528231612.8958-5-miquel.raynal@bootlin.com>
+Subject: [PATCH v6 00/30] Allow vendor drivers to propose their own timings
+Date: Fri, 29 May 2020 01:15:42 +0200
+Message-Id: <20200528231612.8958-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200528231612.8958-1-miquel.raynal@bootlin.com>
-References: <20200528231612.8958-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200528_161622_715860_5ED9F30C 
-X-CRM114-Status: GOOD (  14.10  )
+X-CRM114-CacheID: sfid-20200528_161622_730885_AFC8EB04 
+X-CRM114-Status: GOOD (  11.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,164 +71,118 @@ Cc: Rickard Andersson <rickaran@axis.com>, Michal Simek <monstr@monstr.eu>,
  Naga Sureshkumar Relli <nagasure@xilinx.com>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-It is currently called nand_manufacturer but could actually be called
-nand_manufacturer_desc, like its instances, so that the former name is
-left unused for now.
-
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
----
- drivers/mtd/nand/raw/internals.h |  6 +++---
- drivers/mtd/nand/raw/nand_base.c | 14 +++++++-------
- drivers/mtd/nand/raw/nand_ids.c  | 16 ++++++++--------
- include/linux/mtd/rawnand.h      |  2 +-
- 4 files changed, 19 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
-index 03866b0aadea..a518acfd9b3f 100644
---- a/drivers/mtd/nand/raw/internals.h
-+++ b/drivers/mtd/nand/raw/internals.h
-@@ -53,12 +53,12 @@ struct nand_manufacturer_ops {
- };
- 
- /**
-- * struct nand_manufacturer - NAND Flash Manufacturer structure
-+ * struct nand_manufacturer_desc - NAND Flash Manufacturer descriptor
-  * @name: Manufacturer name
-  * @id: manufacturer ID code of device.
-  * @ops: manufacturer operations
-  */
--struct nand_manufacturer {
-+struct nand_manufacturer_desc {
- 	int id;
- 	char *name;
- 	const struct nand_manufacturer_ops *ops;
-@@ -79,7 +79,7 @@ extern const struct nand_manufacturer_ops toshiba_nand_manuf_ops;
- extern const struct mtd_pairing_scheme dist3_pairing_scheme;
- 
- /* Core functions */
--const struct nand_manufacturer *nand_get_manufacturer(u8 id);
-+const struct nand_manufacturer_desc *nand_get_manufacturer_desc(u8 id);
- int nand_bbm_get_next_page(struct nand_chip *chip, int page);
- int nand_markbad_bbm(struct nand_chip *chip, loff_t ofs);
- int nand_erase_nand(struct nand_chip *chip, struct erase_info *instr,
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index d9cb71e7c0ed..534ee75d0f2b 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -4810,9 +4810,9 @@ static void nand_manufacturer_cleanup(struct nand_chip *chip)
- }
- 
- static const char *
--nand_manufacturer_name(const struct nand_manufacturer *manufacturer)
-+nand_manufacturer_name(const struct nand_manufacturer_desc *manufacturer_desc)
- {
--	return manufacturer ? manufacturer->name : "Unknown";
-+	return manufacturer_desc ? manufacturer_desc->name : "Unknown";
- }
- 
- /*
-@@ -4820,7 +4820,7 @@ nand_manufacturer_name(const struct nand_manufacturer *manufacturer)
-  */
- static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
- {
--	const struct nand_manufacturer *manufacturer;
-+	const struct nand_manufacturer_desc *manufacturer_desc;
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct nand_memory_organization *memorg;
- 	int busw, ret;
-@@ -4877,8 +4877,8 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
- 	chip->id.len = nand_id_len(id_data, ARRAY_SIZE(chip->id.data));
- 
- 	/* Try to identify manufacturer */
--	manufacturer = nand_get_manufacturer(maf_id);
--	chip->manufacturer.desc = manufacturer;
-+	manufacturer_desc = nand_get_manufacturer_desc(maf_id);
-+	chip->manufacturer.desc = manufacturer_desc;
- 
- 	if (!type)
- 		type = nand_flash_ids;
-@@ -4957,7 +4957,7 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
- 		 */
- 		pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
- 			maf_id, dev_id);
--		pr_info("%s %s\n", nand_manufacturer_name(manufacturer),
-+		pr_info("%s %s\n", nand_manufacturer_name(manufacturer_desc),
- 			mtd->name);
- 		pr_warn("bus width %d instead of %d bits\n", busw ? 16 : 8,
- 			(chip->options & NAND_BUSWIDTH_16) ? 16 : 8);
-@@ -4992,7 +4992,7 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
- 
- 	pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
- 		maf_id, dev_id);
--	pr_info("%s %s\n", nand_manufacturer_name(manufacturer),
-+	pr_info("%s %s\n", nand_manufacturer_name(manufacturer_desc),
- 		chip->parameters.model);
- 	pr_info("%d MiB, %s, erase size: %d KiB, page size: %d, OOB size: %d\n",
- 		(int)(targetsize >> 20), nand_is_slc(chip) ? "SLC" : "MLC",
-diff --git a/drivers/mtd/nand/raw/nand_ids.c b/drivers/mtd/nand/raw/nand_ids.c
-index ba27902fc54b..e0dbc2e316c7 100644
---- a/drivers/mtd/nand/raw/nand_ids.c
-+++ b/drivers/mtd/nand/raw/nand_ids.c
-@@ -166,7 +166,7 @@ struct nand_flash_dev nand_flash_ids[] = {
- };
- 
- /* Manufacturer IDs */
--static const struct nand_manufacturer nand_manufacturers[] = {
-+static const struct nand_manufacturer_desc nand_manufacturer_descs[] = {
- 	{NAND_MFR_AMD, "AMD/Spansion", &amd_nand_manuf_ops},
- 	{NAND_MFR_ATO, "ATO"},
- 	{NAND_MFR_EON, "Eon"},
-@@ -186,20 +186,20 @@ static const struct nand_manufacturer nand_manufacturers[] = {
- };
- 
- /**
-- * nand_get_manufacturer - Get manufacturer information from the manufacturer
-- *			   ID
-+ * nand_get_manufacturer_desc - Get manufacturer information from the
-+ *                              manufacturer ID
-  * @id: manufacturer ID
-  *
-- * Returns a pointer a nand_manufacturer object if the manufacturer is defined
-+ * Returns a nand_manufacturer_desc object if the manufacturer is defined
-  * in the NAND manufacturers database, NULL otherwise.
-  */
--const struct nand_manufacturer *nand_get_manufacturer(u8 id)
-+const struct nand_manufacturer_desc *nand_get_manufacturer_desc(u8 id)
- {
- 	int i;
- 
--	for (i = 0; i < ARRAY_SIZE(nand_manufacturers); i++)
--		if (nand_manufacturers[i].id == id)
--			return &nand_manufacturers[i];
-+	for (i = 0; i < ARRAY_SIZE(nand_manufacturer_descs); i++)
-+		if (nand_manufacturer_descs[i].id == id)
-+			return &nand_manufacturer_descs[i];
- 
- 	return NULL;
- }
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 7f9be95ca8dc..860d3c1020ef 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -1163,7 +1163,7 @@ struct nand_chip {
- 	void *priv;
- 
- 	struct {
--		const struct nand_manufacturer *desc;
-+		const struct nand_manufacturer_desc *desc;
- 		void *priv;
- 	} manufacturer;
- };
--- 
-2.20.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+QXMgcmFpc2VkIGJ5IFJpY2thcmQsIGNlcnRhaW4gY2hpcHMgbGlrZSBUb3NoaWJhL0tpb3hpYQpU
+SDU4TlZHMlMzSEJBSTQgYXJlIG5vdCBPTkZJIGNvbXBsaWFudCBhbmQgYmVjYXVzZSBvZiB0aGF0
+LCB3b3JrIGF0IGEKdmVyeSBzbG93IHBhY2UuIFRoaXMgY2hpcCBpbiBwYXJ0aWN1bGFyIHN1cHBv
+cnRzIHJ1bm5pbmcgYXQgYSBwYWNlCiJjbG9zZSIgdG8gT05GSSBtb2RlIDQuCgpUaGlzIHNlcmll
+cyBwcm92aWRlcyBhIHdheSB0byBtYW51ZmFjdHVyZXIgZHJpdmVycyB0byBwcm9wb3NlIGEgZGF0
+YQppbnRlcmZhY2UgdG8gdGhlIGNvcmUgd2l0aCBhIHZlcnkgc2ltcGxlIGludGVyZmFjZS4gV2hp
+bGUgYXQgaXQsIEkgZGlkCnNvbWUgY2xlYW51cCBhbmQgcHJlcGFyZWQgdGhlIGludHJvZHVjdGlv
+biBvZiBOVi1ERFIgdGltaW5ncy4KCkNoZWVycywKTWlxdcOobAoKQ2hhbmdlcyBpbiB2NjoKKiBD
+b2xsZWN0ZWQgUi1ieSB0YWdzLgoqIEluc2VydGVkIGEgcGF0Y2ggcmVuYW1pbmcgbWFzc2l2ZWx5
+IHRoZSAiZGF0YSBpbnRlcmZhY2UiIG5hbWUgaW50bwogICJpbnRlcmZhY2UgY29uZmlndXJhdGlv
+biIuIEZvbGxvd2VkIHRoaXMgbmFtaW5nIGZvciB0aGUgcmVzdCBvZiB0aGUKICBzZXJpZXMsIGlu
+IHBhcnRpY3VsYXIgZm9yIHRoZSBuZXcgaG9va3MuCiogUmUtYWRkZWQgYSBjb21tZW50IGFib3V0
+IHRoZSBzcGVjaWZpYyB0Q0NTLCB0UiwgdEJFUlMgYW5kIHRQUk9HCiAgdGltaW5ncy4KKiBJbnZl
+cnRlZCB0aGUgY29uZGl0aW9ucyBpbiBvbmZpX2ZpbmRfY2xvc2VzdF9zZHJfbW9kZSgpIGFzIGFk
+dmlzZWQuCiogQ3JlYXRlZCBhIGhlbHBlciB0byByZXRyaWV2ZSB0aGUgcmVzZXQgaW50ZXJmYWNl
+IGNvbmZpZ3VyYXRpb24uCiogRHJvcHBlZCBuYW5kX2V4dHJhY3Rfc2RyX3RpbWluZ3MoKSBhbmQg
+a2VwdCBuYW5kX2dldF9zZHJfdGltaW5ncygpLgoqIENyZWF0ZWQgbmFuZF9nZXRfaW50ZXJmYWNl
+X2NvbmZpZygpIGluc3RlYWQsIHRvIHJldHJpZXZlIGFuCiAgaW50ZXJmYWNlIGNvbmZpZ3VyYXRp
+b24gcHJvdmlkZWQgYSBuYW5kX2NoaXAgb2JqZWN0LgoqIENoYW5nZWQgdGhlIHNjb3BlIG9mIGEg
+dmFyaWFibGUuCiogVHVybmVkIG9uZmlfZmlsbF9pbnRlcmZhY2VfY29uZmlnKCkgaW50byBhIHZv
+aWQgaGVscGVyLgoqIEZpeGVkIHR5cG9zLgoqIFVzZWQgc3RybmNtcCgpIHRvIGNvbXBhcmUgTkFO
+RCBjaGlwIG1vZGVsIG5hbWVzLgoqIFByZXZlbnRlZCBhcHBseWluZyB0aW1pbmcgbW9kZSAwIHR3
+aWNlLgoqIENyZWF0ZWQgYSAtPmN1cnJlbnRfaW50ZXJmYWNlX2NvbmZpZyBlbnRyeSBpbiBuYW5k
+X2NoaXAsIGFsd2F5cwogIHBvaW50aW5nIHRvIHRoZSByaWdodCBpbnRlcmZhY2UgY29uZmlndXJh
+dGlvbi4KKiBSZW5hbWVkIHRoZSBvdGhlciBlbnRyeSAtPmJlc3RfaW50ZXJmYWNlX2NvbmZpZy4K
+CkNoYW5nZXMgaW4gdjU6CiogQ29sbGVjdGVkIFItYnkgdGFncy4KKiBEcm9wcGVkIHRoZSByZW5h
+bWUgb2Ygb25maV90aW1pbmdfbW9kZV9kZWZhdWx0LCBnb3QgcmlkIG9mIGl0IGluc3RlYWQuCiog
+Q29udmVydGVkIEh5bml4IGFuZCBUb3NoaWJhIGRyaXZlcnMgdG8gLT5jaG9vc2VfZGF0YV9pbnRl
+cmZhY2UoKS4KKiBDcmVhdGVkIGEgc3RhdGljIGRlZmF1bHQgcmVzZXQgZGF0YSBpbnRlcmZhY2Ug
+b2JqZWN0LgoqIEFsbG9jYXRlZCBkeW5hbWljYWxseSB0aGUgdGltaW5ncy4KKiBSZW5hbWVkIG9u
+ZmlfZmluZF9jbG9zZXN0X3Nkcl9tb2RlKCkgYW5kIGl0cyBwYXJhbWV0ZXIuCiogRHJvcHBlZCB0
+aGUgY29tcGFyaXNvbiB3aXRoIG1heGltdW0gdmFsdWVzIGluCiAgb25maV9maW5kX2Nsb3Nlc3Rf
+c2RyX21vZGUoKS4KKiBVc2UgImJlc3RfdGltaW5ncyIgaW5zdGVhZCBvZiAiYmVzdF9pZmFjZSIg
+YXMgRERSIGlzIG5vdCBzdXBwb3J0ZWQKICB5ZXQuCiogRHJvcHBlZCBjaG9vc2VfYmVzdF92ZW5k
+b3Jfc2RyX3RpbWluZ3MoKSBhbmQgdW5pZmVkIGl0cyBjb250ZW50IHdpdGgKICBjaG9vc2VfYmVz
+dF9zZHJfdGltaW5ncygpLgoqIElmIHRoZSBzcGVjaWZpYyB0aW1pbmcgc2V0IGNsb3NlIHRvIE9O
+RkkgbW9kZSBYIGlzIG5vdCBzdXBwb3J0ZWQsCiAgZmFsbGJhY2sgdG8gT05GSSBtb2RlIFggZmly
+c3QsIG5vdCBYIC0gMS4KCkNoYW5nZXMgaW4gdjQ6CiogVG9vayBSaWNrYXJkIHBhdGNoIGJhc2Vk
+IG9uIG15IHByZXZpb3VzIHByb3Bvc2FscyBvdmVyIEdpdGh1YiBhbmQKICB0d2Vha2VkIGEgZmV3
+IG1vcmUgdGhpbmdzOgogIC0gQWRkZWQgYSAiZ2VuZXJpYyIgaGVscGVyIHRvIGZhbGxiYWNrIG9u
+IHNsb3dlciBPTkZJIG1vZGVzIHdoZW4gdGhlCiAgICBwcm9wb3NlZCBpbnRlcmZhY2UgaXMgbm90
+IHN1cHBvcnRlZCBieSB0aGUgY29udHJvbGxlci4KICAtIEZpeGVkIG1vcmUga2RvYy4KICAtIFNp
+bXBsaWZpZWQgdGhlIHZlbmRvciBkcml2ZXIgc2lkZSBieSBwcm92aWRpbmcgYWRkaXRpb25hbCBo
+ZWxwZXJzLgoqIFR3ZWFrZWQgYSBsaXR0bGUgYml0IFJpY2thcmQgcGF0Y2ggdG8gZml0IHRoZSBs
+YXRlc3QgY2hhbmdlcy4KCgpCb3JpcyBCcmV6aWxsb24gKDEpOgogIG10ZDogcmF3bmFuZDogcy9k
+YXRhX2ludGVyZmFjZS9pbnRlcmZhY2VfY29uZmlnLwoKTWlxdWVsIFJheW5hbCAoMjgpOgogIG10
+ZDogcmF3bmFuZDogVXNlIHVuc2lnbmVkIHR5cGVzIGZvciBuYW5kX2NoaXAgdW5zaWduZWQgdmFs
+dWVzCiAgbXRkOiByYXduYW5kOiBPbmx5IHVzZSB1OCBpbnN0ZWFkIG9mIHVpbnQ4X3QgaW4gbmFu
+ZF9jaGlwIHN0cnVjdHVyZQogIG10ZDogcmF3bmFuZDogQ3JlYXRlIGEgbmFuZF9jaGlwIG9wZXJh
+dGlvbnMgc3RydWN0dXJlCiAgbXRkOiByYXduYW5kOiBSZW5hbWUgdGhlIG1hbnVmYWN0dXJlciBz
+dHJ1Y3R1cmUKICBtdGQ6IHJhd25hbmQ6IERlY2xhcmUgdGhlIG5hbmRfbWFudWZhY3R1cmVyIHN0
+cnVjdHVyZSBvdXQgb2YgbmFuZF9jaGlwCiAgbXRkOiByYXduYW5kOiBSZW9yZ2FuaXplIHRoZSBu
+YW5kX2NoaXAgc3RydWN0dXJlCiAgbXRkOiByYXduYW5kOiBDb21wYXJlIHRoZSBhY3R1YWwgdGlt
+aW5nIHZhbHVlcwogIG10ZDogcmF3bmFuZDogVXNlIHRoZSBkYXRhIGludGVyZmFjZSBtb2RlIGVu
+dHJ5IHdoZW4gcmVsZXZhbnQKICBtdGQ6IHJhd25hbmQ6IFJlbmFtZSBuYW5kX2hhc19zZXR1cF9k
+YXRhX2lmYWNlKCkKICBtdGQ6IHJhd25hbmQ6IEZpeCBuYW5kX3NldHVwX2RhdGFfaW50ZXJmYWNl
+KCkgZGVzY3JpcHRpb24KICBtdGQ6IHJhd25hbmQ6IFJlbmFtZSBuYW5kX2luaXRfZGF0YV9pbnRl
+cmZhY2UoKQogIG10ZDogcmF3bmFuZDogdGltaW5nczogVXBkYXRlIG9uZmlfZmlsbF9kYXRhX2lu
+dGVyZmFjZSgpIGtlcm5lbCBkb2MKICBtdGQ6IHJhd25hbmQ6IHRpbWluZ3M6IFByb3ZpZGUgb25m
+aV9maWxsX2RhdGFfaW50ZXJmYWNlKCkgd2l0aCBhIGRhdGEKICAgIGludGVyZmFjZQogIG10ZDog
+cmF3bmFuZDogdGltaW5nczogQWRkIGEgaGVscGVyIHRvIGZpbmQgdGhlIGNsb3Nlc3QgT05GSSBt
+b2RlCiAgbXRkOiByYXduYW5kOiB0aW1pbmdzOiBBdm9pZCByZWRlZmluaW5nIHRSX21heCBhbmQg
+dENDU19taW4KICBtdGQ6IHJhd25hbmQ6IHRpbWluZ3M6IFVzZSBkZWZhdWx0IHZhbHVlcyBmb3Ig
+dFBST0dfbWF4IGFuZCB0QkVSU19tYXgKICBtdGQ6IHJhd25hbmQ6IHRpbWluZ3M6IE1ha2Ugb25m
+aV9maWxsX2ludGVyZmFjZV9jb25maWcoKSBhIHZvaWQgaGVscGVyCiAgbXRkOiByYXduYW5kOiBE
+ZWZpbmUgYSB1bmlxdWUgcmVzZXQgaW50ZXJmYWNlIGNvbmZpZ3VyYXRpb24KICBtdGQ6IHJhd25h
+bmQ6IG1hcnZlbGw6IFVzZSBhIGhlbHBlciB0byBhY2Nlc3MgdGhlIHRpbWluZ3MKICBtdGQ6IHJh
+d25hbmQ6IGxlZ2FjeTogVXNlIGEgaGVscGVyIHRvIGFjY2VzcyB0aGUgdGltaW5ncwogIG10ZDog
+cmF3bmFuZDogSGlkZSB0aGUgY2hpcC0+aW50ZXJmYWNlX2NvbmZpZyBpbmRpcmVjdGlvbgogIG10
+ZDogcmF3bmFuZDogSW50cm9kdWNlIG5hbmRfY2hvb3NlX2Jlc3Rfc2RyX3RpbWluZ3MoKQogIG10
+ZDogcmF3bmFuZDogQWRkIHRoZSAtPmNob29zZV9pbnRlcmZhY2UoKSBob29rCiAgbXRkOiByYXdu
+YW5kOiB0b3NoaWJhOiBJbXBsZW1lbnQgLT5jaG9vc2VfaW50ZXJmYWNlKCkgZm9yCiAgICBUQzU4
+VEVHNURDTFRBMDAKICBtdGQ6IHJhd25hbmQ6IHRvc2hpYmE6IEltcGxlbWVudCAtPmNob29zZV9p
+bnRlcmZhY2UoKSBmb3IgVEM1OE5WRzBTM0UKICBtdGQ6IHJhd25hbmQ6IGh5bml4OiBJbXBsZW1l
+bnQgLT5jaG9vc2VfaW50ZXJmYWNlKCkgZm9yCiAgICBIMjdVQ0c4VDJBVFItQkMKICBtdGQ6IHJh
+d25hbmQ6IEdldCByaWQgb2YgdGhlIGRlZmF1bHQgT05GSSB0aW1pbmcgbW9kZQogIG10ZDogcmF3
+bmFuZDogQWxsb2NhdGUgdGhlIGJlc3QgaW50ZXJmYWNlIGNvbmZpZ3VyYXRpb24gZHluYW1pY2Fs
+bHkKClJpY2thcmQgeCBBbmRlcnNzb24gKDEpOgogIG10ZDogcmF3bmFuZDogdG9zaGliYTogQ2hv
+b3NlIHRoZSBkYXRhIGludGVyZmFjZSBmb3IgVEg1OE5WRzJTM0hCQUk0CgogZHJpdmVycy9tdGQv
+bmFuZC9yYXcvYW1zLWRlbHRhLmMgICAgICAgICAgICAgIHwgICA2ICstCiBkcml2ZXJzL210ZC9u
+YW5kL3Jhdy9hcmFzYW4tbmFuZC1jb250cm9sbGVyLmMgfCAgIDYgKy0KIGRyaXZlcnMvbXRkL25h
+bmQvcmF3L2F0bWVsL25hbmQtY29udHJvbGxlci5jICB8ICAzNCArLS0KIC4uLi9tdGQvbmFuZC9y
+YXcvY2FkZW5jZS1uYW5kLWNvbnRyb2xsZXIuYyAgICB8ICAgNiArLQogZHJpdmVycy9tdGQvbmFu
+ZC9yYXcvZGVuYWxpLmMgICAgICAgICAgICAgICAgIHwgICA4ICstCiBkcml2ZXJzL210ZC9uYW5k
+L3Jhdy9mc21jX25hbmQuYyAgICAgICAgICAgICAgfCAgIDYgKy0KIGRyaXZlcnMvbXRkL25hbmQv
+cmF3L2dwbWktbmFuZC9ncG1pLW5hbmQuYyAgICB8ICAgNiArLQogZHJpdmVycy9tdGQvbmFuZC9y
+YXcvaW50ZXJuYWxzLmggICAgICAgICAgICAgIHwgIDIyICstCiBkcml2ZXJzL210ZC9uYW5kL3Jh
+dy9tYXJ2ZWxsX25hbmQuYyAgICAgICAgICAgfCAgMjAgKy0KIGRyaXZlcnMvbXRkL25hbmQvcmF3
+L21lc29uX25hbmQuYyAgICAgICAgICAgICB8ICAxNCArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcv
+bXRrX25hbmQuYyAgICAgICAgICAgICAgIHwgICA2ICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9t
+eGNfbmFuZC5jICAgICAgICAgICAgICAgfCAgMjAgKy0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L214
+aWNfbmFuZC5jICAgICAgICAgICAgICB8ICAgNiArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFu
+ZF9iYXNlLmMgICAgICAgICAgICAgIHwgMjg3ICsrKysrKysrKystLS0tLS0tLQogZHJpdmVycy9t
+dGQvbmFuZC9yYXcvbmFuZF9oeW5peC5jICAgICAgICAgICAgIHwgIDE1ICstCiBkcml2ZXJzL210
+ZC9uYW5kL3Jhdy9uYW5kX2lkcy5jICAgICAgICAgICAgICAgfCAgMjQgKy0KIGRyaXZlcnMvbXRk
+L25hbmQvcmF3L25hbmRfbGVnYWN5LmMgICAgICAgICAgICB8ICAgNyArLQogZHJpdmVycy9tdGQv
+bmFuZC9yYXcvbmFuZF9tYWNyb25peC5jICAgICAgICAgIHwgIDEwICstCiBkcml2ZXJzL210ZC9u
+YW5kL3Jhdy9uYW5kX21pY3Jvbi5jICAgICAgICAgICAgfCAgIDIgKy0KIGRyaXZlcnMvbXRkL25h
+bmQvcmF3L25hbmRfdGltaW5ncy5jICAgICAgICAgICB8IDExNyArKysrKy0tCiBkcml2ZXJzL210
+ZC9uYW5kL3Jhdy9uYW5kX3Rvc2hpYmEuYyAgICAgICAgICAgfCAgNjggKysrKy0KIGRyaXZlcnMv
+bXRkL25hbmQvcmF3L3MzYzI0MTAuYyAgICAgICAgICAgICAgICB8ICAgNiArLQogZHJpdmVycy9t
+dGQvbmFuZC9yYXcvc3RtMzJfZm1jMl9uYW5kLmMgICAgICAgIHwgICA2ICstCiBkcml2ZXJzL210
+ZC9uYW5kL3Jhdy9zdW54aV9uYW5kLmMgICAgICAgICAgICAgfCAgIDYgKy0KIGRyaXZlcnMvbXRk
+L25hbmQvcmF3L3RhbmdvX25hbmQuYyAgICAgICAgICAgICB8ICAgNCArLQogZHJpdmVycy9tdGQv
+bmFuZC9yYXcvdGVncmFfbmFuZC5jICAgICAgICAgICAgIHwgICA2ICstCiBpbmNsdWRlL2xpbnV4
+L210ZC9yYXduYW5kLmggICAgICAgICAgICAgICAgICAgfCAyNzAgKysrKysrKystLS0tLS0tLQog
+MjcgZmlsZXMgY2hhbmdlZCwgNTg3IGluc2VydGlvbnMoKyksIDQwMSBkZWxldGlvbnMoLSkKCi0t
+IAoyLjIwLjEKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5p
+bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
