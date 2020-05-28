@@ -2,21 +2,22 @@ Return-Path: <SRS0=EQmy=7K=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DBF2C433DF
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 09:55:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53ABBC433E0
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 10:07:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1F183208A7
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 09:55:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 21E80206B6
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 10:07:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cV8A8RpQ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="QdLpXxfH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1F183208A7
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="J0WEOkgj";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Ct26ohnr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 21E80206B6
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,60 +26,60 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
 	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
 	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=h/EQzHXry4i/HVLsCvJ/FQ7S6o8CqQIUynEJbheHrYc=; b=cV8A8RpQrZ5N3U
-	vqjdpEod6JnksvDi1RUGLb5NEiWzc3ueMLjBRNofiUZ1ajSq9/xTHomf7oTIPZJ0BaFrfpY0pSr5w
-	VPlBLB/f5JQ6Gk+JnBbciiIht3EoooBU5Hk32gmwrSuM5e4jwn/PeoIMFIhJzOk6ieGzmiSOCPkJq
-	0M7ODzizqUUnnRgzwfL0ewTiD3A/0FsasnJpLzuqrifwU7ehqyJRw9+EVf85z1Tq5QpUePL2ver2T
-	qw5WsZrC9aOTLXUlPVLRs9P2hem0SKPlQw8DL7MD0kfS2W4C+ql529TsYLP1f+M5C9NJInfFuXvEV
-	gjhTuQqhFaMhYej95Mhw==;
+	List-Owner; bh=sSlKK0mDo77fZ21XKT7R3H4rd2+6Zy752tmEfEEAQNw=; b=J0WEOkgjz42UnI
+	b3/FNBGk/l+2/x6ar21ErlX0+48R60kY8YAXKKfn03JUtWCbXVk0b4yElih3HgmskaLS34Y+lCkdY
+	Ys7qWoih2tGSGPArXMULXnmR2XCFmScUJ0PaWAFY2MN2Qw6K7FhGX60Hy0qw6RAj/2tt6f802tAQN
+	pBcMRkTbBqUKvIxstecWwImmlfn1zglHOETLNbElYyuSOGGPRc4oyEiF/GLXHxpO8tKKVH3pOLr13
+	U+JoTMnC48wUWPySRg97KkzPqfkdlnlMi/EwTKQ1/MqUOoVSarXVlqmRq2vyvC+066AjhfMIs7bRb
+	1SI9VByqXbtyn52Qe7dQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jeFFM-0007bi-T5; Thu, 28 May 2020 09:54:44 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1jeFRg-0001Zl-OB; Thu, 28 May 2020 10:07:28 +0000
+Received: from lelv0142.ext.ti.com ([198.47.23.249])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jeFFK-0007ZT-SV
- for linux-mtd@lists.infradead.org; Thu, 28 May 2020 09:54:44 +0000
+ id 1jeFRd-0001Z6-7Y
+ for linux-mtd@lists.infradead.org; Thu, 28 May 2020 10:07:27 +0000
 Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04S9sKep073014;
- Thu, 28 May 2020 04:54:20 -0500
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04SA7Amr011529;
+ Thu, 28 May 2020 05:07:10 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1590659660;
- bh=fFt+EvSvDnHIYU/mdgaQndevTVzx/3/nPmaY5O3YS8Y=;
+ s=ti-com-17Q1; t=1590660430;
+ bh=JIuX7vy1NOkZZG4cWNaBQkBz7x7Mn0OSQkz/l93tdT4=;
  h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=QdLpXxfHddhehXDQFmZjHc3vxdZOL1M+cG5mEV72ev2HFoDsuqSVDTAOyMuF2DAyt
- OlZQvFwghFf/ZGZRUWTQmaEOyN+js9oDwHSx6oC59XUfkyIvYzwDV3CMxD+tH8U0F/
- w+lyEThhkiBlHPZ5b+bQkaBpT0VKUh9LSEYgmzlw=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04S9sKMb073639;
- Thu, 28 May 2020 04:54:20 -0500
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ b=Ct26ohnr8OmHtcITq7XzJV2+6grBMLN4GIuygi4KhgTkgl7hgVeSiOgNgZspjm1vT
+ VW537w7qPh33qn1LL/3EpWl0t4bXyHGj5qneXWk9M0th3j59C1i3lHMwQP/15ThW0E
+ Pio2hpxqCv9kxJgGVq65PGt7gKjIUZslmNAnqxKc=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04SA7AfG092541;
+ Thu, 28 May 2020 05:07:10 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 28
- May 2020 04:54:20 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ May 2020 05:07:10 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 28 May 2020 04:54:19 -0500
+ Frontend Transport; Thu, 28 May 2020 05:07:10 -0500
 Received: from [10.250.234.195] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04S9sFgS019886;
- Thu, 28 May 2020 04:54:15 -0500
-Subject: Re: [PATCH v2 6/6] spi: Move cadence-quadspi driver to drivers/spi/
-To: kbuild test robot <lkp@intel.com>, Tudor Ambarus
- <tudor.ambarus@microchip.com>, Mark Brown <broonie@kernel.org>
-References: <20200526093604.11846-7-vigneshr@ti.com>
- <202005280400.IgqKbGTF%lkp@intel.com>
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04SA74na017181;
+ Thu, 28 May 2020 05:07:04 -0500
+Subject: Re: [PATCH RESEND v2] mtd: physmap: Add Baikal-T1 physically mapped
+ ROMs support
+To: Serge Semin <Sergey.Semin@baikalelectronics.ru>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>
+References: <20200526225849.20985-1-Sergey.Semin@baikalelectronics.ru>
 From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <3fd21609-cb9a-cbe9-f40f-a8a8a00491a2@ti.com>
-Date: Thu, 28 May 2020 15:24:14 +0530
+Message-ID: <5f5fc883-1cf0-f0b8-11bb-a60b45d135cd@ti.com>
+Date: Thu, 28 May 2020 15:36:55 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <202005280400.IgqKbGTF%lkp@intel.com>
+In-Reply-To: <20200526225849.20985-1-Sergey.Semin@baikalelectronics.ru>
 Content-Language: en-US
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200528_025443_000445_88E07EC0 
-X-CRM114-Status: GOOD (  12.36  )
+X-CRM114-CacheID: sfid-20200528_030725_358574_F23429DC 
+X-CRM114-Status: GOOD (  26.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,12 +91,18 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: marex@denx.de, kbuild-all@lists.01.org,
- Boris Brezillon <bbrezillon@kernel.org>, dinguyen@kernel.org,
- simon.k.r.goldschmidt@gmail.com, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org,
- Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>,
- linux-mtd@lists.infradead.org
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Vadim Vlasov <V.Vlasov@baikalelectronics.ru>,
+ Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>,
+ Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+ linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+ Serge Semin <fancer.lancer@gmail.com>,
+ Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+ Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>,
+ Arnd Bergmann <arnd@arndb.de>,
+ Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+ Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>,
+ linux-mtd@lists.infradead.org, Lee Jones <lee.jones@linaro.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
@@ -103,71 +110,151 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Hi,
 
-On 28/05/20 2:28 am, kbuild test robot wrote:
-> Hi Vignesh,
+On 27/05/20 4:28 am, Serge Semin wrote:
+> Baikal-T1 Boot Controller provides an access to a RO storages, which are
+> physically mapped into the MMIO space. In particularly there are the
+> Internal ROM embedded into the SoC with a pre-installed firmware,
+> externally attached SPI flash (also accessed in the read-only mode) and a
+> memory region, which mirrors one of them in accordance with the currently
+> enabled system boot mode (also called Boot ROM).
 > 
+> This commit adds the ROMs support to the physmap driver of the MTD kernel
+> subsystem. Currently the driver only supports the Internal ROM, since
+> physically mapped SPI flash is utilized by the Baikal-T1 System Boot
+> Controller driver so won't be available over mtd-rom interface and
+> the Boot ROM mirror mapping has dependency on the SPI flash mapping
+> switcher available within the SPI flash registers space. The real access
+> to the Boot ROM memory will be added in future.
+> 
+> Note we had to create a dedicated code for the ROMs since read from the
+> corresponding memory regions must be done via the dword-aligned addresses.
+> In addition the driver in future states will have to take into account
+> that the Boot ROM might mirror the SPI flash region so before accessing it
+> the SPI flash direct mapping must be enabled by means of a dedicated flag
+> in the Baikal-T1 System SPI register flag.
+> 
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Cc: Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>
+> Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
+> Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
+> Cc: Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>
+> Cc: Vadim Vlasov <V.Vlasov@baikalelectronics.ru>
+> Cc: Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Lee Jones <lee.jones@linaro.org>
+> Cc: linux-mips@vger.kernel.org
+> 
+> ---
+> 
+> Miquel, Richard, Vignesh, the merge window is upon us, please review/merge
+> in/whatever this patch.
+> 
+> This patchset is rebased and tested on the mainline Linux kernel 5.7-rc4:
+> base-commit: 0e698dfa2822 ("Linux 5.7-rc4")
+> tag: v5.7-rc4
+> 
+> New vendor prefix will be added in the framework of the next patchset:
+> https://lkml.org/lkml/2020/5/6/1047
+
+
+Sorry, driver patch and dt bindings have to be proposed together...
+Driver cannot be accepted ahead of DT bindings been reviewed.
+
+> 
+> Note since the next patchset is no longer relevant (as a result of a
+> discussion with @Lee and @Miquel)
+> https://lkml.org/lkml/2020/3/6/421
+> and Boot ROM mtd is currently unsupported I can freely submit this patch,
+> while in former case I had to wait for the patchset merged.
+> 
+
 [...]
-> 
-> In file included from include/linux/err.h:5,
-> from include/linux/clk.h:12,
-> from drivers/spi/spi-cadence-quadspi.c:9:
-> include/linux/scatterlist.h: In function 'sg_set_buf':
-> arch/xtensa/include/asm/page.h:193:9: warning: comparison of unsigned expression >= 0 is always true [-Wtype-limits]
-> 193 |  ((pfn) >= ARCH_PFN_OFFSET && ((pfn) - ARCH_PFN_OFFSET) < max_mapnr)
-> |         ^~
-> include/linux/compiler.h:78:42: note: in definition of macro 'unlikely'
-> 78 | # define unlikely(x) __builtin_expect(!!(x), 0)
-> |                                          ^
-> include/linux/scatterlist.h:143:2: note: in expansion of macro 'BUG_ON'
-> 143 |  BUG_ON(!virt_addr_valid(buf));
-> |  ^~~~~~
-> arch/xtensa/include/asm/page.h:201:32: note: in expansion of macro 'pfn_valid'
-> 201 | #define virt_addr_valid(kaddr) pfn_valid(__pa(kaddr) >> PAGE_SHIFT)
-> |                                ^~~~~~~~~
-> include/linux/scatterlist.h:143:10: note: in expansion of macro 'virt_addr_valid'
-> 143 |  BUG_ON(!virt_addr_valid(buf));
-> |          ^~~~~~~~~~~~~~~
-> In file included from ./arch/xtensa/include/generated/asm/bug.h:1,
-> from include/linux/bug.h:5,
-> from include/linux/thread_info.h:12,
-> from arch/xtensa/include/asm/current.h:18,
-> from include/linux/mutex.h:14,
-> from include/linux/notifier.h:14,
-> from include/linux/clk.h:14,
-> from drivers/spi/spi-cadence-quadspi.c:9:
-> include/linux/dma-mapping.h: In function 'dma_map_resource':
-> arch/xtensa/include/asm/page.h:193:9: warning: comparison of unsigned expression >= 0 is always true [-Wtype-limits]
-> 193 |  ((pfn) >= ARCH_PFN_OFFSET && ((pfn) - ARCH_PFN_OFFSET) < max_mapnr)
-> |         ^~
-> include/asm-generic/bug.h:139:27: note: in definition of macro 'WARN_ON_ONCE'
-> 139 |  int __ret_warn_once = !!(condition);            |                           ^~~~~~~~~
-> include/linux/dma-mapping.h:352:19: note: in expansion of macro 'pfn_valid'
-> 352 |  if (WARN_ON_ONCE(pfn_valid(PHYS_PFN(phys_addr))))
-> |                   ^~~~~~~~~
-> In file included from include/linux/shm.h:6,
-> from include/linux/sched.h:16,
-> from include/linux/ratelimit.h:6,
-> from include/linux/dev_printk.h:16,
-> from include/linux/device.h:15,
-> from include/linux/dma-mapping.h:7,
-> from drivers/spi/spi-cadence-quadspi.c:12:
-> drivers/spi/spi-cadence-quadspi.c: In function 'cqspi_direct_read_execute':
-> arch/xtensa/include/asm/page.h:193:9: warning: comparison of unsigned expression >= 0 is always true [-Wtype-limits]
-> 193 |  ((pfn) >= ARCH_PFN_OFFSET && ((pfn) - ARCH_PFN_OFFSET) < max_mapnr)
-> |         ^~
-> arch/xtensa/include/asm/page.h:201:32: note: in expansion of macro 'pfn_valid'
-> 201 | #define virt_addr_valid(kaddr) pfn_valid(__pa(kaddr) >> PAGE_SHIFT)
-> |                                ^~~~~~~~~
->>> drivers/spi/spi-cadence-quadspi.c:911:26: note: in expansion of macro 'virt_addr_valid'
-> 911 |  if (!cqspi->rx_chan || !virt_addr_valid(buf)) {
-> |                          ^~~~~~~~~~~~~~~
+> +static void __xipram bt1_rom_map_copy_from(struct map_info *map,
+> +					   void *to, unsigned long from,
+> +					   ssize_t len)
+> +{
+> +	void __iomem *src = map->virt + from;
+> +	ssize_t shift, chunk;
+> +	u32 data;
+> +
+> +	if (len <= 0 || from >= map->size)
+> +		return;
+> +
+> +	/* Make sure we don't go over the map limit. */
+> +	len = min_t(ssize_t, map->size - from, len);
+> +
+> +	/*
+> +	 * Since requested data size can be pretty big we have to implement
+> +	 * the copy procedure as optimal as possible. That's why it's split
+> +	 * up into the next three stages: unaligned head, aligned body,
+> +	 * unaligned tail.
+> +	 */
+> +	shift = (ssize_t)src & 0x3;
+> +	if (shift) {
+> +		chunk = min_t(ssize_t, 4 - shift, len);
+> +		data = readl_relaxed(src - shift);
+> +		memcpy(to, &data + shift, chunk);
+> +		src += chunk;
+> +		to += chunk;
+> +		len -= chunk;
+> +	}
+> +
+> +	while (len >= 4) {
+> +		data = readl_relaxed(src);
+> +		memcpy(to, &data, 4);
+> +		src += 4;
+> +		to += 4;
+> +		len -= 4;
+> +	}
+> +
+> +	if (len) {
+> +		data = readl_relaxed(src);
+> +		memcpy(to, &data, len);
+> +	}
+> +}
+> +
+> +static map_word __xipram bt1_rom_dummy_read(struct map_info *map,
+> +					  unsigned long ofs)
+> +{
+> +	map_word ret;
+> +
+> +	ret.x[0] = 0xFF;
+> +
+> +	return ret;
+> +}
+
+Why define dummy_io for "baikal,bt1-boot-rom"? I don't see any use of
+adding a driver that always reads 0xFFs
 
 
-Thanks for the report! But it seems with ARCH=xtensa and config that was
-attached, I see above warning for every file in the kernel that uses
-virt_addr_valid(), So, the fix for this warning is really in xtensa arch
-code and therefore should not block this series from being merged.
+> +
+> +/*
+> + * Currently Baikal-T1 SoC internal ROM is only supported. Boot ROM region is
+> + * dummy-data filled for now since in case of the system booted up from an
+> + * external SPI flash the ROM will mirror the Baikal-T1 System Boot SPI direct
+> + * mapping memory region. That region can be only accessed when transparent
+> + * mode is enabled, which we unable to do here because this feature is provided
+> + * by the SPI controller config space occupied by the corresponding driver.
+> + * In future we'll export the mode setting method from the Baikal-T1 System
+> + * Boot SPI Controller driver to also have the Boot ROM supported here.
+> + */
+> +static const struct of_device_id bt1_rom_of_match[] = {
+> +	{
+> +		.compatible = "baikal,bt1-int-rom",
+> +		.data = &bt1_rom_normal_io
+> +	},
 
+> +	{
+> +		.compatible = "baikal,bt1-boot-rom",
+> +		.data = &bt1_rom_dummy_io
+> +	},
+> +	{ }
+
+
+
+[...]
 
 Regards
 Vignesh
