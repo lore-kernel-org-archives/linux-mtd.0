@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0627C433E0
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 23:20:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24096C433E0
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 23:20:52 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A7B3720721
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 23:20:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DA9F220721
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 23:20:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RfFFe44l"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A7B3720721
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="p+iAiIdi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA9F220721
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sSs21RxdSme+Sb01Jk0aFH5aI3QomW5rE5cQvrDK008=; b=RfFFe44ltJ1Dob
-	OxYOwFdOnLg7ZeizGzn64znL0kZKRFphagjHQOhF6NC/8GoDT7ceI4hXJcw6lxORE7Nkfhhs1yetn
-	f0bs9/85wtOtEWV4CBp0hbsvKVEG16QdV3b8LjERcEfgYOYEDlfWw1AqLuQYMQyLxM7z0PFkWCW2h
-	eamAMiUQVMffwOOdtmxKfSzSWuy8l40cLaafgTFqbsNL159FH1z3unZevq07PDOrh0taLYk2HfAGc
-	3/679EcuEYRFLMZlVOIdcV3vx58LexwK3EccQ2/Q4xTeOSXDSdLFWmVOa0GCls55zwISuwSn43lhJ
-	+cBHvahoOXhIFtd4LNuQ==;
+	List-Owner; bh=rRlBCiPUXipRvWX+nVMlwIf6bfbY0MBx+n9TvBC58GM=; b=p+iAiIdiAGmahO
+	BWVNzigVRZuiF9kO7E7H224sIkj3PEyGpAAJNql9lhPFOLu0+onsc+RwgyaKoTBuS9kOIieQAeA6M
+	uq8xXWF8S92aeOonBFONvPDdD870vuvAoraz45mY8HTUzWCnMvYBiEkFwXEJUsRF5RRg7JDQll7cU
+	COdFCn3ihmRrm0f50FATt4oZlbBdMnYUyM5BX8bmQuJTg+qwQBk/KPlCbFnSJ6hFDbjqkME0tCNdC
+	dJcxk+KVg53DQKVlR7B9eX65PwetkAYFYAVOAhSJ/BS4wk505B0WXEXjDD8Lvb0suTBehHhpMiRJk
+	P3VyniOCOk2/Rr9EoGfw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jeRp4-0003al-2o; Thu, 28 May 2020 23:20:26 +0000
+	id 1jeRpK-0003pO-O3; Thu, 28 May 2020 23:20:42 +0000
 Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jeRlI-0006DH-Jl
- for linux-mtd@lists.infradead.org; Thu, 28 May 2020 23:16:34 +0000
+ id 1jeRlM-0006HS-CY
+ for linux-mtd@lists.infradead.org; Thu, 28 May 2020 23:16:38 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 19E60240006;
- Thu, 28 May 2020 23:16:30 +0000 (UTC)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 7A78B240004;
+ Thu, 28 May 2020 23:16:33 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH v6 13/30] mtd: rawnand: timings: Provide
- onfi_fill_data_interface() with a data interface
-Date: Fri, 29 May 2020 01:15:55 +0200
-Message-Id: <20200528231612.8958-14-miquel.raynal@bootlin.com>
+Subject: [PATCH v6 16/30] mtd: rawnand: timings: Use default values for
+ tPROG_max and tBERS_max
+Date: Fri, 29 May 2020 01:15:58 +0200
+Message-Id: <20200528231612.8958-17-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200528231612.8958-1-miquel.raynal@bootlin.com>
 References: <20200528231612.8958-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200528_161632_936663_4F5A60C2 
-X-CRM114-Status: GOOD (  13.64  )
+X-CRM114-CacheID: sfid-20200528_161636_709345_B1D9CA37 
+X-CRM114-Status: GOOD (  12.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,82 +79,109 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-We rely be default on the data interface which is in the nand_chip
-structure but it should be possible to fill any other data interface.
+The ONFI parameter page of a chip might define more fine grained
+tPROG_max and tBERS_max. When we do not have this information, we
+default to the highest possible values (they are maxima anyway).
+
+There is no point setting these fields at runtime, so explicitly move
+these defaults to the main ONFI SDR timings structure.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 ---
- drivers/mtd/nand/raw/internals.h    | 1 +
- drivers/mtd/nand/raw/nand_base.c    | 7 ++++---
- drivers/mtd/nand/raw/nand_timings.c | 3 ++-
- 3 files changed, 7 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/raw/nand_timings.c | 31 ++++++++++++++++++-----------
+ 1 file changed, 19 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
-index a5e2cec7e301..0f74509abc4c 100644
---- a/drivers/mtd/nand/raw/internals.h
-+++ b/drivers/mtd/nand/raw/internals.h
-@@ -85,6 +85,7 @@ int nand_markbad_bbm(struct nand_chip *chip, loff_t ofs);
- int nand_erase_nand(struct nand_chip *chip, struct erase_info *instr,
- 		    int allowbbt);
- int onfi_fill_data_interface(struct nand_chip *chip,
-+			     struct nand_data_interface *iface,
- 			     enum nand_data_interface_type type,
- 			     int timing_mode);
- int nand_get_features(struct nand_chip *chip, int addr, u8 *subfeature_param);
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 1d9cf02d164b..b4de85794e07 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -927,7 +927,7 @@ static int nand_reset_data_interface(struct nand_chip *chip, int chipnr)
- 	 * timings to timing mode 0.
- 	 */
- 
--	onfi_fill_data_interface(chip, NAND_SDR_IFACE, 0);
-+	onfi_fill_data_interface(chip, &chip->data_interface, NAND_SDR_IFACE, 0);
- 	ret = chip->controller->ops->setup_data_interface(chip, chipnr,
- 							&chip->data_interface);
- 	if (ret)
-@@ -1040,7 +1040,8 @@ static int nand_choose_data_interface(struct nand_chip *chip)
- 	}
- 
- 	for (mode = fls(modes) - 1; mode >= 0; mode--) {
--		ret = onfi_fill_data_interface(chip, NAND_SDR_IFACE, mode);
-+		ret = onfi_fill_data_interface(chip, &chip->data_interface,
-+					       NAND_SDR_IFACE, mode);
- 		if (ret)
- 			continue;
- 
-@@ -5182,7 +5183,7 @@ static int nand_scan_ident(struct nand_chip *chip, unsigned int maxchips,
- 	mutex_init(&chip->lock);
- 
- 	/* Enforce the right timings for reset/detection */
--	onfi_fill_data_interface(chip, NAND_SDR_IFACE, 0);
-+	onfi_fill_data_interface(chip, &chip->data_interface, NAND_SDR_IFACE, 0);
- 
- 	ret = nand_dt_init(chip);
- 	if (ret)
 diff --git a/drivers/mtd/nand/raw/nand_timings.c b/drivers/mtd/nand/raw/nand_timings.c
-index a73d934e86f9..ce6bb87db2e8 100644
+index 728a2dee1eed..9ff4b121ab1e 100644
 --- a/drivers/mtd/nand/raw/nand_timings.c
 +++ b/drivers/mtd/nand/raw/nand_timings.c
-@@ -276,14 +276,15 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
- /**
-  * onfi_fill_data_interface - Initialize a data interface from a given ONFI mode
-  * @chip: The NAND chip
-+ * @iface: The data interface to fill
-  * @type: The data interface type
-  * @timing_mode: The ONFI timing mode
-  */
- int onfi_fill_data_interface(struct nand_chip *chip,
-+			     struct nand_data_interface *iface,
- 			     enum nand_data_interface_type type,
- 			     int timing_mode)
- {
--	struct nand_data_interface *iface = &chip->data_interface;
- 	struct onfi_params *onfi = chip->parameters.onfi;
+@@ -12,6 +12,13 @@
  
- 	if (type != NAND_SDR_IFACE)
+ #define ONFI_DYN_TIMING_MAX U16_MAX
+ 
++/*
++ * For non-ONFI chips we use the highest possible value for tPROG and tBERS.
++ * tR and tCCS will take the default values precised in the ONFI specification
++ * for timing mode 0, respectively 200us and 500ns.
++ *
++ * These four values are tweaked to be more accurate in the case of ONFI chips.
++ */
+ static const struct nand_data_interface onfi_sdr_timings[] = {
+ 	/* Mode 0 */
+ 	{
+@@ -20,6 +27,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
+ 		.timings.sdr = {
+ 			.tCCS_min = 500000,
+ 			.tR_max = 200000000,
++			.tPROG_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
++			.tBERS_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
+ 			.tADL_min = 400000,
+ 			.tALH_min = 20000,
+ 			.tALS_min = 50000,
+@@ -63,6 +72,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
+ 		.timings.sdr = {
+ 			.tCCS_min = 500000,
+ 			.tR_max = 200000000,
++			.tPROG_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
++			.tBERS_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
+ 			.tADL_min = 400000,
+ 			.tALH_min = 10000,
+ 			.tALS_min = 25000,
+@@ -106,6 +117,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
+ 		.timings.sdr = {
+ 			.tCCS_min = 500000,
+ 			.tR_max = 200000000,
++			.tPROG_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
++			.tBERS_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
+ 			.tADL_min = 400000,
+ 			.tALH_min = 10000,
+ 			.tALS_min = 15000,
+@@ -149,6 +162,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
+ 		.timings.sdr = {
+ 			.tCCS_min = 500000,
+ 			.tR_max = 200000000,
++			.tPROG_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
++			.tBERS_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
+ 			.tADL_min = 400000,
+ 			.tALH_min = 5000,
+ 			.tALS_min = 10000,
+@@ -192,6 +207,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
+ 		.timings.sdr = {
+ 			.tCCS_min = 500000,
+ 			.tR_max = 200000000,
++			.tPROG_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
++			.tBERS_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
+ 			.tADL_min = 400000,
+ 			.tALH_min = 5000,
+ 			.tALS_min = 10000,
+@@ -235,6 +252,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
+ 		.timings.sdr = {
+ 			.tCCS_min = 500000,
+ 			.tR_max = 200000000,
++			.tPROG_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
++			.tBERS_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
+ 			.tADL_min = 400000,
+ 			.tALH_min = 5000,
+ 			.tALS_min = 10000,
+@@ -357,18 +376,6 @@ int onfi_fill_data_interface(struct nand_chip *chip,
+ 
+ 		/* nanoseconds -> picoseconds */
+ 		timings->tCCS_min = 1000UL * onfi->tCCS;
+-	} else {
+-		struct nand_sdr_timings *timings = &iface->timings.sdr;
+-		/*
+-		 * For non-ONFI chips we use the highest possible value for
+-		 * tPROG and tBERS. tR and tCCS will take the default values
+-		 * precised in the ONFI specification for timing mode 0,
+-		 * respectively 200us and 500ns.
+-		 */
+-
+-		/* microseconds -> picoseconds */
+-		timings->tPROG_max = 1000000ULL * ONFI_DYN_TIMING_MAX;
+-		timings->tBERS_max = 1000000ULL * ONFI_DYN_TIMING_MAX;
+ 	}
+ 
+ 	return 0;
 -- 
 2.20.1
 
