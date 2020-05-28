@@ -2,77 +2,78 @@ Return-Path: <SRS0=EQmy=7K=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41748C433E0
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 02:59:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7CB6C433DF
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 03:06:31 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0FCEB20888
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 02:58:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 80E812084C
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 03:06:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="f1GfZrrg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0FCEB20888
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VYbdMEJz";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ETKtEfdX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 80E812084C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:Reply-To:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3rqC7o4bvWrQNEQG3o+DBcALn/v+MUmujmraYubmXvo=; b=f1GfZrrgrlu6um
-	CufW+3b+cQHN5bwJvC6/g9dKey1aEeiixiGtakwIRjl5hLXa2+uHY+gHk2pB8MQAlXK6xLGVDLRYj
-	/jYmlKLLGw6tdNUxiWUM/lmOnC90OxJ4pO+RqK7SDehClGyOJRrVymGbKDl9fLhWirJAEdCb//YJ5
-	FK39r4SblJknLcILbf5VeZvV/6jKTyRRh0tfpCHKwXNqTi0GxqJxj6qPcelxdH5rK9YHG4cg8B5R0
-	b+SO6awerNOGQxDsGL5sYhl2V4T8Z2YwfcOZW2WjEQLwkYNz/VcNAmw2riEVYARO4KP1P6dwApitb
-	Z3+eHhzi2UMseQ1+FEBw==;
+	List-Owner; bh=zRk/EF7w1H+evp6x0H/BRhZHDvCkzeyNcFd4F30A2RY=; b=VYbdMEJz9USMiV
+	cfqZS9S5X3knDS//7KVlJAr6Tt2fE15lFDPpxbj6QF9UcISvIPjZ28NHGmh8m0mJ821PY7EiYIO5G
+	pm8AJ4JonWCzooaM8Dlsn1m4++xJW9gmfwhVuwQzSRTH4obADnkiycM+dKo1QEiBhgY6kCcVGC2nz
+	+kDJKpKMZTJp2VykWVXPjdrs9fZh2HUlg9lKWa74zfv/kuNBoq32EoSy4if44qvRGiIsVvXLLtzaj
+	GaJi1eo65pk4jDieoCS2tbc8q1nJ9cLGtbrzQCMGvMcgHOY4IWVmzdAAcZbol3/j4n1tcqLxz284Z
+	8wWydliEGdvD2/9tjquA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1je8kn-0006j1-FQ; Thu, 28 May 2020 02:58:45 +0000
-Received: from mga03.intel.com ([134.134.136.65])
+	id 1je8sB-00043y-0C; Thu, 28 May 2020 03:06:23 +0000
+Received: from mail-vs1-xe43.google.com ([2607:f8b0:4864:20::e43])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1je8kj-0006iK-Vx
- for linux-mtd@lists.infradead.org; Thu, 28 May 2020 02:58:43 +0000
-IronPort-SDR: 7TE+1E4nriy27K0vjQHXZpbIjXyL3W7D6Kkny0VrLCjS4FtnMwzXTvz8fL0yknGEp+u1SdC8pS
- KYltbs178Q1w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 May 2020 19:58:40 -0700
-IronPort-SDR: NV1fIEi7SBqqpWFSyetil7BqpMQvRWv0Sli9g92468c8uiX8Se0i5A3wyNFWKSVJ9zyHmQnumZ
- zGuYmBc3PSyg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,443,1583222400"; d="scan'208";a="468974457"
-Received: from linux.intel.com ([10.54.29.200])
- by fmsmga006.fm.intel.com with ESMTP; 27 May 2020 19:58:40 -0700
-Received: from [10.214.164.131] (vramuthx-MOBL1.gar.corp.intel.com
- [10.214.164.131])
- by linux.intel.com (Postfix) with ESMTP id 9E6925803C1;
- Wed, 27 May 2020 19:58:35 -0700 (PDT)
-Subject: Re: [RESENDPATCH v8 1/2] dt-bindings: mtd: Add Nand Flash Controller
- support for Intel LGM SoC
-To: Rob Herring <robh@kernel.org>
-References: <20200520000621.49152-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200520000621.49152-2-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200526204306.GA224630@bogus>
-From: "Ramuthevar, Vadivel MuruganX"
- <vadivel.muruganx.ramuthevar@linux.intel.com>
-Message-ID: <b04a6779-233d-ff7f-6eb6-b6393100189e@linux.intel.com>
-Date: Thu, 28 May 2020 10:58:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+ id 1je8s7-00043W-3n
+ for linux-mtd@lists.infradead.org; Thu, 28 May 2020 03:06:20 +0000
+Received: by mail-vs1-xe43.google.com with SMTP id w65so14941401vsw.11
+ for <linux-mtd@lists.infradead.org>; Wed, 27 May 2020 20:06:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=c0zRf9WTF0mM6R4rLoCl6Co+fSR9upGJzK30+eXsCrQ=;
+ b=ETKtEfdX4f87hvL+eN5+pIdyNmq0wY+7xdaPLxVaTXZ42GBITJENo0kA+8TlcsZaF5
+ Xluh6N64Pf46mJHA+DCu9/ektSbdItOS8crhEaj6B6a0AfsFuYS1/YNRAKXPhihGWVOh
+ lFgctf5UcsAxRAKLBTOmKAe9xcj+pQoznprDI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=c0zRf9WTF0mM6R4rLoCl6Co+fSR9upGJzK30+eXsCrQ=;
+ b=LKL/vVa+TG9DVbWDn2/OhzVpx4VWsm1U7Q01QhJy0hMweK7BbWfUcBpHznPkhtu9Of
+ uQyuUOmZ1bfjdhRCYu5cE6dQKGJKNmwCYsz47K7Tj1R8QXLbGRKUv6d93QX6E6eU1dq4
+ iX+uoJOrA74SPtsy2QiK2C/PBtrB2rvl6CYmU2FQYV4A5auBS62nElpSCS3WCc4TmwJZ
+ EWevBKZi91YUYsguMN8sSvDRa4wX68+qVMrLhV4zQZYBV460kqS4q3IgK5YkchpxEQbT
+ 91LYSZkqXemNqRa+ywfHk0m9cBkwPo2z9xkvMOYXVuFuH1YPssQicL/NRa8iurI2xdEX
+ KM1Q==
+X-Gm-Message-State: AOAM532bydLJH3KnHasHr5udxS/QRqCyxU/6BcHSN/kyFud26KXbes7Y
+ iJcWefQgOVLyjxvsk5bUrNYSprXQSatsRlVz0Q5TPg==
+X-Google-Smtp-Source: ABdhPJyRv5KIG7uAo2gx9DLqYFdLVEioWfhg8W/XAXDq9+AhgpxLCUHCVP+7cfxwa0TCIQBIbicDDN+po4i6IYEWEZI=
+X-Received: by 2002:a67:71c2:: with SMTP id m185mr581124vsc.186.1590635177072; 
+ Wed, 27 May 2020 20:06:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200526204306.GA224630@bogus>
-Content-Language: en-US
+References: <20200528025503.24003-1-wuxy@bitland.com.cn>
+In-Reply-To: <20200528025503.24003-1-wuxy@bitland.com.cn>
+From: Nicolas Boichat <drinkcat@chromium.org>
+Date: Thu, 28 May 2020 11:06:04 +0800
+Message-ID: <CANMq1KDWp7ztviO+ZoXeEqek3uCzPDKjteahO32C3b-=OxerUQ@mail.gmail.com>
+Subject: Re: [PATCH] [v3]mtd: spi-nor: winbond: add 1.8v SPI NOR Flash IDs
+To: wuxy@bitland.com.cn
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200527_195842_070612_808DC0B9 
-X-CRM114-Status: GOOD (  17.66  )
+X-CRM114-CacheID: sfid-20200527_200619_170854_363A5E14 
+X-CRM114-Status: GOOD (  16.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,164 +85,65 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
-Cc: cheol.yong.kim@intel.com, devicetree@vger.kernel.org, qi-ming.wu@intel.com,
- anders.roxell@linaro.org, vigneshr@ti.com, arnd@arndb.de,
- hauke.mehrtens@intel.com, richard@nod.at, brendanhiggins@google.com,
- linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
- boris.brezillon@collabora.com, linux-mtd@lists.infradead.org,
- miquel.raynal@bootlin.com, tglx@linutronix.de, masonccyang@mxic.com.tw,
- andriy.shevchenko@intel.com
+Cc: wuxy <wuxy@bitland.corp-partner.google.com>, linux-mtd@lists.infradead.org,
+ lkml <linux-kernel@vger.kernel.org>, stlin2@winbond.com
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Rob,
+On Thu, May 28, 2020 at 10:55 AM <wuxy@bitland.com.cn> wrote:
+>
+> From: wuxy <wuxy@bitland.corp-partner.google.com>
+>
+> Winbond has new 1.8V SPI NOR Flash IDs,we need to use the SPI
+> flash IDs in kukui series,this patch can support the new flash IDs.
+>
+> TEST=boot to shell,get the spi information from 'dmesg'.
 
-Thank you very much for the review comments...
+TEST= is Chromium OS specific, you can drop this line.
 
-On 27/5/2020 4:43 am, Rob Herring wrote:
-> On Wed, May 20, 2020 at 08:06:20AM +0800, Ramuthevar,Vadivel MuruganX wrote:
->> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
->>
->> Add YAML file for dt-bindings to support NAND Flash Controller
->> on Intel's Lightning Mountain SoC.
->>
->> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
->> ---
->>   .../devicetree/bindings/mtd/intel,lgm-nand.yaml    | 91 ++++++++++++++++++++++
->>   1 file changed, 91 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml b/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
->> new file mode 100644
->> index 000000000000..cd4e983a449e
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
->> @@ -0,0 +1,91 @@
->> +# SPDX-License-Identifier: GPL-2.0
-> 
-> Still not dual licensed.
-oh sorry, will update.
-> 
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/mtd/intel,lgm-nand.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Intel LGM SoC NAND Controller Device Tree Bindings
->> +
->> +allOf:
->> +  - $ref: "nand-controller.yaml"
->> +
->> +maintainers:
->> +  - Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
->> +
->> +properties:
->> +  compatible:
->> +    const: intel,lgm-nand-controller
-> 
-> Still doesn't match the example. And the example will fail when it does.
-Noted, will change it.
-> 
->> +
->> +  reg:
->> +    items:
->> +       - description: ebunand registers
->> +       - description: hsnand registers
->> +       - description: nand_cs0 external flash access
->> +       - description: nand_cs1 external flash access
->> +       - description: addr_sel0 memory region enable and access
->> +       - description: addr_sel1 memory region enable and access
-> 
-> reg-names?
-   should be -const: ebunand instead added description with register 
-name , will keep "-const: ebunand ..etc"
-> 
->> +
->> +  clocks:
->> +    maxItems: 1
->> +
->> +  dmas:
->> +    maxItems: 2
->> +
->> +  dma-names:
->> +    items:
->> +      - const: tx
->> +      - const: rx
->> +
->> +patternProperties:
->> +  "^nand@[a-f0-9]+$":
->> +    type: object
->> +    properties:
->> +      reg:
->> +        minimum: 0
->> +        maximum: 7
->> +
->> +      nand-ecc-mode: true
->> +
->> +      nand-ecc-algo:
->> +        const: hw
->> +
->> +    additionalProperties: false
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - clocks
->> +  - clock-names
-> 
-> Not documented or should be dropped.
-Yes, will drop it.
-> 
->> +  - dmas
->> +  - dma-names
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +    nand-controller@e0f00000 {
->> +      compatible = "intel,lgm-nand";
->> +      reg = <0xe0f00000 0x100>,
->> +            <0xe1000000 0x300>,
->> +            <0xe1400000 0x8000>,
->> +            <0xe1c00000 0x1000>,
->> +            <0x17400000 0x4>,
->> +            <0x17c00000 0x4>;
->> +      reg-names = "ebunand", "hsnand", "nand_cs0", "nand_cs1",
->> +        "addr_sel0","addr_sel1";
-> 
-> Not documented. And needs a space after the ','.
-Good catch, Thanks
-> 
->> +      clocks = <&cgu0 125>;
->> +      dmas = <&dma0 8>, <&dma0 9>;
->> +      dma-names = "tx", "rx";
->> +      #address-cells = <1>;
->> +      #size-cells = <0>;
->> +      #clock-cells = <1>;
-> 
-> Should be removed?
-sure, will remove it
+>
+> Signed-off-by: Xingyu Wu <wuxy@bitland.corp-partner.google.com>
+> Signed-off-by: ST Lin <stlin2@winbond.com>
 
-Regards
-Vadivel
-> 
->> +
->> +      nand@0 {
->> +        reg = <0>;
->> +        nand-on-flash-bbt;
->> +        #address-cells = <1>;
->> +        #size-cells = <1>;
->> +      };
->> +    };
->> +
->> +...
->> -- 
->> 2.11.0
->>
+Tested-by: Nicolas Boichat <drinkcat@chromium.org>
+
+>
+> This patch copied from:https://patchwork.ozlabs.org/patch/1150756/,
+> The original patch is invalid,so re-submit a new patch for this.
+
+This belongs below the ---, but I guess the maintainer can help you with that.
+
+> ---
+>  drivers/mtd/spi-nor/winbond.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
+> index 17deabad57e1..cda4f8847bd6 100644
+> --- a/drivers/mtd/spi-nor/winbond.c
+> +++ b/drivers/mtd/spi-nor/winbond.c
+> @@ -61,6 +61,15 @@ static const struct flash_info winbond_parts[] = {
+>                              SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>         { "w25m512jv", INFO(0xef7119, 0, 64 * 1024, 1024,
+>                             SECT_4K | SPI_NOR_QUAD_READ | SPI_NOR_DUAL_READ) },
+> +       { "w25q64jwxxIM", INFO(0xef8017, 0, 64 * 1024, 128,
+> +                           SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+> +                           SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
+> +       { "w25q128jwxxIM", INFO(0xef8018, 0, 64 * 1024, 256,
+> +                           SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+> +                           SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
+> +       { "w25q256jwxxIM", INFO(0xef8019, 0, 64 * 1024, 512,
+> +                           SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+> +                           SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
+>  };
+>
+>  /**
+> --
+> 2.20.1
+>
+>
+>
 
 ______________________________________________________
 Linux MTD discussion mailing list
