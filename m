@@ -2,87 +2,145 @@ Return-Path: <SRS0=EQmy=7K=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6AEF2C433E0
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 08:12:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46BE6C433DF
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 08:12:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 350ED2088E
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 08:12:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 149902088E
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 08:12:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fFEWiIBU";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hYFrV6hn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 350ED2088E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BwBw75+t";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="R9ZC35KU";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="eRrN+erc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 149902088E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=eV596mcWc4x7JgdROAAWb500jvYBj1hB3nF/ReDZb4o=; b=fFEWiIBUvb43K9
-	cgsAKQpbiRyUiuVZXxoDwwXdhZC3OFilKmpzGqZIq5g67wRl4PXUZ3PVfi3H6TzSUywcCvwDldF/U
-	xmDt6jIQVevtQ0kmi31isKO4l3VjKrGtam/CW0I8OijX5GAp82at9Aw46E3Yqv7Q069kZpKLdxnPN
-	s1NZh26UEYHdkJZLivQKqIimEMVGUnkgOxY7DjPrbbfD5DduOcGx9JZVJ0088i94ShV5IbiVCg+Od
-	z/ohDeq1ML+hrt9odtMmp9NrVqOuHqZo1Dh5ExdANaMMUgIG/0LOdmxypSUkVbJRCH44M312R2rsH
-	GvJYMxah1dm0JVx5bXlg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=XwJ/gXDnwqgjxqcbuHI/xdO1k3cy9A0vqll8ZERcy6w=; b=BwBw75+tdXo8hi
+	TPrDMMXJ64mFJ6DWSInka+7NwYhoWR62ScTW2Psnndf66nZC61dstDezHMzPthTDz/Kzvv8FpiPL7
+	bC+Ew98hqFekA2vKAbGG38ZDkL6pAtcCIX0b4h+3BPY6e0izQj0H8REl+5HaPHDSqtsCFmSG6WdRQ
+	u5Klu9tQ7UsfHJxEA+/j/OtoBvtKpvMPjewCeRs1zDGNLNpOjmLzkMyyODZBoMTCyeLNs6mTHjDmq
+	6v0ZTBgnQbaFx6CXZdBkxGw5RNopgbrS0C5vjaGW1sb9txE4uHA9MlAujeIANIPJ4Oo6MjXLnJduz
+	KxOnvo3df6gyBwGVqr7A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jeDeJ-0006DK-EI; Thu, 28 May 2020 08:12:23 +0000
-Received: from mail-lf1-x144.google.com ([2a00:1450:4864:20::144])
+	id 1jeDee-0006Vv-CU; Thu, 28 May 2020 08:12:44 +0000
+Received: from esa3.microchip.iphmx.com ([68.232.153.233])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jeDe5-00062A-Q4
- for linux-mtd@lists.infradead.org; Thu, 28 May 2020 08:12:11 +0000
-Received: by mail-lf1-x144.google.com with SMTP id w15so16001898lfe.11
- for <linux-mtd@lists.infradead.org>; Thu, 28 May 2020 01:12:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=RQk00OdF5LpL5xlOXSrSDqS1InuSH/j3c3d+RMcDSME=;
- b=hYFrV6hnyOyM0TqXYVyo29Mpe9PYRzNEp8rLaIglftrYmaU+1sviJPkAq8BJWc6y/w
- yhY1Pk1ezuwKQRUlNTJu5vNwOoExi7sUy5E0WVr5C/E5gWVz3Z/4o/hfAXYgt35nHeuC
- SWR+WWvBvCn3CoQ2xvQkyWd7+dQ4Jo0vw+Y1bJMTH07IzG6E5b5HNh0umWhC0XM09eUV
- Q6BxXW2N0LtoPpjqx8yJP2DrA+XVGsjEho2ebLZJmUCz1oQuS7vw7/BqumbbtQ1PJMZH
- A81KtK5cZOOvqgdlm0Zzvjm6iSxyfZ1/wEGXgqe7waJEyfZG91NLA/B9SY6hsl34z0Wg
- 8HJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=RQk00OdF5LpL5xlOXSrSDqS1InuSH/j3c3d+RMcDSME=;
- b=ExQ5tQ4ZjtoEYMNHLbZMhQD4bo417oO5jSm9ndgZbMMFY8nhO6KwXReAxBLutqwQHj
- 1QI+bseQihtEXlmUH6+0AU60syLhx1XbkDjIlIEWwiLbUrff+R2ijdABYitIC87NyXlp
- 5T4UkWUpJFVxHdXEeFlHc6n8soLXE4EJ5jnd/8mPYgi8MRJ/J0GqIJBQryLuDCi4f7my
- XdWqMI8ssAnTfOscaNXa40VJH+vFGSJFLbhWDgXcYxBoWADIBYGOnTeciGbAgBPuXqTk
- W2QS9nFKkXdqpHgFXVsux+W2mMZPtfyTql4crPWpXQwA1JyC50xY8wyIJRepNKLjlmyP
- wujQ==
-X-Gm-Message-State: AOAM533AIB8RHcId+JHBzqP/Cz0CsTlgNJ4WycZ9ezTXfeRbuFlGi9Et
- +Va+uBIMhLc6VIapRRXsaf9SuA==
-X-Google-Smtp-Source: ABdhPJyrtOTFzXqWYpVxK2jNQGKv40aIylKXBy4gz7zT5WSPDOADC9e2YRecvBb+8sPOeIrhFdhHPA==
-X-Received: by 2002:a19:c616:: with SMTP id w22mr1020281lff.123.1590653527967; 
- Thu, 28 May 2020 01:12:07 -0700 (PDT)
-Received: from localhost.localdomain
- (c-8cdb225c.014-348-6c756e10.bbcust.telenor.se. [92.34.219.140])
- by smtp.gmail.com with ESMTPSA id y11sm1289351lji.52.2020.05.28.01.12.06
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 28 May 2020 01:12:07 -0700 (PDT)
-From: Linus Walleij <linus.walleij@linaro.org>
-To: linux-block@vger.kernel.org,
-	Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH] block: Flag elevators suitable for single queue
-Date: Thu, 28 May 2020 10:10:03 +0200
-Message-Id: <20200528081003.238804-1-linus.walleij@linaro.org>
-X-Mailer: git-send-email 2.25.4
+ id 1jeDeD-00068X-WE
+ for linux-mtd@lists.infradead.org; Thu, 28 May 2020 08:12:19 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1590653537; x=1622189537;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:content-transfer-encoding: mime-version;
+ bh=jH11CgHkfGjKAn5JCGlXZtld1ddDHv1/R4/msHHJWL4=;
+ b=R9ZC35KUof1Wi/VQaSaw//F/Ijt2JvTx3I5e+ic4NB2u3htjbME14zcC
+ ROeNoXrLvfGwHJ5hWxcUHLunga27cqeeBF+XVKWb0y0Cn2C2VZTJtPtZA
+ NenPXSr9UB5L4ct0Jy5pAkRTGGGqiAOov2Zc0LZez7Qr7/euPtC7tw9pC
+ ryyIpLKAGGulFZ0V8AsiFeMB9hSfPv7tgNlEVDOmP3gV7NdRk/5GKolCs
+ 3x1W0dyT9nb4evSRTC4tV5YVF/jp4gLBoulByGYRmawLUhiZTAiXI0d5V
+ VtPSnmjsFE/RhvOo53cJ14OdwU8ZZAjMv4HqJgZ7IthaGjzfr71cPhkCQ g==;
+IronPort-SDR: V682bN6PUWSjluajpY2hreno1hpAm74L60JRzdLlTnHac3HUtxmXmoHTvqnFsPjX+wIbGCT5kA
+ AarjNrLqN1dGSu9sXbJLMACGkRP+hTyjOHU7VS2YDSI7Z+2Zmlkppm6KsRMto5EDA8eDPN6SNm
+ It9Hf+7wBfvG9ANcoH5obCVy2dbRtCtn7G7zTdnTkrjEnIxFqogPWvEhI5sA6cQmrlZTuHx1AY
+ iv4+mmCfxhkq/k5rdADw4OleNfnV2LOu8M9YOpGf2xKqhL3qqBazon/FWDBl0YbR7NQM81m/Z7
+ H6U=
+X-IronPort-AV: E=Sophos;i="5.73,444,1583218800"; d="scan'208";a="78097976"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 28 May 2020 01:12:16 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 28 May 2020 01:12:15 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.71) with Microsoft SMTP Server
+ (version=TLS1_2, 
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5 via Frontend
+ Transport; Thu, 28 May 2020 01:12:08 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dITjkHD43wtTqBCap1+DtrfIjjK0T6nqzR7lluxWFaIX/EVeaXUONVXQ0SDS93A9t/25DZUIQGNziFzMLV3HxBz+j5DWZUnl6cxHHl1B2EBNkDS7rirw07YNNRfQU7WKMJbMXQQbT/AhoNPPliszJPzf6Ai8STM51amYh3dcRO97xuU6YtofVFc1oz7JwWZNtrJVcbYgPW+UaZN3F1uriVNjojmCfAugh+CLhIeYAIJgxZa82p3W7Z3A6icwj1GrgfeX9FSR6ms1juUixXnyz2U0JFTdI+sO3YXNGZmnq0nLBm0bw7AA3YeSX/SsmMe1GLMOyLeUVM9w1xfyYn1TRA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jH11CgHkfGjKAn5JCGlXZtld1ddDHv1/R4/msHHJWL4=;
+ b=gROQOWkFcNUncF5gnSeJ9+fOZaftGCy6yNZ2fAFY1fq1/4gqQM4sr3kgZnb/uv3BZr0jVnpOVyH8sMHe6B9BB2r2ewkHSJS4vFkgoyZOMqUes+wVLViV0R2KMug8pcDn4xW2/I5N1rkL4H+16LykqcbFMiLLcdoVM+Xm182lDCiBiXb2QV4ISNZ6oRHRuwHjGOqHLHY6xfPzyRlYEB1keaaQHdRBXqtJ2TwWyGK1uaz+nu+zFdBf9qQmU2B60KGZNoEBqyoMetKh8DnuPsK5Zw93+76Xc96BvySQCLeJfY0uG0XCZxx5aH56LbbDuRgv0n0chIoPVC65dHG+sQ+++Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jH11CgHkfGjKAn5JCGlXZtld1ddDHv1/R4/msHHJWL4=;
+ b=eRrN+ercV4D7s+54qO0SHPn0Wo1X2W8zW09oKFUXRmVBmQnkp8u6xIOfA9gOVAYGtp0lEX8cYq9kse/j/OVkqkPdo7nwrtLE0bUsiqD5P1uUNa4HonaNvKgxjpKCDtXGoiXXpw5phkEzL57Hv+kjaD0fFbgJRDuzPgGmO0h/P1k=
+Received: from BY5PR11MB4419.namprd11.prod.outlook.com (2603:10b6:a03:1c8::13)
+ by BY5PR11MB4134.namprd11.prod.outlook.com (2603:10b6:a03:18e::30)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.19; Thu, 28 May
+ 2020 08:12:14 +0000
+Received: from BY5PR11MB4419.namprd11.prod.outlook.com
+ ([fe80::d847:5d58:5325:c536]) by BY5PR11MB4419.namprd11.prod.outlook.com
+ ([fe80::d847:5d58:5325:c536%7]) with mapi id 15.20.3045.018; Thu, 28 May 2020
+ 08:12:14 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <s.hauer@pengutronix.de>
+Subject: Re: [PATCH v3] mtd: spi-nor: Add support for Cypress cy15x104q
+Thread-Topic: [PATCH v3] mtd: spi-nor: Add support for Cypress cy15x104q
+Thread-Index: AQHWNMexPMZRFk2w6EixorchYsB1Ag==
+Date: Thu, 28 May 2020 08:12:14 +0000
+Message-ID: <13199742.Uhtxi0mpr9@192.168.0.120>
+References: <20200424065626.8196-1-s.hauer@pengutronix.de>
+In-Reply-To: <20200424065626.8196-1-s.hauer@pengutronix.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: pengutronix.de; dkim=none (message not signed)
+ header.d=none;pengutronix.de; dmarc=none action=none
+ header.from=microchip.com;
+x-originating-ip: [94.177.32.156]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ac31cc16-75d8-4957-e903-08d802ded481
+x-ms-traffictypediagnostic: BY5PR11MB4134:
+x-microsoft-antispam-prvs: <BY5PR11MB4134DAEC6FDE6894A086D1A6F08E0@BY5PR11MB4134.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 0417A3FFD2
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 8yFACVXHqnyfIFnJqfn2KoMKBqWWd1b5dy+2TCVSFmDQglKagWe3scyfI5dw9BpRjU1Fxsyh0WAyqeNmxJQTeO4wyg7MjIMs40+oCik1IQiJ9GjszY3oHcg2z94IOlBvFy/IuQRItLOl6tGYz5tiJtoxKAf4EeOL0HbKhekDnefqMtXD08M7raG5TUp4verFzUG/sSLOLWHJpTAT13zNUwAK7GJspWSKxbVH4D8KUTVQ/tlB7gqr622hP7VbSMT/AtFrHB3MmodljYaJFsbXZeDlbuZ9F/DXNxIB5npoUoS4VbAnjdz+I5WdmOTkQKYDmpjaLf6M88h/NLj2IHy2jWcZB7/sF+RB+JoRG/QirASNnIdnodZCjaIEoxYpoVIb
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:BY5PR11MB4419.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFTY:;
+ SFS:(396003)(346002)(39860400002)(136003)(376002)(366004)(6916009)(26005)(53546011)(54906003)(316002)(6506007)(5660300002)(86362001)(71200400001)(2906002)(66476007)(66946007)(66556008)(64756008)(66446008)(14286002)(8676002)(6512007)(9686003)(186003)(91956017)(76116006)(6486002)(83380400001)(8936002)(4326008)(478600001)(39026012);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata: DNtW1OqVaTp1j7TraMRsXhYqt+bo96VnReLJiqZ48c5s+lcT6BSGfAjLHRk3NMzYmAeleGm6RwVjtpb7UF5U7B11n48u6lFcq3Qg7xufeUzQvlEioD5gXwf1l34oXdCfbGKsjRY8EyJEGMDtAdvhehZcKzylW6ZFd01ces+NMNu9XeC6Sn8hXmgJ6Xd8qIkQIQeKNuwPmS+98UUXHv9/50Sd5Z8v7ZwWxt37WfaE50xVt5+NhZpuzS1JX6i9dR3e+5ECDgy33RRh2X3L9STiUBtk19Alb1C9LGg6esQAaMTmeakw5pyXChjeKvqjA5x6t2lCRiv6ntklPKRluu9temY2vwJCE02KaNIk7qVEkqpNfQKClKy23sHR/r+QGnQ5nymtXLsULNb8waeDu0q1wmiI3Opmhmig/vyodNqoUq3fuE8y2GAfZwSOY13j7NV0ICI/sv6aSlM5QDkKmeXpR8rRBiY+ahJUWTDFJ7ikeeM=
+x-ms-exchange-transport-forked: True
+Content-ID: <CD78708E368AFA46BFD9B7E16075C15F@namprd11.prod.outlook.com>
 MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: ac31cc16-75d8-4957-e903-08d802ded481
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 May 2020 08:12:14.2644 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: XgdluLrUjWfXWz98sjF5n+3GYnH7+5suJ3UgyfM31S+4rXaVIMAIFlpiSdwTKGpvMJuuo6qh6i0Pq8Tn0PkCtxu1acYMR6zNVSMSJaxQRWE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4134
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200528_011209_910096_343A1BDC 
-X-CRM114-Status: GOOD (  13.08  )
+X-CRM114-CacheID: sfid-20200528_011218_059341_BBC950C6 
+X-CRM114-Status: GOOD (  10.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,93 +152,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Damien Le Moal <damien.lemoal@wdc.com>,
- Paolo Valente <paolo.valente@linaro.org>,
- Linus Walleij <linus.walleij@linaro.org>, linux-mmc@vger.kernel.org,
- Ming Lei <ming.lei@redhat.com>, linux-mtd@lists.infradead.org,
- Johannes Thumshirn <jthumshirn@suse.de>, Christoph Hellwig <hch@lst.de>
+Cc: richard@nod.at, linux-mtd@lists.infradead.org, vigneshr@ti.com,
+ kernel@pengutronix.de, miquel.raynal@bootlin.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The Kyber block scheduler is not suitable for single hardware
-queue devices, so add a new flag for single hardware queue
-devices and add that to the deadline and BFQ schedulers
-so the Kyber scheduler will not be selected for single queue
-devices.
+On Friday, April 24, 2020 9:56:26 AM EEST Sascha Hauer wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the
+> content is safe
+> 
+> The Cypress cy15b104q and cy15v104q are 4Mbit serial SPI F-RAM devices.
+> Add support for them to the spi-nor driver.
+> 
+> The actual Device ID of this chip is 7f 7f 7f 7f 7f 7f c2 2c 04. That is
+> six times the continuation code 7f followed by c2 for Ramtron.
+> Unfortunately the chip sends the Device ID in reversed order, so the
+> continuation code is not at the beginning, but instead at the end. Even
+> more unfortunate is that when reading further the chip sends more 7f
+> codes which means we are not even able to count the continuation codes.
+> We can only hope that this reversed Device ID will never match any other
+> devices ID.
+> 
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 
-Deadline and BFQ are applicable to single HW queues so flag
-each of these as single HW queue-friendly.
+Collisions are improbable as of now, the solution from above is good
+enough. In case of future collisions one can introduce an INFO9 macro,
+with the downsize that struct flash_info would grow and we have lots of
+flashes. A more elegant solution would be to introduce dedicated
+flash ID tables for each bank in JESP106BA.
 
-Cc: Johannes Thumshirn <jthumshirn@suse.de>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Ming Lei <ming.lei@redhat.com>
-Cc: Damien Le Moal <damien.lemoal@wdc.com>
-Cc: Paolo Valente <paolo.valente@linaro.org>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
- block/bfq-iosched.c      | 1 +
- block/elevator.c         | 3 +++
- block/mq-deadline.c      | 3 ++-
- include/linux/elevator.h | 2 ++
- 4 files changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index 3d411716d7ee..7bf99fd83472 100644
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -6812,6 +6812,7 @@ static struct elevator_type iosched_bfq_mq = {
- 	.icq_align =		__alignof__(struct bfq_io_cq),
- 	.elevator_attrs =	bfq_attrs,
- 	.elevator_name =	"bfq",
-+	.elevator_features =	ELEVATOR_F_SINGLE_HW_QUEUE,
- 	.elevator_owner =	THIS_MODULE,
- };
- MODULE_ALIAS("bfq-iosched");
-diff --git a/block/elevator.c b/block/elevator.c
-index 4eab3d70e880..ebb4fc875b86 100644
---- a/block/elevator.c
-+++ b/block/elevator.c
-@@ -678,6 +678,9 @@ void elevator_init_mq(struct request_queue *q)
- 	if (unlikely(q->elevator))
- 		return;
- 
-+	if (q->nr_hw_queues == 1)
-+		q->required_elevator_features |= ELEVATOR_F_SINGLE_HW_QUEUE;
-+
- 	if (!q->required_elevator_features)
- 		e = elevator_get_default(q);
- 	else
-diff --git a/block/mq-deadline.c b/block/mq-deadline.c
-index b490f47fd553..324047add271 100644
---- a/block/mq-deadline.c
-+++ b/block/mq-deadline.c
-@@ -794,7 +794,8 @@ static struct elevator_type mq_deadline = {
- 	.elevator_attrs = deadline_attrs,
- 	.elevator_name = "mq-deadline",
- 	.elevator_alias = "deadline",
--	.elevator_features = ELEVATOR_F_ZBD_SEQ_WRITE,
-+	.elevator_features = ELEVATOR_F_ZBD_SEQ_WRITE |
-+	ELEVATOR_F_SINGLE_HW_QUEUE,
- 	.elevator_owner = THIS_MODULE,
- };
- MODULE_ALIAS("mq-deadline-iosched");
-diff --git a/include/linux/elevator.h b/include/linux/elevator.h
-index 901bda352dcb..03057fa2f569 100644
---- a/include/linux/elevator.h
-+++ b/include/linux/elevator.h
-@@ -172,6 +172,8 @@ extern struct request *elv_rb_find(struct rb_root *, sector_t);
- 
- /* Supports zoned block devices sequential write constraint */
- #define ELEVATOR_F_ZBD_SEQ_WRITE	(1U << 0)
-+/* Elevator is suitable for single hardware queue devices */
-+#define ELEVATOR_F_SINGLE_HW_QUEUE	(1U << 1)
- 
- #endif /* CONFIG_BLOCK */
- #endif
--- 
-2.25.4
+Amended commit description with the above text and applied. Thanks.
 
 
 ______________________________________________________
