@@ -2,60 +2,147 @@ Return-Path: <SRS0=EQmy=7K=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A94EC433DF
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 11:43:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EFD53C433E0
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 11:44:45 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1D33C20888
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 11:43:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A1BA820888
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2020 11:44:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VgTaBGmd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1D33C20888
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="iKYYA3K8";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="s9tqnLEL";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="iLHhQKjs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A1BA820888
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PwOO1tMtJhDSHg9EevrDnzpTiwdv+uAp8UWmkP84ywg=; b=VgTaBGmdjsQAzg
-	RxU5FcRC0OMJ+fF0aWUICZhnZ1eAPkXijGB84zK3tBbwhIEyoNaA6OyvxlUsV5hTi5vKCt47AXQdc
-	TO97cP8JbAxS+fES37o1+KiIP9ZTBxLpZ5/QWcIn0ZaHeRZ/1H2dAq8EAuEoxFrROOnSc6tvxkQ7p
-	e+mBaFPaYWBd8bn793Kjj+0jDP2J7TK2qBHXGkZ9NZpUytMkq3mJDRMYDkFQ8Pb1htXPYOwr9ld/b
-	Pk7aUDcxB1DMg+/TkQUGa+d/pScd2EvNsKUsKiXtIGUQRspn7YpSTWbBCqJdHkriQ+ZDvM8JrxW4b
-	D/xG+OvLXwJ7GbD/w9zA==;
+	List-Owner; bh=nGhUWO2jAY8lhEYOpb/TcnCS0VOfIT51LTB8iRYqHr0=; b=iKYYA3K80NHDuT
+	jZrLkamJcnwl27WBG7tiszEqig+LBQyDLdkObuONREb43PfNnjTTIXoKOBtY2O1XeqZMb24ULK715
+	XllYyppi1j9yxX6a6BdHx2YOK1W2Y1114yhsLJ1bAMNmTR5e2k0HMrV1Lh5Y8g2ZLLtdn0imA6GBn
+	twy+G6EwMTFpsrg/0r1TVPB1QYk154vZsoTKabHkPXii74QekDhhgvwMlMUbPwmWc7gl10bRTkp8a
+	UWR+Jo5iMdpTaY1trvKEvdw+9KE5f8gBWExr1v17IyZ2Iuv2K4QV1iMzfTPJYQeFOz4FsA/Esb04x
+	n2HwdCyulJRUfdUGZcgA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jeGwQ-0008Rz-Jy; Thu, 28 May 2020 11:43:18 +0000
-Received: from relay12.mail.gandi.net ([217.70.178.232])
+	id 1jeGxf-0000zV-S3; Thu, 28 May 2020 11:44:35 +0000
+Received: from esa2.microchip.iphmx.com ([68.232.149.84])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jeGlR-0001mg-Lx; Thu, 28 May 2020 11:32:03 +0000
-Received: from localhost.localdomain (unknown [91.224.148.103])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay12.mail.gandi.net (Postfix) with ESMTPSA id 30549200005;
- Thu, 28 May 2020 11:31:54 +0000 (UTC)
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- <linux-mtd@lists.infradead.org>, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, <devicetree@vger.kernel.org>
-Subject: [PATCH v6 18/18] mtd: rawnand: Move generic bits to the ECC framework
-Date: Thu, 28 May 2020 13:31:13 +0200
-Message-Id: <20200528113113.9166-19-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200528113113.9166-1-miquel.raynal@bootlin.com>
-References: <20200528113113.9166-1-miquel.raynal@bootlin.com>
+ id 1jeGv8-0007D4-N8
+ for linux-mtd@lists.infradead.org; Thu, 28 May 2020 11:42:02 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1590666118; x=1622202118;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:content-transfer-encoding: mime-version;
+ bh=JUbfJ/grhJxrmxMI/oPm120rZDkN7Hmpw01cYXHJ9dY=;
+ b=s9tqnLELUHvTQ9T+ti1xFtb2WtFnOvxKH1wu5EKxrhIlqp6tWdtAju6P
+ J3GCIuS0wF6cz48bSbyNBx4geSXjGf2h6YTQOyZ/jhX67Rc8kNztVsBM8
+ YHMglla6YnksH2Ifd4kPNlvnW06i4P8uKMQHJ9bHX3n8kALcPSO4ct3MZ
+ +1SwOdw2IfhxqkkWgfr1cZkwG3v41vvyW3fkfoDwujmiztnhyRfFAgsxu
+ zYiJLq25946HPCe2iF4bdl120JQy9bcH14b491+95Z+csXZLnpzsdAUx9
+ fR5xtVcvJrgR1hz+XYN0sMNlFQBcxtR2RONFa+AonZRPpMLupCytZWc40 A==;
+IronPort-SDR: a7pGp6+oj069KOC7r5VWT1Htpwy8sY0tMJV6RYrQoWE1/BjWXs++i3N2cMbUndK9A9eay6XVMU
+ L/54xWWPEs655iKicgb2+d3bT8RcAH5uBnDFVq/dST40szQBHzbllKaoYcj6ct0vCJhRnlQL1U
+ 2xwYvg/o3MsknkyluVGzL8s1j4ouunefDBIfuVJdfygBG+oJpditYWpNEuqZmfucw3y6qUFFjy
+ FrGqMydsvE8yFaWPjb6rqXdKx/sC57OLSdixCYOzIclJPobtNMhJE20oZ82fUe5n6GYD1jBoy0
+ z3w=
+X-IronPort-AV: E=Sophos;i="5.73,444,1583218800"; d="scan'208";a="76630723"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 28 May 2020 04:41:54 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 28 May 2020 04:41:53 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Thu, 28 May 2020 04:41:53 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oftR6w/RzFrsGudlG2dnkuTW1NHPfHwa0tvNSfuJuFrpV9lQvU6uviIZJBmrwidSBk0jZvR04bQZkLpkKZdg0vTAJFJYL5pwqjWP7YZss1VHM3IcywbtH6ZHA/nocjmparBJXqSWscGVUSyUcKrOYEc8bh3maIG2ImDRgBb2IaHSsihQFDbvV8v0VIhBYboidlSAHEdpTdpUB8CRxNk9RZ56FIkJk/Elts2vdkmAYJ5G0E6FgubS/Xs8TZyqJoETqxhscABlMVc18FxQPl1CNYFUyy1FvsVFfibgeZmWDsW1wZ0uIK7JnbBwjuZMFeh05u0HvZQMCxTyDfEY2/Qq6A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aeTYXWsxjySzl0PIFbR/C1JOTy3mq7Z/MvfNUykkXco=;
+ b=gwrTB7I4C6JqfG7/g8e8GL91JJANBEzxJj4ud0x13BZC8xFO/9LsyeavZG/8RYp0AmiOO/bxLnpcx0PnOSfVwUVMn2skcGwCb/EBt08th1PP1PpreZ763YkLOiJrIdJNOcQEwZnLgGF48lgRMumA0RhZ5OAYt50svgzKPcyLKKcS3nHgQaPisXjJ5reNSbD8bb6Rfr7XjNEOfcnS6qkRDrQ3z5nuktEQSbzLnJN1IqtxqTKwxlsBs7JejvfRdRDdQj5KCRNlKlFyb4URpttWvaQmWP/n0gLf39MLg1l5jXdlI4pQsWpiSnA8cCs+IvemNSspXpN725A12j4uGrM0xA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aeTYXWsxjySzl0PIFbR/C1JOTy3mq7Z/MvfNUykkXco=;
+ b=iLHhQKjsmQLo83MhYUDwPtsl7Q9mDQWa1SReGHKBZDB7tLY0VNdq7TAkBbG0z9y1jOH1HrlhhA4oHekLLwbbeBmfsCb7rFtF5kOfBIjnXNiiuWX5ffMmABUvZm9gMvoYd/JOL+ohR5E+IYdTnwQcRgYHmGGOijlyqHnmWL15iiM=
+Received: from BY5PR11MB4419.namprd11.prod.outlook.com (2603:10b6:a03:1c8::13)
+ by BY5PR11MB3991.namprd11.prod.outlook.com (2603:10b6:a03:186::26)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.17; Thu, 28 May
+ 2020 11:41:52 +0000
+Received: from BY5PR11MB4419.namprd11.prod.outlook.com
+ ([fe80::d847:5d58:5325:c536]) by BY5PR11MB4419.namprd11.prod.outlook.com
+ ([fe80::d847:5d58:5325:c536%7]) with mapi id 15.20.3045.018; Thu, 28 May 2020
+ 11:41:52 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <vigneshr@ti.com>
+Subject: Re: [PATCH v2 1/6] mtd: spi-nor: cadence-quadspi: Make driver
+ independent of flash geometry
+Thread-Topic: [PATCH v2 1/6] mtd: spi-nor: cadence-quadspi: Make driver
+ independent of flash geometry
+Thread-Index: AQHWM0FZFb5dBCwkWUGeiULRbnlz0Ki9Y2+A
+Date: Thu, 28 May 2020 11:41:52 +0000
+Message-ID: <1873244.LXWL5g5pfh@192.168.0.120>
+References: <20200526093604.11846-1-vigneshr@ti.com>
+ <20200526093604.11846-2-vigneshr@ti.com>
+In-Reply-To: <20200526093604.11846-2-vigneshr@ti.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: ti.com; dkim=none (message not signed)
+ header.d=none;ti.com; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [94.177.32.156]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: af228cdd-6b87-4a99-beac-08d802fc1d6c
+x-ms-traffictypediagnostic: BY5PR11MB3991:
+x-microsoft-antispam-prvs: <BY5PR11MB3991AD97A483D63F91E9A6A2F08E0@BY5PR11MB3991.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-forefront-prvs: 0417A3FFD2
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: jZR1qZS2xvDLpofo0BT8Wd6U24hLeeVt2O5Lh2cgFr5RsPslq2uAhgQOXrDFP7pZTJYnSm2Hz31hN8b+FjXD7mFNcJS6+nSq8zd8OLcoUvTjf6dqRJBNtVyB8p1xelS/LeT7qMq7mO7R1a6vJzvem9t19EakNhlPr0XYpZDlIrXPEp9LOYzy3NBV+ntdC+CdLg1kyrpTwfmyE1cnmoXcEzfc4FXPdD769SyDteHh1DryxXC7cW1lbGktedW+TpwMddLwi8EItQJB2SufhxU0d2qTihKVyKoLEHDN3q0loKKWUFD2pxWxU7xpAjXU4DpHxJE+QW53kZWGfEO2lpQMz6/8IBQVlHsk9tuRXncqIyIk014MhIsknw3lruhuWtWh
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:BY5PR11MB4419.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFTY:;
+ SFS:(396003)(136003)(39860400002)(346002)(366004)(376002)(6486002)(86362001)(4744005)(14286002)(8676002)(316002)(2906002)(9686003)(6512007)(54906003)(478600001)(26005)(66446008)(71200400001)(83380400001)(64756008)(66946007)(76116006)(66556008)(6916009)(53546011)(6506007)(66476007)(8936002)(5660300002)(186003)(4326008)(7416002)(39026012);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata: ZMyCWGbfSI2PhMmllIabsxWuaAodLIsWULrXHLgCDqEjFn3iovKqFtrZ/46oW/jtTKDb5V91FeKXkI2pIGzOp9+5AfYcfKv227iaF9bKvj+hC6FSbrMu1o3qu1iDZ6yVSdLQkdMBnZYOzMhVD/MjIIsicxKe7gbJqJKZDNahkxR6QxlEEYqYupI7llFqUNj7q/k70RQJkoslbsnLt5FNp6EDr0Tu/xciPuhyqx1UdUGoi+oyZoGmJ95T+U0PmOI+pA8AOnzJr4t8WUGQV7WAXZAq0ikJnDQ2JdfnEtzlRtlIZYr6Q7j1MqMCtw+SoQ+ykrJOb1e5ww0Ypfo5MlM8LJFQrrdmbdA5RasGHLrlBq3rRptM9MxiRn9qw1s+pxwEM9KEXIqc78wskQJV+tVkXUP80RTiQs0R8QSnh4Z9RIjt4Qp07ts0Sp4t1OdiWzXv4LoOJlplZBFuuCDKFEsRuw4b0FrTR4aKjx7GcEA/oSY=
+x-ms-exchange-transport-forked: True
+Content-ID: <107AB70B0512164CAB04DCFA413C114A@namprd11.prod.outlook.com>
 MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: af228cdd-6b87-4a99-beac-08d802fc1d6c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 May 2020 11:41:52.0186 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 3AGHmC4EdhSFHRJyacN3NRT1uGk4BQTn5eyg1onQAar6Vtnr3nesLGCpICdvnbi71S4U8R74g4cD5p+KU71ImM3rwmTimFkrAGQwVdFIuAc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB3991
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200528_043158_057858_79ECCF26 
-X-CRM114-Status: GOOD (  18.93  )
+X-CRM114-CacheID: sfid-20200528_044158_890853_EE9BDEE8 
+X-CRM114-Status: GOOD (  10.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,1131 +154,32 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Julien Su <juliensu@mxic.com.tw>, Weijie Gao <weijie.gao@mediatek.com>,
- Paul Cercueil <paul@crapouillou.net>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Mason Yang <masonccyang@mxic.com.tw>, Chuanhong Guo <gch981213@gmail.com>,
- linux-arm-kernel@lists.infradead.org
+Cc: marex@denx.de, bbrezillon@kernel.org, dinguyen@kernel.org,
+ simon.k.r.goldschmidt@gmail.com, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, vadivel.muruganx.ramuthevar@linux.intel.com,
+ broonie@kernel.org, linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Many OOB layouts and helpers are generic to all NAND chips, they
-should not be restricted to be only used by raw NAND controller
-drivers. They might later be used by generic ECC engines and SPI-NAND
-devices as well so move them into a more generic place.
+On Tuesday, May 26, 2020 12:35:59 PM EEST Vignesh Raghavendra wrote:
+> Drop configuration of Flash size, erase size and page size
+> configuration. Flash size is needed only if using AHB decoder (BIT 23 of
+> CONFIG_REG) which is not used by the driver.
+> Erase size and page size are needed if IP is configured to send WREN
+> automatically. But since SPI NOR layer takes care of sending WREN, there
+> is no need to configure these fields either.
+> 
+> Therefore drop these in preparation to move the driver to spi-mem
+> framework where flash geometry is not visible to controller driver.
+> 
+> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+> ---
+>  .../mtd/spi-nor/controllers/cadence-quadspi.c | 36 +------------------
+>  1 file changed, 1 insertion(+), 35 deletions(-)
 
-To avoid moving all the raw NAND core "history" into the generic NAND
-layer, we already moved certain bits into legacy helpers in the raw
-NAND core to ensure backward compatibility.
-
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/mtd/nand/Kconfig                      |  11 +
- drivers/mtd/nand/Makefile                     |   1 +
- .../mtd/nand/{raw/nand_bch.c => ecc-sw-bch.c} |   2 +-
- drivers/mtd/nand/ecc.c                        | 299 +++++++++++++++++
- drivers/mtd/nand/raw/Kconfig                  |  11 +-
- drivers/mtd/nand/raw/Makefile                 |   1 -
- drivers/mtd/nand/raw/atmel/nand-controller.c  |   3 +-
- drivers/mtd/nand/raw/denali.c                 |   3 +
- drivers/mtd/nand/raw/nand_base.c              | 313 +-----------------
- drivers/mtd/nand/raw/nand_toshiba.c           |   2 +
- drivers/mtd/nand/raw/nandsim.c                |   2 +-
- drivers/mtd/nand/raw/omap2.c                  |   2 +-
- drivers/mtd/nand/raw/sunxi_nand.c             |   3 +-
- drivers/mtd/nand/raw/tegra_nand.c             |   3 +-
- .../mtd/{nand_bch.h => nand-ecc-sw-bch.h}     |   6 +-
- include/linux/mtd/nand.h                      |  20 ++
- include/linux/mtd/rawnand.h                   |  17 +-
- 17 files changed, 364 insertions(+), 335 deletions(-)
- rename drivers/mtd/nand/{raw/nand_bch.c => ecc-sw-bch.c} (99%)
- rename include/linux/mtd/{nand_bch.h => nand-ecc-sw-bch.h} (92%)
-
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 3327d8539a73..316da271a3a1 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -15,6 +15,17 @@ config MTD_NAND_ECC
- 	bool
- 	select MTD_NAND_CORE
- 
-+config MTD_NAND_ECC_SW_BCH
-+	bool "Software BCH ECC engine"
-+	select BCH
-+	select MTD_NAND_ECC
-+	default n
-+	help
-+	  This enables support for software BCH error correction. Binary BCH
-+	  codes are more powerful and cpu intensive than traditional Hamming
-+	  ECC codes. They are used with NAND devices requiring more than 1 bit
-+	  of error correction.
-+
- endmenu
- 
- endmenu
-diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-index 981372953b56..c7179ff23753 100644
---- a/drivers/mtd/nand/Makefile
-+++ b/drivers/mtd/nand/Makefile
-@@ -8,3 +8,4 @@ obj-y	+= raw/
- obj-y	+= spi/
- 
- nandcore-$(CONFIG_MTD_NAND_ECC) += ecc.o
-+nandcore-$(CONFIG_MTD_NAND_ECC_SW_BCH) += ecc-sw-bch.o
-diff --git a/drivers/mtd/nand/raw/nand_bch.c b/drivers/mtd/nand/ecc-sw-bch.c
-similarity index 99%
-rename from drivers/mtd/nand/raw/nand_bch.c
-rename to drivers/mtd/nand/ecc-sw-bch.c
-index d5af8c5fd02f..d0dc84cfdbdc 100644
---- a/drivers/mtd/nand/raw/nand_bch.c
-+++ b/drivers/mtd/nand/ecc-sw-bch.c
-@@ -13,7 +13,7 @@
- #include <linux/bitops.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_bch.h>
-+#include <linux/mtd/nand-ecc-sw-bch.h>
- #include <linux/bch.h>
- 
- /**
-diff --git a/drivers/mtd/nand/ecc.c b/drivers/mtd/nand/ecc.c
-index e4f2b6fcbb12..91f0969210c4 100644
---- a/drivers/mtd/nand/ecc.c
-+++ b/drivers/mtd/nand/ecc.c
-@@ -133,6 +133,305 @@ int nand_ecc_finish_io_req(struct nand_device *nand,
- }
- EXPORT_SYMBOL(nand_ecc_finish_io_req);
- 
-+/* Define default oob placement schemes for large and small page devices */
-+static int nand_ooblayout_ecc_sp(struct mtd_info *mtd, int section,
-+				 struct mtd_oob_region *oobregion)
-+{
-+	struct nand_device *nand = mtd_to_nanddev(mtd);
-+	unsigned int total_ecc_bytes = nand->ecc.ctx.total;
-+
-+	if (section > 1)
-+		return -ERANGE;
-+
-+	if (!section) {
-+		oobregion->offset = 0;
-+		if (mtd->oobsize == 16)
-+			oobregion->length = 4;
-+		else
-+			oobregion->length = 3;
-+	} else {
-+		if (mtd->oobsize == 8)
-+			return -ERANGE;
-+
-+		oobregion->offset = 6;
-+		oobregion->length = total_ecc_bytes - 4;
-+	}
-+
-+	return 0;
-+}
-+
-+static int nand_ooblayout_free_sp(struct mtd_info *mtd, int section,
-+				  struct mtd_oob_region *oobregion)
-+{
-+	if (section > 1)
-+		return -ERANGE;
-+
-+	if (mtd->oobsize == 16) {
-+		if (section)
-+			return -ERANGE;
-+
-+		oobregion->length = 8;
-+		oobregion->offset = 8;
-+	} else {
-+		oobregion->length = 2;
-+		if (!section)
-+			oobregion->offset = 3;
-+		else
-+			oobregion->offset = 6;
-+	}
-+
-+	return 0;
-+}
-+
-+const struct mtd_ooblayout_ops nand_ooblayout_sp_ops = {
-+	.ecc = nand_ooblayout_ecc_sp,
-+	.free = nand_ooblayout_free_sp,
-+};
-+EXPORT_SYMBOL_GPL(nand_ooblayout_sp_ops);
-+
-+static int nand_ooblayout_ecc_lp(struct mtd_info *mtd, int section,
-+				 struct mtd_oob_region *oobregion)
-+{
-+	struct nand_device *nand = mtd_to_nanddev(mtd);
-+	unsigned int total_ecc_bytes = nand->ecc.ctx.total;
-+
-+	if (section || !total_ecc_bytes)
-+		return -ERANGE;
-+
-+	oobregion->length = total_ecc_bytes;
-+	oobregion->offset = mtd->oobsize - oobregion->length;
-+
-+	return 0;
-+}
-+
-+static int nand_ooblayout_free_lp(struct mtd_info *mtd, int section,
-+				  struct mtd_oob_region *oobregion)
-+{
-+	struct nand_device *nand = mtd_to_nanddev(mtd);
-+	unsigned int total_ecc_bytes = nand->ecc.ctx.total;
-+
-+	if (section)
-+		return -ERANGE;
-+
-+	oobregion->length = mtd->oobsize - total_ecc_bytes - 2;
-+	oobregion->offset = 2;
-+
-+	return 0;
-+}
-+
-+const struct mtd_ooblayout_ops nand_ooblayout_lp_ops = {
-+	.ecc = nand_ooblayout_ecc_lp,
-+	.free = nand_ooblayout_free_lp,
-+};
-+EXPORT_SYMBOL_GPL(nand_ooblayout_lp_ops);
-+
-+/*
-+ * Support the old "large page" layout used for 1-bit Hamming ECC where ECC
-+ * are placed at a fixed offset.
-+ */
-+static int nand_ooblayout_ecc_lp_hamming(struct mtd_info *mtd, int section,
-+					 struct mtd_oob_region *oobregion)
-+{
-+	struct nand_device *nand = mtd_to_nanddev(mtd);
-+	unsigned int total_ecc_bytes = nand->ecc.ctx.total;
-+
-+	if (section)
-+		return -ERANGE;
-+
-+	switch (mtd->oobsize) {
-+	case 64:
-+		oobregion->offset = 40;
-+		break;
-+	case 128:
-+		oobregion->offset = 80;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	oobregion->length = total_ecc_bytes;
-+	if (oobregion->offset + oobregion->length > mtd->oobsize)
-+		return -ERANGE;
-+
-+	return 0;
-+}
-+
-+static int nand_ooblayout_free_lp_hamming(struct mtd_info *mtd, int section,
-+					  struct mtd_oob_region *oobregion)
-+{
-+	struct nand_device *nand = mtd_to_nanddev(mtd);
-+	unsigned int total_ecc_bytes = nand->ecc.ctx.total;
-+	int ecc_offset = 0;
-+
-+	if (section < 0 || section > 1)
-+		return -ERANGE;
-+
-+	switch (mtd->oobsize) {
-+	case 64:
-+		ecc_offset = 40;
-+		break;
-+	case 128:
-+		ecc_offset = 80;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	if (section == 0) {
-+		oobregion->offset = 2;
-+		oobregion->length = ecc_offset - 2;
-+	} else {
-+		oobregion->offset = ecc_offset + total_ecc_bytes;
-+		oobregion->length = mtd->oobsize - oobregion->offset;
-+	}
-+
-+	return 0;
-+}
-+
-+const struct mtd_ooblayout_ops nand_ooblayout_lp_hamming_ops = {
-+	.ecc = nand_ooblayout_ecc_lp_hamming,
-+	.free = nand_ooblayout_free_lp_hamming,
-+};
-+EXPORT_SYMBOL_GPL(nand_ooblayout_lp_hamming_ops);
-+
-+static enum nand_ecc_engine_type
-+of_get_nand_ecc_engine_type(struct device_node *np)
-+{
-+	return NAND_ECC_ENGINE_TYPE_INVALID;
-+}
-+
-+static const char * const nand_ecc_placement[] = {
-+	[NAND_ECC_PLACEMENT_OOB] = "oob",
-+	[NAND_ECC_PLACEMENT_INTERLEAVED] = "interleaved",
-+};
-+
-+enum nand_ecc_placement of_get_nand_ecc_placement(struct device_node *np)
-+{
-+	enum nand_ecc_placement placement;
-+	const char *pm;
-+	int err;
-+
-+	err = of_property_read_string(np, "nand-ecc-placement", &pm);
-+	if (!err) {
-+		for (placement = NAND_ECC_PLACEMENT_OOB;
-+		     placement < ARRAY_SIZE(nand_ecc_placement); placement++) {
-+			if (!strcasecmp(pm, nand_ecc_placement[placement]))
-+				return placement;
-+		}
-+	}
-+
-+	return NAND_ECC_PLACEMENT_UNKNOWN;
-+}
-+
-+static const char * const nand_ecc_algos[] = {
-+	[NAND_ECC_ALGO_HAMMING]	= "hamming",
-+	[NAND_ECC_ALGO_BCH]	= "bch",
-+	[NAND_ECC_ALGO_RS]	= "rs",
-+};
-+
-+static enum nand_ecc_algo of_get_nand_ecc_algo(struct device_node *np)
-+{
-+	enum nand_ecc_algo ecc_algo;
-+	const char *pm;
-+	int err;
-+
-+	err = of_property_read_string(np, "nand-ecc-algo", &pm);
-+	if (!err) {
-+		for (ecc_algo = NAND_ECC_ALGO_HAMMING;
-+		     ecc_algo < ARRAY_SIZE(nand_ecc_algos);
-+		     ecc_algo++) {
-+			if (!strcasecmp(pm, nand_ecc_algos[ecc_algo]))
-+				return ecc_algo;
-+		}
-+	}
-+
-+	return NAND_ECC_ALGO_UNKNOWN;
-+}
-+
-+static int of_get_nand_ecc_step_size(struct device_node *np)
-+{
-+	int ret;
-+	u32 val;
-+
-+	ret = of_property_read_u32(np, "nand-ecc-step-size", &val);
-+	return ret ? ret : val;
-+}
-+
-+static int of_get_nand_ecc_strength(struct device_node *np)
-+{
-+	int ret;
-+	u32 val;
-+
-+	ret = of_property_read_u32(np, "nand-ecc-strength", &val);
-+	return ret ? ret : val;
-+}
-+
-+static inline bool of_get_nand_ecc_maximize(struct device_node *np)
-+{
-+	return of_property_read_bool(np, "nand-ecc-maximize");
-+}
-+
-+void nand_ecc_read_user_conf(struct nand_device *nand)
-+{
-+	struct device_node *dn = nanddev_get_flash_node(nand);
-+	int strength, size;
-+
-+	nand->ecc.user_conf.engine_type = of_get_nand_ecc_engine_type(dn);
-+	nand->ecc.user_conf.algo = of_get_nand_ecc_algo(dn);
-+	nand->ecc.user_conf.placement = of_get_nand_ecc_placement(dn);
-+
-+	strength = of_get_nand_ecc_strength(dn);
-+	if (strength >= 0)
-+		nand->ecc.user_conf.strength = strength;
-+
-+	size = of_get_nand_ecc_step_size(dn);
-+	if (size >= 0)
-+		nand->ecc.user_conf.step_size = size;
-+
-+	if (of_get_nand_ecc_maximize(dn))
-+		nand->ecc.user_conf.flags |= NAND_ECC_MAXIMIZE;
-+}
-+EXPORT_SYMBOL(nand_ecc_read_user_conf);
-+
-+/**
-+ * nand_ecc_correction_is_enough - Check if the chip configuration meets the
-+ *                                 datasheet requirements.
-+ *
-+ * @nand: Device to check
-+ *
-+ * If our configuration corrects A bits per B bytes and the minimum
-+ * required correction level is X bits per Y bytes, then we must ensure
-+ * both of the following are true:
-+ *
-+ * (1) A / B >= X / Y
-+ * (2) A >= X
-+ *
-+ * Requirement (1) ensures we can correct for the required bitflip density.
-+ * Requirement (2) ensures we can correct even when all bitflips are clumped
-+ * in the same sector.
-+ */
-+bool nand_ecc_correction_is_enough(struct nand_device *nand)
-+{
-+	struct nand_ecc_props *reqs = &nand->ecc.requirements;
-+	struct nand_ecc_props *conf = &nand->ecc.ctx.conf;
-+	struct mtd_info *mtd = nanddev_to_mtd(nand);
-+	int corr, ds_corr;
-+
-+	if (conf->step_size == 0 || reqs->step_size == 0)
-+		/* Not enough information */
-+		return true;
-+
-+	/*
-+	 * We get the number of corrected bits per page to compare
-+	 * the correction density.
-+	 */
-+	corr = (mtd->writesize * conf->strength) / conf->step_size;
-+	ds_corr = (mtd->writesize * reqs->strength) / reqs->step_size;
-+
-+	return corr >= ds_corr && conf->strength >= reqs->strength;
-+}
-+EXPORT_SYMBOL(nand_ecc_correction_is_enough);
-+
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Miquel Raynal <miquel.raynal@bootlin.com>");
- MODULE_DESCRIPTION("Generic ECC engine");
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index 85280e327bfe..9f24f8fa9a23 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -13,6 +13,7 @@ config MTD_NAND_ECC_SW_HAMMING_SMC
- menuconfig MTD_RAW_NAND
- 	tristate "Raw/Parallel NAND Device Support"
- 	select MTD_NAND_CORE
-+	select MTD_NAND_ECC
- 	select MTD_NAND_ECC_SW_HAMMING
- 	help
- 	  This enables support for accessing all type of raw/parallel
-@@ -21,16 +22,6 @@ menuconfig MTD_RAW_NAND
- 
- if MTD_RAW_NAND
- 
--config MTD_NAND_ECC_SW_BCH
--	bool "Support software BCH ECC"
--	select BCH
--	default n
--	help
--	  This enables support for software BCH error correction. Binary BCH
--	  codes are more powerful and cpu intensive than traditional Hamming
--	  ECC codes. They are used with NAND devices requiring more than 1 bit
--	  of error correction.
--
- comment "Raw/parallel NAND flash controllers"
- 
- config MTD_NAND_DENALI
-diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
-index 2930f5b9015d..76904305d091 100644
---- a/drivers/mtd/nand/raw/Makefile
-+++ b/drivers/mtd/nand/raw/Makefile
-@@ -2,7 +2,6 @@
- 
- obj-$(CONFIG_MTD_RAW_NAND)		+= nand.o
- obj-$(CONFIG_MTD_NAND_ECC_SW_HAMMING)	+= nand_ecc.o
--nand-$(CONFIG_MTD_NAND_ECC_SW_BCH)	+= nand_bch.o
- obj-$(CONFIG_MTD_SM_COMMON) 		+= sm_common.o
- 
- obj-$(CONFIG_MTD_NAND_CAFE)		+= cafe_nand.o
-diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
-index 2ebcf3087d8d..7ce45b6edb6d 100644
---- a/drivers/mtd/nand/raw/atmel/nand-controller.c
-+++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
-@@ -1045,6 +1045,7 @@ static int atmel_nand_pmecc_init(struct nand_chip *chip)
- {
- 	struct nand_ecc_props *requirements = &chip->base.ecc.requirements;
- 	struct mtd_info *mtd = nand_to_mtd(chip);
-+	struct nand_device *nanddev = mtd_to_nanddev(mtd);
- 	struct atmel_nand *nand = to_atmel_nand(chip);
- 	struct atmel_nand_controller *nc;
- 	struct atmel_pmecc_user_req req;
-@@ -1069,7 +1070,7 @@ static int atmel_nand_pmecc_init(struct nand_chip *chip)
- 			chip->ecc.size = val;
- 	}
- 
--	if (chip->ecc.options & NAND_ECC_MAXIMIZE)
-+	if (nanddev->ecc.user_conf.flags & NAND_ECC_MAXIMIZE)
- 		req.ecc.strength = ATMEL_PMECC_MAXIMIZE_ECC_STRENGTH;
- 	else if (chip->ecc.strength)
- 		req.ecc.strength = chip->ecc.strength;
-diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
-index a6a6464974ec..51bc014ebc0a 100644
---- a/drivers/mtd/nand/raw/denali.c
-+++ b/drivers/mtd/nand/raw/denali.c
-@@ -1181,6 +1181,7 @@ int denali_chip_init(struct denali_controller *denali,
- {
- 	struct nand_chip *chip = &dchip->chip;
- 	struct mtd_info *mtd = nand_to_mtd(chip);
-+	struct nand_device *nanddev = mtd_to_nanddev(mtd);
- 	struct denali_chip *dchip2;
- 	int i, j, ret;
- 
-@@ -1248,6 +1249,8 @@ int denali_chip_init(struct denali_controller *denali,
- 
- 	mtd_set_ooblayout(mtd, &denali_ooblayout_ops);
- 
-+	nanddev->ecc.user_conf.flags |= NAND_ECC_MAXIMIZE;
-+
- 	ret = nand_scan(chip, dchip->nsels);
- 	if (ret)
- 		return ret;
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 98a61071f775..a15cf4ec16e7 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -34,8 +34,9 @@
- #include <linux/mm.h>
- #include <linux/types.h>
- #include <linux/mtd/mtd.h>
-+#include <linux/mtd/nand.h>
- #include <linux/mtd/nand_ecc.h>
--#include <linux/mtd/nand_bch.h>
-+#include <linux/mtd/nand-ecc-sw-bch.h>
- #include <linux/interrupt.h>
- #include <linux/bitops.h>
- #include <linux/io.h>
-@@ -45,166 +46,6 @@
- 
- #include "internals.h"
- 
--/* Define default oob placement schemes for large and small page devices */
--static int nand_ooblayout_ecc_sp(struct mtd_info *mtd, int section,
--				 struct mtd_oob_region *oobregion)
--{
--	struct nand_chip *chip = mtd_to_nand(mtd);
--	struct nand_ecc_ctrl *ecc = &chip->ecc;
--
--	if (section > 1)
--		return -ERANGE;
--
--	if (!section) {
--		oobregion->offset = 0;
--		if (mtd->oobsize == 16)
--			oobregion->length = 4;
--		else
--			oobregion->length = 3;
--	} else {
--		if (mtd->oobsize == 8)
--			return -ERANGE;
--
--		oobregion->offset = 6;
--		oobregion->length = ecc->total - 4;
--	}
--
--	return 0;
--}
--
--static int nand_ooblayout_free_sp(struct mtd_info *mtd, int section,
--				  struct mtd_oob_region *oobregion)
--{
--	if (section > 1)
--		return -ERANGE;
--
--	if (mtd->oobsize == 16) {
--		if (section)
--			return -ERANGE;
--
--		oobregion->length = 8;
--		oobregion->offset = 8;
--	} else {
--		oobregion->length = 2;
--		if (!section)
--			oobregion->offset = 3;
--		else
--			oobregion->offset = 6;
--	}
--
--	return 0;
--}
--
--const struct mtd_ooblayout_ops nand_ooblayout_sp_ops = {
--	.ecc = nand_ooblayout_ecc_sp,
--	.free = nand_ooblayout_free_sp,
--};
--EXPORT_SYMBOL_GPL(nand_ooblayout_sp_ops);
--
--static int nand_ooblayout_ecc_lp(struct mtd_info *mtd, int section,
--				 struct mtd_oob_region *oobregion)
--{
--	struct nand_chip *chip = mtd_to_nand(mtd);
--	struct nand_ecc_ctrl *ecc = &chip->ecc;
--
--	if (section || !ecc->total)
--		return -ERANGE;
--
--	oobregion->length = ecc->total;
--	oobregion->offset = mtd->oobsize - oobregion->length;
--
--	return 0;
--}
--
--static int nand_ooblayout_free_lp(struct mtd_info *mtd, int section,
--				  struct mtd_oob_region *oobregion)
--{
--	struct nand_chip *chip = mtd_to_nand(mtd);
--	struct nand_ecc_ctrl *ecc = &chip->ecc;
--
--	if (section)
--		return -ERANGE;
--
--	oobregion->length = mtd->oobsize - ecc->total - 2;
--	oobregion->offset = 2;
--
--	return 0;
--}
--
--const struct mtd_ooblayout_ops nand_ooblayout_lp_ops = {
--	.ecc = nand_ooblayout_ecc_lp,
--	.free = nand_ooblayout_free_lp,
--};
--EXPORT_SYMBOL_GPL(nand_ooblayout_lp_ops);
--
--/*
-- * Support the old "large page" layout used for 1-bit Hamming ECC where ECC
-- * are placed at a fixed offset.
-- */
--static int nand_ooblayout_ecc_lp_hamming(struct mtd_info *mtd, int section,
--					 struct mtd_oob_region *oobregion)
--{
--	struct nand_chip *chip = mtd_to_nand(mtd);
--	struct nand_ecc_ctrl *ecc = &chip->ecc;
--
--	if (section)
--		return -ERANGE;
--
--	switch (mtd->oobsize) {
--	case 64:
--		oobregion->offset = 40;
--		break;
--	case 128:
--		oobregion->offset = 80;
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	oobregion->length = ecc->total;
--	if (oobregion->offset + oobregion->length > mtd->oobsize)
--		return -ERANGE;
--
--	return 0;
--}
--
--static int nand_ooblayout_free_lp_hamming(struct mtd_info *mtd, int section,
--					  struct mtd_oob_region *oobregion)
--{
--	struct nand_chip *chip = mtd_to_nand(mtd);
--	struct nand_ecc_ctrl *ecc = &chip->ecc;
--	int ecc_offset = 0;
--
--	if (section < 0 || section > 1)
--		return -ERANGE;
--
--	switch (mtd->oobsize) {
--	case 64:
--		ecc_offset = 40;
--		break;
--	case 128:
--		ecc_offset = 80;
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	if (section == 0) {
--		oobregion->offset = 2;
--		oobregion->length = ecc_offset - 2;
--	} else {
--		oobregion->offset = ecc_offset + ecc->total;
--		oobregion->length = mtd->oobsize - oobregion->offset;
--	}
--
--	return 0;
--}
--
--static const struct mtd_ooblayout_ops nand_ooblayout_lp_hamming_ops = {
--	.ecc = nand_ooblayout_ecc_lp_hamming,
--	.free = nand_ooblayout_free_lp_hamming,
--};
--
- static int nand_pairing_dist3_get_info(struct mtd_info *mtd, int page,
- 				       struct mtd_pairing_info *info)
- {
-@@ -5010,17 +4851,6 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
- 	return ret;
- }
- 
--static const char * const nand_ecc_placement[] = {
--	[NAND_ECC_PLACEMENT_OOB] = "oob",
--	[NAND_ECC_PLACEMENT_INTERLEAVED] = "interleaved",
--};
--
--static enum nand_ecc_engine_type
--of_get_nand_ecc_engine_type(struct device_node *np)
--{
--	return NAND_ECC_ENGINE_TYPE_INVALID;
--}
--
- static enum nand_ecc_engine_type
- of_get_rawnand_ecc_engine_type_legacy(struct device_node *np)
- {
-@@ -5072,24 +4902,6 @@ of_get_rawnand_ecc_engine_type_legacy(struct device_node *np)
- 	return NAND_ECC_ENGINE_TYPE_INVALID;
- }
- 
--enum nand_ecc_placement of_get_nand_ecc_placement(struct device_node *np)
--{
--	enum nand_ecc_placement placement;
--	const char *pm;
--	int err;
--
--	err = of_property_read_string(np, "nand-ecc-placement", &pm);
--	if (!err) {
--		for (placement = NAND_ECC_PLACEMENT_OOB;
--		     placement < ARRAY_SIZE(nand_ecc_placement); placement++) {
--			if (!strcasecmp(pm, nand_ecc_placement[placement]))
--				return placement;
--		}
--	}
--
--	return NAND_ECC_PLACEMENT_UNKNOWN;
--}
--
- enum nand_ecc_placement
- of_get_rawnand_ecc_placement_legacy(struct device_node *np)
- {
-@@ -5105,31 +4917,6 @@ of_get_rawnand_ecc_placement_legacy(struct device_node *np)
- 	return NAND_ECC_PLACEMENT_UNKNOWN;
- }
- 
--static const char * const nand_ecc_algos[] = {
--	[NAND_ECC_ALGO_HAMMING]	= "hamming",
--	[NAND_ECC_ALGO_BCH]	= "bch",
--	[NAND_ECC_ALGO_RS]	= "rs",
--};
--
--static enum nand_ecc_algo of_get_nand_ecc_algo(struct device_node *np)
--{
--	enum nand_ecc_algo ecc_algo;
--	const char *pm;
--	int err;
--
--	err = of_property_read_string(np, "nand-ecc-algo", &pm);
--	if (!err) {
--		for (ecc_algo = NAND_ECC_ALGO_HAMMING;
--		     ecc_algo < ARRAY_SIZE(nand_ecc_algos);
--		     ecc_algo++) {
--			if (!strcasecmp(pm, nand_ecc_algos[ecc_algo]))
--				return ecc_algo;
--		}
--	}
--
--	return NAND_ECC_ALGO_UNKNOWN;
--}
--
- static enum nand_ecc_algo of_get_rawnand_ecc_algo_legacy(struct device_node *np)
- {
- 	const char *pm;
-@@ -5146,48 +4933,10 @@ static enum nand_ecc_algo of_get_rawnand_ecc_algo_legacy(struct device_node *np)
- 	return NAND_ECC_ALGO_UNKNOWN;
- }
- 
--static int of_get_nand_ecc_step_size(struct device_node *np)
--{
--	int ret;
--	u32 val;
--
--	ret = of_property_read_u32(np, "nand-ecc-step-size", &val);
--	return ret ? ret : val;
--}
--
--static int of_get_nand_ecc_strength(struct device_node *np)
--{
--	int ret;
--	u32 val;
--
--	ret = of_property_read_u32(np, "nand-ecc-strength", &val);
--	return ret ? ret : val;
--}
--
--static void nand_ecc_read_user_conf(struct nand_chip *chip)
--{
--	struct device_node *dn = nand_get_flash_node(chip);
--	struct nand_device *nand = &chip->base;
--	int strength, size;
--
--	nand->ecc.user_conf.engine_type = of_get_nand_ecc_engine_type(dn);
--	nand->ecc.user_conf.algo = of_get_nand_ecc_algo(dn);
--	nand->ecc.user_conf.placement = of_get_nand_ecc_placement(dn);
--
--	strength = of_get_nand_ecc_strength(dn);
--	if (strength >= 0)
--		nand->ecc.user_conf.strength = strength;
--
--	size = of_get_nand_ecc_step_size(dn);
--	if (size >= 0)
--		nand->ecc.user_conf.step_size = size;
--}
--
- static void rawnand_ecc_read_legacy_user_conf(struct nand_chip *chip)
- {
- 	struct device_node *dn = nand_get_flash_node(chip);
--	struct nand_device *nand = &chip->base;
--	struct nand_ecc_props *user_conf = &nand->ecc.user_conf;
-+	struct nand_ecc_props *user_conf = &chip->base.ecc.user_conf;
- 
- 	if (user_conf->engine_type != NAND_ECC_ENGINE_TYPE_INVALID)
- 		user_conf->engine_type = of_get_rawnand_ecc_engine_type_legacy(dn);
-@@ -5237,10 +4986,7 @@ static int rawnand_dt_init(struct nand_chip *chip)
- 	if (of_get_nand_on_flash_bbt(dn))
- 		chip->bbt_options |= NAND_BBT_USE_FLASH;
- 
--	if (of_property_read_bool(dn, "nand-ecc-maximize"))
--		chip->ecc.options |= NAND_ECC_MAXIMIZE;
--
--	nand_ecc_read_user_conf(chip);
-+	nand_ecc_read_user_conf(nand);
- 	rawnand_ecc_read_legacy_user_conf(chip);
- 
- 	/*
-@@ -5370,6 +5116,7 @@ static void nand_scan_ident_cleanup(struct nand_chip *chip)
- static int nand_set_ecc_soft_ops(struct nand_chip *chip)
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
-+	struct nand_device *nanddev = mtd_to_nanddev(mtd);
- 	struct nand_ecc_ctrl *ecc = &chip->ecc;
- 
- 	if (WARN_ON(ecc->engine_type != NAND_ECC_ENGINE_TYPE_SOFT))
-@@ -5445,7 +5192,7 @@ static int nand_set_ecc_soft_ops(struct nand_chip *chip)
- 		 * used.
- 		 */
- 		if (mtd->ooblayout == &nand_ooblayout_lp_ops &&
--		    ecc->options & NAND_ECC_MAXIMIZE) {
-+		    nanddev->ecc.user_conf.flags & NAND_ECC_MAXIMIZE) {
- 			int steps, bytes;
- 
- 			/* Always prefer 1k blocks over 512bytes ones */
-@@ -5683,11 +5430,12 @@ nand_maximize_ecc(struct nand_chip *chip,
-  * @caps: ECC engine caps info structure
-  * @oobavail: OOB size that the ECC engine can use
-  *
-- * Choose the ECC configuration according to following logic
-+ * Choose the ECC configuration according to following logic.
-  *
-  * 1. If both ECC step size and ECC strength are already set (usually by DT)
-  *    then check if it is supported by this controller.
-- * 2. If NAND_ECC_MAXIMIZE is set, then select maximum ECC strength.
-+ * 2. If the user provided the nand-ecc-maximize property, then select maximum
-+ *    ECC strength.
-  * 3. Otherwise, try to match the ECC step size and ECC strength closest
-  *    to the chip's requirement. If available OOB size can't fit the chip
-  *    requirement then fallback to the maximum ECC step size and ECC strength.
-@@ -5698,6 +5446,7 @@ int nand_ecc_choose_conf(struct nand_chip *chip,
- 			 const struct nand_ecc_caps *caps, int oobavail)
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
-+	struct nand_device *nanddev = mtd_to_nanddev(mtd);
- 
- 	if (WARN_ON(oobavail < 0 || oobavail > mtd->oobsize))
- 		return -EINVAL;
-@@ -5705,7 +5454,7 @@ int nand_ecc_choose_conf(struct nand_chip *chip,
- 	if (chip->ecc.size && chip->ecc.strength)
- 		return nand_check_ecc_caps(chip, caps, oobavail);
- 
--	if (chip->ecc.options & NAND_ECC_MAXIMIZE)
-+	if (nanddev->ecc.user_conf.flags & NAND_ECC_MAXIMIZE)
- 		return nand_maximize_ecc(chip, caps, oobavail);
- 
- 	if (!nand_match_ecc_req(chip, caps, oobavail))
-@@ -5715,42 +5464,6 @@ int nand_ecc_choose_conf(struct nand_chip *chip,
- }
- EXPORT_SYMBOL_GPL(nand_ecc_choose_conf);
- 
--/*
-- * Check if the chip configuration meet the datasheet requirements.
--
-- * If our configuration corrects A bits per B bytes and the minimum
-- * required correction level is X bits per Y bytes, then we must ensure
-- * both of the following are true:
-- *
-- * (1) A / B >= X / Y
-- * (2) A >= X
-- *
-- * Requirement (1) ensures we can correct for the required bitflip density.
-- * Requirement (2) ensures we can correct even when all bitflips are clumped
-- * in the same sector.
-- */
--static bool nand_ecc_strength_good(struct nand_chip *chip)
--{
--	struct mtd_info *mtd = nand_to_mtd(chip);
--	struct nand_ecc_ctrl *ecc = &chip->ecc;
--	struct nand_ecc_props *requirements = &chip->base.ecc.requirements;
--	int corr, ds_corr;
--
--	if (ecc->size == 0 || requirements->step_size == 0)
--		/* Not enough information */
--		return true;
--
--	/*
--	 * We get the number of corrected bits per page to compare
--	 * the correction density.
--	 */
--	corr = (mtd->writesize * ecc->strength) / ecc->size;
--	ds_corr = (mtd->writesize * requirements->strength) /
--		  requirements->step_size;
--
--	return corr >= ds_corr && ecc->strength >= requirements->strength;
--}
--
- static int rawnand_erase(struct nand_device *nand, const struct nand_pos *pos)
- {
- 	struct nand_chip *chip = container_of(nand, struct nand_chip,
-@@ -5806,6 +5519,7 @@ static const struct nand_ops rawnand_ops = {
- static int nand_scan_tail(struct nand_chip *chip)
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
-+	struct nand_device *nanddev = mtd_to_nanddev(mtd);
- 	struct nand_ecc_ctrl *ecc = &chip->ecc;
- 	int ret, i;
- 
-@@ -6015,6 +5729,7 @@ static int nand_scan_tail(struct nand_chip *chip)
- 		goto err_nand_manuf_cleanup;
- 	}
- 	ecc->total = ecc->steps * ecc->bytes;
-+	chip->base.ecc.ctx.total = ecc->total;
- 	if (ecc->total > mtd->oobsize) {
- 		WARN(1, "Total number of ECC bytes exceeded oobsize\n");
- 		ret = -EINVAL;
-@@ -6032,7 +5747,7 @@ static int nand_scan_tail(struct nand_chip *chip)
- 	mtd->oobavail = ret;
- 
- 	/* ECC sanity check: warn if it's too weak */
--	if (!nand_ecc_strength_good(chip))
-+	if (!nand_ecc_correction_is_enough(nanddev))
- 		pr_warn("WARNING: %s: the ECC used on your system (%db/%dB) is too weak compared to the one required by the NAND chip (%db/%dB)\n",
- 			mtd->name,
- 			chip->base.ecc.ctx.conf.strength,
-diff --git a/drivers/mtd/nand/raw/nand_toshiba.c b/drivers/mtd/nand/raw/nand_toshiba.c
-index 1180068007a9..6901fbba3750 100644
---- a/drivers/mtd/nand/raw/nand_toshiba.c
-+++ b/drivers/mtd/nand/raw/nand_toshiba.c
-@@ -6,6 +6,8 @@
-  * Author: Boris Brezillon <boris.brezillon@free-electrons.com>
-  */
- 
-+#include <linux/mtd/nand.h>
-+
- #include "internals.h"
- 
- /* Bit for detecting BENAND */
-diff --git a/drivers/mtd/nand/raw/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
-index 9c2115fe2111..c7733e5d43a0 100644
---- a/drivers/mtd/nand/raw/nandsim.c
-+++ b/drivers/mtd/nand/raw/nandsim.c
-@@ -23,7 +23,7 @@
- #include <linux/string.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_bch.h>
-+#include <linux/mtd/nand-ecc-sw-bch.h>
- #include <linux/mtd/partitions.h>
- #include <linux/delay.h>
- #include <linux/list.h>
-diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
-index 512f60780a50..0ef209e1cd87 100644
---- a/drivers/mtd/nand/raw/omap2.c
-+++ b/drivers/mtd/nand/raw/omap2.c
-@@ -23,7 +23,7 @@
- #include <linux/of.h>
- #include <linux/of_device.h>
- 
--#include <linux/mtd/nand_bch.h>
-+#include <linux/mtd/nand-ecc-sw-bch.h>
- #include <linux/platform_data/elm.h>
- 
- #include <linux/omap-gpmc.h>
-diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
-index a5eefdf89660..5fc1378fe94e 100644
---- a/drivers/mtd/nand/raw/sunxi_nand.c
-+++ b/drivers/mtd/nand/raw/sunxi_nand.c
-@@ -1609,12 +1609,13 @@ static int sunxi_nand_hw_ecc_ctrl_init(struct nand_chip *nand,
- 	static const u8 strengths[] = { 16, 24, 28, 32, 40, 48, 56, 60, 64 };
- 	struct sunxi_nfc *nfc = to_sunxi_nfc(nand->controller);
- 	struct mtd_info *mtd = nand_to_mtd(nand);
-+	struct nand_device *nanddev = mtd_to_nanddev(mtd);
- 	struct sunxi_nand_hw_ecc *data;
- 	int nsectors;
- 	int ret;
- 	int i;
- 
--	if (ecc->options & NAND_ECC_MAXIMIZE) {
-+	if (nanddev->ecc.user_conf.flags & NAND_ECC_MAXIMIZE) {
- 		int bytes;
- 
- 		ecc->size = 1024;
-diff --git a/drivers/mtd/nand/raw/tegra_nand.c b/drivers/mtd/nand/raw/tegra_nand.c
-index 8264bb991d03..d642a1dd2e16 100644
---- a/drivers/mtd/nand/raw/tegra_nand.c
-+++ b/drivers/mtd/nand/raw/tegra_nand.c
-@@ -840,7 +840,8 @@ static int tegra_nand_get_strength(struct nand_chip *chip, const int *strength,
- 				   int strength_len, int bits_per_step,
- 				   int oobsize)
- {
--	bool maximize = chip->ecc.options & NAND_ECC_MAXIMIZE;
-+	struct nand_device *nanddev = mtd_to_nanddev(nand_to_mtd(chip));
-+	bool maximize = nanddev->ecc.user_conf.flags & NAND_ECC_MAXIMIZE;
- 	int i;
- 
- 	/*
-diff --git a/include/linux/mtd/nand_bch.h b/include/linux/mtd/nand-ecc-sw-bch.h
-similarity index 92%
-rename from include/linux/mtd/nand_bch.h
-rename to include/linux/mtd/nand-ecc-sw-bch.h
-index d5956cc48ba9..1e1ee3af82b1 100644
---- a/include/linux/mtd/nand_bch.h
-+++ b/include/linux/mtd/nand-ecc-sw-bch.h
-@@ -5,8 +5,8 @@
-  * This file is the header for the NAND BCH ECC implementation.
-  */
- 
--#ifndef __MTD_NAND_BCH_H__
--#define __MTD_NAND_BCH_H__
-+#ifndef __MTD_NAND_ECC_SW_BCH_H__
-+#define __MTD_NAND_ECC_SW_BCH_H__
- 
- struct mtd_info;
- struct nand_chip;
-@@ -63,4 +63,4 @@ static inline void nand_bch_free(struct nand_bch_control *nbc) {}
- 
- #endif /* CONFIG_MTD_NAND_ECC_SW_BCH */
- 
--#endif /* __MTD_NAND_BCH_H__ */
-+#endif /* __MTD_NAND_ECC_SW_BCH_H__ */
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index ce936ffb9f42..1cc6d71c2b45 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -127,6 +127,10 @@ struct nand_page_io_req {
- 	int mode;
- };
- 
-+extern const struct mtd_ooblayout_ops nand_ooblayout_sp_ops;
-+extern const struct mtd_ooblayout_ops nand_ooblayout_lp_ops;
-+extern const struct mtd_ooblayout_ops nand_ooblayout_lp_hamming_ops;
-+
- /**
-  * enum nand_ecc_engine_type - NAND ECC engine type
-  * @NAND_ECC_ENGINE_TYPE_INVALID: Invalid value
-@@ -191,6 +195,9 @@ struct nand_ecc_props {
- 
- #define NAND_ECCREQ(str, stp) { .strength = (str), .step_size = (stp) }
- 
-+/* NAND ECC misc flags */
-+#define NAND_ECC_MAXIMIZE BIT(0)
-+
- /**
-  * struct nand_bbt - bad block table object
-  * @cache: in memory BBT cache
-@@ -262,12 +269,14 @@ struct nand_ecc_engine {
- 	struct nand_ecc_engine_ops *ops;
- };
- 
-+void nand_ecc_read_user_conf(struct nand_device *nand);
- int nand_ecc_init_ctx(struct nand_device *nand);
- void nand_ecc_cleanup_ctx(struct nand_device *nand);
- int nand_ecc_prepare_io_req(struct nand_device *nand,
- 			    struct nand_page_io_req *req);
- int nand_ecc_finish_io_req(struct nand_device *nand,
- 			   struct nand_page_io_req *req);
-+bool nand_ecc_correction_is_enough(struct nand_device *nand);
- 
- /**
-  * struct nand_ecc - High-level ECC object
-@@ -356,6 +365,17 @@ static inline struct mtd_info *nanddev_to_mtd(struct nand_device *nand)
- 	return &nand->mtd;
- }
- 
-+/**
-+ * nanddev_get_flash_node() - Get the device node attached to a NAND device
-+ * @nand: NAND device
-+ *
-+ * Return: the device node linked to @nand.
-+ */
-+static inline struct device_node *nanddev_get_flash_node(struct nand_device *nand)
-+{
-+	return mtd_get_of_node(nanddev_to_mtd(nand));
-+}
-+
- /*
-  * nanddev_bits_per_cell() - Get the number of bits per cell
-  * @nand: NAND device
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 8f7f1cce3b4b..9d69fa6608ae 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -14,6 +14,7 @@
- #define __LINUX_MTD_RAWNAND_H
- 
- #include <linux/mtd/mtd.h>
-+#include <linux/mtd/nand.h>
- #include <linux/mtd/flashchip.h>
- #include <linux/mtd/bbm.h>
- #include <linux/mtd/jedec.h>
-@@ -80,18 +81,6 @@ struct nand_chip;
- 
- #define NAND_DATA_IFACE_CHECK_ONLY	-1
- 
--/*
-- * Constants for ECC_MODES
-- */
--enum nand_ecc_mode {
--	NAND_ECC_INVALID,
--	NAND_ECC_NONE,
--	NAND_ECC_SOFT,
--	NAND_ECC_HW,
--	NAND_ECC_HW_SYNDROME,
--	NAND_ECC_ON_DIE,
--};
--
- /*
-  * Constants for Hardware ECC
-  */
-@@ -109,7 +98,6 @@ enum nand_ecc_mode {
-  * pages and you want to rely on the default implementation.
-  */
- #define NAND_ECC_GENERIC_ERASED_CHECK	BIT(0)
--#define NAND_ECC_MAXIMIZE		BIT(1)
- 
- /*
-  * Option constants for bizarre disfunctionality and real
-@@ -1159,9 +1147,6 @@ struct nand_chip {
- 	int (*unlock_area)(struct nand_chip *chip, loff_t ofs, uint64_t len);
- };
- 
--extern const struct mtd_ooblayout_ops nand_ooblayout_sp_ops;
--extern const struct mtd_ooblayout_ops nand_ooblayout_lp_ops;
--
- static inline struct nand_chip *mtd_to_nand(struct mtd_info *mtd)
- {
- 	return container_of(mtd, struct nand_chip, base.mtd);
--- 
-2.20.1
+Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 
 
 ______________________________________________________
