@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD22DC433E0
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 May 2020 07:38:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AEDBC433E0
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 May 2020 07:38:25 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9FAB12074D
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 May 2020 07:38:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 021AF2074D
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 May 2020 07:38:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OJCVxUwS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9FAB12074D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="E1Ed47C1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 021AF2074D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,38 +26,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=p7nSIGDz7YvN+yIcotRAi6SV8UW3RyLG/Oa5Ws+DGv4=; b=OJCVxUwSSgmWrvECqKRvmCeqSN
-	MkINrBiSf6K/qDWEoKvnT5eP9cqL+I03KjG1MwDx2tBM/3AhT1pjePG+ZrZDc2JMCtRrXhQAe/VyU
-	OuTBHClvtPcstNx97RnVgnH0BEDBsblxYZEHjfPqXWh7Jsq2lxwAcj65hehz8qQyH6k0U0fGMXmtt
-	Xai4N9Io/BAzCDs4hWieJg0PGpH1z9RLN+ZK7ImerUp5KWmSX687R17nao2v4RK1tEzynsl3OyHkI
-	USFDePhLtdaX5we5FAp8sCpJ8XrYtII+LlTU3YVxuKbAm8XO62WtBlRgGNxaDVn316Zd5L9EKf15k
-	igBOQyYw==;
+	bh=D1AvXEvQQ1CfzNcjBA4MxWSqJEYxrVDkxiWqWo2/vAs=; b=E1Ed47C1u+YwBT6vw/Ka8WLrOp
+	AiUs1WyfmynH+bm+y3sGNGWH6ejy0SvB/nGtikjx2rUiznceJhUMZvbr4KuLSh3sOST6rZmPGpvD0
+	JuJzgZ17c7XcT44Vy8PyOn3SwBRFwljcDt5HE+8Jd1fIKmz9zewK2vr64BqFCDmGE0WcSaTI0PllT
+	e2stfFpGbPGxk3I6mShcS552coBL9YtNkNMAseG5SWnLwxA6eTnD13b8FsEZMafEJLVLFd/X6s8M3
+	jBRRh7Xac23uqMvWg67WyYvZjgGEtiZUHb7hnUztflsiZJkUEaM8+cSg49bhuz0J9ZJcLjLtJaRxx
+	Oo/S3Bjg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jeZaW-0001vV-4K; Fri, 29 May 2020 07:37:56 +0000
+	id 1jeZan-0002I8-AP; Fri, 29 May 2020 07:38:13 +0000
 Received: from twhmllg4.macronix.com ([122.147.135.202])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jeZZW-0000qq-Ex
- for linux-mtd@lists.infradead.org; Fri, 29 May 2020 07:36:57 +0000
+ id 1jeZZd-0000w7-MH
+ for linux-mtd@lists.infradead.org; Fri, 29 May 2020 07:37:03 +0000
 Received: from localhost.localdomain ([172.17.195.96])
- by TWHMLLG4.macronix.com with ESMTP id 04T7aHpx067318;
- Fri, 29 May 2020 15:36:20 +0800 (GMT-8)
+ by TWHMLLG4.macronix.com with ESMTP id 04T7aHq0067318;
+ Fri, 29 May 2020 15:36:21 +0800 (GMT-8)
  (envelope-from masonccyang@mxic.com.tw)
 From: Mason Yang <masonccyang@mxic.com.tw>
 To: broonie@kernel.org, tudor.ambarus@microchip.com, miquel.raynal@bootlin.com,
  richard@nod.at, vigneshr@ti.com, boris.brezillon@collabora.com,
  matthias.bgg@gmail.com
-Subject: [PATCH v4 3/7] mtd: spi-nor: sfdp: parse command sequences to change
- octal DTR mode
-Date: Fri, 29 May 2020 15:36:11 +0800
-Message-Id: <1590737775-4798-4-git-send-email-masonccyang@mxic.com.tw>
+Subject: [PATCH v4 4/7] mtd: spi-nor: core: add configuration register 2 read
+ & write support
+Date: Fri, 29 May 2020 15:36:12 +0800
+Message-Id: <1590737775-4798-5-git-send-email-masonccyang@mxic.com.tw>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1590737775-4798-1-git-send-email-masonccyang@mxic.com.tw>
 References: <1590737775-4798-1-git-send-email-masonccyang@mxic.com.tw>
-X-MAIL: TWHMLLG4.macronix.com 04T7aHpx067318
+X-MAIL: TWHMLLG4.macronix.com 04T7aHq0067318
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200529_003654_801189_85618145 
-X-CRM114-Status: GOOD (  13.02  )
+X-CRM114-CacheID: sfid-20200529_003702_109804_D8207B1C 
+X-CRM114-Status: UNSURE (   9.33  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,198 +79,120 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-A set of simple command sequences is provided which can be executed
-directly by the host controller to enable octal DTR mode.
+Configuration register 2 is to set the device operation condition like
+STR or DTR mode at address offset 0 and DQS mode at address offset 0x200.
 
-Each command sequence is 8 per byte for single SPI mode.
+Each device has various address offset for it's specific operatoin
+setting.
 
 Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
 ---
- drivers/mtd/spi-nor/core.h |  20 +++++++++
- drivers/mtd/spi-nor/sfdp.c | 104 +++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 124 insertions(+)
+ drivers/mtd/spi-nor/core.c | 78 ++++++++++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/spi-nor/core.h |  2 ++
+ 2 files changed, 80 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index a33f807..8de7f53 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -183,6 +183,23 @@ struct spi_nor_locking_ops {
- };
- 
- /**
-+ * struct cmd_seq_octal_dtr - command sequences to change to octal DTR mode
-+ * Each command sequence is 8 per byte for single SPI mode.
-+ * @len:	commmand length of each command sequence.
-+ * @opcode:	command code.
-+ * @addr:	address offset to device.
-+ * @data:	data write to device.
-+ */
-+struct cmd_seq_octal_dtr {
-+	u8 len;
-+	u8 opcode;
-+	u32 addr;
-+	u8 data;
-+};
-+
-+#define CMD_SEQ_NUM	4
-+
-+/**
-  * struct spi_nor_flash_parameter - SPI NOR flash parameters and settings.
-  * Includes legacy flash parameters and settings that can be overwritten
-  * by the spi_nor_fixups hooks, or dynamically when parsing the JESD216
-@@ -205,6 +222,7 @@ struct spi_nor_locking_ops {
-  *                      higher index in the array, the higher priority.
-  * @erase_map:		the erase map parsed from the SFDP Sector Map Parameter
-  *                      Table.
-+ * @cmd_seq:		command sequence to change to octal DTR mode.
-  * @quad_enable:	enables SPI NOR quad mode.
-  * @set_4byte_addr_mode: puts the SPI NOR in 4 byte addressing mode.
-  * @convert_addr:	converts an absolute address into something the flash
-@@ -232,6 +250,8 @@ struct spi_nor_flash_parameter {
- 
- 	struct spi_nor_erase_map        erase_map;
- 
-+	struct cmd_seq_octal_dtr	cmd_seq[CMD_SEQ_NUM];
-+
- 	int (*quad_enable)(struct spi_nor *nor);
- 	int (*set_4byte_addr_mode)(struct spi_nor *nor, bool enable);
- 	u32 (*convert_addr)(struct spi_nor *nor, u32 addr);
-diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index 27a4de4..ef19290 100644
---- a/drivers/mtd/spi-nor/sfdp.c
-+++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -21,6 +21,7 @@
- #define SFDP_SECTOR_MAP_ID	0xff81	/* Sector Map Table */
- #define SFDP_4BAIT_ID		0xff84  /* 4-byte Address Instruction Table */
- #define SFDP_PROFILE1_ID	0xff05	/* xSPI Profile 1.0 table. */
-+#define SFDP_CMD_TO_8DTR_ID	0xff0a  /* Command Sequences to Octal DTR */
- 
- #define SFDP_SIGNATURE		0x50444653U
- #define SFDP_JESD216_MAJOR	1
-@@ -49,6 +50,19 @@ struct xspi_dummy_cycles {
- 	u8 shift;	/* Bit shift */
- };
- 
-+#define CMD_TO_8DTR_LEN			GENMASK(31, 24)
-+#define CMD_TO_8DTR_OPCODE		GENMASK(23, 16)
-+#define CMD_TO_8DTR_1_ADDR		GENMASK(15, 8)
-+#define CMD_TO_8DTR_1_ADDR_DATA		GENMASK(7, 0)
-+#define CMD_TO_8DTR_4_ADDR_MSB		GENMASK(15, 0)
-+#define CMD_TO_8DTR_4_ADDR_LSB		GENMASK(31, 16)
-+#define CMD_TO_8DTR_4_ADDR_DATA		GENMASK(15, 8)
-+#define CMD_TO_8DTR_SIZE_MAX		8
-+
-+struct sfdp_cmd_to_8dtr {
-+	u32	dwords[CMD_TO_8DTR_SIZE_MAX];
-+};
-+
- /* Basic Flash Parameter Table 20th DWORD, Max operation speed of device */
- struct octal_max_speed {
- 	u8 idx; /* Bits value */
-@@ -1219,6 +1233,91 @@ static int spi_nor_parse_profile1(struct spi_nor *nor,
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 3799417..fed6236 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -269,6 +269,84 @@ int spi_nor_write_disable(struct spi_nor *nor)
  }
  
  /**
-+ * spi_nor_parse_cmd_to_8dtr() - parse the command sequence to octal DTR
-+ * @nor:		pointer to a 'struct spi_nor'
-+ * @param_header:	command sequence to octal DTR parameter table header.
-+ * @params:		pointer to the 'struct spi_nor_flash_parameter' to be.
++ * spi_nor_read_cr2() - Read the Configuration Register 2.
++ * @nor:	pointer to 'struct spi_nor'.
++ * @addr:	offset address to read.
++ * @cr2:	pointer to a DMA-able buffer where the value of the
++ *              Configuration Register 2  will be written.
 + *
 + * Return: 0 on success, -errno otherwise.
 + */
-+static int spi_nor_parse_cmd_to_8dtr(struct spi_nor *nor,
-+				     const struct sfdp_parameter_header *header,
-+				     struct spi_nor_flash_parameter *params)
++int spi_nor_read_cr2(struct spi_nor *nor, u32 addr, u8 *cr2)
 +{
-+	struct sfdp_cmd_to_8dtr cmd_seq;
-+	u32 i, j, addr;
-+	size_t len;
 +	int ret;
++	u8 cmd = nor->params->rd_reg_cmd;
 +
-+	if (header->major != SFDP_JESD216_MAJOR ||
-+	    header->length < CMD_TO_8DTR_SIZE_MAX)
-+		return -EINVAL;
++	if (nor->spimem) {
++		struct spi_mem_op op =
++			SPI_MEM_OP(SPI_MEM_OP_CMD(cmd, 1),
++				   SPI_MEM_OP_ADDR(4, addr, 1),
++				   SPI_MEM_OP_DUMMY(4, 1),
++				   SPI_MEM_OP_DATA_IN(1, cr2, 1));
 +
-+	len = min_t(size_t, sizeof(cmd_seq),
-+		    header->length * sizeof(u32));
++		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
 +
-+	memset(&cmd_seq, 0, sizeof(cmd_seq));
-+
-+	addr = SFDP_PARAM_HEADER_PTP(header);
-+	ret = spi_nor_read_sfdp(nor, addr, len, &cmd_seq);
-+	if (ret)
-+		goto out;
-+
-+	/* Fix endianness of the Command Sequences to octal DTR. */
-+	le32_to_cpu_array(cmd_seq.dwords, CMD_TO_8DTR_SIZE_MAX);
-+
-+	memset(params->cmd_seq, 0, sizeof(params->cmd_seq[CMD_SEQ_NUM]));
-+
-+	for (i = 0, j = 0;
-+	     i < CMD_SEQ_NUM && j < CMD_TO_8DTR_SIZE_MAX; i++, j += 2) {
-+		params->cmd_seq[i].len = FIELD_GET(CMD_TO_8DTR_LEN,
-+						   cmd_seq.dwords[j]);
-+		if (!params->cmd_seq[i].len)
-+			break;
-+
-+		switch (params->cmd_seq[i].len) {
-+		case 1:
-+			params->cmd_seq[i].opcode =
-+				FIELD_GET(CMD_TO_8DTR_OPCODE,
-+					  cmd_seq.dwords[j]);
-+			break;
-+
-+		case 3:
-+			params->cmd_seq[i].opcode =
-+				FIELD_GET(CMD_TO_8DTR_OPCODE,
-+					  cmd_seq.dwords[j]);
-+			params->cmd_seq[i].addr =
-+				FIELD_GET(CMD_TO_8DTR_1_ADDR,
-+					  cmd_seq.dwords[j]);
-+			params->cmd_seq[i].data =
-+				FIELD_GET(CMD_TO_8DTR_1_ADDR_DATA,
-+					  cmd_seq.dwords[j]);
-+			break;
-+
-+		case 6:
-+			params->cmd_seq[i].opcode =
-+				FIELD_GET(CMD_TO_8DTR_OPCODE,
-+					  cmd_seq.dwords[j]);
-+			params->cmd_seq[i].addr =
-+				FIELD_GET(CMD_TO_8DTR_4_ADDR_MSB,
-+					  cmd_seq.dwords[j]) << 16 |
-+				FIELD_GET(CMD_TO_8DTR_4_ADDR_LSB,
-+					  cmd_seq.dwords[j + 1]);
-+			params->cmd_seq[i].data =
-+				FIELD_GET(CMD_TO_8DTR_4_ADDR_DATA,
-+					  cmd_seq.dwords[j + 1]);
-+			break;
-+
-+		default:
-+			break;
-+		}
++		ret = spi_mem_exec_op(nor->spimem, &op);
++	} else {
++		if (spi_nor_protocol_is_dtr(nor->reg_proto))
++			ret = -ENOTSUPP;
++		else
++			ret = nor->controller_ops->read_reg(nor, cmd, cr2, 1);
 +	}
 +
-+out:
++	if (ret)
++		dev_dbg(nor->dev, "error %d reading CR2\n", ret);
++
 +	return ret;
 +}
 +
 +/**
-  * spi_nor_parse_sfdp() - parse the Serial Flash Discoverable Parameters.
-  * @nor:		pointer to a 'struct spi_nor'
-  * @params:		pointer to the 'struct spi_nor_flash_parameter' to be
-@@ -1323,6 +1422,11 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
- 			err = spi_nor_parse_profile1(nor, param_header, params);
- 			break;
- 
-+		case SFDP_CMD_TO_8DTR_ID:
-+			err = spi_nor_parse_cmd_to_8dtr(nor,
-+							param_header, params);
-+			break;
++ * spi_nor_write_cr2() - Write the Configuration Register 2.
++ * @nor:	pointer to 'struct spi_nor'.
++ * @addr:	offset address to write.
++ * @cr2:	pointer to a DMA-able buffer where the value of the
++ *              Configuratin Register 2 will be read.
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++int spi_nor_write_cr2(struct spi_nor *nor, u32 addr, u8 *cr2)
++{
++	int ret;
++	u8 cmd = nor->params->wr_reg_cmd;
 +
- 		default:
- 			break;
- 		}
++	ret = spi_nor_write_enable(nor);
++	if (ret)
++		return ret;
++
++	if (nor->spimem) {
++		struct spi_mem_op op =
++			SPI_MEM_OP(SPI_MEM_OP_CMD(cmd, 1),
++				   SPI_MEM_OP_ADDR(4, addr, 1),
++				   SPI_MEM_OP_NO_DUMMY,
++				   SPI_MEM_OP_DATA_OUT(1, cr2, 1));
++
++		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
++
++		ret = spi_mem_exec_op(nor->spimem, &op);
++	} else {
++		if (spi_nor_protocol_is_dtr(nor->reg_proto))
++			ret = -ENOTSUPP;
++		else
++			ret = nor->controller_ops->write_reg(nor, cmd, cr2, 1);
++	}
++
++	if (ret)
++		dev_dbg(nor->dev, "error %d write CFG Reg 2\n", ret);
++
++	return ret;
++}
++
++/**
+  * spi_nor_read_sr() - Read the Status Register.
+  * @nor:	pointer to 'struct spi_nor'.
+  * @sr:		pointer to a DMA-able buffer where the value of the
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index 8de7f53..0eb07ca 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -434,6 +434,8 @@ struct spi_nor_manufacturer {
+ 
+ int spi_nor_write_enable(struct spi_nor *nor);
+ int spi_nor_write_disable(struct spi_nor *nor);
++int spi_nor_read_cr2(struct spi_nor *nor, u32 addr, u8 *cr2);
++int spi_nor_write_cr2(struct spi_nor *nor, u32 addr, u8 *cr2);
+ int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable);
+ int spi_nor_write_ear(struct spi_nor *nor, u8 ear);
+ int spi_nor_wait_till_ready(struct spi_nor *nor);
 -- 
 1.9.1
 
