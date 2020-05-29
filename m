@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A226C433E0
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 May 2020 11:30:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A93AC433DF
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 May 2020 11:32:00 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CEE372074D
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 May 2020 11:30:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CA4B32074D
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 May 2020 11:31:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nmMKQVrV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CEE372074D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="iC6mNVMu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA4B32074D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vuoxGaGCqnNN0ijdpHF+dcde1eE3ijJRRsfetmUldPs=; b=nmMKQVrV0Wjx6e
-	EgjT5k18eicyRT7rdaVkjzPINhBPKiVHY1cmwKwecQfc+0012OMfUR1fL48FIFZ9doavwxFi4+yyB
-	kSoNjWCFGs0Pq3p4cntevS1viYYoPXVhZCbQyGMfv6KmnkExkWFRxi9m+V15Xl/+PGBWOjyrQR7sX
-	uf0l4KWJa3MFRn+bMJ1d/SZzbj78cw0bhLR4kGt5Pv6fBYvsrXwvDXwnKrVqjZq6Fr1wt1QacN7C4
-	EVHJL7WZg60Gnth6gaMlvVVcG6iWCLoeCFX+CQwrkd7pgdx4r+vuvo1poczO6Me06mNTsOuZkVZIi
-	zRbT+Kcx9jblGq/smuog==;
+	List-Owner; bh=PaMyRDc3qG1Jxi5/8QbX8oJJ34PWV5yV3Pg41S69hfk=; b=iC6mNVMugdsy+l
+	w8wp39aAjskt7AEomgNpmNagbMo7Mo018QRRJZMcPZ0SGQDVHl6/M6CjDm9nuKG10xg527lHlz3OQ
+	cCxktMMlMtGzmD/JiG3rpPBJ5W2VMgjC+scRfgkqkm/BPKxk5C4c0lUBhM3/pASRc7LhYirYqVA64
+	gDs6exhHZPe3jNwF0WrnhX8QB8UXB8W/16Xmug+EZzdPVV0xOkz42MYKqwW4V3T8WCGwkvyZIRxYM
+	MuGNCAMTsfaTVBXJ+ZKbzUNopR3LrEaKpeMaQWHM4GuBE/TWG8B3W53JkyvspjEDwLp39qTzl9EXE
+	mVbDpCvydpnK/f/WU5sg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jedDG-0004s6-2o; Fri, 29 May 2020 11:30:10 +0000
+	id 1jedEr-0006gS-NP; Fri, 29 May 2020 11:31:49 +0000
 Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jedDC-0003se-5S
- for linux-mtd@lists.infradead.org; Fri, 29 May 2020 11:30:08 +0000
+ id 1jedEo-0006fb-QP
+ for linux-mtd@lists.infradead.org; Fri, 29 May 2020 11:31:48 +0000
 Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
  (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id D60952A433F;
- Fri, 29 May 2020 12:30:04 +0100 (BST)
-Date: Fri, 29 May 2020 13:30:01 +0200
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 74CFA2A4358;
+ Fri, 29 May 2020 12:31:45 +0100 (BST)
+Date: Fri, 29 May 2020 13:31:41 +0200
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH v7 21/28] mtd: rawnand: Introduce
- nand_choose_best_sdr_timings()
-Message-ID: <20200529133001.434503a8@collabora.com>
-In-Reply-To: <20200529111322.7184-22-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v7 22/28] mtd: rawnand: Add the
+ ->choose_interface_config() hook
+Message-ID: <20200529133141.5410ea0a@collabora.com>
+In-Reply-To: <20200529111322.7184-23-miquel.raynal@bootlin.com>
 References: <20200529111322.7184-1-miquel.raynal@bootlin.com>
- <20200529111322.7184-22-miquel.raynal@bootlin.com>
+ <20200529111322.7184-23-miquel.raynal@bootlin.com>
 Organization: Collabora
 X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200529_043006_505918_03283D92 
-X-CRM114-Status: GOOD (  25.99  )
+X-CRM114-CacheID: sfid-20200529_043146_987053_A9F6516F 
+X-CRM114-Status: GOOD (  22.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,156 +80,88 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 29 May 2020 13:13:15 +0200
+On Fri, 29 May 2020 13:13:16 +0200
 Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> Extract the logic out of nand_choose_interface() to create a
-
-			   ^nand_choose_interface_config()
-
-> public helper that can be reused by manufacturer drivers. Add the
-> possibility to provide a specific set of timings.
+> This hook can be overloaded by NAND manufacturer drivers to propose
+> alternative timings when not following the main standards. In this
+> case, the manufacturer drivers is responsible for choosing the best
+> interface configuration that fits both the controller and chip
+> capabilities.
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
 Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 
 > ---
->  drivers/mtd/nand/raw/internals.h |  3 +
->  drivers/mtd/nand/raw/nand_base.c | 95 ++++++++++++++++++++------------
->  2 files changed, 62 insertions(+), 36 deletions(-)
+>  drivers/mtd/nand/raw/nand_base.c | 18 +++++++++++-------
+>  include/linux/mtd/rawnand.h      |  3 +++
+>  2 files changed, 14 insertions(+), 7 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
-> index 63c5af436901..5ebfbb89e572 100644
-> --- a/drivers/mtd/nand/raw/internals.h
-> +++ b/drivers/mtd/nand/raw/internals.h
-> @@ -90,6 +90,9 @@ void onfi_fill_interface_config(struct nand_chip *chip,
->  				unsigned int timing_mode);
->  unsigned int
->  onfi_find_closest_sdr_mode(const struct nand_sdr_timings *spec_timings);
-> +int nand_choose_best_sdr_timings(struct nand_chip *chip,
-> +				 struct nand_interface_config *iface,
-> +				 struct nand_sdr_timings *spec_timings);
->  int nand_get_features(struct nand_chip *chip, int addr, u8 *subfeature_param);
->  int nand_set_features(struct nand_chip *chip, int addr, u8 *subfeature_param);
->  int nand_read_page_raw_notsupp(struct nand_chip *chip, u8 *buf,
 > diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> index 3bfd71d589cf..956a66fdccb8 100644
+> index 956a66fdccb8..2f4eba1a1082 100644
 > --- a/drivers/mtd/nand/raw/nand_base.c
 > +++ b/drivers/mtd/nand/raw/nand_base.c
-> @@ -1005,6 +1005,63 @@ static int nand_setup_interface(struct nand_chip *chip, int chipnr)
->  	return ret;
->  }
+> @@ -1049,7 +1049,6 @@ int nand_choose_best_sdr_timings(struct nand_chip *chip,
+>  		}
+>  	}
 >  
-> +/**
-> + * nand_choose_best_sdr_timings - Pick up the best SDR timings that both the
-> + *                                NAND controller and the NAND chip support
-> + * @chip: the NAND chip
-> + * @iface: the interface configuration (can eventually be updated)
-> + * @spec_timings: specific timings, when not fitting the ONFI specification
-> + *
-> + * If specific timings are provided, use them. Otherwise, try to retrieve
-> + * supported timing modes from ONFI information. Finally, if the NAND chip does
-> + * not follow the ONFI specification, rely on the ->default_timing_mode
-> + * specified in the nand_ids table.
-> + */
-> +int nand_choose_best_sdr_timings(struct nand_chip *chip,
-> +				 struct nand_interface_config *iface,
-> +				 struct nand_sdr_timings *spec_timings)
-> +{
-> +	const struct nand_controller_ops *ops = chip->controller->ops;
-> +	int best_mode = 0, mode, ret;
-> +
-> +	iface->type = NAND_SDR_IFACE;
-> +
-> +	if (spec_timings) {
-> +		iface->timings.sdr = *spec_timings;
-> +		iface->timings.mode = onfi_find_closest_sdr_mode(spec_timings);
-> +
-> +		/* Verify the controller supports the requested interface */
-> +		ret = ops->setup_interface(chip, NAND_DATA_IFACE_CHECK_ONLY,
-> +					   iface);
-> +		if (!ret)
-> +			return ret;
-> +
-> +		/* Fallback to slower modes */
-> +		best_mode = iface->timings.mode;
-> +	} else {
-> +		if (chip->parameters.onfi) {
-> +			unsigned int onfi_modes;
-> +
-> +			onfi_modes = chip->parameters.onfi->async_timing_mode;
-> +			best_mode = fls(onfi_modes) - 1;
-> +		} else {
-> +			best_mode = chip->onfi_timing_mode_default;
-> +		}
-> +	}
-> +
-> +
-> +	for (mode = best_mode; mode >= 0; mode--) {
-> +		onfi_fill_interface_config(chip, iface, NAND_SDR_IFACE, mode);
-> +
-> +		ret = ops->setup_interface(chip, NAND_DATA_IFACE_CHECK_ONLY,
-> +					   iface);
-> +		if (!ret)
-> +			return 0;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  /**
->   * nand_choose_interface_config - find the best data interface and timings
+> -
+
+Still this unrelated blank line removal :-).
+
+>  	for (mode = best_mode; mode >= 0; mode--) {
+>  		onfi_fill_interface_config(chip, iface, NAND_SDR_IFACE, mode);
+>  
+> @@ -1067,18 +1066,23 @@ int nand_choose_best_sdr_timings(struct nand_chip *chip,
 >   * @chip: The NAND chip
-> @@ -1016,48 +1073,14 @@ static int nand_setup_interface(struct nand_chip *chip, int chipnr)
->   * ->onfi_timing_mode_default specified in the nand_ids table. After this
->   * function nand_chip->interface_ is initialized with the best timing mode
->   * available.
-> - *
-> - * Returns 0 for success or negative error code otherwise.
+>   *
+>   * Find the best data interface and NAND timings supported by the chip
+> - * and the driver.
+> - * First tries to retrieve supported timing modes from ONFI information,
+> - * and if the NAND chip does not support ONFI, relies on the
+> - * ->onfi_timing_mode_default specified in the nand_ids table. After this
+> - * function nand_chip->interface_ is initialized with the best timing mode
+> - * available.
+> + * and the driver. Eventually let the NAND manufacturer driver propose his own
+> + * set of timings.
+> + *
+> + * After this function nand_chip->interface_config is initialized with the best
+> + * timing mode available.
+> + *
+> + * Returns 0 for success or negative error code otherwise.
 >   */
 >  static int nand_choose_interface_config(struct nand_chip *chip)
 >  {
-> -	int modes, mode, ret;
-> -
 >  	if (!nand_controller_can_setup_interface(chip))
 >  		return 0;
 >  
-> -	/*
-> -	 * First try to identify the best timings from ONFI parameters and
-> -	 * if the NAND does not support ONFI, fallback to the default ONFI
-> -	 * timing mode.
-> -	 */
-> -	if (chip->parameters.onfi) {
-> -		modes = chip->parameters.onfi->async_timing_mode;
-> -	} else {
-> -		if (!chip->onfi_timing_mode_default)
-> -			return 0;
-> -
-> -		modes = GENMASK(chip->onfi_timing_mode_default, 0);
-> -	}
-> -
-> -	for (mode = fls(modes) - 1; mode >= 0; mode--) {
-> -		onfi_fill_interface_config(chip, &chip->interface_config,
-> -					   NAND_SDR_IFACE, mode);
-> -
-> -		/*
-> -		 * Pass NAND_DATA_IFACE_CHECK_ONLY to only check if the
-> -		 * controller supports the requested timings.
-> -		 */
-> -		ret = chip->controller->ops->setup_interface(chip,
-> -						 NAND_DATA_IFACE_CHECK_ONLY,
-> -						 &chip->interface_config);
-> -		if (!ret) {
-> -			chip->onfi_timing_mode_default = mode;
-> -			break;
-> -		}
-> -	}
-> -
-> -	return 0;
-> +	return nand_choose_best_sdr_timings(chip, &chip->interface_config,
-> +					    NULL);
+> +	if (chip->ops.choose_interface_config)
+> +		return chip->ops.choose_interface_config(chip,
+> +							 &chip->interface_config);
+> +
+>  	return nand_choose_best_sdr_timings(chip, &chip->interface_config,
+>  					    NULL);
 >  }
+> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+> index 2ca56eef0f07..316a02189da1 100644
+> --- a/include/linux/mtd/rawnand.h
+> +++ b/include/linux/mtd/rawnand.h
+> @@ -1033,6 +1033,7 @@ struct nand_legacy {
+>   * @lock_area: Lock operation
+>   * @unlock_area: Unlock operation
+>   * @setup_read_retry: Set the read-retry mode (mostly needed for MLC NANDs)
+> + * @choose_interface_config: Choose the best interface configuration
+>   */
+>  struct nand_chip_ops {
+>  	int (*suspend)(struct nand_chip *chip);
+> @@ -1040,6 +1041,8 @@ struct nand_chip_ops {
+>  	int (*lock_area)(struct nand_chip *chip, loff_t ofs, uint64_t len);
+>  	int (*unlock_area)(struct nand_chip *chip, loff_t ofs, uint64_t len);
+>  	int (*setup_read_retry)(struct nand_chip *chip, int retry_mode);
+> +	int (*choose_interface_config)(struct nand_chip *chip,
+> +				       struct nand_interface_config *iface);
+>  };
 >  
 >  /**
 
