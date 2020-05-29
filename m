@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A93AC433DF
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 May 2020 11:32:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 815CDC433E0
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 May 2020 11:33:14 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CA4B32074D
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 May 2020 11:31:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 577F92074D
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 May 2020 11:33:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="iC6mNVMu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA4B32074D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OW1fr8RT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 577F92074D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -25,40 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PaMyRDc3qG1Jxi5/8QbX8oJJ34PWV5yV3Pg41S69hfk=; b=iC6mNVMugdsy+l
-	w8wp39aAjskt7AEomgNpmNagbMo7Mo018QRRJZMcPZ0SGQDVHl6/M6CjDm9nuKG10xg527lHlz3OQ
-	cCxktMMlMtGzmD/JiG3rpPBJ5W2VMgjC+scRfgkqkm/BPKxk5C4c0lUBhM3/pASRc7LhYirYqVA64
-	gDs6exhHZPe3jNwF0WrnhX8QB8UXB8W/16Xmug+EZzdPVV0xOkz42MYKqwW4V3T8WCGwkvyZIRxYM
-	MuGNCAMTsfaTVBXJ+ZKbzUNopR3LrEaKpeMaQWHM4GuBE/TWG8B3W53JkyvspjEDwLp39qTzl9EXE
-	mVbDpCvydpnK/f/WU5sg==;
+	List-Owner; bh=yfDfzcMQnfLps3rEKAijg0yRcj8yblmC41jSUxdGSJ8=; b=OW1fr8RTdwE6c6
+	LWIVtVVDRfeVseVkj1nHb7MjlUW3fvmpxjY43vMP0wJzT2/DYOCQiZREVHLJp4NJnDFx27sXLcbd3
+	CLJpx+q0Nh7BsqR7YymCniFYj9eOjpH07JXGdwgaMSJl8VDDw6xC3ONzNow31LwWXDEncpXXXwZy1
+	ZPeyZ0yBf05/e73DXhajESYf6vkV4m+NqJLTXJBmmPjUt1U3uDT+4GGUBrnwjrAq//1+Gy3NdB3XM
+	r6+uvbCuwWcb71axl8LTWiAalUQoW92fEpbCyqiZJRd/4FhdWAW8MWTEKz/ChsdqOfz774nhdkwzg
+	klHN2nSwRxiIAs7yukow==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jedEr-0006gS-NP; Fri, 29 May 2020 11:31:49 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1jedG3-00070z-Cj; Fri, 29 May 2020 11:33:03 +0000
+Received: from relay11.mail.gandi.net ([217.70.178.231])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jedEo-0006fb-QP
- for linux-mtd@lists.infradead.org; Fri, 29 May 2020 11:31:48 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 74CFA2A4358;
- Fri, 29 May 2020 12:31:45 +0100 (BST)
-Date: Fri, 29 May 2020 13:31:41 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
+ id 1jedG0-00070M-3h
+ for linux-mtd@lists.infradead.org; Fri, 29 May 2020 11:33:01 +0000
+Received: from xps13 (unknown [91.224.148.103])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay11.mail.gandi.net (Postfix) with ESMTPSA id D4CB610000A;
+ Fri, 29 May 2020 11:32:54 +0000 (UTC)
+Date: Fri, 29 May 2020 13:32:53 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@collabora.com>
 Subject: Re: [PATCH v7 22/28] mtd: rawnand: Add the
  ->choose_interface_config() hook
-Message-ID: <20200529133141.5410ea0a@collabora.com>
-In-Reply-To: <20200529111322.7184-23-miquel.raynal@bootlin.com>
+Message-ID: <20200529133253.3039c38f@xps13>
+In-Reply-To: <20200529133141.5410ea0a@collabora.com>
 References: <20200529111322.7184-1-miquel.raynal@bootlin.com>
  <20200529111322.7184-23-miquel.raynal@bootlin.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ <20200529133141.5410ea0a@collabora.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200529_043146_987053_A9F6516F 
-X-CRM114-Status: GOOD (  22.32  )
+X-CRM114-CacheID: sfid-20200529_043300_288835_DA16F790 
+X-CRM114-Status: GOOD (  13.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,90 +79,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 29 May 2020 13:13:16 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> This hook can be overloaded by NAND manufacturer drivers to propose
-> alternative timings when not following the main standards. In this
-> case, the manufacturer drivers is responsible for choosing the best
-> interface configuration that fits both the controller and chip
-> capabilities.
+Boris Brezillon <boris.brezillon@collabora.com> wrote on Fri, 29 May
+2020 13:31:41 +0200:
+
+> On Fri, 29 May 2020 13:13:16 +0200
+> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 > 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-
-> ---
->  drivers/mtd/nand/raw/nand_base.c | 18 +++++++++++-------
->  include/linux/mtd/rawnand.h      |  3 +++
->  2 files changed, 14 insertions(+), 7 deletions(-)
+> > This hook can be overloaded by NAND manufacturer drivers to propose
+> > alternative timings when not following the main standards. In this
+> > case, the manufacturer drivers is responsible for choosing the best
+> > interface configuration that fits both the controller and chip
+> > capabilities.
+> > 
+> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>  
 > 
-> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> index 956a66fdccb8..2f4eba1a1082 100644
-> --- a/drivers/mtd/nand/raw/nand_base.c
-> +++ b/drivers/mtd/nand/raw/nand_base.c
-> @@ -1049,7 +1049,6 @@ int nand_choose_best_sdr_timings(struct nand_chip *chip,
->  		}
->  	}
->  
-> -
+> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+> 
+> > ---
+> >  drivers/mtd/nand/raw/nand_base.c | 18 +++++++++++-------
+> >  include/linux/mtd/rawnand.h      |  3 +++
+> >  2 files changed, 14 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> > index 956a66fdccb8..2f4eba1a1082 100644
+> > --- a/drivers/mtd/nand/raw/nand_base.c
+> > +++ b/drivers/mtd/nand/raw/nand_base.c
+> > @@ -1049,7 +1049,6 @@ int nand_choose_best_sdr_timings(struct nand_chip *chip,
+> >  		}
+> >  	}
+> >  
+> > -  
+> 
+> Still this unrelated blank line removal :-).
 
-Still this unrelated blank line removal :-).
-
->  	for (mode = best_mode; mode >= 0; mode--) {
->  		onfi_fill_interface_config(chip, iface, NAND_SDR_IFACE, mode);
->  
-> @@ -1067,18 +1066,23 @@ int nand_choose_best_sdr_timings(struct nand_chip *chip,
->   * @chip: The NAND chip
->   *
->   * Find the best data interface and NAND timings supported by the chip
-> - * and the driver.
-> - * First tries to retrieve supported timing modes from ONFI information,
-> - * and if the NAND chip does not support ONFI, relies on the
-> - * ->onfi_timing_mode_default specified in the nand_ids table. After this
-> - * function nand_chip->interface_ is initialized with the best timing mode
-> - * available.
-> + * and the driver. Eventually let the NAND manufacturer driver propose his own
-> + * set of timings.
-> + *
-> + * After this function nand_chip->interface_config is initialized with the best
-> + * timing mode available.
-> + *
-> + * Returns 0 for success or negative error code otherwise.
->   */
->  static int nand_choose_interface_config(struct nand_chip *chip)
->  {
->  	if (!nand_controller_can_setup_interface(chip))
->  		return 0;
->  
-> +	if (chip->ops.choose_interface_config)
-> +		return chip->ops.choose_interface_config(chip,
-> +							 &chip->interface_config);
-> +
->  	return nand_choose_best_sdr_timings(chip, &chip->interface_config,
->  					    NULL);
->  }
-> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-> index 2ca56eef0f07..316a02189da1 100644
-> --- a/include/linux/mtd/rawnand.h
-> +++ b/include/linux/mtd/rawnand.h
-> @@ -1033,6 +1033,7 @@ struct nand_legacy {
->   * @lock_area: Lock operation
->   * @unlock_area: Unlock operation
->   * @setup_read_retry: Set the read-retry mode (mostly needed for MLC NANDs)
-> + * @choose_interface_config: Choose the best interface configuration
->   */
->  struct nand_chip_ops {
->  	int (*suspend)(struct nand_chip *chip);
-> @@ -1040,6 +1041,8 @@ struct nand_chip_ops {
->  	int (*lock_area)(struct nand_chip *chip, loff_t ofs, uint64_t len);
->  	int (*unlock_area)(struct nand_chip *chip, loff_t ofs, uint64_t len);
->  	int (*setup_read_retry)(struct nand_chip *chip, int retry_mode);
-> +	int (*choose_interface_config)(struct nand_chip *chip,
-> +				       struct nand_interface_config *iface);
->  };
->  
->  /**
+I'm doing too many massive rebases :-p
+I'll drop it before applying.
 
 
 ______________________________________________________
