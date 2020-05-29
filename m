@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A671BC433DF
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 May 2020 08:11:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD68AC433DF
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 May 2020 08:19:42 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 76224207BC
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 May 2020 08:11:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8F49E20897
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 May 2020 08:19:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="odygbf5Q"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 76224207BC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dkKbix50"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F49E20897
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -25,40 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=AEkWPO5HdIqibbajyCMXiaL4Azx9dmcZZNeYorf5nnI=; b=odygbf5QBFmgUc
-	kNquqpZyniTDpbKS0xrse7eL3fTzauhRmsq7nJNJlnPa3BrchKQVgUPd2yfHRUtjFnC0QunSMa7xI
-	vohmPXso3H5nJqxc2yQf8W95GcEHmLuXTh5NC8RLXMciktnHehb/BBxiV02GMPNhBK4K2SsTZXj1I
-	nYgNDIn1prqi8I7YsOClfePbMhTzstc7PrH3k3UBsoXUvFSlZAMgRm5xEClnIVEqvNDpDDtm1bM/Z
-	RQKIO/WKTO3z2jVTc3E/DFp5Gvatll93UqttSe4TQS6ohQWfIoVSVoX0bXM/pg9Kfr0UB1FjMimlq
-	R+KZQ/PX0IdAeKqXiHpg==;
+	List-Owner; bh=ZAqwMOIb6XU3fSlicabmXp1ELg1p7E449VXAWMGO+kk=; b=dkKbix50ZPyWz3
+	SyV2Pz1SvVUMXzg/Huj66U32qMqsjRxwwXeNh6UJq5LR3bOQHmMH5U4neMDg7NJ9YJPMHSJ+6mr5t
+	aP8FouxtwVuIAOxBBkHoFhkjRx45UfTTGEcPvvZVMrWvQ4fdXGOrTMtoq/ssMe6Hsr1/snSTdxyHp
+	fQ9GREHLa5eADy7/Hdrg4diUrxn0pH+9oIOzYROLsJKhMfFQg2hn/omIs8qIJU3Y0FvK5yLdHryrz
+	Gb62Ilm40QoOm7DmIXKHSLBeRbUVM9dQFegYwRdGsjEWiqln0c7YULFr0rAlAsAQNsStxt2IQlTqQ
+	RekqT0+wa+F5Y0gGHTtQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jea6l-0008VV-J3; Fri, 29 May 2020 08:11:15 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1jeaEk-0003jM-Ri; Fri, 29 May 2020 08:19:30 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jea6i-0008Uz-QG
- for linux-mtd@lists.infradead.org; Fri, 29 May 2020 08:11:14 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 6AD3D26CDAA;
- Fri, 29 May 2020 09:11:11 +0100 (BST)
-Date: Fri, 29 May 2020 10:11:07 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
+ id 1jeaEh-0003ih-4E
+ for linux-mtd@lists.infradead.org; Fri, 29 May 2020 08:19:29 +0000
+X-Originating-IP: 91.224.148.103
+Received: from xps13 (unknown [91.224.148.103])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 6BE6DFF80D;
+ Fri, 29 May 2020 08:19:19 +0000 (UTC)
+Date: Fri, 29 May 2020 10:19:17 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@collabora.com>
 Subject: Re: [PATCH v6 17/30] mtd: rawnand: s/data_interface/interface_config/
-Message-ID: <20200529101107.6dadcfd5@collabora.com>
-In-Reply-To: <20200529094755.6b53f88a@collabora.com>
+Message-ID: <20200529101917.434c7fd6@xps13>
+In-Reply-To: <20200529101107.6dadcfd5@collabora.com>
 References: <20200528231612.8958-1-miquel.raynal@bootlin.com>
  <20200528231612.8958-18-miquel.raynal@bootlin.com>
  <20200529094755.6b53f88a@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ <20200529101107.6dadcfd5@collabora.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200529_011112_978642_F67AA213 
-X-CRM114-Status: GOOD (  14.40  )
+X-CRM114-CacheID: sfid-20200529_011927_665313_5B658F2E 
+X-CRM114-Status: GOOD (  13.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,28 +81,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 29 May 2020 09:47:55 +0200
-Boris Brezillon <boris.brezillon@collabora.com> wrote:
+Hi Boris,
 
-> On Fri, 29 May 2020 01:15:59 +0200
-> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> 
-> > From: Boris Brezillon <boris.brezillon@collabora.com>
-> > 
-> > The name/suffix data_interface is a bit misleading in that the field
-> > or functions actually represent a configuration that can be applied by
-> > the controller/chip. Let's rename all fields/functions/hooks that are
-> > worth renaming.
-> > 
-> > Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
-> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>  
-> 
-> I know it's painful to move that one, but I think it should be at the
-> beginning of the series so the functions/fields you introduce have the
-> right name from the start.
+Boris Brezillon <boris.brezillon@collabora.com> wrote on Fri, 29 May
+2020 10:11:07 +0200:
 
-Hm, maybe I'm wrong and you don't introduce any new interface-related
-functions/fields before that one.
+> On Fri, 29 May 2020 09:47:55 +0200
+> Boris Brezillon <boris.brezillon@collabora.com> wrote:
+> 
+> > On Fri, 29 May 2020 01:15:59 +0200
+> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> >   
+> > > From: Boris Brezillon <boris.brezillon@collabora.com>
+> > > 
+> > > The name/suffix data_interface is a bit misleading in that the field
+> > > or functions actually represent a configuration that can be applied by
+> > > the controller/chip. Let's rename all fields/functions/hooks that are
+> > > worth renaming.
+> > > 
+> > > Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+> > > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>    
+> > 
+> > I know it's painful to move that one, but I think it should be at the
+> > beginning of the series so the functions/fields you introduce have the
+> > right name from the start.  
+> 
+> Hm, maybe I'm wrong and you don't introduce any new interface-related
+> functions/fields before that one.
+
+
+Indeed, I don't introduce new hooks before this patch. What I do is
+renaming a few fields, but honestly, before of after, the
+s/data_interface/interface_config/ applies anyway.
 
 ______________________________________________________
 Linux MTD discussion mailing list
