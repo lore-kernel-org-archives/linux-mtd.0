@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6631C433DF
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 May 2020 07:38:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FD38C433E5
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 May 2020 07:39:01 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8875A207D4
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 May 2020 07:38:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 14D86207D4
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 May 2020 07:39:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BflEU+wk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8875A207D4
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="e8I6C58S"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 14D86207D4
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,37 +26,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=6VNWq53EIRjgRbZBLHXuDR8dNxxCLbecZC5M0DBJ8jc=; b=BflEU+wklNSTw/qrGJcjuRB9CV
-	7W5PyVTMDxC7VV+t8zzXfvI99yznwbaIcDkkJ4Feh72e8tdiyLgj5y04VmbUasY3U5A2g5OiGrtWA
-	OGHVJUuMd9RFnlkprEMQnbUiziQOfE1hrQziTHWmnlk6GcJp6KtMze5gv0fo8R3fgLRGQ+e7Vr6D3
-	EeRE6BcKFR+7YoMsbh46SJ2BsBrvfByInNlU/dyTcCFGH4TqT49nJ1HTP8TidyRTjX09S2/fuhQnm
-	O2Rr8rfUfJ5x3GaHfMxAKoiuqQb84N5SYFrXfIsuyXrFAeydeIPRSCrGT0dHlyJrRd1l8gBJZGrBd
-	Rfk7LyBA==;
+	bh=4ge4CgpfBZhl1rMB5M/NwfE1ATiiVRCEISG3UfcAIHk=; b=e8I6C58SwsXVnz/UHE2UJz044o
+	NjAv+omtnslCxux7OJOWggUNsxdifw8tseRJwInOoecV1gmR2Ses0K48O/jTE5YU1mQ0h7bt7Lo4i
+	p2Cjxe0EALSYxymm6vF5vNlAjQSpPM6UCTKruIxts0oYnLF6IvalSxQO8SRKVcfv04hLpvxz/HaMs
+	hzcYgpwoFKB8+NPXVSGxdNPECTtS8SnLPgKaAhmbJtRnMdxZGArq2pF4h9Uxn5+wtSNIjZrgxQKzE
+	FlM2MVuPQunnMJwBRy6wCkVTS1Mckw244KVGzTr/+IbwUszyxzPQGY9RVgrUw7cEiQJDTTzie+21V
+	ZY9yxh0g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jeZb0-0002WU-4W; Fri, 29 May 2020 07:38:26 +0000
+	id 1jeZbF-0002oq-7f; Fri, 29 May 2020 07:38:41 +0000
 Received: from twhmllg4.macronix.com ([122.147.135.202])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jeZZi-00019u-Tz
- for linux-mtd@lists.infradead.org; Fri, 29 May 2020 07:37:08 +0000
+ id 1jeZZl-0001Dq-HH
+ for linux-mtd@lists.infradead.org; Fri, 29 May 2020 07:37:11 +0000
 Received: from localhost.localdomain ([172.17.195.96])
- by TWHMLLG4.macronix.com with ESMTP id 04T7aHq2067318;
- Fri, 29 May 2020 15:36:22 +0800 (GMT-8)
+ by TWHMLLG4.macronix.com with ESMTP id 04T7aHq3067318;
+ Fri, 29 May 2020 15:36:23 +0800 (GMT-8)
  (envelope-from masonccyang@mxic.com.tw)
 From: Mason Yang <masonccyang@mxic.com.tw>
 To: broonie@kernel.org, tudor.ambarus@microchip.com, miquel.raynal@bootlin.com,
  richard@nod.at, vigneshr@ti.com, boris.brezillon@collabora.com,
  matthias.bgg@gmail.com
-Subject: [PATCH v4 6/7] spi: mxic: patch for octal DTR mode support
-Date: Fri, 29 May 2020 15:36:14 +0800
-Message-Id: <1590737775-4798-7-git-send-email-masonccyang@mxic.com.tw>
+Subject: [PATCH v4 7/7] mtd: spi-nor: macronix: Add Octal 8D-8D-8D supports
+ for Macronix mx25uw51245g
+Date: Fri, 29 May 2020 15:36:15 +0800
+Message-Id: <1590737775-4798-8-git-send-email-masonccyang@mxic.com.tw>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1590737775-4798-1-git-send-email-masonccyang@mxic.com.tw>
 References: <1590737775-4798-1-git-send-email-masonccyang@mxic.com.tw>
-X-MAIL: TWHMLLG4.macronix.com 04T7aHq2067318
+X-MAIL: TWHMLLG4.macronix.com 04T7aHq3067318
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200529_003707_274599_2D9C00FD 
-X-CRM114-Status: GOOD (  12.42  )
+X-CRM114-CacheID: sfid-20200529_003709_877964_4D6504BB 
+X-CRM114-Status: UNSURE (   8.94  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,180 +79,92 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Driver patch for octal 8D-8D-8D mode support.
+Macronix mx25uw51245g is a SPI NOR that supports 1-1-1/8-8-8 mode.
+
+Correct the dummy cycles to device for various frequencies
+after xSPI profile 1.0 table parsed.
+
+Enable mx25uw51245g to Octal DTR mode by executing the command sequences
+to change to octal DTR mode.
 
 Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
 ---
- drivers/spi/spi-mxic.c | 98 +++++++++++++++++++++++++++++++++-----------------
- 1 file changed, 66 insertions(+), 32 deletions(-)
+ drivers/mtd/spi-nor/macronix.c | 55 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 55 insertions(+)
 
-diff --git a/drivers/spi/spi-mxic.c b/drivers/spi/spi-mxic.c
-index 69491f3..a9b3817 100644
---- a/drivers/spi/spi-mxic.c
-+++ b/drivers/spi/spi-mxic.c
-@@ -280,10 +280,55 @@ static void mxic_spi_hw_init(struct mxic_spi *mxic)
- 	       mxic->regs + HC_CFG);
- }
+diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+index 96735d8..6c9a24c 100644
+--- a/drivers/mtd/spi-nor/macronix.c
++++ b/drivers/mtd/spi-nor/macronix.c
+@@ -8,6 +8,57 @@
  
-+static u32 mxic_spi_mem_prep_op_cfg(const struct spi_mem_op *op)
+ #include "core.h"
+ 
++#define MXIC_CR2_DUMMY_SET_ADDR 0x300
++
++/* Fixup the dummy cycles to device and setup octa_dtr_enable() */
++static void mx25uw51245g_post_sfdp_fixups(struct spi_nor *nor)
 +{
-+	u32 cfg =  OP_CMD_BYTES(op->cmd.nbytes) |
-+		   OP_CMD_BUSW(fls(op->cmd.buswidth) - 1) |
-+		   (op->cmd.dtr ? OP_CMD_DDR : 0);
++	struct spi_nor_flash_parameter *params = nor->params;
++	int ret;
++	u8 rdc, wdc;
 +
-+	if (op->addr.nbytes)
-+		cfg |= OP_ADDR_BYTES(op->addr.nbytes) |
-+		       OP_ADDR_BUSW(fls(op->addr.buswidth) - 1) |
-+		       (op->addr.dtr ? OP_ADDR_DDR : 0);
++	ret = spi_nor_read_cr2(nor, MXIC_CR2_DUMMY_SET_ADDR, &rdc);
++	if (ret)
++		return;
 +
-+	if (op->dummy.nbytes)
-+		cfg |= OP_DUMMY_CYC(op->dummy.nbytes);
-+
-+	if (op->data.nbytes) {
-+		cfg |= OP_DATA_BUSW(fls(op->data.buswidth) - 1) |
-+		      (op->data.dtr ? OP_DATA_DDR : 0);
-+		if (op->data.dir == SPI_MEM_DATA_IN)
-+			cfg |= OP_READ;
++	/* Refer to dummy cycle and frequency table(MHz) */
++	switch (params->dummy_cycles) {
++	case 10:	/* 10 dummy cycles for 104 MHz */
++		wdc = 5;
++		break;
++	case 12:	/* 12 dummy cycles for 133 MHz */
++		wdc = 4;
++		break;
++	case 16:	/* 16 dummy cycles for 166 MHz */
++		wdc = 2;
++		break;
++	case 18:	/* 18 dummy cycles for 173 MHz */
++		wdc = 1;
++		break;
++	case 20:	/* 20 dummy cycles for 200 MHz */
++	default:
++		wdc = 0;
 +	}
 +
-+	return cfg;
++	if (rdc != wdc)
++		spi_nor_write_cr2(nor, MXIC_CR2_DUMMY_SET_ADDR, &wdc);
++
++	if (params->cmd_seq[0].len) {
++		params->octal_dtr_enable = spi_nor_cmd_seq_octal_dtr;
++		params->hwcaps.mask |= SNOR_HWCAPS_READ_8_8_8_DTR;
++		params->hwcaps.mask |= SNOR_HWCAPS_PP_8_8_8_DTR;
++
++	} else {
++		params->octal_dtr_enable = NULL;
++		params->hwcaps.mask &= ~SNOR_HWCAPS_READ_8_8_8_DTR;
++		params->hwcaps.mask &= ~SNOR_HWCAPS_PP_8_8_8_DTR;
++	}
 +}
 +
-+static void mxic_spi_set_hc_cfg(struct spi_device *spi, u32 flags)
-+{
-+	struct mxic_spi *mxic = spi_master_get_devdata(spi->master);
-+	int nio = 1;
++static struct spi_nor_fixups mx25uw51245g_fixups = {
++	.post_sfdp = mx25uw51245g_post_sfdp_fixups,
++};
 +
-+	if (spi->mode & (SPI_RX_OCTAL | SPI_TX_OCTAL))
-+		nio = 8;
-+	else if (spi->mode & (SPI_TX_QUAD | SPI_RX_QUAD))
-+		nio = 4;
-+	else if (spi->mode & (SPI_TX_DUAL | SPI_RX_DUAL))
-+		nio = 2;
-+
-+	writel(flags | HC_CFG_NIO(nio) |
-+	       HC_CFG_TYPE(spi->chip_select, HC_CFG_TYPE_SPI_NOR) |
-+	       HC_CFG_SLV_ACT(spi->chip_select) | HC_CFG_IDLE_SIO_LVL(1),
-+	       mxic->regs + HC_CFG);
-+}
-+
- static int mxic_spi_data_xfer(struct mxic_spi *mxic, const void *txbuf,
- 			      void *rxbuf, unsigned int len)
- {
- 	unsigned int pos = 0;
-+	bool dtr_enabled;
-+
-+	dtr_enabled = (readl(mxic->regs + SS_CTRL(0)) & OP_DATA_DDR);
+ static int
+ mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
+ 			    const struct sfdp_parameter_header *bfpt_header,
+@@ -84,6 +135,10 @@
+ 			      SPI_NOR_QUAD_READ) },
+ 	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048,
+ 			      SPI_NOR_QUAD_READ) },
++	{ "mx25uw51245g", INFO(0xc2813a, 0, 64 * 1024, 1024,
++			      SECT_4K | SPI_NOR_4B_OPCODES |
++			      SPI_NOR_OCTAL_DTR_READ)
++			      .fixups = &mx25uw51245g_fixups },
+ };
  
- 	while (pos < len) {
- 		unsigned int nbytes = len - pos;
-@@ -302,6 +347,9 @@ static int mxic_spi_data_xfer(struct mxic_spi *mxic, const void *txbuf,
- 		if (ret)
- 			return ret;
- 
-+		if (dtr_enabled && len & 0x1)
-+			nbytes++;
-+
- 		writel(data, mxic->regs + TXD(nbytes % 4));
- 
- 		if (rxbuf) {
-@@ -319,6 +367,8 @@ static int mxic_spi_data_xfer(struct mxic_spi *mxic, const void *txbuf,
- 
- 			data = readl(mxic->regs + RXD);
- 			data >>= (8 * (4 - nbytes));
-+			if (dtr_enabled && len & 0x1)
-+				nbytes++;
- 			memcpy(rxbuf + pos, &data, nbytes);
- 			WARN_ON(readl(mxic->regs + INT_STS) & INT_RX_NOT_EMPTY);
- 		} else {
-@@ -335,8 +385,8 @@ static int mxic_spi_data_xfer(struct mxic_spi *mxic, const void *txbuf,
- static bool mxic_spi_mem_supports_op(struct spi_mem *mem,
- 				     const struct spi_mem_op *op)
- {
--	if (op->data.buswidth > 4 || op->addr.buswidth > 4 ||
--	    op->dummy.buswidth > 4 || op->cmd.buswidth > 4)
-+	if (op->data.buswidth > 8 || op->addr.buswidth > 8 ||
-+	    op->dummy.buswidth > 8 || op->cmd.buswidth > 8)
- 		return false;
- 
- 	if (op->data.nbytes && op->dummy.nbytes &&
-@@ -346,6 +396,9 @@ static bool mxic_spi_mem_supports_op(struct spi_mem *mem,
- 	if (op->addr.nbytes > 7)
- 		return false;
- 
-+	if (op->cmd.buswidth == 8 && op->cmd.nbytes == 2)
-+		return true;
-+
- 	return spi_mem_default_supports_op(mem, op);
- }
- 
-@@ -353,47 +406,27 @@ static int mxic_spi_mem_exec_op(struct spi_mem *mem,
- 				const struct spi_mem_op *op)
- {
- 	struct mxic_spi *mxic = spi_master_get_devdata(mem->spi->master);
--	int nio = 1, i, ret;
--	u32 ss_ctrl;
--	u8 addr[8];
-+	int i, ret;
-+	u8 addr[8], cmd[2];
- 
- 	ret = mxic_spi_set_freq(mxic, mem->spi->max_speed_hz);
- 	if (ret)
- 		return ret;
- 
--	if (mem->spi->mode & (SPI_TX_QUAD | SPI_RX_QUAD))
--		nio = 4;
--	else if (mem->spi->mode & (SPI_TX_DUAL | SPI_RX_DUAL))
--		nio = 2;
-+	mxic_spi_set_hc_cfg(mem->spi, HC_CFG_MAN_CS_EN);
- 
--	writel(HC_CFG_NIO(nio) |
--	       HC_CFG_TYPE(mem->spi->chip_select, HC_CFG_TYPE_SPI_NOR) |
--	       HC_CFG_SLV_ACT(mem->spi->chip_select) | HC_CFG_IDLE_SIO_LVL(1) |
--	       HC_CFG_MAN_CS_EN,
--	       mxic->regs + HC_CFG);
- 	writel(HC_EN_BIT, mxic->regs + HC_EN);
- 
--	ss_ctrl = OP_CMD_BYTES(1) | OP_CMD_BUSW(fls(op->cmd.buswidth) - 1);
--
--	if (op->addr.nbytes)
--		ss_ctrl |= OP_ADDR_BYTES(op->addr.nbytes) |
--			   OP_ADDR_BUSW(fls(op->addr.buswidth) - 1);
--
--	if (op->dummy.nbytes)
--		ss_ctrl |= OP_DUMMY_CYC(op->dummy.nbytes);
--
--	if (op->data.nbytes) {
--		ss_ctrl |= OP_DATA_BUSW(fls(op->data.buswidth) - 1);
--		if (op->data.dir == SPI_MEM_DATA_IN)
--			ss_ctrl |= OP_READ;
--	}
--
--	writel(ss_ctrl, mxic->regs + SS_CTRL(mem->spi->chip_select));
-+	writel(mxic_spi_mem_prep_op_cfg(op),
-+	       mxic->regs + SS_CTRL(mem->spi->chip_select));
- 
- 	writel(readl(mxic->regs + HC_CFG) | HC_CFG_MAN_CS_ASSERT,
- 	       mxic->regs + HC_CFG);
- 
--	ret = mxic_spi_data_xfer(mxic, &op->cmd.opcode, NULL, 1);
-+	for (i = 0; i < op->cmd.nbytes; i++)
-+		cmd[i] = op->cmd.opcode >> (8 * (op->cmd.nbytes - i - 1));
-+
-+	ret = mxic_spi_data_xfer(mxic, cmd, NULL, op->cmd.nbytes);
- 	if (ret)
- 		goto out;
- 
-@@ -566,7 +599,8 @@ static int mxic_spi_probe(struct platform_device *pdev)
- 	master->bits_per_word_mask = SPI_BPW_MASK(8);
- 	master->mode_bits = SPI_CPOL | SPI_CPHA |
- 			SPI_RX_DUAL | SPI_TX_DUAL |
--			SPI_RX_QUAD | SPI_TX_QUAD;
-+			SPI_RX_QUAD | SPI_TX_QUAD |
-+			SPI_RX_OCTAL | SPI_TX_OCTAL;
- 
- 	mxic_spi_hw_init(mxic);
- 
+ static void macronix_default_init(struct spi_nor *nor)
 -- 
 1.9.1
 
