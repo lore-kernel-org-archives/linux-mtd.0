@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 266A0C433E0
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 May 2020 00:30:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92539C433E0
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 May 2020 00:31:21 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B39F7207F9
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 May 2020 00:30:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 218F0207F9
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 May 2020 00:31:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lg5wJhu4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B39F7207F9
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="JMr+mcrV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 218F0207F9
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pOu3vk+Arlo6hZYVB4Jyrzx60l+Va82BFVPWMqjVs28=; b=lg5wJhu4gaVH/C
-	ZP7kXlOezad0Dionx92ml4HcK7mnzs8ZevCAUEEu3h+4O1zRKcHQLbTzY0QN/ePZfTW4iji2mgpJm
-	xaWQZkgwk6CBTcRY9z+OcKqenF7Oau4XjgkvxLXBdZ7TaYeKpWB0joa7C5bAvWmYWDjMneliIQZUF
-	xlZ4BJ2vUE+qtZaPJlYgHKCpKskB89YAjvNT+QiLcLU5y5oT+DXdGYnGExwc05pE1WT28Yq7o5MGq
-	fcBKqeKi7EIAqIAZRVpa86yvSVKHUkypZ5R+0aMVZWcR3ObtTVYs/MLiCblWUBROiYSev6KG7VHBi
-	iQc1GOcEccM7YC+qgqXQ==;
+	List-Owner; bh=U4X1DZ+7R9JtZ1Hh0ta7q7sJVDAlUe4RztybV1APkz4=; b=JMr+mcrVKjnXaP
+	z1Y/vka2BJVJBPh6Av724/oRNrmfG6N9SAyljXXpcGe2g5dBGrDvd6skFIyda/gN0Mtkv0V6F/moh
+	2pUyp09+swQLQOEVvbMisq84lol/whlaqI6faKVZ9bzWlw2y3YSrJJlqh0iVz/UJGUi16o61c7kzB
+	JOZFW/b+vXx+YU70ogHUIQsu2vi5DlU1/Ca2WBPCFtL4uuubTzSZgQjCMpcis+OJL2PtHPvub9FJ/
+	ex4Fj6Z+ygI6qKBWvdg21CI/S+csuuS18X9g1fv3xy6PGZPHd0KeYmC4l0Yhy0dub0SRJQJ+Zj+Y8
+	dBWTdWD4HO2JdXt9rHKg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jeSuM-00016H-Ow; Fri, 29 May 2020 00:29:58 +0000
+	id 1jeSvW-0004WK-F9; Fri, 29 May 2020 00:31:10 +0000
 Received: from relay12.mail.gandi.net ([217.70.178.232])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jeSq4-00062F-SH; Fri, 29 May 2020 00:25:34 +0000
+ id 1jeSqE-00069V-FR; Fri, 29 May 2020 00:25:44 +0000
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay12.mail.gandi.net (Postfix) with ESMTPSA id 9F7C2200009;
- Fri, 29 May 2020 00:25:29 +0000 (UTC)
+ by relay12.mail.gandi.net (Postfix) with ESMTPSA id D56ED200007;
+ Fri, 29 May 2020 00:25:38 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>, Rob Herring <robh+dt@kernel.org>,
  Mark Rutland <mark.rutland@arm.com>, <devicetree@vger.kernel.org>
-Subject: [PATCH v7 05/20] mtd: rawnand: Add a kernel doc to the ECC algorithm
- enumeration
-Date: Fri, 29 May 2020 02:25:02 +0200
-Message-Id: <20200529002517.3546-6-miquel.raynal@bootlin.com>
+Subject: [PATCH v7 10/20] mtd: nand: Add an extra level in the Kconfig
+ hierarchy
+Date: Fri, 29 May 2020 02:25:07 +0200
+Message-Id: <20200529002517.3546-11-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200529002517.3546-1-miquel.raynal@bootlin.com>
 References: <20200529002517.3546-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200528_172533_097435_8C231E1B 
-X-CRM114-Status: UNSURE (   8.08  )
+X-CRM114-CacheID: sfid-20200528_172542_689291_0585532B 
+X-CRM114-Status: UNSURE (   7.46  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -81,33 +81,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Before moving it to the generic raw NAND core, ensure the enumeration
-is properly described.
+Use an extra level in Kconfig for all NAND related entries.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 ---
- include/linux/mtd/rawnand.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/mtd/nand/Kconfig | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index f6ffd174abb7..6699ec7f4d40 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -106,6 +106,13 @@ enum nand_ecc_placement {
- 	NAND_ECC_PLACEMENT_INTERLEAVED,
- };
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index a5d8a211cb8a..c1a45b071165 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -1,7 +1,12 @@
+ # SPDX-License-Identifier: GPL-2.0-only
++
++menu "NAND"
++
+ config MTD_NAND_CORE
+ 	tristate
  
-+/**
-+ * enum nand_ecc_algo - NAND ECC algorithm
-+ * @NAND_ECC_UNKNOWN: Unknown algorithm
-+ * @NAND_ECC_HAMMING: Hamming algorithm
-+ * @NAND_ECC_BCH: Bose-Chaudhuri-Hocquenghem algorithm
-+ * @NAND_ECC_RS: Reed-Solomon algorithm
-+ */
- enum nand_ecc_algo {
- 	NAND_ECC_UNKNOWN,
- 	NAND_ECC_HAMMING,
+ source "drivers/mtd/nand/onenand/Kconfig"
+ source "drivers/mtd/nand/raw/Kconfig"
+ source "drivers/mtd/nand/spi/Kconfig"
++
++endmenu
 -- 
 2.20.1
 
