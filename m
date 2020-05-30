@@ -2,23 +2,23 @@ Return-Path: <SRS0=t0FF=7M=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ECCB0C433E0
-	for <linux-mtd@archiver.kernel.org>; Sat, 30 May 2020 13:50:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D932C433DF
+	for <linux-mtd@archiver.kernel.org>; Sat, 30 May 2020 14:03:51 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8D2332074A
-	for <linux-mtd@archiver.kernel.org>; Sat, 30 May 2020 13:50:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5EB40206C3
+	for <linux-mtd@archiver.kernel.org>; Sat, 30 May 2020 14:03:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="f2FucofV";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="ib/HmRVd";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="MIQYYPXE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8D2332074A
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VZGOOcjO";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="Y74P4uBi";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="F+YEM45p"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5EB40206C3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,56 +27,57 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
 	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qOs9UU7forw7lqi5+jmdO4Sg98jRbzJ2x/PdoaiuB3k=; b=f2FucofVRbMswD
-	sozW+wDEDJFzrocCFb+eLIG6cFZXAaZHyGTwzlmMb6uUI1e045OVqcZK9OVzELagjkxG5H+9Y68+a
-	RX138A8F7szePeC1xUdcqKdLyanFMe5FBe7v1key+hrYyuRT9UKI3GD7ST6BNyhWPJ5/5J7gv/2tA
-	JtI+f9mTOdDu3dLobNshA2dc8erkOmQOErctu6NQbbuFteH0EBZ2GHl6WGX9xpme6oXssL/8Zfg/s
-	y3wY+ASYmNmIe9/QrQXLNTxJ80UIsl5EQzD2w7PJ7ZSHvrrqBbcXhwGeuujnIErJDrHFO16JVNoJV
-	LIP76vRb7ekm2zuKr9Sw==;
+	List-Owner; bh=2VGPVmMJQdwQfxncj9rJiNKWZJP2gfDDg7T/55KMXIQ=; b=VZGOOcjOhgacA+
+	yIhyibyu/VDgkukj/TAw1tZZMgaHX/4Gj4N738RQmCvB1WcnRhm8T2WM88Bcz1ghnz70XZ+eOz0Tk
+	g7KEmGEbALjil7NqQdy3LQ0F7gAnnDMpMJWWe8qTPawdiy+Wxeeq9a9pV5PpmOaH4pVQfwa4MGG80
+	942LhwV41uM+snFOIS/eRKgYmy4Ife4PENJoPxcdOeAtLyN7mBjf6KUUUxFL+zZQnPlAd2RQXL2PT
+	uA3P8d0HmxtBuiDqHHZ23ud/e9z+dRG/8MRPik45oLAJiECJIBl6kWt+rd8xJbWMNGpxzdXxLYjWk
+	FIuH/G5ilwY1rE7kxx7w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jf1sg-0005VU-D3; Sat, 30 May 2020 13:50:34 +0000
-Received: from esa1.microchip.iphmx.com ([68.232.147.91])
+	id 1jf25O-0005Mg-JM; Sat, 30 May 2020 14:03:42 +0000
+Received: from esa6.microchip.iphmx.com ([216.71.154.253])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jf1sa-0005Tu-Is
- for linux-mtd@lists.infradead.org; Sat, 30 May 2020 13:50:31 +0000
+ id 1jf25L-0005M1-If
+ for linux-mtd@lists.infradead.org; Sat, 30 May 2020 14:03:40 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1590846628; x=1622382628;
+ t=1590847419; x=1622383419;
  h=from:to:cc:subject:date:message-id:references:
  in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=V8e/b1eoMRt5JiaMN5+ubs2Kj5wRX+PXDq3lB65agaw=;
- b=ib/HmRVdzIUQoI0aiDBGUHFmSdMFbV/Jc0kfG5hivhkD15/gnVyaBuh2
- WPIAYNz0L2f3Rr/rK0PP7wcUgRSfQ58FbLedBSH0T+UYcSp4qpQSUCXCI
- EOoTSpWMM6aFi+aLMF5tUc9wxrNY0edQWKLZz2fdzUQMjMelPukNwHHtj
- +By5DoSYQb6uwhcCA4UoOe/YvIOwA/KQzh3trqo6G57DJ0w2qae/1OuqS
- PoOIgFFYL372Sx4HnM/0ZMlo+mrRZ74GeFl+PEMlLPWZ30nwLzJRSU1Rf
- feK9cFJltWtORKOQGbGQxciVsnT4mp5Q81oTv9bZJgMBRzPxv+9pn7A5c A==;
-IronPort-SDR: z9TRRLjcjtAYceJnlIAv+MoRVsdNSavJdrrUHPcSehCHrt1JiLMpEtCi9AlCcToX7y+RAgWFtY
- yXWaYq2XUjiIYeX9PNQzlbTQCj4J7jP29IoQ1flxCIsVhnQRGL/bJHHZvd1D3j0pV2oZEpKd5U
- hVf2iXxsrE9eSwO0FpT4ua1S3xfBnFxrGImRzlMfLvwzUrsXdCBEr8JhoG6SJBOC74Zl/b/zWM
- gb84iO/y3CU+DYzAVY7Acu3gRh3JKhpenxAz6Xwkve8o8AQGVTUjM0KzM7+a/Vc6FnxkSNLTH+
- d64=
-X-IronPort-AV: E=Sophos;i="5.73,452,1583218800"; d="scan'208";a="81660336"
+ bh=VG5uN6J561ZKiYZwCThBO61QXUqjf5b3Ws8+A5ojabc=;
+ b=Y74P4uBi+aa4Ny75kWcKjCFmJQrmyhK7jnWlzWBnOeWlBFiIp5FxtJCA
+ X/n7mZwvLDVUnsq2+1cFCA2FL7FlQwXVmN4qhJYxGxI1pupYDi54oA1A8
+ 5DH6izeHfWEpYoZ/AFS6YKP+l4X6zMufDbsGBgx5tIcH4rTmNlMFMoyEa
+ cXYqmhKAwDWf7p7NXJMxfVPkdlxjRhPR1JdP0zHUNGpCSu4PDyCfhI8my
+ a0GT9m163yvEsw+Lf1nOJWz//KgTeB0stmAGGdhdmMv4dCiF7drwZHfMe
+ 0B7HOlhGdMMjRRx0XjBF2qvhIZK+eVBpNhsx22t/2RB43/GM0qLgHWJEA Q==;
+IronPort-SDR: yBsgqNVf7eGdfIWzQs0IVcaEa7dfqHMDkgMFmI6iGMONa4p1gqzy1X4nCT0BHao3g0obD+W0NS
+ kbZbFedolo5LJZ0FmmE4Jt7VD2fdh88nwIb/pl7V6gzt5sL/KfZ/jrD8esagnsTWcPUVhpiYnR
+ +zboP6Ib4VnAGZQiKWgimJtOX1Q/ol6Xs1RUPqK9VfmuOuDt5+0x5gX1RJYlv3/dq1Sj9VStpk
+ zt/kYpxwVKnlS2Czh3/qFsyl2GjUGW0tPQ/mjkW872u92JKNP4Lw7J1qWg1h5jJVtLYCGnYIlz
+ Gps=
+X-IronPort-AV: E=Sophos;i="5.73,452,1583218800"; d="scan'208";a="14043703"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
- by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 30 May 2020 06:50:23 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 30 May 2020 07:03:21 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Sat, 30 May 2020 06:50:13 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Sat, 30 May 2020 06:50:22 -0700
+ 15.1.1713.5; Sat, 30 May 2020 07:03:21 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.71) with Microsoft SMTP Server
+ (version=TLS1_2, 
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5 via Frontend
+ Transport; Sat, 30 May 2020 07:03:11 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cxZAUwfxv34sOMUPPqXB6T24702t7n6yqoJDLdMLY+O89zTCusCxf8OdYiT2WOrxfW56mbC1dZjEL7DeNUTiEnOw+8uqqn6VH1QSckSPG7hBw72cdQuhWMZYVhFerfVIllX/kUAaktyzi055RMOnprpOIgsn7RHkaizHIpRGEpEH67RoaqjAzYVf6czFgSQQODgHBcArqnAbzCFrp6/20dBrDcOeiVo+wfMzrzJ+f/Qla5ptUKBxckMcoQjIeueNV9EWS8E/2Fw7rHGRaFuEcL/MweaoLUq41dHz4Z5eNpmCZGlNw2XxIGXp50PkFhx7PyvGNFIEmbx8La32DRf7Dg==
+ b=DuM/FnuCY9M7cS/Nv7vymXKX5th4/cs7/8bjikn+leGvBdW8SIMVy+atJRSz2Iht2SvtxOAjtgda1LRt5V3/kRd8/gj7+PHS7XSt1pGe+uj4D8FEvnsmDvqOzpD2sUvUMaXfRizec3h/8vxv3nd7ehtNO22NufhOcriYOBeqRGI18YFLPHOTB51EOogDXqa2+kq7MFJD85wejslHkDokBJPfaUhjQxdx3JEw4sXFzV49QIJbSd/0lvoXxMtvWddGP3O7YMbDRxKMeOp+TwrJK1jiE/PqXhSFylc3EoIcg75rJ8lAHmO8d4l8cFjlO3TiBpNdAkdbjWGISm7hwwI3Ag==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J9qhxSvgtz1sHnpFJ+oVJ6ceCyi6PjyTAk0+SfnAfrE=;
- b=SH/+WEcRE1q0y5Wu2PppZW99vUcOe+kCqABpeuFX5Ms9zBuNaD7CjWEl4FPQ/BujErdQry19/Q/W+InMM1KnqclGUGsUOFV9WXdlCLzDU4piIavbaWyh/WXuV6ELGP1KWuiy8ne9kbr4fAI0Ehg/t4Uhx9aiYlfaiJ1yRnK0nHQeK2AAdvHaiHQlEy2kA++ufrhYuHQxbdsQhNSqCLi0RgJKEBANUZ1U8pe2cn0sYMyFgsabLg1r4QPb8HoUqWWziTJVoMAxCCwsa1JPeKgwGrxXf2IhwGfMNLsLn8Eh5FnOCb+pIaSLBg23KzJcjYY6+Vqt3AYVySgOj2xv/uF2aw==
+ bh=raEiasbuFtnxfFGFVPtdn+Hj/et9KNzzOdkA2J++NpQ=;
+ b=NIlKQKAkCk8wye+gXhifPleEEkrB6BGuz5l17eUMTf/T6fhaO1CeNU23XgPGA/F9AfCA1PdUThFK0y6JxwJuPvNJ4r5nNoslgBVEKttmCidMzsqwotAOAwXyxBL/KExdqW/qBW5IBGjgvKKB4tUBhUYSo3BuvV1L4QYgAOHDd/ktAGVYXyybs+g2a96/qTBFGwCsr+LaTmjyGKkkShjKomF9OrwImSU9nieXXm49W9dy/djZt2OwmMI33eX17hh5EIW1YPHi83HP3ec8QGVUQGdZPYp/yHVQzTNoQUqGkJMvxUi7vcBWdn0jKvlC1IlY7CDyz5Y8yfUvuM/dgKhZ3w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=microchip.com; dmarc=pass action=none
  header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
@@ -84,29 +85,27 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=microchiptechnology.onmicrosoft.com;
  s=selector2-microchiptechnology-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J9qhxSvgtz1sHnpFJ+oVJ6ceCyi6PjyTAk0+SfnAfrE=;
- b=MIQYYPXEmPCvFzmmBj2fBQukahY6ecIq9M32oEjk3ci8QDzDXm+CbkjsnhDZCI5XVnTDAMXLYp8UtxmcMZIVLR1hfR/rovXdL4mbixEqSYJrjiwP7NwnvrhR1JYgGlvCD5OsxuPkhlWSt4wwZH7ZLqFGwYPXojz4HBoCuL8ilhY=
+ bh=raEiasbuFtnxfFGFVPtdn+Hj/et9KNzzOdkA2J++NpQ=;
+ b=F+YEM45pA1z+eBO7o1c6MWANzhE8bsSOIQobqXSmpubpzRiHlWN8PPV9fa387Tnc8y3n5NrouLyq3xK4AI+V1Nb4hwIHtscihiRXIhcsdu7ufCig1Wet7dezERaVvwIlJWw2ZUMm1dpdJPbP3Bg3AKWlOoXQ+hw6Ij+q1h9VeXc=
 Received: from BY5PR11MB4419.namprd11.prod.outlook.com (2603:10b6:a03:1c8::13)
- by BY5PR11MB4150.namprd11.prod.outlook.com (2603:10b6:a03:190::33)
+ by BY5PR11MB4120.namprd11.prod.outlook.com (2603:10b6:a03:18f::28)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.17; Sat, 30 May
- 2020 13:50:19 +0000
+ 2020 14:03:17 +0000
 Received: from BY5PR11MB4419.namprd11.prod.outlook.com
  ([fe80::d847:5d58:5325:c536]) by BY5PR11MB4419.namprd11.prod.outlook.com
  ([fe80::d847:5d58:5325:c536%7]) with mapi id 15.20.3045.018; Sat, 30 May 2020
- 13:50:19 +0000
+ 14:03:17 +0000
 From: <Tudor.Ambarus@microchip.com>
 To: <vigneshr@ti.com>
-Subject: Re: [PATCH v2 5/6] mtd: spi-nor: Convert cadence-quadspi to use
- spi-mem framework
-Thread-Topic: [PATCH v2 5/6] mtd: spi-nor: Convert cadence-quadspi to use
- spi-mem framework
-Thread-Index: AQHWM0FbObzLUE3zbU2uk18n3E8gz6jAq/2A
-Date: Sat, 30 May 2020 13:50:19 +0000
-Message-ID: <42194926.90UbduaAQf@192.168.0.120>
+Subject: Re: [PATCH v2 6/6] spi: Move cadence-quadspi driver to drivers/spi/
+Thread-Topic: [PATCH v2 6/6] spi: Move cadence-quadspi driver to drivers/spi/
+Thread-Index: AQHWM0FdEOiVAVvaCEy6tJOJa4r5MajAr52A
+Date: Sat, 30 May 2020 14:03:16 +0000
+Message-ID: <3126407.cFKMuZumrP@192.168.0.120>
 References: <20200526093604.11846-1-vigneshr@ti.com>
- <20200526093604.11846-6-vigneshr@ti.com>
-In-Reply-To: <20200526093604.11846-6-vigneshr@ti.com>
+ <20200526093604.11846-7-vigneshr@ti.com>
+In-Reply-To: <20200526093604.11846-7-vigneshr@ti.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -115,34 +114,35 @@ authentication-results: ti.com; dkim=none (message not signed)
  header.d=none;ti.com; dmarc=none action=none header.from=microchip.com;
 x-originating-ip: [94.177.32.156]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 698e2bc6-32e0-4208-ec9d-08d804a06423
-x-ms-traffictypediagnostic: BY5PR11MB4150:
-x-microsoft-antispam-prvs: <BY5PR11MB4150CF8EDA22E38A402A19E0F08C0@BY5PR11MB4150.namprd11.prod.outlook.com>
+x-ms-office365-filtering-correlation-id: ecf300e9-4de1-473a-fe7e-08d804a2339e
+x-ms-traffictypediagnostic: BY5PR11MB4120:
+x-microsoft-antispam-prvs: <BY5PR11MB41202B9F983572378631C947F08C0@BY5PR11MB4120.namprd11.prod.outlook.com>
 x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:4125;
+x-ms-oob-tlc-oobclassifiers: OLM:1468;
 x-forefront-prvs: 041963B986
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 8JsSvK8Vy950oadRrbU7UAbT3xVEsdX3+gB2aqRjtokt5ElOtEs3oWsouvP4XF2rKHhZRdw8k1PyyEv7dKQm4z9E/8WnSasRTWmUnKnEB970CBYEzeop1SGUCGnRwsevi9yUcQ/esPztqwvk7OYx4Atc7U/+scTXMfYh5ZhT/gxiBSWBRrYqu/ZOPw+6QIwZtfMnO8N/aRLQPE4bVSmtpetL9th4hfcblgf72Mr+j8VjINq9KQ4Ia3Js5g73C18PGS8Jl/XkgUvrAqe3Bd5Ux82Yf498IoPsj7DIOU+/Kr/dgfPw/y+qhdRfB27ajz4A3xzzO4OSgSl3GjWHhqHs+1wTyhnuNjSbNrbInbwlqLTFsgM9X8vtlZQJNFoWg8ZLtjuMRqMhxHJsjWTrf/Mz1gkHcO2JSxuVjdjiixfKDvrp42WwiQvziS2VwwFyxMldHv0sBfnKFmhtnI+iHQQCdw==
+x-microsoft-antispam-message-info: 3I7//G4GuTz3ByrXNi4mbPevh5Z2tPhPmDFLv3i8VU7T/63giDclGlm59JeF/2+szIC826hue5LU+JaLYZEL5iqOURxoaTzLC7rYtHdyKIRlP72eqRaZBdoKitZBCsiqyh9EBePBLm4wnhwmml7McqPgPXxWfM4PeHjsqPL7bfhYxCkboghggb95tHimRQQzq3enxuBu7ajW6gIC4xFP/e/YeZgF5eJJMmyNkh4VchqFCqTmr4EYJGlTsQT/5PB5CXAY9HZLfoPNaFs/elqHAb9LyHm6km0e3DGZNjqd46RNI/3WXT26m4lXQbEESmIZgBLniyZTdMMWZbIk6yEc0A==
 x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:BY5PR11MB4419.namprd11.prod.outlook.com; PTR:; CAT:NONE;
  SFTY:;
- SFS:(136003)(396003)(39850400004)(376002)(366004)(346002)(83380400001)(966005)(5660300002)(64756008)(14286002)(91956017)(478600001)(66556008)(66476007)(66446008)(66946007)(4326008)(76116006)(71200400001)(86362001)(30864003)(6506007)(9686003)(8936002)(186003)(6916009)(8676002)(53546011)(54906003)(6512007)(26005)(2906002)(7416002)(6486002)(316002)(39026012)(579004)(559001);
+ SFS:(346002)(396003)(366004)(136003)(376002)(39860400002)(26005)(8676002)(4326008)(6506007)(14286002)(66556008)(66946007)(66476007)(66446008)(76116006)(64756008)(6486002)(91956017)(7416002)(8936002)(5660300002)(316002)(71200400001)(54906003)(86362001)(9686003)(6916009)(53546011)(478600001)(6512007)(4744005)(83380400001)(186003)(2906002);
  DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata: neVf/NNXCh5OvDOQcZ+/SQ3jD3Gxy7lbSBuveWVyoS9MeTN6tjZ28NlQk8eugOxx0YLbKWUNQXKaxUm55kyRCv7grAlMd0aoE5JLaWPMtH6yYqE/38nnMfeGn+IAP9kdoQHqlDggajHjCiFOOBOmiXRuL9jEw/1ef2jHX6I3cTp49qh4YuiecAHubXGh93Kk0s8rA+SQXSunvf8nJUwh8Kbn912ZhcFAUJvsC73DgVHSADe+wtjjKCT0ojnxBRB4pLablY8uBD6/XnSV8ny0nVQFQNH2vvEYJp04CRz929kw0Q8R5/DVPWHuHXtBfRcijqGYR55ZTMrZrOhdHZHRi7lJH7Mr6xp5RkOCGQvQAWFGjrqS6xxruQw9lSxOI9jcWiQ0/v2YMqS2FBXTcJCVZerKlEDvx0jT/uFhv3cgSKR+jrzHr0sk99w3C6abgenmTRrjRZHr3K7GTT/iH9hLzTrgeUgMxbhZe94UT3OZbOY=
+x-ms-exchange-antispam-messagedata: Q2t2SDyVy9LGXvyANiW6JUPrWylXo8qqorcZtEDRISX3+H1Di169Pgzj+79rb12rsDe0OfE3ArJkgOhhokDTo1xM1spDs50TQgmbsqZyQOpdp1ZTZseFykcEHS86t6Rde/y+CgT0CIUWtGPyohhWjcdgRKlRoTUhZWIoluyK+TzoHcYZWZ+JyEGzQH+vXdTfy6PKRqzVVurW+mERzUx4kgDwDWxAp8DmktLlsKbjFY5uWidIu2LbNAZoGyFutU5hdz+OklLnfm94uUJH9TXu6OsAQcxBquiR9W8FOxNmIvOSwGPyrXaEVlKKDjyluO54NHWCqw4XZIkNwJEOk/jaSdC6cgV4Cw4l9XcT7dN4W0pXQHG5eNW2H9b8/Xpv4urvM0UU+3v45Jim6MHgPH5AecOEQ8W2XBMZXtgw3nQopFj9e/rjVAOgDlZSLrP9gzIB5MS0gPd3p8o0d8LTqzu42D00+7a9PTuEIj6geXbKoVs=
 x-ms-exchange-transport-forked: True
-Content-ID: <1377B88FD5F583469633C13885A4520E@namprd11.prod.outlook.com>
+Content-ID: <D790C2BA81B0094B8C1E8B975CC4F029@namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 698e2bc6-32e0-4208-ec9d-08d804a06423
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 May 2020 13:50:19.2350 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ecf300e9-4de1-473a-fe7e-08d804a2339e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 May 2020 14:03:16.8487 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: W4+JxgxaHrbIuqlyQUKb95ewHzIrTfE08GQt7V+OFTcg0wGcJC2eyONtazMuHuQeQ98UeWugdcWPh4a9aoKLeIIZ/+5oX0LJ8c8XNjW2Gv0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4150
+X-MS-Exchange-CrossTenant-userprincipalname: nRb9wLAPKtmnHrXKVCnjG2WwoDDua+9rotRx5vzn5kWj7I4IRiUn5vAVGEA7MBK6VNHACI4Ygqyj/eN1w4WHb/QjcWVCfrCqJ4ie7pKhsuw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4120
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200530_065028_725487_FD5A0137 
-X-CRM114-Status: GOOD (  19.76  )
+X-CRM114-CacheID: sfid-20200530_070339_683223_7DC11E61 
+X-CRM114-Status: UNSURE (   9.09  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -163,939 +163,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi, Vignesh,
-
-On Tuesday, May 26, 2020 12:36:03 PM EEST Vignesh Raghavendra wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the
-> content is safe
-> 
+On Tuesday, May 26, 2020 12:36:04 PM EEST Vignesh Raghavendra wrote:
 > From: Ramuthevar Vadivel Murugan
 > <vadivel.muruganx.ramuthevar@linux.intel.com>
 > 
-> Move cadence-quadspi driver to use spi-mem framework. This is required
-> to make the driver support for SPI NAND flashes in future.
+> Now that cadence-quadspi has been converted to use spi-mem framework,
+> move it under drivers/spi/
 > 
-> Driver is feature compliant with existing SPI NOR version.
+> Update license header to match SPI subsystem style
 > 
 > Signed-off-by: Ramuthevar Vadivel Murugan
 > <vadivel.muruganx.ramuthevar@linux.intel.com> Signed-off-by: Vignesh
 > Raghavendra <vigneshr@ti.com>
 > ---
->  .../mtd/spi-nor/controllers/cadence-quadspi.c | 469 +++++++-----------
->  1 file changed, 183 insertions(+), 286 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/controllers/cadence-quadspi.c
-> b/drivers/mtd/spi-nor/controllers/cadence-quadspi.c index
-> 608ca657ff7f..c1df4b221889 100644
-> --- a/drivers/mtd/spi-nor/controllers/cadence-quadspi.c
-> +++ b/drivers/mtd/spi-nor/controllers/cadence-quadspi.c
-> @@ -3,6 +3,8 @@
->   * Driver for Cadence QSPI Controller
->   *
->   * Copyright Altera Corporation (C) 2012-2014. All rights reserved.
-> + * Copyright Intel Corporation (C) 2019-2020. All rights reserved.
-> + * Copyright (C) 2020 Texas Instruments Incorporated - http://www.ti.com
->   */
->  #include <linux/clk.h>
->  #include <linux/completion.h>
-> @@ -17,9 +19,6 @@
->  #include <linux/jiffies.h>
->  #include <linux/kernel.h>
->  #include <linux/module.h>
-> -#include <linux/mtd/mtd.h>
-> -#include <linux/mtd/partitions.h>
-> -#include <linux/mtd/spi-nor.h>
->  #include <linux/of_device.h>
->  #include <linux/of.h>
->  #include <linux/platform_device.h>
-> @@ -27,6 +26,7 @@
->  #include <linux/reset.h>
->  #include <linux/sched.h>
->  #include <linux/spi/spi.h>
-> +#include <linux/spi/spi-mem.h>
->  #include <linux/timer.h>
-> 
->  #define CQSPI_NAME                     "cadence-qspi"
-> @@ -36,16 +36,12 @@
->  #define CQSPI_NEEDS_WR_DELAY           BIT(0)
->  #define CQSPI_DISABLE_DAC_MODE         BIT(1)
-> 
-> -/* Capabilities mask */
-> -#define CQSPI_BASE_HWCAPS_MASK                                 \
-> -       (SNOR_HWCAPS_READ | SNOR_HWCAPS_READ_FAST |             \
-> -       SNOR_HWCAPS_READ_1_1_2 | SNOR_HWCAPS_READ_1_1_4 |       \
-> -       SNOR_HWCAPS_PP)
-> +/* Capabilities */
-> +#define CQSPI_SUPPORTS_OCTAL           BIT(0)
-> 
->  struct cqspi_st;
-> 
->  struct cqspi_flash_pdata {
-> -       struct spi_nor  nor;
->         struct cqspi_st *cqspi;
->         u32             clk_rate;
->         u32             read_delay;
-> @@ -58,7 +54,6 @@ struct cqspi_flash_pdata {
->         u8              data_width;
->         u8              cs;
->         bool            registered;
+>  drivers/mtd/spi-nor/controllers/Kconfig            | 11 -----------
+>  drivers/mtd/spi-nor/controllers/Makefile           |  1 -
+>  drivers/spi/Kconfig                                | 11 +++++++++++
+>  drivers/spi/Makefile                               |  1 +
+>  .../spi-cadence-quadspi.c}                         | 14 +++++++-------
+>  5 files changed, 19 insertions(+), 19 deletions(-)
+>  rename drivers/{mtd/spi-nor/controllers/cadence-quadspi.c =>
+> spi/spi-cadence-quadspi.c} (99%)
 
-you can drop this, as it is no longer used
-
-> -       bool            use_direct_mode;
->  };
-> 
->  struct cqspi_st {
-> @@ -71,7 +66,6 @@ struct cqspi_st {
->         void __iomem            *ahb_base;
->         resource_size_t         ahb_size;
->         struct completion       transfer_complete;
-> -       struct mutex            bus_mutex;
-> 
->         struct dma_chan         *rx_chan;
->         struct completion       rx_dma_complete;
-> @@ -85,6 +79,7 @@ struct cqspi_st {
->         bool                    rclk_en;
->         u32                     trigger_address;
->         u32                     wr_delay;
-> +       bool                    use_dac_mode;
-
-is use_dac_mode better than use_direct_mode? If you prefer "dac", maybe you 
-can rename this variable in 2/6
-
->         struct cqspi_flash_pdata f_pdata[CQSPI_MAX_CHIPSELECT];
->  };
-> 
-> @@ -283,9 +278,8 @@ static irqreturn_t cqspi_irq_handler(int this_irq, void
-> *dev) return IRQ_HANDLED;
->  }
-> 
-> -static unsigned int cqspi_calc_rdreg(struct spi_nor *nor)
-> +static unsigned int cqspi_calc_rdreg(struct cqspi_flash_pdata *f_pdata)
->  {
-> -       struct cqspi_flash_pdata *f_pdata = nor->priv;
->         u32 rdreg = 0;
-> 
->         rdreg |= f_pdata->inst_width << CQSPI_REG_RD_INSTR_TYPE_INSTR_LSB;
-> @@ -352,19 +346,21 @@ static int cqspi_exec_flash_cmd(struct cqspi_st
-> *cqspi, unsigned int reg) return cqspi_wait_idle(cqspi);
->  }
-> 
-> -static int cqspi_command_read(struct spi_nor *nor, u8 opcode,
-> -                             u8 *rxbuf, size_t n_rx)
-> +static int cqspi_command_read(struct cqspi_flash_pdata *f_pdata,
-> +                             const struct spi_mem_op *op)
->  {
-> -       struct cqspi_flash_pdata *f_pdata = nor->priv;
->         struct cqspi_st *cqspi = f_pdata->cqspi;
->         void __iomem *reg_base = cqspi->iobase;
-> +       u8 *rxbuf = op->data.buf.in;
-> +       u8 opcode = op->cmd.opcode;
-
-dedicated variable for opcode is not really needed, it is used only once.
-
-> +       size_t n_rx = op->data.nbytes;
->         unsigned int rdreg;
->         unsigned int reg;
->         size_t read_len;
->         int status;
-> 
->         if (!n_rx || n_rx > CQSPI_STIG_DATA_LEN_MAX || !rxbuf) {
-> -               dev_err(nor->dev,
-> +               dev_err(&cqspi->pdev->dev,
->                         "Invalid input argument, len %zu rxbuf 0x%p\n",
->                         n_rx, rxbuf);
->                 return -EINVAL;
-> @@ -372,7 +368,7 @@ static int cqspi_command_read(struct spi_nor *nor, u8
-> opcode,
-> 
->         reg = opcode << CQSPI_REG_CMDCTRL_OPCODE_LSB;
-> 
-> -       rdreg = cqspi_calc_rdreg(nor);
-> +       rdreg = cqspi_calc_rdreg(f_pdata);
->         writel(rdreg, reg_base + CQSPI_REG_RD_INSTR);
-> 
->         reg |= (0x1 << CQSPI_REG_CMDCTRL_RD_EN_LSB);
-> @@ -401,25 +397,35 @@ static int cqspi_command_read(struct spi_nor *nor, u8
-> opcode, return 0;
->  }
-> 
-> -static int cqspi_command_write(struct spi_nor *nor, const u8 opcode,
-> -                              const u8 *txbuf, size_t n_tx)
-> +static int cqspi_command_write(struct cqspi_flash_pdata *f_pdata,
-> +                              const struct spi_mem_op *op)
->  {
-> -       struct cqspi_flash_pdata *f_pdata = nor->priv;
->         struct cqspi_st *cqspi = f_pdata->cqspi;
->         void __iomem *reg_base = cqspi->iobase;
-> +       const u8 opcode = op->cmd.opcode;
-
-dedicated variable for opcode is not really needed, it is used only once.
-
-> +       const u8 *txbuf = op->data.buf.out;
-> +       size_t n_tx = op->data.nbytes;
->         unsigned int reg;
->         unsigned int data;
->         size_t write_len;
-> -       int ret;
-> 
->         if (n_tx > CQSPI_STIG_DATA_LEN_MAX || (n_tx && !txbuf)) {
-> -               dev_err(nor->dev,
-> +               dev_err(&cqspi->pdev->dev,
->                         "Invalid input argument, cmdlen %zu txbuf 0x%p\n",
->                         n_tx, txbuf);
->                 return -EINVAL;
->         }
-> 
->         reg = opcode << CQSPI_REG_CMDCTRL_OPCODE_LSB;
-> +
-> +       if (op->addr.nbytes) {
-> +               reg |= (0x1 << CQSPI_REG_CMDCTRL_ADDR_EN_LSB);
-> +               reg |= ((op->addr.nbytes - 1) &
-> CQSPI_REG_CMDCTRL_ADD_BYTES_MASK)
-> +               <<
-> CQSPI_REG_CMDCTRL_ADD_BYTES_LSB;
-
-you have a 80 chars checkpatch warning here, maybe replace it with smth like
-	reg |= ((op->addr.nbytes - 1) &
-	            CQSPI_REG_CMDCTRL_ADD_BYTES_MASK) <<
-	           CQSPI_REG_CMDCTRL_ADD_BYTES_LSB;
-
-> +
-> +               writel(op->addr.val, reg_base + CQSPI_REG_CMDADDRESS);
-> +       }
-> +
->         if (n_tx) {
->                 reg |= (0x1 << CQSPI_REG_CMDCTRL_WR_EN_LSB);
->                 reg |= ((n_tx - 1) & CQSPI_REG_CMDCTRL_WR_BYTES_MASK)
-> @@ -437,73 +443,46 @@ static int cqspi_command_write(struct spi_nor *nor,
-> const u8 opcode, writel(data, reg_base + CQSPI_REG_CMDWRITEDATAUPPER); }
->         }
-> -       ret = cqspi_exec_flash_cmd(cqspi, reg);
-> -       return ret;
-> -}
-> -
-> -static int cqspi_command_write_addr(struct spi_nor *nor,
-> -                                   const u8 opcode, const unsigned int
-> addr) -{
-> -       struct cqspi_flash_pdata *f_pdata = nor->priv;
-> -       struct cqspi_st *cqspi = f_pdata->cqspi;
-> -       void __iomem *reg_base = cqspi->iobase;
-> -       unsigned int reg;
-> -
-> -       reg = opcode << CQSPI_REG_CMDCTRL_OPCODE_LSB;
-> -       reg |= (0x1 << CQSPI_REG_CMDCTRL_ADDR_EN_LSB);
-> -       reg |= ((nor->addr_width - 1) & CQSPI_REG_CMDCTRL_ADD_BYTES_MASK)
-> -               << CQSPI_REG_CMDCTRL_ADD_BYTES_LSB;
-> -
-> -       writel(addr, reg_base + CQSPI_REG_CMDADDRESS);
-> 
->         return cqspi_exec_flash_cmd(cqspi, reg);
->  }
-> 
-> -static int cqspi_read_setup(struct spi_nor *nor)
-> +static int cqspi_read_setup(struct cqspi_flash_pdata *f_pdata,
-> +                           const struct spi_mem_op *op)
->  {
-> -       struct cqspi_flash_pdata *f_pdata = nor->priv;
->         struct cqspi_st *cqspi = f_pdata->cqspi;
->         void __iomem *reg_base = cqspi->iobase;
->         unsigned int dummy_clk = 0;
->         unsigned int reg;
-> 
-> -       reg = nor->read_opcode << CQSPI_REG_RD_INSTR_OPCODE_LSB;
-> -       reg |= cqspi_calc_rdreg(nor);
-> +       reg = op->cmd.opcode << CQSPI_REG_RD_INSTR_OPCODE_LSB;
-> +       reg |= cqspi_calc_rdreg(f_pdata);
-> 
->         /* Setup dummy clock cycles */
-> -       dummy_clk = nor->read_dummy;
-> +       dummy_clk = op->dummy.nbytes * 8;
->         if (dummy_clk > CQSPI_DUMMY_CLKS_MAX)
->                 dummy_clk = CQSPI_DUMMY_CLKS_MAX;
-> 
-> -       if (dummy_clk / 8) {
-> -               reg |= (1 << CQSPI_REG_RD_INSTR_MODE_EN_LSB);
-> -               /* Set mode bits high to ensure chip doesn't enter XIP */
-> -               writel(0xFF, reg_base + CQSPI_REG_MODE_BIT);
-> -
-> -               /* Need to subtract the mode byte (8 clocks). */
-> -               if (f_pdata->inst_width != CQSPI_INST_TYPE_QUAD)
-> -                       dummy_clk -= 8;
-> -
-> -               if (dummy_clk)
-> -                       reg |= (dummy_clk & CQSPI_REG_RD_INSTR_DUMMY_MASK)
-> -                              << CQSPI_REG_RD_INSTR_DUMMY_LSB;
-> -       }
-> +       if (dummy_clk / 8)
-
-if (dummy_clk) should be enough. dummy_clk is either zero, or a multiple of 
-eight, or CQSPI_DUMMY_CLKS_MAX.
-
-> +               reg |= (dummy_clk & CQSPI_REG_RD_INSTR_DUMMY_MASK)
-> +                      << CQSPI_REG_RD_INSTR_DUMMY_LSB;
-
-> 
->         writel(reg, reg_base + CQSPI_REG_RD_INSTR);
-> 
->         /* Set address width */
->         reg = readl(reg_base + CQSPI_REG_SIZE);
->         reg &= ~CQSPI_REG_SIZE_ADDRESS_MASK;
-> -       reg |= (nor->addr_width - 1);
-> +       reg |= (op->addr.nbytes - 1);
->         writel(reg, reg_base + CQSPI_REG_SIZE);
->         return 0;
->  }
-> 
-> -static int cqspi_indirect_read_execute(struct spi_nor *nor, u8 *rxbuf,
-> -                                      loff_t from_addr, const size_t n_rx)
-> +static int cqspi_indirect_read_execute(struct cqspi_flash_pdata *f_pdata,
-> +                                      u8 *rxbuf, loff_t from_addr,
-> +                                      const size_t n_rx)
->  {
-> -       struct cqspi_flash_pdata *f_pdata = nor->priv;
->         struct cqspi_st *cqspi = f_pdata->cqspi;
-> +       struct device *dev = &cqspi->pdev->dev;
->         void __iomem *reg_base = cqspi->iobase;
->         void __iomem *ahb_base = cqspi->ahb_base;
->         unsigned int remaining = n_rx;
-> @@ -526,13 +505,13 @@ static int cqspi_indirect_read_execute(struct spi_nor
-> *nor, u8 *rxbuf,
-> 
->         while (remaining > 0) {
->                 if (!wait_for_completion_timeout(&cqspi->transfer_complete,
-> -                               msecs_to_jiffies(CQSPI_READ_TIMEOUT_MS)))
-> +                                               
-> msecs_to_jiffies(CQSPI_READ_TIMEOUT_MS))) ret = -ETIMEDOUT;
-> 
->                 bytes_to_read = cqspi_get_rd_sram_level(cqspi);
-> 
->                 if (ret && bytes_to_read == 0) {
-> -                       dev_err(nor->dev, "Indirect read timeout, no
-> bytes\n"); +                       dev_err(dev, "Indirect read timeout, no
-> bytes\n"); goto failrd;
->                 }
-> 
-> @@ -568,8 +547,7 @@ static int cqspi_indirect_read_execute(struct spi_nor
-> *nor, u8 *rxbuf, ret = cqspi_wait_for_bit(reg_base + CQSPI_REG_INDIRECTRD,
->                                  CQSPI_REG_INDIRECTRD_DONE_MASK, 0);
->         if (ret) {
-> -               dev_err(nor->dev,
-> -                       "Indirect read completion error (%i)\n", ret);
-> +               dev_err(dev, "Indirect read completion error (%i)\n", ret);
->                 goto failrd;
->         }
-> 
-> @@ -591,32 +569,32 @@ static int cqspi_indirect_read_execute(struct spi_nor
-> *nor, u8 *rxbuf, return ret;
->  }
-> 
-> -static int cqspi_write_setup(struct spi_nor *nor)
-> +static int cqspi_write_setup(struct cqspi_flash_pdata *f_pdata,
-> +                            const struct spi_mem_op *op)
->  {
->         unsigned int reg;
-> -       struct cqspi_flash_pdata *f_pdata = nor->priv;
->         struct cqspi_st *cqspi = f_pdata->cqspi;
->         void __iomem *reg_base = cqspi->iobase;
-> 
->         /* Set opcode. */
-> -       reg = nor->program_opcode << CQSPI_REG_WR_INSTR_OPCODE_LSB;
-> +       reg = op->cmd.opcode << CQSPI_REG_WR_INSTR_OPCODE_LSB;
->         writel(reg, reg_base + CQSPI_REG_WR_INSTR);
-> -       reg = cqspi_calc_rdreg(nor);
-> +       reg = cqspi_calc_rdreg(f_pdata);
->         writel(reg, reg_base + CQSPI_REG_RD_INSTR);
-> 
->         reg = readl(reg_base + CQSPI_REG_SIZE);
->         reg &= ~CQSPI_REG_SIZE_ADDRESS_MASK;
-> -       reg |= (nor->addr_width - 1);
-> +       reg |= (op->addr.nbytes - 1);
->         writel(reg, reg_base + CQSPI_REG_SIZE);
->         return 0;
->  }
-> 
-> -static int cqspi_indirect_write_execute(struct spi_nor *nor, loff_t
-> to_addr, -                                       const u8 *txbuf, const
-> size_t n_tx) +static int cqspi_indirect_write_execute(struct
-> cqspi_flash_pdata *f_pdata, +                                       loff_t
-> to_addr, const u8 *txbuf, +                                       const
-> size_t n_tx)
->  {
-> -       const unsigned int page_size = nor->page_size;
-> -       struct cqspi_flash_pdata *f_pdata = nor->priv;
->         struct cqspi_st *cqspi = f_pdata->cqspi;
-> +       struct device *dev = &cqspi->pdev->dev;
->         void __iomem *reg_base = cqspi->iobase;
->         unsigned int remaining = n_tx;
->         unsigned int write_bytes;
-> @@ -646,7 +624,7 @@ static int cqspi_indirect_write_execute(struct spi_nor
-> *nor, loff_t to_addr, while (remaining > 0) {
->                 size_t write_words, mod_bytes;
-> 
-> -               write_bytes = remaining > page_size ? page_size : remaining;
-> +               write_bytes = remaining;
->                 write_words = write_bytes / 4;
->                 mod_bytes = write_bytes % 4;
->                 /* Write 4 bytes at a time then single bytes. */
-> @@ -663,8 +641,8 @@ static int cqspi_indirect_write_execute(struct spi_nor
-> *nor, loff_t to_addr, }
-> 
->                 if (!wait_for_completion_timeout(&cqspi->transfer_complete,
-> -                                       msecs_to_jiffies(CQSPI_TIMEOUT_MS)))
-> { -                       dev_err(nor->dev, "Indirect write timeout\n"); + 
->                                              
-> msecs_to_jiffies(CQSPI_TIMEOUT_MS))) { +                       dev_err(dev,
-> "Indirect write timeout\n");
->                         ret = -ETIMEDOUT;
->                         goto failwr;
->                 }
-> @@ -679,8 +657,7 @@ static int cqspi_indirect_write_execute(struct spi_nor
-> *nor, loff_t to_addr, ret = cqspi_wait_for_bit(reg_base +
-> CQSPI_REG_INDIRECTWR,
->                                  CQSPI_REG_INDIRECTWR_DONE_MASK, 0);
->         if (ret) {
-> -               dev_err(nor->dev,
-> -                       "Indirect write completion error (%i)\n", ret);
-> +               dev_err(dev, "Indirect write completion error (%i)\n", ret);
-> goto failwr;
->         }
-> 
-> @@ -704,9 +681,8 @@ static int cqspi_indirect_write_execute(struct spi_nor
-> *nor, loff_t to_addr, return ret;
->  }
-> 
-> -static void cqspi_chipselect(struct spi_nor *nor)
-> +static void cqspi_chipselect(struct cqspi_flash_pdata *f_pdata)
->  {
-> -       struct cqspi_flash_pdata *f_pdata = nor->priv;
->         struct cqspi_st *cqspi = f_pdata->cqspi;
->         void __iomem *reg_base = cqspi->iobase;
->         unsigned int chip_select = f_pdata->cs;
-> @@ -745,9 +721,8 @@ static unsigned int calculate_ticks_for_ns(const
-> unsigned int ref_clk_hz, return ticks;
->  }
-> 
-> -static void cqspi_delay(struct spi_nor *nor)
-> +static void cqspi_delay(struct cqspi_flash_pdata *f_pdata)
->  {
-> -       struct cqspi_flash_pdata *f_pdata = nor->priv;
->         struct cqspi_st *cqspi = f_pdata->cqspi;
->         void __iomem *iobase = cqspi->iobase;
->         const unsigned int ref_clk_hz = cqspi->master_ref_clk_hz;
-> @@ -831,11 +806,10 @@ static void cqspi_controller_enable(struct cqspi_st
-> *cqspi, bool enable) writel(reg, reg_base + CQSPI_REG_CONFIG);
->  }
-> 
-> -static void cqspi_configure(struct spi_nor *nor)
-> +static void cqspi_configure(struct cqspi_flash_pdata *f_pdata,
-> +                           unsigned long sclk)
->  {
-> -       struct cqspi_flash_pdata *f_pdata = nor->priv;
->         struct cqspi_st *cqspi = f_pdata->cqspi;
-> -       const unsigned int sclk = f_pdata->clk_rate;
->         int switch_cs = (cqspi->current_cs != f_pdata->cs);
->         int switch_ck = (cqspi->sclk != sclk);
-> 
-> @@ -845,14 +819,14 @@ static void cqspi_configure(struct spi_nor *nor)
->         /* Switch chip select. */
->         if (switch_cs) {
->                 cqspi->current_cs = f_pdata->cs;
-> -               cqspi_chipselect(nor);
-> +               cqspi_chipselect(f_pdata);
->         }
-> 
->         /* Setup baudrate divisor and delays */
->         if (switch_ck) {
->                 cqspi->sclk = sclk;
->                 cqspi_config_baudrate_div(cqspi);
-> -               cqspi_delay(nor);
-> +               cqspi_delay(f_pdata);
->                 cqspi_readdata_capture(cqspi, !cqspi->rclk_en,
->                                        f_pdata->read_delay);
->         }
-> @@ -861,26 +835,25 @@ static void cqspi_configure(struct spi_nor *nor)
->                 cqspi_controller_enable(cqspi, 1);
->  }
-> 
-> -static int cqspi_set_protocol(struct spi_nor *nor, const int read)
-> +static int cqspi_set_protocol(struct cqspi_flash_pdata *f_pdata,
-> +                             const struct spi_mem_op *op)
->  {
-> -       struct cqspi_flash_pdata *f_pdata = nor->priv;
-> -
->         f_pdata->inst_width = CQSPI_INST_TYPE_SINGLE;
->         f_pdata->addr_width = CQSPI_INST_TYPE_SINGLE;
->         f_pdata->data_width = CQSPI_INST_TYPE_SINGLE;
-> 
-> -       if (read) {
-> -               switch (nor->read_proto) {
-> -               case SNOR_PROTO_1_1_1:
-> +       if (op->data.dir == SPI_MEM_DATA_IN) {
-> +               switch (op->data.buswidth) {
-> +               case 1:
->                         f_pdata->data_width = CQSPI_INST_TYPE_SINGLE;
->                         break;
-> -               case SNOR_PROTO_1_1_2:
-> +               case 2:
->                         f_pdata->data_width = CQSPI_INST_TYPE_DUAL;
->                         break;
-> -               case SNOR_PROTO_1_1_4:
-> +               case 4:
->                         f_pdata->data_width = CQSPI_INST_TYPE_QUAD;
->                         break;
-> -               case SNOR_PROTO_1_1_8:
-> +               case 8:
->                         f_pdata->data_width = CQSPI_INST_TYPE_OCTAL;
->                         break;
->                 default:
-> @@ -888,36 +861,32 @@ static int cqspi_set_protocol(struct spi_nor *nor,
-> const int read) }
->         }
-> 
-> -       cqspi_configure(nor);
-> -
->         return 0;
->  }
-> 
-> -static ssize_t cqspi_write(struct spi_nor *nor, loff_t to,
-> -                          size_t len, const u_char *buf)
-> +static ssize_t cqspi_write(struct cqspi_flash_pdata *f_pdata,
-> +                          const struct spi_mem_op *op)
->  {
-> -       struct cqspi_flash_pdata *f_pdata = nor->priv;
->         struct cqspi_st *cqspi = f_pdata->cqspi;
-> +       loff_t to = op->addr.val;
-> +       size_t len = op->data.nbytes;
-> +       const u_char *buf = op->data.buf.out;
->         int ret;
-> 
-> -       ret = cqspi_set_protocol(nor, 0);
-> +       ret = cqspi_set_protocol(f_pdata, op);
->         if (ret)
->                 return ret;
-> 
-> -       ret = cqspi_write_setup(nor);
-> +       ret = cqspi_write_setup(f_pdata, op);
->         if (ret)
->                 return ret;
-> 
-> -       if (f_pdata->use_direct_mode) {
-> +       if (cqspi->use_dac_mode && ((to + len) <= cqspi->ahb_size)) {
->                 memcpy_toio(cqspi->ahb_base + to, buf, len);
-> -               ret = cqspi_wait_idle(cqspi);
-> -       } else {
-> -               ret = cqspi_indirect_write_execute(nor, to, buf, len);
-> +               return cqspi_wait_idle(cqspi);
->         }
-> -       if (ret)
-> -               return ret;
-> 
-> -       return len;
-> +       return cqspi_indirect_write_execute(f_pdata, to, buf, len);
->  }
-> 
->  static void cqspi_rx_dma_callback(void *param)
-> @@ -927,11 +896,11 @@ static void cqspi_rx_dma_callback(void *param)
->         complete(&cqspi->rx_dma_complete);
->  }
-> 
-> -static int cqspi_direct_read_execute(struct spi_nor *nor, u_char *buf,
-> -                                    loff_t from, size_t len)
-> +static int cqspi_direct_read_execute(struct cqspi_flash_pdata *f_pdata,
-> +                                    u_char *buf, loff_t from, size_t len)
->  {
-> -       struct cqspi_flash_pdata *f_pdata = nor->priv;
->         struct cqspi_st *cqspi = f_pdata->cqspi;
-> +       struct device *dev = &cqspi->pdev->dev;
->         enum dma_ctrl_flags flags = DMA_CTRL_ACK | DMA_PREP_INTERRUPT;
->         dma_addr_t dma_src = (dma_addr_t)cqspi->mmap_phys_base + from;
->         int ret = 0;
-> @@ -944,15 +913,15 @@ static int cqspi_direct_read_execute(struct spi_nor
-> *nor, u_char *buf, return 0;
->         }
-> 
-> -       dma_dst = dma_map_single(nor->dev, buf, len, DMA_FROM_DEVICE);
-> -       if (dma_mapping_error(nor->dev, dma_dst)) {
-> -               dev_err(nor->dev, "dma mapping failed\n");
-> +       dma_dst = dma_map_single(dev, buf, len, DMA_FROM_DEVICE);
-> +       if (dma_mapping_error(dev, dma_dst)) {
-> +               dev_err(dev, "dma mapping failed\n");
->                 return -ENOMEM;
->         }
->         tx = dmaengine_prep_dma_memcpy(cqspi->rx_chan, dma_dst, dma_src,
->                                        len, flags);
->         if (!tx) {
-> -               dev_err(nor->dev, "device_prep_dma_memcpy error\n");
-> +               dev_err(dev, "device_prep_dma_memcpy error\n");
->                 ret = -EIO;
->                 goto err_unmap;
->         }
-> @@ -964,7 +933,7 @@ static int cqspi_direct_read_execute(struct spi_nor
-> *nor, u_char *buf,
-> 
->         ret = dma_submit_error(cookie);
->         if (ret) {
-> -               dev_err(nor->dev, "dma_submit_error %d\n", cookie);
-> +               dev_err(dev, "dma_submit_error %d\n", cookie);
->                 ret = -EIO;
->                 goto err_unmap;
->         }
-> @@ -973,99 +942,68 @@ static int cqspi_direct_read_execute(struct spi_nor
-> *nor, u_char *buf, if
-> (!wait_for_completion_timeout(&cqspi->rx_dma_complete,
->                                          msecs_to_jiffies(len))) {
->                 dmaengine_terminate_sync(cqspi->rx_chan);
-> -               dev_err(nor->dev, "DMA wait_for_completion_timeout\n");
-> +               dev_err(dev, "DMA wait_for_completion_timeout\n");
->                 ret = -ETIMEDOUT;
->                 goto err_unmap;
->         }
-> 
->  err_unmap:
-> -       dma_unmap_single(nor->dev, dma_dst, len, DMA_FROM_DEVICE);
-> +       dma_unmap_single(dev, dma_dst, len, DMA_FROM_DEVICE);
-> 
->         return ret;
->  }
-> 
-> -static ssize_t cqspi_read(struct spi_nor *nor, loff_t from,
-> -                         size_t len, u_char *buf)
-> -{
-> -       struct cqspi_flash_pdata *f_pdata = nor->priv;
-> -       int ret;
-> -
-> -       ret = cqspi_set_protocol(nor, 1);
-> -       if (ret)
-> -               return ret;
-> -
-> -       ret = cqspi_read_setup(nor);
-> -       if (ret)
-> -               return ret;
-> -
-> -       if (f_pdata->use_direct_mode)
-> -               ret = cqspi_direct_read_execute(nor, buf, from, len);
-> -       else
-> -               ret = cqspi_indirect_read_execute(nor, buf, from, len);
-> -       if (ret)
-> -               return ret;
-> -
-> -       return len;
-> -}
-> -
-> -static int cqspi_erase(struct spi_nor *nor, loff_t offs)
-> +static ssize_t cqspi_read(struct cqspi_flash_pdata *f_pdata,
-> +                         const struct spi_mem_op *op)
->  {
-> +       struct cqspi_st *cqspi = f_pdata->cqspi;
-> +       loff_t from = op->addr.val;
-> +       size_t len = op->data.nbytes;
-> +       u_char *buf = op->data.buf.in;
->         int ret;
-> 
-> -       ret = cqspi_set_protocol(nor, 0);
-> +       ret = cqspi_set_protocol(f_pdata, op);
->         if (ret)
->                 return ret;
-> 
-> -       /* Send write enable, then erase commands. */
-> -       ret = nor->controller_ops->write_reg(nor, SPINOR_OP_WREN, NULL, 0);
-
-Dropping the Write Enable for erases can be done in a separate patch, since it 
-is already done in the SPI NOR core. This would ease the review.
-
-> +       ret = cqspi_read_setup(f_pdata, op);
->         if (ret)
->                 return ret;
-> 
-> -       /* Set up command buffer. */
-> -       ret = cqspi_command_write_addr(nor, nor->erase_opcode, offs);
-> -       if (ret)
-> -               return ret;
-> +       if (cqspi->use_dac_mode && ((from + len) <= cqspi->ahb_size))
-> +               return cqspi_direct_read_execute(f_pdata, buf, from, len);
-> 
-> -       return 0;
-> +       return cqspi_indirect_read_execute(f_pdata, buf, from, len);
->  }
-> 
-> -static int cqspi_prep(struct spi_nor *nor)
-> +static int cqspi_mem_process(struct spi_mem *mem, const struct spi_mem_op
-> *op) {
-> -       struct cqspi_flash_pdata *f_pdata = nor->priv;
-> -       struct cqspi_st *cqspi = f_pdata->cqspi;
-> -
-> -       mutex_lock(&cqspi->bus_mutex);
-> -
-> -       return 0;
-> -}
-> +       struct cqspi_st *cqspi = spi_master_get_devdata(mem->spi->master);
-> +       struct cqspi_flash_pdata *f_pdata;
-> 
-> -static void cqspi_unprep(struct spi_nor *nor)
-> -{
-> -       struct cqspi_flash_pdata *f_pdata = nor->priv;
-> -       struct cqspi_st *cqspi = f_pdata->cqspi;
-> +       f_pdata = &cqspi->f_pdata[mem->spi->chip_select];
-> +       cqspi_configure(f_pdata, mem->spi->max_speed_hz);
-> 
-> -       mutex_unlock(&cqspi->bus_mutex);
-> -}
-> +       if (op->data.dir == SPI_MEM_DATA_IN && op->data.buf.in) {
-> +               if (!op->addr.nbytes)
-> +                       return cqspi_command_read(f_pdata, op);
-> 
-> -static int cqspi_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, size_t
-> len) -{
-> -       int ret;
-> +               return cqspi_read(f_pdata, op);
-> +       }
-> 
-> -       ret = cqspi_set_protocol(nor, 0);
-> -       if (!ret)
-> -               ret = cqspi_command_read(nor, opcode, buf, len);
-> +       if (!op->addr.nbytes || !op->data.buf.out)
-> +               return cqspi_command_write(f_pdata, op);
-> 
-> -       return ret;
-> +       return cqspi_write(f_pdata, op);
->  }
-> 
-> -static int cqspi_write_reg(struct spi_nor *nor, u8 opcode, const u8 *buf,
-> -                          size_t len)
-> +static int cqspi_exec_mem_op(struct spi_mem *mem, const struct spi_mem_op
-> *op) {
->         int ret;
-> 
-> -       ret = cqspi_set_protocol(nor, 0);
-> -       if (!ret)
-> -               ret = cqspi_command_write(nor, opcode, buf, len);
-> +       ret = cqspi_mem_process(mem, op);
-> +       if (ret)
-> +               dev_err(&mem->spi->dev, "operation failed with %d\n", ret);
-> 
->         return ret;
->  }
-> @@ -1107,26 +1045,26 @@ static int cqspi_of_get_flash_pdata(struct
-> platform_device *pdev, return 0;
->  }
-> 
-> -static int cqspi_of_get_pdata(struct platform_device *pdev)
-> +static int cqspi_of_get_pdata(struct cqspi_st *cqspi)
->  {
-> -       struct device_node *np = pdev->dev.of_node;
-> -       struct cqspi_st *cqspi = platform_get_drvdata(pdev);
-> +       struct device *dev = &cqspi->pdev->dev;
-> +       struct device_node *np = dev->of_node;
-> 
->         cqspi->is_decoded_cs = of_property_read_bool(np,
-> "cdns,is-decoded-cs");
-> 
->         if (of_property_read_u32(np, "cdns,fifo-depth", &cqspi->fifo_depth))
-> { -               dev_err(&pdev->dev, "couldn't determine fifo-depth\n"); +
->               dev_err(dev, "couldn't determine fifo-depth\n");
->                 return -ENXIO;
->         }
-> 
->         if (of_property_read_u32(np, "cdns,fifo-width", &cqspi->fifo_width))
-> { -               dev_err(&pdev->dev, "couldn't determine fifo-width\n"); +
->               dev_err(dev, "couldn't determine fifo-width\n");
->                 return -ENXIO;
->         }
-> 
->         if (of_property_read_u32(np, "cdns,trigger-address",
->                                  &cqspi->trigger_address)) {
-> -               dev_err(&pdev->dev, "couldn't determine trigger-address\n");
-> +               dev_err(dev, "couldn't determine trigger-address\n");
-> return -ENXIO;
->         }
-> 
-> @@ -1169,7 +1107,7 @@ static void cqspi_controller_init(struct cqspi_st
-> *cqspi) cqspi_controller_enable(cqspi, 1);
->  }
-> 
-> -static void cqspi_request_mmap_dma(struct cqspi_st *cqspi)
-> +static int cqspi_request_mmap_dma(struct cqspi_st *cqspi)
->  {
->         dma_cap_mask_t mask;
-> 
-> @@ -1178,133 +1116,79 @@ static void cqspi_request_mmap_dma(struct cqspi_st
-> *cqspi)
-> 
->         cqspi->rx_chan = dma_request_chan_by_mask(&mask);
->         if (IS_ERR(cqspi->rx_chan)) {
-> -               dev_err(&cqspi->pdev->dev, "No Rx DMA available\n");
-> +               int ret = PTR_ERR(cqspi->rx_chan);
-> +
-> +               if (ret != -EPROBE_DEFER)
-> +                       dev_err(&cqspi->pdev->dev, "No Rx DMA available\n");
-> cqspi->rx_chan = NULL;
-> -               return;
-> +               return ret;
->         }
->         init_completion(&cqspi->rx_dma_complete);
-> +
-> +       return 0;
->  }
-
-Can we have the EPROBE_DEFER changes in a dedicated patch?
-
-> 
-> -static const struct spi_nor_controller_ops cqspi_controller_ops = {
-> -       .prepare = cqspi_prep,
-> -       .unprepare = cqspi_unprep,
-> -       .read_reg = cqspi_read_reg,
-> -       .write_reg = cqspi_write_reg,
-> -       .read = cqspi_read,
-> -       .write = cqspi_write,
-> -       .erase = cqspi_erase,
-> +static const struct spi_controller_mem_ops cqspi_mem_ops = {
-> +       .exec_op = cqspi_exec_mem_op,
->  };
-> 
-> -static int cqspi_setup_flash(struct cqspi_st *cqspi, struct device_node
-> *np) +static int cqspi_setup_flash(struct cqspi_st *cqspi)
->  {
->         struct platform_device *pdev = cqspi->pdev;
->         struct device *dev = &pdev->dev;
-> -       const struct cqspi_driver_platdata *ddata;
-> -       struct spi_nor_hwcaps hwcaps;
-> +       struct device_node *np = dev->of_node;
->         struct cqspi_flash_pdata *f_pdata;
-> -       struct spi_nor *nor;
-> -       struct mtd_info *mtd;
->         unsigned int cs;
-> -       int i, ret;
-> -
-> -       ddata = of_device_get_match_data(dev);
-> -       if (!ddata) {
-> -               dev_err(dev, "Couldn't find driver data\n");
-> -               return -EINVAL;
-> -       }
-> -       hwcaps.mask = ddata->hwcaps_mask;
-> 
->         /* Get flash device data */
->         for_each_available_child_of_node(dev->of_node, np) {
-> -               ret = of_property_read_u32(np, "reg", &cs);
-> -               if (ret) {
-> +               if (of_property_read_u32(np, "reg", &cs)) {
->                         dev_err(dev, "Couldn't determine chip select.\n");
-> -                       goto err;
-> +                       continue;
-
-reg is mandatory, you should keep the behaviour as it was.
-
->                 }
-> 
->                 if (cs >= CQSPI_MAX_CHIPSELECT) {
-> -                       ret = -EINVAL;
->                         dev_err(dev, "Chip select %d out of range.\n", cs);
-> -                       goto err;
-> +                       continue;
->                 }
-> 
->                 f_pdata = &cqspi->f_pdata[cs];
->                 f_pdata->cqspi = cqspi;
->                 f_pdata->cs = cs;
-> 
-> -               ret = cqspi_of_get_flash_pdata(pdev, f_pdata, np);
-> -               if (ret)
-> -                       goto err;
-> -
-> -               nor = &f_pdata->nor;
-> -               mtd = &nor->mtd;
-> -
-> -               mtd->priv = nor;
-> -
-> -               nor->dev = dev;
-> -               spi_nor_set_flash_node(nor, np);
-> -               nor->priv = f_pdata;
-> -               nor->controller_ops = &cqspi_controller_ops;
-> -
-> -               mtd->name = devm_kasprintf(dev, GFP_KERNEL, "%s.%d",
-> -                                          dev_name(dev), cs);
-> -               if (!mtd->name) {
-> -                       ret = -ENOMEM;
-> -                       goto err;
-> -               }
-> -
-> -               ret = spi_nor_scan(nor, NULL, &hwcaps);
-> -               if (ret)
-> -                       goto err;
-> -
-> -               ret = mtd_device_register(mtd, NULL, 0);
-> -               if (ret)
-> -                       goto err;
-> -
-> -               f_pdata->registered = true;
-> -
-> -               if (mtd->size <= cqspi->ahb_size &&
-> -                   !(ddata->quirks & CQSPI_DISABLE_DAC_MODE)) {
-> -                       f_pdata->use_direct_mode = true;
-> -                       dev_dbg(nor->dev, "using direct mode for %s\n",
-> -                               mtd->name);
-> -
-> -                       if (!cqspi->rx_chan)
-> -                               cqspi_request_mmap_dma(cqspi);
-> -               }
-> +               return cqspi_of_get_flash_pdata(pdev, f_pdata, np);
-
-drop the return. you now parse just the first discovered flash, whereas before 
-your changes we parsed all the described flashes.
-
->         }
-> 
->         return 0;
-> -
-> -err:
-> -       for (i = 0; i < CQSPI_MAX_CHIPSELECT; i++)
-> -               if (cqspi->f_pdata[i].registered)
-> -                       mtd_device_unregister(&cqspi->f_pdata[i].nor.mtd);
-> -       return ret;
->  }
-> 
->  static int cqspi_probe(struct platform_device *pdev)
->  {
-> -       struct device_node *np = pdev->dev.of_node;
-> +       const struct cqspi_driver_platdata *ddata;
-> +       struct reset_control *rstc, *rstc_ocp;
->         struct device *dev = &pdev->dev;
-> +       struct spi_master *master;
-> +       struct resource *res_ahb;
->         struct cqspi_st *cqspi;
->         struct resource *res;
-> -       struct resource *res_ahb;
-> -       struct reset_control *rstc, *rstc_ocp;
-> -       const struct cqspi_driver_platdata *ddata;
->         int ret;
->         int irq;
-> 
-> -       cqspi = devm_kzalloc(dev, sizeof(*cqspi), GFP_KERNEL);
-> -       if (!cqspi)
-> +       master = spi_alloc_master(&pdev->dev, sizeof(*cqspi));
-> +       if (!master) {
-> +               dev_err(&pdev->dev, "spi_alloc_master failed\n");
->                 return -ENOMEM;
-> +       }
-> +       master->mode_bits = SPI_RX_QUAD | SPI_RX_DUAL;
-> +       master->mem_ops = &cqspi_mem_ops;
-> +       master->dev.of_node = pdev->dev.of_node;
-> +
-> +       cqspi = spi_master_get_devdata(master);
-> 
-> -       mutex_init(&cqspi->bus_mutex);
->         cqspi->pdev = pdev;
-> -       platform_set_drvdata(pdev, cqspi);
-> 
->         /* Obtain configuration from OF. */
-> -       ret = cqspi_of_get_pdata(pdev);
-> +       ret = cqspi_of_get_pdata(cqspi);
->         if (ret) {
-
-spi_controller_put() to not leak memory.
-
-Cheers,
-ta
+I get a conflict when applying this on top of spi-nor/next.
 
 
 ______________________________________________________
