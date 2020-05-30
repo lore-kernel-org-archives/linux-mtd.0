@@ -2,23 +2,23 @@ Return-Path: <SRS0=t0FF=7M=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D932C433DF
-	for <linux-mtd@archiver.kernel.org>; Sat, 30 May 2020 14:03:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6B09C433E0
+	for <linux-mtd@archiver.kernel.org>; Sat, 30 May 2020 18:43:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5EB40206C3
-	for <linux-mtd@archiver.kernel.org>; Sat, 30 May 2020 14:03:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 76E7A20723
+	for <linux-mtd@archiver.kernel.org>; Sat, 30 May 2020 18:43:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VZGOOcjO";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="Y74P4uBi";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="F+YEM45p"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5EB40206C3
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="C7mxdRBO";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="HnD/cXCE";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="Glmjl7cC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 76E7A20723
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,57 +27,56 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
 	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2VGPVmMJQdwQfxncj9rJiNKWZJP2gfDDg7T/55KMXIQ=; b=VZGOOcjOhgacA+
-	yIhyibyu/VDgkukj/TAw1tZZMgaHX/4Gj4N738RQmCvB1WcnRhm8T2WM88Bcz1ghnz70XZ+eOz0Tk
-	g7KEmGEbALjil7NqQdy3LQ0F7gAnnDMpMJWWe8qTPawdiy+Wxeeq9a9pV5PpmOaH4pVQfwa4MGG80
-	942LhwV41uM+snFOIS/eRKgYmy4Ife4PENJoPxcdOeAtLyN7mBjf6KUUUxFL+zZQnPlAd2RQXL2PT
-	uA3P8d0HmxtBuiDqHHZ23ud/e9z+dRG/8MRPik45oLAJiECJIBl6kWt+rd8xJbWMNGpxzdXxLYjWk
-	FIuH/G5ilwY1rE7kxx7w==;
+	List-Owner; bh=dU4O/VwKylgnMPI4/sAAz4p5XyVoYmDz0Vsv2+lrjGQ=; b=C7mxdRBOQL1NRW
+	nSY7mmfP33nb+FE7IXpEpB4lwMT/ix11pVYHohruYjPqluMR9GE7hXahse0C42h0cs4+CSAeAHeAQ
+	gKdy92ekuIRoX+aBNRmTrdjOEbBATi9wkLIWBvePOKN1evLoE6095k+fpDGUUSpYX/ZTCVgntsgRY
+	tpVJv6l+EopDuYcY6Y9Bun16HnX1IZvCCD3WzvIXZN8KHWXB4E8o3IlcVMX0kJtflpYooYtysGV4C
+	GMw9dg5OmlY8fxBZVuCf24X+7dKGLGQlddNzQ6ZfSoenOlBzSTFH6ezommwfZlb2/a9Qy9E/Zdf/B
+	56BVfPT/8d35KjKcph6A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jf25O-0005Mg-JM; Sat, 30 May 2020 14:03:42 +0000
-Received: from esa6.microchip.iphmx.com ([216.71.154.253])
+	id 1jf6RO-0005im-RE; Sat, 30 May 2020 18:42:42 +0000
+Received: from esa3.microchip.iphmx.com ([68.232.153.233])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jf25L-0005M1-If
- for linux-mtd@lists.infradead.org; Sat, 30 May 2020 14:03:40 +0000
+ id 1jf6RK-0005h0-SW; Sat, 30 May 2020 18:42:40 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1590847419; x=1622383419;
+ t=1590864158; x=1622400158;
  h=from:to:cc:subject:date:message-id:references:
  in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=VG5uN6J561ZKiYZwCThBO61QXUqjf5b3Ws8+A5ojabc=;
- b=Y74P4uBi+aa4Ny75kWcKjCFmJQrmyhK7jnWlzWBnOeWlBFiIp5FxtJCA
- X/n7mZwvLDVUnsq2+1cFCA2FL7FlQwXVmN4qhJYxGxI1pupYDi54oA1A8
- 5DH6izeHfWEpYoZ/AFS6YKP+l4X6zMufDbsGBgx5tIcH4rTmNlMFMoyEa
- cXYqmhKAwDWf7p7NXJMxfVPkdlxjRhPR1JdP0zHUNGpCSu4PDyCfhI8my
- a0GT9m163yvEsw+Lf1nOJWz//KgTeB0stmAGGdhdmMv4dCiF7drwZHfMe
- 0B7HOlhGdMMjRRx0XjBF2qvhIZK+eVBpNhsx22t/2RB43/GM0qLgHWJEA Q==;
-IronPort-SDR: yBsgqNVf7eGdfIWzQs0IVcaEa7dfqHMDkgMFmI6iGMONa4p1gqzy1X4nCT0BHao3g0obD+W0NS
- kbZbFedolo5LJZ0FmmE4Jt7VD2fdh88nwIb/pl7V6gzt5sL/KfZ/jrD8esagnsTWcPUVhpiYnR
- +zboP6Ib4VnAGZQiKWgimJtOX1Q/ol6Xs1RUPqK9VfmuOuDt5+0x5gX1RJYlv3/dq1Sj9VStpk
- zt/kYpxwVKnlS2Czh3/qFsyl2GjUGW0tPQ/mjkW872u92JKNP4Lw7J1qWg1h5jJVtLYCGnYIlz
- Gps=
-X-IronPort-AV: E=Sophos;i="5.73,452,1583218800"; d="scan'208";a="14043703"
+ bh=3X0HkmmwdYlt3B8YQ7a5lZOsqG1PbFwvQ0cBVECn3kg=;
+ b=HnD/cXCED0z1xwMAw4fhbymTRCTEXT9YUJBacF9qnUGLvZZKwvQhw0m+
+ 0lnnH+wBbxHh4sXjitvDcDREh3x2EVg4C304t02j0xE0OL48i+9ACVpZS
+ veVTBlSSqzkvZYb+bTKPtywTdO7bftQwn3SGlmxj+aR3xZqvTL6l8T7EY
+ U9XBZA+a8Mkkl1wxDvrmd55Xv1YcfH9FB3RsFgrFhNGjNxfa9ntJVzjxY
+ 5X/N1Xc5v0w7tNk1YU03kwOmicr9Hsac3acRmYzijlPgfT+Ofe6xyTjz7
+ 8L1cQoNt8CR8rvMgDK2TedOBv3XXzYKaP3b6aSj6qsZTjjKf6HVcuNf0l Q==;
+IronPort-SDR: lIu9cni9mwU1E0ORGOylyPMw1OQ4+cy/7ubHowjGyplj5HIPAIC0hBgZmiRXLZLO5f286ICepz
+ MvJ2Vay8lOsKvS3KbI3yPEMk3LrmCXlVJjjg262VgqgNOvClKoLRGNyUZgRttUtQbw/4SMVK80
+ lYa7YNlCaooW+Rh23zRul4zNXFYVQ5hU6gKSwBnBS87pyKgM+wLcTK4u7viMa0LwoZumLghCgd
+ /3CWwH7KPUvRng6c/ehthXZfuaT0ljCT1m/QFiVPfkH4C0Mts2Z6Rf/WVF/Cw1ZTK9H5t9CK1E
+ K38=
+X-IronPort-AV: E=Sophos;i="5.73,452,1583218800"; d="scan'208";a="78368972"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
- by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 30 May 2020 07:03:21 -0700
+ by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 30 May 2020 11:42:30 -0700
 Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Sat, 30 May 2020 07:03:21 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
+ 15.1.1713.5; Sat, 30 May 2020 11:42:33 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
  email.microchip.com (10.10.87.71) with Microsoft SMTP Server
  (version=TLS1_2, 
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5 via Frontend
- Transport; Sat, 30 May 2020 07:03:11 -0700
+ Transport; Sat, 30 May 2020 11:42:20 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DuM/FnuCY9M7cS/Nv7vymXKX5th4/cs7/8bjikn+leGvBdW8SIMVy+atJRSz2Iht2SvtxOAjtgda1LRt5V3/kRd8/gj7+PHS7XSt1pGe+uj4D8FEvnsmDvqOzpD2sUvUMaXfRizec3h/8vxv3nd7ehtNO22NufhOcriYOBeqRGI18YFLPHOTB51EOogDXqa2+kq7MFJD85wejslHkDokBJPfaUhjQxdx3JEw4sXFzV49QIJbSd/0lvoXxMtvWddGP3O7YMbDRxKMeOp+TwrJK1jiE/PqXhSFylc3EoIcg75rJ8lAHmO8d4l8cFjlO3TiBpNdAkdbjWGISm7hwwI3Ag==
+ b=BwlZ9lSnhf4OuTV0y+VmBMR+yAqlrZ1ULQwi/ZqHJdQ00cbnvVEP+TLr2+gN9bxYobJf+wN5X9HPghrxRC00Vt+DD5cWqLSj8no2ZM5jgQGt1tsbj3r9lowFX/tqerlpyA74ZINt6s8zf+nxGR9kvBPRaFeWXEcF1AKy+2XdpACW0S79ItG/VJl8Khds6dr6HI3cRH1fEGTa81zrY2KkzCq8J5KlqUMF0DA9nAW9fbrSHkdYpwHOEzbWd3lhOYx0ZsKSCRMzSmhwLfquBBzs455sU5Nn1h0a5gPoDnOx9BykgemQdeEnmsvrHfhZ5JMITir0A/BYjfWHdoV5+o1FpQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=raEiasbuFtnxfFGFVPtdn+Hj/et9KNzzOdkA2J++NpQ=;
- b=NIlKQKAkCk8wye+gXhifPleEEkrB6BGuz5l17eUMTf/T6fhaO1CeNU23XgPGA/F9AfCA1PdUThFK0y6JxwJuPvNJ4r5nNoslgBVEKttmCidMzsqwotAOAwXyxBL/KExdqW/qBW5IBGjgvKKB4tUBhUYSo3BuvV1L4QYgAOHDd/ktAGVYXyybs+g2a96/qTBFGwCsr+LaTmjyGKkkShjKomF9OrwImSU9nieXXm49W9dy/djZt2OwmMI33eX17hh5EIW1YPHi83HP3ec8QGVUQGdZPYp/yHVQzTNoQUqGkJMvxUi7vcBWdn0jKvlC1IlY7CDyz5Y8yfUvuM/dgKhZ3w==
+ bh=8sTQKSvperSBJ1cOluezahYZ9bKqYVueX8+oKlr8zGg=;
+ b=lOkjK7Bzb8J0HFZiXcUu5Q1zjmgjnptbSV1v7W5VorGfPvPbZ9wU6PEVk1hsxGT9zhByhX+0angCkuUJ1ktftlyFmQUezQ9hGXP2mtZnsQzEnAzuJsEHPPdtTwg2R//VSHDWNWNxvu5AFBYN4RFMbfW+ePVeUR8LuAlduHTj2fVdFzk4KgWvmnYKRBLAwacUVhSFWdIZ4ok+qontTW9vdsoLtPFZ2HDbR019d8I8bzLG5YQPHfs4XoRe/oEfJCiCPBMRBBj3zfu6CIl2I+DkN4e5tpGBBzIWh6y65Di9E9JnEROLUB4hor+2YgbSgZyrnbPSLU9/5vrJ1H0+R+U0sQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=microchip.com; dmarc=pass action=none
  header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
@@ -85,27 +84,29 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=microchiptechnology.onmicrosoft.com;
  s=selector2-microchiptechnology-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=raEiasbuFtnxfFGFVPtdn+Hj/et9KNzzOdkA2J++NpQ=;
- b=F+YEM45pA1z+eBO7o1c6MWANzhE8bsSOIQobqXSmpubpzRiHlWN8PPV9fa387Tnc8y3n5NrouLyq3xK4AI+V1Nb4hwIHtscihiRXIhcsdu7ufCig1Wet7dezERaVvwIlJWw2ZUMm1dpdJPbP3Bg3AKWlOoXQ+hw6Ij+q1h9VeXc=
+ bh=8sTQKSvperSBJ1cOluezahYZ9bKqYVueX8+oKlr8zGg=;
+ b=Glmjl7cCMLqK9QTP3xWNx+wg0L6NIEZIJIw4AdDZjEuxOG6UBjOBGfp/OGDhm9lXBc6lHDclfoxcftQhv2wfdCygxD4Vo1WDx7DlxRkJwcKjDQJ11fhFyBq64eTjIJuyZBqDkXHb5K7EH/T7PG0Pk9pWOW/IqzuAK4py3XvBJMI=
 Received: from BY5PR11MB4419.namprd11.prod.outlook.com (2603:10b6:a03:1c8::13)
- by BY5PR11MB4120.namprd11.prod.outlook.com (2603:10b6:a03:18f::28)
+ by BY5PR11MB4241.namprd11.prod.outlook.com (2603:10b6:a03:1ca::13)
  with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.17; Sat, 30 May
- 2020 14:03:17 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.19; Sat, 30 May
+ 2020 18:42:26 +0000
 Received: from BY5PR11MB4419.namprd11.prod.outlook.com
  ([fe80::d847:5d58:5325:c536]) by BY5PR11MB4419.namprd11.prod.outlook.com
  ([fe80::d847:5d58:5325:c536%7]) with mapi id 15.20.3045.018; Sat, 30 May 2020
- 14:03:17 +0000
+ 18:42:25 +0000
 From: <Tudor.Ambarus@microchip.com>
-To: <vigneshr@ti.com>
-Subject: Re: [PATCH v2 6/6] spi: Move cadence-quadspi driver to drivers/spi/
-Thread-Topic: [PATCH v2 6/6] spi: Move cadence-quadspi driver to drivers/spi/
-Thread-Index: AQHWM0FdEOiVAVvaCEy6tJOJa4r5MajAr52A
-Date: Sat, 30 May 2020 14:03:16 +0000
-Message-ID: <3126407.cFKMuZumrP@192.168.0.120>
-References: <20200526093604.11846-1-vigneshr@ti.com>
- <20200526093604.11846-7-vigneshr@ti.com>
-In-Reply-To: <20200526093604.11846-7-vigneshr@ti.com>
+To: <p.yadav@ti.com>
+Subject: Re: [PATCH v9 13/19] mtd: spi-nor: sfdp: do not make invalid quad
+ enable fatal
+Thread-Topic: [PATCH v9 13/19] mtd: spi-nor: sfdp: do not make invalid quad
+ enable fatal
+Thread-Index: AQHWMnVIZMEYjFqkx0Olg5PzC+IdA6jA/zMA
+Date: Sat, 30 May 2020 18:42:25 +0000
+Message-ID: <2267830.vuSd8QnXzO@192.168.0.120>
+References: <20200525091544.17270-1-p.yadav@ti.com>
+ <20200525091544.17270-14-p.yadav@ti.com>
+In-Reply-To: <20200525091544.17270-14-p.yadav@ti.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -114,35 +115,34 @@ authentication-results: ti.com; dkim=none (message not signed)
  header.d=none;ti.com; dmarc=none action=none header.from=microchip.com;
 x-originating-ip: [94.177.32.156]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ecf300e9-4de1-473a-fe7e-08d804a2339e
-x-ms-traffictypediagnostic: BY5PR11MB4120:
-x-microsoft-antispam-prvs: <BY5PR11MB41202B9F983572378631C947F08C0@BY5PR11MB4120.namprd11.prod.outlook.com>
+x-ms-office365-filtering-correlation-id: ced1d5d5-284d-4cda-5fda-08d804c932c1
+x-ms-traffictypediagnostic: BY5PR11MB4241:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR11MB4241E672821EC385C242CFB9F08C0@BY5PR11MB4241.namprd11.prod.outlook.com>
 x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:1468;
+x-ms-oob-tlc-oobclassifiers: OLM:5516;
 x-forefront-prvs: 041963B986
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 3I7//G4GuTz3ByrXNi4mbPevh5Z2tPhPmDFLv3i8VU7T/63giDclGlm59JeF/2+szIC826hue5LU+JaLYZEL5iqOURxoaTzLC7rYtHdyKIRlP72eqRaZBdoKitZBCsiqyh9EBePBLm4wnhwmml7McqPgPXxWfM4PeHjsqPL7bfhYxCkboghggb95tHimRQQzq3enxuBu7ajW6gIC4xFP/e/YeZgF5eJJMmyNkh4VchqFCqTmr4EYJGlTsQT/5PB5CXAY9HZLfoPNaFs/elqHAb9LyHm6km0e3DGZNjqd46RNI/3WXT26m4lXQbEESmIZgBLniyZTdMMWZbIk6yEc0A==
+x-microsoft-antispam-message-info: gZwxSVRrO35JyKderyiQQdXs4lq7ih00xDcQrgznTOk5LwTAQxqWpPpqc43eeIxO1NlpwnL9TiImSgPhhMcH1xtdA+nq6wvszc5Vn/JLtlZETRC5yx43PfoTJ3uCIjleFA9n5IMnekFz+xin7nQcmBErFftO/2fwOtSFZFEazy4FuB39Y8cZK0OFDRH7vWj0uTilkjnDGSD+h8D21vzGoP/z6NEaFZovWhgyiNFZAVQ+chsOcWL6DUYZaTkb/daM0ih9eC01P+S04gsrRdC6y1atrJBjIQmgv3BzDQ7JxA6waxdCS+XWLIZ0u4ezDtlTzcYTC1o2CLAOAiKFdpfXmY4hUslFooM0ubNjyPeMCGuhckyQiFCT5hdW4jFklQNL
 x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:BY5PR11MB4419.namprd11.prod.outlook.com; PTR:; CAT:NONE;
  SFTY:;
- SFS:(346002)(396003)(366004)(136003)(376002)(39860400002)(26005)(8676002)(4326008)(6506007)(14286002)(66556008)(66946007)(66476007)(66446008)(76116006)(64756008)(6486002)(91956017)(7416002)(8936002)(5660300002)(316002)(71200400001)(54906003)(86362001)(9686003)(6916009)(53546011)(478600001)(6512007)(4744005)(83380400001)(186003)(2906002);
+ SFS:(136003)(346002)(376002)(366004)(396003)(39850400004)(76116006)(6916009)(91956017)(8936002)(478600001)(66476007)(66946007)(64756008)(66556008)(66446008)(7416002)(54906003)(26005)(71200400001)(2906002)(83380400001)(186003)(8676002)(6486002)(316002)(5660300002)(6512007)(9686003)(86362001)(14286002)(53546011)(4326008)(6506007)(39026012);
  DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata: Q2t2SDyVy9LGXvyANiW6JUPrWylXo8qqorcZtEDRISX3+H1Di169Pgzj+79rb12rsDe0OfE3ArJkgOhhokDTo1xM1spDs50TQgmbsqZyQOpdp1ZTZseFykcEHS86t6Rde/y+CgT0CIUWtGPyohhWjcdgRKlRoTUhZWIoluyK+TzoHcYZWZ+JyEGzQH+vXdTfy6PKRqzVVurW+mERzUx4kgDwDWxAp8DmktLlsKbjFY5uWidIu2LbNAZoGyFutU5hdz+OklLnfm94uUJH9TXu6OsAQcxBquiR9W8FOxNmIvOSwGPyrXaEVlKKDjyluO54NHWCqw4XZIkNwJEOk/jaSdC6cgV4Cw4l9XcT7dN4W0pXQHG5eNW2H9b8/Xpv4urvM0UU+3v45Jim6MHgPH5AecOEQ8W2XBMZXtgw3nQopFj9e/rjVAOgDlZSLrP9gzIB5MS0gPd3p8o0d8LTqzu42D00+7a9PTuEIj6geXbKoVs=
-x-ms-exchange-transport-forked: True
-Content-ID: <D790C2BA81B0094B8C1E8B975CC4F029@namprd11.prod.outlook.com>
+x-ms-exchange-antispam-messagedata: wbLTqMlkieEw4dS9HrNYsU6xXWfX6FfumzTQ+gdi+SGxKvHMXcAE6mklM7HO6cbbnQUvUzaRCK5jtY7C0yXVGxMmKwnNCJ/jQ79+U6LHFgZpWagcqBoJRJGDJuVitcEOi51bc0dg2upvYE/8f+IQfjhjRdxfdtwE/i8ckm6GPuFUJDnYhRmUw5Mq8BQ8qMDtnZy82DwgB3jMVd//Q/w3IQGKHKdI/xxTME6ZtDWmDI9YpWskIWi+kDhg7d0eek+BzPGzzwx+ugJmIkZDNCxvW7LHhex9X1Zy+ZzhGiEKVIZmpnCCLtEIFGekVXrzDtFNUWJgGKjolprhMwGcZSN9Zd19hDWBnPuzxFeDf0BgNXUgyF478sTn3+m1av5Yxuk/P+bugM9gn00Ix2Uh3l3UHq+AgSH3ZsRMAbRfSqJI7F8VbZcBlxRekjQc1pMID11PI7EeVvbGBAE7L7jvEdL9aNoMG2BsBv5IsFdGhf5vpFo=
+Content-ID: <9626737D8CDCAE47BA3681563B01A1D7@namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: ecf300e9-4de1-473a-fe7e-08d804a2339e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 May 2020 14:03:16.8487 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ced1d5d5-284d-4cda-5fda-08d804c932c1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 May 2020 18:42:25.8057 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: nRb9wLAPKtmnHrXKVCnjG2WwoDDua+9rotRx5vzn5kWj7I4IRiUn5vAVGEA7MBK6VNHACI4Ygqyj/eN1w4WHb/QjcWVCfrCqJ4ie7pKhsuw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4120
+X-MS-Exchange-CrossTenant-userprincipalname: wKE+ZMPzkmlQjpVc+sfcl3IIL9Kd9OomJq0OW9NEjk23cNvTDWMr/nSRbLp9gebBwZyslr9TJFdaXf+qKSh9NRzM096Vbl0B4r4ICow8O1k=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4241
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200530_070339_683223_7DC11E61 
-X-CRM114-Status: UNSURE (   9.09  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200530_114239_199989_1D4B98BD 
+X-CRM114-Status: GOOD (  15.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -154,38 +154,72 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: marex@denx.de, bbrezillon@kernel.org, dinguyen@kernel.org,
- simon.k.r.goldschmidt@gmail.com, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, vadivel.muruganx.ramuthevar@linux.intel.com,
- broonie@kernel.org, linux-mtd@lists.infradead.org
+Cc: alexandre.belloni@bootlin.com, masonccyang@mxic.com.tw, vigneshr@ti.com,
+ richard@nod.at, nsekhar@ti.com, Nicolas.Ferre@microchip.com,
+ boris.brezillon@collabora.com, michal.simek@xilinx.com,
+ Ludovic.Desroches@microchip.com, broonie@kernel.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ miquel.raynal@bootlin.com, matthias.bgg@gmail.com,
+ linux-mediatek@lists.infradead.org, linux-spi@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tuesday, May 26, 2020 12:36:04 PM EEST Vignesh Raghavendra wrote:
-> From: Ramuthevar Vadivel Murugan
-> <vadivel.muruganx.ramuthevar@linux.intel.com>
+On Monday, May 25, 2020 12:15:38 PM EEST Pratyush Yadav wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the
+> content is safe
 > 
-> Now that cadence-quadspi has been converted to use spi-mem framework,
-> move it under drivers/spi/
+> The Micron MT35XU512ABA flash does not support the quad enable bit. But
+> instead of programming the Quad Enable Require field to 000b ("Device
+> does not have a QE bit"), it is programmed to 111b ("Reserved").
 > 
-> Update license header to match SPI subsystem style
+> While this is technically incorrect, it is not reason enough to abort
+> BFPT parsing. Instead, continue BFPT parsing assuming there is no quad
+> enable bit present.
 > 
-> Signed-off-by: Ramuthevar Vadivel Murugan
-> <vadivel.muruganx.ramuthevar@linux.intel.com> Signed-off-by: Vignesh
-> Raghavendra <vigneshr@ti.com>
+> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 > ---
->  drivers/mtd/spi-nor/controllers/Kconfig            | 11 -----------
->  drivers/mtd/spi-nor/controllers/Makefile           |  1 -
->  drivers/spi/Kconfig                                | 11 +++++++++++
->  drivers/spi/Makefile                               |  1 +
->  .../spi-cadence-quadspi.c}                         | 14 +++++++-------
->  5 files changed, 19 insertions(+), 19 deletions(-)
->  rename drivers/{mtd/spi-nor/controllers/cadence-quadspi.c =>
-> spi/spi-cadence-quadspi.c} (99%)
+>  drivers/mtd/spi-nor/sfdp.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+> index 052cabb52df9..9fd3d8d9a127 100644
+> --- a/drivers/mtd/spi-nor/sfdp.c
+> +++ b/drivers/mtd/spi-nor/sfdp.c
+> @@ -576,10 +576,6 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+> 
+>         /* Quad Enable Requirements. */
+>         switch (bfpt.dwords[BFPT_DWORD(15)] & BFPT_DWORD15_QER_MASK) {
+> -       case BFPT_DWORD15_QER_NONE:
+> -               params->quad_enable = NULL;
+> -               break;
+> -
+>         case BFPT_DWORD15_QER_SR2_BIT1_BUGGY:
+>                 /*
+>                  * Writing only one byte to the Status Register has the
+> @@ -616,8 +612,10 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+>                 params->quad_enable = spi_nor_sr2_bit1_quad_enable;
+>                 break;
+> 
+> +       case BFPT_DWORD15_QER_NONE:
+>         default:
+> -               return -EINVAL;
+> +               params->quad_enable = NULL;
+> +               break;
 
-I get a conflict when applying this on top of spi-nor/next.
+I would just add a dev_dbg message and break the switch.
+	dev_dbg(nor->dev, "BFPT QER reserved value used.\n");
+	break;
+
+You will then have to set params->quad_enable = NULL; in a post_bfpt hook.
+
+Cheers,
+ta
+
+
+
 
 
 ______________________________________________________
