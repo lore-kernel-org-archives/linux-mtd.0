@@ -1,24 +1,23 @@
-Return-Path: <SRS0=t0FF=7M=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=g+G+=7N=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F04EDC433DF
-	for <linux-mtd@archiver.kernel.org>; Sat, 30 May 2020 18:50:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69F3DC433DF
+	for <linux-mtd@archiver.kernel.org>; Sun, 31 May 2020 06:05:58 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6F306204EF
-	for <linux-mtd@archiver.kernel.org>; Sat, 30 May 2020 18:50:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 378A320707
+	for <linux-mtd@archiver.kernel.org>; Sun, 31 May 2020 06:05:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hZXZTAtS";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="XwswH2Ai";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="KP7j7vwd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6F306204EF
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ockdLIz8";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="UnuejYsm";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="eSEWuwxJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 378A320707
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,56 +26,56 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
 	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+azeWc26BfiVDkIrUPANtLnanZFIYbEdWZDTYmDkkmg=; b=hZXZTAtSXaRLkc
-	8v0i9Pe+IVevJotOjT5aZnWZeTEbw5WSrVKieSJOLXb05+udsY5taDxpMi3Gq5aYZTUNaR9mlnD/n
-	npkYn7SoFEucIFFwkCXc/y5i27lkcQOLsQPyLMVkE8baz9DvRi19y78d3BOIVGYeXYnTJE9d/BAYA
-	Iuj3aPTXHkKu1BjRv+Hm4OgXMBD3tqWllVu5lSVlBjOF/6AwBtoJbWsF7tDfn08POH9NRZp/L1V+Q
-	CKHfjeFwc89n5Ei9xw3hXeDg23hy75NYU32ifYV3+Zs0kSnEMryxPVJPyZt8lPEVRLNbS/b+Do/MD
-	CYmqZAedCKSgXUL8ALTQ==;
+	List-Owner; bh=hNP47LeefmDiFwY18dgYjBCVABMZQajH4BKnT7vsZPE=; b=ockdLIz8VAx+Bo
+	hjvSbyi73VeNey89MbQq2U2cxMys7Z7F5Z3MxSrIRN2QG4dfBFcbNb+mjP4GTrJBzxpt5SbeSZNGW
+	yI1ICfs1VDmkY7y+LcEpnEO2mnfTII3e6QYOHuIEFWxZ0Z7Zs2ihfuHjfL0wUMpCoDUTVcQ/SbWxH
+	tXPYTIg2ber2X/LwGzk6k8eaikYw3zyWUtjGJX5JWToHM1nSyOrMNGxUdHbqyH615Lghgp632T3O4
+	j9GjzmWKhdB0IT21BZxhSHMGHV2htD3IuRfK+ZxGt7aWj9gH0jmC8Fb/8m2wGmwS7IM60C9+ULOtB
+	DLdQBOFQ+t9SDsgyKZoA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jf6ZA-0003ch-5Q; Sat, 30 May 2020 18:50:44 +0000
-Received: from esa4.microchip.iphmx.com ([68.232.154.123])
+	id 1jfH6D-0004OG-Pz; Sun, 31 May 2020 06:05:33 +0000
+Received: from esa2.microchip.iphmx.com ([68.232.149.84])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jf6Z7-0003bp-8m; Sat, 30 May 2020 18:50:42 +0000
+ id 1jfH66-0004Mj-UA
+ for linux-mtd@lists.infradead.org; Sun, 31 May 2020 06:05:28 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1590864641; x=1622400641;
+ t=1590905126; x=1622441126;
  h=from:to:cc:subject:date:message-id:references:
  in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=u1RsWdU2xjj6qg8gaqDPRG94qbe9AS0LapxH4oDYLQ4=;
- b=XwswH2AiNYctMSYKdD81QeKi8dkAFkejREhNj27f1meSoU5mRPwuUb5S
- OywgHZ+fpWLn/AubvTxw4yPRmSofrwwY49bhq2U4HT2uwKFFechAD++h6
- iREmamFhpmlqXSjjhGCcLKi/OsH8jlo9M5UhlbfVUVc3i2d9y1cNwmmJm
- Kz+OKT68vqb+EQkPauPytjElSBOVzFDfMaEe6EHt9DlmctnXH1mYgbLg1
- QYpSzr8E/vQU2uLOKTaU+ObiyA9JQXmOjRCq68ZDT0QCgCrizn+Rfi5YY
- FPHDlTBXkDh5q0JKjTsKEG13nYmfmmi/72dUn/JYG3uuU0EvCk/OkLZ6Z g==;
-IronPort-SDR: PCFAUhNB2i6nvq+90aGV3DsbFJRXbjxoyZB13bCVTJV/FOlYXlrgreinq3ZZbLpsz03n/+1NHG
- eDY5W77VciFB10epq+p8lDJh37mTPS/x1iDVFdqu+Uc1578I51VhzeRjb9Epd4f6wXtved4i2h
- /5hoZ46gAZ0/UbwBpm4qOFD2oYgk+kX9iVJfTQthBxbwXjWfU6xIOjT9bByE0Jf9NnIxf+qj4Q
- t7Ujo8zztkjuMuYDFHz8pwrttqUVuc/v7rtnvBYMi02RemlPoHRQ5Lu86OD1hh8RXQTpfYlRkv
- 3z0=
-X-IronPort-AV: E=Sophos;i="5.73,452,1583218800"; d="scan'208";a="74987486"
+ bh=AYFeQ2K3ydH3cNZoW29Nr9yfRxwzJ4U3xF+FBO0TAmc=;
+ b=UnuejYsmD8uyYL0fSNq3D3Wxe1b6gKf8AdPLlYW5H+Y5Ui3FXSI7sFg5
+ g3w1fzMynDDg8aV769/imtGe2etcYfBJQqOVN9KFWVMGIzqsLP7l4QGjy
+ dOzDjV0x+h99XVV7S6ZE9wN6Zjq6t4sphAoGj8jE+5/s/a/muH8FxfF7q
+ jRLM5Pxp+JSdmgvvSsZglK5PNl1GvAmaEz494NKK2TjVLKJSjNmOUhUFR
+ KPUQ6Z2wDQz7K7stFCA68sFnfpqMx0bw/Yg7wa9bnx33KZ0FJZ2AaIzsY
+ b2u9lx0n8ts5E9It9Drx0XqPtWqKLTOecCAvpRuxcoWASy7qKIFND/UpL w==;
+IronPort-SDR: QpNJbXEy4yX19uC5A7VJzQc5MKmZ/O8dvwyqPzaD0LR20FPf2K2BmBNNyRicpldbgJB0YUFPfP
+ u26j8rJMnGhslwTwLqyOmaEU5VduX6BkaCSTOHjPCmvH5LpcdNMsXDRtAO5gJ0sK2tVK8FLLxr
+ VKiUTuQgA+ynqGpAiu9nPJCgfeINr8bPrQPfYiYGgYn/Y1N0EoBdK7pNWk8tW5yel93FKCMY/8
+ sQYUgnc2vu+V3DgKkLA4nhJJJvWx7P65uOPUmeZ3fAwn+GT+sTF87SaCevjLqzGgZ/9/WHIFEE
+ a8g=
+X-IronPort-AV: E=Sophos;i="5.73,455,1583218800"; d="scan'208";a="76883032"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
- by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 30 May 2020 11:50:39 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 30 May 2020 23:05:20 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Sat, 30 May 2020 11:50:39 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.71) with Microsoft SMTP Server
- (version=TLS1_2, 
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5 via Frontend
- Transport; Sat, 30 May 2020 11:50:29 -0700
+ 15.1.1713.5; Sat, 30 May 2020 23:05:23 -0700
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Sat, 30 May 2020 23:05:19 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CO2lyUPcpG+QfZFnQ4o0O+MyS3ZxChA8LvS4+yRlXIOtqKqU70f4pz/gpGqrbDyDTfSr0IqbJM3v41qEmZ/1BR9/+LN6ExdgohNzJ41NFZ4cf3vsJgWNHVS9vV9W0bKjb8p5NbOZHIW7cJPAAWIcBwx8LSCepbWFswnJPH653EiEiSAeJqh3fPpY9IJH1PSciB3ujuG+eUyPFEiRm9qHpNG4dTTN+OU0MGaK5SKG15AH8/H8lMcF/1+Uga1zKrQTDBF+ZcFqmTpDEML9/FU1vTWI0GcYUXEfWGeXVl6C2A42I2U76qdNUJlxo8SJg2QLgHa/vXYSk6V7R8zPBe8cag==
+ b=VBUp5h4MzGH0HqV4uqPAp2Qgf9HjEnaXVd5awmtH0VtduSFJeH3SNaigJ7GxSXHSwxXF9KhXLQ16XMMqDCjhtfRc3cHike+0GFfHuFg/jeC8MmNCokVS9OYBoX15JXGJdRRHEGrwKycuL6qcsXKSF3BzPPH3fizAE5LTvHg/VXSb8elUkeQD77ddFeoicdKbtdku24OpHYWRhf9XkC6ID8N6/57gbGyoLR9ZCf60z6Ya37YKKnQDR4fPVszPXOUCOD/YmYmgB0TMqqI/CM6G008wCimov/xPwBKKJhpQ7bTDJbrLPahKYi3jaXIe92NLX4Qza3qBJ1qJv0770va7oQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=e1CUiFFtBV02bFc1kB2pJspv686Rx5qmcanhBAM4Yks=;
- b=P4QnoUDx8XoyZjdoVeXP29blYx3XQ5JLylb57O/btvJjwIzT1uuo6dSHTBPL1S/3TtTsjVM815OJulLdO4A8KaXlD8WMqjy78qVeIuRy0fi8ztMTtT3FnfltVcd2mx9ugdjTnBTBM6wnbiu7jgSE9Vk+3rg0cwpjnFqnSNNVCGVfy0crLqdppy1bN6GzuYj7oQuxksivR2JNA4xxhRJZjUhvwRedrhGVrx/g8mtm5UW9tE+GKdYfAKBAUDXl0Xts9fGkUDRDlHIZONa/XqeZqvqXBvo5a2Kr+0mOyvXl+1FlpW53LqHYTV0lc3qSuXiDnjI4sbALgpA1rGi7WHbqwA==
+ bh=IcQ1hGTot9qFRDMlYFXhZJnwFSJtYgC/5d325K21Vek=;
+ b=GqtfeWVaQeWU8ITkoNmoFfWjKS9fJrWGg4Q/6tYVsmQD34RFbWZxLQmCfQrhhHR9RPD5ZoB+w0iH37Z/WAZnLL48i/9RGMNZGJG6USv5lpu54c7qGr7sxIgERpgWp3443mMtvzlpNUBZbnzsnbrVaKB2CYqGsY00gQotGJA2TqEihyteOF77ebo0dacHcaww17T+j2VN0/doiyQSsHdScc0vDxtbpxyUUDlB7wS9ezEod4Um4bIoJPgARtja9tzJoFJ5qw6qfaSF8KBd9VS9VFiRr3aSTds6Uiom7CFlPirRzwuz/cnz9jHnZCwXtrl0RQYC7AjWFPow7AbPZ2lOoQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=microchip.com; dmarc=pass action=none
  header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
@@ -84,65 +83,63 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=microchiptechnology.onmicrosoft.com;
  s=selector2-microchiptechnology-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=e1CUiFFtBV02bFc1kB2pJspv686Rx5qmcanhBAM4Yks=;
- b=KP7j7vwd0yY9HexE1Pp+IFpKuSFqhUd+9Rz046rflUvDIKdiF9jSsX2/kwRJ52QVgWbGphL8gLiB5ZJVX1TnINwU5ebc7UBZbl23Fse9MK+yhTRoJriauzAbADlfiaUe+A0H1H/Iv2QiN4paFmDvnkB8nE7MLBFzCJ4qEHj8pLI=
+ bh=IcQ1hGTot9qFRDMlYFXhZJnwFSJtYgC/5d325K21Vek=;
+ b=eSEWuwxJ9o7xCOWMcJFaQul9aRy5FFjrF+zbq6f6Axn0hiJ4aSowhFRwBg5knRidtkLaCFwP6Zfp1IZbNGLFPWz1aOdQtvp5OQO7vN6qCN9m6A1gcXjjpG7iT1Zk01GGpoMIHHQ2fbn2MPJD7UBa7zp6AqYh2O2rYkuEIKiAdcw=
 Received: from BY5PR11MB4419.namprd11.prod.outlook.com (2603:10b6:a03:1c8::13)
- by BY5PR11MB4008.namprd11.prod.outlook.com (2603:10b6:a03:186::16)
+ by BY5PR11MB4257.namprd11.prod.outlook.com (2603:10b6:a03:1ca::32)
  with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.17; Sat, 30 May
- 2020 18:50:36 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.21; Sun, 31 May
+ 2020 06:05:15 +0000
 Received: from BY5PR11MB4419.namprd11.prod.outlook.com
  ([fe80::d847:5d58:5325:c536]) by BY5PR11MB4419.namprd11.prod.outlook.com
- ([fe80::d847:5d58:5325:c536%7]) with mapi id 15.20.3045.018; Sat, 30 May 2020
- 18:50:36 +0000
+ ([fe80::d847:5d58:5325:c536%7]) with mapi id 15.20.3045.022; Sun, 31 May 2020
+ 06:05:15 +0000
 From: <Tudor.Ambarus@microchip.com>
-To: <p.yadav@ti.com>
-Subject: Re: [PATCH v9 07/19] mtd: spi-nor: sfdp: prepare BFPT parsing for
- JESD216 rev D
-Thread-Topic: [PATCH v9 07/19] mtd: spi-nor: sfdp: prepare BFPT parsing for
- JESD216 rev D
-Thread-Index: AQHWMnU5Ic0v/N8rDUqZSmm8Tcf8kKjBAXsA
-Date: Sat, 30 May 2020 18:50:35 +0000
-Message-ID: <4926455.2XfmzM9RVx@192.168.0.120>
-References: <20200525091544.17270-1-p.yadav@ti.com>
- <20200525091544.17270-8-p.yadav@ti.com>
-In-Reply-To: <20200525091544.17270-8-p.yadav@ti.com>
+To: <mantas@8devices.com>
+Subject: Re: [PATCH] mtd: spi-nor: fix 4-byte opcode support for w25q256
+Thread-Topic: [PATCH] mtd: spi-nor: fix 4-byte opcode support for w25q256
+Thread-Index: AQHWNxFyeCOFTav6rUeke0dD3DMEOg==
+Date: Sun, 31 May 2020 06:05:15 +0000
+Message-ID: <8831196.QsUNxFFoTD@192.168.0.120>
+References: <1586958510-24012-1-git-send-email-mantas@8devices.com>
+In-Reply-To: <1586958510-24012-1-git-send-email-mantas@8devices.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-authentication-results: ti.com; dkim=none (message not signed)
- header.d=none;ti.com; dmarc=none action=none header.from=microchip.com;
+authentication-results: 8devices.com; dkim=none (message not signed)
+ header.d=none; 8devices.com; dmarc=none action=none header.from=microchip.com; 
 x-originating-ip: [94.177.32.156]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a12f4ace-cb24-4329-ac07-08d804ca56fd
-x-ms-traffictypediagnostic: BY5PR11MB4008:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR11MB4008FBABBD7F75AFE9FA84AFF08C0@BY5PR11MB4008.namprd11.prod.outlook.com>
+x-ms-office365-filtering-correlation-id: 38d710a9-4b0b-4537-0cb1-08d805289674
+x-ms-traffictypediagnostic: BY5PR11MB4257:
+x-microsoft-antispam-prvs: <BY5PR11MB4257D3A62460A5E08E624A8CF08D0@BY5PR11MB4257.namprd11.prod.outlook.com>
 x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-forefront-prvs: 041963B986
+x-ms-oob-tlc-oobclassifiers: OLM:773;
+x-forefront-prvs: 0420213CCD
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: VBwwrBwsax09oOGDS7O1DQgnIWugZh5GJyLJCOIe8hehRt/FnnnteQQMUjjqk2lIW4zYMufqL7sCfTQ2T3MyRd9zmOd9QWj9i7j6AdUSFvQE8a5fq6y3OqUZotHnseM6ADB+FNjE49kiEzvoHnwsxlgFPtJ/t8+3Ki/hYWSlOARpOc2/PU4rlBdvGRGYnAmws57TWge97lkbX9LnjNjLnng9/9pdHKFRjgt+K9g4R34o+AV+lSUpqCQljBOBaQD0z0DBXwSczCsgilyrzp3DOjFjbwfr7PKu4ItTrZk/3xHHymYHD+7/M4sqSxquedUnP2a4aC/vWC8soFjBO4eCH2kxQpPsZ9hYLYQxVNfSWbmFsaRJrjklAuuPpgPz8mZ1
+x-microsoft-antispam-message-info: C1qaW1fS9bn75emRgb6WMaGZEyBzRIuyLPVtyeuz04CTaPZqbhswiax6qU5Yu2sJRr1E+ZJ6Ao2F7UicYr4Mo7dLWsBRejJ/MkJVM2glwXYJqYI2teqyH6XUavPoi2hl/+Z3cbqAJyPxEHHYiDep9lfbtBroVnw7tOC8uZt7uNsBZXYBunfDaWt6f6ScyY5XG6D7qnD/EDFAQhCyHt3j2vxuIjaCS/FLjsA63bN6KLhjXkaO+F50hSJmzn7djZeyu3D13K9Ony1FeLGiNNQLMv8MTVX1ES2o+GWG1s5w44A+Jzva5bWyBuj9PiWhLAo81gX9DQ/3sPuX8LwTOmX/4zUaAlri+YBIPlu7Q7Bgs44sPqSd5dh5rNEy5MJ1/Rkw
 x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:BY5PR11MB4419.namprd11.prod.outlook.com; PTR:; CAT:NONE;
  SFTY:;
- SFS:(346002)(376002)(366004)(39850400004)(396003)(136003)(6506007)(2906002)(86362001)(478600001)(54906003)(316002)(66446008)(14286002)(6512007)(64756008)(6916009)(9686003)(7416002)(4326008)(6486002)(76116006)(91956017)(66556008)(53546011)(66476007)(71200400001)(8676002)(66946007)(83380400001)(26005)(186003)(8936002)(5660300002)(39026012);
+ SFS:(396003)(346002)(376002)(136003)(39850400004)(366004)(66476007)(64756008)(66556008)(66446008)(76116006)(66946007)(2906002)(6916009)(4326008)(83380400001)(14286002)(4744005)(91956017)(86362001)(5660300002)(6486002)(8676002)(6512007)(9686003)(186003)(316002)(26005)(54906003)(53546011)(6506007)(71200400001)(8936002)(478600001)(138113003);
  DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata: T6ReAZAkL9vZB2BP5PQoeAbiAnRVtiGhBAws8BZ6t1jLyWWqvwDmvjsfQkZae8+/u1mSwJLLermXU34AnX0iRA+lft7nsypkDw2bPtFrMArvRVu/dDr6uLcTXFu3oTY7koQ10xTjPjzP0cl5ezJMAvx5O0r1dl+hQadZtn4lR2J3SpOgM3drihuAy/lxHM8lKZ0l39qTFchRLOM4urnKLj0qtRdA0yJErrgy1nKB8n9lNbh5b0yLO+cXTS/K+z382DByh2iL2YO97DgOJfQieISjCpA9Fpa7VYA8MpmcqAXwukcv7yCCJHQO4vhLH0RkcgQUmKH/JXnl3IE9BQErvpH/dpIl9tscH77UBtZ/eRz1lroIRh48Xn9AotGTRARnag0txdH8UKmOIMoMIFv/rbTsnNnoW1mWsMC9yhZXB+5prRFEvR9FFizwmcJgId8ZISbcQOHuDjVBy8MFJ5UmsOsMt2+jJu51eopMF/6sFqE=
-Content-ID: <9B76F8AA5383954EA233D971044EE051@namprd11.prod.outlook.com>
+x-ms-exchange-antispam-messagedata: 9bkAcyr6olBL34zZgrSL/2cFf/0PqzOiqrovVS85rtzVKcWZUIQyLF8Oj1InbqBZHOxSZqisExEg37A85X5aLJIsji3mzKPekD9XJDF0pDCoTX3bcGT3CxJpOqWWlInvr/O1snOxHE7i3SGvKvNvRHKKzUqG94tZjSlO6PuT20clrpj2sQcjbEc0S3dhQL0Bwph+F0p1NJDm99lW9K+cpXhra1X8FXDGiPfog2OD0jaLvr6qnVFMJd/qJC71ZmLsnbnV1vOHHE9ZVOWOuti71E6rRnRK3MBaCgmUedsJC/cV0e/qStXxXW4kMNZigPxFSAJQm8qG6V1l9QpVRj4Xn2/dbJx6XN8/WV9kW/gxmdzijbHshOTIy6Qj+F9kU7UYcDtKbgtY0m3AcVYgyjFWIhGHSgfhDter+RpteloCgUFytNOzbGVRltSpSNjgkMQ+JkCIpw5ys9UyXlHM6og+X20ulnO+mUScPytV/6apPCQ=
+x-ms-exchange-transport-forked: True
+Content-ID: <68C345D1EFB94D4BB9AAFF4D78A4C685@namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: a12f4ace-cb24-4329-ac07-08d804ca56fd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 May 2020 18:50:35.8257 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 38d710a9-4b0b-4537-0cb1-08d805289674
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 May 2020 06:05:15.2374 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: z41Z9Rk0DlrJ89DhbnSzPNLE0xAdy4cpNOkZOdF7cBxRDmU6jthVFuxZho6ecSW6J3W46AasmmLED2ew0HdNbDIb8V32FAJfxDJBvq2LbR4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4008
+X-MS-Exchange-CrossTenant-userprincipalname: EJ4ad+xpV/wb06NpgGcieEuh+dUDRllE5BmHe3U92D2zyHne4zQkKqxeBcWxROKeIGZtw8G6Jq/Fs1EB/a6jLmF/aiG2ya0dFmTVA+osd2w=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4257
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200530_115041_375432_7626531E 
-X-CRM114-Status: GOOD (  17.23  )
+X-CRM114-CacheID: sfid-20200530_230527_084684_4409646B 
+X-CRM114-Status: UNSURE (   7.82  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -154,102 +151,27 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: alexandre.belloni@bootlin.com, masonccyang@mxic.com.tw, vigneshr@ti.com,
- richard@nod.at, nsekhar@ti.com, Nicolas.Ferre@microchip.com,
- boris.brezillon@collabora.com, michal.simek@xilinx.com,
- Ludovic.Desroches@microchip.com, broonie@kernel.org,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- miquel.raynal@bootlin.com, matthias.bgg@gmail.com,
- linux-mediatek@lists.infradead.org, linux-spi@vger.kernel.org,
- linux-kernel@vger.kernel.org
+Cc: vigneshr@ti.com, richard@nod.at, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com, robimarko@gmail.com,
+ gch981213@gmail.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Monday, May 25, 2020 12:15:32 PM EEST Pratyush Yadav wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the
-> content is safe
+On Wednesday, April 15, 2020 4:48:30 PM EEST Mantas Pucka wrote:
+> There are 2 different chips (w25q256fv and w25q256jv) that share
+> the same JEDEC ID. Only w25q256jv fully supports 4-byte opcodes.
+> Use SFDP header version to differentiate between them.
 > 
-> JESD216 rev D makes BFPT 20 DWORDs. Update the BFPT size define to
-> reflect that.
-> 
-> The check for rev A or later compared the BFPT header length with the
-> maximum BFPT length, BFPT_DWORD_MAX. Since BFPT_DWORD_MAX was 16, and so
-> was the BFPT length for both rev A and B, this check worked fine. But
-> now, since BFPT_DWORD_MAX is 20, it means this check will also stop BFPT
-> parsing for rev A or B, since their length is 16.
-> 
-> So, instead check for BFPT_DWORD_MAX_JESD216 to stop BFPT parsing for
-> the first JESD216 version, and check for BFPT_DWORD_MAX_JESD216B for the
-> next two versions.
-> 
-> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> Signed-off-by: Mantas Pucka <mantas@8devices.com>
 > ---
->  drivers/mtd/spi-nor/sfdp.c | 7 ++++++-
->  drivers/mtd/spi-nor/sfdp.h | 5 +++--
->  2 files changed, 9 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-> index 5cecc4ba2141..96960f2f3d7a 100644
-> --- a/drivers/mtd/spi-nor/sfdp.c
-> +++ b/drivers/mtd/spi-nor/sfdp.c
-> @@ -549,7 +549,7 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
->                                   SNOR_ERASE_TYPE_MASK;
-> 
->         /* Stop here if not JESD216 rev A or later. */
-> -       if (bfpt_header->length < BFPT_DWORD_MAX)
-> +       if (bfpt_header->length == BFPT_DWORD_MAX_JESD216)
->                 return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt,
->                                                 params);
-> 
-> @@ -605,6 +605,11 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
->                 return -EINVAL;
->         }
-> 
-> +       /* Stop here if JESD216 rev B. */
+>  drivers/mtd/spi-nor/sfdp.c    |  4 ----
+>  drivers/mtd/spi-nor/sfdp.h    |  6 ++++++
+>  drivers/mtd/spi-nor/winbond.c | 30 ++++++++++++++++++++++++++++--
+>  3 files changed, 34 insertions(+), 6 deletions(-)
 
-Applies for both rev A and rev B. Used the following comment instead:
-/* Stop here if not JESD216 rev C or later. */
-
-> +       if (bfpt_header->length == BFPT_DWORD_MAX_JESD216B)
-> +               return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt,
-> +                                               params);
-> +
->         return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt, params);
->  }
-> 
-> diff --git a/drivers/mtd/spi-nor/sfdp.h b/drivers/mtd/spi-nor/sfdp.h
-> index e0a8ded04890..f8198af43a63 100644
-> --- a/drivers/mtd/spi-nor/sfdp.h
-> +++ b/drivers/mtd/spi-nor/sfdp.h
-> @@ -10,11 +10,11 @@
->  /* Basic Flash Parameter Table */
-> 
->  /*
-> - * JESD216 rev B defines a Basic Flash Parameter Table of 16 DWORDs.
-> + * JESD216 rev D defines a Basic Flash Parameter Table of 20 DWORDs.
->   * They are indexed from 1 but C arrays are indexed from 0.
->   */
->  #define BFPT_DWORD(i)          ((i) - 1)
-> -#define BFPT_DWORD_MAX         16
-> +#define BFPT_DWORD_MAX         20
-> 
->  struct sfdp_bfpt {
->         u32     dwords[BFPT_DWORD_MAX];
-> @@ -22,6 +22,7 @@ struct sfdp_bfpt {
-> 
->  /* The first version of JESD216 defined only 9 DWORDs. */
->  #define BFPT_DWORD_MAX_JESD216                 9
-> +#define BFPT_DWORD_MAX_JESD216B                        16
-> 
->  /* 1st DWORD. */
->  #define BFPT_DWORD1_FAST_READ_1_1_2            BIT(16)
-> --
-> 2.26.2
-
-Applied, thanks.
-
+Added Fixes tag, plus other minor cosmetic changes. Applied, thanks.
 
 
 
