@@ -2,83 +2,65 @@ Return-Path: <SRS0=+yQj=7O=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AA3AC433E0
-	for <linux-mtd@archiver.kernel.org>; Mon,  1 Jun 2020 12:54:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CEAE7C433DF
+	for <linux-mtd@archiver.kernel.org>; Mon,  1 Jun 2020 13:46:17 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6C7E320679
-	for <linux-mtd@archiver.kernel.org>; Mon,  1 Jun 2020 12:54:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 379D92068D
+	for <linux-mtd@archiver.kernel.org>; Mon,  1 Jun 2020 13:46:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VjcAPpwf";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Bq93oX3H"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C7E320679
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Q6Btp7Er"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 379D92068D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=VMT3Cl8S5obXEMv0OeoEVtmK51ZdkbSUA96ZlB09QK4=; b=VjcAPpwf6Fk0hk
-	uHFe/E6COy/j1VxgY11dqJRgfLQc/2NQlPqDOwWT777MMBy0pS5uHc2WOv+Aic7r9DrLbDktSkwbV
-	4ZmpBxfhXbCzc7c64dg56UTDEssTpeNQyTWSVFzRL6lmqfIkHrakfvFIQQKnHeFg52gM4NfJVlIoI
-	2/Ma49MR0Jdq3fg/o2B19kdRpmD1veRvh76FbKwf1RVF55ChOMRuWqLK4W2PUyq8R/TKd9HBj64P2
-	b4+WmH4VNIjaQ1v5Dru72Sk6/NuSUAjb5hpVToCBSulcExCKbivs6Qn0fL6kJkOw7IHDdsyC1EIPJ
-	XoL2tPI2mwm6RyYa6yEw==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=N62z13sHRSb0K9j862yMRKg8gWCtB933g67o7LiAky0=; b=Q6Btp7Ermy+8Sfjm4iDb6PaLR
+	lowU3igXVtZq4SvQk/7YUtHxTL/hUsHfNnu0lMHSiNH85CBLeanKuINZpopo++cJrhZkcZnMUMkGv
+	djS45+N90iDB0wrpatf8NCAa+5jQOND5/huCHgIOuPE9UnZXFLRNGXbdb8s+mLPOwOU5n+qabSio/
+	JzUn7+MbHDIWZBnG3gcHt9H8hGhiJ6FoaNKRiSPnKuJHrnbs/ffbSWooG6OyfaJ6TRdzYQ9YW5VkQ
+	uWUDJlYuZk2bk1CMwGI7iHa3H8uH9TroI/Q1T98THQRbnF2Yy3vwqwpPSGPYoRFVr/K40LwL9WXdy
+	aq0MU2Fig==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jfjxO-0003yD-0B; Mon, 01 Jun 2020 12:54:22 +0000
-Received: from mail-vs1-xe41.google.com ([2607:f8b0:4864:20::e41])
+	id 1jfklU-0004G3-B6; Mon, 01 Jun 2020 13:46:08 +0000
+Received: from szxga06-in.huawei.com ([45.249.212.32] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jfjxK-0003xD-KM
- for linux-mtd@lists.infradead.org; Mon, 01 Jun 2020 12:54:20 +0000
-Received: by mail-vs1-xe41.google.com with SMTP id j13so1537839vsn.3
- for <linux-mtd@lists.infradead.org>; Mon, 01 Jun 2020 05:54:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=jxOGOTlnKggSgjQN9iuwo59FH5ZZhrFmRgyUJCajkQk=;
- b=Bq93oX3H0MjyO4jQyEkH9OcwjHBLYZnL9ZkdIUgGiD2zEtJ1qK0jZfP3DG0e8CJQlO
- bgfbm+qCqMxOirDVLMp1k4BBVElUNv9JiPkiek0ywTFBJvEIBah7KJ7xDd99B2kUBKTZ
- hFfKQKaVKU7tJtXSjB8K9jBr7SS+heDWhxm51cnPJNMVbqtZhmwoBeunp+3HCADKUblv
- RNP/O2BXpIkljeEhQU+5kOzrrlVmMtmAsBEuowHJbg1/ITGbH4826WnStPnVlwGlYprb
- lL9xn7KDoDFQc5SBHPURx2QEPsnWWhun/D4ziej3vzv1wN8OmlBoh05lGP7hGtbQwiNG
- aDqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=jxOGOTlnKggSgjQN9iuwo59FH5ZZhrFmRgyUJCajkQk=;
- b=puCuHHbex0ra4EM1oUsvD680W1C1SKM4dhVSvXtelSc0c+gWsa0FSSK3/OdBpRNmDE
- kYAhB9WhBjEr7OVBG/x+L8XxA/t3mknrxKBl+QGLJujtwjfxerPt6vP7gaDAZd4XV5sN
- ksVZHw+OHjlequHZY7tGRApGuE6JcZNW0BVbhH2CFGbS1h53niAe+U7vg5zkZkkIAs7r
- XjgmY36sCemJHPWPqDDdOMvzcqxnPC650m7e73VUraZ7r1iGw0qPS5CCVfoCXv8XkQ1X
- oKNCP0QOjJPGy2wDgGxDmO+MpPaBFnqAteIviDX4LnLNvVern2tpCiGf9EJrRbuoCmRI
- YgaA==
-X-Gm-Message-State: AOAM530CQW2mMBvJNODDLpEIn2ktT6EgcHk9VYus0x3K+rKPW0htFB+q
- AZAy7yKIuRjSy8DhIduUZe5FgXleeDKNrHsTO6pTWQ==
-X-Google-Smtp-Source: ABdhPJwensK4OmZ1cWNU2F/cG9IQgr3JCJdS9trt1igpOZBMncCUR0zvXSmGHNQzDqH6kP5RIwzLOU86cbFcsM1ehlc=
-X-Received: by 2002:a67:be05:: with SMTP id x5mr13037457vsq.35.1591016056212; 
- Mon, 01 Jun 2020 05:54:16 -0700 (PDT)
+ id 1jfklR-0004ES-2M
+ for linux-mtd@lists.infradead.org; Mon, 01 Jun 2020 13:46:06 +0000
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+ by Forcepoint Email with ESMTP id C65D430C51C257326BBE;
+ Mon,  1 Jun 2020 21:45:52 +0800 (CST)
+Received: from [127.0.0.1] (10.166.213.18) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Mon, 1 Jun 2020
+ 21:45:45 +0800
+Subject: Re: [PATCH 1/2] ubifs: Fix potential memory leaks while iterating
+ entries
+To: Markus Elfring <Markus.Elfring@web.de>, <linux-mtd@lists.infradead.org>
+References: <2bec05b7-78d3-fa36-134a-efbe977933e3@web.de>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <45e2cd69-93ec-a0b9-b2a6-d170eee44055@huawei.com>
+Date: Mon, 1 Jun 2020 21:45:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <20200528081003.238804-1-linus.walleij@linaro.org>
- <20200601074957.GE1181806@T590>
- <CACRpkdYL4-Z=kaS+RfniVr=Sn-yOf+=CKMJDsn=eTK3atmGohg@mail.gmail.com>
- <20200601115818.GB1190838@T590>
-In-Reply-To: <20200601115818.GB1190838@T590>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Mon, 1 Jun 2020 14:53:39 +0200
-Message-ID: <CAPDyKFq2paDu9ogEFh6VXWq8___FLeEaNyBWhkMSdpZYpEytQQ@mail.gmail.com>
-Subject: Re: [PATCH] block: Flag elevators suitable for single queue
-To: Ming Lei <ming.lei@redhat.com>
+In-Reply-To: <2bec05b7-78d3-fa36-134a-efbe977933e3@web.de>
+X-Originating-IP: [10.166.213.18]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200601_055418_735639_9F549B67 
-X-CRM114-Status: GOOD (  20.84  )
+X-CRM114-CacheID: sfid-20200601_064605_279989_A7FBD163 
+X-CRM114-Status: UNSURE (   8.53  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,66 +72,32 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Jens Axboe <axboe@kernel.dk>, Damien Le Moal <damien.lemoal@wdc.com>,
- Paolo Valente <paolo.valente@linaro.org>,
- Linus Walleij <linus.walleij@linaro.org>,
- linux-mmc <linux-mmc@vger.kernel.org>,
- linux-block <linux-block@vger.kernel.org>, linux-mtd@lists.infradead.org,
- Johannes Thumshirn <jthumshirn@suse.de>, Christoph Hellwig <hch@lst.de>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Richard Weinberger <richard@nod.at>, kernel-janitors@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Yi Zhang <yi.zhang@huawei.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 1 Jun 2020 at 13:58, Ming Lei <ming.lei@redhat.com> wrote:
->
-> On Mon, Jun 01, 2020 at 01:36:54PM +0200, Linus Walleij wrote:
-> > On Mon, Jun 1, 2020 at 9:50 AM Ming Lei <ming.lei@redhat.com> wrote:
-> > > On Thu, May 28, 2020 at 10:10:03AM +0200, Linus Walleij wrote:
-> > > > The Kyber block scheduler is not suitable for single hardware
-> > > > queue devices, so add a new flag for single hardware queue
-> > > > devices and add that to the deadline and BFQ schedulers
-> > > > so the Kyber scheduler will not be selected for single queue
-> > > > devices.
-> > >
-> > > The above may not be true for some single hw queue high performance HBA(
-> > > such as megasas), which can get better performance from none, so it is
-> > > reasonable to get better performance from kyber, see 6ce3dd6eec11 ("blk-mq:
-> > > issue directly if hw queue isn't busy in case of 'none'"), and the
-> > > following link:
-> > >
-> > > https://lore.kernel.org/linux-block/20180710010331.27479-1-ming.lei@redhat.com/
-> >
-> > I see, but isn't the case rather that none is preferred and kyber gives
-> > the same characteristics because it's not standing in the way
-> > as much?
->
-> Kyber has its own characteristic, such as fair read & write, better
-> IO merge. And the decision on scheduler isn't only related with device,
-> but also with workloads.
->
-> >
-> > It looks like if we should add a special flag for these devices with
-> > very fast single queues so they can say "I prefer none", do you
-> > agree?
->
-> I am not sure if it is easy to add such flag, because it isn't only
-> related with HBA, but also with the attached disks.
->
-
-In general I don't mind the idea of giving hints from lower layer
-block devices, about what kind of scheduling algorithm that could make
-sense (as long it's on a reasonable granularity).
-
-If I understand your point correctly, what you are saying is that it
-isn't easy or even possible for some block devices HWs. However, that
-should be fine, as it wouldn't be mandatory to set this kind of flags,
-but
-instead could help where we see it fit, right?
-
-Kind regards
-Uffe
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+5ZyoIDIwMjAvNi8xIDIwOjAwLCBNYXJrdXMgRWxmcmluZyDlhpnpgZM6Cj4+IEZpeCBzb21lIHBv
+dGVudGlhbCBtZW1vcnkgbGVha3MgaW4gZXJyb3IgaGFuZGxpbmcgYnJhbmNoZXMgd2hpbGUKPj4g
+aXRlcmF0aW5nIHhhdHRyIGVudHJpZXMuCj4gU3VjaCBpbmZvcm1hdGlvbiBpcyB1c2VmdWwuCj4K
+Pgo+PiBGb3IgZXhhbXBsZSwgZnVuY3Rpb24gdWJpZnNfdG5jX3JlbW92ZV9pbm8oKQo+PiBmb3Jn
+ZXRzIHRvIGZyZWUgcHhlbnQgaWYgaXQgZXhpc3RzLiBTaW1pbGFyIHByb2JsZW1zIGFsc28gZXhp
+c3QgaW4KPj4gdWJpZnNfcHVyZ2VfeGF0dHJzKCksIHViaWZzX2FkZF9vcnBoYW4oKSBhbmQgdWJp
+ZnNfam5sX3dyaXRlX2lub2RlKCkuCj4gQ2FuIGFuIG90aGVyIHdvcmRpbmcgdmFyaWFudCBiZSBh
+IGJpdCBuaWNlcj8KVGhhbmtzIGZvciByZW1pbmRpbmcsIEkgd2lsbCBpbXByb3ZlIHRoaXMgZGVz
+Y3JpcHRpb24uCj4KPiBJIHN1Z2dlc3QgdG8gYXZvaWQgdGhlIHNwZWNpZmljYXRpb24gb2YgZHVw
+bGljYXRlIGZ1bmN0aW9uIGNhbGxzCj4gKGFsc28gZm9yIHRoZSBkZXNpcmVkIGV4Y2VwdGlvbiBo
+YW5kbGluZykuCj4gV2lsbCBpdCBiZSBoZWxwZnVsIHRvIGFkZCBhIGZldyBqdW1wIHRhcmdldHM/
+Cj4gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFs
+ZHMvbGludXguZ2l0L3RyZWUvRG9jdW1lbnRhdGlvbi9wcm9jZXNzL2NvZGluZy1zdHlsZS5yc3Q/
+aWQ9M2Q3N2U2YTg4MDRhYmNjMDUwNGM5MDRiZDZlNWNkZjNhNWNmODE2MiNuNDU1CkkndmUgdGhv
+dWdodCBhYm91dCB1c2luZyAiZ290byBlcnJfdGFnXzIiIGluIGtpbGxfeGF0dHJzIGNvZGUgYmxv
+Y2sgdG8gCnJlbGVhc2UgcHJldiB4ZW50LCBidXQgbGF0ZXIgaXQgbmVlZHMgdG8ganVtcCB0byAn
+b3V0X3JlbGVhc2UgdGFn4oCYIGZvciAKcmVsZWFzaW5nIHByZXZpb3VzbHkgcmVxdWVzdGVkIG1l
+bW9yeSwgd2hpY2ggY2FuIGNsdXR0ZXIgdGhlIGNvZGUuIEl0IApzZWVtcyB0aGF0IHR3byBjb25z
+ZWN1dGl2ZSAnZ290byB0YWdzJyB3aWxsIG1ha2UgdGhlIGNvZGUgbGVzcyByZWFkYWJsZS4KPiBS
+ZWdhcmRzLAo+IE1hcmt1cwo+Cj4gLgoKCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
+dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
