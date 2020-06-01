@@ -2,144 +2,81 @@ Return-Path: <SRS0=+yQj=7O=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42BD9C433E0
-	for <linux-mtd@archiver.kernel.org>; Mon,  1 Jun 2020 11:28:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B1EFC433E0
+	for <linux-mtd@archiver.kernel.org>; Mon,  1 Jun 2020 11:37:33 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0FC2E206E2
-	for <linux-mtd@archiver.kernel.org>; Mon,  1 Jun 2020 11:28:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4DE5E207FB
+	for <linux-mtd@archiver.kernel.org>; Mon,  1 Jun 2020 11:37:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VF45Ykc1";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="gFW/UgC2";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="K4cqF2Hj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0FC2E206E2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="eKKIlWp4";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mFkTPyu0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4DE5E207FB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:Message-ID:Date
-	:Subject:To:From:Reply-To:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=15sB2kqt+XqBAL3f4no9CRPvPoEBH1dhK8IbueELQko=; b=VF45Ykc1GODY2M
-	Z/5we6AbjWRKTu21rXvH15hcuT7mY0tEXRKetqpis7jlR+9pDjYKHUTjE+UbewcsMpRw81KbKVY+n
-	NLRKz90hKtTABGh+qlTHVJXXktbz253AqWt7dvq7JdpvHXMPldxYA0W8KAVRS5n4OhXfZxQpGKqvx
-	O5pNhsUCU74yERVZD4hS1as0oDsKICAaKRpwUsZxNJG02fZ8tPVUPNct8A8AQM5T1LvlKTRQczzld
-	hDBkXS2TlntqF3HFQg3mpb9lT3YVLhVHYMZgQ50uN/KgNuAr4O/poaQ3Os7Aho33lTIpGYsWIss4H
-	WrR+C9Htc1vMpZZ1k0qA==;
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Ln3gpltlnuwrBdNU83q+zjCh9V+bRHLrExQrdmio9vY=; b=eKKIlWp4/Nbc7P
+	oY0kUcBhHjELpllxmZlVw1+0xZ79EWI0tLSos6dq61Cn0U/Vt3f8oUuDQdHl1H/V1gSlslPHrtj7Z
+	cjnXOO7bTQuHSi9S64VtbJHypDqrwn6t2+RCLqnHToprZv7rDY5AhsLUj1JefuVs/N6om7w5gN8YX
+	hW9HRS3Zt6pNIinDx+P2jE29MX5V4+HxjaRSm08KTw8ofPG6kVMgHOcuhdfPh0fUT65STlKR7KLLk
+	Id12kTYKcIlPNeyfl3vl67L8oD+E6PXoFHYiq9+oAxEB+aVyHzxGCZBnLTvVtSehMaQEVCKrfV+c0
+	oJEQuXCUlu8q6i5N3HMA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jfibi-0007Jh-PF; Mon, 01 Jun 2020 11:27:54 +0000
-Received: from esa3.microchip.iphmx.com ([68.232.153.233])
+	id 1jfikp-0006Xn-OO; Mon, 01 Jun 2020 11:37:19 +0000
+Received: from mail-lj1-x241.google.com ([2a00:1450:4864:20::241])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jfibf-0007Ie-9W
- for linux-mtd@lists.infradead.org; Mon, 01 Jun 2020 11:27:52 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1591010871; x=1622546871;
- h=from:to:cc:subject:date:message-id:content-id:
- content-transfer-encoding:mime-version;
- bh=u0HJJJrm9gKy+Xv4sbCi53lTGioiqeP5UqZAbAghS2Q=;
- b=gFW/UgC2dzWeKtKnwI2ByaEiCYlHfTPB9/JTggqfqOa6LM0bpDRILcJe
- MYE6x+8X0juLm494ZqRCUl+436CRwjv1qpOnxhbPZ87OwLdAHeNh4G86/
- Sp1M8fExEh6xg6ykHSbfnsQF3txKNsKeXq/cRDR5zl4IcC8IdZg4bJ/Ln
- jlBP/d3Ypo0e8v263HRzhOipWJ92z+5RCTRsZB/+XO3xVY7qY4d862pU5
- jHro33+Hyet7kcKang3sd/ZBLZfHKBeFN2E648tI3yl4xJRtyuQ6R0tNB
- KhFm9s7DQKVy+AD9Y1Fpbs2hZo65Ye6WXvINcNYpj/XZHkg6nDGJsr6cH Q==;
-IronPort-SDR: TSIs8SR+GseAQIKSlWS0lNQBoQNyvw9SnsATr0T32H1doewakdXPW3uXK1NXoUhUjfrknqy5PP
- AB6c/cErd2j8zKsYEC6kPDr098JQoR1LCewkB3HPahdu7R6nfg/dz/1qBkAU+me6g9ncQwgx1B
- v2VeT3HDo37924wCiuaOdxw9xyJmIN+7h/Q/NjcLI5LZ6uaaYFp4+RGqrYfVPASaU5lSi9nQFf
- DHOn0uy8o4AzXDOxMRYbF6ujUPZTogTEpuQFHhVHAY1DqsXxZJ/8541phNMOmX3zaBWmoPcQQX
- MaU=
-X-IronPort-AV: E=Sophos;i="5.73,460,1583218800"; d="scan'208";a="78475078"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 01 Jun 2020 04:27:49 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 1 Jun 2020 04:27:49 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.71) with Microsoft SMTP Server
- (version=TLS1_2, 
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5 via Frontend
- Transport; Mon, 1 Jun 2020 04:27:37 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IGOP1CjmV0/dbRXbd0Zkpx0bKthgr6u1FW4I4+phHJBRmxPc8yEYlxShTsP9mlvVnXhQTGz+BZ1cxZV2GEo08FjIdWnTpb9RLnhIOXz3UaLe67Lrg3GNVragyH2B8m6Qui8KfBHRe4NjXA4l//ZoGP1ichIOz/G5TxAHXzAJG2Bdm/4+dVWUnjhNOfBWe6UJxBlFmXHgyp5qaNVQN1TBV3rB283vB5JT3H17ecrmPQgyxbMnVBUyhy70/ldXoMUrcnOHDRISuc7g8dLDdAAIrT+OMIb7KcgXMiYCsxk5/34KfgOMNFGXUP3Z2aI9BMWsfz3fU6AP7+CFBHO1NF/RGg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5qVBvDiBZuFlUZB4aQxsUBm5JR9R9tGHdfgqNDCUKx0=;
- b=LYxhakQb2ifJFKiNWvWk1QI+zPweCzDwsfnjxco5cYUkAA8l/zu8a1aDW9/qj306VdNuhdHcAsaPkBjNB87W4YKTdhSbWsU8eHBdOxrf0j/BRz8CvkazW5L1fsGRQfx6b3F+190Tk1su+DI9tPQG1Cazczv7pgxAMBZVBoZuALvMkVrE+WX7biWPljzvCw9KXMCLZpwHYbH1FH9xLei5AUWpnBDS1/M2UJAt0qaYupa7DrNLwwC0bfEmBjqSrwJ/T8J7Vs6dMsJP9rJdhjdlPIBF6VVwRwS9A/xl4pgyMnCaSPerVwb7w10hecHL7Braxw45slslzi3v6H3nHaFCXw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5qVBvDiBZuFlUZB4aQxsUBm5JR9R9tGHdfgqNDCUKx0=;
- b=K4cqF2Hj3j0z3wHbY/hgdBPGWCmjuwJ9VR6BO9ksLSUOjGGTo//sMKM2qv0QjAKg5lRubJvwgqVwlEFJgk9cXjgH+hSfb7KrQFMWS4NLZYwm9pVNf/xMqXwVJeIT7AXPzYqFQYYlfvP5PGYPdrVZM1IgS57ZKY/zLaErAzy3l94=
-Received: from BY5PR11MB4419.namprd11.prod.outlook.com (2603:10b6:a03:1c8::13)
- by BY5PR11MB4337.namprd11.prod.outlook.com (2603:10b6:a03:1c1::14)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.22; Mon, 1 Jun
- 2020 11:27:46 +0000
-Received: from BY5PR11MB4419.namprd11.prod.outlook.com
- ([fe80::d847:5d58:5325:c536]) by BY5PR11MB4419.namprd11.prod.outlook.com
- ([fe80::d847:5d58:5325:c536%7]) with mapi id 15.20.3045.022; Mon, 1 Jun 2020
- 11:27:46 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
-Subject: [GIT PULL] mtd: spi-nor: Changes for 5.8
-Thread-Topic: [GIT PULL] mtd: spi-nor: Changes for 5.8
-Thread-Index: AQHWOAesZOnHsKNGgEC69CbwMc0BdA==
-Date: Mon, 1 Jun 2020 11:27:45 +0000
-Message-ID: <1826007.xKk83PxPNM@192.168.0.120>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nod.at; dkim=none (message not signed)
- header.d=none;nod.at; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [94.177.32.156]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: bde371f5-71a3-44df-1ac6-08d8061eced1
-x-ms-traffictypediagnostic: BY5PR11MB4337:
-x-microsoft-antispam-prvs: <BY5PR11MB43373E1708DBE3168D0A1968F08A0@BY5PR11MB4337.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:820;
-x-forefront-prvs: 0421BF7135
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: iScjdnpAW1aU3RUz0h5JqHwNYW9dVkW32HZw/M67fRM/ctxXwzZM7HvmG01DsvTVK0BbDbNIV2+6VM/EN7BXovd/dGyufMEl9Cxxl3QRLmScwD5wpXep5Fr7uAMVEtaItoKV1+T7AQa9BLC45tfcRUgTN0STRp3qsDMtBxWRnDtaTLuig0kEZUCw8ijaGKY0F5Zs9Mr7bCrGY1F1dixvclKsjHqCXPxRp6P2bEsllvN5dHvRefVmeNQPrAIztrPGFbLme4KH6YVdquoaQxLzz6vqIbdAhsGCyCIci0JQs+HdxmMwsEUIx+/ilESRotVqkGe9ZpQ6cWsmTpicRsVIQFnOZJrxaHHnp30C1ic9RKxycIs5GHJM2Emc6TnrgL6Q
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:BY5PR11MB4419.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFTY:;
- SFS:(39860400002)(396003)(136003)(376002)(346002)(366004)(86362001)(9686003)(2906002)(110136005)(6512007)(478600001)(83380400001)(6486002)(66446008)(64756008)(54906003)(5660300002)(316002)(4326008)(26005)(186003)(66476007)(6506007)(66556008)(66946007)(91956017)(71200400001)(8676002)(14286002)(8936002)(76116006)(39026012);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata: SAzDgOw64MTB4hTLePJHbJJFZukfG/xciXP7z7WCWLEN6my2zbKncTX06Fk+oJP3mCZcTzBzkxvfvrjLNH1TR83NivLe9doG9NYey3CAy9fWHtllJk7DYYBrzr3mI0Ey0h/C+IQhrLQ80ft4M5VIbjxBG5jS0l6gmhQ2ybVnd854yTjvUer4uxXF/cbNLTuMEc8X7LnEXOpAnHkdRFaJb6MB5j2WNPr/aWqTy2eyRcl2COHZa+NV4TSZx+bAN+3STuOc8q4/PLKDN3QRCtJrPi9dPB5WF+sfUQ+sYSpoqc4cWkXmo+MKEdTu6EP14n17oMrZJn6ksoQw5LMHxFu6/xiOlVpQ3p2emcbEp/vMVFL2qoliAu+KpfhlJGgFGr77Q9aISX/cPoFJaJ0AGzuVZvO+v0jnj0Bw8Fl4bIFgCCz7jf2yWitTikIyJMa49epTd3KwXRDlUQIHae3ViZvnlz0dSP3aolCMqsHFE38F/Ic=
-x-ms-exchange-transport-forked: True
-Content-ID: <0889D93AC10BA146ADE2FC20EBE05BA1@namprd11.prod.outlook.com>
+ id 1jfikd-0006KB-QO
+ for linux-mtd@lists.infradead.org; Mon, 01 Jun 2020 11:37:09 +0000
+Received: by mail-lj1-x241.google.com with SMTP id u10so6457289ljj.9
+ for <linux-mtd@lists.infradead.org>; Mon, 01 Jun 2020 04:37:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=uQTt+MIIpyDA4belDkYAgM2iFZj3fYj7DkPTdahh8pc=;
+ b=mFkTPyu0DgEndR/rPSLh+6SZhzSM1qBKDd8PBw9+8FvGjQLyi0X4GhIxr44O0HNY9S
+ B0O6ex76hLxTjxqQ49jCMJRn0P5+NwecUxkmaO+2TZvf9guPUE23aZWwKzSV1NJUHrcB
+ XWTjHPSBLmNyW5MpuJeasWOkKZDwWVMWV09Kuyua48ogCAyegiD3cR/TT1fDiwk8TBVe
+ y4rDFfND0mqTQzB7qrGexH6onIGb5aDrS1KF78f7S5UesCrxYaMWTUjSc4eMyNToKq9P
+ irMvgdInEjpirCLJqjXh2FRQc1HtYKpAsHox8q+6ds+nU4NbLZHd1w9jc1+L/R2rJGAo
+ PjRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=uQTt+MIIpyDA4belDkYAgM2iFZj3fYj7DkPTdahh8pc=;
+ b=B//OO9TbRMReUwNLjLSRO2ec1YgThcI4iuj6YiDV+3OY81or7V5h3qmaCZOQ6I3piT
+ zBIVgbjE9WBcLuU7ltjyTzDq0pxwzU4PyeEY7zFmJ6Nh6rVI2avlt7SzGBs4fve0Q7/6
+ EUak7TiF1/oXYbbEAo1HUkwet/CbK2nhhbFTYvNBltqdX3vhqHsrs2TqzeqgP2gJi0tg
+ QRIkMAVpBfV3t/iYSQ0gJHxcHl4UDENitDzZj6RsB078Gx/FiNXFDVV418EVndgwEAzm
+ GS8dZ8riQiyM807eZdqvQfza2z/7bHfaXlU1v4sEImAyFhNHn+nGk22RXvZiIA1uTnWz
+ nHJw==
+X-Gm-Message-State: AOAM532SJjr/vGnyyhhn1/6q9i+fO+Fw4YwtZfgbchQUETVazL5KlTfP
+ hS+hL72klXUvmmrwBwDiOQmq6Ob+Baf6UH8FD8lSlQ==
+X-Google-Smtp-Source: ABdhPJw+PTS+SxItJ484C0YqddclYX1X+Em1nuXbhwpxd5uIYFTeFzaNLSV1mhgdPe0vjmuzIUkSf9IuyYYdVc5kqow=
+X-Received: by 2002:a2e:92d7:: with SMTP id k23mr1854314ljh.100.1591011425955; 
+ Mon, 01 Jun 2020 04:37:05 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: bde371f5-71a3-44df-1ac6-08d8061eced1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Jun 2020 11:27:45.9952 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: g0k8k00EcdnXdYsdE4mIWcQw/7frPGkMEIcmd7FCeynZ9KCe+uefp7fVaz0/DmQ43ThmW6YeaxdoEExWQcpGrG2TlaHnRvBEy2vlws3HV5M=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4337
+References: <20200528081003.238804-1-linus.walleij@linaro.org>
+ <20200601074957.GE1181806@T590>
+In-Reply-To: <20200601074957.GE1181806@T590>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Mon, 1 Jun 2020 13:36:54 +0200
+Message-ID: <CACRpkdYL4-Z=kaS+RfniVr=Sn-yOf+=CKMJDsn=eTK3atmGohg@mail.gmail.com>
+Subject: Re: [PATCH] block: Flag elevators suitable for single queue
+To: Ming Lei <ming.lei@redhat.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200601_042751_451224_A06BBC9E 
-X-CRM114-Status: UNSURE (   8.69  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200601_043707_877784_28ED4B15 
+X-CRM114-Status: GOOD (  14.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -151,105 +88,42 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: broonie@kernel.org, linux-mtd@lists.infradead.org
+Cc: Jens Axboe <axboe@kernel.dk>, Damien Le Moal <damien.lemoal@wdc.com>,
+ Paolo Valente <paolo.valente@linaro.org>,
+ linux-mmc <linux-mmc@vger.kernel.org>,
+ linux-block <linux-block@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ Johannes Thumshirn <jthumshirn@suse.de>, Christoph Hellwig <hch@lst.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi, Richard,
+On Mon, Jun 1, 2020 at 9:50 AM Ming Lei <ming.lei@redhat.com> wrote:
+> On Thu, May 28, 2020 at 10:10:03AM +0200, Linus Walleij wrote:
+> > The Kyber block scheduler is not suitable for single hardware
+> > queue devices, so add a new flag for single hardware queue
+> > devices and add that to the deadline and BFQ schedulers
+> > so the Kyber scheduler will not be selected for single queue
+> > devices.
+>
+> The above may not be true for some single hw queue high performance HBA(
+> such as megasas), which can get better performance from none, so it is
+> reasonable to get better performance from kyber, see 6ce3dd6eec11 ("blk-mq:
+> issue directly if hw queue isn't busy in case of 'none'"), and the
+> following link:
+>
+> https://lore.kernel.org/linux-block/20180710010331.27479-1-ming.lei@redhat.com/
 
-This is the SPI NOR PR for 5.8. Small changes, nothing outstanding.
+I see, but isn't the case rather that none is preferred and kyber gives
+the same characteristics because it's not standing in the way
+as much?
 
-Cheers,
-ta
+It looks like if we should add a special flag for these devices with
+very fast single queues so they can say "I prefer none", do you
+agree?
 
-The following changes since commit ae83d0b416db002fe95601e7f97f64b59514d936:
-
-  Linux 5.7-rc2 (2020-04-19 14:35:30 -0700)
-
-are available in the Git repository at:
-
-  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/
-spi-nor/for-5.8
-
-for you to fetch changes up to e8aec15dd5842b5b11b0e621a2293348d3574a61:
-
-  mtd: spi-nor: winbond: Fix 4-byte opcode support for w25q256 (2020-05-31 
-08:34:16 +0300)
-
-----------------------------------------------------------------
-SPI NOR core changes:
-- add, update support and fix few flashes
-- prepare BFPT parsing for JESD216 rev D
-- kernel doc fixes
-
-----------------------------------------------------------------
-Jungseung Lee (1):
-      mtd: spi-nor: micron-st: Enable locking for n25q00
-
-Mantas Pucka (1):
-      mtd: spi-nor: winbond: Fix 4-byte opcode support for w25q256
-
-Mason Yang (2):
-      mtd: spi-nor: macronix: Add support for mx25l51245g
-      mtd: spi-nor: macronix: Add support for mx25u51245g
-
-Pratyush Yadav (2):
-      mtd: spi-nor: sfdp: default to addr_width of 3 for configurable widths
-      mtd: spi-nor: sfdp: prepare BFPT parsing for JESD216 rev D
-
-Sascha Hauer (1):
-      mtd: spi-nor: Add support for Cypress cy15x104q
-
-Sergei Shtylyov (10):
-      mtd: spi-nor: move #define SPINOR_OP_WRDI
-      mtd: spi-nor: fix kernel-doc for 'struct spi_nor'
-      mtd: spi-nor: fix kernel-doc for spi_nor::mtd
-      mtd: spi-nor: fix kernel-doc for spi_nor::reg_proto
-      mtd: spi-nor: fix kernel-doc for spi_nor::info
-      mtd: spi-nor: fix kernel-doc for spi_nor::spimem
-      mtd: spi-nor: core: fix kernel-doc typo for 
-spi_nor_manufacturer_init_params()
-      mtd: spi-nor: core: fix kernel-doc typo for spi_nor_[{info|sfdp}
-_]init_params()
-      mtd: spi-nor: spansion: fix writes on S25FS512S
-      mtd: spi-nor: sfdp: add/use local variable in spi_nor_parse_bfpt()
-
-Takahiro Kuwano (1):
-      mtd: spi-nor: spansion: Enable dual and quad read for s25fl256s0
-
-Tudor Ambarus (4):
-      mtd: spi-nor: Uniformize the return value in spi_nor_*_ready()
-      mtd: spi-nor: Fix description of the sr_ready() return value
-      mtd: spi-nor: spansion: Differentiate between s25fl256s and s25fs256s
-      mtd: spi-nor: Fix SPI NOR acronym
-
-Xiang Chen (1):
-      mtd: spi-nor: Enable locking for n25q128a11
-
-Yicong Yang (1):
-      mtd: spi-nor: Add support for s25fs128s1
-
- drivers/mtd/spi-nor/Kconfig                  |  4 ++--
- drivers/mtd/spi-nor/controllers/Kconfig      |  4 ++--
- drivers/mtd/spi-nor/controllers/aspeed-smc.c |  2 +-
- drivers/mtd/spi-nor/controllers/hisi-sfc.c   |  2 +-
- drivers/mtd/spi-nor/controllers/nxp-spifi.c  |  2 +-
- drivers/mtd/spi-nor/core.c                   | 22 +++++++++++-----------
- drivers/mtd/spi-nor/macronix.c               |  6 ++++++
- drivers/mtd/spi-nor/micron-st.c              |  6 +++++-
- drivers/mtd/spi-nor/sfdp.c                   | 34 +++++++++++++++++
-+----------------
- drivers/mtd/spi-nor/sfdp.h                   | 11 +++++++++--
- drivers/mtd/spi-nor/spansion.c               | 44 +++++++++++++++++++++++++++
-++++++++++++-----
- drivers/mtd/spi-nor/winbond.c                | 29 ++++++++++++++++++++++++++
-+--
- include/linux/mtd/spi-nor.h                  | 24 ++++++++++++------------
- 13 files changed, 134 insertions(+), 56 deletions(-)
-
-
+Yours,
+Linus Walleij
 
 ______________________________________________________
 Linux MTD discussion mailing list
