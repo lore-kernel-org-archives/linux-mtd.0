@@ -2,84 +2,78 @@ Return-Path: <SRS0=+yQj=7O=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 13955C433DF
-	for <linux-mtd@archiver.kernel.org>; Mon,  1 Jun 2020 07:08:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4ACC0C433E0
+	for <linux-mtd@archiver.kernel.org>; Mon,  1 Jun 2020 07:50:40 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C14DF2074B
-	for <linux-mtd@archiver.kernel.org>; Mon,  1 Jun 2020 07:08:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1D68B20734
+	for <linux-mtd@archiver.kernel.org>; Mon,  1 Jun 2020 07:50:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PQ5TfyAH";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="l55CFcoK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C14DF2074B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dIfwWyhp";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bXUhQiZj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1D68B20734
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wJFePotVWryVXHkn0ouD3wHbgFJPEdd8gUunN7hyXBQ=; b=PQ5TfyAHKJoc9J
-	MCg45UdS1AtkrUfoKCZ/lzTJ+HGOnufrQ9aeVj5jbaDJN9j1MC3t6v0lSlbsb6rsl0sJkFDWsDa12
-	B4ZoVPhhl9jfwPgfQTZhafpvs35VgOvSeS/W+KBorvpJ6wTUne9wkIEo2JeeqparNOKeaEfjEl/44
-	20aUDkgoxe/uhVh8FKeHwk4Vb2lO8ReiXXZYAbE0rWPTh4CxlEMHrLOm+pNEt4er1h+ODX/F/nw5d
-	s8u6zH9QKrW+KcUkgcLfzCRSbHANipxmrfXfBqv/ME7W8yQah67k+UJGHBqxCb6dUpde6/98lJjt1
-	gq2wpJ2CrO7isCxbGL+g==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=CYW0a7zvF0swbhCfj4arxdGuFHYcQPjrdl3K2/9/sA4=; b=dIfwWyhpyPgvTX
+	UJcrfstIuIsorUpMpp+/D4FBhHF4JHzn58ne1ocyOfceOtOstdyKxAajCYac1T9xH/dfIyZCdXU+B
+	8L8QwQp6bnPfcb1jvWbLTOCahSwZ6XXaUK7BogFe/o0KUKHPnJJdkXqPeYN+KfPHi+HOCdmhMavOL
+	UGr2nfaru2TuA5cfAiTXBGxY942XKTiHKDVEGs69XjM8sfcyoJmrPnNnS9vec3Y1Tin60Td/p8Fl+
+	m6iMFeA6RBazikzlpJ6B5RMFzk+XMmxwaIx2CaS7OyMmP4eTwpvB82v/6bi0Spk0JMpGJe51agvOe
+	mtPrYq6zndwpZgyx2Jpw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jfeYG-0007kq-4O; Mon, 01 Jun 2020 07:08:04 +0000
-Received: from lelv0142.ext.ti.com ([198.47.23.249])
+	id 1jffDK-0001Ur-Hj; Mon, 01 Jun 2020 07:50:30 +0000
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]
+ helo=us-smtp-1.mimecast.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jfeYD-0007kW-A2
- for linux-mtd@lists.infradead.org; Mon, 01 Jun 2020 07:08:02 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05177vKN045270;
- Mon, 1 Jun 2020 02:07:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1590995277;
- bh=HujvC9+RO9ZJaECM24aGaK8D8JBb+/kqNVtAgxq9pPk=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=l55CFcoKJdXDqmzmZVtq7ZhWprtMMwoVo9BWlss94YxE0W86YSb1BhWbk29trdCxC
- aEzLmuauiBuyrfDEAJsK5fRsYbUSTG6WSVjg61evXUl07ybSEAlxdHet1DadubUAo0
- D+V/6/Yuuv79zH17So/H2EupzTZ67lRtzA0Anr90=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05177vM0089087
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 1 Jun 2020 02:07:57 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 1 Jun
- 2020 02:07:57 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 1 Jun 2020 02:07:57 -0500
-Received: from [10.250.234.195] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05177rAQ015505;
- Mon, 1 Jun 2020 02:07:54 -0500
-Subject: Re: [PATCH v3 8/8] spi: Move cadence-quadspi driver to drivers/spi/
-To: <Tudor.Ambarus@microchip.com>, <broonie@kernel.org>
-References: <20200601054725.2060-1-vigneshr@ti.com>
- <20200601054725.2060-9-vigneshr@ti.com> <2051214.IORyQiarUF@192.168.0.120>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <2af92a25-02a7-0441-636c-d2853873f4c2@ti.com>
-Date: Mon, 1 Jun 2020 12:37:52 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ id 1jffDG-0001SQ-KD
+ for linux-mtd@lists.infradead.org; Mon, 01 Jun 2020 07:50:28 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1590997819;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=IuO46ycNz8mneB+aXPJm85h+RFJWz/TY+HoUCs4wBY8=;
+ b=bXUhQiZjg4RExx35olI9uHu8hNZuI13hBU/j9ggN0PSiG7O3jDU3uBLDWAMjaROfkVmBOv
+ c3mzkdqdgTZjJFZw4jt9pFXxnGgID6WOeJ8Z8nXy6wRlJBYo0Dxkot81NF1KBbBAzP/7qz
+ 5GhTbk3820CzY5ca6vT4FYhgYW6paE0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-167-5Kga0UcWNre1R3UidKM26A-1; Mon, 01 Jun 2020 03:50:13 -0400
+X-MC-Unique: 5Kga0UcWNre1R3UidKM26A-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com
+ [10.5.11.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 42EB9100CCC2;
+ Mon,  1 Jun 2020 07:50:12 +0000 (UTC)
+Received: from T590 (ovpn-13-152.pek2.redhat.com [10.72.13.152])
+ by smtp.corp.redhat.com (Postfix) with ESMTPS id 0A29C78EA8;
+ Mon,  1 Jun 2020 07:50:01 +0000 (UTC)
+Date: Mon, 1 Jun 2020 15:49:57 +0800
+From: Ming Lei <ming.lei@redhat.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH] block: Flag elevators suitable for single queue
+Message-ID: <20200601074957.GE1181806@T590>
+References: <20200528081003.238804-1-linus.walleij@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <2051214.IORyQiarUF@192.168.0.120>
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Disposition: inline
+In-Reply-To: <20200528081003.238804-1-linus.walleij@linaro.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200601_000801_427263_EC7083D8 
-X-CRM114-Status: GOOD (  14.86  )
+X-CRM114-CacheID: sfid-20200601_005026_738439_99D2A259 
+X-CRM114-Status: GOOD (  11.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,56 +85,33 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: marex@denx.de, bbrezillon@kernel.org, dinguyen@kernel.org,
- simon.k.r.goldschmidt@gmail.com, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, vadivel.muruganx.ramuthevar@linux.intel.com,
- linux-mtd@lists.infradead.org
+Cc: Jens Axboe <axboe@kernel.dk>, Damien Le Moal <damien.lemoal@wdc.com>,
+ Paolo Valente <paolo.valente@linaro.org>, linux-mmc@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Johannes Thumshirn <jthumshirn@suse.de>, Christoph Hellwig <hch@lst.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On Thu, May 28, 2020 at 10:10:03AM +0200, Linus Walleij wrote:
+> The Kyber block scheduler is not suitable for single hardware
+> queue devices, so add a new flag for single hardware queue
+> devices and add that to the deadline and BFQ schedulers
+> so the Kyber scheduler will not be selected for single queue
+> devices.
 
+The above may not be true for some single hw queue high performance HBA(
+such as megasas), which can get better performance from none, so it is
+reasonable to get better performance from kyber, see 6ce3dd6eec11 ("blk-mq:
+issue directly if hw queue isn't busy in case of 'none'"), and the
+following link:
 
-On 01/06/20 12:30 pm, Tudor.Ambarus@microchip.com wrote:
-> Hi, Mark,
-> 
-> On Monday, June 1, 2020 8:47:25 AM EEST Vignesh Raghavendra wrote:
->> From: Ramuthevar Vadivel Murugan
->> <vadivel.muruganx.ramuthevar@linux.intel.com>
->>
->> Now that cadence-quadspi has been converted to use spi-mem framework,
->> move it under drivers/spi/
->>
->> Update license header to match SPI subsystem style
->>
->> Signed-off-by: Ramuthevar Vadivel Murugan
->> <vadivel.muruganx.ramuthevar@linux.intel.com> Signed-off-by: Vignesh
->> Raghavendra <vigneshr@ti.com>
->> ---
->>  drivers/mtd/spi-nor/controllers/Kconfig            | 11 -----------
->>  drivers/mtd/spi-nor/controllers/Makefile           |  1 -
->>  drivers/spi/Kconfig                                | 11 +++++++++++
->>  drivers/spi/Makefile                               |  1 +
->>  .../spi-cadence-quadspi.c}                         | 14 +++++++-------
->>  5 files changed, 19 insertions(+), 19 deletions(-)
->>  rename drivers/{mtd/spi-nor/controllers/cadence-quadspi.c =>
->> spi/spi-cadence-quadspi.c} (99%)
-> 
-> If this patch set looks good to you, would you take it through the SPI tree? 
-> If so, I would need an immutable tag, so I can merge back in spi-nor/next in 
-> order to fix a small conflict that will appear in drivers/mtd/spi-nor/
-> controllers/Kconfig. Vignesh would have to respin this patch on top of v5.7-
-> rc1. With this addressed:
-> 
-> Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> 
+https://lore.kernel.org/linux-block/20180710010331.27479-1-ming.lei@redhat.com/
 
+Thanks, 
+Ming
 
-I have resent v3 on top of v5.7-rc1 (also applies cleanly on spi tree's
-for-next branch):
-
-https://lore.kernel.org/linux-spi/20200601070444.16923-1-vigneshr@ti.com/T/#t
 
 ______________________________________________________
 Linux MTD discussion mailing list
