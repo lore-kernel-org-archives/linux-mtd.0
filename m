@@ -1,87 +1,64 @@
-Return-Path: <SRS0=dUJy=7P=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=zMTj=7Q=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA80CC433E0
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Jun 2020 21:00:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7BD6C433DF
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2020 05:54:43 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A03FC20679
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Jun 2020 21:00:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 775AB20678
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2020 05:54:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rW3KdOpS";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="vIhBYEHS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A03FC20679
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="MuITYe7H"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 775AB20678
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=yadavpratyush.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=a5sLxiT5fw2fIKwRc46dOUWzfRTfHypVGup13q8JIDs=; b=rW3KdOpSslPFfp
-	Yv8B6KsCFTuJk1I0uIBVTZceGtq8Nf4oE+1ny/6I2UBp6/kXJ1XYnEyg4RUCbq+ZgDfDdjkEGVNDK
-	x0aMFjqVmgZ7gVS0kOfEo42XB6Yi8RbMuTbjnounxLTIt2CV/m9CNC81jvWdmgaeuuv/MzZA6mPnW
-	EpvZjkzDjm2SZTXr+NVEEmljLqVbWz6Q/oL1mFg2vPKkCC5/9A7cihMU4m1XIA+uSUIHq5Eo7mPMs
-	LSmwtlM6p5c1PpOcqhhm91UQexpeeWU6nLc5lpDcSXX51aOQDH0kqD6prBxxHBEfzaOLmtg14RLYG
-	2UUJmGenhx2umSU27KzQ==;
+	List-Owner; bh=lxQ2fcnJd62puHZKYhnmDuiF5X2HuqQ3YJCEbx1O40E=; b=MuITYe7HLGcoNw
+	+vke6uEGOyiJWfX4Og5397B3RSNjwtQFTzxHlxspTb7YzZew6DuL4m+oceh46nzsSIpZNqtfYVQi4
+	n8m0vwk3GHc60wjJmux6f9DJmpkovxmYtGsFeQOXFUGy/fULIMWSdr4NIxTQu1nSEw7mFJL3onJk+
+	9aQfDUjHrxRzF1HwsOoxKkIPlJc/j362qjAcLYkM/yVNZuAM43Jkr+uIE9SC30DwWQ2QWTKn5tPcy
+	J+iXk9SezakbPyBA7TsbZVc9BWa/6RGbksYIHii2PXwLjz7/iVB6wNkL2NsLMq9lOG6CQz25W771s
+	fkqhTwlimX9sYwnumX6w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jgE1U-0004Sd-6P; Tue, 02 Jun 2020 21:00:36 +0000
-Received: from mail-qk1-x741.google.com ([2607:f8b0:4864:20::741])
+	id 1jgMMA-0004Io-2P; Wed, 03 Jun 2020 05:54:30 +0000
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jgE1R-0004S7-5n
- for linux-mtd@lists.infradead.org; Tue, 02 Jun 2020 21:00:34 +0000
-Received: by mail-qk1-x741.google.com with SMTP id c185so13994917qke.7
- for <linux-mtd@lists.infradead.org>; Tue, 02 Jun 2020 14:00:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=iNNjrivnEoUAC366H2FdWIu2TL4+Vn1cT9nXKpItZgI=;
- b=vIhBYEHSKoY8Cekw6GyOOeo3n+07mgvI8uOG4etR/8uRWOCCdLJR+zdh1fO+iqebSw
- fYmcthB+lPruvOxedOJkDn+ymgXEbma47JB6bQcTE24EvPWNtbZa7s9zBNxWV4hDg33P
- 1C17QLyILtUPc+wEN+1LWWNqlq9do5T0SpIljNma2/YFG3fWNPXu+qVrB4n0dStEp3dY
- TDSIJdAZiEc+0kYObw8VHNiwg8NV/HeqCb7dNkWTdoDYzVofFtyOsEfmCnuPSXfIt+FQ
- VnrxjOXYH5VVzuhJvCO3pKlUkZ6CIuqpoxDcouQqOqerdNzfyu5wrykW5IWS05pi/WdJ
- mUOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=iNNjrivnEoUAC366H2FdWIu2TL4+Vn1cT9nXKpItZgI=;
- b=io7J0p1IRAvNN52w1TMnoggAqBV58tp5eAAq5bnWOXoUoDI7F3knHrPE1ogpWzFjP2
- +OC1VT+TP0DPoQSIOcBiaKVHToIrZ/o9/yk8AuwUNZlfqN7aKRYoOBKcHkiTA/w/AD5F
- 7wBNFOLwO2tV4vJUJx5YHXvFhQ3jxr9pYCnjbJOS/okDMpDx3BjUzO7iZumPbh/tTkqO
- whAX+eeNeetmuB6YrAcaRPDR5lYl9d+q6y+C3T1OB34yJl+EsDRXARcZ/FnWqFcch+YD
- AwAreV6wo9PnhNasx7TXxBF7kQf8zw4cquYjjhbCZNvOm9UY5zzZ/lh1CUwy0mKsW7+q
- /qBQ==
-X-Gm-Message-State: AOAM533BMp89faS4Ql/nyV2dWTQfhQLo1x+Xz5mMDL179vP8Jm3aF1pd
- YfN+n0r3usQFWLl18OYvCqpuztvM/DfESrADimGg3g==
-X-Google-Smtp-Source: ABdhPJyLE9zCZZJafGOGXEqm+4U4hs8l9S6vCTzQCOjJ77rPe0CNuYhuRj3iQCQw+qBksUJzARnIDg/hjtaOqEm3XsI=
-X-Received: by 2002:a37:bce:: with SMTP id 197mr3407307qkl.370.1591131631351; 
- Tue, 02 Jun 2020 14:00:31 -0700 (PDT)
+ id 1jgMM6-0004HN-Bm
+ for linux-mtd@lists.infradead.org; Wed, 03 Jun 2020 05:54:28 +0000
+X-Originating-IP: 157.36.79.87
+Received: from localhost (unknown [157.36.79.87])
+ (Authenticated sender: me@yadavpratyush.com)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 23E36C0005;
+ Wed,  3 Jun 2020 05:54:03 +0000 (UTC)
+Date: Wed, 3 Jun 2020 11:23:59 +0530
+From: Pratyush Yadav <me@yadavpratyush.com>
+To: masonccyang@mxic.com.tw
+Subject: Re: [PATCH v4 7/7] mtd: spi-nor: macronix: Add Octal 8D-8D-8D
+ supports for Macronix mx25uw51245g
+Message-ID: <20200603055359.y35dwznglc7tlewq@yadavpratyush.com>
+References: <1590737775-4798-1-git-send-email-masonccyang@mxic.com.tw>
+ <1590737775-4798-8-git-send-email-masonccyang@mxic.com.tw>
+ <20200529094202.7vjs7clhykncivux@yadavpratyush.com>
+ <OF577383DB.7BF12AA3-ON4825857B.002468AB-4825857B.00250F16@mxic.com.tw>
 MIME-Version: 1.0
-References: <149914202384.24318.7331828698981799313.stgit@kyeongy-dl.atlnz.lc>
- <CAFLxGvy4NbfHHoHXaH=sR-3e10+EAbDwLsdM1_Eyk_gT5=HE8Q@mail.gmail.com>
- <1589932809.26085.25.camel@alliedtelesis.co.nz>
- <CAFLxGvyAoZ+G3V8i-4CsQYSuHPTdG6v7s-78vL7Wq1EZEzDOWg@mail.gmail.com>
-In-Reply-To: <CAFLxGvyAoZ+G3V8i-4CsQYSuHPTdG6v7s-78vL7Wq1EZEzDOWg@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Tue, 2 Jun 2020 23:00:19 +0200
-Message-ID: <CAFLxGvwLgSTt12pPYVXUixMV3uK=iGbomhWdgy=XLYjk1HvdOw@mail.gmail.com>
-Subject: Re: [PATCH] jffs2: GC deadlock reading a page that is used in
- jffs2_write_begin()
-To: Hamish Martin <Hamish.Martin@alliedtelesis.co.nz>
+Content-Disposition: inline
+In-Reply-To: <OF577383DB.7BF12AA3-ON4825857B.002468AB-4825857B.00250F16@mxic.com.tw>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200602_140033_232555_B5035B12 
-X-CRM114-Status: UNSURE (   9.03  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200602_225426_674957_A24D83DD 
+X-CRM114-Status: GOOD (  22.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,27 +70,114 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
- Kyeong Yoo <Kyeong.Yoo@alliedtelesis.co.nz>
+Cc: vigneshr@ti.com, tudor.ambarus@microchip.com, juliensu@mxic.com.tw,
+ richard@nod.at, miquel.raynal@bootlin.com, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, broonie@kernel.org, linux-mtd@lists.infradead.org,
+ boris.brezillon@collabora.com, matthias.bgg@gmail.com, p.yadav@ti.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, May 25, 2020 at 9:45 PM Richard Weinberger
-<richard.weinberger@gmail.com> wrote:
-> > Please let me know if you'd like me to test a modified patch, or if
-> > you'd like any further assistance to get this patch completed.
->
-> Let me figure why this patch got skipped. :-)
-> Thanks for letting me know.
+On 02/06/20 02:44PM, masonccyang@mxic.com.tw wrote:
+> 
+> Hi Pratyush,
+> 
+>  
+> > Subject
+> > 
+> > Re: [PATCH v4 7/7] mtd: spi-nor: macronix: Add Octal 8D-8D-8D supports 
+> for 
+> > Macronix mx25uw51245g
+> > 
+> > On 29/05/20 03:36PM, Mason Yang wrote:
+> > > Macronix mx25uw51245g is a SPI NOR that supports 1-1-1/8-8-8 mode.
+> > > 
+> > > Correct the dummy cycles to device for various frequencies
+> > > after xSPI profile 1.0 table parsed.
+> > > 
+> > > Enable mx25uw51245g to Octal DTR mode by executing the command 
+> sequences
+> > > to change to octal DTR mode.
+> > > 
+> > > Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
+> > > ---
+> > >  drivers/mtd/spi-nor/macronix.c | 55 
+> ++++++++++++++++++++++++++++++++++++++++++
+> > >  1 file changed, 55 insertions(+)
+> > > 
+> > > diff --git a/drivers/mtd/spi-nor/macronix.c 
+> b/drivers/mtd/spi-nor/macronix.c
+> > > index 96735d8..6c9a24c 100644
+> > > --- a/drivers/mtd/spi-nor/macronix.c
+> > > +++ b/drivers/mtd/spi-nor/macronix.c
+> > > @@ -8,6 +8,57 @@
+> > > 
+> > >  #include "core.h"
+> > > 
+> > > +#define MXIC_CR2_DUMMY_SET_ADDR 0x300
+> > > +
+> > > +/* Fixup the dummy cycles to device and setup octa_dtr_enable() */
+> > > +static void mx25uw51245g_post_sfdp_fixups(struct spi_nor *nor)
+> > > +{
+> > > +   struct spi_nor_flash_parameter *params = nor->params;
+> > > +   int ret;
+> > > +   u8 rdc, wdc;
+> > > +
+> > > +   ret = spi_nor_read_cr2(nor, MXIC_CR2_DUMMY_SET_ADDR, &rdc);
+> > > +   if (ret)
+> > > +      return;
+> > > +
+> > > +   /* Refer to dummy cycle and frequency table(MHz) */
+> > > +   switch (params->dummy_cycles) {
+> > > +   case 10:   /* 10 dummy cycles for 104 MHz */
+> > > +      wdc = 5;
+> > > +      break;
+> > > +   case 12:   /* 12 dummy cycles for 133 MHz */
+> > > +      wdc = 4;
+> > > +      break;
+> > > +   case 16:   /* 16 dummy cycles for 166 MHz */
+> > > +      wdc = 2;
+> > > +      break;
+> > > +   case 18:   /* 18 dummy cycles for 173 MHz */
+> > > +      wdc = 1;
+> > > +      break;
+> > > +   case 20:   /* 20 dummy cycles for 200 MHz */
+> > > +   default:
+> > > +      wdc = 0;
+> > > +   }
+> > 
+> > I don't get the point of this. You already know the fastest the 
+> > mx25uw51245g flash can run at. Why not just use the maximum dummy 
+> > cycles? SPI NOR doesn't know the speed the controller is running at so 
+> > the best it can do is use the maximum dummy cycles possible so it never 
+> > falls short. Sure, it will be _slightly_ less performance, but we will 
+> > be sure to read the correct data, which is much much more important.
+> 
+> In general, 200MHz needs 20 dummy cycles but some powerful device may only 
+> 
+> needs 18 dummy cycles or less.
 
-Applied to my fixes queue.
+Yes, but do different mx25uw51245g chips have different dummy cycle 
+requirements? Shouldn't all the chips with the same ID have same 
+performance?
+
+This is a fixup hook for mx25uw51245g, so you should already know how 
+many cycles are needed for this specific device. Is there any need for 
+generic code here?
+ 
+> Set a proper dummy cycles for a better performance.
+> 
+> > 
+> > Is it possible to have two chips which have _exactly_ the same ID but 
+> > one supports say 200MHz frequency but the other doesn't? Without that, 
+> > we can just enable the maximum and move on.
+> > 
+> 
 
 -- 
-Thanks,
-//richard
+Regards,
+Pratyush Yadav
 
 ______________________________________________________
 Linux MTD discussion mailing list
