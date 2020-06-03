@@ -2,61 +2,61 @@ Return-Path: <SRS0=zMTj=7Q=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D25BC433E0
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2020 14:23:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E479AC433E0
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2020 15:08:14 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EBEFF20679
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2020 14:23:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9E2B0206E6
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2020 15:08:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CpnHZL9b"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EBEFF20679
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gsvxjyBe"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E2B0206E6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6cRjVi9r8AIOXkqsZKziT1sMhzQZRUYvUzInznOhEtg=; b=CpnHZL9bmNmuM0
-	yNAYtHwgTWofAJ7L1UUCD2NthM9KhBr6PMURO9mmn6wZFJtxf329PF5IQ3LjruuK8nKfkHxhP7uCA
-	VFHJOftLLBRnN5riVieW578w6DcxGpCXyJPpbufdwDjhXaYl85LWflrRnfoF2ZxjQ79/dqr9EyQQU
-	sDJ9snfYbJrAsqAwcdMdn1UTbElo9PQ53Lf/arWLVqm8MjAfPSPDNosOKuFogBqU06wPKxZ17tyP3
-	/DGW6FXhmDR23e4R3MLYSejmI0t3Z6R6/Hy36ePEx38VOY648IuquSLTzCaalZ49LJbbNtF9TgSUr
-	iFlK/FJJh6/WAR2MaISw==;
+	List-Owner; bh=e06XHpds9rkwAcFTXnRLm+THWefPeZS4FsWx59fhjxk=; b=gsvxjyBeeTe2pO
+	oRkELQ+JiSyCJTyQBY2tqafdnghQmR4lPc0laGy1157LmPEdoj6jlh0oIyUmEeFBuCpUyDkquX5pE
+	TVmH5i0sRLViD9mNz8vZXv2hxaRm7+DTefMAeJIGlzEnbZ2Rayzusv3+CJ/IP1uanRg20s8XgX67A
+	4udCsZIVNnI0HFK8sCKj0hnoExDBY6q2f60bMkP1fRYhQ+v8fuD3ibEfaPgf82Z+CxTJkzoLZ0a9m
+	PgN/6jcIg6S+sOZN0fgUW/1EPt/Uf0p12PaLgbDfjdJwciMkrTf7ixNjUhzQXA9TARxd7xIAN/9Lk
+	y5PEwCrFzGCOByZa401w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jgUIo-0003Py-JL; Wed, 03 Jun 2020 14:23:34 +0000
-Received: from relay7-d.mail.gandi.net ([217.70.183.200])
+	id 1jgUzm-0006Cp-3f; Wed, 03 Jun 2020 15:07:58 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jgUIl-0003PB-89
- for linux-mtd@lists.infradead.org; Wed, 03 Jun 2020 14:23:32 +0000
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 2E7C420010;
- Wed,  3 Jun 2020 14:23:29 +0000 (UTC)
-Date: Wed, 3 Jun 2020 16:23:28 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@collabora.com>
-Subject: Re: [PATCH] mtd: rawnand: tango: Convert the driver to exec_op()
-Message-ID: <20200603162328.64f39596@xps13>
-In-Reply-To: <20200518170912.328988-1-boris.brezillon@collabora.com>
-References: <20200518170912.328988-1-boris.brezillon@collabora.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1jgUzi-0006AJ-KR
+ for linux-mtd@lists.infradead.org; Wed, 03 Jun 2020 15:07:56 +0000
+Received: from localhost.localdomain (unknown
+ [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested) (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id B27202A3A8A;
+ Wed,  3 Jun 2020 16:07:52 +0100 (BST)
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
+ Ben Dooks <ben-linux@fluff.org>
+Subject: [PATCH 1/3] mtd: rawnand: gpio: Inherit from nand_controller
+Date: Wed,  3 Jun 2020 17:07:44 +0200
+Message-Id: <20200603150746.1423257-2-boris.brezillon@collabora.com>
+X-Mailer: git-send-email 2.25.4
+In-Reply-To: <20200603150746.1423257-1-boris.brezillon@collabora.com>
+References: <20200603150746.1423257-1-boris.brezillon@collabora.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200603_072331_418024_50411E64 
-X-CRM114-Status: UNSURE (   7.27  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200603_080754_799861_0878DFC1 
+X-CRM114-Status: GOOD (  11.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,21 +68,57 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>,
- Tudor Ambarus <tudor.ambarus@microchip.com>, linux-mtd@lists.infradead.org,
- Vignesh Raghavendra <vigneshr@ti.com>, Marc Gonzalez <marc.w.gonzalez@free.fr>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: linux-mips@linux-mips.org, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Richard Weinberger <richard@nod.at>, Ralf Baechle <ralf@linux-mips.org>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>, Jamie Iles <jamie@jamieiles.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgpCb3JpcyBCcmV6aWxsb24gPGJvcmlzLmJyZXppbGxvbkBjb2xsYWJvcmEuY29tPiB3
-cm90ZSBvbiBNb24sIDE4IE1heQoyMDIwIDE5OjA5OjEyICswMjAwOgoKPiBMZXQncyBjb252ZXJ0
-IHRoZSBkcml2ZXIgdG8gZXhlY19vcCgpIHRvIGhhdmUgb25lIGxlc3MgZHJpdmVyIHJlbHlpbmcK
-PiBvbiB0aGUgbGVnYWN5IGludGVyZmFjZS4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBCb3JpcyBCcmV6
-aWxsb24gPGJvcmlzLmJyZXppbGxvbkBjb2xsYWJvcmEuY29tPgo+IC0tLQoKQW55b25lIHRvIHRl
-c3QgdGhpcyBzZXJpZXM/CgpJZiBub3QgSSB3aWxsIGFwcGx5IGl0IGFzIHNvb24gYXMgdjUuOC1y
-YzEgaXMgcmVsZWFzZWQuCgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFp
-bGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGlu
-dXgtbXRkLwo=
+Inherit from nand_controller so we don't rely on the
+nand_chip.legacy.dummy_controller field.
+
+Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+---
+ drivers/mtd/nand/raw/gpio.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/mtd/nand/raw/gpio.c b/drivers/mtd/nand/raw/gpio.c
+index 938077e5c6a9..33828fb20a13 100644
+--- a/drivers/mtd/nand/raw/gpio.c
++++ b/drivers/mtd/nand/raw/gpio.c
+@@ -27,6 +27,7 @@
+ #include <linux/of_address.h>
+ 
+ struct gpiomtd {
++	struct nand_controller	base;
+ 	void __iomem		*io_sync;
+ 	struct nand_chip	nand_chip;
+ 	struct gpio_nand_platdata plat;
+@@ -273,6 +274,7 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 	if (gpiomtd->rdy)
+ 		chip->legacy.dev_ready = gpio_nand_devready;
+ 
++	nand_controller_init(&gpiomtd->base);
+ 	nand_set_flash_node(chip, pdev->dev.of_node);
+ 	chip->legacy.IO_ADDR_W	= chip->legacy.IO_ADDR_R;
+ 	chip->ecc.mode		= NAND_ECC_SOFT;
+@@ -280,6 +282,7 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 	chip->options		= gpiomtd->plat.options;
+ 	chip->legacy.chip_delay	= gpiomtd->plat.chip_delay;
+ 	chip->legacy.cmd_ctrl	= gpio_nand_cmd_ctrl;
++	chip->controller	= &gpiomtd->base;
+ 
+ 	mtd			= nand_to_mtd(chip);
+ 	mtd->dev.parent		= dev;
+-- 
+2.25.4
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
