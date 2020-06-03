@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2EE5C433DF
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2020 13:51:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C194C433DF
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2020 13:51:53 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 966FA20772
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2020 13:51:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4B697206A2
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2020 13:51:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="i//5m6Xq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 966FA20772
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AJAKB16E"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4B697206A2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=cgRzJRlicsZ6G8UYExi0e7rjm5aehhASp1gdYrvZWc8=; b=i//5m6XqDRMmJf
-	c771bRZ8LgQ/9KYA5oeeUVHHSujfSofuRlNGQuVaOGG1x7qGM+i2gDAhJZG27xh1KN5QjUT3HTx4W
-	dVc481AH7Gow3iyWfhdcp51oPWkGZQp7YC77wjh3MgPjGptCZ5ThfbGGeAQdC182aZnUeRQBd8sf8
-	OlOL5Mu3fXmq8fsfqahkdwsjthtjzAyyqK6q5xlp7X8t15nRmDnu1HIJZPBgaXFpiCKe8UtV4NAQA
-	UxDez+aeyK/+t9O8sn+EinlyltJpuLCLHVl1zI0LoO3JIU6bV5IcyjFYXKque2ZyJg/dYlRqi87BK
-	Gs6z8eYuNmQPEWQeYIow==;
+	List-Owner; bh=d78LdSldd4xnjNPBqb5U/LkM69QNewmHZccx0nuDTnU=; b=AJAKB16EChQoG3
+	40jsrVMwY5DAy22UcdQpZzLvBpaJtQP7AcSFy4in+iShURfbYk2XauAKtXZ0KKfEgKglPAmEKKIxF
+	5gvX/ANwihp8l06hmuAyCVtG8w7Q5/qNIBy8vVhlLoAtZ98JbXeUi0cmzHmC12jAvqVNBXTynuw+M
+	YCJMK0a2t5CFwE+Zl5T4zsQhPFTauHxRfI64/hv55+KJz1fs6VS2JbS95jpD4XlIfqS3DYadCVybi
+	zqj1RHZ8RDuRPH2KldAQP8JjuhyOomqJWwMjaUktV1gcc81D2qR9oprf/WnOoytoFcTJPEZidRHtt
+	rexwJl3KEsgdUIHKfCGg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jgTnl-0005nf-Gn; Wed, 03 Jun 2020 13:51:29 +0000
+	id 1jgTo0-00061v-0f; Wed, 03 Jun 2020 13:51:44 +0000
 Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jgTls-0001lN-2S
- for linux-mtd@lists.infradead.org; Wed, 03 Jun 2020 13:49:34 +0000
+ id 1jgTlq-0001jp-D4
+ for linux-mtd@lists.infradead.org; Wed, 03 Jun 2020 13:49:33 +0000
 Received: from localhost.localdomain (unknown
  [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id A59162A3D7D;
- Wed,  3 Jun 2020 14:49:29 +0100 (BST)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 8CA272A3D79;
+ Wed,  3 Jun 2020 14:49:28 +0100 (BST)
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Anton Vorontsov <anton@enomsg.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 10/10] dt-bindings: mtd: fsl-upm-nand: Deprecate chip-delay
- and fsl, upm-wait-flags
-Date: Wed,  3 Jun 2020 15:49:22 +0200
-Message-Id: <20200603134922.1352340-11-boris.brezillon@collabora.com>
+Subject: [PATCH 07/10] mtd: rawnand: fsl_upm: Inherit from nand_controller
+Date: Wed,  3 Jun 2020 15:49:19 +0200
+Message-Id: <20200603134922.1352340-8-boris.brezillon@collabora.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20200603134922.1352340-1-boris.brezillon@collabora.com>
 References: <20200603134922.1352340-1-boris.brezillon@collabora.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200603_064932_259237_0BB03206 
-X-CRM114-Status: GOOD (  11.94  )
+X-CRM114-CacheID: sfid-20200603_064930_590494_D4A718FA 
+X-CRM114-Status: GOOD (  10.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,47 +80,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Those properties are no longer parsed by the driver which is being passed
-those information by the core now. Let's deprecate them.
+Explicitly inherit from nand_controller instead of relying on the
+nand_chip.legacy.dummy_controller field.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
 ---
- Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/raw/fsl_upm.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt b/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt
-index fce4894f5a98..25f07c1f9e44 100644
---- a/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt
-@@ -7,14 +7,16 @@ Required properties:
- - fsl,upm-cmd-offset : UPM pattern offset for the command latch.
+diff --git a/drivers/mtd/nand/raw/fsl_upm.c b/drivers/mtd/nand/raw/fsl_upm.c
+index 977b7aad419b..9a63e36825d8 100644
+--- a/drivers/mtd/nand/raw/fsl_upm.c
++++ b/drivers/mtd/nand/raw/fsl_upm.c
+@@ -24,6 +24,7 @@
+ #define FSL_UPM_WAIT_WRITE_BUFFER 0x4
  
- Optional properties:
--- fsl,upm-wait-flags : add chip-dependent short delays after running the
--	UPM pattern (0x1), after writing a data byte (0x2) or after
--	writing out a buffer (0x4).
- - fsl,upm-addr-line-cs-offsets : address offsets for multi-chip support.
- 	The corresponding address lines are used to select the chip.
- - gpios : may specify optional GPIOs connected to the Ready-Not-Busy pins
- 	(R/B#). For multi-chip devices, "n" GPIO definitions are required
- 	according to the number of chips.
-+
-+Deprecated properties:
-+- fsl,upm-wait-flags : add chip-dependent short delays after running the
-+	UPM pattern (0x1), after writing a data byte (0x2) or after
-+	writing out a buffer (0x4).
- - chip-delay : chip dependent delay for transferring data from array to
- 	read registers (tR). Required if property "gpios" is not used
- 	(R/B# pins not connected).
-@@ -52,8 +54,6 @@ upm@3,0 {
- 	fsl,upm-cmd-offset = <0x08>;
- 	/* Multi-chip NAND device */
- 	fsl,upm-addr-line-cs-offsets = <0x0 0x200>;
--	fsl,upm-wait-flags = <0x5>;
--	chip-delay = <25>; // in micro-seconds
+ struct fsl_upm_nand {
++	struct nand_controller base;
+ 	struct device *dev;
+ 	struct nand_chip chip;
+ 	int last_ctrl;
+@@ -167,6 +168,7 @@ static int fun_chip_init(struct fsl_upm_nand *fun,
+ 	if (!fun->rnb_gpio[0])
+ 		fun->chip.legacy.dev_ready = fun_chip_ready;
  
- 	nand@0 {
- 		#address-cells = <1>;
++	fun->chip.controller = &fun->base;
+ 	mtd->dev.parent = fun->dev;
+ 
+ 	flash_np = of_get_next_child(upm_np, NULL);
+@@ -268,6 +270,7 @@ static int fun_probe(struct platform_device *ofdev)
+ 		fun->wait_flags = FSL_UPM_WAIT_RUN_PATTERN |
+ 				  FSL_UPM_WAIT_WRITE_BYTE;
+ 
++	nand_controller_init(&fun->base);
+ 	fun->dev = &ofdev->dev;
+ 	fun->last_ctrl = NAND_CLE;
+ 
 -- 
 2.25.4
 
