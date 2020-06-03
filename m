@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2436AC433DF
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2020 14:01:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 369BDC433E0
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2020 14:08:42 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EA37B206A2
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2020 14:01:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 09E0E20679
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2020 14:08:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mSzHeQHG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EA37B206A2
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KVU3tt3I"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 09E0E20679
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,37 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hGw6XsCSKTaCAkGPEl2GuAEBgXqqW0UGA8GYKrVqcmg=; b=mSzHeQHGT5hAkr
-	jYmuUki8my2M9+ufRjCFzPWzaUr3O1ZPW7ZHDBEY2+/VJBpUvUI8o8rJTcbCC/4bUkvBk8Y35s1gD
-	N0JT/xsq3E0yz8cfeJ88ou6mxtCPKCk/QRoJmXYHj19Kd+i9K3iDyqUi28/Je6Eo6XhQ7x/B+fMXF
-	FzWucd79hdWdFhjD+uUCTkbziQUgvjmNVpNvhJ57QOsK+mUNcmfehWc0lm5z3ymgcRRLgEyUrMCCy
-	I0w+aecDfrD8zY9jHPzJmPRxLq+UyJHwfSYUV1CdtD9Hed68r3PADUTwdi5zUoHeslnMpWrjB7peQ
-	xDJ9KkNlwlqVIsf2x2Fg==;
+	List-Owner; bh=XjzX/mZqbBl7vfaR3j3hwiYhFDgMQshWBElaSG6lbU0=; b=KVU3tt3InioINp
+	U5FquUhhjNCyY2LP1rpaaOD89EC5ATspTQUeSgPXPHLjKe4ULQQNu1Y1fH3lbZClX0SFDU5Scf9lb
+	v/WQagayRv3k/CQpzeYrWfFJ8UHPOdG9DK0uJlC0RZLMrZdE97bq01XN+AteGVm/862JN3JTZkC2j
+	pdnXs/nf+MrcGe17+HjHR29PCt5fFqJTFFSHqm+XqV7t72EWgTSBAELV4BXs9gIJ4BVRlvWbAXhFx
+	jKQnfuR748XKI5d11wZv0uJBjffpEyfY43ehjBXK0fYacjyprQ8uvH/sdYPTjLhwR6khCKAiILv9H
+	0YNv29iH3k6vhmL6MAKg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jgTxL-00070y-UT; Wed, 03 Jun 2020 14:01:23 +0000
-Received: from relay10.mail.gandi.net ([217.70.178.230])
+	id 1jgU4H-0002T9-EP; Wed, 03 Jun 2020 14:08:33 +0000
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jgTxJ-00070G-V2
- for linux-mtd@lists.infradead.org; Wed, 03 Jun 2020 14:01:23 +0000
+ id 1jgU4D-0002Sf-9D
+ for linux-mtd@lists.infradead.org; Wed, 03 Jun 2020 14:08:32 +0000
+X-Originating-IP: 91.224.148.103
 Received: from xps13 (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay10.mail.gandi.net (Postfix) with ESMTPSA id 07A2D24001B;
- Wed,  3 Jun 2020 14:01:18 +0000 (UTC)
-Date: Wed, 3 Jun 2020 16:01:17 +0200
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 788AFC0007;
+ Wed,  3 Jun 2020 14:08:25 +0000 (UTC)
+Date: Wed, 3 Jun 2020 16:08:24 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@collabora.com>
-Subject: Re: [PATCH 07/10] mtd: rawnand: fsl_upm: Inherit from nand_controller
-Message-ID: <20200603160117.5693606b@xps13>
-In-Reply-To: <20200603134922.1352340-8-boris.brezillon@collabora.com>
+Subject: Re: [PATCH 08/10] mtd: rawnand: fsl_upm: Implement exec_op()
+Message-ID: <20200603160824.3adae7b8@xps13>
+In-Reply-To: <20200603134922.1352340-9-boris.brezillon@collabora.com>
 References: <20200603134922.1352340-1-boris.brezillon@collabora.com>
- <20200603134922.1352340-8-boris.brezillon@collabora.com>
+ <20200603134922.1352340-9-boris.brezillon@collabora.com>
 Organization: Bootlin
 X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200603_070122_134849_A1A66779 
-X-CRM114-Status: GOOD (  11.77  )
+X-CRM114-CacheID: sfid-20200603_070830_887582_F6371C4C 
+X-CRM114-Status: GOOD (  14.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,46 +81,126 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
 Boris Brezillon <boris.brezillon@collabora.com> wrote on Wed,  3 Jun
-2020 15:49:19 +0200:
+2020 15:49:20 +0200:
 
-> Explicitly inherit from nand_controller instead of relying on the
-> nand_chip.legacy.dummy_controller field.
+> Implement exec_op() so we can get rid of the legacy interface
+> implementation.
 > 
 > Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
 > ---
->  drivers/mtd/nand/raw/fsl_upm.c | 3 +++
->  1 file changed, 3 insertions(+)
+>  drivers/mtd/nand/raw/fsl_upm.c | 86 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 86 insertions(+)
 > 
 > diff --git a/drivers/mtd/nand/raw/fsl_upm.c b/drivers/mtd/nand/raw/fsl_upm.c
-> index 977b7aad419b..9a63e36825d8 100644
+> index 9a63e36825d8..03ca20930274 100644
 > --- a/drivers/mtd/nand/raw/fsl_upm.c
 > +++ b/drivers/mtd/nand/raw/fsl_upm.c
-> @@ -24,6 +24,7 @@
->  #define FSL_UPM_WAIT_WRITE_BUFFER 0x4
+> @@ -194,6 +194,91 @@ static int fun_chip_init(struct fsl_upm_nand *fun,
+>  	return ret;
+>  }
 >  
->  struct fsl_upm_nand {
-> +	struct nand_controller base;
->  	struct device *dev;
->  	struct nand_chip chip;
->  	int last_ctrl;
-> @@ -167,6 +168,7 @@ static int fun_chip_init(struct fsl_upm_nand *fun,
->  	if (!fun->rnb_gpio[0])
->  		fun->chip.legacy.dev_ready = fun_chip_ready;
->  
-> +	fun->chip.controller = &fun->base;
->  	mtd->dev.parent = fun->dev;
->  
->  	flash_np = of_get_next_child(upm_np, NULL);
-> @@ -268,6 +270,7 @@ static int fun_probe(struct platform_device *ofdev)
->  		fun->wait_flags = FSL_UPM_WAIT_RUN_PATTERN |
+> +static int func_exec_instr(struct nand_chip *chip,
+> +			   const struct nand_op_instr *instr)
+> +{
+> +	struct fsl_upm_nand *fun = to_fsl_upm_nand(nand_to_mtd(chip));
+> +	u32 mar, reg_offs = fun->mchip_offsets[fun->mchip_number];
+> +	unsigned int i;
+> +	const u8 *out;
+> +	u8 *in;
+> +
+> +	switch (instr->type) {
+> +	case NAND_OP_CMD_INSTR:
+> +		fsl_upm_start_pattern(&fun->upm, fun->upm_cmd_offset);
+> +		mar = (instr->ctx.cmd.opcode << (32 - fun->upm.width)) |
+> +		      reg_offs;
+> +		fsl_upm_run_pattern(&fun->upm, fun->io_base + reg_offs, mar);
+> +		fsl_upm_end_pattern(&fun->upm);
+> +		return 0;
+> +
+> +	case NAND_OP_ADDR_INSTR:
+> +		fsl_upm_start_pattern(&fun->upm, fun->upm_addr_offset);
+> +		for (i = 0; i < instr->ctx.addr.naddrs; i++) {
+> +			mar = (instr->ctx.addr.addrs[i] << (32 - fun->upm.width)) |
+> +			      reg_offs;
+> +			fsl_upm_run_pattern(&fun->upm, fun->io_base + reg_offs, mar);
+> +		}
+> +		fsl_upm_end_pattern(&fun->upm);
+> +		return 0;
+> +
+> +	case NAND_OP_DATA_IN_INSTR:
+> +		in = instr->ctx.data.buf.in;
+> +		for (i = 0; i < instr->ctx.data.len; i++)
+> +			in[i] = in_8(fun->io_base + reg_offs);
+> +		return 0;
+> +
+> +	case NAND_OP_DATA_OUT_INSTR:
+> +		out = instr->ctx.data.buf.out;
+> +		for (i = 0; i < instr->ctx.data.len; i++)
+> +			out_8(fun->io_base + reg_offs, out[i]);
+> +		return 0;
+> +
+> +	case NAND_OP_WAITRDY_INSTR:
+> +		if (!fun->rnb_gpio[fun->mchip_number])
+> +			return nand_soft_waitrdy(chip, instr->ctx.waitrdy.timeout_ms);
+> +
+> +		return nand_gpio_waitrdy(chip, fun->rnb_gpio[fun->mchip_number],
+> +					 instr->ctx.waitrdy.timeout_ms);
+> +
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int fun_exec_op(struct nand_chip *chip, const struct nand_operation *op,
+> +		       bool check_only)
+> +{
+> +	struct fsl_upm_nand *fun = to_fsl_upm_nand(nand_to_mtd(chip));
+> +	unsigned int i;
+> +	int ret;
+> +
+> +	if (op->cs > NAND_MAX_CHIPS)
+> +		return -EINVAL;
+> +
+> +	if (check_only)
+> +		return 0;
+> +
+> +	fun->mchip_number = op->cs;
+> +
+> +	for (i = 0; i < op->ninstrs; i++) {
+> +		ret = func_exec_instr(chip, &op->instrs[i]);
+> +		if (ret)
+> +			return ret;
+> +
+> +		if (op->instrs[i].delay_ns)
+> +			ndelay(op->instrs[i].delay_ns);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct nand_controller_ops fun_ops = {
+> +	.exec_op = fun_exec_op,
+> +};
+> +
+>  static int fun_probe(struct platform_device *ofdev)
+>  {
+>  	struct fsl_upm_nand *fun;
+> @@ -271,6 +356,7 @@ static int fun_probe(struct platform_device *ofdev)
 >  				  FSL_UPM_WAIT_WRITE_BYTE;
 >  
-> +	nand_controller_init(&fun->base);
+>  	nand_controller_init(&fun->base);
+> +	fun->base.ops = &fun_ops;
 >  	fun->dev = &ofdev->dev;
 >  	fun->last_ctrl = NAND_CLE;
 >  
 
+
+Looks fine!
+
 Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
