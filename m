@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D53C6C433DF
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2020 13:50:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17CA9C433DF
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2020 13:50:46 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8331A206A2
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2020 13:50:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B1486206A2
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2020 13:50:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RqsXJUtQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8331A206A2
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="alSXZRyo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B1486206A2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CvSSveVggQLOdUapB32FxpslhtZhoOlACpFfbr6PfDE=; b=RqsXJUtQdC+MId
-	VsSag60RMqLydiMXkyBH8AOE3uBSpOidZ85O+m+urQ+jC7OZtNHIqARGAsqmVutf89BYK37740rLy
-	tMNxtrtvtqYLStoJrkK8c2AXm0RMw5nrs4kszosa+QpFjPEJkR9K6C6+2gU6Xwli5vgKCrPdZ3c5E
-	7Yl6QkLpMtLYjlgZH2Q9j7YtqKb3j9ln2H2RD11MWXV6caosgTW80OhfE2nGTCrt1JGl4vvTGkkwJ
-	C2PyUOk/x0BF7Q0s+dSiCbYyxlPc14SZbshbVgL7OZv9/JOYg7JDqCelPl4Xac7G0o648vMUaYA2Y
-	g6hOlMfNisYRfMprwwlg==;
+	List-Owner; bh=dDGNHohIRImIllmHTt5PobpsZTWLUYRR4+EEeEUajbg=; b=alSXZRyocCzELK
+	a5bOqvje09GEtFxKUcm6Oovgw9XpL2d41wvvWpQAuR2uNzhJW9svgzBftcQUzlVX3B17X9QL4XQZr
+	gSQ1Iq+S8mnFrrQK+0l2+Z/cyShqOgYV6mYlF8Mxs2H7t9u0gJMbfisdDdQAbzNeJyulZP2xQq31G
+	MpTp4EOHkZd9+Fp3NuwZ6IRDZt8n9ukEYragoeZF6Jn/szZV7X+E7K8BcuUf+7mYthesEiiMnwSks
+	B+VvB5rRo09oMCJhYaLl4CYitus8N9l0xiTZ1SJvwDH9NwAyIziyrGOWf4cNndJ9iD34veB7lDnTe
+	f1PqTox3GFnLPJ3BMpow==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jgTme-0004ok-Hk; Wed, 03 Jun 2020 13:50:20 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1jgTmv-00052t-4T; Wed, 03 Jun 2020 13:50:37 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jgTlo-0001iU-LK
+ id 1jgTlo-0001ii-Q7
  for linux-mtd@lists.infradead.org; Wed, 03 Jun 2020 13:49:30 +0000
 Received: from localhost.localdomain (unknown
  [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id B07342A3D56;
- Wed,  3 Jun 2020 14:49:26 +0100 (BST)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 202BF2A3D69;
+ Wed,  3 Jun 2020 14:49:27 +0100 (BST)
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Anton Vorontsov <anton@enomsg.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 02/10] mtd: rawnand: fsl_upm: Get rid of the unused
- fsl_upm_nand.parts field
-Date: Wed,  3 Jun 2020 15:49:14 +0200
-Message-Id: <20200603134922.1352340-3-boris.brezillon@collabora.com>
+Subject: [PATCH 03/10] mtd: rawnand: fsl_upm: Allocate the fsl_upm_nand object
+ using devm_kzalloc()
+Date: Wed,  3 Jun 2020 15:49:15 +0200
+Message-Id: <20200603134922.1352340-4-boris.brezillon@collabora.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20200603134922.1352340-1-boris.brezillon@collabora.com>
 References: <20200603134922.1352340-1-boris.brezillon@collabora.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200603_064928_824034_5E797E1E 
-X-CRM114-Status: UNSURE (   9.87  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200603_064928_969395_83FE403D 
+X-CRM114-Status: GOOD (  11.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,25 +81,86 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-fsl_upm_nand.parts is unused, let's get rid of it.
+This simplifies the init error patch and remove function.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
 ---
- drivers/mtd/nand/raw/fsl_upm.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/mtd/nand/raw/fsl_upm.c | 18 ++++++------------
+ 1 file changed, 6 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/fsl_upm.c b/drivers/mtd/nand/raw/fsl_upm.c
-index 76d1032cd35e..6eba2f4a2f5a 100644
+index 6eba2f4a2f5a..9cf79c62ef22 100644
 --- a/drivers/mtd/nand/raw/fsl_upm.c
 +++ b/drivers/mtd/nand/raw/fsl_upm.c
-@@ -29,7 +29,6 @@ struct fsl_upm_nand {
- 	struct device *dev;
- 	struct nand_chip chip;
- 	int last_ctrl;
--	struct mtd_partition *parts;
- 	struct fsl_upm upm;
- 	uint8_t upm_addr_offset;
- 	uint8_t upm_cmd_offset;
+@@ -205,36 +205,34 @@ static int fun_probe(struct platform_device *ofdev)
+ 	int size;
+ 	int i;
+ 
+-	fun = kzalloc(sizeof(*fun), GFP_KERNEL);
++	fun = devm_kzalloc(&ofdev->dev, sizeof(*fun), GFP_KERNEL);
+ 	if (!fun)
+ 		return -ENOMEM;
+ 
+ 	ret = of_address_to_resource(ofdev->dev.of_node, 0, &io_res);
+ 	if (ret) {
+ 		dev_err(&ofdev->dev, "can't get IO base\n");
+-		goto err1;
++		return ret;
+ 	}
+ 
+ 	ret = fsl_upm_find(io_res.start, &fun->upm);
+ 	if (ret) {
+ 		dev_err(&ofdev->dev, "can't find UPM\n");
+-		goto err1;
++		return ret;
+ 	}
+ 
+ 	prop = of_get_property(ofdev->dev.of_node, "fsl,upm-addr-offset",
+ 			       &size);
+ 	if (!prop || size != sizeof(uint32_t)) {
+ 		dev_err(&ofdev->dev, "can't get UPM address offset\n");
+-		ret = -EINVAL;
+-		goto err1;
++		return -EINVAL;
+ 	}
+ 	fun->upm_addr_offset = *prop;
+ 
+ 	prop = of_get_property(ofdev->dev.of_node, "fsl,upm-cmd-offset", &size);
+ 	if (!prop || size != sizeof(uint32_t)) {
+ 		dev_err(&ofdev->dev, "can't get UPM command offset\n");
+-		ret = -EINVAL;
+-		goto err1;
++		return -EINVAL;
+ 	}
+ 	fun->upm_cmd_offset = *prop;
+ 
+@@ -244,7 +242,7 @@ static int fun_probe(struct platform_device *ofdev)
+ 		fun->mchip_count = size / sizeof(uint32_t);
+ 		if (fun->mchip_count >= NAND_MAX_CHIPS) {
+ 			dev_err(&ofdev->dev, "too much multiple chips\n");
+-			goto err1;
++			return -EINVAL;
+ 		}
+ 		for (i = 0; i < fun->mchip_count; i++)
+ 			fun->mchip_offsets[i] = be32_to_cpu(prop[i]);
+@@ -306,8 +304,6 @@ static int fun_probe(struct platform_device *ofdev)
+ 			break;
+ 		gpio_free(fun->rnb_gpio[i]);
+ 	}
+-err1:
+-	kfree(fun);
+ 
+ 	return ret;
+ }
+@@ -330,8 +326,6 @@ static int fun_remove(struct platform_device *ofdev)
+ 		gpio_free(fun->rnb_gpio[i]);
+ 	}
+ 
+-	kfree(fun);
+-
+ 	return 0;
+ }
+ 
 -- 
 2.25.4
 
