@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BE77C433DF
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2020 18:09:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EA8AC433DF
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2020 18:10:26 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2B44B20734
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2020 18:09:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3778C20734
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2020 18:10:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="c+s4lYqO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2B44B20734
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="UTjS8J6K"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3778C20734
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,36 +25,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=S8p0jleiezTvuB4njlNz4OwZLGdAek3ZVxcaMM9zyn0=; b=c+s4lYqOODLHh2
-	Ie+o44OZe7Kae2MraL+PScWjfl9qPOCnEbAUIUf+Z00dbUdh/9owbrobQaLamexj+/jzD0FIcB/x3
-	dXchCT67BzC9KItU4kUazwfPRgpBEn2nRfhxepPSjP+5+h3sDJIXiOol2boJGGJNchOXnpeycHfWt
-	N0Z+XDGYpZ7jkIKMfULXgz/cAXmlKe8paeDyy4oEAawoii/WPIuSyPMmN2XivL6hVDG4SKMn5lCJt
-	4H7jPKRRhSiAEhZULxplti2noHMmfffrjXt7YW+uC2JHm5DK+PNo8cz2NpdmGFe4JHVGStqogEPEp
-	w8hOBwg2CDN+A4Gn7evQ==;
+	List-Owner; bh=7gGRcYO6Nb/lqJcmEvdEzcxB+ELi1tW7CK777moGriE=; b=UTjS8J6KBq6LVe
+	aTuoQJxWY0PtgISHSzUyoCCPv2gUsgaHF7BhTPYQdEbJo8iQ57u49w3fkrk4nhCFzKApBl9WWf1Gw
+	PrVjc24k+9j9EXjYLbFkgDdouwi+Dcfnh1A/rxr4dqHC4S/sdT1meIoWeyK3KdomzYVDClb6yXOIm
+	VfmKCiqF2SyWxErh6uL0C0VXxArLhtQuIcLET32oL/6c2uZQrTlIank6+yM0/RQn66PWYT3Ru+366
+	S4jegyAFweVw7NRXVDSxYUKU0pnqpnbuxFVWmtjsvnbArJEoyb0FtsCrSkSoFktbo6qfrwoxaQDdg
+	mu2rgnFKsYKp1p0LX4zw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jgXpk-0002K3-JC; Wed, 03 Jun 2020 18:09:48 +0000
+	id 1jgXpx-0002X6-A1; Wed, 03 Jun 2020 18:10:01 +0000
 Received: from relay10.mail.gandi.net ([217.70.178.230])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jgXet-0005PT-R9; Wed, 03 Jun 2020 17:58:43 +0000
+ id 1jgXex-0005S1-12; Wed, 03 Jun 2020 17:58:47 +0000
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay10.mail.gandi.net (Postfix) with ESMTPSA id 2A7F624000B;
- Wed,  3 Jun 2020 17:58:32 +0000 (UTC)
+ by relay10.mail.gandi.net (Postfix) with ESMTPSA id A67AE240004;
+ Wed,  3 Jun 2020 17:58:35 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH v10 15/20] mtd: nand: Use the new generic ECC object
-Date: Wed,  3 Jun 2020 19:57:54 +0200
-Message-Id: <20200603175759.19948-16-miquel.raynal@bootlin.com>
+Subject: [PATCH v10 17/20] mtd: rawnand: Use the ECC framework OOB layouts
+Date: Wed,  3 Jun 2020 19:57:56 +0200
+Message-Id: <20200603175759.19948-18-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200603175759.19948-1-miquel.raynal@bootlin.com>
 References: <20200603175759.19948-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200603_105836_029766_ADB93838 
-X-CRM114-Status: GOOD (  11.72  )
+X-CRM114-CacheID: sfid-20200603_105839_396977_8EF6E84F 
+X-CRM114-Status: GOOD (  16.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,74 +77,353 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Embed a generic NAND ECC high-level object in the nand_device
-structure to carry all the ECC engine configuration/data.
+No need to have our own in the raw NAND core.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- include/linux/mtd/nand.h | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/mtd/nand/raw/arasan-nand-controller.c |   2 +-
+ drivers/mtd/nand/raw/atmel/nand-controller.c  |   2 +-
+ drivers/mtd/nand/raw/davinci_nand.c           |   3 +-
+ .../mtd/nand/raw/ingenic/ingenic_nand_drv.c   |   6 +-
+ drivers/mtd/nand/raw/nand_base.c              | 171 +-----------------
+ drivers/mtd/nand/raw/nand_toshiba.c           |   2 +-
+ drivers/mtd/nand/raw/vf610_nfc.c              |   2 +-
+ include/linux/mtd/rawnand.h                   |   4 +-
+ 8 files changed, 16 insertions(+), 176 deletions(-)
 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 348fb2ad4d90..697ea2474a7c 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -301,7 +301,7 @@ struct nand_ecc {
-  * struct nand_device - NAND device
-  * @mtd: MTD instance attached to the NAND device
-  * @memorg: memory layout
-- * @eccreq: ECC requirements
-+ * @ecc: NAND ECC object attached to the NAND device
-  * @rowconv: position to row address converter
-  * @bbt: bad block table info
-  * @ops: NAND operations attached to the NAND device
-@@ -309,8 +309,8 @@ struct nand_ecc {
-  * Generic NAND object. Specialized NAND layers (raw NAND, SPI NAND, OneNAND)
-  * should declare their own NAND object embedding a nand_device struct (that's
-  * how inheritance is done).
-- * struct_nand_device->memorg and struct_nand_device->eccreq should be filled
-- * at device detection time to reflect the NAND device
-+ * struct_nand_device->memorg and struct_nand_device->ecc.requirements should
-+ * be filled at device detection time to reflect the NAND device
-  * capabilities/requirements. Once this is done nanddev_init() can be called.
-  * It will take care of converting NAND information into MTD ones, which means
-  * the specialized NAND layers should never manually tweak
-@@ -319,7 +319,7 @@ struct nand_ecc {
- struct nand_device {
- 	struct mtd_info mtd;
- 	struct nand_memory_organization memorg;
--	struct nand_ecc_props eccreq;
-+	struct nand_ecc ecc;
- 	struct nand_row_converter rowconv;
- 	struct nand_bbt bbt;
- 	const struct nand_ops *ops;
-@@ -530,7 +530,7 @@ nanddev_get_memorg(struct nand_device *nand)
- static inline const struct nand_ecc_props *
- nanddev_get_ecc_conf(struct nand_device *nand)
+diff --git a/drivers/mtd/nand/raw/arasan-nand-controller.c b/drivers/mtd/nand/raw/arasan-nand-controller.c
+index a0b5c539ca73..6fe61393bd26 100644
+--- a/drivers/mtd/nand/raw/arasan-nand-controller.c
++++ b/drivers/mtd/nand/raw/arasan-nand-controller.c
+@@ -980,7 +980,7 @@ static int anfc_init_hw_ecc_controller(struct arasan_nfc *nfc,
+ 		return -EINVAL;
+ 	}
+ 
+-	mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
++	mtd_set_ooblayout(mtd, nand_get_large_page_ooblayout());
+ 
+ 	ecc->steps = mtd->writesize / ecc->size;
+ 	ecc->algo = NAND_ECC_ALGO_BCH;
+diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
+index 3fba91d7991a..08df7f23b859 100644
+--- a/drivers/mtd/nand/raw/atmel/nand-controller.c
++++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
+@@ -1108,7 +1108,7 @@ static int atmel_nand_pmecc_init(struct nand_chip *chip)
+ 
+ 	chip->options |= NAND_NO_SUBPAGE_WRITE;
+ 
+-	mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
++	mtd_set_ooblayout(mtd, nand_get_large_page_ooblayout());
+ 
+ 	return 0;
+ }
+diff --git a/drivers/mtd/nand/raw/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
+index 58966a9706b1..427f320fb79b 100644
+--- a/drivers/mtd/nand/raw/davinci_nand.c
++++ b/drivers/mtd/nand/raw/davinci_nand.c
+@@ -645,7 +645,8 @@ static int davinci_nand_attach_chip(struct nand_chip *chip)
+ 				mtd_set_ooblayout(mtd,
+ 						  &hwecc4_small_ooblayout_ops);
+ 			} else if (chunks == 4 || chunks == 8) {
+-				mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
++				mtd_set_ooblayout(mtd,
++						  nand_get_large_page_ooblayout());
+ 				info->chip.ecc.read_page = nand_davinci_read_page_hwecc_oob_first;
+ 			} else {
+ 				return -EIO;
+diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
+index 70309f18124c..0e9d426fe4f2 100644
+--- a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
++++ b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
+@@ -243,8 +243,10 @@ static int ingenic_nand_attach_chip(struct nand_chip *chip)
+ 	/* For legacy reasons we use a different layout on the qi,lb60 board. */
+ 	if (of_machine_is_compatible("qi,lb60"))
+ 		mtd_set_ooblayout(mtd, &qi_lb60_ooblayout_ops);
+-	else
++	else if (nfc->soc_info->oob_layout)
+ 		mtd_set_ooblayout(mtd, nfc->soc_info->oob_layout);
++	else
++		mtd_set_ooblayout(mtd, nand_get_large_page_ooblayout());
+ 
+ 	return 0;
+ }
+@@ -532,7 +534,6 @@ static const struct jz_soc_info jz4740_soc_info = {
+ 	.data_offset = 0x00000000,
+ 	.cmd_offset = 0x00008000,
+ 	.addr_offset = 0x00010000,
+-	.oob_layout = &nand_ooblayout_lp_ops,
+ };
+ 
+ static const struct jz_soc_info jz4725b_soc_info = {
+@@ -546,7 +547,6 @@ static const struct jz_soc_info jz4780_soc_info = {
+ 	.data_offset = 0x00000000,
+ 	.cmd_offset = 0x00400000,
+ 	.addr_offset = 0x00800000,
+-	.oob_layout = &nand_ooblayout_lp_ops,
+ };
+ 
+ static const struct of_device_id ingenic_nand_dt_match[] = {
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index aea78642d722..d3e1fc944179 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -46,166 +46,6 @@
+ 
+ #include "internals.h"
+ 
+-/* Define default oob placement schemes for large and small page devices */
+-static int nand_ooblayout_ecc_sp(struct mtd_info *mtd, int section,
+-				 struct mtd_oob_region *oobregion)
+-{
+-	struct nand_chip *chip = mtd_to_nand(mtd);
+-	struct nand_ecc_ctrl *ecc = &chip->ecc;
+-
+-	if (section > 1)
+-		return -ERANGE;
+-
+-	if (!section) {
+-		oobregion->offset = 0;
+-		if (mtd->oobsize == 16)
+-			oobregion->length = 4;
+-		else
+-			oobregion->length = 3;
+-	} else {
+-		if (mtd->oobsize == 8)
+-			return -ERANGE;
+-
+-		oobregion->offset = 6;
+-		oobregion->length = ecc->total - 4;
+-	}
+-
+-	return 0;
+-}
+-
+-static int nand_ooblayout_free_sp(struct mtd_info *mtd, int section,
+-				  struct mtd_oob_region *oobregion)
+-{
+-	if (section > 1)
+-		return -ERANGE;
+-
+-	if (mtd->oobsize == 16) {
+-		if (section)
+-			return -ERANGE;
+-
+-		oobregion->length = 8;
+-		oobregion->offset = 8;
+-	} else {
+-		oobregion->length = 2;
+-		if (!section)
+-			oobregion->offset = 3;
+-		else
+-			oobregion->offset = 6;
+-	}
+-
+-	return 0;
+-}
+-
+-const struct mtd_ooblayout_ops nand_ooblayout_sp_ops = {
+-	.ecc = nand_ooblayout_ecc_sp,
+-	.free = nand_ooblayout_free_sp,
+-};
+-EXPORT_SYMBOL_GPL(nand_ooblayout_sp_ops);
+-
+-static int nand_ooblayout_ecc_lp(struct mtd_info *mtd, int section,
+-				 struct mtd_oob_region *oobregion)
+-{
+-	struct nand_chip *chip = mtd_to_nand(mtd);
+-	struct nand_ecc_ctrl *ecc = &chip->ecc;
+-
+-	if (section || !ecc->total)
+-		return -ERANGE;
+-
+-	oobregion->length = ecc->total;
+-	oobregion->offset = mtd->oobsize - oobregion->length;
+-
+-	return 0;
+-}
+-
+-static int nand_ooblayout_free_lp(struct mtd_info *mtd, int section,
+-				  struct mtd_oob_region *oobregion)
+-{
+-	struct nand_chip *chip = mtd_to_nand(mtd);
+-	struct nand_ecc_ctrl *ecc = &chip->ecc;
+-
+-	if (section)
+-		return -ERANGE;
+-
+-	oobregion->length = mtd->oobsize - ecc->total - 2;
+-	oobregion->offset = 2;
+-
+-	return 0;
+-}
+-
+-const struct mtd_ooblayout_ops nand_ooblayout_lp_ops = {
+-	.ecc = nand_ooblayout_ecc_lp,
+-	.free = nand_ooblayout_free_lp,
+-};
+-EXPORT_SYMBOL_GPL(nand_ooblayout_lp_ops);
+-
+-/*
+- * Support the old "large page" layout used for 1-bit Hamming ECC where ECC
+- * are placed at a fixed offset.
+- */
+-static int nand_ooblayout_ecc_lp_hamming(struct mtd_info *mtd, int section,
+-					 struct mtd_oob_region *oobregion)
+-{
+-	struct nand_chip *chip = mtd_to_nand(mtd);
+-	struct nand_ecc_ctrl *ecc = &chip->ecc;
+-
+-	if (section)
+-		return -ERANGE;
+-
+-	switch (mtd->oobsize) {
+-	case 64:
+-		oobregion->offset = 40;
+-		break;
+-	case 128:
+-		oobregion->offset = 80;
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	oobregion->length = ecc->total;
+-	if (oobregion->offset + oobregion->length > mtd->oobsize)
+-		return -ERANGE;
+-
+-	return 0;
+-}
+-
+-static int nand_ooblayout_free_lp_hamming(struct mtd_info *mtd, int section,
+-					  struct mtd_oob_region *oobregion)
+-{
+-	struct nand_chip *chip = mtd_to_nand(mtd);
+-	struct nand_ecc_ctrl *ecc = &chip->ecc;
+-	int ecc_offset = 0;
+-
+-	if (section < 0 || section > 1)
+-		return -ERANGE;
+-
+-	switch (mtd->oobsize) {
+-	case 64:
+-		ecc_offset = 40;
+-		break;
+-	case 128:
+-		ecc_offset = 80;
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	if (section == 0) {
+-		oobregion->offset = 2;
+-		oobregion->length = ecc_offset - 2;
+-	} else {
+-		oobregion->offset = ecc_offset + ecc->total;
+-		oobregion->length = mtd->oobsize - oobregion->offset;
+-	}
+-
+-	return 0;
+-}
+-
+-static const struct mtd_ooblayout_ops nand_ooblayout_lp_hamming_ops = {
+-	.ecc = nand_ooblayout_ecc_lp_hamming,
+-	.free = nand_ooblayout_free_lp_hamming,
+-};
+-
+ static int nand_pairing_dist3_get_info(struct mtd_info *mtd, int page,
+ 				       struct mtd_pairing_info *info)
  {
--	return &nand->eccreq;
-+	return &nand->ecc.ctx.conf;
+@@ -5349,7 +5189,7 @@ static int nand_set_ecc_soft_ops(struct nand_chip *chip)
+ 				return -EINVAL;
+ 			}
+ 
+-			mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
++			mtd_set_ooblayout(mtd, nand_get_large_page_ooblayout());
+ 
+ 		}
+ 
+@@ -5358,7 +5198,7 @@ static int nand_set_ecc_soft_ops(struct nand_chip *chip)
+ 		 * used, otherwise we don't know how many bytes can really be
+ 		 * used.
+ 		 */
+-		if (mtd->ooblayout == &nand_ooblayout_lp_ops &&
++		if (mtd->ooblayout == nand_get_large_page_ooblayout() &&
+ 		    ecc->options & NAND_ECC_MAXIMIZE) {
+ 			int steps, bytes;
+ 
+@@ -5760,11 +5600,12 @@ static int nand_scan_tail(struct nand_chip *chip)
+ 		switch (mtd->oobsize) {
+ 		case 8:
+ 		case 16:
+-			mtd_set_ooblayout(mtd, &nand_ooblayout_sp_ops);
++			mtd_set_ooblayout(mtd, nand_get_small_page_ooblayout());
+ 			break;
+ 		case 64:
+ 		case 128:
+-			mtd_set_ooblayout(mtd, &nand_ooblayout_lp_hamming_ops);
++			mtd_set_ooblayout(mtd,
++					  nand_get_large_page_hamming_ooblayout());
+ 			break;
+ 		default:
+ 			/*
+@@ -5776,7 +5617,7 @@ static int nand_scan_tail(struct nand_chip *chip)
+ 			 */
+ 			if (ecc->engine_type == NAND_ECC_ENGINE_TYPE_NONE) {
+ 				mtd_set_ooblayout(mtd,
+-						&nand_ooblayout_lp_ops);
++						  nand_get_large_page_ooblayout());
+ 				break;
+ 			}
+ 
+diff --git a/drivers/mtd/nand/raw/nand_toshiba.c b/drivers/mtd/nand/raw/nand_toshiba.c
+index 5d3434587f25..7a3c2b16ff93 100644
+--- a/drivers/mtd/nand/raw/nand_toshiba.c
++++ b/drivers/mtd/nand/raw/nand_toshiba.c
+@@ -140,7 +140,7 @@ static void toshiba_nand_benand_init(struct nand_chip *chip)
+ 
+ 	chip->options |= NAND_SUBPAGE_READ;
+ 
+-	mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
++	mtd_set_ooblayout(mtd, nand_get_large_page_ooblayout());
  }
  
- /**
-@@ -541,7 +541,7 @@ nanddev_get_ecc_conf(struct nand_device *nand)
- static inline const struct nand_ecc_props *
- nanddev_get_ecc_requirements(struct nand_device *nand)
- {
--	return &nand->eccreq;
-+	return &nand->ecc.requirements;
- }
+ static void toshiba_nand_decode_id(struct nand_chip *chip)
+diff --git a/drivers/mtd/nand/raw/vf610_nfc.c b/drivers/mtd/nand/raw/vf610_nfc.c
+index 8ee2c1f539c4..50dc0c93140c 100644
+--- a/drivers/mtd/nand/raw/vf610_nfc.c
++++ b/drivers/mtd/nand/raw/vf610_nfc.c
+@@ -779,7 +779,7 @@ static int vf610_nfc_attach_chip(struct nand_chip *chip)
+ 		mtd->oobsize = 64;
  
- /**
-@@ -554,7 +554,7 @@ static inline void
- nanddev_set_ecc_requirements(struct nand_device *nand,
- 			     const struct nand_ecc_props *reqs)
- {
--	nand->eccreq = *reqs;
-+	nand->ecc.requirements = *reqs;
- }
+ 	/* Use default large page ECC layout defined in NAND core */
+-	mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
++	mtd_set_ooblayout(mtd, nand_get_large_page_ooblayout());
+ 	if (chip->ecc.strength == 32) {
+ 		nfc->ecc_mode = ECC_60_BYTE;
+ 		chip->ecc.bytes = 60;
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 8f7f1cce3b4b..af02eb07207e 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -14,6 +14,7 @@
+ #define __LINUX_MTD_RAWNAND_H
  
- int nanddev_init(struct nand_device *nand, const struct nand_ops *ops,
+ #include <linux/mtd/mtd.h>
++#include <linux/mtd/nand.h>
+ #include <linux/mtd/flashchip.h>
+ #include <linux/mtd/bbm.h>
+ #include <linux/mtd/jedec.h>
+@@ -1159,9 +1160,6 @@ struct nand_chip {
+ 	int (*unlock_area)(struct nand_chip *chip, loff_t ofs, uint64_t len);
+ };
+ 
+-extern const struct mtd_ooblayout_ops nand_ooblayout_sp_ops;
+-extern const struct mtd_ooblayout_ops nand_ooblayout_lp_ops;
+-
+ static inline struct nand_chip *mtd_to_nand(struct mtd_info *mtd)
+ {
+ 	return container_of(mtd, struct nand_chip, base.mtd);
 -- 
 2.20.1
 
