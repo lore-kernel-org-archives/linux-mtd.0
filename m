@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93C73C433E0
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2020 07:04:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18C28C433E1
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2020 07:18:54 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 668CE20674
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2020 07:04:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E41892077D
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2020 07:18:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RPQMdERU";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hvP2SxRp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 668CE20674
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QA5JFhJ1";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IwDhT0K2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E41892077D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,58 +26,58 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6TCy4+d5NRxuuWW8ab991/LHQg0vyFP9fqY2BUEKT/I=; b=RPQMdERUvaZ9hf
-	X5wefwRECdvt4tSo7FNZOg8vzHnjwHwUO3MUV/LjYX0L9Q2syA4MOxT8tXjm2LYUs+KYLbn00wzPf
-	VEMEK5+HSbA4wOi+t2vP3yLRPSHCO9mhGMsfoJKXHT2JZBWM2J4h1O9G+y1jeWnxQTtQg17gk5MuQ
-	ehGF+0RyOH4hmbHMX35dSw/kQ+JJN77R8p9dRF25HMezxUSFcIqtXpwKkDKrNnoQQH7MOb8M9+we4
-	pyjHAIIIzjoaxNJ8jEPzOY/PnTT3Zx5d6i/EiyLViee7DdrNevY4ff/Keba23N1EQibgSp8gBWEO5
-	8M2Uo+6BJS7CzR/KK4bw==;
+	List-Owner; bh=EUjvH8BVU5GgtihSxqj9/h9XLTG0qf+Egvwre7K/TOs=; b=QA5JFhJ1/f4b8x
+	+r4SzTWAUEfcavvYu/PUi4hMXjjbOI7F99+x9EG+5r/E+zQTPTadcBLNrpUCNe1NluTih7vnWfoRo
+	BxGq1g2PJYb7VjFawgJw+I1eWElhj8wmAlyulNVWeeHtW9tABbh3vRzLVf3Khpd9sMYTNAsxmSfk1
+	ZdQGqA7IFfTAmSHUgK99MLW2sKVhCLC14SagFZpE09qKhkuFSaEh2Ys+bAUDfbH5KIoxs14hsQOTH
+	nVYd6kST4M9TDzpmeQkEkBV2X7PGpiHf6VCE9oUf/ifbEggInFb9phK47x3EgUJ70fbXquQcLuT+f
+	7qXsv2t9+3jY1ZmbPkOg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jgNRS-0005Tc-AA; Wed, 03 Jun 2020 07:04:02 +0000
-Received: from mail-qk1-x741.google.com ([2607:f8b0:4864:20::741])
+	id 1jgNfh-0005tN-B8; Wed, 03 Jun 2020 07:18:45 +0000
+Received: from mail-qk1-x744.google.com ([2607:f8b0:4864:20::744])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jgNRN-0005Ss-89
- for linux-mtd@lists.infradead.org; Wed, 03 Jun 2020 07:03:58 +0000
-Received: by mail-qk1-x741.google.com with SMTP id 205so1176192qkg.3
- for <linux-mtd@lists.infradead.org>; Wed, 03 Jun 2020 00:03:53 -0700 (PDT)
+ id 1jgNfe-0005ss-5Z
+ for linux-mtd@lists.infradead.org; Wed, 03 Jun 2020 07:18:43 +0000
+Received: by mail-qk1-x744.google.com with SMTP id q8so1150104qkm.12
+ for <linux-mtd@lists.infradead.org>; Wed, 03 Jun 2020 00:18:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=QzVzuQF02fR+c0YY6XKBCSbJXl7wL1vS1Ln1HL3oxGw=;
- b=hvP2SxRps2n5aDrbSR8AAQbnQC0t0zBApBAx25ugAFYja0lvhsnGmNibf86F7WvKGg
- J+O6rwI5Za3ngxG/RuczGwvXZ3CddVudqhO6xw7M7+73T2uBDtS7ELpJWP2naiVjX2H2
- CUUDBo8X/Wj/yf47+Ks7aZYgLdUeFkRoGjh3cdwA5sXdAsmV5J6+cQcqppbz4qujvnsL
- E67tZfym83Fdq1LejN6YfBTcKeO6oORXbhs+wk7R7Gy2OqWZHE9MOPoAQS/lnrQFzyyG
- AjE9anYFv4LZXRYmgdLwgbr9woyk8RnVX049/PQ0knkZFQzkAmEDQi+vxY7QJ6WXUua9
- yONQ==
+ :cc; bh=upUYfRAA3OB+55Uid8yeg7Ykm1ooNkzjA3YEgCJr99I=;
+ b=IwDhT0K292/Bw6J/zj0jh9gBcuBIJl5QMCTXZQwICBLE9l8ck8ixucykHzavVL170l
+ GwGcTb8RqvvbWSXOotRntL7qZtuSKCnHcnb+XjMrfVo0ZmWQPH3G0o7IQjNuZIsCFgpT
+ KBsy+6Ha+U1JN5ac6VzHaGuSaXiEm/rX8praMgfXOlSkWVRMBTHLhTUv2WDgv1AyuQOg
+ M7x0krg0Ab0VmHJZPlaUbvwNxY1sMI43Sx4ovBjHRLtqp6ioG/I/Nos+mdKwzmmLrJp0
+ kAm6wrY8i+NcozOWXiE+PkLWhn1nGFisvrcLZgOLMCZsWDxz8Dl4tHopSzHo0XlfEIZz
+ 8vJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=QzVzuQF02fR+c0YY6XKBCSbJXl7wL1vS1Ln1HL3oxGw=;
- b=ukYESIrFo88fylpOYZH0fuy7wk+3D8lT9e6ghlT8rNiDxAcL3S5Pv6xn1IOx83hTRc
- 7GvzmkO90VLUauUH3dgi3u7bUSCNMMv5AU+rDhqTew67KWjX1MlfKtftOFJnu+QBfy3k
- agMnC1UKJUXe/Cz+MeX7HvpUQVlnrkWr2FILGZwryqstnEMrIqBnzTJmqnjohxZwlBtO
- QojZSZaisiTORh7jFQ4LH4X35tyHOmH2FsjWbe+CEbK3zQUXlh4aA8hvijz2WOYgK0vT
- GDLXBRU+Vl/tK6enwat1Ll7ZzDyASA2ifcmT5I+Lh5rZkGUzKDy4yli3EnoiPV+ByFse
- +TgQ==
-X-Gm-Message-State: AOAM532YPna724qARydTAzzeWHV/poPuo5y6B1Ovc1zNOUtLRaCNYSKS
- 53x51d4oOxisIOeMQyH/duFdgI7dhLa0LIJBF2I=
-X-Google-Smtp-Source: ABdhPJwS785WPHrjWKaLX4MeXy/6grzSvVxeAqt/HilgrtQDmL2JfnOGPBC89BA9nkq4UOir+8xy7GPL5j/4cJuIFrQ=
+ bh=upUYfRAA3OB+55Uid8yeg7Ykm1ooNkzjA3YEgCJr99I=;
+ b=Uu53E1VWQZFCj6kTef/wMOBfBhpbIw5gZaE97BMLbrj/d7UJUNBrcdxhl9xQB14yh7
+ L6Y4gyGIrijhU2hIN1kANdS8GYd+DjTe+AmuU7TrIGm2fjkephoIbjj636OpFkNaLwLL
+ H7I08KIz5sGkcy+prA7hwm/9fzQosW1ak5kzCU9gWlIvFV3TRdFM181AsOdTFIiAb3/9
+ IQOBW8b5fZb2MyD/7TPMg/zwab9HGFmEQyXuycq72X+0mQsuDIouOWJWg7W+QPSBROCE
+ 67Ox98/JdR1cZavMpDzd9/uVdPOLPTjjkkOKea119GuP7B14YLHGEzKjgDp+YSaEEudS
+ Uo5g==
+X-Gm-Message-State: AOAM53055dn8VcEEoMY9BIe9JmV1jq5Dd1UkiuRyGe20+lF3uqlXrkkm
+ 8yT9vKKpb6xqtWH+PbRauXLiwhj2gGWlNMK9GxIvYX66
+X-Google-Smtp-Source: ABdhPJw8caa0RkmT/kcE/lPlKwmQw7I0GVvEKAwuuSomY0LIBhKDbsb5isrygm8OpzPqI144baZWIiqEMdxh87QEAYo=
 X-Received: by 2002:a05:620a:15f4:: with SMTP id
- p20mr26692587qkm.283.1591167833314; 
- Wed, 03 Jun 2020 00:03:53 -0700 (PDT)
+ p20mr26731572qkm.283.1591168720536; 
+ Wed, 03 Jun 2020 00:18:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200423025827.48736-1-lizhe67@huawei.com>
-In-Reply-To: <20200423025827.48736-1-lizhe67@huawei.com>
+References: <20200529033809.113516-1-lizhe67@huawei.com>
+In-Reply-To: <20200529033809.113516-1-lizhe67@huawei.com>
 From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Wed, 3 Jun 2020 09:03:42 +0200
-Message-ID: <CAFLxGvzZequ2JtzaVOxSst_sH7PPWpWVF5nHv=B8oxLpy=wDjw@mail.gmail.com>
-Subject: Re: [PATCH v2] jffs2: fix jffs2 mounting failure
+Date: Wed, 3 Jun 2020 09:18:29 +0200
+Message-ID: <CAFLxGvzkMp3JJHiE3g3LrxVJUgh2Fj6tbGFPSdv-1W2PiYqGjQ@mail.gmail.com>
+Subject: Re: [PATCH] jffs2: fix nothing output for "ls" command
 To: Zhe Li <lizhe67@huawei.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200603_000357_288113_321D3050 
-X-CRM114-Status: GOOD (  10.84  )
+X-CRM114-CacheID: sfid-20200603_001842_226702_7D5C1B83 
+X-CRM114-Status: GOOD (  12.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,29 +96,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Apr 23, 2020 at 4:58 AM Zhe Li <lizhe67@huawei.com> wrote:
+On Fri, May 29, 2020 at 5:38 AM Zhe Li <lizhe67@huawei.com> wrote:
 >
-> Mounting jffs2 on nand flash will get message "failed: I/O error"
-> with the steps listed below.
-> 1.erase nand flash
-> 2.mount jffs2 on it (this mounting operation will be successful)
-> 3.do chown or chmod to the mount point directory
-> 4.umount jffs2
-> 5.mount jffs2 on nand flash
-> After step 5, we will get message "mount ... failed: I/O error".
+> Recently I find a bug that I get nothing with shell
+> command "ls". The test steps are listed below.
+> 1. cd $JFFS2_MOUNT_DIR
+> 2. touch file
+> 3. ls
+>
+> Finally I find that when command "ls" going into
+> function jffs2_readdir(), it get non-zero return
+> value from function dir_emit(). So I get nothing
+> from "ls", absolutely.
+>
+> After checking my file system image, I find a raw
+> dirent node with nsize = 0. The full_scan mounting
+> process do not check nsize and the return value
+> of strnlen(rd->name, rd->nsize) carefully, which
+> causes function jffs2_readdir pass 0 to parameter
+> namelen of function dir_emit when we use command
+> "ls".
+>
+> Of course it should never happened to find a raw
+> dirent with nsize = 0. In my opinion, this abnormal
+> phenomenon maybe cause by bad driver or bad medium.
+> But for rebustness reason, jffs2 should handle it.
 
-The important step is missing. You need to unmount before jffs2 is done
-with erasing.
-
->         if (c->nr_erasing_blocks) {
-> -               if ( !c->used_size && ((c->nr_free_blocks+empty_blocks+bad_blocks)!= c->nr_blocks || bad_blocks == c->nr_blocks) ) {
-> +               if (!c->used_size && ((c->nr_free_blocks+empty_blocks+bad_blocks) != c->nr_blocks || bad_blocks == c->nr_blocks) &&
-> +                   !(has_root_inode(c) && !has_other_inode(c))) {
-
-I see the problem but I don't think it is wise to implement such a workaround.
-IIUC the real issue is that c->used_size being zero but
-c->nr_free_blocks+empty_blocks+bad_blocks does not sum
-up correctly in this situation.
+Well, if driver or medium are bad, the filesystem will die and lose
+data. Instead of papering over the issue and delaying the inevitable
+loss of data, please address the root cause.
 
 -- 
 Thanks,
