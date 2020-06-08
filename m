@@ -2,93 +2,59 @@ Return-Path: <SRS0=yUT7=7V=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF11BC433E0
-	for <linux-mtd@archiver.kernel.org>; Mon,  8 Jun 2020 09:42:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DFE02C433E0
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 Jun 2020 10:47:55 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 792342076C
-	for <linux-mtd@archiver.kernel.org>; Mon,  8 Jun 2020 09:42:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B2B59206C3
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 Jun 2020 10:47:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="MED5bRXZ";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FH9R6PgL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 792342076C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EN3stoDN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B2B59206C3
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5K7sEGw6ZCbmfotXnJQNXQ4polnCjni3LbBfyeNQmOo=; b=MED5bRXZlkIRTo
-	A3vkNvzQGnOfN5u7YnFI+OKwh9wtaj7UELYnruFdPjMMXG719dJFvoGepzuxWCeju5tqlDm53xjAj
-	MW1ZlxLcUg/A0eTptVqJl6o2yY0fyTjx3uW0q+k6cELPfRVcg3M/cRCzqDa0T6TWhfMw3jwrQCLxp
-	+KvnbwbVYoZmV4TOuSSjT6xznMFkACzo9fYWFPnQgU741WdGjdqpvcKs8idqLvuYB+z9WsY901BvY
-	szJfZrglqWifYlNNGAk4GkGUvhRSz0V9Os13h7Hl13UbkbhBcOSEowhNRReMcNegBY9CxGNgjjWBD
-	i7SMad/rLaAGmtAw4Wsg==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=iis6GkI5vSMZSfRihKMLniYtZcFx4BK/J7NlZmRAwtw=; b=EN3
+	stoDNMu64v7A3IzEnK4ho/jPBA1ZCabZNE4/gIIATgfcpBz56YXVZ/0KkAB4JsL4BewhVzWURIrAh
+	tW6laBniN2jdXcl6PKPvxnn+IGjLR6AwV+5vhB9Q4cmfEPUAoEYZnVoH7EQ7aytgwBiSFIe3STKhr
+	3L1Enu4iNfqcstWo1Or8Yugpok6KEGTM91FzCF+Be+T1gcuF8F6CNiXd/Yi9yy7oxuhjcIllvByo4
+	YCbZMvdb4oFfWubP1SZj7IzvNznvfe6PTHkfuUzrhqWOvoejd7uvp5Xqqhpp91tJw3oyeSCziM6Go
+	2UfJuffVkGMwfbcIbe8HC4FdgHwa1qg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jiEIB-0003sS-4q; Mon, 08 Jun 2020 09:42:07 +0000
-Received: from mail-wr1-x443.google.com ([2a00:1450:4864:20::443])
+	id 1jiFJi-00020e-G1; Mon, 08 Jun 2020 10:47:46 +0000
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jiEH6-0002n7-C9; Mon, 08 Jun 2020 09:41:01 +0000
-Received: by mail-wr1-x443.google.com with SMTP id t18so16636995wru.6;
- Mon, 08 Jun 2020 02:40:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=iutKVuNQT00nZYTrm/7dqkO57UE+CiDX2Zw0XM5T/bs=;
- b=FH9R6PgLpY/xfk9Y1umYU9fO4KCushpyvjjDhM6GJ3nbePEUfx9CV9RGHkeRSKEsHj
- zCXHp+4Ck8VAOggyeM3SPuTEOA6yYqQlAiHqlJeK+Tw08h17No6y1uCKK92+EdzuRSD9
- iYmyshNqAE33+CC7ezVX90kkXloMBdNxYKKkXuvntSmd4Vfv9P53HbLszP3pvtFAQ4u+
- WY/fTwy4fFDibyaS6xNI8Dh5SvXgvY6twrbNPfSRkwQk/SmbbnRdzcxIy5mfqVenF3jH
- ioqEmx/A1cA7WMxoRwDOzRHXszwdyy3dYKEVTAZDtqV0lOVXw93sqf2pulgQUzOnACOx
- 1j3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=iutKVuNQT00nZYTrm/7dqkO57UE+CiDX2Zw0XM5T/bs=;
- b=pYFrZZqOTOKMSZk1qD6T1izBeT7oK8sNusj/WMm7WNTgUZGElVlHWo21fpZIRvVPT9
- 2SOUA4QAK+7wbcIgRPWBac7q+eOHymRrnKIL4YBU34zoUKPbbBMbQSdNAcLX6RDE2g7O
- GKWvwRGNgxjkQEwyoIVcIQUTxCkujuQYwj6ygVYxss4+BNh91fNAHSviO5H5rHlGGmud
- 9qNZyCmESk0LbSyYiIY/85gl95Mxj1qU66C7VNzawT1orLx5Luw0LcFLb379GSGe2jf5
- r7GsjtuFsfGZZkgkMLzPo2c4ZuQ8KJj21AKxHXt8KOvm1udTegyOdHWTQRiTNCB9dkIa
- z0QA==
-X-Gm-Message-State: AOAM530dnO2G1I+rz0TMm9txUZwQb+tqBvGaZfUcwGrkELR/jNFqP/fC
- lCf33hAPqlwRXW4bFpFjjuk=
-X-Google-Smtp-Source: ABdhPJxGkVz4sfW8YmjuDWuFHym9WXb7hrNJ4E1wx771qRgJ70vSanVuzdsFBsv1+hLGrALaJ6L1Rw==
-X-Received: by 2002:adf:a283:: with SMTP id s3mr21368789wra.147.1591609258686; 
- Mon, 08 Jun 2020 02:40:58 -0700 (PDT)
-Received: from skynet.lan (28.red-83-49-61.dynamicip.rima-tde.net.
- [83.49.61.28])
- by smtp.gmail.com with ESMTPSA id a3sm22096479wrp.91.2020.06.08.02.40.57
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 08 Jun 2020 02:40:58 -0700 (PDT)
-From: =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= <noltari@gmail.com>
-To: tsbogend@alpha.franken.de, f.fainelli@gmail.com,
- bcm-kernel-feedback-list@broadcom.com, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com, jonas.gorski@gmail.com,
- linus.walleij@linaro.org, linux-mips@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org
-Subject: [PATCH 2/2] mtd: parsers: bcm63xx: simplify CFE detection
-Date: Mon,  8 Jun 2020 11:40:53 +0200
-Message-Id: <20200608094053.3381512-3-noltari@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200608094053.3381512-1-noltari@gmail.com>
-References: <20200608094053.3381512-1-noltari@gmail.com>
-MIME-Version: 1.0
+ id 1jiFJe-000202-UF
+ for linux-mtd@lists.infradead.org; Mon, 08 Jun 2020 10:47:44 +0000
+Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
+ by alexa-out-sd-01.qualcomm.com with ESMTP; 08 Jun 2020 03:47:40 -0700
+Received: from sivaprak-linux.qualcomm.com ([10.201.3.202])
+ by ironmsg-SD-alpha.qualcomm.com with ESMTP; 08 Jun 2020 03:47:38 -0700
+Received: by sivaprak-linux.qualcomm.com (Postfix, from userid 459349)
+ id C4AA3217EC; Mon,  8 Jun 2020 16:17:35 +0530 (IST)
+From: Sivaprakash Murugesan <sivaprak@codeaurora.org>
+To: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ peter.ujfalusi@ti.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: raw: qcom_nand: Fix register write error
+Date: Mon,  8 Jun 2020 16:17:34 +0530
+Message-Id: <1591613254-1065-1-git-send-email-sivaprak@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200608_024100_413287_479FFAE9 
-X-CRM114-Status: GOOD (  12.29  )
+X-CRM114-CacheID: sfid-20200608_034742_999740_16BA0E97 
+X-CRM114-Status: GOOD (  10.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,44 +66,67 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= <noltari@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Sivaprakash Murugesan <sivaprak@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SW5zdGVhZCBvZiB0cnlpbmcgdG8gcGFyc2UgQ0ZFIHZlcnNpb24gc3RyaW5nLCB3aGljaCBpcyBj
-dXN0b21pemVkIGJ5IHNvbWUKdmVuZG9ycywgbGV0J3MganVzdCBjaGVjayB0aGF0ICJDRkUxIiB3
-YXMgcGFzc2VkIG9uIGFyZ3VtZW50IDMuCgpTaWduZWQtb2ZmLWJ5OiDDgWx2YXJvIEZlcm7DoW5k
-ZXogUm9qYXMgPG5vbHRhcmlAZ21haWwuY29tPgpTaWduZWQtb2ZmLWJ5OiBKb25hcyBHb3Jza2kg
-PGpvbmFzLmdvcnNraUBnbWFpbC5jb20+Ci0tLQogZHJpdmVycy9tdGQvcGFyc2Vycy9iY202M3h4
-cGFydC5jIHwgMjggKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogMSBmaWxlIGNoYW5nZWQs
-IDMgaW5zZXJ0aW9ucygrKSwgMjUgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9t
-dGQvcGFyc2Vycy9iY202M3h4cGFydC5jIGIvZHJpdmVycy9tdGQvcGFyc2Vycy9iY202M3h4cGFy
-dC5jCmluZGV4IDc4ZjkwYzZjMThmZC4uMDZiNjllOTA1YTQyIDEwMDY0NAotLS0gYS9kcml2ZXJz
-L210ZC9wYXJzZXJzL2JjbTYzeHhwYXJ0LmMKKysrIGIvZHJpdmVycy9tdGQvcGFyc2Vycy9iY202
-M3h4cGFydC5jCkBAIC0yMiw2ICsyMiw4IEBACiAjaW5jbHVkZSA8bGludXgvbXRkL3BhcnRpdGlv
-bnMuaD4KICNpbmNsdWRlIDxsaW51eC9vZi5oPgogCisjaW5jbHVkZSA8YXNtL21hY2gtYmNtNjN4
-eC9iY202M3h4X2JvYXJkLmg+CisKICNkZWZpbmUgQkNNOTYzWFhfQ0ZFX0JMT0NLX1NJWkUJCVNa
-XzY0SwkvKiBhbHdheXMgYXQgbGVhc3QgNjRLaUIgKi8KIAogI2RlZmluZSBCQ005NjNYWF9DRkVf
-TUFHSUNfT0ZGU0VUCTB4NGUwCkBAIC0zMiwzMCArMzQsNiBAQAogI2RlZmluZSBTVFJfTlVMTF9U
-RVJNSU5BVEUoeCkgXAogCWRvIHsgY2hhciAqX3N0ciA9ICh4KTsgX3N0cltzaXplb2YoeCkgLSAx
-XSA9IDA7IH0gd2hpbGUgKDApCiAKLXN0YXRpYyBpbnQgYmNtNjN4eF9kZXRlY3RfY2ZlKHN0cnVj
-dCBtdGRfaW5mbyAqbWFzdGVyKQotewotCWNoYXIgYnVmWzldOwotCWludCByZXQ7Ci0Jc2l6ZV90
-IHJldGxlbjsKLQotCXJldCA9IG10ZF9yZWFkKG1hc3RlciwgQkNNOTYzWFhfQ0ZFX1ZFUlNJT05f
-T0ZGU0VULCA1LCAmcmV0bGVuLAotCQkgICAgICAgKHZvaWQgKilidWYpOwotCWJ1ZltyZXRsZW5d
-ID0gMDsKLQotCWlmIChyZXQpCi0JCXJldHVybiByZXQ7Ci0KLQlpZiAoc3RybmNtcCgiY2ZlLXYi
-LCBidWYsIDUpID09IDApCi0JCXJldHVybiAwOwotCi0JLyogdmVyeSBvbGQgQ0ZFJ3MgZG8gbm90
-IGhhdmUgdGhlIGNmZS12IHN0cmluZywgc28gY2hlY2sgZm9yIG1hZ2ljICovCi0JcmV0ID0gbXRk
-X3JlYWQobWFzdGVyLCBCQ005NjNYWF9DRkVfTUFHSUNfT0ZGU0VULCA4LCAmcmV0bGVuLAotCQkg
-ICAgICAgKHZvaWQgKilidWYpOwotCWJ1ZltyZXRsZW5dID0gMDsKLQotCXJldHVybiBzdHJuY21w
-KCJDRkUxQ0ZFMSIsIGJ1ZiwgOCk7Ci19Ci0KIHN0YXRpYyBpbnQgYmNtNjN4eF9yZWFkX252cmFt
-KHN0cnVjdCBtdGRfaW5mbyAqbWFzdGVyLAogCXN0cnVjdCBiY205NjN4eF9udnJhbSAqbnZyYW0p
-CiB7CkBAIC0xMzgsNyArMTE2LDcgQEAgc3RhdGljIGludCBiY202M3h4X3BhcnNlX2NmZV9wYXJ0
-aXRpb25zKHN0cnVjdCBtdGRfaW5mbyAqbWFzdGVyLAogCXN0cnVjdCBiY205NjN4eF9udnJhbSAq
-bnZyYW0gPSBOVUxMOwogCWludCByZXQ7CiAKLQlpZiAoYmNtNjN4eF9kZXRlY3RfY2ZlKG1hc3Rl
-cikpCisJaWYgKCFiY202M3h4X2lzX2NmZV9wcmVzZW50KCkpCiAJCXJldHVybiAtRUlOVkFMOwog
-CiAJbnZyYW0gPSB2emFsbG9jKHNpemVvZigqbnZyYW0pKTsKLS0gCjIuMjYuMgoKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQg
-ZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9saW51eC1tdGQvCg==
+1. SFLASHC_BURST_CFG register is not available on all ipq nand platforms,
+   it is available only on ipq8064 devices and the nand controller works
+   without configuring these registers in this platform, so register
+   write to this can be removed.
+
+2. Once BAM mode is enabled register writes to NAND_CTRL should be
+   performed through BAM command descriptors. The NAND BAM mode will
+   be enabled by bootloaders. Check if BAM mode is already enabled and
+   enable it only if not enabled already.
+
+Signed-off-by: Sivaprakash Murugesan <sivaprak@codeaurora.org>
+---
+ drivers/mtd/nand/raw/qcom_nandc.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index 5b11c70..7bfd93a 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -36,7 +36,6 @@
+ #define	NAND_DEV_CMD1			0xa4
+ #define	NAND_DEV_CMD2			0xa8
+ #define	NAND_DEV_CMD_VLD		0xac
+-#define	SFLASHC_BURST_CFG		0xe0
+ #define	NAND_ERASED_CW_DETECT_CFG	0xe8
+ #define	NAND_ERASED_CW_DETECT_STATUS	0xec
+ #define	NAND_EBI2_ECC_BUF_CFG		0xf0
+@@ -2774,14 +2773,20 @@ static int qcom_nandc_setup(struct qcom_nand_controller *nandc)
+ 	u32 nand_ctrl;
+ 
+ 	/* kill onenand */
+-	nandc_write(nandc, SFLASHC_BURST_CFG, 0);
+ 	nandc_write(nandc, dev_cmd_reg_addr(nandc, NAND_DEV_CMD_VLD),
+ 		    NAND_DEV_CMD_VLD_VAL);
+ 
+ 	/* enable ADM or BAM DMA */
+ 	if (nandc->props->is_bam) {
+ 		nand_ctrl = nandc_read(nandc, NAND_CTRL);
+-		nandc_write(nandc, NAND_CTRL, nand_ctrl | BAM_MODE_EN);
++		/* Once BAM_MODE_EN bit is set, writes to the NAND_CTRL
++		 * should be done through BAM command descriptors.
++		 * in most cases bootloader enables the bam mode we
++		 * need to set the BAM mode only if it is not set by
++		 * bootloader
++		 */
++		if (!(nand_ctrl & BAM_MODE_EN))
++			nandc_write(nandc, NAND_CTRL, nand_ctrl | BAM_MODE_EN);
+ 	} else {
+ 		nandc_write(nandc, NAND_FLASH_CHIP_SELECT, DM_EN);
+ 	}
+-- 
+2.7.4
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
