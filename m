@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51EDBC433DF
-	for <linux-mtd@archiver.kernel.org>; Mon,  8 Jun 2020 23:26:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00236C433E2
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 Jun 2020 23:27:04 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 175292078D
-	for <linux-mtd@archiver.kernel.org>; Mon,  8 Jun 2020 23:26:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BAD5620801
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 Jun 2020 23:27:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="F3ipQ6jR";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="NkRzZo2Q"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 175292078D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jSxD0U9i";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="iMR6LUf3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BAD5620801
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,39 +26,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tXo2UdLDJxSRhNE7iHH8w7ZlQ0KaNlv04wndv09NtDI=; b=F3ipQ6jRQwLO62
-	mSF11q7I54uuZsvSobVN/w0UZPCJXOi1Y4ozoWrr3ETLe1+HSsVQoG51IlakqbhGMhfxk7xqoCANl
-	FNhOM05+pUTupnmW0301l3h/Gf7Nqb62+67WUHToOrMPpuK9OmQDDUtcQGk11PnO8vf/HGklsYiZl
-	zKxtFFzll38MeSyWuuXz8f+ljhQBcoOr/f7PghiGAKvOz12CH2nwGavXHS3FHQz6IHZ/w7Zlqmidc
-	LnTfBXVKbAOTTIeNZoKaNbO0aP5iNq2Shu8v4sI3lENlSVAR/Rd78GCYBxzWGPAyJ9heDtwsi6U+N
-	rkrzYfgrtbgYA+udSZ+A==;
+	List-Owner; bh=lksCdYfnPw4wP6WZkPysUPn4wMMJMkKumZM+5pXsLQ8=; b=jSxD0U9izEKIfe
+	3a+TyDy6ucXVr0XfMaXE1kXPpbFvuUPSX2eq3g/oRVmt3eIjWe3piyuTlzsQubcpdgRjiATXqXNfL
+	KN328AByFMKThTx1ysh9BEF9UABOPfRAIbZAG2ocs7bUmgZqasNv9fAyV6b13XAb70L70ddFV7TXG
+	xwmoGZf1LHHvXe2sJVk1va3LTcq9MQ/rU8YLOYG1lu8t9f70fTC8hImuqH4XJdu1K4rRlS14B09nP
+	yXlbpBs4N3m2BIccZIqaGaDmnE6ZTsI8sPSjVUIj1VsYEodhN3AkCiVwJiPgWiYfbMY5t4Kqo/rjM
+	+bsnzafWi0zO7upraAiA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jiRA5-0007bC-Ki; Mon, 08 Jun 2020 23:26:37 +0000
+	id 1jiRAO-0007pg-8D; Mon, 08 Jun 2020 23:26:56 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jiQxr-00079B-2E
- for linux-mtd@lists.infradead.org; Mon, 08 Jun 2020 23:14:00 +0000
+ id 1jiQxu-0007CG-9V
+ for linux-mtd@lists.infradead.org; Mon, 08 Jun 2020 23:14:03 +0000
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A4C91208C3;
- Mon,  8 Jun 2020 23:13:57 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 326AC208C3;
+ Mon,  8 Jun 2020 23:14:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1591658038;
- bh=5dYKczIvQ+iFI127IXOGGHsWU0/YsZaZeXftt1nV9sg=;
+ s=default; t=1591658041;
+ bh=L0QoRAgWtQseVlwB82qHXXUrftjn7bHptGI3PhND3X4=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=NkRzZo2QJ8th5SxXeyPHztf26SBMrdfWnbMdXzfhtnjIYdoltg2m6VyEYAED40S6n
- Xzg9WiOa0GoQE0FHoMMlA/6ShUBXbQQR1f2Ok9wHWxLkiI1bg2pKh/V9i3F7gufOfk
- FRi9Mt81q0+N8GalzXaO2XumN1R51Z3eZFLY1V6o=
+ b=iMR6LUf3s/UtJRp1qy7d/lXnDk/D7Xlwj52UjYKvNFupnqVPt/32pKnYph8JRXlCl
+ ekEb85ARQrwi7DapD+G/1M/BI4uhrbF12uZlITHqf3lv59LfU3TkSfDkvLm8aQJrTl
+ Vfc4nvBZ0mdIvTJYc91+31oG2ff7lIZ/6k7xRH5Q=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 088/606] mtd: spinand: Propagate ECC information
- to the MTD structure
-Date: Mon,  8 Jun 2020 19:03:33 -0400
-Message-Id: <20200608231211.3363633-88-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.6 091/606] ubifs: remove broken lazytime support
+Date: Mon,  8 Jun 2020 19:03:36 -0400
+Message-Id: <20200608231211.3363633-91-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
 References: <20200608231211.3363633-1-sashal@kernel.org>
@@ -66,8 +65,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200608_161359_146556_4B5A1B54 
-X-CRM114-Status: GOOD (  10.72  )
+X-CRM114-CacheID: sfid-20200608_161402_404716_D7554E63 
+X-CRM114-Status: GOOD (  11.51  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,46 +79,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Sasha Levin <sashal@kernel.org>, Richard Weinberger <richard@nod.at>,
- Boris Brezillon <boris.brezillon@collabora.com>, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>
+ linux-mtd@lists.infradead.org, Christoph Hellwig <hch@lst.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+From: Christoph Hellwig <hch@lst.de>
 
-[ Upstream commit 3507273d5a4d3c2e46f9d3f9ed9449805f5dff07 ]
+[ Upstream commit ecf84096a526f2632ee85c32a3d05de3fa60ce80 ]
 
-This is done by default in the raw NAND core (nand_base.c) but was
-missing in the SPI-NAND core. Without these two lines the ecc_strength
-and ecc_step_size values are not exported to the user through sysfs.
+When "ubifs: introduce UBIFS_ATIME_SUPPORT to ubifs" introduced atime
+support to ubifs, it also added lazytime support.  As far as I can tell
+the lazytime support is terminally broken, as it causes
+mark_inode_dirty_sync to be called from __writeback_single_inode, which
+will then trigger the locking assert in ubifs_dirty_inode.  Just remove
+the broken lazytime support for now, it can be added back later,
+especially as some infrastructure changes should make that easier soon.
 
-Fixes: 7529df465248 ("mtd: nand: Add core infrastructure to support SPI NANDs")
-Cc: stable@vger.kernel.org
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+Fixes: 8c1c5f263833 ("ubifs: introduce UBIFS_ATIME_SUPPORT to ubifs")
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/nand/spi/core.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ fs/ubifs/file.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 8dda51bbdd11..0d21c68bfe24 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -1049,6 +1049,10 @@ static int spinand_init(struct spinand_device *spinand)
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index 743928efffc1..49fe062ce45e 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -1375,7 +1375,6 @@ int ubifs_update_time(struct inode *inode, struct timespec64 *time,
+ 	struct ubifs_info *c = inode->i_sb->s_fs_info;
+ 	struct ubifs_budget_req req = { .dirtied_ino = 1,
+ 			.dirtied_ino_d = ALIGN(ui->data_len, 8) };
+-	int iflags = I_DIRTY_TIME;
+ 	int err, release;
  
- 	mtd->oobavail = ret;
+ 	if (!IS_ENABLED(CONFIG_UBIFS_ATIME_SUPPORT))
+@@ -1393,11 +1392,8 @@ int ubifs_update_time(struct inode *inode, struct timespec64 *time,
+ 	if (flags & S_MTIME)
+ 		inode->i_mtime = *time;
  
-+	/* Propagate ECC information to mtd_info */
-+	mtd->ecc_strength = nand->eccreq.strength;
-+	mtd->ecc_step_size = nand->eccreq.step_size;
-+
- 	return 0;
- 
- err_cleanup_nanddev:
+-	if (!(inode->i_sb->s_flags & SB_LAZYTIME))
+-		iflags |= I_DIRTY_SYNC;
+-
+ 	release = ui->dirty;
+-	__mark_inode_dirty(inode, iflags);
++	__mark_inode_dirty(inode, I_DIRTY_SYNC);
+ 	mutex_unlock(&ui->ui_mutex);
+ 	if (release)
+ 		ubifs_release_budget(c, &req);
 -- 
 2.25.1
 
