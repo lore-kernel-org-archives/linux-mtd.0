@@ -1,72 +1,63 @@
-Return-Path: <SRS0=yUT7=7V=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=GuhJ=7W=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B867FC433E1
-	for <linux-mtd@archiver.kernel.org>; Mon,  8 Jun 2020 23:27:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DE1EC433E0
+	for <linux-mtd@archiver.kernel.org>; Tue,  9 Jun 2020 02:10:30 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5191C207C3
-	for <linux-mtd@archiver.kernel.org>; Mon,  8 Jun 2020 23:27:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1BC80206D5
+	for <linux-mtd@archiver.kernel.org>; Tue,  9 Jun 2020 02:10:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EVO3lKVJ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="evVcRwsU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5191C207C3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fTZ/GcQH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1BC80206D5
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=yeovMHO8lPP5YT3bOWNJgbynT2yRpeH7bTeTKiZB2sE=; b=EVO3lKVJpSoXBS
-	SpP7AHhVd3/BiGmK6tteI9W+iWsWrHUaic5Jn9mbob2NYGda5j6SWIDc3Wms2fHYJvYloA8wV+m6W
-	pjKrVg4KUkvHcfx75ooUCuXxDbx8l7mrYR6uKz7a6queY2/wiQQcYkMnAwLCjlPzI31gAlw4/TTlk
-	bpq0Y8Be9PeuWC6aPLYqgvuc8FwqoKa6C3EAqiFXq9Rn0iqeoxCi7tUXxOFwcHbsK0wmNWdZXhnMJ
-	QPaPugjufT8MdvqoONP4OflQkd2wUL0Qg1s4H6INmCQWj5jGXG7n+rF1ni8OBCYw+LrSaDtOvHhez
-	33/12DoJEgzmWPnMxyhQ==;
+	List-Owner; bh=cuI0ueZaTL2N21vrd5T2vitNNl91ktuPR2Venyj9+EY=; b=fTZ/GcQHHu47iu
+	FzpCZbdQtA7ewPcrjw4U3607W5wryMQ9dqjFTtA2pkBnLdizMgISxoLDmeFs7sAdveMaNDaXqxdyG
+	0mJrZMHQqikrXMhr8P3BJGdzBTbZm1cXhkE/c6atb0sC9APw60yB159KmAM00bUxE7FjApkJ6ly+F
+	KqKdHazhx1y1Xe7lopGAkin1m45fyE8FjYW/CNIPf9uNAU8uFOXTSIvay5kp1teX6BpeiVzI4DYxC
+	idy0NIY5K+Mra0xN1pr1RHUdbplLX92Z8jBAg0qix21w4FXarZDEUeNBWUViae0u/ddx6hBwKlctY
+	u3k5O3Wh9InpbAEIJEqQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jiRB5-0008N1-JZ; Mon, 08 Jun 2020 23:27:39 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1jiTiB-0007Yr-0h; Tue, 09 Jun 2020 02:09:59 +0000
+Received: from szxga06-in.huawei.com ([45.249.212.32] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jiQy3-0007MT-Sm
- for linux-mtd@lists.infradead.org; Mon, 08 Jun 2020 23:14:15 +0000
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
- [73.47.72.35])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A400F20C09;
- Mon,  8 Jun 2020 23:14:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1591658051;
- bh=JkD+MiY/FPpyZmUTHCm6tsWL4xVIOLfpF+zm5aPlmO0=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=evVcRwsUpGQgJBRFlw/B6/wxoKplWx71kOGcPFIDyQjm0sJUO+dTJOCKqsMx63VmS
- TjYIodhGXOXwKQ2fDXlyEfyJEf13GcyDgRNt2Tc8muhkPH16gmXTY5Xy34TsQDVtrX
- oWoSc00ZKRSbEucqlBaECyrRXjV/0RREjc49R9uY=
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 099/606] mtd: Fix mtd not registered due to nvmem
- name collision
-Date: Mon,  8 Jun 2020 19:03:44 -0400
-Message-Id: <20200608231211.3363633-99-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
-References: <20200608231211.3363633-1-sashal@kernel.org>
+ id 1jiTi7-0007Xf-FD
+ for linux-mtd@lists.infradead.org; Tue, 09 Jun 2020 02:09:57 +0000
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+ by Forcepoint Email with ESMTP id BE9B8658380F5715FC5F;
+ Tue,  9 Jun 2020 10:09:35 +0800 (CST)
+Received: from DESKTOP-FKFNUOQ.china.huawei.com (10.67.101.2) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 9 Jun 2020 10:09:27 +0800
+From: Zhe Li <lizhe67@huawei.com>
+To: <richard.weinberger@gmail.com>
+Subject: [PATCH v3] jffs2: fix jffs2 mounting failure
+Date: Tue, 9 Jun 2020 10:09:27 +0800
+Message-ID: <20200609020927.68460-1-lizhe67@huawei.com>
+X-Mailer: git-send-email 2.21.0.windows.1
+In-Reply-To: <CAFLxGvzZequ2JtzaVOxSst_sH7PPWpWVF5nHv=B8oxLpy=wDjw@mail.gmail.com>
+References: <CAFLxGvzZequ2JtzaVOxSst_sH7PPWpWVF5nHv=B8oxLpy=wDjw@mail.gmail.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+X-Originating-IP: [10.67.101.2]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200608_161413_139005_AB81CE46 
-X-CRM114-Status: GOOD (  14.17  )
+X-CRM114-CacheID: sfid-20200608_190955_677685_3F6EFD7E 
+X-CRM114-Status: GOOD (  11.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,68 +69,69 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Sasha Levin <sashal@kernel.org>, Richard Weinberger <richard@nod.at>,
- Ricardo Ribalda Delgado <ribalda@kernel.org>, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: lizhe67@huawei.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, wangfangpeng1@huawei.com, dwmw2@infradead.org,
+ chenjie6@huawei.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Ricardo Ribalda Delgado <ribalda@kernel.org>
+Thanks for the advice mentioned in the email.
+This is my v3 patch for this problem.
 
-[ Upstream commit 7b01b7239d0dc9832e0d0d23605c1ff047422a2c ]
+Mounting jffs2 on nand flash will get message "failed: I/O error"
+with the steps listed below.
+1.umount jffs2
+2.erase nand flash
+3.mount jffs2 on it (this mounting operation will be successful)
+4.do chown or chmod to the mount point directory
+5.umount jffs2
+6.mount jffs2 on nand flash
+After step 6, we will get message "mount ... failed: I/O error".
 
-When the nvmem framework is enabled, a nvmem device is created per mtd
-device/partition.
+Typical image of this problem is like:
+Empty space found from 0x00000000 to 0x008a0000
+Inode node at xx, totlen 0x00000044, #ino 1, version 1, isize 0...
 
-It is not uncommon that a device can have multiple mtd devices with
-partitions that have the same name. Eg, when there DT overlay is allowed
-and the same device with mtd is attached twice.
+The reason for this mounting failure is that at the end of function
+jffs2_scan_medium(), jffs2 will check the used_size and some info
+of nr_blocks.If conditions are met, it will return -EIO.
 
-Under that circumstances, the mtd fails to register due to a name
-duplication on the nvmem framework.
+The detail is that, in the steps listed above, step 4 will write
+jffs2_raw_inode into flash without jffs2_raw_dirent, which will
+cause that there are some jffs2_raw_inode but no jffs2_raw_dirent
+on flash. This will meet the condition at the end of function
+jffs2_scan_medium() and return -EIO if we umount jffs2 and mount it
+again.
 
-With this patch we use the mtdX name instead of the partition name,
-which is unique.
+We notice that jffs2 add the value of c->unchecked_size if we find
+an inode node while mounting. And jffs2 will never add the value of
+c->unchecked_size in other situations. So this patch add one more
+condition about c->unchecked_size of the judgement to fix this problem.
 
-[    8.948991] sysfs: cannot create duplicate filename '/bus/nvmem/devices/Production Data'
-[    8.948992] CPU: 7 PID: 246 Comm: systemd-udevd Not tainted 5.5.0-qtec-standard #13
-[    8.948993] Hardware name: AMD Dibbler/Dibbler, BIOS 05.22.04.0019 10/26/2019
-[    8.948994] Call Trace:
-[    8.948996]  dump_stack+0x50/0x70
-[    8.948998]  sysfs_warn_dup.cold+0x17/0x2d
-[    8.949000]  sysfs_do_create_link_sd.isra.0+0xc2/0xd0
-[    8.949002]  bus_add_device+0x74/0x140
-[    8.949004]  device_add+0x34b/0x850
-[    8.949006]  nvmem_register.part.0+0x1bf/0x640
-...
-[    8.948926] mtd mtd8: Failed to register NVMEM device
-
-Fixes: c4dfa25ab307 ("mtd: add support for reading MTD devices via the nvmem API")
-Signed-off-by: Ricardo Ribalda Delgado <ribalda@kernel.org>
-Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Zhe Li <lizhe67@huawei.com>
 ---
- drivers/mtd/mtdcore.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/jffs2/scan.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 5fac4355b9c2..559b6930b6f6 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -551,7 +551,7 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
- 
- 	config.id = -1;
- 	config.dev = &mtd->dev;
--	config.name = mtd->name;
-+	config.name = dev_name(&mtd->dev);
- 	config.owner = THIS_MODULE;
- 	config.reg_read = mtd_nvmem_reg_read;
- 	config.size = mtd->size;
+diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
+index 5f7e284..db72a9d 100644
+--- a/fs/jffs2/scan.c
++++ b/fs/jffs2/scan.c
+@@ -261,7 +261,8 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
+ 	}
+ #endif
+ 	if (c->nr_erasing_blocks) {
+-		if ( !c->used_size && ((c->nr_free_blocks+empty_blocks+bad_blocks)!= c->nr_blocks || bad_blocks == c->nr_blocks) ) {
++		if (!c->used_size && !c->unchecked_size &&
++			((c->nr_free_blocks+empty_blocks+bad_blocks) != c->nr_blocks || bad_blocks == c->nr_blocks)) {
+ 			pr_notice("Cowardly refusing to erase blocks on filesystem with no valid JFFS2 nodes\n");
+ 			pr_notice("empty_blocks %d, bad_blocks %d, c->nr_blocks %d\n",
+ 				  empty_blocks, bad_blocks, c->nr_blocks);
 -- 
-2.25.1
+2.7.4
+
 
 
 ______________________________________________________
