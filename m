@@ -2,90 +2,88 @@ Return-Path: <SRS0=prrA=7Z=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3EBAC433DF
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Jun 2020 15:25:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C73EDC433E0
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Jun 2020 16:34:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6973620835
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Jun 2020 15:25:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9829720835
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Jun 2020 16:34:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lTcM8khY";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=st.com header.i=@st.com header.b="pA/C8AGD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6973620835
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=st.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="s+dmX1jb";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AT60cBBv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9829720835
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hrKtSWl73d9JcC/a2NjsFiT/VYdthh0vxrRoZcsyQNE=; b=lTcM8khYbQ59zW
-	1ms5cWOAjc6u+tMXSntiHGAgyq3f82nwxh+yxIMhwSbV/dmK2FNkEppYKHmSduSQBaIHzWtkrPIw4
-	t+FIjputrx+j90/tYTXxdKbjRpGhsBPlVoHS4kr/FXKuYGHRTPsqxj63OHbszOxDm3fXmoaHdkRNE
-	oLqRDrQJ3JUGz4LUrp/b4k3H7ZNlT9OXe2jouDufk0MPxylOhb+ehYktdaw665rEqRSG9FSy2bUjg
-	sPjUGnMsv97EfQpcyGpQ0GCb935XQMa1QB9wIuT4RBWwWmZp44YkBpNQh0P8TxGNgk5QL4JvOpex3
-	5t1Vx5oMw17g6aQA+mGA==;
+	List-Owner; bh=aAlqlxJL3SMSlyPFE4nnk17Kf70YwRW6DWVzWlKrh/A=; b=s+dmX1jbJLUtsQ
+	xI72+VW3Ya6nVjySm7wcuK0QBfDYoue2B+SfMvin6+9eCRzjESzgCjG8iX5SWlUAvNiaMqM1JksX+
+	IYhcF9/zRmINPd7WysmHMCCGyJly9TMKHnVV7E1zAE2Au6ynbienHQGY28SB24cfP93xjuUf6RQtu
+	AQLjMxBRzhqV1PuHkgKKeKHcy21geKuBErORQG/gBR2BWq47NLSMmMz7wl0BpzkJYKy4G/QydFeQ5
+	Htx+YUOEGGMBaNKTtiAfh46mJFViojuu+YjNyE8eRdy6gH8Fhl8kvFOjHrADjusvVcExQHLrJio0H
+	+2ytqSdfH2mXmUCR+Wpg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jjlYP-0004RX-0R; Fri, 12 Jun 2020 15:25:13 +0000
-Received: from mx07-00178001.pphosted.com ([62.209.51.94])
+	id 1jjmda-0003TO-9g; Fri, 12 Jun 2020 16:34:38 +0000
+Received: from mail-io1-xd42.google.com ([2607:f8b0:4864:20::d42])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jjlXE-0002Xz-0K
- for linux-mtd@lists.infradead.org; Fri, 12 Jun 2020 15:24:02 +0000
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
- by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- 05CFNRn7024867; Fri, 12 Jun 2020 17:23:54 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com;
- h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=VKuXtI+oKwLUbGWw0bK1JRaRMG7c04L0ar85aWbitOc=;
- b=pA/C8AGDVHHDnA4+i9JL3tWOgrZ5QY/f970LS1wVSI24PDDWLLFvU5VKGwVi5wMY6zi+
- k9lvDwGzI0ZOcL+TpGQTzq5d541qs7NU7hkFDJc9QrHGbGivXGdQlVV61A/wg79ZyDmh
- ja632V8yyTY5ypRh0n9XBuvKNJ9+7tn/IJB1qSMRGrgnTdHnIMUAxlR/IfgDFI9854L7
- P3JnEoMo10HdbFZ8tICb2z+Ntum8mqesLj0aIH4xfMbQHxo4fEsWhmJZ6z9Wj7Q+i3qB
- 2IoWPwX1jQSmRXYpE1qDXFESUQ9OCad4ACXLsnR3PLq2vWliOKlapJeLm5+Q9sib02Js kw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com with ESMTP id 31jppp6g3g-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 12 Jun 2020 17:23:54 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1605C10002A;
- Fri, 12 Jun 2020 17:23:54 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag6node2.st.com [10.75.127.17])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 060BC2B9918;
- Fri, 12 Jun 2020 17:23:54 +0200 (CEST)
-Received: from localhost (10.75.127.48) by SFHDAG6NODE2.st.com (10.75.127.17)
- with Microsoft SMTP Server (TLS) id 15.0.1347.2;
- Fri, 12 Jun 2020 17:23:53 +0200
-From: Christophe Kerello <christophe.kerello@st.com>
-To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
- <robh+dt@kernel.org>, <mark.rutland@arm.com>, <arnd@linaro.org>,
- <alexandre.torgue@st.com>
-Subject: [PATCH v5 6/6] mtd: rawnand: stm32_fmc2: get resources from parent
- node
-Date: Fri, 12 Jun 2020 17:22:42 +0200
-Message-ID: <1591975362-22009-7-git-send-email-christophe.kerello@st.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1591975362-22009-1-git-send-email-christophe.kerello@st.com>
-References: <1591975362-22009-1-git-send-email-christophe.kerello@st.com>
+ id 1jjmdX-0003Sv-7I
+ for linux-mtd@lists.infradead.org; Fri, 12 Jun 2020 16:34:36 +0000
+Received: by mail-io1-xd42.google.com with SMTP id c8so10903822iob.6
+ for <linux-mtd@lists.infradead.org>; Fri, 12 Jun 2020 09:34:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=zGtrkPwQHWrCekYK5dUaegAtQMN8QZalOj8VmvHgaA4=;
+ b=AT60cBBv3QR8xJsxBMrR/A4GpRqeznHdckKOSk0xmw1K1neMHnj2m16VPCQp/VANcC
+ O/gHP6I3TPgj+ejrK0ySfOEOvziyF0zMlNrAmi84zx4I6buJRHr48yykQS3V9gVRa3B3
+ xmk1y9RTZT97Or5/bNoLD6KB2aEYx5QKKUKVFAlkcyqD1bhjqUUTkpOm0hDf5NyUmFei
+ gpH4ONWuxKPxxS/iu5MktOe3dOKWH2/VuD2JqwWr/Vh+JJBW/jxpZNOfM/n+IiKr2emV
+ 3t459QX0VGshbHNoFlV/dGz8fiwJLVa8a6GTC1fZLadFJtUtDccmvtJ5GzgTpU8YLp+4
+ F25Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=zGtrkPwQHWrCekYK5dUaegAtQMN8QZalOj8VmvHgaA4=;
+ b=VnZ62evaTN4o0N6k5zJ/8ccGrhkysoWUXAxj1pGd8VyQ1q5fjCfbp1R1UH2ceqwoUF
+ Dyta9fwZZPKqyQVrkAUXMyEVJmYzUGiWjBxS4ymPw1I8W0cTXs8UuCXYTqjIka0X6ckf
+ 8YUimI2mWUdFFtsEsOBZMPpIb3YN/PqsEkZBRSHxhs95/U/Lg/+7Zm9T92vT/bH+ABOT
+ DrINmiV9hyyeiLWIkrZZPC4npS1yVn30LKPTxVWLu1jk11jA2LuqGDJNw+AZlzM1iCzi
+ eBrtKmEYEKly1+QhwcNUeMwjln7qf3fgHW5zehbJyVSPkMv0Lq+c8rkjmPTJE4KkVSff
+ eKHg==
+X-Gm-Message-State: AOAM5320azF6w336LFsWPwn6R0YuJJGVyCLJk+m/shD7TrSgDc1oQ5rp
+ QKT8zghP/h69yxfR3w3pA0RzjiFAyQ9r6x5zrvk=
+X-Google-Smtp-Source: ABdhPJyxpKZoQ9j7S5fMNo0YLbXNEkvp8Z6oUPQNqDRsiML6KXD8ePD8vcex091bLfNnSXVS5/cUq0kqmWt5t5828xI=
+X-Received: by 2002:a05:6602:2e87:: with SMTP id
+ m7mr14643455iow.203.1591979673042; 
+ Fri, 12 Jun 2020 09:34:33 -0700 (PDT)
 MIME-Version: 1.0
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG6NODE3.st.com (10.75.127.18) To SFHDAG6NODE2.st.com
- (10.75.127.17)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216, 18.0.687
- definitions=2020-06-12_11:2020-06-12,
- 2020-06-12 signatures=0
+References: <20200611054454.2547-1-kdasu.kdev@gmail.com>
+ <20200611054454.2547-2-kdasu.kdev@gmail.com>
+ <20200611092707.75da8c6a@xps13>
+ <CAC=U0a3RXScu12LkU+hCv_5Lp_he92ExRFSgqLkwx40D6Xtrag@mail.gmail.com>
+ <20200612090728.043b6baf@xps13>
+In-Reply-To: <20200612090728.043b6baf@xps13>
+From: Kamal Dasu <kdasu.kdev@gmail.com>
+Date: Fri, 12 Jun 2020 12:34:22 -0400
+Message-ID: <CAC=U0a1oLPs_=SgUTxYPxiW8JpQXOpz-RbL2KrgzDjutt1v0mQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mtd: rawnand: brcmnand: Ecc error handling on EDU
+ transfers
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200612_082400_404036_2F274A4E 
-X-CRM114-Status: GOOD (  19.97  )
+X-CRM114-CacheID: sfid-20200612_093435_264677_26DE7BEF 
+X-CRM114-Status: GOOD (  35.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,197 +95,135 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: marex@denx.de, devicetree@vger.kernel.org,
- Christophe Kerello <christophe.kerello@st.com>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+ Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-FMC2 EBI support has been added. Common resources (registers base
-address and clock) can now be shared between the 2 drivers using
-"st,stm32mp1-fmc2-nfc" compatible string. It means that the
-common resources should now be found in the parent device when EBI
-node is available.
-
-Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
----
-Changes in v5:
- - look at the parent compatible string to match what we expect.
-
- drivers/mtd/nand/raw/Kconfig           |  3 +-
- drivers/mtd/nand/raw/stm32_fmc2_nand.c | 71 ++++++++++++++++++++++++----------
- 2 files changed, 51 insertions(+), 23 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index 0a03ebf..8dd0d7c 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -415,8 +415,7 @@ config MTD_NAND_TEGRA
- config MTD_NAND_STM32_FMC2
- 	tristate "Support for NAND controller on STM32MP SoCs"
- 	depends on MACH_STM32MP157 || COMPILE_TEST
--	select REGMAP
--	select REGMAP_MMIO
-+	select MFD_SYSCON
- 	help
- 	  Enables support for NAND Flash chips on SoCs containing the FMC2
- 	  NAND controller. This controller is found on STM32MP SoCs.
-diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-index 6aa3695..396b325 100644
---- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-+++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-@@ -11,8 +11,10 @@
- #include <linux/errno.h>
- #include <linux/interrupt.h>
- #include <linux/iopoll.h>
-+#include <linux/mfd/syscon.h>
- #include <linux/module.h>
- #include <linux/mtd/rawnand.h>
-+#include <linux/of_address.h>
- #include <linux/pinctrl/consumer.h>
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
-@@ -204,16 +206,6 @@
- #define FMC2_BCHDSR4_EBP7		GENMASK(12, 0)
- #define FMC2_BCHDSR4_EBP8		GENMASK(28, 16)
- 
--/* Regmap registers configuration */
--#define FMC2_MAX_REGISTER		0x3fc
--
--static const struct regmap_config stm32_fmc2_regmap_cfg = {
--	.reg_bits = 32,
--	.val_bits = 32,
--	.reg_stride = sizeof(u32),
--	.max_register = FMC2_MAX_REGISTER,
--};
--
- enum stm32_fmc2_ecc {
- 	FMC2_ECC_HAM = 1,
- 	FMC2_ECC_BCH4 = 4,
-@@ -253,6 +245,7 @@ struct stm32_fmc2_nfc {
- 	struct nand_controller base;
- 	struct stm32_fmc2_nand nand;
- 	struct device *dev;
-+	struct device *cdev;
- 	struct regmap *regmap;
- 	void __iomem *data_base[FMC2_MAX_CE];
- 	void __iomem *cmd_base[FMC2_MAX_CE];
-@@ -1384,8 +1377,9 @@ static void stm32_fmc2_nfc_init(struct stm32_fmc2_nfc *nfc)
- 	pcr |= FIELD_PREP(FMC2_PCR_TAR, FMC2_PCR_TAR_DEFAULT);
- 
- 	/* Enable FMC2 controller */
--	regmap_update_bits(nfc->regmap, FMC2_BCR1,
--			   FMC2_BCR1_FMC2EN, FMC2_BCR1_FMC2EN);
-+	if (nfc->dev == nfc->cdev)
-+		regmap_update_bits(nfc->regmap, FMC2_BCR1,
-+				   FMC2_BCR1_FMC2EN, FMC2_BCR1_FMC2EN);
- 
- 	regmap_write(nfc->regmap, FMC2_PCR, pcr);
- 	regmap_write(nfc->regmap, FMC2_PMEM, FMC2_PMEM_DEFAULT);
-@@ -1815,6 +1809,33 @@ static int stm32_fmc2_nfc_parse_dt(struct stm32_fmc2_nfc *nfc)
- 	return ret;
- }
- 
-+static int stm32_fmc2_nfc_set_cdev(struct stm32_fmc2_nfc *nfc)
-+{
-+	struct device *dev = nfc->dev;
-+	bool ebi_found = false;
-+
-+	if (dev->parent && of_device_is_compatible(dev->parent->of_node,
-+						   "st,stm32mp1-fmc2-ebi"))
-+		ebi_found = true;
-+
-+	if (of_device_is_compatible(dev->of_node, "st,stm32mp1-fmc2-nfc")) {
-+		if (ebi_found) {
-+			nfc->cdev = dev->parent;
-+
-+			return 0;
-+		}
-+
-+		return -EINVAL;
-+	}
-+
-+	if (ebi_found)
-+		return -EINVAL;
-+
-+	nfc->cdev = dev;
-+
-+	return 0;
-+}
-+
- static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -1824,8 +1845,9 @@ static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	struct mtd_info *mtd;
- 	struct nand_chip *chip;
--	void __iomem *mmio;
-+	struct resource cres;
- 	int chip_cs, mem_region, ret, irq;
-+	int start_region = 0;
- 
- 	nfc = devm_kzalloc(dev, sizeof(*nfc), GFP_KERNEL);
- 	if (!nfc)
-@@ -1835,22 +1857,28 @@ static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
- 	nand_controller_init(&nfc->base);
- 	nfc->base.ops = &stm32_fmc2_nfc_controller_ops;
- 
-+	ret = stm32_fmc2_nfc_set_cdev(nfc);
-+	if (ret)
-+		return ret;
-+
- 	ret = stm32_fmc2_nfc_parse_dt(nfc);
- 	if (ret)
- 		return ret;
- 
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	mmio = devm_ioremap_resource(dev, res);
--	if (IS_ERR(mmio))
--		return PTR_ERR(mmio);
-+	ret = of_address_to_resource(nfc->cdev->of_node, 0, &cres);
-+	if (ret)
-+		return ret;
-+
-+	nfc->io_phys_addr = cres.start;
- 
--	nfc->regmap = devm_regmap_init_mmio(dev, mmio, &stm32_fmc2_regmap_cfg);
-+	nfc->regmap = device_node_to_regmap(nfc->cdev->of_node);
- 	if (IS_ERR(nfc->regmap))
- 		return PTR_ERR(nfc->regmap);
- 
--	nfc->io_phys_addr = res->start;
-+	if (nfc->dev == nfc->cdev)
-+		start_region = 1;
- 
--	for (chip_cs = 0, mem_region = 1; chip_cs < FMC2_MAX_CE;
-+	for (chip_cs = 0, mem_region = start_region; chip_cs < FMC2_MAX_CE;
- 	     chip_cs++, mem_region += 3) {
- 		if (!(nfc->cs_assigned & BIT(chip_cs)))
- 			continue;
-@@ -1888,7 +1916,7 @@ static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
- 
- 	init_completion(&nfc->complete);
- 
--	nfc->clk = devm_clk_get(dev, NULL);
-+	nfc->clk = devm_clk_get(nfc->cdev, NULL);
- 	if (IS_ERR(nfc->clk))
- 		return PTR_ERR(nfc->clk);
- 
-@@ -2029,6 +2057,7 @@ static SIMPLE_DEV_PM_OPS(stm32_fmc2_nfc_pm_ops, stm32_fmc2_nfc_suspend,
- 
- static const struct of_device_id stm32_fmc2_nfc_match[] = {
- 	{.compatible = "st,stm32mp15-fmc2"},
-+	{.compatible = "st,stm32mp1-fmc2-nfc"},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, stm32_fmc2_nfc_match);
--- 
-1.9.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gRnJpLCBKdW4gMTIsIDIwMjAgYXQgMzowNyBBTSBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5
+bmFsQGJvb3RsaW4uY29tPiB3cm90ZToKPgo+IEhpIEthbWFsLAo+Cj4gS2FtYWwgRGFzdSA8a2Rh
+c3Uua2RldkBnbWFpbC5jb20+IHdyb3RlIG9uIFRodSwgMTEgSnVuIDIwMjAgMTI6MDQ6MjkKPiAt
+MDQwMDoKPgo+ID4gT24gVGh1LCBKdW4gMTEsIDIwMjAgYXQgMzoyNyBBTSBNaXF1ZWwgUmF5bmFs
+IDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPiB3cm90ZToKPiA+ID4KPiA+ID4gSGkgS2FtYWws
+Cj4gPiA+Cj4gPiA+IEthbWFsIERhc3UgPGtkYXN1LmtkZXZAZ21haWwuY29tPiB3cm90ZSBvbiBU
+aHUsIDExIEp1biAyMDIwIDAxOjQ0OjU0Cj4gPiA+IC0wNDAwOgo+ID4gPgo+ID4gPiA+IEltcGxl
+bWVudGVkIEVDQyBjb3JyZWN0YWJsZSBhbmQgdW5jb3JyZWN0YWJsZSBlcnJvciBoYW5kbGluZyBm
+b3IgRURVCj4gPiA+Cj4gPiA+IEltcGxlbWVudD8KPiA+ID4KPiA+ID4gPiByZWFkcy4gSWYgRUND
+IGNvcnJlY3RhYmxlIGJpdGZsaXBzIGFyZSBlbmNvdW50ZXJlZCAgb24gRURVIHRyYW5zZmVyLAo+
+ID4gPgo+ID4gPiBleHRyYSBzcGFjZSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgXgo+ID4gPgo+ID4gPiA+IHJlYWQgcGFnZSBhZ2FpbiB1c2luZyBwaW8sIFRoaXMgaXMg
+bmVlZGVkIGR1ZSB0byBhIGNvbnRyb2xsZXIgbG1pdGF0aW9uCj4gPiA+Cj4gPiA+IHMvcGlvL1BJ
+Ty8KPiA+ID4KPiA+ID4gPiB3aGVyZSByZWFkIGFuZCBjb3JyZWN0ZWQgZGF0YSBpcyBub3QgdHJh
+bnNmZXJyZWQgdG8gdGhlIERNQSBidWZmZXIgb24gRUNDCj4gPiA+ID4gZXJyb3JzLiBUaGlzIGhv
+bGRzIHRydWUgZm9yIEVDQyBjb3JyZWN0YWJsZSBlcnJvcnMgYmV5b25kIHNldCB0aHJlc2hvbGQu
+Cj4gPiA+Cj4gPiA+IGVycm9yLgo+ID4gPgo+ID4gPiBOb3Qgc3VyZSB3aGF0IHRoZSBsYXN0IHNl
+bnRlbmNlIG1lYW5zPwo+ID4gPgo+ID4KPiA+IE5BTkQgY29udHJvbGxlciBhbGxvd3MgZm9yIHNl
+dHRpbmcgYSBjb3JyZWN0YWJsZSAgRUNDIHRocmVzaG9sZCBudW1iZXIKPiA+IG9mIGJpdHMgYmV5
+b25kIHdoaWNoIGl0IHdpbGwgYWN0dWFsbHkgcmVwb3J0IHRoZSBlcnJvciB0byB0aGUgZHJpdmVy
+Lgo+ID4gZS5nLiBmb3IgQkNILTQgdGhlIHRocmVzaG9sZCBpcyAzLCBzbyAzLWJpdCBhbmQgNC1i
+aXQgZXJyb3JzIHdpbGwKPiA+IGdlbmVyYXRlIGNvcnJlY3RhYmxlIEVDQyBpbnRlcnJ1cHQgaG93
+ZXZlciAxLWJpdCBhbmQgMi1iaXQgZXJyb3JzIHdpbGwKPiA+IGJlIGNvcnJlY3RlZCBzaWxlbnRs
+eS4KPiA+IEZyb20gdGhlIGFib3ZlIGV4YW1wbGUgRURVIGhhcmR3YXJlIHdpbGwgbm90IHRyYW5z
+ZmVyIGNvcnJlY3RlZCBkYXRhCj4gPiB0byB0aGUgRE1BIGJ1ZmZlciBmb3IgMy1iaXQgYW5kIDQt
+Yml0IGVycm9ycyB0aGF0IGdldCByZXBvcnRlZC4gU28KPiA+IG9uY2Ugd2UgZGV0ZWN0Cj4gPiB0
+aGUgZXJyb3IgZHVpbmcgRURVIHdlIHJlYWQgdGhlIHBhZ2UgYWdhaW4gdXNpbmcgcGlvLgo+Cj4g
+T2sgSSBzZWUgd2hhdCB5b3UgbWVhbiwgY2FuJ3QgeW91IGZha2UgdGhlIHRocmVzaG9sZCBpbnN0
+ZWFkPyBUaGUgTkFORAo+IGNvbnRyb2xsZXIgaW4gTGludXggaXMgbm90IHN1cHBvc2VkIHRvIGhh
+bmRsZSB0aGlzIHRocmVzaG9sZCwgdGhlIE5BTkQKPiBjb3JlIGlzIGluIGNoYXJnZS4gU28gd2hh
+dCB0aGUgY29udHJvbGxlciBkcml2ZXIgc2hvdWxkIGRvIGlzIGp1c3Q6Cj4gaW5jcmVhc2UgdGhl
+IG51bWJlciBvZiBiaXRmbGlwcyArIHJldHVybiB0aGUgbWF4aW11bSBudW1iZXIgb3IgYml0Zmxp
+cAo+IG9yIGluY3JlYXNlIHRoZSBmYWlsdXJlIGNvdW50ZXIuIElzIHRoaXMgYWxyZWFkeSB0aGUg
+Y2FzZT8KPgovKiB0aHJlc2hvbGQgPSBjZWlsKEJDSC1sZXZlbCAqIDAuNzUpICovCmJyY21uYW5k
+X3dyX2NvcnJfdGhyZXNoKGhvc3QsIERJVl9ST1VORF9VUChjaGlwLT5lY2Muc3RyZW5ndGggKiAz
+LCA0KSk7ClRoaXMgaG93IHRoZSB0aHJlc2hvbGQgaXMgc2V0LCBhbGwgaXQgbWVhbnMgaXMgdGhh
+dCBmb3IgaGlnaCBCQ0gKbGV2ZWxzIGRvbid0IGludGVycnVwdCBvbiBsb3cgbnVtYmVyIChsZXNz
+IHRoYW4gdGhyZXNob2xkKSBvZgpiaXRfZmxpcHMuIFllcyB0aGUgY29udHJvbGxlciBkcml2ZXIg
+b25seSBpbmNyZW1lbnRzIGNvcnJlY3RhYmxlIEVDQwpjb3VudC4gQnV0IGR1ZSB0aGUgRURVIGRl
+c2lnbiBhbiBFRFUgb3BlcmF0aW9uIGlzIGRpc3J1cHRlZCB3aGVuIHRoZQpjb250cm9sbGVyIGlu
+dGVycnVwdHMgb24gY29ycmVjdGFibGUgRUNDIGVycm9ycyBkdXJpbmcgc3VicGFnZSBFQ0MKY2Fs
+Y3VsYXRpb25zLiBIZW5jZSB0aGUgZHJpdmVyIG5lZWRzIHRvIHJlYWQgdGhlIHBhZ2UgYWdhaW4g
+d2l0aCBQSU8KdG8gdHJhbnNmZXIgY29ycmVjdGVkIGRhdGEuCgo+ID4KPiA+ID4gPgo+ID4gPiA+
+IEZpeGVzOiBhNWQ1M2FkMjZhOGIgKCJtdGQ6IHJhd25hbmQ6IGJyY21uYW5kOiBBZGQgc3VwcG9y
+dCBmb3IgZmxhc2gtZWR1IGZvciBkbWEgdHJhbnNmZXJzIikKPiA+ID4gPiBTaWduZWQtb2ZmLWJ5
+OiBLYW1hbCBEYXN1IDxrZGFzdS5rZGV2QGdtYWlsLmNvbT4KPiA+ID4gPiAtLS0KPiA+ID4KPiA+
+ID4gTWlub3Igbml0cyBiZWxvdyA6KQo+ID4gPgo+ID4gPiA+ICBkcml2ZXJzL210ZC9uYW5kL3Jh
+dy9icmNtbmFuZC9icmNtbmFuZC5jIHwgMjYgKysrKysrKysrKysrKysrKysrKysrKysrCj4gPiA+
+ID4gIDEgZmlsZSBjaGFuZ2VkLCAyNiBpbnNlcnRpb25zKCspCj4gPiA+ID4KPiA+ID4gPiBkaWZm
+IC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvYnJjbW5hbmQvYnJjbW5hbmQuYyBiL2RyaXZl
+cnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2JyY21uYW5kLmMKPiA+ID4gPiBpbmRleCAwYzFkNmU1
+NDM1ODYuLmQ3ZGFhODNjOGE1OCAxMDA2NDQKPiA+ID4gPiAtLS0gYS9kcml2ZXJzL210ZC9uYW5k
+L3Jhdy9icmNtbmFuZC9icmNtbmFuZC5jCj4gPiA+ID4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9y
+YXcvYnJjbW5hbmQvYnJjbW5hbmQuYwo+ID4gPiA+IEBAIC0xODU1LDYgKzE4NTUsMjIgQEAgc3Rh
+dGljIGludCBicmNtbmFuZF9lZHVfdHJhbnMoc3RydWN0IGJyY21uYW5kX2hvc3QgKmhvc3QsIHU2
+NCBhZGRyLCB1MzIgKmJ1ZiwKPiA+ID4gPiAgICAgICBlZHVfd3JpdGVsKGN0cmwsIEVEVV9TVE9Q
+LCAwKTsgLyogZm9yY2Ugc3RvcCAqLwo+ID4gPiA+ICAgICAgIGVkdV9yZWFkbChjdHJsLCBFRFVf
+U1RPUCk7Cj4gPiA+ID4KPiA+ID4gPiArICAgICBpZiAocmV0ID09IDAgJiYgZWR1X2NtZCA9PSBF
+RFVfQ01EX1JFQUQpIHsKPiA+ID4KPiA+ID4gIXJldAo+ID4gPgo+ID4gPiA+ICsgICAgICAgICAg
+ICAgdTY0IGVycl9hZGRyID0gMDsKPiA+ID4gPiArCj4gPiA+ID4gKyAgICAgICAgICAgICAvKgo+
+ID4gPiA+ICsgICAgICAgICAgICAgICogY2hlY2sgZm9yIGVjYyBlcnJvcnMgaGVyZSwgc3VicGFn
+ZSBlY2MgZXJyb3MgYXJlCj4gPiA+ID4gKyAgICAgICAgICAgICAgKiByZXRhaW5lZCBpbiBlY2Mg
+ZXJyb3IgYWRkciByZWdpc3Rlcgo+ID4gPgo+ID4gPiBzL2VjYy9FQ0MvCj4gPiA+IHMvZXJyb3Mv
+ZXJyb3JzLwo+ID4gPiBzL2FkZHIvYWRkcmVzcy8KPiA+ID4KPiA+ID4gPiArICAgICAgICAgICAg
+ICAqLwo+ID4gPiA+ICsgICAgICAgICAgICAgZXJyX2FkZHIgPSBicmNtbmFuZF9nZXRfdW5jb3Jy
+ZWNjX2FkZHIoY3RybCk7Cj4gPiA+ID4gKyAgICAgICAgICAgICBpZiAoIWVycl9hZGRyKSB7Cj4g
+PiA+ID4gKyAgICAgICAgICAgICAgICAgICAgIGVycl9hZGRyID0gYnJjbW5hbmRfZ2V0X2NvcnJl
+Y2NfYWRkcihjdHJsKTsKPiA+ID4gPiArICAgICAgICAgICAgICAgICAgICAgaWYgKGVycl9hZGRy
+KQo+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJldCA9IC1FVUNMRUFOOwo+
+ID4gPiA+ICsgICAgICAgICAgICAgfSBlbHNlCj4gPiA+ID4gKyAgICAgICAgICAgICAgICAgICAg
+IHJldCA9IC1FQkFETVNHOwo+ID4gPgo+ID4gPiBJIGRvbid0IGxpa2UgdmVyeSBtdWNoIHRvIHNl
+ZSB0aGVzZSB2YWx1ZXMgYmVpbmcgdXNlZCB3aXRoaW4gTkFORAo+ID4gPiBjb250cm9sbGVyIGRy
+aXZlcnMgYnV0IEkgc2VlIGl0J3MgYWxyZWFkeSB0aGUgY2F1c2UsIHNvIEkgZ3Vlc3MgSSBjYW4K
+Pgo+IHMvY2F1c2UvY2FzZS8KPgo+ID4gPiBsaXZlIHdpdGggdGhhdC4KPiA+ID4KPiA+ID4gPiAr
+ICAgICB9Cj4gPiA+ID4gKwo+ID4gPiA+ICAgICAgIHJldHVybiByZXQ7Cj4gPiA+ID4gIH0KPiA+
+ID4gPgo+ID4gPiA+IEBAIC0yMDU4LDYgKzIwNzQsNyBAQCBzdGF0aWMgaW50IGJyY21uYW5kX3Jl
+YWQoc3RydWN0IG10ZF9pbmZvICptdGQsIHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsCj4gPiA+ID4g
+ICAgICAgdTY0IGVycl9hZGRyID0gMDsKPiA+ID4gPiAgICAgICBpbnQgZXJyOwo+ID4gPiA+ICAg
+ICAgIGJvb2wgcmV0cnkgPSB0cnVlOwo+ID4gPiA+ICsgICAgIGJvb2wgZWR1X3JlYWQgPSBmYWxz
+ZTsKPiA+ID4gPgo+ID4gPiA+ICAgICAgIGRldl9kYmcoY3RybC0+ZGV2LCAicmVhZCAlbGx4IC0+
+ICVwXG4iLCAodW5zaWduZWQgbG9uZyBsb25nKWFkZHIsIGJ1Zik7Cj4gPiA+ID4KPiA+ID4gPiBA
+QCAtMjA3NSw2ICsyMDkyLDEwIEBAIHN0YXRpYyBpbnQgYnJjbW5hbmRfcmVhZChzdHJ1Y3QgbXRk
+X2luZm8gKm10ZCwgc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwKPiA+ID4gPiAgICAgICAgICAgICAg
+ICAgICAgICAgZWxzZQo+ID4gPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJldHVy
+biAtRUlPOwo+ID4gPiA+ICAgICAgICAgICAgICAgfQo+ID4gPiA+ICsKPiA+ID4gPiArICAgICAg
+ICAgICAgIGlmIChoYXNfZWR1KGN0cmwpKQo+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICBl
+ZHVfcmVhZCA9IHRydWU7Cj4gPiA+Cj4gPiA+IFlvdSBkb24ndCBuZWVkIHRoaXMgZXh0cmEgdmFs
+dWUsIHlvdSBhbHJlYWR5IGhhdmUgdGhlIGNtZCBwYXJhbWV0ZXIKPiA+ID4gd2hpY2ggdGVsbHMg
+eW91IGlmIGl0IGlzIGEgcmVhZCBvciBhIHdyaXRlLiBZb3UgbWlnaHQgZXZlbiB3YW50IHRvCj4g
+PiA+IGNyZWF0ZSBhIGlmIGJsb2NrIHNvIHNldCBkaXIgYW5kIGVkdV9jbWQgYW5kIGV2ZW50dWFs
+bHkgYSBsb2NhbAo+ID4gPiBlZHVfcmVhZCBpZiB5b3UgdGhpbmsgaXQgc3RpbGwgbWFrZXMgc2Vu
+c2UuCj4gPiA+Cj4gPgo+ID4gSSBuZWVkZWQgdGhlIHZhbHVlIHNpbmNlIGRtYSBhbmQgZWR1IHJl
+YWQgaGFzIG11bHRpcGxlIGNvbmRpdGlvbnMgbGlrZQo+ID4gb29iIGlzIG5vdCBpbmNsdWRlZCwg
+YnVmZmVyIGlzIGFsaWduZWQsIHZpcnR1YWwgYWRkcmVzcyBpcyBnb29kLiBUaGlzCj4gPiBpbmRp
+Y2F0ZXMgdG8KPiA+IHRoZSBpZiAobXRkX2lzX2JpdGZsaXAoZXJyKSkgIGJsb2NrIHRoYXQgdGhl
+IGVycm9yIHdhcyBmcm9tIGFuIGVkdQo+ID4gdHJhbnNhY3Rpb24gdGhhdCBoYXBwZW5lZC5UaGlz
+IHdheSBhbGwgZWNjIGVycm9yIGhhbmRsaW5nIGZvciBkbWEsCj4gPiBlZHUsIHBpbyBpcyBpbiBv
+bmUgcGxhY2UuCj4gPiBBbHNvIHRoZXJlIGlzIG1vcmUgY29udHJvbGxlciB2ZXJzaW9uIHNwZWNp
+ZmljIGxvZ2ljIGZvciByZWFkIGVycm9yCj4gPiBoYW5kbGluZyBpbiB0aGVyZSBhbmQgdGhpcyBh
+bGxvd3MgdXMgdG8gbWFpbnRhaW4gdGhlIGhpZXJhcmNoeSBob3cgd2UKPiA+IGhhbmRsZSBib3Ro
+IGNvcnJlY3RhYmxlCj4gPiBhbmQgdW5jb3JyZWN0YWJsZSBlcnJvci4KPgo+IEZhaXIgZW5vdWdo
+Lgo+Cj4gPgo+ID4gPiA+ICsKPiA+ID4gPiAgICAgICB9IGVsc2Ugewo+ID4gPiA+ICAgICAgICAg
+ICAgICAgaWYgKG9vYikKPiA+ID4gPiAgICAgICAgICAgICAgICAgICAgICAgbWVtc2V0KG9vYiwg
+MHg5OSwgbXRkLT5vb2JzaXplKTsKPiA+ID4gPiBAQCAtMjEyMiw2ICsyMTQzLDExIEBAIHN0YXRp
+YyBpbnQgYnJjbW5hbmRfcmVhZChzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgc3RydWN0IG5hbmRfY2hp
+cCAqY2hpcCwKPiA+ID4gPiAgICAgICBpZiAobXRkX2lzX2JpdGZsaXAoZXJyKSkgewo+ID4gPiA+
+ICAgICAgICAgICAgICAgdW5zaWduZWQgaW50IGNvcnJlY3RlZCA9IGJyY21uYW5kX2NvdW50X2Nv
+cnJlY3RlZChjdHJsKTsKPiA+ID4gPgo+ID4gPiA+ICsgICAgICAgICAgICAgLyogaW4gY2FzZSBv
+ZiBlZHUgY29ycmVjdGFibGUgZXJyb3Igd2UgcmVhZCBhZ2FpbiB1c2luZyBwaW8gKi8KPiA+ID4K
+PiA+ID4gcy9lZHUvRURVLyA/Cj4gPiA+IHMvcGlvL1BJTy8KPiA+ID4KPiA+ID4gPiArICAgICAg
+ICAgICAgIGlmIChlZHVfcmVhZCkKPiA+ID4gPiArICAgICAgICAgICAgICAgICAgICAgZXJyID0g
+YnJjbW5hbmRfcmVhZF9ieV9waW8obXRkLCBjaGlwLCBhZGRyLCB0cmFucywgYnVmLAo+ID4gPiA+
+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBvb2IsICZl
+cnJfYWRkcik7Cj4gPiA+ID4gKwo+ID4gPiA+ICAgICAgICAgICAgICAgZGV2X2RiZyhjdHJsLT5k
+ZXYsICJjb3JyZWN0ZWQgZXJyb3IgYXQgMHglbGx4XG4iLAo+ID4gPiA+ICAgICAgICAgICAgICAg
+ICAgICAgICAodW5zaWduZWQgbG9uZyBsb25nKWVycl9hZGRyKTsKPiA+ID4gPiAgICAgICAgICAg
+ICAgIG10ZC0+ZWNjX3N0YXRzLmNvcnJlY3RlZCArPSBjb3JyZWN0ZWQ7Cj4gPiA+Cj4gPgo+ID4g
+V2lsbCBmaXggYWxsIHRoZSBvdGhlciB0eXBvcy4KPiA+Cj4gPiA+IFRoYW5rcywKPiA+ID4gTWlx
+dcOobAo+ID4KPiA+IFRoYW5rcwo+ID4gS2FtYWwKPgo+Cj4gVGhhbmtzLAo+IE1pcXXDqGwKCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51
+eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
