@@ -2,86 +2,90 @@ Return-Path: <SRS0=prrA=7Z=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4394EC433E2
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9743AC433DF
 	for <linux-mtd@archiver.kernel.org>; Fri, 12 Jun 2020 15:23:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1A17A20897
+	by mail.kernel.org (Postfix) with ESMTPS id 6B67820835
 	for <linux-mtd@archiver.kernel.org>; Fri, 12 Jun 2020 15:23:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rVHXOSPI";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=st.com header.i=@st.com header.b="V3oHbThV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1A17A20897
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="H7GkdbOU";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=st.com header.i=@st.com header.b="RrjTyH/f"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6B67820835
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=st.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=6Mm9+vC4o13hNs5/c7o0yGfHbOj8r7I1IXSQSvc8RAQ=; b=rVHXOSPIC5YdnY
-	GUylYzY3ezfuE5/nvGRLoDQsKkFYidg4ga181yh6dzdzBtORm/Ib3Xl82VMp9CoEN/Mx7SnlnFd2a
-	3xYF+uxXpuG/VaT4yxjQ1gy0oteQrMpgyieCByb2yZKiBH+cXVT/uQT1dQVQV8oJvccTzQYU7kogS
-	x827/IrrrmRLNRuq0SBCCk/tmqPpwqYyBdAGIpe+dSgvvD9T/t1GmOMDtAW/CteBpDSr/++bMODy0
-	i4FOSb07C1Z1Y+R03IYFVCINrRqhBGRP6XzVLJ3CSBUjuft6EpoRQ1p/A2lAdygG7R7ojbIiM7nSA
-	1oezxgVO9Xfg0ZUmtFtA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=WfkVCVLczMaC/9dUfLgXJKApEh8CqGgjuYbLQViLeHs=; b=H7GkdbOUJZFGOJ
+	GLvBdaMSFMjcG/CzRnqtS188Qi+U7DD3QjrjcLVoHs6i0wQrTpMHKhokFHRidq2VkdwdV9oQrO5Fg
+	FtwBEN7nuLRDRt14+aZ6GH9zSvQq6xGOn+XnypctjFcSKhaJcUosz3oZNvIGLZIed8Dpw0T1xZAoT
+	5+KKaqtyiPmuGSXAOu8lcYXnsvJnWnBW+WjEtMC3Ku7MnWidQH9aOc3CG6+4+u/Ired+8JfGvvkMJ
+	YKy3T7ETcMEq8hczD+CZGadv/YHK/o0afecHkK0zdb5uJ+fI5RF1XNWB8/rFfed0gY0Frqf/kMwZl
+	WIvlzqYRRQ1eeg+cHSXw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jjlWn-00023p-5X; Fri, 12 Jun 2020 15:23:33 +0000
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]
- helo=mx07-00178001.pphosted.com)
+	id 1jjlWs-0002BJ-Pz; Fri, 12 Jun 2020 15:23:38 +0000
+Received: from mx07-00178001.pphosted.com ([62.209.51.94])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jjlWh-00022s-Jl
- for linux-mtd@lists.infradead.org; Fri, 12 Jun 2020 15:23:29 +0000
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+ id 1jjlWl-00023n-Go
+ for linux-mtd@lists.infradead.org; Fri, 12 Jun 2020 15:23:33 +0000
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
  by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- 05CF1VeH016986; Fri, 12 Jun 2020 17:23:14 +0200
+ 05CFMR02016903; Fri, 12 Jun 2020 17:23:23 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com;
  h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=ZNCgFY29ushPSChdQisNmd/nPHJRu5GNLEvEuVDL5BM=;
- b=V3oHbThVFkfRLV1aqUq4Dvf3ONhnmS7OuMBOhlANd777f+fD9tVVoIHaEwJ4vgFpvSZg
- ny2jfjYOv8WKIkMSjIjFTk1FrvIB5BnbeNpKH6maohfuQ408ijgATIlmvcpp/WGF8ken
- yhOmcT8+nBDSVFsBEFSOcrzGFWyKtA25YStyyT1nOgNdn/yyBXg0p/abfGQW5Mu3KYKX
- nh9D9z8m9I6iztupBtDMJEcYx/OnMXF3EgJXK8zxXq0gOzsqig1v2pffJtgeN0ILZPS+
- ieUcR3UoocZX38owaQxDBdc4zbuFRzQM5+meJgD+bGymcZCR8WxA2oGIDZ2Qx+LWV0Ay LQ== 
+ : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=STMicroelectronics;
+ bh=Pjdkqf0iNDhsdmITwjZsSH1DCxFnXTvI5U7f8Lsv1nI=;
+ b=RrjTyH/f/Qz2lchyKJILkskbIzipXYbJ1COBEXLK9jkdfdbf8T/SYChUKy8YfSexhwLv
+ ZaeluLMGXLTG92XxUt+bc+1KhPhd12rRfrcp/fM7Qysb7N5lRmGVTAig6HX4z6vjQ8iZ
+ Ie2YfFoGeTdH9NYdC1ZzIZNAXuhgz7OyiY4Dq9zG0ME9dY62UuWFIBfQV6nW8GKsR57B
+ IyWNqep9xpRnSv/BcPdYFLxEzfGAjkumWBhlakANzbA7ElbwXGAMR54x6TixQpo/yjGe
+ xe8Iqa56m4ceT/dxMkdab0yhrzuW8bt1Z96vlFJydQTgiweVsyZUPU0MVdvwPzbLdSch kg== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com with ESMTP id 31g097s1j5-1
+ by mx07-00178001.pphosted.com with ESMTP id 31g0ww8s82-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 12 Jun 2020 17:23:14 +0200
+ Fri, 12 Jun 2020 17:23:23 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AF14210002A;
- Fri, 12 Jun 2020 17:23:12 +0200 (CEST)
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 265BE100034;
+ Fri, 12 Jun 2020 17:23:23 +0200 (CEST)
 Received: from Webmail-eu.st.com (sfhdag6node2.st.com [10.75.127.17])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 960112B9918;
- Fri, 12 Jun 2020 17:23:12 +0200 (CEST)
-Received: from localhost (10.75.127.50) by SFHDAG6NODE2.st.com (10.75.127.17)
+ by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 16E702B9918;
+ Fri, 12 Jun 2020 17:23:23 +0200 (CEST)
+Received: from localhost (10.75.127.49) by SFHDAG6NODE2.st.com (10.75.127.17)
  with Microsoft SMTP Server (TLS) id 15.0.1347.2;
- Fri, 12 Jun 2020 17:23:11 +0200
+ Fri, 12 Jun 2020 17:23:22 +0200
 From: Christophe Kerello <christophe.kerello@st.com>
 To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
  <robh+dt@kernel.org>, <mark.rutland@arm.com>, <arnd@linaro.org>,
  <alexandre.torgue@st.com>
-Subject: [PATCH v5 0/6] add STM32 FMC2 EBI controller driver
-Date: Fri, 12 Jun 2020 17:22:36 +0200
-Message-ID: <1591975362-22009-1-git-send-email-christophe.kerello@st.com>
+Subject: [PATCH v5 1/6] mtd: rawnand: stm32_fmc2: do not display errors if the
+ driver is deferred
+Date: Fri, 12 Jun 2020 17:22:37 +0200
+Message-ID: <1591975362-22009-2-git-send-email-christophe.kerello@st.com>
 X-Mailer: git-send-email 1.9.1
+In-Reply-To: <1591975362-22009-1-git-send-email-christophe.kerello@st.com>
+References: <1591975362-22009-1-git-send-email-christophe.kerello@st.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG6NODE1.st.com (10.75.127.16) To SFHDAG6NODE2.st.com
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG7NODE2.st.com (10.75.127.20) To SFHDAG6NODE2.st.com
  (10.75.127.17)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216, 18.0.687
  definitions=2020-06-12_11:2020-06-12,
  2020-06-12 signatures=0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200612_082327_995316_D3D76F8A 
-X-CRM114-Status: GOOD (  14.93  )
+X-CRM114-CacheID: sfid-20200612_082331_847673_1A27E398 
+X-CRM114-Status: GOOD (  17.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,65 +105,51 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The FMC2 functional block makes the interface with: synchronous and
-asynchronous static devices (such as PSNOR, PSRAM or other memory-mapped
-peripherals) and NAND flash memories.
-Its main purposes are:
-  - to translate AXI transactions into the appropriate external device
-    protocol
-  - to meet the access time requirements of the external devices
-All external devices share the addresses, data and control signals with the
-controller. Each external device is accessed by means of a unique Chip
-Select. The FMC2 performs only one access at a time to an external device.
+A MDMA issue has been solved on Kernel 5.7. The effect of this fix is
+that the MDMA driver is now deferred and the FMC2 NFC driver is also
+deferred. All is working fine but there is a FMC2 log in the console:
+stm32_fmc2_nfc 58002000.nand-controller: failed to request tx DMA
+channel: -517
 
-Changes in v5:
- - NAND:
-   - do not display errors if the driver is deferred.
-   - look at the parent compatible string to match what we expect.
- - bindings:
-   - add Rob reviewed-by tag on patch 3.
-   - fix indent descriptions.
-   - add new NFC compatible string to handle reg number of entries. 
+This patch removes the display of this log in the console in case of
+this error is -EPROBE_DEFER.
 
-Changes in v4:
- - bindings:
-   - fix filename: st,stm32-fmc2-ebi.yaml
+Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
+---
+ drivers/mtd/nand/raw/stm32_fmc2_nand.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Changes in v3:
- - NAND:
-   - rename labels used on errors
-   - add in the commit log the reason to increase FMC2_TIMEOUT_MS (patch 3)
-   - add Miquel reviewed-by tag (patches 2/4/5/9)
- - EBI:
-   - move in memory folder
-   - merge MFD and BUS drivers to avoid a MFD driver
- - bindings:
-   - pattern name has been modified
-   - vendor properties have been modified
-     - s/_/-/
-     - add unit suffix (-ns) on timing properties
-
-Christophe Kerello (6):
-  mtd: rawnand: stm32_fmc2: do not display errors if the driver is
-    deferred
-  dt-bindings: mtd: update STM32 FMC2 NAND controller documentation
-  dt-bindings: memory-controller: add STM32 FMC2 EBI controller
-    documentation
-  memory: stm32-fmc2-ebi: add STM32 FMC2 EBI controller driver
-  mtd: rawnand: stm32_fmc2: use regmap APIs
-  mtd: rawnand: stm32_fmc2: get resources from parent node
-
- .../memory-controllers/st,stm32-fmc2-ebi.yaml      |  252 ++++
- .../bindings/mtd/st,stm32-fmc2-nand.yaml           |   83 +-
- drivers/memory/Kconfig                             |   10 +
- drivers/memory/Makefile                            |    1 +
- drivers/memory/stm32-fmc2-ebi.c                    | 1206 ++++++++++++++++++++
- drivers/mtd/nand/raw/Kconfig                       |    1 +
- drivers/mtd/nand/raw/stm32_fmc2_nand.c             |  311 ++---
- 7 files changed, 1688 insertions(+), 176 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml
- create mode 100644 drivers/memory/stm32-fmc2-ebi.c
-
+diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+index 65c9d17..e7b706b 100644
+--- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
++++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+@@ -1570,7 +1570,7 @@ static int stm32_fmc2_nfc_dma_setup(struct stm32_fmc2_nfc *nfc)
+ 	nfc->dma_tx_ch = dma_request_chan(nfc->dev, "tx");
+ 	if (IS_ERR(nfc->dma_tx_ch)) {
+ 		ret = PTR_ERR(nfc->dma_tx_ch);
+-		if (ret != -ENODEV)
++		if (ret != -ENODEV && ret != -EPROBE_DEFER)
+ 			dev_err(nfc->dev,
+ 				"failed to request tx DMA channel: %d\n", ret);
+ 		nfc->dma_tx_ch = NULL;
+@@ -1580,7 +1580,7 @@ static int stm32_fmc2_nfc_dma_setup(struct stm32_fmc2_nfc *nfc)
+ 	nfc->dma_rx_ch = dma_request_chan(nfc->dev, "rx");
+ 	if (IS_ERR(nfc->dma_rx_ch)) {
+ 		ret = PTR_ERR(nfc->dma_rx_ch);
+-		if (ret != -ENODEV)
++		if (ret != -ENODEV && ret != -EPROBE_DEFER)
+ 			dev_err(nfc->dev,
+ 				"failed to request rx DMA channel: %d\n", ret);
+ 		nfc->dma_rx_ch = NULL;
+@@ -1590,7 +1590,7 @@ static int stm32_fmc2_nfc_dma_setup(struct stm32_fmc2_nfc *nfc)
+ 	nfc->dma_ecc_ch = dma_request_chan(nfc->dev, "ecc");
+ 	if (IS_ERR(nfc->dma_ecc_ch)) {
+ 		ret = PTR_ERR(nfc->dma_ecc_ch);
+-		if (ret != -ENODEV)
++		if (ret != -ENODEV && ret != -EPROBE_DEFER)
+ 			dev_err(nfc->dev,
+ 				"failed to request ecc DMA channel: %d\n", ret);
+ 		nfc->dma_ecc_ch = NULL;
 -- 
 1.9.1
 
