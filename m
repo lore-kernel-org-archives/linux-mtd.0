@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E366C433E0
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Jun 2020 09:16:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7C7CC433E0
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Jun 2020 09:16:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CEB692068E
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Jun 2020 09:16:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7C9592068E
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Jun 2020 09:16:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NiRkZbkn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CEB692068E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Yd5kvnfA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7C9592068E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=yaytweEAIlnjL10b9G/HaCrSC5e4+JwzvLSk9q0fr0U=; b=NiRkZbknI6If+u
-	urVW0dAvX0G/R2ThfPLKaEYmNYmjP3Z6YM5BDbPfNpV43pUFrII/3zzUfJQYHSsi9Fc1nbT5L1z5o
-	wY552IBJHt5kviLDTbBPow+RbCgPrtUTAsdtJ0DwcdAC3DJv2BaAServLKm0DayoXrrSDg1DFDPG3
-	UJ+8M5w2zejEUfr/nvVdLpPHK7/ObLQM4X7eAqGXsTkPfTqf/sx+lVFcDdsDDfrXK+++kq8R6O1/n
-	vyqDd+RrtgHXVAJhiqYIVeXEgfOtBnxNY1d7RJwpm0cCWRXn1rpei8QW2Wj2J6/fHCwd7tK6xkRyM
-	8kGMx8K5AbnbH6eiS+6w==;
+	List-Owner; bh=nBvzYb2aiZkrc9Us6BkYH+NZ1ka4oy5ItjfpV9g+goc=; b=Yd5kvnfAlIbx0b
+	D34Y3WdTWMhkX59dJkIGJ+jE5ILPVAzxWToK7h8IC1RTy9yaRJZoAvYSdyaq7ODemEinFRxtJQxuS
+	YOyzOTr46HL3SmOnv2wrop5fAI4rB9Aps3UvkPtRJv65phXHd2n4uKg2NssCG3huUHf+jPDuszMnm
+	ikzrCjofW/gn5mSJ8WJCHRNK9KGgXKV123hTBZ+mgEFp92FmALEaHf46qK4eUdvMhr3LHiHP23S00
+	u/Gztjn+Fy4a9aQVRU3fFwPjS/aUG34lvibJbm7rYM6BC/w/TcfNW2jCCvT3+wmqXXdnwqczaxxOY
+	VwniVya3vWgoIL6VIAKg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jklE4-0000A1-5c; Mon, 15 Jun 2020 09:16:20 +0000
-Received: from relay11.mail.gandi.net ([217.70.178.231])
+	id 1jklEN-0000Pd-4A; Mon, 15 Jun 2020 09:16:39 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jkl4K-0003q9-5i
- for linux-mtd@lists.infradead.org; Mon, 15 Jun 2020 09:06:29 +0000
+ id 1jkl4T-0003wR-CJ
+ for linux-mtd@lists.infradead.org; Mon, 15 Jun 2020 09:06:37 +0000
+X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay11.mail.gandi.net (Postfix) with ESMTPSA id 12977100016;
- Mon, 15 Jun 2020 09:06:01 +0000 (UTC)
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id A48BBFF802;
+ Mon, 15 Jun 2020 09:06:22 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v7 08/28] mtd: rawnand: Use the data interface mode entry
- when relevant
-Date: Mon, 15 Jun 2020 11:06:00 +0200
-Message-Id: <20200615090600.25776-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v7 07/28] mtd: rawnand: Compare the actual timing values
+Date: Mon, 15 Jun 2020 11:06:21 +0200
+Message-Id: <20200615090621.25841-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200529111322.7184-9-miquel.raynal@bootlin.com>
+In-Reply-To: <20200529111322.7184-8-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 12194b3f61642e9d84d1207defec6d0c727c23bb
+X-linux-mtd-patch-commit: 15de4143dcea19633d8bea64de108a8f5598adf9
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200615_020616_370673_C752E404 
-X-CRM114-Status: UNSURE (   9.18  )
+X-CRM114-CacheID: sfid-20200615_020625_564483_75B42FB5 
+X-CRM114-Status: UNSURE (   8.39  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -80,13 +80,11 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2020-05-29 at 11:13:02 UTC, Miquel Raynal wrote:
-> The data interface setup does not care about the default timing mode
-> but cares about the actual timing mode at the time of the call of this
-> helper.
-> 
-> Use this entry instead and let chip->default_timing_mode only be used
-> at initialization time.
+On Fri, 2020-05-29 at 11:13:01 UTC, Miquel Raynal wrote:
+> Avoid relying just on the default timing mode to discriminate if the
+> data interface must be restored. This field should only be used
+> at initialization time by legacy chips statically defined. Do a
+> memcmp() instead.
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
