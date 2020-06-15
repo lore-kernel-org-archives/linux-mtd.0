@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B2CDCC433DF
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Jun 2020 09:12:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B9F9C433DF
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Jun 2020 09:12:32 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6A08A20679
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Jun 2020 09:12:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3C70620679
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Jun 2020 09:12:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FsCcwinu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A08A20679
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="UFyIWUkH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C70620679
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,41 +25,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IY9DyxDccIY0RfFNVKIDc2x+5Vw9WtJ5Z6JZ5pjs1vc=; b=FsCcwinuSfJRmq
-	wCXeHuzlD7d4wUg4HCA0Z0G4zoudRPVr8x1GXjfkwnAje1gqdu66+1TK6UCHh5ldMpCwENZcCAPEb
-	vIQ67klC9m3Im+oiEqTWauPjlKAxDrp1RuzT+PJ4xtmzSXW2BL6galjJgCIOX2hHX6jql6tRO6D4M
-	utqGlXP40pyI3WBMgF4cBCB2nYPqv3+Khon5j9Pp1/Oe4479U1rRiURvpUSkrwjSo9ZyOcdknTq0U
-	JZ/8Iyj+p+MdwuX/ChkbUYzZISSO65ezbBRIEraDZz28gLHYQ/sRexGHfobl2GRoWuwCKxFiXn9Ym
-	lvsYllZFAHvLv5fSRcWA==;
+	List-Owner; bh=WxjcTbBNdBCo79MfBDtV9aFmNJHjZz6dB3txUOfkOZI=; b=UFyIWUkHCCaN/q
+	T6vlvUGlmNVIzFaZTuWY/ZSvztJu1Tl+kbBkolAXImrco7f1JZ0KHr8t3hPI9HhFn4jFJMFPRC8Rg
+	Sybc1foZWdLYtmjECD0V6c/hWN3YqlDpReAGS2hwXmjQprse5e6kuR8dkGKQ05tGCPzLKVd70YlHi
+	B5G31CUVJVb3Mrqw8JTh928NryxKakXJMx7h0PElH7O2IFeMcDVTOeQMzl8B4d8x3fpd9PbuePycZ
+	/xG0SckEuKro1eP725FZWdRBL5hU6DvF4Q6ZAHGvzJ/SA7D4ghqPrdvSACMpw/NzJa7Shisopuzwm
+	6EB4eJrT2Yrv31Chc+6w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jkl9z-0002cl-85; Mon, 15 Jun 2020 09:12:07 +0000
-Received: from relay7-d.mail.gandi.net ([217.70.183.200])
+	id 1jklAF-0002rg-Q1; Mon, 15 Jun 2020 09:12:23 +0000
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jkl2k-0000W3-Mk
- for linux-mtd@lists.infradead.org; Mon, 15 Jun 2020 09:04:40 +0000
+ id 1jkl2u-0000dW-Ph
+ for linux-mtd@lists.infradead.org; Mon, 15 Jun 2020 09:04:54 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 035B820008;
- Mon, 15 Jun 2020 09:04:35 +0000 (UTC)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 1E65DC0010;
+ Mon, 15 Jun 2020 09:04:45 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v7 17/28] mtd: rawnand: timings: Use default values for
- tPROG_max and tBERS_max
-Date: Mon, 15 Jun 2020 11:04:34 +0200
-Message-Id: <20200615090434.25193-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v7 16/28] mtd: rawnand: timings: Avoid redefining tR_max
+ and tCCS_min
+Date: Mon, 15 Jun 2020 11:04:44 +0200
+Message-Id: <20200615090445.25272-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200529111322.7184-18-miquel.raynal@bootlin.com>
+In-Reply-To: <20200529111322.7184-17-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 634d529c94d33cf84a00b76b5aab1a20cc1e3769
+X-linux-mtd-patch-commit: 77c83bb43a07db03a487f947e9caca3fcdfd7cfe
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200615_020438_953272_B9BD8B46 
-X-CRM114-Status: UNSURE (   9.48  )
+X-CRM114-CacheID: sfid-20200615_020448_977813_E0BB3966 
+X-CRM114-Status: UNSURE (   7.45  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -81,15 +81,11 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2020-05-29 at 11:13:11 UTC, Miquel Raynal wrote:
-> The ONFI parameter page of a chip might define more fine grained
-> tPROG_max and tBERS_max. When we do not have this information, we
-> default to the highest possible values (they are maxima anyway).
-> 
-> There is no point setting these fields at runtime, so explicitly move
-> these defaults to the main ONFI SDR timings structure. This way, we
-> will also be able to return a pointer to mode 0 directly when we will
-> create a default reset configuration.
+On Fri, 2020-05-29 at 11:13:10 UTC, Miquel Raynal wrote:
+> These two values are already hardcoded in the default ONFI timing
+> structure, no need to redefine them here. Plus, we want to be able to
+> reference timing mode 0 easily and reliably, without extra
+> computation, so we get rid of the extra assignations.
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
