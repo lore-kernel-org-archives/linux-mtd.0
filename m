@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EFDCC433DF
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Jun 2020 09:06:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5350C433DF
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Jun 2020 09:08:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4C8E520679
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Jun 2020 09:06:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 69B5620679
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Jun 2020 09:08:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ZwhTq2+f"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C8E520679
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tuQg+1cx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 69B5620679
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8kH7G9EzMLZLe7vja4wMGSGChy3Yj855bgYv4J9LP0M=; b=ZwhTq2+fJU3n9v
-	KhpOu82JrA63SWeuDfyKi9vkLpmO1GD45OBe/00HNZQ2dzZB1MvG6b4vHl9cD8UaKYstsHz9Yhzvm
-	IEEm4khnQ3xwyLq/SGYToG8IdiF9xmbQFN5SRNYD9+0mPeEvbz1nzerOwD95lxiimhelXWBPxg7wN
-	wT3kubTzD7j1nbkGdYU0/Y/qLWlbwyr37i5+FIjq3lHF1rNVOMgUIE6pI+3MPzb7h6cV0cW8mrJKa
-	ULIh2Yiy8p4wLRjoa3NeYwCP5fa3DJwyGDQiFgeLL/V+62D95aEhjWeR7lAh0/+NW9CZ8d7xo8pln
-	g+AR/L9k9OZm7sZlcITg==;
+	List-Owner; bh=Rd+iQ72n9BeOJbl47pl3NTNdU6CJHWms0mdPlbBukt0=; b=tuQg+1cxraPh7b
+	dqkFFj81yvw3Zbn0UAaanCqOsDh8NeRcWWI9JI7ob++lKjYF520OIXc7rzikjaNOnkX2/ZHlAaFm1
+	xpH9kaYUJKF//y9z57jKXVv218xFD/zLwx6GgbztHNahKgNSlUOP6zG+Hm6oTAD9OH/cPBYzDRnxA
+	5xn9bOA1UfBk2zI+HqNMlMsVsFuh6LVF8DOn3JEi/NFmtAcYtt6sfbP6el1CkVtm3W6dtzU3vaRzp
+	kGADLUVOECH/SbGVlARlb6dYGLZ0hmnuVIA2y3A2vC4AEC2rO1pgdHJ1eBrI7YBnz/Nv3uveHTplD
+	u3K4jZ0DwcDU9T9qfKYg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jkl4e-000455-Nx; Mon, 15 Jun 2020 09:06:36 +0000
-Received: from relay5-d.mail.gandi.net ([217.70.183.197])
+	id 1jkl6a-0005pJ-JQ; Mon, 15 Jun 2020 09:08:36 +0000
+Received: from relay11.mail.gandi.net ([217.70.178.231])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jkl0q-0007eH-Gw
- for linux-mtd@lists.infradead.org; Mon, 15 Jun 2020 09:02:44 +0000
-X-Originating-IP: 91.224.148.103
+ id 1jkl12-0007ne-TF
+ for linux-mtd@lists.infradead.org; Mon, 15 Jun 2020 09:02:55 +0000
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id A1A741C0005;
- Mon, 15 Jun 2020 09:02:37 +0000 (UTC)
+ by relay11.mail.gandi.net (Postfix) with ESMTPSA id 203FC100004;
+ Mon, 15 Jun 2020 09:02:46 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@collabora.com>,
- Anton Vorontsov <anton@enomsg.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 01/10] mtd: rawnand: fsl_upm: Remove unused mtd var
-Date: Mon, 15 Jun 2020 11:02:36 +0200
-Message-Id: <20200615090236.23345-1-miquel.raynal@bootlin.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v7 28/28] mtd: rawnand: Allocate the interface
+ configurations dynamically
+Date: Mon, 15 Jun 2020 11:02:45 +0200
+Message-Id: <20200615090245.23416-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200603134922.1352340-2-boris.brezillon@collabora.com>
+In-Reply-To: <20200529111322.7184-29-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 9f230ba85948d0bc58deef03d270c603bb71c032
+X-linux-mtd-patch-commit: cd7259ec9fbe5c8aac2953533a70d8401bea132b
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200615_020240_965203_4A954E08 
-X-CRM114-Status: UNSURE (   6.77  )
+X-CRM114-CacheID: sfid-20200615_020253_106859_A11056D6 
+X-CRM114-Status: UNSURE (   9.80  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -71,26 +71,33 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, Paul Mackerras <paulus@samba.org>,
- Michael Ellerman <mpe@ellerman.id.au>,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- linuxppc-dev@lists.ozlabs.org
+Cc: Michal Simek <monstr@monstr.eu>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Naga Sureshkumar Relli <nagasure@xilinx.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 2020-06-03 at 13:49:13 UTC, Boris Brezillon wrote:
-> The mtd var in fun_wait_rnb() is now unused, let's get rid of it and
-> fix the warning resulting from this unused var.
+On Fri, 2020-05-29 at 11:13:22 UTC, Miquel Raynal wrote:
+> Instead of manipulating the statically allocated structure and copy
+> timings around, allocate one at identification time and save it in the
+> nand_chip structure once it has been initialized.
 > 
-> Fixes: 50a487e7719c ("mtd: rawnand: Pass a nand_chip object to chip->dev_ready()")
-> Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
-> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> All NAND chips using the same interface configuration during reset and
+> startup, we define a helper to retrieve a single reset interface
+> configuration object, shared across all NAND chips.
+> 
+> We use a second pointer to always have a reference on the currently
+> applied interface configuration, which may either point to the "best
+> interface configuration" or to the "default reset interface
+> configuration".
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next.
 
 Miquel
 
