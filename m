@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21FCEC433E0
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Jun 2020 09:04:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EFDCC433DF
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Jun 2020 09:06:45 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C32B52065F
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Jun 2020 09:04:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4C8E520679
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Jun 2020 09:06:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="naeuC8sg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C32B52065F
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ZwhTq2+f"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C8E520679
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,41 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=N3BpWbuTSby/FJLvYOfMOoMzpuVdqQsKI6Kp1Y7lOdI=; b=naeuC8sgFat1M0
-	LADS9mOrP96QlDtlOzibRAW9cpE1vkVtMiEG6BilzRk4/GXvasO77FHdLXebfpocSDC2eHw8GqoHR
-	avZAiMbElvdlCHbrvu1Fj0+fJSyiAcnc1FxP4xRX7LVM64i2KL2SbgErjvh6Vq7fxd9NGxGT6+BxB
-	tJJwY/Gr7u+5SKi7TjdJkkGe+plCOMXCKeTRoX0bbQBKLT13AhEu8KBhIh7DJ91lbLgvFKslRabEV
-	ReCsa7l2Zju981qkSmjH4Qy+ffJb6Mvpo1d85woTVy84EyZZINfZMoaf2iALz9AioVQDtgTL6TVPI
-	5/AzyT0SJ9uNj1uHE6HQ==;
+	List-Owner; bh=8kH7G9EzMLZLe7vja4wMGSGChy3Yj855bgYv4J9LP0M=; b=ZwhTq2+fJU3n9v
+	KhpOu82JrA63SWeuDfyKi9vkLpmO1GD45OBe/00HNZQ2dzZB1MvG6b4vHl9cD8UaKYstsHz9Yhzvm
+	IEEm4khnQ3xwyLq/SGYToG8IdiF9xmbQFN5SRNYD9+0mPeEvbz1nzerOwD95lxiimhelXWBPxg7wN
+	wT3kubTzD7j1nbkGdYU0/Y/qLWlbwyr37i5+FIjq3lHF1rNVOMgUIE6pI+3MPzb7h6cV0cW8mrJKa
+	ULIh2Yiy8p4wLRjoa3NeYwCP5fa3DJwyGDQiFgeLL/V+62D95aEhjWeR7lAh0/+NW9CZ8d7xo8pln
+	g+AR/L9k9OZm7sZlcITg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jkl2U-0000Ka-JI; Mon, 15 Jun 2020 09:04:22 +0000
+	id 1jkl4e-000455-Nx; Mon, 15 Jun 2020 09:06:36 +0000
 Received: from relay5-d.mail.gandi.net ([217.70.183.197])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jkl0i-0007Wc-CZ
- for linux-mtd@lists.infradead.org; Mon, 15 Jun 2020 09:02:34 +0000
+ id 1jkl0q-0007eH-Gw
+ for linux-mtd@lists.infradead.org; Mon, 15 Jun 2020 09:02:44 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 20AC51C0018;
- Mon, 15 Jun 2020 09:02:28 +0000 (UTC)
+ by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id A1A741C0005;
+ Mon, 15 Jun 2020 09:02:37 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@collabora.com>,
  Anton Vorontsov <anton@enomsg.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 02/10] mtd: rawnand: fsl_upm: Get rid of the unused
- fsl_upm_nand.parts field
-Date: Mon, 15 Jun 2020 11:02:27 +0200
-Message-Id: <20200615090227.23260-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 01/10] mtd: rawnand: fsl_upm: Remove unused mtd var
+Date: Mon, 15 Jun 2020 11:02:36 +0200
+Message-Id: <20200615090236.23345-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200603134922.1352340-3-boris.brezillon@collabora.com>
+In-Reply-To: <20200603134922.1352340-2-boris.brezillon@collabora.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 5143f979d0e0c2e7ba1ec521910b0090639e3455
+X-linux-mtd-patch-commit: 9f230ba85948d0bc58deef03d270c603bb71c032
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200615_020232_560627_3F57591F 
-X-CRM114-Status: UNSURE (   6.04  )
+X-CRM114-CacheID: sfid-20200615_020240_965203_4A954E08 
+X-CRM114-Status: UNSURE (   6.77  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -83,9 +82,11 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 2020-06-03 at 13:49:14 UTC, Boris Brezillon wrote:
-> fsl_upm_nand.parts is unused, let's get rid of it.
+On Wed, 2020-06-03 at 13:49:13 UTC, Boris Brezillon wrote:
+> The mtd var in fun_wait_rnb() is now unused, let's get rid of it and
+> fix the warning resulting from this unused var.
 > 
+> Fixes: 50a487e7719c ("mtd: rawnand: Pass a nand_chip object to chip->dev_ready()")
 > Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
 > Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
