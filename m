@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 30C90C433E0
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Jun 2020 09:02:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5C2EC433E0
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Jun 2020 09:02:21 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D904A2065F
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Jun 2020 09:02:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6C41E2065F
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Jun 2020 09:02:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dyTYZdTV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D904A2065F
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OOhIVdYT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C41E2065F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=K0Xx0JWfubiasmIQNonbqr+6TAy4Bn/YOH9KJbtm+W8=; b=dyTYZdTV3CW9td
-	HeBKRuYFYHhya+gJvvDsCR0oa/Q7xyeOAB876lUE7PpcCmwDlQnRiy33t/7HHPrn9aod+GzVeBZcA
-	4hYD555u1Cvqbk7Di1buSUGuXI1INktVN2+oXmnY55kvPrJ0JoiDItmNk0bqConeDNzfAy13+6jhB
-	RQWmeYtKI4Q3uKJ0sylfeENhiXTf3DeCSflsdx2+QT18lOBb1FH6xYhFWcPQpnzz9T/TnM4HKqsGj
-	7LBg2TDWEzR+NuRxCJPn8E1v0IWl5/RS/4izwGAg37CtZUAYlknnBJO1yk0HQJ5+EBmCtAZNtCPnQ
-	ktS/pA/0XiSFhSWh8vfg==;
+	List-Owner; bh=W/Urd+2GZzivPFaTVk+Y8dnvNwf6WMw3823fZ/hPqRQ=; b=OOhIVdYTr3w4PW
+	dNC8Y/FyKjRaCNMFExrojXOqGT3TTWsoU+7jWdeeWAzmnye7qlguBdWR+y8AHYEoAqP6yKVdxGOHV
+	FHVexxR5LbTLw0dLOiXXO8zTwjcWQg5sLG38nNrhQU5Rdf8vwSwWMpUia6Hf4uWYQLu67SaAgiGS9
+	u8BsOiIvtoDmOo9hiY97yO/q3kdOcn5ZzSM5Gj8AzZF6t61tMpc9cLsbcpCWEw1V8fLzwQPHtxrBo
+	aK8KsjShmwHeCkPiXroU5oRARYv7jDK8JYOdYqdiu1vPvjHdqUN+97R/JFAeu+QzyKQixhN9Vjj37
+	Mu87y38nDZTTFQmpPgCg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jkl07-0006we-Ro; Mon, 15 Jun 2020 09:01:55 +0000
+	id 1jkl0O-0007Bv-VV; Mon, 15 Jun 2020 09:02:12 +0000
 Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jkkzA-00066L-1M
- for linux-mtd@lists.infradead.org; Mon, 15 Jun 2020 09:00:57 +0000
+ id 1jkkzO-0006HN-9y
+ for linux-mtd@lists.infradead.org; Mon, 15 Jun 2020 09:01:12 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 19A652000C;
- Mon, 15 Jun 2020 09:00:51 +0000 (UTC)
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 5C39E20010;
+ Mon, 15 Jun 2020 09:01:03 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@collabora.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
- Ben Dooks <ben-linux@fluff.org>
-Subject: Re: [PATCH 1/3] mtd: rawnand: gpio: Inherit from nand_controller
-Date: Mon, 15 Jun 2020 11:00:50 +0200
-Message-Id: <20200615090051.22731-1-miquel.raynal@bootlin.com>
+ Anton Vorontsov <anton@enomsg.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 09/10] mtd: rawnand: fsl_upm: Get rid of the legacy
+ interface implementation
+Date: Mon, 15 Jun 2020 11:01:02 +0200
+Message-Id: <20200615090102.22818-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200603150746.1423257-2-boris.brezillon@collabora.com>
+In-Reply-To: <20200603134922.1352340-10-boris.brezillon@collabora.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: e283a075a63b8b536d42ec3e5a57cc2798d53d07
+X-linux-mtd-patch-commit: 063c8055eb8e416522cf4031ff069f0cab840318
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200615_020056_227553_6D6693C2 
-X-CRM114-Status: UNSURE (   6.49  )
+X-CRM114-CacheID: sfid-20200615_020110_548102_B855E5DC 
+X-CRM114-Status: UNSURE (   6.44  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -71,19 +72,20 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mips@linux-mips.org, Vignesh Raghavendra <vigneshr@ti.com>,
+Cc: Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <tudor.ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Ralf Baechle <ralf@linux-mips.org>, Jamie Iles <jamie@jamieiles.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>
+ Richard Weinberger <richard@nod.at>, Paul Mackerras <paulus@samba.org>,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ linuxppc-dev@lists.ozlabs.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 2020-06-03 at 15:07:44 UTC, Boris Brezillon wrote:
-> Inherit from nand_controller so we don't rely on the
-> nand_chip.legacy.dummy_controller field.
+On Wed, 2020-06-03 at 13:49:21 UTC, Boris Brezillon wrote:
+> Now that the driver implements exec_op(), we can get rid of the legacy
+> interface implementation.
 > 
 > Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
 
