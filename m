@@ -6,16 +6,16 @@ X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4B5FC433E0
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Jun 2020 21:15:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB049C433E1
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Jun 2020 21:15:55 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8561E21883
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Jun 2020 21:15:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B85B421841
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Jun 2020 21:15:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="h1SDw3Fa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8561E21883
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hIiYQjdk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B85B421841
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,57 +24,57 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Ir0BE6YuCzVe12/XIx1FS03G6vRniy1ezQzgijQ2WXo=; b=h1SDw3FafalSfJ
-	tQlxf9eIBPGlj13AT7C8U2OciLM9pZjjbbp0ez//fF74+tB8giAZ8uVaoGmIGjfPXvcdE0V5oRHzo
-	FKPZMvJ5PZzCG4GSy/T3Bf6oBaFpcblYBiz3TIAsosSHUBTdY/TAXQHGh/wTJQqqizSr+SBUQen29
-	5ffBSMWrW/YnBVHul6hi598yvimNNB1eo2ZKfD5NJslqvyGCBoINnaMS8xlfOymmTqLU7vIRAwEPg
-	byLdfV+DM7J4GTOt9hoKLhAM+YwSrxGq6OZj0W3LFDChzTjdBIqEDSFg9yQjsWJpCicfVL2vezxIG
-	cuxkSHEzuBVqM7C6lZoQ==;
+	List-Owner; bh=uMoqIe47TtJ3q/WMBJGJZqKumjXr1plHwITeC/dZF1k=; b=hIiYQjdkuwjM0s
+	ren7l514awwLC70oJkdov6OjbbBXimQaLrHMZ/QH+sGiv16b24ZHSGtp21wd8hlfU8xHHEa3VATZL
+	NJVododiwDLVhGM2AhaHqGvMKX+eo7bq+zEnH6nwgfzxjCMZfxGJnt+jSS3IetcHXCg3VKjrr2+jj
+	+lvMO86JlFuSIN62cRWe7jv4B0Iasnjf+Hgjb/vZflJFDmWlHda3sjXLf/Cnx5rQ8aS+d4WW/tpSQ
+	/xiZnuFWXi5gjKtljya1JL4/430DP2k5onRye59pQOLwsmtO3QXftwUgsdCKoWW58A2XCGyln9900
+	8m2FdVva3l2TDfAc901w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jlfOZ-00036e-Cf; Wed, 17 Jun 2020 21:14:55 +0000
-Received: from mail-io1-f67.google.com ([209.85.166.67])
+	id 1jlfPN-00065t-W9; Wed, 17 Jun 2020 21:15:46 +0000
+Received: from mail-io1-f68.google.com ([209.85.166.68])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jlfOW-000363-PZ; Wed, 17 Jun 2020 21:14:54 +0000
-Received: by mail-io1-f67.google.com with SMTP id u13so4607818iol.10;
- Wed, 17 Jun 2020 14:14:52 -0700 (PDT)
+ id 1jlfPL-00064b-5S; Wed, 17 Jun 2020 21:15:44 +0000
+Received: by mail-io1-f68.google.com with SMTP id q8so4648206iow.7;
+ Wed, 17 Jun 2020 14:15:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to;
- bh=VWO5LGmEg8Ig2cq5eIpV/Gm4FJwOWAH3M+GOgTvadrI=;
- b=e8/xbij37h7/hr/0gO5TApVgbNUevvftH/kzPNe0b9W5PuVMufzlInSANOdTL2V1Q/
- KxJB8hRSAILBLnNTxGCYUJjlhN2BK8Wt0HDnliiKb9fFIcWu43a9nGXTTnJxEwLDxuaf
- H2z4q7y6DFHGQOfBsj/mgY49j8696SEh0gWEbsuAZvCLs2WNimRJTyX9DQc8h1PxXwVK
- 7W879BSilRdXJe+HSbg+0IlX3TCxr+O87zm+IlzoLPRRyB4mpWXn8rJqzl4yuQl25wG3
- 7FUAUrwvJcXfv+QH79/W/JENAx3nVGG0aIZo0MXzAwfLOhBlgBZQDMysYPCG0lo+amAw
- wVCw==
-X-Gm-Message-State: AOAM5311x0z4AYuiRxdmUKFG56R8nyWRcZ7rTzNpF9kd2KYGZgC3Qqc0
- dzjklN4BOYdTRwYlkB+FyQ==
-X-Google-Smtp-Source: ABdhPJy7XP0pSsuCKM5EibaN3mFwRa16qdK+sQARWZ0lMWqklFY1HprY+VlevFhTg9YxT29C3724dQ==
-X-Received: by 2002:a05:6602:809:: with SMTP id
- z9mr1454740iow.79.1592428491937; 
- Wed, 17 Jun 2020 14:14:51 -0700 (PDT)
+ bh=xI0mlKe2wRYjHDHCCF+79f1gMeJVs47ukTuRHuYoNXw=;
+ b=OX4Vgd/15ilzN8GxzQ9RBGuC0U6pWPFg9Y4g3M0jwPa++2VzL6n0MKdzrpCcE6SPPv
+ 0hDX9fZOVFYxUqYUVW1CsK2teRpQU08J+TiiGUusolCl6FapTWGUlO3SUgI2jUjBk9us
+ bODOAKqD1tiP1k7GNK0InzmVtidR2serNcJ+owFtUszbRt/gljXbGPK7gA/MS7vmuP6K
+ 4b4RQLXXhACo2lBoZrPPtjjA5Fn0Jlzdkl5zJfbizMViI8B5H6nCRRQyo0hxA5MEoWI2
+ O2sF0mi0Om5cmBGkMmL+vPAzlMBMnDGKHZlC/22R7l2mnIfpKcWvvOJfHe0Ad3LsHCTr
+ mucw==
+X-Gm-Message-State: AOAM530f5ef1JeEkxzjkjQkGjK8hWzaJvyikboOHLodonAMQAmfrLLXI
+ hF3TVEu2/zM8dms+gSqlIg==
+X-Google-Smtp-Source: ABdhPJy9jNQ2ywvtsoluzmREgiIioIKxsPjeXA+erf0DpK8C5v435zxINloN/zcGsS3rvsY1j6EOLA==
+X-Received: by 2002:a05:6602:1204:: with SMTP id
+ y4mr1523265iot.44.1592428542398; 
+ Wed, 17 Jun 2020 14:15:42 -0700 (PDT)
 Received: from xps15 ([64.188.179.253])
- by smtp.gmail.com with ESMTPSA id w15sm430303ilj.21.2020.06.17.14.14.50
+ by smtp.gmail.com with ESMTPSA id l16sm398139ilm.58.2020.06.17.14.15.41
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 17 Jun 2020 14:14:51 -0700 (PDT)
-Received: (nullmailer pid 2834025 invoked by uid 1000);
- Wed, 17 Jun 2020 21:14:50 -0000
-Date: Wed, 17 Jun 2020 15:14:50 -0600
+ Wed, 17 Jun 2020 14:15:42 -0700 (PDT)
+Received: (nullmailer pid 2835354 invoked by uid 1000);
+ Wed, 17 Jun 2020 21:15:41 -0000
+Date: Wed, 17 Jun 2020 15:15:41 -0600
 From: Rob Herring <robh@kernel.org>
 To: Yifeng Zhao <yifeng.zhao@rock-chips.com>
 Subject: Re: [PATCH v6 1/8] dt-bindings: mtd: Describe Rockchip RK3xxx NAND
  flash controller
-Message-ID: <20200617211450.GA2811091@bogus>
+Message-ID: <20200617211541.GB2811091@bogus>
 References: <20200609074020.23860-1-yifeng.zhao@rock-chips.com>
  <20200609074020.23860-2-yifeng.zhao@rock-chips.com>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <20200609074020.23860-2-yifeng.zhao@rock-chips.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200617_141452_831334_F9708C1C 
-X-CRM114-Status: GOOD (  19.89  )
+X-CRM114-CacheID: sfid-20200617_141543_206142_388C0535 
+X-CRM114-Status: GOOD (  19.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -189,22 +189,12 @@ On Tue, Jun 09, 2020 at 03:40:18PM +0800, Yifeng Zhao wrote:
 > +
 > +  pinctrl-names:
 > +    const: default
-
-You can drop pinctrl-*. They are automatically supported.
-
 > +
 > +  power-domains:
 > +     maxItems: 1
 > +
 > +patternProperties:
 > +  "^nand@[a-f0-9]$":
-
-'[0-7]' is correct here.
-
-Out of bounds nodes and other unknown properties should be prevented 
-with 'unevaluatedProperties: false' (though not yet until the tooling 
-supports it).
-
 > +    type: object
 > +    properties:
 > +      reg:
@@ -220,6 +210,9 @@ supports it).
 > +      nand-ecc-strength:
 > +        enum: [16, 24, 40, 60, 70]
 > +        description:
+
+This needs a '|' at the end if you want the below line breaks preserved.
+
 > +          The ECC configurations that can be supported are as follows.
 > +          - NFCv900(PX30 and RK3326) support ecc strength 16, 40, 60 and 70.
 > +          - NFCv600(RK3066 and RK2928) support ecc strength 16, 24, 40 and 60.
@@ -234,9 +227,6 @@ supports it).
 > +        default: 16
 > +        allOf:
 > +        - $ref: /schemas/types.yaml#/definitions/uint32
-
-You can drop 'allOf' now.
-
 > +        description:
 > +          The NFC driver need this information to select ECC
 > +          algorithms supported by the BOOTROM.
