@@ -1,64 +1,63 @@
-Return-Path: <SRS0=GPAM=77=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=4+4/=AA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CAC8C433E0
-	for <linux-mtd@archiver.kernel.org>; Thu, 18 Jun 2020 15:00:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8719C433DF
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Jun 2020 09:08:04 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4987A2073E
-	for <linux-mtd@archiver.kernel.org>; Thu, 18 Jun 2020 15:00:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8376520890
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Jun 2020 09:08:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="L8hIJNhj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4987A2073E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NOKBXZjX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8376520890
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=u5/gyNxXHvqI/Lj1FwrPUIcH76VWVKn2M18juZfmEo0=; b=L8hIJNhjueiZJx
-	f6+mmqGfhtJxTy0X2UruMA37KDMOLR+OGUEl7FqRgs6QAcX2w7bmknhESr6BHtkR0hj0f5TvhwRTi
-	7t5ae/I/p8sTaZKezepnlbmflz2cQuVaeoA+n+XyL9LxlYoPAPH4SE5Yl27SjWgsWXjndxCmE8YSj
-	64NbBZoKqGMlJOGEKf3IC25EkSwHxri/Mzfo7NC5sdLzbog4CEDgI6/xu5blMGF/SVAoKD9UCrsQq
-	Q+UdiqUuUcVF83LiARzOuYVMQOKrK7Cm6S9ZSIPHMZaGJpaW0J+THcxTpQcRuXIacGMVI7tnAH3Oj
-	3btOuTz8PLTn41qILcmg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=UoxoZPqrkqzo6i+pG7aycEHeUxew+5dQw6bmYaLQh4U=; b=NOKBXZjX/qm/w7
+	YVuC1f8JREhS7GE4qwrN+owrdbWk45kBIRHchXJmEqrvqk/VH0gsjtEUn4VjsAJWd1lDuIocCGco1
+	+IuN/PGopKZ2a7pYkdRIdeEn4ZhLEBMa0B1fSSoDCxHspWv3SB6Qmnd7Yhuio+mkI4IFk6zhvL/bD
+	NbycoNAXjJJp4atGyucLnM/PGMYq2FlUU/t0qC1baS3OP9Ss0yX7W6A0/l4Ib3P3O3p21NkWnfF8f
+	TQObZSK1NTF0eDEz9jt8cwsR8PeZmDK9f3jjrVxOf06ZACepU1FI24J5+H2gue6TV/egzyAUIDI3h
+	XSEqH3BPcXwk3FLcwlOw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jlw1a-0002XJ-Q1; Thu, 18 Jun 2020 15:00:18 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1jmD00-0004bt-8E; Fri, 19 Jun 2020 09:07:48 +0000
+Received: from szxga07-in.huawei.com ([45.249.212.35] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jlw1K-000095-Ib
- for linux-mtd@lists.infradead.org; Thu, 18 Jun 2020 15:00:04 +0000
-Received: from [127.0.0.1] (localhost [127.0.0.1])
- (Authenticated sender: gtucker) with ESMTPSA id 75C122A4E5E
-Subject: Re: next/master bisection: baseline.login on
- ox820-cloudengines-pogoplug-series-3N
-To: kernelci-results@groups.io, miquel.raynal@bootlin.com
-References: <5eeb5bf7.1c69fb81.4f6e3.8979@mx.google.com>
- <13497644-ae34-d5e3-e76a-742cddf0f0a9@collabora.com>
- <20200618152324.0b0007a9@xps13> <20200618160925.6f77b1d1@xps13>
- <0c00fe0b-c38b-3d69-8f93-3fe8c3675113@collabora.com>
- <20200618163602.1727fffd@xps13>
-From: Guillaume Tucker <guillaume.tucker@collabora.com>
-Message-ID: <bdc6d561-acfe-311e-2e57-968d15033a15@collabora.com>
-Date: Thu, 18 Jun 2020 15:59:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ id 1jmCzD-0003jJ-Sr
+ for linux-mtd@lists.infradead.org; Fri, 19 Jun 2020 09:07:02 +0000
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+ by Forcepoint Email with ESMTP id DC06B6324870621A196D;
+ Fri, 19 Jun 2020 17:06:48 +0800 (CST)
+Received: from DESKTOP-FKFNUOQ.china.huawei.com (10.67.101.2) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 19 Jun 2020 17:06:39 +0800
+From: Zhe Li <lizhe67@huawei.com>
+To: <dwmw2@infradead.org>, <richard@nod.at>, <linux-mtd@lists.infradead.org>, 
+ <linux-kernel@vger.kernel.org>
+Subject: [PATCH] jffs2: fix UAF problem
+Date: Fri, 19 Jun 2020 17:06:35 +0800
+Message-ID: <20200619090635.58548-1-lizhe67@huawei.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-In-Reply-To: <20200618163602.1727fffd@xps13>
-Content-Language: en-US
+X-Originating-IP: [10.67.101.2]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200618_080002_795663_13AFBDAA 
-X-CRM114-Status: GOOD (  18.47  )
+X-CRM114-CacheID: sfid-20200619_020700_638659_2CCE26B8 
+X-CRM114-Status: UNSURE (   9.21  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,103 +69,82 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, kernelci@groups.io,
- Boris Brezillon <boris.brezillon@collabora.com>, linux-mtd@lists.infradead.org
+Cc: zhongjubin@huawei.com, lizhe67@huawei.com, qiuxi1@huawei.com,
+ wangfangpeng1@huawei.com, chenjie6@huawei.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-+ kernelci@groups.io
+The log of UAF problem is listed below.
+BUG: KASAN: use-after-free in jffs2_rmdir+0xa4/0x1cc [jffs2] at addr c1f165fc
+Read of size 4 by task rm/8283
+=============================================================================
+BUG kmalloc-32 (Tainted: P    B      O   ): kasan: bad access detected
+-----------------------------------------------------------------------------
 
-On 18/06/2020 15:36, Miquel Raynal wrote:
-> Hi Guillaume,
-> 
-> -reducing the Cc: list
-> 
-> Guillaume Tucker <guillaume.tucker@collabora.com> wrote on Thu, 18 Jun
-> 2020 15:23:45 +0100:
-> 
->> On 18/06/2020 15:09, Miquel Raynal wrote:
->>> Hi Guillaume,
->>>
->>> Miquel Raynal <miquel.raynal@bootlin.com> wrote on Thu, 18 Jun 2020
->>> 15:23:24 +0200:
->>>   
->>>> Hi Guillaume,
->>>>
->>>> Guillaume Tucker <guillaume.tucker@collabora.com> wrote on Thu, 18 Jun
->>>> 2020 13:28:05 +0100:
->>>>  
->>>>> Please see the bisection report below about a kernel panic.
->>>>>
->>>>> Reports aren't automatically sent to the public while we're
->>>>> trialing new bisection features on kernelci.org but this one
->>>>> looks valid.
->>>>>
->>>>> See the kernel Oops due to a NULL pointer followed by a panic:
->>>>>
->>>>>   https://storage.kernelci.org/next/master/next-20200618/arm/oxnas_v6_defconfig/gcc-8/lab-baylibre/baseline-ox820-cloudengines-pogoplug-series-3.html#L504  
->>>>
->>>> Thanks for the report, I will not be able to manage it before Monday,
->>>> but I'll try to take care of it early next week.  
->>>
->>> Actually Boris saw the issue, I just updated nand/next, it should be
->>> part of tomorrow's linux-next. Could you please report if it fixes your
->>> boot?  
->>
->> Sure, will check tomorrow.  Thanks for the update.
->>
->> We may also consider adding the nand/next branch to kernelci.org
->> and catch issues earlier.  We can discuss that separately.
-> 
-> That would be great! So far, we -MTD- have been lazy and relied on
-> linux-next testing only. We do code analysis with Intel's 0-day robots
-> but they tend to be very slow when approaching -rc6/-rc7 which is also
-> an issue for us because of the wide variety of architectures we still
-> support.
-> 
-> Currently we maintain the following branches, which are all pulled
-> in linux-next:
->  * nand/next -> Raw NAND and SPI-NAND stuff
->  * spi-nor/next -> SPI-NOR stuff
->  * cfi/next -> CFI stuff
->  * mtd/next -> everything else
->  * mtd/fixes occasionally for all MTD fixes (no subsystem specific
-> branch)
-> 
-> Are there any kernel-ci prerequisites we should be aware of?
+INFO: Allocated in 0xbbbbbbbb age=3054364 cpu=0 pid=0
+        0xb0bba6ef
+        jffs2_write_dirent+0x11c/0x9c8 [jffs2]
+        __slab_alloc.isra.21.constprop.25+0x2c/0x44
+        __kmalloc+0x1dc/0x370
+        jffs2_write_dirent+0x11c/0x9c8 [jffs2]
+        jffs2_do_unlink+0x328/0x5fc [jffs2]
+        jffs2_rmdir+0x110/0x1cc [jffs2]
+        vfs_rmdir+0x180/0x268
+        do_rmdir+0x2cc/0x300
+        ret_from_syscall+0x0/0x3c
+INFO: Freed in 0x205b age=3054364 cpu=0 pid=0
+        0x2e9173
+        jffs2_add_fd_to_list+0x138/0x1dc [jffs2]
+        jffs2_add_fd_to_list+0x138/0x1dc [jffs2]
+        jffs2_garbage_collect_dirent.isra.3+0x21c/0x288 [jffs2]
+        jffs2_garbage_collect_live+0x16bc/0x1800 [jffs2]
+        jffs2_garbage_collect_pass+0x678/0x11d4 [jffs2]
+        jffs2_garbage_collect_thread+0x1e8/0x3b0 [jffs2]
+        kthread+0x1a8/0x1b0
+        ret_from_kernel_thread+0x5c/0x64
+Call Trace:
+[c17ddd20] [c02452d4] kasan_report.part.0+0x298/0x72c (unreliable)
+[c17ddda0] [d2509680] jffs2_rmdir+0xa4/0x1cc [jffs2]
+[c17dddd0] [c026da04] vfs_rmdir+0x180/0x268
+[c17dde00] [c026f4e4] do_rmdir+0x2cc/0x300
+[c17ddf40] [c001a658] ret_from_syscall+0x0/0x3c
 
-Each branch being added means more kernels to be built and an
-increased load in test labs.  But, we can fine-tune the KernelCI
-configuration to handle that.
+The root cause is that we don't get "jffs2_inode_info.sem" before
+we scan list "jffs2_inode_info.dents" in function jffs2_rmdir.
+This patch add codes to get "jffs2_inode_info.sem" before we scan
+"jffs2_inode_info.dents" to slove the UAF problem.
 
-Related to Boris' email, linux-next is built with all possible
-combinations of arch/defconfig/compilers, which amounts to about
-150 kernels for each revision:
+Signed-off-by: Zhe Li <lizhe67@huawei.com>
+---
+ fs/jffs2/dir.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-  https://kernelci.org/job/next/branch/master/
+diff --git a/fs/jffs2/dir.c b/fs/jffs2/dir.c
+index f20cff1..7764937 100644
+--- a/fs/jffs2/dir.c
++++ b/fs/jffs2/dir.c
+@@ -590,10 +590,14 @@ static int jffs2_rmdir (struct inode *dir_i, struct dentry *dentry)
+ 	int ret;
+ 	uint32_t now = JFFS2_NOW();
+ 
++	mutex_lock(&f->sem);
+ 	for (fd = f->dents ; fd; fd = fd->next) {
+-		if (fd->ino)
++		if (fd->ino) {
++			mutex_unlock(&f->sem);
+ 			return -ENOTEMPTY;
++		}
+ 	}
++	mutex_unlock(&f->sem);
+ 
+ 	ret = jffs2_do_unlink(c, dir_f, dentry->d_name.name,
+ 			      dentry->d_name.len, f, now);
+-- 
+2.7.4
 
-For your subsystem branches, we could reduce it to only build the
-main defconfigs for each architecture, or maybe even a subset of
-them.  Building just the defconfigs for x86, arm and arm64 would
-allow to maximise the tests/build ratio.  You would also get
-results quicker than the linux-next ones, typically a couple of
-hours after pushing each branch.  This is what other subsystems
-do, for example GPIO (linusw):
 
-  https://kernelci.org/job/linusw/
-
-Then we can filter which tests to run for your subsystem, at
-least the "baseline" one which are very quick checks for boot
-failures and other obvious issues.  Some relevant tests could
-probably be added to cover flash memory devices, it has been on
-the wish list for a while.  Do you have any tests to recommend?
-
-Thanks,
-Guillaume
 
 ______________________________________________________
 Linux MTD discussion mailing list
