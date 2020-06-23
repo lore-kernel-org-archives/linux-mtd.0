@@ -1,72 +1,90 @@
-Return-Path: <SRS0=4+4/=AA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=Ekuj=AE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 611AEC433DF
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Jun 2020 15:17:54 +0000 (UTC)
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6EF2C433E0
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Jun 2020 18:32:01 +0000 (UTC)
+Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 389F82158C
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Jun 2020 15:17:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BBD3620826
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Jun 2020 18:32:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PAjPz9B3";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="vXN+mD5P"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 389F82158C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PlryVsOz";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="o+1vOeEE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BBD3620826
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:Cc:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Xetnbup4Fsk9tgW/NhLcevmuSzmowwka8/qG5YMap5M=; b=PAjPz9B36S46huaiyJwxqljcJ
-	FFJckfp5J5bLTSZ0QBbVyjm7VP6ceeONbED/QeDDAbSBrnpYL0byGh2Fl6hPqKK2PjM+l5lmv/WLC
-	D+6Qs+OEWs4RdUFR8lsNMu4SvVNvUHqVuUwMwHEse2qzDEqbncMNsU7+hUw8lR3iQSeBeuEuIZIKZ
-	7mWqvKqrIgO0KhxF4R6cxl3AlnWFFGefENnqzJMypkcYE7Cr6dK1YZTCmom4iRKCxibmKR3l3oKWg
-	mlNl5RIwOtGI2LqK7iCf7o5f9hpvrQ6H2+4L6qBJDL8KbRtx2zjcEVuHkiFbcmTB5qJ0rQC7bFMrS
-	dhVkyNu1Q==;
-Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jmIm8-0004Br-QS; Fri, 19 Jun 2020 15:17:52 +0000
-Received: from mail.kernel.org ([198.145.29.99])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jmIm5-0004Ax-GC
- for linux-mtd@lists.infradead.org; Fri, 19 Jun 2020 15:17:50 +0000
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 86344218AC;
- Fri, 19 Jun 2020 15:17:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1592579869;
- bh=UEOOXWngWN83R5j4Pi/o/Dcm/fqzKyyBB3Vt398Ofeg=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=vXN+mD5PP3w4cOHhOURB1wp6S0pItj9Lv2MtK4xP8u/KcD/DeA76FrZ4Xux1jUVHZ
- 7bs8c8lFp4lWayAEscM4naiGN3Cm1p8hOLJwYUkKANHvLXbN09AauMtq+P7o7yoBGc
- 1WPUPT+rPAVWsTNqLXp2J01bb9664fCb8LEq4G8o=
-Date: Fri, 19 Jun 2020 16:17:46 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Tudor.Ambarus@microchip.com
-Subject: Re: [RESEND PATCH v3 0/8] mtd: spi-nor: Move cadence-qaudspi to
- spi-mem framework
-Message-ID: <20200619151746.GF5396@sirena.org.uk>
-References: <20200601070444.16923-1-vigneshr@ti.com>
- <20200619105701.GD5396@sirena.org.uk>
- <0007c019-1ecf-1913-56a7-facffe345b1f@microchip.com>
+	 bh=uCE6sKttPjdtvHIrou1SOATekbtEvToYvaI18OuaEH8=; b=PlryVsOzD7BzZLiRmKev0Q6WJ
+	ctyyn8wEE1e3bciNeFWVM3BRG7gcUQxG09rfYs7TIoqtzdZmeS3cmuykJiJTX5TtKcgGS2D7cg+kH
+	PfzHZax79cVni0ej2pY+ZRhqXrk9xcW3omdCQXDNLPsFdN0X8gJ7lpLeGcagEy/+X4J8ru88637QR
+	Kk//zSoFkJ/4Qr/Xngy432R2/0pOCK4QGQ5LPg5twMIuMGjJDU2Zot3yuSnpnDaWNsaNjgT2vcegf
+	rTn919FKSU2+ItT1ZpAE8DzOtzF/yQ6l7xUNZcPLN6vV2EP1NC4N53ZmFiwz5C4e8Yfm8cNUbPPPS
+	LHnSJl/lA==;
+Received: from localhost ([::1] helo=merlin.infradead.org)
+	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
+	id 1jnnhG-0000ws-Oh; Tue, 23 Jun 2020 18:31:03 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jnnh8-0000rp-MY; Tue, 23 Jun 2020 18:30:55 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05NIUg1g046667;
+ Tue, 23 Jun 2020 13:30:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1592937042;
+ bh=iMtUHt0rAjRLMe+mvdnL0nxuMBYvHggaoNeE2bSkaA4=;
+ h=From:To:CC:Subject:Date:In-Reply-To:References;
+ b=o+1vOeEEHTaja6oPk8R+/KJpjOFeWOkYn3WgVtG1znQRaPxTexDhiprIqgiX5kn8b
+ BBGEKDzi6sA5fUHTPmE+ZpSkkNZxEO22NEV8JrcICnU6+jp5g5NpmCyytatEhTbC3F
+ hzuq8Rn3qZzg915ATI2JGE02VwOgq/aoynDpnHZg=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05NIUgk6038330
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 23 Jun 2020 13:30:42 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 23
+ Jun 2020 13:30:41 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 23 Jun 2020 13:30:41 -0500
+Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com
+ [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05NIUVJF000942;
+ Tue, 23 Jun 2020 13:30:37 -0500
+From: Pratyush Yadav <p.yadav@ti.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Mark Brown <broonie@kernel.org>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>, Alexandre Belloni
+ <alexandre.belloni@bootlin.com>, Ludovic Desroches
+ <ludovic.desroches@microchip.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Michal Simek <michal.simek@xilinx.com>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <linux-spi@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>
+Subject: [PATCH v10 01/17] spi: spi-mem: allow specifying whether an op is DTR
+ or not
+Date: Wed, 24 Jun 2020 00:00:14 +0530
+Message-ID: <20200623183030.26591-2-p.yadav@ti.com>
+X-Mailer: git-send-email 2.25.0
+In-Reply-To: <20200623183030.26591-1-p.yadav@ti.com>
+References: <20200623183030.26591-1-p.yadav@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <0007c019-1ecf-1913-56a7-facffe345b1f@microchip.com>
-X-Cookie: Robot, n.:
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200619_081749_583608_80A06A65 
-X-CRM114-Status: GOOD (  11.66  )
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,95 +96,93 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: marex@denx.de, vigneshr@ti.com, bbrezillon@kernel.org, dinguyen@kernel.org,
- simon.k.r.goldschmidt@gmail.com, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, vadivel.muruganx.ramuthevar@linux.intel.com,
- linux-mtd@lists.infradead.org
-Content-Type: multipart/mixed; boundary="===============7537168164131351121=="
+Cc: Boris Brezillon <boris.brezillon@collabora.com>,
+ Sekhar Nori <nsekhar@ti.com>, Pratyush Yadav <p.yadav@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Each phase is given a separate 'dtr' field so mixed protocols like
+4S-4D-4D can be supported.
 
---===============7537168164131351121==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="uTRFFR9qmiCqR05s"
-Content-Disposition: inline
+Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+---
+ drivers/spi/spi-mem.c       | 3 +++
+ include/linux/spi/spi-mem.h | 8 ++++++++
+ 2 files changed, 11 insertions(+)
 
+diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+index 9a86cc27fcc0..93e255287ab9 100644
+--- a/drivers/spi/spi-mem.c
++++ b/drivers/spi/spi-mem.c
+@@ -156,6 +156,9 @@ bool spi_mem_default_supports_op(struct spi_mem *mem,
+ 				   op->data.dir == SPI_MEM_DATA_OUT))
+ 		return false;
+ 
++	if (op->cmd.dtr || op->addr.dtr || op->dummy.dtr || op->data.dtr)
++		return false;
++
+ 	return true;
+ }
+ EXPORT_SYMBOL_GPL(spi_mem_default_supports_op);
+diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+index af9ff2f0f1b2..e3dcb956bf61 100644
+--- a/include/linux/spi/spi-mem.h
++++ b/include/linux/spi/spi-mem.h
+@@ -71,9 +71,11 @@ enum spi_mem_data_dir {
+  * struct spi_mem_op - describes a SPI memory operation
+  * @cmd.buswidth: number of IO lines used to transmit the command
+  * @cmd.opcode: operation opcode
++ * @cmd.dtr: whether the command opcode should be sent in DTR mode or not
+  * @addr.nbytes: number of address bytes to send. Can be zero if the operation
+  *		 does not need to send an address
+  * @addr.buswidth: number of IO lines used to transmit the address cycles
++ * @addr.dtr: whether the address should be sent in DTR mode or not
+  * @addr.val: address value. This value is always sent MSB first on the bus.
+  *	      Note that only @addr.nbytes are taken into account in this
+  *	      address value, so users should make sure the value fits in the
+@@ -81,7 +83,9 @@ enum spi_mem_data_dir {
+  * @dummy.nbytes: number of dummy bytes to send after an opcode or address. Can
+  *		  be zero if the operation does not require dummy bytes
+  * @dummy.buswidth: number of IO lanes used to transmit the dummy bytes
++ * @dummy.dtr: whether the dummy bytes should be sent in DTR mode or not
+  * @data.buswidth: number of IO lanes used to send/receive the data
++ * @data.dtr: whether the data should be sent in DTR mode or not
+  * @data.dir: direction of the transfer
+  * @data.nbytes: number of data bytes to send/receive. Can be zero if the
+  *		 operation does not involve transferring data
+@@ -91,22 +95,26 @@ enum spi_mem_data_dir {
+ struct spi_mem_op {
+ 	struct {
+ 		u8 buswidth;
++		u8 dtr : 1;
+ 		u8 opcode;
+ 	} cmd;
+ 
+ 	struct {
+ 		u8 nbytes;
+ 		u8 buswidth;
++		u8 dtr : 1;
+ 		u64 val;
+ 	} addr;
+ 
+ 	struct {
+ 		u8 nbytes;
+ 		u8 buswidth;
++		u8 dtr : 1;
+ 	} dummy;
+ 
+ 	struct {
+ 		u8 buswidth;
++		u8 dtr : 1;
+ 		enum spi_mem_data_dir dir;
+ 		unsigned int nbytes;
+ 		union {
+-- 
+2.27.0
 
---uTRFFR9qmiCqR05s
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Jun 19, 2020 at 11:47:08AM +0000, Tudor.Ambarus@microchip.com wrote:
-
-> Would you please provide an immutable tag on top of v5.8-rc1 so that I
-> can merge back in spi-nor/next?
-
-Here you go:
-
-The following changes since commit b3a9e3b9622ae10064826dccb4f7a52bd88c7407:
-
-  Linux 5.8-rc1 (2020-06-14 12:45:04 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/cadence-mtd-spi-move
-
-for you to fetch changes up to 31fb632b5d43ca16713095b3a4fe17e3d7331e28:
-
-  spi: Move cadence-quadspi driver to drivers/spi/ (2020-06-19 14:26:54 +0100)
-
-----------------------------------------------------------------
-mtd/spi: Move the cadence-quadspi driver to spi-mem
-
-----------------------------------------------------------------
-Ramuthevar Vadivel Murugan (2):
-      mtd: spi-nor: Convert cadence-quadspi to use spi-mem framework
-      spi: Move cadence-quadspi driver to drivers/spi/
-
-Vignesh Raghavendra (6):
-      mtd: spi-nor: cadence-quadspi: Make driver independent of flash geometry
-      mtd: spi-nor: cadence-quadspi: Provide a way to disable DAC mode
-      mtd: spi-nor: cadence-quadspi: Don't initialize rx_dma_complete on failure
-      mtd: spi-nor: cadence-quadspi: Fix error path on failure to acquire reset lines
-      mtd: spi-nor: cadence-quadspi: Handle probe deferral while requesting DMA channel
-      mtd: spi-nor: cadence-quadspi: Drop redundant WREN in erase path
-
- drivers/mtd/spi-nor/controllers/Kconfig            |  11 -
- drivers/mtd/spi-nor/controllers/Makefile           |   1 -
- drivers/spi/Kconfig                                |  11 +
- drivers/spi/Makefile                               |   1 +
- .../spi-cadence-quadspi.c}                         | 541 ++++++++-------------
- 5 files changed, 222 insertions(+), 343 deletions(-)
- rename drivers/{mtd/spi-nor/controllers/cadence-quadspi.c => spi/spi-cadence-quadspi.c} (74%)
-
---uTRFFR9qmiCqR05s
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7s1xkACgkQJNaLcl1U
-h9CkZwf/bn/NzkeSHpXBj+R11qSg1PNvnUXgrdmG3O2NoZyp3uimOHDbJOXGe/4Z
-9V4XQpiJRI1PPz+7mEQbbKev+mGBt4mVuZ3TlTYn9w5omw33LJhBjnTdwgA/Ik3j
-uAHE2kytqegcm30R27bLC5kiNQYT8RKm8MqkgYxwrUREapBGPHJ3LASu1c9mBjns
-2FFv7w8YpjzK0cGCE8h/PGT/kPGvnkatMOs5sOXCXfCan3ZQ9F++d6hquYRAhYEG
-T1D+GSJJAYOL0pJ2/B39g7ha+EILEhh9P9pNcKw68IM9NdbDMYjE0MJrJ4oj1q4f
-JuLI56TLnG1VpcXzRvUAbHgsIkfL4w==
-=VBZQ
------END PGP SIGNATURE-----
-
---uTRFFR9qmiCqR05s--
-
-
---===============7537168164131351121==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============7537168164131351121==--
-
