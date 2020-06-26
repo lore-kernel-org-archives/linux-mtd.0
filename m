@@ -2,92 +2,74 @@ Return-Path: <SRS0=H3wt=AH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27C98C433E0
-	for <linux-mtd@archiver.kernel.org>; Fri, 26 Jun 2020 11:40:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5C85C433E1
+	for <linux-mtd@archiver.kernel.org>; Fri, 26 Jun 2020 11:48:26 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C815D20857
-	for <linux-mtd@archiver.kernel.org>; Fri, 26 Jun 2020 11:40:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3B6AC2080C
+	for <linux-mtd@archiver.kernel.org>; Fri, 26 Jun 2020 11:48:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CaXvIigh";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Xvuvj6Fo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C815D20857
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AFezHs1Q";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="A3FNdNaL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B6AC2080C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=w5/D1RlSQVkeJqvPGm64OBxd+5fJN0eG2YkFbIs4njg=; b=CaXvIighx28VnrGjtDRK+4xod
-	jMu09DoxUu0G6VjiEie4rT/T1w/mCBGyVaA+pG4f51m/LPXwy6MNadftZnkWJp5+sJOtlovTpNZNw
-	fS0fLSNfAT3S2qanlWiYUjDETaGKpN5LWA61BVSzYgUaIpF/tDiK42Sz67Kk3V4RfD/6tYsCwHNcX
-	f5S7HiUiIFWL1RcV14ogS0ai8RV6PFR15NqzRLG4a0h6XkxdVrCMQyW/RM+mmaCkfWrQj/764LysB
-	TTiglI0FMMYESxdp3AB9ETcDjOpx6HXuJ0mpTJZqETQaoxKz7WeWZaNV+JiKU3xtsThZ4sjihcQ8A
-	+WvfUsTQQ==;
+	 bh=zq8cbZm4U5BlqSaDLfYkdwXZWG7R+YtXkaAFclwfVl4=; b=AFezHs1Q+5Nnhnt7CN614H7jE
+	mGlPPCX/u+uPX4975uNDSMIE2jmhPXmvn28df+N4baZrCe7DItMef/v9nPfKxhgOZKsq8x6B0ROHX
+	75xHDEyez+0HkpjWQ61Qn+FABAw/RpIBKlG4ruV8DDmW9PCUs8R91ma58tSVvbpBGtuvWpnADdmr1
+	eRnp+XNS/0v2Vx98Qy19s/Pv4XAKYytFHA6y15IdrFU9dk+5YaD8kuanV3YA7Aq1P0J+P17EZb4G/
+	6Yc6r8rryeHah1kC7ZONOZUuea+/nq1K9lCqzlaCqI4sgXvMIOUGUzGD5ZwjIjITP21w+QFe8TrZN
+	Noyjou9XA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jomhv-0008UV-2X; Fri, 26 Jun 2020 11:39:47 +0000
+	id 1jompS-00045A-MU; Fri, 26 Jun 2020 11:47:34 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jolL5-0001rd-WE
- for linux-mtd@merlin.infradead.org; Fri, 26 Jun 2020 10:12:08 +0000
+ id 1jolN3-0000z2-BF
+ for linux-mtd@merlin.infradead.org; Fri, 26 Jun 2020 10:14:09 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
- References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=hW6A0nLlekBcr0b9tROmJhBZ5ZIeAAU9WaCCd3Gn5uU=; b=Xvuvj6FozatjOZ9AXRttdzoKIz
- l0dihnIIFdd3DMGzGLU7yuQn8zKl6seHvcnZS2eFd94VNeoRzTzyB7cTKQFGjmCLujHeUirRVbYUM
- 2hoHJ2Yc0yiBhPI/1cGOTTBg17BaBLgSTTT3+vmDDTGyfyfVeXn8DzzKm91GPYmVNa2UrQIcnS3j4
- IxO07jcwkasPTEXOxLKRgIk1CmAXqWYgNufDtK+VRZuXBX4opJFI2vZtf9JQzSMv5f5kCLwu6VQf4
- rxY5VXBJ9+7WZxaiaaMBUWsjxjZebqBsVj43MkxUJyffwa1qZVzojZLgCbWlENNBUx5xhHjfjRtN2
- SDDuxr8w==;
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+ d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+ MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+ :Reply-To:Content-ID:Content-Description;
+ bh=xZ5cS/N7SHedICeFNBwAGyNAl/iRa57XO1VaKJMwBrg=; b=A3FNdNaLKTpdveUKi2uJ8/DsCd
+ je2s8XmHibEWy7Wgx7eH9HqKvmUsMZ/4ro53QgfD0qSqw9I7EHLg96X/49DmKtt65Gb/nYbQfzg4P
+ WdqLH2MyXerQqPuOOWcAPu3MtYt9cQTh8DLkJVkQ17pAjNWFu2MNUxoj1/h0s5we/6lYlw7DL0IvQ
+ ov6p6AkMtyrOAR84ExyH+2YdG/y3UT3AbuqhHrr94oG1U86qY8qX9UUyQxt8UJQ2byxfJnGYQKVE7
+ s7sxWk8/QEMDzzDS/Dt834PQ4a5YCbJV0Ce7iHK5kyMQv6ZVSQUJvYmgmWxc+DMZ6ia8Dq8L7RXgN
+ 26iOz0Cg==;
+Received: from relay11.mail.gandi.net ([217.70.178.231])
  by casper.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jog1W-00012T-G5
- for linux-mtd@lists.infradead.org; Fri, 26 Jun 2020 04:31:37 +0000
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <sha@pengutronix.de>)
- id 1jog1L-0000Va-Js; Fri, 26 Jun 2020 06:31:23 +0200
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
- (envelope-from <sha@pengutronix.de>)
- id 1jog1I-0006N0-9E; Fri, 26 Jun 2020 06:31:20 +0200
-Date: Fri, 26 Jun 2020 06:31:20 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Torben Hohn <torben.hohn@linutronix.de>
-Subject: Re: [PATCH 1/1] ubifs: support authentication, for ro mount, when no
- key is given
-Message-ID: <20200626043120.GA19105@pengutronix.de>
-References: <20200625155927.28430-1-torben.hohn@linutronix.de>
- <20200625155927.28430-2-torben.hohn@linutronix.de>
+ id 1joiZB-0003Ul-HT
+ for linux-mtd@lists.infradead.org; Fri, 26 Jun 2020 07:14:31 +0000
+Received: from localhost.localdomain (unknown [91.224.148.103])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay11.mail.gandi.net (Postfix) with ESMTPSA id 8C557100003;
+ Fri, 26 Jun 2020 07:14:06 +0000 (UTC)
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ <devicetree@vger.kernel.org>
+Subject: [PATCH v11 1/2] dt-bindings: mtd: Document nand-ecc-engine
+Date: Fri, 26 Jun 2020 09:13:56 +0200
+Message-Id: <20200626071357.21421-2-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200626071357.21421-1-miquel.raynal@bootlin.com>
+References: <20200626071357.21421-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20200625155927.28430-2-torben.hohn@linutronix.de>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-IRC: #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 06:06:00 up 127 days, 11:36, 86 users,  load average: 0.33, 0.28,
- 0.20
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200626_053134_620709_554BE558 
-X-CRM114-Status: GOOD (  24.10  )
+X-CRM114-CacheID: sfid-20200626_081429_724096_0BFF5CFF 
+X-CRM114-Status: GOOD (  11.51  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,55 +81,52 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: richard@nod.at, bigeasy@linutronix.de, linux-mtd@lists.infradead.org,
- tglx@linutronix.de
+Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>, juliensu@mxic.com.tw,
+ Richard Weinberger <richard@nod.at>,
+ Boris Brezillon <boris.brezillon@collabora.com>, linux-mtd@lists.infradead.org,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, masonccyang@mxic.com.tw
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Torben,
+This property is needed to precisely point to the hardware ECC engine
+to use when there are several of them available. Here, hardware also
+refers to the on-die possibility.
 
-On Thu, Jun 25, 2020 at 05:59:27PM +0200, Torben Hohn wrote:
-> diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-> index 7fc2f3f07c16..ec95f1f50e5e 100644
-> --- a/fs/ubifs/super.c
-> +++ b/fs/ubifs/super.c
-> @@ -1291,6 +1291,17 @@ static int mount_ubifs(struct ubifs_info *c)
->  			err = -EINVAL;
->  			goto out_free;
->  		}
-> +	} else if (c->auth_hash_name) {
-> +		if (IS_ENABLED(CONFIG_UBIFS_FS_AUTHENTICATION)) {
-> +			err = ubifs_init_authentication_read_only(c);
-> +			if (err)
-> +				goto out_free;
-> +		} else {
-> +			ubifs_err(c, "auth_hash_name, but UBIFS is built without"
-> +				  " authentication support");
-> +			err = -EINVAL;
-> +			goto out_free;
-> +		}
->  	}
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ .../devicetree/bindings/mtd/nand-controller.yaml     | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-In case we don't have a key available for HMAC and can only verify the
-FS is correctly signed then we have to be sure that we are mounting
-readonly. This means the above needs an additional check for
-c->ro_mount.
-
-Once we can be sure that UBIFS is in readonly mode when we can't do HMAC
-then there's no point in adding a ubifs_authenticated_write(), because
-the places where you call it will never be hit in a readonly mounted
-filesystem.
-
-Regards,
- Sascha
-
+diff --git a/Documentation/devicetree/bindings/mtd/nand-controller.yaml b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
+index 4a0798247d2d..0969d2e6720b 100644
+--- a/Documentation/devicetree/bindings/mtd/nand-controller.yaml
++++ b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
+@@ -56,6 +56,18 @@ patternProperties:
+           (Linux will handle the calculations). soft_bch is deprecated
+           and should be replaced by soft and nand-ecc-algo.
+ 
++      nand-ecc-engine:
++        maxItems: 1
++        description:
++	  A phandle on the hardware ECC engine if any. There are
++          basically three possibilities:
++          1/ The ECC engine is part of the NAND controller, in this
++          case the phandle should reference the parent node.
++          2/ The ECC engine is part of the NAND part (on-die), in this
++          case the phandle should reference the node itself.
++          3/ The ECC engine is external, in this case the phandle should
++          reference the specific ECC engine node.
++
+       nand-ecc-placement:
+         allOf:
+           - $ref: /schemas/types.yaml#/definitions/string
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.20.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
