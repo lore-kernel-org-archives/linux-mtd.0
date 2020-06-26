@@ -2,86 +2,149 @@ Return-Path: <SRS0=H3wt=AH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0C6DC433E0
-	for <linux-mtd@archiver.kernel.org>; Fri, 26 Jun 2020 10:25:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A595C433DF
+	for <linux-mtd@archiver.kernel.org>; Fri, 26 Jun 2020 10:38:53 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BDC3D2070A
-	for <linux-mtd@archiver.kernel.org>; Fri, 26 Jun 2020 10:25:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0ED1B20775
+	for <linux-mtd@archiver.kernel.org>; Fri, 26 Jun 2020 10:38:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="geeL33eX";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="JhiTb5TR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDC3D2070A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="MRcTfb9n";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="vY5Uav+l";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="UM6MSrHn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0ED1B20775
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Subject:References:In-Reply-To:
-	Message-ID:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=lxlZdUNP6OAFIejCjcwkY+ZTk3LjuPnS7/1DPYOpvO0=; b=geeL33eXawgqTvV/oN3fUUYvt
-	r8YyVVP87Qm/mtBSNJfnR6XLrR2lIxwSilGhTsz9AutQaNyJrQxTWtI3zEwzuCRrOcy0fY+okqWy8
-	EVAc99MO8uqUHycKj8gxn63b9gwLy+5F4KPc59WYmf9iXBlzy9FrsA7EWALrDvfF0dVT2Wfrv0NRl
-	i5VnRH/sB6dAUWlTrNYP2wJl9YAK0cocXAvmV0glh0eT7Yvyx3MKUNjgN6TplKiICDs9/FcXaJfdU
-	SP19pZhXSBY3DHxfy0uz/qbfgeQobnNZvun+skLedS8kELusJNjAOgu2TvaXa3QA0kXhmpfq/qw1Q
-	EulQwZRAg==;
+	 bh=8p4UplqNCT8874UzVS2PQCADLvPRZ3Y4fPVX/4OdtVM=; b=MRcTfb9nLitJ4YhoXzuMBdFXn
+	3Zofh+PRNZmKZJYpdH5BxxIPSnWjzldkMyGuSlhYHWtXDXdQldBOPgBnS8a+0t0ojREfHBNCa3bQE
+	qlOJ1Bke5mameW5dRuMl0BoA8HBeMB4ZNtZbHukwOH5eahxgpnLrRjBaIqZrHozkqYcZuVaLKxxOO
+	fCEp9uJqX9+8Rm7rCEWPyftyJjuKphxGcw6B9Izhn8DmHm1gwIlSFYhQNVftf86xRfZXDhqmWAvae
+	To4SoPbDzBnmnvmNNaAw6beQgpx1AMrhfQUIpuNskYxPccB8wWSCyPUP75QZNi11XuMe9tlgLZcUo
+	mRSTgODwA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jolWp-0001vf-8y; Fri, 26 Jun 2020 10:24:15 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1joljx-0008MW-SE; Fri, 26 Jun 2020 10:37:51 +0000
+Received: from esa5.microchip.iphmx.com ([216.71.150.166])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jolQm-0004OP-7v
- for linux-mtd@merlin.infradead.org; Fri, 26 Jun 2020 10:18:00 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
- MIME-Version:Subject:References:In-Reply-To:Message-ID:Cc:To:From:Date:Sender
- :Reply-To:Content-ID:Content-Description;
- bh=IZaeyS9CJNNYkGhfS0NnmXdMfe2Rh5dxc1Dx8Mz/tmw=; b=JhiTb5TRXK+a4PT2137YoQDxXd
- qBo6WMTFVL3aCjuuYZZ8hj4iPcxy4CgmLRTTIlNumpy129LOinxuRam+MKYt6mTIwE/pr1bqjttcQ
- oM33y2jQ2mBO5mxo2BtbRKPQ+t7n0tZMpS9uV052bj40iOJihV0FURet0Es7hkTSQee5Mffk/qrTu
- 8xikxeZjoKdN6nZFEuCToymEl5tVkbsOKREJWDmXfFq1p5Tb8Kxq35ix7M1QZoRoOXJ6AbterfiLR
- BrjiHZfneWPFm0+9/iUNqhHh993x+9v9OeFVXswuZJxKB62Jywil19oEgQEhuaP9yd1W/d0ja2LSr
- wmR2kLkQ==;
-Received: from lithops.sigma-star.at ([195.201.40.130])
- by casper.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jojQC-00085N-W4
- for linux-mtd@lists.infradead.org; Fri, 26 Jun 2020 08:09:19 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 594D4626F1D1;
- Fri, 26 Jun 2020 10:09:15 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id YM6rJfac_B3s; Fri, 26 Jun 2020 10:09:15 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id E165C626F1B6;
- Fri, 26 Jun 2020 10:09:14 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id GPMqiObfxCZO; Fri, 26 Jun 2020 10:09:14 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
- by lithops.sigma-star.at (Postfix) with ESMTP id B8171626F1B4;
- Fri, 26 Jun 2020 10:09:14 +0200 (CEST)
-Date: Fri, 26 Jun 2020 10:09:14 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: Torben Hohn <torben.hohn@linutronix.de>
-Message-ID: <1764637498.61502.1593158954662.JavaMail.zimbra@nod.at>
-In-Reply-To: <20200625155927.28430-1-torben.hohn@linutronix.de>
-References: <20200625155927.28430-1-torben.hohn@linutronix.de>
-Subject: Re: [PATCH 0/1] ubifs: support authentication without hmac
+ id 1joljA-0007un-Fu
+ for linux-mtd@lists.infradead.org; Fri, 26 Jun 2020 10:37:04 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1593167821; x=1624703821;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:content-transfer-encoding: mime-version;
+ bh=dn0Y481lDOxfz/jhsA7+HyvtqJ5dxAZYsFV7h54yG7k=;
+ b=vY5Uav+ly1O9bMGJ7yPoCjqSFUAyO5+KGUjzZzCVt4Et76AbkB278fLe
+ ahpiahcHeZOliGnVKG3X4Rw/NnVWyn3q0emyt1a88rwwao++LCB+Q1K2F
+ cNh4pCMJPcG0f8WO0DWb4KrdwS9g2vojjg6KsQB3HQJvRa/keIo6O9aLp
+ 1lQZXFOZFb54RdzOZtZQFF2sHoc8PWyQVVEn4duiWy2brgZ88VOonYtc6
+ Fpijcy30ZwP4+cFUcBAjhmocEK5HQEczf2N2Xznkmf+VBAHzZ4PiRH2Z9
+ 4Y92ggrn8l9KRprvm7r7cG9vBsn0b3OGHGdT0ZRpK0REKvnA0kt7HN2K2 Q==;
+IronPort-SDR: JjrrsRoK6+/Uou/54uU++Y6dIqy9BhpNVKfs/s4xWLdKUf3ORarnAbpiQgh7MNhH+a7W/jCO6D
+ e9XqUQuWnJ7fkNZ4HNrcd+4tV7FGJVGrnNkTU6acJWFB7LxNWls/mtl/tFJ4jYCtKyQsN39Pdr
+ E1pWllwSq3ygY86k5zl1NXlscOucJT4Jyw5POCJN0moandKdn0V46S5W79bzdcUsYGRG32+6R3
+ ulMiEHt7P65DAHoI+y93VVYhTOiV6dQL0rzzV3XJZ1OFRvpTdb37ckR9Z77/hj8BZYpM4Zi6EH
+ pcs=
+X-IronPort-AV: E=Sophos;i="5.75,283,1589266800"; d="scan'208";a="81000627"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 26 Jun 2020 03:36:52 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 26 Jun 2020 03:36:50 -0700
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.71) with Microsoft SMTP Server
+ (version=TLS1_2, 
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
+ Transport; Fri, 26 Jun 2020 03:36:36 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Xi6SoTQ55IxvKzm2r9f95L67MgvE5E580ekcGzmCTAzphM1Oax/nbkIFtErX8M+jSXunQwPE8GuR/Ca9XNO7i/nkL6scwo7i1OK8tTYIk2oq2lh84QdM9VIKKgtWmXA8/PGvdHd7XRnCaeJx7z16SVd8i/meDhMNosS1wifvwaXBaNrrG1W5c65nnZoTuxQs9X+hY7oPR7amKJktkCpXP83IgN9fdfn5du/iZAQ5C8x59U87+QJwLTccCaS2Y1lxPAr+Pyz3hkw/NOLibsl1VZynLSEB9W+gCOOnFk8MSthCjo1Ytqgp5jWlXf30outxJnqD5H2xbx7OEC2WMxeHMQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dn0Y481lDOxfz/jhsA7+HyvtqJ5dxAZYsFV7h54yG7k=;
+ b=PZg7gA59AV+gaZEnIJmztkvcsLpK/RLp11KstFgowBoeGu6h5XNS5U/sov2RcR0dJt7jaQZMF4LX/yUib1SqrumTSPA+TLEWJtOWmfdMcuv272jfx9LKz2pD2up5skSug2S1ZifZYlzsyVfYTg1KkhN370ieZtJ8QXJo1xQBEw1st+rQSpTLzYIvETCi76aSC7MR7SaCFiOdFv0WBJZ9Eg7kYhCCMWwiF8dZXNSLM14JTQ6ImZG+tkxAay7e1jDNDydB9TPoUB2GX/x4fQj5CyXzN2SXIYHVZGTiznvKU4LSEhsmTEgHYJ2FEf6U7mGRCgKZKUBjp2vnfbJX0znn1w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dn0Y481lDOxfz/jhsA7+HyvtqJ5dxAZYsFV7h54yG7k=;
+ b=UM6MSrHnew1WA7vEOTffiVN9DJ28pyaJoTk98HqG9Oljb1Oxn0g0cRbCcOQsgy+vpAlKaR4KHfxzppsuepxJbYiCrJ29Fr/9VmSH1p7xZ6QIdF0BTVi8vdvCa34aEAKhQaRSWoZKffepl+knLqS6BJ0DnkCugnO87pSsft9JyVQ=
+Received: from BYAPR11MB2856.namprd11.prod.outlook.com (2603:10b6:a02:bd::11)
+ by BYAPR11MB3752.namprd11.prod.outlook.com (2603:10b6:a03:fc::17)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.24; Fri, 26 Jun
+ 2020 10:36:45 +0000
+Received: from BYAPR11MB2856.namprd11.prod.outlook.com
+ ([fe80::f1d5:60ca:d163:c1b3]) by BYAPR11MB2856.namprd11.prod.outlook.com
+ ([fe80::f1d5:60ca:d163:c1b3%3]) with mapi id 15.20.3131.025; Fri, 26 Jun 2020
+ 10:36:45 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <mika.westerberg@linux.intel.com>
+Subject: Re: [PATCH] mtd: spi-nor: intel-spi: Add support for Intel Emmitsburg
+ SPI serial flash
+Thread-Topic: [PATCH] mtd: spi-nor: intel-spi: Add support for Intel
+ Emmitsburg SPI serial flash
+Thread-Index: AQHWS6Ww9+pY9Ib+GUCSZSPcg3YVug==
+Date: Fri, 26 Jun 2020 10:36:45 +0000
+Message-ID: <484cd8fa-1d53-8918-a9c5-bd386777c074@microchip.com>
+References: <20200615155748.920-1-mika.westerberg@linux.intel.com>
+In-Reply-To: <20200615155748.920-1-mika.westerberg@linux.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+authentication-results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none
+ header.from=microchip.com;
+x-originating-ip: [86.127.52.34]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e37f98dd-9dac-401f-c65c-08d819bcd2f8
+x-ms-traffictypediagnostic: BYAPR11MB3752:
+x-microsoft-antispam-prvs: <BYAPR11MB3752FD167F45A0A0D7A1E53DF0930@BYAPR11MB3752.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:1201;
+x-forefront-prvs: 0446F0FCE1
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: cOn7f7mxunl7g8CFPDUVW+BeTKSNczHV3frq8I6GOwEXpMpyMIrheitEeYNCM0fvIoEA8h1Ch7A2kmJCAgOl+N3amzmcJiT7CgqLWb0T0Mu77sRcb0g+nWuoGLCxC+5eXUbRg9bpU7x4sCUX5s+UMZS78jSOLrcETFUo4abv+HiFdxmCiK1i4T7ydhjduwRd6GksI9FbKdrkDMB+PFR5Ej+QLXBtdxvUo73KxPvAHqxIUxN4XbVnQ2KjhIuUtR4cERqV4aMDlLSFnuc6BJ5Q0Sxasva+WHagCnlqfbtMT2oUoOjxWdZD/B+VL1N6IG49CBQwGO/8E2dlOSOCEBTQ5fGhlchimXfnPY4mq2mT/BTMx2lCGilKJEQ1TEei/uYn
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:BYAPR11MB2856.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFTY:;
+ SFS:(346002)(366004)(376002)(136003)(39860400002)(396003)(6916009)(4326008)(2906002)(71200400001)(478600001)(6512007)(53546011)(66946007)(26005)(66556008)(66446008)(4744005)(86362001)(91956017)(66476007)(64756008)(6506007)(76116006)(31696002)(31686004)(5660300002)(186003)(316002)(8676002)(36756003)(2616005)(6486002)(8936002)(54906003)(43740500002);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata: nh9L+qbPqvmAc37+U5W2+KWV3GgthVZ6f9Bj6iYWe4KOFLunpiWEz3xh+ZXcUgz/b08amHQORdXwkVBtBelllliq3drtVG3qGdtJwbEVsFphORVAEPAZV0gYByBA4mmWnNgQeXeQci/W6bEr+6Pzk5nQ3bZrOo5PFN42iBnvNqjzTQD6FAgMVKcmGjyr7GPA/u1+hIa+2VCIFyqbIwKWlYJ5SP8T3y+elbdklswGzQ+MuMvD1y9S1eF1nnDLgbOmroW1c6Xbiz1zHQWnHDMHJVDL/djUc0x1N21YccQA6ocHJHGWHiYA/LTzYyD8D5/mosV48ZYH+6S18027OfPI88+86uHYQEcbgBxa9+AsixjX91lJI85mTb7DZwYlsfkHZtCgrsyUEgZUHdUxT3VX3GsTzWpiGOkmWTYyrzYQqK99kz51Qt+ZrcVDWGRAvC4GcV66ZLiFEdFK7sTMAIN63ET1zyMxvw/NizJPX/aXwik=
+x-ms-exchange-transport-forked: True
+Content-ID: <062500229FBFF9499EE1D73514E55B58@namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF68 (Linux)/8.8.12_GA_3809)
-Thread-Topic: ubifs: support authentication without hmac
-Thread-Index: G3ZYEuhBQPyKvaBqFN5flfnl/qtd9Q==
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200626_090917_261864_17D4EBC0 
-X-CRM114-Status: GOOD (  16.45  )
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2856.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e37f98dd-9dac-401f-c65c-08d819bcd2f8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jun 2020 10:36:45.5141 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: N4xna7iw7cvQ30Bug3a/uvHWeDEwrEwataTc5/2ObqdYKGDk4jC+/i4hfONrgvs+Fe9I7PYuKtV18HROMYHu++Gx4SPEjFzVTyXcXoQrvzo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3752
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,47 +156,26 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: bigeasy <bigeasy@linutronix.de>, linux-mtd <linux-mtd@lists.infradead.org>,
- tglx <tglx@linutronix.de>, Sascha Hauer <s.hauer@pengutronix.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: richard@nod.at, linux-mtd@lists.infradead.org, vigneshr@ti.com,
+ miquel.raynal@bootlin.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-VG9yYmVuLAoKLS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIlRvcmJlbiBI
-b2huIiA8dG9yYmVuLmhvaG5AbGludXRyb25peC5kZT4KPiBBbjogInJpY2hhcmQiIDxyaWNoYXJk
-QG5vZC5hdD4KPiBDQzogImJpZ2Vhc3kiIDxiaWdlYXN5QGxpbnV0cm9uaXguZGU+LCAidGdseCIg
-PHRnbHhAbGludXRyb25peC5kZT4sICJsaW51eC1tdGQiIDxsaW51eC1tdGRAbGlzdHMuaW5mcmFk
-ZWFkLm9yZz4sICJTYXNjaGEKPiBIYXVlciIgPHMuaGF1ZXJAcGVuZ3V0cm9uaXguZGU+Cj4gR2Vz
-ZW5kZXQ6IERvbm5lcnN0YWcsIDI1LiBKdW5pIDIwMjAgMTc6NTk6MjYKPiBCZXRyZWZmOiBbUEFU
-Q0ggMC8xXSB1Ymlmczogc3VwcG9ydCBhdXRoZW50aWNhdGlvbiB3aXRob3V0IGhtYWMKCj4gVGhp
-cyBwYXRjaCBhZGRzIHN1cHBvcnQgZm9yIHViaWZzIGF1dGhlbnRpY2F0aW9uIHdpdGhvdXQgSE1B
-QywKPiB3aGljaCBvYnZpb3VzbHkgb25seSB3b3JrcyBmb3IgYSByZWFkLW9ubHkgbW91bnQuCj4g
-Cj4gdWJpYmxvY2sgYW5kIGRtLXZlcml0eSBhcmUgbm90IHN1cHBvcnRlZCBieSB1LWJvb3QsIGFu
-ZAo+IHRoZSBrZXJuZWwgb24gdGhlIHRhcmdldCBpcyBsb2FkZWQgYnkgdS1ib290IG91dCBvZiB0
-aGUgUkZTLgoKQXMgSSBzYWlkIG9uIElSQyB5ZXN0ZXJkYXkuIFRoZXJlIGlzIGEgYnVnIHdpdGgg
-VUJJRlMgdmVyc2lvbmluZy4KdS1ib290IGlzIG5vdCBzdXBwb3NlZCB0byByZWFkIGZyb20gYXV0
-aGVudGljYXRlZCBVQklGUyBzaW5jZSBpdCBoYXMKbm8gYXV0aGVudGljYXRpb24gc3VwcG9ydCBh
-dCBhbGwgYW4gbWlnaHQgdHJpcCBvdmVyIGNoYW5nZWQgZGF0YSBzdHJ1Y3R1cmVzLgoKV2UgZm9y
-Z290IHRvIHJhaXNlIHRoZSBVQklGUyB2ZXJzaW9uIHRvIHc1cjEgZm9yIGF1dGhlbnRpY2F0ZWQg
-aW1hZ2VzCmFuZCBvbmx5IGludHJvZHVjZWQgYSBuZXcgZmVhdHVyZSBmbGFnLgpUaGlzIGNhdXNl
-cyBvbGQgVUJJRlMgaW1wbGVtZW50YXRpb25zIGxpa2UgdS1ib290J3MgdG8gbm90IGVuZm9yY2Ug
-dGhlCnN1cGVyIGJsb2NrIGZlYXR1cmUgZmxhZyBmaWVsZC4gCkJlZm9yZSB3NCBmZWF0dXJlIGZs
-YWdzIGRpZG4ndCBnZXQgZW5mb2NyZWQuIDotKAoKUGF0Y2hlcyBmb3IgbWtmcy51YmlmcyBhbmQg
-a2VybmVsIGFyZSBvbiB0aGVpciB3YXksIEkganVzdCBuZWVkIHRvIGNhcmVmdWxseQp0ZXN0IHRo
-ZW0gd2l0aCBtYW55IGRpZmZlcmVudCBvbGQgaW1hZ2VzLCB1LWJvb3QgYW5kIGtlcm5lbCBjb21i
-aW5hdGlvbnMuCgpJIHRoaW5rIGl0IGlzIGhpZ2ggbm9vbiB0aGF0IHUtYm9vdCB1cGRhdGVzIHRo
-ZWlyIFVCSUZTLCB0aGVuIGEKbm9uLWF1dGhlbnRpY2F0ZWQgc2hvdWxkIGJlIHRyaXZpYWwuCk9m
-IGNvdXJzZSB5b3UgbmVlZCB0byB2ZXJpZnkgYWxsIGZpbGVzIHlvdSByZWFkIGZyb20gaXQgbWFu
-dWFsbHkgdGhlbi4KCj4gVGhpcyBpcyBhIGZpcnN0IHRyeSB0byBpbXBsZW1lbnQgdGhpcy4KPiBJ
-dCBib290cyBmaW5lLCBhbmQgdGhlIFdBUk5fT04gaXMgbm90IHRyaWdnZXJlZC4KPiAKPiBJIHBs
-YW4gdG8gdXBkYXRlIHRoZSBkb2NzIGFsc28sIGJ1dCBpIHdvdWxkIGxpa2UgdG8gaGF2ZQo+IHNv
-bWUgcG9zaXRpdmUgY29tbWVudHMgb24gdGhpcyBiZWZvcmUuCgpJIHRoaW5rIHRoaXMgaXMgYSB1
-c2VmdWwgZmVhdHVyZSwgcGxlYXNlIGdpdmUgbWUgYSBmZXcgZGF5IHRvIHRoaW5rIGFib3V0CmFs
-bCBpbXBsaWNhdGlvbnMuCgpUaGF0IHNhaWQsIEknbSBub3QgcmVhbGx5IGEgZmFuIG9mIHJlYWRp
-bmcgZmlsZXMgZnJvbSBVQklGUyBpbiB1LWJvb3QuCldlIGhhdmUgVUJJIHN0YXRpYyB2b2x1bWVz
-IGZvciB0aGF0Li4uCk1heWJlIHlvdSBjYW4gZ2l2ZSB0aGlzIGEgdHJ5IGFuZCB2b2lkIHNvbWUg
-Y29tcGxleGl0eSBpbiB0aGUgYm9vdGxvYWRlci4KClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVRE
-IGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On 6/15/20 6:57 PM, Mika Westerberg wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> 
+> Intel Emmitsburg has the same SPI serial flash controller as Lewisburg.
+> Add Emmitsburg PCI ID to the driver list of supported devices.
+> 
+> Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> ---
+>  drivers/mtd/spi-nor/controllers/intel-spi-pci.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+
+Applied, thanks!
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
