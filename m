@@ -6,18 +6,18 @@ X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AA97C433E0
-	for <linux-mtd@archiver.kernel.org>; Mon, 29 Jun 2020 09:08:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0584FC433E0
+	for <linux-mtd@archiver.kernel.org>; Mon, 29 Jun 2020 09:14:08 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 05395233A0
-	for <linux-mtd@archiver.kernel.org>; Mon, 29 Jun 2020 09:08:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C886A233A2
+	for <linux-mtd@archiver.kernel.org>; Mon, 29 Jun 2020 09:14:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nr0qhSqY";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="aN7vp2PV";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0XFFNGAq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 05395233A0
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HlSHHcAZ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4NL5xSpo";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="b98lAQeb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C886A233A2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,51 +26,52 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=v54SaX+6CZEyWMnUJqbGhjrr9+RQOUhpmvWGhrWI9cg=; b=nr0qhSqYefCoA8H2ycMt1jUYx
-	pcWGnz7HybAGKJm+ZWlHBP2xeB22+VSxDpyZjsF2BkfwXaw9Wp7hoB9pcItkXv4CkOXSLTzysI1Gr
-	KVO3g70wE1VVHD+iI1k0rpcWFoylTfwdj3jA2FmFJNZisC/KWTaLIR20g7HVjyPjJU6FJ9DaXTLw2
-	ytJEmtyL1Y12h4U6rkssamd0srFmiYY2sS91NicFb1/4R8yV9uaD85ECWVol1jVRiFqydRlCV1G2O
-	BNksOV1Y80/vBBUb0NWmcrLc5ST4cGaX2OtXLpnigq6090JLzKehQ6G27O+oALlnAxrgFPsOoYnwS
-	oP6dgn4oQ==;
+	 bh=HXMr32yHL0xwlSGhvmJ1OKeIkE+Y6guPNB12KwmLKnY=; b=HlSHHcAZnzYqeJgcCr2sDQbH8
+	hIV2NyRBur+PEJ7RCgLkwD4pUk46zCCBhCdOUmbSwejYkYNZVatH914XHQ8cVJZsPz/myI/hM0mcl
+	KZ/SxpUniPJHh2BhCADtGNB2nD5qZTzTwrWMwRgntNEE216S/8U27A6UcPmEZVhi2AdoB3gWcO/Cf
+	TjlUB8Cz2AzKbhDvmxyu+UytW9Qq6MIXnQJaROXjb+vXAE2j0iJvIN5Y14IE6IFJy+dku9v87a2Uv
+	t3K1XLzWX3RJwUy61AVzHlcioycTl75IT4n2R/Y/o1rPA8RfBni+CyrVM7977Mbpk/YVb5s6AhZ2q
+	pIoVMCJHw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jpplL-0004CO-25; Mon, 29 Jun 2020 09:07:39 +0000
-Received: from galois.linutronix.de ([193.142.43.55])
+	id 1jppr6-0005Gm-8x; Mon, 29 Jun 2020 09:13:36 +0000
+Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jpplJ-0004Bs-77
- for linux-mtd@lists.infradead.org; Mon, 29 Jun 2020 09:07:38 +0000
-Date: Mon, 29 Jun 2020 11:07:34 +0200
+ id 1jppr3-0005G9-SO
+ for linux-mtd@lists.infradead.org; Mon, 29 Jun 2020 09:13:34 +0000
+Date: Mon, 29 Jun 2020 11:13:31 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
- s=2020; t=1593421655;
+ s=2020; t=1593422012;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=4JdMt2M0Q4asIO0EMUsSOkK6al0GXFuzgm3DQXNrW4g=;
- b=aN7vp2PVbVDi8vak8S56qn+UL+5BH4xQMIy9GEaYdUAVnCiYxJv5iQTa7uIzpw/zzgiv/I
- tfpyfBNTqBx+OOzRjhlzW1XTmNMWSo49n7VLFESk7Iq/0G5di1jQ8MXK06W81Fiy05q+cT
- KZzUKcyHAbtUnfF4W6mrjoDJi/MRid/JAHwgfM7m0Hp8LisA12a9TZ4hKOezP+zjKm0qTX
- wlVdvTmgnPRL2CJ01JzaRSHaUU4yxxQuNmY5QY1ykhV1YWOaeOzXTWghyfH5PPXaHzmovY
- N9Y9yd1L8Mnd9r7ZdHAdpTSazhUzY1DeZx9eBxsU3mUAc4z4xJwCBzu3ka25/w==
+ bh=dW3Qbd0PjI/AYjIKPLLwXVRJGt+j8lA2SaYDanwbG8A=;
+ b=4NL5xSpoApF0wL9FrSzDlFWCUcnc/VFFV7IJhzbRee7T6RCbIJu1XT2/iPQiIujPUEfyaN
+ ZKeofxawy/ySuE1Wj9pnDEVC2BsYkg+4w5HAtnmDjtDZB3AfkoLkhIlkbn5ifX/xwGHfw+
+ eIj0IS6scYNlL6opA4vAPqwKHwNlQTBcWjKSU43VeI3nyl6VY8ILGUsBOtLaeSLVKtuv7g
+ 94MKRvyNUHczr6Ox0EPYPDhAcsaBb+mppXE7Uz1p5qEJHqWY2EBtXLeJu7x8Y+tf1sv7k5
+ 5tIzz1L8tpTb0+cxrxsp2yLXvn4tlnzF439jtm+3FB4qTfhn/E4ySCVbcYrHzA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
- s=2020e; t=1593421655;
+ s=2020e; t=1593422012;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=4JdMt2M0Q4asIO0EMUsSOkK6al0GXFuzgm3DQXNrW4g=;
- b=0XFFNGAqdZU6rze8aUktWmhH9YQsvrT2tWcXAGP9eKf82RNGZoYyOEovMYWWJamxpZ0+Ny
- r3CPtfBTMFofTjAQ==
+ bh=dW3Qbd0PjI/AYjIKPLLwXVRJGt+j8lA2SaYDanwbG8A=;
+ b=b98lAQebh5JTBPh0h7+C3+m5VgFKCxlBuRI7TCjhsO+vO9uSmDSCJzRPZudQSfT/7++8t8
+ rJvgCFHBjMoFlvDw==
 From: Torben Hohn <torben.hohn@linutronix.de>
 To: Richard Weinberger <richard@nod.at>
 Subject: Re: [PATCH v2 0/4] ubifs: support authentication without hmac
-Message-ID: <20200629090734.GB17241@linutronix.de>
+Message-ID: <20200629091331.GC17241@linutronix.de>
 References: <20200625155927.28430-1-torben.hohn@linutronix.de>
  <20200626112907.13201-1-torben.hohn@linutronix.de>
  <1644538308.62483.1593181011127.JavaMail.zimbra@nod.at>
+ <1203806497.62586.1593182186554.JavaMail.zimbra@nod.at>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1644538308.62483.1593181011127.JavaMail.zimbra@nod.at>
+In-Reply-To: <1203806497.62586.1593182186554.JavaMail.zimbra@nod.at>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,98 +91,52 @@ Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Jun 26, 2020 at 04:16:51PM +0200, Richard Weinberger wrote:
-> Torben,
-> =
-
+On Fri, Jun 26, 2020 at 04:36:26PM +0200, Richard Weinberger wrote:
 > ----- Urspr=FCngliche Mail -----
-> > Von: "Torben Hohn" <torben.hohn@linutronix.de>
-> > An: "richard" <richard@nod.at>
-> > CC: "bigeasy" <bigeasy@linutronix.de>, "tglx" <tglx@linutronix.de>, "li=
-nux-mtd" <linux-mtd@lists.infradead.org>, "Sascha
-> > Hauer" <s.hauer@pengutronix.de>
-> > Gesendet: Freitag, 26. Juni 2020 13:29:03
-> > Betreff: [PATCH v2 0/4] ubifs: support authentication without hmac
-> =
-
-> > This PQ adds support for ubifs authentication without HMAC,
-> > which obviously only works for a read-only mount.
+> > I didn't dig deep into the code so far, I'm still checking the concept.
 > > =
 
-> > ubiblock and dm-verity are not supported by u-boot, and
-> > the kernel on the target is loaded by u-boot out of the RFS.
+> > Your approach works only on pristine offline signed images from mkfs.ub=
+ifs.
+> > So, if somebody does this, it won't work:
 > > =
 
-> > This is a first try to implement this.
-> > It boots fine, and the WARN_ON is not triggered.
+> > $ keyctl padd logon ubifs:authfs @s < secret.key
+> > $ mount -t ubifs /dev/ubi0_0 /mnt/ -o
+> > auth_hash_name=3Dsha256,auth_key=3Dubifs:authfs
 > > =
 
-> > I plan to update the docs also, but i would like to have
-> > some positive comments on this before.
+> > ... change the fs ...
 > > =
 
-> > Changes since v1:
+> > $ umount /mnt
+> > $ mount -t ubifs /dev/ubi0_0 /mnt/ -o auth_hash_name=3Dsha256,ro
 > > =
 
-> > - apply comments from Sascha an revert the
-> >  ubifs_authicated_(read|write) stuff.
-> >  Use ubifs_assert(c, !c->ro_mount) instead.
-> > - Prevent remount rw, when hmac-less authentication is used
-> > - add missing check, for ro mode, when no auth_key_name is specified.
+> > The ro mount will fail because UBIFS is no longer able to verify the su=
+per block
+> > using the system key ring. It was overwritten by they ubifs:authfs key.
+> > =
+
+> > A possible solution is keeping a copy of the offline sign key forever i=
+n the fs.
+> > But I'm not sure whether this is wise.
 > =
 
-> I didn't dig deep into the code so far, I'm still checking the concept.
-> =
+> Or we change the feature from "ro mount without hmac" to "keep offline si=
+gn key and imply ro mount".
+> IOW adding a new mount option such as "auth_keep_offlinekey". If mounted =
+with this option
+> UBIFS will not look for a hmac and enforce read-only mode.
 
-> Your approach works only on pristine offline signed images from mkfs.ubif=
-s.
-> So, if somebody does this, it won't work:
-> =
+Thats just another name for the same feature.
+But it indeed seems to make the implications clearer.
 
-> $ keyctl padd logon ubifs:authfs @s < secret.key =
-
-> $ mount -t ubifs /dev/ubi0_0 /mnt/ -o auth_hash_name=3Dsha256,auth_key=3D=
-ubifs:authfs
-> =
-
-> ... change the fs ...
-> =
-
-> $ umount /mnt
-> $ mount -t ubifs /dev/ubi0_0 /mnt/ -o auth_hash_name=3Dsha256,ro
-> =
-
-> The ro mount will fail because UBIFS is no longer able to verify the supe=
-r block
-> using the system key ring. It was overwritten by they ubifs:authfs key.
-
-Yes. But that is the intended behaviour.
-If the filesystem has been changed, it must not be mounted again.
-
-I would rather like to make it impossible to mount the filesystem in rw
-mode, because this is an attack scenario. It would refuse to mount upon
-reboot. Making it possible to remount root rw, with a fresh key is
-nice for development, but its not desired in production. =
-
-
+And it porbably also makes the code easier to read.
 
 > =
 
-> A possible solution is keeping a copy of the offline sign key forever in =
-the fs.
-> But I'm not sure whether this is wise.
-
-Heh ? you mean the private key. NO
-
-When its not possible to store a secret on the h/w then the only
-option we have is asymmetric sigatures, with the private key never
-being on the device.
-
-This obviously means, that the device is not able to write to RFS.
-
-
-
-
+> Hmm?
 > =
 
 > Thanks,
