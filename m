@@ -4,74 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0584FC433E0
-	for <linux-mtd@archiver.kernel.org>; Mon, 29 Jun 2020 09:14:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CD3AC433E0
+	for <linux-mtd@archiver.kernel.org>; Mon, 29 Jun 2020 10:48:29 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C886A233A2
-	for <linux-mtd@archiver.kernel.org>; Mon, 29 Jun 2020 09:14:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 28F2823787
+	for <linux-mtd@archiver.kernel.org>; Mon, 29 Jun 2020 10:48:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HlSHHcAZ";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4NL5xSpo";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="b98lAQeb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C886A233A2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linutronix.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="a3Mt/+mE";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Juhe/Og5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 28F2823787
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:Subject:References:In-Reply-To:
+	Message-ID:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=HXMr32yHL0xwlSGhvmJ1OKeIkE+Y6guPNB12KwmLKnY=; b=HlSHHcAZnzYqeJgcCr2sDQbH8
-	hIV2NyRBur+PEJ7RCgLkwD4pUk46zCCBhCdOUmbSwejYkYNZVatH914XHQ8cVJZsPz/myI/hM0mcl
-	KZ/SxpUniPJHh2BhCADtGNB2nD5qZTzTwrWMwRgntNEE216S/8U27A6UcPmEZVhi2AdoB3gWcO/Cf
-	TjlUB8Cz2AzKbhDvmxyu+UytW9Qq6MIXnQJaROXjb+vXAE2j0iJvIN5Y14IE6IFJy+dku9v87a2Uv
-	t3K1XLzWX3RJwUy61AVzHlcioycTl75IT4n2R/Y/o1rPA8RfBni+CyrVM7977Mbpk/YVb5s6AhZ2q
-	pIoVMCJHw==;
+	 bh=iES07DM1OZHNJ1Qrvh+WORsUqKX76z4wJ3ponSdChxk=; b=a3Mt/+mEOtn8GcvN7vAbdeKjC
+	XAxbif1rooceCgpSIkaeVpjtor6vmaddlkqnOpmdYj5nwyYtAPFvW0GlsNsjyR2GvLKBZL9FXsucu
+	B+cRWTsbUurS3miEh5BoOzOKk6Ktt04iTEaQ5fH+5mOJqyCxOzoGx3OSblZ84uaJyw0bsxx774GuS
+	3dD67kFvk+EGJ01scfZq4DKjRiYuUNz/69p8AuG/b6uu32C7osPgw1TRbqptguKPrimoAWRMqcoyP
+	tMrgIWzKIDqpVtx4YaULgjhcq7p1OFMxaHYu5+2epRnrIFgsd9HoaFhdlCoweyajNV903QbVX5VYI
+	5U4if1z3g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jppr6-0005Gm-8x; Mon, 29 Jun 2020 09:13:36 +0000
-Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
+	id 1jprJa-000114-2p; Mon, 29 Jun 2020 10:47:06 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jppr3-0005G9-SO
- for linux-mtd@lists.infradead.org; Mon, 29 Jun 2020 09:13:34 +0000
-Date: Mon, 29 Jun 2020 11:13:31 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
- s=2020; t=1593422012;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=dW3Qbd0PjI/AYjIKPLLwXVRJGt+j8lA2SaYDanwbG8A=;
- b=4NL5xSpoApF0wL9FrSzDlFWCUcnc/VFFV7IJhzbRee7T6RCbIJu1XT2/iPQiIujPUEfyaN
- ZKeofxawy/ySuE1Wj9pnDEVC2BsYkg+4w5HAtnmDjtDZB3AfkoLkhIlkbn5ifX/xwGHfw+
- eIj0IS6scYNlL6opA4vAPqwKHwNlQTBcWjKSU43VeI3nyl6VY8ILGUsBOtLaeSLVKtuv7g
- 94MKRvyNUHczr6Ox0EPYPDhAcsaBb+mppXE7Uz1p5qEJHqWY2EBtXLeJu7x8Y+tf1sv7k5
- 5tIzz1L8tpTb0+cxrxsp2yLXvn4tlnzF439jtm+3FB4qTfhn/E4ySCVbcYrHzA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
- s=2020e; t=1593422012;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=dW3Qbd0PjI/AYjIKPLLwXVRJGt+j8lA2SaYDanwbG8A=;
- b=b98lAQebh5JTBPh0h7+C3+m5VgFKCxlBuRI7TCjhsO+vO9uSmDSCJzRPZudQSfT/7++8t8
- rJvgCFHBjMoFlvDw==
-From: Torben Hohn <torben.hohn@linutronix.de>
-To: Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH v2 0/4] ubifs: support authentication without hmac
-Message-ID: <20200629091331.GC17241@linutronix.de>
+ id 1jprJX-00010N-GX
+ for linux-mtd@merlin.infradead.org; Mon, 29 Jun 2020 10:47:03 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+ MIME-Version:Subject:References:In-Reply-To:Message-ID:Cc:To:From:Date:Sender
+ :Reply-To:Content-ID:Content-Description;
+ bh=sRuO477mOmYEquRlu3Mzw6P3QjDxQV8765WYyF09Irg=; b=Juhe/Og5EtyT+Umc1GcieYukVt
+ JF7zaML8/+oqmlTac2qyMge9KSMBb3Vz+SkWOxd1XfesaE+tj6IwlAAkR1JDc2f+Fu/tSYJZJBp1h
+ cg7CsX+Z4vSMWXTe+G3EZ70d8a5GP0t3HoDaj6zHOqsMk2H6lp3M/xSPSRR1oatOqgIVBhSDFsXrn
+ Gv4qawOW4jhzxGagc/77raC/bN1suVV/en7DtanGD9RSJLLqW19M3FLCIWtXW40lCZ9J+rLSpnuwb
+ P4mbcLbpu7VmHcjaTsYsK/5neiyVCa1KHvJ7nXuFtic8kEsAC9sXDvaCLfoicjr79lOEz51yPZ5yg
+ ArlIDhHA==;
+Received: from lithops.sigma-star.at ([195.201.40.130])
+ by casper.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jprJS-00060m-2g
+ for linux-mtd@lists.infradead.org; Mon, 29 Jun 2020 10:47:02 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 846A7608F451;
+ Mon, 29 Jun 2020 12:46:53 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id HL9wt0Kx2GiV; Mon, 29 Jun 2020 12:46:53 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 1FE0E628A671;
+ Mon, 29 Jun 2020 12:46:53 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id DXcrQwWzordZ; Mon, 29 Jun 2020 12:46:53 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+ by lithops.sigma-star.at (Postfix) with ESMTP id EF518628A660;
+ Mon, 29 Jun 2020 12:46:52 +0200 (CEST)
+Date: Mon, 29 Jun 2020 12:46:52 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: Torben Hohn <torben.hohn@linutronix.de>
+Message-ID: <1031805083.71374.1593427612787.JavaMail.zimbra@nod.at>
+In-Reply-To: <20200629090734.GB17241@linutronix.de>
 References: <20200625155927.28430-1-torben.hohn@linutronix.de>
  <20200626112907.13201-1-torben.hohn@linutronix.de>
  <1644538308.62483.1593181011127.JavaMail.zimbra@nod.at>
- <1203806497.62586.1593182186554.JavaMail.zimbra@nod.at>
+ <20200629090734.GB17241@linutronix.de>
+Subject: Re: [PATCH v2 0/4] ubifs: support authentication without hmac
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1203806497.62586.1593182186554.JavaMail.zimbra@nod.at>
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF68 (Linux)/8.8.12_GA_3809)
+Thread-Topic: ubifs: support authentication without hmac
+Thread-Index: FVK9TEnM0XTAkNCUmJydLUxsCxi8Tg==
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20200629_114659_146321_99E9C159 
+X-CRM114-Status: GOOD (  11.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,78 +99,32 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Cc: bigeasy <bigeasy@linutronix.de>, linux-mtd <linux-mtd@lists.infradead.org>,
  tglx <tglx@linutronix.de>, david <david@sigma-star.at>,
  Sascha Hauer <s.hauer@pengutronix.de>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Jun 26, 2020 at 04:36:26PM +0200, Richard Weinberger wrote:
-> ----- Urspr=FCngliche Mail -----
-> > I didn't dig deep into the code so far, I'm still checking the concept.
-> > =
-
-> > Your approach works only on pristine offline signed images from mkfs.ub=
-ifs.
-> > So, if somebody does this, it won't work:
-> > =
-
-> > $ keyctl padd logon ubifs:authfs @s < secret.key
-> > $ mount -t ubifs /dev/ubi0_0 /mnt/ -o
-> > auth_hash_name=3Dsha256,auth_key=3Dubifs:authfs
-> > =
-
-> > ... change the fs ...
-> > =
-
-> > $ umount /mnt
-> > $ mount -t ubifs /dev/ubi0_0 /mnt/ -o auth_hash_name=3Dsha256,ro
-> > =
-
-> > The ro mount will fail because UBIFS is no longer able to verify the su=
-per block
-> > using the system key ring. It was overwritten by they ubifs:authfs key.
-> > =
-
-> > A possible solution is keeping a copy of the offline sign key forever i=
-n the fs.
-> > But I'm not sure whether this is wise.
-> =
-
-> Or we change the feature from "ro mount without hmac" to "keep offline si=
-gn key and imply ro mount".
-> IOW adding a new mount option such as "auth_keep_offlinekey". If mounted =
-with this option
-> UBIFS will not look for a hmac and enforce read-only mode.
-
-Thats just another name for the same feature.
-But it indeed seems to make the implications clearer.
-
-And it porbably also makes the code easier to read.
-
-> =
-
-> Hmm?
-> =
-
-> Thanks,
-> //richard
-
--- =
-
-Torben Hohn
-Linutronix GmbH | Bahnhofstrasse 3 | D-88690 Uhldingen-M=FChlhofen
-Phone: +49 7556 25 999 18; Fax.: +49 7556 25 999 99
-
-Hinweise zum Datenschutz finden Sie hier (Informations on data privacy =
-
-can be found here): https://linutronix.de/kontakt/Datenschutz.php
-
-Linutronix GmbH | Firmensitz (Registered Office): Uhldingen-M=FChlhofen | =
-
-Registergericht (Registration Court): Amtsgericht Freiburg i.Br., HRB700 =
-
-806 | Gesch=E4ftsf=FChrer (Managing Directors): Heinz Egger, Thomas Gleixner
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VG9yYmVuLAoKLS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+PiBUaGUgcm8gbW91bnQg
+d2lsbCBmYWlsIGJlY2F1c2UgVUJJRlMgaXMgbm8gbG9uZ2VyIGFibGUgdG8gdmVyaWZ5IHRoZSBz
+dXBlciBibG9jawo+PiB1c2luZyB0aGUgc3lzdGVtIGtleSByaW5nLiBJdCB3YXMgb3ZlcndyaXR0
+ZW4gYnkgdGhleSB1YmlmczphdXRoZnMga2V5Lgo+IAo+IFllcy4gQnV0IHRoYXQgaXMgdGhlIGlu
+dGVuZGVkIGJlaGF2aW91ci4KPiBJZiB0aGUgZmlsZXN5c3RlbSBoYXMgYmVlbiBjaGFuZ2VkLCBp
+dCBtdXN0IG5vdCBiZSBtb3VudGVkIGFnYWluLgoKSW4geW91ciB1c2UgY2FzZS4KIAo+IEkgd291
+bGQgcmF0aGVyIGxpa2UgdG8gbWFrZSBpdCBpbXBvc3NpYmxlIHRvIG1vdW50IHRoZSBmaWxlc3lz
+dGVtIGluIHJ3Cj4gbW9kZSwgYmVjYXVzZSB0aGlzIGlzIGFuIGF0dGFjayBzY2VuYXJpby4gSXQg
+d291bGQgcmVmdXNlIHRvIG1vdW50IHVwb24KPiByZWJvb3QuIE1ha2luZyBpdCBwb3NzaWJsZSB0
+byByZW1vdW50IHJvb3QgcncsIHdpdGggYSBmcmVzaCBrZXkgaXMKPiBuaWNlIGZvciBkZXZlbG9w
+bWVudCwgYnV0IGl0cyBub3QgZGVzaXJlZCBpbiBwcm9kdWN0aW9uLgo+IAo+IAo+PiAKPj4gQSBw
+b3NzaWJsZSBzb2x1dGlvbiBpcyBrZWVwaW5nIGEgY29weSBvZiB0aGUgb2ZmbGluZSBzaWduIGtl
+eSBmb3JldmVyIGluIHRoZSBmcy4KPj4gQnV0IEknbSBub3Qgc3VyZSB3aGV0aGVyIHRoaXMgaXMg
+d2lzZS4KPiAKPiBIZWggPyB5b3UgbWVhbiB0aGUgcHJpdmF0ZSBrZXkuIE5PCgpObywgSSB1c2Vk
+IGJhZCB3b3JkaW5nLiA6LSkKVGhlIHN1cGVyYmxvY2sgaXMgc2lnbmVkIGJ5IHRoZSBvZmZsaW5l
+IGtleS4gQXMgc29vbiB5b3Ugc3dpdGNoIHRvIHRoZSBuZXcga2V5CnRoZSBzdXBlciBibG9jayBp
+cyByZXdyaXR0ZW4gYW5kIGNhbiBubyBsb25nZXIgdmVyaWZpZWQgdGhpcyBrZXkuCkluc3RlYWQg
+b2YgcmV3cml0aW5nIHRoZSBpZGVhIHdhcyBrZWVwaW5nIGEgY29weS4KCkFueXdheSwgbGlrZSBz
+YWlkIGluIHRoZSBvdGhlciBtYWlsLCBJIHRoaW5rIGlmIHdlIGNoYW5nZSB0aGUgZmVhdHVyZSB0
+bwoia2VlcCBvZmZsaW5lIHNpZ24ga2V5IGFuZCBpbXBseSBybyBtb3VudCIgdGhpbmdzIHdpbGwg
+YmUgbW9yZSBzbW9vdGggd2l0aCBsZXNzIGNvcm5lcgpjYXNlcy4KClRoYW5rcywKLy9yaWNoYXJk
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+TGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
+b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
