@@ -2,90 +2,78 @@ Return-Path: <SRS0=cYNo=AK=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88AC4C433E0
-	for <linux-mtd@archiver.kernel.org>; Mon, 29 Jun 2020 07:52:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A09F5C433E0
+	for <linux-mtd@archiver.kernel.org>; Mon, 29 Jun 2020 08:54:11 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 550972333E
-	for <linux-mtd@archiver.kernel.org>; Mon, 29 Jun 2020 07:52:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6686220720
+	for <linux-mtd@archiver.kernel.org>; Mon, 29 Jun 2020 08:54:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bQX7Qa+T";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="M/VFD+7b"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 550972333E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tY1UpA9q";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="k1VKmqLC";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="WmGWfIRG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6686220720
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Subject:References:In-Reply-To:
-	Message-ID:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=qWzFagHJpfGhGrqXeeRfa2Tgx+4Hk/Fp9EFoMPT/s+Q=; b=bQX7Qa+TkgJW42MPJONjYwBnq
-	FPAgFxmM70UxYscpD+EDmoojXurEceqDTwsv+EqKNJ94o67D7J/gz4ShlK10eeszshTrQmcVhIP6D
-	VsDt8f/KsnETSoYhrNixNzWvhFJlfqx3zVNKPdaOdcqNFfE+WVz5MnriHM3FOBd03ajg3wGTgVxzw
-	Mrr/1eT3rJ25abYSx2wYacdDjs9wLG8BNyCqDBihrkFQ6SiuKSKRr73l7aFn/xT6IWilkvPln0QLY
-	G1Noycr7SteNZy/mkjW1sq8STrUlIFDqHpC9rx6B5dFFaIAS+/rLtsEqqS7EV3NsnQEocjZ50p4u+
-	j0x36iB1w==;
+	 bh=mYDOZBj0nLGV4m0Y9Tik9DAG16PLoJ7qdEQm/bbKihI=; b=tY1UpA9qgAgWtvmmn169d4OkR
+	adz1/UVXlAjths+JSC/UI+J4EvZCdrptilFb9ukQfs4ZDlhXyYGPMqGX3hEnPxpkgDobJvVAIC/qR
+	8RW0ohQVqwtYgC6OXqXqP/mxDXKuY//EqfIyQwpVWZ1cBE4G86dwckbRHF/BFZ3YSFN4yG1FONPve
+	juiIvIrHRbhQ6VcrwcpK+KTdd8yhes7MSAf8+FGZj0W91iMcxnCnVS2cvwFrUyWxBS7CjqF+GUJdu
+	bjigrViGRmekGlntqlJNxeiULAFIWT8k5lzgIEu2xBTKYPLYaNmEWng+LvYXd5iBju/mhZjnR5Akl
+	9nYxv/PAQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jpoZn-0005XT-9e; Mon, 29 Jun 2020 07:51:39 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1jppXK-0002XZ-G0; Mon, 29 Jun 2020 08:53:10 +0000
+Received: from galois.linutronix.de ([193.142.43.55])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jpoZl-0005X1-Au
- for linux-mtd@merlin.infradead.org; Mon, 29 Jun 2020 07:51:38 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
- MIME-Version:Subject:References:In-Reply-To:Message-ID:Cc:To:From:Date:Sender
- :Reply-To:Content-ID:Content-Description;
- bh=wtX7VwirBwc4jVWRRaM1OH39GeUOcTt7Kh4ECZCblec=; b=M/VFD+7byZYLrabsS2AL+xFcxH
- ytRcmoWK25iC7w2J4GGYhAb1o63qJKIf7pPbApRcE1jfsckwNCrTVKFiTOBY+KWdFuLRshOHgIYPr
- wPMfSK/YkUAhpxaDdRqXmvGETxqPAoeffWFVMxnkreBLHYByIFzUhSO2+PboUemlUB6VuApiMfV74
- komex/Q7+bi6mjsg604ifjfBM0hVqyuLHqKfqNRRVLV5JJ3BxQ4nnYQpbS3JJfL+gNbw5RQ3d2m3D
- a1DjRxggP49T76hyHSN+twsr014KgWYieRw3lI6gsipHKc3/rXrIFEHfFTpAeMVlc0M6WlFubExmO
- x3YHxffQ==;
-Received: from lithops.sigma-star.at ([195.201.40.130])
- by casper.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jpoZf-0006Tc-5s
- for linux-mtd@lists.infradead.org; Mon, 29 Jun 2020 07:51:36 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 161536071A74;
- Mon, 29 Jun 2020 09:51:28 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id Fzor3bZvhlLm; Mon, 29 Jun 2020 09:51:25 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 511776071A7C;
- Mon, 29 Jun 2020 09:51:25 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id 1uKTBFNetjWK; Mon, 29 Jun 2020 09:51:25 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
- by lithops.sigma-star.at (Postfix) with ESMTP id 258766071A74;
- Mon, 29 Jun 2020 09:51:25 +0200 (CEST)
-Date: Mon, 29 Jun 2020 09:51:25 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: Wolfgang Denk <wd@denx.de>
-Message-ID: <667429184.71186.1593417085045.JavaMail.zimbra@nod.at>
-In-Reply-To: <20200629074814.CBCA12400D6@gemini.denx.de>
+ id 1jppXH-0002XB-Rk
+ for linux-mtd@lists.infradead.org; Mon, 29 Jun 2020 08:53:08 +0000
+Date: Mon, 29 Jun 2020 10:53:00 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+ s=2020; t=1593420782;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=4KFL/p5xaSqVRQfsV15M0zFV9Vcn1MKUNOmtYBuAljE=;
+ b=k1VKmqLCVMV5xx7oo5LuxjOcTykJmv/NSO1+It0W1OyjVL5PDrKGXprAaIjSmWdsYGNLnw
+ 87EaSbEeDpP5PIHMh+iR/h1y2Po5hgLiQZwkkGYe0pn+0pmJrVlNw//PEeCMxPGO8Q3AdD
+ 0gdisxR2VrcA+lEOCKdh9Dw7NCu3EIagkrtZqi03wFNc/Lfu5Y8d5ftKxnN6wlbAejMrby
+ XktkfTfR66+Ji0Wi8Hd/6N3MxzmAkIVIItj3V7GJTS42SrpqweKmu/z8DmI0ggQtZPxmIE
+ vopEWHzRyWyG+w4sO0HBZqkIlJcqh0Euo2KejOjKs+gkZs41oamT+17toQqNig==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+ s=2020e; t=1593420782;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=4KFL/p5xaSqVRQfsV15M0zFV9Vcn1MKUNOmtYBuAljE=;
+ b=WmGWfIRGXqpWpAly661wYujLxfeIf9dMfjuEPkmOncGWU/ejJYLQBWgupieffCfR4Rpki3
+ 7k68gvw1kDg3tCDw==
+From: Torben Hohn <torben.hohn@linutronix.de>
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH v2 4/4] ubifs: prevent remounting rw when no hmac key was
+ given
+Message-ID: <20200629085300.GA17241@linutronix.de>
 References: <20200625155927.28430-1-torben.hohn@linutronix.de>
- <1764637498.61502.1593158954662.JavaMail.zimbra@nod.at>
- <2117676.Cu8v49ySxQ@ada>
- <1067478399.71066.1593414287623.JavaMail.zimbra@nod.at>
- <20200629074814.CBCA12400D6@gemini.denx.de>
-Subject: Re: [PATCH 0/1] ubifs: support authentication without hmac
+ <20200626112907.13201-1-torben.hohn@linutronix.de>
+ <20200626112907.13201-5-torben.hohn@linutronix.de>
+ <1273452738.62169.1593174441367.JavaMail.zimbra@nod.at>
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF68 (Linux)/8.8.12_GA_3809)
-Thread-Topic: ubifs: support authentication without hmac
-Thread-Index: Q8js6AHmT/2f16CZl4JJSCpn6DBeFg==
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200629_085132_272885_BD0D8816 
-X-CRM114-Status: GOOD (  13.79  )
+Content-Disposition: inline
+In-Reply-To: <1273452738.62169.1593174441367.JavaMail.zimbra@nod.at>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,41 +85,89 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Alexander Dahl <ada@thorsis.com>, Sascha Hauer <s.hauer@pengutronix.de>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Torben Hohn <torben.hohn@linutronix.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: bigeasy <bigeasy@linutronix.de>, linux-mtd <linux-mtd@lists.infradead.org>,
+ tglx <tglx@linutronix.de>, Sascha Hauer <s.hauer@pengutronix.de>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-V29sZmdhbmcsCgotLS0tLSBVcnNwcsO8bmdsaWNoZSBNYWlsIC0tLS0tCj4gVm9uOiAiV29sZmdh
-bmcgRGVuayIgPHdkQGRlbnguZGU+Cj4gQW46ICJyaWNoYXJkIiA8cmljaGFyZEBub2QuYXQ+Cj4g
-Q0M6ICJBbGV4YW5kZXIgRGFobCIgPGFkYUB0aG9yc2lzLmNvbT4sICJTYXNjaGEgSGF1ZXIiIDxz
-LmhhdWVyQHBlbmd1dHJvbml4LmRlPiwgImxpbnV4LW10ZCIKPiA8bGludXgtbXRkQGxpc3RzLmlu
-ZnJhZGVhZC5vcmc+LCAiVG9yYmVuIEhvaG4iIDx0b3JiZW4uaG9obkBsaW51dHJvbml4LmRlPgo+
-IEdlc2VuZGV0OiBNb250YWcsIDI5LiBKdW5pIDIwMjAgMDk6NDg6MTQKPiBCZXRyZWZmOiBSZTog
-W1BBVENIIDAvMV0gdWJpZnM6IHN1cHBvcnQgYXV0aGVudGljYXRpb24gd2l0aG91dCBobWFjCgo+
-IERlYXIgUmljaGFyZCwKPiAKPiBJbiBtZXNzYWdlIDwxMDY3NDc4Mzk5LjcxMDY2LjE1OTM0MTQy
-ODc2MjMuSmF2YU1haWwuemltYnJhQG5vZC5hdD4geW91IHdyb3RlOgo+PiAKPj4gPiBJIHRyaWVk
-IHRvIGZpbmQgb3V0IG1vcmUgYWJvdXQgdXNpbmcgVUJJIHN0YXRpYyB2b2x1bWVzIGluIGdlbmVy
-YWwgYW5kIGZvcgo+PiA+IHRoYXQgdXNlY2FzZSwgYnV0IG5laXRoZXIgaHR0cDovL2xpbnV4LW10
-ZC5pbmZyYWRlYWQub3JnL2RvYy91YmkuaHRtbCBub3IKPj4gPiBodHRwOi8vbGludXgtbXRkLmlu
-ZnJhZGVhZC5vcmcvZmFxL3ViaS5odG1sIHBvaW50IG1lIGluIGEgZGlyZWN0aW9uIHdoZXJlIHRv
-Cj4+ID4gZmluZCByZWFsIHdvcmxkIGV4YW1wbGVzIHRvIGxvb2sgYXQuIEFyZSB0aGVyZSBhbnkg
-Ym9hcmRzIGluIHRoZSB3aWxkIHVzaW5nCj4+ID4gdGhpcz8gTWF5YmUgd2l0aCBkZWZjb25maWdz
-IGluIFUtQm9vdCBhbHJlYWR5Pwo+PiAKPj4gVS1Cb290IGNob29zZSB0aGUgVUJJRlMgd2F5IEFG
-QUlDVC4KPiAKPiBObywgVS1Cb290IGRvZXMgbm90IGltcGxlbWVudCBhbnkgcHJlZmVyZW5jZXMg
-aGVyZSwgaS4gZS4gYm90aAo+IG1ldGhvZHMgY2FuIGJlIHVzZWQgb3V0IG9mIHRoZSBib3guICBJ
-dCBpcyBqdXN0IHRoZSBwcmVmZXJlbmNlIG9mCj4gdGhlIHVzZXIgd2hvIGRlY2lkZXMgd2hpY2gg
-d2F5IHRvIGdvIC0gdXNpbmcgdGhlIGZpbGUgc3lzdGVtIHNlZW1zCj4gbW9yZSBmbGV4aWJsZSB0
-byBzb21lIHVuc2Vycywgd2hpbGUgb3RoZXJzIGNhcmUgYWJvdXQgdGhlIGFkZGl0aW9uYWwKPiBi
-b290IHRpbWUgbmVlZGVkIHRvIG1vdW50IHRoZSBmaWxlIHN5c3RlbSBvciB0aGUgYWRkaXRpb25h
-bCBtZW1vcnkKPiBmb290cHJpbnQgbmVlZGVkIGZvciB0aGUgZmlsZSBzeXN0ZW0gY29kZS4KPiAK
-PiBZb3VyIGNob2ljZS4KCkdvb2QgdG8ga25vdyEgVGhhbmtzIGZvciBwb2ludGluZyB0aGlzIG91
-dC4KCkkgdGhpbmsgZm9yIG1vc3QgdXNlcnMgcmVhZGluZyBmcm9tIGEgZmlsZXN5c3RlbSBmZWVs
-cyBtb3JlIG5hdHVyYWwKc2luY2Ugb24gb3RoZXIgc3RvcmFnZSBzeXN0ZW1zIHRoaXMgaXMgdGhl
-IG9ubHkgd2F5IHRvIGdvLgoKVGhhbmtzLAovL3JpY2hhcmQKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBt
-YWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
-aW51eC1tdGQvCg==
+On Fri, Jun 26, 2020 at 02:27:21PM +0200, Richard Weinberger wrote:
+> ----- Urspr=FCngliche Mail -----
+> > Von: "Torben Hohn" <torben.hohn@linutronix.de>
+> > An: "richard" <richard@nod.at>
+> > CC: "bigeasy" <bigeasy@linutronix.de>, "tglx" <tglx@linutronix.de>, "li=
+nux-mtd" <linux-mtd@lists.infradead.org>, "Sascha
+> > Hauer" <s.hauer@pengutronix.de>
+> > Gesendet: Freitag, 26. Juni 2020 13:29:07
+> > Betreff: [PATCH v2 4/4] ubifs: prevent remounting rw when no hmac key w=
+as given
+> =
+
+> > After adding readonly hmac-less authentication support,
+> > prevent remounting the filesystem in rw mode, when
+> > the hmac is not available.
+> > =
+
+> > Signed-off-by: Torben Hohn <torben.hohn@linutronix.de>
+> > ---
+> > fs/ubifs/super.c | 4 ++++
+> > 1 file changed, 4 insertions(+)
+> > =
+
+> > diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+> > index b41ca9ee5763..62bdef8f1ddf 100644
+> > --- a/fs/ubifs/super.c
+> > +++ b/fs/ubifs/super.c
+> > @@ -1996,6 +1996,10 @@ static int ubifs_remount_fs(struct super_block *=
+sb, int
+> > *flags, char *data)
+> > 			ubifs_msg(c, "cannot re-mount R/W - UBI volume is R/O");
+> > 			return -EROFS;
+> > 		}
+> > +		if (ubifs_authenticated(c) && !c->hash_tfm) {
+> > +			ubifs_msg(c, "cannot re-mount R/W due to missing hmac key, for
+> > authentication");
+> > +			return -EROFS;
+> > +		}
+> =
+
+> But the case that one remounts rw and provides a HAMC is handled?
+
+No. And i am not sure, whether thats a thing, we want to support.
+I would suggest, we clarify that in the message.
+
+
+One would need to check, whether c->auth_key_name is set now,
+and then instantiate c->hash_tfm.
+
+ubifs_init_authentication is not called upon remount.
+so a remount with a changed auth_key_name is not supported either.
+
+
+
+
+> =
+
+> Thanks,
+> //richard
+
+-- =
+
+Torben Hohn
+Linutronix GmbH | Bahnhofstrasse 3 | D-88690 Uhldingen-M=FChlhofen
+Phone: +49 7556 25 999 18; Fax.: +49 7556 25 999 99
+
+Hinweise zum Datenschutz finden Sie hier (Informations on data privacy =
+
+can be found here): https://linutronix.de/kontakt/Datenschutz.php
+
+Linutronix GmbH | Firmensitz (Registered Office): Uhldingen-M=FChlhofen | =
+
+Registergericht (Registration Court): Amtsgericht Freiburg i.Br., HRB700 =
+
+806 | Gesch=E4ftsf=FChrer (Managing Directors): Heinz Egger, Thomas Gleixner
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
