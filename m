@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79207C433E0
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jun 2020 12:59:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 91CE5C433E1
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jun 2020 12:59:06 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4687F208DB
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jun 2020 12:59:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 643FC2085B
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jun 2020 12:59:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TeBitrCk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4687F208DB
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rmUZvRbe"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 643FC2085B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,30 +25,31 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=bS0YkFfUEBneZ8flBxjyGPjopGOCHf3tMJ+xSL78pzo=; b=TeBitrCk9HIRes6gVfh98QdPs
-	HmXuj1jqHGlcVxs0qLoJFyFvE2mShAXTMp6WqqG1N5/EJ3R1nRiifzsOie6MFt8zHVPqxyDD9HrrR
-	OGGD10wBSrL7ahqWSMRReUf/EHkZ86UFq5rngaGbEUvGU7GQ8rlasQ8eRij0kGWGTsSR2zhH2z00B
-	S7f9pjhK5Z53fITACRZ7/MwIszKxnaBpnF07gVtj/HZFa+tues+oR9wcukKFhA5dEkUPp4FC55ZnM
-	rcGEfokUXmgh9cNTKwMRQbrHGjQ5ulyAwASyRGOIt177FjQNte4ppR6/4an+hscWNAI/owvlKUTLS
-	XaPXBMkyA==;
+	 bh=nw1/kwMNV2TVIdw70Thwsqo7LlWdUJ8r3WawkQyNjv8=; b=rmUZvRbehTXwoWrKS4VQ7KAfG
+	HKbufMUDaoMifCpe2GtXhpl7OlLIyUD1wJYlFy5Fr4Yc33CXFH/5hpkFvCa86jkDrcHwIKs3gVMWo
+	fWi+/dMiRJfBxHOPsTaMmH39qpYWeNaRzOPOwAWZ5q+NPEYF3u5Zl4sbyT9qIP4HB+1/xPXhuK1xN
+	JcyJlrBHWad6ZhEwoUC1AO+L9HwBBpmTWJ/aJZYkeLRlWwYLP3hgeHY2cMFt0CwbLMDJUeAfxbbIl
+	fPbjtspHuMmoAVs9v4s8A+hm2vvBcp1O280eDhDolJDfZj8RrK95mv4sGyehnp+S0ap9R+b40mI5Z
+	Uxg+H0w6g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jqFpm-00089C-Ks; Tue, 30 Jun 2020 12:57:59 +0000
-Received: from szxga04-in.huawei.com ([45.249.212.190] helo=huawei.com)
+	id 1jqFpp-0008Ab-PL; Tue, 30 Jun 2020 12:58:01 +0000
+Received: from szxga06-in.huawei.com ([45.249.212.32] helo=huawei.com)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jqFpi-00087u-H6
- for linux-mtd@lists.infradead.org; Tue, 30 Jun 2020 12:57:55 +0000
+ id 1jqFpj-000885-5l
+ for linux-mtd@lists.infradead.org; Tue, 30 Jun 2020 12:57:56 +0000
 Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
- by Forcepoint Email with ESMTP id D73AEEBB9A014284A02A;
- Tue, 30 Jun 2020 20:57:41 +0800 (CST)
+ by Forcepoint Email with ESMTP id EA381AB42D7CF840EEC5;
+ Tue, 30 Jun 2020 20:57:46 +0800 (CST)
 Received: from huawei.com (10.90.53.225) by DGGEMS405-HUB.china.huawei.com
  (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Tue, 30 Jun 2020
  20:57:36 +0800
 From: Hou Tao <houtao1@huawei.com>
 To: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/3] ubifs: check the remaining name buffer during xattr list
-Date: Tue, 30 Jun 2020 21:04:36 +0800
-Message-ID: <20200630130438.141649-2-houtao1@huawei.com>
+Subject: [PATCH 2/3] ubifs: protect assertion of xattr value size by ui_mutex
+ during xattr get
+Date: Tue, 30 Jun 2020 21:04:37 +0800
+Message-ID: <20200630130438.141649-3-houtao1@huawei.com>
 X-Mailer: git-send-email 2.25.0.4.g0ad7144999
 In-Reply-To: <20200630130438.141649-1-houtao1@huawei.com>
 References: <20200630130438.141649-1-houtao1@huawei.com>
@@ -72,38 +73,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-When there are concurrent xattr list and xattr write operations,
-it is possible xattr_names + xattr_cnt has been increased a lot
-by xattr write op since its last read in the begin of ubifs_listxattr().
-So ubifs_listxattr() may find these newly updated or added xattrs,
-try to copy these xattr names regardless of the remaing buffer size,
-and lead to the corruption of buffer and assertion failure.
+ubifs_xattr_get() may race with change_xattr() which will
+update inode->i_size and ui->data_len accordingly, and
+it will fail the assertion: inode->i_size == ui->data_len,
+so protect the assertion by ui_mutex.
 
-Simply fixing it by checking the remaining size of name buffer
-before copying the xattr name.
+For assertion: host_ui->xattr_size > ui->data_len, it can not been
+ensured even both host_ui->ui_mutex and ui->ui_mutex are acquired,
+because the xattr value may has been removed by remove_xattr() and
+xattr_size has already been decreased, so just remove it.
 
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- fs/ubifs/xattr.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ fs/ubifs/xattr.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
-index 9aefbb60074f..5591b9fa1d86 100644
+index 5591b9fa1d86..82be2c2d2db5 100644
 --- a/fs/ubifs/xattr.c
 +++ b/fs/ubifs/xattr.c
-@@ -429,6 +429,12 @@ ssize_t ubifs_listxattr(struct dentry *dentry, char *buffer, size_t size)
- 		fname_len(&nm) = le16_to_cpu(xent->nlen);
+@@ -356,10 +356,9 @@ ssize_t ubifs_xattr_get(struct inode *host, const char *name, void *buf,
+ 	}
  
- 		if (xattr_visible(xent->name)) {
-+			if (size - written < fname_len(&nm) + 1) {
-+				kfree(pxent);
-+				kfree(xent);
-+				return -ERANGE;
-+			}
-+
- 			memcpy(buffer + written, fname_name(&nm), fname_len(&nm) + 1);
- 			written += fname_len(&nm) + 1;
- 		}
+ 	ui = ubifs_inode(inode);
+-	ubifs_assert(c, inode->i_size == ui->data_len);
+-	ubifs_assert(c, ubifs_inode(host)->xattr_size > ui->data_len);
+ 
+ 	mutex_lock(&ui->ui_mutex);
++	ubifs_assert(c, inode->i_size == ui->data_len);
+ 	if (buf) {
+ 		/* If @buf is %NULL we are supposed to return the length */
+ 		if (ui->data_len > size) {
 -- 
 2.25.0.4.g0ad7144999
 
