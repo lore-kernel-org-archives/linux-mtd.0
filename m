@@ -2,90 +2,91 @@ Return-Path: <SRS0=kN4B=AL=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DCFC5C433DF
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jun 2020 09:36:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C374BC433DF
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jun 2020 09:41:16 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A71CD206A1
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jun 2020 09:36:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 72615206A1
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jun 2020 09:41:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="alU7lcbm";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=st.com header.i=@st.com header.b="Xiq6/Exw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A71CD206A1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=st.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CqEgN7kB";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="SAnji7g1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72615206A1
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:Subject:References:In-Reply-To:
+	Message-ID:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=QnEeFszVruRXHocPA4B+u7U67lFOX4R+ofCglNJP14I=; b=alU7lcbmp1GZ9skZML7eN7lxb
-	rUCW7GmdzLBk5BcHUSqJd69vC3LSf56sVAmJH6YCqPyIxRkw4zMAiTt/MIDbndpbRxfCn0KgeJDzg
-	8CfHC9FWsMccECAI/h5QJjxhQiCZTqHaFHsHzhS/4e2zKXFoZhe8EQcJ/NjIo/Ju9DUBKI4vk14lL
-	/yTtDoqVYOlNObk7MEbAG2+FSgRgszbI9+5UBBCRL9r/8ua/fNSXrLF5cr1ghdx1DdD2nBd2xGQh6
-	LN/AjPCRoHb4kfDfmVV8mPqN8VWVy4DsmxA/C7T89Xee/ZOinXu2/r4QYoScSONW3sGFOO+uAAuUA
-	KPQ6VCguw==;
+	 bh=ZBSiKkOOnAfY0KxB5GjWWIRe30Rh0o8NKL6oJOM2f9A=; b=CqEgN7kBwmsJJhB4ZLjswW85T
+	T+ssS9Cg1FueMrV1La48kE1guADG0X2xn/ZmAvANqlsONkDgZCoNN7ZG0SepTLz/vNn3+OUQKU/Nn
+	XDXxgGguFVFdAe4rgYZqP/IPfgRTYA3bkFK77MUWEsjUEFS/DhqEtIUIjAI0Tyvuao+6o3JR9rnSA
+	+xaoCbpF1UQab9jUWRallRjJQaE5vM/hXUX3gm2LmNKq5FuE+3pxMspwfhGd46TNoK+S7PJZGubII
+	goGPxlq6s9B2U2TcY7r+LJd0jBkUD8bO4sc4bGBna0npgic/BpUsBBN5gi2vOyVqBQd8wOWe2CaeX
+	IU639Q5mg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jqCgM-0006bz-9N; Tue, 30 Jun 2020 09:36:02 +0000
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]
- helo=mx07-00178001.pphosted.com)
+	id 1jqCkK-0007sg-5G; Tue, 30 Jun 2020 09:40:08 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jqCgJ-0006a1-T6
- for linux-mtd@lists.infradead.org; Tue, 30 Jun 2020 09:36:00 +0000
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
- by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- 05U9Ytb1002355; Tue, 30 Jun 2020 11:35:42 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com;
- h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=XvCnsTc0gHyxA4bCQuL6yxD7F1TD1d0nVE+Ilwp4DeE=;
- b=Xiq6/ExwBe2jgYMzd+pcK7nxWvhuZTiZD4+4aj24d34XfntXZzCOg2vU6FyXga20MRKD
- PJOMKuRZSZrEgXKkZziTieNlwWC7FC6WQ7K5ug86Uc/UuIMj1FH5c6MokhYVTyd1RB4Y
- BViFUk/QltOESaJu/VrVtyK11Z3odChqDAl2TRZxDSeOSNsesG5PvoP6T2JMLbtl24n/
- QJhdX61xYpJCFSWNu//POwF8zBpTJo0Zh/4hG69m+nY2ObKs8JX7I7gNJhF2Gsg4aJIA
- dGPTfO8/bP3n6l54ihWE3J1/86/86QAJnpe1rNONw8Ia2/X5tXbXZfJztV2RmEVDgQnS YA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com with ESMTP id 31wu89hxgm-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 30 Jun 2020 11:35:42 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 314C510002A;
- Tue, 30 Jun 2020 11:35:41 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag6node2.st.com [10.75.127.17])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 14BEE2ADA10;
- Tue, 30 Jun 2020 11:35:41 +0200 (CEST)
-Received: from [10.211.8.105] (10.75.127.49) by SFHDAG6NODE2.st.com
- (10.75.127.17) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Tue, 30 Jun
- 2020 11:35:39 +0200
-Subject: Re: [PATCH v5 4/6] memory: stm32-fmc2-ebi: add STM32 FMC2 EBI
- controller driver
-To: Richard Weinberger <richard.weinberger@gmail.com>
+ id 1jqCkI-0007rW-BE
+ for linux-mtd@merlin.infradead.org; Tue, 30 Jun 2020 09:40:06 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+ MIME-Version:Subject:References:In-Reply-To:Message-ID:Cc:To:From:Date:Sender
+ :Reply-To:Content-ID:Content-Description;
+ bh=qf8ya7/PLXXnFVysukLe+QCdGHAMuhR3pbXzMbQzMJs=; b=SAnji7g1HcQAH/Z8/Z8myAXWTB
+ ssjFCKERZHQmPKLb7fg0VBxqBeU/un+wkrWYPWAdJHXUcl0GIqILd3FmYTSY3rGDs5czAnH4FDV4w
+ InvKMJ0bWgjxqZptsujhBFgFkKUOvUbIAtucg8YpolvR4g3EzC9OjAwYM+ENYwpnV0i5J8q/dTEGI
+ IRhz0Hf2EEIy69AVhu1Ik8d7TdN0Rqzb73nKPGQSEB2lMB4MtDP2Q5BITPhNmRtpZ9kphPcive/0n
+ JKafVnJsEuqvNXgc10RHIcaSgVojAejp+VoN1nMDcGK6LMmwUftuKopQ+Q3qYTazmYNWootYpaMHu
+ mwyTxBiQ==;
+Received: from lithops.sigma-star.at ([195.201.40.130])
+ by casper.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jqCkE-0004I8-FB
+ for linux-mtd@lists.infradead.org; Tue, 30 Jun 2020 09:40:05 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id EB070607400F;
+ Tue, 30 Jun 2020 11:39:40 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id qd6xqziz9yTM; Tue, 30 Jun 2020 11:39:37 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 786BA6074029;
+ Tue, 30 Jun 2020 11:39:37 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id UNVw8191GTR5; Tue, 30 Jun 2020 11:39:37 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 423E0607400F;
+ Tue, 30 Jun 2020 11:39:37 +0200 (CEST)
+Date: Tue, 30 Jun 2020 11:39:37 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: Christophe Kerello <christophe.kerello@st.com>
+Message-ID: <1839269888.74591.1593509977137.JavaMail.zimbra@nod.at>
+In-Reply-To: <e30abadc-83c0-f010-be36-fe8d14c4aea9@st.com>
 References: <1591975362-22009-1-git-send-email-christophe.kerello@st.com>
  <1591975362-22009-5-git-send-email-christophe.kerello@st.com>
  <CAFLxGvzfh1Qa_gM9bZAxaoCbO6xCoNdaPN=Ea20Up_zPVgjugw@mail.gmail.com>
-From: Christophe Kerello <christophe.kerello@st.com>
-Message-ID: <e30abadc-83c0-f010-be36-fe8d14c4aea9@st.com>
-Date: Tue, 30 Jun 2020 11:35:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+ <e30abadc-83c0-f010-be36-fe8d14c4aea9@st.com>
+Subject: Re: [PATCH v5 4/6] memory: stm32-fmc2-ebi: add STM32 FMC2 EBI
+ controller driver
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvzfh1Qa_gM9bZAxaoCbO6xCoNdaPN=Ea20Up_zPVgjugw@mail.gmail.com>
-Content-Language: en-US
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG6NODE2.st.com
- (10.75.127.17)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235, 18.0.687
- definitions=2020-06-30_03:2020-06-30,
- 2020-06-29 signatures=0
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF68 (Linux)/8.8.12_GA_3809)
+Thread-Topic: memory: stm32-fmc2-ebi: add STM32 FMC2 EBI controller driver
+Thread-Index: IyChESkmAt61iUEj3iffmldxiXkByg==
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20200630_104002_806513_364D81D0 
+X-CRM114-Status: GOOD (  11.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,41 +99,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Mark Rutland <mark.rutland@arm.com>, Marek Vasut <marex@denx.de>,
- Vignesh Raghavendra <vigneshr@ti.com>, devicetree@vger.kernel.org,
- Richard Weinberger <richard@nod.at>, LKML <linux-kernel@vger.kernel.org>,
+ Vignesh Raghavendra <vigneshr@ti.com>, devicetree <devicetree@vger.kernel.org>,
+ Richard Weinberger <richard.weinberger@gmail.com>,
+ linux-kernel <linux-kernel@vger.kernel.org>,
  linux-stm32@st-md-mailman.stormreply.com, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- arnd@linaro.org, Alexandre Torgue <alexandre.torgue@st.com>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, arnd@linaro.org,
+ Alexandre Torgue <alexandre.torgue@st.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Richard,
-
-On 6/30/20 11:13 AM, Richard Weinberger wrote:
-> On Fri, Jun 12, 2020 at 5:24 PM Christophe Kerello
-> <christophe.kerello@st.com> wrote:
->>
->> The driver adds the support for the STMicroelectronics FMC2 EBI controller
->> found on STM32MP SOCs.
->>
->> Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
->> ---
->> +       if (!IS_ERR(rstc)) {
->> +               reset_control_assert(rstc);
->> +               reset_control_deassert(rstc);
-> 
-> Shouldn't there be a small delay between assert and deassert?
-> Other than that the code looks good to me.
-> 
-
-Even if I have currently not met any issue, I will add a udelay(2) to be 
-safe. It will be part of v6.
-
-Thanks,
-Christophe Kerello.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIkNocmlzdG9waGUgS2VyZWxs
+byIgPGNocmlzdG9waGUua2VyZWxsb0BzdC5jb20+Cj4gQW46ICJSaWNoYXJkIFdlaW5iZXJnZXIi
+IDxyaWNoYXJkLndlaW5iZXJnZXJAZ21haWwuY29tPgo+IENDOiAiTWlxdWVsIFJheW5hbCIgPG1p
+cXVlbC5yYXluYWxAYm9vdGxpbi5jb20+LCAicmljaGFyZCIgPHJpY2hhcmRAbm9kLmF0PiwgIlZp
+Z25lc2ggUmFnaGF2ZW5kcmEiIDx2aWduZXNockB0aS5jb20+LAo+ICJSb2IgSGVycmluZyIgPHJv
+YmgrZHRAa2VybmVsLm9yZz4sICJNYXJrIFJ1dGxhbmQiIDxtYXJrLnJ1dGxhbmRAYXJtLmNvbT4s
+IGFybmRAbGluYXJvLm9yZywgIkFsZXhhbmRyZSBUb3JndWUiCj4gPGFsZXhhbmRyZS50b3JndWVA
+c3QuY29tPiwgIk1hcmVrIFZhc3V0IiA8bWFyZXhAZGVueC5kZT4sICJkZXZpY2V0cmVlIiA8ZGV2
+aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmc+LCAibGludXgta2VybmVsIgo+IDxsaW51eC1rZXJuZWxA
+dmdlci5rZXJuZWwub3JnPiwgImxpbnV4LW10ZCIgPGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQu
+b3JnPiwgbGludXgtc3RtMzJAc3QtbWQtbWFpbG1hbi5zdG9ybXJlcGx5LmNvbQo+IEdlc2VuZGV0
+OiBEaWVuc3RhZywgMzAuIEp1bmkgMjAyMCAxMTozNTozOAo+IEJldHJlZmY6IFJlOiBbUEFUQ0gg
+djUgNC82XSBtZW1vcnk6IHN0bTMyLWZtYzItZWJpOiBhZGQgU1RNMzIgRk1DMiBFQkkgY29udHJv
+bGxlciBkcml2ZXIKCj4gSGkgUmljaGFyZCwKPiAKPiBPbiA2LzMwLzIwIDExOjEzIEFNLCBSaWNo
+YXJkIFdlaW5iZXJnZXIgd3JvdGU6Cj4+IE9uIEZyaSwgSnVuIDEyLCAyMDIwIGF0IDU6MjQgUE0g
+Q2hyaXN0b3BoZSBLZXJlbGxvCj4+IDxjaHJpc3RvcGhlLmtlcmVsbG9Ac3QuY29tPiB3cm90ZToK
+Pj4+Cj4+PiBUaGUgZHJpdmVyIGFkZHMgdGhlIHN1cHBvcnQgZm9yIHRoZSBTVE1pY3JvZWxlY3Ry
+b25pY3MgRk1DMiBFQkkgY29udHJvbGxlcgo+Pj4gZm91bmQgb24gU1RNMzJNUCBTT0NzLgo+Pj4K
+Pj4+IFNpZ25lZC1vZmYtYnk6IENocmlzdG9waGUgS2VyZWxsbyA8Y2hyaXN0b3BoZS5rZXJlbGxv
+QHN0LmNvbT4KPj4+IC0tLQo+Pj4gKyAgICAgICBpZiAoIUlTX0VSUihyc3RjKSkgewo+Pj4gKyAg
+ICAgICAgICAgICAgIHJlc2V0X2NvbnRyb2xfYXNzZXJ0KHJzdGMpOwo+Pj4gKyAgICAgICAgICAg
+ICAgIHJlc2V0X2NvbnRyb2xfZGVhc3NlcnQocnN0Yyk7Cj4+IAo+PiBTaG91bGRuJ3QgdGhlcmUg
+YmUgYSBzbWFsbCBkZWxheSBiZXR3ZWVuIGFzc2VydCBhbmQgZGVhc3NlcnQ/Cj4+IE90aGVyIHRo
+YW4gdGhhdCB0aGUgY29kZSBsb29rcyBnb29kIHRvIG1lLgo+PiAKPiAKPiBFdmVuIGlmIEkgaGF2
+ZSBjdXJyZW50bHkgbm90IG1ldCBhbnkgaXNzdWUsIEkgd2lsbCBhZGQgYSB1ZGVsYXkoMikgdG8g
+YmUKPiBzYWZlLiBJdCB3aWxsIGJlIHBhcnQgb2YgdjYuCgpXZWxsLCBpZiBpdCB3b3JrcyBhbmQg
+eW91IGFyZSBzdXJlLCBwbGVhc2UgZ28gZm9yIGl0LiBMaWtlIEkgc2FpZCwgSSdtIG5vIGV4cGVy
+dCBpbgp0aGlzLgpJIGp1c3Qgbm90aWNlZCB0aGF0IG90aGVyIHVzZXJzIGFkZCBhIGRlbGF5IGFu
+ZCB3b25kZXJlZC4KClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGlu
+ZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
+bXRkLwo=
