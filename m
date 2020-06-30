@@ -2,91 +2,59 @@ Return-Path: <SRS0=kN4B=AL=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C374BC433DF
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jun 2020 09:41:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F29C1C433E0
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jun 2020 12:58:42 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 72615206A1
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jun 2020 09:41:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C28C52083E
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jun 2020 12:58:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CqEgN7kB";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="SAnji7g1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72615206A1
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oEOlRJKs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C28C52083E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Subject:References:In-Reply-To:
-	Message-ID:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=ZBSiKkOOnAfY0KxB5GjWWIRe30Rh0o8NKL6oJOM2f9A=; b=CqEgN7kBwmsJJhB4ZLjswW85T
-	T+ssS9Cg1FueMrV1La48kE1guADG0X2xn/ZmAvANqlsONkDgZCoNN7ZG0SepTLz/vNn3+OUQKU/Nn
-	XDXxgGguFVFdAe4rgYZqP/IPfgRTYA3bkFK77MUWEsjUEFS/DhqEtIUIjAI0Tyvuao+6o3JR9rnSA
-	+xaoCbpF1UQab9jUWRallRjJQaE5vM/hXUX3gm2LmNKq5FuE+3pxMspwfhGd46TNoK+S7PJZGubII
-	goGPxlq6s9B2U2TcY7r+LJd0jBkUD8bO4sc4bGBna0npgic/BpUsBBN5gi2vOyVqBQd8wOWe2CaeX
-	IU639Q5mg==;
+	 bh=4f2ye/UtesFtIBnR/eA/h72C11yC0NkhOdt8MFSX7zk=; b=oEOlRJKsMa8ubxW2dAv/tz55l
+	WI+PiE4sLEH1CvuTjD/VlDwDtaLN9mlpyV0L+SxmygKsuX7MsVzF+wP48Hmppfya3V+d9nx4uVVz+
+	9qdd+mgoXN3KdRNUVK7o1zrcs+oKhx51QI6q9WwrNgKMn0VSYxjUUqIzyRBX/NQwgS8e7gSCkxERm
+	NVOwwpbOS8382cJUQRfwCdeb3oF73U8xjWIpAgy7+9/Cssn63L5mtKBHjcWM//nozyEaRW5LWYVMe
+	N9ZfoxEKwyN2uK48HftaDIztlnncOv6iHfRmAFEpPI7rXxUDn6xhTFZXoK5CNfZZLra1JMBAW9qYg
+	nQcvVAm6A==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jqCkK-0007sg-5G; Tue, 30 Jun 2020 09:40:08 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1jqFpt-0008BW-47; Tue, 30 Jun 2020 12:58:05 +0000
+Received: from szxga06-in.huawei.com ([45.249.212.32] helo=huawei.com)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jqCkI-0007rW-BE
- for linux-mtd@merlin.infradead.org; Tue, 30 Jun 2020 09:40:06 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
- MIME-Version:Subject:References:In-Reply-To:Message-ID:Cc:To:From:Date:Sender
- :Reply-To:Content-ID:Content-Description;
- bh=qf8ya7/PLXXnFVysukLe+QCdGHAMuhR3pbXzMbQzMJs=; b=SAnji7g1HcQAH/Z8/Z8myAXWTB
- ssjFCKERZHQmPKLb7fg0VBxqBeU/un+wkrWYPWAdJHXUcl0GIqILd3FmYTSY3rGDs5czAnH4FDV4w
- InvKMJ0bWgjxqZptsujhBFgFkKUOvUbIAtucg8YpolvR4g3EzC9OjAwYM+ENYwpnV0i5J8q/dTEGI
- IRhz0Hf2EEIy69AVhu1Ik8d7TdN0Rqzb73nKPGQSEB2lMB4MtDP2Q5BITPhNmRtpZ9kphPcive/0n
- JKafVnJsEuqvNXgc10RHIcaSgVojAejp+VoN1nMDcGK6LMmwUftuKopQ+Q3qYTazmYNWootYpaMHu
- mwyTxBiQ==;
-Received: from lithops.sigma-star.at ([195.201.40.130])
- by casper.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jqCkE-0004I8-FB
- for linux-mtd@lists.infradead.org; Tue, 30 Jun 2020 09:40:05 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id EB070607400F;
- Tue, 30 Jun 2020 11:39:40 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id qd6xqziz9yTM; Tue, 30 Jun 2020 11:39:37 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 786BA6074029;
- Tue, 30 Jun 2020 11:39:37 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id UNVw8191GTR5; Tue, 30 Jun 2020 11:39:37 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
- by lithops.sigma-star.at (Postfix) with ESMTP id 423E0607400F;
- Tue, 30 Jun 2020 11:39:37 +0200 (CEST)
-Date: Tue, 30 Jun 2020 11:39:37 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: Christophe Kerello <christophe.kerello@st.com>
-Message-ID: <1839269888.74591.1593509977137.JavaMail.zimbra@nod.at>
-In-Reply-To: <e30abadc-83c0-f010-be36-fe8d14c4aea9@st.com>
-References: <1591975362-22009-1-git-send-email-christophe.kerello@st.com>
- <1591975362-22009-5-git-send-email-christophe.kerello@st.com>
- <CAFLxGvzfh1Qa_gM9bZAxaoCbO6xCoNdaPN=Ea20Up_zPVgjugw@mail.gmail.com>
- <e30abadc-83c0-f010-be36-fe8d14c4aea9@st.com>
-Subject: Re: [PATCH v5 4/6] memory: stm32-fmc2-ebi: add STM32 FMC2 EBI
- controller driver
+ id 1jqFpj-000886-BC
+ for linux-mtd@lists.infradead.org; Tue, 30 Jun 2020 12:57:56 +0000
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+ by Forcepoint Email with ESMTP id EDF25D4331963481D348;
+ Tue, 30 Jun 2020 20:57:46 +0800 (CST)
+Received: from huawei.com (10.90.53.225) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Tue, 30 Jun 2020
+ 20:57:36 +0800
+From: Hou Tao <houtao1@huawei.com>
+To: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>
+Subject: [PATCH 3/3] ubifs: ensure only one in-memory xattr inode is created
+Date: Tue, 30 Jun 2020 21:04:38 +0800
+Message-ID: <20200630130438.141649-4-houtao1@huawei.com>
+X-Mailer: git-send-email 2.25.0.4.g0ad7144999
+In-Reply-To: <20200630130438.141649-1-houtao1@huawei.com>
+References: <20200630130438.141649-1-houtao1@huawei.com>
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF68 (Linux)/8.8.12_GA_3809)
-Thread-Topic: memory: stm32-fmc2-ebi: add STM32 FMC2 EBI controller driver
-Thread-Index: IyChESkmAt61iUEj3iffmldxiXkByg==
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200630_104002_806513_364D81D0 
-X-CRM114-Status: GOOD (  11.31  )
+X-Originating-IP: [10.90.53.225]
+X-CFilter-Loop: Reflected
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,48 +66,103 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Mark Rutland <mark.rutland@arm.com>, Marek Vasut <marex@denx.de>,
- Vignesh Raghavendra <vigneshr@ti.com>, devicetree <devicetree@vger.kernel.org>,
- Richard Weinberger <richard.weinberger@gmail.com>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- linux-stm32@st-md-mailman.stormreply.com, Rob Herring <robh+dt@kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>, arnd@linaro.org,
- Alexandre Torgue <alexandre.torgue@st.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: houtao1@huawei.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIkNocmlzdG9waGUgS2VyZWxs
-byIgPGNocmlzdG9waGUua2VyZWxsb0BzdC5jb20+Cj4gQW46ICJSaWNoYXJkIFdlaW5iZXJnZXIi
-IDxyaWNoYXJkLndlaW5iZXJnZXJAZ21haWwuY29tPgo+IENDOiAiTWlxdWVsIFJheW5hbCIgPG1p
-cXVlbC5yYXluYWxAYm9vdGxpbi5jb20+LCAicmljaGFyZCIgPHJpY2hhcmRAbm9kLmF0PiwgIlZp
-Z25lc2ggUmFnaGF2ZW5kcmEiIDx2aWduZXNockB0aS5jb20+LAo+ICJSb2IgSGVycmluZyIgPHJv
-YmgrZHRAa2VybmVsLm9yZz4sICJNYXJrIFJ1dGxhbmQiIDxtYXJrLnJ1dGxhbmRAYXJtLmNvbT4s
-IGFybmRAbGluYXJvLm9yZywgIkFsZXhhbmRyZSBUb3JndWUiCj4gPGFsZXhhbmRyZS50b3JndWVA
-c3QuY29tPiwgIk1hcmVrIFZhc3V0IiA8bWFyZXhAZGVueC5kZT4sICJkZXZpY2V0cmVlIiA8ZGV2
-aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmc+LCAibGludXgta2VybmVsIgo+IDxsaW51eC1rZXJuZWxA
-dmdlci5rZXJuZWwub3JnPiwgImxpbnV4LW10ZCIgPGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQu
-b3JnPiwgbGludXgtc3RtMzJAc3QtbWQtbWFpbG1hbi5zdG9ybXJlcGx5LmNvbQo+IEdlc2VuZGV0
-OiBEaWVuc3RhZywgMzAuIEp1bmkgMjAyMCAxMTozNTozOAo+IEJldHJlZmY6IFJlOiBbUEFUQ0gg
-djUgNC82XSBtZW1vcnk6IHN0bTMyLWZtYzItZWJpOiBhZGQgU1RNMzIgRk1DMiBFQkkgY29udHJv
-bGxlciBkcml2ZXIKCj4gSGkgUmljaGFyZCwKPiAKPiBPbiA2LzMwLzIwIDExOjEzIEFNLCBSaWNo
-YXJkIFdlaW5iZXJnZXIgd3JvdGU6Cj4+IE9uIEZyaSwgSnVuIDEyLCAyMDIwIGF0IDU6MjQgUE0g
-Q2hyaXN0b3BoZSBLZXJlbGxvCj4+IDxjaHJpc3RvcGhlLmtlcmVsbG9Ac3QuY29tPiB3cm90ZToK
-Pj4+Cj4+PiBUaGUgZHJpdmVyIGFkZHMgdGhlIHN1cHBvcnQgZm9yIHRoZSBTVE1pY3JvZWxlY3Ry
-b25pY3MgRk1DMiBFQkkgY29udHJvbGxlcgo+Pj4gZm91bmQgb24gU1RNMzJNUCBTT0NzLgo+Pj4K
-Pj4+IFNpZ25lZC1vZmYtYnk6IENocmlzdG9waGUgS2VyZWxsbyA8Y2hyaXN0b3BoZS5rZXJlbGxv
-QHN0LmNvbT4KPj4+IC0tLQo+Pj4gKyAgICAgICBpZiAoIUlTX0VSUihyc3RjKSkgewo+Pj4gKyAg
-ICAgICAgICAgICAgIHJlc2V0X2NvbnRyb2xfYXNzZXJ0KHJzdGMpOwo+Pj4gKyAgICAgICAgICAg
-ICAgIHJlc2V0X2NvbnRyb2xfZGVhc3NlcnQocnN0Yyk7Cj4+IAo+PiBTaG91bGRuJ3QgdGhlcmUg
-YmUgYSBzbWFsbCBkZWxheSBiZXR3ZWVuIGFzc2VydCBhbmQgZGVhc3NlcnQ/Cj4+IE90aGVyIHRo
-YW4gdGhhdCB0aGUgY29kZSBsb29rcyBnb29kIHRvIG1lLgo+PiAKPiAKPiBFdmVuIGlmIEkgaGF2
-ZSBjdXJyZW50bHkgbm90IG1ldCBhbnkgaXNzdWUsIEkgd2lsbCBhZGQgYSB1ZGVsYXkoMikgdG8g
-YmUKPiBzYWZlLiBJdCB3aWxsIGJlIHBhcnQgb2YgdjYuCgpXZWxsLCBpZiBpdCB3b3JrcyBhbmQg
-eW91IGFyZSBzdXJlLCBwbGVhc2UgZ28gZm9yIGl0LiBMaWtlIEkgc2FpZCwgSSdtIG5vIGV4cGVy
-dCBpbgp0aGlzLgpJIGp1c3Qgbm90aWNlZCB0aGF0IG90aGVyIHVzZXJzIGFkZCBhIGRlbGF5IGFu
-ZCB3b25kZXJlZC4KClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGlu
-ZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
-bXRkLwo=
+ubifs may create two in-memory inodes for one xattr if
+there are concurrent ubifs_xattr_get() and ubifs_xattr_set(),
+as show in the following case:
+
+ubifs_xattr_get()              ubifs_xattr_set()
+                                 // the first created inode A
+                                 // fill inode A
+                                 ubifs_new_inode()
+                                 ubifs_jnl_update()
+                                   // mapping xattr name to inum
+                                   ubifs_tnc_add_nm()
+                                   // add xattr inode node
+                                   ubifs_tnc_add()
+
+  // find inum through xattr name
+  ubifs_tnc_lookup_nm()
+  iget_xattr()
+    ubifs_iget()
+      // not found in hash table
+      // so create a new inode B
+      // and keep it in hash table
+      iget_locked()
+      // find xattr inode node
+      // fill inode B
+      ubifs_tnc_lookup
+      unlock_new_inode
+                                 // inode A is also inserted into
+                                 // hash table
+
+If we update the xattr value afterwards, only the values in inode A will
+be updated. So when we ty to remove the xattr name, and in the same
+time get the xattr name, ubifs_xattr_get() may return the stale value
+in inode B, as show in the following case:
+
+ubifs_xattr_get()              ubifs_xattr_remove()
+
+// get xattr inum
+ubifs_tnc_lookup_nm()
+				// return inode A
+				iget_xattr()
+				clear_nlink()
+				remove_xattr()
+				iput()
+				  evict()
+				    ubifs_evict_inode()
+				    remove_inode_hash()
+// return inode B
+// return a stale xattr value
+iget_xattr()
+
+Fix it by moving insert_inode_hash() before ubifs_jnl_update(),
+but after the initialization of inode is completed, so only
+one inode is created for xattr value.
+
+Signed-off-by: Hou Tao <houtao1@huawei.com>
+---
+ fs/ubifs/xattr.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
+index 82be2c2d2db5..10fcb454bb01 100644
+--- a/fs/ubifs/xattr.c
++++ b/fs/ubifs/xattr.c
+@@ -133,6 +133,15 @@ static int create_xattr(struct ubifs_info *c, struct inode *host,
+ 	inode->i_size = ui->ui_size = size;
+ 	ui->data_len = size;
+ 
++	/*
++	 * Ensure iget_xattr() in ubifs_xattr_get() will find the inode
++	 * instead of creating a new one.
++	 * The initialization of xattr inode is completed here, so using
++	 * insert_inode_hash() instead of insert_inode_locked(). The
++	 * latter can lead to iget_xattr() return -ESTALE.
++	 */
++	insert_inode_hash(inode);
++
+ 	mutex_lock(&host_ui->ui_mutex);
+ 	host->i_ctime = current_time(host);
+ 	host_ui->xattr_cnt += 1;
+@@ -156,7 +165,6 @@ static int create_xattr(struct ubifs_info *c, struct inode *host,
+ 	mutex_unlock(&host_ui->ui_mutex);
+ 
+ 	ubifs_release_budget(c, &req);
+-	insert_inode_hash(inode);
+ 	iput(inode);
+ 	return 0;
+ 
+-- 
+2.25.0.4.g0ad7144999
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
