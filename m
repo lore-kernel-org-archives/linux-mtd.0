@@ -2,62 +2,66 @@ Return-Path: <SRS0=6ot8=AM=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9C8FC433DF
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Jul 2020 11:27:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 160AFC433DF
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Jul 2020 22:26:21 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7F02820722
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Jul 2020 11:27:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DC27F20780
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Jul 2020 22:26:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NcVTQy2+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7F02820722
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VE93xlvh";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="QnDFizln"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DC27F20780
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=rW6g7X10UZWFVK0gfPLH4C+uGpiFNUYWQGAjDDVpKoU=; b=NcVTQy2+rjLITMgCv/D8Zg4as6
-	8w+OUJ2QvOd2WOX6u2NM2qRxcka1VUEvTBGopBweRMVI8MAP7/KKF7O8XGpKyo918b492X4QeIgfb
-	URdLVoe5x7B6hOoxF9LD6tJu7kUwoog1Cnf0et1ZhGVe7bo+C5+3O/6fLK+wroPQZq1/GvNHFZ6/u
-	4Sse5onVZbOMLHmnlJEAH6vUQ6urLM34+0uoNthzU+u+Aeh3z2KuRkIU5rs+OYszXMgVYy9czhUyv
-	zHs8bFeoeTFwhMT1XrY2j+KzHjgGbLwC000ZHYcvA2OIMAtuSGeiwWqRDJ+Is3WRMA8PHDeggedcC
-	iaEAV+uw==;
+	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-Id:Subject:References:In-Reply-To:To:From:
+	Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=PowwXwM6gQqmBr30u8pe2iC21l3a2dgQS/RnF3QtH1g=; b=VE93xlvhHewap8p1BdeHcqTBC5
+	oLDgMTBtidgNUtnp6/PBMnbE5IFyRMdGQN99KV8lAFyIR/jxdaIZvJZprlSI+dI58gzBgIvoWXlPg
+	zFOkR5oXWvsfd4Z6g1URzguwwKEI1o15QQVhwHinYUY/CjXU5vdIoJgJHCEKndZy25ibJCpL7VimO
+	D+AiTMiKfS0mh+lvI2Z7FvgID7YR4OVjjhQAqhZxEiPzB33vRVvfXAsDt6rHROQTegXeiMDnOH3KP
+	mec6My499WpbZEhVWMiTaS0rjIg+e2zVLlaCGf0bthfWCxdK0DXgRwUJFdpgK3TFKB4e4Np8TV+Ym
+	RWmOdasQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jqasV-0004Dw-Eg; Wed, 01 Jul 2020 11:26:11 +0000
-Received: from szxga05-in.huawei.com ([45.249.212.191] helo=huawei.com)
+	id 1jql9P-0003Z7-D4; Wed, 01 Jul 2020 22:24:19 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jqasS-0004CY-7P
- for linux-mtd@lists.infradead.org; Wed, 01 Jul 2020 11:26:09 +0000
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
- by Forcepoint Email with ESMTP id B6201EE0AAC0EB1C54FF;
- Wed,  1 Jul 2020 19:25:57 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Wed, 1 Jul 2020
- 19:25:50 +0800
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-To: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ubifs: Fix a potential space leak problem while linking
- tmpfile
-Date: Wed, 1 Jul 2020 19:26:43 +0800
-Message-ID: <20200701112643.726986-1-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.25.4
-MIME-Version: 1.0
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
+ id 1jql9M-0003YT-7u
+ for linux-mtd@lists.infradead.org; Wed, 01 Jul 2020 22:24:17 +0000
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 11AF8207E8;
+ Wed,  1 Jul 2020 22:24:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1593642255;
+ bh=HguEhSuy+TQJwfPgAmeSVzUPU4XvdrCi4pUBHZc9nX0=;
+ h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+ b=QnDFizlnL7MCgV5wrTnsU7SP536qZzWl81Skg2dTtNoDE1mD7h8OkeeTLzU+zJIp6
+ Ri5j2qRZuyWrNqSwLQASaB+PC7B8in5SjMeG/RzbZjDCQZnZgQ21GezocLLm6GZsQ8
+ /DyYPtilrzyb3VVFGimpzp+hCIE2HPamV7xBCMhM=
+Date: Wed, 01 Jul 2020 23:24:13 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Rob Herring <robh+dt@kernel.org>,
+ Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+ devicetree@vger.kernel.org
+In-Reply-To: <9969c8a1-e6be-38a9-ced5-ce8c5ff07046@cogentembedded.com>
+References: <9969c8a1-e6be-38a9-ced5-ce8c5ff07046@cogentembedded.com>
+Subject: Re: [PATCH v5 0/2] Add Renesas RPC-IF support
+Message-Id: <159364224814.10988.6815822575560386098.b4-ty@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200701_072608_776732_D090058A 
-X-CRM114-Status: UNSURE (   7.23  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200701_182416_382095_83583ECB 
+X-CRM114-Status: GOOD (  15.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,56 +73,56 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: richard@nod.at, yi.zhang@huawei.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: linux-spi@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ Chris Brandt <chris.brandt@renesas.com>, linux-mtd@lists.infradead.org,
+ Philipp Zabel <p.zabel@pengutronix.de>, Mason Yang <masonccyang@mxic.com.tw>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-VGhlcmUgaXMgYSBwb3RlbnRpYWwgc3BhY2UgbGVhayBwcm9ibGVtIHdoaWxlIGxpbmtpbmcgdG1w
-ZmlsZSwgaW4gd2hpY2gKY2FzZSwgaW5vZGUgbm9kZSAod2l0aCBubGluaz0wKSBpcyB2YWxpZCBp
-biB0bmMgKG9uIGZsYXNoKSwgd2hpY2ggbGVhZHMKdG8gc3BhY2UgbGVhay4gTWVhbndoaWxlLCB0
-aGUgY29ycmVzcG9uZGluZyBkYXRhIG5vZGVzIHdvbid0IGJlIHJlbGVhc2VkCmZyb20gdG5jLiBG
-b3IgZXhhbXBsZSwgKEEgcmVwcm9kdWNlciBjYW4gYmUgZm91bmQgaW4gTGluayk6CgokIG1vdW50
-IFVCSUZTCiAgW3Byb2Nlc3MgQV0gICAgICAgICAgICBbcHJvY2VzcyBCXSAgICAgICAgIFtUTkNd
-ICAgICAgICAgW29ycGhhbiBhcmVhXQoKIHViaWZzX3RtcGZpbGUgICAgICAgICAgICAgICAgICAg
-ICAgICAgIGlub2RlX0EgKG5saW5rPTApICAgICBpbm9kZV9BCiAgICAgICAgICAgICAgICAgICAg
-ICAgICAgZG9fY29tbWl0ICAgICBpbm9kZV9BIChubGluaz0wKSAgICAgaW5vZGVfQQoJCQkgICAg
-ICAg4oaRCiAgICAgIChjb21tZW50OiBJdCBtYWtlcyBzdXJlIG5vdCByZXBsYXkgaW5vZGVfQSBp
-biBuZXh0IG1vdW50KQogdWJpZnNfbGluayAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaW5v
-ZGVfQSAobmxpbms9MCkgICAgIGlub2RlX0EKICAgdWJpZnNfZGVsZXRlX29ycGhhbiAgICAgICAg
-ICAgICAgICAgIGlub2RlX0EgKG5saW5rPTApCiAgICAgICAgICAgICAgICAgICAgICAgICAgZG9f
-Y29tbWl0ICAgICBpbm9kZV9BIChubGluaz0wKQogICAgICAgICAgICAgICAgICAgICAgICAgICAt
-LS0+IFBPV0VSQ1VUIDwtLS0KICAgKHViaWZzX2pubF91cGRhdGUpCgokIG1vdW50IFVCSUZTCiAg
-aW5vZGVfQSB3aWxsIG5laXRoZXIgYmUgcmVwbGF5ZWQgaW4gdWJpZnNfcmVwbGF5X2pvdXJuYWwo
-KSBub3IKICB1Ymlmc19tb3VudF9vcnBoYW5zKCkuIGlub2RlX0EgKG5saW5rPTApIHdpdGggaXRz
-IGRhdGEgbm9kZXMgd2lsbAogIGFsd2F5cyBvbiB0bmMsIGl0IG9jY3VweSBzcGFjZSBidXQgaXMg
-bm9uLXZpc2FibGUgZm9yIHVzZXJzLgoKQ29tbWl0IGVlMTQzOGNlNWRjNGQgKCJ1YmlmczogQ2hl
-Y2sgbGluayBjb3VudCBvZiBpbm9kZXMgd2hlbiBraWxsaW5nCm9ycGhhbnMuIikgaGFuZGxlcyBw
-cm9ibGVtIGluIG1pc3Rha2VubHkgZGVsZXRpbmcgcmVsaW5rZWQgdG1wZmlsZQp3aGlsZSByZXBs
-YXlpbmcgb3JwaGFuIGFyZWEuIFNpbmNlIHRoYXQsIHRtcGZpbGUgaW5vZGUgc2hvdWxkIGFsd2F5
-cwpsaXZlIGluIG9ycGhhbiBhcmVhIGV2ZW4gaXQgaXMgbGlua2VkLiBGaXggaXQgYnkgcmV2ZXJ0
-aW5nIGNvbW1pdAozMmZlOTA1YzE3ZjAwMSAoInViaWZzOiBGaXggT19UTVBGSUxFIGNvcm5lciBj
-YXNlIGluIHViaWZzX2xpbmsoKSIpLgoKU2lnbmVkLW9mZi1ieTogWmhpaGFvIENoZW5nIDxjaGVu
-Z3poaWhhbzFAaHVhd2VpLmNvbT4KQ2M6IDxzdGFibGVAdmdlci5rZXJuZWwub3JnPiAgIyB2NS4z
-KwpGaXhlczogMzJmZTkwNWMxN2YwMDEgKCJ1YmlmczogRml4IE9fVE1QRklMRSBjb3JuZXIgY2Fz
-ZSBpbiB1Ymlmc19saW5rKCkiKQpMaW5rOiBodHRwczovL2J1Z3ppbGxhLmtlcm5lbC5vcmcvc2hv
-d19idWcuY2dpP2lkPTIwODQwNQotLS0KIGZzL3ViaWZzL2Rpci5jIHwgNyAtLS0tLS0tCiAxIGZp
-bGUgY2hhbmdlZCwgNyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9mcy91Ymlmcy9kaXIuYyBi
-L2ZzL3ViaWZzL2Rpci5jCmluZGV4IGVmODVlYzE2N2E4NC4uOTUzNGM0YmI1OThmIDEwMDY0NAot
-LS0gYS9mcy91Ymlmcy9kaXIuYworKysgYi9mcy91Ymlmcy9kaXIuYwpAQCAtNzIyLDExICs3MjIs
-NiBAQCBzdGF0aWMgaW50IHViaWZzX2xpbmsoc3RydWN0IGRlbnRyeSAqb2xkX2RlbnRyeSwgc3Ry
-dWN0IGlub2RlICpkaXIsCiAJCWdvdG8gb3V0X2ZuYW1lOwogCiAJbG9ja18yX2lub2RlcyhkaXIs
-IGlub2RlKTsKLQotCS8qIEhhbmRsZSBPX1RNUEZJTEUgY29ybmVyIGNhc2UsIGl0IGlzIGFsbG93
-ZWQgdG8gbGluayBhIE9fVE1QRklMRS4gKi8KLQlpZiAoaW5vZGUtPmlfbmxpbmsgPT0gMCkKLQkJ
-dWJpZnNfZGVsZXRlX29ycGhhbihjLCBpbm9kZS0+aV9pbm8pOwotCiAJaW5jX25saW5rKGlub2Rl
-KTsKIAlpaG9sZChpbm9kZSk7CiAJaW5vZGUtPmlfY3RpbWUgPSBjdXJyZW50X3RpbWUoaW5vZGUp
-OwpAQCAtNzQ3LDggKzc0Miw2IEBAIHN0YXRpYyBpbnQgdWJpZnNfbGluayhzdHJ1Y3QgZGVudHJ5
-ICpvbGRfZGVudHJ5LCBzdHJ1Y3QgaW5vZGUgKmRpciwKIAlkaXItPmlfc2l6ZSAtPSBzel9jaGFu
-Z2U7CiAJZGlyX3VpLT51aV9zaXplID0gZGlyLT5pX3NpemU7CiAJZHJvcF9ubGluayhpbm9kZSk7
-Ci0JaWYgKGlub2RlLT5pX25saW5rID09IDApCi0JCXViaWZzX2FkZF9vcnBoYW4oYywgaW5vZGUt
-PmlfaW5vKTsKIAl1bmxvY2tfMl9pbm9kZXMoZGlyLCBpbm9kZSk7CiAJdWJpZnNfcmVsZWFzZV9i
-dWRnZXQoYywgJnJlcSk7CiAJaXB1dChpbm9kZSk7Ci0tIAoyLjI1LjQKCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
-c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vbGludXgtbXRkLwo=
+On Tue, 16 Jun 2020 23:00:20 +0300, Sergei Shtylyov wrote:
+> Here's a set of 2 patches against Linus' repo. Renesas Reduced Pin Count
+> Interface (RPC-IF) allows a SPI flash or HyperFlash connected to the SoC
+> to be accessed via the external address space read mode or the manual mode.
+> The memory controller driver for RPC-IF registers either SPI or HyperFLash
+> subdevice, depending on the contents of the device tree subnode; it also
+> provides the abstract "back end" API that can be used by the "front end"
+> SPI/MTD drivers to talk to the real hardware...
+> 
+> [...]
+
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+
+Thanks!
+
+[1/2] dt-bindings: memory: document Renesas RPC-IF bindings
+      commit: ab1c362061d92556bd96fd2c0b188f8e4223e3e3
+[2/2] memory: add Renesas RPC-IF driver
+      commit: ca7d8b980b67f133317525c4273e144116ee1ae5
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
