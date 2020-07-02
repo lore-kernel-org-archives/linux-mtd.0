@@ -2,78 +2,84 @@ Return-Path: <SRS0=vsLb=AN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8234CC433E0
-	for <linux-mtd@archiver.kernel.org>; Thu,  2 Jul 2020 14:41:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89649C433E0
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 Jul 2020 15:10:51 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 534CB206E2
-	for <linux-mtd@archiver.kernel.org>; Thu,  2 Jul 2020 14:41:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4B0F5206B7
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 Jul 2020 15:10:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="vJVzx5fb";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="rVyIgwqe";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="EWfgloAN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 534CB206E2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linutronix.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="UKrVspJR";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ux4nFWdz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4B0F5206B7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References:In-Reply-To:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=k5VIaYahmPOCzkBlJf55jCnH8YJi0ziednCV29J4pQY=; b=vJVzx5fbMI58rGBFzbLLgkKwn
-	ypbWEcxF2tnQoP/i1O9fx6zrMBUUkqp+EvV7UdCgptrEHYYOMZhmJkX4Z7y4lsNZuGOKPE2+Qwf3V
-	U5v+ZhnE3jCQhS0h0/+pKiYnDDyED24/UxsMRGCL2QPCMmzxVnuLUURC/JexdA7+90M/oj2dA0ufD
-	KOQBz9nThjVjDJGAO+7k5fHL8sej61j/ZAH4MUncunb0F/Fm/Sy0IzlASODCQ9j8eMr3VNbD5NISy
-	X864xN121ummcfN75i2Hq/xYVB58tjqMgLIZ0e4bB19T9WX4OqoNmrYnvMjCpqwgpM9xbz8FSyaq8
-	jse6G8F0w==;
+	 bh=guX/tyqC/NyHX6QIoXRESXKUPNAfSNxKsJN5ZaalIck=; b=UKrVspJRgpb90WlJfijhu9f6z
+	AXPvCoG3wKJA5Xi5Rnushg6LVquuFXDiROXO0OfyprTrEYUbIUaHOoONXSw+yBXc7fKfw9miJugIe
+	NE/Sbc8UbcZnm/N734VLPmuu/Cs8x6TZxe5OgtxABHMyK6ypo+0b8ho3blDto4uYL7scyCCdOsbpU
+	zph5O1lJdsMoChj2XEpTOnqYvVcwrgBNBcIvBMCpnMCUyeIRbhvaEhXipREK4Fi5E8yQUxch5PH4r
+	Un3WulyBAap4E5H438mJzv6xJ0xYSDaCeyN8K5VEWqxHF8nncpBl/nhAwl1TDofV0FMQ+EoZ5TuR6
+	fLjKg4O8g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jr0O7-0003e7-3u; Thu, 02 Jul 2020 14:40:31 +0000
-Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
+	id 1jr0ql-0001Tn-3w; Thu, 02 Jul 2020 15:10:07 +0000
+Received: from mail-qt1-x843.google.com ([2607:f8b0:4864:20::843])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jr0O4-0003d9-JH
- for linux-mtd@lists.infradead.org; Thu, 02 Jul 2020 14:40:29 +0000
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
- s=2020; t=1593700825;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=pSJhXMMXLnQZqTG88cVEbTQ3nR9brUzqWpEMD11fZUE=;
- b=rVyIgwqeC4ss66vXrmrg0Rph5/bsXuHRG5fbMvXPOI3Yi/8u7ipQzT4/9IE+h/wdb2bpYc
- JwIL5xmFXTw3D48a4l6UgUKNo0qVrciCWz6bAcyiWNmzTVQdBsrtCxPYScfnOJe4j/mt2s
- kCMnkz5AU7TQJJBYwimVKM8QBBhtA6/RmUMMQMhNruIPI3S82lArYVC62Fw26kz1D9RX6Y
- WB41LBY+/5VmcJ0IGtc43zTBUOCbdQocfwZVl8zHc/s1S2yMHSKMDSlmNiSLDo0Mmeh/VL
- XM4GH5zkLMj7P8AeRJ1gGi9/2rrEapvSHipjNQ9GnAbsWwAwo00qEk5wjiUkjA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
- s=2020e; t=1593700825;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=pSJhXMMXLnQZqTG88cVEbTQ3nR9brUzqWpEMD11fZUE=;
- b=EWfgloANSP+TwWmQMWTZm2Ch2KoenKQdf1Ls/3c41sRmernAzMWsLnWZpEGb5yLsUu/iqO
- 4KffFRKbrpg3hcBw==
-To: Richard Weinberger <richard@nod.at>,
- Torben Hohn <torben.hohn@linutronix.de>
-Subject: Re: [PATCH v2 0/4] ubifs: support authentication without hmac
-In-Reply-To: <1031805083.71374.1593427612787.JavaMail.zimbra@nod.at>
-References: <20200625155927.28430-1-torben.hohn@linutronix.de>
- <20200626112907.13201-1-torben.hohn@linutronix.de>
- <1644538308.62483.1593181011127.JavaMail.zimbra@nod.at>
- <20200629090734.GB17241@linutronix.de>
- <1031805083.71374.1593427612787.JavaMail.zimbra@nod.at>
-Date: Thu, 02 Jul 2020 16:40:24 +0200
-Message-ID: <875zb6t1yf.fsf@nanos.tec.linutronix.de>
+ id 1jr0qf-0001Q6-M3
+ for linux-mtd@lists.infradead.org; Thu, 02 Jul 2020 15:10:04 +0000
+Received: by mail-qt1-x843.google.com with SMTP id d27so21488846qtg.4
+ for <linux-mtd@lists.infradead.org>; Thu, 02 Jul 2020 08:09:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=NR6NPDNU4//rnzLFn69MGk8PVo2U7QF7TU8NITv1GOY=;
+ b=Ux4nFWdzSbOl2jx0BTxJgxO4oMB3q1pfNn3h2eGF5PtVj5+vfGawU3gxURfLZAeXnZ
+ sdsoI8A7p74wx+OKc65rxabkJOk8hrQijtDWGwH9fUuD6c5it09rnXfZIdI7asUlfpIa
+ sPOfJRdYKgZcnC3TZnhZSBzAZ0hxLjrVc0ElOYOHJXVD0yStX4ljADbv9UMMahtoV7Iy
+ PTz6o2mY4Ppgcm1tBS7m1HDyYF7DpzymVoapUgMd2T4C9w2YZwnDrQ4c6JImjEMepu7v
+ aaBa1p670tC8r1waSCdfWjQr45Jzhh1LmiKOktaV6BjIp8W6AOYnVcHUtrTmdr+cF+Es
+ nIXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=NR6NPDNU4//rnzLFn69MGk8PVo2U7QF7TU8NITv1GOY=;
+ b=bXVb5azWcCmi55PDRbLh5yHu0wCx29dVYuWKJlIEU5fWy9BxOuABP6ue0pd+O75Y3z
+ Aq2O0qBXDKFV7MneXBWNok4/QufidTrjw5rkaiym8iCIjtYcDMBqA+40gtW0N1nQiS0Y
+ E/N7H+icpfykuxz60gZM7pi6ecHZtcx5LFJTLiJ2/dqMIcfn2/7QBtWx4vh4DzMMxHSl
+ 7J1om8FRezNFP5kGXkeHMmv0AtPO90twlOgZrX9H1RTLnzPWz5oTN1uNOtk5+X/4Bew4
+ 935FkedV6eMElTJQcK8/A+9czqW+HlX6Hpdyevs2IxhnHQ11B/XRKVDvEDQFGajy9wBn
+ CEEw==
+X-Gm-Message-State: AOAM532Oy8HCr60lEtEMnqGCeToJhH6Zg7dd1a+LzQXaGlapXUzkXB8k
+ hVN3/h1a+Ss/XArBnPg2tX5gL5Q+K43lbEu4aEQSUGfD
+X-Google-Smtp-Source: ABdhPJx5YGjGrJUq91uoxTX2Z8Ue1Anvjct9+JBFVM6cj5m0FP4Qp3LyGLByPkF/zJ3WxhwFNG+bQkZiBahkQ0lgsl0=
+X-Received: by 2002:ac8:408c:: with SMTP id p12mr31049310qtl.332.1593702598061; 
+ Thu, 02 Jul 2020 08:09:58 -0700 (PDT)
 MIME-Version: 1.0
+References: <e31c36b5-5860-b547-81cb-74135eb5823a@koalo.de>
+ <223404ba200c110f464b9c1e78eaa26e9efb347f.camel@infradead.org>
+ <CABDT8WwS=gmS6r9ihV342hywvUZH-uXj-f7cdyh-n06QjObRYQ@mail.gmail.com>
+In-Reply-To: <CABDT8WwS=gmS6r9ihV342hywvUZH-uXj-f7cdyh-n06QjObRYQ@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Thu, 2 Jul 2020 17:09:46 +0200
+Message-ID: <CAFLxGvyuQ011RNjLYch-c0zhwPME214whiQZ=eMwodQ1SVafyw@mail.gmail.com>
+Subject: Re: lists.infradead.org restored from backup, git.infradead.org down.
+To: Florian Kauer <florian.kauer@koalo.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200702_104028_770328_77D5F98B 
-X-CRM114-Status: UNSURE (   7.83  )
+X-CRM114-CacheID: sfid-20200702_111001_794301_D03B4E53 
+X-CRM114-Status: UNSURE (   7.57  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -86,35 +92,23 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: bigeasy <bigeasy@linutronix.de>, linux-mtd <linux-mtd@lists.infradead.org>,
- Sascha Hauer <s.hauer@pengutronix.de>, david <david@sigma-star.at>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Richard Weinberger <richard@nod.at> writes:
-> The superblock is signed by the offline key. As soon you switch to the new key
-> the super block is rewritten and can no longer verified this key.
-> Instead of rewriting the idea was keeping a copy.
+On Thu, Jul 2, 2020 at 1:46 PM Florian Kauer <florian.kauer@koalo.de> wrote:
 >
-> Anyway, like said in the other mail, I think if we change the feature to
-> "keep offline sign key and imply ro mount" things will be more smooth with less corner
-> cases.
+> Thanks for the fast response!
+> The only one I am aware of is https://github.com/sigma-star/mtd-utils
 
-I don't think so. The desired mode is to prevent RW mounts for a factory
-signed image which implies the prevention of rewriting the superblock.
+Another mirror:
+https://git.infraroot.at/mtd-utils.git/
 
-This is not a conveniance feature, it's a strict security feature. Once
-the thing has been changed from the factory generated state it's invalid
-no matter what.
-
-If a developer shoots himself in the foot with that, no big deal. He got
-what he asked for :)
-
+-- 
 Thanks,
-
-        tglx
+//richard
 
 ______________________________________________________
 Linux MTD discussion mailing list
