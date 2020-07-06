@@ -2,68 +2,63 @@ Return-Path: <SRS0=bVXU=AR=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B39BC433DF
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Jul 2020 06:48:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81B63C433E0
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Jul 2020 09:24:20 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 44B512075B
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Jul 2020 06:48:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4FFDF20724
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Jul 2020 09:24:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mvxfLATr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 44B512075B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="exRxHZVu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4FFDF20724
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=hisilicon.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=iPabrZcTeZfKpJTysJK5pdtbr8lgUo5ymhON69nBntM=; b=mvxfLATrzCuGPBzKYz6bLnT5f
-	wH0ZRYH6cCanWGYDYn50Lylg/5TWZsRwXxyQLFDjngJHQWMe25KFTSOg/W92YctVJN/HAQXIu8UL4
-	xoMBuflAuI41yq0HyQT9w+KqyG+9rKbotpXvoH1H4EsTD4kf+9Yw1mXrp/2yKTg1YuvvKCiHCZqaE
-	pqhwnH20QHr09uu5boAN2sVK0WQFnYXLwYyfsOAfd6lpJBzCNmAdltD2GcDBJ0gedml3mVo/rp6LT
-	q1rp8WjP0Q2svH1glBID0H8/DNHvbRWuHAODcnLkKFIcjhDb7mCTOqgeXjd8bq+Sr4cqgqiJLHPSQ
-	quZanJbLw==;
+	 bh=kdTt3SL5OkgD5fBXcm3/TJ60Euw6m5aRXmUyo/3UQqE=; b=exRxHZVuRgZboW5IWEl8N45I0
+	/RV1BMQ1JDeh/dIWpDF8xbKhLHSiYap1F1GnvMDXdq1zGxyhp82WGzv30TYTNdb13z5dvB0lEh1tW
+	6/TqqA/HP4hmtQ/K7uab9ORmCK9vX/AZ8b4HzybsviVXWd44Z5s81MfS9Nf73ye+HSoXZOpY2ZIM8
+	383RtcCpWlHf6w9E95x7ImyFJvA8asl/dOv0/V0ksdmNAvk1nKjbJX5pQgz0Ld9V1Gi0+Fbil+tR5
+	XV7QMi77UoibRCEdyGSgJAozmx0SUarzLqDdnugLiwV3ZOVUbC3SMovCy5Hrlw6fydsmIdK8wjwS2
+	IKMOnp5fw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jsKuo-0003AK-TI; Mon, 06 Jul 2020 06:47:46 +0000
+	id 1jsNLX-0003Ou-PS; Mon, 06 Jul 2020 09:23:31 +0000
 Received: from szxga04-in.huawei.com ([45.249.212.190] helo=huawei.com)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jsKuk-00037D-MT
- for linux-mtd@lists.infradead.org; Mon, 06 Jul 2020 06:47:44 +0000
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
- by Forcepoint Email with ESMTP id C8494357BE9DA5C148D6;
- Mon,  6 Jul 2020 14:47:25 +0800 (CST)
-Received: from [10.65.58.147] (10.65.58.147) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0;
- Mon, 6 Jul 2020 14:47:16 +0800
-Subject: Re: [PATCH 2/2] mtd: spi-nor: Disable the flash quad mode in
- spi_nor_restore()
-To: <Tudor.Ambarus@microchip.com>, <p.yadav@ti.com>
-References: <1592312547-19239-1-git-send-email-yangyicong@hisilicon.com>
- <1592312547-19239-3-git-send-email-yangyicong@hisilicon.com>
- <193b32f7-f56d-4f78-5353-b5d47cbf71d6@microchip.com>
- <20200703111924.tyrvzbbgd7ak53qf@ti.com>
- <157c20a4-2a7e-601a-34ef-66baaa17eb7b@microchip.com>
+ id 1jsNLS-0003NT-6z
+ for linux-mtd@lists.infradead.org; Mon, 06 Jul 2020 09:23:28 +0000
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+ by Forcepoint Email with ESMTP id BEE64481F27A035C28DF;
+ Mon,  6 Jul 2020 17:23:20 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 6 Jul 2020 17:23:11 +0800
 From: Yicong Yang <yangyicong@hisilicon.com>
-Message-ID: <c6ec3c03-1efe-b920-5b08-856c21376bd5@hisilicon.com>
-Date: Mon, 6 Jul 2020 14:47:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+To: <tudor.ambarus@microchip.com>, <p.yadav@ti.com>,
+ <linux-mtd@lists.infradead.org>
+Subject: [PATCH v2 1/2] mtd: spi-nor: Add capability to disable flash quad mode
+Date: Mon, 6 Jul 2020 17:22:35 +0800
+Message-ID: <1594027356-19088-2-git-send-email-yangyicong@hisilicon.com>
+X-Mailer: git-send-email 2.8.1
+In-Reply-To: <1594027356-19088-1-git-send-email-yangyicong@hisilicon.com>
+References: <1594027356-19088-1-git-send-email-yangyicong@hisilicon.com>
 MIME-Version: 1.0
-In-Reply-To: <157c20a4-2a7e-601a-34ef-66baaa17eb7b@microchip.com>
-X-Originating-IP: [10.65.58.147]
+X-Originating-IP: [10.67.165.24]
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200706_024743_509833_8812C2BC 
-X-CRM114-Status: GOOD (  20.47  )
+X-CRM114-CacheID: sfid-20200706_052327_544024_27C8DAB4 
+X-CRM114-Status: GOOD (  15.12  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,87 +71,217 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: vigneshr@ti.com, sergei.shtylyov@cogentembedded.com, richard@nod.at,
- me@yadavpratyush.com, john.garry@huawei.com, linuxarm@huawei.com,
- alexander.sverdlin@nokia.com, miquel.raynal@bootlin.com,
- linux-mtd@lists.infradead.org
+ john.garry@huawei.com, linuxarm@huawei.com, yangyicong@hisilicon.com,
+ alexander.sverdlin@nokia.com, miquel.raynal@bootlin.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+Previous we didn't provide a way to disable the flash's quad mode.
+Which means we cannot do some cleanup works when to remove or
+poweroff the flash, like what set 4-byte address mode does in
+spi_nor_restore().
 
-Thanks for reviewing the patch.
+Add the capability to disable the flash quad mode, by introducing
+an enable flag in the flash parameters quad_enable() hooks and
+related functions.
 
+Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+---
+ drivers/mtd/spi-nor/core.c | 55 ++++++++++++++++++++++++++++++----------------
+ drivers/mtd/spi-nor/core.h | 10 ++++-----
+ 2 files changed, 41 insertions(+), 24 deletions(-)
 
-On 2020/7/3 19:52, Tudor.Ambarus@microchip.com wrote:
-> On 7/3/20 2:19 PM, Pratyush Yadav wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> On 02/07/20 11:02AM, Tudor.Ambarus@microchip.com wrote:
->>> On 6/16/20 4:02 PM, Yicong Yang wrote:
->>>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>>>
->>>> If the flash's quad mode is enabled, it'll remain in the quad mode when
->>>> it's removed. If we drive the flash next time in SPI/Dual mode, then
->>>> problem occurs as the flash's quad enable bit is not cleared.
->>> Please describe the problems that occur. When QE bit is one the flash
->>> operates in Standard/Dual/Quad SPI modes. WP# and RESET#/HOLD# are
->>> affected as they change their functionality to IO2 and IO3 when QE
->>> is 1. Is there anything else?
->> IIUC if we do anything that introduces a state on the flash, we want to
->> clear that state up on restore. That's what we (will) do for 8D mode and
-> correct
->
->> for 4-byte addressing mode. Does that not apply here?
-> yes, it does. I've just asked Yicong to describe in the commit message
-> the problems that he encounters, for better understanding. Standard and
-> Dual modes should still work with QE = 1. The only problem that I see
-> is that WP# and RESET#/HOLD# are changing their functionality to IO2
-> and IO3 when QE is 1. Is there anything else that I miss?
-
-I think I have mixup the issues.
-The problem I met is when I load the driver in Quad mode first and reload it in
-Standard SPI/Dual mode, and tested the flash's read/write but I got mirrored
-data which differs from what I wrote.  But seems the QE bit won't cause this,
-(thanks for your illustration and it may not be the same issue) so it seems
-improper to mention it here and I'll reword the commit.
-
-(PS: the flash I tested is Cypress s25fs128s1 with spi-hisi-sfc-v3xx controller. )
-
-Thanks,
-Yicong
-
->>> While I find the intention good, there might be some problems here:
->>> 1/ w25q jvm variants come with QE "fixed" to 1. This probably means
->>> that QE is not writable, and a writing of QE to zero will be ignored,
->>> but we have to check.
->> In that case they shouldn't have a quad_enable() hook, no?
-> Right. Although this scenario should be a false positive, probably the
-> write of QE bit is ignored. There is a superfluous write of QE indeed,
-> but maybe we can live with it.
->
->>> 2/S25FS128S: CR1NV[1] can set the default power-on state for the
->>> CR1V[1] to 1, i.e. QE to be set to 1 at power-on by default. The
->>> logic here complicates a bit, and maybe we'll have to amend the
->>> patch.
->>>
-> We can come with a patch on top of these for 2/. Yicong, please address
-> the minor comments and resubmit.
-> Cheers.
->
->>>> Disable the quad mode in spi_nor_restore(), the flash will leave
->>>> quad mode when remove. This will make sure the flash always enter the
->>>> correct mode when loaded.
->>> s/correct/ Standard/Dual SPI
->>>
->>> Cheers,
->>> ta
->> --
->> Regards,
->> Pratyush Yadav
->> Texas Instruments India
->>
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 0369d98..f3d4b96 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -1907,15 +1907,16 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ }
+ 
+ /**
+- * spi_nor_sr1_bit6_quad_enable() - Set the Quad Enable BIT(6) in the Status
+- * Register 1.
++ * spi_nor_sr1_bit6_quad_enable() - Set/Unset the Quad Enable BIT(6) in the
++ *                                  Status Register 1.
+  * @nor:	pointer to a 'struct spi_nor'
++ * @enable:	true to enable Quad mode. false to disable Quad mode.
+  *
+  * Bit 6 of the Status Register 1 is the QE bit for Macronix like QSPI memories.
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+-int spi_nor_sr1_bit6_quad_enable(struct spi_nor *nor)
++int spi_nor_sr1_bit6_quad_enable(struct spi_nor *nor, bool enable)
+ {
+ 	int ret;
+ 
+@@ -1923,45 +1924,56 @@ int spi_nor_sr1_bit6_quad_enable(struct spi_nor *nor)
+ 	if (ret)
+ 		return ret;
+ 
+-	if (nor->bouncebuf[0] & SR1_QUAD_EN_BIT6)
++	if ((enable && (nor->bouncebuf[0] & SR1_QUAD_EN_BIT6)) ||
++	    (!enable && !(nor->bouncebuf[0] & SR1_QUAD_EN_BIT6)))
+ 		return 0;
+ 
+-	nor->bouncebuf[0] |= SR1_QUAD_EN_BIT6;
++	if (enable)
++		nor->bouncebuf[0] |= SR1_QUAD_EN_BIT6;
++	else
++		nor->bouncebuf[0] &= ~SR1_QUAD_EN_BIT6;
+ 
+ 	return spi_nor_write_sr1_and_check(nor, nor->bouncebuf[0]);
+ }
+ 
+ /**
+- * spi_nor_sr2_bit1_quad_enable() - set the Quad Enable BIT(1) in the Status
+- * Register 2.
++ * spi_nor_sr2_bit1_quad_enable() - set/unset the Quad Enable BIT(1) in the
++ *                                  Status Register 2.
+  * @nor:       pointer to a 'struct spi_nor'.
++ * @enable:	true to enable Quad mode. false to disable Quad mode.
+  *
+  * Bit 1 of the Status Register 2 is the QE bit for Spansion like QSPI memories.
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+-int spi_nor_sr2_bit1_quad_enable(struct spi_nor *nor)
++int spi_nor_sr2_bit1_quad_enable(struct spi_nor *nor, bool enable)
+ {
+ 	int ret;
+ 
+ 	if (nor->flags & SNOR_F_NO_READ_CR)
+-		return spi_nor_write_16bit_cr_and_check(nor, SR2_QUAD_EN_BIT1);
++		return spi_nor_write_16bit_cr_and_check(nor,
++						enable ? SR2_QUAD_EN_BIT1 : 0);
+ 
+ 	ret = spi_nor_read_cr(nor, nor->bouncebuf);
+ 	if (ret)
+ 		return ret;
+ 
+-	if (nor->bouncebuf[0] & SR2_QUAD_EN_BIT1)
++	if ((enable && (nor->bouncebuf[0] & SR2_QUAD_EN_BIT1)) ||
++	    (!enable && !(nor->bouncebuf[0] & SR2_QUAD_EN_BIT1)))
+ 		return 0;
+ 
+-	nor->bouncebuf[0] |= SR2_QUAD_EN_BIT1;
++	if (enable)
++		nor->bouncebuf[0] |= SR2_QUAD_EN_BIT1;
++	else
++		nor->bouncebuf[0] &= ~SR2_QUAD_EN_BIT1;
+ 
+ 	return spi_nor_write_16bit_cr_and_check(nor, nor->bouncebuf[0]);
+ }
+ 
+ /**
+- * spi_nor_sr2_bit7_quad_enable() - set QE bit in Status Register 2.
++ * spi_nor_sr2_bit7_quad_enable() - set/unset QE bit in Status Register 2.
+  * @nor:	pointer to a 'struct spi_nor'
++ * @enable:	true to enable Quad mode. false to disable Quad mode.
+  *
+  * Set the Quad Enable (QE) bit in the Status Register 2.
+  *
+@@ -1971,7 +1983,7 @@ int spi_nor_sr2_bit1_quad_enable(struct spi_nor *nor)
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+-int spi_nor_sr2_bit7_quad_enable(struct spi_nor *nor)
++int spi_nor_sr2_bit7_quad_enable(struct spi_nor *nor, bool enable)
+ {
+ 	u8 *sr2 = nor->bouncebuf;
+ 	int ret;
+@@ -1981,11 +1993,15 @@ int spi_nor_sr2_bit7_quad_enable(struct spi_nor *nor)
+ 	ret = spi_nor_read_sr2(nor, sr2);
+ 	if (ret)
+ 		return ret;
+-	if (*sr2 & SR2_QUAD_EN_BIT7)
++	if ((enable && (*sr2 & SR2_QUAD_EN_BIT7)) ||
++	    (!enable && !(*sr2 & SR2_QUAD_EN_BIT7)))
+ 		return 0;
+ 
+ 	/* Update the Quad Enable bit. */
+-	*sr2 |= SR2_QUAD_EN_BIT7;
++	if (enable)
++		*sr2 |= SR2_QUAD_EN_BIT7;
++	else
++		*sr2 &= ~SR2_QUAD_EN_BIT7;
+ 
+ 	ret = spi_nor_write_sr2(nor, sr2);
+ 	if (ret)
+@@ -2898,12 +2914,13 @@ static int spi_nor_init_params(struct spi_nor *nor)
+ }
+ 
+ /**
+- * spi_nor_quad_enable() - enable Quad I/O if needed.
++ * spi_nor_quad_enable() - enable/disable Quad I/O if needed.
+  * @nor:                pointer to a 'struct spi_nor'
++ * @enable:             true to enable Quad mode. false to disable Quad mode.
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+-static int spi_nor_quad_enable(struct spi_nor *nor)
++static int spi_nor_quad_enable(struct spi_nor *nor, bool enable)
+ {
+ 	if (!nor->params->quad_enable)
+ 		return 0;
+@@ -2912,7 +2929,7 @@ static int spi_nor_quad_enable(struct spi_nor *nor)
+ 	      spi_nor_get_protocol_width(nor->write_proto) == 4))
+ 		return 0;
+ 
+-	return nor->params->quad_enable(nor);
++	return nor->params->quad_enable(nor, enable);
+ }
+ 
+ /**
+@@ -2936,7 +2953,7 @@ static int spi_nor_init(struct spi_nor *nor)
+ {
+ 	int err;
+ 
+-	err = spi_nor_quad_enable(nor);
++	err = spi_nor_quad_enable(nor, true);
+ 	if (err) {
+ 		dev_dbg(nor->dev, "quad mode not supported\n");
+ 		return err;
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index 6f2f6b2..222e0d3 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -198,7 +198,7 @@ struct spi_nor_locking_ops {
+  *                      higher index in the array, the higher priority.
+  * @erase_map:		the erase map parsed from the SFDP Sector Map Parameter
+  *                      Table.
+- * @quad_enable:	enables SPI NOR quad mode.
++ * @quad_enable:	enables/disables SPI NOR quad mode.
+  * @set_4byte_addr_mode: puts the SPI NOR in 4 byte addressing mode.
+  * @convert_addr:	converts an absolute address into something the flash
+  *                      will understand. Particularly useful when pagesize is
+@@ -219,7 +219,7 @@ struct spi_nor_flash_parameter {
+ 
+ 	struct spi_nor_erase_map        erase_map;
+ 
+-	int (*quad_enable)(struct spi_nor *nor);
++	int (*quad_enable)(struct spi_nor *nor, bool enable);
+ 	int (*set_4byte_addr_mode)(struct spi_nor *nor, bool enable);
+ 	u32 (*convert_addr)(struct spi_nor *nor, u32 addr);
+ 	int (*setup)(struct spi_nor *nor, const struct spi_nor_hwcaps *hwcaps);
+@@ -406,9 +406,9 @@ int spi_nor_write_ear(struct spi_nor *nor, u8 ear);
+ int spi_nor_wait_till_ready(struct spi_nor *nor);
+ int spi_nor_lock_and_prep(struct spi_nor *nor);
+ void spi_nor_unlock_and_unprep(struct spi_nor *nor);
+-int spi_nor_sr1_bit6_quad_enable(struct spi_nor *nor);
+-int spi_nor_sr2_bit1_quad_enable(struct spi_nor *nor);
+-int spi_nor_sr2_bit7_quad_enable(struct spi_nor *nor);
++int spi_nor_sr1_bit6_quad_enable(struct spi_nor *nor, bool enable);
++int spi_nor_sr2_bit1_quad_enable(struct spi_nor *nor, bool enable);
++int spi_nor_sr2_bit7_quad_enable(struct spi_nor *nor, bool enable);
+ 
+ int spi_nor_xread_sr(struct spi_nor *nor, u8 *sr);
+ ssize_t spi_nor_read_data(struct spi_nor *nor, loff_t from, size_t len,
+-- 
+2.8.1
 
 
 ______________________________________________________
