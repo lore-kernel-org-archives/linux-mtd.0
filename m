@@ -2,74 +2,72 @@ Return-Path: <SRS0=3nwF=AS=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F506C433E0
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2020 09:34:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B35F2C433DF
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2020 10:33:21 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4CAE82065F
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2020 09:34:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7E8A12065F
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2020 10:33:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="K1Q8gQP1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4CAE82065F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="26kyqp50";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="blra8Dgw";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="/11CwLNn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7E8A12065F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=YGCSMakWstm2rvjHOV+nuYnbM3cY93f/4575phKso1s=; b=K1Q8gQP1PvaeudHMYXbkxjb8o
-	85VjkD2C1U+eFTJuMip19D1rHJw7d+1gjjeVAWvXTYW4P+BDWElrWsjBJ0hjvPzzLaHXXG1Yy3401
-	jt+BKDomRaFlssRlAR88an7wUFSt0niiFSXoJZoqvVvlaLzWntrQXwgc8nZXS75ICCe7nti+2mY88
-	6h/lpep1YS7rOLhddjY3+H3sW2yAhe3bjitjtsCLOd6Xaqly7c9bhqYDPXL3Xbp7HPDlX49MW2rHb
-	RI/e2IxoNJBfLC/UpGsXE6jNuoO6GHaJLdWcyh/JS4G2A4ynGWROn4WUsOOmU7MvG9MN9PQXJzO+v
-	HVgIlfjLw==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=GGjUS3HLrnsoHynx9GJoqyqIAU5OfiKJuG7I5rnUv84=; b=26kyqp50DdtEiopvA3hUoxG4pt
+	r4DPt2zOLw8z6qtkjUQEHeu+ZFQLI9D5z76sa4RJFDnTn5iUzun9aFaHRb6uEmMiL10i41gIrcHCQ
+	H8Xn//dev0ltjcIUIyAo3RvvjH4ytFqActl6mlNkoE3NahoAGkQqc3cq9Oxrp7irTEdhDKDDHiaEz
+	cUXMKBwloiCJTJNmSAb8mPZPyGyBYc5PI8M9frRuhVOHL4UYjqqDzQaxY/8bk5rSMmraOKg8Q6m+J
+	1oYDaFI0B+W0DlKhoKIcD/RUvdc448CxsHcbTbWW7LDtcvHWJhsWmtrhpm+lGYE247UCrzZFKFvJ9
+	YR4g0JWQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jsjyb-00082A-MJ; Tue, 07 Jul 2020 09:33:21 +0000
-Received: from mail-oi1-f193.google.com ([209.85.167.193])
+	id 1jsktd-0003cO-8t; Tue, 07 Jul 2020 10:32:17 +0000
+Received: from galois.linutronix.de ([193.142.43.55])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jsjyY-00081j-Rt
- for linux-mtd@lists.infradead.org; Tue, 07 Jul 2020 09:33:19 +0000
-Received: by mail-oi1-f193.google.com with SMTP id l63so32940345oih.13
- for <linux-mtd@lists.infradead.org>; Tue, 07 Jul 2020 02:33:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=VB02tOgm4x0vvWinn0yzASS1J5cK/IPzRsdpTAQ4rQk=;
- b=iTUwupa31oRYKBwq/wPICKzlWvQMmHds985EdYc1nAM5uMBeECSH4yT6wbHCGL0LSA
- etRQuBj+mk2TWr6vWfNIUoW8B9imRcyBJgVoubUEAdIvwXdwya8+ArKvybjiZnrArh0l
- YEXnKeyc6mlARaRsUtbrKKjftwUrBWx3bLsLWacSTs3xYCqRAOqAXIwISIaV0+bZqfTg
- LobxaNHqiFZOoAz1Ns30xTkMEZ2qCB3wTi8Ba7X9aSWcYm4eKE8s+KJCulfCJw7AeonI
- hwIIaubhXTcEHtxw6kAR81BKuqvEjg/I//TekbrCZGaLwYEIJRhFx4FeHYnmFwzrgzcy
- eeCQ==
-X-Gm-Message-State: AOAM530AUURCfoI5i2oBD82K2ZiJCDUXYeDfcANNEc0kFlYhwyxenTDq
- 3jaJfppUbB1jEspzjgvUSOByiJ8gGQnJzOt5UyA=
-X-Google-Smtp-Source: ABdhPJzdnmNZM58lYV9qIqWEOtbYuwfoZLGUAXoQImbx7pakXkbzqGAN57IIyGJ4TXoicdjI0ci72Uq/yPlU117sldc=
-X-Received: by 2002:a05:6808:64a:: with SMTP id
- z10mr2601380oih.54.1594114397872; 
- Tue, 07 Jul 2020 02:33:17 -0700 (PDT)
+ id 1jsktX-0003Y5-39
+ for linux-mtd@lists.infradead.org; Tue, 07 Jul 2020 10:32:13 +0000
+From: Martin Kaistra <martin.kaistra@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+ s=2020; t=1594117927;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=USFW9P2SEx1J6Wl5NKxIUnni0TZLY+y2tVeMLY8iD+c=;
+ b=blra8DgwjNPi7VjhRemGkkPogx/XI03TRUDqNBbpOdHYNdyCecodTyWo+tFmDJCNCEOY7A
+ A2a0hjN9gzzT9EzFSgOSwGqIr1ZfVlufe9vZYF5SnSlaL5k8OVyIg7EA/+lzoJgLNJgxmS
+ PGENQYcXkRim8/ty+9Yxi+6+nMCncftsNN0fY4dAx2RHVtQa4swFwqX4fLu4QTlQToHi1j
+ F429oVGkX0xb9/fsnrfgusY4SYbTI953LkoVP2MNNsW3FQ/ftPd9Exqwh4RuJsvSb7z6sJ
+ F4hFFffaUV5KWWcqvOGVee+pZbMemGDUjiagDlfr7YCwAzVlwhE4dZhMuoIYgg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+ s=2020e; t=1594117927;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=USFW9P2SEx1J6Wl5NKxIUnni0TZLY+y2tVeMLY8iD+c=;
+ b=/11CwLNnrcOuPsT2AjWRvD/dVGl4wlHuWwJNUnYt8u8CvfGFJm5bm9ZMOXdH8Utyx/N3Az
+ tXh0U2wDRidfhkBQ==
+To: richard@nod.at
+Subject: [PATCH] ubifs: add option to specify version for new file systems
+Date: Tue,  7 Jul 2020 12:31:59 +0200
+Message-Id: <20200707103159.12267-1-martin.kaistra@linutronix.de>
 MIME-Version: 1.0
-References: <9969c8a1-e6be-38a9-ced5-ce8c5ff07046@cogentembedded.com>
- <54a84c75-fa17-9976-d9a6-a69ef67c418b@cogentembedded.com>
-In-Reply-To: <54a84c75-fa17-9976-d9a6-a69ef67c418b@cogentembedded.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 7 Jul 2020 11:33:07 +0200
-Message-ID: <CAMuHMdVnjE=BHe5MBr_NsL6LeXq30vKym8OVLp28=7sZeUBAWw@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] dt-bindings: memory: document Renesas RPC-IF
- bindings
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200707_053318_905021_911252DD 
-X-CRM114-Status: GOOD (  16.71  )
+X-CRM114-CacheID: sfid-20200707_063211_291000_2CFBC81C 
+X-CRM114-Status: GOOD (  11.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,119 +79,96 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>,
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- Chris Brandt <chris.brandt@renesas.com>, Rob Herring <robh+dt@kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Philipp Zabel <p.zabel@pengutronix.de>, Mason Yang <masonccyang@mxic.com.tw>
+Cc: linux-mtd@lists.infradead.org,
+ Martin Kaistra <martin.kaistra@linutronix.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Sergei,
+Instead of creating ubifs file systems with UBIFS_FORMAT_VERSION
+by default, add a module parameter ubifs.default_version to allow
+the user to specify the desired version. Valid values are 4 to
+UBIFS_FORMAT_VERSION (currently 5).
 
-On Tue, Jun 16, 2020 at 10:01 PM Sergei Shtylyov
-<sergei.shtylyov@cogentembedded.com> wrote:
-> Renesas Reduced Pin Count Interface (RPC-IF) allows a SPI flash or
-> HyperFlash connected to the SoC to be accessed via the external address
-> space read mode or the manual mode.
->
-> Document the device tree bindings for the Renesas RPC-IF found in the R-Car
-> gen3 SoCs.
->
-> Based on the original patch by Mason Yang <masonccyang@mxic.com.tw>.
->
-> Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+This way, one can for example create a file system with version 4
+on kernel 4.19 which can still be mounted rw when downgrading to
+kernel 4.9.
 
-Thanks for your patch!
+Signed-off-by: Martin Kaistra <martin.kaistra@linutronix.de>
+---
+ fs/ubifs/sb.c    |  5 +++--
+ fs/ubifs/super.c | 18 ++++++++++++++++++
+ fs/ubifs/ubifs.h |  1 +
+ 3 files changed, 22 insertions(+), 2 deletions(-)
 
-> --- /dev/null
-> +++ linux/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml
-> @@ -0,0 +1,88 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/memory-controllers/renesas,rpc-if.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Renesas Reduced Pin Count Interface (RPC-IF)
-> +
-> +maintainers:
-> +  - Sergei Shtylyov <sergei.shtylyov@gmail.com>
-> +
-> +description: |
-> +  Renesas RPC-IF allows a SPI flash or HyperFlash connected to the SoC to
-> +  be accessed via the external address space read mode or the manual mode.
-> +
-> +  The flash chip itself should be represented by a subnode of the RPC-IF node.
-> +  The flash interface is selected based on the "compatible" property of this
-> +  subnode:
-> +  - if it contains "jedec,spi-nor", then SPI is used;
-> +  - if it contains "cfi-flash", then HyperFlash is used.
-
-> +patternProperties:
-> +  "flash@[0-9a-f]+$":
-> +    type: object
-> +    properties:
-> +      compatible:
-> +        enum:
-> +          - cfi-flash
-> +          - jedec,spi-nor
-
-The above does not allow specifying e.g.
-
-    compatible = "spansion,s25fs512s", "jedec,spi-nor";
-
-arch/arm64/boot/dts/renesas/r8a77970-eagle.dt.yaml: spi@ee200000:
-flash@0:compatible: Additional items are not allowed ('jedec,spi-nor'
-was unexpected)
-arch/arm64/boot/dts/renesas/r8a77970-eagle.dt.yaml: spi@ee200000:
-flash@0:compatible:0: 'spansion,s25fs512s' is not one of ['cfi-flash',
-'jedec,spi-nor']
-
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/renesas-cpg-mssr.h>
-> +    #include <dt-bindings/power/r8a77995-sysc.h>
-> +
-> +    spi@ee200000 {
-> +      compatible = "renesas,r8a77995-rpc-if", "renesas,rcar-gen3-rpc-if";
-> +      reg = <0xee200000 0x200>,
-> +            <0x08000000 0x4000000>,
-> +            <0xee208000 0x100>;
-> +      reg-names = "regs", "dirmap", "wbuf";
-> +      clocks = <&cpg CPG_MOD 917>;
-> +      power-domains = <&sysc R8A77995_PD_ALWAYS_ON>;
-> +      resets = <&cpg 917>;
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +
-> +      flash@0 {
-> +        compatible = "jedec,spi-nor";
-
-... which you nicely circumvented in the example ;-)
-
-> +        reg = <0>;
-> +        spi-max-frequency = <40000000>;
-> +        spi-tx-bus-width = <1>;
-> +        spi-rx-bus-width = <1>;
-> +      };
-> +    };
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
+index 4b4b65b48c57..c0d3e4008d23 100644
+--- a/fs/ubifs/sb.c
++++ b/fs/ubifs/sb.c
+@@ -174,7 +174,8 @@ static int create_default_filesystem(struct ubifs_info *c)
+ 	tmp64 = (long long)max_buds * c->leb_size;
+ 	if (big_lpt)
+ 		sup_flags |= UBIFS_FLG_BIGLPT;
+-	sup_flags |= UBIFS_FLG_DOUBLE_HASH;
++	if (ubifs_default_version > 4)
++		sup_flags |= UBIFS_FLG_DOUBLE_HASH;
+ 
+ 	if (ubifs_authenticated(c)) {
+ 		sup_flags |= UBIFS_FLG_AUTHENTICATION;
+@@ -200,7 +201,7 @@ static int create_default_filesystem(struct ubifs_info *c)
+ 	sup->jhead_cnt     = cpu_to_le32(DEFAULT_JHEADS_CNT);
+ 	sup->fanout        = cpu_to_le32(DEFAULT_FANOUT);
+ 	sup->lsave_cnt     = cpu_to_le32(c->lsave_cnt);
+-	sup->fmt_version   = cpu_to_le32(UBIFS_FORMAT_VERSION);
++	sup->fmt_version   = cpu_to_le32(ubifs_default_version);
+ 	sup->time_gran     = cpu_to_le32(DEFAULT_TIME_GRAN);
+ 	if (c->mount_opts.override_compr)
+ 		sup->default_compr = cpu_to_le16(c->mount_opts.compr_type);
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 7fc2f3f07c16..a2420c900275 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -26,6 +26,24 @@
+ #include <linux/writeback.h>
+ #include "ubifs.h"
+ 
++static int ubifs_default_version_set(const char *val, const struct kernel_param *kp)
++{
++	int n = 0, ret;
++
++	ret = kstrtoint(val, 10, &n);
++	if (ret != 0 || n < 4 || n > UBIFS_FORMAT_VERSION)
++		return -EINVAL;
++	return param_set_int(val, kp);
++}
++
++static const struct kernel_param_ops ubifs_default_version_ops = {
++	.set = ubifs_default_version_set,
++	.get = param_get_int,
++};
++
++int ubifs_default_version = UBIFS_FORMAT_VERSION;
++module_param_cb(default_version, &ubifs_default_version_ops, &ubifs_default_version, 0600);
++
+ /*
+  * Maximum amount of memory we may 'kmalloc()' without worrying that we are
+  * allocating too much.
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index bff682309fbe..4ffd832e3b93 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -1504,6 +1504,7 @@ extern const struct file_operations ubifs_dir_operations;
+ extern const struct inode_operations ubifs_dir_inode_operations;
+ extern const struct inode_operations ubifs_symlink_inode_operations;
+ extern struct ubifs_compressor *ubifs_compressors[UBIFS_COMPR_TYPES_CNT];
++extern int ubifs_default_version;
+ 
+ /* auth.c */
+ static inline int ubifs_authenticated(const struct ubifs_info *c)
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.20.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
 
 ______________________________________________________
 Linux MTD discussion mailing list
