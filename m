@@ -2,22 +2,23 @@ Return-Path: <SRS0=3nwF=AS=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6761FC433DF
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2020 11:28:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E2EBC433E0
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2020 11:53:42 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 333F4206CD
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2020 11:28:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6BE22206BE
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2020 11:53:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="G5uZbjyD";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NjHjc/P7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 333F4206CD
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kERqELKo";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="vFExuLQF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6BE22206BE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,59 +27,58 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
 	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=csGffYB3TjJ2AGjVEBuBd8SM0wetnSbEbMogjb6vTxQ=; b=G5uZbjyDxa+d2U4aB7+i8EPvN
-	17BMr/jhNznIu7RlBi2i+Foc4WdyB4MC60cJf4cKP/Wnam0Ruy9vASiPqzKM9z985SZSyuDkhY7Pp
-	LRbjaIiY7Dy/bXrk4u1nm/o6rreMdfsm8SfJyXJMxc/NS+jCNUzZmnFhNZ5UA6Uq21rMIDS+jp/WE
-	gPJjtpQzHF5F1T6otp16C3exJJPcQeP/AnR9EGluOl2o0GL73UIFJZ9iEKCQGFCvNO9tkgA2IB7Dq
-	jPBrc44DybyqYDAuECdR+DHRO7J2l3xu/fUSA6qru+xf0Mj+N3PSAXtoxN1R/uBmAavaCLZg2aitR
-	vYXPZFv/A==;
+	 bh=UwD+NsBbSNmYE0WBWGkVazsB2mfTgSpScTVgesiNkSI=; b=kERqELKoKvt49OkX2BNrculco
+	+zxD8BxlTIGVcphTVdEjavWmxkpfDy8ZXgL4LQiOOuafEGnjQkeKOuIUkcGJKtOwWSWU3Nz88uKzA
+	ivc+Q3Wt2L8OnTI4/Fgsjf07GoOdA06zM83E1sT0UT3ipus1hJbVq5pAK8MqQck6idW870FiykYfW
+	NsEQJHMNw0CA/lAKc5Z0Ke63EoXBpKPA1a32pX28nT6saiZ15aBFuws/INBur5RN0F02VCjmExMoL
+	/4slITXGFQymPorOsSWEZCZxeKqqKYygJ32nkZMgDmtAQr871mprzFxxVHEQfBi1k+OF/UJsWgFSV
+	HtZemkcrg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jslkp-0004ji-4r; Tue, 07 Jul 2020 11:27:15 +0000
-Received: from mail-qt1-x842.google.com ([2607:f8b0:4864:20::842])
+	id 1jsm9s-0002PD-Lx; Tue, 07 Jul 2020 11:53:08 +0000
+Received: from mail-qk1-x741.google.com ([2607:f8b0:4864:20::741])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jslkm-0004ic-K2
- for linux-mtd@lists.infradead.org; Tue, 07 Jul 2020 11:27:13 +0000
-Received: by mail-qt1-x842.google.com with SMTP id w34so11338893qte.1
- for <linux-mtd@lists.infradead.org>; Tue, 07 Jul 2020 04:27:10 -0700 (PDT)
+ id 1jsm9p-0002O6-Sf
+ for linux-mtd@lists.infradead.org; Tue, 07 Jul 2020 11:53:06 +0000
+Received: by mail-qk1-x741.google.com with SMTP id j80so37791592qke.0
+ for <linux-mtd@lists.infradead.org>; Tue, 07 Jul 2020 04:53:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=S/3PCAPfoxjGBDIjaZGp6+CalyT9Vs4Hs7aWN08fHIU=;
- b=NjHjc/P7fmDgZed8pANwRNAML3xmnqNssiiYmOrhnjV/bvIQ22gKhbyes5Vt/TSWmX
- qQLblKrx3BpyKYTO9NgM4eRsbRyTEv5NEWbMS+a08Vn3kxnEKk3+I0oZaaF0L2W422Nd
- gx4dX5ZMrSrbOxHKUbCTJq1x1YyD9N3O3OfWdq/1OvO0II6S5C1pkdyOnjKzH6W5OltO
- /Nfh5kPJn90NcSeCDEyPzBdV5EBoOXWZR6kzVNilIhYQ/B4jQBqnCn1v1XRQbztjT41A
- syamgNh4AEfLBlpDtx1aNud7umPUhdDCPx2r1geuWq0a6qE+UzBxulPRhiYpDgYRhicA
- DJCA==
+ :cc; bh=/lhR2DZXpozvvgwzQZE1TCPc3qqJrMpIFfl0B2ci+vU=;
+ b=vFExuLQFOH/bXTR/xQJn75B8oonlcSiIttbkfBjYRxIChwEd2AR3gU2B1S+lwXsSRl
+ R3WqH0yxCnRrY2KezY865zfBmTKORaxsXKfWcSiLF1SOD2peJy0N9Cewg7q5cYrnrwfW
+ n1CgK+S/uqzPLW2XqkTUZVphPCEu2Nh+Ux0A51K52eQ2Z48jprlhtMq+AIeStSSHhh+l
+ 1h8Vprw543xz2CaF83OXxvIYtOvDUac7kcDUiR1nUI3nz8xk3rOEbwvXhCYNMA5jYckd
+ a+nh9RXpYON2GH08oVNgGrqJNNmQha9h52VJ+2R3hj72ne8kjBQNbtj4coPkrSSH4q7U
+ S9rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=S/3PCAPfoxjGBDIjaZGp6+CalyT9Vs4Hs7aWN08fHIU=;
- b=dbrXFbJHcAHj1j8iVF30hdiKYtsBIM48TDnln+Bemw5P50LrtiL6vaDpLS26HP1kIP
- iDRu5OUva/J5nxEZJCbRsD0/G+VI9keqLB5V/gqI6keRoVyFb2QJ1CfKunDUiSdllu9h
- dBI3pOJgJQPtkbdsVfCSS8wqfHGg9R6PLsKFIUE47rXRqYGfiOhEDWcillCAqRi5EPAI
- 8/dJ5pI9ilOyLUWmW05XlRjg1QNL7srEdjFENqMWPvGoPKr1IIWCQoB9pHuIilRkWdWk
- B3+aL/ejOtjDL0VytXk5HkS/YquInt3nWt8xDO79RM0ZLujuoOoLDjkySKhEp1cGv4f7
- iI9A==
-X-Gm-Message-State: AOAM531IgBGAgrsRMmXXOhyN4LX3lSTzmjitydA5d2Y6WxjrkKGPx0I6
- eJGsnWPUFHlVPPan0/Rl44rt6rkHpCObBbp81Vw=
-X-Google-Smtp-Source: ABdhPJzISarwTOC7dTcyKLSH3O194wGhx9+uJw36v4j6vyj/0MSpRT+hObOa20ibKb8uAg/xfOihvN2uV8eq+SFdv/Q=
-X-Received: by 2002:aed:27c7:: with SMTP id m7mr55886324qtg.13.1594121229629; 
- Tue, 07 Jul 2020 04:27:09 -0700 (PDT)
+ :message-id:subject:to:cc;
+ bh=/lhR2DZXpozvvgwzQZE1TCPc3qqJrMpIFfl0B2ci+vU=;
+ b=he7hKHGskWjoR94nzzr0wFxrBM+sraMyQfa2VW4QOseIK/yBnjpKCzea/RoxENdL7I
+ 4mTkNcBxfUpxPaB34+4sJC5VbrJ4I7q5mGczKp5DBa/r8+K151hhPejdbOw3qj1Mzyoz
+ NLgH0BXrxoHU12bEA8yA0ETf+ZKSXkGUyw2DXs71JvQUX4FT3RW2BlHOXt6zHw6dF196
+ 17RjvUvcRFFfLMiGKZ4bJU8LnVhLHlBzzbpYkqXnilWfWormUNPkuP5IfceaLvrFKG5/
+ 95O7OhiQtoQqOoOUAc2Fkm4Q05hiH6ddn2yc50ybDVaRDKPC1+3kK3mNkMDiM3zdQaIb
+ nqMA==
+X-Gm-Message-State: AOAM532QXLhFo5RsBOn8EUs0MPFOjmz2N4uyCtTONrVoOv1/Q6+d2+Uq
+ bjR2aczUI7K+bTxYPDzGgOeiHOBCpQUJzQ8Mam8=
+X-Google-Smtp-Source: ABdhPJxI0yK/3FTcBZrGCc+QfO7hVhj1GBMGcBdmHTMw0+jvC5IYgvfTIPEaDGxgMCOZTnR4yIJOJZHt4XFq01W7GeI=
+X-Received: by 2002:a37:8b01:: with SMTP id n1mr51153237qkd.370.1594122784112; 
+ Tue, 07 Jul 2020 04:53:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200701112643.726986-1-chengzhihao1@huawei.com>
-In-Reply-To: <20200701112643.726986-1-chengzhihao1@huawei.com>
+References: <20200702152048.1819867-1-chengzhihao1@huawei.com>
+In-Reply-To: <20200702152048.1819867-1-chengzhihao1@huawei.com>
 From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Tue, 7 Jul 2020 13:26:58 +0200
-Message-ID: <CAFLxGvyO_aXGfgoO0mrNsoGP4Bfh3n6CUQxDx=ecH6o2ZDNYDg@mail.gmail.com>
-Subject: Re: [PATCH] ubifs: Fix a potential space leak problem while linking
- tmpfile
+Date: Tue, 7 Jul 2020 13:52:53 +0200
+Message-ID: <CAFLxGvybobVbhS4zQSxSmq3xR40QP=pkyDG8j7jA8a6eOOKfHg@mail.gmail.com>
+Subject: Re: [PATCH] ubifs: Fix wrong orphan node deletion in
+ ubifs_jnl_update()
 To: Zhihao Cheng <chengzhihao1@huawei.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200707_072712_711677_2AEAF842 
-X-CRM114-Status: GOOD (  11.78  )
+X-CRM114-CacheID: sfid-20200707_075305_930642_D3811BBE 
+X-CRM114-Status: GOOD (  18.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,40 +92,62 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
  LKML <linux-kernel@vger.kernel.org>, "zhangyi \(F\)" <yi.zhang@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gV2VkLCBKdWwgMSwgMjAyMCBhdCAxOjI4IFBNIFpoaWhhbyBDaGVuZyA8Y2hlbmd6aGloYW8x
-QGh1YXdlaS5jb20+IHdyb3RlOgo+Cj4gVGhlcmUgaXMgYSBwb3RlbnRpYWwgc3BhY2UgbGVhayBw
-cm9ibGVtIHdoaWxlIGxpbmtpbmcgdG1wZmlsZSwgaW4gd2hpY2gKPiBjYXNlLCBpbm9kZSBub2Rl
-ICh3aXRoIG5saW5rPTApIGlzIHZhbGlkIGluIHRuYyAob24gZmxhc2gpLCB3aGljaCBsZWFkcwo+
-IHRvIHNwYWNlIGxlYWsuIE1lYW53aGlsZSwgdGhlIGNvcnJlc3BvbmRpbmcgZGF0YSBub2RlcyB3
-b24ndCBiZSByZWxlYXNlZAo+IGZyb20gdG5jLiBGb3IgZXhhbXBsZSwgKEEgcmVwcm9kdWNlciBj
-YW4gYmUgZm91bmQgaW4gTGluayk6Cj4KPiAkIG1vdW50IFVCSUZTCj4gICBbcHJvY2VzcyBBXSAg
-ICAgICAgICAgIFtwcm9jZXNzIEJdICAgICAgICAgW1ROQ10gICAgICAgICBbb3JwaGFuIGFyZWFd
-Cj4KPiAgdWJpZnNfdG1wZmlsZSAgICAgICAgICAgICAgICAgICAgICAgICAgaW5vZGVfQSAobmxp
-bms9MCkgICAgIGlub2RlX0EKPiAgICAgICAgICAgICAgICAgICAgICAgICAgIGRvX2NvbW1pdCAg
-ICAgaW5vZGVfQSAobmxpbms9MCkgICAgIGlub2RlX0EKPiAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAg4oaRCj4gICAgICAgKGNvbW1lbnQ6IEl0IG1ha2VzIHN1cmUgbm90IHJlcGxheSBp
-bm9kZV9BIGluIG5leHQgbW91bnQpCj4gIHViaWZzX2xpbmsgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIGlub2RlX0EgKG5saW5rPTApICAgICBpbm9kZV9BCj4gICAgdWJpZnNfZGVsZXRlX29y
-cGhhbiAgICAgICAgICAgICAgICAgIGlub2RlX0EgKG5saW5rPTApCj4gICAgICAgICAgICAgICAg
-ICAgICAgICAgICBkb19jb21taXQgICAgIGlub2RlX0EgKG5saW5rPTApCj4gICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgLS0tPiBQT1dFUkNVVCA8LS0tCj4gICAgKHViaWZzX2pubF91cGRhdGUp
-Cj4KPiAkIG1vdW50IFVCSUZTCj4gICBpbm9kZV9BIHdpbGwgbmVpdGhlciBiZSByZXBsYXllZCBp
-biB1Ymlmc19yZXBsYXlfam91cm5hbCgpIG5vcgo+ICAgdWJpZnNfbW91bnRfb3JwaGFucygpLiBp
-bm9kZV9BIChubGluaz0wKSB3aXRoIGl0cyBkYXRhIG5vZGVzIHdpbGwKPiAgIGFsd2F5cyBvbiB0
-bmMsIGl0IG9jY3VweSBzcGFjZSBidXQgaXMgbm9uLXZpc2FibGUgZm9yIHVzZXJzLgo+Cj4gQ29t
-bWl0IGVlMTQzOGNlNWRjNGQgKCJ1YmlmczogQ2hlY2sgbGluayBjb3VudCBvZiBpbm9kZXMgd2hl
-biBraWxsaW5nCj4gb3JwaGFucy4iKSBoYW5kbGVzIHByb2JsZW0gaW4gbWlzdGFrZW5seSBkZWxl
-dGluZyByZWxpbmtlZCB0bXBmaWxlCj4gd2hpbGUgcmVwbGF5aW5nIG9ycGhhbiBhcmVhLiBTaW5j
-ZSB0aGF0LCB0bXBmaWxlIGlub2RlIHNob3VsZCBhbHdheXMKPiBsaXZlIGluIG9ycGhhbiBhcmVh
-IGV2ZW4gaXQgaXMgbGlua2VkLiBGaXggaXQgYnkgcmV2ZXJ0aW5nIGNvbW1pdAo+IDMyZmU5MDVj
-MTdmMDAxICgidWJpZnM6IEZpeCBPX1RNUEZJTEUgY29ybmVyIGNhc2UgaW4gdWJpZnNfbGluaygp
-IikuCgpXZWxsLCBieSByZXZlcnRpbmcgdGhpcyBjb21taXQgeW91IHJlLWludHJvZHVjZSB0aGUg
-aXNzdWUgaXQgZml4ZXMuIDstXAoKLS0gClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
-c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vbGludXgtbXRkLwo=
+On Thu, Jul 2, 2020 at 5:21 PM Zhihao Cheng <chengzhihao1@huawei.com> wrote:
+>
+> There a wrong orphan node deleting in error handling path in
+> ubifs_jnl_update(), which may cause following error msg:
+>
+>   UBIFS error (ubi0:0 pid 1522): ubifs_delete_orphan [ubifs]:
+>   missing orphan ino 65
+>
+> Fix this by checking whether the node has been operated for
+> adding to orphan list before being deleted,
+>
+> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+> ---
+>  fs/ubifs/journal.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+> index e5ec1afe1c66..db0a80dd9d52 100644
+> --- a/fs/ubifs/journal.c
+> +++ b/fs/ubifs/journal.c
+> @@ -539,7 +539,7 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
+>                      const struct fscrypt_name *nm, const struct inode *inode,
+>                      int deletion, int xent)
+>  {
+> -       int err, dlen, ilen, len, lnum, ino_offs, dent_offs;
+> +       int err, dlen, ilen, len, lnum, ino_offs, dent_offs, orphan_added = 0;
+>         int aligned_dlen, aligned_ilen, sync = IS_DIRSYNC(dir);
+>         int last_reference = !!(deletion && inode->i_nlink == 0);
+>         struct ubifs_inode *ui = ubifs_inode(inode);
+> @@ -630,6 +630,7 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
+>                         goto out_finish;
+>                 }
+>                 ui->del_cmtno = c->cmt_no;
+> +               orphan_added = 1;
+>         }
+>
+>         err = write_head(c, BASEHD, dent, len, &lnum, &dent_offs, sync);
+> @@ -702,7 +703,7 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
+>         kfree(dent);
+>  out_ro:
+>         ubifs_ro_mode(c, err);
+> -       if (last_reference)
+> +       if (last_reference && orphan_added)
+
+I think you can just check for orphan_added here.
+Looks good otherwise, thanks for fixing! :-)
+
+-- 
+Thanks,
+//richard
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
