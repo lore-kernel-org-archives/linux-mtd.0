@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C04B8C433DF
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2020 19:01:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E4F8C433E0
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2020 19:01:41 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9217E206CD
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2020 19:01:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E9B9220720
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2020 19:01:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="17csLiu/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9217E206CD
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YmW24/2L"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E9B9220720
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,42 +25,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=7sbbTV6xyqpDO23Z+OS18ZkwBsP+MkXrlA5Yua1L4Uk=; b=17csLiu/9VhQm+khfUar1n6BL
-	Sw9ugxP+MysK+2M1nH9H/Z9a+Bx5eFAWAmF34rzgCD82OLDP02RX7pCpDGYBM55R441IbgweVu0Vl
-	u9ClGbDrEPYjA/lOcXeGZ3AvgNKX2s9IEsrFuj96mQWxx1He6h5w/1I3We0cA1fBBZB4SashVesLB
-	fpgMUJb71YI/srFeILPziaLpDT5I3jGeB9Pz2ZF1C/Abqbh203eax6WRWkGQLCNAOUaiiS6/Gt5g3
-	/sgmBx3d6lswi9JvBCQdAvVCr16jVfNVrVditAykfdrxRQmqgB/2qwXc4mxhSDkAxZO3Z+OxXfsKN
-	9I+7bbkTQ==;
+	 bh=JXpGqi8gpV8OcaPLyduekw8GKAZptT2/+MBFYZrURpE=; b=YmW24/2LusqWIdKy7WSYf4rmN
+	Bh/TeOSaHz8mDimYtcxz428KoWIEC+KJiOoCFZdDTE6tqXFHKG8r4zIyb1OMirg7C4qY+HNj1Kwkn
+	ftepKVsSC6bznkRfOe0YHk4wFzRcXBLSm/FnBtKWG7Z9wLamzC+Lq6KiN+s4tleocu6HEMfYdInQ6
+	GIGLASbmmv3MKh8BcOKndZmlIAEulNuGoKWQDfTc5kuWRnXlFL1lwAgciN5ScIcvManfaYFfNgw+N
+	DYCqswqOhq/co9hl2U90WV/y2JZGTt0RolGgCZCjQIqPX/fuG+oFtIIfEIaZJFJOfHXxI3ZEZnMnb
+	zgCAZ0EAg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jsspA-0006w0-K2; Tue, 07 Jul 2020 19:00:12 +0000
-Received: from relay3-d.mail.gandi.net ([217.70.183.195])
+	id 1jsspZ-000790-Uc; Tue, 07 Jul 2020 19:00:38 +0000
+Received: from relay5-d.mail.gandi.net ([217.70.183.197])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jssp3-0006sT-Jw
- for linux-mtd@lists.infradead.org; Tue, 07 Jul 2020 19:00:06 +0000
+ id 1jsspA-0006w5-RL
+ for linux-mtd@lists.infradead.org; Tue, 07 Jul 2020 19:00:14 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 4F78060009;
- Tue,  7 Jul 2020 19:00:02 +0000 (UTC)
+ by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 1FE721C0003;
+ Tue,  7 Jul 2020 19:00:08 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Christophe Kerello <christophe.kerello@st.com>, miquel.raynal@bootlin.com,
  richard@nod.at, vigneshr@ti.com, robh+dt@kernel.org, mark.rutland@arm.com,
  arnd@linaro.org, alexandre.torgue@st.com
-Subject: Re: [PATCH v5 2/6] dt-bindings: mtd: update STM32 FMC2 NAND
- controller documentation
-Date: Tue,  7 Jul 2020 21:00:01 +0200
-Message-Id: <20200707190001.25234-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v5 1/6] mtd: rawnand: stm32_fmc2: do not display errors if
+ the driver is deferred
+Date: Tue,  7 Jul 2020 21:00:08 +0200
+Message-Id: <20200707190008.25296-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1591975362-22009-3-git-send-email-christophe.kerello@st.com>
+In-Reply-To: <1591975362-22009-2-git-send-email-christophe.kerello@st.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: bce49d1e3cfe48eb7a33a39da2530156c27fa3b2
+X-linux-mtd-patch-commit: 5eeb7fe919ff4f683d96cf8c74a9de7e54722040
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200707_150005_785531_E37AFB5F 
-X-CRM114-Status: UNSURE (   6.88  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200707_150013_033750_32D12887 
+X-CRM114-Status: GOOD (  10.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,11 +78,15 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2020-06-12 at 15:22:38 UTC, Christophe Kerello wrote:
-> These bindings can be used on SOCs where the FMC2 NAND controller is
-> in standalone. In case that the FMC2 embeds 2 controllers (an external
-> bus controller and a raw NAND controller), the register base address,
-> the clock and the reset will be defined in the parent node.
+On Fri, 2020-06-12 at 15:22:37 UTC, Christophe Kerello wrote:
+> A MDMA issue has been solved on Kernel 5.7. The effect of this fix is
+> that the MDMA driver is now deferred and the FMC2 NFC driver is also
+> deferred. All is working fine but there is a FMC2 log in the console:
+> stm32_fmc2_nfc 58002000.nand-controller: failed to request tx DMA
+> channel: -517
+> 
+> This patch removes the display of this log in the console in case of
+> this error is -EPROBE_DEFER.
 > 
 > Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
 
