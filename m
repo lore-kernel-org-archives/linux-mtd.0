@@ -2,58 +2,67 @@ Return-Path: <SRS0=3nwF=AS=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 685E4C433DF
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2020 19:16:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8282EC433DF
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2020 22:13:30 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 39BDD206E9
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2020 19:16:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4D30320720
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2020 22:13:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="yr882CtT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 39BDD206E9
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lVBaENTL";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gcu0nYrU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D30320720
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From:Date:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=GYonqnCLdoE67/nQA/STbsgnmTTORfQJUvIZTC5Mazc=; b=yr882CtTayzDlEb0e3+74U4tLk
-	U2B23/WlEvictfC5VJJ7P4MQIJbaWD5e0rMBIQDDOoxO+IK/tIqHZJVASVo0rM4w222qWpPCQp6/h
-	K9gwF7I5e2jUuvaeYdYHcoiXJHZ5lfp1+XSMOSyqDPurDRsyL4o9WyMWU7bm7k6MA86hTS9VHlyuM
-	GcXV0BdIfM9tbxIXrlEdtmdA5dj8u00HyLgF+yiaOPnCp9CEoqlVktm/f+rYu0UmAy29Fut+OA6Tz
-	9PSmPQLrqzO02/glN2+WVglrIGGUG47ix8ZSlXPp8d1kGciDEOV4pKkRu+WHKHkPLI17nyyLUp2VP
-	5Q0XApzQ==;
+	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:To:Date:Message-Id:References:In-Reply-To:From:
+	Subject:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=pZQSJWtXgutEV71yTYlO3irEqqQ9YfL/sa10vfwubm0=; b=lVBaENTLRVOBeRczunn8PhSMAY
+	95W2ciYTaYfNGQ8M40ZdXVhwPpRX+g3HHhjef4kMlU6pMaUd2UopElEb8DrvrybIlAE68QK+I+1g7
+	tYLeyCCLj/FIPGVtTLpKSClXt/81jboCVxX0xN/EEBJHEeyFATxrzZqJclkb/pGeF2vlnFVS8Nd8T
+	FKSPzTmvn19q/AnU71omrSvhfi66nb+ufOFNI55/d1tmA6vwmNd4oms/x59pTxdhutxBbVw/+a69z
+	9gsnZXwDzW9OrBwr9/eX6n7T2Bxo3uXYOVL9IIP1x7pDw2otpFM3kMQO2MoAFJrs5nvafR/Zv5jS3
+	kTWvKlAQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jst45-00033b-LB; Tue, 07 Jul 2020 19:15:37 +0000
-Received: from relay7-d.mail.gandi.net ([217.70.183.200])
+	id 1jsvmy-0002fj-M7; Tue, 07 Jul 2020 22:10:08 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jst43-00032x-8q
- for linux-mtd@lists.infradead.org; Tue, 07 Jul 2020 19:15:36 +0000
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id D29FA20006;
- Tue,  7 Jul 2020 19:15:32 +0000 (UTC)
-Date: Tue, 7 Jul 2020 21:15:31 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [GIT PULL] mtd: Fixes for v5.8-rc5
-Message-ID: <20200707211531.7f762650@xps13>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
+ id 1jsvmw-0002f7-8l
+ for linux-mtd@lists.infradead.org; Tue, 07 Jul 2020 22:10:07 +0000
+Subject: Re: [GIT PULL] mtd: Fixes for v5.8-rc5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1594159805;
+ bh=yAHAUQjTFiM9h5AbhaXGadEFpmCqHol/fEFrVD8As8E=;
+ h=From:In-Reply-To:References:Date:To:Cc:From;
+ b=Gcu0nYrUGDU3yH3gbVcxaEfwqZNjhNMW7g+s5SF4iQTCbbTr6SydxbZgmIIos5Ybj
+ +OXpT+ZQjg24Lra9tnSr0CdzXK9+Pg0pCbAsfAITT0hxd2+pXnrH+195F/umilj12p
+ PnDvp9yDMpVp4ZknozzgqQI8fE1xzhoBKWwmTti8=
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20200707211531.7f762650@xps13>
+References: <20200707211531.7f762650@xps13>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200707211531.7f762650@xps13>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git
+ tags/mtd/fixes-for-5.8-rc5
+X-PR-Tracked-Commit-Id: 880bc529bae2257d05a767f7f5c24fd61a47b605
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 6d12075ddeedc38d25c5b74e929e686158da728c
+Message-Id: <159415980526.15440.15200140158486298200.pr-tracker-bot@kernel.org>
+Date: Tue, 07 Jul 2020 22:10:05 +0000
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200707_151535_544129_E9D740B3 
-X-CRM114-Status: UNSURE (   8.37  )
+X-CRM114-CacheID: sfid-20200707_181006_405009_23811B18 
+X-CRM114-Status: UNSURE (   2.42  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -69,32 +78,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Cc: Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- Frieder Schrempf <frieder.schrempf@kontron.de>, linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ Frieder Schrempf <frieder.schrempf@kontron.de>, linux-mtd@lists.infradead.org,
+ Linus Torvalds <torvalds@linux-foundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gTGludXMsCgpUaGlzIGlzIHRoZSBNVEQgUFIgZm9yIHRoZSBuZXh0IC1yYy4KClRoYW5r
-cywKTWlxdcOobAoKClRoZSBmb2xsb3dpbmcgY2hhbmdlcyBzaW5jZSBjb21taXQgYjNhOWUzYjk2
-MjJhZTEwMDY0ODI2ZGNjYjRmN2E1MmJkODhjNzQwNzoKCiAgTGludXggNS44LXJjMSAoMjAyMC0w
-Ni0xNCAxMjo0NTowNCAtMDcwMCkKCmFyZSBhdmFpbGFibGUgaW4gdGhlIEdpdCByZXBvc2l0b3J5
-IGF0OgoKICBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvbXRk
-L2xpbnV4LmdpdCB0YWdzL210ZC9maXhlcy1mb3ItNS44LXJjNQoKZm9yIHlvdSB0byBmZXRjaCBj
-aGFuZ2VzIHVwIHRvIDg4MGJjNTI5YmFlMjI1N2QwNWE3NjdmN2Y1YzI0ZmQ2MWE0N2I2MDU6Cgog
-IG10ZDogcmF3bmFuZDogeHdheTogRml4IGJ1aWxkIGlzc3VlICgyMDIwLTA3LTA3IDIxOjA0OjM4
-ICswMjAwKQoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLQpNVEQ6CiogU2V0IGEgbWlzc2luZyBtYXN0ZXIgcGFydGl0aW9uIHBh
-bmljIHdyaXRlIGZsYWcuCgpSYXcgTkFORDoKKiBGaXggYnVpbGQgaXNzdWUgaW4gdGhlIHh3YXkg
-ZHJpdmVyLgoqIEZpeCBhIHdyb25nIHJldHVybiBjb2RlLgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpLYW1hbCBEYXN1ICgx
-KToKICAgICAgbXRkOiBzZXQgbWFzdGVyIHBhcnRpdGlvbiBwYW5pYyB3cml0ZSBmbGFnCgpNaXF1
-ZWwgUmF5bmFsICgxKToKICAgICAgbXRkOiByYXduYW5kOiB4d2F5OiBGaXggYnVpbGQgaXNzdWUK
-ClJpY2hhcmQgV2VpbmJlcmdlciAoMSk6CiAgICAgIG5hbmRzaW06IEZpeCByZXR1cm4gY29kZSB0
-ZXN0aW5nIG9mIG5zX2ZpbmRfb3BlcmF0aW9uKCkKCiBkcml2ZXJzL210ZC9tdGRjb3JlLmMgICAg
-ICAgICAgICB8IDQgKystLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZHNpbS5jICAgfCAyICst
-CiBkcml2ZXJzL210ZC9uYW5kL3Jhdy94d2F5X25hbmQuYyB8IDIgKy0KIDMgZmlsZXMgY2hhbmdl
-ZCwgNCBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1h
-aWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
-bnV4LW10ZC8K
+The pull request you sent on Tue, 7 Jul 2020 21:15:31 +0200:
+
+> git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/fixes-for-5.8-rc5
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/6d12075ddeedc38d25c5b74e929e686158da728c
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
