@@ -2,64 +2,120 @@ Return-Path: <SRS0=3nwF=AS=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB942C433DF
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2020 13:41:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CAA09C433E0
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2020 14:08:15 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 98A1F20658
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2020 13:41:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 89D10206E2
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2020 14:08:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LvTV8nk3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 98A1F20658
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="wWnQ7ek2";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=infinera.com header.i=@infinera.com header.b="fjoxYJrW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 89D10206E2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=infinera.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=AcESl5aMxjK86e9w2lfuVm7CrzGbht+00BU5JC7qpCY=; b=LvTV8nk3wM2NmEZmtv3e+y+rb
-	PeRInJtrdPtsFtPcWiGQTccZt60eYVOqIfpRY3/cqatwlJcHzi8YDexRmsrIqYoTh3xBsPEIl6wKJ
-	qJJWYpnE75zjilIWSa73nG6tgd5aHi0IiKDiqwoxSta4iXQeFIrgYZFdQQbQqUH61+Aklx9pCPkyF
-	Ql+O6s1sQdOwtzkDWjIMNa77WlVOlAIYhDMpif845ZO11QZUxNEeh9v83wfllptpg2EtqEfoVf79H
-	gU1TKE0Oc3wd/e73PsgD3WnQ9dQe7O+fJMGHMfHTsLML8o1CT1XjCjAJKOchuAIL/OyskSXxaILcf
-	NXyUMN/Jg==;
+	 bh=nU6xun6jLp2RCrLPRozUJnXCKnwf2h0NgLrfbCqyBdg=; b=wWnQ7ek25aFUopxWi2ZxB968e
+	5WM8mvN21wAPNSkB0lpUFZumgwW0PnPbmtGSguTTQPAI7qB83FNhOZtbl4IKA6TZHBF7vac3RiQqy
+	W5gKPH2VdZQYiqUFkgsxx0mOs4J43lDF7XPE82ew7cMkYDDAOf/CaOaB1TTO7flkoVBG4zOWEKUma
+	Z9vFzTe9fWXRp3rXBDHmpoikxpBQ0r46mIroi90f6+YLwEMYA6q7GGSJ+oVYXNM4zxNhPJfAB/TCS
+	+QbT7jrsAnKfchn1QOim6OXyC4rvPX8loSS9ISLCJmsst7YM+v69h4tGvQ7s9SolZHFHJDl9Fj/PZ
+	OKuiS/wJA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jsnpm-0004nL-2V; Tue, 07 Jul 2020 13:40:30 +0000
-Received: from szxga06-in.huawei.com ([45.249.212.32] helo=huawei.com)
+	id 1jsoDa-0007ul-Oj; Tue, 07 Jul 2020 14:05:06 +0000
+Received: from mail-eopbgr680060.outbound.protection.outlook.com
+ ([40.107.68.60] helo=NAM04-BN3-obe.outbound.protection.outlook.com)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jsnpj-0004lu-1i
- for linux-mtd@lists.infradead.org; Tue, 07 Jul 2020 13:40:28 +0000
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
- by Forcepoint Email with ESMTP id 9B353F1C52BB5475B6AB;
- Tue,  7 Jul 2020 21:40:22 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Tue, 7 Jul 2020
- 21:40:15 +0800
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-To: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 2/2] ubi: fastmap: Free fastmap next anchor peb during
- detach
-Date: Tue, 7 Jul 2020 21:41:01 +0800
-Message-ID: <20200707134101.562776-3-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200707134101.562776-1-chengzhihao1@huawei.com>
-References: <20200707134101.562776-1-chengzhihao1@huawei.com>
+ id 1jsoDX-0007tm-Op
+ for linux-mtd@lists.infradead.org; Tue, 07 Jul 2020 14:05:05 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jP1O346+qZZpXrqQEJM+SYc4xISZJLuutRppd1z2elZoFtCB1C3TvPVzGBn8jzHJjgYg6ZH6b9I/+evN2CqiEuoANWkxbd9Alu/9Qrs3eFe2BrhQwDNuUvq+TD+stCDdkoADqSU7ZfdBeQVczxJTKHMxVPlOQYCoIJGPLCpXWmaj0eXAfZa6i60vxYUvFiQFtfsOZxmeU12Y5nY987zCy2HePFBksL2Tw4JkFgq2kq3o/LflTwDvo+e9NyriSMO923qA8MRnaYM8DlzM8qpv6b1FzWWQe/TbyZSvOiASIuRONETKGZSWS4b1QlGJMY7WEVHah0FQ2a7Wxzcnkf/+VQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x0/Mt5MenAWY8wppER8v/dUAflsculDSnNaztWU63zU=;
+ b=NiqL8a56XTsvcbQng71aW7idEvWk2jKBuVW+aHG65Uh1lAvuHD5lAfk0Wcdm1xOUXcXitEDJw/BEvHIHDXb7HPfFlPIC417feyVk0/+9+sBHeW5IyyBXEb6Vibq1TbOqVezMGjcINn/qOmDrPxqbyu6zrjt8XnYWq+XM+ZvHXq1aO3MimUpQ593iqgTDvYvTxL3j2acpN7h8cMzKYrKRLS6bnBPBveAVEWgCFnbYiF5emsfXyVeUbUsqWhTG0+tbPXAMHouyPJQNJKQVzLv/XzPrLVkhe1nNz8JHWuh4CcwIjvVR0xYJI8ukjUWuTGf2N6VbM477wBV0/C10dDh8DQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=infinera.com; dmarc=pass action=none header.from=infinera.com;
+ dkim=pass header.d=infinera.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infinera.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x0/Mt5MenAWY8wppER8v/dUAflsculDSnNaztWU63zU=;
+ b=fjoxYJrW4wFc1zOG/6iNXSmfq4ILc7l4JUfC56c0H5HFWD+lz6StdgxfiCYriOURQK0gMeR6nYccI5WMPHszI8kyA5p2Cuj/L1bfEDVK7zt/DGOraIugZ7S0LNUCTklzQo3grPonSRZgbZjRsx3MmI/likp9U/z0ox+M9ySTs6w=
+Received: from DM5PR1001MB2186.namprd10.prod.outlook.com (2603:10b6:4:35::35)
+ by DM5PR10MB1594.namprd10.prod.outlook.com (2603:10b6:3:f::13) with
+ Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3153.27; Tue, 7 Jul 2020 14:05:01 +0000
+Received: from DM5PR1001MB2186.namprd10.prod.outlook.com
+ ([fe80::d086:8298:6d8a:e6ff]) by DM5PR1001MB2186.namprd10.prod.outlook.com
+ ([fe80::d086:8298:6d8a:e6ff%6]) with mapi id 15.20.3153.029; Tue, 7 Jul 2020
+ 14:05:00 +0000
+From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+To: "richard@nod.at" <richard@nod.at>, "lizhe67@huawei.com"
+ <lizhe67@huawei.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "dwmw2@infradead.org" <dwmw2@infradead.org>
+Subject: Re: [PATCH] jffs2: fix UAF problem
+Thread-Topic: [PATCH] jffs2: fix UAF problem
+Thread-Index: AQHWRhkioXhOUXpJp0C2OVljdhi7G6joJxSAgBQb7gA=
+Date: Tue, 7 Jul 2020 14:05:00 +0000
+Message-ID: <dadc539df01b17aa5dc85e7c0f1dbc83591667cc.camel@infinera.com>
+References: <20200619090635.58548-1-lizhe67@huawei.com>
+ <e0d04d70ce674584a71af1a5a00984dd26729891.camel@infinera.com>
+In-Reply-To: <e0d04d70ce674584a71af1a5a00984dd26729891.camel@infinera.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.37.3 
+authentication-results: nod.at; dkim=none (message not signed)
+ header.d=none;nod.at; dmarc=none action=none header.from=infinera.com;
+x-originating-ip: [88.131.87.201]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f83f0b71-6304-4677-9ad0-08d8227ebd47
+x-ms-traffictypediagnostic: DM5PR10MB1594:
+x-microsoft-antispam-prvs: <DM5PR10MB15946531EA1FBBEB654590AEF4660@DM5PR10MB1594.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2958;
+x-forefront-prvs: 0457F11EAF
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: SMl8u7poNuRlZSDpVjjyHpEClOt49QYmDhxTHs+scdGzmVvEwM2OIUYem9pU/Av9sFJZAyWYmJf9BMnYMsG+GAiHMVRf8gpe+Twr4hZUt9jtZlzQAV5EkIfP2CfrXj49eoK50zP6Va5CawEuD7ZMQuLOqxKSthTeCAJTOuf3Es3d3oZeiSKq6vVzXXoWBKthR0kO3GulVkeT71VTqJtwavCQXb3bCB+r+ndXL/igg9+sufYsvXrASZ4MmdXBfkfPqlGGx4/zEY2AQ7ndM4EP3mHDpLGEfvKHAQi0HcK3DrTf40sPZXPjL8GulARNPeQ7QolEuJ4nMZ3JlCf4A1Zs+w==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:DM5PR1001MB2186.namprd10.prod.outlook.com; PTR:; CAT:NONE;
+ SFTY:;
+ SFS:(4636009)(396003)(39860400002)(376002)(366004)(346002)(136003)(8676002)(5660300002)(8936002)(316002)(76116006)(64756008)(66476007)(66556008)(66946007)(66446008)(36756003)(86362001)(2616005)(91956017)(186003)(71200400001)(6486002)(110136005)(2906002)(6512007)(54906003)(478600001)(83380400001)(6506007)(4326008)(26005);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata: wEkK3FpSlGJJjbg+sbbNNSvdXm8F71MSwXlpBJBfy6VV/wTHGmrDHfe7E5jEvOG/XpANnHNUkMFlu0Tg8HBo1ZCSyQ2SF+7soww6Kfz9SNX+neJrGq6HrLNYjWW3XcR+RHcE4V9GFrO6gmlIdx9H8sPEEx06oTv+jFHqZcdsbz55RtG0rS2JchfcjkCzDNdmvITlJONFYJKn6D7MhS/aV6AfNBlT27w48lNQKfqC089ERscixbfuTU5UnNTJhaL//EjO6j4NQFIlKFBp6XC7OCQzSmkGKqMr+B+ES26lRKc+3Tn9+hSCV3rEkC65hFD5CZ+3TgMSpAYLUmOAiEQ5gDvgyupaGnsTyYrJoowfvog5ZuuRfSYUUkvfX13IC5dAOIhtBgffzJ51b/O8O136xJTVHPcANsHiOhHMh/UiXO6Fh4uVhRO1Gd7Ckca318Bq4YirlC65/zhVSzjUHiRnIi4dmPz0xKIyacnWiIsfXxU=
+x-ms-exchange-transport-forked: True
+Content-ID: <6AA25D9B89552446813DA2AE592D750A@namprd10.prod.outlook.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
+X-OriginatorOrg: infinera.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR1001MB2186.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f83f0b71-6304-4677-9ad0-08d8227ebd47
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jul 2020 14:05:00.8476 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 285643de-5f5b-4b03-a153-0ae2dc8aaf77
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: EdFf7sN2SXKhKqpa1YdMzesOLRLXUL8P0UfzKpIQnf+841apAqmjkv0gMQM7R4t0Oz79NrQ7e05FprFEf0bvnA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR10MB1594
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200707_094027_334973_DE23636C 
-X-CRM114-Status: UNSURE (   7.90  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200707_100504_037909_EEC2192C 
+X-CRM114-Status: GOOD (  22.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,43 +127,77 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: richard@nod.at, s.hauer@pengutronix.de, yi.zhang@huawei.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: "zhongjubin@huawei.com" <zhongjubin@huawei.com>,
+ "qiuxi1@huawei.com" <qiuxi1@huawei.com>,
+ "wangfangpeng1@huawei.com" <wangfangpeng1@huawei.com>,
+ "chenjie6@huawei.com" <chenjie6@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-ubi_wl_entry related with the fm_next_anchor PEB is not freed during
-detach, which causes a memory leak.
-Don't forget to release fm_next_anchor PEB while detaching ubi from
-mtd when CONFIG_MTD_UBI_FASTMAP is enabled.
-
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Fixes: 4b68bf9a69d22d ("ubi: Select fastmap anchor PEBs considering...")
----
- drivers/mtd/ubi/fastmap-wl.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/mtd/ubi/fastmap-wl.c b/drivers/mtd/ubi/fastmap-wl.c
-index 83afc00e365a..28f55f9cf715 100644
---- a/drivers/mtd/ubi/fastmap-wl.c
-+++ b/drivers/mtd/ubi/fastmap-wl.c
-@@ -381,6 +381,11 @@ static void ubi_fastmap_close(struct ubi_device *ubi)
- 		ubi->fm_anchor = NULL;
- 	}
- 
-+	if (ubi->fm_next_anchor) {
-+		return_unused_peb(ubi, ubi->fm_next_anchor);
-+		ubi->fm_next_anchor = NULL;
-+	}
-+
- 	if (ubi->fm) {
- 		for (i = 0; i < ubi->fm->used_blocks; i++)
- 			kfree(ubi->fm->e[i]);
--- 
-2.25.4
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+TWFpbnRhaW5lciBwaW5nID8NCg0KICAgSm9ja2UNCg0KT24gV2VkLCAyMDIwLTA2LTI0IGF0IDE4
+OjU5ICswMDAwLCBKb2FraW0gVGplcm5sdW5kIHdyb3RlOg0KPiANCj4gTmljZSBmaW5kLCBJIGp1
+c3QgY2FtZSBhY3Jvc3MgYSBkZWFkbG9jayB3cnQgR0MgYW5kIHJtZGlyLA0KPiBob3BlZnVsbHkg
+dGhpcyBpcyBoZSBmaXguDQo+IA0KPiBUaGlzIG5lZWRzIHRvIGdvIHRvIHN0YWJsZSB0b28sIHNv
+b25lciByYXRoZXIgdGhhbiBsYXRlci4NCj4gDQo+IMKgSm9ja2UNCj4gDQo+IE9uIEZyaSwgMjAy
+MC0wNi0xOSBhdCAxNzowNiArMDgwMCwgWmhlIExpIHdyb3RlOg0KPiA+IA0KPiA+IFRoZSBsb2cg
+b2YgVUFGIHByb2JsZW0gaXMgbGlzdGVkIGJlbG93Lg0KPiA+IEJVRzogS0FTQU46IHVzZS1hZnRl
+ci1mcmVlIGluIGpmZnMyX3JtZGlyKzB4YTQvMHgxY2MgW2pmZnMyXSBhdCBhZGRyIGMxZjE2NWZj
+DQo+ID4gUmVhZCBvZiBzaXplIDQgYnkgdGFzayBybS84MjgzDQo+ID4gPT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT0NCj4gPiBCVUcga21hbGxvYy0zMiAoVGFpbnRlZDogUCAgICBCICAgICAgTyAgICk6IGth
+c2FuOiBiYWQgYWNjZXNzIGRldGVjdGVkDQo+ID4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4gPiAN
+Cj4gPiBJTkZPOiBBbGxvY2F0ZWQgaW4gMHhiYmJiYmJiYiBhZ2U9MzA1NDM2NCBjcHU9MCBwaWQ9
+MA0KPiA+IMKgwqDCoMKgwqDCoMKgwqAweGIwYmJhNmVmDQo+ID4gwqDCoMKgwqDCoMKgwqDCoGpm
+ZnMyX3dyaXRlX2RpcmVudCsweDExYy8weDljOCBbamZmczJdDQo+ID4gwqDCoMKgwqDCoMKgwqDC
+oF9fc2xhYl9hbGxvYy5pc3JhLjIxLmNvbnN0cHJvcC4yNSsweDJjLzB4NDQNCj4gPiDCoMKgwqDC
+oMKgwqDCoMKgX19rbWFsbG9jKzB4MWRjLzB4MzcwDQo+ID4gwqDCoMKgwqDCoMKgwqDCoGpmZnMy
+X3dyaXRlX2RpcmVudCsweDExYy8weDljOCBbamZmczJdDQo+ID4gwqDCoMKgwqDCoMKgwqDCoGpm
+ZnMyX2RvX3VubGluaysweDMyOC8weDVmYyBbamZmczJdDQo+ID4gwqDCoMKgwqDCoMKgwqDCoGpm
+ZnMyX3JtZGlyKzB4MTEwLzB4MWNjIFtqZmZzMl0NCj4gPiDCoMKgwqDCoMKgwqDCoMKgdmZzX3Jt
+ZGlyKzB4MTgwLzB4MjY4DQo+ID4gwqDCoMKgwqDCoMKgwqDCoGRvX3JtZGlyKzB4MmNjLzB4MzAw
+DQo+ID4gwqDCoMKgwqDCoMKgwqDCoHJldF9mcm9tX3N5c2NhbGwrMHgwLzB4M2MNCj4gPiBJTkZP
+OiBGcmVlZCBpbiAweDIwNWIgYWdlPTMwNTQzNjQgY3B1PTAgcGlkPTANCj4gPiDCoMKgwqDCoMKg
+wqDCoMKgMHgyZTkxNzMNCj4gPiDCoMKgwqDCoMKgwqDCoMKgamZmczJfYWRkX2ZkX3RvX2xpc3Qr
+MHgxMzgvMHgxZGMgW2pmZnMyXQ0KPiA+IMKgwqDCoMKgwqDCoMKgwqBqZmZzMl9hZGRfZmRfdG9f
+bGlzdCsweDEzOC8weDFkYyBbamZmczJdDQo+ID4gwqDCoMKgwqDCoMKgwqDCoGpmZnMyX2dhcmJh
+Z2VfY29sbGVjdF9kaXJlbnQuaXNyYS4zKzB4MjFjLzB4Mjg4IFtqZmZzMl0NCj4gPiDCoMKgwqDC
+oMKgwqDCoMKgamZmczJfZ2FyYmFnZV9jb2xsZWN0X2xpdmUrMHgxNmJjLzB4MTgwMCBbamZmczJd
+DQo+ID4gwqDCoMKgwqDCoMKgwqDCoGpmZnMyX2dhcmJhZ2VfY29sbGVjdF9wYXNzKzB4Njc4LzB4
+MTFkNCBbamZmczJdDQo+ID4gwqDCoMKgwqDCoMKgwqDCoGpmZnMyX2dhcmJhZ2VfY29sbGVjdF90
+aHJlYWQrMHgxZTgvMHgzYjAgW2pmZnMyXQ0KPiA+IMKgwqDCoMKgwqDCoMKgwqBrdGhyZWFkKzB4
+MWE4LzB4MWIwDQo+ID4gwqDCoMKgwqDCoMKgwqDCoHJldF9mcm9tX2tlcm5lbF90aHJlYWQrMHg1
+Yy8weDY0DQo+ID4gQ2FsbCBUcmFjZToNCj4gPiBbYzE3ZGRkMjBdIFtjMDI0NTJkNF0ga2FzYW5f
+cmVwb3J0LnBhcnQuMCsweDI5OC8weDcyYyAodW5yZWxpYWJsZSkNCj4gPiBbYzE3ZGRkYTBdIFtk
+MjUwOTY4MF0gamZmczJfcm1kaXIrMHhhNC8weDFjYyBbamZmczJdDQo+ID4gW2MxN2RkZGQwXSBb
+YzAyNmRhMDRdIHZmc19ybWRpcisweDE4MC8weDI2OA0KPiA+IFtjMTdkZGUwMF0gW2MwMjZmNGU0
+XSBkb19ybWRpcisweDJjYy8weDMwMA0KPiA+IFtjMTdkZGY0MF0gW2MwMDFhNjU4XSByZXRfZnJv
+bV9zeXNjYWxsKzB4MC8weDNjDQo+ID4gDQo+ID4gVGhlIHJvb3QgY2F1c2UgaXMgdGhhdCB3ZSBk
+b24ndCBnZXQgImpmZnMyX2lub2RlX2luZm8uc2VtIiBiZWZvcmUNCj4gPiB3ZSBzY2FuIGxpc3Qg
+ImpmZnMyX2lub2RlX2luZm8uZGVudHMiIGluIGZ1bmN0aW9uIGpmZnMyX3JtZGlyLg0KPiA+IFRo
+aXMgcGF0Y2ggYWRkIGNvZGVzIHRvIGdldCAiamZmczJfaW5vZGVfaW5mby5zZW0iIGJlZm9yZSB3
+ZSBzY2FuDQo+ID4gImpmZnMyX2lub2RlX2luZm8uZGVudHMiIHRvIHNsb3ZlIHRoZSBVQUYgcHJv
+YmxlbS4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBaaGUgTGkgPGxpemhlNjdAaHVhd2VpLmNv
+bT4NCj4gPiAtLS0NCj4gPiDCoGZzL2pmZnMyL2Rpci5jIHwgNiArKysrKy0NCj4gPiDCoDEgZmls
+ZSBjaGFuZ2VkLCA1IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkNCj4gPiANCj4gPiBkaWZm
+IC0tZ2l0IGEvZnMvamZmczIvZGlyLmMgYi9mcy9qZmZzMi9kaXIuYw0KPiA+IGluZGV4IGYyMGNm
+ZjEuLjc3NjQ5MzcgMTAwNjQ0DQo+ID4gLS0tIGEvZnMvamZmczIvZGlyLmMNCj4gPiArKysgYi9m
+cy9qZmZzMi9kaXIuYw0KPiA+IEBAIC01OTAsMTAgKzU5MCwxNCBAQCBzdGF0aWMgaW50IGpmZnMy
+X3JtZGlyIChzdHJ1Y3QgaW5vZGUgKmRpcl9pLCBzdHJ1Y3QgZGVudHJ5ICpkZW50cnkpDQo+ID4g
+wqDCoMKgwqDCoMKgwqDCoGludCByZXQ7DQo+ID4gwqDCoMKgwqDCoMKgwqDCoHVpbnQzMl90IG5v
+dyA9IEpGRlMyX05PVygpOw0KPiA+IA0KPiA+ICsgICAgICAgbXV0ZXhfbG9jaygmZi0+c2VtKTsN
+Cj4gPiDCoMKgwqDCoMKgwqDCoMKgZm9yIChmZCA9IGYtPmRlbnRzIDsgZmQ7IGZkID0gZmQtPm5l
+eHQpIHsNCj4gPiAtICAgICAgICAgICAgICAgaWYgKGZkLT5pbm8pDQo+ID4gKyAgICAgICAgICAg
+ICAgIGlmIChmZC0+aW5vKSB7DQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgbXV0ZXhfdW5s
+b2NrKCZmLT5zZW0pOw0KPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoHJldHVybiAtRU5PVEVNUFRZOw0KPiA+ICsgICAgICAgICAgICAgICB9DQo+ID4g
+wqDCoMKgwqDCoMKgwqDCoH0NCj4gPiArICAgICAgIG11dGV4X3VubG9jaygmZi0+c2VtKTsNCj4g
+PiANCj4gPiDCoMKgwqDCoMKgwqDCoMKgcmV0ID0gamZmczJfZG9fdW5saW5rKGMsIGRpcl9mLCBk
+ZW50cnktPmRfbmFtZS5uYW1lLA0KPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGRlbnRyeS0+ZF9uYW1lLmxlbiwgZiwgbm93KTsN
+Cj4gPiAtLQ0KPiA+IDIuNy40DQo+ID4gDQo+ID4gDQo+ID4gDQoNCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lv
+biBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9saW51eC1tdGQvCg==
