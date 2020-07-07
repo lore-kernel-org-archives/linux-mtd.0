@@ -2,75 +2,67 @@ Return-Path: <SRS0=3nwF=AS=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AEA5C433DF
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2020 12:09:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F25A5C433DF
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2020 12:37:27 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D3951206F6
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2020 12:09:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C519E206F6
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2020 12:37:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="x+RT1+NM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D3951206F6
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RZ8QEp2l"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C519E206F6
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Subject:References:In-Reply-To:
-	Message-ID:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=M1KJB2VXFOBl+nj0eO7VB5ZFf26+5WjIfUXizMhHsfI=; b=x+RT1+NMIVri1XkFLTJNK8ynL
-	xQbnwdYr5lU9lsxjmQLktNOuj57Cz7tyiOErELPQVPAYlHn0UPbP6zreVDpzb2Oq4HWLffEaSe5tx
-	d98QXvYgrVmqAHb6DhFt7Pk02fxi+MUjZpTVk6axl6zxdVi9uj+15LuKv8ZZMMCJyI1cBS04khy6k
-	7A3FjJRoT8NDL7fIJkcyMRCU7JsxfKKCb+i8ZJZeMzeXaUtvIkafsA28EZXg0cAM8cdkXxUyoq9Ki
-	A1FlQL1SQFVpcw22Db5ev9cNJPBEkAL/fu3Z/X8/IIYyH4RCtOtelzMm5CG20C5LI6oY3Hl+ARVsD
-	Y6mDfm4bQ==;
+	 bh=/AOHxxvavYC15ziH6l16dNNk81ASdv2eh1asZ/CBlmk=; b=RZ8QEp2l1mz3jmCJ/X3jgN3qj
+	H8jL+ed/Yk+njDLIotxkPxkwVa6uAzUoUO087uQb5QQQNnRD+yxbTrq4zGoxK9eE32xembmuVHv32
+	Xlv2XjKLc4+KnvXsy7MVPXPxt7nmAlAGyzeoFcNg8gqkaFHx2xDxK71mu6Cqnzd1m+e9/7sV36lCq
+	HaANXLUIW+RrIfIX2Oku/+z3a5g+JafZj8XY8NCYA/n1MNMGCD7OxtFnm35pdbsE5oRkWmel07dc+
+	MRaSDDCubVb01eeGAbELHJ8AN13UekPdnYRJR1m4qn29uj081NzTGuS/tMPfGAt0AyGvWteIcxscB
+	S2qx5U3WQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jsmPK-0006TJ-Ku; Tue, 07 Jul 2020 12:09:06 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1jsmpm-0002Jn-Nl; Tue, 07 Jul 2020 12:36:26 +0000
+Received: from szxga05-in.huawei.com ([45.249.212.191] helo=huawei.com)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jsmPI-0006Sg-5Q
- for linux-mtd@lists.infradead.org; Tue, 07 Jul 2020 12:09:05 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id D189D625BBF3;
- Tue,  7 Jul 2020 14:09:01 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id Mk0HXEJkUekK; Tue,  7 Jul 2020 14:09:01 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 72852625BBF5;
- Tue,  7 Jul 2020 14:09:01 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id MiZ7r6eBatiP; Tue,  7 Jul 2020 14:09:01 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
- by lithops.sigma-star.at (Postfix) with ESMTP id 48BB9625BBD2;
- Tue,  7 Jul 2020 14:09:01 +0200 (CEST)
-Date: Tue, 7 Jul 2020 14:09:01 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: chengzhihao1 <chengzhihao1@huawei.com>
-Message-ID: <1463101229.103384.1594123741187.JavaMail.zimbra@nod.at>
-In-Reply-To: <082f18e0-d6f0-6389-43af-3159edb244cb@huawei.com>
+ id 1jsmpk-0002Hx-9d
+ for linux-mtd@lists.infradead.org; Tue, 07 Jul 2020 12:36:25 +0000
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+ by Forcepoint Email with ESMTP id A32FFF6769E724F418DA;
+ Tue,  7 Jul 2020 20:36:18 +0800 (CST)
+Received: from [127.0.0.1] (10.174.179.214) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0;
+ Tue, 7 Jul 2020 20:36:11 +0800
+Subject: Re: [PATCH] ubifs: Fix a potential space leak problem while linking
+ tmpfile
+To: Richard Weinberger <richard@nod.at>
 References: <20200701112643.726986-1-chengzhihao1@huawei.com>
  <CAFLxGvyO_aXGfgoO0mrNsoGP4Bfh3n6CUQxDx=ecH6o2ZDNYDg@mail.gmail.com>
  <082f18e0-d6f0-6389-43af-3159edb244cb@huawei.com>
-Subject: Re: [PATCH] ubifs: Fix a potential space leak problem while linking
- tmpfile
+ <1463101229.103384.1594123741187.JavaMail.zimbra@nod.at>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <963fa5c8-414f-783f-871e-47e751b54d87@huawei.com>
+Date: Tue, 7 Jul 2020 20:36:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF68 (Linux)/8.8.12_GA_3809)
-Thread-Topic: ubifs: Fix a potential space leak problem while linking tmpfile
-Thread-Index: LkuhB0ia7lKOM3lPkaKfNaLo45lo0g==
+In-Reply-To: <1463101229.103384.1594123741187.JavaMail.zimbra@nod.at>
+X-Originating-IP: [10.174.179.214]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200707_080904_319603_EAA4941D 
-X-CRM114-Status: UNSURE (   9.75  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200707_083624_610238_02EDF290 
+X-CRM114-Status: GOOD (  14.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,31 +77,34 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Cc: Richard Weinberger <richard.weinberger@gmail.com>,
  linux-mtd <linux-mtd@lists.infradead.org>,
  linux-kernel <linux-kernel@vger.kernel.org>, yi zhang <yi.zhang@huawei.com>
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFBlcmhhcHMgSSBtaXN1bmRlcnN0b29k
-IHdoYXQgY29tbWl0IDMyZmU5MDVjMTdmMDAxICgidWJpZnM6IEZpeAo+IE9fVE1QRklMRSBjb3Ju
-ZXIgY2FzZSBpbiB1Ymlmc19saW5rKCkiKSB3YW50ZWQgdG8gZml4Lgo+IEkgdGhpbmsgb3JwaGFu
-IGFyZWEgaXMgdXNlZCB0byByZW1pbmQgZmlsZXN5c3RlbSBkb24ndCBmb3JnZXQgdG8gZGVsZXRl
-Cj4gaW5vZGVzICh3aG9zZSBubGluayBpcyAwKSBpbiBuZXh0IHVuY2xlYW4gcmVib290aW5nLiBH
-ZW5lcmFsbHksIHRoZSBmaWxlCj4gc3lzdGVtIGlzIG5vdCBjb3JydXB0ZWQgY2F1c2VkIGJ5IHJl
-cGxheWluZyBvcnBoYW4gbm9kZXMuCj4gUmFscGggcmVwb3J0ZWQgYSBmaWxlc3lzdGVtIGNvcnJ1
-cHRpb24gaW4gY29tYmluYXRpb24gd2l0aCBvdmVybGF5ZnMuCj4gQ2FuIHlvdSB0ZWxsIG1lIHRo
-ZSBkZXRhaWxzIGFib3V0IHRoYXQgcHJvYmxlbT8gVGhhbmtzLgoKT24gbXkgdGVzdCBiZWQgSSBk
+5ZyoIDIwMjAvNy83IDIwOjA5LCBSaWNoYXJkIFdlaW5iZXJnZXIg5YaZ6YGTOgo+IC0tLS0tIFVy
+c3Byw7xuZ2xpY2hlIE1haWwgLS0tLS0KPj4gUGVyaGFwcyBJIG1pc3VuZGVyc3Rvb2Qgd2hhdCBj
+b21taXQgMzJmZTkwNWMxN2YwMDEgKCJ1YmlmczogRml4Cj4+IE9fVE1QRklMRSBjb3JuZXIgY2Fz
+ZSBpbiB1Ymlmc19saW5rKCkiKSB3YW50ZWQgdG8gZml4Lgo+PiBJIHRoaW5rIG9ycGhhbiBhcmVh
+IGlzIHVzZWQgdG8gcmVtaW5kIGZpbGVzeXN0ZW0gZG9uJ3QgZm9yZ2V0IHRvIGRlbGV0ZQo+PiBp
+bm9kZXMgKHdob3NlIG5saW5rIGlzIDApIGluIG5leHQgdW5jbGVhbiByZWJvb3RpbmcuIEdlbmVy
+YWxseSwgdGhlIGZpbGUKPj4gc3lzdGVtIGlzIG5vdCBjb3JydXB0ZWQgY2F1c2VkIGJ5IHJlcGxh
+eWluZyBvcnBoYW4gbm9kZXMuCj4+IFJhbHBoIHJlcG9ydGVkIGEgZmlsZXN5c3RlbSBjb3JydXB0
+aW9uIGluIGNvbWJpbmF0aW9uIHdpdGggb3ZlcmxheWZzLgo+PiBDYW4geW91IHRlbGwgbWUgdGhl
+IGRldGFpbHMgYWJvdXQgdGhhdCBwcm9ibGVtPyBUaGFua3MuCj4gT24gbXkgdGVzdCBiZWQgSSBk
 aWRuJ3Qgc2VlIGEgZnMgY29ycnVwdGlvbiwgd2hhdCBJIHNhdyB3YXMgYSBmYWlsaW5nIG9ycGhh
-bgpzZWxmIHRlc3Qgd2hpbGUgcGxheWluZyB3aXRoIE9fVE1QRklMRSBhbmQgbGlua2F0KCkuCgpX
-aGVuIHlvdSBjcmVhdGUgYSB0bXBmaWxlIGl0IGhhcyBhIGxpbmsgY291bnQgb2YgMCBhbmQgYW4g
-b3JwaGFuIGlzCmluc3RhbGxlZC4gU3VjaCB0aGF0IHRoZSB0bXBmaWxlIGlzIGdvbmUgYWZ0ZXIg
-YSByZWJvb3QgYnV0IHlvdSBjYW4Kc3RpbGwgdXNlIGl0IHByaW9yIHRvIHRoYXQuCkJ5IHVzaW5n
-IGxpbmthdCgpIHlvdSBjYW4gcmFpc2UgdGhlIGxpbmsgY291bnRlciB0byAxIGFnYWluLgpUaHVz
-LCB0aGUgb3JwaGFuIG5lZWRzIHRvIGJlIHJlbW92ZWQuClRoaXMgaXMgcGF0dGVybiBvdmVybGF5
-ZnMgdXNlcyBhIGxvdC4KClNpbmNlIFVCSUZTIG5ldmVyIHN1cHBvcnRlZCByYWlzaW5nIHRoZSBs
-aW5rIGNvdW50ZXIgZnJvbSAwIHRvIDEKd2UgaGF2ZSBtYW55IGNvcm5lciBjYXNlcyBhbmQgZml4
-aW5nIGFsbCB0aGVzZSB0dXJuZWQgb3V0IGludG8gYSBuaWdodG1hcmUuCi4uLmFzIHlvdSBjYW4g
-c2VlIGZyb20gdGhlIGFtb3VudCBicm9rZW4gcGF0Y2hlcyBmcm9tIG1lIDotKC4KClRoYW5rcywK
-Ly9yaWNoYXJkCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+bgo+IHNlbGYgdGVzdCB3aGlsZSBwbGF5aW5nIHdpdGggT19UTVBGSUxFIGFuZCBsaW5rYXQoKS4K
+RG8gd2UgaGF2ZSBhIHJlcHJvZHVjZXIsIG9yIGNhbiBJIGdldCB0aGUgZmFpbCB0ZXN0Y2FzZT8g
+SXMgaXQgYSB4ZnN0ZXN0IApjYXNlPwo+Cj4gV2hlbiB5b3UgY3JlYXRlIGEgdG1wZmlsZSBpdCBo
+YXMgYSBsaW5rIGNvdW50IG9mIDAgYW5kIGFuIG9ycGhhbiBpcwo+IGluc3RhbGxlZC4gU3VjaCB0
+aGF0IHRoZSB0bXBmaWxlIGlzIGdvbmUgYWZ0ZXIgYSByZWJvb3QgYnV0IHlvdSBjYW4KPiBzdGls
+bCB1c2UgaXQgcHJpb3IgdG8gdGhhdC4KPiBCeSB1c2luZyBsaW5rYXQoKSB5b3UgY2FuIHJhaXNl
+IHRoZSBsaW5rIGNvdW50ZXIgdG8gMSBhZ2Fpbi4KPiBUaHVzLCB0aGUgb3JwaGFuIG5lZWRzIHRv
+IGJlIHJlbW92ZWQuCj4gVGhpcyBpcyBwYXR0ZXJuIG92ZXJsYXlmcyB1c2VzIGEgbG90Lgo+Cj4g
+U2luY2UgVUJJRlMgbmV2ZXIgc3VwcG9ydGVkIHJhaXNpbmcgdGhlIGxpbmsgY291bnRlciBmcm9t
+IDAgdG8gMQo+IHdlIGhhdmUgbWFueSBjb3JuZXIgY2FzZXMgYW5kIGZpeGluZyBhbGwgdGhlc2Ug
+dHVybmVkIG91dCBpbnRvIGEgbmlnaHRtYXJlLgo+IC4uLmFzIHlvdSBjYW4gc2VlIGZyb20gdGhl
+IGFtb3VudCBicm9rZW4gcGF0Y2hlcyBmcm9tIG1lIDotKC4KPgo+IFRoYW5rcywKPiAvL3JpY2hh
+cmQKPgo+IC4KCgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3Rz
+LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
