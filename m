@@ -2,80 +2,85 @@ Return-Path: <SRS0=3nwF=AS=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83C46C433DF
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2020 06:04:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CC6BC433E0
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2020 08:10:37 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4D19120702
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2020 06:04:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 47608206C3
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2020 08:10:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ckCfjaPX";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="G0G3QKuW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D19120702
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=broadcom.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cH/1S36y";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="CRJZKB33"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 47608206C3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=y9QtYcVRDFsfFKn4/41E8128z+/2gdRp9KRV8T9BcW8=; b=ckCfjaPX2qVPiWzNA5DEZsJgS
-	0gU3iBuwUj3b+xCHtVVXK8trHKhDZxtYgMxEQGM30APrDmSA+b2Txpj0Gh9b+HA3IIZP4EnWKekbW
-	SO+hsAiD7LuQUTCRXNMYlmJ/OO4YlpfT2JjATUxLlxg/Neh7k6tt/MWDeR5X9YspedZzmLViC/fKY
-	knT9iIgg0uUpGgbPMW2xm7z7ziribx4bggntqHI6OT/W5jzOvCrE/2x7t/Afvbh/QU5FK+XPTFo5q
-	0EJFHWGlRnIhoYJ5n/oJ4zYvxOxXYF/1gx20Q7h6fP+HnwqG0YO2TfcRm4/TEfgrHj3CJjz3dHkn9
-	kBmMc1ePA==;
+	 bh=snMVFAdrsgl+dxaRi2Uf3ZHI/hPO3cPQvhFv5w+o+6c=; b=cH/1S36yfYSpMs45hVt0rW7s1
+	YNIERFwd3aHmUoXd9wKh0hT/3Eo5aOZjAomarg+c7KxOZy/S3c+J8C+ixmsfwfuc/pUVPORiE6QoF
+	77BueXOTL4F/MojXprRqQdkQ+D4CWfmVcE0KPrmjWhPQ199IPkH9lhN+ANbAXX3cWeg4OtCrseOm3
+	Z5599z6cS7xLoafGe82KnCwBufLJnODiuZkI+kLYD9KVSSavoGOTG3jOox/dxkvD/OjNnttuVm+AM
+	DL/Nd7sjAxIU1x+u+WeHGK9v5UvSu69MhxO5ew0Ca84ok23McGTDolUz2Y4hoOxLsWTRry7cC+e1e
+	aFqPvhMwA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jsgiA-000088-ME; Tue, 07 Jul 2020 06:04:10 +0000
-Received: from mail-lf1-x142.google.com ([2a00:1450:4864:20::142])
+	id 1jsifu-00083N-8y; Tue, 07 Jul 2020 08:09:58 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jsgi5-00006i-Iw
- for linux-mtd@lists.infradead.org; Tue, 07 Jul 2020 06:04:07 +0000
-Received: by mail-lf1-x142.google.com with SMTP id d21so24046573lfb.6
- for <linux-mtd@lists.infradead.org>; Mon, 06 Jul 2020 23:04:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=broadcom.com; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=UZZfuoHBs6UPr1tWf4DyOh5v+PqYB3B2WwbMcZ/xTQ4=;
- b=G0G3QKuWd6xOkxDOw6USZb4n6oCxxPmZWNq/guSOxlAl6VlpVmBqxHZ61L96aLMc8U
- Yg6RLBFj1duBvMZdUtqXpCBwzS1P3iD+fsa/FHv/Of+fNYYOkWjPn46fY60/nx2vM58x
- BP89ovi4Qwb+opQ7neeZ7nCEOaAZuw+twJGgE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=UZZfuoHBs6UPr1tWf4DyOh5v+PqYB3B2WwbMcZ/xTQ4=;
- b=dlQdXcFmNqXp3jbMaZNQoWIov54Dijge1HeW2rWV8qhlFcHa+FUC/bjN4DLDPrdoWT
- Vmk+/k/6Bv8CsH2YzEOVPz5epZYsoty/+6vbiZc7xRU0k917I0GvbtmKNWTugXnpXi06
- al6MUJw+BCSBqRsw91c9m4WJHWhunDm3AsbqNaftRtGKxVIoU69VAfMWnYmMo47U8K7P
- DUYekKHLSdRZLSIvRHSBEXzvKsGxjiLPRskSPRuyhr87opnbU0c9z7hhsVOMsmxLFkt+
- moDETG29+HtHHoy2gejnRbzjlAJsyYAxbRDC8fFZ0okyPHw+Xe43zQrOgLGLwkvOPguS
- PeBg==
-X-Gm-Message-State: AOAM531O8U9rHVlgrI7X1y49N5XxOr4HU/cWBh2X06BdpvKtCqO0TRkf
- WTc01UdJaWyd0E4Z5fc9Y1rsShn3AQYVU2StTHY9tg==
-X-Google-Smtp-Source: ABdhPJzxmwvqREl7NOVxuGKyaJKb1ZGT35t2pGwTUaSaxw5RyPOzOIeMQ3BFzgVfB8J0dfix80VsZRRnWDvW8/xjGlQ=
-X-Received: by 2002:ac2:5f0b:: with SMTP id 11mr31805351lfq.201.1594101842863; 
- Mon, 06 Jul 2020 23:04:02 -0700 (PDT)
+ id 1jsifr-00082B-OT
+ for linux-mtd@lists.infradead.org; Tue, 07 Jul 2020 08:09:56 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06789jNd066026;
+ Tue, 7 Jul 2020 03:09:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1594109385;
+ bh=b/Sj5k/vnAzZB4RskTu/OTPGjII+fd4GdS2Nv+pUwso=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=CRJZKB33RFwluKPk/Cf3lMGG4jI3zMedzf0FOB5SPaW28Ye7K5KNCQoaWyOVLYKGN
+ vYSEmS+CP/Mv39BGnNIxvuV2qGxGCnNzSKHsEhHpWHMRIN17MkAkb5f8xcEEHyt23n
+ wSONeQkfFm/53te4KUjiDCJV4FB6ucD63Up+UKlA=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06789jLW108789
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 7 Jul 2020 03:09:45 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 7 Jul
+ 2020 03:09:45 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 7 Jul 2020 03:09:45 -0500
+Received: from [10.250.151.93] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06789eJH062895;
+ Tue, 7 Jul 2020 03:09:41 -0500
+Subject: Re: Octal RAM driver support related query
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Priyank Bhatt
+ <priyankbhatt196@gmail.com>
+References: <aceb03c8-00f4-a6f5-01c3-55621aa6d3d0@gmail.com>
+ <20200706082709.5bcc6ce7@xps13>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <d3bedcc1-a71a-77a9-673b-c2565b6215c2@ti.com>
+Date: Tue, 7 Jul 2020 13:39:40 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <20200529071655.739-1-rayagonda.kokatanur@broadcom.com>
- <2c308101-ba40-2dd4-7304-7e2e29e9aa64@microchip.com>
-In-Reply-To: <2c308101-ba40-2dd4-7304-7e2e29e9aa64@microchip.com>
-From: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
-Date: Tue, 7 Jul 2020 11:33:50 +0530
-Message-ID: <CAHO=5PFyjHJvvy-=exL86OnESH7ypUffyt3bcmQJspzJJ5gO-A@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] drivers: mtd: spi-nor: update read capabilities
- for w25q64 and s25fl064k
-To: Tudor Ambarus <Tudor.Ambarus@microchip.com>
+In-Reply-To: <20200706082709.5bcc6ce7@xps13>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200707_020405_930015_9CCDD4B1 
-X-CRM114-Status: GOOD (  21.02  )
+X-CRM114-CacheID: sfid-20200707_040955_922273_97D3754B 
+X-CRM114-Status: GOOD (  15.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,79 +92,70 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard.weinberger@gmail.com>,
+ linux-mtd@lists.infradead.org, miquel@bootlin.com,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jul 1, 2020 at 12:21 PM <Tudor.Ambarus@microchip.com> wrote:
->
-> On 5/29/20 10:16 AM, Rayagonda Kokatanur wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> >
-> > Both w25q64 and s25fl064k nor flash support QUAD and DUAL read
-> > command, hence update the same in flash_info table.
-> >
-> > This is tested on Broadcom Stingray SoC (bcm958742t).
-> >
-> > Signed-off-by: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
-> > ---
-> > Changes from v1:
-> >  -Address review comments from Vignesh Raghavendra
-> >   Update commit message with testing details.
-> >
-> >  drivers/mtd/spi-nor/spansion.c | 3 ++-
-> >  drivers/mtd/spi-nor/winbond.c  | 3 ++-
-> >  2 files changed, 4 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-> > index 6756202ace4b..c91bbb8d9cd6 100644
-> > --- a/drivers/mtd/spi-nor/spansion.c
-> > +++ b/drivers/mtd/spi-nor/spansion.c
-> > @@ -52,7 +52,8 @@ static const struct flash_info spansion_parts[] = {
-> >                              SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> >         { "s25fl016k",  INFO(0xef4015,      0,  64 * 1024,  32,
-> >                              SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> > -       { "s25fl064k",  INFO(0xef4017,      0,  64 * 1024, 128, SECT_4K) },
-> > +       { "s25fl064k",  INFO(0xef4017,      0,  64 * 1024, 128,
-> > +                            SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> >         { "s25fl116k",  INFO(0x014015,      0,  64 * 1024,  32,
-> >                              SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> >         { "s25fl132k",  INFO(0x014016,      0,  64 * 1024,  64, SECT_4K) },
-> > diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-> > index 17deabad57e1..2028cab3eff9 100644
-> > --- a/drivers/mtd/spi-nor/winbond.c
-> > +++ b/drivers/mtd/spi-nor/winbond.c
-> > @@ -39,7 +39,8 @@ static const struct flash_info winbond_parts[] = {
-> >                             SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-> >                             SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
-> >         { "w25x64", INFO(0xef3017, 0, 64 * 1024, 128, SECT_4K) },
-> > -       { "w25q64", INFO(0xef4017, 0, 64 * 1024, 128, SECT_4K) },
-> > +       { "w25q64", INFO(0xef4017, 0, 64 * 1024, 128,
-> > +                        SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->
-> I checked the winbond website and from all the w25q64 flashes, W25Q64JV-IQ/JQ
-> and W25Q64FV share the 0xef4017 flash ID. Both support 0x3b and 0x6b commands,
-> which is fine.
->
-> I see that s25fl064k and w25q64 share the same flash ID. The search alg will
-> return the first hit, so s25fl064k even for the winbond parts. What is the
-> difference between s25fl064k and W25Q64JVQ/W25Q64FV?
+Hi Priyank,
 
-I think both are from different vendor.
-Please refer link for more info -
-https://lore.kernel.org/patchwork/patch/628090/
++Tudor,
 
-Best regards,
-Rayagonda
+On 06/07/20 11:57 am, Miquel Raynal wrote:
+> Hi Priyank,
+> 
+> +mtd maintainers
+> +mtd list
+> 
+> Priyank Bhatt <priyankbhatt196@gmail.com> wrote on Mon, 6 Jul 2020
+> 11:05:14 +0530:
+> 
+>> Hi Miquel,
+>>
+>> I am working on NXP's iMX8 and trying to communicate to an ISSI Octal RAM with its flexSPI interface. I was recently going through a presentation *MTD: What's new? *from www.bootlin.com and at the end I found that in what's next section you have listed hyperRAM support.
+>>
+>> So my question: Is there any OctalRAM supported driver which I can refer to create my own for a specific chip manufacturer?
+>> Right now I am referring mchp23k256.c(microchip) SPI RAM driver inside /driver/mtd/devices. But I am a little confused as to how to use my driver in Octal mode.
+> 
+> I guess we should ask Vignesh about it because he is the one mastering
+> this subsystem, I could only give you dump answers about these devices
+> :)
+> 
 
->
-> Cheers,
-> ta
+There is no support for any type of Octal RAM devices currently.
+
+Also HyperRAM and Octal RAM use different protocols... Octal RAM uses
+traditional (Octal) SPI command set where as HyperRAM uses HyperBus
+protocol (https://www.cypress.com/products/hyperram-memory). Even ISSI
+website lists Octal and HyperRAM as two different products
+
+Traditionally RAM devices that follow SPI NOR protocol have been
+supported under drivers/mtd/spi-nor/  (Eg.: cy15x104q, mr25h* and
+mb85rs1mt). Read/write logic in drivers/mtd/spi-nor/core.c has been
+sufficient enough to handle these RAM devices as well.
+
+I don't have access to ISSI Octal RAM datasheets, but if these RAM
+devices use same commandset as SPI/Octal SPI NOR flashes then we can
+continue to support them under SPI NOR framework.
+
+Otherwise, there would be a need for separate Octal RAM driver under
+drivers/mtd/devices/ which would then use spi_mem_ops to communicate
+with spi-nxp-fspi.c driver (just like drivers/mtd/spi-nor/core.c)
+
+Please note that SPI NOR framework still lacks complete Octal mode
+support.. There is a patchset to add 8D-8D-8D mode Octal SPI NOR flash
+that still under review:
+
+https://patchwork.ozlabs.org/project/linux-mtd/list/?series=185337
+
+This patchset might be prerequisite to support Octal RAM under SPI NOR
+framework
+
+Regards
+Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
