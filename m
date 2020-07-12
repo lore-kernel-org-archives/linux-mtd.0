@@ -1,71 +1,89 @@
-Return-Path: <SRS0=N9+R=AW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=DnUc=AX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1EB7C433DF
-	for <linux-mtd@archiver.kernel.org>; Sat, 11 Jul 2020 06:45:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65D72C433E1
+	for <linux-mtd@archiver.kernel.org>; Sun, 12 Jul 2020 13:59:35 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B591B206F0
-	for <linux-mtd@archiver.kernel.org>; Sat, 11 Jul 2020 06:45:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3103D20674
+	for <linux-mtd@archiver.kernel.org>; Sun, 12 Jul 2020 13:59:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Y4+AZAIe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B591B206F0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gcfrDVNP";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CZUYXIBZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3103D20674
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:References:
-	To:From:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=C0QuhGDXhHUh9hX09nvS5uqlFR46PFREJOiqo1w71qM=; b=Y4+AZAIenfGXVmJipqTK1p1la
-	2X2H5Kj6pMA/BY4x7QDU8NpqEmeYLw70WMwIhxvtwMJNraQsh2kf73tu5v42OTtGSgoxK0KhaAwh6
-	jNjJrsZ4raJWT2EZflKsXFPN4lU8VCHIHrRTCFxMZyfn7k1bbYlSaszg0+MpS8PbtDUSYIBj9Fc/Q
-	BibDHzcdZiQiXVI3LK4jF5WgIRcKfaz5ZkHXAzzFPqzGkM1wJrpOvnnMgRcgCz7Jwi2z/rHVCr4rS
-	zg3Or7bJxGLfzHMgW23OHnURRKVH/fKyXTz97rfHUMxOgHTIR0Ra1vNOPPdl++hSAGD/aCH9ux9GU
-	zM5Jv+zTA==;
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=yCveEeOTcbeiQiKSNS3p81LVzvXrxTfT2w7bDEFwntA=; b=gcfrDVNPgZrVqtTdEiXZyBvP7e
+	Gxu3f4qSj3piER+36DhPxWN22cB60kGE7vnNe3hfFAyxtvUTOUzbdos3HFpmA+ghJD0v7y7uV3z/L
+	X8dRDnYmF/x0PlZc13tF6w1FYSIG22tGO0DfBidO2CoY3g9posHDZizDxtAlfnHepaXN/B8kboOSm
+	OsPefIf1sAkwleQmouM/KMkf5SAso1+SgN0mwMmC0FCalf0YFJBwd0MWoOtST7EIuiQX+5VvU19B2
+	4xQXSHC9+GlY5E9MfN5pu7VDOd5dVXTKLY5GR1nQ+PmZywfm3WZEhojF+6aokNoFzIYGuLmKBRrAu
+	UeBHI4HQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ju9G5-0000fu-7j; Sat, 11 Jul 2020 06:45:13 +0000
-Received: from szxga07-in.huawei.com ([45.249.212.35] helo=huawei.com)
+	id 1jucUV-0004OJ-AJ; Sun, 12 Jul 2020 13:58:03 +0000
+Received: from mail-pf1-x442.google.com ([2607:f8b0:4864:20::442])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ju9G2-0000fJ-6A
- for linux-mtd@lists.infradead.org; Sat, 11 Jul 2020 06:45:11 +0000
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
- by Forcepoint Email with ESMTP id 2F1755B6A57830D19173;
- Sat, 11 Jul 2020 14:45:04 +0800 (CST)
-Received: from [127.0.0.1] (10.174.179.214) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0;
- Sat, 11 Jul 2020 14:44:53 +0800
-Subject: Re: [PATCH] ubifs: Fix a potential space leak problem while linking
- tmpfile
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-To: Richard Weinberger <richard@nod.at>
-References: <20200701112643.726986-1-chengzhihao1@huawei.com>
- <CAFLxGvyO_aXGfgoO0mrNsoGP4Bfh3n6CUQxDx=ecH6o2ZDNYDg@mail.gmail.com>
- <082f18e0-d6f0-6389-43af-3159edb244cb@huawei.com>
- <1463101229.103384.1594123741187.JavaMail.zimbra@nod.at>
- <963fa5c8-414f-783f-871e-47e751b54d87@huawei.com>
- <1480699627.103583.1594126053947.JavaMail.zimbra@nod.at>
- <0c543297-d94f-ad40-7dd0-2198f39336bb@huawei.com>
-Message-ID: <a3421498-e3a5-f7dc-50c6-15ef3cdfb51b@huawei.com>
-Date: Sat, 11 Jul 2020 14:44:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
-MIME-Version: 1.0
-In-Reply-To: <0c543297-d94f-ad40-7dd0-2198f39336bb@huawei.com>
-X-Originating-IP: [10.174.179.214]
-X-CFilter-Loop: Reflected
+ id 1jucUO-0004Nn-Rf
+ for linux-mtd@lists.infradead.org; Sun, 12 Jul 2020 13:57:57 +0000
+Received: by mail-pf1-x442.google.com with SMTP id i14so4797450pfu.13
+ for <linux-mtd@lists.infradead.org>; Sun, 12 Jul 2020 06:57:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id;
+ bh=t1DD21hpudIl7FcxmIGxgkbZcJ2yGSiWAAezO5F79aU=;
+ b=CZUYXIBZoVXVChixa0O/K3kXm7Ewilu0RFQ7/4JPxQxJaX8gN28WnJm5kSrLnTpUsN
+ 2KJbBZCFQ0tzbK1A/DjuWDwic1QLIYXrOpN19GqYSE4/k0C8Kada89vUPDEGb3Ik2opQ
+ RGauVFFXSonL5FOtD6hPw/SXjSbEtD6NkRjRcXYRBrhYLOrFQuJKRNlFSSHGyM/xtMnU
+ etnecfT2zZSfIaVJQqJnTymtuLYpBxi+dSoGcB5c5hemrNtV4j1S+qlL3LxA+70gDUKn
+ RIwGsPyQLjvqFEKa6IOStVyD04Ejj456//Ut7v7lyQ3FvjeBWYEeUDm1OQtfdrBDHGsT
+ zE8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id;
+ bh=t1DD21hpudIl7FcxmIGxgkbZcJ2yGSiWAAezO5F79aU=;
+ b=l1fdwsCOunbx3dea7267Ddea0fjffIZIHQtqxLrZHt3T1RDuAZkvQeCb+8QOxsGVqn
+ abTmlVo/zibnkZj5lYa3avmdMjsnbuZ+49OXJocZOpTtV+WlRCDzgu7BzkgVm/nBmVce
+ uC7SUjzVnElvgNALuTK1Nxmh8epzE9vd+8DfHqTrXWWmIUm2hdAHxzBDLRbkAyaLjTED
+ /EIodaoVnrgYBoP/CU1BTlKOWCKaD0wmb9keqKw2Q4NMb1rADQOqO7dceNn5snhfdGVT
+ Rd4XkkaYZTKHfLgmClnah4UBuH4CGbMTjApbatgtnTW7R/ObpxdO2jqEQYxF77VaD1kw
+ 2iIQ==
+X-Gm-Message-State: AOAM531/2orXySDthct//rOeFNOhMAC1xiGRWjp/sRzVCr2pWWIxIEtH
+ BLd7H0u+hnmofD8QP06TEHU=
+X-Google-Smtp-Source: ABdhPJw7BzcwvU8d0O+5AuIwLNw0BQrrJ8O1PDi9wenGTXVIm6dEfVg1zNrbKn7/ozhP/RJYPCcM0w==
+X-Received: by 2002:a63:b546:: with SMTP id u6mr28953675pgo.381.1594562271696; 
+ Sun, 12 Jul 2020 06:57:51 -0700 (PDT)
+Received: from rapsodo.Rapsodo.com ([101.100.171.87])
+ by smtp.gmail.com with ESMTPSA id o4sm11682022pjo.16.2020.07.12.06.57.48
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 12 Jul 2020 06:57:50 -0700 (PDT)
+From: Thirumalesha Narasimhappa <nthirumalesha7@gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Shivamurthy Shastri <sshivamurthy@micron.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Chuanhong Guo <gch981213@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: spinand: micron: add support for MT29F2G01AAAED
+Date: Sun, 12 Jul 2020 21:59:42 +0800
+Message-Id: <20200712135942.10904-1-nthirumalesha7@gmail.com>
+X-Mailer: git-send-email 2.17.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200711_024510_545481_9CA6617B 
-X-CRM114-Status: GOOD (  18.49  )
+X-CRM114-CacheID: sfid-20200712_095756_940578_F7CEC797 
+X-CRM114-Status: GOOD (  13.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,84 +95,146 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard.weinberger@gmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- linux-kernel <linux-kernel@vger.kernel.org>, yi zhang <yi.zhang@huawei.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Cc: Thirumalesha Narasimhappa <nthirumalesha7@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-5ZyoIDIwMjAvNy8xMSAxNDozNywgWmhpaGFvIENoZW5nIOWGmemBkzoKPiDlnKggMjAyMC83Lzcg
-MjA6NDcsIFJpY2hhcmQgV2VpbmJlcmdlciDlhpnpgZM6Cj4+IC0tLS0tIFVyc3Byw7xuZ2xpY2hl
-IE1haWwgLS0tLS0KPj4+Pj4gUGVyaGFwcyBJIG1pc3VuZGVyc3Rvb2Qgd2hhdCBjb21taXQgMzJm
-ZTkwNWMxN2YwMDEgKCJ1YmlmczogRml4Cj4+Pj4+IE9fVE1QRklMRSBjb3JuZXIgY2FzZSBpbiB1
-Ymlmc19saW5rKCkiKSB3YW50ZWQgdG8gZml4Lgo+Pj4+PiBJIHRoaW5rIG9ycGhhbiBhcmVhIGlz
-IHVzZWQgdG8gcmVtaW5kIGZpbGVzeXN0ZW0gZG9uJ3QgZm9yZ2V0IHRvIAo+Pj4+PiBkZWxldGUK
-Pj4+Pj4gaW5vZGVzICh3aG9zZSBubGluayBpcyAwKSBpbiBuZXh0IHVuY2xlYW4gcmVib290aW5n
-LiBHZW5lcmFsbHksIAo+Pj4+PiB0aGUgZmlsZQo+Pj4+PiBzeXN0ZW0gaXMgbm90IGNvcnJ1cHRl
-ZCBjYXVzZWQgYnkgcmVwbGF5aW5nIG9ycGhhbiBub2Rlcy4KPj4+Pj4gUmFscGggcmVwb3J0ZWQg
-YSBmaWxlc3lzdGVtIGNvcnJ1cHRpb24gaW4gY29tYmluYXRpb24gd2l0aCBvdmVybGF5ZnMuCj4+
-Pj4+IENhbiB5b3UgdGVsbCBtZSB0aGUgZGV0YWlscyBhYm91dCB0aGF0IHByb2JsZW0/IFRoYW5r
-cy4KPj4+PiBPbiBteSB0ZXN0IGJlZCBJIGRpZG4ndCBzZWUgYSBmcyBjb3JydXB0aW9uLCB3aGF0
-IEkgc2F3IHdhcyBhIAo+Pj4+IGZhaWxpbmcgb3JwaGFuCj4+Pj4gc2VsZiB0ZXN0IHdoaWxlIHBs
-YXlpbmcgd2l0aCBPX1RNUEZJTEUgYW5kIGxpbmthdCgpLgo+Pj4gRG8gd2UgaGF2ZSBhIHJlcHJv
-ZHVjZXIsIG9yIGNhbiBJIGdldCB0aGUgZmFpbCB0ZXN0Y2FzZT8gSXMgaXQgYSAKPj4+IHhmc3Rl
-c3QKPj4+IGNhc2U/Cj4+IEkgdGhpbmsgeGZzdGVzdHMgdHJpZ2dlcmVkIGl0LCB5ZXMuCj4+IExh
-dGVyIHRvZGF5IEkgY2FuIGNoZWNrLiA6KQo+Pgo+PiBUaGFua3MsCj4+IC8vcmljaGFyZAo+Pgo+
-PiAuCj4KPiBJIHRoaW5rIEkgaGF2ZSBmb3VuZCB0aGUgdGVzdGNhc2VzLCBvdmVybGF5LzAwNiBh
-bmQgb3ZlcmxheS8wNDEuCj4KPiBUaGUgJ212JyBhbmQgJ3JtJyBvcGVyYXRpb25zIHdpbGwgcHV0
-IGxvd2VydGVzdGZpbGUgaW50byBvcnBoYW4gbGlzdCAKPiB0d2ljZSwgc28gd2UgbXVzdCByZXNl
-dmUgdGhlIG9ycGhhbiBkZWxldGlvbiBvcGVyYXRpb24gaW4gCj4gdWJpZnNfbGluaygpLCBvdGhl
-cndpc2UgdGhlIHRlc3RjYXNlIGZhaWxzIGFuZCB3ZSB3aWxsIHNlZSB0aGUgCj4gZm9sbG93aW5n
-IG1zZzoKPgo+IMKgIG92ZXJsYXkvMDA2IDJzIC4uLiAtIG91dHB1dCBtaXNtYXRjaCAoc2VlIAo+
-IC9yb290L2dpdC94ZnN0ZXN0cy1kZXYvcmVzdWx0cy8vb3ZlcmxheS8wMDYub3V0LmJhZCkKPiDC
-oMKgwqAgLS0tIHRlc3RzL292ZXJsYXkvMDA2Lm91dMKgwqDCoCAyMDIwLTA3LTA3IDIxOjQyOjU3
-LjczNzAwMDAwMCArMDgwMAo+IMKgwqDCoCArKysgL3Jvb3QvZ2l0L3hmc3Rlc3RzLWRldi9yZXN1
-bHRzLy9vdmVybGF5LzAwNi5vdXQuYmFkIDIwMjAtMDctMTEgCj4gMTQ6MzE6NTUuMzQwMDAwMDAw
-ICswODAwCj4gwqDCoMKgIEBAIC0xLDIgKzEsNCBAQAo+IMKgwqDCoMKgIFFBIG91dHB1dCBjcmVh
-dGVkIGJ5IDAwNgo+IMKgwqDCoMKgIFNpbGVuY2UgaXMgZ29sZGVuCj4gwqDCoMKgICtybTogY2Fu
-bm90IHJlbW92ZSAKPiAnL3RtcC9zY3JhdGNoL292bC1tbnQvdXBwZXJ0ZXN0ZGlyL2xvd2VydGVz
-dGZpbGUnOiBJbnZhbGlkIGFyZ3VtZW50Cj4gwqDCoMKgICtsb3dlcnRlc3RmaWxlCj4gwqDCoMKg
-IC4uLgo+Cj4gwqAgW8KgIDM4Mi4yNTgyMTBdIFVCSUZTIGVycm9yICh1YmkwOjEgcGlkIDExODk2
-KTogb3JwaGFuX2FkZCBbdWJpZnNdOiAKPiBvcnBoYW5lZCB0d2ljZQo+IMKgIFvCoCAzODIuMzUy
-NTM1XSBVQklGUyBlcnJvciAodWJpMDoxIHBpZCAxMTkzMCk6IGZyZWVfb3JwaGFucyBbdWJpZnNd
-OiAKPiBvcnBoYW4gbGlzdCBub3QgZW1wdHkgYXQgdW5tb3VudAo+Cj4KPiBTbywgaG93IGFib3V0
-IG1vdmluZyB1Ymlmc19kZWxldGVfb3JwaGFuKCkgYWZ0ZXIgdWJpZnNfam5sX3VwZGF0ZSgpIGlu
-IAo+IGZ1bmN0aW9uIHViaWZzX2xpbmsoKS4gRm9sbG93aW5nIG1vZGlmaWNhdGlvbnMgYXBwbGll
-ZCBpbiBsaW51eC01LjggCj4gaGFzIGJlZW4gdGVzdGVkIGJ5IG92ZXJsYXkvMDQxLCBvdmVybGF5
-LzAwNiBhbmTCoCBvdGhlciB0bXBmaWxlIGNhc2VzIAo+IChnZW5lcmljLzUzMSwgZ2VuZXJpYy81
-MzAsIGdlbmVyaWMvNTA5LCBnZW5lcmljLzM4OSwgZ2VuZXJpYy8wMDQpLgo+ClJlc3VsdHMgZm9y
-IHRlc3RjYXNlcyBnZW5lcmljLzUzMCwgZ2VuZXJpYy81MDksIGdlbmVyaWMvMzg5IGFuZCAKZ2Vu
-ZXJpYy8wMDQgYXJlIHN0aWxsICJub3QgcnVuIi4KPiBkaWZmIC0tZ2l0IGEvZnMvdWJpZnMvZGly
-LmMgYi9mcy91Ymlmcy9kaXIuYwo+IGluZGV4IGVmODVlYzE2N2E4NC4uZmQ0NDQzYTVlOGM2IDEw
-MDY0NAo+IC0tLSBhL2ZzL3ViaWZzL2Rpci5jCj4gKysrIGIvZnMvdWJpZnMvZGlyLmMKPiBAQCAt
-NzIyLDExICs3MjIsNiBAQCBzdGF0aWMgaW50IHViaWZzX2xpbmsoc3RydWN0IGRlbnRyeSAqb2xk
-X2RlbnRyeSwgCj4gc3RydWN0IGlub2RlICpkaXIsCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIGdvdG8gb3V0X2ZuYW1lOwo+Cj4gwqDCoMKgwqDCoMKgwqAgbG9ja18yX2lub2Rlcyhk
-aXIsIGlub2RlKTsKPiAtCj4gLcKgwqDCoMKgwqDCoCAvKiBIYW5kbGUgT19UTVBGSUxFIGNvcm5l
-ciBjYXNlLCBpdCBpcyBhbGxvd2VkIHRvIGxpbmsgYSAKPiBPX1RNUEZJTEUuICovCj4gLcKgwqDC
-oMKgwqDCoCBpZiAoaW5vZGUtPmlfbmxpbmsgPT0gMCkKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCB1Ymlmc19kZWxldGVfb3JwaGFuKGMsIGlub2RlLT5pX2lubyk7Cj4gLQo+IGluY19u
-bGluayhpbm9kZSk7Cj4gaWhvbGQoaW5vZGUpOwo+IMKgwqDCoMKgwqDCoMKgIGlub2RlLT5pX2N0
-aW1lID0gY3VycmVudF90aW1lKGlub2RlKTsKPiBAQCAtNzM2LDYgKzczMSwxMSBAQCBzdGF0aWMg
-aW50IHViaWZzX2xpbmsoc3RydWN0IGRlbnRyeSAqb2xkX2RlbnRyeSwgCj4gc3RydWN0IGlub2Rl
-ICpkaXIsCj4gwqDCoMKgwqDCoMKgwqAgZXJyID0gdWJpZnNfam5sX3VwZGF0ZShjLCBkaXIsICZu
-bSwgaW5vZGUsIDAsIDApOwo+IMKgwqDCoMKgwqDCoMKgIGlmIChlcnIpCj4gwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIGdvdG8gb3V0X2NhbmNlbDsKPiArCj4gK8KgwqDCoMKgwqDCoCAv
-KiBIYW5kbGUgT19UTVBGSUxFIGNvcm5lciBjYXNlLCBpdCBpcyBhbGxvd2VkIHRvIGxpbmsgYSAK
-PiBPX1RNUEZJTEUuICovCj4gK8KgwqDCoMKgwqDCoCBpZiAoaW5vZGUtPmlfbmxpbmsgPT0gMSkK
-PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB1Ymlmc19kZWxldGVfb3JwaGFuKGMsIGlu
-b2RlLT5pX2lubyk7Cj4gKwo+IMKgwqDCoMKgwqDCoMKgIHVubG9ja18yX2lub2RlcyhkaXIsIGlu
-b2RlKTsKPgo+IMKgwqDCoMKgwqDCoMKgIHViaWZzX3JlbGVhc2VfYnVkZ2V0KGMsICZyZXEpOwo+
-IEBAIC03NDcsOCArNzQ3LDYgQEAgc3RhdGljIGludCB1Ymlmc19saW5rKHN0cnVjdCBkZW50cnkg
-Km9sZF9kZW50cnksIAo+IHN0cnVjdCBpbm9kZSAqZGlyLAo+IMKgwqDCoMKgwqDCoMKgIGRpci0+
-aV9zaXplIC09IHN6X2NoYW5nZTsKPiDCoMKgwqDCoMKgwqDCoCBkaXJfdWktPnVpX3NpemUgPSBk
-aXItPmlfc2l6ZTsKPiBkcm9wX25saW5rKGlub2RlKTsKPiAtwqDCoMKgwqDCoMKgIGlmIChpbm9k
-ZS0+aV9ubGluayA9PSAwKQo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHViaWZzX2Fk
-ZF9vcnBoYW4oYywgaW5vZGUtPmlfaW5vKTsKPiDCoMKgwqDCoMKgwqDCoCB1bmxvY2tfMl9pbm9k
-ZXMoZGlyLCBpbm9kZSk7Cj4gwqDCoMKgwqDCoMKgwqAgdWJpZnNfcmVsZWFzZV9idWRnZXQoYywg
-JnJlcSk7Cj4gaXB1dChpbm9kZSk7Cj4gLS0gCj4KCgoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxp
-bmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
-LW10ZC8K
+The MT29F2G01AAAED is a single die, 2Gb Micron SPI NAND Flash with 4-bit
+ECC
+
+Signed-off-by: Thirumalesha Narasimhappa <nthirumalesha7@gmail.com>
+---
+ drivers/mtd/nand/spi/micron.c | 77 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 77 insertions(+)
+
+diff --git a/drivers/mtd/nand/spi/micron.c b/drivers/mtd/nand/spi/micron.c
+index 5d370cfcdaaa..7e0b61d7b90f 100644
+--- a/drivers/mtd/nand/spi/micron.c
++++ b/drivers/mtd/nand/spi/micron.c
+@@ -17,6 +17,7 @@
+ #define MICRON_STATUS_ECC_1TO3_BITFLIPS	(1 << 4)
+ #define MICRON_STATUS_ECC_4TO6_BITFLIPS	(3 << 4)
+ #define MICRON_STATUS_ECC_7TO8_BITFLIPS	(5 << 4)
++#define MICRON_STATUS_ECC_1TO4_BITFLIPS	(1 << 4)
+ 
+ #define MICRON_CFG_CR			BIT(0)
+ 
+@@ -44,6 +45,19 @@ static SPINAND_OP_VARIANTS(update_cache_variants,
+ 		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
+ 		SPINAND_PROG_LOAD(false, 0, NULL, 0));
+ 
++/* Micron  MT29F2G01AAAED Device */
++static SPINAND_OP_VARIANTS(read_cache_variants_mt29f2g01aaaed,
++		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
++
++static SPINAND_OP_VARIANTS(write_cache_variants_mt29f2g01aaaed,
++		SPINAND_PROG_LOAD(true, 0, NULL, 0));
++
++static SPINAND_OP_VARIANTS(update_cache_variants_mt29f2g01aaaed,
++		SPINAND_PROG_LOAD(false, 0, NULL, 0));
++
+ static int micron_8_ooblayout_ecc(struct mtd_info *mtd, int section,
+ 				  struct mtd_oob_region *region)
+ {
+@@ -69,11 +83,41 @@ static int micron_8_ooblayout_free(struct mtd_info *mtd, int section,
+ 	return 0;
+ }
+ 
++static int mt29f2g01aaaed_ooblayout_ecc(struct mtd_info *mtd, int section,
++					struct mtd_oob_region *region)
++{
++	if (section >= 4)
++		return -ERANGE;
++
++	region->offset = (section * 16) + 8;
++	region->length = 8;
++
++	return 0;
++}
++
++static int mt29f2g01aaaed_ooblayout_free(struct mtd_info *mtd, int section,
++					 struct mtd_oob_region *region)
++{
++	if (section >= 4)
++		return -ERANGE;
++
++	/* Reserve 2 bytes for the BBM. */
++	region->offset = (section * 16) + 2;
++	region->length = 6;
++
++	return 0;
++}
++
+ static const struct mtd_ooblayout_ops micron_8_ooblayout = {
+ 	.ecc = micron_8_ooblayout_ecc,
+ 	.free = micron_8_ooblayout_free,
+ };
+ 
++static const struct mtd_ooblayout_ops mt29f2g01aaaed_ooblayout = {
++	.ecc = mt29f2g01aaaed_ooblayout_ecc,
++	.free = mt29f2g01aaaed_ooblayout_free,
++};
++
+ static int micron_select_target(struct spinand_device *spinand,
+ 				unsigned int target)
+ {
+@@ -114,6 +158,27 @@ static int micron_8_ecc_get_status(struct spinand_device *spinand,
+ 	return -EINVAL;
+ }
+ 
++static int mt29f2g01aaaed_ecc_get_status(struct spinand_device *spinand,
++					 u8 status)
++{
++	switch (status & MICRON_STATUS_ECC_MASK) {
++	case STATUS_ECC_NO_BITFLIPS:
++		return 0;
++
++	case STATUS_ECC_UNCOR_ERROR:
++		return -EBADMSG;
++
++	/* 1 to 4-bit error detected and corrected */
++	case MICRON_STATUS_ECC_1TO4_BITFLIPS:
++		return 4;
++
++	default:
++		break;
++	}
++
++	return -EINVAL;
++}
++
+ static const struct spinand_info micron_spinand_table[] = {
+ 	/* M79A 2Gb 3.3V */
+ 	SPINAND_INFO("MT29F2G01ABAGD",
+@@ -217,6 +282,18 @@ static const struct spinand_info micron_spinand_table[] = {
+ 		     SPINAND_ECCINFO(&micron_8_ooblayout,
+ 				     micron_8_ecc_get_status),
+ 		     SPINAND_SELECT_TARGET(micron_select_target)),
++	/* M70A 2Gb 3.3V */
++	SPINAND_INFO("MT29F2G01AAAED",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x9F),
++		     NAND_MEMORG(1, 2048, 256, 64, 2048, 80, 2, 1, 1),
++		     NAND_ECCREQ(4, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants_mt29f2g01aaaed,
++					      &write_cache_variants_mt29f2g01aaaed,
++					      &update_cache_variants_mt29f2g01aaaed),
++		     0,
++		     SPINAND_ECCINFO(&mt29f2g01aaaed_ooblayout,
++				     mt29f2g01aaaed_ecc_get_status),
++		     SPINAND_SELECT_TARGET(micron_select_target)),
+ };
+ 
+ static int micron_spinand_init(struct spinand_device *spinand)
+-- 
+2.17.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
