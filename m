@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7AD4C433E8
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jul 2020 05:56:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BA23C433DF
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jul 2020 05:57:31 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A310F2073A
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jul 2020 05:56:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 075122073A
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jul 2020 05:57:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Ot6AAtup"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A310F2073A
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KgsKVPso"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 075122073A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,46 +25,46 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:Subject:To:
 	References:In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=EX0k8ZnPiCXyoVi0hLNjGxqkJVu4YJj5K73tp7Km6Ss=; b=Ot6AAtupwsqWxmdoH5rpC/LqD
-	Ji/9GufRbTv8E+woK6tAIuVV93BjkMNp7sJIlz6bd5SMP2iGyRMxglh1woMtKa02vsu1D3hcpq1Zt
-	cSk9Gl1MJbrv/LoInhaNjKlvcHeVWxaoPL8yZ8Agz0rDyZd+BAuSEM7s1CNHtRceVqnsQK2+CWokZ
-	O+DcIJxXOOcGzJtGhSXmAX45xSJCtqt+uPBkPyAuaA1SYAtKOrpIfomk6rqtpNPr754sFW9IltLGK
-	83Bk8SIloHRsbLzRObAl6jp5/qhJkDLYZ9Vek6cljXL/DKbMCQBErcPUKFoUhsT7ixKCsNyUxkm5Z
-	LildMJG+w==;
+	 bh=QLsBn7hNUptqXxe2panXkTiKTDqyOb/q5+jj7EEGgOY=; b=KgsKVPso3ADMCvGs0sZeoZtAP
+	Xrk6RLo38Az2wnGwaUVfeKW+LjW2v31N+ts8/R9/g/kdw8QKPHlFj8w+v1PcQ5AawsVMbkPLX1IgR
+	UuiglRN5f5ePkx5sLOpd6zc1PWBsT+/0hhP2/fypBUEj/ATNBfNbYtdnB9NcVBQrAvXaHM08aLE+C
+	EElpydbugHNwUmQshbQQXUQbfFuyw7DcogqFyQ7+EfxlkQPnlj5Lkfx3ZbzfBHXYS+2dH3Y8RLyzH
+	0de/Vmt32qyVKDQSLQiuuiSq7D/Cie6VOTgXaN/gJAN1HWTecp26uFp88UmxuaMQ1dqeg4Y3b5AVe
+	grTKvQaiQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jurR6-00074M-1d; Mon, 13 Jul 2020 05:55:32 +0000
+	id 1jurSZ-0007Lg-AK; Mon, 13 Jul 2020 05:57:03 +0000
 Received: from twhmllg3.macronix.com ([122.147.135.201])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jurR3-00073P-Lx
- for linux-mtd@lists.infradead.org; Mon, 13 Jul 2020 05:55:30 +0000
+ id 1jurSX-0007Kz-11
+ for linux-mtd@lists.infradead.org; Mon, 13 Jul 2020 05:57:02 +0000
 Received: from twhfmlp1.macronix.com (twhfmlp1.macronix.com [172.17.20.91])
- by TWHMLLG3.macronix.com with ESMTP id 06D5t8fH073343;
- Mon, 13 Jul 2020 13:55:08 +0800 (GMT-8)
+ by TWHMLLG3.macronix.com with ESMTP id 06D5umJN074304;
+ Mon, 13 Jul 2020 13:56:48 +0800 (GMT-8)
  (envelope-from masonccyang@mxic.com.tw)
-Received: from MXML06C.mxic.com.tw (mxml06c.mxic.com.tw [172.17.14.55])
- by Forcepoint Email with ESMTP id CF4E7C58ADF7B5E3F802;
- Mon, 13 Jul 2020 13:55:08 +0800 (CST)
-In-Reply-To: <1590737775-4798-4-git-send-email-masonccyang@mxic.com.tw>
+Received: from MXML06C.mxic.com.tw (mxml06c.macronix.com [172.17.14.55])
+ by Forcepoint Email with ESMTP id 73E4BA0EA246962EF531;
+ Mon, 13 Jul 2020 13:56:49 +0800 (CST)
+In-Reply-To: <1590737775-4798-5-git-send-email-masonccyang@mxic.com.tw>
 References: <1590737775-4798-1-git-send-email-masonccyang@mxic.com.tw>
- <1590737775-4798-4-git-send-email-masonccyang@mxic.com.tw>
+ <1590737775-4798-5-git-send-email-masonccyang@mxic.com.tw>
 To: ycllin@mxic.com.tw
-Subject: Re: [PATCH v4 3/7] mtd: spi-nor: sfdp: parse command sequences to
- change octal DTR mode
+Subject: Re: [PATCH v4 4/7] mtd: spi-nor: core: add configuration register 2
+ read & write support
 MIME-Version: 1.0
-X-KeepSent: 95EC2283:12FD5203-482585A4:00204E4A;
+X-KeepSent: EB5FB2E6:05B846A9-482585A4:00209949;
  type=4; name=$KeepSent
 X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
-Message-ID: <OF95EC2283.12FD5203-ON482585A4.00204E4A-482585A4.002083A3@mxic.com.tw>
+Message-ID: <OFEB5FB2E6.05B846A9-ON482585A4.00209949-482585A4.0020AAF4@mxic.com.tw>
 From: masonccyang@mxic.com.tw
-Date: Mon, 13 Jul 2020 13:55:08 +0800
+Date: Mon, 13 Jul 2020 13:56:49 +0800
 X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
- HF265|July 25, 2018) at 2020/07/13 PM 01:55:08,
- Serialize complete at 2020/07/13 PM 01:55:08
-X-MAIL: TWHMLLG3.macronix.com 06D5t8fH073343
+ HF265|July 25, 2018) at 2020/07/13 PM 01:56:49,
+ Serialize complete at 2020/07/13 PM 01:56:49
+X-MAIL: TWHMLLG3.macronix.com 06D5umJN074304
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200713_015530_126518_C19AD689 
-X-CRM114-Status: UNSURE (   3.97  )
+X-CRM114-CacheID: sfid-20200713_015701_545306_7D34435A 
+X-CRM114-Status: UNSURE (   4.97  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -90,15 +90,18 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 + YC Lin in loop,
 
 --
+> 
 > Subject
 > 
-> [PATCH v4 3/7] mtd: spi-nor: sfdp: parse command sequences to change 
-octal DTR mode
+> [PATCH v4 4/7] mtd: spi-nor: core: add configuration register 2 read & 
+write support
 > 
-> A set of simple command sequences is provided which can be executed
-> directly by the host controller to enable octal DTR mode.
+> Configuration register 2 is to set the device operation condition like
+> STR or DTR mode at address offset 0 and DQS mode at address offset 
+0x200.
 > 
-> Each command sequence is 8 per byte for single SPI mode.
+> Each device has various address offset for it's specific operatoin
+> setting.
 > 
 > Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
 > ---
