@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15F3AC433E3
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jul 2020 16:56:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D95BC433E2
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jul 2020 17:05:05 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DA17B2067D
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jul 2020 16:56:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6D61920738
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jul 2020 17:05:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="eX2W4/m7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA17B2067D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="d56rdGn8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D61920738
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=al2klimov.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=qDO8fclF512UEYyAleWBNZm6/WJ7H3W3d6FJssxMHQ4=; b=eX2W4/m75GV/SmvPJzlCQr8/EK
-	8MCaCmr2HuSDSwYxAh5HhktFBvrrkmKHsJSsj7qpRLWSnWifMWI+v8LW60y527VpcJHA4hoA5Ywz3
-	g5gvwKSF+6NA3FQM03nOXNBu87e7reP1hzJ46zXEXO5whoJaoFk4O3VBEw86gBGC0SYSjkW1y7XFA
-	a7gqAC08hLAGO0OUVyhL9sqNGjeQaTeVWFbtCJAU91E/69h4MucNz9szFC/ILOhA7LW3RBL5UG72F
-	T2YzNhbhC66S2yIxY9WE+5RoW3kd+1+cON189iiLkpypuGIjfpzue95YelDR4ycaHLS22GYA20ent
-	P7K6gYVg==;
+	bh=6EdIa3P3Pw+wwXode2n5e3T953y2H0CMn2bUrIqWoyA=; b=d56rdGn8eKPVNyLs0ykYfYZSbu
+	VjUBNwpQRMNFAfn7zfAWJB9yUwqLGwW3yghLzHy3QVbOlSuUkTSuDRnLgBjo2XNVSDi9YWnx+KJ29
+	BkOaVZtCEymRByoYqJinDNSAVsznIi7CYgzB2PqQCcv+qdgn0kBlHJkiG7eVq8aYbDmC+Gso35VVc
+	pSmCSUogTx/pFpRIwKEeNpooZV64iyAHg2UJQgDKhgLMJDkfQQ3fTaB75pnrBQyzYz++eb4Nqfzhd
+	XF848Z0MwukESm2cbZBgIp96VYdERXjqKHeWYEfpmUBlx9zFJG180gE+RwxPZrZmTYyl61UhoRfxE
+	8idfK/jg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jv1j5-00041L-8t; Mon, 13 Jul 2020 16:54:47 +0000
+	id 1jv1sW-0005D6-KS; Mon, 13 Jul 2020 17:04:32 +0000
 Received: from smtp.al2klimov.de ([78.46.175.9])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jv1id-0003lZ-QJ
- for linux-mtd@lists.infradead.org; Mon, 13 Jul 2020 16:54:21 +0000
+ id 1jv1sU-0005Ch-3N
+ for linux-mtd@lists.infradead.org; Mon, 13 Jul 2020 17:04:30 +0000
 Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
- by smtp.al2klimov.de (Postfix) with ESMTPA id 585A3BC0FD;
- Mon, 13 Jul 2020 16:54:16 +0000 (UTC)
+ by smtp.al2klimov.de (Postfix) with ESMTPA id 03033BC0D3;
+ Mon, 13 Jul 2020 17:04:26 +0000 (UTC)
 From: "Alexander A. Klimov" <grandmaster@al2klimov.de>
 To: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- robh+dt@kernel.org, linus.walleij@linaro.org, arnd@arndb.de,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: Replace HTTP links with HTTPS ones
-Date: Mon, 13 Jul 2020 18:54:08 +0200
-Message-Id: <20200713165408.36229-1-grandmaster@al2klimov.de>
+ tudor.ambarus@microchip.com, dinghao.liu@zju.edu.cn,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: rawnand: omap_elm: Replace HTTP links with HTTPS ones
+Date: Mon, 13 Jul 2020 19:04:20 +0200
+Message-Id: <20200713170420.36300-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-X-Spamd-Bar: ++++++
+X-Spamd-Bar: +++++
 Authentication-Results: smtp.al2klimov.de;
  auth=pass smtp.auth=aklimov@al2klimov.de
  smtp.mailfrom=grandmaster@al2klimov.de
-X-Spam: Yes
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200713_125420_019796_051910FA 
-X-CRM114-Status: UNSURE (   9.80  )
+X-CRM114-CacheID: sfid-20200713_130430_280840_877A07CC 
+X-CRM114-Status: UNSURE (   7.62  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -114,66 +112,22 @@ Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
  Impossible is nothing! :)
 
 
- Documentation/devicetree/bindings/mtd/davinci-nand.txt | 4 ++--
- drivers/mtd/chips/Kconfig                              | 2 +-
- drivers/mtd/maps/Kconfig                               | 2 +-
- drivers/mtd/maps/sc520cdp.c                            | 2 +-
- 4 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/raw/omap_elm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/davinci-nand.txt b/Documentation/devicetree/bindings/mtd/davinci-nand.txt
-index cfb18abe6001..edebeae1f5b3 100644
---- a/Documentation/devicetree/bindings/mtd/davinci-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/davinci-nand.txt
-@@ -4,8 +4,8 @@ This file provides information, what the device node for the davinci/keystone
- NAND interface contains.
- 
- Documentation:
--Davinci DM646x - http://www.ti.com/lit/ug/sprueq7c/sprueq7c.pdf
--Kestone - http://www.ti.com/lit/ug/sprugz3a/sprugz3a.pdf
-+Davinci DM646x - https://www.ti.com/lit/ug/sprueq7c/sprueq7c.pdf
-+Kestone - https://www.ti.com/lit/ug/sprugz3a/sprugz3a.pdf
- 
- Required properties:
- 
-diff --git a/drivers/mtd/chips/Kconfig b/drivers/mtd/chips/Kconfig
-index a7e47e068ad9..aef14990e5f7 100644
---- a/drivers/mtd/chips/Kconfig
-+++ b/drivers/mtd/chips/Kconfig
-@@ -11,7 +11,7 @@ config MTD_CFI
- 	  AMD and other flash manufactures that provides a universal method
- 	  for probing the capabilities of flash devices. If you wish to
- 	  support any device that is CFI-compliant, you need to enable this
--	  option. Visit <http://www.amd.com/products/nvd/overview/cfi.html>
-+	  option. Visit <https://www.amd.com/products/nvd/overview/cfi.html>
- 	  for more information on CFI.
- 
- config MTD_JEDECPROBE
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index b28225a7c4f3..fd37553f1b07 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -310,7 +310,7 @@ config MTD_DC21285
- 	help
- 	  This provides a driver for the flash accessed using Intel's
- 	  21285 bridge used with Intel's StrongARM processors. More info at
--	  <http://www.intel.com/design/bridge/docs/21285_documentation.htm>.
-+	  <https://www.intel.com/design/bridge/docs/21285_documentation.htm>.
- 
- config MTD_IXP4XX
- 	tristate "CFI Flash device mapped on Intel IXP4xx based systems"
-diff --git a/drivers/mtd/maps/sc520cdp.c b/drivers/mtd/maps/sc520cdp.c
-index 9902b37e18b4..8ef7aec634c7 100644
---- a/drivers/mtd/maps/sc520cdp.c
-+++ b/drivers/mtd/maps/sc520cdp.c
-@@ -6,7 +6,7 @@
-  * The SC520CDP is an evaluation board for the Elan SC520 processor available
-  * from AMD. It has two banks of 32-bit Flash ROM, each 8 Megabytes in size,
-  * and up to 512 KiB of 8-bit DIL Flash ROM.
-- * For details see http://www.amd.com/products/epd/desiging/evalboards/18.elansc520/520_cdp_brief/index.html
-+ * For details see https://www.amd.com/products/epd/desiging/evalboards/18.elansc520/520_cdp_brief/index.html
+diff --git a/drivers/mtd/nand/raw/omap_elm.c b/drivers/mtd/nand/raw/omap_elm.c
+index 078b1022ac2a..4b799521a427 100644
+--- a/drivers/mtd/nand/raw/omap_elm.c
++++ b/drivers/mtd/nand/raw/omap_elm.c
+@@ -2,7 +2,7 @@
+ /*
+  * Error Location Module
+  *
+- * Copyright (C) 2012 Texas Instruments Incorporated - http://www.ti.com/
++ * Copyright (C) 2012 Texas Instruments Incorporated - https://www.ti.com/
   */
  
- #include <linux/module.h>
+ #define DRIVER_NAME	"omap-elm"
 -- 
 2.27.0
 
