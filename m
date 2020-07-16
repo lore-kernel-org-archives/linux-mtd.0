@@ -2,63 +2,67 @@ Return-Path: <SRS0=qv8i=A3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 238FEC433E1
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Jul 2020 08:59:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4EEDC433E7
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Jul 2020 11:54:39 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E0A1B20760
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Jul 2020 08:59:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A5D8A20760
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Jul 2020 11:54:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fFJzcrrS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E0A1B20760
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="1EwVy29y";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="z+Lo92f1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A5D8A20760
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To:From:
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From:Date:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=NjmSX7Eslb5XZlthcXo+Pb4RDIDfsHsW42+Ugk6rgdo=; b=fFJzcrrSV4lucqfsTGRPvMnxkv
-	ZDIlKEvY1fRAqUIeK5FDQoak1fxsg/fdQ0SGet/sIbmSfwMLqJDng8HbWQb6VHVtzxuI1VopResQc
-	gSESe8W0YLJ382KD9gg6iKxnOhgN9x2RKHKxd/izsEEWpCz+m7dG9bkuGryCcFvXdmgxfKLe9DF49
-	nabNNv493LDt/9BYgxXQwlM8OJKxxqAB0MV1H5erXN/jMqPSIGTNNKD0rbzHH/AIs65hXntGvHsOx
-	/prO6uHqTz+U2u2Ke/0n1nCpPFSo5ApWgWlqza+NiMckqp/b7fEBe7u9BuWLUgxvLLxruTGFvtlDY
-	ez0T415w==;
+	bh=J8G+auBKAoWm5cf19N+bWiM/jgD+P3OO1qwjpxk1ZjY=; b=1EwVy29yGFsXfakxd1wNm5jDq3
+	jbVgmN+uR6+VYEN6dXm9jMIaFz2j22DzMshrnzzcjhomLhlP1lOvbe9cHuxdOEUVd9BSpRCihCHCm
+	HxLENavsQL0uPpr54YpJCcXMCWIBCtiZTkZpWSH4VzQCAW9RsaJUaEYUpIBoATaNe3fnjBI4kwIPw
+	Jw2lLvF2r9PXWsNq9fP77LlDmSxyt3PIvtOZfLBCJCWhPTdqXad2AH3pLPHkBVJNWBlBWPXMS4jfV
+	X2zXrK2X3X/yElATqju8gWdhUcSXrbtDm1R6WxvleN1oWQ4eu+ymIJE3nKtp1m1ReBZU0DR1ZIxar
+	gr6jLmXg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jvziy-0002pv-Gd; Thu, 16 Jul 2020 08:58:40 +0000
-Received: from szxga05-in.huawei.com ([45.249.212.191] helo=huawei.com)
+	id 1jw2Sc-0005s8-97; Thu, 16 Jul 2020 11:53:58 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jvziv-0002nz-NK
- for linux-mtd@lists.infradead.org; Thu, 16 Jul 2020 08:58:38 +0000
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
- by Forcepoint Email with ESMTP id 077AA2FC830B9AA4065F;
- Thu, 16 Jul 2020 16:58:31 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 16 Jul 2020 16:58:26 +0800
-From: Qinglang Miao <miaoqinglang@huawei.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, "Vignesh
- Raghavendra" <vigneshr@ti.com>
-Subject: [PATCH -next] mtd: mtdcore: Convert to DEFINE_SHOW_ATTRIBUTE
-Date: Thu, 16 Jul 2020 17:02:20 +0800
-Message-ID: <20200716090220.12983-1-miaoqinglang@huawei.com>
-X-Mailer: git-send-email 2.20.1
+ id 1jw2SZ-0005r9-7f
+ for linux-mtd@lists.infradead.org; Thu, 16 Jul 2020 11:53:56 +0000
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
+ [83.86.89.107])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 3C24620739;
+ Thu, 16 Jul 2020 11:53:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1594900432;
+ bh=snuO7Afj7MA835fjlKy97Sdl/QB5+F2KKYVi91gzJGY=;
+ h=Date:From:To:Cc:Subject:From;
+ b=z+Lo92f1Z3Hqd0m/IYqU2kSKtnFQPWyqMXEoQQ0N/Zzl0ctA9mVeKJ19ZxZIQLToC
+ baqRXp/Yx5/pujymq4Cpv9hPfJY3aK0GWGqd7ZnS3SQnItLBpk5iPLCy/e/d5L4rpE
+ WWkD99oVRhItakVJ5C/0akC+F8VNqg4R8kNLV6qc=
+Date: Thu, 16 Jul 2020 13:53:46 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [PATCH] mtd: properly check all write ioctls for permissions
+Message-ID: <20200716115346.GA1667288@kroah.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200716_045838_018228_B9B7A2C6 
-X-CRM114-Status: UNSURE (   6.88  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200716_075355_348653_28F61F56 
+X-CRM114-Status: GOOD (  14.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,71 +80,115 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Yongqiang Liu <liuyongqiang13@huawei.com>
+When doing a "write" ioctl call, properly check that we have permissions
+to do so before copying anything from userspace or anything else so we
+can "fail fast".  This includes also covering the MEMWRITE ioctl which
+previously missed checking for this.
 
-Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
-
-Signed-off-by: Yongqiang Liu <liuyongqiang13@huawei.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: stable <stable@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mtd/mtdcore.c | 28 ++++------------------------
- 1 file changed, 4 insertions(+), 24 deletions(-)
+ drivers/mtd/mtdchar.c | 54 +++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 45 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index e10ff132b..a88fe9fc0 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -335,7 +335,7 @@ static const struct device_type mtd_devtype = {
- 	.release	= mtd_release,
- };
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index c5935b2f9cd1..52c120f9fb0d 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -355,9 +355,6 @@ static int mtdchar_writeoob(struct file *file, struct mtd_info *mtd,
+ 	uint32_t retlen;
+ 	int ret = 0;
  
--static int mtd_partid_show(struct seq_file *s, void *p)
-+static int mtd_partid_debug_show(struct seq_file *s, void *p)
- {
- 	struct mtd_info *mtd = s->private;
- 
-@@ -344,19 +344,9 @@ static int mtd_partid_show(struct seq_file *s, void *p)
- 	return 0;
- }
- 
--static int mtd_partid_debugfs_open(struct inode *inode, struct file *file)
--{
--	return single_open(file, mtd_partid_show, inode->i_private);
--}
+-	if (!(file->f_mode & FMODE_WRITE))
+-		return -EPERM;
 -
--static const struct file_operations mtd_partid_debug_fops = {
--	.open           = mtd_partid_debugfs_open,
--	.read_iter           = seq_read_iter,
--	.llseek         = seq_lseek,
--	.release        = single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(mtd_partid_debug);
+ 	if (length > 4096)
+ 		return -EINVAL;
  
--static int mtd_partname_show(struct seq_file *s, void *p)
-+static int mtd_partname_debug_show(struct seq_file *s, void *p)
- {
- 	struct mtd_info *mtd = s->private;
+@@ -643,6 +640,48 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
  
-@@ -365,17 +355,7 @@ static int mtd_partname_show(struct seq_file *s, void *p)
- 	return 0;
- }
+ 	pr_debug("MTD_ioctl\n");
  
--static int mtd_partname_debugfs_open(struct inode *inode, struct file *file)
--{
--	return single_open(file, mtd_partname_show, inode->i_private);
--}
++	/*
++	 * Check the file mode to require "dangerous" commands to have write
++	 * permissions.
++	 */
++	switch (cmd) {
++	/* "safe" commands */
++	case MEMGETREGIONCOUNT:
++	case MEMGETREGIONINFO:
++	case MEMGETINFO:
++	case MEMREADOOB:
++	case MEMREADOOB64:
++	case MEMLOCK:
++	case MEMUNLOCK:
++	case MEMISLOCKED:
++	case MEMGETOOBSEL:
++	case MEMGETBADBLOCK:
++	case MEMSETBADBLOCK:
++	case OTPSELECT:
++	case OTPGETREGIONCOUNT:
++	case OTPGETREGIONINFO:
++	case OTPLOCK:
++	case ECCGETLAYOUT:
++	case ECCGETSTATS:
++	case MTDFILEMODE:
++	case BLKPG:
++	case BLKRRPART:
++		break;
++
++	/* "dangerous" commands */
++	case MEMERASE:
++	case MEMERASE64:
++	case MEMWRITEOOB:
++	case MEMWRITEOOB64:
++	case MEMWRITE:
++		if (!(file->f_mode & FMODE_WRITE))
++			return -EPERM;
++		break;
++
++	default:
++		return -ENOTTY;
++	}
++
+ 	switch (cmd) {
+ 	case MEMGETREGIONCOUNT:
+ 		if (copy_to_user(argp, &(mtd->numeraseregions), sizeof(int)))
+@@ -690,9 +729,6 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+ 	{
+ 		struct erase_info *erase;
+ 
+-		if(!(file->f_mode & FMODE_WRITE))
+-			return -EPERM;
 -
--static const struct file_operations mtd_partname_debug_fops = {
--	.open           = mtd_partname_debugfs_open,
--	.read_iter           = seq_read_iter,
--	.llseek         = seq_lseek,
--	.release        = single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(mtd_partname_debug);
+ 		erase=kzalloc(sizeof(struct erase_info),GFP_KERNEL);
+ 		if (!erase)
+ 			ret = -ENOMEM;
+@@ -985,9 +1021,6 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+ 		ret = 0;
+ 		break;
+ 	}
+-
+-	default:
+-		ret = -ENOTTY;
+ 	}
  
- static struct dentry *dfs_dir_mtd;
+ 	return ret;
+@@ -1031,6 +1064,9 @@ static long mtdchar_compat_ioctl(struct file *file, unsigned int cmd,
+ 		struct mtd_oob_buf32 buf;
+ 		struct mtd_oob_buf32 __user *buf_user = argp;
  
++		if (!(file->f_mode & FMODE_WRITE))
++			return -EPERM;
++
+ 		if (copy_from_user(&buf, argp, sizeof(buf)))
+ 			ret = -EFAULT;
+ 		else
 -- 
-2.17.1
+2.27.0
 
 
 ______________________________________________________
