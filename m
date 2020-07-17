@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
 	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4D20C433E2
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jul 2020 16:43:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D81BC433E1
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jul 2020 16:44:55 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 72F652067D
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jul 2020 16:43:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5822E2076D
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jul 2020 16:44:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="f7tNI+Yo";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pensando.io header.i=@pensando.io header.b="pb84lWVv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72F652067D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bBQB0bYm";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pensando.io header.i=@pensando.io header.b="PGKGsWRC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5822E2076D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pensando.io
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,62 +25,60 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
 	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=sor50JNzdHbGGnSjxy3EyfjH3yMn1d/TkH+wkl4X4+8=; b=f7tNI+Yoo0xHMNYSWe8x57RQb
-	dFd1C0B5iUpMKC/bvXTNuyakllp7C8Pz8yskvObcn/AAwKKAm9sVPLa4CcelZpSfy8BqCfTTXTEu8
-	8QpY2FSw6o1+IKbspFO6RZ683ZPD4SFUcJuvd70VwlKJv/slN+WbeAM7DC+vi9JXP5sWdRFSdFW5t
-	sLEq45Pb3stI4gZUkVbX81RDu0UZhBcmUJJPkgJWTEKKaW6pbJsJnXITfDEQCqWJVXnIiofoxZCl9
-	3xK0rvIEbPvVGhpHv5CxdQk4UhBIdAw6lfFkdwKmNnAAQHjgfIrMbdSqATVNZLGQFrBL0gXJhAJaI
-	N4rVdCrvQ==;
+	 bh=bc4r7awdH7XrOp8kvDDBg1hqH3SaxlQTMFoUmsSxgk8=; b=bBQB0bYmNR0BbokBffNA9eyjM
+	eyiJS95IgpRz8wfyAuLdLf9XOv5ZZ0F0veXGxM1LjRKhrx6ow7xpPz1Eh4CONB9ZvQa1DyQEhy+JK
+	1PYjtrhPweErjwKNGsPA4SJzUEqfXc8I0JH8zR/oaRFrIfk1rC3jHSJ+16h+f8gsUuz3nv9tBffjB
+	QBVLzfNbmSW15C7iWMnGYjss6IslIUA+KOUgiftK7NYtvAq1wqRFIQVWQN8HuyHs7JZn6LU0/HWf2
+	YCIbMiVtpKslb30xtKRuPf8wjx++sUcYtwnHwDabZ6nTGy8QzUu3R4iKivDnmUg6ePTgYPwGUTJse
+	5R6/N6Wxg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jwTRS-0007d4-9N; Fri, 17 Jul 2020 16:42:34 +0000
-Received: from mail-wm1-x32e.google.com ([2a00:1450:4864:20::32e])
+	id 1jwTTA-0007n0-NT; Fri, 17 Jul 2020 16:44:20 +0000
+Received: from mail-wr1-x442.google.com ([2a00:1450:4864:20::442])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jwTRQ-0007cc-BF
- for linux-mtd@lists.infradead.org; Fri, 17 Jul 2020 16:42:33 +0000
-Received: by mail-wm1-x32e.google.com with SMTP id f139so18150370wmf.5
- for <linux-mtd@lists.infradead.org>; Fri, 17 Jul 2020 09:42:32 -0700 (PDT)
+ id 1jwTT8-0007mU-ML
+ for linux-mtd@lists.infradead.org; Fri, 17 Jul 2020 16:44:19 +0000
+Received: by mail-wr1-x442.google.com with SMTP id 88so1573456wrh.3
+ for <linux-mtd@lists.infradead.org>; Fri, 17 Jul 2020 09:44:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pensando.io; s=google;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=GWDxLQJYi267CP7O2brFkpQaCNuwG2kyB74XlieRqGI=;
- b=pb84lWVvkqXyMEYjE2ml1DcEKFv78CH8q62tAc2yA1ox3cA3vhZhdE9ogV7wk/Mtjx
- aMLD4ySjmu87dRRvHFeeEvNXk70BLgFxStg2g/MY6egXsu2Hkagxxz+NEloZkUS0/O70
- LaFHDMlLypa7gLaKEr9B1Q+WIIfJaH9vEo3BkJoQX52vwPAKTAIHzNefHJQy9mxMoojV
- 631M4kXdQe5xC9cHnQwtPM9+bUjOp1ki59/Vi3rH4zr7BOlVbOSXAmMJ53LNVukOS7s4
- p0JL8Cu4IvGCLEBXurlQ4/5QWPh4xb63WOWd7heQ9fpXMUfSnZwkDw5cC5QcaMBk2zf1
- y9LQ==
+ :cc; bh=HBmamyY0NDGHob0JXE2Lp2+S6YdIwc1lq3YhCijYPjU=;
+ b=PGKGsWRCSbDa93XyhDT4Ra8RMJBI2tSeXMMIpt/XwLXPGpRvpOde0xxg0me7PsAo9Z
+ V9yC1LdPDjY2pHRqjVXIpVOlQ3g6F7QIqQ/h04dKYXM8pvHRv8zPsRSiU0hWytxIM1XB
+ YwW2eAl5zxvN0XTUV1y7Iq7nU3Tun6fUdimtIws3t25BC6F/Qq16V91BHMpvH1Uqy/mU
+ UEFX/uUYUUgwfqoC83lc5eQM+9TjjXNd3p1GHGNu7N3aEmw/zeTxsLPylw5NhNnqThSw
+ Ph8Q8tdC5Ctywt9pRbTODWrq8n+x0I/oMoogeXimj1/pO2hWoqatDqUBTE/jrxAfUbBH
+ qBiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=GWDxLQJYi267CP7O2brFkpQaCNuwG2kyB74XlieRqGI=;
- b=buggNFA+VIs9wDVZimxx+wdJ1fFlC/V5fbjhKFufxFdOgbFKih1Eztb2U5PM9SWiE3
- EEPZ508o9FqupbUfhvYjBYj6yHQs5asYTotzEv2XCZtLbnyuEXTqA5KTFlFZ8xfyg0lV
- dLbY9UT1sHESTdbffnHxwmwiuewUoCnbA9nXmagrhxtP47TWT1uEYVdx9fbPVgY2uSw0
- be8hrfdwHZDxJy54uF8EW7Z847PikqZ08rB5cztgHu2RsfhOc+C4jD3JrOQCBcjEhlD0
- r/EeXUXrC1I5AqvBdP2UjojL1zGO1tPlBBa7g7uFvJ8voAGkhFYv+Y9XmEAriBznb9ET
- HG5g==
-X-Gm-Message-State: AOAM530MiHA6lu37mmZpyedkUw339mgZgbEyHyGgXT0aJYpx5R6DFNZD
- 9cpKpD6MAznzH/nL69mQilfFoWwYpWHpuvhhf6IIHQ==
-X-Google-Smtp-Source: ABdhPJz5RDzuB0SewlzE/OpKTqVvHZLWJHrIRP1wB9FOPOMNqcB3sZ03uyY6a3Pn3Cj8SYnAOaQvu7OJva8xGfKpxko=
-X-Received: by 2002:a7b:cc91:: with SMTP id p17mr10702088wma.90.1595004151254; 
- Fri, 17 Jul 2020 09:42:31 -0700 (PDT)
+ bh=HBmamyY0NDGHob0JXE2Lp2+S6YdIwc1lq3YhCijYPjU=;
+ b=DB3OOuvUfNnxWdHUIQ/QWJRKiNm2fkzPXIUhX9jn77Cdwx6xlO2hwNHrQ6Adxyi+Bb
+ bqd2RYFf/oTl4uqG/vpqSEaq4W7trALwTACkNR+uIjT5SvuPowKxAnzMOqsv2oDkzG79
+ d0RfwVH3Zo7WiRgLDxwMwsAciOG+lKQtW3fBaHwzcmzsH7DGtcyWQFiwMj1Zr65h41PX
+ hP42h7r14l4Klt2uvYNEIxIbpqkfWLHAOWMHrQan3pJ0/279f2NyiU+7+Ic6Q4Zo3XKj
+ dEgdeAUB48mX4EqQKRHAEmYx3Cp8gqfQ/ebg+j/H4oHeOBCK9jI9HGdIaCAILYgGiQwb
+ MuAg==
+X-Gm-Message-State: AOAM531Z+WNBWoc1NeScFlBM37KfHMtVEBwgm2cTxulnCd2+2lsm4y2u
+ R8nTCBgbfZ4DcGnuwDeaYsYdGPVLh8ZBlTezJZ93Ag==
+X-Google-Smtp-Source: ABdhPJzDuBAPJaKE+woJ/5xRzjugAQAArpq3lhmZntVmX/g8oWfUf5qSd/bnKicZNbKvYxyewRcrf6gIQLLvNQqvZCY=
+X-Received: by 2002:a5d:61c8:: with SMTP id q8mr1470898wrv.160.1595004257482; 
+ Fri, 17 Jul 2020 09:44:17 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200716211631.38949-1-dac2@pensando.io>
- <20200716211631.38949-3-dac2@pensando.io>
- <1724beec-aceb-b6e9-1288-da340d3fd43c@microchip.com>
- <CA+nMikFDWgLMAhb2rUZnAaLUJdimKZZxqKsQACnXrmCMb_CLMw@mail.gmail.com>
-In-Reply-To: <CA+nMikFDWgLMAhb2rUZnAaLUJdimKZZxqKsQACnXrmCMb_CLMw@mail.gmail.com>
+ <20200716211631.38949-2-dac2@pensando.io>
+ <d842064a-7d43-6fd4-a544-dd38d124e6ba@microchip.com>
+ <CA+nMikGEEOoKri5z2T3Ms-3cEi+G014ha+rwrwZWeRn=DxfU9w@mail.gmail.com>
+In-Reply-To: <CA+nMikGEEOoKri5z2T3Ms-3cEi+G014ha+rwrwZWeRn=DxfU9w@mail.gmail.com>
 From: David Clear <dac2@pensando.io>
-Date: Fri, 17 Jul 2020 09:42:20 -0700
-Message-ID: <CA+nMikHqOMFUvf-JhQmAX5yePWdNF5G6rDbGbb_JTL-RfTndOw@mail.gmail.com>
-Subject: Fwd: [PATCH 2/2] mtd: spi-nor: Support SPI_NOR_DUAL_READ on Micron
- mt25qu02g.
+Date: Fri, 17 Jul 2020 09:44:06 -0700
+Message-ID: <CA+nMikFsczKaWbhB-SMJvatKR2LYbv2-cCLCPSH5puF2uiR87w@mail.gmail.com>
+Subject: Fwd: [PATCH 1/2] mtd: spi-nor: Add support for Macronix mx66u2g45g.
 To: Tudor.Ambarus@microchip.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200717_124232_680328_D34161C7 
-X-CRM114-Status: UNSURE (   8.06  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200717_124418_742725_41224521 
+X-CRM114-Status: GOOD (  11.86  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,35 +98,28 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 [resend due to mailing list bounce]
-On Fri, Jul 17, 2020 at 3:33 AM <Tudor.Ambarus@microchip.com> wrote:
+On Fri, Jul 17, 2020 at 3:38 AM <Tudor.Ambarus@microchip.com> wrote:
 >
-> > The Micron mt25qu02g supports both x2 and x4 transactions.  Add the
-> > SPI_NOR_DUAL_READ to its spi_nor_ids[] table entry.
+> On 7/17/20 12:16 AM, David Clear wrote:
+> > The Macronix mx66u2g45g is a 1.8V, 2Gbit (256MB) device which
+> > supports x1, x2, or x4 operation.
 >
-> In spi_nor_select_read() we select the fastest read. Since this flash
-> supports Quad Read, the Dual Read will never get selected. As of now,
-> there is no benefit in adding SPI_NOR_DUAL_READ when SPI_NOR_QUAD_READ
-> is specified.
+> Please specify in the commit message if you tested this flash
+> and with which controller.
+> One should do the following tests:
+> - read, erase, read back, hexdump -> to verify the erase op
+> - generate a random file, write, read back, compare
+> (e.g. sha1sum) -> to verify the write/read
+>
+> For locking operations one should do some locking tests.
 
-We're using these devices with the drivers/spi/spi-cadence-quadspi.c
-controller.  Now that the Cadence driver is in the spi subsystem, the
-spi-rx-bus-width property in the device-tree is honored, and the fastest
-available read is selected, taking the bus-width into account.
+We've been using with this part hooked up to the cadence-quadspi
+controller (albeit with a 4.14 kernel and modified driver to
+support x2 mode) for a while now, but yes I'll re-issue the patch
+with a statement on testing once we have closure on the DUAL_READ
+discussion.
 
-Only two data pins are hooked up on our board, so we need the x2
-mode to work.
-
-> &qspi {
->         status = "okay";
->         flash0: flash@0 {
->                 compatible = "jedec,spi-nor";
->                 reg = <0>;
->                 spi-max-frequency = <50000000>;
->                 spi-rx-bus-width = <2>;
-
-Without this property the interface runs in x1 mode.  Both <2> and
-<4> appropriately take effect on this controller (x4 verified under
-simulation).
+Thanks for the review.  I appreciate the quick turnaround.
 
 Regards,
 David.
