@@ -2,63 +2,83 @@ Return-Path: <SRS0=lrxf=A7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CBCE4C433E7
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jul 2020 11:53:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3938DC433E3
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jul 2020 11:59:41 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9AB022070A
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jul 2020 11:53:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0B4712070A
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jul 2020 11:59:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tbTvVdxx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9AB022070A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nkWxlpBf";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="pzO5UY59"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0B4712070A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=kawvA9FpkEnkYosSzKBTx8qC5e5RC9aIumxFdu86c6E=; b=tbTvVdxxoS0PX03n7XJ8bMVVL
-	P2jLwXt0LVXaX6Koz6J/525vHUuEw8qzk2kCAlHigojTdjKmo4B3+6NBFzdxHb6wscbkccWvScgL6
-	aHAKjQW7wb56I2X9DyMEgKeGZ4qiGLRqBwxb05DTMCEBUeUrc+pl2f7dSU8KhjTyxCjnR8kbsKGdd
-	a8uXAYkdf/x77TcUUGVyIyezW6ukjimM1Rj4Wj71U0XlbVJb5r45zLALjuwNAe88EY/Wt5a79h61a
-	szKNO1hRMNyGnXDJADbHPvoc1cZUErzH7IkwnISJK/Cc6z/2I7fuulTKStJyfft93r6VP9clfAbgo
-	SUNPVxdWw==;
+	 bh=MHlg+7ncaPcfUJ0dDmrN/xEOHfzzn/Jqo2uSAH5ZDd8=; b=nkWxlpBfLHfokPHM+rmR0Uyci
+	VBbG0GSxtdA371kZlA8cvILnWweW/cRWXi7RYsI8Dvw/9qZB92+ONjqQN4bnrnX5rTo2MpadKVb45
+	eJmZ185boa3y1MPE33pYrilFetv1MPoeFpgVRQ8ri9Er5IzQbTnPNutknREHp51Y9jlsgTLQ+MGHy
+	l8jDE9E+RTetKxtpll7QqVCFOWlZVG86cGRXTOcIC6wi8e8IFaqVEX3ePrmv6zUePwo8uxkiD0vbq
+	KN/PMQETO7qEk94hF0oMydAWk7qB+WRtuSDNYUlFNuM8AWP5PsB2dgvQooeupb4mmbFqxRBft38Vy
+	4Y2KSfY0A==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jxULu-0004i3-MU; Mon, 20 Jul 2020 11:53:02 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1jxURM-0005fB-5q; Mon, 20 Jul 2020 11:58:40 +0000
+Received: from mail-qk1-x741.google.com ([2607:f8b0:4864:20::741])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jxULs-0004hi-LL
- for linux-mtd@lists.infradead.org; Mon, 20 Jul 2020 11:53:01 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 54C3028FD56;
- Mon, 20 Jul 2020 12:52:58 +0100 (BST)
-Date: Mon, 20 Jul 2020 13:52:54 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: Re: [PATCH v4 5/6] mtd: rawnand: atmel: Convert the driver to
- exec_op()
-Message-ID: <20200720135254.7475dc96@collabora.com>
-In-Reply-To: <20200720042759.1482341-6-tudor.ambarus@microchip.com>
-References: <20200720042759.1482341-1-tudor.ambarus@microchip.com>
- <20200720042759.1482341-6-tudor.ambarus@microchip.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1jxURI-0005dX-RS
+ for linux-mtd@lists.infradead.org; Mon, 20 Jul 2020 11:58:37 +0000
+Received: by mail-qk1-x741.google.com with SMTP id g26so4737175qka.3
+ for <linux-mtd@lists.infradead.org>; Mon, 20 Jul 2020 04:58:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=oyadEz0eZwOz4veMiu/99Xwk84Lj2bAOI1P6STGAbTM=;
+ b=pzO5UY59E2I78nkbHVVchIb8xSq5dpsUcOpNS7Gkxof5sNSjCEODEhGzsvVVjAfJyl
+ VSwzSp6U1Zs9krrRKUF/u2Bk2AkyMb7A4vyZNN5lBySozBpWv75kuuSymSQ75I0lOQIq
+ /aNfumnu9UNKeQqzNIgsFnNCRnWlLEXCl5HKsdcBqoLY2AX4WupdTDUkutMtkReFDd/p
+ 7rLcMb8CsQvVO2aMkGCvC0cISIr9opF8PILSUSavYLWpTTSmyGJ8atrT4DsGICF1czPS
+ GjukeM8re+7Is53uuqLc1gz9fVVpsyasqxmhyXdVNJb4jwNSaNcNEMbvPaz5r/mI8alC
+ KLmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=oyadEz0eZwOz4veMiu/99Xwk84Lj2bAOI1P6STGAbTM=;
+ b=sAA7PH96Y7B2MAtrg2c7c+aJkEy2d8wxW2h2Z8k5GRbm7AgBOexnKe0eYS5ZTkErTy
+ 7FEJPB7afpBu+yMLGAvge/QwlOZljarXy8ch+PyyLV1RO3Zw/5tJypNqoYoS4fsnLo34
+ GuzDQF7475RCruvj3aXou7syTo3zvANOWhvvYh40PiUHZl4Lt+r4gM/wAFFKlreSn40G
+ v3EFZX/fxJlBi6FF/U0dikIFpvGE1LTInInhNlQFrhqj5yWkQuebVWixyLlGWRH2Rdsq
+ pie0BEYOSb8KE1wmBRjHNXlE8ZealyCItL/GhuPO09hQuCJweGtLikNxLxFB7nCuktxh
+ XK3Q==
+X-Gm-Message-State: AOAM5303TCSaVuN01RQnZsf09buZFQumBtzYvRT3w2AKwQZ+HEKyxfn+
+ Qer3kOQUOyx5/KFYkyas+LqOSWaeHsWg6D0xJlY=
+X-Google-Smtp-Source: ABdhPJxZvpi5p/rGIGspu/X0VuST2fAly2yyAucRwLGlbJciYxHfYOGN4y9O3LRxtfeMHSSpDlexGGV5rTPgQNTp1kc=
+X-Received: by 2002:a37:9147:: with SMTP id t68mr20753351qkd.34.1595246313907; 
+ Mon, 20 Jul 2020 04:58:33 -0700 (PDT)
 MIME-Version: 1.0
+References: <20200720075148.172156-1-hch@lst.de>
+ <20200720075148.172156-5-hch@lst.de>
+In-Reply-To: <20200720075148.172156-5-hch@lst.de>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Mon, 20 Jul 2020 13:58:22 +0200
+Message-ID: <CAFLxGvxNHGEOrj6nKTtDeiU+Rx4xv_6asjSQYcFWXhk5m=1cBA@mail.gmail.com>
+Subject: Re: [PATCH 04/14] bdi: initialize ->ra_pages in bdi_init
+To: Christoph Hellwig <hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200720_075300_809600_3F169BEF 
-X-CRM114-Status: GOOD (  12.53  )
+X-CRM114-CacheID: sfid-20200720_075836_934648_60D0099C 
+X-CRM114-Status: UNSURE (   7.27  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,43 +90,32 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com,
- linux-mtd@lists.infradead.org, nicolas.ferre@microchip.com,
- miquel.raynal@bootlin.com
+Cc: Jens Axboe <axboe@kernel.dk>, linux-raid@vger.kernel.org,
+ Hans de Goede <hdegoede@redhat.com>, Richard Weinberger <richard@nod.at>,
+ LKML <linux-kernel@vger.kernel.org>, linux-block@vger.kernel.org,
+ Song Liu <song@kernel.org>, device-mapper development <dm-devel@redhat.com>,
+ linux-mtd@lists.infradead.org, linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ cgroups mailinglist <cgroups@vger.kernel.org>, linux-mm@kvack.org,
+ drbd-dev@lists.linbit.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 20 Jul 2020 07:27:58 +0300
-Tudor Ambarus <tudor.ambarus@microchip.com> wrote:
+Hello Chrstoph,
 
-> +static int atmel_smc_nand_exec_op(struct atmel_nand *nand,
-> +				  const struct nand_operation *op,
-> +				  bool check_only)
-> +{
-> +	struct atmel_nand_controller *nc;
-> +	unsigned int i;
-> +	int ret = 0;
-> +
-> +	if (check_only)
-> +		return 0;
-> +
-> +	nc = to_nand_controller(nand->base.controller);
+On Mon, Jul 20, 2020 at 9:53 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> Set up a readahead size by default.  This changes behavior for mtd,
+> ubifs, and vboxsf to actually enabled readahead, the lack of which
+> very much looks like an oversight.
 
-0day bots complained about this unused var when I submitted v3.
+UBIFS doesn't enable readahead on purpose, please see:
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_readahead
 
-> +	atmel_nand_select_target(nand, op->cs);
-> +	gpiod_set_value(nand->activecs->csgpio, 0);
-> +	for (i = 0; i < op->ninstrs; i++) {
-> +		ret = atmel_smc_nand_exec_instr(nand, &op->instrs[i]);
-> +		if (ret)
-> +			break;
-> +	}
-> +	gpiod_set_value(nand->activecs->csgpio, 1);
-> +
-> +	return ret;
-> +}
+-- 
+Thanks,
+//richard
 
 ______________________________________________________
 Linux MTD discussion mailing list
