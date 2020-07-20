@@ -3,59 +3,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1B93C433F2
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jul 2020 16:40:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DCD5C433E0
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jul 2020 17:54:13 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 90AE4206E9
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jul 2020 16:40:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4D5B420709
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jul 2020 17:54:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ajpVH6xR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 90AE4206E9
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=yadavpratyush.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nzndbBaQ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="SX8NYsOL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D5B420709
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=0bpqyZFjxFIV3C4WqT7mz2cT+b0ULpSB/37U5KlTz7Q=; b=ajpVH6xRTagLnbRR0/XnTvTz7
-	7yH91mdFkd+t+SprylQcucFePnvX71za+CyETWSpk9Ocec6HTtocfugufUq9L9//S2sWI6VgJCTYf
-	SFMcAtytRudDVVSpa2337PNaA/yZKy//ynbN7AicqoUjHj7K96U3PG0mqt8D6YqWuJi56y5yZ3gVP
-	Ydo243bAtfqEM4V+kT40q1cz6N26xfJiBn4Vw9d1eZxa0QFU45rKis8hoqYrZe6R82jpsVEm2I3MI
-	jZOZr8jpHbs0/K81EJ/xIT2t9I9quJcFY3BoPDKR3I4jXJDLYqvaNYZHJmKhM4CDxN+N+UZr78afh
-	VeQ0dal+A==;
+	 bh=2n+6n7qBycbce2Tg224Aow5XKqvBHxuhEHPB7hAjwBY=; b=nzndbBaQt6BgygWpNRuEC2K8c
+	6zqXsUIVdf74Wr+GXmZ23xER6ystaz2ZB2++QK3PS0U7swRA4YVZQrle4YMMMgXKyR7wWn57UoZ1g
+	20poMFsR2IFgyfopr7ZL9ei5D8JupfYwmZEsXvkrj7ITIPXrTiTqZHJehTFkc+Brei9zkJdvKtuJE
+	O9QnKzGXft/hSe+HWuNM9lXC5E4hOIfkzVDWUmLkxAkby85gMLZ3FS49SWSM33K/Gx3/afA2H29cq
+	PgWo7TZsU5EOURXpBl4wYcEo02OG1eMB4aNXBR58Jd6jA/rVih3C4sLwqEgnZuqHtnPCvFHfatvpH
+	5kOH3texA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jxYny-0005EB-SA; Mon, 20 Jul 2020 16:38:18 +0000
-Received: from relay1-d.mail.gandi.net ([217.70.183.193])
+	id 1jxZyU-0005sn-8Q; Mon, 20 Jul 2020 17:53:14 +0000
+Received: from mail-lj1-x242.google.com ([2a00:1450:4864:20::242])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jxYns-0005Bd-OX; Mon, 20 Jul 2020 16:38:13 +0000
-X-Originating-IP: 42.109.212.217
-Received: from localhost (unknown [42.109.212.217])
- (Authenticated sender: me@yadavpratyush.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 7114824000E;
- Mon, 20 Jul 2020 16:38:04 +0000 (UTC)
-Date: Mon, 20 Jul 2020 22:08:02 +0530
-From: Pratyush Yadav <me@yadavpratyush.com>
-To: Tudor.Ambarus@microchip.com
-Subject: Re: [PATCH v10 07/17] mtd: spi-nor: sfdp: parse xSPI Profile 1.0 table
-Message-ID: <20200720163802.veql43cmal7sunit@yadavpratyush.com>
-References: <20200623183030.26591-1-p.yadav@ti.com>
- <20200623183030.26591-8-p.yadav@ti.com>
- <1450d8c8-cda4-51e3-9f57-0b2f00825f11@microchip.com>
+ id 1jxZyR-0005qH-Cr
+ for linux-mtd@lists.infradead.org; Mon, 20 Jul 2020 17:53:12 +0000
+Received: by mail-lj1-x242.google.com with SMTP id q4so21266555lji.2
+ for <linux-mtd@lists.infradead.org>; Mon, 20 Jul 2020 10:53:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=Kya9ou2H4xCIeg2jTugLQPDLPsUiSPAXkhjVJRHMDG8=;
+ b=SX8NYsOLgCeGmFxjb3Z0RzsYrlrHY6Njtfv46WXbScI3rw3tkdMvNy7qsqcNAy91ok
+ EmnOsjkBbRSUSYO4/Q+Cx/xTEf85/D7y3ubLVL9GrTTaC883stkN/jVXYzE2FCCqF7eB
+ 9s7gGZej8MgWwlJIFwC85V0qxylpm5PoPDao/u8vX7pBu4QWu3w4EYzNHhOsY3D9UTQv
+ wZ7VKxvMYrxM6QJlB3KwFInEXd5SELo26Gs2/yM5C+3lGgUkJm4gOG1yFNX6CZ+WQun4
+ 2A746f0YswL5r2QB7a0ry1PuFLvHVFwRkJvX+AeFb1QZo7ouw1eWDpQA/DMeKnb180Pl
+ r/LA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=Kya9ou2H4xCIeg2jTugLQPDLPsUiSPAXkhjVJRHMDG8=;
+ b=uobMGUnjZX6AUMksIUy4uzXVKA1A3MAZQ/0afykIbHDPTMZ99+s/Gf4zC3TMPV5dP2
+ CIMMc2VKrkJXD1SJQdSkncj9MLBBrLjJ3M2TODow7aJSjAC1lY7Jme0zzkz2OEIh8zVK
+ HIdCnkE9X2bJqhW8IR/fZ+lxW3jCub8aVRLNZ3bKG0O8YCqGQSQJKIKNbQovwd4ygNCa
+ lqY8uDV4KKFJSFmGjdelfOG0DZhJOlGnICWPzP/k3NGpnLduhFOQRrcWc6inkJv1bGBC
+ UP2LTEC0CVwPvhVRYyq54ITglJ/l4nC1Msgr68VAiJ7wFq3AICZXhXBelKqhSO6KXLAE
+ 8n3w==
+X-Gm-Message-State: AOAM5304ESokW/maTqqDIxCBqVA6R6s2eSevh5mZHy4nLvr44NnRILy0
+ lC0acvj1AJk0wMI22VlSiYeV95HhQcLpkyfBtTkHYogLVC8=
+X-Google-Smtp-Source: ABdhPJxVEb/gDZEkvQ7LMo203fIZqznHvbPDVwx5Y0R9jHwZ6CsaSCd83ZH/mrB+5f45z4TkFHBNvGDSXrXZqTZC034=
+X-Received: by 2002:a2e:8e36:: with SMTP id r22mr10983662ljk.77.1595267587620; 
+ Mon, 20 Jul 2020 10:53:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1450d8c8-cda4-51e3-9f57-0b2f00825f11@microchip.com>
+References: <20200720075148.172156-1-hch@lst.de>
+ <20200720075148.172156-12-hch@lst.de>
+In-Reply-To: <20200720075148.172156-12-hch@lst.de>
+From: Shakeel Butt <shakeelb@google.com>
+Date: Mon, 20 Jul 2020 10:52:55 -0700
+Message-ID: <CALvZod7ACBnNX5W-gtTzheh8R-rxv1nB-5q7UcDUZ7BvtpakpA@mail.gmail.com>
+Subject: Re: [PATCH 11/14] mm: use SWP_SYNCHRONOUS_IO more intelligently
+To: Christoph Hellwig <hch@lst.de>, Minchan Kim <minchan@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200720_123813_017204_A4E4F68B 
-X-CRM114-Status: GOOD (  32.34  )
+X-CRM114-CacheID: sfid-20200720_135311_461764_7651B2E8 
+X-CRM114-Status: GOOD (  16.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,159 +89,56 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: alexandre.belloni@bootlin.com, vigneshr@ti.com, richard@nod.at,
- nsekhar@ti.com, Nicolas.Ferre@microchip.com, boris.brezillon@collabora.com,
- michal.simek@xilinx.com, Ludovic.Desroches@microchip.com, broonie@kernel.org,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- miquel.raynal@bootlin.com, matthias.bgg@gmail.com,
- linux-mediatek@lists.infradead.org, linux-spi@vger.kernel.org, p.yadav@ti.com,
- linux-kernel@vger.kernel.org
+Cc: Jens Axboe <axboe@kernel.dk>, linux-raid@vger.kernel.org,
+ Hans de Goede <hdegoede@redhat.com>, Richard Weinberger <richard@nod.at>,
+ LKML <linux-kernel@vger.kernel.org>,
+ "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+ Song Liu <song@kernel.org>, dm-devel@redhat.com, linux-mtd@lists.infradead.org,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+ drbd-dev@lists.linbit.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Tudor,
++Minchan Kim
 
-On 08/07/20 04:01PM, Tudor.Ambarus@microchip.com wrote:
-> On 6/23/20 9:30 PM, Pratyush Yadav wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > 
-> > This table is indication that the flash is xSPI compliant and hence
-> > supports octal DTR mode. Extract information like the fast read opcode,
-> > dummy cycles, the number of dummy cycles needed for a Read Status
-> > Register command, and the number of address bytes needed for a Read
-> > Status Register command.
-> > 
-> > We don't know what speed the controller is running at. Find the fast
-> > read dummy cycles for the fastest frequency the flash can run at to be
-> > sure we are never short of dummy cycles. If nothing is available,
-> > default to 20. Flashes that use a different value should update it in
-> > their fixup hooks.
-> > 
-> > Since we want to set read settings, expose spi_nor_set_read_settings()
-> > in core.h.
-> > 
-> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> > ---
-> >  drivers/mtd/spi-nor/core.c |  2 +-
-> >  drivers/mtd/spi-nor/core.h | 10 ++++
-> >  drivers/mtd/spi-nor/sfdp.c | 98 ++++++++++++++++++++++++++++++++++++++
-> >  3 files changed, 109 insertions(+), 1 deletion(-)
-> > 
-[...]
-> > diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-> > index 3f709de5ea67..d5a24e61813c 100644
-> > --- a/drivers/mtd/spi-nor/sfdp.c
-> > +++ b/drivers/mtd/spi-nor/sfdp.c
-[...]
-> > @@ -66,6 +70,16 @@ struct sfdp_bfpt_erase {
-> >         u32                     shift;
-> >  };
-> > 
-> > +/* xSPI Profile 1.0 table (from JESD216D.01). */
-> > +#define PROFILE1_DWORD1_RD_FAST_CMD            GENMASK(15, 8)
-> > +#define PROFILE1_DWORD1_RDSR_DUMMY             BIT(28)
-> > +#define PROFILE1_DWORD1_RDSR_ADDR_BYTES                BIT(29)
-> > +#define PROFILE1_DWORD4_DUMMY_200MHZ           GENMASK(11, 7)
-> > +#define PROFILE1_DWORD5_DUMMY_166MHZ           GENMASK(31, 27)
-> > +#define PROFILE1_DWORD5_DUMMY_133MHZ           GENMASK(21, 17)
-> > +#define PROFILE1_DWORD5_DUMMY_100MHZ           GENMASK(11, 7)
-> 
-> we should order these macros in a consistent way. I see that previous macros
-> are declared in order starting from MSB to LSB.
-> 
-> > +#define PROFILE1_DUMMY_DEFAULT                 20
-> 
-> we need to explain why the default dummy value is 20.
+On Mon, Jul 20, 2020 at 12:52 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> There is no point in trying to call bdev_read_page if SWP_SYNCHRONOUS_IO
+> is not set, as the device won't support it.  Also there is no point in
+> trying a bio submission if bdev_read_page failed.
 
-No reason other than the fact that it is the default for the first flash 
-that uses Profile 1.0 parsing (S28HS512T). AFAIK a similar reasoning is 
-followed for the default being 8 for 1-1-4 or 1-1-8 modes.
+This will at least break the failure path of zram_rw_page().
 
-I can't think of any reasonable way of deciding on a default value since 
-it varies from flash to flash.
- 
-> How about declaring all these macros immediately above of spi_nor_parse_profile1()?
-> 
-> > +
-> >  #define SMPT_CMD_ADDRESS_LEN_MASK              GENMASK(23, 22)
-> >  #define SMPT_CMD_ADDRESS_LEN_0                 (0x0UL << 22)
-> >  #define SMPT_CMD_ADDRESS_LEN_3                 (0x1UL << 22)
-> > @@ -1106,6 +1120,86 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
-> >         return ret;
-> >  }
-> > 
-> > +/**
-> > + * spi_nor_parse_profile1() - parse the xSPI Profile 1.0 table
-> > + * @nor:               pointer to a 'struct spi_nor'
-> > + * @param_header:      pointer to the 'struct sfdp_parameter_header' describing
-> > + *                     the 4-Byte Address Instruction Table length and version.
-> > + * @params:            pointer to the 'struct spi_nor_flash_parameter' to be.
-> > + *
-> > + * Return: 0 on success, -errno otherwise.
-> > + */
-> > +static int spi_nor_parse_profile1(struct spi_nor *nor,
-> > +                                 const struct sfdp_parameter_header *profile1_header,
-> > +                                 struct spi_nor_flash_parameter *params)
-> > +{
-> > +       u32 *table, opcode, addr;
-> 
-> s/table/dwords?
-> 
-> u8 opcode?
-> 
-> > +       size_t len;
-> > +       int ret, i;
-> > +       u8 dummy;
-> > +
-> > +       len = profile1_header->length * sizeof(*table);
-> > +       table = kmalloc(len, GFP_KERNEL);
-> > +       if (!table)
-> > +               return -ENOMEM;
-> > +
-> > +       addr = SFDP_PARAM_HEADER_PTP(profile1_header);
-> > +       ret = spi_nor_read_sfdp(nor, addr, len, table);
-> > +       if (ret)
-> > +               goto out;
-> > +
-> > +       /* Fix endianness of the table DWORDs. */
-> > +       for (i = 0; i < profile1_header->length; i++)
-> > +               table[i] = le32_to_cpu(table[i]);
-> 
-> le32_to_cpu_array(table, profile1_header->length);
-> 
-> > +
-> > +       /* Get 8D-8D-8D fast read opcode and dummy cycles. */
-> > +       opcode = FIELD_GET(PROFILE1_DWORD1_RD_FAST_CMD, table[0]);
-> > +
-> > +       /*
-> > +        * We don't know what speed the controller is running at. Find the
-> > +        * dummy cycles for the fastest frequency the flash can run at to be
-> > +        * sure we are never short of dummy cycles. A value of 0 means the
-> > +        * frequency is not supported.
-> > +        *
-> > +        * Default to PROFILE1_DUMMY_DEFAULT if we don't find anything, and let
-> > +        * flashes set the correct value if needed in their fixup hooks.
-> > +        */
-> > +       dummy = FIELD_GET(PROFILE1_DWORD4_DUMMY_200MHZ, table[3]);
-> > +       if (!dummy)
-> > +               dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_166MHZ, table[4]);
-> > +       if (!dummy)
-> > +               dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_133MHZ, table[4]);
-> > +       if (!dummy)
-> > +               dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_100MHZ, table[4]);
-> > +       if (!dummy)
-> > +               dummy = PROFILE1_DUMMY_DEFAULT;
-> > +
-> > +       /* Round up to an even value to avoid tripping controllers up. */
-> > +       dummy = ROUND_UP_TO(dummy, 2);
-> > +
-[...]
-
--- 
-Regards,
-Pratyush Yadav
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  mm/page_io.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+>
+> diff --git a/mm/page_io.c b/mm/page_io.c
+> index ccda7679008851..63b44b8221af0f 100644
+> --- a/mm/page_io.c
+> +++ b/mm/page_io.c
+> @@ -403,8 +403,11 @@ int swap_readpage(struct page *page, bool synchronous)
+>                 goto out;
+>         }
+>
+> -       ret = bdev_read_page(sis->bdev, swap_page_sector(page), page);
+> -       if (!ret) {
+> +       if (sis->flags & SWP_SYNCHRONOUS_IO) {
+> +               ret = bdev_read_page(sis->bdev, swap_page_sector(page), page);
+> +               if (ret)
+> +                       goto out;
+> +
+>                 if (trylock_page(page)) {
+>                         swap_slot_free_notify(page);
+>                         unlock_page(page);
+> --
+> 2.27.0
+>
 
 ______________________________________________________
 Linux MTD discussion mailing list
