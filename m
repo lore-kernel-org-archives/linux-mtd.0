@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DBA26C4345D
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jul 2020 07:53:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 438C5C43445
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jul 2020 07:53:57 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A67BB20674
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jul 2020 07:53:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0890420709
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jul 2020 07:53:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="i6JrdRIH";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="EEUCLdGs"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A67BB20674
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lpdQYLv7";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="PbQdmzNB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0890420709
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,37 +26,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=a/I7RIsSU9aKDXNgQ1muBYPN+wqWrQUkenTe5Q9RLqk=; b=i6JrdRIHPJHrVZrefmFX7lA4n
-	SETyjvUWY9szevh+VlVtMMgXxaFzG2z9PcPPXJwjSttdy3PU5iFogvLeJ4a9bpusBCYDUgDyC5YnV
-	tClcvQh78by9MLjABoWBGgzQLcIOgokwXD6m5wQMHfK2RNHM5E3uQYg2fWPzgvaEsZgygWEkSdl+F
-	IQfBpv/Y4HIHGxKVm+OD3b5Crq1qQ1lZXi5eAVYUjTUcyfMWtS0JzmIwKE7CPoNSU1OmjIx1nSTXX
-	m3becw29rKpbnxLRFHirjlO7Xvn++sEYpP90AVo43UxmFfNqC8nOxXEsvi8uhjtf15GC/WvveAr2V
-	74VsY3IxA==;
+	 bh=eaIW2ooURY2uSnhP3h0/XCQ6QoaXMaKi3p02MjNQLUQ=; b=lpdQYLv76ZfhLwYyUST9Nyuxq
+	AXYOI6MZPQ1SfYntM1Oq+Q/Mn/g/4or6kp69f/DwbwU4znQA7iO/AsBGvbVmMPCK/jRq9i8pBpv5t
+	m9mFvTsNYvzqT7XfAHdZVgPkZB9hWPFkXS9NEFgngEZ0dw/OpaxnoqqgHeNmBUpBjl4hFBAS9ofbE
+	fHxQ4bxSF4LzxgLmL5sxTMZ5VVMY9w1rq37BiinSyHi2w7SXfzOOO7nlb6tOB9DjKRkTo58LRx1/l
+	cHUyQ49hbKMHcO96LO+3B0sokV9Q0aix2XJx7pJfnYTSCguXIQ6PUtSh1irkEWB7wU6Mqris93gV3
+	V2fuvwBBA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jxQbY-0006Pl-35; Mon, 20 Jul 2020 07:52:56 +0000
+	id 1jxQbo-0006bY-UJ; Mon, 20 Jul 2020 07:53:12 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jxQal-0005xt-DF
- for linux-mtd@merlin.infradead.org; Mon, 20 Jul 2020 07:52:07 +0000
+ id 1jxQao-0005z8-28
+ for linux-mtd@merlin.infradead.org; Mon, 20 Jul 2020 07:52:10 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=luUuha2uuBKJzDaf0I5AoIFxF7omLOXXCx+hIop/T4o=; b=EEUCLdGsknqWi8260esN/FP4+U
- JCopSJK208F1E5YP5qqVuwO4vGt4kHIVDR/LN1BmurmUa8dhNayNqmP+x2v8NFFc36tdHe1jzbHZK
- r85mmZNvAhP1cAd7zdrzZXgFg5hYVHuOoxv8UX8XTtPcqWyWfKugnO//ZQop5SN0JvgyLhqos0cgY
- pZp7U/cTUa+UmNwNYwembja8xx58UvN1Zr7nALisv/SSXuOkin+5jM5jFR7RCgtnPEFSTPNzBCPMF
- oHyI3/WSL7Qx3m3NxDc7vmrdRIOCiIWWCvmJtGQGV3vM7zliCLZ/2X6LUkXujbmaeSxqKBWoUllUM
- eRvaxeiA==;
+ bh=fKz0YAd+vPyNn9MY44lVSCfVRZlSSaoBbETZBMxyX4o=; b=PbQdmzNB/dBOVsy1d8vapJeFAk
+ gxxjumTUNFpXl5KPNyMjsi9VUF75aMy73jNjUpCEixBIdInjlST72jfJ2muwMkJz7hp5iHg4YpNuo
+ 6ICIY7cR0KU+N63bo7CoUvQyW311lj5iY35eJOjLvMbmX+SR2/1xk6Zddpc1CQ2I8pRRqylJiWprX
+ EJYwBY12TsWSxBJsRWnpnHM6coE57Fgb46YgIslxT/LNxH0ejUl/OqA8rNonWE37prQb5QCNlTh8T
+ /m4PYATOZ/owBgbppLJRV5MBWlsIw5LlHRQtNXguN16g0jVYMQGuQHSf7PSD5s182zIQFaVCI4K99
+ W7QcHxjQ==;
 Received: from [2001:4bb8:105:4a81:5185:88fc:94bb:f8bf] (helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jxQaj-00042H-O1; Mon, 20 Jul 2020 07:52:06 +0000
+ id 1jxQal-00042d-Eh; Mon, 20 Jul 2020 07:52:08 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 09/14] bdi: remove BDI_CAP_CGROUP_WRITEBACK
-Date: Mon, 20 Jul 2020 09:51:43 +0200
-Message-Id: <20200720075148.172156-10-hch@lst.de>
+Subject: [PATCH 10/14] bdi: remove BDI_CAP_SYNCHRONOUS_IO
+Date: Mon, 20 Jul 2020 09:51:44 +0200
+Message-Id: <20200720075148.172156-11-hch@lst.de>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720075148.172156-1-hch@lst.de>
 References: <20200720075148.172156-1-hch@lst.de>
@@ -84,75 +84,146 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Just checking SB_I_CGROUPWB for cgroup writeback support is enough.
-Either the file system allocates its own bdi (e.g. btrfs), in which case
-it is know to support cgroup writeback, or the bdi comes from the block
-layer, which always supports cgroup writeback.
+BDI_CAP_SYNCHRONOUS_IO is only checked in the swap code, and used to
+decided if ->rw_page can be used on a block device.  Just check up for
+the method instead.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- block/blk-core.c            | 1 -
- fs/btrfs/disk-io.c          | 1 -
- include/linux/backing-dev.h | 8 +++-----
- 3 files changed, 3 insertions(+), 7 deletions(-)
+ drivers/block/brd.c           |  1 -
+ drivers/block/zram/zram_drv.c | 17 +----------------
+ drivers/nvdimm/btt.c          |  2 --
+ drivers/nvdimm/pmem.c         |  1 -
+ include/linux/backing-dev.h   |  9 ---------
+ mm/swapfile.c                 |  2 +-
+ 6 files changed, 2 insertions(+), 30 deletions(-)
 
-diff --git a/block/blk-core.c b/block/blk-core.c
-index ea1665de7a2079..68db7e745b49dd 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -538,7 +538,6 @@ struct request_queue *blk_alloc_queue(int node_id)
- 	if (!q->stats)
- 		goto fail_stats;
+diff --git a/drivers/block/brd.c b/drivers/block/brd.c
+index 2723a70eb85593..cc49a921339f77 100644
+--- a/drivers/block/brd.c
++++ b/drivers/block/brd.c
+@@ -403,7 +403,6 @@ static struct brd_device *brd_alloc(int i)
+ 	disk->flags		= GENHD_FL_EXT_DEVT;
+ 	sprintf(disk->disk_name, "ram%d", i);
+ 	set_capacity(disk, rd_size * 2);
+-	brd->brd_queue->backing_dev_info->capabilities |= BDI_CAP_SYNCHRONOUS_IO;
  
--	q->backing_dev_info->capabilities = BDI_CAP_CGROUP_WRITEBACK;
- 	q->node = node_id;
+ 	/* Tell the block layer that this is not a rotational device */
+ 	blk_queue_flag_set(QUEUE_FLAG_NONROT, brd->brd_queue);
+diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+index f9a57f147ee1e6..f336c0d45a6f16 100644
+--- a/drivers/block/zram/zram_drv.c
++++ b/drivers/block/zram/zram_drv.c
+@@ -408,8 +408,6 @@ static void reset_bdev(struct zram *zram)
+ 	zram->backing_dev = NULL;
+ 	zram->old_block_size = 0;
+ 	zram->bdev = NULL;
+-	zram->disk->queue->backing_dev_info->capabilities |=
+-				BDI_CAP_SYNCHRONOUS_IO;
+ 	kvfree(zram->bitmap);
+ 	zram->bitmap = NULL;
+ }
+@@ -518,18 +516,6 @@ static ssize_t backing_dev_store(struct device *dev,
+ 	zram->backing_dev = backing_dev;
+ 	zram->bitmap = bitmap;
+ 	zram->nr_pages = nr_pages;
+-	/*
+-	 * With writeback feature, zram does asynchronous IO so it's no longer
+-	 * synchronous device so let's remove synchronous io flag. Othewise,
+-	 * upper layer(e.g., swap) could wait IO completion rather than
+-	 * (submit and return), which will cause system sluggish.
+-	 * Furthermore, when the IO function returns(e.g., swap_readpage),
+-	 * upper layer expects IO was done so it could deallocate the page
+-	 * freely but in fact, IO is going on so finally could cause
+-	 * use-after-free when the IO is really done.
+-	 */
+-	zram->disk->queue->backing_dev_info->capabilities &=
+-			~BDI_CAP_SYNCHRONOUS_IO;
+ 	up_write(&zram->init_lock);
  
- 	timer_setup(&q->backing_dev_info->laptop_mode_wb_timer,
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 67677207d1647d..602f026ac83cbd 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3030,7 +3030,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 		goto fail_sb_buffer;
- 	}
+ 	pr_info("setup backing device %s\n", file_name);
+@@ -1946,8 +1932,7 @@ static int zram_add(void)
+ 	if (ZRAM_LOGICAL_BLOCK_SIZE == PAGE_SIZE)
+ 		blk_queue_max_write_zeroes_sectors(zram->disk->queue, UINT_MAX);
  
--	sb->s_bdi->capabilities |= BDI_CAP_CGROUP_WRITEBACK;
- 	sb->s_bdi->ra_pages *= btrfs_super_num_devices(disk_super);
- 	sb->s_bdi->ra_pages = max(sb->s_bdi->ra_pages, SZ_4M / PAGE_SIZE);
+-	zram->disk->queue->backing_dev_info->capabilities |=
+-			(BDI_CAP_STABLE_WRITES | BDI_CAP_SYNCHRONOUS_IO);
++	zram->disk->queue->backing_dev_info->capabilities |= BDI_CAP_STABLE_WRITES;
+ 	device_add_disk(NULL, zram->disk, zram_disk_attr_groups);
  
+ 	strlcpy(zram->compressor, default_compressor, sizeof(zram->compressor));
+diff --git a/drivers/nvdimm/btt.c b/drivers/nvdimm/btt.c
+index 412d21d8f64351..b4184dc9b41eb4 100644
+--- a/drivers/nvdimm/btt.c
++++ b/drivers/nvdimm/btt.c
+@@ -1540,8 +1540,6 @@ static int btt_blk_init(struct btt *btt)
+ 	btt->btt_disk->private_data = btt;
+ 	btt->btt_disk->queue = btt->btt_queue;
+ 	btt->btt_disk->flags = GENHD_FL_EXT_DEVT;
+-	btt->btt_disk->queue->backing_dev_info->capabilities |=
+-			BDI_CAP_SYNCHRONOUS_IO;
+ 
+ 	blk_queue_logical_block_size(btt->btt_queue, btt->sector_size);
+ 	blk_queue_max_hw_sectors(btt->btt_queue, UINT_MAX);
+diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
+index 94790e6e0e4ce1..436b83fb24ad61 100644
+--- a/drivers/nvdimm/pmem.c
++++ b/drivers/nvdimm/pmem.c
+@@ -478,7 +478,6 @@ static int pmem_attach_disk(struct device *dev,
+ 	disk->queue		= q;
+ 	disk->flags		= GENHD_FL_EXT_DEVT;
+ 	disk->private_data	= pmem;
+-	disk->queue->backing_dev_info->capabilities |= BDI_CAP_SYNCHRONOUS_IO;
+ 	nvdimm_namespace_disk_name(ndns, disk->disk_name);
+ 	set_capacity(disk, (pmem->size - pmem->pfn_pad - pmem->data_offset)
+ 			/ 512);
 diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
-index 0b06b2d26c9aa3..52583b6f2ea05d 100644
+index 52583b6f2ea05d..860ea33571bce5 100644
 --- a/include/linux/backing-dev.h
 +++ b/include/linux/backing-dev.h
-@@ -123,7 +123,6 @@ int bdi_set_max_ratio(struct backing_dev_info *bdi, unsigned int max_ratio);
+@@ -122,9 +122,6 @@ int bdi_set_max_ratio(struct backing_dev_info *bdi, unsigned int max_ratio);
+  * BDI_CAP_NO_WRITEBACK:   Don't write pages back
   * BDI_CAP_NO_ACCT_WB:     Don't automatically account writeback pages
   * BDI_CAP_STRICTLIMIT:    Keep number of dirty pages below bdi threshold.
-  *
-- * BDI_CAP_CGROUP_WRITEBACK: Supports cgroup-aware writeback.
-  * BDI_CAP_SYNCHRONOUS_IO: Device is so fast that asynchronous IO would be
-  *			   inefficient.
+- *
+- * BDI_CAP_SYNCHRONOUS_IO: Device is so fast that asynchronous IO would be
+- *			   inefficient.
   */
-@@ -233,9 +232,9 @@ int inode_congested(struct inode *inode, int cong_bits);
-  * inode_cgwb_enabled - test whether cgroup writeback is enabled on an inode
-  * @inode: inode of interest
-  *
-- * cgroup writeback requires support from both the bdi and filesystem.
-- * Also, both memcg and iocg have to be on the default hierarchy.  Test
-- * whether all conditions are met.
-+ * Cgroup writeback requires support from the filesystem.  Also, both memcg and
-+ * iocg have to be on the default hierarchy.  Test whether all conditions are
-+ * met.
-  *
-  * Note that the test result may change dynamically on the same inode
-  * depending on how memcg and iocg are configured.
-@@ -247,7 +246,6 @@ static inline bool inode_cgwb_enabled(struct inode *inode)
- 	return cgroup_subsys_on_dfl(memory_cgrp_subsys) &&
- 		cgroup_subsys_on_dfl(io_cgrp_subsys) &&
- 		bdi_cap_account_dirty(bdi) &&
--		(bdi->capabilities & BDI_CAP_CGROUP_WRITEBACK) &&
- 		(inode->i_sb->s_iflags & SB_I_CGROUPWB);
- }
+ #define BDI_CAP_NO_ACCT_DIRTY	0x00000001
+ #define BDI_CAP_NO_WRITEBACK	0x00000002
+@@ -132,7 +129,6 @@ int bdi_set_max_ratio(struct backing_dev_info *bdi, unsigned int max_ratio);
+ #define BDI_CAP_STABLE_WRITES	0x00000008
+ #define BDI_CAP_STRICTLIMIT	0x00000010
+ #define BDI_CAP_CGROUP_WRITEBACK 0x00000020
+-#define BDI_CAP_SYNCHRONOUS_IO	0x00000040
  
+ #define BDI_CAP_NO_ACCT_AND_WRITEBACK \
+ 	(BDI_CAP_NO_WRITEBACK | BDI_CAP_NO_ACCT_DIRTY | BDI_CAP_NO_ACCT_WB)
+@@ -174,11 +170,6 @@ static inline int wb_congested(struct bdi_writeback *wb, int cong_bits)
+ long congestion_wait(int sync, long timeout);
+ long wait_iff_congested(int sync, long timeout);
+ 
+-static inline bool bdi_cap_synchronous_io(struct backing_dev_info *bdi)
+-{
+-	return bdi->capabilities & BDI_CAP_SYNCHRONOUS_IO;
+-}
+-
+ static inline bool bdi_cap_stable_pages_required(struct backing_dev_info *bdi)
+ {
+ 	return bdi->capabilities & BDI_CAP_STABLE_WRITES;
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index 6c26916e95fd4a..18eac97b10e502 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -3230,7 +3230,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+ 	if (bdi_cap_stable_pages_required(inode_to_bdi(inode)))
+ 		p->flags |= SWP_STABLE_WRITES;
+ 
+-	if (bdi_cap_synchronous_io(inode_to_bdi(inode)))
++	if (p->bdev && p->bdev->bd_disk->fops->rw_page)
+ 		p->flags |= SWP_SYNCHRONOUS_IO;
+ 
+ 	if (p->bdev && blk_queue_nonrot(bdev_get_queue(p->bdev))) {
 -- 
 2.27.0
 
