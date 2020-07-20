@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE8DBC43457
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B325CC43464
 	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jul 2020 07:53:16 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 465EC22BEF
+	by mail.kernel.org (Postfix) with ESMTPS id 45F6520709
 	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jul 2020 07:53:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="R/CvtjF9";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="bJMgqbCj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 465EC22BEF
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cxkQH6o2";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="R6OsUSxk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 45F6520709
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,37 +26,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=autSpj364CrnhEtc0EMl3RL5ZiqmIt6pA0VEqiZ0mEU=; b=R/CvtjF97WMyyZRb1xuIaaob5
-	Z2tLTOr1pNhNfD7qILqB5HZH990DIyEZ6I7if9/HFbXDqDpDxp8ADuv7be12NsKBns/65rMbSxgsn
-	8LtaPNbuvMv3HYEM9asoKMYwItysVL6A9Zd3SExYu9wXIERYyCWszr7wp1GD/YeKruZwbN1wI+ET1
-	qXqMSmVebE2BZWBAOKNckNyjLj3IZxJMbJFcG91j2jROZZ27jD3lL1nJpOe34IOUNDL30H0lP4RtM
-	79f9UgAbJ31fohshB5Gnv4r0Z7POftRVEMLLna04w5d/AInfRtWvtrg3jm30THEwxQXvCJDLDeHWd
-	K+v9sWbog==;
+	 bh=Vr+U8L3LxTTSkPeTqZ43uAzcboATCW0XasR+j8AtLmI=; b=cxkQH6o2fWXxKORg31tO7GdQe
+	fSJgbQYG5KTc/cYomoaLWkF6y3khAe0nsxsEXHLtbifuuXshRQFDn3W50J2fbeRGEwbSpQONPBZm2
+	231v/JFfki8VV+7iLAhpdhwPGJ3DlqQr7g65wHuAhD992aKGBKDKrb5nq/XxEXpIn8KYQLvET9e8s
+	na5idpRHHlhYOKOMhyRTeDszEtcComq/hZdKDryoyGMV0gszs5I3h5+Czcj9LGTzw8rgQkwyokKu9
+	KZM3c1DY0wzkoGjVCVlrpTpr1jk1oUAP/cJlJNFP3cOE7S0LazZMFl8MOKPniRuQsCSCmlYy2ZX/4
+	O93EjV8pA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jxQaj-0005wi-8K; Mon, 20 Jul 2020 07:52:05 +0000
+	id 1jxQbB-0006Bs-BT; Mon, 20 Jul 2020 07:52:33 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jxQae-0005um-5m
- for linux-mtd@merlin.infradead.org; Mon, 20 Jul 2020 07:52:00 +0000
+ id 1jxQai-0005wJ-3J
+ for linux-mtd@merlin.infradead.org; Mon, 20 Jul 2020 07:52:04 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=y5xFgVJ7P9ea3jEdaYrEy0X1618hfcoxd44fPzgBdeE=; b=bJMgqbCjw2UhLLfuQV0ZNby0ML
- lLAbgZxD8sxjS8eyh6S58LD4hUTBd6ZZjh8auS0QYXxaxOAdabTyzOp8fRYB7tQ263qPTSU9reT1T
- Bmot7exTU5vLQpKW4Wop8jMilY9xkjoM2nZ6tTfYpd9IB5F+MyfrXjnDDn7UkVwqpdb+1pslcPfZx
- uJX+H59EKwdl+uXC2C9wAv9q57uOnIxOPabJPcPMZrl1ykSJwxEv4wiL+G+S5yuKJGW2vEGiOqxrL
- 58qTHBUUTZFtNVJQdpISFSmH4RAVYem4Z0OhwCMcLSuXzeQiS/FFBBgSoC9g3QFTUDbJGF5fFOpeJ
- kP7GQzZg==;
+ bh=UaxK9i4Mki9lVWLBCoh/BWGT2dspFfc4dGG4K3OkffY=; b=R6OsUSxkp5x6W991243/6zzLTz
+ uCt4Vfakh2gcksb/nlks10bjRsnek2/VGUkw4ETEjBN3hUPcjLEBvT6+ybN+SjRHlwg1ZVIwwSeIl
+ YfivaWzU80xjqeJ6jLgjK4uMJiwuC+b8R/HBWvG/18JFbDf4Z+1i9FVzuFAnwo03AXF7JgMzyYwAH
+ YD+XONxAKf5S4Yj9/x2YBp/QNn38hGRsl+pFW3MooMNxsiFuk1q4V8e+Ewqi4ENWQOYFrfP6VP53e
+ TAGj8ulu8jjjNzq525xZnm5QWbEJqsI76LH4o+v/E2NYFdRezBQR0lJQr78I8Zf2uuMPtceNYQGIz
+ 2VwEdTag==;
 Received: from [2001:4bb8:105:4a81:5185:88fc:94bb:f8bf] (helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jxQac-00040e-HF; Mon, 20 Jul 2020 07:51:59 +0000
+ id 1jxQag-00041a-64; Mon, 20 Jul 2020 07:52:02 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 05/14] md: update the optimal I/O size on reshape
-Date: Mon, 20 Jul 2020 09:51:39 +0200
-Message-Id: <20200720075148.172156-6-hch@lst.de>
+Subject: [PATCH 07/14] block: make QUEUE_SYSFS_BIT_FNS a little more useful
+Date: Mon, 20 Jul 2020 09:51:41 +0200
+Message-Id: <20200720075148.172156-8-hch@lst.de>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200720075148.172156-1-hch@lst.de>
 References: <20200720075148.172156-1-hch@lst.de>
@@ -84,107 +84,85 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The raid5 and raid10 drivers currently update the read-ahead size,
-but not the optimal I/O size on reshape.  To prepare for deriving the
-read-ahead size from the optimal I/O size make sure it is updated
-as well.
+Generate the queue_sysfs_entry given that we have all the required
+information for it, and rename the generated show and store methods
+to match the other ones in the file.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/md/raid10.c | 22 ++++++++++++++--------
- drivers/md/raid5.c  | 10 ++++++++--
- 2 files changed, 22 insertions(+), 10 deletions(-)
+ block/blk-sysfs.c | 31 +++++++++----------------------
+ 1 file changed, 9 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
-index 353288bc4cb706..552ee0058c118d 100644
---- a/drivers/md/raid10.c
-+++ b/drivers/md/raid10.c
-@@ -3695,10 +3695,20 @@ static struct r10conf *setup_conf(struct mddev *mddev)
- 	return ERR_PTR(err);
+diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
+index d7cf560efa92e5..358268bb88b700 100644
+--- a/block/blk-sysfs.c
++++ b/block/blk-sysfs.c
+@@ -257,16 +257,16 @@ static ssize_t queue_max_hw_sectors_show(struct request_queue *q, char *page)
+ 	return queue_var_show(max_hw_sectors_kb, (page));
  }
  
-+static void raid10_set_io_opt(struct r10conf *conf)
-+{
-+	int raid_disks = conf->geo.raid_disks;
-+
-+	if (!(conf->geo.raid_disks % conf->geo.near_copies))
-+		raid_disks /= conf->geo.near_copies;
-+	blk_queue_io_opt(conf->mddev->queue, (conf->mddev->chunk_sectors << 9) *
-+			 raid_disks);
-+}
-+
- static int raid10_run(struct mddev *mddev)
- {
- 	struct r10conf *conf;
--	int i, disk_idx, chunk_size;
-+	int i, disk_idx;
- 	struct raid10_info *disk;
- 	struct md_rdev *rdev;
- 	sector_t size;
-@@ -3734,18 +3744,13 @@ static int raid10_run(struct mddev *mddev)
- 	mddev->thread = conf->thread;
- 	conf->thread = NULL;
+-#define QUEUE_SYSFS_BIT_FNS(name, flag, neg)				\
++#define QUEUE_SYSFS_BIT_FNS(_name, flag, neg)				\
+ static ssize_t								\
+-queue_show_##name(struct request_queue *q, char *page)			\
++queue_##_name##_show(struct request_queue *q, char *page)		\
+ {									\
+ 	int bit;							\
+ 	bit = test_bit(QUEUE_FLAG_##flag, &q->queue_flags);		\
+ 	return queue_var_show(neg ? !bit : bit, page);			\
+ }									\
+ static ssize_t								\
+-queue_store_##name(struct request_queue *q, const char *page, size_t count) \
++queue_##_name##_store(struct request_queue *q, const char *page, size_t count) \
+ {									\
+ 	unsigned long val;						\
+ 	ssize_t ret;							\
+@@ -281,7 +281,12 @@ queue_store_##name(struct request_queue *q, const char *page, size_t count) \
+ 	else								\
+ 		blk_queue_flag_clear(QUEUE_FLAG_##flag, q);		\
+ 	return ret;							\
+-}
++}									\
++static struct queue_sysfs_entry queue_##_name##_entry = {		\
++	.attr	= { .name = __stringify(_name), .mode = 0644 },		\
++	.show	= queue_##_name##_show,					\
++	.store	= queue_##_name##_store,				\
++};
  
--	chunk_size = mddev->chunk_sectors << 9;
- 	if (mddev->queue) {
- 		blk_queue_max_discard_sectors(mddev->queue,
- 					      mddev->chunk_sectors);
- 		blk_queue_max_write_same_sectors(mddev->queue, 0);
- 		blk_queue_max_write_zeroes_sectors(mddev->queue, 0);
--		blk_queue_io_min(mddev->queue, chunk_size);
--		if (conf->geo.raid_disks % conf->geo.near_copies)
--			blk_queue_io_opt(mddev->queue, chunk_size * conf->geo.raid_disks);
--		else
--			blk_queue_io_opt(mddev->queue, chunk_size *
--					 (conf->geo.raid_disks / conf->geo.near_copies));
-+		blk_queue_io_min(mddev->queue, mddev->chunk_sectors << 9);
-+		raid10_set_io_opt(conf);
- 	}
+ QUEUE_SYSFS_BIT_FNS(nonrot, NONROT, 1);
+ QUEUE_SYSFS_BIT_FNS(random, ADD_RANDOM, 0);
+@@ -651,12 +656,6 @@ static struct queue_sysfs_entry queue_zone_append_max_entry = {
+ 	.show = queue_zone_append_max_show,
+ };
  
- 	rdev_for_each(rdev, mddev) {
-@@ -4719,6 +4724,7 @@ static void end_reshape(struct r10conf *conf)
- 		stripe /= conf->geo.near_copies;
- 		if (conf->mddev->queue->backing_dev_info->ra_pages < 2 * stripe)
- 			conf->mddev->queue->backing_dev_info->ra_pages = 2 * stripe;
-+		raid10_set_io_opt(conf);
- 	}
- 	conf->fullsync = 0;
- }
-diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
-index 774ea893d47e21..f571b0eb5ec824 100644
---- a/drivers/md/raid5.c
-+++ b/drivers/md/raid5.c
-@@ -7123,6 +7123,12 @@ static int only_parity(int raid_disk, int algo, int raid_disks, int max_degraded
- 	return 0;
- }
+-static struct queue_sysfs_entry queue_nonrot_entry = {
+-	.attr = {.name = "rotational", .mode = 0644 },
+-	.show = queue_show_nonrot,
+-	.store = queue_store_nonrot,
+-};
+-
+ static struct queue_sysfs_entry queue_zoned_entry = {
+ 	.attr = {.name = "zoned", .mode = 0444 },
+ 	.show = queue_zoned_show,
+@@ -679,18 +678,6 @@ static struct queue_sysfs_entry queue_rq_affinity_entry = {
+ 	.store = queue_rq_affinity_store,
+ };
  
-+static void raid5_set_io_opt(struct r5conf *conf)
-+{
-+	blk_queue_io_opt(conf->mddev->queue, (conf->chunk_sectors << 9) *
-+			 (conf->raid_disks - conf->max_degraded));
-+}
-+
- static int raid5_run(struct mddev *mddev)
- {
- 	struct r5conf *conf;
-@@ -7412,8 +7418,7 @@ static int raid5_run(struct mddev *mddev)
- 
- 		chunk_size = mddev->chunk_sectors << 9;
- 		blk_queue_io_min(mddev->queue, chunk_size);
--		blk_queue_io_opt(mddev->queue, chunk_size *
--				 (conf->raid_disks - conf->max_degraded));
-+		raid5_set_io_opt(conf);
- 		mddev->queue->limits.raid_partial_stripes_expensive = 1;
- 		/*
- 		 * We can only discard a whole stripe. It doesn't make sense to
-@@ -8006,6 +8011,7 @@ static void end_reshape(struct r5conf *conf)
- 						   / PAGE_SIZE);
- 			if (conf->mddev->queue->backing_dev_info->ra_pages < 2 * stripe)
- 				conf->mddev->queue->backing_dev_info->ra_pages = 2 * stripe;
-+			raid5_set_io_opt(conf);
- 		}
- 	}
- }
+-static struct queue_sysfs_entry queue_iostats_entry = {
+-	.attr = {.name = "iostats", .mode = 0644 },
+-	.show = queue_show_iostats,
+-	.store = queue_store_iostats,
+-};
+-
+-static struct queue_sysfs_entry queue_random_entry = {
+-	.attr = {.name = "add_random", .mode = 0644 },
+-	.show = queue_show_random,
+-	.store = queue_store_random,
+-};
+-
+ static struct queue_sysfs_entry queue_poll_entry = {
+ 	.attr = {.name = "io_poll", .mode = 0644 },
+ 	.show = queue_poll_show,
 -- 
 2.27.0
 
