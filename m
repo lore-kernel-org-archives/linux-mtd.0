@@ -2,90 +2,148 @@ Return-Path: <SRS0=j43f=BA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42D70C433E5
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Jul 2020 05:47:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A221DC433E4
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Jul 2020 09:38:25 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0CC9220792
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Jul 2020 05:47:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6F83120B1F
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Jul 2020 09:38:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LyFTtBNQ";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D/IxIwyE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0CC9220792
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gyUuiyJk";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="EUzuxzJy";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="KOcbzAU9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6F83120B1F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=2sHffX+PChA4MthMqPJsRFgytwP4rbV63+U5kBqZ7VQ=; b=LyFTtBNQnVyzOCHiGPEY7Rwk3
-	VcGz4Sr/a8cRiQqmkldqPmta0n0r8NU0CUC/Tx3ZOgXUnWNEmpfOpOfMq4z8gJptGb/euqY8kaG6v
-	DdyDWgNiaLG7LSp2N0sQmO5dR8D6AhVCsb0wpu1bCYsb+Y/fFkFqx6wl6fq1pL1fhO06nixROsnTm
-	JsEc1Q7nQr2wrZVjle4Plopu2SWSbEMJx6ctU0N3xOX3wDkbwVHHJqncowaefkVGmLX7NnxwqMbSV
-	coC1EyvGuZBo6W5iDIjcisPptN4jsRmh7NfQTRnC6sVh6el1gX6PK42xR3cvxxk5tjhHWk91njmsF
-	EGc14Uhhw==;
+	 bh=M+SIfHIzPYI0SoHWfby9aKa+O9lJNXNPgY1ST0H8Ngs=; b=gyUuiyJkbFWI5E9wIXmV4a1EP
+	mgh3ZxOMfopvoPV/pC9hxYFfa2u/gf0Ppfx+tBnLQorZ9M6UUyUdD/P/+LNShLSh9HxrnwdshCY0e
+	AP9xAVkoMVOY9FP/FZjAazVoK3tnIDzS0oaw+PM8BHDsBdF/NKisV1e7LSd0WZWbKc99zC4/E70lg
+	5P7Dg/XXRvQ+odGLJf/H5gIPaRnt7nS6kNUghtYggUwtNiXGbLyJKrrUBpbFinJi5qZft7K9EzABr
+	xYPCNcVLNuBauAtW1d5f/T7O1PzOeGWfENXw56DM70e9lBlp2riUl77fg/o6V0ueu29SNgT49MtLI
+	rqCswVrZw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jxl6h-0005Rl-4p; Tue, 21 Jul 2020 05:46:27 +0000
-Received: from mail-pj1-x1041.google.com ([2607:f8b0:4864:20::1041])
+	id 1jxoi1-0000yj-33; Tue, 21 Jul 2020 09:37:13 +0000
+Received: from esa2.microchip.iphmx.com ([68.232.149.84])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jxl6e-0005Q7-F4
- for linux-mtd@lists.infradead.org; Tue, 21 Jul 2020 05:46:25 +0000
-Received: by mail-pj1-x1041.google.com with SMTP id md7so1103908pjb.1
- for <linux-mtd@lists.infradead.org>; Mon, 20 Jul 2020 22:46:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=sender:date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to;
- bh=3veC3pi53wl7dFDGpjkOo+uS1itnPbzCOm4x4ko6JVY=;
- b=D/IxIwyEq3hF3iTuaIk+KFCFZyGC8VqcCGJnFT12TDv/8eGagJrHkXCGkF3Muc266t
- OGT7OoG2HtHbaXMhlknQISHa5De5A/xFpxWKJLCbc/SAIqTngBdVmIG3+rFG2+Y1Wb46
- YATZPWszcpNmKSDpEHErZUkhido9bvZlai2206IHzthib3Y0UiQ6fX8Re2N3orWnF12s
- XZ6RPqQNT9T2QKcABfS3hJr1GCzgJFm/rDpCofJQA16hsZZMLUHK0fkaVJHJKDnTcvEP
- YayBMF/DStbLmLjOPFjbig16IweaRvLj4UCWCSitHEj/N0DuM+39Lm+dho9165oRwpKe
- XDKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
- :references:mime-version:content-disposition:in-reply-to;
- bh=3veC3pi53wl7dFDGpjkOo+uS1itnPbzCOm4x4ko6JVY=;
- b=KAlfYulAsia2OY2kHVg8zhMXtx6J1X/hhwuRWayBpRXbLeg9wXwFSObdl0Sb6MTE4X
- t7Yj0vIH5K19V9UoRIJ1R03z2U1PmBupVjrZV3jBGrnCrhG7RqxQekynwDJH2cnu0OK3
- 0ii+WJlicWeZ0UvEFb2EfBK20+iLvEpqIQSh5YdE2xdJym56qhpiCMGmLHwysjcsTEsw
- T7zLz0/kSghIqE7cwo3u6xbB6qdLOxE6FkdH38YIi8lZHEjlEgdBm+2T3TMfRa8H0oRG
- Lswg5LVkb6j9CZBtPiI9WqOPCATpAKHr9ZADBbU7GpSyM1T/GsSIHHDHS5Bl503VrnRZ
- /DnQ==
-X-Gm-Message-State: AOAM533OCOqIVN+fRWRhh+Q6thz4X30XozmPrHwhJgs+JKq6aHFFM6bC
- iY8pGa0EdtEMrw0B9ifuJWo=
-X-Google-Smtp-Source: ABdhPJylrFyWY9zOcJ3tuosterYe/etVkRG4BboKrT7kWFS6Sy9YPaV4NbuHkPEn95UZ4BSYHonUbw==
-X-Received: by 2002:a17:90a:dd44:: with SMTP id
- u4mr2794038pjv.203.1595310380927; 
- Mon, 20 Jul 2020 22:46:20 -0700 (PDT)
-Received: from google.com ([2620:15c:211:1:7220:84ff:fe09:5e58])
- by smtp.gmail.com with ESMTPSA id nh14sm1541134pjb.4.2020.07.20.22.46.18
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 20 Jul 2020 22:46:19 -0700 (PDT)
-Date: Mon, 20 Jul 2020 22:46:17 -0700
-From: Minchan Kim <minchan@kernel.org>
-To: Shakeel Butt <shakeelb@google.com>
-Subject: Re: [PATCH 11/14] mm: use SWP_SYNCHRONOUS_IO more intelligently
-Message-ID: <20200721054617.GA1879427@google.com>
-References: <20200720075148.172156-1-hch@lst.de>
- <20200720075148.172156-12-hch@lst.de>
- <CALvZod7ACBnNX5W-gtTzheh8R-rxv1nB-5q7UcDUZ7BvtpakpA@mail.gmail.com>
+ id 1jxohw-0000y3-7I
+ for linux-mtd@lists.infradead.org; Tue, 21 Jul 2020 09:37:10 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1595324227; x=1626860227;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:content-transfer-encoding: mime-version;
+ bh=368XCf7q2Xt6K/sbOMaeZ2RJcVDtU3xhpqjdwKXpatM=;
+ b=EUzuxzJyvbeMtQxGg1aNwtwgEeG6Px+DAo1R71zd5bOU8AjO/a3PqTv6
+ 26oUP9kgJZN8u+N27HRKf5DcZ4Rb7F1Z5JJubWeRoBmft8YHdqIaiwhgj
+ AHi2vCLeYm4cw1CLWuC1wE1r656jRbKG4fxooZwMLskdMJl+kQdPOc8Bw
+ QmAzr0vQhK3OJUQK0wEkz9g+9N6cSseM86e8Klc2qk1Lta8TgDPdQkPEG
+ qGQKXt2w+g/iTSjcl8AsLB9uhxywIetHBXlpmk6wrG0QmXBI7BDhu0eYc
+ lvMTce9N4Evc8xqnXTgUcGGOX6eoWy1kzWbgz8FACN+uZmHQjIq1b90Cv A==;
+IronPort-SDR: 8yrOuKuQWn6KBqk218y08bPJjxXjx4Ri1ZaIb6wQ9UXPMxi3hMcxzUzZZGxjG9CBb2XgbJuyH/
+ 6eYP0DylaQ2zH//SBahFqjZZfT2VhfrvIgr/1GkqePMdGWxKrZH0EfwI5aXaKLsmPMc4STLta/
+ fLP0dOSXS69xsHm9lVsjxJ7y9CbSpgX4c1k0lSdULXeAh0VuKojAaYxn2QIs4Zwh0dIZeI+dn6
+ gwTryfH9YvH/BGuxJdxqjDfDEpxEn1AEelsx+kD9/qq275V/VC4Q1OJfGWIzjbjR2l+07dZ3kj
+ dJk=
+X-IronPort-AV: E=Sophos;i="5.75,378,1589266800"; d="scan'208";a="82640856"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 21 Jul 2020 02:37:04 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 21 Jul 2020 02:36:27 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, 
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
+ Transport; Tue, 21 Jul 2020 02:36:24 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Pt9Tic/apFnScjSjw77UJXrFM6CS+Bg0sbpy97z6alVZvAiRlo5m7twqpxyU0KcLOrgyqodprI49/ulVJW/z12vI67yBHFpW75CJUdDPm76GlKM0d9MGx7fbRGyPkc74bG7xbLEKAzttSRmRqMpP10O+BL8QQV+ms2vwWMQt7taW4Lu2XPa2pakVQWFy9GSTK58w7Z/36/8dzyEzIZYLgKALkA366oFG/xClP92WVMrA58HcDuaDBz4AFakXkSEsDy4XOEvlmJEE2ZEcDH4NpxPPzzw0dlCFvrKuNRsZXWi+/6xLuDGDsBiPjRLZs33kI8MyCmM+dUQVuFvn6Y6L0w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=368XCf7q2Xt6K/sbOMaeZ2RJcVDtU3xhpqjdwKXpatM=;
+ b=Q7xn1bGdFm7hll0FMOsCI78wmBQBUHAREu7eD7zssYcoREMAeK6MTyFk2AByfSsJR8h2BOxkxoCYG5AWMxhDo/URK1K9SJ0UjXCqxqCU4sf0LX4jHvleAO+jbxbEmGvGtblVRD/IPOaQBgPV/BUu619WFED9+T2H4BBiiDMEwNnQG61xATYxntQ7ja+W+F4WVM1nMm9+ndbRP63C4khu4VcUvEY0DN8G+vW1M4sZgrnFI/u1p70pyjVbGGtg7UQphW9fI+T/9UO6FMwXwDt6i2lIyOpsl18Qo1h5Nk5NyZEf1hMHmAhWJVN3Kv/lB0Dy6A5afHvpDPl3XvI3CDe7iw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=368XCf7q2Xt6K/sbOMaeZ2RJcVDtU3xhpqjdwKXpatM=;
+ b=KOcbzAU9O4CvjOVWtZnwbkDhovo3UWJ8Dh/DqFPl5TaeQfSwzWLWMMmUM/JCkMHFNl5jleBCdouObfgtcg3nUCfdnHEQR7MHDNd3GlWZl9Hs2f4ghYgakUw8qmtjPFqly5XN5gVL9USwynZxjF9s9AXoVkdLm0MA39ZhrgfVf/Y=
+Received: from BYAPR11MB2856.namprd11.prod.outlook.com (2603:10b6:a02:bd::11)
+ by BYAPR11MB3206.namprd11.prod.outlook.com (2603:10b6:a03:78::27)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.25; Tue, 21 Jul
+ 2020 09:37:03 +0000
+Received: from BYAPR11MB2856.namprd11.prod.outlook.com
+ ([fe80::7424:cb9d:3c63:5181]) by BYAPR11MB2856.namprd11.prod.outlook.com
+ ([fe80::7424:cb9d:3c63:5181%7]) with mapi id 15.20.3195.026; Tue, 21 Jul 2020
+ 09:37:03 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <dac2@pensando.io>, <linux-mtd@lists.infradead.org>
+Subject: Re: [BUG]: spi-nor: spi_nor_init() fails when SR locked
+Thread-Topic: [BUG]: spi-nor: spi_nor_init() fails when SR locked
+Thread-Index: AQHWX0J80aMKh47pfEe1WfBRbg8wTA==
+Date: Tue, 21 Jul 2020 09:37:02 +0000
+Message-ID: <1ae4f44a-cbd2-b39e-68f7-3d0375c453bf@microchip.com>
+References: <CA+nMikGSSc5NA80Z89fz4GCh+6Ux2Pr6UyjB5n+qoBkiOqAh=Q@mail.gmail.com>
+In-Reply-To: <CA+nMikGSSc5NA80Z89fz4GCh+6Ux2Pr6UyjB5n+qoBkiOqAh=Q@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+authentication-results: pensando.io; dkim=none (message not signed)
+ header.d=none;pensando.io; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [94.177.32.156]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: bf699446-9aa5-4be7-cf5b-08d82d599fe5
+x-ms-traffictypediagnostic: BYAPR11MB3206:
+x-microsoft-antispam-prvs: <BYAPR11MB32062A7BCC8ED0CEEC29BC6BF0780@BYAPR11MB3206.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Nm4X3hLCVSUC1V2+uMDZoEEAzSLCS634RinQEX/fr9kOVKFErEUgz/+KVjhrxpv4jxiJH6BfCMTdJkeW1Pkz7u1ku8+jRMIl8yOWxeyURENSErXXELLuLanjG7a0jCE9XOFioMP5I31yD6Lh5rSQySXs4tmPXhTnkTnE8nOXL1GljxgfPVxy/LmedOKtkPbqzgW6DEQ41kzLC+7o3ycws3zmM6YCU0Xovmfb9D7v1P+6tmLZQLwh/GDXLmrk1JiLpjxGi4Gmj3Cpsj3rk3l26bRiO8nNlAtidM4vP2iyfPuEZraFiDEzuaDQ5zVzaoWFn8CPzzHJL7oYiCBEYJQX/ZmHA8+fKozK2y7Gjq0eJAhcWm0j7pYLU4FyssWUdpJ9e4ZfEXcMmPhoWFtYOY6LRBz5JXFFhL8zunJtN5nQ4OHELGYdTt4yDoBp9klZSSgvp43x786bnE1sbQ8Iziyd0w==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:BYAPR11MB2856.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFTY:;
+ SFS:(396003)(366004)(346002)(376002)(39860400002)(136003)(2616005)(66946007)(91956017)(76116006)(8936002)(83380400001)(8676002)(316002)(66476007)(110136005)(66556008)(64756008)(6486002)(36756003)(66446008)(31686004)(6506007)(478600001)(966005)(31696002)(186003)(2906002)(6512007)(26005)(86362001)(4326008)(71200400001)(5660300002)(53546011)(43740500002);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata: IgzKByH8jVgxzWj7L+FVW5BLm0SUrui6GKzcYh+UIt0+yPLk0aXy1rWzLqby9/MEGWQP1Ihb3E8JfrIDvXv0HECJYN76fYuHxODSxD8i9qMlmqJyDK+tR2dCbJnm/5dSZ11bV6OBEuWMQ8OS/EGN2zVckxnvNzNzyQLxKrcsAnfWUGvlKuibnmKDw8vXSRv8GxxyCM3oAL9MiJ8WRs00/9D/MxR2iQ46BWNZEbhVBxkXzVbBfWNHPMmr+ztp0Jzeqd/lD+oT63Qa2GllUayQAgsb1CWWoK/K0I3FvaKRIKjKEJ7O8dblGCDeMQoG4rfMZFBTkyiKM0/IcSd4XXdpweDftrMJqUAGsrXsI7QR3LbPcb4kXpf/iz5tuajp5Rfzl3VjzS/hG1dLvdcyGKi6oIXkoP2/Wl9iRoW3oRh+Q9bu86F6kKf6r+uqa42PPMX5AGP75ptV58YCNQutsTUtmCS/W15xwegyEBA8gmMeTEk=
+x-ms-exchange-transport-forked: True
+Content-ID: <D6CCF1C98BA0CF44A2DE3AA3BC57FA08@namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CALvZod7ACBnNX5W-gtTzheh8R-rxv1nB-5q7UcDUZ7BvtpakpA@mail.gmail.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2856.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bf699446-9aa5-4be7-cf5b-08d82d599fe5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jul 2020 09:37:02.8963 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: fJDG2yNu9hXR5Y8y4yXHPmPGejRf6UMLWU6PcOK2p+ZxkAonzQoKChRmNo3oHjRO+VM3A6P2JImkcaX8gqD6dr3ofiCWRrY5eIlDB6ugNKo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3206
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200721_014624_526276_EDAC0E69 
-X-CRM114-Status: GOOD (  23.87  )
+X-CRM114-CacheID: sfid-20200721_053708_560688_A8624DEA 
+X-CRM114-Status: GOOD (  17.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,86 +155,64 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Jens Axboe <axboe@kernel.dk>, linux-raid@vger.kernel.org,
- Hans de Goede <hdegoede@redhat.com>, Richard Weinberger <richard@nod.at>,
- LKML <linux-kernel@vger.kernel.org>,
- "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
- Song Liu <song@kernel.org>, dm-devel@redhat.com, linux-mtd@lists.infradead.org,
- Linux MM <linux-mm@kvack.org>, linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- Cgroups <cgroups@vger.kernel.org>, Christoph Hellwig <hch@lst.de>,
- drbd-dev@lists.linbit.com
+Cc: michael@walle.cc
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Thanks for Ccing me, Shakeel.
+Hi, David,
 
-On Mon, Jul 20, 2020 at 10:52:55AM -0700, Shakeel Butt wrote:
-> +Minchan Kim
+On 7/20/20 9:13 PM, David Clear wrote:
 > 
-> On Mon, Jul 20, 2020 at 12:52 AM Christoph Hellwig <hch@lst.de> wrote:
-> >
-> > There is no point in trying to call bdev_read_page if SWP_SYNCHRONOUS_IO
-> > is not set, as the device won't support it.  Also there is no point in
-> > trying a bio submission if bdev_read_page failed.
+> Hi Tudor,
 > 
-> This will at least break the failure path of zram_rw_page().
-
-Yes, it needs post processing for error propagaion like *page* handling
-part in end_swap_bio_read(mostly, PG_error and PG_uptodate with pr_alert).
-bdev_read_page's sematic doesn't need to be synchronous so it could just
-submit the IO request and complete the IO afterward. In that case, we
-need right error handling, too if the IO encoutered error. BIO fallback
-makes it simple.
-
- * bdev_read_page() - Start reading a page from a block device
- * @bdev: The device to read the page from
- * @sector: The offset on the device to read the page to (need not be aligned)
- * @page: The page to read
- *
- * On entry, the page should be locked.  It will be unlocked when the page
- * has been read.  If the block driver implements rw_page synchronously,
- * that will be true on exit from this function, but it need not be.
- *
- * Errors returned by this function are usually "soft", eg out of memory, or
- * queue full; callers should try a different route to read this page rather
- * than propagate an error back up the stack.
-
-The other concern about this patch is zram have used rw_page for a long
-time even though sometime it doesn't declare BDI_CAP_SYNCHRONOUS_IO by itself
-because rw_page shows 4~5% bandwidth improvement compared to bio-based.
-The performance gain becomes more important these day because compressor
-becomes more fast day by day.
-
+> I'm seeing a change of behavior in spi-nor/next vs. my older 4.14
+> kernel w.r.t. how SR lock is working.
 > 
-> >
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > ---
-> >  mm/page_io.c | 7 +++++--
-> >  1 file changed, 5 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/mm/page_io.c b/mm/page_io.c
-> > index ccda7679008851..63b44b8221af0f 100644
-> > --- a/mm/page_io.c
-> > +++ b/mm/page_io.c
-> > @@ -403,8 +403,11 @@ int swap_readpage(struct page *page, bool synchronous)
-> >                 goto out;
-> >         }
-> >
-> > -       ret = bdev_read_page(sis->bdev, swap_page_sector(page), page);
-> > -       if (!ret) {
-> > +       if (sis->flags & SWP_SYNCHRONOUS_IO) {
-> > +               ret = bdev_read_page(sis->bdev, swap_page_sector(page), page);
-> > +               if (ret)
-> > +                       goto out;
-> > +
-> >                 if (trylock_page(page)) {
-> >                         swap_slot_free_notify(page);
-> >                         unlock_page(page);
-> > --
-> > 2.27.0
-> >
+> In my system with a Micron mt25qu02g, I'm using the hardware WP# to
+> lock the SR.  When hardware write-protect is on, at the next reboot
+> the kernel rejects the flash as it cannot unlock the whole device.
+> 
+> I traced the problem to spi_nor_write_sr1_and_check(), which is
+> writing to the SR and reading back a different value (as the locked SR
+> bits are immutable).
+> 
+> Call trace:
+>  spi_nor_write_sr1_and_check+0x68/0x70
+>  spi_nor_write_sr_and_check+0x34/0xd0
+>  spi_nor_sr_unlock+0x108/0x230
+>  spi_nor_unlock+0x54/0x80  (via spi_nor_unlock_all())
+>  spi_nor_init+0x94/0x100
+> 
+> spi_nor_write_sr1_and_check() is returning -EIO here:
+>         if (nor->bouncebuf[0] != sr1) {
+>                 dev_dbg(nor->dev, "SR1: read back test failed\n");
+>                 BUG();
+>                 return -EIO;
+>         }
+> 
+> In my specific case Linux doesn't have (and cannot be given, for
+> product security reasons) control over the WP#.  In any case, I don't
+> think a write-protected flash should be rejected here.
+> 
+> Can you suggest how we might proceed?  The way WP# is used is
+> board-specific so perhaps a device-tree property of some sort in the
+> flash device node can inform the code to do or not do the
+> spi_nor_unlock_all()?
+> 
+> I can take a look at putting a patch together if you suggest an
+> acceptable mechanism.
+> 
+
+Thanks for the detailed report. I'll have to study this a bit, I'll get
+back to you in few days/one week. We tackled the unlock_all stuff in
+the past, Michael did a patch, I'll check how that fits here.
+
+https://patchwork.ozlabs.org/project/linux-mtd/patch/20200327155939.13153-1-michael@walle.cc/
+
+Cheers,
+ta
 
 ______________________________________________________
 Linux MTD discussion mailing list
