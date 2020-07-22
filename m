@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27CCEC43446
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Jul 2020 06:27:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B87BBC4345A
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Jul 2020 06:27:10 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DB050207DD
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Jul 2020 06:27:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6585922CA0
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Jul 2020 06:27:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Cs6vMb4Y";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="qcA0OhQS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB050207DD
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hiDtEWiV";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="uEFqCD7B"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6585922CA0
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,37 +26,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Mlv2pTBLJ5tETHfyISIRqxalOsbd1U1vfI4MAGHbiRI=; b=Cs6vMb4YvhOWZAzPaFzSNbW5W
-	cSfixvs6lasrGFZEau+f7n4jy+r4gcrdDNzxzz4LHZVvejbyw3WMcIpSpHn3CEp/vVPkdgx50Mdwi
-	mEMjDXPHq7wMmaPkghkTWuiJJt+2glK2YOKL9u4S41J7KmmTtjtrbNH+2fLO+JnniubrScMrbuoEI
-	rcBivGrDNudtpLHiWyQwqlCDntxMpuNo8M4g2YlBq0EtgY72YzPTkPbwE51J9pkuECZryWQh8yi3y
-	hM4yoaEr3JkMTfYzoBqU4aZqXEeJE5i2b8RuwbF+GIZDL/yqHKGJ+8xVqr9mKAqyrEkHhZlH1ssmt
-	h8zQ11cHg==;
+	 bh=UWpbJNsyHKV7lQRcxH+n6R1KkY1a+TsQ2XD7H/u7+Y8=; b=hiDtEWiVrknqPq2Sf8BLPR92Z
+	BHpSCmcOdst/0y5ZEsXjNTYA9OKY0NAEZNyJWxh38YHfvhuQuC+Wd3ryBsiNdfDfZolPGqWvX/rl9
+	OEJ5ignM3D73ovYKMRmlIOu+F0u21umqjoFbwUiq+Db93JFvHHhhnihPT8Ak/y9Jnrtp4C09KmNND
+	/xshDE+8XB0NEAZsdetpvB7uqQOHvEImfWr6CbQ0azKUuIpvMGljQNE7fOeMJ2Nj6Hf30eleyR1PP
+	gA1+vmtP1NdYw2uHAYHySbaIlqbt8y/iZAaLLhm7abVHTs3MhFjXQp2kYe8KzU1cxVAzVanspF0QL
+	VBrnq9bSQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jy8Cz-0000sx-0a; Wed, 22 Jul 2020 06:26:29 +0000
+	id 1jy8Cs-0000rI-Vv; Wed, 22 Jul 2020 06:26:23 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jy8Cw-0000rs-Az
- for linux-mtd@merlin.infradead.org; Wed, 22 Jul 2020 06:26:26 +0000
+ id 1jy8Cm-0000q8-QC
+ for linux-mtd@merlin.infradead.org; Wed, 22 Jul 2020 06:26:16 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=23lPPnUQ/wtgDdZgYVTv/WJAfGlLRFk69cLmomK1pnE=; b=qcA0OhQS+tvPJpXNLSmTGDPyc5
- keU4ouYq4cSDEogGD8k4bUBKfBabDc6ohHUdaiZ9l05VOph7dpcwQ+awDYWN9Vi/VYLPfYxRwy37Y
- bSj9zsc72LYO58T3vbwX9cZ+fZVr6Z8YbU35YOqOtpWbLWYMh41yBRu5MOFCUWH1N6dKKBZWoC/Mh
- kQKisQ2fhXZReZ9HZpoLQ8LfzBSGhVT5FIYBsk51xdkI4WHXfTJgrusohPbWknqb2l4c9+pt2mdXM
- qlmorndIPcM9UgyeGf45vU9ZbwucMrFP6dnzXlqDkUKqL9TGUiISg2JVHpfmda3Kga9JikUFtspcB
- AOF6Zn2w==;
+ bh=bUYYhGUygoqWMKKuho81ixqziKjBSgraLpIlc+nIh5c=; b=uEFqCD7B3H4B3UtE7iHzIIYryx
+ WwyoYXlyIGrJLFhqj2zal8w4lRDiuTCEaWUPozkaTptpeDskI7AylNYAmnHGmypRq2lqQLy/Ivn7k
+ J/40RAGwged0+YZYjvGJoUPjOuR+E5Nm5SIemukVhG1QbLgA3g+fnZfRf4RW2gFLg3f8qYMmkcK9z
+ dxHfldVIXyR+ONHj4Tmsysogs8B/B8J3zk95bj7JuBi72xwfqJ0wYGroh3ahPF1BTKv1AuQl1VePt
+ QtkkeuVPTA9STXd9Ax8LFqFf/G7F5sth6X371lU1IzL7+5bGDcxvp5Dx6c+auGyu4np3uPVtbrzAe
+ 0pAeS8YA==;
 Received: from [2001:4bb8:18c:2acc:e75:d48f:65ef:e944] (helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jy8Cr-0004mF-Ol; Wed, 22 Jul 2020 06:26:25 +0000
+ id 1jy8Ch-0004ln-Kd; Wed, 22 Jul 2020 06:26:15 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 04/14] bdi: initialize ->ra_pages in bdi_init
-Date: Wed, 22 Jul 2020 08:25:42 +0200
-Message-Id: <20200722062552.212200-5-hch@lst.de>
+Subject: [PATCH 01/14] fs: remove the unused SB_I_MULTIROOT flag
+Date: Wed, 22 Jul 2020 08:25:39 +0200
+Message-Id: <20200722062552.212200-2-hch@lst.de>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200722062552.212200-1-hch@lst.de>
 References: <20200722062552.212200-1-hch@lst.de>
@@ -85,161 +85,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Set up a readahead size by default, as very few users have a good
-reason to change it.
-
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- block/blk-core.c      | 1 -
- drivers/mtd/mtdcore.c | 1 +
- fs/9p/vfs_super.c     | 4 ++--
- fs/afs/super.c        | 1 -
- fs/btrfs/disk-io.c    | 1 -
- fs/fuse/inode.c       | 1 -
- fs/nfs/super.c        | 9 +--------
- fs/ubifs/super.c      | 1 +
- fs/vboxsf/super.c     | 1 +
- mm/backing-dev.c      | 1 +
- 10 files changed, 7 insertions(+), 14 deletions(-)
+ fs/namei.c         | 4 ++--
+ include/linux/fs.h | 1 -
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/block/blk-core.c b/block/blk-core.c
-index 93104c7470e8ac..ea1665de7a2079 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -538,7 +538,6 @@ struct request_queue *blk_alloc_queue(int node_id)
- 	if (!q->stats)
- 		goto fail_stats;
- 
--	q->backing_dev_info->ra_pages = VM_READAHEAD_PAGES;
- 	q->backing_dev_info->capabilities = BDI_CAP_CGROUP_WRITEBACK;
- 	q->node = node_id;
- 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 7d930569a7dfb7..01b3fe888d885b 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -2196,6 +2196,7 @@ static struct backing_dev_info * __init mtd_bdi_init(char *name)
- 	bdi = bdi_alloc(NUMA_NO_NODE);
- 	if (!bdi)
- 		return ERR_PTR(-ENOMEM);
-+	bdi->ra_pages = 0;
- 
- 	/*
- 	 * We put '-0' suffix to the name to get the same name format as we
-diff --git a/fs/9p/vfs_super.c b/fs/9p/vfs_super.c
-index 74df32be4c6a52..a338eb979cadf9 100644
---- a/fs/9p/vfs_super.c
-+++ b/fs/9p/vfs_super.c
-@@ -80,8 +80,8 @@ v9fs_fill_super(struct super_block *sb, struct v9fs_session_info *v9ses,
- 	if (ret)
- 		return ret;
- 
--	if (v9ses->cache)
--		sb->s_bdi->ra_pages = VM_READAHEAD_PAGES;
-+	if (!v9ses->cache)
-+		sb->s_bdi->ra_pages = 0;
- 
- 	sb->s_flags |= SB_ACTIVE | SB_DIRSYNC;
- 	if (!v9ses->cache)
-diff --git a/fs/afs/super.c b/fs/afs/super.c
-index b552357b1d1379..3a40ee752c1e3f 100644
---- a/fs/afs/super.c
-+++ b/fs/afs/super.c
-@@ -456,7 +456,6 @@ static int afs_fill_super(struct super_block *sb, struct afs_fs_context *ctx)
- 	ret = super_setup_bdi(sb);
- 	if (ret)
- 		return ret;
--	sb->s_bdi->ra_pages	= VM_READAHEAD_PAGES;
- 
- 	/* allocate the root inode and dentry */
- 	if (as->dyn_root) {
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index ad157b55d7f5f0..f92c45fe019c48 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3033,7 +3033,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 	}
- 
- 	sb->s_bdi->capabilities |= BDI_CAP_CGROUP_WRITEBACK;
--	sb->s_bdi->ra_pages = VM_READAHEAD_PAGES;
- 	sb->s_bdi->ra_pages *= btrfs_super_num_devices(disk_super);
- 	sb->s_bdi->ra_pages = max(sb->s_bdi->ra_pages, SZ_4M / PAGE_SIZE);
- 
-diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-index bba747520e9b08..17b00670fb539e 100644
---- a/fs/fuse/inode.c
-+++ b/fs/fuse/inode.c
-@@ -1049,7 +1049,6 @@ static int fuse_bdi_init(struct fuse_conn *fc, struct super_block *sb)
- 	if (err)
- 		return err;
- 
--	sb->s_bdi->ra_pages = VM_READAHEAD_PAGES;
- 	/* fuse does it's own writeback accounting */
- 	sb->s_bdi->capabilities = BDI_CAP_NO_ACCT_WB | BDI_CAP_STRICTLIMIT;
- 
-diff --git a/fs/nfs/super.c b/fs/nfs/super.c
-index 7a70287f21a2c1..f943e37853fa25 100644
---- a/fs/nfs/super.c
-+++ b/fs/nfs/super.c
-@@ -1200,13 +1200,6 @@ static void nfs_get_cache_cookie(struct super_block *sb,
- }
- #endif
- 
--static void nfs_set_readahead(struct backing_dev_info *bdi,
--			      unsigned long iomax_pages)
--{
--	bdi->ra_pages = VM_READAHEAD_PAGES;
--	bdi->io_pages = iomax_pages;
--}
--
- int nfs_get_tree_common(struct fs_context *fc)
+diff --git a/fs/namei.c b/fs/namei.c
+index 72d4219c93acb7..e9ff0d54a110a7 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -568,8 +568,8 @@ static bool path_connected(struct vfsmount *mnt, struct dentry *dentry)
  {
- 	struct nfs_fs_context *ctx = nfs_fc2context(fc);
-@@ -1251,7 +1244,7 @@ int nfs_get_tree_common(struct fs_context *fc)
- 					     MINOR(server->s_dev));
- 		if (error)
- 			goto error_splat_super;
--		nfs_set_readahead(s->s_bdi, server->rpages);
-+		s->s_bdi->io_pages = server->rpages;
- 		server->super = s;
- 	}
+ 	struct super_block *sb = mnt->mnt_sb;
  
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 7fc2f3f07c16ed..ee7692e7a35371 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -2159,6 +2159,7 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
- 				   c->vi.vol_id);
- 	if (err)
- 		goto out_close;
-+	sb->s_bdi->ra_pages = 0; /* ubifs does its own readahead */
+-	/* Bind mounts and multi-root filesystems can have disconnected paths */
+-	if (!(sb->s_iflags & SB_I_MULTIROOT) && (mnt->mnt_root == sb->s_root))
++	/* Bind mounts can have disconnected paths */
++	if (mnt->mnt_root == sb->s_root)
+ 		return true;
  
- 	sb->s_fs_info = c;
- 	sb->s_magic = UBIFS_SUPER_MAGIC;
-diff --git a/fs/vboxsf/super.c b/fs/vboxsf/super.c
-index 8fe03b4a0d2b03..6574ae5a97c2c8 100644
---- a/fs/vboxsf/super.c
-+++ b/fs/vboxsf/super.c
-@@ -167,6 +167,7 @@ static int vboxsf_fill_super(struct super_block *sb, struct fs_context *fc)
- 	err = super_setup_bdi_name(sb, "vboxsf-%d", sbi->bdi_id);
- 	if (err)
- 		goto fail_free;
-+	sb->s_bdi->ra_pages = 0;
+ 	return is_subdir(dentry, mnt->mnt_root);
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 41cd993ec0f686..236543605dd118 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -1366,7 +1366,6 @@ extern int send_sigurg(struct fown_struct *fown);
+ #define SB_I_CGROUPWB	0x00000001	/* cgroup-aware writeback enabled */
+ #define SB_I_NOEXEC	0x00000002	/* Ignore executables on this fs */
+ #define SB_I_NODEV	0x00000004	/* Ignore devices on this fs */
+-#define SB_I_MULTIROOT	0x00000008	/* Multiple roots to the dentry tree */
  
- 	/* Turn source into a shfl_string and map the folder */
- 	size = strlen(fc->source) + 1;
-diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-index 8e8b00627bb2d8..3e441e0ff1bc88 100644
---- a/mm/backing-dev.c
-+++ b/mm/backing-dev.c
-@@ -746,6 +746,7 @@ struct backing_dev_info *bdi_alloc(int node_id)
- 		kfree(bdi);
- 		return NULL;
- 	}
-+	bdi->ra_pages = VM_READAHEAD_PAGES;
- 	return bdi;
- }
- EXPORT_SYMBOL(bdi_alloc);
+ /* sb->s_iflags to limit user namespace mounts */
+ #define SB_I_USERNS_VISIBLE		0x00000010 /* fstype already mounted */
 -- 
 2.27.0
 
