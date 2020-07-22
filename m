@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7892FC4361B
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Jul 2020 06:27:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DAAF3C433EC
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Jul 2020 06:28:36 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4700F20872
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Jul 2020 06:27:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A426C20792
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Jul 2020 06:28:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nuy7GqLz";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="rjXQWvaS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4700F20872
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="A9pc9CRD";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="QKj9cRLk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A426C20792
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,37 +26,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=SgcY4wtfE6/LIG/wNPOjrvoPA+ai5dbV9klPdqmfOSE=; b=nuy7GqLzn3txno6135h27Zd+M
-	QQek20eB7K47j7z53EsGZS+gxF+yHQBBncjrVeExF/UsEpjFfDM4p9wHhBg85gd/9mAaamy4e/LaW
-	gJ6gtk5PRxpCgy35AcOvevTFPZV6rIp0uGnz3WChkC3JJJOK+OEkSqsX+WlOmTwRebiUL2qgVhm/F
-	04mfYR846O6ji2mikXqYPEXnVGCtjliNiIwSq1xUktCPIy+D9SiVUU/N6+z/brrkRQt2aUhMxy2xV
-	rzU7op9AkwROWFov+QUoWrG2EYHNPwBbXiExBT1zQkLnH6nFGIlHvjUbysNBMphun5ocVoFb+f60J
-	7GKaSOrDQ==;
+	 bh=vFM2EqFQWGpHd3U6kx5XczITkgCw8FU9mJt6S50rxuo=; b=A9pc9CRDcJ19WwatNNPKe+2+8
+	zpWdpCDZwkH2Qu3o7YcH2ZIQziVhokLdEUNezKTvzNlQwh35Bnti07x164YG6nzY/LWGE0h1BhHEw
+	zZU9UCfCT3MCJyfMZ/+fJetZGcv5bvaqP3Qg3Y1bmT9KcV6GqGBkaNx0L7XwobRWwASJORosmgveB
+	P3Wm+U4+NhbkgSvnebBCFy5Z7wyfkVxc2ekNMFRLM8F3Qrg5S85Rg+x7Fw7L8z3J4Tze5RyfXGaTm
+	q53wWK9ptJn6dw7CWPrd/yStBX31DzWAV6stIsY09qUkhSm1toaYBO/L8yLg/HATgSAFZlBs5LQtJ
+	QVteUN7IA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jy8Df-00019C-WB; Wed, 22 Jul 2020 06:27:12 +0000
+	id 1jy8E4-0001Qp-79; Wed, 22 Jul 2020 06:27:36 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jy8DO-00012H-2d
- for linux-mtd@merlin.infradead.org; Wed, 22 Jul 2020 06:26:54 +0000
+ id 1jy8DW-000166-Px
+ for linux-mtd@merlin.infradead.org; Wed, 22 Jul 2020 06:27:02 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=Jdh+Se3a2Jmdkbd57oVwwUzzlSWemowvtj1/EcjXiHo=; b=rjXQWvaS8qHBtniDPxFQ3W77Lf
- 53UqC85nCDqwBMS670ZU8cqxhPbGs900+d1eIdmxbZ04GiYESYTfGlNCJgRQPBJuB86FTUwLpkHn3
- wPFSDOUzY5zhrDQMil0gRtDB48U4m1FpG+6tlFelSCd34zlztC8m/YowLfNo1I6/mXYie3MDWq7Wh
- QyvLFIXsIK4EB5pGBoHLx+hnJia9LMlhD6KbRcJ4zSik1o4g3eiVehQ9Bns6aNJzBx4RZvdKoLxB1
- JfOOksSykmuh1FyXqu4n88wDVc3dB5EDt/60gUX099FVBcr9ZkMC7D3y/p66Zj7Tco563xJ/Ht9As
- 6JeW5qow==;
+ bh=Ho/bGRY9X7egSzlAdmNPDZqSIrHRov0jTdazhq1mANU=; b=QKj9cRLkk3Asu/nWfisOaLJDaX
+ C9lTNqh6VBILkTth7nNXrkidgP4gchWDSTrhp/3Y1z9QUR+TcwxEe2t6iscABKfqA8kbv5UfRQNcD
+ pD60xBsvIF2Oe+Dlto1bcUYpxEsb2/3kDL3TKyELEbNx2eP3bwsABMDfeX6cUOpaE2HEa4vBz3oLz
+ sp92WB6AX0y4Cx5KZcU+e1nlQXp8bKl8W5I0RmBAKYLHwKMmV6+y71j3XYxtgcLol19B/6cJyu2Wz
+ d4KMJhVqijkM66wxrJaJxYNqqhdCsGfa9cH0ze4/SQ0qBPLNcT9qMsZVaUwOPb3S2wOcsltb8l5Pn
+ 5LFTbrwA==;
 Received: from [2001:4bb8:18c:2acc:e75:d48f:65ef:e944] (helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jy8DM-0004rK-1P; Wed, 22 Jul 2020 06:26:52 +0000
+ id 1jy8DS-0004sw-DL; Wed, 22 Jul 2020 06:27:00 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 11/14] mm: use SWP_SYNCHRONOUS_IO more intelligently
-Date: Wed, 22 Jul 2020 08:25:49 +0200
-Message-Id: <20200722062552.212200-12-hch@lst.de>
+Subject: [PATCH 13/14] bdi: invert BDI_CAP_NO_ACCT_WB
+Date: Wed, 22 Jul 2020 08:25:51 +0200
+Message-Id: <20200722062552.212200-14-hch@lst.de>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200722062552.212200-1-hch@lst.de>
 References: <20200722062552.212200-1-hch@lst.de>
@@ -85,44 +85,105 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There is no point in trying to call bdev_read_page if SWP_SYNCHRONOUS_IO
-is not set, as the device won't support it.
+Replace BDI_CAP_NO_ACCT_WB with a positive BDI_CAP_WRITEBACK_ACCT to
+make the checks more obvious.  Also remove the pointless
+bdi_cap_account_writeback wrapper that just obsfucates the check.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- mm/page_io.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ fs/fuse/inode.c             |  3 ++-
+ include/linux/backing-dev.h | 13 +++----------
+ mm/backing-dev.c            |  1 +
+ mm/page-writeback.c         |  4 ++--
+ 4 files changed, 8 insertions(+), 13 deletions(-)
 
-diff --git a/mm/page_io.c b/mm/page_io.c
-index ccda7679008851..442061348dfb26 100644
---- a/mm/page_io.c
-+++ b/mm/page_io.c
-@@ -403,15 +403,17 @@ int swap_readpage(struct page *page, bool synchronous)
- 		goto out;
+diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
+index 17b00670fb539e..581329203d6860 100644
+--- a/fs/fuse/inode.c
++++ b/fs/fuse/inode.c
+@@ -1050,7 +1050,8 @@ static int fuse_bdi_init(struct fuse_conn *fc, struct super_block *sb)
+ 		return err;
+ 
+ 	/* fuse does it's own writeback accounting */
+-	sb->s_bdi->capabilities = BDI_CAP_NO_ACCT_WB | BDI_CAP_STRICTLIMIT;
++	sb->s_bdi->capabilities &= ~BDI_CAP_WRITEBACK_ACCT;
++	sb->s_bdi->capabilities |= BDI_CAP_STRICTLIMIT;
+ 
+ 	/*
+ 	 * For a single fuse filesystem use max 1% of dirty +
+diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
+index 5da4ea3dd0cc5c..b217344a2c63be 100644
+--- a/include/linux/backing-dev.h
++++ b/include/linux/backing-dev.h
+@@ -120,17 +120,17 @@ int bdi_set_max_ratio(struct backing_dev_info *bdi, unsigned int max_ratio);
+  *
+  * BDI_CAP_NO_ACCT_DIRTY:  Dirty pages shouldn't contribute to accounting
+  * BDI_CAP_NO_WRITEBACK:   Don't write pages back
+- * BDI_CAP_NO_ACCT_WB:     Don't automatically account writeback pages
++ * BDI_CAP_WRITEBACK_ACCT: Automatically account writeback pages
+  * BDI_CAP_STRICTLIMIT:    Keep number of dirty pages below bdi threshold.
+  */
+ #define BDI_CAP_NO_ACCT_DIRTY	0x00000001
+ #define BDI_CAP_NO_WRITEBACK	0x00000002
+-#define BDI_CAP_NO_ACCT_WB	0x00000004
++#define BDI_CAP_WRITEBACK_ACCT	0x00000004
+ #define BDI_CAP_STRICTLIMIT	0x00000010
+ #define BDI_CAP_CGROUP_WRITEBACK 0x00000020
+ 
+ #define BDI_CAP_NO_ACCT_AND_WRITEBACK \
+-	(BDI_CAP_NO_WRITEBACK | BDI_CAP_NO_ACCT_DIRTY | BDI_CAP_NO_ACCT_WB)
++	(BDI_CAP_NO_WRITEBACK | BDI_CAP_NO_ACCT_DIRTY)
+ 
+ extern struct backing_dev_info noop_backing_dev_info;
+ 
+@@ -179,13 +179,6 @@ static inline bool bdi_cap_account_dirty(struct backing_dev_info *bdi)
+ 	return !(bdi->capabilities & BDI_CAP_NO_ACCT_DIRTY);
+ }
+ 
+-static inline bool bdi_cap_account_writeback(struct backing_dev_info *bdi)
+-{
+-	/* Paranoia: BDI_CAP_NO_WRITEBACK implies BDI_CAP_NO_ACCT_WB */
+-	return !(bdi->capabilities & (BDI_CAP_NO_ACCT_WB |
+-				      BDI_CAP_NO_WRITEBACK));
+-}
+-
+ static inline bool mapping_cap_writeback_dirty(struct address_space *mapping)
+ {
+ 	return bdi_cap_writeback_dirty(inode_to_bdi(mapping->host));
+diff --git a/mm/backing-dev.c b/mm/backing-dev.c
+index 41ec322090fca6..5f5958e1d39060 100644
+--- a/mm/backing-dev.c
++++ b/mm/backing-dev.c
+@@ -744,6 +744,7 @@ struct backing_dev_info *bdi_alloc(int node_id)
+ 		kfree(bdi);
+ 		return NULL;
  	}
++	bdi->capabilities = BDI_CAP_WRITEBACK_ACCT;
+ 	bdi->ra_pages = VM_READAHEAD_PAGES;
+ 	return bdi;
+ }
+diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+index 27a10536adad30..44c4a588f48df5 100644
+--- a/mm/page-writeback.c
++++ b/mm/page-writeback.c
+@@ -2740,7 +2740,7 @@ int test_clear_page_writeback(struct page *page)
+ 		if (ret) {
+ 			__xa_clear_mark(&mapping->i_pages, page_index(page),
+ 						PAGECACHE_TAG_WRITEBACK);
+-			if (bdi_cap_account_writeback(bdi)) {
++			if (bdi->capabilities & BDI_CAP_WRITEBACK_ACCT) {
+ 				struct bdi_writeback *wb = inode_to_wb(inode);
  
--	ret = bdev_read_page(sis->bdev, swap_page_sector(page), page);
--	if (!ret) {
--		if (trylock_page(page)) {
--			swap_slot_free_notify(page);
--			unlock_page(page);
--		}
-+	if (sis->flags & SWP_SYNCHRONOUS_IO) {
-+		ret = bdev_read_page(sis->bdev, swap_page_sector(page), page);
-+		if (ret) {
-+			if (trylock_page(page)) {
-+				swap_slot_free_notify(page);
-+				unlock_page(page);
-+			}
+ 				dec_wb_stat(wb, WB_WRITEBACK);
+@@ -2793,7 +2793,7 @@ int __test_set_page_writeback(struct page *page, bool keep_write)
+ 						   PAGECACHE_TAG_WRITEBACK);
  
--		count_vm_event(PSWPIN);
--		goto out;
-+			count_vm_event(PSWPIN);
-+			goto out;
-+		}
- 	}
+ 			xas_set_mark(&xas, PAGECACHE_TAG_WRITEBACK);
+-			if (bdi_cap_account_writeback(bdi))
++			if (bdi->capabilities & BDI_CAP_WRITEBACK_ACCT)
+ 				inc_wb_stat(inode_to_wb(inode), WB_WRITEBACK);
  
- 	ret = 0;
+ 			/*
 -- 
 2.27.0
 
