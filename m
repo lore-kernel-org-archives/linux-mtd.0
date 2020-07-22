@@ -4,115 +4,147 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-11.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA768C433E1
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Jul 2020 14:02:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94009C433DF
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Jul 2020 14:29:17 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5F3092071A
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Jul 2020 14:02:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5B69F20709
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Jul 2020 14:29:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KiCwQtPF";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nokia.onmicrosoft.com header.i=@nokia.onmicrosoft.com header.b="v+jxMi7O"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F3092071A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nokia.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RwOZI7iI";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="0UnaVTem";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="hjP8J8TV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B69F20709
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:To:Subject:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=detzdUJqK74Of65p7yxCHxJSN6BnV27bfWkDEruz0sk=; b=KiCwQtPFaeWTJpQuFi2IdriXO+
-	OxlB05OsYZrjAqMjG19TNE+7wuU7RnV9NenWShEGZxq+PmVc8vSX1oonuFBP5t/UTRLXzt1Ex7IyF
-	FmOJz7mlxjRs8KH39DChwWFxYjqc7IUEz8KEexTQUtmc1O4mLniWy7tSi21tBNP9d++QWU5Vk48EJ
-	s77TTyHn5vCjZCP8gv1k01NRqA/6c8+NoH/gyud6eSl64UwyKBVGUFwIE+F/hVt65I4yMutSod6mX
-	kyRyD8BXk3I7jeU+192X/tZO4EoukLapzSlcbfa9iEvXgyo3kJXtwQOa8O2drenu4Zy0fPJjFRAea
-	C386A3sg==;
+	List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=mibSsDvwdLFPpo+iy0WcKpJGt9FISBNdT5aTc/4bebo=; b=RwOZI7iIs+2mu8KeaDz2jsKq4
+	e53RIboMJS9fx0tf69ANtQq3C+YPlRF+9yXftEv7mtBlKls/lqjp7x5k7D65vO1x69D2MIksz92iH
+	QAiNBTev0NluHI9sZLYooUTmSn5KQXBkagH32O9gR53BxSpWvvWOKyWAYvxsxXvCSZD9gOOtLowdb
+	FMZOo0zn62TN9bkvZ5llbg3R3FiYngT2oaeZ07qI/Tylerr0lTQdP/sC8i87OTx+MsJkPzU5p4/6I
+	T6D3tmcs9OjheM2NoiAQdqIxz+IPGfle/dNkUJV5hdhvONDs7sQN2sM0MHVvi34ObCrDaEMdlxJCg
+	+1mI5CFdw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jyFJf-0001aD-EB; Wed, 22 Jul 2020 14:01:51 +0000
-Received: from mail-am6eur05on2123.outbound.protection.outlook.com
- ([40.107.22.123] helo=EUR05-AM6-obe.outbound.protection.outlook.com)
+	id 1jyFjc-0004NI-EG; Wed, 22 Jul 2020 14:28:40 +0000
+Received: from esa5.microchip.iphmx.com ([216.71.150.166])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jyFJd-0001ZA-7e
- for linux-mtd@lists.infradead.org; Wed, 22 Jul 2020 14:01:50 +0000
+ id 1jyFjW-0004Ma-Eq
+ for linux-mtd@lists.infradead.org; Wed, 22 Jul 2020 14:28:38 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1595428115; x=1626964115;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:content-transfer-encoding: mime-version;
+ bh=2d4P2rmN5yKyPy94hnKpeX0+h9MooSdNJAghy8ZCARI=;
+ b=0UnaVTem6V8CLfcon+OyHzu+sHdv2z8Lvpe+e6Z+iCLCk3n1IJIbfOLI
+ S59BxFpDQqFP6+Ievf1yuxbWwg1K+8AujU1UoqZexgrYxSRSKo2cq2499
+ /jQ1B/CdnXRhf6ZQrtaK2ans42AbbO4wkkyeLtFj7kTirZRqDa6tnpQQm
+ xKvQoOjiyd4R4C9pNvtWixQRoUeB8fd8b7Rr4N2kWhfoJXewI2YH9wpby
+ pZAoI2u10n/l/07KoWkDXuhC1pzL0HOnFEg255wYfsEoK7njZY/4+7JEX
+ oSvNEnDntfhL9b215G49AqeYpYM8/EfGHzae6lDLPwp0Ntv6tFHsahe3p Q==;
+IronPort-SDR: HAFnD9Iw4CCpxdvhphRDMIMnMK1PlC5V9FJm1rdcXvnxcjCYnSlygO9xadtJ+48Fi/CdtwyFH6
+ GN38r3n4sipqllQO8rfQ+tBjB/OHrPrxL7W+BbUAyev//wUUERWjd0yvsXMCC9nJLA48nI+pJX
+ u9VIUDCdfPBMsEVgiCRlqHdOzEJCoecRJL79FjUGinKDCKRSd9ScEFrB1UteavjGasiLUNFc5j
+ fkTiRmnR2Ska+8+wd9dS7LSYILSc1pyPMtayVR5W27OMjfaPC4QsyLd572HC/Ua3GdmzDcdspZ
+ E/0=
+X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; d="scan'208";a="84204445"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 22 Jul 2020 07:28:33 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 22 Jul 2020 07:28:32 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.71) with Microsoft SMTP Server
+ (version=TLS1_2, 
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
+ Transport; Wed, 22 Jul 2020 07:27:53 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LmTUY0r74zc7I8bZR2vp+qhkqZBBc3gtrz4luDDG6PMelfUgzbKkWMYjEEeCooHg8Ut8nZzihEc62stodlQhWw6qQSfGkI1mBmjX7EksYR+rmR0gKLw0uyVKB0EtFFdGkRw+/vyimF9YN9q/FClga09+MXrE8MyhjTt+Of9p/xj5yUIJnvmQgvjmaT/NB6LlwefplmOnLpalR+E5hB2a5SVw4c0vglkOF4Gfd/RQu1WQ7IYWYg6t/lfBtEajRnRWdAIArfDhDOuNGWLcHtsv2HkG/Z+Zws23Cki1pPTBlfGZBxyI7vC/1SdgaVDhbx9HTkDl+mZbRWFtBaUVTkVlXA==
+ b=JK34OduzZosxbc7BMA2SPo2nXHsMNth4zQzSwy+CLl5TpNTn9QlHRHZ8/LwXmO2jGq+McztjvJML/pxsEn0RTCRwZSPJdg3eUAdOKOgL7GLGSGuOGBOIDRg7uEvfLTmqkVJ3j3SaLMLxZVi/y34tVsCwekDxIxkSPl8e1CJGAKEsIagDVp5i4cJRqubqeIq6Ldjj4XSQCnzPQV1eT6GTnw7oscI+lQcJbQtPC59R7NLuZAMiVhVLBWXInfJxGW6f5keflFQGX2ONVLOFKGmT1OVO5xhC4Vmv5FCGGkUpQGyWdJpE076xbz3EJCITKjIApZlzQlN+Qjwm/PEZH2PRzg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+474C47e7TuNGKdhDEqpRqwYs98btVg4YHvMoetApwE=;
- b=GqsnQ7ZLt3d2TzTspPgBAoRO4L19aiOmxxFq1ZLQNdhUhz6xpTDjpVVrcmEN6/Ms6UXc4klOGjz6VpLG4TOwmvrqhz7KaIF3M6zp/SDXaM3f5Ztii3Cmm7Wj8Tdu2Onxzwyypjjp5PH69QpA6g3Wr4FhEoH/rIhIu2K9FXUaKpiTtEfu1SNxpeMW+RZlV+y84je3b0BNFP9Q5NmgqObTyAVDRNWsALz5rxLnOVWxRQZT4u3VvHfZJefoPfYg7dZzXP3LuRYe+Lc4NifnVMGk0SLJBdHkm0/Ufc3gfpfvYdJgYYQcayP8+2eR5QMHhgQLPot1aSj2pwRTHjhby0SKdw==
+ bh=2d4P2rmN5yKyPy94hnKpeX0+h9MooSdNJAghy8ZCARI=;
+ b=COV9ZSl+SnuIlrEnR/urUSKQczwSrLACzIPtOHhqkI8Y807bc/p/Yiy3QwH8veKyaphtSe8AI/Ytdx0C1euY0bxd8DBIM6N/uCvxuvl/DNKQpBtOuBlH0yOwpf4SCh2JaKTGJVlBQudnDkdUF7fMsCjnzjONltNA72eFTI12YmzxK/aGfnmXzhcIrBdftJlhMcfU4Bw1JPxsJn57AjNh6TSbX3br/Eg6hQapK6Kl/50aEvG14NeTrYT6ga51eOq2FpvocZ2D1FcRO9vHV6GQlOs2PaCPsiKBINyUEFKqIxQIr0+TYdyeaNg2rxil8fKPU+q4dig6TccHatTp4jemcw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
- dkim=pass header.d=nokia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com; 
- s=selector1-nokia-onmicrosoft-com;
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+474C47e7TuNGKdhDEqpRqwYs98btVg4YHvMoetApwE=;
- b=v+jxMi7O2E47HQ/W3GsfBB026yOU5ZDwHif41mqlBnUCqDUZp6gnL2/QWAIjL/NXtxbG0iSGxtmQ2ypnYstsoRejTyp2HrWp8QAf9zSwB0FwtojKJHxvQgboWLtTUXyNzOHxf3XxYHFG9odGs8rRvqkQ/ftIIEiGvtSZPHD6nPM=
-Authentication-Results: ilbers.de; dkim=none (message not signed)
- header.d=none;ilbers.de; dmarc=none action=none header.from=nokia.com;
-Received: from HE1PR07MB4412.eurprd07.prod.outlook.com (2603:10a6:7:96::13) by
- HE1PR07MB3516.eurprd07.prod.outlook.com (2603:10a6:7:2b::11) with
- Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3239.9; Wed, 22 Jul 2020 14:01:40 +0000
-Received: from HE1PR07MB4412.eurprd07.prod.outlook.com
- ([fe80::7071:9f4d:b39a:823e]) by HE1PR07MB4412.eurprd07.prod.outlook.com
- ([fe80::7071:9f4d:b39a:823e%6]) with mapi id 15.20.3216.018; Wed, 22 Jul 2020
- 14:01:40 +0000
-From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Subject: [PATCH] mtd: spi-nor: intel-spi: Simulate WRDI command
-To: Tudor Ambarus <tudor.ambarus@microchip.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org
-Message-ID: <282e1305-fd08-e446-1a22-eb4dff78cfb4@nokia.com>
-Date: Wed, 22 Jul 2020 16:01:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ bh=2d4P2rmN5yKyPy94hnKpeX0+h9MooSdNJAghy8ZCARI=;
+ b=hjP8J8TVwTqnGxHwHm+1Haolp8BmNUNI75QWyIgFKVI4oZPPsbCAJw80ax+s4ZC3oXfIQAm7bXURu2gSxJbQY/gKF/aJf0BgVJjTT8iuKrUVhKCHb7iZhnamwNm7U5TR8zzqZYllAszdYZl6U1m8LGO7+EZINyB8SaZN6oTP6fU=
+Received: from BYAPR11MB2856.namprd11.prod.outlook.com (2603:10b6:a02:bd::11)
+ by BYAPR11MB3079.namprd11.prod.outlook.com (2603:10b6:a03:92::16)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.21; Wed, 22 Jul
+ 2020 14:28:30 +0000
+Received: from BYAPR11MB2856.namprd11.prod.outlook.com
+ ([fe80::7424:cb9d:3c63:5181]) by BYAPR11MB2856.namprd11.prod.outlook.com
+ ([fe80::7424:cb9d:3c63:5181%7]) with mapi id 15.20.3216.022; Wed, 22 Jul 2020
+ 14:28:30 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <alexander.sverdlin@nokia.com>, <vigneshr@ti.com>,
+ <linux-mtd@lists.infradead.org>, <mika.westerberg@linux.intel.com>
+Subject: Re: [PATCH] mtd: spi-nor: intel-spi: Simulate WRDI command
+Thread-Topic: [PATCH] mtd: spi-nor: intel-spi: Simulate WRDI command
+Thread-Index: AQHWYDReSXNx4qFwZkKE6j6AE/Ov3Q==
+Date: Wed, 22 Jul 2020 14:28:30 +0000
+Message-ID: <b5c17892-24ec-a690-96ca-d2238b8925d1@microchip.com>
+References: <282e1305-fd08-e446-1a22-eb4dff78cfb4@nokia.com>
+In-Reply-To: <282e1305-fd08-e446-1a22-eb4dff78cfb4@nokia.com>
+Accept-Language: en-US
 Content-Language: en-US
-X-ClientProxiedBy: HE1PR0501CA0026.eurprd05.prod.outlook.com
- (2603:10a6:3:1a::36) To HE1PR07MB4412.eurprd07.prod.outlook.com
- (2603:10a6:7:96::13)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ulegcpsvhp1.emea.nsn-net.net (131.228.32.167) by
- HE1PR0501CA0026.eurprd05.prod.outlook.com (2603:10a6:3:1a::36) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3216.21 via Frontend Transport; Wed, 22 Jul 2020 14:01:39 +0000
-X-Originating-IP: [131.228.32.167]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 7eb051ac-a919-4626-73ac-08d82e47c185
-X-MS-TrafficTypeDiagnostic: HE1PR07MB3516:
-X-Microsoft-Antispam-PRVS: <HE1PR07MB351622053591276DE4C66C8E88790@HE1PR07MB3516.eurprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jiLwFBYnFskZQGKhaDfz0dawisN2lcDOYEauDGCHTo3uGcVCBrAkT98sb7qOJkLgDioSRHEqEWb3ZqDcmyUigAz8XhHiQdCPjDtWw5SP6yvJAVEcL1NMzLaa3x3k6DjTaqjtu4J+6j3adZUYjA6eeJAWoZe8yxopyzJU4mixMl+d4jKTN2/i+X638IJhjuMREpM0d65YC8GDj8TRu8f4WOgNZW0rYtTUXR5BGi43OJae89v27ycxsfpSMB7+s6+t6z7Um10+5Lrt+xImCicO9Cnz0MUL2FI9QxHVmtuQMSYB8C2GsCFkRGyosIzjyBCrZ9kQ9I9bAapC0Fo1s0QpG0rd2XGjjNAdoZv/u1ZJyrQU9jhu0nx58NcPngKoMrff
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:HE1PR07MB4412.eurprd07.prod.outlook.com; PTR:; CAT:NONE;
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+authentication-results: nokia.com; dkim=none (message not signed)
+ header.d=none;nokia.com; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [79.115.63.183]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: edad1c83-365e-43d7-9676-08d82e4b819c
+x-ms-traffictypediagnostic: BYAPR11MB3079:
+x-microsoft-antispam-prvs: <BYAPR11MB3079A7D0004E7E8CAE35A298F0790@BYAPR11MB3079.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: v7OzNVjnWEq5OQ3gEsna2rOYPCOjoyCl+B7AhGeVSNdH9gOr8GjzAx5qPQBKfrJbDEeo8Dc9gqhGunIOmzPZkCSL4Kb9fw+suXn0cPHgzFfDi3ZERtwO1EKgqvEUExYB+csHEMY4YW62WPcH+pqHugp3VnV/xulAxd4CpBIl6kKLKUY3Q//d/XeuVdM1NztfDfqV6z4D9vKg18erXI8spKoPSZ094Y4lK+vHEt661obFMF3jbJbvMUMoZyj6eQyKmJJH2+Zypf1FhymcfpckOLOMm5P5mBigZs2kfLpBrmAxU/8emM8eMSXP1YBBZJRIbmVShyyyWzYz0spyGpPA70LC0lkW5HcXyzam7h2KeMXg1aoumAtA9RsXUwrzixZY
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:BYAPR11MB2856.namprd11.prod.outlook.com; PTR:; CAT:NONE;
  SFTY:;
- SFS:(4636009)(346002)(136003)(376002)(39860400002)(366004)(396003)(6506007)(6486002)(956004)(2616005)(5660300002)(110136005)(52116002)(8936002)(8676002)(4326008)(316002)(6512007)(31686004)(6666004)(36756003)(86362001)(66946007)(186003)(66556008)(66476007)(16526019)(44832011)(2906002)(478600001)(26005)(31696002)(43740500002);
- DIR:OUT; SFP:1102; 
-X-MS-Exchange-AntiSpam-MessageData: 1HKuUfXie1b+I+pGbm1arIrqJ38OobUcV3fYyzYiH+uFFBYZgkYfSFuZudZcbSkRW1P0Vp+5RwJNrRTEH8pBU3hQ/mTACnq4ev1vvA2BjU7mvkkgin9NI+qpqOFwojPGnxaXxjI3KU1Jt88HCKVowh/SPxq11VoRnR6dpXbdERyFFAO5aI7DaaPvVVOY6X6QydsAU4OM1E8pRifd99Y0HvjBYFZzkX0bJkeQxQV1fiqN++K5GYIZTTEunal6vzsHwXBMYFGW6/7Pg6DwQr+Z0zpk0XlMGiBQPst8CWssiJHR0CIABcXZOV/tKufccNErMOqj5MZw++E3Bue/GIeolY/6tlqHILOP4tafwrh6ZVNfG6FvD+43Etdgn7Fy40DctAW6+Lc1CwPkpMqTC9jVA01SLQasfpypo7wEAmrAFIx9nM1jGUPMJ56dkDhvrCSfAt+m9HwdxibkYw3nPkb6XX2DJ8xhZvgbvCZnc5yuyX1QFSA4WBKLGTRu6l8VPvfpW5BOhj8WbNZTLLIRlRXubF20Y0UyaJSqYzm+zHRlC4jjC4LEJRJQnLn/exgW7p3Q6iL5wnIn52EwGiWIiYAs0G6ZqynlOcP8pwKMQv5AsH8EzgqPcQJ0HuWgLejbYDHbG9jxt8TwyS0/ezfcvIwVvA==
-X-OriginatorOrg: nokia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7eb051ac-a919-4626-73ac-08d82e47c185
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR07MB4412.eurprd07.prod.outlook.com
+ SFS:(346002)(39860400002)(396003)(376002)(136003)(366004)(31696002)(76116006)(91956017)(36756003)(5660300002)(2616005)(8676002)(71200400001)(86362001)(186003)(2906002)(110136005)(54906003)(4326008)(53546011)(478600001)(296002)(316002)(6512007)(31686004)(66446008)(64756008)(66556008)(8936002)(26005)(66946007)(6486002)(66476007)(6506007)(43740500002);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata: sOdzEW8iFpCZo1isjfFDJRWiVfYvJyXO5W3hOSwNWzB2i/Tlvj2K7Xm9aBOOKJoSWqA+O6zua+Jdx6zZDJwb3IXyLVC3iAYEEYpld6U0KfzE9XuB0sxOvwKqRkFSo6HKytv6tnPVNQ8KvvaUJiOulZKN5CTqAllntvqcGZVBBkM15DruZdC/awqgKaxObFD6/RQ0QOTSyr7f5kiyd/dgQjYD2Ycww2tLzhc1OPWPPoZofrsd1G7zm53OL5MX443pNQ5wXNKD0mZjwk77xTrUZagWU3zOqaG+I9sqweP4bHVyz2l7mW6jHk131oVFDoSnlerVMHWGkSVM/3wsymzYPhsB9yc8D4Pm05JeSkpRzeNjWZTkPBtEdFQZBQzAAIWWcwAl1vQ7133t1Nugb8SgAZQqZko35gxBbTj4unCbx3HTHLytuwlGybHLoKBdXMbXUr15W0PdHnJ0YPMIMOU6Oibi6SxjN8BzSevJBRyDOMw=
+x-ms-exchange-transport-forked: True
+Content-ID: <384A485FECB9F24993F0605FDF80C572@namprd11.prod.outlook.com>
+MIME-Version: 1.0
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jul 2020 14:01:39.8938 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dmtmXQ49sdgcPe6TVTKhaUxCqRuB3wh0wgYrVPBNSA90PYsdA7xO+QTfgF04/8CPJooC3OQb0ya0Wgn27T2Zqw+yxRnikJdJY4+klBY6c1E=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR07MB3516
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2856.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: edad1c83-365e-43d7-9676-08d82e4b819c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jul 2020 14:28:30.3683 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: GDlB8c62XkaLVolaMLb3QKowBKpNHqXpFw4R7z+WB8BIIFC6PK6xHrDFdtnYwu5VqB2hvsbuXmJEF8iHKFhpTt/XvymnR+MZgejrLoh2MO4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3079
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200722_100149_293891_1452D944 
-X-CRM114-Status: GOOD (  12.36  )
+X-CRM114-CacheID: sfid-20200722_102834_766209_7E4AEA08 
+X-CRM114-Status: GOOD (  20.86  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -124,52 +156,63 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Baurzhan Ismagulov <ibr@ilbers.de>, linux-kernel@vger.kernel.org
+Cc: ibr@ilbers.de, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
++ Mika
 
-After spi_nor_write_disable() return code checks were introduced in the
-spi-nor front end intel-spi backend stopped to work because WRDI was never
-supported and always failed.
+Hi, Mika,
 
-Just pretend it was sucessful and ignore the command itself. HW sequencer
-shall do the right thing automatically, while with SW sequencer we cannot
-do it anyway, because the only tool we had was preopcode and it makes no
-sense for WRDI.
+Would you please review the patch from below?
 
-Cc: stable@vger.kernel.org
-Fixes: bce679e5ae3a ("mtd: spi-nor: Check for errors after each Register Operation")
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
----
- drivers/mtd/spi-nor/controllers/intel-spi.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Thanks!
 
-diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
-index 61d2a0a..134b356 100644
---- a/drivers/mtd/spi-nor/controllers/intel-spi.c
-+++ b/drivers/mtd/spi-nor/controllers/intel-spi.c
-@@ -612,6 +612,14 @@ static int intel_spi_write_reg(struct spi_nor *nor, u8 opcode, const u8 *buf,
- 		return 0;
- 	}
- 
-+	/*
-+	 * We hope that HW sequencer will do the right thing automatically and
-+	 * with the SW seuencer we cannot use preopcode any way, so just ignore
-+	 * write disable operation and pretend it was completed successfully.
-+	 */
-+	if (opcode == SPINOR_OP_WRDI)
-+		return 0;
-+
- 	writel(0, ispi->base + FADDR);
- 
- 	/* Write the value beforehand */
--- 
-2.10.2
-
+On 7/22/20 5:01 PM, Alexander Sverdlin wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> 
+> From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+> 
+> After spi_nor_write_disable() return code checks were introduced in the
+> spi-nor front end intel-spi backend stopped to work because WRDI was never
+> supported and always failed.
+> 
+> Just pretend it was sucessful and ignore the command itself. HW sequencer
+> shall do the right thing automatically, while with SW sequencer we cannot
+> do it anyway, because the only tool we had was preopcode and it makes no
+> sense for WRDI.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: bce679e5ae3a ("mtd: spi-nor: Check for errors after each Register Operation")
+> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+> ---
+>  drivers/mtd/spi-nor/controllers/intel-spi.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
+> index 61d2a0a..134b356 100644
+> --- a/drivers/mtd/spi-nor/controllers/intel-spi.c
+> +++ b/drivers/mtd/spi-nor/controllers/intel-spi.c
+> @@ -612,6 +612,14 @@ static int intel_spi_write_reg(struct spi_nor *nor, u8 opcode, const u8 *buf,
+>                 return 0;
+>         }
+> 
+> +       /*
+> +        * We hope that HW sequencer will do the right thing automatically and
+> +        * with the SW seuencer we cannot use preopcode any way, so just ignore
+> +        * write disable operation and pretend it was completed successfully.
+> +        */
+> +       if (opcode == SPINOR_OP_WRDI)
+> +               return 0;
+> +
+>         writel(0, ispi->base + FADDR);
+> 
+>         /* Write the value beforehand */
+> --
+> 2.10.2
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
