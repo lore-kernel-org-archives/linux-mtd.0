@@ -1,84 +1,68 @@
-Return-Path: <SRS0=j43f=BA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=7+w2=BB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07003C433E6
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Jul 2020 17:03:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27CCEC43446
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Jul 2020 06:27:05 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C5EF42073A
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Jul 2020 17:03:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DB050207DD
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Jul 2020 06:27:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="2E7MwDkD";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pensando.io header.i=@pensando.io header.b="4uWpzaBg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C5EF42073A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pensando.io
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Cs6vMb4Y";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="qcA0OhQS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB050207DD
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=CQeu+8Qrw08kMd6hDmME/8urJQR7cgyUjRqGhSVRfLk=; b=2E7MwDkDmxpZZfHp+guOQDxyl
-	8tgXUb1QQXr8ijo01LHnJA55dBrq3zc8T6fZGPInBQrTkG7+K45Bxr5Jy4LuiZ0wryDvXLpnjqd8x
-	N7ySgLi12XC6h40gPA70TiyHGkr/39KwySOP/wpWiYKWqd+mqiywqmOJZC5xfY+00Xzb51jIA8vG6
-	yciwI0bFh7KVkvUk7fWaRXt/29PdkVPyRImMuaqoQdekEAp5EmaHv7Cft3EHx/ZalGzE4XOCcTpk0
-	Qf19J9JKHMU4RE8G+dhuwnrZNdCNJl6tvZgZp8O0QfUiIbFegH/6LfrI6aGQtsPtXmqjCDF/B6Sz3
-	NqxHudWfA==;
+	 bh=Mlv2pTBLJ5tETHfyISIRqxalOsbd1U1vfI4MAGHbiRI=; b=Cs6vMb4YvhOWZAzPaFzSNbW5W
+	cSfixvs6lasrGFZEau+f7n4jy+r4gcrdDNzxzz4LHZVvejbyw3WMcIpSpHn3CEp/vVPkdgx50Mdwi
+	mEMjDXPHq7wMmaPkghkTWuiJJt+2glK2YOKL9u4S41J7KmmTtjtrbNH+2fLO+JnniubrScMrbuoEI
+	rcBivGrDNudtpLHiWyQwqlCDntxMpuNo8M4g2YlBq0EtgY72YzPTkPbwE51J9pkuECZryWQh8yi3y
+	hM4yoaEr3JkMTfYzoBqU4aZqXEeJE5i2b8RuwbF+GIZDL/yqHKGJ+8xVqr9mKAqyrEkHhZlH1ssmt
+	h8zQ11cHg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jxvel-00076v-HQ; Tue, 21 Jul 2020 17:02:19 +0000
-Received: from mail-wm1-x334.google.com ([2a00:1450:4864:20::334])
+	id 1jy8Cz-0000sx-0a; Wed, 22 Jul 2020 06:26:29 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jxvei-00076Y-FS
- for linux-mtd@lists.infradead.org; Tue, 21 Jul 2020 17:02:17 +0000
-Received: by mail-wm1-x334.google.com with SMTP id 17so3612516wmo.1
- for <linux-mtd@lists.infradead.org>; Tue, 21 Jul 2020 10:02:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pensando.io; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=T//OL5MjSVPVY19h3G1pYDXrSrNyGC9XieuAk8qRvoE=;
- b=4uWpzaBgrn8VvSP1hSN6d4OG8ArUrFpKjx3Src6tnpsXYUnicCT4ClEBQGWbvq4OWd
- x6UE1JSV3H/Ultyx7E2UGzU4FK9EJRuAYXkqXn7cnH76oaCFmaYoP2A2o4Zx1wKuAqoc
- +50DTNyYbFTh7Usty4J3rgmqU/6PtKC+J/5zJ6vsn+hwhC35AHn/7w8P3VEUqktcfQJa
- SeeMfow1DAnUDaW8VUVjUhulj8CP1nkPEDWOKMttqqy1s8ReiikVrauCGMemRiU/DFFF
- 2wZIziBzagCZ6hMT+pbE/jnW9A/HgcB9cwqA5oNtKYIR8lg+s7Xa/8+uhEnsDEoPW9DA
- 3dvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=T//OL5MjSVPVY19h3G1pYDXrSrNyGC9XieuAk8qRvoE=;
- b=WqEfWas1LoVSO4EdMhEojGU+GleZcDGJS4B804bjR4/XBA38BxNrreZiYDaqpDOFlU
- eTBnQyB1qPUTtOUCAI7SSlfoRokaMlZbrb1egjFvqdC87f+3U3vRovd4G6mS2KMaP4jC
- xoAcCRuS5GnHbF9BBsTkEPmCEO3j+nUsg619eaCAEizZMfL+YjmJXnZ3RBt2+rwclilr
- P5Ns7SA0IyDfT783/Cq41FZK9aPflkSAWw04enVT+gwhIJw8wQ9G1fcRKCpsR8ULelju
- lgsXFvK+/SsGO59ekkw72+Jg2De/fqCPHDUpU2UZ68uQfxr65hdupyVFQAlAtXzcXfjG
- ns6A==
-X-Gm-Message-State: AOAM533FvnT0IQ5GCVeStDVvlULDFT1ehMAG72gDZYlMg/z0Ngr0giVz
- ZtxIQujZcfYjUphVz5rNJJzm9yAaWc2pXh3HWV6slA==
-X-Google-Smtp-Source: ABdhPJyO2OhwPQSpAB7IYZcnXlxmL5q3KCdQTG8uYl6ijSrnOwmwPQ0HEpdfapQ6GvbOCMm/2bcY8Ao6rvbpb/FJr0U=
-X-Received: by 2002:a1c:2dc6:: with SMTP id t189mr5154106wmt.26.1595350933227; 
- Tue, 21 Jul 2020 10:02:13 -0700 (PDT)
+ id 1jy8Cw-0000rs-Az
+ for linux-mtd@merlin.infradead.org; Wed, 22 Jul 2020 06:26:26 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+ References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+ Content-Type:Content-ID:Content-Description;
+ bh=23lPPnUQ/wtgDdZgYVTv/WJAfGlLRFk69cLmomK1pnE=; b=qcA0OhQS+tvPJpXNLSmTGDPyc5
+ keU4ouYq4cSDEogGD8k4bUBKfBabDc6ohHUdaiZ9l05VOph7dpcwQ+awDYWN9Vi/VYLPfYxRwy37Y
+ bSj9zsc72LYO58T3vbwX9cZ+fZVr6Z8YbU35YOqOtpWbLWYMh41yBRu5MOFCUWH1N6dKKBZWoC/Mh
+ kQKisQ2fhXZReZ9HZpoLQ8LfzBSGhVT5FIYBsk51xdkI4WHXfTJgrusohPbWknqb2l4c9+pt2mdXM
+ qlmorndIPcM9UgyeGf45vU9ZbwucMrFP6dnzXlqDkUKqL9TGUiISg2JVHpfmda3Kga9JikUFtspcB
+ AOF6Zn2w==;
+Received: from [2001:4bb8:18c:2acc:e75:d48f:65ef:e944] (helo=localhost)
+ by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jy8Cr-0004mF-Ol; Wed, 22 Jul 2020 06:26:25 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 04/14] bdi: initialize ->ra_pages in bdi_init
+Date: Wed, 22 Jul 2020 08:25:42 +0200
+Message-Id: <20200722062552.212200-5-hch@lst.de>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200722062552.212200-1-hch@lst.de>
+References: <20200722062552.212200-1-hch@lst.de>
 MIME-Version: 1.0
-References: <CA+nMikGSSc5NA80Z89fz4GCh+6Ux2Pr6UyjB5n+qoBkiOqAh=Q@mail.gmail.com>
- <1ae4f44a-cbd2-b39e-68f7-3d0375c453bf@microchip.com>
-In-Reply-To: <1ae4f44a-cbd2-b39e-68f7-3d0375c453bf@microchip.com>
-From: David Clear <dac2@pensando.io>
-Date: Tue, 21 Jul 2020 10:02:02 -0700
-Message-ID: <CA+nMikFjaWtzHnxALYvyHfqkpXnHA-i3K86hPEwFQ+-gOm2O0g@mail.gmail.com>
-Subject: Re: [BUG]: spi-nor: spi_nor_init() fails when SR locked
-To: Tudor.Ambarus@microchip.com
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200721_130216_789502_F2D75142 
-X-CRM114-Status: UNSURE (   9.43  )
-X-CRM114-Notice: Please train this message.
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by
+ casper.infradead.org. See http://www.infradead.org/rpr.html
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,33 +74,175 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: michael@walle.cc, linux-mtd@lists.infradead.org
+Cc: linux-raid@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+ Minchan Kim <minchan@kernel.org>, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+ Song Liu <song@kernel.org>, dm-devel@redhat.com, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
+ drbd-dev@lists.linbit.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jul 21, 2020 at 2:37 AM <Tudor.Ambarus@microchip.com> wrote:
-> We tackled the unlock_all stuff in
-> the past, Michael did a patch, I'll check how that fits here.
+Set up a readahead size by default, as very few users have a good
+reason to change it.
 
-Thanks Tudor.  The new Macronix mx662ug45g flash in my patch also
-supports similar block protections, with WP#, but it looks like the driver
-doesn't support BP in any of the Macronix flashes.
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ block/blk-core.c      | 1 -
+ drivers/mtd/mtdcore.c | 1 +
+ fs/9p/vfs_super.c     | 4 ++--
+ fs/afs/super.c        | 1 -
+ fs/btrfs/disk-io.c    | 1 -
+ fs/fuse/inode.c       | 1 -
+ fs/nfs/super.c        | 9 +--------
+ fs/ubifs/super.c      | 1 +
+ fs/vboxsf/super.c     | 1 +
+ mm/backing-dev.c      | 1 +
+ 10 files changed, 7 insertions(+), 14 deletions(-)
 
-The functionality is similar to Micron's (power-of-2 sectors, top/bottom,
-WP# lock), with two differences:
-1. The BP bits in the SR are in different positions
-2. The Top/Bottom bit is OTP, and is in the Configuration Register
+diff --git a/block/blk-core.c b/block/blk-core.c
+index 93104c7470e8ac..ea1665de7a2079 100644
+--- a/block/blk-core.c
++++ b/block/blk-core.c
+@@ -538,7 +538,6 @@ struct request_queue *blk_alloc_queue(int node_id)
+ 	if (!q->stats)
+ 		goto fail_stats;
+ 
+-	q->backing_dev_info->ra_pages = VM_READAHEAD_PAGES;
+ 	q->backing_dev_info->capabilities = BDI_CAP_CGROUP_WRITEBACK;
+ 	q->node = node_id;
+ 
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 7d930569a7dfb7..01b3fe888d885b 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -2196,6 +2196,7 @@ static struct backing_dev_info * __init mtd_bdi_init(char *name)
+ 	bdi = bdi_alloc(NUMA_NO_NODE);
+ 	if (!bdi)
+ 		return ERR_PTR(-ENOMEM);
++	bdi->ra_pages = 0;
+ 
+ 	/*
+ 	 * We put '-0' suffix to the name to get the same name format as we
+diff --git a/fs/9p/vfs_super.c b/fs/9p/vfs_super.c
+index 74df32be4c6a52..a338eb979cadf9 100644
+--- a/fs/9p/vfs_super.c
++++ b/fs/9p/vfs_super.c
+@@ -80,8 +80,8 @@ v9fs_fill_super(struct super_block *sb, struct v9fs_session_info *v9ses,
+ 	if (ret)
+ 		return ret;
+ 
+-	if (v9ses->cache)
+-		sb->s_bdi->ra_pages = VM_READAHEAD_PAGES;
++	if (!v9ses->cache)
++		sb->s_bdi->ra_pages = 0;
+ 
+ 	sb->s_flags |= SB_ACTIVE | SB_DIRSYNC;
+ 	if (!v9ses->cache)
+diff --git a/fs/afs/super.c b/fs/afs/super.c
+index b552357b1d1379..3a40ee752c1e3f 100644
+--- a/fs/afs/super.c
++++ b/fs/afs/super.c
+@@ -456,7 +456,6 @@ static int afs_fill_super(struct super_block *sb, struct afs_fs_context *ctx)
+ 	ret = super_setup_bdi(sb);
+ 	if (ret)
+ 		return ret;
+-	sb->s_bdi->ra_pages	= VM_READAHEAD_PAGES;
+ 
+ 	/* allocate the root inode and dentry */
+ 	if (as->dyn_root) {
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index ad157b55d7f5f0..f92c45fe019c48 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3033,7 +3033,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 	}
+ 
+ 	sb->s_bdi->capabilities |= BDI_CAP_CGROUP_WRITEBACK;
+-	sb->s_bdi->ra_pages = VM_READAHEAD_PAGES;
+ 	sb->s_bdi->ra_pages *= btrfs_super_num_devices(disk_super);
+ 	sb->s_bdi->ra_pages = max(sb->s_bdi->ra_pages, SZ_4M / PAGE_SIZE);
+ 
+diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
+index bba747520e9b08..17b00670fb539e 100644
+--- a/fs/fuse/inode.c
++++ b/fs/fuse/inode.c
+@@ -1049,7 +1049,6 @@ static int fuse_bdi_init(struct fuse_conn *fc, struct super_block *sb)
+ 	if (err)
+ 		return err;
+ 
+-	sb->s_bdi->ra_pages = VM_READAHEAD_PAGES;
+ 	/* fuse does it's own writeback accounting */
+ 	sb->s_bdi->capabilities = BDI_CAP_NO_ACCT_WB | BDI_CAP_STRICTLIMIT;
+ 
+diff --git a/fs/nfs/super.c b/fs/nfs/super.c
+index 7a70287f21a2c1..f943e37853fa25 100644
+--- a/fs/nfs/super.c
++++ b/fs/nfs/super.c
+@@ -1200,13 +1200,6 @@ static void nfs_get_cache_cookie(struct super_block *sb,
+ }
+ #endif
+ 
+-static void nfs_set_readahead(struct backing_dev_info *bdi,
+-			      unsigned long iomax_pages)
+-{
+-	bdi->ra_pages = VM_READAHEAD_PAGES;
+-	bdi->io_pages = iomax_pages;
+-}
+-
+ int nfs_get_tree_common(struct fs_context *fc)
+ {
+ 	struct nfs_fs_context *ctx = nfs_fc2context(fc);
+@@ -1251,7 +1244,7 @@ int nfs_get_tree_common(struct fs_context *fc)
+ 					     MINOR(server->s_dev));
+ 		if (error)
+ 			goto error_splat_super;
+-		nfs_set_readahead(s->s_bdi, server->rpages);
++		s->s_bdi->io_pages = server->rpages;
+ 		server->super = s;
+ 	}
+ 
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 7fc2f3f07c16ed..ee7692e7a35371 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -2159,6 +2159,7 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
+ 				   c->vi.vol_id);
+ 	if (err)
+ 		goto out_close;
++	sb->s_bdi->ra_pages = 0; /* ubifs does its own readahead */
+ 
+ 	sb->s_fs_info = c;
+ 	sb->s_magic = UBIFS_SUPER_MAGIC;
+diff --git a/fs/vboxsf/super.c b/fs/vboxsf/super.c
+index 8fe03b4a0d2b03..6574ae5a97c2c8 100644
+--- a/fs/vboxsf/super.c
++++ b/fs/vboxsf/super.c
+@@ -167,6 +167,7 @@ static int vboxsf_fill_super(struct super_block *sb, struct fs_context *fc)
+ 	err = super_setup_bdi_name(sb, "vboxsf-%d", sbi->bdi_id);
+ 	if (err)
+ 		goto fail_free;
++	sb->s_bdi->ra_pages = 0;
+ 
+ 	/* Turn source into a shfl_string and map the folder */
+ 	size = strlen(fc->source) + 1;
+diff --git a/mm/backing-dev.c b/mm/backing-dev.c
+index 8e8b00627bb2d8..3e441e0ff1bc88 100644
+--- a/mm/backing-dev.c
++++ b/mm/backing-dev.c
+@@ -746,6 +746,7 @@ struct backing_dev_info *bdi_alloc(int node_id)
+ 		kfree(bdi);
+ 		return NULL;
+ 	}
++	bdi->ra_pages = VM_READAHEAD_PAGES;
+ 	return bdi;
+ }
+ EXPORT_SYMBOL(bdi_alloc);
+-- 
+2.27.0
 
-As Macronix flashes don't declare BP support it looks like they won't suffer
-this specific issue (I'll verify in the next few days), but I'd like to
-evolve the driver to support BP on these devices.
-
-Thanks for the patch pointer.  I'll take a look at it.
-
-Regards,
-David.
 
 ______________________________________________________
 Linux MTD discussion mailing list
