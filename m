@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6ACC2C4346E
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ABF1CC4346A
 	for <linux-mtd@archiver.kernel.org>; Wed, 22 Jul 2020 06:27:34 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 348A120872
+	by mail.kernel.org (Postfix) with ESMTPS id 79FDA20872
 	for <linux-mtd@archiver.kernel.org>; Wed, 22 Jul 2020 06:27:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="D6m41SWH";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ANtpF1jf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 348A120872
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lRBq3KS1";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="JaL+Q75+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 79FDA20872
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,37 +26,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=VUI7U0r7EchLB+lrx1IW2O82L3F2X/+FIpqNfU45iu4=; b=D6m41SWHWndqFi5gD+FPcxK/f
-	ltNJucNMLyMPquMHkdF5/Z4CF1qtzGYoT3vR9wHF3XJcmCBYV3WNqradBQgVmx+ypIuRKytMKrV+Q
-	Z3tEeP3xPEh25D9EdKDNQVDwhM9P3vZzRG/+3uCaC1p+nWCaBQaG9YaOhnCOByvA/c/vXDe5cHl+u
-	upTqDH+TEQ0h7ErLyjCY4ecRwVPRLGIj9kxn0pmatoRvm1DOKeWzmuCVpIG9Yw8aK4+eKBRQMslIV
-	IEESsa6VnqfiBClAE+2AYYgiOa+kfJftZPqnOTsTvpvhoX5G2SbxWoY30JF/g17jB8TzUvJFAbefu
-	nXOgQNhZA==;
+	 bh=tfbymXFijGYCPdBdo4eafdHRQN2Ms9SL7smkbJHP6jg=; b=lRBq3KS1/fp63zyHDHmSATnuH
+	CnwsXnlps06hHICfP0W22qrlDzPtXFwpLb0cxze5RjCtrgmfN4LQjuecsK5pApiFti86IKfLS08GP
+	1Ma70ap+hpzjZgn37NXva0PO+GhIKO/OqVttTXbbtrVxO2bvui6ktavL7jsqG56VMhXlGFrd6Q/st
+	3A47kDhCX3RaH6/Tm3figo7q4IMjWT0GX39vwqC3hjsp5q86oisTEqhsO2UFko4v7z8jp2q2rdNSs
+	UsZzovRD4bvXgn2T08mPWl8WYEnoMMsZn2jZ7Rm4CrWLCXLAEE7jatiRo2pjYiIWOgpT9nzHMyIcW
+	UVk9kDsjw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jy8D2-0000uC-3l; Wed, 22 Jul 2020 06:26:32 +0000
+	id 1jy8DR-00013W-Qu; Wed, 22 Jul 2020 06:26:57 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jy8D0-0000tO-8B
- for linux-mtd@merlin.infradead.org; Wed, 22 Jul 2020 06:26:30 +0000
+ id 1jy8DJ-0000zz-DM
+ for linux-mtd@merlin.infradead.org; Wed, 22 Jul 2020 06:26:49 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=va/h+wWyCoJg1xNOoHbk7lvmV/IMHTiU8wUk5cwnCTg=; b=ANtpF1jf8sE5Fd0TXOfriC9j/U
- +LVASm0MyiGuAlIqyjVQGPtp8ufue/bxE9yn64nUj7TLYpoAnKVw1Tyt/IiCSheKIVmsF2z2tRmEl
- mHxOeuwOHpOIofh2hPPLi3yGn4qYpqrIVIwjAEOh9aAw4CKgh8V5UNeGsqfQtKrSIlnbR9CfYLDlS
- 63LMLhhAST8a3NviY7GxTMVAgEFy+4jHavyF/+4FlAddcNj5+au/ubUclZrKdayPVsqlQAk8ZzKbk
- nQML/k10or8YASvZo0Ao8BQLx9Kw0zJdHRVjf9Qje75iKag+/Fkl68wK2IQ2N5YRMFC5hwLp7Ypg7
- oAFsEPMQ==;
+ bh=KPpUWSz4sCeEJkcRUh8fArdJ/PEmchWYkBD3toLmmh4=; b=JaL+Q75+Jgtgt3IrqBlYb0khfV
+ VvKarHKmGRCT0xJcvsM3hYDrUFdzkAnMtLd/wuZFyzE7HOeFSmsypo+irFzCFAbCM/GfD52vos8rQ
+ olNCVxhZ3BYT1/W0OkGoXTg+FoVlWUD7gFiJZERFkK0movDxoNCU5Gw/EuPAyPoVPUNba1/1q14iQ
+ KQmFI6Eb6K+yaliYtekJlw+m/u7xPRKzkoSQTi9SDK5gQLkXc8U9Togw61eaZk9d/39SIRSkkPVPG
+ RV+VAZlNIIq1AIwflBXHLpoltEkLlNYfnIVCpkncXj9D2tBAOdqwTcKQuNtBfvpfXadpyxkZnN8pD
+ 5DO5LlJA==;
 Received: from [2001:4bb8:18c:2acc:e75:d48f:65ef:e944] (helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jy8Cw-0004mm-C7; Wed, 22 Jul 2020 06:26:29 +0000
+ id 1jy8DH-0004qz-Hc; Wed, 22 Jul 2020 06:26:48 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 05/14] md: update the optimal I/O size on reshape
-Date: Wed, 22 Jul 2020 08:25:43 +0200
-Message-Id: <20200722062552.212200-6-hch@lst.de>
+Subject: [PATCH 09/14] bdi: remove BDI_CAP_CGROUP_WRITEBACK
+Date: Wed, 22 Jul 2020 08:25:47 +0200
+Message-Id: <20200722062552.212200-10-hch@lst.de>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200722062552.212200-1-hch@lst.de>
 References: <20200722062552.212200-1-hch@lst.de>
@@ -85,107 +85,75 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The raid5 and raid10 drivers currently update the read-ahead size,
-but not the optimal I/O size on reshape.  To prepare for deriving the
-read-ahead size from the optimal I/O size make sure it is updated
-as well.
+Just checking SB_I_CGROUPWB for cgroup writeback support is enough.
+Either the file system allocates its own bdi (e.g. btrfs), in which case
+it is know to support cgroup writeback, or the bdi comes from the block
+layer, which always supports cgroup writeback.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/md/raid10.c | 22 ++++++++++++++--------
- drivers/md/raid5.c  | 10 ++++++++--
- 2 files changed, 22 insertions(+), 10 deletions(-)
+ block/blk-core.c            | 1 -
+ fs/btrfs/disk-io.c          | 1 -
+ include/linux/backing-dev.h | 8 +++-----
+ 3 files changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
-index b1d0c9d4ef7757..9f88ff9bdee437 100644
---- a/drivers/md/raid10.c
-+++ b/drivers/md/raid10.c
-@@ -3695,10 +3695,20 @@ static struct r10conf *setup_conf(struct mddev *mddev)
- 	return ERR_PTR(err);
- }
+diff --git a/block/blk-core.c b/block/blk-core.c
+index ea1665de7a2079..68db7e745b49dd 100644
+--- a/block/blk-core.c
++++ b/block/blk-core.c
+@@ -538,7 +538,6 @@ struct request_queue *blk_alloc_queue(int node_id)
+ 	if (!q->stats)
+ 		goto fail_stats;
  
-+static void raid10_set_io_opt(struct r10conf *conf)
-+{
-+	int raid_disks = conf->geo.raid_disks;
-+
-+	if (!(conf->geo.raid_disks % conf->geo.near_copies))
-+		raid_disks /= conf->geo.near_copies;
-+	blk_queue_io_opt(conf->mddev->queue, (conf->mddev->chunk_sectors << 9) *
-+			 raid_disks);
-+}
-+
- static int raid10_run(struct mddev *mddev)
- {
- 	struct r10conf *conf;
--	int i, disk_idx, chunk_size;
-+	int i, disk_idx;
- 	struct raid10_info *disk;
- 	struct md_rdev *rdev;
- 	sector_t size;
-@@ -3734,18 +3744,13 @@ static int raid10_run(struct mddev *mddev)
- 	mddev->thread = conf->thread;
- 	conf->thread = NULL;
+-	q->backing_dev_info->capabilities = BDI_CAP_CGROUP_WRITEBACK;
+ 	q->node = node_id;
  
--	chunk_size = mddev->chunk_sectors << 9;
- 	if (mddev->queue) {
- 		blk_queue_max_discard_sectors(mddev->queue,
- 					      mddev->chunk_sectors);
- 		blk_queue_max_write_same_sectors(mddev->queue, 0);
- 		blk_queue_max_write_zeroes_sectors(mddev->queue, 0);
--		blk_queue_io_min(mddev->queue, chunk_size);
--		if (conf->geo.raid_disks % conf->geo.near_copies)
--			blk_queue_io_opt(mddev->queue, chunk_size * conf->geo.raid_disks);
--		else
--			blk_queue_io_opt(mddev->queue, chunk_size *
--					 (conf->geo.raid_disks / conf->geo.near_copies));
-+		blk_queue_io_min(mddev->queue, mddev->chunk_sectors << 9);
-+		raid10_set_io_opt(conf);
+ 	timer_setup(&q->backing_dev_info->laptop_mode_wb_timer,
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index f92c45fe019c48..4b5a8640329e4c 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3032,7 +3032,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 		goto fail_sb_buffer;
  	}
  
- 	rdev_for_each(rdev, mddev) {
-@@ -4719,6 +4724,7 @@ static void end_reshape(struct r10conf *conf)
- 		stripe /= conf->geo.near_copies;
- 		if (conf->mddev->queue->backing_dev_info->ra_pages < 2 * stripe)
- 			conf->mddev->queue->backing_dev_info->ra_pages = 2 * stripe;
-+		raid10_set_io_opt(conf);
- 	}
- 	conf->fullsync = 0;
- }
-diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
-index d7780b1dd0c528..68e41ce3ca75cc 100644
---- a/drivers/md/raid5.c
-+++ b/drivers/md/raid5.c
-@@ -7123,6 +7123,12 @@ static int only_parity(int raid_disk, int algo, int raid_disks, int max_degraded
- 	return 0;
+-	sb->s_bdi->capabilities |= BDI_CAP_CGROUP_WRITEBACK;
+ 	sb->s_bdi->ra_pages *= btrfs_super_num_devices(disk_super);
+ 	sb->s_bdi->ra_pages = max(sb->s_bdi->ra_pages, SZ_4M / PAGE_SIZE);
+ 
+diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
+index 0b06b2d26c9aa3..52583b6f2ea05d 100644
+--- a/include/linux/backing-dev.h
++++ b/include/linux/backing-dev.h
+@@ -123,7 +123,6 @@ int bdi_set_max_ratio(struct backing_dev_info *bdi, unsigned int max_ratio);
+  * BDI_CAP_NO_ACCT_WB:     Don't automatically account writeback pages
+  * BDI_CAP_STRICTLIMIT:    Keep number of dirty pages below bdi threshold.
+  *
+- * BDI_CAP_CGROUP_WRITEBACK: Supports cgroup-aware writeback.
+  * BDI_CAP_SYNCHRONOUS_IO: Device is so fast that asynchronous IO would be
+  *			   inefficient.
+  */
+@@ -233,9 +232,9 @@ int inode_congested(struct inode *inode, int cong_bits);
+  * inode_cgwb_enabled - test whether cgroup writeback is enabled on an inode
+  * @inode: inode of interest
+  *
+- * cgroup writeback requires support from both the bdi and filesystem.
+- * Also, both memcg and iocg have to be on the default hierarchy.  Test
+- * whether all conditions are met.
++ * Cgroup writeback requires support from the filesystem.  Also, both memcg and
++ * iocg have to be on the default hierarchy.  Test whether all conditions are
++ * met.
+  *
+  * Note that the test result may change dynamically on the same inode
+  * depending on how memcg and iocg are configured.
+@@ -247,7 +246,6 @@ static inline bool inode_cgwb_enabled(struct inode *inode)
+ 	return cgroup_subsys_on_dfl(memory_cgrp_subsys) &&
+ 		cgroup_subsys_on_dfl(io_cgrp_subsys) &&
+ 		bdi_cap_account_dirty(bdi) &&
+-		(bdi->capabilities & BDI_CAP_CGROUP_WRITEBACK) &&
+ 		(inode->i_sb->s_iflags & SB_I_CGROUPWB);
  }
  
-+static void raid5_set_io_opt(struct r5conf *conf)
-+{
-+	blk_queue_io_opt(conf->mddev->queue, (conf->chunk_sectors << 9) *
-+			 (conf->raid_disks - conf->max_degraded));
-+}
-+
- static int raid5_run(struct mddev *mddev)
- {
- 	struct r5conf *conf;
-@@ -7412,8 +7418,7 @@ static int raid5_run(struct mddev *mddev)
- 
- 		chunk_size = mddev->chunk_sectors << 9;
- 		blk_queue_io_min(mddev->queue, chunk_size);
--		blk_queue_io_opt(mddev->queue, chunk_size *
--				 (conf->raid_disks - conf->max_degraded));
-+		raid5_set_io_opt(conf);
- 		mddev->queue->limits.raid_partial_stripes_expensive = 1;
- 		/*
- 		 * We can only discard a whole stripe. It doesn't make sense to
-@@ -8006,6 +8011,7 @@ static void end_reshape(struct r5conf *conf)
- 						   / PAGE_SIZE);
- 			if (conf->mddev->queue->backing_dev_info->ra_pages < 2 * stripe)
- 				conf->mddev->queue->backing_dev_info->ra_pages = 2 * stripe;
-+			raid5_set_io_opt(conf);
- 		}
- 	}
- }
 -- 
 2.27.0
 
