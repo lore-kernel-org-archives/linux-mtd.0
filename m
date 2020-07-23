@@ -2,64 +2,74 @@ Return-Path: <SRS0=DvMR=BC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB2DEC433E0
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2020 03:25:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00126C433E1
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2020 06:23:34 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9585B20781
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2020 03:25:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A9ADF206C1
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2020 06:23:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mZ6Ta1nO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9585B20781
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="MHvBb2Ru"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A9ADF206C1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=adxvouznJb7pHmoXFNIz/ON9s59XBp67ofmvZ5roLaA=; b=mZ6Ta1nObj+7pJC1LK9OPuYkn
-	CaHSX//euwXPn1xuBrHSGs7WjjW6fZ0g5l74M8MGMAqZRt7I9r8DZ140hANe1GNummLwjq3MaTXaY
-	AlvL8P8Oz0eguwuHgvJNL6ZyHuhsSiSlbuBCMyw74h6VE+BmT2J102Cyti/T8pfIzop2VtgBfAEdE
-	K+vVTiD85RHPAJzwTyiEdcykpQqsER4kWoW50qcXd34eC4SKVmo51DPTLLlq4yIGJwi9UQh8x5MVp
-	BchhfRxHZjU+PMajDf+QZUCMGFGtaodGELZw1PHAl3NTm9GtNCzOlmaKCZ1PUE4gMNnGQ4rNeMsNl
-	ylfFxDXAg==;
+	 bh=aRVbGq7N2Dljp390GyPceCzGtY6DKLKKYv3LzIkwnuI=; b=MHvBb2Ru6om4F9ZPKLBZKrNTX
+	9XpTglEn3XSF8TUEgikAHK48Sk/H3hI06/069+7FoCLEcGdtR170R0yWwpgl5cPUSOyaAFrQWm/K+
+	d6zAiNYgoEY3EyfaiHqSQhEHtH+VJ2MwVG0QODLTX1si9tfJH0nUWB/3qHt5T8vthkY4snfzlxArc
+	M55NIN7zsC8ZUjT336UFXSeSrNwIG8u8dY9wREpIkmBlTPAJyLOhPSHn3Si2QSePWjHb2nzj5g8AP
+	zw+UktRlg5gEfriK7pnlANINbqzRo0uiOdRKPzQ1aZh9mm5/VwtDBHfpA5ZHgbX6qCyr2J09NfY7l
+	LAcCb7brg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jyRqj-0000LT-Fs; Thu, 23 Jul 2020 03:24:49 +0000
-Received: from szxga05-in.huawei.com ([45.249.212.191] helo=huawei.com)
+	id 1jyUdA-00057S-GC; Thu, 23 Jul 2020 06:23:00 +0000
+Received: from mga04.intel.com ([192.55.52.120])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jyRjm-0005My-Mo
- for linux-mtd@lists.infradead.org; Thu, 23 Jul 2020 03:17:40 +0000
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
- by Forcepoint Email with ESMTP id 22A981FEE23B5CF0C187;
- Thu, 23 Jul 2020 11:17:19 +0800 (CST)
-Received: from use12-sp2.huawei.com (10.67.189.20) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 23 Jul 2020 11:17:10 +0800
-From: Jubin Zhong <zhongjubin@huawei.com>
-To: <yi.zhang@huawei.com>
-Subject: Re: [PATCH] jffs2: move jffs2_init_inode_info() just after allocating
- inode
-Date: Thu, 23 Jul 2020 11:17:08 +0800
-Message-ID: <1595474228-20495-1-git-send-email-zhongjubin@huawei.com>
-X-Mailer: git-send-email 1.8.5.6
-In-Reply-To: <1559fa23-525b-5dad-220e-2ab2821d33eb@huawei.com>
-References: <1559fa23-525b-5dad-220e-2ab2821d33eb@huawei.com>
+ id 1jyUd8-00056i-6Y
+ for linux-mtd@lists.infradead.org; Thu, 23 Jul 2020 06:22:59 +0000
+IronPort-SDR: 0dWaBopUqaJBWEKaT+pz7ay01OOIIBuZux87bF5Tem9XOv/mpU4xBHoic4t/5onOf9aYXnnDao
+ YNaXAyrdtBmg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9690"; a="147965393"
+X-IronPort-AV: E=Sophos;i="5.75,385,1589266800"; d="scan'208";a="147965393"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Jul 2020 23:22:56 -0700
+IronPort-SDR: +qBj/sN4MZPxY4m7ng2TpFYlzzbCueatcNMUHjax+5NgP4EWq9ePx1xDHyQ5suWmKcEKgGGEce
+ hBvcKx79NNbA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,385,1589266800"; d="scan'208";a="392904286"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+ by fmsmga001.fm.intel.com with SMTP; 22 Jul 2020 23:22:53 -0700
+Received: by lahna (sSMTP sendmail emulation); Thu, 23 Jul 2020 09:22:52 +0300
+Date: Thu, 23 Jul 2020 09:22:52 +0300
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Tudor.Ambarus@microchip.com
+Subject: Re: [PATCH] mtd: spi-nor: intel-spi: Simulate WRDI command
+Message-ID: <20200723062252.GR5180@lahna.fi.intel.com>
+References: <282e1305-fd08-e446-1a22-eb4dff78cfb4@nokia.com>
+ <b5c17892-24ec-a690-96ca-d2238b8925d1@microchip.com>
+ <20200722143604.GQ5180@lahna.fi.intel.com>
+ <99e3f6c7-e9a6-584c-883a-0882f5137b7b@microchip.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.67.189.20]
-X-CFilter-Loop: Reflected
+Content-Disposition: inline
+In-Reply-To: <99e3f6c7-e9a6-584c-883a-0882f5137b7b@microchip.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200722_231739_026719_E09F67DF 
-X-CRM114-Status: UNSURE (   7.07  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200723_022258_380791_698C2056 
+X-CRM114-Status: GOOD (  22.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,57 +81,73 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: zhongguohua1@huawei.com, daniel@iogearbox.net, linux-kernel@vger.kernel.org,
- ast@kernel.org, linux-mtd@lists.infradead.org, viro@zeniv.linux.org.uk,
- wangfangpeng1@huawei.com, linux-fsdevel@vger.kernel.org, chenjie6@huawei.com
+Cc: ibr@ilbers.de, linux-mtd@lists.infradead.org, alexander.sverdlin@nokia.com,
+ vigneshr@ti.com, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 2020/1/6 16:04, zhangyi (F) wrote:
-> After commit 4fdcfab5b553 ("jffs2: fix use-after-free on symlink
-> traversal"), it expose a freeing uninitialized memory problem due to
-> this commit move the operaion of freeing f->target to
-> jffs2_i_callback(), which may not be initialized in some error path of
-> allocating jffs2 inode (eg: jffs2_iget()->iget_locked()->
-> destroy_inode()->..->jffs2_i_callback()->kfree(f->target)).
+On Wed, Jul 22, 2020 at 03:18:50PM +0000, Tudor.Ambarus@microchip.com wrote:
+> On 7/22/20 5:36 PM, Mika Westerberg wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > Hi,
+> > 
+> > On Wed, Jul 22, 2020 at 02:28:30PM +0000, Tudor.Ambarus@microchip.com wrote:
+> >> + Mika
+> >>
+> >> Hi, Mika,
+> >>
+> >> Would you please review the patch from below?
+> > 
+> > Sure, there is minor comment below.
+> > 
+> >>
+> >> Thanks!
+> >>
+> >> On 7/22/20 5:01 PM, Alexander Sverdlin wrote:
+> >>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> >>>
+> >>> From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+> >>>
+> >>> After spi_nor_write_disable() return code checks were introduced in the
+> >>> spi-nor front end intel-spi backend stopped to work because WRDI was never
+> >>> supported and always failed.
+> >>>
+> >>> Just pretend it was sucessful and ignore the command itself. HW sequencer
+> >>> shall do the right thing automatically, while with SW sequencer we cannot
+> >>> do it anyway, because the only tool we had was preopcode and it makes no
+> >>> sense for WRDI.
+> >>>
+> >>> Cc: stable@vger.kernel.org
+> >>> Fixes: bce679e5ae3a ("mtd: spi-nor: Check for errors after each Register Operation")
+> >>> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+> >>> ---
+> >>>  drivers/mtd/spi-nor/controllers/intel-spi.c | 8 ++++++++
+> >>>  1 file changed, 8 insertions(+)
+> >>>
+> >>> diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
+> >>> index 61d2a0a..134b356 100644
+> >>> --- a/drivers/mtd/spi-nor/controllers/intel-spi.c
+> >>> +++ b/drivers/mtd/spi-nor/controllers/intel-spi.c
+> >>> @@ -612,6 +612,14 @@ static int intel_spi_write_reg(struct spi_nor *nor, u8 opcode, const u8 *buf,
+> >>>                 return 0;
+> >>>         }
+> >>>
+> >>> +       /*
+> >>> +        * We hope that HW sequencer will do the right thing automatically and
+> >>> +        * with the SW seuencer we cannot use preopcode any way, so just ignore
+> >                            ^^^^^^^^
+> > Typo, should be sequencer.
+> > 
+> > Otherwise looks good to me.
+> > 
 > 
-> Fix this by initialize the jffs2_inode_info just after allocating it.
+> It looks good to me too. Should I add your R-b tag when applying?
+> I can fix the typo.
 
-We are having the same problem. After commit 4fdcfab5b553 ("jffs2: fix use-after-free on symlink
-> traversal"), f->target is freed before it is initialized in the iget_locked() path. This is dangerous and may trigger slub BUG_ON:
-
-kernel BUG at mm/slub.c:3824!
-Internal error: Oops - BUG: 0 [#1] SMP ARM
-CPU: 2 PID: 9 Comm: rcuos/0 Tainted: P           O    4.4.185 #1
-task: cf4a3f68 task.stack: cf4ca000
-PC is at kfree+0xfc/0x264
-LR is at jffs2_i_callback+0x10/0x28 [jffs2]
-pc : [<c032a4f0>]    lr : [<bf0ab188>]    psr: 400e0213
-sp : cf4cbec8  ip : 00000000  fp : c0273df8
-r10: ceb12848  r9 : 0000000c  r8 : cdd52000
-r7 : bf0ab188  r6 : 0000000c  r5 : e7fddef0  r4 : c1121ba0
-r3 : 00000100  r2 : c0ac4010  r1 : 00000002  r0 : e7fddef0
-Flags: nZcv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment kernel
-Control: 32c5387d  Table: 0e315940  DAC: 55555555
-Process rcuos/0 (pid: 9, stack limit = 0xcf4ca190)
-Stack: (0xcf4cbec8 to 0xcf4cc000)
-bec0:                   c086efa8 c032a3a8 00000001 c0273e9c c0a29214 c3931db8
-bee0: 00000000 0000000c ffffe000 cdd52000 0000000c ceb12848 c0273df8 bf0ab188
-bf00: c0adf980 c0273e9c c0adf980 00000001 00000000 ffffff7c 00000000 cf4a3f68
-bf20: c025bc18 cf4cbf24 cf4cbf24 c0a22448 c0adf980 cf4ca000 cf485ac0 00000000
-bf40: c0adf980 c02739b0 00000000 00000000 00000000 c02380bc 00000000 c0adf380
-bf60: c0adf980 00000000 00000000 00000000 00008001 cf4cbf74 cf4cbf74 00000000
-bf80: 00000000 00000000 00008001 cf4cbf8c cf4cbf8c c0a22448 cf485ac0 c0237fb8
-bfa0: 00000000 00000000 00000000 c0202db4 00000000 00000000 00000000 00000000
-bfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-bfe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
-[<c032a4f0>] (kfree) from [<bf0ab188>] (jffs2_i_callback+0x10/0x28 [jffs2])
-[<bf0ab188>] (jffs2_i_callback [jffs2]) from [<c0273e9c>] (rcu_nocb_kthread+0x4ec/0x504)
-[<c0273e9c>] (rcu_nocb_kthread) from [<c02380bc>] (kthread+0x104/0x118)
-[<c02380bc>] (kthread) from [<c0202db4>] (ret_from_fork+0x14/0x20)
-Code: 0300001a 143094e5 010013e3 0000001a (f201f0e7)
+Sure. Thanks!
 
 ______________________________________________________
 Linux MTD discussion mailing list
