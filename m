@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3463C433F7
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2020 13:13:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6F3FC433FB
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2020 13:13:46 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 83AFE20737
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2020 13:13:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6CA4620737
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2020 13:13:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KhI/H4P6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 83AFE20737
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="0XNEG7OD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6CA4620737
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=yadavpratyush.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=YgWrhU7ox97VWQwyLuE5N/GyA54vvDkROQn1FFZc2i0=; b=KhI/H4P6OK5sJxgjhi1Pmc49V
-	NXhV7wKYoNdVbWXMfUZsbmIjUVTZQQiwSYrzWNP/nGF6RcWC8PT5Gwfn2VXS/si2NOn77X12ijoTR
-	suAIpt4en8NpSbFdmsh2t/LN2HvWH9iGDs/+ALZkl7NYfJB89j9q6Db51E0vtqHi+G1gGeBxO1YOs
-	gFjcwBQhS1N6AsUJFB8z9YaRx3iWKgzMIMwPYjuaIIyFqihWoUkONjkc8gX7yEYQPeP4zlwP8IhgD
-	dYcKJvWOG9A5HV3aYsNsHgOybvmrHUu55Ut26E+SDmw4C+gQ+Royif4ypZi120ZCLjs77jhvzEDV+
-	WwjVP4MNA==;
+	 bh=0rssehVGftXwE95+BZduPOIwx2I0dUW9c1m5rYMxZls=; b=0XNEG7ODghHNzlIzUj/Pr6KZp
+	s3e8pSDIJa/hITDThcA6suVLvjQsec0W9r96wPkfcCKpxi9Nqwhx+c6zfC+iO0CaWiVt3kFe5IzTB
+	G0LtJcnTgmv/ZklGRTKw5SZidqbEdzLLOhTU7fzIi5xr17JOYYX8OUgwYLCw9NJ9c1zdT4YpVcJsl
+	lctvhUF3kRGOl7E76CKEhlxMaSHwcNx8EbJ+/FEphPu9iWuYoNMaJVZrT5+Unh2sN5kR2ToqMW5pK
+	XZRBphu8smP5v+lHF5W4047KG6QJMsYcOgvICDU5eTHnC6hBc5ysZ9iiSafdqId5mAbM7Uwc4+lKE
+	ElJ1MFCEw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jyb1z-0003eN-6F; Thu, 23 Jul 2020 13:13:03 +0000
+	id 1jyb25-0003gg-7b; Thu, 23 Jul 2020 13:13:09 +0000
 Received: from relay5-d.mail.gandi.net ([217.70.183.197])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jyb1v-0003cA-8g
- for linux-mtd@lists.infradead.org; Thu, 23 Jul 2020 13:13:01 +0000
+ id 1jyb1z-0003eJ-DF
+ for linux-mtd@lists.infradead.org; Thu, 23 Jul 2020 13:13:04 +0000
 X-Originating-IP: 42.109.196.68
 Received: from localhost.localdomain (unknown [42.109.196.68])
  (Authenticated sender: me@yadavpratyush.com)
- by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id EBB141C0010;
- Thu, 23 Jul 2020 13:12:54 +0000 (UTC)
+ by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id DF2661C0009;
+ Thu, 23 Jul 2020 13:12:58 +0000 (UTC)
 From: Pratyush Yadav <me@yadavpratyush.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v11 08/14] mtd: spi-nor: core: enable octal DTR mode when
- possible
-Date: Thu, 23 Jul 2020 18:41:57 +0530
-Message-Id: <20200723131203.40916-9-me@yadavpratyush.com>
+Subject: [PATCH v11 09/14] mtd: spi-nor: sfdp: detect Soft Reset sequence
+ support from BFPT
+Date: Thu, 23 Jul 2020 18:41:58 +0530
+Message-Id: <20200723131203.40916-10-me@yadavpratyush.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200723131203.40916-1-me@yadavpratyush.com>
 References: <20200723131203.40916-1-me@yadavpratyush.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200723_091259_467632_6668C0D3 
-X-CRM114-Status: GOOD (  12.99  )
+X-CRM114-CacheID: sfid-20200723_091303_632051_33A66340 
+X-CRM114-Status: GOOD (  11.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,88 +80,57 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Pratyush Yadav <p.yadav@ti.com>
 
-Allow flashes to specify a hook to enable octal DTR mode. Use this hook
-whenever possible to get optimal transfer speeds.
+A Soft Reset sequence will return the flash to Power-on-Reset (POR)
+state. It consists of two commands: Soft Reset Enable and Soft Reset.
+Find out if the sequence is supported from BFPT DWORD 16.
 
 Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/mtd/spi-nor/core.c | 35 +++++++++++++++++++++++++++++++++++
- drivers/mtd/spi-nor/core.h |  2 ++
- 2 files changed, 37 insertions(+)
+ drivers/mtd/spi-nor/core.h | 1 +
+ drivers/mtd/spi-nor/sfdp.c | 4 ++++
+ drivers/mtd/spi-nor/sfdp.h | 2 ++
+ 3 files changed, 7 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 6efc86e2aba0..b990fc7add20 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -3050,6 +3050,35 @@ static int spi_nor_init_params(struct spi_nor *nor)
- 	return 0;
- }
- 
-+/** spi_nor_octal_dtr_enable() - enable Octal DTR I/O if needed
-+ * @nor:                 pointer to a 'struct spi_nor'
-+ * @enable:              whether to enable or disable Octal DTR
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int spi_nor_octal_dtr_enable(struct spi_nor *nor, bool enable)
-+{
-+	int ret;
-+
-+	if (!nor->params->octal_dtr_enable)
-+		return 0;
-+
-+	if (!(nor->read_proto == SNOR_PROTO_8_8_8_DTR &&
-+	      nor->write_proto == SNOR_PROTO_8_8_8_DTR))
-+		return 0;
-+
-+	ret = nor->params->octal_dtr_enable(nor, enable);
-+	if (ret)
-+		return ret;
-+
-+	if (enable)
-+		nor->reg_proto = SNOR_PROTO_8_8_8_DTR;
-+	else
-+		nor->reg_proto = SNOR_PROTO_1_1_1;
-+
-+	return 0;
-+}
-+
- /**
-  * spi_nor_quad_enable() - enable/disable Quad I/O if needed.
-  * @nor:                pointer to a 'struct spi_nor'
-@@ -3090,6 +3119,12 @@ static int spi_nor_init(struct spi_nor *nor)
- {
- 	int err;
- 
-+	err = spi_nor_octal_dtr_enable(nor, true);
-+	if (err) {
-+		dev_dbg(nor->dev, "octal mode not supported\n");
-+		return err;
-+	}
-+
- 	err = spi_nor_quad_enable(nor, true);
- 	if (err) {
- 		dev_dbg(nor->dev, "quad mode not supported\n");
 diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 27e00a9f5950..17dbbb3e4796 100644
+index 17dbbb3e4796..ec54ce6c5403 100644
 --- a/drivers/mtd/spi-nor/core.h
 +++ b/drivers/mtd/spi-nor/core.h
-@@ -203,6 +203,7 @@ struct spi_nor_locking_ops {
-  *                      higher index in the array, the higher priority.
-  * @erase_map:		the erase map parsed from the SFDP Sector Map Parameter
-  *                      Table.
-+ * @octal_dtr_enable:	enables SPI NOR octal DTR mode.
-  * @quad_enable:	enables/disables SPI NOR Quad mode.
-  * @set_4byte_addr_mode: puts the SPI NOR in 4 byte addressing mode.
-  * @convert_addr:	converts an absolute address into something the flash
-@@ -226,6 +227,7 @@ struct spi_nor_flash_parameter {
+@@ -26,6 +26,7 @@ enum spi_nor_option_flags {
+ 	SNOR_F_HAS_SR_TB_BIT6	= BIT(11),
+ 	SNOR_F_HAS_4BIT_BP      = BIT(12),
+ 	SNOR_F_HAS_SR_BP3_BIT6  = BIT(13),
++	SNOR_F_SOFT_RESET	= BIT(14),
+ };
  
- 	struct spi_nor_erase_map        erase_map;
+ struct spi_nor_read_command {
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index 05191f7b3b33..3bd173546cca 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -604,6 +604,10 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+ 		break;
+ 	}
  
-+	int (*octal_dtr_enable)(struct spi_nor *nor, bool enable);
- 	int (*quad_enable)(struct spi_nor *nor, bool enable);
- 	int (*set_4byte_addr_mode)(struct spi_nor *nor, bool enable);
- 	u32 (*convert_addr)(struct spi_nor *nor, u32 addr);
++	/* Soft Reset support. */
++	if (bfpt.dwords[BFPT_DWORD(16)] & BFPT_DWORD16_SOFT_RST)
++		nor->flags |= SNOR_F_SOFT_RESET;
++
+ 	/* Stop here if not JESD216 rev C or later. */
+ 	if (bfpt_header->length == BFPT_DWORD_MAX_JESD216B)
+ 		return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt,
+diff --git a/drivers/mtd/spi-nor/sfdp.h b/drivers/mtd/spi-nor/sfdp.h
+index 6d7243067252..8ae55e98084e 100644
+--- a/drivers/mtd/spi-nor/sfdp.h
++++ b/drivers/mtd/spi-nor/sfdp.h
+@@ -90,6 +90,8 @@ struct sfdp_bfpt {
+ #define BFPT_DWORD15_QER_SR2_BIT1_NO_RD		(0x4UL << 20)
+ #define BFPT_DWORD15_QER_SR2_BIT1		(0x5UL << 20) /* Spansion */
+ 
++#define BFPT_DWORD16_SOFT_RST			BIT(12)
++
+ #define BFPT_DWORD18_CMD_EXT_MASK		GENMASK(30, 29)
+ #define BFPT_DWORD18_CMD_EXT_REP		(0x0UL << 29) /* Repeat */
+ #define BFPT_DWORD18_CMD_EXT_INV		(0x1UL << 29) /* Invert */
 -- 
 2.27.0
 
