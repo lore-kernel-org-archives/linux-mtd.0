@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E63BC433EA
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2020 13:14:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F6D9C433DF
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2020 13:14:40 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F39EA207BB
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2020 13:14:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3C0ED207BB
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2020 13:14:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="MIJdgFKE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F39EA207BB
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="q53g5nTF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C0ED207BB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=yadavpratyush.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=ntzuJshxL17jgaOV6TVEmW9wIMhH/d2SODdKRitTGB0=; b=MIJdgFKEwxCd9j8/GdtUDaiw9
-	4hqWkQzm5+vyF9ZsruZJFMIfOgZ+DPINVFofSsOF7DpiwRgp72mnju8QN3XoNOzK/yQK/WPy0M20F
-	QYAWxm7RAPB8wthLy/4gcgHmwdGnEKLjgv9eBKUadHTAkAOOfz5+sCp4Y/f3OetZ5qQGf16GJx8a3
-	HtTofx1jKZBcvNPRXWMYMadMZ9xshV5TVAmtYmN1Fxxi9LKud/C4Lj/IrAzAosSWiT7enTgiBcVtI
-	XqeKP+s5Q69lNdOoVfLhHN1BwXLAAygbknA6b7ahtLg1ldD5a0upHBQYWgKYq+GJOcE4O/le61Fur
-	zbnQX2ETQ==;
+	 bh=nCiQ3E6MrlGX494+KyLzvNjdYnAIbhKE0/Gbo6XQ11k=; b=q53g5nTF8AYiqUEuMBgCbcjfq
+	c8KYNmj7+ldy1ojN5FpxMVdOvAwr98NvucvVP5nO5gT9eTvmskqnxezG96/3oxdDiKiV984pN+oDV
+	2xKaMUDkLGuKFyXHzyCMRNySWLBnzbQ0Xrsk+yDLkjY8uAmlLUFh2VVeJ611zy9pBp+UJn6yVM7Ti
+	xiNrkrlMREIIYCY5Rc9Ym+9Cz3XGRjvg1njeyG0cdkUpOGkXMLGCFir8C7V6AyJXrqESQi7OwzNL5
+	a6j/8tGJhJvwkB/AHnaJ4r+iy7rl+2uzondzDhFuAjyaA7OPNZv45zP3cPisnzPGKdZBX185en8vO
+	eVLiswsUw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jyb2p-0004B5-Ji; Thu, 23 Jul 2020 13:13:55 +0000
+	id 1jyb2x-0004FI-AB; Thu, 23 Jul 2020 13:14:03 +0000
 Received: from relay5-d.mail.gandi.net ([217.70.183.197])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jyb2B-0003lR-Tk
- for linux-mtd@lists.infradead.org; Thu, 23 Jul 2020 13:13:28 +0000
+ id 1jyb2J-0003q4-GY
+ for linux-mtd@lists.infradead.org; Thu, 23 Jul 2020 13:13:29 +0000
 X-Originating-IP: 42.109.196.68
 Received: from localhost.localdomain (unknown [42.109.196.68])
  (Authenticated sender: me@yadavpratyush.com)
- by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id E9E451C0006;
- Thu, 23 Jul 2020 13:13:10 +0000 (UTC)
+ by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id F20D61C0007;
+ Thu, 23 Jul 2020 13:13:18 +0000 (UTC)
 From: Pratyush Yadav <me@yadavpratyush.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v11 12/14] mtd: spi-nor: core: expose spi_nor_default_setup()
- in core.h
-Date: Thu, 23 Jul 2020 18:42:01 +0530
-Message-Id: <20200723131203.40916-13-me@yadavpratyush.com>
+Subject: [PATCH v11 14/14] mtd: spi-nor: micron-st: allow using MT35XU512ABA
+ in Octal DTR mode
+Date: Thu, 23 Jul 2020 18:42:03 +0530
+Message-Id: <20200723131203.40916-15-me@yadavpratyush.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200723131203.40916-1-me@yadavpratyush.com>
 References: <20200723131203.40916-1-me@yadavpratyush.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200723_091316_145548_9F5992B0 
-X-CRM114-Status: GOOD (  11.59  )
+X-CRM114-CacheID: sfid-20200723_091324_014155_137AC424 
+X-CRM114-Status: GOOD (  15.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,48 +80,137 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Pratyush Yadav <p.yadav@ti.com>
 
-Flashes might want to add a custom setup hook to configure the flash in
-the proper mode for operation. But after that, they would still want to
-run the default setup hook because it selects the read, program, and
-erase operations. Since there is little point in repeating all that
-code, expose the spi_nor_default_setup() in core.h to
-manufacturer-specific files.
+Since this flash doesn't have a Profile 1.0 table, the Octal DTR
+capabilities are enabled in the post SFDP fixup, along with the 8D-8D-8D
+fast read settings.
+
+Enable Octal DTR mode with 20 dummy cycles to allow running at the
+maximum supported frequency of 200Mhz.
+
+The flash supports the soft reset sequence. So, add the flag in the
+flash's info.
 
 Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/mtd/spi-nor/core.c | 4 ++--
- drivers/mtd/spi-nor/core.h | 3 +++
- 2 files changed, 5 insertions(+), 2 deletions(-)
+ drivers/mtd/spi-nor/micron-st.c | 102 +++++++++++++++++++++++++++++++-
+ 1 file changed, 101 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index a263196d970f..5ebe0aed0871 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -2740,8 +2740,8 @@ static int spi_nor_select_erase(struct spi_nor *nor)
- 	return 0;
- }
+diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
+index 3dca5b9af3b6..e34098661b11 100644
+--- a/drivers/mtd/spi-nor/micron-st.c
++++ b/drivers/mtd/spi-nor/micron-st.c
+@@ -8,10 +8,110 @@
  
--static int spi_nor_default_setup(struct spi_nor *nor,
--				 const struct spi_nor_hwcaps *hwcaps)
-+int spi_nor_default_setup(struct spi_nor *nor,
-+			  const struct spi_nor_hwcaps *hwcaps)
- {
- 	struct spi_nor_flash_parameter *params = nor->params;
- 	u32 ignored_mask, shared_mask;
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index ec54ce6c5403..24cff27c51aa 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -453,6 +453,9 @@ int spi_nor_post_bfpt_fixups(struct spi_nor *nor,
- 			     const struct sfdp_bfpt *bfpt,
- 			     struct spi_nor_flash_parameter *params);
+ #include "core.h"
  
-+int spi_nor_default_setup(struct spi_nor *nor,
-+			  const struct spi_nor_hwcaps *hwcaps);
++#define SPINOR_OP_MT_DTR_RD	0xfd	/* Fast Read opcode in DTR mode */
++#define SPINOR_OP_MT_RD_ANY_REG	0x85	/* Read volatile register */
++#define SPINOR_OP_MT_WR_ANY_REG	0x81	/* Write volatile register */
++#define SPINOR_REG_MT_CFR0V	0x00	/* For setting octal DTR mode */
++#define SPINOR_REG_MT_CFR1V	0x01	/* For setting dummy cycles */
++#define SPINOR_MT_DTR_NO_DQS	0xc7	/* Enable Octal DTR without DQS. */
++#define SPINOR_MT_EXSPI		0xff	/* Enable Extended SPI (default) */
 +
- static struct spi_nor __maybe_unused *mtd_to_spi_nor(struct mtd_info *mtd)
- {
- 	return mtd->priv;
++static int spi_nor_micron_octal_dtr_enable(struct spi_nor *nor, bool enable)
++{
++	struct spi_mem_op op;
++	u8 *buf = nor->bouncebuf;
++	u8 addr_width;
++	int ret;
++
++	if (enable)
++		addr_width = 3;
++	else
++		addr_width = 4;
++
++	if (enable) {
++		/* Use 20 dummy cycles for memory array reads. */
++		ret = spi_nor_write_enable(nor);
++		if (ret)
++			return ret;
++
++		*buf = 20;
++		op = (struct spi_mem_op)
++			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_MT_WR_ANY_REG, 1),
++				   SPI_MEM_OP_ADDR(addr_width,
++						   SPINOR_REG_MT_CFR1V, 1),
++				   SPI_MEM_OP_NO_DUMMY,
++				   SPI_MEM_OP_DATA_OUT(1, buf, 1));
++		ret = spi_mem_exec_op(nor->spimem, &op);
++		if (ret)
++			return ret;
++
++		ret = spi_nor_wait_till_ready(nor);
++		if (ret)
++			return ret;
++	}
++
++	ret = spi_nor_write_enable(nor);
++	if (ret)
++		return ret;
++
++	if (enable)
++		*buf = SPINOR_MT_DTR_NO_DQS;
++	else
++		*buf = SPINOR_MT_EXSPI;
++	op = (struct spi_mem_op)
++		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_MT_WR_ANY_REG, 1),
++			   SPI_MEM_OP_ADDR(addr_width, SPINOR_REG_MT_CFR0V, 1),
++			   SPI_MEM_OP_NO_DUMMY,
++			   SPI_MEM_OP_DATA_OUT(1, buf, 1));
++
++	if (!enable)
++		spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
++
++	ret = spi_mem_exec_op(nor->spimem, &op);
++	if (ret) {
++		dev_err(nor->dev, "Failed to enable octal DTR mode\n");
++		return ret;
++	}
++
++	return 0;
++}
++
++static void mt35xu512aba_default_init(struct spi_nor *nor)
++{
++	nor->params->octal_dtr_enable = spi_nor_micron_octal_dtr_enable;
++}
++
++static void mt35xu512aba_post_sfdp_fixup(struct spi_nor *nor)
++{
++	/* Set the Fast Read settings. */
++	nor->params->hwcaps.mask |= SNOR_HWCAPS_READ_8_8_8_DTR;
++	spi_nor_set_read_settings(&nor->params->reads[SNOR_CMD_READ_8_8_8_DTR],
++				  0, 20, SPINOR_OP_MT_DTR_RD,
++				  SNOR_PROTO_8_8_8_DTR);
++
++	nor->cmd_ext_type = SPI_NOR_EXT_REPEAT;
++	nor->params->rdsr_dummy = 8;
++	nor->params->rdsr_addr_nbytes = 0;
++
++	/*
++	 * The BFPT quad enable field is set to a reserved value so the quad
++	 * enable function is ignored by spi_nor_parse_bfpt(). Make sure we
++	 * disable it.
++	 */
++	nor->params->quad_enable = NULL;
++}
++
++static struct spi_nor_fixups mt35xu512aba_fixups = {
++	.default_init = mt35xu512aba_default_init,
++	.post_sfdp = mt35xu512aba_post_sfdp_fixup,
++};
++
+ static const struct flash_info micron_parts[] = {
+ 	{ "mt35xu512aba", INFO(0x2c5b1a, 0, 128 * 1024, 512,
+ 			       SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
+-			       SPI_NOR_4B_OPCODES) },
++			       SPI_NOR_4B_OPCODES | SPI_NOR_OCTAL_DTR_READ |
++			       SPI_NOR_OCTAL_DTR_PP)
++		.fixups = &mt35xu512aba_fixups},
+ 	{ "mt35xu02g", INFO(0x2c5b1c, 0, 128 * 1024, 2048,
+ 			    SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
+ 			    SPI_NOR_4B_OPCODES) },
 -- 
 2.27.0
 
