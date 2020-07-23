@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 845DCC433E4
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2020 13:14:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7D24C433E8
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2020 13:14:15 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4A10220737
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2020 13:14:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A420120737
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2020 13:14:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HYbcdGLz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4A10220737
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="J9qKlAxc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A420120737
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=yadavpratyush.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=zfv+gIOBDgfwEMatTNfLQ6mR1S25J9TJWmTPstsKTTI=; b=HYbcdGLznSUdRjo1BQSxFaLc3
-	RLvONZJGCzky7kkfkSnZtZSYcEMItpm2Pd2GbhTMn/ZJQYJGJcNTMz7bIgqJ7xCYgEVOju2iCa2Yo
-	gg5OX66EmaBWNUziF+ZJJYNobn0JTJZDnunb1OXRHQgKyocqiqv19eJGXAMyJ7Wq6Y+0Hio6qWig8
-	wCU8npnrjFZj0usVYF3nVby9fVN4Ldy/j8w0B6bb9YESWSxgU/WL3EcEaoTZXEjA1YhDNcIAI4MMa
-	cZtIbsUt0z+2iXSuBXJLtSEJM8ML9gnVfOOaD2qpUgaMhEtrY2oOFaTZYcHq5weWUKZJ2sb5hdqZg
-	g2c4gKgOw==;
+	 bh=fFbTrBjS2yRbHzICSkM/gbA3icCpv8eUegtCiHVbEs4=; b=J9qKlAxcp37OYyHeXksg9q3Kp
+	fjNJzXWLwiBfWvQ6dbzo+HSCn+zDhLG7G289Uc2LyDCRMqaW2IWEt5Ntq0uil2MXQiyuJuHedmyfc
+	FPfDtjfC08/BLDkOiTSpisZEDQYir1xYiJr0j+QKYInPDwPib+OH/0Sow3L6Z2kJS959upe9/FM2V
+	1YMOuU5XEXDIcphQ5el1mF9Xe6/72+ZP1T5tl83CMr4XpS7MK5omps5ZrjqBaVTElaqRzNNTonUaE
+	mHKov33leWuB1QMOtRHOptO2KpYsc0KZ8KOtDx1FHno8bQQ5psEk4R1XqLbPDQ23MMJQWjQrjZoP9
+	fkuCOlMBA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jyb1m-0003Yw-Te; Thu, 23 Jul 2020 13:12:51 +0000
+	id 1jyb2d-00041M-DG; Thu, 23 Jul 2020 13:13:43 +0000
 Received: from relay5-d.mail.gandi.net ([217.70.183.197])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jyb1j-0003Xc-Ab
- for linux-mtd@lists.infradead.org; Thu, 23 Jul 2020 13:12:48 +0000
+ id 1jyb23-0003gL-Ae
+ for linux-mtd@lists.infradead.org; Thu, 23 Jul 2020 13:13:08 +0000
 X-Originating-IP: 42.109.196.68
 Received: from localhost.localdomain (unknown [42.109.196.68])
  (Authenticated sender: me@yadavpratyush.com)
- by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id EAA7A1C0004;
- Thu, 23 Jul 2020 13:12:42 +0000 (UTC)
+ by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id F2EBA1C0010;
+ Thu, 23 Jul 2020 13:13:02 +0000 (UTC)
 From: Pratyush Yadav <me@yadavpratyush.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v11 05/14] mtd: spi-nor: sfdp: parse xSPI Profile 1.0 table
-Date: Thu, 23 Jul 2020 18:41:54 +0530
-Message-Id: <20200723131203.40916-6-me@yadavpratyush.com>
+Subject: [PATCH v11 10/14] mtd: spi-nor: core: perform a Soft Reset on shutdown
+Date: Thu, 23 Jul 2020 18:41:59 +0530
+Message-Id: <20200723131203.40916-11-me@yadavpratyush.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200723131203.40916-1-me@yadavpratyush.com>
 References: <20200723131203.40916-1-me@yadavpratyush.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200723_091247_615486_2512F977 
-X-CRM114-Status: GOOD (  20.47  )
+X-CRM114-CacheID: sfid-20200723_091307_661834_FD5B97FF 
+X-CRM114-Status: GOOD (  12.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,199 +79,97 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Pratyush Yadav <p.yadav@ti.com>
 
-This table is indication that the flash is xSPI compliant and hence
-supports octal DTR mode. Extract information like the fast read opcode,
-dummy cycles, the number of dummy cycles needed for a Read Status
-Register command, and the number of address bytes needed for a Read
-Status Register command.
-
-We don't know what speed the controller is running at. Find the fast
-read dummy cycles for the fastest frequency the flash can run at to be
-sure we are never short of dummy cycles. If nothing is available,
-default to 20. Flashes that use a different value should update it in
-their fixup hooks.
-
-Since we want to set read settings, expose spi_nor_set_read_settings()
-in core.h.
+Perform a Soft Reset on shutdown on flashes that support it so that the
+flash can be reset to its initial state and any configurations made by
+spi-nor (given that they're only done in volatile registers) will be
+reset. This will hand back the flash in pristine state for any further
+operations on it.
 
 Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/mtd/spi-nor/core.c |  2 +-
- drivers/mtd/spi-nor/core.h | 10 +++++
- drivers/mtd/spi-nor/sfdp.c | 91 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 102 insertions(+), 1 deletion(-)
+ drivers/mtd/spi-nor/core.c  | 41 +++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/spi-nor.h |  2 ++
+ 2 files changed, 43 insertions(+)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 87f82bc8f014..6dfc54ff83be 100644
+index b990fc7add20..f55c062a7bd5 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -2316,7 +2316,7 @@ static int spi_nor_check(struct spi_nor *nor)
+@@ -40,6 +40,9 @@
+ 
+ #define SPI_NOR_MAX_ADDR_WIDTH	4
+ 
++#define SPI_NOR_SRST_SLEEP_MIN 200
++#define SPI_NOR_SRST_SLEEP_MAX 400
++
+ /**
+  * spi_nor_get_cmd_ext() - Get the command opcode extension based on the
+  *			   extension type.
+@@ -3155,6 +3158,41 @@ static int spi_nor_init(struct spi_nor *nor)
  	return 0;
  }
  
--static void
-+void
- spi_nor_set_read_settings(struct spi_nor_read_command *read,
- 			  u8 num_mode_clocks,
- 			  u8 num_wait_states,
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 125d27b0a72f..27e00a9f5950 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -192,6 +192,9 @@ struct spi_nor_locking_ops {
-  *
-  * @size:		the flash memory density in bytes.
-  * @page_size:		the page size of the SPI NOR flash memory.
-+ * @rdsr_dummy:		dummy cycles needed for Read Status Register command.
-+ * @rdsr_addr_nbytes:	dummy address bytes needed for Read Status Register
-+ *			command.
-  * @hwcaps:		describes the read and page program hardware
-  *			capabilities.
-  * @reads:		read capabilities ordered by priority: the higher index
-@@ -214,6 +217,8 @@ struct spi_nor_locking_ops {
- struct spi_nor_flash_parameter {
- 	u64				size;
- 	u32				page_size;
-+	u8				rdsr_dummy;
-+	u8				rdsr_addr_nbytes;
- 
- 	struct spi_nor_hwcaps		hwcaps;
- 	struct spi_nor_read_command	reads[SNOR_CMD_READ_MAX];
-@@ -425,6 +430,11 @@ ssize_t spi_nor_write_data(struct spi_nor *nor, loff_t to, size_t len,
- 
- int spi_nor_hwcaps_read2cmd(u32 hwcaps);
- u8 spi_nor_convert_3to4_read(u8 opcode);
-+void spi_nor_set_read_settings(struct spi_nor_read_command *read,
-+			      u8 num_mode_clocks,
-+			      u8 num_wait_states,
-+			      u8 opcode,
-+			      enum spi_nor_protocol proto);
- void spi_nor_set_pp_settings(struct spi_nor_pp_command *pp, u8 opcode,
- 			     enum spi_nor_protocol proto);
- 
-diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index cd8ada3de8fd..05191f7b3b33 100644
---- a/drivers/mtd/spi-nor/sfdp.c
-+++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -4,6 +4,7 @@
-  * Copyright (C) 2014, Freescale Semiconductor, Inc.
-  */
- 
-+#include <linux/bitfield.h>
- #include <linux/slab.h>
- #include <linux/sort.h>
- #include <linux/mtd/spi-nor.h>
-@@ -19,6 +20,7 @@
- #define SFDP_BFPT_ID		0xff00	/* Basic Flash Parameter Table */
- #define SFDP_SECTOR_MAP_ID	0xff81	/* Sector Map Table */
- #define SFDP_4BAIT_ID		0xff84  /* 4-byte Address Instruction Table */
-+#define SFDP_PROFILE1_ID	0xff05	/* xSPI Profile 1.0 table. */
- 
- #define SFDP_SIGNATURE		0x50444653U
- 
-@@ -1108,6 +1110,91 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
- 	return ret;
- }
- 
-+#define PROFILE1_DWORD1_RDSR_ADDR_BYTES		BIT(29)
-+#define PROFILE1_DWORD1_RDSR_DUMMY		BIT(28)
-+#define PROFILE1_DWORD1_RD_FAST_CMD		GENMASK(15, 8)
-+#define PROFILE1_DWORD4_DUMMY_200MHZ		GENMASK(11, 7)
-+#define PROFILE1_DWORD5_DUMMY_166MHZ		GENMASK(31, 27)
-+#define PROFILE1_DWORD5_DUMMY_133MHZ		GENMASK(21, 17)
-+#define PROFILE1_DWORD5_DUMMY_100MHZ		GENMASK(11, 7)
-+#define PROFILE1_DUMMY_DEFAULT			20
-+
-+/**
-+ * spi_nor_parse_profile1() - parse the xSPI Profile 1.0 table
-+ * @nor:		pointer to a 'struct spi_nor'
-+ * @param_header:	pointer to the 'struct sfdp_parameter_header' describing
-+ *			the 4-Byte Address Instruction Table length and version.
-+ * @params:		pointer to the 'struct spi_nor_flash_parameter' to be.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int spi_nor_parse_profile1(struct spi_nor *nor,
-+				  const struct sfdp_parameter_header *profile1_header,
-+				  struct spi_nor_flash_parameter *params)
++static void spi_nor_soft_reset(struct spi_nor *nor)
 +{
-+	u32 *dwords, addr;
-+	size_t len;
++	struct spi_mem_op op;
 +	int ret;
-+	u8 dummy, opcode;
 +
-+	len = profile1_header->length * sizeof(*dwords);
-+	dwords = kmalloc(len, GFP_KERNEL);
-+	if (!dwords)
-+		return -ENOMEM;
++	op = (struct spi_mem_op)SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_SRSTEN, 8),
++			SPI_MEM_OP_NO_DUMMY,
++			SPI_MEM_OP_NO_ADDR,
++			SPI_MEM_OP_NO_DATA);
++	spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
++	ret = spi_mem_exec_op(nor->spimem, &op);
++	if (ret) {
++		dev_warn(nor->dev, "Software reset failed: %d\n", ret);
++		return;
++	}
 +
-+	addr = SFDP_PARAM_HEADER_PTP(profile1_header);
-+	ret = spi_nor_read_sfdp(nor, addr, len, dwords);
-+	if (ret)
-+		goto out;
-+
-+	le32_to_cpu_array(dwords, profile1_header->length);
-+
-+	/* Get 8D-8D-8D fast read opcode and dummy cycles. */
-+	opcode = FIELD_GET(PROFILE1_DWORD1_RD_FAST_CMD, dwords[0]);
-+
-+	 /* Set the Read Status Register dummy cycles and dummy address bytes. */
-+	if (dwords[0] & PROFILE1_DWORD1_RDSR_DUMMY)
-+		params->rdsr_dummy = 8;
-+	else
-+		params->rdsr_dummy = 4;
-+
-+	if (dwords[0] & PROFILE1_DWORD1_RDSR_ADDR_BYTES)
-+		params->rdsr_addr_nbytes = 4;
-+	else
-+		params->rdsr_addr_nbytes = 0;
++	op = (struct spi_mem_op)SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_SRST, 8),
++			SPI_MEM_OP_NO_DUMMY,
++			SPI_MEM_OP_NO_ADDR,
++			SPI_MEM_OP_NO_DATA);
++	spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
++	ret = spi_mem_exec_op(nor->spimem, &op);
++	if (ret) {
++		dev_warn(nor->dev, "Software reset failed: %d\n", ret);
++		return;
++	}
 +
 +	/*
-+	 * We don't know what speed the controller is running at. Find the
-+	 * dummy cycles for the fastest frequency the flash can run at to be
-+	 * sure we are never short of dummy cycles. A value of 0 means the
-+	 * frequency is not supported.
-+	 *
-+	 * Default to PROFILE1_DUMMY_DEFAULT if we don't find anything, and let
-+	 * flashes set the correct value if needed in their fixup hooks.
++	 * Software Reset is not instant, and the delay varies from flash to
++	 * flash. Looking at a few flashes, most range somewhere below 100
++	 * microseconds. So, sleep for a range of 200-400 us.
 +	 */
-+	dummy = FIELD_GET(PROFILE1_DWORD4_DUMMY_200MHZ, dwords[3]);
-+	if (!dummy)
-+		dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_166MHZ, dwords[4]);
-+	if (!dummy)
-+		dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_133MHZ, dwords[4]);
-+	if (!dummy)
-+		dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_100MHZ, dwords[4]);
-+	if (!dummy)
-+		dummy = PROFILE1_DUMMY_DEFAULT;
-+
-+	/* Round up to an even value to avoid tripping controllers up. */
-+	dummy = round_up(dummy, 2);
-+
-+	/* Update the fast read settings. */
-+	spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_8_8_8_DTR],
-+				  0, dummy, opcode,
-+				  SNOR_PROTO_8_8_8_DTR);
-+
-+out:
-+	kfree(dwords);
-+	return ret;
++	usleep_range(SPI_NOR_SRST_SLEEP_MIN, SPI_NOR_SRST_SLEEP_MAX);
 +}
 +
- /**
-  * spi_nor_parse_sfdp() - parse the Serial Flash Discoverable Parameters.
-  * @nor:		pointer to a 'struct spi_nor'
-@@ -1209,6 +1296,10 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
- 			err = spi_nor_parse_4bait(nor, param_header, params);
- 			break;
+ /* mtd resume handler */
+ static void spi_nor_resume(struct mtd_info *mtd)
+ {
+@@ -3175,6 +3213,9 @@ void spi_nor_restore(struct spi_nor *nor)
+ 	    nor->flags & SNOR_F_BROKEN_RESET)
+ 		nor->params->set_4byte_addr_mode(nor, false);
  
-+		case SFDP_PROFILE1_ID:
-+			err = spi_nor_parse_profile1(nor, param_header, params);
-+			break;
++	if (nor->flags & SNOR_F_SOFT_RESET)
++		spi_nor_soft_reset(nor);
 +
- 		default:
- 			break;
- 		}
+ 	spi_nor_quad_enable(nor, false);
+ }
+ EXPORT_SYMBOL_GPL(spi_nor_restore);
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index cd549042c53d..299685d15dc2 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -51,6 +51,8 @@
+ #define SPINOR_OP_CLFSR		0x50	/* Clear flag status register */
+ #define SPINOR_OP_RDEAR		0xc8	/* Read Extended Address Register */
+ #define SPINOR_OP_WREAR		0xc5	/* Write Extended Address Register */
++#define SPINOR_OP_SRSTEN	0x66	/* Software Reset Enable */
++#define SPINOR_OP_SRST		0x99	/* Software Reset */
+ 
+ /* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
+ #define SPINOR_OP_READ_4B	0x13	/* Read data bytes (low frequency) */
 -- 
 2.27.0
 
