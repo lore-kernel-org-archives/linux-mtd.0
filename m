@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 63071C433E5
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2020 13:13:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3463C433F7
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2020 13:13:42 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D80FB20737
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2020 13:13:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 83AFE20737
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2020 13:13:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bki1sQWR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D80FB20737
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KhI/H4P6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 83AFE20737
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=yadavpratyush.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=7tUy3UvhSvmuY2ePkx6ler4KY5zdnKfE4GNSf+q5am0=; b=bki1sQWR4030eMJRsceP2hX7R
-	TN5f3791Ox8LIhi5jpWTZv+a2T4uDvls5ooHlhFA3OYXzWTpz8xxnL5Sh5u9y6EFpCswk6mnKIlAV
-	VLYH5YvnIAVvXQQR9sdGop6Jrq4oLDc8/PP/4p4h5Yh3aeJ/NgyiEfscSVTlVryDCc4H9BY2Ozc02
-	uJqVj+UyWq2VqD1/TC6xyI9wfCEbjxha5A2yMNeDThGEtE5Qa1bNbwoBKAIrdGVj4aIjspYVPkxpS
-	OZG3afK0HZsxdbgsdQkx0/VyM0lv1r7AtGjCqv2FIEsAWt0OtTmIOqWENEoVK+890/4yqQBOH43kF
-	9YsLLCueA==;
+	 bh=YgWrhU7ox97VWQwyLuE5N/GyA54vvDkROQn1FFZc2i0=; b=KhI/H4P6OK5sJxgjhi1Pmc49V
+	NXhV7wKYoNdVbWXMfUZsbmIjUVTZQQiwSYrzWNP/nGF6RcWC8PT5Gwfn2VXS/si2NOn77X12ijoTR
+	suAIpt4en8NpSbFdmsh2t/LN2HvWH9iGDs/+ALZkl7NYfJB89j9q6Db51E0vtqHi+G1gGeBxO1YOs
+	gFjcwBQhS1N6AsUJFB8z9YaRx3iWKgzMIMwPYjuaIIyFqihWoUkONjkc8gX7yEYQPeP4zlwP8IhgD
+	dYcKJvWOG9A5HV3aYsNsHgOybvmrHUu55Ut26E+SDmw4C+gQ+Royif4ypZi120ZCLjs77jhvzEDV+
+	WwjVP4MNA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jyb1Z-0003Uo-Ti; Thu, 23 Jul 2020 13:12:38 +0000
+	id 1jyb1z-0003eN-6F; Thu, 23 Jul 2020 13:13:03 +0000
 Received: from relay5-d.mail.gandi.net ([217.70.183.197])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jyb1T-0003T0-7M
- for linux-mtd@lists.infradead.org; Thu, 23 Jul 2020 13:12:34 +0000
+ id 1jyb1v-0003cA-8g
+ for linux-mtd@lists.infradead.org; Thu, 23 Jul 2020 13:13:01 +0000
 X-Originating-IP: 42.109.196.68
 Received: from localhost.localdomain (unknown [42.109.196.68])
  (Authenticated sender: me@yadavpratyush.com)
- by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 986591C0014;
- Thu, 23 Jul 2020 13:12:26 +0000 (UTC)
+ by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id EBB141C0010;
+ Thu, 23 Jul 2020 13:12:54 +0000 (UTC)
 From: Pratyush Yadav <me@yadavpratyush.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v11 01/14] mtd: spi-nor: core: add spi_nor_{read,
- write}_reg() helpers
-Date: Thu, 23 Jul 2020 18:41:50 +0530
-Message-Id: <20200723131203.40916-2-me@yadavpratyush.com>
+Subject: [PATCH v11 08/14] mtd: spi-nor: core: enable octal DTR mode when
+ possible
+Date: Thu, 23 Jul 2020 18:41:57 +0530
+Message-Id: <20200723131203.40916-9-me@yadavpratyush.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200723131203.40916-1-me@yadavpratyush.com>
 References: <20200723131203.40916-1-me@yadavpratyush.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200723_091231_476664_0C783367 
-X-CRM114-Status: GOOD (  10.56  )
+X-CRM114-CacheID: sfid-20200723_091259_467632_6668C0D3 
+X-CRM114-Status: GOOD (  12.99  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,249 +80,88 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Pratyush Yadav <p.yadav@ti.com>
 
-They are thin wrappers around nor->controller_ops->{read,write}_reg().
-In a future commit DTR support will be added. These ops can not be
-supported by the {read,write}_reg() hooks and these helpers will make it
-easier to reject those calls.
+Allow flashes to specify a hook to enable octal DTR mode. Use this hook
+whenever possible to get optimal transfer speeds.
 
 Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/mtd/spi-nor/core.c | 110 ++++++++++++++++---------------------
- 1 file changed, 47 insertions(+), 63 deletions(-)
+ drivers/mtd/spi-nor/core.c | 35 +++++++++++++++++++++++++++++++++++
+ drivers/mtd/spi-nor/core.h |  2 ++
+ 2 files changed, 37 insertions(+)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 65eff4ce6ab1..2ccf2c154779 100644
+index 6efc86e2aba0..b990fc7add20 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -82,6 +82,18 @@ static int spi_nor_spimem_exec_op(struct spi_nor *nor, struct spi_mem_op *op)
- 	return spi_mem_exec_op(nor->spimem, op);
+@@ -3050,6 +3050,35 @@ static int spi_nor_init_params(struct spi_nor *nor)
+ 	return 0;
  }
  
-+static int spi_nor_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf,
-+			    size_t len)
++/** spi_nor_octal_dtr_enable() - enable Octal DTR I/O if needed
++ * @nor:                 pointer to a 'struct spi_nor'
++ * @enable:              whether to enable or disable Octal DTR
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++static int spi_nor_octal_dtr_enable(struct spi_nor *nor, bool enable)
 +{
-+	return nor->controller_ops->read_reg(nor, opcode, buf, len);
-+}
++	int ret;
 +
-+static int spi_nor_write_reg(struct spi_nor *nor, u8 opcode, const u8 *buf,
-+			     size_t len)
-+{
-+	return nor->controller_ops->write_reg(nor, opcode, buf, len);
++	if (!nor->params->octal_dtr_enable)
++		return 0;
++
++	if (!(nor->read_proto == SNOR_PROTO_8_8_8_DTR &&
++	      nor->write_proto == SNOR_PROTO_8_8_8_DTR))
++		return 0;
++
++	ret = nor->params->octal_dtr_enable(nor, enable);
++	if (ret)
++		return ret;
++
++	if (enable)
++		nor->reg_proto = SNOR_PROTO_8_8_8_DTR;
++	else
++		nor->reg_proto = SNOR_PROTO_1_1_1;
++
++	return 0;
 +}
 +
  /**
-  * spi_nor_spimem_read_data() - read data from flash's memory region via
-  *                              spi-mem
-@@ -228,10 +240,8 @@ int spi_nor_write_enable(struct spi_nor *nor)
- 				   SPI_MEM_OP_NO_DATA);
+  * spi_nor_quad_enable() - enable/disable Quad I/O if needed.
+  * @nor:                pointer to a 'struct spi_nor'
+@@ -3090,6 +3119,12 @@ static int spi_nor_init(struct spi_nor *nor)
+ {
+ 	int err;
  
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_WREN,
--						     NULL, 0);
--	}
-+	} else
-+		ret = spi_nor_write_reg(nor, SPINOR_OP_WREN, NULL, 0);
++	err = spi_nor_octal_dtr_enable(nor, true);
++	if (err) {
++		dev_dbg(nor->dev, "octal mode not supported\n");
++		return err;
++	}
++
+ 	err = spi_nor_quad_enable(nor, true);
+ 	if (err) {
+ 		dev_dbg(nor->dev, "quad mode not supported\n");
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index 27e00a9f5950..17dbbb3e4796 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -203,6 +203,7 @@ struct spi_nor_locking_ops {
+  *                      higher index in the array, the higher priority.
+  * @erase_map:		the erase map parsed from the SFDP Sector Map Parameter
+  *                      Table.
++ * @octal_dtr_enable:	enables SPI NOR octal DTR mode.
+  * @quad_enable:	enables/disables SPI NOR Quad mode.
+  * @set_4byte_addr_mode: puts the SPI NOR in 4 byte addressing mode.
+  * @convert_addr:	converts an absolute address into something the flash
+@@ -226,6 +227,7 @@ struct spi_nor_flash_parameter {
  
- 	if (ret)
- 		dev_dbg(nor->dev, "error %d on Write Enable\n", ret);
-@@ -257,10 +267,8 @@ int spi_nor_write_disable(struct spi_nor *nor)
- 				   SPI_MEM_OP_NO_DATA);
+ 	struct spi_nor_erase_map        erase_map;
  
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_WRDI,
--						     NULL, 0);
--	}
-+	} else
-+		ret = spi_nor_write_reg(nor, SPINOR_OP_WRDI, NULL, 0);
- 
- 	if (ret)
- 		dev_dbg(nor->dev, "error %d on Write Disable\n", ret);
-@@ -288,10 +296,8 @@ static int spi_nor_read_sr(struct spi_nor *nor, u8 *sr)
- 				   SPI_MEM_OP_DATA_IN(1, sr, 1));
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDSR,
--						    sr, 1);
--	}
-+	} else
-+		ret = spi_nor_read_reg(nor, SPINOR_OP_RDSR, sr, 1);
- 
- 	if (ret)
- 		dev_dbg(nor->dev, "error %d reading SR\n", ret);
-@@ -319,10 +325,8 @@ static int spi_nor_read_fsr(struct spi_nor *nor, u8 *fsr)
- 				   SPI_MEM_OP_DATA_IN(1, fsr, 1));
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDFSR,
--						    fsr, 1);
--	}
-+	} else
-+		ret = spi_nor_read_reg(nor, SPINOR_OP_RDFSR, fsr, 1);
- 
- 	if (ret)
- 		dev_dbg(nor->dev, "error %d reading FSR\n", ret);
-@@ -351,9 +355,8 @@ static int spi_nor_read_cr(struct spi_nor *nor, u8 *cr)
- 				   SPI_MEM_OP_DATA_IN(1, cr, 1));
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDCR, cr, 1);
--	}
-+	} else
-+		ret = spi_nor_read_reg(nor, SPINOR_OP_RDCR, cr, 1);
- 
- 	if (ret)
- 		dev_dbg(nor->dev, "error %d reading CR\n", ret);
-@@ -384,12 +387,11 @@ int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
- 				  SPI_MEM_OP_NO_DATA);
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->write_reg(nor,
--						     enable ? SPINOR_OP_EN4B :
--							      SPINOR_OP_EX4B,
--						     NULL, 0);
--	}
-+	} else
-+		ret = spi_nor_write_reg(nor,
-+					enable ? SPINOR_OP_EN4B :
-+						 SPINOR_OP_EX4B,
-+					NULL, 0);
- 
- 	if (ret)
- 		dev_dbg(nor->dev, "error %d setting 4-byte mode\n", ret);
-@@ -420,10 +422,8 @@ static int spansion_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
- 				   SPI_MEM_OP_DATA_OUT(1, nor->bouncebuf, 1));
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_BRWR,
--						     nor->bouncebuf, 1);
--	}
-+	} else
-+		ret = spi_nor_write_reg(nor, SPINOR_OP_BRWR, nor->bouncebuf, 1);
- 
- 	if (ret)
- 		dev_dbg(nor->dev, "error %d setting 4-byte mode\n", ret);
-@@ -452,10 +452,8 @@ int spi_nor_write_ear(struct spi_nor *nor, u8 ear)
- 				   SPI_MEM_OP_DATA_OUT(1, nor->bouncebuf, 1));
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_WREAR,
--						     nor->bouncebuf, 1);
--	}
-+	} else
-+		ret = spi_nor_write_reg(nor, SPINOR_OP_WREAR, nor->bouncebuf, 1);
- 
- 	if (ret)
- 		dev_dbg(nor->dev, "error %d writing EAR\n", ret);
-@@ -483,10 +481,8 @@ int spi_nor_xread_sr(struct spi_nor *nor, u8 *sr)
- 				   SPI_MEM_OP_DATA_IN(1, sr, 1));
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_XRDSR,
--						    sr, 1);
--	}
-+	} else
-+		ret = spi_nor_read_reg(nor, SPINOR_OP_XRDSR, sr, 1);
- 
- 	if (ret)
- 		dev_dbg(nor->dev, "error %d reading XRDSR\n", ret);
-@@ -528,10 +524,8 @@ static void spi_nor_clear_sr(struct spi_nor *nor)
- 				   SPI_MEM_OP_NO_DATA);
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_CLSR,
--						     NULL, 0);
--	}
-+	} else
-+		ret = spi_nor_write_reg(nor, SPINOR_OP_CLSR, NULL, 0);
- 
- 	if (ret)
- 		dev_dbg(nor->dev, "error %d clearing SR\n", ret);
-@@ -592,10 +586,8 @@ static void spi_nor_clear_fsr(struct spi_nor *nor)
- 				   SPI_MEM_OP_NO_DATA);
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_CLFSR,
--						     NULL, 0);
--	}
-+	} else
-+		ret = spi_nor_write_reg(nor, SPINOR_OP_CLFSR, NULL, 0);
- 
- 	if (ret)
- 		dev_dbg(nor->dev, "error %d clearing FSR\n", ret);
-@@ -736,10 +728,8 @@ static int spi_nor_write_sr(struct spi_nor *nor, const u8 *sr, size_t len)
- 				   SPI_MEM_OP_DATA_OUT(len, sr, 1));
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_WRSR,
--						     sr, len);
--	}
-+	} else
-+		ret = spi_nor_write_reg(nor, SPINOR_OP_WRSR, sr, len);
- 
- 	if (ret) {
- 		dev_dbg(nor->dev, "error %d writing SR\n", ret);
-@@ -938,10 +928,8 @@ static int spi_nor_write_sr2(struct spi_nor *nor, const u8 *sr2)
- 				   SPI_MEM_OP_DATA_OUT(1, sr2, 1));
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_WRSR2,
--						     sr2, 1);
--	}
-+	} else
-+		ret = spi_nor_write_reg(nor, SPINOR_OP_WRSR2, sr2, 1);
- 
- 	if (ret) {
- 		dev_dbg(nor->dev, "error %d writing SR2\n", ret);
-@@ -972,10 +960,8 @@ static int spi_nor_read_sr2(struct spi_nor *nor, u8 *sr2)
- 				   SPI_MEM_OP_DATA_IN(1, sr2, 1));
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDSR2,
--						    sr2, 1);
--	}
-+	} else
-+		ret = spi_nor_read_reg(nor, SPINOR_OP_RDSR2, sr2, 1);
- 
- 	if (ret)
- 		dev_dbg(nor->dev, "error %d reading SR2\n", ret);
-@@ -1003,10 +989,8 @@ static int spi_nor_erase_chip(struct spi_nor *nor)
- 				   SPI_MEM_OP_NO_DATA);
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_CHIP_ERASE,
--						     NULL, 0);
--	}
-+	} else
-+		ret = spi_nor_write_reg(nor, SPINOR_OP_CHIP_ERASE, NULL, 0);
- 
- 	if (ret)
- 		dev_dbg(nor->dev, "error %d erasing chip\n", ret);
-@@ -1158,8 +1142,8 @@ static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
- 		addr >>= 8;
- 	}
- 
--	return nor->controller_ops->write_reg(nor, nor->erase_opcode,
--					      nor->bouncebuf, nor->addr_width);
-+	return spi_nor_write_reg(nor, nor->erase_opcode, nor->bouncebuf,
-+				 nor->addr_width);
- }
- 
- /**
++	int (*octal_dtr_enable)(struct spi_nor *nor, bool enable);
+ 	int (*quad_enable)(struct spi_nor *nor, bool enable);
+ 	int (*set_4byte_addr_mode)(struct spi_nor *nor, bool enable);
+ 	u32 (*convert_addr)(struct spi_nor *nor, u32 addr);
 -- 
 2.27.0
 
