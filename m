@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A98BC433E5
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2020 13:14:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E63BC433EA
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2020 13:14:31 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BEDCC20737
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2020 13:14:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F39EA207BB
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2020 13:14:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="a589S6w9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BEDCC20737
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="MIJdgFKE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F39EA207BB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=yadavpratyush.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=4GW4qJz9Q9Ulg3GaCbscZ28vbPPu+ly1uJnxVDTfsL0=; b=a589S6w9XX2FWN9ZJfgX5+h0R
-	WE88dvQJPSZAOtnouYs38oFs33XcSEnrh68VrvGlO6UYuTPtuBZyq4dAfHlqboFjg4B3h5HQFNeOQ
-	PEud5czOLaufUeSYoWK2xxPxVxFOhHXZWIQnJRW041mghnlLJg1TJdOO8nzsWueD96IspQ2Em++aw
-	JQVwRjV1Q10mU0h3Ywj3yClSJja1eXwLBlc1mJtDF/ZU2YL9zuIJS3sMtiJ3toV5UymCj/UoQ6fn+
-	NwQomK6YUIif6kj8ay1MqL/wpuCTlJOiLhns6KOOi/888L1bE8L+4ALqD6NMxe+IX3afbTzPgwcgn
-	XDJOSnPeA==;
+	 bh=ntzuJshxL17jgaOV6TVEmW9wIMhH/d2SODdKRitTGB0=; b=MIJdgFKEwxCd9j8/GdtUDaiw9
+	4hqWkQzm5+vyF9ZsruZJFMIfOgZ+DPINVFofSsOF7DpiwRgp72mnju8QN3XoNOzK/yQK/WPy0M20F
+	QYAWxm7RAPB8wthLy/4gcgHmwdGnEKLjgv9eBKUadHTAkAOOfz5+sCp4Y/f3OetZ5qQGf16GJx8a3
+	HtTofx1jKZBcvNPRXWMYMadMZ9xshV5TVAmtYmN1Fxxi9LKud/C4Lj/IrAzAosSWiT7enTgiBcVtI
+	XqeKP+s5Q69lNdOoVfLhHN1BwXLAAygbknA6b7ahtLg1ldD5a0upHBQYWgKYq+GJOcE4O/le61Fur
+	zbnQX2ETQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jyb2k-00047Z-Kk; Thu, 23 Jul 2020 13:13:50 +0000
+	id 1jyb2p-0004B5-Ji; Thu, 23 Jul 2020 13:13:55 +0000
 Received: from relay5-d.mail.gandi.net ([217.70.183.197])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jyb27-0003iw-Qk
- for linux-mtd@lists.infradead.org; Thu, 23 Jul 2020 13:13:18 +0000
+ id 1jyb2B-0003lR-Tk
+ for linux-mtd@lists.infradead.org; Thu, 23 Jul 2020 13:13:28 +0000
 X-Originating-IP: 42.109.196.68
 Received: from localhost.localdomain (unknown [42.109.196.68])
  (Authenticated sender: me@yadavpratyush.com)
- by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id E00E31C0007;
- Thu, 23 Jul 2020 13:13:06 +0000 (UTC)
+ by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id E9E451C0006;
+ Thu, 23 Jul 2020 13:13:10 +0000 (UTC)
 From: Pratyush Yadav <me@yadavpratyush.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v11 11/14] mtd: spi-nor: core: disable Octal DTR mode on
- suspend.
-Date: Thu, 23 Jul 2020 18:42:00 +0530
-Message-Id: <20200723131203.40916-12-me@yadavpratyush.com>
+Subject: [PATCH v11 12/14] mtd: spi-nor: core: expose spi_nor_default_setup()
+ in core.h
+Date: Thu, 23 Jul 2020 18:42:01 +0530
+Message-Id: <20200723131203.40916-13-me@yadavpratyush.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200723131203.40916-1-me@yadavpratyush.com>
 References: <20200723131203.40916-1-me@yadavpratyush.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200723_091312_111368_0C74EB68 
-X-CRM114-Status: GOOD (  10.82  )
+X-CRM114-CacheID: sfid-20200723_091316_145548_9F5992B0 
+X-CRM114-Status: GOOD (  11.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,49 +80,48 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Pratyush Yadav <p.yadav@ti.com>
 
-On resume, the init procedure will be run that will re-enable it.
+Flashes might want to add a custom setup hook to configure the flash in
+the proper mode for operation. But after that, they would still want to
+run the default setup hook because it selects the read, program, and
+erase operations. Since there is little point in repeating all that
+code, expose the spi_nor_default_setup() in core.h to
+manufacturer-specific files.
 
 Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/mtd/spi-nor/core.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ drivers/mtd/spi-nor/core.c | 4 ++--
+ drivers/mtd/spi-nor/core.h | 3 +++
+ 2 files changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index f55c062a7bd5..a263196d970f 100644
+index a263196d970f..5ebe0aed0871 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -3193,6 +3193,23 @@ static void spi_nor_soft_reset(struct spi_nor *nor)
- 	usleep_range(SPI_NOR_SRST_SLEEP_MIN, SPI_NOR_SRST_SLEEP_MAX);
+@@ -2740,8 +2740,8 @@ static int spi_nor_select_erase(struct spi_nor *nor)
+ 	return 0;
  }
  
-+/* mtd suspend handler */
-+static int spi_nor_suspend(struct mtd_info *mtd)
-+{
-+	struct spi_nor *nor = mtd_to_spi_nor(mtd);
-+	struct device *dev = nor->dev;
-+	int ret;
-+
-+	/* Disable octal DTR mode if we enabled it. */
-+	ret = spi_nor_octal_dtr_enable(nor, false);
-+	if (ret) {
-+		dev_err(dev, "suspend() failed\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
- /* mtd resume handler */
- static void spi_nor_resume(struct mtd_info *mtd)
+-static int spi_nor_default_setup(struct spi_nor *nor,
+-				 const struct spi_nor_hwcaps *hwcaps)
++int spi_nor_default_setup(struct spi_nor *nor,
++			  const struct spi_nor_hwcaps *hwcaps)
  {
-@@ -3387,6 +3404,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
- 	mtd->size = nor->params->size;
- 	mtd->_erase = spi_nor_erase;
- 	mtd->_read = spi_nor_read;
-+	mtd->_suspend = spi_nor_suspend;
- 	mtd->_resume = spi_nor_resume;
+ 	struct spi_nor_flash_parameter *params = nor->params;
+ 	u32 ignored_mask, shared_mask;
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index ec54ce6c5403..24cff27c51aa 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -453,6 +453,9 @@ int spi_nor_post_bfpt_fixups(struct spi_nor *nor,
+ 			     const struct sfdp_bfpt *bfpt,
+ 			     struct spi_nor_flash_parameter *params);
  
- 	if (nor->params->locking_ops) {
++int spi_nor_default_setup(struct spi_nor *nor,
++			  const struct spi_nor_hwcaps *hwcaps);
++
+ static struct spi_nor __maybe_unused *mtd_to_spi_nor(struct mtd_info *mtd)
+ {
+ 	return mtd->priv;
 -- 
 2.27.0
 
