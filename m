@@ -2,60 +2,82 @@ Return-Path: <SRS0=DvMR=BC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_REPLYTO_END_DIGIT,
-	HEADER_FROM_DIFFERENT_DOMAINS,LOTS_OF_MONEY,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,SUBJ_ALL_CAPS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 136F5C433E0
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2020 19:50:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA138C433E8
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2020 19:58:05 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D4B0A2067D
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2020 19:50:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 93EA620792
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2020 19:58:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="0G3wdt8W"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D4B0A2067D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=znettelecom.net
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="3YiwptAC";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j+gOXK8r"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 93EA620792
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Reply-To:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-Id:Date:From:To:Subject:Content-Description:
-	MIME-Version:Cc:Content-ID:Resent-Date:Resent-From:Resent-Sender:Resent-To:
-	Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=YvdzPc3aOVJk8sJH3A9dEDbE4sZOG1Uun8HXCC5rynQ=; b=0G3wdt8WYoSQgIyfxjX2wA5512
-	135SG1SvzKJwzJDukZzIvb9kHDk8DOqRGPM58BRBv993iylogTSi8eVvTSYD5UcwzL7V28ZK1lM1D
-	ARR5yBb6rEwBqSSZsauq2I+9RYDirw0apN6BkfG7l0H7hZBqdg/NhhDI1UWi+gB2t8VIo9orlJzWz
-	pAZNil5M8DGwWOVAVjNYGcLjExxxHCpIYiwMt3llslOboH05d+g/PqFGKOTFExDZ8bkgD9mE0zDR7
-	BqFPoOqjzPZE9yTG9VJEp3PPPWziIaJ0+LPHInbaXNKmNFoSwWH3Mo+utWJUB/50dxUm0L467y8RF
-	1eTu4hhQ==;
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=6a5fR/iqo3gimZY/gRvS6Jocj2oTQ98JgSWJvVOuarQ=; b=3YiwptACEN62u7V4w7naI9tMf
+	shohUDPvQrExorS7AWHRIUGZBQS7wME09JQNcZJHJFiArETfoOLrzlyNwCtVfIXHSI35ZoIJZBVPa
+	SPDBcS86G7mv1YpS/pJrHhpHTqeop9BH5pOxb33/QGiGGSbs/7v1Y3m1IfnuBGhvyEDOAcNYC9PjJ
+	aYE4SLyJHiB3Q9FPFaueZP7AfDEP+QXL/JSV2olrFyM06LwbEFIJCHh0144PYr9ciZkuvPPYFs6Uo
+	Q7URQW3i4kvU7GocT2xOvLe1AV/W4N7HkO3YIK5Y1L3oU0k3SJg1kzKeaXpL7vWiMqCbzkFfAa1yo
+	8/yBJlItg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jyhDx-0000ou-01; Thu, 23 Jul 2020 19:49:49 +0000
-Received: from [187.0.30.10] (helo=srv01.znettelecom.net)
+	id 1jyhLS-0001yH-UK; Thu, 23 Jul 2020 19:57:35 +0000
+Received: from mail-qt1-x843.google.com ([2607:f8b0:4864:20::843])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jyhDV-0000el-GY
- for linux-mtd@lists.infradead.org; Thu, 23 Jul 2020 19:49:46 +0000
-Received: from 129.205.136.77.rev.sfr.net ([77.136.205.129] helo=[172.20.10.2])
- by srv01.znettelecom.net with esmtpa (Exim 4.92.2)
- (envelope-from <alan@znettelecom.net>) id 1jyhDO-0000Kk-90
- for linux-mtd@lists.infradead.org; Thu, 23 Jul 2020 16:49:14 -0300
+ id 1jyhLQ-0001xS-DQ
+ for linux-mtd@lists.infradead.org; Thu, 23 Jul 2020 19:57:33 +0000
+Received: by mail-qt1-x843.google.com with SMTP id a32so5337693qtb.5
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Jul 2020 12:57:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=Hk1VOua7WA4W+2a0I8tnHK2NN+ZOxHTFP4Vzc6rLNi8=;
+ b=j+gOXK8rtTNs77JTc+74zeZInWXCebPkiK/Qra1mP+D0F5cHd9qLF9OvxofuHVNkZQ
+ Ewc7nDTdnrpEjzXM2dKHTWVQLOEASdds3607fOuHPynBxCAXEN1IgdlFSXnowoe8gQ5o
+ 3i6j+QdgSAd8X/UZlH+Aar36Bc4rxRx2vWtgTZ6FRzrL3jypvRUG0SaKfCui/w2d6iNm
+ a5sBDMWAcv9OYSLfqz4tj+740k9AAuIavOY95lhSoEqn8GmmzQ0V/MyOmuy/d0coOH1a
+ biZ3A+ZLRrDNRasMdi/VfuBrP4bZtRe+a2oxt3EjeRbdsJQT+/OhB+FQuYffy2qNvcY3
+ TamA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=Hk1VOua7WA4W+2a0I8tnHK2NN+ZOxHTFP4Vzc6rLNi8=;
+ b=fRbYOvHG2x3tY+5M+E3OQI8l3rglt8iijkJMsJtzPyroLSxALT+6QIj5GfmrxO4Av1
+ Yf82GKbU4W48hw9mJjpSm74ZbUxU/rEIoPzYR2cJPQDVg/R7DX5UHs3BHWKB+Um14WCV
+ 8La7dUpEp4/tmJly/hl0WfUCMQbL5byJzqtPMDNSl8tNsmCZIQpveSBRxnWET2wKGRT/
+ k1MfLu0kII7TbRc4ZIP2BE73GwqrOEx4aSdcgD7P1ACoxo/JXTvepolDVtmz2hFeq7DV
+ 5grs4sZcAf5utuoNQRz3Nc5cs4Pl43FH/1DvyIt2IlLufEanFt+1vdlEJEr+MqutMxnW
+ YBuQ==
+X-Gm-Message-State: AOAM5331hi2YGIscBdIqBXtuHlru/V/KY2XHYEFGFg0Q7YlhYiJfF7ci
+ M2MWYOk9E8X/rmiA3rgT5sCGz5wQLFF9s+qmjT0=
+X-Google-Smtp-Source: ABdhPJyx2lXUQ3HDTMYdZgeEMfHMWEhRcamB/2Z1IY/HT2QdGNZBtXBBN7HtWjH6eRybQhV+lkurDSOe++dKQvFVJOU=
+X-Received: by 2002:aed:2f46:: with SMTP id l64mr5986227qtd.1.1595534249528;
+ Thu, 23 Jul 2020 12:57:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Description: Mail message body
-Subject: DONATION OFFER
-To: linux-mtd@lists.infradead.org
-From: "Steve lenka" <alan@znettelecom.net>
-Date: Thu, 23 Jul 2020 21:49:02 +0200
-X-Antivirus: Avast (VPS 200723-2, 23/07/2020), Outbound message
-X-Antivirus-Status: Clean
-Message-Id: <E1jyhDO-0000Kk-90@srv01.znettelecom.net>
+References: <20200716115346.GA1667288@kroah.com>
+ <20200723111827.GA1963557@kroah.com>
+In-Reply-To: <20200723111827.GA1963557@kroah.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Thu, 23 Jul 2020 21:57:18 +0200
+Message-ID: <CAFLxGvzP5wMUvXzTFc8S8oqfM8mereFSy92qwwmgg-R73Z9sgQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: properly check all write ioctls for permissions
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200723_154921_846410_A49EDB44 
-X-CRM114-Status: UNSURE (  -4.29  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200723_155732_464974_55924EF7 
+X-CRM114-Status: GOOD (  13.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,23 +89,41 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: stevelenkathomson12@gmail.com
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Vignesh Raghavendra <vigneshr@ti.com>, LKML <linux-kernel@vger.kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello, Donation of 1,000,000.00 GBP given to you by Steve & Lenka Thomson, =
-This is to help fight against Corona Virus and help the poor people off the=
- streets. send email for more details: stevelenkathomson12@gmail.com
-Steve & Lenka Thomson
+On Thu, Jul 23, 2020 at 1:19 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Thu, Jul 16, 2020 at 01:53:46PM +0200, Greg Kroah-Hartman wrote:
+> > When doing a "write" ioctl call, properly check that we have permissions
+> > to do so before copying anything from userspace or anything else so we
+> > can "fail fast".  This includes also covering the MEMWRITE ioctl which
+> > previously missed checking for this.
+> >
+> > Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+> > Cc: Richard Weinberger <richard@nod.at>
+> > Cc: Vignesh Raghavendra <vigneshr@ti.com>
+> > Cc: stable <stable@kernel.org>
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > ---
+> >  drivers/mtd/mtdchar.c | 54 +++++++++++++++++++++++++++++++++++--------
+> >  1 file changed, 45 insertions(+), 9 deletions(-)
+>
+> Any objection to this patch getting into 5.8-final?
 
--- =
+Well, I hoped to get some acks/reviews...
 
-L'absence de virus dans ce courrier =E9lectronique a =E9t=E9 v=E9rifi=E9e p=
-ar le logiciel antivirus Avast.
-https://www.avast.com/antivirus
+Applied to mtd/fixes! :-)
 
+-- 
+Thanks,
+//richard
 
 ______________________________________________________
 Linux MTD discussion mailing list
