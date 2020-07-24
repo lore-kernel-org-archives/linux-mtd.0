@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 064BCC4332E
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 Jul 2020 07:34:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F6FBC43619
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 Jul 2020 07:34:42 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C63C3206F0
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 Jul 2020 07:34:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 120AC206F0
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 Jul 2020 07:34:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="0hPa7GW6";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="gTEc4Kjk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C63C3206F0
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="09isnScX";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="CfD2KeaR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 120AC206F0
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,37 +26,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=JQJL1KYrvNmYWnewLif9wcTCyFDAQ0YDGaUACSNuTvk=; b=0hPa7GW6Ea6lV+UoN9OqDuZTD
-	4XSKHWHSBUePLclM3JhexgEmriMLX8p37+ZcrLm9Q+gak/uwQM63Ad8zP84dJk4SNQUZeongZBqMD
-	u4GK2xjZfe9aSaDxxWsmQtJsHpC6HgqumrNxaNq9dPr1/9k+eu+e2iM/+J+eEz5rbFGU0/1whsGHl
-	W7avM4fNH4jgsHYsejijm+PLZlGmMQpCETudWe2PkGwgoOVh2xrkm8D1W/llv8z3n0eyG7FB2KUt6
-	8/yuLeMNlshwe+lkPHxqNR4ChDMZVCs/64rXB/US+bVKDO0gsl1HC1jHSGNkSUMnBnV2x4IxpJHxU
-	CjOv+0CRw==;
+	 bh=yppvNbZULqbcIAeE2UFyS2zHDTnBpvNmzAKSPnPTZN8=; b=09isnScX7HXqr9rTLJYfOSbVO
+	F5WKFAp5uTvbo9HrrjWqXDp+X0a00cwdmh0jVLaCwYhWp1N83QHFllWGYiny0DRYGLyJJrToCNx/9
+	DwTfUsQ1gocGA4RzLqvGwjlF6wgEcdR9Bx7K9TiyGIMSEQEJfJ+UKJnTS1MAF6wBvo9T3mdPtlzYl
+	xlnVxVvG33rZQNndwyyhjJISLoZ+usjlUVc88qvHQ0GVJ4eu9k4Ru1xGwyVESSPLkK8jHw6Grkc0M
+	XOIpuG3dmjDN0E3Dp5ZN8HcI0i+EOHKygr5tZpV5U/4Gb/Qa6pl5Ha5WMvNkWz7HqWVR79NhDS8Vo
+	AKahdDVOg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jysCw-0006P5-63; Fri, 24 Jul 2020 07:33:30 +0000
+	id 1jysD5-0006RS-6J; Fri, 24 Jul 2020 07:33:39 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jysCt-0006ON-R9
- for linux-mtd@merlin.infradead.org; Fri, 24 Jul 2020 07:33:28 +0000
+ id 1jysCy-0006PV-0e
+ for linux-mtd@merlin.infradead.org; Fri, 24 Jul 2020 07:33:32 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=2XFxJKGxcOOVZQBrWMAqxenYfkp6e0GZfp9ni0DLWtg=; b=gTEc4KjkWvzlJ2bedxZvLjKdLc
- jeVldYyMFED+kxajisIDbZ/bvK3qIJo0l30qwC9v7Hj2QlBhsGUfMftQ8iK2rwKNdwvu01rAHGWZf
- nVxEDNCEX4kvJX5yiTKmf7X5/QAyY3/Ve7tL6N0HEGZ/o90YlpM8rqcVzafxDW8jN99WGTZXnviz/
- G2d2FgOOnuLEIqoPSyUYRXijQfCToH5Wh5qjqD816tf0ZkD6FecwJwptMtw8/8OGE4kAU1JUcmzby
- v+HnRALYSaBIbTB88vq80JG5ITOpXdllVP8hxc5W2Ql1NFjCHaf3H01McoFjiJzazFKUGOpjvPrEK
- po4eHykw==;
+ bh=FzZ6/zgVBqPtRjoXgIlMHr6borSDoijxnK9rowFZCss=; b=CfD2KeaRJ2qBZP1kGC4kr75Plv
+ RUd9ep4PNe4vlSlJj9CkVcud4LGi1HiZsC1Gm26T7GCAzkMmWrgDMCo9enSiZ3R3KFjnANsLche7J
+ pGpbI3JkAQZKSWh3c/YykNOuyTtW/2oP/VUz8szZ0Qj7JLhD6aBkkFwWPeuxBKUCM8aRLakaop48L
+ lJfYG3VKEJ9U4reUzRBpsZqrJUot2zofzJHGsLG1UUNg4hnAbFhK1rW0BP1yhsESEI3KNHSrTpyhc
+ 1DGrBJAoSyQjjGZTPk340CKjIKrbfgmclbSslue9JMa23y9f78VPKszpgrbxsgx1Z5XTppjom91TI
+ FTAfadJw==;
 Received: from [2001:4bb8:18c:2acc:8dfe:be3c:592c:efc5] (helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jysCr-0006C7-03; Fri, 24 Jul 2020 07:33:26 +0000
+ id 1jysCv-0006Ca-Ni; Fri, 24 Jul 2020 07:33:31 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 04/14] bdi: initialize ->ra_pages in bdi_init
-Date: Fri, 24 Jul 2020 09:33:03 +0200
-Message-Id: <20200724073313.138789-5-hch@lst.de>
+Subject: [PATCH 06/14] block: lift setting the readahead size into the block
+ layer
+Date: Fri, 24 Jul 2020 09:33:05 +0200
+Message-Id: <20200724073313.138789-7-hch@lst.de>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200724073313.138789-1-hch@lst.de>
 References: <20200724073313.138789-1-hch@lst.de>
@@ -74,174 +75,288 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: David Sterba <dsterba@suse.com>, linux-raid@vger.kernel.org,
- Hans de Goede <hdegoede@redhat.com>, Minchan Kim <minchan@kernel.org>,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- linux-block@vger.kernel.org, Song Liu <song@kernel.org>, dm-devel@redhat.com,
- linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-mm@kvack.org, drbd-dev@lists.linbit.com
+Cc: linux-raid@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+ Minchan Kim <minchan@kernel.org>, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+ Song Liu <song@kernel.org>, dm-devel@redhat.com, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
+ drbd-dev@lists.linbit.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Set up a readahead size by default, as very few users have a good
-reason to change it.
+Drivers shouldn't really mess with the readahead size, as that is a VM
+concept.  Instead set it based on the optimal I/O size by lifting the
+algorithm from the md driver when registering the disk.  Also set
+bdi->io_pages there as well by applying the same scheme based on
+max_sectors.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
-Acked-by: David Sterba <dsterba@suse.com> [btrfs]
-Acked-by: Richard Weinberger <richard@nod.at> [ubifs, mtd]
 ---
- block/blk-core.c      | 1 -
- drivers/mtd/mtdcore.c | 1 +
- fs/9p/vfs_super.c     | 4 ++--
- fs/afs/super.c        | 1 -
- fs/btrfs/disk-io.c    | 1 -
- fs/fuse/inode.c       | 1 -
- fs/nfs/super.c        | 9 +--------
- fs/ubifs/super.c      | 1 +
- fs/vboxsf/super.c     | 1 +
- mm/backing-dev.c      | 1 +
- 10 files changed, 7 insertions(+), 14 deletions(-)
+ block/blk-settings.c         |  5 ++---
+ block/blk-sysfs.c            |  1 -
+ block/genhd.c                | 13 +++++++++++--
+ drivers/block/aoe/aoeblk.c   |  2 --
+ drivers/block/drbd/drbd_nl.c | 12 +-----------
+ drivers/md/bcache/super.c    |  4 ----
+ drivers/md/dm-table.c        |  3 ---
+ drivers/md/raid0.c           | 16 ----------------
+ drivers/md/raid10.c          | 24 +-----------------------
+ drivers/md/raid5.c           | 13 +------------
+ 10 files changed, 16 insertions(+), 77 deletions(-)
 
-diff --git a/block/blk-core.c b/block/blk-core.c
-index 93104c7470e8ac..ea1665de7a2079 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -538,7 +538,6 @@ struct request_queue *blk_alloc_queue(int node_id)
- 	if (!q->stats)
- 		goto fail_stats;
- 
--	q->backing_dev_info->ra_pages = VM_READAHEAD_PAGES;
- 	q->backing_dev_info->capabilities = BDI_CAP_CGROUP_WRITEBACK;
- 	q->node = node_id;
- 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 7d930569a7dfb7..01b3fe888d885b 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -2196,6 +2196,7 @@ static struct backing_dev_info * __init mtd_bdi_init(char *name)
- 	bdi = bdi_alloc(NUMA_NO_NODE);
- 	if (!bdi)
- 		return ERR_PTR(-ENOMEM);
-+	bdi->ra_pages = 0;
- 
- 	/*
- 	 * We put '-0' suffix to the name to get the same name format as we
-diff --git a/fs/9p/vfs_super.c b/fs/9p/vfs_super.c
-index 74df32be4c6a52..a338eb979cadf9 100644
---- a/fs/9p/vfs_super.c
-+++ b/fs/9p/vfs_super.c
-@@ -80,8 +80,8 @@ v9fs_fill_super(struct super_block *sb, struct v9fs_session_info *v9ses,
- 	if (ret)
- 		return ret;
- 
--	if (v9ses->cache)
--		sb->s_bdi->ra_pages = VM_READAHEAD_PAGES;
-+	if (!v9ses->cache)
-+		sb->s_bdi->ra_pages = 0;
- 
- 	sb->s_flags |= SB_ACTIVE | SB_DIRSYNC;
- 	if (!v9ses->cache)
-diff --git a/fs/afs/super.c b/fs/afs/super.c
-index b552357b1d1379..3a40ee752c1e3f 100644
---- a/fs/afs/super.c
-+++ b/fs/afs/super.c
-@@ -456,7 +456,6 @@ static int afs_fill_super(struct super_block *sb, struct afs_fs_context *ctx)
- 	ret = super_setup_bdi(sb);
- 	if (ret)
- 		return ret;
--	sb->s_bdi->ra_pages	= VM_READAHEAD_PAGES;
- 
- 	/* allocate the root inode and dentry */
- 	if (as->dyn_root) {
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index ad157b55d7f5f0..f92c45fe019c48 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3033,7 +3033,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 	}
- 
- 	sb->s_bdi->capabilities |= BDI_CAP_CGROUP_WRITEBACK;
--	sb->s_bdi->ra_pages = VM_READAHEAD_PAGES;
- 	sb->s_bdi->ra_pages *= btrfs_super_num_devices(disk_super);
- 	sb->s_bdi->ra_pages = max(sb->s_bdi->ra_pages, SZ_4M / PAGE_SIZE);
- 
-diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-index bba747520e9b08..17b00670fb539e 100644
---- a/fs/fuse/inode.c
-+++ b/fs/fuse/inode.c
-@@ -1049,7 +1049,6 @@ static int fuse_bdi_init(struct fuse_conn *fc, struct super_block *sb)
- 	if (err)
- 		return err;
- 
--	sb->s_bdi->ra_pages = VM_READAHEAD_PAGES;
- 	/* fuse does it's own writeback accounting */
- 	sb->s_bdi->capabilities = BDI_CAP_NO_ACCT_WB | BDI_CAP_STRICTLIMIT;
- 
-diff --git a/fs/nfs/super.c b/fs/nfs/super.c
-index 7a70287f21a2c1..f943e37853fa25 100644
---- a/fs/nfs/super.c
-+++ b/fs/nfs/super.c
-@@ -1200,13 +1200,6 @@ static void nfs_get_cache_cookie(struct super_block *sb,
- }
- #endif
- 
--static void nfs_set_readahead(struct backing_dev_info *bdi,
--			      unsigned long iomax_pages)
--{
--	bdi->ra_pages = VM_READAHEAD_PAGES;
--	bdi->io_pages = iomax_pages;
--}
--
- int nfs_get_tree_common(struct fs_context *fc)
+diff --git a/block/blk-settings.c b/block/blk-settings.c
+index 76a7e03bcd6cac..01049e9b998f1d 100644
+--- a/block/blk-settings.c
++++ b/block/blk-settings.c
+@@ -452,6 +452,8 @@ EXPORT_SYMBOL(blk_limits_io_opt);
+ void blk_queue_io_opt(struct request_queue *q, unsigned int opt)
  {
- 	struct nfs_fs_context *ctx = nfs_fc2context(fc);
-@@ -1251,7 +1244,7 @@ int nfs_get_tree_common(struct fs_context *fc)
- 					     MINOR(server->s_dev));
- 		if (error)
- 			goto error_splat_super;
--		nfs_set_readahead(s->s_bdi, server->rpages);
-+		s->s_bdi->io_pages = server->rpages;
- 		server->super = s;
- 	}
- 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 7fc2f3f07c16ed..ee7692e7a35371 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -2159,6 +2159,7 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
- 				   c->vi.vol_id);
- 	if (err)
- 		goto out_close;
-+	sb->s_bdi->ra_pages = 0; /* ubifs does its own readahead */
- 
- 	sb->s_fs_info = c;
- 	sb->s_magic = UBIFS_SUPER_MAGIC;
-diff --git a/fs/vboxsf/super.c b/fs/vboxsf/super.c
-index 8fe03b4a0d2b03..6574ae5a97c2c8 100644
---- a/fs/vboxsf/super.c
-+++ b/fs/vboxsf/super.c
-@@ -167,6 +167,7 @@ static int vboxsf_fill_super(struct super_block *sb, struct fs_context *fc)
- 	err = super_setup_bdi_name(sb, "vboxsf-%d", sbi->bdi_id);
- 	if (err)
- 		goto fail_free;
-+	sb->s_bdi->ra_pages = 0;
- 
- 	/* Turn source into a shfl_string and map the folder */
- 	size = strlen(fc->source) + 1;
-diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-index 8e8b00627bb2d8..3e441e0ff1bc88 100644
---- a/mm/backing-dev.c
-+++ b/mm/backing-dev.c
-@@ -746,6 +746,7 @@ struct backing_dev_info *bdi_alloc(int node_id)
- 		kfree(bdi);
- 		return NULL;
- 	}
-+	bdi->ra_pages = VM_READAHEAD_PAGES;
- 	return bdi;
+ 	blk_limits_io_opt(&q->limits, opt);
++	q->backing_dev_info->ra_pages =
++		max(queue_io_opt(q) * 2 / PAGE_SIZE, VM_READAHEAD_PAGES);
  }
- EXPORT_SYMBOL(bdi_alloc);
+ EXPORT_SYMBOL(blk_queue_io_opt);
+ 
+@@ -628,9 +630,6 @@ void disk_stack_limits(struct gendisk *disk, struct block_device *bdev,
+ 		printk(KERN_NOTICE "%s: Warning: Device %s is misaligned\n",
+ 		       top, bottom);
+ 	}
+-
+-	t->backing_dev_info->io_pages =
+-		t->limits.max_sectors >> (PAGE_SHIFT - 9);
+ }
+ EXPORT_SYMBOL(disk_stack_limits);
+ 
+diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
+index 7dda709f3ccb6f..ce418d9128a0b2 100644
+--- a/block/blk-sysfs.c
++++ b/block/blk-sysfs.c
+@@ -245,7 +245,6 @@ queue_max_sectors_store(struct request_queue *q, const char *page, size_t count)
+ 
+ 	spin_lock_irq(&q->queue_lock);
+ 	q->limits.max_sectors = max_sectors_kb << 1;
+-	q->backing_dev_info->io_pages = max_sectors_kb >> (PAGE_SHIFT - 10);
+ 	spin_unlock_irq(&q->queue_lock);
+ 
+ 	return ret;
+diff --git a/block/genhd.c b/block/genhd.c
+index 8b1e9f48957cb5..097d4e4bc0b8a2 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -775,6 +775,7 @@ static void __device_add_disk(struct device *parent, struct gendisk *disk,
+ 			      const struct attribute_group **groups,
+ 			      bool register_queue)
+ {
++	struct request_queue *q = disk->queue;
+ 	dev_t devt;
+ 	int retval;
+ 
+@@ -785,7 +786,7 @@ static void __device_add_disk(struct device *parent, struct gendisk *disk,
+ 	 * registration.
+ 	 */
+ 	if (register_queue)
+-		elevator_init_mq(disk->queue);
++		elevator_init_mq(q);
+ 
+ 	/* minors == 0 indicates to use ext devt from part0 and should
+ 	 * be accompanied with EXT_DEVT flag.  Make sure all
+@@ -815,10 +816,18 @@ static void __device_add_disk(struct device *parent, struct gendisk *disk,
+ 		disk->flags |= GENHD_FL_SUPPRESS_PARTITION_INFO;
+ 		disk->flags |= GENHD_FL_NO_PART_SCAN;
+ 	} else {
+-		struct backing_dev_info *bdi = disk->queue->backing_dev_info;
++		struct backing_dev_info *bdi = q->backing_dev_info;
+ 		struct device *dev = disk_to_dev(disk);
+ 		int ret;
+ 
++		/*
++		 * For read-ahead of large files to be effective, we need to
++		 * readahead at least twice the optimal I/O size.
++		 */
++		bdi->ra_pages = max(queue_io_opt(q) * 2 / PAGE_SIZE,
++				    VM_READAHEAD_PAGES);
++		bdi->io_pages = queue_max_sectors(q) >> (PAGE_SHIFT - 9);
++
+ 		/* Register BDI before referencing it from bdev */
+ 		dev->devt = devt;
+ 		ret = bdi_register(bdi, "%u:%u", MAJOR(devt), MINOR(devt));
+diff --git a/drivers/block/aoe/aoeblk.c b/drivers/block/aoe/aoeblk.c
+index 5ca7216e9e01f3..89b33b402b4e52 100644
+--- a/drivers/block/aoe/aoeblk.c
++++ b/drivers/block/aoe/aoeblk.c
+@@ -347,7 +347,6 @@ aoeblk_gdalloc(void *vp)
+ 	mempool_t *mp;
+ 	struct request_queue *q;
+ 	struct blk_mq_tag_set *set;
+-	enum { KB = 1024, MB = KB * KB, READ_AHEAD = 2 * MB, };
+ 	ulong flags;
+ 	int late = 0;
+ 	int err;
+@@ -407,7 +406,6 @@ aoeblk_gdalloc(void *vp)
+ 	WARN_ON(d->gd);
+ 	WARN_ON(d->flags & DEVFL_UP);
+ 	blk_queue_max_hw_sectors(q, BLK_DEF_MAX_SECTORS);
+-	q->backing_dev_info->ra_pages = READ_AHEAD / PAGE_SIZE;
+ 	d->bufpool = mp;
+ 	d->blkq = gd->queue = q;
+ 	q->queuedata = d;
+diff --git a/drivers/block/drbd/drbd_nl.c b/drivers/block/drbd/drbd_nl.c
+index 650372ee2c7822..212bf711fb6b41 100644
+--- a/drivers/block/drbd/drbd_nl.c
++++ b/drivers/block/drbd/drbd_nl.c
+@@ -1360,18 +1360,8 @@ static void drbd_setup_queue_param(struct drbd_device *device, struct drbd_backi
+ 	decide_on_discard_support(device, q, b, discard_zeroes_if_aligned);
+ 	decide_on_write_same_support(device, q, b, o, disable_write_same);
+ 
+-	if (b) {
++	if (b)
+ 		blk_stack_limits(&q->limits, &b->limits, 0);
+-
+-		if (q->backing_dev_info->ra_pages !=
+-		    b->backing_dev_info->ra_pages) {
+-			drbd_info(device, "Adjusting my ra_pages to backing device's (%lu -> %lu)\n",
+-				 q->backing_dev_info->ra_pages,
+-				 b->backing_dev_info->ra_pages);
+-			q->backing_dev_info->ra_pages =
+-						b->backing_dev_info->ra_pages;
+-		}
+-	}
+ 	fixup_discard_if_not_supported(q);
+ 	fixup_write_zeroes(device, q);
+ }
+diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+index 9e45faa054b6f4..9d3f0711be030f 100644
+--- a/drivers/md/bcache/super.c
++++ b/drivers/md/bcache/super.c
+@@ -1367,10 +1367,6 @@ static int cached_dev_init(struct cached_dev *dc, unsigned int block_size)
+ 	if (ret)
+ 		return ret;
+ 
+-	dc->disk.disk->queue->backing_dev_info->ra_pages =
+-		max(dc->disk.disk->queue->backing_dev_info->ra_pages,
+-		    q->backing_dev_info->ra_pages);
+-
+ 	atomic_set(&dc->io_errors, 0);
+ 	dc->io_disable = false;
+ 	dc->error_limit = DEFAULT_CACHED_DEV_ERROR_LIMIT;
+diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
+index aac4c31cfc8498..324a42ed2f8894 100644
+--- a/drivers/md/dm-table.c
++++ b/drivers/md/dm-table.c
+@@ -1924,9 +1924,6 @@ void dm_table_set_restrictions(struct dm_table *t, struct request_queue *q,
+ 		q->nr_zones = blkdev_nr_zones(t->md->disk);
+ 	}
+ #endif
+-
+-	/* Allow reads to exceed readahead limits */
+-	q->backing_dev_info->io_pages = limits->max_sectors >> (PAGE_SHIFT - 9);
+ }
+ 
+ unsigned int dm_table_get_num_targets(struct dm_table *t)
+diff --git a/drivers/md/raid0.c b/drivers/md/raid0.c
+index f54a449f97aa79..aa2d7279176880 100644
+--- a/drivers/md/raid0.c
++++ b/drivers/md/raid0.c
+@@ -410,22 +410,6 @@ static int raid0_run(struct mddev *mddev)
+ 		 mdname(mddev),
+ 		 (unsigned long long)mddev->array_sectors);
+ 
+-	if (mddev->queue) {
+-		/* calculate the max read-ahead size.
+-		 * For read-ahead of large files to be effective, we need to
+-		 * readahead at least twice a whole stripe. i.e. number of devices
+-		 * multiplied by chunk size times 2.
+-		 * If an individual device has an ra_pages greater than the
+-		 * chunk size, then we will not drive that device as hard as it
+-		 * wants.  We consider this a configuration error: a larger
+-		 * chunksize should be used in that case.
+-		 */
+-		int stripe = mddev->raid_disks *
+-			(mddev->chunk_sectors << 9) / PAGE_SIZE;
+-		if (mddev->queue->backing_dev_info->ra_pages < 2* stripe)
+-			mddev->queue->backing_dev_info->ra_pages = 2* stripe;
+-	}
+-
+ 	dump_zones(mddev);
+ 
+ 	ret = md_integrity_register(mddev);
+diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
+index 9f88ff9bdee437..23d15acbf457d4 100644
+--- a/drivers/md/raid10.c
++++ b/drivers/md/raid10.c
+@@ -3865,19 +3865,6 @@ static int raid10_run(struct mddev *mddev)
+ 	mddev->resync_max_sectors = size;
+ 	set_bit(MD_FAILFAST_SUPPORTED, &mddev->flags);
+ 
+-	if (mddev->queue) {
+-		int stripe = conf->geo.raid_disks *
+-			((mddev->chunk_sectors << 9) / PAGE_SIZE);
+-
+-		/* Calculate max read-ahead size.
+-		 * We need to readahead at least twice a whole stripe....
+-		 * maybe...
+-		 */
+-		stripe /= conf->geo.near_copies;
+-		if (mddev->queue->backing_dev_info->ra_pages < 2 * stripe)
+-			mddev->queue->backing_dev_info->ra_pages = 2 * stripe;
+-	}
+-
+ 	if (md_integrity_register(mddev))
+ 		goto out_free_conf;
+ 
+@@ -4715,17 +4702,8 @@ static void end_reshape(struct r10conf *conf)
+ 	conf->reshape_safe = MaxSector;
+ 	spin_unlock_irq(&conf->device_lock);
+ 
+-	/* read-ahead size must cover two whole stripes, which is
+-	 * 2 * (datadisks) * chunksize where 'n' is the number of raid devices
+-	 */
+-	if (conf->mddev->queue) {
+-		int stripe = conf->geo.raid_disks *
+-			((conf->mddev->chunk_sectors << 9) / PAGE_SIZE);
+-		stripe /= conf->geo.near_copies;
+-		if (conf->mddev->queue->backing_dev_info->ra_pages < 2 * stripe)
+-			conf->mddev->queue->backing_dev_info->ra_pages = 2 * stripe;
++	if (conf->mddev->queue)
+ 		raid10_set_io_opt(conf);
+-	}
+ 	conf->fullsync = 0;
+ }
+ 
+diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
+index 68e41ce3ca75cc..415ce3cc155698 100644
+--- a/drivers/md/raid5.c
++++ b/drivers/md/raid5.c
+@@ -7413,8 +7413,6 @@ static int raid5_run(struct mddev *mddev)
+ 		int data_disks = conf->previous_raid_disks - conf->max_degraded;
+ 		int stripe = data_disks *
+ 			((mddev->chunk_sectors << 9) / PAGE_SIZE);
+-		if (mddev->queue->backing_dev_info->ra_pages < 2 * stripe)
+-			mddev->queue->backing_dev_info->ra_pages = 2 * stripe;
+ 
+ 		chunk_size = mddev->chunk_sectors << 9;
+ 		blk_queue_io_min(mddev->queue, chunk_size);
+@@ -8002,17 +8000,8 @@ static void end_reshape(struct r5conf *conf)
+ 		spin_unlock_irq(&conf->device_lock);
+ 		wake_up(&conf->wait_for_overlap);
+ 
+-		/* read-ahead size must cover two whole stripes, which is
+-		 * 2 * (datadisks) * chunksize where 'n' is the number of raid devices
+-		 */
+-		if (conf->mddev->queue) {
+-			int data_disks = conf->raid_disks - conf->max_degraded;
+-			int stripe = data_disks * ((conf->chunk_sectors << 9)
+-						   / PAGE_SIZE);
+-			if (conf->mddev->queue->backing_dev_info->ra_pages < 2 * stripe)
+-				conf->mddev->queue->backing_dev_info->ra_pages = 2 * stripe;
++		if (conf->mddev->queue)
+ 			raid5_set_io_opt(conf);
+-		}
+ 	}
+ }
+ 
 -- 
 2.27.0
 
