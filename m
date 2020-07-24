@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0F88C43464
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 Jul 2020 07:34:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64D70C43469
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 Jul 2020 07:34:22 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8C9D120767
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 Jul 2020 07:34:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 33D472074A
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 Jul 2020 07:34:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XgACVhIp";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="aR1KCIqU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8C9D120767
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Xg02+GPq";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="A0XjcXi6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 33D472074A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,37 +26,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=oMz5iG7KvPm4tdx6Dv4V96TRXCu7nRZkpbtLk2S3qZU=; b=XgACVhIpqsITM4tr4mrO/g7iC
-	OQ1WRYI2T3JRaKRbdkzLwEIZktoz1JM+BMUj7XoY4ra1Lo0yiPmZB7Eqopec1/wXmsiqEqyU+VjgJ
-	U+i2ZgWEDh6UMeJF68XkI4UlW0in/PVBx/xbNaJNcEZm/IPyEFpsBFznixJjn6ohmsc5l0AqtJw/W
-	rw4F11G/j/ZnamYgwheAo9sQq9koT73I7ZxlL5Oj3RIVT2aq7IsaWjNAkCZ5xb3rt8Dk+uLFu5nor
-	36u1fTR5iwIZf9PNVbwSmY8KhLG/ZYQSXDgLsrxpqhQmRna56qKrMps6Ux1OSj3etWOZj4SDoetxJ
-	XF4K9GHIQ==;
+	 bh=Kr1jqA4+aPhbmNtcBPxXOq3PZ9azj3nn2Cnl09iKEOo=; b=Xg02+GPqzf6Em7XDpVOAjoY52
+	xsllKdDjvmmIwx+R7UcC1B6Egz4O7JSOVpL9Hit6eiogzU/bMeSkm3gack0GerQxSlHBS8mdM2SOv
+	yQfV9MgaeIxuQRz4MbcFkTeUhdmlU6TWFN8TxSDb03CZDQ2XoSEnCO4fLZk/ILivNPJfCCBJyrn9i
+	wPFvblBvAjCpbaDcFTgKpZ9uCLZRmgYIb6eqMmv5Ui5/pOpLSGwWc2yDdEmSqeJqqmsZQTrFgVwnn
+	qIf4cCooZz6yktG0UXf/aBs3xljkkpwdjo7OexD/OzqDeqPI38y9UMc1HbkiA4moSYIAcCBqbmXoD
+	EaCJu9xyA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jysCs-0006OA-Lp; Fri, 24 Jul 2020 07:33:26 +0000
+	id 1jysDF-0006Xa-E0; Fri, 24 Jul 2020 07:33:49 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jysCo-0006NT-OI
- for linux-mtd@merlin.infradead.org; Fri, 24 Jul 2020 07:33:23 +0000
+ id 1jysD0-0006QO-Cp
+ for linux-mtd@merlin.infradead.org; Fri, 24 Jul 2020 07:33:34 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=7sLr773opB4TCq8qFsHUwDVwSWroJwloCS8BnU42JTo=; b=aR1KCIqU5n3FMWmkqvfO7SpcKF
- oqOEcqMBDy4oPLrhK8z58Kb4aFYC56ib7WkOV9Eo5iXWtlWSKfwC9pUJEyuwbFsu58Gc7rKbmcIUJ
- xDn+MArcv16FPVSVV7UQT04aQcPsMrfkWuJLEO6NswAGWPoHNHXizcW1yFFJ91M7+faKZZt8IdPcc
- ZyxkID6zriUcdp1HFJKnJQtO5cQuj8R8RTe4C42VJeo3G4fYSgMja3CP+OC0D77pnE9UFLrYmlNWM
- mgz5hVzBB6jOsNeZSyfZBSb6sAgFsM2bwzHXro4uLqQX7zgrSR31MkAnkkMBP4ijZftw4LxBMmYex
- 6AXV4PNQ==;
+ bh=kdnG/8uKQIMddLsDA/8BZYPUgnH5s1kSDlqsFlCYesw=; b=A0XjcXi6AWg4BAiiYrfb5u7VKs
+ 19+wnBIlBjZAXX4zKVPektF6PWyu+DNmyLaFolk1xBy7MloHa+kvlgrss7ifjhgU6GtD3krmGSe1q
+ Qob4cZHyHGbZ1xL4z4hnUo3T7euA310hpE9Ju6GccfeAQv3NRTZqqerGjyhiyAU3i2gT01UWU2wdk
+ ef4MdFc2ShAPldJJulTxd0016duvA41I7W2q+KZQElydQzCvey2c4dL7RaLeWwRyoYVGgnF3CgjJb
+ 5Vy6ngR2mAoOWKEr+n3p/wzNiPYLuZzlS390YSpz8bv1zWAiHagpWZWbNX/eQY9fB0oM0ifalMldz
+ ts0NHyKA==;
 Received: from [2001:4bb8:18c:2acc:8dfe:be3c:592c:efc5] (helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jysCm-0006Bh-OU; Fri, 24 Jul 2020 07:33:21 +0000
+ id 1jysCy-0006Cs-5e; Fri, 24 Jul 2020 07:33:33 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 02/14] drbd: remove dead code in device_to_statistics
-Date: Fri, 24 Jul 2020 09:33:01 +0200
-Message-Id: <20200724073313.138789-3-hch@lst.de>
+Subject: [PATCH 07/14] block: make QUEUE_SYSFS_BIT_FNS a little more useful
+Date: Fri, 24 Jul 2020 09:33:06 +0200
+Message-Id: <20200724073313.138789-8-hch@lst.de>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200724073313.138789-1-hch@lst.de>
 References: <20200724073313.138789-1-hch@lst.de>
@@ -78,46 +78,93 @@ Cc: linux-raid@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
  Minchan Kim <minchan@kernel.org>, Richard Weinberger <richard@nod.at>,
  linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
  Song Liu <song@kernel.org>, dm-devel@redhat.com, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
- drbd-dev@lists.linbit.com
+ Johannes Thumshirn <johannes.thumshirn@wdc.com>, linux-fsdevel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-mm@kvack.org, drbd-dev@lists.linbit.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Ever since the switch to blk-mq, a lower device not used for VM
-writeback will not be marked congested, so the check will never
-trigger.
+Generate the queue_sysfs_entry given that we have all the required
+information for it, and rename the generated show and store methods
+to match the other ones in the file.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- drivers/block/drbd/drbd_nl.c | 6 ------
- 1 file changed, 6 deletions(-)
+ block/blk-sysfs.c | 31 +++++++++----------------------
+ 1 file changed, 9 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/block/drbd/drbd_nl.c b/drivers/block/drbd/drbd_nl.c
-index d0d9a549b58388..650372ee2c7822 100644
---- a/drivers/block/drbd/drbd_nl.c
-+++ b/drivers/block/drbd/drbd_nl.c
-@@ -3370,7 +3370,6 @@ static void device_to_statistics(struct device_statistics *s,
- 	if (get_ldev(device)) {
- 		struct drbd_md *md = &device->ldev->md;
- 		u64 *history_uuids = (u64 *)s->history_uuids;
--		struct request_queue *q;
- 		int n;
+diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
+index ce418d9128a0b2..cfbb039da8751f 100644
+--- a/block/blk-sysfs.c
++++ b/block/blk-sysfs.c
+@@ -257,16 +257,16 @@ static ssize_t queue_max_hw_sectors_show(struct request_queue *q, char *page)
+ 	return queue_var_show(max_hw_sectors_kb, (page));
+ }
  
- 		spin_lock_irq(&md->uuid_lock);
-@@ -3384,11 +3383,6 @@ static void device_to_statistics(struct device_statistics *s,
- 		spin_unlock_irq(&md->uuid_lock);
+-#define QUEUE_SYSFS_BIT_FNS(name, flag, neg)				\
++#define QUEUE_SYSFS_BIT_FNS(_name, flag, neg)				\
+ static ssize_t								\
+-queue_show_##name(struct request_queue *q, char *page)			\
++queue_##_name##_show(struct request_queue *q, char *page)		\
+ {									\
+ 	int bit;							\
+ 	bit = test_bit(QUEUE_FLAG_##flag, &q->queue_flags);		\
+ 	return queue_var_show(neg ? !bit : bit, page);			\
+ }									\
+ static ssize_t								\
+-queue_store_##name(struct request_queue *q, const char *page, size_t count) \
++queue_##_name##_store(struct request_queue *q, const char *page, size_t count) \
+ {									\
+ 	unsigned long val;						\
+ 	ssize_t ret;							\
+@@ -281,7 +281,12 @@ queue_store_##name(struct request_queue *q, const char *page, size_t count) \
+ 	else								\
+ 		blk_queue_flag_clear(QUEUE_FLAG_##flag, q);		\
+ 	return ret;							\
+-}
++}									\
++static struct queue_sysfs_entry queue_##_name##_entry = {		\
++	.attr	= { .name = __stringify(_name), .mode = 0644 },		\
++	.show	= queue_##_name##_show,					\
++	.store	= queue_##_name##_store,				\
++};
  
- 		s->dev_disk_flags = md->flags;
--		q = bdev_get_queue(device->ldev->backing_bdev);
--		s->dev_lower_blocked =
--			bdi_congested(q->backing_dev_info,
--				      (1 << WB_async_congested) |
--				      (1 << WB_sync_congested));
- 		put_ldev(device);
- 	}
- 	s->dev_size = drbd_get_capacity(device->this_bdev);
+ QUEUE_SYSFS_BIT_FNS(nonrot, NONROT, 1);
+ QUEUE_SYSFS_BIT_FNS(random, ADD_RANDOM, 0);
+@@ -661,12 +666,6 @@ static struct queue_sysfs_entry queue_zone_append_max_entry = {
+ 	.show = queue_zone_append_max_show,
+ };
+ 
+-static struct queue_sysfs_entry queue_nonrot_entry = {
+-	.attr = {.name = "rotational", .mode = 0644 },
+-	.show = queue_show_nonrot,
+-	.store = queue_store_nonrot,
+-};
+-
+ static struct queue_sysfs_entry queue_zoned_entry = {
+ 	.attr = {.name = "zoned", .mode = 0444 },
+ 	.show = queue_zoned_show,
+@@ -699,18 +698,6 @@ static struct queue_sysfs_entry queue_rq_affinity_entry = {
+ 	.store = queue_rq_affinity_store,
+ };
+ 
+-static struct queue_sysfs_entry queue_iostats_entry = {
+-	.attr = {.name = "iostats", .mode = 0644 },
+-	.show = queue_show_iostats,
+-	.store = queue_store_iostats,
+-};
+-
+-static struct queue_sysfs_entry queue_random_entry = {
+-	.attr = {.name = "add_random", .mode = 0644 },
+-	.show = queue_show_random,
+-	.store = queue_store_random,
+-};
+-
+ static struct queue_sysfs_entry queue_poll_entry = {
+ 	.attr = {.name = "io_poll", .mode = 0644 },
+ 	.show = queue_poll_show,
 -- 
 2.27.0
 
