@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C151C4346D
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 Jul 2020 07:34:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9F89C43470
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 Jul 2020 07:34:31 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C530C206F0
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 Jul 2020 07:34:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 77C7A206F0
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 Jul 2020 07:34:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CWpGTqy0";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="G9W66i4K"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C530C206F0
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YuhHrKk+";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Cq5WtkvU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 77C7A206F0
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,37 +26,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=mjPa4LZzBP1hqpLqv4nok3JJ165dwpGVI6z5ICFyrIM=; b=CWpGTqy0cky5s/zX6szJN/iSL
-	gBi0nrMz4/b+UuZuIRrqDVjXdFicpaax9lZttit0jZWC5cYjT+9+NZIDkVHLO9jACo+hE4WFDsnrq
-	CeA3IAREBqMIVo1cD8tP8aEeS5WqJmdPEamt81CymN4vPW0ydv2wv+rc1kPUkKbmCx4+dIBmqssk/
-	Kgwk6Oq5jX2UXTmzFtQbZWTQ7G2d+UR2xaa8eKDdpKMVu5dMlwntx+LrdL7wOeGFnsNSVglVzLu4s
-	vNxeprCUM3pUxw3mxfaqtjQ3cOaBdkYnNsMbtja7a6no6nCfD6o8a91wYkRxMDipNW2cg+bCzBnLL
-	HIui/DmsQ==;
+	 bh=jMUWFGe+MjeaHDXffjovjJzBKZ6o2Ey572YTFpsNTCw=; b=YuhHrKk+F76QYMgya2z5AtH/D
+	aOiqq6HJO00a1EwvHpoy5PiKGinWTdtjYS3D6YvxMc2Sz8QhUvRTSw+98cEStsiZs9C4c+69UW4DC
+	h4auExU9TtdJBSQ88POAN52ruk0Fzy/87nFehJJSplx4uyExMz8V+5PKbkMU/ZDKINVEMerAKWUjN
+	AkwSHIPYPw+MdC4vtgVNgiXuCE29zqEfBo39ssLJ9MFVxDFZvxHhHp2Ndlq3ubyhqj/447kAxtkks
+	KrWTeVtmN8EeqNKtdTGg2yAvR/x0yO1fPLZPkiKunKDe1w8No3w+VKHcA7OJaPnWaurlXnqySFzwN
+	nKZpcz+/w==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jysDL-0006az-QI; Fri, 24 Jul 2020 07:33:55 +0000
+	id 1jysCu-0006OV-IH; Fri, 24 Jul 2020 07:33:28 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jysD2-0006RF-EH
- for linux-mtd@merlin.infradead.org; Fri, 24 Jul 2020 07:33:36 +0000
+ id 1jysCq-0006Ng-Cu
+ for linux-mtd@merlin.infradead.org; Fri, 24 Jul 2020 07:33:24 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=fgrmtzY2RTn3uqEl7NE2KYNoJXb5Vjc7RCDyRtLWKlU=; b=G9W66i4Ka/mMRNz43F9jXrEr2L
- p1+VL2FI1hB4uPeYTynT9RYv6gUCZoXDXCQxY8b5RmBEQYCyn3rlvY1ZKcAkeEDes66A2qhIYYMqN
- 0esCX+Lja4UmLRz0NaXpWgl9BRcGTBjsfmn0BP3uOvzNjbcAwDZZmLMPU+uDZcmbGG5AEubP3xHTu
- L0LGnntGbS+9PkTy9/BdMd2W3Tl17ZOzbXTJjagoVcSonoX2+nfbtgywf19fcw6h/6Sw5aV+8Ts1w
- 59Ye2O0KhX1ag3LAeHuGC62ZOvVI5vm/e5wPSSWCjr3N2PRnc8vMGy+Tu85GRODAanq7vpO3czjwX
- d+1Z/9rA==;
+ bh=S8Ttwcc94B0Xl9tEeP23NWmZAdd1Fm0GDSqESxJAyFs=; b=Cq5WtkvU2hZtkgW7YgKmXephtz
+ sRuxjblps/sZzq7XAYfla3HbfCuxJ9ZjSD0HnNweGXGz8m7jKhzdlbir6tJ0y3NdRZ+dN7Ln8WYh1
+ cUCq7PNn/7vJi9tpsvhmcloWhXifCBWToqiNkpGHDa+KBJcLcMbspSRxcUrs4LgblyPU8jOJaf9LL
+ mE2/5tNX5Rc1i32njD4RFGMHBDAS6GwRnUw3J4pM1GY8meyF+RPcPqsedEqDY+DDvyd7vC9am+7F/
+ QwvYGK1G5xwBeQUiFGB4JMZg793MVS8M1C5QcgzTYp1o3XdZ9SNY1LK51noayvOtVKZ4UU8av2LaT
+ Ipo8uxfw==;
 Received: from [2001:4bb8:18c:2acc:8dfe:be3c:592c:efc5] (helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jysD0-0006D8-Gr; Fri, 24 Jul 2020 07:33:35 +0000
+ id 1jysCo-0006Bs-Ra; Fri, 24 Jul 2020 07:33:23 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 08/14] block: add helper macros for queue sysfs entries
-Date: Fri, 24 Jul 2020 09:33:07 +0200
-Message-Id: <20200724073313.138789-9-hch@lst.de>
+Subject: [PATCH 03/14] drbd: remove RB_CONGESTED_REMOTE
+Date: Fri, 24 Jul 2020 09:33:02 +0200
+Message-Id: <20200724073313.138789-4-hch@lst.de>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200724073313.138789-1-hch@lst.de>
 References: <20200724073313.138789-1-hch@lst.de>
@@ -85,295 +85,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add two helpers macros to avoid boilerplate code for the queue sysfs
-entries.
+This case isn't ever used.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- block/blk-sysfs.c | 248 +++++++++++-----------------------------------
- 1 file changed, 58 insertions(+), 190 deletions(-)
+ drivers/block/drbd/drbd_req.c | 4 ----
+ include/linux/drbd.h          | 1 -
+ 2 files changed, 5 deletions(-)
 
-diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
-index cfbb039da8751f..9bb4e42fb73265 100644
---- a/block/blk-sysfs.c
-+++ b/block/blk-sysfs.c
-@@ -551,201 +551,69 @@ static ssize_t queue_dax_show(struct request_queue *q, char *page)
- 	return queue_var_show(blk_queue_dax(q), page);
- }
+diff --git a/drivers/block/drbd/drbd_req.c b/drivers/block/drbd/drbd_req.c
+index 674be09b2da94a..4d944f2eb56efa 100644
+--- a/drivers/block/drbd/drbd_req.c
++++ b/drivers/block/drbd/drbd_req.c
+@@ -901,13 +901,9 @@ static bool drbd_may_do_local_read(struct drbd_device *device, sector_t sector,
+ static bool remote_due_to_read_balancing(struct drbd_device *device, sector_t sector,
+ 		enum drbd_read_balancing rbm)
+ {
+-	struct backing_dev_info *bdi;
+ 	int stripe_shift;
  
--static struct queue_sysfs_entry queue_requests_entry = {
--	.attr = {.name = "nr_requests", .mode = 0644 },
--	.show = queue_requests_show,
--	.store = queue_requests_store,
--};
--
--static struct queue_sysfs_entry queue_ra_entry = {
--	.attr = {.name = "read_ahead_kb", .mode = 0644 },
--	.show = queue_ra_show,
--	.store = queue_ra_store,
--};
--
--static struct queue_sysfs_entry queue_max_sectors_entry = {
--	.attr = {.name = "max_sectors_kb", .mode = 0644 },
--	.show = queue_max_sectors_show,
--	.store = queue_max_sectors_store,
--};
-+#define QUEUE_RO_ENTRY(_prefix, _name)			\
-+static struct queue_sysfs_entry _prefix##_entry = {	\
-+	.attr	= { .name = _name, .mode = 0444 },	\
-+	.show	= _prefix##_show,			\
-+};
-+
-+#define QUEUE_RW_ENTRY(_prefix, _name)			\
-+static struct queue_sysfs_entry _prefix##_entry = {	\
-+	.attr	= { .name = _name, .mode = 0644 },	\
-+	.show	= _prefix##_show,			\
-+	.store	= _prefix##_store,			\
-+};
-+
-+QUEUE_RW_ENTRY(queue_requests, "nr_requests");
-+QUEUE_RW_ENTRY(queue_ra, "read_ahead_kb");
-+QUEUE_RW_ENTRY(queue_max_sectors, "max_sectors_kb");
-+QUEUE_RO_ENTRY(queue_max_hw_sectors, "max_hw_sectors_kb");
-+QUEUE_RO_ENTRY(queue_max_segments, "max_segments");
-+QUEUE_RO_ENTRY(queue_max_integrity_segments, "max_integrity_segments");
-+QUEUE_RO_ENTRY(queue_max_segment_size, "max_segment_size");
-+QUEUE_RW_ENTRY(elv_iosched, "scheduler");
-+
-+QUEUE_RO_ENTRY(queue_logical_block_size, "logical_block_size");
-+QUEUE_RO_ENTRY(queue_physical_block_size, "physical_block_size");
-+QUEUE_RO_ENTRY(queue_chunk_sectors, "chunk_sectors");
-+QUEUE_RO_ENTRY(queue_io_min, "minimum_io_size");
-+QUEUE_RO_ENTRY(queue_io_opt, "optimal_io_size");
-+
-+QUEUE_RO_ENTRY(queue_max_discard_segments, "max_discard_segments");
-+QUEUE_RO_ENTRY(queue_discard_granularity, "discard_granularity");
-+QUEUE_RO_ENTRY(queue_discard_max_hw, "discard_max_hw_bytes");
-+QUEUE_RW_ENTRY(queue_discard_max, "discard_max_bytes");
-+QUEUE_RO_ENTRY(queue_discard_zeroes_data, "discard_zeroes_data");
-+
-+QUEUE_RO_ENTRY(queue_write_same_max, "write_same_max_bytes");
-+QUEUE_RO_ENTRY(queue_write_zeroes_max, "write_zeroes_max_bytes");
-+QUEUE_RO_ENTRY(queue_zone_append_max, "zone_append_max_bytes");
-+
-+QUEUE_RO_ENTRY(queue_zoned, "zoned");
-+QUEUE_RO_ENTRY(queue_nr_zones, "nr_zones");
-+QUEUE_RO_ENTRY(queue_max_open_zones, "max_open_zones");
-+QUEUE_RO_ENTRY(queue_max_active_zones, "max_active_zones");
-+
-+QUEUE_RW_ENTRY(queue_nomerges, "nomerges");
-+QUEUE_RW_ENTRY(queue_rq_affinity, "rq_affinity");
-+QUEUE_RW_ENTRY(queue_poll, "io_poll");
-+QUEUE_RW_ENTRY(queue_poll_delay, "io_poll_delay");
-+QUEUE_RW_ENTRY(queue_wc, "write_cache");
-+QUEUE_RO_ENTRY(queue_fua, "fua");
-+QUEUE_RO_ENTRY(queue_dax, "dax");
-+QUEUE_RW_ENTRY(queue_io_timeout, "io_timeout");
-+QUEUE_RW_ENTRY(queue_wb_lat, "wbt_lat_usec");
- 
--static struct queue_sysfs_entry queue_max_hw_sectors_entry = {
--	.attr = {.name = "max_hw_sectors_kb", .mode = 0444 },
--	.show = queue_max_hw_sectors_show,
--};
--
--static struct queue_sysfs_entry queue_max_segments_entry = {
--	.attr = {.name = "max_segments", .mode = 0444 },
--	.show = queue_max_segments_show,
--};
--
--static struct queue_sysfs_entry queue_max_discard_segments_entry = {
--	.attr = {.name = "max_discard_segments", .mode = 0444 },
--	.show = queue_max_discard_segments_show,
--};
--
--static struct queue_sysfs_entry queue_max_integrity_segments_entry = {
--	.attr = {.name = "max_integrity_segments", .mode = 0444 },
--	.show = queue_max_integrity_segments_show,
--};
--
--static struct queue_sysfs_entry queue_max_segment_size_entry = {
--	.attr = {.name = "max_segment_size", .mode = 0444 },
--	.show = queue_max_segment_size_show,
--};
--
--static struct queue_sysfs_entry queue_iosched_entry = {
--	.attr = {.name = "scheduler", .mode = 0644 },
--	.show = elv_iosched_show,
--	.store = elv_iosched_store,
--};
-+#ifdef CONFIG_BLK_DEV_THROTTLING_LOW
-+QUEUE_RW_ENTRY(blk_throtl_sample, "throttle_sample_time");
-+#endif
- 
-+/* legacy alias for logical_block_size: */
- static struct queue_sysfs_entry queue_hw_sector_size_entry = {
- 	.attr = {.name = "hw_sector_size", .mode = 0444 },
- 	.show = queue_logical_block_size_show,
- };
- 
--static struct queue_sysfs_entry queue_logical_block_size_entry = {
--	.attr = {.name = "logical_block_size", .mode = 0444 },
--	.show = queue_logical_block_size_show,
--};
--
--static struct queue_sysfs_entry queue_physical_block_size_entry = {
--	.attr = {.name = "physical_block_size", .mode = 0444 },
--	.show = queue_physical_block_size_show,
--};
--
--static struct queue_sysfs_entry queue_chunk_sectors_entry = {
--	.attr = {.name = "chunk_sectors", .mode = 0444 },
--	.show = queue_chunk_sectors_show,
--};
--
--static struct queue_sysfs_entry queue_io_min_entry = {
--	.attr = {.name = "minimum_io_size", .mode = 0444 },
--	.show = queue_io_min_show,
--};
--
--static struct queue_sysfs_entry queue_io_opt_entry = {
--	.attr = {.name = "optimal_io_size", .mode = 0444 },
--	.show = queue_io_opt_show,
--};
--
--static struct queue_sysfs_entry queue_discard_granularity_entry = {
--	.attr = {.name = "discard_granularity", .mode = 0444 },
--	.show = queue_discard_granularity_show,
--};
--
--static struct queue_sysfs_entry queue_discard_max_hw_entry = {
--	.attr = {.name = "discard_max_hw_bytes", .mode = 0444 },
--	.show = queue_discard_max_hw_show,
--};
--
--static struct queue_sysfs_entry queue_discard_max_entry = {
--	.attr = {.name = "discard_max_bytes", .mode = 0644 },
--	.show = queue_discard_max_show,
--	.store = queue_discard_max_store,
--};
--
--static struct queue_sysfs_entry queue_discard_zeroes_data_entry = {
--	.attr = {.name = "discard_zeroes_data", .mode = 0444 },
--	.show = queue_discard_zeroes_data_show,
--};
--
--static struct queue_sysfs_entry queue_write_same_max_entry = {
--	.attr = {.name = "write_same_max_bytes", .mode = 0444 },
--	.show = queue_write_same_max_show,
--};
--
--static struct queue_sysfs_entry queue_write_zeroes_max_entry = {
--	.attr = {.name = "write_zeroes_max_bytes", .mode = 0444 },
--	.show = queue_write_zeroes_max_show,
--};
--
--static struct queue_sysfs_entry queue_zone_append_max_entry = {
--	.attr = {.name = "zone_append_max_bytes", .mode = 0444 },
--	.show = queue_zone_append_max_show,
--};
--
--static struct queue_sysfs_entry queue_zoned_entry = {
--	.attr = {.name = "zoned", .mode = 0444 },
--	.show = queue_zoned_show,
--};
--
--static struct queue_sysfs_entry queue_nr_zones_entry = {
--	.attr = {.name = "nr_zones", .mode = 0444 },
--	.show = queue_nr_zones_show,
--};
--
--static struct queue_sysfs_entry queue_max_open_zones_entry = {
--	.attr = {.name = "max_open_zones", .mode = 0444 },
--	.show = queue_max_open_zones_show,
--};
--
--static struct queue_sysfs_entry queue_max_active_zones_entry = {
--	.attr = {.name = "max_active_zones", .mode = 0444 },
--	.show = queue_max_active_zones_show,
--};
--
--static struct queue_sysfs_entry queue_nomerges_entry = {
--	.attr = {.name = "nomerges", .mode = 0644 },
--	.show = queue_nomerges_show,
--	.store = queue_nomerges_store,
--};
--
--static struct queue_sysfs_entry queue_rq_affinity_entry = {
--	.attr = {.name = "rq_affinity", .mode = 0644 },
--	.show = queue_rq_affinity_show,
--	.store = queue_rq_affinity_store,
--};
--
--static struct queue_sysfs_entry queue_poll_entry = {
--	.attr = {.name = "io_poll", .mode = 0644 },
--	.show = queue_poll_show,
--	.store = queue_poll_store,
--};
--
--static struct queue_sysfs_entry queue_poll_delay_entry = {
--	.attr = {.name = "io_poll_delay", .mode = 0644 },
--	.show = queue_poll_delay_show,
--	.store = queue_poll_delay_store,
--};
--
--static struct queue_sysfs_entry queue_wc_entry = {
--	.attr = {.name = "write_cache", .mode = 0644 },
--	.show = queue_wc_show,
--	.store = queue_wc_store,
--};
--
--static struct queue_sysfs_entry queue_fua_entry = {
--	.attr = {.name = "fua", .mode = 0444 },
--	.show = queue_fua_show,
--};
--
--static struct queue_sysfs_entry queue_dax_entry = {
--	.attr = {.name = "dax", .mode = 0444 },
--	.show = queue_dax_show,
--};
--
--static struct queue_sysfs_entry queue_io_timeout_entry = {
--	.attr = {.name = "io_timeout", .mode = 0644 },
--	.show = queue_io_timeout_show,
--	.store = queue_io_timeout_store,
--};
--
--static struct queue_sysfs_entry queue_wb_lat_entry = {
--	.attr = {.name = "wbt_lat_usec", .mode = 0644 },
--	.show = queue_wb_lat_show,
--	.store = queue_wb_lat_store,
--};
--
--#ifdef CONFIG_BLK_DEV_THROTTLING_LOW
--static struct queue_sysfs_entry throtl_sample_time_entry = {
--	.attr = {.name = "throttle_sample_time", .mode = 0644 },
--	.show = blk_throtl_sample_time_show,
--	.store = blk_throtl_sample_time_store,
--};
--#endif
--
- static struct attribute *queue_attrs[] = {
- 	&queue_requests_entry.attr,
- 	&queue_ra_entry.attr,
-@@ -755,7 +623,7 @@ static struct attribute *queue_attrs[] = {
- 	&queue_max_discard_segments_entry.attr,
- 	&queue_max_integrity_segments_entry.attr,
- 	&queue_max_segment_size_entry.attr,
--	&queue_iosched_entry.attr,
-+	&elv_iosched_entry.attr,
- 	&queue_hw_sector_size_entry.attr,
- 	&queue_logical_block_size_entry.attr,
- 	&queue_physical_block_size_entry.attr,
-@@ -786,7 +654,7 @@ static struct attribute *queue_attrs[] = {
- 	&queue_poll_delay_entry.attr,
- 	&queue_io_timeout_entry.attr,
- #ifdef CONFIG_BLK_DEV_THROTTLING_LOW
--	&throtl_sample_time_entry.attr,
-+	&blk_throtl_sample_time_entry.attr,
- #endif
- 	NULL,
- };
+ 	switch (rbm) {
+-	case RB_CONGESTED_REMOTE:
+-		bdi = device->ldev->backing_bdev->bd_disk->queue->backing_dev_info;
+-		return bdi_read_congested(bdi);
+ 	case RB_LEAST_PENDING:
+ 		return atomic_read(&device->local_cnt) >
+ 			atomic_read(&device->ap_pending_cnt) + atomic_read(&device->rs_pending_cnt);
+diff --git a/include/linux/drbd.h b/include/linux/drbd.h
+index 5755537b51b114..6a8286132751df 100644
+--- a/include/linux/drbd.h
++++ b/include/linux/drbd.h
+@@ -94,7 +94,6 @@ enum drbd_read_balancing {
+ 	RB_PREFER_REMOTE,
+ 	RB_ROUND_ROBIN,
+ 	RB_LEAST_PENDING,
+-	RB_CONGESTED_REMOTE,
+ 	RB_32K_STRIPING,
+ 	RB_64K_STRIPING,
+ 	RB_128K_STRIPING,
 -- 
 2.27.0
 
