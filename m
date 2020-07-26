@@ -2,72 +2,88 @@ Return-Path: <SRS0=JUqn=BF=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64BCEC433DF
-	for <linux-mtd@archiver.kernel.org>; Sun, 26 Jul 2020 16:21:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DB7CC433E0
+	for <linux-mtd@archiver.kernel.org>; Sun, 26 Jul 2020 19:07:43 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 31B21206D7
-	for <linux-mtd@archiver.kernel.org>; Sun, 26 Jul 2020 16:21:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3949F2065F
+	for <linux-mtd@archiver.kernel.org>; Sun, 26 Jul 2020 19:07:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="owtjGZSM";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="QUIbvw8D"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 31B21206D7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=crapouillou.net
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="0W+Glzja";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W6kZST4B"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3949F2065F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:To:
-	Subject:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=vWI4Q27n6Teu4kmco8AAD7BOncJGP3FTZ8GA3O9uMTg=; b=owtjGZSMYR40WoF/cQZH2ZJ57
-	KgbBx/TsLAMjzK0VgY9jXoUOy7uCFvhIqAILG6XvGUrLX93zpIcT45dR3yuMei2Uf+y2P/g043xSb
-	egSUwwcGffBZVcALC2vOeUq2ms4q+sIbxR+31KZap90rH73/V3tfFsjaISV1MCmw+hmfREqkMnj3T
-	uTlQQpM7aUtQLgx4QVuX4HDobC7tfsCNcQf8+AwfPeAZJpWzzdSXx9WNPwpYfbA8Dua/1IPGuyeWi
-	yBAkj0swAre5GR0uMzf6GeNbt/ZosdefvNLg3MtjAWuJapXAKEsIBsrZOaS3Uxre0TiJc+JZsSBIs
-	FejVjE0lg==;
+	 bh=sGWh5Y2ry8rha7Bt3K8/UGL7YcTFV2PHEQM4uCq4MXk=; b=0W+GlzjaLwDkPFWY67lFUArzJ
+	p0XTvnjrVN16t7iG4ho7E/g06dobkhuYGKF6dbxM0H5Mofzi3e+wkmoh9WWKHwmB5BkGR7QsQi2c6
+	8XOIgf1vAHMmkjxIGxTtqJpXxWfj8N3KQsLXMs+RghDCXmh6iDKxzaWDgh57UJxOrHZVGx9+MxUfO
+	A34OWaZdVCeduOwwdXmoFnmOvmWb0v/IDS5o2xwHnPZSseAfFYj8hpXRFM08OAyraVzYvDtomrqPK
+	MtWYQt+TYnb6Jf1AqchObF2oo/uJyt5UjzMQtW356r+CaCeVVxVvB7oxmVU0DnRv/96hPtrDlXhMX
+	+ywqEtwtA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jzjOK-0006Zq-8g; Sun, 26 Jul 2020 16:20:48 +0000
-Received: from crapouillou.net ([89.234.176.41])
+	id 1jzlyy-0001jO-IV; Sun, 26 Jul 2020 19:06:48 +0000
+Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jzjOH-0006ZR-QZ
- for linux-mtd@lists.infradead.org; Sun, 26 Jul 2020 16:20:46 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
- s=mail; t=1595780444; h=from:from:sender:reply-to:subject:subject:date:date:
- message-id:message-id:to:to:cc:cc:mime-version:mime-version:
- content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=k9fIRGUZsDc5QSYHsqk9mi+m1nvILWliO5qoklHXvpo=;
- b=QUIbvw8DxF/MhBtGGWBxJkLggcDdT5GyntWyl+JIGJ3rv7nrS4uwKT5NPL0Pj90fI85ha5
- jB1eYCFSuWJ6hxsvf85VSnKHSqLYB9o5I/q2B1nnCAur4NHizz7Hu5Z3Qxn+lXkUpHWk4+
- cWPBsoTzBwhlJufg56uPrvQPEIPCg1Y=
-Date: Sun, 26 Jul 2020 18:20:35 +0200
-From: Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v3 2/2] mtd: rawnand: ingenic: Limit MTD_NAND_JZ4780 to
- architecture only
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Message-Id: <B243EQ.VEXGA7ZL5JAE2@crapouillou.net>
-In-Reply-To: <20200726161545.GA6058@kozik-lap>
-References: <20200724145401.2566-1-krzk@kernel.org>
- <20200724145401.2566-3-krzk@kernel.org>
- <PWBZDQ.D1XCW6N2YMRA@crapouillou.net>
- <CAJKOXPc2w0QHQDEwqoeg9Nm361MszM4LRaCoJD2En-fPgPp+4Q@mail.gmail.com>
- <IBDZDQ.K28R5FAI0BXI2@crapouillou.net> <20200724155436.GA7460@kozik-lap>
- <K5Y0EQ.WYAK00ADM46F3@crapouillou.net>
- <CAK8P3a0HDu15u5dREd6gk_e9D6mrZ9JqT0DJs9AeC9C2602nAw@mail.gmail.com>
- <20200726160616.GA2662@kozik-lap> <RO33EQ.546WD84D5N7K2@crapouillou.net>
- <20200726161545.GA6058@kozik-lap>
+ id 1jzlyw-0001ii-Qd
+ for linux-mtd@lists.infradead.org; Sun, 26 Jul 2020 19:06:47 +0000
+Received: by mail-pl1-x643.google.com with SMTP id p1so6938065pls.4
+ for <linux-mtd@lists.infradead.org>; Sun, 26 Jul 2020 12:06:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=sender:date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to;
+ bh=qhvPLwCPXjMqFU2x4gEnxP4JjTqrO6GiJqIFdd+1yaY=;
+ b=W6kZST4BhAg8j6aAzIOCVIsrh6bIit/0aLvxBm75a4a194r0fukEv3cBdzfg05ZQ+4
+ j1OcMjy52PUg5c4JKaqkPD+rZEHfxs4gV6Cph35S/Vp9IoNA2IXusr5vhlQDRRl0mxxH
+ YKCMl3NIkqx2xS40Phzh9Ri23iauKkDzsvRDB1ibmTHzFYk8DSAsKUgPhvyZHYdgH/Wn
+ 3XjC1g4pAaFV4Z1JIz3eqPo4YVgGSUvC64+QgKsm1wQQ10QN/4ZeA9wOMLsCuphEH+t1
+ alc2DXv1K5/JMNntu53Xw/iqRJ3pyzdoBdkk2yXAvGBAM43xCJ3H1SiEIyO0ffrlqSfR
+ KCHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+ :references:mime-version:content-disposition:in-reply-to;
+ bh=qhvPLwCPXjMqFU2x4gEnxP4JjTqrO6GiJqIFdd+1yaY=;
+ b=J9kOzfVo5JGH+3itSrv+/WgeH0+/S1xnYYJbRyDYTWgUGtuGdizzycalGCfHb4hHPW
+ Hm+YGSm9S9PxpaJd9Hr8XhrEj95FLcsX/HFN5JUaF+OSskXVjuwD6qDBZQVHTkV71QgB
+ 7zv0aZduouzVOK57vxZ1A6l8rLh6SuLR3ft3wmBaZyd7KxHU2kytqvZXzPUizuhb3rE4
+ 7zOTXHKIF6ABAI6oUJpM+KOcVR2pAngODoBJg4esfeZtgcP0t9Ilk+ZYy/wvuqXufpVm
+ SXzzilOwgtNbdNVZjpXhCszhcRtgSxQG6i2CIrAUip3ACu5XoIX24LlBBDKRyIYv+KOW
+ Wq/Q==
+X-Gm-Message-State: AOAM531PuTQvboclSk9HxPz3Gmob4IyRueR+NeiJn9744FPmwsjtOV3W
+ O/gy4bQ9/EaEJU71QPgoPCg=
+X-Google-Smtp-Source: ABdhPJzRH4Cwo8GKdnDVU07rflKqs4ddrzgi88E3WWwZnPBfqLP6xNZSSBxRrE9jOOyxKIw1tGTGqg==
+X-Received: by 2002:a17:902:6a82:: with SMTP id
+ n2mr16617932plk.27.1595790403131; 
+ Sun, 26 Jul 2020 12:06:43 -0700 (PDT)
+Received: from google.com ([2620:15c:211:1:7220:84ff:fe09:5e58])
+ by smtp.gmail.com with ESMTPSA id o11sm12418242pfp.88.2020.07.26.12.06.41
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 26 Jul 2020 12:06:41 -0700 (PDT)
+Date: Sun, 26 Jul 2020 12:06:39 -0700
+From: Minchan Kim <minchan@kernel.org>
+To: Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 10/14] bdi: remove BDI_CAP_SYNCHRONOUS_IO
+Message-ID: <20200726190639.GA560221@google.com>
+References: <20200726150333.305527-1-hch@lst.de>
+ <20200726150333.305527-11-hch@lst.de>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20200726150333.305527-11-hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200726_122046_029277_C35EDE9F 
-X-CRM114-Status: GOOD (  17.97  )
+X-CRM114-CacheID: sfid-20200726_150646_899374_CF700C6D 
+X-CRM114-Status: GOOD (  26.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,113 +95,189 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, Arnd Bergmann <arnd@arndb.de>,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- Harvey Hunt <harveyhuntnexus@gmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
+Cc: Jens Axboe <axboe@kernel.dk>, linux-raid@vger.kernel.org,
+ Hans de Goede <hdegoede@redhat.com>, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+ Song Liu <song@kernel.org>, dm-devel@redhat.com, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
+ drbd-dev@lists.linbit.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On Sun, Jul 26, 2020 at 05:03:29PM +0200, Christoph Hellwig wrote:
+> BDI_CAP_SYNCHRONOUS_IO is only checked in the swap code, and used to
+> decided if ->rw_page can be used on a block device.  Just check up for
+> the method instead.  The only complication is that zram needs a second
+> set of block_device_operations as it can switch between modes that
+> actually support ->rw_page and those who don't.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  drivers/block/brd.c           |  1 -
+>  drivers/block/zram/zram_drv.c | 19 +++++++++++++------
+>  drivers/nvdimm/btt.c          |  2 --
+>  drivers/nvdimm/pmem.c         |  1 -
+>  include/linux/backing-dev.h   |  9 ---------
+>  mm/swapfile.c                 |  2 +-
+>  6 files changed, 14 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/block/brd.c b/drivers/block/brd.c
+> index 2723a70eb85593..cc49a921339f77 100644
+> --- a/drivers/block/brd.c
+> +++ b/drivers/block/brd.c
+> @@ -403,7 +403,6 @@ static struct brd_device *brd_alloc(int i)
+>  	disk->flags		= GENHD_FL_EXT_DEVT;
+>  	sprintf(disk->disk_name, "ram%d", i);
+>  	set_capacity(disk, rd_size * 2);
+> -	brd->brd_queue->backing_dev_info->capabilities |= BDI_CAP_SYNCHRONOUS_IO;
+>  
+>  	/* Tell the block layer that this is not a rotational device */
+>  	blk_queue_flag_set(QUEUE_FLAG_NONROT, brd->brd_queue);
+> diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+> index 9100ac36670afc..d73ddf018fa65f 100644
+> --- a/drivers/block/zram/zram_drv.c
+> +++ b/drivers/block/zram/zram_drv.c
+> @@ -52,6 +52,9 @@ static unsigned int num_devices = 1;
+>   */
+>  static size_t huge_class_size;
+>  
+> +static const struct block_device_operations zram_devops;
+> +static const struct block_device_operations zram_wb_devops;
+> +
+>  static void zram_free_page(struct zram *zram, size_t index);
+>  static int zram_bvec_read(struct zram *zram, struct bio_vec *bvec,
+>  				u32 index, int offset, struct bio *bio);
+> @@ -408,8 +411,7 @@ static void reset_bdev(struct zram *zram)
+>  	zram->backing_dev = NULL;
+>  	zram->old_block_size = 0;
+>  	zram->bdev = NULL;
+> -	zram->disk->queue->backing_dev_info->capabilities |=
+> -				BDI_CAP_SYNCHRONOUS_IO;
+> +	zram->disk->fops = &zram_devops;
+>  	kvfree(zram->bitmap);
+>  	zram->bitmap = NULL;
+>  }
+> @@ -528,8 +530,7 @@ static ssize_t backing_dev_store(struct device *dev,
+>  	 * freely but in fact, IO is going on so finally could cause
+>  	 * use-after-free when the IO is really done.
+>  	 */
+> -	zram->disk->queue->backing_dev_info->capabilities &=
+> -			~BDI_CAP_SYNCHRONOUS_IO;
+> +	zram->disk->fops = &zram_wb_devops;
+>  	up_write(&zram->init_lock);
 
+For zram, regardless of BDI_CAP_SYNCHRONOUS_IO, it have used rw_page
+every time on read/write path. This one with next patch will make zram
+use bio instead of rw_page when it's declared !BDI_CAP_SYNCHRONOUS_IO,
+which introduce regression for performance.
 
-Le dim. 26 juil. 2020 =E0 18:15, Krzysztof Kozlowski <krzk@kernel.org> a =
+In the swap code, BDI_CAP_SYNCHRONOUS_IO is used to avoid swap cache
+when the page was private. bdev_read_page is not designed to rely on
+synchronous operation. That's why this patch breaks the old behavior.
 
-=E9crit :
-> On Sun, Jul 26, 2020 at 06:12:27PM +0200, Paul Cercueil wrote:
->> =
-
->> =
-
->>  Le dim. 26 juil. 2020 =E0 18:06, Krzysztof Kozlowski =
-
->> <krzk@kernel.org> a =E9crit
->>  :
->>  > On Sat, Jul 25, 2020 at 08:30:56PM +0200, Arnd Bergmann wrote:
->>  > >  On Sat, Jul 25, 2020 at 2:17 PM Paul Cercueil
->>  > > <paul@crapouillou.net> wrote:
->>  > >  > Le ven. 24 juil. 2020 =E0 17:54, Krzysztof Kozlowski
->>  > > <krzk@kernel.org> a
->>  > >  > =E9crit :
->>  > >  > > On Fri, Jul 24, 2020 at 05:50:06PM +0200, Paul Cercueil =
-
->> wrote:
->>  > >  > >>  Le ven. 24 juil. 2020 =E0 17:33, Krzysztof Kozlowski
->>  > >  > >> <krzk@kernel.org> a =E9crit:
->>  > >  > >>  > On Fri, 24 Jul 2020 at 17:19, Paul Cercueil
->>  > > <paul@crapouillou.net>
->>  > >  > >>  > wrote:
->>  > >  > >>
->>  > >  > >>  On MIPS, the SoC selection is a Kconfig "choice", so you =
-
->> can
->>  > > only
->>  > >  > >> support
->>  > >  > >>  one SoC family, unfortunately.
->>  > >  > >
->>  > >  > > Let's say someone selected then some other architecture
->>  > >  > > (MIPS_ALCHEMY).
->>  > >  > > They could select this MTD driver.
->>  > >  > >
->>  > >  > > Does it mean they would be able to run it on Ingenic =
-
->> hardware?
->>  > >  >
->>  > >  > In *theory* yes, as long as the Kconfig options that =
-
->> MACH_INGENIC
->>  > >  > selects are enabled, the kernel should boot and work on =
-
->> Ingenic
->>  > > SoCs.
->>  > >
->>  > >  Right now, this won't work yet, because there are platform =
-
->> specific
->>  > >  functions that are implemented by each of the platforms in
->>  > > arch/mips,
->>  > >  e.g. arch/mips/generic/init.c and arch/mips/jz4740/setup.c.
->>  >
->>  > I would say even more - no DTS would be provided for such =
-
->> configuration.
->>  > All Ingenic DTSes are included only with MACH_INGENIC.  You =
-
->> cannot build
->>  > a kernel working on Ingenic without MACH_INGENIC. Even in theory.
->> =
-
->>  But the devicetree doesn't have to be built-in.
->> =
-
-> =
-
-> OK, that's true. Anyway, I don't have strong opinion on any of this. I
-> just followed Arnd's hint.
-> =
-
-> For the memory driver (and MTD NAND as well) which one you prefer:
-> 1. https://lore.kernel.org/lkml/20200724074038.5597-6-krzk@kernel.org/
-> 2. depends on MACH_INGENIC || MIPS_GENERIC || COMPILE_TEST
-> =
-
-> ?
-
-I'd say a slightly modified #1. The driver shouldn't be "default y" in =
-
-the first place, so the patch could be to disable it by default. And =
-
-when the Ingenic code is merged into the MIPS generic framework, I'll =
-
-send a set of patches to change all driver dependencies on MIPS to =
-
-MIPS_GENERIC.
-
--Paul
-
-
+>  
+>  	pr_info("setup backing device %s\n", file_name);
+> @@ -1819,6 +1820,13 @@ static const struct block_device_operations zram_devops = {
+>  	.owner = THIS_MODULE
+>  };
+>  
+> +static const struct block_device_operations zram_wb_devops = {
+> +	.open = zram_open,
+> +	.submit_bio = zram_submit_bio,
+> +	.swap_slot_free_notify = zram_slot_free_notify,
+> +	.owner = THIS_MODULE
+> +};
+> +
+>  static DEVICE_ATTR_WO(compact);
+>  static DEVICE_ATTR_RW(disksize);
+>  static DEVICE_ATTR_RO(initstate);
+> @@ -1946,8 +1954,7 @@ static int zram_add(void)
+>  	if (ZRAM_LOGICAL_BLOCK_SIZE == PAGE_SIZE)
+>  		blk_queue_max_write_zeroes_sectors(zram->disk->queue, UINT_MAX);
+>  
+> -	zram->disk->queue->backing_dev_info->capabilities |=
+> -			(BDI_CAP_STABLE_WRITES | BDI_CAP_SYNCHRONOUS_IO);
+> +	zram->disk->queue->backing_dev_info->capabilities |= BDI_CAP_STABLE_WRITES;
+>  	device_add_disk(NULL, zram->disk, zram_disk_attr_groups);
+>  
+>  	strlcpy(zram->compressor, default_compressor, sizeof(zram->compressor));
+> diff --git a/drivers/nvdimm/btt.c b/drivers/nvdimm/btt.c
+> index 412d21d8f64351..b4184dc9b41eb4 100644
+> --- a/drivers/nvdimm/btt.c
+> +++ b/drivers/nvdimm/btt.c
+> @@ -1540,8 +1540,6 @@ static int btt_blk_init(struct btt *btt)
+>  	btt->btt_disk->private_data = btt;
+>  	btt->btt_disk->queue = btt->btt_queue;
+>  	btt->btt_disk->flags = GENHD_FL_EXT_DEVT;
+> -	btt->btt_disk->queue->backing_dev_info->capabilities |=
+> -			BDI_CAP_SYNCHRONOUS_IO;
+>  
+>  	blk_queue_logical_block_size(btt->btt_queue, btt->sector_size);
+>  	blk_queue_max_hw_sectors(btt->btt_queue, UINT_MAX);
+> diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
+> index 94790e6e0e4ce1..436b83fb24ad61 100644
+> --- a/drivers/nvdimm/pmem.c
+> +++ b/drivers/nvdimm/pmem.c
+> @@ -478,7 +478,6 @@ static int pmem_attach_disk(struct device *dev,
+>  	disk->queue		= q;
+>  	disk->flags		= GENHD_FL_EXT_DEVT;
+>  	disk->private_data	= pmem;
+> -	disk->queue->backing_dev_info->capabilities |= BDI_CAP_SYNCHRONOUS_IO;
+>  	nvdimm_namespace_disk_name(ndns, disk->disk_name);
+>  	set_capacity(disk, (pmem->size - pmem->pfn_pad - pmem->data_offset)
+>  			/ 512);
+> diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
+> index 52583b6f2ea05d..860ea33571bce5 100644
+> --- a/include/linux/backing-dev.h
+> +++ b/include/linux/backing-dev.h
+> @@ -122,9 +122,6 @@ int bdi_set_max_ratio(struct backing_dev_info *bdi, unsigned int max_ratio);
+>   * BDI_CAP_NO_WRITEBACK:   Don't write pages back
+>   * BDI_CAP_NO_ACCT_WB:     Don't automatically account writeback pages
+>   * BDI_CAP_STRICTLIMIT:    Keep number of dirty pages below bdi threshold.
+> - *
+> - * BDI_CAP_SYNCHRONOUS_IO: Device is so fast that asynchronous IO would be
+> - *			   inefficient.
+>   */
+>  #define BDI_CAP_NO_ACCT_DIRTY	0x00000001
+>  #define BDI_CAP_NO_WRITEBACK	0x00000002
+> @@ -132,7 +129,6 @@ int bdi_set_max_ratio(struct backing_dev_info *bdi, unsigned int max_ratio);
+>  #define BDI_CAP_STABLE_WRITES	0x00000008
+>  #define BDI_CAP_STRICTLIMIT	0x00000010
+>  #define BDI_CAP_CGROUP_WRITEBACK 0x00000020
+> -#define BDI_CAP_SYNCHRONOUS_IO	0x00000040
+>  
+>  #define BDI_CAP_NO_ACCT_AND_WRITEBACK \
+>  	(BDI_CAP_NO_WRITEBACK | BDI_CAP_NO_ACCT_DIRTY | BDI_CAP_NO_ACCT_WB)
+> @@ -174,11 +170,6 @@ static inline int wb_congested(struct bdi_writeback *wb, int cong_bits)
+>  long congestion_wait(int sync, long timeout);
+>  long wait_iff_congested(int sync, long timeout);
+>  
+> -static inline bool bdi_cap_synchronous_io(struct backing_dev_info *bdi)
+> -{
+> -	return bdi->capabilities & BDI_CAP_SYNCHRONOUS_IO;
+> -}
+> -
+>  static inline bool bdi_cap_stable_pages_required(struct backing_dev_info *bdi)
+>  {
+>  	return bdi->capabilities & BDI_CAP_STABLE_WRITES;
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index 6c26916e95fd4a..18eac97b10e502 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -3230,7 +3230,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+>  	if (bdi_cap_stable_pages_required(inode_to_bdi(inode)))
+>  		p->flags |= SWP_STABLE_WRITES;
+>  
+> -	if (bdi_cap_synchronous_io(inode_to_bdi(inode)))
+> +	if (p->bdev && p->bdev->bd_disk->fops->rw_page)
+>  		p->flags |= SWP_SYNCHRONOUS_IO;
+>  
+>  	if (p->bdev && blk_queue_nonrot(bdev_get_queue(p->bdev))) {
+> -- 
+> 2.27.0
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
