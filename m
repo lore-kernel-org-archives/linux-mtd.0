@@ -2,64 +2,62 @@ Return-Path: <SRS0=JUqn=BF=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E53BC4346F
-	for <linux-mtd@archiver.kernel.org>; Sun, 26 Jul 2020 15:04:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20133C433ED
+	for <linux-mtd@archiver.kernel.org>; Sun, 26 Jul 2020 15:05:06 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2EA9B2070B
-	for <linux-mtd@archiver.kernel.org>; Sun, 26 Jul 2020 15:04:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A8AD02065F
+	for <linux-mtd@archiver.kernel.org>; Sun, 26 Jul 2020 15:05:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oWIl/n6+";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="eWgKThWa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2EA9B2070B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="J7CtLUGv";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="gcCyhFok"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A8AD02065F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=YzIG6SfYpKYOUXfuB/JAYt2ECXHTR7GRft4cKX6LsAs=; b=oWIl/n6+H5S0RdZyg3yeX9u/b
-	yGyb2Y68W86JaiGoOq8zvf2h9ahLIFEVhLIyhYgg8pBkwjlT3YjQXUiV9QerEY7hBLPrrAH9DFSEy
-	u28Gjj4aJtUdG7s/EP7Ejs8Nc6JkgfXzxKfrrsW21UGGIzifY+1wvH/fhiCly+bbQRwBKnpL2QxA/
-	dtsanlLv3KoWu6s00FB90cjVcbEUXmrcx7TaDfaJpfbsCSVLFCyV5nYvj94jOl5IGJaVvwor2cul1
-	e3e3rsdsYVmHCRecNj9dMGsCN5S01J83YRct5SFgo/3RrZxyo9QdHBeRQQd51Y8biK6ELQNEvOxdE
-	6+NUOZz6Q==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=P4Mr/uv9S+bNzWScdGGNBKj3z0MGOuKjRxT0eaukocE=; b=J7CtLUGvj+3eDHie3UdjyqaOKm
+	XE987qDuDSAhcqBhMK8Icea1sy15xA6CYLFH6LxwCfW6abIex4e6CUr9wJA0p2IAooJO5pruX/z0n
+	lQJt6BpdTBpfCIfI8zVRvEBxCRnDf70A8E3CAr8w2WDvZZmJ4xYpajYCHkp2S3scn1Md72clLIA+n
+	do542sITDOFziP4ACGIeC3Z/WWNRS7t0an3LhA8RHC4pxQsCSDEYj5POJ4czNlS++Mm9HNJspT4oS
+	8d/jyA+xQmejDqF1kwkyC7Zq9cDVuLCv8D3cNimxA10z9N6NDkM4YcNU8CmVYubk01aVE4LgMGLO6
+	n0DsZK6A==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jziCI-0003IE-Qd; Sun, 26 Jul 2020 15:04:18 +0000
+	id 1jziBk-00032R-Cu; Sun, 26 Jul 2020 15:03:44 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jziBr-00035n-RN
- for linux-mtd@merlin.infradead.org; Sun, 26 Jul 2020 15:03:52 +0000
+ id 1jziBe-00031f-Ok
+ for linux-mtd@merlin.infradead.org; Sun, 26 Jul 2020 15:03:38 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
- References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
- Content-Type:Content-ID:Content-Description;
- bh=1H+lWVRYCWt4MODEgPxnHmFqCfz3JoG7JBlKzqx59xM=; b=eWgKThWa0DCq3ocZZM8vW2pqqI
- EvMO3324fvECNiFdOvuYaTs1ikg718R/7MWDrMeTkO70rqX6CwczbydY2EZDUDQaG1TxV4r5cMFxA
- wgXrU+rVXni2/Xm7nUR/Hw8SQDuDbn5OyelhEujgWzkOR3saDjhgf/ZCeSsoH1Ov5ZGjQxRoMDJGk
- hplz9w9gNwA0c8uJclphBCGObuMI5fCwVhLZnZNX7ijJx2GOH7ZUHxqQLpVJWLt3QUI4JnMLJ8HNZ
- c+ZWYZoI/FNi4Mlhx0NkySCeyHRV6GTUbyDQuWmEAEnCrJHPE9PMGbr1gicZd+KQ/ajhEgKiWLSwv
- rIlFtrBQ==;
+ Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+ Content-Description:In-Reply-To:References;
+ bh=04VE7HPmOaEIcQmpVyHs48tjQkwZrMnq91D8chn1PWs=; b=gcCyhFoksQsWO0hBn75l9y3eqO
+ rt7vUoyyQ9uPDBBFPq3XTHLMjW3AjTgCzBO7uTLnkzsJ1uYPw8ycXoDFcMhrQisMj+zvN/aTVihsw
+ 1hgMXQRfoxvh+sEv+0wfcelGuxKwdudBPeZjx4VCI4fL6bZ24Sbo13xsIp0pR/acwSKk8xlQnswXm
+ JdJUIHrcVzKgjZDPTlvdTExghgDiF+byhGFaaQSQrUkAUpH9N0viDO1N29oOCGjpZ/3uWPjZEvbeG
+ sjHA/7Ii8CvICPtcoIBb9xkg9PYMmFVoSvqoE/fwHTcuKmUdlhJDbe8KAeCL+k+aVJFCbu+TASYWg
+ RLrHiiIg==;
 Received: from [2001:4bb8:18c:2acc:2375:88ff:9f84:118d] (helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jziBp-0005hL-T9; Sun, 26 Jul 2020 15:03:50 +0000
+ id 1jziBb-0005eu-MR; Sun, 26 Jul 2020 15:03:36 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 09/14] bdi: remove BDI_CAP_CGROUP_WRITEBACK
-Date: Sun, 26 Jul 2020 17:03:28 +0200
-Message-Id: <20200726150333.305527-10-hch@lst.de>
+Subject: bdi cleanups v3
+Date: Sun, 26 Jul 2020 17:03:19 +0200
+Message-Id: <20200726150333.305527-1-hch@lst.de>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200726150333.305527-1-hch@lst.de>
-References: <20200726150333.305527-1-hch@lst.de>
 MIME-Version: 1.0
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by
  casper.infradead.org. See http://www.infradead.org/rpr.html
@@ -78,86 +76,81 @@ Cc: linux-raid@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
  Minchan Kim <minchan@kernel.org>, Richard Weinberger <richard@nod.at>,
  linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
  Song Liu <song@kernel.org>, dm-devel@redhat.com, linux-mtd@lists.infradead.org,
- Johannes Thumshirn <johannes.thumshirn@wdc.com>, linux-fsdevel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-mm@kvack.org, drbd-dev@lists.linbit.com
+ linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
+ drbd-dev@lists.linbit.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Just checking SB_I_CGROUPWB for cgroup writeback support is enough.
-Either the file system allocates its own bdi (e.g. btrfs), in which case
-it is known to support cgroup writeback, or the bdi comes from the block
-layer, which always supports cgroup writeback.
+Hi Jens,
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- block/blk-core.c            | 1 -
- fs/btrfs/disk-io.c          | 1 -
- include/linux/backing-dev.h | 8 +++-----
- 3 files changed, 3 insertions(+), 7 deletions(-)
+this series contains a bunch of different BDI cleanups.  The biggest item
+is to isolate block drivers from the BDI in preparation of changing the
+lifetime of the block device BDI in a follow up series.
 
-diff --git a/block/blk-core.c b/block/blk-core.c
-index ea1665de7a2079..68db7e745b49dd 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -538,7 +538,6 @@ struct request_queue *blk_alloc_queue(int node_id)
- 	if (!q->stats)
- 		goto fail_stats;
- 
--	q->backing_dev_info->capabilities = BDI_CAP_CGROUP_WRITEBACK;
- 	q->node = node_id;
- 
- 	timer_setup(&q->backing_dev_info->laptop_mode_wb_timer,
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index f92c45fe019c48..4b5a8640329e4c 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3032,7 +3032,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 		goto fail_sb_buffer;
- 	}
- 
--	sb->s_bdi->capabilities |= BDI_CAP_CGROUP_WRITEBACK;
- 	sb->s_bdi->ra_pages *= btrfs_super_num_devices(disk_super);
- 	sb->s_bdi->ra_pages = max(sb->s_bdi->ra_pages, SZ_4M / PAGE_SIZE);
- 
-diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
-index 0b06b2d26c9aa3..52583b6f2ea05d 100644
---- a/include/linux/backing-dev.h
-+++ b/include/linux/backing-dev.h
-@@ -123,7 +123,6 @@ int bdi_set_max_ratio(struct backing_dev_info *bdi, unsigned int max_ratio);
-  * BDI_CAP_NO_ACCT_WB:     Don't automatically account writeback pages
-  * BDI_CAP_STRICTLIMIT:    Keep number of dirty pages below bdi threshold.
-  *
-- * BDI_CAP_CGROUP_WRITEBACK: Supports cgroup-aware writeback.
-  * BDI_CAP_SYNCHRONOUS_IO: Device is so fast that asynchronous IO would be
-  *			   inefficient.
-  */
-@@ -233,9 +232,9 @@ int inode_congested(struct inode *inode, int cong_bits);
-  * inode_cgwb_enabled - test whether cgroup writeback is enabled on an inode
-  * @inode: inode of interest
-  *
-- * cgroup writeback requires support from both the bdi and filesystem.
-- * Also, both memcg and iocg have to be on the default hierarchy.  Test
-- * whether all conditions are met.
-+ * Cgroup writeback requires support from the filesystem.  Also, both memcg and
-+ * iocg have to be on the default hierarchy.  Test whether all conditions are
-+ * met.
-  *
-  * Note that the test result may change dynamically on the same inode
-  * depending on how memcg and iocg are configured.
-@@ -247,7 +246,6 @@ static inline bool inode_cgwb_enabled(struct inode *inode)
- 	return cgroup_subsys_on_dfl(memory_cgrp_subsys) &&
- 		cgroup_subsys_on_dfl(io_cgrp_subsys) &&
- 		bdi_cap_account_dirty(bdi) &&
--		(bdi->capabilities & BDI_CAP_CGROUP_WRITEBACK) &&
- 		(inode->i_sb->s_iflags & SB_I_CGROUPWB);
- }
- 
--- 
-2.27.0
 
+Changes since v2:
+ - fix a rw_page return value check
+ - fix up various changelogs
+
+Changes since v1:
+ - rebased to the for-5.9/block-merge branch
+ - explicitly set the readahead to 0 for ubifs, vboxsf and mtd
+ - split the zram block_device operations
+ - let rw_page users fall back to bios in swap_readpage
+
+
+Diffstat:
+ block/blk-core.c              |    2 
+ block/blk-integrity.c         |    4 
+ block/blk-mq-debugfs.c        |    1 
+ block/blk-settings.c          |    5 
+ block/blk-sysfs.c             |  282 ++++++++++--------------------------------
+ block/genhd.c                 |   13 +
+ drivers/block/aoe/aoeblk.c    |    2 
+ drivers/block/brd.c           |    1 
+ drivers/block/drbd/drbd_nl.c  |   18 --
+ drivers/block/drbd/drbd_req.c |    4 
+ drivers/block/rbd.c           |    2 
+ drivers/block/zram/zram_drv.c |   19 +-
+ drivers/md/bcache/super.c     |    4 
+ drivers/md/dm-table.c         |    9 -
+ drivers/md/raid0.c            |   16 --
+ drivers/md/raid10.c           |   46 ++----
+ drivers/md/raid5.c            |   31 +---
+ drivers/mmc/core/queue.c      |    3 
+ drivers/mtd/mtdcore.c         |    1 
+ drivers/nvdimm/btt.c          |    2 
+ drivers/nvdimm/pmem.c         |    1 
+ drivers/nvme/host/core.c      |    3 
+ drivers/nvme/host/multipath.c |   10 -
+ drivers/scsi/iscsi_tcp.c      |    4 
+ fs/9p/vfs_file.c              |    2 
+ fs/9p/vfs_super.c             |    4 
+ fs/afs/super.c                |    1 
+ fs/btrfs/disk-io.c            |    2 
+ fs/fs-writeback.c             |    7 -
+ fs/fuse/inode.c               |    4 
+ fs/namei.c                    |    4 
+ fs/nfs/super.c                |    9 -
+ fs/super.c                    |    2 
+ fs/ubifs/super.c              |    1 
+ fs/vboxsf/super.c             |    1 
+ include/linux/backing-dev.h   |   78 +----------
+ include/linux/blkdev.h        |    3 
+ include/linux/drbd.h          |    1 
+ include/linux/fs.h            |    2 
+ mm/backing-dev.c              |   12 -
+ mm/filemap.c                  |    4 
+ mm/memcontrol.c               |    2 
+ mm/memory-failure.c           |    2 
+ mm/migrate.c                  |    2 
+ mm/mmap.c                     |    2 
+ mm/page-writeback.c           |   18 +-
+ mm/page_io.c                  |   18 +-
+ mm/swapfile.c                 |    4 
+ 48 files changed, 204 insertions(+), 464 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
