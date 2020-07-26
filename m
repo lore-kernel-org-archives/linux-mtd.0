@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24A54C43478
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83060C432C3
 	for <linux-mtd@archiver.kernel.org>; Sun, 26 Jul 2020 15:05:14 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D90C12065F
-	for <linux-mtd@archiver.kernel.org>; Sun, 26 Jul 2020 15:05:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 479672065F
+	for <linux-mtd@archiver.kernel.org>; Sun, 26 Jul 2020 15:05:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pDp3Y3e+";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="i661P2un"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D90C12065F
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="MKNTdq//";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="CykWczfD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 479672065F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,38 +26,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=yppvNbZULqbcIAeE2UFyS2zHDTnBpvNmzAKSPnPTZN8=; b=pDp3Y3e+m6XJINvlPobk43cup
-	TWUSXWe2EG0SPFseq/t113B0DvunuUBH1UpE+Lt0lwiNj/Q65lS7EOydUML6Up4fJIyLXrFqa3gOq
-	zPTkDIR8XrqE2JZplhK4MTDAMTfuJbjfElWLQSuX4iKuArJ9/iSgZdSdeJfIpxqrruM9DUK4DGqdJ
-	tWbtD5Ly+VdTd13ZYOPmALpDDvrsGR2WAfREdZ0ZGzHP9f43Sqlcc/EAKG3dPJAQejyLS1Lr8gXmv
-	ZGy1SNveGlJwIdXfrwynmWkHczDBneDvzo4qeZ/x0F/JGs7OyJH/Pl+lxdWiAs/UNw5QKdrCN5SNN
-	+SViRa+DA==;
+	 bh=mjPa4LZzBP1hqpLqv4nok3JJ165dwpGVI6z5ICFyrIM=; b=MKNTdq//GHt7CV2icS8Xwibn2
+	DBN+QIVGunsWLaH+YSHymA2x1K8+PNU7eIbnbdhU/5WetcVIN2hP798u3WAL2xQYtiQ43ofT+o5SZ
+	H1sB5VrSWpHNFVcXyfhI+RsG4uH5P+Pj06PmO2zc1OgTgJyLwNrFJiN+O/wLOyrMwFaukWyIiMJYo
+	Dl2pDJnP8RyGv1l92HqRCMRIcTptrZ2425INDtvxLRu4AnIVZptcwGqUauayaL4YmaBxoo+aBRb03
+	0EnDdecfzTfOzrl14kFcBeOeDFZ3T0t3QLOJ/3YSjxgVU6YpfKMncZ0uOaWnqu1YxRIN4sO0E4kJu
+	HtQ0rVvIw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1jziC7-0003DB-Mo; Sun, 26 Jul 2020 15:04:07 +0000
+	id 1jziCC-0003F1-Cw; Sun, 26 Jul 2020 15:04:12 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jziBn-000343-04
- for linux-mtd@merlin.infradead.org; Sun, 26 Jul 2020 15:03:47 +0000
+ id 1jziBp-00035E-Vc
+ for linux-mtd@merlin.infradead.org; Sun, 26 Jul 2020 15:03:50 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=FzZ6/zgVBqPtRjoXgIlMHr6borSDoijxnK9rowFZCss=; b=i661P2un3Yqo5Bl+gXoBfVA3+2
- q/mdd4jHrZPhfGhxoOfINJsy1b/y3e1g8eoP6Krs26RbQd7X0KETRpP84Uz15AJfcR25vJhPdDfPj
- 5DFDI94BJM3G1ys/toUXeVcm3Ps52w0jx6AOTxmwN5wS/b8PF0Mu/J/GXLNppMtpxDGFkfNwUDWai
- wXmB+3Hu5y48VgIKEc1T/aLBdlS4I01/EUx9MAfBwmaiDR40Q+9JipFTIf8doRxSmLCPodtztNKsS
- MJ+f1bk8TfM7bbhG7pomWFPFioasGW5qMcMHD1vZEfg8FdSESN8KCAh+rETHUojsKIgcDEezqlQ0R
- LzRZt3dg==;
+ bh=fgrmtzY2RTn3uqEl7NE2KYNoJXb5Vjc7RCDyRtLWKlU=; b=CykWczfDyPtUotuOuKPDdIuXBa
+ Yfla4i/HN43Ko24+UeW/GEb+v9iMLUkS6Cnnof4Ak1EGSzCF0sc5gXLWw3hX9SSRwPMVm2Jca+MtY
+ SrQWSNAC1px8i8UXskCjgLc3vqH8AJCgtNO5uTvxG6LVnRfAtWCkGkaNBMzFju/BjIbX6AZ/VKba5
+ 7nAM2bCmpf8WrTBZyx4cFAIA/LbeFcFWz3JJXB3/PV5X13XLYkcWpWhFQqQ2WCZN3EeoXi8NuUf2n
+ jeBlL2+B5ro2/cMFSZ++rBzQ2m5+PaWBNJSfYU2Bam2D28mUEximIjMGeVY2BwsCz+vlGXb1d9WVa
+ 8myBKyzQ==;
 Received: from [2001:4bb8:18c:2acc:2375:88ff:9f84:118d] (helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jziBl-0005ge-IL; Sun, 26 Jul 2020 15:03:46 +0000
+ id 1jziBo-0005hA-G1; Sun, 26 Jul 2020 15:03:48 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 06/14] block: lift setting the readahead size into the block
- layer
-Date: Sun, 26 Jul 2020 17:03:25 +0200
-Message-Id: <20200726150333.305527-7-hch@lst.de>
+Subject: [PATCH 08/14] block: add helper macros for queue sysfs entries
+Date: Sun, 26 Jul 2020 17:03:27 +0200
+Message-Id: <20200726150333.305527-9-hch@lst.de>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200726150333.305527-1-hch@lst.de>
 References: <20200726150333.305527-1-hch@lst.de>
@@ -79,284 +78,302 @@ Cc: linux-raid@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
  Minchan Kim <minchan@kernel.org>, Richard Weinberger <richard@nod.at>,
  linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
  Song Liu <song@kernel.org>, dm-devel@redhat.com, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
- drbd-dev@lists.linbit.com
+ Johannes Thumshirn <johannes.thumshirn@wdc.com>, linux-fsdevel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-mm@kvack.org, drbd-dev@lists.linbit.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Drivers shouldn't really mess with the readahead size, as that is a VM
-concept.  Instead set it based on the optimal I/O size by lifting the
-algorithm from the md driver when registering the disk.  Also set
-bdi->io_pages there as well by applying the same scheme based on
-max_sectors.
+Add two helpers macros to avoid boilerplate code for the queue sysfs
+entries.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- block/blk-settings.c         |  5 ++---
- block/blk-sysfs.c            |  1 -
- block/genhd.c                | 13 +++++++++++--
- drivers/block/aoe/aoeblk.c   |  2 --
- drivers/block/drbd/drbd_nl.c | 12 +-----------
- drivers/md/bcache/super.c    |  4 ----
- drivers/md/dm-table.c        |  3 ---
- drivers/md/raid0.c           | 16 ----------------
- drivers/md/raid10.c          | 24 +-----------------------
- drivers/md/raid5.c           | 13 +------------
- 10 files changed, 16 insertions(+), 77 deletions(-)
+ block/blk-sysfs.c | 248 +++++++++++-----------------------------------
+ 1 file changed, 58 insertions(+), 190 deletions(-)
 
-diff --git a/block/blk-settings.c b/block/blk-settings.c
-index 76a7e03bcd6cac..01049e9b998f1d 100644
---- a/block/blk-settings.c
-+++ b/block/blk-settings.c
-@@ -452,6 +452,8 @@ EXPORT_SYMBOL(blk_limits_io_opt);
- void blk_queue_io_opt(struct request_queue *q, unsigned int opt)
- {
- 	blk_limits_io_opt(&q->limits, opt);
-+	q->backing_dev_info->ra_pages =
-+		max(queue_io_opt(q) * 2 / PAGE_SIZE, VM_READAHEAD_PAGES);
- }
- EXPORT_SYMBOL(blk_queue_io_opt);
- 
-@@ -628,9 +630,6 @@ void disk_stack_limits(struct gendisk *disk, struct block_device *bdev,
- 		printk(KERN_NOTICE "%s: Warning: Device %s is misaligned\n",
- 		       top, bottom);
- 	}
--
--	t->backing_dev_info->io_pages =
--		t->limits.max_sectors >> (PAGE_SHIFT - 9);
- }
- EXPORT_SYMBOL(disk_stack_limits);
- 
 diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
-index 7dda709f3ccb6f..ce418d9128a0b2 100644
+index cfbb039da8751f..9bb4e42fb73265 100644
 --- a/block/blk-sysfs.c
 +++ b/block/blk-sysfs.c
-@@ -245,7 +245,6 @@ queue_max_sectors_store(struct request_queue *q, const char *page, size_t count)
+@@ -551,201 +551,69 @@ static ssize_t queue_dax_show(struct request_queue *q, char *page)
+ 	return queue_var_show(blk_queue_dax(q), page);
+ }
  
- 	spin_lock_irq(&q->queue_lock);
- 	q->limits.max_sectors = max_sectors_kb << 1;
--	q->backing_dev_info->io_pages = max_sectors_kb >> (PAGE_SHIFT - 10);
- 	spin_unlock_irq(&q->queue_lock);
- 
- 	return ret;
-diff --git a/block/genhd.c b/block/genhd.c
-index 8b1e9f48957cb5..097d4e4bc0b8a2 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -775,6 +775,7 @@ static void __device_add_disk(struct device *parent, struct gendisk *disk,
- 			      const struct attribute_group **groups,
- 			      bool register_queue)
- {
-+	struct request_queue *q = disk->queue;
- 	dev_t devt;
- 	int retval;
- 
-@@ -785,7 +786,7 @@ static void __device_add_disk(struct device *parent, struct gendisk *disk,
- 	 * registration.
- 	 */
- 	if (register_queue)
--		elevator_init_mq(disk->queue);
-+		elevator_init_mq(q);
- 
- 	/* minors == 0 indicates to use ext devt from part0 and should
- 	 * be accompanied with EXT_DEVT flag.  Make sure all
-@@ -815,10 +816,18 @@ static void __device_add_disk(struct device *parent, struct gendisk *disk,
- 		disk->flags |= GENHD_FL_SUPPRESS_PARTITION_INFO;
- 		disk->flags |= GENHD_FL_NO_PART_SCAN;
- 	} else {
--		struct backing_dev_info *bdi = disk->queue->backing_dev_info;
-+		struct backing_dev_info *bdi = q->backing_dev_info;
- 		struct device *dev = disk_to_dev(disk);
- 		int ret;
- 
-+		/*
-+		 * For read-ahead of large files to be effective, we need to
-+		 * readahead at least twice the optimal I/O size.
-+		 */
-+		bdi->ra_pages = max(queue_io_opt(q) * 2 / PAGE_SIZE,
-+				    VM_READAHEAD_PAGES);
-+		bdi->io_pages = queue_max_sectors(q) >> (PAGE_SHIFT - 9);
+-static struct queue_sysfs_entry queue_requests_entry = {
+-	.attr = {.name = "nr_requests", .mode = 0644 },
+-	.show = queue_requests_show,
+-	.store = queue_requests_store,
+-};
+-
+-static struct queue_sysfs_entry queue_ra_entry = {
+-	.attr = {.name = "read_ahead_kb", .mode = 0644 },
+-	.show = queue_ra_show,
+-	.store = queue_ra_store,
+-};
+-
+-static struct queue_sysfs_entry queue_max_sectors_entry = {
+-	.attr = {.name = "max_sectors_kb", .mode = 0644 },
+-	.show = queue_max_sectors_show,
+-	.store = queue_max_sectors_store,
+-};
++#define QUEUE_RO_ENTRY(_prefix, _name)			\
++static struct queue_sysfs_entry _prefix##_entry = {	\
++	.attr	= { .name = _name, .mode = 0444 },	\
++	.show	= _prefix##_show,			\
++};
 +
- 		/* Register BDI before referencing it from bdev */
- 		dev->devt = devt;
- 		ret = bdi_register(bdi, "%u:%u", MAJOR(devt), MINOR(devt));
-diff --git a/drivers/block/aoe/aoeblk.c b/drivers/block/aoe/aoeblk.c
-index 5ca7216e9e01f3..89b33b402b4e52 100644
---- a/drivers/block/aoe/aoeblk.c
-+++ b/drivers/block/aoe/aoeblk.c
-@@ -347,7 +347,6 @@ aoeblk_gdalloc(void *vp)
- 	mempool_t *mp;
- 	struct request_queue *q;
- 	struct blk_mq_tag_set *set;
--	enum { KB = 1024, MB = KB * KB, READ_AHEAD = 2 * MB, };
- 	ulong flags;
- 	int late = 0;
- 	int err;
-@@ -407,7 +406,6 @@ aoeblk_gdalloc(void *vp)
- 	WARN_ON(d->gd);
- 	WARN_ON(d->flags & DEVFL_UP);
- 	blk_queue_max_hw_sectors(q, BLK_DEF_MAX_SECTORS);
--	q->backing_dev_info->ra_pages = READ_AHEAD / PAGE_SIZE;
- 	d->bufpool = mp;
- 	d->blkq = gd->queue = q;
- 	q->queuedata = d;
-diff --git a/drivers/block/drbd/drbd_nl.c b/drivers/block/drbd/drbd_nl.c
-index 650372ee2c7822..212bf711fb6b41 100644
---- a/drivers/block/drbd/drbd_nl.c
-+++ b/drivers/block/drbd/drbd_nl.c
-@@ -1360,18 +1360,8 @@ static void drbd_setup_queue_param(struct drbd_device *device, struct drbd_backi
- 	decide_on_discard_support(device, q, b, discard_zeroes_if_aligned);
- 	decide_on_write_same_support(device, q, b, o, disable_write_same);
++#define QUEUE_RW_ENTRY(_prefix, _name)			\
++static struct queue_sysfs_entry _prefix##_entry = {	\
++	.attr	= { .name = _name, .mode = 0644 },	\
++	.show	= _prefix##_show,			\
++	.store	= _prefix##_store,			\
++};
++
++QUEUE_RW_ENTRY(queue_requests, "nr_requests");
++QUEUE_RW_ENTRY(queue_ra, "read_ahead_kb");
++QUEUE_RW_ENTRY(queue_max_sectors, "max_sectors_kb");
++QUEUE_RO_ENTRY(queue_max_hw_sectors, "max_hw_sectors_kb");
++QUEUE_RO_ENTRY(queue_max_segments, "max_segments");
++QUEUE_RO_ENTRY(queue_max_integrity_segments, "max_integrity_segments");
++QUEUE_RO_ENTRY(queue_max_segment_size, "max_segment_size");
++QUEUE_RW_ENTRY(elv_iosched, "scheduler");
++
++QUEUE_RO_ENTRY(queue_logical_block_size, "logical_block_size");
++QUEUE_RO_ENTRY(queue_physical_block_size, "physical_block_size");
++QUEUE_RO_ENTRY(queue_chunk_sectors, "chunk_sectors");
++QUEUE_RO_ENTRY(queue_io_min, "minimum_io_size");
++QUEUE_RO_ENTRY(queue_io_opt, "optimal_io_size");
++
++QUEUE_RO_ENTRY(queue_max_discard_segments, "max_discard_segments");
++QUEUE_RO_ENTRY(queue_discard_granularity, "discard_granularity");
++QUEUE_RO_ENTRY(queue_discard_max_hw, "discard_max_hw_bytes");
++QUEUE_RW_ENTRY(queue_discard_max, "discard_max_bytes");
++QUEUE_RO_ENTRY(queue_discard_zeroes_data, "discard_zeroes_data");
++
++QUEUE_RO_ENTRY(queue_write_same_max, "write_same_max_bytes");
++QUEUE_RO_ENTRY(queue_write_zeroes_max, "write_zeroes_max_bytes");
++QUEUE_RO_ENTRY(queue_zone_append_max, "zone_append_max_bytes");
++
++QUEUE_RO_ENTRY(queue_zoned, "zoned");
++QUEUE_RO_ENTRY(queue_nr_zones, "nr_zones");
++QUEUE_RO_ENTRY(queue_max_open_zones, "max_open_zones");
++QUEUE_RO_ENTRY(queue_max_active_zones, "max_active_zones");
++
++QUEUE_RW_ENTRY(queue_nomerges, "nomerges");
++QUEUE_RW_ENTRY(queue_rq_affinity, "rq_affinity");
++QUEUE_RW_ENTRY(queue_poll, "io_poll");
++QUEUE_RW_ENTRY(queue_poll_delay, "io_poll_delay");
++QUEUE_RW_ENTRY(queue_wc, "write_cache");
++QUEUE_RO_ENTRY(queue_fua, "fua");
++QUEUE_RO_ENTRY(queue_dax, "dax");
++QUEUE_RW_ENTRY(queue_io_timeout, "io_timeout");
++QUEUE_RW_ENTRY(queue_wb_lat, "wbt_lat_usec");
  
--	if (b) {
-+	if (b)
- 		blk_stack_limits(&q->limits, &b->limits, 0);
+-static struct queue_sysfs_entry queue_max_hw_sectors_entry = {
+-	.attr = {.name = "max_hw_sectors_kb", .mode = 0444 },
+-	.show = queue_max_hw_sectors_show,
+-};
 -
--		if (q->backing_dev_info->ra_pages !=
--		    b->backing_dev_info->ra_pages) {
--			drbd_info(device, "Adjusting my ra_pages to backing device's (%lu -> %lu)\n",
--				 q->backing_dev_info->ra_pages,
--				 b->backing_dev_info->ra_pages);
--			q->backing_dev_info->ra_pages =
--						b->backing_dev_info->ra_pages;
--		}
--	}
- 	fixup_discard_if_not_supported(q);
- 	fixup_write_zeroes(device, q);
- }
-diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-index 9e45faa054b6f4..9d3f0711be030f 100644
---- a/drivers/md/bcache/super.c
-+++ b/drivers/md/bcache/super.c
-@@ -1367,10 +1367,6 @@ static int cached_dev_init(struct cached_dev *dc, unsigned int block_size)
- 	if (ret)
- 		return ret;
+-static struct queue_sysfs_entry queue_max_segments_entry = {
+-	.attr = {.name = "max_segments", .mode = 0444 },
+-	.show = queue_max_segments_show,
+-};
+-
+-static struct queue_sysfs_entry queue_max_discard_segments_entry = {
+-	.attr = {.name = "max_discard_segments", .mode = 0444 },
+-	.show = queue_max_discard_segments_show,
+-};
+-
+-static struct queue_sysfs_entry queue_max_integrity_segments_entry = {
+-	.attr = {.name = "max_integrity_segments", .mode = 0444 },
+-	.show = queue_max_integrity_segments_show,
+-};
+-
+-static struct queue_sysfs_entry queue_max_segment_size_entry = {
+-	.attr = {.name = "max_segment_size", .mode = 0444 },
+-	.show = queue_max_segment_size_show,
+-};
+-
+-static struct queue_sysfs_entry queue_iosched_entry = {
+-	.attr = {.name = "scheduler", .mode = 0644 },
+-	.show = elv_iosched_show,
+-	.store = elv_iosched_store,
+-};
++#ifdef CONFIG_BLK_DEV_THROTTLING_LOW
++QUEUE_RW_ENTRY(blk_throtl_sample, "throttle_sample_time");
++#endif
  
--	dc->disk.disk->queue->backing_dev_info->ra_pages =
--		max(dc->disk.disk->queue->backing_dev_info->ra_pages,
--		    q->backing_dev_info->ra_pages);
++/* legacy alias for logical_block_size: */
+ static struct queue_sysfs_entry queue_hw_sector_size_entry = {
+ 	.attr = {.name = "hw_sector_size", .mode = 0444 },
+ 	.show = queue_logical_block_size_show,
+ };
+ 
+-static struct queue_sysfs_entry queue_logical_block_size_entry = {
+-	.attr = {.name = "logical_block_size", .mode = 0444 },
+-	.show = queue_logical_block_size_show,
+-};
 -
- 	atomic_set(&dc->io_errors, 0);
- 	dc->io_disable = false;
- 	dc->error_limit = DEFAULT_CACHED_DEV_ERROR_LIMIT;
-diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
-index aac4c31cfc8498..324a42ed2f8894 100644
---- a/drivers/md/dm-table.c
-+++ b/drivers/md/dm-table.c
-@@ -1924,9 +1924,6 @@ void dm_table_set_restrictions(struct dm_table *t, struct request_queue *q,
- 		q->nr_zones = blkdev_nr_zones(t->md->disk);
- 	}
+-static struct queue_sysfs_entry queue_physical_block_size_entry = {
+-	.attr = {.name = "physical_block_size", .mode = 0444 },
+-	.show = queue_physical_block_size_show,
+-};
+-
+-static struct queue_sysfs_entry queue_chunk_sectors_entry = {
+-	.attr = {.name = "chunk_sectors", .mode = 0444 },
+-	.show = queue_chunk_sectors_show,
+-};
+-
+-static struct queue_sysfs_entry queue_io_min_entry = {
+-	.attr = {.name = "minimum_io_size", .mode = 0444 },
+-	.show = queue_io_min_show,
+-};
+-
+-static struct queue_sysfs_entry queue_io_opt_entry = {
+-	.attr = {.name = "optimal_io_size", .mode = 0444 },
+-	.show = queue_io_opt_show,
+-};
+-
+-static struct queue_sysfs_entry queue_discard_granularity_entry = {
+-	.attr = {.name = "discard_granularity", .mode = 0444 },
+-	.show = queue_discard_granularity_show,
+-};
+-
+-static struct queue_sysfs_entry queue_discard_max_hw_entry = {
+-	.attr = {.name = "discard_max_hw_bytes", .mode = 0444 },
+-	.show = queue_discard_max_hw_show,
+-};
+-
+-static struct queue_sysfs_entry queue_discard_max_entry = {
+-	.attr = {.name = "discard_max_bytes", .mode = 0644 },
+-	.show = queue_discard_max_show,
+-	.store = queue_discard_max_store,
+-};
+-
+-static struct queue_sysfs_entry queue_discard_zeroes_data_entry = {
+-	.attr = {.name = "discard_zeroes_data", .mode = 0444 },
+-	.show = queue_discard_zeroes_data_show,
+-};
+-
+-static struct queue_sysfs_entry queue_write_same_max_entry = {
+-	.attr = {.name = "write_same_max_bytes", .mode = 0444 },
+-	.show = queue_write_same_max_show,
+-};
+-
+-static struct queue_sysfs_entry queue_write_zeroes_max_entry = {
+-	.attr = {.name = "write_zeroes_max_bytes", .mode = 0444 },
+-	.show = queue_write_zeroes_max_show,
+-};
+-
+-static struct queue_sysfs_entry queue_zone_append_max_entry = {
+-	.attr = {.name = "zone_append_max_bytes", .mode = 0444 },
+-	.show = queue_zone_append_max_show,
+-};
+-
+-static struct queue_sysfs_entry queue_zoned_entry = {
+-	.attr = {.name = "zoned", .mode = 0444 },
+-	.show = queue_zoned_show,
+-};
+-
+-static struct queue_sysfs_entry queue_nr_zones_entry = {
+-	.attr = {.name = "nr_zones", .mode = 0444 },
+-	.show = queue_nr_zones_show,
+-};
+-
+-static struct queue_sysfs_entry queue_max_open_zones_entry = {
+-	.attr = {.name = "max_open_zones", .mode = 0444 },
+-	.show = queue_max_open_zones_show,
+-};
+-
+-static struct queue_sysfs_entry queue_max_active_zones_entry = {
+-	.attr = {.name = "max_active_zones", .mode = 0444 },
+-	.show = queue_max_active_zones_show,
+-};
+-
+-static struct queue_sysfs_entry queue_nomerges_entry = {
+-	.attr = {.name = "nomerges", .mode = 0644 },
+-	.show = queue_nomerges_show,
+-	.store = queue_nomerges_store,
+-};
+-
+-static struct queue_sysfs_entry queue_rq_affinity_entry = {
+-	.attr = {.name = "rq_affinity", .mode = 0644 },
+-	.show = queue_rq_affinity_show,
+-	.store = queue_rq_affinity_store,
+-};
+-
+-static struct queue_sysfs_entry queue_poll_entry = {
+-	.attr = {.name = "io_poll", .mode = 0644 },
+-	.show = queue_poll_show,
+-	.store = queue_poll_store,
+-};
+-
+-static struct queue_sysfs_entry queue_poll_delay_entry = {
+-	.attr = {.name = "io_poll_delay", .mode = 0644 },
+-	.show = queue_poll_delay_show,
+-	.store = queue_poll_delay_store,
+-};
+-
+-static struct queue_sysfs_entry queue_wc_entry = {
+-	.attr = {.name = "write_cache", .mode = 0644 },
+-	.show = queue_wc_show,
+-	.store = queue_wc_store,
+-};
+-
+-static struct queue_sysfs_entry queue_fua_entry = {
+-	.attr = {.name = "fua", .mode = 0444 },
+-	.show = queue_fua_show,
+-};
+-
+-static struct queue_sysfs_entry queue_dax_entry = {
+-	.attr = {.name = "dax", .mode = 0444 },
+-	.show = queue_dax_show,
+-};
+-
+-static struct queue_sysfs_entry queue_io_timeout_entry = {
+-	.attr = {.name = "io_timeout", .mode = 0644 },
+-	.show = queue_io_timeout_show,
+-	.store = queue_io_timeout_store,
+-};
+-
+-static struct queue_sysfs_entry queue_wb_lat_entry = {
+-	.attr = {.name = "wbt_lat_usec", .mode = 0644 },
+-	.show = queue_wb_lat_show,
+-	.store = queue_wb_lat_store,
+-};
+-
+-#ifdef CONFIG_BLK_DEV_THROTTLING_LOW
+-static struct queue_sysfs_entry throtl_sample_time_entry = {
+-	.attr = {.name = "throttle_sample_time", .mode = 0644 },
+-	.show = blk_throtl_sample_time_show,
+-	.store = blk_throtl_sample_time_store,
+-};
+-#endif
+-
+ static struct attribute *queue_attrs[] = {
+ 	&queue_requests_entry.attr,
+ 	&queue_ra_entry.attr,
+@@ -755,7 +623,7 @@ static struct attribute *queue_attrs[] = {
+ 	&queue_max_discard_segments_entry.attr,
+ 	&queue_max_integrity_segments_entry.attr,
+ 	&queue_max_segment_size_entry.attr,
+-	&queue_iosched_entry.attr,
++	&elv_iosched_entry.attr,
+ 	&queue_hw_sector_size_entry.attr,
+ 	&queue_logical_block_size_entry.attr,
+ 	&queue_physical_block_size_entry.attr,
+@@ -786,7 +654,7 @@ static struct attribute *queue_attrs[] = {
+ 	&queue_poll_delay_entry.attr,
+ 	&queue_io_timeout_entry.attr,
+ #ifdef CONFIG_BLK_DEV_THROTTLING_LOW
+-	&throtl_sample_time_entry.attr,
++	&blk_throtl_sample_time_entry.attr,
  #endif
--
--	/* Allow reads to exceed readahead limits */
--	q->backing_dev_info->io_pages = limits->max_sectors >> (PAGE_SHIFT - 9);
- }
- 
- unsigned int dm_table_get_num_targets(struct dm_table *t)
-diff --git a/drivers/md/raid0.c b/drivers/md/raid0.c
-index f54a449f97aa79..aa2d7279176880 100644
---- a/drivers/md/raid0.c
-+++ b/drivers/md/raid0.c
-@@ -410,22 +410,6 @@ static int raid0_run(struct mddev *mddev)
- 		 mdname(mddev),
- 		 (unsigned long long)mddev->array_sectors);
- 
--	if (mddev->queue) {
--		/* calculate the max read-ahead size.
--		 * For read-ahead of large files to be effective, we need to
--		 * readahead at least twice a whole stripe. i.e. number of devices
--		 * multiplied by chunk size times 2.
--		 * If an individual device has an ra_pages greater than the
--		 * chunk size, then we will not drive that device as hard as it
--		 * wants.  We consider this a configuration error: a larger
--		 * chunksize should be used in that case.
--		 */
--		int stripe = mddev->raid_disks *
--			(mddev->chunk_sectors << 9) / PAGE_SIZE;
--		if (mddev->queue->backing_dev_info->ra_pages < 2* stripe)
--			mddev->queue->backing_dev_info->ra_pages = 2* stripe;
--	}
--
- 	dump_zones(mddev);
- 
- 	ret = md_integrity_register(mddev);
-diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
-index 9f88ff9bdee437..23d15acbf457d4 100644
---- a/drivers/md/raid10.c
-+++ b/drivers/md/raid10.c
-@@ -3865,19 +3865,6 @@ static int raid10_run(struct mddev *mddev)
- 	mddev->resync_max_sectors = size;
- 	set_bit(MD_FAILFAST_SUPPORTED, &mddev->flags);
- 
--	if (mddev->queue) {
--		int stripe = conf->geo.raid_disks *
--			((mddev->chunk_sectors << 9) / PAGE_SIZE);
--
--		/* Calculate max read-ahead size.
--		 * We need to readahead at least twice a whole stripe....
--		 * maybe...
--		 */
--		stripe /= conf->geo.near_copies;
--		if (mddev->queue->backing_dev_info->ra_pages < 2 * stripe)
--			mddev->queue->backing_dev_info->ra_pages = 2 * stripe;
--	}
--
- 	if (md_integrity_register(mddev))
- 		goto out_free_conf;
- 
-@@ -4715,17 +4702,8 @@ static void end_reshape(struct r10conf *conf)
- 	conf->reshape_safe = MaxSector;
- 	spin_unlock_irq(&conf->device_lock);
- 
--	/* read-ahead size must cover two whole stripes, which is
--	 * 2 * (datadisks) * chunksize where 'n' is the number of raid devices
--	 */
--	if (conf->mddev->queue) {
--		int stripe = conf->geo.raid_disks *
--			((conf->mddev->chunk_sectors << 9) / PAGE_SIZE);
--		stripe /= conf->geo.near_copies;
--		if (conf->mddev->queue->backing_dev_info->ra_pages < 2 * stripe)
--			conf->mddev->queue->backing_dev_info->ra_pages = 2 * stripe;
-+	if (conf->mddev->queue)
- 		raid10_set_io_opt(conf);
--	}
- 	conf->fullsync = 0;
- }
- 
-diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
-index 68e41ce3ca75cc..415ce3cc155698 100644
---- a/drivers/md/raid5.c
-+++ b/drivers/md/raid5.c
-@@ -7413,8 +7413,6 @@ static int raid5_run(struct mddev *mddev)
- 		int data_disks = conf->previous_raid_disks - conf->max_degraded;
- 		int stripe = data_disks *
- 			((mddev->chunk_sectors << 9) / PAGE_SIZE);
--		if (mddev->queue->backing_dev_info->ra_pages < 2 * stripe)
--			mddev->queue->backing_dev_info->ra_pages = 2 * stripe;
- 
- 		chunk_size = mddev->chunk_sectors << 9;
- 		blk_queue_io_min(mddev->queue, chunk_size);
-@@ -8002,17 +8000,8 @@ static void end_reshape(struct r5conf *conf)
- 		spin_unlock_irq(&conf->device_lock);
- 		wake_up(&conf->wait_for_overlap);
- 
--		/* read-ahead size must cover two whole stripes, which is
--		 * 2 * (datadisks) * chunksize where 'n' is the number of raid devices
--		 */
--		if (conf->mddev->queue) {
--			int data_disks = conf->raid_disks - conf->max_degraded;
--			int stripe = data_disks * ((conf->chunk_sectors << 9)
--						   / PAGE_SIZE);
--			if (conf->mddev->queue->backing_dev_info->ra_pages < 2 * stripe)
--				conf->mddev->queue->backing_dev_info->ra_pages = 2 * stripe;
-+		if (conf->mddev->queue)
- 			raid5_set_io_opt(conf);
--		}
- 	}
- }
- 
+ 	NULL,
+ };
 -- 
 2.27.0
 
