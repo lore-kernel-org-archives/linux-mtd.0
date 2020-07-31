@@ -2,59 +2,92 @@ Return-Path: <SRS0=HCZ/=BK=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF7EBC433E0
-	for <linux-mtd@archiver.kernel.org>; Fri, 31 Jul 2020 11:59:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CFD6C433E3
+	for <linux-mtd@archiver.kernel.org>; Fri, 31 Jul 2020 13:21:58 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6000122B40
-	for <linux-mtd@archiver.kernel.org>; Fri, 31 Jul 2020 11:59:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2DB6D21744
+	for <linux-mtd@archiver.kernel.org>; Fri, 31 Jul 2020 13:21:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CF2osDbV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6000122B40
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=emlix.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="I/U3hOsO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2DB6D21744
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sigma-star.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
-	:List-Id:MIME-Version:Message-ID:Date:Subject:To:From:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=XOIsqdlHtcafF0CHavhZjgXbIgHmh5z4AIfL0dNr5Ss=; b=CF2osDbVmHTUZ6SmEamDxzDGgr
-	fnFlkPydWKijmFsoCtwNB4yf8s4tVzW3T9CzGhvPW+tbW86ClDLjtv9P+/2dsxdWbv6CNshN7xVY1
-	rsYVEcMrEuNYqxhgC/00fr8M8O7SjWdkhaYruFc+V1bXyS/1ZYUCTUe98MPOAIsQcxDlo6D7pF+Ui
-	SbEdru0BPCCqjIrNJZvLizpbugG99PJyy79Zsk72qJgyoQis5eroPUQgnkK36b6EFVKf8yZZ3xwtV
-	54sHbMurXB7XXtZ8zr6sQU2Z6d/wa2+Ay4Gr1ZQ6PxoaP4i9kCXYRhnZqsLOlFFsjqCXkymYmsNOW
-	G2+ALB5Q==;
+	:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=MsqOIQWTS4MGgKRfQDT5YLU9hEswUsTKtx1PVsS6AIc=; b=I/U3hOsOcoKNVfoqqCKg4LigkO
+	Ev9WXM6oPhEA4W1r3uyDTDU+77JDJQMWlD8VrYzPEvFKpzwfG5NJLXnR+P9CgGDjQOB4U63BX8DiN
+	oFkgFe4iqhv0dpQPXrU81FeZuKCN0YYYiQZ1Hhluzd1uMfOTDhOOfIjD04HBkLfbFzaftlFc9aUwS
+	BUMbyXc+QF3T7dJdNN9h8EsDr0B8fHddmRMlspimTx2v25ws5rGOTeIpbWHDOVDLxtHEnXEGG17L9
+	6EiNGp6EflZkBtUlj0AJYx0PEWje3keGy/Zsaw3MERU6j+9TfNJHzsVwxOWiw4gVfUmUJvLcLstOi
+	JPcHeX+A==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1k1Tfm-0000yU-ER; Fri, 31 Jul 2020 11:58:02 +0000
-Received: from mx1.emlix.com ([188.40.240.192])
+	id 1k1Uxr-00025t-M2; Fri, 31 Jul 2020 13:20:47 +0000
+Received: from lilium.sigma-star.at ([109.75.188.150])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k1Tff-0000xq-Hp
- for linux-mtd@lists.infradead.org; Fri, 31 Jul 2020 11:57:56 +0000
-Received: from mailer.emlix.com (p5098be52.dip0.t-ipconnect.de [80.152.190.82])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mx1.emlix.com (Postfix) with ESMTPS id 4E260600EF
- for <linux-mtd@lists.infradead.org>; Fri, 31 Jul 2020 13:57:53 +0200 (CEST)
-From: Rolf Eike Beer <eb@emlix.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] fix build of jffs2reader and jffs2dump if zlib or lzo headers
- are not in default paths
-Date: Fri, 31 Jul 2020 13:57:53 +0200
-Message-ID: <4173430.oBoMjFJ7W7@devpool35>
-Organization: emlix GmbH
+ id 1k1Uxp-00025T-2B
+ for linux-mtd@lists.infradead.org; Fri, 31 Jul 2020 13:20:46 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lilium.sigma-star.at (Postfix) with ESMTP id 6A80918191041;
+ Fri, 31 Jul 2020 15:20:41 +0200 (CEST)
+Received: from lilium.sigma-star.at ([127.0.0.1])
+ by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id 0HDO6hBCCtRs; Fri, 31 Jul 2020 15:20:41 +0200 (CEST)
+Received: from lilium.sigma-star.at ([127.0.0.1])
+ by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id F_kk996HZOZ8; Fri, 31 Jul 2020 15:20:40 +0200 (CEST)
+Subject: Re: [PATCH] fix build of jffs2reader and jffs2dump if zlib or lzo
+ headers are not in default paths
+To: Rolf Eike Beer <eb@emlix.com>, linux-mtd@lists.infradead.org
+References: <4173430.oBoMjFJ7W7@devpool35>
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Autocrypt: addr=david.oberhollenzer@sigma-star.at; prefer-encrypt=mutual;
+ keydata=
+ mQENBFZyf0YBCADHyKhABhxthCC9n48pvsuk5p3IEdYXMs8Apenh1N/Z4cViAz/d/nSCZ+FG
+ FX/PSubEzq8AilZLejchAltaORCvA1Y6FgTlpcdJ6gHDfStDbJL/vk5N8aL7YNF7VfjTRntB
+ tKbhKcrG05nbdNjIioAm04pt9rx5mV5KMbf22/FdZpOSSsC6/N7b/cFH9+fx8kwi4pNFuJwr
+ BkWRuQ7rEtCoSpd22t+Vh9qA7kymW9gWY405258jnN65jBO7ElqU2CCuGRPg6uryAHV3RVCB
+ 9j9AE3HLacQReFtt5ylyydSQbaK4K9asnd7U2/C11vIuuciXCppX4bPap/pMnGpzw0UNABEB
+ AAG0N0RhdmlkIE9iZXJob2xsZW56ZXIgPGRhdmlkLm9iZXJob2xsZW56ZXJAc2lnbWEtc3Rh
+ ci5hdD6JATcEEwEIACEFAlZyf0YCGwMFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AACgkQvOXc
+ PHQaAtFuEAgArXOhaoaVvCMVCa5N25Q/+Q6K1wrVpPmkH89yhQqCmfM6f+2VM5MGFDPfaSJ3
+ 5fBDH0iwBQwlXIb7NSXWtzdXX9rMvJkJqv45TgeKtJApf/sRhmcN+clrwzP8oZQbxkP1YWzo
+ Vwo4lOb3Kv7aY9yeCjqNbdJJ57NpvYOUrzrCpGkrDPBBQOvKF3wbq3oU/o3dT23NDeQ20jXg
+ quJf/PCw6WCzRxqg58wH02MdMDQe8vByzVig2bM2e7DErtt+hPK/Dmdsqgns+Z+SrQcOvRa3
+ GMAHAuHB0u2LhYO6NyaNCgzdgutorilYcq7FEKr8XqwOnfVmZdCW3qGKmLbn6qMEdLkBDQRW
+ cn9GAQgAvugF8cFjv2Zs4BBb44SnxGawBySC1bMRas/MjA9EMHUAx/StcecQmxnl6BzEyGpr
+ +TRnXIzcb5xI8SxitBDU5MLvwsHgNvpYp9fscd4kWP7oMir9ta3Q8SvT4OLbO4FZBGaURzGP
+ ak8JmjMMtOoOBh4meOjz6GrJe9UIGxT94aB01w7YohfBANzK8xyk4ykKC5Op4XgaaMKOEQUa
+ h7wajcojYSlvgOiXqEisMHlRDAW6sXL2sEM7TIpvYhy9txMLllpkYb0Pu1BvUpY/unsybWKA
+ FyiTmeiY+nEveUvqX6Ef7BWdClBeCk2UaRvtcoLd22VxMlKTniHQcNMOXlRRawARAQABiQEf
+ BBgBCAAJBQJWcn9GAhsMAAoJELzl3Dx0GgLRPtcH/jD6rn2+VIKgrHdt3ao3Abpu2fqYfwbI
+ yPAtpXOddDptVq+0A/2arXT1Y8+jNSZpbAg8K+bLaEAcSUEjviKMpfI7ppTUBuGKrpgc5xsi
+ UpKkJCb7oB1ZraIBNBPtPPVUhbwLie4uW/LVt+8rBKz3W9KEDOsT0ZCG/pW8Ld+EpDR9l0fm
+ qoVHaw8PhLAtez+B7HS7Hv7iJPDtX85kFYpud8kIPENXVn9EjZudyMWgZb2LhYlcavNcszgR
+ 7In6ift5SNySojCOfAV0iKZb8QUXWktLleY8kQ8jltOsSRTuO4PDfzvtCQDixUw4tQ7WLwDT
+ qyUpot0oG03vtSG4LIRCdxI=
+Organization: sigma star gmbh
+Message-ID: <a46ab746-7a86-4f02-5e5a-5e492b10b3fc@sigma-star.at>
+Date: Fri, 31 Jul 2020 15:20:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <4173430.oBoMjFJ7W7@devpool35>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200731_075755_758964_392361B4 
-X-CRM114-Status: UNSURE (   7.83  )
+X-CRM114-CacheID: sfid-20200731_092045_240732_BC565B12 
+X-CRM114-Status: UNSURE (   8.05  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -67,35 +100,19 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RnJvbSAxN2Y2NDA3ZjIyYjhmODc5ZTZiNzg4Y2I0ZTNhNjdkODU2YWJlMDJlIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBSb2xmIEVpa2UgQmVlciA8ZWJAZW1saXguY29tPgpEYXRlOiBG
-cmksIDE1IE1heSAyMDIwIDE0OjU2OjQ4ICswMjAwClN1YmplY3Q6IFtQQVRDSF0gZml4IGJ1aWxk
-IG9mIGpmZnMycmVhZGVyIGFuZCBqZmZzMmR1bXAgaWYgemxpYiBvciBsem8KIGhlYWRlcnMgYXJl
-IG5vdCBpbiBkZWZhdWx0IHBhdGhzCgpTaWduZWQtb2ZmLWJ5OiBSb2xmIEVpa2UgQmVlciA8ZWJA
-ZW1saXguY29tPgotLS0KIGpmZnNYLXV0aWxzL01ha2Vtb2R1bGUuYW0gfCAyICsrCiAxIGZpbGUg
-Y2hhbmdlZCwgMiBpbnNlcnRpb25zKCspCgpkaWZmIC0tZ2l0IGEvamZmc1gtdXRpbHMvTWFrZW1v
-ZHVsZS5hbSBiL2pmZnNYLXV0aWxzL01ha2Vtb2R1bGUuYW0KaW5kZXggZmIxODFkZS4uOWZkNzM0
-YiAxMDA2NDQKLS0tIGEvamZmc1gtdXRpbHMvTWFrZW1vZHVsZS5hbQorKysgYi9qZmZzWC11dGls
-cy9NYWtlbW9kdWxlLmFtCkBAIC0xMiw5ICsxMiwxMSBAQCBta2ZzX2pmZnMyX0NQUEZMQUdTID0g
-JChBTV9DUFBGTEFHUykgJChaTElCX0NGTEFHUykgJChMWk9fQ0ZMQUdTKQogCiBqZmZzMnJlYWRl
-cl9TT1VSQ0VTID0gamZmc1gtdXRpbHMvamZmczJyZWFkZXIuYwogamZmczJyZWFkZXJfTERBREQg
-PSBsaWJtdGQuYSAkKFpMSUJfTElCUykgJChMWk9fTElCUykKK2pmZnMycmVhZGVyX0NQUEZMQUdT
-ID0gJChBTV9DUFBGTEFHUykgJChaTElCX0NGTEFHUykgJChMWk9fQ0ZMQUdTKQogCiBqZmZzMmR1
-bXBfU09VUkNFUyA9IGpmZnNYLXV0aWxzL2pmZnMyZHVtcC5jCiBqZmZzMmR1bXBfTERBREQgPSBs
-aWJtdGQuYSAkKFpMSUJfTElCUykgJChMWk9fTElCUykKK2pmZnMyZHVtcF9DUFBGTEFHUyA9ICQo
-QU1fQ1BQRkxBR1MpICQoWkxJQl9DRkxBR1MpICQoTFpPX0NGTEFHUykKIAogc3VtdG9vbF9TT1VS
-Q0VTID0gamZmc1gtdXRpbHMvc3VtdG9vbC5jCiBzdW10b29sX0xEQUREID0gbGlibXRkLmEKLS0g
-CjIuMjYuMgoKLS0gClJvbGYgRWlrZSBCZWVyLCBlbWxpeCBHbWJILCBodHRwOi8vd3d3LmVtbGl4
-LmNvbQpGb24gKzQ5IDU1MSAzMDY2NC0wLCBGYXggKzQ5IDU1MSAzMDY2NC0xMQpHb3RoYWVyIFBs
-YXR6IDMsIDM3MDgzIEfDtnR0aW5nZW4sIEdlcm1hbnkKU2l0eiBkZXIgR2VzZWxsc2NoYWZ0OiBH
-w7Z0dGluZ2VuLCBBbXRzZ2VyaWNodCBHw7Z0dGluZ2VuIEhSIEIgMzE2MApHZXNjaMOkZnRzZsO8
-aHJ1bmc6IEhlaWtlIEpvcmRhbiwgRHIuIFV3ZSBLcmFja2Ug4oCTIFVzdC1JZE5yLjogREUgMjA1
-IDE5OCAwNTUKCmVtbGl4IC0gc21hcnQgZW1iZWRkZWQgb3BlbiBzb3VyY2UKCgoKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQg
-ZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9saW51eC1tdGQvCg==
+Sorry for the delay, looks like I missed the patch the first time round.
+
+Applied to mtd-utils.git master.
+
+Thanks,
+
+David
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
