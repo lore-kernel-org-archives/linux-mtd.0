@@ -1,78 +1,93 @@
-Return-Path: <SRS0=HCZ/=BK=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=Mklv=BL=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA465C433E0
-	for <linux-mtd@archiver.kernel.org>; Fri, 31 Jul 2020 22:31:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A27FC433DF
+	for <linux-mtd@archiver.kernel.org>; Sat,  1 Aug 2020 12:25:20 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 890F421744
-	for <linux-mtd@archiver.kernel.org>; Fri, 31 Jul 2020 22:31:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0869B2076A
+	for <linux-mtd@archiver.kernel.org>; Sat,  1 Aug 2020 12:25:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="U9fN4jGU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 890F421744
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="d5kLB4QV";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j66cZ0ST"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0869B2076A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=4a1femkrsf5ywkCTePhOI/96tJvmAIy1Z4I8IVskZek=; b=U9fN4jGUHC6SEHbRFHpXl89pb
-	6sLk+/kVFAYeTNlUMUIrD5ouIL+r3sG9+dB2Vql4MbEqUI4ul+UfmvnZ34NC68PXE75v9qmN5U1hc
-	OKuVd/RITSMhNJ5PUj1uqFw8rcJIbNLOXoXHQiiFrhk010cEOe2MYnsYYjuW4bf8n6iSNAz8NyBkT
-	AX7adEXd8m8kHAQQo70GgeSjg56PUQ0M0RyQMExdIJVdGPkFb+dodeuYtjY8fpxKswCdggU89+Beh
-	AyqeVFXMT5o70S0Ibnl1jENm22V/3NpWulkz1X9peWLSvE0jGaVLDdrQvle1Gw3iB8H4YEecVqpXD
-	1mFfE/VBA==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=TrM2FC1hyh1DJB+JCQjmzlZy1pM3X4lS8EXmvkHR0LQ=; b=d5kLB4QVjOvVrVy3O1nMErjHYK
+	N4BqHlhFsj9QQVQNGsJwqtbeLWAc6w+weVAgch3v5eWmKBNMH3hVcdnefrx538xl38I/kCgnZPWJQ
+	g2uPnekeDcomzF7zzLnrKo0SEYT/dBA+bwq1grmULUD881SDs81VK4q31MkNgZqUCrofQd0HXs770
+	fF3YSrt4v1Cw5YkAspg6J5Nf394JuUAbeXZtlu7i1P8RozubWKVS7hIldfxd83xkyUwrkdqRrBuMF
+	sA3BwhjuO8R+yv8sD1rVfLiN3jmxe+q/B1NZpwRvF2V0/n/UUhcYFJArIEhXeNVl33LpCcj0H+0HW
+	MbU2pM4g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1k1dXm-0003p4-Pg; Fri, 31 Jul 2020 22:30:26 +0000
-Received: from mail-il1-f196.google.com ([209.85.166.196])
+	id 1k1qYz-0005ma-D0; Sat, 01 Aug 2020 12:24:33 +0000
+Received: from mail-ej1-x641.google.com ([2a00:1450:4864:20::641])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k1dXk-0003oN-7f
- for linux-mtd@lists.infradead.org; Fri, 31 Jul 2020 22:30:24 +0000
-Received: by mail-il1-f196.google.com with SMTP id r12so26593629ilh.4
- for <linux-mtd@lists.infradead.org>; Fri, 31 Jul 2020 15:30:24 -0700 (PDT)
+ id 1k1qYs-0005m0-FR
+ for linux-mtd@lists.infradead.org; Sat, 01 Aug 2020 12:24:27 +0000
+Received: by mail-ej1-x641.google.com with SMTP id bo3so11390219ejb.11
+ for <linux-mtd@lists.infradead.org>; Sat, 01 Aug 2020 05:24:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=T7aPF82SA5wWWFZavl8BJzxoy0LUNqXZ1nMb9d5sWLA=;
+ b=j66cZ0STMIZTim+8iu9l4yKXtG8ZTanGI8z+X1wR0aquCIkjlSQ3uq144NXbHFRqYq
+ pryOrLm0Tk4WjXIpQPSZ9hc5epP0b8/seyPyQa+oa84ubNQfoqeMdFAeOwHM5c7f8gs6
+ iw1UY5HeZyBDIl6k0tfTCuIswWS1yzXqU96nzIlAzw9U72XKPoXpyeW/y8zsFeP4eni7
+ u92WbfkYX/y3wS58Nh5M614LPj1IL5Sgqlo04ji1dBuFIvc+ym23L2TB1sTW89cBJDl5
+ Jm1eicn/zIgYkq2QWzqabG/A92wScoWb3O1Q68yCp6is3jqAAXrCric1VJ3YyUqhFsVs
+ VMzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=2maazcGZ5EmPVyaTxV1kqSQWG44Ku8XCmrKZS9b/6sw=;
- b=Gzx9droQojLNsJjK3Phztjr8RoqQEPkSuZGOVPEmZxxg9jr1i9/KEAHPGX8XtlR7B/
- i+8I0B1T4aDWKXFf7QJaakvuf9p9WkDXuDqzAnB0zgvAXnOYuvdOks72F+3inQYNnvzq
- eRFa3ncfGeo3ODqtTYAw+0LEK242RGsdAqZbC3VkDW2h4EoHfuRLJJ2DmfNJjFqZo0PT
- PcMMQZJVlAeJwuMVY6SHXqr+uLSea77FlaXPWOCg/x7GteC7qLFGZh2zIdPyvsiHrkI2
- ARsL9jq3FrcVddXmw4a0a138AvnbZcw6NZvYLBpCg1lS/59cxqGBk5ucR9+sYnZbMT6a
- cnUw==
-X-Gm-Message-State: AOAM53013PK12tZK2WCXJxyqG614xOEM/enr70NxeXjzuj7IZM5rpQiv
- Pkkif2ZwbW+PeyLV5dSnDg==
-X-Google-Smtp-Source: ABdhPJweVA/kIb9N17voplqDVaSgdP6Uo167HAzEoZY7A1QACN/CL+32OjS4NIvJD0JGn11TfvLrAQ==
-X-Received: by 2002:a92:5bd8:: with SMTP id c85mr5466714ilg.35.1596234623651; 
- Fri, 31 Jul 2020 15:30:23 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
- by smtp.gmail.com with ESMTPSA id l16sm5507830ilj.78.2020.07.31.15.30.22
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=T7aPF82SA5wWWFZavl8BJzxoy0LUNqXZ1nMb9d5sWLA=;
+ b=ucGRJ4BfAUNOcjU1fsVv7ECrmZBh6Cv/qGxmGRagA8cnUtLFLCorYofLT5HJs14Bkf
+ pqAqkXL+L+NYAYVH4rQDLhMX+TXS8SJzZQghtzLr2/70EcV755R5KMJ/+2R7YhhNGzji
+ b+UD60NHARZVKJpew0O9cPnQmVYPPCr9sU7v0u0/IVW9utWdYTvk/zoot+gPGasJgmrw
+ 6qvP9/Lu4HKCi8P5F/nfcP/nxx0LMTFMxmUQVtC/6wmMMaCFJcOEmib0lj+3Sw+RWZvg
+ 9jvZoKKflvwoDwAsYiMB1Gum43noweJk/Z0jI0ir7LLWzD4WWvgJIttC7Tf+Hk/7BC2X
+ nBmQ==
+X-Gm-Message-State: AOAM532+KT1PdxyTgbIm8aPQrB5Nw17XUKRFr7jR2DBgyKTy8GCYXFYb
+ 1Hl5WtvzB0Y0dtO2/0olLBfCz3LoPWVUEw==
+X-Google-Smtp-Source: ABdhPJzoUNKtZROrtg5oRTHrqWYi9kdFEI+ce31VxUN0Y2Yt/rL0DBWkJLpuSAyDhwqGzfm7zy5ymA==
+X-Received: by 2002:a17:906:b146:: with SMTP id
+ bt6mr8432804ejb.138.1596284663809; 
+ Sat, 01 Aug 2020 05:24:23 -0700 (PDT)
+Received: from net.saheed (95C84E0A.dsl.pool.telekom.hu. [149.200.78.10])
+ by smtp.gmail.com with ESMTPSA id a101sm12083131edf.76.2020.08.01.05.24.20
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 31 Jul 2020 15:30:23 -0700 (PDT)
-Received: (nullmailer pid 922882 invoked by uid 1000);
- Fri, 31 Jul 2020 22:30:22 -0000
-Date: Fri, 31 Jul 2020 16:30:22 -0600
-From: Rob Herring <robh@kernel.org>
-To: Anson Huang <Anson.Huang@nxp.com>
-Subject: Re: [PATCH 1/2] dt-bindings: mtd: Convert gpmi nand to json-schema
-Message-ID: <20200731223022.GA922797@bogus>
-References: <1596113004-15548-1-git-send-email-Anson.Huang@nxp.com>
+ Sat, 01 Aug 2020 05:24:22 -0700 (PDT)
+From: "Saheed O. Bolarinwa" <refactormyself@gmail.com>
+To: helgaas@kernel.org, Kalle Valo <kvalo@codeaurora.org>,
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Wolfgang Grandegger <wg@grandegger.com>,
+ Marc Kleine-Budde <mkl@pengutronix.de>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Joerg Roedel <joro@8bytes.org>
+Subject: [RFC PATCH 00/17] Drop uses of pci_read_config_*() return value
+Date: Sat,  1 Aug 2020 13:24:29 +0200
+Message-Id: <20200801112446.149549-1-refactormyself@gmail.com>
+X-Mailer: git-send-email 2.18.4
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1596113004-15548-1-git-send-email-Anson.Huang@nxp.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200731_183024_286342_F2EC1D7F 
-X-CRM114-Status: GOOD (  10.97  )
+X-CRM114-CacheID: sfid-20200801_082426_549422_7C49ED94 
+X-CRM114-Status: GOOD (  13.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,29 +99,118 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, vigneshr@ti.com, richard@nod.at,
- miquel.raynal@bootlin.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, Linux-imx@nxp.com,
- u.kleine-koenig@pengutronix.de, han.xu@nxp.com
+Cc: linux-pci@vger.kernel.org, linux-fpga@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-ide@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-atm-general@lists.sourceforge.net,
+ linux-kernel-mentees@lists.linuxfoundation.org,
+ intel-gfx@lists.freedesktop.org, linux-gpio@vger.kernel.org,
+ skhan@linuxfoundation.org, bjorn@helgaas.com, linux-edac@vger.kernel.org,
+ linux-hwmon@vger.kernel.org, "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
+ linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+ iommu@lists.linux-foundation.org, linux-crypto@vger.kernel.org,
+ netdev@vger.kernel.org, dmaengine@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 30 Jul 2020 20:43:23 +0800, Anson Huang wrote:
-> Convert the gpmi nand controller binding to DT schema format
-> using json-schema.
-> 
-> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-> ---
->  .../devicetree/bindings/mtd/gpmi-nand.txt          |  75 -------------
->  .../devicetree/bindings/mtd/gpmi-nand.yaml         | 118 +++++++++++++++++++++
->  2 files changed, 118 insertions(+), 75 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/mtd/gpmi-nand.txt
->  create mode 100644 Documentation/devicetree/bindings/mtd/gpmi-nand.yaml
-> 
+The return value of pci_read_config_*() may not indicate a device error.
+However, the value read by these functions is more likely to indicate
+this kind of error. This presents two overlapping ways of reporting
+errors and complicates error checking.
 
-Applied, thanks!
+It is possible to move to one single way of checking for error if the 
+dependencies on the return value of these functions are removed, then it
+can later be made to return void.
+
+Remove all uses of the return value of pci_read_config_*().
+Check the actual value read for ~0. In this case, ~0 is an invalid value
+thus it indicates some kind of error.
+
+In some cases it madkes sence to make the calling function return void
+without causing any bug. Future callers can use the value obtained from
+these functions for validation. This case pertain to cs5536_read() and 
+edac_pci_read_dword()
+
+MERGE:
+There is no dependency.
+Merge individually
+
+Saheed O. Bolarinwa (17):
+  ata: Drop uses of pci_read_config_*() return value
+  atm: Drop uses of pci_read_config_*() return value
+  bcma: Drop uses of pci_read_config_*() return value
+  hwrng: Drop uses of pci_read_config_*() return value
+  dmaengine: ioat: Drop uses of pci_read_config_*() return value
+  edac: Drop uses of pci_read_config_*() return value
+  fpga: altera-cvp: Drop uses of pci_read_config_*() return value
+  gpio: Drop uses of pci_read_config_*() return value
+  drm/i915/vga: Drop uses of pci_read_config_*() return value
+  hwmon: Drop uses of pci_read_config_*() return value
+  intel_th: pci: Drop uses of pci_read_config_*() return value
+  i2c: Drop uses of pci_read_config_*() return value
+  ide: Drop uses of pci_read_config_*() return value
+  IB: Drop uses of pci_read_config_*() return value
+  iommu/vt-d: Drop uses of pci_read_config_*() return value
+  mtd: Drop uses of pci_read_config_*() return value
+  net: Drop uses of pci_read_config_*() return value
+
+ drivers/ata/pata_cs5536.c                     |  6 +--
+ drivers/ata/pata_rz1000.c                     |  3 +-
+ drivers/atm/eni.c                             |  3 +-
+ drivers/atm/he.c                              | 12 +++--
+ drivers/atm/idt77252.c                        |  9 ++--
+ drivers/atm/iphase.c                          | 46 ++++++++++---------
+ drivers/atm/lanai.c                           |  4 +-
+ drivers/atm/nicstar.c                         |  3 +-
+ drivers/atm/zatm.c                            |  9 ++--
+ drivers/bcma/host_pci.c                       |  6 ++-
+ drivers/char/hw_random/amd-rng.c              |  6 +--
+ drivers/dma/ioat/dma.c                        |  6 +--
+ drivers/edac/amd64_edac.c                     |  8 ++--
+ drivers/edac/amd8111_edac.c                   | 16 ++-----
+ drivers/edac/amd8131_edac.c                   |  6 +--
+ drivers/edac/i82443bxgx_edac.c                |  3 +-
+ drivers/edac/sb_edac.c                        | 12 +++--
+ drivers/edac/skx_common.c                     | 18 +++++---
+ drivers/fpga/altera-cvp.c                     |  8 ++--
+ drivers/gpio/gpio-amd8111.c                   |  7 ++-
+ drivers/gpio/gpio-rdc321x.c                   | 21 +++++----
+ drivers/gpu/drm/i915/display/intel_vga.c      |  3 +-
+ drivers/hwmon/i5k_amb.c                       | 12 +++--
+ drivers/hwmon/vt8231.c                        |  8 ++--
+ drivers/hwtracing/intel_th/pci.c              | 12 ++---
+ drivers/i2c/busses/i2c-ali15x3.c              |  6 ++-
+ drivers/i2c/busses/i2c-elektor.c              |  3 +-
+ drivers/i2c/busses/i2c-nforce2.c              |  4 +-
+ drivers/i2c/busses/i2c-sis5595.c              | 17 ++++---
+ drivers/i2c/busses/i2c-sis630.c               |  7 +--
+ drivers/i2c/busses/i2c-viapro.c               | 11 +++--
+ drivers/ide/cs5536.c                          |  6 +--
+ drivers/ide/rz1000.c                          |  3 +-
+ drivers/ide/setup-pci.c                       | 26 +++++++----
+ drivers/infiniband/hw/hfi1/pcie.c             | 38 +++++++--------
+ drivers/infiniband/hw/mthca/mthca_reset.c     | 19 ++++----
+ drivers/iommu/intel/iommu.c                   |  6 ++-
+ drivers/mtd/maps/ichxrom.c                    |  4 +-
+ drivers/net/can/peak_canfd/peak_pciefd_main.c |  6 ++-
+ drivers/net/can/sja1000/peak_pci.c            |  6 ++-
+ drivers/net/ethernet/agere/et131x.c           | 11 +++--
+ .../ethernet/broadcom/bnx2x/bnx2x_ethtool.c   |  5 +-
+ .../cavium/liquidio/cn23xx_pf_device.c        |  4 +-
+ drivers/net/ethernet/marvell/sky2.c           |  5 +-
+ drivers/net/ethernet/mellanox/mlx4/catas.c    |  7 +--
+ drivers/net/ethernet/mellanox/mlx4/reset.c    | 10 ++--
+ .../net/ethernet/myricom/myri10ge/myri10ge.c  |  4 +-
+ drivers/net/wan/farsync.c                     |  5 +-
+ .../broadcom/brcm80211/brcmfmac/pcie.c        |  4 +-
+ .../net/wireless/intel/iwlwifi/pcie/trans.c   | 15 ++++--
+ 50 files changed, 270 insertions(+), 209 deletions(-)
+
+-- 
+2.18.4
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
