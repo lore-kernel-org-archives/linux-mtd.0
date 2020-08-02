@@ -2,66 +2,71 @@ Return-Path: <SRS0=iZys=BM=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 570D4C433DF
-	for <linux-mtd@archiver.kernel.org>; Sun,  2 Aug 2020 19:15:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D762C433E0
+	for <linux-mtd@archiver.kernel.org>; Sun,  2 Aug 2020 19:17:57 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 30B39206F6
-	for <linux-mtd@archiver.kernel.org>; Sun,  2 Aug 2020 19:15:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4DA45206F6
+	for <linux-mtd@archiver.kernel.org>; Sun,  2 Aug 2020 19:17:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="k4+e4rcM";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="i/jHSvTU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 30B39206F6
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gwtoj4Pu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4DA45206F6
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Message-ID:Subject:To:From:
-	Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:List-Owner;
-	 bh=hrtPglQSB9D1gXwi7ghwffdRsCe9abLipBsgTd/rFpw=; b=k4+e4rcMAhEhZIrqzZplEw6+E
-	LgyT0XqaJmaLNQsCHrFPnGH1r5NSQ9HBMYj+vYNkZ0b8iYzickskGwxk+BDNBkKRnnW8wfNhPLkT4
-	EVjlPUdb6ZIvcWQJ3NEdIHiK5PWmthoybOYxMV7ISZTJ+8XADXvSaeJruzKcCI0f0T6QN455PZ42v
-	b/zrhPWPTjxt7lXxV+I0ognRIWw+B5ZjIzzVsvSrUeT1PJCDCYOog8iGmcMmczxTEsT/7NyifQNNx
-	Wf75w4PV3+vVsjHt3R7kUiUb12LunHjrQAlVrdrebAHv42t93oZ5l93Mw9Yg1wRPcoMkH40Q0CCeu
-	2TPVV5EdA==;
+	List-Unsubscribe:List-Id:MIME-Version:Subject:Message-ID:To:From:Date:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=e/9Jy8ABa8biB/IyGvB1/WaVaWtmoK2laAFhSBVvVoE=; b=gwtoj4Pu5YDokG26y5nrdjlkbY
+	ugaFEN2NSo2f4ZdiUKwqQ9aeyTsdFhvBKv3sxqir+9tLFgZdEuY7uVaCENTSVNr/iX0LbioDJvcwu
+	wiphZXIDqCfz3lgBQAGSWyGf0drHdnrI/xgTJ3mB9X6ZDtBBKyWnZkFpqo8OUNDha4tLaeBy461jA
+	eJS9Ub8UFf4WhdXtsW847zOdMMiwqSKFAAk4ugYxwAvZ09r8P4aoZ58s+SXbpqpWpbcnrN75TxD/V
+	pdV2DPPXwwYuUh9kTwK6Ko1jYQyRMKv7mO9NUFXmbz087C70pQhAoFEx2NK0KMDU3/utuJYAti0rG
+	YDO4IgXA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1k2JQy-00044w-A9; Sun, 02 Aug 2020 19:14:12 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1k2JU8-0004TU-7A; Sun, 02 Aug 2020 19:17:28 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k2JQv-00044Z-U6
- for linux-mtd@lists.infradead.org; Sun, 02 Aug 2020 19:14:10 +0000
-Received: from localhost (mobile-166-175-186-42.mycingular.net
- [166.175.186.42])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id E9B0F206E9;
- Sun,  2 Aug 2020 19:14:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1596395648;
- bh=8BmtM5Wz6njp3alR4dE4/v12QyDF8IHMxGR5An5fCEM=;
- h=Date:From:To:Cc:Subject:In-Reply-To:From;
- b=i/jHSvTUizuVlNBRmQdxRNPe6coho/ATL8nGKi/xOmyBYjKmz9+xWg85IsgGxSgIS
- dL1yfc+oHKYsaeZL0AE3OSX+Y10i5fuMEzdWvutU18j1LA95jrbDgF15+X0v94hhxC
- 1mNVxGQqYc9cBpDxqrC9KNkOyCMbtt1kU/iMoM8s=
-Date: Sun, 2 Aug 2020 14:14:06 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Borislav Petkov <bp@alien8.de>
-Subject: Re: [RFC PATCH 00/17] Drop uses of pci_read_config_*() return value
-Message-ID: <20200802191406.GA248232@bjorn-Precision-5520>
+ id 1k2JU5-0004Qj-DH
+ for linux-mtd@lists.infradead.org; Sun, 02 Aug 2020 19:17:26 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 1AC0561D8AB3;
+ Sun,  2 Aug 2020 21:17:22 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id euIn5lnh-NeA; Sun,  2 Aug 2020 21:17:21 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id A674B61D8A8B;
+ Sun,  2 Aug 2020 21:17:21 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id NR3dkTOCafhq; Sun,  2 Aug 2020 21:17:21 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 7BDF96071A7C;
+ Sun,  2 Aug 2020 21:17:21 +0200 (CEST)
+Date: Sun, 2 Aug 2020 21:17:21 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: torvalds <torvalds@linux-foundation.org>
+Message-ID: <1401520472.201470.1596395841386.JavaMail.zimbra@nod.at>
+Subject: [GIT PULL] MTD fixes for 5.8 final
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20200802184648.GA23190@nazgul.tnic>
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
+Thread-Index: YSIOvvqeeCjsUO5zcWYbwcKUq1Gp2w==
+Thread-Topic: MTD fixes for 5.8 final
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200802_151410_091198_F6C779CD 
-X-CRM114-Status: GOOD (  13.96  )
+X-CRM114-CacheID: sfid-20200802_151725_580786_DF801A7B 
+X-CRM114-Status: UNSURE (   5.25  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,48 +78,35 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, linux-pci@vger.kernel.org,
- linux-fpga@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-ide@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-i2c@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-rdma@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- Joerg Roedel <joro@8bytes.org>, linux-atm-general@lists.sourceforge.net,
- trix@redhat.com, Jakub Kicinski <kuba@kernel.org>,
- linux-kernel-mentees@lists.linuxfoundation.org,
- Wolfgang Grandegger <wg@grandegger.com>, intel-gfx@lists.freedesktop.org,
- linux-gpio@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
- skhan@linuxfoundation.org, bjorn@helgaas.com,
- Kalle Valo <kvalo@codeaurora.org>, linux-edac@vger.kernel.org,
- linux-hwmon@vger.kernel.org, Saheed Bolarinwa <refactormyself@gmail.com>,
- linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
- iommu@lists.linux-foundation.org, linux-crypto@vger.kernel.org,
- netdev@vger.kernel.org, dmaengine@vger.kernel.org,
- "David S. Miller" <davem@davemloft.net>
+Cc: vigneshr@ti.com, linux-mtd <linux-mtd@lists.infradead.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>, miquel.raynal@bootlin.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sun, Aug 02, 2020 at 08:46:48PM +0200, Borislav Petkov wrote:
-> On Sun, Aug 02, 2020 at 07:28:00PM +0200, Saheed Bolarinwa wrote:
-> > Because the value ~0 has a meaning to some drivers and only
-> 
-> No, ~0 means that the PCI read failed. For *every* PCI device I know.
+Linus,
 
-Wait, I'm not convinced yet.  I know that if a PCI read fails, you
-normally get ~0 data because the host bridge fabricates it to complete
-the CPU load.
+sorry for the late PR, feel free to postpone it into the merge window.
 
-But what guarantees that a PCI config register cannot contain ~0?
-If there's something about that in the spec I'd love to know where it
-is because it would simplify a lot of things.
+The following changes since commit d15be546031cf65a0fc34879beca02fd90fe7ac7:
 
-I don't think we should merge any of these patches as-is.  If we *do*
-want to go this direction, we at least need some kind of macro or
-function that tests for ~0 so we have a clue about what's happening
-and can grep for it.
+  Merge tag 'media/v5.8-3' of git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media into master (2020-07-22 11:56:00 -0700)
 
-Bjorn
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes
+
+for you to fetch changes up to f7e6b19bc76471ba03725fe58e0c218a3d6266c3:
+
+  mtd: properly check all write ioctls for permissions (2020-07-24 23:03:11 +0200)
+
+----------------------------------------------------------------
+Greg Kroah-Hartman (1):
+      mtd: properly check all write ioctls for permissions
+
+ drivers/mtd/mtdchar.c | 56 ++++++++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 47 insertions(+), 9 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
