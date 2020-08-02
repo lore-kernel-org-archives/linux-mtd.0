@@ -2,82 +2,69 @@ Return-Path: <SRS0=iZys=BM=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AADCC433E0
-	for <linux-mtd@archiver.kernel.org>; Sun,  2 Aug 2020 20:19:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FBEEC433DF
+	for <linux-mtd@archiver.kernel.org>; Sun,  2 Aug 2020 20:19:59 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5B9C120738
-	for <linux-mtd@archiver.kernel.org>; Sun,  2 Aug 2020 20:19:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3092120738
+	for <linux-mtd@archiver.kernel.org>; Sun,  2 Aug 2020 20:19:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ZnWvnRZZ";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="oPrxCDXx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B9C120738
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="yatbPdYj";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=alien8.de header.i=@alien8.de header.b="IpVr02DQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3092120738
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=alien8.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=pyu8UTieL8B3d2AiD3N69e87DReHEEj1GbXo7jiEP6c=; b=ZnWvnRZZO0UwY498jFVoftIj4
-	7Mru6H7ht1JVsM3alyzX1qT+sda+vG/tV3i8L0sBsKRZOXA9rwxmWGO+rcv0BgPH7zLGf6XQ0C0S/
-	V1oB3i5sg1Eh23gropMAKwASzeBheUcY1uaWCi4J3sVPL2syb/gbW5kCSNqGqMe5qhYto+xGHEcRt
-	7Vb5gFs4NfU6u36cvsoe+ZKQa+6nlJQ0sZnAwG8NzSF1SEoBs3kD3IJ69l3rT9LWNmCt5m0eWxwnU
-	ppamGYTAlN94xrEpCQcJRDRrrdvl5wr7/7jBrF9LGYa1Y7tj9hYtgyg2kH3mLjSDIbfAHBe7Czqsy
-	8cWtJg9mQ==;
+	 bh=23QdY2K/1UgACxFgaTEtOKZ5U9O3REDfMDkk0V9SAkY=; b=yatbPdYjldZpEXyJGMMXcvzv3
+	pSEi53TnEy5mHGrxJkvSjzf1b047nBAGxXQBfnLwmbkMVpF5L5JQm9MOlfxv/yTJ2DWxwozp5E7Yf
+	eBvGYTt/MCNnvygY5ajHJ0t+9rKvOJ5R16yiMUGFy7SPZf09T7b9MzFJeHUb1ZS9GBNGuPPAV2FHM
+	Xxyi9kSmBmzz9hz3/mVJxNJOdlHWcUCf2CxwqL7nu2V69FgcTmUhBXPpCGfxMWghDIY7ESNhyex8P
+	fXzaU+ArMY5wfKnT/YOwAMh2kdwrqlvk3sAozxIZKiAdimZvIXdz4k/CszrSNmaH1ljsM62hIoj/1
+	kCcw5714w==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1k2KRd-0007hp-D3; Sun, 02 Aug 2020 20:18:57 +0000
-Received: from mail-qt1-x844.google.com ([2607:f8b0:4864:20::844])
+	id 1k2KRS-0007eG-Bc; Sun, 02 Aug 2020 20:18:46 +0000
+Received: from mail.skyhub.de ([5.9.137.197])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k2KRa-0007hH-RT
- for linux-mtd@lists.infradead.org; Sun, 02 Aug 2020 20:18:55 +0000
-Received: by mail-qt1-x844.google.com with SMTP id d27so26853680qtg.4
- for <linux-mtd@lists.infradead.org>; Sun, 02 Aug 2020 13:18:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=X4el0gauSUjNsfXwiz026OMHpfpwY+zK0Rf376j3X2E=;
- b=oPrxCDXxF8+UTKdjo8Y2pj1vrKNPbd5hJt1iSjfSWt0wpQT8id+oSTMszbk3iMH0xl
- rZT4+zC8UqDUzG1GOqEiYdp8zhfu9XxXN9Ou694NKA9Mi76LaJv/0o7xtUu0jwEGxTAM
- oUyuG36o/YF9NZTsaOwP2GaoynLI86ecYS/1mxskLP04dG48w7C/xVver+P43vzK/cK8
- d/bTCsI/aajwsjiD6hJspFSPQg4CEeNs6x23jPKplIEva2tHQWJnNuFBW2I8v+ATAfEx
- yx/VWe5xNffckYOVzpVBlGI+H0/HNP/RotwjwTUpPzD/t301IjvMgk3aQHr1cjEEdBpA
- N+QA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=X4el0gauSUjNsfXwiz026OMHpfpwY+zK0Rf376j3X2E=;
- b=Bf9HBYwg0Vm6QkJaYFZp0jE6vE/uVdCr8sOMUwTI86bj4CvDls1LddS/7MpttiDi9u
- mxIYUC7Xsf30W7L+WZuzkbwHn2Z/0ZsdOgriuo9KPNQs+/ubq+4rOxifs7s+8NaxztBt
- uVA46VmT3Qt2qcd0n2/GYu12hW41rp23thEQQ/V+FS72n82/WgwQK3N1c/KvRam7kXfM
- jD2QbrERVo04BwzeaKQp+IOkeNN1p5eTV4wzmAjVqwZNCMNH2gbgviAWrZl2sm/22sNO
- S+SqSl2bGWO/HZipz8pW4Q5kZarKcry4bUN7jizU2608owa5dttvUkT6Oigv7HIElmBV
- W6dg==
-X-Gm-Message-State: AOAM531MwRBO4OaskNAOAm6iMFRkNuD74tnQC3Z7YO9akEnsG8KcddGa
- RAALfiNLEWk3okOBAUx9HtzxTnYBzZb40A1A+d8=
-X-Google-Smtp-Source: ABdhPJxLswAM2iqijoI6Y6gAsJmFssQq5vci53Ywbt2DOYFE2LWn010VC6DRW5Z8P8CKREVmppFrGjsNMfkPrTJI7Ec=
-X-Received: by 2002:ac8:72cb:: with SMTP id o11mr14123745qtp.13.1596399533145; 
- Sun, 02 Aug 2020 13:18:53 -0700 (PDT)
+ id 1k2KRP-0007dS-Ay
+ for linux-mtd@lists.infradead.org; Sun, 02 Aug 2020 20:18:44 +0000
+Received: from nazgul.tnic (unknown [78.130.214.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4D2291EC02A8;
+ Sun,  2 Aug 2020 22:18:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+ t=1596399520;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+ bh=z0K+vlWV9j7wfXLQcUnvdJhwiVrF38RAZueHzdmaci0=;
+ b=IpVr02DQwE3yYwTGqHzkePquczoIuB3CSh4JRazV28rb0yxVyTjgJHeFSYXLscJQCgocj+
+ YjGRmfK2vuZ4xdnOu8V6Bj4srNoX1QpTQVYAD0HdeQama4rhKTHzaxEhs3BC4FYYx+fxXN
+ dZeZiogCz7IvNzoJKsyyZMEOy76rM2w=
+Date: Sun, 2 Aug 2020 22:18:06 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Subject: Re: [RFC PATCH 00/17] Drop uses of pci_read_config_*() return value
+Message-ID: <20200802201806.GA24437@nazgul.tnic>
+References: <20200802184648.GA23190@nazgul.tnic>
+ <20200802191406.GA248232@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20200713165408.36229-1-grandmaster@al2klimov.de>
- <20200721015258.GA3362089@bogus>
-In-Reply-To: <20200721015258.GA3362089@bogus>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Sun, 2 Aug 2020 22:18:42 +0200
-Message-ID: <CAFLxGvyxFjy2cSWgokb8=d_FoGCX4QVbnoLYdLqybKCypoBWLA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: Replace HTTP links with HTTPS ones
-To: Rob Herring <robh@kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20200802191406.GA248232@bjorn-Precision-5520>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200802_161854_926782_5F8E1F6F 
-X-CRM114-Status: GOOD (  23.90  )
+X-CRM114-CacheID: sfid-20200802_161843_532780_5A611DE0 
+X-CRM114-Status: GOOD (  13.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,72 +76,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
- Arnd Bergmann <arnd@arndb.de>, Richard Weinberger <richard@nod.at>,
- Linus Walleij <linus.walleij@linaro.org>, LKML <linux-kernel@vger.kernel.org>,
- Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
- "Alexander A. Klimov" <grandmaster@al2klimov.de>,
- Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, linux-pci@vger.kernel.org,
+ linux-fpga@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-ide@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-i2c@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ linux-rdma@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+ Joerg Roedel <joro@8bytes.org>, linux-atm-general@lists.sourceforge.net,
+ trix@redhat.com, Jakub Kicinski <kuba@kernel.org>,
+ linux-kernel-mentees@lists.linuxfoundation.org,
+ Wolfgang Grandegger <wg@grandegger.com>, intel-gfx@lists.freedesktop.org,
+ linux-gpio@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
+ skhan@linuxfoundation.org, bjorn@helgaas.com,
+ Kalle Valo <kvalo@codeaurora.org>, linux-edac@vger.kernel.org,
+ linux-hwmon@vger.kernel.org, Saheed Bolarinwa <refactormyself@gmail.com>,
+ linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+ iommu@lists.linux-foundation.org, linux-crypto@vger.kernel.org,
+ netdev@vger.kernel.org, dmaengine@vger.kernel.org,
+ "David S. Miller" <davem@davemloft.net>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jul 21, 2020 at 3:54 AM Rob Herring <robh@kernel.org> wrote:
->
-> On Mon, 13 Jul 2020 18:54:08 +0200, Alexander A. Klimov wrote:
-> > Rationale:
-> > Reduces attack surface on kernel devs opening the links for MITM
-> > as HTTPS traffic is much harder to manipulate.
-> >
-> > Deterministic algorithm:
-> > For each file:
-> >   If not .svg:
-> >     For each line:
-> >       If doesn't contain `\bxmlns\b`:
-> >         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-> >         If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-> >             If both the HTTP and HTTPS versions
-> >             return 200 OK and serve the same content:
-> >               Replace HTTP with HTTPS.
-> >
-> > Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
-> > ---
-> >  Continuing my work started at 93431e0607e5.
-> >  See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
-> >  (Actually letting a shell for loop submit all this stuff for me.)
-> >
-> >  If there are any URLs to be removed completely or at least not just HTTPSified:
-> >  Just clearly say so and I'll *undo my change*.
-> >  See also: https://lkml.org/lkml/2020/6/27/64
-> >
-> >  If there are any valid, but yet not changed URLs:
-> >  See: https://lkml.org/lkml/2020/6/26/837
-> >
-> >  If you apply the patch, please let me know.
-> >
-> >  Sorry again to all maintainers who complained about subject lines.
-> >  Now I realized that you want an actually perfect prefixes,
-> >  not just subsystem ones.
-> >  I tried my best...
-> >  And yes, *I could* (at least half-)automate it.
-> >  Impossible is nothing! :)
-> >
-> >
-> >  Documentation/devicetree/bindings/mtd/davinci-nand.txt | 4 ++--
-> >  drivers/mtd/chips/Kconfig                              | 2 +-
-> >  drivers/mtd/maps/Kconfig                               | 2 +-
-> >  drivers/mtd/maps/sc520cdp.c                            | 2 +-
-> >  4 files changed, 5 insertions(+), 5 deletions(-)
-> >
->
-> Acked-by: Rob Herring <robh@kernel.org>
+On Sun, Aug 02, 2020 at 02:14:06PM -0500, Bjorn Helgaas wrote:
+> Wait, I'm not convinced yet.  I know that if a PCI read fails, you
+> normally get ~0 data because the host bridge fabricates it to complete
+> the CPU load.
+> 
+> But what guarantees that a PCI config register cannot contain ~0?
 
-All three mtd related patches applied to mtd/next, thanks!
+Well, I don't think you can differentiate that case, right?
+
+I guess this is where the driver knowledge comes into play: if the read
+returns ~0, the pci_read_config* should probably return in that case
+something like:
+
+	PCIBIOS_READ_MAYBE_FAILED
+
+to denote it is all 1s and then the caller should be able to determine,
+based on any of domain:bus:slot.func and whatever else the driver knows
+about its hardware, whether the 1s are a valid value or an error.
+Hopefully.
+
+Or something better of which I cannot think of right now...
 
 -- 
-Thanks,
-//richard
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
 ______________________________________________________
 Linux MTD discussion mailing list
