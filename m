@@ -4,58 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A198DC433DF
-	for <linux-mtd@archiver.kernel.org>; Mon,  3 Aug 2020 08:48:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E51F6C433DF
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Aug 2020 09:07:08 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6E7E120678
-	for <linux-mtd@archiver.kernel.org>; Mon,  3 Aug 2020 08:48:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AD7612068F
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Aug 2020 09:07:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FDebFeOR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6E7E120678
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="v+jE5CvO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD7612068F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=emrCnNWV5xla5YmOIEJzeP22yaGQ7uYlCS62RprBw1M=; b=FDebFeORVZcHAjgaEA0+t3Awe
-	LkLwqWnAnrNpCtnkt9vDHFkCpAcr4C2NMHKLlkgsMywIOyrd8mKKMlkPNKx+1L7Z0r9YxiXQnEE/o
-	iaCfaU/Th0vZK4FqgKIbPi8zGlPBNzXANGd89KenIl0i70uVvM0O8/vAf89k23EWZymsvjE8shFyM
-	+1yHs8inFeuftpi1rw8zQ8wvQVD0kYgJbfcP5NxoXKeL5ZNVNVHn45ufhnZInHasSL1npLag4oyci
-	GlDaLv/DDoMVPHgpTpRYKguCpGcn7lgOynpR5UDcVYp39XqjLKKVfciTg34xRzOoxzf2StYP+yL1x
-	wuQrC0otQ==;
+	 bh=Zom6E4guNgbGwnNovyKwHCGaFf8uEAckBFUlrMzVEP8=; b=v+jE5CvOu4ufgpnXnbliRiAGM
+	+Kh7oyh6o9btlXNmWeIqPZ9SA+rSBWQZ3YLa6BJw3/rAAE6VuewHdvS2vxH9O60+/FNZd8aV9PX1I
+	N8PiDNJbisxdUa8IKyMDM6GxdsqKwzeKGbVgww9EXgIJaj2YQov+2ZLgTmxeMZSS6tlDT6U/p3tpo
+	rSEUvxQ/jJPh/MT454aZ5xAaPZf8Pk7OW6tJVYbjfwZrsbTe8299vGfVVN/5l+Q04II+ab+LAC5zl
+	hEQWmGO6DFa/cVDgFmC78ofWpXt8F2ApxJpHy8k6bA7/Stggny9unLtx8BEEqPBV3yPxU1eilvF+D
+	x6/uhzUZA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1k2W86-0002gC-Km; Mon, 03 Aug 2020 08:47:34 +0000
-Received: from relay7-d.mail.gandi.net ([217.70.183.200])
+	id 1k2WQW-0005Js-S7; Mon, 03 Aug 2020 09:06:36 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k2W83-0002fZ-TX
- for linux-mtd@lists.infradead.org; Mon, 03 Aug 2020 08:47:32 +0000
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 343A620009;
- Mon,  3 Aug 2020 08:47:28 +0000 (UTC)
-Date: Mon, 3 Aug 2020 10:47:27 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Marco Felsch <m.felsch@pengutronix.de>
+ id 1k2WQU-0005I1-6v
+ for linux-mtd@lists.infradead.org; Mon, 03 Aug 2020 09:06:35 +0000
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <mfe@pengutronix.de>)
+ id 1k2WQN-0000AK-Lx; Mon, 03 Aug 2020 11:06:27 +0200
+Received: from mfe by pty.hi.pengutronix.de with local (Exim 4.89)
+ (envelope-from <mfe@pengutronix.de>)
+ id 1k2WQM-0001l2-TA; Mon, 03 Aug 2020 11:06:26 +0200
+Date: Mon, 3 Aug 2020 11:06:26 +0200
+From: Marco Felsch <m.felsch@pengutronix.de>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 Subject: Re: Invalid ONFI PARAM PAGE
-Message-ID: <20200803104727.1edf834e@xps13>
-In-Reply-To: <20200730121425.rjeo6qh4fxisargl@pengutronix.de>
+Message-ID: <20200803090626.xwbxnlynun6nmnh7@pengutronix.de>
 References: <20200730121425.rjeo6qh4fxisargl@pengutronix.de>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ <20200803104727.1edf834e@xps13>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20200803104727.1edf834e@xps13>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-IRC: #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 10:57:35 up 262 days, 16 min, 247 users, load average: 0.19, 0.15, 
+ 0.09
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200803_044732_061360_D9D8318A 
-X-CRM114-Status: GOOD (  16.28  )
+X-CRM114-CacheID: sfid-20200803_050634_299696_200D1C00 
+X-CRM114-Status: GOOD (  25.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,47 +85,88 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: bbrezillon@kernel.org, linux-mtd@lists.infradead.org,
  peterpandong@micron.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWFyY28sCgpNYXJjbyBGZWxzY2ggPG0uZmVsc2NoQHBlbmd1dHJvbml4LmRlPiB3cm90ZSBv
-biBUaHUsIDMwIEp1bCAyMDIwCjE0OjE0OjI1ICswMjAwOgoKPiBIaSwKPiAKPiBhIGN1c3RvbWVy
-IG9mIHVzIHVzZXMgbWljcm9uIG5hbmQgZmxhc2ggZGV2aWNlcyBmb3IgdGhlaXIgbG9jYWwgc3Rv
-cmFnZS4KPiBUaGV5IGFyZSBub3cgaGF2aW5nIHNvbWUgdHJvdWJsZXMgd2l0aCBhIGZldyBkZXZp
-Y2VzLiBMZXQgbWUgc3RhcnQgd2l0aAo+IHRoZSBmb2xsb3dpbmc6Cj4gICAxKSBXZSBjYW4gc3Vj
-Y2Vzc2Z1bGx5IHJlYWQgdGhlIG5hbmQgaWQgZmllbGQgYnk6Cj4gICAgICAtPiBzZWxlY3RfY2hp
-cAo+ICAgICAgLT4gY21kZnVuYyhtdGQsIE5BTkRfQ01EX1JFU0VUKQo+ICAgICAgLT4gY21kZnVu
-YyhtdGQsIE5BTkRfQ01EX1JFQURJRCkgQWRkcj0weDAwCj4gICAgICAtPiA4dGltZXM6IHJlYWRf
-Ynl0ZShtdGQpICAKPiAKPiAgICAgIFRoZSBOQU5EIGRldmljZSByZXNwb25zZSB3aXRoIHRoZSBm
-b2xsb3dpbmc6Cj4gICAgICBuYW5kOiBpZF9kYXRhWzBdOiAweDJjCj4gICAgICBuYW5kOiBpZF9k
-YXRhWzFdOiAweGRjCj4gICAgICBuYW5kOiBpZF9kYXRhWzJdOiAweDkwCj4gICAgICBuYW5kOiBp
-ZF9kYXRhWzNdOiAweDk1Cj4gICAgICBuYW5kOiBpZF9kYXRhWzRdOiAweDU2Cj4gICAgICBuYW5k
-OiBpZF9kYXRhWzVdOiAweDAKPiAgICAgIG5hbmQ6IGlkX2RhdGFbNl06IDB4MAo+ICAgICAgbmFu
-ZDogaWRfZGF0YVs3XTogMHgwCj4gCj4gICAgICBBY2Nyb2RpbmcgdGhlIHNjaGVtYXRpYyBhbmQg
-dGhlIGRhdGFzaGVldCB0aGlzIGlzIHJpZ2h0Lgo+IAo+ICAgMikgVG8gZGV0ZWN0IHRoZSBPTkZJ
-IGNvbXBhdGliaWxpdHkgd2Ugbm93IGlzc3VlOgo+ICAgICAgLT4gY21kZnVuYyhtdGQsIE5BTkRf
-Q01EX1JFQURJRCkgQWRkcj0weDIwICAKPiAKPiAgICAgIGFuZCBnZXR0aW5nIHRoZSBleHBlY3Rl
-ZCAnTycsJ04nLCdGJywnSScgc2lnbmF0dXJlLgo+IAo+ICAgIDMpIE5vdyB3ZSBhcmUgdHJ5aW5n
-IHRvIFJlYWQgdGhlIFBBUkFNIFBhZ2UgYnk6Cj4gICAgICAgLT4gY21kZnVuYyhtdGQsIE5BTkRf
-Q01EX1BBUkFNKQo+ICAgICAgIC0+IHRyeSB0byByZWFkIHRoZSB0aGUgcGFyYW0gcGFnZSBhbmQg
-aWYgbm90IHN1Y2Nlc3NmdWwgdHJ5IHRvICAKPiAgICAgICAgICByZWFkIHRoZSBjb3BpZXMuCj4g
-Cj4gICAgICAgSGVyZSB0aGluZ3MgZ2V0dGluZyBjcmF6eSBzaW5jZSB3ZSBhcmUgcmVhZGluZyBh
-bGwgdGhlIHRpbWUgJzB4ZmYnLgo+IAo+ICAgIDQpIFNpbmNlIEJhcmVib3ggKEJvb3Rsb2FkZXIp
-IGNhbid0IHJlYWQgdGhlIE9ORkkgcGFyYW0gcGFnZSB3ZQo+ICAgICAgIGNhbGN1bGF0ZSB0aGUg
-dmFsdWVzIGFzIGV4cGVjdGVkIGZyb20gdGhlIHBhcmFtIHBhZ2UuIEJ1dCBub3cgd2UKPiAgICAg
-ICBjYW4ndCBhY2Nlc3MgQkJUIChub3QgZm91bmQpIG5vciB3ZSBhcmUgbm90IGFibGUgdG8gd3Jp
-dGUgdG8gdGhlCj4gICAgICAgT09CIEFyZWEgKHRoZSBjaGlwIGlzIG5vdCB3cml0ZSBwcm90ZWN0
-ZWQpLgo+IAo+IFRoZSBlbGVjdHJpY2FsIHNpZ25hbHMgYXJlIGxvb2tpbmcgZ29vZCBhbmQgc2lu
-Y2Ugd2UgY2FuIHJldHJpZXZlIHRoZQo+IGlkLWRhdGEgaXQgc2hvdWxkIGJlIG5vIFBDQiBidWcu
-IERpZCBhbnlvbmUgc3RydWdnbGVkIHdpdGggc3VjaCBwcm9ibGVtcwo+IHRvbz8KPiAKPiBCVFc6
-Cj4gSSBhbHNvIGdldCAnMHhmZicgaWYgSSBzZW5kIGEgUkVBRF9VTklRVUVfSUQgY29tbWFuZCBh
-bmQgdHJ5aW5nIHRvIHJlYWQKPiB0aGUgMTYgY29waWVzIG9mIHRoZSAzMmJ5dGUgdW5pcXVlLWlk
-Lgo+IAo+IEFueSBhbnN3ZXJzIGFyZSB3ZWxjb21lIDopCgpDb3VsZCB5b3Ugc2hhcmUgbW9yZSBk
-ZXRhaWxzIGFib3V0IHRoZSBzaXR1YXRpb24geW91ciBjdXN0b21lciBpcwpmYWNpbmc/IERpZCB0
-aGlzIHdvcmsgYmVmb3JlPyBJcyB0aGlzIGFuIHVwZGF0ZT8gSWYgeWVzIGZyb20gd2hhdAp2ZXJz
-aW9uIHRvIHdoYXQgdmVyc2lvbj8gQWxzbywgaXMgdGhpcyBhIExpbnV4IG9yIEJhcmVib3ggaXNz
-dWU/CgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0
-cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Hi Miquel,
+
+thanks for your response :)
+
+On 20-08-03 10:47, Miquel Raynal wrote:
+> Hi Marco,
+> 
+> Marco Felsch <m.felsch@pengutronix.de> wrote on Thu, 30 Jul 2020
+> 14:14:25 +0200:
+> 
+> > Hi,
+> > 
+> > a customer of us uses micron nand flash devices for their local storage.
+> > They are now having some troubles with a few devices. Let me start with
+> > the following:
+> >   1) We can successfully read the nand id field by:
+> >      -> select_chip
+> >      -> cmdfunc(mtd, NAND_CMD_RESET)
+> >      -> cmdfunc(mtd, NAND_CMD_READID) Addr=0x00
+> >      -> 8times: read_byte(mtd)  
+> > 
+> >      The NAND device response with the following:
+> >      nand: id_data[0]: 0x2c
+> >      nand: id_data[1]: 0xdc
+> >      nand: id_data[2]: 0x90
+> >      nand: id_data[3]: 0x95
+> >      nand: id_data[4]: 0x56
+> >      nand: id_data[5]: 0x0
+> >      nand: id_data[6]: 0x0
+> >      nand: id_data[7]: 0x0
+> > 
+> >      Accroding the schematic and the datasheet this is right.
+> > 
+> >   2) To detect the ONFI compatibility we now issue:
+> >      -> cmdfunc(mtd, NAND_CMD_READID) Addr=0x20  
+> > 
+> >      and getting the expected 'O','N','F','I' signature.
+> > 
+> >    3) Now we are trying to Read the PARAM Page by:
+> >       -> cmdfunc(mtd, NAND_CMD_PARAM)
+> >       -> try to read the the param page and if not successful try to  
+> >          read the copies.
+> > 
+> >       Here things getting crazy since we are reading all the time '0xff'.
+> > 
+> >    4) Since Barebox (Bootloader) can't read the ONFI param page we
+> >       calculate the values as expected from the param page. But now we
+> >       can't access BBT (not found) nor we are not able to write to the
+> >       OOB Area (the chip is not write protected).
+> > 
+> > The electrical signals are looking good and since we can retrieve the
+> > id-data it should be no PCB bug. Did anyone struggled with such problems
+> > too?
+> > 
+> > BTW:
+> > I also get '0xff' if I send a READ_UNIQUE_ID command and trying to read
+> > the 16 copies of the 32byte unique-id.
+> > 
+> > Any answers are welcome :)
+> 
+> Could you share more details about the situation your customer is
+> facing? Did this work before? Is this an update? If yes from what
+> version to what version? Also, is this a Linux or Barebox issue?
+
+This issue get's triggered right after the first start-up. Some devices
+do work and some of them don't after the production. I think it's not a
+Linux nor a Barebox issue. Since Barebox can't find the BBT and all
+other stuff I skipped propper Linux tests. I will test if Linux can
+identify and setup the chip. But I think Linux will setp into the same
+NAND-Issues.
+
+I asked on this ML since you guys are the Experts here and maybe you had
+see a 'not full prefactored' NAND device too.
+
+Regards,
+  Marco
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
