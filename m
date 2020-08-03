@@ -7,81 +7,71 @@ X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A8A6C433DF
-	for <linux-mtd@archiver.kernel.org>; Mon,  3 Aug 2020 12:59:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68A92C433E0
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Aug 2020 13:07:56 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 27EC820678
-	for <linux-mtd@archiver.kernel.org>; Mon,  3 Aug 2020 12:59:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 31D4820678
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Aug 2020 13:07:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="zq3Cw7hz";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=eclypsium.com header.i=@eclypsium.com header.b="INrGUnJr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 27EC820678
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=eclypsium.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FCIjEu45"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 31D4820678
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=dwv2WeeUNaxYETx44wW/R+o9J6rzoSnP1hLDv+ud9DI=; b=zq3Cw7hz+nkivRg/VaYEq/A71
-	xI+e7NmJqNbMue53dRUqzV8C4tPitp8nEY7dNxU5E1Df6WqW6GR8G2nYTPUbRuxLffNfaZ+aKU8XQ
-	96IA4lq9jy1jDCrdGSitx/PXh4DTG4azMp3cHR8MWDj7iIM5PTCsrPUhdFAejexSx/kw/RgCz4Hnc
-	Rysm61uQScFve5Qj/xo7NuU2U4FkG4iT/G76o8TcIVVTfsa6FHk6YlcCsNeXg7BPMvENPfHm3Vk28
-	hEyZzKb59hqj5BaouC3ZbJ9+jF4sh8RC9UPDx5vmUNKeZroPv4RCoD0vuYn+iZHlVBMbXdjBARj5e
-	k3a1TggHQ==;
+	 bh=yOVzopk/LNljGQo9+a74zW5cS2H9kMnxjapcnLpjw60=; b=FCIjEu45Qn0l2B7LLwXi11ibM
+	FOJbJIuHqLe9+I0/xAon8faZolACF+O+Tm1D0xlCmChp3Bsq+UAro6+XhuNzUm8aEtsBL/wUh9DP0
+	bXtmLlWCYErhE7UBjPktb/tMWXoKfiEkgK9A7vh193HJecGzq+lbO72ZFyuNHUlvVk1Eld+uUQqdO
+	d/BY9sMF++g2PlMT2kLsrsHrc4lkRSQfevFSh2BPnGq5JqGU8CcHFXk519yLlNSaaD7Nf92P5vncE
+	YqXNtLWQBUOFuPnIL2foEVjZzTDlo+TxFDRNd6AKsG7CqCC41oKimm1gKgWDJCQ70dSsBSV/exbFM
+	dvvTcUl2w==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1k2a36-0000VY-RF; Mon, 03 Aug 2020 12:58:40 +0000
-Received: from mail-qv1-xf42.google.com ([2607:f8b0:4864:20::f42])
+	id 1k2aB4-0001Ro-EJ; Mon, 03 Aug 2020 13:06:54 +0000
+Received: from mga17.intel.com ([192.55.52.151])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k2a33-0000Tr-N5
- for linux-mtd@lists.infradead.org; Mon, 03 Aug 2020 12:58:38 +0000
-Received: by mail-qv1-xf42.google.com with SMTP id y11so14261581qvl.4
- for <linux-mtd@lists.infradead.org>; Mon, 03 Aug 2020 05:58:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=eclypsium.com; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=hMT0kXz5t1WlxhKdWYf7H/xItPGzEq+A55WtZ2+D4/I=;
- b=INrGUnJrvvSk6e3+aV2VgzC0XESxwlRZvQcst2jXyBNpTkMHYyvuy8qp9Ut87dDQWG
- y+aqedwp4Taqrqv94K3l9BkpYCF37e6KB/6Oj4roXPBX8SbTKWxSI8eRRlakZfCABbHv
- /NoCR+7jDjWkKTqnC20Z+gEkUV89AAZsKMHcFOtfDeF0tEpSUhJlFUsw2q8dSaAaREX3
- 47vNOLCuofipKCY2DWZCOqF4K0DvLXMi+9BwL5eGKp+QaX1hyD9Qn6SWcnMhv7vktN2F
- SINb5Jd0zS03FqG60FE3451vaoVPv23hkZ16Grbojnda2Tfl8EgZkyST1bijDHItC28p
- ydtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=hMT0kXz5t1WlxhKdWYf7H/xItPGzEq+A55WtZ2+D4/I=;
- b=lHwWcZlyD7lKJZgrSGgfH4CCpxTmWzBJN9Is++11K1rwDCG7G5BvEIEA2GYtcyfYuI
- m8Aj1FCT1MiL23gchZGLTu4x+ezISN04d9oF9toGp32ZVH0/eXHsMe/N/+9NhhypGB46
- gfkKrrZbvj5rMYgupmYK8a3BZWo5V4bA4ehdUN93kRjG+h+xw2MT+cJFBh2t9mOsWaHD
- 1dF2yDFWmgHVdqclVaGod8SwygCWNqzHFC8OsIv3hM7967gWPttypDdU66s2mhG/KAbr
- X1QFA4/6wrKv1MInjivSjiOPc4yu5YuOQs9IgXZ6rTqAnYxgMAWM5oBWN20LQtoVZ6/P
- yF+A==
-X-Gm-Message-State: AOAM531l0ut7ZBp+lEmIjFCcmPKAFPW9NpZ+LkaynRaI0K5hmO83WzXW
- 1XUB4m7pxV0IUwCuUrEqGZ7yrym2WKJ+fxl8FzU5zw==
-X-Google-Smtp-Source: ABdhPJxZmIwMOwJq4SwiSkCoJapyo5gtyYk7zA5OkjK+cKoeY/k56q8q8XGjCBAM2maXoOOquYPzasZBhozkWerzxHU=
-X-Received: by 2002:ad4:4cc9:: with SMTP id i9mr16260419qvz.131.1596459514234; 
- Mon, 03 Aug 2020 05:58:34 -0700 (PDT)
-MIME-Version: 1.0
+ id 1k2aB2-0001RI-QO
+ for linux-mtd@lists.infradead.org; Mon, 03 Aug 2020 13:06:53 +0000
+IronPort-SDR: qgXoj/5xWSuNj5VhIY5RxPSFDcaUiPdng93amesHWirFb/FSjCrkPWpUL+Jx7WkVXt2ei/PjED
+ /jaJBzbpxeOw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9701"; a="132154911"
+X-IronPort-AV: E=Sophos;i="5.75,430,1589266800"; d="scan'208";a="132154911"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Aug 2020 06:05:37 -0700
+IronPort-SDR: 97bGbyL6YMQTKXS8v/uAnE7kejawVmtdJ7xUNwRv4412nrgH29Uv0FezDr/4/nZGZWddQ6sQa6
+ TUAzMI00e65A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,430,1589266800"; d="scan'208";a="396051205"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+ by fmsmga001.fm.intel.com with SMTP; 03 Aug 2020 06:05:33 -0700
+Received: by lahna (sSMTP sendmail emulation); Mon, 03 Aug 2020 16:05:32 +0300
+Date: Mon, 3 Aug 2020 16:05:32 +0300
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Daniel Gutson <daniel@eclypsium.com>
+Subject: Re: [PATCH] Module argument to control whether intel-spi-pci
+ attempts to turn the SPI flash chip writeable
+Message-ID: <20200803130532.GY1375436@lahna.fi.intel.com>
 References: <20200724212853.11601-1-daniel.gutson@eclypsium.com>
  <20200803095720.GC1375436@lahna.fi.intel.com>
  <CAD2FfiFt6=OueX3E0g2ckPU+7F69yCmM0+bzF_6UD1sd4E_k_A@mail.gmail.com>
  <20200803102711.GK1375436@lahna.fi.intel.com>
-In-Reply-To: <20200803102711.GK1375436@lahna.fi.intel.com>
-From: Daniel Gutson <daniel@eclypsium.com>
-Date: Mon, 3 Aug 2020 09:58:23 -0300
-Message-ID: <CAFmMkTHSjQZJNzvUzLHHJ7sUTVX4BV6TwB=P8EO-HNk_cv8RKg@mail.gmail.com>
-Subject: Re: [PATCH] Module argument to control whether intel-spi-pci attempts
- to turn the SPI flash chip writeable
-To: Mika Westerberg <mika.westerberg@linux.intel.com>
+ <CAFmMkTHSjQZJNzvUzLHHJ7sUTVX4BV6TwB=P8EO-HNk_cv8RKg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CAFmMkTHSjQZJNzvUzLHHJ7sUTVX4BV6TwB=P8EO-HNk_cv8RKg@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200803_085838_066846_4356F51E 
-X-CRM114-Status: GOOD (  18.40  )
+X-CRM114-CacheID: sfid-20200803_090653_051625_8905369E 
+X-CRM114-Status: GOOD (  23.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,38 +96,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Aug 3, 2020 at 7:27 AM Mika Westerberg
-<mika.westerberg@linux.intel.com> wrote:
->
-> On Mon, Aug 03, 2020 at 11:18:12AM +0100, Richard Hughes wrote:
-> > On Mon, 3 Aug 2020 at 10:57, Mika Westerberg
-> > <mika.westerberg@linux.intel.com> wrote:
-> > > I think instead of this we should simply make it so that the driver
-> > > never tries to make the chip writable.
+On Mon, Aug 03, 2020 at 09:58:23AM -0300, Daniel Gutson wrote:
+> On Mon, Aug 3, 2020 at 7:27 AM Mika Westerberg
+> <mika.westerberg@linux.intel.com> wrote:
 > >
-> > I think this is a good idea, but I wasn't sure if it was an acceptable
-> > behaviour change. Should the driver still try to set BCR_WPD when
-> > writing an image (i.e. defer the setting of write enable until later),
-> > or just not set the BCR register at all? I think your last comment was
-> > the latter, but wanted to check.
->
-> I would say not set it at all. I think it was (my) mistake to set it in
-> the first place.
+> > On Mon, Aug 03, 2020 at 11:18:12AM +0100, Richard Hughes wrote:
+> > > On Mon, 3 Aug 2020 at 10:57, Mika Westerberg
+> > > <mika.westerberg@linux.intel.com> wrote:
+> > > > I think instead of this we should simply make it so that the driver
+> > > > never tries to make the chip writable.
+> > >
+> > > I think this is a good idea, but I wasn't sure if it was an acceptable
+> > > behaviour change. Should the driver still try to set BCR_WPD when
+> > > writing an image (i.e. defer the setting of write enable until later),
+> > > or just not set the BCR register at all? I think your last comment was
+> > > the latter, but wanted to check.
+> >
+> > I would say not set it at all. I think it was (my) mistake to set it in
+> > the first place.
+> 
+> Do you want me to remove the module parameter from intel-spi too and
+> do the same?
 
-Do you want me to remove the module parameter from intel-spi too and
-do the same?
-
-
-
--- 
-Daniel Gutson
-Argentina Site Director
-Enginieering Director
-Eclypsium
-
-Below The Surface: Get the latest threat research and insights on
-firmware and supply chain threats from the research team at Eclypsium.
-https://eclypsium.com/research/#threatreport
+No, I think that should still be left there. Then by default it is
+read-only and you can only enable writing if the BIOS allows it and that
+the user actually requested it.
 
 ______________________________________________________
 Linux MTD discussion mailing list
