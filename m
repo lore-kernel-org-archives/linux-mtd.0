@@ -1,84 +1,66 @@
-Return-Path: <SRS0=iZys=BM=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=IhQK=BN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E84DC433E0
-	for <linux-mtd@archiver.kernel.org>; Sun,  2 Aug 2020 21:26:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86B37C433DF
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Aug 2020 02:02:35 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3EE1020722
-	for <linux-mtd@archiver.kernel.org>; Sun,  2 Aug 2020 21:26:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5B204206F6
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Aug 2020 02:02:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CmyrEBy0";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H5BNbEYw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3EE1020722
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Iy2rDfxy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B204206F6
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=2SB0ORtQEF/KStEso3HkNEpsPspVjn36cWq2gbKyC60=; b=CmyrEBy05qXvF0To8cWMGfhjc
-	b8CSVbXPwFWgz10KF3T8qkIkpzyjEav3aqesP/hW4o1BW5hMLcqs0Z2OnIZHtnxPHNgQg10DXJKiG
-	PIiubI15TLRKgNzmmbr49Uh20n2vJB0/DbqDeCShrmxGJQr18Ei/LytnBDpmP9KLD8YobyX9xHmc5
-	1aszP82KkLHieBOKPJ+YSHNd0N0JNtC6JKI0sYb/vJrf1/bwFMz1XJ9Or+nLq/JgZ66p+F8Dy0Qsl
-	dNMIXK3LC74ERemSrBaSgQnqRtF4J64O6YASVek1Hmdm63HnNsMoYD0oFyS03Z38zCUtGiYoALjDe
-	zqi6fA7JQ==;
+	 bh=VgwSrgKrwfl2yG91yrfju7tiEHSwC1QQHWZWaGwp7ls=; b=Iy2rDfxyqamdPX1OIUaU/fVd6
+	Z4AhSJ6zKjh1cD/H9qDqAEc3MR7VliluinrKACUGqrzeBBCBi4ON7h4V9uFXLIls1g1EX36ATV2dK
+	gdW/mxlogmMDj+e9AubWjeOiyrxTsUhb0oE9p17tIX4tJB/uTjhQFfYPaPA3VTvCTstQPH0awt+2z
+	xrRDyIRiRaqdjLIczlKMrDq3Z0Q5JPny57wip3rJHaqgdVEADfgbdYUyUlWvXkwLMerpUGO8+augI
+	YgpxjNIrQanRqGGpqBE1XiPg61DQxpHSjkra24OXwUDpceN/0uKVJGHZPnXcZAFXKZ/cmZWlfSdNo
+	lyUDP/rGQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1k2LU9-0003sD-G5; Sun, 02 Aug 2020 21:25:37 +0000
-Received: from mail-qv1-xf44.google.com ([2607:f8b0:4864:20::f44])
+	id 1k2PnF-0007mo-TE; Mon, 03 Aug 2020 02:01:37 +0000
+Received: from szxga04-in.huawei.com ([45.249.212.190] helo=huawei.com)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k2LU6-0003rr-Mb
- for linux-mtd@lists.infradead.org; Sun, 02 Aug 2020 21:25:35 +0000
-Received: by mail-qv1-xf44.google.com with SMTP id dd12so11496402qvb.0
- for <linux-mtd@lists.infradead.org>; Sun, 02 Aug 2020 14:25:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=+vPBcIAaDQT1fIr7QHvmC5z6P2qSBTffqgMpR1sAJ18=;
- b=H5BNbEYwlq1eaQkM03llB+jv8CkBc+J5Zgu7JNzbHTkmruj9rx4ybP++eTVD8DoAsN
- 902r8DaB52xvylcxNmAUm22FWb/LRd2fxdc4Tu6JhF4/ZT9TeT9GXP6GWxO1M1QEgl3r
- kIFO71kTZ23lj3v8hlQmrwteLSbleHC/jNtXVcdAUVQYuvegY0HiwMZ43cErM2M2iWhV
- wk0h9mbN1hESKLNRsuMc40JUWR1z4pnQboCTZAeAgsAvPBD5ewobcDceLhTUXts9Yv0X
- xTjqzLpm0efT8C9qRM1T8wmCI384Q675QPcgK3w0C0iWkppUJco9aSGa5C6pDFhxvWW4
- jEiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=+vPBcIAaDQT1fIr7QHvmC5z6P2qSBTffqgMpR1sAJ18=;
- b=BOhu+mBlMZPetlUiVbNTyUQwuy1piLwhx8rb2ym/MP1F/g6fifl9XXv1yBG5vYpCPT
- l9pIVbiJdruPWMy7KGBjmvZKrzi/65dIaFPVky6RjaEa4j3Hp0okIuaa2p4cpZM3D+0M
- Zvk/y2vjyEXE1t+X+q2PIIuljXOya+A2d8OEWysPZQ09b0HZRJI1g89g6muFbeZ/260P
- 9gOuWZLbmMKet5FZZW0+XIMjh1k67zjqa97DCQZQy8OlnDPGGxvy1WrwTe+B8hrwrxot
- RKgk2Wd3XLp/SpZgxpFy2JRoZsKp5SUmCSUbmxWEc7ns2KcOVFEe5gHbQSjvoWDkf5wb
- MkXA==
-X-Gm-Message-State: AOAM5314Z76StVpb5J1vo3qGgv0e6W6WmVKpVPzb93Ia01xRJt6yOFN4
- bIOnz4DvqIx9dqQTj8MdmmD0emcv4wnRCzR5CHc=
-X-Google-Smtp-Source: ABdhPJy/D57l4PxXsvtNghGpZYYWxtQzGKIP9nS2mWv50e3fWXnuy/WrDD7ylBIgT36e7fl/UU0Xpv5GyujUEEZZD90=
-X-Received: by 2002:a0c:e9c7:: with SMTP id q7mr14265761qvo.195.1596403532995; 
- Sun, 02 Aug 2020 14:25:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200601091231.3794350-1-chengzhihao1@huawei.com>
-In-Reply-To: <20200601091231.3794350-1-chengzhihao1@huawei.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Sun, 2 Aug 2020 23:25:21 +0200
-Message-ID: <CAFLxGvwLSvYsQ+OPi85VS8aQ2uge_JqQRD2C8h=XMORvCej3Sw@mail.gmail.com>
+ id 1k2PnC-0007mK-KF
+ for linux-mtd@lists.infradead.org; Mon, 03 Aug 2020 02:01:36 +0000
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+ by Forcepoint Email with ESMTP id 4E8D9DAB2F7AAB45C5FE;
+ Mon,  3 Aug 2020 10:01:24 +0800 (CST)
+Received: from [127.0.0.1] (10.174.179.214) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0;
+ Mon, 3 Aug 2020 10:01:15 +0800
 Subject: Re: [PATCH] ubi: check kthread_should_stop() after the setting of
  task state
-To: Zhihao Cheng <chengzhihao1@huawei.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+References: <20200601091231.3794350-1-chengzhihao1@huawei.com>
+ <CAFLxGvwLSvYsQ+OPi85VS8aQ2uge_JqQRD2C8h=XMORvCej3Sw@mail.gmail.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <211afcd0-d5b3-5ac0-1fd1-dc789634a858@huawei.com>
+Date: Mon, 3 Aug 2020 10:01:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
+MIME-Version: 1.0
+In-Reply-To: <CAFLxGvwLSvYsQ+OPi85VS8aQ2uge_JqQRD2C8h=XMORvCej3Sw@mail.gmail.com>
+X-Originating-IP: [10.174.179.214]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200802_172534_900285_2422EBD7 
-X-CRM114-Status: GOOD (  23.27  )
+X-CRM114-CacheID: sfid-20200802_220134_944426_CB94DA0D 
+X-CRM114-Status: GOOD (  21.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,78 +74,110 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
  LKML <linux-kernel@vger.kernel.org>, "zhangyi \(F\)" <yi.zhang@huawei.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jun 1, 2020 at 11:13 AM Zhihao Cheng <chengzhihao1@huawei.com> wrote:
->
-> A detach hung is possible when a race occurs between the detach process
-> and the ubi background thread. The following sequences outline the race:
->
->   ubi thread: if (list_empty(&ubi->works)...
->
->   ubi detach: set_bit(KTHREAD_SHOULD_STOP, &kthread->flags)
->               => by kthread_stop()
->               wake_up_process()
->               => ubi thread is still running, so 0 is returned
->
->   ubi thread: set_current_state(TASK_INTERRUPTIBLE)
->               schedule()
->               => ubi thread will never be scheduled again
->
->   ubi detach: wait_for_completion()
->               => hung task!
->
-> To fix that, we need to check kthread_should_stop() after we set the
-> task state, so the ubi thread will either see the stop bit and exit or
-> the task state is reset to runnable such that it isn't scheduled out
-> indefinitely.
->
-> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-> Cc: <Stable@vger.kernel.org>
-> Fixes: 801c135ce73d5df1ca ("UBI: Unsorted Block Images")
-> Reported-by: syzbot+853639d0cb16c31c7a14@syzkaller.appspotmail.com
-> ---
->  drivers/mtd/ubi/wl.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
->
-> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-> index 5146cce5fe32..a4d4343053d7 100644
-> --- a/drivers/mtd/ubi/wl.c
-> +++ b/drivers/mtd/ubi/wl.c
-> @@ -1628,6 +1628,19 @@ int ubi_thread(void *u)
->                     !ubi->thread_enabled || ubi_dbg_is_bgt_disabled(ubi)) {
->                         set_current_state(TASK_INTERRUPTIBLE);
->                         spin_unlock(&ubi->wl_lock);
-> +
-> +                       /*
-> +                        * Check kthread_should_stop() after we set the task
-> +                        * state to guarantee that we either see the stop bit
-> +                        * and exit or the task state is reset to runnable such
-> +                        * that it's not scheduled out indefinitely and detects
-> +                        * the stop bit at kthread_should_stop().
-> +                        */
-> +                       if (kthread_should_stop()) {
-> +                               set_current_state(TASK_RUNNING);
-> +                               break;
-> +                       }
-> +
-
-Hmm, I see the problem but I fear this patch does not cure the race completely.
-It just lowers the chance to hit it.
-What if KTHREAD_SHOULD_STOP is set right after you checked for it?
-
->                         schedule();
->                         continue;
->                 }
-
-
--- 
-Thanks,
-//richard
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+5ZyoIDIwMjAvOC8zIDU6MjUsIFJpY2hhcmQgV2VpbmJlcmdlciDlhpnpgZM6Cj4gT24gTW9uLCBK
+dW4gMSwgMjAyMCBhdCAxMToxMyBBTSBaaGloYW8gQ2hlbmcgPGNoZW5nemhpaGFvMUBodWF3ZWku
+Y29tPiB3cm90ZToKPj4gQSBkZXRhY2ggaHVuZyBpcyBwb3NzaWJsZSB3aGVuIGEgcmFjZSBvY2N1
+cnMgYmV0d2VlbiB0aGUgZGV0YWNoIHByb2Nlc3MKPj4gYW5kIHRoZSB1YmkgYmFja2dyb3VuZCB0
+aHJlYWQuIFRoZSBmb2xsb3dpbmcgc2VxdWVuY2VzIG91dGxpbmUgdGhlIHJhY2U6Cj4+Cj4+ICAg
+IHViaSB0aHJlYWQ6IGlmIChsaXN0X2VtcHR5KCZ1YmktPndvcmtzKS4uLgo+Pgo+PiAgICB1Ymkg
+ZGV0YWNoOiBzZXRfYml0KEtUSFJFQURfU0hPVUxEX1NUT1AsICZrdGhyZWFkLT5mbGFncykKPj4g
+ICAgICAgICAgICAgICAgPT4gYnkga3RocmVhZF9zdG9wKCkKPj4gICAgICAgICAgICAgICAgd2Fr
+ZV91cF9wcm9jZXNzKCkKPj4gICAgICAgICAgICAgICAgPT4gdWJpIHRocmVhZCBpcyBzdGlsbCBy
+dW5uaW5nLCBzbyAwIGlzIHJldHVybmVkCj4+Cj4+ICAgIHViaSB0aHJlYWQ6IHNldF9jdXJyZW50
+X3N0YXRlKFRBU0tfSU5URVJSVVBUSUJMRSkKPj4gICAgICAgICAgICAgICAgc2NoZWR1bGUoKQo+
+PiAgICAgICAgICAgICAgICA9PiB1YmkgdGhyZWFkIHdpbGwgbmV2ZXIgYmUgc2NoZWR1bGVkIGFn
+YWluCj4+Cj4+ICAgIHViaSBkZXRhY2g6IHdhaXRfZm9yX2NvbXBsZXRpb24oKQo+PiAgICAgICAg
+ICAgICAgICA9PiBodW5nIHRhc2shCj4+Cj4+IFRvIGZpeCB0aGF0LCB3ZSBuZWVkIHRvIGNoZWNr
+IGt0aHJlYWRfc2hvdWxkX3N0b3AoKSBhZnRlciB3ZSBzZXQgdGhlCj4+IHRhc2sgc3RhdGUsIHNv
+IHRoZSB1YmkgdGhyZWFkIHdpbGwgZWl0aGVyIHNlZSB0aGUgc3RvcCBiaXQgYW5kIGV4aXQgb3IK
+Pj4gdGhlIHRhc2sgc3RhdGUgaXMgcmVzZXQgdG8gcnVubmFibGUgc3VjaCB0aGF0IGl0IGlzbid0
+IHNjaGVkdWxlZCBvdXQKPj4gaW5kZWZpbml0ZWx5Lgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBaaGlo
+YW8gQ2hlbmcgPGNoZW5nemhpaGFvMUBodWF3ZWkuY29tPgo+PiBDYzogPFN0YWJsZUB2Z2VyLmtl
+cm5lbC5vcmc+Cj4+IEZpeGVzOiA4MDFjMTM1Y2U3M2Q1ZGYxY2EgKCJVQkk6IFVuc29ydGVkIEJs
+b2NrIEltYWdlcyIpCj4+IFJlcG9ydGVkLWJ5OiBzeXpib3QrODUzNjM5ZDBjYjE2YzMxYzdhMTRA
+c3l6a2FsbGVyLmFwcHNwb3RtYWlsLmNvbQo+PiAtLS0KPj4gICBkcml2ZXJzL210ZC91Ymkvd2wu
+YyB8IDEzICsrKysrKysrKysrKysKPj4gICAxIGZpbGUgY2hhbmdlZCwgMTMgaW5zZXJ0aW9ucygr
+KQo+Pgo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvdWJpL3dsLmMgYi9kcml2ZXJzL210ZC91
+Ymkvd2wuYwo+PiBpbmRleCA1MTQ2Y2NlNWZlMzIuLmE0ZDQzNDMwNTNkNyAxMDA2NDQKPj4gLS0t
+IGEvZHJpdmVycy9tdGQvdWJpL3dsLmMKPj4gKysrIGIvZHJpdmVycy9tdGQvdWJpL3dsLmMKPj4g
+QEAgLTE2MjgsNiArMTYyOCwxOSBAQCBpbnQgdWJpX3RocmVhZCh2b2lkICp1KQo+PiAgICAgICAg
+ICAgICAgICAgICAgICAhdWJpLT50aHJlYWRfZW5hYmxlZCB8fCB1YmlfZGJnX2lzX2JndF9kaXNh
+YmxlZCh1YmkpKSB7Cj4+ICAgICAgICAgICAgICAgICAgICAgICAgICBzZXRfY3VycmVudF9zdGF0
+ZShUQVNLX0lOVEVSUlVQVElCTEUpOwo+PiAgICAgICAgICAgICAgICAgICAgICAgICAgc3Bpbl91
+bmxvY2soJnViaS0+d2xfbG9jayk7Cj4+ICsKPj4gKyAgICAgICAgICAgICAgICAgICAgICAgLyoK
+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgICogQ2hlY2sga3RocmVhZF9zaG91bGRfc3RvcCgp
+IGFmdGVyIHdlIHNldCB0aGUgdGFzawo+PiArICAgICAgICAgICAgICAgICAgICAgICAgKiBzdGF0
+ZSB0byBndWFyYW50ZWUgdGhhdCB3ZSBlaXRoZXIgc2VlIHRoZSBzdG9wIGJpdAo+PiArICAgICAg
+ICAgICAgICAgICAgICAgICAgKiBhbmQgZXhpdCBvciB0aGUgdGFzayBzdGF0ZSBpcyByZXNldCB0
+byBydW5uYWJsZSBzdWNoCj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAqIHRoYXQgaXQncyBu
+b3Qgc2NoZWR1bGVkIG91dCBpbmRlZmluaXRlbHkgYW5kIGRldGVjdHMKPj4gKyAgICAgICAgICAg
+ICAgICAgICAgICAgICogdGhlIHN0b3AgYml0IGF0IGt0aHJlYWRfc2hvdWxkX3N0b3AoKS4KPj4g
+KyAgICAgICAgICAgICAgICAgICAgICAgICovCj4+ICsgICAgICAgICAgICAgICAgICAgICAgIGlm
+IChrdGhyZWFkX3Nob3VsZF9zdG9wKCkpIHsKPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICBzZXRfY3VycmVudF9zdGF0ZShUQVNLX1JVTk5JTkcpOwo+PiArICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIGJyZWFrOwo+PiArICAgICAgICAgICAgICAgICAgICAgICB9Cj4+ICsK
+PiBIbW0sIEkgc2VlIHRoZSBwcm9ibGVtIGJ1dCBJIGZlYXIgdGhpcyBwYXRjaCBkb2VzIG5vdCBj
+dXJlIHRoZSByYWNlIGNvbXBsZXRlbHkuCj4gSXQganVzdCBsb3dlcnMgdGhlIGNoYW5jZSB0byBo
+aXQgaXQuCj4gV2hhdCBpZiBLVEhSRUFEX1NIT1VMRF9TVE9QIGlzIHNldCByaWdodCBhZnRlciB5
+b3UgY2hlY2tlZCBmb3IgaXQ/CgpUaGUgcGF0Y2ggY2FuIGhhbmRsZSB0aGlzIGNhc2UuIHViaV90
+aHJlYWQgd2lsbCBleGl0IGF0IAprdGhyZWFkX3Nob3VsZF9zdG9wKCkgaW4gbmV4dCBpdGVyYXRp
+b24uCgoKWW91IGNhbiBhcHBseSBmb2xsb3dpbmcgcGF0Y2ggdG8gdmVyaWZ5IGl0LiAoWW91IG1h
+eSBzZXQgCidrZXJuZWwuaHVuZ190YXNrX3RpbWVvdXRfc2VjcyA9IDEwJyBieSBzeXNjdGwpCgoK
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3ViaS93bC5jIGIvZHJpdmVycy9tdGQvdWJpL3dsLmMK
+aW5kZXggMjc2MzYwNjNlZDFiLi40NDA0Nzg2MWMyYTEgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRk
+L3ViaS93bC5jCisrKyBiL2RyaXZlcnMvbXRkL3ViaS93bC5jCkBAIC05MSw2ICs5MSw3IEBACiDC
+oCNpbmNsdWRlIDxsaW51eC9rdGhyZWFkLmg+CiDCoCNpbmNsdWRlICJ1YmkuaCIKIMKgI2luY2x1
+ZGUgIndsLmgiCisjaW5jbHVkZSA8bGludXgvZGVsYXkuaD4KCiDCoC8qIE51bWJlciBvZiBwaHlz
+aWNhbCBlcmFzZWJsb2NrcyByZXNlcnZlZCBmb3Igd2Vhci1sZXZlbGluZyBwdXJwb3NlcyAqLwog
+wqAjZGVmaW5lIFdMX1JFU0VSVkVEX1BFQlMgMQpAQCAtMTYyNyw4ICsxNjI4LDEwIEBAIGludCB1
+YmlfdGhyZWFkKHZvaWQgKnUpCiDCoMKgwqDCoMKgwqDCoCBmb3IgKDs7KSB7CiDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAgaW50IGVycjsKCi3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgIGlmIChrdGhyZWFkX3Nob3VsZF9zdG9wKCkpCivCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgIGlmIChrdGhyZWFkX3Nob3VsZF9zdG9wKCkpIHsKK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIHByX2VycigiRXhpdCBhdCBzdG9wIEFcbiIpOwogwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBicmVhazsKK8KgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAgfQoKIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBp
+ZiAodHJ5X3RvX2ZyZWV6ZSgpKQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCBjb250aW51ZTsKQEAgLTE2MzgsNiArMTY0MSwxNSBAQCBpbnQgdWJpX3RocmVh
+ZCh2b2lkICp1KQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgIXViaS0+
+dGhyZWFkX2VuYWJsZWQgfHwgdWJpX2RiZ19pc19iZ3RfZGlzYWJsZWQodWJpKSkgewogwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzZXRfY3VycmVudF9zdGF0
+ZShUQVNLX0lOVEVSUlVQVElCTEUpOwogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCBzcGluX3VubG9jaygmdWJpLT53bF9sb2NrKTsKK8KgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlmIChrdGhyZWFkX3Nob3VsZF9zdG9wKCkp
+IHsKK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCBzZXRfY3VycmVudF9zdGF0ZShUQVNLX1JVTk5JTkcpOworwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGJyZWFrOworwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfQorCivCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBwcl9lcnIoIkNoZWNrIHNob3VsZCBz
+dG9wIEJcbiIpOworwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
+bWRlbGF5KDUwMDApOworwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgcHJfZXJyKCJkZWxheSA1MDAwbXMgXG4iKTsKKwogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzY2hlZHVsZSgpOwogwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjb250aW51ZTsKIMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCB9CmRpZmYgLS1naXQgYS9rZXJuZWwva3RocmVhZC5jIGIva2VybmVsL2t0aHJl
+YWQuYwppbmRleCAxMzJmODRhNWZkZTMuLjE4NjI3YWNiOTU3MyAxMDA2NDQKLS0tIGEva2VybmVs
+L2t0aHJlYWQuYworKysgYi9rZXJuZWwva3RocmVhZC5jCkBAIC01OTAsNiArNTkwLDEwIEBAIGlu
+dCBrdGhyZWFkX3N0b3Aoc3RydWN0IHRhc2tfc3RydWN0ICprKQogwqDCoMKgwqDCoMKgwqAgZ2V0
+X3Rhc2tfc3RydWN0KGspOwogwqDCoMKgwqDCoMKgwqAga3RocmVhZCA9IHRvX2t0aHJlYWQoayk7
+CiDCoMKgwqDCoMKgwqDCoCBzZXRfYml0KEtUSFJFQURfU0hPVUxEX1NUT1AsICZrdGhyZWFkLT5m
+bGFncyk7CisKK8KgwqDCoMKgwqDCoCBpZiAoay0+Y29tbSAmJiAhc3RybmNtcChrLT5jb21tLCAi
+dWJpX2JndDBkIiwgc3RybGVuKCJ1YmlfYmd0MGQiKSkpCivCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIHByX2VycigiU3RvcCBmbGFnIGhhcyBiZWVuIHNldCBmb3IgdGFzayAlc1xuIiwgay0+
+Y29tbSk7CisKIMKgwqDCoMKgwqDCoMKgIGt0aHJlYWRfdW5wYXJrKGspOwogwqDCoMKgwqDCoMKg
+wqAgd2FrZV91cF9wcm9jZXNzKGspOwogwqDCoMKgwqDCoMKgwqAgd2FpdF9mb3JfY29tcGxldGlv
+bigma3RocmVhZC0+ZXhpdGVkKTsKCmtlcm5lbCBtc2c6ClvCoCAyMTAuNjAyMDA1XSBDaGVjayBz
+aG91bGQgc3RvcCBCwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICMgUGxlYXNlIGV4ZWN1dGUgCnVi
+aV9kZXRhY2ggbWFudWFsbHkgd2hlbiB5b3Ugc2VlIHRoaXMKW8KgIDIxMS4zNDc2MzhdIFN0b3Ag
+ZmxhZyBoYXMgYmVlbiBzZXQgZm9yIHRhc2sgdWJpX2JndDBkClvCoCAyMTUuNjAzMDI2XSBkZWxh
+eSA1MDAwbXMKW8KgIDIxNS42MDU3MjhdIEV4aXQgYXQgc3RvcCBBCj4+ICAgICAgICAgICAgICAg
+ICAgICAgICAgICBzY2hlZHVsZSgpOwo+PiAgICAgICAgICAgICAgICAgICAgICAgICAgY29udGlu
+dWU7Cj4+ICAgICAgICAgICAgICAgICAgfQo+CgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
+IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
+dGQvCg==
