@@ -2,23 +2,23 @@ Return-Path: <SRS0=GAYx=BO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AE0FC433DF
-	for <linux-mtd@archiver.kernel.org>; Tue,  4 Aug 2020 21:27:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8657C433E0
+	for <linux-mtd@archiver.kernel.org>; Tue,  4 Aug 2020 21:57:02 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D6BEB22B42
-	for <linux-mtd@archiver.kernel.org>; Tue,  4 Aug 2020 21:27:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B233C207FC
+	for <linux-mtd@archiver.kernel.org>; Tue,  4 Aug 2020 21:57:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="T2qc2QmA";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=eclypsium.com header.i=@eclypsium.com header.b="NnLic8Mv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D6BEB22B42
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=eclypsium.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XlOFB7gD";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RsfTh8Ki"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B233C207FC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
@@ -26,64 +26,62 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
 	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=GsEvm8ZaNNQnrQiVhUrF198vbJUly+z7AI0HB794hQE=; b=T2qc2QmAEyKAxnMYtejkLdr4m
-	QM/UMNIFES33OmYFtyD8xTZs3UH9Pb9ynCJZiSLSBt9ccg7zDVixhcXcoRNJ6lJALXJeLHvaup0F7
-	LH8wTgmLQUFMH+b8CCN0rROyHxS1qRPr+3Q9C9y9dJS3NQDCAP4a26jyzeANX+RXGdfaNIDJ/gUVl
-	RM75yJ8iOTUEWt5abf3VslSZoa3NKsjypMecOY2FTgW5Cgue7AqGtnzCBvv0aJQHSssvPi8zPNDdd
-	zbVN5Cm2jSDrfVsFBHVtyqFR70wXIC1mnhndw/OOInnXrRqTupUUZKC9QBJ5w12bU3isDmctnYQsx
-	Gs2Q9qicg==;
+	 bh=dd4nEfmUXMYPwEfLbd6ctTd/d8ZoGgZ7kEJ4SBQ+bXs=; b=XlOFB7gDx5T7apZp4l63kyyT5
+	Z8rRm1IihZAhEQFLHVq8UDhTCAdGrLzfsnAXh9z9WXlDboR7cu5sRnp84uqNqEbOIOhr8IeCyvWjt
+	/Zdvk0qeMoFbW5tuTbo9V8dBviIiLQuudY8p1oL5lkcdox9TuWcCZAQOtMQijmSY4ZPbFcysj/JPZ
+	mEvdIzXYnB/cWM2wGef4R3UdI5OXzZ8s3ZYlPPIbTqEidJkdENacuKr4bxNS6poVUlkGUShAECNsH
+	oCkKjYDM6NgKmgrsfJufhuMiXxSpnjkDlNCwnYLF3FD8oitb3tmBOxJQeOvWhUoX5MvDyRCZc3KWZ
+	yvPSbE+6w==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1k34S7-00018Z-Rl; Tue, 04 Aug 2020 21:26:31 +0000
-Received: from mail-qv1-xf43.google.com ([2607:f8b0:4864:20::f43])
+	id 1k34v6-0003kg-11; Tue, 04 Aug 2020 21:56:28 +0000
+Received: from mail-qt1-x842.google.com ([2607:f8b0:4864:20::842])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k34S4-00017j-Qf
- for linux-mtd@lists.infradead.org; Tue, 04 Aug 2020 21:26:30 +0000
-Received: by mail-qv1-xf43.google.com with SMTP id r19so11296375qvw.11
- for <linux-mtd@lists.infradead.org>; Tue, 04 Aug 2020 14:26:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=eclypsium.com; s=google;
+ id 1k34v4-0003kI-2q
+ for linux-mtd@lists.infradead.org; Tue, 04 Aug 2020 21:56:26 +0000
+Received: by mail-qt1-x842.google.com with SMTP id x12so23702788qtp.1
+ for <linux-mtd@lists.infradead.org>; Tue, 04 Aug 2020 14:56:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=EIijXqczA+fJ6ljet3cDCIUDRtSrnljLBcPwrEPIX1I=;
- b=NnLic8Mve8V7Vn5BnI+2aE5Qj9cAudq14M8IldzGj4HmlvW/KE+/PvgoPdjFUIzzVA
- ovpOrHj6UrwT/KFYHpe2OF2gPnl434X7L9XP5gyfwBlzPGhvBU4IHO/Ia+ZTNUMzLmtB
- Gu78Ru+PyTpkN8YLdM5zvj7fj0EmcMiRT8Fn1nIQNTq7O/C/k29VTasIfZvhsES96FsW
- 16jj98++LlFxieMbt8m2oLc2i9Llz6HrmTPt5lYYfZp1d78kXWx+HMnyvoX8axmRU+bw
- NtFKluqhjAqZaoRrq6T39LyCkITvmN25fmY2VrUmdVyHx3kYHW5+A66gQaX0SwYDSiDf
- 7lIA==
+ :cc; bh=UccPpGQ4uKB6WoZTJl1MuCD8hOajsEsC2QDYvhe7OlI=;
+ b=RsfTh8KikBVqMMDscItiDVRzYzoyVI57OTTnIWzu8W2gMV2GTU7IFKjy65O4wutBgV
+ xvCN/mshX97he/qdqN0r+aelpgxZmMzVa6faS+xe3OSsiv8Dph55Zzz0WpEazdM31ZgI
+ i2J39gbosT7a1R3NfV630dSc4+sy+kmAI2Bj/jcMwi/Xx5KjBNUK4EAlnw4ToTHR3djN
+ NSRF6a3NHZCsHyGifrlUhxJtoUAaKOeQ9/enFzrkY4pah1bNPNcGu3G4Vbt5CXFCUFWD
+ jdiG1rYBJgrI9TzlS5VnB9bkvg8VNpgDCIPm/XqNU/ovg9tRF6J6ot1Dj1JaulfVjZke
+ pdwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=EIijXqczA+fJ6ljet3cDCIUDRtSrnljLBcPwrEPIX1I=;
- b=nFQbdLFLncnKJYV7qUvUNngHk2toD5W4xykR27Teh8nhqHe0N67etIfPkkULzzJOZp
- y3lCRRCz/sBVKYlSMO8wfAhk0DLK1nQjvYdA854Es+0cdq2Zmr+YN9LiG6HvLore/1kM
- MYCijm/mQcZW2bfQVLnmKFotPsBlSu2GXGKJEw1k/bcS6DJx/9cZKq7yZp9BoqQcpxxC
- U0r1DTVhVDv2RR5OUS4/wzA74SaSJIcyjE8ZCMBjaenT21sU8aD+NQFyKgZ/1mSen0oA
- xH4x885VmQX3QPAq1PSYWMUx9TW31xAguB2QC7UjfiwTWQbNs/K1eYUYR9UOzjT5cD8o
- dJwQ==
-X-Gm-Message-State: AOAM533/a2cvr879zyNwI8+c49BiassZCXl3kQ+bNS9RuGZMjF2vRT4B
- hFxa9Qo1BhOG9xDs+QXWlZ53s5ejCvBQ/jH2DCk3jA==
-X-Google-Smtp-Source: ABdhPJwIUJCuwei8hSV3a4TkiS+iC3YNpjfJ4ecvLLDgt9aGNNY9t56c7/1MEk2DbmD6pDwFam+EQdlp2nNaYzfUAF8=
-X-Received: by 2002:ad4:5502:: with SMTP id az2mr377046qvb.148.1596576386950; 
- Tue, 04 Aug 2020 14:26:26 -0700 (PDT)
+ bh=UccPpGQ4uKB6WoZTJl1MuCD8hOajsEsC2QDYvhe7OlI=;
+ b=kK/w1c+LRRNx8onU+AUYK09UHoHUzxopmc5Uy6u/SoZuvbAK2VeBMgV1InZpE8viXZ
+ jjyVddtWrsVHOoOx5aFqM5KT/LFphv7MCU2sGWZULEYhoCuW+77lRsFkrezOYUGDfI+k
+ 4709ef3ox/8+oprLHpimjpESUYFW+I0gXbIj9ntxG843k97TMveHWBtbXGvAxjwhJcVy
+ aHJzizw38GGPxne4U1NbuWrZ7zvNCyDnxKKBZ6qus7CE8eSJEYbhtoe+As5rjv0toy8P
+ BQdRsSAHZoc4RBSzp+dAmwq4kL2WZbD5a+yMTS3x+i/ZC7iAQEOvaLffefL5BXZv3NPn
+ ybUA==
+X-Gm-Message-State: AOAM533MnWovAtWN0dZkUeHkBfnpWTbExo0arznUlUjT10re44Li3c+M
+ DNfJTguNmdd571MlOMNtYqFpfdxgpg3WrIXU1qI=
+X-Google-Smtp-Source: ABdhPJx2MqaXC6314A1gSPMasWpsFVff5bIebJciZadSY5fZ1AG7ilqKRqlUiQPkNcU6k97spzJ9jL5jjULnOV/rMAI=
+X-Received: by 2002:ac8:67da:: with SMTP id r26mr180090qtp.332.1596578184361; 
+ Tue, 04 Aug 2020 14:56:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200804135817.5495-1-daniel.gutson@eclypsium.com>
- <CAK8P3a0_fJ0BfD5Qvxdo0s7CbjPWaGA8QTgYhbXR=omafOHH4Q@mail.gmail.com>
- <CAFmMkTHEm8k+5GZkVJbDZMEhMwpsqVKRb-hGskSpBstdLRuFyA@mail.gmail.com>
- <CAK8P3a27bTYyn3N+tX=i_6f4KrQkOmkUA1zUQfvCW7qw6smSkQ@mail.gmail.com>
- <CAFmMkTF9eVm0tpOKEy2rzdX=Scr3RwqHDFy_i24R3F5ok-4=eA@mail.gmail.com>
- <CAK8P3a3mf8_Y4DWe3WuBO-Xo0N4Jj=-rrtFzD6w0TriGZPu1_g@mail.gmail.com>
-In-Reply-To: <CAK8P3a3mf8_Y4DWe3WuBO-Xo0N4Jj=-rrtFzD6w0TriGZPu1_g@mail.gmail.com>
-From: Daniel Gutson <daniel@eclypsium.com>
-Date: Tue, 4 Aug 2020 18:26:15 -0300
-Message-ID: <CAFmMkTFzmC=aY0gR6urLu-8Oq8aeHBUWi-TodG8XhXKCcC057A@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: intel-spi: Do not try to make the SPI flash
- chip writable
-To: Arnd Bergmann <arnd@arndb.de>
+References: <20200601091231.3794350-1-chengzhihao1@huawei.com>
+ <CAFLxGvwLSvYsQ+OPi85VS8aQ2uge_JqQRD2C8h=XMORvCej3Sw@mail.gmail.com>
+ <211afcd0-d5b3-5ac0-1fd1-dc789634a858@huawei.com>
+ <CAFLxGvwRDfB4mqxJhOLwWvoZ3yzpVY-kuAiovYLf8T7WwJqaTg@mail.gmail.com>
+ <9caa4860-975c-70bb-c8b9-737d1db9ead4@huawei.com>
+In-Reply-To: <9caa4860-975c-70bb-c8b9-737d1db9ead4@huawei.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Tue, 4 Aug 2020 23:56:13 +0200
+Message-ID: <CAFLxGvycs7DNu5o5QY1WwTPfS6cTTykTh-91n9TQZ7yP_ADr4A@mail.gmail.com>
+Subject: Re: [PATCH] ubi: check kthread_should_stop() after the setting of
+ task state
+To: Zhihao Cheng <chengzhihao1@huawei.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200804_172629_198432_C1E8DE38 
-X-CRM114-Status: GOOD (  38.69  )
+X-CRM114-CacheID: sfid-20200804_175626_151811_6EB59D85 
+X-CRM114-Status: GOOD (  16.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,132 +93,64 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Hughes <hughsient@gmail.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Alex Bazhaniuk <alex@eclypsium.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ LKML <linux-kernel@vger.kernel.org>, "zhangyi \(F\)" <yi.zhang@huawei.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Aug 4, 2020 at 5:46 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Tue, Aug 4, 2020 at 9:57 PM Daniel Gutson <daniel@eclypsium.com> wrote:
-> > On Tue, Aug 4, 2020 at 4:06 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> > > On Tue, Aug 4, 2020 at 5:49 PM Daniel Gutson <daniel@eclypsium.com> wrote:
-> > > > On Tue, Aug 4, 2020 at 12:21 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> > > >> On Tue, Aug 4, 2020 at 3:58 PM Daniel Gutson
-> > > >> <daniel.gutson@eclypsium.com> wrote:
-> > > >
-> > > > What about just saying
-> > > >
-> > > > "This patch removes the attempt by the intel-spi-pci driver to
-> > > > make the chip always writable."
-> > >
-> > > Yes, that is much better, though it still sounds like it would at the
-> > > moment allow writing to the device from software without also
-> > > setting the module parameter. I would say something like
-> > >
-> > > "Disallow overriding the write protection in the PCI driver
-> > > with a module parameter and instead honor the current
-> > > state of the write protection as set by the firmware."
-> >
-> > But wait, Mika, the author of the file, asked earlier not to remove
-> > the module parameter of intel-spi, and just remove the unconditional
-> > attempt to turn the chip writable in intle-spi-pci.
->
-> Yes, and I think that is fine (aside from the inconsistency with bay trail
-> that you have not commented on),
+On Tue, Aug 4, 2020 at 4:58 AM Zhihao Cheng <chengzhihao1@huawei.com> wrote:
+> Oh, you're thinking about influence by schedule(), I get it. But I think
+> it still works. Because the ubi_thread is still on runqueue, it will be
+> scheduled to execute later anyway.
 
-There are two inconsistencies before any of my patches:
-1) in intel-spi.c: uses the module parameter only for bay trail.
-2) intel-spi.c uses a module parameter whereas intel-spi-pci doesn't
-
-My initial patch addressed #2 by also adding a module parameter to
-intel-spi-pci,
-but then some of you discouraged me to use module parameters.
-Mika showed up and suggested to leave intel-spi.c as is (with its
-module parameter),
-and remove the code in intel-spi-pci that tried to turn the SPI chip
-writable if the BIOS
-was unlocked.
-
-> but that only touches the hardware
-> write-protection, which doesn't really have any effect unless user
-> space also configures the driver module to allow writing to the
-> mtd device.
->
-> > So I'm not touching intel-pci, just removing that code from
-> > intel-spi-pci without adding a new module parameter.
-> >
-> > Are you aligned on this?
->
-> One of us is still very confused about what the driver does.
-> You seem to have gone back to saying that without the
-> change a user could just write to the device even without
-> passing the module parameter to intel-spi.ko?
-
-What I'm trying to say is that, if the BIOS is unlocked
-(no driver involvement here), the intel-spi-pci turns the
-chip writable even without changing the module parameter of intel-spi.
-This is because the attempt to turn the chip writable occurs in
-the probing of intel-spi-pci, that is, earlier than the intel-spi
-initialization.
+It will not get woken. This is the problem.
 
 >
-> Maybe you should start by explaining what scenario you
-> actually want to prevent here. Is it
-
-Was it clear from above?
-
-Before commenting below, it's important to note again that
-the driver will succeed in turning the chip writable only if the
-BIOS is unlocked by its build time specification.
-The WPD field (Write Protect Disable) bit only has effect if
-the BIOS is not locked. This WPD bit is the one that the intel-spi-pci
-driver tries to set unconditionally. If the BIOS is locked, it will cause
-no effect. But if the BIOS is not locked, the chip will
-end up in Write Protect Disabled state.
-My latest patch simply leaves alone the WPD bit in intel-spi-pci,
-not trying to set it to 1.
-
-I'm not sure the options below are now fully compatible
-with my explanation above.
-
+> op                                                    state of
+> ubi_thread           on runqueue
+> set_current_state(TASK_INTERRUPTIBLE) TASK_INTERRUPTIBLE              Yes
+> if (kthread_should_stop()) // not satisfy
+> TASK_INTERRUPTIBLE              Yes
+> kthread_stop:
+>    wake_up_process
+>      ttwu_queue
+>        ttwu_do_activate
+>          ttwu_do_wakeup TASK_RUNNING                       Yes
+> schedule
+>    __schedule(false)
 >
-> a) the hardware write-protect bit getting changed, which
->     introduces the possibility of corrupting the flash even
->     if nothing tries to write to it,
->
-> b) root users setting the device writable with the intention
->    of writing to it even though firmware has politely asked
->    for this not to be done (by setting the write-protect bit
->    but not preventing it from being disabled again), or
->
-> c) a writeable mtd device showing up even without
->     the module parameter being set at all?
->
-> I thought the initial patch was about c) which turned out
-> to be a non-issue, and then the later patch being about b).
->
->      Arnd
+>   // prev->state is TASK_RUNNING, so we cannot move it from runqueue by
+> deactivate_task(). So just pick next task to execute, ubi_thread is
+> still on runqueue and will be scheduled to execute later.
 
+It will be in state TASK_RUNNING only if your check is reached.
 
+If kthread_stop() is called *before* your code:
++                       if (kthread_should_stop()) {
++                               set_current_state(TASK_RUNNING);
++                               break;
++                       }
+
+...everything is fine.
+But there is still a race window between your if
+(kthread_should_stop()) and schedule() in the next line.
+So if kthread_stop() is called right *after* the if and *before*
+schedule(), the task state is still TASK_INTERRUPTIBLE
+--> schedule() will not return unless the task is explicitly woken,
+which does not happen.
+
+Before your patch, the race window was much larger, I fully agree, but
+your patch does not cure the problem
+it just makes it harder to hit.
+
+And using mdelay() to verify such a thing is also tricky because
+mdelay() will influence the task state.
 
 -- 
-Daniel Gutson
-Argentina Site Director
-Enginieering Director
-Eclypsium
-
-Below The Surface: Get the latest threat research and insights on
-firmware and supply chain threats from the research team at Eclypsium.
-https://eclypsium.com/research/#threatreport
+Thanks,
+//richard
 
 ______________________________________________________
 Linux MTD discussion mailing list
