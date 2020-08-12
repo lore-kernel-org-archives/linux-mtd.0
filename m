@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2E3FC433DF
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Aug 2020 22:42:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B584BC433DF
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 Aug 2020 23:06:13 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A435D20781
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Aug 2020 22:42:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8162B20675
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 Aug 2020 23:06:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uancKbOx";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="BbGfi0lG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A435D20781
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="t8i8vZLS";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="pXDZRt76"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8162B20675
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,52 +25,51 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
 	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=WBU0F3NKWVedvfYQbID0+R35axU13RlAvLb3SlkkvUg=; b=uancKbOxRwgIDNl6n4J76M+zt
-	bF7zPDZFKCwthufL8DUR/GIGf+z/Bv7rV7duFrbDwykfI1vBTde4lB+/N+p5D2V2VH7tDH4sb64yM
-	95teHO28KLJm7MgVAxa4eFfTWClLKrzmyiifi4WNHOZB1UIC5QyqLrDtoNcBop08kabL3JA6w750k
-	xnXX6nkcVZ2616y7EsuD1XajQJ9zTDt/HkOqQCfvtZKfcLkO49B8KXd9cOqxgHAdL7mtP/ZBARh5/
-	a6cLmE8axmlz+WH8OtHgipHyPo00FTikmxS4d/jibX40mKlpYAqkYzWvoerd4FMxWW9stdMhwgPwz
-	epEw7ftJw==;
+	 bh=zU00xoTwotKFgwkoagebitc4wmMVTzYYUQW28RhuLRA=; b=t8i8vZLSMTkl1fhzObHFQLOsb
+	YwNdRazI/KignBbnf92sH3on0Po5qn/qDBwjnZSP12gm3FssEMOVRaWepcHFFIcnNk0z11apnz6hx
+	EEyF63JjJg8YiSJ/sNs5i2waWvvxfN8ymGH7QMumZb8z6qtnLBmMHXmNLWFJDtY4/Xvm3raLKgMiw
+	jmySH/JsIb1LcpHwqv0EtdZc4W3chM+aKZ3i/44e5MnEmu+rmon5nBx3BfqXgJc6prKwxkmMHudOC
+	hz1BZbbPbVHKtQ2yc69BF3ljR5e7qQIdr0BARJ7UO0EzFTiFdtVpQ6aLXYurtYQsW4p1BBxtWfLve
+	rYm7thUlA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1k5zRD-00012q-8K; Wed, 12 Aug 2020 22:41:39 +0000
+	id 1k5zoE-00040J-7F; Wed, 12 Aug 2020 23:05:26 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k5zR8-00011T-40; Wed, 12 Aug 2020 22:41:35 +0000
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com
- [209.85.210.51])
+ id 1k5zo9-0003zQ-UC; Wed, 12 Aug 2020 23:05:23 +0000
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com
+ [209.85.167.180])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 7F88320781;
- Wed, 12 Aug 2020 22:41:32 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 9F65522BF5;
+ Wed, 12 Aug 2020 23:05:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1597272092;
- bh=+TgKkV6KqLhfjYAFIPeYwktp69RC4Ly6UgDwT/dBhDE=;
+ s=default; t=1597273520;
+ bh=6kwxpshrOlbOHxWnmXC6+dWtt2L5X/Drj58h8rpdMCA=;
  h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=BbGfi0lG5QCcZTN884K1SsY5f22mZrWcKc6andleE2eVn9J4s1FjOglMSu0+SqG3v
- +frY1T2SqpMd3XD/fVjzgYIYdMyKcSZNyNrFpW2gjYxwvnGx0Lx/+i6VDImXTzJebw
- DftdpKvxqxEh1Aq0dLD/uTX0EFfHI5KFKPGlsQmU=
-Received: by mail-ot1-f51.google.com with SMTP id e11so3309227otk.4;
- Wed, 12 Aug 2020 15:41:32 -0700 (PDT)
-X-Gm-Message-State: AOAM532xjUbxLCg2QrZrJXVwBUO4Yex1dVGtqc0uxHmJPaKh0g4EAeSF
- xXtFKavpHX0dkemEZR+4d68mJrNtru3IVsoBMA==
-X-Google-Smtp-Source: ABdhPJzHpRcjvIrip5SaXz0gOR2Dk5E1eheEnWizjmaZ+srfkuyaKcplDT6pTJKb9I9sGnPFKTkG9V8xTaEbGjKVycM=
-X-Received: by 2002:a05:6830:1b79:: with SMTP id
- d25mr1655834ote.107.1597272091695; 
- Wed, 12 Aug 2020 15:41:31 -0700 (PDT)
+ b=pXDZRt76CPWxVlpilBeAf66pO/Ch1+UOaSOgdUpIGMcw2xAS2mFHBEgkKJVucyrd/
+ hFrdQmO7EEU0DOv8a5XHHMAntvFEpH8ijK+mCysryubzOS2R2XGypW54K9swm6SsIs
+ b7zU39V5JMU64Uhe2oipgDLWWHGgSe5VXnIpigps=
+Received: by mail-oi1-f180.google.com with SMTP id j7so3365176oij.9;
+ Wed, 12 Aug 2020 16:05:20 -0700 (PDT)
+X-Gm-Message-State: AOAM531XDPkzBelDKo8guL8BP+1wZnHRjEzSSCTwwmlkRVitKuhBAwmF
+ YUCU4IWwnj2kYLfCaoLMrzBdI6NuelguMRmYYw==
+X-Google-Smtp-Source: ABdhPJx2qQebZiNBPQzgE1fpdypeYG9ycnPVX3JxYluiX5nbkNkxeZlpxpCsMAonDMWnL7JIOVI286FePABwvHucHl8=
+X-Received: by 2002:aca:bb82:: with SMTP id l124mr1235268oif.106.1597273520003; 
+ Wed, 12 Aug 2020 16:05:20 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200812203618.2656699-1-robh@kernel.org>
- <20200812213453.GA690477@ravnborg.org>
-In-Reply-To: <20200812213453.GA690477@ravnborg.org>
+ <f5dedf2d8d8057de3eaa2f9126f44cebb0653b09.camel@perches.com>
+In-Reply-To: <f5dedf2d8d8057de3eaa2f9126f44cebb0653b09.camel@perches.com>
 From: Rob Herring <robh@kernel.org>
-Date: Wed, 12 Aug 2020 16:41:20 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJLoTojYv5gLB-iWACc-rkUU9t3v1XBZtdRz6A715Z3Uw@mail.gmail.com>
-Message-ID: <CAL_JsqJLoTojYv5gLB-iWACc-rkUU9t3v1XBZtdRz6A715Z3Uw@mail.gmail.com>
+Date: Wed, 12 Aug 2020 17:05:08 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKBzqMHMMRwBJUjomxOpZAop_+TXBjLCb6ntwZzNMy=3Q@mail.gmail.com>
+Message-ID: <CAL_JsqKBzqMHMMRwBJUjomxOpZAop_+TXBjLCb6ntwZzNMy=3Q@mail.gmail.com>
 Subject: Re: [PATCH] dt-bindings: Whitespace clean-ups in schema files
-To: Sam Ravnborg <sam@ravnborg.org>
+To: Joe Perches <joe@perches.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200812_184134_364872_4B41B706 
-X-CRM114-Status: GOOD (  32.53  )
+X-CRM114-CacheID: sfid-20200812_190522_476188_EC3E9E66 
+X-CRM114-Status: GOOD (  19.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,217 +106,71 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Aug 12, 2020 at 3:34 PM Sam Ravnborg <sam@ravnborg.org> wrote:
+On Wed, Aug 12, 2020 at 4:32 PM Joe Perches <joe@perches.com> wrote:
 >
-> Hi Rob.
->
-> On Wed, Aug 12, 2020 at 02:36:18PM -0600, Rob Herring wrote:
+> On Wed, 2020-08-12 at 14:36 -0600, Rob Herring wrote:
 > > Clean-up incorrect indentation, extra spaces, long lines, and missing
 > > EOF newline in schema files. Most of the clean-ups are for list
 > > indentation which should always be 2 spaces more than the preceding
+>                                      ^
 > > keyword.
-> >
-> > Found with yamllint (which I plan to integrate into the checks).
+
+keyword is the key part...
+
+> []
+> > diff --git a/Documentation/devicetree/bindings/arm/arm,integrator.yaml b/Documentation/devicetree/bindings/arm/arm,integrator.yaml
+> > index 192ded470e32..f0daf990e077 100644
+> > --- a/Documentation/devicetree/bindings/arm/arm,integrator.yaml
+> > +++ b/Documentation/devicetree/bindings/arm/arm,integrator.yaml
+> > @@ -67,9 +67,9 @@ patternProperties:
+> >        compatible:
+> >          items:
+> >            - enum:
+> > -            - arm,integrator-ap-syscon
+> > -            - arm,integrator-cp-syscon
+> > -            - arm,integrator-sp-syscon
+> > +              - arm,integrator-ap-syscon
+> > +              - arm,integrator-cp-syscon
+> > +              - arm,integrator-sp-syscon
 >
-> I have browsed through the patch - and there was only a few things
-> that jumped at me.
+> Confused a bit here.
+>           - enum:
+>         10 spaces to dash
+> old line:
+>             - arm,integrator-ap-syscon
+>         12 spaces to dash
+> new line:
+>               - arm,integrator-ap-syscon
+>         14 spaces to dash
 >
-> With these points considered:
-> Acked-by: Sam Ravnborg <sam@ravnborg.org>
->
-> I expect only some (few) of my points to actually results in any updates.
->
-> I look forward to have the lint functionality as part of the built-in
-> tools so we catch these things early.
->
->         Sam
->
-> > diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-> > index f63895c8ce2d..88814a2a14a5 100644
-> > --- a/Documentation/devicetree/bindings/arm/fsl.yaml
-> > +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-> > @@ -273,8 +273,8 @@ properties:
-> >                - fsl,imx6ull-14x14-evk     # i.MX6 UltraLiteLite 14x14 EVK Board
-> >                - kontron,imx6ull-n6411-som # Kontron N6411 SOM
-> >                - myir,imx6ull-mys-6ulx-eval # MYiR Tech iMX6ULL Evaluation Board
-> > -              - toradex,colibri-imx6ull-eval            # Colibri iMX6ULL Module on Colibri Evaluation Board
-> > -              - toradex,colibri-imx6ull-wifi-eval       # Colibri iMX6ULL Wi-Fi / Bluetooth Module on Colibri Evaluation Board
-> > +              - toradex,colibri-imx6ull-eval      # Colibri iMX6ULL Module on Colibri Eval Board
-> > +              - toradex,colibri-imx6ull-wifi-eval # Colibri iMX6ULL Wi-Fi / BT Module on Colibri Eval Board
-> >            - const: fsl,imx6ull
->
-> This change looks bad as it drops the alignment with the comments below.
-> See following patch chunck:
+> Is it supposed to be 2 spaces more than the preceding line
+> or 4 more?
 
-Yes, but as a whole there's no alignment in this file. Even the rest
-of the entries for the hunk below aren't aligned.
+If the preceding line is a list entry (i.e. starts with '-'), then
+it's 4 more spaces. It's always 2 more spaces than the preceding
+keyword start (aka json-schema vocabulary).
 
-Perhaps this form would be better:
+Arguably, this style is a bit inconsistent in that the '-' counts
+toward as indentation of the current line, but not the preceding line.
+However, I think this style is a bit less error prone and easier to
+review. With the other style (always N more spaces) it's harder to
+distinguish lists vs. dicts. For example, you can have something like
+this:
 
-    # Colibri iMX6ULL Wi-Fi / BT Module on Colibri Eval Board
-  - toradex,colibri-imx6ull-wifi-eval
+- key:
+  - foo
+  - bar
 
-But I really don't want to go fix this in the whole file...
+- key:
+    foo
+    bar
 
-> >        - description: Kontron N6411 S Board
-> > @@ -312,9 +312,12 @@ properties:
-> >                - toradex,colibri-imx7d                   # Colibri iMX7 Dual Module
-> >                - toradex,colibri-imx7d-aster             # Colibri iMX7 Dual Module on Aster Carrier Board
-> >                - toradex,colibri-imx7d-emmc              # Colibri iMX7 Dual 1GB (eMMC) Module
-> > -              - toradex,colibri-imx7d-emmc-aster        # Colibri iMX7 Dual 1GB (eMMC) Module on Aster Carrier Board
-> > -              - toradex,colibri-imx7d-emmc-eval-v3      # Colibri iMX7 Dual 1GB (eMMC) Module on Colibri Evaluation Board V3
-> > -              - toradex,colibri-imx7d-eval-v3           # Colibri iMX7 Dual Module on Colibri Evaluation Board V3
-> > +              - toradex,colibri-imx7d-emmc-aster        # Colibri iMX7 Dual 1GB (eMMC) Module on
-> > +                                                        #  Aster Carrier Board
->
->
->
-> > diff --git a/Documentation/devicetree/bindings/display/panel/ilitek,ili9322.yaml b/Documentation/devicetree/bindings/display/panel/ilitek,ili9322.yaml
-> > index 177d48c5bd97..e89c1ea62ffa 100644
-> > --- a/Documentation/devicetree/bindings/display/panel/ilitek,ili9322.yaml
-> > +++ b/Documentation/devicetree/bindings/display/panel/ilitek,ili9322.yaml
-> > @@ -25,8 +25,7 @@ properties:
-> >    compatible:
-> >      items:
-> >        - enum:
-> > -        - dlink,dir-685-panel
-> > -
-> > +          - dlink,dir-685-panel
-> >        - const: ilitek,ili9322
-> >
-> >    reset-gpios: true
-> > diff --git a/Documentation/devicetree/bindings/display/panel/ilitek,ili9881c.yaml b/Documentation/devicetree/bindings/display/panel/ilitek,ili9881c.yaml
-> > index a39332276bab..76a9068a85dd 100644
-> > --- a/Documentation/devicetree/bindings/display/panel/ilitek,ili9881c.yaml
-> > +++ b/Documentation/devicetree/bindings/display/panel/ilitek,ili9881c.yaml
-> > @@ -13,8 +13,7 @@ properties:
-> >    compatible:
-> >      items:
-> >        - enum:
-> > -        - bananapi,lhr050h41
-> > -
-> > +          - bananapi,lhr050h41
-> >        - const: ilitek,ili9881c
-> >
->
-> The extra lines is a simple way to indicate that here shall be added
-> more in the future. So I like the empty line.
+- key:
+  - foo
+    bar
 
-News to me. I thought 'enum' indicates that. My preference here is a
-blank line just between DT properties.
-
-> > diff --git a/Documentation/devicetree/bindings/leds/backlight/qcom-wled.yaml b/Documentation/devicetree/bindings/leds/backlight/qcom-wled.yaml
-> > index 32e0896c6bc1..47938e372987 100644
-> > --- a/Documentation/devicetree/bindings/leds/backlight/qcom-wled.yaml
-> > +++ b/Documentation/devicetree/bindings/leds/backlight/qcom-wled.yaml
-> > @@ -79,7 +79,8 @@ properties:
-> >      description: |
-> >        kHz; switching frequency.
-> >      $ref: /schemas/types.yaml#/definitions/uint32
-> > -    enum: [ 600, 640, 685, 738, 800, 872, 960, 1066, 1200, 1371, 1600, 1920, 2400, 3200, 4800, 9600 ]
-> > +    enum: [ 600, 640, 685, 738, 800, 872, 960, 1066, 1200, 1371, 1600, 1920,
-> > +            2400, 3200, 4800, 9600 ]
-> >
-> >    qcom,ovp:
-> >      description: |
->
-> In the modern world we are living in now line length of 100 chars are
-> OK. checkpatch and coding_style is updated to reflected this.
-
-Yes, and it was 102. For yamllint I actually put it at 110 just to get
-to a reasonable number that I wanted to fix and warning free. I think
-I fixed all non comment cases to be less than 100 and comments to be
-up to 110.
-
-> > diff --git a/Documentation/devicetree/bindings/spi/mikrotik,rb4xx-spi.yaml b/Documentation/devicetree/bindings/spi/mikrotik,rb4xx-spi.yaml
-> > index 4ddb42a4ae05..9102feae90a2 100644
-> > --- a/Documentation/devicetree/bindings/spi/mikrotik,rb4xx-spi.yaml
-> > +++ b/Documentation/devicetree/bindings/spi/mikrotik,rb4xx-spi.yaml
-> > @@ -33,4 +33,5 @@ examples:
-> >          reg = <0x1f000000 0x10>;
-> >      };
-> >
-> > -...
-> > \ No newline at end of file
-> > +...
-> > +
->
-> Added one line too much?
-
-Indeed.
-
->  diff --git a/Documentation/devicetree/bindings/spi/spi-mux.yaml b/Documentation/devicetree/bindings/spi/spi-mux.yaml
-> > index 0ae692dc28b5..3d3fed63409b 100644
-> > --- a/Documentation/devicetree/bindings/spi/spi-mux.yaml
-> > +++ b/Documentation/devicetree/bindings/spi/spi-mux.yaml
-> > @@ -43,47 +43,47 @@ properties:
-> >      maxItems: 1
-> >
-> >  required:
-> > -   - compatible
-> > -   - reg
-> > -   - spi-max-frequency
-> > -   - mux-controls
-> > +  - compatible
-> > +  - reg
-> > +  - spi-max-frequency
-> > +  - mux-controls
-> >
-> >  examples:
-> > -   - |
-> > -     #include <dt-bindings/gpio/gpio.h>
-> > -     mux: mux-controller {
-> > -       compatible = "gpio-mux";
-> > -       #mux-control-cells = <0>;
-> > +  - |
-> > +    #include <dt-bindings/gpio/gpio.h>
-> > +    mux: mux-controller {
-> > +        compatible = "gpio-mux";
-> > +        #mux-control-cells = <0>;
-> >
-> > -       mux-gpios = <&gpio0 3 GPIO_ACTIVE_HIGH>;
-> > -     };
-> > +        mux-gpios = <&gpio0 3 GPIO_ACTIVE_HIGH>;
-> > +    };
->
-> Example is updated to use 4-space indent. I like.
->
-> But many other examples are left untouched.
-
-That was not the purpose here. The '- |' line was indented 1 too many.
-IIRC, the parser is not happy if you only change that line, so at
-least the 1st line of the example had to be updated anyways.
-
-> So I wonder if updating all examples to the same indent should
-> be left for another mega-patch?
-
-I've said this before, but until example indentation is automatically
-checked I'm not going to care.
-
-> > diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> > index f3d847832fdc..2baee2c817c1 100644
-> > --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> > +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> > @@ -993,7 +993,8 @@ patternProperties:
-> >    "^sst,.*":
-> >      description: Silicon Storage Technology, Inc.
-> >    "^sstar,.*":
-> > -    description: Xiamen Xingchen(SigmaStar) Technology Co., Ltd. (formerly part of MStar Semiconductor, Inc.)
-> > +    description: Xiamen Xingchen(SigmaStar) Technology Co., Ltd.
-> > +      (formerly part of MStar Semiconductor, Inc.)
-> >    "^st,.*":
-> >      description: STMicroelectronics
-> >    "^starry,.*":
->
-> Did you check that they are all in alphabetical order?
-> I would be suprised if this is the only issue in this file.
-
-Nope, as that's not a WS or linter thing. Alphabetical order is about
-the only thing I look at reviewing additions to this, but I'm sure
-some errors have slipped in.
-
-Thanks for taking a look.
-
+All 3 of these could be valid. Which one was intended? (Can't really
+tell here, but you can with actual DT schema.)
 
 Rob
 
