@@ -2,83 +2,88 @@ Return-Path: <SRS0=lgj1=BW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F714C433DF
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Aug 2020 15:30:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC3D7C433E0
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 Aug 2020 15:42:52 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CF11720885
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Aug 2020 15:30:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 97220207DA
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 Aug 2020 15:42:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="I48Mn+DL";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=yadro.com header.i=@yadro.com header.b="VUE7wrr9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CF11720885
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=yadro.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nCoKuA8M";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=eclypsium.com header.i=@eclypsium.com header.b="HXcUj/8n"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 97220207DA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=eclypsium.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=bnrYSLdywKL1a7h/jbVJ9DOTUmf2u3c9m8Tn8owoLnc=; b=I48Mn+DLyA+Se8uPcBdINv0lE
-	CEa6yXFOyn92Gn9KgRqPqCMvwwwSEWccYb/F71ErPWLL8nFXFRUeJvsa8mf2cnr/U9TOxpaMmPCPU
-	EWZw8pPCMLIk6qKOTscbhmHgbEBK2JIqAXhHolQX7SzNCxN71B9tyiJBLW/sgPHxlskZplz22WgZK
-	uXZOZoNxbN0nhfxUI1a0GO/khTvaG0ZLqsLfZPkyuNZuFNTPHTC5fZUMSfACA0Kky0tV/VXgmNgFF
-	rc3ur9sGEc3kP6ag3DprFLfYj4ljFBMGNu8lJRhCsw1Uq7cYvbE7cfQL0GA59ml/V0/VuYuaaQmS+
-	9867hJorA==;
+	 bh=cEEFdEDDxGY11GHi40p5uJCdItXliJMM1i0odCIeWE8=; b=nCoKuA8MJE3xXehewXXYA1qTY
+	5/mRbBZEE5KezVyLtXgGVHzKqaoTe8duSXKES/FtCwI/yKwESr1dzdVnuetYO5AFI/qxaXO/DsqPH
+	ReXVuQr9t99A7DJw60b+GWshpglVY/fcHmVZw01H2RzsXBgHrJRmp1vWsRmrKLGsgYNZys3oWa+dS
+	SGfgTJWVhlAya+fNhDtHI9wSvHfR9oSfHyAo6Fa9TCPlRy0YNXcPMZ2o1kdtiipNu7pdWaNAB9wVS
+	0P5YmsGIXjIe6qP9PW7cdrOMu0Qn0TCvtmIiUb/wSb1zU/5TBnSffGu3wa4WTpBEousiKWcnc9u46
+	bInJqYhlQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1k5sh4-0001MI-9r; Wed, 12 Aug 2020 15:29:34 +0000
-Received: from mta-02.yadro.com ([89.207.88.252] helo=mta-01.yadro.com)
+	id 1k5ssz-0002bV-B5; Wed, 12 Aug 2020 15:41:53 +0000
+Received: from mail-qv1-xf42.google.com ([2607:f8b0:4864:20::f42])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k5sh0-0001Kf-0c
- for linux-mtd@lists.infradead.org; Wed, 12 Aug 2020 15:29:31 +0000
-Received: from localhost (unknown [127.0.0.1])
- by mta-01.yadro.com (Postfix) with ESMTP id 92DAB4C897;
- Wed, 12 Aug 2020 15:15:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
- content-type:content-type:content-transfer-encoding:mime-version
- :references:in-reply-to:x-mailer:message-id:date:date:subject
- :subject:from:from:received:received:received; s=mta-01; t=
- 1597245331; x=1599059732; bh=nnOj6MFAVv+oGP+mdBYK4SKBtK5bLxUUMPQ
- FQit6vVE=; b=VUE7wrr9MFz2yrgK2REr4+CB7rkx2YJ23dtvi3VLJC/VwsohcKp
- cJIYJhP3+r5+KWkfe7FE5jgXKSBLA+YA3fKT0bJrgVUTuievZkViuhL4La3EqeT1
- FU6gzyiR3JS4Vo5F89Y/8FfkqMSVrS+YD+u+zAvqGPOzGlJuL2rvabeU=
-X-Virus-Scanned: amavisd-new at yadro.com
-Received: from mta-01.yadro.com ([127.0.0.1])
- by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id fQU7Z207qrwn; Wed, 12 Aug 2020 18:15:31 +0300 (MSK)
-Received: from T-EXCH-02.corp.yadro.com (t-exch-02.corp.yadro.com
- [172.17.10.102])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by mta-01.yadro.com (Postfix) with ESMTPS id A243B4C84D;
- Wed, 12 Aug 2020 18:15:30 +0300 (MSK)
-Received: from localhost.dev.yadro.com (10.199.2.34) by
- T-EXCH-02.corp.yadro.com (172.17.10.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
- 15.1.669.32; Wed, 12 Aug 2020 18:15:30 +0300
-From: Ivan Mikhaylov <i.mikhaylov@yadro.com>
-To: 
-Subject: [PATCH 2/2] mtd: spi-nor: enable lock interface for macronix chips
-Date: Wed, 12 Aug 2020 18:18:18 +0300
-Message-ID: <20200812151818.16699-3-i.mikhaylov@yadro.com>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200812151818.16699-1-i.mikhaylov@yadro.com>
-References: <20200812151818.16699-1-i.mikhaylov@yadro.com>
+ id 1k5ssv-0002ay-VN
+ for linux-mtd@lists.infradead.org; Wed, 12 Aug 2020 15:41:51 +0000
+Received: by mail-qv1-xf42.google.com with SMTP id j10so1192478qvo.13
+ for <linux-mtd@lists.infradead.org>; Wed, 12 Aug 2020 08:41:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=eclypsium.com; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=haCZp8d7OZAFbRh0ccsZ5DNIkLr16Zii89E0sXPAORI=;
+ b=HXcUj/8nYPyuiRt/bdiw2udHv9wTKOG/PYcKO9Gdsa/+oPPJKPsPVQcmvC83jET7Om
+ Jsq1HYXsoxblYI/Zm1SvjAW6qzpb5YPSSHii/6rBssU7Wu2MYDzwZ30Zj3UbS9tu7Ljj
+ JDPTUz7lxQdbQkDwDjISjIGUU4mVfXRTgGTdMoa+N04kYDTE82ai1MVZfo249Owbho6G
+ 5tQqbEnl7yoCIuRT9DFSTclrP8ex43bu6ik/16p5EnaVOtdiPN8hIonEiHZl92rX+IPW
+ teGtTYpyvkc8LTR+YbHG6/V3vPaKJ84ZEeySq3IDVJmQA8L3Lf0Wew4fTri8X8Tu5yXL
+ 2ecA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=haCZp8d7OZAFbRh0ccsZ5DNIkLr16Zii89E0sXPAORI=;
+ b=jS6aNEGCdkz5JLVmYzTwjDPrkDb56UcsKNUbBBF/0LClAMTNWGh+GgXT8tfI08Nu/3
+ 5falMpy/T5xJohjO5PaW2YvXzpDkBHSK4Bg/hsqV8Po02mr/b5N4r2A9vFo8duyqGiCH
+ STAgWWI2Ju0VjNxe4ChYrkYbSnm/sxNVMxGf+yU9y6Szf7nbNyr5C17r0T8HBFRcz+lV
+ g6RqHcMswKzzKV1vENZJvtCpK79NSPlJY0b3EvHlENR6gANZCpFeQgb7MYU1XNXt8bza
+ QvMZZCnKYXjm2Z6rI1XfT+4HEQRtgUDGYD30sxpC2xfSkQHpTgGjTEdZHqKkmXAiMQBP
+ N6sA==
+X-Gm-Message-State: AOAM532miml9fdguF3MXJlEEHmz3KAZzf1ufHPNJDEDlI0apxBKgNy+i
+ Pp4o/r96EaRSFNIr8SZq06PCFTpOLK+qk+SBNnwl3w==
+X-Google-Smtp-Source: ABdhPJzXAxewiJp6SpmJoqd5oXPp1B2xCxwmqfuOwpOLAawT9RWGc8YhA071QWN3Hamy52lLh5Ro0K3VQnLOSTRCjNI=
+X-Received: by 2002:ad4:55ca:: with SMTP id bt10mr172844qvb.200.1597246906738; 
+ Wed, 12 Aug 2020 08:41:46 -0700 (PDT)
 MIME-Version: 1.0
-X-Originating-IP: [10.199.2.34]
-X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
- T-EXCH-02.corp.yadro.com (172.17.10.102)
+References: <20200804135817.5495-1-daniel.gutson@eclypsium.com>
+ <CAK8P3a0_fJ0BfD5Qvxdo0s7CbjPWaGA8QTgYhbXR=omafOHH4Q@mail.gmail.com>
+ <CAFmMkTHEm8k+5GZkVJbDZMEhMwpsqVKRb-hGskSpBstdLRuFyA@mail.gmail.com>
+ <CAK8P3a27bTYyn3N+tX=i_6f4KrQkOmkUA1zUQfvCW7qw6smSkQ@mail.gmail.com>
+ <CAFmMkTF9eVm0tpOKEy2rzdX=Scr3RwqHDFy_i24R3F5ok-4=eA@mail.gmail.com>
+ <CAK8P3a3mf8_Y4DWe3WuBO-Xo0N4Jj=-rrtFzD6w0TriGZPu1_g@mail.gmail.com>
+ <CAFmMkTFzmC=aY0gR6urLu-8Oq8aeHBUWi-TodG8XhXKCcC057A@mail.gmail.com>
+In-Reply-To: <CAFmMkTFzmC=aY0gR6urLu-8Oq8aeHBUWi-TodG8XhXKCcC057A@mail.gmail.com>
+From: Daniel Gutson <daniel@eclypsium.com>
+Date: Wed, 12 Aug 2020 12:41:35 -0300
+Message-ID: <CAFmMkTE+2Qxo43bZkwCszEYbXFV22YdpLJD40gB6LgvnPbvdSA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: intel-spi: Do not try to make the SPI flash
+ chip writable
+To: Arnd Bergmann <arnd@arndb.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200812_112930_375784_9D7FBC8A 
-X-CRM114-Status: GOOD (  12.50  )
+X-CRM114-CacheID: sfid-20200812_114150_276974_EF6A5E2B 
+X-CRM114-Status: GOOD (  45.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,136 +95,148 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+Cc: Richard Hughes <hughsient@gmail.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
  Tudor Ambarus <tudor.ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- Ivan Mikhaylov <i.mikhaylov@yadro.com>
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Alex Bazhaniuk <alex@eclypsium.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add locks for whole macronix chip series with BP0-2 and BP0-3 bits.
+ping
 
-Tested with mx25l51245g(BP0-3).
+On Tue, Aug 4, 2020 at 6:26 PM Daniel Gutson <daniel@eclypsium.com> wrote:
+>
+> On Tue, Aug 4, 2020 at 5:46 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> >
+> > On Tue, Aug 4, 2020 at 9:57 PM Daniel Gutson <daniel@eclypsium.com> wrote:
+> > > On Tue, Aug 4, 2020 at 4:06 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> > > > On Tue, Aug 4, 2020 at 5:49 PM Daniel Gutson <daniel@eclypsium.com> wrote:
+> > > > > On Tue, Aug 4, 2020 at 12:21 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> > > > >> On Tue, Aug 4, 2020 at 3:58 PM Daniel Gutson
+> > > > >> <daniel.gutson@eclypsium.com> wrote:
+> > > > >
+> > > > > What about just saying
+> > > > >
+> > > > > "This patch removes the attempt by the intel-spi-pci driver to
+> > > > > make the chip always writable."
+> > > >
+> > > > Yes, that is much better, though it still sounds like it would at the
+> > > > moment allow writing to the device from software without also
+> > > > setting the module parameter. I would say something like
+> > > >
+> > > > "Disallow overriding the write protection in the PCI driver
+> > > > with a module parameter and instead honor the current
+> > > > state of the write protection as set by the firmware."
+> > >
+> > > But wait, Mika, the author of the file, asked earlier not to remove
+> > > the module parameter of intel-spi, and just remove the unconditional
+> > > attempt to turn the chip writable in intle-spi-pci.
+> >
+> > Yes, and I think that is fine (aside from the inconsistency with bay trail
+> > that you have not commented on),
+>
+> There are two inconsistencies before any of my patches:
+> 1) in intel-spi.c: uses the module parameter only for bay trail.
+> 2) intel-spi.c uses a module parameter whereas intel-spi-pci doesn't
+>
+> My initial patch addressed #2 by also adding a module parameter to
+> intel-spi-pci,
+> but then some of you discouraged me to use module parameters.
+> Mika showed up and suggested to leave intel-spi.c as is (with its
+> module parameter),
+> and remove the code in intel-spi-pci that tried to turn the SPI chip
+> writable if the BIOS
+> was unlocked.
+>
+> > but that only touches the hardware
+> > write-protection, which doesn't really have any effect unless user
+> > space also configures the driver module to allow writing to the
+> > mtd device.
+> >
+> > > So I'm not touching intel-pci, just removing that code from
+> > > intel-spi-pci without adding a new module parameter.
+> > >
+> > > Are you aligned on this?
+> >
+> > One of us is still very confused about what the driver does.
+> > You seem to have gone back to saying that without the
+> > change a user could just write to the device even without
+> > passing the module parameter to intel-spi.ko?
+>
+> What I'm trying to say is that, if the BIOS is unlocked
+> (no driver involvement here), the intel-spi-pci turns the
+> chip writable even without changing the module parameter of intel-spi.
+> This is because the attempt to turn the chip writable occurs in
+> the probing of intel-spi-pci, that is, earlier than the intel-spi
+> initialization.
+>
+> >
+> > Maybe you should start by explaining what scenario you
+> > actually want to prevent here. Is it
+>
+> Was it clear from above?
+>
+> Before commenting below, it's important to note again that
+> the driver will succeed in turning the chip writable only if the
+> BIOS is unlocked by its build time specification.
+> The WPD field (Write Protect Disable) bit only has effect if
+> the BIOS is not locked. This WPD bit is the one that the intel-spi-pci
+> driver tries to set unconditionally. If the BIOS is locked, it will cause
+> no effect. But if the BIOS is not locked, the chip will
+> end up in Write Protect Disabled state.
+> My latest patch simply leaves alone the WPD bit in intel-spi-pci,
+> not trying to set it to 1.
+>
+> I'm not sure the options below are now fully compatible
+> with my explanation above.
+>
+> >
+> > a) the hardware write-protect bit getting changed, which
+> >     introduces the possibility of corrupting the flash even
+> >     if nothing tries to write to it,
+> >
+> > b) root users setting the device writable with the intention
+> >    of writing to it even though firmware has politely asked
+> >    for this not to be done (by setting the write-protect bit
+> >    but not preventing it from being disabled again), or
+> >
+> > c) a writeable mtd device showing up even without
+> >     the module parameter being set at all?
+> >
+> > I thought the initial patch was about c) which turned out
+> > to be a non-issue, and then the later patch being about b).
+> >
+> >      Arnd
+>
+>
+>
+> --
+> Daniel Gutson
+> Argentina Site Director
+> Enginieering Director
+> Eclypsium
+>
+> Below The Surface: Get the latest threat research and insights on
+> firmware and supply chain threats from the research team at Eclypsium.
+> https://eclypsium.com/research/#threatreport
 
-Signed-off-by: Ivan Mikhaylov <i.mikhaylov@yadro.com>
----
- drivers/mtd/spi-nor/macronix.c | 75 ++++++++++++++++++++++------------
- 1 file changed, 50 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index 96735d83c77c..80de43eb05d6 100644
---- a/drivers/mtd/spi-nor/macronix.c
-+++ b/drivers/mtd/spi-nor/macronix.c
-@@ -37,53 +37,78 @@ static const struct flash_info macronix_parts[] = {
- 	/* Macronix */
- 	{ "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
- 	{ "mx25l2005a",  INFO(0xc22012, 0, 64 * 1024,   4, SECT_4K) },
--	{ "mx25l4005a",  INFO(0xc22013, 0, 64 * 1024,   8, SECT_4K) },
--	{ "mx25l8005",   INFO(0xc22014, 0, 64 * 1024,  16, 0) },
--	{ "mx25l1606e",  INFO(0xc22015, 0, 64 * 1024,  32, SECT_4K) },
--	{ "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K) },
--	{ "mx25l3255e",  INFO(0xc29e16, 0, 64 * 1024,  64, SECT_4K) },
--	{ "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, SECT_4K) },
--	{ "mx25u2033e",  INFO(0xc22532, 0, 64 * 1024,   4, SECT_4K) },
-+	{ "mx25l4005a",  INFO(0xc22013, 0, 64 * 1024,   8,
-+			      SECT_4K | SPI_NOR_HAS_LOCK) },
-+	{ "mx25l8005",   INFO(0xc22014, 0, 64 * 1024,  16,
-+			      SPI_NOR_HAS_LOCK) },
-+	{ "mx25l1606e",  INFO(0xc22015, 0, 64 * 1024,  32,
-+			      SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP) },
-+	{ "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64,
-+			      SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP) },
-+	{ "mx25l3255e",  INFO(0xc29e16, 0, 64 * 1024,  64,
-+			      SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP) },
-+	{ "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128,
-+			      SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP) },
-+	{ "mx25u2033e",  INFO(0xc22532, 0, 64 * 1024,   4,
-+			      SECT_4K | SPI_NOR_HAS_LOCK) },
- 	{ "mx25u3235f",	 INFO(0xc22536, 0, 64 * 1024,  64,
- 			      SECT_4K | SPI_NOR_DUAL_READ |
--			      SPI_NOR_QUAD_READ) },
--	{ "mx25u4035",   INFO(0xc22533, 0, 64 * 1024,   8, SECT_4K) },
--	{ "mx25u8035",   INFO(0xc22534, 0, 64 * 1024,  16, SECT_4K) },
--	{ "mx25u6435f",  INFO(0xc22537, 0, 64 * 1024, 128, SECT_4K) },
--	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
--	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
-+			      SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK |
-+			      SPI_NOR_4BIT_BP) },
-+	{ "mx25u4035",   INFO(0xc22533, 0, 64 * 1024,   8,
-+			      SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP) },
-+	{ "mx25u8035",   INFO(0xc22534, 0, 64 * 1024,  16,
-+			      SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP) },
-+	{ "mx25u6435f",  INFO(0xc22537, 0, 64 * 1024, 128,
-+			      SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP) },
-+	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256,
-+			      SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP) },
-+	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256,
-+			      SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP) },
- 	{ "mx25r3235f",  INFO(0xc22816, 0, 64 * 1024,  64,
- 			      SECT_4K | SPI_NOR_DUAL_READ |
--			      SPI_NOR_QUAD_READ) },
-+			      SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK |
-+			      SPI_NOR_4BIT_BP) },
- 	{ "mx25u12835f", INFO(0xc22538, 0, 64 * 1024, 256,
- 			      SECT_4K | SPI_NOR_DUAL_READ |
--			      SPI_NOR_QUAD_READ) },
-+			      SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK |
-+			      SPI_NOR_4BIT_BP) },
- 	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512,
--			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-+			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+			      SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP)
- 		.fixups = &mx25l25635_fixups },
- 	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512,
--			      SECT_4K | SPI_NOR_4B_OPCODES) },
-+			      SECT_4K | SPI_NOR_4B_OPCODES | SPI_NOR_HAS_LOCK |
-+			      SPI_NOR_4BIT_BP) },
- 	{ "mx25u51245g", INFO(0xc2253a, 0, 64 * 1024, 1024,
- 			      SECT_4K | SPI_NOR_DUAL_READ |
--			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
-+			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES |
-+			      SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP) },
- 	{ "mx25v8035f",  INFO(0xc22314, 0, 64 * 1024,  16,
- 			      SECT_4K | SPI_NOR_DUAL_READ |
--			      SPI_NOR_QUAD_READ) },
--	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
-+			      SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK |
-+			      SPI_NOR_4BIT_BP) },
-+	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512,
-+			      SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP) },
- 	{ "mx25l51245g", INFO(0xc2201a, 0, 64 * 1024, 1024,
- 			      SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
--			      SPI_NOR_4B_OPCODES) },
-+			      SPI_NOR_4B_OPCODES | SPI_NOR_HAS_LOCK |
-+			      SPI_NOR_4BIT_BP) },
- 	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024,
- 			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
--			      SPI_NOR_4B_OPCODES) },
-+			      SPI_NOR_4B_OPCODES | SPI_NOR_HAS_LOCK |
-+			      SPI_NOR_4BIT_BP) },
- 	{ "mx66u51235f", INFO(0xc2253a, 0, 64 * 1024, 1024,
- 			      SECT_4K | SPI_NOR_DUAL_READ |
--			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
-+			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES |
-+			      SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP) },
- 	{ "mx66l1g45g",  INFO(0xc2201b, 0, 64 * 1024, 2048,
- 			      SECT_4K | SPI_NOR_DUAL_READ |
--			      SPI_NOR_QUAD_READ) },
-+			      SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK |
-+			      SPI_NOR_4BIT_BP) },
- 	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048,
--			      SPI_NOR_QUAD_READ) },
-+			      SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK |
-+			      SPI_NOR_4BIT_BP) },
- };
- 
- static void macronix_default_init(struct spi_nor *nor)
+
 -- 
-2.21.1
+Daniel Gutson
+Argentina Site Director
+Enginieering Director
+Eclypsium
 
+Below The Surface: Get the latest threat research and insights on
+firmware and supply chain threats from the research team at Eclypsium.
+https://eclypsium.com/research/#threatreport
 
 ______________________________________________________
 Linux MTD discussion mailing list
