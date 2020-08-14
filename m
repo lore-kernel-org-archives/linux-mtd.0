@@ -2,89 +2,75 @@ Return-Path: <SRS0=BXPI=BY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 829BBC433E3
-	for <linux-mtd@archiver.kernel.org>; Fri, 14 Aug 2020 08:57:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84985C433E1
+	for <linux-mtd@archiver.kernel.org>; Fri, 14 Aug 2020 14:52:11 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 524C920639
-	for <linux-mtd@archiver.kernel.org>; Fri, 14 Aug 2020 08:57:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 51C1420855
+	for <linux-mtd@archiver.kernel.org>; Fri, 14 Aug 2020 14:52:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NUFF5Szt";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="oc/++NNg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 524C920639
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="M4oTeIj9";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="prpw3/kx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 51C1420855
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=KLipnIhpFZF+SaD2fbEQPAgMHttXmmw+3aK14ZPr7OQ=; b=NUFF5Sztnkn6MLutF8OOhkFUx
-	J5e4WE2lx+kN6f7Pgp3z6YInJ9Ww8yHa7dIYbNrZoKuzNqlpLMTNoJCcqv0fZNxynQj9KgxDd532+
-	PkN3WEF5B7ovsPzS49T5IQgFCPLfJh/lElqhFxHWxGyuNgJtJnz4//ucuTFaZbicpGQ9aChvIn74U
-	D0wvrcBxl6+QZzrORUWJ1VhXt4jeXVL5gxaylcQuM7vYFkSIbdkhl4AXJB3gOs/ijLBduyOc+EqF5
-	MCQ+//qbdm78ZgyN65irS8WifsJdI16UCuQ8tJgFVf7N2/RDdWNSaipprKGTaVH3X0JIU4ZIIEOsq
-	BBpKKcCJA==;
+	 bh=zyza/hV09fcO+S9VKfH69O1J1yy0SiEg8GM9dw/xysI=; b=M4oTeIj9AnBMOq94cVUZkS1qR
+	w6c+auAUT+Zk54kjOd8dKGNX4RyOhfTe62dB+lkQn0ULIs6KTjbjsA3Lu5cwrL1CGGAl1KluV0O5N
+	RYres3MkBjvYLA0CbrKtxf4M+6nsXohbgefnw13cUqfiaPIBdaK4JzBJt+/2RtXBUYAn8sTBe5H4b
+	KfiMpPAcPnpgSA7rcgF4/jsEPXFMfLFEOmiG8otTQD5AE5kxZIBR3VUnODHUcU3rzHm3gtVCvo0Ui
+	M1kM64YICBTGMjEJ6xpj3fWW7nw/IBQS2wiy8tXfY0gr/DjCoKePkEEAOJUKQIGhv1GBAWabSVwl4
+	pPObK/UEw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1k6VVl-0002KU-VB; Fri, 14 Aug 2020 08:56:29 +0000
-Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
+	id 1k6b3W-0002Xa-9c; Fri, 14 Aug 2020 14:51:42 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k6VVd-0002JY-F6; Fri, 14 Aug 2020 08:56:22 +0000
-Received: by mail-pf1-x444.google.com with SMTP id 74so4233004pfx.13;
- Fri, 14 Aug 2020 01:56:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=sender:date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:content-transfer-encoding:in-reply-to
- :user-agent; bh=zTcT2yb4VlahiZ+8x3DiZcJOZkmeuTPvsJD8D2PV1jQ=;
- b=oc/++NNgtI8v6eFrM0KIqAXlLPm2RknS/SV/lh/tUXDQHB8pdqmlxlheAvtfix/5OM
- tLzhnCft3oe37d3qXf8+l2t5J1sMEmkoMEGS8geSLxgl8sB6PAChS1CPjmvrXFbEpR+y
- wjjjZ2rG5DHJoEdIEyYJjoh3w1DWc24UyiyzLuB8MyeLfo7uFVzXZewZkiG4dEN8MFUo
- Gqtf1ez/+cJr/WCQCHpUTzl92NvKY+ZXVgEVd4ZwEHGiVtSv24CJqm12bVfjavCkMQPo
- BMPs7crTzHlHKtw9WAVBafFsZdiz9VNy0mzmcKGUUy4r7tV3NcK4fukNDbqRJsBMVAEe
- uz3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
- :references:mime-version:content-disposition
- :content-transfer-encoding:in-reply-to:user-agent;
- bh=zTcT2yb4VlahiZ+8x3DiZcJOZkmeuTPvsJD8D2PV1jQ=;
- b=gt6Fb3VCU0uXutSQAefByixu0i4y7OaHJw86qdRcpKr4C9Obxd5odyiNDWC26acL/J
- xfrKJ2FAqzPYmy9nHQK2H5tuD6nCQQ5ucGZMy9ah0o59+UaDKwlabBFs0oLf2sa4U0C/
- ic+FxtEesMu4vJgXk87TVz2ule3cgXm2BiWq9LbScmRc720u2EyjPatiXZmW6D2x9Zkz
- HWUijUPtDiaiOpohnd1/EDmupWq5WhdnBq2iHe2YztXI33wN4rjZxeo2oGu1yJ7HOElF
- 13hLyOUrH5tTvDECqmuf0UUc27w5aSyaY24EmB1/tdWB9DaeihPHNqYE8FbZvGu+008M
- FWuA==
-X-Gm-Message-State: AOAM533vLGldiOd5cR2foagvgyw+QJuyPHgM66ppfNgsHEwCkhtIeWwQ
- eVz95MY0Jnt5kwcxAWLZ7wM=
-X-Google-Smtp-Source: ABdhPJyfJw+JRCcHRK5mYeqXgxZBEKbhdNI+zRQErExZOJKxYHQqSs2GplRu196nml01FcKc6RgA3g==
-X-Received: by 2002:a62:e704:: with SMTP id s4mr1165962pfh.177.1597395379200; 
- Fri, 14 Aug 2020 01:56:19 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
- by smtp.gmail.com with ESMTPSA id n2sm7349968pgv.37.2020.08.14.01.56.17
- (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
- Fri, 14 Aug 2020 01:56:18 -0700 (PDT)
-Date: Fri, 14 Aug 2020 01:56:17 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>
-Subject: Re: [PATCH v4] mtd: parsers: bcm63xx: simplify CFE detection
-Message-ID: <20200814085617.GA129183@roeck-us.net>
-References: <20200612073549.1658336-1-noltari@gmail.com>
- <20200615091740.2958303-1-noltari@gmail.com>
+ id 1k6b3S-0002RY-EB; Fri, 14 Aug 2020 14:51:39 +0000
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com
+ [209.85.210.48])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id D633A20855;
+ Fri, 14 Aug 2020 14:51:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1597416696;
+ bh=2azDCJAW0WmwzjFoNP1+Xf1baXp64Ykp/VUpBlKju0s=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=prpw3/kxkCO5L+ZzIGqI6IWSbn4Gjfl/XiOAJK1cZ21tQ+vKPNqwRX8ojTLY13+sW
+ IsErIVuBIOX1B5fxlXCrKztysgXNlUaXau0ewnnjk83KFK1l4s1c7RHmsl1dQ0O34O
+ ATzSeLY7UpgbSvXBXGQ1Z8B+nOtare8pQZwTZ67M=
+Received: by mail-ot1-f48.google.com with SMTP id v21so7741698otj.9;
+ Fri, 14 Aug 2020 07:51:36 -0700 (PDT)
+X-Gm-Message-State: AOAM530Z3rUnS3wi9QUmDILT+PWiOZ4vvRYi9yF+326cFunnbH1Mk5a9
+ 69ZQsfTdSefbKoxyQZFmad5EpcqrOvAINTHHeA==
+X-Google-Smtp-Source: ABdhPJzAQOVgwIRLTeJz+4kS8jI7uSM4yy2bV/QUkiEz2152JH8sgfiQxJMSY+wk4abg95jsoFr6h5Ymz6ZJoeFhB2g=
+X-Received: by 2002:a05:6830:1b79:: with SMTP id
+ d25mr1995774ote.107.1597416696235; 
+ Fri, 14 Aug 2020 07:51:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20200615091740.2958303-1-noltari@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200812203618.2656699-1-robh@kernel.org>
+ <d5808e9c-07fe-1c28-b9a6-a16abe9df458@lucaceresoli.net>
+In-Reply-To: <d5808e9c-07fe-1c28-b9a6-a16abe9df458@lucaceresoli.net>
+From: Rob Herring <robh@kernel.org>
+Date: Fri, 14 Aug 2020 08:51:24 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKekx0VO4NROwLrgrU8+L584HaLHM9i3kCZvU+g5myeGw@mail.gmail.com>
+Message-ID: <CAL_JsqKekx0VO4NROwLrgrU8+L584HaLHM9i3kCZvU+g5myeGw@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: Whitespace clean-ups in schema files
+To: Luca Ceresoli <luca@lucaceresoli.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200814_045621_560922_5E2BA06F 
-X-CRM114-Status: GOOD (  22.90  )
+X-CRM114-CacheID: sfid-20200814_105138_629909_027721E6 
+X-CRM114-Status: GOOD (  22.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,115 +82,103 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: f.fainelli@gmail.com, vigneshr@ti.com, richard@nod.at,
- linus.walleij@linaro.org, jonas.gorski@gmail.com, linux-mips@vger.kernel.org,
- linux-kernel@vger.kernel.org, tsbogend@alpha.franken.de,
- bcm-kernel-feedback-list@broadcom.com, miquel.raynal@bootlin.com,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Cc: Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+ "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
+ "open list:REMOTE PROCESSOR \(REMOTEPROC\) SUBSYSTEM"
+ <linux-remoteproc@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>,
+ dri-devel <dri-devel@lists.freedesktop.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Linux I2C <linux-i2c@vger.kernel.org>, linux-clk <linux-clk@vger.kernel.org>,
+ "open list:REAL TIME CLOCK \(RTC\) SUBSYSTEM" <linux-rtc@vger.kernel.org>,
+ "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+ Linux Input <linux-input@vger.kernel.org>,
+ Linux Media Mailing List <linux-media@vger.kernel.org>,
+ devicetree@vger.kernel.org, "open list:THERMAL" <linux-pm@vger.kernel.org>,
+ "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+ "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE"
+ <linux-arm-kernel@lists.infradead.org>,
+ Linux HWMON List <linux-hwmon@vger.kernel.org>,
+ netdev <netdev@vger.kernel.org>, Linux USB List <linux-usb@vger.kernel.org>,
+ linux-mmc <linux-mmc@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jun 15, 2020 at 11:17:40AM +0200, =C1lvaro Fern=E1ndez Rojas wrote:
-> Instead of trying to parse CFE version string, which is customized by some
-> vendors, let's just check that "CFE1" was passed on argument 3.
-> =
+On Thu, Aug 13, 2020 at 4:31 AM Luca Ceresoli <luca@lucaceresoli.net> wrote:
+>
+> Hi Rob,
+>
+> On 12/08/20 22:36, Rob Herring wrote:
+> > Clean-up incorrect indentation, extra spaces, long lines, and missing
+> > EOF newline in schema files. Most of the clean-ups are for list
+> > indentation which should always be 2 spaces more than the preceding
+> > keyword.
+> >
+> > Found with yamllint (which I plan to integrate into the checks).
+>
+> [...]
+>
+> > diff --git a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+> > index 3d4e1685cc55..28c6461b9a9a 100644
+> > --- a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+> > +++ b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+> > @@ -95,10 +95,10 @@ allOf:
+> >        # Devices without builtin crystal
+> >        properties:
+> >          clock-names:
+> > -            minItems: 1
+> > -            maxItems: 2
+> > -            items:
+> > -              enum: [ xin, clkin ]
+> > +          minItems: 1
+> > +          maxItems: 2
+> > +          items:
+> > +            enum: [ xin, clkin ]
+> >          clocks:
+> >            minItems: 1
+> >            maxItems: 2
+>
+> Thanks for noticing, LGTM.
+>
+> [...]
+>
+> > diff --git a/Documentation/devicetree/bindings/input/touchscreen/touchscreen.yaml b/Documentation/devicetree/bindings/input/touchscreen/touchscreen.yaml
+> > index d7dac16a3960..36dc7b56a453 100644
+> > --- a/Documentation/devicetree/bindings/input/touchscreen/touchscreen.yaml
+> > +++ b/Documentation/devicetree/bindings/input/touchscreen/touchscreen.yaml
+> > @@ -33,8 +33,8 @@ properties:
+> >      $ref: /schemas/types.yaml#/definitions/uint32
+> >
+> >    touchscreen-min-pressure:
+> > -    description: minimum pressure on the touchscreen to be achieved in order for the
+> > -                 touchscreen driver to report a touch event.
+> > +    description: minimum pressure on the touchscreen to be achieved in order
+> > +      for the touchscreen driver to report a touch event.
+>
+> Out of personal taste, I find the original layout more pleasant and
+> readable. This third option is also good, especially for long descriptions:
+>
+>   description:
+>     minimum pressure on the touchscreen to be achieved in order for the
+>     touchscreen driver to report a touch event.
+>
+> At first glance yamllint seems to support exactly these two by default:
+>
+> > With indentation: {spaces: 4, check-multi-line-strings: true}
 
-> Signed-off-by: =C1lvaro Fern=E1ndez Rojas <noltari@gmail.com>
-> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
-> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Turning on check-multi-line-strings results in 10K+ warnings, so no.
 
-mips:allmodconfig:
+The other issue is the style ruamel.yaml wants to write out is as the
+patch does above. This matters when doing some scripted
+transformations where we read in the files and write them back out. I
+can somewhat work around that by first doing a pass with no changes
+and then another pass with the actual changes, but that's completely
+scriptable. Hopefully, ruamel learns to preserve the style better.
 
-ERROR: modpost: "fw_arg3" [drivers/mtd/parsers/bcm63xxpart.ko] undefined!
-
-This is not surprising, since fw_arg3 is not exported.
-
-Guenter
-
-> ---
->  v4: shorten conditional compilation part as suggested by Miqu=E8l.
->  v3: keep COMPILE_TEST compatibility by adding a new function that only c=
-hecks
->      fw_arg3 when CONFIG_MIPS is defined.
->  v2: use CFE_EPTSEAL definition and avoid using an additional function.
-> =
-
->  drivers/mtd/parsers/bcm63xxpart.c | 32 ++++++++++++-------------------
->  1 file changed, 12 insertions(+), 20 deletions(-)
-> =
-
-> diff --git a/drivers/mtd/parsers/bcm63xxpart.c b/drivers/mtd/parsers/bcm6=
-3xxpart.c
-> index 78f90c6c18fd..b15bdadaedb5 100644
-> --- a/drivers/mtd/parsers/bcm63xxpart.c
-> +++ b/drivers/mtd/parsers/bcm63xxpart.c
-> @@ -22,6 +22,11 @@
->  #include <linux/mtd/partitions.h>
->  #include <linux/of.h>
->  =
-
-> +#ifdef CONFIG_MIPS
-> +#include <asm/bootinfo.h>
-> +#include <asm/fw/cfe/cfe_api.h>
-> +#endif /* CONFIG_MIPS */
-> +
->  #define BCM963XX_CFE_BLOCK_SIZE		SZ_64K	/* always at least 64KiB */
->  =
-
->  #define BCM963XX_CFE_MAGIC_OFFSET	0x4e0
-> @@ -32,28 +37,15 @@
->  #define STR_NULL_TERMINATE(x) \
->  	do { char *_str =3D (x); _str[sizeof(x) - 1] =3D 0; } while (0)
->  =
-
-> -static int bcm63xx_detect_cfe(struct mtd_info *master)
-> +static inline int bcm63xx_detect_cfe(void)
->  {
-> -	char buf[9];
-> -	int ret;
-> -	size_t retlen;
-> +	int ret =3D 0;
->  =
-
-> -	ret =3D mtd_read(master, BCM963XX_CFE_VERSION_OFFSET, 5, &retlen,
-> -		       (void *)buf);
-> -	buf[retlen] =3D 0;
-> +#ifdef CONFIG_MIPS
-> +	ret =3D (fw_arg3 =3D=3D CFE_EPTSEAL);
-> +#endif /* CONFIG_MIPS */
->  =
-
-> -	if (ret)
-> -		return ret;
-> -
-> -	if (strncmp("cfe-v", buf, 5) =3D=3D 0)
-> -		return 0;
-> -
-> -	/* very old CFE's do not have the cfe-v string, so check for magic */
-> -	ret =3D mtd_read(master, BCM963XX_CFE_MAGIC_OFFSET, 8, &retlen,
-> -		       (void *)buf);
-> -	buf[retlen] =3D 0;
-> -
-> -	return strncmp("CFE1CFE1", buf, 8);
-> +	return ret;
->  }
->  =
-
->  static int bcm63xx_read_nvram(struct mtd_info *master,
-> @@ -138,7 +130,7 @@ static int bcm63xx_parse_cfe_partitions(struct mtd_in=
-fo *master,
->  	struct bcm963xx_nvram *nvram =3D NULL;
->  	int ret;
->  =
-
-> -	if (bcm63xx_detect_cfe(master))
-> +	if (!bcm63xx_detect_cfe())
->  		return -EINVAL;
->  =
-
->  	nvram =3D vzalloc(sizeof(*nvram));
+Rob
 
 ______________________________________________________
 Linux MTD discussion mailing list
