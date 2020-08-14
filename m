@@ -1,90 +1,90 @@
-Return-Path: <SRS0=wA1i=BX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=BXPI=BY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93C8CC433DF
-	for <linux-mtd@archiver.kernel.org>; Thu, 13 Aug 2020 21:41:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 829BBC433E3
+	for <linux-mtd@archiver.kernel.org>; Fri, 14 Aug 2020 08:57:48 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5E9ED20768
-	for <linux-mtd@archiver.kernel.org>; Thu, 13 Aug 2020 21:41:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 524C920639
+	for <linux-mtd@archiver.kernel.org>; Fri, 14 Aug 2020 08:57:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QmOIxliA";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=eclypsium.com header.i=@eclypsium.com header.b="V5j1ZdhL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E9ED20768
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=eclypsium.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NUFF5Szt";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="oc/++NNg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 524C920639
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=VHw/mMznGBHWBLVbs3hGhCNCP60sNkFdOds4037JFQ0=; b=QmOIxliAKq/YJhNEWZD+RwSLo
-	ifKH1uq8136QlUlvvs97azZnO3uvo5GK9pQBEFkfuwv92jmKxwkmqe7BoYewbqILYVkJhpa4l9FHy
-	pqqclg3v3uak5a7GPNfA8zX859W06jtyDLUc7k5OZn5512gZy85q3WxelO+1tejc7AjPGljS1r7z9
-	63avKDiOhyERmLFlDGqq6lDmpEO9LKAIAbHHFb9DjVtRCZa/lpyZRqayyP9ZTFPbbw+TKvIw2Zz2q
-	ENNRYpAN2t0ffvqFo20VgyMVZK7a/C+QUeAzFYHSPUF+E+FXM6sOx+sLV586Yc2TzIfQ4KQ52goCx
-	Zd+KJ007w==;
+	 bh=KLipnIhpFZF+SaD2fbEQPAgMHttXmmw+3aK14ZPr7OQ=; b=NUFF5Sztnkn6MLutF8OOhkFUx
+	J5e4WE2lx+kN6f7Pgp3z6YInJ9Ww8yHa7dIYbNrZoKuzNqlpLMTNoJCcqv0fZNxynQj9KgxDd532+
+	PkN3WEF5B7ovsPzS49T5IQgFCPLfJh/lElqhFxHWxGyuNgJtJnz4//ucuTFaZbicpGQ9aChvIn74U
+	D0wvrcBxl6+QZzrORUWJ1VhXt4jeXVL5gxaylcQuM7vYFkSIbdkhl4AXJB3gOs/ijLBduyOc+EqF5
+	MCQ+//qbdm78ZgyN65irS8WifsJdI16UCuQ8tJgFVf7N2/RDdWNSaipprKGTaVH3X0JIU4ZIIEOsq
+	BBpKKcCJA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1k6Kxv-0001JL-Sx; Thu, 13 Aug 2020 21:40:51 +0000
-Received: from mail-qv1-xf42.google.com ([2607:f8b0:4864:20::f42])
+	id 1k6VVl-0002KU-VB; Fri, 14 Aug 2020 08:56:29 +0000
+Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k6Kxt-0001Ij-Pu
- for linux-mtd@lists.infradead.org; Thu, 13 Aug 2020 21:40:50 +0000
-Received: by mail-qv1-xf42.google.com with SMTP id b2so3375545qvp.9
- for <linux-mtd@lists.infradead.org>; Thu, 13 Aug 2020 14:40:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=eclypsium.com; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=q0ojIysJtPe9HFSEWoGVpZim3QRqJX9wLnTMO9Q2Ah4=;
- b=V5j1ZdhLi9JoGsI1Mg59PBoNNDoUiDIptYbdhxaXyy9hzzbT1Agh3YKti4OfRdPLXq
- XpzGEB/84iroQZQQU07vwFQHNGIq4cK4qJf6uhxBGZVxk6Am7k/KVA4Dbl/IVpK+d7DS
- IJ5cZd8fvRfyxk8lxoH5uRks8ypm1mF3uAGmNoQK2HtdlMX97NJa2vZl/zfzOw2UhIbg
- 27Uuz4l4sHV58/a3/2D0jlOrVpoluSjM/UiAuInA9tnmE5B32As7a8YaE0JEg6HPfM9i
- l89FeKArSLc6CmYcNxRBK63JTJp7uut9pVWy7T1dxj8R2ErbvE6RiJhqb501/9N2Ft5d
- GZOA==
+ id 1k6VVd-0002JY-F6; Fri, 14 Aug 2020 08:56:22 +0000
+Received: by mail-pf1-x444.google.com with SMTP id 74so4233004pfx.13;
+ Fri, 14 Aug 2020 01:56:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=sender:date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:content-transfer-encoding:in-reply-to
+ :user-agent; bh=zTcT2yb4VlahiZ+8x3DiZcJOZkmeuTPvsJD8D2PV1jQ=;
+ b=oc/++NNgtI8v6eFrM0KIqAXlLPm2RknS/SV/lh/tUXDQHB8pdqmlxlheAvtfix/5OM
+ tLzhnCft3oe37d3qXf8+l2t5J1sMEmkoMEGS8geSLxgl8sB6PAChS1CPjmvrXFbEpR+y
+ wjjjZ2rG5DHJoEdIEyYJjoh3w1DWc24UyiyzLuB8MyeLfo7uFVzXZewZkiG4dEN8MFUo
+ Gqtf1ez/+cJr/WCQCHpUTzl92NvKY+ZXVgEVd4ZwEHGiVtSv24CJqm12bVfjavCkMQPo
+ BMPs7crTzHlHKtw9WAVBafFsZdiz9VNy0mzmcKGUUy4r7tV3NcK4fukNDbqRJsBMVAEe
+ uz3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=q0ojIysJtPe9HFSEWoGVpZim3QRqJX9wLnTMO9Q2Ah4=;
- b=VPhwO38ZbugLWcu+fxz1Y4038wI7VC9eMrOnHm65qgatMTTObqzbJ3WUSRb5EJMvo3
- NMlR5+Hbo+ooSEJB3EozduC1kQKPp1Iw+wAnq+vtkmZwWOf/nj4czcWQKrE3eB7lbwia
- oF1EWIpOqy+YMt8Js3kksx1mlldLGJ0QXSW1FHXPqdYny6CIdUD53qcxIZj7rPgBBdlE
- BgHUh0UrT95ZvXAtdUPLago6RNC96hUhT4vpn0igdfPal+Ut5gaXkaHDYeF1e+9BVoU5
- ho4b4VOBl57fE8Ck0NsyhacNJLQCinesrNfPmMQU1YF/PTjx+wGQz+VyKtia95tdqOME
- PCxw==
-X-Gm-Message-State: AOAM5301kTDNL4FNdFSu0WjxIii4K+4d28kkg8hXvXzFmeZKodS9AvB2
- gGKfkjKAmBqQLlR8PRx4l3dg1LLPgxBePbcuhAeXOg==
-X-Google-Smtp-Source: ABdhPJz26JMnJY2pl3AV9GgZ7zaj6tqMi0U/+2mh3l4fvVM2Jgrrb6S5lOzCQeSKmO9F2GpbSDh/RhfijmRfBdAN6e4=
-X-Received: by 2002:ad4:46ac:: with SMTP id br12mr6701109qvb.236.1597354845858; 
- Thu, 13 Aug 2020 14:40:45 -0700 (PDT)
+ h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+ :references:mime-version:content-disposition
+ :content-transfer-encoding:in-reply-to:user-agent;
+ bh=zTcT2yb4VlahiZ+8x3DiZcJOZkmeuTPvsJD8D2PV1jQ=;
+ b=gt6Fb3VCU0uXutSQAefByixu0i4y7OaHJw86qdRcpKr4C9Obxd5odyiNDWC26acL/J
+ xfrKJ2FAqzPYmy9nHQK2H5tuD6nCQQ5ucGZMy9ah0o59+UaDKwlabBFs0oLf2sa4U0C/
+ ic+FxtEesMu4vJgXk87TVz2ule3cgXm2BiWq9LbScmRc720u2EyjPatiXZmW6D2x9Zkz
+ HWUijUPtDiaiOpohnd1/EDmupWq5WhdnBq2iHe2YztXI33wN4rjZxeo2oGu1yJ7HOElF
+ 13hLyOUrH5tTvDECqmuf0UUc27w5aSyaY24EmB1/tdWB9DaeihPHNqYE8FbZvGu+008M
+ FWuA==
+X-Gm-Message-State: AOAM533vLGldiOd5cR2foagvgyw+QJuyPHgM66ppfNgsHEwCkhtIeWwQ
+ eVz95MY0Jnt5kwcxAWLZ7wM=
+X-Google-Smtp-Source: ABdhPJyfJw+JRCcHRK5mYeqXgxZBEKbhdNI+zRQErExZOJKxYHQqSs2GplRu196nml01FcKc6RgA3g==
+X-Received: by 2002:a62:e704:: with SMTP id s4mr1165962pfh.177.1597395379200; 
+ Fri, 14 Aug 2020 01:56:19 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+ by smtp.gmail.com with ESMTPSA id n2sm7349968pgv.37.2020.08.14.01.56.17
+ (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+ Fri, 14 Aug 2020 01:56:18 -0700 (PDT)
+Date: Fri, 14 Aug 2020 01:56:17 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>
+Subject: Re: [PATCH v4] mtd: parsers: bcm63xx: simplify CFE detection
+Message-ID: <20200814085617.GA129183@roeck-us.net>
+References: <20200612073549.1658336-1-noltari@gmail.com>
+ <20200615091740.2958303-1-noltari@gmail.com>
 MIME-Version: 1.0
-References: <20200804135817.5495-1-daniel.gutson@eclypsium.com>
- <CAK8P3a0_fJ0BfD5Qvxdo0s7CbjPWaGA8QTgYhbXR=omafOHH4Q@mail.gmail.com>
- <CAFmMkTHEm8k+5GZkVJbDZMEhMwpsqVKRb-hGskSpBstdLRuFyA@mail.gmail.com>
- <CAK8P3a27bTYyn3N+tX=i_6f4KrQkOmkUA1zUQfvCW7qw6smSkQ@mail.gmail.com>
- <CAFmMkTF9eVm0tpOKEy2rzdX=Scr3RwqHDFy_i24R3F5ok-4=eA@mail.gmail.com>
- <CAK8P3a3mf8_Y4DWe3WuBO-Xo0N4Jj=-rrtFzD6w0TriGZPu1_g@mail.gmail.com>
- <CAFmMkTFzmC=aY0gR6urLu-8Oq8aeHBUWi-TodG8XhXKCcC057A@mail.gmail.com>
- <CAK8P3a13N_wNORz_3cYHTN8t29pPrY+dJ+g+1Ga_MmG1TmrUQw@mail.gmail.com>
-In-Reply-To: <CAK8P3a13N_wNORz_3cYHTN8t29pPrY+dJ+g+1Ga_MmG1TmrUQw@mail.gmail.com>
-From: Daniel Gutson <daniel@eclypsium.com>
-Date: Thu, 13 Aug 2020 18:40:34 -0300
-Message-ID: <CAFmMkTGm3pMsBzEenYOsRbhOZKFhbHiZ5LxPyVmTdYTTRpKzVQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: intel-spi: Do not try to make the SPI flash
- chip writable
-To: Arnd Bergmann <arnd@arndb.de>
+Content-Disposition: inline
+In-Reply-To: <20200615091740.2958303-1-noltari@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200813_174049_880114_49953E9E 
-X-CRM114-Status: GOOD (  34.94  )
+X-CRM114-CacheID: sfid-20200814_045621_560922_5E2BA06F 
+X-CRM114-Status: GOOD (  22.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,105 +96,115 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Hughes <hughsient@gmail.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Alex Bazhaniuk <alex@eclypsium.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: f.fainelli@gmail.com, vigneshr@ti.com, richard@nod.at,
+ linus.walleij@linaro.org, jonas.gorski@gmail.com, linux-mips@vger.kernel.org,
+ linux-kernel@vger.kernel.org, tsbogend@alpha.franken.de,
+ bcm-kernel-feedback-list@broadcom.com, miquel.raynal@bootlin.com,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Aug 13, 2020 at 12:41 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Tue, Aug 4, 2020 at 11:26 PM Daniel Gutson <daniel@eclypsium.com> wrote:
-> > On Tue, Aug 4, 2020 at 5:46 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> > > > But wait, Mika, the author of the file, asked earlier not to remove
-> > > > the module parameter of intel-spi, and just remove the unconditional
-> > > > attempt to turn the chip writable in intle-spi-pci.
-> > >
-> > > Yes, and I think that is fine (aside from the inconsistency with bay trail
-> > > that you have not commented on),
-> >
-> > There are two inconsistencies before any of my patches:
-> > 1) in intel-spi.c: uses the module parameter only for bay trail.
-> > 2) intel-spi.c uses a module parameter whereas intel-spi-pci doesn't
->
-> Neither of these matches what I see in the source code. Please
-> check again.
->
-> Once more: intel-spi.c has a module parameter that controls writing
-> to the device regardless of the back-end (platform or pci), purely
-> in software.
+On Mon, Jun 15, 2020 at 11:17:40AM +0200, =C1lvaro Fern=E1ndez Rojas wrote:
+> Instead of trying to parse CFE version string, which is customized by some
+> vendors, let's just check that "CFE1" was passed on argument 3.
+> =
 
-If I understand you correctly, this is not what I see:
-If the deviceID is listed in intel-spi-pci.c
-(https://elixir.bootlin.com/linux/latest/source/drivers/mtd/spi-nor/controllers/intel-spi-pci.c#L66)
-then intel_spi_pci_probe will be called, where it unconditionally will
-try to make the chip writable
-https://elixir.bootlin.com/linux/latest/source/drivers/mtd/spi-nor/controllers/intel-spi-pci.c#L44
-These devices correspond to the BXT and CNL devices (lines 19 and 23 resp.).
+> Signed-off-by: =C1lvaro Fern=E1ndez Rojas <noltari@gmail.com>
+> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
+> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 
-Lines later (53), it will call intel-spi.c 's intel_spi_probe
-function, which ends up calling intel_spi_init,
-which checks for the type
-(https://elixir.bootlin.com/linux/latest/source/drivers/mtd/spi-nor/controllers/intel-spi.c#L313)
-It is in this switch where the module parameter is checked, but only
-in the BYT case; however,
-flow coming from intel-spi-pci is BXT and CNL as mentioned before,
-landing in their case labels (lines 343 and 351 respectively)
-where the module parameter is not checked.
+mips:allmodconfig:
 
-Therefore, for BXT and CNL probed in intel-spi-pci, the chip is turned
-writable and later the module parameter is not honored.
+ERROR: modpost: "fw_arg3" [drivers/mtd/parsers/bcm63xxpart.ko] undefined!
 
-> The hardware write-protect setting where available
-> works in addition that and prevents writing even if the module
-> parameter is set to writeable.
->
-> > > but that only touches the hardware
-> > > write-protection, which doesn't really have any effect unless user
-> > > space also configures the driver module to allow writing to the
-> > > mtd device.
-> > >
-> > > > So I'm not touching intel-pci, just removing that code from
-> > > > intel-spi-pci without adding a new module parameter.
-> > > >
-> > > > Are you aligned on this?
-> > >
-> > > One of us is still very confused about what the driver does.
-> > > You seem to have gone back to saying that without the
-> > > change a user could just write to the device even without
-> > > passing the module parameter to intel-spi.ko?
-> >
-> > What I'm trying to say is that, if the BIOS is unlocked
-> > (no driver involvement here), the intel-spi-pci turns the
-> > chip writable even without changing the module parameter of intel-spi.
-> > This is because the attempt to turn the chip writable occurs in
-> > the probing of intel-spi-pci, that is, earlier than the intel-spi
-> > initialization.
->
-> My question was why you even care whether the hardware
-> bit is set to writeable if the driver disallows writing. I think the
-> answer is that you misread the driver.
->
->        Arnd
+This is not surprising, since fw_arg3 is not exported.
 
+Guenter
 
+> ---
+>  v4: shorten conditional compilation part as suggested by Miqu=E8l.
+>  v3: keep COMPILE_TEST compatibility by adding a new function that only c=
+hecks
+>      fw_arg3 when CONFIG_MIPS is defined.
+>  v2: use CFE_EPTSEAL definition and avoid using an additional function.
+> =
 
--- 
-Daniel Gutson
-Argentina Site Director
-Enginieering Director
-Eclypsium
+>  drivers/mtd/parsers/bcm63xxpart.c | 32 ++++++++++++-------------------
+>  1 file changed, 12 insertions(+), 20 deletions(-)
+> =
 
-Below The Surface: Get the latest threat research and insights on
-firmware and supply chain threats from the research team at Eclypsium.
-https://eclypsium.com/research/#threatreport
+> diff --git a/drivers/mtd/parsers/bcm63xxpart.c b/drivers/mtd/parsers/bcm6=
+3xxpart.c
+> index 78f90c6c18fd..b15bdadaedb5 100644
+> --- a/drivers/mtd/parsers/bcm63xxpart.c
+> +++ b/drivers/mtd/parsers/bcm63xxpart.c
+> @@ -22,6 +22,11 @@
+>  #include <linux/mtd/partitions.h>
+>  #include <linux/of.h>
+>  =
+
+> +#ifdef CONFIG_MIPS
+> +#include <asm/bootinfo.h>
+> +#include <asm/fw/cfe/cfe_api.h>
+> +#endif /* CONFIG_MIPS */
+> +
+>  #define BCM963XX_CFE_BLOCK_SIZE		SZ_64K	/* always at least 64KiB */
+>  =
+
+>  #define BCM963XX_CFE_MAGIC_OFFSET	0x4e0
+> @@ -32,28 +37,15 @@
+>  #define STR_NULL_TERMINATE(x) \
+>  	do { char *_str =3D (x); _str[sizeof(x) - 1] =3D 0; } while (0)
+>  =
+
+> -static int bcm63xx_detect_cfe(struct mtd_info *master)
+> +static inline int bcm63xx_detect_cfe(void)
+>  {
+> -	char buf[9];
+> -	int ret;
+> -	size_t retlen;
+> +	int ret =3D 0;
+>  =
+
+> -	ret =3D mtd_read(master, BCM963XX_CFE_VERSION_OFFSET, 5, &retlen,
+> -		       (void *)buf);
+> -	buf[retlen] =3D 0;
+> +#ifdef CONFIG_MIPS
+> +	ret =3D (fw_arg3 =3D=3D CFE_EPTSEAL);
+> +#endif /* CONFIG_MIPS */
+>  =
+
+> -	if (ret)
+> -		return ret;
+> -
+> -	if (strncmp("cfe-v", buf, 5) =3D=3D 0)
+> -		return 0;
+> -
+> -	/* very old CFE's do not have the cfe-v string, so check for magic */
+> -	ret =3D mtd_read(master, BCM963XX_CFE_MAGIC_OFFSET, 8, &retlen,
+> -		       (void *)buf);
+> -	buf[retlen] =3D 0;
+> -
+> -	return strncmp("CFE1CFE1", buf, 8);
+> +	return ret;
+>  }
+>  =
+
+>  static int bcm63xx_read_nvram(struct mtd_info *master,
+> @@ -138,7 +130,7 @@ static int bcm63xx_parse_cfe_partitions(struct mtd_in=
+fo *master,
+>  	struct bcm963xx_nvram *nvram =3D NULL;
+>  	int ret;
+>  =
+
+> -	if (bcm63xx_detect_cfe(master))
+> +	if (!bcm63xx_detect_cfe())
+>  		return -EINVAL;
+>  =
+
+>  	nvram =3D vzalloc(sizeof(*nvram));
 
 ______________________________________________________
 Linux MTD discussion mailing list
