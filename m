@@ -1,75 +1,68 @@
-Return-Path: <SRS0=BXPI=BY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=OlMN=BZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8981CC433DF
-	for <linux-mtd@archiver.kernel.org>; Fri, 14 Aug 2020 16:31:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 317CBC433DF
+	for <linux-mtd@archiver.kernel.org>; Sat, 15 Aug 2020 17:29:01 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 54C6A2074D
-	for <linux-mtd@archiver.kernel.org>; Fri, 14 Aug 2020 16:31:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F299E23B18
+	for <linux-mtd@archiver.kernel.org>; Sat, 15 Aug 2020 17:29:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="iMw5uwlS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 54C6A2074D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lucaceresoli.net
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="wrUjNV8g"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F299E23B18
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=hauke-m.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=vY9T8Wvra4CIqekE5xw3XITe/VRZFRz+m68xcLORGAY=; b=iMw5uwlSBs+NwIxT2AqDVM4gO
-	nXKIr8a6wL+xN+L4NOPHGy2SNIx6z7/tBs/3+2Ac8hULH6O9Dvi5KkXKjDrf41TTd7HrdLaolS2UR
-	tB2qTvdIFvWcC5nXnhfU8/KzKviAAZK7jJcbRpBqTABU+rl4pLBGmEHlY6l+9qXJL+S4d9ZOfy1Xs
-	+QenYEOJro9sWbbwZhG9OkE4vZj83XkFdAhb2GE5f33V8i/esihdN1S274c1CmhQmPTiotnaVXL3f
-	uosDbPinstyNgP7iepahM6k9IBptF9n4wjMHbMRD7vslF+n8Obnz9pTY8goXWQlV0xwqzRw6UqlN2
-	mH6X4SOxQ==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=vTgu52gn9omd1oj/327ufTgaqWCXCds9rQ3ydJ625Rc=; b=wrUjNV8gzEJyo9xHNu16pzWeZP
+	qiWX88BOd4v4Zs/DQuLrazhcjmloN5eOiuwXbWWznWW/PgodDQdmp3W+mdHsUoC0LS9rqToX/fULd
+	0KR6gNaTUut50f94ekUi8W5/0u+g9f1EfsGPK+ZFGna1++kYy8CDai9ItBx3q+nKcZw+hM+4RtxK5
+	0H/MSgYSPHlXR0DozklvK7SpeKIvMxICDI/+jFvguWYE/O/lanFUTkwBXYDAHg/tQVUTToCtj1PXs
+	BvE4os3pDrqj4GCGrIb9WCe+AvhDYr8TmccGITM288mmV3mg8VQVF0fkKEot3JSYJstEOy3Okg4+4
+	ibXPXXgA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1k6cb7-0004l3-As; Fri, 14 Aug 2020 16:30:29 +0000
-Received: from hostingweb31-40.netsons.net ([89.40.174.40])
+	id 1k6zyG-0000Qf-PG; Sat, 15 Aug 2020 17:27:56 +0000
+Received: from mout-p-202.mailbox.org ([80.241.56.172])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k6cb3-0004h2-LH; Fri, 14 Aug 2020 16:30:27 +0000
-Received: from [37.160.38.175] (port=40734 helo=[192.168.42.162])
- by hostingweb31.netsons.net with esmtpsa (TLS1.2) tls
- TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (Exim 4.93)
- (envelope-from <luca@lucaceresoli.net>)
- id 1k6cay-0001mB-F9; Fri, 14 Aug 2020 18:30:20 +0200
-Subject: Re: [PATCH] dt-bindings: Whitespace clean-ups in schema files
-To: Rob Herring <robh@kernel.org>
-References: <20200812203618.2656699-1-robh@kernel.org>
- <d5808e9c-07fe-1c28-b9a6-a16abe9df458@lucaceresoli.net>
- <CAL_JsqKekx0VO4NROwLrgrU8+L584HaLHM9i3kCZvU+g5myeGw@mail.gmail.com>
-From: Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <f1963eb9-283f-e903-2a3a-4f324d71d418@lucaceresoli.net>
-Date: Fri, 14 Aug 2020 18:30:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ id 1k6zy9-0000PR-K4
+ for linux-mtd@lists.infradead.org; Sat, 15 Aug 2020 17:27:50 +0000
+Received: from smtp1.mailbox.org (smtp1.mailbox.org
+ [IPv6:2001:67c:2050:105:465:1:1:0])
+ (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
+ (No client certificate requested)
+ by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4BTS1Z04chzQlJg;
+ Sat, 15 Aug 2020 19:27:46 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp1.mailbox.org ([80.241.60.240])
+ by spamfilter01.heinlein-hosting.de (spamfilter01.heinlein-hosting.de
+ [80.241.56.115]) (amavisd-new, port 10030)
+ with ESMTP id g0resQkq61V8; Sat, 15 Aug 2020 19:27:41 +0200 (CEST)
+From: Hauke Mehrtens <hauke@hauke-m.de>
+To: miquel.raynal@bootlin.com,
+	richard@nod.at
+Subject: [PATCH] mtd: spinand: Add support for GigaDevice GD5F4GQ4xC
+Date: Sat, 15 Aug 2020 19:27:25 +0200
+Message-Id: <20200815172725.28765-1-hauke@hauke-m.de>
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqKekx0VO4NROwLrgrU8+L584HaLHM9i3kCZvU+g5myeGw@mail.gmail.com>
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse,
- please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - lists.infradead.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id:
- luca@lucaceresoli.net
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+X-MBO-SPAM-Probability: *
+X-Rspamd-Score: 0.34 / 15.00 / 15.00
+X-Rspamd-Queue-Id: 5C334180E
+X-Rspamd-UID: 59639e
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200814_123025_848770_5246D6A4 
-X-CRM114-Status: GOOD (  15.87  )
+X-CRM114-CacheID: sfid-20200815_132749_812278_11847DF8 
+X-CRM114-Status: GOOD (  19.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,113 +74,101 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
- "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
- "open list:REMOTE PROCESSOR \(REMOTEPROC\) SUBSYSTEM"
- <linux-remoteproc@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>,
- dri-devel <dri-devel@lists.freedesktop.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Linux I2C <linux-i2c@vger.kernel.org>, linux-clk <linux-clk@vger.kernel.org>,
- "open list:REAL TIME CLOCK \(RTC\) SUBSYSTEM" <linux-rtc@vger.kernel.org>,
- "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
- Linux Input <linux-input@vger.kernel.org>,
- Linux Media Mailing List <linux-media@vger.kernel.org>,
- devicetree@vger.kernel.org, "open list:THERMAL" <linux-pm@vger.kernel.org>,
- "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
- "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE"
- <linux-arm-kernel@lists.infradead.org>,
- Linux HWMON List <linux-hwmon@vger.kernel.org>,
- netdev <netdev@vger.kernel.org>, Linux USB List <linux-usb@vger.kernel.org>,
- linux-mmc <linux-mmc@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>
+Cc: linux-mtd@lists.infradead.org, gch981213@gmail.com, vigneshr@ti.com,
+ wigyori@uid0.hu, Hauke Mehrtens <hauke@hauke-m.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+This adds support for the following 4GiB chips:
+GD5F4GQ4RCYIG 1.8V
+GD5F4GQ4UCYIG 3.3V
 
-On 14/08/20 16:51, Rob Herring wrote:
-> On Thu, Aug 13, 2020 at 4:31 AM Luca Ceresoli <luca@lucaceresoli.net> wrote:
->>
->> Hi Rob,
->>
->> On 12/08/20 22:36, Rob Herring wrote:
->>> Clean-up incorrect indentation, extra spaces, long lines, and missing
->>> EOF newline in schema files. Most of the clean-ups are for list
->>> indentation which should always be 2 spaces more than the preceding
->>> keyword.
->>>
->>> Found with yamllint (which I plan to integrate into the checks).
->>
->> [...]
->>
->>> diff --git a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
->>> index 3d4e1685cc55..28c6461b9a9a 100644
->>> --- a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
->>> +++ b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
->>> @@ -95,10 +95,10 @@ allOf:
->>>        # Devices without builtin crystal
->>>        properties:
->>>          clock-names:
->>> -            minItems: 1
->>> -            maxItems: 2
->>> -            items:
->>> -              enum: [ xin, clkin ]
->>> +          minItems: 1
->>> +          maxItems: 2
->>> +          items:
->>> +            enum: [ xin, clkin ]
->>>          clocks:
->>>            minItems: 1
->>>            maxItems: 2
->>
->> Thanks for noticing, LGTM.
->>
->> [...]
->>
->>> diff --git a/Documentation/devicetree/bindings/input/touchscreen/touchscreen.yaml b/Documentation/devicetree/bindings/input/touchscreen/touchscreen.yaml
->>> index d7dac16a3960..36dc7b56a453 100644
->>> --- a/Documentation/devicetree/bindings/input/touchscreen/touchscreen.yaml
->>> +++ b/Documentation/devicetree/bindings/input/touchscreen/touchscreen.yaml
->>> @@ -33,8 +33,8 @@ properties:
->>>      $ref: /schemas/types.yaml#/definitions/uint32
->>>
->>>    touchscreen-min-pressure:
->>> -    description: minimum pressure on the touchscreen to be achieved in order for the
->>> -                 touchscreen driver to report a touch event.
->>> +    description: minimum pressure on the touchscreen to be achieved in order
->>> +      for the touchscreen driver to report a touch event.
->>
->> Out of personal taste, I find the original layout more pleasant and
->> readable. This third option is also good, especially for long descriptions:
->>
->>   description:
->>     minimum pressure on the touchscreen to be achieved in order for the
->>     touchscreen driver to report a touch event.
->>
->> At first glance yamllint seems to support exactly these two by default:
->>
->>> With indentation: {spaces: 4, check-multi-line-strings: true}
-> 
-> Turning on check-multi-line-strings results in 10K+ warnings, so no.
-> 
-> The other issue is the style ruamel.yaml wants to write out is as the
-> patch does above. This matters when doing some scripted
-> transformations where we read in the files and write them back out. I
-> can somewhat work around that by first doing a pass with no changes
-> and then another pass with the actual changes, but that's completely
-> scriptable. Hopefully, ruamel learns to preserve the style better.
+The datasheet can be found here:
+https://www.novitronic.ch/sixcms/media.php/2/DS-00173-GD5F4GQ4xCxIG-Rev1.574695.pdf
 
-Kind of sad, but I understand the reason as far as my understanding of
-the yaml world allows. Thanks for the explanation.
+The GD5F4GQ4UCYIGT (3.3V) version is used on the Imagination
+Technologies Creator Ci40 (Marduk), the 1.8V version was not tested.
 
-[For idt,versaclock5.yaml, plus an overview of whole patch]
-Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
+This device only works in single SPI mode and not in dual or quad mode
+for me on this board.
 
+Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+---
+ drivers/mtd/nand/spi/gigadevice.c | 49 +++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
+
+diff --git a/drivers/mtd/nand/spi/gigadevice.c b/drivers/mtd/nand/spi/gigadevice.c
+index d219c970042a..96625e2bdf1e 100644
+--- a/drivers/mtd/nand/spi/gigadevice.c
++++ b/drivers/mtd/nand/spi/gigadevice.c
+@@ -132,6 +132,35 @@ static const struct mtd_ooblayout_ops gd5fxgq4_variant2_ooblayout = {
+ 	.free = gd5fxgq4_variant2_ooblayout_free,
+ };
+ 
++static int gd5fxgq4xc_ooblayout_256_ecc(struct mtd_info *mtd, int section,
++					struct mtd_oob_region *oobregion)
++{
++	if (section)
++		return -ERANGE;
++
++	oobregion->offset = 128;
++	oobregion->length = 128;
++
++	return 0;
++}
++
++static int gd5fxgq4xc_ooblayout_256_free(struct mtd_info *mtd, int section,
++					 struct mtd_oob_region *oobregion)
++{
++	if (section)
++		return -ERANGE;
++
++	oobregion->offset = 1;
++	oobregion->length = 127;
++
++	return 0;
++}
++
++static const struct mtd_ooblayout_ops gd5fxgq4xc_oob_256_ops = {
++	.ecc = gd5fxgq4xc_ooblayout_256_ecc,
++	.free = gd5fxgq4xc_ooblayout_256_free,
++};
++
+ static int gd5fxgq4uexxg_ecc_get_status(struct spinand_device *spinand,
+ 					u8 status)
+ {
+@@ -225,6 +254,26 @@ static const struct spinand_info gigadevice_spinand_table[] = {
+ 		     0,
+ 		     SPINAND_ECCINFO(&gd5fxgq4xa_ooblayout,
+ 				     gd5fxgq4xa_ecc_get_status)),
++	SPINAND_INFO("GD5F4GQ4RC",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE, 0xa4, 0x68),
++		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants_f,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&gd5fxgq4xc_oob_256_ops,
++				     gd5fxgq4ufxxg_ecc_get_status)),
++	SPINAND_INFO("GD5F4GQ4UC",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE, 0xb4, 0x68),
++		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants_f,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&gd5fxgq4xc_oob_256_ops,
++				     gd5fxgq4ufxxg_ecc_get_status)),
+ 	SPINAND_INFO("GD5F1GQ4UExxG",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0xd1),
+ 		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
 -- 
-Luca
+2.20.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
