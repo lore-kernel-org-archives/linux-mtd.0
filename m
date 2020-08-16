@@ -2,93 +2,68 @@ Return-Path: <SRS0=MAvX=B2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35559C433E1
-	for <linux-mtd@archiver.kernel.org>; Sun, 16 Aug 2020 08:43:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BA8FC433DF
+	for <linux-mtd@archiver.kernel.org>; Sun, 16 Aug 2020 08:45:04 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 030A62067C
-	for <linux-mtd@archiver.kernel.org>; Sun, 16 Aug 2020 08:43:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 178292067C
+	for <linux-mtd@archiver.kernel.org>; Sun, 16 Aug 2020 08:45:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qk0+Nxm0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 030A62067C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="COrK0Xd7";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="drEoeXpH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 178292067C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=NkJVd+cu/2B5zFJ0GCle8MQOQNyanCsd7wZG3TLje/Y=; b=qk0+Nxm0k157YMrzrDNvfJOsr
-	yLLxFrGpifx84CEJhQZfTEnEFbLGnHJ3yzoJnndIeKGF3qqm6W07g9X4lHC5WafyrITOyPXZ4h+GN
-	c1U3/fwUce6uEB1YPdAq3rhPPuFy8MPJ2hBz3jvwZFED/T/q9tWh18YT7iiCxIRpZJSTr3Hf/Enz9
-	N3OIRZYndZylDXbKQ2kWfx3qJgEzMOBAG2zivJoBFNOUuxABeOTCkFgF8SVP3uRb95G4f5Fd72ovD
-	WwcXVQZ4V9V6nDzJqPAK0ML+M5P01RWdInhDdlulAKd+hbvvr2SLIcvRrT1CvCGaYsMni4rD1TXBW
-	LAlhC0BTg==;
+	 bh=9m7Qk21C6cFKq/FLiHGMkkWGrRnzw8uAiFVfw/gdmAQ=; b=COrK0Xd79CwewxsuR375TvPLk
+	yZQq4kbDyzsLIP1cSrfhHOLQ5psTSFl8LDP3K/LqF3226qKsjV34EvaLsmikP2KYay0YpmmLItVaE
+	/nWcHv6labeKMlWi2Na5FpbgOHgorpJZC7n9CkuIsjjnbpIdcrzI/CLU8Y5OQNN05a7d95OUPIaGm
+	BCCj+K1mjphHCKXANN0noRZeNvF7IVXpe47lgR+16RGpbEq+N9A4jSvTmW4uKtjH0dezjjuN461+h
+	5A464AankZ9J/Az5vYzZCMSgJH1CE6bCrLcHKhV7kTEUufKEYdOne9CT69WLvv/LMcAkU+bpCxrHM
+	QfWLK59nQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1k7EFJ-0001zC-Mx; Sun, 16 Aug 2020 08:42:29 +0000
-Received: from mout.kundenserver.de ([212.227.17.24])
+	id 1k7EHI-0002Fs-9q; Sun, 16 Aug 2020 08:44:32 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k7EFG-0001yN-JX
- for linux-mtd@lists.infradead.org; Sun, 16 Aug 2020 08:42:27 +0000
-Received: from mail-qv1-f44.google.com ([209.85.219.44]) by
- mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MEFCF-1jzlz54BTJ-00AHnK for <linux-mtd@lists.infradead.org>; Sun, 16 Aug
- 2020 10:42:19 +0200
-Received: by mail-qv1-f44.google.com with SMTP id x7so6364322qvi.5
- for <linux-mtd@lists.infradead.org>; Sun, 16 Aug 2020 01:42:13 -0700 (PDT)
-X-Gm-Message-State: AOAM5318HpaWVIS94GTphoj+w1I5II9bVfBqPr6Jwy6aIsTrIvYnv4gf
- oOvPMi7qQFF04CZgmKBVjq/FGtc1diRaT/BvOS8=
-X-Google-Smtp-Source: ABdhPJyT4ba0KjtjvrTFsQR8K9en1ajCsl5ivlE6fwXu46F/qDg96TBozqonUPhoUOVqk1XJE/qc0o+pw2NR84KPM6g=
-X-Received: by 2002:a0c:e604:: with SMTP id z4mr9908333qvm.222.1597567332693; 
- Sun, 16 Aug 2020 01:42:12 -0700 (PDT)
+ id 1k7EHC-0002EU-9h; Sun, 16 Aug 2020 08:44:27 +0000
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net
+ [82.4.196.95])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 032672067C;
+ Sun, 16 Aug 2020 08:44:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1597567464;
+ bh=T6UwMy4v18bgR1RYSk8bKZfCqTMnyUP8XZKnI31+u3w=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=drEoeXpHv0E0mUqTh6XgOtxm5HjQ3BZXo/2Vyh0E5JgpqmZ5oJHeFCZAHCZB9rAXm
+ AbIb6f0WWGOxG4kSm3h11hWn0MA48MyZ6oiLma2mj2RujKNmxiI3bNdIjGxh0rdsDK
+ bybFa1BfDVi2cbQ+dCfDbBrEzAgdhLg63i6r2Z2c=
+Date: Sun, 16 Aug 2020 09:44:18 +0100
+From: Jonathan Cameron <jic23@kernel.org>
+To: Sam Ravnborg <sam@ravnborg.org>
+Subject: Re: [PATCH] dt-bindings: Whitespace clean-ups in schema files
+Message-ID: <20200816094418.5bd08f5f@archlinux>
+In-Reply-To: <20200812213453.GA690477@ravnborg.org>
+References: <20200812203618.2656699-1-robh@kernel.org>
+ <20200812213453.GA690477@ravnborg.org>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20200804135817.5495-1-daniel.gutson@eclypsium.com>
- <CAK8P3a0_fJ0BfD5Qvxdo0s7CbjPWaGA8QTgYhbXR=omafOHH4Q@mail.gmail.com>
- <CAFmMkTHEm8k+5GZkVJbDZMEhMwpsqVKRb-hGskSpBstdLRuFyA@mail.gmail.com>
- <CAK8P3a27bTYyn3N+tX=i_6f4KrQkOmkUA1zUQfvCW7qw6smSkQ@mail.gmail.com>
- <CAFmMkTF9eVm0tpOKEy2rzdX=Scr3RwqHDFy_i24R3F5ok-4=eA@mail.gmail.com>
- <CAK8P3a3mf8_Y4DWe3WuBO-Xo0N4Jj=-rrtFzD6w0TriGZPu1_g@mail.gmail.com>
- <CAFmMkTFzmC=aY0gR6urLu-8Oq8aeHBUWi-TodG8XhXKCcC057A@mail.gmail.com>
- <CAK8P3a13N_wNORz_3cYHTN8t29pPrY+dJ+g+1Ga_MmG1TmrUQw@mail.gmail.com>
- <CAFmMkTGm3pMsBzEenYOsRbhOZKFhbHiZ5LxPyVmTdYTTRpKzVQ@mail.gmail.com>
-In-Reply-To: <CAFmMkTGm3pMsBzEenYOsRbhOZKFhbHiZ5LxPyVmTdYTTRpKzVQ@mail.gmail.com>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Sun, 16 Aug 2020 10:41:52 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2_RV33kiJ0c34aopZ4iG7LYBR-u=-+BbC+Upyjh1T0Eg@mail.gmail.com>
-Message-ID: <CAK8P3a2_RV33kiJ0c34aopZ4iG7LYBR-u=-+BbC+Upyjh1T0Eg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: intel-spi: Do not try to make the SPI flash
- chip writable
-To: Daniel Gutson <daniel@eclypsium.com>
-X-Provags-ID: V03:K1:mXBLbdPtQk4tYs/O4bovwc8eqPsBESmmoj88ZyYAMAljDkOuoXU
- 7v+JKz3O8PUgrRJfqLECsnKrHIiPTUGAC2ZiVNTStAkXvjf1t+QVX+OrYG1CF4YF8tn5s7e
- lHBrUTOj8SRiXHwFsTxP4G85xNwXxgBy5a6lOv5eRdC4cILEIQZ7WDm2FLxsVDG6zvPC9wB
- oHOWS+3tyq/tzviuFRerw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6Drfukl5pKw=:XwHy6P8zOB8XRK8B79A3DF
- lD9t3FpkCAlZyNjVJLiqkwpWeRMlAOvIx8ipDJNT0juCbT9kmU126x9ZaCxIeHn69MB5sHnyS
- raaXVerF94cvOkVbrlJiT+GTLDbFfsljVHC5PssBGPm86qfRAgKZTyVquCHT5ucz0rwWPTMy/
- NuTLyoGVAHUm5plZcnb2ymmHsQLgIm1EG90yu/+1PgRvofhG4iiUbaxhSiJ5Rb2oeJxvlFU0w
- WBdLkz7F6BAp8Zf5NVOx8U5OnXvNnvg+LQHYsS20C92UhkXtnM3pH0oYz8iW62YwyfMqPP2f9
- AYwP480JZmIvCsAFlk7DbYRIAhEMCrQqbFx7oj2Ti2utgtIU0IYayvzL83tnmSZ1aFAJIE7LC
- lODBWt0Frh0d2k1rBSgaDsNg7QhlNevqTebtDf0cUUi3Usuc/5cAvM0NESAY+ee9FvB5uv/Iy
- eIgSMSTQFJb1se5fIUmqFemzoc4snKNgnPPxUgzVKcJgUU1TSSYkTlNxczFSzUUs9tSmlvkqI
- FYf0OtvNSKxmfiP8yvujZTz5bp/a79tMElEJ0XYBlCfKZj9I/92G8UU1KsFcNF4zUTym4cQtA
- R5zhSkLqCmBtbp89d7PYjOTK2SSX3IxWQW82KJPFpbCYsEaCwvTxCaHouHYgpQEw8Nydr6Sog
- 2S7hB9H9Yeb0byFjWAWQ3SdjU58crOJgs/veBw/DGjkiTQgoMgllwLR12R5JpJmeIkI9TUHUK
- u3vlkCl+nLD6Re1Gz004v/oflflzS5hq2fkjwSNN4/spePjtRfJZQHAmA6H9gscAiu7jqozfl
- /G9Wesqxyz4480FY8gs4gxLHvvR04QoKTbhuC+z0n7KnduOLagklMSTQDzI/J8Ek0x5Y2J6Wh
- dhZX4bqi1TleAHOmd8fzh3d3zx0glF501XGNsJlHrMvGIkylwzHmpRJOR2qc38Wxt7w3OXGqR
- 68VMlojSK/1RUQ6w8XIWYamZZGI7dZ8uHIOjuJqNmLVxUvmYPQidu
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200816_044226_866929_41EDB207 
-X-CRM114-Status: GOOD (  27.55  )
+X-CRM114-CacheID: sfid-20200816_044426_500312_BF841702 
+X-CRM114-Status: GOOD (  30.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,77 +75,212 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Hughes <hughsient@gmail.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Alex Bazhaniuk <alex@eclypsium.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: linux-fbdev@vger.kernel.org, linux-iio@vger.kernel.org,
+ linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org,
+ dri-devel@lists.freedesktop.org, linux-mtd@lists.infradead.org,
+ linux-i2c@vger.kernel.org, linux-clk@vger.kernel.org,
+ linux-rtc@vger.kernel.org, Rob Herring <robh@kernel.org>,
+ linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
+ linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-pm@vger.kernel.org, linux-gpio@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
+ netdev@vger.kernel.org, linux-usb@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Aug 13, 2020 at 11:40 PM Daniel Gutson <daniel@eclypsium.com> wrote:
->
-> On Thu, Aug 13, 2020 at 12:41 PM Arnd Bergmann <arnd@arndb.de> wrote:
+On Wed, 12 Aug 2020 23:34:53 +0200
+Sam Ravnborg <sam@ravnborg.org> wrote:
+
+> Hi Rob.
+> 
+> On Wed, Aug 12, 2020 at 02:36:18PM -0600, Rob Herring wrote:
+> > Clean-up incorrect indentation, extra spaces, long lines, and missing
+> > EOF newline in schema files. Most of the clean-ups are for list
+> > indentation which should always be 2 spaces more than the preceding
+> > keyword.
+> > 
+> > Found with yamllint (which I plan to integrate into the checks).  
+> 
+> I have browsed through the patch - and there was only a few things
+> that jumped at me.
+> 
+> With these points considered:
+> Acked-by: Sam Ravnborg <sam@ravnborg.org>
+
+Replying here as the patch doesn't seem to have made it to linux-iio
+at least. I'm not sure why...
+
+Anyhow, found it in an lkml archive so for the iio changes
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+> 
+> I expect only some (few) of my points to actually results in any updates.
+> 
+> I look forward to have the lint functionality as part of the built-in
+> tools so we catch these things early.
+> 
+> 	Sam
+> 
+> > diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+> > index f63895c8ce2d..88814a2a14a5 100644
+> > --- a/Documentation/devicetree/bindings/arm/fsl.yaml
+> > +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+> > @@ -273,8 +273,8 @@ properties:
+> >                - fsl,imx6ull-14x14-evk     # i.MX6 UltraLiteLite 14x14 EVK Board
+> >                - kontron,imx6ull-n6411-som # Kontron N6411 SOM
+> >                - myir,imx6ull-mys-6ulx-eval # MYiR Tech iMX6ULL Evaluation Board
+> > -              - toradex,colibri-imx6ull-eval            # Colibri iMX6ULL Module on Colibri Evaluation Board
+> > -              - toradex,colibri-imx6ull-wifi-eval       # Colibri iMX6ULL Wi-Fi / Bluetooth Module on Colibri Evaluation Board
+> > +              - toradex,colibri-imx6ull-eval      # Colibri iMX6ULL Module on Colibri Eval Board
+> > +              - toradex,colibri-imx6ull-wifi-eval # Colibri iMX6ULL Wi-Fi / BT Module on Colibri Eval Board
+> >            - const: fsl,imx6ull  
+> 
+> This change looks bad as it drops the alignment with the comments below.
+> See following patch chunck:
+> 
 > >
-> > On Tue, Aug 4, 2020 at 11:26 PM Daniel Gutson <daniel@eclypsium.com> wrote:
-> > > On Tue, Aug 4, 2020 at 5:46 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> > > > > But wait, Mika, the author of the file, asked earlier not to remove
-> > > > > the module parameter of intel-spi, and just remove the unconditional
-> > > > > attempt to turn the chip writable in intle-spi-pci.
-> > > >
-> > > > Yes, and I think that is fine (aside from the inconsistency with bay trail
-> > > > that you have not commented on),
-> > >
-> > > There are two inconsistencies before any of my patches:
-> > > 1) in intel-spi.c: uses the module parameter only for bay trail.
-> > > 2) intel-spi.c uses a module parameter whereas intel-spi-pci doesn't
+> >        - description: Kontron N6411 S Board
+> > @@ -312,9 +312,12 @@ properties:
+> >                - toradex,colibri-imx7d                   # Colibri iMX7 Dual Module
+> >                - toradex,colibri-imx7d-aster             # Colibri iMX7 Dual Module on Aster Carrier Board
+> >                - toradex,colibri-imx7d-emmc              # Colibri iMX7 Dual 1GB (eMMC) Module
+> > -              - toradex,colibri-imx7d-emmc-aster        # Colibri iMX7 Dual 1GB (eMMC) Module on Aster Carrier Board
+> > -              - toradex,colibri-imx7d-emmc-eval-v3      # Colibri iMX7 Dual 1GB (eMMC) Module on Colibri Evaluation Board V3
+> > -              - toradex,colibri-imx7d-eval-v3           # Colibri iMX7 Dual Module on Colibri Evaluation Board V3
+> > +              - toradex,colibri-imx7d-emmc-aster        # Colibri iMX7 Dual 1GB (eMMC) Module on
+> > +                                                        #  Aster Carrier Board  
+> 
+> 
+> 
+> > diff --git a/Documentation/devicetree/bindings/display/panel/ilitek,ili9322.yaml b/Documentation/devicetree/bindings/display/panel/ilitek,ili9322.yaml
+> > index 177d48c5bd97..e89c1ea62ffa 100644
+> > --- a/Documentation/devicetree/bindings/display/panel/ilitek,ili9322.yaml
+> > +++ b/Documentation/devicetree/bindings/display/panel/ilitek,ili9322.yaml
+> > @@ -25,8 +25,7 @@ properties:
+> >    compatible:
+> >      items:
+> >        - enum:
+> > -        - dlink,dir-685-panel
+> > -
+> > +          - dlink,dir-685-panel
+> >        - const: ilitek,ili9322
 > >
-> > Neither of these matches what I see in the source code. Please
-> > check again.
+> >    reset-gpios: true
+> > diff --git a/Documentation/devicetree/bindings/display/panel/ilitek,ili9881c.yaml b/Documentation/devicetree/bindings/display/panel/ilitek,ili9881c.yaml
+> > index a39332276bab..76a9068a85dd 100644
+> > --- a/Documentation/devicetree/bindings/display/panel/ilitek,ili9881c.yaml
+> > +++ b/Documentation/devicetree/bindings/display/panel/ilitek,ili9881c.yaml
+> > @@ -13,8 +13,7 @@ properties:
+> >    compatible:
+> >      items:
+> >        - enum:
+> > -        - bananapi,lhr050h41
+> > -
+> > +          - bananapi,lhr050h41
+> >        - const: ilitek,ili9881c
+> >  
+> 
+> The extra lines is a simple way to indicate that here shall be added
+> more in the future. So I like the empty line.
+> 
+> 
+> > diff --git a/Documentation/devicetree/bindings/leds/backlight/qcom-wled.yaml b/Documentation/devicetree/bindings/leds/backlight/qcom-wled.yaml
+> > index 32e0896c6bc1..47938e372987 100644
+> > --- a/Documentation/devicetree/bindings/leds/backlight/qcom-wled.yaml
+> > +++ b/Documentation/devicetree/bindings/leds/backlight/qcom-wled.yaml
+> > @@ -79,7 +79,8 @@ properties:
+> >      description: |
+> >        kHz; switching frequency.
+> >      $ref: /schemas/types.yaml#/definitions/uint32
+> > -    enum: [ 600, 640, 685, 738, 800, 872, 960, 1066, 1200, 1371, 1600, 1920, 2400, 3200, 4800, 9600 ]
+> > +    enum: [ 600, 640, 685, 738, 800, 872, 960, 1066, 1200, 1371, 1600, 1920,
+> > +            2400, 3200, 4800, 9600 ]
 > >
-> > Once more: intel-spi.c has a module parameter that controls writing
-> > to the device regardless of the back-end (platform or pci), purely
-> > in software.
->
-> If I understand you correctly, this is not what I see:
-> If the deviceID is listed in intel-spi-pci.c
-> (https://elixir.bootlin.com/linux/latest/source/drivers/mtd/spi-nor/controllers/intel-spi-pci.c#L66)
-> then intel_spi_pci_probe will be called, where it unconditionally will
-> try to make the chip writable
-> https://elixir.bootlin.com/linux/latest/source/drivers/mtd/spi-nor/controllers/intel-spi-pci.c#L44
-> These devices correspond to the BXT and CNL devices (lines 19 and 23 resp.).
->
-> Lines later (53), it will call intel-spi.c 's intel_spi_probe
-> function, which ends up calling intel_spi_init,
-> which checks for the type
-> (https://elixir.bootlin.com/linux/latest/source/drivers/mtd/spi-nor/controllers/intel-spi.c#L313)
-> It is in this switch where the module parameter is checked, but only
-> in the BYT case; however,
-> flow coming from intel-spi-pci is BXT and CNL as mentioned before,
-> landing in their case labels (lines 343 and 351 respectively)
-> where the module parameter is not checked.
->
-> Therefore, for BXT and CNL probed in intel-spi-pci, the chip is turned
-> writable and later the module parameter is not honored.
+> >    qcom,ovp:
+> >      description: |  
+> 
+> In the modern world we are living in now line length of 100 chars are
+> OK. checkpatch and coding_style is updated to reflected this.
+> 
+> > diff --git a/Documentation/devicetree/bindings/spi/mikrotik,rb4xx-spi.yaml b/Documentation/devicetree/bindings/spi/mikrotik,rb4xx-spi.yaml
+> > index 4ddb42a4ae05..9102feae90a2 100644
+> > --- a/Documentation/devicetree/bindings/spi/mikrotik,rb4xx-spi.yaml
+> > +++ b/Documentation/devicetree/bindings/spi/mikrotik,rb4xx-spi.yaml
+> > @@ -33,4 +33,5 @@ examples:
+> >          reg = <0x1f000000 0x10>;
+> >      };
+> >
+> > -...
+> > \ No newline at end of file
+> > +...
+> > +  
+> 
+> Added one line too much?
+> 
+>  diff --git a/Documentation/devicetree/bindings/spi/spi-mux.yaml b/Documentation/devicetree/bindings/spi/spi-mux.yaml
+> > index 0ae692dc28b5..3d3fed63409b 100644
+> > --- a/Documentation/devicetree/bindings/spi/spi-mux.yaml
+> > +++ b/Documentation/devicetree/bindings/spi/spi-mux.yaml
+> > @@ -43,47 +43,47 @@ properties:
+> >      maxItems: 1
+> >
+> >  required:
+> > -   - compatible
+> > -   - reg
+> > -   - spi-max-frequency
+> > -   - mux-controls
+> > +  - compatible
+> > +  - reg
+> > +  - spi-max-frequency
+> > +  - mux-controls
+> >
+> >  examples:
+> > -   - |
+> > -     #include <dt-bindings/gpio/gpio.h>
+> > -     mux: mux-controller {
+> > -       compatible = "gpio-mux";
+> > -       #mux-control-cells = <0>;
+> > +  - |
+> > +    #include <dt-bindings/gpio/gpio.h>
+> > +    mux: mux-controller {
+> > +        compatible = "gpio-mux";
+> > +        #mux-control-cells = <0>;
+> >
+> > -       mux-gpios = <&gpio0 3 GPIO_ACTIVE_HIGH>;
+> > -     };
+> > +        mux-gpios = <&gpio0 3 GPIO_ACTIVE_HIGH>;
+> > +    };  
+> 
+> Example is updated to use 4-space indent. I like.
+> 
+> But many other examples are left untouched.
+> 
+> So I wonder if updating all examples to the same indent should
+> be left for another mega-patch?
+> 
+> > diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > index f3d847832fdc..2baee2c817c1 100644
+> > --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > @@ -993,7 +993,8 @@ patternProperties:
+> >    "^sst,.*":
+> >      description: Silicon Storage Technology, Inc.
+> >    "^sstar,.*":
+> > -    description: Xiamen Xingchen(SigmaStar) Technology Co., Ltd. (formerly part of MStar Semiconductor, Inc.)
+> > +    description: Xiamen Xingchen(SigmaStar) Technology Co., Ltd.
+> > +      (formerly part of MStar Semiconductor, Inc.)
+> >    "^st,.*":
+> >      description: STMicroelectronics
+> >    "^starry,.*":  
+> 
+> Did you check that they are all in alphabetical order?
+> I would be suprised if this is the only issue in this file.
+> 
+> 
 
-The module parameter is definitely honored on all hardware, but the driver
-only cares about the functionality it provides through the mtd interface:
-
-https://elixir.bootlin.com/linux/latest/source/drivers/mtd/spi-nor/controllers/intel-spi.c#L941
-
-If you care about other (malicious) code writing to the driver, please explain
-what the specific attack scenario is that you are worried about, and
-why you think
-this is not sufficient. What code would be able to write to the device
-if not the
-device driver itself?
-
-    Arnd
 
 ______________________________________________________
 Linux MTD discussion mailing list
