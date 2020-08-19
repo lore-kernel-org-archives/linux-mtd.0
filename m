@@ -4,54 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A85CC433E1
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Aug 2020 08:45:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71AE6C433DF
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Aug 2020 09:12:03 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D116F20639
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Aug 2020 08:45:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 30AF520738
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Aug 2020 09:12:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ThCSEseU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D116F20639
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="g6gfN2ii"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 30AF520738
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=UmaziE1FjlNX+/piZ2VWtfY4Crn+unKN91Udo/Rpt4w=; b=ThCSEseUbhXHSF7HKLND1OFVp
-	FsNajrvKnuqf66cfkepLoU6OcbxG2nqve5XaQHq1GF4kqLOZC9VM0UszbIa1S5AF59t8Wv+WOcIIm
-	Ii/O6eNyCAwIVZmmoV89h55q1k05tFDAbpk0vk/Keiu2CQZ9UXHcijPk5iUgGoFcpu4dxMnb4B5cX
-	cbbstuvtLLBb2ludPy6ub65blvjaQ5H9UC25fFEV7CMj0VrLO6zBVXz69E9HnGtTa7a+CYqsLz4dX
-	M0HmxS2MlIt7mBEj8BwGjWfEHl40uRYSSSjWHW7AT19W0FoN1+LsYHpdXAQtqJE7WPFyYXDve7ZZL
-	32hUM0S9w==;
+	 bh=6JIkwDg6rt2KtByTlN5cjDNepiH5uIqrRa4zuIHD+Rg=; b=g6gfN2iiybllGTb/v3bqdVuzF
+	gqwjjyffEbTQE+RPxrXx95ifUeb7GkgY6B2951zqNXHxmcpo3RA/81YSwwajLJvJffuE1V1CR1j/i
+	Cp8QP/4Zm0Srtk3usBpnuj8p+aRhxxb6Ry6kum5TZ130vdrvIp3oX3iE5NPxpr1rMC6J22tzm93Cl
+	UBhCTbLaaMzTjgocfHKNTHgixAK+OJjuk+sCdM9+4z5+m47G9xVMTrK3D5+jm8YyhXdV52VVLwUqC
+	zRbIZJzeqI4cF3Imrvom0hrMBqPavvyEinip5paj54z6G0LqVDOZ362EYln14kqDiXZP4Pda68rwG
+	6sn8apg8g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1k8Jhg-0004xA-Sq; Wed, 19 Aug 2020 08:44:16 +0000
-Received: from mout.kundenserver.de ([212.227.126.134])
+	id 1k8K84-0001jc-8m; Wed, 19 Aug 2020 09:11:32 +0000
+Received: from mga05.intel.com ([192.55.52.43])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k8Jhe-0004wS-LB
- for linux-mtd@lists.infradead.org; Wed, 19 Aug 2020 08:44:15 +0000
-Received: from mail-qk1-f175.google.com ([209.85.222.175]) by
- mrelayeu.kundenserver.de (mreue011 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1MGiF0-1jveG31TiU-00DovP for <linux-mtd@lists.infradead.org>; Wed, 19 Aug
- 2020 10:44:09 +0200
-Received: by mail-qk1-f175.google.com with SMTP id m7so20863221qki.12
- for <linux-mtd@lists.infradead.org>; Wed, 19 Aug 2020 01:44:08 -0700 (PDT)
-X-Gm-Message-State: AOAM531ibDZqBEjGJPJPbCEDhUkzRXV9OwfR5hQo7/05Iilhapzmye1w
- Bewi0dQzhR3GAXGU1SokdZyO8WzMrfPNdL8DXb8=
-X-Google-Smtp-Source: ABdhPJwfWJY4YQv36la+/0MD+QHocBF/Le7H2+CMgwAczLK9eQqrKeWrsZvvuug6OVTaAgPSIwj0wUbFD1Lx3Gr0TQ8=
-X-Received: by 2002:a37:385:: with SMTP id 127mr19827899qkd.3.1597826321598;
- Wed, 19 Aug 2020 01:38:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAK8P3a0_fJ0BfD5Qvxdo0s7CbjPWaGA8QTgYhbXR=omafOHH4Q@mail.gmail.com>
- <CAFmMkTHEm8k+5GZkVJbDZMEhMwpsqVKRb-hGskSpBstdLRuFyA@mail.gmail.com>
- <CAK8P3a27bTYyn3N+tX=i_6f4KrQkOmkUA1zUQfvCW7qw6smSkQ@mail.gmail.com>
+ id 1k8K81-0001iA-M9
+ for linux-mtd@lists.infradead.org; Wed, 19 Aug 2020 09:11:30 +0000
+IronPort-SDR: V1knm6HlsAncUwm+waqgn4gVZ+N4fnfdNk7q7rjGuvvy2hE0C8L5QIOX+KdHc4vujes2qJN8WW
+ 8VQeUbGN5sCw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9717"; a="239906124"
+X-IronPort-AV: E=Sophos;i="5.76,330,1592895600"; d="scan'208";a="239906124"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Aug 2020 02:11:27 -0700
+IronPort-SDR: ENF7eXhSGo6i+2qQww+BDD1amp8qQ1Y8+ja5GK/SWuR3FLvne13EtcQ39J2VweT2UGLDBlmEYu
+ LIneF3ufd3CQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,330,1592895600"; d="scan'208";a="400770822"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+ by fmsmga001.fm.intel.com with SMTP; 19 Aug 2020 02:11:24 -0700
+Received: by lahna (sSMTP sendmail emulation); Wed, 19 Aug 2020 12:11:23 +0300
+Date: Wed, 19 Aug 2020 12:11:23 +0300
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] mtd: spi-nor: intel-spi: Do not try to make the SPI
+ flash chip writable
+Message-ID: <20200819091123.GE1375436@lahna.fi.intel.com>
+References: <CAK8P3a27bTYyn3N+tX=i_6f4KrQkOmkUA1zUQfvCW7qw6smSkQ@mail.gmail.com>
  <CAFmMkTF9eVm0tpOKEy2rzdX=Scr3RwqHDFy_i24R3F5ok-4=eA@mail.gmail.com>
  <CAK8P3a3mf8_Y4DWe3WuBO-Xo0N4Jj=-rrtFzD6w0TriGZPu1_g@mail.gmail.com>
  <CAFmMkTFzmC=aY0gR6urLu-8Oq8aeHBUWi-TodG8XhXKCcC057A@mail.gmail.com>
@@ -60,36 +69,14 @@ References: <CAK8P3a0_fJ0BfD5Qvxdo0s7CbjPWaGA8QTgYhbXR=omafOHH4Q@mail.gmail.com>
  <CAK8P3a2_RV33kiJ0c34aopZ4iG7LYBR-u=-+BbC+Upyjh1T0Eg@mail.gmail.com>
  <CAFmMkTHqQO1Gj7VeXr4Y_Umb1KzZc2Pf=1pDQvPPpb_XeAFPqQ@mail.gmail.com>
  <20200819065721.GA1375436@lahna.fi.intel.com>
-In-Reply-To: <20200819065721.GA1375436@lahna.fi.intel.com>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Wed, 19 Aug 2020 10:38:24 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0Bq-ucgC4Xue+B_HV97pTX8YRr4hYh1gfrfGBV_H1EUQ@mail.gmail.com>
-Message-ID: <CAK8P3a0Bq-ucgC4Xue+B_HV97pTX8YRr4hYh1gfrfGBV_H1EUQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: intel-spi: Do not try to make the SPI flash
- chip writable
-To: Mika Westerberg <mika.westerberg@linux.intel.com>
-X-Provags-ID: V03:K1:6rIMlbWIHGLGuAp+UrHMgE4wu244A8tQJyKBDeNP2P9hxrQW8u5
- GOJ0i6DIcvz2d0zmfHRbtFQOijhnsK3OKZ+vbkaCpl0wUmWwhh/YIervwGjudR4yrRrMUzB
- 2Mq62foo1I6dGEMoqpqHCjUNnYhNfWFPEKb1qyJVzrnvCiRTqZ4y/4CqAOXDEYtfodanrn5
- i/R69lYAC6EwvkC+uifKw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:/SpSUZFrzUc=:j3b7la3h/xmlu26KLba6xp
- Z7slfmOu7rgF5tgueOex/6+scbAjupu2cR/rLWEer+25TAKnknBoZEFXwKQ6v4jFSvA2KP42b
- a47ORppxw7cd/QlYDNABMrxxmUKk8uikapgnkJm56BFuOacBfi5RXLzFzxIjsQITwYw+m4aff
- CIycnirZGsgnHqxXt96xr3OA8T22VBi5fDqjyDyPqGEDN5tDioBHVLQWLeOEXozl6G9sgOGIZ
- mWUTSXIZ7SLttp8r3DbGzLeuOxIxdGbGROgfSk0GKG7ALOB2hQhLlLXu/25tG/6lvB0fFA6gC
- +DVRfKkta6O5RuU6iWTTtrFl0g5gaqmHPNZztlwUQwJpddUFkcZp+FW+7c3xpNayxG4wV8wdQ
- js0+T+R7WwVsa7iYYVc7dcQ+bQzyDctFzYEDCKw2JrLCpiRb9WtgZsnto6MC4PYuHeLjC3C0M
- oqlbPYRpqx7LOpR4SgdXZJ6ep82VUdZYeQxPccmd2vKEZOcLebzYvxn/5a2G06xMfSm2ayE0K
- oa9uhGxIQp7uRYeUm92GcYfmIj1tE5jhhh91TbxqDZALU4Zb1s1WzhFkDMyaZgrCCsE8oxZXq
- FcOhZ2jvXwytercNmFKHwed5ppNYwUqSLHNSKIBh3PbQvEKaWlE+tyyE4QLz/VR4ds7gfghUh
- Ozl3AQaFMY4Db0TQXT6cwmvko+JFDiiV97Bqe6r+9C+g4U2oSwpgETdIqFjD517bOFp2KAa4H
- YfATz8ecMHAZLeEsCgZ/nvJTrGsWQFJDEgZXWJKVfK1i4nXijv2Tjz22H0l4g1/EVHmqMejCx
- Vok3HBnDe5UxiF8eFQUEk46U8soNvEs8d7hZ51R14dM9fFh7YiJZ7yNNAgIts0ICHe4+ShmkW
- CUV0uVmvaGhwkLXqq+ZcBBNMD0N3xFC6k/H2zJ9G9EjuT3FBhcjnD6+Mngfk78DREY/HIlJfo
- YBkQNGO2mbffmT8h+PKO53I5w6uDYY4H0b2kpvakgIiEXhQzCZPB/
+ <CAK8P3a0Bq-ucgC4Xue+B_HV97pTX8YRr4hYh1gfrfGBV_H1EUQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a0Bq-ucgC4Xue+B_HV97pTX8YRr4hYh1gfrfGBV_H1EUQ@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200819_044414_914256_5404EE4D 
-X-CRM114-Status: GOOD (  30.56  )
+X-CRM114-CacheID: sfid-20200819_051129_895063_A1A19429 
+X-CRM114-Status: GOOD (  36.61  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,56 +101,60 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Aug 19, 2020 at 8:57 AM Mika Westerberg
-<mika.westerberg@linux.intel.com> wrote:
->
-> On Tue, Aug 18, 2020 at 12:55:59PM -0300, Daniel Gutson wrote:
-> > > If you care about other (malicious) code writing to the driver, please explain
-> > > what the specific attack scenario is that you are worried about, and
-> > > why you think
-> > > this is not sufficient. What code would be able to write to the device
-> > > if not the
-> > > device driver itself?
+On Wed, Aug 19, 2020 at 10:38:24AM +0200, Arnd Bergmann wrote:
+> On Wed, Aug 19, 2020 at 8:57 AM Mika Westerberg
+> <mika.westerberg@linux.intel.com> wrote:
 > >
-> > Maybe Mika can answer this better, but what I'm trying to do is to
-> > limit the possibility of
-> > damage, as explained in the Kconfig:
-> > "Intel PCH/PCU SPI flash PCI driver (DANGEROUS)"
-> > "Say N here unless you know what you are doing. Overwriting the
-> >   SPI flash may render the system unbootable."
->
-> Right, the PCI part of the driver unconditionally (and wrongly) tried to
-> set the chip writeable.
->
-> What this whole thing tries to protect is that the user does not
-> accidentally write to the flash chip. It contains BIOS and other
-> important firmware so touching it (if it is not locked in the BIOS side)
-> may potentially brick the system. That's why we also require that
-> command line parameter so the user who knows what he or she is doing can
-> enable it for writing.
+> > On Tue, Aug 18, 2020 at 12:55:59PM -0300, Daniel Gutson wrote:
+> > > > If you care about other (malicious) code writing to the driver, please explain
+> > > > what the specific attack scenario is that you are worried about, and
+> > > > why you think
+> > > > this is not sufficient. What code would be able to write to the device
+> > > > if not the
+> > > > device driver itself?
+> > >
+> > > Maybe Mika can answer this better, but what I'm trying to do is to
+> > > limit the possibility of
+> > > damage, as explained in the Kconfig:
+> > > "Intel PCH/PCU SPI flash PCI driver (DANGEROUS)"
+> > > "Say N here unless you know what you are doing. Overwriting the
+> > >   SPI flash may render the system unbootable."
+> >
+> > Right, the PCI part of the driver unconditionally (and wrongly) tried to
+> > set the chip writeable.
+> >
+> > What this whole thing tries to protect is that the user does not
+> > accidentally write to the flash chip. It contains BIOS and other
+> > important firmware so touching it (if it is not locked in the BIOS side)
+> > may potentially brick the system. That's why we also require that
+> > command line parameter so the user who knows what he or she is doing can
+> > enable it for writing.
+> 
+> The same thing can happen with the platform driver if you load it
+> once with 'writeable=1' and then unload, leaving the chip in writeable
+> state. If you load it a second time without the module parameter, it
+> will be in the same state as the PCI driver: the hardware bit allows
+> writing, but the MTD layer prevents writes from being issued to the
+> device.
 
-The same thing can happen with the platform driver if you load it
-once with 'writeable=1' and then unload, leaving the chip in writeable
-state. If you load it a second time without the module parameter, it
-will be in the same state as the PCI driver: the hardware bit allows
-writing, but the MTD layer prevents writes from being issued to the
-device.
+Right.
 
-> Actually thinking about this bit more, to make PCI and the platform
-> parts consistent we can make the "writeable" control this for the PCI
-> part as well. So what if we add a callback to struct intel_spi_boardinfo
-> that the PCI driver populates and then the "core" driver uses to enable
-> writing when "writeable" is set to 1.
+> > Actually thinking about this bit more, to make PCI and the platform
+> > parts consistent we can make the "writeable" control this for the PCI
+> > part as well. So what if we add a callback to struct intel_spi_boardinfo
+> > that the PCI driver populates and then the "core" driver uses to enable
+> > writing when "writeable" is set to 1.
+> 
+> If you are really worried about the write protection being bypassed by
+> a different driver or code injection, the best way would seem to be to
+> only enable writing in the mtd write callback and disable it immediately
+> after the write is complete. I still don't see why this hardware would
+> be more susceptible to this kind of attack than other drivers though,
+> as it already has the safeguard against writing through the MTD layer
+> without the module parameter.
 
-If you are really worried about the write protection being bypassed by
-a different driver or code injection, the best way would seem to be to
-only enable writing in the mtd write callback and disable it immediately
-after the write is complete. I still don't see why this hardware would
-be more susceptible to this kind of attack than other drivers though,
-as it already has the safeguard against writing through the MTD layer
-without the module parameter.
-
-       Arnd
+Hmm, is there already a mechanism at the MTD level to prevent writes? If
+that's the case then sure we can use that instead.
 
 ______________________________________________________
 Linux MTD discussion mailing list
