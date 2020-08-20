@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A53CC433DF
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Aug 2020 00:04:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59DD6C433E1
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Aug 2020 00:04:16 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3A98C21744
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Aug 2020 00:04:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1EF3922B43
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Aug 2020 00:04:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="a1e/MQiA";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="tCPLjMi6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A98C21744
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tK4ofkps";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q7cdj96t"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1EF3922B43
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,46 +26,46 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=wBfruPzOBxAwA6W0wUxHDgwHjyUQ6zxH3I7/kFvRFYU=; b=a1e/MQiANXq+vNw/xS11hC/hd
-	ccoTn+NXBkndZrkaVfGqRlnoX1zoBURTIH44aPaYuKNMEXU4kY8hZDE33ZYFCxSBx/Nqwb1K69la1
-	CPz7UBdbbnC21+XxBjelpaNXe1USvreEFvlRQ+Aq+DPl1aruJGu+VIfsZyKeVFYWOxz1wXsgR9+ni
-	l3DUqZlja7SyIlb4KsYR7b26w8x+oIEDY7FO++ibNFV0+tu6i6eSRp/BZYvGCwBWiSW/hdEuqz1mM
-	dinMD0mG40yOGlh5hhq5/38PgCCXAvEjc2F7arpoDI1lb8BlDzgsBEOYZcTaZ5oNhZ5h4QpWzuvLe
-	VifMY1Rxg==;
+	 bh=ZVXt9NIGxKbHSGe5KXKzTb8alYwb8My70rfLWkJmzAk=; b=tK4ofkpso0fjnfkHzqENaJOyY
+	hNAKaOO+9lYGTDcfyuWBP+NnuB4M+duiWS3tvyccoCgvYibWymrGxMrLd+kbSFF1Xkn7twURSjvzT
+	UjrWf4MAIUqKjuvf9PTyL7AsK//d1lqD21w+jnj5qAasGMtOIq69fglCTqrbyCaGsMpVorrQwojra
+	zejDtKifzLe+AWfRsnFAtjwV3iK1KTE+W/6a8ZqSPlD3TtzFdWdyyPA9lD0Z69HdDNn+LM9kHiaTv
+	+sPung1Xxj1K5L3hk8GYu1mrTpHDCOHWSq5Ql7RjEzbsGVWvkgmBphALfbFkpIPM4AKJtzfOgg+dg
+	JP4xS/+bw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1k8Y35-0001K9-Ln; Thu, 20 Aug 2020 00:03:19 +0000
+	id 1k8Y3V-0001Yw-HH; Thu, 20 Aug 2020 00:03:45 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k8Y32-0001I1-NR
- for linux-mtd@lists.infradead.org; Thu, 20 Aug 2020 00:03:18 +0000
+ id 1k8Y3R-0001WI-03
+ for linux-mtd@lists.infradead.org; Thu, 20 Aug 2020 00:03:42 +0000
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 01FC322B3F;
- Thu, 20 Aug 2020 00:03:14 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 37084208E4;
+ Thu, 20 Aug 2020 00:03:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1597881795;
- bh=Nsx1/QnVpUDV33+SrioDmlhfg5tkM9R+Pa91bvw0w0Q=;
+ s=default; t=1597881820;
+ bh=gz1Ql6wLuLKli3sxEIWh60v0JCTWQm0FhUAHNyRqBJY=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=tCPLjMi6ZcbhUX7Q64akbXZSeUg/RRefPxUX+sx0N3bCEznUfY2iWmhujHxQs7V/n
- 0Suk4HYb1X9YNVB8+7KWc87g8O1z/uj7fOCr/N1yZ1Pgy3uyTMwmONSRmG52pVWsoG
- 6PAIJIu50C40Cwall9J4zTQuc5KssdgPlM+qy8ek=
+ b=Q7cdj96tsX2HmLPSgPHua6QwS6Subwa5lcbI5cXN/frt4JeoIgpxDp42uIX673d9K
+ 68+X2Z/2JFFwnPmhp1OA6DxjNYJBvUQv2VAKGR6pz08hkQ/wImdmn4Lh9w7kDwq6UL
+ kH9k7wIP5W79u0UkPLKcWxflHbmx2coBYcbxo0Vc=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 10/18] jffs2: fix UAF problem
-Date: Wed, 19 Aug 2020 20:02:53 -0400
-Message-Id: <20200820000302.215560-10-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 08/13] jffs2: fix UAF problem
+Date: Wed, 19 Aug 2020 20:03:23 -0400
+Message-Id: <20200820000328.215755-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200820000302.215560-1-sashal@kernel.org>
-References: <20200820000302.215560-1-sashal@kernel.org>
+In-Reply-To: <20200820000328.215755-1-sashal@kernel.org>
+References: <20200820000328.215755-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200819_200316_993135_9A5364EE 
+X-CRM114-CacheID: sfid-20200819_200341_225242_23CB10EC 
 X-CRM114-Status: GOOD (  14.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -139,12 +139,12 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/fs/jffs2/dir.c b/fs/jffs2/dir.c
-index f20cff1194bb6..776493713153f 100644
+index e5a6deb38e1e1..f4a5ec92f5dc7 100644
 --- a/fs/jffs2/dir.c
 +++ b/fs/jffs2/dir.c
 @@ -590,10 +590,14 @@ static int jffs2_rmdir (struct inode *dir_i, struct dentry *dentry)
  	int ret;
- 	uint32_t now = JFFS2_NOW();
+ 	uint32_t now = get_seconds();
  
 +	mutex_lock(&f->sem);
  	for (fd = f->dents ; fd; fd = fd->next) {
