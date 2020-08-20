@@ -4,20 +4,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E98F7C433DF
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Aug 2020 00:03:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A53CC433DF
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Aug 2020 00:04:09 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A5FB921744
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Aug 2020 00:03:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3A98C21744
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Aug 2020 00:04:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Q1e0F5ZR";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="U06G1hwI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A5FB921744
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="a1e/MQiA";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="tCPLjMi6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A98C21744
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,47 +26,47 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=wBfruPzOBxAwA6W0wUxHDgwHjyUQ6zxH3I7/kFvRFYU=; b=Q1e0F5ZRd/TDsCf3btrKJ0CPV
-	Y9h+dGXAZUoK8t33qAPbaa1i0IMdttG++HEWUUFwU/zmIf+2tOJO32PWTEqDT+8KsjgO4Ed/DIpWD
-	6aiThVvGC0RI5B5hG1UymL72cb+2SlH5LUvUccX22QnJWS46OHIDilwnJ/Fljv3/If6KyPddabdg7
-	xs5ig5DCzNSV0WkCtY9I15dgPUVxqcBJvTuMk77/NqT53rAMlyF0d+Lh30xOCRYnUfSfshQgQAJyJ
-	VBWR5Yg3+TNBngtxsvzBbmx7Dco309OhkPMAbmCRip0ysBlshFmKRjOI9CDTnYni4VByjZ7deoShk
-	cVuKzlk1A==;
+	 bh=wBfruPzOBxAwA6W0wUxHDgwHjyUQ6zxH3I7/kFvRFYU=; b=a1e/MQiANXq+vNw/xS11hC/hd
+	ccoTn+NXBkndZrkaVfGqRlnoX1zoBURTIH44aPaYuKNMEXU4kY8hZDE33ZYFCxSBx/Nqwb1K69la1
+	CPz7UBdbbnC21+XxBjelpaNXe1USvreEFvlRQ+Aq+DPl1aruJGu+VIfsZyKeVFYWOxz1wXsgR9+ni
+	l3DUqZlja7SyIlb4KsYR7b26w8x+oIEDY7FO++ibNFV0+tu6i6eSRp/BZYvGCwBWiSW/hdEuqz1mM
+	dinMD0mG40yOGlh5hhq5/38PgCCXAvEjc2F7arpoDI1lb8BlDzgsBEOYZcTaZ5oNhZ5h4QpWzuvLe
+	VifMY1Rxg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1k8Y2b-00014D-Rw; Thu, 20 Aug 2020 00:02:49 +0000
+	id 1k8Y35-0001K9-Ln; Thu, 20 Aug 2020 00:03:19 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k8Y2Z-00011e-24
- for linux-mtd@lists.infradead.org; Thu, 20 Aug 2020 00:02:48 +0000
+ id 1k8Y32-0001I1-NR
+ for linux-mtd@lists.infradead.org; Thu, 20 Aug 2020 00:03:18 +0000
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 7C62120FC3;
- Thu, 20 Aug 2020 00:02:45 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 01FC322B3F;
+ Thu, 20 Aug 2020 00:03:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1597881766;
+ s=default; t=1597881795;
  bh=Nsx1/QnVpUDV33+SrioDmlhfg5tkM9R+Pa91bvw0w0Q=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=U06G1hwIq5Lj3872/1wkBIB8ol9jwuIU7yl1TK3Fl3+jhQxFDaqJ7d24nwgJcEreq
- 8vtsTrGvnULNZuTNNZX6KMofSbIW/dv9BsYaypcFUsDEuDI5Bpdjj0fu+Odycu9ven
- wigF0EGQWbLMc9SgOYO+Zz+iqNWNSnn380qMK56Q=
+ b=tCPLjMi6ZcbhUX7Q64akbXZSeUg/RRefPxUX+sx0N3bCEznUfY2iWmhujHxQs7V/n
+ 0Suk4HYb1X9YNVB8+7KWc87g8O1z/uj7fOCr/N1yZ1Pgy3uyTMwmONSRmG52pVWsoG
+ 6PAIJIu50C40Cwall9J4zTQuc5KssdgPlM+qy8ek=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 12/22] jffs2: fix UAF problem
-Date: Wed, 19 Aug 2020 20:02:19 -0400
-Message-Id: <20200820000229.215333-12-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 10/18] jffs2: fix UAF problem
+Date: Wed, 19 Aug 2020 20:02:53 -0400
+Message-Id: <20200820000302.215560-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200820000229.215333-1-sashal@kernel.org>
-References: <20200820000229.215333-1-sashal@kernel.org>
+In-Reply-To: <20200820000302.215560-1-sashal@kernel.org>
+References: <20200820000302.215560-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200819_200247_247418_B9D667F4 
-X-CRM114-Status: GOOD (  14.74  )
+X-CRM114-CacheID: sfid-20200819_200316_993135_9A5364EE 
+X-CRM114-Status: GOOD (  14.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
