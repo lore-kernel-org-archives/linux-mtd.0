@@ -1,62 +1,72 @@
-Return-Path: <SRS0=Mr3t=B5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=ooLN=B6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CD2EC433DF
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Aug 2020 12:41:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12D90C433E1
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Aug 2020 00:02:35 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C27A5206B5
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Aug 2020 12:41:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D4E72207FB
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Aug 2020 00:02:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="23A5bTDp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C27A5206B5
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jd6SUK5+";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="LHVkUWmu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D4E72207FB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=mb6l5R58D7jtV1qDjybOUIpdiHUNOF1S498M597g8Ic=; b=23A5bTDpP1LWQwDBnT8Z8m9VSF
-	VdB/MnnaUB+80iUTNsXOJiPE0lYSHNg4dTMRQHwNJ+2BFNtc4MqY9c7S370A0fc1lA61bKU9SCrDK
-	Rlj734nVdrhVpBmJoiRYQTUXhpaK9EYY+aFm4hxuWniK9BMw0CWsT0Ney8jxZj+iQ7c6SDs8zG8Gm
-	8CWWaFpXEMH4lOPsKKtE0TZnC0IICX3+PNE06fkgvqZ56wptUpVK+QoArnORFuGvch47iaoA6Lim9
-	TRNdYbFoU+D3eYxpHKwM+gszI7XtxJXHqg9Eb5g6HtVsO2r99Q50F9yK4Dh9zl0bsKHZNhqBe4pBp
-	B1Dv+lxA==;
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=wBfruPzOBxAwA6W0wUxHDgwHjyUQ6zxH3I7/kFvRFYU=; b=jd6SUK5+yq1bjFnpMYXbwUCiR
+	xgG00CPM41uJZcBkb6fdUkfzzWiA6UopOwEdBf9S2tHUMaFQmv/5qrJBuLN3s+MI4/2ZUOZtm0wZ2
+	suQUMjKYRXRjLBhZn8f5OoMozjiUmADBJBXJW91Dr0mxCcKwC8DNrSAPcDFDa35GSfshjHvXtP0ji
+	lUXlrAR+KM39+wxsPL6zDymazEj8z+sXPtVhMEH1RySf2oENymTnJy7pLQqH5DlWSgy9aT81dhpAB
+	mIvYkMs6G8Q/rdbHb7BjBGF/aO5FaNj6Z4J9Nge9nsktUgPiWPMoMzgcdqVYfNIWk1zJ0Vw/Uw3u+
+	HNE4D+fdg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1k8NO1-0001HB-8n; Wed, 19 Aug 2020 12:40:13 +0000
-Received: from michel.telenet-ops.be ([2a02:1800:110:4::f00:18])
+	id 1k8Y1Z-0000VG-QR; Thu, 20 Aug 2020 00:01:45 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k8NNy-0001Ff-0c
- for linux-mtd@lists.infradead.org; Wed, 19 Aug 2020 12:40:10 +0000
-Received: from ramsan ([84.195.186.194]) by michel.telenet-ops.be with bizsmtp
- id HQg52300i4C55Sk06Qg5Wn; Wed, 19 Aug 2020 14:40:06 +0200
-Received: from rox.of.borg ([192.168.97.57]) by ramsan with esmtp (Exim 4.90_1)
- (envelope-from <geert@linux-m68k.org>)
- id 1k8NNt-0002M7-Md; Wed, 19 Aug 2020 14:40:05 +0200
-Received: from geert by rox.of.borg with local (Exim 4.90_1)
- (envelope-from <geert@linux-m68k.org>)
- id 1k8NNt-00058v-L8; Wed, 19 Aug 2020 14:40:05 +0200
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH] dt-bindings: mtd: spi-nor: Sort list of support chip names
-Date: Wed, 19 Aug 2020 14:40:04 +0200
-Message-Id: <20200819124004.19728-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.17.1
+ id 1k8Y1S-0000Ti-Ph
+ for linux-mtd@lists.infradead.org; Thu, 20 Aug 2020 00:01:39 +0000
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
+ [73.47.72.35])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 4C88B2184D;
+ Thu, 20 Aug 2020 00:01:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1597881698;
+ bh=Nsx1/QnVpUDV33+SrioDmlhfg5tkM9R+Pa91bvw0w0Q=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=LHVkUWmuK8T1BKnCATt8u/co61Mwf6LxNFppBhdE9C0dc+iModiRB7JQFgDJoIDb1
+ Vvk+Ui2u4f8oddhAWt5tH09mjgHIYddx5aCpqPzxz1EM/WahkptsBIsBk3/8EFdpmj
+ HTzDzUdDuUQJMrj3GNroQ3LCFO7jJ7KR2Vykpy4g=
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 16/27] jffs2: fix UAF problem
+Date: Wed, 19 Aug 2020 20:01:05 -0400
+Message-Id: <20200820000116.214821-16-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200820000116.214821-1-sashal@kernel.org>
+References: <20200820000116.214821-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200819_084010_223127_FB26B27D 
-X-CRM114-Status: GOOD (  10.64  )
+X-CRM114-CacheID: sfid-20200819_200138_986280_071CC191 
+X-CRM114-Status: GOOD (  14.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,99 +78,88 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- Geert Uytterhoeven <geert+renesas@glider.be>
-MIME-Version: 1.0
+Cc: Sasha Levin <sashal@kernel.org>, Richard Weinberger <richard@nod.at>,
+ Zhe Li <lizhe67@huawei.com>, linux-mtd@lists.infradead.org,
+ Hou Tao <houtao1@huawei.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Sort the list of supported chip names, using "sort -V", to take into
-account both names and numbers.
+From: Zhe Li <lizhe67@huawei.com>
 
-This makes it easier to read and maintain the list.
+[ Upstream commit 798b7347e4f29553db4b996393caf12f5b233daf ]
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+The log of UAF problem is listed below.
+BUG: KASAN: use-after-free in jffs2_rmdir+0xa4/0x1cc [jffs2] at addr c1f165fc
+Read of size 4 by task rm/8283
+=============================================================================
+BUG kmalloc-32 (Tainted: P    B      O   ): kasan: bad access detected
+-----------------------------------------------------------------------------
+
+INFO: Allocated in 0xbbbbbbbb age=3054364 cpu=0 pid=0
+        0xb0bba6ef
+        jffs2_write_dirent+0x11c/0x9c8 [jffs2]
+        __slab_alloc.isra.21.constprop.25+0x2c/0x44
+        __kmalloc+0x1dc/0x370
+        jffs2_write_dirent+0x11c/0x9c8 [jffs2]
+        jffs2_do_unlink+0x328/0x5fc [jffs2]
+        jffs2_rmdir+0x110/0x1cc [jffs2]
+        vfs_rmdir+0x180/0x268
+        do_rmdir+0x2cc/0x300
+        ret_from_syscall+0x0/0x3c
+INFO: Freed in 0x205b age=3054364 cpu=0 pid=0
+        0x2e9173
+        jffs2_add_fd_to_list+0x138/0x1dc [jffs2]
+        jffs2_add_fd_to_list+0x138/0x1dc [jffs2]
+        jffs2_garbage_collect_dirent.isra.3+0x21c/0x288 [jffs2]
+        jffs2_garbage_collect_live+0x16bc/0x1800 [jffs2]
+        jffs2_garbage_collect_pass+0x678/0x11d4 [jffs2]
+        jffs2_garbage_collect_thread+0x1e8/0x3b0 [jffs2]
+        kthread+0x1a8/0x1b0
+        ret_from_kernel_thread+0x5c/0x64
+Call Trace:
+[c17ddd20] [c02452d4] kasan_report.part.0+0x298/0x72c (unreliable)
+[c17ddda0] [d2509680] jffs2_rmdir+0xa4/0x1cc [jffs2]
+[c17dddd0] [c026da04] vfs_rmdir+0x180/0x268
+[c17dde00] [c026f4e4] do_rmdir+0x2cc/0x300
+[c17ddf40] [c001a658] ret_from_syscall+0x0/0x3c
+
+The root cause is that we don't get "jffs2_inode_info.sem" before
+we scan list "jffs2_inode_info.dents" in function jffs2_rmdir.
+This patch add codes to get "jffs2_inode_info.sem" before we scan
+"jffs2_inode_info.dents" to slove the UAF problem.
+
+Signed-off-by: Zhe Li <lizhe67@huawei.com>
+Reviewed-by: Hou Tao <houtao1@huawei.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../devicetree/bindings/mtd/jedec,spi-nor.txt | 34 +++++++++----------
- 1 file changed, 17 insertions(+), 17 deletions(-)
+ fs/jffs2/dir.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
-index f03be904d3c228d8..654d4a2d2ba26630 100644
---- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
-+++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
-@@ -13,12 +13,18 @@ Required properties:
-                  at25df321a
-                  at25df641
-                  at26df081a
--                 mr25h128
--                 mr25h256
-+                 m25p16
-+                 m25p32
-+                 m25p40
-+                 m25p64
-+                 m25p80
-+                 m25p128
-                  mr25h10
-                  mr25h40
--                 mx25l4005a
-+                 mr25h128
-+                 mr25h256
-                  mx25l1606e
-+                 mx25l4005a
-                  mx25l6405d
-                  mx25l12805d
-                  mx25l25635e
-@@ -26,38 +32,32 @@ Required properties:
-                  n25q128a11
-                  n25q128a13
-                  n25q512a
-+                 s25fl008k
-+                 s25fl064k
-                  s25fl256s1
-                  s25fl512s
-                  s25sl12801
--                 s25fl008k
--                 s25fl064k
-                  sst25vf040b
--                 m25p40
--                 m25p80
--                 m25p16
--                 m25p32
--                 m25p64
--                 m25p128
--                 w25x80
--                 w25x32
-                  w25q32
--                 w25q64
-                  w25q32dw
-+                 w25q64
-                  w25q80bl
-                  w25q128
-                  w25q256
-+                 w25x32
-+                 w25x80
+diff --git a/fs/jffs2/dir.c b/fs/jffs2/dir.c
+index f20cff1194bb6..776493713153f 100644
+--- a/fs/jffs2/dir.c
++++ b/fs/jffs2/dir.c
+@@ -590,10 +590,14 @@ static int jffs2_rmdir (struct inode *dir_i, struct dentry *dentry)
+ 	int ret;
+ 	uint32_t now = JFFS2_NOW();
  
-                The following chip names have been used historically to
-                designate quirky versions of flash chips that do not support the
-                JEDEC READ ID opcode (0x9F):
-                  m25p05-nonjedec
-                  m25p10-nonjedec
--                 m25p20-nonjedec
--                 m25p40-nonjedec
--                 m25p80-nonjedec
-                  m25p16-nonjedec
-+                 m25p20-nonjedec
-                  m25p32-nonjedec
-+                 m25p40-nonjedec
-                  m25p64-nonjedec
-+                 m25p80-nonjedec
-                  m25p128-nonjedec
++	mutex_lock(&f->sem);
+ 	for (fd = f->dents ; fd; fd = fd->next) {
+-		if (fd->ino)
++		if (fd->ino) {
++			mutex_unlock(&f->sem);
+ 			return -ENOTEMPTY;
++		}
+ 	}
++	mutex_unlock(&f->sem);
  
- - reg : Chip-Select number
+ 	ret = jffs2_do_unlink(c, dir_f, dentry->d_name.name,
+ 			      dentry->d_name.len, f, now);
 -- 
-2.17.1
+2.25.1
 
 
 ______________________________________________________
