@@ -4,20 +4,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59DD6C433E1
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Aug 2020 00:04:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F1A6C433DF
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Aug 2020 00:04:49 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1EF3922B43
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Aug 2020 00:04:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4FD9E207FB
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Aug 2020 00:04:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tK4ofkps";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q7cdj96t"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1EF3922B43
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WKrWkuA4";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="O9Vfx1Vv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4FD9E207FB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,46 +26,46 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=ZVXt9NIGxKbHSGe5KXKzTb8alYwb8My70rfLWkJmzAk=; b=tK4ofkpso0fjnfkHzqENaJOyY
-	hNAKaOO+9lYGTDcfyuWBP+NnuB4M+duiWS3tvyccoCgvYibWymrGxMrLd+kbSFF1Xkn7twURSjvzT
-	UjrWf4MAIUqKjuvf9PTyL7AsK//d1lqD21w+jnj5qAasGMtOIq69fglCTqrbyCaGsMpVorrQwojra
-	zejDtKifzLe+AWfRsnFAtjwV3iK1KTE+W/6a8ZqSPlD3TtzFdWdyyPA9lD0Z69HdDNn+LM9kHiaTv
-	+sPung1Xxj1K5L3hk8GYu1mrTpHDCOHWSq5Ql7RjEzbsGVWvkgmBphALfbFkpIPM4AKJtzfOgg+dg
-	JP4xS/+bw==;
+	 bh=ZVze2sNrzW+RVmSoJzeXmt4NfSyHwU9myX5RiLJYvMo=; b=WKrWkuA4Q+/JC9/XKYw6TqhiV
+	bOvRl+WMFNZtB4rVGa5z7f8ow+puquXWZFtE451m5pu09+aRBmWwj1r4QWg6M+347VCBLK8MNHuVu
+	PBQTq+BoKsiTR+a8g4lpyuZpz7VyN9BYSKa1v3IaAnj6DUj28TQ9IswXSHzdHJpU4BJwJ3lpXcMmw
+	zXbZYqM3k3BR2Bgpb+KEAPkVHUR3isCP6+FjvGivZjnSVM/jvbbYvS4A0hbI2gi9mM8td+mJkQx9p
+	/I8BTcmnY3dKR0a42ml+NK6L9UOTwsapUoBlp7R4jgq5i6ZeEuMhHZj49kvaVkgF9blcjpvHL9Ljp
+	YcfnOAfQw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1k8Y3V-0001Yw-HH; Thu, 20 Aug 2020 00:03:45 +0000
+	id 1k8Y43-0001v5-8u; Thu, 20 Aug 2020 00:04:19 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k8Y3R-0001WI-03
- for linux-mtd@lists.infradead.org; Thu, 20 Aug 2020 00:03:42 +0000
+ id 1k8Y40-0001sw-26
+ for linux-mtd@lists.infradead.org; Thu, 20 Aug 2020 00:04:17 +0000
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 37084208E4;
- Thu, 20 Aug 2020 00:03:39 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 65F8621741;
+ Thu, 20 Aug 2020 00:04:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1597881820;
- bh=gz1Ql6wLuLKli3sxEIWh60v0JCTWQm0FhUAHNyRqBJY=;
+ s=default; t=1597881855;
+ bh=c2JzkfZP4N0nxD4BIiuifQG9PoFroCZt0vwqyLLUyMw=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Q7cdj96tsX2HmLPSgPHua6QwS6Subwa5lcbI5cXN/frt4JeoIgpxDp42uIX673d9K
- 68+X2Z/2JFFwnPmhp1OA6DxjNYJBvUQv2VAKGR6pz08hkQ/wImdmn4Lh9w7kDwq6UL
- kH9k7wIP5W79u0UkPLKcWxflHbmx2coBYcbxo0Vc=
+ b=O9Vfx1VvaXaOhXqhXb+H23eftTHWRPRI9qU5y0ryWAc8uu/cFf0tHum6hO6plCOy5
+ WnBWeirSGCxyV89iArPSbCj6HdqETPph77EgTSDqzChiY3UEerwVnkXVD9LVSuHHUh
+ qpnI27BX1YGkq+3zlxzwzGEF2J/AykpxhCzY+gR0=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 08/13] jffs2: fix UAF problem
-Date: Wed, 19 Aug 2020 20:03:23 -0400
-Message-Id: <20200820000328.215755-8-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 06/10] jffs2: fix UAF problem
+Date: Wed, 19 Aug 2020 20:04:02 -0400
+Message-Id: <20200820000406.216050-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200820000328.215755-1-sashal@kernel.org>
-References: <20200820000328.215755-1-sashal@kernel.org>
+In-Reply-To: <20200820000406.216050-1-sashal@kernel.org>
+References: <20200820000406.216050-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200819_200341_225242_23CB10EC 
+X-CRM114-CacheID: sfid-20200819_200416_256813_DAF7FF5F 
 X-CRM114-Status: GOOD (  14.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -139,10 +139,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/fs/jffs2/dir.c b/fs/jffs2/dir.c
-index e5a6deb38e1e1..f4a5ec92f5dc7 100644
+index e273171696972..7a3368929245d 100644
 --- a/fs/jffs2/dir.c
 +++ b/fs/jffs2/dir.c
-@@ -590,10 +590,14 @@ static int jffs2_rmdir (struct inode *dir_i, struct dentry *dentry)
+@@ -588,10 +588,14 @@ static int jffs2_rmdir (struct inode *dir_i, struct dentry *dentry)
  	int ret;
  	uint32_t now = get_seconds();
  
