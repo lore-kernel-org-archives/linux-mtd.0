@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC4CDC433DF
-	for <linux-mtd@archiver.kernel.org>; Sun, 23 Aug 2020 16:24:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E75BC433DF
+	for <linux-mtd@archiver.kernel.org>; Sun, 23 Aug 2020 16:25:13 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 94EAB2072D
-	for <linux-mtd@archiver.kernel.org>; Sun, 23 Aug 2020 16:24:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CF9242075B
+	for <linux-mtd@archiver.kernel.org>; Sun, 23 Aug 2020 16:25:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="zYK+ucju";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="kGNoYo8F"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 94EAB2072D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OnO5Utpx";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="NoaAR81i"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CF9242075B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,30 +26,30 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=NSCn945cNMbqViMRxux5q8BdFM5yRSHAFuD9J9X5bPE=; b=zYK+ucjuC+EmVIArVTtgi0YUnV
-	BeLlHBglvbTs9v6yciL9pmxetiBsmy+K1Wi5mbsfHOflg2qDN1piXvnifb3t5ZTOcEZOPJBj4XRCB
-	hpJNjmmOs0h9QAfuJIe/UGMSllg0HmbftdxhSHsZ6Npm0aut1NBJ58bwdo9pL5TFh88Jd5a9FwMCm
-	oeqLF2mo4QRGQnAWbC/MBz3VRxFpv1K7Y3vkeAQb1puoT/DMg43BmZpHTEU20PHUmcqpuD8s/rzko
-	03W5a3igrsGywHx/H/+aSmP0iu9iI1T/IxRmKgxtZtHc7TcwC23YoLApMIW6KdcoEcqQ+lyKO1UGc
-	TUAwPRfQ==;
+	bh=Cd0sP5ef8zOQg22FoOfFa9OluKX9xz/ywcd+Qfd5nK8=; b=OnO5Utpxo+aZZzYDbhN0F/nTb8
+	OOnoZanM1FORwfEKbYe7UMbh1RDh8cJlLSKOzd7XIPqP+HuQbhBE/R4DPvgGE3afznA/oIjdKqPtl
+	TgcDSXkX9DqNLS71IVK6kHLNhQ8hY5vgws3EjoOiEGXHV0m7rnYMc9lMR7gPpM+54IivNPWs6D68C
+	sfoNCSdvD20iK+rZ3UVAEjClzZh173ORb81y5RXvFZwV9+HXmrl+DPb2KgTOlSn8UTWz3GTn0WYZq
+	oIuB0YRhTkPlPuKTztOMf8BP+Y9MIQ9MXOfij4Xs0RltUkCgJfeyNkpmXADiiQCJepkEWr7cQwFxt
+	hySTuRsg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1k9smi-0000Su-I9; Sun, 23 Aug 2020 16:23:56 +0000
+	id 1k9sms-0000Xq-0t; Sun, 23 Aug 2020 16:24:06 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k9sgb-0004m1-29; Sun, 23 Aug 2020 16:17:38 +0000
+ id 1k9sgh-0004oC-JQ; Sun, 23 Aug 2020 16:17:46 +0000
 Received: from kozik-lap.proceq-device.com (unknown [194.230.155.216])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id E56912072D;
- Sun, 23 Aug 2020 16:17:31 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 9218120767;
+ Sun, 23 Aug 2020 16:17:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598199456;
- bh=p7s6/RTngu5wO+BXh/RckmKOH+s+BJOz4PP9eHTqfjY=;
+ s=default; t=1598199460;
+ bh=om9ESAnTN0kLIHeSYqTWxWWUBVqyKQ5oPt5eaHUA+2k=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=kGNoYo8F+u5NxDsg/u+guoF6LVbrYlOdkltihyzc6zveKIDkwzfULbcZHjwfVJg0C
- Xmk2S2MUUOG7JdQ1C+N6UxwYOvGhgFHd5Az7ofdPWAYCF1FCRSLlVBGEcREVJq3DLY
- fI1g8/7lamehuBVzD/kMOxUBfZiw4aLmNN4xXulk=
+ b=NoaAR81iHPTZTaeVWIysT1dgDiueIU1wsfTlQmwilaHTXOgNAp2Kiv1ZDYbmTEZyi
+ DbkAGv4UahUvhmnSz7YofRG8QUC2usXaH+ng4qRtMnjpwEwJ0MYFy+B7fPsiKiAjUy
+ 4a6SBWOT+dxnoeMz6fUlewNe3Rk55M2pp2KWemUs=
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
  Bartosz Golaszewski <bgolaszewski@baylibre.com>,
@@ -61,15 +61,15 @@ To: Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
  linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
  linux-pm@vger.kernel.org, linux-watchdog@vger.kernel.org
-Subject: [PATCH 21/22] arm64: dts: imx8qxp: Remove i.MX7 compatible from USDHC
-Date: Sun, 23 Aug 2020 18:15:49 +0200
-Message-Id: <20200823161550.3981-21-krzk@kernel.org>
+Subject: [PATCH 22/22] arm64: dts: imx8mp: Remove i.MX7 compatible from DDR PMU
+Date: Sun, 23 Aug 2020 18:15:50 +0200
+Message-Id: <20200823161550.3981-22-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200823161550.3981-1-krzk@kernel.org>
 References: <20200823161550.3981-1-krzk@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200823_121737_307355_A4CB8A2C 
-X-CRM114-Status: GOOD (  13.04  )
+X-CRM114-CacheID: sfid-20200823_121744_947901_2483464B 
+X-CRM114-Status: GOOD (  14.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,53 +89,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The USDHC on i.MX 8QXP has its own compatible described in bindings
-and used in the driver (with its own quirks).  Remove additional
-fsl,imx7d-usdhc compatible to fix dtbs_check warnings like:
+The DDR PMU on i.MX 8MP has its own compatible described in bindings and
+used in the driver (with its own quirks).  Remove additional
+fsl,imx8m-ddr-pmu compatible to fix dtbs_check warnings like:
 
-  arch/arm64/boot/dts/freescale/imx8qxp-ai_ml.dt.yaml: mmc@5b010000:
-    compatible: ['fsl,imx8qxp-usdhc', 'fsl,imx7d-usdhc'] is too long
-    From schema: /ocumentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
-
-  arch/arm64/boot/dts/freescale/imx8qxp-ai_ml.dt.yaml: mmc@5b010000:
-    compatible: Additional items are not allowed ('fsl,imx7d-usdhc' was unexpected)
+  arch/arm64/boot/dts/freescale/imx8mq-nitrogen.dt.yaml: ddr-pmu@3d800000:
+    compatible: ['fsl,imx8mq-ddr-pmu', 'fsl,imx8m-ddr-pmu'] is not valid under any of the given schemas (Possible causes of the failure):
+    arch/arm64/boot/dts/freescale/imx8mq-nitrogen.dt.yaml: ddr-pmu@3d800000: compatible: ['fsl,imx8mq-ddr-pmu', 'fsl,imx8m-ddr-pmu'] is too long
+    From schema: Docmentation/devicetree/bindings/perf/fsl-imx-ddr.yaml
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/arm64/boot/dts/freescale/imx8qxp.dtsi | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/arm64/boot/dts/freescale/imx8mp.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8qxp.dtsi b/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
-index 61bccb69f09e..26c4fcdfe290 100644
---- a/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
-@@ -362,7 +362,7 @@
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+index 9de2aa1c573c..e34eff19fcae 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+@@ -746,7 +746,7 @@
  		};
  
- 		usdhc1: mmc@5b010000 {
--			compatible = "fsl,imx8qxp-usdhc", "fsl,imx7d-usdhc";
-+			compatible = "fsl,imx8qxp-usdhc";
- 			interrupts = <GIC_SPI 232 IRQ_TYPE_LEVEL_HIGH>;
- 			reg = <0x5b010000 0x10000>;
- 			clocks = <&conn_lpcg IMX_CONN_LPCG_SDHC0_IPG_CLK>,
-@@ -374,7 +374,7 @@
+ 		ddr-pmu@3d800000 {
+-			compatible = "fsl,imx8mp-ddr-pmu", "fsl,imx8m-ddr-pmu";
++			compatible = "fsl,imx8mp-ddr-pmu";
+ 			reg = <0x3d800000 0x400000>;
+ 			interrupts = <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>;
  		};
- 
- 		usdhc2: mmc@5b020000 {
--			compatible = "fsl,imx8qxp-usdhc", "fsl,imx7d-usdhc";
-+			compatible = "fsl,imx8qxp-usdhc";
- 			interrupts = <GIC_SPI 233 IRQ_TYPE_LEVEL_HIGH>;
- 			reg = <0x5b020000 0x10000>;
- 			clocks = <&conn_lpcg IMX_CONN_LPCG_SDHC1_IPG_CLK>,
-@@ -388,7 +388,7 @@
- 		};
- 
- 		usdhc3: mmc@5b030000 {
--			compatible = "fsl,imx8qxp-usdhc", "fsl,imx7d-usdhc";
-+			compatible = "fsl,imx8qxp-usdhc";
- 			interrupts = <GIC_SPI 234 IRQ_TYPE_LEVEL_HIGH>;
- 			reg = <0x5b030000 0x10000>;
- 			clocks = <&conn_lpcg IMX_CONN_LPCG_SDHC2_IPG_CLK>,
 -- 
 2.17.1
 
