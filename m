@@ -4,20 +4,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76E25C433E1
-	for <linux-mtd@archiver.kernel.org>; Sun, 23 Aug 2020 18:13:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 413EBC433DF
+	for <linux-mtd@archiver.kernel.org>; Sun, 23 Aug 2020 18:45:25 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4903221741
-	for <linux-mtd@archiver.kernel.org>; Sun, 23 Aug 2020 18:13:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 00D2920706
+	for <linux-mtd@archiver.kernel.org>; Sun, 23 Aug 2020 18:45:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NxCrrIo3";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="MCzDXQVg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4903221741
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="l/GAsXiA";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="djqIqNfp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 00D2920706
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,30 +26,30 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=0EoPrCpvcM6u/7//PHapZTBqbZ3FuxQqWROvo8snPeM=; b=NxCrrIo3tPiJPciDq2MOJh12Mh
-	UC28DCcIx1GRaexgq58ZL6/LYlgRAY8iJGEmk5zxVj1L+z5opLa+ZuO++4xUAMcc3BS/s27P6+P4a
-	1paYQ+xb2nPwoAJ3WaYbnLSJ2dT7Pl7dGxC6w2LKnSrKVOxlXnIOkE31YcBhThWX8kKn/r4uZtTz3
-	dftR7wlrmpaa9pGEhsyBbMMNNIBGcNJ6DFFbiTRQA5sUGz/EWxk5cr7VzJqaMk/zWvX0Pkip5I22x
-	YDbJey8WqjoWP5KzEx9rEN3IT2eACDiY+B8Q1nQXnBWdaLxG5ROnllyp59CRJ3zHW8KTJZ84muwfG
-	LawPa//w==;
+	bh=r26E7AOXy/3julg0XQrm1if4ipZa92lRlDAijWifHr0=; b=l/GAsXiAhB/CdmRm+wGnze42To
+	eIMQRkZMtH8aemWuidzKZ9ZArafIqbjD/9hHSN4iEsEL9hPmq9PPw3xpT9FwpaFZQzEF8By9SvjwY
+	paP9ogPZr5yvNIwYRgpK3OUMNny6V/WG9pagsAj8GMzA2HpXpgDoiOkfv4MV/dna7py/GOP0+TSys
+	wCJZrEh9NnrcaoR909jtuFgV3bt2X3pivNMJ+aYu2NpOHlMowx7bM146tCQjvGivekxav65Ioknlb
+	p7DkbOBZ5RVPqRl0+CvVeALwI+OxQ+ACBQlmgVUuvZJZiGCHPTGM/VB/0TKca246v/2As1M6LxKNl
+	wonWBVLA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1k9sjz-0006qA-4Y; Sun, 23 Aug 2020 16:21:07 +0000
+	id 1k9skd-0007DK-1m; Sun, 23 Aug 2020 16:21:47 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k9sfy-0004Og-2W; Sun, 23 Aug 2020 16:16:59 +0000
+ id 1k9sg2-0004Qg-HX; Sun, 23 Aug 2020 16:17:03 +0000
 Received: from kozik-lap.proceq-device.com (unknown [194.230.155.216])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 193DD2078A;
- Sun, 23 Aug 2020 16:16:52 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id AEEB02072D;
+ Sun, 23 Aug 2020 16:16:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598199417;
- bh=VqDD3KFuiRD86Z7+w0i17rgKkKCPFxI1DEBp8fL8MEs=;
+ s=default; t=1598199421;
+ bh=QlwySSBCvmniu5l1kZrfLw5QDFpCJZGwDezndX9H7Zo=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=MCzDXQVgp12mbtB449hvqtg7DzFdqsO50NCG20CPk1CsZdLEJfHDaLpgv7hQiFozl
- 65k5IkpH4qZJ/JxrPVyr6VCgjsJNsUFOxZFdgzzJK9n3KQX0m6DpPrmDLR7D6+wrHK
- Z0iUD8IrtKeucGsZayZVT8FCgSjVCTBh+IVhWc6o=
+ b=djqIqNfpDmCmAnKttL/Jn8WVYR+hrsPFeZ18Xf1X9f0kSf3uyPd+3W9sIOZ2oGCj9
+ eU/976pAeoTdxJrCRFp4IOXobPGzAwtVOoEP0biGIMBSRLT15GOWf+zLhV+1fu1JBw
+ oYITexJMsa1/UlJ4n4pCKbkCKIwpmRNO4zXg4YbU=
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
  Bartosz Golaszewski <bgolaszewski@baylibre.com>,
@@ -61,16 +61,16 @@ To: Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
  linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
  linux-pm@vger.kernel.org, linux-watchdog@vger.kernel.org
-Subject: [PATCH 13/22] dt-bindings: nvmem: imx-ocotp: Update i.MX 8M
- compatibles
-Date: Sun, 23 Aug 2020 18:15:41 +0200
-Message-Id: <20200823161550.3981-13-krzk@kernel.org>
+Subject: [PATCH 14/22] dt-bindings: arm: fsl: Fix Toradex Colibri i.MX 8
+ binding
+Date: Sun, 23 Aug 2020 18:15:42 +0200
+Message-Id: <20200823161550.3981-14-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200823161550.3981-1-krzk@kernel.org>
 References: <20200823161550.3981-1-krzk@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200823_121658_293189_043E2075 
-X-CRM114-Status: GOOD (  12.63  )
+X-CRM114-CacheID: sfid-20200823_121702_768166_48459D2E 
+X-CRM114-Status: GOOD (  11.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,73 +90,36 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-DTSes with new i.MX 8M SoCs use two compatibles so update the binding to
-fix dtbs_check warnings like:
+The Toradex Colibri i.MX 8 Evaluation board has two Toradex compatibles
+so it needs separate entry.  This fixes dtbs_check warning:
 
-  arch/arm64/boot/dts/freescale/imx8mn-evk.dt.yaml: efuse@30350000: compatible:1: 'syscon' was expected
-    From schema: Documentation/devicetree/bindings/nvmem/imx-ocotp.yaml
-
-  arch/arm64/boot/dts/freescale/imx8mn-evk.dt.yaml: efuse@30350000:
-    compatible: ['fsl,imx8mn-ocotp', 'fsl,imx8mm-ocotp', 'syscon'] is too long
-
-  arch/arm64/boot/dts/freescale/imx8mn-evk.dt.yaml: efuse@30350000:
-    compatible: Additional items are not allowed ('syscon' was unexpected)
+  arch/arm64/boot/dts/freescale/imx8qxp-colibri-eval-v3.dt.yaml: /:
+    compatible: ['toradex,colibri-imx8x-eval-v3', 'toradex,colibri-imx8x', 'fsl,imx8qxp'] is not valid under any of the given schemas (Possible causes of the failure):
+    arch/arm64/boot/dts/freescale/imx8qxp-colibri-eval-v3.dt.yaml: /: compatible: ['toradex,colibri-imx8x-eval-v3', 'toradex,colibri-imx8x', 'fsl,imx8qxp'] is too long
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- .../devicetree/bindings/nvmem/imx-ocotp.yaml  | 39 ++++++++++++-------
- 1 file changed, 24 insertions(+), 15 deletions(-)
+ Documentation/devicetree/bindings/arm/fsl.yaml | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/nvmem/imx-ocotp.yaml b/Documentation/devicetree/bindings/nvmem/imx-ocotp.yaml
-index 1c9d7f05f173..b5b250185afd 100644
---- a/Documentation/devicetree/bindings/nvmem/imx-ocotp.yaml
-+++ b/Documentation/devicetree/bindings/nvmem/imx-ocotp.yaml
-@@ -19,21 +19,30 @@ allOf:
- 
- properties:
-   compatible:
--    items:
--      - enum:
--          - fsl,imx6q-ocotp
--          - fsl,imx6sl-ocotp
--          - fsl,imx6sx-ocotp
--          - fsl,imx6ul-ocotp
--          - fsl,imx6ull-ocotp
--          - fsl,imx7d-ocotp
--          - fsl,imx6sll-ocotp
--          - fsl,imx7ulp-ocotp
--          - fsl,imx8mq-ocotp
--          - fsl,imx8mm-ocotp
--          - fsl,imx8mn-ocotp
--          - fsl,imx8mp-ocotp
--      - const: syscon
-+    oneOf:
-+      - items:
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index 591fa336d6fa..93a21b10d115 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -385,7 +385,13 @@ properties:
+               - einfochips,imx8qxp-ai_ml  # i.MX8QXP AI_ML Board
+               - fsl,imx8qxp-mek           # i.MX8QXP MEK Board
+               - toradex,colibri-imx8x         # Colibri iMX8X Module
++          - const: fsl,imx8qxp
++
++      - description: Toradex Colibri i.MX8 Evaluation Board
++        items:
 +          - enum:
-+              - fsl,imx6q-ocotp
-+              - fsl,imx6sl-ocotp
-+              - fsl,imx6sx-ocotp
-+              - fsl,imx6ul-ocotp
-+              - fsl,imx6ull-ocotp
-+              - fsl,imx7d-ocotp
-+              - fsl,imx6sll-ocotp
-+              - fsl,imx7ulp-ocotp
-+              - fsl,imx8mq-ocotp
-+              - fsl,imx8mm-ocotp
-+              - fsl,imx8mn-ocotp
-+              - fsl,imx8mp-ocotp
-+          - const: syscon
-+      - items:
-+          # The devices are not really compatible with fsl,imx8mm-ocotp, however
-+          # the code for getting SoC revision depends on fsl,imx8mm-ocotp compatible.
-+          - enum:
-+              - fsl,imx8mn-ocotp
-+              - fsl,imx8mp-ocotp
-+          - const: fsl,imx8mm-ocotp
-+          - const: syscon
+               - toradex,colibri-imx8x-eval-v3 # Colibri iMX8X Module on Colibri Evaluation Board V3
++          - const: toradex,colibri-imx8x
+           - const: fsl,imx8qxp
  
-   reg:
-     maxItems: 1
+       - description:
 -- 
 2.17.1
 
