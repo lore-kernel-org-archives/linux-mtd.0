@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 063A7C433DF
-	for <linux-mtd@archiver.kernel.org>; Sun, 23 Aug 2020 16:24:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A123C433E1
+	for <linux-mtd@archiver.kernel.org>; Sun, 23 Aug 2020 16:24:08 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BC06F2072D
-	for <linux-mtd@archiver.kernel.org>; Sun, 23 Aug 2020 16:24:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6A8782072D
+	for <linux-mtd@archiver.kernel.org>; Sun, 23 Aug 2020 16:24:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="wsCqUa8e";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="HuKsuY+e"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC06F2072D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qfXrub5z";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="g7c5SyZZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A8782072D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,30 +26,30 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=0NCP2jPBja5mB8qebNb0hnyoZDkQyplqUvIgkJKVWNk=; b=wsCqUa8e1DFgaSxfJIY8NGwx+y
-	ScTsjuUtaLFTx+rXbdipaMZjUtN74oFNUap4LOmMqeXAEE/9kTuQChRnutFy6XwD6SNC+1t9rv/oS
-	wrD1okJZmJMAtk3qrxDOwBtYriFFwClrkuQUrMCQuuTp7u7eqyFyPCXIIrzSnawWeM2kRwVk6dQ5U
-	ZA/4KZo0O9sSIMoOWSBOd0M8VUOM7cqLE+WM6d+sIrxjWTVOdTRW5gZiN0Lr2N6b9Sk3JYKqvkJYW
-	b8Cxs7f1DN+R5GBVGe3I6Xkl1ZszvCoHO0R7fA5n8nAaZfpzTwO0/6l8bcRgk7uQMXMRnsR/vlCU9
-	kR9Gr1ng==;
+	bh=PKiqJFdQ5F/J8+vIoXxBuxMENZJlhaQARQmd3nX/sZ4=; b=qfXrub5zWCVvpyRbKk2RAUz2Af
+	KaGvmubwBQExioj2iJcymkCltwUj7NI/Gurkk/6MuYh1q0nEhuxkJRr0CEAGNXPcYFF2KDfmE2Jk6
+	Vx1Q3MI4juvV3noIKxH9lrz2UJ/aSzP3H/I8OgyKQksNs2wH9ppCE5GSStiwCCkqv0YV0+osaYRP4
+	pPAwU4Q4nZkKxgl4mRoX+arrVZTvRzRlvrz9/r1SUt2nLewPrjpRtfiPvrX1a2fzxA2owKL+0vmsL
+	HVsnv9DvNAl9641C906Emhblh9RUJpTZRRv/iOQHKHvh+PTECzYSqDhnxQJkI6cmIkZ1dvUOIH+Hn
+	dPQQnVyg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1k9smF-0000M0-RF; Sun, 23 Aug 2020 16:23:27 +0000
+	id 1k9smN-0000Mx-9E; Sun, 23 Aug 2020 16:23:35 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k9sg7-0004Sb-Bs; Sun, 23 Aug 2020 16:17:09 +0000
+ id 1k9sgG-0004b9-M3; Sun, 23 Aug 2020 16:17:17 +0000
 Received: from kozik-lap.proceq-device.com (unknown [194.230.155.216])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 43E132075B;
- Sun, 23 Aug 2020 16:17:02 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id B598F20767;
+ Sun, 23 Aug 2020 16:17:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598199426;
- bh=896l3mHbTpz7Udoblv0WC50trxhLboDp1OOqzgKW9jM=;
+ s=default; t=1598199435;
+ bh=IcWdUIpZPLrTFhfMFn5K5VkjUKVluLTxZ3P2v5TWsEE=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=HuKsuY+eqO+A5PXgNMu8MX+x2WaM5UnMlzLnxerWZETbbSWDWVXnW1VhGg7pPK+xo
- 105L/fgGz6B9tFDyC3nwOyHLdpuuvHFDQsBhlEQJtIchsXgRZdzFUsCVLY+PJ2qu9v
- tYHvP3WQX/qrZCrvvo0VDiyx89qasQwsBS/h9YZw=
+ b=g7c5SyZZT6Zq8zJcs7lELf9ENGqIJrTY1K8TN0SnqUBmDOtVgzwuLqzGeDHKGyVRQ
+ lj9S8EE9fqkp5cgD2AX3lCDtvNKRKtootihwVhEMWPId8da+rT2m3wXQtkwVclHGWe
+ +3LUdG7rGfwqnbJILBO4DM5BJs/DnK/O2os08ITE=
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
  Bartosz Golaszewski <bgolaszewski@baylibre.com>,
@@ -61,15 +61,15 @@ To: Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
  linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
  linux-pm@vger.kernel.org, linux-watchdog@vger.kernel.org
-Subject: [PATCH 15/22] dt-bindings: arm: fsl: Add ZII Ultra boards binding
-Date: Sun, 23 Aug 2020 18:15:43 +0200
-Message-Id: <20200823161550.3981-15-krzk@kernel.org>
+Subject: [PATCH 17/22] arm64: dts: imx8mq-evk: Add hog suffix to wl-reg-on
+Date: Sun, 23 Aug 2020 18:15:45 +0200
+Message-Id: <20200823161550.3981-17-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200823161550.3981-1-krzk@kernel.org>
 References: <20200823161550.3981-1-krzk@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200823_121707_901095_B4278A0F 
-X-CRM114-Status: GOOD (  11.57  )
+X-CRM114-CacheID: sfid-20200823_121717_161079_28B09AF5 
+X-CRM114-Status: GOOD (  14.93  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,32 +89,28 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Document the binding for Zodiac Inflight Innovations Ultra Boards.
+According to device tree specification, device node names should be
+somewhat generic and reflecting the function of the device so add the
+"hog" suffix to wl-reg-on GPIO hog.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- Documentation/devicetree/bindings/arm/fsl.yaml | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/arm64/boot/dts/freescale/imx8mq-evk.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-index 93a21b10d115..f2e670e9ae54 100644
---- a/Documentation/devicetree/bindings/arm/fsl.yaml
-+++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-@@ -379,6 +379,14 @@ properties:
-               - technexion,pico-pi-imx8m  # TechNexion PICO-PI-8M evk
-           - const: fsl,imx8mq
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-evk.dts b/arch/arm64/boot/dts/freescale/imx8mq-evk.dts
+index 8aa9cd8e495a..a088831d2e24 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mq-evk.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mq-evk.dts
+@@ -157,7 +157,7 @@
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_wifi_reset>;
  
-+      - description: Zodiac Inflight Innovations Ultra Boards
-+        items:
-+          - enum:
-+              - zii,imx8mq-ultra-rmb3
-+              - zii,imx8mq-ultra-zest
-+          - const: zii,imx8mq-ultra
-+          - const: fsl,imx8mq
-+
-       - description: i.MX8QXP based Boards
-         items:
-           - enum:
+-	wl-reg-on {
++	wl-reg-on-hog {
+ 		gpio-hog;
+ 		gpios = <29 GPIO_ACTIVE_HIGH>;
+ 		output-high;
 -- 
 2.17.1
 
