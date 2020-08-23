@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DE6CC433E3
-	for <linux-mtd@archiver.kernel.org>; Sun, 23 Aug 2020 16:17:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29EADC433DF
+	for <linux-mtd@archiver.kernel.org>; Sun, 23 Aug 2020 16:18:28 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 112362075B
-	for <linux-mtd@archiver.kernel.org>; Sun, 23 Aug 2020 16:17:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DE86D2072D
+	for <linux-mtd@archiver.kernel.org>; Sun, 23 Aug 2020 16:18:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VL+kkeCg";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="J9UTaE5w"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 112362075B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XE5jgUKD";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="wxkdkw0e"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE86D2072D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,30 +26,30 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=G4f5AQZSGjynrddtv6VpnOnSu+FlBQo+sxDYULPtk9s=; b=VL+kkeCgaqBXz9bPq6F6uvlxsL
-	khZnGlqU75lj0GRmRR3mh6snrZx5Q4vuJQ2CnQW2flehjoC227aNIaSwKejFIPcAxYiE9hc/CkDRl
-	4zU2eT+vrGOFJkVrGYwZK+WmONx2uMQzVYIAAegjOQtynFSZRtUx1bVnB+yk2T3Vb2lBJKA+jP49G
-	/Lcf5XYi40e+AGaDEUiyvSyoLJ8ys/DAgVQo8JqoHjODfRRIeVbp2rsmWi8Pn5a6Jhxq9qdx3K0mS
-	Y+H6rfOTHT0OPwvi3iTiNX4S0paDotPx9iizWxs+cYQGDwLFD6OoV/TbiF5pHd9jUKF6cwTOjC66Y
-	kYkKPBeQ==;
+	bh=LX4AdfeTGoF02z45rPfO7FI7l8slLRI5kTnO2D5a7mE=; b=XE5jgUKD+0L2e621jiEDhW9RA2
+	/L8PFnq5Rahy+l7B5dDh+4DuPVTGjlsFEjLF9m7x67qH+WcWrjJHDTFBEUIH5II9Jr1pnzbFKUezp
+	AJaNWzU4sG5Kj7bBR5UV4GZOrbIhqhN1+l3EP1gNvHjq2SbQG/lL0tvbrw6gF5mTtXq9zHo9JgkRg
+	bozNTG6kABbNcPwzuV9dNg5/qsQ66OmUdTudjuGbmgJcvgIa/A+HZvsLNZMbq/tiRPiFG8Zdlnafu
+	brNdXY59rIDwX0RecwlS8Q5JXuDIiYIpCDuIaVfRrlY3/nAPpRImteevK9oIG5GbY+YR8Zdcja/4F
+	Orm2Odag==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1k9sg8-0004TC-09; Sun, 23 Aug 2020 16:17:08 +0000
+	id 1k9sgo-0004rO-Kb; Sun, 23 Aug 2020 16:17:50 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k9sfR-0004Dl-HG; Sun, 23 Aug 2020 16:16:26 +0000
+ id 1k9sfW-0004Ev-56; Sun, 23 Aug 2020 16:16:31 +0000
 Received: from kozik-lap.proceq-device.com (unknown [194.230.155.216])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id CC9C720767;
- Sun, 23 Aug 2020 16:16:20 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 5EC4420825;
+ Sun, 23 Aug 2020 16:16:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598199384;
- bh=yKCM7tLnXxMws8MTZ9jhKA97yUjAzHOZPP6ETkwSECU=;
+ s=default; t=1598199389;
+ bh=Liei5u7Kko26cAURdkAPcV9O3qy3rpq8tXPf8OiZqZo=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=J9UTaE5wLzgKph+nZVaiHPQI/bQFi3jkQu3Bq/mCJqqVDhAzVHrOGSla5kcuHNpfW
- Rjsz3FrMJmE0UPj9VM21JQKK7tMGqF9soY6qz0m7GmBM3jaasdWJw1GufujloLb+5m
- +QbsRgkisM82EefUDSBdUUPuwPJ4IegaiTipCzQA=
+ b=wxkdkw0e4znBk8K1vRRtrpc6yINYhcFR9O6Lq97w5OXwwhp+02P5l8gyUPkWWPaUN
+ Ilt1eeqqS4DBKiyA+nC/pfv1Zi4A/glarIy1r7EQDteMgSJr6eeYgS5lpZW1uLKKA5
+ 35U8V/ZIZeTUj3u8e+mr3zyCDe4zNfdUOlRPMTjU=
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
  Bartosz Golaszewski <bgolaszewski@baylibre.com>,
@@ -61,15 +61,16 @@ To: Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
  linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
  linux-pm@vger.kernel.org, linux-watchdog@vger.kernel.org
-Subject: [PATCH 06/22] dt-bindings: pwm: imx-pwm: Add i.MX 8M compatibles
-Date: Sun, 23 Aug 2020 18:15:34 +0200
-Message-Id: <20200823161550.3981-6-krzk@kernel.org>
+Subject: [PATCH 07/22] dt-bindings: serial: fsl-imx-uart: imx-pwm: Add i.MX 8M
+ compatibles
+Date: Sun, 23 Aug 2020 18:15:35 +0200
+Message-Id: <20200823161550.3981-7-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200823161550.3981-1-krzk@kernel.org>
 References: <20200823161550.3981-1-krzk@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200823_121625_682218_A50E139A 
-X-CRM114-Status: GOOD (  11.57  )
+X-CRM114-CacheID: sfid-20200823_121630_352783_C7158B17 
+X-CRM114-Status: GOOD (  11.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,34 +105,24 @@ to fix dtbs_check warnings like:
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- Documentation/devicetree/bindings/pwm/imx-pwm.yaml | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/serial/fsl-imx-uart.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/pwm/imx-pwm.yaml b/Documentation/devicetree/bindings/pwm/imx-pwm.yaml
-index 01df06777cba..473863eb67e5 100644
---- a/Documentation/devicetree/bindings/pwm/imx-pwm.yaml
-+++ b/Documentation/devicetree/bindings/pwm/imx-pwm.yaml
-@@ -19,9 +19,17 @@ properties:
-       - 3
- 
-   compatible:
--    enum:
--      - fsl,imx1-pwm
--      - fsl,imx27-pwm
-+    oneOf:
-+      - enum:
-+          - fsl,imx1-pwm
-+          - fsl,imx27-pwm
-+      - items:
-+          - enum:
-+              - fsl,imx8mm-pwm
-+              - fsl,imx8mn-pwm
-+              - fsl,imx8mp-pwm
-+              - fsl,imx8mq-pwm
-+          - const: fsl,imx27-pwm
+diff --git a/Documentation/devicetree/bindings/serial/fsl-imx-uart.yaml b/Documentation/devicetree/bindings/serial/fsl-imx-uart.yaml
+index cba3f83ccd5f..3d896173b3b0 100644
+--- a/Documentation/devicetree/bindings/serial/fsl-imx-uart.yaml
++++ b/Documentation/devicetree/bindings/serial/fsl-imx-uart.yaml
+@@ -36,6 +36,10 @@ properties:
+             - fsl,imx6sx-uart
+             - fsl,imx6ul-uart
+             - fsl,imx7d-uart
++            - fsl,imx8mm-uart
++            - fsl,imx8mn-uart
++            - fsl,imx8mp-uart
++            - fsl,imx8mq-uart
+           - const: fsl,imx6q-uart
  
    reg:
-     maxItems: 1
 -- 
 2.17.1
 
