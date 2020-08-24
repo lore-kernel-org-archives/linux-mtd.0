@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B84EC433E1
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 16:34:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 60449C433DF
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 16:35:17 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2DE2420738
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 16:34:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3EDFA22BED
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 16:35:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ykBBoeKL";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="bz8SqDs4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2DE2420738
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LPLiYeVp";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="HTcV7Hq+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3EDFA22BED
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,30 +26,30 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=xo678zREGDmY1znkKGeIxtNZtywwj79NRgihLQETBhg=; b=ykBBoeKLlBv2IVSw3DMUOuNTOD
-	db8lkEX9r2gg5sme2BBdwZTY27lgIockkUSl+5lOhax9wQUvO3antr/aJt2cks1/KJ/D1StzRuJsy
-	z9PUVnh8IT/xi4lwNbIuDh5DBMCaPptxCFrXzkLU8XEk4ojcIQJFssrkERi6fgISs9r8zJAvesKk8
-	3cVlV7OaspxdQki6eh9psF1XvVioTgj34J/tLA36q2lxBZhsrUBFWA5qXQ6jq7vUrvVheAsDiwxzw
-	5yOnmor288nsfoiAKIl/ZCwPNeSqUp5Jb5hH1F5+zN3FeM7eAn8euKlLmKXd7TLNidjgSmEK/7GmW
-	DnZA9bsw==;
+	bh=7163DyAflGv7Bl/MNvFNPUoWVn9LBurE9F8cVy26DAI=; b=LPLiYeVpRf9Xh0qgVgYQ/66JBh
+	9RFd9Jkj4evmphsTacbRaoXKL43SFJRerwOYBUc5/1SfNcl3zypX/H+SYw9zki9+M1ME4PK9VI1hM
+	dV3PWo7VCugAKoWjeZ1jN9IWZM9ZHAvQse1UvP99agTPGWg3p8v2vcltz5EC8pzJjiRDMasRFmzzd
+	Kjf7fVnKLFoGRb3lsgMTYXepit/ri93Bhf9WKwbMPNhOOVvlDbxuL9V8AHOT0iN05hdYkUbFR3lRL
+	kUqHpYZEv+beVQegpcumDjFyrZB5ZjA/mP0swwVb78tMAwgTP8EiO83JeafnvL7Xu9JzpIKMgL25o
+	nnnoZ/WQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kAFPq-0002YV-5Z; Mon, 24 Aug 2020 16:33:50 +0000
+	id 1kAFQ3-0002fq-7D; Mon, 24 Aug 2020 16:34:03 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kAFL7-0007tz-RZ; Mon, 24 Aug 2020 16:29:01 +0000
+ id 1kAFLD-0007wk-OE; Mon, 24 Aug 2020 16:29:05 +0000
 Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 12E472074D;
- Mon, 24 Aug 2020 16:28:48 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id A084820838;
+ Mon, 24 Aug 2020 16:28:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598286535;
- bh=gOESEJc7aA4Bdlbw/0GS4VThO3taNCzjhxOFB6At2XY=;
+ s=default; t=1598286541;
+ bh=1X/cRmfopwt+rCsRoYRr5R5QW8XW/gYCIDl6hjON3qs=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=bz8SqDs4rFnLVFy9fjZrXh8NVo9GVwojru9OTglcSdI3wl17KPorg7NtyoHqhV4bN
- 47R46lF9BdF+EUDQpoUn2zWx/P1IYHdJBWFsTPBLXqFCZqBVbG9TORCWgoQeKs/d4J
- hyGPPb1c/43B98AXJeRQuRd6GeITtXc3WoEyGQ/0=
+ b=HTcV7Hq+Wz0fVWlImWpXbdNqymi7ZC+FwJ/OIwCOfq8K9wbZIjSZtBzDx6PFIz8fU
+ PIP0T6mdf09RI7GCUVUqF7RowOAcTp0QisWNDZj3RKLjEprWRBPyG38N/o8OlxbQ1l
+ vnvPxUrFusOoVuYCi0ANy/2bdox1qweZxaKgVQ/E=
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
  Bartosz Golaszewski <bgolaszewski@baylibre.com>,
@@ -70,15 +70,16 @@ To: Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
  linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
  linux-pm@vger.kernel.org, linux-watchdog@vger.kernel.org
-Subject: [PATCH v2 15/19] dt-bindings: arm: fsl: Add ZII Ultra boards binding
-Date: Mon, 24 Aug 2020 18:26:48 +0200
-Message-Id: <20200824162652.21047-15-krzk@kernel.org>
+Subject: [PATCH v2 16/19] dt-bindings: interrupt-controller: fsl,
+ irqsteer: Fix compatible matching
+Date: Mon, 24 Aug 2020 18:26:49 +0200
+Message-Id: <20200824162652.21047-16-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200824162652.21047-1-krzk@kernel.org>
 References: <20200824162652.21047-1-krzk@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200824_122858_293420_7B4239BF 
-X-CRM114-Status: GOOD (  14.00  )
+X-CRM114-CacheID: sfid-20200824_122903_975916_D84B97B8 
+X-CRM114-Status: GOOD (  14.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,32 +98,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Document the binding for Zodiac Inflight Innovations Ultra Boards.
+The i.MX 8M DTSes use two compatibles so update the binding to fix
+dtbs_check warnings like:
+
+  arch/arm64/boot/dts/freescale/imx8mq-thor96.dt.yaml: interrupt-controller@32e2d000:
+    compatible: ['fsl,imx8m-irqsteer', 'fsl,imx-irqsteer'] is too long
+    From schema: Domentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.yaml
+
+  arch/arm64/boot/dts/freescale/imx8mq-thor96.dt.yaml: interrupt-controller@32e2d000:
+    compatible: Additional items are not allowed ('fsl,imx-irqsteer' was unexpected)
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- Documentation/devicetree/bindings/arm/fsl.yaml | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ .../bindings/interrupt-controller/fsl,irqsteer.yaml       | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-index 377fc2a4c159..b48dbf924cfe 100644
---- a/Documentation/devicetree/bindings/arm/fsl.yaml
-+++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-@@ -373,6 +373,14 @@ properties:
-               - technexion,pico-pi-imx8m  # TechNexion PICO-PI-8M evk
-           - const: fsl,imx8mq
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.yaml b/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.yaml
+index 360a575ef8b0..3b11a1a15398 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.yaml
+@@ -11,9 +11,11 @@ maintainers:
  
-+      - description: Zodiac Inflight Innovations Ultra Boards
-+        items:
-+          - enum:
-+              - zii,imx8mq-ultra-rmb3
-+              - zii,imx8mq-ultra-zest
-+          - const: zii,imx8mq-ultra
-+          - const: fsl,imx8mq
-+
-       - description: i.MX8QXP based Boards
-         items:
-           - enum:
+ properties:
+   compatible:
+-    enum:
+-      - fsl,imx8m-irqsteer
+-      - fsl,imx-irqsteer
++    oneOf:
++      - const: fsl,imx-irqsteer
++      - items:
++          - const: fsl,imx8m-irqsteer
++          - const: fsl,imx-irqsteer
+ 
+   reg:
+     maxItems: 1
 -- 
 2.17.1
 
