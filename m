@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FC8EC433DF
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 16:31:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 35FC3C433E1
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 16:31:30 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 34E0420738
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 16:31:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F38682067C
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 16:31:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lWXAI9o0";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZFNO5Ddk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 34E0420738
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="V9NcuRed";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Lc5v+i6R"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F38682067C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,30 +26,30 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=RNc5dJMURsJfEk9SbW8OpF5YhhT7jSjXsASPtAggvbQ=; b=lWXAI9o0umo04baDE1AyQBwuX/
-	XNUe/5wrkw5+LTGszTpcyZ9Gd3dg8NqpVY6dkCX0DjF9nqsqJewbuYmHdDamT35FHNtU2zyMPouXM
-	JgOQMpb3txZZ3qV83Ejaf7BwY2sIQKHoR7eUlSHgcjGP6ISK0d43xzNu0VJWU5Rwsz2Jz+glnStvH
-	mnp93Dg412C1JkMwINsaQaje42adRJ31s6KL8LavoivLpkmkUF1fEdASZVn72L0LpbCcYBk3cMO41
-	HBjxZBlREUjYhDcG6IqrhhDC2MYCzEtreRcQO+l+ex8B/SkEtMIINsjpsA02oirAk0sbtJFcGyTTs
-	28d2ni6A==;
+	bh=jiStYt2Td0IPM3nZ/nYktjKp3j254vUO9ahnSggENT8=; b=V9NcuRedAUoesYxKJkd1VkEA7R
+	cuc5uc5RC3pN2fHRjNfFVdgIL2TgcSCX2wai90OzVQakadCt3xZcTQKyCT+XnCGBeGtRH7EoMjNYO
+	SBOw85E54jv+KzMFPj7gvKWM6mmvFz40NSHpy/sHeevkEytJOoRiOsQ2uz/U+iTsYtBhdInIkBSgo
+	m0mKW4ZES5GYxA6DTYANW9lRklIa0Zqbwp6XdRXLdTXMe3LmC8reHtJcrMXr8UFPzks+AgcXEABqW
+	5OMzxcx0sERw5CT3B/ApmrRQqAyuhFCxthvtx6oYRdXuaKpYAJKoTU2y6zZXb7ckP9RShdUXpHM8Q
+	VB0LbMHg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kAFM8-0008UG-N6; Mon, 24 Aug 2020 16:30:00 +0000
+	id 1kAFMp-0000eG-7p; Mon, 24 Aug 2020 16:30:43 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kAFKS-0007Wz-EK; Mon, 24 Aug 2020 16:28:17 +0000
+ id 1kAFKg-0007el-S3; Mon, 24 Aug 2020 16:28:32 +0000
 Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 3037A2074D;
- Mon, 24 Aug 2020 16:28:09 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id AB4CF20866;
+ Mon, 24 Aug 2020 16:28:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598286495;
- bh=D0lGql3068l0qoya1++oR3DiMvBwPOUE4frjDG+x5vE=;
+ s=default; t=1598286508;
+ bh=zn6SwQvRqTQI9Av55ZFXzkgJGiEIGN9PfDf4Q2x9mwU=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ZFNO5DdkEiEzZ/CI+2ciB/9994joymxRDDFV80yw9eyP9da5eItooQLa42+hABTXX
- rvJ1Z4+jH5dpazhjihHiJN+0JgvVCBxCNPMqi8bYa6CXdeoz741ZrpAkZUnrkAzU+W
- 7jG1Ex7uw8jDCBFUndsBneeOxMmYKI9I9sOMWInE=
+ b=Lc5v+i6R4868rSns6Pnlf3sYqSq41pDHXT2qEDxgaiUFWD3d3G1R3SANTYpTyO7vO
+ fHq1kqFHdq/oZDj2voanWVtglRZaByLbvzfMkHB+k26zkka8r+ETpFbq/4doPDP0RW
+ 1NbyfLC/2VAAfJwSMAYzmWSCk4XnkNAuljsWtaCM=
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
  Bartosz Golaszewski <bgolaszewski@baylibre.com>,
@@ -70,15 +70,16 @@ To: Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
  linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
  linux-pm@vger.kernel.org, linux-watchdog@vger.kernel.org
-Subject: [PATCH v2 09/19] dt-bindings: mtd: gpmi-nand: Add i.MX 8M compatibles
-Date: Mon, 24 Aug 2020 18:26:42 +0200
-Message-Id: <20200824162652.21047-9-krzk@kernel.org>
+Subject: [PATCH v2 11/19] dt-bindings: thermal: imx8mm-thermal: Add i.MX 8M
+ Nano compatible
+Date: Mon, 24 Aug 2020 18:26:44 +0200
+Message-Id: <20200824162652.21047-11-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200824162652.21047-1-krzk@kernel.org>
 References: <20200824162652.21047-1-krzk@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200824_122816_754538_FE95C9DD 
-X-CRM114-Status: GOOD (  13.74  )
+X-CRM114-CacheID: sfid-20200824_122831_129231_4FDB8B30 
+X-CRM114-Status: GOOD (  13.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,50 +101,42 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DTSes with new i.MX 8M SoCs introduce their own compatibles so add them
 to fix dtbs_check warnings like:
 
-  arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml: nand-controller@33002000:
-    compatible:0: 'fsl,imx8mm-gpmi-nand' is not one of ['fsl,imx23-gpmi-nand', 'fsl,imx28-gpmi-nand', 'fsl,imx6q-gpmi-nand', 'fsl,imx6sx-gpmi-nand', 'fsl,imx7d-gpmi-nand']
-    From schema: Documentation/devicetree/bindings/mtd/gpmi-nand.yaml
+  arch/arm64/boot/dts/freescale/imx8mn-evk.dt.yaml: tmu@30260000:
+    compatible:0: 'fsl,imx8mn-tmu' is not one of ['fsl,imx8mm-tmu', 'fsl,imx8mp-tmu']
+    From schema: Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml
 
-  arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml: nand-controller@33002000:
-    compatible: ['fsl,imx8mm-gpmi-nand', 'fsl,imx7d-gpmi-nand'] is too long
+  arch/arm64/boot/dts/freescale/imx8mn-evk.dt.yaml: tmu@30260000:
+    compatible: ['fsl,imx8mn-tmu', 'fsl,imx8mm-tmu'] is too long
 
-  arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml: nand-controller@33002000:
-    compatible: Additional items are not allowed ('fsl,imx7d-gpmi-nand' was unexpected)
+  arch/arm64/boot/dts/freescale/imx8mn-evk.dt.yaml: tmu@30260000:
+    compatible: Additional items are not allowed ('fsl,imx8mm-tmu' was unexpected)
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- .../devicetree/bindings/mtd/gpmi-nand.yaml     | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+ .../devicetree/bindings/thermal/imx8mm-thermal.yaml    | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml b/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml
-index 3201372b7f85..28ff8c581837 100644
---- a/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml
-+++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml
-@@ -20,12 +20,18 @@ description: |
+diff --git a/Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml b/Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml
+index 38852877b8e3..89c54e08ee61 100644
+--- a/Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml
++++ b/Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml
+@@ -18,9 +18,13 @@ description: |
  
  properties:
    compatible:
 -    enum:
--      - fsl,imx23-gpmi-nand
--      - fsl,imx28-gpmi-nand
--      - fsl,imx6q-gpmi-nand
--      - fsl,imx6sx-gpmi-nand
--      - fsl,imx7d-gpmi-nand
+-      - fsl,imx8mm-tmu
+-      - fsl,imx8mp-tmu
 +    oneOf:
 +      - enum:
-+          - fsl,imx23-gpmi-nand
-+          - fsl,imx28-gpmi-nand
-+          - fsl,imx6q-gpmi-nand
-+          - fsl,imx6sx-gpmi-nand
-+          - fsl,imx7d-gpmi-nand
++          - fsl,imx8mm-tmu
++          - fsl,imx8mp-tmu
 +      - items:
-+          - enum:
-+              - fsl,imx8mm-gpmi-nand
-+              - fsl,imx8mn-gpmi-nand
-+          - const: fsl,imx7d-gpmi-nand
++          - const: fsl,imx8mn-tmu
++          - const: fsl,imx8mm-tmu
  
    reg:
-     items:
+     maxItems: 1
 -- 
 2.17.1
 
