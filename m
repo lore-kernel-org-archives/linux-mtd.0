@@ -7,49 +7,49 @@ X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53571C433E1
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4826C433E3
 	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 16:28:32 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C2DA020738
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 16:28:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B0FA32072D
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 16:28:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NvLhZS1D";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Znz4cKVr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C2DA020738
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ObwUzaa2";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="i+a4FgzI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B0FA32072D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=14NdkVy6jtFXB6jbmX0BuRPXUrXaSktcOEpHQCceGb0=; b=NvLhZS1DVO9c5hv+cs8IQs7z/k
-	WN1yraDml04wIq+PEDHvG5W0nHrZ2BQv1MjElnFRswHa1/mpeYHGGMQ/ymxmN/HSKISu52TSiQwJE
-	ZGQU0/ei6ESflpVUjvcT/iOdjeE9oUmeSPrkwB6tZ6o4tTQF/fEimuV/tVsRBOQuhuThnlWSrp6es
-	+3Ad5vFTVEZGREncbrjJEQiPGRNDhdOx4MMuRRdqf/rL3DzHrJJkQergC/xg/G4j6sfAflgrHA6+7
-	G0/KIGi/Y9x+wiq6XmWsJMBcCtaNJ+TRIrLmOOUVCrYJ0sdiEIMybrdk5ZLhRuGoEZBFaHXB7KMYv
-	QDtljz7A==;
+	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
+	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=Iy7clBZHuQajU6cQCv490OCMGpfYv545+A0J9eEm6Pg=; b=ObwUzaa2io2NWQ0ff6SIb8yCjM
+	xOxTqYeGBYWNDCGxOBI06nOhQ9WVBKawMoH5B7vcfCgOPRswHKZRlp7rgduF+vi0xTq1pWUKk/mix
+	vxmMK2gI7GfAbCEptD03g3hxeGxhy16/a84oYUmBl8vDy/cgUn6U0bynmAmumu9Zodsm63IKLCEQx
+	6Iw4Rn3ApmWrypCL+tMHUxOSYofr4vJ0MdfanKDrxfRPC9X0tYOGxmxE+AU1SrK0s9EkMfLl+WV9t
+	lJpoNbGFBvngZxnFF3/MbNJOt4/ks9XyeM79ac1/0hH8glNsr4kaq8SCEnHBfl5WqLwG8HzPRerP8
+	3Ozdv6Tg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kAFJe-0007D9-P3; Mon, 24 Aug 2020 16:27:26 +0000
+	id 1kAFJj-0007Eb-7G; Mon, 24 Aug 2020 16:27:31 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kAFJV-0007CE-SA; Mon, 24 Aug 2020 16:27:18 +0000
+ id 1kAFJd-0007DX-JO; Mon, 24 Aug 2020 16:27:26 +0000
 Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A7E5F2072D;
- Mon, 24 Aug 2020 16:27:09 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 8336C20738;
+ Mon, 24 Aug 2020 16:27:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598286437;
- bh=lnBHoUXioLOrOWNKvWtcrwmt13u6QaY0trxOTodHtew=;
- h=From:To:Cc:Subject:Date:From;
- b=Znz4cKVrnSCgYw35MMVSPppJ5hjlovEHC0R/6Thnt26/cwLk2AL+Vy0L/Q8VJDg2z
- 0YaNbOuluJaThIJ/UdVJU13Pvd1GJutNSYP8bKDyNdneetH6PEX0IKFOEeU0GmtueK
- tTgVmwEG0W5wMKi6KelLbGhNcQGJlRHl+mt+/mRA=
+ s=default; t=1598286445;
+ bh=FEYDtXSw6BUsAMYwPOgqkJY00wPcLoi3PHhcOzPS6no=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=i+a4FgzI8qpNmaQE/z5i1hOu8tvqTu0hjEOdu2di2GBw6rNXYuY5YW7MWaZ8AFxJ0
+ DetwQ3kBNoco8W8M5cuap3blj/qUUw6Uqc+/8BIEt8YUnuymUNccV7WcXAi9PWgzW7
+ KpqvE5a0++yv3JF7IW8FvdjNPeuThC4k1R4wPEKQ=
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
  Bartosz Golaszewski <bgolaszewski@baylibre.com>,
@@ -70,14 +70,16 @@ To: Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
  linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
  linux-pm@vger.kernel.org, linux-watchdog@vger.kernel.org
-Subject: [PATCH v2 01/19] dt-bindings: gpio: fsl-imx-gpio: Add i.MX 8
- compatibles
-Date: Mon, 24 Aug 2020 18:26:34 +0200
-Message-Id: <20200824162652.21047-1-krzk@kernel.org>
+Subject: [PATCH v2 02/19] dt-bindings: gpio: fsl-imx-gpio: Add gpio-ranges
+ property
+Date: Mon, 24 Aug 2020 18:26:35 +0200
+Message-Id: <20200824162652.21047-2-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200824162652.21047-1-krzk@kernel.org>
+References: <20200824162652.21047-1-krzk@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200824_122718_033326_B882C9EF 
-X-CRM114-Status: GOOD (  13.63  )
+X-CRM114-CacheID: sfid-20200824_122725_740122_4FBA0EA2 
+X-CRM114-Status: GOOD (  14.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,56 +98,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-DTSes with new i.MX 8 SoCs introduce their own compatibles so add them
-to fix dtbs_check warnings like:
+The GPIO controller node can have gpio-ranges property.  This fixes
+dtbs_check warnings like:
 
-  arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml: gpio@30200000:
-    compatible:0: 'fsl,imx8mm-gpio' is not one of ['fsl,imx1-gpio', 'fsl,imx21-gpio', 'fsl,imx31-gpio', 'fsl,imx35-gpio', 'fsl,imx7d-gpio']
+  arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml: gpio@30200000: 'gpio-ranges' does not match any of the regexes: 'pinctrl-[0-9]+'
     From schema: Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
 
-  arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml: gpio@30200000:
-    compatible: ['fsl,imx8mm-gpio', 'fsl,imx35-gpio'] is too long
-
-  arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml: gpio@30200000:
-    compatible: Additional items are not allowed ('fsl,imx35-gpio' was unexpected)
-
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+
 ---
- .../bindings/gpio/fsl-imx-gpio.yaml           | 21 +++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
+
+Changes since v1:
+1. Remove maxItems
+---
+ Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml b/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
-index 0b223abe8cfb..454db20c2d1a 100644
+index 454db20c2d1a..dffd9171ea66 100644
 --- a/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
 +++ b/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
-@@ -11,12 +11,21 @@ maintainers:
+@@ -51,6 +51,8 @@ properties:
  
- properties:
-   compatible:
--    enum:
--      - fsl,imx1-gpio
--      - fsl,imx21-gpio
--      - fsl,imx31-gpio
--      - fsl,imx35-gpio
--      - fsl,imx7d-gpio
-+    oneOf:
-+      - enum:
-+          - fsl,imx1-gpio
-+          - fsl,imx21-gpio
-+          - fsl,imx31-gpio
-+          - fsl,imx35-gpio
-+          - fsl,imx7d-gpio
-+      - items:
-+          - enum:
-+              - fsl,imx8mm-gpio
-+              - fsl,imx8mn-gpio
-+              - fsl,imx8mp-gpio
-+              - fsl,imx8mq-gpio
-+              - fsl,imx8qxp-gpio
-+          - const: fsl,imx35-gpio
+   gpio-controller: true
  
-   reg:
-     maxItems: 1
++  gpio-ranges: true
++
+ required:
+   - compatible
+   - reg
 -- 
 2.17.1
 
