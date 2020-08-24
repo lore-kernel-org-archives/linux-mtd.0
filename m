@@ -2,94 +2,79 @@ Return-Path: <SRS0=BSfO=CC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F33A4C433E1
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 09:10:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 955A8C433E1
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 09:12:17 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C1F86206F0
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 09:10:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 66D8B206F0
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 09:12:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rwIflfZg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C1F86206F0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="emT7vmhV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 66D8B206F0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=NEyF1Yam+xVVTl+q/wUaJZaK90GPVHOhrieg3tP2E/M=; b=rwIflfZgx/4IoAyvFB6fS+Bly
-	OyVmPyXEifv0kQ0UXhdpCzkGqrcoJpk28dPkt0GpZpc5c4SK2VT3lJteWN5XM97NovEgPxWI731Jj
-	0vCNbKMJMjq1kvKi1Y5NVi/U+X2UXJdv1+T2VqvuZOb5DZcf5Tzy7dW4ud+o7PhDzMNLMQn1qWBUA
-	0th3o8ofWq7+XlVdSEt9T2fVoWtYSX85fMJO5lkfjzgDVchLm05URY+0oPsRYWjUesQJHaS4EGGTf
-	Qkcm6nKg4vM8B9PV/lFJO3hOhrdAfLT3jrygOxH6o2jP01fYmug6/FBLhuTklY+6/+une7XD1DGtb
-	bd6h1QOag==;
+	 bh=QkqNshQiCk83sf/MNusly8uLhL8HKaR8Hn83g76PHlw=; b=emT7vmhVSVddtDRUYZEIeK+2G
+	hPdZQDwt/Gcc/pTq3ODDhxI9iQ7uZuaB9nkHf5r58PlpUsJqiET1SKsIw5PLal7ZlAVRWFjmGCLvn
+	CHTDrJWxVbO0Ev4pjGqZnZNN3A49amHzOcDYm9oaVbXqGZjhVaZHScgDsYo4sX2SU1YZ4NOpiQSpL
+	VJqXG1e0bEyXVxJpAGgZCMqQpoBTyBd50fAGtbu19XQzHV1Wp1tc26ODW4s6x7smUXilOj13Y8QO5
+	8CU77BX9T10X63GZ7LsCxSa2JiGaUt1AqOcpreQLqpEmA4RdVo9DAEykZn1QhRDmlWN9iKEZ2Ca/a
+	pugpAbhmA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kA8TO-0006Zj-R1; Mon, 24 Aug 2020 09:09:02 +0000
-Received: from mout.kundenserver.de ([217.72.192.75])
+	id 1kA8VW-00077X-2P; Mon, 24 Aug 2020 09:11:14 +0000
+Received: from mail-wr1-f67.google.com ([209.85.221.67])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kA8TK-0006Xh-Rc
- for linux-mtd@lists.infradead.org; Mon, 24 Aug 2020 09:09:00 +0000
-Received: from mail-qv1-f51.google.com ([209.85.219.51]) by
- mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MKt3r-1jvdtJ4A17-00LAtD for <linux-mtd@lists.infradead.org>; Mon, 24 Aug
- 2020 11:08:53 +0200
-Received: by mail-qv1-f51.google.com with SMTP id dd12so3407875qvb.0
- for <linux-mtd@lists.infradead.org>; Mon, 24 Aug 2020 02:08:50 -0700 (PDT)
-X-Gm-Message-State: AOAM532Ffc/qgoCEecYoi9IuqAHfuACtMZFrH7OqycIqLyGt/7yzb0l6
- iCeVQnZpC+hA0BKjGbjb8OUolWq6q3lrUPkClu4=
-X-Google-Smtp-Source: ABdhPJwZX+cjJ6iQYsZP8QaU/HljAAPbR5R+V1AQGPTEA6x/4DhuNUmNMX30QFbj29m2jqEE9gD2C7ba4jC+Fn0bWIM=
-X-Received: by 2002:ad4:450e:: with SMTP id k14mr3691202qvu.211.1598260129733; 
- Mon, 24 Aug 2020 02:08:49 -0700 (PDT)
+ id 1kA8VP-00074c-KM; Mon, 24 Aug 2020 09:11:08 +0000
+Received: by mail-wr1-f67.google.com with SMTP id a15so7874145wrh.10;
+ Mon, 24 Aug 2020 02:11:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=pUF3QN5qpBvG5fN8G2Ybjf+ixCnkDOi3rCaIBYZPN7k=;
+ b=FYgNPMRObWuMT6UG2AhAauPa4BIovwrhvlzfDU+NGCd5p4BIrT7y8ETmH4gvK0nJzc
+ BJ8TFW4wGOz7bjY3gcWYq7ZKA8ILbk9PXCiRwtp1e2/V26eSsw3FeNTyY0yyo6gXb5Ri
+ SN3rEFgnAI4BbSqlL+d09pNn0coTmRGd0xCyOBrd9xI6LlTASrfn+UC0YhwPnXSHO92q
+ oqdrn7gWqCX/cWXfAgzb6xOpqZ94a/v8Y+5F5DnhYvbunKaxpN6wXKsZ+EPLf1lpFPA2
+ D3hYbSpJDarE4S0z2Hu0n7Zw5Sa5vl25IQeaQqNWPlyWc31N97FqIsQsSQiPlKXOZ0yU
+ +ShQ==
+X-Gm-Message-State: AOAM531LsJJ9e4t1bFprNPkU/e2uJgwX5QRqfWZoGyqdQo+8hYeEcvk1
+ E8NdXtMOREynCWZaoXMbL4Q=
+X-Google-Smtp-Source: ABdhPJwE3kGFDhN1s/hoJjFR2sSwbpKpOgvJl8AK3ZwbGzN+OM9ankAAiOzMdDiYIc2qELP19gLoww==
+X-Received: by 2002:adf:ea4f:: with SMTP id j15mr4845334wrn.253.1598260266068; 
+ Mon, 24 Aug 2020 02:11:06 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.216])
+ by smtp.googlemail.com with ESMTPSA id y24sm21368601wmi.17.2020.08.24.02.11.04
+ (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+ Mon, 24 Aug 2020 02:11:05 -0700 (PDT)
+Date: Mon, 24 Aug 2020 11:11:02 +0200
+From: Krzysztof Kozlowski <krzk@kernel.org>
+To: Aisheng Dong <aisheng.dong@nxp.com>
+Subject: Re: [PATCH 21/22] arm64: dts: imx8qxp: Remove i.MX7 compatible from
+ USDHC
+Message-ID: <20200824091102.GA20819@kozik-lap>
+References: <20200823161550.3981-1-krzk@kernel.org>
+ <20200823161550.3981-21-krzk@kernel.org>
+ <AM6PR04MB49668B0F67B02B2A33603B4880560@AM6PR04MB4966.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-References: <CAK8P3a3mf8_Y4DWe3WuBO-Xo0N4Jj=-rrtFzD6w0TriGZPu1_g@mail.gmail.com>
- <CAFmMkTFzmC=aY0gR6urLu-8Oq8aeHBUWi-TodG8XhXKCcC057A@mail.gmail.com>
- <CAK8P3a13N_wNORz_3cYHTN8t29pPrY+dJ+g+1Ga_MmG1TmrUQw@mail.gmail.com>
- <CAFmMkTGm3pMsBzEenYOsRbhOZKFhbHiZ5LxPyVmTdYTTRpKzVQ@mail.gmail.com>
- <CAK8P3a2_RV33kiJ0c34aopZ4iG7LYBR-u=-+BbC+Upyjh1T0Eg@mail.gmail.com>
- <CAFmMkTHqQO1Gj7VeXr4Y_Umb1KzZc2Pf=1pDQvPPpb_XeAFPqQ@mail.gmail.com>
- <20200819065721.GA1375436@lahna.fi.intel.com>
- <CAK8P3a0Bq-ucgC4Xue+B_HV97pTX8YRr4hYh1gfrfGBV_H1EUQ@mail.gmail.com>
- <20200819091123.GE1375436@lahna.fi.intel.com>
- <CAK8P3a19MLfQARXEWzCD-ySq4t9nsyryB+con33HsQ193+muMw@mail.gmail.com>
- <20200824082227.GU1375436@lahna.fi.intel.com>
-In-Reply-To: <20200824082227.GU1375436@lahna.fi.intel.com>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 24 Aug 2020 11:08:33 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0==cZDHwZfqvCuvUg9jfjBOBG+AAomE9eqJ2xm-xNLvQ@mail.gmail.com>
-Message-ID: <CAK8P3a0==cZDHwZfqvCuvUg9jfjBOBG+AAomE9eqJ2xm-xNLvQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: intel-spi: Do not try to make the SPI flash
- chip writable
-To: Mika Westerberg <mika.westerberg@linux.intel.com>
-X-Provags-ID: V03:K1:UiM8/1/+uYJB5E48nmjhOWNartMl9OwSg4a9GYDexStiuuXan0n
- 8PU0Iq65dl6OJ1u9bOsX3gX9kCEZ+uYM8bZKKjh9OwkqyjvrMEwyf5usotmqJAu6xkiDOjp
- Pa414fUyAzdbDngd+/Ho/+eXWRCBpjpWuPlhIdiifvG7Dy74Nrhq3w+OOtPf1PyU5dyw6Ht
- eC2FFZ1WiAjuuq12WSaiA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:oB/nPaY1eCE=:yB19sz0j2tTxQsl8qJgscy
- /IAlOXW5x9LVfKuBf6yxYUKTcPWmL4g0qp62tIK0/cMB2bAgP2un/TKTlFYvUkXfuvunVagkc
- W4O85mGaOqxxsr2OSErGKCEA8Pu3kQYLcKtiBJqKxQ2xJkcI2Gmqj7HlPmtxgWFleMavw9Kap
- sYaxr6lcwnXDD8bo8M5y1+miudom4ROJV35wVKeHlNXyqraTEZ97I4D+jP1qIBCWyC8XU1ZGA
- VRuf3VdyjQZPvmq2yqsnE4L64E6xw42icgwAXk+1CXu4ODmpKnHZwOzqjnY9EWpeVqpyfetqq
- SAZeMZSLP4fdNHb+xNf68tqXtWnaazip0fI+xXp224t7E2C+eHUgEmYxNfLJG5yuDn6rHj+jF
- noO/65vAy157UUP1+KQVUvYb2g2NDs9GkSc49zV2Q1QUgF/rN/76iz5ti3/g5yKveASEUzI2S
- SidtnERex5dOlzBic8DjhnXKStykfzPPsKYuerPZH+su14igGUMXaq0MtmwQ17f1tjGqaTgvW
- BCZHJU+5Dw6uQx8n8t67pyfE+QyircM0xWYHVrI2vvPKkTtBhIysl7iQDjNlL6hsEj5KfNC3n
- NNoXbqSUwCS86CItL+t8Rb9kAkVbXG0OGG52vlm3XbXg2tXxyBD/Cqs4SnIrnEZFN7t7moDtQ
- nKhhsRkwwF+rglK5J4Ty3z4fLnMw/KlPsYFGqFxVpwOb+iOzBK5HQVczeUNzJK17isiW4yAIv
- PMbcmUTDDlVTiGOYvK/OTBvCMO3JH8c9kQtGJuqe0uu4P+R/ZUnI238+56dXsnDD3DwRn/FMW
- nc98QhxrtH3dSigjF6x/6mScE8y7Wizt53dgyWXGs+ZxCFKdN4e6tqTolkPxbbhCJvTFbgvqa
- S3Y5jmKQG6/kxmPUzvqsPxFJLb3W9yhDuCM66N39S4GRzeuGM8y8vOF1+cTkC9Zsda1oPcYR1
- wtnFGZL188TMtT/uvfPgKAzOM/HJlerRYVibGer0ftYo6wzXTeEg6
+Content-Disposition: inline
+In-Reply-To: <AM6PR04MB49668B0F67B02B2A33603B4880560@AM6PR04MB4966.eurprd04.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200824_050859_160997_D74B7096 
-X-CRM114-Status: GOOD (  22.29  )
+X-CRM114-CacheID: sfid-20200824_051107_747434_55DF9E4D 
+X-CRM114-Status: GOOD (  22.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,48 +86,102 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Hughes <hughsient@gmail.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+ Anson Huang <anson.huang@nxp.com>,
+ "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+ Fabio Estevam <festevam@gmail.com>, Linus Walleij <linus.walleij@linaro.org>,
+ "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+ "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Daniel Gutson <daniel@eclypsium.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Alex Bazhaniuk <alex@eclypsium.com>
+ "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+ Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ dl-linux-imx <linux-imx@nxp.com>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Thierry Reding <thierry.reding@gmail.com>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Aug 24, 2020 at 10:22 AM Mika Westerberg
-<mika.westerberg@linux.intel.com> wrote:
-> On Sat, Aug 22, 2020 at 06:06:03PM +0200, Arnd Bergmann wrote:
-> > On Wed, Aug 19, 2020 at 11:11 AM Mika Westerberg
-> >
-> > The mtd core just checks both the permissions on the device node (which
-> > default to 0600 without any special udev rules) and the MTD_WRITEABLE
-> > on the underlying device that is controlled by the module parameter
-> > in case of intel-spi{,-platform,-pci}.c.
->
-> OK, thanks.
->
-> Since we cannot really get rid of the module parameter (AFAIK there are
-> users for it), I still think we should just make the "writeable" to
-> apply to the PCI part as well. That should at least make it consistent,
-> and it also solves Daniel's case.
+On Mon, Aug 24, 2020 at 09:00:19AM +0000, Aisheng Dong wrote:
+> > From: Krzysztof Kozlowski <krzk@kernel.org>
+> > Sent: Monday, August 24, 2020 12:16 AM
+> > 
+> > The USDHC on i.MX 8QXP has its own compatible described in bindings and
+> > used in the driver (with its own quirks).  Remove additional fsl,imx7d-usdhc
+> > compatible to fix dtbs_check warnings like:
+> > 
+> >   arch/arm64/boot/dts/freescale/imx8qxp-ai_ml.dt.yaml: mmc@5b010000:
+> >     compatible: ['fsl,imx8qxp-usdhc', 'fsl,imx7d-usdhc'] is too long
+> >     From schema:
+> > /ocumentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
+> > 
+> >   arch/arm64/boot/dts/freescale/imx8qxp-ai_ml.dt.yaml: mmc@5b010000:
+> >     compatible: Additional items are not allowed ('fsl,imx7d-usdhc' was
+> > unexpected)
+> > 
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> 
+> For Patch 19-22, I think we should fix dt binding doc.
 
-Can you explain Daniel's case then? I still don't understand what he
-actually wants.
+Are you sure that these USDHC controllers are compatible with i.MX 7D?
+Could they really run with fsl,imx7d-usdhc compatible?
 
-As I keep repeating, the module parameter *does* apply to the pci
-driver front-end since it determines whether the driver will disallow
-writes to the mtd device without it. The only difference is that the pci
-driver will attempt to set the hardware bit without checking the
-module parameter first, while the platform driver does not. If the
-module parameter is not set however, the state of the hardware
-bit is never checked again.
+The implementation (Linux kernel driver) is different, I guess on
+purpose...
 
-    Arnd
+Best regards,
+Krzysztof
+
+> 
+> Regards
+> Aisheng
+> 
+> > ---
+> >  arch/arm64/boot/dts/freescale/imx8qxp.dtsi | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
+> > b/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
+> > index 61bccb69f09e..26c4fcdfe290 100644
+> > --- a/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
+> > +++ b/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
+> > @@ -362,7 +362,7 @@
+> >  		};
+> > 
+> >  		usdhc1: mmc@5b010000 {
+> > -			compatible = "fsl,imx8qxp-usdhc", "fsl,imx7d-usdhc";
+> > +			compatible = "fsl,imx8qxp-usdhc";
+> >  			interrupts = <GIC_SPI 232 IRQ_TYPE_LEVEL_HIGH>;
+> >  			reg = <0x5b010000 0x10000>;
+> >  			clocks = <&conn_lpcg IMX_CONN_LPCG_SDHC0_IPG_CLK>, @@
+> > -374,7 +374,7 @@
+> >  		};
+> > 
+> >  		usdhc2: mmc@5b020000 {
+> > -			compatible = "fsl,imx8qxp-usdhc", "fsl,imx7d-usdhc";
+> > +			compatible = "fsl,imx8qxp-usdhc";
+> >  			interrupts = <GIC_SPI 233 IRQ_TYPE_LEVEL_HIGH>;
+> >  			reg = <0x5b020000 0x10000>;
+> >  			clocks = <&conn_lpcg IMX_CONN_LPCG_SDHC1_IPG_CLK>, @@
+> > -388,7 +388,7 @@
+> >  		};
+> > 
+> >  		usdhc3: mmc@5b030000 {
+> > -			compatible = "fsl,imx8qxp-usdhc", "fsl,imx7d-usdhc";
+> > +			compatible = "fsl,imx8qxp-usdhc";
+> >  			interrupts = <GIC_SPI 234 IRQ_TYPE_LEVEL_HIGH>;
+> >  			reg = <0x5b030000 0x10000>;
+> >  			clocks = <&conn_lpcg IMX_CONN_LPCG_SDHC2_IPG_CLK>,
+> > --
+> > 2.17.1
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
