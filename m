@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEC60C433DF
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 19:14:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1ADD0C433E1
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 19:14:30 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9C0C12074D
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 19:14:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C7F562074D
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 19:14:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ZkJbNUfl";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="xEELp6bE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9C0C12074D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="0F110OWN";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="kbX7pFKd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C7F562074D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,30 +26,30 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=xSvfVy2Y6zwk9mMV2uqMHK/5plqH7kxtiFUeXF1zY3s=; b=ZkJbNUflxKs7/4wE9WfFHwptlX
-	evQ1+/6981v5Mdryv3zVapBriazfClGbT0h0n4U1cbHY4dOqZp4I1F2f/wtAN0EFSSp89N0jpJqvL
-	WbB/Z0PfoUvZtEqTIRneCAyIfWrEghJGLZctBctffgn7fsRkb/rXdXD4Msq57MXXCE+DEYZLsR2M6
-	tZChF1FhCp2GwlkusQEP3dzS8YoOy+litfa/XXvTmpluaaH3vJns8fh3k0QH5oMyShrSQgqkfG+4V
-	b/qnEWMHWsO64oFGOB9xJeDdNsacuo9yniOz7NDEaQZFdFVPhfMBPghz9hu5PKgzcxHUz2UCnbdUW
-	x9GG46HA==;
+	bh=v/ZRWKTUAU6QunGhOuMCBOWf+8PhFa7152XFPiLT65E=; b=0F110OWNRqSqYhyONoo5UJ9C0V
+	1tbqiWuB/NymVe/u/s7Ba+Rcdg4UWP9uNTVaNUYemqVL3CanbrQTn1jQvuxWHFOIjeuB6sp+sb2Pw
+	t94uLVr3sReTv2FdbNnOTavQslJHTsbHtSj8P8Yi97KHeKpECC6wganpbYoaiO5K7hPB7JPdGRXV2
+	LcRrZGF2cVvSSFlsDIULR5vRsi16hC+dw7XE3CZdNww5KBrO/1vWs+Y0T3chGHw5YR05kaOZkqwGS
+	olBy51PfJzxGppc+aNL/1eV5z+JF7vnCirLxYJlk4GpMIK/KC6Vt8bOuUjZuJNm1+50+SJUCc4IXy
+	Mbtwd76g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kAHtz-000057-7X; Mon, 24 Aug 2020 19:13:07 +0000
+	id 1kAHuf-0000Z6-0x; Mon, 24 Aug 2020 19:13:49 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kAHpF-0005g5-JE; Mon, 24 Aug 2020 19:08:14 +0000
+ id 1kAHpL-0005ix-8o; Mon, 24 Aug 2020 19:08:21 +0000
 Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 3E84A2074D;
- Mon, 24 Aug 2020 19:08:08 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 47E6E20866;
+ Mon, 24 Aug 2020 19:08:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598296092;
- bh=Cgxn33agiAyp87HeECnZVMhxGfb2+DrRvu3F+O4k4xU=;
+ s=default; t=1598296097;
+ bh=AgWkGLVNMdD2DNKd/wZ2SbCNZ2uFLt8zFJn6wF1Cl4Q=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=xEELp6bEmiUWuGyLsLq1MK/NI+k27tG3Jmcj3wSPXd1kmGgntkdSA1YwP0mF0oDr6
- MK3VR+XH0HNrxKAVkJpyLQhYQDL+/KAXpKgQDjnN8PnU4IIk1NV1/elaB0Ykd0fAsD
- 5yiTZU+kFiNRPg7RLyiw0zkOUx1USrifZCAcEqcc=
+ b=kbX7pFKdM1J7IiNFrdx/+DoYw1uK+WxRMew/kLsrqMMEiyUhH8rJ27ynDGz5JKsk8
+ rEKuAeTRektrsoa9aNDBqZneGy19fjPWZFjdz1EHH/L/qMdtxXUGrGM+qvQJ/kSU+j
+ 0peIzmIJRrEaX17Ti37z51AkUuC74q8qeaWhkzB0=
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -64,15 +64,15 @@ To: Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
  Han Xu <han.xu@nxp.com>, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 12/16] arm64: dts: imx8mq-phanbell: Align pin configuration
+Subject: [PATCH 13/16] arm64: dts: imx8mq-pico-pi: Align pin configuration
  group names with schema
-Date: Mon, 24 Aug 2020 21:06:57 +0200
-Message-Id: <20200824190701.8447-12-krzk@kernel.org>
+Date: Mon, 24 Aug 2020 21:06:58 +0200
+Message-Id: <20200824190701.8447-13-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200824190701.8447-1-krzk@kernel.org>
 References: <20200824190701.8447-1-krzk@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200824_150813_832490_3CA40DDC 
+X-CRM114-CacheID: sfid-20200824_150819_696888_7E7AC5E3 
 X-CRM114-Status: GOOD (  12.74  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -99,14 +99,14 @@ suffix, otherwise dtbs_check complain with a warning like:
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts | 12 ++++++------
+ arch/arm64/boot/dts/freescale/imx8mq-pico-pi.dts | 12 ++++++------
  1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts b/arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts
-index 3f541ddf0768..d6d3a3d5abc3 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts
-@@ -365,7 +365,7 @@
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-pico-pi.dts b/arch/arm64/boot/dts/freescale/imx8mq-pico-pi.dts
+index 59da96b7143f..f4d5748a7bd6 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mq-pico-pi.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mq-pico-pi.dts
+@@ -297,7 +297,7 @@
  		>;
  	};
  
@@ -115,7 +115,7 @@ index 3f541ddf0768..d6d3a3d5abc3 100644
  		fsl,pins = <
  			MX8MQ_IOMUXC_GPIO1_IO03_GPIO1_IO3	0x41
  		>;
-@@ -395,7 +395,7 @@
+@@ -335,7 +335,7 @@
  		>;
  	};
  
@@ -124,7 +124,7 @@ index 3f541ddf0768..d6d3a3d5abc3 100644
  		fsl,pins = <
  			MX8MQ_IOMUXC_SD1_CLK_USDHC1_CLK			0x85
  			MX8MQ_IOMUXC_SD1_CMD_USDHC1_CMD			0xc5
-@@ -412,7 +412,7 @@
+@@ -351,7 +351,7 @@
  		>;
  	};
  
@@ -133,7 +133,7 @@ index 3f541ddf0768..d6d3a3d5abc3 100644
  		fsl,pins = <
  			MX8MQ_IOMUXC_SD1_CLK_USDHC1_CLK			0x87
  			MX8MQ_IOMUXC_SD1_CMD_USDHC1_CMD			0xc7
-@@ -429,7 +429,7 @@
+@@ -367,7 +367,7 @@
  		>;
  	};
  
@@ -141,8 +141,8 @@ index 3f541ddf0768..d6d3a3d5abc3 100644
 +	pinctrl_usdhc2_gpio: usdhc2gpiogrp {
  		fsl,pins = <
  			MX8MQ_IOMUXC_SD2_CD_B_GPIO2_IO12	0x41
- 			MX8MQ_IOMUXC_SD2_RESET_B_GPIO2_IO19	0x41
-@@ -448,7 +448,7 @@
+ 		>;
+@@ -385,7 +385,7 @@
  		>;
  	};
  
@@ -151,7 +151,7 @@ index 3f541ddf0768..d6d3a3d5abc3 100644
  		fsl,pins = <
  			MX8MQ_IOMUXC_SD2_CLK_USDHC2_CLK			0x85
  			MX8MQ_IOMUXC_SD2_CMD_USDHC2_CMD			0xc5
-@@ -460,7 +460,7 @@
+@@ -397,7 +397,7 @@
  		>;
  	};
  
