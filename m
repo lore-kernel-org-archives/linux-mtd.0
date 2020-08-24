@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60449C433DF
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 16:35:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4154AC433E1
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 16:37:32 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3EDFA22BED
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 16:35:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0BA6F23107
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 16:37:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LPLiYeVp";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="HTcV7Hq+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3EDFA22BED
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oqzPGKpD";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="jyGTA3pl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0BA6F23107
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,30 +26,30 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=7163DyAflGv7Bl/MNvFNPUoWVn9LBurE9F8cVy26DAI=; b=LPLiYeVpRf9Xh0qgVgYQ/66JBh
-	9RFd9Jkj4evmphsTacbRaoXKL43SFJRerwOYBUc5/1SfNcl3zypX/H+SYw9zki9+M1ME4PK9VI1hM
-	dV3PWo7VCugAKoWjeZ1jN9IWZM9ZHAvQse1UvP99agTPGWg3p8v2vcltz5EC8pzJjiRDMasRFmzzd
-	Kjf7fVnKLFoGRb3lsgMTYXepit/ri93Bhf9WKwbMPNhOOVvlDbxuL9V8AHOT0iN05hdYkUbFR3lRL
-	kUqHpYZEv+beVQegpcumDjFyrZB5ZjA/mP0swwVb78tMAwgTP8EiO83JeafnvL7Xu9JzpIKMgL25o
-	nnnoZ/WQ==;
+	bh=PKiqJFdQ5F/J8+vIoXxBuxMENZJlhaQARQmd3nX/sZ4=; b=oqzPGKpDjQMKp0C1OGSbPhsnpi
+	yJYl6ZP9EFWR+OX+o4BeaM6cFt7PFeM62p2W8bg+CZlHVVE0iP9Y/WevL4a5UF5yUnCBqyHrGFHYr
+	lWAwEXyNhaU+Kqp5Rjp2EFA1RllFhlUp6zlLDvGGfVTDQkMKcpVaJJ35+PtreN7uKWEi0qQCPNDE2
+	6xA6FTPnyhE1Kl1EjdfW2iYo9lZ0nyWJ8EX0ubQ3kqKdHZYyR1KR7lBrw0eh5zSSiApaHLwmPYmjv
+	hUJY+jnlxdhP+9+O1+sGuKuByfeGLs+Wk2HwytXuETRQQRvUDPkVMNHqlms8LPC1sGfFLwTqe9Ui5
+	r5kpwN9w==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kAFQ3-0002fq-7D; Mon, 24 Aug 2020 16:34:03 +0000
+	id 1kAFSt-0000M0-83; Mon, 24 Aug 2020 16:36:59 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kAFLD-0007wk-OE; Mon, 24 Aug 2020 16:29:05 +0000
+ id 1kAFLS-00085T-E4; Mon, 24 Aug 2020 16:29:19 +0000
 Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A084820838;
- Mon, 24 Aug 2020 16:28:55 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 215E920866;
+ Mon, 24 Aug 2020 16:29:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598286541;
- bh=1X/cRmfopwt+rCsRoYRr5R5QW8XW/gYCIDl6hjON3qs=;
+ s=default; t=1598286556;
+ bh=IcWdUIpZPLrTFhfMFn5K5VkjUKVluLTxZ3P2v5TWsEE=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=HTcV7Hq+Wz0fVWlImWpXbdNqymi7ZC+FwJ/OIwCOfq8K9wbZIjSZtBzDx6PFIz8fU
- PIP0T6mdf09RI7GCUVUqF7RowOAcTp0QisWNDZj3RKLjEprWRBPyG38N/o8OlxbQ1l
- vnvPxUrFusOoVuYCi0ANy/2bdox1qweZxaKgVQ/E=
+ b=jyGTA3pl2iZ6iwRTHRYvbqGpkvnk43nFCR8d3W1X2RJu/hO3ZgALLiUgPt8e58Ibx
+ kfvaz4xYS3ZNqva0peuSxSgYny+/X7lvFzweEhN8BcH8LaKhgC47hEq4bwVGeK3yLC
+ 5BKfBbu4I0HwGbZ+9otThfJkwOjs9tiFPmxyxcvE=
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
  Bartosz Golaszewski <bgolaszewski@baylibre.com>,
@@ -70,16 +70,15 @@ To: Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
  linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
  linux-pm@vger.kernel.org, linux-watchdog@vger.kernel.org
-Subject: [PATCH v2 16/19] dt-bindings: interrupt-controller: fsl,
- irqsteer: Fix compatible matching
-Date: Mon, 24 Aug 2020 18:26:49 +0200
-Message-Id: <20200824162652.21047-16-krzk@kernel.org>
+Subject: [PATCH v2 18/19] arm64: dts: imx8mq-evk: Add hog suffix to wl-reg-on
+Date: Mon, 24 Aug 2020 18:26:51 +0200
+Message-Id: <20200824162652.21047-18-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200824162652.21047-1-krzk@kernel.org>
 References: <20200824162652.21047-1-krzk@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200824_122903_975916_D84B97B8 
-X-CRM114-Status: GOOD (  14.55  )
+X-CRM114-CacheID: sfid-20200824_122919_103102_F7D351F2 
+X-CRM114-Status: GOOD (  17.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,40 +97,28 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The i.MX 8M DTSes use two compatibles so update the binding to fix
-dtbs_check warnings like:
-
-  arch/arm64/boot/dts/freescale/imx8mq-thor96.dt.yaml: interrupt-controller@32e2d000:
-    compatible: ['fsl,imx8m-irqsteer', 'fsl,imx-irqsteer'] is too long
-    From schema: Domentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.yaml
-
-  arch/arm64/boot/dts/freescale/imx8mq-thor96.dt.yaml: interrupt-controller@32e2d000:
-    compatible: Additional items are not allowed ('fsl,imx-irqsteer' was unexpected)
+According to device tree specification, device node names should be
+somewhat generic and reflecting the function of the device so add the
+"hog" suffix to wl-reg-on GPIO hog.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- .../bindings/interrupt-controller/fsl,irqsteer.yaml       | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ arch/arm64/boot/dts/freescale/imx8mq-evk.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.yaml b/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.yaml
-index 360a575ef8b0..3b11a1a15398 100644
---- a/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.yaml
-+++ b/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.yaml
-@@ -11,9 +11,11 @@ maintainers:
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-evk.dts b/arch/arm64/boot/dts/freescale/imx8mq-evk.dts
+index 8aa9cd8e495a..a088831d2e24 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mq-evk.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mq-evk.dts
+@@ -157,7 +157,7 @@
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_wifi_reset>;
  
- properties:
-   compatible:
--    enum:
--      - fsl,imx8m-irqsteer
--      - fsl,imx-irqsteer
-+    oneOf:
-+      - const: fsl,imx-irqsteer
-+      - items:
-+          - const: fsl,imx8m-irqsteer
-+          - const: fsl,imx-irqsteer
- 
-   reg:
-     maxItems: 1
+-	wl-reg-on {
++	wl-reg-on-hog {
+ 		gpio-hog;
+ 		gpios = <29 GPIO_ACTIVE_HIGH>;
+ 		output-high;
 -- 
 2.17.1
 
