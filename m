@@ -2,84 +2,69 @@ Return-Path: <SRS0=BSfO=CC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C21AC433DF
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 17:28:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C568C433E3
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 18:21:59 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5B0FA2074D
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 17:28:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 48A4220738
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 18:21:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="whoZ/Q1E";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="hjBsPtlw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B0FA2074D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="eK9ZWgSK";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="gSO2JDEB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 48A4220738
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
-	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=FRrv9IIMotMmrUMyA/KoQlw+ivCv7sdld+o28Pbwas4=; b=whoZ/Q1Eqgot/Rs880rSzZv1/c
-	VaBPF7t3+EWHW5/kglwLkJikc4m1xaRvTTjZRwRGMI9kprbryKxZgt9BLOtK7zZWl0LxSQ0hWey9V
-	ZxWZcZoevcbLZq4+48Z3RnbKT71XNHjBz6bi0pbEsC7Nw5AHAdZuOLTpGtZUtHuj/50XrFEcboS/e
-	yo6X14OZNmZSsZeWMakERrOkkdWz3etFG9hfOaLKXxw0COTaNeqroQqhIEuHNULh5yarahRAFBTHL
-	jxfSajo218WceNqDMHlLTYDAVQv1h8CRQNQWpm+zjf2DbnzTdYdFk6N3iRV0mWu3j/7TGhNubhZKT
-	+i2NaB/w==;
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=7TwIL8TLu/8q0aDrUHhJicbOBfsJ7QaNkeVVfWTJzho=; b=eK9ZWgSKfgYu2RedyVbZhndpb
+	OBnlUmfoHYyRuAoSZ80OEQLOZ4zyNLE9bGeSb3/oQiUQ1gxIKR8lFyZr4DScNNiO6QfMakzmT24DH
+	JI0sJlU7t8VZClg9Rnc+uk9lZmpk/KulFTxc3ofU4ubnJdPmL7gqQOOsNZfR2ETNz6GxAMj4DTHV9
+	mR4qEoWrfcNrrMewljoi/VK3OAzx8PbTCtk7qrrNpUfQyQzFYRHxE8e6KN6ghLtGB91AoL3Pgmqlz
+	aUZNh3o/MMnztoSwJibwtZseIYiBJGCBMitDCyxyiXgT2vY1gddNTBdMFt3sflPU153KL9bHDJ6QL
+	vNKSYdntQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kAFQs-0003Kx-33; Mon, 24 Aug 2020 16:34:54 +0000
+	id 1kAH5r-00007b-Ps; Mon, 24 Aug 2020 18:21:19 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kAFLJ-00080g-CF; Mon, 24 Aug 2020 16:29:10 +0000
-Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 1kAH5o-00007A-EZ
+ for linux-mtd@lists.infradead.org; Mon, 24 Aug 2020 18:21:17 +0000
+Received: from gmail.com (unknown [104.132.1.76])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 4BFCD207CD;
- Mon, 24 Aug 2020 16:29:02 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 96FA820738;
+ Mon, 24 Aug 2020 18:21:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598286548;
- bh=Nf0OvcvrRDy7hmzkr0pvBomF5COodtTwW57kov6fTeI=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=hjBsPtlwd3lyNplTLQWLqE4mmSOTqYpF39QWDc+pZpaEXACNoZ/W2J8VAc4iWbisp
- QCbcIZSs9nMfanlynSx2HiZwFlSIj09dreAppvZpuvr7LF8cIw11q0G9Puf36CWdmI
- 8GZnbXcwv1ODKcYtr+lolOZYNLL67tDltw6nkAWs=
-From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>,
- Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
- Ulf Hansson <ulf.hansson@linaro.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- Philipp Zabel <p.zabel@pengutronix.de>, Guenter Roeck <linux@roeck-us.net>,
- Li Yang <leoyang.li@nxp.com>, Han Xu <han.xu@nxp.com>,
- Frank Li <frank.li@nxp.com>, Fugang Duan <fugang.duan@nxp.com>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
- linux-pm@vger.kernel.org, linux-watchdog@vger.kernel.org
-Subject: [PATCH v2 17/19] dt-bindings: serial: fsl-lpuart: Fix compatible
- matching
-Date: Mon, 24 Aug 2020 18:26:50 +0200
-Message-Id: <20200824162652.21047-17-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200824162652.21047-1-krzk@kernel.org>
-References: <20200824162652.21047-1-krzk@kernel.org>
+ s=default; t=1598293275;
+ bh=BPd9FqfRK57acJvZfHNixoCcKstFE02QTmcYRlfCq7s=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=gSO2JDEBH2du9sVIqRO/ccvceJM7cC9d3CT0/1d7x0lyj5q9qdZRvB77EudGgmLBP
+ DDXy3fjKwWLf31wIq1ym4KVx7/HdPpObHPD4gbEQTGggArK1CPr0EOlxDk/XQs4GGp
+ MxEUAJwlx/5dWcs35/gGQek/09sGDl96J76TPivQ=
+Date: Mon, 24 Aug 2020 11:21:14 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Jeff Layton <jlayton@kernel.org>
+Subject: Re: [RFC PATCH 1/8] fscrypt: add fscrypt_prepare_new_inode() and
+ fscrypt_set_context()
+Message-ID: <20200824182114.GB1650861@gmail.com>
+References: <20200824061712.195654-1-ebiggers@kernel.org>
+ <20200824061712.195654-2-ebiggers@kernel.org>
+ <0cf5638796e7cddacc38dcd1e967368b99f0069a.camel@kernel.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <0cf5638796e7cddacc38dcd1e967368b99f0069a.camel@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200824_122909_550967_DE03935E 
-X-CRM114-Status: GOOD (  13.93  )
+X-CRM114-CacheID: sfid-20200824_142116_590518_95164972 
+X-CRM114-Status: GOOD (  18.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,65 +76,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>
-MIME-Version: 1.0
+Cc: linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-mtd@lists.infradead.org, ceph-devel@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The i.MX 8QXP DTSes use two compatibles so update the binding to fix
-dtbs_check warnings like:
+On Mon, Aug 24, 2020 at 12:48:48PM -0400, Jeff Layton wrote:
+> > +void fscrypt_hash_inode_number(struct fscrypt_info *ci,
+> > +			       const struct fscrypt_master_key *mk)
+> > +{
+> > +	WARN_ON(ci->ci_inode->i_ino == 0);
+> > +	WARN_ON(!mk->mk_ino_hash_key_initialized);
+> > +
+> > +	ci->ci_hashed_ino = (u32)siphash_1u64(ci->ci_inode->i_ino,
+> > +					      &mk->mk_ino_hash_key);
+> 
+> i_ino is an unsigned long. Will this produce a consistent results on
+> arches with 32 and 64 bit long values? I think it'd be nice to ensure
+> that we can access an encrypted directory created on a 32-bit host from
+> (e.g.) a 64-bit host.
 
-  arch/arm64/boot/dts/freescale/imx8qxp-mek.dt.yaml: serial@5a060000:
-    compatible: ['fsl,imx8qxp-lpuart', 'fsl,imx7ulp-lpuart'] is too long
-    From schema: Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
+The result is the same regardless of word size and endianness.
+siphash_1u64(v, k) is equivalent to:
 
-  arch/arm64/boot/dts/freescale/imx8qxp-mek.dt.yaml: serial@5a060000:
-    compatible: Additional items are not allowed ('fsl,imx7ulp-lpuart' was unexpected)
+	__le64 x = cpu_to_le64(v);
+	siphash(&x, 8, k);
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> It may be better to base this on something besides i_ino
 
----
+This code that hashes the inode number is only used when userspace used
+FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32 for the directory.  IV_INO_LBLK_32 modifies
+the encryption to be optimized for eMMC inline encryption hardware.  For more
+details, see commit e3b1078bedd3 which added this feature.
 
-Changes since v1:
-1. New patch.
----
- .../devicetree/bindings/serial/fsl-lpuart.yaml | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+We actually could have hashed the file nonce instead of the inode number.  But I
+wanted to make the eMMC-optimized format similar to IV_INO_LBLK_64, which is the
+format optimized for UFS inline encryption hardware.
 
-diff --git a/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml b/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
-index e82c2cf9fef7..8ee651f2ef0b 100644
---- a/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
-+++ b/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
-@@ -14,13 +14,17 @@ allOf:
- 
- properties:
-   compatible:
--    enum:
--      - fsl,vf610-lpuart
--      - fsl,ls1021a-lpuart
--      - fsl,ls1028a-lpuart
--      - fsl,imx7ulp-lpuart
--      - fsl,imx8qxp-lpuart
--      - fsl,imx8qm-lpuart
-+    oneOf:
-+      - enum:
-+          - fsl,vf610-lpuart
-+          - fsl,ls1021a-lpuart
-+          - fsl,ls1028a-lpuart
-+          - fsl,imx7ulp-lpuart
-+          - fsl,imx8qxp-lpuart
-+          - fsl,imx8qm-lpuart
-+      - items:
-+          - const: fsl,imx8qxp-lpuart
-+          - const: fsl,imx7ulp-lpuart
- 
-   reg:
-     maxItems: 1
--- 
-2.17.1
+Both of these flags have very specific use cases; they make it feasible to use
+inline encryption hardware
+(https://www.kernel.org/doc/html/latest/block/inline-encryption.html)
+that only supports a small number of keyslots and that limits the IV length.
 
+You don't need to worry about these flags at all for ceph, since there won't be
+any use case to use them on ceph, and ceph won't be declaring support for them.
+
+- Eric
 
 ______________________________________________________
 Linux MTD discussion mailing list
