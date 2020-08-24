@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E4A3C433E1
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A12E1C433E3
 	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 16:30:20 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6858220656
+	by mail.kernel.org (Postfix) with ESMTPS id 68E362072D
 	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 16:30:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BqGefDXG";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="smpOZk9p"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6858220656
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mjuwVSAn";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="XTqczjKj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 68E362072D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,30 +26,30 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=NUHsBdBJlRHERU1C+Ihkiai9gtT/DTlCR61VvaIUV5c=; b=BqGefDXGDGgI+YCa9B0Vd87JVi
-	eLF2snGag0gcI7Et3EhX9EKGsZgAqnelTgs0EbiD57daoS/m0ymSL1SGhGaAEhwl69DpH0w2yI/Xw
-	z2RYLagr5cBODdEByON76kHp4vvKP7JhZ+jafgDSiMIYlF/gitZDNamyppbcMLchNRvNRoyJazbP6
-	RWK2Fw2V+a1+zP7V4dH+KMlV5mtpbYiVPBXHnRB6PUQaya7seK94ULj7ePZTQdO72uwkB12xsTMDb
-	ko88JV9/SEhGPrDt2SUmTYLTsVV6xYpX5xpWz3VRPtuff+Pze4f184AiwYq7aRooIpUYfGjhrVzcp
-	11j6n7yQ==;
+	bh=n1aeeeO0/hxyaCmOl/41zlif41U32l9rLFvOE9rXysY=; b=mjuwVSAnI7fIj6ZjmoZFg+xrPp
+	I4ZZMcbDZf1jyMcSSPdefQxXi6KnPTDcVQDCg7CHC/4tqFHsnC9yVPi0aTgUwvJ88BziIGFte4z70
+	G4szVeRa0W8W1YLrORlFKwWd4r9skbDSNOyhOWGoChYWDZ3Cmzfmuz9Jb4C3nUebJ0HiFZiBvEJEt
+	RIY0PVywq2uiZKY6B8h2J3hB7eUm6G08liJhcCjSkDTSyMnsZwxT8eWsWT+M55Rw6cbx1VZt0lHiF
+	X+4IQ0lLw21HyI/sjMKM8B5CvUfbmhuDosaAmiuCFckY51Qu2DUgSeWhfn1NBgfhG8tINDfvEefM0
+	7UabPPog==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kAFLF-0007uL-OP; Mon, 24 Aug 2020 16:29:05 +0000
+	id 1kAFLv-0008LU-Lg; Mon, 24 Aug 2020 16:29:47 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kAFKE-0007PQ-2y; Mon, 24 Aug 2020 16:28:03 +0000
+ id 1kAFKL-0007TO-F4; Mon, 24 Aug 2020 16:28:10 +0000
 Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id F08B52072D;
- Mon, 24 Aug 2020 16:27:54 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id D2A0120738;
+ Mon, 24 Aug 2020 16:28:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598286481;
- bh=oI5edkUlXbtCAhp4G3TmpG9G3Gm6A9pWuYcaXj1iwjA=;
+ s=default; t=1598286488;
+ bh=NxgEI35oyykqhboGx/XN/M8uVZEQeFJp9m/hyO8Zrz8=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=smpOZk9pK7QHKoeFdX2EIhwtwUAX9244M1vzK8o8gWDGCuZPWRTE5om+pOtvBNhnf
- dN6p8oYty6FECps58quRfQ7MzzGGJmz6I4RSmVi2X3wTWlabuTLhAHOcjEpxelR2xE
- mtzv8T38QnTggAHTksb8K90BK7fsmwK2RI359lQk=
+ b=XTqczjKjHJ68aZnCriupqIDy8TROXvBw+2pPtLlrlOKEyMUyJywYCE7/2lYvNrxRw
+ ha7HID//r9sRGPIYqiLmmZ8JbiUpGlnqTZhe8cbr/CYB3VHatZuJ2JkhoKQBM2XoH/
+ Mwkr8XWX4EOf8VySp4knB+IW2IZIEeYqjHGpIxco=
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
  Bartosz Golaszewski <bgolaszewski@baylibre.com>,
@@ -70,16 +70,16 @@ To: Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
  linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
  linux-pm@vger.kernel.org, linux-watchdog@vger.kernel.org
-Subject: [PATCH v2 07/19] dt-bindings: serial: fsl-imx-uart: Add i.MX 8M
+Subject: [PATCH v2 08/19] dt-bindings: watchdog: fsl-imx-wdt: Add i.MX 8M
  compatibles
-Date: Mon, 24 Aug 2020 18:26:40 +0200
-Message-Id: <20200824162652.21047-7-krzk@kernel.org>
+Date: Mon, 24 Aug 2020 18:26:41 +0200
+Message-Id: <20200824162652.21047-8-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200824162652.21047-1-krzk@kernel.org>
 References: <20200824162652.21047-1-krzk@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200824_122802_281114_36B183FC 
-X-CRM114-Status: GOOD (  13.94  )
+X-CRM114-CacheID: sfid-20200824_122809_649084_8AF0406F 
+X-CRM114-Status: GOOD (  14.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,41 +101,43 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DTSes with new i.MX 8M SoCs introduce their own compatibles so add them
 to fix dtbs_check warnings like:
 
-  arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml: pwm@30660000:
-    compatible:0: 'fsl,imx8mm-pwm' is not one of ['fsl,imx1-pwm', 'fsl,imx27-pwm']
-    From schema: Documentation/devicetree/bindings/pwm/imx-pwm.yaml
+  arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dt.yaml: watchdog@30280000:
+    compatible:0: 'fsl,imx8mm-wdt' is not one of ['fsl,imx21-wdt']
+    From schema: Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.yaml
 
-  arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml: pwm@30660000:
-    compatible: ['fsl,imx8mm-pwm', 'fsl,imx27-pwm'] is too long
+  arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dt.yaml: watchdog@30280000:
+    compatible: ['fsl,imx8mm-wdt', 'fsl,imx21-wdt'] is too long
 
-  arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml: pwm@30660000:
-    compatible: Additional items are not allowed ('fsl,imx27-pwm' was unexpected)
+  arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dt.yaml: watchdog@30280000:
+    compatible: Additional items are not allowed ('fsl,imx21-wdt' was unexpected)
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-
 ---
+ .../devicetree/bindings/watchdog/fsl-imx-wdt.yaml     | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-Changes since v1:
-1. Fix subject prefix
----
- Documentation/devicetree/bindings/serial/fsl-imx-uart.yaml | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/serial/fsl-imx-uart.yaml b/Documentation/devicetree/bindings/serial/fsl-imx-uart.yaml
-index cba3f83ccd5f..3d896173b3b0 100644
---- a/Documentation/devicetree/bindings/serial/fsl-imx-uart.yaml
-+++ b/Documentation/devicetree/bindings/serial/fsl-imx-uart.yaml
-@@ -36,6 +36,10 @@ properties:
-             - fsl,imx6sx-uart
-             - fsl,imx6ul-uart
-             - fsl,imx7d-uart
-+            - fsl,imx8mm-uart
-+            - fsl,imx8mn-uart
-+            - fsl,imx8mp-uart
-+            - fsl,imx8mq-uart
-           - const: fsl,imx6q-uart
+diff --git a/Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.yaml b/Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.yaml
+index d96b93b11fad..991b4e33486e 100644
+--- a/Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.yaml
++++ b/Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.yaml
+@@ -14,8 +14,15 @@ allOf:
+ 
+ properties:
+   compatible:
+-    enum:
+-      - fsl,imx21-wdt
++    oneOf:
++      - const: fsl,imx21-wdt
++      - items:
++          - enum:
++              - fsl,imx8mm-wdt
++              - fsl,imx8mn-wdt
++              - fsl,imx8mp-wdt
++              - fsl,imx8mq-wdt
++          - const: fsl,imx21-wdt
  
    reg:
+     maxItems: 1
 -- 
 2.17.1
 
