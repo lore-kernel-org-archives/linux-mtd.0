@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53CF4C433DF
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 19:11:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0445AC433E1
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 19:11:13 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0D3902074D
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 19:11:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C3EC02078D
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 19:11:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nPWYdxMm";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="j9wigELx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D3902074D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BVnVYdKg";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="2Wldq5IX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C3EC02078D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,30 +26,30 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=0+jpCaIAJWr6xeRD+suFu6wtye9uxS6sqIJeet4r6ls=; b=nPWYdxMmCxWRWsLgEwxywRxnBx
-	bnn0qVo7ic72avx8bKNsAZKMcoHFWmi+YosUxok9cXqogEhYW8jitfNCCFTd4562WcWaT5HgdK2Qa
-	oPdokvQDV+XfvQK6FwEmGRyV/Z4mXZMjjIilnNN2vce1UuXWOxPDPqNOlvELQbJzN3EsgmqFMFZeI
-	gF7JyDiC9wQhC+PyVAOm2RWyG+hVnvxqe3WvDJ9D1RAS5/QigG68qyUupQeur2Hrglj7CTZ2efVoo
-	//EU7wEK8P7eh4krYn8GZXwIjZwjXqBvrgg3lwiFWd+e+1uLQkP0qpzxVO9Rmd9IakIozkf6yCqi1
-	/YeBbx9w==;
+	bh=GaVD+T/c5HeX90L1HMT55CfZmPwvr/hqL+Z94IS7PmQ=; b=BVnVYdKglEnv+uixThvtUAL2F5
+	ZkKyy3oN7JFxaur8/lfmJLoY7njXMbf3jWNQ0G5K+1jOxXHSPUEQAEcdv4TWKntYyFuUvS+Uedyv4
+	WLa9PJjvGZuyimm9f3E2QZNulMl05rGNy3NqVkxdXQKVFEyoPgSvGjxXOPM8ae0d7eeY036MoRx0w
+	yCUX3ShqGA0fi5I+hsNeD//yuFSam7Ppf6fgli5XWRKoMhtU1/UaycrF5TQCrLxcyJabc01UaWqZJ
+	ze+WGyowtuGnSBNxnd9+NBWl6I83qJgZoEKxRsTpMcrWvl75Hx2wwopDwGojuVLh4jKLPcCht7MjO
+	k0N/yVsw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kAHqy-0006Z0-7D; Mon, 24 Aug 2020 19:10:00 +0000
+	id 1kAHr6-0006fS-Cs; Mon, 24 Aug 2020 19:10:08 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kAHor-0005UU-2Z; Mon, 24 Aug 2020 19:07:50 +0000
+ id 1kAHov-0005W9-8N; Mon, 24 Aug 2020 19:07:54 +0000
 Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 9113A20866;
- Mon, 24 Aug 2020 19:07:42 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id C6BAE20FC3;
+ Mon, 24 Aug 2020 19:07:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598296067;
- bh=FkLjw7Jcs543SiKoNIN05bHQA4tIrsY4ElZISGC6hZE=;
+ s=default; t=1598296072;
+ bh=s/IWPjNkvLKvULdLeo9A2oyTBca1K4wPFcKLEvwklic=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=j9wigELx9n/FYrR60grGQ+VxPQsbdRYB5alC5zUN/1bM6XJZQPzmQH+9avv/orlbu
- PLuLOfjKcAR+Js/6eOQnfT6s0kNRrS3nar0UXy/UDMLtizZs+Rqyvy0m0LjGjq/uZ6
- NBFnkV9x+MIlAdJUwmQ12edpV5LDv6iYzL7odjrc=
+ b=2Wldq5IXjdcesU7KOzdRFpjLl8U2c9Ws3tsRitfxLL/nVAAIXHRF+AMt2LLkyLUN0
+ 6YVt0RcleUNZmQ4nCbY4VPLvADkYeDkvcW84+ZSLFE7UErjIlAFlGNAvo+SAkTYANo
+ nUfeqHLgUFyhucdsMLxGeQhHnkF7YDRuiqk4AQLo=
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -64,16 +64,16 @@ To: Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
  Han Xu <han.xu@nxp.com>, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 07/16] arm64: dts: imx8mm-evk: Align pin configuration group
- names with schema
-Date: Mon, 24 Aug 2020 21:06:52 +0200
-Message-Id: <20200824190701.8447-7-krzk@kernel.org>
+Subject: [PATCH 08/16] arm64: dts: imx8mm-ddr4-evk: Align pin configuration
+ group names with schema
+Date: Mon, 24 Aug 2020 21:06:53 +0200
+Message-Id: <20200824190701.8447-8-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200824190701.8447-1-krzk@kernel.org>
 References: <20200824190701.8447-1-krzk@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200824_150749_431105_53E8CBEA 
-X-CRM114-Status: GOOD (  12.17  )
+X-CRM114-CacheID: sfid-20200824_150753_676988_0FF210FA 
+X-CRM114-Status: GOOD (  14.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,74 +99,22 @@ suffix, otherwise dtbs_check complain with a warning like:
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/arm64/boot/dts/freescale/imx8mm-evk.dts | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk.dts
-index 0115f07bbc9d..207dc8de3145 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-evk.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-evk.dts
-@@ -423,13 +423,13 @@
- 		>;
- 	};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts b/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
+index 299caed5d46e..8f7155716c84 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
+@@ -155,7 +155,7 @@
+ };
  
+ &iomuxc {
 -	pinctrl_pmic: pmicirq {
 +	pinctrl_pmic: pmicirqgrp {
  		fsl,pins = <
- 			MX8MM_IOMUXC_GPIO1_IO03_GPIO1_IO3		0x41
+ 			MX8MN_IOMUXC_GPIO1_IO03_GPIO1_IO3	0x41
  		>;
- 	};
- 
--	pinctrl_reg_usdhc2_vmmc: regusdhc2vmmc {
-+	pinctrl_reg_usdhc2_vmmc: regusdhc2vmmcgrp {
- 		fsl,pins = <
- 			MX8MM_IOMUXC_SD2_RESET_B_GPIO2_IO19	0x41
- 		>;
-@@ -457,7 +457,7 @@
- 		>;
- 	};
- 
--	pinctrl_usdhc2_gpio: usdhc2grpgpio {
-+	pinctrl_usdhc2_gpio: usdhc2gpiogrp {
- 		fsl,pins = <
- 			MX8MM_IOMUXC_GPIO1_IO15_GPIO1_IO15	0x1c4
- 		>;
-@@ -475,7 +475,7 @@
- 		>;
- 	};
- 
--	pinctrl_usdhc2_100mhz: usdhc2grp100mhz {
-+	pinctrl_usdhc2_100mhz: usdhc2-100mhzgrp {
- 		fsl,pins = <
- 			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK		0x194
- 			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD		0x1d4
-@@ -487,7 +487,7 @@
- 		>;
- 	};
- 
--	pinctrl_usdhc2_200mhz: usdhc2grp200mhz {
-+	pinctrl_usdhc2_200mhz: usdhc2-200mhzgrp {
- 		fsl,pins = <
- 			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK		0x196
- 			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD		0x1d6
-@@ -515,7 +515,7 @@
- 		>;
- 	};
- 
--	pinctrl_usdhc3_100mhz: usdhc3grp100mhz {
-+	pinctrl_usdhc3_100mhz: usdhc3-100mhzgrp {
- 		fsl,pins = <
- 			MX8MM_IOMUXC_NAND_WE_B_USDHC3_CLK		0x194
- 			MX8MM_IOMUXC_NAND_WP_B_USDHC3_CMD		0x1d4
-@@ -531,7 +531,7 @@
- 		>;
- 	};
- 
--	pinctrl_usdhc3_200mhz: usdhc3grp200mhz {
-+	pinctrl_usdhc3_200mhz: usdhc3-200mhzgrp {
- 		fsl,pins = <
- 			MX8MM_IOMUXC_NAND_WE_B_USDHC3_CLK		0x196
- 			MX8MM_IOMUXC_NAND_WP_B_USDHC3_CMD		0x1d6
 -- 
 2.17.1
 
