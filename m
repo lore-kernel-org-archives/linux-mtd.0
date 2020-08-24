@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61422C433E1
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 19:12:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DEC60C433DF
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 19:14:19 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 19CB42074D
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 19:12:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9C0C12074D
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 19:14:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DQykJuCs";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="S6KnQAfx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 19CB42074D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ZkJbNUfl";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="xEELp6bE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9C0C12074D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,30 +26,30 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ef4AWDhFJMXvA9aI5WHhMvq5id5uyKunSbMGdPJJfs4=; b=DQykJuCsbcVpxKKBWRpSCJl6pC
-	G2mIRTfpdy1Fb5bgernQu71JDr0769XI0+1vbUB//Py63/RiZ9mzpRU2mh/7yI04pxeFAktVSG0jP
-	BbRjopxfSLaMNfPNlUUfYaFkubEerjqwJzbrtnDZC4PaFqiQ2Ryqzy3dJSi2nulcRHd8JF1APKDnm
-	pa/fnppOfZHiJOZbDBRbbIJzsRfvzkUYCfp/LISb5HwW8OmC+AmvzTI1b91425wUi2ReJuc52bgTL
-	YwG+hkAMPmBjXA7DDl50ag5KFsBKOcNgPh9ErLdzdQF/IR8gJfoUWXZZ4CpvynjDPJVZIm7qWlx+B
-	RvplGFOA==;
+	bh=xSvfVy2Y6zwk9mMV2uqMHK/5plqH7kxtiFUeXF1zY3s=; b=ZkJbNUflxKs7/4wE9WfFHwptlX
+	evQ1+/6981v5Mdryv3zVapBriazfClGbT0h0n4U1cbHY4dOqZp4I1F2f/wtAN0EFSSp89N0jpJqvL
+	WbB/Z0PfoUvZtEqTIRneCAyIfWrEghJGLZctBctffgn7fsRkb/rXdXD4Msq57MXXCE+DEYZLsR2M6
+	tZChF1FhCp2GwlkusQEP3dzS8YoOy+litfa/XXvTmpluaaH3vJns8fh3k0QH5oMyShrSQgqkfG+4V
+	b/qnEWMHWsO64oFGOB9xJeDdNsacuo9yniOz7NDEaQZFdFVPhfMBPghz9hu5PKgzcxHUz2UCnbdUW
+	x9GG46HA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kAHsY-0007dS-Sl; Mon, 24 Aug 2020 19:11:40 +0000
+	id 1kAHtz-000057-7X; Mon, 24 Aug 2020 19:13:07 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kAHpA-0005dU-G1; Mon, 24 Aug 2020 19:08:10 +0000
+ id 1kAHpF-0005g5-JE; Mon, 24 Aug 2020 19:08:14 +0000
 Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 25B33208E4;
- Mon, 24 Aug 2020 19:08:02 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 3E84A2074D;
+ Mon, 24 Aug 2020 19:08:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598296087;
- bh=+6fsx9inRaN4fvWlXSXEShmnP49N2TqHhDeCV/p1ZRQ=;
+ s=default; t=1598296092;
+ bh=Cgxn33agiAyp87HeECnZVMhxGfb2+DrRvu3F+O4k4xU=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=S6KnQAfxLvus3HjYnQ4zMGO6O23IE5mJUuOi9UUTaa5Py+2zNBaSII525Aly1V9xg
- pDFoX0my+rraFXo5d/9YW24vrE42c8ptxoRpuk8qGqaPYG+u1z/Q2Q+/Gh5I/BUe65
- kJTWMaSzclWQFXzUrMsRg6TtdB7svE0Gmk28MB+M=
+ b=xEELp6bEmiUWuGyLsLq1MK/NI+k27tG3Jmcj3wSPXd1kmGgntkdSA1YwP0mF0oDr6
+ MK3VR+XH0HNrxKAVkJpyLQhYQDL+/KAXpKgQDjnN8PnU4IIk1NV1/elaB0Ykd0fAsD
+ 5yiTZU+kFiNRPg7RLyiw0zkOUx1USrifZCAcEqcc=
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -64,16 +64,16 @@ To: Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
  Han Xu <han.xu@nxp.com>, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 11/16] arm64: dts: imx8mq-librem5-devkit: Align pin
- configuration group names with schema
-Date: Mon, 24 Aug 2020 21:06:56 +0200
-Message-Id: <20200824190701.8447-11-krzk@kernel.org>
+Subject: [PATCH 12/16] arm64: dts: imx8mq-phanbell: Align pin configuration
+ group names with schema
+Date: Mon, 24 Aug 2020 21:06:57 +0200
+Message-Id: <20200824190701.8447-12-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200824190701.8447-1-krzk@kernel.org>
 References: <20200824190701.8447-1-krzk@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200824_150809_208901_66110038 
-X-CRM114-Status: GOOD (  12.89  )
+X-CRM114-CacheID: sfid-20200824_150813_832490_3CA40DDC 
+X-CRM114-Status: GOOD (  12.74  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,65 +99,67 @@ suffix, otherwise dtbs_check complain with a warning like:
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- .../boot/dts/freescale/imx8mq-librem5-devkit.dts     | 12 ++++++------
+ arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts | 12 ++++++------
  1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts b/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
-index 6900ac274f5b..377591a0e6e9 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
-@@ -734,7 +734,7 @@
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts b/arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts
+index 3f541ddf0768..d6d3a3d5abc3 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts
+@@ -365,7 +365,7 @@
+ 		>;
+ 	};
+ 
+-	pinctrl_pmic: pmicirq {
++	pinctrl_pmic: pmicirqgrp {
+ 		fsl,pins = <
+ 			MX8MQ_IOMUXC_GPIO1_IO03_GPIO1_IO3	0x41
+ 		>;
+@@ -395,7 +395,7 @@
  		>;
  	};
  
 -	pinctrl_usdhc1_100mhz: usdhc1grp100mhz {
 +	pinctrl_usdhc1_100mhz: usdhc1-100mhzgrp {
  		fsl,pins = <
- 			MX8MQ_IOMUXC_SD1_CLK_USDHC1_CLK			0x8d
- 			MX8MQ_IOMUXC_SD1_CMD_USDHC1_CMD			0xcd
-@@ -751,7 +751,7 @@
+ 			MX8MQ_IOMUXC_SD1_CLK_USDHC1_CLK			0x85
+ 			MX8MQ_IOMUXC_SD1_CMD_USDHC1_CMD			0xc5
+@@ -412,7 +412,7 @@
  		>;
  	};
  
 -	pinctrl_usdhc1_200mhz: usdhc1grp200mhz {
 +	pinctrl_usdhc1_200mhz: usdhc1-200mhzgrp {
  		fsl,pins = <
- 			MX8MQ_IOMUXC_SD1_CLK_USDHC1_CLK			0x9f
- 			MX8MQ_IOMUXC_SD1_CMD_USDHC1_CMD			0xdf
-@@ -768,13 +768,13 @@
- 		>;
- 	};
- 
--	pinctrl_usdhc2_pwr: usdhc2grppwr {
-+	pinctrl_usdhc2_pwr: usdhc2pwrgrp {
- 		fsl,pins = <
- 			MX8MQ_IOMUXC_SD2_RESET_B_GPIO2_IO19	0x41
+ 			MX8MQ_IOMUXC_SD1_CLK_USDHC1_CLK			0x87
+ 			MX8MQ_IOMUXC_SD1_CMD_USDHC1_CMD			0xc7
+@@ -429,7 +429,7 @@
  		>;
  	};
  
 -	pinctrl_usdhc2_gpio: usdhc2grpgpio {
 +	pinctrl_usdhc2_gpio: usdhc2gpiogrp {
  		fsl,pins = <
- 			MX8MQ_IOMUXC_SD2_WP_GPIO2_IO20		0x80 /* WIFI_WAKE */
- 		>;
-@@ -791,7 +791,7 @@
+ 			MX8MQ_IOMUXC_SD2_CD_B_GPIO2_IO12	0x41
+ 			MX8MQ_IOMUXC_SD2_RESET_B_GPIO2_IO19	0x41
+@@ -448,7 +448,7 @@
  		>;
  	};
  
 -	pinctrl_usdhc2_100mhz: usdhc2grp100mhz {
 +	pinctrl_usdhc2_100mhz: usdhc2-100mhzgrp {
  		fsl,pins = <
- 			MX8MQ_IOMUXC_SD2_CLK_USDHC2_CLK		0x8d
- 			MX8MQ_IOMUXC_SD2_CMD_USDHC2_CMD		0xcd
-@@ -802,7 +802,7 @@
+ 			MX8MQ_IOMUXC_SD2_CLK_USDHC2_CLK			0x85
+ 			MX8MQ_IOMUXC_SD2_CMD_USDHC2_CMD			0xc5
+@@ -460,7 +460,7 @@
  		>;
  	};
  
 -	pinctrl_usdhc2_200mhz: usdhc2grp200mhz {
 +	pinctrl_usdhc2_200mhz: usdhc2-200mhzgrp {
  		fsl,pins = <
- 			MX8MQ_IOMUXC_SD2_CLK_USDHC2_CLK		0x9f
- 			MX8MQ_IOMUXC_SD2_CMD_USDHC2_CMD		0xcf
+ 			MX8MQ_IOMUXC_SD2_CLK_USDHC2_CLK			0x87
+ 			MX8MQ_IOMUXC_SD2_CMD_USDHC2_CMD			0xc7
 -- 
 2.17.1
 
