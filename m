@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CBB87C433DF
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 19:08:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 72E83C433DF
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 19:08:43 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7A49D2074D
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 19:08:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2541A2074D
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 19:08:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PJcgQ2rO";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="xroCTR8e"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A49D2074D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="H8xKZmVU";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="SpRIrrax"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2541A2074D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=d7+Do5LO8h3vj4GoAsPqg0jSgoVOdMgteOOwuOkwV8E=; b=PJcgQ2rOzZakkH1ldF45g14MC6
-	d2P184Y4nzlDVF2QJRmkFnDALBDMP1SXu6pNRosFumTBiZs90B0m/5PjS2C6GPZHHG1GTAi1u4Bua
-	Ac0SGUCYuMqdYimPuhd01IQdTDVAka/AaaTAt0KwbBnlI7JuIDaP34Ruk6zOlUE+rhYc7bFdQ/69m
-	xur+o7bb0joPDzB7j6+okICR3rCXQgrZ0+xxAS6lsSt0QaDXxis1ojLrOVwOpC06HZBLpa7Ud8o8m
-	0c//PKHwfXixXCm22oA/8T1jhxb2ugfJKnDw1tKO3Nr68jhpgXVv3fos2wAVMjHt7mZrvXTCaMom1
-	jjmY6ktA==;
+	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
+	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=Hjt10izQUqkM2EQXzbdHAJSWxiBXd/FCeY9Q9uC5AIk=; b=H8xKZmVUm2DSvCimFIhuIkI4Qa
+	2U1GocV0FJ5tMUYOdL2VQUOEcyJKT4mkdg0TdVNgRR7vw4phuV4ZsNKchT+Ff/R54siL49hZsezlY
+	hgTXhQCv2I2yB7F56lBqx6ZPx6J/3x9tetA7QHvFTxcweXSUjqirwkqclVB/Q/MVBHgl/O5gFqVoY
+	sFA3wZRrs/rosDVJtkHvDMCeK5dlehTUwnEm20R7moLPb666fbK9l28jREFED4F6TjQase9JrCZju
+	uTiEoEV8QHYSdbaN0m3NlbbwRhLUrhHTmmFdTb1NHfI3KMiwG692hnIM4MVlt/SzU9xAQb0uRkr9m
+	Dj14+XgA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kAHoP-0005Jp-S2; Mon, 24 Aug 2020 19:07:21 +0000
+	id 1kAHoi-0005Qc-RN; Mon, 24 Aug 2020 19:07:40 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kAHoK-0005IJ-Ty; Mon, 24 Aug 2020 19:07:17 +0000
+ id 1kAHoV-0005La-Bx; Mon, 24 Aug 2020 19:07:29 +0000
 Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id DF8FC2074D;
- Mon, 24 Aug 2020 19:07:10 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id BD02C207D3;
+ Mon, 24 Aug 2020 19:07:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598296035;
- bh=D49DFnKwX3H2+4/JHutRBjl6onsdr+JMHUvotdX4JOA=;
- h=From:To:Cc:Subject:Date:From;
- b=xroCTR8eKxl6V1lvgh/HrBdL5yumIzn+QzqCpV0HmoTNHLBcd3BOlUqvYqiQ83PtV
- +jE0X2cY7O73uflWwXcWluqNlVZ9SdesRA885D2C0dd3UtzB5zoCx2kjOhk6I+djzV
- DXQeTZZ+iNeRWQbKb9Y2vaA8SQNF3ozNUVvJU0vc=
+ s=default; t=1598296046;
+ bh=nLniJlTDFKmUOo3eOmVq9DwRia6k7TDCH2R4PPuXY5k=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=SpRIrraxKRL7eRfOgA0Z4Yhx2UBDsbhCoUYaxVQFKXY3usMN3fkTnARXaHlOhoizX
+ +nJnallTE17RkkodaiWEWrerOmxfE0setuV1R2xz4XhbDGZSfVc09X08z3NXOtKsUr
+ MYtgdLrdbx3WjYQL/dA76vEl2HwiCvddYCfH6gsg=
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -64,14 +64,16 @@ To: Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
  Han Xu <han.xu@nxp.com>, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 01/16] dt-bindings: mfd: rohm,
- bd71847-pmic: Correct clock properties requirements
-Date: Mon, 24 Aug 2020 21:06:46 +0200
-Message-Id: <20200824190701.8447-1-krzk@kernel.org>
+Subject: [PATCH 03/16] arm64: dts: imx8mm-beacon-som.dtsi: Align regulator
+ names with schema
+Date: Mon, 24 Aug 2020 21:06:48 +0200
+Message-Id: <20200824190701.8447-3-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200824190701.8447-1-krzk@kernel.org>
+References: <20200824190701.8447-1-krzk@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200824_150717_069207_686F95B3 
-X-CRM114-Status: GOOD (  12.45  )
+X-CRM114-CacheID: sfid-20200824_150727_613037_22839BDC 
+X-CRM114-Status: GOOD (  12.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,53 +92,118 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The input clock and number of clock provider cells are not required for
-the PMIC to operate.  They are needed only for the optional bd718x7
-clock driver.
+Device tree schema expects regulator names to be lowercase.  This fixes
+dtbs_check warnings like:
 
-Add also clock-output-names as driver takes use of it.
-
-This fixes dtbs_check warnings like:
-
-    arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dt.yaml: pmic@4b: 'clocks' is a required property
-    arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dt.yaml: pmic@4b: '#clock-cells' is a required property
+    arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dt.yaml: pmic@4b: regulators:LDO1:regulator-name:0: 'LDO1' does not match '^ldo[1-6]$'
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- .../devicetree/bindings/mfd/rohm,bd71847-pmic.yaml       | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ .../boot/dts/freescale/imx8mn-ddr4-evk.dts    | 22 +++++++++----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mfd/rohm,bd71847-pmic.yaml b/Documentation/devicetree/bindings/mfd/rohm,bd71847-pmic.yaml
-index 77bcca2d414f..5d531051a153 100644
---- a/Documentation/devicetree/bindings/mfd/rohm,bd71847-pmic.yaml
-+++ b/Documentation/devicetree/bindings/mfd/rohm,bd71847-pmic.yaml
-@@ -38,6 +38,9 @@ properties:
-   "#clock-cells":
-     const: 0
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts b/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
+index a1e5483dbbbe..299caed5d46e 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
+@@ -60,7 +60,7 @@
  
-+  clock-output-names:
-+    maxItems: 1
-+
- # The BD71847 abd BD71850 support two different HW states as reset target
- # states. States are called as SNVS and READY. At READY state all the PMIC
- # power outputs go down and OTP is reload. At the SNVS state all other logic
-@@ -116,12 +119,14 @@ required:
-   - compatible
-   - reg
-   - interrupts
--  - clocks
--  - "#clock-cells"
-   - regulators
+ 		regulators {
+ 			buck1_reg: BUCK1 {
+-				regulator-name = "BUCK1";
++				regulator-name = "buck1";
+ 				regulator-min-microvolt = <700000>;
+ 				regulator-max-microvolt = <1300000>;
+ 				regulator-boot-on;
+@@ -69,7 +69,7 @@
+ 			};
  
- additionalProperties: false
+ 			buck2_reg: BUCK2 {
+-				regulator-name = "BUCK2";
++				regulator-name = "buck2";
+ 				regulator-min-microvolt = <700000>;
+ 				regulator-max-microvolt = <1300000>;
+ 				regulator-boot-on;
+@@ -79,14 +79,14 @@
  
-+dependencies:
-+  '#clock-cells': [clocks]
-+  clocks: ['#clock-cells']
-+
- examples:
-   - |
-     #include <dt-bindings/interrupt-controller/irq.h>
+ 			buck3_reg: BUCK3 {
+ 				// BUCK5 in datasheet
+-				regulator-name = "BUCK3";
++				regulator-name = "buck3";
+ 				regulator-min-microvolt = <700000>;
+ 				regulator-max-microvolt = <1350000>;
+ 			};
+ 
+ 			buck4_reg: BUCK4 {
+ 				// BUCK6 in datasheet
+-				regulator-name = "BUCK4";
++				regulator-name = "buck4";
+ 				regulator-min-microvolt = <3000000>;
+ 				regulator-max-microvolt = <3300000>;
+ 				regulator-boot-on;
+@@ -95,7 +95,7 @@
+ 
+ 			buck5_reg: BUCK5 {
+ 				// BUCK7 in datasheet
+-				regulator-name = "BUCK5";
++				regulator-name = "buck5";
+ 				regulator-min-microvolt = <1605000>;
+ 				regulator-max-microvolt = <1995000>;
+ 				regulator-boot-on;
+@@ -104,7 +104,7 @@
+ 
+ 			buck6_reg: BUCK6 {
+ 				// BUCK8 in datasheet
+-				regulator-name = "BUCK6";
++				regulator-name = "buck6";
+ 				regulator-min-microvolt = <800000>;
+ 				regulator-max-microvolt = <1400000>;
+ 				regulator-boot-on;
+@@ -112,7 +112,7 @@
+ 			};
+ 
+ 			ldo1_reg: LDO1 {
+-				regulator-name = "LDO1";
++				regulator-name = "ldo1";
+ 				regulator-min-microvolt = <1600000>;
+ 				regulator-max-microvolt = <3300000>;
+ 				regulator-boot-on;
+@@ -120,7 +120,7 @@
+ 			};
+ 
+ 			ldo2_reg: LDO2 {
+-				regulator-name = "LDO2";
++				regulator-name = "ldo2";
+ 				regulator-min-microvolt = <800000>;
+ 				regulator-max-microvolt = <900000>;
+ 				regulator-boot-on;
+@@ -128,7 +128,7 @@
+ 			};
+ 
+ 			ldo3_reg: LDO3 {
+-				regulator-name = "LDO3";
++				regulator-name = "ldo3";
+ 				regulator-min-microvolt = <1800000>;
+ 				regulator-max-microvolt = <3300000>;
+ 				regulator-boot-on;
+@@ -136,7 +136,7 @@
+ 			};
+ 
+ 			ldo4_reg: LDO4 {
+-				regulator-name = "LDO4";
++				regulator-name = "ldo4";
+ 				regulator-min-microvolt = <900000>;
+ 				regulator-max-microvolt = <1800000>;
+ 				regulator-boot-on;
+@@ -144,7 +144,7 @@
+ 			};
+ 
+ 			ldo6_reg: LDO6 {
+-				regulator-name = "LDO6";
++				regulator-name = "ldo6";
+ 				regulator-min-microvolt = <900000>;
+ 				regulator-max-microvolt = <1800000>;
+ 				regulator-boot-on;
 -- 
 2.17.1
 
