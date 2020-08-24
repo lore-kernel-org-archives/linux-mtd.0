@@ -2,78 +2,77 @@ Return-Path: <SRS0=BSfO=CC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE40AC433E1
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 02:59:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AEBC8C433DF
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 05:26:29 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6BA3B20774
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 02:59:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7A3162071E
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2020 05:26:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FLnl4rpp";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="2eTvr2el"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6BA3B20774
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=alliedtelesis.co.nz
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VEX/P6FN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A3162071E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=II9f8+jM1DbBUim6mfcAmIdjFGBrmCKWEO+Bfjx+wL8=; b=FLnl4rppF0uS8zNsTLQh+mB9iX
-	QeZoEZ4wL0GViePgaMz+ErXr5hf6DnPqU3KfN2SZiY+7/UNdhzYcGpmhjXoTU0dFQiGgN9b58jXxF
-	v6N6nXrHBjs+FfeheOV0N0m6Pn7XsA+rEQJFoj0wrojeYaZwI+8FuonKajH2CBQuEN6NDtOsT5QzN
-	CwdGKFHt3kOZdYV/FP8XCGiHr3J5HEvvrAVUD0I9cK6tV0CKEr/ts63Nd0yToshXhpcv1c4lZ6/dE
-	042PJaMXNJ8z3niqzhu0aZADm9rmPpreRwA8Vl5gUpbxGrm0/RMzRvP8pCQooY5b7wQs4m3W46DMl
-	69aU4abQ==;
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=P27gcp4VQxF8ax1G8FSx2uwKqWPl2M6MYmrGi8ERg7g=; b=VEX/P6FNC1lKuvHnUi+qTXMV9
+	dU32TbhxH3TEu81GveYeO+VhVmtcHrK9/WSxP1IXNFnDZpiqjQShEF9sJOUlsuokzRng5Td5N4/+8
+	/W86Qj4/qHhdWTzm9gFRplVwdkBmHAO07Zi6y4z6CaRdqcOTzVyYKbr3sPlbdGk6MirLoBFcd9eC3
+	HMa8QiXEPOeGeKalizKy60dms4ZGJEh2Z1ioN2K4SwP/yx7YFnuCcfSZHUIl7akt4nSP5SKyLbFyF
+	IRTpD0tOCyd33AMRNjgFo1yrFbB7DDOUSYI44s7z58NOYqCotHPFAF8t7IB1FpTGpBHPCmUHdevx3
+	nWnR89aHQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kA2gX-0007nN-8X; Mon, 24 Aug 2020 02:58:17 +0000
-Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
+	id 1kA4yc-0000FE-Jz; Mon, 24 Aug 2020 05:25:02 +0000
+Received: from metis.ext.pengutronix.de ([85.220.165.71])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kA2gT-0007mT-1D
- for linux-mtd@lists.infradead.org; Mon, 24 Aug 2020 02:58:10 +0000
-Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (Client did not present a certificate)
- by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 1903B891AF;
- Mon, 24 Aug 2020 14:57:50 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
- s=mail181024; t=1598237870;
- bh=o4lNcSIrdI/eNUWihGfzjOy8zXW6NxDz/kki0266Xb8=;
- h=From:To:Cc:Subject:Date;
- b=2eTvr2el0/SDY1f2lyA/zMSW5cnGuDa+Q93ZQTu1MufoMVf7qJCsJNScgcg4B3T1v
- ca20fPMSUoOnt6Q7/s7zuzuu7xY1zdSsymbmW+Z6ZEZ3daoxtZHahaNbKa0P30tHnb
- 2tHKydqD4knI+ngki+Jh2SkwFBDM5tPJ1tNH853o+NrnBdQmA89qR4mFbhNfLvmZTv
- OiwiaRLytYVCqmh7j7oyb+EisX3SQxZ45wLEtpC2brwHQcADJvO6cjFn6lPl5OmxGb
- /5lCFqExOomFTcR58iKHL2c1RaOU2/OAL1qg0kqXharwpisQx8Tb5YHwLofg3qGL9+
- O2W7o+XJXvTzA==
-Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with
- Trustwave SEG (v7, 5, 8, 10121)
- id <B5f432cae0000>; Mon, 24 Aug 2020 14:57:50 +1200
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
- by smtp (Postfix) with ESMTP id 125C013EEB7;
- Mon, 24 Aug 2020 14:57:48 +1200 (NZST)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
- id 29427280032; Mon, 24 Aug 2020 14:57:49 +1200 (NZST)
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
-To: miquel.raynal@bootlin.com,
-	richard@nod.at
-Subject: [PATCH] mtd: maps: physmap: Retain mtd-name property from dts
-Date: Mon, 24 Aug 2020 14:57:44 +1200
-Message-Id: <20200824025744.25992-1-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.28.0
+ id 1kA4ya-0000Dp-MB
+ for linux-mtd@lists.infradead.org; Mon, 24 Aug 2020 05:25:01 +0000
+Received: from [2001:67c:670:100:1d::c0] (helo=ptx.hi.pengutronix.de)
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <sha@pengutronix.de>)
+ id 1kA4yP-0002k3-0d; Mon, 24 Aug 2020 07:24:49 +0200
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
+ (envelope-from <sha@pengutronix.de>)
+ id 1kA4yM-0000FJ-Og; Mon, 24 Aug 2020 07:24:46 +0200
+Date: Mon, 24 Aug 2020 07:24:46 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH 02/22] dt-bindings: gpio: fsl-imx-gpio: Add gpio-ranges
+ property
+Message-ID: <20200824052446.GE13023@pengutronix.de>
+References: <20200823161550.3981-1-krzk@kernel.org>
+ <20200823161550.3981-2-krzk@kernel.org>
 MIME-Version: 1.0
-x-atlnz-ls: pat
+Content-Disposition: inline
+In-Reply-To: <20200823161550.3981-2-krzk@kernel.org>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-IRC: #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 07:22:41 up 186 days, 12:53, 138 users,  load average: 0.06, 0.11,
+ 0.10
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200823_225809_813717_E3A87FBF 
-X-CRM114-Status: GOOD (  17.80  )
+X-CRM114-CacheID: sfid-20200824_012500_843467_E1F76A30 
+X-CRM114-Status: GOOD (  17.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,40 +84,74 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Vignesh Raghavendra <vigneshr@ti.com>
+Cc: devicetree@vger.kernel.org, linux-serial@vger.kernel.org,
+ Anson Huang <Anson.Huang@nxp.com>, linux-gpio@vger.kernel.org,
+ Fabio Estevam <festevam@gmail.com>, Linus Walleij <linus.walleij@linaro.org>,
+ linux-pm@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org,
+ Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+ Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
+ NXP Linux Team <linux-imx@nxp.com>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Thierry Reding <thierry.reding@gmail.com>, Shawn Guo <shawnguo@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, linux-watchdog@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In physmap_flash_of_init() the maps[].name can be populated based on the
-optional 'linux,mtd-name' property in the dts. Make sure this is
-retained when filling in the rest of the map[] data.
+On Sun, Aug 23, 2020 at 06:15:30PM +0200, Krzysztof Kozlowski wrote:
+> The GPIO controller node can have gpio-ranges property.  This fixes
+> dtbs_check warnings like:
+> 
+>   arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml: gpio@30200000: 'gpio-ranges' does not match any of the regexes: 'pinctrl-[0-9]+'
+>     From schema: Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  .../devicetree/bindings/gpio/fsl-imx-gpio.yaml    | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml b/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
+> index 454db20c2d1a..1fac69573bb9 100644
+> --- a/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
+> +++ b/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
+> @@ -51,6 +51,9 @@ properties:
+>  
+>    gpio-controller: true
+>  
+> +  gpio-ranges:
+> +    maxItems: 1
+> +
+>  required:
+>    - compatible
+>    - reg
+> @@ -62,6 +65,18 @@ required:
+>  
+>  additionalProperties: false
+>  
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: fsl,imx8mp-gpio
+> +    then:
+> +      properties:
+> +        gpio-ranges:
+> +          minItems: 1
+> +          maxItems: 2
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
- drivers/mtd/maps/physmap-core.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Why do you limit this to fsl,imx8mp-gpio? The i.MX5,6,7 dtsi files use
+gpio-ranges as well and other i.MX dtsi files could also use it.
 
-diff --git a/drivers/mtd/maps/physmap-core.c b/drivers/mtd/maps/physmap-core.c
-index 8f7f966fa9a7..6372197ad865 100644
---- a/drivers/mtd/maps/physmap-core.c
-+++ b/drivers/mtd/maps/physmap-core.c
-@@ -515,7 +515,8 @@ static int physmap_flash_probe(struct platform_device *dev)
- 		dev_notice(&dev->dev, "physmap platform flash device: %pR\n",
- 			   res);
- 
--		info->maps[i].name = dev_name(&dev->dev);
-+		if (!info->maps[i].name)
-+			info->maps[i].name = dev_name(&dev->dev);
- 
- 		if (!info->maps[i].phys)
- 			info->maps[i].phys = res->start;
+Sascha
+
 -- 
-2.28.0
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
 ______________________________________________________
 Linux MTD discussion mailing list
