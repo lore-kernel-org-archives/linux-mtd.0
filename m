@@ -2,66 +2,78 @@ Return-Path: <SRS0=rH0u=CD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AF0EC433DF
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Aug 2020 07:11:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 790CEC433E1
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Aug 2020 07:18:37 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 682E22074D
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Aug 2020 07:11:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2FA462071E
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Aug 2020 07:18:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="X2m8nlGZ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="f3Wq0A6w"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 682E22074D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="vmrw27WC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2FA462071E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:Cc:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=0wCgdwlr79MPxHQIJ1mRLXmmkArl/eJnnz0qOdppY3w=; b=X2m8nlGZtgYtR19+f5dlQmlON
-	rXl0U6jXAwD5HqTuiH5CBkOq+FLehUzXVwdB/g9ZZ7r6TUshYSjQ7klLwNWT5o4ijTA4DUQ5BL5in
-	dlFHKomDgqSDK6038x+ro2hySgk7zUjufVZOR7stG/ioX9bf8Pmj/JlLDutj6refflGCSyCaorGPR
-	jsHVhkc6YzK1O7HhZIkxj+UYkYPrY8n+w5FRdoPL//N0o5gMsq8GWcmI57ujyv8wXgaQ2R/8KsFyQ
-	KmH9SOemzXxK/O2weaEGbJ3qewSfaR+M9V70SQcpltoMr0JWV0TSbj94wXl9f3LqLWZnTLjjeWrw+
-	hZl5riL1g==;
+	 bh=Bw6bRnU8yT8XsubOdI67PKt8JrkaSy0xfBRmFZPzEJ0=; b=vmrw27WCLU+mCuJMBWUyqL4yY
+	fFLK+kDQBg2tgsn7z8fHsNF32kuasSuJO7A5AIv/WtBKxIiIX0VPJtO+l4lcegr27ZjyVyS8iVr+X
+	qvUZ+NQ/BgzreCsS2gtNavIN7k3m1bK3i/AZviAETPgO5ZLyIvhLNV0jeMrJOPcYO5RRsRiv7ILVV
+	4S91B27xVaY2Hcgq+PMXhY70Jz5Wz8KqBq2LFkxwSzmVo4qMdS9XZDJGKhtJqpFLMOSvvnbd+c5oL
+	adT6srW2vFrSQi0msoc/xINmFZAYjujg/ZbSUuH9WhbezHG1QKFQ2TT5PFj0bUGwvgtWUpTjnY4DB
+	g9jVEHqZw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kAT6R-0001eu-NG; Tue, 25 Aug 2020 07:10:43 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1kATDC-0003Yp-Jg; Tue, 25 Aug 2020 07:17:42 +0000
+Received: from mail-wr1-f66.google.com ([209.85.221.66])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kAT6M-0001cy-A0; Tue, 25 Aug 2020 07:10:39 +0000
-Received: from localhost (p54b333df.dip0.t-ipconnect.de [84.179.51.223])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id C35662074D;
- Tue, 25 Aug 2020 07:10:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598339436;
- bh=FWfgAaWELOpnq9T2ZqffNJ7A9qnO3QfKuIy+OMg+Nkc=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=f3Wq0A6wK+XyCx0NdyaVbiOp2OMrI3KPwj1V3RQ/NOii/Sv8XJMYsbLmiBZPZxHLr
- 0oPOxmO4ZW2uxwUXqLpZCKZIApP5fRkbLXbO9bWzKlL5g/hG5Vx0qfVAI9CAKfOqMV
- tmM358uBo/FCFQE7cpCl+yIXbi94y/ptPbOUqIoI=
-Date: Tue, 25 Aug 2020 09:10:33 +0200
-From: Wolfram Sang <wsa@kernel.org>
-To: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: Whitespace clean-ups in schema files
-Message-ID: <20200825071033.GB1861@ninjato>
-References: <20200812203618.2656699-1-robh@kernel.org>
+ id 1kATD6-0003VI-K7; Tue, 25 Aug 2020 07:17:37 +0000
+Received: by mail-wr1-f66.google.com with SMTP id r15so11562664wrp.13;
+ Tue, 25 Aug 2020 00:17:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=VUO6i/U3AVhRZX9XkX8wTuXOsuDoxa3aV3dAz0woA4o=;
+ b=JGXxN60UHh1hbRbdy9Bs78OUQHnzOkwU7xYzE1qd6cEjfXfYruihaQjXYZTikRilbI
+ dnlpJGecwq4fkvM4RD6vb22Cajn6oIeNT4jH/krfyP4eMfGMN1+Dr2Du9WpKxWSkMFRc
+ Seh5WFAV3HXUAUZQ2mOs/u7ynW9VEVW8FlZTWgqnPJK8wfiWZCfEb/ko8ZD0RgfjzQ9X
+ D6zoL5SswYyMXUG+uh/np4UvAdnbSHDO6aNS3XGSdcWF0uXM2tnFMuZHV4k99telJ8AT
+ 8J9z9VnlvZORCmWNQHAv9xdf6d9lxagg6POl4xO57lLLGtoaszKlf6SOy/B0FaY2xQKu
+ opYw==
+X-Gm-Message-State: AOAM530bQxUOMubbjT5ZqYvJUpB0d09jJ9iQxNM7ms4RCwbLvjs68X7T
+ tHgnGAUC4cIJrjjo1k4oniQ=
+X-Google-Smtp-Source: ABdhPJzJYPNbntZuVXqhHtMzbv8B44RjyoelOfsWDije4BgkxJQBl+U8ambvcHbMGJuX5NndB1iaIw==
+X-Received: by 2002:adf:fd84:: with SMTP id d4mr8719602wrr.243.1598339855693; 
+ Tue, 25 Aug 2020 00:17:35 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.216])
+ by smtp.googlemail.com with ESMTPSA id y3sm20848575wrs.36.2020.08.25.00.17.33
+ (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+ Tue, 25 Aug 2020 00:17:35 -0700 (PDT)
+Date: Tue, 25 Aug 2020 09:17:32 +0200
+From: Krzysztof Kozlowski <krzk@kernel.org>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH v2 13/19] dt-bindings: nvmem: imx-ocotp: Update i.MX 8M
+ compatibles
+Message-ID: <20200825071732.GD3458@kozik-lap>
+References: <20200824162652.21047-1-krzk@kernel.org>
+ <20200824162652.21047-13-krzk@kernel.org>
+ <20200825044653.GK13023@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20200812203618.2656699-1-robh@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Disposition: inline
+In-Reply-To: <20200825044653.GK13023@pengutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200825_031038_474089_878B745D 
-X-CRM114-Status: GOOD (  13.08  )
+X-CRM114-CacheID: sfid-20200825_031736_716869_75B81C47 
+X-CRM114-Status: GOOD (  18.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,100 +85,70 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-fbdev@vger.kernel.org, linux-iio@vger.kernel.org,
- linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org,
- dri-devel@lists.freedesktop.org, linux-mtd@lists.infradead.org,
- linux-i2c@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
- linux-input@vger.kernel.org, linux-media@vger.kernel.org,
- devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
- linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-hwmon@vger.kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org
-Content-Type: multipart/mixed; boundary="===============5858997060389207430=="
+Cc: Mark Rutland <mark.rutland@arm.com>, Ulf Hansson <ulf.hansson@linaro.org>,
+ linux-pwm@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+ Frank Li <frank.li@nxp.com>, Thierry Reding <thierry.reding@gmail.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Will Deacon <will@kernel.org>,
+ linux-watchdog@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+ Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+ NXP Linux Team <linux-imx@nxp.com>, linux-serial@vger.kernel.org,
+ Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+ Pengutronix Kernel Team <kernel@pengutronix.de>, linux-pm@vger.kernel.org,
+ linux-gpio@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ Han Xu <han.xu@nxp.com>, linux-arm-kernel@lists.infradead.org,
+ Fugang Duan <fugang.duan@nxp.com>, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Li Yang <leoyang.li@nxp.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>, linux-mtd@lists.infradead.org,
+ Shawn Guo <shawnguo@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On Tue, Aug 25, 2020 at 06:46:53AM +0200, Sascha Hauer wrote:
+> On Mon, Aug 24, 2020 at 06:26:46PM +0200, Krzysztof Kozlowski wrote:
+> > +    oneOf:
+> > +      - items:
+> > +          - enum:
+> > +              - fsl,imx6q-ocotp
+> > +              - fsl,imx6sl-ocotp
+> > +              - fsl,imx6sx-ocotp
+> > +              - fsl,imx6ul-ocotp
+> > +              - fsl,imx6ull-ocotp
+> > +              - fsl,imx7d-ocotp
+> > +              - fsl,imx6sll-ocotp
+> > +              - fsl,imx7ulp-ocotp
+> > +              - fsl,imx8mq-ocotp
+> > +              - fsl,imx8mm-ocotp
+> > +              - fsl,imx8mn-ocotp
+> > +              - fsl,imx8mp-ocotp
+> > +          - const: syscon
+> > +      - items:
+> > +          # The devices are not really compatible with fsl,imx8mm-ocotp, however
+> > +          # the code for getting SoC revision depends on fsl,imx8mm-ocotp compatible.
+> 
+> Shouldn't this be fixed? It seems strange to justify a binding with
+> existing code.
 
---===============5858997060389207430==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="JYK4vJDZwFMowpUq"
-Content-Disposition: inline
+The fsl,imx8mn-ocotp is actually compatible with "mm", only the
+fsl,imx8mp-ocotp is not (although someone might argue that subset of
+"mp" falls into "mn").
 
+The problem is that drivers/soc/imx/soc-imx8m.c checks revision only
+against the fsl,imx8mm-ocotp compatible, not the others. It's the
+pattern used in that driver also for other i.MX 8. Therefore it is a
+binding implemented and actually used, regardless whether it is correct
+from hardware point of view or not.
 
---JYK4vJDZwFMowpUq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+If that's preferred, I could adjust the drivers/soc/imx/soc-imx8m.c for
+the incompatible "mp". It should not break anything.
 
-On Wed, Aug 12, 2020 at 02:36:18PM -0600, Rob Herring wrote:
-> Clean-up incorrect indentation, extra spaces, long lines, and missing
-> EOF newline in schema files. Most of the clean-ups are for list
-> indentation which should always be 2 spaces more than the preceding
-> keyword.
->=20
-> Found with yamllint (which I plan to integrate into the checks).
->=20
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-clk@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-spi@vger.kernel.org
-> Cc: linux-gpio@vger.kernel.org
-> Cc: linux-remoteproc@vger.kernel.org
-> Cc: linux-hwmon@vger.kernel.org
-> Cc: linux-i2c@vger.kernel.org
-> Cc: linux-fbdev@vger.kernel.org
-> Cc: linux-iio@vger.kernel.org
-> Cc: linux-input@vger.kernel.org
-> Cc: linux-pm@vger.kernel.org
-> Cc: linux-media@vger.kernel.org
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-mmc@vger.kernel.org
-> Cc: linux-mtd@lists.infradead.org
-> Cc: netdev@vger.kernel.org
-> Cc: linux-rtc@vger.kernel.org
-> Cc: linux-serial@vger.kernel.org
-> Cc: linux-usb@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Best regards,
+Krzysztof
 
-I trust you guys in figuring out the details, so for touching I2C:
-
-Acked-by: Wolfram Sang <wsa@kernel.org>
-
-
---JYK4vJDZwFMowpUq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9EuWkACgkQFA3kzBSg
-KbZbPA/+MqNMzGTVXT++2afD+v/Qkum1LRbeldro+e0ewQSps4tnW/eHg9RaemYr
-BwxfsOZA+EJp0lGOnRM5/vhPMoInlSEwJSBlxtjratUScfPiR7D4ljKXGaUQv4IV
-l9cXBZuOeLnSerxdYsuGrs8M0uqe4rAc3jt/FGD4rSgawNTN1HieFaQ0vq/0I5Gi
-pyJv09alaosBuqNYc37Gqm9Ddk6xEJb8lvwrVqeS2ZGMFmfJuFlsuLKhwdgen/og
-Wik6VZEjyUHJbyZgkcwMn6rTVTnopK7E0RYmdap35Bh6MAZ3auQ4eQU2tktY3L0G
-+NL/ah9FAvmPH1RAR7KmXzZxVYX2ZoWm3AJVpCIvlc9toZI5NdOwdruT+KlTLHIY
-T0vs7B3wqsrD4pHputHdDtf9iSZDB0FiTi44yJjReI72Yb47gDXXK7tOcewvq33Y
-J9dv/HeT85ER8dZ3fCssLdOsIVSE5ZGaDGjP9M4hPo5ZqM5WlMcqW13gmBsEaY3W
-quFFx4pgOXFmnO+7fCb0OIoySeTtgCMNqSwekaNsrbK8dBsFhMx62IzUwwCwL8ST
-clLrMsK81BA4v5hiU1SXC5zAJJG1W0FEpGvIuQRa5YxW8goqwIJrEuvy8jWLhg1x
-kB4BNFdQdBMg8xw0GSHGDhOZhIxgC5t/fvrbiLmqazzmbfCE1i8=
-=71f2
------END PGP SIGNATURE-----
-
---JYK4vJDZwFMowpUq--
-
-
---===============5858997060389207430==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============5858997060389207430==--
-
