@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AE4DC433DF
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Aug 2020 07:51:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D3D0C433E1
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Aug 2020 07:56:43 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0B363206EB
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Aug 2020 07:51:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 476262071E
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Aug 2020 07:56:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="izs2NOCv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0B363206EB
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FpyqvRBm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 476262071E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,59 +25,56 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=r998gxlBvSF4AOfVE0uz2cOAqOO9pXol2jB7782atYo=; b=izs2NOCvxJaIw5PXIqcLA/xoU
-	GcMADW7VFgf8Zwl5ryGwbYulQU5ESwNRHe7KhX7wI/lrayeN0ilkcCxuVR01nHd/mZnPW1fkYsGEl
-	Q0VLdil/5Hj7pVyqH1iBpwKBHKcT8v92BeM0b+IR4ZSsrdv0Ua7etv7JxoG7+Kzn2JZgdkwKCL6mp
-	HR+s1rI0KkQm7Ev9S0aYlfW+wjTKcPQkV/lYp0SXauMvPnn2ZlSySQypWjaf9CC7Hpb/W6KU1oak6
-	U5kxrBNB0KmSD2qA4Mlqf/l/NX0umvWQ59dPRbvWvQ2wMwvLQLKgOnzvc0SuOHYnRL2yDX+iEvG6e
-	KS8X9+QFA==;
+	 bh=noooLVpsVY1efezVcaKCaMTIkhVD3+d6Eb3LR+WSru4=; b=FpyqvRBmkn5SiAycR8Su4256y
+	NsRXi75Vtm7UhekZG+tUn1SE9FXNJGUyxAm3kNJ+vkXmTub166QOhEdaHnTBzMNVcKynQYXtnoHit
+	4JQE/FrVP0AqhS5qiEvkEMwsAVEbI+39KYKj5LejqXKIi9b8IxZWlrquJSBFY+nEkUMIew+N0MNMo
+	u6c607Q8+jLd7SvLfD87tNb7lMYZC65PdhHXZzQKNjjVgWSaNhF4T28p1QixZhgA4hI6C6VRT7q/m
+	OfWw2CFe6uSjITMBJjULgoe9heW+1xqgmGZHC3OV+HqWOza9FQRH10o1GsQA94gefNmjJRCl9eX0h
+	FQBxa+kGA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kATjB-0008Ef-Sq; Tue, 25 Aug 2020 07:50:45 +0000
-Received: from mail-wr1-f66.google.com ([209.85.221.66])
+	id 1kATo9-0000qz-Ju; Tue, 25 Aug 2020 07:55:53 +0000
+Received: from mail-wr1-f65.google.com ([209.85.221.65])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kATj8-0008Du-Qo; Tue, 25 Aug 2020 07:50:43 +0000
-Received: by mail-wr1-f66.google.com with SMTP id p17so6017379wrj.8;
- Tue, 25 Aug 2020 00:50:42 -0700 (PDT)
+ id 1kATo5-0000pk-6z; Tue, 25 Aug 2020 07:55:50 +0000
+Received: by mail-wr1-f65.google.com with SMTP id b17so10916879wru.2;
+ Tue, 25 Aug 2020 00:55:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to:user-agent;
- bh=zDClTj1s5N+7to7OhV01SAjKraKRfpn6FyxoNR9IkEU=;
- b=H6SD42Lke4LRl63G9d0wHYAwtt70aIdH+em1iIwKM4mvNYj35jdBqhvYiv+BgKuUar
- U1BHfmdUsJ8ISeeuVpxmddxlHLV5bInhbE9nWmcAsd4cSHbG9xxhnLbB6egd1jc/P70e
- QjHYZYT0NelVrH0mnhPNF2JCTj3MSygChGjkh5P5VZioOlMM3VwfDhaXGEECWDlQBc17
- Ip5PoIlyxCYNCFOH0JfxIQvlOcs/dPUsvm9gO672OoZtikyz6S11Tl63+mRJ0woztTCw
- 6JKZ14pH7GZYk61bds1oDtq0cmUbprm0mqgEEyQebtOslkJXxtuDAzlHdl2BY1QtpjOM
- gIRg==
-X-Gm-Message-State: AOAM530gL652UH8v5bbZVroRNjHftpFM6GK/A2BBJx9a6BHknFCkM2gt
- f964nSgHfdF4fgO1BllX8QwMZn/8W0ADVw==
-X-Google-Smtp-Source: ABdhPJz4Djn1xXgFIG+eLnd2hHpypc7Vf0VfaQwoafVN0wzGR0eJoRGVKcMj9sJTv9d70FoXI70fpA==
-X-Received: by 2002:a5d:5589:: with SMTP id i9mr9269809wrv.127.1598341841452; 
- Tue, 25 Aug 2020 00:50:41 -0700 (PDT)
+ bh=aBjVw1JG0tpm4bk51wIknFht9NwTSZ65KB4U3gClblQ=;
+ b=m2ndQp4kleZUnL8v+OilFbY3fL2eF/AemOHxDE3HJyZOTWf3mDtPAUx2d2Xw4ZuRYx
+ tyyZoCUSeaiXFgGB6WykQLrPQBj2xqpwjGL2nzLeeRTiJBPXEVdqEUhCdOaptd7QF5b+
+ 3NkT2kzxkckhNAp+7OMVG3m1L0rGa69X8kZVt6K3g/UIFtaGT3gEamAsqVvLk2HFCq4t
+ M4fvfrasZCMElh4FWGG7QUiIgBOE8pMe4ZkiSidbQLYuTf62NgrnY8axCDjx4aWNoOM0
+ MnKczbMAf9rck1qT4U/NZQ1S117ohgD3vGUVjHZV7bRvoNEGrAGrm9b4h068fGdjHKM4
+ L/4Q==
+X-Gm-Message-State: AOAM531SelrfYq5bI2Qe6Qx+yUkqDvoiTc9W4dzvnYEnXWmD5pqBWjk/
+ hFpQK5YbgZmRrux0CNiVO+U=
+X-Google-Smtp-Source: ABdhPJy11J0dvtltETiMUmgoqOGY5vwRYKznzFSM+Jn9Jhy70mulHl9VGChcIKqtFo0jH3ClWuVjng==
+X-Received: by 2002:adf:f5c7:: with SMTP id k7mr9247503wrp.230.1598342147767; 
+ Tue, 25 Aug 2020 00:55:47 -0700 (PDT)
 Received: from kozik-lap ([194.230.155.216])
- by smtp.googlemail.com with ESMTPSA id v9sm17639149wru.37.2020.08.25.00.50.39
+ by smtp.googlemail.com with ESMTPSA id f9sm8049134wrm.5.2020.08.25.00.55.45
  (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
- Tue, 25 Aug 2020 00:50:40 -0700 (PDT)
-Date: Tue, 25 Aug 2020 09:50:38 +0200
-From: "krzk@kernel.org" <krzk@kernel.org>
-To: "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>
-Subject: Re: [PATCH 03/16] arm64: dts: imx8mm-beacon-som.dtsi: Align
- regulator names with schema
-Message-ID: <20200825075038.GA10148@kozik-lap>
-References: <20200824190701.8447-1-krzk@kernel.org>
- <20200824190701.8447-3-krzk@kernel.org>
- <fa042a4f670775f340e88fca8f363252112fd538.camel@fi.rohmeurope.com>
- <20200825072537.GA5914@kozik-lap>
- <20200825074500.GA19323@kozik-lap>
+ Tue, 25 Aug 2020 00:55:47 -0700 (PDT)
+Date: Tue, 25 Aug 2020 09:55:43 +0200
+From: Krzysztof Kozlowski <krzk@kernel.org>
+To: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v2 17/19] dt-bindings: serial: fsl-lpuart: Fix compatible
+ matching
+Message-ID: <20200825075543.GA10369@kozik-lap>
+References: <20200824162652.21047-1-krzk@kernel.org>
+ <20200824162652.21047-17-krzk@kernel.org>
+ <20200825024226.GA3843643@bogus>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20200825074500.GA19323@kozik-lap>
+In-Reply-To: <20200825024226.GA3843643@bogus>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200825_035042_898148_30A13ECB 
-X-CRM114-Status: GOOD (  34.07  )
+X-CRM114-CacheID: sfid-20200825_035549_298935_5A53C5F9 
+X-CRM114-Status: GOOD (  19.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,184 +86,80 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "daniel.baluta@nxp.com" <daniel.baluta@nxp.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "festevam@gmail.com" <festevam@gmail.com>, "vigneshr@ti.com" <vigneshr@ti.com>,
- "Anson.Huang@nxp.com" <Anson.Huang@nxp.com>,
- "aford173@gmail.com" <aford173@gmail.com>,
- "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "richard@nod.at" <richard@nod.at>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-imx@nxp.com" <linux-imx@nxp.com>,
- "kernel@pengutronix.de" <kernel@pengutronix.de>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "han.xu@nxp.com" <han.xu@nxp.com>,
- "lee.jones@linaro.org" <lee.jones@linaro.org>,
- "yibin.gong@nxp.com" <yibin.gong@nxp.com>,
- "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "jun.li@nxp.com" <jun.li@nxp.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, Ulf Hansson <ulf.hansson@linaro.org>,
+ linux-pwm@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+ Frank Li <frank.li@nxp.com>, Thierry Reding <thierry.reding@gmail.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Will Deacon <will@kernel.org>,
+ linux-watchdog@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+ Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+ NXP Linux Team <linux-imx@nxp.com>, linux-serial@vger.kernel.org,
+ Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+ Pengutronix Kernel Team <kernel@pengutronix.de>, linux-pm@vger.kernel.org,
+ Sascha Hauer <s.hauer@pengutronix.de>, linux-gpio@vger.kernel.org,
+ Han Xu <han.xu@nxp.com>, linux-arm-kernel@lists.infradead.org,
+ Fugang Duan <fugang.duan@nxp.com>, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Li Yang <leoyang.li@nxp.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>, linux-mtd@lists.infradead.org,
+ Shawn Guo <shawnguo@kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Aug 25, 2020 at 09:45:00AM +0200, krzk@kernel.org wrote:
-> On Tue, Aug 25, 2020 at 09:25:37AM +0200, krzk@kernel.org wrote:
-> > On Tue, Aug 25, 2020 at 06:51:33AM +0000, Vaittinen, Matti wrote:
-> > > Hello Krzysztof,
-> > > 
-> > > Just some questions - please ignore if I misunderstood the impact of
-> > > the change.
-> > > 
-> > > On Mon, 2020-08-24 at 21:06 +0200, Krzysztof Kozlowski wrote:
-> > > > Device tree schema expects regulator names to be lowercase.  This
-> > > > fixes
-> > > > dtbs_check warnings like:
-> > > > 
-> > > >     arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dt.yaml: pmic@4b:
-> > > > regulators:LDO1:regulator-name:0: 'LDO1' does not match '^ldo[1-6]$'
-> > > > 
-> > > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > > > ---
-> > > >  .../boot/dts/freescale/imx8mn-ddr4-evk.dts    | 22 +++++++++------
-> > > > ----
-> > > >  1 file changed, 11 insertions(+), 11 deletions(-)
-> > > > 
-> > > > diff --git a/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
-> > > > b/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
-> > > > index a1e5483dbbbe..299caed5d46e 100644
-> > > > --- a/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
-> > > > +++ b/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
-> > > > @@ -60,7 +60,7 @@
-> > > >  
-> > > >  		regulators {
-> > > >  			buck1_reg: BUCK1 {
-> > > > -				regulator-name = "BUCK1";
-> > > > +				regulator-name = "buck1";
-> > > 
-> > > I am not against this change but I would expect seeing some other
-> > > patches too? I guess this will change the regulator name in regulator
-> > > core, right? So maybe I am mistaken but it looks to me this change is
-> > > visible in suppliers, sysfs and debugfs too? Thus changing this sounds
-> > > a bit like asking for a nose bleed :) Am I right that the impact of
-> > > this change has been thoroughly tested? Are there any other patches
-> > > (that I have not seen) related to this change?
+On Mon, Aug 24, 2020 at 08:42:26PM -0600, Rob Herring wrote:
+> On Mon, Aug 24, 2020 at 06:26:50PM +0200, Krzysztof Kozlowski wrote:
+> > The i.MX 8QXP DTSes use two compatibles so update the binding to fix
+> > dtbs_check warnings like:
 > > 
-> > Oh, crap, the names of regulators in the driver are lowercase, but they
-> > use of_match_ptr for upper case. Seriously, why making a binding which
-> > is contradictory to the driver implementation on the first day?
+> >   arch/arm64/boot/dts/freescale/imx8qxp-mek.dt.yaml: serial@5a060000:
+> >     compatible: ['fsl,imx8qxp-lpuart', 'fsl,imx7ulp-lpuart'] is too long
+> >     From schema: Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
 > > 
-> > The driver goes with binding, right? One expects uppercase, other
-> > lowercase...
+> >   arch/arm64/boot/dts/freescale/imx8qxp-mek.dt.yaml: serial@5a060000:
+> >     compatible: Additional items are not allowed ('fsl,imx7ulp-lpuart' was unexpected)
 > > 
-> > And tell me, what is now the ABI? The binding or the incorrect
-> > implementation?
-> 
-> Wait, my mistake. I got confused by my own change. The node name stays
-> the same, so of_match will be correct.
-> 
-> The driver internally already uses lowercase names.
-> 
-> Everything looks good. I will just double check whether the constraints
-> did not change on the board after boot.
-
-Constraints look good.
-
-> 
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 > > 
-> > > 
-> > > >  				regulator-min-microvolt = <700000>;
-> > > >  				regulator-max-microvolt = <1300000>;
-> > > >  				regulator-boot-on;
-> > > > @@ -69,7 +69,7 @@
-> > > >  			};
-> > > >  
-> > > >  			buck2_reg: BUCK2 {
-> > > > -				regulator-name = "BUCK2";
-> > > > +				regulator-name = "buck2";
-> > > >  				regulator-min-microvolt = <700000>;
-> > > >  				regulator-max-microvolt = <1300000>;
-> > > >  				regulator-boot-on;
-> > > > @@ -79,14 +79,14 @@
-> > > >  
-> > > >  			buck3_reg: BUCK3 {
-> > > >  				// BUCK5 in datasheet
-> > > > -				regulator-name = "BUCK3";
-> > > > +				regulator-name = "buck3";
-> > > >  				regulator-min-microvolt = <700000>;
-> > > >  				regulator-max-microvolt = <1350000>;
-> > > >  			};
-> > > >  
-> > > >  			buck4_reg: BUCK4 {
-> > > >  				// BUCK6 in datasheet
-> > > > -				regulator-name = "BUCK4";
-> > > > +				regulator-name = "buck4";
-> > > >  				regulator-min-microvolt = <3000000>;
-> > > >  				regulator-max-microvolt = <3300000>;
-> > > >  				regulator-boot-on;
-> > > > @@ -95,7 +95,7 @@
-> > > >  
-> > > >  			buck5_reg: BUCK5 {
-> > > >  				// BUCK7 in datasheet
-> > > > -				regulator-name = "BUCK5";
-> > > > +				regulator-name = "buck5";
-> > > 
-> > > What I see in bd718x7-regulator.c for LDO6 desc is:
-> > > 
-> > >                         /* LDO6 is supplied by buck5 */
-> > >                         .supply_name = "buck5",
-> > > 
-> > > So, is this change going to change the supply-chain for the board? Is
-> > > this intended? (Or am I mistaken on what is the impact of regulator-
-> > > name property?)
+> > ---
+> > 
+> > Changes since v1:
+> > 1. New patch.
+> > ---
+> >  .../devicetree/bindings/serial/fsl-lpuart.yaml | 18 +++++++++++-------
+> >  1 file changed, 11 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml b/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
+> > index e82c2cf9fef7..8ee651f2ef0b 100644
+> > --- a/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
+> > +++ b/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
+> > @@ -14,13 +14,17 @@ allOf:
+> >  
+> >  properties:
+> >    compatible:
+> > -    enum:
+> > -      - fsl,vf610-lpuart
+> > -      - fsl,ls1021a-lpuart
+> > -      - fsl,ls1028a-lpuart
+> > -      - fsl,imx7ulp-lpuart
+> > -      - fsl,imx8qxp-lpuart
+> > -      - fsl,imx8qm-lpuart
+> > +    oneOf:
+> > +      - enum:
+> > +          - fsl,vf610-lpuart
+> > +          - fsl,ls1021a-lpuart
+> > +          - fsl,ls1028a-lpuart
+> > +          - fsl,imx7ulp-lpuart
+> > +          - fsl,imx8qxp-lpuart
 > 
-> Good point, let me check the supplies.
+> This should be dropped.
 
-This patch actually fixes the supplies which before were not working
-because of case mismatch.
-
-Before:
-
- regulator                      use open bypass  opmode voltage current     min     max
----------------------------------------------------------------------------------------
- regulator-dummy                  4    5      0 unknown     0mV     0mA     0mV     0mV
-    LDO6                          1    0      0 unknown  1200mV     0mA   900mV  1800mV
- BUCK1                            1    0      0 unknown   850mV     0mA   700mV  1300mV
- BUCK2                            2    1      0 unknown  1000mV     0mA   700mV  1300mV
-    cpu0-cpu                      1                                 0mA  1000mV  1000mV
- BUCK3                            1    0      0 unknown   975mV     0mA   700mV  1350mV
- BUCK4                            1    0      0 unknown  3300mV     0mA  3000mV  3300mV
- BUCK5                            1    0      0 unknown  1800mV     0mA  1605mV  1995mV
- BUCK6                            1    0      0 unknown  1200mV     0mA   800mV  1400mV
- LDO1                             1    0      0 unknown  1800mV     0mA  1600mV  1900mV
- LDO2                             1    0      0 unknown   800mV     0mA   800mV   900mV
- LDO3                             1    0      0 unknown  1800mV     0mA  1800mV  3300mV
- LDO4                             1    0      0 unknown   900mV     0mA   900mV  1800mV
- ldo5                             1    4      0 unknown  1800mV     0mA  1800mV  1800mV
-
-
-
-After:
- regulator                      use open bypass  opmode voltage current     min     max
----------------------------------------------------------------------------------------
-buck1                            1    0      0 unknown   850mV     0mA   700mV  1300mV
- buck2                            2    1      0 unknown   850mV     0mA   700mV  1300mV
-    cpu0-cpu                      1                                 0mA   850mV   850mV
- buck3                            1    0      0 unknown   975mV     0mA   700mV  1350mV
- buck4                            1    0      0 unknown  3300mV     0mA  3000mV  3300mV
- buck5                            2    1      0 unknown  1800mV     0mA  1605mV  1995mV
-    ldo6                          1    0      0 unknown  1200mV     0mA   900mV  1800mV
- buck6                            1    0      0 unknown  1200mV     0mA   800mV  1400mV
- ldo1                             1    0      0 unknown  1800mV     0mA  1600mV  1900mV
- ldo2                             1    0      0 unknown   800mV     0mA   800mV   900mV
- ldo3                             1    0      0 unknown  1800mV     0mA  1800mV  3300mV
- ldo4                             1    0      0 unknown   900mV     0mA   900mV  1800mV
- ldo5                             0    0      0 unknown  3300mV     0mA     0mV     0mV
+Right.
 
 Best regards,
 Krzysztof
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
