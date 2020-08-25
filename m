@@ -4,20 +4,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DA83C433E1
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Aug 2020 19:41:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 117A7C433DF
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Aug 2020 19:41:41 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3493F2075E
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Aug 2020 19:41:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 95B612075E
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Aug 2020 19:41:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="h+DerNbH";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="1mhyc2hF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3493F2075E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WB8v6Frt";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="wZYN9o64"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 95B612075E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,30 +26,30 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=9XzzR/N24f17aztohuDxtdRjqe3XvhBeeo5JAh48yOA=; b=h+DerNbHwSpdRpQoQlEt2Yk/0p
-	6JLlwAprtf7qT+CYLeZxekfGfWNnT2BjBwIVHwv094cPr/rm1xz++lugVZXLekTCrg3Gcl0rGEwCf
-	N8VuQsATxOb/FqRTxYIyb/Ta3tf0srppqr6E8ZqAUypSlZi+fm5IyLUi3ZzQViWk5m53xU3bz/iAv
-	UeINrk0rkQh+7ulknGIAoWGMM7gY1ChO+/4I+D6im053Fpd7QELXVHnQbhM2Jz1PRFwNnqVONbQ74
-	sEEHhvc5fscFB+iSBKuD8g0yTPsTZR5Khcqa253qk/80NDgg+jtwPdGFGtjy8AVD8bn0WgkwU9kQa
-	RW6a6aYQ==;
+	bh=PWAROORp184rs45IPUNAm55IBiFoGT0XLunt8VSWuN0=; b=WB8v6FrtoDEbePhA5PyDjBi6qK
+	6r3ELBoPzIaRmjYcYflWbmUx1e+wOmdBtvcdQw6iGYtw32HABoiqJM7AOT209DsgNptR/Edbf8fyZ
+	6jnLeEcMt1cOQJ/nlusBPavXtFNY3bh/MUmy/sZKe1Alp4E+v93mBbarxaIti++9IReJKyVGODqyB
+	AtONouN+sH0tLc8/L/DK5N1T8q5Dydzl0Bi1+xgkalG913WXQg1D92xvEnJkzys3RGHKXr6nCpgNJ
+	RG+rJg+DFrn+4U3Ir+gsGukCHKWUzSogtZu6gEuj6fWSoY3b3GIKaBgVH5hfXXw2hnUVmyCY4bZAk
+	qC45qGsw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kAenp-0001Ys-Dn; Tue, 25 Aug 2020 19:40:17 +0000
+	id 1kAeoN-0001tx-SO; Tue, 25 Aug 2020 19:40:51 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kAel7-0008GD-S2; Tue, 25 Aug 2020 19:37:32 +0000
+ id 1kAelK-0008OQ-Pb; Tue, 25 Aug 2020 19:37:43 +0000
 Received: from localhost.localdomain (unknown [194.230.155.216])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 383B8207DF;
- Tue, 25 Aug 2020 19:37:16 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 79B9B2076C;
+ Tue, 25 Aug 2020 19:37:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598384246;
- bh=85RKMTmKECIMFM6DGRK+YX/4QokPxJS+EKnA8zzJN1U=;
+ s=default; t=1598384261;
+ bh=oLRBjrakobO00fQoSHuH7N5PbZAoKW+gBHMvclqPiN4=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=1mhyc2hFMV1Kl1VwHgMe7aKSzXGPKK1Or/omGY8U3pUngppO6NjrP7fkDSj4szw1E
- TkWRcWbSPnnuchHuQNQ7pSvSpdxHWysYTbsVaNXezUQewJKsDQdW9y64qM0lVD7rK/
- dyncXh1XGtYjAqDQj30ErtI7JkZgSxy4VTxkwOZs=
+ b=wZYN9o640+VFHGKh1osxq8NjcnAVTCAs0ov9HzZBc6xlW9uvTt88RXvE/chPYzK1A
+ 8Z5yemHpf3GD/1tQGnMTagBv5e1hNVAhv3XYkXtJCM54QXePe9Xq2vdBnkl3U5MbXK
+ CKWDGAtOnMYsoXLtfGVazUeI07XZvl30zs0l+7HU=
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
  Bartosz Golaszewski <bgolaszewski@baylibre.com>,
@@ -68,16 +68,16 @@ To: Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
  linux-mtd@lists.infradead.org, linux-pwm@vger.kernel.org,
  linux-serial@vger.kernel.org, linux-pm@vger.kernel.org,
  linux-watchdog@vger.kernel.org
-Subject: [PATCH v3 10/19] dt-bindings: reset: fsl,
- imx7-src: Add i.MX 8M compatibles
-Date: Tue, 25 Aug 2020 21:35:27 +0200
-Message-Id: <20200825193536.7332-11-krzk@kernel.org>
+Subject: [PATCH v3 12/19] dt-bindings: mmc: fsl-imx-esdhc: Fix i.MX 8
+ compatible matching
+Date: Tue, 25 Aug 2020 21:35:29 +0200
+Message-Id: <20200825193536.7332-13-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200825193536.7332-1-krzk@kernel.org>
 References: <20200825193536.7332-1-krzk@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200825_153730_931640_EEB83CCA 
-X-CRM114-Status: GOOD (  12.85  )
+X-CRM114-CacheID: sfid-20200825_153743_065985_9AC212B7 
+X-CRM114-Status: GOOD (  13.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,52 +96,77 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-DTSes with new i.MX 8M SoCs introduce their own compatibles so add them
-to fix dtbs_check warnings like:
+The i.MX 8 DTSes use two compatibles so update the binding to fix
+dtbs_check warnings like:
 
-  arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml: reset-controller@30390000:
-    compatible:0: 'fsl,imx8mm-src' is not one of ['fsl,imx7d-src', 'fsl,imx8mq-src', 'fsl,imx8mp-src']
-    From schema: Documentation/devicetree/bindings/reset/fsl,imx7-src.yaml
+  arch/arm64/boot/dts/freescale/imx8mn-evk.dt.yaml: mmc@30b40000:
+    compatible: ['fsl,imx8mn-usdhc', 'fsl,imx7d-usdhc'] is too long
+    From schema: Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
 
-  arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml: reset-controller@30390000:
-    compatible:1: 'syscon' was expected
+  arch/arm64/boot/dts/freescale/imx8mn-evk.dt.yaml: mmc@30b40000:
+    compatible: Additional items are not allowed ('fsl,imx7d-usdhc' was unexpected)
 
-  arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml: reset-controller@30390000:
-    compatible: ['fsl,imx8mm-src', 'fsl,imx8mq-src', 'syscon'] is too long
+  arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dt.yaml: mmc@30b40000:
+    compatible: ['fsl,imx8mn-usdhc', 'fsl,imx7d-usdhc'] is too long
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
- .../bindings/reset/fsl,imx7-src.yaml          | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/reset/fsl,imx7-src.yaml b/Documentation/devicetree/bindings/reset/fsl,imx7-src.yaml
-index 569cd3bd3a70..00430e2eabc8 100644
---- a/Documentation/devicetree/bindings/reset/fsl,imx7-src.yaml
-+++ b/Documentation/devicetree/bindings/reset/fsl,imx7-src.yaml
-@@ -22,12 +22,19 @@ description: |
+---
+
+Changes since v2:
+1. Remove moved compatibles.
+
+Changes since v1:
+1. Handle also fsl,imx8mm-usdhc and fsl,imx8qxp-usdhc
+---
+ .../bindings/mmc/fsl-imx-esdhc.yaml           | 37 ++++++++++---------
+ 1 file changed, 20 insertions(+), 17 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml b/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
+index 10b45966f1b8..e71d13c2d109 100644
+--- a/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
++++ b/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
+@@ -21,23 +21,26 @@ description: |
  
  properties:
    compatible:
--    items:
--      - enum:
--          - fsl,imx7d-src
--          - fsl,imx8mq-src
--          - fsl,imx8mp-src
--      - const: syscon
+-    enum:
+-      - fsl,imx25-esdhc
+-      - fsl,imx35-esdhc
+-      - fsl,imx51-esdhc
+-      - fsl,imx53-esdhc
+-      - fsl,imx6q-usdhc
+-      - fsl,imx6sl-usdhc
+-      - fsl,imx6sx-usdhc
+-      - fsl,imx6ull-usdhc
+-      - fsl,imx7d-usdhc
+-      - fsl,imx7ulp-usdhc
+-      - fsl,imx8mq-usdhc
+-      - fsl,imx8mm-usdhc
+-      - fsl,imx8mn-usdhc
+-      - fsl,imx8mp-usdhc
+-      - fsl,imx8qm-usdhc
+-      - fsl,imx8qxp-usdhc
 +    oneOf:
++      - enum:
++          - fsl,imx25-esdhc
++          - fsl,imx35-esdhc
++          - fsl,imx51-esdhc
++          - fsl,imx53-esdhc
++          - fsl,imx6q-usdhc
++          - fsl,imx6sl-usdhc
++          - fsl,imx6sx-usdhc
++          - fsl,imx6ull-usdhc
++          - fsl,imx7d-usdhc
++          - fsl,imx7ulp-usdhc
 +      - items:
 +          - enum:
-+              - fsl,imx7d-src
-+              - fsl,imx8mq-src
-+              - fsl,imx8mp-src
-+          - const: syscon
-+      - items:
-+          - enum:
-+              - fsl,imx8mm-src
-+              - fsl,imx8mn-src
-+          - const: fsl,imx8mq-src
-+          - const: syscon
++              - fsl,imx8mm-usdhc
++              - fsl,imx8mn-usdhc
++              - fsl,imx8mp-usdhc
++              - fsl,imx8mq-usdhc
++              - fsl,imx8qxp-usdhc
++          - const: fsl,imx7d-usdhc
  
    reg:
      maxItems: 1
