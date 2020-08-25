@@ -2,77 +2,153 @@ Return-Path: <SRS0=rH0u=CD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FEE9C433E1
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Aug 2020 21:58:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E73BC433E1
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Aug 2020 22:22:03 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5A28B2071E
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Aug 2020 21:58:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E008D2075F
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Aug 2020 22:22:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="UX5na0sE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5A28B2071E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DjhIkqEn";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K5UGRk30"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E008D2075F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=VIUaD4+o+ocLfZALkqH1wKl2R1P89KLVY8H+mKZvN7w=; b=UX5na0sEBU5i5kemTjU8NaouP
-	J4PFHyD3B6EIIfGdbE7LAZirI6O5CHM/zKr8mpk+hbSSbUWKEqwmjL3x5a5kzbW1vrJi51fQsgU4q
-	809oEURKs2Bt8l6xLAAZEeexM23eiIJ1vcP307gJvVXJlDy4xxKzTXXAzh+dskoDi6phdcXtjEXuk
-	B3zEWeJlCtd0N99OKi9JrnHglbkfJ8uK6gd3P27C5mLl0FmU1GLwGLxVGR4zjfB3ygvA8gMr+e686
-	68/UjxuS/4H63/05S2T3E+dmgVnEyte6DyHL5VGS5mdVqDG56rK1GzvVtImCSDSkV2Mlw75c/kxeq
-	+bQ4qdVCA==;
+	Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
+	:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=g38CICskSL3sA3+93vnuzpK17/DkXTzmc2ZKwI3lYng=; b=DjhIkqEnu6Yi7XCBy+GXV42hMF
+	eNs9N8ePTwnDA7w+onPr7SYTamJSbJgbEtJSE1GArSI33z4DBPzSJT3Ac+vaFn4YCwrZiZoJBahWa
+	iCxPE7+JgFx7NAnHh8OAmDpuM4Tf1BO8++gF6S2txwJEC8f+ayBibnfnbTbolydZtRqf7YhtOj4u6
+	yLL77NCNpEepn1OJ7Z2Giditus5QQNe3rqhFFQIbRJ9MN73AhOMw4f5K0pHWCr60ugxJekUzbFkh/
+	MeJKSlIvVDL5nS3mdqS6nXSVdfdmif5yEJ5mQ0CKm03YLgFljIRxWCK2lXmKI1Yx9cGzsg5fBalSM
+	L7x5GJiA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kAgwW-0000E2-27; Tue, 25 Aug 2020 21:57:24 +0000
-Received: from mail-il1-f196.google.com ([209.85.166.196])
+	id 1kAhJp-0003ET-TR; Tue, 25 Aug 2020 22:21:29 +0000
+Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kAgwT-0000De-Dg
- for linux-mtd@lists.infradead.org; Tue, 25 Aug 2020 21:57:22 +0000
-Received: by mail-il1-f196.google.com with SMTP id t13so68149ile.9
- for <linux-mtd@lists.infradead.org>; Tue, 25 Aug 2020 14:57:21 -0700 (PDT)
+ id 1kAhJl-0003By-PW; Tue, 25 Aug 2020 22:21:27 +0000
+Received: by mail-pf1-x444.google.com with SMTP id k18so8433382pfp.7;
+ Tue, 25 Aug 2020 15:21:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=sender:subject:to:references:from:autocrypt:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=Xo3Lh0ar7wK8VvvtzSvlcOKRsOHINzAQAPvkHRS8eCk=;
+ b=K5UGRk30zCXsG7GyY8ibqJTsvhuFGMNYsMqdZaXvDUMwQedYWITYCEidSXBJOsM6xX
+ G5lm7jYUuJjWCyn68p+/Ji763YxWvw113AC6Wr06+QqcibsW/uuPKKguaG10PDggRgaA
+ VaB5WEjxaIvUd9pV3jAtNE7xWq/qwemnzDOPDUtmOuPjKHbMDsBHty7OUhWg33wZLSAm
+ dZbPw5t5ZyNZBjssFp72nGKKgNUNHTbZOrDCmh8xiFcvLcm3v5WdC9ZizdwE9HdXTRux
+ qfexwp2ykIJg+a0OYiJ8JdNv30nsS//N5XihqqZwzkSMUwvYlLN6GL4EK9shYfzVePQq
+ brfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=GjO9kVR66d1g6PuKVDC5MRmQctTcbYaJo56NTkeAqjM=;
- b=UJMtj2jYfViWUdGuWZP5GrShIHdDxHuOvBqDUVtcdcxQlLpiCxIzJNbyYXnsK+rWcm
- m/5GyVTNuuMvm9mKoNVNNxI5TRmGjHN4hfGlymmANQ+L03NOg/ub8RGXnQil0RSQlFy4
- 9eFZfpVq5oJaZC41F3R7OUcsrMOwkIXp2carzfsNfdLJKYWNEM+KXeoh2g4dp+mz9uwv
- An7+KJ3LzXMUrB6mxXDQqvu6VlDE5Y588QIi8FfWtvfh2WSX97i9xZ0XDAMykK196f03
- x9S/aU2giE0AhNXv3FblqVxwJ8sg755SsR4zfzPgVbBmAk2AZs3SH7L/Tk8ZWUwYMHex
- cgeA==
-X-Gm-Message-State: AOAM533eZjxj4TsSRUOUxuq3fXWBZ76IDqWhcV0KYepRcSogw8kxcNvj
- 4va56ARNCPkzQLFqnWt1/5E7jy91cpD2
-X-Google-Smtp-Source: ABdhPJy82N7dzwGaEQHw3zZQSbxNrrPETtjhHR6HpfXF4h+fMyTLd9vaf2b94cWGuWBfG8iq+fOJHQ==
-X-Received: by 2002:a92:aa94:: with SMTP id p20mr11099726ill.266.1598392640682; 
- Tue, 25 Aug 2020 14:57:20 -0700 (PDT)
-Received: from xps15 ([64.188.179.249])
- by smtp.gmail.com with ESMTPSA id t88sm203330ild.8.2020.08.25.14.57.19
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 25 Aug 2020 14:57:20 -0700 (PDT)
-Received: (nullmailer pid 1410297 invoked by uid 1000);
- Tue, 25 Aug 2020 21:57:19 -0000
-Date: Tue, 25 Aug 2020 15:57:19 -0600
-From: Rob Herring <robh@kernel.org>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: Re: [PATCH] dt-bindings: mtd: spi-nor: Sort list of support chip names
-Message-ID: <20200825215719.GA1406172@bogus>
-References: <20200819124004.19728-1-geert+renesas@glider.be>
+ h=x-gm-message-state:sender:subject:to:references:from:autocrypt
+ :message-id:date:user-agent:mime-version:in-reply-to
+ :content-language:content-transfer-encoding;
+ bh=Xo3Lh0ar7wK8VvvtzSvlcOKRsOHINzAQAPvkHRS8eCk=;
+ b=tjLJsGHWInmUCH7WIV/Ijn6SX2bTYZ14qJsSfC6QG+D+AzEW1VEWAWy82GYZLz92hb
+ U5qIcV8BEYxzkhQsXX2+rtvH4A/ChfMpxJ3GuSoqhwV7yb+04UIT6mWLNRppb6H0CUhh
+ oG9KLfONXKSaUDxJavp6p5wJLmP/CGCmV27U5rn0bRK9yZIQUupVS2Cc0s3g86bJi6A6
+ O9z+ZRbZgTNFsdwVBQzpbYDxxmzVxkROD+PeZqa7tffHSHy2zuJDq9hFBvXMLOXpdA0v
+ pz+KQJToF+dxL6T6HTXxq8dW//l7kkvfIpAzMgv8m6SlvpKmpj0Pk9By1f/MqmEdq5IX
+ 5K/Q==
+X-Gm-Message-State: AOAM530RwEeoNZ9hUGevli510vSIFALoLbHh4ZWid9LjkpgSbnLIsLxA
+ UvyaQ02B5hJdN+SBhzKiMtQ=
+X-Google-Smtp-Source: ABdhPJx/W1tKY8ncOnd42CczsmOXPD+BXGz4pzZDJOXSv79W0b26Rxxdd7HgbovfyrFCE6/1S6CseA==
+X-Received: by 2002:a63:1341:: with SMTP id 1mr880005pgt.144.1598394082624;
+ Tue, 25 Aug 2020 15:21:22 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+ by smtp.gmail.com with ESMTPSA id
+ e3sm258500pfj.78.2020.08.25.15.21.20
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 25 Aug 2020 15:21:21 -0700 (PDT)
+Subject: Re: [PATCH v3 08/19] dt-bindings: watchdog: fsl-imx-wdt: Add i.MX 8M
+ compatibles
+To: Krzysztof Kozlowski <krzk@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+ Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Thierry Reding <thierry.reding@gmail.com>, Anson Huang
+ <Anson.Huang@nxp.com>, Li Yang <leoyang.li@nxp.com>, Han Xu
+ <han.xu@nxp.com>, Frank Li <frank.li@nxp.com>,
+ Fugang Duan <fugang.duan@nxp.com>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-pwm@vger.kernel.org,
+ linux-serial@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-watchdog@vger.kernel.org
+References: <20200825193536.7332-1-krzk@kernel.org>
+ <20200825193536.7332-9-krzk@kernel.org>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <88bcb8db-1e19-fdf6-6527-6f3755cd5709@roeck-us.net>
+Date: Tue, 25 Aug 2020 15:21:19 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20200819124004.19728-1-geert+renesas@glider.be>
+In-Reply-To: <20200825193536.7332-9-krzk@kernel.org>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200825_175721_512332_00217F73 
-X-CRM114-Status: GOOD (  13.76  )
+X-CRM114-CacheID: sfid-20200825_182125_939507_C1143FFD 
+X-CRM114-Status: GOOD (  19.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,26 +160,58 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org, Vignesh Raghavendra <vigneshr@ti.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Aug 19, 2020 at 02:40:04PM +0200, Geert Uytterhoeven wrote:
-> Sort the list of supported chip names, using "sort -V", to take into
-> account both names and numbers.
+On 8/25/20 12:35 PM, Krzysztof Kozlowski wrote:
+> DTSes with new i.MX 8M SoCs introduce their own compatibles so add them
+> to fix dtbs_check warnings like:
 > 
-> This makes it easier to read and maintain the list.
+>   arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dt.yaml: watchdog@30280000:
+>     compatible:0: 'fsl,imx8mm-wdt' is not one of ['fsl,imx21-wdt']
+>     From schema: Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.yaml
+> 
+>   arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dt.yaml: watchdog@30280000:
+>     compatible: ['fsl,imx8mm-wdt', 'fsl,imx21-wdt'] is too long
+> 
+>   arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dt.yaml: watchdog@30280000:
+>     compatible: Additional items are not allowed ('fsl,imx21-wdt' was unexpected)
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-Can we just do this when converting to schema?
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 > ---
->  .../devicetree/bindings/mtd/jedec,spi-nor.txt | 34 +++++++++----------
->  1 file changed, 17 insertions(+), 17 deletions(-)
+>  .../devicetree/bindings/watchdog/fsl-imx-wdt.yaml     | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.yaml b/Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.yaml
+> index d96b93b11fad..991b4e33486e 100644
+> --- a/Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.yaml
+> +++ b/Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.yaml
+> @@ -14,8 +14,15 @@ allOf:
+>  
+>  properties:
+>    compatible:
+> -    enum:
+> -      - fsl,imx21-wdt
+> +    oneOf:
+> +      - const: fsl,imx21-wdt
+> +      - items:
+> +          - enum:
+> +              - fsl,imx8mm-wdt
+> +              - fsl,imx8mn-wdt
+> +              - fsl,imx8mp-wdt
+> +              - fsl,imx8mq-wdt
+> +          - const: fsl,imx21-wdt
+>  
+>    reg:
+>      maxItems: 1
+> 
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
