@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D37EFC433E1
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Aug 2020 08:55:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13FD9C433DF
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Aug 2020 08:55:56 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9F30D2177B
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Aug 2020 08:55:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CFD922177B
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Aug 2020 08:55:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YW8ODueW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9F30D2177B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ZZMj31IR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CFD922177B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:To:From:
 	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=m5vEcTOn8Ae+/DFcoTrXhbdMPQS7kdqtKGy7ChfpJL4=; b=YW8ODueWcTcSBRDRxmroeMXv9/
-	aV0iVDXRv9nwgEvjs9pFAKXFlmBFwQwbT4ekrK4cnNXXRpUp8mIL/JypEwAem92dPA1TTqewLc9N+
-	d1u/20EL0ZHksLCs+jGbdPf8FFn4HtOsQa5LO8dFwxpcBiKjcR1EtKGBkRBEG8GmCd/MUv/0ZindF
-	0PPzYEqTi2c1K8fQ3yBJLE4t8ojwwTK8Euns7zTmRFICb5flViaZh8u0LtCmrcEjgcGN9ztAiTkZn
-	4kraAzlb36FGICuF+aJ1dNCp/mIMdvcBODyQ/hjkDSAbqLo8gCU5TO4Kgb3WipFHwY/qwHh0AYRio
-	zRmNJfmg==;
+	bh=nipQDg1s/aUvYF6RA+Kw0kETCVUuwxnIwrCf2HgUWA8=; b=ZZMj31IRkSXVkpuBe+E91cNkAP
+	z/MQzn/ZTPguszfqdQ/HhTetEtSjEuFRJWm/Q/1vVLGy7d/G3HNZR051kKU/MJEwxH1TnHdhgrOSw
+	SSw8klFYgtNGLolZ2yDkFeyWm6Q1wE8vmZ54OqgT+V7tmq5Qlh1GDW11kVFTGK7iTEo6pqJXZ+XTv
+	/Z1DOrykj/VuH6f2Wh77rASgIkxBQ0fKmnZ9IU75LMtwdufFZs3WGKLeOK/2Zq5PyhZf6/TjD/1s2
+	2TaF80yQ9Bu5PYUqtY1wpPEDmDvN4clmzofdtsqFnzL0gN0DIiKVvZG3fNclns4grLDwqjWQzy4Lf
+	68jqmj+w==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kBDgX-0006pl-4F; Thu, 27 Aug 2020 08:55:05 +0000
+	id 1kBDge-0006xy-Fs; Thu, 27 Aug 2020 08:55:12 +0000
 Received: from relay5-d.mail.gandi.net ([217.70.183.197])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kBDg7-0006XD-Kg
- for linux-mtd@lists.infradead.org; Thu, 27 Aug 2020 08:54:40 +0000
+ id 1kBDgA-0006ZW-DN
+ for linux-mtd@lists.infradead.org; Thu, 27 Aug 2020 08:54:44 +0000
 X-Originating-IP: 77.205.47.153
 Received: from xps13.clients.t25.sncf (153.47.205.77.rev.sfr.net
  [77.205.47.153]) (Authenticated sender: miquel.raynal@bootlin.com)
- by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 8E18B1C0007;
- Thu, 27 Aug 2020 08:53:22 +0000 (UTC)
+ by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id CF1DD1C0003;
+ Thu, 27 Aug 2020 08:54:38 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH v13 18/20] mtd: rawnand: Use the ECC framework
- nand_ecc_is_strong_enough() helper
-Date: Thu, 27 Aug 2020 10:52:06 +0200
-Message-Id: <20200827085208.16276-19-miquel.raynal@bootlin.com>
+Subject: [PATCH v13 19/20] mtd: rawnand: Use the ECC framework user input
+ parsing bits
+Date: Thu, 27 Aug 2020 10:52:07 +0200
+Message-Id: <20200827085208.16276-20-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200827085208.16276-1-miquel.raynal@bootlin.com>
 References: <20200827085208.16276-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200827_045439_880156_89E2FC67 
-X-CRM114-Status: GOOD (  14.06  )
+X-CRM114-CacheID: sfid-20200827_045443_676815_097DB4D7 
+X-CRM114-Status: GOOD (  21.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,70 +74,264 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Plus, the new helper has a more "english" name.
+Many helpers are generic to all NAND chips, they should not be
+raw-NAND specific, so use the generic ones.
+
+To avoid moving all the raw NAND core "history" into the generic NAND
+layer, we keep a part of this parsing in the raw NAND core to ensure
+backward compatibility.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/nand_base.c | 39 +-------------------------------
- 1 file changed, 1 insertion(+), 38 deletions(-)
+ drivers/mtd/nand/raw/nand_base.c | 144 +++++++++++++++----------------
+ include/linux/mtd/rawnand.h      |  12 ---
+ 2 files changed, 71 insertions(+), 85 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 77f60849dfb4..66443986d80f 100644
+index 66443986d80f..6a5f5699514f 100644
 --- a/drivers/mtd/nand/raw/nand_base.c
 +++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -5499,43 +5499,6 @@ int nand_ecc_choose_conf(struct nand_chip *chip,
+@@ -4882,18 +4882,27 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+ 	return ret;
  }
- EXPORT_SYMBOL_GPL(nand_ecc_choose_conf);
+ 
+-static const char * const nand_ecc_modes[] = {
+-	[NAND_ECC_NONE]		= "none",
+-	[NAND_ECC_SOFT]		= "soft",
+-	[NAND_ECC_HW]		= "hw",
+-	[NAND_ECC_HW_SYNDROME]	= "hw_syndrome",
+-	[NAND_ECC_ON_DIE]	= "on-die",
+-};
+-
+ static enum nand_ecc_engine_type
+-of_get_nand_ecc_engine_type(struct device_node *np)
++of_get_rawnand_ecc_engine_type_legacy(struct device_node *np)
+ {
+-	enum nand_ecc_mode eng_type;
++	enum nand_ecc_legacy_mode {
++		NAND_ECC_INVALID,
++		NAND_ECC_NONE,
++		NAND_ECC_SOFT,
++		NAND_ECC_SOFT_BCH,
++		NAND_ECC_HW,
++		NAND_ECC_HW_SYNDROME,
++		NAND_ECC_ON_DIE,
++	};
++	const char * const nand_ecc_legacy_modes[] = {
++		[NAND_ECC_NONE]		= "none",
++		[NAND_ECC_SOFT]		= "soft",
++		[NAND_ECC_SOFT_BCH]	= "soft_bch",
++		[NAND_ECC_HW]		= "hw",
++		[NAND_ECC_HW_SYNDROME]	= "hw_syndrome",
++		[NAND_ECC_ON_DIE]	= "on-die",
++	};
++	enum nand_ecc_legacy_mode eng_type;
+ 	const char *pm;
+ 	int err;
+ 
+@@ -4902,12 +4911,13 @@ of_get_nand_ecc_engine_type(struct device_node *np)
+ 		return NAND_ECC_ENGINE_TYPE_INVALID;
+ 
+ 	for (eng_type = NAND_ECC_NONE;
+-	     eng_type < ARRAY_SIZE(nand_ecc_modes); eng_type++) {
+-		if (!strcasecmp(pm, nand_ecc_modes[eng_type])) {
++	     eng_type < ARRAY_SIZE(nand_ecc_legacy_modes); eng_type++) {
++		if (!strcasecmp(pm, nand_ecc_legacy_modes[eng_type])) {
+ 			switch (eng_type) {
+ 			case NAND_ECC_NONE:
+ 				return NAND_ECC_ENGINE_TYPE_NONE;
+ 			case NAND_ECC_SOFT:
++			case NAND_ECC_SOFT_BCH:
+ 				return NAND_ECC_ENGINE_TYPE_SOFT;
+ 			case NAND_ECC_HW:
+ 			case NAND_ECC_HW_SYNDROME:
+@@ -4920,43 +4930,29 @@ of_get_nand_ecc_engine_type(struct device_node *np)
+ 		}
+ 	}
+ 
+-	/*
+-	 * For backward compatibility we support few obsoleted values that don't
+-	 * have their mappings into the nand_ecc_engine_providers enum anymore
+-	 * (they were merged with other enums).
+-	 */
+-	if (!strcasecmp(pm, "soft_bch"))
+-		return NAND_ECC_ENGINE_TYPE_SOFT;
+-
+ 	return NAND_ECC_ENGINE_TYPE_INVALID;
+ }
+ 
+-static const char * const nand_ecc_algos[] = {
+-	[NAND_ECC_ALGO_HAMMING]	= "hamming",
+-	[NAND_ECC_ALGO_BCH]	= "bch",
+-	[NAND_ECC_ALGO_RS]	= "rs",
+-};
+-
+-static enum nand_ecc_algo of_get_nand_ecc_algo(struct device_node *np)
++enum nand_ecc_placement
++of_get_rawnand_ecc_placement_legacy(struct device_node *np)
+ {
+-	enum nand_ecc_algo ecc_algo;
+ 	const char *pm;
+ 	int err;
+ 
+-	err = of_property_read_string(np, "nand-ecc-algo", &pm);
++	err = of_property_read_string(np, "nand-ecc-mode", &pm);
+ 	if (!err) {
+-		for (ecc_algo = NAND_ECC_ALGO_HAMMING;
+-		     ecc_algo < ARRAY_SIZE(nand_ecc_algos);
+-		     ecc_algo++) {
+-			if (!strcasecmp(pm, nand_ecc_algos[ecc_algo]))
+-				return ecc_algo;
+-		}
++		if (!strcasecmp(pm, "hw_syndrome"))
++			return NAND_ECC_PLACEMENT_INTERLEAVED;
+ 	}
+ 
+-	/*
+-	 * For backward compatibility we also read "nand-ecc-mode" checking
+-	 * for some obsoleted values that were specifying ECC algorithm.
+-	 */
++	return NAND_ECC_PLACEMENT_UNKNOWN;
++}
++
++static enum nand_ecc_algo of_get_rawnand_ecc_algo_legacy(struct device_node *np)
++{
++	const char *pm;
++	int err;
++
+ 	err = of_property_read_string(np, "nand-ecc-mode", &pm);
+ 	if (!err) {
+ 		if (!strcasecmp(pm, "soft"))
+@@ -4968,22 +4964,19 @@ static enum nand_ecc_algo of_get_nand_ecc_algo(struct device_node *np)
+ 	return NAND_ECC_ALGO_UNKNOWN;
+ }
+ 
+-static int of_get_nand_ecc_step_size(struct device_node *np)
++static void of_get_nand_ecc_legacy_user_config(struct nand_chip *chip)
+ {
+-	int ret;
+-	u32 val;
++	struct device_node *dn = nand_get_flash_node(chip);
++	struct nand_ecc_props *user_conf = &chip->base.ecc.user_conf;
+ 
+-	ret = of_property_read_u32(np, "nand-ecc-step-size", &val);
+-	return ret ? ret : val;
+-}
++	if (user_conf->engine_type != NAND_ECC_ENGINE_TYPE_INVALID)
++		user_conf->engine_type = of_get_rawnand_ecc_engine_type_legacy(dn);
+ 
+-static int of_get_nand_ecc_strength(struct device_node *np)
+-{
+-	int ret;
+-	u32 val;
++	if (user_conf->algo != NAND_ECC_ALGO_UNKNOWN)
++		user_conf->algo = of_get_rawnand_ecc_algo_legacy(dn);
+ 
+-	ret = of_property_read_u32(np, "nand-ecc-strength", &val);
+-	return ret ? ret : val;
++	if (user_conf->placement != NAND_ECC_PLACEMENT_UNKNOWN)
++		user_conf->placement = of_get_rawnand_ecc_placement_legacy(dn);
+ }
+ 
+ static int of_get_nand_bus_width(struct device_node *np)
+@@ -5007,12 +5000,10 @@ static bool of_get_nand_on_flash_bbt(struct device_node *np)
+ 	return of_property_read_bool(np, "nand-on-flash-bbt");
+ }
+ 
+-static int nand_dt_init(struct nand_chip *chip)
++static int rawnand_dt_init(struct nand_chip *chip)
+ {
++	struct nand_device *nand = mtd_to_nanddev(nand_to_mtd(chip));
+ 	struct device_node *dn = nand_get_flash_node(chip);
+-	enum nand_ecc_engine_type ecc_type;
+-	enum nand_ecc_algo ecc_algo;
+-	int ecc_strength, ecc_step;
+ 
+ 	if (!dn)
+ 		return 0;
+@@ -5026,26 +5017,33 @@ static int nand_dt_init(struct nand_chip *chip)
+ 	if (of_get_nand_on_flash_bbt(dn))
+ 		chip->bbt_options |= NAND_BBT_USE_FLASH;
+ 
+-	ecc_type = of_get_nand_ecc_engine_type(dn);
+-	ecc_algo = of_get_nand_ecc_algo(dn);
+-	ecc_strength = of_get_nand_ecc_strength(dn);
+-	ecc_step = of_get_nand_ecc_step_size(dn);
+-
+-	if (ecc_type != NAND_ECC_ENGINE_TYPE_INVALID)
+-		chip->ecc.engine_type = ecc_type;
+-
+-	if (ecc_algo != NAND_ECC_ALGO_UNKNOWN)
+-		chip->ecc.algo = ecc_algo;
+-
+-	if (ecc_strength >= 0)
+-		chip->ecc.strength = ecc_strength;
+-
+-	if (ecc_step > 0)
+-		chip->ecc.size = ecc_step;
+-
+ 	if (of_property_read_bool(dn, "nand-ecc-maximize"))
+ 		chip->ecc.options |= NAND_ECC_MAXIMIZE;
+ 
++	of_get_nand_ecc_user_config(nand);
++	of_get_nand_ecc_legacy_user_config(chip);
++
++	/*
++	 * If neither the user nor the NAND controller have requested a specific
++	 * ECC engine type, we will default to NAND_ECC_ENGINE_TYPE_ON_HOST.
++	 */
++	nand->ecc.defaults.engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
++
++	/*
++	 * Use the user requested engine type, unless there is none, in this
++	 * case default to the NAND controller choice, otherwise fallback to
++	 * the raw NAND default one.
++	 */
++	if (nand->ecc.user_conf.engine_type != NAND_ECC_ENGINE_TYPE_INVALID)
++		chip->ecc.engine_type = nand->ecc.user_conf.engine_type;
++	if (chip->ecc.engine_type == NAND_ECC_ENGINE_TYPE_INVALID)
++		chip->ecc.engine_type = nand->ecc.defaults.engine_type;
++
++	chip->ecc.placement = nand->ecc.user_conf.placement;
++	chip->ecc.algo = nand->ecc.user_conf.algo;
++	chip->ecc.strength = nand->ecc.user_conf.strength;
++	chip->ecc.size = nand->ecc.user_conf.step_size;
++
+ 	return 0;
+ }
+ 
+@@ -5082,7 +5080,7 @@ static int nand_scan_ident(struct nand_chip *chip, unsigned int maxchips,
+ 	/* Enforce the right timings for reset/detection */
+ 	chip->current_interface_config = nand_get_reset_interface_config();
+ 
+-	ret = nand_dt_init(chip);
++	ret = rawnand_dt_init(chip);
+ 	if (ret)
+ 		return ret;
+ 
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 1bbce6fa1b08..671e60948deb 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -81,18 +81,6 @@ struct nand_chip;
+ 
+ #define NAND_DATA_IFACE_CHECK_ONLY	-1
  
 -/*
-- * Check if the chip configuration meet the datasheet requirements.
--
-- * If our configuration corrects A bits per B bytes and the minimum
-- * required correction level is X bits per Y bytes, then we must ensure
-- * both of the following are true:
-- *
-- * (1) A / B >= X / Y
-- * (2) A >= X
-- *
-- * Requirement (1) ensures we can correct for the required bitflip density.
-- * Requirement (2) ensures we can correct even when all bitflips are clumped
-- * in the same sector.
+- * Constants for ECC_MODES
 - */
--static bool nand_ecc_strength_good(struct nand_chip *chip)
--{
--	struct mtd_info *mtd = nand_to_mtd(chip);
--	struct nand_ecc_ctrl *ecc = &chip->ecc;
--	const struct nand_ecc_props *requirements =
--		nanddev_get_ecc_requirements(&chip->base);
--	int corr, ds_corr;
+-enum nand_ecc_mode {
+-	NAND_ECC_INVALID,
+-	NAND_ECC_NONE,
+-	NAND_ECC_SOFT,
+-	NAND_ECC_HW,
+-	NAND_ECC_HW_SYNDROME,
+-	NAND_ECC_ON_DIE,
+-};
 -
--	if (ecc->size == 0 || requirements->step_size == 0)
--		/* Not enough information */
--		return true;
--
--	/*
--	 * We get the number of corrected bits per page to compare
--	 * the correction density.
--	 */
--	corr = (mtd->writesize * ecc->strength) / ecc->size;
--	ds_corr = (mtd->writesize * requirements->strength) /
--		  requirements->step_size;
--
--	return corr >= ds_corr && ecc->strength >= requirements->strength;
--}
--
- static int rawnand_erase(struct nand_device *nand, const struct nand_pos *pos)
- {
- 	struct nand_chip *chip = container_of(nand, struct nand_chip,
-@@ -5818,7 +5781,7 @@ static int nand_scan_tail(struct nand_chip *chip)
- 	mtd->oobavail = ret;
- 
- 	/* ECC sanity check: warn if it's too weak */
--	if (!nand_ecc_strength_good(chip))
-+	if (!nand_ecc_is_strong_enough(&chip->base))
- 		pr_warn("WARNING: %s: the ECC used on your system (%db/%dB) is too weak compared to the one required by the NAND chip (%db/%dB)\n",
- 			mtd->name, chip->ecc.strength, chip->ecc.size,
- 			nanddev_get_ecc_requirements(&chip->base)->strength,
+ /*
+  * Constants for Hardware ECC
+  */
 -- 
 2.20.1
 
