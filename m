@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97DB2C433DF
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Aug 2020 08:53:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA561C433DF
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Aug 2020 08:53:45 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3ECEE206F0
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Aug 2020 08:53:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ECF35206F0
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Aug 2020 08:53:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nkiusCof"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3ECEE206F0
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="grIXxJlM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ECF35206F0
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:To:From:
 	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Ma3+LwxUY9jQEcJkyKoJJLzPyalo9z+PL3hPDY4uGq4=; b=nkiusCofCRvfgMTnISw+sfGs5n
-	CWQlExFHItMA+GyGWfyTkOua1BCUo8dnDrdk3n04jJVCw6Q+w9g7RLPg9bKx2noyzOmKY4Bzy73yN
-	JS5pU6GAJCJWlR2rcY7cYQEvM2D2KG+dJ6Xo5YsnH967n8WZ+f6lZT0QoxJY39rHwUUuGZe8+ALsD
-	1at4OMOo91R+392JUbwnUaiI4JiwkmsdEy/02BMjTo+PD3yDuVKozaRd2cTOwXFPohtwKx3/i0YAa
-	8w/M1YTbri1Wv4jrsXLTiXV8MortI747/akajrGR4tjFVcZyM4KgKCUgFBVXISW6dw5+9xlS8vt0W
-	QNK3wzTw==;
+	bh=xf1b4ZyK6V3VhVIrbVgtmFqrnQhx2iMGwNS/kesouJU=; b=grIXxJlMMzeocOVHI/T7i8HfvL
+	+hBinFJ0PA+WN68bAFtykzWjNx3nAD6OG2QDbnRj0LlyAjFPu+WFYGobatrXyqGwGnHLfyuUTb+Vh
+	2Ey3xjjEXYBOI3udCSfoExe/3PcrgBwqC4akVIQn5pxAYfS4zFUsxyZqAqwiI1LkP/UWsF7QIodcl
+	PxcG8iWWQgCNVAsMlwsnDrOTJMjO9E6WTDbR9raW9WARRa5jBESM7kH6IlKN2XLHfBFgdAnda1yXj
+	UWaurEm/ZY5suQhKZ3+lpiZ7x4EtrqvLYEPfsm7avyf6gwmCBaOyASx+C8RNjT1l9COxaCfmICETH
+	O5JsR0nA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kBDeC-0005T9-FB; Thu, 27 Aug 2020 08:52:40 +0000
+	id 1kBDeZ-0005cR-EJ; Thu, 27 Aug 2020 08:53:03 +0000
 Received: from relay5-d.mail.gandi.net ([217.70.183.197])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kBDds-0005Mf-Gn
- for linux-mtd@lists.infradead.org; Thu, 27 Aug 2020 08:52:23 +0000
+ id 1kBDe4-0005Qb-8K
+ for linux-mtd@lists.infradead.org; Thu, 27 Aug 2020 08:52:35 +0000
 X-Originating-IP: 77.205.47.153
 Received: from xps13.clients.t25.sncf (153.47.205.77.rev.sfr.net
  [77.205.47.153]) (Authenticated sender: miquel.raynal@bootlin.com)
- by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 6FD4B1C0005;
- Thu, 27 Aug 2020 08:52:15 +0000 (UTC)
+ by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 59BC01C0004;
+ Thu, 27 Aug 2020 08:52:28 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH v13 02/20] mtd: rawnand: Rename the ECC algorithm enumeration
- items
-Date: Thu, 27 Aug 2020 10:51:50 +0200
-Message-Id: <20200827085208.16276-3-miquel.raynal@bootlin.com>
+Subject: [PATCH v13 08/20] mtd: nand: Introduce the ECC engine framework
+Date: Thu, 27 Aug 2020 10:51:56 +0200
+Message-Id: <20200827085208.16276-9-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200827085208.16276-1-miquel.raynal@bootlin.com>
 References: <20200827085208.16276-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200827_045220_808208_A028E6F0 
-X-CRM114-Status: GOOD (  20.25  )
+X-CRM114-CacheID: sfid-20200827_045232_628739_C8CE35E6 
+X-CRM114-Status: GOOD (  29.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,673 +68,395 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-NAND_ECC_ is not a meaningful prefix, use NAND_ECC_ALGO_ instead.
-
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
----
- drivers/mtd/nand/raw/ams-delta.c              |  2 +-
- drivers/mtd/nand/raw/arasan-nand-controller.c |  2 +-
- drivers/mtd/nand/raw/atmel/nand-controller.c  |  2 +-
- drivers/mtd/nand/raw/au1550nd.c               |  2 +-
- drivers/mtd/nand/raw/brcmnand/brcmnand.c      | 12 ++++-----
- drivers/mtd/nand/raw/davinci_nand.c           |  8 +++---
- drivers/mtd/nand/raw/fsl_elbc_nand.c          |  2 +-
- drivers/mtd/nand/raw/fsl_ifc_nand.c           |  2 +-
- drivers/mtd/nand/raw/fsl_upm.c                |  2 +-
- drivers/mtd/nand/raw/fsmc_nand.c              |  2 +-
- drivers/mtd/nand/raw/gpio.c                   |  2 +-
- drivers/mtd/nand/raw/marvell_nand.c           | 10 +++----
- drivers/mtd/nand/raw/mpc5121_nfc.c            |  2 +-
- drivers/mtd/nand/raw/mxc_nand.c               |  2 +-
- drivers/mtd/nand/raw/nand_base.c              | 26 +++++++++----------
- drivers/mtd/nand/raw/nand_micron.c            |  2 +-
- drivers/mtd/nand/raw/nandsim.c                |  4 +--
- drivers/mtd/nand/raw/omap2.c                  |  2 +-
- drivers/mtd/nand/raw/orion_nand.c             |  2 +-
- drivers/mtd/nand/raw/pasemi_nand.c            |  2 +-
- drivers/mtd/nand/raw/plat_nand.c              |  2 +-
- drivers/mtd/nand/raw/s3c2410.c                |  4 +--
- drivers/mtd/nand/raw/sh_flctl.c               |  2 +-
- drivers/mtd/nand/raw/socrates_nand.c          |  2 +-
- drivers/mtd/nand/raw/tango_nand.c             |  2 +-
- drivers/mtd/nand/raw/tegra_nand.c             | 20 +++++++-------
- drivers/mtd/nand/raw/xway_nand.c              |  2 +-
- include/linux/mtd/rawnand.h                   | 16 ++++++------
- 28 files changed, 70 insertions(+), 70 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
-index fdba155416d2..21199d9ae9be 100644
---- a/drivers/mtd/nand/raw/ams-delta.c
-+++ b/drivers/mtd/nand/raw/ams-delta.c
-@@ -261,7 +261,7 @@ static int gpio_nand_probe(struct platform_device *pdev)
- 	}
- 
- 	this->ecc.mode = NAND_ECC_SOFT;
--	this->ecc.algo = NAND_ECC_HAMMING;
-+	this->ecc.algo = NAND_ECC_ALGO_HAMMING;
- 
- 	platform_set_drvdata(pdev, priv);
- 
-diff --git a/drivers/mtd/nand/raw/arasan-nand-controller.c b/drivers/mtd/nand/raw/arasan-nand-controller.c
-index 12c643e97c85..b0616a95340d 100644
---- a/drivers/mtd/nand/raw/arasan-nand-controller.c
-+++ b/drivers/mtd/nand/raw/arasan-nand-controller.c
-@@ -983,7 +983,7 @@ static int anfc_init_hw_ecc_controller(struct arasan_nfc *nfc,
- 	mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
- 
- 	ecc->steps = mtd->writesize / ecc->size;
--	ecc->algo = NAND_ECC_BCH;
-+	ecc->algo = NAND_ECC_ALGO_BCH;
- 	anand->ecc_bits = bch_gf_mag * ecc->strength;
- 	ecc->bytes = DIV_ROUND_UP(anand->ecc_bits, 8);
- 	anand->ecc_total = DIV_ROUND_UP(anand->ecc_bits * ecc->steps, 8);
-diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
-index c9818f548d07..8999571bfa5d 100644
---- a/drivers/mtd/nand/raw/atmel/nand-controller.c
-+++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
-@@ -1099,7 +1099,7 @@ static int atmel_nand_pmecc_init(struct nand_chip *chip)
- 	if (IS_ERR(nand->pmecc))
- 		return PTR_ERR(nand->pmecc);
- 
--	chip->ecc.algo = NAND_ECC_BCH;
-+	chip->ecc.algo = NAND_ECC_ALGO_BCH;
- 	chip->ecc.size = req.ecc.sectorsize;
- 	chip->ecc.bytes = req.ecc.bytes / req.ecc.nsectors;
- 	chip->ecc.strength = req.ecc.strength;
-diff --git a/drivers/mtd/nand/raw/au1550nd.c b/drivers/mtd/nand/raw/au1550nd.c
-index d865200ccd08..ec2d90ad87de 100644
---- a/drivers/mtd/nand/raw/au1550nd.c
-+++ b/drivers/mtd/nand/raw/au1550nd.c
-@@ -295,7 +295,7 @@ static int au1550nd_probe(struct platform_device *pdev)
- 	ctx->controller.ops = &au1550nd_ops;
- 	this->controller = &ctx->controller;
- 	this->ecc.mode = NAND_ECC_SOFT;
--	this->ecc.algo = NAND_ECC_HAMMING;
-+	this->ecc.algo = NAND_ECC_ALGO_HAMMING;
- 
- 	if (pd->devwidth)
- 		this->options |= NAND_BUSWIDTH_16;
-diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index a4033d32a710..39f1bf327592 100644
---- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -2571,17 +2571,17 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
- 		return -EINVAL;
- 	}
- 
--	if (chip->ecc.algo == NAND_ECC_UNKNOWN) {
-+	if (chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN) {
- 		if (chip->ecc.strength == 1 && chip->ecc.size == 512)
- 			/* Default to Hamming for 1-bit ECC, if unspecified */
--			chip->ecc.algo = NAND_ECC_HAMMING;
-+			chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
- 		else
- 			/* Otherwise, BCH */
--			chip->ecc.algo = NAND_ECC_BCH;
-+			chip->ecc.algo = NAND_ECC_ALGO_BCH;
- 	}
- 
--	if (chip->ecc.algo == NAND_ECC_HAMMING && (chip->ecc.strength != 1 ||
--						   chip->ecc.size != 512)) {
-+	if (chip->ecc.algo == NAND_ECC_ALGO_HAMMING &&
-+	    (chip->ecc.strength != 1 || chip->ecc.size != 512)) {
- 		dev_err(ctrl->dev, "invalid Hamming params: %d bits per %d bytes\n",
- 			chip->ecc.strength, chip->ecc.size);
- 		return -EINVAL;
-@@ -2600,7 +2600,7 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
- 
- 	switch (chip->ecc.size) {
- 	case 512:
--		if (chip->ecc.algo == NAND_ECC_HAMMING)
-+		if (chip->ecc.algo == NAND_ECC_ALGO_HAMMING)
- 			cfg->ecc_level = 15;
- 		else
- 			cfg->ecc_level = chip->ecc.strength;
-diff --git a/drivers/mtd/nand/raw/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
-index d975a62caaa5..551515c223bb 100644
---- a/drivers/mtd/nand/raw/davinci_nand.c
-+++ b/drivers/mtd/nand/raw/davinci_nand.c
-@@ -593,11 +593,11 @@ static int davinci_nand_attach_chip(struct nand_chip *chip)
- 		pdata->ecc_bits = 0;
- 		/*
- 		 * This driver expects Hamming based ECC when ecc_mode is set
--		 * to NAND_ECC_SOFT. Force ecc.algo to NAND_ECC_HAMMING to
-+		 * to NAND_ECC_SOFT. Force ecc.algo to NAND_ECC_ALGO_HAMMING to
- 		 * avoid adding an extra ->ecc_algo field to
- 		 * davinci_nand_pdata.
- 		 */
--		info->chip.ecc.algo = NAND_ECC_HAMMING;
-+		info->chip.ecc.algo = NAND_ECC_ALGO_HAMMING;
- 		break;
- 	case NAND_ECC_HW:
- 		if (pdata->ecc_bits == 4) {
-@@ -629,7 +629,7 @@ static int davinci_nand_attach_chip(struct nand_chip *chip)
- 			info->chip.ecc.hwctl = nand_davinci_hwctl_4bit;
- 			info->chip.ecc.bytes = 10;
- 			info->chip.ecc.options = NAND_ECC_GENERIC_ERASED_CHECK;
--			info->chip.ecc.algo = NAND_ECC_BCH;
-+			info->chip.ecc.algo = NAND_ECC_ALGO_BCH;
- 
- 			/*
- 			 * Update ECC layout if needed ... for 1-bit HW ECC, the
-@@ -656,7 +656,7 @@ static int davinci_nand_attach_chip(struct nand_chip *chip)
- 			info->chip.ecc.correct = nand_davinci_correct_1bit;
- 			info->chip.ecc.hwctl = nand_davinci_hwctl_1bit;
- 			info->chip.ecc.bytes = 3;
--			info->chip.ecc.algo = NAND_ECC_HAMMING;
-+			info->chip.ecc.algo = NAND_ECC_ALGO_HAMMING;
- 		}
- 		info->chip.ecc.size = 512;
- 		info->chip.ecc.strength = pdata->ecc_bits;
-diff --git a/drivers/mtd/nand/raw/fsl_elbc_nand.c b/drivers/mtd/nand/raw/fsl_elbc_nand.c
-index 088692b2e27a..da89389faaae 100644
---- a/drivers/mtd/nand/raw/fsl_elbc_nand.c
-+++ b/drivers/mtd/nand/raw/fsl_elbc_nand.c
-@@ -748,7 +748,7 @@ static int fsl_elbc_attach_chip(struct nand_chip *chip)
- 		} else {
- 			/* otherwise fall back to default software ECC */
- 			chip->ecc.mode = NAND_ECC_SOFT;
--			chip->ecc.algo = NAND_ECC_HAMMING;
-+			chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
- 		}
- 		break;
- 
-diff --git a/drivers/mtd/nand/raw/fsl_ifc_nand.c b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-index 00ae7a910b03..b2ae759dd14e 100644
---- a/drivers/mtd/nand/raw/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-@@ -926,7 +926,7 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
- 		}
- 	} else {
- 		chip->ecc.mode = NAND_ECC_SOFT;
--		chip->ecc.algo = NAND_ECC_HAMMING;
-+		chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
- 	}
- 
- 	ret = fsl_ifc_sram_init(priv);
-diff --git a/drivers/mtd/nand/raw/fsl_upm.c b/drivers/mtd/nand/raw/fsl_upm.c
-index 197850aeb261..04cf7d14082a 100644
---- a/drivers/mtd/nand/raw/fsl_upm.c
-+++ b/drivers/mtd/nand/raw/fsl_upm.c
-@@ -48,7 +48,7 @@ static int fun_chip_init(struct fsl_upm_nand *fun,
- 	struct device_node *flash_np;
- 
- 	fun->chip.ecc.mode = NAND_ECC_SOFT;
--	fun->chip.ecc.algo = NAND_ECC_HAMMING;
-+	fun->chip.ecc.algo = NAND_ECC_ALGO_HAMMING;
- 	fun->chip.controller = &fun->base;
- 	mtd->dev.parent = fun->dev;
- 
-diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
-index 92ddc41d0ff0..580b9fe8ca42 100644
---- a/drivers/mtd/nand/raw/fsmc_nand.c
-+++ b/drivers/mtd/nand/raw/fsmc_nand.c
-@@ -911,7 +911,7 @@ static int fsmc_nand_attach_chip(struct nand_chip *nand)
- 		break;
- 
- 	case NAND_ECC_SOFT:
--		if (nand->ecc.algo == NAND_ECC_BCH) {
-+		if (nand->ecc.algo == NAND_ECC_ALGO_BCH) {
- 			dev_info(host->dev,
- 				 "Using 4-bit SW BCH ECC scheme\n");
- 			break;
-diff --git a/drivers/mtd/nand/raw/gpio.c b/drivers/mtd/nand/raw/gpio.c
-index 3bd847ccc3f3..c8f498eaabeb 100644
---- a/drivers/mtd/nand/raw/gpio.c
-+++ b/drivers/mtd/nand/raw/gpio.c
-@@ -343,7 +343,7 @@ static int gpio_nand_probe(struct platform_device *pdev)
- 
- 	nand_set_flash_node(chip, pdev->dev.of_node);
- 	chip->ecc.mode		= NAND_ECC_SOFT;
--	chip->ecc.algo		= NAND_ECC_HAMMING;
-+	chip->ecc.algo		= NAND_ECC_ALGO_HAMMING;
- 	chip->options		= gpiomtd->plat.options;
- 	chip->controller	= &gpiomtd->base;
- 
-diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-index 8482d3bd8b1f..b2200aa787f2 100644
---- a/drivers/mtd/nand/raw/marvell_nand.c
-+++ b/drivers/mtd/nand/raw/marvell_nand.c
-@@ -780,7 +780,7 @@ static void marvell_nfc_enable_hw_ecc(struct nand_chip *chip)
- 		 * When enabling BCH, set threshold to 0 to always know the
- 		 * number of corrected bitflips.
- 		 */
--		if (chip->ecc.algo == NAND_ECC_BCH)
-+		if (chip->ecc.algo == NAND_ECC_ALGO_BCH)
- 			writel_relaxed(NDECCCTRL_BCH_EN, nfc->regs + NDECCCTRL);
- 	}
- }
-@@ -792,7 +792,7 @@ static void marvell_nfc_disable_hw_ecc(struct nand_chip *chip)
- 
- 	if (ndcr & NDCR_ECC_EN) {
- 		writel_relaxed(ndcr & ~NDCR_ECC_EN, nfc->regs + NDCR);
--		if (chip->ecc.algo == NAND_ECC_BCH)
-+		if (chip->ecc.algo == NAND_ECC_ALGO_BCH)
- 			writel_relaxed(0, nfc->regs + NDECCCTRL);
- 	}
- }
-@@ -966,7 +966,7 @@ static int marvell_nfc_hw_ecc_check_bitflips(struct nand_chip *chip,
- 	if (ndsr & NDSR_CORERR) {
- 		writel_relaxed(ndsr, nfc->regs + NDSR);
- 
--		if (chip->ecc.algo == NAND_ECC_BCH)
-+		if (chip->ecc.algo == NAND_ECC_ALGO_BCH)
- 			bf = NDSR_ERRCNT(ndsr);
- 		else
- 			bf = 1;
-@@ -2218,7 +2218,7 @@ static int marvell_nand_hw_ecc_controller_init(struct mtd_info *mtd,
- 	ecc->size = l->data_bytes;
- 
- 	if (ecc->strength == 1) {
--		chip->ecc.algo = NAND_ECC_HAMMING;
-+		chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
- 		ecc->read_page_raw = marvell_nfc_hw_ecc_hmg_read_page_raw;
- 		ecc->read_page = marvell_nfc_hw_ecc_hmg_read_page;
- 		ecc->read_oob_raw = marvell_nfc_hw_ecc_hmg_read_oob_raw;
-@@ -2228,7 +2228,7 @@ static int marvell_nand_hw_ecc_controller_init(struct mtd_info *mtd,
- 		ecc->write_oob_raw = marvell_nfc_hw_ecc_hmg_write_oob_raw;
- 		ecc->write_oob = ecc->write_oob_raw;
- 	} else {
--		chip->ecc.algo = NAND_ECC_BCH;
-+		chip->ecc.algo = NAND_ECC_ALGO_BCH;
- 		ecc->strength = 16;
- 		ecc->read_page_raw = marvell_nfc_hw_ecc_bch_read_page_raw;
- 		ecc->read_page = marvell_nfc_hw_ecc_bch_read_page;
-diff --git a/drivers/mtd/nand/raw/mpc5121_nfc.c b/drivers/mtd/nand/raw/mpc5121_nfc.c
-index 18ecb096a32d..a67eded226db 100644
---- a/drivers/mtd/nand/raw/mpc5121_nfc.c
-+++ b/drivers/mtd/nand/raw/mpc5121_nfc.c
-@@ -689,7 +689,7 @@ static int mpc5121_nfc_probe(struct platform_device *op)
- 	chip->legacy.get_features = nand_get_set_features_notsupp;
- 	chip->bbt_options = NAND_BBT_USE_FLASH;
- 	chip->ecc.mode = NAND_ECC_SOFT;
--	chip->ecc.algo = NAND_ECC_HAMMING;
-+	chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
- 
- 	/* Support external chip-select logic on ADS5121 board */
- 	if (of_machine_is_compatible("fsl,mpc5121ads")) {
-diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
-index a043d76b48cb..65448fb223b8 100644
---- a/drivers/mtd/nand/raw/mxc_nand.c
-+++ b/drivers/mtd/nand/raw/mxc_nand.c
-@@ -1846,7 +1846,7 @@ static int mxcnd_probe(struct platform_device *pdev)
- 		this->ecc.mode = NAND_ECC_HW;
- 	} else {
- 		this->ecc.mode = NAND_ECC_SOFT;
--		this->ecc.algo = NAND_ECC_HAMMING;
-+		this->ecc.algo = NAND_ECC_ALGO_HAMMING;
- 	}
- 
- 	/* NAND bus width determines access functions used by upper layer */
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 8086545299c0..1d403b439850 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -5071,9 +5071,9 @@ static int of_get_nand_ecc_mode(struct device_node *np)
- }
- 
- static const char * const nand_ecc_algos[] = {
--	[NAND_ECC_HAMMING]	= "hamming",
--	[NAND_ECC_BCH]		= "bch",
--	[NAND_ECC_RS]		= "rs",
-+	[NAND_ECC_ALGO_HAMMING]	= "hamming",
-+	[NAND_ECC_ALGO_BCH]	= "bch",
-+	[NAND_ECC_ALGO_RS]	= "rs",
- };
- 
- static enum nand_ecc_algo of_get_nand_ecc_algo(struct device_node *np)
-@@ -5084,7 +5084,7 @@ static enum nand_ecc_algo of_get_nand_ecc_algo(struct device_node *np)
- 
- 	err = of_property_read_string(np, "nand-ecc-algo", &pm);
- 	if (!err) {
--		for (ecc_algo = NAND_ECC_HAMMING;
-+		for (ecc_algo = NAND_ECC_ALGO_HAMMING;
- 		     ecc_algo < ARRAY_SIZE(nand_ecc_algos);
- 		     ecc_algo++) {
- 			if (!strcasecmp(pm, nand_ecc_algos[ecc_algo]))
-@@ -5099,12 +5099,12 @@ static enum nand_ecc_algo of_get_nand_ecc_algo(struct device_node *np)
- 	err = of_property_read_string(np, "nand-ecc-mode", &pm);
- 	if (!err) {
- 		if (!strcasecmp(pm, "soft"))
--			return NAND_ECC_HAMMING;
-+			return NAND_ECC_ALGO_HAMMING;
- 		else if (!strcasecmp(pm, "soft_bch"))
--			return NAND_ECC_BCH;
-+			return NAND_ECC_ALGO_BCH;
- 	}
- 
--	return NAND_ECC_UNKNOWN;
-+	return NAND_ECC_ALGO_UNKNOWN;
- }
- 
- static int of_get_nand_ecc_step_size(struct device_node *np)
-@@ -5172,7 +5172,7 @@ static int nand_dt_init(struct nand_chip *chip)
- 	if (ecc_mode >= 0)
- 		chip->ecc.mode = ecc_mode;
- 
--	if (ecc_algo != NAND_ECC_UNKNOWN)
-+	if (ecc_algo != NAND_ECC_ALGO_UNKNOWN)
- 		chip->ecc.algo = ecc_algo;
- 
- 	if (ecc_strength >= 0)
-@@ -5296,7 +5296,7 @@ static int nand_set_ecc_soft_ops(struct nand_chip *chip)
- 		return -EINVAL;
- 
- 	switch (ecc->algo) {
--	case NAND_ECC_HAMMING:
-+	case NAND_ECC_ALGO_HAMMING:
- 		ecc->calculate = nand_calculate_ecc;
- 		ecc->correct = nand_correct_data;
- 		ecc->read_page = nand_read_page_swecc;
-@@ -5317,7 +5317,7 @@ static int nand_set_ecc_soft_ops(struct nand_chip *chip)
- 			ecc->options |= NAND_ECC_SOFT_HAMMING_SM_ORDER;
- 
- 		return 0;
--	case NAND_ECC_BCH:
-+	case NAND_ECC_ALGO_BCH:
- 		if (!mtd_nand_has_bch()) {
- 			WARN(1, "CONFIG_MTD_NAND_ECC_SW_BCH not enabled\n");
- 			return -EINVAL;
-@@ -5757,7 +5757,7 @@ static int nand_scan_tail(struct nand_chip *chip)
- 	 * If no default placement scheme is given, select an appropriate one.
- 	 */
- 	if (!mtd->ooblayout &&
--	    !(ecc->mode == NAND_ECC_SOFT && ecc->algo == NAND_ECC_BCH)) {
-+	    !(ecc->mode == NAND_ECC_SOFT && ecc->algo == NAND_ECC_ALGO_BCH)) {
- 		switch (mtd->oobsize) {
- 		case 8:
- 		case 16:
-@@ -5848,7 +5848,7 @@ static int nand_scan_tail(struct nand_chip *chip)
- 		pr_warn("%d byte HW ECC not possible on %d byte page size, fallback to SW ECC\n",
- 			ecc->size, mtd->writesize);
- 		ecc->mode = NAND_ECC_SOFT;
--		ecc->algo = NAND_ECC_HAMMING;
-+		ecc->algo = NAND_ECC_ALGO_HAMMING;
- 		fallthrough;
- 	case NAND_ECC_SOFT:
- 		ret = nand_set_ecc_soft_ops(chip);
-@@ -6107,7 +6107,7 @@ EXPORT_SYMBOL(nand_scan_with_ids);
- void nand_cleanup(struct nand_chip *chip)
- {
- 	if (chip->ecc.mode == NAND_ECC_SOFT &&
--	    chip->ecc.algo == NAND_ECC_BCH)
-+	    chip->ecc.algo == NAND_ECC_ALGO_BCH)
- 		nand_bch_free((struct nand_bch_control *)chip->ecc.priv);
- 
- 	nanddev_cleanup(&chip->base);
-diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
-index 4385092a9325..2d54a3aa15b1 100644
---- a/drivers/mtd/nand/raw/nand_micron.c
-+++ b/drivers/mtd/nand/raw/nand_micron.c
-@@ -543,7 +543,7 @@ static int micron_nand_init(struct nand_chip *chip)
- 		chip->ecc.bytes = chip->base.eccreq.strength * 2;
- 		chip->ecc.size = 512;
- 		chip->ecc.strength = chip->base.eccreq.strength;
--		chip->ecc.algo = NAND_ECC_BCH;
-+		chip->ecc.algo = NAND_ECC_ALGO_BCH;
- 		chip->ecc.read_page = micron_nand_read_page_on_die_ecc;
- 		chip->ecc.write_page = micron_nand_write_page_on_die_ecc;
- 
-diff --git a/drivers/mtd/nand/raw/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
-index f5a53aac3c5f..1ab849ccaa96 100644
---- a/drivers/mtd/nand/raw/nandsim.c
-+++ b/drivers/mtd/nand/raw/nandsim.c
-@@ -2235,7 +2235,7 @@ static int ns_attach_chip(struct nand_chip *chip)
- 	}
- 
- 	chip->ecc.mode = NAND_ECC_SOFT;
--	chip->ecc.algo = NAND_ECC_BCH;
-+	chip->ecc.algo = NAND_ECC_ALGO_BCH;
- 	chip->ecc.size = 512;
- 	chip->ecc.strength = bch;
- 	chip->ecc.bytes = eccbytes;
-@@ -2275,7 +2275,7 @@ static int __init ns_init_module(void)
- 	nand_set_controller_data(chip, (void *)ns);
- 
- 	chip->ecc.mode   = NAND_ECC_SOFT;
--	chip->ecc.algo   = NAND_ECC_HAMMING;
-+	chip->ecc.algo   = NAND_ECC_ALGO_HAMMING;
- 	/* The NAND_SKIP_BBTSCAN option is necessary for 'overridesize' */
- 	/* and 'badblocks' parameters to work */
- 	chip->options   |= NAND_SKIP_BBTSCAN;
-diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
-index eb7fcfd9276b..967ddbda1c48 100644
---- a/drivers/mtd/nand/raw/omap2.c
-+++ b/drivers/mtd/nand/raw/omap2.c
-@@ -2011,7 +2011,7 @@ static int omap_nand_attach_chip(struct nand_chip *chip)
- 	 */
- 	if (info->ecc_opt == OMAP_ECC_HAM1_CODE_SW) {
- 		chip->ecc.mode = NAND_ECC_SOFT;
--		chip->ecc.algo = NAND_ECC_HAMMING;
-+		chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
- 		return 0;
- 	}
- 
-diff --git a/drivers/mtd/nand/raw/orion_nand.c b/drivers/mtd/nand/raw/orion_nand.c
-index 880b54ca1b41..7a5cfa3d883f 100644
---- a/drivers/mtd/nand/raw/orion_nand.c
-+++ b/drivers/mtd/nand/raw/orion_nand.c
-@@ -140,7 +140,7 @@ static int __init orion_nand_probe(struct platform_device *pdev)
- 	nc->legacy.cmd_ctrl = orion_nand_cmd_ctrl;
- 	nc->legacy.read_buf = orion_nand_read_buf;
- 	nc->ecc.mode = NAND_ECC_SOFT;
--	nc->ecc.algo = NAND_ECC_HAMMING;
-+	nc->ecc.algo = NAND_ECC_ALGO_HAMMING;
- 
- 	if (board->chip_delay)
- 		nc->legacy.chip_delay = board->chip_delay;
-diff --git a/drivers/mtd/nand/raw/pasemi_nand.c b/drivers/mtd/nand/raw/pasemi_nand.c
-index d8eca8c3fdcd..3eddc284614d 100644
---- a/drivers/mtd/nand/raw/pasemi_nand.c
-+++ b/drivers/mtd/nand/raw/pasemi_nand.c
-@@ -133,7 +133,7 @@ static int pasemi_nand_probe(struct platform_device *ofdev)
- 	chip->legacy.write_buf = pasemi_write_buf;
- 	chip->legacy.chip_delay = 0;
- 	chip->ecc.mode = NAND_ECC_SOFT;
--	chip->ecc.algo = NAND_ECC_HAMMING;
-+	chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
- 
- 	/* Enable the following for a flash based bad block table */
- 	chip->bbt_options = NAND_BBT_USE_FLASH;
-diff --git a/drivers/mtd/nand/raw/plat_nand.c b/drivers/mtd/nand/raw/plat_nand.c
-index 556182f26057..dbc089c8872f 100644
---- a/drivers/mtd/nand/raw/plat_nand.c
-+++ b/drivers/mtd/nand/raw/plat_nand.c
-@@ -67,7 +67,7 @@ static int plat_nand_probe(struct platform_device *pdev)
- 	data->chip.bbt_options |= pdata->chip.bbt_options;
- 
- 	data->chip.ecc.mode = NAND_ECC_SOFT;
--	data->chip.ecc.algo = NAND_ECC_HAMMING;
-+	data->chip.ecc.algo = NAND_ECC_ALGO_HAMMING;
- 
- 	platform_set_drvdata(pdev, data);
- 
-diff --git a/drivers/mtd/nand/raw/s3c2410.c b/drivers/mtd/nand/raw/s3c2410.c
-index 105522205979..5a39002d67ef 100644
---- a/drivers/mtd/nand/raw/s3c2410.c
-+++ b/drivers/mtd/nand/raw/s3c2410.c
-@@ -938,11 +938,11 @@ static int s3c2410_nand_attach_chip(struct nand_chip *chip)
- 	case NAND_ECC_SOFT:
- 		/*
- 		 * This driver expects Hamming based ECC when ecc_mode is set
--		 * to NAND_ECC_SOFT. Force ecc.algo to NAND_ECC_HAMMING to
-+		 * to NAND_ECC_SOFT. Force ecc.algo to NAND_ECC_ALGO_HAMMING to
- 		 * avoid adding an extra ecc_algo field to
- 		 * s3c2410_platform_nand.
- 		 */
--		chip->ecc.algo = NAND_ECC_HAMMING;
-+		chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
- 		dev_info(info->device, "soft ECC\n");
- 		break;
- 
-diff --git a/drivers/mtd/nand/raw/sh_flctl.c b/drivers/mtd/nand/raw/sh_flctl.c
-index a661b8bb2dd5..9dbd6fdbe264 100644
---- a/drivers/mtd/nand/raw/sh_flctl.c
-+++ b/drivers/mtd/nand/raw/sh_flctl.c
-@@ -1045,7 +1045,7 @@ static int flctl_chip_attach_chip(struct nand_chip *chip)
- 		flctl->flcmncr_base |= _4ECCEN;
- 	} else {
- 		chip->ecc.mode = NAND_ECC_SOFT;
--		chip->ecc.algo = NAND_ECC_HAMMING;
-+		chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
- 	}
- 
- 	return 0;
-diff --git a/drivers/mtd/nand/raw/socrates_nand.c b/drivers/mtd/nand/raw/socrates_nand.c
-index 243b34cfbc1b..72a3a7f98282 100644
---- a/drivers/mtd/nand/raw/socrates_nand.c
-+++ b/drivers/mtd/nand/raw/socrates_nand.c
-@@ -154,7 +154,7 @@ static int socrates_nand_probe(struct platform_device *ofdev)
- 	nand_chip->legacy.dev_ready = socrates_nand_device_ready;
- 
- 	nand_chip->ecc.mode = NAND_ECC_SOFT;	/* enable ECC */
--	nand_chip->ecc.algo = NAND_ECC_HAMMING;
-+	nand_chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
- 
- 	/* TODO: I have no idea what real delay is. */
- 	nand_chip->legacy.chip_delay = 20;	/* 20us command delay time */
-diff --git a/drivers/mtd/nand/raw/tango_nand.c b/drivers/mtd/nand/raw/tango_nand.c
-index bdb965ae7a4a..021ceef4ad0a 100644
---- a/drivers/mtd/nand/raw/tango_nand.c
-+++ b/drivers/mtd/nand/raw/tango_nand.c
-@@ -550,7 +550,7 @@ static int tango_attach_chip(struct nand_chip *chip)
- 	struct nand_ecc_ctrl *ecc = &chip->ecc;
- 
- 	ecc->mode = NAND_ECC_HW;
--	ecc->algo = NAND_ECC_BCH;
-+	ecc->algo = NAND_ECC_ALGO_BCH;
- 	ecc->bytes = DIV_ROUND_UP(ecc->strength * FIELD_ORDER, BITS_PER_BYTE);
- 
- 	ecc->read_page_raw = tango_read_page_raw;
-diff --git a/drivers/mtd/nand/raw/tegra_nand.c b/drivers/mtd/nand/raw/tegra_nand.c
-index 6b6212ffa01c..0d6f3c6d6e11 100644
---- a/drivers/mtd/nand/raw/tegra_nand.c
-+++ b/drivers/mtd/nand/raw/tegra_nand.c
-@@ -479,7 +479,7 @@ static void tegra_nand_hw_ecc(struct tegra_nand_controller *ctrl,
- {
- 	struct tegra_nand_chip *nand = to_tegra_chip(chip);
- 
--	if (chip->ecc.algo == NAND_ECC_BCH && enable)
-+	if (chip->ecc.algo == NAND_ECC_ALGO_BCH && enable)
- 		writel_relaxed(nand->bch_config, ctrl->regs + BCH_CONFIG);
- 	else
- 		writel_relaxed(0, ctrl->regs + BCH_CONFIG);
-@@ -877,7 +877,7 @@ static int tegra_nand_select_strength(struct nand_chip *chip, int oobsize)
- 	int strength_len, bits_per_step;
- 
- 	switch (chip->ecc.algo) {
--	case NAND_ECC_RS:
-+	case NAND_ECC_ALGO_RS:
- 		bits_per_step = BITS_PER_STEP_RS;
- 		if (chip->options & NAND_IS_BOOT_MEDIUM) {
- 			strength = rs_strength_bootable;
-@@ -887,7 +887,7 @@ static int tegra_nand_select_strength(struct nand_chip *chip, int oobsize)
- 			strength_len = ARRAY_SIZE(rs_strength);
- 		}
- 		break;
--	case NAND_ECC_BCH:
-+	case NAND_ECC_ALGO_BCH:
- 		bits_per_step = BITS_PER_STEP_BCH;
- 		if (chip->options & NAND_IS_BOOT_MEDIUM) {
- 			strength = bch_strength_bootable;
-@@ -935,14 +935,14 @@ static int tegra_nand_attach_chip(struct nand_chip *chip)
- 	if (chip->options & NAND_BUSWIDTH_16)
- 		nand->config |= CONFIG_BUS_WIDTH_16;
- 
--	if (chip->ecc.algo == NAND_ECC_UNKNOWN) {
-+	if (chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN) {
- 		if (mtd->writesize < 2048)
--			chip->ecc.algo = NAND_ECC_RS;
-+			chip->ecc.algo = NAND_ECC_ALGO_RS;
- 		else
--			chip->ecc.algo = NAND_ECC_BCH;
-+			chip->ecc.algo = NAND_ECC_ALGO_BCH;
- 	}
- 
--	if (chip->ecc.algo == NAND_ECC_BCH && mtd->writesize < 2048) {
-+	if (chip->ecc.algo == NAND_ECC_ALGO_BCH && mtd->writesize < 2048) {
- 		dev_err(ctrl->dev, "BCH supports 2K or 4K page size only\n");
- 		return -EINVAL;
- 	}
-@@ -963,7 +963,7 @@ static int tegra_nand_attach_chip(struct nand_chip *chip)
- 			   CONFIG_SKIP_SPARE_SIZE_4;
- 
- 	switch (chip->ecc.algo) {
--	case NAND_ECC_RS:
-+	case NAND_ECC_ALGO_RS:
- 		bits_per_step = BITS_PER_STEP_RS * chip->ecc.strength;
- 		mtd_set_ooblayout(mtd, &tegra_nand_oob_rs_ops);
- 		nand->config_ecc |= CONFIG_HW_ECC | CONFIG_ECC_SEL |
-@@ -984,7 +984,7 @@ static int tegra_nand_attach_chip(struct nand_chip *chip)
- 			return -EINVAL;
- 		}
- 		break;
--	case NAND_ECC_BCH:
-+	case NAND_ECC_ALGO_BCH:
- 		bits_per_step = BITS_PER_STEP_BCH * chip->ecc.strength;
- 		mtd_set_ooblayout(mtd, &tegra_nand_oob_bch_ops);
- 		nand->bch_config = BCH_ENABLE;
-@@ -1013,7 +1013,7 @@ static int tegra_nand_attach_chip(struct nand_chip *chip)
- 	}
- 
- 	dev_info(ctrl->dev, "Using %s with strength %d per 512 byte step\n",
--		 chip->ecc.algo == NAND_ECC_BCH ? "BCH" : "RS",
-+		 chip->ecc.algo == NAND_ECC_ALGO_BCH ? "BCH" : "RS",
- 		 chip->ecc.strength);
- 
- 	chip->ecc.bytes = DIV_ROUND_UP(bits_per_step, BITS_PER_BYTE);
-diff --git a/drivers/mtd/nand/raw/xway_nand.c b/drivers/mtd/nand/raw/xway_nand.c
-index 29255476afdb..b279ed143b8f 100644
---- a/drivers/mtd/nand/raw/xway_nand.c
-+++ b/drivers/mtd/nand/raw/xway_nand.c
-@@ -181,7 +181,7 @@ static int xway_nand_probe(struct platform_device *pdev)
- 	data->chip.legacy.chip_delay = 30;
- 
- 	data->chip.ecc.mode = NAND_ECC_SOFT;
--	data->chip.ecc.algo = NAND_ECC_HAMMING;
-+	data->chip.ecc.algo = NAND_ECC_ALGO_HAMMING;
- 
- 	platform_set_drvdata(pdev, data);
- 	nand_set_controller_data(&data->chip, data);
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 1495f22b60cb..8174c0c331a1 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -94,16 +94,16 @@ enum nand_ecc_mode {
- 
- /**
-  * enum nand_ecc_algo - NAND ECC algorithm
-- * @NAND_ECC_UNKNOWN: Unknown algorithm
-- * @NAND_ECC_HAMMING: Hamming algorithm
-- * @NAND_ECC_BCH: Bose-Chaudhuri-Hocquenghem algorithm
-- * @NAND_ECC_RS: Reed-Solomon algorithm
-+ * @NAND_ECC_ALGO_UNKNOWN: Unknown algorithm
-+ * @NAND_ECC_ALGO_HAMMING: Hamming algorithm
-+ * @NAND_ECC_ALGO_BCH: Bose-Chaudhuri-Hocquenghem algorithm
-+ * @NAND_ECC_ALGO_RS: Reed-Solomon algorithm
-  */
- enum nand_ecc_algo {
--	NAND_ECC_UNKNOWN,
--	NAND_ECC_HAMMING,
--	NAND_ECC_BCH,
--	NAND_ECC_RS,
-+	NAND_ECC_ALGO_UNKNOWN,
-+	NAND_ECC_ALGO_HAMMING,
-+	NAND_ECC_ALGO_BCH,
-+	NAND_ECC_ALGO_RS,
- };
- 
- /*
--- 
-2.20.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Q3JlYXRlIGEgZ2VuZXJpYyBFQ0MgZW5naW5lIGZyYW1ld29yay4gVGhpcyBpcyBhIGJhc2UgdG8g
+aW5zdGFudGlhdGUgRUNDCmVuZ2luZSBvYmplY3RzLgoKSWYgd2UgcmVhbGx5IHdhbnQgdG8gYmUg
+Z2VuZXJpYywgYmluZGluZ3MgbXVzdCBldm9sdmUsIHNvIGhlcmUgaXMgdGhlCm5ldyBsb2dpYy4g
+VGhlIGZvbGxvd2luZyB0aHJlZSBwcm9wZXJ0aWVzIGFyZSBtdXR1YWxseSBleGNsdXNpdmU6Ci0g
+VGhlIG5hbmQtbm8tZWNjLWVuZ2luZSBib29sZWFuIHByb3BlcnR5IGlzIHNldCBhbmQgdGhlcmUg
+aXMgbm8KICBFQ0MgZW5naW5lIHRvIHJldHJpZXZlLgotIFRoZSBuYW5kLXVzZS1zb2Z0LWVjYy1l
+bmdpbmUgYm9vbGVhbiBwcm9wZXJ0eSBpcyBzZXQgYW5kIHRoZSBjb3JlCiAgd2lsbCBmb3JjZSB1
+c2luZyB0aGUgdXNlIG9mIHNvZnR3YXJlIGNvcnJlY3Rpb24uCi0gVGhlcmUgaXMgYSBuYW5kLWVj
+Yy1lbmdpbmUgcHJvcGVydHkgcG9pbnRpbmcgYXQgYSBub2RlIHdoaWNoIHdpbGwKICBhY3QgYXMg
+RUNDIGVuZ2luZS4KCkl0IHRoZSBsYXRlciBjYXNlLCB0aGUgcHJvcGVydHkgbWF5IHJlZmVyZW5j
+ZToKLSBUaGUgTkFORCBjaGlwIG5vZGUgaXRzZWxmIChmb3IgdGhlIG9uLWRpZSBFQ0MgY2FzZSku
+Ci0gVGhlIHBhcmVudCBub2RlIGlmIHRoZSBOQU5EIGNvbnRyb2xsZXIgZW1iZWRzIGFuIEVDQyBl
+bmdpbmUuCi0gQW55IG90aGVyIG5vZGUgYmVpbmcgYW4gZXh0ZXJuYWwgRUNDIGNvbnRyb2xsZXIg
+YXMgd2VsbC4KClNpZ25lZC1vZmYtYnk6IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9v
+dGxpbi5jb20+Ci0tLQogZHJpdmVycy9tdGQvbmFuZC9LY29uZmlnICB8ICAgOCArCiBkcml2ZXJz
+L210ZC9uYW5kL01ha2VmaWxlIHwgICAyICsKIGRyaXZlcnMvbXRkL25hbmQvZWNjLmMgICAgfCA0
+ODQgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysKIGluY2x1ZGUvbGludXgv
+bXRkL25hbmQuaCAgfCAxMTQgKysrKysrKysrCiA0IGZpbGVzIGNoYW5nZWQsIDYwOCBpbnNlcnRp
+b25zKCspCiBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9tdGQvbmFuZC9lY2MuYwoKZGlmZiAt
+LWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvS2NvbmZpZyBiL2RyaXZlcnMvbXRkL25hbmQvS2NvbmZp
+ZwppbmRleCBjMWE0NWIwNzExNjUuLjRhOWFlZDRmMDEwNCAxMDA2NDQKLS0tIGEvZHJpdmVycy9t
+dGQvbmFuZC9LY29uZmlnCisrKyBiL2RyaXZlcnMvbXRkL25hbmQvS2NvbmZpZwpAQCAtOSw0ICs5
+LDEyIEBAIHNvdXJjZSAiZHJpdmVycy9tdGQvbmFuZC9vbmVuYW5kL0tjb25maWciCiBzb3VyY2Ug
+ImRyaXZlcnMvbXRkL25hbmQvcmF3L0tjb25maWciCiBzb3VyY2UgImRyaXZlcnMvbXRkL25hbmQv
+c3BpL0tjb25maWciCiAKK21lbnUgIkVDQyBlbmdpbmUgc3VwcG9ydCIKKworY29uZmlnIE1URF9O
+QU5EX0VDQworICAgICAgIGJvb2wKKyAgICAgICBkZXBlbmRzIG9uIE1URF9OQU5EX0NPUkUKKwor
+ZW5kbWVudQorCiBlbmRtZW51CmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL01ha2VmaWxl
+IGIvZHJpdmVycy9tdGQvbmFuZC9NYWtlZmlsZQppbmRleCA3ZWNkODBjMGE2NmUuLjk4MTM3Mjk1
+M2I1NiAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9NYWtlZmlsZQorKysgYi9kcml2ZXJz
+L210ZC9uYW5kL01ha2VmaWxlCkBAIC02LDMgKzYsNSBAQCBvYmotJChDT05GSUdfTVREX05BTkRf
+Q09SRSkgKz0gbmFuZGNvcmUubwogb2JqLXkJKz0gb25lbmFuZC8KIG9iai15CSs9IHJhdy8KIG9i
+ai15CSs9IHNwaS8KKworbmFuZGNvcmUtJChDT05GSUdfTVREX05BTkRfRUNDKSArPSBlY2Mubwpk
+aWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9lY2MuYyBiL2RyaXZlcnMvbXRkL25hbmQvZWNj
+LmMKbmV3IGZpbGUgbW9kZSAxMDA2NDQKaW5kZXggMDAwMDAwMDAwMDAwLi41MmRlOWM5Nzc1YTAK
+LS0tIC9kZXYvbnVsbAorKysgYi9kcml2ZXJzL210ZC9uYW5kL2VjYy5jCkBAIC0wLDAgKzEsNDg0
+IEBACisvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMCsKKy8qCisgKiBHZW5lcmlj
+IEVycm9yLUNvcnJlY3RpbmcgQ29kZSAoRUNDKSBlbmdpbmUKKyAqCisgKiBDb3B5cmlnaHQgKEMp
+IDIwMTkgTWFjcm9uaXgKKyAqIEF1dGhvcjoKKyAqICAgICBNaXF1w6hsIFJBWU5BTCA8bWlxdWVs
+LnJheW5hbEBib290bGluLmNvbT4KKyAqCisgKgorICogVGhpcyBmaWxlIGRlc2NyaWJlcyB0aGUg
+YWJzdHJhY3Rpb24gb2YgYW55IE5BTkQgRUNDIGVuZ2luZS4gSXQgaGFzIGJlZW4KKyAqIGRlc2ln
+bmVkIHRvIGZpdCBtb3N0IGNhc2VzLCBpbmNsdWRpbmcgcGFyYWxsZWwgTkFORHMgYW5kIFNQSS1O
+QU5Ecy4KKyAqCisgKiBUaGVyZSBhcmUgdGhyZWUgbWFpbiBzaXR1YXRpb25zIHdoZXJlIGluc3Rh
+bnRpYXRpbmcgdGhpcyBFQ0MgZW5naW5lIG1ha2VzCisgKiBzZW5zZToKKyAqICAgLSBleHRlcm5h
+bDogVGhlIEVDQyBlbmdpbmUgaXMgb3V0c2lkZSB0aGUgTkFORCBwaXBlbGluZSwgdHlwaWNhbGx5
+IHRoaXMKKyAqICAgICAgICAgICAgICAgaXMgYSBzb2Z0d2FyZSBFQ0MgZW5naW5lLCBvciBhbiBo
+YXJkd2FyZSBlbmdpbmUgdGhhdCBpcworICogICAgICAgICAgICAgICBvdXRzaWRlIHRoZSBOQU5E
+IGNvbnRyb2xsZXIgcGlwZWxpbmUuCisgKiAgIC0gcGlwZWxpbmVkOiBUaGUgRUNDIGVuZ2luZSBp
+cyBpbnNpZGUgdGhlIE5BTkQgcGlwZWxpbmUsIGllLiBvbiB0aGUKKyAqICAgICAgICAgICAgICAg
+IGNvbnRyb2xsZXIncyBzaWRlLiBUaGlzIGlzIHRoZSBjYXNlIG9mIG1vc3Qgb2YgdGhlIHJhdyBO
+QU5ECisgKiAgICAgICAgICAgICAgICBjb250cm9sbGVycy4gSW4gdGhlIHBpcGVsaW5lIGNhc2Us
+IHRoZSBFQ0MgYnl0ZXMgYXJlCisgKiAgICAgICAgICAgICAgICBnZW5lcmF0ZWQvZGF0YSBjb3Jy
+ZWN0ZWQgb24gdGhlIGZseSB3aGVuIGEgcGFnZSBpcworICogICAgICAgICAgICAgICAgd3JpdHRl
+bi9yZWFkLgorICogICAtIG9uZGllOiBUaGUgRUNDIGVuZ2luZSBpcyBpbnNpZGUgdGhlIE5BTkQg
+cGlwZWxpbmUsIG9uIHRoZSBjaGlwJ3Mgc2lkZS4KKyAqICAgICAgICAgICAgU29tZSBOQU5EIGNo
+aXBzIGNhbiBjb3JyZWN0IHRoZW1zZWx2ZXMgdGhlIGRhdGEuCisgKgorICogQmVzaWRlcyB0aGUg
+aW5pdGlhbCBzZXR1cCBhbmQgZmluYWwgY2xlYW51cHMsIHRoZSBpbnRlcmZhY2VzIGFyZSByYXRo
+ZXIKKyAqIHNpbXBsZToKKyAqICAgLSBwcmVwYXJlOiBQcmVwYXJlIGFuIEkvTyByZXF1ZXN0LiBF
+bmFibGUvZGlzYWJsZSB0aGUgRUNDIGVuZ2luZSBiYXNlZCBvbgorICogICAgICAgICAgICAgIHRo
+ZSBJL08gcmVxdWVzdCB0eXBlLiBJbiBjYXNlIG9mIHNvZnR3YXJlIGNvcnJlY3Rpb24gb3IgZXh0
+ZXJuYWwKKyAqICAgICAgICAgICAgICBlbmdpbmUsIHRoaXMgc3RlcCBtYXkgaW52b2x2ZSB0byBk
+ZXJpdmUgdGhlIEVDQyBieXRlcyBhbmQgcGxhY2UKKyAqICAgICAgICAgICAgICB0aGVtIGluIHRo
+ZSBPT0IgYXJlYSBiZWZvcmUgYSB3cml0ZS4KKyAqICAgLSBmaW5pc2g6IEZpbmlzaCBhbiBJL08g
+cmVxdWVzdC4gQ29ycmVjdCB0aGUgZGF0YSBpbiBjYXNlIG9mIGEgcmVhZAorICogICAgICAgICAg
+ICAgcmVxdWVzdCBhbmQgcmVwb3J0IHRoZSBudW1iZXIgb2YgY29ycmVjdGVkIGJpdHMvdW5jb3Jy
+ZWN0YWJsZQorICogICAgICAgICAgICAgZXJyb3JzLiBNb3N0IGxpa2VseSBlbXB0eSBmb3Igd3Jp
+dGUgb3BlcmF0aW9ucywgdW5sZXNzIHlvdSBoYXZlCisgKiAgICAgICAgICAgICBoYXJkd2FyZSBz
+cGVjaWZpYyBzdHVmZiB0byBkbywgbGlrZSBzaHV0dGluZyBkb3duIHRoZSBlbmdpbmUgdG8KKyAq
+ICAgICAgICAgICAgIHNhdmUgcG93ZXIuCisgKgorICogVGhlIEkvTyByZXF1ZXN0IHNob3VsZCBi
+ZSBlbmNsb3NlZCBpbiBhIHByZXBhcmUoKS9maW5pc2goKSBwYWlyIG9mIGNhbGxzCisgKiBhbmQg
+d2lsbCBiZWhhdmUgZGlmZmVyZW50bHkgZGVwZW5kaW5nIG9uIHRoZSByZXF1ZXN0ZWQgSS9PIHR5
+cGU6CisgKiAgIC0gcmF3OiBDb3JyZWN0aW9uIGRpc2FibGVkCisgKiAgIC0gZWNjOiBDb3JyZWN0
+aW9uIGVuYWJsZWQKKyAqCisgKiBUaGUgcmVxdWVzdCBkaXJlY3Rpb24gaXMgaW1wYWN0aW5nIHRo
+ZSBsb2dpYyBhcyB3ZWxsOgorICogICAtIHJlYWQ6IExvYWQgZGF0YSBmcm9tIHRoZSBOQU5EIGNo
+aXAKKyAqICAgLSB3cml0ZTogU3RvcmUgZGF0YSBpbiB0aGUgTkFORCBjaGlwCisgKgorICogTWl4
+aW5nIGFsbCB0aGlzIGNvbWJpbmF0aW9ucyB0b2dldGhlciBnaXZlcyB0aGUgZm9sbG93aW5nIGJl
+aGF2aW9yLgorICogVGhvc2UgYXJlIGp1c3QgZXhhbXBsZXMsIGRyaXZlcnMgYXJlIGZyZWUgdG8g
+YWRkIGN1c3RvbSBzdGVwcyBpbiB0aGVpcgorICogcHJlcGFyZS9maW5pc2ggaG9vay4KKyAqCisg
+KiBbZXh0ZXJuYWwgRUNDIGVuZ2luZV0KKyAqICAgLSBleHRlcm5hbCArIHByZXBhcmUgKyByYXcg
+KyByZWFkOiBkbyBub3RoaW5nCisgKiAgIC0gZXh0ZXJuYWwgKyBmaW5pc2ggICsgcmF3ICsgcmVh
+ZDogZG8gbm90aGluZworICogICAtIGV4dGVybmFsICsgcHJlcGFyZSArIHJhdyArIHdyaXRlOiBk
+byBub3RoaW5nCisgKiAgIC0gZXh0ZXJuYWwgKyBmaW5pc2ggICsgcmF3ICsgd3JpdGU6IGRvIG5v
+dGhpbmcKKyAqICAgLSBleHRlcm5hbCArIHByZXBhcmUgKyBlY2MgKyByZWFkOiBkbyBub3RoaW5n
+CisgKiAgIC0gZXh0ZXJuYWwgKyBmaW5pc2ggICsgZWNjICsgcmVhZDogY2FsY3VsYXRlIGV4cGVj
+dGVkIEVDQyBieXRlcywgZXh0cmFjdAorICogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIEVDQyBieXRlcyBmcm9tIE9PQiBidWZmZXIsIGNvcnJlY3QKKyAqICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICBhbmQgcmVwb3J0IGFueSBiaXRmbGlwL2Vycm9yCisg
+KiAgIC0gZXh0ZXJuYWwgKyBwcmVwYXJlICsgZWNjICsgd3JpdGU6IGNhbGN1bGF0ZSBFQ0MgYnl0
+ZXMgYW5kIHN0b3JlIHRoZW0gYXQKKyAqICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgdGhlIHJpZ2h0IHBsYWNlIGluIHRoZSBPT0IgYnVmZmVyIGJhc2VkCisgKiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG9uIHRoZSBPT0IgbGF5b3V0CisgKiAgIC0g
+ZXh0ZXJuYWwgKyBmaW5pc2ggICsgZWNjICsgd3JpdGU6IGRvIG5vdGhpbmcKKyAqCisgKiBbcGlw
+ZWxpbmVkIEVDQyBlbmdpbmVdCisgKiAgIC0gcGlwZWxpbmVkICsgcHJlcGFyZSArIHJhdyArIHJl
+YWQ6IGRpc2FibGUgdGhlIGNvbnRyb2xsZXIncyBFQ0MgZW5naW5lIGlmCisgKiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFjdGl2YXRlZAorICogICAtIHBpcGVsaW5lZCAr
+IGZpbmlzaCAgKyByYXcgKyByZWFkOiBkbyBub3RoaW5nCisgKiAgIC0gcGlwZWxpbmVkICsgcHJl
+cGFyZSArIHJhdyArIHdyaXRlOiBkaXNhYmxlIHRoZSBjb250cm9sbGVyJ3MgRUNDIGVuZ2luZSBp
+ZgorICogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYWN0aXZhdGVkCisg
+KiAgIC0gcGlwZWxpbmVkICsgZmluaXNoICArIHJhdyArIHdyaXRlOiBkbyBub3RoaW5nCisgKiAg
+IC0gcGlwZWxpbmVkICsgcHJlcGFyZSArIGVjYyArIHJlYWQ6IGVuYWJsZSB0aGUgY29udHJvbGxl
+cidzIEVDQyBlbmdpbmUgaWYKKyAqICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgZGVhY3RpdmF0ZWQKKyAqICAgLSBwaXBlbGluZWQgKyBmaW5pc2ggICsgZWNjICsgcmVhZDog
+Y2hlY2sgdGhlIHN0YXR1cywgcmVwb3J0IGFueQorICogICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBlcnJvci9iaXRmbGlwCisgKiAgIC0gcGlwZWxpbmVkICsgcHJlcGFyZSAr
+IGVjYyArIHdyaXRlOiBlbmFibGUgdGhlIGNvbnRyb2xsZXIncyBFQ0MgZW5naW5lIGlmCisgKiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBkZWFjdGl2YXRlZAorICogICAt
+IHBpcGVsaW5lZCArIGZpbmlzaCAgKyBlY2MgKyB3cml0ZTogZG8gbm90aGluZworICoKKyAqIFtv
+bmRpZSBFQ0MgZW5naW5lXQorICogICAtIG9uZGllICsgcHJlcGFyZSArIHJhdyArIHJlYWQ6IHNl
+bmQgY29tbWFuZHMgdG8gZGlzYWJsZSB0aGUgb24tY2hpcCBFQ0MKKyAqICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICBlbmdpbmUgaWYgYWN0aXZhdGVkCisgKiAgIC0gb25kaWUgKyBm
+aW5pc2ggICsgcmF3ICsgcmVhZDogZG8gbm90aGluZworICogICAtIG9uZGllICsgcHJlcGFyZSAr
+IHJhdyArIHdyaXRlOiBzZW5kIGNvbW1hbmRzIHRvIGRpc2FibGUgdGhlIG9uLWNoaXAgRUNDCisg
+KiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGVuZ2luZSBpZiBhY3RpdmF0ZWQK
+KyAqICAgLSBvbmRpZSArIGZpbmlzaCAgKyByYXcgKyB3cml0ZTogZG8gbm90aGluZworICogICAt
+IG9uZGllICsgcHJlcGFyZSArIGVjYyArIHJlYWQ6IHNlbmQgY29tbWFuZHMgdG8gZW5hYmxlIHRo
+ZSBvbi1jaGlwIEVDQworICogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGVuZ2lu
+ZSBpZiBkZWFjdGl2YXRlZAorICogICAtIG9uZGllICsgZmluaXNoICArIGVjYyArIHJlYWQ6IHNl
+bmQgY29tbWFuZHMgdG8gY2hlY2sgdGhlIHN0YXR1cywgcmVwb3J0CisgKiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgYW55IGVycm9yL2JpdGZsaXAKKyAqICAgLSBvbmRpZSArIHBy
+ZXBhcmUgKyBlY2MgKyB3cml0ZTogc2VuZCBjb21tYW5kcyB0byBlbmFibGUgdGhlIG9uLWNoaXAg
+RUNDCisgKiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGVuZ2luZSBpZiBkZWFj
+dGl2YXRlZAorICogICAtIG9uZGllICsgZmluaXNoICArIGVjYyArIHdyaXRlOiBkbyBub3RoaW5n
+CisgKi8KKworI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPgorI2luY2x1ZGUgPGxpbnV4L210ZC9u
+YW5kLmg+CisKKy8qKgorICogbmFuZF9lY2NfaW5pdF9jdHggLSBJbml0IHRoZSBFQ0MgZW5naW5l
+IGNvbnRleHQKKyAqIEBuYW5kOiB0aGUgTkFORCBkZXZpY2UKKyAqCisgKiBPbiBzdWNjZXNzLCB0
+aGUgY2FsbGVyIGlzIHJlc3BvbnNpYmxlIG9mIGNhbGxpbmcgQG5hbmRfZWNjX2NsZWFudXBfY3R4
+KCkuCisgKi8KK2ludCBuYW5kX2VjY19pbml0X2N0eChzdHJ1Y3QgbmFuZF9kZXZpY2UgKm5hbmQp
+Cit7CisJaWYgKCFuYW5kLT5lY2MuZW5naW5lLT5vcHMtPmluaXRfY3R4KQorCQlyZXR1cm4gMDsK
+KworCXJldHVybiBuYW5kLT5lY2MuZW5naW5lLT5vcHMtPmluaXRfY3R4KG5hbmQpOworfQorRVhQ
+T1JUX1NZTUJPTChuYW5kX2VjY19pbml0X2N0eCk7CisKKy8qKgorICogbmFuZF9lY2NfY2xlYW51
+cF9jdHggLSBDbGVhbnVwIHRoZSBFQ0MgZW5naW5lIGNvbnRleHQKKyAqIEBuYW5kOiB0aGUgTkFO
+RCBkZXZpY2UKKyAqLwordm9pZCBuYW5kX2VjY19jbGVhbnVwX2N0eChzdHJ1Y3QgbmFuZF9kZXZp
+Y2UgKm5hbmQpCit7CisJaWYgKG5hbmQtPmVjYy5lbmdpbmUtPm9wcy0+Y2xlYW51cF9jdHgpCisJ
+CW5hbmQtPmVjYy5lbmdpbmUtPm9wcy0+Y2xlYW51cF9jdHgobmFuZCk7Cit9CitFWFBPUlRfU1lN
+Qk9MKG5hbmRfZWNjX2NsZWFudXBfY3R4KTsKKworLyoqCisgKiBuYW5kX2VjY19wcmVwYXJlX2lv
+X3JlcSAtIFByZXBhcmUgYW4gSS9PIHJlcXVlc3QKKyAqIEBuYW5kOiB0aGUgTkFORCBkZXZpY2UK
+KyAqIEByZXE6IHRoZSBJL08gcmVxdWVzdAorICovCitpbnQgbmFuZF9lY2NfcHJlcGFyZV9pb19y
+ZXEoc3RydWN0IG5hbmRfZGV2aWNlICpuYW5kLAorCQkJICAgIHN0cnVjdCBuYW5kX3BhZ2VfaW9f
+cmVxICpyZXEpCit7CisJaWYgKCFuYW5kLT5lY2MuZW5naW5lLT5vcHMtPnByZXBhcmVfaW9fcmVx
+KQorCQlyZXR1cm4gMDsKKworCXJldHVybiBuYW5kLT5lY2MuZW5naW5lLT5vcHMtPnByZXBhcmVf
+aW9fcmVxKG5hbmQsIHJlcSk7Cit9CitFWFBPUlRfU1lNQk9MKG5hbmRfZWNjX3ByZXBhcmVfaW9f
+cmVxKTsKKworLyoqCisgKiBuYW5kX2VjY19maW5pc2hfaW9fcmVxIC0gRmluaXNoIGFuIEkvTyBy
+ZXF1ZXN0CisgKiBAbmFuZDogdGhlIE5BTkQgZGV2aWNlCisgKiBAcmVxOiB0aGUgSS9PIHJlcXVl
+c3QKKyAqLworaW50IG5hbmRfZWNjX2ZpbmlzaF9pb19yZXEoc3RydWN0IG5hbmRfZGV2aWNlICpu
+YW5kLAorCQkJICAgc3RydWN0IG5hbmRfcGFnZV9pb19yZXEgKnJlcSkKK3sKKwlpZiAoIW5hbmQt
+PmVjYy5lbmdpbmUtPm9wcy0+ZmluaXNoX2lvX3JlcSkKKwkJcmV0dXJuIDA7CisKKwlyZXR1cm4g
+bmFuZC0+ZWNjLmVuZ2luZS0+b3BzLT5maW5pc2hfaW9fcmVxKG5hbmQsIHJlcSk7Cit9CitFWFBP
+UlRfU1lNQk9MKG5hbmRfZWNjX2ZpbmlzaF9pb19yZXEpOworCisvKiBEZWZpbmUgZGVmYXVsdCBP
+T0IgcGxhY2VtZW50IHNjaGVtZXMgZm9yIGxhcmdlIGFuZCBzbWFsbCBwYWdlIGRldmljZXMgKi8K
+K3N0YXRpYyBpbnQgbmFuZF9vb2JsYXlvdXRfZWNjX3NwKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBp
+bnQgc2VjdGlvbiwKKwkJCQkgc3RydWN0IG10ZF9vb2JfcmVnaW9uICpvb2JyZWdpb24pCit7CisJ
+c3RydWN0IG5hbmRfZGV2aWNlICpuYW5kID0gbXRkX3RvX25hbmRkZXYobXRkKTsKKwl1bnNpZ25l
+ZCBpbnQgdG90YWxfZWNjX2J5dGVzID0gbmFuZC0+ZWNjLmN0eC50b3RhbDsKKworCWlmIChzZWN0
+aW9uID4gMSkKKwkJcmV0dXJuIC1FUkFOR0U7CisKKwlpZiAoIXNlY3Rpb24pIHsKKwkJb29icmVn
+aW9uLT5vZmZzZXQgPSAwOworCQlpZiAobXRkLT5vb2JzaXplID09IDE2KQorCQkJb29icmVnaW9u
+LT5sZW5ndGggPSA0OworCQllbHNlCisJCQlvb2JyZWdpb24tPmxlbmd0aCA9IDM7CisJfSBlbHNl
+IHsKKwkJaWYgKG10ZC0+b29ic2l6ZSA9PSA4KQorCQkJcmV0dXJuIC1FUkFOR0U7CisKKwkJb29i
+cmVnaW9uLT5vZmZzZXQgPSA2OworCQlvb2JyZWdpb24tPmxlbmd0aCA9IHRvdGFsX2VjY19ieXRl
+cyAtIDQ7CisJfQorCisJcmV0dXJuIDA7Cit9CisKK3N0YXRpYyBpbnQgbmFuZF9vb2JsYXlvdXRf
+ZnJlZV9zcChzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgaW50IHNlY3Rpb24sCisJCQkJICBzdHJ1Y3Qg
+bXRkX29vYl9yZWdpb24gKm9vYnJlZ2lvbikKK3sKKwlpZiAoc2VjdGlvbiA+IDEpCisJCXJldHVy
+biAtRVJBTkdFOworCisJaWYgKG10ZC0+b29ic2l6ZSA9PSAxNikgeworCQlpZiAoc2VjdGlvbikK
+KwkJCXJldHVybiAtRVJBTkdFOworCisJCW9vYnJlZ2lvbi0+bGVuZ3RoID0gODsKKwkJb29icmVn
+aW9uLT5vZmZzZXQgPSA4OworCX0gZWxzZSB7CisJCW9vYnJlZ2lvbi0+bGVuZ3RoID0gMjsKKwkJ
+aWYgKCFzZWN0aW9uKQorCQkJb29icmVnaW9uLT5vZmZzZXQgPSAzOworCQllbHNlCisJCQlvb2Jy
+ZWdpb24tPm9mZnNldCA9IDY7CisJfQorCisJcmV0dXJuIDA7Cit9CisKK3N0YXRpYyBjb25zdCBz
+dHJ1Y3QgbXRkX29vYmxheW91dF9vcHMgbmFuZF9vb2JsYXlvdXRfc3Bfb3BzID0geworCS5lY2Mg
+PSBuYW5kX29vYmxheW91dF9lY2Nfc3AsCisJLmZyZWUgPSBuYW5kX29vYmxheW91dF9mcmVlX3Nw
+LAorfTsKKworY29uc3Qgc3RydWN0IG10ZF9vb2JsYXlvdXRfb3BzICpuYW5kX2dldF9zbWFsbF9w
+YWdlX29vYmxheW91dCh2b2lkKQoreworCXJldHVybiAmbmFuZF9vb2JsYXlvdXRfc3Bfb3BzOwor
+fQorRVhQT1JUX1NZTUJPTF9HUEwobmFuZF9nZXRfc21hbGxfcGFnZV9vb2JsYXlvdXQpOworCitz
+dGF0aWMgaW50IG5hbmRfb29ibGF5b3V0X2VjY19scChzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgaW50
+IHNlY3Rpb24sCisJCQkJIHN0cnVjdCBtdGRfb29iX3JlZ2lvbiAqb29icmVnaW9uKQoreworCXN0
+cnVjdCBuYW5kX2RldmljZSAqbmFuZCA9IG10ZF90b19uYW5kZGV2KG10ZCk7CisJdW5zaWduZWQg
+aW50IHRvdGFsX2VjY19ieXRlcyA9IG5hbmQtPmVjYy5jdHgudG90YWw7CisKKwlpZiAoc2VjdGlv
+biB8fCAhdG90YWxfZWNjX2J5dGVzKQorCQlyZXR1cm4gLUVSQU5HRTsKKworCW9vYnJlZ2lvbi0+
+bGVuZ3RoID0gdG90YWxfZWNjX2J5dGVzOworCW9vYnJlZ2lvbi0+b2Zmc2V0ID0gbXRkLT5vb2Jz
+aXplIC0gb29icmVnaW9uLT5sZW5ndGg7CisKKwlyZXR1cm4gMDsKK30KKworc3RhdGljIGludCBu
+YW5kX29vYmxheW91dF9mcmVlX2xwKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBpbnQgc2VjdGlvbiwK
+KwkJCQkgIHN0cnVjdCBtdGRfb29iX3JlZ2lvbiAqb29icmVnaW9uKQoreworCXN0cnVjdCBuYW5k
+X2RldmljZSAqbmFuZCA9IG10ZF90b19uYW5kZGV2KG10ZCk7CisJdW5zaWduZWQgaW50IHRvdGFs
+X2VjY19ieXRlcyA9IG5hbmQtPmVjYy5jdHgudG90YWw7CisKKwlpZiAoc2VjdGlvbikKKwkJcmV0
+dXJuIC1FUkFOR0U7CisKKwlvb2JyZWdpb24tPmxlbmd0aCA9IG10ZC0+b29ic2l6ZSAtIHRvdGFs
+X2VjY19ieXRlcyAtIDI7CisJb29icmVnaW9uLT5vZmZzZXQgPSAyOworCisJcmV0dXJuIDA7Cit9
+CisKK3N0YXRpYyBjb25zdCBzdHJ1Y3QgbXRkX29vYmxheW91dF9vcHMgbmFuZF9vb2JsYXlvdXRf
+bHBfb3BzID0geworCS5lY2MgPSBuYW5kX29vYmxheW91dF9lY2NfbHAsCisJLmZyZWUgPSBuYW5k
+X29vYmxheW91dF9mcmVlX2xwLAorfTsKKworY29uc3Qgc3RydWN0IG10ZF9vb2JsYXlvdXRfb3Bz
+ICpuYW5kX2dldF9sYXJnZV9wYWdlX29vYmxheW91dCh2b2lkKQoreworCXJldHVybiAmbmFuZF9v
+b2JsYXlvdXRfbHBfb3BzOworfQorRVhQT1JUX1NZTUJPTF9HUEwobmFuZF9nZXRfbGFyZ2VfcGFn
+ZV9vb2JsYXlvdXQpOworCisvKgorICogU3VwcG9ydCB0aGUgb2xkICJsYXJnZSBwYWdlIiBsYXlv
+dXQgdXNlZCBmb3IgMS1iaXQgSGFtbWluZyBFQ0Mgd2hlcmUgRUNDCisgKiBhcmUgcGxhY2VkIGF0
+IGEgZml4ZWQgb2Zmc2V0LgorICovCitzdGF0aWMgaW50IG5hbmRfb29ibGF5b3V0X2VjY19scF9o
+YW1taW5nKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBpbnQgc2VjdGlvbiwKKwkJCQkJIHN0cnVjdCBt
+dGRfb29iX3JlZ2lvbiAqb29icmVnaW9uKQoreworCXN0cnVjdCBuYW5kX2RldmljZSAqbmFuZCA9
+IG10ZF90b19uYW5kZGV2KG10ZCk7CisJdW5zaWduZWQgaW50IHRvdGFsX2VjY19ieXRlcyA9IG5h
+bmQtPmVjYy5jdHgudG90YWw7CisKKwlpZiAoc2VjdGlvbikKKwkJcmV0dXJuIC1FUkFOR0U7CisK
+Kwlzd2l0Y2ggKG10ZC0+b29ic2l6ZSkgeworCWNhc2UgNjQ6CisJCW9vYnJlZ2lvbi0+b2Zmc2V0
+ID0gNDA7CisJCWJyZWFrOworCWNhc2UgMTI4OgorCQlvb2JyZWdpb24tPm9mZnNldCA9IDgwOwor
+CQlicmVhazsKKwlkZWZhdWx0OgorCQlyZXR1cm4gLUVJTlZBTDsKKwl9CisKKwlvb2JyZWdpb24t
+Pmxlbmd0aCA9IHRvdGFsX2VjY19ieXRlczsKKwlpZiAob29icmVnaW9uLT5vZmZzZXQgKyBvb2Jy
+ZWdpb24tPmxlbmd0aCA+IG10ZC0+b29ic2l6ZSkKKwkJcmV0dXJuIC1FUkFOR0U7CisKKwlyZXR1
+cm4gMDsKK30KKworc3RhdGljIGludCBuYW5kX29vYmxheW91dF9mcmVlX2xwX2hhbW1pbmcoc3Ry
+dWN0IG10ZF9pbmZvICptdGQsIGludCBzZWN0aW9uLAorCQkJCQkgIHN0cnVjdCBtdGRfb29iX3Jl
+Z2lvbiAqb29icmVnaW9uKQoreworCXN0cnVjdCBuYW5kX2RldmljZSAqbmFuZCA9IG10ZF90b19u
+YW5kZGV2KG10ZCk7CisJdW5zaWduZWQgaW50IHRvdGFsX2VjY19ieXRlcyA9IG5hbmQtPmVjYy5j
+dHgudG90YWw7CisJaW50IGVjY19vZmZzZXQgPSAwOworCisJaWYgKHNlY3Rpb24gPCAwIHx8IHNl
+Y3Rpb24gPiAxKQorCQlyZXR1cm4gLUVSQU5HRTsKKworCXN3aXRjaCAobXRkLT5vb2JzaXplKSB7
+CisJY2FzZSA2NDoKKwkJZWNjX29mZnNldCA9IDQwOworCQlicmVhazsKKwljYXNlIDEyODoKKwkJ
+ZWNjX29mZnNldCA9IDgwOworCQlicmVhazsKKwlkZWZhdWx0OgorCQlyZXR1cm4gLUVJTlZBTDsK
+Kwl9CisKKwlpZiAoc2VjdGlvbiA9PSAwKSB7CisJCW9vYnJlZ2lvbi0+b2Zmc2V0ID0gMjsKKwkJ
+b29icmVnaW9uLT5sZW5ndGggPSBlY2Nfb2Zmc2V0IC0gMjsKKwl9IGVsc2UgeworCQlvb2JyZWdp
+b24tPm9mZnNldCA9IGVjY19vZmZzZXQgKyB0b3RhbF9lY2NfYnl0ZXM7CisJCW9vYnJlZ2lvbi0+
+bGVuZ3RoID0gbXRkLT5vb2JzaXplIC0gb29icmVnaW9uLT5vZmZzZXQ7CisJfQorCisJcmV0dXJu
+IDA7Cit9CisKK3N0YXRpYyBjb25zdCBzdHJ1Y3QgbXRkX29vYmxheW91dF9vcHMgbmFuZF9vb2Js
+YXlvdXRfbHBfaGFtbWluZ19vcHMgPSB7CisJLmVjYyA9IG5hbmRfb29ibGF5b3V0X2VjY19scF9o
+YW1taW5nLAorCS5mcmVlID0gbmFuZF9vb2JsYXlvdXRfZnJlZV9scF9oYW1taW5nLAorfTsKKwor
+Y29uc3Qgc3RydWN0IG10ZF9vb2JsYXlvdXRfb3BzICpuYW5kX2dldF9sYXJnZV9wYWdlX2hhbW1p
+bmdfb29ibGF5b3V0KHZvaWQpCit7CisJcmV0dXJuICZuYW5kX29vYmxheW91dF9scF9oYW1taW5n
+X29wczsKK30KK0VYUE9SVF9TWU1CT0xfR1BMKG5hbmRfZ2V0X2xhcmdlX3BhZ2VfaGFtbWluZ19v
+b2JsYXlvdXQpOworCitzdGF0aWMgZW51bSBuYW5kX2VjY19lbmdpbmVfdHlwZQorb2ZfZ2V0X25h
+bmRfZWNjX2VuZ2luZV90eXBlKHN0cnVjdCBkZXZpY2Vfbm9kZSAqbnApCit7CisJc3RydWN0IGRl
+dmljZV9ub2RlICplbmdfbnA7CisKKwlpZiAob2ZfcHJvcGVydHlfcmVhZF9ib29sKG5wLCAibmFu
+ZC1uby1lY2MtZW5naW5lIikpCisJCXJldHVybiBOQU5EX0VDQ19FTkdJTkVfVFlQRV9OT05FOwor
+CisJaWYgKG9mX3Byb3BlcnR5X3JlYWRfYm9vbChucCwgIm5hbmQtdXNlLXNvZnQtZWNjLWVuZ2lu
+ZSIpKQorCQlyZXR1cm4gTkFORF9FQ0NfRU5HSU5FX1RZUEVfU09GVDsKKworCWVuZ19ucCA9IG9m
+X3BhcnNlX3BoYW5kbGUobnAsICJuYW5kLWVjYy1lbmdpbmUiLCAwKTsKKwlvZl9ub2RlX3B1dChl
+bmdfbnApOworCisJaWYgKGVuZ19ucCkgeworCQlpZiAoZW5nX25wID09IG5wKQorCQkJcmV0dXJu
+IE5BTkRfRUNDX0VOR0lORV9UWVBFX09OX0RJRTsKKwkJZWxzZQorCQkJcmV0dXJuIE5BTkRfRUND
+X0VOR0lORV9UWVBFX09OX0hPU1Q7CisJfQorCisJcmV0dXJuIE5BTkRfRUNDX0VOR0lORV9UWVBF
+X0lOVkFMSUQ7Cit9CisKK3N0YXRpYyBjb25zdCBjaGFyICogY29uc3QgbmFuZF9lY2NfcGxhY2Vt
+ZW50W10gPSB7CisJW05BTkRfRUNDX1BMQUNFTUVOVF9PT0JdID0gIm9vYiIsCisJW05BTkRfRUND
+X1BMQUNFTUVOVF9JTlRFUkxFQVZFRF0gPSAiaW50ZXJsZWF2ZWQiLAorfTsKKworZW51bSBuYW5k
+X2VjY19wbGFjZW1lbnQgb2ZfZ2V0X25hbmRfZWNjX3BsYWNlbWVudChzdHJ1Y3QgZGV2aWNlX25v
+ZGUgKm5wKQoreworCWVudW0gbmFuZF9lY2NfcGxhY2VtZW50IHBsYWNlbWVudDsKKwljb25zdCBj
+aGFyICpwbTsKKwlpbnQgZXJyOworCisJZXJyID0gb2ZfcHJvcGVydHlfcmVhZF9zdHJpbmcobnAs
+ICJuYW5kLWVjYy1wbGFjZW1lbnQiLCAmcG0pOworCWlmICghZXJyKSB7CisJCWZvciAocGxhY2Vt
+ZW50ID0gTkFORF9FQ0NfUExBQ0VNRU5UX09PQjsKKwkJICAgICBwbGFjZW1lbnQgPCBBUlJBWV9T
+SVpFKG5hbmRfZWNjX3BsYWNlbWVudCk7IHBsYWNlbWVudCsrKSB7CisJCQlpZiAoIXN0cmNhc2Vj
+bXAocG0sIG5hbmRfZWNjX3BsYWNlbWVudFtwbGFjZW1lbnRdKSkKKwkJCQlyZXR1cm4gcGxhY2Vt
+ZW50OworCQl9CisJfQorCisJcmV0dXJuIE5BTkRfRUNDX1BMQUNFTUVOVF9VTktOT1dOOworfQor
+CitzdGF0aWMgY29uc3QgY2hhciAqIGNvbnN0IG5hbmRfZWNjX2FsZ29zW10gPSB7CisJW05BTkRf
+RUNDX0FMR09fSEFNTUlOR10gPSAiaGFtbWluZyIsCisJW05BTkRfRUNDX0FMR09fQkNIXSA9ICJi
+Y2giLAorCVtOQU5EX0VDQ19BTEdPX1JTXSA9ICJycyIsCit9OworCitzdGF0aWMgZW51bSBuYW5k
+X2VjY19hbGdvIG9mX2dldF9uYW5kX2VjY19hbGdvKHN0cnVjdCBkZXZpY2Vfbm9kZSAqbnApCit7
+CisJZW51bSBuYW5kX2VjY19hbGdvIGVjY19hbGdvOworCWNvbnN0IGNoYXIgKnBtOworCWludCBl
+cnI7CisKKwllcnIgPSBvZl9wcm9wZXJ0eV9yZWFkX3N0cmluZyhucCwgIm5hbmQtZWNjLWFsZ28i
+LCAmcG0pOworCWlmICghZXJyKSB7CisJCWZvciAoZWNjX2FsZ28gPSBOQU5EX0VDQ19BTEdPX0hB
+TU1JTkc7CisJCSAgICAgZWNjX2FsZ28gPCBBUlJBWV9TSVpFKG5hbmRfZWNjX2FsZ29zKTsKKwkJ
+ICAgICBlY2NfYWxnbysrKSB7CisJCQlpZiAoIXN0cmNhc2VjbXAocG0sIG5hbmRfZWNjX2FsZ29z
+W2VjY19hbGdvXSkpCisJCQkJcmV0dXJuIGVjY19hbGdvOworCQl9CisJfQorCisJcmV0dXJuIE5B
+TkRfRUNDX0FMR09fVU5LTk9XTjsKK30KKworc3RhdGljIGludCBvZl9nZXRfbmFuZF9lY2Nfc3Rl
+cF9zaXplKHN0cnVjdCBkZXZpY2Vfbm9kZSAqbnApCit7CisJaW50IHJldDsKKwl1MzIgdmFsOwor
+CisJcmV0ID0gb2ZfcHJvcGVydHlfcmVhZF91MzIobnAsICJuYW5kLWVjYy1zdGVwLXNpemUiLCAm
+dmFsKTsKKwlyZXR1cm4gcmV0ID8gcmV0IDogdmFsOworfQorCitzdGF0aWMgaW50IG9mX2dldF9u
+YW5kX2VjY19zdHJlbmd0aChzdHJ1Y3QgZGV2aWNlX25vZGUgKm5wKQoreworCWludCByZXQ7CisJ
+dTMyIHZhbDsKKworCXJldCA9IG9mX3Byb3BlcnR5X3JlYWRfdTMyKG5wLCAibmFuZC1lY2Mtc3Ry
+ZW5ndGgiLCAmdmFsKTsKKwlyZXR1cm4gcmV0ID8gcmV0IDogdmFsOworfQorCit2b2lkIG9mX2dl
+dF9uYW5kX2VjY191c2VyX2NvbmZpZyhzdHJ1Y3QgbmFuZF9kZXZpY2UgKm5hbmQpCit7CisJc3Ry
+dWN0IGRldmljZV9ub2RlICpkbiA9IG5hbmRkZXZfZ2V0X29mX25vZGUobmFuZCk7CisJaW50IHN0
+cmVuZ3RoLCBzaXplOworCisJbmFuZC0+ZWNjLnVzZXJfY29uZi5lbmdpbmVfdHlwZSA9IG9mX2dl
+dF9uYW5kX2VjY19lbmdpbmVfdHlwZShkbik7CisJbmFuZC0+ZWNjLnVzZXJfY29uZi5hbGdvID0g
+b2ZfZ2V0X25hbmRfZWNjX2FsZ28oZG4pOworCW5hbmQtPmVjYy51c2VyX2NvbmYucGxhY2VtZW50
+ID0gb2ZfZ2V0X25hbmRfZWNjX3BsYWNlbWVudChkbik7CisKKwlzdHJlbmd0aCA9IG9mX2dldF9u
+YW5kX2VjY19zdHJlbmd0aChkbik7CisJaWYgKHN0cmVuZ3RoID49IDApCisJCW5hbmQtPmVjYy51
+c2VyX2NvbmYuc3RyZW5ndGggPSBzdHJlbmd0aDsKKworCXNpemUgPSBvZl9nZXRfbmFuZF9lY2Nf
+c3RlcF9zaXplKGRuKTsKKwlpZiAoc2l6ZSA+PSAwKQorCQluYW5kLT5lY2MudXNlcl9jb25mLnN0
+ZXBfc2l6ZSA9IHNpemU7CisKKwlpZiAob2ZfcHJvcGVydHlfcmVhZF9ib29sKGRuLCAibmFuZC1l
+Y2MtbWF4aW1pemUiKSkKKwkJbmFuZC0+ZWNjLnVzZXJfY29uZi5mbGFncyB8PSBOQU5EX0VDQ19N
+QVhJTUlaRV9TVFJFTkdUSDsKK30KK0VYUE9SVF9TWU1CT0wob2ZfZ2V0X25hbmRfZWNjX3VzZXJf
+Y29uZmlnKTsKKworLyoqCisgKiBuYW5kX2VjY19pc19zdHJvbmdfZW5vdWdoIC0gQ2hlY2sgaWYg
+dGhlIGNoaXAgY29uZmlndXJhdGlvbiBtZWV0cyB0aGUKKyAqICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICBkYXRhc2hlZXQgcmVxdWlyZW1lbnRzLgorICoKKyAqIEBuYW5kOiBEZXZpY2UgdG8g
+Y2hlY2sKKyAqCisgKiBJZiBvdXIgY29uZmlndXJhdGlvbiBjb3JyZWN0cyBBIGJpdHMgcGVyIEIg
+Ynl0ZXMgYW5kIHRoZSBtaW5pbXVtCisgKiByZXF1aXJlZCBjb3JyZWN0aW9uIGxldmVsIGlzIFgg
+Yml0cyBwZXIgWSBieXRlcywgdGhlbiB3ZSBtdXN0IGVuc3VyZQorICogYm90aCBvZiB0aGUgZm9s
+bG93aW5nIGFyZSB0cnVlOgorICoKKyAqICgxKSBBIC8gQiA+PSBYIC8gWQorICogKDIpIEEgPj0g
+WAorICoKKyAqIFJlcXVpcmVtZW50ICgxKSBlbnN1cmVzIHdlIGNhbiBjb3JyZWN0IGZvciB0aGUg
+cmVxdWlyZWQgYml0ZmxpcCBkZW5zaXR5LgorICogUmVxdWlyZW1lbnQgKDIpIGVuc3VyZXMgd2Ug
+Y2FuIGNvcnJlY3QgZXZlbiB3aGVuIGFsbCBiaXRmbGlwcyBhcmUgY2x1bXBlZAorICogaW4gdGhl
+IHNhbWUgc2VjdG9yLgorICovCitib29sIG5hbmRfZWNjX2lzX3N0cm9uZ19lbm91Z2goc3RydWN0
+IG5hbmRfZGV2aWNlICpuYW5kKQoreworCWNvbnN0IHN0cnVjdCBuYW5kX2VjY19wcm9wcyAqcmVx
+cyA9IG5hbmRkZXZfZ2V0X2VjY19yZXF1aXJlbWVudHMobmFuZCk7CisJY29uc3Qgc3RydWN0IG5h
+bmRfZWNjX3Byb3BzICpjb25mID0gbmFuZGRldl9nZXRfZWNjX2NvbmYobmFuZCk7CisJc3RydWN0
+IG10ZF9pbmZvICptdGQgPSBuYW5kZGV2X3RvX210ZChuYW5kKTsKKwlpbnQgY29yciwgZHNfY29y
+cjsKKworCWlmIChjb25mLT5zdGVwX3NpemUgPT0gMCB8fCByZXFzLT5zdGVwX3NpemUgPT0gMCkK
+KwkJLyogTm90IGVub3VnaCBpbmZvcm1hdGlvbiAqLworCQlyZXR1cm4gdHJ1ZTsKKworCS8qCisJ
+ICogV2UgZ2V0IHRoZSBudW1iZXIgb2YgY29ycmVjdGVkIGJpdHMgcGVyIHBhZ2UgdG8gY29tcGFy
+ZQorCSAqIHRoZSBjb3JyZWN0aW9uIGRlbnNpdHkuCisJICovCisJY29yciA9IChtdGQtPndyaXRl
+c2l6ZSAqIGNvbmYtPnN0cmVuZ3RoKSAvIGNvbmYtPnN0ZXBfc2l6ZTsKKwlkc19jb3JyID0gKG10
+ZC0+d3JpdGVzaXplICogcmVxcy0+c3RyZW5ndGgpIC8gcmVxcy0+c3RlcF9zaXplOworCisJcmV0
+dXJuIGNvcnIgPj0gZHNfY29yciAmJiBjb25mLT5zdHJlbmd0aCA+PSByZXFzLT5zdHJlbmd0aDsK
+K30KK0VYUE9SVF9TWU1CT0wobmFuZF9lY2NfaXNfc3Ryb25nX2Vub3VnaCk7CisKK01PRFVMRV9M
+SUNFTlNFKCJHUEwiKTsKK01PRFVMRV9BVVRIT1IoIk1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXlu
+YWxAYm9vdGxpbi5jb20+Iik7CitNT0RVTEVfREVTQ1JJUFRJT04oIkdlbmVyaWMgRUNDIGVuZ2lu
+ZSIpOwpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9tdGQvbmFuZC5oIGIvaW5jbHVkZS9saW51
+eC9tdGQvbmFuZC5oCmluZGV4IGU3NTRhNmZjOGE0Yi4uOGNmNWJkYmVhNzgyIDEwMDY0NAotLS0g
+YS9pbmNsdWRlL2xpbnV4L210ZC9uYW5kLmgKKysrIGIvaW5jbHVkZS9saW51eC9tdGQvbmFuZC5o
+CkBAIC0xMjcsNiArMTI3LDQwIEBAIHN0cnVjdCBuYW5kX3BhZ2VfaW9fcmVxIHsKIAlpbnQgbW9k
+ZTsKIH07CiAKK2NvbnN0IHN0cnVjdCBtdGRfb29ibGF5b3V0X29wcyAqbmFuZF9nZXRfc21hbGxf
+cGFnZV9vb2JsYXlvdXQodm9pZCk7Citjb25zdCBzdHJ1Y3QgbXRkX29vYmxheW91dF9vcHMgKm5h
+bmRfZ2V0X2xhcmdlX3BhZ2Vfb29ibGF5b3V0KHZvaWQpOworY29uc3Qgc3RydWN0IG10ZF9vb2Js
+YXlvdXRfb3BzICpuYW5kX2dldF9sYXJnZV9wYWdlX2hhbW1pbmdfb29ibGF5b3V0KHZvaWQpOwor
+CisvKioKKyAqIGVudW0gbmFuZF9lY2NfZW5naW5lX3R5cGUgLSBOQU5EIEVDQyBlbmdpbmUgdHlw
+ZQorICogQE5BTkRfRUNDX0VOR0lORV9UWVBFX0lOVkFMSUQ6IEludmFsaWQgdmFsdWUKKyAqIEBO
+QU5EX0VDQ19FTkdJTkVfVFlQRV9OT05FOiBObyBFQ0MgY29ycmVjdGlvbgorICogQE5BTkRfRUND
+X0VOR0lORV9UWVBFX1NPRlQ6IFNvZnR3YXJlIEVDQyBjb3JyZWN0aW9uCisgKiBATkFORF9FQ0Nf
+RU5HSU5FX1RZUEVfT05fSE9TVDogT24gaG9zdCBoYXJkd2FyZSBFQ0MgY29ycmVjdGlvbgorICog
+QE5BTkRfRUNDX0VOR0lORV9UWVBFX09OX0RJRTogT24gY2hpcCBoYXJkd2FyZSBFQ0MgY29ycmVj
+dGlvbgorICovCitlbnVtIG5hbmRfZWNjX2VuZ2luZV90eXBlIHsKKwlOQU5EX0VDQ19FTkdJTkVf
+VFlQRV9JTlZBTElELAorCU5BTkRfRUNDX0VOR0lORV9UWVBFX05PTkUsCisJTkFORF9FQ0NfRU5H
+SU5FX1RZUEVfU09GVCwKKwlOQU5EX0VDQ19FTkdJTkVfVFlQRV9PTl9IT1NULAorCU5BTkRfRUND
+X0VOR0lORV9UWVBFX09OX0RJRSwKK307CisKKy8qKgorICogZW51bSBuYW5kX2VjY19wbGFjZW1l
+bnQgLSBOQU5EIEVDQyBieXRlcyBwbGFjZW1lbnQKKyAqIEBOQU5EX0VDQ19QTEFDRU1FTlRfVU5L
+Tk9XTjogVGhlIGFjdHVhbCBwb3NpdGlvbiBvZiB0aGUgRUNDIGJ5dGVzIGlzIHVua25vd24KKyAq
+IEBOQU5EX0VDQ19QTEFDRU1FTlRfT09COiBUaGUgRUNDIGJ5dGVzIGFyZSBsb2NhdGVkIGluIHRo
+ZSBPT0IgYXJlYQorICogQE5BTkRfRUNDX1BMQUNFTUVOVF9JTlRFUkxFQVZFRDogU3luZHJvbWUg
+bGF5b3V0LCB0aGVyZSBhcmUgRUNDIGJ5dGVzCisgKiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICBpbnRlcmxlYXZlZCB3aXRoIHJlZ3VsYXIgZGF0YSBpbiB0aGUgbWFpbgorICogICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYXJlYQorICovCitlbnVtIG5hbmRfZWNjX3Bs
+YWNlbWVudCB7CisJTkFORF9FQ0NfUExBQ0VNRU5UX1VOS05PV04sCisJTkFORF9FQ0NfUExBQ0VN
+RU5UX09PQiwKKwlOQU5EX0VDQ19QTEFDRU1FTlRfSU5URVJMRUFWRUQsCit9OworCiAvKioKICAq
+IGVudW0gbmFuZF9lY2NfYWxnbyAtIE5BTkQgRUNDIGFsZ29yaXRobQogICogQE5BTkRfRUNDX0FM
+R09fVU5LTk9XTjogVW5rbm93biBhbGdvcml0aG0KQEAgLTE0MywxNiArMTc3LDI3IEBAIGVudW0g
+bmFuZF9lY2NfYWxnbyB7CiAKIC8qKgogICogc3RydWN0IG5hbmRfZWNjX3Byb3BzIC0gTkFORCBF
+Q0MgcHJvcGVydGllcworICogQGVuZ2luZV90eXBlOiBFQ0MgZW5naW5lIHR5cGUKKyAqIEBwbGFj
+ZW1lbnQ6IE9PQiBwbGFjZW1lbnQgKGlmIHJlbGV2YW50KQorICogQGFsZ286IEVDQyBhbGdvcml0
+aG0gKGlmIHJlbGV2YW50KQogICogQHN0cmVuZ3RoOiBFQ0Mgc3RyZW5ndGgKICAqIEBzdGVwX3Np
+emU6IE51bWJlciBvZiBieXRlcyBwZXIgc3RlcAorICogQGZsYWdzOiBNaXNjIHByb3BlcnRpZXMK
+ICAqLwogc3RydWN0IG5hbmRfZWNjX3Byb3BzIHsKKwllbnVtIG5hbmRfZWNjX2VuZ2luZV90eXBl
+IGVuZ2luZV90eXBlOworCWVudW0gbmFuZF9lY2NfcGxhY2VtZW50IHBsYWNlbWVudDsKKwllbnVt
+IG5hbmRfZWNjX2FsZ28gYWxnbzsKIAl1bnNpZ25lZCBpbnQgc3RyZW5ndGg7CiAJdW5zaWduZWQg
+aW50IHN0ZXBfc2l6ZTsKKwl1bnNpZ25lZCBpbnQgZmxhZ3M7CiB9OwogCiAjZGVmaW5lIE5BTkRf
+RUNDUkVRKHN0ciwgc3RwKSB7IC5zdHJlbmd0aCA9IChzdHIpLCAuc3RlcF9zaXplID0gKHN0cCkg
+fQogCisvKiBOQU5EIEVDQyBtaXNjIGZsYWdzICovCisjZGVmaW5lIE5BTkRfRUNDX01BWElNSVpF
+X1NUUkVOR1RIIEJJVCgwKQorCiAvKioKICAqIHN0cnVjdCBuYW5kX2JidCAtIGJhZCBibG9jayB0
+YWJsZSBvYmplY3QKICAqIEBjYWNoZTogaW4gbWVtb3J5IEJCVCBjYWNoZQpAQCAtMTgzLDYgKzIy
+OCw3NSBAQCBzdHJ1Y3QgbmFuZF9vcHMgewogCWJvb2wgKCppc2JhZCkoc3RydWN0IG5hbmRfZGV2
+aWNlICpuYW5kLCBjb25zdCBzdHJ1Y3QgbmFuZF9wb3MgKnBvcyk7CiB9OwogCisvKioKKyAqIHN0
+cnVjdCBuYW5kX2VjY19jb250ZXh0IC0gQ29udGV4dCBmb3IgdGhlIEVDQyBlbmdpbmUKKyAqIEBj
+b25mOiBiYXNpYyBFQ0MgZW5naW5lIHBhcmFtZXRlcnMKKyAqIEB0b3RhbDogdG90YWwgbnVtYmVy
+IG9mIGJ5dGVzIHVzZWQgZm9yIHN0b3JpbmcgRUNDIGNvZGVzLCB0aGlzIGlzIHVzZWQgYnkKKyAq
+ICAgICAgICAgZ2VuZXJpYyBPT0IgbGF5b3V0cworICogQHByaXY6IEVDQyBlbmdpbmUgZHJpdmVy
+IHByaXZhdGUgZGF0YQorICovCitzdHJ1Y3QgbmFuZF9lY2NfY29udGV4dCB7CisJc3RydWN0IG5h
+bmRfZWNjX3Byb3BzIGNvbmY7CisJdW5zaWduZWQgaW50IHRvdGFsOworCXZvaWQgKnByaXY7Cit9
+OworCisvKioKKyAqIHN0cnVjdCBuYW5kX2VjY19lbmdpbmVfb3BzIC0gRUNDIGVuZ2luZSBvcGVy
+YXRpb25zCisgKiBAaW5pdF9jdHg6IGdpdmVuIGEgZGVzaXJlZCB1c2VyIGNvbmZpZ3VyYXRpb24g
+Zm9yIHRoZSBwb2ludGVkIE5BTkQgZGV2aWNlLAorICogICAgICAgICAgICByZXF1ZXN0cyB0aGUg
+RUNDIGVuZ2luZSBkcml2ZXIgdG8gc2V0dXAgYSBjb25maWd1cmF0aW9uIHdpdGgKKyAqICAgICAg
+ICAgICAgdmFsdWVzIGl0IHN1cHBvcnRzLgorICogQGNsZWFudXBfY3R4OiBjbGVhbiB0aGUgY29u
+dGV4dCBpbml0aWFsaXplZCBieSBAaW5pdF9jdHguCisgKiBAcHJlcGFyZV9pb19yZXE6IGlzIGNh
+bGxlZCBiZWZvcmUgcmVhZGluZy93cml0aW5nIGEgcGFnZSB0byBwcmVwYXJlIHRoZSBJL08KKyAq
+ICAgICAgICAgICAgICAgICAgcmVxdWVzdCB0byBiZSBwZXJmb3JtZWQgd2l0aCBFQ0MgY29ycmVj
+dGlvbi4KKyAqIEBmaW5pc2hfaW9fcmVxOiBpcyBjYWxsZWQgYWZ0ZXIgcmVhZGluZy93cml0aW5n
+IGEgcGFnZSB0byB0ZXJtaW5hdGUgdGhlIEkvTworICogICAgICAgICAgICAgICAgIHJlcXVlc3Qg
+YW5kIGVuc3VyZSBwcm9wZXIgRUNDIGNvcnJlY3Rpb24uCisgKi8KK3N0cnVjdCBuYW5kX2VjY19l
+bmdpbmVfb3BzIHsKKwlpbnQgKCppbml0X2N0eCkoc3RydWN0IG5hbmRfZGV2aWNlICpuYW5kKTsK
+Kwl2b2lkICgqY2xlYW51cF9jdHgpKHN0cnVjdCBuYW5kX2RldmljZSAqbmFuZCk7CisJaW50ICgq
+cHJlcGFyZV9pb19yZXEpKHN0cnVjdCBuYW5kX2RldmljZSAqbmFuZCwKKwkJCSAgICAgIHN0cnVj
+dCBuYW5kX3BhZ2VfaW9fcmVxICpyZXEpOworCWludCAoKmZpbmlzaF9pb19yZXEpKHN0cnVjdCBu
+YW5kX2RldmljZSAqbmFuZCwKKwkJCSAgICAgc3RydWN0IG5hbmRfcGFnZV9pb19yZXEgKnJlcSk7
+Cit9OworCisvKioKKyAqIHN0cnVjdCBuYW5kX2VjY19lbmdpbmUgLSBFQ0MgZW5naW5lIGFic3Ry
+YWN0aW9uIGZvciBOQU5EIGRldmljZXMKKyAqIEBvcHM6IEVDQyBlbmdpbmUgb3BlcmF0aW9ucwor
+ICovCitzdHJ1Y3QgbmFuZF9lY2NfZW5naW5lIHsKKwlzdHJ1Y3QgbmFuZF9lY2NfZW5naW5lX29w
+cyAqb3BzOworfTsKKwordm9pZCBvZl9nZXRfbmFuZF9lY2NfdXNlcl9jb25maWcoc3RydWN0IG5h
+bmRfZGV2aWNlICpuYW5kKTsKK2ludCBuYW5kX2VjY19pbml0X2N0eChzdHJ1Y3QgbmFuZF9kZXZp
+Y2UgKm5hbmQpOwordm9pZCBuYW5kX2VjY19jbGVhbnVwX2N0eChzdHJ1Y3QgbmFuZF9kZXZpY2Ug
+Km5hbmQpOworaW50IG5hbmRfZWNjX3ByZXBhcmVfaW9fcmVxKHN0cnVjdCBuYW5kX2RldmljZSAq
+bmFuZCwKKwkJCSAgICBzdHJ1Y3QgbmFuZF9wYWdlX2lvX3JlcSAqcmVxKTsKK2ludCBuYW5kX2Vj
+Y19maW5pc2hfaW9fcmVxKHN0cnVjdCBuYW5kX2RldmljZSAqbmFuZCwKKwkJCSAgIHN0cnVjdCBu
+YW5kX3BhZ2VfaW9fcmVxICpyZXEpOworYm9vbCBuYW5kX2VjY19pc19zdHJvbmdfZW5vdWdoKHN0
+cnVjdCBuYW5kX2RldmljZSAqbmFuZCk7CisKKy8qKgorICogc3RydWN0IG5hbmRfZWNjIC0gSW5m
+b3JtYXRpb24gcmVsYXRpdmUgdG8gdGhlIEVDQworICogQGRlZmF1bHRzOiBEZWZhdWx0IHZhbHVl
+cywgZGVwZW5kIG9uIHRoZSB1bmRlcmx5aW5nIHN1YnN5c3RlbQorICogQHJlcXVpcmVtZW50czog
+RUNDIHJlcXVpcmVtZW50cyBmcm9tIHRoZSBOQU5EIGNoaXAgcGVyc3BlY3RpdmUKKyAqIEB1c2Vy
+X2NvbmY6IFVzZXIgZGVzaXJlcyBpbiB0ZXJtcyBvZiBFQ0MgcGFyYW1ldGVycworICogQGN0eDog
+RUNDIGNvbnRleHQgZm9yIHRoZSBFQ0MgZW5naW5lLCBkZXJpdmVkIGZyb20gdGhlIGRldmljZSBA
+cmVxdWlyZW1lbnRzCisgKiAgICAgICB0aGUgQHVzZXJfY29uZiBhbmQgdGhlIEBkZWZhdWx0cwor
+ICogQG9uZGllX2VuZ2luZTogT24tZGllIEVDQyBlbmdpbmUgcmVmZXJlbmNlLCBpZiBhbnkKKyAq
+IEBlbmdpbmU6IEVDQyBlbmdpbmUgYWN0dWFsbHkgYm91bmQKKyAqLworc3RydWN0IG5hbmRfZWNj
+IHsKKwlzdHJ1Y3QgbmFuZF9lY2NfcHJvcHMgZGVmYXVsdHM7CisJc3RydWN0IG5hbmRfZWNjX3By
+b3BzIHJlcXVpcmVtZW50czsKKwlzdHJ1Y3QgbmFuZF9lY2NfcHJvcHMgdXNlcl9jb25mOworCXN0
+cnVjdCBuYW5kX2VjY19jb250ZXh0IGN0eDsKKwlzdHJ1Y3QgbmFuZF9lY2NfZW5naW5lICpvbmRp
+ZV9lbmdpbmU7CisJc3RydWN0IG5hbmRfZWNjX2VuZ2luZSAqZW5naW5lOworfTsKKwogLyoqCiAg
+KiBzdHJ1Y3QgbmFuZF9kZXZpY2UgLSBOQU5EIGRldmljZQogICogQG10ZDogTVREIGluc3RhbmNl
+IGF0dGFjaGVkIHRvIHRoZSBOQU5EIGRldmljZQotLSAKMi4yMC4xCgoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNz
+aW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2xpbnV4LW10ZC8K
