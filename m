@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 838B9C433E2
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Aug 2020 17:00:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75425C433E6
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Aug 2020 17:01:25 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4B5212080C
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Aug 2020 17:00:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3679220776
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Aug 2020 17:01:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pkCSPPts";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="GBs8Ltnh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4B5212080C
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="yd3RkjXa";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="qe1Zgr32"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3679220776
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,30 +26,30 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=G1ypWHjdJuxP0ti51dZpisHRDq/NRfRoRJ6bNcIMx+Y=; b=pkCSPPts7CTfYpNTESh/yybAhY
-	kvlBAiU5nL6CT0oWxpEayumC8hi8S4BXxaElcsTMjUzpTxO4wVKiLNp7KlyBi4uNjPA9B5gzyRbaG
-	07vuS0/Jzdo2YQ+9tGX4x4BkjGPpm5PXXSfMoe5TbFUVUTmrmNXK3YlL4lQ/DC/7yTL4fmKvQKXVS
-	/UcEAxG6CzDx2C/PyRAo6x1gruy84F799uljsGz2C69LZcplE+B22EXALEGCUEyExLfVwUu+e3+6x
-	flaqE31JLiWLSdadeu5E1PgtrlMfLoYH6I0yijFIp7IuowPAlBkAt3LjjE1IwoHbJwJNPn7+n3UyO
-	KN6fcosg==;
+	bh=51gPD7672YkOaxdwOKOK2nOly5EKbwT+/5AiPrWbxAY=; b=yd3RkjXaU8WCHl3rSPIufW5uBB
+	de2/kpWnC4O3KSb4edMJufMekr7AXImGTi4OveoOxXdVunDgsjBYVGvdEybYWwxtrbg2qLbjCE8xc
+	U1x4rTzKpijYCgVSIX5pixPSODsnGvhAAtxxSmJL3C0+Xc7jcRrsqVFpTXt42f4h/O+izCsOreMHV
+	cUvHN0sw9a7SWjHH4cZuiM+Zu7Ns+sZDmKJx335RZHOsoewO+p9cEobtjxeeNAvzFu/3ElwOoYDL2
+	JcM4pq40h+LqMyd7a7go68R3VSeLZlzK9iIs2wbc2W6m3U7+DOPDgbpe6nKFRhU6owgXe92Y2nauE
+	NWi0GICg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kBhiP-0001bp-SF; Fri, 28 Aug 2020 16:59:02 +0000
+	id 1kBhj6-0001tR-87; Fri, 28 Aug 2020 16:59:44 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kBhaO-0005md-W0; Fri, 28 Aug 2020 16:50:46 +0000
+ id 1kBhaV-0005p7-2a; Fri, 28 Aug 2020 16:50:52 +0000
 Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 028AB20791;
- Fri, 28 Aug 2020 16:50:39 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 0F1A620825;
+ Fri, 28 Aug 2020 16:50:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598633443;
- bh=1uXd9ISJsirAUfbmjnYLzUw+I40c4LhHjYZ4wB/ECos=;
+ s=default; t=1598633447;
+ bh=4XlFYSUqyUgXNY2lTOdDnWrKsSE6d2W+mwPpeXHRPfc=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=GBs8LtnhOYHd2PYIU2qPcVzAB5Ovc/K6ig2BrElsHUhfBHj6Gv52ffgOCNBcsCeh2
- JABQVsofQl2DZ6pOJbJ77znd+QfNtIAR0wFClRqv1B/cT+rKa9ptuvPix+QHfKmOPP
- vvX2biLwoXBdktSTLSt969p4CGEaQp0ApqlN77NU=
+ b=qe1Zgr32Q9ocb0IQe+4DreGTDpSTQIDngobDu4OdGen3kyQvajwsoEOEuF3pD/uug
+ Y0aMj+JLZjqIkSOZ3zZBCJ5vNnyYkQtcPqAmdf/aWI7v4O4ni9oH92fJBmJ4bDvX9N
+ WwZgr0S4wGXzGhw3/WeRNLMzoRrqXvFigpoDYbB8=
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -62,16 +62,16 @@ To: Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
  Han Xu <han.xu@nxp.com>, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 18/19] arm64: dts: imx8mq-hummingboard-pulse: Align pin
- configuration group names with schema
-Date: Fri, 28 Aug 2020 18:47:49 +0200
-Message-Id: <20200828164750.10377-19-krzk@kernel.org>
+Subject: [PATCH v2 19/19] arm64: dts: imx8qxp-colibri: Align pin configuration
+ group names with schema
+Date: Fri, 28 Aug 2020 18:47:50 +0200
+Message-Id: <20200828164750.10377-20-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200828164750.10377-1-krzk@kernel.org>
 References: <20200828164750.10377-1-krzk@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200828_125045_256879_792B72B4 
-X-CRM114-Status: GOOD (  12.52  )
+X-CRM114-CacheID: sfid-20200828_125051_358940_82D20679 
+X-CRM114-Status: GOOD (  12.74  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,47 +97,49 @@ suffix, otherwise dtbs_check complain with a warning like:
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- .../boot/dts/freescale/imx8mq-hummingboard-pulse.dts      | 8 ++++----
+ arch/arm64/boot/dts/freescale/imx8qxp-colibri.dtsi | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq-hummingboard-pulse.dts b/arch/arm64/boot/dts/freescale/imx8mq-hummingboard-pulse.dts
-index bfd91c1ed6a5..366693f31992 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq-hummingboard-pulse.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mq-hummingboard-pulse.dts
-@@ -214,13 +214,13 @@
+diff --git a/arch/arm64/boot/dts/freescale/imx8qxp-colibri.dtsi b/arch/arm64/boot/dts/freescale/imx8qxp-colibri.dtsi
+index 75f17a29f81e..f38acff0d25c 100644
+--- a/arch/arm64/boot/dts/freescale/imx8qxp-colibri.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8qxp-colibri.dtsi
+@@ -494,7 +494,7 @@
  		>;
  	};
  
--	pinctrl_usdhc2_gpio: usdhc2grpgpio {
-+	pinctrl_usdhc2_gpio: usdhc2gpiogrp {
+-	pinctrl_usdhc1_100mhz: usdhc1grp100mhz {
++	pinctrl_usdhc1_100mhz: usdhc1-100mhzgrp {
  		fsl,pins = <
- 			MX8MQ_IOMUXC_SD2_CD_B_GPIO2_IO12	0x41
+ 			IMX8QXP_EMMC0_CLK_CONN_EMMC0_CLK		0x06000041
+ 			IMX8QXP_EMMC0_CMD_CONN_EMMC0_CMD		0x21
+@@ -511,7 +511,7 @@
  		>;
  	};
  
--	pinctrl_usdhc2_vmmc: usdhc2vmmcgpio {
-+	pinctrl_usdhc2_vmmc: usdhc2vmmcgpiogrp {
+-	pinctrl_usdhc1_200mhz: usdhc1grp200mhz {
++	pinctrl_usdhc1_200mhz: usdhc1-200mhzgrp {
  		fsl,pins = <
- 			MX8MQ_IOMUXC_GPIO1_IO13_GPIO1_IO13	0x41
- 		>;
-@@ -238,7 +238,7 @@
+ 			IMX8QXP_EMMC0_CLK_CONN_EMMC0_CLK		0x06000041
+ 			IMX8QXP_EMMC0_CMD_CONN_EMMC0_CMD		0x21
+@@ -554,7 +554,7 @@
  		>;
  	};
  
 -	pinctrl_usdhc2_100mhz: usdhc2grp100mhz {
 +	pinctrl_usdhc2_100mhz: usdhc2-100mhzgrp {
  		fsl,pins = <
- 			MX8MQ_IOMUXC_SD2_CLK_USDHC2_CLK			0x8d
- 			MX8MQ_IOMUXC_SD2_CMD_USDHC2_CMD			0xcd
-@@ -250,7 +250,7 @@
+ 			IMX8QXP_USDHC1_CLK_CONN_USDHC1_CLK		0x06000041	/* SODIMM  47 */
+ 			IMX8QXP_USDHC1_CMD_CONN_USDHC1_CMD		0x21		/* SODIMM 190 */
+@@ -566,7 +566,7 @@
  		>;
  	};
  
 -	pinctrl_usdhc2_200mhz: usdhc2grp200mhz {
 +	pinctrl_usdhc2_200mhz: usdhc2-200mhzgrp {
  		fsl,pins = <
- 			MX8MQ_IOMUXC_SD2_CLK_USDHC2_CLK			0x9f
- 			MX8MQ_IOMUXC_SD2_CMD_USDHC2_CMD			0xdf
+ 			IMX8QXP_USDHC1_CLK_CONN_USDHC1_CLK		0x06000041	/* SODIMM  47 */
+ 			IMX8QXP_USDHC1_CMD_CONN_USDHC1_CMD		0x21		/* SODIMM 190 */
 -- 
 2.17.1
 
