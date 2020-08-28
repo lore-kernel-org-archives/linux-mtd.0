@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47F5AC433E6
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Aug 2020 16:53:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88B21C433E6
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Aug 2020 16:54:07 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B2A4420848
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Aug 2020 16:53:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5522C20738
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Aug 2020 16:54:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qYpqG77/";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ec2OVget"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B2A4420848
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Y9hcg1PB";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="JlPIv+Ft"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5522C20738
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,30 +26,30 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=DZyp6yBwqanelbmuodB5jsf/25e/OEOX2RoW6HQfk9A=; b=qYpqG77/BqV9GHNS55RZ3rjpMZ
-	L455e5x5jLJTqCYadv51RoJbacxmC2/Zw4zzLWUXLO9BCssYlQSKS54m0YRSkrnwwJu4nlW4tcx3y
-	CoT3mAYN9POBEuAVDJT0dRYeHQbOf0cLJA1AGWGjYKpg59A8C2M7yvdXqYf23fVFLQVU3gEi7YEw8
-	16JrZ1JucJAHXJ1uRwqnkzz/k+mQ/qnSFCHi9YDKyZazjnpo7iuGEJmY9sQfe8GybYOY57/6alusx
-	bIFC+t2DCZv9Slq4hn6CibtjiKVl88uBPapK3n/JehlZzKeXw7yLPlWP9N1Mpo6wdbay9To7GZ00M
-	HBPADFcQ==;
+	bh=3YpOVIUv/PsDwPwra5XaO0Y8U5xAPqyRDgjKsS8SLDs=; b=Y9hcg1PBPk/R9T/yzR5/x9J1jM
+	k5v0LNyBq8AjsfX65hJ66haScHPDtbFiBCx74G8EsL19qfxaC3W0kr2BfX6r+5djGh7SLQ3ZO1A22
+	PG6gpCzieBpOlRDZwFLMZygjsNCYos8VvVrab9cml0VFTGPDfBfKGNDFC6EkdaOLk5IZl2weHM7nm
+	SdEGfa5M+ZsJeIEqE1uz0EoDlOu+AvhL37NFEzoePGaVLD68iAPtxmcSRis8B//d5DwUH16bmEpf6
+	USo3+ROS3rDPPq2tw7mJWZFYWfQaX4/cnloCwz5IMOH89AVd4OVbQYty8uJPCb//a+y/bVyMIOPgw
+	RF7X2nmg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kBhbz-0006iA-7y; Fri, 28 Aug 2020 16:52:23 +0000
+	id 1kBhd1-0007IC-GP; Fri, 28 Aug 2020 16:53:27 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kBhZH-0005D5-Nw; Fri, 28 Aug 2020 16:49:36 +0000
+ id 1kBhZQ-0005Hf-JO; Fri, 28 Aug 2020 16:49:45 +0000
 Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 053032100A;
- Fri, 28 Aug 2020 16:49:30 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 13DCE2098B;
+ Fri, 28 Aug 2020 16:49:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598633375;
- bh=ldF6UHOHHJVbzEDB7ln+iQ6yBk9UNL7dYnbB0GYXwD8=;
+ s=default; t=1598633383;
+ bh=UtPYY+Ho4KT6wf42Y2B4Y9hguY5yOcNJn2uCRqnItIQ=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Ec2OVgetZCt/A8lcosbZYAsAPiVGkVKlLMJh3LlHj3h0NCeyw36wC3rVsOpgbaGq8
- TaqnrNwQN5SwVdAFALOI/kpb1842OVoNHLyFzK9vNmSw7LkR65q4SI4zyPRzwhHebC
- QACHh1WhDBTCafZuyt0GS2zYWkQDYdhRtuba0i4I=
+ b=JlPIv+FtQLeHm+YLGoNBp1zH84NQErmlAiQUmJ0x8lckhQT9uYnYekbar2EUCY5VY
+ h31Eyd8Z9Bv1JTGgGpXUrQt9ET+31rPGzDdxZcEnRy0YsJyOtsJnH7QMgmNAlbxesX
+ bRABegoiRqVnUQOj+XTpfoeq1dzQuE8n4S8LtkYI=
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -62,15 +62,16 @@ To: Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
  Han Xu <han.xu@nxp.com>, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 08/19] arm64: dts: imx8mm-evk: Add 32.768 kHz clock to PMIC
-Date: Fri, 28 Aug 2020 18:47:39 +0200
-Message-Id: <20200828164750.10377-9-krzk@kernel.org>
+Subject: [PATCH v2 10/19] arm64: dts: imx8mm-ddr4-evk: Align pin configuration
+ group names with schema
+Date: Fri, 28 Aug 2020 18:47:41 +0200
+Message-Id: <20200828164750.10377-11-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200828164750.10377-1-krzk@kernel.org>
 References: <20200828164750.10377-1-krzk@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200828_124935_946767_FBD84FCF 
-X-CRM114-Status: GOOD (  14.36  )
+X-CRM114-CacheID: sfid-20200828_124944_785056_05580EE8 
+X-CRM114-Status: GOOD (  14.74  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,32 +90,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The ROHM BD71847 PMIC has a 32.768 kHz clock.  Adding necessary parent
-allows to probe the bd718x7 clock driver fixing boot errors:
+Device tree schema expects pin configuration groups to end with 'grp'
+suffix, otherwise dtbs_check complain with a warning like:
 
-    bd718xx-clk bd71847-clk.1.auto: No parent clk found
-    bd718xx-clk: probe of bd71847-clk.1.auto failed with error -22
+    ... do not match any of the regexes: 'grp$', 'pinctrl-[0-9]+'
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/arm64/boot/dts/freescale/imx8mm-evk.dts | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk.dts
-index 3cb8b6bcb657..0115f07bbc9d 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-evk.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-evk.dts
-@@ -149,6 +149,10 @@
- 		interrupts = <3 GPIO_ACTIVE_LOW>;
- 		rohm,reset-snvs-powered;
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts b/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
+index a1e5483dbbbe..3ac8f9d3c372 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
+@@ -155,7 +155,7 @@
+ };
  
-+		#clock-cells = <0>;
-+		clocks = <&osc_32k 0>;
-+		clock-output-names = "clk-32k-out";
-+
- 		regulators {
- 			buck1_reg: BUCK1 {
- 				regulator-name = "buck1";
+ &iomuxc {
+-	pinctrl_pmic: pmicirq {
++	pinctrl_pmic: pmicirqgrp {
+ 		fsl,pins = <
+ 			MX8MN_IOMUXC_GPIO1_IO03_GPIO1_IO3	0x41
+ 		>;
 -- 
 2.17.1
 
