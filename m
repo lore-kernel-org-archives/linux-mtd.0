@@ -4,20 +4,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 30FEFC433E6
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Aug 2020 16:53:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 60772C433E7
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Aug 2020 16:53:34 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EF01020738
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Aug 2020 16:53:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3033E20738
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Aug 2020 16:53:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Ne82W38A";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="I3TwHkT8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EF01020738
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="yfP5z0Gf";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="rM1dwyRg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3033E20738
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,30 +26,30 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=7v/pH0ExaZYpUxihWRvTnoVyKVfzerrsuSzyF2oY50c=; b=Ne82W38ANSGSwmDLRaUjERoSAy
-	NhMHswqwXYaOrSt7ue7tv1qkZMnDsdzFqvxtxZAi7VxU23OhWgH7bzZzXbzTWHHm9jI1uj/S5hmV6
-	UPAXIEdYoEcQiL79RGL0i9XLbROpVJV9j9nxzyY74u1sunpd+4ThonZAY0tWZIzIGsBLEe/XmfEVm
-	IhyFJJ5e+BU138ZYFkQpYSdY/BHRrfEzBxxwEGH3i0Ts7i6Y7YszkFml4zjU+EM/vhDzTJiPcDcjC
-	3/2alvLgoDrudg0VlEyCjMswdz6Vx+kt4//4eUAuyAuBJlftBtyn5PJ7uBHs9qDzICCaynfvollAv
-	jOJVNlQw==;
+	bh=0+jpCaIAJWr6xeRD+suFu6wtye9uxS6sqIJeet4r6ls=; b=yfP5z0Gfxft2lQAYEEBHWnXY9Q
+	BHh/gOvRMfzTAm4Uv2k05DhwAjCiKACFYXwm/VMHpkIoD2b3gHtftf56aF6IEC8HKeUR1IXHOilgB
+	z+6pnZcyTHK/zjMtbY/f0K/j3PeIpdsUbEFE6WOc+Ym4/52oonLk22SAYYywrb6seRHQcDSIz8P4I
+	lksXLZz8Jq8/RlS3faSPhbxvfuoi3fHdXlN+xzDvTy2n1Cre7dBrNPuOKyoBDQqbc1I53utuBoxLY
+	ALPMukes5x1kbm5wI8CuRZjkVlLtKSqHW4Lt1aPi4Cp7xNt+XMuxqd8ig9edUDOOJkS4e2osclNIl
+	ZI6Iwkig==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kBhbM-0006Gs-DX; Fri, 28 Aug 2020 16:51:44 +0000
+	id 1kBhcV-0006xv-Az; Fri, 28 Aug 2020 16:52:55 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kBhZ9-000594-Ic; Fri, 28 Aug 2020 16:49:28 +0000
+ id 1kBhZM-0005Ey-3x; Fri, 28 Aug 2020 16:49:41 +0000
 Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id C882520848;
- Fri, 28 Aug 2020 16:49:22 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 97B9720B80;
+ Fri, 28 Aug 2020 16:49:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598633366;
- bh=JMjwvcNs4b37P7xm+7gxQw/xSmaryGBbQ40tRtlOM9E=;
+ s=default; t=1598633379;
+ bh=FkLjw7Jcs543SiKoNIN05bHQA4tIrsY4ElZISGC6hZE=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=I3TwHkT8ZSUalQOaGJQmePU3Dz1GwJ4qYWBvs7AkbCMxbPqd9xk58a4Boj0CkVMmR
- L2NxplrVlvGN8c7tulbF95z9oDWmS5otNt/L/HwYg5ItWCrNYTOIY3ufmOTzW7RxER
- LXU8NYktR7BpSyPfc1AzD+IlcxUY5clTmeMna2DE=
+ b=rM1dwyRgJ3KIP0QWWY77IMjSthExMTWxWT5YYeEBwDfTvME0q5IyMTZCTJ8MgVZDB
+ 8+CKUzWnucoUCyZsoBFjl+D5S8PtxnCGVBCvDP4fBOHTWyPOv/YZBSAcA+bJFBBENz
+ JXBpltlA5wgx+bDQTSqZsYcWFqAR2eMbGM2s1S50=
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -62,16 +62,16 @@ To: Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
  Han Xu <han.xu@nxp.com>, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 06/19] arm64: dts: imx8mm-beacon: Align pin configuration
+Subject: [PATCH v2 09/19] arm64: dts: imx8mm-evk: Align pin configuration
  group names with schema
-Date: Fri, 28 Aug 2020 18:47:37 +0200
-Message-Id: <20200828164750.10377-7-krzk@kernel.org>
+Date: Fri, 28 Aug 2020 18:47:40 +0200
+Message-Id: <20200828164750.10377-10-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200828164750.10377-1-krzk@kernel.org>
 References: <20200828164750.10377-1-krzk@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200828_124927_844849_6891B7E6 
-X-CRM114-Status: GOOD (  12.82  )
+X-CRM114-CacheID: sfid-20200828_124940_298981_C393BB9C 
+X-CRM114-Status: GOOD (  12.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,116 +91,80 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Device tree schema expects pin configuration groups to end with 'grp'
-suffix.  This fixes dtbs_check warnings like:
+suffix, otherwise dtbs_check complain with a warning like:
 
-  pinctrl@30330000: 'pcal6414-gpio', 'pmicirq', 'usdhc1grp100mhz', 'usdhc1grp200mhz', 'usdhc1grpgpio',
-    'usdhc2grp100mhz', 'usdhc2grp200mhz', 'usdhc2grpgpio', 'usdhc3grp100mhz', 'usdhc3grp200mhz'
-    do not match any of the regexes: 'grp$', 'pinctrl-[0-9]+'
+    ... do not match any of the regexes: 'grp$', 'pinctrl-[0-9]+'
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- .../boot/dts/freescale/imx8mm-beacon-baseboard.dtsi  |  8 ++++----
- arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi | 12 ++++++------
- 2 files changed, 10 insertions(+), 10 deletions(-)
+ arch/arm64/boot/dts/freescale/imx8mm-evk.dts | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi
-index bf0859f1e1fa..16e4910aeb1e 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi
-@@ -210,7 +210,7 @@
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk.dts
+index 0115f07bbc9d..207dc8de3145 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-evk.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mm-evk.dts
+@@ -423,13 +423,13 @@
  		>;
  	};
  
--	pinctrl_pcal6414: pcal6414-gpio {
-+	pinctrl_pcal6414: pcal6414-gpiogrp {
+-	pinctrl_pmic: pmicirq {
++	pinctrl_pmic: pmicirqgrp {
  		fsl,pins = <
- 			MX8MM_IOMUXC_SAI2_MCLK_GPIO4_IO27		0x19
+ 			MX8MM_IOMUXC_GPIO1_IO03_GPIO1_IO3		0x41
  		>;
-@@ -240,7 +240,7 @@
+ 	};
+ 
+-	pinctrl_reg_usdhc2_vmmc: regusdhc2vmmc {
++	pinctrl_reg_usdhc2_vmmc: regusdhc2vmmcgrp {
+ 		fsl,pins = <
+ 			MX8MM_IOMUXC_SD2_RESET_B_GPIO2_IO19	0x41
+ 		>;
+@@ -457,7 +457,7 @@
  		>;
  	};
  
 -	pinctrl_usdhc2_gpio: usdhc2grpgpio {
 +	pinctrl_usdhc2_gpio: usdhc2gpiogrp {
  		fsl,pins = <
- 			MX8MM_IOMUXC_SD2_CD_B_USDHC2_CD_B	0x41
- 			MX8MM_IOMUXC_SD2_RESET_B_GPIO2_IO19	0x41
-@@ -259,7 +259,7 @@
+ 			MX8MM_IOMUXC_GPIO1_IO15_GPIO1_IO15	0x1c4
+ 		>;
+@@ -475,7 +475,7 @@
  		>;
  	};
  
 -	pinctrl_usdhc2_100mhz: usdhc2grp100mhz {
 +	pinctrl_usdhc2_100mhz: usdhc2-100mhzgrp {
  		fsl,pins = <
- 			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK	0x194
- 			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD	0x1d4
-@@ -271,7 +271,7 @@
+ 			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK		0x194
+ 			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD		0x1d4
+@@ -487,7 +487,7 @@
  		>;
  	};
  
 -	pinctrl_usdhc2_200mhz: usdhc2grp200mhz {
 +	pinctrl_usdhc2_200mhz: usdhc2-200mhzgrp {
  		fsl,pins = <
- 			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK	0x196
- 			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD	0x1d6
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
-index 620a124dfb5f..502faf6144b0 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
-@@ -290,7 +290,7 @@
- 			>;
- 		};
+ 			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK		0x196
+ 			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD		0x1d6
+@@ -515,7 +515,7 @@
+ 		>;
+ 	};
  
--		pinctrl_pmic: pmicirq {
-+		pinctrl_pmic: pmicirqgrp {
- 			fsl,pins = <
- 				MX8MM_IOMUXC_GPIO1_IO03_GPIO1_IO3		0x41
- 			>;
-@@ -309,7 +309,7 @@
- 			>;
- 		};
+-	pinctrl_usdhc3_100mhz: usdhc3grp100mhz {
++	pinctrl_usdhc3_100mhz: usdhc3-100mhzgrp {
+ 		fsl,pins = <
+ 			MX8MM_IOMUXC_NAND_WE_B_USDHC3_CLK		0x194
+ 			MX8MM_IOMUXC_NAND_WP_B_USDHC3_CMD		0x1d4
+@@ -531,7 +531,7 @@
+ 		>;
+ 	};
  
--		pinctrl_usdhc1_gpio: usdhc1grpgpio {
-+		pinctrl_usdhc1_gpio: usdhc1gpiogrp {
- 			fsl,pins = <
- 				MX8MM_IOMUXC_SD1_RESET_B_GPIO2_IO10	0x41
- 			>;
-@@ -326,7 +326,7 @@
- 			>;
- 		};
- 
--		pinctrl_usdhc1_100mhz: usdhc1grp100mhz {
-+		pinctrl_usdhc1_100mhz: usdhc1-100mhzgrp {
- 			fsl,pins = <
- 				MX8MM_IOMUXC_SD1_CLK_USDHC1_CLK		0x194
- 				MX8MM_IOMUXC_SD1_CMD_USDHC1_CMD		0x1d4
-@@ -337,7 +337,7 @@
- 			>;
- 		};
- 
--		pinctrl_usdhc1_200mhz: usdhc1grp200mhz {
-+		pinctrl_usdhc1_200mhz: usdhc1-200mhzgrp {
- 			fsl,pins = <
- 				MX8MM_IOMUXC_SD1_CLK_USDHC1_CLK		0x196
- 				MX8MM_IOMUXC_SD1_CMD_USDHC1_CMD		0x1d6
-@@ -364,7 +364,7 @@
- 			>;
- 		};
- 
--		pinctrl_usdhc3_100mhz: usdhc3grp100mhz {
-+		pinctrl_usdhc3_100mhz: usdhc3-100mhzgrp {
- 			fsl,pins = <
- 				MX8MM_IOMUXC_NAND_WE_B_USDHC3_CLK		0x194
- 				MX8MM_IOMUXC_NAND_WP_B_USDHC3_CMD		0x1d4
-@@ -380,7 +380,7 @@
- 			>;
- 		};
- 
--		pinctrl_usdhc3_200mhz: usdhc3grp200mhz {
-+		pinctrl_usdhc3_200mhz: usdhc3-200mhzgrp {
- 			fsl,pins = <
- 				MX8MM_IOMUXC_NAND_WE_B_USDHC3_CLK		0x196
- 				MX8MM_IOMUXC_NAND_WP_B_USDHC3_CMD		0x1d6
+-	pinctrl_usdhc3_200mhz: usdhc3grp200mhz {
++	pinctrl_usdhc3_200mhz: usdhc3-200mhzgrp {
+ 		fsl,pins = <
+ 			MX8MM_IOMUXC_NAND_WE_B_USDHC3_CLK		0x196
+ 			MX8MM_IOMUXC_NAND_WP_B_USDHC3_CMD		0x1d6
 -- 
 2.17.1
 
