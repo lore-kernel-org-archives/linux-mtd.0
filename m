@@ -7,74 +7,57 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62142C433E6
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Aug 2020 01:14:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C1C3C433E6
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Aug 2020 03:35:00 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F07422080C
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Aug 2020 01:14:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ECD5B2080C
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Aug 2020 03:34:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LrZHZ1uU";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="Do8Emqvx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F07422080C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=alliedtelesis.co.nz
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="me01ahwS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ECD5B2080C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To:From:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=uSVdKTSXuOCSnAGYazd4gD5RsPo9Oxhih/aVRaPQ/zo=; b=LrZHZ1uUD5MzIsGrhl1IpSGIyC
-	XvANyFqDsHclvEHiCdxsTUgILhBtqbJdTRwHf/Oy/MtuteaiO0X7jfrnCNFhAXjhyxJL6utC4sSDV
-	mAX1SyJHCaYN+8vdqIVjq2vsscTes2GlG6TNezfCiPzv1xE4sWxbeEj2H86sPRp7xQ0pU17WxnSCR
-	+AQ61T7nVUDqKzgSoD2KCZdE2gCGo9oMe9L+gFVzzfTjXxoiAQ9AvHuaLR9E1CAiuxD9gyShbwtnq
-	qjyAyDW2zUIuZX2zUZxQc7aFHBmdFhQiDhylf5VOvBLPRFeYrywosv+089jjBB9r+3zBqDhzmDpwj
-	zuuA18oQ==;
+	bh=kjbTTx4FyJX+Gy4Jy2VhytUq7S7D5rxfFsBbhFgalds=; b=me01ahwSN5FN2RT5FaP7yJglAI
+	h5kp2S7QJnKbFuo5xfGq0R5UWS8pIetNVKtgKOkG+PjlIfhLLNFJUdi88nbsU8tPyxY0hXftfJ6sI
+	z8H0mSM/Q4jidySTc/46G1jgpd1F6Ew91/hYKRuPrNpkXN57SHJnN4vNzCbpw2QTL9l+n/CgWmm7G
+	JS1mg24pKdFsqHHbzDBjIVSVZShUSLGe5X5IxzzznrIau9JbfRNsov23b72C/gh4OgF95nytD1Qbm
+	uT1qZ1+Vgka3xznecRzlzDllTZh3LreeyvjBeCqPrVeP3Eylz4FzEtxAmbzJTAd3/mIXxPzvKfMHV
+	Asuly/nw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kBSwv-00064y-PT; Fri, 28 Aug 2020 01:13:01 +0000
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
+	id 1kBV98-0006YP-P4; Fri, 28 Aug 2020 03:33:46 +0000
+Received: from szxga07-in.huawei.com ([45.249.212.35] helo=huawei.com)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kBSwo-00063A-US
- for linux-mtd@lists.infradead.org; Fri, 28 Aug 2020 01:12:56 +0000
-Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (Client did not present a certificate)
- by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 18D8684487;
- Fri, 28 Aug 2020 13:12:41 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
- s=mail181024; t=1598577161;
- bh=HzQ2JRxwOvIbNaDzkQVH6yxpHLoPkEl245xKkJP6A9M=;
- h=From:To:Cc:Subject:Date;
- b=Do8EmqvxJfgCyQE0o10P41/CO4lNjrQXyh50aXrRRFV3eROqfbuPK+ToRTX2Gl0ZC
- qTeWHMUfOf5QTEolYcOxZKUYeLJT+sfO8N+pfyrKf4dgvTDUsYuVvguvlbf9MMbdTH
- bBA67naUZo/Q9z7zjS4w70BRqESTrdlf//pz2I+noV8jx9rvc5Jc1eW2l0gObJKWSO
- xoI0g8m3xIqn5M6JSfOjDOWNkqCxRs4jStJj+tT5gB9re062FXNoUlTk3cDd4Sod92
- Y1qy7rliZogberCYDOKHeTK5b6nSUurIjNQrCS+tznWyNbDaBD1xbHHDmngemd7nwq
- Qu2Q1gomvNq7g==
-Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with
- Trustwave SEG (v7, 5, 8, 10121)
- id <B5f485a080000>; Fri, 28 Aug 2020 13:12:40 +1200
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
- by smtp (Postfix) with ESMTP id B0E2713EEB7;
- Fri, 28 Aug 2020 13:12:40 +1200 (NZST)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
- id BF23B280060; Fri, 28 Aug 2020 13:12:40 +1200 (NZST)
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
-To: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com
-Subject: [PATCH] mtd: rawnand: marvell: Support panic_write for mtdoops
-Date: Fri, 28 Aug 2020 13:12:37 +1200
-Message-Id: <20200828011237.22066-1-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.28.0
+ id 1kBV96-0006Xb-Nq
+ for linux-mtd@lists.infradead.org; Fri, 28 Aug 2020 03:33:45 +0000
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+ by Forcepoint Email with ESMTP id 3048085FE2F224C0F4FC;
+ Fri, 28 Aug 2020 11:33:34 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Fri, 28 Aug 2020
+ 11:33:13 +0800
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+To: <richard.weinberger@gmail.com>, <yi.zhang@huawei.com>
+Subject: [PATCH] ubifs: setflags: Don't show error message when
+ vfs_ioc_setflags_prepare() fails
+Date: Fri, 28 Aug 2020 11:32:50 +0800
+Message-ID: <20200828033250.910168-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-x-atlnz-ls: pat
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200827_211255_240519_F48DA625 
-X-CRM114-Status: GOOD (  19.83  )
+X-CRM114-CacheID: sfid-20200827_233345_019257_E378AB79 
+X-CRM114-Status: UNSURE (   8.89  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,83 +69,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Under a panic context we can't get an interrupt. Actively poll for the
-RB status when performing a panic_write.
+Following process will trigger ubifs_err:
+  1. useradd -m freg                                        (Under root)
+  2. cd /home/freg && mkdir mp                              (Under freg)
+  3. mount -t ubifs /dev/ubi0_0 /home/freg/mp               (Under root)
+  4. cd /home/freg && echo 123 > mp/a			    (Under root)
+  5. cd mp && chown freg a && chgrp freg a && chmod 777 a   (Under root)
+  6. chattr +i a                                            (Under freg)
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+UBIFS error (ubi0:0 pid 1723): ubifs_ioctl [ubifs]: can't modify inode
+65 attributes
+chattr: Operation not permitted while setting flags on a
+
+This is not an UBIFS problem, it was caused by task priviliage checking
+on file operations. Remove error message printing from kernel just like
+other filesystems (eg. ext4), since we already have enough information
+from userspace tools.
+
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- drivers/mtd/nand/raw/marvell_nand.c | 38 +++++++++++++++++++++++++----
- 1 file changed, 33 insertions(+), 5 deletions(-)
+ fs/ubifs/ioctl.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-index 8482d3bd8b1f..a81bc50f5ec8 100644
---- a/drivers/mtd/nand/raw/marvell_nand.c
-+++ b/drivers/mtd/nand/raw/marvell_nand.c
-@@ -685,9 +685,31 @@ static int marvell_nfc_wait_cmdd(struct nand_chip *chip)
- 	return marvell_nfc_end_cmd(chip, cs_flag, "CMDD");
- }
+diff --git a/fs/ubifs/ioctl.c b/fs/ubifs/ioctl.c
+index 3df9be2c684c..4363d85a3fd4 100644
+--- a/fs/ubifs/ioctl.c
++++ b/fs/ubifs/ioctl.c
+@@ -134,7 +134,6 @@ static int setflags(struct inode *inode, int flags)
+ 	return err;
  
-+static int marvell_nfc_poll_status(struct marvell_nfc *nfc, u32 mask,
-+				   u32 expected_val, unsigned long timeout_ms)
-+{
-+	unsigned long limit;
-+	u32 st;
-+
-+	limit = jiffies + msecs_to_jiffies(timeout_ms);
-+	do {
-+		st = readl_relaxed(nfc->regs + NDSR);
-+		if (st & NDSR_RDY(1))
-+			st |= NDSR_RDY(0);
-+
-+		if ((st & mask) == expected_val)
-+			return 0;
-+
-+		cpu_relax();
-+	} while (time_after(limit, jiffies));
-+
-+	return -ETIMEDOUT;
-+}
-+
- static int marvell_nfc_wait_op(struct nand_chip *chip, unsigned int timeout_ms)
- {
- 	struct marvell_nfc *nfc = to_marvell_nfc(chip->controller);
-+	struct mtd_info *mtd = nand_to_mtd(chip);
- 	u32 pending;
- 	int ret;
- 
-@@ -695,12 +717,18 @@ static int marvell_nfc_wait_op(struct nand_chip *chip, unsigned int timeout_ms)
- 	if (!timeout_ms)
- 		timeout_ms = IRQ_TIMEOUT;
- 
--	init_completion(&nfc->complete);
-+	if (mtd->oops_panic_write) {
-+		ret = marvell_nfc_poll_status(nfc, NDSR_RDY(0),
-+					      NDSR_RDY(0),
-+					      timeout_ms);
-+	} else {
-+		init_completion(&nfc->complete);
- 
--	marvell_nfc_enable_int(nfc, NDCR_RDYM);
--	ret = wait_for_completion_timeout(&nfc->complete,
--					  msecs_to_jiffies(timeout_ms));
--	marvell_nfc_disable_int(nfc, NDCR_RDYM);
-+		marvell_nfc_enable_int(nfc, NDCR_RDYM);
-+		ret = wait_for_completion_timeout(&nfc->complete,
-+						  msecs_to_jiffies(timeout_ms));
-+		marvell_nfc_disable_int(nfc, NDCR_RDYM);
-+	}
- 	pending = marvell_nfc_clear_int(nfc, NDSR_RDY(0) | NDSR_RDY(1));
- 
- 	/*
+ out_unlock:
+-	ubifs_err(c, "can't modify inode %lu attributes", inode->i_ino);
+ 	mutex_unlock(&ui->ui_mutex);
+ 	ubifs_release_budget(c, &req);
+ 	return err;
 -- 
-2.28.0
+2.25.4
 
 
 ______________________________________________________
