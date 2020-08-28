@@ -4,20 +4,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AE0CC433E7
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Aug 2020 16:57:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6162DC433E2
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Aug 2020 16:57:09 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ED8732074A
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Aug 2020 16:56:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 942CB2074A
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Aug 2020 16:57:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="I2BXe8lq";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="uZsn4rx/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ED8732074A
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NTt4YjFR";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="XMecWnAg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 942CB2074A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,30 +26,30 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=5+oPXF10SIWoq59ewoVSIdmRdoRnfb9iyvzW/8QPYhQ=; b=I2BXe8lqAVnm+0n8GZ2uKNcFBO
-	SgygGYitpBDmkGIW7BmUhNvgtXM4I+19emBxt5Q2o9ftDxP0XMHa5DVv7Z8vxtn768j9H9etB+w8+
-	zvUpSnzYAzjMcW5SvWK9S6OARufkA8Iz75GFx+e1njP9fhdP/m9B6fSSl6MRSD53c5vaP0nK3+zkI
-	LPL61oFwYlGOKkH6tFEYqWUZROqJEziEKnL3PNB/ksy1cDuXyMMtGXnJQO0Sorr/wH3VdxFmFKlfR
-	U+Rdk+Br4UuI5ymQbWxk7Q1aqWy/gUltQcLa3pwksl569Oio/BIO1TKm2DEkgXWRGHYBfua+dpLZB
-	3cscMVXw==;
+	bh=xSvfVy2Y6zwk9mMV2uqMHK/5plqH7kxtiFUeXF1zY3s=; b=NTt4YjFRB3dJgJlL6N0toTvIp0
+	Vpsu48iUjAaW+lAi1/UpJp6OhYC0HVook+SmTltv0NAruf7s1uYwTv0VqSKUEdEzPgZnVGDfjClSo
+	u5FVTRWDGFojS83IlnkSJtLvZ0PVxSeUVl72wJEgZ1sZicQ1s/D6oN+NtwPdqUhMa10lcPKOLjxK3
+	3YhiQ2PWQD1ujHbjafy7qLRv6/4/ug7E0Ck/V0KX7eCcgRtH/cAzVk5ruWUst5GM57+A4uSQlqLCu
+	1M7ireoY/BRNyFGkYfxooq5qSmuDUJbPWK8AVEFJvEo6CyUECLb+x65kaXtb3MEMwtv017IWwQp/c
+	SThZDBNg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kBhf0-0000KK-UR; Fri, 28 Aug 2020 16:55:30 +0000
+	id 1kBhfK-0000NW-VS; Fri, 28 Aug 2020 16:55:51 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kBhZU-0005KP-Pg; Fri, 28 Aug 2020 16:49:50 +0000
+ id 1kBha3-0005bh-UC; Fri, 28 Aug 2020 16:50:25 +0000
 Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 8443320B80;
- Fri, 28 Aug 2020 16:49:44 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id A1DC820C56;
+ Fri, 28 Aug 2020 16:50:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598633388;
- bh=tMAMGxqIF7yzVEB7ojVRCLXtOkuEnHAvF6XNEXvOM7w=;
+ s=default; t=1598633422;
+ bh=Cgxn33agiAyp87HeECnZVMhxGfb2+DrRvu3F+O4k4xU=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=uZsn4rx/cQ04tzbfnAuHAAkpRFU8dfexY1NW0tyaF7Ll870+UHpuh/f9d3xP71xgf
- cJ/dKXyq7CcSN9Z8DWeBUqfavbyXOEMVvWO55XMUXjeNsbS8+6x+BL0QrWscfV0ynn
- 9fXZxJYmBCR4e59710N90WQPWJLA9X1Ym2IuPdvs=
+ b=XMecWnAgOXRnqFZguFNZP++EQZeOKRRS5Pe+Zk8bSrrUsCjXle74AErcIw7+ZWsoF
+ ervXUHTa8lWgRKeZ7FLmxkSRfE3N+9xeZjqe8jJFQWe4m2Vyjhj0irN8yl5C6TFrFF
+ 3KKcfKi81CTMl2bK/i/TBBzarDVDs/FzlFRWjCSY=
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -62,16 +62,16 @@ To: Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
  Han Xu <han.xu@nxp.com>, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 11/19] arm64: dts: imx8mn-ddr4-evk: Align regulator names
- with schema
-Date: Fri, 28 Aug 2020 18:47:42 +0200
-Message-Id: <20200828164750.10377-12-krzk@kernel.org>
+Subject: [PATCH v2 15/19] arm64: dts: imx8mq-phanbell: Align pin configuration
+ group names with schema
+Date: Fri, 28 Aug 2020 18:47:46 +0200
+Message-Id: <20200828164750.10377-16-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200828164750.10377-1-krzk@kernel.org>
 References: <20200828164750.10377-1-krzk@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200828_124949_424075_8BE8EED9 
-X-CRM114-Status: GOOD (  12.59  )
+X-CRM114-CacheID: sfid-20200828_125024_191895_110A3A7D 
+X-CRM114-Status: GOOD (  12.88  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,122 +90,74 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Device tree schema expects regulator names to be lowercase.  Changing to
-lowercase has multiple effects:
-1. LDO6 supply is now properly configured, because regulator driver
-   looks for supplies by lowercase name,
-2. User-visible names via sysfs or debugfs are now lowercase,
-2. dtbs_check warnings are fixed:
+Device tree schema expects pin configuration groups to end with 'grp'
+suffix, otherwise dtbs_check complain with a warning like:
 
-    pmic@4b: regulators:LDO1:regulator-name:0: 'LDO1' does not match '^ldo[1-6]$'
+    ... do not match any of the regexes: 'grp$', 'pinctrl-[0-9]+'
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- .../boot/dts/freescale/imx8mn-ddr4-evk.dts    | 22 +++++++++----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts b/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
-index 3ac8f9d3c372..8f7155716c84 100644
---- a/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
-@@ -60,7 +60,7 @@
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts b/arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts
+index 3f541ddf0768..d6d3a3d5abc3 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts
+@@ -365,7 +365,7 @@
+ 		>;
+ 	};
  
- 		regulators {
- 			buck1_reg: BUCK1 {
--				regulator-name = "BUCK1";
-+				regulator-name = "buck1";
- 				regulator-min-microvolt = <700000>;
- 				regulator-max-microvolt = <1300000>;
- 				regulator-boot-on;
-@@ -69,7 +69,7 @@
- 			};
+-	pinctrl_pmic: pmicirq {
++	pinctrl_pmic: pmicirqgrp {
+ 		fsl,pins = <
+ 			MX8MQ_IOMUXC_GPIO1_IO03_GPIO1_IO3	0x41
+ 		>;
+@@ -395,7 +395,7 @@
+ 		>;
+ 	};
  
- 			buck2_reg: BUCK2 {
--				regulator-name = "BUCK2";
-+				regulator-name = "buck2";
- 				regulator-min-microvolt = <700000>;
- 				regulator-max-microvolt = <1300000>;
- 				regulator-boot-on;
-@@ -79,14 +79,14 @@
+-	pinctrl_usdhc1_100mhz: usdhc1grp100mhz {
++	pinctrl_usdhc1_100mhz: usdhc1-100mhzgrp {
+ 		fsl,pins = <
+ 			MX8MQ_IOMUXC_SD1_CLK_USDHC1_CLK			0x85
+ 			MX8MQ_IOMUXC_SD1_CMD_USDHC1_CMD			0xc5
+@@ -412,7 +412,7 @@
+ 		>;
+ 	};
  
- 			buck3_reg: BUCK3 {
- 				// BUCK5 in datasheet
--				regulator-name = "BUCK3";
-+				regulator-name = "buck3";
- 				regulator-min-microvolt = <700000>;
- 				regulator-max-microvolt = <1350000>;
- 			};
+-	pinctrl_usdhc1_200mhz: usdhc1grp200mhz {
++	pinctrl_usdhc1_200mhz: usdhc1-200mhzgrp {
+ 		fsl,pins = <
+ 			MX8MQ_IOMUXC_SD1_CLK_USDHC1_CLK			0x87
+ 			MX8MQ_IOMUXC_SD1_CMD_USDHC1_CMD			0xc7
+@@ -429,7 +429,7 @@
+ 		>;
+ 	};
  
- 			buck4_reg: BUCK4 {
- 				// BUCK6 in datasheet
--				regulator-name = "BUCK4";
-+				regulator-name = "buck4";
- 				regulator-min-microvolt = <3000000>;
- 				regulator-max-microvolt = <3300000>;
- 				regulator-boot-on;
-@@ -95,7 +95,7 @@
+-	pinctrl_usdhc2_gpio: usdhc2grpgpio {
++	pinctrl_usdhc2_gpio: usdhc2gpiogrp {
+ 		fsl,pins = <
+ 			MX8MQ_IOMUXC_SD2_CD_B_GPIO2_IO12	0x41
+ 			MX8MQ_IOMUXC_SD2_RESET_B_GPIO2_IO19	0x41
+@@ -448,7 +448,7 @@
+ 		>;
+ 	};
  
- 			buck5_reg: BUCK5 {
- 				// BUCK7 in datasheet
--				regulator-name = "BUCK5";
-+				regulator-name = "buck5";
- 				regulator-min-microvolt = <1605000>;
- 				regulator-max-microvolt = <1995000>;
- 				regulator-boot-on;
-@@ -104,7 +104,7 @@
+-	pinctrl_usdhc2_100mhz: usdhc2grp100mhz {
++	pinctrl_usdhc2_100mhz: usdhc2-100mhzgrp {
+ 		fsl,pins = <
+ 			MX8MQ_IOMUXC_SD2_CLK_USDHC2_CLK			0x85
+ 			MX8MQ_IOMUXC_SD2_CMD_USDHC2_CMD			0xc5
+@@ -460,7 +460,7 @@
+ 		>;
+ 	};
  
- 			buck6_reg: BUCK6 {
- 				// BUCK8 in datasheet
--				regulator-name = "BUCK6";
-+				regulator-name = "buck6";
- 				regulator-min-microvolt = <800000>;
- 				regulator-max-microvolt = <1400000>;
- 				regulator-boot-on;
-@@ -112,7 +112,7 @@
- 			};
- 
- 			ldo1_reg: LDO1 {
--				regulator-name = "LDO1";
-+				regulator-name = "ldo1";
- 				regulator-min-microvolt = <1600000>;
- 				regulator-max-microvolt = <3300000>;
- 				regulator-boot-on;
-@@ -120,7 +120,7 @@
- 			};
- 
- 			ldo2_reg: LDO2 {
--				regulator-name = "LDO2";
-+				regulator-name = "ldo2";
- 				regulator-min-microvolt = <800000>;
- 				regulator-max-microvolt = <900000>;
- 				regulator-boot-on;
-@@ -128,7 +128,7 @@
- 			};
- 
- 			ldo3_reg: LDO3 {
--				regulator-name = "LDO3";
-+				regulator-name = "ldo3";
- 				regulator-min-microvolt = <1800000>;
- 				regulator-max-microvolt = <3300000>;
- 				regulator-boot-on;
-@@ -136,7 +136,7 @@
- 			};
- 
- 			ldo4_reg: LDO4 {
--				regulator-name = "LDO4";
-+				regulator-name = "ldo4";
- 				regulator-min-microvolt = <900000>;
- 				regulator-max-microvolt = <1800000>;
- 				regulator-boot-on;
-@@ -144,7 +144,7 @@
- 			};
- 
- 			ldo6_reg: LDO6 {
--				regulator-name = "LDO6";
-+				regulator-name = "ldo6";
- 				regulator-min-microvolt = <900000>;
- 				regulator-max-microvolt = <1800000>;
- 				regulator-boot-on;
+-	pinctrl_usdhc2_200mhz: usdhc2grp200mhz {
++	pinctrl_usdhc2_200mhz: usdhc2-200mhzgrp {
+ 		fsl,pins = <
+ 			MX8MQ_IOMUXC_SD2_CLK_USDHC2_CLK			0x87
+ 			MX8MQ_IOMUXC_SD2_CMD_USDHC2_CMD			0xc7
 -- 
 2.17.1
 
