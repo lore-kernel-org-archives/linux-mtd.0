@@ -7,49 +7,49 @@ X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1879AC433E7
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Aug 2020 19:22:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75C32C433E2
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Aug 2020 19:22:11 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DD27C20848
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Aug 2020 19:22:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4697A2073A
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Aug 2020 19:22:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LR0ikqfo";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="VonmhDxf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DD27C20848
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rUXZ5kaW";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="bbqtve0a"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4697A2073A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=vwL7BHuBV2/feTZK4SsMuL7HUDf7wd54v4l43CyV/0k=; b=LR0ikqfoxIhTBg36X35gXPAhjL
-	9N89z/eDFAVAxGgbOTJkLW+nuHji2fLmZ/lcS5qoakzvHu8aR5WN2UPwI3UUmrS+Goi9INgoKcImB
-	lVB2yvuppcj9+OT19+sZ62vRDkmyQQdl4aWJfmHw4qBQAqEfty5Typp1FGfqwitr5a7C87kAEx47j
-	uSzDqLYzvrZs6GQTs1JMTqPv2QjHna+1+TQPMHE7x5kKgZqcA3JQrhj5hWdjM1XZMJmS3WdzWqjzi
-	YH1zYk5troTgw0iUdKyuUtxyPYXutYOOuHo5gHeQo+AdL0ChyGD+7sO0kNdFip+pkKZ1aH5hmY6ce
-	ewRmVeEg==;
+	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
+	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=RiOG0ODvS2iYsp0GtKfiK2EwruaCfirx76QgxLvWPfs=; b=rUXZ5kaWcCAaoqJLSb4V+wHAX3
+	5jlm9ukzJ6uOopXKJzoKFss7IAPNNTFMW5NWpom+19m1K4f8T0lB4Rdudhlwijk4t/ODUcP2Psui6
+	yK8qCTzovRKNOFWana35JPljTroc1lQBG3ib0Iaa5T7Ehw9Qjbe4Wl6M4jgMh3o4iunLj4k+hYwQW
+	GTg4OchnQXUAl9M66HU7D2pITDKq52Mz8sCpi9tYrTTBKVCkZ+OWoC52JxcevUtBOO69Z4mDYjDcP
+	2ll3+k5zxjJ3qppq1NIjg0WEJpduTEkcb7thIRqfjVzDu7zBXtlFZAl2V8JtWZ2LoQceWrBNE0zRv
+	F/EKxMyQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kBjvh-0006vh-RX; Fri, 28 Aug 2020 19:20:53 +0000
+	id 1kBjw6-00072F-9C; Fri, 28 Aug 2020 19:21:18 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kBjvc-0006ue-MZ; Fri, 28 Aug 2020 19:20:49 +0000
+ id 1kBjvq-0006xe-8e; Fri, 28 Aug 2020 19:21:03 +0000
 Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 585882073A;
- Fri, 28 Aug 2020 19:20:44 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 6662B2073A;
+ Fri, 28 Aug 2020 19:20:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598642448;
- bh=Dd93FE9oQpev+CVY2ipzNLkXaKzEf3vCB92IiF1lQ2Y=;
- h=From:To:Cc:Subject:Date:From;
- b=VonmhDxf/JRylSInuRvDeO2JGgW/YHN1EdjvQfXOZElmu2Qtqr2/V7StFOSH9LRT1
- rmRmx0h8WuTAu/ke2we0v+40aGO2D8HPmr26gjT5A9WAIuROz78VShOOjaztrN5w7G
- VD8ARDgOTmiqVV3cegtVqlWZq4+zhoesR6GSVw/k=
+ s=default; t=1598642461;
+ bh=b+C9gooK4xJleCmMIQXtF7ckCR+IgHOmuWP1gyW97aU=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=bbqtve0adoen2rwk86LU8WCdvmxtsyag5ihSsathppQh7s8iOn6DrwmMr/sy5kQQz
+ TAfSKaGn+utTpr5exYj+dYGLJyhFvm3YV1IAeVKeIZgSgJRRQJhHr7XYcypo3+5NPg
+ 7v9JSWp5O06QPmzemwdHxXNeCrel4dWr73c3BAWQ=
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
@@ -59,14 +59,15 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
  linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 1/4] dt-bindings: mtd: nand-controller: Fix matching with
- size-cells==1
-Date: Fri, 28 Aug 2020 21:20:34 +0200
-Message-Id: <20200828192037.22897-1-krzk@kernel.org>
+Subject: [PATCH 4/4] ARM: dts: imx: Align GPMI NAND node name with schema
+Date: Fri, 28 Aug 2020 21:20:37 +0200
+Message-Id: <20200828192037.22897-4-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200828192037.22897-1-krzk@kernel.org>
+References: <20200828192037.22897-1-krzk@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200828_152048_840471_499F28F3 
-X-CRM114-Status: GOOD (  12.27  )
+X-CRM114-CacheID: sfid-20200828_152102_433456_785A5FB4 
+X-CRM114-Status: GOOD (  12.80  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,33 +86,58 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Most of Freescale/NXP GPMI device trees use size-cells==1 (even when
-actually not needed except few boards).  This fixes dtbs_check warnings
-like:
+Device tree schema expects NAND controller to be named
+"nand-controller", otherwise dtbs_check complain with a warning like:
 
-    arch/arm64/boot/dts/freescale/imx8mm-beacon-kit.dt.yaml: nand-controller@33002000: #size-cells:0:0: 0 was expected
+    arch/arm/boot/dts/imx6dl-apf6dev.dt.yaml: gpmi-nand@112000:
+        $nodename:0: 'gpmi-nand@112000' does not match '^nand-controller(@.*)?'
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- Documentation/devicetree/bindings/mtd/nand-controller.yaml | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/imx6sx.dtsi | 2 +-
+ arch/arm/boot/dts/imx6ul.dtsi | 2 +-
+ arch/arm/boot/dts/imx7s.dtsi  | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/nand-controller.yaml b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-index 40fc5b0b2b8c..0879e1108837 100644
---- a/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-+++ b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-@@ -34,7 +34,10 @@ properties:
-     const: 1
+diff --git a/arch/arm/boot/dts/imx6sx.dtsi b/arch/arm/boot/dts/imx6sx.dtsi
+index b480dfa9e251..dfdca1804f9f 100644
+--- a/arch/arm/boot/dts/imx6sx.dtsi
++++ b/arch/arm/boot/dts/imx6sx.dtsi
+@@ -213,7 +213,7 @@
+ 			clocks = <&clks IMX6SX_CLK_APBH_DMA>;
+ 		};
  
-   "#size-cells":
--    const: 0
-+    description:
-+      Depends on your controller. Put zero unless you need a mapping between CS
-+      lines and dedicated memory regions.
-+    enum: [0, 1]
+-		gpmi: gpmi-nand@1806000{
++		gpmi: nand-controller@1806000{
+ 			compatible = "fsl,imx6sx-gpmi-nand";
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
+diff --git a/arch/arm/boot/dts/imx6ul.dtsi b/arch/arm/boot/dts/imx6ul.dtsi
+index 2b088f210331..d7d9f3e46b92 100644
+--- a/arch/arm/boot/dts/imx6ul.dtsi
++++ b/arch/arm/boot/dts/imx6ul.dtsi
+@@ -174,7 +174,7 @@
+ 			clocks = <&clks IMX6UL_CLK_APBHDMA>;
+ 		};
  
-   ranges: true
+-		gpmi: gpmi-nand@1806000 {
++		gpmi: nand-controller@1806000 {
+ 			compatible = "fsl,imx6q-gpmi-nand";
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
+diff --git a/arch/arm/boot/dts/imx7s.dtsi b/arch/arm/boot/dts/imx7s.dtsi
+index 1cfaf410aa43..2d237793eba9 100644
+--- a/arch/arm/boot/dts/imx7s.dtsi
++++ b/arch/arm/boot/dts/imx7s.dtsi
+@@ -1208,7 +1208,7 @@
+ 			clocks = <&clks IMX7D_NAND_USDHC_BUS_RAWNAND_CLK>;
+ 		};
  
+-		gpmi: gpmi-nand@33002000{
++		gpmi: nand-controller@33002000{
+ 			compatible = "fsl,imx7d-gpmi-nand";
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
 -- 
 2.17.1
 
