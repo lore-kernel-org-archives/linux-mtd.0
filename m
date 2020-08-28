@@ -2,62 +2,83 @@ Return-Path: <SRS0=a+HT=CG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C1C3C433E6
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Aug 2020 03:35:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EC63C433E2
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Aug 2020 08:47:28 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ECD5B2080C
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Aug 2020 03:34:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DC3002071B
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Aug 2020 08:47:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="me01ahwS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ECD5B2080C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="aRs/QTju";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aIm4qyEy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DC3002071B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=kjbTTx4FyJX+Gy4Jy2VhytUq7S7D5rxfFsBbhFgalds=; b=me01ahwSN5FN2RT5FaP7yJglAI
-	h5kp2S7QJnKbFuo5xfGq0R5UWS8pIetNVKtgKOkG+PjlIfhLLNFJUdi88nbsU8tPyxY0hXftfJ6sI
-	z8H0mSM/Q4jidySTc/46G1jgpd1F6Ew91/hYKRuPrNpkXN57SHJnN4vNzCbpw2QTL9l+n/CgWmm7G
-	JS1mg24pKdFsqHHbzDBjIVSVZShUSLGe5X5IxzzznrIau9JbfRNsov23b72C/gh4OgF95nytD1Qbm
-	uT1qZ1+Vgka3xznecRzlzDllTZh3LreeyvjBeCqPrVeP3Eylz4FzEtxAmbzJTAd3/mIXxPzvKfMHV
-	Asuly/nw==;
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=ldjfDfHGhUZAgMolbHgQDlv13Y87sWDDM+8G1FIcH2U=; b=aRs/QTju+s83f2vX0fwq+kY01
+	akMcIVHc6UhyvgaQ8uT+kQBlPmP46MicjHJLe91u52J4Og74Mh39QgUmchkC/7H7UULoWfXUv+ebX
+	Z7aUnFnz90076z9i4RyfAZ20KCBofu05i66WGXR5bO0ROKRQok8k/WNeCFwKayZm3AqbKDe2Bkxp0
+	Z44ebxwl20l27DFqAlAlGra9XBpgVwIjh+twFFa7Z2pxslxBCJrlIX72T6JPhtdcK4AyytqPyAYP8
+	bjenJSSmlD/L15Dq6lOiV3aM4Dm4ttP7iBmt31DxZUOesActtjVv38dLRS6xUkfNSfFd9exNKVDje
+	u5bYnD2JQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kBV98-0006YP-P4; Fri, 28 Aug 2020 03:33:46 +0000
-Received: from szxga07-in.huawei.com ([45.249.212.35] helo=huawei.com)
+	id 1kBa1j-0005YN-RP; Fri, 28 Aug 2020 08:46:27 +0000
+Received: from mail-vs1-xe44.google.com ([2607:f8b0:4864:20::e44])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kBV96-0006Xb-Nq
- for linux-mtd@lists.infradead.org; Fri, 28 Aug 2020 03:33:45 +0000
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
- by Forcepoint Email with ESMTP id 3048085FE2F224C0F4FC;
- Fri, 28 Aug 2020 11:33:34 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Fri, 28 Aug 2020
- 11:33:13 +0800
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-To: <richard.weinberger@gmail.com>, <yi.zhang@huawei.com>
-Subject: [PATCH] ubifs: setflags: Don't show error message when
- vfs_ioc_setflags_prepare() fails
-Date: Fri, 28 Aug 2020 11:32:50 +0800
-Message-ID: <20200828033250.910168-1-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.25.4
+ id 1kBa1d-0005Ro-14
+ for linux-mtd@lists.infradead.org; Fri, 28 Aug 2020 08:46:22 +0000
+Received: by mail-vs1-xe44.google.com with SMTP id a21so198091vsd.3
+ for <linux-mtd@lists.infradead.org>; Fri, 28 Aug 2020 01:46:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=189lzAWfQfsXqTmFG0edsCDCtQB53S1O0XCFYRVJy0M=;
+ b=aIm4qyEymVO5ohXmss62q8J7ZsU21OeX87DHri44FY+MtB8kKPRTRN8fC2fuIy9zvX
+ Z9GTB09WEFGr+7TVAWibwyGyVwol+ajGdpcyUuC4mEf8pIP20ndS3jHWcXKurf5SVAhY
+ V+KCtnocv+7SjPRR+/YrhNgmkynyreSovR2OBYvRS0xkDojpgFoNajirehBgyh2Hrzif
+ 0zPrbgW8qQ+iLRDMParVC4EFTYOfC0SYgcE9hKp/OLDf4Z3U/WxlgJJAx8ImgeFHI7Ms
+ K2rPmiftA1He8wyBKNzMVDF2IAg9gwh+r+motN/9SM691+1Dlb6EM3f2CTGjxwoc2hSk
+ YCSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=189lzAWfQfsXqTmFG0edsCDCtQB53S1O0XCFYRVJy0M=;
+ b=i031H3Czd/Xc7W3iIQ6oNLFi5Fcpd0h3Uad9+Htpqfo9ShwclLXlxQPp2UextFZX1m
+ adzPGidmAajJ3sRVgclU26Gr3m8Cz45yg6Y89iowhry2o6q6k3U8GeWU8x1u/80n6AUd
+ gCEjFA7TnmVdbyzxx+eRSVpwfJ+hXhrIBHT7hMC2EMRq1dhBzEEDYMFMnWrPZLG0EvQv
+ 39ovD3W/EpKTx3W3vMFa7GD+J/Bm/nf53f3E+MgVOAuiyqyTakADiBHosCQbvw3ruayX
+ tx8Lns7k21skVT18CKxTu+mgPpHzCsB0F7t8oPOSQgEPy7hUSxVgwG4iDyl5Gb7rGBT0
+ axWg==
+X-Gm-Message-State: AOAM530LW4IxHEgyFscyZhXdpEJoqkvPTuz1qEjGUIvCSKnYrL1UuA/8
+ V5xL/s6nyyuKnUZWMwKhYA5jlMpAeEZkzprdG7fPfg==
+X-Google-Smtp-Source: ABdhPJwdM//IK26BNKLGQTKBrolM5NysJSl2j+QUGwsOTG7KyqNDjalKpnYeND/9ptvlwZBlFInKLZnPBJM5EgFzpWg=
+X-Received: by 2002:a67:f8ce:: with SMTP id c14mr189781vsp.14.1598604376960;
+ Fri, 28 Aug 2020 01:46:16 -0700 (PDT)
 MIME-Version: 1.0
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
+References: <20200825193536.7332-1-krzk@kernel.org>
+ <20200825193536.7332-13-krzk@kernel.org>
+In-Reply-To: <20200825193536.7332-13-krzk@kernel.org>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Fri, 28 Aug 2020 10:45:40 +0200
+Message-ID: <CAPDyKFp9m6xBJMGn2TgwD8VEUZ0JwzgowU32qUbL1qgEPua-GA@mail.gmail.com>
+Subject: Re: [PATCH v3 12/19] dt-bindings: mmc: fsl-imx-esdhc: Fix i.MX 8
+ compatible matching
+To: Krzysztof Kozlowski <krzk@kernel.org>, Rob Herring <robh+dt@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200827_233345_019257_E378AB79 
-X-CRM114-Status: UNSURE (   8.89  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200828_044621_211886_BFD82926 
+X-CRM114-Status: GOOD (  17.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,49 +90,112 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: Mark Rutland <mark.rutland@arm.com>, linux-pwm@vger.kernel.org,
+ Linus Walleij <linus.walleij@linaro.org>, Frank Li <frank.li@nxp.com>,
+ Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Fabio Estevam <festevam@gmail.com>,
+ Anson Huang <Anson.Huang@nxp.com>,
+ Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+ NXP Linux Team <linux-imx@nxp.com>, linux-serial@vger.kernel.org,
+ DTML <devicetree@vger.kernel.org>, linux-watchdog@vger.kernel.org,
+ Linux PM <linux-pm@vger.kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+ "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+ Han Xu <han.xu@nxp.com>, Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Fugang Duan <fugang.duan@nxp.com>,
+ "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Li Yang <leoyang.li@nxp.com>, Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Shawn Guo <shawnguo@kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Following process will trigger ubifs_err:
-  1. useradd -m freg                                        (Under root)
-  2. cd /home/freg && mkdir mp                              (Under freg)
-  3. mount -t ubifs /dev/ubi0_0 /home/freg/mp               (Under root)
-  4. cd /home/freg && echo 123 > mp/a			    (Under root)
-  5. cd mp && chown freg a && chgrp freg a && chmod 777 a   (Under root)
-  6. chattr +i a                                            (Under freg)
+On Tue, 25 Aug 2020 at 21:37, Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> The i.MX 8 DTSes use two compatibles so update the binding to fix
+> dtbs_check warnings like:
+>
+>   arch/arm64/boot/dts/freescale/imx8mn-evk.dt.yaml: mmc@30b40000:
+>     compatible: ['fsl,imx8mn-usdhc', 'fsl,imx7d-usdhc'] is too long
+>     From schema: Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
+>
+>   arch/arm64/boot/dts/freescale/imx8mn-evk.dt.yaml: mmc@30b40000:
+>     compatible: Additional items are not allowed ('fsl,imx7d-usdhc' was unexpected)
+>
+>   arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dt.yaml: mmc@30b40000:
+>     compatible: ['fsl,imx8mn-usdhc', 'fsl,imx7d-usdhc'] is too long
+>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-UBIFS error (ubi0:0 pid 1723): ubifs_ioctl [ubifs]: can't modify inode
-65 attributes
-chattr: Operation not permitted while setting flags on a
+Rob, Krzysztof - do you want me to pick this one?
 
-This is not an UBIFS problem, it was caused by task priviliage checking
-on file operations. Remove error message printing from kernel just like
-other filesystems (eg. ext4), since we already have enough information
-from userspace tools.
+Kind regards
+Uffe
 
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- fs/ubifs/ioctl.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/fs/ubifs/ioctl.c b/fs/ubifs/ioctl.c
-index 3df9be2c684c..4363d85a3fd4 100644
---- a/fs/ubifs/ioctl.c
-+++ b/fs/ubifs/ioctl.c
-@@ -134,7 +134,6 @@ static int setflags(struct inode *inode, int flags)
- 	return err;
- 
- out_unlock:
--	ubifs_err(c, "can't modify inode %lu attributes", inode->i_ino);
- 	mutex_unlock(&ui->ui_mutex);
- 	ubifs_release_budget(c, &req);
- 	return err;
--- 
-2.25.4
-
+>
+> ---
+>
+> Changes since v2:
+> 1. Remove moved compatibles.
+>
+> Changes since v1:
+> 1. Handle also fsl,imx8mm-usdhc and fsl,imx8qxp-usdhc
+> ---
+>  .../bindings/mmc/fsl-imx-esdhc.yaml           | 37 ++++++++++---------
+>  1 file changed, 20 insertions(+), 17 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml b/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
+> index 10b45966f1b8..e71d13c2d109 100644
+> --- a/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
+> @@ -21,23 +21,26 @@ description: |
+>
+>  properties:
+>    compatible:
+> -    enum:
+> -      - fsl,imx25-esdhc
+> -      - fsl,imx35-esdhc
+> -      - fsl,imx51-esdhc
+> -      - fsl,imx53-esdhc
+> -      - fsl,imx6q-usdhc
+> -      - fsl,imx6sl-usdhc
+> -      - fsl,imx6sx-usdhc
+> -      - fsl,imx6ull-usdhc
+> -      - fsl,imx7d-usdhc
+> -      - fsl,imx7ulp-usdhc
+> -      - fsl,imx8mq-usdhc
+> -      - fsl,imx8mm-usdhc
+> -      - fsl,imx8mn-usdhc
+> -      - fsl,imx8mp-usdhc
+> -      - fsl,imx8qm-usdhc
+> -      - fsl,imx8qxp-usdhc
+> +    oneOf:
+> +      - enum:
+> +          - fsl,imx25-esdhc
+> +          - fsl,imx35-esdhc
+> +          - fsl,imx51-esdhc
+> +          - fsl,imx53-esdhc
+> +          - fsl,imx6q-usdhc
+> +          - fsl,imx6sl-usdhc
+> +          - fsl,imx6sx-usdhc
+> +          - fsl,imx6ull-usdhc
+> +          - fsl,imx7d-usdhc
+> +          - fsl,imx7ulp-usdhc
+> +      - items:
+> +          - enum:
+> +              - fsl,imx8mm-usdhc
+> +              - fsl,imx8mn-usdhc
+> +              - fsl,imx8mp-usdhc
+> +              - fsl,imx8mq-usdhc
+> +              - fsl,imx8qxp-usdhc
+> +          - const: fsl,imx7d-usdhc
+>
+>    reg:
+>      maxItems: 1
+> --
+> 2.17.1
+>
 
 ______________________________________________________
 Linux MTD discussion mailing list
