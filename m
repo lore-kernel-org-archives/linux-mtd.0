@@ -2,87 +2,66 @@ Return-Path: <SRS0=YYjO=CK=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3126C433E2
-	for <linux-mtd@archiver.kernel.org>; Tue,  1 Sep 2020 14:05:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37C30C433E6
+	for <linux-mtd@archiver.kernel.org>; Tue,  1 Sep 2020 14:21:45 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B668220684
-	for <linux-mtd@archiver.kernel.org>; Tue,  1 Sep 2020 14:05:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ECD99206CD
+	for <linux-mtd@archiver.kernel.org>; Tue,  1 Sep 2020 14:21:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ta4qXGVz";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=yadro.com header.i=@yadro.com header.b="hv5Tpu+p"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B668220684
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=yadro.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FcopEGpm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ECD99206CD
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=hisilicon.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Date:To:From:
-	Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=hOx97HbtuOcAf/zVfwWtHzlJaocpSFBhAHeEQN/KnPY=; b=ta4qXGVzAiPOHZwVZD1yqCCwJ
-	wQWdrUDT1xCf809Atmm2115alKyAHnHIz/iIA33l1xfcOO8p2UN6MrPUr2Wxz7W0nZoKoNg6TRGkn
-	adz2xEimcBLT71R0ggfQu4pQ/5caEGVmvJag9Xc90DvXKoVQKzNz12nTkJ7tZvx0qqC97LhKSrVmm
-	ad/scPtEOM0ROFk/eqqNzqpCOI6flD93o9dTXnUQJPiao6oBGD6BJnV6HM98kn+N/GgFSJhhsSmAk
-	gzF5w+CXrhWzLnQfW7yyoASGjzLb1LPCysjCzWO+uOaZmyRFd1niMpnxp8VqouQ780eW/1J9bY22T
-	7BTO+OvXg==;
+	 bh=jON7svjmVMY5E4wpEPWs2zsl0BEM5sRzH6DuuXD4//k=; b=FcopEGpm80pCV7GU85T1Et4R2
+	elqyBE+ammae0VRoiPENcr8mO4trTEpg4mRVka2z1rTMfVQXEmJDxn8Wlanif9+6gtFm2M1hMfd7u
+	L9lp/GS8lP5Ph7pkXyl/rexqRMbbcBdM08zg0+s0F7hx6yUSBWPKc0Nw3U0/ybyp0QzwAJVJmLzRi
+	26ZJeQb21k0HsFoMQo0Ix0wq57OW3jUXdoyjRM03W43WQKVZJtVbCtoARwLJNuMtbBslwdshnDOWC
+	WS8RmoAwwBrvwcDb+PPi8YWJsoG7EtlD6EvpTvZLKpMalkGM9UyQkXKBQvd+AGV/iOYSVuP0B2Onu
+	t95v+Q6Tg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kD6t7-0008MZ-7F; Tue, 01 Sep 2020 14:03:53 +0000
-Received: from mta-02.yadro.com ([89.207.88.252] helo=mta-01.yadro.com)
+	id 1kD79I-0002rR-Cj; Tue, 01 Sep 2020 14:20:36 +0000
+Received: from szxga04-in.huawei.com ([45.249.212.190] helo=huawei.com)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kD6t3-0008Ku-TF
- for linux-mtd@lists.infradead.org; Tue, 01 Sep 2020 14:03:51 +0000
-Received: from localhost (unknown [127.0.0.1])
- by mta-01.yadro.com (Postfix) with ESMTP id F272452195;
- Tue,  1 Sep 2020 14:03:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
- content-transfer-encoding:mime-version:user-agent:content-type
- :content-type:organization:references:in-reply-to:date:date:from
- :from:subject:subject:message-id:received:received:received; s=
- mta-01; t=1598969019; x=1600783420; bh=Cio/AuAeW0HBrdL9zokO5x1JI
- loihymCKFdkc3tu5Rw=; b=hv5Tpu+pfEE+4TqMB+Tacv08S9E1AtZHx0I6ruCR/
- 9VTvOFvazAaOvNVY2lYLMmlDfYxFPuYIMoJi0aRcIp8IHzhss3UB5BQdxCQvnaB6
- gYi5qWsqNv/jjrY6YRGBig+QP/e/B9VCTbSRcokU83k8yH4dNx25zrTTPuOHUOgz
- FM=
-X-Virus-Scanned: amavisd-new at yadro.com
-Received: from mta-01.yadro.com ([127.0.0.1])
- by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id jTjqBeJ6JhO5; Tue,  1 Sep 2020 17:03:39 +0300 (MSK)
-Received: from T-EXCH-02.corp.yadro.com (t-exch-02.corp.yadro.com
- [172.17.10.102])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by mta-01.yadro.com (Postfix) with ESMTPS id 23F644C866;
- Tue,  1 Sep 2020 17:03:39 +0300 (MSK)
-Received: from localhost.localdomain (10.199.1.70) by T-EXCH-02.corp.yadro.com
- (172.17.10.102) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id 15.1.669.32; Tue, 1 Sep
- 2020 17:03:38 +0300
-Message-ID: <ceb27ac19cd66e9b8f1c95a27f4c92a3029eda0c.camel@yadro.com>
-Subject: Re: [PATCH 2/2] mtd: spi-nor: enable lock interface for macronix chips
-From: Ivan Mikhaylov <i.mikhaylov@yadro.com>
-To: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Date: Tue, 1 Sep 2020 17:06:59 +0300
-In-Reply-To: <ae094597-e57e-dff1-f897-bf3cc75f5511@prevas.dk>
-References: <20200812151818.16699-1-i.mikhaylov@yadro.com>
- <20200812151818.16699-3-i.mikhaylov@yadro.com>
- <ae094597-e57e-dff1-f897-bf3cc75f5511@prevas.dk>
-Organization: YADRO
-User-Agent: Evolution 3.32.5 (3.32.5-1.fc30) 
+ id 1kD79F-0002qE-A1
+ for linux-mtd@lists.infradead.org; Tue, 01 Sep 2020 14:20:34 +0000
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+ by Forcepoint Email with ESMTP id 631D9A4E1218CD2D4173;
+ Tue,  1 Sep 2020 22:20:27 +0800 (CST)
+Received: from [10.65.58.147] (10.65.58.147) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0;
+ Tue, 1 Sep 2020 22:20:16 +0800
+Subject: Re: [PATCH 2/2] mtd: spi-nor: Disable the flash quad mode in
+ spi_nor_restore()
+To: =?UTF-8?Q?Matthias_Wei=c3=9fer?= <m.weisser.m@gmail.com>, <p.yadav@ti.com>
+References: <1592312547-19239-1-git-send-email-yangyicong@hisilicon.com>
+ <1592312547-19239-3-git-send-email-yangyicong@hisilicon.com>
+ <CAO8h3eFLVLRmw7u+rurKsg7=Nh2q-HVq-HgVXig8gf5Dffk8MA@mail.gmail.com>
+From: Yicong Yang <yangyicong@hisilicon.com>
+Message-ID: <30ca8ffc-74a7-92b0-5563-286967d23dc9@hisilicon.com>
+Date: Tue, 1 Sep 2020 22:20:22 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-X-Originating-IP: [10.199.1.70]
-X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
- T-EXCH-02.corp.yadro.com (172.17.10.102)
+In-Reply-To: <CAO8h3eFLVLRmw7u+rurKsg7=Nh2q-HVq-HgVXig8gf5Dffk8MA@mail.gmail.com>
+X-Originating-IP: [10.65.58.147]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200901_100350_171012_7A8F627F 
-X-CRM114-Status: GOOD (  16.46  )
+X-CRM114-CacheID: sfid-20200901_102033_586304_3D09C9DC 
+X-CRM114-Status: GOOD (  24.17  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,46 +73,105 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh
- Raghavendra <vigneshr@ti.com>, Tudor Ambarus <tudor.ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: vigneshr@ti.com, sergei.shtylyov@cogentembedded.com,
+ tudor.ambarus@microchip.com, richard@nod.at, me@yadavpratyush.com,
+ john.garry@huawei.com, linuxarm@huawei.com, linux-mtd@lists.infradead.org,
+ miquel.raynal@bootlin.com, alexander.sverdlin@nokia.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2020-08-31 at 12:55 +0200, Rasmus Villemoes wrote:
-> On 12/08/2020 17.18, Ivan Mikhaylov wrote:
-> > Add locks for whole macronix chip series with BP0-2 and BP0-3 bits.
-> > 
-> > Tested with mx25l51245g(BP0-3).
-> 
-> Hmm. I've tried adding support for locking on Macronix to U-Boot
-> (
-> https://patchwork.ozlabs.org/project/uboot/patch/20200326114257.1782-3-rasmus.villemoes@prevas.dk/
-> ),
-> but that was quite a bit more involved than this. Note in particular the
-> first part of my commit message:
-> 
->   Macronix chips implements locking in (power-of-two multiple of) 64K
->   blocks, not as a fraction of the chip's size.
-> 
-> At least, that was true for the chip I was interested in and the few
-> others whose data sheets I grabbed to double-check. So I'm a bit
-> skeptical that this can work out-of-the-box without introducing a new
-> struct spi_nor_locking_ops.
-> 
-> Rasmus
-
-Rasmus, but there is already locking of power-of-two as I see from the code,
-I'll double check on hw. Also compared documentation n25q512ax3(micron, which
-HAS_LOCK) to mx25l25635e(macronix) and they have same block protection table
-bits for example. I'd be glad to hear from maintainers on this spot.
-
-Thanks.
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWF0aGhpYXMgYW5kIFByYXR5dXNoLAoKSSd2ZSB0ZXN0ZWQgdGhlIGZvbGxvd2luZyBwYXRj
+aCB3aXRoIHMyNWZzMTI4czEuCkkgbGVmdCB0aGUgZmxhc2ggcXVhZCBlbmFibGVkIGJlZm9yZSBt
+YW5hZ2VkIGJ5IHNwaS1ub3IgZHJpdmVyLAphbmQgaXQnbGwgc3RheSBRRSBhZnRlciByZW1vdmVk
+LiBTbyBJIHRoaW5rIGl0J2xsIGFsc28gYWRkcmVzcyB0aGUgaXNzdWUKbWVudGlvbmVkLiBQbGVh
+c2UgaGF2ZSBhIHRlc3QuCgpSZWdhcmRzLApZaWNvbmcKCgpGcm9tIDQzYWExYWZhMTJhMTAwMzZm
+NzIyYjI3MmE5YTM5YjhjODMyMThmMzMgTW9uIFNlcCAxNyAwMDowMDowMCAyMDAxCkZyb206IFlp
+Y29uZyBZYW5nIDx5YW5neWljb25nQGhpc2lsaWNvbi5jb20+CkRhdGU6IFR1ZSwgMSBTZXAgMjAy
+MCAyMjowOTo0NiArMDgwMApTdWJqZWN0OiBbUEFUQ0hdIG10ZDogc3BpLW5vcjogZG9uJ3QgZGlz
+YWJsZSBxdWFkIG1vZGUgb2YgZmxhc2ggd2hvc2UgaXMKIG9yaWdpbmFsbHkgZW5hYmxlZAoKQ3Vy
+cmVudGx5IHdlJ2xsIGRpc2FibGUgdGhlIGZsYXNoJ3MgUXVhZCBtb2RlIHdoZW4gcmVtb3ZlL3No
+dXRkb3duIGluCnNwaV9ub3JfcmVzdG9yZSgpLCBubyBtYXR0ZXIgd2hldGhlciBpdCdzIFF1YWQg
+ZW5hYmxlZCBvciBub3QuCkZvciBmbGFzaGVzIG9yaWdpbmFsbHkgaW4gUXVhZCBtb2RlLCBpdCds
+bCBjbGVhciB0aGUgZmxhc2gncyBRRSBiaXQKYW5kIHJlc3RvcmUgYW4gaW5jb3JyZWN0IHN0YXRl
+LgoKUmVjb3JkIHRoZSBmbGFzaCdzIG9yaWdpbmFsIFFFIHN0YXRlLCBhbmQgZG9uJ3QgZGlzYWJs
+ZSB0aGUgUXVhZCBtb2RlCm9mIHRoZXNlIG9yaWdpbmFsbHkgUXVhZCBlbmFibGVkIGZsYXNoLgoK
+UmVwb3J0ZWQtYnk6IE1hdHRoaWFzIFdlaXNzZXIgPG0ud2Vpc3Nlci5tQGdtYWlsLmNvbT4KU2ln
+bmVkLW9mZi1ieTogWWljb25nIFlhbmcgPHlhbmd5aWNvbmdAaGlzaWxpY29uLmNvbT4KLS0tCiBk
+cml2ZXJzL210ZC9zcGktbm9yL2NvcmUuYyAgfCAzMCArKysrKysrKysrKysrKysrKysrKysrKy0t
+LS0tLS0KIGluY2x1ZGUvbGludXgvbXRkL3NwaS1ub3IuaCB8ICAzICsrKwogMiBmaWxlcyBjaGFu
+Z2VkLCAyNiBpbnNlcnRpb25zKCspLCA3IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZl
+cnMvbXRkL3NwaS1ub3IvY29yZS5jIGIvZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMKaW5kZXgg
+NjVlZmY0Yy4uYjEzYjNiMyAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMK
+KysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMKQEAgLTE5MjQsOCArMTkyNCwxMSBAQCBp
+bnQgc3BpX25vcl9zcjFfYml0Nl9xdWFkX2VuYWJsZShzdHJ1Y3Qgc3BpX25vciAqbm9yLCBib29s
+IGVuYWJsZSkKICAgICBpZiAocmV0KQogICAgICAgICByZXR1cm4gcmV0OwogCi0gICAgaWYgKChl
+bmFibGUgJiYgKG5vci0+Ym91bmNlYnVmWzBdICYgU1IxX1FVQURfRU5fQklUNikpIHx8Ci0gICAg
+ICAgICghZW5hYmxlICYmICEobm9yLT5ib3VuY2VidWZbMF0gJiBTUjFfUVVBRF9FTl9CSVQ2KSkp
+CisgICAgaWYgKGVuYWJsZSAmJiAobm9yLT5ib3VuY2VidWZbMF0gJiBTUjFfUVVBRF9FTl9CSVQ2
+KSkgeworICAgICAgICBub3ItPm9yaWdfcWVfc3RhdGUgPSB0cnVlOworICAgICAgICByZXR1cm4g
+MDsKKyAgICB9CisgICAgaWYgKCFlbmFibGUgJiYgIShub3ItPmJvdW5jZWJ1ZlswXSAmIFNSMV9R
+VUFEX0VOX0JJVDYpKQogICAgICAgICByZXR1cm4gMDsKIAogICAgIGlmIChlbmFibGUpCkBAIC0x
+OTU4LDggKzE5NjEsMTIgQEAgaW50IHNwaV9ub3Jfc3IyX2JpdDFfcXVhZF9lbmFibGUoc3RydWN0
+IHNwaV9ub3IgKm5vciwgYm9vbCBlbmFibGUpCiAgICAgaWYgKHJldCkKICAgICAgICAgcmV0dXJu
+IHJldDsKIAotICAgIGlmICgoZW5hYmxlICYmIChub3ItPmJvdW5jZWJ1ZlswXSAmIFNSMl9RVUFE
+X0VOX0JJVDEpKSB8fAotICAgICAgICAoIWVuYWJsZSAmJiAhKG5vci0+Ym91bmNlYnVmWzBdICYg
+U1IyX1FVQURfRU5fQklUMSkpKQorICAgIGlmIChlbmFibGUgJiYgKG5vci0+Ym91bmNlYnVmWzBd
+ICYgU1IyX1FVQURfRU5fQklUMSkpIHsKKyAgICAgICAgbm9yLT5vcmlnX3FlX3N0YXRlID0gdHJ1
+ZTsKKyAgICAgICAgcmV0dXJuIDA7CisgICAgfQorCisgICAgaWYgKCFlbmFibGUgJiYgIShub3It
+PmJvdW5jZWJ1ZlswXSAmIFNSMl9RVUFEX0VOX0JJVDEpKQogICAgICAgICByZXR1cm4gMDsKIAog
+ICAgIGlmIChlbmFibGUpCkBAIC0xOTkzLDggKzIwMDAsMTIgQEAgaW50IHNwaV9ub3Jfc3IyX2Jp
+dDdfcXVhZF9lbmFibGUoc3RydWN0IHNwaV9ub3IgKm5vciwgYm9vbCBlbmFibGUpCiAgICAgcmV0
+ID0gc3BpX25vcl9yZWFkX3NyMihub3IsIHNyMik7CiAgICAgaWYgKHJldCkKICAgICAgICAgcmV0
+dXJuIHJldDsKLSAgICBpZiAoKGVuYWJsZSAmJiAoKnNyMiAmIFNSMl9RVUFEX0VOX0JJVDcpKSB8
+fAotICAgICAgICAoIWVuYWJsZSAmJiAhKCpzcjIgJiBTUjJfUVVBRF9FTl9CSVQ3KSkpCisgICAg
+aWYgKGVuYWJsZSAmJiAoKnNyMiAmIFNSMl9RVUFEX0VOX0JJVDcpKSB7CisgICAgICAgIG5vci0+
+b3JpZ19xZV9zdGF0ZSA9IHRydWU7CisgICAgICAgIHJldHVybiAwOworICAgIH0KKworICAgIGlm
+ICghZW5hYmxlICYmICEoKnNyMiAmIFNSMl9RVUFEX0VOX0JJVDcpKQogICAgICAgICByZXR1cm4g
+MDsKIAogICAgIC8qIFVwZGF0ZSB0aGUgUXVhZCBFbmFibGUgYml0LiAqLwpAQCAtMzAwMSw3ICsz
+MDEyLDEyIEBAIHZvaWQgc3BpX25vcl9yZXN0b3JlKHN0cnVjdCBzcGlfbm9yICpub3IpCiAgICAg
+ICAgIG5vci0+ZmxhZ3MgJiBTTk9SX0ZfQlJPS0VOX1JFU0VUKQogICAgICAgICBub3ItPnBhcmFt
+cy0+c2V0XzRieXRlX2FkZHJfbW9kZShub3IsIGZhbHNlKTsKIAotICAgIHNwaV9ub3JfcXVhZF9l
+bmFibGUobm9yLCBmYWxzZSk7CisgICAgLyoKKyAgICAgKiByZXN0b3JlIHRoZSBmbGFzaCdzIHF1
+YWQgbW9kZS4gaWYgdGhlIGZsYXNoJ3MgcXVhZCBtb2RlIGlzCisgICAgICogZW5hYmxlZCBvcmln
+aW5hbGx5LCB3ZSdsbCBub3QgZGlzYWJsZSBpdC4KKyAgICAgKi8KKyAgICBpZiAoIW5vci0+b3Jp
+Z19xZV9zdGF0ZSkKKyAgICAgICAgc3BpX25vcl9xdWFkX2VuYWJsZShub3IsIGZhbHNlKTsKIH0K
+IEVYUE9SVF9TWU1CT0xfR1BMKHNwaV9ub3JfcmVzdG9yZSk7CiAKZGlmZiAtLWdpdCBhL2luY2x1
+ZGUvbGludXgvbXRkL3NwaS1ub3IuaCBiL2luY2x1ZGUvbGludXgvbXRkL3NwaS1ub3IuaAppbmRl
+eCA2MGJhYzJjLi5mMzQzNDE2IDEwMDY0NAotLS0gYS9pbmNsdWRlL2xpbnV4L210ZC9zcGktbm9y
+LmgKKysrIGIvaW5jbHVkZS9saW51eC9tdGQvc3BpLW5vci5oCkBAIC0zNDQsNiArMzQ0LDggQEAg
+c3RydWN0IHNwaV9ub3JfZmxhc2hfcGFyYW1ldGVyOwogICogQHJlYWRfZHVtbXk6ICAgICAgICB0
+aGUgZHVtbXkgbmVlZGVkIGJ5IHRoZSByZWFkIG9wZXJhdGlvbgogICogQHByb2dyYW1fb3Bjb2Rl
+OiAgICB0aGUgcHJvZ3JhbSBvcGNvZGUKICAqIEBzc3Rfd3JpdGVfc2Vjb25kOiAgICB1c2VkIGJ5
+IHRoZSBTU1Qgd3JpdGUgb3BlcmF0aW9uCisgKiBAb3JpZ19xZV9zdGF0ZTogICAgdXNlZCB0byBp
+bmRpY2F0ZSB0aGUgZmxhc2gncyBvcmlnaW5hbCBRdWFkIG1vZGUgZW5hYmxlCisgKiAgICAgICAg
+ICAgICAgICAgICAgICBzdGF0ZS4gVHJ1ZSBmb3IgZW5hYmxlZCBhbmQgZmFsc2UgZm9yIGRpc2Fi
+bGVkLgogICogQGZsYWdzOiAgICAgICAgZmxhZyBvcHRpb25zIGZvciB0aGUgY3VycmVudCBTUEkg
+Tk9SIChTTk9SX0ZfKikKICAqIEByZWFkX3Byb3RvOiAgICAgICAgdGhlIFNQSSBwcm90b2NvbCBm
+b3IgcmVhZCBvcGVyYXRpb25zCiAgKiBAd3JpdGVfcHJvdG86ICAgIHRoZSBTUEkgcHJvdG9jb2wg
+Zm9yIHdyaXRlIG9wZXJhdGlvbnMKQEAgLTM3NSw2ICszNzcsNyBAQCBzdHJ1Y3Qgc3BpX25vciB7
+CiAgICAgZW51bSBzcGlfbm9yX3Byb3RvY29sICAgIHdyaXRlX3Byb3RvOwogICAgIGVudW0gc3Bp
+X25vcl9wcm90b2NvbCAgICByZWdfcHJvdG87CiAgICAgYm9vbCAgICAgICAgICAgIHNzdF93cml0
+ZV9zZWNvbmQ7CisgICAgYm9vbCAgICAgICAgICAgIG9yaWdfcWVfc3RhdGU7CiAgICAgdTMyICAg
+ICAgICAgICAgZmxhZ3M7CiAKICAgICBjb25zdCBzdHJ1Y3Qgc3BpX25vcl9jb250cm9sbGVyX29w
+cyAqY29udHJvbGxlcl9vcHM7Ci0tIAoyLjguMQoKCgpPbiAyMDIwLzkvMSAxNDoxNiwgTWF0dGhp
+YXMgV2Vpw59lciB3cm90ZToKPiBBbSBEaS4sIDE2LiBKdW5pIDIwMjAgdW0gMTU6MDMgVWhyIHNj
+aHJpZWIgWWljb25nIFlhbmcKPiA8eWFuZ3lpY29uZ0BoaXNpbGljb24uY29tPjoKPj4gSWYgdGhl
+IGZsYXNoJ3MgcXVhZCBtb2RlIGlzIGVuYWJsZWQsIGl0J2xsIHJlbWFpbiBpbiB0aGUgcXVhZCBt
+b2RlIHdoZW4KPj4gaXQncyByZW1vdmVkLiBJZiB3ZSBkcml2ZSB0aGUgZmxhc2ggbmV4dCB0aW1l
+IGluIFNQSS9EdWFsIG1vZGUsIHRoZW4KPj4gcHJvYmxlbSBvY2N1cnMgYXMgdGhlIGZsYXNoJ3Mg
+cXVhZCBlbmFibGUgYml0IGlzIG5vdCBjbGVhcmVkLgo+IE9uIGZsYXNoIGRldmljZXMgd2l0aCBh
+IG5vbi12b2xhdGlsZSBxdWFkIGVuYWJsZSBiaXQgKHdlIHVzZSBTMjVGTDUxMlMpCj4gdGhpcyB3
+aWxsIHdlYXIgb3V0IHRoZSBxdWFkIGVuYWJsZSBiaXQgYXMgb24gZXZlcnkgYm9vdCB0aGUgYml0
+IGlzCj4gc2V0IGFuZCByZXNldCBvbiBzaHV0ZG93bi4gT3IgZG8gSSBtaXNzIHNvbWV0aGluZyBo
+ZXJlPwo+Cj4+IERpc2FibGUgdGhlIHF1YWQgbW9kZSBpbiBzcGlfbm9yX3Jlc3RvcmUoKSwgdGhl
+IGZsYXNoIHdpbGwgbGVhdmUKPj4gcXVhZCBtb2RlIHdoZW4gcmVtb3ZlLiBUaGlzIHdpbGwgbWFr
+ZSBzdXJlIHRoZSBmbGFzaCBhbHdheXMgZW50ZXIgdGhlCj4+IGNvcnJlY3QgbW9kZSB3aGVuIGxv
+YWRlZC4KPiBXZSBoYXZlIGEgc3lzdGVtIHdoaWNoIHJlbGllcyBvbiBhbiBlbmFibGVkIHF1YWQg
+bW9kZSBvbiBib290Cj4gKGJvb3Rsb2FkZXIgdXNlcyBxdWFkIG1vZGUgd2l0aG91dCBlbmFibGlu
+ZyBpdCkgc28gdXNpbmcgdGhpcyBwYXRjaAo+IHdpbGwgcHJldmVudCBvdXIgZGV2aWNlIGZyb20g
+Ym9vdGluZy4KPgo+IFJlZ2FyZHMsCj4gTWF0dGhpYXMKPiAuCj4KCgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Np
+b24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vbGludXgtbXRkLwo=
